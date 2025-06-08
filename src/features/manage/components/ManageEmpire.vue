@@ -1,5 +1,14 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, ref, Ref, watch } from "vue";
+	import {
+		computed,
+		ComputedRef,
+		PropType,
+		ref,
+		Ref,
+		watch,
+		h,
+		VNodeChild,
+	} from "vue";
 
 	// Stores
 	import { usePlanningStore } from "@/stores/planningStore";
@@ -154,6 +163,13 @@
 		refCXOptions.value = options;
 	}
 
+	function selectRenderLabelWithTooltip(option: SelectMixedOption): VNodeChild {
+		// Native UI tooltips do look nicer, but are annoying when trying to
+		// interact with the select. Instead, we'll wrap the label in a div with
+		// 'title' set on it so we get the browser native tooltips
+		return h("div", { title: option.label }, { default: () => option.label });
+	}
+
 	const cxEmpireJunctions: ComputedRef<ICXEmpireJunction[]> = computed(() => {
 		const jct: ICXEmpireJunction[] = [];
 
@@ -277,7 +293,7 @@
 		"
 		class="transition-all duration-500 border-t border-b border-white/10"
 	>
-		<div class="flex gap-x-3 pt-3">
+		<div class="flex gap-x-3 pt-3 w-1/2 min-w-[400px]">
 			<div class="flex-grow">
 				<n-form
 					label-placement="left"
@@ -369,10 +385,11 @@
 		</x-n-data-table-column>
 		<x-n-data-table-column title="CX" key="cx" width="200">
 			<template #render-cell="{ rowData }">
-				<div class="!w-full">
+				<div class="max-w-[200px]">
 					<n-select
 						size="small"
 						:options="refCXOptions"
+						:render-label="selectRenderLabelWithTooltip"
 						placeholder="None"
 						v-model:value="refEmpireCXMap[rowData.uuid]"
 					/>
