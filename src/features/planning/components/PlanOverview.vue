@@ -33,13 +33,6 @@
 				<tbody
 					class="child:child:first:font-bold child:child:last:text-end">
 					<tr>
-						<td>Storage</td>
-						<td>
-							{{ formatNumber(visitationData.storageFilled) }}
-							<span class="font-light text-white/50"> d </span>
-						</td>
-					</tr>
-					<tr>
 						<td>Daily Cost</td>
 						<td>
 							{{ formatNumber(overviewData.dailyCost) }}
@@ -56,6 +49,15 @@
 						</td>
 					</tr>
 					<tr>
+						<td>Plan Cost</td>
+						<td>
+							{{
+								formatNumber(overviewData.totalConstructionCost)
+							}}
+							<span class="font-light text-white/50"> $ </span>
+						</td>
+					</tr>
+					<tr>
 						<td>Daily Profit</td>
 						<td
 							:class="
@@ -64,15 +66,6 @@
 									: '!text-negative'
 							">
 							{{ formatNumber(overviewData.profit) }}
-							<span class="font-light text-white/50"> $ </span>
-						</td>
-					</tr>
-					<tr>
-						<td>Plan Cost</td>
-						<td>
-							{{
-								formatNumber(overviewData.totalConstructionCost)
-							}}
 							<span class="font-light text-white/50"> $ </span>
 						</td>
 					</tr>
@@ -129,7 +122,7 @@
 						<td class="!text-left font-bold">Filled</td>
 						<td colspan="2" class="font-bold">
 							{{ formatNumber(visitationData.storageFilled) }}
-							days
+							<span class="font-light text-white/50"> d </span>
 						</td>
 					</tr>
 				</tbody>
