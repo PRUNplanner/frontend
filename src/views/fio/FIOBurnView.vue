@@ -235,7 +235,7 @@
 
 							<AsyncFIOBurnPlanTable :plan-table="planTable" />
 						</div>
-						<div>
+						<div class="md:!pl-3">
 							<AsyncFIOBurnTable :burn-table="burnTable" />
 						</div>
 					</div>

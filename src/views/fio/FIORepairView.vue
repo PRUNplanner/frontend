@@ -42,7 +42,7 @@
 				<div>
 					<FIORepairPlanet :repair-data="planetRepairTable" />
 				</div>
-				<div>
+				<div class="md:!pl-3">
 					<FIORepairShip :repair-data="shipRepairTable" />
 				</div>
 			</div>
