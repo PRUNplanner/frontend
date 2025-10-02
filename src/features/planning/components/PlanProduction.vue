@@ -91,7 +91,9 @@
 	<div
 		class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-3 py-3 child:my-auto">
 		<div class="flex gap-3 child:my-auto">
-			<div class="text-sm">Planet Resources</div>
+			<div v-if="planetResources.length" class="text-sm">
+				Planet Resources
+			</div>
 			<div class="flex flex-wrap gap-1 child:my-auto">
 				<PTooltip
 					v-for="resource in planetResources"
