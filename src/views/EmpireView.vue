@@ -328,7 +328,7 @@
 							class="flex-grow grid grid-cols-1 xl:grid-cols-[1fr_auto]">
 							<div>
 								<div
-									class="px-6 pb-3 pt-6 my-auto">
+									class="px-3 md:px-6 pb-3 pt-6 my-auto md:pr-0">
 									<PForm>
 										<PFormItem label="Switch Empire">
 											<PSelect
@@ -348,12 +348,13 @@
 										</PFormItem>
 									</PForm>
 								</div>
-								<div class="p-6">
+								<div class="px-3 md:px-6 pt-3 md:pr-0">
 									<AsyncEmpireCostOverview
 										:cost-overview="costOverview" />
 								</div>
-								<div class="flex flex-wrap child:p-6">
-									<div>
+								<div
+									class="flex flex-col child:p-3 child:md:px-6 child:md:pr-0">
+									<div class="overflow-x-auto">
 										<Suspense>
 											<AsyncEmpirePlanList
 												:plan-list-data="
@@ -380,7 +381,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="p-6 overflow-x-auto">
+							<div class="p-3 md:p-6 overflow-x-auto">
 								<EmpireMaterialIOFiltered
 									:content="mainContent"
 									:empire-material-i-o="

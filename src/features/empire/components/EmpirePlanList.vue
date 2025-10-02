@@ -39,7 +39,7 @@
 	<XNDataTable :data="planListData" striped>
 		<XNDataTableColumn key="name" title="Plan" sorter="default">
 			<template #render-cell="{ rowData }">
-				<div class="w-[150px] text-wrap">
+				<div class="text-wrap">
 					<router-link
 						:to="`/plan/${rowData.planet}/${rowData.uuid}`"
 						class="text-link-primary font-bold hover:underline">
@@ -50,7 +50,7 @@
 		</XNDataTableColumn>
 		<XNDataTableColumn key="planet" title="Planet" sorter="default">
 			<template #render-cell="{ rowData }">
-				<div class="w-[150px] test-wrap">
+				<div class="test-wrap">
 					{{ planetNames[rowData.planet] || "Loading..." }}
 				</div>
 			</template>
