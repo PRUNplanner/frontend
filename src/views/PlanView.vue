@@ -155,8 +155,13 @@
 		}
 	);
 
+	// When the plan hasn't been created, we'll use the local ref which is
+	// stored into planPrefs on plan creation in save()
+	const refLocalAutoOptimizeHabs: Ref<boolean> = ref(true);
 	const refAutoOptimizeHabs =
-		planPrefs.value === null ? ref(true) : planPrefs.value.autoOptimizeHabs;
+		planPrefs.value === null
+			? refLocalAutoOptimizeHabs
+			: planPrefs.value.autoOptimizeHabs;
 
 	/**
 	 * Handle initial empire uuid assignment
@@ -362,6 +367,13 @@
 							planetData.PlanetNaturalId,
 							result.value.materialio
 						);
+
+						// Persist the auto-optimize-habs preference
+						const prefs = usePlanPreferences(
+							refPlanData.value.uuid!
+						);
+						prefs.autoOptimizeHabs.value =
+							refAutoOptimizeHabs.value;
 
 						// reset modified state
 						handleResetModified();
@@ -695,7 +707,7 @@
 									"
 									@update:auto-optimize-habs="
 										(v: boolean, goal: HabSolverGoal) => {
-											if(planPrefs !== null) refAutoOptimizeHabs = v;
+											refAutoOptimizeHabs = v;
 											trackEvent('plan_tool_optimize_habitation_active', { active: v });
 											applyOptimizeHabs(goal, false);
 										}
