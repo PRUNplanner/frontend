@@ -22,6 +22,9 @@ export const preferenceDefaults: IPreferenceDefault = {
 	planDefaults: {
 		includeCM: false,
 		visitationMaterialExclusions: [],
-		autoOptimizeHabs: true,
+		// Auto-optimize habs is true by default for new plans, that value will
+		// be stored into the prefs on saving. But for existing plans, we want it
+		// to be false by default
+		autoOptimizeHabs: false,
 	},
 };
