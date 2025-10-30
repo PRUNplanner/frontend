@@ -134,6 +134,7 @@
 				v-model:value="localSelectedBuilding"
 				:disabled="disabled"
 				searchable
+				placeholder="Select Production Building(s)"
 				class="w-full sm:!w-[300px]"
 				:options="
 					getProductionBuildingOptions(
