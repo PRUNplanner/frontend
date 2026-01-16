@@ -2,7 +2,7 @@
 	import { computed, PropType, ref, Ref } from "vue";
 
 	// Composables
-	import { useCXManagement } from "@/features/exchanges/useManageCX";
+	import { exchangeLabels, useCXManagement } from "@/features/exchanges/useManageCX";
 
 	// Types & Interfaces
 	import { ICXDataExchangeOption } from "@/stores/planningStore.types";
@@ -86,7 +86,7 @@
 						{{ preference.type }}
 					</PTag>
 				</td>
-				<td>{{ preference.exchange }}</td>
+				<td>{{ exchangeLabels[preference.exchange] }}</td>
 				<td class="text-right">
 					<PButton
 						size="sm"

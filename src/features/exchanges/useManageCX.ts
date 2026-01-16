@@ -14,6 +14,41 @@ import {
 } from "@/features/exchanges/manageCX.types";
 import { PSelectOption } from "@/ui/ui.types";
 
+export const exchangeLabels: Record<ExchangeType, string> = {
+	"AI1_BUY": "AI1 ask",
+	"AI1_SELL": "AI1 bid",
+	"AI1_AVG": "AI1 last",
+	"IC1_BUY": "IC1 ask",
+	"IC1_SELL": "IC1 bid",
+	"IC1_AVG": "IC1 last",
+	"CI1_BUY": "CI1 ask",
+	"CI1_SELL": "CI1 bid",
+	"CI1_AVG": "CI1 last",
+	"CI2_BUY": "CI2 ask",
+	"CI2_SELL": "CI2 bid",
+	"CI2_AVG": "CI2 last",
+	"NC1_BUY": "NC1 ask",
+	"NC1_SELL": "NC1 bid",
+	"NC1_AVG": "NC1 last",
+	"NC2_BUY": "NC2 ask",
+	"NC2_SELL": "NC2 bid",
+	"NC2_AVG": "NC2 last",
+	"PP7D_AI1": "PP7D AI1",
+	"PP7D_IC1": "PP7D IC1",
+	"PP7D_CI1": "PP7D CI1",
+	"PP7D_CI2": "PP7D CI2",
+	"PP7D_NC1": "PP7D NC1",
+	"PP7D_NC2": "PP7D NC2",
+	"PP30D_AI1": "PP30D AI1",
+	"PP30D_IC1": "PP30D IC1",
+	"PP30D_CI1": "PP30D CI1",
+	"PP30D_CI2": "PP30D CI2",
+	"PP30D_NC1": "PP30D NC1",
+	"PP30D_NC2": "PP30D NC2",
+	"PP7D_UNIVERSE": "PP7D universe",
+	"PP30D_UNIVERSE": "PP30D universe",
+} as const;
+
 export async function useCXManagement() {
 	const { materialSelectOptions } = useMaterialData();
 
@@ -23,40 +58,9 @@ export async function useCXManagement() {
 		{ label: "SELL" as PreferenceType, value: "SELL" },
 	];
 
-	const exchangeOptions: PSelectOption[] = [
-		{ label: "AI1 BUY" as ExchangeType, value: "AI1_BUY" },
-		{ label: "AI1 SELL" as ExchangeType, value: "AI1_SELL" },
-		{ label: "AI1 AVG" as ExchangeType, value: "AI1_AVG" },
-		{ label: "IC1 BUY" as ExchangeType, value: "IC1_BUY" },
-		{ label: "IC1 SELL" as ExchangeType, value: "IC1_SELL" },
-		{ label: "IC1 AVG" as ExchangeType, value: "IC1_AVG" },
-		{ label: "CI1 BUY" as ExchangeType, value: "CI1_BUY" },
-		{ label: "CI1 SELL" as ExchangeType, value: "CI1_SELL" },
-		{ label: "CI1 AVG" as ExchangeType, value: "CI1_AVG" },
-		{ label: "CI2 BUY" as ExchangeType, value: "CI2_BUY" },
-		{ label: "CI2 SELL" as ExchangeType, value: "CI2_SELL" },
-		{ label: "CI2 AVG" as ExchangeType, value: "CI2_AVG" },
-		{ label: "NC1 BUY" as ExchangeType, value: "NC1_BUY" },
-		{ label: "NC1 SELL" as ExchangeType, value: "NC1_SELL" },
-		{ label: "NC1 AVG" as ExchangeType, value: "NC1_AVG" },
-		{ label: "NC2 BUY" as ExchangeType, value: "NC2_BUY" },
-		{ label: "NC2 SELL" as ExchangeType, value: "NC2_SELL" },
-		{ label: "NC2 AVG" as ExchangeType, value: "NC2_AVG" },
-		{ label: "PP7D AI1" as ExchangeType, value: "PP7D_AI1" },
-		{ label: "PP7D IC1" as ExchangeType, value: "PP7D_IC1" },
-		{ label: "PP7D CI1" as ExchangeType, value: "PP7D_CI1" },
-		{ label: "PP7D CI2" as ExchangeType, value: "PP7D_CI2" },
-		{ label: "PP7D NC1" as ExchangeType, value: "PP7D_NC1" },
-		{ label: "PP7D NC2" as ExchangeType, value: "PP7D_NC2" },
-		{ label: "PP30D AI1" as ExchangeType, value: "PP30D_AI1" },
-		{ label: "PP30D IC1" as ExchangeType, value: "PP30D_IC1" },
-		{ label: "PP30D CI1" as ExchangeType, value: "PP30D_CI1" },
-		{ label: "PP30D CI2" as ExchangeType, value: "PP30D_CI2" },
-		{ label: "PP30D NC1" as ExchangeType, value: "PP30D_NC1" },
-		{ label: "PP30D NC2" as ExchangeType, value: "PP30D_NC2" },
-		{ label: "PP7D UNIVERSE" as ExchangeType, value: "PP7D_UNIVERSE" },
-		{ label: "PP30D UNIVERSE" as ExchangeType, value: "PP30D_UNIVERSE" },
-	];
+	const exchangeOptions = computed(() =>
+		Object.entries(exchangeLabels).map(([value, label]) => ({label, value}))
+	);
 
 	const materialOptions: PSelectOption[] = materialSelectOptions.value;
 
