@@ -5,6 +5,7 @@
 	import { usePlanetData } from "@/database/services/usePlanetData";
 
 	// Utils
+	import { exchangeLabels } from "@/features/exchanges/useManageCX";
 	import { formatNumber } from "@/util/numbers";
 
 	// Components
@@ -13,7 +14,7 @@
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// Types & Interfaces
-	import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
+	import { ICXPlanetMap, type ExchangeType } from "@/features/exchanges/manageCX.types";
 
 	// UI
 	import { PButton, PTag } from "@/ui";
@@ -111,7 +112,7 @@
 									: 'primary'
 							">
 							{{ exchange.type }}:
-							<strong>{{ exchange.exchange }}</strong>
+							<strong>{{ exchangeLabels[exchange.exchange as ExchangeType] }}</strong>
 						</PTag>
 					</div>
 				</div>
