@@ -53,6 +53,7 @@ export function useUpkeepBuildingSummary() {
 
 		return {
 			ticker: buildingTicker,
+			name: building.name,
 			totalPricePerNeed,
 			totalDailyCost,
 			materialsAvailable: materialsWithPrice.length,

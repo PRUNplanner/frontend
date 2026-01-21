@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ComputedRef, Ref, computed, onMounted, ref, watch } from "vue";
+	import { ComputedRef, Ref, computed, ref, watch } from "vue";
 
 	// Composables
 	import { useUpkeepBuildings } from "@/features/government/composables/useUpkeepBuildings";
@@ -12,6 +12,7 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import { WarningAmberSharp } from "@vicons/material";
 
 	// Types & Interfaces
 	import {
@@ -21,7 +22,7 @@
 	} from "@/features/government/upkeepCalculations.types";
 
 	// UI
-	import { PProgressBar, PButton, PButtonGroup, PTag, PTooltip } from "@/ui";
+	import { PProgressBar, PButton, PButtonGroup, PTooltip } from "@/ui";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 
 	const props = defineProps({
@@ -81,12 +82,9 @@
 		() => props.cxUuid,
 		async () => {
 			await calculate();
-		}
+		},
+		{ immediate: true }
 	);
-
-	onMounted(async () => {
-		await calculate();
-	});
 </script>
 
 <template>
@@ -124,21 +122,18 @@
 				size="small">
 				<XNDataTableColumn key="ticker" title="Building" sorter="default">
 					<template #render-cell="{ rowData }">
-						<div class="flex items-center gap-2">
+						<div class="flex items-center gap-1.5">
 							<span class="font-bold">{{ rowData.ticker }}</span>
+							<span class="text-white/50">({{ rowData.name }})</span>
 							<PTooltip v-if="!rowData.isComplete">
 								<template #trigger>
-									<PTag type="warning" size="sm">
-										{{ rowData.materialsAvailable }}/{{
-											rowData.materialsTotal
-										}}
-									</PTag>
+									<WarningAmberSharp
+										class="w-4 h-4 text-orange-400 cursor-help" />
 								</template>
-								Some materials have no market price
+								Missing prices for
+								{{ rowData.materialsTotal - rowData.materialsAvailable }}
+								material(s)
 							</PTooltip>
-							<PTag v-else type="success" size="sm">
-								{{ rowData.materialsAvailable }}/{{ rowData.materialsTotal }}
-							</PTag>
 						</div>
 					</template>
 				</XNDataTableColumn>

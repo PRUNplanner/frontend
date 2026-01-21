@@ -20,6 +20,7 @@ export interface IUpkeepNeeds {
 
 export interface IUpkeepBuilding {
 	ticker: string;
+	name: string;
 	materials: IUpkeepMaterial[];
 	needs: IUpkeepNeeds;
 }
@@ -36,6 +37,7 @@ export interface IUpkeepMaterialCalculation {
 
 export interface IUpkeepBuildingSummary {
 	ticker: string;
+	name: string; // Human-readable building name
 	totalPricePerNeed: number; // Sum of $/Need of all materials
 	totalDailyCost: number; // Sum of (cxPrice * qtyPerDay) of all materials
 	materialsAvailable: number; // How many have price > 0
