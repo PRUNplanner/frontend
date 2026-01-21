@@ -86,6 +86,7 @@
 		() => props.cogc
 	);
 	const localMatchCOGC: Ref<boolean> = ref(false);
+	const localMatchResources: Ref<boolean> = ref(false);
 
 	const { getProductionBuildingOptions } = await useBuildingData();
 
@@ -153,6 +154,12 @@
 		</div>
 		<div class="sm:justify-self-end-safe flex child:my-auto gap-3">
 			<div class="flex gap-3">
+				<div class="text-sm text-nowrap">Match Resources</div>
+				<PCheckbox
+					v-model:checked="localMatchResources"
+					:disabled="disabled" />
+			</div>
+			<div class="flex gap-3">
 				<div class="text-sm text-nowrap">Match COGC</div>
 				<PCheckbox
 					v-model:checked="localMatchCOGC"
@@ -168,7 +175,8 @@
 				:options="
 					getProductionBuildingOptions(
 						localProductionData.buildings.map((e) => e.name),
-						localMatchCOGC ? localCOGC : undefined
+						localMatchCOGC ? localCOGC : undefined,
+						localMatchResources ? props.planetResources : undefined
 					)
 				"
 				@update:value="
