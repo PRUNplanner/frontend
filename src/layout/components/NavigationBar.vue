@@ -43,6 +43,7 @@
 		TravelExploreSharp,
 		KeyboardDoubleArrowLeftSharp,
 		KeyboardDoubleArrowRightSharp,
+		AccountBalanceSharp,
 	} from "@vicons/material";
 
 	const userStore = useUserStore();
@@ -190,6 +191,12 @@
 					display: true,
 					routerLink: "/production-chain",
 					icon: CompareSharp,
+				},
+				{
+					label: "Upkeep Prices",
+					display: true,
+					routerLink: "/upkeep-price-calculator",
+					icon: AccountBalanceSharp,
 				},
 				// {
 				// 	label: "Base Compare",
