@@ -3,7 +3,7 @@
 </script>
 
 <template>
-	<div class="ptable-container relative flex flex-col">
+	<div class="ptable-container relative flex flex-col overflow-x-auto">
 		<table class="ptable" :class="striped ? 'ptable-striped' : ''">
 			<slot />
 		</table>

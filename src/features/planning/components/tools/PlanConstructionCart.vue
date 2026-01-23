@@ -270,7 +270,7 @@
 			<thead>
 				<tr>
 					<th>Building</th>
-					<th v-if="constructedMap">Constructed</th>
+					<th v-if="constructedMap">Built</th>
 					<th>Amount</th>
 					<th>Planned</th>
 					<th
@@ -300,6 +300,8 @@
 						<PInputNumber
 							v-model:value="localBuildingAmount[building]"
 							show-buttons
+							size="sm"
+							class="min-w-20"
 							:min="0" />
 					</th>
 					<th>
