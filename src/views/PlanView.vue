@@ -10,6 +10,9 @@
 		watch,
 	} from "vue";
 
+	// Naive UI
+	import { NModal } from "naive-ui";
+
 	// Router
 	import router from "@/router";
 
@@ -21,6 +24,7 @@
 	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
 	import { IPlanet } from "@/features/api/gameData.types";
 	import { INFRASTRUCTURE_TYPE } from "@/features/planning/usePlanCalculation.types";
+	import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 	import {
 		optimizeHabs,
 		calculateAvailableArea,
@@ -64,7 +68,17 @@
 	);
 
 	// UI
-	import { PButton, PButtonGroup, PTooltip, PSpin } from "@/ui";
+	import {
+		PButton,
+		PButtonGroup,
+		PTooltip,
+		PSpin,
+		PForm,
+		PFormItem,
+		PInput,
+		PSelect,
+	} from "@/ui";
+	import { PSelectOption } from "@/ui/ui.types";
 	import {
 		ShoppingBasketSharp,
 		AttachMoneySharp,
@@ -146,6 +160,12 @@
 
 	const refMaterialIOShowBasked: Ref<boolean> = ref(false);
 	const refMaterialIOSplitted: Ref<boolean> = ref(false);
+
+	// Save As modal state
+	const refShowSaveAsModal: Ref<boolean> = ref(false);
+	const refSaveAsName: Ref<string> = ref("");
+	const refSaveAsEmpireUuid: Ref<string | undefined> = ref(undefined);
+	const refIsSavingAs: Ref<boolean> = ref(false);
 
 	// Plan Preferences
 	const planPrefs = computed<ReturnType<typeof usePlanPreferences> | null>(
@@ -392,6 +412,52 @@
 		}
 	}
 
+	async function saveAs(): Promise<void> {
+		if (!refSaveAsName.value.trim()) return;
+
+		refIsSavingAs.value = true;
+
+		// Create new plan data with the new name and selected empire
+		const saveAsData: IPlanCreateData = {
+			...backendData.value,
+			name: refSaveAsName.value.trim(),
+			empire_uuid: refSaveAsEmpireUuid.value,
+		};
+
+		const newUuid = await createNewPlan(saveAsData);
+
+		if (newUuid) {
+			await patchMaterialIO(
+				newUuid,
+				planetData.PlanetNaturalId,
+				result.value.materialio
+			);
+
+			// Persist the auto-optimize-habs preference
+			const prefs = usePlanPreferences(newUuid);
+			prefs.autoOptimizeHabs.value = refAutoOptimizeHabs.value;
+
+			trackEvent("plan_save_as", {
+				planetNaturalId: planetData.PlanetNaturalId,
+			});
+
+			// Close modal and open new plan in a new tab
+			refShowSaveAsModal.value = false;
+			window.open(`/plan/${planetData.PlanetNaturalId}/${newUuid}`, "_blank");
+			return;
+		}
+
+		refIsSavingAs.value = false;
+	}
+
+	function openSaveAsModal(): void {
+		// Pre-fill with current plan name + " (Copy)"
+		refSaveAsName.value = planName.value ? `${planName.value} (Copy)` : "";
+		// Pre-fill with current empire
+		refSaveAsEmpireUuid.value = refEmpireUuid.value;
+		refShowSaveAsModal.value = true;
+	}
+
 	const refIsReloading: Ref<boolean> = ref(false);
 
 	async function reloadPlan(): Promise<void> {
@@ -456,6 +522,15 @@
 			result.value.area.areaUsed,
 			result.value.infrastructure
 		);
+	});
+
+	// Save As empire options
+	const saveAsEmpireOptions: ComputedRef<PSelectOption[]> = computed(() => {
+		if (!refEmpireList.value) return [];
+		return refEmpireList.value.map((e) => ({
+			label: e.name,
+			value: e.uuid,
+		}));
 	});
 
 	function applyOptimizeHabs(goal: HabSolverGoal, force: boolean) {
@@ -567,6 +642,14 @@
 						</template>
 						Must set a plan name in Configuration to save
 					</PTooltip>
+					<PButton
+						v-if="existing && !disabled"
+						@click="openSaveAsModal">
+						<template #icon>
+							<ContentCopySharp />
+						</template>
+						Save As
+					</PButton>
 					<PButton
 						v-if="existing"
 						:disabled="disabled"
@@ -874,4 +957,42 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Save As Modal -->
+	<n-modal
+		v-model:show="refShowSaveAsModal"
+		class="w-120! max-w-[90vw]!"
+		preset="card"
+		title="Save As">
+		<PForm>
+			<PFormItem label="Name">
+				<PInput
+					v-model:value="refSaveAsName"
+					class="w-full"
+					placeholder="New Plan Name" />
+			</PFormItem>
+			<PFormItem v-if="saveAsEmpireOptions.length > 0" label="Empire">
+				<PSelect
+					v-model:value="refSaveAsEmpireUuid"
+					class="w-full"
+					:options="saveAsEmpireOptions" />
+			</PFormItem>
+		</PForm>
+		<template #action>
+			<div class="flex justify-end gap-3">
+				<PButton
+					type="secondary"
+					@click="refShowSaveAsModal = false">
+					Cancel
+				</PButton>
+				<PButton
+					:loading="refIsSavingAs"
+					:disabled="!refSaveAsName.trim()"
+					type="primary"
+					@click="saveAs">
+					Create
+				</PButton>
+			</div>
+		</template>
+	</n-modal>
 </template>

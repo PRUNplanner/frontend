@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType, ref, Ref, watch } from "vue";
+	import { computed, ComputedRef, PropType } from "vue";
 
 	// Composables
 	import { usePlanetSearchResults } from "@/features/planet_search/usePlanetSearchResults";
@@ -31,6 +31,11 @@
 			type: Array as PropType<string[]>,
 			required: true,
 		},
+		searchMaterialRichness: {
+			type: Object as PropType<Record<string, number>>,
+			required: false,
+			default: () => ({}),
+		},
 		searchSystem: {
 			type: String,
 			required: false,
@@ -45,37 +50,24 @@
 
 	const { getSystemName } = usePathfinder();
 
-	// Table Data
-	const tableResults: Ref<IPlanetSearchResult[]> = ref([]);
-	const tableSearchMaterials: Ref<string[]> = ref([]);
-	const tableCheckDistances: Ref<string | null> = ref(null);
+	// Table Data - computed to always reflect current props
+	const tableSearchMaterials: ComputedRef<string[]> = computed(
+		() => props.searchMaterials
+	);
 
-	function prepareTableData(): void {
-		tableSearchMaterials.value = [...props.searchMaterials];
-
-		tableResults.value = usePlanetSearchResults(
+	const tableResults: ComputedRef<IPlanetSearchResult[]> = computed(() => {
+		if (props.results.length === 0) return [];
+		return usePlanetSearchResults(
 			props.results,
 			props.searchMaterials,
+			props.searchMaterialRichness,
 			props.searchSystem,
 			props.searchSystemDistance
 		).results.value;
-		tableCheckDistances.value = props.searchSystem
-			? getSystemName(props.searchSystem)
-			: null;
-	}
+	});
 
-	watch(
-		[
-			() => props.results,
-			() => props.searchSystem,
-			() => props.searchSystemDistance,
-		],
-		([newResults]) => {
-			if (newResults.length > 0) {
-				prepareTableData();
-			}
-		},
-		{ deep: true }
+	const tableCheckDistances: ComputedRef<string | null> = computed(() =>
+		props.searchSystem ? getSystemName(props.searchSystem) : null
 	);
 </script>
 

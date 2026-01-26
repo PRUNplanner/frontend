@@ -77,6 +77,8 @@ export async function useGraph() {
 				id: edge.id,
 				source: `NODE#${edge.source}`,
 				target: `NODE#${edge.target}`,
+				sourceHandle: "output",
+				targetHandle: "input",
 				animated: false,
 				type: "default",
 				label: formatNumber(edge.quantitiy, 2),

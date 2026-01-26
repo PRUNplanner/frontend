@@ -102,13 +102,16 @@
 	const refMaterialOverrides: Ref<Record<string, number>> = ref({});
 	const refMaterialInactives: Ref<Set<string>> = ref(new Set([]));
 
-	const { materialTable, totalWeightVolume, fit } = await useBurnXITAction(
-		localElements,
-		burnResupplyDays,
-		refHideInfinite,
-		refMaterialOverrides,
-		refMaterialInactives
-	);
+	const { materialTable, totalWeightVolume, totalPrice, fit } =
+		await useBurnXITAction(
+			localElements,
+			burnResupplyDays,
+			refHideInfinite,
+			refMaterialOverrides,
+			refMaterialInactives,
+			ref(undefined),
+			ref(undefined)
+		);
 </script>
 
 <template>
@@ -254,22 +257,33 @@
 						<td colspan="7">
 							<div class="flex flex-row justify-between">
 								<div>
-									Total Weight:
+									Weight:
 									{{
 										formatNumber(
 											totalWeightVolume.totalWeight
 										)
 									}}
-									t
+									<span class="pl-1 font-light text-white/50">
+										t
+									</span>
 								</div>
 								<div>
-									Total Volume:
+									Volume:
 									{{
 										formatNumber(
 											totalWeightVolume.totalVolume
 										)
 									}}
-									m³
+									<span class="pl-1 font-light text-white/50">
+										m³
+									</span>
+								</div>
+								<div>
+									Price:
+									{{ formatNumber(totalPrice) }}
+									<span class="pl-1 font-light text-white/50">
+										$
+									</span>
 								</div>
 							</div>
 						</td>
@@ -302,7 +316,7 @@
 										? `${
 												getBurnDisplayClass(e.burn)
 													.value
-										  } px-2 py-0.75`
+											} px-2 py-0.75`
 										: ''
 								">
 								{{ formatNumber(e.burn) }}

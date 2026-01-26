@@ -115,33 +115,33 @@
 				<thead class="child:text-center">
 					<tr>
 						<th />
-						<th class="text-center!">m³</th>
 						<th class="text-center!">t</th>
+						<th class="text-center!">m³</th>
 					</tr>
 				</thead>
 				<tbody class="child:child:text-center">
 					<tr>
 						<td class="text-left! font-bold">Import</td>
 						<td>
-							{{ formatNumber(visitationData.dailyVolumeImport) }}
+							{{ formatNumber(visitationData.dailyWeightImport) }}
 						</td>
 						<td>
-							{{ formatNumber(visitationData.dailyWeightImport) }}
+							{{ formatNumber(visitationData.dailyVolumeImport) }}
 						</td>
 					</tr>
 					<tr>
 						<td class="text-left! font-bold">Export</td>
 						<td>
-							{{ formatNumber(visitationData.dailyVolumeExport) }}
+							{{ formatNumber(visitationData.dailyWeightExport) }}
 						</td>
 						<td>
-							{{ formatNumber(visitationData.dailyWeightExport) }}
+							{{ formatNumber(visitationData.dailyVolumeExport) }}
 						</td>
 					</tr>
 					<tr>
 						<td class="text-left! font-bold">&#8721;</td>
-						<td>{{ formatNumber(visitationData.dailyVolume) }}</td>
 						<td>{{ formatNumber(visitationData.dailyWeight) }}</td>
+						<td>{{ formatNumber(visitationData.dailyVolume) }}</td>
 					</tr>
 					<tr>
 						<td class="text-left! font-bold">Filled</td>

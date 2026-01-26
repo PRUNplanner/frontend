@@ -12,6 +12,7 @@ describe("usePlanetSearchResults", async () => {
 			// @ts-expect-error mock data
 			planet_search_results,
 			[],
+			{},
 			undefined,
 			undefined
 		);
@@ -24,6 +25,7 @@ describe("usePlanetSearchResults", async () => {
 			// @ts-expect-error mock data
 			[{ CheckDistances: null }],
 			[],
+			{},
 			undefined,
 			undefined
 		);
@@ -36,6 +38,7 @@ describe("usePlanetSearchResults", async () => {
 			// @ts-expect-error mock data
 			planet_search_results,
 			["N"],
+			{},
 			undefined,
 			undefined
 		);
@@ -49,6 +52,7 @@ describe("usePlanetSearchResults", async () => {
 			// @ts-expect-error mock data
 			[planet_etherwind],
 			["N"],
+			{},
 			undefined,
 			undefined
 		);
@@ -62,6 +66,7 @@ describe("usePlanetSearchResults", async () => {
 			// @ts-expect-error mock data
 			[planet_etherwind],
 			["N"],
+			{},
 			"239e36f2a61041e0952d9c9741c195c9",
 			30
 		);
@@ -75,6 +80,7 @@ describe("usePlanetSearchResults", async () => {
 			// @ts-expect-error mock data
 			[planet_etherwind],
 			["N"],
+			{},
 			"49b6615d39ccba05752b3be77b2ebf36",
 			1
 		);

@@ -220,25 +220,25 @@
 				<thead>
 					<tr>
 						<th />
-						<th class="text-center!">m³</th>
 						<th class="text-center!">t</th>
+						<th class="text-center!">m³</th>
 					</tr>
 				</thead>
 				<tbody class="child:child:text-center">
 					<tr>
 						<td class="text-left! font-bold">Import</td>
-						<td>{{ formatNumber(dailyData.dailyVolumeImport) }}</td>
 						<td>{{ formatNumber(dailyData.dailyWeightImport) }}</td>
+						<td>{{ formatNumber(dailyData.dailyVolumeImport) }}</td>
 					</tr>
 					<tr>
 						<td class="text-left! font-bold">Export</td>
-						<td>{{ formatNumber(dailyData.dailyVolumeExport) }}</td>
 						<td>{{ formatNumber(dailyData.dailyWeightExport) }}</td>
+						<td>{{ formatNumber(dailyData.dailyVolumeExport) }}</td>
 					</tr>
 					<tr>
 						<td class="text-left! font-bold">&#8721;</td>
-						<td>{{ formatNumber(dailyData.dailyVolume) }}</td>
 						<td>{{ formatNumber(dailyData.dailyWeight) }}</td>
+						<td>{{ formatNumber(dailyData.dailyVolume) }}</td>
 					</tr>
 					<tr>
 						<td class="text-left! font-bold">Storage Filled</td>
@@ -279,8 +279,8 @@
 			<PTable striped>
 				<thead>
 					<tr>
-						<th>Ship m³</th>
 						<th>Ship t</th>
+						<th>Ship m³</th>
 						<th class="text-center!">Visitation (days)</th>
 						<th class="text-center!">Limit</th>
 						<th class="text-center!">Visitation (days)</th>
@@ -300,8 +300,8 @@
 					<tr
 						v-for="(shipData, index) in visitationData"
 						:key="index">
-						<td>{{ formatAmount(shipData.shipVolume) }}</td>
 						<td>{{ formatAmount(shipData.shipWeight) }}</td>
+						<td>{{ formatAmount(shipData.shipVolume) }}</td>
 						<td class="text-center">
 							{{ formatNumber(shipData.exportDays) }}
 						</td>

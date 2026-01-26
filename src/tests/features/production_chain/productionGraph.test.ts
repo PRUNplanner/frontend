@@ -6,10 +6,12 @@ import { ProductionGraph } from "@/features/production_chain/productionGraph";
 import materials from "@/tests/test_data/api_data_materials.json";
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import recipes from "@/tests/test_data/api_data_recipes.json";
+import planets from "@/tests/test_data/api_data_planets.json";
 import {
 	materialsStore,
 	buildingsStore,
 	recipesStore,
+	planetsStore,
 } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { useMaterialData } from "@/database/services/useMaterialData";
@@ -21,6 +23,8 @@ describe("productionNode", async () => {
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
 		await recipesStore.setMany(recipes);
+		//@ts-expect-error mock data
+		await planetsStore.setMany(planets);
 		const { preloadBuildings, preloadRecipes } = await useBuildingData();
 
 		const { preload } = useMaterialData();

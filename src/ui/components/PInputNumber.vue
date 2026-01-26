@@ -32,8 +32,16 @@
 		if (decimals) target.value = target.value.replace(/[^0-9.]/g, "");
 		else target.value = target.value.replace(/\D/g, "");
 
-		if (target.value !== "") value.value = Number(target.value);
-		else value.value = null;
+		if (target.value !== "") {
+			let numValue = Number(target.value);
+			// clamp to min/max
+			if (numValue < min) numValue = min;
+			if (numValue > max) numValue = max;
+			value.value = numValue;
+			target.value = String(numValue);
+		} else {
+			value.value = null;
+		}
 	}
 
 	function canChange(e: number): boolean {

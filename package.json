@@ -1,7 +1,7 @@
 {
 	"name": "prunplanner_frontend",
 	"private": true,
-	"version": "0.21.2",
+	"version": "0.22.0",
 	"dbVersion": "0.20.1",
 	"type": "module",
 	"scripts": {
@@ -35,7 +35,7 @@
 		"highcharts": "^12.4.0",
 		"highcharts-vue": "^2.0.1",
 		"idb": "^8.0.3",
-		"lodash": "^4.17.21",
+		"lodash": "^4.17.23",
 		"numbro": "^2.5.0",
 		"p-limit": "^7.2.0",
 		"papaparse": "^5.5.3",

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, ref, Ref } from "vue";
+	import { computed, ComputedRef, ref, Ref, watch } from "vue";
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
@@ -43,10 +43,12 @@
 			system: string | undefined,
 			distance: number | undefined
 		): void;
+		(e: "update:richness", value: Record<string, number>): void;
 	}>();
 
 	// input refs
 	const inputMaterials: Ref<string[]> = ref([]);
+	const inputMaterialRichness: Ref<Record<string, number>> = ref({});
 	const inputCOGC: Ref<string[]> = ref([]);
 	const inputInfrastructure: Ref<string[]> = ref([]);
 	const inputSystem: Ref<string | undefined> = ref(undefined);
@@ -137,6 +139,30 @@
 		inputIncludeHighTemperature.value = true;
 	}
 
+	// Watch materials to manage richness thresholds
+	watch(
+		inputMaterials,
+		(newMaterials) => {
+			const newRichness: Record<string, number> = {};
+			for (const material of newMaterials) {
+				// Keep existing value or default to 0 (no filter)
+				newRichness[material] =
+					inputMaterialRichness.value[material] ?? 0;
+			}
+			inputMaterialRichness.value = newRichness;
+		},
+		{ immediate: true }
+	);
+
+	// Watch richness changes to emit updates in real-time
+	watch(
+		inputMaterialRichness,
+		(newRichness) => {
+			emit("update:richness", { ...newRichness });
+		},
+		{ deep: true }
+	);
+
 	async function doSearch() {
 		refIsLoading.value = true;
 
@@ -157,10 +183,12 @@
 			}
 
 			emit("update:materials", inputMaterials.value);
+			emit("update:richness", { ...inputMaterialRichness.value });
 			emit("update:results", data);
 		} catch {
 			emit("update:results", []);
 			emit("update:materials", []);
+			emit("update:richness", {});
 			emit("update:distance", undefined, undefined);
 		}
 
@@ -198,6 +226,26 @@
 								}
 							}
 						" />
+				</PFormItem>
+				<PFormItem
+					v-if="inputMaterials.length > 0"
+					label="Min. Richness %">
+					<div class="flex flex-col gap-1 w-full">
+						<div
+							v-for="material in inputMaterials"
+							:key="material"
+							class="flex items-center gap-2">
+							<span class="w-12 text-sm font-mono">{{
+								material
+							}}</span>
+							<PInputNumber
+								v-model:value="inputMaterialRichness[material]"
+								:min="0"
+								:max="100"
+								class="flex-1" />
+							<span class="text-sm text-white/50">%</span>
+						</div>
+					</div>
 				</PFormItem>
 				<PFormItem label="COGC">
 					<PSelectMultiple

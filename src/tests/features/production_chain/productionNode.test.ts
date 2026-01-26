@@ -1,22 +1,62 @@
 import { flushPromises } from "@vue/test-utils";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { ProductionNode } from "@/features/production_chain/productionNode";
-import { buildingsStore } from "@/database/stores";
+import {
+	ProductionNode,
+	setExtractableMaterials,
+} from "@/features/production_chain/productionNode";
+import { buildingsStore, planetsStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
+import { usePlanetData } from "@/database/services/usePlanetData";
+import {
+	IPlanet,
+	PLANET_RESOURCETYPE_TYPE,
+} from "@/features/api/gameData.types";
 
 // test data
 
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import recipes from "@/tests/test_data/api_data_recipes.json";
+import planets from "@/tests/test_data/api_data_planets.json";
 
 describe("productionNode", async () => {
 	beforeAll(async () => {
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
-		const { preloadBuildings } = await useBuildingData();
+		//@ts-expect-error mock data
+		await planetsStore.setMany(planets);
 
+		const { preloadBuildings } = await useBuildingData();
 		await preloadBuildings();
+
+		// Load extractable materials from planet data
+		const { planets: planetsData, reload } = usePlanetData();
+		await reload();
+
+		const resourceTypeToBuildingTicker: Record<
+			PLANET_RESOURCETYPE_TYPE,
+			string
+		> = {
+			MINERAL: "EXT",
+			GASEOUS: "COL",
+			LIQUID: "RIG",
+		};
+
+		const extractableMaterialsMap: Record<string, string> = {};
+		if (planetsData.value) {
+			planetsData.value.forEach((planet: IPlanet) => {
+				planet.Resources.forEach((resource) => {
+					const buildingTicker =
+						resourceTypeToBuildingTicker[resource.ResourceType];
+					if (buildingTicker) {
+						extractableMaterialsMap[resource.MaterialTicker] =
+							buildingTicker;
+					}
+				});
+			});
+		}
+		setExtractableMaterials(extractableMaterialsMap);
+
 		await flushPromises();
 	});
 

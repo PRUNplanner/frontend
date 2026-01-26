@@ -30,6 +30,7 @@ export type ANALYTICS_EVENT_TYPE =
 	| "plan_leave_changed"
 	| "plan_reload"
 	| "plan_save"
+	| "plan_save_as"
 	| "plan_share_create"
 	| "plan_share_delete"
 	| "plan_shared_cloned"
@@ -82,6 +83,9 @@ export interface IAnalyticsEventProperties {
 		name: string | null;
 	};
 	plan_save: {
+		planetNaturalId: string;
+	};
+	plan_save_as: {
 		planetNaturalId: string;
 	};
 	plan_create: {

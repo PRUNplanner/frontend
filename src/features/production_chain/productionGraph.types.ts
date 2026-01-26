@@ -53,6 +53,8 @@ export interface IFlowEdge {
 	id: string;
 	source: string;
 	target: string;
+	sourceHandle?: string;
+	targetHandle?: string;
 	animated: boolean;
 	type: string;
 	label: string;

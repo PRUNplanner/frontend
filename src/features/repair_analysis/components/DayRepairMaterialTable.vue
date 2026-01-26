@@ -69,18 +69,18 @@
 								$
 							</span>
 						</div>
-						<div>Total Volume</div>
-						<div>
-							{{ formatNumber(totalData.volume) }}
-							<span class="pl-1 font-light text-white/50">
-								m³
-							</span>
-						</div>
 						<div>Total Weight</div>
 						<div>
 							{{ formatNumber(totalData.weight) }}
 							<span class="pl-1 font-light text-white/50">
 								t
+							</span>
+						</div>
+						<div>Total Volume</div>
+						<div>
+							{{ formatNumber(totalData.volume) }}
+							<span class="pl-1 font-light text-white/50">
+								m³
 							</span>
 						</div>
 					</div>

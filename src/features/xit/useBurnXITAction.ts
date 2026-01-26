@@ -1,7 +1,8 @@
-import { computed, ComputedRef, Ref } from "vue";
+import { computed, ComputedRef, Ref, ref, watchEffect } from "vue";
 
 // Composables
 import { useMaterialData } from "@/database/services/useMaterialData";
+import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
 import {
@@ -15,10 +16,15 @@ export async function useBurnXITAction(
 	resupplyDays: Ref<number>,
 	hideInfinite: Ref<boolean>,
 	materialOverrides: Ref<Record<string, number | null>>,
-	materialInactives: Ref<Set<string>>
+	materialInactives: Ref<Set<string>>,
+	cxUuid: Ref<string | undefined>,
+	planetNaturalId: Ref<string | undefined>
 ) {
 	// get materials
 	const { materialsMap } = useMaterialData();
+
+	// get price function
+	const { getPrice } = await usePrice(cxUuid, planetNaturalId);
 
 	// buildupo material overrides
 	materialOverrides.value = elements.value.reduce((sum, current) => {
@@ -104,6 +110,31 @@ export async function useBurnXITAction(
 		};
 	});
 
+	/**
+	 * Holds estimated price total for materialTable elements
+	 * Updated async via watchEffect
+	 *
+	 * @author adrian-cancio
+	 *
+	 * @type {Ref<number>}
+	 */
+	const totalPrice: Ref<number> = ref(0);
+
+	watchEffect(async () => {
+		let price: number = 0;
+
+		const activeMaterials = materialTable.value.filter(
+			(f) => f.total !== Infinity && f.active
+		);
+
+		for (const material of activeMaterials) {
+			const unitPrice = await getPrice(material.ticker, "BUY");
+			price += unitPrice * material.total;
+		}
+
+		totalPrice.value = price;
+	});
+
 	function fit(targetWeight: number, targetVolume: number): void {
 		function fits(days: number): boolean {
 			const old = resupplyDays.value;
@@ -130,6 +161,7 @@ export async function useBurnXITAction(
 	return {
 		materialTable,
 		totalWeightVolume,
+		totalPrice,
 		fit,
 	};
 }

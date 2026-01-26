@@ -33,6 +33,7 @@ const {
 export function usePlanetSearchResults(
 	searchData: IPlanet[],
 	searchMaterials: string[],
+	searchMaterialRichness: Record<string, number>,
 	searchSystem: string | undefined,
 	searchSystemDistance: number | undefined
 ) {
@@ -152,6 +153,23 @@ export function usePlanetSearchResults(
 				};
 			})
 			.filter((f) => {
+				// richness checking
+				for (const material of searchMaterials) {
+					const minRichness = searchMaterialRichness[material];
+					if (minRichness && minRichness > 0) {
+						const resource = f.searchResources[material];
+						if (resource && resource.maxExtraction > 0) {
+							const richnessPct =
+								(resource.dailyExtraction /
+									resource.maxExtraction) *
+								100;
+							if (richnessPct < minRichness) {
+								return false;
+							}
+						}
+					}
+				}
+
 				// distance checking
 				if (!searchSystem || !searchSystemDistance) return true;
 				else {

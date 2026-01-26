@@ -114,8 +114,8 @@
 </script>
 
 <template>
-	<Handle v-if="data.hasInput" type="target" :position="Position.Left" />
-	<Handle v-if="data.hasOutput" type="source" :position="Position.Right" />
+	<Handle v-if="data.hasInput" id="input" type="target" :position="Position.Left" />
+	<Handle v-if="data.hasOutput" id="output" type="source" :position="Position.Right" />
 	<div
 		class="flex flex-col text-white border border-black child:text-center justify-center items-center"
 		:class="nodeClass"

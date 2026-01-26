@@ -274,14 +274,14 @@
 				{{ formatAmount(rowData.needLeft) }}
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="needVolume" title="m³" sorter="default">
-			<template #render-cell="{ rowData }">
-				{{ formatNumber(rowData.needVolume) }}
-			</template>
-		</XNDataTableColumn>
 		<XNDataTableColumn key="needWeight" title="t" sorter="default">
 			<template #render-cell="{ rowData }">
 				{{ formatNumber(rowData.needWeight) }}
+			</template>
+		</XNDataTableColumn>
+		<XNDataTableColumn key="needVolume" title="m³" sorter="default">
+			<template #render-cell="{ rowData }">
+				{{ formatNumber(rowData.needVolume) }}
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn key="workforce" title="Workforce" sorter="default">
@@ -340,18 +340,18 @@
 							</div>
 							<div
 								class="grid grid-cols-2 gap-x-3 gap-y-1 child:text-end child:not-even:font-bold">
-								<div>Total Volume</div>
-								<div>
-									{{ formatNumber(totalVolume) }}
-									<span class="pl-1 font-light text-white/50">
-										m³
-									</span>
-								</div>
 								<div>Total Weight</div>
 								<div>
 									{{ formatNumber(totalWeight) }}
 									<span class="pl-1 font-light text-white/50">
 										t
+									</span>
+								</div>
+								<div>Total Volume</div>
+								<div>
+									{{ formatNumber(totalVolume) }}
+									<span class="pl-1 font-light text-white/50">
+										m³
 									</span>
 								</div>
 							</div>

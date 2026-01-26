@@ -1,3 +1,14 @@
+# 2026-01-22 - v. 0.22.0
+
+- Pathfinding and distance calculations on Planet Search are now done in the frontend instead of backend [[PR-322]](https://github.com/PRUNplanner/frontend/pull/322)
+- FIO and how to use it with PRUNplanner now has a proper explanation on the Profile view [[PR-323]](https://github.com/PRUNplanner/frontend/pull/323)
+- Negative differences for buildings in construction cart are now highlighted [[PR-324]](https://github.com/PRUNplanner/frontend/pull/324)
+- XIT Action now shows price estimates [[PR-327]](https://github.com/PRUNplanner/frontend/pull/327)
+- Volume/Weight display in PRUNplanner switched to mirror ingame order [[PR-328]](https://github.com/PRUNplanner/frontend/pull/328)
+- Natural Resources can now be origins in Production Chains [[PR-329]](https://github.com/PRUNplanner/frontend/pull/329)
+- Plans now have a "Save As" feature [[PR-330]](https://github.com/PRUNplanner/frontend/pull/330)
+- Planet Search now has a "Resource Richness" option to easily filter results [[PR-331]](https://github.com/PRUNplanner/frontend/pull/331)
+
 # 2026-01-09 - v. 0.21.1
 
 - Fixes an issue with the construction cart when FIO is not enabled [[PR-320]](https://github.com/PRUNplanner/frontend/pull/320)

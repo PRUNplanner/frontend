@@ -4,7 +4,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import { useUserStore } from "@/stores/userStore";
 
 // Composables
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+// import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 const router = createRouter({
 	history: createWebHistory(),

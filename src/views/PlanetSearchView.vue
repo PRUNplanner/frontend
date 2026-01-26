@@ -17,6 +17,7 @@
 
 	const refResults: Ref<IPlanet[]> = ref([]);
 	const refSearchMaterials: Ref<string[]> = ref([]);
+	const refSearchMaterialRichness: Ref<Record<string, number>> = ref({});
 	const refSearchSystem: Ref<string | undefined> = ref(undefined);
 	const refSearchSystemDistance: Ref<number | undefined> = ref(undefined);
 </script>
@@ -39,6 +40,7 @@
 								(value) => {
 									refResults = value;
 									refSearchMaterials = [];
+									refSearchMaterialRichness = {};
 									refSearchSystem = undefined;
 									refSearchSystemDistance = undefined;
 								}
@@ -49,6 +51,9 @@
 							@update:results="(value) => (refResults = value)"
 							@update:materials="
 								(value) => (refSearchMaterials = value)
+							"
+							@update:richness="
+								(value) => (refSearchMaterialRichness = value)
 							"
 							@update:distance="
 								(searchSystem, searchDistance) => {
@@ -64,6 +69,7 @@
 					<PlanetSearchResults
 						:results="refResults"
 						:search-materials="refSearchMaterials"
+						:search-material-richness="refSearchMaterialRichness"
 						:search-system="refSearchSystem"
 						:search-system-distance="refSearchSystemDistance" />
 				</div>
