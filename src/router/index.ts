@@ -125,6 +125,13 @@ const router = createRouter({
 			component: () => import("@/views/tools/ProductionChainView.vue"),
 		},
 		{
+			name: "upkeep-price-calculator",
+			path: "/upkeep-price-calculator",
+			meta: { requiresAuth: true },
+			component: () =>
+				import("@/views/tools/UpkeepPriceCalculatorView.vue"),
+		},
+		{
 			name: "verify-email",
 			path: "/verify-email",
 			meta: { showHeader: false },
