@@ -78,9 +78,13 @@ export async function useBuildingData() {
 
 	function getProductionBuildingOptions(
 		existing: string[],
-		cogc: PLAN_COGCPROGRAM_TYPE | undefined = undefined
+		cogc: PLAN_COGCPROGRAM_TYPE | undefined = undefined,
+		matchResources: IPlanetResource[] | undefined = undefined
 	): PSelectOption[] {
 		const options: PSelectOption[] = [];
+
+		// Pre-compute planet resource types for matching extraction buildings
+		const planetResourceTypes = matchResources?.map((r) => r.ResourceType) ?? [];
 
 		Object.values(buildingsMap.value)
 			.filter(
@@ -95,6 +99,19 @@ export async function useBuildingData() {
 					// check for matching COGC
 					if (cogc && building.Expertise != cogc) {
 						return [];
+					}
+
+					// check for matching resources (only show extraction buildings that match planet resources)
+					if (matchResources) {
+						// Only allow extraction buildings (EXT, COL, RIG)
+						if (!Object.keys(resourceBuildingTicker).includes(building.Ticker)) {
+							return;
+						}
+						// Check if planet has matching resource type
+						const buildingResourceType = resourceBuildingTicker[building.Ticker];
+						if (!planetResourceTypes.includes(buildingResourceType)) {
+							return;
+						}
 					}
 
 					options.push({
