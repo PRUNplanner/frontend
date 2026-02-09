@@ -32,22 +32,6 @@ export function calculatePricePerNeed(
 }
 
 /**
- * Calculates the relative price compared to the lowest price per need
- * @param materialPrice The CX price of the material
- * @param pricePerNeed The price per need for this material
- * @param lowestPricePerNeed The lowest price per need (anchor)
- * @returns Relative price
- */
-export function calculateRelativePrice(
-	materialPrice: number,
-	pricePerNeed: number,
-	lowestPricePerNeed: number
-): number {
-	if (pricePerNeed === 0 || pricePerNeed === Infinity) return materialPrice;
-	return (materialPrice / pricePerNeed) * lowestPricePerNeed;
-}
-
-/**
  * Gets all buildings that provide a specific need type
  * @param needType The type of need
  * @returns Array of buildings providing that need
@@ -95,14 +79,13 @@ export async function calculateMaterialsForNeed(
 				effectiveNeed
 			);
 
-			calculations.push({
+		calculations.push({
 				ticker: material.ticker,
 				buildingTicker: building.ticker,
 				qtyPerDay: material.qtyPerDay,
 				needProvided,
 				pricePerNeed,
 				cxPrice,
-				relativePrice: 0, // Will be calculated after sorting
 			});
 		}
 	}
@@ -114,22 +97,6 @@ export async function calculateMaterialsForNeed(
 		if (b.cxPrice <= 0) return -1;
 		return a.pricePerNeed - b.pricePerNeed;
 	});
-
-	// Calculate relative prices using the lowest PRICED material as anchor
-	const pricedCalculations = calculations.filter((c) => c.cxPrice > 0);
-	if (pricedCalculations.length > 0) {
-		const lowestPricePerNeed = pricedCalculations[0].pricePerNeed;
-		for (const calc of calculations) {
-			if (calc.cxPrice > 0) {
-				calc.relativePrice = calculateRelativePrice(
-					calc.cxPrice,
-					calc.pricePerNeed,
-					lowestPricePerNeed
-				);
-			}
-			// Materials with no price keep relativePrice = 0
-		}
-	}
 
 	return calculations;
 }

@@ -25,7 +25,7 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 	},
 	{
 		ticker: "SDP",
-		name: "Space Defense Platform",
+		name: "Security Drone Post",
 		materials: [
 			{ ticker: "POW", qtyPerDay: 1 },
 			{ ticker: "RAD", qtyPerDay: 0.47 },
@@ -96,7 +96,7 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 	},
 	{
 		ticker: "4DA",
-		name: "4D Arena",
+		name: "4D Arcades",
 		materials: [
 			{ ticker: "POW", qtyPerDay: 2 },
 			{ ticker: "MHP", qtyPerDay: 2 },
@@ -109,7 +109,7 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 	},
 	{
 		ticker: "ACA",
-		name: "Academy",
+		name: "Art Cafe",
 		materials: [
 			{ ticker: "COF", qtyPerDay: 8 },
 			{ ticker: "OLF", qtyPerDay: 2 },
@@ -133,7 +133,7 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 	},
 	{
 		ticker: "VRT",
-		name: "Virtual Reality Theater",
+		name: "VR Theater",
 		materials: [
 			{ ticker: "POW", qtyPerDay: 1.4 },
 			{ ticker: "MHP", qtyPerDay: 2 },
@@ -146,7 +146,7 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 	},
 	{
 		ticker: "PBH",
-		name: "Public Broadcast Hub",
+		name: "Planetary Broadcasting Hub",
 		materials: [
 			{ ticker: "OFF", qtyPerDay: 10 },
 			{ ticker: "MHP", qtyPerDay: 1 },

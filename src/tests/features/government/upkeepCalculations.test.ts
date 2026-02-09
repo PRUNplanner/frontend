@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import {
 	calculatePricePerNeed,
-	calculateRelativePrice,
 	getBuildingsForNeed,
 	getBuildingNeedCount,
 	calculateMaterialsForNeed,
@@ -65,31 +64,6 @@ describe("Government: Upkeep Calculations", () => {
 			// Price per need = 50 / 1666.6 ≈ 0.03
 			const result = calculatePricePerNeed(50, 0.5, 833.3);
 			expect(result).toBeCloseTo(0.03, 2);
-		});
-	});
-
-	describe("calculateRelativePrice", () => {
-		it("should calculate relative price correctly", () => {
-			// Material price: 100, price per need: 2, lowest price per need: 1
-			// Relative price = (100 / 2) * 1 = 50
-			const result = calculateRelativePrice(100, 2, 1);
-			expect(result).toBe(50);
-		});
-
-		it("should return material price when pricePerNeed is 0", () => {
-			const result = calculateRelativePrice(100, 0, 1);
-			expect(result).toBe(100);
-		});
-
-		it("should return material price when pricePerNeed is Infinity", () => {
-			const result = calculateRelativePrice(100, Infinity, 1);
-			expect(result).toBe(100);
-		});
-
-		it("should handle same price per need as anchor", () => {
-			// When price per need equals lowest, relative price equals material price
-			const result = calculateRelativePrice(100, 2, 2);
-			expect(result).toBe(100);
 		});
 	});
 
@@ -285,49 +259,5 @@ describe("Government: Upkeep Calculations", () => {
 			}
 		});
 
-		it("should calculate relative prices correctly", async () => {
-			const mockGetPrice = async (ticker: string) => {
-				const prices: Record<string, number> = {
-					DW: 50,
-					OFF: 100,
-					SUN: 500,
-				};
-				return prices[ticker] || 0;
-			};
-
-			const calculations = await calculateMaterialsForNeed(
-				"safety",
-				mockGetPrice
-			);
-
-			const pricedCalcs = calculations.filter((c) => c.cxPrice > 0);
-
-			if (pricedCalcs.length > 0) {
-				// The first priced calculation should have relativePrice equal to cxPrice
-				// because it has the lowest pricePerNeed
-				const lowestCalc = pricedCalcs[0];
-				expect(lowestCalc.relativePrice).toBe(lowestCalc.cxPrice);
-			}
-		});
-
-		it("should keep relativePrice as 0 for materials with no price", async () => {
-			const mockGetPrice = async (ticker: string) => {
-				const prices: Record<string, number> = {
-					DW: 50,
-				};
-				return prices[ticker] || 0;
-			};
-
-			const calculations = await calculateMaterialsForNeed(
-				"safety",
-				mockGetPrice
-			);
-
-			const zeroPriceCalcs = calculations.filter((c) => c.cxPrice === 0);
-
-			for (const calc of zeroPriceCalcs) {
-				expect(calc.relativePrice).toBe(0);
-			}
-		});
 	});
 });

@@ -32,16 +32,4 @@ export interface IUpkeepMaterialCalculation {
 	needProvided: number;
 	pricePerNeed: number;
 	cxPrice: number;
-	relativePrice: number;
-}
-
-export interface IUpkeepBuildingSummary {
-	ticker: string;
-	name: string; // Human-readable building name
-	totalPricePerNeed: number; // Sum of $/Need of all materials
-	totalDailyCost: number; // Sum of (cxPrice * qtyPerDay) of all materials
-	materialsAvailable: number; // How many have price > 0
-	materialsTotal: number; // Total materials for the building
-	needProvided: number; // Need that the building provides
-	isComplete: boolean; // materialsAvailable === materialsTotal
 }

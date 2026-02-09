@@ -5,10 +5,7 @@ import { usePrice } from "@/features/cx/usePrice";
 import { useUpkeepBuildings } from "./useUpkeepBuildings";
 
 // Calculations
-import {
-	calculatePricePerNeed,
-	calculateRelativePrice,
-} from "@/features/government/upkeepCalculations";
+import { calculatePricePerNeed } from "@/features/government/upkeepCalculations";
 
 // Types & Interfaces
 import {
@@ -65,41 +62,24 @@ export async function useUpkeepPriceCalculator(
 					effectiveNeed
 				);
 
-				calculations.push({
-					ticker: material.ticker,
-					buildingTicker: building.ticker,
-					qtyPerDay: material.qtyPerDay,
-					needProvided,
-					pricePerNeed,
-					cxPrice,
-					relativePrice: 0, // Will be calculated after sorting
-				});
+			calculations.push({
+				ticker: material.ticker,
+				buildingTicker: building.ticker,
+				qtyPerDay: material.qtyPerDay,
+				needProvided,
+				pricePerNeed,
+				cxPrice,
+			});
 			}
 		}
 
-		// Sort by price per need ascending, but put items with no price (0) at the end
+	// Sort by price per need ascending, but put items with no price (0) at the end
 		calculations.sort((a, b) => {
 			if (a.cxPrice <= 0 && b.cxPrice <= 0) return 0;
 			if (a.cxPrice <= 0) return 1;
 			if (b.cxPrice <= 0) return -1;
 			return a.pricePerNeed - b.pricePerNeed;
 		});
-
-		// Calculate relative prices using the lowest PRICED material as anchor
-		const pricedCalculations = calculations.filter((c) => c.cxPrice > 0);
-		if (pricedCalculations.length > 0) {
-			const lowestPricePerNeed = pricedCalculations[0].pricePerNeed;
-			for (const calc of calculations) {
-				if (calc.cxPrice > 0) {
-					calc.relativePrice = calculateRelativePrice(
-						calc.cxPrice,
-						calc.pricePerNeed,
-						lowestPricePerNeed
-					);
-				}
-				// Materials with no price keep relativePrice = 0
-			}
-		}
 
 		return calculations;
 	}
