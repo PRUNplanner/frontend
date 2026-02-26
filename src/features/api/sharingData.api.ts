@@ -7,6 +7,8 @@ import {
 	ScharedListResponseType,
 	SharedCloneResponseSchema,
 	SharedCloneResponseType,
+	SharedCreatePayloadSchema,
+	SharedCreatePayloadType,
 	SharedCreateResponseSchema,
 	SharedCreateResponseType,
 	SharedListResponseSchema,
@@ -29,7 +31,7 @@ import {
  */
 export async function callGetSharedList(): Promise<IShared[]> {
 	return apiService.get<ScharedListResponseType>(
-		"/shared/list",
+		"/planning/shared/",
 		SharedListResponseSchema
 	);
 }
@@ -44,7 +46,7 @@ export async function callGetSharedList(): Promise<IShared[]> {
  * @returns {Promise<boolean>} Deletion Status
  */
 export async function callDeleteSharing(sharedUuid: string): Promise<boolean> {
-	return apiService.delete(`/shared/${sharedUuid}`);
+	return apiService.delete(`/planning/shared/${sharedUuid}`);
 }
 
 /**
@@ -59,10 +61,12 @@ export async function callDeleteSharing(sharedUuid: string): Promise<boolean> {
 export async function callCreateSharing(
 	planUuid: string
 ): Promise<ISharedCreateResponse> {
-	return apiService.put<null, SharedCreateResponseType>(
-		`/shared/baseplanner/${planUuid}`,
-		null,
-		z.null(),
+	return apiService.post<SharedCreatePayloadType, SharedCreateResponseType>(
+		`/planning/shared/`,
+		{
+			plan: planUuid,
+		},
+		SharedCreatePayloadSchema,
 		SharedCreateResponseSchema
 	);
 }
@@ -71,7 +75,7 @@ export async function callCloneSharedPlan(
 	sharedUuid: string
 ): Promise<ISharedCloneResponse> {
 	return apiService.put<null, SharedCloneResponseType>(
-		`/shared/baseplanner/${sharedUuid}/clone`,
+		`/planning/shared/${sharedUuid}/clone`,
 		null,
 		z.null(),
 		SharedCloneResponseSchema

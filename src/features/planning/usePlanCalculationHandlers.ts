@@ -5,10 +5,10 @@ import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Types & Interfaces
 import {
+	IPlan,
 	IPlanData,
 	IPlanDataExpert,
 	IPlanDataInfrastructure,
-	IPlanDataPlanet,
 	IPlanDataWorkforce,
 	PLAN_COGCPROGRAM_TYPE,
 } from "@/stores/planningStore.types";
@@ -36,7 +36,7 @@ import { clamp } from "@/util/numbers";
  * @param {Ref<IPlanResult>} planResult Plan Calculation Result
  */
 export async function usePlanCalculationHandlers(
-	planet: Ref<IPlanDataPlanet>,
+	plan: Ref<IPlan>,
 	planData: Ref<IPlanData>,
 	planName: Ref<string | undefined>,
 	planResult: Ref<IPlanResult>
@@ -58,7 +58,7 @@ export async function usePlanCalculationHandlers(
 	 * @param {boolean} value Has CorpHQ on Planet
 	 */
 	function handleUpdateCorpHQ(value: boolean): void {
-		planet.value.corphq = value;
+		plan.value.plan_corphq = value;
 		modified.value = true;
 	}
 
@@ -69,7 +69,7 @@ export async function usePlanCalculationHandlers(
 	 * @param {PLAN_COGCPROGRAM_TYPE} value COGC Program
 	 */
 	function handleUpdateCOGC(value: PLAN_COGCPROGRAM_TYPE): void {
-		planet.value.cogc = value;
+		plan.value.plan_cogc = value;
 		modified.value = true;
 	}
 
@@ -80,7 +80,7 @@ export async function usePlanCalculationHandlers(
 	 * @param {number} value Number of permits
 	 */
 	function handleUpdatePermits(value: number): void {
-		planet.value.permits = clamp(value, 1, 3);
+		plan.value.plan_permits_used = clamp(value, 1, 3);
 		modified.value = true;
 	}
 
@@ -98,7 +98,7 @@ export async function usePlanCalculationHandlers(
 		value: boolean
 	): void {
 		const workforceData: IPlanDataWorkforce | undefined =
-			planet.value.workforce.find((e) => e.type == workforce);
+			planData.value.workforce.find((e) => e.type == workforce);
 
 		if (workforceData) {
 			if (luxType === "lux1") {
@@ -119,7 +119,7 @@ export async function usePlanCalculationHandlers(
 	 */
 	function handleUpdateExpert(expert: EXPERT_TYPE, value: number): void {
 		const expertData: IPlanDataExpert | undefined =
-			planet.value.experts.find((e) => e.type === expert);
+			planData.value.experts.find((e) => e.type === expert);
 
 		if (expertData) {
 			expertData.amount = clamp(value, 0, 5);
@@ -212,7 +212,7 @@ export async function usePlanCalculationHandlers(
 		// only add, if this ticker is not yet present
 		if (!hasTicker) {
 			planData.value.buildings.push({
-				name: building.Ticker,
+				name: building.building_ticker,
 				amount: 1,
 				active_recipes: [],
 			});
@@ -380,7 +380,7 @@ export async function usePlanCalculationHandlers(
 		planData.value.buildings[buildingIndex].active_recipes.push({
 			recipeid:
 				planResult.value.production.buildings[buildingIndex]
-					.recipeOptions[0].RecipeId,
+					.recipeOptions[0].recipe_id,
 			amount: 1,
 		});
 

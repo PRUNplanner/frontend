@@ -67,10 +67,10 @@ export async function useMaterialIOUtil() {
 				input: minimal.input,
 				output: minimal.output,
 				delta: minimal.output - minimal.input,
-				individualWeight: material.Weight,
-				individualVolume: material.Volume,
-				totalWeight: (minimal.output - minimal.input) * material.Weight,
-				totalVolume: (minimal.output - minimal.input) * material.Volume,
+				individualWeight: material.weight,
+				individualVolume: material.volume,
+				totalWeight: (minimal.output - minimal.input) * material.weight,
+				totalVolume: (minimal.output - minimal.input) * material.volume,
 			});
 		});
 

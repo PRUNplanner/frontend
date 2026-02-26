@@ -15,9 +15,7 @@
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	const AsyncManagePlanEmpireAssignments = defineAsyncComponent(
 		() =>
-			import(
-				"@/features/manage/components/ManagePlanEmpireAssignments.vue"
-			)
+			import("@/features/manage/components/ManagePlanEmpireAssignments.vue")
 	);
 	const AsyncManageCX = defineAsyncComponent(
 		() => import("@/features/manage/components/ManageCX.vue")

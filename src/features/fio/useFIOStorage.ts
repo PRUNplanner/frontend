@@ -6,10 +6,8 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Types & Interfaces
 import { PSelectOption } from "@/ui/ui.types";
 import {
+	IFIOStorageElement,
 	IFIOStorageItem,
-	IFIOStoragePlanet,
-	IFIOStorageShip,
-	IFIOStorageWarehouse,
 } from "@/features/api/gameData.types";
 import { IFIOFindMaterialResult } from "@/features/fio/useFIOStorage.types";
 
@@ -55,9 +53,7 @@ export function useFIOStorage() {
 				label: "Warehouses",
 				value: "warehouses",
 				children: warehouses.map((elem) => ({
-					label:
-						planningStore.fio_storage_warehouses[elem]
-							.LocationName ?? elem,
+					label: elem,
 					value: `WAR#${elem}`,
 				})),
 			});
@@ -69,9 +65,7 @@ export function useFIOStorage() {
 				label: "Ships",
 				value: "ships",
 				children: ships.map((elem) => ({
-					label:
-						planningStore.fio_storage_ships[elem].Name ??
-						planningStore.fio_storage_ships[elem].AddressableId,
+					label: elem,
 					value: `SHIP#${elem}`,
 				})),
 			});
@@ -154,17 +148,17 @@ export function useFIOStorage() {
 			{
 				data: planningStore.fio_storage_planets,
 				type: "PLANET",
-				getName: (item: IFIOStoragePlanet) => item.PlanetIdentifier,
+				getName: (item: IFIOStorageElement) => item.Identifier,
 			},
 			{
 				data: planningStore.fio_storage_warehouses,
 				type: "WAR",
-				getName: (item: IFIOStorageWarehouse) => item.LocationNaturalId,
+				getName: (item: IFIOStorageElement) => item.Identifier,
 			},
 			{
 				data: planningStore.fio_storage_ships,
 				type: "SHIP",
-				getName: (item: IFIOStorageShip) => item.Registration,
+				getName: (item: IFIOStorageElement) => item.Identifier,
 			},
 		];
 

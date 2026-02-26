@@ -71,14 +71,14 @@
 		if (filterInputMaterial.value !== null)
 			filtered = filtered.filter((f) =>
 				f.recipeInputs
-					.map((e) => e.Ticker)
+					.map((e) => e.material_ticker)
 					.includes(filterInputMaterial.value!)
 			);
 
 		if (filterOutputMaterial.value !== null)
 			filtered = filtered.filter((f) =>
 				f.recipeOutputs
-					.map((e) => e.Ticker)
+					.map((e) => e.material_ticker)
 					.includes(filterOutputMaterial.value!)
 			);
 
@@ -105,7 +105,9 @@
 			Array.from(
 				new Set(
 					result.value
-						.map((e) => e.recipeInputs.map((e) => e.Ticker))
+						.map((e) =>
+							e.recipeInputs.map((e) => e.material_ticker)
+						)
 						.flat()
 				)
 			)
@@ -118,7 +120,9 @@
 			Array.from(
 				new Set(
 					result.value
-						.map((e) => e.recipeOutputs.map((e) => e.Ticker))
+						.map((e) =>
+							e.recipeOutputs.map((e) => e.material_ticker)
+						)
 						.flat()
 				)
 			)
@@ -191,9 +195,9 @@
 					<div class="flex flex-row flex-wrap gap-1">
 						<MaterialTile
 							v-for="output in rowData.recipeOutputs"
-							:key="`${rowData.buildingTicker}#output#${output.Ticker}`"
-							:ticker="output.Ticker"
-							:amount="output.Amount" />
+							:key="`${rowData.buildingTicker}#output#${output.material_ticker}`"
+							:ticker="output.material_ticker"
+							:amount="output.material_amount" />
 					</div>
 				</template>
 			</XNDataTableColumn>
@@ -202,9 +206,9 @@
 					<div class="flex flex-row flex-wrap gap-1">
 						<MaterialTile
 							v-for="output in rowData.recipeInputs"
-							:key="`${rowData.buildingTicker}#input#${output.Ticker}`"
-							:ticker="output.Ticker"
-							:amount="output.Amount" />
+							:key="`${rowData.buildingTicker}#input#${output.material_ticker}`"
+							:ticker="output.material_ticker"
+							:amount="output.material_amount" />
 					</div>
 				</template>
 			</XNDataTableColumn>

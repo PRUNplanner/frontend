@@ -5,14 +5,9 @@ import { apiService } from "@/lib/apiService";
 import {
 	PlanClonePayloadSchema,
 	PlanClonePayloadType,
-	PlanCloneResponseSchema,
-	PlanCloneResponseType,
 	PlanCreateDataSchema,
 	PlanCreateDataType,
 	PlanListPayload,
-	PlanPatchMaterialIOResponse,
-	PlanPatchMaterialIOSchema,
-	PlanPatchMaterialIOType,
 	PlanSaveCreateResponseSchema,
 	PlanSaveCreateResponseType,
 	PlanSaveDataSchema,
@@ -27,10 +22,8 @@ import {
 import { IPlan, IPlanShare } from "@/stores/planningStore.types";
 import {
 	IPlanCreateData,
-	IPlanPatchMaterialIOElement,
 	IPlanSaveData,
 } from "@/features/planning_data/usePlan.types";
-import { IPlanCloneResponse } from "@/features/manage/manage.types";
 
 /**
  * Fetches data of a shared plans uuid from the API
@@ -45,7 +38,7 @@ export async function callGetShared(
 	sharedPlanUuid: string
 ): Promise<IPlanShare> {
 	return apiService.get<PlanShareSchemaType>(
-		`/shared/${sharedPlanUuid}`,
+		`/planning/shared/${sharedPlanUuid}`,
 		PlanShareSchema
 	);
 }
@@ -61,7 +54,7 @@ export async function callGetShared(
  */
 export async function callGetPlan(planUuid: string): Promise<IPlan> {
 	return apiService.get<PlanSchemaType>(
-		`/baseplanner/${planUuid}`,
+		`/planning/plan/${planUuid}`,
 		PlanSchema
 	);
 }
@@ -75,7 +68,7 @@ export async function callGetPlan(planUuid: string): Promise<IPlan> {
  * @returns {Promise<IPlan[]>} List of Plan Data
  */
 export async function callGetPlanlist(): Promise<IPlan[]> {
-	return apiService.get<PlanSchemaType[]>("/baseplanner/", PlanListPayload);
+	return apiService.get<PlanSchemaType[]>("/planning/plan/", PlanListPayload);
 }
 
 /**
@@ -91,8 +84,8 @@ export async function callGetPlanlist(): Promise<IPlan[]> {
 export async function callCreatePlan(
 	data: IPlanCreateData
 ): Promise<PlanSaveCreateResponseType> {
-	return apiService.put<PlanCreateDataType, PlanSaveCreateResponseType>(
-		"/baseplanner/",
+	return apiService.post<PlanCreateDataType, PlanSaveCreateResponseType>(
+		"/planning/plan/",
 		data,
 		PlanCreateDataSchema,
 		PlanSaveCreateResponseSchema
@@ -114,8 +107,8 @@ export async function callSavePlan(
 	planUuid: string,
 	data: IPlanSaveData
 ): Promise<PlanSaveCreateResponseType> {
-	return apiService.patch<PlanSaveDataType, PlanSaveCreateResponseType>(
-		`/baseplanner/${planUuid}`,
+	return apiService.put<PlanSaveDataType, PlanSaveCreateResponseType>(
+		`/planning/plan/${planUuid}/`,
 		data,
 		PlanSaveDataSchema,
 		PlanSaveCreateResponseSchema
@@ -135,12 +128,12 @@ export async function callSavePlan(
 export async function callClonePlan(
 	planUuid: string,
 	cloneName: string
-): Promise<IPlanCloneResponse> {
-	return apiService.put<PlanClonePayloadType, PlanCloneResponseType>(
-		`/baseplanner/${planUuid}/clone`,
+): Promise<IPlan> {
+	return apiService.post<PlanClonePayloadType, PlanSchemaType>(
+		`/planning/plan/${planUuid}/clone/`,
 		{ plan_name: cloneName },
 		PlanClonePayloadSchema,
-		PlanCloneResponseSchema
+		PlanSchema
 	);
 }
 
@@ -154,16 +147,5 @@ export async function callClonePlan(
  * @returns {Promise<boolean>} Deletion Status
  */
 export async function callDeletePlan(planUuid: string): Promise<boolean> {
-	return apiService.delete(`/baseplanner/${planUuid}`);
-}
-
-export async function callPatchPlanMaterialIO(
-	data: IPlanPatchMaterialIOElement[]
-): Promise<boolean> {
-	return apiService.patch<PlanPatchMaterialIOType, boolean>(
-		"/baseplanner/materialio",
-		data,
-		PlanPatchMaterialIOSchema,
-		PlanPatchMaterialIOResponse
-	);
+	return apiService.delete(`/planning/plan/${planUuid}/`);
 }

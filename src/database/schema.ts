@@ -12,42 +12,42 @@ interface IndexDef {
 // define all stores in a schema object
 export const DB_SCHEMA: Record<string, StoreSchema> = {
 	gamedata_materials: {
-		keyPath: "Ticker",
+		keyPath: "ticker",
 		indexes: [
 			{
 				name: "byMaterialId",
-				keyPath: "MaterialId",
+				keyPath: "material_id",
 				options: { unique: true },
 			},
-			{ name: "byCategoryId", keyPath: "CategoryId" },
+			{ name: "byCategoryId", keyPath: "category_id" },
 		],
 	},
 	gamedata_planets: {
-		keyPath: "PlanetNaturalId",
+		keyPath: "planet_natural_id",
 	},
 	gamedata_exchanges: {
-		keyPath: "TickerId",
+		keyPath: "ticker_id",
 		indexes: [
 			{
 				name: "byMaterialTicker",
-				keyPath: "MaterialTicker",
+				keyPath: "ticker",
 			},
 			{
 				name: "byExchangeCode",
-				keyPath: "ExchangeCode",
+				keyPath: "exchange_code",
 			},
 		],
 	},
 	gamedata_recipes: {
-		keyPath: "RecipeId",
+		keyPath: "recipe_id",
 		indexes: [
 			{
 				name: "byBuildingTicker",
-				keyPath: "BuildingTicker",
+				keyPath: "building_ticker",
 			},
 		],
 	},
 	gamedata_buildings: {
-		keyPath: "Ticker",
+		keyPath: "building_ticker",
 	},
 };

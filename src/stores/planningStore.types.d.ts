@@ -28,15 +28,6 @@ export type PLAN_FACTION =
 	| "MORIA"
 	| "OUTSIDEREGION";
 
-export interface IPlanDataPlanet {
-	planetid: string;
-	permits: number;
-	corphq: boolean;
-	cogc: PLAN_COGCPROGRAM_TYPE;
-	experts: IPlanDataExpert[];
-	workforce: IPlanDataWorkforce[];
-}
-
 export interface IPlanDataInfrastructure {
 	building:
 		| "HB1"
@@ -91,45 +82,44 @@ export interface IPlanDataBuilding {
 }
 
 export interface IPlanData {
-	planet: IPlanDataPlanet;
-	infrastructure: IPlanDataInfrastructure[];
+	experts: IPlanDataExpert[];
 	buildings: IPlanDataBuilding[];
+	infrastructure: IPlanDataInfrastructure[];
+	workforce: IPlanDataWorkforce[];
 }
 
 export interface IPlanEmpire {
-	faction: string;
-	permits_used: number;
-	permits_total: number;
+	empire_faction: string;
+	empire_permits_used: number;
+	empire_permits_total: number;
 	uuid: string;
-	name: string;
-	use_fio_storage: boolean;
+	empire_name: string;
 }
 
 export interface IPlanEmpireElement extends IPlanEmpire {
-	baseplanners: {
-		name: string;
+	plans: {
 		uuid: string;
-		planet_id: string;
+		plan_name: string;
+		planet_natural_id: string;
 	}[];
 }
 
 export interface IPlan {
-	name: string | undefined;
 	uuid: string | undefined;
-	planet_id: string;
-	faction: PLAN_FACTION;
-	permits_used: number;
-	permits_total: number;
-	override_empire: boolean;
-	baseplanner_data: IPlanData;
-	empires: IPlanEmpire[];
+	plan_name: string | undefined;
+	planet_natural_id: string;
+	plan_permits_used: number;
+	plan_corphq: boolean;
+	plan_cogc: PLAN_COGCPROGRAM_TYPE;
+	plan_data: IPlanData;
+	empires?: IPlanEmpire[];
 }
 
 export interface IPlanShare {
 	uuid: string;
-	created_date: string;
+	created_at: string;
 	view_count: number;
-	baseplanner: IPlan;
+	plan_details: IPlan;
 }
 
 interface IPlanLoadData {
@@ -138,38 +128,16 @@ interface IPlanLoadData {
 }
 
 type CX_EXCHANGE_OPTION_TYPE =
-	| "AI1_BUY"
-	| "AI1_SELL"
-	| "AI1_AVG"
-	| "IC1_BUY"
-	| "IC1_SELL"
-	| "IC1_AVG"
-	| "CI1_BUY"
-	| "CI1_SELL"
-	| "CI1_AVG"
-	| "CI2_BUY"
-	| "CI2_SELL"
-	| "CI2_AVG"
-	| "NC1_BUY"
-	| "NC1_SELL"
-	| "NC1_AVG"
-	| "NC2_BUY"
-	| "NC2_SELL"
-	| "NC2_AVG"
-	| "PP7D_AI1"
-	| "PP7D_IC1"
-	| "PP7D_CI1"
-	| "PP7D_CI2"
-	| "PP7D_NC1"
-	| "PP7D_NC2"
-	| "PP30D_AI1"
-	| "PP30D_IC1"
-	| "PP30D_CI1"
-	| "PP30D_CI2"
-	| "PP30D_NC1"
-	| "PP30D_NC2"
-	| "PP7D_UNIVERSE"
-	| "PP30D_UNIVERSE";
+	| "AI1_7D"
+	| "NC1_7D"
+	| "CI1_7D"
+	| "IC1_7D"
+	| "UNIVERSE_7D"
+	| "AI1_30D"
+	| "NC1_30D"
+	| "CI1_30D"
+	| "IC1_30D"
+	| "UNIVERSE_30D";
 
 type CX_PREFERENCE_TYPE = "BUY" | "SELL" | "BOTH";
 
@@ -185,22 +153,37 @@ export interface ICXDataTickerOption {
 }
 
 export interface ICXData {
-	name: string;
 	cx_empire: ICXDataExchangeOption[];
 	cx_planets: { planet: string; preferences: ICXDataExchangeOption[] }[];
 	ticker_empire: ICXDataTickerOption[];
 	ticker_planets: { planet: string; preferences: ICXDataTickerOption[] }[];
 }
 
+export interface IPlanCXEmpireElement {
+	uuid: string;
+	empire_name: string;
+	plans: {
+		uuid: string;
+		plan_name: string;
+		planet_natural_id: string;
+	}[];
+}
+
 export interface ICX {
 	uuid: string;
-	name: string;
-	empires: IPlanEmpireElement[];
+	cx_name: string;
+	empires: IPlanCXEmpireElement[];
+	cx_data: ICXData;
+}
+
+export interface ICXPut {
+	cx_name: string;
 	cx_data: ICXData;
 }
 
 export interface ISharedPlan {
-	shared_uuid: string;
-	plan_uuid: string;
+	uuid: string;
+	plan: string;
 	view_count: number;
+	created_at: Date;
 }

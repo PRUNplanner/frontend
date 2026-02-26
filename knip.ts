@@ -22,6 +22,7 @@ function getStyleImports(content: string): string {
 }
 
 const config = {
+	project: ["src/**/*.{ts,vue}"],
 	compilers: {
 		vue: (text: string, filename: string) => {
 			const { descriptor } = parse(text, { filename, sourceMap: false });
@@ -41,6 +42,15 @@ const config = {
 		"src/router/router.d.ts",
 	],
 	ignoreDependencies: ["fast-equals"],
+	include: [
+		"exports",
+		"types",
+		"nsTypes",
+		"classMembers",
+		"enumMembers",
+		"duplicates",
+	],
+	ignoreExportsUsedInFile: true,
 } satisfies KnipConfig;
 
 export default config;

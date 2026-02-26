@@ -13,7 +13,7 @@ import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
-import { ICXData } from "@/stores/planningStore.types";
+import { CX_EXCHANGE_OPTION_TYPE, ICXData } from "@/stores/planningStore.types";
 import { infrastructureBuildingNames } from "@/features/planning/calculations/workforceCalculations";
 import { IPlanet } from "@/features/api/gameData.types";
 import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
@@ -37,11 +37,11 @@ import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
  * - Empire Material Preference
  * - Planet Exchange Preference
  * - Empire Exchange Preference
- * - PP30D_Universe (fallack)
+ * - Universe VWAP 30d (fallack)
  *
  * ## Fallback
  * If no preferences are defined at the planet or empire levels matching the price request
- * the system uses the PP30D_Universe data to return the PriceAverage
+ * the system uses the Universe VWAP 30d data
  */
 
 export async function usePrice(
@@ -61,7 +61,6 @@ export async function usePrice(
 	 *
 	 * @param {string} materialTicker Material Ticker e.g., "RAT"
 	 * @param {("BUY" | "SELL")} type Buying or Selling
-	 * @param {(Ref<IPriceCXInformation> | undefined)} cx CX and Planet Information
 	 * @returns {number} Price
 	 */
 	async function getPrice(
@@ -69,17 +68,15 @@ export async function usePrice(
 		type: "BUY" | "SELL"
 	): Promise<number> {
 		try {
-			// if any cx information is undefined, we return the PP30D_Universe PriceAverage
+			// no cx information, default to UNIVERSE
 			if (!cxUuid.value || cxUuid.value === undefined) {
 				const price = await getExchangeTicker(
-					`${materialTicker}.PP30D_UNIVERSE`
+					`${materialTicker}.UNIVERSE`
 				);
-				return price.PriceAverage ?? 0;
+				return price.vwap_30d;
 			}
 
-			// we got cx information with cxUuid and/or planetNaturalId
-			// apply identification logic and return the price
-
+			// we got cx information with cxUuid
 			const cxData: ICXData = planningStore.getCX(cxUuid.value).cx_data;
 
 			// Planet Ticker Path
@@ -93,27 +90,23 @@ export async function usePrice(
 							(t.type === type || t.type === "BOTH")
 					);
 
-				// found planet ticker setting
 				if (planetTickerPreference) {
-					const price: number = planetTickerPreference.value;
-					return price;
+					return planetTickerPreference.value;
 				}
 			}
 
-			// Material Ticker Path
-
+			// Empire Ticker Path
 			const empireTickerPreference = cxData.ticker_empire.find(
 				(te) =>
 					te.ticker === materialTicker &&
 					(te.type === type || te.type === "BOTH")
 			);
+
 			if (empireTickerPreference) {
-				const price: number = empireTickerPreference.value;
-				return price;
+				return empireTickerPreference.value;
 			}
 
 			// Planet Exchange Path
-
 			if (planetNaturalId && planetNaturalId.value) {
 				// find potential planet exchange setting
 				const planetExchangePreference = cxData.cx_planets
@@ -156,10 +149,10 @@ export async function usePrice(
 
 			// None of the path specifics yielded a result, return PP30D_Average fallback
 			const tickerData = await getExchangeTicker(
-				`${materialTicker}.PP30D_UNIVERSE`
+				`${materialTicker}.UNIVERSE`
 			);
 
-			const price: number = tickerData.PriceAverage ?? 0;
+			const price: number = tickerData.vwap_30d;
 			return price;
 		} catch (error) {
 			if (error instanceof Error) {
@@ -177,7 +170,6 @@ export async function usePrice(
 	 *
 	 * @param {IMaterialIOMinimal[]} data Material IO []
 	 * @param {("BUY" | "SELL")} type Buying or Selling
-	 * @param {(Ref<IPriceCXInformation> | undefined)} cx CX Information
 	 * @returns {number} Total Price of MaterialIO[]
 	 */
 	async function getMaterialIOTotalPrice(
@@ -192,6 +184,17 @@ export async function usePrice(
 		return sum;
 	}
 
+	type SplitOption<T> = T extends `${infer Prefix}_${infer Suffix}`
+		? [Prefix, Suffix]
+		: never;
+	type PrefixPart = SplitOption<CX_EXCHANGE_OPTION_TYPE>[0];
+	type SuffixPart = SplitOption<CX_EXCHANGE_OPTION_TYPE>[1];
+
+	function splitExchangeOption(option: CX_EXCHANGE_OPTION_TYPE) {
+		const [prefix, suffix] = option.split("_") as [PrefixPart, SuffixPart];
+		return { prefix, suffix };
+	}
+
 	/**
 	 * Splits Exchange Preference codes into parts and identifies
 	 * the correct key of IExchange to use.
@@ -203,12 +206,12 @@ export async function usePrice(
 	 * 		key: string;
 	 * 	}} Exchange code and value key
 	 */
-	function getExchangeCodeKey(preference: string): {
+	function getExchangeCodeKey(preference: CX_EXCHANGE_OPTION_TYPE): {
 		exchangeCode: string;
 		key: string;
 	} {
-		let exchangeCode: string = "PP30D_UNIVERSE";
-		let key: string = "PriceAverage";
+		let exchangeCode: string = "UNIVERSE";
+		let key: string = "vwap_30d";
 
 		// split by underscore
 		const splitted: string[] = preference.split("_");
@@ -219,34 +222,16 @@ export async function usePrice(
 			);
 		}
 
-		/**
-		 * If first part is PP7D or PP30D, it's the price average of those tickers
-		 * If second part is UNIVERSE, it's the universe price and price average
-		 */
-		if (
-			splitted[1] === "UNIVERSE" ||
-			splitted[0] === "PP7D" ||
-			splitted[0] === "PP30D"
-		) {
-			return { exchangeCode: preference, key: "PriceAverage" };
-		}
+		// first part indicates the exchange, second part the time, e.g. AI1_7D
 
-		if (
-			["AI1", "IC1", "CI1", "NC1", "NC2"].includes(splitted[0]) &&
-			["BUY", "SELL", "AVG"].includes(splitted[1])
-		) {
-			// we got an individual cx preference and correct key type
+		const { prefix: exchange, suffix: timeframe } =
+			splitExchangeOption(preference);
 
-			exchangeCode = splitted[0];
+		exchangeCode = exchange;
 
-			if (splitted[1] === "BUY") key = "Ask";
-			else if (splitted[1] === "SELL") key = "Bid";
-			else key = "PriceAverage";
+		if (timeframe == "7D") key = "vwap_7d";
+		else key = "vwap_30d";
 
-			return { exchangeCode, key };
-		}
-
-		// If nothing matched, also fallback to PP30D_UNIVERSE and PriceAverage
 		return { exchangeCode, key };
 	}
 

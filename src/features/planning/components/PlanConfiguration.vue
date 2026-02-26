@@ -50,7 +50,7 @@
 			);
 
 			selectOptions.push({
-				label: pE ? `» ${e.name}` : e.name,
+				label: pE ? `» ${e.empire_name}` : e.empire_name,
 				value: e.uuid,
 			});
 		});

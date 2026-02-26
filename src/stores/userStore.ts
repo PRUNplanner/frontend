@@ -14,6 +14,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Composables
+import { useQuery } from "@/lib/query_cache/useQuery";
 import { useVersionCheck } from "@/lib/useVersionCheck";
 import {
 	trackEvent,
@@ -25,6 +26,7 @@ import {
 // Types & Interfaces
 import {
 	IUserProfile,
+	IUserRefreshTokenResponse,
 	IUserTokenResponse,
 } from "@/features/api/userData.types";
 import {
@@ -49,6 +51,7 @@ export const useUserStore = defineStore(
 			accessToken.value = undefined;
 			refreshToken.value = undefined;
 			profile.value = undefined;
+			Object.assign(preferences, preferenceDefaults);
 		}
 
 		// user preference handling
@@ -156,13 +159,16 @@ export const useUserStore = defineStore(
 					password
 				);
 
-				setToken(tokenData.access_token, tokenData.refresh_token);
+				setToken(tokenData.access, tokenData.refresh);
 
 				trackEvent("user_login", { username });
 
 				// sets the current version to the available version
 				const { markUpdated } = useVersionCheck();
 				await markUpdated();
+
+				// update preferences
+				useQuery("GetPreferences");
 
 				return true;
 			} catch (err) {
@@ -181,10 +187,13 @@ export const useUserStore = defineStore(
 		async function performTokenRefresh(): Promise<boolean> {
 			if (refreshToken.value) {
 				try {
-					const tokenData: IUserTokenResponse =
+					const tokenData: IUserRefreshTokenResponse =
 						await callRefreshToken(refreshToken.value);
 
-					setToken(tokenData.access_token, tokenData.refresh_token);
+					setToken(tokenData.access, refreshToken.value);
+
+					// update preferences
+					useQuery("GetPreferences");
 
 					return true;
 				} catch (error) {
@@ -209,7 +218,7 @@ export const useUserStore = defineStore(
 				try {
 					await callGetProfile().then((result: IUserProfile) => {
 						// identify users for posthog
-						identifyUser(result.user_id.toString(), {
+						identifyUser(result.id.toString(), {
 							username: result.username,
 						});
 

@@ -2,7 +2,7 @@
 	"name": "prunplanner_frontend",
 	"private": true,
 	"version": "0.22.1",
-	"dbVersion": "0.20.1",
+	"dbVersion": "0.23.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",

@@ -62,11 +62,11 @@ export async function useROIOverview(
 
 		for (const recipe of buildingRecipes) {
 			// as we're using production buildings, they all have a COGC
-			definitionCopy.baseplanner_data.planet.cogc =
-				`${building.Expertise}` as PLAN_COGCPROGRAM_TYPE;
+			definitionCopy.plan_cogc =
+				`${building.expertise}` as PLAN_COGCPROGRAM_TYPE;
 
 			// set building
-			definitionCopy.baseplanner_data.buildings = [
+			definitionCopy.plan_data.buildings = [
 				{
 					name: optimal.ticker,
 					amount: optimal.amount,
@@ -75,7 +75,7 @@ export async function useROIOverview(
 			];
 
 			// set infrastructure
-			definitionCopy.baseplanner_data.infrastructure = [
+			definitionCopy.plan_data.infrastructure = [
 				{ building: "HB1", amount: optimal.HB1 },
 				{ building: "HB2", amount: optimal.HB2 },
 				{ building: "HB3", amount: optimal.HB3 },
@@ -89,9 +89,9 @@ export async function useROIOverview(
 			];
 
 			// set recipe
-			definitionCopy.baseplanner_data.buildings[0].active_recipes = [
+			definitionCopy.plan_data.buildings[0].active_recipes = [
 				{
-					recipeid: recipe.RecipeId,
+					recipeid: recipe.recipe_id,
 					amount: 1,
 				},
 			];
@@ -113,9 +113,9 @@ export async function useROIOverview(
 			itemResults.push({
 				buildingTicker: optimal.ticker,
 				optimalSetup: optimal,
-				recipeId: recipe.RecipeId,
-				recipeInputs: recipe.Inputs,
-				recipeOutputs: recipe.Outputs,
+				recipeId: recipe.recipe_id,
+				recipeInputs: recipe.inputs,
+				recipeOutputs: recipe.outputs,
 				cogc: result.cogc,
 				cogm: result.production.buildings[0].activeRecipes[0].cogm,
 				outputProfit:
@@ -145,7 +145,7 @@ export async function useROIOverview(
 		progressTotal.value = filteredOptimalProduction.length;
 
 		// set all the experts to 5
-		definition.value.baseplanner_data.planet.experts.forEach(
+		definition.value.plan_data.experts.forEach(
 			(expert) => (expert.amount = 5)
 		);
 

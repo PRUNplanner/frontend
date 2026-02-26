@@ -43,20 +43,26 @@ export async function useBuildingData() {
 	const { calculateWorkforceConsumption } = await useWorkforceCalculation();
 
 	const buildingsMap = computed((): Record<string, IBuilding> => {
-		return (allDataBuildings.value ?? []).reduce((acc, building) => {
-			acc[building.Ticker] = building;
-			return acc;
-		}, {} as Record<string, IBuilding>);
+		return (allDataBuildings.value ?? []).reduce(
+			(acc, building) => {
+				acc[building.building_ticker] = building;
+				return acc;
+			},
+			{} as Record<string, IBuilding>
+		);
 	});
 
 	const recipeBuildingMap = computed((): Record<string, IRecipe[]> => {
-		return (allDataRecipes.value ?? []).reduce((acc, recipe) => {
-			if (acc[recipe.BuildingTicker])
-				acc[recipe.BuildingTicker].push(recipe);
-			else acc[recipe.BuildingTicker] = [recipe];
+		return (allDataRecipes.value ?? []).reduce(
+			(acc, recipe) => {
+				if (acc[recipe.building_ticker])
+					acc[recipe.building_ticker].push(recipe);
+				else acc[recipe.building_ticker] = [recipe];
 
-			return acc;
-		}, {} as Record<string, IRecipe[]>);
+				return acc;
+			},
+			{} as Record<string, IRecipe[]>
+		);
 	});
 
 	async function getBuilding(buildingTicker: string): Promise<IBuilding> {
@@ -85,28 +91,30 @@ export async function useBuildingData() {
 		Object.values(buildingsMap.value)
 			.filter(
 				(b) =>
-					b.Habitation === null &&
-					b.Type !== "PLANETARY" &&
-					b.Type !== "INFRASTRUCTURE"
+					b.habitations === null &&
+					b.building_type !== "PLANETARY" &&
+					b.building_type !== "INFRASTRUCTURE"
 			)
 			.forEach((building) => {
 				// only production buildings that are not in existing list
-				if (!existing.includes(building.Ticker)) {
+				if (!existing.includes(building.building_ticker)) {
 					// check for matching COGC
 					if (cogc && building.Expertise != cogc) {
 						return [];
 					}
 
 					options.push({
-						value: building.Ticker,
+						value: building.building_ticker,
 						label:
-							building.Ticker +
+							building.building_ticker +
 							" (" +
-							building.Name.replace(/([A-Z])/g, " $1")
+							building.building_name
+								.replace(/([A-Z])/g, " $1")
 								.trim()
 								.charAt(0)
 								.toUpperCase() +
-							building.Name.replace(/([A-Z])/g, " $1")
+							building.building_name
+								.replace(/([A-Z])/g, " $1")
 								.trim()
 								.slice(1) +
 							")",
@@ -140,26 +148,26 @@ export async function useBuildingData() {
 			const searchType: PLANET_RESOURCETYPE_TYPE =
 				resourceBuildingTicker[buildingTicker];
 			const relevantResources: IPlanetResource[] = planetResources.filter(
-				(r) => r.ResourceType === searchType
+				(r) => r.resource_type === searchType
 			);
 
 			// create individual resource recipes
 			const resourceRecipes: IRecipe[] = relevantResources.map((res) => {
 				const { timeMs, extractionAmount } = calculateExtraction(
-					res.ResourceType,
-					res.DailyExtraction
+					res.resource_type,
+					res.daily_extraction
 				);
 
 				return {
-					RecipeId: `${buildingTicker}#${res.MaterialTicker}`,
-					BuildingTicker: buildingTicker,
-					RecipeName: buildingTicker,
-					TimeMs: timeMs,
-					Inputs: [],
-					Outputs: [
+					recipe_id: `${buildingTicker}#${res.material_ticker}`,
+					building_ticker: buildingTicker,
+					recipe_name: buildingTicker,
+					time_ms: timeMs,
+					inputs: [],
+					outputs: [
 						{
-							Ticker: res.MaterialTicker,
-							Amount: extractionAmount,
+							material_ticker: res.material_ticker,
+							material_amount: extractionAmount,
 						},
 					],
 				};
@@ -186,11 +194,11 @@ export async function useBuildingData() {
 
 	function getTotalWorkforce(building: IBuilding): number {
 		return (
-			building.Pioneers +
-			building.Settlers +
-			building.Technicians +
-			building.Engineers +
-			building.Scientists
+			building.pioneers +
+			building.settlers +
+			building.technicians +
+			building.engineers +
+			building.scientists
 		);
 	}
 
@@ -200,10 +208,10 @@ export async function useBuildingData() {
 	): IMaterialIOMinimal[] {
 		const materials: IMaterialIOMinimal[] = [];
 
-		building.BuildingCosts.forEach((m) => {
+		building.costs.forEach((m) => {
 			materials.push({
-				ticker: m.CommodityTicker,
-				input: m.Amount,
+				ticker: m.material_ticker,
+				input: m.material_amount,
 				output: 0,
 			});
 		});
@@ -212,7 +220,7 @@ export async function useBuildingData() {
 		if (planet) {
 			return combineMaterialIOMinimal([
 				materials,
-				getPlanetSpecialMaterials(planet, building.AreaCost),
+				getPlanetSpecialMaterials(planet, building.area_cost),
 			]);
 		} else {
 			return materials;
@@ -228,8 +236,8 @@ export async function useBuildingData() {
 		const buildingWorkforce: IWorkforceRecord = {
 			pioneer: {
 				name: "pioneer",
-				required: building.Pioneers,
-				capacity: building.Pioneers,
+				required: building.pioneers,
+				capacity: building.pioneers,
 				left: 0,
 				lux1: lux1,
 				lux2: lux2,
@@ -237,8 +245,8 @@ export async function useBuildingData() {
 			},
 			settler: {
 				name: "settler",
-				required: building.Settlers,
-				capacity: building.Settlers,
+				required: building.settlers,
+				capacity: building.settlers,
 				left: 0,
 				lux1: lux1,
 				lux2: lux2,
@@ -246,8 +254,8 @@ export async function useBuildingData() {
 			},
 			technician: {
 				name: "technician",
-				required: building.Technicians,
-				capacity: building.Technicians,
+				required: building.technicians,
+				capacity: building.technicians,
 				left: 0,
 				lux1: lux1,
 				lux2: lux2,
@@ -255,8 +263,8 @@ export async function useBuildingData() {
 			},
 			engineer: {
 				name: "engineer",
-				required: building.Engineers,
-				capacity: building.Engineers,
+				required: building.engineers,
+				capacity: building.engineers,
 				left: 0,
 				lux1: lux1,
 				lux2: lux2,
@@ -264,8 +272,8 @@ export async function useBuildingData() {
 			},
 			scientist: {
 				name: "scientist",
-				required: building.Scientists,
-				capacity: building.Scientists,
+				required: building.scientists,
+				capacity: building.scientists,
 				left: 0,
 				lux1: lux1,
 				lux2: lux2,

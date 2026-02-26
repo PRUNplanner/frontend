@@ -106,7 +106,7 @@ export async function usePlanCalculationPreComputes(
 				buildingData: buildingData,
 				buildingRecipes: getBuildingRecipes(
 					ticker,
-					planetData.Resources
+					planetData.resources
 				),
 				constructionMaterials: constructionMaterials,
 				constructionCost: await getMaterialIOTotalPrice(

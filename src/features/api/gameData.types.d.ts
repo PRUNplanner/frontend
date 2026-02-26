@@ -1,55 +1,55 @@
 export interface IMaterial {
-	MaterialId: string;
-	CategoryName: string;
-	CategoryId: string;
-	Name: string;
-	Ticker: string;
-	Weight: number;
-	Volume: number;
+	material_id: string;
+	category_name: string;
+	category_id: string;
+	name: string;
+	ticker: string;
+	weight: number;
+	volume: number;
 }
 
 export interface IExchange {
-	TickerId: string;
-	MaterialTicker: string;
-	ExchangeCode: string;
-	Ask: number | null;
-	Bid: number | null;
-	PriceAverage: number | null;
-	Supply: number | null;
-	Demand: number | null;
-	Traded: number | null;
+	ticker: string;
+	exchange_code: string;
+	calendar_date: Date;
+	traded_daily: number;
+	vwap_daily: number;
+	sum_traded_7d: number;
+	avg_traded_7d: number;
+	vwap_7d: number;
+	sum_traded_30d: number;
+	avg_traded_30d: number;
+	vwap_30d: number;
+	exchange_status: "ACTIVE" | "INACTIVE" | "STALE";
 
-	[key: string]: string | number | null;
+	[key: string]: string | number | Date;
 }
 
 export interface IRecipeMaterial {
-	Ticker: string;
-	Amount: number;
+	material_ticker: string;
+	material_amount: number;
 }
 
 export interface IRecipe {
-	RecipeId: string;
-	BuildingTicker: string;
-	RecipeName: string;
-	TimeMs: number;
-	Inputs: IRecipeMaterial[];
-	Outputs: IRecipeMaterial[];
+	recipe_id: string;
+	building_ticker: string;
+	recipe_name: string;
+	time_ms: number;
+	inputs: IRecipeMaterial[];
+	outputs: IRecipeMaterial[];
 }
 
 export interface IBuildingCost {
-	CommodityTicker: string;
-	Weight: number;
-	Volume: number;
-	Amount: number;
+	material_ticker: string;
+	material_amount: number;
 }
 
 export interface IBuildingHabitation {
-	Pioneer: number;
-	Settler: number;
-	Technician: number;
-	Engineer: number;
-	Scientist: number;
-	Area: number;
+	pioneers: number;
+	settlers: number;
+	technicians: number;
+	engineers: number;
+	scientists: number;
 }
 
 export type BUILDING_EXPERTISE_TYPE =
@@ -66,18 +66,18 @@ export type BUILDING_EXPERTISE_TYPE =
 type BUILDING_TYPE = "INFRASTRUCTURE" | "PLANETARY" | "PRODUCTION";
 
 export interface IBuilding {
-	Name: string;
-	Ticker: string;
-	Pioneers: number;
-	Settlers: number;
-	Technicians: number;
-	Engineers: number;
-	Scientists: number;
-	AreaCost: number;
-	BuildingCosts: IBuildingCost[];
-	Habitation: IBuildingHabitation | null;
-	Expertise: BUILDING_EXPERTISE_TYPE | null;
-	Type: BUILDING_TYPE;
+	building_name: string;
+	building_ticker: string;
+	pioneers: number;
+	settlers: number;
+	technicians: number;
+	engineers: number;
+	scientists: number;
+	area_cost: number;
+	costs: IBuildingCost[];
+	habitations: IBuildingHabitation | null;
+	expertise: BUILDING_EXPERTISE_TYPE | null;
+	building_type: BUILDING_TYPE;
 
 	[key: string]:
 		| string
@@ -96,24 +96,11 @@ type PLANET_DISTANCE_NAMES =
 	| "Hortus Station";
 
 export interface IPlanetResource {
-	MaterialId: string;
-	ResourceType: PLANET_RESOURCETYPE_TYPE;
-	Factor: number;
-	DailyExtraction: number;
-	MaterialTicker: string;
-	ExtractionMax: number;
-}
-
-export interface IPlanetDistance {
-	name: PLANET_DISTANCE_NAMES;
-	distance: number;
-}
-
-export interface IPlanetCheckDistance {
-	SystemIdStart: string;
-	SystemIdTarget: string;
-	SystemName: string;
-	Distance: number;
+	resource_type: PLANET_RESOURCETYPE_TYPE;
+	factor: number;
+	daily_extraction: number;
+	material_ticker: string;
+	max_daily_extraction: number;
 }
 
 export type PLANET_COGCPROGRAM_TYPE =
@@ -134,134 +121,81 @@ export type PLANET_COGCPROGRAM_TYPE =
 	| "WORKFORCE_SCIENTISTS";
 
 export interface IPlanetCOGCProgram {
-	ProgramType: PLANET_COGCPROGRAM_TYPE | null;
-	StartEpochMs: number;
-	EndEpochMs: number;
+	program_type: PLANET_COGCPROGRAM_TYPE | null;
+	start_epochms: number;
+	end_epochms: number;
 }
 
 type PLANET_COGCPROGRAM_STATUS_TYPE = "ACTIVE" | "ON_STRIKE" | "PLANNED";
 
 export interface IPlanet {
-	PlanetId: string;
-	PlanetNaturalId: string;
-	PlanetName: string;
-	SystemId: string;
-	HasLocalMarket: boolean;
-	HasChamberOfCommerce: boolean;
-	HasWarehouse: boolean;
-	HasAdministrationCenter: boolean;
-	HasShipyard: boolean;
-	Pressure: number;
-	Surface: boolean;
-	Temperature: number;
-	Fertility: number;
-	Gravity: number;
-	FactionCode: string | null;
-	FactionName: string | null;
-	GovernorUserName: string | null;
-	COGCProgramStatus: PLANET_COGCPROGRAM_STATUS_TYPE | null;
+	planet_id: string;
+	planet_natural_id: string;
+	planet_name: string;
+	system_id: string;
+	has_localmarket: boolean;
+	has_chamberofcommerce: boolean;
+	has_warehouse: boolean;
+	has_administrationcenter: boolean;
+	has_shipyard: boolean;
+	pressure: number;
+	surface: boolean;
+	temperature: number;
+	fertility: number;
+	gravity: number;
+	faction_code: string | null;
+	faction_name: string | null;
+	cogc_program_status: PLANET_COGCPROGRAM_STATUS_TYPE | null;
 
-	Resources: IPlanetResource[];
-	Distances: IPlanetDistance[];
-	COGCPrograms: IPlanetCOGCProgram[];
-	COGCProgramActive: PLANET_COGCPROGRAM_TYPE | null;
-	CheckDistances: IPlanetCheckDistance | null;
+	resources: IPlanetResource[];
+	cogc_programs: IPlanetCOGCProgram[];
+	active_cogc_program_type: PLANET_COGCPROGRAM_TYPE | null;
 }
 
 export interface IFIOStorageItem {
-	MaterialId: string;
-	MaterialName: string;
 	MaterialTicker: string;
-	MaterialCategory: string;
-	MaterialWeight: number;
-	MaterialVolume: number;
 	MaterialAmount: number;
-	MaterialValue: number;
-	MaterialValueCurrency?: string;
-	Type: string;
-	TotalWeight: number;
-	TotalVolume: number;
 }
 
-interface IFIOStorageBase {
-	StorageId: string;
-	AddressableId: string;
-	Name: string | null;
-	Type: string;
-	UserNameSubmitted: string;
-	Timestamp: Date;
+export interface IFIOStorageElement {
 	WeightCapacity: number;
 	VolumeCapacity: number;
-
+	WeightLoad: number;
+	VolumeLoad: number;
+	Identifier: string;
 	StorageItems: IFIOStorageItem[];
 }
 
-export interface IFIOStoragePlanet extends IFIOStorageBase {
-	PlanetId: string;
+export interface IFIOSitePlanet {
 	PlanetIdentifier: string;
-	PlanetName?: string;
-	WeightLoad: number;
-	VolumeLoad: number;
-}
-
-export interface IFIOStorageWarehouse extends IFIOStorageBase {
-	LocationNaturalId: string;
-	LocationName?: string | null;
-	WarehouseId?: string | null;
-	Units?: number | null;
-
-	NextPaymentTimestampEpochMs?: number | null;
-	FeeAmount?: number | null;
-	FeeCurrency?: string | null;
-	FeeCollectorId?: string | null;
-	FeeCollectorName?: string | null;
-	FeeCollectorCode?: string | null;
-}
-
-export interface IFIOStorageShip extends IFIOStorageBase {
-	WeightLoad: number;
-	VolumeLoad: number;
-	Registration: string;
+	PlanetName: string;
+	InvestedPermits: number;
+	MaximumPermits: number;
+	Buildings: IFIOSitePlanetBuilding[];
 }
 
 export interface IFIOStorage {
-	planets: Record<string, IFIOStoragePlanet>;
-	warehouses: Record<string, IFIOStorageWarehouse>;
-	ships: Record<string, IFIOStorageShip>;
+	storage_data: {
+		planets: Record<string, IFIOStorageElement>;
+		warehouses: Record<string, IFIOStorageElement>;
+		ships: Record<string, IFIOStorageElement & { Name: string }>;
+	};
+	sites_data: Record<string, IFIOSitePlanet>;
+	last_modified: Date;
 }
 
 export interface IFIOSitePlanetBuildingMaterial {
-	MaterialId: string;
-	MaterialName: string;
 	MaterialTicker: string;
 	MaterialAmount: number;
 }
 
 export interface IFIOSitePlanetBuilding {
-	SiteBuildingId: string;
-	BuildingId: string;
-	BuildingCreated: Date;
-	BuildingName: string;
 	BuildingTicker: string;
 	BuildingLastRepair?: Date;
 	Condition: number;
-	AgeDays?: number | null;
 	ReclaimableMaterials: IFIOSitePlanetBuildingMaterial[];
 	RepairMaterials: IFIOSitePlanetBuildingMaterial[];
-}
-
-export interface IFIOSitePlanet {
-	SiteId: string;
-	PlanetId: string;
-	PlanetIdentifier: string;
-	PlanetName: string;
-	PlanetFoundedEpochMs: number;
-	InvestedPermits: number;
-	MaximumPermits: number;
-	UserNameSubmitted: string;
-	Timestamp: Date;
-
-	Buildings: IFIOSitePlanetBuilding[];
+	AgeDays?: number;
 }
 
 export interface IFIOSiteShipRepairMaterial {
@@ -295,80 +229,57 @@ export interface IFIOSiteShip {
 	AddressLines: IFIOSiteShipAddressLine[];
 }
 
-export interface IFIOSites {
-	planets: Record<string, IFIOSitePlanet>;
-	ships: Record<string, IFIOSiteShip>;
-}
-
 export interface IPlanetSearchAdvanced {
-	Materials: string[];
-	COGC: PLANET_COGCPROGRAM_TYPE[];
-	IncludeRocky: boolean;
-	IncludeGaseous: boolean;
-	IncludeLowGravity: boolean;
-	IncludeHighGravity: boolean;
-	IncludeLowPressure: boolean;
-	IncludeHighPressure: boolean;
-	IncludeLowTemperature: boolean;
-	IncludeHighTemperature: boolean;
-	MustBeFertile: boolean;
-	MustHaveLocalMarket: boolean;
-	MustHaveChamberOfCommerce: boolean;
-	MustHaveWarehouse: boolean;
-	MustHaveAdministrationCenter: boolean;
-	MustHaveShipyard: boolean;
-	MaxDistanceCheck?: {
-		SystemId: string;
-		MaxDistance: number;
-	};
+	materials: string[];
+	cogc_programs: PLANET_COGCPROGRAM_TYPE[];
+	environment_rocky: boolean;
+	environment_gaseous: boolean;
+	environment_low_gravity: boolean;
+	environment_high_gravity: boolean;
+	environment_low_pressure: boolean;
+	environment_high_pressure: boolean;
+	environment_low_temperature: boolean;
+	environment_high_temperature: boolean;
+	must_be_fertile: boolean;
+	must_have_localmarket: boolean;
+	must_have_chamberofcommerce: boolean;
+	must_have_warehouse: boolean;
+	must_have_administrationcenter: boolean;
+	must_have_shipyard: boolean;
 }
 
 export interface IPopulationReport {
-	InfrastructureReportId: string;
-	ExplorersGraceEnabled: boolean;
-	SimulationPeriod: number;
-	NextPopulationPioneer: number;
-	NextPopulationSettler: number;
-	NextPopulationTechnician: number;
-	NextPopulationEngineer: number;
-	NextPopulationScientist: number;
-	PopulationDifferencePioneer: number;
-	PopulationDifferenceSettler: number;
-	PopulationDifferenceTechnician: number;
-	PopulationDifferenceEngineer: number;
-	PopulationDifferenceScientist: number;
-	UnemploymentRatePioneer: number;
-	UnemploymentRateSettler: number;
-	UnemploymentRateTechnician: number;
-	UnemploymentRateEngineer: number;
-	UnemploymentRateScientist: number;
-	OpenJobsPioneer: number;
-	OpenJobsSettler: number;
-	OpenJobsTechnician: number;
-	OpenJobsEngineer: number;
-	OpenJobsScientist: number;
-	TimestampMs: Date;
-	FreePioneer: number;
-	FreeSettler: number;
-	FreeTechnician: number;
-	FreeEngineer: number;
-	FreeScientist: number;
-
-	CurrentOpenJobsPioneer?: number;
-	CurrentOpenJobsSettler?: number;
-	CurrentOpenJobsTechnician?: number;
-	CurrentOpenJobsEngineer?: number;
-	CurrentOpenJobsScientist?: number;
-
-	AvailablePioneer?: number;
-	AvailableSettler?: number;
-	AvailableTechnician?: number;
-	AvailableEngineer?: number;
-	AvailableScientist?: number;
-
-	TrueHappinessPioneer?: number;
-	TrueHappinessSettler?: number;
-	TrueHappinessTechnician?: number;
-	TrueHappinessEngineer?: number;
-	TrueHappinessScientist?: number;
+	explorers_grace_enabled: boolean;
+	simulation_period: number;
+	next_population_pioneer: number;
+	next_population_settler: number;
+	next_population_technician: number;
+	next_population_engineer: number;
+	next_population_scientist: number;
+	population_difference_pioneer: number;
+	population_difference_settler: number;
+	population_difference_technician: number;
+	population_difference_engineer: number;
+	population_difference_scientist: number;
+	unemployment_rate_pioneer: number;
+	unemployment_rate_settler: number;
+	unemployment_rate_technician: number;
+	unemployment_rate_engineer: number;
+	unemployment_rate_scientist: number;
+	open_jobs_pioneer: number;
+	open_jobs_settler: number;
+	open_jobs_technician: number;
+	open_jobs_engineer: number;
+	open_jobs_scientist: number;
+	need_fulfillment_life_support: number;
+	need_fulfillment_safety: number;
+	need_fulfillment_health: number;
+	need_fulfillment_comfort: number;
+	need_fulfillment_culture: number;
+	need_fulfillment_education: number;
+	free_pioneer: number;
+	free_settler: number;
+	free_technician: number;
+	free_engineer: number;
+	free_scientist: number;
 }

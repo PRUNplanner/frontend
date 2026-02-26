@@ -50,14 +50,14 @@ export async function useGraph() {
 				sourcePosition: Position.Right,
 				data: {
 					materialTicker: node.materialTicker,
-					buildingTicker: buildingData?.Ticker ?? "N/A",
-					buildingExpertise: buildingData?.Expertise,
+					buildingTicker: buildingData?.building_ticker ?? "N/A",
+					buildingExpertise: buildingData?.expertise,
 					buildingWorkforce: {
-						Pioneers: buildingData?.Pioneers ?? 0,
-						Settlers: buildingData?.Settlers ?? 0,
-						Technicians: buildingData?.Technicians ?? 0,
-						Engineers: buildingData?.Engineers ?? 0,
-						Scientists: buildingData?.Scientists ?? 0,
+						Pioneers: buildingData?.pioneers ?? 0,
+						Settlers: buildingData?.settlers ?? 0,
+						Technicians: buildingData?.technicians ?? 0,
+						Engineers: buildingData?.engineers ?? 0,
+						Scientists: buildingData?.scientists ?? 0,
 					},
 					amount: node.amount,
 					hasInput: node.hasInput,
@@ -164,27 +164,35 @@ export async function useGraph() {
 		const expertiseAnalysis = flowNodes
 			.map((fn) => fn.data.buildingExpertise)
 			.filter((e) => e && e !== null)
-			.reduce((sum, current) => {
-				if (!current) return sum;
-				sum[current] = (sum[current] ?? 0) + 1;
-				return sum;
-			}, {} as Record<Partial<BUILDING_EXPERTISE_TYPE>, number>);
+			.reduce(
+				(sum, current) => {
+					if (!current) return sum;
+					sum[current] = (sum[current] ?? 0) + 1;
+					return sum;
+				},
+				{} as Record<Partial<BUILDING_EXPERTISE_TYPE>, number>
+			);
 
 		const workforceAnalysis = Object.entries(
 			flowNodes
 				.map((fn) => fn.data.buildingWorkforce)
-				.reduce((sum, current) => {
-					sum["Pioneers"] = (sum["Pioneers"] ?? 0) + current.Pioneers;
-					sum["Settlers"] = (sum["Settlers"] ?? 0) + current.Settlers;
-					sum["Technicians"] =
-						(sum["Technicians"] ?? 0) + current.Technicians;
-					sum["Engineers"] =
-						(sum["Engineers"] ?? 0) + current.Engineers;
-					sum["Scientists"] =
-						(sum["Scientists"] ?? 0) + current.Scientists;
+				.reduce(
+					(sum, current) => {
+						sum["Pioneers"] =
+							(sum["Pioneers"] ?? 0) + current.Pioneers;
+						sum["Settlers"] =
+							(sum["Settlers"] ?? 0) + current.Settlers;
+						sum["Technicians"] =
+							(sum["Technicians"] ?? 0) + current.Technicians;
+						sum["Engineers"] =
+							(sum["Engineers"] ?? 0) + current.Engineers;
+						sum["Scientists"] =
+							(sum["Scientists"] ?? 0) + current.Scientists;
 
-					return sum;
-				}, {} as Record<string, number>)
+						return sum;
+					},
+					{} as Record<string, number>
+				)
 		)
 			.filter(([_, value]) => value > 0)
 			.map(([key, value]) => ({ workforce: key, value }));

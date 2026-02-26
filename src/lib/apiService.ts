@@ -178,12 +178,18 @@ class ApiService {
 		} else if (isAxiosError(err)) {
 			const status = err.response?.status;
 			const body = err.response?.data;
+
 			const msg =
 				body && typeof body === "object"
 					? JSON.stringify(body)
 					: err.message;
 
-			return new Error(`HTTP ${status}: ${msg}`);
+			const newError = new Error(msg);
+
+			(newError as any).responseData = body;
+			(newError as any).status = status;
+
+			return newError;
 		}
 
 		return err instanceof Error ? err : new Error(String(err));

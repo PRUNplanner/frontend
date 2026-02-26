@@ -43,7 +43,7 @@ export function useSharing(planUuid: string) {
 	 */
 	const url: ComputedRef<string | undefined> = computed(() => {
 		if (isShared.value) {
-			return `${config.SHARE_BASE_URL}/${planningStore.shared[planUuid].shared_uuid}`;
+			return `${config.SHARE_BASE_URL}/${planningStore.shared[planUuid].uuid}`;
 		}
 		return undefined;
 	});
@@ -67,14 +67,10 @@ export function useSharing(planUuid: string) {
 	 * @returns {Promise<void>}
 	 */
 	async function deleteSharing(): Promise<void> {
-		console.log("enter, deleteSharing");
-
 		if (isShared.value) {
 			// call share deletion
-
-			console.log("delete", planningStore.shared[planUuid].shared_uuid);
 			await useQuery("DeleteSharedPlan", {
-				sharedUuid: planningStore.shared[planUuid].shared_uuid,
+				sharedUuid: planningStore.shared[planUuid].uuid,
 			}).execute();
 			await refreshStore();
 		}

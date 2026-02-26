@@ -71,14 +71,14 @@
 
 	const selectorDropdownOptions = computed(() =>
 		localCXs.value.map((c) => ({
-			label: c.name,
+			label: c.cx_name,
 			key: c.uuid,
 		}))
 	);
 
 	const cxName = computed(() => {
 		if (!localCXUuid.value) return "Exchanges";
-		return planningStore.getCX(localCXUuid.value).name;
+		return planningStore.getCX(localCXUuid.value).cx_name;
 	});
 
 	const localPlanetList: Ref<string[]> = ref([]);
@@ -95,7 +95,7 @@
 
 	function initialize(cxUuid: string): void {
 		selectedCX.value = planningStore.getCX(cxUuid);
-		selectedName.value = selectedCX.value.name;
+		selectedName.value = selectedCX.value.cx_name;
 
 		// save raw, in order to re-use on "reload" button
 		rawSelectedCX.value = planningStore.getCX(cxUuid);
@@ -160,6 +160,7 @@
 			});
 
 			await useQuery("PatchCX", {
+				cxName: selectedName.value ?? "Unnamed",
 				cxUuid: selectedCX.value.uuid,
 				data: data,
 			}).execute();
@@ -172,7 +173,7 @@
 	function reloadCXData(): void {
 		trackEvent("exchange_reload", { location: "exchanges_view" });
 		selectedCX.value = inertClone(rawSelectedCX.value);
-		selectedName.value = selectedCX.value!.name;
+		selectedName.value = selectedCX.value!.cx_name;
 	}
 
 	function toggleImportExport(): void {

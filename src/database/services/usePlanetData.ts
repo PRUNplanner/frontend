@@ -47,9 +47,9 @@ export function usePlanetData() {
 		try {
 			const planet = await getPlanet(planetNaturalId);
 
-			if (planet.PlanetName != planet.PlanetNaturalId) {
-				return `${planet.PlanetName} (${planet.PlanetNaturalId})`;
-			} else return planet.PlanetName;
+			if (planet.planet_name != planet.planet_natural_id) {
+				return `${planet.planet_name} (${planet.planet_natural_id})`;
+			} else return planet.planet_name;
 		} catch {
 			return planetNaturalId;
 		}
@@ -57,9 +57,8 @@ export function usePlanetData() {
 
 	async function loadPlanetName(planetNaturalId: string): Promise<string> {
 		if (!planetNames.value[planetNaturalId])
-			planetNames.value[planetNaturalId] = await getPlanetName(
-				planetNaturalId
-			);
+			planetNames.value[planetNaturalId] =
+				await getPlanetName(planetNaturalId);
 
 		return planetNames.value[planetNaturalId];
 	}
@@ -92,7 +91,7 @@ export function usePlanetData() {
 		const additions: IMaterialIOMinimal[] = [];
 
 		// Rocky
-		if (planet.Surface)
+		if (planet.surface)
 			additions.push({ ticker: "MCG", input: areaCost * 4, output: 0 });
 		// Gaseous
 		else
@@ -103,19 +102,19 @@ export function usePlanetData() {
 			});
 
 		const gravityType: BOUNDARY_DESCRIPTOR = boundaryDescriptor(
-			planet.Gravity,
+			planet.gravity,
 			boundaryGravityLow,
 			boundaryGravityHigh
 		);
 
 		const pressureType: BOUNDARY_DESCRIPTOR = boundaryDescriptor(
-			planet.Pressure,
+			planet.pressure,
 			boundaryPressureLow,
 			boundaryPressureHigh
 		);
 
 		const temperatureType: BOUNDARY_DESCRIPTOR = boundaryDescriptor(
-			planet.Temperature,
+			planet.temperature,
 			boundaryTemperatureLow,
 			boundaryTemperatureHigh
 		);

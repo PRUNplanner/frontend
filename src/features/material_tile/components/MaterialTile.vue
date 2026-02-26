@@ -63,31 +63,25 @@
 	});
 
 	const { getMaterial, getMaterialClass } = useMaterialData();
-	const { getMaterialExchangeOverview, getMaterialTradedVolume } =
-		await useExchangeData();
+	const { getMaterialExchangeOverview } = await useExchangeData();
 
 	const refShowDrawer: Ref<boolean> = ref(false);
 	const refExchangeOverview: Ref<IMaterialExchangeOverview | undefined> =
 		ref(undefined);
-	const refTradedVolumeLoaded: Ref<boolean> = ref(false);
 
-	const refChartValue: Ref<string> = ref("volume_max");
+	const refChartValue: Ref<string> = ref("traded");
 	const refChartValueOptions: Ref<PSelectOption[]> = ref([
 		{
 			label: "Traded Volume",
-			value: "volume_max",
-		},
-		{
-			label: "Average Price",
-			value: "price_average",
+			value: "traded",
 		},
 		{
 			label: "Daily Minimum Price",
-			value: "price_min",
+			value: "low_p",
 		},
 		{
 			label: "Daily Maximum Price",
-			value: "price_max",
+			value: "high_p",
 		},
 	]);
 
@@ -135,29 +129,6 @@
 		}
 	}
 
-	async function loadTradedVolumeData(): Promise<void> {
-		if (
-			!refTradedVolumeLoaded.value &&
-			refExchangeOverview.value &&
-			props.enablePopover
-		) {
-			try {
-				refTradedVolumeLoaded.value = true;
-				const tradedData = await getMaterialTradedVolume(props.ticker);
-
-				// Merge traded volume data into existing overview
-				if (refExchangeOverview.value) {
-					refExchangeOverview.value.Traded1Day =
-						tradedData.Traded1Day;
-					refExchangeOverview.value.Traded7Days =
-						tradedData.Traded7Days;
-				}
-			} catch (error) {
-				console.error("Failed to fetch traded volume data:", error);
-			}
-		}
-	}
-
 	const instance = getCurrentInstance();
 
 	onMounted(async () => {
@@ -197,8 +168,8 @@
 				disableDrawer && enablePopover
 					? 'hover:cursor-help'
 					: !disableDrawer
-					? 'hover:cursor-pointer'
-					: '',
+						? 'hover:cursor-pointer'
+						: '',
 			]"
 			@click="toggleDrawer">
 			<PTooltip
@@ -207,8 +178,7 @@
 				<template #trigger>
 					<div
 						class="flex justify-center items-center"
-						:class="{ 'px-2': !!amount }"
-						@mouseenter="loadTradedVolumeData">
+						:class="{ 'px-2': !!amount }">
 						<div v-if="amount" class="pr-1">
 							{{ formatNumber(amount, 2, true) }}x
 						</div>
@@ -274,7 +244,7 @@
 					<div
 						:class="categoryCssClass"
 						class="text-nowrap p-2 px-4 text-2xl text-shadow-[0_1px_1px_rgb(34,34,34)]">
-						{{ material.Ticker }}
+						{{ material.ticker }}
 					</div>
 				</div>
 				<div class="grow">
@@ -282,16 +252,16 @@
 						class="w-full grid grid-cols-[25%_auto] child:odd:font-bold">
 						<div>Category</div>
 						<div>
-							{{ capitalizeString(material.CategoryName) }}
+							{{ capitalizeString(material.category_name) }}
 						</div>
 						<div>Weight</div>
 						<div>
-							{{ formatNumber(material.Weight, 4) }}
+							{{ formatNumber(material.weight, 4) }}
 							t
 						</div>
 						<div>Volume</div>
 						<div>
-							{{ formatNumber(material.Volume, 4) }}
+							{{ formatNumber(material.volume, 4) }}
 							m³
 						</div>
 					</div>

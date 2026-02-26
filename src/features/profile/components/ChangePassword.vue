@@ -34,8 +34,8 @@
 		trackEvent("user_password_change");
 
 		await useQuery("PatchUserChangePassword", {
-			old: refCurrentPassword.value,
-			new: refNewPassword.value,
+			old_password: refCurrentPassword.value,
+			new_password: refNewPassword.value,
 		})
 			.execute()
 			.then((result: boolean) => {

@@ -72,10 +72,12 @@
 		() => {
 			// sort by output ticker ascending, map-join multiple tickers
 			return [...props.recipeOptions].sort((a, b) => {
-				const tickerA = a.Outputs.map((o) => o.Ticker)
+				const tickerA = a.outputs
+					.map((o) => o.material_ticker)
 					.sort()
 					.join("#");
-				const tickerB = b.Outputs.map((o) => o.Ticker)
+				const tickerB = b.outputs
+					.map((o) => o.material_ticker)
 					.sort()
 					.join("#");
 				return tickerA.localeCompare(tickerB);
@@ -105,7 +107,7 @@
 
 <template>
 	<n-modal
-		:key="`COGM#RECIPE#${recipeData.recipe.BuildingTicker}#${localRecipeIndex}`"
+		:key="`COGM#RECIPE#${recipeData.recipe.building_ticker}#${localRecipeIndex}`"
 		v-model:show="refShowCOGM"
 		preset="card"
 		title="Cost Of Goods Manufactured"
@@ -145,10 +147,12 @@
 			@click="refShowRecipeOptions = true">
 			<div class="flex flex-col gap-1">
 				<MaterialTile
-					v-for="material in localRecipeData.recipe.Outputs"
-					:key="`${localRecipeData.recipe.BuildingTicker}#${material.Ticker}`"
-					:ticker="material.Ticker"
-					:amount="material.Amount * localRecipeData.amount" />
+					v-for="material in localRecipeData.recipe.outputs"
+					:key="`${localRecipeData.recipe.building_ticker}#${material.material_ticker}`"
+					:ticker="material.material_ticker"
+					:amount="
+						material.material_amount * localRecipeData.amount
+					" />
 			</div>
 			<div class="text-white/50 text-xs text-end">
 				<span class="font-bold">
@@ -178,24 +182,24 @@
 								emit(
 									'update:building:recipe',
 									localRecipeIndex,
-									recipe.RecipeId
+									recipe.recipe_id
 								),
 						})
 					">
-					<XNDataTableColumn key="Input" title="Input">
+					<XNDataTableColumn key="input" title="input">
 						<template #render-cell="{ rowData }">
 							<div class="flex flex-row gap-1">
 								<span
 									v-if="
 										rowData.RecipeId ===
-										localRecipeData.recipe.RecipeId
+										localRecipeData.recipe.recipe_id
 									"
 									class="w-2 h-2 bg-prunplanner animate-pulse rounded-full my-auto mr-1" />
 								<MaterialTile
-									v-for="material in rowData.Inputs"
-									:key="`${rowData.BuildingTicker}#INPUT#${material.Ticker}`"
-									:ticker="material.Ticker"
-									:amount="material.Amount" />
+									v-for="material in rowData.inputs"
+									:key="`${rowData.building_ticker}#INPUT#${material.material_ticker}`"
+									:ticker="material.material_ticker"
+									:amount="material.material_amount" />
 							</div>
 						</template>
 					</XNDataTableColumn>
@@ -204,17 +208,17 @@
 						title="Time"
 						sorter="default">
 						<template #render-cell="{ rowData }">
-							{{ humanizeTimeMs(rowData.TimeMs) }}
+							{{ humanizeTimeMs(rowData.time_ms) }}
 						</template>
 					</XNDataTableColumn>
-					<XNDataTableColumn key="Output" title="Output">
+					<XNDataTableColumn key="output" title="output">
 						<template #render-cell="{ rowData }">
 							<div class="flex flex-row gap-1">
 								<MaterialTile
-									v-for="material in rowData.Outputs"
-									:key="`${rowData.BuildingTicker}#OUTPUT#${material.Ticker}`"
-									:ticker="material.Ticker"
-									:amount="material.Amount" />
+									v-for="material in rowData.outputs"
+									:key="`${rowData.building_ticker}#OUTPUT#${material.material_ticker}`"
+									:ticker="material.material_ticker"
+									:amount="material.material_amount" />
 							</div>
 						</template>
 					</XNDataTableColumn>

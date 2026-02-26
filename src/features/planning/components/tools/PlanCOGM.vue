@@ -92,7 +92,6 @@
 				await useQuery("PatchCX", {
 					cxUuid: props.cxUuid,
 					data: {
-						name: selectedCX.value.name,
 						cx_empire: selectedCX.value.cx_data.cx_empire,
 						ticker_empire: selectedCX.value.cx_data.ticker_empire,
 						cx_planets: selectedCX.value.cx_data.cx_planets,

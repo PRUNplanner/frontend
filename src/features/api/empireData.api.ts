@@ -41,7 +41,7 @@ import { IPlanEmpireJunction } from "@/features/manage/manage.types";
  */
 export async function callGetEmpireList(): Promise<IPlanEmpireElement[]> {
 	return apiService.get<PlanEmpireElementPayloadType>(
-		`/empire/`,
+		`planning/empire/`,
 		PlanEmpireElementPayload
 	);
 }
@@ -56,8 +56,8 @@ export async function callGetEmpireList(): Promise<IPlanEmpireElement[]> {
  * @returns {Promise<IPlan[]>} List of plans in specified empire
  */
 export async function callGetEmpirePlans(empireUuid: string): Promise<IPlan[]> {
-	return apiService.get<PlanEmpirePlanListType>(
-		`/baseplanner/empire/${empireUuid}`,
+	return await apiService.get<PlanEmpirePlanListType>(
+		`planning/empire/${empireUuid}/plans`,
 		PlanEmpirePlanListPayload
 	);
 }
@@ -76,8 +76,8 @@ export async function callPatchEmpire(
 	empireUuid: string,
 	data: IEmpirePatchPayload
 ): Promise<IPlanEmpire> {
-	return apiService.patch<EmpirePatchPayloadType, PlanEmpireSchemaType>(
-		`/empire/${empireUuid}`,
+	return apiService.put<EmpirePatchPayloadType, PlanEmpireSchemaType>(
+		`planning/empire/${empireUuid}/`,
 		data,
 		EmpirePatchPayload,
 		PlanEmpireSchema
@@ -96,8 +96,8 @@ export async function callPatchEmpire(
 export async function callCreateEmpire(
 	data: IEmpireCreatePayload
 ): Promise<IPlanEmpire> {
-	return apiService.put<EmpireCreatePayloadType, PlanEmpireSchemaType>(
-		"/empire/",
+	return apiService.post<EmpireCreatePayloadType, PlanEmpireSchemaType>(
+		"/planning/empire/",
 		data,
 		EmpireCreatePayload,
 		PlanEmpireSchema
@@ -114,17 +114,17 @@ export async function callCreateEmpire(
  * @returns {Promise<boolean>} Deletion Status
  */
 export async function callDeleteEmpire(empireUuid: string): Promise<boolean> {
-	return apiService.delete(`/empire/${empireUuid}`);
+	return apiService.delete(`/planning/empire/${empireUuid}/`);
 }
 
 export async function callPatchEmpirePlanJunctions(
 	junctions: IPlanEmpireJunction[]
 ): Promise<IPlanEmpireElement[]> {
-	return apiService.patch<
+	return apiService.post<
 		EmpireJunctionPayloadType,
 		PlanEmpireElementPayloadType
 	>(
-		"/empire/junctions",
+		"/planning/empire/junctions/",
 		junctions,
 		EmpireJunctionPayloadSchema,
 		PlanEmpireElementPayload

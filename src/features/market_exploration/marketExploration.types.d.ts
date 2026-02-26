@@ -1,23 +1,15 @@
 export interface IExploration {
-	Datetime: string;
-	ExchangeCode: string;
-	Ticker: string;
-	price_first: number;
-	price_last: number;
-	price_average: number;
-	price_min: number;
-	price_max: number;
-	volume_max: number;
-	demand_average: number;
-	supply_average: number;
-	delta_supply_demand: number;
+	ticker: string;
+	exchange_code: string;
+	date_epoch: number;
+	open_p: number;
+	close_p: number;
+	high_p: number;
+	low_p: number;
+	volume: number;
+	traded: number;
 
 	[key: string]: string | number;
-}
-
-export interface IExplorationRequestPayload {
-	start: string;
-	end: string;
 }
 
 export type IMaterialExplorationRecord = Record<string, IExploration[]>;

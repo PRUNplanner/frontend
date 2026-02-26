@@ -64,56 +64,46 @@
 
 	const searchPayload: ComputedRef<IPlanetSearchAdvanced> = computed(() => {
 		return {
-			Materials: inputMaterials.value,
-			COGC: inputCOGC.value as PLANET_COGCPROGRAM_TYPE[],
-			IncludeRocky: inputIncludeRocky.value,
-			IncludeGaseous: inputIncludeGaseous.value,
-			IncludeLowGravity: inputIncludeLowGravity.value,
-			IncludeHighGravity: inputIncludeHighGravity.value,
-			IncludeLowPressure: inputIncludeLowPressure.value,
-			IncludeHighPressure: inputIncludeHighPressure.value,
-			IncludeLowTemperature: inputIncludeLowTemperature.value,
-			IncludeHighTemperature: inputIncludeHighTemperature.value,
-			MustBeFertile:
+			materials: inputMaterials.value,
+			cogc_programs: inputCOGC.value as PLANET_COGCPROGRAM_TYPE[],
+			environment_rocky: inputIncludeRocky.value,
+			environment_gaseous: inputIncludeGaseous.value,
+			environment_low_gravity: inputIncludeLowGravity.value,
+			environment_high_gravity: inputIncludeHighGravity.value,
+			environment_low_pressure: inputIncludeLowPressure.value,
+			environment_high_pressure: inputIncludeHighPressure.value,
+			environment_low_temperature: inputIncludeLowTemperature.value,
+			environment_high_temperature: inputIncludeHighTemperature.value,
+			must_be_fertile:
 				inputInfrastructure.value &&
 				inputInfrastructure.value.includes("Fertile")
 					? true
 					: false,
-			MustHaveLocalMarket:
+			must_have_localmarket:
 				inputInfrastructure.value &&
 				inputInfrastructure.value.includes("LM")
 					? true
 					: false,
-			MustHaveChamberOfCommerce:
+			must_have_chamberofcommerce:
 				inputInfrastructure.value &&
 				inputInfrastructure.value.includes("COGC")
 					? true
 					: false,
-			MustHaveWarehouse:
+			must_have_warehouse:
 				inputInfrastructure.value &&
 				inputInfrastructure.value.includes("WAR")
 					? true
 					: false,
-			MustHaveAdministrationCenter:
+			must_have_administrationcenter:
 				inputInfrastructure.value &&
 				inputInfrastructure.value.includes("ADM")
 					? true
 					: false,
-			MustHaveShipyard:
+			must_have_shipyard:
 				inputInfrastructure.value &&
 				inputInfrastructure.value.includes("SHY")
 					? true
 					: false,
-			// // NOTE: Removed to use frontend pathfinding
-			// MaxDistanceCheck:
-			// 	inputSystem.value !== undefined &&
-			// 	inputSystem.value !== null &&
-			// 	inputSystemDistance.value !== undefined
-			// 		? {
-			// 				SystemId: inputSystem.value,
-			// 				MaxDistance: inputSystemDistance.value,
-			// 		  }
-			// 		: undefined,
 		};
 	});
 

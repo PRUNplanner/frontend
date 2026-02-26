@@ -40,27 +40,33 @@ export async function useBuildingCalculation() {
 				}
 
 				// handle inputs
-				ar.recipe.Inputs.forEach((arInput) => {
+				ar.recipe.inputs.forEach((arInput) => {
 					buildingMaterialIOInput = combineMaterialIOMinimal([
 						buildingMaterialIOInput,
 						[
 							{
-								ticker: arInput.Ticker,
-								input: arInput.Amount * ar.amount * batchRuns,
+								ticker: arInput.material_ticker,
+								input:
+									arInput.material_amount *
+									ar.amount *
+									batchRuns,
 								output: 0,
 							},
 						],
 					]);
 				});
 				// handle outputs
-				ar.recipe.Outputs.forEach((arOutput) => {
+				ar.recipe.outputs.forEach((arOutput) => {
 					buildingMaterialIOOutput = combineMaterialIOMinimal([
 						buildingMaterialIOOutput,
 						[
 							{
-								ticker: arOutput.Ticker,
+								ticker: arOutput.material_ticker,
 								input: 0,
-								output: arOutput.Amount * ar.amount * batchRuns,
+								output:
+									arOutput.material_amount *
+									ar.amount *
+									batchRuns,
 							},
 						],
 					]);

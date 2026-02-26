@@ -313,7 +313,7 @@ export const useQueryStore = defineStore(
 		async function addCacheState<
 			K extends keyof IQueryRepository,
 			TParams,
-			TData
+			TData,
 		>(
 			key: JSONValue,
 			definitionName: K,
@@ -359,7 +359,7 @@ export const useQueryStore = defineStore(
 		 * @author jplacht
 		 */
 		function checkEntryStatusAndRefresh<
-			K extends keyof IQueryRepository
+			K extends keyof IQueryRepository,
 		>() {
 			// inactivity check, skip if true
 			if (userActivity.shouldDelay()) return;

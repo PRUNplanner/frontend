@@ -97,8 +97,8 @@
 			resourceType === "MINERAL"
 				? "EXT"
 				: resourceType === "GASEOUS"
-				? "COL"
-				: "RIG";
+					? "COL"
+					: "RIG";
 
 		emit(
 			"create:building:recipe",
@@ -119,34 +119,34 @@
 			<div class="flex flex-wrap gap-1 child:my-auto">
 				<PTooltip
 					v-for="resource in planetResources"
-					:key="`PLANET#RESOURCE#${resource.MaterialTicker}`">
+					:key="`PLANET#RESOURCE#${resource.material_ticker}`">
 					<template #trigger>
 						<div
 							class="hover:cursor-pointer"
 							@click="
 								emitCreateBuildingWithRecipe(
-									resource.ResourceType,
-									resource.MaterialTicker
+									resource.resource_type,
+									resource.material_ticker
 								)
 							">
 							<MaterialTile
-								:key="resource.MaterialTicker"
-								:ticker="resource.MaterialTicker"
+								:key="resource.material_ticker"
+								:ticker="resource.material_ticker"
 								:amount="
 									parseFloat(
-										formatNumber(resource.DailyExtraction)
+										formatNumber(resource.daily_extraction)
 									)
 								"
 								disable-drawer
 								:enable-popover="false" />
 						</div>
 					</template>
-					{{ resource.ResourceType }} ({{
-						resource.ResourceType === "MINERAL"
+					{{ resource.resource_type }} ({{
+						resource.resource_type === "MINERAL"
 							? "EXT"
-							: resource.ResourceType === "GASEOUS"
-							? "COL"
-							: "RIG"
+							: resource.resource_type === "GASEOUS"
+								? "COL"
+								: "RIG"
 					}})
 				</PTooltip>
 			</div>
@@ -174,7 +174,10 @@
 				@update:value="
 					(value) => {
 						emit('create:building', value as string);
-						trackEvent('plan_create_building', {planetNaturalId: props.planetId, buildingTicker: value as string})
+						trackEvent('plan_create_building', {
+							planetNaturalId: props.planetId,
+							buildingTicker: value as string,
+						});
 					}
 				" />
 		</div>
@@ -189,49 +192,64 @@
 		:cx-uuid="cxUuid"
 		:planet-id="planetId"
 		@update:building:amount="
-			(index: number, value: number) =>
-				{
-					emit('update:building:amount', index, value);
-					trackEvent('plan_update_building', {planetNaturalId: props.planetId, buildingTicker: building.name, amount: value})
-				}
+			(index: number, value: number) => {
+				emit('update:building:amount', index, value);
+				trackEvent('plan_update_building', {
+					planetNaturalId: props.planetId,
+					buildingTicker: building.name,
+					amount: value,
+				});
+			}
 		"
 		@delete:building="(index: number) => emit('delete:building', index)"
 		@update:building:recipe:amount="
-			(buildingIndex: number, recipeIndex: number, value: number) =>
-				{
-					emit(
-						'update:building:recipe:amount',
-						buildingIndex,
-						recipeIndex,
-						value
-					);
-					trackEvent('plan_update_building_recipe_amount', {planetNaturalId: props.planetId, buildingTicker: building.name, recipeIndex: recipeIndex, amount: value})
+			(buildingIndex: number, recipeIndex: number, value: number) => {
+				emit(
+					'update:building:recipe:amount',
+					buildingIndex,
+					recipeIndex,
+					value
+				);
+				trackEvent('plan_update_building_recipe_amount', {
+					planetNaturalId: props.planetId,
+					buildingTicker: building.name,
+					recipeIndex: recipeIndex,
+					amount: value,
+				});
 			}
 		"
 		@delete:building:recipe="
-			(buildingIndex: number, recipeIndex: number) =>
-				{
-					emit('delete:building:recipe', buildingIndex, recipeIndex);
-					trackEvent('plan_update_building_delete_recipe', {planetNaturalId: props.planetId, buildingTicker: building.name, recipeIndex: recipeIndex})
-				}
+			(buildingIndex: number, recipeIndex: number) => {
+				emit('delete:building:recipe', buildingIndex, recipeIndex);
+				trackEvent('plan_update_building_delete_recipe', {
+					planetNaturalId: props.planetId,
+					buildingTicker: building.name,
+					recipeIndex: recipeIndex,
+				});
+			}
 		"
 		@add:building:recipe="
-			(buildingIndex: number) =>
-				{
-					emit('add:building:recipe', buildingIndex);
-					trackEvent('plan_update_building_add_recipe', {planetNaturalId: props.planetId, buildingTicker: building.name})
-				}
+			(buildingIndex: number) => {
+				emit('add:building:recipe', buildingIndex);
+				trackEvent('plan_update_building_add_recipe', {
+					planetNaturalId: props.planetId,
+					buildingTicker: building.name,
+				});
+			}
 		"
 		@update:building:recipe="
-			(buildingIndex: number, recipeIndex: number, recipeId: string) =>
-				{
-					emit(
-						'update:building:recipe',
-						buildingIndex,
-						recipeIndex,
-						recipeId
-					);
-					trackEvent('plan_update_building_change_recipe', {planetNaturalId: props.planetId, buildingTicker: building.name, recipeId})
-				}
+			(buildingIndex: number, recipeIndex: number, recipeId: string) => {
+				emit(
+					'update:building:recipe',
+					buildingIndex,
+					recipeIndex,
+					recipeId
+				);
+				trackEvent('plan_update_building_change_recipe', {
+					planetNaturalId: props.planetId,
+					buildingTicker: building.name,
+					recipeId,
+				});
+			}
 		" />
 </template>

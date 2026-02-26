@@ -71,10 +71,10 @@
 	let constructedMap: Map<string, number> | null = null;
 	if (useUserStore().hasFIO) {
 		constructedMap = new Map<string, number>();
-		const fioSites = await useQuery("GetFIOSites").execute();
-		const constructedArray = Object.values(fioSites.planets).find(
-			(p) => p.PlanetIdentifier === props.planetNaturalId
-		)?.Buildings;
+		const fioSites = await useQuery("GetFIOStorage").execute();
+		const constructedArray =
+			fioSites.sites_data[props.planetNaturalId].Buildings;
+
 		if (constructedArray) {
 			for (const building of constructedArray) {
 				const count = constructedMap.get(building.BuildingTicker) ?? 0;
@@ -229,8 +229,8 @@
 
 		for (const m of data) {
 			const materialInfo = materialsMap.value[m.ticker];
-			weight += materialInfo.Weight * m.value;
-			volume += materialInfo.Volume * m.value;
+			weight += materialInfo.weight * m.value;
+			volume += materialInfo.volume * m.value;
 
 			const unitPrice = await getPrice(m.ticker, "BUY");
 			price += unitPrice * m.value;

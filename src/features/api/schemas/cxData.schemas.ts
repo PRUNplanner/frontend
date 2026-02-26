@@ -4,8 +4,8 @@ import { z } from "zod";
 import { ICXEmpireJunction } from "@/features/manage/manage.types";
 
 const CXEmpireJunctionSchema: z.ZodType<ICXEmpireJunction> = z.object({
-	cx_uuid: z.string().uuid(),
-	empires: z.array(z.object({ empire_uuid: z.string().uuid() })),
+	cx_uuid: z.uuid(),
+	empires: z.array(z.object({ empire_uuid: z.uuid() })),
 });
 
 export const CXEmpireJunctionSchemaPayload = z.array(CXEmpireJunctionSchema);

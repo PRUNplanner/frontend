@@ -35,7 +35,7 @@ export function getDifferenceMinutes(
  * @param {string} value Date as string, e.g. 2025-05-01
  * @returns {number} Unix timestamp
  */
-export function timestampFromString(value: string): number {
+export function timestampFromString(value: string | number): number {
 	return dayjs(value).valueOf();
 }
 

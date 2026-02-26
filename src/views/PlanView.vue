@@ -43,7 +43,6 @@
 		createNewPlan,
 		saveExistingPlan,
 		reloadExistingPlan,
-		patchMaterialIO,
 		cloneSharedPlan,
 	} = usePlan();
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -120,6 +119,10 @@
 	const refEmpireUuid: Ref<string | undefined> = ref(undefined);
 	const refCXUuid: Ref<string | undefined> = ref(undefined);
 
+	const planetData: IPlanet = await getPlanet(
+		props.planData.planet_natural_id
+	);
+
 	const calculation = await usePlanCalculation(
 		refPlanData,
 		refEmpireUuid,
@@ -155,8 +158,6 @@
 		handleChangeBuildingRecipe,
 		handleChangePlanName,
 	} = calculation;
-
-	const planetData: IPlanet = await getPlanet(props.planData.planet_id);
 
 	const refMaterialIOShowBasked: Ref<boolean> = ref(false);
 	const refMaterialIOSplitted: Ref<boolean> = ref(false);
@@ -248,38 +249,28 @@
 			case "visitation-frequency":
 				return defineAsyncComponent(
 					() =>
-						import(
-							"@/features/planning/components/tools/PlanVisitationFrequency.vue"
-						)
+						import("@/features/planning/components/tools/PlanVisitationFrequency.vue")
 				);
 			case "repair-analysis":
 				return defineAsyncComponent(
 					() =>
-						import(
-							"@/features/planning/components/tools/PlanRepairAnalysis.vue"
-						)
+						import("@/features/planning/components/tools/PlanRepairAnalysis.vue")
 				);
 
 			case "popr":
 				return defineAsyncComponent(
 					() =>
-						import(
-							"@/features/planning/components/tools/PlanPOPR.vue"
-						)
+						import("@/features/planning/components/tools/PlanPOPR.vue")
 				);
 			case "supply-cart":
 				return defineAsyncComponent(
 					() =>
-						import(
-							"@/features/planning/components/tools/PlanSupplyCart.vue"
-						)
+						import("@/features/planning/components/tools/PlanSupplyCart.vue")
 				);
 			case "construction-cart":
 				return defineAsyncComponent(
 					() =>
-						import(
-							"@/features/planning/components/tools/PlanConstructionCart.vue"
-						)
+						import("@/features/planning/components/tools/PlanConstructionCart.vue")
 				);
 			default:
 				return null;
@@ -310,14 +301,14 @@
 							};
 						}),
 						cxUuid: refCXUuid.value,
-						planetNaturalId: planetData.PlanetNaturalId,
+						planetNaturalId: planetData.planet_natural_id,
 					},
 					listeners: {},
 				};
 			case "popr":
 				return {
 					props: {
-						planetNaturalId: planetData.PlanetNaturalId,
+						planetNaturalId: planetData.planet_natural_id,
 						workforceData: result.value.workforce,
 					},
 					listeners: {},
@@ -325,7 +316,7 @@
 			case "supply-cart":
 				return {
 					props: {
-						planetNaturalId: planetData.PlanetNaturalId,
+						planetNaturalId: planetData.planet_natural_id,
 						materialIO: result.value.materialio,
 						workforceMaterialIO: result.value.workforceMaterialIO,
 						productionMaterialIO: result.value.productionMaterialIO,
@@ -335,7 +326,7 @@
 			case "construction-cart":
 				return {
 					props: {
-						planetNaturalId: planetData.PlanetNaturalId,
+						planetNaturalId: planetData.planet_natural_id,
 						cxUuid: refCXUuid.value,
 						constructionData: result.value.constructionMaterials,
 						productionBuildingData:
@@ -362,17 +353,11 @@
 		if (existing.value) {
 			await saveExistingPlan(refPlanData.value.uuid!, backendData.value);
 
-			await patchMaterialIO(
-				refPlanData.value.uuid!,
-				planetData.PlanetNaturalId,
-				result.value.materialio
-			);
-
 			// reset modified state
 			handleResetModified();
 
 			trackEvent("plan_save", {
-				planetNaturalId: planetData.PlanetNaturalId,
+				planetNaturalId: planetData.planet_natural_id,
 			});
 
 			refIsSaving.value = false;
@@ -382,13 +367,6 @@
 					if (newUuid) {
 						refIsSaving.value = false;
 						refPlanData.value.uuid = newUuid;
-
-						await patchMaterialIO(
-							refPlanData.value.uuid!,
-							planetData.PlanetNaturalId,
-							result.value.materialio
-						);
-
 						// Persist the auto-optimize-habs preference
 						const prefs = usePlanPreferences(
 							refPlanData.value.uuid!
@@ -399,11 +377,11 @@
 						// reset modified state
 						handleResetModified();
 						trackEvent("plan_create", {
-							planetNaturalId: planetData.PlanetNaturalId,
+							planetNaturalId: planetData.planet_natural_id,
 						});
 
 						router.push(
-							`/plan/${planetData.PlanetNaturalId}/${newUuid}`
+							`/plan/${planetData.planet_natural_id}/${newUuid}`
 						);
 					}
 				}
@@ -420,30 +398,27 @@
 		// Create new plan data with the new name and selected empire
 		const saveAsData: IPlanCreateData = {
 			...backendData.value,
-			name: refSaveAsName.value.trim(),
+			plan_name: refSaveAsName.value.trim(),
 			empire_uuid: refSaveAsEmpireUuid.value,
 		};
 
 		const newUuid = await createNewPlan(saveAsData);
 
 		if (newUuid) {
-			await patchMaterialIO(
-				newUuid,
-				planetData.PlanetNaturalId,
-				result.value.materialio
-			);
-
 			// Persist the auto-optimize-habs preference
 			const prefs = usePlanPreferences(newUuid);
 			prefs.autoOptimizeHabs.value = refAutoOptimizeHabs.value;
 
 			trackEvent("plan_save_as", {
-				planetNaturalId: planetData.PlanetNaturalId,
+				planetNaturalId: planetData.planet_natural_id,
 			});
 
 			// Close modal and open new plan in a new tab
 			refShowSaveAsModal.value = false;
-			window.open(`/plan/${planetData.PlanetNaturalId}/${newUuid}`, "_blank");
+			window.open(
+				`/plan/${planetData.planet_natural_id}/${newUuid}`,
+				"_blank"
+			);
 			return;
 		}
 
@@ -472,7 +447,7 @@
 		);
 
 		trackEvent("plan_reload", {
-			planetNaturalId: planetData.PlanetNaturalId,
+			planetNaturalId: planetData.planet_natural_id,
 		});
 		refIsReloading.value = false;
 	}
@@ -485,7 +460,7 @@
 
 		sharedWasCloned.value = await cloneSharedPlan(props.sharedPlanUuid);
 		trackEvent("plan_shared_cloned", {
-			planetNaturalId: planetData.PlanetNaturalId,
+			planetNaturalId: planetData.planet_natural_id,
 			sharedUuid: props.sharedPlanUuid,
 		});
 	}
@@ -496,7 +471,7 @@
 		title: computed(() =>
 			planName.value
 				? `${planName.value} | PRUNplanner`
-				: `${props.planData.planet_id} | PRUNplanner`
+				: `${props.planData.planet_natural_id} | PRUNplanner`
 		),
 	});
 
@@ -504,7 +479,7 @@
 	onBeforeRouteLeave(() => {
 		if (modified.value && !props.sharedPlanUuid) {
 			trackEvent("plan_leave_changed", {
-				planetNaturalId: planetData.PlanetNaturalId,
+				planetNaturalId: planetData.planet_natural_id,
 			});
 
 			const answer = confirm(
@@ -528,7 +503,7 @@
 	const saveAsEmpireOptions: ComputedRef<PSelectOption[]> = computed(() => {
 		if (!refEmpireList.value) return [];
 		return refEmpireList.value.map((e) => ({
-			label: e.name,
+			label: e.empire_name,
 			value: e.uuid,
 		}));
 	});
@@ -588,11 +563,11 @@
 				</h1>
 				<span class="text-white/60">
 					{{
-						planetData.PlanetName != planetData.PlanetNaturalId
-							? planetData.PlanetName + " - "
+						planetData.planet_name != planetData.planet_natural_id
+							? planetData.planet_name + " - "
 							: ""
 					}}
-					{{ planetData.PlanetNaturalId }}
+					{{ planetData.planet_natural_id }}
 				</span>
 			</div>
 			<!-- Status Bar (sticky) -->
@@ -755,7 +730,8 @@
 									@update:active-empire="
 										(empireUuid: string) => {
 											refEmpireUuid = empireUuid;
-											refCXUuid = findEmpireCXUuid(empireUuid);
+											refCXUuid =
+												findEmpireCXUuid(empireUuid);
 										}
 									"
 									@update:plan-name="handleChangePlanName" />
@@ -763,7 +739,7 @@
 									:disabled="disabled"
 									:area-data="result.area"
 									:planet-natural-id="
-										planetData.PlanetNaturalId
+										planetData.planet_natural_id
 									"
 									@update:permits="handleUpdatePermits" />
 								<PlanBonuses
@@ -771,7 +747,7 @@
 									:corphq="result.corphq"
 									:cogc="result.cogc"
 									:planet-natural-id="
-										planetData.PlanetNaturalId
+										planetData.planet_natural_id
 									"
 									@update:corphq="handleUpdateCorpHQ"
 									@update:cogc="handleUpdateCOGC" />
@@ -788,7 +764,7 @@
 									:infrastructure-data="result.infrastructure"
 									:auto-optimize-habs="refAutoOptimizeHabs"
 									:planet-natural-id="
-										planetData.PlanetNaturalId
+										planetData.planet_natural_id
 									"
 									@update:infrastructure="
 										handleUpdateInfrastructure
@@ -796,11 +772,17 @@
 									@update:auto-optimize-habs="
 										(v: boolean, goal: HabSolverGoal) => {
 											refAutoOptimizeHabs = v;
-											trackEvent('plan_tool_optimize_habitation_active', { active: v });
+											trackEvent(
+												'plan_tool_optimize_habitation_active',
+												{ active: v }
+											);
 											applyOptimizeHabs(goal, false);
 										}
 									"
-									@optimize-habs="(goal: HabSolverGoal) => applyOptimizeHabs(goal, true)" />
+									@optimize-habs="
+										(goal: HabSolverGoal) =>
+											applyOptimizeHabs(goal, true)
+									" />
 							</div>
 						</div>
 						<div>
@@ -813,7 +795,7 @@
 									:disabled="disabled"
 									:expert-data="result.experts"
 									:planet-natural-id="
-										planetData.PlanetNaturalId
+										planetData.planet_natural_id
 									"
 									@update:expert="handleUpdateExpert" />
 							</div>
@@ -847,7 +829,9 @@
 							<PlanWorkforce
 								:disabled="disabled"
 								:workforce-data="result.workforce"
-								:planet-natural-id="planetData.PlanetNaturalId"
+								:planet-natural-id="
+									planetData.planet_natural_id
+								"
 								@update:lux="handleUpdateWorkforceLux" />
 						</div>
 						<div>
@@ -868,10 +852,10 @@
 						<PlanProduction
 							:disabled="disabled"
 							:production-data="result.production"
-							:planet-resources="planetData.Resources"
+							:planet-resources="planetData.resources"
 							:cogc="result.cogc"
 							:cx-uuid="refCXUuid"
-							:planet-id="planetData.PlanetNaturalId"
+							:planet-id="planetData.planet_natural_id"
 							@update:building:amount="handleUpdateBuildingAmount"
 							@delete:building="handleDeleteBuilding"
 							@create:building="handleCreateBuilding"
@@ -980,9 +964,7 @@
 		</PForm>
 		<template #action>
 			<div class="flex justify-end gap-3">
-				<PButton
-					type="secondary"
-					@click="refShowSaveAsModal = false">
+				<PButton type="secondary" @click="refShowSaveAsModal = false">
 					Cancel
 				</PButton>
 				<PButton

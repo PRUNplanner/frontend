@@ -60,8 +60,8 @@
 		() => ({
 			username: inputUsername.value ?? "",
 			password: inputPassword.value ?? "",
-			planet: inputPlanetName.value ?? "",
-			randomplanet: activeSecurityOption.value ?? "",
+			planet_id: activeSecurityOption.value ?? "",
+			planet_input: inputPlanetName.value ?? "",
 			...(inputEmail.value ? { email: inputEmail.value } : {}),
 		})
 	);
@@ -79,12 +79,12 @@
 			).execute();
 			registrationUsername.value = data.username;
 			registrationSuccess.value = true;
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
-			// error message is string
-			const match = err.message.match(/{.*}$/);
-			if (match) {
-				hasErrorMessage.value = JSON.parse(match[0]).detail;
+			if (err.validationFields) {
+				hasErrorMessage.value = err.validationFields;
+			} else {
+				hasErrorMessage.value =
+					"Unknown error. Please try again later.";
 			}
 			hasError.value = true;
 			randomSecurityOption();

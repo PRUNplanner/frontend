@@ -7,8 +7,6 @@ import {
 	BuildingPayloadType,
 	ExchangePayloadSchema,
 	ExchangePayloadType,
-	FIOSitesSchema,
-	FIOSitesSchemaPayloadType,
 	FIOStoragePayloadType,
 	FIOStorageSchema,
 	MaterialPayloadSchema,
@@ -35,20 +33,14 @@ import {
 	IBuilding,
 	IPlanet,
 	IFIOStorage,
-	IFIOSites,
 	IPlanetSearchAdvanced,
 	IPopulationReport,
 } from "@/features/api/gameData.types";
-import {
-	IExploration,
-	IExplorationRequestPayload,
-} from "@/features/market_exploration/marketExploration.types";
+import { IExploration } from "@/features/market_exploration/marketExploration.types";
 import {
 	ExplorationPayloadSchema,
 	ExplorationPayloadType,
-	ExplorationRequestPayloadSchema,
-	ExplorationRequestPayloadType,
-} from "../market_exploration/marketExploration.schemas";
+} from "@/features/market_exploration/marketExploration.schemas";
 
 /**
  * Calls the /data/materials API endpoint
@@ -60,7 +52,7 @@ import {
  */
 export async function callDataMaterials(): Promise<IMaterial[]> {
 	return apiService.get<MaterialPayloadType>(
-		"/data/materials",
+		"/data/materials/",
 		MaterialPayloadSchema
 	);
 }
@@ -75,7 +67,7 @@ export async function callDataMaterials(): Promise<IMaterial[]> {
  */
 export async function callDataExchanges(): Promise<IExchange[]> {
 	return apiService.get<ExchangePayloadType>(
-		"/data/exchanges",
+		"/data/exchanges/",
 		ExchangePayloadSchema
 	);
 }
@@ -90,7 +82,7 @@ export async function callDataExchanges(): Promise<IExchange[]> {
  */
 export async function callDataRecipes(): Promise<IRecipe[]> {
 	return apiService.get<RecipePayloadType>(
-		"/data/recipes",
+		"/data/recipes/",
 		RecipePayloadSchema
 	);
 }
@@ -105,7 +97,7 @@ export async function callDataRecipes(): Promise<IRecipe[]> {
  */
 export async function callDataBuildings(): Promise<IBuilding[]> {
 	return apiService.get<BuildingPayloadType>(
-		"/data/buildings",
+		"/data/buildings/",
 		BuildingPayloadSchema
 	);
 }
@@ -146,7 +138,7 @@ export async function callDataMultiplePlanets(
 		PlanetMultipleRequestType,
 		PlanetMultiplePayloadType
 	>(
-		"/data/planet/multiple",
+		"/data/planets/multiple",
 		planetNaturalIds,
 		PlanetMultipleRequestPayload,
 		PlanetMultiplePayload
@@ -164,23 +156,8 @@ export async function callDataMultiplePlanets(
  */
 export async function callDataFIOStorage(): Promise<IFIOStorage> {
 	return apiService.get<FIOStoragePayloadType>(
-		"/data/fio_storage",
+		"/data/storage/",
 		FIOStorageSchema
-	);
-}
-
-/**
- * Calls /data/fio_sites endpoint to fetch users FIO Sites data
- * @author jplacht
- *
- * @export
- * @async
- * @returns {Promise<IFIOSites>}
- */
-export async function callDataFIOSites(): Promise<IFIOSites> {
-	return apiService.get<FIOSitesSchemaPayloadType>(
-		"/data/fio_sites",
-		FIOSitesSchema
 	);
 }
 
@@ -218,7 +195,7 @@ export async function callDataPlanetSearch(
 		PlanetSearchAdvancedPayloadType,
 		PlanetMultiplePayloadType
 	>(
-		"/data/planet/search",
+		"/data/planets/search/",
 		searchData,
 		PlanetSearchAdvancedPayloadSchema,
 		PlanetMultiplePayload
@@ -238,16 +215,10 @@ export async function callDataPlanetSearch(
  */
 export async function callExplorationData(
 	exchange: string,
-	ticker: string,
-	payload: IExplorationRequestPayload
+	ticker: string
 ): Promise<IExploration[]> {
-	return apiService.post<
-		ExplorationRequestPayloadType,
-		ExplorationPayloadType
-	>(
-		`/data/market/${exchange}/${ticker}`,
-		payload,
-		ExplorationRequestPayloadSchema,
+	return apiService.get<ExplorationPayloadType>(
+		`/data/cxpc/${ticker}/${exchange}`,
 		ExplorationPayloadSchema
 	);
 }
@@ -265,7 +236,7 @@ export async function callPlanetLastPOPR(
 	planetNaturalId: string
 ): Promise<IPopulationReport> {
 	return apiService.get<PopulationReportPayloadType>(
-		`/data/planet/popi/${planetNaturalId}`,
+		`/data/planet/${planetNaturalId}/popr`,
 		PopulationReportPayloadSchema
 	);
 }
