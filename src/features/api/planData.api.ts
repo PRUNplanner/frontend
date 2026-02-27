@@ -147,5 +147,5 @@ export async function callClonePlan(
  * @returns {Promise<boolean>} Deletion Status
  */
 export async function callDeletePlan(planUuid: string): Promise<boolean> {
-	return apiService.delete(`/planning/plan/${planUuid}/`);
+	return apiService.delete(`/planning/plan/${planUuid}`);
 }
