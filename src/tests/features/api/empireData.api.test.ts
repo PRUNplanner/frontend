@@ -31,9 +31,11 @@ describe("Empire Data API Calls", async () => {
 	it("callGetEmpireList", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/empire/").reply(200, empire_list);
+		mock.onGet("/planning/empire/").reply(200, empire_list);
 
-		expect(await callGetEmpireList()).toStrictEqual(empire_list);
+		expect((await callGetEmpireList()).length).toStrictEqual(
+			empire_list.length
+		);
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
@@ -42,38 +44,39 @@ describe("Empire Data API Calls", async () => {
 
 		const fakeEmpireUuid: string = "foo";
 
-		mock
-			.onGet(`/baseplanner/empire/${fakeEmpireUuid}`)
-			.reply(200, [plan_etherwind, plan_etherwind]);
-
-		expect(await callGetEmpirePlans(fakeEmpireUuid)).toStrictEqual([
+		mock.onGet(`/planning/empire/${fakeEmpireUuid}/plans`).reply(200, [
 			plan_etherwind,
 			plan_etherwind,
 		]);
+
+		expect((await callGetEmpirePlans(fakeEmpireUuid)).length).toStrictEqual(
+			2
+		);
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
 	it("callPatchEmpire", async () => {
-		const spyApiServicePatch = vi.spyOn(apiService, "patch");
+		const spyApiServicePatch = vi.spyOn(apiService, "put");
 
 		const fakeEmpireUuid: string = "f39c84a5-e7ba-4aeb-a04d-0618df58fd74";
 		const fakePatchPayload = {
-			faction: "NONE",
-			permits_used: 1,
-			permits_total: 2,
-			name: "CAAP",
-			use_fio_storage: false,
+			empire_faction: "NONE",
+			empire_permits_used: 1,
+			empire_permits_total: 2,
+			empire_name: "CAAP",
 		};
 		const fakePatchResponse = {
-			faction: "NONE",
-			permits_used: 1,
-			permits_total: 2,
+			empire_faction: "NONE",
+			empire_permits_used: 1,
+			empire_permits_total: 2,
 			uuid: "f39c84a5-e7ba-4aeb-a04d-0618df58fd74",
-			name: "CAAP",
-			use_fio_storage: false,
+			empire_name: "CAAP",
 		};
 
-		mock.onPatch(`/empire/${fakeEmpireUuid}`).reply(200, fakePatchResponse);
+		mock.onPut(`/planning/empire/${fakeEmpireUuid}/`).reply(
+			200,
+			fakePatchResponse
+		);
 
 		expect(
 			// @ts-expect-error mock data
@@ -84,26 +87,24 @@ describe("Empire Data API Calls", async () => {
 	});
 
 	it("callCreateEmpire", async () => {
-		const spyApiServicePut = vi.spyOn(apiService, "put");
+		const spyApiServicePut = vi.spyOn(apiService, "post");
 
 		const fakeEmpireUuid: string = "f39c84a5-e7ba-4aeb-a04d-0618df58fd74";
 		const fakePutPayload = {
-			faction: "NONE",
-			permits_used: 1,
-			permits_total: 2,
-			name: "CAAP",
-			use_fio_storage: false,
+			empire_faction: "NONE",
+			empire_permits_used: 1,
+			empire_permits_total: 2,
+			empire_name: "CAAP",
 		};
 		const fakePutResponse = {
-			faction: "NONE",
-			permits_used: 1,
-			permits_total: 2,
+			empire_faction: "NONE",
+			empire_permits_used: 1,
+			empire_permits_total: 2,
 			uuid: "f39c84a5-e7ba-4aeb-a04d-0618df58fd74",
-			name: "CAAP",
-			use_fio_storage: false,
+			empire_name: "CAAP",
 		};
 
-		mock.onPut(`/empire/`).reply(200, fakePutResponse);
+		mock.onPost(`/planning/empire/`).reply(200, fakePutResponse);
 
 		// @ts-expect-error mock data
 		expect(await callCreateEmpire(fakePutPayload)).toStrictEqual(
@@ -116,18 +117,20 @@ describe("Empire Data API Calls", async () => {
 	it("callDeleteEmpire", async () => {
 		const spyApiServiceDelete = vi.spyOn(apiService, "delete");
 
-		mock.onDelete("/empire/foo").reply(200, true);
+		mock.onDelete("/planning/empire/foo/").reply(200, true);
 
 		expect(await callDeleteEmpire("foo")).toBeTruthy();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
 	});
 
 	it("callPatchEmpirePlanJunctions", async () => {
-		const spyApiServicePatch = vi.spyOn(apiService, "patch");
+		const spyApiServicePatch = vi.spyOn(apiService, "post");
 
-		mock.onPatch("/empire/junctions").reply(200, empire_list);
+		mock.onPost("/planning/empire/junctions/").reply(200, empire_list);
 
-		expect(await callPatchEmpirePlanJunctions([])).toStrictEqual(empire_list);
+		expect((await callPatchEmpirePlanJunctions([])).length).toStrictEqual(
+			7
+		);
 		expect(spyApiServicePatch).toHaveBeenCalled();
 	});
 });

@@ -1,1005 +1,414 @@
 [
 	{
-		"PlanetId": "60c64441d754b04b30f7ab531cc4aae7",
-		"PlanetNaturalId": "KW-020c",
-		"PlanetName": "Milliways",
-		"SystemId": "57b0be081b45ebbe72f76eff065d951b",
-		"HasLocalMarket": true,
-		"HasChamberOfCommerce": true,
-		"HasWarehouse": true,
-		"HasAdministrationCenter": true,
-		"HasShipyard": false,
-		"Pressure": 0.25226354598999023,
-		"Surface": true,
-		"Temperature": 18.875593185424805,
-		"Fertility": -1.0,
-		"Gravity": 1.1190704107284546,
-		"FactionCode": "CI",
-		"FactionName": "Castillo-Ito Mercantile",
-		"GovernorUserName": null,
-		"COGCProgramStatus": "ACTIVE",
-		"Resources": [
+		"planet_id": "1d3203f9257e99e9cf621a40a1a734af",
+		"planet_natural_id": "KW-020a",
+		"planet_name": "KW-020a",
+		"system_id": "57b0be081b45ebbe72f76eff065d951b",
+		"has_localmarket": false,
+		"has_chamberofcommerce": true,
+		"has_warehouse": true,
+		"has_administrationcenter": true,
+		"has_shipyard": false,
+		"pressure": 9.459412574768066,
+		"surface": true,
+		"gravity": 0.9717201590538025,
+		"temperature": 482.412109375,
+		"fertility": -1.0,
+		"faction_code": "CI",
+		"faction_name": "Castillo-Ito Mercantile",
+		"cogc_program_status": "ACTIVE",
+		"resources": [
 			{
-				"MaterialId": "eeff5ee913d34354be84177847fbfe48",
-				"ResourceType": "MINERAL",
-				"Factor": 0.025807511061429977,
-				"DailyExtraction": 1.8065257743000984,
-				"MaterialTicker": "SIO",
-				"ExtractionMax": 53.825785517692566
-			},
-			{
-				"MaterialId": "6e16dbf050b98d9c4fc9c615b3367a0f",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.34338557720184326,
-				"DailyExtraction": 20.603134632110596,
-				"MaterialTicker": "O",
-				"ExtractionMax": 43.26020121574402
+				"resource_type": "GASEOUS",
+				"factor": 0.030884668231010437,
+				"daily_extraction": 1.8530800938606262,
+				"material_ticker": "H",
+				"max_daily_extraction": 45.372583866119385
 			}
 		],
-		"COGCPrograms": [
+		"cogc_programs": [
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1746434719829,
-				"EndEpochMs": 1747039519829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1771569547594,
+				"end_epochms": 1772174347594
 			},
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1741596319829,
-				"EndEpochMs": 1742201119829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1770964747594,
+				"end_epochms": 1771569547594
 			},
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1742201119829,
-				"EndEpochMs": 1742805919829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1770359947594,
+				"end_epochms": 1770964747594
 			},
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1742805919829,
-				"EndEpochMs": 1743410719829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1769755147594,
+				"end_epochms": 1770359947594
 			},
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1743410719829,
-				"EndEpochMs": 1744015519829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1769150347594,
+				"end_epochms": 1769755147594
 			},
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1744015519829,
-				"EndEpochMs": 1744620319829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1768545547594,
+				"end_epochms": 1769150347594
 			},
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1744620319829,
-				"EndEpochMs": 1745225119829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1767940747594,
+				"end_epochms": 1768545547594
 			},
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1745225119829,
-				"EndEpochMs": 1745829919829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1767335947594,
+				"end_epochms": 1767940747594
 			},
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1745829919829,
-				"EndEpochMs": 1746434719829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1766731147594,
+				"end_epochms": 1767335947594
 			},
 			{
-				"ProgramType": "ADVERTISING_FOOD_INDUSTRIES",
-				"StartEpochMs": 1740991519829,
-				"EndEpochMs": 1741596319829
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1766126347594,
+				"end_epochms": 1766731147594
 			}
 		],
-		"CheckDistances": null,
-		"Distances": [
-			{
-				"name": "Moria Station",
-				"distance": 7
-			},
-			{
-				"name": "Antares Station",
-				"distance": 8
-			},
-			{
-				"name": "Benten Station",
-				"distance": 1
-			},
-			{
-				"name": "Hortus Station",
-				"distance": 12
-			}
-		],
-		"COGCProgramActive": "ADVERTISING_FOOD_INDUSTRIES"
+		"active_cogc_program_type": null
 	},
 	{
-		"PlanetId": "a09f3bf153025929b2fb266e4119931a",
-		"PlanetNaturalId": "UV-351a",
-		"PlanetName": "Katoa",
-		"SystemId": "92029ff27c1abe932bd2c61ee4c492c7",
-		"HasLocalMarket": true,
-		"HasChamberOfCommerce": true,
-		"HasWarehouse": true,
-		"HasAdministrationCenter": true,
-		"HasShipyard": false,
-		"Pressure": 1.04933762550354,
-		"Surface": true,
-		"Temperature": 11.877347946166992,
-		"Fertility": -0.1600000262260437,
-		"Gravity": 0.9244412779808044,
-		"FactionCode": "CI",
-		"FactionName": "Castillo-Ito Mercantile",
-		"GovernorUserName": null,
-		"COGCProgramStatus": "ACTIVE",
-		"Resources": [
+		"planet_id": "00fb156286e75845197d99bd02633b4a",
+		"planet_natural_id": "KW-020e",
+		"planet_name": "KW-020e",
+		"system_id": "57b0be081b45ebbe72f76eff065d951b",
+		"has_localmarket": false,
+		"has_chamberofcommerce": true,
+		"has_warehouse": true,
+		"has_administrationcenter": true,
+		"has_shipyard": false,
+		"pressure": 3.7101869583129883,
+		"surface": true,
+		"gravity": 1.4751417636871338,
+		"temperature": -105.10681915283203,
+		"fertility": -1.0,
+		"faction_code": "CI",
+		"faction_name": "Castillo-Ito Mercantile",
+		"cogc_program_status": "ACTIVE",
+		"resources": [
 			{
-				"MaterialId": "ec8dbb1d3f51d89c61b6f58fdd64a7f0",
-				"ResourceType": "LIQUID",
-				"Factor": 0.20999999344348907,
-				"DailyExtraction": 14.699999541044235,
-				"MaterialTicker": "H2O",
-				"ExtractionMax": 62.82984256744385
+				"resource_type": "MINERAL",
+				"factor": 0.2730250060558319,
+				"daily_extraction": 19.111750423908234,
+				"material_ticker": "GAL",
+				"max_daily_extraction": 33.55893313884735
 			},
 			{
-				"MaterialId": "6e16dbf050b98d9c4fc9c615b3367a0f",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.2800000011920929,
-				"DailyExtraction": 16.800000071525574,
-				"MaterialTicker": "O",
-				"ExtractionMax": 43.26020121574402
-			},
-			{
-				"MaterialId": "bcf4a2029e461cf76d29de8c66ec2ff9",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.10999999940395355,
-				"DailyExtraction": 6.599999964237213,
-				"MaterialTicker": "AMM",
-				"ExtractionMax": 35.93450903892517
-			},
-			{
-				"MaterialId": "c5236c5b79b9e75ddbce16887aeda338",
-				"ResourceType": "MINERAL",
-				"Factor": 0.23000000417232513,
-				"DailyExtraction": 16.10000029206276,
-				"MaterialTicker": "GAL",
-				"ExtractionMax": 33.55893313884735
+				"resource_type": "MINERAL",
+				"factor": 0.45402267575263977,
+				"daily_extraction": 31.781587302684784,
+				"material_ticker": "SIO",
+				"max_daily_extraction": 53.825785517692566
 			}
 		],
-		"COGCPrograms": [
+		"cogc_programs": [
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1746378130311,
-				"EndEpochMs": 1746982930311
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1768395665425,
+				"end_epochms": 1769000465425
 			},
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1740934930311,
-				"EndEpochMs": 1741539730311
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1767790865425,
+				"end_epochms": 1768395665425
 			},
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1741539730311,
-				"EndEpochMs": 1742144530311
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1767186065425,
+				"end_epochms": 1767790865425
 			},
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1742144530311,
-				"EndEpochMs": 1742749330311
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1766581265425,
+				"end_epochms": 1767186065425
 			},
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1742749330311,
-				"EndEpochMs": 1743354130311
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1765976465425,
+				"end_epochms": 1766581265425
 			},
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1743354130311,
-				"EndEpochMs": 1743958930311
+				"program_type": null,
+				"start_epochms": 1765371665425,
+				"end_epochms": 1765976465425
 			},
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1743958930311,
-				"EndEpochMs": 1744563730311
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1764766865425,
+				"end_epochms": 1765371665425
 			},
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1744563730311,
-				"EndEpochMs": 1745168530311
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1764162065425,
+				"end_epochms": 1764766865425
 			},
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1745168530311,
-				"EndEpochMs": 1745773330311
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1763557265425,
+				"end_epochms": 1764162065425
 			},
 			{
-				"ProgramType": "ADVERTISING_MANUFACTURING",
-				"StartEpochMs": 1745773330311,
-				"EndEpochMs": 1746378130311
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1762952465425,
+				"end_epochms": 1763557265425
 			}
 		],
-		"CheckDistances": null,
-		"Distances": [
-			{
-				"name": "Moria Station",
-				"distance": 6
-			},
-			{
-				"name": "Antares Station",
-				"distance": 9
-			},
-			{
-				"name": "Benten Station",
-				"distance": 0
-			},
-			{
-				"name": "Hortus Station",
-				"distance": 12
-			}
-		],
-		"COGCProgramActive": "ADVERTISING_MANUFACTURING"
+		"active_cogc_program_type": null
 	},
 	{
-		"PlanetId": "677e0fbbc63cef258bb963b5bc3d47e2",
-		"PlanetNaturalId": "JS-299a",
-		"PlanetName": "Nemesis",
-		"SystemId": "214d402b04104bcac3e725118242c7e1",
-		"HasLocalMarket": true,
-		"HasChamberOfCommerce": true,
-		"HasWarehouse": true,
-		"HasAdministrationCenter": true,
-		"HasShipyard": true,
-		"Pressure": 1.2245652675628662,
-		"Surface": true,
-		"Temperature": 33.79474639892578,
-		"Fertility": 0.22716569900512695,
-		"Gravity": 1.0345962047576904,
-		"FactionCode": "CI",
-		"FactionName": "Castillo-Ito Mercantile",
-		"GovernorUserName": null,
-		"COGCProgramStatus": "ACTIVE",
-		"Resources": [
+		"planet_id": "60c64441d754b04b30f7ab531cc4aae7",
+		"planet_natural_id": "KW-020c",
+		"planet_name": "Milliways",
+		"system_id": "57b0be081b45ebbe72f76eff065d951b",
+		"has_localmarket": true,
+		"has_chamberofcommerce": true,
+		"has_warehouse": true,
+		"has_administrationcenter": true,
+		"has_shipyard": true,
+		"pressure": 0.25226354598999023,
+		"surface": true,
+		"gravity": 1.1190704107284546,
+		"temperature": 18.875593185424805,
+		"fertility": -1.0,
+		"faction_code": "CI",
+		"faction_name": "Castillo-Ito Mercantile",
+		"cogc_program_status": "ACTIVE",
+		"resources": [
 			{
-				"MaterialId": "ec8dbb1d3f51d89c61b6f58fdd64a7f0",
-				"ResourceType": "LIQUID",
-				"Factor": 0.4312616288661957,
-				"DailyExtraction": 30.188314020633698,
-				"MaterialTicker": "H2O",
-				"ExtractionMax": 62.82984256744385
+				"resource_type": "MINERAL",
+				"factor": 0.025807511061429977,
+				"daily_extraction": 1.8065257743000984,
+				"material_ticker": "SIO",
+				"max_daily_extraction": 53.825785517692566
 			},
 			{
-				"MaterialId": "a4a8a25d01f80586f7bad3488fa11f36",
-				"ResourceType": "MINERAL",
-				"Factor": 0.25838223099708557,
-				"DailyExtraction": 18.08675616979599,
-				"MaterialTicker": "SCR",
-				"ExtractionMax": 24.403139054775238
-			},
-			{
-				"MaterialId": "6e16dbf050b98d9c4fc9c615b3367a0f",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.3106825649738312,
-				"DailyExtraction": 18.64095389842987,
-				"MaterialTicker": "O",
-				"ExtractionMax": 43.26020121574402
+				"resource_type": "GASEOUS",
+				"factor": 0.34338557720184326,
+				"daily_extraction": 20.603134632110596,
+				"material_ticker": "O",
+				"max_daily_extraction": 43.26020121574402
 			}
 		],
-		"COGCPrograms": [
+		"cogc_programs": [
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1745888704620,
-				"EndEpochMs": 1746493504620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1772441119829,
+				"end_epochms": 1773045919829
 			},
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1741655104620,
-				"EndEpochMs": 1742259904620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1771836319829,
+				"end_epochms": 1772441119829
 			},
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1745283904620,
-				"EndEpochMs": 1745888704620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1771231519829,
+				"end_epochms": 1771836319829
 			},
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1740445504620,
-				"EndEpochMs": 1741050304620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1770626719829,
+				"end_epochms": 1771231519829
 			},
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1741050304620,
-				"EndEpochMs": 1741655104620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1770021919829,
+				"end_epochms": 1770626719829
 			},
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1744679104620,
-				"EndEpochMs": 1745283904620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1769417119829,
+				"end_epochms": 1770021919829
 			},
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1744074304620,
-				"EndEpochMs": 1744679104620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1768812319829,
+				"end_epochms": 1769417119829
 			},
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1742259904620,
-				"EndEpochMs": 1742864704620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1768207519829,
+				"end_epochms": 1768812319829
 			},
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1742864704620,
-				"EndEpochMs": 1743469504620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1767602719829,
+				"end_epochms": 1768207519829
 			},
 			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1743469504620,
-				"EndEpochMs": 1744074304620
+				"program_type": "ADVERTISING_FOOD_INDUSTRIES",
+				"start_epochms": 1766997919829,
+				"end_epochms": 1767602719829
 			}
 		],
-		"CheckDistances": null,
-		"Distances": [
-			{
-				"name": "Moria Station",
-				"distance": 8
-			},
-			{
-				"name": "Antares Station",
-				"distance": 11
-			},
-			{
-				"name": "Benten Station",
-				"distance": 4
-			},
-			{
-				"name": "Hortus Station",
-				"distance": 14
-			}
-		],
-		"COGCProgramActive": "ADVERTISING_AGRICULTURE"
+		"active_cogc_program_type": "ADVERTISING_FOOD_INDUSTRIES"
 	},
 	{
-		"PlanetId": "192e3d69605d3516e86ebdb78e529c8e",
-		"PlanetNaturalId": "UV-351d",
-		"PlanetName": "Biogenesis",
-		"SystemId": "92029ff27c1abe932bd2c61ee4c492c7",
-		"HasLocalMarket": true,
-		"HasChamberOfCommerce": true,
-		"HasWarehouse": true,
-		"HasAdministrationCenter": true,
-		"HasShipyard": false,
-		"Pressure": 0.8327193856239319,
-		"Surface": false,
-		"Temperature": -158.329833984375,
-		"Fertility": -1.0,
-		"Gravity": 1.9664082527160645,
-		"FactionCode": "CI",
-		"FactionName": "Castillo-Ito Mercantile",
-		"GovernorUserName": null,
-		"COGCProgramStatus": "ACTIVE",
-		"Resources": [
+		"planet_id": "faaf454b4d16e16ae7e7b67f8915ed71",
+		"planet_natural_id": "KW-020b",
+		"planet_name": "KW-020b",
+		"system_id": "57b0be081b45ebbe72f76eff065d951b",
+		"has_localmarket": false,
+		"has_chamberofcommerce": false,
+		"has_warehouse": false,
+		"has_administrationcenter": false,
+		"has_shipyard": false,
+		"pressure": 26.596614837646484,
+		"surface": true,
+		"gravity": 1.030073881149292,
+		"temperature": 149.7264404296875,
+		"fertility": -1.0,
+		"faction_code": "CI",
+		"faction_name": "Castillo-Ito Mercantile",
+		"cogc_program_status": null,
+		"resources": [
 			{
-				"MaterialId": "bcf4a2029e461cf76d29de8c66ec2ff9",
-				"ResourceType": "MINERAL",
-				"Factor": 0.4204149544239044,
-				"DailyExtraction": 29.42904680967331,
-				"MaterialTicker": "AMM",
-				"ExtractionMax": 41.92359387874603
+				"resource_type": "GASEOUS",
+				"factor": 0.17061376571655273,
+				"daily_extraction": 10.236825942993164,
+				"material_ticker": "HE",
+				"max_daily_extraction": 24.212270379066467
 			},
 			{
-				"MaterialId": "5d59ddddb1ce9a26eb81b78b8378b3ac",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.47363778948783875,
-				"DailyExtraction": 28.418267369270325,
-				"MaterialTicker": "N",
-				"ExtractionMax": 44.583009481430054
+				"resource_type": "GASEOUS",
+				"factor": 0.03166082873940468,
+				"daily_extraction": 1.8996497243642807,
+				"material_ticker": "H",
+				"max_daily_extraction": 45.372583866119385
 			}
 		],
-		"COGCPrograms": [
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1746243048035,
-				"EndEpochMs": 1746847848035
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1741404648035,
-				"EndEpochMs": 1742009448035
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1742009448035,
-				"EndEpochMs": 1742614248035
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1742614248035,
-				"EndEpochMs": 1743219048035
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1743219048035,
-				"EndEpochMs": 1743823848035
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1743823848035,
-				"EndEpochMs": 1744428648035
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1744428648035,
-				"EndEpochMs": 1745033448035
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1745033448035,
-				"EndEpochMs": 1745638248035
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1745638248035,
-				"EndEpochMs": 1746243048035
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1740799848035,
-				"EndEpochMs": 1741404648035
-			}
-		],
-		"CheckDistances": null,
-		"Distances": [
-			{
-				"name": "Moria Station",
-				"distance": 6
-			},
-			{
-				"name": "Antares Station",
-				"distance": 9
-			},
-			{
-				"name": "Benten Station",
-				"distance": 0
-			},
-			{
-				"name": "Hortus Station",
-				"distance": 12
-			}
-		],
-		"COGCProgramActive": "ADVERTISING_RESOURCE_EXTRACTION"
+		"cogc_programs": [],
+		"active_cogc_program_type": null
 	},
 	{
-		"PlanetId": "959e92330c3825b7203ea4bbf9f4aa3f",
-		"PlanetNaturalId": "UV-796b",
-		"PlanetName": "Proxion",
-		"SystemId": "92e0be4581e6e4683b732c1d6484b00c",
-		"HasLocalMarket": true,
-		"HasChamberOfCommerce": true,
-		"HasWarehouse": true,
-		"HasAdministrationCenter": true,
-		"HasShipyard": true,
-		"Pressure": 1.185520052909851,
-		"Surface": true,
-		"Temperature": 20.188152313232422,
-		"Fertility": 0.2200000286102295,
-		"Gravity": 1.0445626974105835,
-		"FactionCode": "CI",
-		"FactionName": "Castillo-Ito Mercantile",
-		"GovernorUserName": null,
-		"COGCProgramStatus": "ACTIVE",
-		"Resources": [
+		"planet_id": "1d23f0668bc5ed4b7c3141838794b160",
+		"planet_natural_id": "KW-020f",
+		"planet_name": "KW-020f",
+		"system_id": "57b0be081b45ebbe72f76eff065d951b",
+		"has_localmarket": false,
+		"has_chamberofcommerce": false,
+		"has_warehouse": false,
+		"has_administrationcenter": false,
+		"has_shipyard": false,
+		"pressure": 1.1610658168792725,
+		"surface": false,
+		"gravity": 1.97946035861969,
+		"temperature": -189.4668731689453,
+		"fertility": -1.0,
+		"faction_code": "CI",
+		"faction_name": "Castillo-Ito Mercantile",
+		"cogc_program_status": null,
+		"resources": [
 			{
-				"MaterialId": "6e16dbf050b98d9c4fc9c615b3367a0f",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.20999999344348907,
-				"DailyExtraction": 12.599999606609344,
-				"MaterialTicker": "O",
-				"ExtractionMax": 43.26020121574402
-			},
-			{
-				"MaterialId": "ec8dbb1d3f51d89c61b6f58fdd64a7f0",
-				"ResourceType": "LIQUID",
-				"Factor": 0.11999999731779099,
-				"DailyExtraction": 8.399999812245369,
-				"MaterialTicker": "H2O",
-				"ExtractionMax": 62.82984256744385
-			},
-			{
-				"MaterialId": "1f9a0293d9ba9bf519f71432e695edeb",
-				"ResourceType": "MINERAL",
-				"Factor": 0.3100000023841858,
-				"DailyExtraction": 21.700000166893005,
-				"MaterialTicker": "LST",
-				"ExtractionMax": 55.24479329586029
+				"resource_type": "GASEOUS",
+				"factor": 0.27797001600265503,
+				"daily_extraction": 16.6782009601593,
+				"material_ticker": "H",
+				"max_daily_extraction": 45.372583866119385
 			}
 		],
-		"COGCPrograms": [
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1746017046630,
-				"EndEpochMs": 1746621846630
-			},
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1745412246630,
-				"EndEpochMs": 1746017046630
-			},
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1744807446630,
-				"EndEpochMs": 1745412246630
-			},
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1744202646630,
-				"EndEpochMs": 1744807446630
-			},
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1743597846630,
-				"EndEpochMs": 1744202646630
-			},
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1742993046630,
-				"EndEpochMs": 1743597846630
-			},
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1740573846630,
-				"EndEpochMs": 1741178646630
-			},
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1742388246630,
-				"EndEpochMs": 1742993046630
-			},
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1741178646630,
-				"EndEpochMs": 1741783446630
-			},
-			{
-				"ProgramType": "ADVERTISING_AGRICULTURE",
-				"StartEpochMs": 1741783446630,
-				"EndEpochMs": 1742388246630
-			}
-		],
-		"CheckDistances": null,
-		"Distances": [
-			{
-				"name": "Moria Station",
-				"distance": 6
-			},
-			{
-				"name": "Antares Station",
-				"distance": 10
-			},
-			{
-				"name": "Benten Station",
-				"distance": 1
-			},
-			{
-				"name": "Hortus Station",
-				"distance": 12
-			}
-		],
-		"COGCProgramActive": "ADVERTISING_AGRICULTURE"
+		"cogc_programs": [],
+		"active_cogc_program_type": null
 	},
 	{
-		"PlanetId": "1e39248e468e9a6bb12938ba97b58bcf",
-		"PlanetNaturalId": "JS-952c",
-		"PlanetName": "Gibson",
-		"SystemId": "9e0f4a18381e14dcf7f525c027b62314",
-		"HasLocalMarket": true,
-		"HasChamberOfCommerce": true,
-		"HasWarehouse": true,
-		"HasAdministrationCenter": true,
-		"HasShipyard": false,
-		"Pressure": 0.9542138576507568,
-		"Surface": true,
-		"Temperature": 33.03887939453125,
-		"Fertility": -0.24000000953674316,
-		"Gravity": 0.7705102562904358,
-		"FactionCode": "CI",
-		"FactionName": "Castillo-Ito Mercantile",
-		"GovernorUserName": null,
-		"COGCProgramStatus": "ACTIVE",
-		"Resources": [
+		"planet_id": "6aef54ed22783a2941de08b58111dcfa",
+		"planet_natural_id": "KW-020d",
+		"planet_name": "Kakrafoon Kappa",
+		"system_id": "57b0be081b45ebbe72f76eff065d951b",
+		"has_localmarket": true,
+		"has_chamberofcommerce": true,
+		"has_warehouse": true,
+		"has_administrationcenter": true,
+		"has_shipyard": false,
+		"pressure": 119.65926361083984,
+		"surface": true,
+		"gravity": 1.3310432434082031,
+		"temperature": -10.305907249450684,
+		"fertility": -1.0,
+		"faction_code": "CI",
+		"faction_name": "Castillo-Ito Mercantile",
+		"cogc_program_status": "ACTIVE",
+		"resources": [
 			{
-				"MaterialId": "ec8dbb1d3f51d89c61b6f58fdd64a7f0",
-				"ResourceType": "LIQUID",
-				"Factor": 0.1899999976158142,
-				"DailyExtraction": 13.299999833106995,
-				"MaterialTicker": "H2O",
-				"ExtractionMax": 62.82984256744385
+				"resource_type": "MINERAL",
+				"factor": 0.017867377027869225,
+				"daily_extraction": 1.2507163919508457,
+				"material_ticker": "BOR",
+				"max_daily_extraction": 17.156646847724915
 			},
 			{
-				"MaterialId": "6e16dbf050b98d9c4fc9c615b3367a0f",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.1599999964237213,
-				"DailyExtraction": 9.599999785423279,
-				"MaterialTicker": "O",
-				"ExtractionMax": 43.26020121574402
-			},
-			{
-				"MaterialId": "b9640b0d66e7d0ca7e4d3132711c97fc",
-				"ResourceType": "MINERAL",
-				"Factor": 0.18000000715255737,
-				"DailyExtraction": 12.600000500679016,
-				"MaterialTicker": "FEO",
-				"ExtractionMax": 52.42888689041138
-			},
-			{
-				"MaterialId": "c04de28c3e717f236d6ed177b89d9523",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.07000000029802322,
-				"DailyExtraction": 4.200000017881393,
-				"MaterialTicker": "H",
-				"ExtractionMax": 45.372583866119385
+				"resource_type": "GASEOUS",
+				"factor": 0.01227115374058485,
+				"daily_extraction": 0.736269224435091,
+				"material_ticker": "H",
+				"max_daily_extraction": 45.372583866119385
 			}
 		],
-		"COGCPrograms": [
+		"cogc_programs": [
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1745929252640,
-				"EndEpochMs": 1746534052640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1772042308814,
+				"end_epochms": 1772647108814
 			},
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1740486052640,
-				"EndEpochMs": 1741090852640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1770227908814,
+				"end_epochms": 1770832708814
 			},
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1741090852640,
-				"EndEpochMs": 1741695652640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1769623108814,
+				"end_epochms": 1770227908814
 			},
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1741695652640,
-				"EndEpochMs": 1742300452640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1769018308814,
+				"end_epochms": 1769623108814
 			},
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1742300452640,
-				"EndEpochMs": 1742905252640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1768413508814,
+				"end_epochms": 1769018308814
 			},
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1742905252640,
-				"EndEpochMs": 1743510052640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1767808708814,
+				"end_epochms": 1768413508814
 			},
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1743510052640,
-				"EndEpochMs": 1744114852640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1767203908814,
+				"end_epochms": 1767808708814
 			},
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1744114852640,
-				"EndEpochMs": 1744719652640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1766599108814,
+				"end_epochms": 1767203908814
 			},
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1744719652640,
-				"EndEpochMs": 1745324452640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1771437508814,
+				"end_epochms": 1772042308814
 			},
 			{
-				"ProgramType": "ADVERTISING_CONSTRUCTION",
-				"StartEpochMs": 1745324452640,
-				"EndEpochMs": 1745929252640
+				"program_type": "ADVERTISING_AGRICULTURE",
+				"start_epochms": 1770832708814,
+				"end_epochms": 1771437508814
 			}
 		],
-		"CheckDistances": null,
-		"Distances": [
-			{
-				"name": "Moria Station",
-				"distance": 6
-			},
-			{
-				"name": "Antares Station",
-				"distance": 9
-			},
-			{
-				"name": "Benten Station",
-				"distance": 2
-			},
-			{
-				"name": "Hortus Station",
-				"distance": 12
-			}
-		],
-		"COGCProgramActive": "ADVERTISING_CONSTRUCTION"
-	},
-	{
-		"PlanetId": "8403b6809cda4c6adf1362a5c2801ad0",
-		"PlanetNaturalId": "KW-688c",
-		"PlanetName": "Etherwind",
-		"SystemId": "239e36f2a61041e0952d9c9741c195c9",
-		"HasLocalMarket": true,
-		"HasChamberOfCommerce": true,
-		"HasWarehouse": true,
-		"HasAdministrationCenter": true,
-		"HasShipyard": true,
-		"Pressure": 0.3981054127216339,
-		"Surface": true,
-		"Temperature": 31.400123596191406,
-		"Fertility": -0.699999988079071,
-		"Gravity": 0.5614709854125977,
-		"FactionCode": null,
-		"FactionName": null,
-		"GovernorUserName": null,
-		"COGCProgramStatus": "ACTIVE",
-		"Resources": [
-			{
-				"MaterialId": "ec8dbb1d3f51d89c61b6f58fdd64a7f0",
-				"ResourceType": "LIQUID",
-				"Factor": 0.6000000238418579,
-				"DailyExtraction": 42.000001668930054,
-				"MaterialTicker": "H2O",
-				"ExtractionMax": 62.82984256744385
-			},
-			{
-				"MaterialId": "eeff5ee913d34354be84177847fbfe48",
-				"ResourceType": "MINERAL",
-				"Factor": 0.30000001192092896,
-				"DailyExtraction": 21.000000834465027,
-				"MaterialTicker": "SIO",
-				"ExtractionMax": 53.825785517692566
-			},
-			{
-				"MaterialId": "6e16dbf050b98d9c4fc9c615b3367a0f",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.44999998807907104,
-				"DailyExtraction": 26.999999284744263,
-				"MaterialTicker": "O",
-				"ExtractionMax": 43.26020121574402
-			}
-		],
-		"COGCPrograms": [
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1745931600904,
-				"EndEpochMs": 1746536400904
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1745326800904,
-				"EndEpochMs": 1745931600904
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1744722000904,
-				"EndEpochMs": 1745326800904
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1744117200904,
-				"EndEpochMs": 1744722000904
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1743512400904,
-				"EndEpochMs": 1744117200904
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1742907600904,
-				"EndEpochMs": 1743512400904
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1742302800904,
-				"EndEpochMs": 1742907600904
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1740488400904,
-				"EndEpochMs": 1741093200904
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1741698000904,
-				"EndEpochMs": 1742302800904
-			},
-			{
-				"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-				"StartEpochMs": 1741093200904,
-				"EndEpochMs": 1741698000904
-			}
-		],
-		"CheckDistances": null,
-		"Distances": [
-			{
-				"name": "Moria Station",
-				"distance": 6
-			},
-			{
-				"name": "Antares Station",
-				"distance": 7
-			},
-			{
-				"name": "Benten Station",
-				"distance": 4
-			},
-			{
-				"name": "Hortus Station",
-				"distance": 11
-			}
-		],
-		"COGCProgramActive": "ADVERTISING_RESOURCE_EXTRACTION"
-	},
-	{
-		"PlanetId": "562f35329d00ddcb9fb9bc791517848c",
-		"PlanetNaturalId": "UV-072c",
-		"PlanetName": "Asbestos Lead Asbestos",
-		"SystemId": "582cd0502d397ca3fbabe9e88e60b804",
-		"HasLocalMarket": true,
-		"HasChamberOfCommerce": true,
-		"HasWarehouse": true,
-		"HasAdministrationCenter": true,
-		"HasShipyard": false,
-		"Pressure": 6.718203067779541,
-		"Surface": true,
-		"Temperature": -59.99913024902344,
-		"Fertility": -1.0,
-		"Gravity": 0.7287209630012512,
-		"FactionCode": "CI",
-		"FactionName": "Castillo-Ito Mercantile",
-		"GovernorUserName": null,
-		"COGCProgramStatus": "ACTIVE",
-		"Resources": [
-			{
-				"MaterialId": "c5236c5b79b9e75ddbce16887aeda338",
-				"ResourceType": "MINERAL",
-				"Factor": 0.2309224009513855,
-				"DailyExtraction": 16.164568066596985,
-				"MaterialTicker": "GAL",
-				"ExtractionMax": 33.55893313884735
-			},
-			{
-				"MaterialId": "4d2a6c0cf6eb404cda3b35820bcbe453",
-				"ResourceType": "MINERAL",
-				"Factor": 0.3424048125743866,
-				"DailyExtraction": 23.96833688020706,
-				"MaterialTicker": "CLI",
-				"ExtractionMax": 41.99443995952606
-			},
-			{
-				"MaterialId": "1f9a0293d9ba9bf519f71432e695edeb",
-				"ResourceType": "MINERAL",
-				"Factor": 0.65577632188797,
-				"DailyExtraction": 45.9043425321579,
-				"MaterialTicker": "LST",
-				"ExtractionMax": 55.24479329586029
-			}
-		],
-		"COGCPrograms": [
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1746140688942,
-				"EndEpochMs": 1746745488942
-			},
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1740697488942,
-				"EndEpochMs": 1741302288942
-			},
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1741302288942,
-				"EndEpochMs": 1741907088942
-			},
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1741907088942,
-				"EndEpochMs": 1742511888942
-			},
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1742511888942,
-				"EndEpochMs": 1743116688942
-			},
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1743116688942,
-				"EndEpochMs": 1743721488942
-			},
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1743721488942,
-				"EndEpochMs": 1744326288942
-			},
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1744326288942,
-				"EndEpochMs": 1744931088942
-			},
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1744931088942,
-				"EndEpochMs": 1745535888942
-			},
-			{
-				"ProgramType": "ADVERTISING_CHEMISTRY",
-				"StartEpochMs": 1745535888942,
-				"EndEpochMs": 1746140688942
-			}
-		],
-		"CheckDistances": null,
-		"Distances": [
-			{
-				"name": "Moria Station",
-				"distance": 5
-			},
-			{
-				"name": "Antares Station",
-				"distance": 10
-			},
-			{
-				"name": "Benten Station",
-				"distance": 1
-			},
-			{
-				"name": "Hortus Station",
-				"distance": 11
-			}
-		],
-		"COGCProgramActive": "ADVERTISING_CHEMISTRY"
-	},
-	{
-		"PlanetId": "9c105d5c288131016584601dffbef66d",
-		"PlanetNaturalId": "RC-040e",
-		"PlanetName": "RC-040e",
-		"SystemId": "72921acc206608a949e38eb0519af345",
-		"HasLocalMarket": false,
-		"HasChamberOfCommerce": false,
-		"HasWarehouse": false,
-		"HasAdministrationCenter": false,
-		"HasShipyard": false,
-		"Pressure": 1.911266803741455,
-		"Surface": false,
-		"Temperature": -151.34933471679688,
-		"Fertility": -1.0,
-		"Gravity": 0.899028480052948,
-		"FactionCode": null,
-		"FactionName": null,
-		"GovernorUserName": null,
-		"COGCProgramStatus": null,
-		"Resources": [
-			{
-				"MaterialId": "e9dc6ec89adb62b9ef83031d89e3ce99",
-				"ResourceType": "GASEOUS",
-				"Factor": 0.26260873675346375,
-				"DailyExtraction": 15.756524205207825,
-				"MaterialTicker": "HE",
-				"ExtractionMax": 24.212270379066467
-			},
-			{
-				"MaterialId": "bcf4a2029e461cf76d29de8c66ec2ff9",
-				"ResourceType": "MINERAL",
-				"Factor": 0.04771474003791809,
-				"DailyExtraction": 3.3400318026542664,
-				"MaterialTicker": "AMM",
-				"ExtractionMax": 41.92359387874603
-			}
-		],
-		"COGCPrograms": [],
-		"CheckDistances": null,
-		"Distances": [
-			{
-				"name": "Moria Station",
-				"distance": 4
-			},
-			{
-				"name": "Antares Station",
-				"distance": 11
-			},
-			{
-				"name": "Benten Station",
-				"distance": 4
-			},
-			{
-				"name": "Hortus Station",
-				"distance": 8
-			}
-		],
-		"COGCProgramActive": null
+		"active_cogc_program_type": "ADVERTISING_AGRICULTURE"
 	}
 ]

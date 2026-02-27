@@ -9,12 +9,12 @@ import { useFIOBurn } from "@/features/fio/useFIOBurn";
 
 const plan_A = {
 	uuid: "A",
-	name: "test plan A",
-	planet_id: "A",
+	plan_name: "test plan A",
+	planet_natural_id: "A",
 };
 const plan_B = {
 	uuid: "B",
-	planet_id: "B",
+	planet_natural_id: "B",
 };
 
 const result_A = {
@@ -51,14 +51,13 @@ describe("useFIOBurn", async () => {
 		setActivePinia(createPinia());
 		planningStore = usePlanningStore();
 
+		// @ts-expect-error mock data
 		planningStore.fio_storage_planets["A"] = {
 			StorageItems: [
-				// @ts-expect-error mock data
 				{
 					MaterialTicker: "Foo",
 					MaterialAmount: 2,
 				},
-				// @ts-expect-error mock data
 				{
 					MaterialTicker: "Moo",
 					MaterialAmount: 100,
@@ -81,6 +80,7 @@ describe("useFIOBurn", async () => {
 		const { burnTable } = useFIOBurn(ref(fakePlans), ref(fakeData));
 
 		const result = burnTable.value;
+		console.log(result);
 
 		expect(result.length).toBe(2);
 		expect(result[0]).toStrictEqual({

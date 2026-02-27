@@ -1,3815 +1,3104 @@
 [
 	{
-		"Name": "technetiumProcessing",
-		"Ticker": "TNP",
-		"Expertise": "CHEMISTRY",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 80,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 30,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 6
-			},
-			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
-			},
-			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 12
-			},
-			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 8
+				"material_ticker": "BSE",
+				"material_amount": 12
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "rig",
+		"building_ticker": "RIG",
+		"expertise": "RESOURCE_EXTRACTION",
+		"pioneers": 30,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 10,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectComfortSmall",
-		"Ticker": "PAR",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 500,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 16
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "SOI",
-				"Weight": 0.8999999761581421,
-				"Volume": 1.0,
-				"Amount": 100
+				"material_ticker": "LSE",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "HAB",
-				"Weight": 10.0,
-				"Volume": 8.0,
-				"Amount": 5
+				"material_ticker": "LDE",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 20
-			},
-			{
-				"CommodityTicker": "BTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 10
-			},
-			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 16
-			},
-			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 300
+				"material_ticker": "LBH",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "technetiumProcessing",
+		"building_ticker": "TNP",
+		"expertise": "CHEMISTRY",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 80,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 30,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "prefabPlant1",
-		"Ticker": "PP1",
-		"Expertise": "CONSTRUCTION",
-		"Pioneers": 80,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 19,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 3
+				"material_ticker": "BBH",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 4
+				"material_ticker": "BTA",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 3
+				"material_ticker": "BSE",
+				"material_amount": 20
+			},
+			{
+				"material_ticker": "MCG",
+				"material_amount": 300
+			},
+			{
+				"material_ticker": "HAB",
+				"material_amount": 5
+			},
+			{
+				"material_ticker": "SOI",
+				"material_amount": 100
+			},
+			{
+				"material_ticker": "BDE",
+				"material_amount": 16
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "planetaryProjectComfortSmall",
+		"building_ticker": "PAR",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 500,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "clothingFactory",
-		"Ticker": "CLF",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 0,
-		"Settlers": 40,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 37,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
+				"material_ticker": "BBH",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "BSE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
-			},
-			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 4
+				"material_ticker": "BDE",
+				"material_amount": 3
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "prefabPlant1",
+		"building_ticker": "PP1",
+		"expertise": "CONSTRUCTION",
+		"pioneers": 80,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 19,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectSafetyBig",
-		"Ticker": "SDP",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "ADS",
-				"Weight": 0.699999988079071,
-				"Volume": 2.0,
-				"Amount": 1
+				"material_ticker": "LSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "LDE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 300
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 8
-			},
-			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 16
-			},
-			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 16
-			},
-			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 10
-			},
-			{
-				"CommodityTicker": "DOU",
-				"Weight": 5.0,
-				"Volume": 4.0,
-				"Amount": 1
-			},
-			{
-				"CommodityTicker": "BMF",
-				"Weight": 0.800000011920929,
-				"Volume": 1.2000000476837158,
-				"Amount": 1
+				"material_ticker": "BSE",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "clothingFactory",
+		"building_ticker": "CLF",
+		"expertise": "MANUFACTURING",
+		"pioneers": 0,
+		"settlers": 40,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 37,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "habitationLuxury",
-		"Ticker": "HBL",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 22,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "ATA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "ADE",
-				"Weight": 0.4000000059604645,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "DOU",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "ABH",
-				"Weight": 0.6000000238418579,
-				"Volume": 0.8999999761581421,
-				"Amount": 8
+				"material_ticker": "ADS",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 6
+				"material_ticker": "RBH",
+				"material_amount": 16
+			},
+			{
+				"material_ticker": "RDE",
+				"material_amount": 16
+			},
+			{
+				"material_ticker": "RSE",
+				"material_amount": 10
+			},
+			{
+				"material_ticker": "RTA",
+				"material_amount": 8
+			},
+			{
+				"material_ticker": "MCG",
+				"material_amount": 300
+			},
+			{
+				"material_ticker": "BMF",
+				"material_amount": 1
 			}
 		],
-		"Habitation": {
-			"Pioneer": 0,
-			"Settler": 0,
-			"Technician": 0,
-			"Engineer": 75,
-			"Scientist": 75,
-			"Area": 22
+		"habitations": null,
+		"building_name": "planetaryProjectSafetyBig",
+		"building_ticker": "SDP",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
+	},
+	{
+		"costs": [
+			{
+				"material_ticker": "ATA",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "ASE",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "ADE",
+				"material_amount": 8
+			},
+			{
+				"material_ticker": "ABH",
+				"material_amount": 8
+			}
+		],
+		"habitations": {
+			"pioneers": 0,
+			"settlers": 0,
+			"technicians": 0,
+			"engineers": 75,
+			"scientists": 75
 		},
-		"Type": "INFRASTRUCTURE"
+		"building_name": "habitationLuxury",
+		"building_ticker": "HBL",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 22,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "habitationManagers",
-		"Ticker": "HBM",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 20,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 6
+				"material_ticker": "ASE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 8
+				"material_ticker": "RDE",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "RBH",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "ATA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 4
+				"material_ticker": "ATA",
+				"material_amount": 4
 			}
 		],
-		"Habitation": {
-			"Pioneer": 0,
-			"Settler": 0,
-			"Technician": 75,
-			"Engineer": 75,
-			"Scientist": 0,
-			"Area": 20
+		"habitations": {
+			"pioneers": 0,
+			"settlers": 0,
+			"technicians": 75,
+			"engineers": 75,
+			"scientists": 0
 		},
-		"Type": "INFRASTRUCTURE"
+		"building_name": "habitationManagers",
+		"building_ticker": "HBM",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 20,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "corporationProjectFTLLaboratory",
-		"Ticker": "CFL",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 100,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "FFC",
-				"Weight": 50.0,
-				"Volume": 16.0,
-				"Amount": 1
+				"material_ticker": "LSE",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 24
+				"material_ticker": "LTA",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "TAC",
-				"Weight": 0.15000000596046448,
-				"Volume": 1.0,
-				"Amount": 6
+				"material_ticker": "LBH",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 32
+				"material_ticker": "SP",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 16
+				"material_ticker": "BMF",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "SP",
-				"Weight": 0.15000000596046448,
-				"Volume": 0.10000000149011612,
-				"Amount": 32
+				"material_ticker": "BWS",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 24
+				"material_ticker": "LDE",
+				"material_amount": 16
 			}
 		],
-		"Habitation": null,
-		"Type": "INFRASTRUCTURE"
+		"habitations": null,
+		"building_name": "planetaryProjectCogc",
+		"building_ticker": "COG",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "habitationEngineer",
-		"Ticker": "HB4",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 16,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "LDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 4
+				"material_ticker": "LSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 4
+				"material_ticker": "ALR",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 6
+				"material_ticker": "LBH",
+				"material_amount": 6
 			}
 		],
-		"Habitation": {
-			"Pioneer": 0,
-			"Settler": 0,
-			"Technician": 0,
-			"Engineer": 100,
-			"Scientist": 0,
-			"Area": 16
+		"habitations": null,
+		"building_name": "storageVolume",
+		"building_ticker": "STV",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 15,
+		"building_type": "INFRASTRUCTURE"
+	},
+	{
+		"costs": [
+			{
+				"material_ticker": "RDE",
+				"material_amount": 24
+			},
+			{
+				"material_ticker": "RBH",
+				"material_amount": 24
+			},
+			{
+				"material_ticker": "RSE",
+				"material_amount": 16
+			},
+			{
+				"material_ticker": "RTA",
+				"material_amount": 32
+			},
+			{
+				"material_ticker": "FFC",
+				"material_amount": 1
+			},
+			{
+				"material_ticker": "TAC",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "SP",
+				"material_amount": 32
+			}
+		],
+		"habitations": null,
+		"building_name": "corporationProjectFTLLaboratory",
+		"building_ticker": "CFL",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 100,
+		"building_type": "INFRASTRUCTURE"
+	},
+	{
+		"costs": [
+			{
+				"material_ticker": "BBH",
+				"material_amount": 3
+			},
+			{
+				"material_ticker": "BDE",
+				"material_amount": 3
+			},
+			{
+				"material_ticker": "BSE",
+				"material_amount": 1
+			}
+		],
+		"habitations": null,
+		"building_name": "storageSmall",
+		"building_ticker": "STA",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 8,
+		"building_type": "INFRASTRUCTURE"
+	},
+	{
+		"costs": [
+			{
+				"material_ticker": "RTA",
+				"material_amount": 4
+			},
+			{
+				"material_ticker": "RDE",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "RSE",
+				"material_amount": 4
+			},
+			{
+				"material_ticker": "RBH",
+				"material_amount": 6
+			}
+		],
+		"habitations": {
+			"pioneers": 0,
+			"settlers": 0,
+			"technicians": 0,
+			"engineers": 100,
+			"scientists": 0
 		},
-		"Type": "INFRASTRUCTURE"
+		"building_name": "habitationEngineer",
+		"building_ticker": "HB4",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 16,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "corporationProjectImmortality",
-		"Ticker": "CIM",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 100,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LIS",
-				"Weight": 5.599999904632568,
-				"Volume": 7.0,
-				"Amount": 1
+				"material_ticker": "LIS",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "CRU",
-				"Weight": 2.200000047683716,
-				"Volume": 2.0,
-				"Amount": 4
+				"material_ticker": "RTA",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "SP",
-				"Weight": 0.15000000596046448,
-				"Volume": 0.10000000149011612,
-				"Amount": 36
+				"material_ticker": "RBH",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 16
+				"material_ticker": "SP",
+				"material_amount": 36
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 16
+				"material_ticker": "CRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 32
+				"material_ticker": "RDE",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 16
+				"material_ticker": "RSE",
+				"material_amount": 16
 			}
 		],
-		"Habitation": null,
-		"Type": "INFRASTRUCTURE"
+		"habitations": null,
+		"building_name": "corporationProjectImmortality",
+		"building_ticker": "CIM",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 100,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "foodProcessor",
-		"Ticker": "FP",
-		"Expertise": "FOOD_INDUSTRIES",
-		"Pioneers": 40,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 12,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 3
+				"material_ticker": "BBH",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 3
+				"material_ticker": "BDE",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 3
+				"material_ticker": "BSE",
+				"material_amount": 3
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "foodProcessor",
+		"building_ticker": "FP",
+		"expertise": "FOOD_INDUSTRIES",
+		"pioneers": 40,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 12,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "corporationProjectRepresentationCenter",
-		"Ticker": "CRC",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 100,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "DEC",
-				"Weight": 0.5,
-				"Volume": 2.0,
-				"Amount": 80
+				"material_ticker": "ASE",
+				"material_amount": 100
 			},
 			{
-				"CommodityTicker": "SP",
-				"Weight": 0.15000000596046448,
-				"Volume": 0.10000000149011612,
-				"Amount": 200
+				"material_ticker": "ABH",
+				"material_amount": 100
 			},
 			{
-				"CommodityTicker": "CBL",
-				"Weight": 5.400000095367432,
-				"Volume": 2.4000000953674316,
-				"Amount": 4
+				"material_ticker": "ATA",
+				"material_amount": 100
 			},
 			{
-				"CommodityTicker": "LOG",
-				"Weight": 0.5,
-				"Volume": 1.5,
-				"Amount": 1
+				"material_ticker": "ADE",
+				"material_amount": 100
 			},
 			{
-				"CommodityTicker": "ADS",
-				"Weight": 0.699999988079071,
-				"Volume": 2.0,
-				"Amount": 1
+				"material_ticker": "TRU",
+				"material_amount": 400
 			},
 			{
-				"CommodityTicker": "ATA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 100
+				"material_ticker": "SP",
+				"material_amount": 200
 			},
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 100
+				"material_ticker": "LOG",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "ADE",
-				"Weight": 0.4000000059604645,
-				"Volume": 1.5,
-				"Amount": 100
+				"material_ticker": "CBL",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "ABH",
-				"Weight": 0.6000000238418579,
-				"Volume": 0.8999999761581421,
-				"Amount": 100
+				"material_ticker": "ADS",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 400
+				"material_ticker": "LIT",
+				"material_amount": 40
 			},
 			{
-				"CommodityTicker": "LIT",
-				"Weight": 1.0,
-				"Volume": 2.0,
-				"Amount": 40
+				"material_ticker": "DEC",
+				"material_amount": 80
 			}
 		],
-		"Habitation": null,
-		"Type": "INFRASTRUCTURE"
+		"habitations": null,
+		"building_name": "corporationProjectRepresentationCenter",
+		"building_ticker": "CRC",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 100,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "fineSmithy",
-		"Ticker": "FS",
-		"Expertise": "METALLURGY",
-		"Pioneers": 0,
-		"Settlers": 50,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 25,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 2
+				"material_ticker": "TRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 2
+				"material_ticker": "BBH",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
+				"material_ticker": "LBH",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "LDE",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "fineSmithy",
+		"building_ticker": "FS",
+		"expertise": "METALLURGY",
+		"pioneers": 0,
+		"settlers": 50,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 25,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectHealthBig",
-		"Ticker": "HOS",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 20
+				"material_ticker": "RSE",
+				"material_amount": 20
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 16
+				"material_ticker": "DOU",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "TCU",
-				"Weight": 5.0,
-				"Volume": 4.0,
-				"Amount": 1
+				"material_ticker": "TCU",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 24
+				"material_ticker": "TRU",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 20
+				"material_ticker": "RTA",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 400
+				"material_ticker": "MCG",
+				"material_amount": 400
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 16
+				"material_ticker": "SU",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "DOU",
-				"Weight": 5.0,
-				"Volume": 4.0,
-				"Amount": 1
+				"material_ticker": "RBH",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "SU",
-				"Weight": 6.0,
-				"Volume": 5.0,
-				"Amount": 1
+				"material_ticker": "RDE",
+				"material_amount": 20
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "planetaryProjectHealthBig",
+		"building_ticker": "HOS",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "planetaryProjectEducationBig",
-		"Ticker": "UNI",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 30
+				"material_ticker": "ATA",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "BMF",
-				"Weight": 0.800000011920929,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
+				"material_ticker": "BMF",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "ABH",
-				"Weight": 0.6000000238418579,
-				"Volume": 0.8999999761581421,
-				"Amount": 12
+				"material_ticker": "MCG",
+				"material_amount": 400
 			},
 			{
-				"CommodityTicker": "ADE",
-				"Weight": 0.4000000059604645,
-				"Volume": 1.5,
-				"Amount": 16
+				"material_ticker": "LU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 16
+				"material_ticker": "ADE",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "LU",
-				"Weight": 8.0,
-				"Volume": 6.0,
-				"Amount": 4
+				"material_ticker": "ABH",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 400
+				"material_ticker": "ASE",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "LOG",
-				"Weight": 0.5,
-				"Volume": 1.5,
-				"Amount": 1
+				"material_ticker": "LOG",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "ATA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 12
+				"material_ticker": "TRU",
+				"material_amount": 30
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "planetaryProjectEducationBig",
+		"building_ticker": "UNI",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "farm",
-		"Ticker": "FRM",
-		"Expertise": "AGRICULTURE",
-		"Pioneers": 50,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 30,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 4
+				"material_ticker": "BBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 4
+				"material_ticker": "BSE",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "farm",
+		"building_ticker": "FRM",
+		"expertise": "AGRICULTURE",
+		"pioneers": 50,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 30,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectEducationSmall",
-		"Ticker": "LIB",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 500,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 20
+				"material_ticker": "MCG",
+				"material_amount": 250
 			},
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 12
+				"material_ticker": "LOG",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "COM",
-				"Weight": 0.5,
-				"Volume": 1.5,
-				"Amount": 1
+				"material_ticker": "TRU",
+				"material_amount": 20
 			},
 			{
-				"CommodityTicker": "ABH",
-				"Weight": 0.6000000238418579,
-				"Volume": 0.8999999761581421,
-				"Amount": 8
+				"material_ticker": "ATA",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "ADE",
-				"Weight": 0.4000000059604645,
-				"Volume": 1.5,
-				"Amount": 12
+				"material_ticker": "ADE",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "LOG",
-				"Weight": 0.5,
-				"Volume": 1.5,
-				"Amount": 1
+				"material_ticker": "COM",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "ATA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 6
+				"material_ticker": "ABH",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 250
+				"material_ticker": "ASE",
+				"material_amount": 12
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "planetaryProjectEducationSmall",
+		"building_ticker": "LIB",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 500,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "planetaryProjectWarehouse",
-		"Ticker": "PWH",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 24
+				"material_ticker": "BBH",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 300
+				"material_ticker": "BSE",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 12
+				"material_ticker": "TRU",
+				"material_amount": 20
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 20
+				"material_ticker": "MCG",
+				"material_amount": 300
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 24
+				"material_ticker": "BDE",
+				"material_amount": 24
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "planetaryProjectWarehouse",
+		"building_ticker": "PWH",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "weldingPlant",
-		"Ticker": "WEL",
-		"Expertise": "CONSTRUCTION",
-		"Pioneers": 70,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 19,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 8
+				"material_ticker": "BBH",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 6
+				"material_ticker": "BSE",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "weldingPlant",
+		"building_ticker": "WEL",
+		"expertise": "CONSTRUCTION",
+		"pioneers": 70,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 19,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "basicMaterialsPlant",
-		"Ticker": "BMP",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 100,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 12,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
+				"material_ticker": "BBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 4
+				"material_ticker": "BDE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 6
+				"material_ticker": "BSE",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "basicMaterialsPlant",
+		"building_ticker": "BMP",
+		"expertise": "MANUFACTURING",
+		"pioneers": 100,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 12,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "corporationProjectHeadquarters",
-		"Ticker": "COR",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 100,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 8
+				"material_ticker": "BWS",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 32
+				"material_ticker": "RBH",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 16
+				"material_ticker": "BMF",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BMF",
-				"Weight": 0.800000011920929,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
+				"material_ticker": "SP",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "BWS",
-				"Weight": 0.05000000074505806,
-				"Volume": 0.10000000149011612,
-				"Amount": 8
+				"material_ticker": "RDE",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "SP",
-				"Weight": 0.15000000596046448,
-				"Volume": 0.10000000149011612,
-				"Amount": 24
+				"material_ticker": "RTA",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 32
+				"material_ticker": "RSE",
+				"material_amount": 32
 			}
 		],
-		"Habitation": null,
-		"Type": "INFRASTRUCTURE"
+		"habitations": null,
+		"building_name": "corporationProjectHeadquarters",
+		"building_ticker": "COR",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 100,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "habitationScientist",
-		"Ticker": "HB5",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 18,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 4
+				"material_ticker": "ASE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "ADE",
-				"Weight": 0.4000000059604645,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "ADE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "ABH",
-				"Weight": 0.6000000238418579,
-				"Volume": 0.8999999761581421,
-				"Amount": 6
+				"material_ticker": "ABH",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "ATA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 4
+				"material_ticker": "ATA",
+				"material_amount": 4
 			}
 		],
-		"Habitation": {
-			"Pioneer": 0,
-			"Settler": 0,
-			"Technician": 0,
-			"Engineer": 0,
-			"Scientist": 100,
-			"Area": 18
+		"habitations": {
+			"pioneers": 0,
+			"settlers": 0,
+			"technicians": 0,
+			"engineers": 0,
+			"scientists": 100
 		},
-		"Type": "INFRASTRUCTURE"
+		"building_name": "habitationScientist",
+		"building_ticker": "HB5",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 18,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "planetaryProjectLocalMarket",
-		"Ticker": "LM",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 500,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "BSE",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 10
+				"material_ticker": "BDE",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "BTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 8
+				"material_ticker": "TRU",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 8
+				"material_ticker": "BTA",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 12
+				"material_ticker": "LBH",
+				"material_amount": 8
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "planetaryProjectLocalMarket",
+		"building_ticker": "LM",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 500,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "habitationBarracks",
-		"Ticker": "HBB",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 14,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
+				"material_ticker": "LTA",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "LSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 4
+				"material_ticker": "BBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "BDE",
+				"material_amount": 4
 			}
 		],
-		"Habitation": {
-			"Pioneer": 75,
-			"Settler": 75,
-			"Technician": 0,
-			"Engineer": 0,
-			"Scientist": 0,
-			"Area": 14
+		"habitations": {
+			"pioneers": 75,
+			"settlers": 75,
+			"technicians": 0,
+			"engineers": 0,
+			"scientists": 0
 		},
-		"Type": "INFRASTRUCTURE"
+		"building_name": "habitationBarracks",
+		"building_ticker": "HBB",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 14,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "storageFacility",
-		"Ticker": "STO",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 15,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "BSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 6
+				"material_ticker": "BDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "BBH",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "INFRASTRUCTURE"
+		"habitations": null,
+		"building_name": "storageFacility",
+		"building_ticker": "STO",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 15,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "prefabPlant3",
-		"Ticker": "PP3",
-		"Expertise": "CONSTRUCTION",
-		"Pioneers": 0,
-		"Settlers": 20,
-		"Technicians": 40,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 32,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "LSE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 4
+				"material_ticker": "LDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "prefabPlant3",
+		"building_ticker": "PP3",
+		"expertise": "CONSTRUCTION",
+		"pioneers": 0,
+		"settlers": 20,
+		"technicians": 40,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 32,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "electronicsPlant",
-		"Ticker": "ELP",
-		"Expertise": "ELECTRONICS",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 40,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 35,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RDE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "RSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 4
+				"material_ticker": "RBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "electronicsPlant",
+		"building_ticker": "ELP",
+		"expertise": "ELECTRONICS",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 40,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 35,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "appliancesFactory",
-		"Ticker": "APF",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 60,
-		"Engineers": 20,
-		"Scientists": 0,
-		"AreaCost": 40,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "ABH",
-				"Weight": 0.6000000238418579,
-				"Volume": 0.8999999761581421,
-				"Amount": 6
+				"material_ticker": "ASE",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 10
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "ADE",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "ADE",
-				"Weight": 0.4000000059604645,
-				"Volume": 1.5,
-				"Amount": 10
+				"material_ticker": "ABH",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "appliancesFactory",
+		"building_ticker": "APF",
+		"expertise": "MANUFACTURING",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 60,
+		"engineers": 20,
+		"scientists": 0,
+		"area_cost": 40,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "habitationPioneer",
-		"Ticker": "HB1",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 10,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 1
+				"material_ticker": "BTA",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
+				"material_ticker": "BDE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 4
+				"material_ticker": "BSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "BBH",
+				"material_amount": 4
 			}
 		],
-		"Habitation": {
-			"Pioneer": 100,
-			"Settler": 0,
-			"Technician": 0,
-			"Engineer": 0,
-			"Scientist": 0,
-			"Area": 10
+		"habitations": {
+			"pioneers": 100,
+			"settlers": 0,
+			"technicians": 0,
+			"engineers": 0,
+			"scientists": 0
 		},
-		"Type": "INFRASTRUCTURE"
+		"building_name": "habitationPioneer",
+		"building_ticker": "HB1",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 10,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "planetaryProjectSafetyHealth",
-		"Ticker": "EMC",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 300
+				"material_ticker": "TRS",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "BTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 16
+				"material_ticker": "ASE",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 24
+				"material_ticker": "ADE",
+				"material_amount": 20
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 32
+				"material_ticker": "ABH",
+				"material_amount": 20
 			},
 			{
-				"CommodityTicker": "DOU",
-				"Weight": 5.0,
-				"Volume": 4.0,
-				"Amount": 1
+				"material_ticker": "WRH",
+				"material_amount": 40
 			},
 			{
-				"CommodityTicker": "TCU",
-				"Weight": 5.0,
-				"Volume": 4.0,
-				"Amount": 1
-			},
-			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 32
+				"material_ticker": "ALR",
+				"material_amount": 60
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "storageBig",
+		"building_ticker": "STE",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 20,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "planetaryProjectCultureSmall",
-		"Ticker": "ART",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 500,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 32
+				"material_ticker": "DOU",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "WOR",
-				"Weight": 5.0,
-				"Volume": 5.0,
-				"Amount": 2
+				"material_ticker": "MCG",
+				"material_amount": 300
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 24
+				"material_ticker": "TCU",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "DEC",
-				"Weight": 0.5,
-				"Volume": 2.0,
-				"Amount": 10
+				"material_ticker": "BTA",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 32
+				"material_ticker": "LSE",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 16
+				"material_ticker": "LDE",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 20
-			},
-			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 300
+				"material_ticker": "LBH",
+				"material_amount": 32
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "planetaryProjectSafetyHealth",
+		"building_ticker": "EMC",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "planetaryProjectHealthComfort",
-		"Ticker": "WCE",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "DEC",
-				"Weight": 0.5,
-				"Volume": 2.0,
-				"Amount": 40
+				"material_ticker": "DEC",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 500
+				"material_ticker": "LSE",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 16
+				"material_ticker": "LDE",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 24
+				"material_ticker": "TRU",
+				"material_amount": 20
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 32
+				"material_ticker": "MCG",
+				"material_amount": 300
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 36
+				"material_ticker": "WOR",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 36
+				"material_ticker": "LTA",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "FLO",
-				"Weight": 1.0,
-				"Volume": 2.0,
-				"Amount": 12
+				"material_ticker": "LBH",
+				"material_amount": 24
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "planetaryProjectCultureSmall",
+		"building_ticker": "ART",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 500,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "cleanRoom",
-		"Ticker": "CLR",
-		"Expertise": "ELECTRONICS",
-		"Pioneers": 0,
-		"Settlers": 25,
-		"Technicians": 15,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 27,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 4
+				"material_ticker": "DEC",
+				"material_amount": 40
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 4
+				"material_ticker": "LSE",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 6
+				"material_ticker": "MCG",
+				"material_amount": 500
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "FLO",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 4
+				"material_ticker": "LDE",
+				"material_amount": 36
+			},
+			{
+				"material_ticker": "LBH",
+				"material_amount": 36
+			},
+			{
+				"material_ticker": "LTA",
+				"material_amount": 24
+			},
+			{
+				"material_ticker": "TRU",
+				"material_amount": 16
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "planetaryProjectHealthComfort",
+		"building_ticker": "WCE",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "advancedAppliancesFactory",
-		"Ticker": "AAF",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 40,
-		"Scientists": 20,
-		"AreaCost": 50,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "ABH",
-				"Weight": 0.6000000238418579,
-				"Volume": 0.8999999761581421,
-				"Amount": 6
+				"material_ticker": "LBH",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "ADE",
-				"Weight": 0.4000000059604645,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "TRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "LTA",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "ATA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 1
+				"material_ticker": "LSE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 8
+				"material_ticker": "LDE",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "cleanRoom",
+		"building_ticker": "CLR",
+		"expertise": "ELECTRONICS",
+		"pioneers": 0,
+		"settlers": 25,
+		"technicians": 15,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 27,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectComfortBig",
-		"Ticker": "4DA",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "FUN",
-				"Weight": 5.0,
-				"Volume": 4.0,
-				"Amount": 10
+				"material_ticker": "ATA",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "BMF",
-				"Weight": 0.800000011920929,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
+				"material_ticker": "ADE",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 42
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 42
+				"material_ticker": "ASE",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "ADS",
-				"Weight": 0.699999988079071,
-				"Volume": 2.0,
-				"Amount": 1
-			},
-			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 40
-			},
-			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 24
-			},
-			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 42
-			},
-			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 600
-			},
-			{
-				"CommodityTicker": "LIT",
-				"Weight": 1.0,
-				"Volume": 2.0,
-				"Amount": 2
+				"material_ticker": "ABH",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "advancedAppliancesFactory",
+		"building_ticker": "AAF",
+		"expertise": "MANUFACTURING",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 40,
+		"scientists": 20,
+		"area_cost": 50,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "weavingPlant",
-		"Ticker": "WPL",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 0,
-		"Settlers": 70,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 40,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
+				"material_ticker": "ADS",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "FUN",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 3
+				"material_ticker": "LIT",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 6
+				"material_ticker": "BMF",
+				"material_amount": 2
+			},
+			{
+				"material_ticker": "LSE",
+				"material_amount": 42
+			},
+			{
+				"material_ticker": "MCG",
+				"material_amount": 600
+			},
+			{
+				"material_ticker": "TRU",
+				"material_amount": 40
+			},
+			{
+				"material_ticker": "LTA",
+				"material_amount": 24
+			},
+			{
+				"material_ticker": "LDE",
+				"material_amount": 42
+			},
+			{
+				"material_ticker": "LBH",
+				"material_amount": 42
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "planetaryProjectComfortBig",
+		"building_ticker": "4DA",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "incinerator",
-		"Ticker": "INC",
-		"Expertise": "RESOURCE_EXTRACTION",
-		"Pioneers": 40,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 10,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 1
+				"material_ticker": "TRU",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
+				"material_ticker": "LBH",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 4
+				"material_ticker": "LSE",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 3
+				"material_ticker": "BDE",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "weavingPlant",
+		"building_ticker": "WPL",
+		"expertise": "MANUFACTURING",
+		"pioneers": 0,
+		"settlers": 70,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 40,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "extractor",
-		"Ticker": "EXT",
-		"Expertise": "RESOURCE_EXTRACTION",
-		"Pioneers": 60,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 25,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 16
+				"material_ticker": "MCG",
+				"material_amount": 100
+			},
+			{
+				"material_ticker": "LDE",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "TRU",
+				"material_amount": 4
+			},
+			{
+				"material_ticker": "BSE",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "LBH",
+				"material_amount": 10
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "packagingCenter",
+		"building_ticker": "PAC",
+		"expertise": "MANUFACTURING",
+		"pioneers": 20,
+		"settlers": 40,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 35,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "habitationSettler",
-		"Ticker": "HB2",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 12,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "BDE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 2
+				"material_ticker": "BSE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
+				"material_ticker": "BBH",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 2
-			},
-			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
+				"material_ticker": "BTA",
+				"material_amount": 1
 			}
 		],
-		"Habitation": {
-			"Pioneer": 0,
-			"Settler": 100,
-			"Technician": 0,
-			"Engineer": 0,
-			"Scientist": 0,
-			"Area": 12
+		"habitations": null,
+		"building_name": "incinerator",
+		"building_ticker": "INC",
+		"expertise": "RESOURCE_EXTRACTION",
+		"pioneers": 40,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 10,
+		"building_type": "PRODUCTION"
+	},
+	{
+		"costs": [
+			{
+				"material_ticker": "BSE",
+				"material_amount": 16
+			}
+		],
+		"habitations": null,
+		"building_name": "extractor",
+		"building_ticker": "EXT",
+		"expertise": "RESOURCE_EXTRACTION",
+		"pioneers": 60,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 25,
+		"building_type": "PRODUCTION"
+	},
+	{
+		"costs": [
+			{
+				"material_ticker": "BSE",
+				"material_amount": 2
+			},
+			{
+				"material_ticker": "BBH",
+				"material_amount": 2
+			},
+			{
+				"material_ticker": "BDE",
+				"material_amount": 2
+			},
+			{
+				"material_ticker": "BTA",
+				"material_amount": 2
+			},
+			{
+				"material_ticker": "TRU",
+				"material_amount": 2
+			}
+		],
+		"habitations": {
+			"pioneers": 0,
+			"settlers": 100,
+			"technicians": 0,
+			"engineers": 0,
+			"scientists": 0
 		},
-		"Type": "INFRASTRUCTURE"
+		"building_name": "habitationSettler",
+		"building_ticker": "HB2",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 12,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "laboratory",
-		"Ticker": "LAB",
-		"Expertise": "CHEMISTRY",
-		"Pioneers": 0,
-		"Settlers": 20,
-		"Technicians": 70,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 25,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 6
+				"material_ticker": "LDE",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 12
+				"material_ticker": "LSE",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "laboratory",
+		"building_ticker": "LAB",
+		"expertise": "CHEMISTRY",
+		"pioneers": 0,
+		"settlers": 20,
+		"technicians": 70,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 25,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "advancedSmelter",
-		"Ticker": "ASM",
-		"Expertise": "METALLURGY",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 50,
-		"Engineers": 20,
-		"Scientists": 0,
-		"AreaCost": 34,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 4
+				"material_ticker": "LTA",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
+				"material_ticker": "LDE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 6
+				"material_ticker": "LSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "TRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "LBH",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "advancedSmelter",
+		"building_ticker": "ASM",
+		"expertise": "METALLURGY",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 50,
+		"engineers": 20,
+		"scientists": 0,
+		"area_cost": 34,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "energyComponentAssembly",
-		"Ticker": "ECA",
-		"Expertise": "ELECTRONICS",
-		"Pioneers": 0,
-		"Settlers": 20,
-		"Technicians": 20,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 35,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 6
+				"material_ticker": "LSE",
+				"material_amount": 25
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "LBH",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 4
+				"material_ticker": "BWS",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "LDE",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "MCG",
+				"material_amount": 750
+			},
+			{
+				"material_ticker": "BMF",
+				"material_amount": 2
+			},
+			{
+				"material_ticker": "RTA",
+				"material_amount": 5
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "planetaryProjectAdminCenter",
+		"building_ticker": "ADM",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 400,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "planetaryProjectShipyard",
-		"Ticker": "PSY",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "ADE",
-				"Weight": 0.4000000059604645,
-				"Volume": 1.5,
-				"Amount": 24
+				"material_ticker": "RTA",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "ABH",
-				"Weight": 0.6000000238418579,
-				"Volume": 0.8999999761581421,
-				"Amount": 32
+				"material_ticker": "RBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 24
+				"material_ticker": "RDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "ATA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 8
+				"material_ticker": "RSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 24
+				"material_ticker": "TRU",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "energyComponentAssembly",
+		"building_ticker": "ECA",
+		"expertise": "ELECTRONICS",
+		"pioneers": 0,
+		"settlers": 20,
+		"technicians": 20,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 35,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectSafetySmall",
-		"Ticker": "SST",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 500,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 24
+				"material_ticker": "ADE",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 12
+				"material_ticker": "ABH",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "BTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 6
+				"material_ticker": "ATA",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 300
+				"material_ticker": "ASE",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 10
-			},
-			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 24
+				"material_ticker": "TRU",
+				"material_amount": 24
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "planetaryProjectShipyard",
+		"building_ticker": "PSY",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "coreModule",
-		"Ticker": "CM",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 25,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "BTA",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 4
+				"material_ticker": "MCG",
+				"material_amount": 300
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 4
+				"material_ticker": "BSE",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "PSL",
-				"Weight": 0.07999999821186066,
-				"Volume": 0.800000011920929,
-				"Amount": 12
+				"material_ticker": "BDE",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 4
+				"material_ticker": "BBH",
+				"material_amount": 24
+			},
+			{
+				"material_ticker": "TRU",
+				"material_amount": 10
 			}
 		],
-		"Habitation": null,
-		"Type": "INFRASTRUCTURE"
+		"habitations": null,
+		"building_name": "planetaryProjectSafetySmall",
+		"building_ticker": "SST",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 500,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "shipKitFactory",
-		"Ticker": "SKF",
-		"Expertise": "METALLURGY",
-		"Pioneers": 0,
-		"Settlers": 40,
-		"Technicians": 10,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 40,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 4
+				"material_ticker": "PSL",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "LDE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 4
+				"material_ticker": "LTA",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "LSE",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "coreModule",
+		"building_ticker": "CM",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 25,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "smelter",
-		"Ticker": "SME",
-		"Expertise": "METALLURGY",
-		"Pioneers": 50,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 17,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 4
+				"material_ticker": "TRU",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "BDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 6
+				"material_ticker": "LTA",
+				"material_amount": 2
+			},
+			{
+				"material_ticker": "BBH",
+				"material_amount": 4
+			},
+			{
+				"material_ticker": "BSE",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "shipKitFactory",
+		"building_ticker": "SKF",
+		"expertise": "METALLURGY",
+		"pioneers": 0,
+		"settlers": 40,
+		"technicians": 10,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 40,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "habitationTechnician",
-		"Ticker": "HB3",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 14,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 8
+				"material_ticker": "BBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 4
+				"material_ticker": "BDE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 4
-			},
-			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 4
+				"material_ticker": "BSE",
+				"material_amount": 6
 			}
 		],
-		"Habitation": {
-			"Pioneer": 0,
-			"Settler": 0,
-			"Technician": 100,
-			"Engineer": 0,
-			"Scientist": 0,
-			"Area": 14
+		"habitations": null,
+		"building_name": "smelter",
+		"building_ticker": "SME",
+		"expertise": "METALLURGY",
+		"pioneers": 50,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 17,
+		"building_type": "PRODUCTION"
+	},
+	{
+		"costs": [
+			{
+				"material_ticker": "LTA",
+				"material_amount": 8
+			},
+			{
+				"material_ticker": "LBH",
+				"material_amount": 4
+			},
+			{
+				"material_ticker": "LDE",
+				"material_amount": 4
+			},
+			{
+				"material_ticker": "LSE",
+				"material_amount": 4
+			}
+		],
+		"habitations": {
+			"pioneers": 0,
+			"settlers": 0,
+			"technicians": 100,
+			"engineers": 0,
+			"scientists": 0
 		},
-		"Type": "INFRASTRUCTURE"
+		"building_name": "habitationTechnician",
+		"building_ticker": "HB3",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 14,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "plasticsPrinterFacility",
-		"Ticker": "PPF",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 0,
-		"Settlers": 50,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 16,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "LDE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
+				"material_ticker": "LBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
+				"material_ticker": "BSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 4
+				"material_ticker": "TRU",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "plasticsPrinterFacility",
+		"building_ticker": "PPF",
+		"expertise": "MANUFACTURING",
+		"pioneers": 0,
+		"settlers": 50,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 16,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "hydroponicsFarm",
-		"Ticker": "HYF",
-		"Expertise": "AGRICULTURE",
-		"Pioneers": 40,
-		"Settlers": 20,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 15,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "MHL",
-				"Weight": 0.10000000149011612,
-				"Volume": 0.05000000074505806,
-				"Amount": 16
+				"material_ticker": "TRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "BSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "MHL",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 4
+				"material_ticker": "LBH",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "hydroponicsFarm",
+		"building_ticker": "HYF",
+		"expertise": "AGRICULTURE",
+		"pioneers": 40,
+		"settlers": 20,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 15,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "polymerPlant",
-		"Ticker": "POL",
-		"Expertise": "CHEMISTRY",
-		"Pioneers": 10,
-		"Settlers": 25,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 15,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
+				"material_ticker": "RSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 8
+				"material_ticker": "WRH",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 4
+				"material_ticker": "RBH",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "RDE",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "storageWeight",
+		"building_ticker": "STW",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 15,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "hullWeldingPlant",
-		"Ticker": "HWP",
-		"Expertise": "METALLURGY",
-		"Pioneers": 0,
-		"Settlers": 40,
-		"Technicians": 10,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 25,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "LBH",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 4
+				"material_ticker": "BSE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "BDE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
-			},
-			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "polymerPlant",
+		"building_ticker": "POL",
+		"expertise": "CHEMISTRY",
+		"pioneers": 10,
+		"settlers": 25,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 15,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "softwareLabs",
-		"Ticker": "SL",
-		"Expertise": "ELECTRONICS",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 20,
-		"AreaCost": 20,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 8
+				"material_ticker": "TRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 6
+				"material_ticker": "LTA",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "BBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 12
+				"material_ticker": "BSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 12
+				"material_ticker": "BDE",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "hullWeldingPlant",
+		"building_ticker": "HWP",
+		"expertise": "METALLURGY",
+		"pioneers": 0,
+		"settlers": 40,
+		"technicians": 10,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 25,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "softwareDevelopment",
-		"Ticker": "SD",
-		"Expertise": "ELECTRONICS",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 50,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 20,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 6
+				"material_ticker": "RSE",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 4
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "LTA",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 6
+				"material_ticker": "LDE",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 10
+				"material_ticker": "RBH",
+				"material_amount": 12
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "softwareLabs",
+		"building_ticker": "SL",
+		"expertise": "ELECTRONICS",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 20,
+		"area_cost": 20,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "rig",
-		"Ticker": "RIG",
-		"Expertise": "RESOURCE_EXTRACTION",
-		"Pioneers": 30,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 10,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 12
+				"material_ticker": "LBH",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "LSE",
+				"material_amount": 10
+			},
+			{
+				"material_ticker": "LDE",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "LTA",
+				"material_amount": 4
+			},
+			{
+				"material_ticker": "TRU",
+				"material_amount": 8
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "softwareDevelopment",
+		"building_ticker": "SD",
+		"expertise": "ELECTRONICS",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 50,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 20,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectCogc",
-		"Ticker": "COG",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 24
+				"material_ticker": "TRU",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BMF",
-				"Weight": 0.800000011920929,
-				"Volume": 1.2000000476837158,
-				"Amount": 1
+				"material_ticker": "ASE",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 16
-			},
-			{
-				"CommodityTicker": "SP",
-				"Weight": 0.15000000596046448,
-				"Volume": 0.10000000149011612,
-				"Amount": 32
-			},
-			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 32
-			},
-			{
-				"CommodityTicker": "BWS",
-				"Weight": 0.05000000074505806,
-				"Volume": 0.10000000149011612,
-				"Amount": 16
-			},
-			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 32
+				"material_ticker": "ATA",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "orchard",
+		"building_ticker": "ORC",
+		"expertise": "AGRICULTURE",
+		"pioneers": 0,
+		"settlers": 70,
+		"technicians": 10,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 120,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "packagingCenter",
-		"Ticker": "PAC",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 20,
-		"Settlers": 40,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 35,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 100
+				"material_ticker": "BSE",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "MCG",
+				"material_amount": 300
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 10
+				"material_ticker": "BDE",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 6
+				"material_ticker": "BBH",
+				"material_amount": 24
+			},
+			{
+				"material_ticker": "BTA",
+				"material_amount": 12
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "planetaryProjectHealthSmall",
+		"building_ticker": "INF",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 500,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "planetaryProjectAdminCenter",
-		"Ticker": "ADM",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 400,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 750
+				"material_ticker": "BSE",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 32
+				"material_ticker": "BBH",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 25
+				"material_ticker": "TRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 5
-			},
-			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 16
-			},
-			{
-				"CommodityTicker": "BMF",
-				"Weight": 0.800000011920929,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
-			},
-			{
-				"CommodityTicker": "BWS",
-				"Weight": 0.05000000074505806,
-				"Volume": 0.10000000149011612,
-				"Amount": 10
+				"material_ticker": "BDE",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "prefabPlant2",
+		"building_ticker": "PP2",
+		"expertise": "CONSTRUCTION",
+		"pioneers": 25,
+		"settlers": 25,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 25,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "orchard",
-		"Ticker": "ORC",
-		"Expertise": "AGRICULTURE",
-		"Pioneers": 0,
-		"Settlers": 70,
-		"Technicians": 10,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 120,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 8
+				"material_ticker": "BSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "ATA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 4
+				"material_ticker": "BDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
+				"material_ticker": "BBH",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "refinery",
+		"building_ticker": "REF",
+		"expertise": "FUEL_REFINING",
+		"pioneers": 60,
+		"settlers": 20,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 25,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectHealthSmall",
-		"Ticker": "INF",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 500,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 24
+				"material_ticker": "RDE",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 24
+				"material_ticker": "RBH",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "BTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 12
+				"material_ticker": "CC",
+				"material_amount": 5
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 16
+				"material_ticker": "LIS",
+				"material_amount": 1
 			},
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 300
+				"material_ticker": "RSE",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 10
+				"material_ticker": "RTA",
+				"material_amount": 8
+			},
+			{
+				"material_ticker": "SP",
+				"material_amount": 44
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "corporationProjectTerraforming",
+		"building_ticker": "CTE",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 100,
+		"building_type": "INFRASTRUCTURE"
 	},
 	{
-		"Name": "prefabPlant2",
-		"Ticker": "PP2",
-		"Expertise": "CONSTRUCTION",
-		"Pioneers": 25,
-		"Settlers": 25,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 25,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 6
+				"material_ticker": "RTA",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 20
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "RSE",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 3
+				"material_ticker": "RBH",
+				"material_amount": 16
+			},
+			{
+				"material_ticker": "DEC",
+				"material_amount": 32
+			},
+			{
+				"material_ticker": "MCG",
+				"material_amount": 300
+			},
+			{
+				"material_ticker": "RDE",
+				"material_amount": 24
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "planetaryProjectComfortCulture",
+		"building_ticker": "ACA",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "refinery",
-		"Ticker": "REF",
-		"Expertise": "FUEL_REFINING",
-		"Pioneers": 60,
-		"Settlers": 20,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 25,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RSE",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 6
+				"material_ticker": "RBH",
+				"material_amount": 16
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 6
+				"material_ticker": "COM",
+				"material_amount": 1
+			},
+			{
+				"material_ticker": "RDE",
+				"material_amount": 24
+			},
+			{
+				"material_ticker": "RTA",
+				"material_amount": 12
+			},
+			{
+				"material_ticker": "TRU",
+				"material_amount": 30
+			},
+			{
+				"material_ticker": "ADS",
+				"material_amount": 1
+			},
+			{
+				"material_ticker": "MCG",
+				"material_amount": 300
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "planetaryProjectCultureEducation",
+		"building_ticker": "PBH",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "corporationProjectTerraforming",
-		"Ticker": "CTE",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 100,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 8
+				"material_ticker": "TRU",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 32
+				"material_ticker": "RBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 32
+				"material_ticker": "RDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "CC",
-				"Weight": 0.5,
-				"Volume": 1.0,
-				"Amount": 5
-			},
-			{
-				"CommodityTicker": "SP",
-				"Weight": 0.15000000596046448,
-				"Volume": 0.10000000149011612,
-				"Amount": 44
-			},
-			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 32
-			},
-			{
-				"CommodityTicker": "LIS",
-				"Weight": 5.599999904632568,
-				"Volume": 7.0,
-				"Amount": 1
+				"material_ticker": "RSE",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "INFRASTRUCTURE"
+		"habitations": null,
+		"building_name": "mediumComponentsAssembly",
+		"building_ticker": "MCA",
+		"expertise": "MANUFACTURING",
+		"pioneers": 0,
+		"settlers": 20,
+		"technicians": 20,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 35,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectComfortCulture",
-		"Ticker": "ACA",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 20
+				"material_ticker": "RSE",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "DEC",
-				"Weight": 0.5,
-				"Volume": 2.0,
-				"Amount": 32
+				"material_ticker": "RBH",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 300
+				"material_ticker": "RDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 12
-			},
-			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 24
-			},
-			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 16
-			},
-			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 24
+				"material_ticker": "TRU",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "prefabPlant4",
+		"building_ticker": "PP4",
+		"expertise": "CONSTRUCTION",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 40,
+		"engineers": 30,
+		"scientists": 0,
+		"area_cost": 40,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectCultureEducation",
-		"Ticker": "PBH",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 30
+				"material_ticker": "BSE",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 12
+				"material_ticker": "BDE",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "ADS",
-				"Weight": 0.699999988079071,
-				"Volume": 2.0,
-				"Amount": 1
+				"material_ticker": "TRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 24
-			},
-			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 16
-			},
-			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 24
-			},
-			{
-				"CommodityTicker": "COM",
-				"Weight": 0.5,
-				"Volume": 1.5,
-				"Amount": 1
-			},
-			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 300
+				"material_ticker": "BBH",
+				"material_amount": 3
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "chemPlant",
+		"building_ticker": "CHP",
+		"expertise": "CHEMISTRY",
+		"pioneers": 20,
+		"settlers": 60,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 18,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "mediumComponentsAssembly",
-		"Ticker": "MCA",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 0,
-		"Settlers": 20,
-		"Technicians": 20,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 35,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 4
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RBH",
+				"material_amount": 12
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 4
+				"material_ticker": "RSE",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "RTA",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "spacecraftPrefabPlant",
+		"building_ticker": "SPP",
+		"expertise": "MANUFACTURING",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 50,
+		"engineers": 30,
+		"scientists": 0,
+		"area_cost": 60,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "prefabPlant4",
-		"Ticker": "PP4",
-		"Expertise": "CONSTRUCTION",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 40,
-		"Engineers": 30,
-		"Scientists": 0,
-		"AreaCost": 40,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 6
+				"material_ticker": "MCG",
+				"material_amount": 500
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "RSE",
+				"material_amount": 32
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 8
+				"material_ticker": "RBH",
+				"material_amount": 24
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RDE",
+				"material_amount": 32
+			},
+			{
+				"material_ticker": "RTA",
+				"material_amount": 12
+			},
+			{
+				"material_ticker": "TRU",
+				"material_amount": 30
+			},
+			{
+				"material_ticker": "ADS",
+				"material_amount": 1
+			},
+			{
+				"material_ticker": "DEC",
+				"material_amount": 20
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "planetaryProjectCultureBig",
+		"building_ticker": "VRT",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 1000,
+		"building_type": "PLANETARY"
 	},
 	{
-		"Name": "chemPlant",
-		"Ticker": "CHP",
-		"Expertise": "CHEMISTRY",
-		"Pioneers": 20,
-		"Settlers": 60,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 18,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "TRU",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 3
+				"material_ticker": "LTA",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 3
+				"material_ticker": "LBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 3
+				"material_ticker": "LDE",
+				"material_amount": 6
+			},
+			{
+				"material_ticker": "LSE",
+				"material_amount": 8
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "pharmaFactory",
+		"building_ticker": "PHF",
+		"expertise": "CHEMISTRY",
+		"pioneers": 0,
+		"settlers": 25,
+		"technicians": 25,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 35,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "spacecraftPrefabPlant",
-		"Ticker": "SPP",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 50,
-		"Engineers": 30,
-		"Scientists": 0,
-		"AreaCost": 60,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 12
+				"material_ticker": "BDE",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "BSE",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 6
+				"material_ticker": "BTA",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "BBH",
+				"material_amount": 8
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "unitPrefabPlant",
+		"building_ticker": "UPF",
+		"expertise": "CONSTRUCTION",
+		"pioneers": 20,
+		"settlers": 50,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 50,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "planetaryProjectCultureBig",
-		"Ticker": "VRT",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 1000,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "MCG",
-				"Weight": 0.23999999463558197,
-				"Volume": 0.10000000149011612,
-				"Amount": 500
+				"material_ticker": "TRU",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 32
+				"material_ticker": "RBH",
+				"material_amount": 8
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 30
+				"material_ticker": "RSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "DEC",
-				"Weight": 0.5,
-				"Volume": 2.0,
-				"Amount": 20
+				"material_ticker": "RTA",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 24
-			},
-			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 12
-			},
-			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 32
-			},
-			{
-				"CommodityTicker": "ADS",
-				"Weight": 0.699999988079071,
-				"Volume": 2.0,
-				"Amount": 1
+				"material_ticker": "RDE",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PLANETARY"
+		"habitations": null,
+		"building_name": "spacecraftPropulsionFactory",
+		"building_ticker": "SPF",
+		"expertise": "MANUFACTURING",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 50,
+		"scientists": 20,
+		"area_cost": 40,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "pharmaFactory",
-		"Ticker": "PHF",
-		"Expertise": "CHEMISTRY",
-		"Pioneers": 0,
-		"Settlers": 25,
-		"Technicians": 25,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 35,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 4
+				"material_ticker": "TRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "LSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 8
+				"material_ticker": "LDE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 6
-			},
-			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "LBH",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "electronicDeviceManufactory",
+		"building_ticker": "EDM",
+		"expertise": "ELECTRONICS",
+		"pioneers": 0,
+		"settlers": 50,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 30,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "unitPrefabPlant",
-		"Ticker": "UPF",
-		"Expertise": "CONSTRUCTION",
-		"Pioneers": 20,
-		"Settlers": 50,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 50,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "BBH",
-				"Weight": 0.5,
-				"Volume": 0.800000011920929,
-				"Amount": 8
+				"material_ticker": "RTA",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "BDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 10
+				"material_ticker": "RDE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "BTA",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.4000000059604645,
-				"Amount": 3
+				"material_ticker": "RBH",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 8
+				"material_ticker": "RSE",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 10
+				"material_ticker": "TRU",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "inVitroPlant",
+		"building_ticker": "IVP",
+		"expertise": "FOOD_INDUSTRIES",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 70,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 32,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "spacecraftPropulsionFactory",
-		"Ticker": "SPF",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 50,
-		"Scientists": 20,
-		"AreaCost": 40,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 8
+				"material_ticker": "RTA",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "RDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RBH",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RSE",
+				"material_amount": 12
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "einsteiniumEnrichmentPlant",
+		"building_ticker": "EEP",
+		"expertise": "CHEMISTRY",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 60,
+		"scientists": 40,
+		"area_cost": 100,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "electronicDeviceManufactory",
-		"Ticker": "EDM",
-		"Expertise": "ELECTRONICS",
-		"Pioneers": 0,
-		"Settlers": 50,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 30,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 6
+				"material_ticker": "LSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 4
+				"material_ticker": "TRU",
+				"material_amount": 5
 			},
 			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 4
-			},
-			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "LBH",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "glassFurnace",
+		"building_ticker": "GF",
+		"expertise": "METALLURGY",
+		"pioneers": 0,
+		"settlers": 80,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 27,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "inVitroPlant",
-		"Ticker": "IVP",
-		"Expertise": "FOOD_INDUSTRIES",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 70,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 32,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 4
+				"material_ticker": "RBH",
+				"material_amount": 3
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "RDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 4
-			},
-			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RSE",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "smallComponentsAssembly",
+		"building_ticker": "SCA",
+		"expertise": "MANUFACTURING",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 30,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 35,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "einsteiniumEnrichmentPlant",
-		"Ticker": "EEP",
-		"Expertise": "CHEMISTRY",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 60,
-		"Scientists": 40,
-		"AreaCost": 100,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "RBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 6
+				"material_ticker": "RTA",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 12
+				"material_ticker": "TRU",
+				"material_amount": 4
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "softwareEngineering",
+		"building_ticker": "SE",
+		"expertise": "ELECTRONICS",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 30,
+		"scientists": 0,
+		"area_cost": 20,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "glassFurnace",
-		"Ticker": "GF",
-		"Expertise": "METALLURGY",
-		"Pioneers": 0,
-		"Settlers": 80,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 27,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 5
+				"material_ticker": "LDE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 4
+				"material_ticker": "LSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 6
+				"material_ticker": "TRU",
+				"material_amount": 5
+			},
+			{
+				"material_ticker": "LBH",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "fermentationFacility",
+		"building_ticker": "FER",
+		"expertise": "FOOD_INDUSTRIES",
+		"pioneers": 0,
+		"settlers": 60,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 25,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "smallComponentsAssembly",
-		"Ticker": "SCA",
-		"Expertise": "MANUFACTURING",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 30,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 35,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 2
+				"material_ticker": "TRU",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "ADE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "ABH",
+				"material_amount": 10
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 3
+				"material_ticker": "ASE",
+				"material_amount": 6
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "advancedMaterialLab",
+		"building_ticker": "AML",
+		"expertise": "CHEMISTRY",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 20,
+		"engineers": 30,
+		"scientists": 0,
+		"area_cost": 45,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "softwareEngineering",
-		"Ticker": "SE",
-		"Expertise": "ELECTRONICS",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 30,
-		"Scientists": 0,
-		"AreaCost": 20,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "RSE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 4
+				"material_ticker": "RDE",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 4
+				"material_ticker": "RBH",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 2
+				"material_ticker": "TRU",
+				"material_amount": 6
 			},
 			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 6
+				"material_ticker": "RTA",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "droneShop",
+		"building_ticker": "DRS",
+		"expertise": "ELECTRONICS",
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 40,
+		"engineers": 20,
+		"scientists": 0,
+		"area_cost": 30,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "fermentationFacility",
-		"Ticker": "FER",
-		"Expertise": "FOOD_INDUSTRIES",
-		"Pioneers": 0,
-		"Settlers": 60,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 25,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "LSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
-			},
-			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 5
-			},
-			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 2
-			},
-			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
+				"material_ticker": "BSE",
+				"material_amount": 16
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
+		"habitations": null,
+		"building_name": "collector",
+		"building_ticker": "COL",
+		"expertise": "RESOURCE_EXTRACTION",
+		"pioneers": 50,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 15,
+		"building_type": "PRODUCTION"
 	},
 	{
-		"Name": "advancedMaterialLab",
-		"Ticker": "AML",
-		"Expertise": "CHEMISTRY",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 20,
-		"Engineers": 30,
-		"Scientists": 0,
-		"AreaCost": 45,
-		"BuildingCosts": [
+		"costs": [
 			{
-				"CommodityTicker": "ABH",
-				"Weight": 0.6000000238418579,
-				"Volume": 0.8999999761581421,
-				"Amount": 10
+				"material_ticker": "RTA",
+				"material_amount": 4
 			},
 			{
-				"CommodityTicker": "ADE",
-				"Weight": 0.4000000059604645,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "LDE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "ASE",
-				"Weight": 0.5,
-				"Volume": 0.6000000238418579,
-				"Amount": 6
+				"material_ticker": "RSE",
+				"material_amount": 2
 			},
 			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
+				"material_ticker": "LBH",
+				"material_amount": 4
+			},
+			{
+				"material_ticker": "TRU",
+				"material_amount": 2
 			}
 		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
-	},
-	{
-		"Name": "droneShop",
-		"Ticker": "DRS",
-		"Expertise": "ELECTRONICS",
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 40,
-		"Engineers": 20,
-		"Scientists": 0,
-		"AreaCost": 30,
-		"BuildingCosts": [
-			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 2
-			},
-			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 6
-			},
-			{
-				"CommodityTicker": "RDE",
-				"Weight": 1.399999976158142,
-				"Volume": 1.5,
-				"Amount": 6
-			},
-			{
-				"CommodityTicker": "RBH",
-				"Weight": 2.4000000953674316,
-				"Volume": 0.8999999761581421,
-				"Amount": 4
-			},
-			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 6
-			}
-		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
-	},
-	{
-		"Name": "collector",
-		"Ticker": "COL",
-		"Expertise": "RESOURCE_EXTRACTION",
-		"Pioneers": 50,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 15,
-		"BuildingCosts": [
-			{
-				"CommodityTicker": "BSE",
-				"Weight": 0.30000001192092896,
-				"Volume": 0.5,
-				"Amount": 16
-			}
-		],
-		"Habitation": null,
-		"Type": "PRODUCTION"
-	},
-	{
-		"Name": "habitationCommune",
-		"Ticker": "HBC",
-		"Expertise": null,
-		"Pioneers": 0,
-		"Settlers": 0,
-		"Technicians": 0,
-		"Engineers": 0,
-		"Scientists": 0,
-		"AreaCost": 17,
-		"BuildingCosts": [
-			{
-				"CommodityTicker": "RSE",
-				"Weight": 1.899999976158142,
-				"Volume": 0.699999988079071,
-				"Amount": 2
-			},
-			{
-				"CommodityTicker": "TRU",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.5,
-				"Amount": 2
-			},
-			{
-				"CommodityTicker": "RTA",
-				"Weight": 1.5,
-				"Volume": 0.5,
-				"Amount": 4
-			},
-			{
-				"CommodityTicker": "LBH",
-				"Weight": 0.20000000298023224,
-				"Volume": 0.6000000238418579,
-				"Amount": 4
-			},
-			{
-				"CommodityTicker": "LDE",
-				"Weight": 0.10000000149011612,
-				"Volume": 1.2000000476837158,
-				"Amount": 2
-			}
-		],
-		"Habitation": {
-			"Pioneer": 0,
-			"Settler": 75,
-			"Technician": 75,
-			"Engineer": 0,
-			"Scientist": 0,
-			"Area": 17
+		"habitations": {
+			"pioneers": 0,
+			"settlers": 75,
+			"technicians": 75,
+			"engineers": 0,
+			"scientists": 0
 		},
-		"Type": "INFRASTRUCTURE"
+		"building_name": "habitationCommune",
+		"building_ticker": "HBC",
+		"expertise": null,
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 0,
+		"scientists": 0,
+		"area_cost": 17,
+		"building_type": "INFRASTRUCTURE"
 	}
 ]

@@ -105,7 +105,7 @@ describe("useCXImportExport", () => {
 	describe("generateSettingsCSV", () => {
 		it("should generate a valid CSV string", () => {
 			const empireCX: ICXDataExchangeOption[] = [
-				{ type: "BUY", exchange: "AI1_BUY" },
+				{ type: "BUY", exchange: "AI1_30D" },
 			];
 			const empireTickerOptions: ICXDataTickerOption[] = [
 				{ type: "SELL", ticker: "MAT", value: 100 },
@@ -114,7 +114,7 @@ describe("useCXImportExport", () => {
 			const planetsCX: ICXPlanetMap[string][] = [
 				{
 					planet: "Montem",
-					exchanges: [{ type: "SELL", exchange: "IC1_SELL" }],
+					exchanges: [{ type: "SELL", exchange: "AI1_30D" }],
 					ticker: [],
 				},
 			];
@@ -134,9 +134,9 @@ describe("useCXImportExport", () => {
 			);
 
 			expect(csv).toContain("Location;Type;CX;Ticker;Price");
-			expect(csv).toContain("EMPIRE;BUY;AI1_BUY;;");
+			expect(csv).toContain("EMPIRE;BUY;AI1_30D;;");
 			expect(csv).toContain("EMPIRE;SELL;;MAT;100");
-			expect(csv).toContain("Montem;SELL;IC1_SELL;;");
+			expect(csv).toContain("Montem;SELL;AI1_30D;;");
 			expect(csv).toContain("Montem;BUY;;H2O;50");
 		});
 	});

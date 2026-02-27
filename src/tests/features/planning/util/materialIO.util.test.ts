@@ -24,6 +24,7 @@ describe("Util: materialIO ", async () => {
 		setActivePinia(createPinia());
 
 		await materialsStore.setMany(materials);
+		// @ts-expect-error mock data date as string
 		await exchangesStore.setMany(exchanges);
 		const { preload } = useMaterialData();
 		await preload();
@@ -147,10 +148,10 @@ describe("Util: materialIO ", async () => {
 		);
 
 		expect(resultSell).toStrictEqual([
-			{ ticker: "OVE", delta: 1, price: 127.98048739093674 },
+			{ ticker: "OVE", delta: 1, price: 121.77925679203784 },
 		]);
 		expect(resultBuy).toStrictEqual([
-			{ ticker: "OVE", delta: -1, price: -127.98048739093674 },
+			{ ticker: "OVE", delta: -1, price: -121.77925679203784 },
 		]);
 	});
 

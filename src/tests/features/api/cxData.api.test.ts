@@ -31,16 +31,16 @@ describe("CX Data API Calls", async () => {
 	it("callGetCXList", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/cx/").reply(200, cx_list);
+		mock.onGet("/planning/cx/").reply(200, cx_list);
 
 		expect(await callGetCXList()).toStrictEqual(cx_list);
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
 	it("callCreateCX", async () => {
-		const spyApiServicePut = vi.spyOn(apiService, "put");
+		const spyApiServicePut = vi.spyOn(apiService, "post");
 
-		mock.onPut("/cx/").reply(200, cx_list[0]);
+		mock.onPost("/planning/cx/").reply(200, cx_list[0]);
 
 		expect(await callCreateCX("foo")).toStrictEqual(cx_list[0]);
 		expect(spyApiServicePut).toHaveBeenCalled();
@@ -49,29 +49,31 @@ describe("CX Data API Calls", async () => {
 	it("callDeleteCX", async () => {
 		const spyApiServiceDelete = vi.spyOn(apiService, "delete");
 
-		mock.onDelete("/cx/foo").reply(200, true);
+		mock.onDelete("/planning/cx/foo/").reply(200, true);
 
 		expect(await callDeleteCX("foo")).toBeTruthy();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
 	});
 
 	it("callUpdateCXJunctions", async () => {
-		const spyApiServicePatch = vi.spyOn(apiService, "patch");
+		const spyApiServicePatch = vi.spyOn(apiService, "post");
 
-		mock.onPatch("/cx/junctions").reply(200, []);
+		mock.onPost("/planning/cx/junctions/").reply(200, []);
 
 		expect(await callUpdateCXJunctions([])).toBeTruthy();
 		expect(spyApiServicePatch).toHaveBeenCalled();
 	});
 
 	it("callPatchCX", async () => {
-		const spyApiServicePatch = vi.spyOn(apiService, "patch");
+		const spyApiServicePatch = vi.spyOn(apiService, "put");
 
 		const fakeUuid = "foo";
 
-		mock.onPatch(`/cx/${fakeUuid}`).reply(200, cx_patch as ICXData);
+		mock.onPut(`/planning/cx/${fakeUuid}`).reply(200, cx_patch);
 
-		expect(await callPatchCX(fakeUuid, cx_patch as ICXData)).toBeTruthy();
+		expect(
+			await callPatchCX("fakecx", fakeUuid, cx_patch.cx_data as ICXData)
+		).toBeTruthy();
 		expect(spyApiServicePatch).toHaveBeenCalled();
 	});
 });

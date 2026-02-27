@@ -41,6 +41,7 @@ describe("useResourceROIOverview", async () => {
 		await buildingsStore.setMany(buildings);
 		await recipesStore.setMany(recipes);
 		await materialsStore.setMany(materials);
+		//@ts-expect-error mock data
 		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
@@ -53,17 +54,17 @@ describe("useResourceROIOverview", async () => {
 	});
 
 	it("searchPlanets", async () => {
-		mock.onPost("/data/planet/search").reply(200, planet_search_results);
+		mock.onPost("/data/planets/search/").reply(200, planet_search_results);
 
 		const { searchPlanets } = useResourceROIOverview(ref(undefined));
 
 		const result = await searchPlanets("N");
 
-		expect(result.length).toBe(60);
+		expect(result.length).toBe(65);
 	});
 
 	it("calculate", async () => {
-		mock.onPost("/data/planet/search").reply(200, [planet_etherwind]);
+		mock.onPost("/data/planets/search/").reply(200, [planet_etherwind]);
 
 		const { calculate } = useResourceROIOverview(ref(undefined));
 
@@ -72,7 +73,7 @@ describe("useResourceROIOverview", async () => {
 		expect(result.length).toBe(1);
 		expect(result[0].buildingTicker).toBe("RIG");
 		expect(result[0].dailyYield).toBe(2359.3500937521458);
-		expect(result[0].dailyProfit).toBe(69531.18805678377);
+		expect(result[0].dailyProfit).toBe(91384.63487521681);
 		expect(result[0].planetSurface.length).toBe(1);
 	});
 
@@ -83,11 +84,11 @@ describe("useResourceROIOverview", async () => {
 			);
 			expect(
 				// @ts-expect-error mock data
-				getPlanetEnvironment({ Surface: true }).surface
+				getPlanetEnvironment({ surface: true }).surface
 			).toStrictEqual(["MCG"]);
 			expect(
 				// @ts-expect-error mock data
-				getPlanetEnvironment({ Surface: false }).surface
+				getPlanetEnvironment({ surface: false }).surface
 			).toStrictEqual(["AEF"]);
 		});
 
@@ -97,11 +98,11 @@ describe("useResourceROIOverview", async () => {
 			);
 			expect(
 				// @ts-expect-error mock data
-				getPlanetEnvironment({ Gravity: 0.24 }).gravity
+				getPlanetEnvironment({ gravity: 0.24 }).gravity
 			).toStrictEqual(["MGC"]);
 			expect(
 				// @ts-expect-error mock data
-				getPlanetEnvironment({ Gravity: 2.51 }).gravity
+				getPlanetEnvironment({ gravity: 2.51 }).gravity
 			).toStrictEqual(["BL"]);
 		});
 
@@ -111,11 +112,11 @@ describe("useResourceROIOverview", async () => {
 			);
 			expect(
 				// @ts-expect-error mock data
-				getPlanetEnvironment({ Pressure: 0.24 }).pressure
+				getPlanetEnvironment({ pressure: 0.24 }).pressure
 			).toStrictEqual(["SEA"]);
 			expect(
 				// @ts-expect-error mock data
-				getPlanetEnvironment({ Pressure: 2.01 }).pressure
+				getPlanetEnvironment({ pressure: 2.01 }).pressure
 			).toStrictEqual(["HSE"]);
 		});
 
@@ -125,11 +126,11 @@ describe("useResourceROIOverview", async () => {
 			);
 			expect(
 				// @ts-expect-error mock data
-				getPlanetEnvironment({ Temperature: -25.1 }).temperature
+				getPlanetEnvironment({ temperature: -25.1 }).temperature
 			).toStrictEqual(["INS"]);
 			expect(
 				// @ts-expect-error mock data
-				getPlanetEnvironment({ Temperature: 75.1 }).temperature
+				getPlanetEnvironment({ temperature: 75.1 }).temperature
 			).toStrictEqual(["TSH"]);
 		});
 	});

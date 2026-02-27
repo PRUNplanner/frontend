@@ -14,13 +14,12 @@ import {
 	callGetPlanlist,
 	callDeletePlan,
 	callClonePlan,
-	callPatchPlanMaterialIO,
 } from "@/features/api/planData.api";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
 import shared from "@/tests/test_data/api_data_shared.json";
-import patch_materialio from "@/tests/test_data/api_data_plan_materialio_patch.json";
+import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -30,23 +29,18 @@ describe("PlanData API Calls", async () => {
 	const sharedUuid: string = "0f7161c8-7bc9-4ab6-af4a-10105be4180a";
 	const fakeUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
 
-	const fakeSaveCreateData = {
-		name: "meow",
-		planet_id: "foo",
-		faction: "NONE",
-		override_empire: false,
-		permits_used: 1,
-		permits_total: 3,
-		planet: {
-			planetid: "foo",
-			permits: 3,
-			corphq: true,
-			cogc: "RESOURCE_EXTRACTION",
+	const fakeSaveCreateData: IPlanCreateData = {
+		plan_name: "meow",
+		planet_natural_id: "foo",
+		plan_permits_used: 1,
+		plan_cogc: "RESOURCE_EXTRACTION",
+		plan_corphq: true,
+		plan_data: {
 			experts: [],
 			workforce: [],
+			infrastructure: [],
+			buildings: [],
 		},
-		infrastructure: [],
-		buildings: [],
 		empire_uuid: fakeUuid,
 	};
 
@@ -58,36 +52,45 @@ describe("PlanData API Calls", async () => {
 	it("callGetPlan", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet(`/baseplanner/${etherwindUuid}`).reply(200, plan_etherwind);
+		mock.onGet(`/planning/plan/${etherwindUuid}`).reply(
+			200,
+			plan_etherwind
+		);
 
-		expect(await callGetPlan(etherwindUuid)).toStrictEqual(plan_etherwind);
+		expect((await callGetPlan(etherwindUuid)).uuid).toStrictEqual(
+			plan_etherwind.uuid
+		);
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
 	it("callGetPlanlist", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet(`/baseplanner/`).reply(200, [plan_etherwind]);
+		mock.onGet(`/planning/plan/`).reply(200, [plan_etherwind]);
 
-		expect(await callGetPlanlist()).toStrictEqual([plan_etherwind]);
+		expect((await callGetPlanlist())[0].uuid).toStrictEqual(
+			plan_etherwind.uuid
+		);
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
 	it("callGetShared", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet(`/shared/${sharedUuid}`).reply(200, shared);
+		mock.onGet(`/planning/shared/${sharedUuid}`).reply(200, shared);
 
 		expect(await callGetShared(sharedUuid)).toStrictEqual(shared);
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
 	it("callCreatePlan", async () => {
-		const spyApiServicePut = vi.spyOn(apiService, "put");
+		const spyApiServicePut = vi.spyOn(apiService, "post");
 
-		mock.onPut("/baseplanner/").reply(200, { uuid: fakeUuid });
+		mock.onPost("/planning/plan/").reply(200, {
+			plan_etherwind,
+			uuid: fakeUuid,
+		});
 
-		// @ts-expect-error mock data
 		expect(await callCreatePlan(fakeSaveCreateData)).toStrictEqual({
 			uuid: fakeUuid,
 		});
@@ -95,12 +98,13 @@ describe("PlanData API Calls", async () => {
 	});
 
 	it("callSavePlan", async () => {
-		const spyApiServicePatch = vi.spyOn(apiService, "patch");
+		const spyApiServicePatch = vi.spyOn(apiService, "put");
 
-		mock.onPatch(`/baseplanner/${fakeUuid}`).reply(200, { uuid: fakeUuid });
+		mock.onPut(`/planning/plan/${fakeUuid}/`).reply(200, {
+			uuid: fakeUuid,
+		});
 
 		expect(
-			// @ts-expect-error mock data
 			await callSavePlan(fakeUuid, {
 				uuid: fakeUuid,
 				...fakeSaveCreateData,
@@ -112,31 +116,22 @@ describe("PlanData API Calls", async () => {
 	});
 
 	it("callClonePlan", async () => {
-		const spyApiServicePut = vi.spyOn(apiService, "put");
+		const spyApiServicePut = vi.spyOn(apiService, "post");
 
-		mock.onPut("/baseplanner/foo/clone").reply(200, { message: "yay" });
+		mock.onPost("/planning/plan/foo/clone/").reply(200, plan_etherwind);
 
-		expect(await callClonePlan("foo", "meow")).toStrictEqual({
-			message: "yay",
-		});
+		expect((await callClonePlan("foo", "meow")).uuid).toStrictEqual(
+			plan_etherwind.uuid
+		);
 		expect(spyApiServicePut).toHaveBeenCalled();
 	});
 
 	it("callDeletePlan", async () => {
 		const spyApiServiceDelete = vi.spyOn(apiService, "delete");
 
-		mock.onDelete("/baseplanner/foo").reply(200, true);
+		mock.onDelete("/planning/plan/foo").reply(200, true);
 
 		expect(await callDeletePlan("foo")).toBeTruthy();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
-	});
-
-	it("callPatchPlanMaterialIO", async () => {
-		const spyApiServicePatch = vi.spyOn(apiService, "patch");
-
-		mock.onPatch("/baseplanner/materialio").reply(200, true);
-
-		expect(await callPatchPlanMaterialIO(patch_materialio)).toBeTruthy();
-		expect(spyApiServicePatch).toHaveBeenCalled();
 	});
 });

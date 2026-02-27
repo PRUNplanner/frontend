@@ -39,7 +39,9 @@ describe("useBuildingData", async () => {
 			const { getBuilding } = await useBuildingData();
 			const TNP: IBuilding = await getBuilding("TNP");
 
-			expect(TNP.Ticker).toBe(building_single_tnp.Ticker);
+			expect(TNP.building_ticker).toBe(
+				building_single_tnp.building_ticker
+			);
 		});
 
 		it("Get invalid, non-existing building", async () => {
@@ -99,19 +101,18 @@ describe("useBuildingData", async () => {
 
 			const fakePlanetResources: IPlanetResource[] = [
 				{
-					MaterialId: "foo",
-					ResourceType: "GASEOUS",
-					Factor: 1,
-					DailyExtraction: 3,
-					MaterialTicker: "O",
-					ExtractionMax: 3,
+					resource_type: "GASEOUS",
+					factor: 1,
+					daily_extraction: 3,
+					material_ticker: "O",
+					max_daily_extraction: 3,
 				},
 			];
 
 			const result = getBuildingRecipes("COL", fakePlanetResources);
 			expect(result.length).toBe(1);
-			expect(result[0].BuildingTicker).toBe("COL");
-			expect(result[0].RecipeId).toBe("COL#O");
+			expect(result[0].building_ticker).toBe("COL");
+			expect(result[0].recipe_id).toBe("COL#O");
 		});
 
 		it("Production Building, error", async () => {
@@ -125,7 +126,7 @@ describe("useBuildingData", async () => {
 			const result = getBuildingRecipes("BMP");
 
 			expect(result.length).toBe(20);
-			expect(result[0].BuildingTicker).toBe("BMP");
+			expect(result[0].building_ticker).toBe("BMP");
 		});
 	});
 
@@ -136,9 +137,9 @@ describe("useBuildingData", async () => {
 
 		it("No Planet", async () => {
 			const testBuilding = {
-				BuildingCosts: [
-					{ CommodityTicker: "Moo", Amount: 2 },
-					{ CommodityTicker: "Foo", Amount: 1 },
+				costs: [
+					{ material_ticker: "Moo", material_amount: 2 },
+					{ material_ticker: "Foo", material_amount: 1 },
 				],
 			};
 
@@ -175,10 +176,10 @@ describe("useBuildingData", async () => {
 
 		it("With planet special material", async () => {
 			const testBuilding = {
-				AreaCost: 1,
-				BuildingCosts: [
-					{ CommodityTicker: "Moo", Amount: 2 },
-					{ CommodityTicker: "Foo", Amount: 1 },
+				area_cost: 1,
+				costs: [
+					{ material_ticker: "Moo", material_amount: 2 },
+					{ material_ticker: "Foo", material_amount: 1 },
 				],
 			};
 
@@ -201,9 +202,9 @@ describe("useBuildingData", async () => {
 					ticker: "Foo",
 				},
 				{
-					input: 4,
+					input: 1,
 					output: 0,
-					ticker: "MCG",
+					ticker: "AEF",
 				},
 			]);
 		});
@@ -214,11 +215,11 @@ describe("useBuildingData", async () => {
 			const { getBuildingWorkforceMaterials } = await useBuildingData();
 
 			const testBuilding = {
-				Pioneers: 20,
-				Settlers: 30,
-				Technicians: 40,
-				Engineers: 50,
-				Scientists: 60,
+				pioneers: 20,
+				settlers: 30,
+				technicians: 40,
+				engineers: 50,
+				scientists: 60,
 			};
 
 			// @ts-expect-error mock building data

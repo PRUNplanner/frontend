@@ -21,11 +21,11 @@ const workforceCases: {
 }[] = [
 	{
 		building: {
-			Pioneers: 40,
-			Settlers: 30,
-			Technicians: 20,
-			Engineers: 10,
-			Scientists: 5,
+			pioneers: 40,
+			settlers: 30,
+			technicians: 20,
+			engineers: 10,
+			scientists: 5,
 		},
 		workforce: {
 			pioneer: {
@@ -78,11 +78,11 @@ const workforceCases: {
 	},
 	{
 		building: {
-			Pioneers: 100,
-			Settlers: 50,
-			Technicians: 20,
-			Engineers: 10,
-			Scientists: 5,
+			pioneers: 100,
+			settlers: 50,
+			technicians: 20,
+			engineers: 10,
+			scientists: 5,
 		},
 		workforce: {
 			pioneer: {
@@ -136,28 +136,32 @@ const workforceCases: {
 ];
 
 const factionBonusCases = [
-	{ building: { Expertise: null }, empire: {}, expected: undefined },
+	{ building: { expertise: null }, empire: {}, expected: undefined },
 	{
-		building: { Expertise: "AGRICULTURE" },
+		building: { expertise: "AGRICULTURE" },
 		empire: undefined,
 		expected: undefined,
 		description: "Building Expertise, no empire",
 	},
 	{
-		building: { Expertise: null },
+		building: { expertise: null },
 		empire: undefined,
 		expected: undefined,
 		description: "Building Expertise null, no empire",
 	},
 	{
-		building: { Expertise: "AGRICULTURE" },
-		empire: { faction: "FOO" },
+		building: { expertise: "AGRICULTURE" },
+		empire: { empire_faction: "FOO" },
 		expected: undefined,
 		description: "Building Expertise, invalid faction",
 	},
 	{
-		building: { Expertise: "AGRICULTURE" },
-		empire: { faction: "HORTUS", permits_used: 1, permits_total: 3 },
+		building: { expertise: "AGRICULTURE" },
+		empire: {
+			empire_faction: "HORTUS",
+			empire_permits_used: 1,
+			empire_permits_total: 3,
+		},
 		expected: {
 			efficiencyType: "FACTION",
 			value: 1.1400000000000001,
@@ -165,8 +169,12 @@ const factionBonusCases = [
 		description: "Building Expertise, Hortus",
 	},
 	{
-		building: { Expertise: "METALLURGY" },
-		empire: { faction: "MORIA", permits_used: 20, permits_total: 21 },
+		building: { expertise: "METALLURGY" },
+		empire: {
+			empire_faction: "MORIA",
+			empire_permits_used: 20,
+			empire_permits_total: 21,
+		},
 		expected: {
 			efficiencyType: "FACTION",
 			value: 1.0438095238095237,
@@ -228,15 +236,15 @@ describe("Planning: Bonus Calculations ", async () => {
 			const { calculateBuildingEfficiency } = await useBonusCalculation();
 
 			const testBuilding = {
-				Ticker: "FRM",
-				Pioneers: 20,
-				Settlers: 50,
-				Technicians: 10,
-				Engineers: 5,
-				Scientists: 5,
-				Expertise: "METALLURGY",
+				building_ticker: "FRM",
+				pioneers: 20,
+				settlers: 50,
+				technicians: 10,
+				engineers: 5,
+				scientists: 5,
+				expertise: "METALLURGY",
 			};
-			const testPlanet = { Fertility: 0.85 };
+			const testPlanet = { fertility: 0.85 };
 			const testCorpHQ = true;
 			const testCOGC = "METALLURGY";
 			const testWorkforce = {
@@ -290,9 +298,9 @@ describe("Planning: Bonus Calculations ", async () => {
 				Metallurgy: { name: "Metallurgy", amount: 3, bonus: 0.1248 },
 			};
 			const testEmpire = {
-				faction: "MORIA",
-				permits_used: 20,
-				permits_total: 21,
+				empire_faction: "MORIA",
+				empire_permits_used: 20,
+				empire_permits_total: 21,
 			};
 
 			const result = calculateBuildingEfficiency(
@@ -340,15 +348,15 @@ describe("Planning: Bonus Calculations ", async () => {
 			const { calculateBuildingEfficiency } = await useBonusCalculation();
 
 			const testBuilding = {
-				Ticker: "FRM",
-				Pioneers: 20,
-				Settlers: 50,
-				Technicians: 10,
-				Engineers: 5,
-				Scientists: 5,
-				Expertise: "METALLURGY",
+				building_ticker: "FRM",
+				pioneers: 20,
+				settlers: 50,
+				technicians: 10,
+				engineers: 5,
+				scientists: 5,
+				expertise: "METALLURGY",
 			};
-			const testPlanet = { Fertility: 0.85 };
+			const testPlanet = { fertility: 0.85 };
 			const testCorpHQ = true;
 			const testCOGC = "SETTLERS";
 			const testWorkforce = {
@@ -402,9 +410,9 @@ describe("Planning: Bonus Calculations ", async () => {
 				Metallurgy: { name: "Metallurgy", amount: 3, bonus: 0.1248 },
 			};
 			const testEmpire = {
-				faction: "MORIA",
-				permits_used: 20,
-				permits_total: 21,
+				empire_faction: "MORIA",
+				empire_permits_used: 20,
+				empire_permits_total: 21,
 			};
 
 			const result = calculateBuildingEfficiency(
@@ -452,15 +460,15 @@ describe("Planning: Bonus Calculations ", async () => {
 			const { calculateBuildingEfficiency } = await useBonusCalculation();
 
 			const testBuilding = {
-				Ticker: "FRM",
-				Pioneers: 20,
-				Settlers: 50,
-				Technicians: 10,
-				Engineers: 5,
-				Scientists: 5,
-				Expertise: "METALLURGY",
+				building_ticker: "FRM",
+				pioneers: 20,
+				settlers: 50,
+				technicians: 10,
+				engineers: 5,
+				scientists: 5,
+				expertise: "METALLURGY",
 			};
-			const testPlanet = { Fertility: -1.0 };
+			const testPlanet = { fertility: -1.0 };
 			const testCorpHQ = true;
 			const testCOGC = "SETTLERS";
 			const testWorkforce = {
@@ -514,9 +522,9 @@ describe("Planning: Bonus Calculations ", async () => {
 				Metallurgy: { name: "Metallurgy", amount: 3, bonus: 0.1248 },
 			};
 			const testEmpire = {
-				faction: "MORIA",
-				permits_used: 20,
-				permits_total: 21,
+				empire_faction: "MORIA",
+				empire_permits_used: 20,
+				empire_permits_total: 21,
 			};
 
 			const result = calculateBuildingEfficiency(

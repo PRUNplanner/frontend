@@ -8,9 +8,6 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useSharing } from "@/features/sharing/useSharing";
 
 // test data
-import shared from "@/tests/test_data/api_data_shared.json";
-import planet_single from "@/tests/test_data/api_data_planet_single.json";
-import empire_list from "@/tests/test_data/api_data_empire_list.json";
 import shared_list from "@/tests/test_data/api_data_shared_list.json";
 
 vi.mock("@/features/api/sharingData.api", async () => {
@@ -40,7 +37,7 @@ describe("useSharing", async () => {
 
 	it("data on shared plan", async () => {
 		planningStore.shared["foo"] = {
-			shared_uuid: "moo",
+			uuid: "moo",
 			plan_uuid: "foo",
 			view_count: 10,
 		};
@@ -72,9 +69,10 @@ describe("useSharing", async () => {
 	it("create shared plan", async () => {
 		vi.mocked(callCreateSharing).mockResolvedValueOnce({
 			uuid: "7864a361-cca5-4384-8477-ceec21a8ee65",
-			created_date: "2025-06-06",
+			created_at: new Date(),
 			view_count: 157,
 		});
+		// @ts-expect-error mock data date as string
 		vi.mocked(callGetSharedList).mockResolvedValueOnce(shared_list);
 
 		const { isShared, createSharing } = useSharing("foo");
@@ -86,6 +84,7 @@ describe("useSharing", async () => {
 
 	it("delete shared plan", async () => {
 		vi.mocked(callDeleteSharing).mockResolvedValueOnce(true);
+		// @ts-expect-error mock data date as string
 		vi.mocked(callGetSharedList).mockResolvedValueOnce(shared_list);
 
 		planningStore.shared["foo"] = {

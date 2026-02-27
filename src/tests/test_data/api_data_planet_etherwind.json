@@ -1,118 +1,95 @@
 {
-	"PlanetId": "8403b6809cda4c6adf1362a5c2801ad0",
-	"PlanetNaturalId": "KW-688c",
-	"PlanetName": "Etherwind",
-	"SystemId": "239e36f2a61041e0952d9c9741c195c9",
-	"HasLocalMarket": true,
-	"HasChamberOfCommerce": true,
-	"HasWarehouse": true,
-	"HasAdministrationCenter": true,
-	"HasShipyard": true,
-	"Pressure": 0.3981054127216339,
-	"Surface": true,
-	"Temperature": 31.400123596191406,
-	"Fertility": -0.699999988079071,
-	"Gravity": 0.5614709854125977,
-	"FactionCode": null,
-	"FactionName": null,
-	"GovernorUserName": null,
-	"COGCProgramStatus": "ACTIVE",
-	"Resources": [
+	"planet_id": "8403b6809cda4c6adf1362a5c2801ad0",
+	"planet_natural_id": "KW-688c",
+	"planet_name": "Etherwind",
+	"system_id": "239e36f2a61041e0952d9c9741c195c9",
+	"has_localmarket": true,
+	"has_chamberofcommerce": true,
+	"has_warehouse": true,
+	"has_administrationcenter": true,
+	"has_shipyard": true,
+	"pressure": 0.3981054127216339,
+	"surface": true,
+	"gravity": 0.5614709854125977,
+	"temperature": 31.400123596191406,
+	"fertility": -0.699999988079071,
+	"faction_code": null,
+	"faction_name": null,
+	"cogc_program_status": "ACTIVE",
+	"resources": [
 		{
-			"MaterialId": "ec8dbb1d3f51d89c61b6f58fdd64a7f0",
-			"ResourceType": "LIQUID",
-			"Factor": 0.6000000238418579,
-			"DailyExtraction": 42.000001668930054,
-			"MaterialTicker": "H2O",
-			"ExtractionMax": 62.82984256744385
+			"resource_type": "LIQUID",
+			"factor": 0.6000000238418579,
+			"daily_extraction": 42.000001668930054,
+			"material_ticker": "H2O",
+			"max_daily_extraction": 62.82984256744385
 		},
 		{
-			"MaterialId": "eeff5ee913d34354be84177847fbfe48",
-			"ResourceType": "MINERAL",
-			"Factor": 0.30000001192092896,
-			"DailyExtraction": 21.000000834465027,
-			"MaterialTicker": "SIO",
-			"ExtractionMax": 53.825785517692566
+			"resource_type": "MINERAL",
+			"factor": 0.30000001192092896,
+			"daily_extraction": 21.000000834465027,
+			"material_ticker": "SIO",
+			"max_daily_extraction": 53.825785517692566
 		},
 		{
-			"MaterialId": "6e16dbf050b98d9c4fc9c615b3367a0f",
-			"ResourceType": "GASEOUS",
-			"Factor": 0.44999998807907104,
-			"DailyExtraction": 26.999999284744263,
-			"MaterialTicker": "O",
-			"ExtractionMax": 43.26020121574402
+			"resource_type": "GASEOUS",
+			"factor": 0.44999998807907104,
+			"daily_extraction": 26.999999284744263,
+			"material_ticker": "O",
+			"max_daily_extraction": 43.26020121574402
 		}
 	],
-	"COGCPrograms": [
+	"cogc_programs": [
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1747141200904,
-			"EndEpochMs": 1747746000904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1772542800904,
+			"end_epochms": 1773147600904
 		},
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1746536400904,
-			"EndEpochMs": 1747141200904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1771333200904,
+			"end_epochms": 1771938000904
 		},
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1745931600904,
-			"EndEpochMs": 1746536400904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1770728400904,
+			"end_epochms": 1771333200904
 		},
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1745326800904,
-			"EndEpochMs": 1745931600904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1770123600904,
+			"end_epochms": 1770728400904
 		},
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1744722000904,
-			"EndEpochMs": 1745326800904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1769518800904,
+			"end_epochms": 1770123600904
 		},
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1741698000904,
-			"EndEpochMs": 1742302800904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1768914000904,
+			"end_epochms": 1769518800904
 		},
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1744117200904,
-			"EndEpochMs": 1744722000904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1768309200904,
+			"end_epochms": 1768914000904
 		},
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1742302800904,
-			"EndEpochMs": 1742907600904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1767704400904,
+			"end_epochms": 1768309200904
 		},
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1743512400904,
-			"EndEpochMs": 1744117200904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1767099600904,
+			"end_epochms": 1767704400904
 		},
 		{
-			"ProgramType": "ADVERTISING_RESOURCE_EXTRACTION",
-			"StartEpochMs": 1742907600904,
-			"EndEpochMs": 1743512400904
+			"program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+			"start_epochms": 1771938000904,
+			"end_epochms": 1772542800904
 		}
 	],
-	"CheckDistances": null,
-	"Distances": [
-		{
-			"name": "Moria Station",
-			"distance": 6
-		},
-		{
-			"name": "Antares Station",
-			"distance": 7
-		},
-		{
-			"name": "Benten Station",
-			"distance": 4
-		},
-		{
-			"name": "Hortus Station",
-			"distance": 11
-		}
-	],
-	"COGCProgramActive": "ADVERTISING_RESOURCE_EXTRACTION"
+	"active_cogc_program_type": "ADVERTISING_RESOURCE_EXTRACTION"
 }

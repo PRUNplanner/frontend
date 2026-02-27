@@ -12,28 +12,28 @@ import { DB_SCHEMA } from "@/database/schema";
 import { IMaterial } from "@/features/api/gameData.types";
 
 const fakeMaterial_1: IMaterial = {
-	MaterialId: "foo",
-	CategoryName: "foo category",
-	CategoryId: "foo category id",
-	Name: "m1",
-	Ticker: "m1",
-	Weight: 5,
-	Volume: 7,
+	material_id: "foo",
+	category_name: "foo category",
+	category_id: "foo category id",
+	name: "m1",
+	ticker: "m1",
+	weight: 5,
+	volume: 7,
 };
 const fakeMaterial_2: IMaterial = {
-	MaterialId: "moo",
-	CategoryName: "moo category",
-	CategoryId: "moo category id",
-	Name: "m2",
-	Ticker: "m2",
-	Weight: 5,
-	Volume: 7,
+	material_id: "moo",
+	category_name: "moo category",
+	category_id: "moo category id",
+	name: "m2",
+	ticker: "m2",
+	weight: 5,
+	volume: 7,
 };
 
 describe("useIndexedDBStore", () => {
-	const store = useIndexedDBStore<IMaterial, "Ticker">(
+	const store = useIndexedDBStore<IMaterial, "ticker">(
 		"gamedata_materials",
-		"Ticker"
+		"ticker"
 	);
 
 	// Before each test, clear the store
@@ -47,9 +47,8 @@ describe("useIndexedDBStore", () => {
 		// @ts-expect-error
 		navigator.storage = { persist: persistSpy };
 
-		const { requestPersistence } = await import(
-			"@/database/composables/useIndexedDBStore"
-		);
+		const { requestPersistence } =
+			await import("@/database/composables/useIndexedDBStore");
 		await requestPersistence();
 
 		expect(persistSpy).toHaveBeenCalledTimes(1);
@@ -110,9 +109,8 @@ describe("useIndexedDBStore", () => {
 		// @ts-expect-error
 		delete navigator.storage;
 
-		const { requestPersistence } = await import(
-			"@/database/composables/useIndexedDBStore"
-		);
+		const { requestPersistence } =
+			await import("@/database/composables/useIndexedDBStore");
 		await expect(requestPersistence()).resolves.not.toThrow();
 	});
 

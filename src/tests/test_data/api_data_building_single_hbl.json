@@ -1,46 +1,38 @@
 {
-	"Name": "habitationLuxury",
-	"Ticker": "HBL",
-	"Expertise": null,
-	"Pioneers": 0,
-	"Settlers": 0,
-	"Technicians": 0,
-	"Engineers": 0,
-	"Scientists": 0,
-	"AreaCost": 22,
-	"BuildingCosts": [
+	"building_id": "181b4057c362f7b13cb87fdcf456cc45",
+	"costs": [
 		{
-			"CommodityTicker": "ADE",
-			"Weight": 0.4000000059604645,
-			"Volume": 1.5,
-			"Amount": 8
+			"material_ticker": "ATA",
+			"material_amount": 6
 		},
 		{
-			"CommodityTicker": "ABH",
-			"Weight": 0.6000000238418579,
-			"Volume": 0.8999999761581421,
-			"Amount": 8
+			"material_ticker": "ASE",
+			"material_amount": 6
 		},
 		{
-			"CommodityTicker": "ASE",
-			"Weight": 0.5,
-			"Volume": 0.6000000238418579,
-			"Amount": 6
+			"material_ticker": "ADE",
+			"material_amount": 8
 		},
 		{
-			"CommodityTicker": "ATA",
-			"Weight": 0.30000001192092896,
-			"Volume": 0.4000000059604645,
-			"Amount": 6
+			"material_ticker": "ABH",
+			"material_amount": 8
 		}
 	],
-	"Habitation": {
-		"Pioneer": 0,
-		"Settler": 0,
-		"Technician": 0,
-		"Engineer": 75,
-		"Scientist": 75,
-		"Area": 22
+	"habitations": {
+		"pioneers": 0,
+		"settlers": 0,
+		"technicians": 0,
+		"engineers": 75,
+		"scientists": 75
 	},
-	"Type": "INFRASTRUCTURE"
+	"building_name": "habitationLuxury",
+	"building_ticker": "HBL",
+	"expertise": null,
+	"pioneers": 0,
+	"settlers": 0,
+	"technicians": 0,
+	"engineers": 0,
+	"scientists": 0,
+	"area_cost": 22,
+	"building_type": "INFRASTRUCTURE"
 }

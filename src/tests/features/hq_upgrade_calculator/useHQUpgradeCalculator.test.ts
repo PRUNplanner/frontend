@@ -24,6 +24,7 @@ describe("useHQUpgradeCalculator", async () => {
 		setActivePinia(createPinia());
 
 		await materialsStore.setMany(materials);
+		// @ts-expect-error mock data with string as date
 		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();

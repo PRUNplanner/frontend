@@ -68,7 +68,9 @@ describe("useBurnXITAction", async () => {
 			ref(resupplyDays),
 			ref(hideInfinite),
 			ref(materialOverrides),
-			ref(materialInactives)
+			ref(materialInactives),
+			ref(undefined),
+			ref(undefined)
 		);
 
 		expect(materialTable.value.length).toBe(3);
@@ -83,7 +85,9 @@ describe("useBurnXITAction", async () => {
 			ref(resupplyDays),
 			ref(hideInfinite),
 			ref(materialOverrides),
-			ref(materialInactives)
+			ref(materialInactives),
+			ref(undefined),
+			ref(undefined)
 		);
 
 		expect(totalWeightVolume.value.totalWeight).toBe(16.230000257492065);
@@ -98,7 +102,9 @@ describe("useBurnXITAction", async () => {
 			days,
 			ref(hideInfinite),
 			ref(materialOverrides),
-			ref(materialInactives)
+			ref(materialInactives),
+			ref(undefined),
+			ref(undefined)
 		);
 
 		fit(50, 50);

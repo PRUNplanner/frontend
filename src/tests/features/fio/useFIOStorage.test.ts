@@ -53,11 +53,11 @@ describe("useFIOStorage", async () => {
 			const { findStorageValueFromOptions } = useFIOStorage();
 
 			expect(findStorageValueFromOptions("PLANET#ZV-307c", "PWO")).toBe(
-				6
+				63
 			);
-			expect(findStorageValueFromOptions("WAR#ANT", "PWO")).toBe(279);
+			expect(findStorageValueFromOptions("WAR#ANT", "PWO")).toBe(618);
 			expect(findStorageValueFromOptions("SHIP#AVI-04WD9", "H2O")).toBe(
-				467
+				1250
 			);
 		});
 	});
@@ -82,8 +82,8 @@ describe("useFIOStorage", async () => {
 		const { findMaterial } = useFIOStorage();
 
 		const first = findMaterial("RAT");
-		expect(first.amount).toBe(67042);
-		expect(first.locations.length).toBe(18);
+		expect(first.amount).toBe(38091);
+		expect(first.locations.length).toBe(21);
 		const second = findMaterial("FOO");
 		expect(second.amount).toBe(0);
 		expect(second.locations.length).toBe(0);

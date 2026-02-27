@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useVersionCheck } from "@/lib/useVersionCheck";
-import { flushPromises, mount } from "@vue/test-utils";
 
 describe("useVersionCheck", () => {
 	const LOCAL_KEY = "prunplanner_version";

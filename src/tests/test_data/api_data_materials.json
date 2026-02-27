@@ -1,3107 +1,3332 @@
 [
 	{
-		"MaterialId": "d4a247f1ae7a17b6e80057866ecdf90d",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "antennaArray",
-		"Ticker": "AAR",
-		"Weight": 0.7799999713897705,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "274e35935b4ba9f4032f657b0ab6e0e5",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "advancedBulkhead",
-		"Ticker": "ABH",
-		"Weight": 0.6000000238418579,
-		"Volume": 0.8999999761581421
-	},
-	{
-		"MaterialId": "a7a19eb0c3f253884c901bf1d05f2369",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "automatedCoolingSystem",
-		"Ticker": "ACS",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.20000000298023224
-	},
-	{
-		"MaterialId": "bf1f62e450627f2db02884657c399284",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "advancedDeckElements",
-		"Ticker": "ADE",
-		"Weight": 0.4000000059604645,
-		"Volume": 1.5
-	},
-	{
-		"MaterialId": "f99a1c9a730d92fd78b7dc7c2d710060",
-		"CategoryName": "medical equipment",
-		"CategoryId": "ef05c6b81cf109f142dd415ce6d36e67",
-		"Name": "autoDoc",
-		"Ticker": "ADR",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "03133ed742ebc355fb01a1b363d48a70",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "audioDistributionSystem",
-		"Ticker": "ADS",
-		"Weight": 0.699999988079071,
-		"Volume": 2.0
-	},
-	{
-		"MaterialId": "5fa39c2298568262540bf6579feb017e",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "aerostatFoundation",
-		"Ticker": "AEF",
-		"Weight": 2.0,
-		"Volume": 5.0
-	},
-	{
-		"MaterialId": "6f5e5b36f990caafe0b6eae133084930",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "advancedEngine",
-		"Ticker": "AEN",
-		"Weight": 14.0,
-		"Volume": 7.0
-	},
-	{
-		"MaterialId": "f02fe7ddd1a92d3b7968fdbc40f8447e",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "advancedFuelPump",
-		"Ticker": "AFP",
-		"Weight": 1.0,
-		"Volume": 0.25
-	},
-	{
-		"MaterialId": "b591180c0f681910b0e29ade88b6be62",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "advancedFuelRod",
-		"Ticker": "AFR",
-		"Weight": 0.4000000059604645,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "0a37a0d116f1271b285b7304e413733b",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "advancedHighgSeats",
-		"Ticker": "AGS",
-		"Weight": 30.0,
-		"Volume": 5.0
-	},
-	{
-		"MaterialId": "686d319fc72c05510a884292da6cb664",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "advancedHullPlate",
-		"Ticker": "AHP",
-		"Weight": 10.0,
-		"Volume": 10.0
-	},
-	{
-		"MaterialId": "cbfa90b487f0d79023e11da44f052f96",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "airScrubber",
-		"Ticker": "AIR",
-		"Weight": 1.7000000476837158,
-		"Volume": 3.0
-	},
-	{
-		"MaterialId": "ed72545a5db1f16430d79a240dc61e6c",
-		"CategoryName": "metals",
-		"CategoryId": "cae48680d4c4e6f98d593a8c3778cb56",
-		"Name": "aluminium",
-		"Ticker": "AL",
-		"Weight": 2.700000047683716,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "cd0c4bd7aae87c7e402d359b6e908b05",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "technicianLuxuryDrink",
-		"Ticker": "ALE",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "ec6fe0efa83e52fd59f248a069aee9bb",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "proteinAlgae",
-		"Ticker": "ALG",
-		"Weight": 0.699999988079071,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "04f72b0c957b769c6d45c011e9c9b4b5",
-		"CategoryName": "ores",
-		"CategoryId": "4c0430b40fbf7fa175ed4a5a13682c6f",
-		"Name": "aluminiumOre",
-		"Ticker": "ALO",
-		"Weight": 1.350000023841858,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "bcf4a2029e461cf76d29de8c66ec2ff9",
-		"CategoryName": "gases",
-		"CategoryId": "54dec1e42eba44dda423dd774393326a",
-		"Name": "ammonia",
-		"Ticker": "AMM",
-		"Weight": 0.8600000143051147,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "5de316b11d1e8f5dc142665ae979ec19",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "advancedNozzle",
-		"Ticker": "ANZ",
-		"Weight": 6.0,
-		"Volume": 3.0
-	},
-	{
-		"MaterialId": "815b7171c7647a71758ff3a13bd303a9",
-		"CategoryName": "ship shields",
-		"CategoryId": "a8e32e7e16219394989aea62fc0cd943",
-		"Name": "advancedHeatShield",
-		"Ticker": "APT",
-		"Weight": 0.029999999329447746,
-		"Volume": 0.30000001192092896
-	},
-	{
-		"MaterialId": "a014493f8716f1636704dc836acc66ec",
-		"CategoryName": "gases",
-		"CategoryId": "54dec1e42eba44dda423dd774393326a",
-		"Name": "argon",
-		"Ticker": "AR",
-		"Weight": 1.784000039100647,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e73f2311d23a1dc4e096d2cf389e5ee2",
-		"CategoryName": "ship shields",
-		"CategoryId": "a8e32e7e16219394989aea62fc0cd943",
-		"Name": "advancedRadiationShielding",
-		"Ticker": "ARP",
-		"Weight": 0.03999999910593033,
-		"Volume": 0.20000000298023224
-	},
-	{
-		"MaterialId": "c83a4fc74233f9ffac3f5b7b7b83dce5",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "advancedStructuralElements",
-		"Ticker": "ASE",
-		"Weight": 0.5,
-		"Volume": 0.6000000238418579
-	},
-	{
-		"MaterialId": "5a3934eb6d4ffc642fab7a358c3fb1b8",
-		"CategoryName": "alloys",
-		"CategoryId": "37e95782d80aa1c1ded89f2c4b834dd0",
-		"Name": "aluminiumTitaniumAlloy",
-		"Ticker": "AST",
-		"Weight": 4.980000019073486,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "a531fd67223d12e94103dff359c50e0d",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "advancedWindow",
-		"Ticker": "ATA",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.4000000059604645
-	},
-	{
-		"MaterialId": "7bfabb5b93eb7a287206e062ce829e29",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "advancedThermalProtectionMaterial",
-		"Ticker": "ATP",
-		"Weight": 2.9000000953674316,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "de74e4c1ab68d0889a7204f154153da1",
-		"CategoryName": "metals",
-		"CategoryId": "cae48680d4c4e6f98d593a8c3778cb56",
-		"Name": "gold",
-		"Ticker": "AU",
-		"Weight": 19.31999969482422,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "3efc94d2a18702eee04ba2850bdb9bef",
-		"CategoryName": "ores",
-		"CategoryId": "4c0430b40fbf7fa175ed4a5a13682c6f",
-		"Name": "goldOre",
-		"Ticker": "AUO",
-		"Weight": 3.859999895095825,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e40f3373c1b7c0158d69ee9adfe612b1",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "waterFilter",
-		"Ticker": "AWF",
-		"Weight": 0.800000011920929,
-		"Volume": 1.2000000476837158
-	},
-	{
-		"MaterialId": "8284845e663b10975f8eec5f4426ec29",
-		"CategoryName": "ship shields",
-		"CategoryId": "a8e32e7e16219394989aea62fc0cd943",
-		"Name": "advancedWhippleShielding",
-		"Ticker": "AWH",
-		"Weight": 0.11999999731779099,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "6daa4e4e074e1af8fb74458fe2196124",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "bacteria",
-		"Ticker": "BAC",
-		"Weight": 0.15000000596046448,
-		"Volume": 0.15000000596046448
-	},
-	{
-		"MaterialId": "6224081a169a0951a9cac7553d601ba7",
-		"CategoryName": "software components",
-		"CategoryId": "ebec0c297d5b499a84dd051fa6f7c8ec",
-		"Name": "basicAiFramework",
-		"Ticker": "BAI",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "63b98e9700f6630cbfd9c824e0882388",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "basicBulkhead",
-		"Ticker": "BBH",
-		"Weight": 0.5,
-		"Volume": 0.800000011920929
-	},
-	{
-		"MaterialId": "7bd03426f1ced7f6aa13a6195f494930",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "copperConnectors",
-		"Ticker": "BCO",
-		"Weight": 0.004999999888241291,
-		"Volume": 0.0020000000949949026
-	},
-	{
-		"MaterialId": "420b38d32301dfe56403d1f3967d5b86",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "basicDeckElements",
-		"Ticker": "BDE",
-		"Weight": 0.10000000149011612,
-		"Volume": 1.5
-	},
-	{
-		"MaterialId": "d3c0b6280da00e2ab4ee1ea6046cb488",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "beryllium",
-		"Ticker": "BE",
-		"Weight": 1.840000033378601,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e97e2535fec019710299709a7462c066",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "proteinBeans",
-		"Ticker": "BEA",
-		"Weight": 0.800000011920929,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "fc9e1183c47d97315434a8b2c768d35c",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "beryl",
-		"Ticker": "BER",
-		"Weight": 1.9199999570846558,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "3798c56adc243fe2b25d988139939d8d",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "basicFuelPump",
-		"Ticker": "BFP",
-		"Weight": 0.800000011920929,
-		"Volume": 0.20000000298023224
-	},
-	{
-		"MaterialId": "206d41a1981a67025be0299c67943607",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "basicFuelRod",
-		"Ticker": "BFR",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "115e4c08cdd519c175ca3d58af562c1e",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "blueGoldConnectors",
-		"Ticker": "BGC",
-		"Weight": 0.009999999776482582,
-		"Volume": 0.0020000000949949026
-	},
-	{
-		"MaterialId": "b2ca8883f60fb72011ad33855c531f3a",
-		"CategoryName": "alloys",
-		"CategoryId": "37e95782d80aa1c1ded89f2c4b834dd0",
-		"Name": "goldIronAlloy",
-		"Ticker": "BGO",
-		"Weight": 19.31999969482422,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "9375c2dbd1de92b8ec107677bfeda193",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "basicHighgSeats",
-		"Ticker": "BGS",
-		"Weight": 20.0,
-		"Volume": 3.0
-	},
-	{
-		"MaterialId": "c03644ad9e74ee585b1148f608010003",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "basicHullPlate",
-		"Ticker": "BHP",
-		"Weight": 9.0,
-		"Volume": 10.0
-	},
-	{
-		"MaterialId": "1dc2dcd0be19e4272767510d3392fe36",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "fullBodyInteractionDevice",
-		"Ticker": "BID",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "aa4fb3a0d1c1cf17199f436b12c59b69",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "breathableLiquid",
-		"Ticker": "BL",
-		"Weight": 1.1200000047683716,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "5745aed2f78b303ee96528213f99ec9f",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "bleach",
-		"Ticker": "BLE",
-		"Weight": 0.5,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "47952dfcb98b6d573fd3e9461cfdddcf",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "mainFrameBlank",
-		"Ticker": "BMF",
-		"Weight": 0.800000011920929,
-		"Volume": 1.2000000476837158
-	},
-	{
-		"MaterialId": "26c6a0defb9109b7ac3fab559b9d4f65",
-		"CategoryName": "medical equipment",
-		"CategoryId": "ef05c6b81cf109f142dd415ce6d36e67",
-		"Name": "bandages",
-		"Ticker": "BND",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.004999999888241291
-	},
-	{
-		"MaterialId": "fba7294b0f74a4a2527f5a7049c70120",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "boronCrystals",
-		"Ticker": "BOR",
-		"Weight": 1.7999999523162842,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "08adb8c8b129d07b85919cff2fdc2c0d",
-		"CategoryName": "alloys",
-		"CategoryId": "37e95782d80aa1c1ded89f2c4b834dd0",
-		"Name": "borosilicate",
-		"Ticker": "BOS",
-		"Weight": 1.5,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "5dee73eea0e8e99a6564a011ddc80880",
-		"CategoryName": "ship shields",
-		"CategoryId": "a8e32e7e16219394989aea62fc0cd943",
-		"Name": "basicHeatShield",
-		"Ticker": "BPT",
-		"Weight": 0.019999999552965164,
-		"Volume": 0.30000001192092896
-	},
-	{
-		"MaterialId": "70504de53ce6b9348f725e442586d75c",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "commandBridge1",
-		"Ticker": "BR1",
-		"Weight": 180.0,
-		"Volume": 300.0
-	},
-	{
-		"MaterialId": "73e30b806837b71692e2857fd9aff667",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "commandBridge2",
-		"Ticker": "BR2",
-		"Weight": 280.0,
-		"Volume": 400.0
-	},
-	{
-		"MaterialId": "e97bde9e60d4c60a16205d2c859eda62",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "bioreactiveMineral",
-		"Ticker": "BRM",
-		"Weight": 2.5,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "069cfa526ddedea57b71adc0d4556c21",
-		"CategoryName": "alloys",
-		"CategoryId": "37e95782d80aa1c1ded89f2c4b834dd0",
-		"Name": "copperAluminiumAlloy",
-		"Ticker": "BRO",
-		"Weight": 8.729999542236328,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "6070c50f7e58a7db432416085531a01b",
-		"CategoryName": "ship shields",
-		"CategoryId": "a8e32e7e16219394989aea62fc0cd943",
-		"Name": "basicRadiationShielding",
-		"Ticker": "BRP",
-		"Weight": 0.029999999329447746,
-		"Volume": 0.20000000298023224
-	},
-	{
-		"MaterialId": "bfef679d7f2ac72b24c2a277fdf072ef",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "commandBridgeShort",
-		"Ticker": "BRS",
-		"Weight": 150.0,
-		"Volume": 200.0
-	},
-	{
-		"MaterialId": "c8a952f1ae3dbd4be8a72741efa29880",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "bodyScanner",
-		"Ticker": "BSC",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "6bbdf7d0503153753c8cb23653a4d22b",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "basicStructuralElements",
-		"Ticker": "BSE",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "334f3510e3265410da15174160fbf8f5",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "basicWindow",
-		"Ticker": "BTA",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.4000000059604645
-	},
-	{
-		"MaterialId": "72b87b633c828f417737f5e2e473083d",
-		"CategoryName": "liquids",
-		"CategoryId": "473218d3618453bf25d2cd0b5616a72f",
-		"Name": "tungstenResource",
-		"Ticker": "BTS",
-		"Weight": 1.0499999523162842,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "42e71bbfad2d69d9716ba14e653f50d4",
-		"CategoryName": "ship shields",
-		"CategoryId": "a8e32e7e16219394989aea62fc0cd943",
-		"Name": "basicWhippleShielding",
-		"Ticker": "BWH",
-		"Weight": 0.10000000149011612,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "dca85bbac276e8688496bd8ae06b1185",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "workstationBlank",
-		"Ticker": "BWS",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "4bbcc7dc5dd16e9af90528ed04d9c6ba",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "carbon",
-		"Ticker": "C",
-		"Weight": 2.25,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "d4b42f6606b6f9d7ca1aea9295154288",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "calcium",
-		"Ticker": "CA",
-		"Weight": 1.5399999618530273,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "363f35e6ebb48062872112416e49424c",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "caffeinatedBeans",
-		"Ticker": "CAF",
-		"Weight": 0.8600000143051147,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "2db0ebcc44d7df90defe67cc63903a76",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "capacitor",
-		"Ticker": "CAP",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "7c21fd74ca3684f0df5470d774e694a3",
-		"CategoryName": "energy systems",
-		"CategoryId": "0509ed0a396f5a004d24ef08e33786fb",
-		"Name": "largeCapacitorBank",
-		"Ticker": "CBL",
-		"Weight": 5.400000095367432,
-		"Volume": 2.4000000953674316
-	},
-	{
-		"MaterialId": "284020181d5731f5119fd98352061ad5",
-		"CategoryName": "energy systems",
-		"CategoryId": "0509ed0a396f5a004d24ef08e33786fb",
-		"Name": "mediumCapacitorBank",
-		"Ticker": "CBM",
-		"Weight": 3.5999999046325684,
-		"Volume": 1.600000023841858
-	},
-	{
-		"MaterialId": "46fef6e8b458e46414345cf8248410c3",
-		"CategoryName": "energy systems",
-		"CategoryId": "0509ed0a396f5a004d24ef08e33786fb",
-		"Name": "smallCapacitorBank",
-		"Ticker": "CBS",
-		"Weight": 1.7999999523162842,
-		"Volume": 0.800000011920929
-	},
-	{
-		"MaterialId": "c3851a633c5e8c625bfe332e79af7360",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "climateController",
-		"Ticker": "CC",
-		"Weight": 0.5,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e0bc5afdf3ca754592f454fdbd813c74",
-		"CategoryName": "drones",
-		"CategoryId": "6eb09f14ed9fec3d0407114be8bc8882",
-		"Name": "crowdControlDrone",
-		"Ticker": "CCD",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "cb9bcbcc36de690abcafb9d5cc944cd4",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "touchScreen",
-		"Ticker": "CD",
-		"Weight": 0.004000000189989805,
-		"Volume": 0.0020000000949949026
-	},
-	{
-		"MaterialId": "c8cc72aa9babd2ca382be2f358202587",
-		"CategoryName": "textiles",
-		"CategoryId": "7028d7d532ccd4c6c878b069e7bbb634",
-		"Name": "ceramicFabric",
-		"Ticker": "CF",
-		"Weight": 2.819999933242798,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "099fe9e22a3c6238629445fe518b58ff",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "combustionChamber",
-		"Ticker": "CHA",
-		"Weight": 1.2000000476837158,
-		"Volume": 0.699999988079071
-	},
-	{
-		"MaterialId": "19be1b1e67efe63de8127d057508fe0c",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "chlorine",
-		"Ticker": "CL",
-		"Weight": 3.200000047683716,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "4d2a6c0cf6eb404cda3b35820bcbe453",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "caliche",
-		"Ticker": "CLI",
-		"Weight": 2.4200000762939453,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "67eab8960fc6262250335978d64c9e80",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "coreModuleKit",
-		"Ticker": "CMK",
-		"Weight": 4.559999942779541,
-		"Volume": 33.20000076293945
-	},
-	{
-		"MaterialId": "9842ad8d9dfdf8e4c2e80117e7b5ebaf",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "pioneerLuxuryDrink",
-		"Ticker": "COF",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "ee0e83e198391b1c9affe29ac07623b0",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "communicationSystem",
-		"Ticker": "COM",
-		"Weight": 0.5,
-		"Volume": 1.5
-	},
-	{
-		"MaterialId": "7aeed35adeb209ebdb4985f451ed3e46",
-		"CategoryName": "textiles",
-		"CategoryId": "7028d7d532ccd4c6c878b069e7bbb634",
-		"Name": "cottonProcessed",
-		"Ticker": "COT",
-		"Weight": 0.7699999809265137,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e04f3be303b7dabe50ef92a354070891",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "crewQuarters",
-		"Ticker": "CQL",
-		"Weight": 75.0,
-		"Volume": 150.0
-	},
-	{
-		"MaterialId": "128870a0d62fc67b9d562bb40ddf3922",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "crewQuartersMed",
-		"Ticker": "CQM",
-		"Weight": 50.0,
-		"Volume": 100.0
-	},
-	{
-		"MaterialId": "9f4c5f6a328a1bef6a989c7ea6b21fb9",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "crewQuartersSmall",
-		"Ticker": "CQS",
-		"Weight": 25.0,
-		"Volume": 50.0
-	},
-	{
-		"MaterialId": "2a75ecd980c6edd020d71a8b8948aa6a",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "crewQuartersTiny",
-		"Ticker": "CQT",
-		"Weight": 12.5,
-		"Volume": 25.0
-	},
-	{
-		"MaterialId": "3e9e003ed20e4a62eb811a8a50223a65",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "cryoUnit",
-		"Ticker": "CRU",
-		"Weight": 2.200000047683716,
-		"Volume": 2.0
-	},
-	{
-		"MaterialId": "5a41a18d80ddc6982b61f5d2df496358",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "cryogenicFluid",
-		"Ticker": "CST",
-		"Weight": 1.1399999856948853,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "5b959b6c0c20016402811352969960c0",
-		"CategoryName": "textiles",
-		"CategoryId": "7028d7d532ccd4c6c878b069e7bbb634",
-		"Name": "ceramicTungstenFabric",
-		"Ticker": "CTF",
-		"Weight": 4.320000171661377,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "495ffb5105f367b76b1310c1d6736ac9",
-		"CategoryName": "metals",
-		"CategoryId": "cae48680d4c4e6f98d593a8c3778cb56",
-		"Name": "copper",
-		"Ticker": "CU",
-		"Weight": 8.920000076293945,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "b25e1857f8234dc9779d83d7abea3d77",
-		"CategoryName": "ores",
-		"CategoryId": "4c0430b40fbf7fa175ed4a5a13682c6f",
-		"Name": "copperOre",
-		"Ticker": "CUO",
-		"Weight": 4.010000228881836,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "6da55ef2896023daf2a2f119895e2078",
-		"CategoryName": "software tools",
-		"CategoryId": "1dfe943824ceb52d332b4650ce457218",
-		"Name": "dataAnalyzer",
-		"Ticker": "DA",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "751120b64901019887c843e4125cd571",
-		"CategoryName": "drones",
-		"CategoryId": "6eb09f14ed9fec3d0407114be8bc8882",
-		"Name": "droneChassis",
-		"Ticker": "DCH",
-		"Weight": 0.20000000298023224,
-		"Volume": 0.029999999329447746
-	},
-	{
-		"MaterialId": "d4c590dd12f7fbd0f3533c27da6c9f19",
-		"CategoryName": "plastics",
-		"CategoryId": "6316282906a9f68b0c7bb4396a26aa95",
-		"Name": "largeDeviceCover",
-		"Ticker": "DCL",
-		"Weight": 0.07999999821186066,
-		"Volume": 0.800000011920929
-	},
-	{
-		"MaterialId": "36d0064e2b9415e1a1214aed16b17ed2",
-		"CategoryName": "plastics",
-		"CategoryId": "6316282906a9f68b0c7bb4396a26aa95",
-		"Name": "mediumDeviceCover",
-		"Ticker": "DCM",
-		"Weight": 0.03999999910593033,
-		"Volume": 0.4000000059604645
-	},
-	{
-		"MaterialId": "52b88b137a9f71a66a0ff41aaa7075a5",
-		"CategoryName": "plastics",
-		"CategoryId": "6316282906a9f68b0c7bb4396a26aa95",
-		"Name": "smallDeviceCover",
-		"Ticker": "DCS",
-		"Weight": 0.009999999776482582,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "c100446dafeb6899f37f97217e8409af",
-		"CategoryName": "software tools",
-		"CategoryId": "1dfe943824ceb52d332b4650ce457218",
-		"Name": "distributedDatabase",
-		"Ticker": "DD",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "fe5be65546733ffa4f619bbc76ac532d",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "pesticides",
-		"Ticker": "DDT",
-		"Weight": 0.10999999940395355,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "1ddffd7f8b1ff5391113582ffac2eff0",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "decorativeElements",
-		"Ticker": "DEC",
-		"Weight": 0.5,
-		"Volume": 2.0
-	},
-	{
-		"MaterialId": "71437224d7590e8ff92265a56cb70dee",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "twoDimensionalDisplay",
-		"Ticker": "DIS",
-		"Weight": 0.019999999552965164,
-		"Volume": 0.019999999552965164
-	},
-	{
-		"MaterialId": "3da2d0cffdac26559504aa8fadfcdee2",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "droneOperationsUnit",
-		"Ticker": "DOU",
-		"Weight": 5.0,
-		"Volume": 4.0
-	},
-	{
-		"MaterialId": "ab5016ca0c184474d80e00ee5f8a8b66",
-		"CategoryName": "drones",
-		"CategoryId": "6eb09f14ed9fec3d0407114be8bc8882",
-		"Name": "droneFrame",
-		"Ticker": "DRF",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.019999999552965164
-	},
-	{
-		"MaterialId": "005936105ae3d0f6197349ad693e9240",
-		"CategoryName": "software tools",
-		"CategoryId": "1dfe943824ceb52d332b4650ce457218",
-		"Name": "dataVisualizer",
-		"Ticker": "DV",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "4fca6f5b5e6c3b8a1b887c6dc99db146",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "drinkingWater",
-		"Ticker": "DW",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "a36d549d1340c1d489cc4a9ccccf22d0",
-		"CategoryName": "software tools",
-		"CategoryId": "1dfe943824ceb52d332b4650ce457218",
-		"Name": "entertainmentDataCore",
-		"Ticker": "EDC",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "082332472d3285c985367678a5716e71",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "enrichedEinsteinium",
-		"Ticker": "EES",
-		"Weight": 9.199999809265137,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "39cbe35342c34d16bc02009130920bb4",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "standardEngine",
-		"Ticker": "ENG",
-		"Weight": 8.0,
-		"Volume": 4.0
-	},
-	{
-		"MaterialId": "78321af6ac08c494186fafff3965034f",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "epoxy",
-		"Ticker": "EPO",
-		"Weight": 0.03999999910593033,
-		"Volume": 0.019999999552965164
-	},
-	{
-		"MaterialId": "a528afba5c7d4bf1fd2f2c69fc7f247f",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "einsteinium",
-		"Ticker": "ES",
-		"Weight": 0.8799999952316284,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "a9d7758454f7a446565e3ce1cd49386a",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "enrichedTechnetium",
-		"Ticker": "ETC",
-		"Weight": 4.099999904632568,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "87dd9b56a69e118e8c778de2dce11e8c",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "settlerClothing",
-		"Ticker": "EXO",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "ee320953d3d725c83bfbc594449979a2",
-		"CategoryName": "gases",
-		"CategoryId": "54dec1e42eba44dda423dd774393326a",
-		"Name": "fluorine",
-		"Ticker": "F",
-		"Weight": 1.6959999799728394,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "78b8206e505d8970f0d9a8f56885ec97",
-		"CategoryName": "alloys",
-		"CategoryId": "37e95782d80aa1c1ded89f2c4b834dd0",
-		"Name": "aluminiumIronAlloy",
-		"Ticker": "FAL",
-		"Weight": 3.2200000286102295,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "09a313c77887ec04c209c0153f7dee75",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "coolingFan",
-		"Ticker": "FAN",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "a2b6316f3bc85f3e1b05ae36e49faa4c",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "flowControl",
-		"Ticker": "FC",
-		"Weight": 0.5,
-		"Volume": 0.25
-	},
-	{
-		"MaterialId": "7921cd20f7add0b26ff77f76e3e911f8",
-		"CategoryName": "metals",
-		"CategoryId": "cae48680d4c4e6f98d593a8c3778cb56",
-		"Name": "iron",
-		"Ticker": "FE",
-		"Weight": 7.874000072479248,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "b9640b0d66e7d0ca7e4d3132711c97fc",
-		"CategoryName": "ores",
-		"CategoryId": "4c0430b40fbf7fa175ed4a5a13682c6f",
-		"Name": "ironOre",
-		"Ticker": "FEO",
-		"Weight": 5.900000095367432,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "d7ac798b0457e67da544fbccfa9367f6",
-		"CategoryName": "alloys",
-		"CategoryId": "37e95782d80aa1c1ded89f2c4b834dd0",
-		"Name": "ironTitaniumAlloy",
-		"Ticker": "FET",
-		"Weight": 6.849999904632568,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "7a2a12cd6872b89a6b97532618788a4d",
-		"CategoryName": "fuels",
-		"CategoryId": "ba98fa0cf77040a96cd8a608ad0d08e9",
-		"Name": "ftlFuel",
-		"Ticker": "FF",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "11cfa0cf3614e7a2405a31039c44632e",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "ftlFieldController",
-		"Ticker": "FFC",
-		"Weight": 50.0,
-		"Volume": 16.0
-	},
-	{
-		"MaterialId": "73e138a825968b0132230d02591af63f",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "engineerFood",
-		"Ticker": "FIM",
-		"Weight": 0.550000011920929,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "c2ea542d15989d97a9d1b9c89f2b0b07",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "fissionReactor",
-		"Ticker": "FIR",
-		"Weight": 7.0,
-		"Volume": 4.900000095367432
-	},
-	{
-		"MaterialId": "cc12f1c859c25f13867485ea395f34c0",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "floatingTank",
-		"Ticker": "FLO",
-		"Weight": 1.0,
-		"Volume": 2.0
-	},
-	{
-		"MaterialId": "f1d402957a88fd396f302372a6912158",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "fluidPiping",
-		"Ticker": "FLP",
-		"Weight": 0.30000001192092896,
-		"Volume": 2.0
-	},
-	{
-		"MaterialId": "51c829b6e62e70223024ffa6688db9f7",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "flux",
-		"Ticker": "FLX",
-		"Weight": 0.25,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "c54c5f96af3bec918be316b4469307cb",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "allPurposeFodder",
-		"Ticker": "FOD",
-		"Weight": 1.2000000476837158,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "d643ca86b7ddbc8ab087ac9e2fcb0980",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "fuelSavingEngine",
-		"Ticker": "FSE",
-		"Weight": 6.0,
-		"Volume": 3.0
-	},
-	{
-		"MaterialId": "10469071872e3221bb8ec42c79368f96",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "entertainmentUnit",
-		"Ticker": "FUN",
-		"Weight": 5.0,
-		"Volume": 4.0
-	},
-	{
-		"MaterialId": "c5236c5b79b9e75ddbce16887aeda338",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "galerite",
-		"Ticker": "GAL",
-		"Weight": 2.509999990463257,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "ce50248c2878dc89de170da84bbee064",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "gasContainer",
-		"Ticker": "GC",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "8665fabacd64adfbc74ee255b00ae019",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "glassCombustionChamber",
-		"Ticker": "GCH",
-		"Weight": 1.0,
-		"Volume": 0.6000000238418579
-	},
-	{
-		"MaterialId": "4c38903fc8fd2f87b1877ab9d47cb57e",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "glassEngine",
-		"Ticker": "GEN",
-		"Weight": 5.0,
-		"Volume": 3.0
-	},
-	{
-		"MaterialId": "a9c439ab4a206915c370ad05e0af62d9",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "engineerLuxuryDrink",
-		"Ticker": "GIN",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "fbb04a8587195e52ce6df8bc238675dd",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "translucentMaterial",
-		"Ticker": "GL",
-		"Weight": 0.01600000075995922,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "77638e63e83ace0a7e33667d362a3a91",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "glassNozzle",
-		"Ticker": "GNZ",
-		"Weight": 1.5,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "ccef250eff466c569c12c2b711a0d5c2",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "grapes",
-		"Ticker": "GRA",
-		"Weight": 1.100000023841858,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "83d83e8cf6fb9018ae7138a1b5d4b19c",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "carbohydrateGrains",
-		"Ticker": "GRN",
-		"Weight": 0.8999999761581421,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "67516facbdb77c8d6fe49162f2ca3917",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "gasVent",
-		"Ticker": "GV",
-		"Weight": 0.25,
-		"Volume": 0.15000000596046448
-	},
-	{
-		"MaterialId": "c04de28c3e717f236d6ed177b89d9523",
-		"CategoryName": "gases",
-		"CategoryId": "54dec1e42eba44dda423dd774393326a",
-		"Name": "hydrogen",
-		"Ticker": "H",
-		"Weight": 0.07000000029802322,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "ec8dbb1d3f51d89c61b6f58fdd64a7f0",
-		"CategoryName": "liquids",
-		"CategoryId": "473218d3618453bf25d2cd0b5616a72f",
-		"Name": "water",
-		"Ticker": "H2O",
-		"Weight": 0.20000000298023224,
-		"Volume": 0.20000000298023224
-	},
-	{
-		"MaterialId": "cbe44387c37259ac71716382c0016bbf",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "habitatUnit",
-		"Ticker": "HAB",
-		"Weight": 10.0,
-		"Volume": 8.0
-	},
-	{
-		"MaterialId": "7e3f98a49ce2d3c8361975de8b4bbea4",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "halite",
-		"Ticker": "HAL",
-		"Weight": 2.1700000762939453,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "eab56d3d6b0742ccbf19a7e955209b0e",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "redGoldConnectors",
-		"Ticker": "HCC",
-		"Weight": 0.009999999776482582,
-		"Volume": 0.0020000000949949026
-	},
-	{
-		"MaterialId": "c76b4100059661084315938999623c26",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "hydrocarbonPlants",
-		"Ticker": "HCP",
-		"Weight": 0.800000011920929,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "9409ba6022b2767eb16bbee6d680cf8c",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "holographicDisplay",
-		"Ticker": "HD",
-		"Weight": 0.05000000074505806,
-		"Volume": 2.0
-	},
-	{
-		"MaterialId": "e9dc6ec89adb62b9ef83031d89e3ce99",
-		"CategoryName": "gases",
-		"CategoryId": "54dec1e42eba44dda423dd774393326a",
-		"Name": "helium",
-		"Ticker": "HE",
-		"Weight": 0.14499999582767487,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "4e10b93baa6166496b204e0531347959",
-		"CategoryName": "gases",
-		"CategoryId": "54dec1e42eba44dda423dd774393326a",
-		"Name": "helium3",
-		"Ticker": "HE3",
-		"Weight": 0.14499999582767487,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "1a1f13b7fc3e0fb6aa292b7c28764f93",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "herbs",
-		"Ticker": "HER",
-		"Weight": 0.4000000059604645,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "2adebc00bf7efaa693021426a68a3e65",
-		"CategoryName": "liquids",
-		"CategoryId": "473218d3618453bf25d2cd0b5616a72f",
-		"Name": "heliotropeExtract",
-		"Ticker": "HEX",
-		"Weight": 1.100000023841858,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "bb576032a158719b514c2b3f3e87e30a",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "hardenedHullPlate",
-		"Ticker": "HHP",
-		"Weight": 10.0,
-		"Volume": 10.0
-	},
-	{
-		"MaterialId": "5b0e02208dbbb99695707001d626963a",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "technicianClothing",
-		"Ticker": "HMS",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "f4316553b9594a88e21536a897f0cab4",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "hyperthrustNozzle",
-		"Ticker": "HNZ",
-		"Weight": 6.0,
-		"Volume": 12.0
-	},
-	{
-		"MaterialId": "488a45ca9f9a3be0bbbe7b4f53ef5b31",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "holographicGlasses",
-		"Ticker": "HOG",
-		"Weight": 0.009999999776482582,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "d7a9a96a18f278aa7c3f9af30fc68d19",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "antibacterialTreeFlowers",
-		"Ticker": "HOP",
-		"Weight": 0.3499999940395355,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "3795b86284befb6c493ccd380258c970",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "touchDeviceBlank",
-		"Ticker": "HPC",
-		"Weight": 0.003000000026077032,
-		"Volume": 0.003000000026077032
-	},
-	{
-		"MaterialId": "93a78d6bcf54aef3f2ea93f1238ce79a",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "highPowerReactor",
-		"Ticker": "HPR",
-		"Weight": 16.0,
-		"Volume": 15.0
-	},
-	{
-		"MaterialId": "ec3491b37050a8c780dc514033131843",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "hardenedStructuralElements",
-		"Ticker": "HSE",
-		"Weight": 3.0999999046325684,
-		"Volume": 0.699999988079071
-	},
-	{
-		"MaterialId": "379f7bc12b6d2800c0a9f72c4943628b",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "engineerClothing",
-		"Ticker": "HSS",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "7075b9314a25ea13f973a1f2d2dad18e",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "hyperthrustEngine",
-		"Ticker": "HTE",
-		"Weight": 16.0,
-		"Volume": 10.0
-	},
-	{
-		"MaterialId": "844341ef73a82d657b64050be2632c53",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "hyperPowerReactor",
-		"Ticker": "HYR",
-		"Weight": 25.0,
-		"Volume": 25.0
-	},
-	{
-		"MaterialId": "18237d01e53d08212ee0b67dc1ad3df1",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "iodine",
-		"Ticker": "I",
-		"Weight": 4.929999828338623,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "5cd2b3729f1de46d80cbf7300c905bef",
-		"CategoryName": "software systems",
-		"CategoryId": "9e8bc2a092cc3361b6949eca3e95921a",
-		"Name": "informationDataCore",
-		"Ticker": "IDC",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "6f09054d36298a23458bfb9942aea6ac",
-		"CategoryName": "software systems",
-		"CategoryId": "9e8bc2a092cc3361b6949eca3e95921a",
-		"Name": "informationManagementSystem",
-		"Ticker": "IMM",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "01dfc4e798680d1174fd785db6578627",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "indigo",
-		"Ticker": "IND",
-		"Weight": 0.20999999344348907,
-		"Volume": 0.20000000298023224
-	},
-	{
-		"MaterialId": "b88aaf3dba6caa7e6d437e49e7620f0b",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "insuFoam",
-		"Ticker": "INS",
-		"Weight": 0.05999999865889549,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "f8fdd918a757d6a9888f544e3375e585",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "sedativeSubstance",
-		"Ticker": "JUI",
-		"Weight": 1.2000000476837158,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "a1d1d61f8085de53455dd4e8a7813788",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "settlerLuxuryDrink",
-		"Ticker": "KOM",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "76e7790d43219588122f401f2b9f0534",
-		"CategoryName": "textiles",
-		"CategoryId": "7028d7d532ccd4c6c878b069e7bbb634",
-		"Name": "kevlar",
-		"Ticker": "KV",
-		"Weight": 1.649999976158142,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "772408d48cf5842fb003698aaa7a6a94",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "lightweightBulkhead",
-		"Ticker": "LBH",
-		"Weight": 0.20000000298023224,
-		"Volume": 0.6000000238418579
-	},
-	{
-		"MaterialId": "d6c283d4480cacbca31bec0bbb55b940",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "scientistClothing",
-		"Ticker": "LC",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "d140bdc3f13c831ab8931e330c8d6120",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "largeCargoBay",
-		"Ticker": "LCB",
-		"Weight": 200.0,
-		"Volume": 200.0
-	},
-	{
-		"MaterialId": "17a9e15840c1d90848c5e59949f7abc2",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "liquidCrystals",
-		"Ticker": "LCR",
-		"Weight": 0.15000000596046448,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "2fae5ed4c15f7d668b9e708dbfc77008",
-		"CategoryName": "software components",
-		"CategoryId": "ebec0c297d5b499a84dd051fa6f7c8ec",
-		"Name": "localDatabase",
-		"Ticker": "LD",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "3010d90fde69729f4754b092fdcda826",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "lightweightDeckElements",
-		"Ticker": "LDE",
-		"Weight": 0.10000000149011612,
-		"Volume": 1.2000000476837158
-	},
-	{
-		"MaterialId": "291cd8f5c28b371afe0793f78f5499a8",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "laserDiode",
-		"Ticker": "LDI",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "14d35a43454dd8e9797fc36f4ee59698",
-		"CategoryName": "liquids",
-		"CategoryId": "473218d3618453bf25d2cd0b5616a72f",
-		"Name": "liquidEinsteinium",
-		"Ticker": "LES",
-		"Weight": 8.84000015258789,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e892dd87f4f499f96bdbaa2ca5965ce9",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "largeEmitter",
-		"Ticker": "LFE",
-		"Weight": 0.4000000059604645,
-		"Volume": 1.600000023841858
-	},
-	{
-		"MaterialId": "98750f7d48ab2115293c8a8334b0120e",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "largeFtlTank",
-		"Ticker": "LFL",
-		"Weight": 60.0,
-		"Volume": 10.0
-	},
-	{
-		"MaterialId": "b2ba495fc0643c5e5c71195be14aef0e",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "lowHeatFuelPump",
-		"Ticker": "LFP",
-		"Weight": 0.5,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "f3f12b5b3adebdd25f3067e5aa4589f0",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "lightweightHullPlate",
-		"Ticker": "LHP",
-		"Weight": 4.0,
-		"Volume": 10.0
-	},
-	{
-		"MaterialId": "295bef52967a15fda26f5968976d29b8",
-		"CategoryName": "metals",
-		"CategoryId": "cae48680d4c4e6f98d593a8c3778cb56",
-		"Name": "lithium",
-		"Ticker": "LI",
-		"Weight": 0.550000011920929,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "6dd01a9f12e493d44bbb8ce578f7a2d2",
-		"CategoryName": "ores",
-		"CategoryId": "4c0430b40fbf7fa175ed4a5a13682c6f",
-		"Name": "lithiumOre",
-		"Ticker": "LIO",
-		"Weight": 2.75,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "05be9d04aad5bb7ea6ed6db76102399f",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "lifeSupportSystem",
-		"Ticker": "LIS",
-		"Weight": 5.599999904632568,
-		"Volume": 7.0
-	},
-	{
-		"MaterialId": "3395e6f815495c32d54823f350e5c15d",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "neonLightingSystem",
-		"Ticker": "LIT",
-		"Weight": 1.0,
-		"Volume": 2.0
-	},
-	{
-		"MaterialId": "d0d20f604c3b3348cad620a02c664d57",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "logisticsSystem",
-		"Ticker": "LOG",
-		"Weight": 0.5,
-		"Volume": 1.5
-	},
-	{
-		"MaterialId": "8d4e0986419d2769fe50ac6497be6b7e",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "lightweightStructuralElements",
-		"Ticker": "LSE",
-		"Weight": 0.30000001192092896,
-		"Volume": 1.2000000476837158
-	},
-	{
-		"MaterialId": "684d77b82143e23d746461d1a55a6711",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "largeStlTank",
-		"Ticker": "LSL",
-		"Weight": 125.0,
-		"Volume": 100.0
-	},
-	{
-		"MaterialId": "1f9a0293d9ba9bf519f71432e695edeb",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "limestone",
-		"Ticker": "LST",
-		"Weight": 2.7300000190734863,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "b29a0e901300857a8672f0643f7d796a",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "lightweightWindow",
-		"Ticker": "LTA",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "1b05fb8506fcd5be63a465171dd4c656",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "laboratoryUnit",
-		"Ticker": "LU",
-		"Weight": 8.0,
-		"Volume": 6.0
-	},
-	{
-		"MaterialId": "24a2518b138203909eb13f330ac298d3",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "magnetite",
-		"Ticker": "MAG",
-		"Weight": 5.150000095367432,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "a381f9434f9105a4f8179f6c6cffe007",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "carbohydrateMaize",
-		"Ticker": "MAI",
-		"Weight": 1.2999999523162842,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "0995a123c2c2e60c9b0d4f120abac7bb",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "motherBoard",
-		"Ticker": "MB",
-		"Weight": 0.07500000298023224,
-		"Volume": 0.07500000298023224
-	},
-	{
-		"MaterialId": "ca35c8015a968c985e6a2a8fbb6b7664",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "mediumCargoBay",
-		"Ticker": "MCB",
-		"Weight": 100.0,
-		"Volume": 100.0
-	},
-	{
-		"MaterialId": "cc5fb1618f0506e80bfbcee9ae2605ab",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "mineralConstructionGranulate",
-		"Ticker": "MCG",
-		"Weight": 0.23999999463558197,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "a5de3e325e87c874fe395949728bb276",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "scientistFood",
-		"Ticker": "MEA",
-		"Weight": 0.6000000238418579,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "5d36829593b5fd61674320cd66e4bb5c",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "technicianHealth",
-		"Ticker": "MED",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "943fff6ce1b470ea031432a15a9afe47",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "mediumEmitter",
-		"Ticker": "MFE",
-		"Weight": 0.20000000298023224,
-		"Volume": 0.800000011920929
-	},
-	{
-		"MaterialId": "432414a579f1fccd66136b257eb44408",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "fastenerKitMedium",
-		"Ticker": "MFK",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "4fce81e03539c346cc5c493c197eac69",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "mediumFtlTank",
-		"Ticker": "MFL",
-		"Weight": 24.0,
-		"Volume": 4.0
-	},
-	{
-		"MaterialId": "833efac228452f5d770c0693c3fb3d50",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "magnesium",
-		"Ticker": "MG",
-		"Weight": 0.27000001072883606,
-		"Volume": 0.1599999964237213
-	},
-	{
-		"MaterialId": "4f26e8b4f9cb1373311fcd3323a53bdd",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "magneticFloor",
-		"Ticker": "MGC",
-		"Weight": 0.6000000238418579,
-		"Volume": 0.8999999761581421
-	},
-	{
-		"MaterialId": "51531f3012276e93e60cb06b194bac7f",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "magnesite",
-		"Ticker": "MGS",
-		"Weight": 1.7300000190734863,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "9282cf0c801f5b5adcee3b44621ea1bb",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "metalHalideLamp",
-		"Ticker": "MHL",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "33ae4b6e0e01638f33a18ab9b0bf917d",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "microHeadphones",
-		"Ticker": "MHP",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "4d3d0c15f18a19ec8147adb0f3bd39e6",
-		"CategoryName": "software components",
-		"CategoryId": "ebec0c297d5b499a84dd051fa6f7c8ec",
-		"Name": "machineLearningInterface",
-		"Ticker": "MLI",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "ef1a8b643e865195823ec884b3343c6a",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "microProcessor",
-		"Ticker": "MPC",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "11fa820041249299d95d85191dc378fc",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "mediumStlTank",
-		"Ticker": "MSL",
-		"Weight": 50.0,
-		"Volume": 50.0
-	},
-	{
-		"MaterialId": "edea6e957426c9531b19ce53fec47ae7",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "megaTubeCoating",
-		"Ticker": "MTC",
-		"Weight": 0.03200000151991844,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "52cc5c8aeab6bb1778e7ce93a1bbdc80",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "meat",
-		"Ticker": "MTP",
-		"Weight": 0.699999988079071,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "005252da5904d755c10d3abd4442bdeb",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "mushrooms",
-		"Ticker": "MUS",
-		"Weight": 0.800000011920929,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "ef36cda3528c490360fa8d513a53e6c6",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "waferMedium",
-		"Ticker": "MWF",
-		"Weight": 0.00800000037997961,
-		"Volume": 0.00800000037997961
-	},
-	{
-		"MaterialId": "5d59ddddb1ce9a26eb81b78b8378b3ac",
-		"CategoryName": "gases",
-		"CategoryId": "54dec1e42eba44dda423dd774393326a",
-		"Name": "nitrogen",
-		"Ticker": "N",
-		"Weight": 0.8069999814033508,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "11ec662cd8ba85e87b111a7ba7aa4973",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "sodium",
-		"Ticker": "NA",
-		"Weight": 0.9700000286102295,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "710cb599231cd6b974bcc5feea9603c7",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "sodiumBorohydride",
-		"Ticker": "NAB",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "08b3d1994643df5efe095b335be3a029",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "nanoCarbonSheeting",
-		"Ticker": "NCS",
-		"Weight": 0.02800000086426735,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "adca908f9dd26ff505d01bc5ffc0d2e1",
-		"CategoryName": "gases",
-		"CategoryId": "54dec1e42eba44dda423dd774393326a",
-		"Name": "neon",
-		"Ticker": "NE",
-		"Weight": 0.8999999761581421,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "d26bd2ac52ea6061a923f000cd104967",
-		"CategoryName": "software components",
-		"CategoryId": "ebec0c297d5b499a84dd051fa6f7c8ec",
-		"Name": "networkingFramework",
-		"Ticker": "NF",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "2689b2d4859b0cb73e7efa9466301297",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "nanoFiber",
-		"Ticker": "NFI",
-		"Weight": 0.03200000151991844,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "8faa9fb6d21ebd5731043b0c122bc5b6",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "nanoGlass",
-		"Ticker": "NG",
-		"Weight": 0.02199999988079071,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "12fb94d0184c18455533bffb4b8b7e51",
-		"CategoryName": "textiles",
-		"CategoryId": "7028d7d532ccd4c6c878b069e7bbb634",
-		"Name": "nylon",
-		"Ticker": "NL",
-		"Weight": 1.1299999952316284,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "c06935922eac3dccb7d7a368a899d309",
-		"CategoryName": "software tools",
-		"CategoryId": "1dfe943824ceb52d332b4650ce457218",
-		"Name": "neuralNetwork",
-		"Ticker": "NN",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "f4cb7556739ec63fe3e019ee0f798263",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "basicNozzle",
-		"Ticker": "NOZ",
-		"Weight": 3.0,
-		"Volume": 1.5
-	},
-	{
-		"MaterialId": "17229492d319a4d6a5d0d45ee5bef188",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "nanoResin",
-		"Ticker": "NR",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "d9cfb2948188f49bfae2b6d9972837c8",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "nutrientSolution",
-		"Ticker": "NS",
-		"Weight": 0.6000000238418579,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "a636755a8531daa76ab6b1f95fd5d5e3",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "scientistLuxuryHealth",
-		"Ticker": "NST",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "87488698340ed6d9db87e26e35360c20",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "fattyNuts",
-		"Ticker": "NUT",
-		"Weight": 0.8999999761581421,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e8e7a34cb5e2a62aaf8d83dc79d81ee5",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "navigation1",
-		"Ticker": "NV1",
-		"Weight": 4.199999809265137,
-		"Volume": 2.0
-	},
-	{
-		"MaterialId": "ccdecb3fc5eb9f0d04c67cc1c9fb47dd",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "navigation2",
-		"Ticker": "NV2",
-		"Weight": 6.699999809265137,
-		"Volume": 3.0
-	},
-	{
-		"MaterialId": "6e16dbf050b98d9c4fc9c615b3367a0f",
-		"CategoryName": "gases",
-		"CategoryId": "54dec1e42eba44dda423dd774393326a",
-		"Name": "oxygen",
-		"Ticker": "O",
-		"Weight": 1.1410000324249268,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "26c05c3b63aa57025e68dd67d0001ba2",
-		"CategoryName": "utility",
-		"CategoryId": "4eb124000ee0e38af1daf5aced313823",
-		"Name": "officeSupplies",
-		"Ticker": "OFF",
-		"Weight": 0.019999999552965164,
-		"Volume": 0.20000000298023224
-	},
-	{
-		"MaterialId": "aa6636f6018e23e92e52aa74d65e3b7a",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "olfactorySubstances",
-		"Ticker": "OLF",
-		"Weight": 0.009999999776482582,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "8bdcb737ea5ad7fde81d2b8c78cfd0aa",
-		"CategoryName": "software tools",
-		"CategoryId": "1dfe943824ceb52d332b4650ce457218",
-		"Name": "operatingSystem",
-		"Ticker": "OS",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "9788890100fd2191fb065cb0d5e624cb",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "pioneerClothing",
-		"Ticker": "OVE",
-		"Weight": 0.019999999552965164,
-		"Volume": 0.02500000037252903
-	},
-	{
-		"MaterialId": "9da5f471dfc7759a11858456e74fbc8f",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "printedCircuitBoard",
-		"Ticker": "PCB",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "1d2a14dda2d950fe0dfa51cb76e79e54",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "engineerTools",
-		"Ticker": "PDA",
-		"Weight": 0.0020000000949949026,
-		"Volume": 0.0020000000949949026
-	},
-	{
-		"MaterialId": "ee8e92a632d1b5f4847fe9d4e376aeca",
-		"CategoryName": "plastics",
-		"CategoryId": "6316282906a9f68b0c7bb4396a26aa95",
-		"Name": "polyEthylene",
-		"Ticker": "PE",
-		"Weight": 0.009999999776482582,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "d767c625cdf6f6f97df9fe8e49766912",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "premiumFertilizer",
-		"Ticker": "PFE",
-		"Weight": 0.8999999761581421,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "64666b2eb0faaba594a62818e48229b8",
-		"CategoryName": "plastics",
-		"CategoryId": "6316282906a9f68b0c7bb4396a26aa95",
-		"Name": "polymerGranulate",
-		"Ticker": "PG",
-		"Weight": 0.0020000000949949026,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "746983ed94132dfa021aac40b67754b2",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "pineberries",
-		"Ticker": "PIB",
-		"Weight": 0.30000001192092896,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "4854eb1479ec6225b01d337a172d7b02",
-		"CategoryName": "medical equipment",
-		"CategoryId": "ef05c6b81cf109f142dd415ce6d36e67",
-		"Name": "painkillers",
-		"Ticker": "PK",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "edb9e2c57c966f28c66f441bda0b030f",
-		"CategoryName": "energy systems",
-		"CategoryId": "0509ed0a396f5a004d24ef08e33786fb",
-		"Name": "powerCell",
-		"Ticker": "POW",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "5f2011b6c605256dfa4626776cc7cf3c",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "proteinPaste",
-		"Ticker": "PPA",
-		"Weight": 2.0,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "eebc3c4618186afa73bbe0a19be73eed",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "pressureShielding",
-		"Ticker": "PSH",
-		"Weight": 4.199999809265137,
-		"Volume": 0.800000011920929
-	},
-	{
-		"MaterialId": "db4fbfd5c434a3952e7e1d37ae36158f",
-		"CategoryName": "plastics",
-		"CategoryId": "6316282906a9f68b0c7bb4396a26aa95",
-		"Name": "largePlasticsBoard",
-		"Ticker": "PSL",
-		"Weight": 0.07999999821186066,
-		"Volume": 0.800000011920929
-	},
-	{
-		"MaterialId": "d1da92df0f3cd523b647245fb79b5025",
-		"CategoryName": "plastics",
-		"CategoryId": "6316282906a9f68b0c7bb4396a26aa95",
-		"Name": "mediumPlasticsBoard",
-		"Ticker": "PSM",
-		"Weight": 0.03999999910593033,
-		"Volume": 0.4000000059604645
-	},
-	{
-		"MaterialId": "7f1b9df7face3f9b3d99e34f9a51c6b2",
-		"CategoryName": "plastics",
-		"CategoryId": "6316282906a9f68b0c7bb4396a26aa95",
-		"Name": "smallPlasticsBoard",
-		"Ticker": "PSS",
-		"Weight": 0.009999999776482582,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "b5744244bb7913cee262ec29abc3b9d0",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "settlerTools",
-		"Ticker": "PT",
-		"Weight": 0.25,
-		"Volume": 0.20000000298023224
-	},
-	{
-		"MaterialId": "820d081096fd3e8fbd98b4344f6250ad",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "pioneerLuxuryClothing",
-		"Ticker": "PWO",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "07ba4d80010a9d5c869aa6f05ea78208",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "quickChargeReactor",
-		"Ticker": "QCR",
-		"Weight": 14.0,
-		"Volume": 10.0
-	},
-	{
-		"MaterialId": "c8e78ba6113f8db69d14ae620ddbad06",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "radioDevice",
-		"Ticker": "RAD",
-		"Weight": 0.003000000026077032,
-		"Volume": 0.004999999888241291
-	},
-	{
-		"MaterialId": "c855d1fe267c1f5fca20459db2bcd1b0",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "radioisotopeGenerator",
-		"Ticker": "RAG",
-		"Weight": 5.0,
-		"Volume": 3.4000000953674316
-	},
-	{
-		"MaterialId": "206aa44d627bd8e886a20c565b4bd058",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "memoryBank",
-		"Ticker": "RAM",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "83dd61885cf6879ff49fe1419f068f10",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "rations",
-		"Ticker": "RAT",
-		"Weight": 0.20999999344348907,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "9930460f6d54364954dcf0af905029c5",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "reinforcedBulkhead",
-		"Ticker": "RBH",
-		"Weight": 2.4000000953674316,
-		"Volume": 0.8999999761581421
-	},
-	{
-		"MaterialId": "1205efe7810a94592524a53e87c3299b",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "cottonRaw",
-		"Ticker": "RCO",
-		"Weight": 0.949999988079071,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e5bea4cd29eccc0162885f338cd1c235",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "reactorControlSystem",
-		"Ticker": "RCS",
-		"Weight": 0.6700000166893005,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "17147bdc09c3762514c78f12dc17b79a",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "standardReactor",
-		"Ticker": "RCT",
-		"Weight": 7.0,
-		"Volume": 4.0
-	},
-	{
-		"MaterialId": "165dab5e1f913b2a4769f57f64c2505e",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "reinforcedDeckElements",
-		"Ticker": "RDE",
-		"Weight": 1.399999976158142,
-		"Volume": 1.5
-	},
-	{
-		"MaterialId": "4d7a3d9cf07cd3c3be0cd0092afd0ea8",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "largeShipRepairDroneUnit",
-		"Ticker": "RDL",
-		"Weight": 150.0,
-		"Volume": 30.0
-	},
-	{
-		"MaterialId": "addf3b08bfd443feb2c5f51c776155f5",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "smallShipRepairDroneUnit",
-		"Ticker": "RDS",
-		"Weight": 50.0,
-		"Volume": 10.0
-	},
-	{
-		"MaterialId": "dd806abbca77956b09bc043c1633f51e",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "chemicalReagents",
-		"Ticker": "REA",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "0700a1ac4bfbbb10fbe08f9a3c08bc13",
-		"CategoryName": "drones",
-		"CategoryId": "6eb09f14ed9fec3d0407114be8bc8882",
-		"Name": "rescueDrone",
-		"Ticker": "RED",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "7171933481f022ca74200b216f98ca60",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "settlerLuxuryTools",
-		"Ticker": "REP",
-		"Weight": 0.006000000052154064,
-		"Volume": 0.0020000000949949026
-	},
-	{
-		"MaterialId": "11205b2106f47b28c189a82494733841",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "reinforcedTranslucentMaterial",
-		"Ticker": "RG",
-		"Weight": 0.03200000151991844,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "184e8b2fa39edeeb942a838c7502bcc1",
-		"CategoryName": "alloys",
-		"CategoryId": "37e95782d80aa1c1ded89f2c4b834dd0",
-		"Name": "goldCopperAlloy",
-		"Ticker": "RGO",
-		"Weight": 19.31999969482422,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e59f70623448014f8fac5af9922de5c3",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "reinforcedHullPlate",
-		"Ticker": "RHP",
-		"Weight": 10.0,
-		"Volume": 10.0
-	},
-	{
-		"MaterialId": "23b9ee06710318a6d3e9eec4d0b58cb7",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "nonVolatileMemory",
-		"Ticker": "ROM",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "0fd977ac87d641a5bfcadea33e24641c",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "reinforcedStructuralElements",
-		"Ticker": "RSE",
-		"Weight": 1.899999976158142,
-		"Volume": 0.699999988079071
-	},
-	{
-		"MaterialId": "3b32f1da809a1cd9083a22f7aa0c8af2",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "radiationShielding",
-		"Ticker": "RSH",
-		"Weight": 3.700000047683716,
-		"Volume": 0.800000011920929
-	},
-	{
-		"MaterialId": "81dabbc84c110d1214ac8e090592ad31",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "silkRaw",
-		"Ticker": "RSI",
-		"Weight": 1.100000023841858,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "a24540c6c24595ca5bf47f091f11c8f9",
-		"CategoryName": "construction prefabs",
-		"CategoryId": "ef423f673d9e8c82043b4c5c63f6b55e",
-		"Name": "reinforcedWindow",
-		"Ticker": "RTA",
-		"Weight": 1.5,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "2f2863037da2f5b88e13609b2cc21e3b",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "sulfur",
-		"Ticker": "S",
-		"Weight": 0.5199999809265137,
-		"Volume": 0.25
-	},
-	{
-		"MaterialId": "cebf6ae4dbea53789660ed6b9a4a5e86",
-		"CategoryName": "software components",
-		"CategoryId": "ebec0c297d5b499a84dd051fa6f7c8ec",
-		"Name": "searchAlgorithm",
-		"Ticker": "SA",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "460c114b10d44a8ac99f7a0a47910f42",
-		"CategoryName": "software components",
-		"CategoryId": "ebec0c297d5b499a84dd051fa6f7c8ec",
-		"Name": "sortingAlgorithm",
-		"Ticker": "SAL",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "5c9630043c3f2d66206977ae394d8cf0",
-		"CategoryName": "electronic devices",
-		"CategoryId": "19d621bb3f297c0425e34cdf0b138ece",
-		"Name": "sensorArray",
-		"Ticker": "SAR",
-		"Weight": 1.7000000476837158,
-		"Volume": 2.0
-	},
-	{
-		"MaterialId": "5952bfbf043018679334e7ea71b1504e",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "technicianLuxuryHealth",
-		"Ticker": "SC",
-		"Weight": 0.03999999910593033,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "c006dedb53cf3bb8cb964c8151d9a744",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "smallCargoBay",
-		"Ticker": "SCB",
-		"Weight": 50.0,
-		"Volume": 50.0
-	},
-	{
-		"MaterialId": "66369803dbe73bee8a78105d3ca00554",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "technicianTools",
-		"Ticker": "SCN",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "a4a8a25d01f80586f7bad3488fa11f36",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "sulfurCrystals",
-		"Ticker": "SCR",
-		"Weight": 2.049999952316284,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "663f2e01b48535883100f1e16fc75f45",
-		"CategoryName": "drones",
-		"CategoryId": "6eb09f14ed9fec3d0407114be8bc8882",
-		"Name": "surgicalDrone",
-		"Ticker": "SDR",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "04970fd8cd9c3bc423b46503985e55de",
-		"CategoryName": "construction materials",
-		"CategoryId": "156bbcce730fba6169338d560f05fd26",
-		"Name": "sealant",
-		"Ticker": "SEA",
-		"Weight": 0.15000000596046448,
-		"Volume": 0.07000000029802322
-	},
-	{
-		"MaterialId": "cbb28f4ebfa4e7b26f09d5b585608e3d",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "sensor",
-		"Ticker": "SEN",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "4094d1cf6704085fbe6ff7a6e1862e4a",
-		"CategoryName": "medical equipment",
-		"CategoryId": "ef05c6b81cf109f142dd415ce6d36e67",
-		"Name": "surgicalEquipment",
-		"Ticker": "SEQ",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "7756a0779efe67f0f293f41eda4944d4",
-		"CategoryName": "fuels",
-		"CategoryId": "ba98fa0cf77040a96cd8a608ad0d08e9",
-		"Name": "stlFuel",
-		"Ticker": "SF",
-		"Weight": 0.05999999865889549,
-		"Volume": 0.05999999865889549
-	},
-	{
-		"MaterialId": "bbfa7555fbfa8ef2852d4479f7aa703e",
-		"CategoryName": "ship engines",
-		"CategoryId": "16b943147bb16fe84c0d62de8a4316a7",
-		"Name": "smallEmitter",
-		"Ticker": "SFE",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.4000000059604645
-	},
-	{
-		"MaterialId": "24cb7e11e07449e2a6966b92d4ee307d",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "fastenerKitSmall",
-		"Ticker": "SFK",
-		"Weight": 0.03999999910593033,
-		"Volume": 0.019999999552965164
-	},
-	{
-		"MaterialId": "e8b8b2f9a1e27ff69fe0c15b25a1d424",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "smallFtlTank",
-		"Ticker": "SFL",
-		"Weight": 9.0,
-		"Volume": 1.5
-	},
-	{
-		"MaterialId": "69e09abe369419b53675148d64164b3a",
-		"CategoryName": "metals",
-		"CategoryId": "cae48680d4c4e6f98d593a8c3778cb56",
-		"Name": "silicon",
-		"Ticker": "SI",
-		"Weight": 2.3289999961853027,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "8302200bd88502383e932ae257bcb9b4",
-		"CategoryName": "textiles",
-		"CategoryId": "7028d7d532ccd4c6c878b069e7bbb634",
-		"Name": "silkProcessed",
-		"Ticker": "SIL",
-		"Weight": 1.2100000381469727,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "eeff5ee913d34354be84177847fbfe48",
-		"CategoryName": "ores",
-		"CategoryId": "4c0430b40fbf7fa175ed4a5a13682c6f",
-		"Name": "siliconOre",
-		"Ticker": "SIO",
-		"Weight": 1.7899999618530273,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "0247f5b671722c53f2bb4cb83af68f2b",
-		"CategoryName": "software systems",
-		"CategoryId": "9e8bc2a092cc3361b6949eca3e95921a",
-		"Name": "universeMap",
-		"Ticker": "SNM",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "93fb7db0a58375534661afd0dc88f4ad",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "artificialSoil",
-		"Ticker": "SOI",
-		"Weight": 0.8999999761581421,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "bda47fe5bfb1769235f9447569b0d369",
-		"CategoryName": "energy systems",
-		"CategoryId": "0509ed0a396f5a004d24ef08e33786fb",
-		"Name": "solarCell",
-		"Ticker": "SOL",
-		"Weight": 0.014999999664723873,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "4602969555899f2a4955e3b08d2fbdb6",
-		"CategoryName": "energy systems",
-		"CategoryId": "0509ed0a396f5a004d24ef08e33786fb",
-		"Name": "solarPanel",
-		"Ticker": "SP",
-		"Weight": 0.15000000596046448,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "9c418f805a867af115600ac3657cce0d",
-		"CategoryName": "drones",
-		"CategoryId": "6eb09f14ed9fec3d0407114be8bc8882",
-		"Name": "shipRepairDrone",
-		"Ticker": "SRD",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "9e783e064cfecd477c04cd25f0cf0389",
-		"CategoryName": "ship shields",
-		"CategoryId": "a8e32e7e16219394989aea62fc0cd943",
-		"Name": "specializedRadiationShielding",
-		"Ticker": "SRP",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.20000000298023224
-	},
-	{
-		"MaterialId": "b700f9670131981590e77238d7c207d3",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "structuralSpacecraftComponent",
-		"Ticker": "SSC",
-		"Weight": 1.0,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "251192d17a5b0e770cd3681383a495fd",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "smallStlTank",
-		"Ticker": "SSL",
-		"Weight": 20.0,
-		"Volume": 20.0
-	},
-	{
-		"MaterialId": "aaef669fed967abcfc188df59e1c4f4b",
-		"CategoryName": "metals",
-		"CategoryId": "cae48680d4c4e6f98d593a8c3778cb56",
-		"Name": "steel",
-		"Ticker": "STL",
-		"Weight": 7.849999904632568,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "3ca4ad9d9fa814530aa9ba66b74c1d06",
-		"CategoryName": "medical equipment",
-		"CategoryId": "ef05c6b81cf109f142dd415ce6d36e67",
-		"Name": "medicalStretcher",
-		"Ticker": "STR",
-		"Weight": 0.009999999776482582,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "83cadb15cbdc91cbdf616710b05afb34",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "stabilitySupportSystem",
-		"Ticker": "STS",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "04aac5d04eadadd5a34806f60334abc3",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "surgeryUnit",
-		"Ticker": "SU",
-		"Weight": 6.0,
-		"Volume": 5.0
-	},
-	{
-		"MaterialId": "08f48a785d3012a7fcfa7e0c3e2c571c",
-		"CategoryName": "drones",
-		"CategoryId": "6eb09f14ed9fec3d0407114be8bc8882",
-		"Name": "surveillanceDrone",
-		"Ticker": "SUD",
-		"Weight": 0.30000001192092896,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "e8308b1283cb813e2962d64fdb42ec33",
-		"CategoryName": "utility",
-		"CategoryId": "4eb124000ee0e38af1daf5aced313823",
-		"Name": "safetyUniform",
-		"Ticker": "SUN",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "f1778b3b4e6643f6424e01ffb79e87a0",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "waferSmall",
-		"Ticker": "SWF",
-		"Weight": 0.003000000026077032,
-		"Volume": 0.003000000026077032
-	},
-	{
-		"MaterialId": "f2b6f7e3711dc54e44da33efec4aadb7",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "tantalum",
-		"Ticker": "TA",
-		"Weight": 16.649999618530273,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "346d2efba85c3e9c1f874fa6845e8c23",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "targetingComputer",
-		"Ticker": "TAC",
-		"Weight": 0.15000000596046448,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "ea550373234a7c171de0f525922af5be",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "tantalite",
-		"Ticker": "TAI",
-		"Weight": 7.940000057220459,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "fc7f4fd0177c86ab262a99c9bde5a0d0",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "technetium",
-		"Ticker": "TC",
-		"Weight": 11.800000190734863,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "3aa3bc318e699090ecfbe327f044a219",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "tinyCargoBay",
-		"Ticker": "TCB",
-		"Weight": 20.0,
-		"Volume": 20.0
-	},
-	{
-		"MaterialId": "97ba20adb4d05fdcf365048b6878eaa7",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "tclAcid",
-		"Ticker": "TCL",
-		"Weight": 0.09000000357627869,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "a0f92faf8cf9487b04fda968030527bf",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "technetiumOxide",
-		"Ticker": "TCO",
-		"Weight": 9.800000190734863,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "ccfd9b3d2d89ab9876ef33f7e915294f",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "technetiumStabilizers",
-		"Ticker": "TCS",
-		"Weight": 3.4000000953674316,
-		"Volume": 1.2000000476837158
-	},
-	{
-		"MaterialId": "7923f6f2e04ed63a27fed11aa350a48b",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "traumaCareUnit",
-		"Ticker": "TCU",
-		"Weight": 5.0,
-		"Volume": 4.0
-	},
-	{
-		"MaterialId": "580c70e310bcd1543a46116d6be612e5",
-		"CategoryName": "chemicals",
-		"CategoryId": "9b32ea2333917ee2632ba7ae7675643f",
-		"Name": "thermoFluid",
-		"Ticker": "THF",
-		"Weight": 0.6000000238418579,
-		"Volume": 0.3499999940395355
-	},
-	{
-		"MaterialId": "683145c220ccb5ed327326d7c4e26c6d",
-		"CategoryName": "ship parts",
-		"CategoryId": "d23b9225010ad7978e5496e55359e19b",
-		"Name": "basicThermalProtectionMaterial",
-		"Ticker": "THP",
-		"Weight": 2.200000047683716,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "59dc3f23a82660bb9816d4a28775bd17",
-		"CategoryName": "metals",
-		"CategoryId": "cae48680d4c4e6f98d593a8c3778cb56",
-		"Name": "titanium",
-		"Ticker": "TI",
-		"Weight": 4.5,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "4e66cc6157f132ba934a79ae38776521",
-		"CategoryName": "ores",
-		"CategoryId": "4c0430b40fbf7fa175ed4a5a13682c6f",
-		"Name": "titaniumOre",
-		"Ticker": "TIO",
-		"Weight": 1.5800000429153442,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "563f37e86831a8361e79fa62ebe059eb",
-		"CategoryName": "textiles",
-		"CategoryId": "7028d7d532ccd4c6c878b069e7bbb634",
-		"Name": "technoKevlar",
-		"Ticker": "TK",
-		"Weight": 1.8899999856948853,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "7cc9acecdf3e9565c9b4cbe9c96f0ab5",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "tensorProcessingUnit",
-		"Ticker": "TPU",
-		"Weight": 0.0020000000949949026,
-		"Volume": 0.0020000000949949026
-	},
-	{
-		"MaterialId": "b805d86e129e9cf885ac92fabc6aa59f",
-		"CategoryName": "electronic parts",
-		"CategoryId": "8e15000dfbda2f46ce73458deaeeb358",
-		"Name": "audioTransmitter",
-		"Ticker": "TRA",
-		"Weight": 0.004999999888241291,
-		"Volume": 0.0020000000949949026
-	},
-	{
-		"MaterialId": "1c9b53bea13393865b625d8310bd2ced",
-		"CategoryName": "electronic pieces",
-		"CategoryId": "5e022d8f199de1c70f8de4dfd2fdef64",
-		"Name": "transistor",
-		"Ticker": "TRN",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.0010000000474974513
-	},
-	{
-		"MaterialId": "ec53c7423b75ca0d868f9580ae921561",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "truss",
-		"Ticker": "TRU",
-		"Weight": 0.10000000149011612,
-		"Volume": 1.5
-	},
-	{
-		"MaterialId": "a2e3d2f078583c564476f8d4062c2d1a",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "tectosilisite",
-		"Ticker": "TS",
-		"Weight": 2.4000000953674316,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "56afb81e665cf39883cdffbb26f81bf5",
-		"CategoryName": "construction parts",
-		"CategoryId": "f8aebc7dd84ce14fae131aa0203d4498",
-		"Name": "thermalShielding",
-		"Ticker": "TSH",
-		"Weight": 2.4000000953674316,
-		"Volume": 1.5
-	},
-	{
-		"MaterialId": "9a1ae6a2b5bd58d6ea3ec91c9499cfc4",
-		"CategoryName": "medical equipment",
-		"CategoryId": "ef05c6b81cf109f142dd415ce6d36e67",
-		"Name": "testTubes",
-		"Ticker": "TUB",
-		"Weight": 0.0020000000949949026,
-		"Volume": 0.0020000000949949026
-	},
-	{
-		"MaterialId": "22b3e4f9114304fb15a093e2b8f22a91",
-		"CategoryName": "utility",
-		"CategoryId": "4eb124000ee0e38af1daf5aced313823",
-		"Name": "universalToolset",
-		"Ticker": "UTS",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.05000000074505806
-	},
-	{
-		"MaterialId": "4f44983ac27bcbac1f0fd4af7b5a2b7b",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "highVolumeCargoBay",
-		"Ticker": "VCB",
-		"Weight": 200.0,
-		"Volume": 200.0
-	},
-	{
-		"MaterialId": "cc2dcb3699225b81cf63bf3e044a4f05",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "fattyVegetables",
-		"Ticker": "VEG",
-		"Weight": 1.100000023841858,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "9c80515790fcd5fefc84d56c80f4bb2a",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "engineerLuxuryHealth",
-		"Ticker": "VG",
-		"Weight": 0.20999999344348907,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "44424f913bab7837217786c8543bf44e",
-		"CategoryName": "agricultural products",
-		"CategoryId": "510e7751c0eb6a51fd0fa73565365d1c",
-		"Name": "vitaEssence",
-		"Ticker": "VIT",
-		"Weight": 0.8999999761581421,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "6fb814bde2cab570e5d8717251b96c00",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "verySmallCargoBay",
-		"Ticker": "VSC",
-		"Weight": 35.0,
-		"Volume": 35.0
-	},
-	{
-		"MaterialId": "96b43016ff0f9872d92a35196045c07d",
-		"CategoryName": "metals",
-		"CategoryId": "cae48680d4c4e6f98d593a8c3778cb56",
-		"Name": "wolfram",
-		"Ticker": "W",
-		"Weight": 7.519000053405762,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "4b78d4a814b42073673aecab2e7c5dbc",
-		"CategoryName": "software systems",
-		"CategoryId": "9e8bc2a092cc3361b6949eca3e95921a",
-		"Name": "weakArtificalIntelligence",
-		"Ticker": "WAI",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "21da4b6b92096523c67d016f97e7cc09",
-		"CategoryName": "alloys",
-		"CategoryId": "37e95782d80aa1c1ded89f2c4b834dd0",
-		"Name": "tungstenAluminiumAlloy",
-		"Ticker": "WAL",
-		"Weight": 6.25,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "cc7eb7e114d1c7f0db547595d683850a",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "highLoadCargoBay",
-		"Ticker": "WCB",
-		"Weight": 200.0,
-		"Volume": 200.0
-	},
-	{
-		"MaterialId": "9030ca612b7a761bc458240461fc8057",
-		"CategoryName": "consumables (luxury)",
-		"CategoryId": "8a0bd8b6a329c3d632da9da63c818b3d",
-		"Name": "scientistLuxuryDrink",
-		"Ticker": "WIN",
-		"Weight": 0.10000000149011612,
-		"Volume": 0.10000000149011612
-	},
-	{
-		"MaterialId": "a64beff205f211baec5a6d782cd6ec87",
-		"CategoryName": "software components",
-		"CategoryId": "ebec0c297d5b499a84dd051fa6f7c8ec",
-		"Name": "windowManager",
-		"Ticker": "WM",
-		"Weight": 0.0010000000474974513,
-		"Volume": 0.009999999776482582
-	},
-	{
-		"MaterialId": "34c4ff00c83e6b8f247f9b3948f7fe1a",
-		"CategoryName": "unit prefabs",
-		"CategoryId": "2c6ca18d24e03fc9250d8ca7d577568b",
-		"Name": "handcraftWorkshopUnit",
-		"Ticker": "WOR",
-		"Weight": 5.0,
-		"Volume": 5.0
-	},
-	{
-		"MaterialId": "1e7c5ae5b1518398b98e2ffdb28c0934",
-		"CategoryName": "electronic systems",
-		"CategoryId": "1e1a3a579c46d5f9c4e9959650c6b7a3",
-		"Name": "waterRecycler",
-		"Ticker": "WR",
-		"Weight": 6.400000095367432,
-		"Volume": 5.0
-	},
-	{
-		"MaterialId": "a4eeeb1b4c85b0637cfa7ca0a47c78d6",
-		"CategoryName": "consumables (basic)",
-		"CategoryId": "3f047ec3043bdd795fd7272d6be98799",
-		"Name": "scientistTools",
-		"Ticker": "WS",
-		"Weight": 0.05000000074505806,
-		"Volume": 0.5
-	},
-	{
-		"MaterialId": "82583e13472538b113667abc82421bda",
-		"CategoryName": "minerals",
-		"CategoryId": "79f3917448cc4f6034ece865c41aea34",
-		"Name": "zircon",
-		"Ticker": "ZIR",
-		"Weight": 4.849999904632568,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "e2a7a3a35c5e390f42db1faa468459dd",
-		"CategoryName": "elements",
-		"CategoryId": "ef1d03e7ef924395c2173fc4e4ee8a6f",
-		"Name": "zirconium",
-		"Ticker": "ZR",
-		"Weight": 6.53000020980835,
-		"Volume": 1.0
-	},
-	{
-		"MaterialId": "0b6a3cf120eac87d6a4bb21ad41371a1",
-		"CategoryName": "ship kits",
-		"CategoryId": "b7102e43e58120a254cf161c226d4177",
-		"Name": "hugeCargoBay",
-		"Ticker": "HCB",
-		"Weight": 500.0,
-		"Volume": 500.0
+		"material_id": "33ae4b6e0e01638f33a18ab9b0bf917d",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "microHeadphones",
+		"ticker": "MHP",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "e2a7a3a35c5e390f42db1faa468459dd",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "zirconium",
+		"ticker": "ZR",
+		"weight": 6.53000020980835,
+		"volume": 1.0
+	},
+	{
+		"material_id": "c8e78ba6113f8db69d14ae620ddbad06",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "radioDevice",
+		"ticker": "RAD",
+		"weight": 0.003000000026077032,
+		"volume": 0.004999999888241291
+	},
+	{
+		"material_id": "5c9630043c3f2d66206977ae394d8cf0",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "sensorArray",
+		"ticker": "SAR",
+		"weight": 1.7000000476837158,
+		"volume": 2.0
+	},
+	{
+		"material_id": "de74e4c1ab68d0889a7204f154153da1",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "gold",
+		"ticker": "AU",
+		"weight": 19.31999969482422,
+		"volume": 1.0
+	},
+	{
+		"material_id": "495ffb5105f367b76b1310c1d6736ac9",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "copper",
+		"ticker": "CU",
+		"weight": 8.920000076293945,
+		"volume": 1.0
+	},
+	{
+		"material_id": "7921cd20f7add0b26ff77f76e3e911f8",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "iron",
+		"ticker": "FE",
+		"weight": 7.874000072479248,
+		"volume": 1.0
+	},
+	{
+		"material_id": "69e09abe369419b53675148d64164b3a",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "silicon",
+		"ticker": "SI",
+		"weight": 2.3289999961853027,
+		"volume": 1.0
+	},
+	{
+		"material_id": "aaef669fed967abcfc188df59e1c4f4b",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "steel",
+		"ticker": "STL",
+		"weight": 7.849999904632568,
+		"volume": 1.0
+	},
+	{
+		"material_id": "59dc3f23a82660bb9816d4a28775bd17",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "titanium",
+		"ticker": "TI",
+		"weight": 4.5,
+		"volume": 1.0
+	},
+	{
+		"material_id": "96b43016ff0f9872d92a35196045c07d",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "wolfram",
+		"ticker": "W",
+		"weight": 7.519000053405762,
+		"volume": 1.0
+	},
+	{
+		"material_id": "83cadb15cbdc91cbdf616710b05afb34",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "stabilitySupportSystem",
+		"ticker": "STS",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "c8cc72aa9babd2ca382be2f358202587",
+		"category_name": "textiles",
+		"category_id": "7028d7d532ccd4c6c878b069e7bbb634",
+		"name": "ceramicFabric",
+		"ticker": "CF",
+		"weight": 2.819999933242798,
+		"volume": 1.0
+	},
+	{
+		"material_id": "d1da92df0f3cd523b647245fb79b5025",
+		"category_name": "plastics",
+		"category_id": "6316282906a9f68b0c7bb4396a26aa95",
+		"name": "mediumPlasticsBoard",
+		"ticker": "PSM",
+		"weight": 0.03999999910593033,
+		"volume": 0.4000000059604645
+	},
+	{
+		"material_id": "5745aed2f78b303ee96528213f99ec9f",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "bleach",
+		"ticker": "BLE",
+		"weight": 0.5,
+		"volume": 0.5
+	},
+	{
+		"material_id": "5a41a18d80ddc6982b61f5d2df496358",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "cryogenicFluid",
+		"ticker": "CST",
+		"weight": 1.1399999856948853,
+		"volume": 1.0
+	},
+	{
+		"material_id": "fe5be65546733ffa4f619bbc76ac532d",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "pesticides",
+		"ticker": "DDT",
+		"weight": 0.10999999940395355,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "082332472d3285c985367678a5716e71",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "enrichedEinsteinium",
+		"ticker": "EES",
+		"weight": 9.199999809265137,
+		"volume": 1.0
+	},
+	{
+		"material_id": "bcf4a2029e461cf76d29de8c66ec2ff9",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "ammonia",
+		"ticker": "AMM",
+		"weight": 0.8600000143051147,
+		"volume": 1.0
+	},
+	{
+		"material_id": "6e16dbf050b98d9c4fc9c615b3367a0f",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "oxygen",
+		"ticker": "O",
+		"weight": 1.1410000324249268,
+		"volume": 1.0
+	},
+	{
+		"material_id": "7bfabb5b93eb7a287206e062ce829e29",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "advancedThermalProtectionMaterial",
+		"ticker": "ATP",
+		"weight": 2.9000000953674316,
+		"volume": 1.0
+	},
+	{
+		"material_id": "9375c2dbd1de92b8ec107677bfeda193",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "basicHighgSeats",
+		"ticker": "BGS",
+		"weight": 20.0,
+		"volume": 3.0
+	},
+	{
+		"material_id": "c03644ad9e74ee585b1148f608010003",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "basicHullPlate",
+		"ticker": "BHP",
+		"weight": 9.0,
+		"volume": 10.0
+	},
+	{
+		"material_id": "7e3db35fdccce745cede7b1b636f3cb1",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "habitationModule",
+		"ticker": "HAM",
+		"weight": 1200.0,
+		"volume": 1200.0
+	},
+	{
+		"material_id": "bb576032a158719b514c2b3f3e87e30a",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "hardenedHullPlate",
+		"ticker": "HHP",
+		"weight": 10.0,
+		"volume": 10.0
+	},
+	{
+		"material_id": "432414a579f1fccd66136b257eb44408",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "fastenerKitMedium",
+		"ticker": "MFK",
+		"weight": 0.10000000149011612,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "b25e1857f8234dc9779d83d7abea3d77",
+		"category_name": "ores",
+		"category_id": "4c0430b40fbf7fa175ed4a5a13682c6f",
+		"name": "copperOre",
+		"ticker": "CUO",
+		"weight": 4.010000228881836,
+		"volume": 1.0
+	},
+	{
+		"material_id": "b9640b0d66e7d0ca7e4d3132711c97fc",
+		"category_name": "ores",
+		"category_id": "4c0430b40fbf7fa175ed4a5a13682c6f",
+		"name": "ironOre",
+		"ticker": "FEO",
+		"weight": 5.900000095367432,
+		"volume": 1.0
+	},
+	{
+		"material_id": "6dd01a9f12e493d44bbb8ce578f7a2d2",
+		"category_name": "ores",
+		"category_id": "4c0430b40fbf7fa175ed4a5a13682c6f",
+		"name": "lithiumOre",
+		"ticker": "LIO",
+		"weight": 2.75,
+		"volume": 1.0
+	},
+	{
+		"material_id": "21dd9e8e792b601949b9024991244f9e",
+		"category_name": "ores",
+		"category_id": "4c0430b40fbf7fa175ed4a5a13682c6f",
+		"name": "rheniumOre",
+		"ticker": "REO",
+		"weight": 12.800000190734863,
+		"volume": 1.0
+	},
+	{
+		"material_id": "eeff5ee913d34354be84177847fbfe48",
+		"category_name": "ores",
+		"category_id": "4c0430b40fbf7fa175ed4a5a13682c6f",
+		"name": "siliconOre",
+		"ticker": "SIO",
+		"weight": 1.7899999618530273,
+		"volume": 1.0
+	},
+	{
+		"material_id": "4e66cc6157f132ba934a79ae38776521",
+		"category_name": "ores",
+		"category_id": "4c0430b40fbf7fa175ed4a5a13682c6f",
+		"name": "titaniumOre",
+		"ticker": "TIO",
+		"weight": 1.5800000429153442,
+		"volume": 1.0
+	},
+	{
+		"material_id": "70504de53ce6b9348f725e442586d75c",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "commandBridge1",
+		"ticker": "BR1",
+		"weight": 180.0,
+		"volume": 300.0
+	},
+	{
+		"material_id": "bfef679d7f2ac72b24c2a277fdf072ef",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "commandBridgeShort",
+		"ticker": "BRS",
+		"weight": 150.0,
+		"volume": 200.0
+	},
+	{
+		"material_id": "fdb85e688cf7f229f20c8e819c4cab9f",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "biosphereUnit",
+		"ticker": "BSU",
+		"weight": 50.0,
+		"volume": 50.0
+	},
+	{
+		"material_id": "7bcbe9bbdebb94ec145d614baf8e65f5",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "cryopreservationUnit",
+		"ticker": "CPU",
+		"weight": 20.0,
+		"volume": 20.0
+	},
+	{
+		"material_id": "e04f3be303b7dabe50ef92a354070891",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "crewQuarters",
+		"ticker": "CQL",
+		"weight": 75.0,
+		"volume": 150.0
+	},
+	{
+		"material_id": "128870a0d62fc67b9d562bb40ddf3922",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "crewQuartersMed",
+		"ticker": "CQM",
+		"weight": 50.0,
+		"volume": 100.0
+	},
+	{
+		"material_id": "9f4c5f6a328a1bef6a989c7ea6b21fb9",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "crewQuartersSmall",
+		"ticker": "CQS",
+		"weight": 25.0,
+		"volume": 50.0
+	},
+	{
+		"material_id": "2a75ecd980c6edd020d71a8b8948aa6a",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "crewQuartersTiny",
+		"ticker": "CQT",
+		"weight": 12.5,
+		"volume": 25.0
+	},
+	{
+		"material_id": "3da2d0cffdac26559504aa8fadfcdee2",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "droneOperationsUnit",
+		"ticker": "DOU",
+		"weight": 5.0,
+		"volume": 4.0
+	},
+	{
+		"material_id": "93fb7db0a58375534661afd0dc88f4ad",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "artificialSoil",
+		"ticker": "SOI",
+		"weight": 0.8999999761581421,
+		"volume": 1.0
+	},
+	{
+		"material_id": "4854eb1479ec6225b01d337a172d7b02",
+		"category_name": "medical equipment",
+		"category_id": "ef05c6b81cf109f142dd415ce6d36e67",
+		"name": "painkillers",
+		"ticker": "PK",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "2db0ebcc44d7df90defe67cc63903a76",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "capacitor",
+		"ticker": "CAP",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "eab56d3d6b0742ccbf19a7e955209b0e",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "redGoldConnectors",
+		"ticker": "HCC",
+		"weight": 0.009999999776482582,
+		"volume": 0.0020000000949949026
+	},
+	{
+		"material_id": "291cd8f5c28b371afe0793f78f5499a8",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "laserDiode",
+		"ticker": "LDI",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "206d41a1981a67025be0299c67943607",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "basicFuelRod",
+		"ticker": "BFR",
+		"weight": 0.30000001192092896,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "4094d1cf6704085fbe6ff7a6e1862e4a",
+		"category_name": "medical equipment",
+		"category_id": "ef05c6b81cf109f142dd415ce6d36e67",
+		"name": "surgicalEquipment",
+		"ticker": "SEQ",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "3ca4ad9d9fa814530aa9ba66b74c1d06",
+		"category_name": "medical equipment",
+		"category_id": "ef05c6b81cf109f142dd415ce6d36e67",
+		"name": "medicalStretcher",
+		"ticker": "STR",
+		"weight": 0.009999999776482582,
+		"volume": 1.0
+	},
+	{
+		"material_id": "cb9bcbcc36de690abcafb9d5cc944cd4",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "touchScreen",
+		"ticker": "CD",
+		"weight": 0.004000000189989805,
+		"volume": 0.0020000000949949026
+	},
+	{
+		"material_id": "71437224d7590e8ff92265a56cb70dee",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "twoDimensionalDisplay",
+		"ticker": "DIS",
+		"weight": 0.019999999552965164,
+		"volume": 0.019999999552965164
+	},
+	{
+		"material_id": "09a313c77887ec04c209c0153f7dee75",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "coolingFan",
+		"ticker": "FAN",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "0995a123c2c2e60c9b0d4f120abac7bb",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "motherBoard",
+		"ticker": "MB",
+		"weight": 0.07500000298023224,
+		"volume": 0.07500000298023224
+	},
+	{
+		"material_id": "a4a8a25d01f80586f7bad3488fa11f36",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "sulfurCrystals",
+		"ticker": "SCR",
+		"weight": 2.049999952316284,
+		"volume": 1.0
+	},
+	{
+		"material_id": "ea550373234a7c171de0f525922af5be",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "tantalite",
+		"ticker": "TAI",
+		"weight": 7.940000057220459,
+		"volume": 1.0
+	},
+	{
+		"material_id": "a0f92faf8cf9487b04fda968030527bf",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "technetiumOxide",
+		"ticker": "TCO",
+		"weight": 9.800000190734863,
+		"volume": 1.0
+	},
+	{
+		"material_id": "a2e3d2f078583c564476f8d4062c2d1a",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "tectosilisite",
+		"ticker": "TS",
+		"weight": 2.4000000953674316,
+		"volume": 1.0
+	},
+	{
+		"material_id": "82583e13472538b113667abc82421bda",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "zircon",
+		"ticker": "ZIR",
+		"weight": 4.849999904632568,
+		"volume": 1.0
+	},
+	{
+		"material_id": "1d2a14dda2d950fe0dfa51cb76e79e54",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "engineerTools",
+		"ticker": "PDA",
+		"weight": 0.0020000000949949026,
+		"volume": 0.0020000000949949026
+	},
+	{
+		"material_id": "b5744244bb7913cee262ec29abc3b9d0",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "settlerTools",
+		"ticker": "PT",
+		"weight": 0.25,
+		"volume": 0.20000000298023224
+	},
+	{
+		"material_id": "83dd61885cf6879ff49fe1419f068f10",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "rations",
+		"ticker": "RAT",
+		"weight": 0.20999999344348907,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "66369803dbe73bee8a78105d3ca00554",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "technicianTools",
+		"ticker": "SCN",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "a4eeeb1b4c85b0637cfa7ca0a47c78d6",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "scientistTools",
+		"ticker": "WS",
+		"weight": 0.05000000074505806,
+		"volume": 0.5
+	},
+	{
+		"material_id": "10469071872e3221bb8ec42c79368f96",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "entertainmentUnit",
+		"ticker": "FUN",
+		"weight": 5.0,
+		"volume": 4.0
+	},
+	{
+		"material_id": "cbe44387c37259ac71716382c0016bbf",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "habitatUnit",
+		"ticker": "HAB",
+		"weight": 10.0,
+		"volume": 8.0
+	},
+	{
+		"material_id": "f3f12b5b3adebdd25f3067e5aa4589f0",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "lightweightHullPlate",
+		"ticker": "LHP",
+		"weight": 4.0,
+		"volume": 10.0
+	},
+	{
+		"material_id": "e8e7a34cb5e2a62aaf8d83dc79d81ee5",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "navigation1",
+		"ticker": "NV1",
+		"weight": 4.199999809265137,
+		"volume": 2.0
+	},
+	{
+		"material_id": "ccdecb3fc5eb9f0d04c67cc1c9fb47dd",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "navigation2",
+		"ticker": "NV2",
+		"weight": 6.699999809265137,
+		"volume": 3.0
+	},
+	{
+		"material_id": "e59f70623448014f8fac5af9922de5c3",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "reinforcedHullPlate",
+		"ticker": "RHP",
+		"weight": 10.0,
+		"volume": 10.0
+	},
+	{
+		"material_id": "751120b64901019887c843e4125cd571",
+		"category_name": "drones",
+		"category_id": "6eb09f14ed9fec3d0407114be8bc8882",
+		"name": "droneChassis",
+		"ticker": "DCH",
+		"weight": 0.20000000298023224,
+		"volume": 0.029999999329447746
+	},
+	{
+		"material_id": "5ddd503694fc9c42013e2cf2ca3b85af",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "alurhenium",
+		"ticker": "ALR",
+		"weight": 3.5999999046325684,
+		"volume": 1.0
+	},
+	{
+		"material_id": "5a3934eb6d4ffc642fab7a358c3fb1b8",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "aluminiumTitaniumAlloy",
+		"ticker": "AST",
+		"weight": 4.980000019073486,
+		"volume": 1.0
+	},
+	{
+		"material_id": "b2ca8883f60fb72011ad33855c531f3a",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "goldIronAlloy",
+		"ticker": "BGO",
+		"weight": 19.31999969482422,
+		"volume": 1.0
+	},
+	{
+		"material_id": "08adb8c8b129d07b85919cff2fdc2c0d",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "borosilicate",
+		"ticker": "BOS",
+		"weight": 1.5,
+		"volume": 1.0
+	},
+	{
+		"material_id": "78b8206e505d8970f0d9a8f56885ec97",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "aluminiumIronAlloy",
+		"ticker": "FAL",
+		"weight": 3.2200000286102295,
+		"volume": 1.0
+	},
+	{
+		"material_id": "d7ac798b0457e67da544fbccfa9367f6",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "ironTitaniumAlloy",
+		"ticker": "FET",
+		"weight": 6.849999904632568,
+		"volume": 1.0
+	},
+	{
+		"material_id": "184e8b2fa39edeeb942a838c7502bcc1",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "goldCopperAlloy",
+		"ticker": "RGO",
+		"weight": 19.31999969482422,
+		"volume": 1.0
+	},
+	{
+		"material_id": "21da4b6b92096523c67d016f97e7cc09",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "tungstenAluminiumAlloy",
+		"ticker": "WAL",
+		"weight": 6.25,
+		"volume": 1.0
+	},
+	{
+		"material_id": "0253e010aee37786b8e0b7220db60527",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "wolfrhenium",
+		"ticker": "WRH",
+		"weight": 6.920000076293945,
+		"volume": 1.0
+	},
+	{
+		"material_id": "1eaaffac98a9a50276e29cf675f43ec9",
+		"category_name": "consumable bundles",
+		"category_id": "1237e1d7ac57367e39b6a2406ca4dadc",
+		"name": "scientistBundle",
+		"ticker": "CBU",
+		"weight": 54.0,
+		"volume": 47.0
+	},
+	{
+		"material_id": "6a04f7cdbb83b9f6253b01ebb08f2e0e",
+		"category_name": "consumable bundles",
+		"category_id": "1237e1d7ac57367e39b6a2406ca4dadc",
+		"name": "engineerBundle",
+		"ticker": "EBU",
+		"weight": 51.0,
+		"volume": 46.0
+	},
+	{
+		"material_id": "0d47794b3f8331f4b945a0dcd56d7d41",
+		"category_name": "consumable bundles",
+		"category_id": "1237e1d7ac57367e39b6a2406ca4dadc",
+		"name": "pioneerBundle",
+		"ticker": "PBU",
+		"weight": 13.0,
+		"volume": 8.0
+	},
+	{
+		"material_id": "d4068898d1dbd1eab014050453eb4cef",
+		"category_name": "consumable bundles",
+		"category_id": "1237e1d7ac57367e39b6a2406ca4dadc",
+		"name": "settlerBundle",
+		"ticker": "SBU",
+		"weight": 20.0,
+		"volume": 13.0
+	},
+	{
+		"material_id": "ea76195ce185b40e800502a66194d5a0",
+		"category_name": "consumable bundles",
+		"category_id": "1237e1d7ac57367e39b6a2406ca4dadc",
+		"name": "technicianBundle",
+		"ticker": "TBU",
+		"weight": 24.0,
+		"volume": 16.0
+	},
+	{
+		"material_id": "f99a1c9a730d92fd78b7dc7c2d710060",
+		"category_name": "medical equipment",
+		"category_id": "ef05c6b81cf109f142dd415ce6d36e67",
+		"name": "autoDoc",
+		"ticker": "ADR",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "26c6a0defb9109b7ac3fab559b9d4f65",
+		"category_name": "medical equipment",
+		"category_id": "ef05c6b81cf109f142dd415ce6d36e67",
+		"name": "bandages",
+		"ticker": "BND",
+		"weight": 0.0010000000474974513,
+		"volume": 0.004999999888241291
+	},
+	{
+		"material_id": "5cd2b3729f1de46d80cbf7300c905bef",
+		"category_name": "software systems",
+		"category_id": "9e8bc2a092cc3361b6949eca3e95921a",
+		"name": "informationDataCore",
+		"ticker": "IDC",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "42e71bbfad2d69d9716ba14e653f50d4",
+		"category_name": "ship shields",
+		"category_id": "a8e32e7e16219394989aea62fc0cd943",
+		"name": "basicWhippleShielding",
+		"ticker": "BWH",
+		"weight": 0.10000000149011612,
+		"volume": 1.0
+	},
+	{
+		"material_id": "77638e63e83ace0a7e33667d362a3a91",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "glassNozzle",
+		"ticker": "GNZ",
+		"weight": 1.5,
+		"volume": 1.0
+	},
+	{
+		"material_id": "ec53c7423b75ca0d868f9580ae921561",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "truss",
+		"ticker": "TRU",
+		"weight": 0.10000000149011612,
+		"volume": 1.5
+	},
+	{
+		"material_id": "56afb81e665cf39883cdffbb26f81bf5",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "thermalShielding",
+		"ticker": "TSH",
+		"weight": 2.4000000953674316,
+		"volume": 1.5
+	},
+	{
+		"material_id": "069cfa526ddedea57b71adc0d4556c21",
+		"category_name": "alloys",
+		"category_id": "37e95782d80aa1c1ded89f2c4b834dd0",
+		"name": "copperAluminiumAlloy",
+		"ticker": "BRO",
+		"weight": 8.729999542236328,
+		"volume": 1.0
+	},
+	{
+		"material_id": "9a1ae6a2b5bd58d6ea3ec91c9499cfc4",
+		"category_name": "medical equipment",
+		"category_id": "ef05c6b81cf109f142dd415ce6d36e67",
+		"name": "testTubes",
+		"ticker": "TUB",
+		"weight": 0.0020000000949949026,
+		"volume": 0.0020000000949949026
+	},
+	{
+		"material_id": "1b05fb8506fcd5be63a465171dd4c656",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "laboratoryUnit",
+		"ticker": "LU",
+		"weight": 8.0,
+		"volume": 6.0
+	},
+	{
+		"material_id": "4d7a3d9cf07cd3c3be0cd0092afd0ea8",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "largeShipRepairDroneUnit",
+		"ticker": "RDL",
+		"weight": 150.0,
+		"volume": 30.0
+	},
+	{
+		"material_id": "addf3b08bfd443feb2c5f51c776155f5",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "smallShipRepairDroneUnit",
+		"ticker": "RDS",
+		"weight": 50.0,
+		"volume": 10.0
+	},
+	{
+		"material_id": "04aac5d04eadadd5a34806f60334abc3",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "surgeryUnit",
+		"ticker": "SU",
+		"weight": 6.0,
+		"volume": 5.0
+	},
+	{
+		"material_id": "7923f6f2e04ed63a27fed11aa350a48b",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "traumaCareUnit",
+		"ticker": "TCU",
+		"weight": 5.0,
+		"volume": 4.0
+	},
+	{
+		"material_id": "34c4ff00c83e6b8f247f9b3948f7fe1a",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "handcraftWorkshopUnit",
+		"ticker": "WOR",
+		"weight": 5.0,
+		"volume": 5.0
+	},
+	{
+		"material_id": "815b7171c7647a71758ff3a13bd303a9",
+		"category_name": "ship shields",
+		"category_id": "a8e32e7e16219394989aea62fc0cd943",
+		"name": "advancedHeatShield",
+		"ticker": "APT",
+		"weight": 0.029999999329447746,
+		"volume": 0.30000001192092896
+	},
+	{
+		"material_id": "e73f2311d23a1dc4e096d2cf389e5ee2",
+		"category_name": "ship shields",
+		"category_id": "a8e32e7e16219394989aea62fc0cd943",
+		"name": "advancedRadiationShielding",
+		"ticker": "ARP",
+		"weight": 0.03999999910593033,
+		"volume": 0.20000000298023224
+	},
+	{
+		"material_id": "8284845e663b10975f8eec5f4426ec29",
+		"category_name": "ship shields",
+		"category_id": "a8e32e7e16219394989aea62fc0cd943",
+		"name": "advancedWhippleShielding",
+		"ticker": "AWH",
+		"weight": 0.11999999731779099,
+		"volume": 1.0
+	},
+	{
+		"material_id": "295bef52967a15fda26f5968976d29b8",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "lithium",
+		"ticker": "LI",
+		"weight": 0.550000011920929,
+		"volume": 1.0
+	},
+	{
+		"material_id": "3643069b469e68db439510dd551ad025",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "rhenium",
+		"ticker": "RE",
+		"weight": 3.200000047683716,
+		"volume": 1.0
+	},
+	{
+		"material_id": "b700f9670131981590e77238d7c207d3",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "structuralSpacecraftComponent",
+		"ticker": "SSC",
+		"weight": 1.0,
+		"volume": 1.0
+	},
+	{
+		"material_id": "0700a1ac4bfbbb10fbe08f9a3c08bc13",
+		"category_name": "drones",
+		"category_id": "6eb09f14ed9fec3d0407114be8bc8882",
+		"name": "rescueDrone",
+		"ticker": "RED",
+		"weight": 0.30000001192092896,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "5952bfbf043018679334e7ea71b1504e",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "technicianLuxuryHealth",
+		"ticker": "SC",
+		"weight": 0.03999999910593033,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "f4316553b9594a88e21536a897f0cab4",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "hyperthrustNozzle",
+		"ticker": "HNZ",
+		"weight": 6.0,
+		"volume": 12.0
+	},
+	{
+		"material_id": "24cb7e11e07449e2a6966b92d4ee307d",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "fastenerKitSmall",
+		"ticker": "SFK",
+		"weight": 0.03999999910593033,
+		"volume": 0.019999999552965164
+	},
+	{
+		"material_id": "f1778b3b4e6643f6424e01ffb79e87a0",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "waferSmall",
+		"ticker": "SWF",
+		"weight": 0.003000000026077032,
+		"volume": 0.003000000026077032
+	},
+	{
+		"material_id": "5dee73eea0e8e99a6564a011ddc80880",
+		"category_name": "ship shields",
+		"category_id": "a8e32e7e16219394989aea62fc0cd943",
+		"name": "basicHeatShield",
+		"ticker": "BPT",
+		"weight": 0.019999999552965164,
+		"volume": 0.30000001192092896
+	},
+	{
+		"material_id": "6070c50f7e58a7db432416085531a01b",
+		"category_name": "ship shields",
+		"category_id": "a8e32e7e16219394989aea62fc0cd943",
+		"name": "basicRadiationShielding",
+		"ticker": "BRP",
+		"weight": 0.029999999329447746,
+		"volume": 0.20000000298023224
+	},
+	{
+		"material_id": "488a45ca9f9a3be0bbbe7b4f53ef5b31",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "holographicGlasses",
+		"ticker": "HOG",
+		"weight": 0.009999999776482582,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "3795b86284befb6c493ccd380258c970",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "touchDeviceBlank",
+		"ticker": "HPC",
+		"weight": 0.003000000026077032,
+		"volume": 0.003000000026077032
+	},
+	{
+		"material_id": "9c80515790fcd5fefc84d56c80f4bb2a",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "engineerLuxuryHealth",
+		"ticker": "VG",
+		"weight": 0.20999999344348907,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "9030ca612b7a761bc458240461fc8057",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "scientistLuxuryDrink",
+		"ticker": "WIN",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "6f5e5b36f990caafe0b6eae133084930",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "advancedEngine",
+		"ticker": "AEN",
+		"weight": 14.0,
+		"volume": 7.0
+	},
+	{
+		"material_id": "93a78d6bcf54aef3f2ea93f1238ce79a",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "highPowerReactor",
+		"ticker": "HPR",
+		"weight": 16.0,
+		"volume": 15.0
+	},
+	{
+		"material_id": "7075b9314a25ea13f973a1f2d2dad18e",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "hyperthrustEngine",
+		"ticker": "HTE",
+		"weight": 16.0,
+		"volume": 10.0
+	},
+	{
+		"material_id": "844341ef73a82d657b64050be2632c53",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "hyperPowerReactor",
+		"ticker": "HYR",
+		"weight": 25.0,
+		"volume": 25.0
+	},
+	{
+		"material_id": "e892dd87f4f499f96bdbaa2ca5965ce9",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "largeEmitter",
+		"ticker": "LFE",
+		"weight": 0.4000000059604645,
+		"volume": 1.600000023841858
+	},
+	{
+		"material_id": "b2ba495fc0643c5e5c71195be14aef0e",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "lowHeatFuelPump",
+		"ticker": "LFP",
+		"weight": 0.5,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "943fff6ce1b470ea031432a15a9afe47",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "mediumEmitter",
+		"ticker": "MFE",
+		"weight": 0.20000000298023224,
+		"volume": 0.800000011920929
+	},
+	{
+		"material_id": "9e783e064cfecd477c04cd25f0cf0389",
+		"category_name": "ship shields",
+		"category_id": "a8e32e7e16219394989aea62fc0cd943",
+		"name": "specializedRadiationShielding",
+		"ticker": "SRP",
+		"weight": 0.10000000149011612,
+		"volume": 0.20000000298023224
+	},
+	{
+		"material_id": "d4a247f1ae7a17b6e80057866ecdf90d",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "antennaArray",
+		"ticker": "AAR",
+		"weight": 0.7799999713897705,
+		"volume": 0.5
+	},
+	{
+		"material_id": "e40f3373c1b7c0158d69ee9adfe612b1",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "waterFilter",
+		"ticker": "AWF",
+		"weight": 0.800000011920929,
+		"volume": 1.2000000476837158
+	},
+	{
+		"material_id": "1dc2dcd0be19e4272767510d3392fe36",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "fullBodyInteractionDevice",
+		"ticker": "BID",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "47952dfcb98b6d573fd3e9461cfdddcf",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "mainFrameBlank",
+		"ticker": "BMF",
+		"weight": 0.800000011920929,
+		"volume": 1.2000000476837158
+	},
+	{
+		"material_id": "c8a952f1ae3dbd4be8a72741efa29880",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "bodyScanner",
+		"ticker": "BSC",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "dca85bbac276e8688496bd8ae06b1185",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "workstationBlank",
+		"ticker": "BWS",
+		"weight": 0.05000000074505806,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "9409ba6022b2767eb16bbee6d680cf8c",
+		"category_name": "electronic devices",
+		"category_id": "19d621bb3f297c0425e34cdf0b138ece",
+		"name": "holographicDisplay",
+		"ticker": "HD",
+		"weight": 0.05000000074505806,
+		"volume": 2.0
+	},
+	{
+		"material_id": "663f2e01b48535883100f1e16fc75f45",
+		"category_name": "drones",
+		"category_id": "6eb09f14ed9fec3d0407114be8bc8882",
+		"name": "surgicalDrone",
+		"ticker": "SDR",
+		"weight": 0.30000001192092896,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "9c418f805a867af115600ac3657cce0d",
+		"category_name": "drones",
+		"category_id": "6eb09f14ed9fec3d0407114be8bc8882",
+		"name": "shipRepairDrone",
+		"ticker": "SRD",
+		"weight": 0.30000001192092896,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "08f48a785d3012a7fcfa7e0c3e2c571c",
+		"category_name": "drones",
+		"category_id": "6eb09f14ed9fec3d0407114be8bc8882",
+		"name": "surveillanceDrone",
+		"ticker": "SUD",
+		"weight": 0.30000001192092896,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "98750f7d48ab2115293c8a8334b0120e",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "largeFtlTank",
+		"ticker": "LFL",
+		"weight": 60.0,
+		"volume": 10.0
+	},
+	{
+		"material_id": "684d77b82143e23d746461d1a55a6711",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "largeStlTank",
+		"ticker": "LSL",
+		"weight": 125.0,
+		"volume": 100.0
+	},
+	{
+		"material_id": "ca35c8015a968c985e6a2a8fbb6b7664",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "mediumCargoBay",
+		"ticker": "MCB",
+		"weight": 100.0,
+		"volume": 100.0
+	},
+	{
+		"material_id": "e8308b1283cb813e2962d64fdb42ec33",
+		"category_name": "utility",
+		"category_id": "4eb124000ee0e38af1daf5aced313823",
+		"name": "safetyUniform",
+		"ticker": "SUN",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "cd0c4bd7aae87c7e402d359b6e908b05",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "technicianLuxuryDrink",
+		"ticker": "ALE",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "9842ad8d9dfdf8e4c2e80117e7b5ebaf",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "pioneerLuxuryDrink",
+		"ticker": "COF",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "a9c439ab4a206915c370ad05e0af62d9",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "engineerLuxuryDrink",
+		"ticker": "GIN",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "a1d1d61f8085de53455dd4e8a7813788",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "settlerLuxuryDrink",
+		"ticker": "KOM",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "a636755a8531daa76ab6b1f95fd5d5e3",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "scientistLuxuryHealth",
+		"ticker": "NST",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "820d081096fd3e8fbd98b4344f6250ad",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "pioneerLuxuryClothing",
+		"ticker": "PWO",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "7171933481f022ca74200b216f98ca60",
+		"category_name": "consumables (luxury)",
+		"category_id": "8a0bd8b6a329c3d632da9da63c818b3d",
+		"name": "settlerLuxuryTools",
+		"ticker": "REP",
+		"weight": 0.006000000052154064,
+		"volume": 0.0020000000949949026
+	},
+	{
+		"material_id": "a7a19eb0c3f253884c901bf1d05f2369",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "automatedCoolingSystem",
+		"ticker": "ACS",
+		"weight": 0.30000001192092896,
+		"volume": 0.20000000298023224
+	},
+	{
+		"material_id": "03133ed742ebc355fb01a1b363d48a70",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "audioDistributionSystem",
+		"ticker": "ADS",
+		"weight": 0.699999988079071,
+		"volume": 2.0
+	},
+	{
+		"material_id": "c3851a633c5e8c625bfe332e79af7360",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "climateController",
+		"ticker": "CC",
+		"weight": 0.5,
+		"volume": 1.0
+	},
+	{
+		"material_id": "ee0e83e198391b1c9affe29ac07623b0",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "communicationSystem",
+		"ticker": "COM",
+		"weight": 0.5,
+		"volume": 1.5
+	},
+	{
+		"material_id": "3e9e003ed20e4a62eb811a8a50223a65",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "cryoUnit",
+		"ticker": "CRU",
+		"weight": 2.200000047683716,
+		"volume": 2.0
+	},
+	{
+		"material_id": "11cfa0cf3614e7a2405a31039c44632e",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "ftlFieldController",
+		"ticker": "FFC",
+		"weight": 50.0,
+		"volume": 16.0
+	},
+	{
+		"material_id": "05be9d04aad5bb7ea6ed6db76102399f",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "lifeSupportSystem",
+		"ticker": "LIS",
+		"weight": 5.599999904632568,
+		"volume": 7.0
+	},
+	{
+		"material_id": "d0d20f604c3b3348cad620a02c664d57",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "logisticsSystem",
+		"ticker": "LOG",
+		"weight": 0.5,
+		"volume": 1.5
+	},
+	{
+		"material_id": "ec6fe0efa83e52fd59f248a069aee9bb",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "proteinAlgae",
+		"ticker": "ALG",
+		"weight": 0.699999988079071,
+		"volume": 1.0
+	},
+	{
+		"material_id": "e97e2535fec019710299709a7462c066",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "proteinBeans",
+		"ticker": "BEA",
+		"weight": 0.800000011920929,
+		"volume": 1.0
+	},
+	{
+		"material_id": "363f35e6ebb48062872112416e49424c",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "caffeinatedBeans",
+		"ticker": "CAF",
+		"weight": 0.8600000143051147,
+		"volume": 1.0
+	},
+	{
+		"material_id": "c54c5f96af3bec918be316b4469307cb",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "allPurposeFodder",
+		"ticker": "FOD",
+		"weight": 1.2000000476837158,
+		"volume": 1.0
+	},
+	{
+		"material_id": "a531fd67223d12e94103dff359c50e0d",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "advancedWindow",
+		"ticker": "ATA",
+		"weight": 0.30000001192092896,
+		"volume": 0.4000000059604645
+	},
+	{
+		"material_id": "63b98e9700f6630cbfd9c824e0882388",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "basicBulkhead",
+		"ticker": "BBH",
+		"weight": 0.5,
+		"volume": 0.800000011920929
+	},
+	{
+		"material_id": "420b38d32301dfe56403d1f3967d5b86",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "basicDeckElements",
+		"ticker": "BDE",
+		"weight": 0.10000000149011612,
+		"volume": 1.5
+	},
+	{
+		"material_id": "5de316b11d1e8f5dc142665ae979ec19",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "advancedNozzle",
+		"ticker": "ANZ",
+		"weight": 6.0,
+		"volume": 3.0
+	},
+	{
+		"material_id": "3798c56adc243fe2b25d988139939d8d",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "basicFuelPump",
+		"ticker": "BFP",
+		"weight": 0.800000011920929,
+		"volume": 0.20000000298023224
+	},
+	{
+		"material_id": "a014493f8716f1636704dc836acc66ec",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "argon",
+		"ticker": "AR",
+		"weight": 1.784000039100647,
+		"volume": 1.0
+	},
+	{
+		"material_id": "ee320953d3d725c83bfbc594449979a2",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "fluorine",
+		"ticker": "F",
+		"weight": 1.6959999799728394,
+		"volume": 1.0
+	},
+	{
+		"material_id": "c04de28c3e717f236d6ed177b89d9523",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "hydrogen",
+		"ticker": "H",
+		"weight": 0.07000000029802322,
+		"volume": 1.0
+	},
+	{
+		"material_id": "5d59ddddb1ce9a26eb81b78b8378b3ac",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "nitrogen",
+		"ticker": "N",
+		"weight": 0.8069999814033508,
+		"volume": 1.0
+	},
+	{
+		"material_id": "adca908f9dd26ff505d01bc5ffc0d2e1",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "neon",
+		"ticker": "NE",
+		"weight": 0.8999999761581421,
+		"volume": 1.0
+	},
+	{
+		"material_id": "0a37a0d116f1271b285b7304e413733b",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "advancedHighgSeats",
+		"ticker": "AGS",
+		"weight": 30.0,
+		"volume": 5.0
+	},
+	{
+		"material_id": "686d319fc72c05510a884292da6cb664",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "advancedHullPlate",
+		"ticker": "AHP",
+		"weight": 10.0,
+		"volume": 10.0
+	},
+	{
+		"material_id": "ccef250eff466c569c12c2b711a0d5c2",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "grapes",
+		"ticker": "GRA",
+		"weight": 1.100000023841858,
+		"volume": 1.0
+	},
+	{
+		"material_id": "83d83e8cf6fb9018ae7138a1b5d4b19c",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "carbohydrateGrains",
+		"ticker": "GRN",
+		"weight": 0.8999999761581421,
+		"volume": 1.0
+	},
+	{
+		"material_id": "c76b4100059661084315938999623c26",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "hydrocarbonPlants",
+		"ticker": "HCP",
+		"weight": 0.800000011920929,
+		"volume": 1.0
+	},
+	{
+		"material_id": "1a1f13b7fc3e0fb6aa292b7c28764f93",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "herbs",
+		"ticker": "HER",
+		"weight": 0.4000000059604645,
+		"volume": 1.0
+	},
+	{
+		"material_id": "d7a9a96a18f278aa7c3f9af30fc68d19",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "antibacterialTreeFlowers",
+		"ticker": "HOP",
+		"weight": 0.3499999940395355,
+		"volume": 1.0
+	},
+	{
+		"material_id": "a381f9434f9105a4f8179f6c6cffe007",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "carbohydrateMaize",
+		"ticker": "MAI",
+		"weight": 1.2999999523162842,
+		"volume": 1.0
+	},
+	{
+		"material_id": "52cc5c8aeab6bb1778e7ce93a1bbdc80",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "meat",
+		"ticker": "MTP",
+		"weight": 0.699999988079071,
+		"volume": 1.0
+	},
+	{
+		"material_id": "005252da5904d755c10d3abd4442bdeb",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "mushrooms",
+		"ticker": "MUS",
+		"weight": 0.800000011920929,
+		"volume": 1.0
+	},
+	{
+		"material_id": "76afd4e7e388072fbb01051c4ad8afde",
+		"category_name": "fuels",
+		"category_id": "ba98fa0cf77040a96cd8a608ad0d08e9",
+		"name": "vortexStimulationFuel",
+		"ticker": "VF",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "0b6a3cf120eac87d6a4bb21ad41371a1",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "hugeCargoBay",
+		"ticker": "HCB",
+		"weight": 500.0,
+		"volume": 500.0
+	},
+	{
+		"material_id": "d140bdc3f13c831ab8931e330c8d6120",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "largeCargoBay",
+		"ticker": "LCB",
+		"weight": 200.0,
+		"volume": 200.0
+	},
+	{
+		"material_id": "f02fe7ddd1a92d3b7968fdbc40f8447e",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "advancedFuelPump",
+		"ticker": "AFP",
+		"weight": 1.0,
+		"volume": 0.25
+	},
+	{
+		"material_id": "b591180c0f681910b0e29ade88b6be62",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "advancedFuelRod",
+		"ticker": "AFR",
+		"weight": 0.4000000059604645,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "bbfa7555fbfa8ef2852d4479f7aa703e",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "smallEmitter",
+		"ticker": "SFE",
+		"weight": 0.10000000149011612,
+		"volume": 0.4000000059604645
+	},
+	{
+		"material_id": "f61588ec7828cc953e8199bd8a0c2edb",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "vortexEngine",
+		"ticker": "VOE",
+		"weight": 40.0,
+		"volume": 35.0
+	},
+	{
+		"material_id": "6f09054d36298a23458bfb9942aea6ac",
+		"category_name": "software systems",
+		"category_id": "9e8bc2a092cc3361b6949eca3e95921a",
+		"name": "informationManagementSystem",
+		"ticker": "IMM",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "0247f5b671722c53f2bb4cb83af68f2b",
+		"category_name": "software systems",
+		"category_id": "9e8bc2a092cc3361b6949eca3e95921a",
+		"name": "universeMap",
+		"ticker": "SNM",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "4b78d4a814b42073673aecab2e7c5dbc",
+		"category_name": "software systems",
+		"category_id": "9e8bc2a092cc3361b6949eca3e95921a",
+		"name": "weakArtificalIntelligence",
+		"ticker": "WAI",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "2595868f51acc0889a1b15c2e757176b",
+		"category_name": "infrastructure",
+		"category_id": "5aac3f26a7e93c5999cfa593dcddd4e1",
+		"name": "gatewaySegment",
+		"ticker": "GWS",
+		"weight": 5000.0,
+		"volume": 5000.0
+	},
+	{
+		"material_id": "60323fea22b8182e1a5fd8191ba542ef",
+		"category_name": "infrastructure",
+		"category_id": "5aac3f26a7e93c5999cfa593dcddd4e1",
+		"name": "shockwaveDampeningModule",
+		"ticker": "SDM",
+		"weight": 500.0,
+		"volume": 500.0
+	},
+	{
+		"material_id": "0bff5df7021b879dcdb098358d150473",
+		"category_name": "infrastructure",
+		"category_id": "5aac3f26a7e93c5999cfa593dcddd4e1",
+		"name": "spaceTether",
+		"ticker": "SPT",
+		"weight": 1.7999999523162842,
+		"volume": 5.0
+	},
+	{
+		"material_id": "cbf2cde8669ec88def5eff94f58b60bb",
+		"category_name": "infrastructure",
+		"category_id": "5aac3f26a7e93c5999cfa593dcddd4e1",
+		"name": "singularityStabilizer",
+		"ticker": "SST",
+		"weight": 1500.0,
+		"volume": 500.0
+	},
+	{
+		"material_id": "1ca3caf43fd0fea8a67522ae6ebf1af0",
+		"category_name": "infrastructure",
+		"category_id": "5aac3f26a7e93c5999cfa593dcddd4e1",
+		"name": "torusSegment",
+		"ticker": "TOR",
+		"weight": 700.0,
+		"volume": 200.0
+	},
+	{
+		"material_id": "3a65b32e1c0af942aa911ef541008b1e",
+		"category_name": "infrastructure",
+		"category_id": "5aac3f26a7e93c5999cfa593dcddd4e1",
+		"name": "tensionReliefStructure",
+		"ticker": "TRS",
+		"weight": 50.0,
+		"volume": 50.0
+	},
+	{
+		"material_id": "7bd03426f1ced7f6aa13a6195f494930",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "copperConnectors",
+		"ticker": "BCO",
+		"weight": 0.004999999888241291,
+		"volume": 0.0020000000949949026
+	},
+	{
+		"material_id": "115e4c08cdd519c175ca3d58af562c1e",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "blueGoldConnectors",
+		"ticker": "BGC",
+		"weight": 0.009999999776482582,
+		"volume": 0.0020000000949949026
+	},
+	{
+		"material_id": "099fe9e22a3c6238629445fe518b58ff",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "combustionChamber",
+		"ticker": "CHA",
+		"weight": 1.2000000476837158,
+		"volume": 0.699999988079071
+	},
+	{
+		"material_id": "39cbe35342c34d16bc02009130920bb4",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "standardEngine",
+		"ticker": "ENG",
+		"weight": 8.0,
+		"volume": 4.0
+	},
+	{
+		"material_id": "c2ea542d15989d97a9d1b9c89f2b0b07",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "fissionReactor",
+		"ticker": "FIR",
+		"weight": 7.0,
+		"volume": 4.900000095367432
+	},
+	{
+		"material_id": "d643ca86b7ddbc8ab087ac9e2fcb0980",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "fuelSavingEngine",
+		"ticker": "FSE",
+		"weight": 6.0,
+		"volume": 3.0
+	},
+	{
+		"material_id": "e5bea4cd29eccc0162885f338cd1c235",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "reactorControlSystem",
+		"ticker": "RCS",
+		"weight": 0.6700000166893005,
+		"volume": 0.5
+	},
+	{
+		"material_id": "17147bdc09c3762514c78f12dc17b79a",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "standardReactor",
+		"ticker": "RCT",
+		"weight": 7.0,
+		"volume": 4.0
+	},
+	{
+		"material_id": "3395e6f815495c32d54823f350e5c15d",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "neonLightingSystem",
+		"ticker": "LIT",
+		"weight": 1.0,
+		"volume": 2.0
+	},
+	{
+		"material_id": "4f26e8b4f9cb1373311fcd3323a53bdd",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "magneticFloor",
+		"ticker": "MGC",
+		"weight": 0.6000000238418579,
+		"volume": 0.8999999761581421
+	},
+	{
+		"material_id": "9282cf0c801f5b5adcee3b44621ea1bb",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "metalHalideLamp",
+		"ticker": "MHL",
+		"weight": 0.10000000149011612,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "eebc3c4618186afa73bbe0a19be73eed",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "pressureShielding",
+		"ticker": "PSH",
+		"weight": 4.199999809265137,
+		"volume": 0.800000011920929
+	},
+	{
+		"material_id": "3b32f1da809a1cd9083a22f7aa0c8af2",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "radiationShielding",
+		"ticker": "RSH",
+		"weight": 3.700000047683716,
+		"volume": 0.800000011920929
+	},
+	{
+		"material_id": "ccfd9b3d2d89ab9876ef33f7e915294f",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "technetiumStabilizers",
+		"ticker": "TCS",
+		"weight": 3.4000000953674316,
+		"volume": 1.2000000476837158
+	},
+	{
+		"material_id": "1c9b53bea13393865b625d8310bd2ced",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "transistor",
+		"ticker": "TRN",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "6224081a169a0951a9cac7553d601ba7",
+		"category_name": "software components",
+		"category_id": "ebec0c297d5b499a84dd051fa6f7c8ec",
+		"name": "basicAiFramework",
+		"ticker": "BAI",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "2fae5ed4c15f7d668b9e708dbfc77008",
+		"category_name": "software components",
+		"category_id": "ebec0c297d5b499a84dd051fa6f7c8ec",
+		"name": "localDatabase",
+		"ticker": "LD",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "4d3d0c15f18a19ec8147adb0f3bd39e6",
+		"category_name": "software components",
+		"category_id": "ebec0c297d5b499a84dd051fa6f7c8ec",
+		"name": "machineLearningInterface",
+		"ticker": "MLI",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "d26bd2ac52ea6061a923f000cd104967",
+		"category_name": "software components",
+		"category_id": "ebec0c297d5b499a84dd051fa6f7c8ec",
+		"name": "networkingFramework",
+		"ticker": "NF",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "cebf6ae4dbea53789660ed6b9a4a5e86",
+		"category_name": "software components",
+		"category_id": "ebec0c297d5b499a84dd051fa6f7c8ec",
+		"name": "searchAlgorithm",
+		"ticker": "SA",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "460c114b10d44a8ac99f7a0a47910f42",
+		"category_name": "software components",
+		"category_id": "ebec0c297d5b499a84dd051fa6f7c8ec",
+		"name": "sortingAlgorithm",
+		"ticker": "SAL",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "a64beff205f211baec5a6d782cd6ec87",
+		"category_name": "software components",
+		"category_id": "ebec0c297d5b499a84dd051fa6f7c8ec",
+		"name": "windowManager",
+		"ticker": "WM",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "04f72b0c957b769c6d45c011e9c9b4b5",
+		"category_name": "ores",
+		"category_id": "4c0430b40fbf7fa175ed4a5a13682c6f",
+		"name": "aluminiumOre",
+		"ticker": "ALO",
+		"weight": 1.350000023841858,
+		"volume": 1.0
+	},
+	{
+		"material_id": "3efc94d2a18702eee04ba2850bdb9bef",
+		"category_name": "ores",
+		"category_id": "4c0430b40fbf7fa175ed4a5a13682c6f",
+		"name": "goldOre",
+		"ticker": "AUO",
+		"weight": 3.859999895095825,
+		"volume": 1.0
+	},
+	{
+		"material_id": "8665fabacd64adfbc74ee255b00ae019",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "glassCombustionChamber",
+		"ticker": "GCH",
+		"weight": 1.0,
+		"volume": 0.6000000238418579
+	},
+	{
+		"material_id": "4c38903fc8fd2f87b1877ab9d47cb57e",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "glassEngine",
+		"ticker": "GEN",
+		"weight": 5.0,
+		"volume": 3.0
+	},
+	{
+		"material_id": "ce50248c2878dc89de170da84bbee064",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "gasContainer",
+		"ticker": "GC",
+		"weight": 0.05000000074505806,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "67516facbdb77c8d6fe49162f2ca3917",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "gasVent",
+		"ticker": "GV",
+		"weight": 0.25,
+		"volume": 0.15000000596046448
+	},
+	{
+		"material_id": "f4cb7556739ec63fe3e019ee0f798263",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "basicNozzle",
+		"ticker": "NOZ",
+		"weight": 3.0,
+		"volume": 1.5
+	},
+	{
+		"material_id": "73e30b806837b71692e2857fd9aff667",
+		"category_name": "unit prefabs",
+		"category_id": "2c6ca18d24e03fc9250d8ca7d577568b",
+		"name": "commandBridge2",
+		"ticker": "BR2",
+		"weight": 280.0,
+		"volume": 400.0
+	},
+	{
+		"material_id": "07ba4d80010a9d5c869aa6f05ea78208",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "quickChargeReactor",
+		"ticker": "QCR",
+		"weight": 14.0,
+		"volume": 10.0
+	},
+	{
+		"material_id": "c855d1fe267c1f5fca20459db2bcd1b0",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "radioisotopeGenerator",
+		"ticker": "RAG",
+		"weight": 5.0,
+		"volume": 3.4000000953674316
+	},
+	{
+		"material_id": "ef1a8b643e865195823ec884b3343c6a",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "microProcessor",
+		"ticker": "MPC",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "9da5f471dfc7759a11858456e74fbc8f",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "printedCircuitBoard",
+		"ticker": "PCB",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "206aa44d627bd8e886a20c565b4bd058",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "memoryBank",
+		"ticker": "RAM",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "23b9ee06710318a6d3e9eec4d0b58cb7",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "nonVolatileMemory",
+		"ticker": "ROM",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "cbb28f4ebfa4e7b26f09d5b585608e3d",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "sensor",
+		"ticker": "SEN",
+		"weight": 0.0010000000474974513,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "97ba20adb4d05fdcf365048b6878eaa7",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "tclAcid",
+		"ticker": "TCL",
+		"weight": 0.09000000357627869,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "580c70e310bcd1543a46116d6be612e5",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "thermoFluid",
+		"ticker": "THF",
+		"weight": 0.6000000238418579,
+		"volume": 0.3499999940395355
+	},
+	{
+		"material_id": "d3c0b6280da00e2ab4ee1ea6046cb488",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "beryllium",
+		"ticker": "BE",
+		"weight": 1.840000033378601,
+		"volume": 1.0
+	},
+	{
+		"material_id": "4bbcc7dc5dd16e9af90528ed04d9c6ba",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "carbon",
+		"ticker": "C",
+		"weight": 2.25,
+		"volume": 1.0
+	},
+	{
+		"material_id": "d4b42f6606b6f9d7ca1aea9295154288",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "calcium",
+		"ticker": "CA",
+		"weight": 1.5399999618530273,
+		"volume": 1.0
+	},
+	{
+		"material_id": "19be1b1e67efe63de8127d057508fe0c",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "chlorine",
+		"ticker": "CL",
+		"weight": 3.200000047683716,
+		"volume": 1.0
+	},
+	{
+		"material_id": "a528afba5c7d4bf1fd2f2c69fc7f247f",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "einsteinium",
+		"ticker": "ES",
+		"weight": 0.8799999952316284,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "18237d01e53d08212ee0b67dc1ad3df1",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "iodine",
+		"ticker": "I",
+		"weight": 4.929999828338623,
+		"volume": 1.0
+	},
+	{
+		"material_id": "c100446dafeb6899f37f97217e8409af",
+		"category_name": "software tools",
+		"category_id": "1dfe943824ceb52d332b4650ce457218",
+		"name": "distributedDatabase",
+		"ticker": "DD",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "005936105ae3d0f6197349ad693e9240",
+		"category_name": "software tools",
+		"category_id": "1dfe943824ceb52d332b4650ce457218",
+		"name": "dataVisualizer",
+		"ticker": "DV",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "a36d549d1340c1d489cc4a9ccccf22d0",
+		"category_name": "software tools",
+		"category_id": "1dfe943824ceb52d332b4650ce457218",
+		"name": "entertainmentDataCore",
+		"ticker": "EDC",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "c06935922eac3dccb7d7a368a899d309",
+		"category_name": "software tools",
+		"category_id": "1dfe943824ceb52d332b4650ce457218",
+		"name": "neuralNetwork",
+		"ticker": "NN",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "7cc9acecdf3e9565c9b4cbe9c96f0ab5",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "tensorProcessingUnit",
+		"ticker": "TPU",
+		"weight": 0.0020000000949949026,
+		"volume": 0.0020000000949949026
+	},
+	{
+		"material_id": "b805d86e129e9cf885ac92fabc6aa59f",
+		"category_name": "electronic parts",
+		"category_id": "8e15000dfbda2f46ce73458deaeeb358",
+		"name": "audioTransmitter",
+		"ticker": "TRA",
+		"weight": 0.004999999888241291,
+		"volume": 0.0020000000949949026
+	},
+	{
+		"material_id": "7c21fd74ca3684f0df5470d774e694a3",
+		"category_name": "energy systems",
+		"category_id": "0509ed0a396f5a004d24ef08e33786fb",
+		"name": "largeCapacitorBank",
+		"ticker": "CBL",
+		"weight": 5.400000095367432,
+		"volume": 2.4000000953674316
+	},
+	{
+		"material_id": "284020181d5731f5119fd98352061ad5",
+		"category_name": "energy systems",
+		"category_id": "0509ed0a396f5a004d24ef08e33786fb",
+		"name": "mediumCapacitorBank",
+		"ticker": "CBM",
+		"weight": 3.5999999046325684,
+		"volume": 1.600000023841858
+	},
+	{
+		"material_id": "46fef6e8b458e46414345cf8248410c3",
+		"category_name": "energy systems",
+		"category_id": "0509ed0a396f5a004d24ef08e33786fb",
+		"name": "smallCapacitorBank",
+		"ticker": "CBS",
+		"weight": 1.7999999523162842,
+		"volume": 0.800000011920929
+	},
+	{
+		"material_id": "edb9e2c57c966f28c66f441bda0b030f",
+		"category_name": "energy systems",
+		"category_id": "0509ed0a396f5a004d24ef08e33786fb",
+		"name": "powerCell",
+		"ticker": "POW",
+		"weight": 0.05000000074505806,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "bda47fe5bfb1769235f9447569b0d369",
+		"category_name": "energy systems",
+		"category_id": "0509ed0a396f5a004d24ef08e33786fb",
+		"name": "solarCell",
+		"ticker": "SOL",
+		"weight": 0.014999999664723873,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "4602969555899f2a4955e3b08d2fbdb6",
+		"category_name": "energy systems",
+		"category_id": "0509ed0a396f5a004d24ef08e33786fb",
+		"name": "solarPanel",
+		"ticker": "SP",
+		"weight": 0.15000000596046448,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "fba7294b0f74a4a2527f5a7049c70120",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "boronCrystals",
+		"ticker": "BOR",
+		"weight": 1.7999999523162842,
+		"volume": 1.0
+	},
+	{
+		"material_id": "e97bde9e60d4c60a16205d2c859eda62",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "bioreactiveMineral",
+		"ticker": "BRM",
+		"weight": 2.5,
+		"volume": 1.0
+	},
+	{
+		"material_id": "4d2a6c0cf6eb404cda3b35820bcbe453",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "caliche",
+		"ticker": "CLI",
+		"weight": 2.4200000762939453,
+		"volume": 1.0
+	},
+	{
+		"material_id": "c5236c5b79b9e75ddbce16887aeda338",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "galerite",
+		"ticker": "GAL",
+		"weight": 2.509999990463257,
+		"volume": 1.0
+	},
+	{
+		"material_id": "7e3f98a49ce2d3c8361975de8b4bbea4",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "halite",
+		"ticker": "HAL",
+		"weight": 2.1700000762939453,
+		"volume": 1.0
+	},
+	{
+		"material_id": "1f9a0293d9ba9bf519f71432e695edeb",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "limestone",
+		"ticker": "LST",
+		"weight": 2.7300000190734863,
+		"volume": 1.0
+	},
+	{
+		"material_id": "24a2518b138203909eb13f330ac298d3",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "magnetite",
+		"ticker": "MAG",
+		"weight": 5.150000095367432,
+		"volume": 1.0
+	},
+	{
+		"material_id": "51531f3012276e93e60cb06b194bac7f",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "magnesite",
+		"ticker": "MGS",
+		"weight": 1.7300000190734863,
+		"volume": 1.0
+	},
+	{
+		"material_id": "c81dbc5e1758121fe9acb067d89b6a05",
+		"category_name": "ship engines",
+		"category_id": "16b943147bb16fe84c0d62de8a4316a7",
+		"name": "vortexReactor",
+		"ticker": "VOR",
+		"weight": 35.0,
+		"volume": 30.0
+	},
+	{
+		"material_id": "6da55ef2896023daf2a2f119895e2078",
+		"category_name": "software tools",
+		"category_id": "1dfe943824ceb52d332b4650ce457218",
+		"name": "dataAnalyzer",
+		"ticker": "DA",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "78321af6ac08c494186fafff3965034f",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "epoxy",
+		"ticker": "EPO",
+		"weight": 0.03999999910593033,
+		"volume": 0.019999999552965164
+	},
+	{
+		"material_id": "fbb04a8587195e52ce6df8bc238675dd",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "translucentMaterial",
+		"ticker": "GL",
+		"weight": 0.01600000075995922,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "b88aaf3dba6caa7e6d437e49e7620f0b",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "insuFoam",
+		"ticker": "INS",
+		"weight": 0.05999999865889549,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "cc5fb1618f0506e80bfbcee9ae2605ab",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "mineralConstructionGranulate",
+		"ticker": "MCG",
+		"weight": 0.23999999463558197,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "edea6e957426c9531b19ce53fec47ae7",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "megaTubeCoating",
+		"ticker": "MTC",
+		"weight": 0.03200000151991844,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "08b3d1994643df5efe095b335be3a029",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "nanoCarbonSheeting",
+		"ticker": "NCS",
+		"weight": 0.02800000086426735,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "2689b2d4859b0cb73e7efa9466301297",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "nanoFiber",
+		"ticker": "NFI",
+		"weight": 0.03200000151991844,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "8faa9fb6d21ebd5731043b0c122bc5b6",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "nanoGlass",
+		"ticker": "NG",
+		"weight": 0.02199999988079071,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "11205b2106f47b28c189a82494733841",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "reinforcedTranslucentMaterial",
+		"ticker": "RG",
+		"weight": 0.03200000151991844,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "04970fd8cd9c3bc423b46503985e55de",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "sealant",
+		"ticker": "SEA",
+		"weight": 0.15000000596046448,
+		"volume": 0.07000000029802322
+	},
+	{
+		"material_id": "9788890100fd2191fb065cb0d5e624cb",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "pioneerClothing",
+		"ticker": "OVE",
+		"weight": 0.019999999552965164,
+		"volume": 0.02500000037252903
+	},
+	{
+		"material_id": "8bdcb737ea5ad7fde81d2b8c78cfd0aa",
+		"category_name": "software tools",
+		"category_id": "1dfe943824ceb52d332b4650ce457218",
+		"name": "operatingSystem",
+		"ticker": "OS",
+		"weight": 0.0010000000474974513,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "5fa39c2298568262540bf6579feb017e",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "aerostatFoundation",
+		"ticker": "AEF",
+		"weight": 2.0,
+		"volume": 5.0
+	},
+	{
+		"material_id": "cbfa90b487f0d79023e11da44f052f96",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "airScrubber",
+		"ticker": "AIR",
+		"weight": 1.7000000476837158,
+		"volume": 3.0
+	},
+	{
+		"material_id": "1ddffd7f8b1ff5391113582ffac2eff0",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "decorativeElements",
+		"ticker": "DEC",
+		"weight": 0.5,
+		"volume": 2.0
+	},
+	{
+		"material_id": "a2b6316f3bc85f3e1b05ae36e49faa4c",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "flowControl",
+		"ticker": "FC",
+		"weight": 0.5,
+		"volume": 0.25
+	},
+	{
+		"material_id": "cc12f1c859c25f13867485ea395f34c0",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "floatingTank",
+		"ticker": "FLO",
+		"weight": 1.0,
+		"volume": 2.0
+	},
+	{
+		"material_id": "67eab8960fc6262250335978d64c9e80",
+		"category_name": "construction materials",
+		"category_id": "156bbcce730fba6169338d560f05fd26",
+		"name": "coreModuleKit",
+		"ticker": "CMK",
+		"weight": 4.559999942779541,
+		"volume": 33.20000076293945
+	},
+	{
+		"material_id": "f1d402957a88fd396f302372a6912158",
+		"category_name": "construction parts",
+		"category_id": "f8aebc7dd84ce14fae131aa0203d4498",
+		"name": "fluidPiping",
+		"ticker": "FLP",
+		"weight": 0.30000001192092896,
+		"volume": 2.0
+	},
+	{
+		"material_id": "a3df77b3455fc17fa676d0131550152c",
+		"category_name": "infrastructure",
+		"category_id": "5aac3f26a7e93c5999cfa593dcddd4e1",
+		"name": "polarityFieldGenerator",
+		"ticker": "PFG",
+		"weight": 80.0,
+		"volume": 65.0
+	},
+	{
+		"material_id": "51c829b6e62e70223024ffa6688db9f7",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "flux",
+		"ticker": "FLX",
+		"weight": 0.25,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "8d05c8c4bac264bc9c6310d656a8a9a2",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "kryptonium",
+		"ticker": "KRE",
+		"weight": 8.25,
+		"volume": 1.0
+	},
+	{
+		"material_id": "17a9e15840c1d90848c5e59949f7abc2",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "liquidCrystals",
+		"ticker": "LCR",
+		"weight": 0.15000000596046448,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "710cb599231cd6b974bcc5feea9603c7",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "sodiumBorohydride",
+		"ticker": "NAB",
+		"weight": 0.10000000149011612,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "17229492d319a4d6a5d0d45ee5bef188",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "nanoResin",
+		"ticker": "NR",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "d9cfb2948188f49bfae2b6d9972837c8",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "nutrientSolution",
+		"ticker": "NS",
+		"weight": 0.6000000238418579,
+		"volume": 0.5
+	},
+	{
+		"material_id": "aa6636f6018e23e92e52aa74d65e3b7a",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "olfactorySubstances",
+		"ticker": "OLF",
+		"weight": 0.009999999776482582,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "d767c625cdf6f6f97df9fe8e49766912",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "premiumFertilizer",
+		"ticker": "PFE",
+		"weight": 0.8999999761581421,
+		"volume": 1.0
+	},
+	{
+		"material_id": "dd806abbca77956b09bc043c1633f51e",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "chemicalReagents",
+		"ticker": "REA",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "4fca6f5b5e6c3b8a1b887c6dc99db146",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "drinkingWater",
+		"ticker": "DW",
+		"weight": 0.10000000149011612,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "87dd9b56a69e118e8c778de2dce11e8c",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "settlerClothing",
+		"ticker": "EXO",
+		"weight": 0.10000000149011612,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "73e138a825968b0132230d02591af63f",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "engineerFood",
+		"ticker": "FIM",
+		"weight": 0.550000011920929,
+		"volume": 0.5
+	},
+	{
+		"material_id": "5b0e02208dbbb99695707001d626963a",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "technicianClothing",
+		"ticker": "HMS",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "379f7bc12b6d2800c0a9f72c4943628b",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "engineerClothing",
+		"ticker": "HSS",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "d6c283d4480cacbca31bec0bbb55b940",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "scientistClothing",
+		"ticker": "LC",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "a5de3e325e87c874fe395949728bb276",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "scientistFood",
+		"ticker": "MEA",
+		"weight": 0.6000000238418579,
+		"volume": 0.5
+	},
+	{
+		"material_id": "5d36829593b5fd61674320cd66e4bb5c",
+		"category_name": "consumables (basic)",
+		"category_id": "3f047ec3043bdd795fd7272d6be98799",
+		"name": "technicianHealth",
+		"ticker": "MED",
+		"weight": 0.30000001192092896,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "a9d7758454f7a446565e3ce1cd49386a",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "enrichedTechnetium",
+		"ticker": "ETC",
+		"weight": 4.099999904632568,
+		"volume": 1.0
+	},
+	{
+		"material_id": "e9dc6ec89adb62b9ef83031d89e3ce99",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "helium",
+		"ticker": "HE",
+		"weight": 0.14499999582767487,
+		"volume": 1.0
+	},
+	{
+		"material_id": "4e10b93baa6166496b204e0531347959",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "helium3",
+		"ticker": "HE3",
+		"weight": 0.14499999582767487,
+		"volume": 1.0
+	},
+	{
+		"material_id": "82cd82533fdfb68b315bd8697a241b55",
+		"category_name": "gases",
+		"category_id": "54dec1e42eba44dda423dd774393326a",
+		"name": "krypton",
+		"ticker": "KR",
+		"weight": 2.799999952316284,
+		"volume": 1.0
+	},
+	{
+		"material_id": "ef36cda3528c490360fa8d513a53e6c6",
+		"category_name": "electronic pieces",
+		"category_id": "5e022d8f199de1c70f8de4dfd2fdef64",
+		"name": "waferMedium",
+		"ticker": "MWF",
+		"weight": 0.00800000037997961,
+		"volume": 0.00800000037997961
+	},
+	{
+		"material_id": "6bbdf7d0503153753c8cb23653a4d22b",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "basicStructuralElements",
+		"ticker": "BSE",
+		"weight": 0.30000001192092896,
+		"volume": 0.5
+	},
+	{
+		"material_id": "334f3510e3265410da15174160fbf8f5",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "basicWindow",
+		"ticker": "BTA",
+		"weight": 0.30000001192092896,
+		"volume": 0.4000000059604645
+	},
+	{
+		"material_id": "ec3491b37050a8c780dc514033131843",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "hardenedStructuralElements",
+		"ticker": "HSE",
+		"weight": 3.0999999046325684,
+		"volume": 0.699999988079071
+	},
+	{
+		"material_id": "772408d48cf5842fb003698aaa7a6a94",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "lightweightBulkhead",
+		"ticker": "LBH",
+		"weight": 0.20000000298023224,
+		"volume": 0.6000000238418579
+	},
+	{
+		"material_id": "3010d90fde69729f4754b092fdcda826",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "lightweightDeckElements",
+		"ticker": "LDE",
+		"weight": 0.10000000149011612,
+		"volume": 1.2000000476837158
+	},
+	{
+		"material_id": "8d4e0986419d2769fe50ac6497be6b7e",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "lightweightStructuralElements",
+		"ticker": "LSE",
+		"weight": 0.30000001192092896,
+		"volume": 1.2000000476837158
+	},
+	{
+		"material_id": "a24540c6c24595ca5bf47f091f11c8f9",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "reinforcedWindow",
+		"ticker": "RTA",
+		"weight": 1.5,
+		"volume": 0.5
+	},
+	{
+		"material_id": "7a2a12cd6872b89a6b97532618788a4d",
+		"category_name": "fuels",
+		"category_id": "ba98fa0cf77040a96cd8a608ad0d08e9",
+		"name": "ftlFuel",
+		"ticker": "FF",
+		"weight": 0.05000000074505806,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "7756a0779efe67f0f293f41eda4944d4",
+		"category_name": "fuels",
+		"category_id": "ba98fa0cf77040a96cd8a608ad0d08e9",
+		"name": "stlFuel",
+		"ticker": "SF",
+		"weight": 0.05999999865889549,
+		"volume": 0.05999999865889549
+	},
+	{
+		"material_id": "346d2efba85c3e9c1f874fa6845e8c23",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "targetingComputer",
+		"ticker": "TAC",
+		"weight": 0.15000000596046448,
+		"volume": 1.0
+	},
+	{
+		"material_id": "1e7c5ae5b1518398b98e2ffdb28c0934",
+		"category_name": "electronic systems",
+		"category_id": "1e1a3a579c46d5f9c4e9959650c6b7a3",
+		"name": "waterRecycler",
+		"ticker": "WR",
+		"weight": 6.400000095367432,
+		"volume": 5.0
+	},
+	{
+		"material_id": "7aeed35adeb209ebdb4985f451ed3e46",
+		"category_name": "textiles",
+		"category_id": "7028d7d532ccd4c6c878b069e7bbb634",
+		"name": "cottonProcessed",
+		"ticker": "COT",
+		"weight": 0.7699999809265137,
+		"volume": 1.0
+	},
+	{
+		"material_id": "5b959b6c0c20016402811352969960c0",
+		"category_name": "textiles",
+		"category_id": "7028d7d532ccd4c6c878b069e7bbb634",
+		"name": "ceramicTungstenFabric",
+		"ticker": "CTF",
+		"weight": 4.320000171661377,
+		"volume": 1.0
+	},
+	{
+		"material_id": "76e7790d43219588122f401f2b9f0534",
+		"category_name": "textiles",
+		"category_id": "7028d7d532ccd4c6c878b069e7bbb634",
+		"name": "kevlar",
+		"ticker": "KV",
+		"weight": 1.649999976158142,
+		"volume": 1.0
+	},
+	{
+		"material_id": "12fb94d0184c18455533bffb4b8b7e51",
+		"category_name": "textiles",
+		"category_id": "7028d7d532ccd4c6c878b069e7bbb634",
+		"name": "nylon",
+		"ticker": "NL",
+		"weight": 1.1299999952316284,
+		"volume": 1.0
+	},
+	{
+		"material_id": "8302200bd88502383e932ae257bcb9b4",
+		"category_name": "textiles",
+		"category_id": "7028d7d532ccd4c6c878b069e7bbb634",
+		"name": "silkProcessed",
+		"ticker": "SIL",
+		"weight": 1.2100000381469727,
+		"volume": 1.0
+	},
+	{
+		"material_id": "563f37e86831a8361e79fa62ebe059eb",
+		"category_name": "textiles",
+		"category_id": "7028d7d532ccd4c6c878b069e7bbb634",
+		"name": "technoKevlar",
+		"ticker": "TK",
+		"weight": 1.8899999856948853,
+		"volume": 1.0
+	},
+	{
+		"material_id": "d4c590dd12f7fbd0f3533c27da6c9f19",
+		"category_name": "plastics",
+		"category_id": "6316282906a9f68b0c7bb4396a26aa95",
+		"name": "largeDeviceCover",
+		"ticker": "DCL",
+		"weight": 0.07999999821186066,
+		"volume": 0.800000011920929
+	},
+	{
+		"material_id": "36d0064e2b9415e1a1214aed16b17ed2",
+		"category_name": "plastics",
+		"category_id": "6316282906a9f68b0c7bb4396a26aa95",
+		"name": "mediumDeviceCover",
+		"ticker": "DCM",
+		"weight": 0.03999999910593033,
+		"volume": 0.4000000059604645
+	},
+	{
+		"material_id": "52b88b137a9f71a66a0ff41aaa7075a5",
+		"category_name": "plastics",
+		"category_id": "6316282906a9f68b0c7bb4396a26aa95",
+		"name": "smallDeviceCover",
+		"ticker": "DCS",
+		"weight": 0.009999999776482582,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "ee8e92a632d1b5f4847fe9d4e376aeca",
+		"category_name": "plastics",
+		"category_id": "6316282906a9f68b0c7bb4396a26aa95",
+		"name": "polyEthylene",
+		"ticker": "PE",
+		"weight": 0.009999999776482582,
+		"volume": 0.009999999776482582
+	},
+	{
+		"material_id": "64666b2eb0faaba594a62818e48229b8",
+		"category_name": "plastics",
+		"category_id": "6316282906a9f68b0c7bb4396a26aa95",
+		"name": "polymerGranulate",
+		"ticker": "PG",
+		"weight": 0.0020000000949949026,
+		"volume": 0.0010000000474974513
+	},
+	{
+		"material_id": "db4fbfd5c434a3952e7e1d37ae36158f",
+		"category_name": "plastics",
+		"category_id": "6316282906a9f68b0c7bb4396a26aa95",
+		"name": "largePlasticsBoard",
+		"ticker": "PSL",
+		"weight": 0.07999999821186066,
+		"volume": 0.800000011920929
+	},
+	{
+		"material_id": "22b3e4f9114304fb15a093e2b8f22a91",
+		"category_name": "utility",
+		"category_id": "4eb124000ee0e38af1daf5aced313823",
+		"name": "universalToolset",
+		"ticker": "UTS",
+		"weight": 0.05000000074505806,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "7f1b9df7face3f9b3d99e34f9a51c6b2",
+		"category_name": "plastics",
+		"category_id": "6316282906a9f68b0c7bb4396a26aa95",
+		"name": "smallPlasticsBoard",
+		"ticker": "PSS",
+		"weight": 0.009999999776482582,
+		"volume": 0.10000000149011612
+	},
+	{
+		"material_id": "6daa4e4e074e1af8fb74458fe2196124",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "bacteria",
+		"ticker": "BAC",
+		"weight": 0.15000000596046448,
+		"volume": 0.15000000596046448
+	},
+	{
+		"material_id": "aa4fb3a0d1c1cf17199f436b12c59b69",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "breathableLiquid",
+		"ticker": "BL",
+		"weight": 1.1200000047683716,
+		"volume": 1.0
+	},
+	{
+		"material_id": "01dfc4e798680d1174fd785db6578627",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "indigo",
+		"ticker": "IND",
+		"weight": 0.20999999344348907,
+		"volume": 0.20000000298023224
+	},
+	{
+		"material_id": "f8fdd918a757d6a9888f544e3375e585",
+		"category_name": "chemicals",
+		"category_id": "9b32ea2333917ee2632ba7ae7675643f",
+		"name": "sedativeSubstance",
+		"ticker": "JUI",
+		"weight": 1.2000000476837158,
+		"volume": 1.0
+	},
+	{
+		"material_id": "833efac228452f5d770c0693c3fb3d50",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "magnesium",
+		"ticker": "MG",
+		"weight": 0.27000001072883606,
+		"volume": 0.1599999964237213
+	},
+	{
+		"material_id": "11ec662cd8ba85e87b111a7ba7aa4973",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "sodium",
+		"ticker": "NA",
+		"weight": 0.9700000286102295,
+		"volume": 1.0
+	},
+	{
+		"material_id": "2f2863037da2f5b88e13609b2cc21e3b",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "sulfur",
+		"ticker": "S",
+		"weight": 0.5199999809265137,
+		"volume": 0.25
+	},
+	{
+		"material_id": "f2b6f7e3711dc54e44da33efec4aadb7",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "tantalum",
+		"ticker": "TA",
+		"weight": 16.649999618530273,
+		"volume": 1.0
+	},
+	{
+		"material_id": "fc7f4fd0177c86ab262a99c9bde5a0d0",
+		"category_name": "elements",
+		"category_id": "ef1d03e7ef924395c2173fc4e4ee8a6f",
+		"name": "technetium",
+		"ticker": "TC",
+		"weight": 11.800000190734863,
+		"volume": 1.0
+	},
+	{
+		"material_id": "4fce81e03539c346cc5c493c197eac69",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "mediumFtlTank",
+		"ticker": "MFL",
+		"weight": 24.0,
+		"volume": 4.0
+	},
+	{
+		"material_id": "11fa820041249299d95d85191dc378fc",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "mediumStlTank",
+		"ticker": "MSL",
+		"weight": 50.0,
+		"volume": 50.0
+	},
+	{
+		"material_id": "c006dedb53cf3bb8cb964c8151d9a744",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "smallCargoBay",
+		"ticker": "SCB",
+		"weight": 50.0,
+		"volume": 50.0
+	},
+	{
+		"material_id": "e8b8b2f9a1e27ff69fe0c15b25a1d424",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "smallFtlTank",
+		"ticker": "SFL",
+		"weight": 9.0,
+		"volume": 1.5
+	},
+	{
+		"material_id": "251192d17a5b0e770cd3681383a495fd",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "smallStlTank",
+		"ticker": "SSL",
+		"weight": 20.0,
+		"volume": 20.0
+	},
+	{
+		"material_id": "3aa3bc318e699090ecfbe327f044a219",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "tinyCargoBay",
+		"ticker": "TCB",
+		"weight": 20.0,
+		"volume": 20.0
+	},
+	{
+		"material_id": "4f44983ac27bcbac1f0fd4af7b5a2b7b",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "highVolumeCargoBay",
+		"ticker": "VCB",
+		"weight": 200.0,
+		"volume": 200.0
+	},
+	{
+		"material_id": "aaa4b2b80deb387726d8845630874446",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "vortexFuelTank",
+		"ticker": "VFT",
+		"weight": 1000.0,
+		"volume": 1000.0
+	},
+	{
+		"material_id": "6fb814bde2cab570e5d8717251b96c00",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "verySmallCargoBay",
+		"ticker": "VSC",
+		"weight": 35.0,
+		"volume": 35.0
+	},
+	{
+		"material_id": "cc7eb7e114d1c7f0db547595d683850a",
+		"category_name": "ship kits",
+		"category_id": "b7102e43e58120a254cf161c226d4177",
+		"name": "highLoadCargoBay",
+		"ticker": "WCB",
+		"weight": 200.0,
+		"volume": 200.0
+	},
+	{
+		"material_id": "72b87b633c828f417737f5e2e473083d",
+		"category_name": "liquids",
+		"category_id": "473218d3618453bf25d2cd0b5616a72f",
+		"name": "tungstenResource",
+		"ticker": "BTS",
+		"weight": 1.0499999523162842,
+		"volume": 1.0
+	},
+	{
+		"material_id": "ec8dbb1d3f51d89c61b6f58fdd64a7f0",
+		"category_name": "liquids",
+		"category_id": "473218d3618453bf25d2cd0b5616a72f",
+		"name": "water",
+		"ticker": "H2O",
+		"weight": 0.20000000298023224,
+		"volume": 0.20000000298023224
+	},
+	{
+		"material_id": "2adebc00bf7efaa693021426a68a3e65",
+		"category_name": "liquids",
+		"category_id": "473218d3618453bf25d2cd0b5616a72f",
+		"name": "heliotropeExtract",
+		"ticker": "HEX",
+		"weight": 1.100000023841858,
+		"volume": 1.0
+	},
+	{
+		"material_id": "14d35a43454dd8e9797fc36f4ee59698",
+		"category_name": "liquids",
+		"category_id": "473218d3618453bf25d2cd0b5616a72f",
+		"name": "liquidEinsteinium",
+		"ticker": "LES",
+		"weight": 8.84000015258789,
+		"volume": 1.0
+	},
+	{
+		"material_id": "26c05c3b63aa57025e68dd67d0001ba2",
+		"category_name": "utility",
+		"category_id": "4eb124000ee0e38af1daf5aced313823",
+		"name": "officeSupplies",
+		"ticker": "OFF",
+		"weight": 0.019999999552965164,
+		"volume": 0.20000000298023224
+	},
+	{
+		"material_id": "683145c220ccb5ed327326d7c4e26c6d",
+		"category_name": "ship parts",
+		"category_id": "d23b9225010ad7978e5496e55359e19b",
+		"name": "basicThermalProtectionMaterial",
+		"ticker": "THP",
+		"weight": 2.200000047683716,
+		"volume": 1.0
+	},
+	{
+		"material_id": "e0bc5afdf3ca754592f454fdbd813c74",
+		"category_name": "drones",
+		"category_id": "6eb09f14ed9fec3d0407114be8bc8882",
+		"name": "crowdControlDrone",
+		"ticker": "CCD",
+		"weight": 0.30000001192092896,
+		"volume": 0.05000000074505806
+	},
+	{
+		"material_id": "ab5016ca0c184474d80e00ee5f8a8b66",
+		"category_name": "drones",
+		"category_id": "6eb09f14ed9fec3d0407114be8bc8882",
+		"name": "droneFrame",
+		"ticker": "DRF",
+		"weight": 0.10000000149011612,
+		"volume": 0.019999999552965164
+	},
+	{
+		"material_id": "fc9e1183c47d97315434a8b2c768d35c",
+		"category_name": "minerals",
+		"category_id": "79f3917448cc4f6034ece865c41aea34",
+		"name": "beryl",
+		"ticker": "BER",
+		"weight": 1.9199999570846558,
+		"volume": 1.0
+	},
+	{
+		"material_id": "ed72545a5db1f16430d79a240dc61e6c",
+		"category_name": "metals",
+		"category_id": "cae48680d4c4e6f98d593a8c3778cb56",
+		"name": "aluminium",
+		"ticker": "AL",
+		"weight": 2.700000047683716,
+		"volume": 1.0
+	},
+	{
+		"material_id": "87488698340ed6d9db87e26e35360c20",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "fattyNuts",
+		"ticker": "NUT",
+		"weight": 0.8999999761581421,
+		"volume": 1.0
+	},
+	{
+		"material_id": "746983ed94132dfa021aac40b67754b2",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "pineberries",
+		"ticker": "PIB",
+		"weight": 0.30000001192092896,
+		"volume": 1.0
+	},
+	{
+		"material_id": "5f2011b6c605256dfa4626776cc7cf3c",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "proteinPaste",
+		"ticker": "PPA",
+		"weight": 2.0,
+		"volume": 1.0
+	},
+	{
+		"material_id": "1205efe7810a94592524a53e87c3299b",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "cottonRaw",
+		"ticker": "RCO",
+		"weight": 0.949999988079071,
+		"volume": 1.0
+	},
+	{
+		"material_id": "81dabbc84c110d1214ac8e090592ad31",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "silkRaw",
+		"ticker": "RSI",
+		"weight": 1.100000023841858,
+		"volume": 1.0
+	},
+	{
+		"material_id": "cc2dcb3699225b81cf63bf3e044a4f05",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "fattyVegetables",
+		"ticker": "VEG",
+		"weight": 1.100000023841858,
+		"volume": 1.0
+	},
+	{
+		"material_id": "44424f913bab7837217786c8543bf44e",
+		"category_name": "agricultural products",
+		"category_id": "510e7751c0eb6a51fd0fa73565365d1c",
+		"name": "vitaEssence",
+		"ticker": "VIT",
+		"weight": 0.8999999761581421,
+		"volume": 1.0
+	},
+	{
+		"material_id": "274e35935b4ba9f4032f657b0ab6e0e5",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "advancedBulkhead",
+		"ticker": "ABH",
+		"weight": 0.6000000238418579,
+		"volume": 0.8999999761581421
+	},
+	{
+		"material_id": "bf1f62e450627f2db02884657c399284",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "advancedDeckElements",
+		"ticker": "ADE",
+		"weight": 0.4000000059604645,
+		"volume": 1.5
+	},
+	{
+		"material_id": "c83a4fc74233f9ffac3f5b7b7b83dce5",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "advancedStructuralElements",
+		"ticker": "ASE",
+		"weight": 0.5,
+		"volume": 0.6000000238418579
+	},
+	{
+		"material_id": "b29a0e901300857a8672f0643f7d796a",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "lightweightWindow",
+		"ticker": "LTA",
+		"weight": 0.30000001192092896,
+		"volume": 0.5
+	},
+	{
+		"material_id": "9930460f6d54364954dcf0af905029c5",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "reinforcedBulkhead",
+		"ticker": "RBH",
+		"weight": 2.4000000953674316,
+		"volume": 0.8999999761581421
+	},
+	{
+		"material_id": "165dab5e1f913b2a4769f57f64c2505e",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "reinforcedDeckElements",
+		"ticker": "RDE",
+		"weight": 1.399999976158142,
+		"volume": 1.5
+	},
+	{
+		"material_id": "0fd977ac87d641a5bfcadea33e24641c",
+		"category_name": "construction prefabs",
+		"category_id": "ef423f673d9e8c82043b4c5c63f6b55e",
+		"name": "reinforcedStructuralElements",
+		"ticker": "RSE",
+		"weight": 1.899999976158142,
+		"volume": 0.699999988079071
 	}
 ]

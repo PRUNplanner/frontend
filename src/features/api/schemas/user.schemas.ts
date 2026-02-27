@@ -5,8 +5,6 @@ import {
 	IUserLoginPayload,
 	IUserRefreshPayload,
 	IUserTokenResponse,
-	IUserAPIKey,
-	IUserAPIKeyCreatePayload,
 	IUserRegistrationPayload,
 	IUserRequestPasswordResetResponse,
 	IUserRequestPasswordResetPayload,
@@ -85,26 +83,6 @@ export const UserChangePasswordResponseSchema: z.ZodType<IUserChangePasswordResp
 export const UserVerifyEmailPayloadSchema = z.object({
 	code: z.string(),
 });
-
-export const UserVerifyEmailResponseSchema = z.object({
-	status_code: z.int(),
-	message: z.string(),
-});
-
-const UserAPIKeySchema: z.ZodType<IUserAPIKey> = z.object({
-	name: z.string(),
-	key: z.string(),
-	created_date: z.coerce.date(),
-	last_activity: z.coerce.date().nullable(),
-});
-
-export const UserAPIKeyPayloadSchema: z.ZodType<IUserAPIKey[]> =
-	z.array(UserAPIKeySchema);
-
-export const UserAPIKeyCreatePayloadSchema: z.ZodType<IUserAPIKeyCreatePayload> =
-	z.object({
-		keyname: z.string().min(1).max(100),
-	});
 
 export const UserRegistrationPayloadSchema: z.ZodType<IUserRegistrationPayload> =
 	z.object({
@@ -190,13 +168,7 @@ export type UserChangePasswordResponseType = z.infer<
 export type UserVerifyEmailPayloadType = z.infer<
 	typeof UserVerifyEmailPayloadSchema
 >;
-export type UserVerifyEmailResponseType = z.infer<
-	typeof UserVerifyEmailResponseSchema
->;
-export type UserAPIKeyPayloadType = z.infer<typeof UserAPIKeyPayloadSchema>;
-export type UserAPIKeyCreatePayloadType = z.infer<
-	typeof UserAPIKeyCreatePayloadSchema
->;
+
 export type UserRegistrationPayloadType = z.infer<
 	typeof UserRegistrationPayloadSchema
 >;

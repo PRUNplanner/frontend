@@ -20,6 +20,7 @@ describe("useRepairAnalysis", async () => {
 	beforeAll(async () => {
 		setActivePinia(createPinia());
 		await materialsStore.setMany(materials);
+		// @ts-expect-error mock data date as string
 		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
@@ -101,7 +102,7 @@ describe("useRepairAnalysis", async () => {
 				individualWeight: 0.5,
 				input: 34,
 				output: 0,
-				price: -85648.19110522536,
+				price: -86083.37134751774,
 				ticker: "BBH",
 				totalVolume: -27.200000405311584,
 				totalWeight: -17,
@@ -112,7 +113,7 @@ describe("useRepairAnalysis", async () => {
 				individualWeight: 0.10000000149011612,
 				input: 34,
 				output: 0,
-				price: -77480.69725241153,
+				price: -82593.68266527586,
 				ticker: "BDE",
 				totalVolume: -51,
 				totalWeight: -3.400000050663948,
@@ -123,7 +124,7 @@ describe("useRepairAnalysis", async () => {
 				individualWeight: 0.30000001192092896,
 				input: 50,
 				output: 0,
-				price: -82143.85838299348,
+				price: -91067.14852347762,
 				ticker: "BSE",
 				totalVolume: -25,
 				totalWeight: -15.000000596046448,
@@ -134,7 +135,7 @@ describe("useRepairAnalysis", async () => {
 				individualWeight: 0.23999999463558197,
 				input: 700,
 				output: 0,
-				price: -24821.99274946328,
+				price: -24823.416880678564,
 				ticker: "MCG",
 				totalVolume: -70.00000104308128,
 				totalWeight: -167.99999624490738,
@@ -145,7 +146,7 @@ describe("useRepairAnalysis", async () => {
 				individualWeight: 2.4000000953674316,
 				input: 9,
 				output: 0,
-				price: -144109.140131891,
+				price: -177007.57749712974,
 				ticker: "RBH",
 				totalVolume: -8.099999785423279,
 				totalWeight: -21.600000858306885,
@@ -156,7 +157,7 @@ describe("useRepairAnalysis", async () => {
 				individualWeight: 1.399999976158142,
 				input: 6,
 				output: 0,
-				price: -174824.49485074615,
+				price: -177080.65686461714,
 				ticker: "RDE",
 				totalVolume: -9,
 				totalWeight: -8.399999856948853,
@@ -167,7 +168,7 @@ describe("useRepairAnalysis", async () => {
 				individualWeight: 1.899999976158142,
 				input: 6,
 				output: 0,
-				price: -137871.4365631245,
+				price: -174013.47747747749,
 				ticker: "RSE",
 				totalVolume: -4.199999928474426,
 				totalWeight: -11.399999856948853,
@@ -178,7 +179,7 @@ describe("useRepairAnalysis", async () => {
 				individualWeight: 1.5,
 				input: 3,
 				output: 0,
-				price: -47084.83533244325,
+				price: -50978.31947232578,
 				ticker: "RTA",
 				totalVolume: -1.5,
 				totalWeight: -4.5,
@@ -189,7 +190,7 @@ describe("useRepairAnalysis", async () => {
 				individualWeight: 0.10000000149011612,
 				input: 9,
 				output: 0,
-				price: -4226.70925201278,
+				price: -4766.267159609293,
 				ticker: "TRU",
 				totalVolume: -13.5,
 				totalWeight: -0.9000000134110451,

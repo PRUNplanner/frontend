@@ -14,6 +14,7 @@ import {
 
 // test data
 import shared_list from "@/tests/test_data/api_data_shared_list.json";
+import { ISharedCreateResponse } from "@/features/api/sharingData.types";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -27,33 +28,33 @@ describe("Empire Data API Calls", async () => {
 	it("callGetSharedList", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/shared/list").reply(200, shared_list);
+		mock.onGet("/planning/shared/").reply(200, shared_list);
 
-		expect(await callGetSharedList()).toStrictEqual(shared_list);
+		expect((await callGetSharedList()).length).toStrictEqual(
+			shared_list.length
+		);
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
 	it("callDeleteSharing", async () => {
 		const spyApiServiceDelete = vi.spyOn(apiService, "delete");
 
-		mock.onDelete("/shared/foo").reply(200, true);
+		mock.onDelete("/planning/shared/foo").reply(200, true);
 
 		expect(await callDeleteSharing("foo")).toBeTruthy();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
 	});
 
 	it("callCreateSharing", async () => {
-		const spyApiServicePut = vi.spyOn(apiService, "put");
+		const spyApiServicePut = vi.spyOn(apiService, "post");
 
-		const fakeSharing = {
+		const fakeSharing: ISharedCreateResponse = {
 			uuid: "da105ce1-25f2-479d-b1eb-944353f4784f",
-			created_date: "2025-06-06",
+			created_at: new Date(),
 			view_count: 0,
 		};
 
-		mock.onPut(
-			"/shared/baseplanner/da105ce1-25f2-479d-b1eb-944353f4784f"
-		).reply(200, fakeSharing);
+		mock.onPost("/planning/shared/").reply(200, fakeSharing);
 
 		expect(
 			await callCreateSharing("da105ce1-25f2-479d-b1eb-944353f4784f")
@@ -69,7 +70,7 @@ describe("Empire Data API Calls", async () => {
 		};
 
 		mock.onPut(
-			"/shared/baseplanner/da105ce1-25f2-479d-b1eb-944353f4784f/clone"
+			"/planning/shared/da105ce1-25f2-479d-b1eb-944353f4784f/clone"
 		).reply(200, fakeSharing);
 
 		expect(

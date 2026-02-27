@@ -44,20 +44,11 @@ export interface IUserVerifyEmailPayload {
 	code: string;
 }
 
-export interface IUserVerifyEmailResponse {
-	status_code: number;
-	message: string;
-}
-
 export interface IUserAPIKey {
 	name: string;
 	key: string;
 	created_date: Date;
 	last_activity: Date | null;
-}
-
-export interface IUserAPIKeyCreatePayload {
-	keyname: string;
 }
 
 export interface IUserRegistrationPayload {

@@ -1,169 +1,155 @@
 {
-	"uuid": "0f7161c8-7bc9-4ab6-af4a-10105be4180a",
-	"created_date": "2024-04-15T16:28:29.002839",
-	"view_count": 88,
-	"baseplanner": {
-		"name": "Saladin - HCP/GRN/MAI",
-		"uuid": "9508600b-9772-4bcb-beca-478adcfc3767",
-		"planet_id": "PG-899b",
-		"faction": "MORIA",
-		"permits_used": 0,
-		"permits_total": 0,
-		"override_empire": false,
-		"baseplanner_data": {
-			"planet": {
-				"planetid": "PG-899b",
-				"permits": 1,
-				"corphq": false,
-				"cogc": "AGRICULTURE",
-				"experts": [
-					{
-						"type": "Agriculture",
-						"amount": 5
-					},
-					{
-						"type": "Chemistry",
-						"amount": 0
-					},
-					{
-						"type": "Construction",
-						"amount": 0
-					},
-					{
-						"type": "Electronics",
-						"amount": 0
-					},
-					{
-						"type": "Food_Industries",
-						"amount": 0
-					},
-					{
-						"type": "Fuel_Refining",
-						"amount": 0
-					},
-					{
-						"type": "Manufacturing",
-						"amount": 0
-					},
-					{
-						"type": "Metallurgy",
-						"amount": 0
-					},
-					{
-						"type": "Resource_Extraction",
-						"amount": 1
-					}
-				],
-				"workforce": [
-					{
-						"type": "pioneer",
-						"lux1": true,
-						"lux2": true
-					},
-					{
-						"type": "settler",
-						"lux1": false,
-						"lux2": false
-					},
-					{
-						"type": "technician",
-						"lux1": false,
-						"lux2": false
-					},
-					{
-						"type": "engineer",
-						"lux1": false,
-						"lux2": false
-					},
-					{
-						"type": "scientist",
-						"lux1": false,
-						"lux2": false
-					}
-				]
-			},
-			"infrastructure": [
+	"uuid": "7864a361-cca5-4384-8477-ceec21a8ee65",
+	"plan_details": {
+		"uuid": "0fa56f16-a1cc-496a-9a39-bb93f172b9f4",
+		"plan_name": "Vallis Shared",
+		"planet_natural_id": "OT-580c",
+		"plan_permits_used": 1,
+		"plan_cogc": "PIONEERS",
+		"plan_corphq": false,
+		"plan_data": {
+			"experts": [
 				{
-					"building": "HB1",
-					"amount": 7
-				},
-				{
-					"building": "HB2",
+					"type": "Agriculture",
 					"amount": 0
 				},
 				{
-					"building": "HB3",
+					"type": "Chemistry",
 					"amount": 0
 				},
 				{
-					"building": "HB4",
+					"type": "Construction",
 					"amount": 0
 				},
 				{
-					"building": "HB5",
+					"type": "Electronics",
 					"amount": 0
 				},
 				{
-					"building": "HBB",
+					"type": "Food_Industries",
 					"amount": 0
 				},
 				{
-					"building": "HBC",
+					"type": "Fuel_Refining",
 					"amount": 0
 				},
 				{
-					"building": "HBM",
+					"type": "Manufacturing",
 					"amount": 0
 				},
 				{
-					"building": "HBL",
-					"amount": 0
+					"type": "Metallurgy",
+					"amount": 3
 				},
 				{
-					"building": "STO",
-					"amount": 1
+					"type": "Resource_Extraction",
+					"amount": 3
 				}
 			],
 			"buildings": [
 				{
-					"name": "FRM",
-					"amount": 12,
+					"name": "COL",
+					"amount": 2,
 					"active_recipes": [
 						{
-							"recipeid": "FRM#2xH2O=>4xHCP",
-							"amount": 5
-						},
-						{
-							"recipeid": "FRM#1xH2O=>4xGRN",
-							"amount": 3
-						},
-						{
-							"recipeid": "FRM#4xH2O=>12xMAI",
-							"amount": 1
+							"amount": 1,
+							"recipeid": "COL#O"
 						}
 					]
 				},
 				{
-					"name": "RIG",
-					"amount": 2,
+					"name": "EXT",
+					"amount": 3,
 					"active_recipes": [
 						{
-							"recipeid": "RIG#H2O",
-							"amount": 1
+							"amount": 1,
+							"recipeid": "EXT#FEO"
+						}
+					]
+				},
+				{
+					"name": "SME",
+					"amount": 5,
+					"active_recipes": [
+						{
+							"amount": 1,
+							"recipeid": "SME#6xFEO 1xC 1xO=>3xFE"
 						}
 					]
 				}
+			],
+			"workforce": [
+				{
+					"lux1": true,
+					"lux2": false,
+					"type": "pioneer"
+				},
+				{
+					"lux1": true,
+					"lux2": false,
+					"type": "settler"
+				},
+				{
+					"lux1": false,
+					"lux2": false,
+					"type": "technician"
+				},
+				{
+					"lux1": false,
+					"lux2": false,
+					"type": "engineer"
+				},
+				{
+					"lux1": false,
+					"lux2": false,
+					"type": "scientist"
+				}
+			],
+			"infrastructure": [
+				{
+					"amount": 3,
+					"building": "HB1"
+				},
+				{
+					"amount": 0,
+					"building": "HB2"
+				},
+				{
+					"amount": 0,
+					"building": "HB3"
+				},
+				{
+					"amount": 0,
+					"building": "HB4"
+				},
+				{
+					"amount": 0,
+					"building": "HB5"
+				},
+				{
+					"amount": 0,
+					"building": "HBB"
+				},
+				{
+					"amount": 0,
+					"building": "HBC"
+				},
+				{
+					"amount": 0,
+					"building": "HBM"
+				},
+				{
+					"amount": 0,
+					"building": "HBL"
+				},
+				{
+					"amount": 0,
+					"building": "STO"
+				}
 			]
 		},
-		"empires": [
-			{
-				"faction": "NONE",
-				"permits_used": 0,
-				"permits_total": 0,
-				"uuid": "653c67ae-eddf-4e91-bf19-34e17585d8b5",
-				"name": "Plans",
-				"use_fio_storage": false
-			}
-		]
-	}
+		"empires": []
+	},
+	"view_count": 319,
+	"created_at": "2026-02-09T12:07:20.972325Z"
 }

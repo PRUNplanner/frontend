@@ -11,9 +11,7 @@ import {
 	callCreatePlan,
 	callGetPlan,
 	callSavePlan,
-	callPatchPlanMaterialIO,
 } from "@/features/api/planData.api";
-import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 import { callCloneSharedPlan } from "@/features/api/sharingData.api";
 
 vi.mock("@/features/api/planData.api", async () => {
@@ -76,12 +74,12 @@ describe("usePlan", async () => {
 
 		const result = createBlankDefinition("OT-580b", null);
 
-		expect(result.planet_id).toBe("OT-580b");
-		expect(result.baseplanner_data.planet.experts.length).toBe(9);
-		expect(result.baseplanner_data.planet.workforce.length).toBe(5);
-		expect(result.baseplanner_data.infrastructure.length).toBe(0);
-		expect(result.baseplanner_data.buildings.length).toBe(0);
-		expect(result.empires.length).toBe(0);
+		expect(result.planet_natural_id).toBe("OT-580b");
+		expect(result.plan_data.experts.length).toBe(9);
+		expect(result.plan_data.workforce.length).toBe(5);
+		expect(result.plan_data.infrastructure.length).toBe(0);
+		expect(result.plan_data.buildings.length).toBe(0);
+		expect(result.empires?.length).toBe(0);
 	});
 
 	describe("createNewPlan", async () => {
@@ -140,59 +138,6 @@ describe("usePlan", async () => {
 		expect(result).toStrictEqual({});
 	});
 
-	it("patchMaterialIO", async () => {
-		const { patchMaterialIO } = usePlan();
-		const fakeMaterialIO: IMaterialIO[] = [
-			{
-				ticker: "C",
-				input: 1,
-				output: 2,
-				price: 0,
-				delta: 0,
-				individualWeight: 0,
-				individualVolume: 0,
-				totalWeight: 0,
-				totalVolume: 0,
-			},
-			{
-				ticker: "FEO",
-				input: 0,
-				output: 100,
-				price: 0,
-				delta: 0,
-				individualWeight: 0,
-				individualVolume: 0,
-				totalWeight: 0,
-				totalVolume: 0,
-			},
-		];
-		vi.mocked(callPatchPlanMaterialIO).mockResolvedValueOnce(true);
-
-		const result = await patchMaterialIO("foo", "moo", fakeMaterialIO);
-
-		expect(callPatchPlanMaterialIO).toBeCalledTimes(1);
-		expect(callPatchPlanMaterialIO).toHaveBeenCalledWith([
-			{
-				material_io: [
-					{
-						input: 1,
-						output: 2,
-						ticker: "C",
-					},
-					{
-						input: 0,
-						output: 100,
-						ticker: "FEO",
-					},
-				],
-				planet_id: "moo",
-				uuid: "foo",
-			},
-		]);
-
-		expect(result).toBeTruthy();
-	});
-
 	describe("getPlanNamePlanet", async () => {
 		it("unknown plan throws error", async () => {
 			const { getPlanNamePlanet } = usePlan();
@@ -203,8 +148,8 @@ describe("usePlan", async () => {
 		it("known plan returns planetId and planName", async () => {
 			// @ts-expect-error mock data
 			planningStore.plans["foo"] = {
-				planet_id: "1",
-				name: "2",
+				planet_natural_id: "1",
+				plan_name: "2",
 			};
 
 			const { getPlanNamePlanet } = usePlan();
@@ -218,7 +163,7 @@ describe("usePlan", async () => {
 		it("known plan returns planetId and default planName", async () => {
 			// @ts-expect-error mock data
 			planningStore.plans["foo"] = {
-				planet_id: "1",
+				planet_natural_id: "1",
 			};
 
 			const { getPlanNamePlanet } = usePlan();

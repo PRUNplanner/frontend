@@ -17,12 +17,12 @@ describe("useMarketExploration", async () => {
 		it("Call API 4 times and create structured result", async () => {
 			const { getMaterialExplorationData } = useMarketExploration();
 
-			const spyPostCalls = vi.spyOn(apiService, "post");
+			const spyPostCalls = vi.spyOn(apiService, "get");
 
-			mock.onPost("/data/market/AI1/DW").reply(200, exploration_7d_dw);
-			mock.onPost("/data/market/CI1/DW").reply(200, exploration_7d_dw);
-			mock.onPost("/data/market/IC1/DW").reply(200, exploration_7d_dw);
-			mock.onPost("/data/market/NC1/DW").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/AI1").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/CI1").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/IC1").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/NC1").reply(200, exploration_7d_dw);
 
 			const result = await getMaterialExplorationData("DW");
 

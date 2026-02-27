@@ -2,13 +2,14 @@ import { describe, expect, it } from "vitest";
 
 // Composables
 import { useBuildingCalculation } from "@/features/planning/calculations/buildingCalculations";
+import { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
 
 describe("Planning: Workforce Calculations", async () => {
 	describe("calculateMaterialIO", async () => {
 		it("Calculate whole production material io", async () => {
 			const { calculateMaterialIO } = await useBuildingCalculation();
 
-			const fakeData = [
+			const fakeData: IProductionBuilding[] = [
 				{
 					amount: 1,
 					totalBatchTime: 17280000 + 51840000,
@@ -17,31 +18,54 @@ describe("Planning: Workforce Calculations", async () => {
 							recipeId: "foo",
 							amount: 1,
 							time: 17280000,
+							// @ts-expect-error mock data
 							recipe: {
-								Inputs: [
-									{ Ticker: "DW", Amount: 20 },
-									{ Ticker: "EPO", Amount: 5 },
+								inputs: [
+									{
+										material_ticker: "DW",
+										material_amount: 20,
+									},
+									{
+										material_ticker: "EPO",
+										material_amount: 5,
+									},
 								],
-								Outputs: [{ Ticker: "O", Amount: 3 }],
+								outputs: [
+									{
+										material_ticker: "O",
+										material_amount: 3,
+									},
+								],
 							},
 						},
 						{
 							recipeId: "moo",
 							amount: 1,
 							time: 51840000,
+							// @ts-expect-error mock data
 							recipe: {
-								Inputs: [
-									{ Ticker: "MG", Amount: 3 },
-									{ Ticker: "O", Amount: 1 },
+								inputs: [
+									{
+										material_ticker: "MG",
+										material_amount: 3,
+									},
+									{
+										material_ticker: "O",
+										material_amount: 1,
+									},
 								],
-								Outputs: [{ Ticker: "NR", Amount: 3 }],
+								outputs: [
+									{
+										material_ticker: "NR",
+										material_amount: 3,
+									},
+								],
 							},
 						},
 					],
 				},
 			];
 
-			// @ts-expect-error mocked data
 			const result = calculateMaterialIO(fakeData);
 
 			expect(result).toStrictEqual([
@@ -76,7 +100,7 @@ describe("Planning: Workforce Calculations", async () => {
 		it("Skip recipes which amount = 0", async () => {
 			const { calculateMaterialIO } = await useBuildingCalculation();
 
-			const fakeData = [
+			const fakeData: IProductionBuilding[] = [
 				{
 					amount: 1,
 					totalBatchTime: 17280000 + 51840000,
@@ -85,31 +109,54 @@ describe("Planning: Workforce Calculations", async () => {
 							recipeId: "foo",
 							amount: 0,
 							time: 17280000,
+							// @ts-expect-error mock data
 							recipe: {
-								Inputs: [
-									{ Ticker: "DW", Amount: 20 },
-									{ Ticker: "EPO", Amount: 5 },
+								inputs: [
+									{
+										material_ticker: "DW",
+										material_amount: 20,
+									},
+									{
+										material_ticker: "EPO",
+										material_amount: 5,
+									},
 								],
-								Outputs: [{ Ticker: "O", Amount: 3 }],
+								outputs: [
+									{
+										material_ticker: "O",
+										material_amount: 3,
+									},
+								],
 							},
 						},
 						{
 							recipeId: "moo",
 							amount: 1,
 							time: 51840000,
+							// @ts-expect-error mock data
 							recipe: {
-								Inputs: [
-									{ Ticker: "MG", Amount: 3 },
-									{ Ticker: "O", Amount: 1 },
+								inputs: [
+									{
+										material_ticker: "MG",
+										material_amount: 3,
+									},
+									{
+										material_ticker: "O",
+										material_amount: 1,
+									},
 								],
-								Outputs: [{ Ticker: "NR", Amount: 3 }],
+								outputs: [
+									{
+										material_ticker: "NR",
+										material_amount: 3,
+									},
+								],
 							},
 						},
 					],
 				},
 			];
 
-			// @ts-expect-error mocked data
 			const result = calculateMaterialIO(fakeData);
 
 			expect(result).toStrictEqual([

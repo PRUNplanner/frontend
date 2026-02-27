@@ -12,12 +12,12 @@ import {
 	callDataPlanet,
 	callDataRecipes,
 	callDataFIOStorage,
-	callDataFIOSites,
 	callDataPlanetSearch,
 	callDataPlanetSearchSingle,
 	callExplorationData,
 	callPlanetLastPOPR,
 } from "@/features/api/gameData.api";
+import { IPlanetSearchAdvanced } from "@/features/api/gameData.types";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -26,7 +26,6 @@ import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import planets from "@/tests/test_data/api_data_planets.json";
 import planet_single from "@/tests/test_data/api_data_planet_single.json";
-import fio_sites from "@/tests/test_data/api_data_fio_sites.json";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 import planet_search_results from "@/tests/test_data/api_data_planet_search.json";
 import exploration_7d_dw from "@/tests/test_data/api_data_exploration_7d_dw.json";
@@ -44,7 +43,7 @@ describe("GameData API Calls", async () => {
 	it("callDataMaterials", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/data/materials").reply(200, materials);
+		mock.onGet("/data/materials/").reply(200, materials);
 
 		expect(await callDataMaterials()).toStrictEqual(materials);
 		expect(spyApiServiceGet).toHaveBeenCalled();
@@ -53,16 +52,16 @@ describe("GameData API Calls", async () => {
 	it("callDataExchanges", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/data/exchanges").reply(200, exchanges);
+		mock.onGet("/data/exchanges/").reply(200, exchanges);
 
-		expect(await callDataExchanges()).toStrictEqual(exchanges);
+		expect((await callDataExchanges()).length).toStrictEqual(1850);
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
 	it("callDataRecipes", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/data/recipes").reply(200, recipes);
+		mock.onGet("/data/recipes/").reply(200, recipes);
 
 		expect(await callDataRecipes()).toStrictEqual(recipes);
 		expect(spyApiServiceGet).toHaveBeenCalled();
@@ -71,7 +70,7 @@ describe("GameData API Calls", async () => {
 	it("callDataBuildings", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/data/buildings").reply(200, buildings);
+		mock.onGet("/data/buildings/").reply(200, buildings);
 
 		expect(await callDataBuildings()).toStrictEqual(buildings);
 		expect(spyApiServiceGet).toHaveBeenCalled();
@@ -89,7 +88,7 @@ describe("GameData API Calls", async () => {
 	it("callDataMultiplePlanets", async () => {
 		const spyApiServicePost = vi.spyOn(apiService, "post");
 
-		mock.onPost("/data/planet/multiple").reply(200, planets);
+		mock.onPost("/data/planets/multiple").reply(200, planets);
 
 		expect(await callDataMultiplePlanets([])).toStrictEqual(planets);
 		expect(spyApiServicePost).toHaveBeenCalled();
@@ -98,37 +97,19 @@ describe("GameData API Calls", async () => {
 	it("callDataFIOStorage", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/data/fio_storage").reply(200, fio_storage);
+		mock.onGet("/data/storage/").reply(200, fio_storage);
 
 		const result = await callDataFIOStorage();
 
-		expect(Object.keys(result.planets)).toStrictEqual(
-			Object.keys(fio_storage.planets)
+		expect(Object.keys(result.storage_data.planets)).toStrictEqual(
+			Object.keys(fio_storage.storage_data.planets)
 		);
-		expect(Object.keys(result.warehouses)).toStrictEqual(
-			Object.keys(fio_storage.warehouses)
+		expect(Object.keys(result.storage_data.warehouses)).toStrictEqual(
+			Object.keys(fio_storage.storage_data.warehouses)
 		);
-		expect(Object.keys(result.ships)).toStrictEqual(
-			Object.keys(fio_storage.ships)
+		expect(Object.keys(result.storage_data.ships)).toStrictEqual(
+			Object.keys(fio_storage.storage_data.ships)
 		);
-		expect(spyApiServiceGet).toHaveBeenCalled();
-	});
-
-	it("callDataFIOSites", async () => {
-		const spyApiServiceGet = vi.spyOn(apiService, "get");
-
-		mock.onGet("/data/fio_sites").reply(200, fio_sites);
-
-		const result = await callDataFIOSites();
-
-		expect(Object.keys(result.planets)).toStrictEqual(
-			Object.keys(fio_sites.planets)
-		);
-
-		expect(Object.keys(result.ships)).toStrictEqual(
-			Object.keys(fio_sites.ships)
-		);
-
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
@@ -147,25 +128,25 @@ describe("GameData API Calls", async () => {
 	it("callDataPlanetSearch", async () => {
 		const spyApiServicePost = vi.spyOn(apiService, "post");
 
-		mock.onPost("/data/planet/search").reply(200, planet_search_results);
+		mock.onPost("/data/planets/search/").reply(200, planet_search_results);
 
-		const params = {
-			Materials: [],
-			COGC: [],
-			IncludeRocky: true,
-			IncludeGaseous: false,
-			IncludeLowGravity: false,
-			IncludeHighGravity: false,
-			IncludeLowPressure: false,
-			IncludeHighPressure: false,
-			IncludeLowTemperature: false,
-			IncludeHighTemperature: false,
-			MustBeFertile: false,
-			MustHaveLocalMarket: false,
-			MustHaveChamberOfCommerce: false,
-			MustHaveWarehouse: false,
-			MustHaveAdministrationCenter: false,
-			MustHaveShipyard: false,
+		const params: IPlanetSearchAdvanced = {
+			materials: [],
+			cogc_programs: [],
+			environment_rocky: true,
+			environment_gaseous: false,
+			environment_low_gravity: false,
+			environment_high_gravity: false,
+			environment_low_pressure: false,
+			environment_high_pressure: false,
+			environment_low_temperature: false,
+			environment_high_temperature: false,
+			must_be_fertile: false,
+			must_have_localmarket: false,
+			must_have_chamberofcommerce: false,
+			must_have_warehouse: false,
+			must_have_administrationcenter: false,
+			must_have_shipyard: false,
 		};
 
 		const result = await callDataPlanetSearch(params);
@@ -177,14 +158,11 @@ describe("GameData API Calls", async () => {
 
 	describe("callExplorationData", async () => {
 		it("Call API 4 times and create structured result", async () => {
-			const spyPostCalls = vi.spyOn(apiService, "post");
+			const spyPostCalls = vi.spyOn(apiService, "get");
 
-			mock.onPost("/data/market/AI1/DW").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/AI1").reply(200, exploration_7d_dw);
 
-			const result = await callExplorationData("AI1", "DW", {
-				start: "2025-01-01",
-				end: "2025-01-07",
-			});
+			const result = await callExplorationData("AI1", "DW");
 
 			expect(spyPostCalls).toBeCalledTimes(1);
 
@@ -195,11 +173,11 @@ describe("GameData API Calls", async () => {
 	it("callPlanetLastPOPR", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/data/planet/popi/OT-580b").reply(200, latest_popr);
+		mock.onGet("/data/planet/OT-580b/popr").reply(200, latest_popr);
 
 		const result = await callPlanetLastPOPR("OT-580b");
 
-		expect(result.FreeEngineer).toBe(latest_popr.FreeEngineer);
+		expect(result.free_engineer).toBe(latest_popr.free_engineer);
 
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
