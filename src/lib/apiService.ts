@@ -186,7 +186,9 @@ class ApiService {
 
 			const newError = new Error(msg);
 
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(newError as any).responseData = body;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(newError as any).status = status;
 
 			return newError;

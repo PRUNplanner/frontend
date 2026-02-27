@@ -7,14 +7,6 @@ import { usePlanetData } from "@/database/services/usePlanetData";
 import { IFIOSitePlanet } from "@/features/api/gameData.types";
 import { IFIOSitesRepairTablePlanetElement } from "@/features/fio/useFIORepair.types";
 
-/**
- * Composable making use of FIO Sites Data
- * @author jplacht
- *
- * @export
- * @param {Ref<Record<string, IFIOSitePlanet>>} planets Planets Sites Data
- * @param {Ref<Record<string, IFIOSiteShip>>} ships Ships Sites Data
- */
 export function useFIORepair(planets: Ref<Record<string, IFIOSitePlanet>>) {
 	const { planetNames, loadPlanetNames } = usePlanetData();
 

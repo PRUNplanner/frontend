@@ -198,37 +198,6 @@ export interface IFIOSitePlanetBuilding {
 	AgeDays?: number;
 }
 
-export interface IFIOSiteShipRepairMaterial {
-	ShipRepairMaterialId: string;
-	MaterialName: string;
-	MaterialId: string;
-	MaterialTicker: string;
-	Amount: number;
-}
-
-export interface IFIOSiteShipAddressLine {
-	LineId: string;
-	LineType: string;
-	NaturalId: string;
-	Name: string;
-}
-
-export interface IFIOSiteShip {
-	ShipId: string;
-	StoreId: string;
-	StlFuelStoreId: string;
-	FtlFuelStoreId: string;
-	Registration: string;
-	Name?: string | null;
-	CommissioningTimeEpochMs: number;
-	Condition: number;
-	LastRepairEpochMs?: number | null;
-	Location: string;
-
-	RepairMaterials: IFIOSiteShipRepairMaterial[];
-	AddressLines: IFIOSiteShipAddressLine[];
-}
-
 export interface IPlanetSearchAdvanced {
 	materials: string[];
 	cogc_programs: PLANET_COGCPROGRAM_TYPE[];

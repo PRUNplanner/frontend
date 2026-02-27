@@ -897,6 +897,7 @@ export function useQueryRepository() {
 				try {
 					const response = await callRegisterUser(params);
 					return response;
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (error: any) {
 					const apiErrors = error.responseData;
 
@@ -907,6 +908,7 @@ export function useQueryRepository() {
 							? messages[0]
 							: messages;
 
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
 						(error as any).validationFields = userFriendlyMessage;
 					}
 
@@ -939,7 +941,7 @@ export function useQueryRepository() {
 						params.code,
 						params.new_password
 					);
-				} catch (err: any) {
+				} catch {
 					return {
 						detail: "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
 					};

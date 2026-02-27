@@ -10,7 +10,6 @@
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import FIORepairPlanet from "@/features/fio/components/FIORepairPlanet.vue";
-	import FIORepairShip from "@/features/fio/components/FIORepairShip.vue";
 
 	// Util
 	import { relativeFromDate } from "@/util/date";

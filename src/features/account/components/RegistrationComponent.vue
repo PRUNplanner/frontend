@@ -79,6 +79,7 @@
 			).execute();
 			registrationUsername.value = data.username;
 			registrationSuccess.value = true;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
 			if (err.validationFields) {
 				hasErrorMessage.value = err.validationFields;
