@@ -112,7 +112,7 @@ export async function callPatchCX(
 	data: ICXData
 ): Promise<ICX> {
 	return apiService.put<CXPutType, CXSchemaType>(
-		`/planning/cx/${cxUuid}/`,
+		`/planning/cx/${cxUuid}`,
 		{
 			cx_name: cxName,
 			cx_data: data,
