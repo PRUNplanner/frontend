@@ -99,7 +99,7 @@ export async function useBuildingData() {
 				// only production buildings that are not in existing list
 				if (!existing.includes(building.building_ticker)) {
 					// check for matching COGC
-					if (cogc && building.Expertise != cogc) {
+					if (cogc && building.expertise != cogc) {
 						return [];
 					}
 
