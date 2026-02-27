@@ -111,11 +111,6 @@ import {
 } from "@/features/planning_data/usePlan.types";
 import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
 import {
-	IOptimizeHabitationPayload,
-	IOptimizeHabitationResponse,
-} from "@/features/api/schemas/optimize.schemas";
-import { callOptimizeHabitation } from "@/features/api/optimize.api";
-import {
 	callAPIKeyList,
 	callChangePassword,
 	callCreateAPIKey,
@@ -787,23 +782,6 @@ export function useQueryRepository() {
 			persist: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 		} as IQueryDefinition<{ planetNaturalId: string }, IPopulationReport>,
-		OptimizeHabitation: {
-			key: (params: IOptimizeHabitationPayload) => [
-				"planningdata",
-				"optimize",
-				"habitation",
-				params,
-			],
-			fetchFn: async (params: IOptimizeHabitationPayload) => {
-				return await callOptimizeHabitation(params);
-			},
-			autoRefetch: false,
-			persist: true,
-			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
-		} as IQueryDefinition<
-			IOptimizeHabitationPayload,
-			IOptimizeHabitationResponse
-		>,
 		PatchUserProfile: {
 			key: () => ["user", "profile", "patch"],
 			fetchFn: async (params: IUserProfilePatch) => {

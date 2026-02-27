@@ -45,10 +45,6 @@ import {
 } from "@/features/planning_data/usePlan.types";
 import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
 import {
-	IOptimizeHabitationPayload,
-	IOptimizeHabitationResponse,
-} from "@/features/api/schemas/optimize.schemas";
-import {
 	IUserAPIKey,
 	IUserAPIKeyCreatePayload,
 	IUserChangePasswordPayload,
@@ -164,10 +160,6 @@ export interface IQueryRepository {
 	GetPlanetLastPOPR: IQueryDefinition<
 		{ planetNaturalId: string },
 		IPopulationReport
-	>;
-	OptimizeHabitation: IQueryDefinition<
-		IOptimizeHabitationPayload,
-		IOptimizeHabitationResponse
 	>;
 	PatchUserProfile: IQueryDefinition<IUserProfilePatch, IUserProfile>;
 	PostUserResendEmailVerification: IQueryDefinition<
