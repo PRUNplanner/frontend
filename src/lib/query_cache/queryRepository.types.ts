@@ -45,8 +45,6 @@ import {
 } from "@/features/planning_data/usePlan.types";
 import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
 import {
-	IUserAPIKey,
-	IUserAPIKeyCreatePayload,
 	IUserChangePasswordPayload,
 	IUserRequestPasswordResetResponse,
 	IUserProfile,
@@ -171,9 +169,6 @@ export interface IQueryRepository {
 		boolean
 	>;
 	PostUserVerifyEmail: IQueryDefinition<IUserVerifyEmailPayload, boolean>;
-	GetUserAPIKeyList: IQueryDefinition<undefined, IUserAPIKey[]>;
-	PostUserCreateAPIKey: IQueryDefinition<IUserAPIKeyCreatePayload, boolean>;
-	DeleteUserAPIKey: IQueryDefinition<{ key: string }, boolean>;
 	PostUserRegistration: IQueryDefinition<
 		IUserRegistrationPayload,
 		IUserRegistrationResponse

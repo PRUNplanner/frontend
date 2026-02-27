@@ -111,10 +111,7 @@ import {
 } from "@/features/planning_data/usePlan.types";
 import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
 import {
-	callAPIKeyList,
 	callChangePassword,
-	callCreateAPIKey,
-	callDeleteAPIKey,
 	callGetUserPreferences,
 	callPasswordReset,
 	callPatchProfile,
@@ -125,8 +122,6 @@ import {
 	callVerifyEmail,
 } from "@/features/api/userData.api";
 import {
-	IUserAPIKey,
-	IUserAPIKeyCreatePayload,
 	IUserChangePasswordPayload,
 	IUserRequestPasswordResetPayload,
 	IUserRequestPasswordResetResponse,
@@ -826,46 +821,6 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<IUserVerifyEmailPayload, boolean>,
-		GetUserAPIKeyList: {
-			key: () => ["user", "api", "list"],
-			fetchFn: async () => {
-				return await callAPIKeyList();
-			},
-			autoRefetch: false,
-			persist: true,
-		} as IQueryDefinition<undefined, IUserAPIKey[]>,
-		PostUserCreateAPIKey: {
-			key: () => ["user", "api", "create"],
-			fetchFn: async (params: IUserAPIKeyCreatePayload) => {
-				try {
-					return await callCreateAPIKey(params.keyname);
-				} catch {
-					return false;
-				} finally {
-					await queryStore.invalidateKey(["user", "api"], {
-						exact: false,
-					});
-				}
-			},
-			autoRefetch: false,
-			persist: false,
-		} as IQueryDefinition<IUserAPIKeyCreatePayload, boolean>,
-		DeleteUserAPIKey: {
-			key: () => ["user", "api", "delete"],
-			fetchFn: async (params: { key: string }) => {
-				try {
-					return await callDeleteAPIKey(params.key);
-				} catch {
-					return false;
-				} finally {
-					await queryStore.invalidateKey(["user", "api"], {
-						exact: false,
-					});
-				}
-			},
-			autoRefetch: false,
-			persist: false,
-		} as IQueryDefinition<{ key: string }, boolean>,
 		PostUserRegistration: {
 			key: () => ["user", "account", "registration"],
 			fetchFn: async (params: IUserRegistrationPayload) => {
