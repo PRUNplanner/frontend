@@ -72,10 +72,12 @@
 	if (useUserStore().hasFIO) {
 		constructedMap = new Map<string, number>();
 		const fioSites = await useQuery("GetFIOStorage").execute();
-		const constructedArray =
-			fioSites.sites_data[props.planetNaturalId].Buildings;
-
-		if (constructedArray) {
+		if (
+			fioSites.sites_data[props.planetNaturalId] &&
+			fioSites.sites_data[props.planetNaturalId].Buildings
+		) {
+			const constructedArray =
+				fioSites.sites_data[props.planetNaturalId].Buildings;
 			for (const building of constructedArray) {
 				const count = constructedMap.get(building.BuildingTicker) ?? 0;
 				constructedMap.set(building.BuildingTicker, count + 1);
