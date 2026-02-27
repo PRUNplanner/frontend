@@ -157,7 +157,7 @@ export async function useHQUpgradeCalculator(
 				(sum, current) =>
 					(sum =
 						sum +
-						materialsMap.value[current.ticker].Weight *
+						materialsMap.value[current.ticker].weight *
 							current.required),
 				0
 			),
@@ -165,7 +165,7 @@ export async function useHQUpgradeCalculator(
 				(sum, current) =>
 					(sum =
 						sum +
-						materialsMap.value[current.ticker].Volume *
+						materialsMap.value[current.ticker].volume *
 							current.required),
 				0
 			),
