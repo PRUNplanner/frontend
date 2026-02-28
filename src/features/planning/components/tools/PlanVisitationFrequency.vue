@@ -9,7 +9,7 @@
 
 	// Types & Interfaces
 	import { PSelectOption } from "@/ui/ui.types";
-	import { STORAGE_TYPE, IMaterialIO, IStorageRecord } from "@/features/planning/usePlanCalculation.types";
+	import { IMaterialIO, IStorageRecord } from "@/features/planning/usePlanCalculation.types";
 	import { getVolumeOfAllStorages, getWeightOfAllStorages } from "../../calculations/infrastructureCalculations";
 
 	interface IShippingCalculation {
