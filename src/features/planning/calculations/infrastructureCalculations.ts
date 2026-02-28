@@ -20,7 +20,7 @@ export const infrastructureBuildingNames: string[] = [
 	"HBL",
 ].concat(storageBuildingNames);
 
-export const STORAGE_WEIGHT_MAP: Record<STORAGE_TYPE, number> = {
+const STORAGE_WEIGHT_MAP: Record<STORAGE_TYPE, number> = {
 	"STO": 5000,
 	"STA": 2500,
 	"STE": 10000,
@@ -28,7 +28,7 @@ export const STORAGE_WEIGHT_MAP: Record<STORAGE_TYPE, number> = {
 	"STW": 7500,
 };
 
-export const STORAGE_VOLUME_MAP: Record<STORAGE_TYPE, number> = {	
+const STORAGE_VOLUME_MAP: Record<STORAGE_TYPE, number> = {	
 	"STO": 5000,
 	"STA": 2500,
 	"STE": 10000,
