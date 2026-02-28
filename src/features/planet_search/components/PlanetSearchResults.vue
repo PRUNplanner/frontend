@@ -50,6 +50,17 @@
 
 	const { getSystemName } = usePathfinder();
 
+	function distanceSorter(key: string) {
+		return (
+			row1: Record<string, unknown>,
+			row2: Record<string, unknown>
+		): number => {
+			const d1 = row1[key] === -1 ? Infinity : (row1[key] as number);
+			const d2 = row2[key] === -1 ? Infinity : (row2[key] as number);
+			return d1 - d2;
+		};
+	}
+
 	// Table Data - computed to always reflect current props
 	const tableSearchMaterials: ComputedRef<string[]> = computed(
 		() => props.searchMaterials
@@ -216,7 +227,10 @@
 			key="checkDistance"
 			:title="`Distance ${tableCheckDistances}`"
 			sorter="default" />
-		<XNDataTableColumn key="distanceAI1" title="AI1" sorter="default">
+		<XNDataTableColumn
+			key="distanceAI1"
+			title="AI1"
+			:sorter="distanceSorter('distanceAI1')">
 			<template #render-cell="{ rowData }">
 				<PTooltip v-if="rowData.distanceAI1 == -1">
 					<template #trigger> ∞ </template>
@@ -225,7 +239,10 @@
 				<span v-else>{{ rowData.distanceAI1 }}</span>
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="distanceCI1" title="CI1" sorter="default">
+		<XNDataTableColumn
+			key="distanceCI1"
+			title="CI1"
+			:sorter="distanceSorter('distanceCI1')">
 			<template #render-cell="{ rowData }">
 				<PTooltip v-if="rowData.distanceCI1 == -1">
 					<template #trigger> ∞ </template>
@@ -234,7 +251,10 @@
 				<span v-else>{{ rowData.distanceCI1 }}</span>
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="distanceIC1" title="IC1" sorter="default">
+		<XNDataTableColumn
+			key="distanceIC1"
+			title="IC1"
+			:sorter="distanceSorter('distanceIC1')">
 			<template #render-cell="{ rowData }">
 				<PTooltip v-if="rowData.distanceIC1 == -1">
 					<template #trigger> ∞ </template>
@@ -243,7 +263,10 @@
 				<span v-else>{{ rowData.distanceIC1 }}</span>
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="distanceNC1" title="NC1" sorter="default">
+		<XNDataTableColumn
+			key="distanceNC1"
+			title="NC1"
+			:sorter="distanceSorter('distanceNC1')">
 			<template #render-cell="{ rowData }">
 				<PTooltip v-if="rowData.distanceNC1 == -1">
 					<template #trigger> ∞ </template>
