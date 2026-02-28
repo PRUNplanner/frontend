@@ -77,7 +77,7 @@
 		hasStorage.value
 			? storageOptions.value.filter(
 					(e) => e.value === `PLANET#${props.planetNaturalId}`
-			  )
+				)
 				? `PLANET#${props.planetNaturalId}`
 				: undefined
 			: undefined
@@ -132,7 +132,7 @@
 	const dailyCost: ComputedRef<number> = computed(() => {
 		return (
 			filteredMaterialIO.value.reduce(
-				(sum, current) => (sum = sum + current.price),
+				(sum, current) => sum + current.price,
 				0
 			) * -1
 		);
@@ -141,23 +141,22 @@
 	const totalCost: ComputedRef<number> = computed(() => {
 		return filteredMaterialIO.value.reduce(
 			(sum, current) =>
-				(sum =
-					sum +
-					(Math.abs(current.price) / Math.abs(current.delta)) *
-						current.needLeft),
+				sum +
+				(Math.abs(current.price) / Math.abs(current.delta)) *
+					current.needLeft,
 			0
 		);
 	});
 
 	const totalVolume: ComputedRef<number> = computed(() => {
 		return filteredMaterialIO.value.reduce(
-			(sum, current) => (sum = sum + current.needVolume),
+			(sum, current) => sum + current.needVolume,
 			0
 		);
 	});
 	const totalWeight: ComputedRef<number> = computed(() => {
 		return filteredMaterialIO.value.reduce(
-			(sum, current) => (sum = sum + current.needWeight),
+			(sum, current) => sum + current.needWeight,
 			0
 		);
 	});

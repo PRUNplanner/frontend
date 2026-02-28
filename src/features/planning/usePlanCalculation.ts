@@ -401,7 +401,12 @@ export async function usePlanCalculation(
 						dailyShare: 1,
 						// time adjusted to efficiency and amount
 						time: (recipeInfo.TimeMs * r.amount) / totalEfficiency,
-						recipe: { ...recipeInfo, dailyRevenue: 0, roi: 0, profitPerArea: 0 },
+						recipe: {
+							...recipeInfo,
+							dailyRevenue: 0,
+							roi: 0,
+							profitPerArea: 0,
+						},
 						cogm: undefined,
 					});
 				}
@@ -473,8 +478,13 @@ export async function usePlanCalculation(
 					const roi: number = (constructionCost * -1) / dailyRevenue;
 
 					// Recipe option Profit per Area
-					const optimalProductionData = optimalProduction.find((op) => op.ticker === br.BuildingTicker);
-					const areaPerBuilding: number = optimalProductionData ? (optimalProductionData.total_area + 25) / optimalProductionData.amount : buildingData.AreaCost + 25;
+					const optimalProductionData = optimalProduction.find(
+						(op) => op.ticker === br.BuildingTicker
+					);
+					const areaPerBuilding: number = optimalProductionData
+						? (optimalProductionData.total_area + 25) /
+							optimalProductionData.amount
+						: buildingData.AreaCost + 25;
 
 					const profitPerArea = dailyRevenue / areaPerBuilding;
 
@@ -531,7 +541,7 @@ export async function usePlanCalculation(
 				inputCost.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 
 				const inputTotal: number = inputCost.reduce(
-					(sum, current) => (sum += current.costTotal),
+					(sum, current) => sum + current.costTotal,
 					0
 				);
 
@@ -551,7 +561,7 @@ export async function usePlanCalculation(
 					degradationShare + workforceCost + inputTotal;
 
 				const sumOutputs: number = ar.recipe.Outputs.reduce(
-					(sum, current) => (sum += current.Amount),
+					(sum, current) => sum + current.Amount,
 					0
 				);
 
@@ -703,9 +713,8 @@ export async function usePlanCalculation(
 			]);
 		const materialIOMaterial: IMaterialIOMaterial[] =
 			enhanceMaterialIOMinimal(combinedMaterialIOMinimal);
-		const materialIO: IMaterialIO[] = await enhanceMaterialIOMaterial(
-			materialIOMaterial
-		);
+		const materialIO: IMaterialIO[] =
+			await enhanceMaterialIOMaterial(materialIOMaterial);
 
 		/**
 		 * Revenue, profit and cost calculation
@@ -778,11 +787,11 @@ export async function usePlanCalculation(
 		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>
 	) {
 		const dailyCost: number = materialIO.reduce(
-			(sum, current) => (sum += current.delta < 0 ? current.price : 0),
+			(sum, current) => sum + (current.delta < 0 ? current.price : 0),
 			0
 		);
 		const dailyProfit: number = materialIO.reduce(
-			(sum, current) => (sum += current.delta > 0 ? current.price : 0),
+			(sum, current) => sum + (current.delta > 0 ? current.price : 0),
 			0
 		);
 
@@ -790,7 +799,7 @@ export async function usePlanCalculation(
 		const totalProductionConstructionCost: number =
 			production.buildings.reduce(
 				(sum, current) =>
-					(sum += current.constructionCost * current.amount),
+					sum + current.constructionCost * current.amount,
 				0
 			);
 

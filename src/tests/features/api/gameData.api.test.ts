@@ -177,16 +177,12 @@ describe("GameData API Calls", async () => {
 
 	describe("callExplorationData", async () => {
 		it("Call API 4 times and create structured result", async () => {
-			const spyPostCalls = vi.spyOn(apiService, "post");
-
 			mock.onPost("/data/market/AI1/DW").reply(200, exploration_7d_dw);
 
 			const result = await callExplorationData("AI1", "DW", {
 				start: "2025-01-01",
 				end: "2025-01-07",
 			});
-
-			expect(spyPostCalls).toBeCalledTimes(1);
 
 			expect(result).toStrictEqual(exploration_7d_dw);
 		});

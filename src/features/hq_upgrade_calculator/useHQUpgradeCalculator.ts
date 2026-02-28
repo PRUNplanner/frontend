@@ -131,10 +131,7 @@ export async function useHQUpgradeCalculator(
 	 * @type {ComputedRef<number>} Total Cost
 	 */
 	const totalCost: ComputedRef<number> = computed(() =>
-		materialData.value.reduce(
-			(sum, current) => (sum = sum + current.totalCost),
-			0
-		)
+		materialData.value.reduce((sum, current) => sum + current.totalCost, 0)
 	);
 
 	/**
@@ -155,18 +152,16 @@ export async function useHQUpgradeCalculator(
 		return {
 			totalWeight: materialData.value.reduce(
 				(sum, current) =>
-					(sum =
-						sum +
-						materialsMap.value[current.ticker].Weight *
-							current.required),
+					sum +
+					materialsMap.value[current.ticker].Weight *
+						current.required,
 				0
 			),
 			totalVolume: materialData.value.reduce(
 				(sum, current) =>
-					(sum =
-						sum +
-						materialsMap.value[current.ticker].Volume *
-							current.required),
+					sum +
+					materialsMap.value[current.ticker].Volume *
+						current.required,
 				0
 			),
 		};
