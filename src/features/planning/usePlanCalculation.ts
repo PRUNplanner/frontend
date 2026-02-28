@@ -787,11 +787,11 @@ export async function usePlanCalculation(
 		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>
 	) {
 		const dailyCost: number = materialIO.reduce(
-			(sum, current) => (sum + current.delta < 0 ? current.price : 0),
+			(sum, current) => sum + (current.delta < 0 ? current.price : 0),
 			0
 		);
 		const dailyProfit: number = materialIO.reduce(
-			(sum, current) => (sum + current.delta > 0 ? current.price : 0),
+			(sum, current) => sum + (current.delta > 0 ? current.price : 0),
 			0
 		);
 
