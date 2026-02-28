@@ -104,7 +104,7 @@
 	const indicatorStyle: ComputedRef<string> = computed(() => {
 		const percentage: number = 100 - indicatorPercentage.value;
 
-		let color: string = "";
+		let color: string;
 
 		if (percentage > 75) {
 			color = "rgb(255, 0, 0)";
@@ -197,8 +197,8 @@
 				disableDrawer && enablePopover
 					? 'hover:cursor-help'
 					: !disableDrawer
-					? 'hover:cursor-pointer'
-					: '',
+						? 'hover:cursor-pointer'
+						: '',
 			]"
 			@click="toggleDrawer">
 			<PTooltip
