@@ -9,7 +9,8 @@
 
 	// Types & Interfaces
 	import { PSelectOption } from "@/ui/ui.types";
-	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+	import { STORAGE_TYPE, IMaterialIO, IStorageRecord } from "@/features/planning/usePlanCalculation.types";
+	import { getVolumeOfAllStorages, getWeightOfAllStorages } from "../../calculations/infrastructureCalculations";
 
 	interface IShippingCalculation {
 		shipVolume: number;
@@ -29,8 +30,8 @@
 	import { PSelectMultiple, PTable } from "@/ui";
 
 	const props = defineProps({
-		stoAmount: {
-			type: Number,
+		storage: {
+			type: Object as PropType<IStorageRecord>,
 			required: true,
 		},
 		materialIO: {
@@ -89,8 +90,8 @@
 		return {
 			storageFilled: Math.max(
 				Math.min(
-					totalStorage.value / dailyWeightTotal,
-					totalStorage.value / dailyVolumeTotal
+					totalWeight.value / dailyWeightTotal,
+					totalVolume.value / dailyVolumeTotal
 				),
 				0
 			),
@@ -104,7 +105,7 @@
 	}
 
 	// Local State
-	const localStoAmount: Ref<number> = ref(props.stoAmount);
+	const localStorage: Ref<IStorageRecord> = ref(props.storage);
 	const localMaterialIO: Ref<IMaterialIO[]> = ref(props.materialIO);
 
 	const refMaterialExclusionOption: Ref<PSelectOption[]> = ref(
@@ -118,9 +119,9 @@
 
 	// Prop Watcher
 	watch(
-		() => props.stoAmount,
-		(newAmount: number) => {
-			localStoAmount.value = newAmount;
+		() => props.storage,
+		(newStorage: IStorageRecord) => {
+			localStorage.value = newStorage;
 		}
 	);
 	watch(
@@ -132,8 +133,12 @@
 	);
 
 	//
-	const totalStorage: ComputedRef<number> = computed(() => {
-		return 1500 + 5000 * localStoAmount.value;
+	const totalWeight: ComputedRef<number> = computed(() => {
+		return getWeightOfAllStorages(localStorage.value);
+	});
+
+	const totalVolume: ComputedRef<number> = computed(() => {
+		return getVolumeOfAllStorages(localStorage.value);
 	});
 
 	const dailyData = computed(() => {
@@ -199,6 +204,12 @@
 
 		return shippingCalc;
 	});
+
+	const storageAmountsForDisplay: ComputedRef<{ ticker: string; amount: number }[]> = computed(() => {
+		return Object.entries(localStorage.value)
+			.filter(([_, amount]) => amount > 0)
+			.map(([ticker, amount]) => ({ ticker: ticker, amount: amount }));
+	});
 </script>
 
 <template>
@@ -209,11 +220,14 @@
 			<h3 class="font-bold text-lg pb-3">Storage</h3>
 
 			<p class="pb-3">
-				Your plan involves adding
-				<strong>{{ localStoAmount }}</strong> STO, giving you a total
-				storage capacity of
-				<strong>{{ formatAmount(totalStorage) }}</strong
-				>.
+				<template v-if="storageAmountsForDisplay.length > 0">
+					Your plan involves adding
+					<template v-for="(item, index) in storageAmountsForDisplay" :key="item.ticker">
+						<strong>{{ item.amount }}</strong> {{ item.ticker }}<template v-if="index < storageAmountsForDisplay.length - 1">{{ index === storageAmountsForDisplay.length - 2 ? ' and ' : ', ' }}</template>
+					</template>, giving you a total storage capacity of
+					<strong>{{ formatAmount(totalWeight) }}</strong> t and <strong>{{ formatAmount(totalVolume) }}</strong> m³.
+				</template>
+				<template v-else>Your plan has a storage capacity of <strong>{{ formatAmount(totalWeight) }}</strong> t and <strong>{{ formatAmount(totalVolume) }}</strong> m³.</template>
 			</p>
 
 			<PTable striped>

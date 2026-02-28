@@ -98,6 +98,10 @@ const PlanDataInfrastructureSchema: z.ZodType<IPlanDataInfrastructure> =
 			"HBM",
 			"HBL",
 			"STO",
+			"STA",
+			"STE",
+			"STV",
+			"STW",
 		]),
 		amount: PositiveOrZeroNumber,
 	});

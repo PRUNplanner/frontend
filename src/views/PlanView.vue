@@ -291,7 +291,7 @@
 			case "visitation-frequency":
 				return {
 					props: {
-						stoAmount: result.value.infrastructure["STO"],
+						storage: result.value.storage,
 						materialIO: result.value.materialio,
 						disabled: props.disabled,
 						planUuid: refPlanData.value.uuid,

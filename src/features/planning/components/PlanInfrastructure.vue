@@ -8,6 +8,7 @@
 		IInfrastructureRecord,
 		INFRASTRUCTURE_TYPE,
 	} from "@/features/planning/usePlanCalculation.types";
+	import { isStorageInfrastructure } from "@/features/planning/calculations/infrastructureCalculations";
 
 	// UI
 	import {
@@ -67,6 +68,10 @@
 		"HBL",
 		"HB5",
 		"STO",
+		"STA",
+		"STE",
+		"STV",
+		"STW",
 	];
 
 	const localAutoOptimizeHabs: WritableComputedRef<boolean> = computed({
@@ -98,7 +103,7 @@
 			<div>{{ inf }}</div>
 			<PInputNumber
 				v-model:value="localInfrastructureData[inf]"
-				:disabled="disabled || (localAutoOptimizeHabs && inf !== 'STO')"
+				:disabled="disabled || (localAutoOptimizeHabs && !isStorageInfrastructure(inf))"
 				show-buttons
 				:min="0"
 				class="min-w-21.25 max-w-25"

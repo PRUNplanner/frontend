@@ -31,6 +31,10 @@ describe("useFIORepair", async () => {
 		expect(isInfrastructureBuilding("HBL")).toBeTruthy();
 		expect(isInfrastructureBuilding("STO")).toBeTruthy();
 		expect(isInfrastructureBuilding("CM")).toBeTruthy();
+		expect(isInfrastructureBuilding("STA")).toBeTruthy();
+		expect(isInfrastructureBuilding("STE")).toBeTruthy();
+		expect(isInfrastructureBuilding("STV")).toBeTruthy();
+		expect(isInfrastructureBuilding("STW")).toBeTruthy();
 	});
 
 	it("planetRepairTable", async () => {

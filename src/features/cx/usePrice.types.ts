@@ -9,6 +9,10 @@ export type IInfrastructureCosts = {
 	HBM: number;
 	HBL: number;
 	STO: number;
+	STA: number;
+	STE: number;
+	STV: number;
+	STW: number;
 
 	[key: string]: number;
 };
