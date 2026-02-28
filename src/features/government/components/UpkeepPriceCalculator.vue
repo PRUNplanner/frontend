@@ -30,7 +30,9 @@
 		},
 	});
 
-	const cxUuid: ComputedRef<string | undefined> = computed(() => props.cxUuid);
+	const cxUuid: ComputedRef<string | undefined> = computed(
+		() => props.cxUuid
+	);
 	const planetNaturalId: Ref<string | undefined> = ref(undefined);
 
 	// Composables
@@ -91,7 +93,9 @@
 				<PButton
 					v-for="needType in needTypes"
 					:key="needType"
-					:type="selectedNeedType === needType ? 'primary' : 'secondary'"
+					:type="
+						selectedNeedType === needType ? 'primary' : 'secondary'
+					"
 					@click="selectedNeedType = needType">
 					{{ capitalizeString(needType) }}
 				</PButton>
@@ -107,12 +111,14 @@
 				:data="currentResults"
 				striped
 				:pagination="{ pageSize: 50 }">
-				<XNDataTableColumn key="ticker" title="Material" sorter="default">
+				<XNDataTableColumn
+					key="ticker"
+					title="Material"
+					sorter="default">
 					<template #render-cell="{ rowData }">
 						<MaterialTile
 							:key="`${rowData.ticker}-${rowData.buildingTicker}`"
-							:ticker="rowData.ticker"
-							:amount="null" />
+							:ticker="rowData.ticker" />
 					</template>
 				</XNDataTableColumn>
 				<XNDataTableColumn
@@ -120,7 +126,9 @@
 					title="Building"
 					sorter="default">
 					<template #render-cell="{ rowData }">
-						<span class="font-bold">{{ rowData.buildingTicker }}</span>
+						<span class="font-bold">{{
+							rowData.buildingTicker
+						}}</span>
 					</template>
 				</XNDataTableColumn>
 				<XNDataTableColumn
@@ -133,7 +141,9 @@
 					<template #render-cell="{ rowData }">
 						<div
 							class="text-end text-nowrap"
-							:class="rowData.cxPrice <= 0 ? 'text-white/40' : ''">
+							:class="
+								rowData.cxPrice <= 0 ? 'text-white/40' : ''
+							">
 							<template v-if="rowData.cxPrice > 0">
 								{{ formatNumber(rowData.pricePerNeed, 4) }}
 							</template>
@@ -141,17 +151,24 @@
 						</div>
 					</template>
 				</XNDataTableColumn>
-				<XNDataTableColumn key="cxPrice" title="CX Price" sorter="default">
+				<XNDataTableColumn
+					key="cxPrice"
+					title="CX Price"
+					sorter="default">
 					<template #title>
 						<div class="text-end">CX Price</div>
 					</template>
 					<template #render-cell="{ rowData }">
 						<div
 							class="text-end text-nowrap"
-							:class="rowData.cxPrice <= 0 ? 'text-white/40' : ''">
+							:class="
+								rowData.cxPrice <= 0 ? 'text-white/40' : ''
+							">
 							<template v-if="rowData.cxPrice > 0">
 								{{ formatNumber(rowData.cxPrice, 2) }}
-								<span class="pl-1 font-light text-white/50">$</span>
+								<span class="pl-1 font-light text-white/50"
+									>$</span
+								>
 							</template>
 							<template v-else>-</template>
 						</div>
