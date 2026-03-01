@@ -1,3 +1,9 @@
+# 2026-03-01 - v. 0.23.0
+
+- Adds new storage buildings (STA, STE, STV, STW) to planning [[PR-346]](https://github.com/PRUNplanner/frontend/pull/346)
+- Adds Government Upkeep Price Calculator Tool [[PR-339]](https://github.com/PRUNplanner/frontend/pull/339)
+- Fixes planet search to sort ∞ distance planets last in ascending order [[PR-345]](https://github.com/PRUNplanner/frontend/pull/345)
+
 # 2026-01-29 - v. 0.22.1
 
 - Adds horizontal scroll in construction carts [[PR-333]](https://github.com/PRUNplanner/frontend/pull/333)
