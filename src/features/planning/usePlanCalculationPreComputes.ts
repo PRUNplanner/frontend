@@ -16,7 +16,7 @@ import {
 	IPreBuildingRecord,
 } from "@/features/planning/usePlanCalculation.types";
 import { IBuilding, IPlanet } from "@/features/api/gameData.types";
-import { infrastructureBuildingNames } from "@/features/planning/calculations/workforceCalculations";
+import { infrastructureBuildingNames } from "@/features/planning/calculations/infrastructureCalculations";
 
 /**
  * # Precomputed References

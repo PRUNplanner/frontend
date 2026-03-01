@@ -35,7 +35,8 @@ export function useFIORepair(
 	 * @returns {boolean} Is infrastructure Building
 	 */
 	function isInfrastructureBuilding(ticker: string): boolean {
-		return ticker.startsWith("HB") || ticker === "STO" || ticker === "CM";
+		return ticker.startsWith("HB") || ticker === "STO" || ticker === "CM" ||
+			ticker === "STA" || ticker === "STE" || ticker === "STV" || ticker === "STW";
 	}
 
 	/**

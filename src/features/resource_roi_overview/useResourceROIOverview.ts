@@ -171,6 +171,10 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 			{ building: "HBM", amount: optimal.HBM },
 			{ building: "HBL", amount: optimal.HBL },
 			{ building: "STO", amount: optimal.sto },
+			{ building: "STA", amount: optimal.sta },
+			{ building: "STE", amount: optimal.ste },
+			{ building: "STV", amount: optimal.stv },
+			{ building: "STW", amount: optimal.stw },
 		];
 
 		// artificially set cogc to resource extraction

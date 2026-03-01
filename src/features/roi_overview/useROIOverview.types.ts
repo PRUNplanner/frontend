@@ -6,6 +6,10 @@ export type IStaticOptimalProduction = {
 	ticker: string;
 	amount: number;
 	sto: number;
+	sta: number;
+	ste: number;
+	stv: number;
+	stw: number;
 	total_area: number;
 	HB1: number;
 	HB2: number;

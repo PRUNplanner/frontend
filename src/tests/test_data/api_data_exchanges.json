@@ -76778,5 +76778,38 @@
 		"Supply": 246,
 		"Demand": 159,
 		"Traded": 1
+	},
+	{
+		"TickerId": "ALR.PP30D_UNIVERSE",
+		"MaterialTicker": "ALR",
+		"ExchangeCode": "PP30D_UNIVERSE",
+		"Ask": null,
+		"Bid": null,
+		"PriceAverage": 5000.0,
+		"Supply": null,
+		"Demand": null,
+		"Traded": 0
+	},
+	{
+		"TickerId": "TRS.PP30D_UNIVERSE",
+		"MaterialTicker": "TRS",
+		"ExchangeCode": "PP30D_UNIVERSE",
+		"Ask": null,
+		"Bid": null,
+		"PriceAverage": 200000.0,
+		"Supply": null,
+		"Demand": null,
+		"Traded": 0
+	},
+	{
+		"TickerId": "WRH.PP30D_UNIVERSE",
+		"MaterialTicker": "WRH",
+		"ExchangeCode": "PP30D_UNIVERSE",
+		"Ask": null,
+		"Bid": null,
+		"PriceAverage": 20000.0,
+		"Supply": null,
+		"Demand": null,
+		"Traded": 0
 	}
 ]
