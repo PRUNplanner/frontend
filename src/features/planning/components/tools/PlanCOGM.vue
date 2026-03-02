@@ -90,6 +90,7 @@
 				});
 
 				await useQuery("PatchCX", {
+					cxName: selectedCX.value.cx_name,
 					cxUuid: props.cxUuid,
 					data: {
 						cx_empire: selectedCX.value.cx_data.cx_empire,

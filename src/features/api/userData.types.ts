@@ -44,13 +44,6 @@ export interface IUserVerifyEmailPayload {
 	code: string;
 }
 
-export interface IUserAPIKey {
-	name: string;
-	key: string;
-	created_date: Date;
-	last_activity: Date | null;
-}
-
 export interface IUserRegistrationPayload {
 	username: string;
 	password: string;
