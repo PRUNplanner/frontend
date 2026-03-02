@@ -19,10 +19,10 @@ describe("useMarketExploration", async () => {
 
 			const spyPostCalls = vi.spyOn(apiService, "get");
 
-			mock.onGet("/data/cxpc/DW/AI1").reply(200, exploration_7d_dw);
-			mock.onGet("/data/cxpc/DW/CI1").reply(200, exploration_7d_dw);
-			mock.onGet("/data/cxpc/DW/IC1").reply(200, exploration_7d_dw);
-			mock.onGet("/data/cxpc/DW/NC1").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/AI1/").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/CI1/").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/IC1/").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/NC1/").reply(200, exploration_7d_dw);
 
 			const result = await getMaterialExplorationData("DW");
 

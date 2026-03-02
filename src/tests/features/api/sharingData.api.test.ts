@@ -39,7 +39,7 @@ describe("Empire Data API Calls", async () => {
 	it("callDeleteSharing", async () => {
 		const spyApiServiceDelete = vi.spyOn(apiService, "delete");
 
-		mock.onDelete("/planning/shared/foo").reply(200, true);
+		mock.onDelete("/planning/shared/foo/").reply(200, true);
 
 		expect(await callDeleteSharing("foo")).toBeTruthy();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
@@ -70,7 +70,7 @@ describe("Empire Data API Calls", async () => {
 		};
 
 		mock.onPut(
-			"/planning/shared/da105ce1-25f2-479d-b1eb-944353f4784f/clone"
+			"/planning/shared/da105ce1-25f2-479d-b1eb-944353f4784f/clone/"
 		).reply(200, fakeSharing);
 
 		expect(

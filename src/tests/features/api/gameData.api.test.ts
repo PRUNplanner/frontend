@@ -79,7 +79,7 @@ describe("GameData API Calls", async () => {
 	it("callDataPlanet", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/data/planet/KW-020c").reply(200, planet_single);
+		mock.onGet("/data/planet/KW-020c/").reply(200, planet_single);
 
 		expect(await callDataPlanet("KW-020c")).toStrictEqual(planet_single);
 		expect(spyApiServiceGet).toHaveBeenCalled();
@@ -88,7 +88,7 @@ describe("GameData API Calls", async () => {
 	it("callDataMultiplePlanets", async () => {
 		const spyApiServicePost = vi.spyOn(apiService, "post");
 
-		mock.onPost("/data/planets/multiple").reply(200, planets);
+		mock.onPost("/data/planets/multiple/").reply(200, planets);
 
 		expect(await callDataMultiplePlanets([])).toStrictEqual(planets);
 		expect(spyApiServicePost).toHaveBeenCalled();
@@ -116,7 +116,7 @@ describe("GameData API Calls", async () => {
 	it("callDataPlanetSearchSingle", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/data/planets/foo").reply(200, planet_search_results);
+		mock.onGet("/data/planets/foo/").reply(200, planet_search_results);
 
 		const result = await callDataPlanetSearchSingle("foo");
 
@@ -160,7 +160,7 @@ describe("GameData API Calls", async () => {
 		it("Call API 4 times and create structured result", async () => {
 			const spyPostCalls = vi.spyOn(apiService, "get");
 
-			mock.onGet("/data/cxpc/DW/AI1").reply(200, exploration_7d_dw);
+			mock.onGet("/data/cxpc/DW/AI1/").reply(200, exploration_7d_dw);
 
 			const result = await callExplorationData("AI1", "DW");
 
@@ -171,7 +171,7 @@ describe("GameData API Calls", async () => {
 	it("callPlanetLastPOPR", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet("/data/planet/OT-580b/popr").reply(200, latest_popr);
+		mock.onGet("/data/planet/OT-580b/popr/").reply(200, latest_popr);
 
 		const result = await callPlanetLastPOPR("OT-580b");
 

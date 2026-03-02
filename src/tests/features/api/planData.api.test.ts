@@ -52,7 +52,7 @@ describe("PlanData API Calls", async () => {
 	it("callGetPlan", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet(`/planning/plan/${etherwindUuid}`).reply(
+		mock.onGet(`/planning/plan/${etherwindUuid}/`).reply(
 			200,
 			plan_etherwind
 		);
@@ -77,7 +77,7 @@ describe("PlanData API Calls", async () => {
 	it("callGetShared", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
-		mock.onGet(`/planning/shared/${sharedUuid}`).reply(200, shared);
+		mock.onGet(`/planning/shared/${sharedUuid}/`).reply(200, shared);
 
 		expect(await callGetShared(sharedUuid)).toStrictEqual(shared);
 		expect(spyApiServiceGet).toHaveBeenCalled();
@@ -100,7 +100,7 @@ describe("PlanData API Calls", async () => {
 	it("callSavePlan", async () => {
 		const spyApiServicePatch = vi.spyOn(apiService, "put");
 
-		mock.onPut(`/planning/plan/${fakeUuid}`).reply(200, {
+		mock.onPut(`/planning/plan/${fakeUuid}/`).reply(200, {
 			uuid: fakeUuid,
 		});
 
@@ -129,7 +129,7 @@ describe("PlanData API Calls", async () => {
 	it("callDeletePlan", async () => {
 		const spyApiServiceDelete = vi.spyOn(apiService, "delete");
 
-		mock.onDelete("/planning/plan/foo").reply(200, true);
+		mock.onDelete("/planning/plan/foo/").reply(200, true);
 
 		expect(await callDeletePlan("foo")).toBeTruthy();
 		expect(spyApiServiceDelete).toHaveBeenCalled();

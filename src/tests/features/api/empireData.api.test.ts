@@ -44,7 +44,7 @@ describe("Empire Data API Calls", async () => {
 
 		const fakeEmpireUuid: string = "foo";
 
-		mock.onGet(`/planning/empire/${fakeEmpireUuid}/plans`).reply(200, [
+		mock.onGet(`/planning/empire/${fakeEmpireUuid}/plans/`).reply(200, [
 			plan_etherwind,
 			plan_etherwind,
 		]);

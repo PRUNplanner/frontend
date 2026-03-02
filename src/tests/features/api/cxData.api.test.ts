@@ -69,7 +69,7 @@ describe("CX Data API Calls", async () => {
 
 		const fakeUuid = "foo";
 
-		mock.onPut(`/planning/cx/${fakeUuid}`).reply(200, cx_patch);
+		mock.onPut(`/planning/cx/${fakeUuid}/`).reply(200, cx_patch);
 
 		expect(
 			await callPatchCX("fakecx", fakeUuid, cx_patch.cx_data as ICXData)

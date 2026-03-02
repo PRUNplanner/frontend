@@ -33,7 +33,7 @@ describe("useMarketExplorationChart", async () => {
 			exchangeTicker,
 			materialTicker
 		);
-		mock.onGet("/data/cxpc/DW/NC1").reply(500);
+		mock.onGet("/data/cxpc/DW/NC1/").reply(500);
 
 		await fetchData();
 
@@ -50,7 +50,7 @@ describe("useMarketExplorationChart", async () => {
 			dataVolume,
 			chartOptions,
 		} = useMarketExplorationChart(exchangeTicker, materialTicker);
-		mock.onGet("/data/cxpc/DW/NC1").reply(200, exploration_7d_dw);
+		mock.onGet("/data/cxpc/DW/NC1/").reply(200, exploration_7d_dw);
 
 		await fetchData();
 
