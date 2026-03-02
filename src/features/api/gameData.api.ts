@@ -116,7 +116,7 @@ export async function callDataPlanet(
 	planetNaturalId: string
 ): Promise<IPlanet> {
 	return apiService.get<PlanetPayloadType>(
-		`/data/planet/${planetNaturalId}`,
+		`/data/planet/${planetNaturalId}/`,
 		PlanetSchema
 	);
 }
@@ -138,7 +138,7 @@ export async function callDataMultiplePlanets(
 		PlanetMultipleRequestType,
 		PlanetMultiplePayloadType
 	>(
-		"/data/planets/multiple",
+		"/data/planets/multiple/",
 		planetNaturalIds,
 		PlanetMultipleRequestPayload,
 		PlanetMultiplePayload
@@ -174,7 +174,7 @@ export async function callDataPlanetSearchSingle(
 	searchId: string
 ): Promise<IPlanet[]> {
 	return apiService.get<PlanetMultiplePayloadType>(
-		`/data/planets/${searchId}`,
+		`/data/planets/${searchId}/`,
 		PlanetMultiplePayload
 	);
 }
@@ -218,7 +218,7 @@ export async function callExplorationData(
 	ticker: string
 ): Promise<IExploration[]> {
 	return apiService.get<ExplorationPayloadType>(
-		`/data/cxpc/${ticker}/${exchange}`,
+		`/data/cxpc/${ticker}/${exchange}/`,
 		ExplorationPayloadSchema
 	);
 }
@@ -236,7 +236,7 @@ export async function callPlanetLastPOPR(
 	planetNaturalId: string
 ): Promise<IPopulationReport> {
 	return apiService.get<PopulationReportPayloadType>(
-		`/data/planet/${planetNaturalId}/popr`,
+		`/data/planet/${planetNaturalId}/popr/`,
 		PopulationReportPayloadSchema
 	);
 }

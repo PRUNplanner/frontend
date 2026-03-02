@@ -46,7 +46,7 @@ export async function callGetSharedList(): Promise<IShared[]> {
  * @returns {Promise<boolean>} Deletion Status
  */
 export async function callDeleteSharing(sharedUuid: string): Promise<boolean> {
-	return apiService.delete(`/planning/shared/${sharedUuid}`);
+	return apiService.delete(`/planning/shared/${sharedUuid}/`);
 }
 
 /**
@@ -75,7 +75,7 @@ export async function callCloneSharedPlan(
 	sharedUuid: string
 ): Promise<ISharedCloneResponse> {
 	return apiService.put<null, SharedCloneResponseType>(
-		`/planning/shared/${sharedUuid}/clone`,
+		`/planning/shared/${sharedUuid}/clone/`,
 		null,
 		z.null(),
 		SharedCloneResponseSchema

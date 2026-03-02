@@ -38,7 +38,7 @@ export async function callGetShared(
 	sharedPlanUuid: string
 ): Promise<IPlanShare> {
 	return apiService.get<PlanShareSchemaType>(
-		`/planning/shared/${sharedPlanUuid}`,
+		`/planning/shared/${sharedPlanUuid}/`,
 		PlanShareSchema
 	);
 }
@@ -54,7 +54,7 @@ export async function callGetShared(
  */
 export async function callGetPlan(planUuid: string): Promise<IPlan> {
 	return apiService.get<PlanSchemaType>(
-		`/planning/plan/${planUuid}`,
+		`/planning/plan/${planUuid}/`,
 		PlanSchema
 	);
 }
@@ -108,7 +108,7 @@ export async function callSavePlan(
 	data: IPlanSaveData
 ): Promise<PlanSaveCreateResponseType> {
 	return apiService.put<PlanSaveDataType, PlanSaveCreateResponseType>(
-		`/planning/plan/${planUuid}`,
+		`/planning/plan/${planUuid}/`,
 		data,
 		PlanSaveDataSchema,
 		PlanSaveCreateResponseSchema
@@ -147,5 +147,5 @@ export async function callClonePlan(
  * @returns {Promise<boolean>} Deletion Status
  */
 export async function callDeletePlan(planUuid: string): Promise<boolean> {
-	return apiService.delete(`/planning/plan/${planUuid}`);
+	return apiService.delete(`/planning/plan/${planUuid}/`);
 }

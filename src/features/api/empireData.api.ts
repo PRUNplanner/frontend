@@ -57,7 +57,7 @@ export async function callGetEmpireList(): Promise<IPlanEmpireElement[]> {
  */
 export async function callGetEmpirePlans(empireUuid: string): Promise<IPlan[]> {
 	return await apiService.get<PlanEmpirePlanListType>(
-		`planning/empire/${empireUuid}/plans`,
+		`planning/empire/${empireUuid}/plans/`,
 		PlanEmpirePlanListPayload
 	);
 }
