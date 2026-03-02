@@ -13,7 +13,7 @@ import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
-import { ICXData } from "@/stores/planningStore.types";
+import { CX_EXCHANGE_OPTION_TYPE, ICXData } from "@/stores/planningStore.types";
 import { infrastructureBuildingNames } from "@/features/planning/calculations/infrastructureCalculations";
 import { IPlanet } from "@/features/api/gameData.types";
 import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
@@ -210,8 +210,7 @@ export async function usePrice(
 		exchangeCode: string;
 		key: string;
 	} {
-		let exchangeCode: string = "UNIVERSE";
-		let key: string = "vwap_30d";
+		let key: string;
 
 		// split by underscore
 		const splitted: string[] = preference.split("_");
@@ -227,7 +226,7 @@ export async function usePrice(
 		const { prefix: exchange, suffix: timeframe } =
 			splitExchangeOption(preference);
 
-		exchangeCode = exchange;
+		const exchangeCode = exchange;
 
 		if (timeframe == "7D") key = "vwap_7d";
 		else key = "vwap_30d";

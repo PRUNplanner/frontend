@@ -100,7 +100,7 @@ describe("PlanData API Calls", async () => {
 	it("callSavePlan", async () => {
 		const spyApiServicePatch = vi.spyOn(apiService, "put");
 
-		mock.onPut(`/planning/plan/${fakeUuid}/`).reply(200, {
+		mock.onPut(`/planning/plan/${fakeUuid}`).reply(200, {
 			uuid: fakeUuid,
 		});
 

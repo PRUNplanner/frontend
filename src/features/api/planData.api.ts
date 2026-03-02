@@ -108,7 +108,7 @@ export async function callSavePlan(
 	data: IPlanSaveData
 ): Promise<PlanSaveCreateResponseType> {
 	return apiService.put<PlanSaveDataType, PlanSaveCreateResponseType>(
-		`/planning/plan/${planUuid}/`,
+		`/planning/plan/${planUuid}`,
 		data,
 		PlanSaveDataSchema,
 		PlanSaveCreateResponseSchema
