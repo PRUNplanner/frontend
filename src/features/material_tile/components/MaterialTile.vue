@@ -98,7 +98,7 @@
 	const indicatorStyle: ComputedRef<string> = computed(() => {
 		const percentage: number = 100 - indicatorPercentage.value;
 
-		let color: string = "";
+		let color: string;
 
 		if (percentage > 75) {
 			color = "rgb(255, 0, 0)";

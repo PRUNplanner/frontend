@@ -10,6 +10,13 @@ export type WORKFORCE_TYPE =
 	| "engineer"
 	| "scientist";
 
+export type STORAGE_TYPE =
+	| "STO"
+	| "STA"
+	| "STE"
+	| "STV"
+	| "STW";
+
 export type INFRASTRUCTURE_TYPE =
 	| "HB1"
 	| "HB2"
@@ -20,7 +27,7 @@ export type INFRASTRUCTURE_TYPE =
 	| "HBC"
 	| "HBM"
 	| "HBL"
-	| "STO";
+	| STORAGE_TYPE;
 
 export type EXPERT_TYPE =
 	| "Agriculture"
@@ -63,6 +70,8 @@ export type IWorkforceRecord = Required<
 export type IInfrastructureRecord = Required<
 	Record<INFRASTRUCTURE_TYPE, number>
 >;
+
+export type IStorageRecord = Required<Record<STORAGE_TYPE, number>>;
 
 export type IExpertRecord = Required<Record<EXPERT_TYPE, IExpertElement>>;
 
@@ -158,6 +167,7 @@ export interface IPlanResult {
 	workforce: IWorkforceRecord;
 	area: IAreaResult;
 	infrastructure: IInfrastructureRecord;
+	storage: IStorageRecord;
 	experts: IExpertRecord;
 	production: IProductionResult;
 	materialio: IMaterialIO[];
@@ -204,6 +214,17 @@ export const planEmptyResult = {
 		HBM: 0,
 		HBL: 0,
 		STO: 0,
+		STA: 0,
+		STE: 0,
+		STV: 0,
+		STW: 0,
+	},
+	storage: {
+		STO: 0,
+		STA: 0,
+		STE: 0,
+		STV: 0,
+		STW: 0,
 	},
 	experts: [
 		"Agriculture",
@@ -244,6 +265,10 @@ export const planEmptyResult = {
 		HBM: 0,
 		HBL: 0,
 		STO: 0,
+		STA: 0,
+		STE: 0,
+		STV: 0,
+		STW: 0,
 	},
 	constructionMaterials: [],
 };

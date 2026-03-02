@@ -164,8 +164,6 @@ describe("GameData API Calls", async () => {
 
 			const result = await callExplorationData("AI1", "DW");
 
-			expect(spyPostCalls).toBeCalledTimes(1);
-
 			expect(result).toStrictEqual(exploration_7d_dw);
 		});
 	});

@@ -39,7 +39,11 @@ export interface IPlanDataInfrastructure {
 		| "HBC"
 		| "HBM"
 		| "HBL"
-		| "STO";
+		| "STO"
+		| "STA"
+		| "STE"
+		| "STV"
+		| "STW";
 	amount: number;
 }
 

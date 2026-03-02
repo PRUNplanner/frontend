@@ -21,6 +21,7 @@ describe("Router NavigationGuard", () => {
 
 	it(
 		"redirects to homepage with state if not logged in and route requires auth",
+		{ timeout: 10_000 },
 		async () => {
 			const userStore = useUserStore();
 			// logged out
@@ -30,12 +31,12 @@ describe("Router NavigationGuard", () => {
 			await router.isReady();
 
 			expect(router.currentRoute.value.name).toBe("homepage");
-		},
-		{ timeout: 10_000 }
+		}
 	);
 
 	it(
 		"redirects to empire if logged in and tries to access homepage",
+		{ timeout: 10_000 },
 		async () => {
 			const userStore = useUserStore();
 			// logging in
@@ -53,8 +54,7 @@ describe("Router NavigationGuard", () => {
 			await router.isReady();
 
 			expect(router.currentRoute.value.name).toBe("empire");
-		},
-		{ timeout: 10_000 }
+		}
 	);
 
 	it("allows access to shared-plan without auth", async () => {

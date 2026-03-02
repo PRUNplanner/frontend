@@ -13,8 +13,8 @@ import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
-import { CX_EXCHANGE_OPTION_TYPE, ICXData } from "@/stores/planningStore.types";
-import { infrastructureBuildingNames } from "@/features/planning/calculations/workforceCalculations";
+import { ICXData } from "@/stores/planningStore.types";
+import { infrastructureBuildingNames } from "@/features/planning/calculations/infrastructureCalculations";
 import { IPlanet } from "@/features/api/gameData.types";
 import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
 
@@ -283,6 +283,10 @@ export async function usePrice(
 			HBM: 0,
 			HBL: 0,
 			STO: 0,
+			STA: 0,
+			STE: 0,
+			STV: 0,
+			STW: 0,
 		};
 
 		await Promise.all(

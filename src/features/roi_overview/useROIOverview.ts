@@ -86,6 +86,10 @@ export async function useROIOverview(
 				{ building: "HBM", amount: optimal.HBM },
 				{ building: "HBL", amount: optimal.HBL },
 				{ building: "STO", amount: optimal.sto },
+				{ building: "STA", amount: optimal.sta },
+				{ building: "STE", amount: optimal.ste },
+				{ building: "STV", amount: optimal.stv },
+				{ building: "STW", amount: optimal.stw },
 			];
 
 			// set recipe

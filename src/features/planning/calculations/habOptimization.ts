@@ -49,7 +49,7 @@ export function optimizeHabs(
 			costs,
 			workforceRequired,
 			availableArea,
-			(constrainArea = true)
+			true
 		);
 		if (costWorked.status === "optimal") {
 			return costWorked;

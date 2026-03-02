@@ -65,19 +65,6 @@ export const workforceTypeNames: string[] = [
 	"scientist",
 ];
 
-export const infrastructureBuildingNames: string[] = [
-	"HB1",
-	"HB2",
-	"HB3",
-	"HB4",
-	"HB5",
-	"HBB",
-	"HBC",
-	"HBM",
-	"HBL",
-	"STO",
-];
-
 export async function useWorkforceCalculation() {
 	const { combineMaterialIOMinimal } = await useMaterialIOUtil();
 

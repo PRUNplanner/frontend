@@ -19,10 +19,15 @@ import {
 	useBonusCalculation,
 } from "@/features/planning/calculations/bonusCalculations";
 import {
-	infrastructureBuildingNames,
 	useWorkforceCalculation,
 	workforceTypeNames,
 } from "@/features/planning/calculations/workforceCalculations";
+import {
+	infrastructureBuildingNames,
+	storageBuildingNames,
+	getVolumeOfAllStorages,
+	getWeightOfAllStorages,
+} from "@/features/planning/calculations/infrastructureCalculations";
 
 // Submodule composables
 import { usePlanCalculationHandlers } from "@/features/planning/usePlanCalculationHandlers";
@@ -44,6 +49,7 @@ import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 	INFRASTRUCTURE_TYPE,
+	IStorageRecord,
 	IOverviewData,
 	IPlanResult,
 	IProductionBuilding,
@@ -304,6 +310,26 @@ export async function usePlanCalculation(
 	}
 
 	/**
+	 * Calculates a result record with all infrastructure buildings and
+	 * their currently used amount in the plan
+	 */
+	function calculateStorageResult(): IStorageRecord {
+		const result: IStorageRecord = Object.fromEntries(
+			storageBuildingNames.map((key) => {
+				const currentInf: IPlanDataInfrastructure | undefined =
+					data.value.infrastructure.find((e) => e.building === key);
+
+				if (currentInf) {
+					return [key, currentInf.amount];
+				}
+				return [key, 0];
+			})
+		) as IStorageRecord;
+
+		return result;
+	}
+
+	/**
 	 * Calculates the result for expert setup of the plan returning a
 	 * record with each expert type, its planned amount and the bonus
 	 * efficiency provided by it
@@ -536,7 +562,7 @@ export async function usePlanCalculation(
 				inputCost.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 
 				const inputTotal: number = inputCost.reduce(
-					(sum, current) => (sum += current.costTotal),
+					(sum, current) => sum + current.costTotal,
 					0
 				);
 
@@ -559,7 +585,7 @@ export async function usePlanCalculation(
 					degradationShare + workforceCost + inputTotal;
 
 				const sumOutputs: number = ar.recipe.outputs.reduce(
-					(sum, current) => (sum += current.material_amount),
+					(sum, current) => sum + current.material_amount,
 					0
 				);
 
@@ -689,6 +715,7 @@ export async function usePlanCalculation(
 		const areaResult: IAreaResult = await calculateAreaResult();
 		const infrastructureResult: IInfrastructureRecord =
 			calculateInfrastructureResult();
+		const storageResult: IStorageRecord = calculateStorageResult();
 		const expertResult: IExpertRecord = calculateExpertResult();
 		const productionResult: IProductionResult = await calculateProduction(
 			corpHQResult,
@@ -759,6 +786,7 @@ export async function usePlanCalculation(
 			workforce: workforceResult,
 			area: areaResult,
 			infrastructure: infrastructureResult,
+			storage: storageResult,
 			experts: expertResult,
 			production: productionResult,
 			materialio: materialIO,
@@ -785,11 +813,11 @@ export async function usePlanCalculation(
 		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>
 	) {
 		const dailyCost: number = materialIO.reduce(
-			(sum, current) => (sum += current.delta < 0 ? current.price : 0),
+			(sum, current) => sum + (current.delta < 0 ? current.price : 0),
 			0
 		);
 		const dailyProfit: number = materialIO.reduce(
-			(sum, current) => (sum += current.delta > 0 ? current.price : 0),
+			(sum, current) => sum + (current.delta > 0 ? current.price : 0),
 			0
 		);
 
@@ -797,7 +825,7 @@ export async function usePlanCalculation(
 		const totalProductionConstructionCost: number =
 			production.buildings.reduce(
 				(sum, current) =>
-					(sum += current.constructionCost * current.amount),
+					sum + current.constructionCost * current.amount,
 				0
 			);
 
@@ -851,15 +879,30 @@ export async function usePlanCalculation(
 	});
 
 	/**
+	 * Calculates the total weight of the plan's storage
+	 *
+	 * @type {ComputedRef<number>}
+	 */
+	const totalWeight: ComputedRef<number> = computed(() => {
+		return getWeightOfAllStorages(result.value.storage);
+	});
+
+	/**
+	 * Calculates the total volume of the plan's storage
+	 *
+	 * @type {ComputedRef<number>}
+	 */
+	const totalVolume: ComputedRef<number> = computed(() => {
+		return getVolumeOfAllStorages(result.value.storage);
+	});
+
+	/**
 	 * Calculates a plans visitation data
 	 * @author jplacht
 	 *
 	 * @type {ComputedRef<IVisitationData>}
 	 */
 	const visitationData: ComputedRef<IVisitationData> = computed(() => {
-		const totalStorage: number =
-			1500 + 5000 * result.value.infrastructure.STO;
-
 		const dailyWeightImport: number = result.value.materialio.reduce(
 			(sum, e) => sum + (e.delta < 0 ? e.totalWeight * -1 : 0),
 			0
@@ -882,8 +925,8 @@ export async function usePlanCalculation(
 		return {
 			storageFilled: Math.max(
 				Math.min(
-					totalStorage / dailyWeightTotal,
-					totalStorage / dailyVolumeTotal
+					totalWeight.value / dailyWeightTotal,
+					totalVolume.value / dailyVolumeTotal
 				),
 				0
 			),
