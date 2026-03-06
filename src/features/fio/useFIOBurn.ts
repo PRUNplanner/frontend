@@ -5,7 +5,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
 import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
-import { IFIOStoragePlanet } from "@/features/api/gameData.types";
+import { IFIOStorageElement } from "@/features/api/gameData.types";
 import { IPlan } from "@/stores/planningStore.types";
 import {
 	IFIOBurnPlanetTableElement,
@@ -23,9 +23,9 @@ export function useFIOBurn(
 	 * Burn data reference from Game Data Store
 	 * @author jplacht
 	 *
-	 * @type {Record<string, IFIOStoragePlanet>}
+	 * @type {Record<string, IFIOStorageElement>}
 	 */
-	const burnData: Record<string, IFIOStoragePlanet> =
+	const burnData: Record<string, IFIOStorageElement> =
 		planningStore.fio_storage_planets;
 
 	/**
@@ -80,18 +80,18 @@ export function useFIOBurn(
 
 		for (const [planUuid, plan] of Object.entries(data.value) as [
 			string,
-			IPlanResult
+			IPlanResult,
 		][]) {
 			const planData: IPlan = planRecord.value[planUuid];
-			const hasStorage: boolean = burnData[planData.planet_id]
+			const hasStorage: boolean = burnData[planData.planet_natural_id]
 				? true
 				: false;
 
 			const elementData: IFIOBurnTableElement = {
 				key: planUuid,
 				planUuid: planUuid,
-				planName: planData.name ?? "Unnamed",
-				planetId: planData.planet_id,
+				planName: planData.plan_name ?? "Unnamed",
+				planetId: planData.planet_natural_id,
 				hasStorage,
 				burnMaterials: [] as IFIOBurnTableElementMaterial[],
 				minDays: 0,
@@ -103,9 +103,9 @@ export function useFIOBurn(
 			plan.materialio.forEach((m) => {
 				let stock: number = 0;
 
-				if (hasStorage && burnData[planData.planet_id]) {
+				if (hasStorage && burnData[planData.planet_natural_id]) {
 					const found = burnData[
-						planData.planet_id
+						planData.planet_natural_id
 					].StorageItems.find((bi) => bi.MaterialTicker === m.ticker);
 
 					if (found) {

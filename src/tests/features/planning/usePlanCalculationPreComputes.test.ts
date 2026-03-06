@@ -27,6 +27,7 @@ describe("usePlanCalculationPreComputes", async () => {
 	beforeAll(async () => {
 		setActivePinia(createPinia());
 
+		// @ts-expect-error mock data date as string
 		await exchangesStore.setMany(exchanges);
 		await materialsStore.setMany(materials);
 		//@ts-expect-error mock data
@@ -77,10 +78,10 @@ describe("usePlanCalculationPreComputes", async () => {
 		const pp1Data = computedData["BMP"];
 
 		expect(pp1Data).toBeDefined();
-		expect(pp1Data.buildingData.AreaCost).toBe(12);
-		expect(pp1Data.buildingData.BuildingCosts.length).toBe(3);
+		expect(pp1Data.buildingData.area_cost).toBe(12);
+		expect(pp1Data.buildingData.costs.length).toBe(3);
 		expect(pp1Data.buildingRecipes.length).toBe(20);
-		expect(pp1Data.constructionCost).toBe(-43627.318995589914);
+		expect(pp1Data.constructionCost).toBe(-47075.53049212322);
 		expect(pp1Data.constructionMaterials.length).toBe(4);
 		expect(pp1Data.workforceMaterials.length).toBe(5);
 	});

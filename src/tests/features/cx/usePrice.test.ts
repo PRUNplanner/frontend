@@ -25,6 +25,7 @@ describe("usePrice", async () => {
 
 		planningStore.cxs[fakeCXUuid] = cx_definition;
 
+		// @ts-expect-error date
 		await exchangesStore.setMany(exchanges);
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
@@ -72,8 +73,8 @@ describe("usePrice", async () => {
 				ref("OT-580c")
 			);
 
-			expect(await getPrice("LSE", "BUY")).toBe(25);
-			expect(await getPrice("FEO", "BUY")).toBe(500);
+			expect(await getPrice("LSE", "BUY")).toBe(10829.888422315536);
+			expect(await getPrice("FEO", "BUY")).toBe(146.47124767786104);
 		});
 
 		it("with cx uuid and planet exchange pref", async () => {
@@ -82,21 +83,21 @@ describe("usePrice", async () => {
 				ref("UV-796b")
 			);
 
-			expect(await getPrice("LSE", "BUY")).toBe(9240);
-			expect(await getPrice("FEO", "BUY")).toBe(500);
+			expect(await getPrice("LSE", "BUY")).toBe(10829.888422315536);
+			expect(await getPrice("FEO", "BUY")).toBe(146.47124767786104);
 		});
 
 		it("with cx uuid and empire exchange pref", async () => {
 			const { getPrice } = await usePrice(ref(fakeCXUuid), ref("foo"));
 
-			expect(await getPrice("LSE", "BUY")).toBe(9240);
+			expect(await getPrice("LSE", "BUY")).toBe(10829.888422315536);
 		});
 
 		it("nothing set on empire", async () => {
 			planningStore.cxs[fakeCXUuid].cx_data.cx_empire = [];
 			const { getPrice } = await usePrice(ref(fakeCXUuid), ref("foo"));
 
-			expect(await getPrice("LSE", "BUY")).toBe(9030.470166275736);
+			expect(await getPrice("LSE", "BUY")).toBe(10829.888422315536);
 		});
 	});
 
@@ -115,7 +116,7 @@ describe("usePrice", async () => {
 				"BUY"
 			);
 
-			expect(result).toBe(-487.5322427382275);
+			expect(result).toBe(-628.8656643217855);
 		});
 	});
 
@@ -133,8 +134,8 @@ describe("usePrice", async () => {
 				{ ticker: "N", delta: 2 },
 			]);
 
-			expect(result[0].price).toBe(-721.683823950678);
-			expect(result[1].price).toBe(234.15158121245042);
+			expect(result[0].price).toBe(-959.9907349774703);
+			expect(result[1].price).toBe(331.12507065568474);
 		});
 	});
 
@@ -144,7 +145,7 @@ describe("usePrice", async () => {
 				ref(undefined),
 				ref(undefined)
 			);
-
+			//@ts-expect-error fake data
 			expect(() => getExchangeCodeKey("FOO_MOO_MEOW")).toThrowError();
 		});
 
@@ -154,10 +155,10 @@ describe("usePrice", async () => {
 				ref(undefined)
 			);
 
-			const result = getExchangeCodeKey("PP30D_UNIVERSE");
+			const result = getExchangeCodeKey("UNIVERSE_30D");
 
-			expect(result.exchangeCode).toBe("PP30D_UNIVERSE");
-			expect(result.key).toBe("PriceAverage");
+			expect(result.exchangeCode).toBe("UNIVERSE");
+			expect(result.key).toBe("vwap_30d");
 		});
 
 		it("PP7Ds", async () => {
@@ -166,10 +167,10 @@ describe("usePrice", async () => {
 				ref(undefined)
 			);
 
-			const result = getExchangeCodeKey("PP7D_AI1");
+			const result = getExchangeCodeKey("AI1_7D");
 
-			expect(result.exchangeCode).toBe("PP7D_AI1");
-			expect(result.key).toBe("PriceAverage");
+			expect(result.exchangeCode).toBe("AI1");
+			expect(result.key).toBe("vwap_7d");
 		});
 
 		it("PP30Ds", async () => {
@@ -178,10 +179,10 @@ describe("usePrice", async () => {
 				ref(undefined)
 			);
 
-			const result = getExchangeCodeKey("PP30D_AI1");
+			const result = getExchangeCodeKey("NC1_30D");
 
-			expect(result.exchangeCode).toBe("PP30D_AI1");
-			expect(result.key).toBe("PriceAverage");
+			expect(result.exchangeCode).toBe("NC1");
+			expect(result.key).toBe("vwap_30d");
 		});
 
 		it("CX BUY", async () => {
@@ -190,10 +191,11 @@ describe("usePrice", async () => {
 				ref(undefined)
 			);
 
+			//@ts-expect-error fake data
 			const result = getExchangeCodeKey("AI1_BUY");
 
 			expect(result.exchangeCode).toBe("AI1");
-			expect(result.key).toBe("Ask");
+			expect(result.key).toBe("vwap_30d");
 		});
 
 		it("CX SELL", async () => {
@@ -202,22 +204,10 @@ describe("usePrice", async () => {
 				ref(undefined)
 			);
 
-			const result = getExchangeCodeKey("AI1_SELL");
+			const result = getExchangeCodeKey("AI1_30D");
 
 			expect(result.exchangeCode).toBe("AI1");
-			expect(result.key).toBe("Bid");
-		});
-
-		it("CX AVG", async () => {
-			const { getExchangeCodeKey } = await usePrice(
-				ref(undefined),
-				ref(undefined)
-			);
-
-			const result = getExchangeCodeKey("AI1_AVG");
-
-			expect(result.exchangeCode).toBe("AI1");
-			expect(result.key).toBe("PriceAverage");
+			expect(result.key).toBe("vwap_30d");
 		});
 
 		it("Invalid two part", async () => {
@@ -226,10 +216,11 @@ describe("usePrice", async () => {
 				ref(undefined)
 			);
 
+			//@ts-expect-error fake data
 			const result = getExchangeCodeKey("FOO_MOO");
 
-			expect(result.exchangeCode).toBe("PP30D_UNIVERSE");
-			expect(result.key).toBe("PriceAverage");
+			expect(result.exchangeCode).toBe("FOO");
+			expect(result.key).toBe("vwap_30d");
 		});
 	});
 });

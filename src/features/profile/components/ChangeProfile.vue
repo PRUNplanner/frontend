@@ -131,12 +131,12 @@
 			<PFormItem label="Email Verified">
 				<div class="w-full flex flex-row flex-wrap gap-3">
 					<PCheckbox
-						v-model:checked="localProfile.email_verified"
+						v-model:checked="localProfile.is_email_verified"
 						disabled
 						class="w-full min-w-50 max-w-[50%] child:my-auto" />
 
 					<div
-						v-if="!localProfile.email_verified"
+						v-if="!localProfile.is_email_verified"
 						class="flex flex-row flex-wrap gap-3">
 						<div>
 							<router-link

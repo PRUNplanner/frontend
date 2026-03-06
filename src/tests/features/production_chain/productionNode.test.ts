@@ -45,11 +45,11 @@ describe("productionNode", async () => {
 		const extractableMaterialsMap: Record<string, string> = {};
 		if (planetsData.value) {
 			planetsData.value.forEach((planet: IPlanet) => {
-				planet.Resources.forEach((resource) => {
+				planet.resources.forEach((resource) => {
 					const buildingTicker =
-						resourceTypeToBuildingTicker[resource.ResourceType];
+						resourceTypeToBuildingTicker[resource.resource_type];
 					if (buildingTicker) {
-						extractableMaterialsMap[resource.MaterialTicker] =
+						extractableMaterialsMap[resource.material_ticker] =
 							buildingTicker;
 					}
 				});
@@ -68,7 +68,7 @@ describe("productionNode", async () => {
 	});
 
 	it("addRecipe", async () => {
-		const rat_recipes = recipes.filter((f) => f.BuildingTicker === "FP");
+		const rat_recipes = recipes.filter((f) => f.building_ticker === "FP");
 
 		const node = new ProductionNode("RAT");
 
@@ -81,7 +81,7 @@ describe("productionNode", async () => {
 	});
 
 	it("getOutput", async () => {
-		const rat_recipes = recipes.filter((f) => f.BuildingTicker === "FP");
+		const rat_recipes = recipes.filter((f) => f.building_ticker === "FP");
 
 		const node = new ProductionNode("RAT");
 		rat_recipes.forEach((r) => node.addRecipe(r));
@@ -98,7 +98,7 @@ describe("productionNode", async () => {
 	});
 
 	it("getInput", async () => {
-		const rat_recipes = recipes.filter((f) => f.BuildingTicker === "FP");
+		const rat_recipes = recipes.filter((f) => f.building_ticker === "FP");
 
 		const node = new ProductionNode("RAT");
 		rat_recipes.forEach((r) => node.addRecipe(r));
@@ -120,7 +120,7 @@ describe("productionNode", async () => {
 		const selected = node.getInput(["FP#1xGRN 1xALG 1xNUT=>10xRAT"]);
 		expect(selected).toStrictEqual([
 			{
-				materialTicker: "ALG",
+				materialTicker: "GRN",
 				quantity: 1,
 			},
 			{
@@ -128,14 +128,14 @@ describe("productionNode", async () => {
 				quantity: 1,
 			},
 			{
-				materialTicker: "GRN",
+				materialTicker: "ALG",
 				quantity: 1,
 			},
 		]);
 	});
 
 	it("getRecipe, single match", async () => {
-		const rat_recipes = recipes.filter((f) => f.BuildingTicker === "FP");
+		const rat_recipes = recipes.filter((f) => f.building_ticker === "FP");
 
 		const node = new ProductionNode("RAT");
 		rat_recipes.forEach((r) => node.addRecipe(r));
@@ -145,18 +145,18 @@ describe("productionNode", async () => {
 	});
 
 	it("getRecipe, exclusion", async () => {
-		const rat_recipes = recipes.filter((f) => f.BuildingTicker === "FP");
+		const rat_recipes = recipes.filter((f) => f.building_ticker === "FP");
 
 		const node = new ProductionNode("O");
 		rat_recipes.forEach((r) => node.addRecipe(r));
 
 		const result = node.getRecipe([]);
 		expect(result).toBeDefined();
-		expect(result?.BuildingTicker).toBe("COL");
+		expect(result?.building_ticker).toBe("COL");
 	});
 
 	it("getRecipe, multiple match error", async () => {
-		const rat_recipes = recipes.filter((f) => f.BuildingTicker === "FP");
+		const rat_recipes = recipes.filter((f) => f.building_ticker === "FP");
 
 		const node = new ProductionNode("RAT");
 		rat_recipes.forEach((r) => node.addRecipe(r));
@@ -170,13 +170,13 @@ describe("productionNode", async () => {
 	});
 
 	it("getBuildingData", async () => {
-		const rat_recipes = recipes.filter((f) => f.BuildingTicker === "FP");
+		const rat_recipes = recipes.filter((f) => f.building_ticker === "FP");
 
 		const node = new ProductionNode("RAT");
 		rat_recipes.forEach((r) => node.addRecipe(r));
 
 		const result = await node.getBuildingData([]);
-		expect(result?.Ticker).toBe("FP");
+		expect(result?.building_ticker).toBe("FP");
 
 		node.recipes = [];
 		const building = await node.getBuildingData(["foo"]);

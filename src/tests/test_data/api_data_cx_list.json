@@ -1,243 +1,677 @@
 [
 	{
-		"uuid": "2a83a2ca-db0c-49d2-9c43-0db08c1675bb",
-		"name": "34",
+		"uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
 		"empires": [
 			{
-				"faction": "ANTARES",
-				"permits_used": 1,
-				"permits_total": 2,
+				"uuid": "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6",
+				"empire_name": "PRUN REAL",
+				"plans": [
+					{
+						"uuid": "092a338f-b405-4ca5-9da0-0e41538ca289",
+						"plan_name": "Nasc C More",
+						"planet_natural_id": "QJ-149c"
+					},
+					{
+						"uuid": "1b01568f-45d9-4873-9832-1173956a47e1",
+						"plan_name": "Pyrgos Food 2",
+						"planet_natural_id": "CH-771a"
+					},
+					{
+						"uuid": "1c1a7ad9-9986-4b81-9b85-ada108bfb79c",
+						"plan_name": "Selence AL Tap",
+						"planet_natural_id": "IY-816c"
+					},
+					{
+						"uuid": "291c8cf5-401c-4f1b-a191-9f6d2df1339d",
+						"plan_name": "Nike",
+						"planet_natural_id": "ZV-194a"
+					},
+					{
+						"uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+						"plan_name": "EW COF RAT DW C",
+						"planet_natural_id": "KW-688c"
+					},
+					{
+						"uuid": "419df109-f545-48c0-a329-4f9eee1f455c",
+						"plan_name": "meow",
+						"planet_natural_id": "ZV-307b"
+					},
+					{
+						"uuid": "43ef82c2-757f-49fb-9296-d4e254a76ae4",
+						"plan_name": "DEIMALO",
+						"planet_natural_id": "ZV-759c"
+					},
+					{
+						"uuid": "44c6bfcb-75ae-4117-9983-da55cc211a30",
+						"plan_name": "Montem Full",
+						"planet_natural_id": "OT-580b"
+					},
+					{
+						"uuid": "4551cac9-daee-4a35-8c09-a140144f9d53",
+						"plan_name": "Phobos NCS+EDC",
+						"planet_natural_id": "ZV-307d"
+					},
+					{
+						"uuid": "553ffa1a-09d4-4028-9747-ac540f78e603",
+						"plan_name": "Heph 2 Permits",
+						"planet_natural_id": "ZV-307c"
+					},
+					{
+						"uuid": "625a4ed1-78b7-425f-981f-e67bf20f02d1",
+						"plan_name": "VULC STL, MFK, SFK",
+						"planet_natural_id": "ZV-759b"
+					},
+					{
+						"uuid": "ad836ba2-c265-44ae-9132-3cf249fff990",
+						"plan_name": "PROX BEA, HCP, HER",
+						"planet_natural_id": "UV-796b"
+					},
+					{
+						"uuid": "ae06402d-d692-42d2-9963-de5778cbb5a9",
+						"plan_name": "Norwick FIM+MEA",
+						"planet_natural_id": "YK-649b"
+					},
+					{
+						"uuid": "c45efaea-e7c7-48f6-947b-7d439376aba4",
+						"plan_name": "Demeter RCO",
+						"planet_natural_id": "KI-446b"
+					},
+					{
+						"uuid": "d52adddb-9525-467a-8b9f-a41bf3079d0b",
+						"plan_name": "Malahat IDC",
+						"planet_natural_id": "RC-040b"
+					},
+					{
+						"uuid": "da105ce1-25f2-479d-b1eb-944353f4784f",
+						"plan_name": "Bober NR+PG",
+						"planet_natural_id": "ZV-307b"
+					},
+					{
+						"uuid": "de8252b5-825a-439c-b396-a2936fcc1ace",
+						"plan_name": "Nemesis GRN O",
+						"planet_natural_id": "JS-299a"
+					},
+					{
+						"uuid": "f7d88f4b-cea2-4b11-aa1f-998cf2cb0d95",
+						"plan_name": "Harm Farmland",
+						"planet_natural_id": "ZV-896b"
+					},
+					{
+						"uuid": "fa7b21e8-6f01-4566-a77e-41e057c7e4a6",
+						"plan_name": "Griff EPO + DDT",
+						"planet_natural_id": "LS-300c"
+					}
+				]
+			},
+			{
+				"uuid": "32aed118-c4ed-4a4e-9eb4-3cf6aa0068da",
+				"empire_name": "Sky Productions",
+				"plans": [
+					{
+						"uuid": "092a338f-b405-4ca5-9da0-0e41538ca289",
+						"plan_name": "Nasc C More",
+						"planet_natural_id": "QJ-149c"
+					},
+					{
+						"uuid": "1b01568f-45d9-4873-9832-1173956a47e1",
+						"plan_name": "Pyrgos Food 2",
+						"planet_natural_id": "CH-771a"
+					},
+					{
+						"uuid": "1c1a7ad9-9986-4b81-9b85-ada108bfb79c",
+						"plan_name": "Selence AL Tap",
+						"planet_natural_id": "IY-816c"
+					},
+					{
+						"uuid": "291c8cf5-401c-4f1b-a191-9f6d2df1339d",
+						"plan_name": "Nike",
+						"planet_natural_id": "ZV-194a"
+					},
+					{
+						"uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+						"plan_name": "EW COF RAT DW C",
+						"planet_natural_id": "KW-688c"
+					},
+					{
+						"uuid": "43ef82c2-757f-49fb-9296-d4e254a76ae4",
+						"plan_name": "DEIMALO",
+						"planet_natural_id": "ZV-759c"
+					},
+					{
+						"uuid": "44c6bfcb-75ae-4117-9983-da55cc211a30",
+						"plan_name": "Montem Full",
+						"planet_natural_id": "OT-580b"
+					},
+					{
+						"uuid": "4551cac9-daee-4a35-8c09-a140144f9d53",
+						"plan_name": "Phobos NCS+EDC",
+						"planet_natural_id": "ZV-307d"
+					},
+					{
+						"uuid": "553ffa1a-09d4-4028-9747-ac540f78e603",
+						"plan_name": "Heph 2 Permits",
+						"planet_natural_id": "ZV-307c"
+					},
+					{
+						"uuid": "625a4ed1-78b7-425f-981f-e67bf20f02d1",
+						"plan_name": "VULC STL, MFK, SFK",
+						"planet_natural_id": "ZV-759b"
+					},
+					{
+						"uuid": "ad836ba2-c265-44ae-9132-3cf249fff990",
+						"plan_name": "PROX BEA, HCP, HER",
+						"planet_natural_id": "UV-796b"
+					},
+					{
+						"uuid": "ae06402d-d692-42d2-9963-de5778cbb5a9",
+						"plan_name": "Norwick FIM+MEA",
+						"planet_natural_id": "YK-649b"
+					},
+					{
+						"uuid": "c45efaea-e7c7-48f6-947b-7d439376aba4",
+						"plan_name": "Demeter RCO",
+						"planet_natural_id": "KI-446b"
+					},
+					{
+						"uuid": "d52adddb-9525-467a-8b9f-a41bf3079d0b",
+						"plan_name": "Malahat IDC",
+						"planet_natural_id": "RC-040b"
+					},
+					{
+						"uuid": "da105ce1-25f2-479d-b1eb-944353f4784f",
+						"plan_name": "Bober NR+PG",
+						"planet_natural_id": "ZV-307b"
+					},
+					{
+						"uuid": "de8252b5-825a-439c-b396-a2936fcc1ace",
+						"plan_name": "Nemesis GRN O",
+						"planet_natural_id": "JS-299a"
+					},
+					{
+						"uuid": "f7d88f4b-cea2-4b11-aa1f-998cf2cb0d95",
+						"plan_name": "Harm Farmland",
+						"planet_natural_id": "ZV-896b"
+					},
+					{
+						"uuid": "fa7b21e8-6f01-4566-a77e-41e057c7e4a6",
+						"plan_name": "Griff EPO + DDT",
+						"planet_natural_id": "LS-300c"
+					}
+				]
+			},
+			{
 				"uuid": "f39c84a5-e7ba-4aeb-a04d-0618df58fd74",
-				"name": "CAAP",
-				"use_fio_storage": false,
-				"baseplanners": [
+				"empire_name": "CAAP 3",
+				"plans": [
 					{
-						"name": "CAAP: Aceland xflqr PP3-RBH/PP4-ABH",
-						"uuid": "8e305b04-089a-4473-8737-7bc6a25d725f",
-						"planet_id": "QJ-684b"
-					},
-					{
-						"name": "CAAP: Nike xflqr PP4-ABH-ASE",
-						"uuid": "eb271efa-33b0-4a3d-9229-80af7734b926",
-						"planet_id": "ZV-194a"
-					},
-					{
-						"name": "CAAP: Aceland PP3/PP4",
-						"uuid": "3b440416-e814-4c9a-9216-f4860cc1e316",
-						"planet_id": "QJ-684b"
-					},
-					{
-						"name": "CAAP: Origo PG",
-						"uuid": "1e892cc2-3468-4a29-a7e3-90dccd2cf711",
-						"planet_id": "QJ-650c"
-					},
-					{
-						"name": "CAAP: Aceland Roganartu PP4-ADE-ATA",
 						"uuid": "12390e57-1b42-4ad7-8dd1-4648b8831b0b",
-						"planet_id": "QJ-684b"
+						"plan_name": "CAAP: Aceland Roganartu PP4-ADE-ATA",
+						"planet_natural_id": "QJ-684b"
+					},
+					{
+						"uuid": "8e305b04-089a-4473-8737-7bc6a25d725f",
+						"plan_name": "CAAP: Aceland xflqr PP3-RBH/PP4-ABH",
+						"planet_natural_id": "QJ-684b"
+					},
+					{
+						"uuid": "9a33f8f9-a3ae-4648-b412-05b8dacd4849",
+						"plan_name": "CHEM COGM NAB",
+						"planet_natural_id": "UV-351c"
+					},
+					{
+						"uuid": "de8252b5-825a-439c-b396-a2936fcc1ace",
+						"plan_name": "Nemesis GRN O",
+						"planet_natural_id": "JS-299a"
+					},
+					{
+						"uuid": "eb271efa-33b0-4a3d-9229-80af7734b926",
+						"plan_name": "CAAP: Nike xflqr PP4-ABH-ASECAAP: Nike xflqr PP4-ABH-ASE",
+						"planet_natural_id": "ZV-194a"
 					}
 				]
 			}
 		],
 		"cx_data": {
-			"name": "34",
 			"cx_empire": [
 				{
-					"type": "BUY",
-					"exchange": "NC1_AVG"
+					"type": "BOTH",
+					"exchange": "UNIVERSE_30D"
+				}
+			],
+			"cx_planets": [],
+			"ticker_empire": [
+				{
+					"type": "SELL",
+					"value": 80.0,
+					"ticker": "FEO"
 				},
 				{
 					"type": "SELL",
-					"exchange": "PP7D_UNIVERSE"
-				}
-			],
-			"cx_planets": [
-				{
-					"planet": "OT-580c",
-					"preferences": [
-						{
-							"type": "BOTH",
-							"exchange": "PP7D_NC1"
-						}
-					]
+					"value": 3800.0,
+					"ticker": "UTS"
 				},
 				{
-					"planet": "UV-796b",
-					"preferences": [
-						{
-							"type": "BUY",
-							"exchange": "NC1_AVG"
-						},
-						{
-							"type": "SELL",
-							"exchange": "PP30D_UNIVERSE"
-						}
-					]
+					"type": "SELL",
+					"value": 45.0,
+					"ticker": "SFK"
 				},
 				{
-					"planet": "QJ-684b",
-					"preferences": [
-						{
-							"type": "BUY",
-							"exchange": "PP7D_AI1"
-						}
-					]
+					"type": "SELL",
+					"value": 145.0,
+					"ticker": "MFK"
 				},
 				{
-					"planet": "QJ-650c",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-194a",
-					"preferences": []
-				}
-			],
-			"ticker_empire": [
-				{
-					"ticker": "FEO",
 					"type": "BUY",
-					"value": 500.0
+					"value": 35.0,
+					"ticker": "O"
 				},
 				{
-					"ticker": "ABH",
 					"type": "BUY",
-					"value": 1.0
+					"value": 19.0,
+					"ticker": "PG"
+				},
+				{
+					"type": "BUY",
+					"value": 9.0,
+					"ticker": "PE"
+				},
+				{
+					"type": "BUY",
+					"value": 9.0,
+					"ticker": "H2O"
+				},
+				{
+					"type": "BUY",
+					"value": 180.0,
+					"ticker": "PT"
+				},
+				{
+					"type": "BUY",
+					"value": 53.0,
+					"ticker": "GRN"
+				},
+				{
+					"type": "BUY",
+					"value": 150.0,
+					"ticker": "C"
+				},
+				{
+					"type": "BUY",
+					"value": 250.0,
+					"ticker": "AL"
+				},
+				{
+					"type": "BUY",
+					"value": 9.0,
+					"ticker": "NCS"
+				},
+				{
+					"type": "BUY",
+					"value": 95.0,
+					"ticker": "EPO"
+				},
+				{
+					"type": "BUY",
+					"value": 1100.0,
+					"ticker": "HER"
+				},
+				{
+					"type": "BUY",
+					"value": 74.0,
+					"ticker": "BEA"
+				},
+				{
+					"type": "BUY",
+					"value": 74.0,
+					"ticker": "HCP"
+				},
+				{
+					"type": "BUY",
+					"value": 70.0,
+					"ticker": "PPA"
+				},
+				{
+					"type": "BUY",
+					"value": 770.0,
+					"ticker": "FIM"
+				},
+				{
+					"type": "BUY",
+					"value": 2650.0,
+					"ticker": "MEA"
 				}
 			],
 			"ticker_planets": [
 				{
-					"planet": "OT-580c",
+					"planet": "ZV-194a",
 					"preferences": [
 						{
-							"ticker": "LSE",
-							"type": "BOTH",
-							"value": 25.0
+							"type": "BUY",
+							"value": 300.0,
+							"ticker": "AL"
 						}
 					]
 				},
 				{
-					"planet": "UV-796b",
+					"planet": "KW-688c",
 					"preferences": [
 						{
-							"ticker": "C",
 							"type": "BUY",
-							"value": 333.0
+							"value": 150.0,
+							"ticker": "NS"
+						}
+					]
+				},
+				{
+					"planet": "KI-446b",
+					"preferences": [
+						{
+							"type": "BOTH",
+							"value": 17.0,
+							"ticker": "H2O"
 						},
 						{
-							"ticker": "C",
-							"type": "SELL",
-							"value": 123.0
+							"type": "BUY",
+							"value": 150.0,
+							"ticker": "NS"
 						}
 					]
 				},
 				{
-					"planet": "QJ-684b",
+					"planet": "ZV-307c",
 					"preferences": [
 						{
-							"ticker": "STL",
-							"type": "SELL",
-							"value": 500.0
+							"type": "BUY",
+							"value": 486.0,
+							"ticker": "RCO"
 						}
 					]
 				},
 				{
-					"planet": "QJ-650c",
-					"preferences": []
+					"planet": "OT-580b",
+					"preferences": [
+						{
+							"type": "BUY",
+							"value": 48.0,
+							"ticker": "LST"
+						}
+					]
 				},
 				{
-					"planet": "ZV-194a",
-					"preferences": []
+					"planet": "QJ-149c",
+					"preferences": [
+						{
+							"type": "BUY",
+							"value": 55.0,
+							"ticker": "GRN"
+						}
+					]
+				},
+				{
+					"planet": "JS-299a",
+					"preferences": [
+						{
+							"type": "BUY",
+							"value": 14.0,
+							"ticker": "H2O"
+						},
+						{
+							"type": "BUY",
+							"value": 53.0,
+							"ticker": "GRN"
+						}
+					]
+				},
+				{
+					"planet": "ZV-759b",
+					"preferences": [
+						{
+							"type": "BUY",
+							"value": 313.0,
+							"ticker": "FE"
+						}
+					]
+				},
+				{
+					"planet": "QJ-382a",
+					"preferences": [
+						{
+							"type": "BUY",
+							"value": 145.0,
+							"ticker": "H"
+						}
+					]
 				}
 			]
-		}
+		},
+		"cx_name": "PRUN CX REAL"
 	},
 	{
-		"uuid": "88295b65-fe32-4634-82c2-1c94eaf22577",
-		"name": "AI1 AVG",
-		"empires": [],
+		"uuid": "41c6f4dc-d1cd-4bde-b61a-c1595101d980",
+		"empires": [
+			{
+				"uuid": "a208d74e-d07f-4722-8192-9b55d4140f58",
+				"empire_name": "Share",
+				"plans": [
+					{
+						"uuid": "0acbcd31-bbe0-4d71-80af-084f601bfa6b",
+						"plan_name": "HE3",
+						"planet_natural_id": "HV-512g"
+					},
+					{
+						"uuid": "1658aa27-e5e8-48d1-94b3-d157b7590263",
+						"plan_name": "COGM Stuff",
+						"planet_natural_id": "KW-688c"
+					}
+				]
+			},
+			{
+				"uuid": "8804b0e1-73d8-48f7-93e3-48bb2ef7b727",
+				"empire_name": "meow",
+				"plans": []
+			}
+		],
 		"cx_data": {
-			"name": "AI1 AVG",
 			"cx_empire": [
 				{
 					"type": "BOTH",
-					"exchange": "AI1_AVG"
+					"exchange": "UNIVERSE_30D"
 				}
 			],
 			"cx_planets": [
 				{
-					"planet": "ZV-759c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-650c",
-					"preferences": []
-				},
-				{
 					"planet": "KI-446b",
-					"preferences": []
-				},
-				{
-					"planet": "OT-580c",
-					"preferences": []
+					"preferences": [
+						{
+							"type": "BOTH",
+							"exchange": "NC1_7D"
+						}
+					]
 				}
 			],
 			"ticker_empire": [],
-			"ticker_planets": [
-				{
-					"planet": "ZV-759c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-650c",
-					"preferences": []
-				},
-				{
-					"planet": "KI-446b",
-					"preferences": []
-				},
-				{
-					"planet": "OT-580c",
-					"preferences": []
-				}
-			]
-		}
+			"ticker_planets": []
+		},
+		"cx_name": "Share CX"
 	},
 	{
-		"uuid": "b4af6f5f-3916-4bde-b801-224c9651a5a0",
-		"name": "BEN AVG",
+		"uuid": "4907f10d-982e-4f6c-b068-221bd0fb8b86",
+		"empires": [],
+		"cx_data": {
+			"cx_empire": [
+				{
+					"type": "BOTH",
+					"exchange": "AI1_7D"
+				}
+			],
+			"cx_planets": [],
+			"ticker_empire": [
+				{
+					"type": "SELL",
+					"value": 80.0,
+					"ticker": "FEO"
+				},
+				{
+					"type": "SELL",
+					"value": 3800.0,
+					"ticker": "UTS"
+				},
+				{
+					"type": "SELL",
+					"value": 45.0,
+					"ticker": "SFK"
+				},
+				{
+					"type": "SELL",
+					"value": 145.0,
+					"ticker": "MFK"
+				},
+				{
+					"type": "SELL",
+					"value": 125.0,
+					"ticker": "EPO"
+				},
+				{
+					"type": "SELL",
+					"value": 57.5,
+					"ticker": "O"
+				},
+				{
+					"type": "BUY",
+					"value": 12.0,
+					"ticker": "O"
+				},
+				{
+					"type": "BUY",
+					"value": 250.0,
+					"ticker": "AL"
+				},
+				{
+					"type": "BUY",
+					"value": 19.0,
+					"ticker": "PG"
+				},
+				{
+					"type": "BUY",
+					"value": 9.0,
+					"ticker": "PE"
+				},
+				{
+					"type": "BUY",
+					"value": 15.0,
+					"ticker": "H2O"
+				},
+				{
+					"type": "BUY",
+					"value": 150.0,
+					"ticker": "NS"
+				},
+				{
+					"type": "BUY",
+					"value": 48.0,
+					"ticker": "LST"
+				},
+				{
+					"type": "BUY",
+					"value": 170.0,
+					"ticker": "C"
+				},
+				{
+					"type": "BUY",
+					"value": 313.0,
+					"ticker": "FE"
+				},
+				{
+					"type": "BUY",
+					"value": 486.0,
+					"ticker": "RCO"
+				},
+				{
+					"type": "BUY",
+					"value": 180.0,
+					"ticker": "PT"
+				},
+				{
+					"type": "BUY",
+					"value": 454.0,
+					"ticker": "COF"
+				},
+				{
+					"type": "BUY",
+					"value": 94.0,
+					"ticker": "MUS"
+				},
+				{
+					"type": "BUY",
+					"value": 84.0,
+					"ticker": "VEG"
+				},
+				{
+					"type": "BUY",
+					"value": 110.0,
+					"ticker": "MAI"
+				},
+				{
+					"type": "BUY",
+					"value": 56.0,
+					"ticker": "GRN"
+				},
+				{
+					"type": "BUY",
+					"value": 66.0,
+					"ticker": "BEA"
+				},
+				{
+					"type": "BUY",
+					"value": 63.0,
+					"ticker": "NUT"
+				}
+			],
+			"ticker_planets": []
+		},
+		"cx_name": "CX Norwick Scheme"
+	},
+	{
+		"uuid": "88295b65-fe32-4634-82c2-1c94eaf22577",
 		"empires": [
 			{
-				"faction": "MORIA",
-				"permits_used": 25,
-				"permits_total": 25,
-				"uuid": "2eac235a-9f8d-4994-8c71-933c31127423",
-				"name": "RFab Plan",
-				"use_fio_storage": false,
-				"baseplanners": [
+				"uuid": "c92db9b8-ef3b-44c4-9fb5-a61964f6fc5a",
+				"empire_name": "PRUN Expand #2",
+				"plans": [
 					{
-						"name": "Danakil PP3",
-						"uuid": "c35f7829-a83d-4cac-b926-0f72307d6ccb",
-						"planet_id": "OT-442b"
+						"uuid": "12390e57-1b42-4ad7-8dd1-4648b8831b0b",
+						"plan_name": "CAAP: Aceland Roganartu PP4-ADE-ATA",
+						"planet_natural_id": "QJ-684b"
 					},
 					{
-						"name": "Circe EPO",
-						"uuid": "4bb3ddc1-da23-472b-bf68-5bef533c488a",
-						"planet_id": "QQ-001b"
-					},
-					{
-						"name": "Bober NR+PG",
-						"uuid": "da105ce1-25f2-479d-b1eb-944353f4784f",
-						"planet_id": "ZV-307b"
+						"uuid": "8276ec3b-0cb5-4c79-9e0d-4d96a280671f",
+						"plan_name": "PE Prod?",
+						"planet_natural_id": "QJ-382a"
 					}
 				]
 			}
 		],
 		"cx_data": {
-			"name": "BEN AVG",
 			"cx_empire": [
 				{
 					"type": "BOTH",
-					"exchange": "CI1_AVG"
+					"exchange": "AI1_7D"
+				}
+			],
+			"cx_planets": [],
+			"ticker_empire": [],
+			"ticker_planets": []
+		},
+		"cx_name": "AI1 AVG"
+	},
+	{
+		"uuid": "b4af6f5f-3916-4bde-b801-224c9651a5a0",
+		"empires": [],
+		"cx_data": {
+			"cx_empire": [
+				{
+					"type": "BOTH",
+					"exchange": "AI1_7D"
 				}
 			],
 			"cx_planets": [],
@@ -247,989 +681,19 @@
 					"planet": "UV-796b",
 					"preferences": [
 						{
-							"ticker": "MAI",
 							"type": "BUY",
-							"value": 68.0
+							"value": 68.0,
+							"ticker": "MAI"
 						},
-						{
-							"ticker": "HCP",
-							"type": "BOTH",
-							"value": 77.0
-						}
-					]
-				}
-			]
-		}
-	},
-	{
-		"uuid": "4907f10d-982e-4f6c-b068-221bd0fb8b86",
-		"name": "CX Norwick Scheme",
-		"empires": [],
-		"cx_data": {
-			"name": "CX Norwick Scheme",
-			"cx_empire": [
-				{
-					"type": "BOTH",
-					"exchange": "AI1_AVG"
-				}
-			],
-			"cx_planets": [
-				{
-					"planet": "ZV-759c",
-					"preferences": []
-				},
-				{
-					"planet": "LS-300c",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-759b",
-					"preferences": []
-				},
-				{
-					"planet": "SE-648c",
-					"preferences": []
-				},
-				{
-					"planet": "KI-446b",
-					"preferences": []
-				},
-				{
-					"planet": "OT-580b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-194a",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-307c",
-					"preferences": []
-				},
-				{
-					"planet": "KW-688c",
-					"preferences": []
-				},
-				{
-					"planet": "YK-649b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-896b",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-149c",
-					"preferences": []
-				}
-			],
-			"ticker_empire": [
-				{
-					"ticker": "FEO",
-					"type": "SELL",
-					"value": 80.0
-				},
-				{
-					"ticker": "UTS",
-					"type": "SELL",
-					"value": 3800.0
-				},
-				{
-					"ticker": "SFK",
-					"type": "SELL",
-					"value": 45.0
-				},
-				{
-					"ticker": "MFK",
-					"type": "SELL",
-					"value": 145.0
-				},
-				{
-					"ticker": "EPO",
-					"type": "SELL",
-					"value": 125.0
-				},
-				{
-					"ticker": "O",
-					"type": "SELL",
-					"value": 57.5
-				},
-				{
-					"ticker": "O",
-					"type": "BUY",
-					"value": 12.0
-				},
-				{
-					"ticker": "AL",
-					"type": "BUY",
-					"value": 250.0
-				},
-				{
-					"ticker": "PG",
-					"type": "BUY",
-					"value": 19.0
-				},
-				{
-					"ticker": "PE",
-					"type": "BUY",
-					"value": 9.0
-				},
-				{
-					"ticker": "H2O",
-					"type": "BUY",
-					"value": 15.0
-				},
-				{
-					"ticker": "NS",
-					"type": "BUY",
-					"value": 150.0
-				},
-				{
-					"ticker": "LST",
-					"type": "BUY",
-					"value": 48.0
-				},
-				{
-					"ticker": "C",
-					"type": "BUY",
-					"value": 170.0
-				},
-				{
-					"ticker": "FE",
-					"type": "BUY",
-					"value": 313.0
-				},
-				{
-					"ticker": "RCO",
-					"type": "BUY",
-					"value": 486.0
-				},
-				{
-					"ticker": "PT",
-					"type": "BUY",
-					"value": 180.0
-				},
-				{
-					"ticker": "COF",
-					"type": "BUY",
-					"value": 454.0
-				},
-				{
-					"ticker": "MUS",
-					"type": "BUY",
-					"value": 94.0
-				},
-				{
-					"ticker": "VEG",
-					"type": "BUY",
-					"value": 84.0
-				},
-				{
-					"ticker": "MAI",
-					"type": "BUY",
-					"value": 110.0
-				},
-				{
-					"ticker": "GRN",
-					"type": "BUY",
-					"value": 56.0
-				},
-				{
-					"ticker": "BEA",
-					"type": "BUY",
-					"value": 66.0
-				},
-				{
-					"ticker": "NUT",
-					"type": "BUY",
-					"value": 63.0
-				}
-			],
-			"ticker_planets": [
-				{
-					"planet": "ZV-759c",
-					"preferences": []
-				},
-				{
-					"planet": "LS-300c",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-759b",
-					"preferences": []
-				},
-				{
-					"planet": "SE-648c",
-					"preferences": []
-				},
-				{
-					"planet": "KI-446b",
-					"preferences": []
-				},
-				{
-					"planet": "OT-580b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-194a",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-307c",
-					"preferences": []
-				},
-				{
-					"planet": "KW-688c",
-					"preferences": []
-				},
-				{
-					"planet": "YK-649b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-896b",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-149c",
-					"preferences": []
-				}
-			]
-		}
-	},
-	{
-		"uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
-		"name": "PRUN CX REAL",
-		"empires": [
-			{
-				"faction": "MORIA",
-				"permits_used": 25,
-				"permits_total": 28,
-				"uuid": "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6",
-				"name": "PRUN REAL",
-				"use_fio_storage": true,
-				"baseplanners": [
-					{
-						"name": "Bober NR+PG",
-						"uuid": "da105ce1-25f2-479d-b1eb-944353f4784f",
-						"planet_id": "ZV-307b"
-					},
-					{
-						"name": "Phobos NCS+EDC",
-						"uuid": "4551cac9-daee-4a35-8c09-a140144f9d53",
-						"planet_id": "ZV-307d"
-					},
-					{
-						"name": "Griff EPO + DDT",
-						"uuid": "fa7b21e8-6f01-4566-a77e-41e057c7e4a6",
-						"planet_id": "LS-300c"
-					},
-					{
-						"name": "Norwick FIM+MEA",
-						"uuid": "ae06402d-d692-42d2-9963-de5778cbb5a9",
-						"planet_id": "YK-649b"
-					},
-					{
-						"name": "PROX BEA, HCP, HER",
-						"uuid": "ad836ba2-c265-44ae-9132-3cf249fff990",
-						"planet_id": "UV-796b"
-					},
-					{
-						"name": "IY-816c AL Tap",
-						"uuid": "1c1a7ad9-9986-4b81-9b85-ada108bfb79c",
-						"planet_id": "IY-816c"
-					},
-					{
-						"name": "Heph 2 Permits",
-						"uuid": "553ffa1a-09d4-4028-9747-ac540f78e603",
-						"planet_id": "ZV-307c"
-					},
-					{
-						"name": "VULC STL, MFK, SFK",
-						"uuid": "625a4ed1-78b7-425f-981f-e67bf20f02d1",
-						"planet_id": "ZV-759b"
-					},
-					{
-						"name": "EW COF RAT DW C",
-						"uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
-						"planet_id": "KW-688c"
-					},
-					{
-						"name": "DEIMALO",
-						"uuid": "43ef82c2-757f-49fb-9296-d4e254a76ae4",
-						"planet_id": "ZV-759c"
-					},
-					{
-						"name": "Harm Farmland",
-						"uuid": "f7d88f4b-cea2-4b11-aa1f-998cf2cb0d95",
-						"planet_id": "ZV-896b"
-					},
-					{
-						"name": "Demeter RCO",
-						"uuid": "c45efaea-e7c7-48f6-947b-7d439376aba4",
-						"planet_id": "KI-446b"
-					},
-					{
-						"name": "Montem Full",
-						"uuid": "44c6bfcb-75ae-4117-9983-da55cc211a30",
-						"planet_id": "OT-580b"
-					},
-					{
-						"name": "Nasc C More",
-						"uuid": "092a338f-b405-4ca5-9da0-0e41538ca289",
-						"planet_id": "QJ-149c"
-					},
-					{
-						"name": "Nike",
-						"uuid": "291c8cf5-401c-4f1b-a191-9f6d2df1339d",
-						"planet_id": "ZV-194a"
-					},
-					{
-						"name": "Nemesis GRN O",
-						"uuid": "de8252b5-825a-439c-b396-a2936fcc1ace",
-						"planet_id": "JS-299a"
-					},
-					{
-						"name": "Pyrgos Food",
-						"uuid": "1b01568f-45d9-4873-9832-1173956a47e1",
-						"planet_id": "CH-771a"
-					},
-					{
-						"name": "Malahat IDC",
-						"uuid": "d52adddb-9525-467a-8b9f-a41bf3079d0b",
-						"planet_id": "RC-040b"
-					}
-				]
-			},
-			{
-				"faction": "MORIA",
-				"permits_used": 26,
-				"permits_total": 26,
-				"uuid": "c92db9b8-ef3b-44c4-9fb5-a61964f6fc5a",
-				"name": "PRUN Expand #2",
-				"use_fio_storage": false,
-				"baseplanners": [
-					{
-						"name": "EW COF RAT DW C",
-						"uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
-						"planet_id": "KW-688c"
-					},
-					{
-						"name": "DEIMALO",
-						"uuid": "43ef82c2-757f-49fb-9296-d4e254a76ae4",
-						"planet_id": "ZV-759c"
-					},
-					{
-						"name": "Harm Farmland",
-						"uuid": "f7d88f4b-cea2-4b11-aa1f-998cf2cb0d95",
-						"planet_id": "ZV-896b"
-					},
-					{
-						"name": "Demeter RCO",
-						"uuid": "c45efaea-e7c7-48f6-947b-7d439376aba4",
-						"planet_id": "KI-446b"
-					},
-					{
-						"name": "Montem Full",
-						"uuid": "44c6bfcb-75ae-4117-9983-da55cc211a30",
-						"planet_id": "OT-580b"
-					},
-					{
-						"name": "Nasc C More",
-						"uuid": "092a338f-b405-4ca5-9da0-0e41538ca289",
-						"planet_id": "QJ-149c"
-					},
-					{
-						"name": "Nike",
-						"uuid": "291c8cf5-401c-4f1b-a191-9f6d2df1339d",
-						"planet_id": "ZV-194a"
-					},
-					{
-						"name": "Nemesis GRN O",
-						"uuid": "de8252b5-825a-439c-b396-a2936fcc1ace",
-						"planet_id": "JS-299a"
-					},
-					{
-						"name": "Pyrgos Food",
-						"uuid": "1b01568f-45d9-4873-9832-1173956a47e1",
-						"planet_id": "CH-771a"
-					},
-					{
-						"name": "Malahat IDC",
-						"uuid": "d52adddb-9525-467a-8b9f-a41bf3079d0b",
-						"planet_id": "RC-040b"
-					},
-					{
-						"name": "Bober NR+PG",
-						"uuid": "da105ce1-25f2-479d-b1eb-944353f4784f",
-						"planet_id": "ZV-307b"
-					},
-					{
-						"name": "Phobos NCS+EDC",
-						"uuid": "4551cac9-daee-4a35-8c09-a140144f9d53",
-						"planet_id": "ZV-307d"
-					},
-					{
-						"name": "Griff EPO + DDT",
-						"uuid": "fa7b21e8-6f01-4566-a77e-41e057c7e4a6",
-						"planet_id": "LS-300c"
-					},
-					{
-						"name": "Norwick FIM+MEA",
-						"uuid": "ae06402d-d692-42d2-9963-de5778cbb5a9",
-						"planet_id": "YK-649b"
-					},
-					{
-						"name": "PROX BEA, HCP, HER",
-						"uuid": "ad836ba2-c265-44ae-9132-3cf249fff990",
-						"planet_id": "UV-796b"
-					},
-					{
-						"name": "IY-816c AL Tap",
-						"uuid": "1c1a7ad9-9986-4b81-9b85-ada108bfb79c",
-						"planet_id": "IY-816c"
-					},
-					{
-						"name": "Heph 2 Permits",
-						"uuid": "553ffa1a-09d4-4028-9747-ac540f78e603",
-						"planet_id": "ZV-307c"
-					},
-					{
-						"name": "VULC STL, MFK, SFK",
-						"uuid": "625a4ed1-78b7-425f-981f-e67bf20f02d1",
-						"planet_id": "ZV-759b"
-					}
-				]
-			},
-			{
-				"faction": "MORIA",
-				"permits_used": 27,
-				"permits_total": 28,
-				"uuid": "32aed118-c4ed-4a4e-9eb4-3cf6aa0068da",
-				"name": "Sky Productions",
-				"use_fio_storage": true,
-				"baseplanners": [
-					{
-						"name": "EW COF RAT DW C",
-						"uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
-						"planet_id": "KW-688c"
-					},
-					{
-						"name": "DEIMALO",
-						"uuid": "43ef82c2-757f-49fb-9296-d4e254a76ae4",
-						"planet_id": "ZV-759c"
-					},
-					{
-						"name": "Harm Farmland",
-						"uuid": "f7d88f4b-cea2-4b11-aa1f-998cf2cb0d95",
-						"planet_id": "ZV-896b"
-					},
-					{
-						"name": "Vallis Shared",
-						"uuid": "0fa56f16-a1cc-496a-9a39-bb93f172b9f4",
-						"planet_id": "OT-580c"
-					},
-					{
-						"name": "Demeter RCO",
-						"uuid": "c45efaea-e7c7-48f6-947b-7d439376aba4",
-						"planet_id": "KI-446b"
-					},
-					{
-						"name": "Montem Full",
-						"uuid": "44c6bfcb-75ae-4117-9983-da55cc211a30",
-						"planet_id": "OT-580b"
-					},
-					{
-						"name": "Nasc C More",
-						"uuid": "092a338f-b405-4ca5-9da0-0e41538ca289",
-						"planet_id": "QJ-149c"
-					},
-					{
-						"name": "Nemesis GRN O",
-						"uuid": "de8252b5-825a-439c-b396-a2936fcc1ace",
-						"planet_id": "JS-299a"
-					},
-					{
-						"name": "Pyrgos Food",
-						"uuid": "1b01568f-45d9-4873-9832-1173956a47e1",
-						"planet_id": "CH-771a"
-					},
-					{
-						"name": "Malahat IDC",
-						"uuid": "d52adddb-9525-467a-8b9f-a41bf3079d0b",
-						"planet_id": "RC-040b"
-					},
-					{
-						"name": "Phobos NCS+EDC",
-						"uuid": "4551cac9-daee-4a35-8c09-a140144f9d53",
-						"planet_id": "ZV-307d"
-					},
-					{
-						"name": "Griff EPO + DDT",
-						"uuid": "fa7b21e8-6f01-4566-a77e-41e057c7e4a6",
-						"planet_id": "LS-300c"
-					},
-					{
-						"name": "Norwick FIM+MEA",
-						"uuid": "ae06402d-d692-42d2-9963-de5778cbb5a9",
-						"planet_id": "YK-649b"
-					},
-					{
-						"name": "PROX BEA, HCP, HER",
-						"uuid": "ad836ba2-c265-44ae-9132-3cf249fff990",
-						"planet_id": "UV-796b"
-					},
-					{
-						"name": "IY-816c AL Tap",
-						"uuid": "1c1a7ad9-9986-4b81-9b85-ada108bfb79c",
-						"planet_id": "IY-816c"
-					},
-					{
-						"name": "Heph 2 Permits",
-						"uuid": "553ffa1a-09d4-4028-9747-ac540f78e603",
-						"planet_id": "ZV-307c"
-					},
-					{
-						"name": "VULC STL, MFK, SFK",
-						"uuid": "625a4ed1-78b7-425f-981f-e67bf20f02d1",
-						"planet_id": "ZV-759b"
-					},
-					{
-						"name": "Nike",
-						"uuid": "291c8cf5-401c-4f1b-a191-9f6d2df1339d",
-						"planet_id": "ZV-194a"
-					}
-				]
-			}
-		],
-		"cx_data": {
-			"name": "PRUN CX REAL",
-			"cx_empire": [
-				{
-					"type": "BOTH",
-					"exchange": "PP7D_AI1"
-				}
-			],
-			"cx_planets": [
-				{
-					"planet": "OT-580b",
-					"preferences": []
-				},
-				{
-					"planet": "KW-688c",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-759c",
-					"preferences": []
-				},
-				{
-					"planet": "LS-300c",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-759b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-896b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-194a",
-					"preferences": []
-				},
-				{
-					"planet": "SE-648c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-149c",
-					"preferences": []
-				},
-				{
-					"planet": "OT-580c",
-					"preferences": []
-				},
-				{
-					"planet": "KI-446b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-307c",
-					"preferences": []
-				},
-				{
-					"planet": "YK-649b",
-					"preferences": []
-				},
-				{
-					"planet": "LS-746b",
-					"preferences": [
-						{
-							"type": "BUY",
-							"exchange": "NC1_BUY"
-						},
-						{
-							"type": "SELL",
-							"exchange": "AI1_SELL"
-						}
-					]
-				},
-				{
-					"planet": "JS-299a",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-650c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-684b",
-					"preferences": []
-				},
-				{
-					"planet": "CH-771a",
-					"preferences": []
-				},
-				{
-					"planet": "KI-840c",
-					"preferences": []
-				},
-				{
-					"planet": "RC-040b",
-					"preferences": []
-				},
-				{
-					"planet": "VH-331g",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-307b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-307d",
-					"preferences": []
-				}
-			],
-			"ticker_empire": [
-				{
-					"ticker": "FEO",
-					"type": "SELL",
-					"value": 80.0
-				},
-				{
-					"ticker": "UTS",
-					"type": "SELL",
-					"value": 3800.0
-				},
-				{
-					"ticker": "SFK",
-					"type": "SELL",
-					"value": 45.0
-				},
-				{
-					"ticker": "MFK",
-					"type": "SELL",
-					"value": 145.0
-				},
-				{
-					"ticker": "O",
-					"type": "BUY",
-					"value": 35.0
-				},
-				{
-					"ticker": "PG",
-					"type": "BUY",
-					"value": 19.0
-				},
-				{
-					"ticker": "PE",
-					"type": "BUY",
-					"value": 9.0
-				},
-				{
-					"ticker": "H2O",
-					"type": "BUY",
-					"value": 9.0
-				},
-				{
-					"ticker": "PT",
-					"type": "BUY",
-					"value": 180.0
-				},
-				{
-					"ticker": "GRN",
-					"type": "BUY",
-					"value": 53.0
-				},
-				{
-					"ticker": "C",
-					"type": "BUY",
-					"value": 150.0
-				},
-				{
-					"ticker": "AL",
-					"type": "BUY",
-					"value": 250.0
-				},
-				{
-					"ticker": "NCS",
-					"type": "BUY",
-					"value": 9.0
-				},
-				{
-					"ticker": "EPO",
-					"type": "BUY",
-					"value": 95.0
-				},
-				{
-					"ticker": "HER",
-					"type": "BUY",
-					"value": 1100.0
-				},
-				{
-					"ticker": "BEA",
-					"type": "BUY",
-					"value": 74.0
-				},
-				{
-					"ticker": "HCP",
-					"type": "BUY",
-					"value": 74.0
-				},
-				{
-					"ticker": "PPA",
-					"type": "BUY",
-					"value": 70.0
-				},
-				{
-					"ticker": "FIM",
-					"type": "BUY",
-					"value": 770.0
-				},
-				{
-					"ticker": "MEA",
-					"type": "BUY",
-					"value": 2650.0
-				}
-			],
-			"ticker_planets": [
-				{
-					"planet": "OT-580b",
-					"preferences": [
-						{
-							"ticker": "LST",
-							"type": "BUY",
-							"value": 48.0
-						}
-					]
-				},
-				{
-					"planet": "KW-688c",
-					"preferences": [
-						{
-							"ticker": "NS",
-							"type": "BUY",
-							"value": 150.0
-						}
-					]
-				},
-				{
-					"planet": "ZV-759c",
-					"preferences": []
-				},
-				{
-					"planet": "LS-300c",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-759b",
-					"preferences": [
-						{
-							"ticker": "FE",
-							"type": "BUY",
-							"value": 313.0
-						}
-					]
-				},
-				{
-					"planet": "ZV-896b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-194a",
-					"preferences": [
-						{
-							"ticker": "AL",
-							"type": "BUY",
-							"value": 300.0
-						}
-					]
-				},
-				{
-					"planet": "SE-648c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-149c",
-					"preferences": [
-						{
-							"ticker": "GRN",
-							"type": "BUY",
-							"value": 55.0
-						}
-					]
-				},
-				{
-					"planet": "OT-580c",
-					"preferences": []
-				},
-				{
-					"planet": "KI-446b",
-					"preferences": [
-						{
-							"ticker": "H2O",
-							"type": "BOTH",
-							"value": 17.0
-						},
-						{
-							"ticker": "NS",
-							"type": "BUY",
-							"value": 150.0
-						}
-					]
-				},
-				{
-					"planet": "ZV-307c",
-					"preferences": [
-						{
-							"ticker": "RCO",
-							"type": "BUY",
-							"value": 486.0
-						}
-					]
-				},
-				{
-					"planet": "YK-649b",
-					"preferences": []
-				},
-				{
-					"planet": "LS-746b",
-					"preferences": []
-				},
-				{
-					"planet": "JS-299a",
-					"preferences": [
-						{
-							"ticker": "H2O",
-							"type": "BUY",
-							"value": 14.0
-						},
-						{
-							"ticker": "GRN",
-							"type": "BUY",
-							"value": 53.0
-						}
-					]
-				},
-				{
-					"planet": "QJ-650c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-684b",
-					"preferences": []
-				},
-				{
-					"planet": "CH-771a",
-					"preferences": []
-				},
-				{
-					"planet": "KI-840c",
-					"preferences": []
-				},
-				{
-					"planet": "RC-040b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-307b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-307d",
-					"preferences": []
-				},
-				{
-					"planet": "VH-331g",
-					"preferences": []
-				},
-				{
-					"planet": "UV-796b",
-					"preferences": []
-				}
-			]
-		}
-	},
-	{
-		"uuid": "41c6f4dc-d1cd-4bde-b61a-c1595101d980",
-		"name": "Share CX",
-		"empires": [],
-		"cx_data": {
-			"name": "Share CX",
-			"cx_empire": [],
-			"cx_planets": [
-				{
-					"planet": "KI-446b",
-					"preferences": [
 						{
 							"type": "BOTH",
-							"exchange": "NC1_AVG"
+							"value": 77.0,
+							"ticker": "HCP"
 						}
 					]
-				},
-				{
-					"planet": "OT-580c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-650c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-684b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-194a",
-					"preferences": []
-				}
-			],
-			"ticker_empire": [],
-			"ticker_planets": [
-				{
-					"planet": "KI-446b",
-					"preferences": []
-				},
-				{
-					"planet": "OT-580c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-650c",
-					"preferences": []
-				},
-				{
-					"planet": "QJ-684b",
-					"preferences": []
-				},
-				{
-					"planet": "ZV-194a",
-					"preferences": []
 				}
 			]
-		}
+		},
+		"cx_name": "BEN AVG"
 	}
 ]

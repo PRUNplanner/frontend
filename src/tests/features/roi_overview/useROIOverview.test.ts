@@ -49,6 +49,7 @@ describe("useROIOverview", async () => {
 		await buildingsStore.setMany(buildings);
 		await recipesStore.setMany(recipes);
 		await materialsStore.setMany(materials);
+		// @ts-expect-error mock data date as string
 		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
@@ -81,7 +82,7 @@ describe("useROIOverview", async () => {
 
 		await calculate();
 
-		expect(resultData.value.length).toBe(353);
+		expect(resultData.value.length).toBe(370);
 	});
 
 	it("formatOptimal", async () => {

@@ -1,4 +1,5 @@
-import { computed, ComputedRef, WritableComputedRef } from "vue";
+import { computed, ComputedRef, watch, WritableComputedRef } from "vue";
+import { debounce } from "lodash";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
@@ -6,6 +7,9 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { usePlan } from "@/features/planning_data/usePlan";
+
+// API
+import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Default values
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
@@ -16,11 +20,22 @@ import {
 	IPreferencePerPlan,
 } from "@/features/preferences/userPreferences.types";
 
+// debounced update to backend
+const syncToBBackend = debounce(async (prefs) => {
+	await useQuery("PatchPreferences", prefs).execute();
+}, 5000);
+
 export function usePreferences() {
 	const userStore = useUserStore();
 	const planningStore = usePlanningStore();
 
 	const { getPlanNamePlanet } = usePlan();
+
+	watch(
+		() => userStore.preferences,
+		(newVal) => syncToBBackend(newVal),
+		{ deep: true }
+	);
 
 	const defaultEmpireUuid: WritableComputedRef<
 		string | undefined,

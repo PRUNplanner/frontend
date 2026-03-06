@@ -30,7 +30,7 @@
 	import { formatAmount } from "@/util/numbers";
 
 	const exchangeOptions: Ref<PSelectOption[]> = ref(
-		["AI1", "CI1", "CI2", "IC1", "NC1", "NC2"].map((e) => {
+		["AI1", "CI1", "IC1", "NC1"].map((e) => {
 			return { label: e, value: e };
 		})
 	);
@@ -115,46 +115,23 @@
 							title="Date"
 							sorter="default">
 							<template #render-cell="{ rowData }">
-								{{ formatDate(rowData.Datetime) }}
+								{{ formatDate(rowData.date_epoch) }}
 							</template>
 						</XNDataTableColumn>
 						<XNDataTableColumn
-							key="price_average"
-							title="Average Price"
-							sorter="default" />
-						<XNDataTableColumn
-							key="price_min"
+							key="low_p"
 							title="Lowest Price"
 							sorter="default" />
 						<XNDataTableColumn
-							key="price_max"
+							key="high_p"
 							title="Highest Price"
 							sorter="default" />
 						<XNDataTableColumn
-							key="volume_max"
+							key="volume"
 							title="Traded Volume"
 							sorter="default">
 							<template #render-cell="{ rowData }">
-								{{ formatAmount(rowData.volume_max) }}
-							</template>
-						</XNDataTableColumn>
-						<XNDataTableColumn
-							key="delta_supply_demand"
-							title="Delta Supply & Demand"
-							sorter="default">
-							<template #render-cell="{ rowData }">
-								<span
-									:class="
-										rowData.delta_supply_demand >= 0
-											? 'text-positive'
-											: 'text-negative'
-									">
-									{{
-										formatAmount(
-											rowData.delta_supply_demand
-										)
-									}}
-								</span>
+								{{ formatAmount(rowData.volume) }}
 							</template>
 						</XNDataTableColumn>
 					</XNDataTable>

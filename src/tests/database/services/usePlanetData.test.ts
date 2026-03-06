@@ -16,21 +16,21 @@ import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Sample planet mock
 const mockPlanet1 = {
-	PlanetNaturalId: "P1",
-	PlanetName: "Earth",
-	Surface: true,
-	Gravity: 1,
-	Pressure: 1,
-	Temperature: 25,
+	planet_natural_id: "P1",
+	planet_name: "Earth",
+	surface: true,
+	gravity: 1,
+	pressure: 1,
+	temperature: 25,
 };
 
 const mockPlanet2 = {
-	PlanetNaturalId: "P2",
-	PlanetName: "Mars",
-	Surface: false,
-	Gravity: 0.5,
-	Pressure: 0.5,
-	Temperature: -20,
+	planet_natural_id: "P2",
+	planet_name: "Mars",
+	surface: false,
+	gravity: 0.5,
+	pressure: 0.5,
+	temperature: -20,
 };
 
 describe("usePlanetData", () => {
@@ -39,8 +39,8 @@ describe("usePlanetData", () => {
 
 	beforeEach(() => {
 		getMock = vi.fn(async (id: string) => {
-			if (id === mockPlanet1.PlanetNaturalId) return mockPlanet1;
-			if (id === mockPlanet2.PlanetNaturalId) return mockPlanet2;
+			if (id === mockPlanet1.planet_natural_id) return mockPlanet1;
+			if (id === mockPlanet2.planet_natural_id) return mockPlanet2;
 			return undefined;
 		});
 
@@ -57,7 +57,7 @@ describe("usePlanetData", () => {
 	it("getPlanet returns the planet", async () => {
 		const { getPlanet } = usePlanetData();
 		const planet = await getPlanet("P1");
-		expect(planet.PlanetName).toBe("Earth");
+		expect(planet.planet_name).toBe("Earth");
 		expect(getMock).toHaveBeenCalledWith("P1");
 	});
 
@@ -105,7 +105,7 @@ describe("usePlanetData", () => {
 	describe("getPlanetSpecialMaterials", async () => {
 		const specialMaterialCases = [
 			{
-				planet: { Surface: true },
+				planet: { surface: true },
 				areaCost: 25,
 				result: [
 					{
@@ -117,7 +117,7 @@ describe("usePlanetData", () => {
 				description: "With Surface",
 			},
 			{
-				planet: { Surface: false },
+				planet: { surface: false },
 				areaCost: 25,
 				result: [
 					{
@@ -129,7 +129,7 @@ describe("usePlanetData", () => {
 				description: "No Surface",
 			},
 			{
-				planet: { Surface: true, Gravity: 0.249 },
+				planet: { surface: true, gravity: 0.249 },
 				areaCost: 25,
 				result: [
 					{
@@ -146,7 +146,7 @@ describe("usePlanetData", () => {
 				description: "Low Gravity",
 			},
 			{
-				planet: { Surface: true, Gravity: 2.51 },
+				planet: { surface: true, gravity: 2.51 },
 				areaCost: 25,
 				result: [
 					{
@@ -163,7 +163,7 @@ describe("usePlanetData", () => {
 				description: "High Gravity",
 			},
 			{
-				planet: { Surface: true, Pressure: 0.249 },
+				planet: { surface: true, pressure: 0.249 },
 				areaCost: 25,
 				result: [
 					{
@@ -180,7 +180,7 @@ describe("usePlanetData", () => {
 				description: "Low Pressure",
 			},
 			{
-				planet: { Surface: true, Pressure: 2.01 },
+				planet: { surface: true, pressure: 2.01 },
 				areaCost: 25,
 				result: [
 					{
@@ -197,7 +197,7 @@ describe("usePlanetData", () => {
 				description: "Low Pressure",
 			},
 			{
-				planet: { Surface: true, Temperature: -25.01 },
+				planet: { surface: true, temperature: -25.01 },
 				areaCost: 25,
 				result: [
 					{
@@ -214,7 +214,7 @@ describe("usePlanetData", () => {
 				description: "Low Temperature",
 			},
 			{
-				planet: { Surface: true, Temperature: 75.01 },
+				planet: { surface: true, temperature: 75.01 },
 				areaCost: 25,
 				result: [
 					{

@@ -43,7 +43,7 @@
 	const empireOptions: Ref<PSelectOption[]> = ref(
 		Object.values(planningStore.empires).map((e) => {
 			return {
-				label: e.name,
+				label: e.empire_name,
 				value: e.uuid,
 			};
 		})
@@ -99,7 +99,14 @@
 			<CXPreferenceSelector
 				:cx-uuid="defaultCXUuid"
 				:add-undefined-c-x="false"
-				class="w-full" />
+				class="w-full"
+				@update:value="
+					(value: string | undefined) => {
+						if (value && typeof value === 'string') {
+							defaultCXUuid = value;
+						}
+					}
+				" />
 		</PFormItem>
 
 		<PFormSeperator>

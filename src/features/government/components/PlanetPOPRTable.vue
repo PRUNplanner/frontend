@@ -65,47 +65,53 @@
 		<tbody>
 			<tr>
 				<td class="font-bold">Total Population</td>
-				<td>{{ formatAmount(poprData.NextPopulationPioneer) }}</td>
-				<td>{{ formatAmount(poprData.NextPopulationSettler) }}</td>
-				<td>{{ formatAmount(poprData.NextPopulationTechnician) }}</td>
-				<td>{{ formatAmount(poprData.NextPopulationEngineer) }}</td>
-				<td>{{ formatAmount(poprData.NextPopulationScientist) }}</td>
+				<td>{{ formatAmount(poprData.next_population_pioneer) }}</td>
+				<td>{{ formatAmount(poprData.next_population_settler) }}</td>
+				<td>{{ formatAmount(poprData.next_population_technician) }}</td>
+				<td>{{ formatAmount(poprData.next_population_engineer) }}</td>
+				<td>{{ formatAmount(poprData.next_population_scientist) }}</td>
 			</tr>
 			<tr>
 				<td class="font-bold">Free Population</td>
-				<td>{{ formatAmount(poprData.FreePioneer) }}</td>
-				<td>{{ formatAmount(poprData.FreeSettler) }}</td>
-				<td>{{ formatAmount(poprData.FreeTechnician) }}</td>
-				<td>{{ formatAmount(poprData.FreeEngineer) }}</td>
-				<td>{{ formatAmount(poprData.FreeScientist) }}</td>
+				<td>{{ formatAmount(poprData.free_pioneer) }}</td>
+				<td>{{ formatAmount(poprData.free_settler) }}</td>
+				<td>{{ formatAmount(poprData.free_technician) }}</td>
+				<td>{{ formatAmount(poprData.free_engineer) }}</td>
+				<td>{{ formatAmount(poprData.free_scientist) }}</td>
 			</tr>
 			<tr>
 				<td class="font-bold">Free Population %</td>
 				<td>
-					{{ formatNumber(poprData.UnemploymentRatePioneer * 100) }}
+					{{ formatNumber(poprData.unemployment_rate_pioneer * 100) }}
 				</td>
 				<td>
-					{{ formatNumber(poprData.UnemploymentRateSettler * 100) }}
+					{{ formatNumber(poprData.unemployment_rate_settler * 100) }}
 				</td>
 				<td>
 					{{
-						formatNumber(poprData.UnemploymentRateTechnician * 100)
+						formatNumber(
+							poprData.unemployment_rate_technician * 100
+						)
 					}}
 				</td>
 				<td>
-					{{ formatNumber(poprData.UnemploymentRateEngineer * 100) }}
+					{{
+						formatNumber(poprData.unemployment_rate_engineer * 100)
+					}}
 				</td>
 				<td>
-					{{ formatNumber(poprData.UnemploymentRateScientist * 100) }}
+					{{
+						formatNumber(poprData.unemployment_rate_scientist * 100)
+					}}
 				</td>
 			</tr>
 			<tr>
 				<td class="font-bold">Unfilled Jobs</td>
-				<td>{{ formatAmount(poprData.OpenJobsPioneer) }}</td>
-				<td>{{ formatAmount(poprData.OpenJobsSettler) }}</td>
-				<td>{{ formatAmount(poprData.OpenJobsTechnician) }}</td>
-				<td>{{ formatAmount(poprData.OpenJobsEngineer) }}</td>
-				<td>{{ formatAmount(poprData.OpenJobsScientist) }}</td>
+				<td>{{ formatAmount(poprData.open_jobs_pioneer) }}</td>
+				<td>{{ formatAmount(poprData.open_jobs_settler) }}</td>
+				<td>{{ formatAmount(poprData.open_jobs_technician) }}</td>
+				<td>{{ formatAmount(poprData.open_jobs_engineer) }}</td>
+				<td>{{ formatAmount(poprData.open_jobs_scientist) }}</td>
 			</tr>
 			<template v-if="workforceData">
 				<tr class="child:border-t-2! child:border-t-white/20!">
@@ -127,8 +133,8 @@
 							<component
 								:is="
 									assessPlanWorkforce(
-										poprData.FreePioneer,
-										poprData.OpenJobsPioneer,
+										poprData.free_pioneer,
+										poprData.open_jobs_pioneer,
 										workforceData.pioneer.required
 									)
 										? CheckSharp
@@ -136,8 +142,8 @@
 								"
 								:class="
 									assessPlanWorkforce(
-										poprData.FreePioneer,
-										poprData.OpenJobsPioneer,
+										poprData.free_pioneer,
+										poprData.open_jobs_pioneer,
 										workforceData.pioneer.required
 									)
 										? 'text-positive'
@@ -150,8 +156,8 @@
 							<component
 								:is="
 									assessPlanWorkforce(
-										poprData.FreeSettler,
-										poprData.OpenJobsSettler,
+										poprData.free_settler,
+										poprData.open_jobs_settler,
 										workforceData.settler.required
 									)
 										? CheckSharp
@@ -159,8 +165,8 @@
 								"
 								:class="
 									assessPlanWorkforce(
-										poprData.FreeSettler,
-										poprData.OpenJobsSettler,
+										poprData.free_settler,
+										poprData.open_jobs_settler,
 										workforceData.settler.required
 									)
 										? 'text-positive'
@@ -173,8 +179,8 @@
 							<component
 								:is="
 									assessPlanWorkforce(
-										poprData.FreeTechnician,
-										poprData.OpenJobsTechnician,
+										poprData.free_technician,
+										poprData.open_jobs_technician,
 										workforceData.technician.required
 									)
 										? CheckSharp
@@ -182,8 +188,8 @@
 								"
 								:class="
 									assessPlanWorkforce(
-										poprData.FreeTechnician,
-										poprData.OpenJobsTechnician,
+										poprData.free_technician,
+										poprData.open_jobs_technician,
 										workforceData.technician.required
 									)
 										? 'text-positive'
@@ -196,8 +202,8 @@
 							<component
 								:is="
 									assessPlanWorkforce(
-										poprData.FreeEngineer,
-										poprData.OpenJobsEngineer,
+										poprData.free_engineer,
+										poprData.open_jobs_engineer,
 										workforceData.engineer.required
 									)
 										? CheckSharp
@@ -205,8 +211,8 @@
 								"
 								:class="
 									assessPlanWorkforce(
-										poprData.FreeEngineer,
-										poprData.OpenJobsEngineer,
+										poprData.free_engineer,
+										poprData.open_jobs_engineer,
 										workforceData.engineer.required
 									)
 										? 'text-positive'
@@ -219,8 +225,8 @@
 							<component
 								:is="
 									assessPlanWorkforce(
-										poprData.FreeScientist,
-										poprData.OpenJobsScientist,
+										poprData.free_scientist,
+										poprData.open_jobs_scientist,
 										workforceData.scientist.required
 									)
 										? CheckSharp
@@ -228,8 +234,8 @@
 								"
 								:class="
 									assessPlanWorkforce(
-										poprData.FreeScientist,
-										poprData.OpenJobsScientist,
+										poprData.free_scientist,
+										poprData.open_jobs_scientist,
 										workforceData.scientist.required
 									)
 										? 'text-positive'

@@ -67,7 +67,7 @@ describe("Planning: Workforce Calculations", async () => {
 
 	it("handleUpdateCorpHQ", async () => {
 		const fakePlanet = {
-			corphq: true,
+			plan_corphq: true,
 		};
 
 		const { handleUpdateCorpHQ } = await usePlanCalculationHandlers(
@@ -79,12 +79,12 @@ describe("Planning: Workforce Calculations", async () => {
 		);
 
 		handleUpdateCorpHQ(false);
-		expect(fakePlanet.corphq).toBeFalsy();
+		expect(fakePlanet.plan_corphq).toBeFalsy();
 	});
 
 	it("handleUpdateCOGC", async () => {
 		const fakePlanet = {
-			cogc: "CHEMISTRY",
+			plan_cogc: "CHEMISTRY",
 		};
 
 		const { handleUpdateCOGC } = await usePlanCalculationHandlers(
@@ -96,13 +96,13 @@ describe("Planning: Workforce Calculations", async () => {
 		);
 
 		handleUpdateCOGC("CONSTRUCTION");
-		expect(fakePlanet.cogc).toBe("CONSTRUCTION");
+		expect(fakePlanet.plan_cogc).toBe("CONSTRUCTION");
 	});
 
 	describe("handleUpdateCOGC", async () => {
 		it("permit value valid", async () => {
 			const fakePlanet = {
-				permits: 1,
+				plan_permits_used: 1,
 			};
 
 			const { handleUpdatePermits } = await usePlanCalculationHandlers(
@@ -114,12 +114,12 @@ describe("Planning: Workforce Calculations", async () => {
 			);
 
 			handleUpdatePermits(2);
-			expect(fakePlanet.permits).toBe(2);
+			expect(fakePlanet.plan_permits_used).toBe(2);
 		});
 
 		it("permit value valid, lower clamp", async () => {
 			const fakePlanet = {
-				permits: 1,
+				plan_permits_used: 1,
 			};
 
 			const { handleUpdatePermits } = await usePlanCalculationHandlers(
@@ -131,12 +131,12 @@ describe("Planning: Workforce Calculations", async () => {
 			);
 
 			handleUpdatePermits(0);
-			expect(fakePlanet.permits).toBe(1);
+			expect(fakePlanet.plan_permits_used).toBe(1);
 		});
 
 		it("permit value valid, upper clamp", async () => {
 			const fakePlanet = {
-				permits: 1,
+				plan_permits_used: 1,
 			};
 
 			const { handleUpdatePermits } = await usePlanCalculationHandlers(
@@ -148,7 +148,7 @@ describe("Planning: Workforce Calculations", async () => {
 			);
 
 			handleUpdatePermits(4);
-			expect(fakePlanet.permits).toBe(3);
+			expect(fakePlanet.plan_permits_used).toBe(3);
 		});
 	});
 
@@ -167,8 +167,8 @@ describe("Planning: Workforce Calculations", async () => {
 			const { handleUpdateWorkforceLux } =
 				await usePlanCalculationHandlers(
 					// @ts-expect-error mock data
-					ref(fakePlanet),
 					ref({}),
+					ref(fakePlanet),
 					ref(),
 					ref({})
 				);
@@ -181,8 +181,8 @@ describe("Planning: Workforce Calculations", async () => {
 			const { handleUpdateWorkforceLux } =
 				await usePlanCalculationHandlers(
 					// @ts-expect-error mock data
-					ref(fakePlanet),
 					ref({}),
+					ref(fakePlanet),
 					ref(),
 					ref({})
 				);
@@ -205,8 +205,8 @@ describe("Planning: Workforce Calculations", async () => {
 		it("Update, valid value", async () => {
 			const { handleUpdateExpert } = await usePlanCalculationHandlers(
 				// @ts-expect-error mock data
-				ref(fakePlanet),
 				ref({}),
+				ref(fakePlanet),
 				ref(),
 				ref({})
 			);
@@ -218,8 +218,8 @@ describe("Planning: Workforce Calculations", async () => {
 		it("Update, invalid value lower clamp", async () => {
 			const { handleUpdateExpert } = await usePlanCalculationHandlers(
 				// @ts-expect-error mock data
-				ref(fakePlanet),
 				ref({}),
+				ref(fakePlanet),
 				ref(),
 				ref({})
 			);
@@ -231,8 +231,8 @@ describe("Planning: Workforce Calculations", async () => {
 		it("Update, invalid value upper clamp", async () => {
 			const { handleUpdateExpert } = await usePlanCalculationHandlers(
 				// @ts-expect-error mock data
-				ref(fakePlanet),
 				ref({}),
+				ref(fakePlanet),
 				ref(),
 				ref({})
 			);

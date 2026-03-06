@@ -69,7 +69,6 @@ import {
 	IPlanDataBuilding,
 	IPlanDataExpert,
 	IPlanDataInfrastructure,
-	IPlanDataPlanet,
 	IPlanDataWorkforce,
 	IPlanEmpire,
 	IPlanEmpireElement,
@@ -100,21 +99,14 @@ export async function usePlanCalculation(
 
 	// data references
 
-	const planName: Ref<string | undefined> = toRef(plan.value.name);
-	const data: ComputedRef<IPlanData> = computed(
-		() => plan.value.baseplanner_data
-	);
-	const planet: ComputedRef<IPlanDataPlanet> = computed(
-		() => data.value.planet
-	);
-	const planetNaturalId: ComputedRef<string> = computed(
-		() => data.value.planet.planetid
-	);
+	const planName: Ref<string | undefined> = toRef(plan.value.plan_name);
+	const data: ComputedRef<IPlanData> = computed(() => plan.value.plan_data);
 	const empires: Ref<IPlanEmpire[]> = toRef([]);
-	const planEmpires: ComputedRef<IPlanEmpire[]> = computed(
-		() => plan.value.empires
+	const planEmpires: ComputedRef<IPlanEmpire[]> = computed(() =>
+		plan.value.empires ? plan.value.empires : []
 	);
-	const planetData: IPlanet = await getPlanet(planet.value.planetid);
+	const planetNaturalId: Ref<string> = toRef(plan.value.planet_natural_id);
+	const planetData: IPlanet = await getPlanet(plan.value.planet_natural_id);
 	const buildings: ComputedRef<IPlanDataBuilding[]> = computed(
 		() => data.value.buildings
 	);
@@ -176,7 +168,7 @@ export async function usePlanCalculation(
 				workforceTypeNames.map((key) => {
 					// get current workforce value from planet data
 					const dataLuxuries: IPlanDataWorkforce | undefined =
-						planet.value.workforce.find((e) => e.type == key);
+						data.value.workforce.find((e) => e.type == key);
 
 					return [
 						key,
@@ -201,21 +193,21 @@ export async function usePlanCalculation(
 				);
 
 				// must provide workforce habitation
-				if (infBuildingData.Habitation !== null) {
+				if (infBuildingData.habitations !== null) {
 					result.pioneer.capacity +=
-						infBuildingData.Habitation.Pioneer *
+						infBuildingData.habitations.pioneers *
 						infrastructure.amount;
 					result.settler.capacity +=
-						infBuildingData.Habitation.Settler *
+						infBuildingData.habitations.settlers *
 						infrastructure.amount;
 					result.technician.capacity +=
-						infBuildingData.Habitation.Technician *
+						infBuildingData.habitations.technicians *
 						infrastructure.amount;
 					result.engineer.capacity +=
-						infBuildingData.Habitation.Engineer *
+						infBuildingData.habitations.engineers *
 						infrastructure.amount;
 					result.scientist.capacity +=
-						infBuildingData.Habitation.Scientist *
+						infBuildingData.habitations.scientists *
 						infrastructure.amount;
 				}
 			}
@@ -229,15 +221,15 @@ export async function usePlanCalculation(
 				);
 
 				result.pioneer.required +=
-					prodBuildingData.Pioneers * prodBuilding.amount;
+					prodBuildingData.pioneers * prodBuilding.amount;
 				result.settler.required +=
-					prodBuildingData.Settlers * prodBuilding.amount;
+					prodBuildingData.settlers * prodBuilding.amount;
 				result.technician.required +=
-					prodBuildingData.Technicians * prodBuilding.amount;
+					prodBuildingData.technicians * prodBuilding.amount;
 				result.engineer.required +=
-					prodBuildingData.Engineers * prodBuilding.amount;
+					prodBuildingData.engineers * prodBuilding.amount;
 				result.scientist.required +=
-					prodBuildingData.Scientists * prodBuilding.amount;
+					prodBuildingData.scientists * prodBuilding.amount;
 			}
 		}
 
@@ -266,7 +258,7 @@ export async function usePlanCalculation(
 	async function calculateAreaResult(): Promise<IAreaResult> {
 		// Core Module holds 25 area
 		let areaUsed: number = 25;
-		const areaTotal: number = 250 + planet.value.permits * 250;
+		const areaTotal: number = 250 + plan.value.plan_permits_used * 250;
 
 		// calculate area used based on production and infrastructure buildings
 		for (const infrastructure of data.value.infrastructure) {
@@ -275,7 +267,7 @@ export async function usePlanCalculation(
 					infrastructure.building
 				);
 
-				areaUsed += infBuildingData.AreaCost * infrastructure.amount;
+				areaUsed += infBuildingData.area_cost * infrastructure.amount;
 			}
 		}
 
@@ -285,12 +277,12 @@ export async function usePlanCalculation(
 					building.name
 				);
 
-				areaUsed += prodBuildingData.AreaCost * building.amount;
+				areaUsed += prodBuildingData.area_cost * building.amount;
 			}
 		}
 
 		return {
-			permits: planet.value.permits,
+			permits: plan.value.plan_permits_used,
 			areaUsed: areaUsed,
 			areaTotal: areaTotal,
 			areaLeft: areaTotal - areaUsed,
@@ -348,7 +340,7 @@ export async function usePlanCalculation(
 		const result: IExpertRecord = Object.fromEntries(
 			expertNames.map((key) => {
 				const currentExpert: IPlanDataExpert | undefined =
-					planet.value.experts.find((e) => e.type === key);
+					data.value.experts.find((e) => e.type === key);
 
 				let amount: number = 0;
 				let bonus: number = 0;
@@ -413,7 +405,7 @@ export async function usePlanCalculation(
 			b.active_recipes.forEach((r) => {
 				// go raw to loose Proxy
 				const recipeInfo: IRecipe | undefined = toRaw(
-					buildingRecipes.find((ar) => ar.RecipeId == r.recipeid)
+					buildingRecipes.find((ar) => ar.recipe_id == r.recipeid)
 				);
 
 				if (!recipeInfo) {
@@ -426,7 +418,7 @@ export async function usePlanCalculation(
 						amount: r.amount,
 						dailyShare: 1,
 						// time adjusted to efficiency and amount
-						time: (recipeInfo.TimeMs * r.amount) / totalEfficiency,
+						time: (recipeInfo.time_ms * r.amount) / totalEfficiency,
 						recipe: {
 							...recipeInfo,
 							dailyRevenue: 0,
@@ -471,9 +463,9 @@ export async function usePlanCalculation(
 				buildingRecipes.map(async (br) => {
 					// calculate daily revenue
 					const dailyIncome: number = await getMaterialIOTotalPrice(
-						br.Outputs.map((o) => ({
-							ticker: o.Ticker,
-							output: o.Amount,
+						br.outputs.map((o) => ({
+							ticker: o.material_ticker,
+							output: o.material_amount,
 							input: 0,
 						})),
 						"SELL"
@@ -482,17 +474,17 @@ export async function usePlanCalculation(
 					const dailyCost: number =
 						-1 *
 						(await getMaterialIOTotalPrice(
-							br.Inputs.map((i) => ({
-								ticker: i.Ticker,
+							br.inputs.map((i) => ({
+								ticker: i.material_ticker,
 								output: 0,
-								input: i.Amount,
+								input: i.material_amount,
 							})),
 							"BUY"
 						));
 
 					// Daily Revenue of a recipe option
 					const maxDailyRuns: number =
-						TOTALMSDAY / (br.TimeMs / totalEfficiency);
+						TOTALMSDAY / (br.time_ms / totalEfficiency);
 
 					const dailyRevenue: number =
 						dailyIncome * maxDailyRuns -
@@ -505,22 +497,22 @@ export async function usePlanCalculation(
 
 					// Recipe option Profit per Area
 					const optimalProductionData = optimalProduction.find(
-						(op) => op.ticker === br.BuildingTicker
+						(op) => op.ticker === br.building_ticker
 					);
 					const areaPerBuilding: number = optimalProductionData
 						? (optimalProductionData.total_area + 25) /
 							optimalProductionData.amount
-						: buildingData.AreaCost + 25;
+						: buildingData.area_cost + 25;
 
 					const profitPerArea = dailyRevenue / areaPerBuilding;
 
 					return {
-						RecipeId: br.RecipeId,
-						BuildingTicker: br.BuildingTicker,
-						RecipeName: br.RecipeName,
-						TimeMs: br.TimeMs / totalEfficiency,
-						Inputs: br.Inputs,
-						Outputs: br.Outputs,
+						recipe_id: br.recipe_id,
+						recipe_name: br.recipe_name,
+						building_ticker: br.building_ticker,
+						time_ms: br.time_ms / totalEfficiency,
+						inputs: br.inputs,
+						outputs: br.outputs,
 						dailyRevenue,
 						roi,
 						profitPerArea,
@@ -546,20 +538,23 @@ export async function usePlanCalculation(
 
 			activeRecipes.forEach(async (ar) => {
 				const runtimeShare: number =
-					ar.recipe.TimeMs / totalEfficiency / TOTALMSDAY;
+					ar.recipe.time_ms / totalEfficiency / TOTALMSDAY;
 				const degradation: number = (constructionCost * -1) / 180;
 				const degradationShare: number = degradation * runtimeShare;
 				const workforceCostTotal: number = workforceDailyCost * -1;
 				const workforceCost: number = workforceCostTotal * runtimeShare;
 
 				const inputCost: ICOGMMaterialCost[] = await Promise.all(
-					ar.recipe.Inputs.map(async (inputMat) => {
-						const price = await getPrice(inputMat.Ticker, "BUY");
+					ar.recipe.inputs.map(async (inputMat) => {
+						const price = await getPrice(
+							inputMat.material_ticker,
+							"BUY"
+						);
 						return {
-							ticker: inputMat.Ticker,
-							amount: inputMat.Amount,
+							ticker: inputMat.material_ticker,
+							amount: inputMat.material_amount,
 							costUnit: price,
-							costTotal: price * inputMat.Amount,
+							costTotal: price * inputMat.material_amount,
 						};
 					})
 				);
@@ -572,9 +567,12 @@ export async function usePlanCalculation(
 				);
 
 				const outputRevenueArray = await Promise.all(
-					ar.recipe.Outputs.map(async (current) => {
-						const price = await getPrice(current.Ticker, "SELL");
-						return price * current.Amount;
+					ar.recipe.outputs.map(async (current) => {
+						const price = await getPrice(
+							current.material_ticker,
+							"SELL"
+						);
+						return price * current.material_amount;
 					})
 				);
 
@@ -586,25 +584,25 @@ export async function usePlanCalculation(
 				const totalCost: number =
 					degradationShare + workforceCost + inputTotal;
 
-				const sumOutputs: number = ar.recipe.Outputs.reduce(
-					(sum, current) => sum + current.Amount,
+				const sumOutputs: number = ar.recipe.outputs.reduce(
+					(sum, current) => sum + current.material_amount,
 					0
 				);
 
 				const totalProfit: number = outputRevenue - totalCost;
 
-				const outputCOGM: ICOGMMaterialReturn[] = ar.recipe.Outputs.map(
-					(outputMat) => ({
-						ticker: outputMat.Ticker,
-						amount: outputMat.Amount,
+				const outputCOGM: ICOGMMaterialReturn[] = ar.recipe.outputs
+					.map((outputMat) => ({
+						ticker: outputMat.material_ticker,
+						amount: outputMat.material_amount,
 						costSplit: totalCost / sumOutputs,
-						costTotal: totalCost / outputMat.Amount,
-					})
-				).sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
+						costTotal: totalCost / outputMat.material_amount,
+					}))
+					.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 
 				ar.cogm = {
 					visible: cxUuid.value !== undefined,
-					runtime: ar.recipe.TimeMs / totalEfficiency,
+					runtime: ar.recipe.time_ms / totalEfficiency,
 					runtimeShare,
 					efficiency: totalEfficiency,
 					degradation,
@@ -623,7 +621,7 @@ export async function usePlanCalculation(
 			const building: IProductionBuilding = {
 				name: b.name,
 				amount: b.amount,
-				areaUsed: buildingData.AreaCost * b.amount,
+				areaUsed: buildingData.area_cost * b.amount,
 				activeRecipes: activeRecipes,
 				recipeOptions: recipeOptions,
 				totalEfficiency: totalEfficiency,
@@ -634,7 +632,7 @@ export async function usePlanCalculation(
 				workforceMaterials: workforceMaterials,
 				workforceDailyCost: workforceDailyCost,
 				dailyRevenue: 0,
-				expertise: buildingData.Expertise,
+				expertise: buildingData.expertise,
 			};
 
 			// Calculating individual buildings daily contribution
@@ -709,16 +707,15 @@ export async function usePlanCalculation(
 
 	async function calculate(): Promise<IPlanResult> {
 		// pre-calculate individual results
-		const corpHQResult = planet.value.corphq;
-		const cogcResult = planet.value.cogc;
+		const corpHQResult = plan.value.plan_corphq;
+		const cogcResult = plan.value.plan_cogc;
 
 		const workforceResult: IWorkforceRecord =
 			await calculateWorkforceResult();
 		const areaResult: IAreaResult = await calculateAreaResult();
 		const infrastructureResult: IInfrastructureRecord =
 			calculateInfrastructureResult();
-		const storageResult: IStorageRecord =
-		    calculateStorageResult();
+		const storageResult: IStorageRecord = calculateStorageResult();
 		const expertResult: IExpertRecord = calculateExpertResult();
 		const productionResult: IProductionResult = await calculateProduction(
 			corpHQResult,
@@ -883,7 +880,7 @@ export async function usePlanCalculation(
 
 	/**
 	 * Calculates the total weight of the plan's storage
-	 * 
+	 *
 	 * @type {ComputedRef<number>}
 	 */
 	const totalWeight: ComputedRef<number> = computed(() => {
@@ -892,7 +889,7 @@ export async function usePlanCalculation(
 
 	/**
 	 * Calculates the total volume of the plan's storage
-	 * 
+	 *
 	 * @type {ComputedRef<number>}
 	 */
 	const totalVolume: ComputedRef<number> = computed(() => {
@@ -950,22 +947,24 @@ export async function usePlanCalculation(
 	 */
 	const backendData: ComputedRef<IPlanCreateData> = computed(() => {
 		return {
-			name: planName.value ?? "missing name",
-			planet_id: planet.value.planetid,
-			faction: "NONE",
-			override_empire: false,
-			permits_used: 1,
-			permits_total: 3,
-			planet: planet.value,
-			infrastructure: data.value.infrastructure,
-			buildings: data.value.buildings,
 			empire_uuid: empireUuid.value,
+			plan_name: planName.value ?? "missing name",
+			planet_natural_id: plan.value.planet_natural_id,
+			plan_permits_used: plan.value.plan_permits_used,
+			plan_cogc: plan.value.plan_cogc,
+			plan_corphq: plan.value.plan_corphq,
+			plan_data: {
+				experts: data.value.experts,
+				buildings: data.value.buildings,
+				workforce: data.value.workforce,
+				infrastructure: data.value.infrastructure,
+			},
 		};
 	});
 
 	// submodules
 	const handlers = await usePlanCalculationHandlers(
-		planet,
+		plan,
 		data,
 		planName,
 		result

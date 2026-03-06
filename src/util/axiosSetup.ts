@@ -40,7 +40,7 @@ export default function axiosSetup() {
 			if (error.response && error.response.status === 401) {
 				if (
 					originalRequest.url &&
-					originalRequest.url.includes("/user/refresh")
+					originalRequest.url.includes("/user/refresh/")
 				) {
 					userStore.logout();
 					router.push("/");

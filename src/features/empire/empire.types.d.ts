@@ -41,11 +41,10 @@ interface IEmpirePlanMaterialIO {
 }
 
 interface IEmpirePatchPayload {
-	faction: PLAN_FACTION;
-	permits_used: number;
-	permits_total: number;
-	name: string;
-	use_fio_storage: boolean;
+	empire_name: string;
+	empire_faction: PLAN_FACTION;
+	empire_permits_used: number;
+	empire_permits_total: number;
 }
 
 type IEmpireCreatePayload = IEmpirePatchPayload;

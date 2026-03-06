@@ -5,7 +5,6 @@ import {
 import {
 	IBuilding,
 	IExchange,
-	IFIOSites,
 	IFIOStorage,
 	IMaterial,
 	IPlanet,
@@ -22,6 +21,7 @@ import {
 import {
 	ICX,
 	ICXData,
+	ICXPut,
 	IPlan,
 	IPlanEmpire,
 	IPlanEmpireElement,
@@ -34,27 +34,17 @@ import {
 	ISharedCreateResponse,
 } from "@/features/api/sharingData.types";
 
-import {
-	IExploration,
-	IExplorationRequestPayload,
-} from "@/features/market_exploration/marketExploration.types";
+import { IExploration } from "@/features/market_exploration/marketExploration.types";
 import {
 	IEmpireCreatePayload,
 	IEmpirePatchPayload,
 } from "@/features/empire/empire.types";
 import {
 	IPlanCreateData,
-	IPlanPatchMaterialIOElement,
 	IPlanSaveData,
 } from "@/features/planning_data/usePlan.types";
 import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
 import {
-	IOptimizeHabitationPayload,
-	IOptimizeHabitationResponse,
-} from "@/features/api/schemas/optimize.schemas";
-import {
-	IUserAPIKey,
-	IUserAPIKeyCreatePayload,
 	IUserChangePasswordPayload,
 	IUserRequestPasswordResetResponse,
 	IUserProfile,
@@ -64,7 +54,10 @@ import {
 	IUserRequestPasswordResetPayload,
 	IUserPasswordResetPayload,
 	IUserPasswordResetResponse,
+	IUserResponseDetail,
+	IUserRegistrationResponse,
 } from "@/features/api/userData.types";
+import { IPreference } from "@/features/preferences/userPreferences.types";
 
 /*
  * To be honest, this typing for Query Params and their data is a complete
@@ -77,16 +70,17 @@ export type ParamsOfDefinition<Q> = Q extends {
 }
 	? P
 	: Q extends IQueryDefinition<infer P, unknown>
-	? P
-	: never;
+		? P
+		: never;
 
-export type DataOfDefinition<Q> = Q extends IQueryDefinition<infer _, infer D>
-	? D
-	: Q extends { fetchFn: (...args: unknown[]) => Promise<infer D> }
-	? D
-	: Q extends { fetchFn: (...args: unknown[]) => infer D }
-	? D
-	: never;
+export type DataOfDefinition<Q> =
+	Q extends IQueryDefinition<infer _, infer D>
+		? D
+		: Q extends { fetchFn: (...args: unknown[]) => Promise<infer D> }
+			? D
+			: Q extends { fetchFn: (...args: unknown[]) => infer D }
+				? D
+				: never;
 
 export interface IQueryRepository {
 	GetMaterials: IQueryDefinition<undefined, IMaterial[]>;
@@ -120,7 +114,10 @@ export interface IQueryRepository {
 		{ junctions: ICXEmpireJunction[] },
 		ICX[]
 	>;
-	PatchCX: IQueryDefinition<{ cxUuid: string; data: ICXData }, ICXData>;
+	PatchCX: IQueryDefinition<
+		{ cxName: string; cxUuid: string; data: ICXData },
+		ICXPut
+	>;
 	GetAllEmpires: IQueryDefinition<undefined, IPlanEmpireElement[]>;
 	GetEmpirePlans: IQueryDefinition<{ empireUuid: string }, IPlan[]>;
 	PatchEmpire: IQueryDefinition<
@@ -149,41 +146,32 @@ export interface IQueryRepository {
 		{ planUuid: string; data: IPlanSaveData },
 		PlanSaveCreateResponseType
 	>;
-	PatchMaterialIO: IQueryDefinition<
-		{ data: IPlanPatchMaterialIOElement[] },
-		boolean
-	>;
 	GetExplorationData: IQueryDefinition<
 		{
 			exchangeTicker: string;
 			materialTicker: string;
-			payload: IExplorationRequestPayload;
 		},
 		IExploration[]
 	>;
 	GetFIOStorage: IQueryDefinition<undefined, IFIOStorage>;
-	GetFIOSites: IQueryDefinition<undefined, IFIOSites>;
+	// GetFIOSites: IQueryDefinition<undefined, IFIOSites>;
 	GetPlanetLastPOPR: IQueryDefinition<
 		{ planetNaturalId: string },
 		IPopulationReport
 	>;
-	OptimizeHabitation: IQueryDefinition<
-		IOptimizeHabitationPayload,
-		IOptimizeHabitationResponse
-	>;
 	PatchUserProfile: IQueryDefinition<IUserProfilePatch, IUserProfile>;
-	PostUserResendEmailVerification: IQueryDefinition<null, boolean>;
+	PostUserResendEmailVerification: IQueryDefinition<
+		null,
+		IUserResponseDetail
+	>;
 	PatchUserChangePassword: IQueryDefinition<
 		IUserChangePasswordPayload,
 		boolean
 	>;
 	PostUserVerifyEmail: IQueryDefinition<IUserVerifyEmailPayload, boolean>;
-	GetUserAPIKeyList: IQueryDefinition<undefined, IUserAPIKey[]>;
-	PostUserCreateAPIKey: IQueryDefinition<IUserAPIKeyCreatePayload, boolean>;
-	DeleteUserAPIKey: IQueryDefinition<{ key: string }, boolean>;
 	PostUserRegistration: IQueryDefinition<
 		IUserRegistrationPayload,
-		IUserProfile
+		IUserRegistrationResponse
 	>;
 	PostUserRequestPasswordReset: IQueryDefinition<
 		IUserRequestPasswordResetPayload,
@@ -193,4 +181,6 @@ export interface IQueryRepository {
 		IUserPasswordResetPayload,
 		IUserPasswordResetResponse
 	>;
+	PatchPreferences: IQueryDefinition<IPreference, IPreference>;
+	GetPreferences: IQueryDefinition<undefined, IPreference>;
 }

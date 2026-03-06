@@ -10,16 +10,14 @@
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import FIORepairPlanet from "@/features/fio/components/FIORepairPlanet.vue";
-	import FIORepairShip from "@/features/fio/components/FIORepairShip.vue";
 
 	// Util
 	import { relativeFromDate } from "@/util/date";
 
 	const planningStore = usePlanningStore();
 
-	const { planetRepairTable, shipRepairTable } = useFIORepair(
-		ref(planningStore.fio_sites_planets),
-		ref(planningStore.fio_sites_ships)
+	const { planetRepairTable } = useFIORepair(
+		ref(planningStore.fio_sites_planets)
 	);
 </script>
 
@@ -32,18 +30,18 @@
 				<div class="my-auto">
 					FIO Data Update:
 					{{
-						relativeFromDate(planningStore.fio_sites_timestamp ?? 0)
+						relativeFromDate(
+							planningStore.fio_storage_timestamp ?? 0,
+							true
+						)
 					}}
 				</div>
 			</div>
 
 			<div
-				class="grow grid grid-cols-1 lg:grid-cols-2 gap-3 divide-x divide-white/10 child:px-6 child:py-3">
+				class="grow grid grid-cols-1 gap-3 divide-x divide-white/10 child:px-6 child:py-3">
 				<div>
 					<FIORepairPlanet :repair-data="planetRepairTable" />
-				</div>
-				<div class="md:pl-3!">
-					<FIORepairShip :repair-data="shipRepairTable" />
 				</div>
 			</div>
 		</div>

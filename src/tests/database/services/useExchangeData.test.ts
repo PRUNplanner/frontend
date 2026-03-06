@@ -8,6 +8,7 @@ import exchanges from "@/tests/test_data/api_data_exchanges.json";
 
 describe("useExchangeData", () => {
 	beforeAll(async () => {
+		// @ts-expect-error
 		await exchangesStore.setMany(exchanges);
 	});
 
@@ -22,8 +23,9 @@ describe("useExchangeData", () => {
 			const { getExchangeTicker } = await useExchangeData();
 
 			const result = await getExchangeTicker("RAT.AI1");
+			console.log(result);
 			expect(result).toBeDefined();
-			expect(result.TickerId).toBe("RAT.AI1");
+			expect(result.ticker_id).toBe("RAT.AI1");
 		});
 	});
 
@@ -33,21 +35,13 @@ describe("useExchangeData", () => {
 
 			const result = await getMaterialExchangeOverview("CL");
 
-			expect(result.Ask).toBeDefined();
-			expect(result.Average).toBeDefined();
-			expect(result.Bid).toBeDefined();
-			expect(result.Demand).toBeDefined();
-			expect(result.PP30D).toBeDefined();
-			expect(result.PP7D).toBeDefined();
-			expect(result.Supply).toBeDefined();
-			expect(result.Ask).toStrictEqual({
-				AI1: 3500,
-				CI1: 3850,
-				IC1: 4490,
-				NC1: 3980,
-			});
-			expect(result.Universe30D).toEqual(3910.124333455047);
-			expect(result.Universe7D).toEqual(3600.871248110732);
+			expect(result.vwap_daily).toBeDefined();
+			expect(result.vwap_7d).toBeDefined();
+			expect(result.vwap_30d).toBeDefined();
+			expect(result.sum_traded_7d).toBeDefined();
+			expect(result.sum_traded_30d).toBeDefined();
+			expect(result.calendar_date).toBeDefined();
+			expect(result.exchange_status).toBeDefined();
 		});
 	});
 });

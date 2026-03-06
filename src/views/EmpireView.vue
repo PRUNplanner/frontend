@@ -195,7 +195,7 @@
 	 */
 	const empireName: ComputedRef<string> = computed(() => {
 		if (selectedEmpire.value) {
-			return selectedEmpire.value.name;
+			return selectedEmpire.value.empire_name;
 		}
 		return "Unknown";
 	});
@@ -215,10 +215,10 @@
 
 				return {
 					uuid: planUuid,
-					name: plan.name,
-					planet: plan.baseplanner_data.planet.planetid,
-					permits: plan.baseplanner_data.planet.permits,
-					cogc: plan!.baseplanner_data.planet.cogc,
+					name: plan.plan_name,
+					planet: plan.planet_natural_id,
+					permits: plan.plan_permits_used,
+					cogc: plan.plan_cogc,
 					profit: planResult.profit,
 				};
 			}
@@ -239,9 +239,9 @@
 						(p) => p.uuid == planUuid
 					)!;
 					return {
-						planetId: plan.baseplanner_data.planet.planetid,
+						planetId: plan.planet_natural_id,
 						planUuid: planUuid,
-						planName: plan.name ?? "Unknown Plan Name",
+						planName: plan.plan_name ?? "Unknown Plan Name",
 						materialIO: planResult.materialio,
 					};
 				}
@@ -257,7 +257,7 @@
 	const empireOptions = computed(() =>
 		refEmpireList.value.map((e) => {
 			return {
-				label: e.name,
+				label: e.empire_name,
 				value: e.uuid,
 			};
 		})

@@ -54,18 +54,18 @@ export function usePlanetSearchResults(
 					IPlanetSearchResultResource
 				> = {};
 				const additionalResources: IPlanetSearchResultResource[] = [];
-				e.Resources.forEach((er) => {
-					if (!searchMaterials.includes(er.MaterialTicker)) {
+				e.resources.forEach((er) => {
+					if (!searchMaterials.includes(er.material_ticker)) {
 						additionalResources.push({
-							ticker: er.MaterialTicker,
-							dailyExtraction: er.DailyExtraction,
-							maxExtraction: er.ExtractionMax,
+							ticker: er.material_ticker,
+							dailyExtraction: er.daily_extraction,
+							maxExtraction: er.max_daily_extraction,
 						});
 					} else {
-						searchResources[er.MaterialTicker] = {
-							ticker: er.MaterialTicker,
-							dailyExtraction: er.DailyExtraction,
-							maxExtraction: er.ExtractionMax,
+						searchResources[er.material_ticker] = {
+							ticker: er.material_ticker,
+							dailyExtraction: er.daily_extraction,
+							maxExtraction: er.max_daily_extraction,
 						};
 					}
 				});
@@ -81,12 +81,12 @@ export function usePlanetSearchResults(
 				const environmentTemperature: string[] = [];
 
 				// surface
-				if (e.Surface) environmentSurface.push("MCG");
+				if (e.surface) environmentSurface.push("MCG");
 				else environmentSurface.push("AEF");
 
 				// gravity
 				const gravityType: BOUNDARY_DESCRIPTOR = boundaryDescriptor(
-					e.Gravity,
+					e.gravity,
 					boundaryGravityLow,
 					boundaryGravityHigh
 				);
@@ -95,7 +95,7 @@ export function usePlanetSearchResults(
 
 				// pressure
 				const pressureType: BOUNDARY_DESCRIPTOR = boundaryDescriptor(
-					e.Pressure,
+					e.pressure,
 					boundaryPressureLow,
 					boundaryPressureHigh
 				);
@@ -106,7 +106,7 @@ export function usePlanetSearchResults(
 				// temperature
 
 				const temperatureType: BOUNDARY_DESCRIPTOR = boundaryDescriptor(
-					e.Temperature,
+					e.temperature,
 					boundaryTemperatureLow,
 					boundaryTemperatureHigh
 				);
@@ -118,34 +118,34 @@ export function usePlanetSearchResults(
 				// infrastructures
 				const infrastructures: string[] = [];
 
-				if (e.HasLocalMarket) infrastructures.push("LM");
-				if (e.HasChamberOfCommerce) infrastructures.push("COGC");
-				if (e.HasWarehouse) infrastructures.push("WAR");
-				if (e.HasAdministrationCenter) infrastructures.push("ADM");
-				if (e.HasShipyard) infrastructures.push("SHY");
+				if (e.has_localmarket) infrastructures.push("LM");
+				if (e.has_chamberofcommerce) infrastructures.push("COGC");
+				if (e.has_warehouse) infrastructures.push("WAR");
+				if (e.has_administrationcenter) infrastructures.push("ADM");
+				if (e.has_shipyard) infrastructures.push("SHY");
 
 				infrastructures.sort((a, b) => (a > b ? 1 : -1));
 
 				return {
-					planetId: e.PlanetNaturalId,
-					planetName: e.PlanetName,
+					planetId: e.planet_natural_id,
+					planetName: e.planet_name,
 					fertility:
-						e.Fertility === -1 ? 0 : 1 + e.Fertility * (10 / 33),
+						e.fertility === -1 ? 0 : 1 + e.fertility * (10 / 33),
 					cogcProgram:
-						e.COGCProgramActive !== null
-							? e.COGCProgramActive
+						e.active_cogc_program_type !== null
+							? e.active_cogc_program_type
 							: "—",
 					environmentSurface,
 					environmentGravity,
 					environmentPressure,
 					environmentTemperature,
-					distanceAI1: getPathBetweenLength(systemidAI1, e.SystemId),
-					distanceCI1: getPathBetweenLength(systemidCI1, e.SystemId),
-					distanceIC1: getPathBetweenLength(systemidIC1, e.SystemId),
-					distanceNC1: getPathBetweenLength(systemidNC1, e.SystemId),
+					distanceAI1: getPathBetweenLength(systemidAI1, e.system_id),
+					distanceCI1: getPathBetweenLength(systemidCI1, e.system_id),
+					distanceIC1: getPathBetweenLength(systemidIC1, e.system_id),
+					distanceNC1: getPathBetweenLength(systemidNC1, e.system_id),
 					checkDistance:
 						searchSystem && searchSystemDistance
-							? getPathBetweenLength(searchSystem, e.SystemId)
+							? getPathBetweenLength(searchSystem, e.system_id)
 							: null,
 					searchResources,
 					additionalResources,
@@ -186,22 +186,7 @@ export function usePlanetSearchResults(
 		return r;
 	});
 
-	/**
-	 * Boolean if the search includes a max distance check
-	 * @author jplacht
-	 *
-	 * @type {ComputedRef<string | null>}
-	 */
-	const hasCheckDistance: ComputedRef<string | null> = computed(() => {
-		if (searchData.length > 0 && searchData[0].CheckDistances !== null) {
-			return searchData[0].CheckDistances.SystemName;
-		} else {
-			return null;
-		}
-	});
-
 	return {
 		results,
-		hasCheckDistance,
 	};
 }

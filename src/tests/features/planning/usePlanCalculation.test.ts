@@ -51,6 +51,7 @@ describe("usePlanCalculation", async () => {
 		await buildingsStore.setMany(buildings);
 		await recipesStore.setMany(recipes);
 		await materialsStore.setMany(materials);
+		//@ts-expect-error mock data date as string
 		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
@@ -125,8 +126,8 @@ describe("usePlanCalculation", async () => {
 			result.infrastructure
 		);
 
-		expect(overviewData.dailyCost).toBe(38364.71626045736);
-		expect(overviewData.roi).toBe(25.909127634141438);
+		expect(overviewData.dailyCost).toBe(34758.368568527185);
+		expect(overviewData.roi).toBe(23.478162662559594);
 	});
 
 	it("validate visitationData", async () => {
@@ -167,134 +168,134 @@ describe("usePlanCalculation", async () => {
 		);
 		const { backendData } = calculation;
 
+		console.log(backendData.value);
+
 		expect(backendData.value).toStrictEqual({
-			buildings: [
-				{
-					active_recipes: [
-						{
-							amount: 1,
-							recipeid: "EXT#SIO",
-						},
-					],
-					amount: 1,
-					name: "EXT",
-				},
-				{
-					active_recipes: [
-						{
-							amount: 2,
-							recipeid: "FP#10xH2O=>7xDW",
-						},
-						{
-							amount: 1,
-							recipeid: "FP#1xCAF 3xDW=>3xCOF",
-						},
-						{
-							amount: 1,
-							recipeid: "FP#1xMUS 1xVEG 1xMAI=>10xRAT",
-						},
-					],
-					amount: 19,
-					name: "FP",
-				},
-				{
-					active_recipes: [
-						{
-							amount: 6,
-							recipeid: "HYF#22xH2O 3xNS=>2xCAF",
-						},
-						{
-							amount: 3,
-							recipeid: "HYF#14xH2O 1xNS=>8xHCP",
-						},
-						{
-							amount: 1,
-							recipeid: "HYF#4xNS=>12xMUS",
-						},
-						{
-							amount: 2,
-							recipeid: "HYF#16xH2O 1xNS=>6xVEG",
-						},
-						{
-							amount: 2,
-							recipeid: "HYF#20xH2O 2xNS=>12xMAI",
-						},
-					],
-					amount: 11,
-					name: "HYF",
-				},
-				{
-					active_recipes: [
-						{
-							amount: 1,
-							recipeid: "INC#4xHCP 2xMAI=>4xC",
-						},
-					],
-					amount: 7,
-					name: "INC",
-				},
-				{
-					active_recipes: [
-						{
-							amount: 1,
-							recipeid: "RIG#H2O",
-						},
-					],
-					amount: 21,
-					name: "RIG",
-				},
-			],
 			empire_uuid: undefined,
-			faction: "NONE",
-			infrastructure: [
-				{
-					amount: 22,
-					building: "HB1",
-				},
-				{
-					amount: 3,
-					building: "HB2",
-				},
-				{
-					amount: 0,
-					building: "HB3",
-				},
-				{
-					amount: 0,
-					building: "HB4",
-				},
-				{
-					amount: 0,
-					building: "HB5",
-				},
-				{
-					amount: 0,
-					building: "HBB",
-				},
-				{
-					amount: 0,
-					building: "HBC",
-				},
-				{
-					amount: 0,
-					building: "HBM",
-				},
-				{
-					amount: 0,
-					building: "HBL",
-				},
-				{
-					amount: 1,
-					building: "STO",
-				},
-			],
-			name: "EW COF RAT DW C",
-			override_empire: false,
-			permits_total: 3,
-			permits_used: 1,
-			planet: {
-				cogc: "RESOURCE_EXTRACTION",
-				corphq: false,
+			plan_name: "EW COF RAT DW C",
+			planet_natural_id: "KW-688c",
+			plan_permits_used: 3,
+			plan_cogc: "RESOURCE_EXTRACTION",
+			plan_corphq: false,
+			plan_data: {
+				buildings: [
+					{
+						active_recipes: [
+							{
+								amount: 1,
+								recipeid: "EXT#SIO",
+							},
+						],
+						amount: 1,
+						name: "EXT",
+					},
+					{
+						active_recipes: [
+							{
+								amount: 2,
+								recipeid: "FP#10xH2O=>7xDW",
+							},
+							{
+								amount: 1,
+								recipeid: "FP#1xCAF 3xDW=>3xCOF",
+							},
+							{
+								amount: 1,
+								recipeid: "FP#1xMUS 1xVEG 1xMAI=>10xRAT",
+							},
+						],
+						amount: 19,
+						name: "FP",
+					},
+					{
+						active_recipes: [
+							{
+								amount: 6,
+								recipeid: "HYF#22xH2O 3xNS=>2xCAF",
+							},
+							{
+								amount: 3,
+								recipeid: "HYF#14xH2O 1xNS=>8xHCP",
+							},
+							{
+								amount: 1,
+								recipeid: "HYF#4xNS=>12xMUS",
+							},
+							{
+								amount: 2,
+								recipeid: "HYF#16xH2O 1xNS=>6xVEG",
+							},
+							{
+								amount: 2,
+								recipeid: "HYF#20xH2O 2xNS=>12xMAI",
+							},
+						],
+						amount: 11,
+						name: "HYF",
+					},
+					{
+						active_recipes: [
+							{
+								amount: 1,
+								recipeid: "INC#4xHCP 2xMAI=>4xC",
+							},
+						],
+						amount: 7,
+						name: "INC",
+					},
+					{
+						active_recipes: [
+							{
+								amount: 1,
+								recipeid: "RIG#H2O",
+							},
+						],
+						amount: 21,
+						name: "RIG",
+					},
+				],
+				infrastructure: [
+					{
+						amount: 22,
+						building: "HB1",
+					},
+					{
+						amount: 3,
+						building: "HB2",
+					},
+					{
+						amount: 0,
+						building: "HB3",
+					},
+					{
+						amount: 0,
+						building: "HB4",
+					},
+					{
+						amount: 0,
+						building: "HB5",
+					},
+					{
+						amount: 0,
+						building: "HBB",
+					},
+					{
+						amount: 0,
+						building: "HBC",
+					},
+					{
+						amount: 0,
+						building: "HBM",
+					},
+					{
+						amount: 0,
+						building: "HBL",
+					},
+					{
+						amount: 1,
+						building: "STO",
+					},
+				],
 				experts: [
 					{
 						amount: 3,
@@ -333,8 +334,7 @@ describe("usePlanCalculation", async () => {
 						type: "Resource_Extraction",
 					},
 				],
-				permits: 3,
-				planetid: "KW-688c",
+
 				workforce: [
 					{
 						lux1: true,
@@ -363,7 +363,6 @@ describe("usePlanCalculation", async () => {
 					},
 				],
 			},
-			planet_id: "KW-688c",
 		});
 	});
 });

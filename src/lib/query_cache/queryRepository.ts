@@ -24,7 +24,6 @@ import { useDB } from "@/database/composables/useDB";
 import {
 	callDataBuildings,
 	callDataExchanges,
-	callDataFIOSites,
 	callDataFIOStorage,
 	callDataMaterials,
 	callDataMultiplePlanets,
@@ -42,7 +41,6 @@ import {
 	callGetPlan,
 	callGetPlanlist,
 	callGetShared,
-	callPatchPlanMaterialIO,
 	callSavePlan,
 } from "@/features/api/planData.api";
 import {
@@ -73,7 +71,6 @@ import { IQueryRepository } from "@/lib/query_cache/queryRepository.types";
 import {
 	IBuilding,
 	IExchange,
-	IFIOSites,
 	IFIOStorage,
 	IMaterial,
 	IPlanet,
@@ -90,6 +87,7 @@ import {
 import {
 	ICX,
 	ICXData,
+	ICXPut,
 	IPlan,
 	IPlanEmpire,
 	IPlanEmpireElement,
@@ -102,40 +100,28 @@ import {
 	ISharedCreateResponse,
 } from "@/features/api/sharingData.types";
 
-import {
-	IExploration,
-	IExplorationRequestPayload,
-} from "@/features/market_exploration/marketExploration.types";
+import { IExploration } from "@/features/market_exploration/marketExploration.types";
 import {
 	IEmpireCreatePayload,
 	IEmpirePatchPayload,
 } from "@/features/empire/empire.types";
 import {
 	IPlanCreateData,
-	IPlanPatchMaterialIOElement,
 	IPlanSaveData,
 } from "@/features/planning_data/usePlan.types";
 import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
 import {
-	IOptimizeHabitationPayload,
-	IOptimizeHabitationResponse,
-} from "@/features/api/schemas/optimize.schemas";
-import { callOptimizeHabitation } from "@/features/api/optimize.api";
-import {
-	callAPIKeyList,
 	callChangePassword,
-	callCreateAPIKey,
-	callDeleteAPIKey,
+	callGetUserPreferences,
 	callPasswordReset,
 	callPatchProfile,
+	callPatchUserPreferences,
 	callRegisterUser,
 	callRequestPasswordReset,
 	callResendEmailVerification,
 	callVerifyEmail,
 } from "@/features/api/userData.api";
 import {
-	IUserAPIKey,
-	IUserAPIKeyCreatePayload,
 	IUserChangePasswordPayload,
 	IUserRequestPasswordResetPayload,
 	IUserRequestPasswordResetResponse,
@@ -145,7 +131,11 @@ import {
 	IUserVerifyEmailPayload,
 	IUserPasswordResetPayload,
 	IUserPasswordResetResponse,
+	IUserResponseDetail,
+	IUserRegistrationResponse,
 } from "@/features/api/userData.types";
+import { IPreference } from "@/features/preferences/userPreferences.types";
+import { UserPreferenceType } from "@/features/api/schemas/user.schemas";
 
 export function useQueryRepository() {
 	const queryStore = useQueryStore();
@@ -243,9 +233,9 @@ export function useQueryRepository() {
 					// set plans individually
 					data.forEach((p) => {
 						queryStore.addCacheState(
-							["gamedata", "planet", p.PlanetNaturalId],
+							["gamedata", "planet", p.planet_natural_id],
 							"GetPlanet",
-							{ planetNaturalId: p.PlanetNaturalId },
+							{ planetNaturalId: p.planet_natural_id },
 							p
 						);
 					});
@@ -424,19 +414,30 @@ export function useQueryRepository() {
 				"patch",
 				params.cxUuid,
 			],
-			fetchFn: async (params: { cxUuid: string; data: ICXData }) => {
-				const data = await callPatchCX(params.cxUuid, params.data);
+			fetchFn: async (params: {
+				cxName: string;
+				cxUuid: string;
+				data: ICXData;
+			}) => {
+				const data = await callPatchCX(
+					params.cxName,
+					params.cxUuid,
+					params.data
+				);
 				await queryStore.invalidateKey(["planningdata", "cx"], {
 					exact: false,
 				});
 
-				planningStore.setCX(params.cxUuid, data);
+				planningStore.setCX(params.cxUuid, data.cx_name, data.cx_data);
 
 				return data;
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<{ cxUuid: string; data: ICXData }, ICXData>,
+		} as IQueryDefinition<
+			{ cxName: string; cxUuid: string; data: ICXData },
+			ICXPut
+		>,
 		GetAllEmpires: {
 			key: () => ["planningdata", "empire", "list"],
 			fetchFn: async () => {
@@ -457,6 +458,7 @@ export function useQueryRepository() {
 			fetchFn: async (params: { empireUuid: string }) => {
 				try {
 					const data = await callGetEmpirePlans(params.empireUuid);
+
 					planningStore.setPlans(data);
 
 					// manually set individual plans
@@ -707,38 +709,23 @@ export function useQueryRepository() {
 			{ planUuid: string; data: IPlanSaveData },
 			PlanSaveCreateResponseType
 		>,
-		PatchMaterialIO: {
-			key: () => ["planningdata", "materialio", "patch"],
-			fetchFn: async (params: {
-				data: IPlanPatchMaterialIOElement[];
-			}) => {
-				return await callPatchPlanMaterialIO(params.data);
-			},
-			autoRefetch: false,
-			persist: false,
-		} as IQueryDefinition<{ data: IPlanPatchMaterialIOElement[] }, boolean>,
 		GetExplorationData: {
 			key: (params: {
 				exchangeTicker: string;
 				materialTicker: string;
-				payload: IExplorationRequestPayload;
 			}) => [
 				"gamedata",
 				"marketexploration",
 				params.exchangeTicker,
 				params.materialTicker,
-				params.payload.start,
-				params.payload.end,
 			],
 			fetchFn: async (params: {
 				exchangeTicker: string;
 				materialTicker: string;
-				payload: IExplorationRequestPayload;
 			}) => {
 				return await callExplorationData(
 					params.exchangeTicker,
-					params.materialTicker,
-					params.payload
+					params.materialTicker
 				);
 			},
 			autoRefetch: false,
@@ -748,7 +735,6 @@ export function useQueryRepository() {
 			{
 				exchangeTicker: string;
 				materialTicker: string;
-				payload: IExplorationRequestPayload;
 			},
 			IExploration[]
 		>,
@@ -762,20 +748,20 @@ export function useQueryRepository() {
 			},
 			autoRefetch: true,
 			persist: true,
-			expireTime: 60_000 * 15, // 15 minutes
+			expireTime: 60_000 * 5, // 5 minutes
 		} as IQueryDefinition<void, IFIOStorage>,
-		GetFIOSites: {
-			key: () => ["gamedata", "fio", "sites"],
-			fetchFn: async () => {
-				return await callDataFIOSites().then((data: IFIOSites) => {
-					planningStore.setFIOSitesData(data);
-					return data;
-				});
-			},
-			autoRefetch: true,
-			persist: true,
-			expireTime: 60_000 * 15, // 15 minutes
-		} as IQueryDefinition<void, IFIOSites>,
+		// GetFIOSites: {
+		// 	key: () => ["gamedata", "fio", "sites"],
+		// 	fetchFn: async () => {
+		// 		return await callDataFIOSites().then((data: IFIOSites) => {
+		// 			planningStore.setFIOSitesData(data);
+		// 			return data;
+		// 		});
+		// 	},
+		// 	autoRefetch: true,
+		// 	persist: true,
+		// 	expireTime: 60_000 * 15, // 15 minutes
+		// } as IQueryDefinition<void, IFIOSites>,
 		GetPlanetLastPOPR: {
 			key: (params: { planetNaturalId: string }) => [
 				"gamedata",
@@ -791,23 +777,6 @@ export function useQueryRepository() {
 			persist: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 		} as IQueryDefinition<{ planetNaturalId: string }, IPopulationReport>,
-		OptimizeHabitation: {
-			key: (params: IOptimizeHabitationPayload) => [
-				"planningdata",
-				"optimize",
-				"habitation",
-				params,
-			],
-			fetchFn: async (params: IOptimizeHabitationPayload) => {
-				return await callOptimizeHabitation(params);
-			},
-			autoRefetch: false,
-			persist: true,
-			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
-		} as IQueryDefinition<
-			IOptimizeHabitationPayload,
-			IOptimizeHabitationResponse
-		>,
 		PatchUserProfile: {
 			key: () => ["user", "profile", "patch"],
 			fetchFn: async (params: IUserProfilePatch) => {
@@ -825,7 +794,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<null, boolean>,
+		} as IQueryDefinition<null, IUserResponseDetail>,
 		PatchUserChangePassword: {
 			key: () => ["user", "password", "patch"],
 			fetchFn: async (params: IUserChangePasswordPayload) => {
@@ -844,9 +813,7 @@ export function useQueryRepository() {
 			key: () => ["user", "verification", "check"],
 			fetchFn: async (params: IUserVerifyEmailPayload) => {
 				try {
-					const response = await callVerifyEmail(params);
-					if (response.status_code === 200) return true;
-					return false;
+					return await callVerifyEmail(params);
 				} catch {
 					return false;
 				}
@@ -854,57 +821,39 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<IUserVerifyEmailPayload, boolean>,
-		GetUserAPIKeyList: {
-			key: () => ["user", "api", "list"],
-			fetchFn: async () => {
-				return await callAPIKeyList();
-			},
-			autoRefetch: false,
-			persist: true,
-		} as IQueryDefinition<undefined, IUserAPIKey[]>,
-		PostUserCreateAPIKey: {
-			key: () => ["user", "api", "create"],
-			fetchFn: async (params: IUserAPIKeyCreatePayload) => {
-				try {
-					return await callCreateAPIKey(params.keyname);
-				} catch {
-					return false;
-				} finally {
-					await queryStore.invalidateKey(["user", "api"], {
-						exact: false,
-					});
-				}
-			},
-			autoRefetch: false,
-			persist: false,
-		} as IQueryDefinition<IUserAPIKeyCreatePayload, boolean>,
-		DeleteUserAPIKey: {
-			key: () => ["user", "api", "delete"],
-			fetchFn: async (params: { key: string }) => {
-				try {
-					return await callDeleteAPIKey(params.key);
-				} catch {
-					return false;
-				} finally {
-					await queryStore.invalidateKey(["user", "api"], {
-						exact: false,
-					});
-				}
-			},
-			autoRefetch: false,
-			persist: false,
-		} as IQueryDefinition<{ key: string }, boolean>,
 		PostUserRegistration: {
 			key: () => ["user", "account", "registration"],
 			fetchFn: async (params: IUserRegistrationPayload) => {
 				trackEvent("user_registration", {
 					username: params.username,
 				});
-				return await callRegisterUser(params);
+				try {
+					const response = await callRegisterUser(params);
+					return response;
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				} catch (error: any) {
+					const apiErrors = error.responseData;
+
+					if (apiErrors && typeof apiErrors === "object") {
+						const firstKey = Object.keys(apiErrors)[0];
+						const messages = apiErrors[firstKey];
+						const userFriendlyMessage = Array.isArray(messages)
+							? messages[0]
+							: messages;
+
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						(error as any).validationFields = userFriendlyMessage;
+					}
+
+					throw error;
+				}
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<IUserRegistrationPayload, IUserProfile>,
+		} as IQueryDefinition<
+			IUserRegistrationPayload,
+			IUserRegistrationResponse
+		>,
 		PostUserRequestPasswordReset: {
 			key: () => ["user", "account", "request_password_reset"],
 			fetchFn: async (params: IUserRequestPasswordResetPayload) => {
@@ -919,7 +868,17 @@ export function useQueryRepository() {
 		PostUserPasswordReset: {
 			key: () => ["user", "account", "password_reset"],
 			fetchFn: async (params: IUserPasswordResetPayload) => {
-				return await callPasswordReset(params.code, params.password);
+				try {
+					return await callPasswordReset(
+						params.email,
+						params.code,
+						params.new_password
+					);
+				} catch {
+					return {
+						detail: "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
+					};
+				}
 			},
 			autoRefetch: false,
 			persist: false,
@@ -927,6 +886,25 @@ export function useQueryRepository() {
 			IUserPasswordResetPayload,
 			IUserPasswordResetResponse
 		>,
+		PatchPreferences: {
+			key: () => ["user", "profile", "patch"],
+			fetchFn: async (prefs: IPreference) => {
+				return await callPatchUserPreferences(prefs);
+			},
+			autoRefetch: false,
+			persist: false,
+		} as IQueryDefinition<UserPreferenceType, UserPreferenceType>,
+		GetPreferences: {
+			key: () => ["user", "profile"],
+			fetchFn: async () => {
+				const prefs = await callGetUserPreferences();
+				userStore.preferences = prefs;
+
+				return prefs;
+			},
+			autoRefetch: false,
+			persist: false,
+		} as IQueryDefinition<undefined, UserPreferenceType>,
 	};
 
 	return {

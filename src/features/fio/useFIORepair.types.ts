@@ -8,13 +8,3 @@ export interface IFIOSitesRepairTablePlanetElement {
 	averageCondition: number;
 	maxLastRepairDays: number;
 }
-
-export interface IFIOSitesRepairTableShipElement {
-	shipRegistration: string;
-	shipName: string;
-	condition: number;
-	repairMaterials: {
-		ticker: string;
-		amount: number;
-	}[];
-}

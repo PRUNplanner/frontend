@@ -41,13 +41,13 @@ export class ProductionGraph {
 		allRecipes.forEach((buildingRecipes: IRecipe[]) => {
 			buildingRecipes.forEach((recipe: IRecipe) => {
 				// outputs
-				recipe.Outputs.forEach((output) => {
-					const node = this.getOrCreateNode(output.Ticker);
+				recipe.outputs.forEach((output) => {
+					const node = this.getOrCreateNode(output.material_ticker);
 					node.addRecipe(recipe);
 				});
 				// inputs
-				recipe.Inputs.forEach((input) =>
-					this.getOrCreateNode(input.Ticker)
+				recipe.inputs.forEach((input) =>
+					this.getOrCreateNode(input.material_ticker)
 				);
 			});
 		});
@@ -82,11 +82,13 @@ export class ProductionGraph {
 
 			if (planets.value && planets.value.length > 0) {
 				planets.value.forEach((planet: IPlanet) => {
-					planet.Resources.forEach((resource) => {
+					planet.resources.forEach((resource) => {
 						const buildingTicker =
-							resourceTypeToBuildingTicker[resource.ResourceType];
+							resourceTypeToBuildingTicker[
+								resource.resource_type
+							];
 						if (buildingTicker) {
-							extractableMaterialsMap[resource.MaterialTicker] =
+							extractableMaterialsMap[resource.material_ticker] =
 								buildingTicker;
 						}
 					});
@@ -219,14 +221,14 @@ export class ProductionGraph {
 			if (outputTicker) {
 				// Start with production recipes
 				const options = node.recipes.map((r) => ({
-					label: r.RecipeId,
-					value: r.RecipeId,
+					label: r.recipe_id,
+					value: r.recipe_id,
 				}));
 
 				// Add extraction option for extractable materials
 				if (isExtractable(node.materialTicker)) {
 					const buildingTicker =
-						node.getRecipe([])?.BuildingTicker ?? "EXT";
+						node.getRecipe([])?.building_ticker ?? "EXT";
 					const extractionId = `${buildingTicker}#=>${node.materialTicker}`;
 					options.unshift({
 						label: extractionId,
@@ -238,7 +240,7 @@ export class ProductionGraph {
 
 				// set the initial selection
 				const r = node.getRecipe(this.selectedRecipes);
-				if (r) recipeSelection[outputTicker] = r.RecipeId;
+				if (r) recipeSelection[outputTicker] = r.recipe_id;
 			}
 		}
 

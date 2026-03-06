@@ -46,6 +46,7 @@ export default [
 					varsIgnorePattern: "^_",
 					argsIgnorePattern: "^_",
 					caughtErrorsIgnorePattern: "^_",
+					ignoreRestSiblings: true,
 				},
 			],
 		},
@@ -69,6 +70,19 @@ export default [
 			"vue/singleline-html-element-content-newline": "off",
 			"vue/html-closing-bracket-newline": "off",
 			"vue/html-self-closing": "off",
+			"vue/no-unused-components": [
+				"error",
+				{
+					ignoreWhenBindingPresent: true,
+				},
+			],
+			"vue/no-unused-properties": [
+				"warn",
+				{
+					groups: ["props", "setup"],
+					deepData: false,
+				},
+			],
 		},
 	},
 ];
