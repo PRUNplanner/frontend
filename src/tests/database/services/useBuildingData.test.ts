@@ -332,7 +332,7 @@ describe("useBuildingData", async () => {
 					ticker: "LC",
 				},
 				{
-					input: 0.06,
+					input: 0.03,
 					output: 0,
 					ticker: "WS",
 				},
