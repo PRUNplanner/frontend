@@ -381,7 +381,7 @@ describe("Planning: Workforce Calculations", async () => {
 					ticker: "LC",
 				},
 				{
-					input: 0.1,
+					input: 0.05,
 					output: 0,
 					ticker: "WS",
 				},
