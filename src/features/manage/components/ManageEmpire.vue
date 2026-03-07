@@ -307,7 +307,11 @@
 		</div>
 	</div>
 	<x-n-data-table :data="localEmpires" striped class="pt-3">
-		<x-n-data-table-column key="empire_name" title="Name">
+		<x-n-data-table-column
+			key="empire_name"
+			title="Name"
+			sorter="default"
+			default-sort-order="ascend">
 			<template #render-cell="{ rowData }">
 				<router-link
 					:to="`/empire/${rowData.uuid}`"

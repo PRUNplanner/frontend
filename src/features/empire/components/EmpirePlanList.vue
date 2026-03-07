@@ -37,7 +37,11 @@
 
 <template>
 	<XNDataTable :data="planListData" striped>
-		<XNDataTableColumn key="name" title="Plan" sorter="default">
+		<XNDataTableColumn
+			key="name"
+			title="Plan"
+			sorter="default"
+			default-sort-order="ascend">
 			<template #render-cell="{ rowData }">
 				<div class="text-wrap">
 					<router-link

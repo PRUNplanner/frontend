@@ -316,7 +316,11 @@
 		striped
 		:single-line="false"
 		:pagination="{ pageSize: 50 }">
-		<x-n-data-table-column key="planName" title="Plan" sorter="default">
+		<x-n-data-table-column
+			key="planName"
+			title="Plan"
+			sorter="default"
+			default-sort-order="ascend">
 			<template #render-cell="{ rowData }">
 				<div class="w-43.75 text-wrap">
 					<router-link
