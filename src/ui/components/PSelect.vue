@@ -83,7 +83,6 @@
 		if (value.value === e && clearable) value.value = null;
 		else value.value = e;
 
-		useSearch.value = false;
 		open.value = false;
 	}
 
@@ -161,8 +160,11 @@
 			!dropdownRef.value?.contains(e.target as Node)
 		) {
 			open.value = false;
-			searchString.value = null;
 		}
+	}
+
+	function ensureOpened() {
+		if (!open.value) toggleOpen();
 	}
 
 	watch(open, (val) => {
@@ -175,6 +177,8 @@
 			document.addEventListener("click", handleClickOutside);
 		} else {
 			document.removeEventListener("click", handleClickOutside);
+			useSearch.value = false;
+			searchString.value = null;
 		}
 	});
 
@@ -205,19 +209,25 @@
 				class="flex flex-row items-center cursor-pointer bg-white/5 text-white/80 rounded-sm pr-2 min-h-7"
 				:class="!useSearch ? 'py-1 ' : ''"
 				@click="toggleOpen">
-				<div v-if="!useSearch" class="grow px-2">
+				<div
+					v-if="!useSearch"
+					class="grow px-2"
+					@click.stop="ensureOpened">
 					{{ displayValue }}
 				</div>
-				<div v-else class="grow child:child:bg-transparent! py-0.5">
+				<div
+					v-else
+					class="grow child:child:bg-transparent! py-0.5"
+					@click.stop="ensureOpened">
 					<PInput v-model:value="searchString" placeholder="Search" />
 				</div>
 				<div
 					v-if="value && value !== null && clearable"
 					class="text-white/60 w-4"
-					@click="clear">
+					@click.stop="clear">
 					<ClearSharp />
 				</div>
-				<div class="text-white w-4" @click="toggleOpen">
+				<div class="text-white w-4" @click.prevent.stop="toggleOpen">
 					<svg
 						viewBox="0 0 16 16"
 						fill="none"
