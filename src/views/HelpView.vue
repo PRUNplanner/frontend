@@ -41,38 +41,6 @@
 				<HelpTutorial />
 			</div>
 			<div>
-				<section class="bg-prunplanner text-black p-3 rounded mb-3">
-					<p>
-						<strong>We're leveling up!</strong> PRUNplanner will be
-						switching to a brand-new backend in the coming weeks.
-						We've open-sourced the new system—check out the
-						<a
-							href="https://github.com/PRUNplanner/backend"
-							target="_blank"
-							class="underline"
-							>repository</a
-						>
-						and read more about the
-						<a
-							href="https://github.com/PRUNplanner/frontend/issues/344#issuecomment-3973504946"
-							target="_blank"
-							class="underline"
-							>migration process</a
-						>
-						on GitHub.
-					</p>
-					<p>
-						<strong>Stay tuned:</strong> More details and an exact
-						timeline will be shared in the
-						<a
-							href="https://discord.gg/2MDR5DYSfY"
-							target="_blank"
-							class="underline"
-							>PCT Discord</a
-						>.
-					</p>
-				</section>
-
 				<h2 class="text-xl font-bold pb-3">Changelog</h2>
 				<div
 					v-if="markdownContent != ''"
