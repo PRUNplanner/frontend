@@ -62,19 +62,20 @@
 	const filteredOptions: ComputedRef<PSelectOption[]> = computed(() => {
 		if (searchString.value === null || searchString.value === "")
 			return options;
-		else {
-			return options.filter(
-				(f) =>
-					f.label
-						.toLowerCase()
-						.includes(searchString.value!.toLowerCase()) ||
-					f.children?.filter((c) =>
-						c.label
-							.toLowerCase()
-							.includes(searchString.value!.toLowerCase())
-					)
-			);
-		}
+		const search = searchString.value.toLowerCase();
+		return options
+			.map((f: PSelectOption) => {
+				if (f.children) {
+					const matchingChildren = f.children.filter((c: PSelectOption) =>
+						c.label.toLowerCase().includes(search)
+					);
+					if (matchingChildren.length === 0) return null;
+					return { ...f, children: matchingChildren };
+				}
+				if (f.label.toLowerCase().includes(search)) return f;
+				return null;
+			})
+			.filter((x: PSelectOption | null): x is PSelectOption => x != null);
 	});
 
 	function change(e: string | number | undefined) {
