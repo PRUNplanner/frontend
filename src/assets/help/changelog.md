@@ -1,3 +1,7 @@
+# 2026-03-08 - v. 0.24.2
+
+- Brings back ASK/BID selections as CX preferences, also enhances material tiles overlay to display more information [[PR-356]](https://github.com/PRUNplanner/frontend/pull/356)
+
 # 2026-03-07 - v. 0.24.1
 
 - Version 0.24 introduces a complete backend overhaul, integrating updated endpoints and open-sourcing the codebase on [GitHub](https://github.com/PRUNplanner/backend) for the first time. While core logic remains consistent, all material price calculations now utilize a Volume-Weighted Average Price (VWAP) to provide a more stable "fair market value" for long-term planning.
