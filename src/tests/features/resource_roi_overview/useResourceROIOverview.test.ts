@@ -73,7 +73,7 @@ describe("useResourceROIOverview", async () => {
 		expect(result.length).toBe(1);
 		expect(result[0].buildingTicker).toBe("RIG");
 		expect(result[0].dailyYield).toBe(2359.3500937521458);
-		expect(result[0].dailyProfit).toBe(91384.63487521681);
+		expect(result[0].dailyProfit).toBe(88631.84364589654);
 		expect(result[0].planetSurface.length).toBe(1);
 	});
 

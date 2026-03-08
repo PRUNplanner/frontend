@@ -126,8 +126,8 @@ describe("usePlanCalculation", async () => {
 			result.infrastructure
 		);
 
-		expect(overviewData.dailyCost).toBe(34758.368568527185);
-		expect(overviewData.roi).toBe(23.478162662559594);
+		expect(overviewData.dailyCost).toBe(35893.31692202096);
+		expect(overviewData.roi).toBe(23.63675760327964);
 	});
 
 	it("validate visitationData", async () => {

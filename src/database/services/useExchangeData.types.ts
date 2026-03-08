@@ -6,6 +6,10 @@ export interface IMaterialExchangeOverview {
 	vwap_30d: Required<Record<EXCHANGES_TYPE, number>>;
 	sum_traded_7d: Required<Record<EXCHANGES_TYPE, number>>;
 	sum_traded_30d: Required<Record<EXCHANGES_TYPE, number>>;
+	ask: Required<Record<EXCHANGES_TYPE, number>>;
+	bid: Required<Record<EXCHANGES_TYPE, number>>;
+	supply: Required<Record<EXCHANGES_TYPE, number>>;
+	demand: Required<Record<EXCHANGES_TYPE, number>>;
 	calendar_date: Required<Record<EXCHANGES_TYPE, Date>>;
 	exchange_status: Required<
 		Record<EXCHANGES_TYPE, "ACTIVE" | "INACTIVE" | "STALE">
