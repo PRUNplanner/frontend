@@ -17,6 +17,13 @@ export async function useExchangeData() {
 		"UNIVERSE",
 	];
 
+	const exchangeGameTypesArray: EXCHANGES_TYPE[] = [
+		"AI1",
+		"CI1",
+		"IC1",
+		"NC1",
+	];
+
 	const { get, preload } = useDB(exchangesStore);
 
 	async function getExchangeTicker(tickerId: string): Promise<IExchange> {
@@ -38,6 +45,10 @@ export async function useExchangeData() {
 			vwap_30d: {} as Record<EXCHANGES_TYPE, number>,
 			sum_traded_7d: {} as Record<EXCHANGES_TYPE, number>,
 			sum_traded_30d: {} as Record<EXCHANGES_TYPE, number>,
+			ask: {} as Record<EXCHANGES_TYPE, number>,
+			bid: {} as Record<EXCHANGES_TYPE, number>,
+			supply: {} as Record<EXCHANGES_TYPE, number>,
+			demand: {} as Record<EXCHANGES_TYPE, number>,
 			calendar_date: {} as Record<EXCHANGES_TYPE, Date>,
 			exchange_status: {} as Record<
 				EXCHANGES_TYPE,
@@ -58,6 +69,10 @@ export async function useExchangeData() {
 					overview.sum_traded_30d[type] = ticker.sum_traded_30d;
 					overview.calendar_date[type] = ticker.calendar_date;
 					overview.exchange_status[type] = ticker.exchange_status;
+					overview.ask[type] = ticker.ask;
+					overview.bid[type] = ticker.bid;
+					overview.supply[type] = ticker.supply;
+					overview.demand[type] = ticker.demand;
 				})
 			);
 		} catch (error) {
@@ -71,5 +86,6 @@ export async function useExchangeData() {
 		getExchangeTicker,
 		getMaterialExchangeOverview,
 		exchangeTypesArray,
+		exchangeGameTypesArray,
 	};
 }

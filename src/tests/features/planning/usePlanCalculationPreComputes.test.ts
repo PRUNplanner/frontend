@@ -81,7 +81,7 @@ describe("usePlanCalculationPreComputes", async () => {
 		expect(pp1Data.buildingData.area_cost).toBe(12);
 		expect(pp1Data.buildingData.costs.length).toBe(3);
 		expect(pp1Data.buildingRecipes.length).toBe(20);
-		expect(pp1Data.constructionCost).toBe(-47075.53049212322);
+		expect(pp1Data.constructionCost).toBe(-47210.68693274005);
 		expect(pp1Data.constructionMaterials.length).toBe(4);
 		expect(pp1Data.workforceMaterials.length).toBe(5);
 	});
