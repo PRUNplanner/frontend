@@ -43,6 +43,7 @@ export const useUserStore = defineStore(
 		const refreshToken: Ref<string | undefined> = ref(undefined);
 		const profile: Ref<IUserProfile | undefined> = ref(undefined);
 
+		const intialPreferencesCalled: Ref<boolean> = ref(false);
 		const preferences: Reactive<IPreference> =
 			reactive<IPreference>(preferenceDefaults);
 
@@ -140,6 +141,17 @@ export const useUserStore = defineStore(
 			queryStore.$reset();
 		}
 
+		async function queryPreferences(): Promise<void> {
+			if (intialPreferencesCalled.value) {
+				return;
+			}
+
+			intialPreferencesCalled.value = true;
+
+			// update preferences
+			await useQuery("GetPreferences").execute();
+		}
+
 		/**
 		 * Performs a login
 		 * @author jplacht
@@ -167,8 +179,7 @@ export const useUserStore = defineStore(
 				const { markUpdated } = useVersionCheck();
 				await markUpdated();
 
-				// update preferences
-				useQuery("GetPreferences");
+				queryPreferences();
 
 				return true;
 			} catch (err) {
@@ -192,8 +203,7 @@ export const useUserStore = defineStore(
 
 					setToken(tokenData.access, refreshToken.value);
 
-					// update preferences
-					useQuery("GetPreferences");
+					queryPreferences();
 
 					return true;
 				} catch (error) {
@@ -257,6 +267,7 @@ export const useUserStore = defineStore(
 			isLoggedIn,
 			hasFIO,
 			// preferences
+			intialPreferencesCalled,
 			preferences,
 			setPreference,
 			setPlanPreference,

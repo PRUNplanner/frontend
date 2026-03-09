@@ -1,7 +1,7 @@
 {
 	"name": "prunplanner_frontend",
 	"private": true,
-	"version": "0.24.2",
+	"version": "0.24.3",
 	"dbVersion": "26.3.6",
 	"type": "module",
 	"scripts": {
