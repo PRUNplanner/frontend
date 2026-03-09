@@ -1,6 +1,21 @@
 {
 	"navigation": {
-		"test": "hello girls and boys",
-		"empire": "Empire"
+		"empire": "Empire",
+		"planet_search": "Planet Search",
+		"management": "Management",
+		"exchanges": "Exchanges",
+		"tools": "Tools",
+		"market_exploration": "Market Exploration",
+		"recipe_roi": "Recipe ROI",
+		"resource_roi": "Resource ROI",
+		"hq_calculator": "HQ Calculator",
+		"production_chains": "Production Chains",
+		"upkeep_prices": "Upkeep Prices",
+		"fio_burn": "FIO Burn",
+		"fio_repair": "FIO Repair",
+		"account": "Account",
+		"profile": "Profile",
+		"help": "Help",
+		"logout": "Logout"
 	}
 }
