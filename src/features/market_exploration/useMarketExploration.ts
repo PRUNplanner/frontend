@@ -1,13 +1,9 @@
 // Composables
 import { useQuery } from "@/lib/query_cache/useQuery";
 
-// Util
-import { formatDate } from "@/util/date";
-
 // Types & Interfaces
 import {
 	IExploration,
-	IExplorationRequestPayload,
 	IMaterialExplorationRecord,
 } from "@/features/market_exploration/marketExploration.types";
 
@@ -31,16 +27,6 @@ export function useMarketExploration() {
 			NC1: [],
 		};
 
-		const todayString: string = formatDate(new Date());
-		const sevenAgoString: string = formatDate(
-			new Date(new Date().setDate(new Date().getDate() - 7))
-		);
-
-		const fetchPayload: IExplorationRequestPayload = {
-			start: sevenAgoString,
-			end: todayString,
-		};
-
 		// fetch multiple exploration data
 		const fetchPromises: Promise<IExploration[]>[] = [
 			"AI1",
@@ -51,7 +37,6 @@ export function useMarketExploration() {
 			useQuery("GetExplorationData", {
 				exchangeTicker: exchangeTicker,
 				materialTicker: ticker,
-				payload: fetchPayload,
 			})
 				.execute()
 				.then(

@@ -133,12 +133,12 @@
 	</div>
 
 	<x-n-data-table :data="localCX" striped class="pt-3">
-		<x-n-data-table-column key="name" title="Name">
+		<x-n-data-table-column key="cx_name" title="Name">
 			<template #render-cell="{ rowData }">
 				<router-link
 					:to="`/exchanges/${rowData.uuid}`"
 					class="text-link-primary font-bold hover:underline">
-					{{ rowData.name }}
+					{{ rowData.cx_name }}
 				</router-link>
 			</template>
 		</x-n-data-table-column>

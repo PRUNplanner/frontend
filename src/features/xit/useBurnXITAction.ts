@@ -27,10 +27,14 @@ export async function useBurnXITAction(
 	const { getPrice } = await usePrice(cxUuid, planetNaturalId);
 
 	// buildupo material overrides
-	materialOverrides.value = elements.value.reduce((sum, current) => {
-		sum[current.ticker] = materialOverrides.value[current.ticker] ?? null;
-		return sum;
-	}, {} as Record<string, number | null>);
+	materialOverrides.value = elements.value.reduce(
+		(sum, current) => {
+			sum[current.ticker] =
+				materialOverrides.value[current.ticker] ?? null;
+			return sum;
+		},
+		{} as Record<string, number | null>
+	);
 
 	/**
 	 * Computes a material table to be used in a XIT Resupply Action
@@ -67,8 +71,8 @@ export async function useBurnXITAction(
 						total: override
 							? override
 							: Math.ceil(totalNeed) > 0
-							? Math.ceil(totalNeed)
-							: 0,
+								? Math.ceil(totalNeed)
+								: 0,
 					});
 				}
 			});
@@ -100,8 +104,8 @@ export async function useBurnXITAction(
 			.forEach((material) => {
 				const mat: IMaterial = materialsMap.value[material.ticker];
 
-				totalWeight += mat.Weight * material.total;
-				totalVolume += mat.Volume * material.total;
+				totalWeight += mat.weight * material.total;
+				totalVolume += mat.volume * material.total;
 			});
 
 		return {

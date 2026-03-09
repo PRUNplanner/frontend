@@ -30,28 +30,28 @@ describe("useCXManagement", async () => {
 
 		it("should not allow BOTH if BUY or SELL exists", () => {
 			const current: ICXDataExchangeOption[] = [
-				{ type: "BUY", exchange: "AI1_BUY" },
+				{ type: "BUY", exchange: "AI1_30D" },
 			];
 			expect(canAddExchangePreference(current, "BOTH").value).toBe(false);
 		});
 
 		it("should not allow BUY if BOTH exists", () => {
 			const current: ICXDataExchangeOption[] = [
-				{ type: "BOTH", exchange: "AI1_AVG" },
+				{ type: "BOTH", exchange: "AI1_30D" },
 			];
 			expect(canAddExchangePreference(current, "BUY").value).toBe(false);
 		});
 
 		it("should allow SELL if only BUY exists", () => {
 			const current: ICXDataExchangeOption[] = [
-				{ type: "BUY", exchange: "AI1_BUY" },
+				{ type: "BUY", exchange: "AI1_30D" },
 			];
 			expect(canAddExchangePreference(current, "SELL").value).toBe(true);
 		});
 
 		it("should return false for invalid preference type", () => {
 			const current: ICXDataExchangeOption[] = [
-				{ type: "BUY", exchange: "AI1_BUY" },
+				{ type: "BUY", exchange: "AI1_30D" },
 			];
 			// @ts-expect-error: testing invalid input
 			expect(canAddExchangePreference(current, "INVALID").value).toBe(
@@ -106,31 +106,31 @@ describe("useCXManagement", async () => {
 	describe("updateExchangePreference", () => {
 		it("should add new preference", () => {
 			const current: ICXDataExchangeOption[] = [];
-			const updated = updateExchangePreference(current, "BUY", "AI1_BUY");
+			const updated = updateExchangePreference(current, "BUY", "AI1_30D");
 			expect(updated).toContainEqual({
 				type: "BUY",
-				exchange: "AI1_BUY",
+				exchange: "AI1_30D",
 			});
 		});
 
 		it("should update existing preference", () => {
 			const current: ICXDataExchangeOption[] = [
-				{ type: "BUY", exchange: "AI1_BUY" },
+				{ type: "BUY", exchange: "AI1_30D" },
 			];
-			const updated = updateExchangePreference(current, "BUY", "IC1_BUY");
+			const updated = updateExchangePreference(current, "BUY", "AI1_30D");
 			expect(updated).toContainEqual({
 				type: "BUY",
-				exchange: "IC1_BUY",
+				exchange: "AI1_30D",
 			});
 		});
 
 		it("should not add if not allowed", () => {
 			const current: ICXDataExchangeOption[] = [
-				{ type: "BOTH", exchange: "AI1_AVG" },
+				{ type: "BOTH", exchange: "AI1_30D" },
 			];
-			const updated = updateExchangePreference(current, "BUY", "IC1_BUY");
+			const updated = updateExchangePreference(current, "BUY", "AI1_30D");
 			expect(updated).toHaveLength(1);
-			expect(updated[0].exchange).toBe("AI1_AVG");
+			expect(updated[0].exchange).toBe("AI1_30D");
 		});
 	});
 
@@ -170,8 +170,8 @@ describe("useCXManagement", async () => {
 	describe("deleteExchangePreference", () => {
 		it("should delete existing type", () => {
 			const current: ICXDataExchangeOption[] = [
-				{ type: "BUY", exchange: "AI1_BUY" },
-				{ type: "SELL", exchange: "AI1_SELL" },
+				{ type: "BUY", exchange: "AI1_30D" },
+				{ type: "SELL", exchange: "AI1_30D" },
 			];
 			const updated = deleteExchangePreference(current, "BUY");
 			expect(updated).toHaveLength(1);

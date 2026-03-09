@@ -1,122 +1,46 @@
 {
-	"name": "EW COF RAT DW C",
 	"uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
-	"planet_id": "KW-688c",
-	"faction": "MORIA",
-	"permits_used": 24,
-	"permits_total": 24,
-	"override_empire": false,
-	"baseplanner_data": {
-		"planet": {
-			"planetid": "KW-688c",
-			"permits": 3,
-			"corphq": false,
-			"cogc": "RESOURCE_EXTRACTION",
-			"experts": [
-				{
-					"type": "Agriculture",
-					"amount": 3
-				},
-				{
-					"type": "Chemistry",
-					"amount": 0
-				},
-				{
-					"type": "Construction",
-					"amount": 0
-				},
-				{
-					"type": "Electronics",
-					"amount": 0
-				},
-				{
-					"type": "Food_Industries",
-					"amount": 2
-				},
-				{
-					"type": "Fuel_Refining",
-					"amount": 0
-				},
-				{
-					"type": "Manufacturing",
-					"amount": 0
-				},
-				{
-					"type": "Metallurgy",
-					"amount": 0
-				},
-				{
-					"type": "Resource_Extraction",
-					"amount": 1
-				}
-			],
-			"workforce": [
-				{
-					"type": "pioneer",
-					"lux1": true,
-					"lux2": true
-				},
-				{
-					"type": "settler",
-					"lux1": true,
-					"lux2": true
-				},
-				{
-					"type": "technician",
-					"lux1": false,
-					"lux2": false
-				},
-				{
-					"type": "engineer",
-					"lux1": false,
-					"lux2": false
-				},
-				{
-					"type": "scientist",
-					"lux1": false,
-					"lux2": false
-				}
-			]
-		},
-		"infrastructure": [
+	"plan_name": "EW COF RAT DW C",
+	"planet_natural_id": "KW-688c",
+	"plan_permits_used": 3,
+	"plan_cogc": "RESOURCE_EXTRACTION",
+	"plan_corphq": false,
+	"plan_data": {
+		"experts": [
 			{
-				"building": "HB1",
-				"amount": 22
-			},
-			{
-				"building": "HB2",
+				"type": "Agriculture",
 				"amount": 3
 			},
 			{
-				"building": "HB3",
+				"type": "Chemistry",
 				"amount": 0
 			},
 			{
-				"building": "HB4",
+				"type": "Construction",
 				"amount": 0
 			},
 			{
-				"building": "HB5",
+				"type": "Electronics",
 				"amount": 0
 			},
 			{
-				"building": "HBB",
+				"type": "Food_Industries",
+				"amount": 2
+			},
+			{
+				"type": "Fuel_Refining",
 				"amount": 0
 			},
 			{
-				"building": "HBC",
+				"type": "Manufacturing",
 				"amount": 0
 			},
 			{
-				"building": "HBM",
+				"type": "Metallurgy",
 				"amount": 0
 			},
 			{
-				"building": "HBL",
-				"amount": 0
-			},
-			{
-				"building": "STO",
+				"type": "Resource_Extraction",
 				"amount": 1
 			}
 		],
@@ -126,8 +50,8 @@
 				"amount": 1,
 				"active_recipes": [
 					{
-						"recipeid": "EXT#SIO",
-						"amount": 1
+						"amount": 1,
+						"recipeid": "EXT#SIO"
 					}
 				]
 			},
@@ -136,16 +60,16 @@
 				"amount": 19,
 				"active_recipes": [
 					{
-						"recipeid": "FP#10xH2O=>7xDW",
-						"amount": 2
+						"amount": 2,
+						"recipeid": "FP#10xH2O=>7xDW"
 					},
 					{
-						"recipeid": "FP#1xCAF 3xDW=>3xCOF",
-						"amount": 1
+						"amount": 1,
+						"recipeid": "FP#1xCAF 3xDW=>3xCOF"
 					},
 					{
-						"recipeid": "FP#1xMUS 1xVEG 1xMAI=>10xRAT",
-						"amount": 1
+						"amount": 1,
+						"recipeid": "FP#1xMUS 1xVEG 1xMAI=>10xRAT"
 					}
 				]
 			},
@@ -154,24 +78,24 @@
 				"amount": 11,
 				"active_recipes": [
 					{
-						"recipeid": "HYF#22xH2O 3xNS=>2xCAF",
-						"amount": 6
+						"amount": 6,
+						"recipeid": "HYF#22xH2O 3xNS=>2xCAF"
 					},
 					{
-						"recipeid": "HYF#14xH2O 1xNS=>8xHCP",
-						"amount": 3
+						"amount": 3,
+						"recipeid": "HYF#14xH2O 1xNS=>8xHCP"
 					},
 					{
-						"recipeid": "HYF#4xNS=>12xMUS",
-						"amount": 1
+						"amount": 1,
+						"recipeid": "HYF#4xNS=>12xMUS"
 					},
 					{
-						"recipeid": "HYF#16xH2O 1xNS=>6xVEG",
-						"amount": 2
+						"amount": 2,
+						"recipeid": "HYF#16xH2O 1xNS=>6xVEG"
 					},
 					{
-						"recipeid": "HYF#20xH2O 2xNS=>12xMAI",
-						"amount": 2
+						"amount": 2,
+						"recipeid": "HYF#20xH2O 2xNS=>12xMAI"
 					}
 				]
 			},
@@ -180,8 +104,8 @@
 				"amount": 7,
 				"active_recipes": [
 					{
-						"recipeid": "INC#4xHCP 2xMAI=>4xC",
-						"amount": 1
+						"amount": 1,
+						"recipeid": "INC#4xHCP 2xMAI=>4xC"
 					}
 				]
 			},
@@ -190,37 +114,530 @@
 				"amount": 21,
 				"active_recipes": [
 					{
-						"recipeid": "RIG#H2O",
-						"amount": 1
+						"amount": 1,
+						"recipeid": "RIG#H2O"
 					}
 				]
+			}
+		],
+		"workforce": [
+			{
+				"lux1": true,
+				"lux2": true,
+				"type": "pioneer"
+			},
+			{
+				"lux1": true,
+				"lux2": true,
+				"type": "settler"
+			},
+			{
+				"lux1": false,
+				"lux2": false,
+				"type": "technician"
+			},
+			{
+				"lux1": false,
+				"lux2": false,
+				"type": "engineer"
+			},
+			{
+				"lux1": false,
+				"lux2": false,
+				"type": "scientist"
+			}
+		],
+		"infrastructure": [
+			{
+				"amount": 22,
+				"building": "HB1"
+			},
+			{
+				"amount": 3,
+				"building": "HB2"
+			},
+			{
+				"amount": 0,
+				"building": "HB3"
+			},
+			{
+				"amount": 0,
+				"building": "HB4"
+			},
+			{
+				"amount": 0,
+				"building": "HB5"
+			},
+			{
+				"amount": 0,
+				"building": "HBB"
+			},
+			{
+				"amount": 0,
+				"building": "HBC"
+			},
+			{
+				"amount": 0,
+				"building": "HBM"
+			},
+			{
+				"amount": 0,
+				"building": "HBL"
+			},
+			{
+				"amount": 1,
+				"building": "STO"
 			}
 		]
 	},
 	"empires": [
 		{
-			"faction": "MORIA",
-			"permits_used": 25,
-			"permits_total": 28,
-			"uuid": "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6",
-			"name": "PRUN REAL",
-			"use_fio_storage": true
-		},
-		{
-			"faction": "MORIA",
-			"permits_used": 26,
-			"permits_total": 26,
-			"uuid": "c92db9b8-ef3b-44c4-9fb5-a61964f6fc5a",
-			"name": "PRUN Expand #2",
-			"use_fio_storage": false
-		},
-		{
-			"faction": "MORIA",
-			"permits_used": 27,
-			"permits_total": 28,
 			"uuid": "32aed118-c4ed-4a4e-9eb4-3cf6aa0068da",
-			"name": "Sky Productions",
-			"use_fio_storage": true
+			"empire_name": "Sky Productions",
+			"empire_faction": "MORIA",
+			"empire_permits_used": 25,
+			"empire_permits_total": 28,
+			"cx": {
+				"uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
+				"cx_name": "PRUN CX REAL",
+				"cx_data": {
+					"cx_empire": [
+						{
+							"type": "BOTH",
+							"exchange": "UNIVERSE_30D"
+						}
+					],
+					"cx_planets": [],
+					"ticker_empire": [
+						{
+							"type": "SELL",
+							"value": 80.0,
+							"ticker": "FEO"
+						},
+						{
+							"type": "SELL",
+							"value": 3800.0,
+							"ticker": "UTS"
+						},
+						{
+							"type": "SELL",
+							"value": 45.0,
+							"ticker": "SFK"
+						},
+						{
+							"type": "SELL",
+							"value": 145.0,
+							"ticker": "MFK"
+						},
+						{
+							"type": "BUY",
+							"value": 35.0,
+							"ticker": "O"
+						},
+						{
+							"type": "BUY",
+							"value": 19.0,
+							"ticker": "PG"
+						},
+						{
+							"type": "BUY",
+							"value": 9.0,
+							"ticker": "PE"
+						},
+						{
+							"type": "BUY",
+							"value": 9.0,
+							"ticker": "H2O"
+						},
+						{
+							"type": "BUY",
+							"value": 180.0,
+							"ticker": "PT"
+						},
+						{
+							"type": "BUY",
+							"value": 53.0,
+							"ticker": "GRN"
+						},
+						{
+							"type": "BUY",
+							"value": 150.0,
+							"ticker": "C"
+						},
+						{
+							"type": "BUY",
+							"value": 250.0,
+							"ticker": "AL"
+						},
+						{
+							"type": "BUY",
+							"value": 9.0,
+							"ticker": "NCS"
+						},
+						{
+							"type": "BUY",
+							"value": 95.0,
+							"ticker": "EPO"
+						},
+						{
+							"type": "BUY",
+							"value": 1100.0,
+							"ticker": "HER"
+						},
+						{
+							"type": "BUY",
+							"value": 74.0,
+							"ticker": "BEA"
+						},
+						{
+							"type": "BUY",
+							"value": 74.0,
+							"ticker": "HCP"
+						},
+						{
+							"type": "BUY",
+							"value": 70.0,
+							"ticker": "PPA"
+						},
+						{
+							"type": "BUY",
+							"value": 770.0,
+							"ticker": "FIM"
+						},
+						{
+							"type": "BUY",
+							"value": 2650.0,
+							"ticker": "MEA"
+						}
+					],
+					"ticker_planets": [
+						{
+							"planet": "ZV-194a",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 300.0,
+									"ticker": "AL"
+								}
+							]
+						},
+						{
+							"planet": "KW-688c",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 150.0,
+									"ticker": "NS"
+								}
+							]
+						},
+						{
+							"planet": "KI-446b",
+							"preferences": [
+								{
+									"type": "BOTH",
+									"value": 17.0,
+									"ticker": "H2O"
+								},
+								{
+									"type": "BUY",
+									"value": 150.0,
+									"ticker": "NS"
+								}
+							]
+						},
+						{
+							"planet": "ZV-307c",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 486.0,
+									"ticker": "RCO"
+								}
+							]
+						},
+						{
+							"planet": "OT-580b",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 48.0,
+									"ticker": "LST"
+								}
+							]
+						},
+						{
+							"planet": "QJ-149c",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 55.0,
+									"ticker": "GRN"
+								}
+							]
+						},
+						{
+							"planet": "JS-299a",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 14.0,
+									"ticker": "H2O"
+								},
+								{
+									"type": "BUY",
+									"value": 53.0,
+									"ticker": "GRN"
+								}
+							]
+						},
+						{
+							"planet": "ZV-759b",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 313.0,
+									"ticker": "FE"
+								}
+							]
+						},
+						{
+							"planet": "QJ-382a",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 145.0,
+									"ticker": "H"
+								}
+							]
+						}
+					]
+				}
+			}
+		},
+		{
+			"uuid": "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6",
+			"empire_name": "PRUN REAL",
+			"empire_faction": "MORIA",
+			"empire_permits_used": 25,
+			"empire_permits_total": 28,
+			"cx": {
+				"uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
+				"cx_name": "PRUN CX REAL",
+				"cx_data": {
+					"cx_empire": [
+						{
+							"type": "BOTH",
+							"exchange": "UNIVERSE_30D"
+						}
+					],
+					"cx_planets": [],
+					"ticker_empire": [
+						{
+							"type": "SELL",
+							"value": 80.0,
+							"ticker": "FEO"
+						},
+						{
+							"type": "SELL",
+							"value": 3800.0,
+							"ticker": "UTS"
+						},
+						{
+							"type": "SELL",
+							"value": 45.0,
+							"ticker": "SFK"
+						},
+						{
+							"type": "SELL",
+							"value": 145.0,
+							"ticker": "MFK"
+						},
+						{
+							"type": "BUY",
+							"value": 35.0,
+							"ticker": "O"
+						},
+						{
+							"type": "BUY",
+							"value": 19.0,
+							"ticker": "PG"
+						},
+						{
+							"type": "BUY",
+							"value": 9.0,
+							"ticker": "PE"
+						},
+						{
+							"type": "BUY",
+							"value": 9.0,
+							"ticker": "H2O"
+						},
+						{
+							"type": "BUY",
+							"value": 180.0,
+							"ticker": "PT"
+						},
+						{
+							"type": "BUY",
+							"value": 53.0,
+							"ticker": "GRN"
+						},
+						{
+							"type": "BUY",
+							"value": 150.0,
+							"ticker": "C"
+						},
+						{
+							"type": "BUY",
+							"value": 250.0,
+							"ticker": "AL"
+						},
+						{
+							"type": "BUY",
+							"value": 9.0,
+							"ticker": "NCS"
+						},
+						{
+							"type": "BUY",
+							"value": 95.0,
+							"ticker": "EPO"
+						},
+						{
+							"type": "BUY",
+							"value": 1100.0,
+							"ticker": "HER"
+						},
+						{
+							"type": "BUY",
+							"value": 74.0,
+							"ticker": "BEA"
+						},
+						{
+							"type": "BUY",
+							"value": 74.0,
+							"ticker": "HCP"
+						},
+						{
+							"type": "BUY",
+							"value": 70.0,
+							"ticker": "PPA"
+						},
+						{
+							"type": "BUY",
+							"value": 770.0,
+							"ticker": "FIM"
+						},
+						{
+							"type": "BUY",
+							"value": 2650.0,
+							"ticker": "MEA"
+						}
+					],
+					"ticker_planets": [
+						{
+							"planet": "ZV-194a",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 300.0,
+									"ticker": "AL"
+								}
+							]
+						},
+						{
+							"planet": "KW-688c",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 150.0,
+									"ticker": "NS"
+								}
+							]
+						},
+						{
+							"planet": "KI-446b",
+							"preferences": [
+								{
+									"type": "BOTH",
+									"value": 17.0,
+									"ticker": "H2O"
+								},
+								{
+									"type": "BUY",
+									"value": 150.0,
+									"ticker": "NS"
+								}
+							]
+						},
+						{
+							"planet": "ZV-307c",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 486.0,
+									"ticker": "RCO"
+								}
+							]
+						},
+						{
+							"planet": "OT-580b",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 48.0,
+									"ticker": "LST"
+								}
+							]
+						},
+						{
+							"planet": "QJ-149c",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 55.0,
+									"ticker": "GRN"
+								}
+							]
+						},
+						{
+							"planet": "JS-299a",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 14.0,
+									"ticker": "H2O"
+								},
+								{
+									"type": "BUY",
+									"value": 53.0,
+									"ticker": "GRN"
+								}
+							]
+						},
+						{
+							"planet": "ZV-759b",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 313.0,
+									"ticker": "FE"
+								}
+							]
+						},
+						{
+							"planet": "QJ-382a",
+							"preferences": [
+								{
+									"type": "BUY",
+									"value": 145.0,
+									"ticker": "H"
+								}
+							]
+						}
+					]
+				}
+			}
 		}
 	]
 }

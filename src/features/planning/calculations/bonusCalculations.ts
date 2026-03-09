@@ -142,17 +142,17 @@ export async function useBonusCalculation() {
 		let efficiency: number = 0;
 
 		efficiency +=
-			(building.Pioneers / totalWorkforce) * workforce.pioneer.efficiency;
+			(building.pioneers / totalWorkforce) * workforce.pioneer.efficiency;
 		efficiency +=
-			(building.Settlers / totalWorkforce) * workforce.settler.efficiency;
+			(building.settlers / totalWorkforce) * workforce.settler.efficiency;
 		efficiency +=
-			(building.Technicians / totalWorkforce) *
+			(building.technicians / totalWorkforce) *
 			workforce.technician.efficiency;
 		efficiency +=
-			(building.Engineers / totalWorkforce) *
+			(building.engineers / totalWorkforce) *
 			workforce.engineer.efficiency;
 		efficiency +=
-			(building.Scientists / totalWorkforce) *
+			(building.scientists / totalWorkforce) *
 			workforce.scientist.efficiency;
 
 		return efficiency;
@@ -174,10 +174,14 @@ export async function useBonusCalculation() {
 
 		// multiplier using share of used and total available permits
 		const multiplier: number =
-			2 * (-2 * (empire.permits_used / empire.permits_total) + 3);
+			2 *
+			(-2 * (empire.empire_permits_used / empire.empire_permits_total) +
+				3);
 
 		const efficiency: number | undefined =
-			FACTION_BONUS_MAP[empire.faction]?.[building.Expertise];
+			FACTION_BONUS_MAP[empire.empire_faction]?.[
+				building.expertise as BUILDING_EXPERTISE_TYPE
+			];
 
 		if (!efficiency) return undefined;
 
@@ -221,12 +225,12 @@ export async function useBonusCalculation() {
 		const elements: IBuildingEfficiency[] = [];
 
 		// Fertility and Farming buildings
-		if (["FRM", "ORC"].includes(building.Ticker)) {
+		if (["FRM", "ORC"].includes(building.building_ticker)) {
 			elements.push({
 				efficiencyType: "FERTILITY",
 				value:
-					planet.Fertility != -1.0
-						? 1 + planet.Fertility * (10 / 33)
+					planet.fertility != -1.0
+						? 1 + planet.fertility * (10 / 33)
 						: 0,
 			});
 		}
@@ -242,7 +246,7 @@ export async function useBonusCalculation() {
 		// Expert + Advertising COGC
 		if (building.Expertise !== null) {
 			// COGC on programs
-			if (cogc === building.Expertise) {
+			if (cogc === building.expertise) {
 				elements.push({
 					efficiencyType: "COGC",
 					value: 1.25,
@@ -250,7 +254,11 @@ export async function useBonusCalculation() {
 			}
 
 			const expertElement: IExpertElement =
-				experts[MAP_BUILDING_EXPERTISE_EXPERTS[building.Expertise]];
+				experts[
+					MAP_BUILDING_EXPERTISE_EXPERTS[
+						building.expertise as BUILDING_EXPERTISE_TYPE
+					]
+				];
 
 			if (expertElement.amount > 0) {
 				elements.push({
@@ -274,11 +282,11 @@ export async function useBonusCalculation() {
 			// number to then check for existance
 
 			const workforceMap: Record<string, number> = {
-				PIONEERS: building.Pioneers,
-				SETTLERS: building.Settlers,
-				TECHNICIANS: building.Technicians,
-				ENGINEERS: building.Engineers,
-				SCIENTISTS: building.Scientists,
+				PIONEERS: building.pioneers,
+				SETTLERS: building.settlers,
+				TECHNICIANS: building.technicians,
+				ENGINEERS: building.engineers,
+				SCIENTISTS: building.scientists,
 			};
 
 			if (workforceMap[cogc] > 0) {

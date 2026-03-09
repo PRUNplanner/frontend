@@ -14,6 +14,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Composables
+import { useQuery } from "@/lib/query_cache/useQuery";
 import { useVersionCheck } from "@/lib/useVersionCheck";
 import {
 	trackEvent,
@@ -25,6 +26,7 @@ import {
 // Types & Interfaces
 import {
 	IUserProfile,
+	IUserRefreshTokenResponse,
 	IUserTokenResponse,
 } from "@/features/api/userData.types";
 import {
@@ -41,6 +43,7 @@ export const useUserStore = defineStore(
 		const refreshToken: Ref<string | undefined> = ref(undefined);
 		const profile: Ref<IUserProfile | undefined> = ref(undefined);
 
+		const intialPreferencesCalled: Ref<boolean> = ref(false);
 		const preferences: Reactive<IPreference> =
 			reactive<IPreference>(preferenceDefaults);
 
@@ -49,6 +52,7 @@ export const useUserStore = defineStore(
 			accessToken.value = undefined;
 			refreshToken.value = undefined;
 			profile.value = undefined;
+			Object.assign(preferences, preferenceDefaults);
 		}
 
 		// user preference handling
@@ -137,6 +141,17 @@ export const useUserStore = defineStore(
 			queryStore.$reset();
 		}
 
+		async function queryPreferences(): Promise<void> {
+			if (intialPreferencesCalled.value) {
+				return;
+			}
+
+			intialPreferencesCalled.value = true;
+
+			// update preferences
+			await useQuery("GetPreferences").execute();
+		}
+
 		/**
 		 * Performs a login
 		 * @author jplacht
@@ -156,13 +171,15 @@ export const useUserStore = defineStore(
 					password
 				);
 
-				setToken(tokenData.access_token, tokenData.refresh_token);
+				setToken(tokenData.access, tokenData.refresh);
 
 				trackEvent("user_login", { username });
 
 				// sets the current version to the available version
 				const { markUpdated } = useVersionCheck();
 				await markUpdated();
+
+				queryPreferences();
 
 				return true;
 			} catch (err) {
@@ -181,10 +198,12 @@ export const useUserStore = defineStore(
 		async function performTokenRefresh(): Promise<boolean> {
 			if (refreshToken.value) {
 				try {
-					const tokenData: IUserTokenResponse =
+					const tokenData: IUserRefreshTokenResponse =
 						await callRefreshToken(refreshToken.value);
 
-					setToken(tokenData.access_token, tokenData.refresh_token);
+					setToken(tokenData.access, refreshToken.value);
+
+					queryPreferences();
 
 					return true;
 				} catch (error) {
@@ -209,7 +228,7 @@ export const useUserStore = defineStore(
 				try {
 					await callGetProfile().then((result: IUserProfile) => {
 						// identify users for posthog
-						identifyUser(result.user_id.toString(), {
+						identifyUser(result.id.toString(), {
 							username: result.username,
 						});
 
@@ -248,6 +267,7 @@ export const useUserStore = defineStore(
 			isLoggedIn,
 			hasFIO,
 			// preferences
+			intialPreferencesCalled,
 			preferences,
 			setPreference,
 			setPlanPreference,

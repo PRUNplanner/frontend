@@ -9,7 +9,6 @@ import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
 import empire_list from "@/tests/test_data/api_data_empire_list.json";
 import cx_list from "@/tests/test_data/api_data_cx_list.json";
 import shared_list from "@/tests/test_data/api_data_shared_list.json";
-import fio_sites from "@/tests/test_data/api_data_fio_sites.json";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 
 const etherwindUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
@@ -27,7 +26,7 @@ describe("Planning Store", async () => {
 	describe("setters and getters", async () => {
 		it("setEmpires", async () => {
 			planningStore.setEmpires(empire_list);
-			expect(Object.keys(planningStore.empires).length).toBe(2);
+			expect(Object.keys(planningStore.empires).length).toBe(7);
 		});
 
 		it("setPlan", async () => {
@@ -61,7 +60,7 @@ describe("Planning Store", async () => {
 		it("setCXs", async () => {
 			// @ts-expect-error mock data
 			planningStore.setCXs(cx_list);
-			expect(Object.keys(planningStore.cxs).length).toBe(6);
+			expect(Object.keys(planningStore.cxs).length).toBe(5);
 		});
 
 		it("setCXs", async () => {
@@ -92,17 +91,19 @@ describe("Planning Store", async () => {
 			// @ts-expect-error mock data
 			planningStore.setCXs(cx_list);
 			expect(
-				planningStore.getCX("2a83a2ca-db0c-49d2-9c43-0db08c1675bb")
+				planningStore.getCX("8eec58c8-7fcb-4bc6-bfc9-56879d297a18")
 			).toBeDefined();
 			expect(() => planningStore.getCX("foo")).toThrowError();
 		});
 
 		it("setSharedList", async () => {
+			// @ts-expect-error mock date
 			planningStore.setSharedList(shared_list);
-			expect(Object.keys(planningStore.shared).length).toBe(2);
+			expect(Object.keys(planningStore.shared).length).toBe(3);
 		});
 
 		it("getSharedList", async () => {
+			// @ts-expect-error mock date
 			planningStore.setSharedList(shared_list);
 			const result = planningStore.getSharedList();
 
@@ -110,11 +111,12 @@ describe("Planning Store", async () => {
 		});
 
 		it("deleteShared", async () => {
+			// @ts-expect-error mock date
 			planningStore.setSharedList(shared_list);
 			const sharedPlanUuid: string =
 				"0fa56f16-a1cc-496a-9a39-bb93f172b9f4";
 			planningStore.deleteShared(sharedPlanUuid);
-			expect(Object.keys(planningStore.shared).length).toBe(1);
+			expect(Object.keys(planningStore.shared).length).toBe(2);
 		});
 
 		describe("getPlan", async () => {
@@ -169,7 +171,6 @@ describe("FIO Data", async () => {
 			planningStore.fio_storage_ships = {};
 			planningStore.fio_storage_warehouses = {};
 			planningStore.fio_sites_planets = {};
-			planningStore.fio_sites_ships = {};
 
 			planningStore.$reset();
 
@@ -181,39 +182,12 @@ describe("FIO Data", async () => {
 				Object.keys(planningStore.fio_storage_warehouses).length
 			).toBe(0);
 			expect(Object.keys(planningStore.fio_sites_planets).length).toBe(0);
-			expect(Object.keys(planningStore.fio_sites_ships).length).toBe(0);
-		});
-
-		describe("setters", async () => {
-			it("setFIOSitesData", async () => {
-				// @ts-expect-error mock data
-				planningStore.setFIOSitesData(fio_sites);
-				expect(
-					Object.keys(planningStore.fio_sites_planets).length
-				).toBe(18);
-				expect(Object.keys(planningStore.fio_sites_ships).length).toBe(
-					24
-				);
-			});
-			it("setFIOStorageData", async () => {
-				// @ts-expect-error mock data
-				planningStore.setFIOStorageData(fio_storage);
-				expect(
-					Object.keys(planningStore.fio_storage_planets).length
-				).toBe(18);
-				expect(
-					Object.keys(planningStore.fio_storage_ships).length
-				).toBe(24);
-				expect(
-					Object.keys(planningStore.fio_storage_warehouses).length
-				).toBe(5);
-			});
 		});
 
 		it("getStoreSize", async () => {
 			const results = await planningStore.getStoreSize();
 
-			expect(results.length).toBe(9);
+			expect(results.length).toBe(8);
 		});
 	});
 });

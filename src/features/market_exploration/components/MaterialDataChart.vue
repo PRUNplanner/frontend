@@ -15,9 +15,6 @@
 	// UI
 	import { PSpin } from "@/ui";
 
-	// Util
-	import { timestampFromString } from "@/util/date";
-
 	const { getMaterialExplorationData } = useMarketExploration();
 
 	// Props
@@ -29,7 +26,7 @@
 		displayValue: {
 			type: String,
 			required: false,
-			default: "volume_max",
+			default: "traded",
 		},
 	});
 
@@ -47,10 +44,17 @@
 		if (chartData.value) {
 			return Object.keys(chartData.value).map((exchange) => ({
 				name: exchange,
-				data: chartData.value![exchange].map((e) => [
-					timestampFromString(e.Datetime),
-					e[props.displayValue] as number,
-				]),
+				data: chartData
+					.value![exchange].map(
+						(e) =>
+							[e.date_epoch, e[props.displayValue] as number] as [
+								number,
+								number,
+							]
+					)
+					.sort((a, b) => b[0] - a[0])
+					.slice(0, 7)
+					.reverse(),
 			}));
 		} else {
 			return [];

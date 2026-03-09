@@ -41,7 +41,7 @@ describe("productionNode", async () => {
 
 		expect(graph.selectedRecipes).toStrictEqual([]);
 		expect(graph.terminals).toStrictEqual([]);
-		expect(Object.keys(graph.nodes).length).toBe(344);
+		expect(Object.keys(graph.nodes).length).toBe(369);
 	});
 
 	it("getNode", async () => {

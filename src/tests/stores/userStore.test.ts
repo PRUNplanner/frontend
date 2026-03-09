@@ -15,6 +15,7 @@ vi.mock("@/features/api/userData.api", () => ({
 	callUserLogin: vi.fn(),
 	callRefreshToken: vi.fn(),
 	callGetProfile: vi.fn(),
+	callGetUserPreferences: vi.fn(),
 }));
 
 describe("User Store", () => {
@@ -95,8 +96,7 @@ describe("User Store", () => {
 
 		const mockToken = "testtoken";
 		const mockTokenData = {
-			access_token: "mockAccessToken",
-			refresh_token: "mockRefreshToken",
+			access: "mockAccessToken",
 		};
 
 		userStore.refreshToken = mockToken;
@@ -113,8 +113,8 @@ describe("User Store", () => {
 		expect(callRefreshToken).toHaveBeenCalledWith(mockToken);
 
 		expect(result).toBe(true);
-		expect(userStore.accessToken).toBe(mockTokenData.access_token);
-		expect(userStore.refreshToken).toBe(mockTokenData.refresh_token);
+		expect(userStore.accessToken).toBe(mockTokenData.access);
+		expect(userStore.refreshToken).toBe(mockToken);
 	});
 
 	it("Perform Token Refresh, no refresh token", async () => {
@@ -154,10 +154,10 @@ describe("User Store", () => {
 		const hasFIOCases = [
 			{
 				profile: {
-					user_id: 1,
+					id: 1,
 					username: "test",
 					email: null,
-					email_verified: false,
+					is_email_verified: false,
 					fio_apikey: "foo",
 					prun_username: "moo",
 				},
@@ -171,10 +171,10 @@ describe("User Store", () => {
 			},
 			{
 				profile: {
-					user_id: 1,
+					id: 1,
 					username: "test",
 					email: null,
-					email_verified: false,
+					is_email_verified: false,
 					fio_apikey: "",
 					prun_username: "",
 				},
@@ -183,10 +183,10 @@ describe("User Store", () => {
 			},
 			{
 				profile: {
-					user_id: 1,
+					id: 1,
 					username: "test",
 					email: null,
-					email_verified: false,
+					is_email_verified: false,
 					fio_apikey: "test",
 					prun_username: "",
 				},
@@ -195,10 +195,10 @@ describe("User Store", () => {
 			},
 			{
 				profile: {
-					user_id: 1,
+					id: 1,
 					username: "test",
 					email: null,
-					email_verified: false,
+					is_email_verified: false,
 					fio_apikey: "",
 					prun_username: "moo",
 				},
@@ -207,10 +207,10 @@ describe("User Store", () => {
 			},
 			{
 				profile: {
-					user_id: 1,
+					id: 1,
 					username: "test",
 					email: null,
-					email_verified: false,
+					is_email_verified: false,
 					fio_apikey: null,
 					prun_username: null,
 				},
@@ -233,10 +233,10 @@ describe("User Store", () => {
 	describe("performGetProfile", async () => {
 		it("fio enabled", async () => {
 			const mockProfile: IUserProfile = {
-				user_id: 1,
+				id: 1,
 				username: "johndoe",
 				email: "a@b.com",
-				email_verified: true,
+				is_email_verified: true,
 				fio_apikey: "foo",
 				prun_username: "moo",
 			};
@@ -255,10 +255,10 @@ describe("User Store", () => {
 
 		it("fio not enabled", async () => {
 			const mockProfile: IUserProfile = {
-				user_id: 1,
+				id: 1,
 				username: "johndoe",
 				email: "a@b.com",
-				email_verified: true,
+				is_email_verified: true,
 				fio_apikey: null,
 				prun_username: "moo",
 			};

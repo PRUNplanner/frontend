@@ -43,10 +43,11 @@ export function usePlanPreferences(planUuid: string) {
 	 *
 	 * @type {WritableComputedRef<boolean, boolean>}
 	 */
-	const includeCM: WritableComputedRef<boolean, boolean> = computed({
-		get: () => fullPreferences.value.includeCM,
-		set: (v) => setPlanPreference("includeCM", v),
-	});
+	const includeCM: WritableComputedRef<boolean | undefined, boolean> =
+		computed({
+			get: () => fullPreferences.value.includeCM,
+			set: (v) => setPlanPreference("includeCM", v),
+		});
 
 	/**
 	 * Writable computed for plans visitation frequency tool material
@@ -60,7 +61,7 @@ export function usePlanPreferences(planUuid: string) {
 	 * 	>}
 	 */
 	const visitationMaterialExclusions: WritableComputedRef<
-		string[],
+		string[] | undefined,
 		string[]
 	> = computed({
 		get: () => fullPreferences.value.visitationMaterialExclusions,

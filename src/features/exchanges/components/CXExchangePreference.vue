@@ -37,7 +37,7 @@
 	} = await useCXManagement();
 
 	const selectedType: Ref<PreferenceType> = ref("BOTH");
-	const selectedExchange: Ref<ExchangeType> = ref("PP30D_UNIVERSE");
+	const selectedExchange: Ref<ExchangeType> = ref("UNIVERSE_30D");
 </script>
 
 <template>
@@ -80,8 +80,8 @@
 							preference.type === 'BUY'
 								? 'success'
 								: preference.type === 'SELL'
-								? 'error'
-								: 'primary'
+									? 'error'
+									: 'primary'
 						">
 						{{ preference.type }}
 					</PTag>

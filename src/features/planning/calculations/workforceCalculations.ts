@@ -51,7 +51,7 @@ export const WORKFORCE_CONSUMPTION_MAP: WorkforceConsumptionMap = {
 		{ ticker: "MED", need: 0.5 / 100, lux1: false, lux2: false },
 		{ ticker: "MEA", need: 7 / 100, lux1: false, lux2: false },
 		{ ticker: "LC", need: 0.2 / 100, lux1: false, lux2: false },
-		{ ticker: "WS", need: 0.1 / 100, lux1: false, lux2: false },
+		{ ticker: "WS", need: 0.05 / 100, lux1: false, lux2: false },
 		{ ticker: "NST", need: 0.1 / 100, lux1: true, lux2: false },
 		{ ticker: "WIN", need: 1 / 100, lux1: false, lux2: true },
 	],

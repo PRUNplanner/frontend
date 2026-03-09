@@ -35,7 +35,6 @@
 		ProductionQuantityLimitsSharp,
 		PersonSharp,
 		HelpOutlineSharp,
-		ExtensionSharp,
 		LocalFireDepartmentSharp,
 		AutoFixNormalSharp,
 		MoneySharp,
@@ -59,7 +58,6 @@
 		(newValue: boolean) => {
 			if (newValue) {
 				useQuery("GetFIOStorage").execute();
-				useQuery("GetFIOSites").execute();
 			} else {
 				queryStore.invalidateKey(["gamedata", "fio"], {
 					exact: false,
@@ -75,14 +73,8 @@
 			queryStore.peekQueryState(["gamedata", "fio", "storage"])
 				?.timestamp ?? 0
 	);
-	const sitesTimestamp = computed(
-		() =>
-			queryStore.peekQueryState(["gamedata", "fio", "sites"])
-				?.timestamp ?? 0
-	);
 
 	const storageAge = computed(() => planningStore.fio_storage_timestamp ?? 0);
-	const sitesAge = computed(() => planningStore.fio_sites_timestamp ?? 0);
 
 	const menuItems: ComputedRef<IMenuSection[]> = computed(() => [
 		{
@@ -259,12 +251,12 @@
 			labelShort: "Acc",
 			display: true,
 			children: [
-				{
-					label: "API",
-					display: true,
-					routerLink: "/api",
-					icon: ExtensionSharp,
-				},
+				// {
+				// 	label: "API",
+				// 	display: true,
+				// 	routerLink: "/api",
+				// 	icon: ExtensionSharp,
+				// },
 				{
 					label: "Profile",
 					display: true,
@@ -333,7 +325,9 @@
 					</router-link>
 				</div>
 				<div v-if="isFull" class="text-end text-[10px] text-white/40">
-					{{ appVersion }}
+					<RouterLink to="/debug">
+						{{ appVersion }}
+					</RouterLink>
 				</div>
 			</div>
 		</div>
@@ -521,12 +515,7 @@
 				class="flex gap-1 justify-between items-center"
 				:class="isFull ? 'flex-row' : 'flex-col'">
 				<div>
-					<PTooltip
-						v-if="
-							userStore.hasFIO &&
-							storageTimestamp !== 0 &&
-							sitesTimestamp !== 0
-						">
+					<PTooltip v-if="userStore.hasFIO && storageTimestamp !== 0">
 						<template #trigger>
 							<PTag size="sm" type="success" :bordered="false">
 								{{ isFull ? "FIO Active" : "FIO" }}
@@ -535,23 +524,12 @@
 						<PTable striped>
 							<thead>
 								<tr>
-									<th>Type</th>
 									<th>Backend</th>
 									<th>FIO</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td>Sites</td>
-									<td>
-										{{ relativeFromDate(sitesTimestamp) }}
-									</td>
-									<td>
-										{{ relativeFromDate(sitesAge) }}
-									</td>
-								</tr>
-								<tr>
-									<td>Storage</td>
 									<td>
 										{{ relativeFromDate(storageTimestamp) }}
 									</td>
@@ -562,7 +540,7 @@
 							</tbody>
 						</PTable>
 					</PTooltip>
-					<RouterLink v-else to="profile">
+					<RouterLink v-else to="/profile">
 						<PTag size="sm" type="warning" :bordered="false">
 							{{ isFull ? "FIO Inactive" : "FIO" }}
 						</PTag>

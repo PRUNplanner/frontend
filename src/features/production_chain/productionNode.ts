@@ -81,14 +81,14 @@ export class ProductionNode {
 		const recipe: IRecipe | undefined = this.getRecipe(selectedRecipes);
 
 		if (recipe) {
-			const output: IRecipeMaterial[] = recipe.Outputs.filter(
-				(o) => o.Ticker === ticker
+			const output: IRecipeMaterial[] = recipe.outputs.filter(
+				(o) => o.material_ticker === ticker
 			);
 
 			if (output.length > 0)
 				return {
-					materialTicker: output[0].Ticker,
-					quantity: output[0].Amount,
+					materialTicker: output[0].material_ticker,
+					quantity: output[0].material_amount,
 				};
 		}
 
@@ -102,10 +102,10 @@ export class ProductionNode {
 		const recipe: IRecipe | undefined = this.getRecipe(selectedRecipes);
 
 		if (recipe)
-			recipe.Inputs.map((i) => {
+			recipe.inputs.map((i) => {
 				inputs.push({
-					materialTicker: i.Ticker,
-					quantity: i.Amount,
+					materialTicker: i.material_ticker,
+					quantity: i.material_amount,
 				});
 			});
 
@@ -114,10 +114,7 @@ export class ProductionNode {
 
 	getRecipe(selectedRecipes: string[]): IRecipe | undefined {
 		// skip if there is no recipe and not extractable
-		if (
-			!isExtractable(this.materialTicker) &&
-			this.recipes.length === 0
-		)
+		if (!isExtractable(this.materialTicker) && this.recipes.length === 0)
 			return undefined;
 
 		// Build the extraction recipe if this material is extractable
@@ -125,14 +122,19 @@ export class ProductionNode {
 			this.materialTicker
 		)
 			? {
-					RecipeId: `${getExtractionBuilding(this.materialTicker) ?? "EXT"}#=>${this.materialTicker}`,
-					BuildingTicker:
+					recipe_id: `${getExtractionBuilding(this.materialTicker) ?? "EXT"}#=>${this.materialTicker}`,
+					building_ticker:
 						getExtractionBuilding(this.materialTicker) ?? "EXT",
-					RecipeName: `=>${this.materialTicker}`,
-					TimeMs: 0,
-					Inputs: [],
-					Outputs: [{ Amount: 1, Ticker: this.materialTicker }],
-			  }
+					recipe_name: `=>${this.materialTicker}`,
+					time_ms: 0,
+					inputs: [],
+					outputs: [
+						{
+							material_amount: 1,
+							material_ticker: this.materialTicker,
+						},
+					],
+				}
 			: undefined;
 
 		// Check if user selected a specific recipe
@@ -140,14 +142,14 @@ export class ProductionNode {
 			// Check if extraction recipe is selected
 			if (
 				extractionRecipe &&
-				selectedRecipes.includes(extractionRecipe.RecipeId)
+				selectedRecipes.includes(extractionRecipe.recipe_id)
 			) {
 				return extractionRecipe;
 			}
 
 			// Check if a production recipe is selected
 			const selectionMatch: IRecipe[] = this.recipes.filter((f) =>
-				selectedRecipes.includes(f.RecipeId)
+				selectedRecipes.includes(f.recipe_id)
 			);
 
 			if (selectionMatch.length > 1) {
@@ -169,7 +171,7 @@ export class ProductionNode {
 		const recipe: IRecipe | undefined = this.getRecipe(selectedRecipes);
 		const { getBuilding } = await useBuildingData();
 
-		if (recipe) return await getBuilding(recipe.BuildingTicker);
+		if (recipe) return await getBuilding(recipe.building_ticker);
 		return undefined;
 	}
 }

@@ -14,10 +14,6 @@ export interface IResourceROIResult {
 	planROI: number;
 	planArea: number;
 	planProfitArea: number;
-	distanceAI1: number;
-	distanceCI1: number;
-	distanceIC1: number;
-	distanceNC1: number;
 	planetSurface: string[];
 	planetGravity: string[];
 	planetPressure: string[];

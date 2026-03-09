@@ -1,3 +1,18 @@
+# 2026-03-09 - v. 0.24.3
+
+- Fixes a bug that lead to continuous calls to fetch preferences when it is not needed [[PR-358]](https://github.com/PRUNplanner/frontend/pull/358)
+
+# 2026-03-08 - v. 0.24.2
+
+- Brings back ASK/BID selections as CX preferences, also enhances material tiles overlay to display more information [[PR-356]](https://github.com/PRUNplanner/frontend/pull/356)
+
+# 2026-03-07 - v. 0.24.1
+
+- Version 0.24 introduces a complete backend overhaul, integrating updated endpoints and open-sourcing the codebase on [GitHub](https://github.com/PRUNplanner/backend) for the first time. While core logic remains consistent, all material price calculations now utilize a Volume-Weighted Average Price (VWAP) to provide a more stable "fair market value" for long-term planning.
+- Legacy API keys have been removed in favor of a streamlined single-key system (currently in testing), which will eventually provide full PRUNplanner functionality through a simplified authentication process.
+- Fixes a bug where scientists consumption of WS was wrongly doubled [[PR-352]](https://github.com/PRUNplanner/frontend/pull/352)
+- Sorts empire and management tables by name as default [[PR-353]](https://github.com/PRUNplanner/frontend/pull/353)
+
 # 2026-03-01 - v. 0.23.0
 
 - Adds new storage buildings (STA, STE, STV, STW) to planning [[PR-346]](https://github.com/PRUNplanner/frontend/pull/346)

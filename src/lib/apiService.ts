@@ -178,12 +178,20 @@ class ApiService {
 		} else if (isAxiosError(err)) {
 			const status = err.response?.status;
 			const body = err.response?.data;
+
 			const msg =
 				body && typeof body === "object"
 					? JSON.stringify(body)
 					: err.message;
 
-			return new Error(`HTTP ${status}: ${msg}`);
+			const newError = new Error(msg);
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(newError as any).responseData = body;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(newError as any).status = status;
+
+			return newError;
 		}
 
 		return err instanceof Error ? err : new Error(String(err));

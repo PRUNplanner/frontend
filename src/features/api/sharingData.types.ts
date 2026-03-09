@@ -1,15 +1,20 @@
 export interface IShared {
-	shared_uuid: string;
-	plan_uuid: string;
+	uuid: string;
+	plan: string;
 	view_count: number;
+	created_at: Date;
 }
 
 export interface ISharedCreateResponse {
 	uuid: string;
-	created_date: string;
 	view_count: number;
+	created_at: Date;
 }
 
 export interface ISharedCloneResponse {
 	message: string;
+}
+
+export interface ISharedCreatePayload {
+	plan: string;
 }

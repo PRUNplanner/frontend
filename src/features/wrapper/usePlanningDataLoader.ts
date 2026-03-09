@@ -100,7 +100,7 @@ export function usePlanningDataLoader(
 			load: () => queryStore.execute("GetAllPlans", undefined),
 			onSuccess: (data: IPlan[]) => {
 				const planetList: string[] = Array.from(
-					new Set(data.map((e) => e.planet_id)).values()
+					new Set(data.map((e) => e.planet_natural_id)).values()
 				);
 
 				emits("data:plan:list", data);
@@ -123,7 +123,7 @@ export function usePlanningDataLoader(
 									}
 								)
 							)!.data as IPlanShare
-					  ).baseplanner.planet_id
+						).plan_details.planet_natural_id
 					: props.planetNaturalId!;
 				return queryStore.execute("GetPlanet", {
 					planetNaturalId: id,
@@ -269,14 +269,17 @@ export function usePlanningDataLoader(
 				const empireList = steps.find((s) => s.cfg.key === "empireList")
 					?.data as undefined | IPlanEmpireElement[];
 
-				if (empirePlans)
-					return [...new Set(empirePlans.map((p) => p.planet_id))];
+				if (empirePlans) {
+					return [
+						...new Set(empirePlans.map((p) => p.planet_natural_id)),
+					];
+				}
 				if (empireList) {
 					return [
 						...new Set(
 							empireList
 								.map((e) =>
-									e.baseplanners.map((p) => p.planet_id)
+									e.plans.map((p) => p.planet_natural_id)
 								)
 								.flat()
 						),
@@ -296,15 +299,15 @@ export function usePlanningDataLoader(
 			3) only planet natural id provided, new plan definition created
 		*/
 		const planDefinition = props.sharedPlanUuid
-			? data.sharedPlan.baseplanner
+			? data.sharedPlan.plan_details
 			: props.planUuid
-			? data.planData
-			: data.planetData
-			? createBlankDefinition(
-					data.planetData.PlanetNaturalId,
-					data.planetData.COGCProgramActive
-			  )
-			: undefined;
+				? data.planData
+				: data.planetData
+					? createBlankDefinition(
+							data.planetData.planet_natural_id,
+							data.planetData.active_cogc_program_type
+						)
+					: undefined;
 
 		// if there is a shared plan uuid, the plan editing is disabled
 		const disabled: boolean = props.sharedPlanUuid ? true : false;

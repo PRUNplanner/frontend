@@ -16,14 +16,14 @@ import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Sample materials
 const mockMaterial1 = {
-	Ticker: "MAT1",
-	Name: "Material One",
-	CategoryName: "foo",
+	ticker: "MAT1",
+	name: "Material One",
+	category_name: "foo",
 };
 const mockMaterial2 = {
-	Ticker: "MAT2",
-	Name: "Material Two",
-	CategoryName: "moo",
+	ticker: "MAT2",
+	name: "Material Two",
+	category_name: "moo",
 };
 
 describe("useMaterialData, no data", async () => {
@@ -64,8 +64,8 @@ describe("useMaterialData", () => {
 
 	beforeEach(() => {
 		getMock = vi.fn(async (ticker: string) => {
-			if (ticker === mockMaterial1.Ticker) return mockMaterial1;
-			if (ticker === mockMaterial2.Ticker) return mockMaterial2;
+			if (ticker === mockMaterial1.ticker) return mockMaterial1;
+			if (ticker === mockMaterial2.ticker) return mockMaterial2;
 			return undefined;
 		});
 
@@ -82,7 +82,7 @@ describe("useMaterialData", () => {
 	it("getMaterial returns the correct material", async () => {
 		const { getMaterial } = useMaterialData();
 		const material = await getMaterial("MAT1");
-		expect(material.Name).toBe("Material One");
+		expect(material.name).toBe("Material One");
 		expect(getMock).toHaveBeenCalledWith("MAT1");
 	});
 

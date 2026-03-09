@@ -169,7 +169,9 @@
 								FIO Data Update:
 								{{
 									relativeFromDate(
-										planningStore.fio_sites_timestamp ?? 0
+										planningStore.fio_storage_timestamp ??
+											0,
+										true
 									)
 								}}
 							</div>
@@ -192,17 +194,17 @@
 										:options="
 											empireList.map((e) => {
 												return {
-													label: e.name,
+													label: e.empire_name,
 													value: e.uuid,
 												};
 											})
 										"
 										@update-value="
-									(value: string) => {
-										selectedEmpireUuid = value;
-										defaultEmpireUuid = value;
-									}
-								" />
+											(value: string) => {
+												selectedEmpireUuid = value;
+												defaultEmpireUuid = value;
+											}
+										" />
 								</div>
 								<div>
 									<h2

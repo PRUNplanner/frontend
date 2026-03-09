@@ -153,14 +153,14 @@ export async function useHQUpgradeCalculator(
 			totalWeight: materialData.value.reduce(
 				(sum, current) =>
 					sum +
-					materialsMap.value[current.ticker].Weight *
+					materialsMap.value[current.ticker].weight *
 						current.required,
 				0
 			),
 			totalVolume: materialData.value.reduce(
 				(sum, current) =>
 					sum +
-					materialsMap.value[current.ticker].Volume *
+					materialsMap.value[current.ticker].volume *
 						current.required,
 				0
 			),
