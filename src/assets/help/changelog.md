@@ -1,6 +1,8 @@
 # 2026-03-09 - v. 0.24.3
 
 - Fixes a bug that lead to continuous calls to fetch preferences when it is not needed [[PR-358]](https://github.com/PRUNplanner/frontend/pull/358)
+- Improves Select and Multiselect input elements [[PR-355]](https://github.com/PRUNplanner/frontend/pull/355)
+- Allow decimal inputs on input fields [[PR-349]](https://github.com/PRUNplanner/frontend/pull/349)
 
 # 2026-03-08 - v. 0.24.2
 
