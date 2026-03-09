@@ -1,0 +1,21 @@
+{
+	"navigation": {
+		"empire": "Empire",
+		"planet_search": "Planeten Suchen",
+		"management": "Verwaltung",
+		"exchanges": "Handelskammern",
+		"tools": "Werkzeuge",
+		"market_exploration": "Marktübersicht",
+		"recipe_roi": "Rezept ROI",
+		"resource_roi": "Ressourcen ROI",
+		"hq_calculator": "HQ Kalkulator",
+		"production_chains": "Produktionsketten",
+		"upkeep_prices": "Preise Regierung",
+		"fio_burn": "FIO Verbrauch",
+		"fio_repair": "FIO Reparieren",
+		"account": "Konto",
+		"profile": "Profil",
+		"help": "Hilfe",
+		"logout": "Abmelden"
+	}
+}
