@@ -224,8 +224,9 @@
 		@keydown="onKeyDown">
 		<label name="pselect-multiple-label">
 			<div
-				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-white/80 rounded-sm px-2 min-h-7">
-				<div class="w-full max-w-full grow" @click="toggleOpen">
+				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-white/80 rounded-sm px-2 min-h-7"
+				@click="toggleOpen">
+				<div class="w-full max-w-full grow">
 					<template v-if="displayValue.length > 0">
 						<div class="flex w-full max-w-full flex-wrap gap-y-1">
 							<PTag
@@ -233,7 +234,7 @@
 								:key="v"
 								:value="v"
 								type="secondary"
-								@click="removeElement(v)">
+								@click.stop="removeElement(v)">
 								<template #icon><ClearSharp /></template>
 							</PTag>
 						</div>
@@ -244,10 +245,10 @@
 				<div
 					v-if="clearable && value.length !== 0"
 					class="text-white/60 w-4"
-					@click="clear">
+					@click.stop="clear">
 					<ClearSharp />
 				</div>
-				<div class="text-white w-4" @click="toggleOpen">
+				<div class="text-white w-4" @click.stop="toggleOpen">
 					<svg
 						viewBox="0 0 16 16"
 						fill="none"
