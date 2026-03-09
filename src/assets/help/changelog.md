@@ -1,3 +1,7 @@
+# 2026-03-09 - v. 0.24.3
+
+- Fixes a bug that lead to continuous calls to fetch preferences when it is not needed
+
 # 2026-03-08 - v. 0.24.2
 
 - Brings back ASK/BID selections as CX preferences, also enhances material tiles overlay to display more information [[PR-356]](https://github.com/PRUNplanner/frontend/pull/356)
