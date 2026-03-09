@@ -43,6 +43,7 @@ export const useUserStore = defineStore(
 		const refreshToken: Ref<string | undefined> = ref(undefined);
 		const profile: Ref<IUserProfile | undefined> = ref(undefined);
 
+		const initialProfileCalled: Ref<boolean> = ref(false);
 		const intialPreferencesCalled: Ref<boolean> = ref(false);
 		const preferences: Reactive<IPreference> =
 			reactive<IPreference>(preferenceDefaults);
@@ -118,6 +119,11 @@ export const useUserStore = defineStore(
 			refreshToken.value = refresh;
 
 			// trigger profile refresh non-blocking
+			if (initialProfileCalled.value) return;
+
+			initialProfileCalled.value = true;
+
+			// make get profile call
 			performGetProfile();
 		}
 
@@ -142,9 +148,7 @@ export const useUserStore = defineStore(
 		}
 
 		async function queryPreferences(): Promise<void> {
-			if (intialPreferencesCalled.value) {
-				return;
-			}
+			if (intialPreferencesCalled.value) return;
 
 			intialPreferencesCalled.value = true;
 
