@@ -34,6 +34,14 @@ export async function useCXManagement() {
 		{ label: "CI1 VWAP 30D" as ExchangeType, value: "CI1_30D" },
 		{ label: "IC1 VWAP 30D" as ExchangeType, value: "IC1_30D" },
 		{ label: "UNIVERSE VWAP 30D" as ExchangeType, value: "UNIVERSE_30D" },
+		{ label: "AI1 ASK" as ExchangeType, value: "AI1_ASK" },
+		{ label: "AI1 BID" as ExchangeType, value: "AI1_BID" },
+		{ label: "NC1 ASK" as ExchangeType, value: "NC1_ASK" },
+		{ label: "NC1 BID" as ExchangeType, value: "NC1_BID" },
+		{ label: "CI1 ASK" as ExchangeType, value: "CI1_ASK" },
+		{ label: "CI1 BID" as ExchangeType, value: "CI1_BID" },
+		{ label: "IC1 ASK" as ExchangeType, value: "IC1_ASK" },
+		{ label: "IC1 BID" as ExchangeType, value: "IC1_BID" },
 	];
 
 	const materialOptions: PSelectOption[] = materialSelectOptions.value;

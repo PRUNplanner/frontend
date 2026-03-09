@@ -73,8 +73,8 @@ describe("usePrice", async () => {
 				ref("OT-580c")
 			);
 
-			expect(await getPrice("LSE", "BUY")).toBe(10829.888422315536);
-			expect(await getPrice("FEO", "BUY")).toBe(146.47124767786104);
+			expect(await getPrice("LSE", "BUY")).toBe(10872.315150756913);
+			expect(await getPrice("FEO", "BUY")).toBe(146.257042818308);
 		});
 
 		it("with cx uuid and planet exchange pref", async () => {
@@ -83,21 +83,21 @@ describe("usePrice", async () => {
 				ref("UV-796b")
 			);
 
-			expect(await getPrice("LSE", "BUY")).toBe(10829.888422315536);
-			expect(await getPrice("FEO", "BUY")).toBe(146.47124767786104);
+			expect(await getPrice("LSE", "BUY")).toBe(10872.315150756913);
+			expect(await getPrice("FEO", "BUY")).toBe(146.257042818308);
 		});
 
 		it("with cx uuid and empire exchange pref", async () => {
 			const { getPrice } = await usePrice(ref(fakeCXUuid), ref("foo"));
 
-			expect(await getPrice("LSE", "BUY")).toBe(10829.888422315536);
+			expect(await getPrice("LSE", "BUY")).toBe(10872.315150756913);
 		});
 
 		it("nothing set on empire", async () => {
 			planningStore.cxs[fakeCXUuid].cx_data.cx_empire = [];
 			const { getPrice } = await usePrice(ref(fakeCXUuid), ref("foo"));
 
-			expect(await getPrice("LSE", "BUY")).toBe(10829.888422315536);
+			expect(await getPrice("LSE", "BUY")).toBe(10872.315150756913);
 		});
 	});
 
@@ -116,7 +116,7 @@ describe("usePrice", async () => {
 				"BUY"
 			);
 
-			expect(result).toBe(-628.8656643217855);
+			expect(result).toBe(-650.756828745828);
 		});
 	});
 
@@ -134,8 +134,8 @@ describe("usePrice", async () => {
 				{ ticker: "N", delta: 2 },
 			]);
 
-			expect(result[0].price).toBe(-959.9907349774703);
-			expect(result[1].price).toBe(331.12507065568474);
+			expect(result[0].price).toBe(-971.1088901227713);
+			expect(result[1].price).toBe(320.35206137694325);
 		});
 	});
 

@@ -46,6 +46,10 @@ export const ExchangeSchema: z.ZodType<IExchange> = z.object({
 	sum_traded_30d: z.number(),
 	avg_traded_30d: z.number(),
 	vwap_30d: z.number(),
+	ask: z.number(),
+	bid: z.number(),
+	supply: z.number(),
+	demand: z.number(),
 	exchange_status: z.literal(["STALE", "ACTIVE", "INACTIVE"]),
 });
 

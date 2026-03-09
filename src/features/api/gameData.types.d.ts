@@ -20,6 +20,10 @@ export interface IExchange {
 	sum_traded_30d: number;
 	avg_traded_30d: number;
 	vwap_30d: number;
+	ask: number;
+	bid: number;
+	supply: number;
+	demand: number;
 	exchange_status: "ACTIVE" | "INACTIVE" | "STALE";
 
 	[key: string]: string | number | Date;

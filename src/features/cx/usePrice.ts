@@ -223,13 +223,27 @@ export async function usePrice(
 
 		// first part indicates the exchange, second part the time, e.g. AI1_7D
 
-		const { prefix: exchange, suffix: timeframe } =
+		const { prefix: exchange, suffix: identifier } =
 			splitExchangeOption(preference);
 
 		const exchangeCode = exchange;
 
-		if (timeframe == "7D") key = "vwap_7d";
-		else key = "vwap_30d";
+		switch (identifier) {
+			case "7D":
+				key = "vwap_7d";
+				break;
+			case "30D":
+				key = "vwap_30d";
+				break;
+			case "ASK":
+				key = "ask";
+				break;
+			case "BID":
+				key = "bid";
+				break;
+			default:
+				key = "vwap_30d";
+		}
 
 		return { exchangeCode, key };
 	}

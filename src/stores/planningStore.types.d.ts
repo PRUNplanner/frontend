@@ -141,7 +141,15 @@ type CX_EXCHANGE_OPTION_TYPE =
 	| "NC1_30D"
 	| "CI1_30D"
 	| "IC1_30D"
-	| "UNIVERSE_30D";
+	| "UNIVERSE_30D"
+	| "AI1_ASK"
+	| "AI1_BID"
+	| "NC1_ASK"
+	| "NC1_BID"
+	| "CI1_ASK"
+	| "CI1_BID"
+	| "IC1_ASK"
+	| "IC1_BID";
 
 type CX_PREFERENCE_TYPE = "BUY" | "SELL" | "BOTH";
 

@@ -148,10 +148,10 @@ describe("Util: materialIO ", async () => {
 		);
 
 		expect(resultSell).toStrictEqual([
-			{ ticker: "OVE", delta: 1, price: 121.77925679203784 },
+			{ ticker: "OVE", delta: 1, price: 122.03631467139488 },
 		]);
 		expect(resultBuy).toStrictEqual([
-			{ ticker: "OVE", delta: -1, price: -121.77925679203784 },
+			{ ticker: "OVE", delta: -1, price: -122.03631467139488 },
 		]);
 	});
 

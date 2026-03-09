@@ -3,7 +3,8 @@
 
 	// Composables
 	import { useExchangeData } from "@/database/services/useExchangeData";
-	const { exchangeTypesArray } = await useExchangeData();
+	const { exchangeTypesArray, exchangeGameTypesArray } =
+		await useExchangeData();
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -43,13 +44,15 @@
 				class="border-b-2 border-t-2 border-dark-gray child:bg-dark-gray/50">
 				<td colspan="6">VWAP</td>
 			</tr>
-			<tr>
+			<tr
+				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
 				<td>7D</td>
 				<td v-for="cx in exchangeTypesArray" :key="`vwap_7d#${cx}`">
 					{{ formatNumber(overviewData.vwap_7d[cx], 2, true) }}
 				</td>
 			</tr>
-			<tr>
+			<tr
+				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
 				<td>30D</td>
 				<td v-for="cx in exchangeTypesArray" :key="`vwap_30d#${cx}`">
 					{{ formatNumber(overviewData.vwap_30d[cx], 2, true) }}
@@ -59,7 +62,8 @@
 				class="border-b-2 border-t-2 border-dark-gray child:bg-dark-gray/50">
 				<td colspan="6">Traded Volume</td>
 			</tr>
-			<tr>
+			<tr
+				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
 				<td>7D</td>
 				<td
 					v-for="cx in exchangeTypesArray"
@@ -67,7 +71,8 @@
 					{{ formatNumber(overviewData.sum_traded_7d[cx], 2, true) }}
 				</td>
 			</tr>
-			<tr>
+			<tr
+				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
 				<td>30D</td>
 				<td
 					v-for="cx in exchangeTypesArray"
@@ -77,9 +82,46 @@
 			</tr>
 			<tr
 				class="border-b-2 border-t-2 border-dark-gray child:bg-dark-gray/50">
+				<td colspan="6">Live Data</td>
+			</tr>
+			<tr
+				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
+				<td>Ask</td>
+				<td v-for="cx in exchangeGameTypesArray" :key="`ask#${cx}`">
+					{{ formatNumber(overviewData.ask[cx], 2, true) }}
+				</td>
+				<td />
+			</tr>
+			<tr
+				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
+				<td>Bid</td>
+				<td v-for="cx in exchangeGameTypesArray" :key="`bid#${cx}`">
+					{{ formatNumber(overviewData.bid[cx], 2, true) }}
+				</td>
+				<td />
+			</tr>
+			<tr
+				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray border-t-2 border-dark-gray">
+				<td>Supply</td>
+				<td v-for="cx in exchangeGameTypesArray" :key="`supply#${cx}`">
+					{{ formatNumber(overviewData.supply[cx], 2, true) }}
+				</td>
+				<td />
+			</tr>
+			<tr
+				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
+				<td>Demand</td>
+				<td v-for="cx in exchangeGameTypesArray" :key="`demand#${cx}`">
+					{{ formatNumber(overviewData.demand[cx], 2, true) }}
+				</td>
+				<td />
+			</tr>
+			<tr
+				class="border-b-2 border-t-2 border-dark-gray child:bg-dark-gray/50">
 				<td colspan="6">Exchange Status</td>
 			</tr>
-			<tr>
+			<tr
+				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
 				<td></td>
 				<td
 					v-for="cx in exchangeTypesArray"

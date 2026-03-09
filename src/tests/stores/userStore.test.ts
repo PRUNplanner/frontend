@@ -15,6 +15,7 @@ vi.mock("@/features/api/userData.api", () => ({
 	callUserLogin: vi.fn(),
 	callRefreshToken: vi.fn(),
 	callGetProfile: vi.fn(),
+	callGetUserPreferences: vi.fn(),
 }));
 
 describe("User Store", () => {

@@ -234,25 +234,26 @@
 					<template
 						v-for="(item, index) in storageAmountsForDisplay"
 						:key="item.ticker">
-						<strong>{{ item.amount }}</strong> {{ item.ticker
-						}}<template
-							v-if="index < storageAmountsForDisplay.length - 1"
-							>{{
+						<strong>{{ item.amount }}</strong> {{ item.ticker }}
+						<template
+							v-if="index < storageAmountsForDisplay.length - 1">
+							{{
 								index === storageAmountsForDisplay.length - 2
 									? " and "
 									: ", "
-							}}</template
-						> </template
-					>, giving you a total storage capacity of
+							}}
+						</template>
+					</template>
+					, giving you a total storage capacity of
 					<strong>{{ formatAmount(totalWeight) }}</strong> t and
 					<strong>{{ formatAmount(totalVolume) }}</strong> m³.
 				</template>
-				<template v-else
-					>Your plan has a storage capacity of
+				<template v-else>
+					Your plan has a storage capacity of
 					<strong>{{ formatAmount(totalWeight) }}</strong> t and
 					<strong>{{ formatAmount(totalVolume) }}</strong>
-					m³.</template
-				>
+					m³.
+				</template>
 			</p>
 
 			<PTable striped>

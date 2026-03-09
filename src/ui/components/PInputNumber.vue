@@ -28,20 +28,32 @@
 	function onInput(e: Event) {
 		const target = e.target as HTMLInputElement;
 
-		// sanitize input
-		if (decimals) target.value = target.value.replace(/[^0-9.]/g, "");
-		else target.value = target.value.replace(/\D/g, "");
-
-		if (target.value !== "") {
-			let numValue = Number(target.value);
-			// clamp to min/max
-			if (numValue < min) numValue = min;
-			if (numValue > max) numValue = max;
-			value.value = numValue;
-			target.value = String(numValue);
-		} else {
+		// check for empty value
+		if (target.value === "") {
 			value.value = null;
+			return;
 		}
+
+		// Check for valid number formats
+		if (decimals && target.value.match(/^-?\d*\.?\d*$/) === null) {
+			target.value = String(value.value ?? "");
+			return;
+		}
+		if (!decimals && target.value.match(/^-?\d*$/) === null) {
+			target.value = String(value.value ?? "");
+			return;
+		}
+
+		let numValue = Number(target.value);
+
+		// Clamp to min/max, only updating the text field if the value is out of bounds.
+		// Otherwise we may inadvertently move the user's cursor or remove decimal points they are in the process of typing.
+		if (numValue < min || numValue > max) {	
+			numValue = Math.min(Math.max(numValue, min), max);
+			target.value = String(numValue);
+		}
+		
+		value.value = numValue;
 	}
 
 	function canChange(e: number): boolean {
@@ -67,8 +79,9 @@
 			:class="`${inputNumberConfig.container} ${inputNumberConfig.sizes[size].container}`">
 			<input
 				:disabled="disabled"
-				type="text"
-				inputmode="numeric"
+				:inputmode="decimals ? 'decimal' : 'numeric'"
+				:min="min"
+				:max="max"
 				:value="value"
 				:placeholder="placeholder"
 				:class="`${inputNumberConfig.input} ${inputNumberConfig.sizes[size].input}`"
