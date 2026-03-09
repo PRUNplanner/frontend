@@ -2,6 +2,9 @@ import { createApp } from "vue";
 import "@/assets/css/style.css";
 import AppProvider from "@/AppProvider.vue";
 
+// i18n
+import i18n from "./i18n";
+
 // stores
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
@@ -18,6 +21,7 @@ import router from "@/router";
 const app = createApp(AppProvider);
 app.config.performance = true;
 
+app.use(i18n);
 app.use(router);
 app.use(pinia);
 
