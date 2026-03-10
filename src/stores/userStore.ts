@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ComputedRef, Reactive, reactive, ref, Ref } from "vue";
 import merge from "lodash/merge";
+import i18n from "@/i18n";
 
 // API
 import {
@@ -35,6 +36,8 @@ import {
 } from "@/features/preferences/userPreferences.types";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
+export type SupportedLocale = "en-US" | "de-DE";
+
 export const useUserStore = defineStore(
 	"prunplanner_user",
 	() => {
@@ -47,6 +50,32 @@ export const useUserStore = defineStore(
 		const intialPreferencesCalled: Ref<boolean> = ref(false);
 		const preferences: Reactive<IPreference> =
 			reactive<IPreference>(preferenceDefaults);
+
+		// language options
+		const currentLocale = ref<SupportedLocale>("en-US");
+		i18n.global.locale.value = currentLocale.value;
+
+		async function setLocale(newLocale: SupportedLocale) {
+			// 1. Check if we already have the language loaded
+			if (!i18n.global.availableLocales.includes(newLocale)) {
+				try {
+					const messages = await import(
+						`../locales/${newLocale}.json`
+					);
+
+					// 3. Register the new messages in vue-i18n
+					i18n.global.setLocaleMessage(newLocale, messages.default);
+				} catch (e) {
+					console.error(`Could not load locale ${newLocale}`, e);
+					return;
+				}
+			}
+
+			i18n.global.locale.value = newLocale as SupportedLocale;
+			currentLocale.value = newLocale;
+			localStorage.setItem("user-locale", newLocale);
+			document.querySelector("html")?.setAttribute("lang", newLocale);
+		}
 
 		// state reset
 		function $reset(): void {
@@ -267,6 +296,9 @@ export const useUserStore = defineStore(
 			profile,
 			// reset
 			$reset,
+			// locale
+			currentLocale,
+			setLocale,
 			// getters
 			isLoggedIn,
 			hasFIO,
@@ -287,7 +319,13 @@ export const useUserStore = defineStore(
 	},
 	{
 		persist: {
-			pick: ["accessToken", "refreshToken", "profile", "preferences"],
+			pick: [
+				"accessToken",
+				"refreshToken",
+				"profile",
+				"preferences",
+				"currentLocale",
+			],
 		},
 	}
 );

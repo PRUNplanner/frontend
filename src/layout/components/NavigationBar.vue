@@ -23,6 +23,11 @@
 	// Types & Interfaces
 	import { IMenuSection } from "@/layout/components/navigation.types";
 
+	// Locale
+	import { useI18n } from "vue-i18n";
+	const { t } = useI18n();
+	import LanguageSwitcher from "@/layout/components/LanguageSwitcher.vue";
+
 	// UI
 	import { PTag, PTooltip, PTable, PIcon } from "@/ui";
 	import {
@@ -83,25 +88,25 @@
 			display: true,
 			children: [
 				{
-					label: "Empire",
+					label: t("navigation.empire"),
 					display: true,
 					routerLink: "/",
 					icon: HomeSharp,
 				},
 				{
-					label: "Planet Search",
+					label: t("navigation.planet_search"),
 					display: true,
 					routerLink: "/search",
 					icon: SearchRound,
 				},
 				{
-					label: "Management",
+					label: t("navigation.management"),
 					display: true,
 					routerLink: "/manage",
 					icon: SettingsRound,
 				},
 				{
-					label: "Exchanges",
+					label: t("navigation.exchanges"),
 					display: true,
 					routerLink: "/exchanges",
 					icon: ShoppingBasketSharp,
@@ -124,24 +129,24 @@
 		// 	],
 		// },
 		{
-			label: "Tools",
-			labelShort: "Tool",
+			label: t("navigation.tools"),
+			labelShort: t("navigation.tools"),
 			display: true,
 			children: [
 				{
-					label: "Market Exploration",
+					label: t("navigation.market_exploration"),
 					display: true,
 					routerLink: "/market-exploration",
 					icon: ExploreSharp,
 				},
 				{
-					label: "Recipe ROI",
+					label: t("navigation.recipe_roi"),
 					display: true,
 					routerLink: "/roi-overview",
 					icon: MoneySharp,
 				},
 				{
-					label: "Resource ROI",
+					label: t("navigation.resource_roi"),
 					display: true,
 					routerLink: "/resource-roi-overview",
 					icon: TravelExploreSharp,
@@ -173,19 +178,19 @@
 				// 	],
 				// },
 				{
-					label: "HQ Calculator",
+					label: t("navigation.hq_calculator"),
 					display: true,
 					routerLink: "/hq-upgrade-calculator",
 					icon: ProductionQuantityLimitsSharp,
 				},
 				{
-					label: "Production Chains",
+					label: t("navigation.production_chains"),
 					display: true,
 					routerLink: "/production-chain",
 					icon: CompareSharp,
 				},
 				{
-					label: "Upkeep Prices",
+					label: t("navigation.upkeep_prices"),
 					display: true,
 					routerLink: "/upkeep-price-calculator",
 					icon: AccountBalanceSharp,
@@ -203,13 +208,13 @@
 				// 	icon: StarsSharp,
 				// },
 				{
-					label: "FIO Burn",
+					label: t("navigation.fio_burn"),
 					display: userStore.hasFIO,
 					routerLink: "/fio/burn",
 					icon: LocalFireDepartmentSharp,
 				},
 				{
-					label: "FIO Repair",
+					label: t("navigation.fio_repair"),
 					display: userStore.hasFIO,
 					routerLink: "/fio/repair",
 					icon: AutoFixNormalSharp,
@@ -247,8 +252,8 @@
 			],
 		},
 		{
-			label: "Account",
-			labelShort: "Acc",
+			label: t("navigation.account"),
+			labelShort: t("navigation.account"),
 			display: true,
 			children: [
 				// {
@@ -258,19 +263,19 @@
 				// 	icon: ExtensionSharp,
 				// },
 				{
-					label: "Profile",
+					label: t("navigation.profile"),
 					display: true,
 					routerLink: "/profile",
 					icon: PersonSharp,
 				},
 				{
-					label: "Help",
+					label: t("navigation.help"),
 					display: true,
 					routerLink: "/help",
 					icon: HelpOutlineSharp,
 				},
 				{
-					label: "Logout",
+					label: t("navigation.logout"),
 					display: true,
 					icon: LogOutRound,
 					functionCall: () => {
@@ -331,6 +336,7 @@
 				</div>
 			</div>
 		</div>
+		<LanguageSwitcher />
 		<div class="flex flex-col flex-1 overflow-y-auto">
 			<nav class="flex-1 pt-0 pb-4 text-white/80">
 				<template
