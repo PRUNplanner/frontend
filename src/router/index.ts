@@ -154,7 +154,7 @@ const router = createRouter({
 			name: "debug",
 			path: "/debug",
 			meta: { requiresAuth: true },
-			component: () => import("@/lib/query_cache/QueryCacheView.vue"),
+			component: () => import("@/views/QueryCacheView.vue"),
 		},
 	],
 });
