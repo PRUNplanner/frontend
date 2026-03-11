@@ -178,20 +178,21 @@ describe("usePlan", async () => {
 	it("cloneSharedPlan, okay", async () => {
 		const { cloneSharedPlan } = usePlan();
 		vi.mocked(callCloneSharedPlan).mockResolvedValueOnce({
-			message: "foo",
+			uuid: "f13ca1e0-179b-4380-92bf-b58855c28313",
+			plan_name: "CH-771a (Shared Clone)",
 		});
 
-		const result = await cloneSharedPlan("foo");
+		const result = await cloneSharedPlan("da105ce1-25f2-479d-b1eb-944353f4784f");
 
-		expect(result).toBeTruthy();
+		expect(result).toBe("f13ca1e0-179b-4380-92bf-b58855c28313");
 	});
 
 	it("cloneSharedPlan, failure", async () => {
 		const { cloneSharedPlan } = usePlan();
 		vi.mocked(callCloneSharedPlan).mockRejectedValueOnce(new Error());
 
-		const result = await cloneSharedPlan("foo");
+		const result = await cloneSharedPlan("da105ce1-25f2-479d-b1eb-944353f4784f");
 
-		expect(result).toBeFalsy();
+		expect(result).toBeNull();
 	});
 });

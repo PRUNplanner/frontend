@@ -12,7 +12,8 @@ export interface ISharedCreateResponse {
 }
 
 export interface ISharedCloneResponse {
-	message: string;
+	uuid: string;
+	plan_name: string;
 }
 
 export interface ISharedCreatePayload {

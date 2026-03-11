@@ -104,7 +104,7 @@ export interface IQueryRepository {
 		{ planUuid: string },
 		ISharedCreateResponse
 	>;
-	PutCloneSharedPlan: IQueryDefinition<
+	PostCloneSharedPlan: IQueryDefinition<
 		{ sharedUuid: string },
 		ISharedCloneResponse
 	>;

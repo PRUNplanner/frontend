@@ -74,7 +74,7 @@ export async function callCreateSharing(
 export async function callCloneSharedPlan(
 	sharedUuid: string
 ): Promise<ISharedCloneResponse> {
-	return apiService.put<null, SharedCloneResponseType>(
+	return apiService.post<null, SharedCloneResponseType>(
 		`/planning/shared/${sharedUuid}/clone/`,
 		null,
 		z.null(),
