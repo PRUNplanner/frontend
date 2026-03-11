@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { computed } from "vue";
 
-	import { PSpin } from "@/ui";
+	import PSpin from "./PSpin.vue";
 
 	import { ColorKey, SizeKey } from "@/ui/ui.types";
 	import { buttonConfig } from "@/ui/styles";

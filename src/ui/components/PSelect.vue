@@ -10,7 +10,8 @@
 	} from "vue";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 	import { PSelectOption } from "@/ui/ui.types";
-	import { PInput, PSelectElement } from "@/ui";
+	import PInput from "./PInput.vue";
+	import PSelectElement from "./PSelectElement.vue";
 	import { createPopper, Instance } from "@popperjs/core";
 	import { ClearSharp } from "@vicons/material";
 
@@ -66,8 +67,9 @@
 		return options
 			.map((f: PSelectOption) => {
 				if (f.children) {
-					const matchingChildren = f.children.filter((c: PSelectOption) =>
-						c.label.toLowerCase().includes(search)
+					const matchingChildren = f.children.filter(
+						(c: PSelectOption) =>
+							c.label.toLowerCase().includes(search)
 					);
 					if (matchingChildren.length === 0) return null;
 					return { ...f, children: matchingChildren };
