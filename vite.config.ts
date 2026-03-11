@@ -128,30 +128,36 @@ export default defineConfig({
 							.pop()!
 							.split("/");
 
-						// handle scoped packages (@vue/reactivity)
 						let pkg = parts[0];
 						if (pkg.startsWith("@") && parts.length > 1) {
 							pkg = `${parts[0]}/${parts[1]}`;
 						}
 
-						// heavy libs as dedicated async chunks
-						if (pkg === "highcharts") return "highcharts";
-						if (pkg === "showdown") return "showdown";
-						if (pkg === "posthog-js") return "posthog";
+						if (pkg === "highcharts") return "vendor_highcharts";
+						if (pkg === "showdown") return "vendor_showdown";
+						if (pkg === "posthog-js") return "vendor_posthog";
 
-						// sanitize vendor name
+						// Sanitize vendor name for the general vendor chunk
 						return (
 							"vendor_" +
 							pkg
-								.replace(/^@/, "") // remove leading @
-								.replace(/[^a-zA-Z0-9]/g, "_") // replace all weird chars
-								.replace(/_+$/, "") // trim trailing underscores
+								.replace(/^@/, "")
+								.replace(/[^a-zA-Z0-9]/g, "_")
+								.replace(/_+$/, "")
 						);
 					}
 
-					// group app code by feature
-					if (id.includes("/views/")) return "views";
-					if (id.includes("/components/")) return "components";
+					if (
+						id.includes("src/ui/") ||
+						id.includes("/features/") ||
+						id.includes("/components/")
+					) {
+						return "app-core";
+					}
+
+					if (id.includes("/views/")) {
+						return;
+					}
 				},
 			},
 		},
