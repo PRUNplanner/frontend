@@ -33,7 +33,10 @@ export type SharedCreateResponseType = z.infer<
 >;
 
 export const SharedCloneResponseSchema: z.ZodType<ISharedCloneResponse> =
-	z.object({ message: z.string() });
+	z.object({
+		uuid: z.string().uuid(),
+		plan_name: z.string(),
+	});
 
 export type SharedCloneResponseType = z.infer<typeof SharedCloneResponseSchema>;
 

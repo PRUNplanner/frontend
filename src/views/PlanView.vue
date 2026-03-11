@@ -458,11 +458,17 @@
 	async function cloneShared(): Promise<void> {
 		if (!props.sharedPlanUuid) return;
 
-		sharedWasCloned.value = await cloneSharedPlan(props.sharedPlanUuid);
+		const newPlanUuid = await cloneSharedPlan(props.sharedPlanUuid);
+		sharedWasCloned.value = newPlanUuid !== null;
 		trackEvent("plan_shared_cloned", {
 			planetNaturalId: planetData.planet_natural_id,
 			sharedUuid: props.sharedPlanUuid,
 		});
+		if (newPlanUuid) {
+			router.push(
+				`/plan/${planetData.planet_natural_id}/${newPlanUuid}`
+			);
+		}
 	}
 
 	// Unhead

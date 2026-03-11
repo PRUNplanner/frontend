@@ -289,12 +289,14 @@ export function usePlan() {
 		);
 	}
 
-	async function cloneSharedPlan(sharedUuid: string): Promise<boolean> {
+	async function cloneSharedPlan(sharedUuid: string): Promise<string | null> {
 		try {
-			await useQuery("PutCloneSharedPlan", { sharedUuid }).execute();
-			return true;
+			const result = await useQuery("PostCloneSharedPlan", {
+				sharedUuid,
+			}).execute();
+			return result?.uuid ?? null;
 		} catch {
-			return false;
+			return null;
 		}
 	}
 

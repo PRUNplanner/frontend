@@ -346,7 +346,7 @@ export function useQueryRepository() {
 			persist: false,
 			autoRefetch: false,
 		} as IQueryDefinition<{ planUuid: string }, ISharedCreateResponse>,
-		PutCloneSharedPlan: {
+		PostCloneSharedPlan: {
 			key: (params: { sharedUuid: string }) => [
 				"planningdata",
 				"shared",

@@ -63,19 +63,20 @@ describe("Empire Data API Calls", async () => {
 	});
 
 	it("callCloneSharedPlan", async () => {
-		const spyApiServicePut = vi.spyOn(apiService, "put");
+		const spyApiServicePost = vi.spyOn(apiService, "post");
 
-		const fakeSharing = {
-			message: "foo",
+		const fakeCloneResponse = {
+			uuid: "f13ca1e0-179b-4380-92bf-b58855c28313",
+			plan_name: "CH-771a (Shared Clone)",
 		};
 
-		mock.onPut(
+		mock.onPost(
 			"/planning/shared/da105ce1-25f2-479d-b1eb-944353f4784f/clone/"
-		).reply(200, fakeSharing);
+		).reply(200, fakeCloneResponse);
 
 		expect(
 			await callCloneSharedPlan("da105ce1-25f2-479d-b1eb-944353f4784f")
-		).toStrictEqual(fakeSharing);
-		expect(spyApiServicePut).toHaveBeenCalled();
+		).toStrictEqual(fakeCloneResponse);
+		expect(spyApiServicePost).toHaveBeenCalled();
 	});
 });
