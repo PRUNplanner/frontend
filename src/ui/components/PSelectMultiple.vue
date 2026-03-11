@@ -46,24 +46,25 @@
 	const componentId = `select-${Math.random().toString(36).substring(2, 9)}`;
 	const dropdownPosition = ref({ top: "0px", left: "0px", width: "100px" });
 
-	const displayValue: ComputedRef<string[]> = computed(() => {
-		const allOptions: PSelectOption[] = [];
-
-		options.forEach((e) => {
-			if (!e.children) allOptions.push(e);
-			else {
-				e.children.forEach((c) => allOptions.push(c));
-			}
+	/** Selected items as { value, label } for correct remove by value */
+	const selectedEntries: ComputedRef<{ value: string | number | undefined; label: string }[]> =
+		computed(() => {
+			const allOptions: PSelectOption[] = [];
+			options.forEach((e) => {
+				if (!e.children) allOptions.push(e);
+				else {
+					e.children.forEach((c) => allOptions.push(c));
+				}
+			});
+			return value.value
+				.map((val) => {
+					const opt = allOptions.find((a) => a.value === val);
+					return opt ? { value: opt.value, label: opt.label } : null;
+				})
+				.filter((x): x is { value: string | number | undefined; label: string } =>
+					x != null
+				);
 		});
-
-		const displayOptions: string[] = [];
-
-		allOptions.forEach((a) => {
-			if (value.value.includes(a.value)) displayOptions.push(a.label);
-		});
-
-		return displayOptions;
-	});
 
 	const filteredOptions: ComputedRef<PSelectOption[]> = computed(() => {
 		if (searchString.value === null || searchString.value === "")
@@ -142,10 +143,13 @@
 		searchString.value = null;
 	}
 
-	function removeElement(v: string | number): void {
-		if (!disabled) {
-			value.value.splice(value.value.indexOf(v, 0), 1);
-			value.value = [...value.value];
+	function removeElement(v: string | number | undefined): void {
+		if (!disabled && v !== undefined) {
+			const index = value.value.indexOf(v, 0);
+			if (index !== -1) {
+				value.value.splice(index, 1);
+				value.value = [...value.value];
+			}
 		}
 	}
 
@@ -227,14 +231,14 @@
 				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-white/80 rounded-sm px-2 min-h-7"
 				@click="toggleOpen">
 				<div class="w-full max-w-full grow">
-					<template v-if="displayValue.length > 0">
+					<template v-if="selectedEntries.length > 0">
 						<div class="flex w-full max-w-full flex-wrap gap-y-1">
 							<PTag
-								v-for="v in displayValue"
-								:key="v"
-								:value="v"
+								v-for="entry in selectedEntries"
+								:key="String(entry.value)"
+								:value="entry.label"
 								type="secondary"
-								@click.stop="removeElement(v)">
+								@click.stop="removeElement(entry.value)">
 								<template #icon><ClearSharp /></template>
 							</PTag>
 						</div>
