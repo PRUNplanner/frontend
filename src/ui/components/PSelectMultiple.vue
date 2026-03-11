@@ -10,7 +10,9 @@
 	} from "vue";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 	import { PSelectOption } from "@/ui/ui.types";
-	import { PInput, PSelectElement, PTag } from "@/ui";
+	import PInput from "./PInput.vue";
+	import PSelectElement from "./PSelectElement.vue";
+	import PTag from "./PTag.vue";
 	import { createPopper, Instance } from "@popperjs/core";
 	import { ClearSharp } from "@vicons/material";
 
@@ -47,24 +49,28 @@
 	const dropdownPosition = ref({ top: "0px", left: "0px", width: "100px" });
 
 	/** Selected items as { value, label } for correct remove by value */
-	const selectedEntries: ComputedRef<{ value: string | number | undefined; label: string }[]> =
-		computed(() => {
-			const allOptions: PSelectOption[] = [];
-			options.forEach((e) => {
-				if (!e.children) allOptions.push(e);
-				else {
-					e.children.forEach((c) => allOptions.push(c));
-				}
-			});
-			return value.value
-				.map((val) => {
-					const opt = allOptions.find((a) => a.value === val);
-					return opt ? { value: opt.value, label: opt.label } : null;
-				})
-				.filter((x): x is { value: string | number | undefined; label: string } =>
-					x != null
-				);
+	const selectedEntries: ComputedRef<
+		{ value: string | number | undefined; label: string }[]
+	> = computed(() => {
+		const allOptions: PSelectOption[] = [];
+		options.forEach((e) => {
+			if (!e.children) allOptions.push(e);
+			else {
+				e.children.forEach((c) => allOptions.push(c));
+			}
 		});
+		return value.value
+			.map((val) => {
+				const opt = allOptions.find((a) => a.value === val);
+				return opt ? { value: opt.value, label: opt.label } : null;
+			})
+			.filter(
+				(
+					x
+				): x is { value: string | number | undefined; label: string } =>
+					x != null
+			);
+	});
 
 	const filteredOptions: ComputedRef<PSelectOption[]> = computed(() => {
 		if (searchString.value === null || searchString.value === "")
