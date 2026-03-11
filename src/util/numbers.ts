@@ -9,23 +9,21 @@ import { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
 export function formatNumber(
 	value: number,
 	decimals: number = 2,
-	optionalDecimals: boolean = false
+	optionalDecimals: boolean = false,
+	forceSign: boolean = false
 ): string {
 	if (value === Infinity || isNaN(value)) {
 		return "∞";
 	}
-	if (!optionalDecimals) {
-		return numbro(value).format({
-			thousandSeparated: true,
-			mantissa: decimals,
-		});
-	} else {
-		return numbro(value).format({
-			thousandSeparated: true,
-			optionalMantissa: true,
-			mantissa: decimals,
-		});
-	}
+
+	const format: numbro.Format = {
+		thousandSeparated: true,
+		mantissa: decimals,
+		optionalMantissa: optionalDecimals,
+		forceSign: forceSign,
+	};
+
+	return numbro(value).format(format);
 }
 
 /**
