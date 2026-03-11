@@ -13,7 +13,7 @@
 	}>();
 
 	defineEmits<{
-		(e: "click"): void;
+		(e: "click", value: MouseEvent): void;
 	}>();
 </script>
 
@@ -27,7 +27,7 @@
 		<div
 			v-if="$slots.icon"
 			:class="tagConfig.sizes[size].icon"
-			@click="$emit('click')">
+			@click.stop="$emit('click', $event)">
 			<slot name="icon" />
 		</div>
 	</div>

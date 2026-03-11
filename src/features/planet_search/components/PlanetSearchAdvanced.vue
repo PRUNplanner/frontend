@@ -207,11 +207,8 @@
 						class="w-full"
 						@update:value="
 							(value) => {
-								// NOTE: There is apparently a bug where search returns planets for 3+ materials
-								// but the materials do not actually exist on the planets. Backend issue.
-
-								// limit to 2
-								if (Object.keys(inputMaterials).length > 2) {
+								// limit to 3
+								if (Object.keys(inputMaterials).length > 3) {
 									value.pop();
 								}
 							}
