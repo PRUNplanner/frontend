@@ -37,6 +37,7 @@ import {
 import { IExploration } from "@/features/market_exploration/marketExploration.types";
 import {
 	IEmpireCreatePayload,
+	IEmpireMaterialIOState,
 	IEmpirePatchPayload,
 } from "@/features/empire/empire.types";
 import {
@@ -127,6 +128,10 @@ export interface IQueryRepository {
 	PatchEmpirePlanJunctions: IQueryDefinition<
 		{ junctions: IPlanEmpireJunction[] },
 		IPlanEmpireElement[]
+	>;
+	PatchEmpireState: IQueryDefinition<
+		{ empireUuid: string; empireState: IEmpireMaterialIOState },
+		IPlanEmpire
 	>;
 	CreateCX: IQueryDefinition<{ cxName: string }, ICX>;
 	DeleteCX: IQueryDefinition<{ cxUuid: string }, boolean>;

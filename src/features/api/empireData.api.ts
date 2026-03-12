@@ -15,6 +15,8 @@ import {
 	EmpireCreatePayloadType,
 	EmpireJunctionPayloadSchema,
 	EmpireJunctionPayloadType,
+	EmpireMaterialIOStateSchema,
+	EmpireMaterialIOStateType,
 	EmpirePatchPayload,
 	EmpirePatchPayloadType,
 } from "@/features/api/schemas/empireData.schemas";
@@ -27,6 +29,7 @@ import {
 } from "@/stores/planningStore.types";
 import {
 	IEmpireCreatePayload,
+	IEmpireMaterialIOState,
 	IEmpirePatchPayload,
 } from "@/features/empire/empire.types";
 import { IPlanEmpireJunction } from "@/features/manage/manage.types";
@@ -128,5 +131,17 @@ export async function callPatchEmpirePlanJunctions(
 		junctions,
 		EmpireJunctionPayloadSchema,
 		PlanEmpireElementPayload
+	);
+}
+
+export async function callPatchEmpireState(
+	empireUuid: string,
+	empireState: IEmpireMaterialIOState
+): Promise<IPlanEmpire> {
+	return apiService.patch<EmpireMaterialIOStateType, PlanEmpireSchemaType>(
+		`/planning/empire/${empireUuid}/state/`,
+		empireState,
+		EmpireMaterialIOStateSchema,
+		PlanEmpireSchema
 	);
 }
