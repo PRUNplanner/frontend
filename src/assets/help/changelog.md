@@ -1,3 +1,11 @@
+# 2026-03-12 - v. 0.24.4
+
+- Improves material exchange overlay with additional information [[PR-363]](https://github.com/PRUNplanner/frontend/pull/363)
+- Fixes an issue where logged-in users were not able to clone a shared plan [[PR-362]](https://github.com/PRUNplanner/frontend/pull/362)
+- Fixes UI issues with Tags and Multi-Select filters [[PR-361]](https://github.com/PRUNplanner/frontend/pull/361)
+- Empire Material I/O and their plans individual Material I/O are patched to the backend incl. metadata [[PR-364]](https://github.com/PRUNplanner/frontend/pull/365)
+- Various package and security updates [[PR-365]](https://github.com/PRUNplanner/frontend/pull/365)
+
 # 2026-03-09 - v. 0.24.3
 
 - Fixes a bug that lead to continuous calls to fetch preferences when it is not needed [[PR-358]](https://github.com/PRUNplanner/frontend/pull/358)
