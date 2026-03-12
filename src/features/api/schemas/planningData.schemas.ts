@@ -28,7 +28,7 @@ import { PositiveOrZeroNumber } from "@/util/zodValidators";
  * PLAN
  */
 
-const PLAN_COGCPROGRAM_TYPE_ENUM = z.enum([
+export const PLAN_COGCPROGRAM_TYPE_ENUM = z.enum([
 	"---",
 	"AGRICULTURE",
 	"CHEMISTRY",

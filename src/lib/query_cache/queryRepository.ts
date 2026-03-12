@@ -50,6 +50,7 @@ import {
 	callGetEmpirePlans,
 	callPatchEmpire,
 	callPatchEmpirePlanJunctions,
+	callPatchEmpireState,
 } from "@/features/api/empireData.api";
 import {
 	callCreateCX,
@@ -103,6 +104,7 @@ import {
 import { IExploration } from "@/features/market_exploration/marketExploration.types";
 import {
 	IEmpireCreatePayload,
+	IEmpireMaterialIOState,
 	IEmpirePatchPayload,
 } from "@/features/empire/empire.types";
 import {
@@ -407,6 +409,28 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<{ junctions: ICXEmpireJunction[] }, ICX[]>,
+		PatchEmpireState: {
+			key: (params: { empireUuid: string }) => [
+				"planningdata",
+				"empire",
+				"state",
+				params.empireUuid,
+			],
+			fetchFn: async (params: {
+				empireUuid: string;
+				empireState: IEmpireMaterialIOState;
+			}) => {
+				return await callPatchEmpireState(
+					params.empireUuid,
+					params.empireState
+				);
+			},
+			autoRefetch: false,
+			persist: false,
+		} as IQueryDefinition<
+			{ empireUuid: string; empireState: IEmpireMaterialIOState },
+			IPlanEmpire
+		>,
 		PatchCX: {
 			key: (params: { cxUuid: string }) => [
 				"planningdata",

@@ -1,8 +1,14 @@
 import { z } from "zod";
 
 // Types & Interfaces
-import { PLAN_FACTION_TYPE_ZOD_ENUM } from "@/features/api/schemas/planningData.schemas";
-import { IEmpirePatchPayload } from "@/features/empire/empire.types";
+import {
+	PLAN_COGCPROGRAM_TYPE_ENUM,
+	PLAN_FACTION_TYPE_ZOD_ENUM,
+} from "@/features/api/schemas/planningData.schemas";
+import {
+	IEmpireMaterialIOState,
+	IEmpirePatchPayload,
+} from "@/features/empire/empire.types";
 import { IPlanEmpireJunction } from "@/features/manage/manage.types";
 
 export const EmpirePatchPayload: z.ZodType<IEmpirePatchPayload> = z.object({
@@ -35,4 +41,38 @@ const EmpireJunctionSchema: z.ZodType<IPlanEmpireJunction> = z.object({
 export const EmpireJunctionPayloadSchema = z.array(EmpireJunctionSchema);
 export type EmpireJunctionPayloadType = z.infer<
 	typeof EmpireJunctionPayloadSchema
+>;
+
+const MaterialValueSchema = z.object({
+	p: z.number(),
+	c: z.number(),
+	d: z.number(),
+});
+
+export const EmpireMaterialIOStateSchema: z.ZodType<IEmpireMaterialIOState> =
+	z.object({
+		metadata: z.object({
+			faction: PLAN_FACTION_TYPE_ZOD_ENUM,
+			permits_used: z.number(),
+			permits_total: z.number(),
+			plan_count: z.number(),
+			timestamp: z.iso.datetime(),
+		}),
+
+		empire_total: z.record(z.string(), MaterialValueSchema),
+
+		plan_details: z.record(
+			z.string(),
+			z.object({
+				metadata: z.object({
+					planet_natural_id: z.string(),
+					cogc: PLAN_COGCPROGRAM_TYPE_ENUM,
+				}),
+				deltas: z.record(z.string(), MaterialValueSchema),
+			})
+		),
+	});
+
+export type EmpireMaterialIOStateType = z.infer<
+	typeof EmpireMaterialIOStateSchema
 >;

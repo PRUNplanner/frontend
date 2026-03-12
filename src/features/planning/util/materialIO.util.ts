@@ -2,6 +2,7 @@
 import {
 	IEmpireMaterialIO,
 	IEmpireMaterialIOPlanet,
+	IEmpireMaterialIOState,
 	IEmpirePlanMaterialIO,
 } from "@/features/empire/empire.types";
 import { useMaterialData } from "@/database/services/useMaterialData";
@@ -11,6 +12,7 @@ import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
+import { IPlanEmpireElement, PLAN_FACTION } from "@/stores/planningStore.types";
 
 export async function useMaterialIOUtil() {
 	const { materialsMap } = useMaterialData();
@@ -109,6 +111,7 @@ export async function useMaterialIOUtil() {
 					planetId: planInfo.planetId,
 					planUuid: planInfo.planUuid,
 					planName: planInfo.planName,
+					planCOGC: planInfo.planCOGC,
 					delta: element.delta,
 					input: element.input,
 					output: element.output,
@@ -177,9 +180,76 @@ export async function useMaterialIOUtil() {
 		);
 	}
 
+	async function empireMaterialIOState(
+		empire: IPlanEmpireElement | undefined,
+		data: IEmpireMaterialIO[]
+	): Promise<IEmpireMaterialIOState | undefined> {
+		if (!empire) return undefined;
+
+		const result: IEmpireMaterialIOState = {
+			metadata: {
+				faction: empire.empire_faction as PLAN_FACTION,
+				permits_used: empire.empire_permits_used,
+				permits_total: empire.empire_permits_total,
+				plan_count: empire.plans.length,
+				timestamp: new Date().toISOString(),
+			},
+			empire_total: {},
+			plan_details: {},
+		};
+
+		const round = (val: number) => Math.round(val * 10000) / 10000;
+
+		// empire totals
+		data.forEach((item) => {
+			const ticker = item.ticker;
+
+			result.empire_total[ticker] = {
+				p: round(item.output),
+				c: round(item.input),
+				d: round(item.delta),
+			};
+
+			// processing plans
+			const allPlanEntries = [
+				...item.inputPlanets,
+				...item.outputPlanets,
+			];
+			const seenPlansInTicker = new Set();
+
+			allPlanEntries.forEach((planEntry) => {
+				const uuid = planEntry.planUuid;
+
+				if (seenPlansInTicker.has(uuid)) return;
+				seenPlansInTicker.add(uuid);
+
+				if (!result.plan_details[uuid]) {
+					result.plan_details[uuid] = {
+						metadata: {
+							planet_natural_id: planEntry.planetId,
+							cogc: planEntry.planCOGC,
+						},
+						deltas: {},
+					};
+				}
+
+				// Record the production/consumption for this specific plan
+				// input -> c, output -> p, delta -> d
+				result.plan_details[uuid].deltas[ticker] = {
+					p: round(planEntry.output),
+					c: round(planEntry.input),
+					d: round(planEntry.delta),
+				};
+			});
+		});
+
+		return result;
+	}
+
 	return {
 		combineMaterialIOMinimal,
 		enhanceMaterialIOMinimal,
 		combineEmpireMaterialIO,
+		empireMaterialIOState,
 	};
 }

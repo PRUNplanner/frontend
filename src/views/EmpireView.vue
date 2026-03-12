@@ -19,7 +19,8 @@
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 	import { usePreferences } from "@/features/preferences/usePreferences";
-	const { combineEmpireMaterialIO } = await useMaterialIOUtil();
+	const { combineEmpireMaterialIO, empireMaterialIOState } =
+		await useMaterialIOUtil();
 	const { defaultEmpireUuid } = usePreferences();
 
 	// Components
@@ -50,6 +51,7 @@
 	import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 	import {
 		IEmpireCostOverview,
+		IEmpireMaterialIO,
 		IEmpirePlanListData,
 		IEmpirePlanMaterialIO,
 	} from "@/features/empire/empire.types";
@@ -129,6 +131,17 @@
 		}
 
 		isCalculating.value = false;
+
+		empireMaterialIOState(
+			selectedEmpire.value,
+			combinedEmpireMaterialIO.value
+		).then((data) => {
+			if (data && selectedEmpire.value)
+				useQuery("PatchEmpireState", {
+					empireUuid: selectedEmpire.value.uuid,
+					empireState: data,
+				}).execute();
+		});
 	}
 
 	/**
@@ -242,11 +255,16 @@
 						planetId: plan.planet_natural_id,
 						planUuid: planUuid,
 						planName: plan.plan_name ?? "Unknown Plan Name",
+						planCOGC: plan.plan_cogc,
 						materialIO: planResult.materialio,
 					};
 				}
 			);
 		}
+	);
+
+	const combinedEmpireMaterialIO: ComputedRef<IEmpireMaterialIO[]> = computed(
+		() => combineEmpireMaterialIO(empireMaterialIO.value)
 	);
 
 	/**
@@ -388,9 +406,7 @@
 								<EmpireMaterialIOFiltered
 									:content="mainContent"
 									:empire-material-i-o="
-										combineEmpireMaterialIO(
-											empireMaterialIO
-										)
+										combinedEmpireMaterialIO
 									"
 									:plan-list-data="planListData" />
 							</div>
