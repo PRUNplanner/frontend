@@ -298,7 +298,6 @@
 
 <template>
 	<WrapperPlanningDataLoader
-		:key="`WrapperPlanningDataLoader#${selectedEmpireUuid}`"
 		empire-list
 		:empire-uuid="selectedEmpireUuid"
 		@data:empire:plans="(value: IPlan[]) => (planData = value)"

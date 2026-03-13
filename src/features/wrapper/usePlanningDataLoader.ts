@@ -52,6 +52,35 @@ export function usePlanningDataLoader(
 
 	const { createBlankDefinition } = usePlan();
 
+	// reset on change
+	watch(
+		() => props.empireUuid,
+		(newVal) => {
+			if (newVal) {
+				const step = steps.find((s) => s.cfg.key === "empirePlans");
+				if (step) {
+					step.triggered = false;
+					step.data = null;
+					done.value = false;
+				}
+			}
+		}
+	);
+
+	watch(
+		() => props.planUuid,
+		(newVal) => {
+			if (newVal) {
+				const step = steps.find((s) => s.cfg.key === "plan");
+				if (step) {
+					step.triggered = false;
+					step.data = null;
+					done.value = false;
+				}
+			}
+		}
+	);
+
 	const stepConfigs: PlanningStepConfigsType = [
 		{
 			key: "sharedPlan",
@@ -69,14 +98,11 @@ export function usePlanningDataLoader(
 			enabled: () => !!props.empireList,
 			load: () => queryStore.execute("GetAllEmpires", undefined),
 			onSuccess: (data: IPlanEmpireElement[]) => {
-				if (!props.empireUuid) {
-					/*
-						It might be required to send the empire uuid of the first
-						available empire fetched as there could be a frontend select
-						needing a value or a full refresh happing, e.g. default empire
-						uuid missing or not set.
-					*/
-
+				if (
+					props.empireUuid === undefined ||
+					props.empireUuid === null ||
+					props.empireUuid === ""
+				) {
 					if (data.length > 0)
 						emits("update:empireUuid", data[0].uuid);
 				}
