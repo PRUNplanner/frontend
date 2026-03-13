@@ -67,9 +67,18 @@
 		},
 	});
 
-	const selectedEmpireUuid: Ref<string | undefined> = ref(
-		props.empireUuid ? props.empireUuid : defaultEmpireUuid
-	);
+	const internalEmpireUuid = ref(props.empireUuid || defaultEmpireUuid.value);
+
+	const selectedEmpireUuid = computed({
+		get: () => props.empireUuid || internalEmpireUuid.value,
+		set: (val) => {
+			if (val) {
+				internalEmpireUuid.value = val;
+				defaultEmpireUuid.value = val;
+			}
+		},
+	});
+
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
 	const refEmpireList: Ref<IPlanEmpireElement[]> = ref([]);
 
@@ -357,15 +366,7 @@
 													selectedEmpireUuid
 												"
 												class="w-full"
-												:options="empireOptions"
-												@update-value="
-													(value: string) => {
-														selectedEmpireUuid =
-															value;
-														defaultEmpireUuid =
-															value;
-													}
-												" />
+												:options="empireOptions" />
 										</PFormItem>
 									</PForm>
 								</div>

@@ -68,18 +68,22 @@ export function usePlanningDataLoader(
 
 			// per step reset
 			if (newEmpire !== oldEmpire) {
-				const step = steps.find((s) => s.cfg.key === "empirePlans");
-				if (step) {
-					step.triggered = false;
-					step.data = null;
+				const stepEmpirePlans = steps.find(
+					(s) => s.cfg.key === "empirePlans"
+				);
+				if (stepEmpirePlans) {
+					stepEmpirePlans.triggered = false;
+					stepEmpirePlans.data = null;
+					done.value = false;
 				}
 			}
 
 			if (newPlan !== oldPlan) {
-				const step = steps.find((s) => s.cfg.key === "plan");
-				if (step) {
-					step.triggered = false;
-					step.data = null;
+				const stepPlan = steps.find((s) => s.cfg.key === "plan");
+				if (stepPlan) {
+					stepPlan.triggered = false;
+					stepPlan.data = null;
+					done.value = false;
 				}
 			}
 		}
@@ -189,11 +193,11 @@ export function usePlanningDataLoader(
 				}),
 			onSuccess: (data: IPlan[]) => {
 				// emit empire data
-				emits("data:empire:plans", data);
 				// emit potential empire cx uuid
 				if (!props.cxUuid) {
 					emits("update:cxUuid", findEmpireCXUuid(props.empireUuid!));
 				}
+				emits("data:empire:plans", data);
 			},
 		},
 	];
