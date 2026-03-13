@@ -54,28 +54,32 @@ export function usePlanningDataLoader(
 
 	// reset on change
 	watch(
-		() => props.empireUuid,
-		(newVal) => {
-			if (newVal) {
+		() => [
+			props.empireUuid,
+			props.planUuid,
+			props.planetNaturalId,
+			props.sharedPlanUuid,
+		],
+		(
+			[newEmpire, newPlan, _newPlanet, _newShared],
+			[oldEmpire, oldPlan, _oldPlanet, _oldShared]
+		) => {
+			done.value = false;
+
+			// per step reset
+			if (newEmpire !== oldEmpire) {
 				const step = steps.find((s) => s.cfg.key === "empirePlans");
 				if (step) {
 					step.triggered = false;
 					step.data = null;
-					done.value = false;
 				}
 			}
-		}
-	);
 
-	watch(
-		() => props.planUuid,
-		(newVal) => {
-			if (newVal) {
+			if (newPlan !== oldPlan) {
 				const step = steps.find((s) => s.cfg.key === "plan");
 				if (step) {
 					step.triggered = false;
 					step.data = null;
-					done.value = false;
 				}
 			}
 		}
@@ -98,14 +102,13 @@ export function usePlanningDataLoader(
 			enabled: () => !!props.empireList,
 			load: () => queryStore.execute("GetAllEmpires", undefined),
 			onSuccess: (data: IPlanEmpireElement[]) => {
-				if (
-					props.empireUuid === undefined ||
-					props.empireUuid === null ||
-					props.empireUuid === ""
-				) {
-					if (data.length > 0)
-						emits("update:empireUuid", data[0].uuid);
+				const hasNoSelection =
+					!props.empireUuid || props.empireUuid === "";
+
+				if (hasNoSelection && data.length > 0) {
+					emits("update:empireUuid", data[0].uuid);
 				}
+
 				emits("data:empire:list", data);
 			},
 		},
