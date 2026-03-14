@@ -52,6 +52,43 @@ export function usePlanningDataLoader(
 
 	const { createBlankDefinition } = usePlan();
 
+	// reset on change
+	watch(
+		() => [
+			props.empireUuid,
+			props.planUuid,
+			props.planetNaturalId,
+			props.sharedPlanUuid,
+		],
+		(
+			[newEmpire, newPlan, _newPlanet, _newShared],
+			[oldEmpire, oldPlan, _oldPlanet, _oldShared]
+		) => {
+			done.value = false;
+
+			// per step reset
+			if (newEmpire !== oldEmpire) {
+				const stepEmpirePlans = steps.find(
+					(s) => s.cfg.key === "empirePlans"
+				);
+				if (stepEmpirePlans) {
+					stepEmpirePlans.triggered = false;
+					stepEmpirePlans.data = null;
+					done.value = false;
+				}
+			}
+
+			if (newPlan !== oldPlan) {
+				const stepPlan = steps.find((s) => s.cfg.key === "plan");
+				if (stepPlan) {
+					stepPlan.triggered = false;
+					stepPlan.data = null;
+					done.value = false;
+				}
+			}
+		}
+	);
+
 	const stepConfigs: PlanningStepConfigsType = [
 		{
 			key: "sharedPlan",
@@ -69,17 +106,13 @@ export function usePlanningDataLoader(
 			enabled: () => !!props.empireList,
 			load: () => queryStore.execute("GetAllEmpires", undefined),
 			onSuccess: (data: IPlanEmpireElement[]) => {
-				if (!props.empireUuid) {
-					/*
-						It might be required to send the empire uuid of the first
-						available empire fetched as there could be a frontend select
-						needing a value or a full refresh happing, e.g. default empire
-						uuid missing or not set.
-					*/
+				const hasNoSelection =
+					!props.empireUuid || props.empireUuid === "";
 
-					if (data.length > 0)
-						emits("update:empireUuid", data[0].uuid);
+				if (hasNoSelection && data.length > 0) {
+					emits("update:empireUuid", data[0].uuid);
 				}
+
 				emits("data:empire:list", data);
 			},
 		},
@@ -160,11 +193,11 @@ export function usePlanningDataLoader(
 				}),
 			onSuccess: (data: IPlan[]) => {
 				// emit empire data
-				emits("data:empire:plans", data);
 				// emit potential empire cx uuid
 				if (!props.cxUuid) {
 					emits("update:cxUuid", findEmpireCXUuid(props.empireUuid!));
 				}
+				emits("data:empire:plans", data);
 			},
 		},
 	];
