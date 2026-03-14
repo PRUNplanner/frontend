@@ -1,3 +1,7 @@
+# 2026-03-14 - v. 0.24.5
+
+- Fixes an issue where no reload was triggered after switching the empire [[PR-367]](https://github.com/PRUNplanner/frontend/pull/367)
+
 # 2026-03-12 - v. 0.24.4
 
 - Improves material exchange overlay with additional information [[PR-363]](https://github.com/PRUNplanner/frontend/pull/363)
