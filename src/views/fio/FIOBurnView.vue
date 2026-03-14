@@ -54,7 +54,19 @@
 	import { PSelect, PForm, PFormItem, PInputNumber } from "@/ui";
 
 	const isCalculating: Ref<boolean> = ref(false);
-	const selectedEmpireUuid: Ref<string | undefined> = ref(defaultEmpireUuid);
+
+	const internalEmpireUuid = ref(defaultEmpireUuid.value);
+
+	const selectedEmpireUuid = computed({
+		get: () => internalEmpireUuid.value,
+		set: (val) => {
+			if (val) {
+				internalEmpireUuid.value = val;
+				defaultEmpireUuid.value = val;
+			}
+		},
+	});
+
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
 	const planData: Ref<IPlan[]> = ref([]);
 	const empireList: Ref<IPlanEmpireElement[]> = ref([]);
@@ -136,7 +148,6 @@
 
 <template>
 	<WrapperPlanningDataLoader
-		:key="`WrapperPlanningDataLoader#${selectedEmpireUuid}`"
 		empire-list
 		:empire-uuid="selectedEmpireUuid"
 		@update:cx-uuid="
@@ -163,7 +174,18 @@
 				<div v-else class="min-h-screen flex flex-col">
 					<div
 						class="px-6 py-3 border-b border-white/10 flex flex-row justify-between">
-						<h1 class="text-2xl font-bold my-auto">FIO Burn</h1>
+						<h1 class="text-2xl font-normal my-auto">
+							FIO Burn:
+							<span class="font-bold">
+								{{
+									` ${
+										empireList.find(
+											(e) => e.uuid == selectedEmpireUuid
+										)?.empire_name ?? ""
+									}`
+								}}
+							</span>
+						</h1>
 						<div class="flex flex-row gap-x-3">
 							<div class="my-auto">
 								FIO Data Update:
@@ -198,12 +220,6 @@
 													value: e.uuid,
 												};
 											})
-										"
-										@update-value="
-											(value: string) => {
-												selectedEmpireUuid = value;
-												defaultEmpireUuid = value;
-											}
 										" />
 								</div>
 								<div>
