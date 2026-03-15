@@ -2,20 +2,23 @@
 	import { computed, ComputedRef, onMounted, ref, Ref } from "vue";
 
 	// Types & Interfaces
-	import { Options, SeriesOptionsType } from "highcharts";
-	import { IMaterialExplorationRecord } from "@/features/market_exploration/marketExploration.types";
-	import { IMaterialDataSeries } from "@/features/market_exploration/components/MaterialDataChart.types";
+	import {
+		IMaterialExplorationRecord,
+		IMaterialMarketHistory,
+	} from "@/features/market_exploration/marketExploration.types";
 
 	// Composables
 	import { useMarketExploration } from "@/features/market_exploration/useMarketExploration";
+	const { getMaterialExplorationData } = useMarketExploration();
+
+	// Util
+	import { dateStringFromEpoch } from "@/util/date";
 
 	// Components
-	import { Chart } from "highcharts-vue";
+	import MarketHistoryChart from "@/ui/charts/MarketHistoryChart.vue";
 
 	// UI
 	import { PSpin } from "@/ui";
-
-	const { getMaterialExplorationData } = useMarketExploration();
 
 	// Props
 	const props = defineProps({
@@ -40,48 +43,44 @@
 
 	const chartData: Ref<IMaterialExplorationRecord | undefined> =
 		ref(undefined);
-	const chartSeriesData: ComputedRef<IMaterialDataSeries[]> = computed(() => {
-		if (chartData.value) {
-			return Object.keys(chartData.value).map((exchange) => ({
-				name: exchange,
-				data: chartData
-					.value![exchange].map(
-						(e) =>
-							[e.date_epoch, e[props.displayValue] as number] as [
-								number,
-								number,
-							]
-					)
-					.sort((a, b) => b[0] - a[0])
-					.slice(0, 7)
-					.reverse(),
-			}));
-		} else {
-			return [];
-		}
-	});
 
-	const chartOptions: ComputedRef<Options> = computed(() => {
-		return {
-			chart: {
-				type: "column",
-				height: "300px",
-			},
-			yAxis: {
-				title: {
-					text: "",
-				},
-				type: "logarithmic",
-			},
-			xAxis: {
-				type: "datetime",
-			},
-			series: chartSeriesData.value as SeriesOptionsType[],
-			title: {
-				text: "",
-			},
-		};
-	});
+	const transformedChartData: ComputedRef<IMaterialMarketHistory[]> =
+		computed(() => {
+			const data = chartData.value;
+			if (!data) return [];
+			else {
+				const exchanges = Object.keys(data);
+
+				const allEpochs = new Set<number>();
+				exchanges.forEach((ex) => {
+					data[ex].forEach((d) => allEpochs.add(d.date_epoch));
+				});
+
+				const sortedEpochs = Array.from(allEpochs).sort(
+					(a, b) => a - b
+				);
+				const lastSevenEpochs = sortedEpochs.slice(-7);
+
+				return lastSevenEpochs.map((epoch) => {
+					const row: IMaterialMarketHistory = {
+						date: dateStringFromEpoch(epoch),
+						AI1: 0,
+						CI1: 0,
+						IC1: 0,
+						NC1: 0,
+					};
+
+					exchanges.forEach((ex) => {
+						const dayEntry = data[ex].find(
+							(d) => d.date_epoch === epoch
+						);
+						row[ex] = dayEntry ? dayEntry[props.displayValue] : 0;
+					});
+
+					return row;
+				});
+			}
+		});
 </script>
 
 <template>
@@ -91,5 +90,7 @@
 			<div class="text-white/60">Loading Data...</div>
 		</div>
 	</div>
-	<chart v-else ref="chart" class="hc" :options="chartOptions" />
+	<div v-else>
+		<MarketHistoryChart :data="transformedChartData" />
+	</div>
 </template>

@@ -86,8 +86,3 @@ services:
 | VITE_GAME_DATA_STALE_MINUTES_MATERIALS | int    | 1440                             |
 | VITE_GAME_DATA_STALE_MINUTES_EXCHANGES | int    | 30                               |
 | VITE_GAME_DATA_STALE_MINUTES_PLANETS   | int    | 180                              |
-
-
-# Highcharts
-
-PRUNplanner is allowed to use [Highcharts](https://www.highcharts.com/) as it got a license certificate granted for its `Core` and `Stock` libraries. If you want to use this repository outside of local development, please ensure to follow the Highcharts license terms and conditions that might apply.

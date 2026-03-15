@@ -133,8 +133,10 @@ export default defineConfig({
 							pkg = `${parts[0]}/${parts[1]}`;
 						}
 
-						if (pkg === "highcharts") return "vendor_highcharts";
+						if (pkg === "chartjs") return "vendor_chartjs";
 						if (pkg === "showdown") return "vendor_showdown";
+						if (pkg === "lightweight-charts")
+							return "vendor_lightweight";
 						if (pkg === "posthog-js") return "vendor_posthog";
 
 						// Sanitize vendor name for the general vendor chunk

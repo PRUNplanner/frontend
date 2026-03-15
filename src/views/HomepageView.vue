@@ -212,9 +212,6 @@
 					src="/images/homepage/posthog-logo-white@2x.png"
 					class="h-7.5" />
 			</a>
-			<a href="https://www.highcharts.com/" target="_blank">
-				<img src="/images/homepage/highcharts-logo.png" class="h-7.5" />
-			</a>
 		</div>
 	</div>
 	<h1 class="pb-4 text-4xl tracking-tight text-white text-center mt-30">

@@ -39,6 +39,13 @@ export function timestampFromString(value: string | number): number {
 	return dayjs(value).valueOf();
 }
 
+export function dateStringFromEpoch(
+	value: number,
+	dateFormat = "YYYY-MM-DD"
+): string {
+	return dayjs(value).format(dateFormat);
+}
+
 /**
  * Formats a date to string
  * @author jplacht

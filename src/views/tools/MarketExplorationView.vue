@@ -14,6 +14,7 @@
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import MarketExplorationChart from "@/ui/charts/MarketExplorationChart.vue";
 
 	// Composables
 	import { useMarketExplorationChart } from "@/features/market_exploration/useMarketExplorationChart";
@@ -24,7 +25,6 @@
 
 	// UI
 	import { PSelect, PButton, PSpin } from "@/ui";
-	import { Chart } from "highcharts-vue";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import { formatDate } from "@/util/date";
 	import { formatAmount } from "@/util/numbers";
@@ -44,8 +44,8 @@
 		fetchData,
 		isLoading: loading,
 		hasError: error,
-		chartOptions,
 		dataChart,
+		dataCandlestick,
 	} = useMarketExplorationChart(selectedExchange, selectedMaterial);
 
 	function fetch(): void {
@@ -100,16 +100,13 @@
 					Error Loading Data.
 				</div>
 				<div v-else-if="!loading && !error && dataChart.length > 0">
-					<Chart
-						ref="marketchart"
-						:constructor-type="'stockChart'"
-						class="hc"
-						:options="chartOptions" />
+					<MarketExplorationChart :data="dataCandlestick" />
+
 					<h2 class="text-xl py-2">Data</h2>
 					<XNDataTable
 						:data="dataChart"
 						striped
-						:pagination="{ pageSize: 50 }">
+						:pagination="{ pageSize: 25 }">
 						<XNDataTableColumn
 							key="Datetime"
 							title="Date"
