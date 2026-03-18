@@ -35,10 +35,10 @@
 	}>();
 
 	const PALETTE = {
-		AI1: "#60a5fa", // Blue
-		CI1: "#4ade80", // Green
-		NC1: "#fbbf24", // Amber
-		IC1: "#f87171", // Red
+		AI1: "#60a5fa",
+		CI1: "#4ade80",
+		NC1: "#fbbf24",
+		IC1: "#f87171",
 	};
 
 	const chartData = computed<ChartData<"bar">>(() => ({
@@ -47,7 +47,7 @@
 			{
 				label: "AI1",
 				data: props.data.map((d) => d.AI1),
-				backgroundColor: PALETTE.AI1 + "B3", // 70% opacity
+				backgroundColor: PALETTE.AI1 + "B3",
 				borderColor: PALETTE.AI1,
 				borderWidth: 1,
 				borderRadius: 2,

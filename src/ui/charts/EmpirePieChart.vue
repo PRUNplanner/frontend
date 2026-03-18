@@ -56,7 +56,7 @@
 			datalabels: {
 				display: "auto",
 				clamp: true,
-				color: "#ffffff",
+				color: "#fff",
 				anchor: "end",
 				align: "end",
 				offset: 15,
