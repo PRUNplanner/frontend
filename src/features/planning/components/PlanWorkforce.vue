@@ -15,7 +15,7 @@
 
 	// UI
 	import { PButton, PTable } from "@/ui";
-	import { CheckSharp, RadioButtonUncheckedSharp } from "@vicons/material";
+	import { CheckSharp, BlockOutlined } from "@vicons/material";
 
 	const props = defineProps({
 		disabled: {
@@ -102,13 +102,13 @@
 					<PButton
 						:disabled="disabled"
 						size="sm"
-						:type="workforce.lux1 ? 'success' : 'error'"
+						:type="workforce.lux1 ? 'success' : 'secondary'"
 						@click="
 							updateLux(workforce.name, 'lux1', !workforce.lux1)
 						">
 						<template #icon>
 							<CheckSharp v-if="workforce.lux1" />
-							<RadioButtonUncheckedSharp v-else />
+							<BlockOutlined v-else />
 						</template>
 						<template #default>
 							<div class="w-[4ch]">
@@ -121,13 +121,13 @@
 					<PButton
 						:disabled="disabled"
 						size="sm"
-						:type="workforce.lux2 ? 'success' : 'error'"
+						:type="workforce.lux2 ? 'success' : 'secondary'"
 						@click="
 							updateLux(workforce.name, 'lux2', !workforce.lux2)
 						">
 						<template #icon>
 							<CheckSharp v-if="workforce.lux2" />
-							<RadioButtonUncheckedSharp v-else />
+							<BlockOutlined v-else />
 						</template>
 						<template #default>
 							<div class="w-[4ch]">
