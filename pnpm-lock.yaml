@@ -53,12 +53,6 @@ importers:
       globals:
         specifier: ^17.4.0
         version: 17.4.0
-      highcharts:
-        specifier: ^12.5.0
-        version: 12.5.0
-      highcharts-vue:
-        specifier: ^2.0.1
-        version: 2.0.1(highcharts@12.5.0)(vue@3.5.30(typescript@5.9.3))
       idb:
         specifier: ^8.0.3
         version: 8.0.3
@@ -1851,23 +1845,6 @@ packages:
 
   heap@0.2.7:
     resolution: {integrity: sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==}
-
-  highcharts-vue@2.0.1:
-    resolution: {integrity: sha512-7yVaKvsWlx7OgmKFXE2D99fi/0tr2A85H4KUz3jL7CRQhAwvEvXgtDIyTBGLHJsOC5L9VlppAI7k6KfIi0j0hg==}
-    peerDependencies:
-      highcharts: '>=5.0.0'
-      vue: '>=3.0.0'
-
-  highcharts@12.5.0:
-    resolution: {integrity: sha512-uNSSv1KqRLNvkyXlf1FbeGWB1mJ/8/IYpVeqYiTIop5Wo8peUvNyzUfLa58vILsmXyz+XrETtgKIEOcSgBBKuQ==}
-    peerDependencies:
-      jspdf: ^3.0.0
-      svg2pdf.js: ^2.6.0
-    peerDependenciesMeta:
-      jspdf:
-        optional: true
-      svg2pdf.js:
-        optional: true
 
   highlight.js@11.11.1:
     resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
@@ -4483,13 +4460,6 @@ snapshots:
       function-bind: 1.1.2
 
   heap@0.2.7: {}
-
-  highcharts-vue@2.0.1(highcharts@12.5.0)(vue@3.5.30(typescript@5.9.3)):
-    dependencies:
-      highcharts: 12.5.0
-      vue: 3.5.30(typescript@5.9.3)
-
-  highcharts@12.5.0: {}
 
   highlight.js@11.11.1: {}
 
