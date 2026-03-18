@@ -90,11 +90,15 @@
 					PRUNplanner database.
 				</p>
 				<p class="py-3">
-					PRUNplanner employs New Relic to gather server and process
-					metrics pertaining to the backend API of its tools. The data
-					collected by New Relic is stored within the European Union,
-					and access to their Privacy Policy is available for your
-					reference.
+					To ensure the technical stability and security of our
+					platform, we utilize Axiom, a cloud-based logging and
+					analytics service. Axiom is used to collect and store system
+					logs and performance metrics, which may include technical
+					identifiers such as IP addresses, browser types, and request
+					timestamps. This data is processed solely for the purposes
+					of debugging, monitoring service health, and preventing
+					unauthorized access. This information is not used for
+					marketing or profiling purposes.
 				</p>
 				<p class="py-3">
 					PRUNplanner uses PostHog, a EU-hosted analytics tool, to
