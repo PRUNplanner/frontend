@@ -8,7 +8,8 @@
 	// Components
 	import DayRepairMaterialTable from "@/features/repair_analysis/components/DayRepairMaterialTable.vue";
 	import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
-	import { Chart } from "highcharts-vue";
+	import PlanRepairProfitChart from "@/ui/charts/PlanRepairProfitChart.vue";
+	import PlanRepairCostChart from "@/ui/charts/PlanRepairCostChart.vue";
 
 	// Types & Interfaces
 	import {
@@ -20,7 +21,6 @@
 		IMaterialIO,
 		IMaterialIOMinimal,
 	} from "@/features/planning/usePlanCalculation.types";
-	import { Options } from "highcharts";
 
 	// UI
 	import { PForm, PFormItem, PSelect } from "@/ui";
@@ -165,90 +165,6 @@
 		singleMat.value = results;
 	}
 
-	const chartOptions: ComputedRef<Options> = computed(() => {
-		return {
-			chart: {
-				type: "line",
-				height: "300px",
-			},
-			yAxis: {
-				title: {
-					text: "Profit / Day",
-				},
-				labels: {
-					format: "${text}",
-				},
-			},
-			xAxis: {
-				title: {
-					text: "Days since Repair",
-				},
-			},
-			tooltip: {
-				headerFormat: "Day: <strong>{point.key}</strong><br />",
-				pointFormat: "$ {y:.2f}",
-			},
-			series: [
-				{
-					name: "Repair Analyis",
-					data: repairAnalysisElements.value.map((r) => r.profit),
-				},
-				{
-					name: "Last Optimal Profit",
-					data: [{ x: maxDay.value, y: maxValue.value }],
-					marker: {
-						symbol: "diamond",
-					},
-					dataLabels: {
-						enabled: true,
-						format: "Day: <strong>{x}</strong><br />$ {y:.2f}",
-					},
-				},
-			],
-			title: {
-				text: "",
-			},
-		} as Options;
-	});
-
-	const costOptions: ComputedRef<Options> = computed(() => {
-		const s = [
-			{
-				name: "Total Cost",
-				data: repairAnalysisElements.value.map((r) => r.dailyRepair),
-			},
-		].concat(singleMat.value as { name: string; data: number[] }[]);
-
-		return {
-			chart: {
-				type: "line",
-				height: "300px",
-			},
-			tooltip: {
-				headerFormat:
-					"<strong>{series.name}</strong><br />Day: <strong>{point.key}</strong><br />",
-				pointFormat: "$ {y:.2f}",
-			},
-			yAxis: {
-				title: {
-					text: "Cost",
-				},
-				labels: {
-					format: "${text}",
-				},
-			},
-			xAxis: {
-				title: {
-					text: "Days since Repair",
-				},
-			},
-			series: s,
-			title: {
-				text: "",
-			},
-		} as Options;
-	});
-
 	const selectPlanTransferMaterials = computed(() => {
 		if (
 			!dailyRepairMaterials.value ||
@@ -329,19 +245,30 @@
 				<div class="flex flex-col">
 					<div>
 						<h2 class="font-bold py-3">Profit Curve</h2>
-						<chart
-							v-if="repairAnalysisElements.length > 0"
-							ref="chart"
-							class="hc"
-							:options="chartOptions" />
+						<PlanRepairProfitChart
+							:profit-data="
+								repairAnalysisElements.map((r) => r.profit)
+							"
+							:optimal-point="{ x: maxDay, y: maxValue }" />
 					</div>
 					<div>
 						<h2 class="font-bold pb-3">Repair Cost Breakdown</h2>
-						<chart
-							v-if="repairAnalysisElements.length > 0"
-							ref="chart"
-							class="hc"
-							:options="costOptions" />
+						<PlanRepairCostChart
+							:series="
+								[
+									{
+										name: 'Total Cost',
+										data: repairAnalysisElements.map(
+											(r) => r.dailyRepair
+										),
+									},
+								].concat(
+									singleMat as {
+										name: string;
+										data: number[];
+									}[]
+								)
+							" />
 					</div>
 				</div>
 			</template>
