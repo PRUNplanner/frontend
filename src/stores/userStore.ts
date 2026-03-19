@@ -183,7 +183,7 @@ export const useUserStore = defineStore(
 				const { markUpdated } = useVersionCheck();
 				await markUpdated();
 
-				queryPreferences();
+				await queryPreferences();
 
 				return true;
 			} catch (err) {
