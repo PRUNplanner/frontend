@@ -85,7 +85,7 @@
 						">
 						{{ formatNumber(rowData.profit) }}
 					</span>
-					<span class="pl-1 font-light text-white/50">$</span>
+					<span class="pl-1 font-light text-white/50">ȼ</span>
 				</div>
 			</template>
 		</XNDataTableColumn>

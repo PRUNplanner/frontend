@@ -349,7 +349,7 @@
 								<div>
 									{{ formatNumber(totalInformation.price) }}
 									<span class="pl-1 font-light text-white/50">
-										$
+										ȼ
 									</span>
 								</div>
 							</div>
@@ -452,7 +452,7 @@
 										}}
 										<span
 											class="pl-1 font-light text-white/50">
-											$
+											ȼ
 										</span>
 									</div>
 								</div>

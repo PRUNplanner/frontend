@@ -326,14 +326,14 @@
 								<div>
 									{{ formatNumber(dailyCost) }}
 									<span class="pl-1 font-light text-white/50">
-										$
+										ȼ
 									</span>
 								</div>
 								<div>Total Cost</div>
 								<div>
 									{{ formatNumber(totalCost) }}
 									<span class="pl-1 font-light text-white/50">
-										$
+										ȼ
 									</span>
 								</div>
 							</div>

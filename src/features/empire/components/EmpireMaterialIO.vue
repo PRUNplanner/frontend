@@ -84,7 +84,7 @@
 		</x-n-data-table-column>
 		<x-n-data-table-column
 			key="deltaPrice"
-			title="$ Delta"
+			title="ȼ Delta"
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				<span

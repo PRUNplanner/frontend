@@ -232,7 +232,7 @@
 								localBuildingData.constructionCost * -1
 							)
 						}}
-						$
+						<span class="font-light text-white/50">ȼ</span>
 					</span>
 				</div>
 			</div>
