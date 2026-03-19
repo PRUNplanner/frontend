@@ -234,7 +234,7 @@
 				<template #render-cell="{ rowData }">
 					<div class="text-end text-nowrap">
 						{{ formatNumber(rowData.planCost) }}
-						<span class="pl-1 font-light text-white/50"> $ </span>
+						<span class="pl-1 font-light text-white/50"> ȼ </span>
 					</div>
 				</template>
 			</XNDataTableColumn>
@@ -254,7 +254,7 @@
 								: 'text-negative'
 						">
 						{{ formatNumber(rowData.dailyProfit) }}
-						<span class="pl-1 font-light text-white/50"> $ </span>
+						<span class="pl-1 font-light text-white/50"> ȼ </span>
 					</div>
 				</template>
 			</XNDataTableColumn>
@@ -274,7 +274,7 @@
 								: 'text-negative'
 						">
 						{{ formatNumber(rowData.planProfitArea) }}
-						<span class="pl-1 font-light text-white/50"> $ </span>
+						<span class="pl-1 font-light text-white/50"> ȼ </span>
 					</div>
 				</template>
 			</XNDataTableColumn>

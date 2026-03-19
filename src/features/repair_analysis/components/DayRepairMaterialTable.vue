@@ -53,7 +53,7 @@
 				</td>
 				<td class="text-end">
 					{{ formatNumber(-1 * material.price) }}
-					<span class="pl-1 font-light text-white/50"> $ </span>
+					<span class="pl-1 font-light text-white/50"> ȼ </span>
 				</td>
 			</tr>
 		</tbody>
@@ -66,7 +66,7 @@
 						<div>
 							{{ formatNumber(totalData.cost) }}
 							<span class="pl-1 font-light text-white/50">
-								$
+								ȼ
 							</span>
 						</div>
 						<div>Total Weight</div>

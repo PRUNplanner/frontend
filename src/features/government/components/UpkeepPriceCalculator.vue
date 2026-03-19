@@ -133,10 +133,10 @@
 				</XNDataTableColumn>
 				<XNDataTableColumn
 					key="pricePerNeed"
-					title="$/Need"
+					title="ȼ/Need"
 					sorter="default">
 					<template #title>
-						<div class="text-end">$/Need</div>
+						<div class="text-end">ȼ/Need</div>
 					</template>
 					<template #render-cell="{ rowData }">
 						<div
@@ -166,9 +166,9 @@
 							">
 							<template v-if="rowData.cxPrice > 0">
 								{{ formatNumber(rowData.cxPrice, 2) }}
-								<span class="pl-1 font-light text-white/50"
-									>$</span
-								>
+								<span class="pl-1 font-light text-white/50">
+									ȼ
+								</span>
 							</template>
 							<template v-else>-</template>
 						</div>

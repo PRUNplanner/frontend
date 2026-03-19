@@ -107,8 +107,8 @@
 								exchange.type === 'BUY'
 									? 'success'
 									: exchange.type === 'SELL'
-									? 'error'
-									: 'primary'
+										? 'error'
+										: 'primary'
 							">
 							{{ exchange.type }}:
 							<strong>{{ exchange.exchange }}</strong>
@@ -132,12 +132,12 @@
 								ticker.type === 'BUY'
 									? 'success'
 									: ticker.type === 'SELL'
-									? 'error'
-									: 'primary'
+										? 'error'
+										: 'primary'
 							">
 							{{ ticker.type }}:
 							<strong>{{ formatNumber(ticker.value) }}</strong>
-							<span class="pl-1 font-light opacity-50">$</span>
+							<span class="pl-1 font-light opacity-50">ȼ</span>
 						</PTag>
 					</div>
 				</div>

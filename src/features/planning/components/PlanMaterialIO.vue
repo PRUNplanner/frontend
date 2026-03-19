@@ -70,7 +70,7 @@
 		<XNDataTableColumn
 			v-if="!localShowBasked"
 			key="price"
-			title="$ / day"
+			title="ȼ / day"
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				<span

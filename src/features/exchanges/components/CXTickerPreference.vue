@@ -100,8 +100,8 @@
 							preference.type === 'BUY'
 								? 'success'
 								: preference.type === 'SELL'
-								? 'error'
-								: 'primary'
+									? 'error'
+									: 'primary'
 						">
 						{{ preference.type }}
 					</PTag>
@@ -113,7 +113,7 @@
 				</td>
 				<td class="text-right">
 					{{ formatNumber(preference.value) }}
-					<span class="pl-1 font-light text-white/50">$</span>
+					<span class="pl-1 font-light text-white/50">ȼ</span>
 				</td>
 				<td class="text-right">
 					<PButton

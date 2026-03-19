@@ -224,7 +224,7 @@
 					</XNDataTableColumn>
 					<XNDataTableColumn
 						key="dailyRevenue"
-						title="$ / Day"
+						title="ȼ / Day"
 						sorter="default">
 						<template #render-cell="{ rowData }">
 							<span
@@ -233,13 +233,14 @@
 										? 'text-positive!'
 										: 'text-negative!'
 								">
-								{{ formatNumber(rowData.dailyRevenue) }} $
+								{{ formatNumber(rowData.dailyRevenue) }}
+								<span class="font-light text-white/50">ȼ</span>
 							</span>
 						</template>
 					</XNDataTableColumn>
 					<XNDataTableColumn
 						key="profitPerArea"
-						title="$ / Area"
+						title="ȼ / Area"
 						sorter="default">
 						<template #render-cell="{ rowData }">
 							<span
@@ -248,7 +249,8 @@
 										? 'text-positive!'
 										: 'text-negative!'
 								">
-								{{ formatNumber(rowData.profitPerArea) }} $
+								{{ formatNumber(rowData.profitPerArea) }}
+								<span class="font-light text-white/50">ȼ</span>
 							</span>
 						</template>
 					</XNDataTableColumn>
@@ -273,7 +275,7 @@
 					daily building degradation cost (1/180th of the construction
 					cost). The income from the recipe is based on the difference
 					between the input material costs and the output material
-					values. <strong>$ / Area</strong> is the daily revenue
+					values. <strong>ȼ / Area</strong> is the daily revenue
 					divided by the area for one production building and its
 					proportionate share of the area for a CM and habs required
 					for an optimal base of such buildings in Recipe ROI.

@@ -122,7 +122,7 @@
 							<div>
 								{{ formatNumber(totalCost) }}
 								<span class="pl-1 font-light text-white/50">
-									$
+									ȼ
 								</span>
 							</div>
 							<div>Total Weight</div>
@@ -219,7 +219,7 @@
 							<template #render-cell="{ rowData }">
 								{{ formatNumber(rowData.unitCost) }}
 								<span class="pl-1 font-light text-white/50">
-									$
+									ȼ
 								</span>
 							</template>
 						</XNDataTableColumn>
@@ -230,7 +230,7 @@
 							<template #render-cell="{ rowData }">
 								{{ formatNumber(rowData.totalCost) }}
 								<span class="pl-1 font-light text-white/50">
-									$
+									ȼ
 								</span>
 							</template>
 						</XNDataTableColumn>

@@ -61,7 +61,7 @@
 					formatter: (value: { x: number; y: number }) => {
 						return [
 							`Day: ${value.x}`,
-							`$ ${value.y.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+							`ȼ ${value.y.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
 						];
 					},
 					textAlign: "center",

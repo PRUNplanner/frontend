@@ -282,7 +282,7 @@
 									Price:
 									{{ formatNumber(totalPrice) }}
 									<span class="pl-1 font-light text-white/50">
-										$
+										ȼ
 									</span>
 								</div>
 							</div>

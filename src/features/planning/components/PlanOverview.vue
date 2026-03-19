@@ -49,7 +49,7 @@
 						<td>Daily Cost</td>
 						<td>
 							{{ formatNumber(overviewData.dailyCost) }}
-							<span class="font-light text-white/50"> $ </span>
+							<span class="font-light text-white/50"> ȼ </span>
 						</td>
 					</tr>
 					<tr>
@@ -58,7 +58,7 @@
 							{{
 								formatNumber(overviewData.dailyDegradationCost)
 							}}
-							<span class="font-light text-white/50"> $ </span>
+							<span class="font-light text-white/50"> ȼ </span>
 						</td>
 					</tr>
 					<tr>
@@ -67,7 +67,7 @@
 							{{
 								formatNumber(overviewData.totalConstructionCost)
 							}}
-							<span class="font-light text-white/50"> $ </span>
+							<span class="font-light text-white/50"> ȼ </span>
 						</td>
 					</tr>
 					<tr>
@@ -79,7 +79,7 @@
 									: 'text-negative!'
 							">
 							{{ formatNumber(overviewData.profit) }}
-							<span class="font-light text-white/50"> $ </span>
+							<span class="font-light text-white/50"> ȼ </span>
 						</td>
 					</tr>
 					<tr>
@@ -103,7 +103,7 @@
 									: 'text-negative!'
 							">
 							{{ formatNumber(profitPerArea) }}
-							<span class="font-light text-white/50"> $ </span>
+							<span class="font-light text-white/50"> ȼ </span>
 						</td>
 					</tr>
 				</tbody>
