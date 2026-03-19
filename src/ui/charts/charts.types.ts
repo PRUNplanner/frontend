@@ -3,3 +3,7 @@ export interface IChartEmpirePieElement {
 	value: number;
 	color: string;
 }
+
+export interface IChartEmpireTreeElement extends IChartEmpirePieElement {
+	cogc: string;
+}

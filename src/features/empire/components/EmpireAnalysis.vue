@@ -7,13 +7,18 @@
 
 	// Components
 	import EmpirePieChart from "@/ui/charts/EmpirePieChart.vue";
+	import EmpirePlanMapChart from "@/ui/charts/EmpirePlanMapChart.vue";
 
 	// Types & Interfaces
 	import {
 		IEmpireMaterialIO,
 		IEmpirePlanListData,
 	} from "@/features/empire/empire.types";
-	import { IChartEmpirePieElement } from "@/ui/charts/charts.types";
+	import {
+		IChartEmpirePieElement,
+		IChartEmpireTreeElement,
+	} from "@/ui/charts/charts.types";
+	import { capitalizeString } from "@/util/text";
 
 	const props = defineProps({
 		empireMaterialIO: {
@@ -73,7 +78,7 @@
 		];
 	}
 
-	const chartDataProfitablePlans: ComputedRef<IChartEmpirePieElement[]> =
+	const chartDataProfitablePlans: ComputedRef<IChartEmpireTreeElement[]> =
 		computed(() => {
 			const data = localPlanListData.value.filter((f) => f.profit > 0);
 
@@ -81,6 +86,7 @@
 				return {
 					name: e.name ?? "",
 					value: Math.round(e.profit * 100) / 100,
+					cogc: capitalizeString(e.cogc),
 					color: `hsl(${(index * 137.5) % 360}, 60%, 40%)`,
 				};
 			});
@@ -176,9 +182,9 @@
 <template>
 	<div class="border rounded-[3px] border-white/15 p-3">
 		<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
-			<div class="col-span-2">
-				<h2 class="text-lg font-bold">Profitable Plans</h2>
-				<EmpirePieChart :data="chartDataProfitablePlans" />
+			<div v-if="chartDataProfitablePlans.length >= 3" class="col-span-2">
+				<h2 class="text-lg font-bold pb-3">Profitable Plans</h2>
+				<EmpirePlanMapChart :data="chartDataProfitablePlans" />
 			</div>
 			<div>
 				<h2 class="text-lg font-bold">Material Profits</h2>
