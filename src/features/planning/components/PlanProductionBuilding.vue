@@ -221,7 +221,8 @@
 								? 'text-positive!'
 								: 'text-negative!'
 						">
-						{{ formatNumber(localBuildingData.dailyRevenue) }} $
+						{{ formatNumber(localBuildingData.dailyRevenue) }}
+						<span class="font-light text-white/50">ȼ</span>
 					</span>
 				</div>
 				<div class="flex gap-x-1">
