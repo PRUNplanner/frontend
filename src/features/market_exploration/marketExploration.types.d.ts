@@ -13,3 +13,13 @@ export interface IExploration {
 }
 
 export type IMaterialExplorationRecord = Record<string, IExploration[]>;
+
+export interface IMaterialMarketHistory {
+	date: string;
+	AI1: number;
+	CI1: number;
+	IC1: number;
+	NC1: number;
+
+	[key: string]: string | number;
+}

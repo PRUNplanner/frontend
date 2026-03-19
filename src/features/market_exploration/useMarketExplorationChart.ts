@@ -22,69 +22,18 @@ export function useMarketExplorationChart(
 
 	const dataCandlestick = computed(() => {
 		return data.value
-			.map((d) => [d.date_epoch, d.open_p, d.high_p, d.low_p, d.close_p])
+			.map(
+				(d) =>
+					[
+						d.date_epoch,
+						d.open_p,
+						d.high_p,
+						d.low_p,
+						d.close_p,
+						d.traded,
+					] as [number, number, number, number, number, number]
+			) // Force Tuple type
 			.sort((a, b) => a[0] - b[0]);
-	});
-
-	const dataVolume = computed(() => {
-		return data.value
-			.map((d) => [d.date_epoch, d.traded])
-			.sort((a, b) => a[0] - b[0]);
-	});
-
-	const chartOptions = computed(() => {
-		return {
-			chart: {
-				height: 900,
-			},
-			tooltip: {
-				split: true,
-			},
-			xAxis: {
-				ordinal: false,
-			},
-			yAxis: [
-				{
-					title: {
-						text: "Candlestick",
-					},
-					height: "80%",
-					resize: {
-						enabled: true,
-					},
-					startOnTick: false,
-				},
-				{
-					title: {
-						text: "Volume",
-					},
-					height: "20%",
-					top: "80%",
-					offset: 0,
-					resize: {
-						enabled: true,
-					},
-				},
-			],
-			series: [
-				{
-					id: "candles",
-					name: `${materialTicker.value}`,
-					type: "candlestick",
-					data: dataCandlestick.value,
-					gapSize: 1,
-				} as Highcharts.SeriesOptionsType,
-				{
-					id: "volume",
-					name: `${materialTicker.value}: Traded Volume`,
-					type: "column",
-					yAxis: 1,
-					data: dataVolume.value,
-					color: "#659bf1",
-					gapSize: 1,
-				} as Highcharts.SeriesOptionsType,
-			],
-		};
 	});
 
 	/**
@@ -122,8 +71,5 @@ export function useMarketExplorationChart(
 		// data
 		dataChart,
 		dataCandlestick,
-		dataVolume,
-		// chart
-		chartOptions,
 	};
 }

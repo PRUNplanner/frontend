@@ -91,16 +91,3 @@ html {
 .n-data-table-th__title {
 	@apply text-nowrap;
 }
-
-/** HIGHCHARTS **/
-
-.highcharts-point-up {
-	stroke: rgb(92, 184, 92);
-	fill: rgb(92, 184, 92);
-	color: rgb(92, 184, 92);
-}
-.highcharts-point-down {
-	stroke: rgb(217, 83, 79);
-	fill: rgb(217, 83, 79);
-	color: rgb(217, 83, 79);
-}

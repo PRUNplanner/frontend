@@ -25,18 +25,6 @@ app.use(pinia);
 import axiosSetup from "@/util/axiosSetup";
 axiosSetup();
 
-// highcharts
-import HighChartsVue from "highcharts-vue";
-
-import * as Highcharts from "highcharts";
-import "highcharts/modules/stock";
-
-import { highchartsOptions } from "@/layout/highcartsOptions";
-
-Highcharts.setOptions(highchartsOptions);
-
-app.use(HighChartsVue);
-
 // unhead
 import { createHead } from "@unhead/vue/client";
 

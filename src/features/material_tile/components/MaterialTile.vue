@@ -236,7 +236,7 @@
 	<n-drawer
 		v-if="refShowDrawer && material"
 		v-model:show="refShowDrawer"
-		:width="500"
+		:width="600"
 		placement="right">
 		<n-drawer-content title="Material Information">
 			<div class="flex gap-x-5">

@@ -42,14 +42,8 @@ describe("useMarketExplorationChart", async () => {
 	});
 
 	it("fetch data and check it", async () => {
-		const {
-			fetchData,
-			hasError,
-			dataChart,
-			dataCandlestick,
-			dataVolume,
-			chartOptions,
-		} = useMarketExplorationChart(exchangeTicker, materialTicker);
+		const { fetchData, hasError, dataChart, dataCandlestick } =
+			useMarketExplorationChart(exchangeTicker, materialTicker);
 		mock.onGet("/data/cxpc/DW/NC1/").reply(200, exploration_7d_dw);
 
 		await fetchData();
@@ -57,11 +51,7 @@ describe("useMarketExplorationChart", async () => {
 		expect(dataChart.value.length).toBe(778);
 		expect(hasError.value).toBeFalsy();
 		expect(dataCandlestick.value.length).toBe(778);
-		expect(dataVolume.value.length).toBe(778);
 
-		// @ts-expect-error access data directly thats not exposed
-		expect(chartOptions.value.series[0].data.length).toBe(778);
-
-		expect(dataCandlestick.value[0].length).toBe(5);
+		expect(dataCandlestick.value[0].length).toBe(6);
 	});
 });
