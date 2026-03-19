@@ -5,6 +5,7 @@
 	// Utils
 	import { capitalizeString } from "@/util/text";
 	import { formatAmount, formatNumber } from "@/util/numbers";
+	import { WORKFORCE_CONSUMPTION_MAP } from "../calculations/workforceCalculations";
 
 	// Types & Interfaces
 	import {
@@ -14,7 +15,7 @@
 
 	// UI
 	import { PButton, PTable } from "@/ui";
-	import { CheckSharp, RadioButtonUncheckedSharp } from "@vicons/material";
+	import { CheckSharp, BlockOutlined } from "@vicons/material";
 
 	const props = defineProps({
 		disabled: {
@@ -59,6 +60,16 @@
 			value: value,
 		});
 	}
+
+	function getLuxuryTicker(
+		workforce: WORKFORCE_TYPE,
+		luxType: "lux1" | "lux2"
+	): string {
+		return (
+			WORKFORCE_CONSUMPTION_MAP[workforce].find((e) => e[luxType])
+				?.ticker ?? "N/A"
+		);
+	}
 </script>
 
 <template>
@@ -66,12 +77,11 @@
 		<thead>
 			<tr>
 				<th>Type</th>
-				<th>Req.</th>
-				<th>Capa.</th>
+				<th>Demand</th>
+				<th>Supply</th>
 				<th>Open</th>
-				<th class="text-center!">L1</th>
-				<th class="text-center!">L2</th>
-				<th class="text-end!">%Eff</th>
+				<th colspan="2" class="text-center!">Luxuries</th>
+				<th class="text-end!">Efficiency</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -92,13 +102,18 @@
 					<PButton
 						:disabled="disabled"
 						size="sm"
-						:type="workforce.lux1 ? 'success' : 'error'"
+						:type="workforce.lux1 ? 'success' : 'secondary'"
 						@click="
 							updateLux(workforce.name, 'lux1', !workforce.lux1)
 						">
 						<template #icon>
 							<CheckSharp v-if="workforce.lux1" />
-							<RadioButtonUncheckedSharp v-else />
+							<BlockOutlined v-else />
+						</template>
+						<template #default>
+							<div class="w-[4ch]">
+								{{ getLuxuryTicker(workforce.name, "lux1") }}
+							</div>
 						</template>
 					</PButton>
 				</td>
@@ -106,13 +121,18 @@
 					<PButton
 						:disabled="disabled"
 						size="sm"
-						:type="workforce.lux2 ? 'success' : 'error'"
+						:type="workforce.lux2 ? 'success' : 'secondary'"
 						@click="
 							updateLux(workforce.name, 'lux2', !workforce.lux2)
 						">
 						<template #icon>
 							<CheckSharp v-if="workforce.lux2" />
-							<RadioButtonUncheckedSharp v-else />
+							<BlockOutlined v-else />
+						</template>
+						<template #default>
+							<div class="w-[4ch]">
+								{{ getLuxuryTicker(workforce.name, "lux2") }}
+							</div>
 						</template>
 					</PButton>
 				</td>
