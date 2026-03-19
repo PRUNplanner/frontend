@@ -207,8 +207,6 @@ export const useUserStore = defineStore(
 
 					setToken(tokenData.access, refreshToken.value);
 
-					queryPreferences();
-
 					return true;
 				} catch (error) {
 					console.error(error);
