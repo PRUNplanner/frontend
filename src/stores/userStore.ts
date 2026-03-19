@@ -183,7 +183,7 @@ export const useUserStore = defineStore(
 				const { markUpdated } = useVersionCheck();
 				await markUpdated();
 
-				queryPreferences();
+				await queryPreferences();
 
 				return true;
 			} catch (err) {
@@ -206,8 +206,6 @@ export const useUserStore = defineStore(
 						await callRefreshToken(refreshToken.value);
 
 					setToken(tokenData.access, refreshToken.value);
-
-					queryPreferences();
 
 					return true;
 				} catch (error) {

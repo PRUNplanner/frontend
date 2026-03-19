@@ -1,5 +1,5 @@
 import { computed, ComputedRef, watch, WritableComputedRef } from "vue";
-import { debounce } from "lodash";
+import { debounce, isEqual } from "lodash";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
@@ -17,13 +17,19 @@ import { preferenceDefaults } from "@/features/preferences/userDefaults";
 // Types & Interfaces
 import {
 	IPlanPreferenceOverview,
+	IPreference,
 	IPreferencePerPlan,
 } from "@/features/preferences/userPreferences.types";
 
 // debounced update to backend
-const syncToBBackend = debounce(async (prefs) => {
-	await useQuery("PatchPreferences", prefs).execute();
-}, 5000);
+const patchPrefs = async (prefs: IPreference) => {
+	try {
+		await useQuery("PatchPreferences", prefs).execute();
+	} catch (err) {
+		console.error("Sync failed", err);
+	}
+};
+const syncToBackend = debounce(patchPrefs, 5000);
 
 export function usePreferences() {
 	const userStore = useUserStore();
@@ -33,7 +39,11 @@ export function usePreferences() {
 
 	watch(
 		() => userStore.preferences,
-		(newVal) => syncToBBackend(newVal),
+		(newVal, oldVal) => {
+			if (isEqual(newVal, oldVal)) return;
+
+			syncToBackend(newVal);
+		},
 		{ deep: true }
 	);
 
