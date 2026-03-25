@@ -41,18 +41,21 @@
 </script>
 
 <template>
-	<div class="flex flex-row gap-x-1">
-		<PSelect
-			v-model:value="selectedType"
-			:options="typeOptions"
-			class="w-25!" />
-
-		<PSelect
-			v-model:value="selectedExchange"
-			class="w-full"
-			searchable
-			:options="exchangeOptions" />
-		<div>
+	<div class="flex flex-row gap-x-1 w-full items-end">
+		<div class="flex-0">
+			<PSelect
+				v-model:value="selectedType"
+				:options="typeOptions"
+				class="w-full" />
+		</div>
+		<div class="flex-1">
+			<PSelect
+				v-model:value="selectedExchange"
+				class="w-full"
+				searchable
+				:options="exchangeOptions" />
+		</div>
+		<div class="flex-none">
 			<PButton
 				:disabled="
 					!canAddExchangePreference(localCXOptions, selectedType)
@@ -87,18 +90,20 @@
 					</PTag>
 				</td>
 				<td>{{ preference.exchange }}</td>
-				<td class="text-right">
-					<PButton
-						size="sm"
-						type="error"
-						@click="
-							localCXOptions = deleteExchangePreference(
-								localCXOptions,
-								preference.type
-							)
-						">
-						<template #icon><ClearSharp /></template>
-					</PButton>
+				<td>
+					<div class="flex justify-end">
+						<PButton
+							size="sm"
+							type="error"
+							@click="
+								localCXOptions = deleteExchangePreference(
+									localCXOptions,
+									preference.type
+								)
+							">
+							<template #icon><ClearSharp /></template>
+						</PButton>
+					</div>
 				</td>
 			</tr>
 			<tr
