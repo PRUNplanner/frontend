@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType, ref, Ref, watch } from "vue";
+	import { computed, PropType, ref, Ref } from "vue";
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
@@ -29,14 +29,30 @@
 		},
 	});
 
-	const localMap: Ref<ICXPlanetMap> = ref(props.planetMap);
+	const localMap = computed({
+		get: () => props.planetMap,
+		set: (val: ICXPlanetMap) => emit("update:planetMap", val),
+	});
 
-	watch(
-		() => props.planetMap,
-		(newMap: ICXPlanetMap) => {
-			localMap.value = newMap;
-		}
-	);
+	const emit = defineEmits<{
+		(e: "update:planetMap", value: ICXPlanetMap): void;
+	}>();
+
+	function updatePlanetSubProperty<K extends keyof ICXPlanetMap[string]>(
+		planetId: string | null,
+		key: K,
+		newValue: ICXPlanetMap[string][K]
+	) {
+		if (!planetId || !localMap.value[planetId]) return;
+
+		localMap.value = {
+			...localMap.value,
+			[planetId]: {
+				...localMap.value[planetId],
+				[key]: newValue,
+			},
+		};
+	}
 
 	const selectedPlanet: Ref<string | null> = ref(null);
 </script>
@@ -59,13 +75,25 @@
 			<h3 class="text-lg font-bold pb-3">Exchange</h3>
 			<CXExchangePreference
 				:key="`Exchanges#${selectedPlanet}`"
-				v-model:cx-options="localMap[selectedPlanet].exchanges" />
+				:cx-options="localMap[selectedPlanet].exchanges"
+				@update:cx-options="
+					(val) =>
+						updatePlanetSubProperty(
+							selectedPlanet,
+							'exchanges',
+							val
+						)
+				" />
 		</div>
 		<div>
 			<h3 class="text-lg font-bold pb-3">Ticker</h3>
 			<CXTickerPreference
 				:key="`Ticker#${selectedPlanet}`"
-				v-model:cx-options="localMap[selectedPlanet].ticker" />
+				:cx-options="localMap[selectedPlanet].ticker"
+				@update:cx-options="
+					(val) =>
+						updatePlanetSubProperty(selectedPlanet, 'ticker', val)
+				" />
 		</div>
 	</div>
 	<XNDataTable :data="Object.values(localMap)" striped>
