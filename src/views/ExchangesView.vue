@@ -97,27 +97,52 @@
 		selectedCX.value = planningStore.getCX(cxUuid);
 		selectedName.value = selectedCX.value.cx_name;
 
-		// save raw, in order to re-use on "reload" button
 		rawSelectedCX.value = planningStore.getCX(cxUuid);
 	}
 
-	const planetMap = computed(() => {
-		if (!selectedCX.value) return {};
+	const planetMap = computed({
+		get: () => {
+			if (!selectedCX.value) return {};
 
-		return localPlanetList.value.reduce((acc, planet) => {
-			acc[planet] = {
-				planet: planet,
-				exchanges:
-					selectedCX.value?.cx_data.cx_planets.find(
-						(e) => e.planet === planet
-					)?.preferences ?? [],
-				ticker:
-					selectedCX.value?.cx_data.ticker_planets.find(
-						(e) => e.planet === planet
-					)?.preferences ?? [],
+			return localPlanetList.value.reduce((acc, planet) => {
+				acc[planet] = {
+					planet: planet,
+					exchanges:
+						selectedCX.value?.cx_data.cx_planets.find(
+							(e) => e.planet === planet
+						)?.preferences ?? [],
+					ticker:
+						selectedCX.value?.cx_data.ticker_planets.find(
+							(e) => e.planet === planet
+						)?.preferences ?? [],
+				};
+				return acc;
+			}, {} as ICXPlanetMap);
+		},
+
+		set: (newMap: ICXPlanetMap) => {
+			if (!selectedCX.value) return;
+
+			const updatedCX = { ...selectedCX.value };
+
+			const newCxPlanets = Object.values(newMap).map((item) => ({
+				planet: item.planet,
+				preferences: item.exchanges,
+			}));
+
+			const newTickerPlanets = Object.values(newMap).map((item) => ({
+				planet: item.planet,
+				preferences: item.ticker,
+			}));
+
+			updatedCX.cx_data = {
+				...updatedCX.cx_data,
+				cx_planets: newCxPlanets,
+				ticker_planets: newTickerPlanets,
 			};
-			return acc;
-		}, {} as ICXPlanetMap);
+
+			selectedCX.value = updatedCX;
+		},
 	});
 
 	const patchData: ComputedRef<undefined | ICXData> = computed(() => {
@@ -316,7 +341,7 @@
 						<CXPlanetPreferenceTable
 							v-if="selectedCX"
 							:key="selectedCX.uuid"
-							:planet-map="planetMap" />
+							v-model:planet-map="planetMap" />
 					</div>
 				</div>
 			</div>
