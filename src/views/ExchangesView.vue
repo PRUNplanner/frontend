@@ -211,7 +211,7 @@
 			return selectedCX.value.cx_data.cx_planets.map((p) => ({
 				planet: p.planet,
 				exchanges: p.preferences,
-				ticker: [], // Empty because this is the exchange-only list
+				ticker: [],
 			}));
 		},
 		set: (val) => {
@@ -229,7 +229,7 @@
 			if (!selectedCX.value) return [];
 			return selectedCX.value.cx_data.ticker_planets.map((p) => ({
 				planet: p.planet,
-				exchanges: [], // Empty because this is the ticker-only list
+				exchanges: [],
 				ticker: p.preferences,
 			}));
 		},
@@ -303,7 +303,7 @@
 				</div>
 				<div
 					:kex="`EXCHANGE#${localCXUuid}`"
-					class="grow grid grid-cols-1 lg:grid-cols-[25%_auto] divide-x divide-white/10">
+					class="grow grid grid-cols-1 lg:grid-cols-[350px_auto] divide-x divide-white/10">
 					<div class="px-6 pb-3 pt-4 border-b border-white/10">
 						<h3 class="text-lg font-bold pb-3">Preference Name</h3>
 						<PInput

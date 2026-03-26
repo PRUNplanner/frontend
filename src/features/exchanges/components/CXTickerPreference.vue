@@ -52,23 +52,27 @@
 </script>
 
 <template>
-	<div class="flex flex-row gap-x-1">
-		<div class="child:w-25!">
+	<div class="flex flex-row gap-x-1 w-full items-end">
+		<div class="flex-0">
 			<PSelect v-model:value="selectedType" :options="typeOptions" />
 		</div>
-		<PSelect
-			v-model:value="selectedTicker"
-			:options="materialOptions"
-			searchable
-			size="small"
-			placeholder="Material"
-			class="w-25!" />
-		<PInputNumber
-			v-model:value="selectedValue"
-			:min="0"
-			decimals
-			class="w-62.5!" />
-		<div>
+		<div class="flex-1">
+			<PSelect
+				v-model:value="selectedTicker"
+				:options="materialOptions"
+				searchable
+				size="small"
+				placeholder="Material"
+				class="w-full" />
+		</div>
+		<div class="flex-1">
+			<PInputNumber
+				v-model:value="selectedValue"
+				:min="0"
+				decimals
+				class="w-full" />
+		</div>
+		<div class="flex-none">
 			<PButton
 				:disabled="
 					!canAddTickerPreference(
@@ -115,19 +119,21 @@
 					{{ formatNumber(preference.value) }}
 					<span class="pl-1 font-light text-white/50">ȼ</span>
 				</td>
-				<td class="text-right">
-					<PButton
-						size="sm"
-						type="error"
-						@click="
-							localCXOptions = deleteTickerPreference(
-								localCXOptions,
-								preference.ticker,
-								preference.type
-							)
-						">
-						<template #icon><ClearSharp /></template>
-					</PButton>
+				<td>
+					<div class="flex justify-end">
+						<PButton
+							size="sm"
+							type="error"
+							@click="
+								localCXOptions = deleteTickerPreference(
+									localCXOptions,
+									preference.ticker,
+									preference.type
+								)
+							">
+							<template #icon><ClearSharp /></template>
+						</PButton>
+					</div>
 				</td>
 			</tr>
 			<tr

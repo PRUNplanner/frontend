@@ -124,7 +124,10 @@
 				}}
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="exchanges" title="Exchanges" max-width="20%">
+		<XNDataTableColumn
+			key="exchanges"
+			title="Exchange Preferences"
+			width="20%">
 			<template #render-cell="{ rowData }">
 				<div class="flex flex-col gap-y-1">
 					<div
@@ -145,7 +148,7 @@
 				</div>
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="ticker" title="Ticker" max-width="50%">
+		<XNDataTableColumn key="ticker" title="Ticker Preferences" width="50%">
 			<template #render-cell="{ rowData }">
 				<div class="flex flex-wrap gap-3">
 					<div

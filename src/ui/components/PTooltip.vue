@@ -17,14 +17,17 @@
 	const tooltipRef = ref<HTMLElement | null>(null);
 	let popperInstance: Instance | null = null;
 	let ro: ResizeObserver | null = null;
+	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
 	const isVisible = ref(false);
 
 	async function show() {
 		if (disabled) return;
 
-		isVisible.value = true;
+		if (hideTimeout) clearTimeout(hideTimeout);
 
-		// ensure tooltip is rendered before Popper is created
+		if (isVisible.value) return;
+
+		isVisible.value = true;
 		await nextTick();
 
 		if (triggerRef.value && tooltipRef.value) {
@@ -32,10 +35,7 @@
 				placement: placement,
 				strategy: "fixed",
 				modifiers: [
-					{
-						name: "offset",
-						options: { offset: [0, offset] },
-					},
+					{ name: "offset", options: { offset: [0, offset] } },
 					{
 						name: "flip",
 						options: {
@@ -57,22 +57,21 @@
 							tether: false,
 						},
 					},
-					{
-						name: "shift",
-						options: {
-							boundary: "viewport",
-							padding: 8,
-						},
-					},
 				],
 			});
 
 			requestAnimationFrame(() => popperInstance?.update());
-
-			// observe size + update if overflowing
 			ro = new ResizeObserver(() => popperInstance?.update());
 			ro.observe(tooltipRef.value);
 		}
+	}
+
+	function scheduleHide() {
+		if (hideTimeout) clearTimeout(hideTimeout);
+
+		hideTimeout = setTimeout(() => {
+			hide();
+		}, 150);
 	}
 
 	function hide() {
@@ -83,7 +82,10 @@
 		popperInstance = null;
 	}
 
-	onBeforeUnmount(hide);
+	onBeforeUnmount(() => {
+		if (hideTimeout) clearTimeout(hideTimeout);
+		hide();
+	});
 </script>
 
 <template>
@@ -91,7 +93,7 @@
 		ref="triggerRef"
 		:class="tooltipConfig.trigger"
 		@mouseenter="show"
-		@mouseleave="hide">
+		@mouseleave="scheduleHide">
 		<slot name="trigger"></slot>
 	</div>
 
@@ -100,7 +102,9 @@
 			v-if="isVisible"
 			ref="tooltipRef"
 			class="z-9999"
-			:class="tooltipConfig.tooltip">
+			:class="tooltipConfig.tooltip"
+			@mouseenter="show"
+			@mouseleave="scheduleHide">
 			<slot />
 		</div>
 	</Teleport>
