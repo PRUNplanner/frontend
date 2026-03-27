@@ -1,3 +1,17 @@
+# 2026-03-27 - v. 0.25.0
+
+- Plan Workforce now show luxury material tickers [[PR-373]](https://github.com/PRUNplanner/frontend/pull/373)
+- Market Exploration now shows more information, standard insights for all materials and has better exploration capabilities [[PR-382]](https://github.com/PRUNplanner/frontend/pull/382)
+- Shows profitable plans in Empire Analysis as treemap per COGC [[PR-378]](https://github.com/PRUNplanner/frontend/pull/378)
+- Replaces Dollar currency sign with generic currency [[PR-376]](https://github.com/PRUNplanner/frontend/pull/376)
+- Switch from `Highcharts` to `Chart.js` [[PR-372]](https://github.com/PRUNplanner/frontend/pull/372)
+- Enhances CX Preference and tooltip UI components [[PR-381]](https://github.com/PRUNplanner/frontend/pull/381)
+- Prevent app crashes due to preference update promises on XIT actions [[PR-377]](https://github.com/PRUNplanner/frontend/pull/377)
+- Reintegrate the "active recipe" indicator on buildings recipe selection [[PR-375]](https://github.com/PRUNplanner/frontend/pull/375)
+- Fixes an error where planet exchange preferences were not correctly updated [[PR-379]](https://github.com/PRUNplanner/frontend/pull/379)
+- Package upgrades [[PR-383]](https://github.com/PRUNplanner/frontend/pull/383), [[PR-380]](https://github.com/PRUNplanner/frontend/pull/380)
+- Update Terms of Service, remove unused services [[PR-374]](https://github.com/PRUNplanner/frontend/pull/374)
+
 # 2026-03-14 - v. 0.24.6
 
 - Fixes a following issue where users were not always able to select another empire on FIO Burn and have their material I/O recalculated [[PR-368]](https://github.com/PRUNplanner/frontend/pull/368)
