@@ -6,6 +6,10 @@
 		type ISeriesApi,
 		CandlestickSeries,
 		HistogramSeries,
+		CandlestickData,
+		WhitespaceData,
+		HistogramData,
+		Time,
 	} from "lightweight-charts";
 
 	type OhlcArray = [number, number, number, number, number, number];
@@ -30,30 +34,42 @@
 		price: false,
 	});
 
-	// Transformation function: [ms, o, h, l, c] -> { time, open, high, low, close }
-	const transformCandleData = (raw: OhlcArray[]) => {
-		return raw
-			.map(([time, open, high, low, close]) => ({
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				time: (time / 1000) as any,
-				open,
-				high,
-				low,
-				close,
-			}))
-			.sort((a, b) => a.time - b.time);
-	};
+	const processChartData = (raw: OhlcArray[]) => {
+		const intervalMs = 24 * 60 * 60 * 1000;
 
-	const transformVolumeData = (raw: OhlcArray[]) => {
-		return raw
-			.map(([time, _open, _high, _low, _close, volume]) => {
-				return {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					time: (time / 1000) as any,
-					value: volume,
-				};
-			})
-			.sort((a, b) => a.time - b.time);
+		// sort by timestamp first
+		const sorted = [...raw].sort((a, b) => a[0] - b[0]);
+
+		const candles: (CandlestickData | WhitespaceData)[] = [];
+		const volumes: (HistogramData | WhitespaceData)[] = [];
+
+		for (let i = 0; i < sorted.length; i++) {
+			// unpack
+			const [ms, open, high, low, close, volume] = sorted[i];
+			const timeInSeconds = (ms / 1000) as Time;
+
+			if (i > 0) {
+				const prevMs = sorted[i - 1][0];
+				let missingMs = prevMs + intervalMs;
+
+				while (missingMs < ms) {
+					const gapTime = (missingMs / 1000) as Time;
+
+					// insert whitespace
+					const whitespace = { time: gapTime };
+					candles.push(whitespace);
+					volumes.push(whitespace);
+
+					missingMs += intervalMs;
+				}
+			}
+
+			// actual datapoints
+			candles.push({ time: timeInSeconds, open, high, low, close });
+			volumes.push({ time: timeInSeconds, value: volume });
+		}
+
+		return { candles, volumes };
 	};
 
 	onMounted(async () => {
@@ -104,8 +120,10 @@
 			},
 		});
 
-		candleSeries.setData(transformCandleData(props.data));
-		volumeSeries.setData(transformVolumeData(props.data));
+		const { candles, volumes } = processChartData(props.data);
+
+		if (candleSeries) candleSeries.setData(candles);
+		if (volumeSeries) volumeSeries.setData(volumes);
 
 		resizeObserver = new ResizeObserver((entries) => {
 			if (entries.length === 0 || !chart) return;
@@ -176,10 +194,10 @@
 	watch(
 		() => props.data,
 		(newData) => {
-			if (candleSeries)
-				candleSeries.setData(transformCandleData(newData));
-			if (volumeSeries)
-				volumeSeries.setData(transformVolumeData(newData));
+			const { candles, volumes } = processChartData(newData);
+
+			if (candleSeries) candleSeries.setData(candles);
+			if (volumeSeries) volumeSeries.setData(volumes);
 		},
 		{ deep: true }
 	);
