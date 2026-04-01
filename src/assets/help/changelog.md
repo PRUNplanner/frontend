@@ -1,3 +1,8 @@
+# 2026-04-01 - v. 0.25.1
+
+- Improve Market Exploration chart to display no-trade gaps [[PR-385]](https://github.com/PRUNplanner/frontend/pull/385)
+- Fixes a Verification Code issue were the url did not populate the input but failed rendering the view [[PR-387]](https://github.com/PRUNplanner/frontend/pull/387)
+
 # 2026-03-27 - v. 0.25.0
 
 - Plan Workforce now show luxury material tickers [[PR-373]](https://github.com/PRUNplanner/frontend/pull/373)
