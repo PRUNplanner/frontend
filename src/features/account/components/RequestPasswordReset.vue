@@ -48,8 +48,8 @@
 		Password Reset Request
 	</h2>
 	<div class="py-3 text-xs font-mono text-white/60">
-		Enter the email address linked to your PRUNplanner account. If we
-		recognize it, we'll send you a code to reset your password.
+		Enter the verified email address linked to your PRUNplanner account. If
+		we recognize it, we'll send you a code to reset your password.
 	</div>
 	<div v-if="requestResponse" class="pb-3 text-xs font-mono text-prunplanner">
 		{{ requestResponse.detail }}.

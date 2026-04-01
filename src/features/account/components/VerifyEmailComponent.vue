@@ -10,7 +10,15 @@
 	// UI
 	import { PInput, PButton } from "@/ui";
 
-	const refVerificationCode: Ref<string> = ref("");
+	const props = defineProps({
+		verifyCode: {
+			type: String,
+			required: false,
+			default: null,
+		},
+	});
+
+	const refVerificationCode: Ref<string> = ref(props.verifyCode);
 	const isVerifying: Ref<boolean> = ref(false);
 	const verifyStatus: Ref<boolean | null> = ref(null);
 
