@@ -10,6 +10,7 @@
 	} from "vue";
 
 	// Composables
+	import { useBuildingData } from "@/database/services/useBuildingData";
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { usePrice } from "@/features/cx/usePrice";
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
@@ -24,13 +25,16 @@
 	// Util
 	import { relativeFromDate } from "@/util/date";
 	import { clamp, formatAmount, formatNumber } from "@/util/numbers";
+	import { workforceTypeNames } from "@/features/planning/calculations/workforceCalculations";
 
 	// Types & Interfaces
 	import {
 		IBuildingConstruction,
 		INFRASTRUCTURE_TYPE,
 		IProductionBuilding,
+		WORKFORCE_TYPE,
 	} from "@/features/planning/usePlanCalculation.types";
+	import { IBuilding } from "@/features/api/gameData.types";
 	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
@@ -62,6 +66,7 @@
 	});
 
 	const { materialsMap } = useMaterialData();
+	const { buildingsMap } = await useBuildingData();
 	const { getPrice } = await usePrice(
 		ref(props.cxUuid),
 		ref(props.planetNaturalId)
@@ -121,6 +126,47 @@
 			.filter(ticker => !plannedSet.has(ticker))
 			.sort((a, b) => a.localeCompare(b));
 	});
+
+	const deficitWorkforceTypes = computed(() => {
+		return (workforceTypeNames as WORKFORCE_TYPE[]).filter(
+			(workforceType) =>
+				buildingTicker.value.reduce((sum, ticker) => {
+					const building = buildingsMap.value[ticker];
+					const amount = localBuildingAmount.value[ticker] ?? 0;
+					const field =
+						`${workforceType}s` as keyof NonNullable<
+							IBuilding["habitations"]
+						>;
+					return sum + (building ? building[field] * amount : 0);
+				}, 0) >
+				buildingTicker.value.reduce((sum, ticker) => {
+					const building = buildingsMap.value[ticker];
+					const amount = localBuildingAmount.value[ticker] ?? 0;
+					const field =
+						`${workforceType}s` as keyof NonNullable<
+							IBuilding["habitations"]
+						>;
+					return (
+						sum +
+						(building ? (building.habitations?.[field] ?? 0) * amount : 0)
+					);
+				}, 0)
+		);
+	});
+
+	function isDeficitHabitationBuilding(ticker: string): boolean {
+		const building = buildingsMap.value[ticker];
+		if (!building?.habitations) return false;
+
+		return deficitWorkforceTypes.value.some(
+			(workforceType) =>
+				(building.habitations?.[
+					`${workforceType}s` as keyof NonNullable<
+						IBuilding["habitations"]
+					>
+				] ?? 0) > 0
+		);
+	}
 
 	const totalMaterials = computed(() => {
 		const r: Record<string, number> = {};
@@ -314,7 +360,14 @@
 				<tr
 					v-for="building in buildingTicker"
 					:key="`CONSTRUCTIONCART#ROW#${building}`">
-					<th>{{ building }}</th>
+					<th
+						:class="
+							isDeficitHabitationBuilding(building)
+								? 'text-negative'
+								: ''
+						">
+						{{ building }}
+					</th>
 					<th
 						v-if="constructedMap"
 						:class="
