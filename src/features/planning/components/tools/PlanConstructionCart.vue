@@ -14,6 +14,7 @@
 	import { usePrice } from "@/features/cx/usePrice";
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { usePlanningStore } from "@/stores/planningStore";
 	import { useUserStore } from "@/stores/userStore";
 
 	// Components
@@ -21,6 +22,7 @@
 	import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
 
 	// Util
+	import { relativeFromDate } from "@/util/date";
 	import { clamp, formatAmount, formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
@@ -67,6 +69,8 @@
 
 	const { hasStorage, storageOptions, findStorageValueFromOptions } =
 		useFIOStorage();
+	const planningStore = usePlanningStore();
+	const fioUpdated = relativeFromDate(planningStore.fio_storage_timestamp ?? undefined);
 
 	// Get already constructed buildings
 	let constructedMap: Map<string, number> | null = null;
@@ -277,9 +281,10 @@
 						<WarningAmberRound />
 					</PIcon>
 				</template>
-						Base has unplanned {{
-							unplannedBuildings.join("+")
-						}} — demolish for accurate area, habitation and materials.
+						Base has unplanned {{ unplannedBuildings.join("+") }}
+						(FIO: {{ fioUpdated }})
+						<br>
+						Demolish to ensure area, habitation and materials are accurate
 			</PTooltip>
 		</h2>
 		<div class="flex flex-row gap-x-3 child:my-auto!">
