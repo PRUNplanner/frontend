@@ -32,7 +32,8 @@
 	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
-	import { PInputNumber, PSelect, PTable } from "@/ui";
+	import { PIcon, PInputNumber, PSelect, PTable, PTooltip } from "@/ui";
+	import { WarningAmberRound } from "@vicons/material";
 
 	const props = defineProps({
 		planetNaturalId: {
@@ -107,6 +108,15 @@
 	const buildingTicker = computed(() =>
 		props.constructionData.map((b) => b.ticker).sort()
 	);
+
+	const unplannedBuildings = computed(() => {
+		if (!constructedMap) return [];
+
+		const plannedSet = new Set(buildingTicker.value);
+		return Array.from(constructedMap.keys())
+			.filter(ticker => !plannedSet.has(ticker))
+			.sort((a, b) => a.localeCompare(b));
+	});
 
 	const totalMaterials = computed(() => {
 		const r: Record<string, number> = {};
@@ -259,7 +269,19 @@
 
 <template>
 	<div class="pb-3 flex flex-row justify-between child:my-auto">
-		<h2 class="text-white/80 font-bold text-lg">Construction Cart</h2>
+		<h2 class="text-white/80 font-bold text-lg inline-flex items-center">
+			Construction Cart
+					<PTooltip v-if="unplannedBuildings.length > 0">
+				<template #trigger>
+					<PIcon class="text-amber-400 ml-1 relative top-px">
+						<WarningAmberRound />
+					</PIcon>
+				</template>
+						Base has unplanned {{
+							unplannedBuildings.join("+")
+						}} — demolish for accurate area, habitation and materials.
+			</PTooltip>
+		</h2>
 		<div class="flex flex-row gap-x-3 child:my-auto!">
 			<XITTransferActionButton
 				:elements="xitTransferElements"
