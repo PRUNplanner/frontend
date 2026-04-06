@@ -360,14 +360,7 @@
 				<tr
 					v-for="building in buildingTicker"
 					:key="`CONSTRUCTIONCART#ROW#${building}`">
-					<th
-						:class="
-							isDeficitHabitationBuilding(building)
-								? 'text-negative'
-								: ''
-						">
-						{{ building }}
-					</th>
+					<th>{{ building }}</th>
 					<th
 						v-if="constructedMap"
 						:class="
@@ -383,7 +376,11 @@
 							v-model:value="localBuildingAmount[building]"
 							show-buttons
 							size="sm"
-							class="min-w-20"
+							:class="
+								isDeficitHabitationBuilding(building)
+									? 'min-w-20 [&>div>input]:text-negative'
+									: 'min-w-20'
+							"
 							:min="0" />
 					</th>
 					<th>
