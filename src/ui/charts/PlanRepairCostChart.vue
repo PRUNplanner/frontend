@@ -10,6 +10,8 @@
 		PointElement,
 		CategoryScale,
 		LinearScale,
+		LineController,
+		ScatterController,
 		type ChartData,
 		type ChartOptions,
 	} from "chart.js";
@@ -21,7 +23,9 @@
 		LineElement,
 		PointElement,
 		CategoryScale,
-		LinearScale
+		LinearScale,
+		LineController,
+		ScatterController
 	);
 
 	interface SeriesData {
