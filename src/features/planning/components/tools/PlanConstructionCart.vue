@@ -14,6 +14,7 @@
 	import { usePrice } from "@/features/cx/usePrice";
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { usePlanningStore } from "@/stores/planningStore";
 	import { useUserStore } from "@/stores/userStore";
 
 	// Components
@@ -21,6 +22,7 @@
 	import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
 
 	// Util
+	import { relativeFromDate } from "@/util/date";
 	import { clamp, formatAmount, formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
@@ -32,7 +34,8 @@
 	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
-	import { PInputNumber, PSelect, PTable } from "@/ui";
+	import { PIcon, PInputNumber, PSelect, PTable, PTooltip } from "@/ui";
+	import { WarningAmberRound } from "@vicons/material";
 
 	const props = defineProps({
 		planetNaturalId: {
@@ -66,6 +69,8 @@
 
 	const { hasStorage, storageOptions, findStorageValueFromOptions } =
 		useFIOStorage();
+	const planningStore = usePlanningStore();
+	const fioUpdated = relativeFromDate(planningStore.fio_storage_timestamp ?? undefined);
 
 	// Get already constructed buildings
 	let constructedMap: Map<string, number> | null = null;
@@ -107,6 +112,15 @@
 	const buildingTicker = computed(() =>
 		props.constructionData.map((b) => b.ticker).sort()
 	);
+
+	const unplannedBuildings = computed(() => {
+		if (!constructedMap) return [];
+
+		const plannedSet = new Set(buildingTicker.value);
+		return Array.from(constructedMap.keys())
+			.filter(ticker => !plannedSet.has(ticker))
+			.sort((a, b) => a.localeCompare(b));
+	});
 
 	const totalMaterials = computed(() => {
 		const r: Record<string, number> = {};
@@ -259,7 +273,20 @@
 
 <template>
 	<div class="pb-3 flex flex-row justify-between child:my-auto">
-		<h2 class="text-white/80 font-bold text-lg">Construction Cart</h2>
+		<h2 class="text-white/80 font-bold text-lg inline-flex items-center">
+			Construction Cart
+					<PTooltip v-if="unplannedBuildings.length > 0">
+				<template #trigger>
+					<PIcon class="text-amber-400 ml-1 relative top-px">
+						<WarningAmberRound />
+					</PIcon>
+				</template>
+						Base has unplanned {{ unplannedBuildings.join("+") }}
+						(FIO: {{ fioUpdated }})
+						<br>
+						Demolish to ensure area, habitation and materials are accurate
+			</PTooltip>
+		</h2>
 		<div class="flex flex-row gap-x-3 child:my-auto!">
 			<XITTransferActionButton
 				:elements="xitTransferElements"
