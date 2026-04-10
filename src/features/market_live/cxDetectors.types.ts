@@ -66,3 +66,8 @@ export interface MarketEvent {
 		prevData?: CXDataPoint;
 	};
 }
+
+export interface MessageHistory {
+	timestamp: number;
+	tickers: string[];
+}

@@ -37,7 +37,7 @@
 			<div class="col-span-2 text-end">Time</div>
 		</div>
 
-		<div class="divide-y divide-white/10 overflow-y-auto max-h-screen">
+		<div class="divide-y divide-white/10 overflow-y-auto">
 			<template v-for="event in eventLog" :key="event.id">
 				<div class="group mx-auto cursor-pointer">
 					<div

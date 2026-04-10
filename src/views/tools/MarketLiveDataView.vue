@@ -9,6 +9,7 @@
 	import AlertManager from "@/features/market_live/components/AlertManager.vue";
 	import AlertFeed from "@/features/market_live/components/AlertFeed.vue";
 	import CXPointTable from "@/features/market_live/components/CXPointTable.vue";
+	import MessageHistory from "@/features/market_live/components/MessageHistory.vue";
 
 	// UI
 	import PButton from "@/ui/components/PButton.vue";
@@ -26,6 +27,7 @@
 		connect,
 		disconnect,
 		clearEventLog,
+		messageHistory,
 		cxPointTableData,
 		eventLog,
 		detectorsActive,
@@ -44,9 +46,9 @@
 </script>
 
 <template>
-	<div class="min-h-screen flex flex-col">
+	<div class="h-dvh flex flex-col overflow-hidden">
 		<div
-			class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
+			class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3 shrink-0">
 			<h1 class="text-2xl font-bold">Market Live Data</h1>
 			<div>
 				<div class="flex flex-row gap-x-3 child:my-auto">
@@ -75,62 +77,76 @@
 				</div>
 			</div>
 		</div>
-		<div class="px-6 py-3">
-			<div class="grid grid-cols-1 xl:grid-cols-[auto_700px] gap-3">
-				<div class="rounded border border-white/10 p-3">
+		<div class="px-6 py-3 flex-1 min-h-0">
+			<div
+				class="grid grid-cols-1 xl:grid-cols-[auto_700px] gap-3 h-full">
+				<div class="flex flex-col h-full overflow-hidden">
 					<div
-						class="pb-3 flex flex-row justify-between items-center">
-						<h2 class="text-lg font-bold">Alert Feed</h2>
-						<div class="flex flex-row gap-3">
-							<PButton
-								:type="showAlertManager ? 'error' : 'secondary'"
-								@click="
-									() => (showAlertManager = !showAlertManager)
-								">
-								<template #icon>
-									<CloseSharp v-if="showAlertManager" />
-									<EditSharp v-else />
-								</template>
-								<span v-if="showAlertManager">
-									Close Alert Manager
-								</span>
-								<span v-if="!showAlertManager">
-									Open Alert Manager
-								</span>
-							</PButton>
-							<PButton type="error" @click="clearEventLog">
-								<template #icon>
-									<ClearSharp />
-								</template>
-								Clear Log
-							</PButton>
-							<PButton
-								:type="detectorsActive ? 'success' : 'error'"
-								:loading="isProcessing"
-								@click="
-									() => {
-										detectorsActive = !detectorsActive;
-									}
-								">
-								<template #icon>
-									<NotificationsActiveSharp
-										v-if="detectorsActive" />
-									<NotificationsNoneSharp v-else />
-								</template>
-							</PButton>
+						class="flex-1 flex flex-col min-h-0 rounded border border-white/10 p-3">
+						<div
+							class="pb-3 flex flex-row justify-between items-center shrink-0">
+							<h2 class="text-lg font-bold">Alert Feed</h2>
+							<div class="flex flex-row gap-3">
+								<PButton
+									:type="
+										showAlertManager ? 'error' : 'secondary'
+									"
+									@click="
+										() =>
+											(showAlertManager =
+												!showAlertManager)
+									">
+									<template #icon>
+										<CloseSharp v-if="showAlertManager" />
+										<EditSharp v-else />
+									</template>
+									<span v-if="showAlertManager">
+										Close Alert Manager
+									</span>
+									<span v-if="!showAlertManager">
+										Open Alert Manager
+									</span>
+								</PButton>
+								<PButton type="error" @click="clearEventLog">
+									<template #icon>
+										<ClearSharp />
+									</template>
+									Clear Log
+								</PButton>
+								<PButton
+									:type="
+										detectorsActive ? 'success' : 'error'
+									"
+									:loading="isProcessing"
+									@click="
+										() => {
+											detectorsActive = !detectorsActive;
+										}
+									">
+									<template #icon>
+										<NotificationsActiveSharp
+											v-if="detectorsActive" />
+										<NotificationsNoneSharp v-else />
+									</template>
+								</PButton>
+							</div>
+						</div>
+						<div class="flex-1 overflow-y-auto custom-scroll">
+							<div
+								v-if="showAlertManager"
+								class="shrink-0 p-3 mb-3 rounded border border-white/10">
+								<AlertManager />
+							</div>
+							<AlertFeed :event-log="eventLog" />
 						</div>
 					</div>
 					<div
-						v-if="showAlertManager"
-						class="p-3 mb-3 rounded border border-white/10">
-						<AlertManager />
-					</div>
-					<div>
-						<AlertFeed :event-log="eventLog" />
+						class="h-[250px] shrink-0 overflow-y-auto custom-scroll mt-3 rounded border border-white/10 p-3">
+						<MessageHistory :data="messageHistory" />
 					</div>
 				</div>
-				<div>
-					<CXPointTable :data="cxPointTableData" />
+				<div class="flex-1 min-h-0">
+					<CXPointTable :data="cxPointTableData" class="h-full" />
 				</div>
 			</div>
 		</div>

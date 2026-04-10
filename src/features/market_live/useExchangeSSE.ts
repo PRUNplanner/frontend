@@ -11,7 +11,10 @@ import {
 	SSECXSchema,
 	type SSECXSchemaType,
 } from "@/features/market_live/schemas/cxSSE.schema";
-import { MarketEvent } from "@/features/market_live/cxDetectors.types";
+import {
+	MarketEvent,
+	MessageHistory,
+} from "@/features/market_live/cxDetectors.types";
 import { processUserDetectors } from "@/features/market_live/cxDetectors";
 import { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
@@ -21,11 +24,14 @@ const connectionError = ref<string | null>(null);
 const cxPointMap = reactive<Record<string, CXDataPoint>>({});
 const eventLog = reactive<MarketEvent[]>([]);
 
+const messageHistory = ref<MessageHistory[]>([]);
+
 const isProcessing = ref(false);
 let activeMessages = 0;
 let processingTimeout: number | null = null;
 
 const EVENT_LOG_MAX = 500;
+const MESSAGE_HISTORY_MAX = 25;
 
 export function useExchangeSSE() {
 	const urlCXSSE = "https://api.prunplanner.org/data/stream/?channels=cx";
@@ -186,6 +192,31 @@ export function useExchangeSSE() {
 		const data = result.data;
 		const key = `${data.material_ticker}.${data.exchange_code}`;
 
+		// incoming data log
+		const now = new Date();
+		const minuteKey = new Date(now.setSeconds(0, 0)).getTime();
+		let bundle = messageHistory.value.find(
+			(e) => e.timestamp === minuteKey
+		);
+
+		if (!bundle) {
+			messageHistory.value.unshift({
+				timestamp: minuteKey,
+				tickers: [],
+			});
+
+			// keep only last 5 data ingestions
+			if (messageHistory.value.length > MESSAGE_HISTORY_MAX) {
+				messageHistory.value.pop();
+			}
+			bundle = messageHistory.value[0];
+		}
+
+		// push in new ticker, if not already present
+		if (!bundle.tickers.includes(key)) {
+			bundle.tickers.push(key);
+		}
+
 		// process grab old, process new data
 		const oldData = cxPointMap[key] as CXDataPoint | undefined;
 		const newData = processIncomingData(data, oldData);
@@ -271,6 +302,7 @@ export function useExchangeSSE() {
 		isProcessing,
 		cxPointMap,
 		cxPointTableData,
+		messageHistory,
 		// actions
 		connect,
 		disconnect,
