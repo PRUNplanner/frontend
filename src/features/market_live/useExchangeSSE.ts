@@ -15,9 +15,6 @@ import { MarketEvent } from "@/features/market_live/cxDetectors.types";
 import { processUserDetectors } from "@/features/market_live/cxDetectors";
 import { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
-const alertsStore = useAlertsStore();
-const { userAlerts } = storeToRefs(alertsStore);
-
 const isConnected = ref(false);
 const connectionError = ref<string | null>(null);
 
@@ -32,6 +29,8 @@ const EVENT_LOG_MAX = 500;
 
 export function useExchangeSSE() {
 	const urlCXSSE = "https://api.prunplanner.org/data/stream/?channels=cx";
+	const alertsStore = useAlertsStore();
+	const { userAlerts } = storeToRefs(alertsStore);
 
 	let eventSource: EventSource | null = null;
 
