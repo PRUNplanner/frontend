@@ -87,6 +87,12 @@ const router = createRouter({
 			component: () => import("@/views/tools/MarketExplorationView.vue"),
 		},
 		{
+			name: "market-live",
+			path: "/market-live",
+			meta: { requiresAuth: true },
+			component: () => import("@/views/tools/MarketLiveDataView.vue"),
+		},
+		{
 			name: "hq-upgrade-calculator",
 			path: "/hq-upgrade-calculator",
 			meta: { requiresAuth: true },
