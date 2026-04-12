@@ -56,7 +56,7 @@
 	<div class="h-dvh flex flex-col overflow-hidden">
 		<div
 			class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3 shrink-0">
-			<h1 class="text-2xl font-bold">Market Live Data</h1>
+			<h1 class="text-2xl font-bold">Market Live</h1>
 			<div>
 				<div class="flex flex-row gap-x-3 child:my-auto">
 					<div class="flex items-center gap-2 font-medium">
