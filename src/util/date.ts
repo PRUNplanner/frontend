@@ -89,21 +89,25 @@ export function humanizeTimeMs(value: number): string {
 	}
 }
 
-/**
- * Gets the relative time from date till now
- * @author jplacht
- *
- * @export
- * @param {(Date | undefined)} value Date
- * @returns {string} Relative, humanized time
- */
 export function relativeFromDate(
 	value: Date | number | undefined,
-	isUTC: boolean = false
+	isUTC: boolean = false,
+	short: boolean = false
 ): string {
 	if (value === undefined) return "—";
 
-	if (isUTC) return dayjs(value).utc(true).local().fromNow();
+	const instance = isUTC ? dayjs.utc(value).local() : dayjs(value);
+	const result = instance.fromNow();
 
-	return dayjs(value).fromNow();
+	if (short) {
+		return result
+			.replace(" ago", "")
+			.replace("a few seconds", "1s")
+			.replace("a minute", "1m")
+			.replace(" minutes", "m")
+			.replace("an hour", "1h")
+			.replace(" hours", "h");
+	}
+
+	return result;
 }
