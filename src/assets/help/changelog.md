@@ -1,3 +1,10 @@
+# 2026-04-12 - v. 0.26.0.
+
+- Added habitation deficit highlight [[PR-390]](https://github.com/PRUNplanner/frontend/pull/390)
+- Show warning when base has unplanned buildings [[PR-391]](https://github.com/PRUNplanner/frontend/pull/391)
+- Fix missing chart controller on profit curve [[PR-393]](https://github.com/PRUNplanner/frontend/pull/393)
+- Implemented "Market Live" view, implements SSE CX data stream from FIO API webhook and alert logic [[PR-395]](https://github.com/PRUNplanner/frontend/pull/395)
+
 # 2026-04-01 - v. 0.25.1
 
 - Improve Market Exploration chart to display no-trade gaps [[PR-385]](https://github.com/PRUNplanner/frontend/pull/385)
