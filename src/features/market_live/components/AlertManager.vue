@@ -33,6 +33,10 @@
 				<h2 class="text-lg font-bold">
 					{{ isEditing ? "Edit Alert" : "Alert Manager" }}
 				</h2>
+				<span class="text-xs text-negative!">
+					Alerts are currently stored on this device only and are not
+					synced to your account.
+				</span>
 			</div>
 
 			<div class="flex gap-3">
