@@ -43,7 +43,7 @@
 		KeyboardDoubleArrowLeftSharp,
 		KeyboardDoubleArrowRightSharp,
 		AccountBalanceSharp,
-		CrisisAlertSharp,
+		RssFeedSharp,
 	} from "@vicons/material";
 
 	const userStore = useUserStore();
@@ -139,7 +139,7 @@
 					label: "Market Live",
 					display: true,
 					routerLink: "/market-live",
-					icon: CrisisAlertSharp,
+					icon: RssFeedSharp,
 				},
 				{
 					label: "Recipe ROI",
