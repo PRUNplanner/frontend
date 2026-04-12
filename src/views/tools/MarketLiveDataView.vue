@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { onMounted, onUnmounted, ref } from "vue";
+	import { computed, onMounted, onUnmounted, ref } from "vue";
 
 	// Composables
 	import { useExchangeSSE } from "@/features/market_live/useExchangeSSE";
@@ -19,9 +19,16 @@
 		NotificationsNoneSharp,
 		NotificationsActiveSharp,
 		ClearSharp,
+		KeyboardDoubleArrowLeftSharp,
+		KeyboardDoubleArrowRightSharp,
 	} from "@vicons/material";
 
 	const showAlertManager = ref<boolean>(false);
+	const showTickerOverview = ref<boolean>(true);
+
+	const mainDisplayClass = computed(() =>
+		showTickerOverview.value ? "xl:grid-cols-[auto_700px]" : ""
+	);
 
 	const {
 		connect,
@@ -79,7 +86,8 @@
 		</div>
 		<div class="px-6 py-3 flex-1 min-h-0">
 			<div
-				class="grid grid-cols-1 xl:grid-cols-[auto_700px] gap-3 h-full">
+				:class="mainDisplayClass"
+				class="grid grid-cols-1 gap-3 h-full">
 				<div class="flex flex-col h-full overflow-hidden">
 					<div
 						class="flex-1 flex flex-col min-h-0 rounded border border-white/10 p-3">
@@ -111,7 +119,7 @@
 									<template #icon>
 										<ClearSharp />
 									</template>
-									Clear Log
+									Clear Feed
 								</PButton>
 								<PButton
 									:type="
@@ -129,6 +137,25 @@
 										<NotificationsNoneSharp v-else />
 									</template>
 								</PButton>
+
+								<PButton
+									type="secondary"
+									@click="
+										() => {
+											showTickerOverview =
+												!showTickerOverview;
+										}
+									">
+									<template #icon>
+										<KeyboardDoubleArrowRightSharp
+											v-if="showTickerOverview" />
+										<KeyboardDoubleArrowLeftSharp v-else />
+									</template>
+									<span v-if="showTickerOverview">
+										Hide Overview
+									</span>
+									<span v-else> Show Overview </span>
+								</PButton>
 							</div>
 						</div>
 						<div class="flex-1 overflow-y-auto custom-scroll">
@@ -145,7 +172,7 @@
 						<MessageHistory :data="messageHistory" />
 					</div>
 				</div>
-				<div class="flex-1 min-h-0">
+				<div v-if="showTickerOverview" class="flex-1 min-h-0">
 					<CXPointTable :data="cxPointTableData" class="h-full" />
 				</div>
 			</div>
