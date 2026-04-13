@@ -62,7 +62,6 @@
 	import PSelect from "@/ui/components/PSelect.vue";
 	import PButton from "@/ui/components/PButton.vue";
 	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
-	import PSpin from "@/ui/components/PSpin.vue";
 
 	const props = defineProps({
 		empireUuid: {
@@ -338,7 +337,6 @@
 							<h1 class="text-2xl font-bold my-auto">
 								{{ empireName }}
 							</h1>
-							<PSpin v-if="isCalculating" />
 						</div>
 						<div class="gap-3 flex flex-row flex-wrap">
 							<PButtonGroup>
@@ -417,7 +415,7 @@
 							</div>
 						</div>
 						<div
-							class="xl:sticky xl:top-6 h-[calc(100vh-theme(spacing.12))] flex flex-col">
+							class="xl:sticky xl:top-1 h-[calc(100vh-theme(spacing.12))] flex flex-col">
 							<div class="flex flex-col flex-1 overflow-auto">
 								<EmpireMaterialIOFiltered
 									:content="mainContent"

@@ -1,11 +1,19 @@
 <script setup lang="ts">
 	import { computed, PropType } from "vue";
-	import { IEmpireMaterialIO } from "../empire.types";
 
-	import { useProductionOpportunities } from "../useProductionOpportunities";
-	import { formatNumber } from "@/util/numbers";
+	// Composables
+	import { useProductionOpportunities } from "@/features/empire/useProductionOpportunities";
+
+	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
+	// Util
+	import { formatNumber } from "@/util/numbers";
+
+	// Types & Interfaces
+	import { IEmpireMaterialIO } from "@/features/empire/empire.types";
+
+	// UI
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 
 	const props = defineProps({
@@ -17,9 +25,8 @@
 
 	const localEmpireMaterialIO = computed(() => props.empireMaterialIO);
 
-	const { isLoading, opportunities } = useProductionOpportunities(
-		localEmpireMaterialIO
-	);
+	const { isLoading, opportunities, opportunityStats } =
+		useProductionOpportunities(localEmpireMaterialIO);
 </script>
 
 <template>
@@ -32,6 +39,74 @@
 			to convert excess materials into higher-tier products. Recipes are
 			prioritized by input availability. Items with a Shortfall highlight
 			exactly which material is currently bottlenecking the opportunity.
+		</div>
+		<div class="grid grid-cols-1 xl:grid-cols-3 gap-3 pb-3 child:gap-1">
+			<div
+				class="flex flex-col p-3 rounded border border-white/10 child:text-xs">
+				<span class="uppercase text-white/60"> Opportunities </span>
+				<div
+					class="flex flex-row justify-between items-center font-mono">
+					<span class="text-2xl text-white">
+						{{ opportunityStats.fullMatch }}
+					</span>
+					<span>
+						{{
+							formatNumber(
+								(opportunityStats.fullMatch /
+									opportunityStats.total) *
+									100,
+								2,
+								false
+							)
+						}}
+						%
+					</span>
+				</div>
+			</div>
+			<div
+				class="flex flex-col p-3 rounded border border-white/10 child:text-xs">
+				<span class="uppercase text-white/60"> Delta Required </span>
+				<div
+					class="flex flex-row justify-between items-center font-mono">
+					<span class="text-2xl text-white">
+						{{ opportunityStats.deltaRequired }}
+					</span>
+					<span>
+						{{
+							formatNumber(
+								(opportunityStats.deltaRequired /
+									opportunityStats.total) *
+									100,
+								2,
+								false
+							)
+						}}
+						%
+					</span>
+				</div>
+			</div>
+			<div
+				class="flex flex-col p-3 rounded border border-white/10 child:text-xs">
+				<span class="uppercase text-white/60"> Material Missing </span>
+				<div
+					class="flex flex-row justify-between items-center font-mono">
+					<span class="text-2xl text-white">
+						{{ opportunityStats.missingMaterial }}
+					</span>
+					<span>
+						{{
+							formatNumber(
+								(opportunityStats.missingMaterial /
+									opportunityStats.total) *
+									100,
+								2,
+								false
+							)
+						}}
+						%
+					</span>
+				</div>
+			</div>
 		</div>
 		<div class="flex-1">
 			<XNDataTable
@@ -62,7 +137,8 @@
 					title="Production Flow (Inputs &rarr; Outputs)">
 					<template #render-cell="{ rowData }">
 						<div class="flex flex-row justify-between">
-							<div class="flex flex-row flex-wrap gap-1.5">
+							<div
+								class="grid grid-cols-1 xl:grid-cols-4 gap-1.5">
 								<div
 									v-for="stat in rowData.inputStats"
 									:key="`${rowData.recipe.recipe_id}#${stat.ticker}`"
