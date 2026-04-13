@@ -39,6 +39,7 @@ export function useProductionOpportunities(empireIO: Ref<IEmpireMaterialIO[]>) {
 			allRecipesList.value
 				.map((recipe) => {
 					let positiveDeltaCount = 0;
+					let minRuns = Infinity;
 
 					const inputStats = recipe.inputs.map((input) => {
 						const currentDelta =
@@ -46,11 +47,13 @@ export function useProductionOpportunities(empireIO: Ref<IEmpireMaterialIO[]>) {
 
 						if (currentDelta > 0) positiveDeltaCount++;
 
-						// potential runs = current delta / recipe requirement
 						const potentialRuns =
 							currentDelta > 0
 								? currentDelta / input.material_amount
 								: 0;
+
+						// Update bottleneck immediately
+						if (potentialRuns < minRuns) minRuns = potentialRuns;
 
 						return {
 							ticker: input.material_ticker,
@@ -61,9 +64,7 @@ export function useProductionOpportunities(empireIO: Ref<IEmpireMaterialIO[]>) {
 						};
 					});
 
-					const sustainedRuns = Math.min(
-						...inputStats.map((i) => i.potentialRuns)
-					);
+					const sustainedRuns = minRuns === Infinity ? 0 : minRuns;
 					const inputMatchRatio =
 						positiveDeltaCount / recipe.inputs.length;
 
@@ -88,9 +89,30 @@ export function useProductionOpportunities(empireIO: Ref<IEmpireMaterialIO[]>) {
 		);
 	});
 
+	const opportunityStats = computed(() => {
+		const counts = {
+			fullMatch: 0,
+			deltaRequired: 0,
+			missingMaterial: 0,
+			total: opportunities.value.length,
+		};
+
+		for (const opp of opportunities.value) {
+			if (opp.isFullMatch) counts.fullMatch++;
+			else if (!opp.isFullMatch && opp.sustainedRuns > 0) {
+				counts.deltaRequired++;
+			} else {
+				counts.missingMaterial++;
+			}
+		}
+
+		return counts;
+	});
+
 	return {
 		isLoading,
 		allRecipesList,
 		opportunities,
+		opportunityStats,
 	};
 }
