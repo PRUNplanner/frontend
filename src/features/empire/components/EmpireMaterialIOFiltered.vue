@@ -5,6 +5,7 @@
 	import EmpireMaterialIOFilters from "@/features/empire/components/EmpireMaterialIOFilters.vue";
 	import EmpireMaterialIO from "@/features/empire/components/EmpireMaterialIO.vue";
 	import EmpireAnalysis from "@/features/empire/components/EmpireAnalysis.vue";
+	import EmpireOpportunities from "@/features/empire/components/EmpireOpportunities.vue";
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
@@ -23,7 +24,9 @@
 
 	const props = defineProps({
 		content: {
-			type: String as PropType<"materialio" | "analysis">,
+			type: String as PropType<
+				"materialio" | "analysis" | "opportunities"
+			>,
 			required: true,
 		},
 		empireMaterialIO: {
@@ -160,22 +163,28 @@
 </script>
 
 <template>
-	<div class="border rounded-[3px] border-b-0 border-white/15 p-3">
-		<EmpireMaterialIOFilters
-			v-model:load-balance="refFilterLoadbalance"
-			v-model:hide-consumables="refFilterHideConsumables"
-			v-model:filter-materials="refFilterMaterials"
-			v-model:filter-planets="refFilterPlanets"
-			:material-options="refMaterialSelectOptions"
-			:planet-options="refPlanetSelectOptions"
-			@apply-filter="applyFilter" />
+	<div class="">
+		<div
+			v-if="content != 'opportunities'"
+			class="border rounded-[3px] border-b-0 border-white/15 p-3">
+			<EmpireMaterialIOFilters
+				v-model:load-balance="refFilterLoadbalance"
+				v-model:hide-consumables="refFilterHideConsumables"
+				v-model:filter-materials="refFilterMaterials"
+				v-model:filter-planets="refFilterPlanets"
+				:material-options="refMaterialSelectOptions"
+				:planet-options="refPlanetSelectOptions"
+				@apply-filter="applyFilter" />
+		</div>
+		<EmpireMaterialIO
+			v-if="content === 'materialio'"
+			:empire-material-i-o="filteredMaterialIO" />
+		<EmpireAnalysis
+			v-else-if="content === 'analysis'"
+			:empire-material-i-o="filteredMaterialIO"
+			:plan-list-data="localPlanListData" />
+		<EmpireOpportunities
+			v-else-if="content === 'opportunities'"
+			:empire-material-i-o="empireMaterialIO" />
 	</div>
-
-	<EmpireMaterialIO
-		v-if="content === 'materialio'"
-		:empire-material-i-o="filteredMaterialIO" />
-	<EmpireAnalysis
-		v-else
-		:empire-material-i-o="filteredMaterialIO"
-		:plan-list-data="localPlanListData" />
 </template>

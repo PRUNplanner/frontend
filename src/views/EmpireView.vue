@@ -57,7 +57,12 @@
 	} from "@/features/empire/empire.types";
 
 	// UI
-	import { PForm, PFormItem, PSelect, PButton, PSpin } from "@/ui";
+	import PForm from "@/ui/components/PForm.vue";
+	import PFormItem from "@/ui/components/PFormItem.vue";
+	import PSelect from "@/ui/components/PSelect.vue";
+	import PButton from "@/ui/components/PButton.vue";
+	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
+	import PSpin from "@/ui/components/PSpin.vue";
 
 	const props = defineProps({
 		empireUuid: {
@@ -290,19 +295,9 @@
 		})
 	);
 
-	const mainContent = ref<"materialio" | "analysis">("materialio");
-
-	const switchText = computed(() =>
-		mainContent.value === "materialio"
-			? "Empire Analysis"
-			: "Empire Material I/O"
+	const mainContent = ref<"materialio" | "analysis" | "opportunities">(
+		"materialio"
 	);
-
-	// dafuq does Vite complain it would change a computed here?
-	function switchMainContent(): void {
-		mainContent.value =
-			mainContent.value === "materialio" ? "analysis" : "materialio";
-	}
 </script>
 
 <template>
@@ -337,7 +332,7 @@
 					message="One does not simply calculate empire plans." />
 
 				<div v-else>
-					<div class="flex flex-col">
+					<div class="flex-1 flex flex-col">
 						<div
 							class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
 							<div class="flex flex-row gap-3">
@@ -347,15 +342,48 @@
 								<PSpin v-if="isCalculating" />
 							</div>
 							<div class="gap-3 flex flex-row flex-wrap">
-								<PButton @click="switchMainContent">
-									{{ switchText }}
-								</PButton>
+								<PButtonGroup>
+									<PButton
+										:type="
+											mainContent === 'materialio'
+												? 'primary'
+												: 'secondary'
+										"
+										@click="
+											() => (mainContent = 'materialio')
+										">
+										Material I/O
+									</PButton>
+									<PButton
+										:type="
+											mainContent === 'analysis'
+												? 'primary'
+												: 'secondary'
+										"
+										@click="
+											() => (mainContent = 'analysis')
+										">
+										Analysis
+									</PButton>
+									<PButton
+										:type="
+											mainContent === 'opportunities'
+												? 'primary'
+												: 'secondary'
+										"
+										@click="
+											() =>
+												(mainContent = 'opportunities')
+										">
+										Production Opportunities
+									</PButton>
+								</PButtonGroup>
 								<HelpDrawer file-name="empire" />
 							</div>
 						</div>
 
 						<div
-							class="grow grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6 m-3 sm:m-6">
+							class="grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6 m-3 sm:m-6">
 							<div
 								class="flex flex-col gap-6 justify-items-start">
 								<div>
@@ -402,7 +430,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="overflow-x-auto">
+							<div class="h-dvh min-h-0 overflow-auto">
 								<EmpireMaterialIOFiltered
 									:content="mainContent"
 									:empire-material-i-o="
