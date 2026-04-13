@@ -332,105 +332,93 @@
 					message="One does not simply calculate empire plans." />
 
 				<div v-else>
-					<div class="flex-1 flex flex-col">
+					<div
+						class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
+						<div class="flex flex-row gap-3">
+							<h1 class="text-2xl font-bold my-auto">
+								{{ empireName }}
+							</h1>
+							<PSpin v-if="isCalculating" />
+						</div>
+						<div class="gap-3 flex flex-row flex-wrap">
+							<PButtonGroup>
+								<PButton
+									:type="
+										mainContent === 'materialio'
+											? 'primary'
+											: 'secondary'
+									"
+									@click="() => (mainContent = 'materialio')">
+									Material I/O
+								</PButton>
+								<PButton
+									:type="
+										mainContent === 'analysis'
+											? 'primary'
+											: 'secondary'
+									"
+									@click="() => (mainContent = 'analysis')">
+									Analysis
+								</PButton>
+								<PButton
+									:type="
+										mainContent === 'opportunities'
+											? 'primary'
+											: 'secondary'
+									"
+									@click="
+										() => (mainContent = 'opportunities')
+									">
+									Production Opportunities
+								</PButton>
+							</PButtonGroup>
+							<HelpDrawer file-name="empire" />
+						</div>
+					</div>
+
+					<div
+						class="grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6 m-3 sm:m-6 items-start">
 						<div
-							class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
-							<div class="flex flex-row gap-3">
-								<h1 class="text-2xl font-bold my-auto">
-									{{ empireName }}
-								</h1>
-								<PSpin v-if="isCalculating" />
+							class="min-h-screen w-[600px] flex flex-col gap-6 justify-items-start">
+							<div>
+								<PForm>
+									<PFormItem label="Switch Empire">
+										<PSelect
+											v-model:value="selectedEmpireUuid"
+											class="w-full"
+											:options="empireOptions" />
+									</PFormItem>
+								</PForm>
 							</div>
-							<div class="gap-3 flex flex-row flex-wrap">
-								<PButtonGroup>
-									<PButton
-										:type="
-											mainContent === 'materialio'
-												? 'primary'
-												: 'secondary'
-										"
-										@click="
-											() => (mainContent = 'materialio')
-										">
-										Material I/O
-									</PButton>
-									<PButton
-										:type="
-											mainContent === 'analysis'
-												? 'primary'
-												: 'secondary'
-										"
-										@click="
-											() => (mainContent = 'analysis')
-										">
-										Analysis
-									</PButton>
-									<PButton
-										:type="
-											mainContent === 'opportunities'
-												? 'primary'
-												: 'secondary'
-										"
-										@click="
-											() =>
-												(mainContent = 'opportunities')
-										">
-										Production Opportunities
-									</PButton>
-								</PButtonGroup>
-								<HelpDrawer file-name="empire" />
+							<div>
+								<AsyncEmpireCostOverview
+									:cost-overview="costOverview" />
+							</div>
+							<div class="flex flex-col gap-6">
+								<div class="overflow-x-auto">
+									<Suspense>
+										<AsyncEmpirePlanList
+											:plan-list-data="planListData" />
+										<template #fallback>
+											<RenderingProgress :height="200" />
+										</template>
+									</Suspense>
+								</div>
+								<div>
+									<Suspense v-if="selectedEmpire">
+										<AsyncEmpireConfiguration
+											:data="selectedEmpire"
+											@reload:empires="reloadEmpires" />
+										<template #fallback>
+											<RenderingProgress :height="200" />
+										</template>
+									</Suspense>
+								</div>
 							</div>
 						</div>
-
 						<div
-							class="grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6 m-3 sm:m-6">
-							<div
-								class="flex flex-col gap-6 justify-items-start">
-								<div>
-									<PForm>
-										<PFormItem label="Switch Empire">
-											<PSelect
-												v-model:value="
-													selectedEmpireUuid
-												"
-												class="w-full"
-												:options="empireOptions" />
-										</PFormItem>
-									</PForm>
-								</div>
-								<div>
-									<AsyncEmpireCostOverview
-										:cost-overview="costOverview" />
-								</div>
-								<div class="flex flex-col gap-6">
-									<div class="overflow-x-auto">
-										<Suspense>
-											<AsyncEmpirePlanList
-												:plan-list-data="
-													planListData
-												" />
-											<template #fallback>
-												<RenderingProgress
-													:height="200" />
-											</template>
-										</Suspense>
-									</div>
-									<div>
-										<Suspense v-if="selectedEmpire">
-											<AsyncEmpireConfiguration
-												:data="selectedEmpire"
-												@reload:empires="
-													reloadEmpires
-												" />
-											<template #fallback>
-												<RenderingProgress
-													:height="200" />
-											</template>
-										</Suspense>
-									</div>
-								</div>
-							</div>
-							<div class="h-dvh min-h-0 overflow-auto">
+							class="xl:sticky xl:top-6 h-[calc(100vh-theme(spacing.12))] flex flex-col">
+							<div class="flex flex-col flex-1 overflow-auto">
 								<EmpireMaterialIOFiltered
 									:content="mainContent"
 									:empire-material-i-o="

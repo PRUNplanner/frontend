@@ -54,7 +54,7 @@
 		</XNDataTableColumn>
 		<XNDataTableColumn key="planet" title="Planet" sorter="default">
 			<template #render-cell="{ rowData }">
-				<div class="test-wrap">
+				<div class="text-wrap">
 					{{ planetNames[rowData.planet] || "Loading..." }}
 				</div>
 			</template>

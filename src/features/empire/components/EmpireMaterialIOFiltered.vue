@@ -163,7 +163,7 @@
 </script>
 
 <template>
-	<div class="">
+	<div class="flex flex-col flex-1">
 		<div
 			v-if="content != 'opportunities'"
 			class="border rounded-[3px] border-b-0 border-white/15 p-3">
