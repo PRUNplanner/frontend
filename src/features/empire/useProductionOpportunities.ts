@@ -1,7 +1,12 @@
 import { ref, computed, onMounted, Ref } from "vue";
+
+// Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
-import { IEmpireMaterialIO } from "./empire.types";
-import { IRecipe } from "../api/gameData.types";
+
+// Types & Interfaces
+import { IEmpireMaterialIO } from "@/features/empire/empire.types";
+import { IRecipe } from "@/features/api/gameData.types";
+import { IOpportunityStats } from "@/features/empire/useProductionOpportunities.types";
 
 export function useProductionOpportunities(empireIO: Ref<IEmpireMaterialIO[]>) {
 	const recipeMap = ref<Record<string, IRecipe[]>>({});
@@ -89,24 +94,26 @@ export function useProductionOpportunities(empireIO: Ref<IEmpireMaterialIO[]>) {
 		);
 	});
 
-	const opportunityStats = computed(() => {
-		const counts = {
-			fullMatch: 0,
-			deltaRequired: 0,
-			missingMaterial: 0,
-			total: opportunities.value.length,
-		};
+	const opportunityStats = computed((): IOpportunityStats => {
+		const list = opportunities.value;
 
-		for (const opp of opportunities.value) {
-			if (opp.isFullMatch) counts.fullMatch++;
-			else if (!opp.isFullMatch && opp.sustainedRuns > 0) {
-				counts.deltaRequired++;
-			} else {
-				counts.missingMaterial++;
+		return list.reduce(
+			(acc, opp) => {
+				if (opp.isFullMatch) acc.fullMatch++;
+				else if (opp.sustainedRuns > 0) {
+					acc.deltaRequired++;
+				} else {
+					acc.missingMaterial++;
+				}
+				return acc;
+			},
+			{
+				fullMatch: 0,
+				deltaRequired: 0,
+				missingMaterial: 0,
+				total: list.length,
 			}
-		}
-
-		return counts;
+		);
 	});
 
 	return {
