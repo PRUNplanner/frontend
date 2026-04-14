@@ -98,12 +98,12 @@ export const FieldConfigs: Partial<Record<keyof CXDataPoint, FieldConfig>> = {
 		operators: ["gt", "lt", "eq", "neq"],
 	},
 	lowest_sell_cost: {
-		label: "Lowest Buy Price",
+		label: "Best Ask Price",
 		type: "number",
 		operators: ["gt", "lt", "eq", "neq"],
 	},
 	highest_buy_cost: {
-		label: "Lowest Sell Price",
+		label: "Best Bid Price",
 		type: "number",
 		operators: ["gt", "lt", "eq", "neq"],
 	},
