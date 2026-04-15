@@ -138,6 +138,8 @@ import {
 } from "@/features/api/userData.types";
 import { IPreference } from "@/features/preferences/userPreferences.types";
 import { UserPreferenceType } from "@/features/api/schemas/user.schemas";
+import { AnalyticsPlanetInsightsPayloadType } from "@/features/api/schemas/analyticsData.schemas";
+import { callAnalyticsPlanetInsights } from "@/features/api/analyticsData.api";
 
 export function useQueryRepository() {
 	const queryStore = useQueryStore();
@@ -929,6 +931,24 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<undefined, UserPreferenceType>,
+		GetAnalyticsPlanetInsights: {
+			key: (params: { planetNaturalId: string }) => [
+				"analytics",
+				"planet_insights",
+				params.planetNaturalId,
+			],
+			fetchFn: async (params: { planetNaturalId: string }) => {
+				return await callAnalyticsPlanetInsights(
+					params.planetNaturalId
+				);
+			},
+			autoRefetch: false,
+			persist: true,
+			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
+		} as IQueryDefinition<
+			{ planetNaturalId: string },
+			AnalyticsPlanetInsightsPayloadType
+		>,
 	};
 
 	return {

@@ -62,6 +62,7 @@
 	import PlanOverview from "@/features/planning/components/PlanOverview.vue";
 	import PlanStatusBar from "@/features/planning/components/PlanStatusBar.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
 	const ShareButton = defineAsyncComponent(
 		() => import("@/features/sharing/components/SharingButton.vue")
 	);
@@ -465,9 +466,7 @@
 			sharedUuid: props.sharedPlanUuid,
 		});
 		if (newPlanUuid) {
-			router.push(
-				`/plan/${planetData.planet_natural_id}/${newPlanUuid}`
-			);
+			router.push(`/plan/${planetData.planet_natural_id}/${newPlanUuid}`);
 		}
 	}
 
@@ -558,6 +557,9 @@
 
 <!--div class="border-b border-white/10 p-3 overflow-visible">-->
 <template>
+	<PlanAnalyticsBox
+		:key="`INSIGHTS#${planetData.planet_natural_id}`"
+		:planet-natural-id="planetData.planet_natural_id" />
 	<div class="@container">
 		<div
 			class="px-3 grid grid-cols-1 grid-rows-[repeat(5,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
