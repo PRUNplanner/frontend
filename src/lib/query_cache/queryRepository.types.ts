@@ -59,7 +59,7 @@ import {
 	IUserRegistrationResponse,
 } from "@/features/api/userData.types";
 import { IPreference } from "@/features/preferences/userPreferences.types";
-
+import { AnalyticsPlanetInsightsPayloadType } from "@/features/api/schemas/analyticsData.schemas";
 /*
  * To be honest, this typing for Query Params and their data is a complete
  * shitshow, I'm still not 100 % sure why this is working, but if someone
@@ -188,4 +188,8 @@ export interface IQueryRepository {
 	>;
 	PatchPreferences: IQueryDefinition<IPreference, IPreference>;
 	GetPreferences: IQueryDefinition<undefined, IPreference>;
+	GetAnalyticsPlanetInsights: IQueryDefinition<
+		{ planetNaturalId: string },
+		AnalyticsPlanetInsightsPayloadType
+	>;
 }
