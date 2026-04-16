@@ -422,6 +422,7 @@
 									:empire-material-i-o="
 										combinedEmpireMaterialIO
 									"
+									:cx-uuid="selectedCXUuid"
 									:plan-list-data="planListData" />
 							</div>
 						</div>

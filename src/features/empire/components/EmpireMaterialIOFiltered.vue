@@ -37,6 +37,11 @@
 			type: Array as PropType<IEmpirePlanListData[]>,
 			required: true,
 		},
+		cxUuid: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
 	});
 
 	const workforceMaterial: string[] = [
@@ -185,6 +190,7 @@
 			:plan-list-data="localPlanListData" />
 		<EmpireOpportunities
 			v-else-if="content === 'opportunities'"
-			:empire-material-i-o="empireMaterialIO" />
+			:empire-material-i-o="empireMaterialIO"
+			:cx-uuid="cxUuid" />
 	</div>
 </template>
