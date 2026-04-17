@@ -52,11 +52,10 @@
 	const selectedMaterial: Ref<string> = ref("DW");
 	const selectedChartFullscreen: Ref<boolean> = ref(false);
 
-	const {
-		fetchData,
-		isLoading: loading,
-		dataCandlestick,
-	} = useMarketExplorationChart(selectedExchange, selectedMaterial);
+	const { fetchData, dataCandlestick } = useMarketExplorationChart(
+		selectedExchange,
+		selectedMaterial
+	);
 
 	function fetch(): void {
 		trackEvent("marketexploration_explore", {
@@ -174,21 +173,14 @@
 				<h1 class="text-2xl font-bold">Market Exploration</h1>
 				<div>
 					<div class="flex flex-row gap-x-3 child:my-auto">
-						<div>Exchange</div>
-						<PSelect
-							v-model:value="selectedExchange"
-							:options="exchangeOptions"
-							class="w-25" />
-
-						<div>Material</div>
+						<div>Switch Material</div>
 						<PSelect
 							v-model:value="selectedMaterial"
 							searchable
 							:options="materialOptions"
-							class="w-50" />
-						<PButton :loading="loading" @click="fetch">
-							Explore
-						</PButton>
+							class="w-30"
+							@update:value="fetch" />
+
 						<HelpDrawer file-name="tools_market_exploration" />
 					</div>
 				</div>
