@@ -301,6 +301,7 @@
 					}
 				">
 				<template #icon><AnalyticsOutlined /> </template>
+				COGM
 			</PButton>
 			<PButton
 				size="sm"
@@ -311,6 +312,7 @@
 					}
 				">
 				<template #icon><ClearSharp /></template>
+				Recipe
 			</PButton>
 		</div>
 	</div>

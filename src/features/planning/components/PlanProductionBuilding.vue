@@ -97,7 +97,8 @@
 				}}</span>
 			</div>
 			<div
-				class="col-1 row-2 @lg:row-1 @lg:col-2 @lg:justify-self-end-safe flex flex-row flex-wrap gap-x-1">
+				class="col-1 row-2 @lg:row-1 @lg:col-2 @lg:justify-self-end-safe flex flex-row flex-wrap gap-x-1 items-center">
+				<span class="pr-1 text-xs text-white/50"># Buildings</span>
 				<PInputNumber
 					v-model:value="localBuildingData.amount"
 					:disabled="disabled"
@@ -128,6 +129,7 @@
 					type="error"
 					@click="emit('delete:building', buildingIndex)">
 					<template #icon><ClearSharp /></template>
+					Building
 				</PButton>
 			</div>
 		</div>
