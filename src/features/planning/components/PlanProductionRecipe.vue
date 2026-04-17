@@ -24,7 +24,9 @@
 	import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
 
 	// UI
-	import { PButton, PInputNumber } from "@/ui";
+	import PButton from "@/ui/components/PButton.vue";
+	import PInputNumber from "@/ui/components/PInputNumber.vue";
+	import PTooltip from "@/ui/components/PTooltip.vue";
 	import { NModal } from "naive-ui";
 	import { ClearSharp, AnalyticsOutlined } from "@vicons/material";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
@@ -186,7 +188,7 @@
 								),
 						})
 					">
-					<XNDataTableColumn key="input" title="input">
+					<XNDataTableColumn key="input" title="Input">
 						<template #render-cell="{ rowData }">
 							<div class="flex flex-row gap-1">
 								<span
@@ -211,7 +213,7 @@
 							{{ humanizeTimeMs(rowData.time_ms) }}
 						</template>
 					</XNDataTableColumn>
-					<XNDataTableColumn key="output" title="output">
+					<XNDataTableColumn key="output" title="Output">
 						<template #render-cell="{ rowData }">
 							<div class="flex flex-row gap-1">
 								<MaterialTile
@@ -288,20 +290,28 @@
 		</div>
 
 		<div class="flex flex-row justify-between pt-1 child:my-auto">
-			<PButton
-				size="sm"
-				:disabled="!cogmEnabled"
-				@click="
-					() => {
-						refShowCOGM = true;
-						trackEvent('plan_tool_cogm', {
-							planetNaturalId: props.planetId,
-							recipeId: localRecipeData.recipeId,
-						});
-					}
-				">
-				<template #icon><AnalyticsOutlined /> </template>
-			</PButton>
+			<PTooltip :disabled="cogmEnabled">
+				<template #trigger>
+					<PButton
+						size="sm"
+						:disabled="!cogmEnabled"
+						@click="
+							() => {
+								refShowCOGM = true;
+								trackEvent('plan_tool_cogm', {
+									planetNaturalId: props.planetId,
+									recipeId: localRecipeData.recipeId,
+								});
+							}
+						">
+						<template #icon><AnalyticsOutlined /> </template>
+						COGM
+					</PButton>
+				</template>
+				COGM Calculation not possible. Check your Management View if
+				your Empire has a CX assigned.
+			</PTooltip>
+
 			<PButton
 				size="sm"
 				type="error"
@@ -311,6 +321,7 @@
 					}
 				">
 				<template #icon><ClearSharp /></template>
+				Recipe
 			</PButton>
 		</div>
 	</div>

@@ -562,10 +562,10 @@
 		:planet-natural-id="planetData.planet_natural_id" />
 	<div class="@container">
 		<div
-			class="px-3 grid grid-cols-1 grid-rows-[repeat(5,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
+			class="grid grid-cols-1 grid-rows-[repeat(5,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
 			<!-- Plan Name & Selector -->
 			<div
-				class="row-1 col-1 flex flex-row flex-wrap gap-x-3 pt-3 pb-3 md:pb-0 @6xl:pb-3 items-baseline">
+				class="p-3 row-1 col-1 flex flex-row flex-wrap gap-x-3 pt-3 pb-3 md:pb-0 @6xl:pb-3 items-baseline">
 				<h1 class="text-2xl font-bold text-white">
 					{{ planName }}
 				</h1>
@@ -590,7 +590,7 @@
 			</div>
 			<!-- Plan Actions -->
 			<div
-				class="row-2 md:row-1 md:col-3 py-3 flex flex-row flex-wrap gap-x-3">
+				class="p-3 row-2 md:row-1 md:col-3 py-3 flex flex-row flex-wrap gap-x-3">
 				<HelpDrawer file-name="plan" />
 
 				<PButtonGroup v-if="userStore.isLoggedIn">
@@ -826,7 +826,7 @@
 			</div>
 			<!-- Main Plan View -->
 			<div
-				class="row-5 col-span-full grid grid-cols-1 @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
+				class="p-3 row-5 col-span-full grid grid-cols-1 @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
 				<div>
 					<div
 						class="flex flex-row flex-wrap sm:justify-center-safe gap-6">
