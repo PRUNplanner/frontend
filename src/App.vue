@@ -32,8 +32,6 @@
 	const showUpdateNotification = computed(
 		() => isLoggedIn.value && updateAvailable.value
 	);
-	const mainContentClasses = computed(() => ["flex-1 flex flex-col"]);
-
 	onMounted(() => {
 		startWatch();
 
@@ -47,10 +45,10 @@
 <template>
 	<VersionUpdateNotification v-if="showUpdateNotification" />
 
-	<main class="flex h-full w-full text-white/80">
+	<main class="flex w-full text-white/80">
 		<NavigationBar v-if="isLoggedIn" />
 
-		<div :class="mainContentClasses">
+		<div class="flex-1 flex flex-col">
 			<div class="h-full min-h-screen">
 				<HomepageHeader
 					v-if="!isLoggedIn"
