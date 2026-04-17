@@ -406,6 +406,7 @@
 									<Suspense v-if="selectedEmpire">
 										<AsyncEmpireConfiguration
 											:data="selectedEmpire"
+											:plan-list-data="planListData"
 											@reload:empires="reloadEmpires" />
 										<template #fallback>
 											<RenderingProgress :height="200" />

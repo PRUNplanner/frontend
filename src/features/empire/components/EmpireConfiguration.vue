@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType, ref, Ref, watch } from "vue";
+	import { computed, PropType, ref, Ref, watch } from "vue";
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
@@ -13,7 +13,10 @@
 		IPlanEmpireElement,
 		PLAN_FACTION,
 	} from "@/stores/planningStore.types";
-	import { IEmpirePatchPayload } from "@/features/empire/empire.types";
+	import {
+		IEmpirePatchPayload,
+		IEmpirePlanListData,
+	} from "@/features/empire/empire.types";
 	import { PSelectOption } from "@/ui/ui.types";
 
 	// UI
@@ -30,6 +33,10 @@
 	const props = defineProps({
 		data: {
 			type: Object as PropType<IPlanEmpireElement>,
+			required: true,
+		},
+		planListData: {
+			type: Array as PropType<IEmpirePlanListData[]>,
 			required: true,
 		},
 	});
@@ -100,11 +107,15 @@
 			isLoading.value = false;
 		}
 	}
+
+	const plannedPermits = computed(() =>
+		props.planListData.reduce((sum, element) => sum + element.permits, 0)
+	);
 </script>
 
 <template>
-	<div class="p-3 child:my-auto border border-white/10 rounded">
-		<div class="pb-3 flex justify-between child:my-auto">
+	<div class="p-3 flex flex-col gap-3 border border-white/10 rounded">
+		<div class="flex flex-row justify-between items-center">
 			<h2 class="grow text-white/80 font-bold text-lg">Configuration</h2>
 
 			<div class="flex gap-x-3">
@@ -118,6 +129,7 @@
 				</PButton>
 			</div>
 		</div>
+
 		<PForm>
 			<PFormItem label="Name">
 				<PInput v-model:value="localData.empire_name" class="w-full" />
@@ -141,5 +153,16 @@
 					:min="1" />
 			</PFormItem>
 		</PForm>
+
+		<div
+			v-if="localData.empire_permits_used != plannedPermits"
+			class="text-xs bg-red-500/50 p-2">
+			Mismatch Detected:
+			{{ localData.empire_permits_used }} configured vs.
+			{{ plannedPermits }}
+			planned permits. Please synchronize these values using your in-game
+			<span class="font-mono bg-white/10 px-1.5">HQ</span> Buffer to
+			ensure accurate faction bonus calculations.
+		</div>
 	</div>
 </template>
