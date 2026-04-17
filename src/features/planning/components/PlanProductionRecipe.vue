@@ -186,7 +186,7 @@
 								),
 						})
 					">
-					<XNDataTableColumn key="input" title="input">
+					<XNDataTableColumn key="input" title="Input">
 						<template #render-cell="{ rowData }">
 							<div class="flex flex-row gap-1">
 								<span
@@ -211,7 +211,7 @@
 							{{ humanizeTimeMs(rowData.time_ms) }}
 						</template>
 					</XNDataTableColumn>
-					<XNDataTableColumn key="output" title="output">
+					<XNDataTableColumn key="output" title="Output">
 						<template #render-cell="{ rowData }">
 							<div class="flex flex-row gap-1">
 								<MaterialTile
