@@ -163,7 +163,7 @@
 				v-model:value="localSelectedBuilding"
 				:disabled="disabled"
 				searchable
-				placeholder="Select Production Building(s)"
+				placeholder="Select Building & Add to Plan"
 				class="w-full sm:w-75!"
 				:options="
 					getProductionBuildingOptions(
