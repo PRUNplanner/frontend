@@ -48,10 +48,10 @@
 	const result: Ref<IROIResult[]> = ref([]);
 	const isCalculating: Ref<boolean> = ref(true);
 
-	const filterBuilding: Ref<string | null> = ref(null);
-	const filterCOGC: Ref<string | null> = ref(null);
-	const filterInputMaterial: Ref<string | null> = ref(null);
-	const filterOutputMaterial: Ref<string | null> = ref(null);
+	const filterBuilding: Ref<string[]> = ref([]);
+	const filterCOGC: Ref<string[]> = ref([]);
+	const filterOutputMaterial: Ref<string[]> = ref([]);
+	const filterInputMaterial: Ref<string[]> = ref([]);
 	const filterPostiveROI: Ref<boolean> = ref(false);
 
 	const { calculate, formatOptimal, progressCurrent, progressTotal } =
@@ -60,26 +60,28 @@
 	const filteredResult: ComputedRef<IROIResult[]> = computed(() => {
 		let filtered = result.value;
 
-		if (filterBuilding.value !== null)
-			filtered = filtered.filter(
-				(f) => f.buildingTicker === filterBuilding.value
+		if (filterBuilding.value.length > 0)
+			filtered = filtered.filter((f) =>
+				filterBuilding.value.includes(f.buildingTicker)
 			);
 
-		if (filterCOGC.value !== null)
-			filtered = filtered.filter((f) => f.cogc === filterCOGC.value);
-
-		if (filterInputMaterial.value !== null)
+		if (filterCOGC.value.length > 0)
 			filtered = filtered.filter((f) =>
-				f.recipeInputs
-					.map((e) => e.material_ticker)
-					.includes(filterInputMaterial.value!)
+				filterCOGC.value.includes(f.cogc)
 			);
 
-		if (filterOutputMaterial.value !== null)
+		if (filterOutputMaterial.value.length > 0)
 			filtered = filtered.filter((f) =>
-				f.recipeOutputs
-					.map((e) => e.material_ticker)
-					.includes(filterOutputMaterial.value!)
+				f.recipeOutputs.some((e) =>
+					filterOutputMaterial.value.includes(e.material_ticker)
+				)
+			);
+
+		if (filterInputMaterial.value.length > 0)
+			filtered = filtered.filter((f) =>
+				f.recipeInputs.some((e) =>
+					filterInputMaterial.value.includes(e.material_ticker)
+				)
 			);
 
 		if (filterPostiveROI.value)
