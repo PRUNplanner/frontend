@@ -75,7 +75,9 @@
 	const { hasStorage, storageOptions, findStorageValueFromOptions } =
 		useFIOStorage();
 	const planningStore = usePlanningStore();
-	const fioUpdated = relativeFromDate(planningStore.fio_storage_timestamp ?? undefined);
+	const fioUpdated = relativeFromDate(
+		planningStore.fio_storage_timestamp ?? undefined
+	);
 
 	// Get already constructed buildings
 	let constructedMap: Map<string, number> | null = null;
@@ -123,7 +125,7 @@
 
 		const plannedSet = new Set(buildingTicker.value);
 		return Array.from(constructedMap.keys())
-			.filter(ticker => !plannedSet.has(ticker))
+			.filter((ticker) => !plannedSet.has(ticker))
 			.sort((a, b) => a.localeCompare(b));
 	});
 
@@ -133,22 +135,22 @@
 				buildingTicker.value.reduce((sum, ticker) => {
 					const building = buildingsMap.value[ticker];
 					const amount = localBuildingAmount.value[ticker] ?? 0;
-					const field =
-						`${workforceType}s` as keyof NonNullable<
-							IBuilding["habitations"]
-						>;
+					const field = `${workforceType}s` as keyof NonNullable<
+						IBuilding["habitations"]
+					>;
 					return sum + (building ? building[field] * amount : 0);
 				}, 0) >
 				buildingTicker.value.reduce((sum, ticker) => {
 					const building = buildingsMap.value[ticker];
 					const amount = localBuildingAmount.value[ticker] ?? 0;
-					const field =
-						`${workforceType}s` as keyof NonNullable<
-							IBuilding["habitations"]
-						>;
+					const field = `${workforceType}s` as keyof NonNullable<
+						IBuilding["habitations"]
+					>;
 					return (
 						sum +
-						(building ? (building.habitations?.[field] ?? 0) * amount : 0)
+						(building
+							? (building.habitations?.[field] ?? 0) * amount
+							: 0)
 					);
 				}, 0)
 		);
@@ -224,10 +226,10 @@
 
 	const xitTransferElements: ComputedRef<IXITTransferMaterial[]> = computed(
 		() =>
-			Object.entries(totalMaterials.value)
-				.map(([ticker, value]) => ({
-					ticker,
-					value,
+			Object.values(totalMaterialsSorted.value)
+				.map((e) => ({
+					ticker: e.ticker,
+					value: e.amount,
 				}))
 				.sort((a, b) => (a.ticker > b.ticker ? 1 : -1))
 	);
@@ -270,7 +272,7 @@
 		computed(() =>
 			totalMaterialsSorted.value.map((e) => ({
 				ticker: e.ticker,
-				value: e.total,
+				value: e.amount,
 			}))
 		);
 
@@ -321,21 +323,21 @@
 	<div class="pb-3 flex flex-row justify-between child:my-auto">
 		<h2 class="text-white/80 font-bold text-lg inline-flex items-center">
 			Construction Cart
-					<PTooltip v-if="unplannedBuildings.length > 0">
+			<PTooltip v-if="unplannedBuildings.length > 0">
 				<template #trigger>
 					<PIcon class="text-amber-400 ml-1 relative top-px">
 						<WarningAmberRound />
 					</PIcon>
 				</template>
-						Base has unplanned {{ unplannedBuildings.join("+") }}
-						(FIO: {{ fioUpdated }})
-						<br>
-						Demolish to ensure area, habitation and materials are accurate
+				Base has unplanned {{ unplannedBuildings.join("+") }} (FIO:
+				{{ fioUpdated }})
+				<br />
+				Demolish to ensure area, habitation and materials are accurate
 			</PTooltip>
 		</h2>
 		<div class="flex flex-row gap-x-3 child:my-auto!">
 			<XITTransferActionButton
-				:elements="xitTransferElements"
+				:elements="xitTransferElementsOverview"
 				transfer-name="Construct"
 				:drawer-width="400" />
 		</div>
@@ -462,6 +464,7 @@
 					<template v-if="hasStorage">
 						<div class="my-auto font-bold">Storage</div>
 						<PSelect
+							v-if="storageOptions"
 							v-model:value="refSelectedStorage"
 							searchable
 							:options="storageOptions"
