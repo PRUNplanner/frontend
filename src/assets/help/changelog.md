@@ -1,4 +1,13 @@
-# 2026-04-12 - v. 0.26.0.
+# 2026-04-19 - v. 0.27.0
+
+- Show Production Opportunities on Empire View for materials with positive Delta [[PR-400]](https://github.com/PRUNplanner/frontend/pull/400), [[PR-402]](https://github.com/PRUNplanner/frontend/pull/402)
+- New "Planning Insights" showing players how planets are usually settled [[PR-401]](https://github.com/PRUNplanner/frontend/pull/401)
+- Notify user on empire permit used / plan total permit mismatch [[PR-403]](https://github.com/PRUNplanner/frontend/pull/403)
+- Fix Market Live labels for Lowest Sell and Lowest Buy Price [[PR-399]](https://github.com/PRUNplanner/frontend/pull/399)
+- XIT Actions in Construction Cart always use total needed materials, not including stock [[PR-406]](https://github.com/PRUNplanner/frontend/pull/406)
+- Various UI improvements: Removed unused classes, fixed plan outside paddings, auto-fetch on material change in market exploration, ROI view multi-select filtering, fixed recipe selector title capitalization, added additional text in plans to better indicate buttons/inputs, added tooltip if COGM calculation is not available [[PR-404]](https://github.com/PRUNplanner/frontend/pull/404)
+
+# 2026-04-12 - v. 0.26.0
 
 - Added habitation deficit highlight [[PR-390]](https://github.com/PRUNplanner/frontend/pull/390)
 - Show warning when base has unplanned buildings [[PR-391]](https://github.com/PRUNplanner/frontend/pull/391)
