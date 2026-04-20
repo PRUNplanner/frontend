@@ -32,6 +32,7 @@ export default defineConfig({
 				"src/layout/*",
 				"src/AppProvider.vue",
 				"src/App.vue",
+				"src/ui/**",
 				"src/main.ts",
 				"src/views/*",
 				"**/components/**",
