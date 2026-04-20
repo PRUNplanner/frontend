@@ -60,6 +60,11 @@ import {
 } from "@/features/api/userData.types";
 import { IPreference } from "@/features/preferences/userPreferences.types";
 import { AnalyticsPlanetInsightsPayloadType } from "@/features/api/schemas/analyticsData.schemas";
+import {
+	APIKeyCreatePayloadType,
+	APIKeyCreateResponseType,
+	APIKeyListType,
+} from "@/features/api/schemas/apiKeysData.schema";
 /*
  * To be honest, this typing for Query Params and their data is a complete
  * shitshow, I'm still not 100 % sure why this is working, but if someone
@@ -192,4 +197,10 @@ export interface IQueryRepository {
 		{ planetNaturalId: string },
 		AnalyticsPlanetInsightsPayloadType
 	>;
+	GetAPIKeys: IQueryDefinition<undefined, APIKeyListType>;
+	PostCreateAPIKey: IQueryDefinition<
+		APIKeyCreatePayloadType,
+		APIKeyCreateResponseType
+	>;
+	DeleteAPIKey: IQueryDefinition<{ id: string }, boolean>;
 }

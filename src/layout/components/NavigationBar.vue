@@ -44,6 +44,7 @@
 		KeyboardDoubleArrowRightSharp,
 		AccountBalanceSharp,
 		RssFeedSharp,
+		ExtensionSharp,
 	} from "@vicons/material";
 
 	const userStore = useUserStore();
@@ -258,17 +259,17 @@
 			labelShort: "Acc",
 			display: true,
 			children: [
-				// {
-				// 	label: "API",
-				// 	display: true,
-				// 	routerLink: "/api",
-				// 	icon: ExtensionSharp,
-				// },
 				{
 					label: "Profile",
 					display: true,
 					routerLink: "/profile",
 					icon: PersonSharp,
+				},
+				{
+					label: "API",
+					display: true,
+					routerLink: "/apikey",
+					icon: ExtensionSharp,
 				},
 				{
 					label: "Help",

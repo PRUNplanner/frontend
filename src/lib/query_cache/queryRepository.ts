@@ -140,6 +140,16 @@ import { IPreference } from "@/features/preferences/userPreferences.types";
 import { UserPreferenceType } from "@/features/api/schemas/user.schemas";
 import { AnalyticsPlanetInsightsPayloadType } from "@/features/api/schemas/analyticsData.schemas";
 import { callAnalyticsPlanetInsights } from "@/features/api/analyticsData.api";
+import {
+	callDeleteAPIKey,
+	callGetAPIKeys,
+	callPostCreateAPIKey,
+} from "@/features/api/apiKeysData.api";
+import {
+	APIKeyCreatePayloadType,
+	APIKeyCreateResponseType,
+	APIKeyListType,
+} from "@/features/api/schemas/apiKeysData.schema";
 
 export function useQueryRepository() {
 	const queryStore = useQueryStore();
@@ -949,6 +959,33 @@ export function useQueryRepository() {
 			{ planetNaturalId: string },
 			AnalyticsPlanetInsightsPayloadType
 		>,
+		GetAPIKeys: {
+			key: () => ["user", "api", "keys"],
+			fetchFn: async () => {
+				return await callGetAPIKeys();
+			},
+			autoRefetch: false,
+			persist: false,
+		} as IQueryDefinition<undefined, APIKeyListType>,
+		PostCreateAPIKey: {
+			key: () => ["user", "api", "keys", "create"],
+			fetchFn: async (params: { name: string }) => {
+				return await callPostCreateAPIKey(params.name);
+			},
+			autoRefetch: false,
+			persist: false,
+		} as IQueryDefinition<
+			APIKeyCreatePayloadType,
+			APIKeyCreateResponseType
+		>,
+		DeleteAPIKey: {
+			key: () => ["user", "api", "keys", "delete"],
+			fetchFn: async (params: { id: string }) => {
+				return callDeleteAPIKey(params.id);
+			},
+			autoRefetch: false,
+			persist: false,
+		} as IQueryDefinition<{ id: string }, boolean>,
 	};
 
 	return {
