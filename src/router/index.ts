@@ -163,6 +163,12 @@ const router = createRouter({
 			meta: { requiresAuth: true },
 			component: () => import("@/views/QueryCacheView.vue"),
 		},
+		{
+			name: "apikey",
+			path: "/apikey",
+			meta: { requiresAuth: true },
+			component: () => import("@/views/APIKeyView.vue"),
+		},
 	],
 });
 
