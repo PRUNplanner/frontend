@@ -49,8 +49,9 @@
 			:class="buttonConfig.sizes[size].icon">
 			<slot name="icon" />
 		</span>
-
-		<slot />
+		<span class="inline-block">
+			<slot />
+		</span>
 	</button>
 </template>
 
