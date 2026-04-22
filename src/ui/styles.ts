@@ -11,7 +11,7 @@ import {
 } from "@/ui/ui.types";
 
 export const buttonConfig: PButtonConfig = {
-	base: "flex flex-row items-center justify-center leading-normal rounded-sm cursor-pointer disabled:cursor-auto text-nowrap px-1 gap-1 text-xs min-w-[22px] bg-blue-800 active:bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800/50 disabled:text-white/80",
+	base: "flex flex-row items-center justify-center leading-normal rounded-sm cursor-pointer disabled:cursor-auto text-nowrap px-1 gap-1 min-w-[22px] bg-blue-800",
 	defaultSize: "md",
 	defaultColor: "primary",
 	sizes: {
