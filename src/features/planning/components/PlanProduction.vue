@@ -18,7 +18,9 @@
 	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
 
 	// UI
-	import { PCheckbox, PSelect, PTooltip } from "@/ui";
+	import PCheckbox from "@/ui/components/PCheckbox.vue";
+	import PSelect from "@/ui/components/PSelect.vue";
+	import PTooltip from "@/ui/components/PTooltip.vue";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -183,73 +185,98 @@
 		</div>
 	</div>
 
-	<PlanProductionBuilding
-		v-for="(building, index) in localProductionData.buildings"
-		:key="building.name"
-		:disabled="props.disabled"
-		:building-data="building"
-		:building-index="index"
-		:cx-uuid="cxUuid"
-		:planet-id="planetId"
-		@update:building:amount="
-			(index: number, value: number) => {
-				emit('update:building:amount', index, value);
-				trackEvent('plan_update_building', {
-					planetNaturalId: props.planetId,
-					buildingTicker: building.name,
-					amount: value,
-				});
-			}
-		"
-		@delete:building="(index: number) => emit('delete:building', index)"
-		@update:building:recipe:amount="
-			(buildingIndex: number, recipeIndex: number, value: number) => {
-				emit(
-					'update:building:recipe:amount',
-					buildingIndex,
-					recipeIndex,
-					value
-				);
-				trackEvent('plan_update_building_recipe_amount', {
-					planetNaturalId: props.planetId,
-					buildingTicker: building.name,
-					recipeIndex: recipeIndex,
-					amount: value,
-				});
-			}
-		"
-		@delete:building:recipe="
-			(buildingIndex: number, recipeIndex: number) => {
-				emit('delete:building:recipe', buildingIndex, recipeIndex);
-				trackEvent('plan_update_building_delete_recipe', {
-					planetNaturalId: props.planetId,
-					buildingTicker: building.name,
-					recipeIndex: recipeIndex,
-				});
-			}
-		"
-		@add:building:recipe="
-			(buildingIndex: number) => {
-				emit('add:building:recipe', buildingIndex);
-				trackEvent('plan_update_building_add_recipe', {
-					planetNaturalId: props.planetId,
-					buildingTicker: building.name,
-				});
-			}
-		"
-		@update:building:recipe="
-			(buildingIndex: number, recipeIndex: number, recipeId: string) => {
-				emit(
-					'update:building:recipe',
-					buildingIndex,
-					recipeIndex,
-					recipeId
-				);
-				trackEvent('plan_update_building_change_recipe', {
-					planetNaturalId: props.planetId,
-					buildingTicker: building.name,
-					recipeId,
-				});
-			}
-		" />
+	<div class="border border-white/10 rounded overflow-hidden">
+		<div
+			class="grid grid-cols-12 text-xs uppercase p-3 bg-white/5 font-bold">
+			<div class="col-span-3">Building / Recipe</div>
+			<div class="col-span-3">Runtime</div>
+			<div class="col-span-3">Share</div>
+			<div class="col-span-3 text-end">Tools</div>
+		</div>
+		<template
+			v-for="(building, index) in localProductionData.buildings"
+			:key="`${building.name}`">
+			<PlanProductionBuilding
+				:disabled="props.disabled"
+				:building-data="building"
+				:building-index="index"
+				:cx-uuid="cxUuid"
+				:planet-id="planetId"
+				@update:building:amount="
+					(index: number, value: number) => {
+						emit('update:building:amount', index, value);
+						trackEvent('plan_update_building', {
+							planetNaturalId: props.planetId,
+							buildingTicker: building.name,
+							amount: value,
+						});
+					}
+				"
+				@delete:building="
+					(index: number) => emit('delete:building', index)
+				"
+				@update:building:recipe:amount="
+					(
+						buildingIndex: number,
+						recipeIndex: number,
+						value: number
+					) => {
+						emit(
+							'update:building:recipe:amount',
+							buildingIndex,
+							recipeIndex,
+							value
+						);
+						trackEvent('plan_update_building_recipe_amount', {
+							planetNaturalId: props.planetId,
+							buildingTicker: building.name,
+							recipeIndex: recipeIndex,
+							amount: value,
+						});
+					}
+				"
+				@delete:building:recipe="
+					(buildingIndex: number, recipeIndex: number) => {
+						emit(
+							'delete:building:recipe',
+							buildingIndex,
+							recipeIndex
+						);
+						trackEvent('plan_update_building_delete_recipe', {
+							planetNaturalId: props.planetId,
+							buildingTicker: building.name,
+							recipeIndex: recipeIndex,
+						});
+					}
+				"
+				@add:building:recipe="
+					(buildingIndex: number) => {
+						emit('add:building:recipe', buildingIndex);
+						trackEvent('plan_update_building_add_recipe', {
+							planetNaturalId: props.planetId,
+							buildingTicker: building.name,
+						});
+					}
+				"
+				@update:building:recipe="
+					(
+						buildingIndex: number,
+						recipeIndex: number,
+						recipeId: string
+					) => {
+						emit(
+							'update:building:recipe',
+							buildingIndex,
+							recipeIndex,
+							recipeId
+						);
+						trackEvent('plan_update_building_change_recipe', {
+							planetNaturalId: props.planetId,
+							buildingTicker: building.name,
+							recipeId,
+						});
+					}
+				" />
+		</template>
+	</div>
 </template>

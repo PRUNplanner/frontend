@@ -51,6 +51,18 @@ export const prunplannerTheme: GlobalThemeOverrides = {
 		tdPaddingMedium: "5px 10px",
 		tdColorSorting: "rgba(255,255,255,0)",
 		tdColorHover: "rgba(255,255,255,0.03)",
+
+		// Popover colors
+		thColorPopover: BLACK,
+		tdColorPopover: "rgba(255,255,255,0.02)",
+		tdColorStripedPopover: GRAY_DARK,
+		tdColorSortingPopover: GRAY_DARK,
+		tdColorHoverPopover: "rgba(255,255,255,0.03)",
+	},
+	Popover: {
+		color: BLACK,
+		borderRadius: 0,
+		padding: 0,
 	},
 	Table: {
 		thTextColor: "rgba(255,255,255,0.9)",

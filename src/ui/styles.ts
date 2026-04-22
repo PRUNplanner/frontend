@@ -16,7 +16,7 @@ export const buttonConfig: PButtonConfig = {
 	defaultColor: "primary",
 	sizes: {
 		sm: {
-			base: "py-1 px-1 gap-1 text-xs h-[21px] min-w-[22px]",
+			base: "py-0.5 px-1 gap-0.5 text-xs min-w-[22px] h-[22px]",
 			icon: "w-[12px] h-[12px]",
 			spinner: "w-[12px] h-[12px]",
 		},
@@ -30,32 +30,27 @@ export const buttonConfig: PButtonConfig = {
 		primary: {
 			base: "bg-blue-800 text-white active:bg-blue-600",
 			hover: "hover:bg-blue-700",
-			disabled:
-				"disabled:bg-blue-800/50 disabled:text-white/80",
+			disabled: "disabled:bg-blue-800/50 disabled:text-white/80",
 		},
 		success: {
 			base: "bg-lime-500 text-black active:bg-lime-300",
 			hover: "hover:bg-lime-400",
-			disabled:
-				"disabled:bg-lime-500/50 disabled:text-white/80",
+			disabled: "disabled:bg-lime-500/50 disabled:text-white/80",
 		},
 		secondary: {
 			base: "bg-gray-800 text-white active:bg-gray-600",
 			hover: "hover:bg-gray-700",
-			disabled:
-				"disabled:bg-gray-800/50 disabled:text-white/80",
+			disabled: "disabled:bg-gray-800/50 disabled:text-white/80",
 		},
 		error: {
 			base: "bg-red-600 text-white active:bg-red-500",
 			hover: "hover:bg-red-700",
-			disabled:
-				"disabled:bg-red-600/50 disabled:text-white/80",
+			disabled: "disabled:bg-red-600/50 disabled:text-white/80",
 		},
 		warning: {
 			base: "bg-gray-100 text-gray-900 active:bg-gray-300",
 			hover: "hover:bg-gray-200",
-			disabled:
-				"disabled:bg-gray-100/50 disabled:text-gray-900",
+			disabled: "disabled:bg-gray-100/50 disabled:text-gray-900",
 		},
 	},
 };
@@ -106,9 +101,9 @@ export const inputNumberConfig: PInputNumberConfig = {
 	buttonChangeUnallowed: "text-white/20 cursor-auto",
 	sizes: {
 		sm: {
-			container: "gap-1 child:py-1",
+			container: "gap-1 child:py-0.75 text-[12px]",
 			input: "px-1",
-			buttonContainer: "pr-2 child:w-[20px] child:h-[20px]",
+			buttonContainer: "pr-2 child:w-[16px] child:h-[16px]",
 		},
 		md: {
 			container: "gap-1 child:py-1 h-[28px]",
@@ -119,7 +114,8 @@ export const inputNumberConfig: PInputNumberConfig = {
 };
 
 export const inputConfig: PInputConfig = {
-	container: "rounded-sm leading-none bg-white/5 text-white/80 overflow-hidden",
+	container:
+		"rounded-sm leading-none bg-white/5 text-white/80 overflow-hidden",
 	sizes: {
 		sm: {
 			container: "child:py-1 child:px-2",
