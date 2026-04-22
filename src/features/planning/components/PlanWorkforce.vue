@@ -77,11 +77,11 @@
 		<thead>
 			<tr>
 				<th>Type</th>
-				<th>Demand</th>
+				<th>Need</th>
 				<th>Supply</th>
 				<th>Open</th>
 				<th colspan="2" class="text-center!">Luxuries</th>
-				<th class="text-end!">Efficiency</th>
+				<th class="text-end!">Eff. %</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -139,7 +139,7 @@
 				<td
 					class="text-end"
 					:class="workforce.efficiency === 0 ? 'text-white/50!' : ''">
-					{{ formatNumber(workforce.efficiency * 100) }} %
+					{{ formatNumber(workforce.efficiency * 100) }}
 				</td>
 			</tr>
 		</tbody>
