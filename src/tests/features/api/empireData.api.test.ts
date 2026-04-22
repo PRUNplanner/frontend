@@ -13,11 +13,13 @@ import {
 	callGetEmpirePlans,
 	callPatchEmpire,
 	callPatchEmpirePlanJunctions,
+	callPatchEmpireState,
 } from "@/features/api/empireData.api";
 
 // test data
 import empire_list from "@/tests/test_data/api_data_empire_list.json";
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
+import { IEmpireMaterialIOState } from "@/features/empire/empire.types";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -131,6 +133,51 @@ describe("Empire Data API Calls", async () => {
 		expect((await callPatchEmpirePlanJunctions([])).length).toStrictEqual(
 			7
 		);
+		expect(spyApiServicePatch).toHaveBeenCalled();
+	});
+
+	it("callPatchEmpireState", async () => {
+		const spyApiServicePatch = vi.spyOn(apiService, "patch");
+
+		const mockData: IEmpireMaterialIOState = {
+			metadata: {
+				faction: "MORIA",
+				permits_used: 3,
+				permits_total: 3,
+				plan_count: 1,
+				timestamp: "2026-04-22T03:43:09.504511Z",
+			},
+			empire_total: {
+				C: {
+					p: 0,
+					c: 0,
+					d: 0,
+				},
+			},
+			plan_details: {
+				foo: {
+					metadata: {
+						planet_natural_id: "foo",
+						cogc: "---",
+					},
+					deltas: {
+						C: {
+							p: 0,
+							c: 0,
+							d: 0,
+						},
+					},
+				},
+			},
+		};
+
+		const fakeUuid = "foo";
+
+		mock.onPatch(`/planning/empire/${fakeUuid}/state/`).reply(
+			200,
+			empire_list[0]
+		);
+		expect(await callPatchEmpireState(fakeUuid, mockData)).toBeDefined();
 		expect(spyApiServicePatch).toHaveBeenCalled();
 	});
 });

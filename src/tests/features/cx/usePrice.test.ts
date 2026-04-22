@@ -146,7 +146,31 @@ describe("usePrice", async () => {
 				ref(undefined)
 			);
 			//@ts-expect-error fake data
-			expect(() => getExchangeCodeKey("FOO_MOO_MEOW")).toThrowError();
+			expect(() => getExchangeCodeKey("FOO_MOO_MEOW")).toThrow();
+		});
+
+		it("variants", async () => {
+			const { getExchangeCodeKey } = await usePrice(
+				ref(undefined),
+				ref(undefined)
+			);
+
+			expect(getExchangeCodeKey("AI1_7D")).toStrictEqual({
+				exchangeCode: "AI1",
+				key: "vwap_7d",
+			});
+			expect(getExchangeCodeKey("AI1_30D")).toStrictEqual({
+				exchangeCode: "AI1",
+				key: "vwap_30d",
+			});
+			expect(getExchangeCodeKey("AI1_ASK")).toStrictEqual({
+				exchangeCode: "AI1",
+				key: "ask",
+			});
+			expect(getExchangeCodeKey("AI1_BID")).toStrictEqual({
+				exchangeCode: "AI1",
+				key: "bid",
+			});
 		});
 
 		it("UNIVERSE", async () => {

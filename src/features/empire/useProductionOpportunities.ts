@@ -21,7 +21,7 @@ export function useProductionOpportunities(
 	const priceSellMap = ref<IPriceSellMap>({});
 	const isLoading = ref<boolean>(true);
 
-	onMounted(async () => {
+	const loadData = async () => {
 		try {
 			const [{ getAllBuildingRecipes }, { getPrice }] = await Promise.all(
 				[useBuildingData(), usePrice(cxUuid, ref(undefined))]
@@ -54,7 +54,9 @@ export function useProductionOpportunities(
 		} finally {
 			isLoading.value = false;
 		}
-	});
+	};
+
+	onMounted(loadData);
 
 	const allRecipesList = computed(() =>
 		Object.values(recipeMap.value).flat()
@@ -183,5 +185,7 @@ export function useProductionOpportunities(
 		opportunities,
 		opportunityStats,
 		priceSellMap,
+		deltaMap,
+		loadData,
 	};
 }

@@ -8,7 +8,10 @@ import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
 import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
-import { IEmpirePlanMaterialIO } from "@/features/empire/empire.types";
+import {
+	IEmpireMaterialIO,
+	IEmpirePlanMaterialIO,
+} from "@/features/empire/empire.types";
 
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";
@@ -18,6 +21,7 @@ import { materialsStore } from "@/database/stores";
 import { exchangesStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { flushPromises } from "@vue/test-utils";
+import { IPlanEmpireElement } from "@/stores/planningStore.types";
 
 describe("Util: materialIO ", async () => {
 	beforeAll(async () => {
@@ -161,6 +165,7 @@ describe("Util: materialIO ", async () => {
 				planetId: "foo",
 				planUuid: "foo#1",
 				planName: "foo",
+				planCOGC: "---",
 				materialIO: [
 					{
 						ticker: "RAT",
@@ -190,6 +195,7 @@ describe("Util: materialIO ", async () => {
 				planetId: "moo",
 				planUuid: "moo#1",
 				planName: "moo",
+				planCOGC: "---",
 				materialIO: [
 					{
 						ticker: "DW",
@@ -228,6 +234,7 @@ describe("Util: materialIO ", async () => {
 				planetId: "foo",
 				planUuid: "foo#1",
 				planName: "foo",
+				planCOGC: "---",
 				materialIO: [
 					{
 						ticker: "RAT",
@@ -257,5 +264,63 @@ describe("Util: materialIO ", async () => {
 		expect(result[0].output).toBe(10);
 		expect(result[0].inputPlanets.length).toBe(2);
 		expect(result[0].outputPlanets.length).toBe(2);
+	});
+
+	it("empireMaterialIOState", async () => {
+		const { empireMaterialIOState } = await useMaterialIOUtil();
+
+		const noResult = await empireMaterialIOState(undefined, []);
+		expect(noResult).toBeUndefined();
+
+		const fakeIPlanEmpireElement: IPlanEmpireElement = {
+			empire_faction: "Moria",
+			empire_permits_used: 3,
+			empire_permits_total: 3,
+			uuid: "foo",
+			empire_name: "foo",
+			plans: [
+				{
+					uuid: "moo",
+					plan_name: "moo",
+					planet_natural_id: "moo",
+				},
+			],
+		};
+
+		const fakeIEmpireMaterialIO: IEmpireMaterialIO[] = [
+			{
+				ticker: "C",
+				input: 5,
+				output: 0,
+				delta: -5,
+				deltaPrice: 0,
+				inputPlanets: [
+					{
+						planetId: "moo",
+						planUuid: "moo",
+						planName: "moo",
+						planCOGC: "---",
+						delta: -5,
+						input: 5,
+						output: 0,
+						price: 0,
+					},
+				],
+				outputPlanets: [],
+			},
+		];
+
+		const result = await empireMaterialIOState(
+			fakeIPlanEmpireElement,
+			fakeIEmpireMaterialIO
+		);
+		expect(result).toBeDefined();
+		console.log(result);
+
+		expect(result?.metadata).toBeDefined();
+		expect(result?.empire_total["C"]).toBeDefined();
+		expect(result?.empire_total["C"].p).toBe(0);
+		expect(result?.empire_total["C"].c).toBe(5);
+		expect(result?.empire_total["C"].d).toBe(-5);
 	});
 });

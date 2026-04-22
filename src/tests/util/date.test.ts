@@ -5,6 +5,7 @@ import {
 	timestampFromString,
 	humanizeTimeMs,
 	relativeFromDate,
+	dateStringFromEpoch,
 } from "@/util/date";
 
 describe("Util: date", async () => {
@@ -86,5 +87,24 @@ describe("Util: date", async () => {
 
 		expect(rel).toBe("a few seconds ago");
 		expect(und).toBe("—");
+	});
+
+	describe("dateStringFromEpoch", () => {
+		it("validates standard formatting, custom patterns, and edge cases", () => {
+			// 1713780000000 = April 22, 2024
+			expect(dateStringFromEpoch(1713780000000)).toBe("2024-04-22");
+
+			// Custom format string
+			expect(dateStringFromEpoch(1713780000000, "DD/MM/YYYY")).toBe(
+				"22/04/2024"
+			);
+
+			// Unix Epoch start
+			expect(dateStringFromEpoch(0)).toBe("1970-01-01");
+
+			// Negative epoch (pre-1970)
+			// -631152000000 = 1950-01-01
+			expect(dateStringFromEpoch(-631152000000, "YYYY")).toBe("1950");
+		});
 	});
 });
