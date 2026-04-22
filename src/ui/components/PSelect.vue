@@ -214,7 +214,7 @@
 				@click="toggleOpen">
 				<div
 					v-if="!useSearch"
-					class="grow px-2"
+					class="grow px-2 text-nowrap"
 					@click.stop="ensureOpened">
 					{{ displayValue }}
 				</div>
