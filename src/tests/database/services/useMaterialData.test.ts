@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
 
 // Mock the materials store
 vi.mock("@/database/stores", () => ({
@@ -62,7 +62,7 @@ describe("useMaterialData", () => {
 	let getMock: any;
 	let preloadMock: any;
 
-	beforeEach(() => {
+	beforeAll(() => {
 		getMock = vi.fn(async (ticker: string) => {
 			if (ticker === mockMaterial1.ticker) return mockMaterial1;
 			if (ticker === mockMaterial2.ticker) return mockMaterial2;
@@ -83,6 +83,11 @@ describe("useMaterialData", () => {
 		const { getMaterial } = useMaterialData();
 		const material = await getMaterial("MAT1");
 		expect(material.name).toBe("Material One");
+		expect(getMock).toHaveBeenCalledWith("MAT1");
+
+		// from cache
+		const material_cache = await getMaterial("MAT1");
+		expect(material_cache.name).toBe("Material One");
 		expect(getMock).toHaveBeenCalledWith("MAT1");
 	});
 
@@ -107,6 +112,17 @@ describe("useMaterialData", () => {
 		const { getMaterialClass } = useMaterialData();
 
 		expect(getMaterialClass("MAT1")).toBe("material-category-foo");
+
+		// from cache
+		expect(getMaterialClass("MAT1")).toBe("material-category-foo");
+	});
+
+	it("getMaterialClass, error", async () => {
+		const { getMaterialClass } = useMaterialData();
+
+		expect(() => getMaterialClass("moo")).toThrow(
+			"Material moo not available. Preload."
+		);
 	});
 
 	it("reload calls preload", async () => {
