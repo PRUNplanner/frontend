@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { ProductionGraph } from "@/features/production_chain/productionGraph";
 
@@ -18,7 +18,7 @@ import { useMaterialData } from "@/database/services/useMaterialData";
 import { flushPromises } from "@vue/test-utils";
 
 describe("productionNode", async () => {
-	beforeEach(async () => {
+	beforeAll(async () => {
 		await materialsStore.setMany(materials);
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
