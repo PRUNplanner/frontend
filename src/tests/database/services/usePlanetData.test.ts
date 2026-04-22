@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
 
 // Mock the planets store (could be empty)
 vi.mock("@/database/stores", () => ({
@@ -33,6 +33,15 @@ const mockPlanet2 = {
 	temperature: -20,
 };
 
+const mockPlanet3 = {
+	planet_natural_id: "P3",
+	planet_name: "P3",
+	surface: false,
+	gravity: 0.5,
+	pressure: 0.5,
+	temperature: -20,
+};
+
 describe("usePlanetData", () => {
 	let getMock: any;
 	let preloadMock: any;
@@ -41,6 +50,7 @@ describe("usePlanetData", () => {
 		getMock = vi.fn(async (id: string) => {
 			if (id === mockPlanet1.planet_natural_id) return mockPlanet1;
 			if (id === mockPlanet2.planet_natural_id) return mockPlanet2;
+			if (id === mockPlanet3.planet_natural_id) return mockPlanet3;
 			return undefined;
 		});
 
@@ -48,7 +58,7 @@ describe("usePlanetData", () => {
 
 		// @ts-ignore
 		useDB.mockReturnValue({
-			allData: ref([mockPlanet1, mockPlanet2]),
+			allData: ref([mockPlanet1, mockPlanet2, mockPlanet3]),
 			get: getMock,
 			preload: preloadMock,
 		});
@@ -65,6 +75,9 @@ describe("usePlanetData", () => {
 		const { getPlanetName } = usePlanetData();
 		const name = await getPlanetName("P1");
 		expect(name).toBe("Earth (P1)");
+
+		const name_same = await getPlanetName("P3");
+		expect(name_same).toBe("P3");
 	});
 
 	it("loadPlanetName caches the name", async () => {
