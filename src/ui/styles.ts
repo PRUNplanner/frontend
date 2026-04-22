@@ -11,18 +11,18 @@ import {
 } from "@/ui/ui.types";
 
 export const buttonConfig: PButtonConfig = {
-	base: "flex flex-row items-center justify-center leading-none rounded-sm cursor-pointer disabled:cursor-auto text-nowrap px-1 gap-1",
+	base: "flex flex-row items-center justify-center leading-none rounded-sm cursor-pointer disabled:cursor-auto text-nowrap",
 	defaultSize: "md",
 	defaultColor: "primary",
 	sizes: {
 		sm: {
-			base: "py-0.5 px-1 gap-1 text-xs min-w-[22px] min-h-[22px]",
-			icon: "w-[12px] h-[12px] flex items-center",
+			base: "py-0.5 px-1 gap-0.5 text-xs min-w-[22px] h-[22px]",
+			icon: "w-[12px] h-[12px]",
 			spinner: "w-[12px] h-[12px]",
 		},
 		md: {
 			base: "px-2 gap-2 text-sm h-[28px] min-w-[28px]",
-			icon: "w-[16px] h-[16px] flex items-center",
+			icon: "w-[16px] h-[16px]",
 			spinner: "w-[16px] h-[16px]",
 		},
 	},
