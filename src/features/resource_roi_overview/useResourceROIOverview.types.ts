@@ -20,4 +20,8 @@ export interface IResourceROIResult {
 	planetTemperature: string[];
 	planetCOGC: PLANET_COGCPROGRAM_TYPE | null;
 	planetInfrastructures: string[];
+	distanceAI1: number;
+	distanceCI1: number;
+	distanceIC1: number;
+	distanceNC1: number;
 }
