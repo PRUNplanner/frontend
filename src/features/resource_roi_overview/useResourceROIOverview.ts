@@ -27,6 +27,9 @@ import { boundaryDescriptor } from "@/util/numbers";
 import { IPlanet } from "@/features/api/gameData.types";
 import { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
 import { IStaticOptimalProduction } from "../roi_overview/useROIOverview.types";
+import { usePathfinder } from "../pathfinding/usePathfinder";
+
+let lastYieldTime = 0;
 
 export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	const { createBlankDefinition } = usePlan();
@@ -39,7 +42,18 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	const progressCurrent = ref(0);
 	const progressTotal = ref(0);
 
-	const calculatePLimit: number = 64;
+	const planetDistanceMap: Record<string, [number, number, number, number]> =
+		{};
+
+	const calculatePLimit: number = 128;
+
+	const {
+		getPathBetweenLength,
+		systemidAI1,
+		systemidCI1,
+		systemidIC1,
+		systemidNC1,
+	} = usePathfinder();
 
 	// Filter for all extraction buildings
 	const filteredOptimalProduction = optimalProduction.filter((e) =>
@@ -242,6 +256,10 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 					planetTemperature: temperature,
 					planetCOGC: planet.active_cogc_program_type,
 					planetInfrastructures: infrastructures,
+					distanceAI1: planetDistanceMap[planet.planet_natural_id][0],
+					distanceCI1: planetDistanceMap[planet.planet_natural_id][1],
+					distanceIC1: planetDistanceMap[planet.planet_natural_id][2],
+					distanceNC1: planetDistanceMap[planet.planet_natural_id][3],
 				});
 			}
 		}
@@ -253,13 +271,19 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		planet: IPlanet,
 		materialTicker: string
 	): Promise<IResourceROIResult[]> {
-		const allResults: IResourceROIResult[] = [];
-
 		const { surface, gravity, pressure, temperature, infrastructures } =
 			getPlanetEnvironment(planet);
 
-		for (const optimal of filteredOptimalProduction) {
-			const results = await calculateOptimal(
+		// calculate planet
+		planetDistanceMap[planet.planet_natural_id] = [
+			getPathBetweenLength(systemidAI1, planet.system_id),
+			getPathBetweenLength(systemidCI1, planet.system_id),
+			getPathBetweenLength(systemidIC1, planet.system_id),
+			getPathBetweenLength(systemidNC1, planet.system_id),
+		];
+
+		const calculationPromises = filteredOptimalProduction.map((optimal) =>
+			calculateOptimal(
 				planet,
 				optimal,
 				materialTicker,
@@ -268,12 +292,18 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 				pressure,
 				temperature,
 				infrastructures
-			);
-			allResults.push(...results);
-		}
+			)
+		);
 
 		progressCurrent.value++;
-		await new Promise((r) => setTimeout(r, 0));
+
+		if (performance.now() - lastYieldTime > 16) {
+			await new Promise((r) => setTimeout(r, 0));
+			lastYieldTime = performance.now();
+		}
+
+		const resultsArray = await Promise.all(calculationPromises);
+		const allResults: IResourceROIResult[] = resultsArray.flat();
 
 		return allResults;
 	}
