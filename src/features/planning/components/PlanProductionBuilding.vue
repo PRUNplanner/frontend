@@ -85,7 +85,12 @@
 
 <template>
 	<div
-		class="grid grid-cols-12 px-3 py-1.5 items-center bg-white/10 border-b border-t border-white/5 border-l-2 border-l-prunplanner">
+		class="grid grid-cols-12 px-3 py-1.5 items-center bg-white/10 border-b border-t border-white/5 border-l-2"
+		:class="
+			localBuildingData.amount > 0
+				? 'border-l-prunplanner'
+				: 'border-l-red-500'
+		">
 		<div class="col-span-6 xl:col-span-2 text-lg font-mono">
 			{{ localBuildingData.amount }}x
 			<strong>{{ localBuildingData.name }}</strong>
@@ -117,7 +122,7 @@
 				:disabled="disabled"
 				@click="emit('add:building:recipe', buildingIndex)">
 				<template #icon><PlusSharp /></template>
-				RECIPE
+				Recipe
 			</PButton>
 		</div>
 		<div
@@ -128,9 +133,12 @@
 					Expertise
 				</span>
 				<span class="text-xs font-mono">
-					<span :class="isPlanetCogc ? 'text-positive' : ''">{{
-						capitalizeString(expertiseString)
-					}}</span>
+					<span
+						:class="
+							isPlanetCogc ? 'text-positive' : 'text-negative'
+						"
+						>{{ capitalizeString(expertiseString) }}</span
+					>
 				</span>
 			</div>
 			<div class="flex flex-col items-end">
