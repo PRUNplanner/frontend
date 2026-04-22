@@ -49,7 +49,7 @@
 			:class="buttonConfig.sizes[size].icon">
 			<slot name="icon" />
 		</span>
-		<span class="inline-block">
+		<span v-if="$slots.default" class="inline-block">
 			<slot />
 		</span>
 	</button>

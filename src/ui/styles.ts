@@ -16,7 +16,7 @@ export const buttonConfig: PButtonConfig = {
 	defaultColor: "primary",
 	sizes: {
 		sm: {
-			base: "py-0.5 px-1 gap-1 text-xs min-w-[22px]",
+			base: "py-0.5 px-1 gap-1 text-xs min-w-[22px] min-h-[22px]",
 			icon: "w-[12px] h-[12px] flex items-center",
 			spinner: "w-[12px] h-[12px]",
 		},
