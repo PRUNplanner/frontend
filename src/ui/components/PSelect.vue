@@ -42,7 +42,6 @@
 	const triggerRef = ref<HTMLElement | null>(null);
 	const dropdownRef = ref<HTMLElement | null>(null);
 	const componentId = `select-${Math.random().toString(36).substring(2, 9)}`;
-	const dropdownPosition = ref({ top: "0px", left: "0px", width: "100px" });
 
 	const displayValue: ComputedRef<string> = computed(() => {
 		const allOptions: PSelectOption[] = [];
@@ -220,7 +219,7 @@
 				</div>
 				<div
 					v-else
-					class="grow child:child:bg-transparent! py-0.5"
+					class="grow child:child:bg-transparent!"
 					@click.stop="ensureOpened">
 					<PInput v-model:value="searchString" placeholder="Search" />
 				</div>
@@ -247,8 +246,7 @@
 			<div
 				v-if="open"
 				ref="dropdownRef"
-				class="z-5000 p-1 bg-gray-900 text-white rounded-sm shadow-lg max-h-75 overflow-auto"
-				:style="dropdownPosition">
+				class="z-5000 p-1 bg-gray-900 text-white rounded-sm shadow-lg max-h-75 overflow-auto">
 				<div
 					class="w-full flex flex-col bg-gray-900 child:py-1 child:px-2 child:hover:bg-gray-800 rounded-b-sm">
 					<PSelectElement

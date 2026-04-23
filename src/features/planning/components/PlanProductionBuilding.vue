@@ -126,8 +126,8 @@
 			</PButton>
 		</div>
 		<div
-			class="col-span-12 xl:col-span-6 flex justify-end items-center gap-6 text-white/80">
-			<div class="flex flex-col items-end">
+			class="col-span-12 xl:col-span-6 grid grid-cols-12 items-center gap-x-3 text-white/80">
+			<div class="col-span-3 flex flex-col items-end min-w-0 text-right">
 				<span
 					class="text-[10px] text-white/50 uppercase tracking-wider">
 					Expertise
@@ -141,11 +141,11 @@
 					>
 				</span>
 			</div>
-			<div class="flex flex-col items-end">
+			<div class="col-span-2 flex flex-col items-end text-right">
 				<span class="text-[10px] text-white/50 uppercase tracking-wide">
 					Efficiency
 				</span>
-				<span class="text-xs font-mono font-bold">
+				<span class="text-xs font-mono font-bold whitespace-nowrap">
 					<PTooltip>
 						<template #trigger>
 							<div class="flex gap-x-1 hover:cursor-help">
@@ -171,12 +171,12 @@
 					</PTooltip>
 				</span>
 			</div>
-			<div class="flex flex-col items-end">
+			<div class="col-span-3 flex flex-col items-end text-right">
 				<span class="text-[10px] text-white/50 uppercase tracking-wide">
 					Revenue
 				</span>
 				<span
-					class="text-xs font-mono font-bold text-positive"
+					class="text-xs font-mono font-bold text-positive whitespace-nowrap"
 					:class="
 						localBuildingData.dailyRevenue >= 0
 							? 'text-positive!'
@@ -186,24 +186,24 @@
 					<span class="font-light text-white/50">ȼ</span>
 				</span>
 			</div>
-			<div class="flex flex-col items-end">
+			<div class="col-span-1 flex flex-col items-end text-right">
 				<span class="text-[10px] text-white/50 uppercase tracking-wide">
 					Area
 				</span>
-				<span class="text-xs font-mono font-bold">
+				<span class="text-xs font-mono font-bold whitespace-nowrap">
 					{{ localBuildingData.areaUsed }}
 				</span>
 			</div>
-			<div class="flex flex-col items-end">
+			<div class="col-span-2 flex flex-col items-end text-right">
 				<span class="text-[10px] text-white/50 uppercase tracking-wide">
 					Construction
 				</span>
-				<span class="text-xs font-mono font-bold">
+				<span class="text-xs font-mono font-bold whitespace-nowrap">
 					{{ formatNumber(localBuildingData.constructionCost * -1) }}
 					<span class="font-light text-white/50">ȼ</span>
 				</span>
 			</div>
-			<div>
+			<div class="col-span-1 flex justify-end">
 				<PButton
 					:disabled="disabled"
 					size="sm"
