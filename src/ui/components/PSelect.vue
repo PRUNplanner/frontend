@@ -220,7 +220,7 @@
 				</div>
 				<div
 					v-else
-					class="grow child:child:bg-transparent! py-0.5"
+					class="grow child:child:bg-transparent!"
 					@click.stop="ensureOpened">
 					<PInput v-model:value="searchString" placeholder="Search" />
 				</div>
