@@ -129,12 +129,18 @@
 			.sort((a, b) => a.localeCompare(b));
 	});
 
+	function getTotalBuildingAmount(ticker: string): number {
+		const builtAmount = constructedMap?.get(ticker) ?? 0;
+		const plannedAmount = localBuildingAmount.value[ticker] ?? 0;
+		return builtAmount + plannedAmount;
+	}
+
 	const deficitWorkforceTypes = computed(() => {
 		return (workforceTypeNames as WORKFORCE_TYPE[]).filter(
 			(workforceType) =>
 				buildingTicker.value.reduce((sum, ticker) => {
 					const building = buildingsMap.value[ticker];
-					const amount = localBuildingAmount.value[ticker] ?? 0;
+					const amount = getTotalBuildingAmount(ticker);
 					const field = `${workforceType}s` as keyof NonNullable<
 						IBuilding["habitations"]
 					>;
@@ -142,7 +148,7 @@
 				}, 0) >
 				buildingTicker.value.reduce((sum, ticker) => {
 					const building = buildingsMap.value[ticker];
-					const amount = localBuildingAmount.value[ticker] ?? 0;
+					const amount = getTotalBuildingAmount(ticker);
 					const field = `${workforceType}s` as keyof NonNullable<
 						IBuilding["habitations"]
 					>;
@@ -348,7 +354,17 @@
 				<tr>
 					<th>Building</th>
 					<th v-if="constructedMap">Built</th>
-					<th>Amount</th>
+					<th class="inline-flex">
+						Amount
+						<PTooltip v-if="deficitWorkforceTypes.length > 0">
+							<template #trigger>
+								<PIcon class="text-amber-400 ml-1 relative top-px">
+									<WarningAmberRound />
+								</PIcon>
+							</template>
+							Insufficient habitation will reduce production efficiency
+						</PTooltip>
+					</th>
 					<th>Planned</th>
 					<th
 						v-for="mat in uniqueMaterials"
