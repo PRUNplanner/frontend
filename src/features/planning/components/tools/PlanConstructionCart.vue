@@ -356,7 +356,7 @@
 					<th v-if="constructedMap">Built</th>
 					<th class="inline-flex">
 						Amount
-							<PTooltip v-if="deficitWorkforceTypes.length > 0">
+						<PTooltip v-if="deficitWorkforceTypes.length > 0">
 							<template #trigger>
 								<PIcon class="text-amber-400 ml-1 relative top-px">
 									<WarningAmberRound />
