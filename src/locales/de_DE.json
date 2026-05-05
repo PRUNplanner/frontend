@@ -6,7 +6,30 @@
 			"empire": "Empire",
 			"planet_search": "Planet Search",
 			"management": "Management",
-			"exchanges": "Exchanges"
+			"exchanges": "Exchanges",
+			"tools": "Tools",
+			"tools_short": "Tool",
+			"market_exploration": "Market Exploration",
+			"market_live": "Market Live",
+			"recipe_roi": "Recipe ROI",
+			"resource_roi": "Resource ROI",
+			"hq_calculator": "HQ Calculator",
+			"production_chains": "Production Chains",
+			"upkeep_price_calculator": "Upkeep Prices",
+			"fio_burn": "FIO Burn",
+			"fio_repair": "FIO Repair",
+			"account": "Account",
+			"account_short": "Acc",
+			"profile": "Profile",
+			"api": "API",
+			"help": "Help",
+			"logout": "Logout",
+			"fio": {
+				"backend": "Backend",
+				"fio": "FIO",
+				"fio_active": "FIO Active",
+				"fio_inactive": "FIO Inactive"
+			}
 		},
 		"buttons": {
 			"save": "Speichern",
@@ -150,15 +173,15 @@
 			}
 		},
 		"tools": {
-			"section_title": "Powered by tools we love to use"
+			"section_title": "Unterstützt von Tools, die wir gerne verwenden"
 		},
 		"open_source": {
-			"section_title": "Free &amp; Open Source",
-			"section_lead": "PRUNplanner is completely free to use, and its frontend is fully {link}.",
-			"prompt": "Love it? We'd be thrilled if you contributed!",
+			"section_title": "Kostenlos &amp; Open Source",
+			"section_lead": "PRUNplanner ist völlig frei zu verwenden und {link}.",
+			"prompt": "Du magst es? Wir würden uns freuen, wenn du mitmachst!",
 			"link_open_source": "Open Source"
 		},
-		"love": "Made with ♥  in Munich, with contributions from around the world."
+		"love": "Mit ♥️ aus München und Beteiligten aus aller Welt."
 	},
 	"empire": {
 		"view_title": "Empire",
