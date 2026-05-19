@@ -90,8 +90,8 @@
 			(sum, e) => sum + (e.delta > 0 ? e.totalVolume : 0),
 			0
 		);
-		const dailyWeightTotal: number = dailyWeightImport + dailyWeightExport;
-		const dailyVolumeTotal: number = dailyVolumeImport + dailyVolumeExport;
+		const dailyWeightTotal: number = Math.max(dailyWeightImport, dailyWeightExport);
+		const dailyVolumeTotal: number = Math.max(dailyVolumeImport, dailyVolumeExport);
 
 		return {
 			storageFilled: Math.max(

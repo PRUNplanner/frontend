@@ -141,7 +141,7 @@ describe("usePlanCalculation", async () => {
 
 		const result = await calculate();
 
-		expect(visitationData.value.storageFilled).toBe(22.342256698594255);
+		expect(visitationData.value.storageFilled).toBe(26.462529131522697);
 	});
 
 	it("validate existing and saveable", async () => {
