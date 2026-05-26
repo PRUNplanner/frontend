@@ -1,37 +1,37 @@
 {
 	"navigation": {
-		"registration": "Create Account",
-		"login": "Login"
+		"registration": "Crea Account",
+		"login": "Accedi"
 	},
 	"images": {
-		"section_title": "Command Your Empire from Anywhere",
-		"section_lead": "Monitor bases, manage production, and control your plans effortlessly. With intuitive, powerful tools, you can strategize, expand, and outsmart your rivals wherever you are.",
-		"empire": "Empire: Track production, supply chains, and growth across all your planets.",
-		"plan": "Plan: Strategize and analyze without spending in-game resources.",
-		"management": "Management: Coordinate plans, expansions, and your next moves effortlessly.",
-		"exchanges": "Exchanges: Optimize in-game pricing and trading strategies.",
-		"market_exploration": "Exploration: Analyze years of market data for smarter insights.",
-		"planet_search": "Search: Find the exact planets and resources you need instantly."
+		"section_title": "Comanda il tuo Impero da qualsiasi luogo",
+		"section_lead": "Supervisiona le basi, organizza la produzione e gestisci i tuoi piani senza difficoltà. Con strumenti intuitivi e potenti, puoi pianificare, espanderti e superare i tuoi rivali ovunque tu sia.",
+		"empire": "Impero: monitora la produzione, le catene di distribuzione e la crescita su tutti i tuoi pianeti.",
+		"plan": "Piani: elabora strategie e analizza senza spendere risorse di gioco.",
+		"management": "Gestione: Coordina piani, espansioni e le tue prossime mosse senza sforzo.",
+		"exchanges": "Borse: Ottimizza i prezzi e le strategie commerciali.",
+		"market_exploration": "Esplora: Analizza anni di dati di mercato per approfondimenti intelligenti.",
+		"planet_search": "Ricerca: Trova immediatamente i pianeti e le risorse esatte di cui hai bisogno."
 	},
 	"hero": {
-		"title": "Plan your empire",
-		"subtitle": "Rule Prosperous Universe",
-		"lead": "Say goodbye to cumbersome spreadsheets and hello to seamless management of your in-game assets."
+		"title": "Pianifica il tuo impero",
+		"subtitle": "Domina Prosperous Universe",
+		"lead": "Dì addio ai complicati fogli di calcolo e dai il benvenuto a una gestione fluida delle tue risorse di gioco."
 	},
 	"features": {
-		"section_title": "Powerful Features, Free For Everyone",
-		"section_lead": "Streamline your planning and resource management, ensure you stay ahead in the galaxy.",
+		"section_title": "Funzionalità Potenti, Gratis Per Tutti",
+		"section_lead": "Semplifica la pianificazione e la gestione delle risorse, assicurati di rimanere un passo avanti nella galassia.",
 		"simulation": {
-			"label": "Base Simulation",
-			"text": "PRUNplanner lets you design and try new bases without spending in-game resources. It mirrors all aspects of a base, from habitation and production buildings to COGC programs and planet resources."
+			"label": "Simulazione Delle Basi",
+			"text": "PRUNplanner ti permette di progettare e provare nuove basi senza spendere risorse nel gioco. Rispecchia tutti gli aspetti di una base, da edifici abitativi e produttivi a programmi COGC e risorse del pianeta."
 		},
 		"planning": {
-			"label": "Empire Planning",
-			"text": "Effortlessly organize and manage your entire empire. With PRUNplanner, you can plan across multiple bases and complex supply chains, ensuring your material flows remain on schedule and your empire runs smoothly."
+			"label": "Pianificazione Dell'Impero",
+			"text": "Organizza e gestisci senza sforzo tutto il tuo impero. Con PRUNplanner, puoi pianificare più basi e catene di distribuzione complesse, assicurandoti che i flussi di materiali rimanga puntuale e che il tuo impero funzioni senza intoppi."
 		},
 		"gamedata": {
-			"label": "Game Data",
-			"text": "Stay ahead with up-to-date market information integrated directly from the game's community API (FIO). Make informed planning and expansion decisions based on actual markets and the best ROI."
+			"label": "Dati di Gioco",
+			"text": "Rimani sempre aggiornato con informazioni di mercato integrate direttamente dalla API della community del gioco (FIO). Prendi decisioni più consapevoli sulla pianificazione e sull’espansione grazie a dati di mercato reali e al miglior ritorno sull’investimento."
 		},
 		"burn_repair": {
 			"label": "Burn & Repair",
