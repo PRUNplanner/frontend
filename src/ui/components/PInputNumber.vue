@@ -67,17 +67,14 @@
 
 	function canChange(e: number): boolean {
 		if (disabled) return false;
-		if (value.value === null || value.value === undefined) return true;
-
-		if (value.value + e >= min && value.value + e <= max) return true;
+		const currentValue: number = value.value ?? 0;
+		if (currentValue + e >= min && currentValue + e <= max) return true;
 		return false;
 	}
 
 	function change(e: number) {
 		if (canChange(e)) {
-			if (value.value === null || value.value === undefined)
-				value.value = 0;
-			value.value += e;
+			value.value = (value.value ?? 0) + e;
 		}
 	}
 </script>
