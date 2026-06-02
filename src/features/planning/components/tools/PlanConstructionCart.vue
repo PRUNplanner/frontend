@@ -282,6 +282,14 @@
 			}))
 		);
 
+	const xitTransferElementsNeed: ComputedRef<IXITTransferMaterial[]> =
+		computed(() =>
+			totalMaterialsSorted.value.map((e) => ({
+				ticker: e.ticker,
+				value: e.total,
+			}))
+		);
+
 	const refSelectedStorage: Ref<string | undefined> = ref(
 		hasStorage.value
 			? storageOptions.value.filter(
@@ -317,7 +325,7 @@
 	});
 
 	watch(
-		() => xitTransferElementsOverview.value,
+		() => xitTransferElementsNeed.value,
 		async (overview) => {
 			overviewTotalInformation.value = await calculateTotal(overview);
 		},
@@ -532,7 +540,7 @@
 							class="w-62.5!" />
 					</template>
 					<XITTransferActionButton
-						:elements="xitTransferElementsOverview"
+						:elements="xitTransferElementsNeed"
 						transfer-name="Construct"
 						:drawer-width="400" />
 				</div>
