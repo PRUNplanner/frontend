@@ -43,7 +43,7 @@ export function dateStringFromEpoch(
 	value: number,
 	dateFormat = "YYYY-MM-DD"
 ): string {
-	return dayjs(value).format(dateFormat);
+	return dayjs.utc(value).format(dateFormat);
 }
 
 /**
