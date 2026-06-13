@@ -65,18 +65,53 @@ export async function useBurnXITAction(
 						(override == null || override <= 0)
 					);
 				});
-				const demand = buildBurnDemand(
-					activeElements,
-					materialsMap.value,
-					resupplyDays.value
-				);
-				solverQuantities = solveBurn(demand, {
-					volumeCapacity: shipVolumeCapacity.value,
-					weightCapacity: shipWeightCapacity.value,
-					targetDays: resupplyDays.value,
-					fullCoverBelowBurnPerDay: fullCoverThreshold.value,
-					integer: true,
+
+				// Reserve the weight/volume already consumed by static
+				// overrides so the solver only fills the remaining ship
+				// capacity instead of the full ship.
+				let reservedWeight: number = 0;
+				let reservedVolume: number = 0;
+				elements.value.forEach((e) => {
+					const override = materialOverrides.value[e.ticker];
+					if (
+						override != null &&
+						override > 0 &&
+						!materialInactives.value.has(e.ticker)
+					) {
+						const mat: IMaterial | undefined =
+							materialsMap.value[e.ticker];
+						if (mat) {
+							reservedWeight += mat.weight * override;
+							reservedVolume += mat.volume * override;
+						}
+					}
 				});
+
+				const remainingWeight: number =
+					shipWeightCapacity.value - reservedWeight;
+				const remainingVolume: number =
+					shipVolumeCapacity.value - reservedVolume;
+
+				// Overrides already filled (or overfilled) the ship in at
+				// least one dimension. Since every solvable material has a
+				// positive weight and volume, nothing more can be loaded, so
+				// skip the no-op solve.
+				if (remainingWeight <= 0 || remainingVolume <= 0) {
+					solverQuantities = new Map<string, number>();
+				} else {
+					const demand = buildBurnDemand(
+						activeElements,
+						materialsMap.value,
+						resupplyDays.value
+					);
+					solverQuantities = solveBurn(demand, {
+						volumeCapacity: remainingVolume,
+						weightCapacity: remainingWeight,
+						targetDays: resupplyDays.value,
+						fullCoverBelowBurnPerDay: fullCoverThreshold.value,
+						integer: true,
+					});
+				}
 			}
 
 			elements.value.forEach((e) => {
