@@ -136,6 +136,12 @@ export const UserPreferenceSchema: z.ZodType<IPreference> = z.object({
 	burnDaysYellow: z.number(),
 	burnResupplyDays: z.number(),
 	burnOrigin: z.string(),
+	burnDefaultMode: z
+		.preprocess((v) => v ?? "simple", z.enum(["simple", "solver"]))
+		.catch("simple"),
+	burnFullCoverThreshold: z
+		.preprocess((v) => v ?? 1.0, z.number())
+		.catch(1.0),
 	layoutNavigationStyle: z.enum(["full", "collapsed"]),
 	planOverrides: z.record(
 		z.string(),

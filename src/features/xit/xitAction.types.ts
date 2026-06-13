@@ -53,3 +53,15 @@ export interface IXITTransferMaterial {
 	ticker: string;
 	value: number;
 }
+
+export interface IBurnDemandItem {
+	ticker: string;
+	burnPerDay: number;
+	targetDays: number;
+	targetQuantity: number;
+	currentStock: number;
+	need: number;
+	weightPerUnit: number;
+	volumePerUnit: number;
+	priority: number;
+}

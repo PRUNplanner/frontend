@@ -92,6 +92,20 @@ export function usePreferences() {
 		set: (v) => userStore.setPreference("burnOrigin", v),
 	});
 
+	const burnDefaultMode: WritableComputedRef<
+		"simple" | "solver",
+		"simple" | "solver"
+	> = computed<"simple" | "solver">({
+		get: () => userStore.preferences.burnDefaultMode,
+		set: (v) => userStore.setPreference("burnDefaultMode", v),
+	});
+
+	const burnFullCoverThreshold: WritableComputedRef<number, number> =
+		computed<number>({
+			get: () => userStore.preferences.burnFullCoverThreshold,
+			set: (v) => userStore.setPreference("burnFullCoverThreshold", v),
+		});
+
 	const planSettings: ComputedRef<
 		Record<string, Partial<IPreferencePerPlan>>
 	> = computed(() => {
@@ -234,6 +248,8 @@ export function usePreferences() {
 		burnDaysYellow,
 		burnResupplyDays,
 		burnOrigin,
+		burnDefaultMode,
+		burnFullCoverThreshold,
 		planSettings,
 		planSettingsOverview,
 		layoutNavigationStyle,

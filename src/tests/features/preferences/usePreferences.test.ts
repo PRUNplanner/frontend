@@ -76,6 +76,36 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	describe("burnDefaultMode", async () => {
+		it("get", async () => {
+			const { burnDefaultMode } = usePreferences();
+			expect(burnDefaultMode.value).toBe(
+				preferenceDefaults.burnDefaultMode
+			);
+		});
+
+		it("set", async () => {
+			const { burnDefaultMode } = usePreferences();
+			burnDefaultMode.value = "solver";
+			expect(burnDefaultMode.value).toBe("solver");
+		});
+	});
+
+	describe("burnFullCoverThreshold", async () => {
+		it("get", async () => {
+			const { burnFullCoverThreshold } = usePreferences();
+			expect(burnFullCoverThreshold.value).toBe(
+				preferenceDefaults.burnFullCoverThreshold
+			);
+		});
+
+		it("set", async () => {
+			const { burnFullCoverThreshold } = usePreferences();
+			burnFullCoverThreshold.value = 2.5;
+			expect(burnFullCoverThreshold.value).toBe(2.5);
+		});
+	});
+
 	describe("defaultBuyItemsFromCX", async () => {
 		it("get", async () => {
 			const { defaultBuyItemsFromCX } = usePreferences();

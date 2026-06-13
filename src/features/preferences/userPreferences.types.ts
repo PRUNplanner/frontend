@@ -15,6 +15,8 @@ export interface IPreference {
 	burnDaysYellow: number;
 	burnResupplyDays: number;
 	burnOrigin: string;
+	burnDefaultMode: "simple" | "solver";
+	burnFullCoverThreshold: number;
 	layoutNavigationStyle: "full" | "collapsed";
 
 	// seeding per plan defaults
