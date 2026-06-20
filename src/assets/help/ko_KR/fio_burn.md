@@ -1,12 +1,12 @@
-# Calculations
+# 계산
 
-Plan calculations are based on the production and storage data of your plans. To get accurate results, you’ll need to have your data synced via FIO. Please note that degradation is not included in these calculations.
+계획은 생산과 저장소 데이터를 기반하여 계산됩니다. 정확한 결과를 얻기 위해서, FIO 데이터로 동기화 해야 합니다. 건축물 열화는 이 계산에 포함되어 있지 않습니다.
 
-# Thresholds
+# 임계값
 
-PRUNplanner uses color thresholds to highlight important values:
+PRUNplanner는 중요한 값을 강조하기 위해 색상 임계값을 사용합니다:
 
-- Yellow indicates that a value is approaching a limit or may need attention soon.
-- Red means the threshold has been exceeded and requires immediate attention.
+- 노란색은 임계값에 도달하고 있거나 곧 주의가 필요함을 나타냅니다.
+- 빨간색은 임계값을 초과하여 시급한 조치가 필요함을 나타냅니다.
 
-These thresholds help you quickly spot potential issues in your production or storage before they become critical.
+이 임계값들은 생산 또는 보관에서 문제가 발생하기 전에 빠르게 확인할 수 있도록 도와줍니다.
