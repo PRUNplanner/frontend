@@ -17,6 +17,7 @@
 
 	// Composables
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
+	import { usePreferences } from "@/features/preferences/usePreferences";
 
 	// Types & Interfaces
 	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
@@ -72,8 +73,7 @@
 
 	const { hasStorage, storageOptions, findStorageValueFromOptions } =
 		useFIOStorage();
-
-	const refStockRequirement: Ref<number> = ref(20);
+	const { supplyCartDays: refStockRequirement } = usePreferences();
 	const refSelectedStorage: Ref<string | undefined> = ref(
 		hasStorage.value
 			? storageOptions.value.filter(
