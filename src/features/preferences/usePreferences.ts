@@ -92,6 +92,12 @@ export function usePreferences() {
 		set: (v) => userStore.setPreference("burnOrigin", v),
 	});
 
+	const supplyCartDays: WritableComputedRef<number, number> =
+		computed({
+			get: () => userStore.preferences.supplyCartDays ?? 20,
+			set: (v) => userStore.setPreference("supplyCartDays", v),
+		});
+
 	const planSettings: ComputedRef<
 		Record<string, Partial<IPreferencePerPlan>>
 	> = computed(() => {
@@ -234,6 +240,7 @@ export function usePreferences() {
 		burnDaysYellow,
 		burnResupplyDays,
 		burnOrigin,
+		supplyCartDays,
 		planSettings,
 		planSettingsOverview,
 		layoutNavigationStyle,
