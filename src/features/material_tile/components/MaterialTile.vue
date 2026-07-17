@@ -165,7 +165,7 @@
 <template>
 	<div class="inline-block" :class="`material-tile#${ticker}`">
 		<div
-			class="flex flex-row items-center justify-center w-full material-tile"
+			class="flex flex-row items-center justify-center w-full child:first:size-full material-tile"
 			:class="[
 				categoryCssClass,
 				disableDrawer && enablePopover
