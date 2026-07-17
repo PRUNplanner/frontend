@@ -206,7 +206,8 @@
 							v-for="output in rowData.recipeOutputs"
 							:key="`${rowData.buildingTicker}#output#${output.material_ticker}`"
 							:ticker="output.material_ticker"
-							:amount="output.material_amount" />
+							:amount="output.material_amount"
+							popover-placement="right" />
 					</div>
 				</template>
 			</XNDataTableColumn>
@@ -219,7 +220,8 @@
 							v-for="output in rowData.recipeInputs"
 							:key="`${rowData.buildingTicker}#input#${output.material_ticker}`"
 							:ticker="output.material_ticker"
-							:amount="output.material_amount" />
+							:amount="output.material_amount"
+							popover-placement="right" />
 					</div>
 				</template>
 			</XNDataTableColumn>

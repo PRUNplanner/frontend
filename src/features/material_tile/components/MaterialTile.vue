@@ -8,9 +8,11 @@
 		ComputedRef,
 		getCurrentInstance,
 		onMounted,
+		PropType,
 		ref,
 		Ref,
 	} from "vue";
+	import type { Placement } from "@popperjs/core";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -62,6 +64,11 @@
 			type: Boolean,
 			required: false,
 			default: true,
+		},
+		popoverPlacement: {
+			type: String as PropType<Placement>,
+			required: false,
+			default: "left",
 		},
 	});
 
@@ -177,7 +184,8 @@
 			@click="toggleDrawer">
 			<PTooltip
 				v-if="refExchangeOverview !== undefined"
-				:disabled="!enablePopover">
+				:disabled="!enablePopover"
+				:placement="popoverPlacement">
 				<template #trigger>
 					<div
 						class="flex justify-center items-center"

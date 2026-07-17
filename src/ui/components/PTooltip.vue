@@ -2,13 +2,14 @@
 	import { ref, onBeforeUnmount, nextTick } from "vue";
 	import { tooltipConfig } from "@/ui/styles";
 	import { createPopper, Instance } from "@popperjs/core";
+	import type { Placement } from "@popperjs/core";
 
 	const {
 		placement = "top",
 		offset = 8,
 		disabled = false,
 	} = defineProps<{
-		placement?: "top" | "bottom" | "left" | "right";
+		placement?: Placement;
 		offset?: number;
 		disabled?: boolean;
 	}>();
@@ -39,13 +40,9 @@
 					{
 						name: "flip",
 						options: {
-							fallbackPlacements: [
-								"top",
-								"bottom",
-								"left",
-								"right",
-							],
 							boundary: "viewport",
+							padding: 8,
+							altAxis: false,
 						},
 					},
 					{
@@ -53,7 +50,6 @@
 						options: {
 							boundary: "viewport",
 							padding: 8,
-							altAxis: true,
 							tether: false,
 						},
 					},
