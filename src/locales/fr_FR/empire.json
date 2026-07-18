@@ -59,7 +59,7 @@
 		},
 		"table": {
 			"building": "Bâtiment",
-			"flow_inputs": "Production (Inputs &rarr; Outputs)",
+			"flow_inputs": "Production (Inputs → Outputs)",
 			"analysis": "Analysis",
 			"sell_inputs": "Sell Inputs",
 			"sell_outputs": "Sell Outputs",
