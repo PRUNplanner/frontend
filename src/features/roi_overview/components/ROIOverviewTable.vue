@@ -207,6 +207,12 @@
 							:key="`${rowData.buildingTicker}#output#${output.material_ticker}`"
 							:ticker="output.material_ticker"
 							:amount="output.material_amount"
+							:daily="
+								output.material_amount
+								* rowData.optimalSetup.amount
+								* rowData.dailyRuns
+								* 1.25
+							"
 							popover-placement="right" />
 					</div>
 				</template>
@@ -221,6 +227,12 @@
 							:key="`${rowData.buildingTicker}#input#${output.material_ticker}`"
 							:ticker="output.material_ticker"
 							:amount="output.material_amount"
+							:daily="
+								output.material_amount
+								* rowData.optimalSetup.amount
+								* rowData.dailyRuns
+								* 1.25
+							"
 							popover-placement="right" />
 					</div>
 				</template>

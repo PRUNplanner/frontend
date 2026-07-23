@@ -61,7 +61,8 @@
 				<template #render-cell="{ rowData }">
 					<MaterialTile
 						:key="rowData.ticker"
-						:ticker="rowData.ticker" />
+						:ticker="rowData.ticker"
+						:daily="rowData.delta" />
 				</template>
 			</x-n-data-table-column>
 			<x-n-data-table-column

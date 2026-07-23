@@ -4,6 +4,7 @@ import { Ref, ref } from "vue";
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 import { useBuildingData } from "@/database/services/useBuildingData";
+import { TOTALMSDAY } from "@/features/planning/calculations/buildingCalculations";
 
 // Util
 import { deepClone } from "@/util/data";
@@ -118,6 +119,7 @@ export async function useROIOverview(
 				buildingTicker: optimal.ticker,
 				optimalSetup: optimal,
 				recipeId: recipe.recipe_id,
+				dailyRuns: TOTALMSDAY / recipe.time_ms,
 				recipeInputs: recipe.inputs,
 				recipeOutputs: recipe.outputs,
 				cogc: result.cogc,
