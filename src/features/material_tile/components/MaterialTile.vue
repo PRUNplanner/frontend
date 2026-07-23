@@ -50,6 +50,11 @@
 			required: false,
 			default: undefined,
 		},
+		daily: {
+			type: Number,
+			required: false,
+			default: undefined,
+		},
 		disableDrawer: {
 			type: Boolean,
 			required: false,
@@ -201,6 +206,7 @@
 				<MaterialCXOverviewTable
 					:key="`material-tile#CXOverview#${ticker}`"
 					:ticker="ticker"
+					:daily="daily"
 					:overview-data="refExchangeOverview" />
 			</PTooltip>
 			<template v-else>
