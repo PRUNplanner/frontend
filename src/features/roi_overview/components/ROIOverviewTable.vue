@@ -223,12 +223,12 @@
 				<template #render-cell="{ rowData }">
 					<div class="flex flex-row flex-wrap gap-1">
 						<MaterialTile
-							v-for="output in rowData.recipeInputs"
-							:key="`${rowData.buildingTicker}#input#${output.material_ticker}`"
-							:ticker="output.material_ticker"
-							:amount="output.material_amount"
+							v-for="input in rowData.recipeInputs"
+							:key="`${rowData.buildingTicker}#input#${input.material_ticker}`"
+							:ticker="input.material_ticker"
+							:amount="input.material_amount"
 							:daily="
-								output.material_amount
+								input.material_amount
 								* rowData.optimalSetup.amount
 								* rowData.dailyRuns
 								* 1.25
