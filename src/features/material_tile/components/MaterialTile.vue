@@ -8,9 +8,11 @@
 		ComputedRef,
 		getCurrentInstance,
 		onMounted,
+		PropType,
 		ref,
 		Ref,
 	} from "vue";
+	import type { Placement } from "@popperjs/core";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -48,6 +50,11 @@
 			required: false,
 			default: undefined,
 		},
+		daily: {
+			type: Number,
+			required: false,
+			default: undefined,
+		},
 		disableDrawer: {
 			type: Boolean,
 			required: false,
@@ -62,6 +69,11 @@
 			type: Boolean,
 			required: false,
 			default: true,
+		},
+		popoverPlacement: {
+			type: String as PropType<Placement>,
+			required: false,
+			default: "left",
 		},
 	});
 
@@ -165,7 +177,7 @@
 <template>
 	<div class="inline-block" :class="`material-tile#${ticker}`">
 		<div
-			class="flex flex-row items-center justify-center w-full material-tile"
+			class="flex flex-row items-center justify-center w-full child:first:size-full material-tile"
 			:class="[
 				categoryCssClass,
 				disableDrawer && enablePopover
@@ -177,7 +189,8 @@
 			@click="toggleDrawer">
 			<PTooltip
 				v-if="refExchangeOverview !== undefined"
-				:disabled="!enablePopover">
+				:disabled="!enablePopover"
+				:placement="popoverPlacement">
 				<template #trigger>
 					<div
 						class="flex justify-center items-center"
@@ -193,6 +206,7 @@
 				<MaterialCXOverviewTable
 					:key="`material-tile#CXOverview#${ticker}`"
 					:ticker="ticker"
+					:daily="daily"
 					:overview-data="refExchangeOverview" />
 			</PTooltip>
 			<template v-else>

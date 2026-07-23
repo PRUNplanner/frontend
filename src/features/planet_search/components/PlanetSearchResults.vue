@@ -145,7 +145,8 @@
 						:key="rowData.searchResources[sm].ticker"
 						:ticker="rowData.searchResources[sm].ticker"
 						:amount="rowData.searchResources[sm].dailyExtraction"
-						:max="rowData.searchResources[sm].maxExtraction" />
+						:max="rowData.searchResources[sm].maxExtraction"
+						popover-placement="right" />
 				</div>
 			</template>
 		</XNDataTableColumn>
@@ -159,7 +160,8 @@
 						:key="am.ticker"
 						:ticker="am.ticker"
 						:amount="am.dailyExtraction"
-						:max="am.maxExtraction" />
+						:max="am.maxExtraction"
+						popover-placement="right" />
 				</div>
 			</template>
 		</XNDataTableColumn>
@@ -194,7 +196,8 @@
 							<div>
 								<MaterialTile
 									:key="rowData.environmentSurface[0]"
-									:ticker="rowData.environmentSurface[0]" />
+									:ticker="rowData.environmentSurface[0]"
+									popover-placement="left" />
 							</div>
 						</template>
 						{{ $t("terms.surface") }}
@@ -204,7 +207,8 @@
 							<div>
 								<MaterialTile
 									:key="rowData.environmentGravity[0]"
-									:ticker="rowData.environmentGravity[0]" />
+									:ticker="rowData.environmentGravity[0]"
+									popover-placement="left" />
 							</div>
 						</template>
 						{{ $t("terms.gravity") }}
@@ -217,7 +221,8 @@
 									:key="rowData.environmentTemperature[0]"
 									:ticker="
 										rowData.environmentTemperature[0]
-									" />
+									"
+									popover-placement="left" />
 							</div>
 						</template>
 						{{ $t("terms.temperature") }}
@@ -227,7 +232,8 @@
 							<div>
 								<MaterialTile
 									:key="rowData.environmentPressure[0]"
-									:ticker="rowData.environmentPressure[0]" />
+									:ticker="rowData.environmentPressure[0]"
+									popover-placement="left" />
 							</div>
 						</template>
 						{{ $t("terms.pressure") }}

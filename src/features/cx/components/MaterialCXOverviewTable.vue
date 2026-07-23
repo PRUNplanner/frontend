@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import { computed, PropType } from "vue";
 
 	// Composables
 	import { useExchangeData } from "@/database/services/useExchangeData";
@@ -7,6 +7,7 @@
 	const { exchangeTypesArray, exchangeGameTypesArray } =
 		await useExchangeData();
 	const { getMaterialClass } = useMaterialData();
+
 	// Util
 	import { formatNumber } from "@/util/numbers";
 
@@ -26,16 +27,45 @@
 		CircleOutlined,
 	} from "@vicons/material";
 
-	defineProps({
+	const props = defineProps({
 		ticker: {
 			type: String,
 			required: true,
+		},
+		daily: {
+			type: Number,
+			required: false,
 		},
 		overviewData: {
 			type: Object as PropType<IMaterialExchangeOverview>,
 			required: true,
 		},
 	});
+
+	const tradedRows = [
+		{ label: "terms.7d", days: 7, volumeKey: "sum_traded_7d" },
+		{ label: "terms.30d", days: 30, volumeKey: "sum_traded_30d" },
+	] as const;
+
+	const tradedRowsData = computed(() =>
+		tradedRows.map((row) => {
+			const daily = Math.abs((props.daily ?? 0) * row.days);
+
+			return {
+				...row,
+				daily,
+				marketShare: Object.fromEntries(
+					exchangeTypesArray.map((cx) => [
+						cx,
+						props.overviewData[row.volumeKey][cx] > 0
+							? (daily / props.overviewData[row.volumeKey][cx]) *
+								100
+							: 0,
+					])
+				),
+			};
+		})
+	);
 
 	const getTrendIcon = (analysis: IMaterialExchangeVWAPAnalysis) => {
 		const { significance, percentChange } = analysis;
@@ -151,23 +181,33 @@
 				<td colspan="6">{{ $t("cx_info_table.traded_volume") }}</td>
 			</tr>
 			<tr
+				v-for="row in tradedRowsData"
+				:key="row.volumeKey"
 				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
-				<td>{{ $t("terms.7d") }}</td>
-				<td
-					v-for="cx in exchangeTypesArray"
-					:key="`sum_traded_7d#${cx}`"
-					class="font-mono">
-					{{ formatNumber(overviewData.sum_traded_7d[cx], 2, true) }}
+				<td>
+					{{ $t(row.label) }}
+					<div v-if="daily" class="text-white/50 font-mono">
+						{{ formatNumber(row.daily, 2, true) }}
+					</div>
 				</td>
-			</tr>
-			<tr
-				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
-				<td>{{ $t("terms.30d") }}</td>
 				<td
 					v-for="cx in exchangeTypesArray"
-					:key="`sum_traded_30d#${cx}`"
+					:key="`${row.volumeKey}#${cx}`"
 					class="font-mono">
-					{{ formatNumber(overviewData.sum_traded_30d[cx], 2, true) }}
+					{{ formatNumber(overviewData[row.volumeKey][cx], 2, true) }}
+					<div
+						v-if="daily"
+						:class="
+							row.marketShare[cx] >= 5 // red at 5% market share
+								? 'text-negative'
+							: 'text-white/50'
+						">
+						{{
+							row.marketShare[cx]
+								? `${formatNumber(row.marketShare[cx])}%`
+								: "—"
+						}}
+					</div>
 				</td>
 			</tr>
 			<tr

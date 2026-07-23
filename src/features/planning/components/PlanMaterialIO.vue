@@ -43,6 +43,7 @@
 				<MaterialTile
 					:key="`MATERIALIO#MATERIALTILE#${rowData.ticker}`"
 					:ticker="rowData.ticker"
+					:daily="rowData.delta"
 					:disable-drawer="false" />
 			</template>
 		</XNDataTableColumn>
