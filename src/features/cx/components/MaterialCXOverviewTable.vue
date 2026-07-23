@@ -196,13 +196,17 @@
 					class="font-mono">
 					{{ formatNumber(overviewData[row.volumeKey][cx], 2, true) }}
 					<div
-						v-if="daily && row.marketShare[cx]"
+						v-if="daily"
 						:class="
 							row.marketShare[cx] >= 5 // red at 5% market share
 								? 'text-negative'
 							: 'text-white/50'
 						">
-						{{ formatNumber(row.marketShare[cx]) }}%
+						{{
+							row.marketShare[cx]
+								? `${formatNumber(row.marketShare[cx])}%`
+								: "—"
+						}}
 					</div>
 				</td>
 			</tr>
