@@ -13,6 +13,9 @@
 		WORKFORCE_TYPE,
 	} from "@/features/planning/usePlanCalculation.types";
 
+	// raukk: per-unit-of-output cost strip
+	import RaukkPerUnitStrip from "@/features/raukk_sourcing/components/RaukkPerUnitStrip.vue";
+
 	// UI
 	import { PButton, PTable } from "@/ui";
 	import { CheckSharp, BlockOutlined } from "@vicons/material";
@@ -152,4 +155,6 @@
 			</tr>
 		</tbody>
 	</PTable>
+	<!-- raukk: workforce cost per unit of output -->
+	<RaukkPerUnitStrip bucket="workforce" />
 </template>

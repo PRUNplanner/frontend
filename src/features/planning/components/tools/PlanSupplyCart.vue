@@ -14,6 +14,8 @@
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
+	// raukk: per-unit-of-output cost strip
+	import RaukkPerUnitStrip from "@/features/raukk_sourcing/components/RaukkPerUnitStrip.vue";
 
 	// Composables
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
@@ -408,4 +410,6 @@
 			</XNDataTableSummaryRow>
 		</template>
 	</XNDataTable>
+	<!-- raukk: combined consumption cost per unit of output -->
+	<RaukkPerUnitStrip bucket="total" />
 </template>
