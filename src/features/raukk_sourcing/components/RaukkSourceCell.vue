@@ -146,7 +146,7 @@
 		);
 	}
 
-	function toggle(checked: boolean): void {
+	function toggle(checked: boolean | undefined): void {
 		if (!checked) {
 			emit("update:source", undefined);
 			return;

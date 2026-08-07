@@ -192,7 +192,9 @@
 				:value="config.repairDay"
 				:options="repairDayOptions"
 				:disabled="readOnly"
-				@update:value="(v) => changeRepairDay(Number(v) as RAUKK_REPAIR_DAY)" />
+				@update:value="
+					(v) => changeRepairDay(Number(v) as RAUKK_REPAIR_DAY)
+				" />
 
 			<PButton
 				type="primary"

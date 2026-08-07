@@ -219,6 +219,8 @@
 		| "popr"
 		| "supply-cart"
 		| "construction-cart"
+		// raukk: sourcing tool
+		| "raukk-sourcing"
 		| null;
 	const refShowTool: Ref<toolOptions> = ref(null);
 	if (!refPlanData.value.uuid) {
@@ -276,6 +278,12 @@
 					() =>
 						import("@/features/planning/components/tools/PlanConstructionCart.vue")
 				);
+			// raukk: sourcing tool
+			case "raukk-sourcing":
+				return defineAsyncComponent(
+					() =>
+						import("@/features/raukk_sourcing/components/RaukkSourcingTool.vue")
+				);
 			default:
 				return null;
 		}
@@ -304,6 +312,8 @@
 								constructionMaterials: b.constructionMaterials,
 							};
 						}),
+						// raukk: full buildings for per-unit repair table
+						productionBuildings: result.value.production.buildings,
 						cxUuid: refCXUuid.value,
 						planetNaturalId: planetData.planet_natural_id,
 					},
@@ -336,6 +346,19 @@
 						productionBuildingData:
 							result.value.production.buildings,
 						infrastructureData: result.value.infrastructure,
+					},
+					listeners: {},
+				};
+			// raukk: sourcing tool
+			case "raukk-sourcing":
+				return {
+					props: {
+						planUuid: refPlanData.value.uuid,
+						planName: planName.value,
+						planetNaturalId: planetData.planet_natural_id,
+						cxUuid: refCXUuid.value,
+						planResult: result.value,
+						disabled: props.disabled,
 					},
 					listeners: {},
 				};
@@ -720,6 +743,16 @@
 						"
 						@click="toggleTool('repair-analysis')">
 						{{ $t("plan.tools.labels.repair_analysis") }}
+					</PButton>
+					<!-- raukk: sourcing tool -->
+					<PButton
+						:type="
+							refShowTool === 'raukk-sourcing'
+								? 'primary'
+								: 'secondary'
+						"
+						@click="toggleTool('raukk-sourcing')">
+						{{ $t("raukk_sourcing.title") }}
 					</PButton>
 				</div>
 				<!-- Tool View -->

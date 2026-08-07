@@ -79,7 +79,9 @@
 				<td
 					class="text-right font-bold"
 					:class="
-						row.marginPerUnit >= 0 ? 'text-positive' : 'text-negative'
+						row.marginPerUnit >= 0
+							? 'text-positive'
+							: 'text-negative'
 					">
 					{{ formatNumber(row.marginPerUnit) }}
 				</td>

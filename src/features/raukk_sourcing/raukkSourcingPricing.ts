@@ -113,8 +113,7 @@ export function createRaukkPriceResolver(
 	context: IRaukkPriceResolverContext
 ): IRaukkPriceResolver {
 	return (ticker: string): IRaukkResolvedPrice => {
-		const source: IRaukkTickerSource | undefined =
-			context.sources[ticker];
+		const source: IRaukkTickerSource | undefined = context.sources[ticker];
 
 		if (source === undefined)
 			return { price: context.getDefaultPrice(ticker) };
@@ -134,10 +133,7 @@ export function createRaukkPriceResolver(
 				return { price: context.getDefaultPrice(ticker) };
 
 			return {
-				price: aggregateProducerPrice(
-					producers,
-					source.sourcePlanUuid
-				),
+				price: aggregateProducerPrice(producers, source.sourcePlanUuid),
 				fromPlanUuid: source.sourcePlanUuid,
 			};
 		}

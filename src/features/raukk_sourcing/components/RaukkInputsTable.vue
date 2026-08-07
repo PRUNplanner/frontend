@@ -68,7 +68,9 @@
 	]);
 
 	function priceModeValue(row: IRaukkInputRow): string {
-		return row.source?.mode === "market" ? row.source.priceMode : DEFAULT_MODE;
+		return row.source?.mode === "market"
+			? row.source.priceMode
+			: DEFAULT_MODE;
 	}
 
 	function changePriceMode(row: IRaukkInputRow, value: string): void {
@@ -125,7 +127,10 @@
 							type="secondary">
 							{{ $t("raukk_sourcing.buckets.workforce") }}
 						</PTag>
-						<PTag v-if="row.buckets.repair" size="sm" type="warning">
+						<PTag
+							v-if="row.buckets.repair"
+							size="sm"
+							type="warning">
 							{{ $t("raukk_sourcing.buckets.repair") }}
 						</PTag>
 					</div>
@@ -140,7 +145,8 @@
 						:options="priceModeOptions"
 						:disabled="disabled || row.source?.mode === 'plan'"
 						@update:value="
-							(v) => changePriceMode(row, String(v ?? DEFAULT_MODE))
+							(v) =>
+								changePriceMode(row, String(v ?? DEFAULT_MODE))
 						" />
 				</td>
 				<td>
@@ -149,7 +155,8 @@
 						:options="sourceOptions(row.ticker, row.unitsPerDay)"
 						:disabled="disabled"
 						@update:source="
-							(source) => emit('update:source', row.ticker, source)
+							(source) =>
+								emit('update:source', row.ticker, source)
 						" />
 				</td>
 				<td class="text-right">
