@@ -47,7 +47,12 @@ export interface IRaukkSnapshot {
 	/** Key: output material ticker */
 	outputs: Record<string, IRaukkOutputCost>;
 	/** Daily amounts drawn from other plans' snapshots.
-	 * Key: source plan uuid, then ticker → units/day. Drives
-	 * subscription percentages and staleness propagation. */
+	 * Key: CONCRETE source plan uuid (never an AGG_* sentinel —
+	 * aggregate draws are pre-split across producers proportional
+	 * to their unitsPerDay before storing), then ticker →
+	 * units/day. Drives subscription percentages and staleness
+	 * propagation. */
 	draws: Record<string, Record<string, number>>;
+	/** Sourcing config this snapshot was computed with */
+	config?: IRaukkPlanConfig;
 }

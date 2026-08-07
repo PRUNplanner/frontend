@@ -83,7 +83,13 @@ other stores. Shape (indicative):
   { mode: "market", priceMode } | { mode: "plan", sourcePlanUuid |
   "AGG_AVG" | "AGG_MAX" } } }`
 - `snapshots[planUuid]`: `{ computedAt, stale, outputs: { [ticker]:
-  { costPerUnit, unitsPerDay, breakdown } }, dependsOn: planUuid[] }`
+  { costPerUnit, unitsPerDay, breakdown } }, draws, config }`.
+  Dependency edges are DERIVED from `draws` keys + config sources —
+  no stored dependsOn list. `draws` keys are always concrete plan
+  uuids: when an aggregate source is used, the snapshot-computing
+  layer pre-splits the drawn amount across producers proportional
+  to their unitsPerDay before storing. `config` is the sourcing
+  config the snapshot was computed with (display/staleness aid).
 - JSON export/import of the whole store (localStorage is fragile).
 
 ## UI surfaces
