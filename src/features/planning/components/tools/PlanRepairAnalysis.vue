@@ -8,8 +8,14 @@
 	import { usePrice } from "@/features/cx/usePrice";
 	import { useRepairAnalysis } from "@/features/repair_analysis/useRepairAnalysis";
 
+	// raukk: repair capital cost math
+	import { calculateRepairCostPerDay } from "@/features/raukk_sourcing/calculations/repairCapitalCost";
+
 	// Components
 	import DayRepairMaterialTable from "@/features/repair_analysis/components/DayRepairMaterialTable.vue";
+	// raukk: totals + per unit of output surfaces
+	import RaukkRepairTotals from "@/features/raukk_sourcing/components/RaukkRepairTotals.vue";
+	import RaukkRepairPerUnit from "@/features/raukk_sourcing/components/RaukkRepairPerUnit.vue";
 	import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
 	import PlanRepairProfitChart from "@/ui/charts/PlanRepairProfitChart.vue";
 	import PlanRepairCostChart from "@/ui/charts/PlanRepairCostChart.vue";
@@ -23,7 +29,11 @@
 	import {
 		IMaterialIO,
 		IMaterialIOMinimal,
+		// raukk: per unit of output allocation input
+		IProductionBuilding,
 	} from "@/features/planning/usePlanCalculation.types";
+	// raukk: repair cycle days
+	import { RAUKK_REPAIR_DAY } from "@/features/raukk_sourcing/raukkSourcing.types";
 
 	// UI
 	import { PForm, PFormItem, PSelect } from "@/ui";
@@ -42,6 +52,12 @@
 			type: String,
 			required: false,
 			default: undefined,
+		},
+		// raukk: optional full production buildings, recipes included
+		productionBuildings: {
+			type: Array as PropType<IProductionBuilding[]>,
+			required: false,
+			default: () => [],
 		},
 	});
 
@@ -66,8 +82,65 @@
 	const singleMat = ref<{ name: string; data: (number | undefined)[] }[]>([]);
 
 	const { getPrice } = await usePrice(localCxUuid, localPlanetNaturalId);
-	const { calculateDailyRepairMaterials, daySelectOptions } =
-		await useRepairAnalysis(localCxUuid, localPlanetNaturalId);
+	// raukk: day options come from raukkDaySelectOptions below
+	const { calculateDailyRepairMaterials } = await useRepairAnalysis(
+		localCxUuid,
+		localPlanetNaturalId
+	);
+
+	/*
+	 * raukk: repair cycle days, plan totals and per unit of output
+	 *
+	 * Players repair on 30/60/90/120 day cadences, the selector is
+	 * limited to those. Repair materials are priced with the same market
+	 * "BUY" price the rest of this tool uses; snapshot based pricing
+	 * lives in the Sourcing tab.
+	 */
+
+	const raukkDaySelectOptions: PSelectOption[] = [30, 60, 90, 120].map(
+		(d) => ({ value: d, label: `${d}` })
+	);
+
+	const raukkPrices: Ref<Record<string, number>> = ref({});
+
+	async function raukkLoadPrices(): Promise<void> {
+		const tickers: string[] = Array.from(
+			new Set(
+				localData.value.flatMap((b) =>
+					b.constructionMaterials.map((m) => m.ticker)
+				)
+			)
+		);
+
+		const prices: Record<string, number> = {};
+
+		await Promise.all(
+			tickers.map(async (ticker) => {
+				prices[ticker] = await getPrice(ticker, "BUY");
+			})
+		);
+
+		raukkPrices.value = prices;
+	}
+
+	const raukkRepairCost = computed(() =>
+		calculateRepairCostPerDay(
+			localData.value,
+			selectedDay.value as RAUKK_REPAIR_DAY,
+			(ticker: string) => raukkPrices.value[ticker] ?? 0
+		)
+	);
+
+	// full buildings are used when handed in, otherwise the data prop is
+	// probed for recipes so a richer parent payload works unchanged
+	const raukkProductionBuildings: ComputedRef<IProductionBuilding[]> =
+		computed(() =>
+			props.productionBuildings.length > 0
+				? props.productionBuildings
+				: (localData.value as unknown as IProductionBuilding[]).filter(
+						(b) => Array.isArray(b.activeRecipes)
+					)
+		);
 
 	async function calculateRep() {
 		const r: IPlanRepairAnalysisElement[] = [];
@@ -186,6 +259,7 @@
 		[selectedBuilding, localData],
 		async () => {
 			calculateRep();
+			await raukkLoadPrices(); // raukk: repair material prices
 			dailyRepairMaterials.value = await calculateDailyRepairMaterials(
 				localData.value
 			);
@@ -217,10 +291,10 @@
 				<PFormItem
 					:label="t('plan.tools.repair_analysis.table.select_day')">
 					<div class="w-full flex flex-row justify-between">
+						<!-- raukk: 30/60/90/120 repair cadences only -->
 						<PSelect
 							v-model:value="selectedDay"
-							:options="daySelectOptions"
-							searchable
+							:options="raukkDaySelectOptions"
 							class="w-1/2 max-w-50" />
 
 						<XITTransferActionButton
@@ -236,6 +310,16 @@
 						dailyRepairMaterials[selectedDay]
 					"
 					:materials="dailyRepairMaterials[selectedDay]" />
+			</div>
+
+			<!-- raukk: plan total per cycle and per day -->
+			<div class="py-3">
+				<RaukkRepairTotals
+					:repair-day="selectedDay"
+					:total-cost-per-day="raukkRepairCost.total"
+					:material-units-per-day="
+						raukkRepairCost.materialUnitsPerDay
+					" />
 			</div>
 		</div>
 		<div>
@@ -292,5 +376,13 @@
 				</div>
 			</template>
 		</div>
+	</div>
+
+	<!-- raukk: repair cost per unit of output -->
+	<div class="pt-6">
+		<RaukkRepairPerUnit
+			:buildings="raukkProductionBuildings"
+			:repair-cost-per-day-by-building="raukkRepairCost.perBuilding"
+			:repair-day="selectedDay" />
 	</div>
 </template>
