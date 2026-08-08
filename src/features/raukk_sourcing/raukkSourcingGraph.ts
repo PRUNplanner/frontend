@@ -7,10 +7,18 @@ import {
 	IRaukkPlanConfig,
 	IRaukkSnapshot,
 } from "@/features/raukk_sourcing/raukkSourcing.types";
-import { IRaukkEdgeCandidate } from "@/features/raukk_sourcing/raukkSourcingStore.types";
 
 /** Adjacency list, key: plan uuid, value: plan uuids it depends on */
 export type IRaukkDependencyGraph = Record<string, string[]>;
+
+/** Ordered recompute scope of one plan's sourcing subgraph */
+export interface IRaukkRecomputePlanning {
+	/** Plan uuids holding a snapshot, upstream first */
+	order: string[];
+	/** Scope contains a cross plan supply loop; recomputing it once is
+	 * not enough, the values only settle over repeated passes */
+	cyclic: boolean;
+}
 
 /**
  * Finds all plans whose snapshot lists the given ticker as an output.
@@ -41,7 +49,8 @@ export function expandAggregateSource(
  *    sourcePlanUuid: S }`.
  *
  * Aggregate sources are expanded to all plans producing the ticker.
- * Self edges are dropped, they are handled by the cycle guard instead.
+ * Self edges are dropped: a plan feeding its own repairs needs no graph
+ * edge, its own staleness flag already covers it.
  *
  * @author raukk
  *
@@ -197,23 +206,24 @@ export function collectDependencies(
  * downstream, an untouched "current" snapshot in the middle of a chain
  * would silently keep the old upstream values.
  *
- * The dependency graph is acyclic by construction — the cycle guard
- * refuses looping edges — persisted state can still be malformed, so
- * the traversal carries a visited and a recursion set and drops back
- * edges instead of hanging.
+ * Supply loops are allowed: snapshots price from frozen source values,
+ * a loop therefore never recurses, its numbers just settle over
+ * repeated passes. Back edges are dropped from the ordering — the loop
+ * is broken at an arbitrary point — and reported through `cyclic` so
+ * the caller knows a single pass leaves the loop's values unsettled.
  *
  * @author raukk
  *
  * @param {IRaukkDependencyGraph} graph Dependency Graph
  * @param {string} planUuid Root Plan Uuid
  * @param {(planUuid: string) => boolean} hasSnapshot Snapshot Predicate
- * @returns {string[]} Plan Uuids, upstream first
+ * @returns {IRaukkRecomputePlanning} Ordered scope, upstream first
  */
 export function buildRecomputeOrder(
 	graph: IRaukkDependencyGraph,
 	planUuid: string,
 	hasSnapshot: (planUuid: string) => boolean
-): string[] {
+): IRaukkRecomputePlanning {
 	const scope: Set<string> = new Set([
 		...collectDependencies(graph, planUuid),
 		planUuid,
@@ -223,10 +233,15 @@ export function buildRecomputeOrder(
 	const order: string[] = [];
 	const visited: Set<string> = new Set();
 	const onStack: Set<string> = new Set();
+	let cyclic: boolean = false;
 
 	function visit(current: string): void {
-		// onStack: malformed, cyclic persisted state
-		if (visited.has(current) || onStack.has(current)) return;
+		// onStack: back edge, the scope loops
+		if (onStack.has(current)) {
+			cyclic = true;
+			return;
+		}
+		if (visited.has(current)) return;
 
 		onStack.add(current);
 
@@ -244,125 +259,5 @@ export function buildRecomputeOrder(
 		.sort()
 		.forEach((current) => visit(current));
 
-	return order;
-}
-
-/**
- * Checks reachability from one plan to another along dependency edges.
- *
- * @author raukk
- *
- * @param {IRaukkDependencyGraph} graph Dependency Graph
- * @param {string} fromPlanUuid Start Plan Uuid
- * @param {string} toPlanUuid Target Plan Uuid
- * @returns {boolean} Target is reachable from start
- */
-export function hasPath(
-	graph: IRaukkDependencyGraph,
-	fromPlanUuid: string,
-	toPlanUuid: string
-): boolean {
-	const visited: Set<string> = new Set();
-	const queue: string[] = [...(graph[fromPlanUuid] ?? [])];
-
-	while (queue.length > 0) {
-		const current: string = queue.shift() as string;
-		if (current === toPlanUuid) return true;
-		if (visited.has(current)) continue;
-
-		visited.add(current);
-		queue.push(...(graph[current] ?? []));
-	}
-
-	return false;
-}
-
-/**
- * Resolves an edge candidate to the plan uuids it would depend on.
- *
- * @author raukk
- *
- * @param {Record<string, IRaukkSnapshot>} snapshots Snapshots by uuid
- * @param {IRaukkEdgeCandidate} candidate Candidate Edge
- * @returns {string[]} Target Plan Uuids
- */
-export function resolveCandidateTargets(
-	snapshots: Record<string, IRaukkSnapshot>,
-	candidate: IRaukkEdgeCandidate
-): string[] {
-	if ("sourcePlanUuid" in candidate) return [candidate.sourcePlanUuid];
-
-	return expandAggregateSource(snapshots, candidate.ticker);
-}
-
-/**
- * Determines if adding the candidate edge closes a loop in an already
- * built dependency graph.
- *
- * A loop exists when the candidate points at the consumer itself or
- * when any of its targets already depends, transitively, on the
- * consumer. Aggregates are expanded conservatively, an aggregate that
- * contains the consumer as producer therefore counts as a loop.
- *
- * Checking many candidates against the same state — the source dropdown
- * of one ticker does — builds the graph once and calls this directly,
- * {@link wouldCreateCycleInGraph} is the single check convenience.
- *
- * @author raukk
- *
- * @param {IRaukkDependencyGraph} graph Dependency Graph
- * @param {Record<string, IRaukkSnapshot>} snapshots Snapshots by uuid
- * @param {string} consumerPlanUuid Consuming Plan Uuid
- * @param {IRaukkEdgeCandidate} candidate Candidate Edge
- * @returns {boolean} Edge would create a supply loop
- */
-export function wouldCreateCycleWithGraph(
-	graph: IRaukkDependencyGraph,
-	snapshots: Record<string, IRaukkSnapshot>,
-	consumerPlanUuid: string,
-	candidate: IRaukkEdgeCandidate
-): boolean {
-	const targets: string[] = resolveCandidateTargets(snapshots, candidate);
-	if (targets.length === 0) return false;
-
-	return targets.some(
-		(targetUuid) =>
-			targetUuid === consumerPlanUuid ||
-			hasPath(graph, targetUuid, consumerPlanUuid)
-	);
-}
-
-/**
- * Determines if adding the candidate edge closes a loop in the
- * config derived dependency graph.
- *
- * Builds the dependency graph and delegates to
- * {@link wouldCreateCycleWithGraph}; use that one directly when several
- * candidates are checked against the same state.
- *
- * @author raukk
- *
- * @param {Record<string, IRaukkPlanConfig>} configs Configs by uuid
- * @param {Record<string, IRaukkSnapshot>} snapshots Snapshots by uuid
- * @param {string} consumerPlanUuid Consuming Plan Uuid
- * @param {IRaukkEdgeCandidate} candidate Candidate Edge
- * @returns {boolean} Edge would create a supply loop
- */
-export function wouldCreateCycleInGraph(
-	configs: Record<string, IRaukkPlanConfig>,
-	snapshots: Record<string, IRaukkSnapshot>,
-	consumerPlanUuid: string,
-	candidate: IRaukkEdgeCandidate
-): boolean {
-	const targets: string[] = resolveCandidateTargets(snapshots, candidate);
-	if (targets.length === 0) return false;
-
-	if (targets.includes(consumerPlanUuid)) return true;
-
-	return wouldCreateCycleWithGraph(
-		buildDependencyGraph(configs, snapshots),
-		snapshots,
-		consumerPlanUuid,
-		candidate
-	);
+	return { order, cyclic };
 }

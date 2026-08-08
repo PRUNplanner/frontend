@@ -58,7 +58,10 @@ function costWeights(outputs: IRaukkOutputCost[]): Record<string, number> {
  *
  * Guards: tickers a source does not produce (any more) and outputs
  * without daily units are skipped, a source snapshot without a stored
- * base fraction counts as 1.
+ * base fraction counts as 1. A draw of the plan against itself — own
+ * output feeding own repairs — is skipped entirely: the own base is
+ * already the leading 1, counting a self draw would inflate it and
+ * feed back into itself on every recompute.
  *
  * @author raukk
  *
@@ -66,14 +69,19 @@ function costWeights(outputs: IRaukkOutputCost[]): Record<string, number> {
  * plan uuid, then ticker to units per day
  * @param {(planUuid: string) => IRaukkSnapshot | undefined}
  * getSourceSnapshot Source Snapshot Lookup
+ * @param {string} [ownPlanUuid] Plan the draws belong to, its self
+ * draw is excluded
  * @returns {number} Base Fraction, at least 1
  */
 export function calculateBaseFraction(
 	draws: Record<string, IRaukkMaterialUnits>,
-	getSourceSnapshot: (planUuid: string) => IRaukkSnapshot | undefined
+	getSourceSnapshot: (planUuid: string) => IRaukkSnapshot | undefined,
+	ownPlanUuid?: string
 ): number {
 	return Object.entries(draws).reduce(
 		(fraction, [sourcePlanUuid, tickers]) => {
+			if (sourcePlanUuid === ownPlanUuid) return fraction;
+
 			const snapshot: IRaukkSnapshot | undefined =
 				getSourceSnapshot(sourcePlanUuid);
 

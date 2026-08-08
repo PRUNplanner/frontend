@@ -7,11 +7,9 @@ import {
 	collectDependencies,
 	collectDependents,
 	expandAggregateSource,
-	hasPath,
 	IRaukkDependencyGraph,
-	resolveCandidateTargets,
+	IRaukkRecomputePlanning,
 	reverseGraph,
-	wouldCreateCycleInGraph,
 } from "@/features/raukk_sourcing/raukkSourcingGraph";
 
 // Types & Interfaces
@@ -113,9 +111,22 @@ describe("raukkSourcingGraph", () => {
 
 			expect(buildDependencyGraph({}, snapshots).a).toStrictEqual([]);
 		});
+
+		it("keeps cross plan loop edges", () => {
+			// a and b draw from each other, loops are allowed
+			const snapshots: Record<string, IRaukkSnapshot> = {
+				a: makeSnapshot("A", { ORE: 100 }, { b: { FUEL: 5 } }),
+				b: makeSnapshot("B", { FUEL: 50 }, { a: { ORE: 40 } }),
+			};
+
+			const graph = buildDependencyGraph({}, snapshots);
+
+			expect(graph.a).toStrictEqual(["b"]);
+			expect(graph.b).toStrictEqual(["a"]);
+		});
 	});
 
-	describe("reverseGraph, collectDependents, hasPath", () => {
+	describe("reverseGraph, collectDependents", () => {
 		// c -> b -> a
 		const graph = { a: [], b: ["a"], c: ["b"] };
 
@@ -143,75 +154,6 @@ describe("raukkSourcingGraph", () => {
 				"b",
 				"c",
 			]);
-			expect(hasPath(cyclic, "a", "a")).toBe(true);
-		});
-
-		it("checks reachability", () => {
-			expect(hasPath(graph, "c", "a")).toBe(true);
-			expect(hasPath(graph, "a", "c")).toBe(false);
-			expect(hasPath(graph, "a", "a")).toBe(false);
-		});
-	});
-
-	describe("resolveCandidateTargets", () => {
-		const snapshots: Record<string, IRaukkSnapshot> = {
-			a: makeSnapshot("A", { RAT: 10 }),
-		};
-
-		it("resolves concrete and aggregate candidates", () => {
-			expect(
-				resolveCandidateTargets(snapshots, { sourcePlanUuid: "a" })
-			).toStrictEqual(["a"]);
-			expect(
-				resolveCandidateTargets(snapshots, {
-					aggregate: "AGG_MAX",
-					ticker: "RAT",
-				})
-			).toStrictEqual(["a"]);
-		});
-	});
-
-	describe("wouldCreateCycleInGraph", () => {
-		const snapshots: Record<string, IRaukkSnapshot> = {
-			a: makeSnapshot("A", { ORE: 100 }),
-			b: makeSnapshot("B", { MET: 50 }),
-		};
-		// b already sources ORE from a
-		const configs: Record<string, IRaukkPlanConfig> = {
-			b: planConfig({ ORE: { mode: "plan", sourcePlanUuid: "a" } }),
-		};
-
-		it("refuses a closing edge", () => {
-			expect(
-				wouldCreateCycleInGraph(configs, snapshots, "a", {
-					sourcePlanUuid: "b",
-				})
-			).toBe(true);
-		});
-
-		it("allows an edge in dependency direction", () => {
-			expect(
-				wouldCreateCycleInGraph(configs, snapshots, "b", {
-					sourcePlanUuid: "a",
-				})
-			).toBe(false);
-		});
-
-		it("refuses self references", () => {
-			expect(
-				wouldCreateCycleInGraph(configs, snapshots, "a", {
-					sourcePlanUuid: "a",
-				})
-			).toBe(true);
-		});
-
-		it("returns false for aggregates without producers", () => {
-			expect(
-				wouldCreateCycleInGraph(configs, snapshots, "a", {
-					aggregate: "AGG_AVG",
-					ticker: "NOPE",
-				})
-			).toBe(false);
 		});
 	});
 
@@ -240,7 +182,7 @@ describe("raukkSourcingGraph", () => {
 			expect(collectDependencies(graph, "nope")).toStrictEqual([]);
 		});
 
-		it("terminates on malformed cycles", () => {
+		it("terminates on cycles", () => {
 			const cyclic: IRaukkDependencyGraph = {
 				a: ["b"],
 				b: ["a"],
@@ -261,21 +203,16 @@ describe("raukkSourcingGraph", () => {
 				c: ["b"],
 			};
 
-			expect(buildRecomputeOrder(graph, "b", all)).toStrictEqual([
-				"a",
-				"b",
-				"c",
-			]);
-			expect(buildRecomputeOrder(graph, "a", all)).toStrictEqual([
-				"a",
-				"b",
-				"c",
-			]);
-			expect(buildRecomputeOrder(graph, "c", all)).toStrictEqual([
-				"a",
-				"b",
-				"c",
-			]);
+			(["a", "b", "c"] as const).forEach((start) => {
+				const planning: IRaukkRecomputePlanning = buildRecomputeOrder(
+					graph,
+					start,
+					all
+				);
+
+				expect(planning.order).toStrictEqual(["a", "b", "c"]);
+				expect(planning.cyclic).toBe(false);
+			});
 		});
 
 		it("orders a diamond with both sources before the sink", () => {
@@ -287,13 +224,14 @@ describe("raukkSourcingGraph", () => {
 				d: ["b", "c"],
 			};
 
-			const order: string[] = buildRecomputeOrder(graph, "d", all);
+			const { order, cyclic } = buildRecomputeOrder(graph, "d", all);
 
 			expect(order.length).toBe(4);
 			expect(order[0]).toBe("a");
 			expect(order[3]).toBe("d");
 			expect(order.indexOf("b")).toBeLessThan(order.indexOf("d"));
 			expect(order.indexOf("c")).toBeLessThan(order.indexOf("d"));
+			expect(cyclic).toBe(false);
 		});
 
 		it("leaves disconnected plans alone", () => {
@@ -304,7 +242,7 @@ describe("raukkSourcingGraph", () => {
 				y: ["x"],
 			};
 
-			expect(buildRecomputeOrder(graph, "b", all)).toStrictEqual([
+			expect(buildRecomputeOrder(graph, "b", all).order).toStrictEqual([
 				"a",
 				"b",
 			]);
@@ -319,35 +257,53 @@ describe("raukkSourcingGraph", () => {
 			};
 
 			expect(
-				buildRecomputeOrder(graph, "c", (uuid) => uuid !== "b")
+				buildRecomputeOrder(graph, "c", (uuid) => uuid !== "b").order
 			).toStrictEqual(["a", "c"]);
 		});
 
 		it("returns nothing when no plan holds a snapshot", () => {
 			const graph: IRaukkDependencyGraph = { a: [], b: ["a"] };
 
-			expect(buildRecomputeOrder(graph, "a", () => false)).toStrictEqual(
-				[]
-			);
+			expect(
+				buildRecomputeOrder(graph, "a", () => false).order
+			).toStrictEqual([]);
 		});
 
 		it("includes the started plan without any edges", () => {
-			expect(buildRecomputeOrder({ a: [] }, "a", all)).toStrictEqual([
+			expect(buildRecomputeOrder({ a: [] }, "a", all).order).toStrictEqual(
+				["a"]
+			);
+			expect(buildRecomputeOrder({}, "a", all).order).toStrictEqual([
 				"a",
 			]);
-			expect(buildRecomputeOrder({}, "a", all)).toStrictEqual(["a"]);
 		});
 
-		it("terminates on malformed, cyclic state", () => {
+		it("covers a loop once per pass and reports it cyclic", () => {
 			const graph: IRaukkDependencyGraph = {
 				a: ["c"],
 				b: ["a"],
 				c: ["b"],
 			};
 
-			const order: string[] = buildRecomputeOrder(graph, "a", all);
+			const { order, cyclic } = buildRecomputeOrder(graph, "a", all);
 
-			expect(order.sort()).toStrictEqual(["a", "b", "c"]);
+			expect([...order].sort()).toStrictEqual(["a", "b", "c"]);
+			expect(cyclic).toBe(true);
+		});
+
+		it("reports an acyclic scope even when an unrelated loop exists", () => {
+			// a <- b, plus a disconnected x <-> y loop
+			const graph: IRaukkDependencyGraph = {
+				a: [],
+				b: ["a"],
+				x: ["y"],
+				y: ["x"],
+			};
+
+			const { order, cyclic } = buildRecomputeOrder(graph, "b", all);
+
+			expect(order).toStrictEqual(["a", "b"]);
+			expect(cyclic).toBe(false);
 		});
 
 		it("derives its scope from configs and snapshots", () => {
@@ -363,7 +319,7 @@ describe("raukkSourcingGraph", () => {
 					buildDependencyGraph({}, snapshots),
 					"b",
 					(uuid) => snapshots[uuid] !== undefined
-				)
+				).order
 			).toStrictEqual(["a", "b", "c"]);
 		});
 	});

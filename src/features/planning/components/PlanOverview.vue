@@ -7,6 +7,9 @@
 	// Util
 	import { formatNumber } from "@/util/numbers";
 
+	// raukk: sourced cost note under the overview table
+	import RaukkOverviewNote from "@/features/raukk_sourcing/components/RaukkOverviewNote.vue";
+
 	// Types & Interfaces
 	import {
 		IAreaResult,
@@ -133,6 +136,8 @@
 					</tr>
 				</tbody>
 			</PTable>
+			<!-- raukk: sourced cost note -->
+			<RaukkOverviewNote />
 		</div>
 		<div>
 			<slot

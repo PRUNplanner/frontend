@@ -3,5 +3,7 @@
 	"sourced_aggregate": "← avg of {count} producers",
 	"sourced_tooltip": "This input is covered upstream: the sourcing configuration of this plan draws it from another plan's snapshot instead of buying it at market.",
 	"subscribed": "→ {units} / day ({percent}%)",
-	"subscribed_tooltip": "Units per day other plans draw from this output through their sourcing configuration, as a share of this plan's daily output. Above 100% the output is oversubscribed."
+	"subscribed_tooltip": "Units per day other plans draw from this output through their sourcing configuration, as a share of this plan's daily output. Above 100% the output is oversubscribed.",
+	"our_cost": "ours {cost}",
+	"our_cost_tooltip": "Daily cost of this input at the sourcing configuration ({price} ȼ/u) instead of the CX preference price shown above. From the stored sourcing snapshot."
 }

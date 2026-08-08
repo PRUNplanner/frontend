@@ -107,6 +107,27 @@
 			.sort((a, b) => a.ticker.localeCompare(b.ticker));
 	});
 
+	/**
+	 * Daily total of the bucket at the snapshots sourced prices, the
+	 * counterpart of the vanilla "ȼ/day" number the strip sits under.
+	 * @author raukk
+	 */
+	const localDailyTotal: ComputedRef<number> = computed(() => {
+		const snapshot: IRaukkSnapshot | undefined = localSnapshot.value;
+
+		if (!snapshot) return 0;
+
+		return Object.values(snapshot.outputs).reduce(
+			(sum, output: IRaukkOutputCost) =>
+				sum +
+				(props.bucket === "total"
+					? output.costPerUnit
+					: output.breakdown[props.bucket]) *
+					output.unitsPerDay,
+			0
+		);
+	});
+
 	const localIsStale: ComputedRef<boolean> = computed(
 		() => localSnapshot.value?.stale === true
 	);
@@ -143,6 +164,13 @@
 						{{ $t("raukk_strips.per_unit") }}
 					</span>
 				</span>
+			</span>
+			<span :class="localIsStale ? 'text-amber-400' : 'text-white/70'">
+				{{
+					$t("raukk_strips.daily_total", {
+						total: formatNumber(localDailyTotal),
+					})
+				}}
 			</span>
 			<PTooltip v-if="localIsStale">
 				<template #trigger>

@@ -8,8 +8,10 @@ import { inertClone } from "@/util/data";
 import {
 	buildDependencyGraph,
 	collectDependents,
-	wouldCreateCycleInGraph,
 } from "@/features/raukk_sourcing/raukkSourcingGraph";
+
+// Pricing
+import { snapshotMateriallyChanged } from "@/features/raukk_sourcing/raukkSourcingPricing";
 
 // Schemas
 import {
@@ -26,7 +28,6 @@ import {
 	RAUKK_REPAIR_DAY,
 } from "@/features/raukk_sourcing/raukkSourcing.types";
 import {
-	IRaukkEdgeCandidate,
 	IRaukkExportPayload,
 	IRaukkProducerOption,
 	IRaukkSubscription,
@@ -156,28 +157,6 @@ export const useRaukkSourcingStore = defineStore(
 			};
 		}
 
-		/**
-		 * Checks if sourcing a ticker from the given candidate would
-		 * close a loop in the stored dependency graph. Backs the source
-		 * dropdowns greying out of invalid options.
-		 * @author raukk
-		 *
-		 * @param {string} consumerPlanUuid Consuming Plan Uuid
-		 * @param {IRaukkEdgeCandidate} candidate Candidate Source
-		 * @returns {boolean} Edge would create a supply loop
-		 */
-		function wouldCreateCycle(
-			consumerPlanUuid: string,
-			candidate: IRaukkEdgeCandidate
-		): boolean {
-			return wouldCreateCycleInGraph(
-				configs.value,
-				snapshots.value,
-				consumerPlanUuid,
-				candidate
-			);
-		}
-
 		// setters
 
 		/**
@@ -285,22 +264,28 @@ export const useRaukkSourcingStore = defineStore(
 
 		/**
 		 * Stores a freshly computed snapshot of a plan. The snapshot
-		 * itself is stored as current, every plan transitively
-		 * depending on it is marked stale as its numbers were derived
-		 * from the previous values.
+		 * itself is stored as current; every plan transitively
+		 * depending on it is marked stale, but only when the numbers
+		 * downstream plans consume actually changed — the automatic
+		 * snapshot upkeep recomputes on every plan view load, an
+		 * unchanged result must not flag the whole chain stale.
 		 * @author raukk
 		 *
 		 * @param {string} planUuid Plan Uuid
 		 * @param {IRaukkSnapshot} snapshot Snapshot Data
 		 */
 		function setSnapshot(planUuid: string, snapshot: IRaukkSnapshot): void {
+			const previous: IRaukkSnapshot | undefined =
+				snapshots.value[planUuid];
+
 			snapshots.value[planUuid] = {
 				...inertClone(snapshot),
 				stale: false,
 			};
 
 			// dependents derive from the new draws as well
-			cascadeStale(planUuid);
+			if (!previous || snapshotMateriallyChanged(previous, snapshot))
+				cascadeStale(planUuid);
 		}
 
 		/**
@@ -384,7 +369,6 @@ export const useRaukkSourcingStore = defineStore(
 			getSnapshot,
 			producersOf,
 			subscription,
-			wouldCreateCycle,
 			// setters
 			setTickerSource,
 			clearTickerSource,

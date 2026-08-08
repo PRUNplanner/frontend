@@ -225,4 +225,68 @@ describe("useRaukkChainRecompute", () => {
 
 		expect(mockComputePlanSnapshot.mock.calls.length).toBe(3);
 	});
+
+	it("adds settling passes for loops and stops once settled", async () => {
+		// d and e draw from each other
+		sourcingStore.setSnapshot(
+			"d",
+			makeSnapshot("D", { ORE: 1 }, { e: { FUEL: 1 } })
+		);
+		sourcingStore.setSnapshot(
+			"e",
+			makeSnapshot("E", { FUEL: 1 }, { d: { ORE: 1 } })
+		);
+
+		const { recomputeChain, total, done, errors } =
+			useRaukkChainRecompute();
+		await recomputeChain("d");
+
+		// one full pass plus one settling pass finding no change; the
+		// mocked pipeline never writes, so the second pass settles
+		expect(
+			mockComputePlanSnapshot.mock.calls.map((call) => call[0].planUuid)
+		).toStrictEqual(["e", "d", "e", "d"]);
+		expect(total.value).toBe(4);
+		expect(done.value).toBe(4);
+		expect(errors.value).toStrictEqual([]);
+	});
+
+	it("caps the settling passes of a loop that keeps shifting", async () => {
+		sourcingStore.setSnapshot(
+			"d",
+			makeSnapshot("D", { ORE: 1 }, { e: { FUEL: 1 } })
+		);
+		sourcingStore.setSnapshot(
+			"e",
+			makeSnapshot("E", { FUEL: 1 }, { d: { ORE: 1 } })
+		);
+
+		// every recompute shifts the stored cost, the loop never settles
+		let cost: number = 10;
+		mockComputePlanSnapshot.mockImplementation(
+			async (context: { planUuid: string }) => {
+				cost += 1;
+
+				const snapshot: IRaukkSnapshot = makeSnapshot(
+					context.planUuid === "d" ? "D" : "E",
+					context.planUuid === "d" ? { ORE: 1 } : { FUEL: 1 },
+					context.planUuid === "d"
+						? { e: { FUEL: 1 } }
+						: { d: { ORE: 1 } }
+				);
+				const ticker: string = context.planUuid === "d" ? "ORE" : "FUEL";
+				snapshot.outputs[ticker].costPerUnit = cost;
+
+				sourcingStore.setSnapshot(context.planUuid, snapshot);
+				return {};
+			}
+		);
+
+		const { recomputeChain, done } = useRaukkChainRecompute();
+		await recomputeChain("d");
+
+		// capped at 5 passes over the 2 plan loop
+		expect(mockComputePlanSnapshot.mock.calls.length).toBe(10);
+		expect(done.value).toBe(10);
+	});
 });

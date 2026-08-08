@@ -54,9 +54,11 @@
 
 	/**
 	 * Translated display name of an option, aggregates carry their
-	 * sentinel as name.
+	 * sentinel as name and the plan itself renders as "this base".
 	 */
 	function optionName(option: IRaukkSourceOption): string {
+		if (option.self) return t("raukk_sourcing.source_option.self");
+
 		if (!option.aggregate) return option.planName;
 
 		return option.value === "AGG_AVG"
@@ -83,15 +85,13 @@
 		props.options.map((option) => ({
 			label: optionLabel(option),
 			value: option.value,
-			disabled: option.disabled,
 			raukk: option,
 		}))
 	);
 
 	/**
 	 * Renders an option with a red subscription share on
-	 * oversubscription, a stale marker and, for options refused by the
-	 * cycle guard, the explaining tooltip.
+	 * oversubscription and a stale marker.
 	 */
 	function renderLabel(raw: SelectOption): VNode {
 		const option: IRaukkSourceOption = (raw as IRaukkSelectOption).raukk;
@@ -102,7 +102,9 @@
 			h(
 				"span",
 				`${optionName(option)}${
-					option.aggregate ? "" : ` (${option.planetNaturalId})`
+					option.aggregate || option.self
+						? ""
+						: ` (${option.planetNaturalId})`
 				} — ${formatNumber(option.costPerUnit)} ȼ/u — `
 			),
 			h(
@@ -125,22 +127,11 @@
 				)
 			);
 
-		if (option.disabled)
-			children.push(
-				h(
-					"span",
-					{ class: "pl-1 text-white/50" },
-					`(${t("raukk_sourcing.source_option.cycle")})`
-				)
-			);
-
 		return h(
 			"span",
 			{
 				class: "text-nowrap",
-				title: option.disabled
-					? t("raukk_sourcing.source_option.cycle")
-					: optionLabel(option),
+				title: optionLabel(option),
 			},
 			children
 		);
@@ -152,9 +143,7 @@
 			return;
 		}
 
-		const first: IRaukkSourceOption | undefined = props.options.find(
-			(option) => !option.disabled
-		);
+		const first: IRaukkSourceOption | undefined = props.options[0];
 
 		if (!first) return;
 

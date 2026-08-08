@@ -5,16 +5,11 @@
 // Calculation Utils
 import { resolveMarketPrice } from "@/features/raukk_sourcing/calculations/priceMode";
 
-// Graph
-import {
-	buildDependencyGraph,
-	IRaukkDependencyGraph,
-	wouldCreateCycleWithGraph,
-} from "@/features/raukk_sourcing/raukkSourcingGraph";
-
 // Types & Interfaces
 import { ICXData } from "@/stores/planningStore.types";
 import {
+	IRaukkOutputCost,
+	IRaukkSnapshot,
 	IRaukkTickerSource,
 	RAUKK_SOURCE_AGGREGATE,
 } from "@/features/raukk_sourcing/raukkSourcing.types";
@@ -23,10 +18,7 @@ import {
 	IRaukkPriceResolver,
 	IRaukkResolvedPrice,
 } from "@/features/raukk_sourcing/calculations/raukkCalculations.types";
-import {
-	IRaukkEdgeCandidate,
-	IRaukkProducerOption,
-} from "@/features/raukk_sourcing/raukkSourcingStore.types";
+import { IRaukkProducerOption } from "@/features/raukk_sourcing/raukkSourcingStore.types";
 import {
 	IRaukkInputBuckets,
 	IRaukkInputRow,
@@ -225,18 +217,17 @@ export function splitAggregateDraws(
  * Builds the source dropdown entries of one ticker.
  *
  * Every plan whose snapshot holds the ticker as an output becomes an
- * entry, the consuming plan itself is skipped. Entries closing a supply
- * loop stay visible but disabled. The synthetic aggregates are appended
- * as soon as two or more producers exist.
+ * entry, the consuming plan itself included: its repair demand never
+ * shows up in the netted material I/O, feeding own repairs from own
+ * output is therefore a legitimate edge. Supply loops are allowed —
+ * frozen snapshot pricing never recurses, looping values settle over
+ * repeated recomputes. The synthetic aggregates are appended as soon as
+ * two or more producers exist.
  *
  * `ownPct` is this plans prospective draw, `othersPct` everything other
  * plans already draw from the stored edges; the consumers own stored
  * draw is removed from that so it is not counted twice. Both may exceed
  * 1, oversubscription is allowed by design.
- *
- * The cycle guard graph is derived from the handed in configs and
- * snapshots exactly once and reused for every option, the per option
- * semantics stay those of the stores `wouldCreateCycle`.
  *
  * @author raukk
  *
@@ -246,29 +237,9 @@ export function splitAggregateDraws(
 export function buildSourceOptions(
 	input: IRaukkSourceOptionInput
 ): IRaukkSourceOption[] {
-	const producers: IRaukkProducerOption[] = input.producers.filter(
-		(producer) => producer.planUuid !== input.consumerPlanUuid
-	);
+	const producers: IRaukkProducerOption[] = input.producers;
 
 	if (producers.length === 0) return [];
-
-	// one graph for all options, every candidate is checked against the
-	// same state
-	const graph: IRaukkDependencyGraph = buildDependencyGraph(
-		input.configs,
-		input.snapshots
-	);
-
-	function isCycle(candidate: IRaukkEdgeCandidate): boolean {
-		if (input.consumerPlanUuid === undefined) return false;
-
-		return wouldCreateCycleWithGraph(
-			graph,
-			input.snapshots,
-			input.consumerPlanUuid,
-			candidate
-		);
-	}
 
 	function othersOf(producer: IRaukkProducerOption): number {
 		const subscription = input.subscriptionOf(
@@ -308,7 +279,7 @@ export function buildSourceOptions(
 			othersPct:
 				producer.unitsPerDay > 0 ? others / producer.unitsPerDay : 0,
 			stale: producer.stale,
-			disabled: isCycle({ sourcePlanUuid: producer.planUuid }),
+			self: producer.planUuid === input.consumerPlanUuid,
 			aggregate: false,
 			baseFraction: baseFractionOf(producer),
 		};
@@ -370,10 +341,6 @@ export function buildSourceOptions(
 	}
 
 	const stale: boolean = producers.some((producer) => producer.stale);
-	const aggregateDisabled: boolean = isCycle({
-		aggregate: "AGG_AVG",
-		ticker: input.ticker,
-	});
 
 	(["AGG_AVG", "AGG_MAX"] as RAUKK_SOURCE_AGGREGATE[]).forEach(
 		(aggregate) => {
@@ -389,7 +356,7 @@ export function buildSourceOptions(
 						: 0,
 				othersPct: unitsTotal > 0 ? othersTotal / unitsTotal : 0,
 				stale,
-				disabled: aggregateDisabled,
+				self: false,
 				aggregate: true,
 				baseFraction: aggregateBaseFraction(aggregate),
 			});
@@ -400,12 +367,151 @@ export function buildSourceOptions(
 }
 
 /**
+ * Largest relative `costPerUnit` difference between two output sets.
+ *
+ * Convergence measure of the loop settling iterations: recomputing a
+ * plan that is part of a supply loop (own repairs included) shifts its
+ * output costs a little each pass, once the largest relative shift
+ * drops below a threshold the loop has settled. Tickers appearing in
+ * only one of the two sets count as a full shift of 1, both sides
+ * being zero counts as no shift.
+ *
+ * @author raukk
+ *
+ * @param {Record<string, IRaukkOutputCost>} before Previous outputs
+ * @param {Record<string, IRaukkOutputCost>} after Current outputs
+ * @returns {number} Largest relative cost per unit change, >= 0
+ */
+export function maxRelativeOutputDelta(
+	before: Record<string, IRaukkOutputCost>,
+	after: Record<string, IRaukkOutputCost>
+): number {
+	const tickers: Set<string> = new Set([
+		...Object.keys(before),
+		...Object.keys(after),
+	]);
+
+	let max: number = 0;
+
+	tickers.forEach((ticker) => {
+		const previous: IRaukkOutputCost | undefined = before[ticker];
+		const current: IRaukkOutputCost | undefined = after[ticker];
+
+		if (!previous || !current) {
+			max = Math.max(max, 1);
+			return;
+		}
+
+		const reference: number = Math.max(
+			Math.abs(previous.costPerUnit),
+			Math.abs(current.costPerUnit)
+		);
+
+		if (reference === 0) return;
+
+		max = Math.max(
+			max,
+			Math.abs(current.costPerUnit - previous.costPerUnit) / reference
+		);
+	});
+
+	return max;
+}
+
+/** Relative difference below which two snapshot numbers count equal */
+const RAUKK_SNAPSHOT_EQUAL_EPSILON: number = 1e-9;
+
+/**
+ * Relative difference of two numbers against the larger magnitude,
+ * 0 when both are 0.
+ */
+function relativeDelta(previous: number, current: number): number {
+	const reference: number = Math.max(
+		Math.abs(previous),
+		Math.abs(current)
+	);
+
+	if (reference === 0) return 0;
+
+	return Math.abs(current - previous) / reference;
+}
+
+/**
+ * Determines if a freshly computed snapshot differs materially from the
+ * stored one, in anything downstream plans consume: output costs and
+ * daily units, and the draws held against other plans.
+ *
+ * Backs the stores conditional staleness cascade: the automatic
+ * snapshot upkeep recomputes on every plan view load, an unchanged
+ * result must not flag the whole downstream chain stale.
+ *
+ * @author raukk
+ *
+ * @param {IRaukkSnapshot} previous Stored Snapshot
+ * @param {IRaukkSnapshot} next Fresh Snapshot
+ * @returns {boolean} Downstream relevant numbers changed
+ */
+export function snapshotMateriallyChanged(
+	previous: IRaukkSnapshot,
+	next: IRaukkSnapshot
+): boolean {
+	const outputTickers: Set<string> = new Set([
+		...Object.keys(previous.outputs),
+		...Object.keys(next.outputs),
+	]);
+
+	for (const ticker of outputTickers) {
+		const previousOutput: IRaukkOutputCost | undefined =
+			previous.outputs[ticker];
+		const nextOutput: IRaukkOutputCost | undefined = next.outputs[ticker];
+
+		if (!previousOutput || !nextOutput) return true;
+
+		if (
+			relativeDelta(previousOutput.costPerUnit, nextOutput.costPerUnit) >=
+				RAUKK_SNAPSHOT_EQUAL_EPSILON ||
+			relativeDelta(previousOutput.unitsPerDay, nextOutput.unitsPerDay) >=
+				RAUKK_SNAPSHOT_EQUAL_EPSILON
+		)
+			return true;
+	}
+
+	const drawPlans: Set<string> = new Set([
+		...Object.keys(previous.draws),
+		...Object.keys(next.draws),
+	]);
+
+	for (const planUuid of drawPlans) {
+		const previousDraws: IRaukkMaterialUnits = previous.draws[planUuid] ?? {};
+		const nextDraws: IRaukkMaterialUnits = next.draws[planUuid] ?? {};
+
+		const drawTickers: Set<string> = new Set([
+			...Object.keys(previousDraws),
+			...Object.keys(nextDraws),
+		]);
+
+		for (const ticker of drawTickers) {
+			if (
+				relativeDelta(
+					previousDraws[ticker] ?? 0,
+					nextDraws[ticker] ?? 0
+				) >= RAUKK_SNAPSHOT_EQUAL_EPSILON
+			)
+				return true;
+		}
+	}
+
+	return false;
+}
+
+/**
  * Formats a source dropdown label.
  *
- * Aggregates carry their translated name in `planName` and no planet,
- * concrete producers render as "Plan (Planet)". Producers whose
- * snapshot already stores a base fraction append it as "— BF 1.50", it
- * is the quickest hint that a source ties up more than its own base.
+ * Aggregates and the plan itself carry their translated name in
+ * `planName` and no planet, other concrete producers render as
+ * "Plan (Planet)". Producers whose snapshot already stores a base
+ * fraction append it as "— BF 1.50", it is the quickest hint that a
+ * source ties up more than its own base.
  *
  * @author raukk
  *
@@ -419,9 +525,10 @@ export function formatSourceOptionLabel(
 	formatValue: (value: number) => string,
 	words: { yours: string; others: string }
 ): string {
-	const name: string = option.aggregate
-		? option.planName
-		: `${option.planName} (${option.planetNaturalId})`;
+	const name: string =
+		option.aggregate || option.self
+			? option.planName
+			: `${option.planName} (${option.planetNaturalId})`;
 
 	const own: string = `${formatValue(option.ownPct * 100)}% ${words.yours}`;
 	const others: string = `${formatValue(

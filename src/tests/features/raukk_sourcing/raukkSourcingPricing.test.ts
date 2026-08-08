@@ -8,7 +8,9 @@ import {
 	createRaukkPriceResolver,
 	formatSourceOptionLabel,
 	isAggregateSource,
+	maxRelativeOutputDelta,
 	resolveCxExchangeCode,
+	snapshotMateriallyChanged,
 	splitAggregateDraws,
 } from "@/features/raukk_sourcing/raukkSourcingPricing";
 
@@ -41,7 +43,7 @@ function producer(
 	};
 }
 
-/** Minimal snapshot producing RAT, enough for the cycle guard */
+/** Minimal snapshot producing RAT */
 function snapshot(baseFraction?: number): IRaukkSnapshot {
 	return {
 		computedAt: "2026-01-01T00:00:00.000Z",
@@ -249,7 +251,6 @@ describe("Raukk Sourcing Pricing", () => {
 							: [],
 					pctOfOutput: 0,
 				}),
-				configs: {},
 				snapshots: {},
 				...overrides,
 			});
@@ -287,41 +288,6 @@ describe("Raukk Sourcing Pricing", () => {
 			expect(aggregate.ownPct).toBe(0.125);
 			expect(aggregate.othersPct).toBe(0.175);
 			expect(build()[3].costPerUnit).toBe(20);
-		});
-
-		it("disables options refused by the cycle guard", () => {
-			// producer "a" already sources from the consuming plan
-			const options: IRaukkSourceOption[] = build({
-				configs: {
-					a: {
-						repairDay: 90,
-						sources: {
-							HE: {
-								mode: "plan",
-								sourcePlanUuid: "consumer",
-							},
-						},
-					},
-				},
-			});
-
-			expect(options[0].disabled).toBe(true);
-			expect(options[1].disabled).toBe(false);
-		});
-
-		it("disables the aggregates when the consumer produces itself", () => {
-			// the aggregate expands to every producer of the ticker, the
-			// consuming plan among them
-			const options: IRaukkSourceOption[] = build({
-				snapshots: {
-					consumer: snapshot(),
-				},
-			});
-
-			expect(options[0].disabled).toBe(false);
-			expect(options[1].disabled).toBe(false);
-			expect(options[2].disabled).toBe(true);
-			expect(options[3].disabled).toBe(true);
 		});
 
 		it("carries the producers stored base fraction", () => {
@@ -369,13 +335,21 @@ describe("Raukk Sourcing Pricing", () => {
 			expect(options[2].baseFraction).toBe(3);
 		});
 
-		it("skips the consuming plan itself", () => {
+		it("keeps the consuming plan itself and flags it self", () => {
 			const options: IRaukkSourceOption[] = build({
 				consumerPlanUuid: "a",
 			});
 
-			// single producer left, no aggregates
-			expect(options.map((o) => o.value)).toStrictEqual(["b"]);
+			// own output feeds own repairs, the plan stays selectable
+			expect(options.map((o) => o.value)).toStrictEqual([
+				"a",
+				"b",
+				"AGG_AVG",
+				"AGG_MAX",
+			]);
+			expect(options[0].self).toBe(true);
+			expect(options[1].self).toBe(false);
+			expect(options[2].self).toBe(false);
 		});
 
 		it("is empty without producers", () => {
@@ -402,7 +376,7 @@ describe("Raukk Sourcing Pricing", () => {
 			ownPct: 0.46,
 			othersPct: 0.87,
 			stale: false,
-			disabled: false,
+			self: false,
 			aggregate: false,
 		};
 
@@ -425,6 +399,16 @@ describe("Raukk Sourcing Pricing", () => {
 					{ yours: "yours", others: "others" }
 				)
 			).toBe("All producers — 28.35 ȼ/u — 46% yours / 87% others");
+		});
+
+		it("formats the plan itself without planet", () => {
+			expect(
+				formatSourceOptionLabel(
+					{ ...option, self: true, planName: "Own output" },
+					format,
+					{ yours: "yours", others: "others" }
+				)
+			).toBe("Own output — 28.35 ȼ/u — 46% yours / 87% others");
 		});
 
 		it("appends a stored base fraction", () => {
@@ -519,6 +503,135 @@ describe("Raukk Sourcing Pricing", () => {
 
 			expect(rows.map((r) => r.ticker)).not.toContain("FE");
 			expect(rows.map((r) => r.ticker)).not.toContain("BSE");
+		});
+	});
+
+	describe("maxRelativeOutputDelta", () => {
+		const outputs = (costs: Record<string, number>) =>
+			Object.fromEntries(
+				Object.entries(costs).map(([ticker, costPerUnit]) => [
+					ticker,
+					{
+						ticker,
+						unitsPerDay: 10,
+						costPerUnit,
+						breakdown: {
+							workforce: 0,
+							repair: 0,
+							inputs: costPerUnit,
+							shipping: 0,
+						},
+					},
+				])
+			);
+
+		it("is 0 for identical outputs", () => {
+			expect(
+				maxRelativeOutputDelta(
+					outputs({ RAT: 10, DW: 5 }),
+					outputs({ RAT: 10, DW: 5 })
+				)
+			).toBe(0);
+		});
+
+		it("measures the largest relative cost shift", () => {
+			expect(
+				maxRelativeOutputDelta(
+					outputs({ RAT: 10, DW: 5 }),
+					outputs({ RAT: 11, DW: 5 })
+				)
+			).toBeCloseTo(1 / 11, 10);
+		});
+
+		it("counts appearing or vanishing tickers as full shift", () => {
+			expect(
+				maxRelativeOutputDelta(outputs({ RAT: 10 }), outputs({ DW: 5 }))
+			).toBe(1);
+		});
+
+		it("treats zero on both sides as no shift", () => {
+			expect(
+				maxRelativeOutputDelta(outputs({ RAT: 0 }), outputs({ RAT: 0 }))
+			).toBe(0);
+		});
+	});
+
+	describe("snapshotMateriallyChanged", () => {
+		function fullSnapshot(
+			costPerUnit: number,
+			unitsPerDay: number,
+			draws: Record<string, Record<string, number>>
+		): IRaukkSnapshot {
+			return {
+				computedAt: "2026-01-01T00:00:00.000Z",
+				stale: false,
+				planName: "Plan",
+				planetNaturalId: "OT-580b",
+				outputs: {
+					RAT: {
+						ticker: "RAT",
+						unitsPerDay,
+						costPerUnit,
+						breakdown: {
+							workforce: 1,
+							repair: 1,
+							inputs: costPerUnit - 2,
+							shipping: 0,
+						},
+					},
+				},
+				draws,
+			};
+		}
+
+		it("is false for numerically identical snapshots", () => {
+			expect(
+				snapshotMateriallyChanged(
+					fullSnapshot(10, 100, { a: { ORE: 5 } }),
+					fullSnapshot(10, 100, { a: { ORE: 5 } })
+				)
+			).toBe(false);
+		});
+
+		it("detects output cost and unit changes", () => {
+			expect(
+				snapshotMateriallyChanged(
+					fullSnapshot(10, 100, {}),
+					fullSnapshot(11, 100, {})
+				)
+			).toBe(true);
+			expect(
+				snapshotMateriallyChanged(
+					fullSnapshot(10, 100, {}),
+					fullSnapshot(10, 90, {})
+				)
+			).toBe(true);
+		});
+
+		it("detects draw changes", () => {
+			expect(
+				snapshotMateriallyChanged(
+					fullSnapshot(10, 100, { a: { ORE: 5 } }),
+					fullSnapshot(10, 100, { a: { ORE: 6 } })
+				)
+			).toBe(true);
+			expect(
+				snapshotMateriallyChanged(
+					fullSnapshot(10, 100, { a: { ORE: 5 } }),
+					fullSnapshot(10, 100, {})
+				)
+			).toBe(true);
+		});
+
+		it("ignores metadata only differences", () => {
+			const previous: IRaukkSnapshot = fullSnapshot(10, 100, {});
+			const next: IRaukkSnapshot = {
+				...fullSnapshot(10, 100, {}),
+				computedAt: "2026-02-02T00:00:00.000Z",
+				stale: true,
+			};
+
+			expect(snapshotMateriallyChanged(previous, next)).toBe(false);
 		});
 	});
 

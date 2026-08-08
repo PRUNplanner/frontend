@@ -6,6 +6,7 @@
 		"total": "True cost per output unit"
 	},
 	"per_unit": "ȼ/u",
+	"daily_total": "≈ {total} ȼ/d sourced",
 	"stale": {
 		"tag": "stale",
 		"tooltip": "Snapshot computed {computedAt} and marked stale since. Recompute it in the Sourcing tab."

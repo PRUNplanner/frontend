@@ -194,64 +194,32 @@ describe("Raukk Sourcing Store", () => {
 
 			expect(store.snapshots.a.outputs.ORE.costPerUnit).toBe(42);
 		});
-	});
 
-	describe("wouldCreateCycle", () => {
-		beforeEach(() => {
+		it("setSnapshot skips the cascade when the numbers are unchanged", () => {
+			buildChain();
+
+			// same numbers again, e.g. the automatic upkeep on view load
 			store.setSnapshot("a", makeSnapshot("A", { ORE: 100 }));
-			store.setSnapshot("b", makeSnapshot("B", { MET: 50 }));
-			store.setTickerSource("b", "ORE", {
-				mode: "plan",
-				sourcePlanUuid: "a",
-			});
+
+			expect(store.snapshots.b.stale).toBe(false);
+			expect(store.snapshots.c.stale).toBe(false);
 		});
 
-		it("refuses an edge closing the loop", () => {
-			expect(store.wouldCreateCycle("a", { sourcePlanUuid: "b" })).toBe(
-				true
+		it("staleness cascades along a supply loop without hanging", () => {
+			// a and b draw from each other
+			store.setSnapshot(
+				"a",
+				makeSnapshot("A", { ORE: 100 }, { b: { FUEL: 5 } })
 			);
-		});
-
-		it("allows an edge in dependency direction", () => {
-			expect(store.wouldCreateCycle("b", { sourcePlanUuid: "a" })).toBe(
-				false
+			store.setSnapshot(
+				"b",
+				makeSnapshot("B", { FUEL: 50 }, { a: { ORE: 40 } })
 			);
-		});
 
-		it("refuses self references", () => {
-			expect(store.wouldCreateCycle("a", { sourcePlanUuid: "a" })).toBe(
-				true
-			);
-		});
+			store.markStale("a");
 
-		it("refuses aggregates containing a downstream plan", () => {
-			// a would source MET, produced by b, which draws from a
-			expect(
-				store.wouldCreateCycle("a", {
-					aggregate: "AGG_AVG",
-					ticker: "MET",
-				})
-			).toBe(true);
-		});
-
-		it("refuses aggregates containing the consumer itself", () => {
-			expect(
-				store.wouldCreateCycle("a", {
-					aggregate: "AGG_MAX",
-					ticker: "ORE",
-				})
-			).toBe(true);
-		});
-
-		it("allows aggregates of unrelated producers", () => {
-			store.setSnapshot("c", makeSnapshot("C", { DW: 10 }));
-
-			expect(
-				store.wouldCreateCycle("a", {
-					aggregate: "AGG_AVG",
-					ticker: "DW",
-				})
-			).toBe(false);
+			expect(store.snapshots.a.stale).toBe(true);
+			expect(store.snapshots.b.stale).toBe(true);
 		});
 	});
 
@@ -441,6 +409,29 @@ describe("Raukk Sourcing Store", () => {
 			);
 
 			expect(store.getConfig("a").repairDay).toBe(30);
+		});
+
+		it("accepts snapshots carrying frozen input and sell prices", () => {
+			const snapshot: IRaukkSnapshot = {
+				...makeSnapshot("A", { ORE: 100 }),
+				inputPrices: { FUEL: 12.5 },
+				sellPrices: { ORE: 55 },
+			};
+
+			store.importJSON(
+				JSON.stringify({
+					version: 1,
+					configs: {},
+					snapshots: { a: snapshot },
+				})
+			);
+
+			expect(store.getSnapshot("a")?.inputPrices).toStrictEqual({
+				FUEL: 12.5,
+			});
+			expect(store.getSnapshot("a")?.sellPrices).toStrictEqual({
+				ORE: 55,
+			});
 		});
 	});
 

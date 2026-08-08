@@ -13,11 +13,16 @@ import { computePlanSnapshot } from "@/features/raukk_sourcing/useRaukkSnapshot"
 import {
 	buildDependencyGraph,
 	buildRecomputeOrder,
+	IRaukkRecomputePlanning,
 } from "@/features/raukk_sourcing/raukkSourcingGraph";
+
+// Pricing
+import { maxRelativeOutputDelta } from "@/features/raukk_sourcing/raukkSourcingPricing";
 
 // Types & Interfaces
 import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
 import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import { IRaukkOutputCost } from "@/features/raukk_sourcing/raukkSourcing.types";
 
 /** One plan of a chain run that could not be recomputed */
 export interface IRaukkChainError {
@@ -25,6 +30,12 @@ export interface IRaukkChainError {
 	planName: string;
 	message: string;
 }
+
+/** Total pass cap of a cyclic chain run, first pass included */
+const RAUKK_CHAIN_MAX_PASSES: number = 5;
+
+/** Relative cost change below which a supply loop counts as settled */
+const RAUKK_CHAIN_EPSILON: number = 1e-6;
 
 /**
  * Recomputes a whole sourcing chain instead of a single plan.
@@ -108,7 +119,40 @@ export function useRaukkChainRecompute() {
 	}
 
 	/**
+	 * Snapshot output costs of the given plans, the comparison base of
+	 * the loop settling passes.
+	 *
+	 * @author raukk
+	 *
+	 * @param {string[]} order Plan Uuids
+	 * @returns {Record<string, Record<string, IRaukkOutputCost>>} Outputs
+	 * by plan uuid
+	 */
+	function captureOutputs(
+		order: string[]
+	): Record<string, Record<string, IRaukkOutputCost>> {
+		const captured: Record<
+			string,
+			Record<string, IRaukkOutputCost>
+		> = {};
+
+		order.forEach((uuid) => {
+			captured[uuid] = sourcingStore.snapshots[uuid]?.outputs ?? {};
+		});
+
+		return captured;
+	}
+
+	/**
 	 * Recomputes the sourcing chain the given plan is part of.
+	 *
+	 * A chain whose scope contains a supply loop is recomputed in
+	 * multiple passes: every pass consumes the frozen values of the
+	 * previous one, the loops numbers shrink towards their fixed point
+	 * each time. Passes stop once the largest relative output cost
+	 * change drops below {@link RAUKK_CHAIN_EPSILON} or
+	 * {@link RAUKK_CHAIN_MAX_PASSES} is reached. Acyclic chains keep
+	 * their single upstream first pass.
 	 *
 	 * @author raukk
 	 *
@@ -118,7 +162,7 @@ export function useRaukkChainRecompute() {
 	async function recomputeChain(planUuid: string): Promise<void> {
 		if (running.value) return;
 
-		const order: string[] = buildRecomputeOrder(
+		const planning: IRaukkRecomputePlanning = buildRecomputeOrder(
 			buildDependencyGraph(
 				sourcingStore.configs,
 				sourcingStore.snapshots
@@ -126,6 +170,7 @@ export function useRaukkChainRecompute() {
 			planUuid,
 			(uuid: string) => sourcingStore.snapshots[uuid] !== undefined
 		);
+		const order: string[] = planning.order;
 
 		running.value = true;
 		current.value = undefined;
@@ -133,9 +178,10 @@ export function useRaukkChainRecompute() {
 		total.value = order.length;
 		errors.value = [];
 
-		try {
-			const empireList: IPlanEmpireElement[] = await empires();
-
+		/**
+		 * One recompute pass over the whole ordered scope.
+		 */
+		async function runPass(empireList: IPlanEmpireElement[]): Promise<void> {
 			for (const uuid of order) {
 				const planName: string =
 					sourcingStore.snapshots[uuid]?.planName ?? uuid;
@@ -159,6 +205,37 @@ export function useRaukkChainRecompute() {
 
 				// yield back to vue and update the progress display
 				await new Promise((resolve) => setTimeout(resolve, 0));
+			}
+		}
+
+		try {
+			const empireList: IPlanEmpireElement[] = await empires();
+
+			await runPass(empireList);
+
+			// loop settling passes, see the function doc
+			for (
+				let pass = 2;
+				planning.cyclic && pass <= RAUKK_CHAIN_MAX_PASSES;
+				pass++
+			) {
+				const before: Record<
+					string,
+					Record<string, IRaukkOutputCost>
+				> = captureOutputs(order);
+
+				total.value += order.length;
+				await runPass(empireList);
+
+				const settled: boolean = order.every(
+					(uuid) =>
+						maxRelativeOutputDelta(
+							before[uuid],
+							sourcingStore.snapshots[uuid]?.outputs ?? {}
+						) < RAUKK_CHAIN_EPSILON
+				);
+
+				if (settled) break;
 			}
 		} finally {
 			running.value = false;

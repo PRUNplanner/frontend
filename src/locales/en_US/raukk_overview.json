@@ -1,0 +1,6 @@
+{
+	"line_cost": "Sourced: cost {cost} ȼ/d · repair {repair} ȼ/d",
+	"line_profit": "Sourced profit: {profit} ȼ/d",
+	"stale": "(stale)",
+	"tooltip": "Daily numbers at the plan's sourcing snapshot from {computedAt}: full true cost of all outputs, repair capital cost (the degradation counterpart) and profit against the frozen market sell prices. The vanilla numbers above stay untouched."
+}

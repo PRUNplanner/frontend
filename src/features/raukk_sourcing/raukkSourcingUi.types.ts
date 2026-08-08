@@ -5,7 +5,6 @@
 // Types & Interfaces
 import {
 	IRaukkCostBreakdown,
-	IRaukkPlanConfig,
 	IRaukkSnapshot,
 	IRaukkTickerSource,
 	RAUKK_SOURCE_AGGREGATE,
@@ -65,8 +64,8 @@ export interface IRaukkSourceOption {
 	/** Share other plans already draw, may exceed 1 */
 	othersPct: number;
 	stale: boolean;
-	/** Refused by the cycle guard, rendered greyed out */
-	disabled: boolean;
+	/** The consuming plan itself, e.g. own output feeding own repairs */
+	self: boolean;
 	aggregate: boolean;
 	/** Base fraction of the producer(s) snapshot, undefined when none of
 	 * them stores one yet */
@@ -94,8 +93,7 @@ export interface IRaukkSourceOptionInput {
 		sourcePlanUuid: string,
 		ticker: string
 	) => IRaukkSubscription;
-	/** Cycle guard state, the dependency graph is derived from it once */
-	configs: Record<string, IRaukkPlanConfig>;
+	/** Base fractions of the options come from the stored snapshots */
 	snapshots: Record<string, IRaukkSnapshot>;
 }
 

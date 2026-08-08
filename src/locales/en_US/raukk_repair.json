@@ -5,7 +5,9 @@
 		"cycle_value": "{days} days",
 		"per_period": "Cost per Cycle",
 		"per_day": "Cost per Day",
-		"materials": "Repair Materials"
+		"materials": "Repair Materials",
+		"sourced": "At Sourced Prices / Day ({days}d cycle)",
+		"sourced_tooltip": "Repair capital cost per day at the sourcing snapshot's configured prices and repair cycle. The market priced numbers above stay untouched."
 	},
 	"per_unit": {
 		"title": "Repair Cost per Unit of Output",

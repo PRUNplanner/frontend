@@ -6,8 +6,9 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
-	// raukk: sourcing annotation of a single material I/O row
+	// raukk: sourcing annotation + sourced cost note of a material I/O row
 	import RaukkMaterialIOInfo from "@/features/raukk_sourcing/components/RaukkMaterialIOInfo.vue";
+	import RaukkMaterialIOCost from "@/features/raukk_sourcing/components/RaukkMaterialIOCost.vue";
 
 	// Types & Interfaces
 	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
@@ -97,6 +98,11 @@
 					">
 					{{ formatNumber(rowData.price) }}
 				</span>
+				<!-- raukk: sourced cost note -->
+				<RaukkMaterialIOCost
+					:ticker="rowData.ticker"
+					:delta="rowData.delta"
+					:vanilla-cost-per-day="rowData.price" />
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn

@@ -40,6 +40,8 @@
 	import { useCXData } from "@/features/cx/useCXData";
 	const { findEmpireCXUuid } = useCXData();
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
+	// raukk: automatic sourcing snapshot upkeep of the open plan
+	import { useRaukkAutoSnapshot } from "@/features/raukk_sourcing/useRaukkAutoSnapshot";
 	import { usePlan } from "@/features/planning_data/usePlan";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
 	const {
@@ -207,6 +209,16 @@
 		refEmpireUuid.value = props.empireList[0].uuid;
 		refCXUuid.value = findEmpireCXUuid(refEmpireUuid.value);
 	}
+
+	// raukk: keep this plan's sourcing snapshot current, single base only
+	useRaukkAutoSnapshot({
+		planUuid: computed(() => refPlanData.value.uuid),
+		planName: computed(() => planName.value ?? ""),
+		planetNaturalId: computed(() => planetData.planet_natural_id),
+		cxUuid: refCXUuid,
+		planResult: result,
+		disabled: computed(() => props.disabled),
+	});
 
 	/**
 	 * Tool Setup

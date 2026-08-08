@@ -175,4 +175,28 @@ describe("Raukk Base Fraction", () => {
 
 		expect(result).toBe(1.5);
 	});
+
+	it("excludes the plans own self draw", () => {
+		// own output feeding own repairs, the own base is the leading 1
+		const result: number = calculateBaseFraction(
+			{ self: { RAT: 50 }, other: { DW: 100 } },
+			lookup({
+				self: snapshot([output("RAT", 100, 5)], 3),
+				other: snapshot([output("DW", 200, 1)]),
+			}),
+			"self"
+		);
+
+		// 1 + 0.5 of "other", nothing of the self draw
+		expect(result).toBe(1.5);
+	});
+
+	it("counts every draw when no own plan uuid is given", () => {
+		const result: number = calculateBaseFraction(
+			{ self: { RAT: 50 } },
+			lookup({ self: snapshot([output("RAT", 100, 5)]) })
+		);
+
+		expect(result).toBe(1.5);
+	});
 });

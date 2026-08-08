@@ -55,6 +55,13 @@ export interface IRaukkSnapshot {
 	draws: Record<string, Record<string, number>>;
 	/** Sourcing config this snapshot was computed with */
 	config?: IRaukkPlanConfig;
+	/** Effective ȼ per unit of every input ticker at computation time,
+	 * market and plan sourced alike. Backs the read only sourced cost
+	 * notes on the non-sourcing panels. */
+	inputPrices?: Record<string, number>;
+	/** Market sell ȼ per unit of every output ticker at computation
+	 * time. Backs the read only profit note on the plan overview. */
+	sellPrices?: Record<string, number>;
 	/** Cumulative base permits occupied: 1 (own base) + Σ per
 	 * source (cost-weighted share of source output drawn ×
 	 * source baseFraction). May exceed the plan count on paper —

@@ -16,6 +16,7 @@ import {
 	buildInputRows,
 	buildSourceOptions,
 	createRaukkPriceResolver,
+	maxRelativeOutputDelta,
 	resolveCxExchangeCode,
 	splitAggregateDraws,
 } from "@/features/raukk_sourcing/raukkSourcingPricing";
@@ -78,6 +79,14 @@ export interface IRaukkPlanSnapshotResult {
 	snapshot: IRaukkSnapshot;
 	prices: IRaukkPriceCaches;
 }
+
+/** Iteration cap of the self supply fixed point, see
+ * {@link computePlanSnapshot} */
+const RAUKK_SELF_LOOP_MAX_ITERATIONS: number = 10;
+
+/** Relative cost change below which a self supply loop counts as
+ * settled */
+const RAUKK_SELF_LOOP_EPSILON: number = 1e-9;
 
 /**
  * All tickers a plans sourcing numbers need prices for: everything
@@ -164,14 +173,24 @@ async function loadRaukkPrices(params: {
  * aggregate draw splitting, base fraction, store write — detached from
  * any component: {@link useRaukkSnapshot} runs it for the plan the
  * sourcing tool is open on, `useRaukkChainRecompute` runs it for every
- * plan of a dependency chain. Prices are returned alongside the stored
+ * plan of a dependency chain and `useRaukkAutoSnapshot` keeps the open
+ * plans snapshot current. Prices are returned alongside the stored
  * snapshot so a caller displaying live numbers can adopt exactly the
  * ones the frozen values were computed from.
+ *
+ * A plan may source from itself — own output feeding own repairs — in
+ * which case the pipeline reruns against its own freshly stored value
+ * until the numbers settle (a fixed point exists because the self drawn
+ * share is a fraction of the total cost) or the iteration cap is hit.
+ * Cross plan loops settle the same way, but across chain recompute
+ * passes instead of within one call.
  *
  * Aggregate draws are pre split into concrete producer uuids before
  * storing, the persisted `draws` keys are always plan uuids. The base
  * fraction is derived from those concrete draws and the stored
- * snapshots of the sources, it is frozen with the rest.
+ * snapshots of the sources, it is frozen with the rest. The effective
+ * input prices and the market sell prices of the outputs are frozen
+ * alongside, they back the read only sourced cost notes.
  *
  * @author raukk
  *
@@ -205,56 +224,103 @@ export async function computePlanSnapshot(
 		getExchangeTicker,
 	});
 
-	const config: IRaukkPlanConfig = sourcingStore.getConfig(context.planUuid);
-
 	const getProducers = (ticker: string): IRaukkProducerOption[] =>
-		sourcingStore
-			.producersOf(ticker)
-			.filter((producer) => producer.planUuid !== context.planUuid);
+		sourcingStore.producersOf(ticker);
 
-	const resolver: IRaukkPriceResolver = createRaukkPriceResolver({
-		sources: config.sources,
-		getExchange: (ticker: string) => prices.exchangePrices[ticker],
-		getDefaultPrice: (ticker: string) => prices.defaultPrices[ticker] ?? 0,
-		getProducers,
-	});
+	/**
+	 * One full snapshot computation against the current store state.
+	 * Reads the configuration and the producer snapshots live, so a
+	 * rerun after a store write picks up the plans own new value.
+	 */
+	function computeOnce(): IRaukkSnapshot {
+		const config: IRaukkPlanConfig = sourcingStore.getConfig(
+			context.planUuid
+		);
 
-	const repairCost: IRaukkRepairCost = calculateRepairCostPerDay(
-		context.planResult.production.buildings.map((building) => ({
-			name: building.name,
-			amount: building.amount,
-			constructionMaterials: building.constructionMaterials,
-		})),
-		config.repairDay,
-		(ticker: string) => resolver(ticker).price
-	);
+		const resolver: IRaukkPriceResolver = createRaukkPriceResolver({
+			sources: config.sources,
+			getExchange: (ticker: string) => prices.exchangePrices[ticker],
+			getDefaultPrice: (ticker: string) =>
+				prices.defaultPrices[ticker] ?? 0,
+			getProducers,
+		});
 
-	const result: IRaukkTrueCostResult = calculateTrueCosts({
-		planResult: context.planResult,
-		repairCostPerDayByBuilding: repairCost.perBuilding,
-		repairMaterialUnitsPerDay: repairCost.materialUnitsPerDay,
-		resolveInputPrice: resolver,
-	});
+		const repairCost: IRaukkRepairCost = calculateRepairCostPerDay(
+			context.planResult.production.buildings.map((building) => ({
+				name: building.name,
+				amount: building.amount,
+				constructionMaterials: building.constructionMaterials,
+			})),
+			config.repairDay,
+			(ticker: string) => resolver(ticker).price
+		);
 
-	const draws: Record<string, IRaukkMaterialUnits> = splitAggregateDraws(
-		result.draws,
-		getProducers
-	);
+		const result: IRaukkTrueCostResult = calculateTrueCosts({
+			planResult: context.planResult,
+			repairCostPerDayByBuilding: repairCost.perBuilding,
+			repairMaterialUnitsPerDay: repairCost.materialUnitsPerDay,
+			resolveInputPrice: resolver,
+		});
 
-	const snapshot: IRaukkSnapshot = {
-		computedAt: new Date().toISOString(),
-		stale: false,
-		planName: context.planName,
-		planetNaturalId: context.planetNaturalId,
-		outputs: inertClone(result.outputs),
-		draws,
-		config: inertClone(config),
-		baseFraction: calculateBaseFraction(draws, (sourcePlanUuid) =>
-			sourcingStore.getSnapshot(sourcePlanUuid)
-		),
-	};
+		const draws: Record<string, IRaukkMaterialUnits> = splitAggregateDraws(
+			result.draws,
+			getProducers
+		);
 
+		const inputPrices: Record<string, number> = {};
+		buildInputRows(
+			context.planResult,
+			repairCost.materialUnitsPerDay,
+			config.sources,
+			resolver
+		).forEach((row) => {
+			inputPrices[row.ticker] = row.price;
+		});
+
+		const sellPrices: Record<string, number> = {};
+		Object.keys(result.outputs).forEach((ticker) => {
+			sellPrices[ticker] = prices.sellPrices[ticker] ?? 0;
+		});
+
+		return {
+			computedAt: new Date().toISOString(),
+			stale: false,
+			planName: context.planName,
+			planetNaturalId: context.planetNaturalId,
+			outputs: inertClone(result.outputs),
+			draws,
+			config: inertClone(config),
+			baseFraction: calculateBaseFraction(
+				draws,
+				(sourcePlanUuid) => sourcingStore.getSnapshot(sourcePlanUuid),
+				context.planUuid
+			),
+			inputPrices,
+			sellPrices,
+		};
+	}
+
+	let snapshot: IRaukkSnapshot = computeOnce();
 	sourcingStore.setSnapshot(context.planUuid, snapshot);
+
+	// self supply fixed point: rerun against the own stored value until
+	// the outputs settle, see the function doc
+	for (
+		let iteration = 1;
+		snapshot.draws[context.planUuid] !== undefined &&
+		iteration < RAUKK_SELF_LOOP_MAX_ITERATIONS;
+		iteration++
+	) {
+		const next: IRaukkSnapshot = computeOnce();
+		const settled: boolean =
+			maxRelativeOutputDelta(snapshot.outputs, next.outputs) <
+			RAUKK_SELF_LOOP_EPSILON;
+
+		snapshot = next;
+		sourcingStore.setSnapshot(context.planUuid, snapshot);
+
+		if (settled) break;
+	}
 
 	return { snapshot, prices };
 }
@@ -307,14 +373,13 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 	});
 
 	/**
-	 * Producers of a ticker, without the plan itself. Same planet self
-	 * consumption is already netted by the material I/O, a plan must
-	 * never draw from its own snapshot.
+	 * Producers of a ticker, the plan itself included: production and
+	 * workforce self consumption is netted by the material I/O already,
+	 * but repair demand is not — own output feeding own repairs is a
+	 * legitimate source edge.
 	 */
 	function getProducers(ticker: string): IRaukkProducerOption[] {
-		return sourcingStore
-			.producersOf(ticker)
-			.filter((producer) => producer.planUuid !== context.planUuid.value);
+		return sourcingStore.producersOf(ticker);
 	}
 
 	const resolver: ComputedRef<IRaukkPriceResolver> = computed(() =>
@@ -386,7 +451,8 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 			: undefined
 	);
 
-	/** Producers the current configuration draws from */
+	/** Producers the current configuration draws from. The plan itself
+	 * is skipped, its own staleness is surfaced by the snapshot tag. */
 	const usedSources: ComputedRef<IRaukkProducerOption[]> = computed(() => {
 		const seen: Set<string> = new Set();
 		const result: IRaukkProducerOption[] = [];
@@ -397,9 +463,10 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 			getProducers(ticker)
 				.filter(
 					(producer) =>
-						source.sourcePlanUuid === "AGG_AVG" ||
-						source.sourcePlanUuid === "AGG_MAX" ||
-						source.sourcePlanUuid === producer.planUuid
+						producer.planUuid !== context.planUuid.value &&
+						(source.sourcePlanUuid === "AGG_AVG" ||
+							source.sourcePlanUuid === "AGG_MAX" ||
+							source.sourcePlanUuid === producer.planUuid)
 				)
 				.forEach((producer) => {
 					if (seen.has(producer.planUuid)) return;
@@ -436,7 +503,6 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 			prospectiveDrawPerDay,
 			producers: getProducers(ticker),
 			subscriptionOf: sourcingStore.subscription,
-			configs: sourcingStore.configs,
 			snapshots: sourcingStore.snapshots,
 		});
 	}
