@@ -1,0 +1,23 @@
+{
+	"totals": {
+		"title": "Plan Repair Total",
+		"cycle": "Repair Cycle",
+		"cycle_value": "{days} days",
+		"per_period": "Cost per Cycle",
+		"per_day": "Cost per Day",
+		"materials": "Repair Materials"
+	},
+	"per_unit": {
+		"title": "Repair Cost per Unit of Output",
+		"description": "Daily repair cost of each building attributed to its outputs, amortized by recipe runtime share and split across multi output recipes.",
+		"material": "Output",
+		"units_per_day": "Units / Day",
+		"cost_per_unit": "ȼ / Unit",
+		"cost_per_day": "ȼ / Day",
+		"cost_per_period": "ȼ / Cycle",
+		"share": "Share",
+		"total": "Total",
+		"unallocated": "Unallocated",
+		"no_data": "No production output available for this plan."
+	}
+}

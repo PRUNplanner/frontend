@@ -12,6 +12,8 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
+// raukk: sourcing snapshots follow plan saves and deletions
+import { useRaukkSourcingStore } from "@/features/raukk_sourcing/raukkSourcingStore";
 
 // indexeddb
 import {
@@ -159,6 +161,8 @@ export function useQueryRepository() {
 	const queryStore = useQueryStore();
 	const planningStore = usePlanningStore();
 	const userStore = useUserStore();
+	// raukk: sourcing store, snapshot staleness follows plan mutations
+	const raukkSourcingStore = useRaukkSourcingStore();
 
 	const repository: IQueryRepository = {
 		GetMaterials: {
@@ -700,6 +704,8 @@ export function useQueryRepository() {
 						params.planUuid,
 					]);
 					planningStore.deletePlan(params.planUuid);
+					// raukk: drop sourcing data, flag its dependents
+					raukkSourcingStore.deletePlanData(params.planUuid);
 				});
 			},
 			autoRefetch: false,
@@ -735,6 +741,9 @@ export function useQueryRepository() {
 				data: IPlanSaveData;
 			}) => {
 				const data = await callSavePlan(params.planUuid, params.data);
+				// raukk: saved plan invalidates its own and all
+				// downstream snapshots
+				raukkSourcingStore.markStale(params.planUuid);
 				await queryStore.invalidateKey(["planningdata", "plan"], {
 					exact: false,
 				});

@@ -1,0 +1,82 @@
+{
+	"title": "Sourcing",
+	"info": "True break-even cost per output unit, with inputs either bought at market or drawn from another plan's stored snapshot.",
+	"unsaved_plan": "Save the plan first, sourcing snapshots are stored per plan uuid.",
+	"read_only": "This plan is read-only, sourcing configuration can't be changed.",
+	"controls": {
+		"repair_day": "Repair Day",
+		"compute": "Compute Snapshot",
+		"compute_error": "Snapshot computation failed: {message}",
+		"recompute_chain": "Recompute Chain",
+		"recompute_chain_tooltip": "Recomputes the snapshots of this plan's whole sourcing chain — its sources, this plan and everything drawing from it — upstream first.",
+		"recompute_chain_progress": "Recomputing {done}/{total}: {name}…",
+		"recompute_chain_error": "{name}: {message}",
+		"export": "Export JSON",
+		"import": "Import JSON",
+		"import_placeholder": "Paste a previously exported sourcing payload",
+		"import_file": "Import File",
+		"import_apply": "Apply Import",
+		"import_cancel": "@:common.buttons.cancel",
+		"import_success": "Sourcing data imported.",
+		"import_error": "Import failed: {message}"
+	},
+	"snapshot": {
+		"never": "No snapshot computed yet",
+		"computed_at": "Snapshot from {timestamp}",
+		"stale": "Stale",
+		"current": "Current",
+		"stale_sources": "{count} upstream snapshot(s) used here are stale",
+		"base_fraction": "Base fraction: {value}",
+		"base_fraction_tooltip": "Base permits this product chain occupies: the plan's own base plus, per source plan, the cost-weighted share of that source's output drawn here, times the source's own base fraction. Fully using this base and half of another one gives 1.50. High values mean the chain ties up several bases — often cheaper to buy than to build."
+	},
+	"inputs_title": "Inputs",
+	"inputs": {
+		"ticker": "Ticker",
+		"buckets": "Buckets",
+		"daily_need": "Need / Day",
+		"price_mode": "Price Mode",
+		"use_source": "Plan",
+		"source": "Source",
+		"effective_price": "Effective ȼ/u",
+		"line_cost": "ȼ/Day",
+		"total_cost": "Total Input Cost / Day",
+		"repair_cost": "Repair Capital Cost / Day",
+		"no_producers": "No plan produces this ticker",
+		"market": "Market",
+		"empty": "This plan has no net inputs."
+	},
+	"buckets": {
+		"production": "Production",
+		"workforce": "Workforce",
+		"repair": "Repair"
+	},
+	"price_modes": {
+		"BID": "Bid",
+		"ASK": "Ask",
+		"MID": "Mid",
+		"AVG7D": "Average 7d",
+		"AVG30D": "Average 30d",
+		"default": "CX Preference"
+	},
+	"source_option": {
+		"yours": "this base",
+		"others": "other bases",
+		"agg_avg": "All producers (weighted avg)",
+		"agg_max": "Highest-cost producer",
+		"cycle": "would create a supply loop",
+		"stale": "stale snapshot"
+	},
+	"outputs_title": "Outputs",
+	"outputs": {
+		"ticker": "Ticker",
+		"units_per_day": "Units / Day",
+		"true_cost": "True ȼ/u",
+		"workforce": "Workforce",
+		"repair": "Repair",
+		"inputs": "Inputs",
+		"shipping": "Shipping",
+		"market_price": "Market ȼ/u",
+		"margin": "Margin ȼ/u",
+		"empty": "This plan has no net outputs."
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"bucket": {
+		"workforce": "Workforce per output unit",
+		"repair": "Repair per output unit",
+		"inputs": "Inputs per output unit",
+		"total": "True cost per output unit"
+	},
+	"per_unit": "ȼ/u",
+	"stale": {
+		"tag": "stale",
+		"tooltip": "Snapshot computed {computedAt} and marked stale since. Recompute it in the Sourcing tab."
+	},
+	"empty": "No sourcing snapshot — compute one in the Sourcing tab."
+}
