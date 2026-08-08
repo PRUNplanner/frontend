@@ -55,4 +55,9 @@ export interface IRaukkSnapshot {
 	draws: Record<string, Record<string, number>>;
 	/** Sourcing config this snapshot was computed with */
 	config?: IRaukkPlanConfig;
+	/** Cumulative base permits occupied: 1 (own base) + Σ per
+	 * source (cost-weighted share of source output drawn ×
+	 * source baseFraction). May exceed the plan count on paper —
+	 * >1 signals this product chain ties up multiple permits. */
+	baseFraction?: number;
 }

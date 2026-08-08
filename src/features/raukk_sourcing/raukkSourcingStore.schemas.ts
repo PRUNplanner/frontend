@@ -57,6 +57,7 @@ export const RaukkSnapshotSchema = z.object({
 	outputs: z.record(z.string(), RaukkOutputCostSchema),
 	draws: z.record(z.string(), z.record(z.string(), z.number())),
 	config: RaukkPlanConfigSchema.optional(),
+	baseFraction: z.number().optional(),
 });
 
 /** Whole store payload as written by exportJSON */
