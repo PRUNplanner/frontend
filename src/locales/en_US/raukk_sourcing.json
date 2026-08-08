@@ -59,8 +59,8 @@
 		"default": "CX Preference"
 	},
 	"source_option": {
-		"yours": "yours",
-		"others": "others",
+		"yours": "this base",
+		"others": "other bases",
 		"agg_avg": "All producers (weighted avg)",
 		"agg_max": "Highest-cost producer",
 		"cycle": "would create a supply loop",
