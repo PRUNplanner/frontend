@@ -1,25 +1,13 @@
 // Calculation Utils
-import { TOTALMSDAY } from "@/features/planning/calculations/buildingCalculations";
+import {
+	IRecipeDaily,
+	netOutputWeights,
+	reduceRecipesDaily,
+} from "@/features/raukk_sourcing/calculations/trueCost";
 
 // Types & Interfaces
 import { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
 import { IRaukkMaterialUnits } from "@/features/raukk_sourcing/calculations/raukkCalculations.types";
-
-/**
- * A single active recipe reduced to its daily contribution.
- *
- * Minimal mirror of the identically named interface in
- * `src/features/raukk_sourcing/calculations/trueCost.ts`, which does not
- * export it.
- */
-interface IRecipeDaily {
-	buildingName: string;
-	dailyShare: number;
-	/** Gross output units per day, keyed by ticker */
-	outputs: IRaukkMaterialUnits;
-	/** Gross input units per day, keyed by ticker */
-	inputs: IRaukkMaterialUnits;
-}
 
 export interface IRaukkRepairPerUnitInput {
 	buildings: IProductionBuilding[];
@@ -52,60 +40,6 @@ export interface IRaukkRepairPerUnitResult {
 	totalCostPerDay: number;
 	/** Repair cost that found no net output to carry it */
 	unallocatedCostPerDay: number;
-}
-
-/**
- * Reduces production buildings to per-recipe daily gross material flows.
- *
- * Minimal mirror of `reduceRecipesDaily` of
- * `src/features/raukk_sourcing/calculations/trueCost.ts`, which keeps the
- * helper module private. Batch runs follow `calculateMaterialIO` of
- * `src/features/planning/calculations/buildingCalculations.ts`: a
- * building runs `TOTALMSDAY * amount / totalBatchTime` batches per day
- * and each active recipe contributes `amount` runs per batch.
- *
- * @author raukk
- *
- * @param {IProductionBuilding[]} buildings Plan production buildings
- * @returns {IRecipeDaily[]} Per-recipe daily flows
- */
-function reduceRecipesDaily(buildings: IProductionBuilding[]): IRecipeDaily[] {
-	const result: IRecipeDaily[] = [];
-
-	buildings.forEach((building) => {
-		if (building.amount <= 0 || building.totalBatchTime <= 0) return;
-
-		const batchRuns: number =
-			(TOTALMSDAY * building.amount) / building.totalBatchTime;
-
-		building.activeRecipes.forEach((ar) => {
-			if (ar.amount === 0) return;
-
-			const runs: number = ar.amount * batchRuns;
-
-			const outputs: IRaukkMaterialUnits = {};
-			const inputs: IRaukkMaterialUnits = {};
-
-			ar.recipe.outputs.forEach((o) => {
-				outputs[o.material_ticker] =
-					(outputs[o.material_ticker] ?? 0) +
-					o.material_amount * runs;
-			});
-			ar.recipe.inputs.forEach((i) => {
-				inputs[i.material_ticker] =
-					(inputs[i.material_ticker] ?? 0) + i.material_amount * runs;
-			});
-
-			result.push({
-				buildingName: building.name,
-				dailyShare: ar.dailyShare,
-				outputs,
-				inputs,
-			});
-		});
-	});
-
-	return result;
 }
 
 /**
@@ -189,20 +123,11 @@ export function calculateRepairPerUnit(
 			(repairCostPerDayByBuilding[r.buildingName] ?? 0) * r.dailyShare;
 
 		// weight net outputs only, self consumed units carry no weight
-		const weights: IRaukkMaterialUnits = {};
-		let weightTotal: number = 0;
-
-		Object.entries(r.outputs).forEach(([ticker, units]) => {
-			const gross: number = recipeGrossOutput[ticker] ?? 0;
-			const netFraction: number =
-				gross > 0 ? (netOutputUnits[ticker] ?? 0) / gross : 0;
-
-			const weight: number = units * Math.min(netFraction, 1);
-			if (weight <= 0) return;
-
-			weights[ticker] = weight;
-			weightTotal += weight;
-		});
+		const { weights, weightTotal } = netOutputWeights(
+			r.outputs,
+			recipeGrossOutput,
+			netOutputUnits
+		);
 
 		if (weightTotal <= 0) {
 			residual += cost;

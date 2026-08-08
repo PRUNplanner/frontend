@@ -5,6 +5,13 @@
 // Calculation Utils
 import { resolveMarketPrice } from "@/features/raukk_sourcing/calculations/priceMode";
 
+// Graph
+import {
+	buildDependencyGraph,
+	IRaukkDependencyGraph,
+	wouldCreateCycleWithGraph,
+} from "@/features/raukk_sourcing/raukkSourcingGraph";
+
 // Types & Interfaces
 import { ICXData } from "@/stores/planningStore.types";
 import {
@@ -16,7 +23,10 @@ import {
 	IRaukkPriceResolver,
 	IRaukkResolvedPrice,
 } from "@/features/raukk_sourcing/calculations/raukkCalculations.types";
-import { IRaukkProducerOption } from "@/features/raukk_sourcing/raukkSourcingStore.types";
+import {
+	IRaukkEdgeCandidate,
+	IRaukkProducerOption,
+} from "@/features/raukk_sourcing/raukkSourcingStore.types";
 import {
 	IRaukkInputBuckets,
 	IRaukkInputRow,
@@ -224,6 +234,10 @@ export function splitAggregateDraws(
  * draw is removed from that so it is not counted twice. Both may exceed
  * 1, oversubscription is allowed by design.
  *
+ * The cycle guard graph is derived from the handed in configs and
+ * snapshots exactly once and reused for every option, the per option
+ * semantics stay those of the stores `wouldCreateCycle`.
+ *
  * @author raukk
  *
  * @param {IRaukkSourceOptionInput} input Option Input
@@ -237,6 +251,24 @@ export function buildSourceOptions(
 	);
 
 	if (producers.length === 0) return [];
+
+	// one graph for all options, every candidate is checked against the
+	// same state
+	const graph: IRaukkDependencyGraph = buildDependencyGraph(
+		input.configs,
+		input.snapshots
+	);
+
+	function isCycle(candidate: IRaukkEdgeCandidate): boolean {
+		if (input.consumerPlanUuid === undefined) return false;
+
+		return wouldCreateCycleWithGraph(
+			graph,
+			input.snapshots,
+			input.consumerPlanUuid,
+			candidate
+		);
+	}
 
 	function othersOf(producer: IRaukkProducerOption): number {
 		const subscription = input.subscriptionOf(
@@ -270,7 +302,7 @@ export function buildSourceOptions(
 			othersPct:
 				producer.unitsPerDay > 0 ? others / producer.unitsPerDay : 0,
 			stale: producer.stale,
-			disabled: input.isCycle({ sourcePlanUuid: producer.planUuid }),
+			disabled: isCycle({ sourcePlanUuid: producer.planUuid }),
 			aggregate: false,
 		};
 	});
@@ -286,7 +318,7 @@ export function buildSourceOptions(
 		0
 	);
 	const stale: boolean = producers.some((producer) => producer.stale);
-	const aggregateDisabled: boolean = input.isCycle({
+	const aggregateDisabled: boolean = isCycle({
 		aggregate: "AGG_AVG",
 		ticker: input.ticker,
 	});

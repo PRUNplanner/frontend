@@ -199,13 +199,49 @@ export function resolveCandidateTargets(
 }
 
 /**
- * Determines if adding the candidate edge closes a loop in the
- * config derived dependency graph.
+ * Determines if adding the candidate edge closes a loop in an already
+ * built dependency graph.
  *
  * A loop exists when the candidate points at the consumer itself or
  * when any of its targets already depends, transitively, on the
  * consumer. Aggregates are expanded conservatively, an aggregate that
  * contains the consumer as producer therefore counts as a loop.
+ *
+ * Checking many candidates against the same state — the source dropdown
+ * of one ticker does — builds the graph once and calls this directly,
+ * {@link wouldCreateCycleInGraph} is the single check convenience.
+ *
+ * @author raukk
+ *
+ * @param {IRaukkDependencyGraph} graph Dependency Graph
+ * @param {Record<string, IRaukkSnapshot>} snapshots Snapshots by uuid
+ * @param {string} consumerPlanUuid Consuming Plan Uuid
+ * @param {IRaukkEdgeCandidate} candidate Candidate Edge
+ * @returns {boolean} Edge would create a supply loop
+ */
+export function wouldCreateCycleWithGraph(
+	graph: IRaukkDependencyGraph,
+	snapshots: Record<string, IRaukkSnapshot>,
+	consumerPlanUuid: string,
+	candidate: IRaukkEdgeCandidate
+): boolean {
+	const targets: string[] = resolveCandidateTargets(snapshots, candidate);
+	if (targets.length === 0) return false;
+
+	return targets.some(
+		(targetUuid) =>
+			targetUuid === consumerPlanUuid ||
+			hasPath(graph, targetUuid, consumerPlanUuid)
+	);
+}
+
+/**
+ * Determines if adding the candidate edge closes a loop in the
+ * config derived dependency graph.
+ *
+ * Builds the dependency graph and delegates to
+ * {@link wouldCreateCycleWithGraph}; use that one directly when several
+ * candidates are checked against the same state.
  *
  * @author raukk
  *
@@ -226,14 +262,10 @@ export function wouldCreateCycleInGraph(
 
 	if (targets.includes(consumerPlanUuid)) return true;
 
-	const graph: IRaukkDependencyGraph = buildDependencyGraph(
-		configs,
-		snapshots
-	);
-
-	return targets.some(
-		(targetUuid) =>
-			targetUuid === consumerPlanUuid ||
-			hasPath(graph, targetUuid, consumerPlanUuid)
+	return wouldCreateCycleWithGraph(
+		buildDependencyGraph(configs, snapshots),
+		snapshots,
+		consumerPlanUuid,
+		candidate
 	);
 }

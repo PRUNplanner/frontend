@@ -6,6 +6,7 @@
 	"controls": {
 		"repair_day": "Repair Day",
 		"compute": "Compute Snapshot",
+		"compute_error": "Snapshot computation failed: {message}",
 		"recompute_chain": "Recompute Chain",
 		"recompute_chain_disabled": "coming in integration",
 		"export": "Export JSON",

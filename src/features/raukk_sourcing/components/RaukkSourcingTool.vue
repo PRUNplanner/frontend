@@ -111,11 +111,21 @@
 	 */
 
 	const refIsComputing: Ref<boolean> = ref(false);
+	const refComputeError: Ref<string | undefined> = ref(undefined);
 
 	async function compute(): Promise<void> {
 		refIsComputing.value = true;
-		await computeSnapshot();
-		refIsComputing.value = false;
+		refComputeError.value = undefined;
+
+		try {
+			await computeSnapshot();
+		} catch (error) {
+			refComputeError.value = t("raukk_sourcing.controls.compute_error", {
+				message: error instanceof Error ? error.message : "unknown",
+			});
+		} finally {
+			refIsComputing.value = false;
+		}
 	}
 
 	/*
@@ -250,6 +260,10 @@
 				{{ $t("raukk_sourcing.controls.import_cancel") }}
 			</PButton>
 		</div>
+	</div>
+
+	<div v-if="refComputeError" class="pt-3">
+		<span class="text-negative">{{ refComputeError }}</span>
 	</div>
 
 	<div v-if="refImportMessage" class="pt-3">

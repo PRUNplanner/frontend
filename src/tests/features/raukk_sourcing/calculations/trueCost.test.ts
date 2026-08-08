@@ -258,6 +258,66 @@ describe("Raukk Sourcing: True Cost", () => {
 			expect(result.outputs.DW.costPerUnit).toBeCloseTo(15, 8);
 		});
 
+		it("redistributes cost of buildings without any recipe", () => {
+			// IDLE contributes no recipe row at all, its repair and
+			// workforce share still has to reach the outputs
+			const result = calculateTrueCosts({
+				planResult: planResult(
+					[
+						building("EXT", -1000, [
+							{
+								inputs: [],
+								outputs: [{ ticker: "ALO", amount: 100 }],
+							},
+						]),
+						building("IDLE", -1000, []),
+					],
+					[mio("ALO", 0, 100), mio("RAT", 10, 0)],
+					[mio("RAT", 10, 0)],
+					[mio("ALO", 0, 100)]
+				),
+				repairCostPerDayByBuilding: { EXT: 500, IDLE: 300 },
+				resolveInputPrice: marketResolver({ RAT: 20 }),
+			});
+
+			const alo = result.outputs.ALO;
+
+			// workforce 200 split 100 / 100 by equal weights, repair
+			// 500 + 300, everything of IDLE arrives via the residual
+			expect(alo.breakdown.workforce).toBeCloseTo(2, 8);
+			expect(alo.breakdown.repair).toBeCloseTo(8, 8);
+			expect(alo.costPerUnit).toBeCloseTo(10, 8);
+		});
+
+		it("reconciles allocated cost with the daily cost fed in", () => {
+			const result = calculateTrueCosts({
+				planResult: planResult(
+					[
+						building("EXT", -16986, [
+							{
+								inputs: [{ ticker: "FLX", amount: 20 }],
+								outputs: [{ ticker: "ALO", amount: 100 }],
+							},
+						]),
+						building("IDLE", -4000, []),
+					],
+					[mio("ALO", 0, 100), mio("FLX", 20, 0), mio("RAT", 100, 0)],
+					[mio("RAT", 100, 0)],
+					[mio("ALO", 0, 100), mio("FLX", 20, 0)]
+				),
+				repairCostPerDayByBuilding: { EXT: 500, IDLE: 300 },
+				resolveInputPrice: marketResolver({ RAT: 169.86, FLX: 50 }),
+			});
+
+			const allocated: number = Object.values(result.outputs).reduce(
+				(sum, output) => sum + output.costPerUnit * output.unitsPerDay,
+				0
+			);
+
+			// workforce 100 * 169.86, inputs 20 * 50, repair 500 + 300
+			expect(allocated).toBeCloseTo(16986 + 1000 + 800, 6);
+		});
+
 		it("splits a shared ticker between workforce and inputs", () => {
 			const result = calculateTrueCosts({
 				planResult: planResult(

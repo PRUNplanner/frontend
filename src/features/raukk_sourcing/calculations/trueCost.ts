@@ -23,8 +23,13 @@ import {
  * `dailyShare` is the recipes share of its buildings runtime, taken
  * straight from the plan result — the same share the upstream COGM uses
  * to split building costs across recipes.
+ *
+ * Canonical definition of the raukk sourcing calculations, consumed by
+ * `src/features/raukk_sourcing/calculations/repairPerUnit.ts` as well.
+ *
+ * @author raukk
  */
-interface IRecipeDaily {
+export interface IRecipeDaily {
 	buildingName: string;
 	dailyShare: number;
 	/** Gross output units per day, keyed by ticker */
@@ -49,12 +54,17 @@ interface ICostBuckets {
  * a building runs `TOTALMSDAY * amount / totalBatchTime` batches per day
  * and each active recipe contributes `amount` runs per batch.
  *
+ * Canonical implementation of the raukk sourcing calculations, consumed
+ * by `src/features/raukk_sourcing/calculations/repairPerUnit.ts` as well.
+ *
  * @author raukk
  *
  * @param {IProductionBuilding[]} buildings Plan production buildings
  * @returns {IRecipeDaily[]} Per-recipe daily flows
  */
-function reduceRecipesDaily(buildings: IProductionBuilding[]): IRecipeDaily[] {
+export function reduceRecipesDaily(
+	buildings: IProductionBuilding[]
+): IRecipeDaily[] {
 	const result: IRecipeDaily[] = [];
 
 	buildings.forEach((building) => {
@@ -93,6 +103,55 @@ function reduceRecipesDaily(buildings: IProductionBuilding[]): IRecipeDaily[] {
 	return result;
 }
 
+/** Net output weights of one recipe and their sum */
+export interface IRaukkOutputWeights {
+	/** Key: output ticker, value: weight */
+	weights: IRaukkMaterialUnits;
+	weightTotal: number;
+}
+
+/**
+ * Weights the outputs of one recipe by the share of them that leaves the
+ * plan as net output.
+ *
+ * Self consumed units carry no weight: a tickers gross recipe output is
+ * scaled by its net fraction, so a recipe whose outputs are fully
+ * consumed inside the plan ends up with a zero weight total and its cost
+ * has to be carried by the callers residual.
+ *
+ * Canonical implementation of the raukk sourcing calculations, consumed
+ * by `src/features/raukk_sourcing/calculations/repairPerUnit.ts` as well.
+ *
+ * @author raukk
+ *
+ * @param {IRaukkMaterialUnits} outputs Gross recipe outputs per day
+ * @param {IRaukkMaterialUnits} recipeGrossOutput Plan gross output per day
+ * @param {IRaukkMaterialUnits} netOutputUnits Plan net output per day
+ * @returns {IRaukkOutputWeights} Weights per ticker and their sum
+ */
+export function netOutputWeights(
+	outputs: IRaukkMaterialUnits,
+	recipeGrossOutput: IRaukkMaterialUnits,
+	netOutputUnits: IRaukkMaterialUnits
+): IRaukkOutputWeights {
+	const weights: IRaukkMaterialUnits = {};
+	let weightTotal: number = 0;
+
+	Object.entries(outputs).forEach(([ticker, units]) => {
+		const gross: number = recipeGrossOutput[ticker] ?? 0;
+		const netFraction: number =
+			gross > 0 ? (netOutputUnits[ticker] ?? 0) / gross : 0;
+
+		const weight: number = units * Math.min(netFraction, 1);
+		if (weight <= 0) return;
+
+		weights[ticker] = weight;
+		weightTotal += weight;
+	});
+
+	return { weights, weightTotal };
+}
+
 /**
  * Sums the `input` side of a material I/O array per ticker.
  *
@@ -126,7 +185,9 @@ function grossInputs(materialIO: IMaterialIO[]): IRaukkMaterialUnits {
  * net inputs (`delta < 0`) are paid for and only net outputs
  * (`delta > 0`) receive an allocation. A recipe whose outputs are fully
  * consumed inside the plan carries no weight; its cost is redistributed
- * across the plans net outputs.
+ * across the plans net outputs. Runtime shares left idle and buildings
+ * without an active recipe hold a residual as well, they still cost
+ * workforce and repair — it is redistributed the same way.
  *
  * Prices are supplied by the caller through `resolveInputPrice`, which
  * decides market mode versus another plans transfer price. Whenever it
@@ -271,8 +332,9 @@ export function calculateTrueCosts(
 				((buildingWeights[name] ?? 0) / buildingWeightTotal)
 			);
 		}
-		// no workforce weights available, spread evenly
-		return runningBuildings.length > 0
+		// no workforce weights available, spread evenly over the
+		// buildings that actually run
+		return runningBuildings.includes(name)
 			? workforceCostTotal / runningBuildings.length
 			: 0;
 	}
@@ -284,6 +346,8 @@ export function calculateTrueCosts(
 	const buckets: Record<string, ICostBuckets> = {};
 	const weightByTicker: IRaukkMaterialUnits = {};
 	const residual: ICostBuckets = { workforce: 0, repair: 0, inputs: 0 };
+	/** Key: building name, value: runtime share covered by its recipes */
+	const coveredShare: Record<string, number> = {};
 
 	function addBucket(ticker: string, key: keyof ICostBuckets, v: number) {
 		const current: ICostBuckets = buckets[ticker] ?? {
@@ -296,6 +360,9 @@ export function calculateTrueCosts(
 	}
 
 	recipes.forEach((r) => {
+		coveredShare[r.buildingName] =
+			(coveredShare[r.buildingName] ?? 0) + r.dailyShare;
+
 		const workforce: number =
 			buildingWorkforceCost(r.buildingName) * r.dailyShare;
 		const repair: number =
@@ -318,20 +385,11 @@ export function calculateTrueCosts(
 		);
 
 		// weight net outputs only, self consumed units carry no weight
-		const weights: IRaukkMaterialUnits = {};
-		let weightTotal: number = 0;
-
-		Object.entries(r.outputs).forEach(([ticker, units]) => {
-			const gross: number = recipeGrossOutput[ticker] ?? 0;
-			const netFraction: number =
-				gross > 0 ? (netOutputUnits[ticker] ?? 0) / gross : 0;
-
-			const weight: number = units * Math.min(netFraction, 1);
-			if (weight <= 0) return;
-
-			weights[ticker] = weight;
-			weightTotal += weight;
-		});
+		const { weights, weightTotal } = netOutputWeights(
+			r.outputs,
+			recipeGrossOutput,
+			netOutputUnits
+		);
 
 		if (weightTotal <= 0) {
 			residual.workforce += workforce;
@@ -349,6 +407,25 @@ export function calculateTrueCosts(
 
 			weightByTicker[ticker] = (weightByTicker[ticker] ?? 0) + weight;
 		});
+	});
+
+	/*
+	 * Runtime shares left idle and buildings without an active recipe
+	 * carry workforce and repair cost as well. They contribute no recipe
+	 * row, so their share lands in the residual — the same handling
+	 * `calculateRepairPerUnit` performs.
+	 */
+	const costedBuildings: Set<string> = new Set([
+		...Object.keys(buildingWeights),
+		...Object.keys(repairCostPerDayByBuilding),
+	]);
+
+	costedBuildings.forEach((name) => {
+		const uncovered: number = 1 - (coveredShare[name] ?? 0);
+		if (uncovered <= 0) return;
+
+		residual.workforce += buildingWorkforceCost(name) * uncovered;
+		residual.repair += (repairCostPerDayByBuilding[name] ?? 0) * uncovered;
 	});
 
 	// redistribute the cost of fully self consumed recipes

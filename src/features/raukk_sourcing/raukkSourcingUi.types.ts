@@ -5,12 +5,13 @@
 // Types & Interfaces
 import {
 	IRaukkCostBreakdown,
+	IRaukkPlanConfig,
+	IRaukkSnapshot,
 	IRaukkTickerSource,
 	RAUKK_SOURCE_AGGREGATE,
 } from "@/features/raukk_sourcing/raukkSourcing.types";
 import { IRaukkExchangePrices } from "@/features/raukk_sourcing/calculations/raukkCalculations.types";
 import {
-	IRaukkEdgeCandidate,
 	IRaukkProducerOption,
 	IRaukkSubscription,
 } from "@/features/raukk_sourcing/raukkSourcingStore.types";
@@ -90,7 +91,9 @@ export interface IRaukkSourceOptionInput {
 		sourcePlanUuid: string,
 		ticker: string
 	) => IRaukkSubscription;
-	isCycle: (candidate: IRaukkEdgeCandidate) => boolean;
+	/** Cycle guard state, the dependency graph is derived from it once */
+	configs: Record<string, IRaukkPlanConfig>;
+	snapshots: Record<string, IRaukkSnapshot>;
 }
 
 /** Minimal plan result shape the input table rows are built from */

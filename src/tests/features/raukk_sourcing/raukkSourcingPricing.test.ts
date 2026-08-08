@@ -14,7 +14,10 @@ import {
 
 // Types & Interfaces
 import { ICXData } from "@/stores/planningStore.types";
-import { IRaukkTickerSource } from "@/features/raukk_sourcing/raukkSourcing.types";
+import {
+	IRaukkSnapshot,
+	IRaukkTickerSource,
+} from "@/features/raukk_sourcing/raukkSourcing.types";
 import { IRaukkProducerOption } from "@/features/raukk_sourcing/raukkSourcingStore.types";
 import {
 	IRaukkInputRowSource,
@@ -35,6 +38,30 @@ function producer(
 		unitsPerDay,
 		stale,
 		computedAt: "2026-01-01T00:00:00.000Z",
+	};
+}
+
+/** Minimal snapshot producing RAT, enough for the cycle guard */
+function snapshot(): IRaukkSnapshot {
+	return {
+		computedAt: "2026-01-01T00:00:00.000Z",
+		stale: false,
+		planName: "Plan",
+		planetNaturalId: "OT-580b",
+		outputs: {
+			RAT: {
+				ticker: "RAT",
+				unitsPerDay: 10,
+				costPerUnit: 5,
+				breakdown: {
+					workforce: 1,
+					repair: 1,
+					inputs: 3,
+					shipping: 0,
+				},
+			},
+		},
+		draws: {},
 	};
 }
 
@@ -221,7 +248,8 @@ describe("Raukk Sourcing Pricing", () => {
 							: [],
 					pctOfOutput: 0,
 				}),
-				isCycle: () => false,
+				configs: {},
+				snapshots: {},
 				...overrides,
 			});
 		}
@@ -261,14 +289,38 @@ describe("Raukk Sourcing Pricing", () => {
 		});
 
 		it("disables options refused by the cycle guard", () => {
+			// producer "a" already sources from the consuming plan
 			const options: IRaukkSourceOption[] = build({
-				isCycle: (candidate) =>
-					"sourcePlanUuid" in candidate &&
-					candidate.sourcePlanUuid === "a",
+				configs: {
+					a: {
+						repairDay: 90,
+						sources: {
+							HE: {
+								mode: "plan",
+								sourcePlanUuid: "consumer",
+							},
+						},
+					},
+				},
 			});
 
 			expect(options[0].disabled).toBe(true);
 			expect(options[1].disabled).toBe(false);
+		});
+
+		it("disables the aggregates when the consumer produces itself", () => {
+			// the aggregate expands to every producer of the ticker, the
+			// consuming plan among them
+			const options: IRaukkSourceOption[] = build({
+				snapshots: {
+					consumer: snapshot(),
+				},
+			});
+
+			expect(options[0].disabled).toBe(false);
+			expect(options[1].disabled).toBe(false);
+			expect(options[2].disabled).toBe(true);
+			expect(options[3].disabled).toBe(true);
 		});
 
 		it("skips the consuming plan itself", () => {

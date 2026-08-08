@@ -229,13 +229,8 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 			prospectiveDrawPerDay,
 			producers: getProducers(ticker),
 			subscriptionOf: sourcingStore.subscription,
-			isCycle: (candidate) =>
-				context.planUuid.value
-					? sourcingStore.wouldCreateCycle(
-							context.planUuid.value,
-							candidate
-						)
-					: false,
+			configs: sourcingStore.configs,
+			snapshots: sourcingStore.snapshots,
 		});
 	}
 
@@ -261,6 +256,12 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 	 * Reloads CX preference prices, sell prices and exchange data of all
 	 * relevant tickers into the local caches.
 	 *
+	 * A ticker that fails to price degrades to 0 with a console warning
+	 * instead of rejecting the whole refresh: `usePrice` already resolves
+	 * unknown materials and missing exchange data to 0, so one broken
+	 * ticker must not take the tools numbers down with it. The refreshing
+	 * flag is always reset, even when something throws.
+	 *
 	 * @author raukk
 	 */
 	async function refreshPrices(): Promise<void> {
@@ -275,27 +276,39 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 		const sell: Record<string, number> = {};
 		const exchange: Record<string, IRaukkExchangePrices> = {};
 
-		await Promise.all(
-			relevantTickers.value.map(async (ticker) => {
-				buy[ticker] = await getPrice(ticker, "BUY");
-				sell[ticker] = await getPrice(ticker, "SELL");
+		try {
+			await Promise.all(
+				relevantTickers.value.map(async (ticker) => {
+					try {
+						buy[ticker] = await getPrice(ticker, "BUY");
+						sell[ticker] = await getPrice(ticker, "SELL");
+					} catch (error) {
+						buy[ticker] = 0;
+						sell[ticker] = 0;
 
-				try {
-					exchange[ticker] = await getExchangeTicker(
-						`${ticker}.${exchangeCode}`
-					);
-				} catch {
-					// thinly traded or unknown exchange, price modes
-					// resolve to 0 as usePrice does as well
-				}
-			})
-		);
+						console.warn(
+							`[raukk] price of '${ticker}' unavailable, using 0`,
+							error
+						);
+					}
 
-		defaultPrices.value = buy;
-		sellPrices.value = sell;
-		exchangePrices.value = exchange;
+					try {
+						exchange[ticker] = await getExchangeTicker(
+							`${ticker}.${exchangeCode}`
+						);
+					} catch {
+						// thinly traded or unknown exchange, price modes
+						// resolve to 0 as usePrice does as well
+					}
+				})
+			);
 
-		isRefreshing.value = false;
+			defaultPrices.value = buy;
+			sellPrices.value = sell;
+			exchangePrices.value = exchange;
+		} finally {
+			isRefreshing.value = false;
+		}
 	}
 
 	/**
