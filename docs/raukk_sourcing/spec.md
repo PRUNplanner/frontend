@@ -95,7 +95,14 @@ plan's current CX preference behavior.
 - Staleness: saving a plan or changing its sourcing config marks its
   snapshot stale AND (via edges) all downstream snapshots stale.
   Stale values still display, visibly flagged. A manual
-  "recompute chain" action re-runs snapshots in dependency order.
+  "recompute chain" action recomputes the started plan's sourcing
+  subgraph — its transitive sources, the plan itself and its transitive
+  dependents — upstream-first, so every plan consumes freshly stored
+  source snapshots. All plans in that scope that hold a snapshot are
+  recomputed, not only the stale ones (a refreshed source changes the
+  numbers below it); plans without a snapshot are skipped. Each plan is
+  calculated in its own empire/CX context; a plan that fails is
+  recorded as an error and the run continues with the next one.
   Never auto-recompute the tree on save.
 
 ## Persistence

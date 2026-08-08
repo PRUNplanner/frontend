@@ -10,6 +10,7 @@
 
 	// Composables
 	import { useRaukkSnapshot } from "@/features/raukk_sourcing/useRaukkSnapshot";
+	import { useRaukkChainRecompute } from "@/features/raukk_sourcing/useRaukkChainRecompute";
 
 	// Components
 	import RaukkInputsTable from "@/features/raukk_sourcing/components/RaukkInputsTable.vue";
@@ -130,6 +131,35 @@
 	}
 
 	/*
+	 * Chain recomputation
+	 */
+
+	const {
+		running: chainRunning,
+		current: chainCurrent,
+		done: chainDone,
+		total: chainTotal,
+		errors: chainErrors,
+		recomputeChain,
+	} = useRaukkChainRecompute();
+
+	/** Any snapshot action is blocked while a chain run is going on */
+	const busy: ComputedRef<boolean> = computed(
+		() => refIsComputing.value || chainRunning.value
+	);
+
+	/** 1 based position of the plan currently being recomputed */
+	const chainStep: ComputedRef<number> = computed(() =>
+		Math.min(chainDone.value + 1, chainTotal.value)
+	);
+
+	async function recompute(): Promise<void> {
+		if (readOnly.value || !props.planUuid) return;
+
+		await recomputeChain(props.planUuid);
+	}
+
+	/*
 	 * Import & Export
 	 */
 
@@ -210,19 +240,32 @@
 			<PButton
 				type="primary"
 				:loading="refIsComputing"
-				:disabled="readOnly"
+				:disabled="readOnly || busy"
 				@click="compute">
 				{{ $t("raukk_sourcing.controls.compute") }}
 			</PButton>
 
 			<PTooltip>
 				<template #trigger>
-					<PButton disabled>
+					<PButton
+						:loading="chainRunning"
+						:disabled="readOnly || busy"
+						@click="recompute">
 						{{ $t("raukk_sourcing.controls.recompute_chain") }}
 					</PButton>
 				</template>
-				{{ $t("raukk_sourcing.controls.recompute_chain_disabled") }}
+				{{ $t("raukk_sourcing.controls.recompute_chain_tooltip") }}
 			</PTooltip>
+
+			<span v-if="chainRunning" class="text-white/60">
+				{{
+					$t("raukk_sourcing.controls.recompute_chain_progress", {
+						done: chainStep,
+						total: chainTotal,
+						name: chainCurrent ?? "",
+					})
+				}}
+			</span>
 		</div>
 
 		<div class="flex flex-row flex-wrap gap-3 child:my-auto">
@@ -265,6 +308,20 @@
 
 	<div v-if="refComputeError" class="pt-3">
 		<span class="text-negative">{{ refComputeError }}</span>
+	</div>
+
+	<div v-if="chainErrors.length > 0" class="pt-3 flex flex-col">
+		<span
+			v-for="chainError in chainErrors"
+			:key="chainError.planUuid"
+			class="text-negative">
+			{{
+				$t("raukk_sourcing.controls.recompute_chain_error", {
+					name: chainError.planName,
+					message: chainError.message,
+				})
+			}}
+		</span>
 	</div>
 
 	<div v-if="refImportMessage" class="pt-3">

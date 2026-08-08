@@ -3,9 +3,12 @@ import { describe, it, expect } from "vitest";
 // graph
 import {
 	buildDependencyGraph,
+	buildRecomputeOrder,
+	collectDependencies,
 	collectDependents,
 	expandAggregateSource,
 	hasPath,
+	IRaukkDependencyGraph,
 	resolveCandidateTargets,
 	reverseGraph,
 	wouldCreateCycleInGraph,
@@ -209,6 +212,159 @@ describe("raukkSourcingGraph", () => {
 					ticker: "NOPE",
 				})
 			).toBe(false);
+		});
+	});
+
+	describe("collectDependencies", () => {
+		// a <- b <- c, d unrelated
+		const graph: IRaukkDependencyGraph = {
+			a: [],
+			b: ["a"],
+			c: ["b"],
+			d: [],
+		};
+
+		it("collects transitive sources", () => {
+			expect(collectDependencies(graph, "c").sort()).toStrictEqual([
+				"a",
+				"b",
+			]);
+		});
+
+		it("excludes the plan itself", () => {
+			expect(collectDependencies(graph, "a")).toStrictEqual([]);
+			expect(collectDependencies(graph, "d")).toStrictEqual([]);
+		});
+
+		it("returns nothing for unknown plans", () => {
+			expect(collectDependencies(graph, "nope")).toStrictEqual([]);
+		});
+
+		it("terminates on malformed cycles", () => {
+			const cyclic: IRaukkDependencyGraph = {
+				a: ["b"],
+				b: ["a"],
+			};
+
+			expect(collectDependencies(cyclic, "a")).toStrictEqual(["b"]);
+		});
+	});
+
+	describe("buildRecomputeOrder", () => {
+		const all = (): boolean => true;
+
+		it("orders a chain upstream first, from any start", () => {
+			// a <- b <- c
+			const graph: IRaukkDependencyGraph = {
+				a: [],
+				b: ["a"],
+				c: ["b"],
+			};
+
+			expect(buildRecomputeOrder(graph, "b", all)).toStrictEqual([
+				"a",
+				"b",
+				"c",
+			]);
+			expect(buildRecomputeOrder(graph, "a", all)).toStrictEqual([
+				"a",
+				"b",
+				"c",
+			]);
+			expect(buildRecomputeOrder(graph, "c", all)).toStrictEqual([
+				"a",
+				"b",
+				"c",
+			]);
+		});
+
+		it("orders a diamond with both sources before the sink", () => {
+			// b and c draw from a, d draws from b and c
+			const graph: IRaukkDependencyGraph = {
+				a: [],
+				b: ["a"],
+				c: ["a"],
+				d: ["b", "c"],
+			};
+
+			const order: string[] = buildRecomputeOrder(graph, "d", all);
+
+			expect(order.length).toBe(4);
+			expect(order[0]).toBe("a");
+			expect(order[3]).toBe("d");
+			expect(order.indexOf("b")).toBeLessThan(order.indexOf("d"));
+			expect(order.indexOf("c")).toBeLessThan(order.indexOf("d"));
+		});
+
+		it("leaves disconnected plans alone", () => {
+			const graph: IRaukkDependencyGraph = {
+				a: [],
+				b: ["a"],
+				x: [],
+				y: ["x"],
+			};
+
+			expect(buildRecomputeOrder(graph, "b", all)).toStrictEqual([
+				"a",
+				"b",
+			]);
+		});
+
+		it("skips plans without a snapshot but keeps the ordering", () => {
+			// a <- b <- c, b has no snapshot
+			const graph: IRaukkDependencyGraph = {
+				a: [],
+				b: ["a"],
+				c: ["b"],
+			};
+
+			expect(
+				buildRecomputeOrder(graph, "c", (uuid) => uuid !== "b")
+			).toStrictEqual(["a", "c"]);
+		});
+
+		it("returns nothing when no plan holds a snapshot", () => {
+			const graph: IRaukkDependencyGraph = { a: [], b: ["a"] };
+
+			expect(buildRecomputeOrder(graph, "a", () => false)).toStrictEqual(
+				[]
+			);
+		});
+
+		it("includes the started plan without any edges", () => {
+			expect(buildRecomputeOrder({ a: [] }, "a", all)).toStrictEqual([
+				"a",
+			]);
+			expect(buildRecomputeOrder({}, "a", all)).toStrictEqual(["a"]);
+		});
+
+		it("terminates on malformed, cyclic state", () => {
+			const graph: IRaukkDependencyGraph = {
+				a: ["c"],
+				b: ["a"],
+				c: ["b"],
+			};
+
+			const order: string[] = buildRecomputeOrder(graph, "a", all);
+
+			expect(order.sort()).toStrictEqual(["a", "b", "c"]);
+		});
+
+		it("derives its scope from configs and snapshots", () => {
+			const snapshots: Record<string, IRaukkSnapshot> = {
+				a: makeSnapshot("A", { ORE: 100 }),
+				b: makeSnapshot("B", { MET: 50 }, { a: { ORE: 40 } }),
+				c: makeSnapshot("C", { ALO: 10 }, { b: { MET: 20 } }),
+				x: makeSnapshot("X", { RAT: 1 }),
+			};
+
+			expect(
+				buildRecomputeOrder(
+					buildDependencyGraph({}, snapshots),
+					"b",
+					(uuid) => snapshots[uuid] !== undefined
+				)
+			).toStrictEqual(["a", "b", "c"]);
 		});
 	});
 });
