@@ -46,6 +46,31 @@ trueCost(P, ticker) = allocated daily cost of ticker / units per day
 Result must carry the breakdown: workforce / repair / inputs (and a
 zero shipping slot) per output ticker.
 
+### Base fraction
+
+How many base permits a plan's product chain really occupies, stored on
+the snapshot and computed from its concrete draws:
+
+```
+baseFraction(P) = 1 + Σ over source plans S
+    shareOfSource(P, S) × baseFraction(S)
+
+shareOfSource(P, S) = Σ over tickers t drawn from S
+    (draw_t / S.outputs[t].unitsPerDay) × costWeight_S(t)
+
+costWeight_S(t) = S.outputs[t].costPerUnit × unitsPerDay
+                  / Σ over all S outputs (costPerUnit × unitsPerDay)
+```
+
+`baseFraction(S)` comes from S's stored snapshot, 1 when absent. Zero
+output tickers are skipped, a source without any output value falls back
+to equal weights. Nothing is clamped: fully using the own base plus half
+of another one is 1.5, values above the plan count are meaningful and
+signal "better to buy than build". Displayed in the sourcing tool's
+snapshot line and appended to the source dropdown options as "BF 1.50"
+(aggregates: output weighted average for `AGG_AVG`, the highest-cost
+producer's value for `AGG_MAX`).
+
 ## Market price modes
 
 Per input ticker, one of: `BID`, `ASK`, `MID` ((bid+ask)/2, computed),

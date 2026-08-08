@@ -6,6 +6,8 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	// raukk: sourcing annotation of a single material I/O row
+	import RaukkMaterialIOInfo from "@/features/raukk_sourcing/components/RaukkMaterialIOInfo.vue";
 
 	// Types & Interfaces
 	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
@@ -77,6 +79,10 @@
 					">
 					{{ formatNumber(rowData.delta) }}
 				</span>
+				<!-- raukk: sourcing annotation -->
+				<RaukkMaterialIOInfo
+					:ticker="rowData.ticker"
+					:delta="rowData.delta" />
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn

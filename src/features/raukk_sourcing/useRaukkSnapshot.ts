@@ -11,6 +11,7 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 // Calculations
 import { calculateTrueCosts } from "@/features/raukk_sourcing/calculations/trueCost";
 import { calculateRepairCostPerDay } from "@/features/raukk_sourcing/calculations/repairCapitalCost";
+import { calculateBaseFraction } from "@/features/raukk_sourcing/calculations/baseFraction";
 import {
 	buildInputRows,
 	buildSourceOptions,
@@ -31,6 +32,7 @@ import {
 } from "@/features/raukk_sourcing/raukkSourcing.types";
 import {
 	IRaukkExchangePrices,
+	IRaukkMaterialUnits,
 	IRaukkPriceResolver,
 	IRaukkRepairBuilding,
 	IRaukkRepairCost,
@@ -315,7 +317,9 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 	 * Computes and stores this plans snapshot.
 	 *
 	 * Aggregate draws are pre split into concrete producer uuids before
-	 * storing, the persisted `draws` keys are always plan uuids.
+	 * storing, the persisted `draws` keys are always plan uuids. The base
+	 * fraction is derived from those concrete draws and the stored
+	 * snapshots of the sources, it is frozen with the rest.
 	 *
 	 * @author raukk
 	 *
@@ -328,6 +332,10 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 		await refreshPrices();
 
 		const result: IRaukkTrueCostResult = trueCost.value;
+		const draws: Record<string, IRaukkMaterialUnits> = splitAggregateDraws(
+			result.draws,
+			getProducers
+		);
 
 		sourcingStore.setSnapshot(planUuid, {
 			computedAt: new Date().toISOString(),
@@ -335,8 +343,11 @@ export async function useRaukkSnapshot(context: IRaukkSnapshotContext) {
 			planName: context.planName.value,
 			planetNaturalId: context.planetNaturalId.value ?? "",
 			outputs: inertClone(result.outputs),
-			draws: splitAggregateDraws(result.draws, getProducers),
+			draws,
 			config: inertClone(config.value),
+			baseFraction: calculateBaseFraction(draws, (sourcePlanUuid) =>
+				sourcingStore.getSnapshot(sourcePlanUuid)
+			),
 		});
 
 		return true;

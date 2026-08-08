@@ -68,6 +68,9 @@ export interface IRaukkSourceOption {
 	/** Refused by the cycle guard, rendered greyed out */
 	disabled: boolean;
 	aggregate: boolean;
+	/** Base fraction of the producer(s) snapshot, undefined when none of
+	 * them stores one yet */
+	baseFraction?: number;
 }
 
 /** Everything the price resolver needs, free of store and Pinia access */

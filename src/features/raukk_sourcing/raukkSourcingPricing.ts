@@ -286,6 +286,12 @@ export function buildSourceOptions(
 		return subscription.totalDrawnPerDay - own;
 	}
 
+	function baseFractionOf(
+		producer: IRaukkProducerOption
+	): number | undefined {
+		return input.snapshots[producer.planUuid]?.baseFraction;
+	}
+
 	const options: IRaukkSourceOption[] = producers.map((producer) => {
 		const others: number = othersOf(producer);
 
@@ -304,6 +310,7 @@ export function buildSourceOptions(
 			stale: producer.stale,
 			disabled: isCycle({ sourcePlanUuid: producer.planUuid }),
 			aggregate: false,
+			baseFraction: baseFractionOf(producer),
 		};
 	});
 
@@ -317,6 +324,51 @@ export function buildSourceOptions(
 		(sum, producer) => sum + othersOf(producer),
 		0
 	);
+	/**
+	 * Base fraction of an aggregate option: the output weighted average
+	 * of the producers for `AGG_AVG`, the base fraction of the producer
+	 * `AGG_MAX` prices against for the worst case. Producers without a
+	 * stored base fraction count as their own base alone, the aggregate
+	 * stays undefined while none of them stores one at all.
+	 */
+	function aggregateBaseFraction(
+		aggregate: RAUKK_SOURCE_AGGREGATE
+	): number | undefined {
+		if (
+			producers.every(
+				(producer) => baseFractionOf(producer) === undefined
+			)
+		)
+			return undefined;
+
+		if (aggregate === "AGG_MAX") {
+			const worst: IRaukkProducerOption = producers.reduce(
+				(max, producer) =>
+					producer.costPerUnit > max.costPerUnit ? producer : max,
+				producers[0]
+			);
+
+			return baseFractionOf(worst) ?? 1;
+		}
+
+		if (unitsTotal <= 0)
+			return (
+				producers.reduce(
+					(sum, producer) => sum + (baseFractionOf(producer) ?? 1),
+					0
+				) / producers.length
+			);
+
+		return (
+			producers.reduce(
+				(sum, producer) =>
+					sum +
+					(baseFractionOf(producer) ?? 1) * producer.unitsPerDay,
+				0
+			) / unitsTotal
+		);
+	}
+
 	const stale: boolean = producers.some((producer) => producer.stale);
 	const aggregateDisabled: boolean = isCycle({
 		aggregate: "AGG_AVG",
@@ -339,6 +391,7 @@ export function buildSourceOptions(
 				stale,
 				disabled: aggregateDisabled,
 				aggregate: true,
+				baseFraction: aggregateBaseFraction(aggregate),
 			});
 		}
 	);
@@ -350,7 +403,9 @@ export function buildSourceOptions(
  * Formats a source dropdown label.
  *
  * Aggregates carry their translated name in `planName` and no planet,
- * concrete producers render as "Plan (Planet)".
+ * concrete producers render as "Plan (Planet)". Producers whose
+ * snapshot already stores a base fraction append it as "— BF 1.50", it
+ * is the quickest hint that a source ties up more than its own base.
  *
  * @author raukk
  *
@@ -373,7 +428,14 @@ export function formatSourceOptionLabel(
 		option.othersPct * 100
 	)}% ${words.others}`;
 
-	return `${name} — ${formatValue(option.costPerUnit)} ȼ/u — ${own} / ${others}`;
+	const baseFraction: string =
+		option.baseFraction === undefined
+			? ""
+			: ` — BF ${formatValue(option.baseFraction)}`;
+
+	return `${name} — ${formatValue(
+		option.costPerUnit
+	)} ȼ/u — ${own} / ${others}${baseFraction}`;
 }
 
 /**

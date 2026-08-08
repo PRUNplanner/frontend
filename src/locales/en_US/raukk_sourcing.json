@@ -23,7 +23,9 @@
 		"computed_at": "Snapshot from {timestamp}",
 		"stale": "Stale",
 		"current": "Current",
-		"stale_sources": "{count} upstream snapshot(s) used here are stale"
+		"stale_sources": "{count} upstream snapshot(s) used here are stale",
+		"base_fraction": "Base fraction: {value}",
+		"base_fraction_tooltip": "Base permits this product chain occupies: the plan's own base plus, per source plan, the cost-weighted share of that source's output drawn here, times the source's own base fraction. Fully using this base and half of another one gives 1.50. High values mean the chain ties up several bases — often cheaper to buy than to build."
 	},
 	"inputs_title": "Inputs",
 	"inputs": {

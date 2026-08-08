@@ -42,7 +42,7 @@ function producer(
 }
 
 /** Minimal snapshot producing RAT, enough for the cycle guard */
-function snapshot(): IRaukkSnapshot {
+function snapshot(baseFraction?: number): IRaukkSnapshot {
 	return {
 		computedAt: "2026-01-01T00:00:00.000Z",
 		stale: false,
@@ -62,6 +62,7 @@ function snapshot(): IRaukkSnapshot {
 			},
 		},
 		draws: {},
+		baseFraction,
 	};
 }
 
@@ -323,6 +324,51 @@ describe("Raukk Sourcing Pricing", () => {
 			expect(options[3].disabled).toBe(true);
 		});
 
+		it("carries the producers stored base fraction", () => {
+			const options: IRaukkSourceOption[] = build({
+				snapshots: { a: snapshot(1.5) },
+			});
+
+			expect(options[0].baseFraction).toBe(1.5);
+			expect(options[1].baseFraction).toBeUndefined();
+		});
+
+		it("weights the aggregate base fraction by daily output", () => {
+			const options: IRaukkSourceOption[] = build({
+				snapshots: { a: snapshot(1.5), b: snapshot(3) },
+			});
+
+			// (1.5 * 100 + 3 * 300) / 400
+			expect(options[2].baseFraction).toBe(2.625);
+			// "b" is the highest cost producer
+			expect(options[3].baseFraction).toBe(3);
+		});
+
+		it("counts producers without base fraction as a single base", () => {
+			const options: IRaukkSourceOption[] = build({
+				snapshots: { b: snapshot(3) },
+			});
+
+			// (1 * 100 + 3 * 300) / 400
+			expect(options[2].baseFraction).toBe(2.5);
+		});
+
+		it("leaves the aggregate base fraction undefined without any", () => {
+			const options: IRaukkSourceOption[] = build();
+
+			expect(options[2].baseFraction).toBeUndefined();
+			expect(options[3].baseFraction).toBeUndefined();
+		});
+
+		it("averages the aggregate plainly without any output", () => {
+			const options: IRaukkSourceOption[] = build({
+				producers: [producer("a", 10, 0), producer("b", 20, 0)],
+				snapshots: { a: snapshot(2), b: snapshot(4) },
+			});
+
+			expect(options[2].baseFraction).toBe(3);
+		});
+
 		it("skips the consuming plan itself", () => {
 			const options: IRaukkSourceOption[] = build({
 				consumerPlanUuid: "a",
@@ -379,6 +425,21 @@ describe("Raukk Sourcing Pricing", () => {
 					{ yours: "yours", others: "others" }
 				)
 			).toBe("All producers — 28.35 ȼ/u — 46% yours / 87% others");
+		});
+
+		it("appends a stored base fraction", () => {
+			expect(
+				formatSourceOptionLabel(
+					{ ...option, baseFraction: 1.5 },
+					format,
+					{
+						yours: "yours",
+						others: "others",
+					}
+				)
+			).toBe(
+				"Steel (OT-580b) — 28.35 ȼ/u — 46% yours / 87% others — BF 1.5"
+			);
 		});
 	});
 

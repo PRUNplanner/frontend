@@ -17,6 +17,7 @@
 
 	// Util
 	import { formatDate } from "@/util/date";
+	import { formatNumber } from "@/util/numbers";
 
 	// UI
 	import { PButton, PSelect, PTag, PTooltip, PInput } from "@/ui";
@@ -291,6 +292,18 @@
 						: $t("raukk_sourcing.snapshot.current")
 				}}
 			</PTag>
+			<PTooltip v-if="snapshot.baseFraction !== undefined">
+				<template #trigger>
+					<span class="text-white/60 hover:cursor-help">
+						{{
+							$t("raukk_sourcing.snapshot.base_fraction", {
+								value: formatNumber(snapshot.baseFraction),
+							})
+						}}
+					</span>
+				</template>
+				{{ $t("raukk_sourcing.snapshot.base_fraction_tooltip") }}
+			</PTooltip>
 		</template>
 		<span v-else class="text-white/60">
 			{{ $t("raukk_sourcing.snapshot.never") }}
