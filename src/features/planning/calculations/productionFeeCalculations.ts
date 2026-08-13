@@ -5,16 +5,23 @@ import {
 	PLANET_WORKFORCE_LEVEL_TYPE,
 } from "@/features/api/gameData.types";
 
-const WORKFORCE_BUILDING_FIELD_MAP: Record<
-	PLANET_WORKFORCE_LEVEL_TYPE,
-	"pioneers" | "settlers" | "technicians" | "engineers" | "scientists"
-> = {
-	PIONEER: "pioneers",
-	SETTLER: "settlers",
-	TECHNICIAN: "technicians",
-	ENGINEER: "engineers",
-	SCIENTIST: "scientists",
-};
+function getWorkforceAmount(
+	building: IBuilding,
+	level: PLANET_WORKFORCE_LEVEL_TYPE
+): number {
+	switch (level) {
+		case "PIONEER":
+			return building.pioneers;
+		case "SETTLER":
+			return building.settlers;
+		case "TECHNICIAN":
+			return building.technicians;
+		case "ENGINEER":
+			return building.engineers;
+		case "SCIENTIST":
+			return building.scientists;
+	}
+}
 
 /**
  * Calculates a buildings production fee rate per 24h of runtime as the
@@ -33,19 +40,19 @@ export function calculateProductionFeeRate(
 ): number {
 	if (!fees || building.expertise === null) return 0;
 
-	const workers: number = Object.values(WORKFORCE_BUILDING_FIELD_MAP).reduce(
-		(sum, field) => sum + building[field],
-		0
-	);
+	const workers: number =
+		building.pioneers +
+		building.settlers +
+		building.technicians +
+		building.engineers +
+		building.scientists;
 	if (workers === 0) return 0;
 
 	const weighted: number = fees.reduce(
 		(sum, fee) =>
 			fee.category === building.expertise
 				? sum +
-					building[
-						WORKFORCE_BUILDING_FIELD_MAP[fee.workforce_level]
-					] *
+					getWorkforceAmount(building, fee.workforce_level) *
 						fee.fee_amount
 				: sum,
 		0
