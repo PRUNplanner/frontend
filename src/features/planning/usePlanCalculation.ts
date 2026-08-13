@@ -28,6 +28,7 @@ import {
 	getVolumeOfAllStorages,
 	getWeightOfAllStorages,
 } from "@/features/planning/calculations/infrastructureCalculations";
+import { calculateProductionFeeRate } from "@/features/planning/calculations/productionFeeCalculations";
 
 // Submodule composables
 import { usePlanCalculationHandlers } from "@/features/planning/usePlanCalculationHandlers";
@@ -458,6 +459,17 @@ export async function usePlanCalculation(
 				"BUY"
 			);
 
+			// government production fee, daily at full utilization
+			const productionFeeDaily: number =
+				-1 *
+				calculateProductionFeeRate(
+					buildingData,
+					planetData.production_fees
+				);
+			// fees are charged per order, an idle building pays none
+			const productionFeeDailyCost: number =
+				activeRecipes.length > 0 ? productionFeeDaily : 0;
+
 			// get recipe options
 			const recipeOptions: IRecipeBuildingOption[] = await Promise.all(
 				buildingRecipes.map(async (br) => {
@@ -490,7 +502,8 @@ export async function usePlanCalculation(
 						dailyIncome * maxDailyRuns -
 						dailyCost * maxDailyRuns -
 						constructionCost * -1 * (1 / 180) -
-						-1 * workforceDailyCost;
+						-1 * workforceDailyCost -
+						-1 * productionFeeDaily;
 
 					// Recipe option ROI
 					const roi: number = (constructionCost * -1) / dailyRevenue;
@@ -631,6 +644,7 @@ export async function usePlanCalculation(
 				constructionCost: constructionCost,
 				workforceMaterials: workforceMaterials,
 				workforceDailyCost: workforceDailyCost,
+				productionFeeDailyCost: productionFeeDailyCost,
 				dailyRevenue: 0,
 				expertise: buildingData.expertise,
 			};
@@ -651,6 +665,7 @@ export async function usePlanCalculation(
 			building.dailyRevenue =
 				productionRevenue +
 				workforceDailyCost * building.amount +
+				productionFeeDailyCost * building.amount +
 				(1 / 180) * constructionCost;
 
 			buildings.push(building);
@@ -766,10 +781,21 @@ export async function usePlanCalculation(
 			) *
 			(1 / 180);
 
-		const profit: number =
-			materialRevenue - materialCost - dailyDegradationCost;
+		const dailyProductionFeeCost: number =
+			productionResult.buildings.reduce(
+				(sum, element) =>
+					sum + element.productionFeeDailyCost * -1 * element.amount,
+				0
+			);
 
-		const cost: number = materialCost + dailyDegradationCost;
+		const profit: number =
+			materialRevenue -
+			materialCost -
+			dailyDegradationCost -
+			dailyProductionFeeCost;
+
+		const cost: number =
+			materialCost + dailyDegradationCost + dailyProductionFeeCost;
 
 		// calculate overview
 		overviewData.value = await calculateOverview(
@@ -832,6 +858,12 @@ export async function usePlanCalculation(
 		const dailyDegradationCost: number =
 			totalProductionConstructionCost / 180;
 
+		const dailyProductionFee: number = production.buildings.reduce(
+			(sum, current) =>
+				sum + current.productionFeeDailyCost * current.amount,
+			0
+		);
+
 		const constructionMaterials = await calculateConstructionMaterials(
 			infrastructure,
 			production.buildings
@@ -857,13 +889,17 @@ export async function usePlanCalculation(
 		);
 
 		const profit: number =
-			dailyProfit - -1 * dailyDegradationCost - -1 * dailyCost;
+			dailyProfit -
+			-1 * dailyDegradationCost -
+			-1 * dailyCost -
+			-1 * dailyProductionFee;
 
 		return {
 			dailyCost: dailyCost * -1,
 			dailyProfit: dailyProfit * 1,
 			totalConstructionCost,
 			dailyDegradationCost: dailyDegradationCost * -1,
+			dailyProductionFeeCost: dailyProductionFee * -1,
 			profit,
 			roi: totalConstructionCost / profit,
 		};
@@ -874,6 +910,7 @@ export async function usePlanCalculation(
 		dailyProfit: 0,
 		totalConstructionCost: 0,
 		dailyDegradationCost: 0,
+		dailyProductionFeeCost: 0,
 		profit: 0,
 		roi: 0,
 	});

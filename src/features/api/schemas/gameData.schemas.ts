@@ -10,6 +10,7 @@ import {
 	IBuilding,
 	IPlanetResource,
 	IPlanetCOGCProgram,
+	IPlanetProductionFee,
 	IPlanet,
 	IFIOStorageItem,
 	IFIOSitePlanetBuildingMaterial,
@@ -156,6 +157,20 @@ const PLANET_COGCPGROGRAM_STATUS_TYPE_ZOD = z.enum([
 	"PLANNED",
 ]);
 
+const PLANET_WORKFORCE_LEVEL_TYPE_ZOD = z.enum([
+	"PIONEER",
+	"SETTLER",
+	"TECHNICIAN",
+	"ENGINEER",
+	"SCIENTIST",
+]);
+
+const PlanetProductionFeeSchema: z.ZodType<IPlanetProductionFee> = z.object({
+	category: EXPERTISE_TYPE_ZOD,
+	workforce_level: PLANET_WORKFORCE_LEVEL_TYPE_ZOD,
+	fee_amount: z.number(),
+});
+
 export const PlanetSchema: z.ZodType<IPlanet> = z.object({
 	planet_id: z.string().min(32).max(32),
 	planet_natural_id: z.string(),
@@ -178,6 +193,7 @@ export const PlanetSchema: z.ZodType<IPlanet> = z.object({
 	resources: z.array(PlanetResourceSchema),
 	cogc_programs: z.array(PlanetCOGCProgramSchema),
 	active_cogc_program_type: PLANET_COGCPROGRAM_TYPE_ZOD.nullable(),
+	production_fees: z.array(PlanetProductionFeeSchema).optional(),
 });
 
 export const PlanetMultiplePayload: z.ZodType<IPlanet[]> =
