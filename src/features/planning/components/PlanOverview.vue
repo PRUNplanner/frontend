@@ -76,6 +76,23 @@
 					</tr>
 					<tr>
 						<td>
+							{{
+								$t(
+									"plan.components.overview.table.production_fees"
+								)
+							}}
+						</td>
+						<td>
+							{{
+								formatNumber(
+									overviewData.dailyProductionFeeCost
+								)
+							}}
+							<span class="font-light text-white/50"> ȼ </span>
+						</td>
+					</tr>
+					<tr>
+						<td>
 							{{ $t("plan.components.overview.table.plan_cost") }}
 						</td>
 						<td>

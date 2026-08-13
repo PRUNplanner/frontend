@@ -201,6 +201,7 @@
 			"table": {
 				"daily_cost": "Daily Cost",
 				"degradation": "Degradation",
+				"production_fees": "Production Fees",
 				"plan_cost": "Plan Cost",
 				"daily_profit": "Daily Profit",
 				"roi": "ROI",
