@@ -1,17 +1,19 @@
 // Types & Interfaces
-import { IBuilding } from "@/features/api/gameData.types";
-import { IFIOProductionFeeTable } from "@/features/api/fioData.types";
-import { WORKFORCE_TYPE } from "@/features/planning/usePlanCalculation.types";
+import {
+	IBuilding,
+	IPlanetProductionFee,
+	PLANET_WORKFORCE_LEVEL_TYPE,
+} from "@/features/api/gameData.types";
 
 const WORKFORCE_BUILDING_FIELD_MAP: Record<
-	WORKFORCE_TYPE,
+	PLANET_WORKFORCE_LEVEL_TYPE,
 	"pioneers" | "settlers" | "technicians" | "engineers" | "scientists"
 > = {
-	pioneer: "pioneers",
-	settler: "settlers",
-	technician: "technicians",
-	engineer: "engineers",
-	scientist: "scientists",
+	PIONEER: "pioneers",
+	SETTLER: "settlers",
+	TECHNICIAN: "technicians",
+	ENGINEER: "engineers",
+	SCIENTIST: "scientists",
 };
 
 /**
@@ -24,29 +26,30 @@ const WORKFORCE_BUILDING_FIELD_MAP: Record<
  *
  * @export
  * @param {IBuilding} building Building Data
- * @param {IFIOProductionFeeTable | null} fees Planet Fee Data, null if unknown
+ * @param {IPlanetProductionFee[] | undefined} fees Planet Fee Data
  * @returns {number} Fee rate per 24h runtime, 0 if unknown
  */
 export function calculateProductionFeeRate(
 	building: IBuilding,
-	fees: IFIOProductionFeeTable | null
+	fees: IPlanetProductionFee[] | undefined
 ): number {
 	if (!fees || building.expertise === null) return 0;
 
-	const feeTable = fees[building.expertise];
-	if (!feeTable) return 0;
+	const workers: number = Object.values(WORKFORCE_BUILDING_FIELD_MAP).reduce(
+		(sum, field) => sum + building[field],
+		0
+	);
+	if (workers === 0) return 0;
 
-	const { weighted, workers } = Object.entries(
-		WORKFORCE_BUILDING_FIELD_MAP
-	).reduce(
-		(acc, [workforce, field]) => ({
-			weighted:
-				acc.weighted +
-				building[field] * (feeTable[workforce as WORKFORCE_TYPE] ?? 0),
-			workers: acc.workers + building[field],
-		}),
-		{ weighted: 0, workers: 0 }
+	const weighted: number = fees.reduce(
+		(sum, fee) =>
+			fee.category === building.expertise
+				? sum +
+					building[WORKFORCE_BUILDING_FIELD_MAP[fee.workforce_level]] *
+						fee.fee_amount
+				: sum,
+		0
 	);
 
-	return workers > 0 ? weighted / workers : 0;
+	return weighted / workers;
 }

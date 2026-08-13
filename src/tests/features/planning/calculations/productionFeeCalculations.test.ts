@@ -3,8 +3,10 @@ import { describe, it, expect } from "vitest";
 import { calculateProductionFeeRate } from "@/features/planning/calculations/productionFeeCalculations";
 
 // Types & Interfaces
-import { IBuilding } from "@/features/api/gameData.types";
-import { IFIOProductionFeeTable } from "@/features/api/fioData.types";
+import {
+	IBuilding,
+	IPlanetProductionFee,
+} from "@/features/api/gameData.types";
 
 const fakeBuilding = {
 	ticker: "SME",
@@ -16,15 +18,12 @@ const fakeBuilding = {
 	scientists: 0,
 } as unknown as IBuilding;
 
-const fakeFees: IFIOProductionFeeTable = {
-	METALLURGY: {
-		pioneer: 50,
-		settler: 80,
-		technician: 140,
-		engineer: 800,
-		scientist: 1500,
-	},
-};
+const fakeFees: IPlanetProductionFee[] = [
+	{ category: "METALLURGY", workforce_level: "PIONEER", fee_amount: 50 },
+	{ category: "METALLURGY", workforce_level: "SETTLER", fee_amount: 80 },
+	{ category: "METALLURGY", workforce_level: "SCIENTIST", fee_amount: 1500 },
+	{ category: "AGRICULTURE", workforce_level: "PIONEER", fee_amount: 999 },
+];
 
 describe("productionFeeCalculations", () => {
 	describe("calculateProductionFeeRate", () => {
@@ -79,14 +78,23 @@ describe("productionFeeCalculations", () => {
 			} as unknown as IBuilding;
 
 			expect(
-				calculateProductionFeeRate(polymerPlant, {
-					CHEMISTRY: { pioneer: 15, settler: 12 },
-				})
+				calculateProductionFeeRate(polymerPlant, [
+					{
+						category: "CHEMISTRY",
+						workforce_level: "PIONEER",
+						fee_amount: 15,
+					},
+					{
+						category: "CHEMISTRY",
+						workforce_level: "SETTLER",
+						fee_amount: 12,
+					},
+				])
 			).toBeCloseTo(450 / 35, 8);
 		});
 
 		it("returns 0 on unknown fees", () => {
-			expect(calculateProductionFeeRate(fakeBuilding, null)).toBe(0);
+			expect(calculateProductionFeeRate(fakeBuilding, undefined)).toBe(0);
 		});
 
 		it("returns 0 without building expertise", () => {
@@ -97,10 +105,10 @@ describe("productionFeeCalculations", () => {
 			expect(calculateProductionFeeRate(noExpertise, fakeFees)).toBe(0);
 		});
 
-		it("returns 0 on missing industry fee table", () => {
+		it("returns 0 on missing industry fee entries", () => {
 			const otherExpertise = {
 				...fakeBuilding,
-				expertise: "CHEMISTRY",
+				expertise: "CONSTRUCTION",
 			} as IBuilding;
 			expect(calculateProductionFeeRate(otherExpertise, fakeFees)).toBe(
 				0

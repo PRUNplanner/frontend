@@ -1,7 +1,6 @@
 class Config {
 	public readonly API_BASE_URL: string;
 	public readonly SHARE_BASE_URL: string;
-	public readonly FIO_BASE_URL: string;
 
 	public readonly GAME_DATA_STALE_MINUTES_BUILDINGS: number;
 	public readonly GAME_DATA_STALE_MINUTES_RECIPES: number;
@@ -17,8 +16,6 @@ class Config {
 		this.SHARE_BASE_URL =
 			import.meta.env.VITE_SHARE_BASE_URL ||
 			"https://prunplanner.org/shared";
-		this.FIO_BASE_URL =
-			import.meta.env.VITE_FIO_BASE_URL || "https://rest.fnar.net";
 
 		this.GAME_DATA_STALE_MINUTES_BUILDINGS =
 			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_BUILDINGS || 24 * 60;

@@ -12,7 +12,6 @@ import {
 	IPopulationReport,
 	IRecipe,
 } from "@/features/api/gameData.types";
-import { IFIOProductionFeeTable } from "@/features/api/fioData.types";
 
 import {
 	ICXEmpireJunction,
@@ -100,10 +99,6 @@ export interface IQueryRepository {
 		IPlanet[]
 	>;
 	GetPlanetSearchSingle: IQueryDefinition<{ searchId: string }, IPlanet[]>;
-	GetFIOPlanetFees: IQueryDefinition<
-		{ planetNaturalId: string },
-		IFIOProductionFeeTable | null
-	>;
 	PostPlanetSearch: IQueryDefinition<
 		{ searchData: IPlanetSearchAdvanced },
 		IPlanet[]

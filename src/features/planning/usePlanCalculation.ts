@@ -12,7 +12,6 @@ import {
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
 import { usePlanetData } from "@/database/services/usePlanetData";
-import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Calculation Utils
 import {
@@ -40,7 +39,6 @@ import { optimalProduction } from "@/features/roi_overview/assets/optimalProduct
 
 // Types & Interfaces
 import { IBuilding, IPlanet, IRecipe } from "@/features/api/gameData.types";
-import { IFIOProductionFeeTable } from "@/features/api/fioData.types";
 import {
 	IAreaResult,
 	IBuildingConstruction,
@@ -110,23 +108,6 @@ export async function usePlanCalculation(
 	);
 	const planetNaturalId: Ref<string> = toRef(plan.value.planet_natural_id);
 	const planetData: IPlanet = await getPlanet(plan.value.planet_natural_id);
-
-	// government-set production fees, fetched non-blocking from FIO:
-	// plan calculation must not depend on FIO uptime, until resolved
-	// (or on failure) fees are unknown and cost 0
-	const planetFees: Ref<IFIOProductionFeeTable | null> = ref(null);
-	useQuery("GetFIOPlanetFees", {
-		planetNaturalId: plan.value.planet_natural_id,
-	})
-		.execute()
-		.then((fees) => {
-			if (fees) {
-				planetFees.value = fees;
-				refreshKey.value++;
-			}
-		})
-		.catch(() => {});
-
 	const buildings: ComputedRef<IPlanDataBuilding[]> = computed(
 		() => data.value.buildings
 	);
@@ -480,7 +461,11 @@ export async function usePlanCalculation(
 
 			// government production fee, daily at full utilization
 			const productionFeeDaily: number =
-				-1 * calculateProductionFeeRate(buildingData, planetFees.value);
+				-1 *
+				calculateProductionFeeRate(
+					buildingData,
+					planetData.production_fees
+				);
 			// fees are charged per order, an idle building pays none
 			const productionFeeDailyCost: number =
 				activeRecipes.length > 0 ? productionFeeDaily : 0;
