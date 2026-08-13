@@ -17,6 +17,15 @@ export interface IPreference {
 	burnOrigin: string;
 	layoutNavigationStyle: "full" | "collapsed";
 
+	/**
+	 * Share of an exchange's daily traded volume, in percent, at which a
+	 * plan's sale of a material is flagged yellow respectively red.
+	 * Optional and client side only: deliberately absent from
+	 * `UserPreferenceSchema`, so it never reaches the backend
+	 */
+	cxVolumeYellowPercent?: number;
+	cxVolumeRedPercent?: number;
+
 	// seeding per plan defaults
 	planOverrides: Record<string, Partial<IPreferencePerPlan>>;
 
