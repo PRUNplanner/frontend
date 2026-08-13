@@ -15,6 +15,10 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Default values
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
+import {
+	CX_VOLUME_RED_PERCENT,
+	CX_VOLUME_YELLOW_PERCENT,
+} from "@/features/cx/cxVolumeShare";
 
 // Types & Interfaces
 import {
@@ -96,7 +100,7 @@ export function usePreferences() {
 		computed<number>({
 			get: () =>
 				userStore.preferences.cxVolumeYellowPercent ??
-				preferenceDefaults.cxVolumeYellowPercent!,
+				CX_VOLUME_YELLOW_PERCENT,
 			set: (v) => userStore.setPreference("cxVolumeYellowPercent", v),
 		});
 
@@ -104,7 +108,7 @@ export function usePreferences() {
 		computed<number>({
 			get: () =>
 				userStore.preferences.cxVolumeRedPercent ??
-				preferenceDefaults.cxVolumeRedPercent!,
+				CX_VOLUME_RED_PERCENT,
 			set: (v) => userStore.setPreference("cxVolumeRedPercent", v),
 		});
 

@@ -79,25 +79,12 @@ export function useCXVolumeShare(
 	// guards against an earlier, slower run overwriting a later one
 	let generation: number = 0;
 
-	watchEffect(async () => {
-		// every reactive read happens before the first await, a dependency
-		// picked up after it would not be tracked
-		const localRows: ICXVolumeRow[] = rows.value.filter(
-			(row) => row.soldPerDay > 0
-		);
-		const exchange: EXCHANGES_TYPE = resolveSellExchange(cxUuid.value);
-		const thresholds: ICXVolumeThresholds = {
-			yellowPercent: cxVolumeYellowPercent.value,
-			redPercent: cxVolumeRedPercent.value,
-		};
-
-		const run: number = ++generation;
-
-		if (localRows.length === 0) {
-			volumeShares.value = new Map();
-			return;
-		}
-
+	async function computeShares(
+		localRows: ICXVolumeRow[],
+		exchange: EXCHANGES_TYPE,
+		thresholds: ICXVolumeThresholds,
+		run: number
+	): Promise<void> {
 		const { getExchangeTicker } = await useExchangeData();
 
 		const next: Map<string, ICXVolumeShare> = new Map();
@@ -129,6 +116,28 @@ export function useCXVolumeShare(
 		);
 
 		if (run === generation) volumeShares.value = next;
+	}
+
+	// the effect itself stays synchronous, so every reactive read is
+	// tracked; the async fetch runs detached under a generation guard
+	watchEffect(() => {
+		const localRows: ICXVolumeRow[] = rows.value.filter(
+			(row) => row.soldPerDay > 0
+		);
+		const exchange: EXCHANGES_TYPE = resolveSellExchange(cxUuid.value);
+		const thresholds: ICXVolumeThresholds = {
+			yellowPercent: cxVolumeYellowPercent.value,
+			redPercent: cxVolumeRedPercent.value,
+		};
+
+		const run: number = ++generation;
+
+		if (localRows.length === 0) {
+			volumeShares.value = new Map();
+			return;
+		}
+
+		computeShares(localRows, exchange, thresholds, run).catch(() => {});
 	});
 
 	return { volumeShares };

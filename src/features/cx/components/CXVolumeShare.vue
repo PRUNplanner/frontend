@@ -59,18 +59,20 @@
 		}
 	});
 
-	function windowLine(window: ICXVolumeWindow, label: string): string {
-		const share: ICXVolumeShare = localShare.value!;
-
+	function windowLine(
+		window: ICXVolumeWindow,
+		exchange: string,
+		label: string
+	): string {
 		if (window.share === undefined)
 			return t("cx_volume.tooltip_window_empty", {
 				window: label,
-				exchange: share.exchange,
+				exchange,
 			});
 
 		return t("cx_volume.tooltip_window", {
 			window: label,
-			exchange: share.exchange,
+			exchange,
 			traded: formatNumber(window.sumTraded, 0),
 			perDay: formatNumber(window.sumTraded / window.days, 1),
 			percent: formatNumber(window.share * 100, 1),
@@ -100,8 +102,8 @@
 			);
 		} else {
 			lines.push(
-				windowLine(share.window7d, t("terms.7d")),
-				windowLine(share.window30d, t("terms.30d"))
+				windowLine(share.window7d, share.exchange, t("terms.7d")),
+				windowLine(share.window30d, share.exchange, t("terms.30d"))
 			);
 		}
 
