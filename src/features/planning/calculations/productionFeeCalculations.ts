@@ -17,17 +17,15 @@ const WORKFORCE_BUILDING_FIELD_MAP: Record<
 };
 
 /**
- * A building's production fee rate per 24h of runtime. The rate is
- * charged per building, not per employee: the workforce-weighted
- * average of the planet's per-tier daily rates for the building's
- * expertise, e.g. (10 x 15 + 25 x 12) / (10 + 25) = 12.9.
- * @see https://handbook.apex.prosperousuniverse.com/wiki/local-rules/index.html
+ * Calculates a buildings production fee rate per 24h of runtime as the
+ * workforce-weighted average of the planets per-tier daily rates for
+ * the buildings expertise, charged per building following ingame logic
  * @author raukk
  *
  * @export
  * @param {IBuilding} building Building Data
  * @param {IPlanetProductionFee[] | undefined} fees Planet Fee Data
- * @returns {number} Fee rate per 24h runtime, 0 if unknown
+ * @returns {number} Fee Rate per 24h, 0 if unknown
  */
 export function calculateProductionFeeRate(
 	building: IBuilding,
@@ -45,7 +43,9 @@ export function calculateProductionFeeRate(
 		(sum, fee) =>
 			fee.category === building.expertise
 				? sum +
-					building[WORKFORCE_BUILDING_FIELD_MAP[fee.workforce_level]] *
+					building[
+						WORKFORCE_BUILDING_FIELD_MAP[fee.workforce_level]
+					] *
 						fee.fee_amount
 				: sum,
 		0

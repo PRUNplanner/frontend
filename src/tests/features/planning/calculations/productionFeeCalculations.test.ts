@@ -3,10 +3,7 @@ import { describe, it, expect } from "vitest";
 import { calculateProductionFeeRate } from "@/features/planning/calculations/productionFeeCalculations";
 
 // Types & Interfaces
-import {
-	IBuilding,
-	IPlanetProductionFee,
-} from "@/features/api/gameData.types";
+import { IBuilding, IPlanetProductionFee } from "@/features/api/gameData.types";
 
 const fakeBuilding = {
 	ticker: "SME",
@@ -65,8 +62,7 @@ describe("productionFeeCalculations", () => {
 		});
 
 		it("reproduces the APEX handbook worked example", () => {
-			// handbook "Local Rules": a polymer plant of 10 pioneers at 15
-			// and 25 settlers at 12 pays (10 * 15 + 25 * 12) / 35 = 12.9
+			// (10 * 15 + 25 * 12) / 35 = 12.9
 			const polymerPlant = {
 				ticker: "POL",
 				expertise: "CHEMISTRY",
