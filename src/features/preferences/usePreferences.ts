@@ -15,6 +15,10 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Default values
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
+import {
+	CX_VOLUME_RED_PERCENT,
+	CX_VOLUME_YELLOW_PERCENT,
+} from "@/features/cx/cxVolumeShare";
 
 // Types & Interfaces
 import {
@@ -91,6 +95,22 @@ export function usePreferences() {
 		get: () => userStore.preferences.burnOrigin,
 		set: (v) => userStore.setPreference("burnOrigin", v),
 	});
+
+	const cxVolumeYellowPercent: WritableComputedRef<number, number> =
+		computed<number>({
+			get: () =>
+				userStore.preferences.cxVolumeYellowPercent ??
+				CX_VOLUME_YELLOW_PERCENT,
+			set: (v) => userStore.setPreference("cxVolumeYellowPercent", v),
+		});
+
+	const cxVolumeRedPercent: WritableComputedRef<number, number> =
+		computed<number>({
+			get: () =>
+				userStore.preferences.cxVolumeRedPercent ??
+				CX_VOLUME_RED_PERCENT,
+			set: (v) => userStore.setPreference("cxVolumeRedPercent", v),
+		});
 
 	const planSettings: ComputedRef<
 		Record<string, Partial<IPreferencePerPlan>>
@@ -234,6 +254,8 @@ export function usePreferences() {
 		burnDaysYellow,
 		burnResupplyDays,
 		burnOrigin,
+		cxVolumeYellowPercent,
+		cxVolumeRedPercent,
 		planSettings,
 		planSettingsOverview,
 		layoutNavigationStyle,
