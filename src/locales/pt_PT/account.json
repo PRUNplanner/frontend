@@ -49,7 +49,7 @@
 			"form": {
 				"email": "Email",
 				"code": "Code",
-				"password": "Password",
+				"password": "Senha",
 				"password_info": "Must be at least 8 characters long."
 			}
 		},
