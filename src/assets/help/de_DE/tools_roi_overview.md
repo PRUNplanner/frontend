@@ -2,4 +2,4 @@ The ROI Overview tool is a collaborative creation, developed with insights from 
 
 This tool uses a linear model to calculate the optimal number of production buildings and the required habitation buildings to maximize the use of a 500-area base, factoring in workforce requirements, STO for large or heavy materials, and alignment with 5 experts and COGC. The calculations assume normal planetary conditions—standard surface, temperature, pressure, and gravity—for all available building recipes. The tool will also consider your CX preferences.
 
-Buildings such as EXT, RIG, COL, and FRM are excluded, as their outputs depend on a planet's unique resources and fertility. Figures for these excluded buildings can be viewed on the Resource ROI Overview.
+Buildings such as EXT, RIG, COL, and FRM are excluded, as their outputs depend on a planet's unique resources and fertility. Zahlen für diese ausgeschlossenen Gebäude können in der Ressourcen-ROI-Übersicht eingesehen werden.

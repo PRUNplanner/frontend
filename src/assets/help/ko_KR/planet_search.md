@@ -1,5 +1,5 @@
-The **Planet Search** lets you quickly find planets by name or ID, or use the Advanced Search to narrow results with multiple parameters.
+**행성 검색**을 사용하면 행성 이름이나 ID로 행성을 빠르게 찾을 수 있으며, **고급 검색**을 사용해 여러 조건으로 검색 결과를 좁힐 수도 있습니다.
 
-With Advanced Search, you can look for up to four specific materials, filter by COGC programs, or select planets with certain features such as fertility or a warehouse. You can also search by distance from a chosen system or by environment parameters like surface type, gravity, temperature, or pressure.
+고급검색에서는 최대 네 가지 특정 자재를 기준으로 행성을 찾을 수 있고, **행성상공회의소 프로그램**으로 필터링하거나, 비옥도나 창고 같은 특정 특징을 가진 행성을 선택할 수 있습니다. 또한 선택한 성계로부터의 거리나 표면 유형, 중력, 온도, 압력 같은 환경 조건을 기준으로도 검색할 수 있습니다.
 
-Planet Search is also the starting point for creating a new plan: simply find the planet you’re interested in and begin your plan from there.
+Planet Search는 새로운 계획을 생성하는 출발점이기도 합니다. 관심 있는 행성을 찾은 뒤, 그 행성에서 바로 계획 작성을 시작하면 됩니다.

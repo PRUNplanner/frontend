@@ -1,7 +1,7 @@
-The **Empire view** gives you a complete overview of your plans and their combined production within an empire. Here, you can also adjust your faction and permits, since both affect your production bonuses. Plans can be assigned to an empire in the **Management view**.
+**제국 화면**은 그 안에 포함된 계획들과 통합 생산 현황을 한눈에 볼 수 있는 전체 개요를 제공합니다. 여기에서는 생산 보너스에 영향을 주는 진영과 허가권 수도 조정할 수 있습니다. 계획은 **관리 화면**에서 제국에 할당할 수 있습니다.
 
-In addition to tracking production, the empire automatically calculates your **daily profit, costs** (including materials, workforce, and degradation), and total **revenue** based on your personal exchange preferences. These figures aren’t just a simple sum of your plans—they use weighted prices that take both production and consumption into account across the entire empire.
+생산량 추적 뿐 아니라, 제국은 사용자가 설정한 개인 거래소 선호도에 따라 **일일 수익**, **비용**(자재, 인력과 시설 열화 비용을 포함), **총매출**을 자동으로 계산합니다. 이 수치들은 단순히 각 계획의 값을 더한 것이 아니라, 제국 전체의 생산과 소비를 함께 고려한 가중 가격을 사용해 계산됩니다.
 
-The **Empire Material I/O** view shows how much of each material your empire produces and where. You can filter consumables in or out, or focus purely on load balancing, comparing production and consumption at a glance.
+**제국 자재 입출고** 화면은 제국이 각 자재를 얼마나 생산하는지, 그리고 어디에서 생산하는지를 보여줍니다. 소모품을 포함하거나 제외해서 필터링할 수 있으며, 순수하게 부하 분산에 초점을 맞춰 생산량과 소비량을 한눈에 비교할 수도 있습니다.
 
-Finally, the **Empire Analysis** provides charts that break down your profits by plans and materials. You can also explore what your empire net produces or consumes, as well as which materials are produced or consumed exclusively.
+마지막으로 **제국 분석**은 계획 및 자재별 수익을 분석한 차트를 제공합니다. 또한 제국이 순생산하거나 순소비하는 자재가 무엇인지, 그리고 특정 자재가 생산 전용인지 소비 전용인지도 확인할 수 있습니다.
