@@ -28,6 +28,27 @@
 	<div
 		class="grid grid-cols-2 sm:grid-cols-[1fr_auto_auto_auto_auto_1fr] gap-6 child:child:text-center">
 		<div class="sm:col-2">
+			<div class="text-muted text-xs">{{ $t("terms.revenue") }}</div>
+			<div class="text-white text-xl">
+				<PValue :value="costOverview.totalRevenue" />
+			</div>
+		</div>
+		<div>
+			<div class="text-muted text-xs">{{ $t("terms.cost") }}</div>
+			<div class="text-white text-xl">
+				{{ formatNumber(costOverview.totalCost) }}
+			</div>
+			<div class="text-muted text-xs">
+				{{
+					formatNumber(
+						(costOverview.totalCost / costOverview.totalRevenue) *
+							100
+					)
+				}}
+				%
+			</div>
+		</div>
+		<div>
 			<div class="text-muted text-xs">{{ $t("terms.profit") }}</div>
 			<div class="text-white text-xl">
 				<PValue :value="costOverview.totalProfit" />
@@ -41,27 +62,6 @@
 				{{
 					formatNumber(
 						(costOverview.totalProfit / costOverview.totalRevenue) *
-							100
-					)
-				}}
-				%
-			</div>
-		</div>
-		<div>
-			<div class="text-muted text-xs">{{ $t("terms.revenue") }}</div>
-			<div class="text-white text-xl">
-				{{ formatNumber(costOverview.totalRevenue) }}
-			</div>
-		</div>
-		<div>
-			<div class="text-muted text-xs">{{ $t("terms.cost") }}</div>
-			<div class="text-white text-xl">
-				{{ formatNumber(costOverview.totalCost) }}
-			</div>
-			<div class="text-muted text-xs">
-				{{
-					formatNumber(
-						(costOverview.totalCost / costOverview.totalRevenue) *
 							100
 					)
 				}}
