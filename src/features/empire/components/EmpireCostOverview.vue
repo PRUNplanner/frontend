@@ -19,6 +19,11 @@
 			? props.costOverview.totalProfit / props.costOverview.totalAreaUsed
 			: 0;
 	});
+
+	const revenuePercentage = (value: number) =>
+		props.costOverview.totalRevenue
+			? (value / props.costOverview.totalRevenue) * 100
+			: 0;
 </script>
 
 <template>
@@ -36,12 +41,7 @@
 				{{ formatNumber(costOverview.totalCost) }}
 			</div>
 			<div class="text-white/40 text-xs">
-				{{
-					formatNumber(
-						(costOverview.totalCost / costOverview.totalRevenue) *
-							100
-					)
-				}}
+				{{ formatNumber(revenuePercentage(costOverview.totalCost)) }}
 				%
 			</div>
 		</div>
@@ -51,12 +51,7 @@
 				{{ formatNumber(costOverview.totalProfit) }}
 			</div>
 			<div class="text-white/40 text-xs">
-				{{
-					formatNumber(
-						(costOverview.totalProfit / costOverview.totalRevenue) *
-							100
-					)
-				}}
+				{{ formatNumber(revenuePercentage(costOverview.totalProfit)) }}
 				%
 			</div>
 		</div>

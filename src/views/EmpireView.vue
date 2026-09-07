@@ -22,7 +22,11 @@
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 	import { usePreferences } from "@/features/preferences/usePreferences";
-	const { combineEmpireMaterialIO, empireMaterialIOState } =
+	const {
+		calculateEmpireCostOverview,
+		combineEmpireMaterialIO,
+		empireMaterialIOState,
+	} =
 		await useMaterialIOUtil();
 	const { defaultEmpireUuid } = usePreferences();
 
@@ -119,7 +123,7 @@
 			// note, calculation depends on empire + cx, so a plan is only
 			// calculated properly within this context
 
-			const cacheKey: string = `${plan.uuid}#${selectedCXUuid.value}#${selectedCXUuid.value}`;
+			const cacheKey: string = `${plan.uuid}#${selectedEmpireUuid.value}#${selectedCXUuid.value}`;
 
 			if (cacheCalculatedPlans.has(cacheKey)) {
 				calculatedPlans.value[plan.uuid!] =
@@ -187,36 +191,6 @@
 		});
 
 	/**
-	 * Holds computed cost overview based on plan results.
-	 * @author jplacht
-	 *
-	 * @type {ComputedRef<IEmpireCostOverview>} Empire Cost overview
-	 */
-	const costOverview: ComputedRef<IEmpireCostOverview> = computed(() => {
-		const totalProfit: number = Object.values(calculatedPlans.value).reduce(
-			(sum, element) => sum + element.profit,
-			0
-		);
-		const totalRevenue: number = Object.values(
-			calculatedPlans.value
-		).reduce((sum, element) => sum + element.revenue, 0);
-		const totalCost: number = Object.values(calculatedPlans.value).reduce(
-			(sum, element) => sum + element.cost,
-			0
-		);
-		const totalAreaUsed: number = Object.values(
-			calculatedPlans.value
-		).reduce((sum, element) => sum + element.area.areaUsed, 0);
-
-		return {
-			totalProfit,
-			totalRevenue,
-			totalCost,
-			totalAreaUsed,
-		};
-	});
-
-	/**
 	 * Holds computed empire name.
 	 * @author jplacht
 	 *
@@ -281,6 +255,16 @@
 
 	const combinedEmpireMaterialIO: ComputedRef<IEmpireMaterialIO[]> = computed(
 		() => combineEmpireMaterialIO(empireMaterialIO.value)
+	);
+
+	const costOverview: ComputedRef<IEmpireCostOverview> = computed(() =>
+		calculateEmpireCostOverview(
+			combinedEmpireMaterialIO.value,
+			Object.values(calculatedPlans.value).reduce(
+				(sum, element) => sum + element.area.areaUsed,
+				0
+			)
+		)
 	);
 
 	/**
