@@ -160,6 +160,22 @@ describe("Util: materialIO ", async () => {
 	});
 
 	it("combineEmpireMaterialIO", async () => {
+		const material = (
+			ticker: string,
+			input: number,
+			output: number,
+			price: number
+		) => ({
+			ticker,
+			input,
+			output,
+			delta: output - input,
+			individualVolume: 0,
+			individualWeight: 0,
+			totalWeight: 0,
+			totalVolume: 0,
+			price,
+		});
 		const fakeInput: IEmpirePlanMaterialIO[] = [
 			{
 				planetId: "foo",
@@ -167,28 +183,9 @@ describe("Util: materialIO ", async () => {
 				planName: "foo",
 				planCOGC: "---",
 				materialIO: [
-					{
-						ticker: "RAT",
-						input: 10,
-						output: 2,
-						delta: 8,
-						individualVolume: 0,
-						individualWeight: 0,
-						totalWeight: 0,
-						totalVolume: 0,
-						price: 5,
-					},
-					{
-						ticker: "DW",
-						input: 0,
-						output: 3,
-						delta: -3,
-						individualVolume: 0,
-						individualWeight: 0,
-						totalWeight: 0,
-						totalVolume: 0,
-						price: 5,
-					},
+					material("OUT", 0, 2, 5),
+					material("DW", 0, 3, 5),
+					material("OUT", 1, 1, 0),
 				],
 			},
 			{
@@ -197,36 +194,34 @@ describe("Util: materialIO ", async () => {
 				planName: "moo",
 				planCOGC: "---",
 				materialIO: [
-					{
-						ticker: "DW",
-						input: 3,
-						output: 0,
-						delta: -3,
-						individualVolume: 0,
-						individualWeight: 0,
-						totalWeight: 0,
-						totalVolume: 0,
-						price: 5,
-					},
+					material("DW", 3, 0, -5),
+					material("IN", 3, 0, -9),
 				],
 			},
 		];
 
-		const { combineEmpireMaterialIO } = await useMaterialIOUtil();
+		const { combineEmpireMaterialIO, calculateEmpireCostOverview } =
+			await useMaterialIOUtil();
 
 		const result = combineEmpireMaterialIO(fakeInput);
 
-		expect(result.length).toBe(2);
+		expect(result.length).toBe(3);
 		// sorting
 		expect(result[0].ticker).toBe("DW");
-		expect(result[1].ticker).toBe("RAT");
+		expect(result[1].ticker).toBe("IN");
+		expect(result[2].ticker).toBe("OUT");
 
-		expect(result[0].delta).toBe(-6);
-		expect(result[0].deltaPrice).toBe(-10);
+		expect(result[0].delta).toBe(0);
+		expect(result[0].deltaPrice).toBe(0);
 		expect(result[0].input).toBe(3);
 		expect(result[0].output).toBe(3);
 		expect(result[0].inputPlanets.length).toBe(1);
 		expect(result[0].outputPlanets.length).toBe(1);
+		expect(calculateEmpireCostOverview(result, 25)).toMatchObject({
+			totalRevenue: 5,
+			totalCost: 9,
+			totalProfit: -4,
+		});
 	});
 	it("combineEmpireMaterialIO", async () => {
 		const fakeInput: IEmpirePlanMaterialIO[] = [
