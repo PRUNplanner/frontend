@@ -22,6 +22,11 @@
 			? props.costOverview.totalProfit / props.costOverview.totalAreaUsed
 			: 0;
 	});
+
+	const revenuePercentage = (value: number) =>
+		props.costOverview.totalRevenue
+			? (value / props.costOverview.totalRevenue) * 100
+			: 0;
 </script>
 
 <template>
@@ -39,12 +44,7 @@
 				{{ formatNumber(costOverview.totalCost) }}
 			</div>
 			<div class="text-muted text-xs">
-				{{
-					formatNumber(
-						(costOverview.totalCost / costOverview.totalRevenue) *
-							100
-					)
-				}}
+				{{ formatNumber(revenuePercentage(costOverview.totalCost)) }}
 				%
 			</div>
 		</div>
@@ -53,18 +53,8 @@
 			<div class="text-white text-xl">
 				<PValue :value="costOverview.totalProfit" />
 			</div>
-			<div
-				v-if="costOverview.totalRevenue === 0"
-				class="text-muted text-xs">
-				—
-			</div>
-			<div v-else class="text-muted text-xs">
-				{{
-					formatNumber(
-						(costOverview.totalProfit / costOverview.totalRevenue) *
-							100
-					)
-				}}
+			<div class="text-muted text-xs">
+				{{ formatNumber(revenuePercentage(costOverview.totalProfit)) }}
 				%
 			</div>
 		</div>

@@ -26,7 +26,11 @@
 	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { planResultCacheKey } from "@/features/empire/empire.util";
-	const { combineEmpireMaterialIO, empireMaterialIOState } =
+	const {
+		calculateEmpireCostOverview,
+		combineEmpireMaterialIO,
+		empireMaterialIOState,
+	} =
 		useMaterialIOUtil();
 	const { defaultEmpireUuid } = usePreferences();
 
@@ -230,36 +234,6 @@
 	);
 
 	/**
-	 * Holds computed cost overview based on plan results.
-	 * @author jplacht
-	 *
-	 * @type {ComputedRef<IEmpireCostOverview>} Empire Cost overview
-	 */
-	const costOverview: ComputedRef<IEmpireCostOverview> = computed(() => {
-		const totalProfit: number = Object.values(calculatedPlans.value).reduce(
-			(sum, element) => sum + element.profit,
-			0
-		);
-		const totalRevenue: number = Object.values(
-			calculatedPlans.value
-		).reduce((sum, element) => sum + element.revenue, 0);
-		const totalCost: number = Object.values(calculatedPlans.value).reduce(
-			(sum, element) => sum + element.cost,
-			0
-		);
-		const totalAreaUsed: number = Object.values(
-			calculatedPlans.value
-		).reduce((sum, element) => sum + element.area.areaUsed, 0);
-
-		return {
-			totalProfit,
-			totalRevenue,
-			totalCost,
-			totalAreaUsed,
-		};
-	});
-
-	/**
 	 * Holds computed empire name.
 	 * @author jplacht
 	 *
@@ -324,6 +298,16 @@
 
 	const combinedEmpireMaterialIO: ComputedRef<IEmpireMaterialIO[]> = computed(
 		() => combineEmpireMaterialIO(empireMaterialIO.value)
+	);
+
+	const costOverview: ComputedRef<IEmpireCostOverview> = computed(() =>
+		calculateEmpireCostOverview(
+			combinedEmpireMaterialIO.value,
+			Object.values(calculatedPlans.value).reduce(
+				(sum, element) => sum + element.area.areaUsed,
+				0
+			)
+		)
 	);
 
 	/**
