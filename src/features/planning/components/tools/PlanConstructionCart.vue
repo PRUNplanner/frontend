@@ -313,25 +313,27 @@
 		return { weight, volume, price };
 	}
 
-	// prices resolve async, a run started later may finish first: drop the
-	// result of a run that a newer one replaced
-	watchEffect(async (onCleanup) => {
-		let stale = false;
-		onCleanup(() => (stale = true));
+	// prices resolve async, a run started later may finish first: only the
+	// latest run may set a total, a slower older one is stale
+	let latestTotalRun: number = 0;
+	let latestOverviewRun: number = 0;
 
+	watchEffect(() => {
 		generateMatrix();
-		const total = await calculateTotal(xitTransferElements.value);
-		if (!stale) totalInformation.value = total;
+		const run = ++latestTotalRun;
+		// the sync part of calculateTotal reads the dependencies
+		void calculateTotal(xitTransferElements.value).then((total) => {
+			if (run === latestTotalRun) totalInformation.value = total;
+		});
 	});
 
 	watch(
 		() => xitTransferElementsNeed.value,
-		async (overview, _old, onCleanup) => {
-			let stale = false;
-			onCleanup(() => (stale = true));
-
+		async (overview) => {
+			const run = ++latestOverviewRun;
 			const total = await calculateTotal(overview);
-			if (!stale) overviewTotalInformation.value = total;
+			if (run === latestOverviewRun)
+				overviewTotalInformation.value = total;
 		},
 		{ deep: true, immediate: true }
 	);
