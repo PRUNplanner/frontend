@@ -212,6 +212,48 @@ describe("PlanRepairAnalysis", () => {
 		);
 	});
 
+	it("falls back to the first building when the selected one is removed", async () => {
+		const { wrapper, setProps } = await mountAnalysis();
+		await select(wrapper, 1, 1);
+
+		await setProps({ data: [FRM] });
+
+		expect(wrapper.findAllComponents(PSelect).at(1)!.text()).toContain(
+			"FRM"
+		);
+		const series = wrapper
+			.findComponent(PlanRepairCostChart)
+			.props("series") as { name: string }[];
+		expect(series.map((s) => s.name)).toEqual(["Total Cost", "BBH", "BSE"]);
+	});
+
+	it("clears the selection when the last building is removed", async () => {
+		const { wrapper, setProps } = await mountAnalysis();
+
+		await setProps({ data: [] });
+
+		expect(wrapper.findAllComponents(PSelect).at(1)!.text()).toBe(
+			"common.ui.placeholder.please_select"
+		);
+		expect(wrapper.findComponent(PlanRepairProfitChart).exists()).toBe(
+			false
+		);
+		await vi.waitFor(() => expect(dayRows(wrapper)).toEqual([]));
+	});
+
+	it("selects the first building once the plan gets one", async () => {
+		const { wrapper, setProps } = await mountAnalysis([]);
+
+		await setProps({ data: [EXT] });
+
+		expect(wrapper.findAllComponents(PSelect).at(1)!.text()).toContain(
+			"EXT"
+		);
+		expect(
+			wrapper.findComponent(PlanRepairProfitChart).props("profitData")
+		).toHaveLength(181);
+	});
+
 	it("hides the charts without buildings", async () => {
 		const { wrapper } = await mountAnalysis([]);
 

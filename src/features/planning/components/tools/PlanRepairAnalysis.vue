@@ -115,6 +115,11 @@
 	watch(
 		[selectedBuilding, localData],
 		async () => {
+			// the plan's buildings changed, keep the selection valid
+			if (!localData.value[selectedBuilding.value ?? -1])
+				selectedBuilding.value =
+					localData.value.length > 0 ? 0 : undefined;
+
 			calculateRep();
 			dailyRepairMaterials.value = await calculateDailyRepairMaterials(
 				localData.value
