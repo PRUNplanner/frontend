@@ -13,6 +13,7 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Types & Interfaces
 import { IPlan } from "@/stores/planningStore.types";
+import { IPlanet } from "@/features/api/gameData.types";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
@@ -20,6 +21,7 @@ import recipes from "@/tests/test_data/api_data_recipes.json";
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
+import planet_search from "@/tests/test_data/api_data_planet_search.json";
 
 /**
  * Shared plans and setup for the planning engine characterization tests
@@ -133,4 +135,24 @@ export function findRecipeSwap(plan: IPlan): {
 			!b.active_recipes.some((ar) => ar.recipeid === r.recipe_id)
 	)!.recipe_id;
 	return { index, recipeid };
+}
+
+/**
+ * The planet search fixture where every planet has N, like a real search
+ * for N returns. Planets without N get a gaseous N deposit.
+ */
+export function planetSearchWithN(): IPlanet[] {
+	return (structuredClone(planet_search) as unknown as IPlanet[]).map(
+		(p) => {
+			if (!p.resources.some((r) => r.material_ticker === "N"))
+				p.resources.push({
+					material_ticker: "N",
+					resource_type: "GASEOUS",
+					factor: 0.04132271185517311,
+					daily_extraction: 2.4793627113103867,
+					max_daily_extraction: 52.013511061668396,
+				} as IPlanet["resources"][number]);
+			return p;
+		}
+	);
 }

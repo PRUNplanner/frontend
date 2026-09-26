@@ -23,11 +23,11 @@ import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import planet_search_results from "@/tests/test_data/api_data_planet_search.json";
 import empire_list from "@/tests/test_data/api_data_empire_list.json";
 import {
 	etherwindPlan,
 	largePlan,
+	planetSearchWithN,
 	setupPlanningTestData,
 	smallPlan,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
@@ -81,13 +81,14 @@ optimalProduction.find = function (...args: Parameters<typeof find>) {
 	return find.apply(optimalProduction, args);
 } as typeof find;
 
+const planetSearch = planetSearchWithN();
 await setupPlanningTestData();
 axiosSetup();
 new AxiosMockAdapter(apiService.client)
 	.onPost("/data/planets/search/")
-	.reply(200, planet_search_results);
+	.reply(200, planetSearch);
 // @ts-expect-error mock data
-await planetsStore.setMany([planet_etherwind, ...planet_search_results]);
+await planetsStore.setMany([planet_etherwind, ...planetSearch]);
 await useDB(planetsStore).preload(true);
 
 // B6: 25 etherwind variants and 5 large plans
