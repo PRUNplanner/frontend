@@ -36,7 +36,8 @@ const AnalyticsPlanetInsightsEmptySchema = z.object({
 	status: z.literal("below_threshold"),
 	planet_natural_id: z.string(),
 	total_plans_analyzed: z.literal(0),
-	insights_data: z.undefined(),
+	// JSON has no undefined, the key is missing or null
+	insights_data: z.null().optional(),
 });
 
 // discriminated union via status of response

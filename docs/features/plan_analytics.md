@@ -14,8 +14,11 @@ there.
   planetNaturalId })` and renders only when `status === "success"`.
 - **Schema:** the response is a discriminated union
   (`AnalyticsPlanetInsightsPayloadSchema` in
-  `features/api/schemas/analyticsData.schemas.ts`).
+  `features/api/schemas/analyticsData.schemas.ts`). A `below_threshold`
+  response has no `insights_data`, or `null`.
 
 ## Tests
 
-The API is covered in `src/tests/features/api/analyticsData.api.test.ts`.
+The API is covered in `src/tests/features/api/analyticsData.api.test.ts`,
+the box in the local component suite
+(`src/tests/features/plan_analytics/components/`).

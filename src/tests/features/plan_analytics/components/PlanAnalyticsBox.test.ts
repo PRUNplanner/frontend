@@ -201,4 +201,19 @@ describe("PlanAnalyticsBox", () => {
 		expect(wrapper.text()).toContain("1xH2O ➔ 1xDW");
 		expect(wrapper.text()).toContain("1xC 4xFEO ➔ 1xFE");
 	});
+
+	it("renders nothing below the analysis threshold", async () => {
+		const { wrapper } = await mountBox([
+			200,
+			{
+				status: "below_threshold",
+				planet_natural_id: PLANET,
+				total_plans_analyzed: 0,
+			},
+		]);
+
+		expect(mock.history.get).toHaveLength(1);
+		expect(toggle(wrapper).exists()).toBe(false);
+		expect(wrapper.text()).toBe("");
+	});
 });

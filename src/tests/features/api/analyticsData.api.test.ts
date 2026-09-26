@@ -129,4 +129,24 @@ describe("API Keys Data API Calls", async () => {
 		);
 		expect(spyApiService).toHaveBeenCalledOnce();
 	});
+
+	it.each([
+		["without insights", {}],
+		["with null insights", { insights_data: null }],
+	])(
+		"callAnalyticsPlanetInsights below threshold %s",
+		async (_name, insights) => {
+			const mockData = {
+				status: "below_threshold",
+				planet_natural_id: "ZV-307b",
+				total_plans_analyzed: 0,
+				...insights,
+			};
+			mock.onGet("/analytics/planet_insights/Few/").reply(200, mockData);
+
+			expect(await callAnalyticsPlanetInsights("Few")).toStrictEqual(
+				mockData
+			);
+		}
+	);
 });
