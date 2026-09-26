@@ -72,8 +72,12 @@
 		ref(props.planetNaturalId)
 	);
 
-	const { hasStorage, storageOptions, findStorageValueFromOptions } =
-		useFIOStorage();
+	const {
+		hasStorage,
+		storageOptions,
+		findStorageValueFromOptions,
+		planetStorageId,
+	} = useFIOStorage();
 	const planningStore = usePlanningStore();
 	const fioUpdated = relativeFromDate(
 		planningStore.fio_storage_timestamp ?? undefined
@@ -289,13 +293,7 @@
 		);
 
 	const refSelectedStorage: Ref<string | undefined> = ref(
-		hasStorage.value
-			? storageOptions.value.filter(
-					(e) => e.value === `PLANET#${props.planetNaturalId}`
-				)
-				? `PLANET#${props.planetNaturalId}`
-				: undefined
-			: undefined
+		planetStorageId(props.planetNaturalId)
 	);
 
 	async function calculateTotal(data: IXITTransferMaterial[]) {

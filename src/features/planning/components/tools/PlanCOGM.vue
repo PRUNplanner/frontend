@@ -102,10 +102,10 @@
 
 				// reload the CX data from store
 				getCXData();
-
-				isPatching.value = false;
 			} catch (err) {
 				console.error("Error patching CX", err);
+			} finally {
+				isPatching.value = false;
 			}
 		}
 	}

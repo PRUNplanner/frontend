@@ -11,6 +11,7 @@
 		"tsc:watch": "vue-tsc --project tsconfig.typecheck.json --watch",
 		"preview": "vite preview",
 		"test": "vitest --run --silent",
+		"test:components": "vitest --run --config vitest.components.config.ts",
 		"test:watch": "vitest watch",
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest run --coverage",
