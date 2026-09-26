@@ -164,19 +164,94 @@ so that discarded watcher runs can finish. They were identical in both runs.
 
 ## Phases 1-3 (performance and engine)
 
+All numbers: Node 22.19 + jsdom, `pnpm vitest bench --run`, mean ms unless
+noted. Rows up to S3 were re-measured in temporary worktrees at those
+commits once the machine was quiet. A second Claude session had been
+loading it (load average 15-23), and the first measurements of those rows
+were unusable. Run-to-run noise on a quiet machine is about ±5% on means.
+
+### Step 1.0: test adjustments
+- `7aae74c`: the `large` snapshot is without `recipeOptions`. The new file
+  equals the old one with only the `recipeOptions` blocks removed (checked
+  with a diff).
+- `0bf2949`: B8 uses `planetSearchWithN()`. Every planet of the search
+  fixture has N, so every plan does its second run (455 runs instead of
+  395).
+
 ### Profile of `calculate()` on `large`
-| Step | ms | share |
-| --- | --- | --- |
+V8 CPU profile of 110 `calculate()` calls. Each sample is attributed to the
+outermost stage on its stack. The ms are sampled CPU time per run: GC and
+idle are not included, so they come out lower than the bench means.
+
+| Step | baseline `0bf2949` ms | share | after Phase 1 `8821170` ms | share |
+| --- | --- | --- | --- | --- |
+| building information (S3: rebuilt once per building) | 5.36 | 44% | 0.18 | 5% |
+| other in `calculate()`/`calculateProduction` (reactive proxies, async overhead, efficiency setup) | 2.74 | 23% | 1.03 | 26% |
+| recipe options (S11) | 2.03 | 17% | 1.55 | 39% |
+| material IO (+ prices on it) | 1.62 | 13% | 0.86 | 22% |
+| COGM | 0.17 | 1% | 0.16 | 4% |
+| workforce + area | 0.09 | 1% | 0.13 | 3% |
+| construction materials / overview / infrastructure costs | 0.08 | 1% | 0.05 | 1% |
+| efficiency | 0.04 | 0% | 0.03 | 1% |
+| **total** | **12.13** | | **4.00** | |
+| price lookups, cross-cutting (included above) | 3.13 | 26% | 0.51 | 13% |
+
+The biggest single self-time function at baseline was
+`combineMaterialIOMinimal`. It was called once per recipe input and output
+with a growing array.
 
 ### Single plan, edit -> result (Node, mean ms)
-| After commit | fix | small | etherwind | large | large p99 |
-| --- | --- | --- | --- | --- | --- |
-| (baseline) | none | | | | |
+| After commit | fix | small | etherwind | large | large p99 | large `calculate()` (B1b) |
+| --- | --- | --- | --- | --- | --- | --- |
+| `0bf2949` (baseline) | none | 0.90 | 0.97 | 15.86 | 16.90 | 16.41 |
+| `35ac885` | S1 await COGM | 0.88 | 0.95 | 16.15 | 16.99 | 15.05 |
+| `eddc187` | S3 building information once, planet once | 0.86 | 0.89 | 6.60 | 7.87 | 5.38 |
+| `16e8190` | S4 `{ live: false }` | 0.80 | 0.87 | 6.15 | 6.97 | 5.02 |
+| `98c7bcf` | S11 `{ recipeOptions: false }` | 0.86 | 0.86 | 6.78 | 30.26 (1 outlier) | 5.09 |
+| `18baf0e` | per-run price cache | 0.79 | 0.82 | 5.73 | 12.79 | 5.46 |
+| `bdbfd05` | S2 stale-run guard | 0.80 | 0.82 | 5.40 | 6.97 | 4.42 |
+| `8821170` | single-pass production material IO | 0.78 | 0.79 | 4.97 | 6.41 | 3.74 |
 
 ### Batch (Node, total mean ms)
-| After commit | fix | B6 | B7 | B8 (all planets have N) | runs per plan | recipe options |
+| After commit | fix | B6 | B7 | B8 (all planets have N) | runs per plan (B6/B7/B8) | recipe options (B6/B7/B8) |
 | --- | --- | --- | --- | --- | --- | --- |
-| (baseline) | none | | | | | |
+| `0bf2949` (baseline) | none | 235 | 555 | 181 | 2.00 / 2.00 / 2.33 | 5640 / 8128 / 483 |
+| `35ac885` | S1 | 233 | 552 | 182 | 2.00 / 2.00 / 2.33 | 5640 / 8128 / 483 |
+| `eddc187` | S3 | 143 | 540 | 180 | 2.00 / 2.00 / 2.33 | 5640 / 8128 / 483 |
+| `16e8190` | S4 | 83 | 257 | 99 | 1.00 / 1.00 / 1.33 | 2820 / 4064 / 288 |
+| `98c7bcf` | S11 | 71 | 239 | 99 | 1.00 / 1.00 / 1.33 | 0 / 0 / 288 |
+| `18baf0e` | price cache | 68 | 229 | 91 | 1.00 / 1.00 / 1.33 | 0 / 0 / 288 |
+| `bdbfd05` | S2 | 73 | 235 | 91 | 1.00 / 1.00 / 1.33 | 0 / 0 / 288 |
+| `8821170` | material IO | 69 | 229 | 90 | 1.00 / 1.00 / 1.33 | 0 / 0 / 288 |
+
+B8's 1.33 runs per plan are real work: its 65 plans with N need a second
+`calculate()` after the building is chosen.
+
+### Phase 1 notes
+- **Order:** S1 went first although it is not a cost. S3 removes awaits,
+  and without S1 the un-awaited COGM callbacks could then finish after the
+  result was published (the mutation would not be reactive). After that,
+  the order followed the profile: S3 (44%), then S4 (halves every batch),
+  S11, the price cache, S2, and finally the material IO hotspot.
+- **S4/S11 in the bench:** the B6 loop in the batch bench passes
+  `{ live: false, recipeOptions: false }` like `EmpireView`. On `main` the
+  extra argument is ignored, so the same file runs on both sides.
+- **S11 scope:** Resource ROI keeps recipe options, because its first
+  calculation uses them to find the extractor. Empire, FIO burn and ROI
+  overview skip them.
+- **Price cache:** it is passed explicitly, not held as "current run"
+  state. With the async watcher, runs can overlap.
+- **Material IO:** the single pass keeps the exact summation and ticker
+  order of the old repeated `combineMaterialIOMinimal`.
+- **The `main.test.ts` smoke test** (app bootstrap, 30 s timeout) timed out
+  twice under the external load and passed alone and on re-runs. It is
+  unrelated to these changes.
+
+**Gate 1: met.**
+- Snapshots are identical: no `.snap` change after `7aae74c`.
+- `large` edit -> result: 15.86 -> 4.97 ms.
+- small: 0.90 -> 0.78 ms.
+- etherwind: 0.97 -> 0.79 ms.
 
 ## Deviations from TASKS.md
 1. Node 22.19 as `.nvmrc` requires, but with pnpm 12.5.1 instead of 10

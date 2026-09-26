@@ -34,35 +34,35 @@ number may change.**
 ## Phase 1: Performance inside the current architecture
 
 ### 1.0 Test adjustments (before any production change)
-- [ ] Snapshot the `large` plan without `recipeOptions` (`etherwind`
+- [x] Snapshot the `large` plan without `recipeOptions` (`etherwind`
       snapshots still cover them). This is the only snapshot change allowed;
       commit it on its own.
-- [ ] B8: build a search fixture where every planet has N, so every plan
+- [x] B8: build a search fixture where every planet has N, so every plan
       does its second run.
-- [ ] Re-run both benches on unchanged production code and record the new
+- [x] Re-run both benches on unchanged production code and record the new
       baseline in `STATUS.md`.
 
 ### 1.1 Profile
-- [ ] Profile `calculate()` on `large` and record a breakdown in
+- [x] Profile `calculate()` on `large` and record a breakdown in
       `STATUS.md` (recipe options, price lookups, building information,
       material IO, COGM, construction materials/overview, other).
 
 ### 1.2 Fixes (ordered by the profile)
-- [ ] **S3:** building information once per `calculate()`; planet loaded
+- [x] **S3:** building information once per `calculate()`; planet loaded
       once per `calculate()` and passed down.
-- [ ] **Per-run price cache:** each `(ticker, BUY/SELL)` resolved once per
+- [x] **Per-run price cache:** each `(ticker, BUY/SELL)` resolved once per
       run (a Map created per run, so CX changes still apply next run).
-- [ ] **S4:** optional `{ live: false }` that skips the recalculation
+- [x] **S4:** optional `{ live: false }` that skips the recalculation
       watchers. Use it in `EmpireView`, `FIOBurnView`, `useROIOverview`,
       `useResourceROIOverview`.
-- [ ] **S11:** optional way to skip `recipeOptions`, used only by batch
+- [x] **S11:** optional way to skip `recipeOptions`, used only by batch
       callers that provably never read them. `useResourceROIOverview`
       (l.211) and the handlers (`usePlanCalculationHandlers.ts` l.371-383)
       read them. Test that a result without recipe options equals the
       normal result apart from `recipeOptions`.
-- [ ] **S1:** await COGM (`Promise.all`) instead of `forEach(async ...)`.
-- [ ] **S2:** stale-run guard in the watcher, with a test.
-- [ ] Further hotspots from the profile, under the same rules.
+- [x] **S1:** await COGM (`Promise.all`) instead of `forEach(async ...)`.
+- [x] **S2:** stale-run guard in the watcher, with a test.
+- [x] Further hotspots from the profile, under the same rules.
 
 **Gate 1:** snapshots identical; `large` edit -> result not slower than the
 baseline, small/etherwind not slower.
