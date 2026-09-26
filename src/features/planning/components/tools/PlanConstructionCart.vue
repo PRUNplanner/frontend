@@ -313,17 +313,25 @@
 		return { weight, volume, price };
 	}
 
-	watchEffect(async () => {
+	// prices resolve async, a run started later may finish first: drop the
+	// result of a run that a newer one replaced
+	watchEffect(async (onCleanup) => {
+		let stale = false;
+		onCleanup(() => (stale = true));
+
 		generateMatrix();
-		totalInformation.value = await calculateTotal(
-			xitTransferElements.value
-		);
+		const total = await calculateTotal(xitTransferElements.value);
+		if (!stale) totalInformation.value = total;
 	});
 
 	watch(
 		() => xitTransferElementsNeed.value,
-		async (overview) => {
-			overviewTotalInformation.value = await calculateTotal(overview);
+		async (overview, _old, onCleanup) => {
+			let stale = false;
+			onCleanup(() => (stale = true));
+
+			const total = await calculateTotal(overview);
+			if (!stale) overviewTotalInformation.value = total;
 		},
 		{ deep: true, immediate: true }
 	);
