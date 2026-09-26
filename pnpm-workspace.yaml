@@ -8,3 +8,6 @@ allowBuilds:
     vue-demi: true
 
 strictDepBuilds: true
+
+# match pnpm 11+ default: skip versions published less than 24h ago
+minimumReleaseAge: 1440
