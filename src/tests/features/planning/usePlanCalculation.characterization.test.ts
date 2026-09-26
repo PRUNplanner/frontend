@@ -9,6 +9,9 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { useBonusCalculation } from "@/features/planning/calculations/bonusCalculations";
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
+import { usePlanContext } from "@/features/planning/usePlanContext";
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculateVisitation } from "@/features/planning/engine/visitation";
 
 // Types & Interfaces
 import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
@@ -107,6 +110,40 @@ async function runCase(
 	}
 }
 
+// the same plans straight through the engine, without the Vue adapter
+async function runEngine(
+	plan: IPlan,
+	options: ICase = {},
+	withRecipeOptions = true
+) {
+	const { loadGameData, createContext } = usePlanContext();
+	const ctx = await createContext(
+		await loadGameData(),
+		plan.planet_natural_id,
+		options.cxUuid
+	);
+	const { result, overview } = calculatePlan(
+		{
+			plan,
+			empire: options.empireOptions?.find(
+				(e) => e.uuid === options.empireUuid
+			),
+			cxUuid: options.cxUuid,
+		},
+		ctx
+	);
+
+	if (!withRecipeOptions)
+		for (const b of result.production.buildings)
+			delete (b as Partial<typeof b>).recipeOptions;
+
+	return normalize({
+		result,
+		overviewData: overview,
+		visitationData: calculateVisitation(result),
+	});
+}
+
 function withPlan(mutate: (plan: IPlan) => void): IPlan {
 	const plan = etherwindPlan();
 	mutate(plan);
@@ -192,6 +229,12 @@ describe("usePlanCalculation characterization", () => {
 		).toMatchFileSnapshot(
 			snapshotPath(name)
 		);
+	});
+
+	it.each(cases)("engine snapshot: %s", async (name, plan, options) => {
+		await expect(
+			await runEngine(plan(), options(), name !== "large")
+		).toMatchFileSnapshot(snapshotPath(name));
 	});
 
 	it("large plan has 30+ buildings with several active recipes", () => {
