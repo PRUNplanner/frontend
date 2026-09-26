@@ -1,6 +1,3 @@
-// Composables
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
-
 // Types & Interfaces
 import {
 	IMaterialIOMinimal,
@@ -10,11 +7,14 @@ import {
 export const TOTALMSDAY: number = 24 * 60 * 60 * 1000;
 
 export function useBuildingCalculation() {
-	const { combineMaterialIOMinimal } = useMaterialIOUtil();
-
 	/**
 	 * Calculates a plans production buildings total material io based
 	 * on their running active recipe batches
+	 *
+	 * @remark Single pass. Sums per ticker in the same order as combining
+	 * each building's inputs, then outputs, then all buildings with
+	 * combineMaterialIOMinimal, so results are bit-identical to that.
+	 *
 	 * @author jplacht
 	 *
 	 * @param {IProductionBuilding[]} data Production Buildings
@@ -23,65 +23,51 @@ export function useBuildingCalculation() {
 	function calculateMaterialIO(
 		data: IProductionBuilding[]
 	): IMaterialIOMinimal[] {
-		const materialIO: IMaterialIOMinimal[][] = [];
+		const total = new Map<string, IMaterialIOMinimal>();
 
-		data.forEach((building) => {
+		const add = (ticker: string, input: number, output: number) => {
+			let element = total.get(ticker);
+			if (!element) {
+				element = { ticker: ticker, input: 0, output: 0 };
+				total.set(ticker, element);
+			}
+			element.input += input;
+			element.output += output;
+		};
+
+		for (const building of data) {
 			const batchRuns: number =
 				(TOTALMSDAY * building.amount) / building.totalBatchTime;
 
-			let buildingMaterialIOInput: IMaterialIOMinimal[] = [];
-			let buildingMaterialIOOutput: IMaterialIOMinimal[] = [];
+			const inputs = new Map<string, number>();
+			const outputs = new Map<string, number>();
 
-			// iterate over active_recipes
-			building.activeRecipes.forEach((ar) => {
+			for (const ar of building.activeRecipes) {
 				// skip if the recipes amount is set to 0
-				if (ar.amount === 0) {
-					return;
-				}
+				if (ar.amount === 0) continue;
 
-				// handle inputs
-				ar.recipe.inputs.forEach((arInput) => {
-					buildingMaterialIOInput = combineMaterialIOMinimal([
-						buildingMaterialIOInput,
-						[
-							{
-								ticker: arInput.material_ticker,
-								input:
-									arInput.material_amount *
-									ar.amount *
-									batchRuns,
-								output: 0,
-							},
-						],
-					]);
-				});
-				// handle outputs
-				ar.recipe.outputs.forEach((arOutput) => {
-					buildingMaterialIOOutput = combineMaterialIOMinimal([
-						buildingMaterialIOOutput,
-						[
-							{
-								ticker: arOutput.material_ticker,
-								input: 0,
-								output:
-									arOutput.material_amount *
-									ar.amount *
-									batchRuns,
-							},
-						],
-					]);
-				});
-			});
+				for (const i of ar.recipe.inputs)
+					inputs.set(
+						i.material_ticker,
+						(inputs.get(i.material_ticker) ?? 0) +
+							i.material_amount * ar.amount * batchRuns
+					);
+				for (const o of ar.recipe.outputs)
+					outputs.set(
+						o.material_ticker,
+						(outputs.get(o.material_ticker) ?? 0) +
+							o.material_amount * ar.amount * batchRuns
+					);
+			}
 
-			materialIO.push(
-				combineMaterialIOMinimal([
-					buildingMaterialIOInput,
-					buildingMaterialIOOutput,
-				])
-			);
-		});
+			// building order: its inputs, then outputs it doesn't consume
+			for (const [ticker, input] of inputs)
+				add(ticker, input, outputs.get(ticker) ?? 0);
+			for (const [ticker, output] of outputs)
+				if (!inputs.has(ticker)) add(ticker, 0, output);
+		}
 
-		return combineMaterialIOMinimal(materialIO);
+		return [...total.values()];
 	}
 
 	return {
