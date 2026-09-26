@@ -120,7 +120,7 @@
 				selectedBuilding.value =
 					localData.value.length > 0 ? 0 : undefined;
 
-			calculateRep();
+			await calculateRep();
 			dailyRepairMaterials.value = await calculateDailyRepairMaterials(
 				localData.value
 			);

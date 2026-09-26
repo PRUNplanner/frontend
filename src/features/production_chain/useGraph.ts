@@ -148,7 +148,7 @@ export async function useGraph() {
 		);
 
 		let flowNodes = await createFlowNodes(graphData.nodes, selectedRecipes);
-		const flowEdges = await createFlowEdges(graphData.edges);
+		const flowEdges = createFlowEdges(graphData.edges);
 
 		// apply dagrejs layouting
 		flowNodes = applyDagreLayout(flowNodes, flowEdges);
