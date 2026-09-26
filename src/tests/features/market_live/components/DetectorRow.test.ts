@@ -90,6 +90,27 @@ describe("DetectorRow", () => {
 		expect(lastDetector()).toEqual({ ...PRICE, field: "spread_pct" });
 	});
 
+	it("resets operator and target for a field of another type", async () => {
+		const { wrapper, lastDetector } = await mountRow();
+
+		// "gt" and 100 mean nothing for a ticker
+		await select(selects(wrapper).field, "material_ticker");
+		expect(lastDetector()).toEqual({
+			field: "material_ticker",
+			operator: "matches",
+			target: { type: "static", value: "" },
+		});
+
+		const { wrapper: ticker, lastDetector: lastTicker } =
+			await mountRow(TICKER);
+		await select(selects(ticker).field, "ask");
+		expect(lastTicker()).toEqual({
+			field: "ask",
+			operator: "gt",
+			target: { type: "static", value: 0 },
+		});
+	});
+
 	it("emits the detector with a changed target", async () => {
 		const { wrapper, lastDetector } = await mountRow();
 

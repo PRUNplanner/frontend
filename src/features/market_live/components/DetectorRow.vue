@@ -36,6 +36,20 @@
 			...patch,
 		});
 	};
+
+	// operator and target of a number field never match a string field
+	const updateField = (field: SchemaKey) => {
+		const next = FieldConfigs[field]!;
+		if (next.type === config.value!.type) {
+			updateDetector({ field: field as Detector["field"] });
+			return;
+		}
+		updateDetector({
+			field: field as Detector["field"],
+			operator: next.operators[0],
+			target: { type: "static", value: next.type === "number" ? 0 : "" },
+		});
+	};
 </script>
 
 <template>
@@ -50,9 +64,7 @@
 					}))
 				"
 				class="w-[250px]"
-				@update:value="
-					(val) => updateDetector({ field: val as any })
-				" />
+				@update:value="(val) => updateField(val as SchemaKey)" />
 			<PSelect
 				:value="modelValue.operator"
 				:options="configOptions"
