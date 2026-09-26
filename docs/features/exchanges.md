@@ -10,7 +10,10 @@ at empire level and per planet. It also offers CSV import/export.
   `PatchCX`.
 - `CXPreferenceSelector` is reused as the "pick a CX" dropdown in the tools:
   `ROIOverviewView`, `ResourceROIOverviewView`, `HQUpgradeCalculatorView`,
-  `UpkeepPriceCalculatorView` and profile `UserPreferences`.
+  `UpkeepPriceCalculatorView` and profile `UserPreferences`. It shows the
+  user's default CX (if it still exists) over its `cxUuid` prop, emits
+  that default as `update:cxuuid` so the view calculates with it, and
+  stores a picked CX as the new default.
 - `PlanCOGM` embeds `CXTickerPreference`.
 
 ## Key files
