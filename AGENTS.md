@@ -20,6 +20,7 @@ Node `22.19` (see `.nvmrc`) and pnpm 10.
 | Tests (single run) | `pnpm test` |
 | One test file | `pnpm vitest run src/tests/features/cx/usePrice.test.ts` |
 | Component tests (local only, not in CI) | `pnpm test:components` |
+| Benchmarks (planning engine) | `pnpm vitest bench --run` |
 | Type check | `pnpm tsc` (vue-tsc; **excludes `src/tests/`**) |
 | Lint | `pnpm lint` / `pnpm lint:fix` |
 | Unused exports/files | `pnpm knip` |
