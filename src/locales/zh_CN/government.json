@@ -11,6 +11,7 @@
 			"unfilled_jobs": "空缺职位",
 			"plan_need": "@:terms.plan需求",
 			"plan_check": "@:terms.plan检查"
-		}
+		},
+		"modal_title": "Latest Population Report: {planet_id}"
 	}
 }
