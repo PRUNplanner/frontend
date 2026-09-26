@@ -71,5 +71,6 @@
 			"title": "So viele weitere Werkzeuge",
 			"p": "PRUNplanner ist voll von weiteren Hilfsmitteln. Verschaffe dir einen Überblick zu historischen Marktentwicklungen, optimiere Gebäude für deine Belegschaft, ermittle wie oft du deine Basis anfliegen musst und wie du die höchste Produktionseffizienz erzielst."
 		}
-	}
+	},
+	"load_error": "Unable to load '{file_name}'"
 }
