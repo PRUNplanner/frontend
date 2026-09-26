@@ -38,9 +38,12 @@ editor UI. The engine is documented in depth in
 
 ## Data
 
-- Game data is read through `useBuildingData`, `useMaterialData` and
-  `usePlanetData`, and prices through `usePrice`.
-- `planningStore.cxs` changes trigger a recalculation.
+- The engine reads game data, the planet and prices from its context
+  (`usePlanContext`: preloaded `useDB` caches, `usePlanetData`, a
+  `PriceBook`). Components still use `useBuildingData`, `useMaterialData`
+  and `usePrice`.
+- The result is a `computed`: plan, empire, CX and `planningStore.cxs`
+  changes recalculate it synchronously.
 
 ## Gotchas
 
