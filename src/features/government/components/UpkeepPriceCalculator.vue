@@ -5,8 +5,13 @@
 	const { t } = useI18n();
 
 	// Composables
-	import { useUpkeepBuildings } from "@/features/government/composables/useUpkeepBuildings";
-	import { useUpkeepPriceCalculator } from "@/features/government/composables/useUpkeepPriceCalculator";
+	import { usePrice } from "@/features/cx/usePrice";
+
+	// Calculations
+	import {
+		UPKEEP_NEED_TYPES,
+		calculateAllNeeds,
+	} from "@/features/government/upkeepCalculations";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -37,8 +42,7 @@
 	);
 	const planetNaturalId: Ref<string | undefined> = ref(undefined);
 
-	// Composables
-	const { needTypes } = useUpkeepBuildings();
+	const needTypes = UPKEEP_NEED_TYPES;
 
 	// State
 	const isCalculating: Ref<boolean> = ref(true);
@@ -61,11 +65,10 @@
 	async function calculate() {
 		isCalculating.value = true;
 
-		const { calculateAllNeeds } = await useUpkeepPriceCalculator(
-			cxUuid,
-			planetNaturalId
+		const { getPrice } = await usePrice(cxUuid, planetNaturalId);
+		calculationResults.value = await calculateAllNeeds((ticker) =>
+			getPrice(ticker, "BUY")
 		);
-		calculationResults.value = await calculateAllNeeds();
 
 		isCalculating.value = false;
 	}

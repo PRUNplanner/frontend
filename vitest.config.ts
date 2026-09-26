@@ -21,6 +21,7 @@ export default defineConfig({
 			"**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*",
 			"**/cypress/**",
 			"**/.{idea,git,cache,output,temp}/**",
+			"**/.claude/**",
 			"**/*.md",
 		],
 		environment: "jsdom",
@@ -50,8 +51,16 @@ export default defineConfig({
 				"src/router/**",
 				"src/lib/analytics/**",
 				"**/*.md",
+				"**/.DS_Store",
 			],
 			reportOnFailure: true,
+			// fail CI when coverage drops, raise these as coverage grows
+			thresholds: {
+				statements: 94,
+				branches: 82,
+				functions: 95,
+				lines: 95,
+			},
 		},
 	},
 	resolve: {

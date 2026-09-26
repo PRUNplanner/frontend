@@ -61,14 +61,28 @@ describe("useHQUpgradeCalculator", async () => {
 	});
 
 	it("totalCost", async () => {
-		const { totalCost } = await useHQUpgradeCalculator(
-			refStart,
-			refTo,
-			refOverride,
-			refCXUuid
-		);
+		const { totalCost, materialData, calculateMaterialData } =
+			await useHQUpgradeCalculator(
+				refStart,
+				refTo,
+				refOverride,
+				refCXUuid
+			);
 
-		expect(totalCost.value).toBeDefined();
+		expect(totalCost.value).toBe(0);
+
+		await calculateMaterialData();
+
+		// each material costs what is still required at its buy price
+		for (const m of materialData.value) {
+			expect(m.required).toBe(Math.max(m.amount - m.storage, 0));
+			expect(m.totalCost).toBe(m.required * m.unitCost);
+		}
+		expect(totalCost.value).toBeCloseTo(
+			materialData.value.reduce((sum, m) => sum + m.totalCost, 0),
+			8
+		);
+		expect(totalCost.value).toBeGreaterThan(0);
 	});
 
 	it("totalWeightVolume", async () => {

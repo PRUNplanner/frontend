@@ -110,6 +110,60 @@ describe("usePlanCalculation", async () => {
 		});
 	});
 
+	it("result figures are internally consistent", async () => {
+		const { calculate } = await usePlanCalculation(
+			// @ts-expect-error mock data
+			ref(plan_etherwind),
+			ref(undefined),
+			ref(undefined),
+			ref(undefined)
+		);
+
+		const result = await calculate();
+		const sum = (values: number[]) => values.reduce((s, v) => s + v, 0);
+
+		// material flows: delta = output - input, value carries delta's sign
+		for (const m of result.materialio) {
+			expect(m.delta).toBeCloseTo(m.output - m.input, 8);
+			expect(m.price * m.delta).toBeGreaterThanOrEqual(0);
+		}
+
+		// production + workforce split adds up to the combined material io
+		const splitDelta = (ticker: string) =>
+			sum(
+				[...result.productionMaterialIO, ...result.workforceMaterialIO]
+					.filter((m) => m.ticker === ticker)
+					.map((m) => m.delta)
+			);
+		for (const m of result.materialio) {
+			expect(splitDelta(m.ticker)).toBeCloseTo(m.delta, 8);
+		}
+
+		// revenue: sold surplus, cost: bought deficit + 1/180 degradation
+		const revenue = sum(
+			result.materialio.filter((m) => m.delta > 0).map((m) => m.price)
+		);
+		const materialCost = sum(
+			result.materialio.filter((m) => m.delta < 0).map((m) => -m.price)
+		);
+		const degradation =
+			sum(
+				result.production.buildings.map(
+					(b) => -b.constructionCost * b.amount
+				)
+			) / 180;
+
+		expect(result.revenue).toBeCloseTo(revenue, 6);
+		expect(result.cost).toBeCloseTo(materialCost + degradation, 6);
+		expect(result.profit).toBeCloseTo(result.revenue - result.cost, 6);
+		expect(degradation).toBeGreaterThan(0);
+
+		// area
+		expect(result.area.areaLeft).toBe(
+			result.area.areaTotal - result.area.areaUsed
+		);
+	});
+
 	it("validate overviewData", async () => {
 		const calculation = await usePlanCalculation(
 			// @ts-expect-error mock data
