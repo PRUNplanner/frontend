@@ -55,7 +55,7 @@ describe("usePlanCalculation", async () => {
 		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
-		const { preloadBuildings, preloadRecipes } = await useBuildingData();
+		const { preloadBuildings, preloadRecipes } = useBuildingData();
 
 		await preload();
 		await preloadBuildings();

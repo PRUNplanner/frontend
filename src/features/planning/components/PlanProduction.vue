@@ -92,7 +92,7 @@
 	);
 	const localMatchCOGC: Ref<boolean> = ref(false);
 
-	const { getProductionBuildingOptions } = await useBuildingData();
+	const { getProductionBuildingOptions } = useBuildingData();
 
 	function emitCreateBuildingWithRecipe(
 		resourceType: PLANET_RESOURCETYPE_TYPE,

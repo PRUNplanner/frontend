@@ -19,7 +19,7 @@ const TICKER = "CL";
 
 /** Mounts the async-setup component inside Suspense */
 async function mountTable(daily?: number) {
-	const { getMaterialExchangeOverview } = await useExchangeData();
+	const { getMaterialExchangeOverview } = useExchangeData();
 	const overviewData: IMaterialExchangeOverview =
 		await getMaterialExchangeOverview(TICKER);
 
@@ -80,7 +80,7 @@ describe("MaterialCXOverviewTable", () => {
 	});
 
 	it("shows the daily amount's share of traded volume per exchange", async () => {
-		const { exchangeTypesArray } = await useExchangeData();
+		const { exchangeTypesArray } = useExchangeData();
 		// negative deltas (consumption) count the same as production
 		const daily = -250;
 		const { wrapper, overviewData } = await mountTable(daily);
@@ -107,7 +107,7 @@ describe("MaterialCXOverviewTable", () => {
 	});
 
 	it("flags a share of 5% and above", async () => {
-		const { exchangeTypesArray } = await useExchangeData();
+		const { exchangeTypesArray } = useExchangeData();
 		const { overviewData: data } = await mountTable();
 		const cx = exchangeTypesArray.find((c) => data.sum_traded_7d[c] > 0)!;
 

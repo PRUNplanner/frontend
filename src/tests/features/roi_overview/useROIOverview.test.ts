@@ -53,7 +53,7 @@ describe("useROIOverview", async () => {
 		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
-		const { preloadBuildings, preloadRecipes } = await useBuildingData();
+		const { preloadBuildings, preloadRecipes } = useBuildingData();
 
 		await preload();
 		await preloadBuildings();
@@ -62,7 +62,7 @@ describe("useROIOverview", async () => {
 	});
 
 	it("calculateItem", async () => {
-		const { calculateItem } = await useROIOverview(
+		const { calculateItem } = useROIOverview(
 			// @ts-expect-error mock definition
 			definition,
 			ref(undefined)
@@ -75,7 +75,7 @@ describe("useROIOverview", async () => {
 
 	// full recipe sweep, slow under parallel load with coverage
 	it("calculate", { timeout: 20_000 }, async () => {
-		const { calculate, resultData } = await useROIOverview(
+		const { calculate, resultData } = useROIOverview(
 			// @ts-expect-error mock definition
 			definition,
 			ref(undefined)
@@ -87,7 +87,7 @@ describe("useROIOverview", async () => {
 	});
 
 	it("formatOptimal", async () => {
-		const { formatOptimal } = await useROIOverview(
+		const { formatOptimal } = useROIOverview(
 			// @ts-expect-error mock definition
 			definition,
 			ref(undefined)

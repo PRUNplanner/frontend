@@ -65,7 +65,7 @@
 	async function calculate() {
 		isCalculating.value = true;
 
-		const { getPrice } = await usePrice(cxUuid, planetNaturalId);
+		const { getPrice } = usePrice(cxUuid, planetNaturalId);
 		calculationResults.value = await calculateAllNeeds((ticker) =>
 			getPrice(ticker, "BUY")
 		);

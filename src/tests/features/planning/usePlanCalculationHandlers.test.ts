@@ -18,7 +18,7 @@ describe("Planning: Workforce Calculations", async () => {
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
 		await recipesStore.setMany(recipes);
-		const { preloadBuildings, preloadRecipes } = await useBuildingData();
+		const { preloadBuildings, preloadRecipes } = useBuildingData();
 
 		await preloadBuildings();
 		await preloadRecipes();
@@ -29,7 +29,7 @@ describe("Planning: Workforce Calculations", async () => {
 		const fakeName = ref(undefined);
 
 		const { handleChangePlanName, modified, handleResetModified } =
-			await usePlanCalculationHandlers(
+			usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref({}),
 				ref({}),
@@ -47,7 +47,7 @@ describe("Planning: Workforce Calculations", async () => {
 	it("handleChangePlanName", async () => {
 		const fakeName = ref(undefined);
 
-		const { handleChangePlanName } = await usePlanCalculationHandlers(
+		const { handleChangePlanName } = usePlanCalculationHandlers(
 			// @ts-expect-error mock data
 			ref({}),
 			ref({}),
@@ -70,7 +70,7 @@ describe("Planning: Workforce Calculations", async () => {
 			plan_corphq: true,
 		};
 
-		const { handleUpdateCorpHQ } = await usePlanCalculationHandlers(
+		const { handleUpdateCorpHQ } = usePlanCalculationHandlers(
 			// @ts-expect-error mock data
 			ref(fakePlanet),
 			ref({}),
@@ -87,7 +87,7 @@ describe("Planning: Workforce Calculations", async () => {
 			plan_cogc: "CHEMISTRY",
 		};
 
-		const { handleUpdateCOGC } = await usePlanCalculationHandlers(
+		const { handleUpdateCOGC } = usePlanCalculationHandlers(
 			// @ts-expect-error mock data
 			ref(fakePlanet),
 			ref({}),
@@ -105,7 +105,7 @@ describe("Planning: Workforce Calculations", async () => {
 				plan_permits_used: 1,
 			};
 
-			const { handleUpdatePermits } = await usePlanCalculationHandlers(
+			const { handleUpdatePermits } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref(fakePlanet),
 				ref({}),
@@ -122,7 +122,7 @@ describe("Planning: Workforce Calculations", async () => {
 				plan_permits_used: 1,
 			};
 
-			const { handleUpdatePermits } = await usePlanCalculationHandlers(
+			const { handleUpdatePermits } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref(fakePlanet),
 				ref({}),
@@ -139,7 +139,7 @@ describe("Planning: Workforce Calculations", async () => {
 				plan_permits_used: 1,
 			};
 
-			const { handleUpdatePermits } = await usePlanCalculationHandlers(
+			const { handleUpdatePermits } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref(fakePlanet),
 				ref({}),
@@ -164,28 +164,26 @@ describe("Planning: Workforce Calculations", async () => {
 		};
 
 		it("Found, lux 1", async () => {
-			const { handleUpdateWorkforceLux } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlanet),
-					ref(),
-					ref({})
-				);
+			const { handleUpdateWorkforceLux } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlanet),
+				ref(),
+				ref({})
+			);
 
 			handleUpdateWorkforceLux("pioneer", "lux1", true);
 			expect(fakePlanet.workforce[0].lux1).toBeTruthy();
 		});
 
 		it("Found, lux 2", async () => {
-			const { handleUpdateWorkforceLux } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlanet),
-					ref(),
-					ref({})
-				);
+			const { handleUpdateWorkforceLux } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlanet),
+				ref(),
+				ref({})
+			);
 
 			handleUpdateWorkforceLux("pioneer", "lux2", true);
 			expect(fakePlanet.workforce[0].lux2).toBeTruthy();
@@ -203,7 +201,7 @@ describe("Planning: Workforce Calculations", async () => {
 		};
 
 		it("Update, valid value", async () => {
-			const { handleUpdateExpert } = await usePlanCalculationHandlers(
+			const { handleUpdateExpert } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref({}),
 				ref(fakePlanet),
@@ -216,7 +214,7 @@ describe("Planning: Workforce Calculations", async () => {
 		});
 
 		it("Update, invalid value lower clamp", async () => {
-			const { handleUpdateExpert } = await usePlanCalculationHandlers(
+			const { handleUpdateExpert } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref({}),
 				ref(fakePlanet),
@@ -229,7 +227,7 @@ describe("Planning: Workforce Calculations", async () => {
 		});
 
 		it("Update, invalid value upper clamp", async () => {
-			const { handleUpdateExpert } = await usePlanCalculationHandlers(
+			const { handleUpdateExpert } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref({}),
 				ref(fakePlanet),
@@ -253,14 +251,13 @@ describe("Planning: Workforce Calculations", async () => {
 		};
 
 		it("Update, existing infrastructure", async () => {
-			const { handleUpdateInfrastructure } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleUpdateInfrastructure } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			handleUpdateInfrastructure("HB1", 6);
 			expect(fakePlan.infrastructure[0].amount).toBe(6);
@@ -270,14 +267,13 @@ describe("Planning: Workforce Calculations", async () => {
 			const newPlan = ref({
 				infrastructure: [] as { building: string; amount: number }[],
 			});
-			const { handleUpdateInfrastructure } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					newPlan,
-					ref(),
-					ref({})
-				);
+			const { handleUpdateInfrastructure } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				newPlan,
+				ref(),
+				ref({})
+			);
 
 			handleUpdateInfrastructure("HB1", 6);
 			expect(newPlan.value.infrastructure).toStrictEqual([
@@ -298,28 +294,26 @@ describe("Planning: Workforce Calculations", async () => {
 		};
 
 		it("Update at valid index", async () => {
-			const { handleUpdateBuildingAmount } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleUpdateBuildingAmount } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			handleUpdateBuildingAmount(0, 6);
 			expect(fakePlan.buildings[0].amount).toBe(6);
 		});
 
 		it("Update at invalid index", async () => {
-			const { handleUpdateBuildingAmount } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleUpdateBuildingAmount } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			expect(() => handleUpdateBuildingAmount(1, 6)).toThrowError();
 		});
@@ -342,7 +336,7 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleDeleteBuilding } = await usePlanCalculationHandlers(
+			const { handleDeleteBuilding } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref({}),
 				ref(fakePlan),
@@ -371,7 +365,7 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleDeleteBuilding } = await usePlanCalculationHandlers(
+			const { handleDeleteBuilding } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref({}),
 				ref(fakePlan),
@@ -399,7 +393,7 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleDeleteBuilding } = await usePlanCalculationHandlers(
+			const { handleDeleteBuilding } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref({}),
 				ref(fakePlan),
@@ -417,7 +411,7 @@ describe("Planning: Workforce Calculations", async () => {
 				buildings: [],
 			};
 
-			const { handleCreateBuilding } = await usePlanCalculationHandlers(
+			const { handleCreateBuilding } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref({}),
 				ref(fakePlan),
@@ -437,14 +431,13 @@ describe("Planning: Workforce Calculations", async () => {
 				buildings: [],
 			};
 
-			const { handleCreateBuildingAndRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleCreateBuildingAndRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			expect(fakePlan.buildings.length).toBe(0);
 			await handleCreateBuildingAndRecipe("EXT", "EXT#FEO");
@@ -463,14 +456,13 @@ describe("Planning: Workforce Calculations", async () => {
 				buildings: [],
 			};
 
-			const { handleUpdateBuildingRecipeAmount } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleUpdateBuildingRecipeAmount } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			expect(() =>
 				handleUpdateBuildingRecipeAmount(0, 0, 5)
@@ -486,14 +478,13 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleUpdateBuildingRecipeAmount } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleUpdateBuildingRecipeAmount } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			expect(() =>
 				handleUpdateBuildingRecipeAmount(0, 0, 5)
@@ -513,14 +504,13 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleUpdateBuildingRecipeAmount } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleUpdateBuildingRecipeAmount } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			handleUpdateBuildingRecipeAmount(0, 0, 100);
 			expect(fakePlan.buildings[0].active_recipes[0].amount).toBe(100);
@@ -533,14 +523,13 @@ describe("Planning: Workforce Calculations", async () => {
 				buildings: [],
 			};
 
-			const { handleDeleteBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleDeleteBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			expect(() => handleDeleteBuildingRecipe(0, 0)).toThrowError();
 		});
@@ -554,14 +543,13 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleDeleteBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleDeleteBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			expect(() => handleDeleteBuildingRecipe(0, 0)).toThrowError();
 		});
@@ -579,14 +567,13 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleDeleteBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleDeleteBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			handleDeleteBuildingRecipe(0, 0);
 			expect(fakePlan.buildings[0].active_recipes.length).toBe(0);
@@ -608,14 +595,13 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleDeleteBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleDeleteBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			handleDeleteBuildingRecipe(0, 1);
 			expect(fakePlan.buildings[0].active_recipes.length).toBe(1);
@@ -628,14 +614,13 @@ describe("Planning: Workforce Calculations", async () => {
 				buildings: [],
 			};
 
-			const { handleAddBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref({})
-				);
+			const { handleAddBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
 
 			expect(() => handleAddBuildingRecipe(0)).toThrowError();
 		});
@@ -651,14 +636,13 @@ describe("Planning: Workforce Calculations", async () => {
 				},
 			};
 
-			const { handleAddBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref(fakePlanResult)
-				);
+			const { handleAddBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref(fakePlanResult)
+			);
 
 			expect(() => handleAddBuildingRecipe(0)).toThrowError();
 		});
@@ -678,14 +662,13 @@ describe("Planning: Workforce Calculations", async () => {
 				},
 			};
 
-			const { handleAddBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref(fakePlanResult)
-				);
+			const { handleAddBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref(fakePlanResult)
+			);
 
 			expect(() => handleAddBuildingRecipe(0)).toThrowError();
 		});
@@ -709,14 +692,13 @@ describe("Planning: Workforce Calculations", async () => {
 				},
 			};
 
-			const { handleAddBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref(fakePlanResult)
-				);
+			const { handleAddBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref(fakePlanResult)
+			);
 
 			handleAddBuildingRecipe(0);
 			expect(fakePlan.buildings[0].active_recipes.length).toBe(1);
@@ -735,14 +717,13 @@ describe("Planning: Workforce Calculations", async () => {
 				},
 			};
 
-			const { handleChangeBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref(fakePlanResult)
-				);
+			const { handleChangeBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref(fakePlanResult)
+			);
 
 			expect(() =>
 				handleChangeBuildingRecipe(0, 0, "moo")
@@ -764,14 +745,13 @@ describe("Planning: Workforce Calculations", async () => {
 				},
 			};
 
-			const { handleChangeBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref(fakePlanResult)
-				);
+			const { handleChangeBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref(fakePlanResult)
+			);
 
 			expect(() =>
 				handleChangeBuildingRecipe(0, 0, "moo")
@@ -801,14 +781,13 @@ describe("Planning: Workforce Calculations", async () => {
 				},
 			};
 
-			const { handleChangeBuildingRecipe } =
-				await usePlanCalculationHandlers(
-					// @ts-expect-error mock data
-					ref({}),
-					ref(fakePlan),
-					ref(),
-					ref(fakePlanResult)
-				);
+			const { handleChangeBuildingRecipe } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref(fakePlanResult)
+			);
 
 			handleChangeBuildingRecipe(0, 0, "moo");
 			expect(fakePlan.buildings[0].active_recipes.length).toBe(1);

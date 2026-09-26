@@ -169,7 +169,7 @@ export class ProductionNode {
 		selectedRecipes: string[]
 	): Promise<IBuilding | undefined> {
 		const recipe: IRecipe | undefined = this.getRecipe(selectedRecipes);
-		const { getBuilding } = await useBuildingData();
+		const { getBuilding } = useBuildingData();
 
 		if (recipe) return await getBuilding(recipe.building_ticker);
 		return undefined;

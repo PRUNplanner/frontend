@@ -65,9 +65,9 @@
 	const dailyRepairMaterials: Ref<Record<number, IMaterialIO[]>> = ref({});
 	const singleMat = ref<{ name: string; data: (number | undefined)[] }[]>([]);
 
-	const { getPrice } = await usePrice(localCxUuid, localPlanetNaturalId);
+	const { getPrice } = usePrice(localCxUuid, localPlanetNaturalId);
 	const { calculateDailyRepairMaterials, daySelectOptions } =
-		await useRepairAnalysis(localCxUuid, localPlanetNaturalId);
+		useRepairAnalysis(localCxUuid, localPlanetNaturalId);
 
 	async function calculateRep() {
 		const r: IPlanRepairAnalysisElement[] = [];

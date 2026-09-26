@@ -7,7 +7,7 @@ import { IProductionBuilding } from "@/features/planning/usePlanCalculation.type
 describe("Planning: Workforce Calculations", async () => {
 	describe("calculateMaterialIO", async () => {
 		it("Calculate whole production material io", async () => {
-			const { calculateMaterialIO } = await useBuildingCalculation();
+			const { calculateMaterialIO } = useBuildingCalculation();
 
 			const fakeData: IProductionBuilding[] = [
 				{
@@ -98,7 +98,7 @@ describe("Planning: Workforce Calculations", async () => {
 		});
 
 		it("Skip recipes which amount = 0", async () => {
-			const { calculateMaterialIO } = await useBuildingCalculation();
+			const { calculateMaterialIO } = useBuildingCalculation();
 
 			const fakeData: IProductionBuilding[] = [
 				{

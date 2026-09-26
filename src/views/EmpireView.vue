@@ -24,7 +24,7 @@
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { planResultCacheKey } from "@/features/empire/empire.util";
 	const { combineEmpireMaterialIO, empireMaterialIOState } =
-		await useMaterialIOUtil();
+		useMaterialIOUtil();
 	const { defaultEmpireUuid } = usePreferences();
 
 	// Components

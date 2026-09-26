@@ -19,7 +19,7 @@
 		materials,
 	} = useMaterialData();
 	import { useExchangeData } from "@/database/services/useExchangeData";
-	const { getMaterialExchangeOverview } = await useExchangeData();
+	const { getMaterialExchangeOverview } = useExchangeData();
 
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";

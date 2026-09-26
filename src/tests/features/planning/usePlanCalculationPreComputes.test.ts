@@ -35,7 +35,7 @@ describe("usePlanCalculationPreComputes", async () => {
 		await recipesStore.setMany(recipes);
 
 		const { preload } = useMaterialData();
-		const { preloadBuildings, preloadRecipes } = await useBuildingData();
+		const { preloadBuildings, preloadRecipes } = useBuildingData();
 
 		await preloadBuildings();
 		await preloadRecipes();

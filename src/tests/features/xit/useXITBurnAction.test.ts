@@ -63,7 +63,7 @@ describe("useBurnXITAction", async () => {
 	const materialInactives: Set<string> = new Set(["FEO"]);
 
 	it("materialTable", async () => {
-		const { materialTable } = await useBurnXITAction(
+		const { materialTable } = useBurnXITAction(
 			ref(elements),
 			ref(resupplyDays),
 			ref(hideInfinite),
@@ -80,7 +80,7 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("totalWeightVolume", async () => {
-		const { totalWeightVolume } = await useBurnXITAction(
+		const { totalWeightVolume } = useBurnXITAction(
 			ref(elements),
 			ref(resupplyDays),
 			ref(hideInfinite),
@@ -97,7 +97,7 @@ describe("useBurnXITAction", async () => {
 	it("fit", async () => {
 		const days = ref(5);
 
-		const { fit } = await useBurnXITAction(
+		const { fit } = useBurnXITAction(
 			ref(elements),
 			days,
 			ref(hideInfinite),

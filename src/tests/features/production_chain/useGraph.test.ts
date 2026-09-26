@@ -16,7 +16,7 @@ describe("productionNode", async () => {
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
 		await recipesStore.setMany(recipes);
-		const { preloadBuildings, preloadRecipes } = await useBuildingData();
+		const { preloadBuildings, preloadRecipes } = useBuildingData();
 
 		await preloadBuildings();
 		await preloadRecipes();

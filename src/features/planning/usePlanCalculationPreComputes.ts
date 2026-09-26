@@ -50,9 +50,9 @@ export async function usePlanCalculationPreComputes(
 		getBuildingConstructionMaterials,
 		getBuildingRecipes,
 		getBuildingWorkforceMaterials,
-	} = await useBuildingData();
+	} = useBuildingData();
 
-	const { getMaterialIOTotalPrice } = await usePrice(cxUuid, planetNaturalId);
+	const { getMaterialIOTotalPrice } = usePrice(cxUuid, planetNaturalId);
 	/**
 	 * Holds data of the currently active empire based on all available
 	 * empires and the empireUuid passed to this composable
