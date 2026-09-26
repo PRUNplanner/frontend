@@ -172,6 +172,13 @@ Write them for logic-heavy components, see
   setter instead (`ChainNode.test.ts`). Queries that persist
   (`GetPlanetLastPOPR`, `GetPlanetSearchSingle`) survive a fresh Pinia, so
   give each test its own planet or search id.
+- **Multipart and debounced requests**: axios-mock-adapter records a
+  `FormData` body as `"[object FormData]"`, so spy on `apiService.post`
+  to read it (`RegistrationComponent.test.ts`). A module-level
+  `debounce` (the preference sync) needs fake timers before the module
+  loads: fake `setTimeout`, `clearTimeout` and `Date` with
+  `vi.useFakeTimers({ toFake })`, `vi.resetModules()`, then a dynamic
+  import of the component (`UserPreferences.test.ts`).
 
 ## Test isolation checklist
 
