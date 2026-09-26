@@ -1,4 +1,4 @@
-import { ref, Ref } from "vue";
+import { ref, Ref, watch } from "vue";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
@@ -115,6 +115,48 @@ describe("useROIOverview", async () => {
 		await calculate();
 
 		expect(resultData.value.length).toBe(370);
+	});
+
+	// e.g. the CX changes while the first sweep still runs
+	it("drops a calculation a newer one took over", { timeout: 40_000 }, async () => {
+		const { calculate, resultData, progressCurrent, progressTotal } =
+			useROIOverview(
+				// @ts-expect-error mock definition
+				definition,
+				ref(undefined)
+			);
+
+		const first = calculate();
+		await new Promise((r) => setTimeout(r, 0));
+		const second = await calculate();
+
+		expect(await first).toBeUndefined();
+		expect(second).toHaveLength(370);
+		expect(resultData.value).toHaveLength(370);
+		// the dropped run stops counting progress
+		expect(progressCurrent.value).toBe(progressTotal.value);
+	});
+
+	it("drops a run superseded in its last step", { timeout: 60_000 }, async () => {
+		const { calculate, progressCurrent, progressTotal } =
+			useROIOverview(
+				// @ts-expect-error mock definition
+				definition,
+				ref(undefined)
+			);
+
+		// start the next run once the first one counted its last building
+		let second: ReturnType<typeof calculate> | undefined;
+		watch(
+			progressCurrent,
+			(v) => {
+				if (v === progressTotal.value && !second) second = calculate();
+			},
+			{ flush: "sync" }
+		);
+
+		expect(await calculate()).toBeUndefined();
+		expect(await second).toHaveLength(370);
 	});
 
 	it("formatOptimal", async () => {

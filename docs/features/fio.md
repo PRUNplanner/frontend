@@ -17,7 +17,7 @@ The backend proxies the data, and the user links FIO in their profile.
 | --- | --- |
 | `useFIOBurn.ts` | `useFIOBurn(plans, planResults)` computes days of supply per planet from the plan's daily consumption and FIO stock. Its outputs are `planTable` and the burn table |
 | `useFIORepair.ts` | `useFIORepair(planetsRef)` builds a repair table from FIO sites: average and min condition, and days since last repair. Infrastructure buildings (`HB*`, `ST*`, `CM`) are counted separately |
-| `useFIOStorage.ts` | `storageOptions` (planets / warehouses / ships as grouped select options) and `findMaterial(ticker)` across all storages |
+| `useFIOStorage.ts` | `storageOptions` (planets / warehouses / ships as grouped select options), `planetStorageId(planet)` (the `PLANET#id` option, only if FIO has storage there) and `findMaterial(ticker)` across all storages |
 | `components/FIOBurnTable.vue`, `FIOBurnPlanTable.vue` | Burn UI, with XIT resupply buttons |
 | `components/FIORepairPlanet.vue` | Repair UI per planet |
 

@@ -150,14 +150,20 @@ export function useROIOverview(
 		return itemResults;
 	}
 
+	let latestRun = 0;
+
 	/**
-	 * Triggers calculation of all optimal definitions
+	 * Triggers calculation of all optimal definitions, a newer call
+	 * stops the running one
 	 * @author jplacht
 	 *
 	 * @async
-	 * @returns {Promise<IROIResult[]>} ROI results
+	 * @returns {Promise<IROIResult[] | undefined>} ROI results, undefined
+	 * if a newer calculation took over
 	 */
-	async function calculate(): Promise<IROIResult[]> {
+	async function calculate(): Promise<IROIResult[] | undefined> {
+		const run = ++latestRun;
+		const results: IROIResult[] = [];
 		resultData.value = [];
 		progressCurrent.value = 0;
 		progressTotal.value = filteredOptimalProduction.length;
@@ -174,7 +180,8 @@ export function useROIOverview(
 			await Promise.resolve();
 
 			const result = await calculateItem(optimal, ctx);
-			result.forEach((r) => resultData.value.push(r));
+			if (run !== latestRun) return undefined;
+			results.push(...result);
 
 			progressCurrent.value++;
 
@@ -182,7 +189,9 @@ export function useROIOverview(
 			await new Promise((r) => setTimeout(r, 0));
 		}
 
-		return resultData.value;
+		if (run !== latestRun) return undefined;
+		resultData.value = results;
+		return results;
 	}
 
 	/**

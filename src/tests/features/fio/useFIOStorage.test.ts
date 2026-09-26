@@ -75,6 +75,20 @@ describe("useFIOStorage", async () => {
 		expect(storageOptions.value[3].children).toBeDefined();
 	});
 
+	it("planetStorageId", async () => {
+		const { planetStorageId } = useFIOStorage();
+		expect(planetStorageId("ZV-307c")).toBeUndefined();
+
+		// @ts-expect-error test data
+		planningStore.setFIOStorageData(fio_storage);
+
+		expect(planetStorageId("ZV-307c")).toBe("PLANET#ZV-307c");
+		// has FIO storage elsewhere, but not on this planet
+		expect(planetStorageId("XX-000a")).toBeUndefined();
+		// warehouse ids are no planet storage
+		expect(planetStorageId("ANT")).toBeUndefined();
+	});
+
 	it("findMaterial", async () => {
 		// @ts-expect-error test data
 		planningStore.setFIOStorageData(fio_storage);

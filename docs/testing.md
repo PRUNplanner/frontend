@@ -111,9 +111,46 @@ Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
 
 ### Component tests
 
-`@vue/test-utils` is available (`mount`, `flushPromises`). Few component
-tests exist, because coverage excludes `components/`, but they are welcome
-for logic-heavy components. Stub naive-ui overlays when they get in the way.
+Component tests are a **separate, local-only suite**. Every test under
+`src/tests/**/components/**` is excluded from `pnpm test` (which CI runs),
+so they cost no GitHub Actions minutes. Run them yourself before a PR that
+touches a tested component:
+
+```bash
+pnpm test:components                        # vitest.components.config.ts, no coverage
+pnpm vitest run --config vitest.components.config.ts src/tests/features/manage
+```
+
+The glob is `COMPONENT_TESTS` in `vitest.config.ts`; the components config
+spreads the base config and swaps `include`/`exclude`. Logic you extract
+from a component into a util belongs in the regular suite, not this one.
+
+Write them for logic-heavy components, see
+`src/tests/features/planning/components/PlanSupplyCart.test.ts`:
+
+- **Mount** with `mountComponent(Component, props, { pinia, withDialog })`
+  from `src/tests/mountComponent.ts`. It renders inside `<Suspense>`
+  (async setup), installs a message-less i18n instance, so `t(key)` and
+  `$t(key)` render the key itself, stubs `RouterLink`, and unmounts after
+  each test. `withDialog` adds `NDialogProvider` for `useDialog()`.
+  `setProps` updates props, `component.emitted()` holds emitted events.
+- **Data**: seed fixtures into the IndexedDB stores and preload, as in
+  engine tests. Mock the backend with axios-mock-adapter and assert on
+  `mock.history` request bodies. Payloads are Zod-validated, so use real
+  uuids where the schema demands them.
+- **Interact** through the DOM (`setValue`, `trigger("click")`), or emit
+  `update:value` on a `PSelect` / `PSelectMultiple`. `tableRows(wrapper)`
+  reads naive-ui data tables as column key → text.
+- **Assert** on rendered text, classes and emitted events with
+  hand-computed values. No snapshots. Work that hits IndexedDB (search
+  results, planet names) needs `vi.waitFor` rather than `flushPromises`.
+- **Charts**: chart.js has no canvas in jsdom. `vi.mock` the chart
+  component with a stub that declares its props, then assert on
+  `findComponent(Chart).props()`; see `PlanRepairAnalysis.test.ts`.
+- **Overlays**: `NPopover`, `NModal` and `NDrawer` render into
+  `document.body` once shown. Query them through
+  `new DOMWrapper(document.body)`; `PlanProductionRecipe.test.ts` opens a
+  popover and reads its table.
 
 ## Test isolation checklist
 

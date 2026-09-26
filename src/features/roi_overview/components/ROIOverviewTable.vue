@@ -139,9 +139,15 @@
 		isCalculating.value = true;
 		result.value = [];
 
-		calculate()
-			.then((d) => (result.value = d))
-			.finally(() => (isCalculating.value = false));
+		calculate().then(
+			(d) => {
+				// undefined: a newer calculation took over
+				if (d === undefined) return;
+				result.value = d;
+				isCalculating.value = false;
+			},
+			() => (isCalculating.value = false)
+		);
 	}
 
 	// watch for cx change, must retrigger calculation

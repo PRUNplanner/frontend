@@ -136,7 +136,7 @@ async function empire(): Promise<number> {
 async function roiOverview(): Promise<number> {
 	return (
 		await useROIOverview(ref(etherwindPlan()), ref(undefined)).calculate()
-	).length;
+	)!.length;
 }
 
 // one plan per planet and extractor (RIG, EXT, COL)

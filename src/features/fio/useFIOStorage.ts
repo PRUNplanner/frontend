@@ -180,10 +180,26 @@ export function useFIOStorage() {
 		return amountAndLocations;
 	}
 
+	/**
+	 * Storage identifier of a planets FIO storage, undefined if the
+	 * user has no storage on that planet
+	 *
+	 * @author jplacht
+	 *
+	 * @param {string} planetNaturalId Planet Natural Id
+	 * @returns {(string | undefined)} 'PLANET#ID' identifier
+	 */
+	function planetStorageId(planetNaturalId: string): string | undefined {
+		return planningStore.fio_storage_planets[planetNaturalId]
+			? `PLANET#${planetNaturalId}`
+			: undefined;
+	}
+
 	return {
 		hasStorage,
 		storageOptions,
 		findStorageValueFromOptions,
+		planetStorageId,
 		findMaterial,
 	};
 }

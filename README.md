@@ -73,6 +73,9 @@ pnpm run test
 
 # Or use vitest-ui
 pnpm run test:ui
+
+# Component tests, local only (not run in CI)
+pnpm run test:components
 ```
 ## Environment Variables
 
