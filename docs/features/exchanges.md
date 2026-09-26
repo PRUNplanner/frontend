@@ -40,6 +40,10 @@ at empire level and per planet. It also offers CSV import/export.
   same target, so the UI must prevent that combination.
 - Saving a CX changes `planningStore.cxs`, which makes every mounted
   `usePlanCalculation` recalculate.
+- An import replaces all four preference lists. `parseSettingsCSV` rejects
+  a file that lacks one of the columns, or has a row that is no valid
+  preference (checked with the CX payload schemas, an empty price is
+  invalid), so a wrong file changes nothing.
 
 ## Tests
 

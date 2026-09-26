@@ -218,4 +218,34 @@ describe("CXPreferenceImportExport", () => {
 		// not even an attempt to parse
 		expect(error).not.toHaveBeenCalled();
 	});
+
+	it.each([
+		["a file that is not a preference export", '{"cx_empire": []}'],
+		["an empty file", ""],
+		[
+			"an unknown preference type",
+			"Location;Type;CX;Ticker;Price\nEMPIRE;MAYBE;AI1_30D;;",
+		],
+		[
+			"an unknown exchange",
+			"Location;Type;CX;Ticker;Price\nEMPIRE;BUY;AI1_BUY;;",
+		],
+		[
+			"a price that is not a number",
+			"Location;Type;CX;Ticker;Price\nEMPIRE;BUY;;RAT;cheap",
+		],
+		[
+			"a ticker row without price",
+			"Location;Type;CX;Ticker;Price\nZV-307c;SELL;;RAT;",
+		],
+	])("keeps the preferences on %s", async (_name, content) => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper, component } = await mountImportExport();
+
+		const input = await selectFile(wrapper, content);
+
+		await vi.waitFor(() => expect(error).toHaveBeenCalledTimes(1));
+		for (const event of EVENTS) expect(component.emitted(event)).toBeUndefined();
+		expect(input.value).toBe("");
+	});
 });
