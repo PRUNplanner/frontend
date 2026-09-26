@@ -112,8 +112,10 @@ Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
 ### Component tests
 
 Component tests are a **separate, local-only suite**. Every test under
-`src/tests/**/components/**` is excluded from `pnpm test` (which CI runs),
-so they cost no GitHub Actions minutes. Run them yourself before a PR that
+`src/tests/**/components/**`, and view tests under `src/tests/views/`, is
+excluded from `pnpm test` (which CI runs), so they cost no GitHub Actions
+minutes. A view test stubs the `features/wrapper` loaders with a
+pass-through and seeds the stores instead; see `ExchangesView.test.ts`. Run them yourself before a PR that
 touches a tested component:
 
 ```bash
