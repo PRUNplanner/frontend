@@ -24,6 +24,11 @@ It also analyses the required workforce, expertise and materials.
 - **Graph code is plain classes, not reactive state.** Rebuild or re-run
   `useGraph` for the vue-flow output rather than mutating nodes in place.
 - **Extractable materials** (planet resources) are terminal nodes.
+- **Create the graph after the game data loader.** `init()` reads the
+  recipes from memory once, so a graph created before
+  `WrapperGameDataLoader` completes stays empty. `ProductionChainView`
+  calls `useGraph()` on its first `generate()`, which runs on the loader's
+  `complete`.
 
 ## Tests
 
