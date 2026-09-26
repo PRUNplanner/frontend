@@ -132,6 +132,19 @@ export interface IPlanetCOGCProgram {
 
 type PLANET_COGCPROGRAM_STATUS_TYPE = "ACTIVE" | "ON_STRIKE" | "PLANNED";
 
+export type PLANET_WORKFORCE_LEVEL_TYPE =
+	| "PIONEER"
+	| "SETTLER"
+	| "TECHNICIAN"
+	| "ENGINEER"
+	| "SCIENTIST";
+
+export interface IPlanetProductionFee {
+	category: BUILDING_EXPERTISE_TYPE;
+	workforce_level: PLANET_WORKFORCE_LEVEL_TYPE;
+	fee_amount: number;
+}
+
 export interface IPlanet {
 	planet_id: string;
 	planet_natural_id: string;
@@ -154,6 +167,8 @@ export interface IPlanet {
 	resources: IPlanetResource[];
 	cogc_programs: IPlanetCOGCProgram[];
 	active_cogc_program_type: PLANET_COGCPROGRAM_TYPE | null;
+	// optional: not part of the payload until backend support is deployed
+	production_fees?: IPlanetProductionFee[];
 }
 
 export interface IFIOStorageItem {

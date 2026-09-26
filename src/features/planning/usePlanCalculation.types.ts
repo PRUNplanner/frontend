@@ -134,6 +134,7 @@ export interface IProductionBuilding {
 	constructionCost: number;
 	workforceMaterials: IMaterialIOMinimal[];
 	workforceDailyCost: number;
+	productionFeeDailyCost: number;
 	dailyRevenue: number;
 	expertise: BUILDING_EXPERTISE_TYPE | null;
 }
@@ -306,6 +307,7 @@ export interface IOverviewData {
 	dailyProfit: number;
 	totalConstructionCost: number;
 	dailyDegradationCost: number;
+	dailyProductionFeeCost: number;
 	profit: number;
 	roi: number;
 }
