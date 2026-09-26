@@ -131,6 +131,12 @@ Write them for logic-heavy components, see
 - **Charts**: chart.js has no canvas in jsdom. `vi.mock` the chart
   component with a stub that declares its props, then assert on
   `findComponent(Chart).props()`; see `PlanRepairAnalysis.test.ts`.
+- **Children** with their own test get the same kind of stub. Assert the
+  props you hand them and fire their events with `stub.vm.$emit(...)`; see
+  `PlanProduction.test.ts`.
+- **File inputs**: define `files` on the hidden `<input type="file">` and
+  `trigger("change")`, then `vi.waitFor` the parse; see
+  `CXPreferenceImportExport.test.ts`.
 - **Overlays**: `NPopover`, `NModal` and `NDrawer` render into
   `document.body` once shown. Query them through
   `new DOMWrapper(document.body)`; `PlanProductionRecipe.test.ts` opens a
