@@ -7,7 +7,6 @@ export default [
 	{
 		ignores: [
 			"**/dist/*",
-			"**/tests/*",
 			"**/coverage/**",
 			"tsconfig.json",
 			"tailwind.config.js",
@@ -48,6 +47,18 @@ export default [
 					caughtErrorsIgnorePattern: "^_",
 					ignoreRestSiblings: true,
 				},
+			],
+		},
+	},
+
+	// tests: loose typing on mock data is fine, dead assertions are not
+	{
+		files: ["src/tests/**"],
+		rules: {
+			"@typescript-eslint/no-explicit-any": "off",
+			"@typescript-eslint/ban-ts-comment": [
+				"error",
+				{ "ts-expect-error": false },
 			],
 		},
 	},

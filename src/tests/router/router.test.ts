@@ -6,6 +6,10 @@ import router from "@/router";
 
 // mock views, otherwise loading of components will take long
 
+vi.mock("@/views/HomepageView.vue", () => ({
+	default: { template: "<div />" },
+}));
+
 vi.mock("@/views/PlanLoadView.vue", () => ({
 	default: { template: "<div />" },
 }));
@@ -27,7 +31,10 @@ describe("Router NavigationGuard", () => {
 			// logged out
 			userStore.logout();
 
-			router.push({ name: "plan", params: { planetNaturalId: "abc" } });
+			await router.push({
+				name: "plan",
+				params: { planetNaturalId: "abc" },
+			});
 			await router.isReady();
 
 			expect(router.currentRoute.value.name).toBe("homepage");

@@ -252,12 +252,16 @@
 						</template>
 					</template>
 				</template>
-				<template #total_weight>{{
+				<template #total_weight>
+{{
 					formatAmount(totalWeight)
-				}}</template>
-				<template #total_volume>{{
+				}}
+</template>
+				<template #total_volume>
+{{
 					formatAmount(totalVolume)
-				}}</template>
+				}}
+</template>
 			</i18n-t>
 
 			<i18n-t
@@ -265,12 +269,16 @@
 				keypath="plan.tools.visitation_frequency.storage.info_no_storage"
 				tag="p"
 				class="pb-3">
-				<template #total_weight>{{
+				<template #total_weight>
+{{
 					formatAmount(totalWeight)
-				}}</template>
-				<template #total_volume>{{
+				}}
+</template>
+				<template #total_volume>
+{{
 					formatAmount(totalVolume)
-				}}</template>
+				}}
+</template>
 			</i18n-t>
 
 			<PTable striped>

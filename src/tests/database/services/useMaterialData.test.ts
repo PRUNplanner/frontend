@@ -27,16 +27,15 @@ const mockMaterial2 = {
 };
 
 describe("useMaterialData, no data", async () => {
-	let getMock: any;
 	let preloadMock: any;
 
 	beforeEach(() => {
 		preloadMock = vi.fn(async () => {});
 
-		// @ts-ignore
+		// @ts-expect-error
 		useDB.mockReturnValue({
 			allData: ref(undefined),
-			get: getMock,
+			get: vi.fn(),
 			preload: preloadMock,
 		});
 	});
@@ -71,7 +70,7 @@ describe("useMaterialData", () => {
 
 		preloadMock = vi.fn(async () => {});
 
-		// @ts-ignore
+		// @ts-expect-error
 		useDB.mockReturnValue({
 			allData: ref([mockMaterial1, mockMaterial2]),
 			get: getMock,

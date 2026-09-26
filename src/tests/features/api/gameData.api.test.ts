@@ -180,8 +180,6 @@ describe("GameData API Calls", async () => {
 
 	describe("callExplorationData", async () => {
 		it("Call API 4 times and create structured result", async () => {
-			const spyPostCalls = vi.spyOn(apiService, "get");
-
 			mock.onGet("/data/cxpc/DW/AI1/").reply(200, exploration_7d_dw);
 
 			const result = await callExplorationData("AI1", "DW");

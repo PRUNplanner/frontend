@@ -218,12 +218,12 @@ describe("Planning: Bonus Calculations ", async () => {
 
 				if (typeof expected === "object") {
 					expect(
-						// @ts-ignore test data mocking
+						// @ts-expect-error test data mocking
 						calculateBuildingFactionBonus(building, empire)
 					).toStrictEqual(expected);
 				} else {
 					expect(
-						// @ts-ignore test data mocking
+						// @ts-expect-error test data mocking
 						calculateBuildingFactionBonus(building, empire)
 					).toBe(expected);
 				}

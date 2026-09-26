@@ -91,7 +91,6 @@ describe("Empire Data API Calls", async () => {
 	it("callCreateEmpire", async () => {
 		const spyApiServicePut = vi.spyOn(apiService, "post");
 
-		const fakeEmpireUuid: string = "f39c84a5-e7ba-4aeb-a04d-0618df58fd74";
 		const fakePutPayload = {
 			empire_faction: "NONE",
 			empire_permits_used: 1,

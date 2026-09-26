@@ -13,6 +13,9 @@ describe("useVersionCheck", () => {
 			removeItem: vi.fn(),
 		});
 
+		// mock fetch
+		vi.stubGlobal("fetch", vi.fn());
+
 		vi.stubEnv("DEV", false);
 		vi.useFakeTimers();
 
@@ -20,10 +23,10 @@ describe("useVersionCheck", () => {
 		updateAvailable.value = false;
 	});
 
-	// mock fetch
-	vi.stubGlobal("fetch", vi.fn());
-
-	afterEach(() => vi.restoreAllMocks());
+	afterEach(() => {
+		vi.useRealTimers();
+		vi.restoreAllMocks();
+	});
 
 	it("sets updateAvailable true if no version in localStorage", async () => {
 		// localStorage.getItem returns null (first visit)

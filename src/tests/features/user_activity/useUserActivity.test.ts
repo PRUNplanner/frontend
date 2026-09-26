@@ -28,10 +28,7 @@ describe("useUserActivity", () => {
 	});
 
 	it("should reset forced activity after maxDelay", () => {
-		const { shouldDelay, lastForcedActivity } = useUserActivity(
-			300_000,
-			10_800_000
-		);
+		const { shouldDelay } = useUserActivity(300_000, 10_800_000);
 
 		// simulate inactivity
 		vi.advanceTimersByTime(301_000);

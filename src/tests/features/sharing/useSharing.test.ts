@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 // Stores
@@ -28,7 +28,7 @@ import {
 describe("useSharing", async () => {
 	let planningStore: any;
 
-	beforeAll(() => {
+	beforeEach(() => {
 		setActivePinia(createPinia());
 		planningStore = usePlanningStore();
 

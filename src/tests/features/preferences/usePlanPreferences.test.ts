@@ -1,17 +1,5 @@
-import {
-	describe,
-	it,
-	expect,
-	beforeAll,
-	vi,
-	beforeEach,
-	afterEach,
-} from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
-
-// Stores
-import { useUserStore } from "@/stores/userStore";
-import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
@@ -19,13 +7,8 @@ import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 describe("usePreferences", async () => {
-	let userStore: any;
-	let planningStore: any;
-
 	beforeEach(() => {
 		setActivePinia(createPinia());
-		userStore = useUserStore();
-		planningStore = usePlanningStore();
 	});
 
 	it("fullPreferences", async () => {

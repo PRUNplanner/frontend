@@ -1,5 +1,5 @@
 import { flushPromises } from "@vue/test-utils";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 import { buildingsStore, recipesStore } from "@/database/stores";
@@ -10,7 +10,7 @@ import { useProductionOpportunities } from "@/features/empire/useProductionOppor
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import recipes from "@/tests/test_data/api_data_recipes.json";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { IEmpireMaterialIO } from "@/features/empire/empire.types";
 
 const fakeIEmpireMaterialIO: IEmpireMaterialIO[] = [

@@ -221,7 +221,7 @@ describe("User Store", () => {
 
 		it.each(hasFIOCases)(
 			"Test $description",
-			async ({ profile, expected, description }) => {
+			async ({ profile, expected }) => {
 				const userStore = useUserStore();
 				userStore.profile = profile;
 
@@ -324,6 +324,22 @@ describe("User Store", () => {
 			expect(userStore.getPlanPreference("foo").includeCM).toBe(
 				preferenceDefaults.planDefaults.includeCM
 			);
+		});
+
+		it("Preference changes never touch the defaults and reset restores them", async () => {
+			const userStore = useUserStore();
+			const defaultBurnDaysRed = preferenceDefaults.burnDaysRed;
+
+			userStore.setPreference("burnDaysRed", defaultBurnDaysRed + 1);
+			userStore.setPlanPreference("foo", { includeCM: true });
+
+			expect(preferenceDefaults.burnDaysRed).toBe(defaultBurnDaysRed);
+			expect(preferenceDefaults.planOverrides).toStrictEqual({});
+
+			userStore.$reset();
+
+			expect(userStore.preferences.burnDaysRed).toBe(defaultBurnDaysRed);
+			expect(userStore.preferences.planOverrides).toStrictEqual({});
 		});
 	});
 });

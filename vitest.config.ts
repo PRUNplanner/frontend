@@ -24,6 +24,9 @@ export default defineConfig({
 			"**/*.md",
 		],
 		environment: "jsdom",
+		// undo vi.stubGlobal / vi.stubEnv after each test
+		unstubGlobals: true,
+		unstubEnvs: true,
 		coverage: {
 			enabled: true,
 			provider: "v8",

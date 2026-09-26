@@ -28,7 +28,6 @@
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
-	import { capitalizeString } from "@/util/text";
 
 	// Interfaces & Types
 	import { IMaterial } from "@/features/api/gameData.types";

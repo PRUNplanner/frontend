@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { apiService } from "@/lib/apiService";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { createPinia, setActivePinia } from "pinia";
@@ -12,7 +12,10 @@ import { useMarketExplorationChart } from "@/features/market_exploration/useMark
 const mock = new AxiosMockAdapter(apiService.client);
 
 describe("useMarketExplorationChart", async () => {
-	setActivePinia(createPinia());
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		mock.reset();
+	});
 
 	const exchangeTicker: Ref<string> = ref("NC1");
 	const materialTicker: Ref<string> = ref("DW");

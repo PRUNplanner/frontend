@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import { describe, it, expect } from "vitest";
 
 // Composables

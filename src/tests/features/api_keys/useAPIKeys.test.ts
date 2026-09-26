@@ -1,5 +1,5 @@
 import { apiService } from "@/lib/apiService";
-import { describe, it, expect, beforeAll, vi } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axiosSetup from "@/util/axiosSetup";
