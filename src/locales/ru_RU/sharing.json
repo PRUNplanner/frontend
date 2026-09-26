@@ -7,5 +7,6 @@
 		"stop_sharing": "Остановить общий доступ",
 		"views": "{count} просмотров",
 		"share": "Поделиться"
-	}
+	},
+	"title": "Share Plan"
 }
