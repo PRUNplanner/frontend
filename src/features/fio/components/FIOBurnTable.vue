@@ -8,7 +8,7 @@
 	import { usePlanetData } from "@/database/services/usePlanetData";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	const { getBurnDisplayClass } = usePreferences();
-	const { planetNames, loadPlanetName } = usePlanetData();
+	const { planetName } = usePlanetData();
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -145,9 +145,7 @@
 						<span class="text-white/50!">
 							&mdash;
 							{{
-								planetNames[rowData.planetId] ||
-								loadPlanetName(rowData.planetId) ||
-								"..."
+								planetName(rowData.planetId)
 							}}
 						</span>
 					</div>

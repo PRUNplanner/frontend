@@ -32,9 +32,12 @@
 	}>();
 
 	// Local State
-	const localPermits: WritableComputedRef<number> = computed({
+	const localPermits: WritableComputedRef<number, number | null> = computed({
 		get: () => props.areaData.permits,
-		set: (value: number) => {
+		set: (value: number | null) => {
+			// the input is empty while retyping
+			if (value === null) return;
+
 			emit("update:permits", value);
 			trackEvent("plan_update_permits", {
 				permits: value,

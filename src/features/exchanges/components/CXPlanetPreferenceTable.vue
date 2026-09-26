@@ -23,7 +23,7 @@
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import { EditSharp } from "@vicons/material";
 
-	const { planetNames, loadPlanetName } = usePlanetData();
+	const { planetName } = usePlanetData();
 
 	const props = defineProps({
 		planetMap: {
@@ -66,9 +66,7 @@
 		}}<span v-if="selectedPlanet"
 			>:
 			{{
-				planetNames[selectedPlanet] ||
-				loadPlanetName(selectedPlanet) ||
-				"..."
+				planetName(selectedPlanet)
 			}}
 		</span>
 	</h2>
@@ -131,9 +129,7 @@
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				{{
-					planetNames[rowData.planet] ||
-					loadPlanetName(rowData.planet) ||
-					"..."
+					planetName(rowData.planet)
 				}}
 			</template>
 		</XNDataTableColumn>

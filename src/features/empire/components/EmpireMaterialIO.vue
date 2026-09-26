@@ -129,7 +129,7 @@
 						<router-link
 							:to="`/plan/${p.planetId}/${p.planUuid}`"
 							class="hover:underline">
-							{{ planetNames[p.planetId] || "Loading" }}:
+							{{ planetNames.get(p.planetId) || "Loading" }}:
 							<strong>
 								{{ formatNumber(p.output) }}
 							</strong>
@@ -147,7 +147,7 @@
 						<router-link
 							:to="`/plan/${p.planetId}/${p.planUuid}`"
 							class="hover:underline">
-							{{ planetNames[p.planetId] || "Loading" }}:
+							{{ planetNames.get(p.planetId) || "Loading" }}:
 							<strong>
 								{{ formatNumber(p.input) }}
 							</strong>

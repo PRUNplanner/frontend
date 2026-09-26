@@ -10,6 +10,7 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Composables
 import { useBurnXITAction } from "@/features/xit/useBurnXITAction";
+import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
 import { IXITActionElement } from "@/features/xit/xitAction.types";
@@ -17,6 +18,30 @@ import { IXITActionElement } from "@/features/xit/xitAction.types";
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
+
+// lets a test hold back price lookups, to finish calculations out of order
+const priceGate = vi.hoisted(() => ({
+	wait: undefined as Promise<void> | undefined,
+}));
+vi.mock("@/features/cx/usePrice", async (importOriginal) => {
+	const actual =
+		await importOriginal<typeof import("@/features/cx/usePrice")>();
+	return {
+		...actual,
+		usePrice: (...args: Parameters<typeof actual.usePrice>) => {
+			const price = actual.usePrice(...args);
+			return {
+				...price,
+				getPrice: async (
+					...a: Parameters<typeof price.getPrice>
+				): Promise<number> => {
+					if (priceGate.wait) await priceGate.wait;
+					return price.getPrice(...a);
+				},
+			};
+		},
+	};
+});
 
 describe("useBurnXITAction", async () => {
 	beforeAll(async () => {
@@ -27,6 +52,10 @@ describe("useBurnXITAction", async () => {
 		const { preload } = useMaterialData();
 
 		await preload();
+		// like the GetExchanges query: write, then reload the memory cache
+		// @ts-expect-error mock data date as string
+		await exchangesStore.setMany(exchanges);
+		await useExchangeData().preload(true);
 		await flushPromises();
 	});
 
@@ -121,10 +150,6 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("stops updating totalPrice once its scope is stopped", async () => {
-		// @ts-expect-error mock data date as string
-		await exchangesStore.setMany(exchanges);
-		// like the GetExchanges query: write, then reload the memory cache
-		await useExchangeData().preload(true);
 
 		const days = ref(5);
 		const scope = effectScope();
@@ -151,5 +176,72 @@ describe("useBurnXITAction", async () => {
 		await flushPromises();
 
 		expect(totalPrice.value).toBe(initial * 2);
+	});
+
+	it("leaves inactive materials out of totalPrice", async () => {
+		const { getPrice } = usePrice(ref(undefined), ref(undefined));
+		const unitPrice = await getPrice("RAT", "BUY");
+		// OVE has a price, so leaving it in would change the total
+		expect(await getPrice("OVE", "BUY")).toBeGreaterThan(0);
+
+		const scope = effectScope();
+		const { totalPrice } = scope.run(() =>
+			useBurnXITAction(
+				ref([
+					{ ticker: "RAT", stock: 0, delta: -10 },
+					{ ticker: "OVE", stock: 0, delta: -10 },
+				]),
+				ref(5),
+				ref(true),
+				ref({}),
+				ref(new Set<string>(["OVE"])),
+				ref(undefined),
+				ref(undefined)
+			)
+		)!;
+
+		// only RAT: 5 days × 10 RAT = 50 RAT
+		await vi.waitFor(() => expect(totalPrice.value).toBe(unitPrice * 50));
+		scope.stop();
+	});
+
+	it("keeps the latest totalPrice when an older run finishes last", async () => {
+		const unitPrice = await usePrice(ref(undefined), ref(undefined)).getPrice(
+			"RAT",
+			"BUY"
+		);
+		expect(unitPrice).toBeGreaterThan(0);
+
+		// the run for 5 days waits for its price
+		let release: () => void = () => {};
+		priceGate.wait = new Promise<void>((resolve) => {
+			release = resolve;
+		});
+		const days = ref(5);
+		const scope = effectScope();
+		const { totalPrice } = scope.run(() =>
+			useBurnXITAction(
+				ref([{ ticker: "RAT", stock: 0, delta: -10 }]),
+				days,
+				ref(true),
+				ref({}),
+				ref(new Set<string>()),
+				ref(undefined),
+				ref(undefined)
+			)
+		)!;
+		await flushPromises();
+
+		// the run for 10 days finishes first: 10 days × 10 RAT = 100 RAT
+		priceGate.wait = undefined;
+		days.value = 10;
+		await vi.waitFor(() => expect(totalPrice.value).toBe(unitPrice * 100));
+
+		// the stale 5 day run (50 RAT) finishes last and must not win
+		release();
+		await flushPromises();
+		expect(totalPrice.value).toBe(unitPrice * 100);
+
+		scope.stop();
 	});
 });

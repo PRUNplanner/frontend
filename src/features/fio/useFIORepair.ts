@@ -79,7 +79,7 @@ export function useFIORepair(planets: Ref<Record<string, IFIOSitePlanet>>) {
 				data.push({
 					planetId: planetData.PlanetIdentifier,
 					planetName:
-						planetNames.value[planetData.PlanetIdentifier] ??
+						planetNames.value.get(planetData.PlanetIdentifier) ??
 						"Loading",
 					amountBuildings: buildingAmount,
 					amountProductionBuildings: productionBuildingAmount,

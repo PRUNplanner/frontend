@@ -131,7 +131,7 @@
 					<div class="w-full flex flex-row gap-1">
 						<div class="grow">
 							<PInput
-								v-model:value="
+								:value="
 									transferJSON(localElements, {
 										name: transferName,
 										origin: burnOrigin,

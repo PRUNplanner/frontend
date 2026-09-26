@@ -75,9 +75,17 @@
 		},
 	});
 
+	// the error only shows once loading failed, not while a page loads
+	const loadFailed: Ref<boolean> = ref(false);
+
 	watch(showDrawer, async () => {
 		if (showDrawer.value) {
-			markdownContent.value = await loadMarkdown();
+			try {
+				markdownContent.value = await loadMarkdown();
+			} catch (err) {
+				console.error(err);
+				loadFailed.value = true;
+			}
 		}
 	});
 
@@ -105,8 +113,8 @@
 			<div v-if="markdownContent != ''" id="markdown">
 				<VueShowdown :markdown="markdownContent" />
 			</div>
-			<div v-else class="text-center text-red-500">
-				Unable to load '{{ fileName }}'
+			<div v-else-if="loadFailed" class="text-center text-red-500">
+				{{ t("help.load_error", { file_name: fileName }) }}
 			</div>
 		</n-drawer-content>
 	</n-drawer>

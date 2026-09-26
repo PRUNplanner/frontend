@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { onMounted, ref, Ref } from "vue";
+	import { ref, Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -20,7 +20,8 @@
 
 	// Composables
 	import { useGraph } from "@/features/production_chain/useGraph";
-	const { create } = await useGraph();
+	// the graph indexes all recipes on creation, so only after the loader
+	let graph: ReturnType<typeof useGraph> | undefined;
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	const { materialSelectOptions } = useMaterialData();
 	// Composables
@@ -63,6 +64,9 @@
 			terminals: selectedTerminals.value,
 		});
 
+		graph ??= useGraph();
+		const { create } = await graph;
+
 		graphData.value = await create(
 			selectedMaterial.value,
 			selectedAmount.value,
@@ -73,12 +77,15 @@
 		selectedRecipes.value = graphData.value.recipeSelection;
 		recipeOptions.value = graphData.value.recipeOptions;
 	}
-
-	onMounted(async () => await generate());
 </script>
 
 <template>
-	<WrapperGameDataLoader load-recipes load-buildings>
+	<!-- the graph needs recipes and buildings, build it once they are loaded -->
+	<WrapperGameDataLoader
+		load-materials
+		load-recipes
+		load-buildings
+		@complete="generate()">
 		<div class="min-h-screen flex flex-col">
 			<div
 				class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">

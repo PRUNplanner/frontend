@@ -45,17 +45,27 @@
 
 	async function stopSharing(): Promise<void> {
 		isDeleting.value = true;
-		await deleteSharing();
-		isDeleting.value = false;
-		showModal.value = false;
-		trackEvent("plan_share_delete");
+		try {
+			await deleteSharing();
+			showModal.value = false;
+			trackEvent("plan_share_delete");
+		} catch (err) {
+			console.error(err);
+		} finally {
+			isDeleting.value = false;
+		}
 	}
 
 	async function doCreateSharing(): Promise<void> {
 		isCreating.value = true;
-		await createSharing();
-		trackEvent("plan_share_create");
-		isCreating.value = false;
+		try {
+			await createSharing();
+			trackEvent("plan_share_create");
+		} catch (err) {
+			console.error(err);
+		} finally {
+			isCreating.value = false;
+		}
 	}
 
 	onMounted(() => {
@@ -70,7 +80,7 @@
 		v-model:show="showModal"
 		class="w-fit! max-w-175!"
 		preset="card"
-		title="Share Plan">
+		:title="$t('sharing.title')">
 		<template v-if="!isShared">
 			<div>
 				{{ $t("sharing.info") }}

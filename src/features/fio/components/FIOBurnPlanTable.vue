@@ -9,7 +9,7 @@
 	import { usePreferences } from "@/features/preferences/usePreferences";
 
 	const { getBurnDisplayClass } = usePreferences();
-	const { planetNames, loadPlanetName } = usePlanetData();
+	const { planetName } = usePlanetData();
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -47,9 +47,7 @@
 			:title="t('fio.burn.components.overview.table.planet')">
 			<template #render-cell="{ rowData }">
 				{{
-					planetNames[rowData.planetId] ||
-					loadPlanetName(rowData.planetId) ||
-					"Loading..."
+					planetName(rowData.planetId, "Loading...")
 				}}
 			</template>
 		</XNDataTableColumn>

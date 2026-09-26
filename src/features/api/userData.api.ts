@@ -173,7 +173,7 @@ export async function callResendEmailVerification(): Promise<IUserResponseDetail
  * @export
  * @async
  * @param {IUserVerifyEmailPayload} postCode Verification code
- * @returns {Promise<IUserVerifyEmailResponse>} Verification status
+ * @returns {Promise<IUserResponseDetail>} Verification status
  */
 export async function callVerifyEmail(
 	postCode: IUserVerifyEmailPayload

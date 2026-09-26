@@ -70,7 +70,7 @@
 	<n-modal
 		v-model:show="showPOPRModal"
 		preset="card"
-		:title="`Latest Population Report: ${planetNaturalId}`"
+		:title="t('government.popr_button.modal_title', { planet_id: planetNaturalId })"
 		class="max-w-150">
 		<PlanetPOPRTable
 			v-if="poprData"

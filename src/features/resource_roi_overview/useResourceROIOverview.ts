@@ -247,7 +247,9 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 			// all matches, push the result
 			results.push({
 				planetNaturalId: planet.planet_natural_id,
-				planetName: planetNames.value[planet.planet_natural_id],
+				planetName:
+					planetNames.value.get(planet.planet_natural_id) ??
+					planet.planet_natural_id,
 				buildingTicker: optimal.ticker,
 				dailyYield,
 				percentMaxDailyYield: 0,
