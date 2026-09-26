@@ -33,6 +33,7 @@ is async end to end. Most of the issues below follow from that.
 | S9 | `PlanProductionBuilding.vue` l.94 | `v-model:value="localBuildingData.amount"` writes into `result.production.buildings[i]` (a derived value) before the emit updates the plan. |
 | S11 | l.~440-510, batch callers | Every calculation builds `recipeOptions` for *all* recipes of every building, with price lookups for each. Batch callers mostly don't use them: the ROI overview runs one plan per recipe, so a building with k recipes costs k plans x k options (x2 because of S4). Resource ROI only uses them to check which building can output a material. |
 | S12 | `useResourceROIOverview.ts` l.48, l.330 | `pLimit(128)` gives no parallelism on one thread; it only interleaves up to 128 async calculations, which raises memory use and delays the first results. |
+| S13 | l.978 | The recalculation watcher watches `[plan, refreshKey, empireUuid]` but not `cxUuid`. Harmless today (in `PlanView` the CX only changes together with the empire), but the engine should take the CX as an explicit input (Phase 3). |
 | S10 | l.1-1008 | Costs are negative numbers by convention, handled with scattered `* -1` and `- -1 *`. |
 
 ## Suspected bugs (confirm with a failing test before fixing)

@@ -73,3 +73,9 @@ results identical to the single-plan engine.
 | D4 | 2026-09-26 | Zod only at system boundaries, not on internal messages. |
 | D5 | 2026-09-26 | Tests and benchmarks run in Claude Code in this worktree; discussion and review in Cowork. |
 | D6 | 2026-09-26 | Batch calculation is the case for Web Workers: a pool of stateless workers running the pure engine, after removing batch waste and measuring (Phase 5). |
+| D7 | 2026-09-26 | Phase 1 is performance only: characterization snapshots must stay identical. Bug fixes B1-B3 wait for Phase 4 (B3 needs Jan's decision). |
+| D8 | 2026-09-26 | The 16 ms budget is about the browser. The Node bench is the regression check; target for `large` edit -> result is under 8 ms in Node. No dev-only timing code in `src/`. |
+| D9 | 2026-09-26 | The `large` snapshot drops `recipeOptions` (covered by the `etherwind` snapshots). B8 uses a search fixture where every planet has the material. |
+| D10 | 2026-09-26 | Phases 1, 2, 3 (and 5 if needed) run as one autonomous Claude Code session ending in one PR, with a before/after comparison benchmark (`main` vs branch) highlighted in the PR description. |
+| D11 | 2026-09-26 | B1 is fixed in this PR (no number changes). B2 and B3 change numbers and get a separate PR; B3 still needs Jan's decision. |
+| D12 | 2026-09-26 | Before the PR, `docs/refactor/planning-engine/` is deleted after its lasting content moves to `docs/planning-engine.md`. Characterization tests, snapshots and benches stay. |

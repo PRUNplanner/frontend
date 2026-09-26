@@ -162,6 +162,22 @@ so that discarded watcher runs can finish. They were identical in both runs.
 - **S11 confirmed:** B7's 370 plans compute 8128 recipe options, none of
   which the ROI overview reads.
 
+## Phases 1-3 (performance and engine)
+
+### Profile of `calculate()` on `large`
+| Step | ms | share |
+| --- | --- | --- |
+
+### Single plan, edit -> result (Node, mean ms)
+| After commit | fix | small | etherwind | large | large p99 |
+| --- | --- | --- | --- | --- | --- |
+| (baseline) | none | | | | |
+
+### Batch (Node, total mean ms)
+| After commit | fix | B6 | B7 | B8 (all planets have N) | runs per plan | recipe options |
+| --- | --- | --- | --- | --- | --- | --- |
+| (baseline) | none | | | | | |
+
 ## Deviations from TASKS.md
 1. Node 22.19 as `.nvmrc` requires, but with pnpm 12.5.1 instead of 10
    (the one installed). Lockfile unchanged.

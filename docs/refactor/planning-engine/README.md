@@ -26,8 +26,8 @@ These files are how the work is split between two places:
    into `STATUS.md`, with the commit hash it was measured on.
 4. If something contradicts `REVIEW.md` or `PLAN.md`, stop and write it into
    `STATUS.md` instead of working around it.
-5. Commit on this branch in small commits. Don't push or open a PR unless Jan
-   asks.
+5. Commit on this branch in small commits. Push and open the PR only in
+   the final step of `TASKS.md`.
 
 ## Kickoff prompt for Claude Code
 
