@@ -68,13 +68,13 @@ number may change.**
 baseline, small/etherwind not slower.
 
 ## Phase 2: Synchronous data access
-- [ ] Confirm game data (buildings, recipes, materials, exchanges, the
+- [x] Confirm game data (buildings, recipes, materials, exchanges, the
       plan's planet) is always loaded before any view that calculates plans.
       Document where that is guaranteed. If a view can calculate before
       preload, keep an async path for it and note it.
-- [ ] Synchronous getters over the `useDB` caches (throw a clear error if
+- [x] Synchronous getters over the `useDB` caches (throw a clear error if
       not loaded).
-- [ ] A `PriceBook`: resolves the CX preference hierarchy from `usePrice`
+- [x] A `PriceBook`: resolves the CX preference hierarchy from `usePrice`
       and returns prices synchronously. Same resolution logic and values;
       reuse or replace the per-run cache from Phase 1.
 

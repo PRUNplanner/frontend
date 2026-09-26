@@ -253,6 +253,69 @@ B8's 1.33 runs per plan are real work: its 65 plans with N need a second
 - small: 0.90 -> 0.78 ms.
 - etherwind: 0.97 -> 0.79 ms.
 
+
+## Phase 2: synchronous data access
+
+### Where game data is guaranteed loaded
+The game data queries in `queryRepository.ts` (`GetMaterials`,
+`GetExchanges`, `GetRecipes`, `GetBuildings`, `GetPlanet`,
+`GetMultiplePlanets`, `PostPlanetSearch`, ...) always write IndexedDB and
+then `useDB(store).preload(true)`. The query store is not persisted, so after
+a reload every query runs its `fetchFn` again. The `useDB` memory caches
+live for the whole session and are only ever refreshed by `preload(true)`.
+
+| View (calculates plans) | Loader flags | Planet(s) |
+| --- | --- | --- |
+| `PlanLoadView` -> `PlanView` | materials, exchanges, recipes, buildings | `WrapperPlanningDataLoader` `GetPlanet`; `PlanView` also awaits `getPlanet` before `usePlanCalculation` |
+| `EmpireView` | materials, buildings, recipes, exchanges | `load-planet-multiple` (all empire planets) |
+| `FIOBurnView` | materials, exchanges, recipes, buildings | `load-planet-multiple` |
+| `ROIOverviewView` | exchanges, materials, buildings, recipes | `OT-580b` via `WrapperPlanningDataLoader` |
+| `ResourceROIOverviewView` | exchanges, materials, buildings, recipes | `PostPlanetSearch` preloads the planets store |
+
+Other `usePrice` users:
+- `UpkeepPriceCalculatorView`, `HQUpgradeCalculatorView`, and the empire
+  and FIO burn components load exchanges.
+- `FIORepairView` (repair analysis) loads materials only. It used to read
+  exchanges lazily from IndexedDB, one ticker at a time.
+
+**Async path kept:** `usePrice` and `calculate()` await `preload()` of
+exchanges and buildings first. That is a no-op once they are loaded.
+Where nothing preloaded them, such as `FIORepairView` and tests, it reads
+the same IndexedDB data the lazy per-ticker `get()` used to read. The planet
+stays an async `getPlanet` call, loaded once per run.
+
+**Behaviour note:** a lazy `get()` also found tickers written to IndexedDB
+*after* the cache was loaded. A synchronous read only sees them after
+`preload(true)`. In the app, the only writer (`GetExchanges`) always runs
+`preload(true)` right after writing. One test wrote without reloading
+(`useXITBurnAction.test.ts`), and now reloads like the query does.
+
+### Changes
+- `9daae16`, PriceBook:
+  - `useDB.getLoaded()`, `useBuildingData.getBuildingLoaded()` and
+    `useExchangeData.getExchangeTickerLoaded()` are the new sync getters.
+  - The CX preference logic moved unchanged into the pure
+    `features/cx/priceBook.ts`. A book resolves each (ticker, type) once and
+    reads the CX once (`getCX` deep-clones the CX on every call, which used
+    to happen on every price lookup).
+  - `usePrice` keeps its async API and delegates to a book.
+    `calculate()` uses one book per run, which replaces the Phase 1
+    `PriceCache`.
+- `6880ebb`: synchronous building lookups in workforce, area, building
+  information and infrastructure construction.
+
+| After commit | fix | small | etherwind | large | large p99 | large B1b | B6 | B7 | B8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `8821170` (end of Phase 1) | | 0.78 | 0.79 | 4.97 | 6.41 | 3.74 | 69 | 229 | 90 |
+| `9daae16` | PriceBook + sync getters | 0.69 | 0.73 | 4.35 | 6.03 | 3.23 | 62 | 220 | 80 |
+| `6880ebb` | sync building lookups | 0.67 | 0.69 | 4.20 | 5.63 | 3.09 | 61 | 209 | 76 |
+
+Runs per plan and recipe options are unchanged from Phase 1: 1.00 / 1.00 /
+1.33 runs and 0 / 0 / 288 options.
+
+**Gate 2: met.** Snapshots are identical and every bench is faster than at
+the end of Phase 1.
+
 ## Deviations from TASKS.md
 1. Node 22.19 as `.nvmrc` requires, but with pnpm 12.5.1 instead of 10
    (the one installed). Lockfile unchanged.
