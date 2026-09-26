@@ -33,7 +33,9 @@
 				if (data.status === "success") {
 					planetInsights.value = data;
 				}
-			});
+			})
+			// insights are optional, the box stays hidden
+			.catch(() => {});
 	});
 
 	const hasData = computed(() => planetInsights.value?.status === "success");

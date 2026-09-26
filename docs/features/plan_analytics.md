@@ -11,7 +11,8 @@ there.
 `components/PlanAnalyticsBox.vue`:
 - **Prop:** `planetNaturalId`.
 - **Data:** on mount it calls `useQuery("GetAnalyticsPlanetInsights", {
-  planetNaturalId })` and renders only when `status === "success"`.
+  planetNaturalId })` and renders only when `status === "success"`. A
+  failed request leaves the box hidden.
 - **Schema:** the response is a discriminated union
   (`AnalyticsPlanetInsightsPayloadSchema` in
   `features/api/schemas/analyticsData.schemas.ts`). A `below_threshold`

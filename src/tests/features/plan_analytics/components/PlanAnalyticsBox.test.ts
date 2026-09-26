@@ -216,4 +216,21 @@ describe("PlanAnalyticsBox", () => {
 		expect(toggle(wrapper).exists()).toBe(false);
 		expect(wrapper.text()).toBe("");
 	});
+
+	it("renders nothing when loading the insights fails", async () => {
+		const { wrapper } = await mountBox([500]);
+
+		expect(mock.history.get).toHaveLength(1);
+		expect(toggle(wrapper).exists()).toBe(false);
+	});
+
+	it("renders nothing for an invalid response", async () => {
+		// fewer than 15 plans are no valid insights
+		const { wrapper } = await mountBox([
+			200,
+			{ ...INSIGHTS, total_plans_analyzed: 3 },
+		]);
+
+		expect(toggle(wrapper).exists()).toBe(false);
+	});
 });
