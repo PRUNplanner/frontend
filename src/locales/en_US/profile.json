@@ -80,6 +80,8 @@
 			"resupply_days": "Resupply Days",
 			"xit_origin": "XIT Origin",
 			"buy_from_cx": "XIT Buy from CX",
+			"burn_default_mode": "Default Burn Mode",
+			"burn_full_cover_threshold": "Burn Full Cover Threshold",
 			"plan_specific": "Plan-Specific Settings",
 			"plan_specific_description": "These settings are managed within individual plans. This section provides an overview of the preferences you've customized so far - to modify them, navigate to the corresponding plan.",
 			"plan": "Plan",

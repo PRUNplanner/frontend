@@ -1,10 +1,17 @@
 {
 	"form": {
+		"mode": "Mode",
+		"mode_simple": "Simple (days)",
+		"mode_solver": "Solver (ship target)",
 		"origin": "Origin",
 		"target_days": "Target Days",
 		"buy_from_cx": "Buy From CX",
 		"buy_from_cx_warning": "Only warehouse origin allows purchasing.",
 		"fit_ship": "Fit Ship",
+		"ship_weight": "Ship Weight (t)",
+		"ship_volume": "Ship Volume (m³)",
+		"full_cover_threshold": "Full Cover",
+		"full_cover_threshold_info": "Materials whose daily burn is at or below this value are shipped to their full target-days quantity first, before the solver balances the rest of the cargo. This guarantees tiny-burn items are not starved by the optimization. Set to 0 to disable.",
 		"hide_infinite": "Hide Infinite",
 		"json": "JSON"
 	},

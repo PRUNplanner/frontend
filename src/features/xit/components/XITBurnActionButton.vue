@@ -13,6 +13,8 @@
 	const {
 		burnResupplyDays,
 		burnOrigin,
+		burnDefaultMode,
+		burnFullCoverThreshold,
 		getBurnDisplayClass,
 		defaultBuyItemsFromCX,
 	} = usePreferences();
@@ -36,8 +38,10 @@
 		PSelect,
 		PInput,
 		PTable,
+		PTooltip,
 	} from "@/ui";
 	import { NDrawer, NDrawerContent } from "naive-ui";
+	import { HelpOutlineSharp } from "@vicons/material";
 
 	// Constants
 	import { XITSTATIONWAREHOUSES } from "@/features/xit/xitConstants";
@@ -104,17 +108,34 @@
 	const refHideInfinite: Ref<boolean> = ref(false);
 	const refMaterialOverrides: Ref<Record<string, number>> = ref({});
 	const refMaterialInactives: Ref<Set<string>> = ref(new Set([]));
+	const refShipWeightCapacity: Ref<number> = ref(1000);
+	const refShipVolumeCapacity: Ref<number> = ref(1000);
+
+	const modeOptions = computed(() => [
+		{ label: t("xit.form.mode_simple"), value: "simple" },
+		{ label: t("xit.form.mode_solver"), value: "solver" },
+	]);
 
 	const { materialTable, totalWeightVolume, totalPrice, fit } =
 		await useBurnXITAction(
+			burnDefaultMode,
 			localElements,
 			burnResupplyDays,
 			refHideInfinite,
 			refMaterialOverrides,
 			refMaterialInactives,
 			ref(undefined),
-			ref(undefined)
+			ref(undefined),
+			refShipWeightCapacity,
+			refShipVolumeCapacity,
+			burnFullCoverThreshold
 		);
+
+	function applyShipPreset(weight: number, volume: number): void {
+		refShipWeightCapacity.value = weight;
+		refShipVolumeCapacity.value = volume;
+		trackEvent("xit_burn_fit_ship", { weight, volume });
+	}
 </script>
 
 <template>
@@ -129,6 +150,12 @@
 			<div class="mb-3 grid grid-cols-1 xl:grid-cols-[60%_auto] gap-3">
 				<div>
 					<PForm>
+						<PFormItem :label="t('xit.form.mode')">
+							<PSelect
+								v-model:value="burnDefaultMode"
+								:options="modeOptions"
+								class="w-full" />
+						</PFormItem>
 						<PFormItem :label="t('xit.form.origin')">
 							<PSelect
 								v-model:value="burnOrigin"
@@ -155,27 +182,86 @@
 									burnOrigin === 'Configure on Execution'
 								" />
 						</PFormItem>
-						<PFormItem :label="t('xit.form.fit_ship')">
-							<PButtonGroup>
-								<PButton
-									v-for="fitOption in fitOptions"
-									:key="fitOption.label"
-									@click="
-										() => {
-											fit(
+						<template v-if="burnDefaultMode === 'solver'">
+							<PFormItem :label="t('xit.form.ship_weight')">
+								<PInputNumber
+									v-model:value="refShipWeightCapacity"
+									:min="0"
+									show-buttons
+									class="w-full" />
+							</PFormItem>
+							<PFormItem :label="t('xit.form.ship_volume')">
+								<PInputNumber
+									v-model:value="refShipVolumeCapacity"
+									:min="0"
+									show-buttons
+									class="w-full" />
+							</PFormItem>
+							<PFormItem :label="t('xit.form.fit_ship')">
+								<PButtonGroup>
+									<PButton
+										v-for="fitOption in fitOptions"
+										:key="fitOption.label"
+										@click="
+											applyShipPreset(
 												fitOption.weight,
 												fitOption.volume
-											);
-											trackEvent('xit_burn_fit_ship', {
-												weight: fitOption.weight,
-												volume: fitOption.volume,
-											});
-										}
-									">
-									{{ fitOption.label }}
-								</PButton>
-							</PButtonGroup>
-						</PFormItem>
+											)
+										">
+										{{ fitOption.label }}
+									</PButton>
+								</PButtonGroup>
+							</PFormItem>
+							<PFormItem
+								:label="t('xit.form.full_cover_threshold')">
+								<div class="flex flex-row items-center gap-x-2">
+									<PInputNumber
+										v-model:value="burnFullCoverThreshold"
+										:min="0"
+										show-buttons
+										class="w-full" />
+									<PTooltip placement="top">
+										<template #trigger>
+											<HelpOutlineSharp
+												class="w-4 h-4 text-white/50 cursor-help" />
+										</template>
+										<div class="max-w-75 text-xs">
+											{{
+												t(
+													"xit.form.full_cover_threshold_info"
+												)
+											}}
+										</div>
+									</PTooltip>
+								</div>
+							</PFormItem>
+						</template>
+						<template v-else>
+							<PFormItem :label="t('xit.form.fit_ship')">
+								<PButtonGroup>
+									<PButton
+										v-for="fitOption in fitOptions"
+										:key="fitOption.label"
+										@click="
+											() => {
+												fit(
+													fitOption.weight,
+													fitOption.volume
+												);
+												trackEvent(
+													'xit_burn_fit_ship',
+													{
+														weight: fitOption.weight,
+														volume: fitOption.volume,
+													}
+												);
+											}
+										">
+										{{ fitOption.label }}
+									</PButton>
+								</PButtonGroup>
+							</PFormItem>
+						</template>
 						<PFormItem :label="t('xit.form.hide_infinite')">
 							<PCheckbox v-model:checked="refHideInfinite" />
 						</PFormItem>

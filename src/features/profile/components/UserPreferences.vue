@@ -28,7 +28,9 @@
 		PInputNumber,
 		PCheckbox,
 		PTable,
+		PTooltip,
 	} from "@/ui";
+	import { HelpOutlineSharp } from "@vicons/material";
 
 	const planningStore = usePlanningStore();
 
@@ -37,10 +39,17 @@
 		burnDaysYellow,
 		burnResupplyDays,
 		burnOrigin,
+		burnDefaultMode,
+		burnFullCoverThreshold,
 		locale,
 		planSettingsOverview,
 		cleanPlanPreferences,
 	} = usePreferences();
+
+	const burnModeOptions: Ref<PSelectOption[]> = ref([
+		{ label: t("xit.form.mode_simple"), value: "simple" },
+		{ label: t("xit.form.mode_solver"), value: "solver" },
+	]);
 	let { defaultEmpireUuid, defaultCXUuid, defaultBuyItemsFromCX } =
 		usePreferences();
 
@@ -173,6 +182,31 @@
 		</PFormItem>
 		<PFormItem :label="t('profile.preferences.form.buy_from_cx')">
 			<PCheckbox v-model:checked="defaultBuyItemsFromCX" />
+		</PFormItem>
+		<PFormItem :label="t('profile.preferences.form.burn_default_mode')">
+			<PSelect
+				v-model:value="burnDefaultMode"
+				:options="burnModeOptions"
+				class="w-full" />
+		</PFormItem>
+		<PFormItem
+			:label="t('profile.preferences.form.burn_full_cover_threshold')">
+			<div class="flex flex-row items-center gap-x-2 w-full">
+				<PInputNumber
+					v-model:value="burnFullCoverThreshold"
+					show-button
+					:min="0"
+					class="w-full" />
+				<PTooltip placement="top">
+					<template #trigger>
+						<HelpOutlineSharp
+							class="w-4 h-4 text-white/50 cursor-help" />
+					</template>
+					<div class="max-w-75 text-xs">
+						{{ t("xit.form.full_cover_threshold_info") }}
+					</div>
+				</PTooltip>
+			</div>
 		</PFormItem>
 	</PForm>
 
