@@ -118,7 +118,7 @@
 				// calculated properly within this context
 
 				const cacheKey: string = planResultCacheKey(
-					plan.uuid!,
+					plan.uuid,
 					selectedEmpireUuid.value,
 					selectedCXUuid.value
 				);

@@ -3,13 +3,13 @@
  * Results depend on the empire (faction, permits) and the CX.
  * @author jplacht
  *
- * @param {string} planUuid Plan Uuid
+ * @param {string | undefined} planUuid Plan Uuid
  * @param {string | undefined} empireUuid Empire Uuid
  * @param {string | undefined} cxUuid CX Uuid
  * @returns {string} Cache key
  */
 export function planResultCacheKey(
-	planUuid: string,
+	planUuid: string | undefined,
 	empireUuid: string | undefined,
 	cxUuid: string | undefined
 ): string {

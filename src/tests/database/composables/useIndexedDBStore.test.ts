@@ -205,6 +205,21 @@ describe("useIndexedDBStore", () => {
 			await expect(reset).rejects.toBe(error);
 		});
 
+		it("rejects with an error when the request has none", async () => {
+			const request = stubDeleteRequest();
+			Object.defineProperty(request, "error", { value: null });
+
+			const reset = resetDB();
+			await vi.waitFor(() =>
+				expect(request.onerror).toBeTypeOf("function")
+			);
+			request.onerror!.call(request, new Event("error"));
+
+			await expect(reset).rejects.toThrow(
+				"Deleting the IndexedDB failed"
+			);
+		});
+
 		it("drops stored data", async () => {
 			await store.set(fakeMaterial_1);
 
