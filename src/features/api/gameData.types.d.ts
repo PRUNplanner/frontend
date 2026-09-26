@@ -172,7 +172,7 @@ export interface IFIOStorageElement {
 
 export interface IFIOSitePlanet {
 	PlanetIdentifier: string;
-	PlanetName: string;
+	PlanetName?: string;
 	InvestedPermits: number;
 	MaximumPermits: number;
 	Buildings: IFIOSitePlanetBuilding[];
@@ -182,7 +182,7 @@ export interface IFIOStorage {
 	storage_data: {
 		planets: Record<string, IFIOStorageElement>;
 		warehouses: Record<string, IFIOStorageElement>;
-		ships: Record<string, IFIOStorageElement & { Name: string }>;
+		ships: Record<string, IFIOStorageElement & { Name?: string }>;
 	};
 	sites_data: Record<string, IFIOSitePlanet>;
 	last_modified: Date;

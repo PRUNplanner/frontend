@@ -206,7 +206,7 @@ const FIOStoragePlanetSchema = FIOStorageBaseSchema.extend({});
 const FIOStorageWarehouseSchema = FIOStorageBaseSchema.extend({});
 
 const FIOStorageShipSchema = FIOStorageBaseSchema.extend({
-	Name: z.string(),
+	Name: z.string().optional(),
 });
 
 const FIOSitePlanetBuildingMaterialSchema: z.ZodType<IFIOSitePlanetBuildingMaterial> =
@@ -220,15 +220,15 @@ const FIOSitePlanetBuildingSchema: z.ZodType<IFIOSitePlanetBuilding> = z.object(
 		BuildingTicker: z.string(),
 		BuildingLastRepair: z.coerce.date().optional(),
 		Condition: z.number(),
-		ReclaimableMaterials: z.array(FIOSitePlanetBuildingMaterialSchema),
-		RepairMaterials: z.array(FIOSitePlanetBuildingMaterialSchema),
+		ReclaimableMaterials: z.array(FIOSitePlanetBuildingMaterialSchema).default([]),
+		RepairMaterials: z.array(FIOSitePlanetBuildingMaterialSchema).default([]),
 		AgeDays: z.number().optional(),
 	}
 );
 
 const FIOSitePlanetSchema: z.ZodType<IFIOSitePlanet> = z.object({
 	PlanetIdentifier: z.string(),
-	PlanetName: z.string(),
+	PlanetName: z.string().optional(),
 	InvestedPermits: z.number(),
 	MaximumPermits: z.number(),
 	Buildings: z.array(FIOSitePlanetBuildingSchema),

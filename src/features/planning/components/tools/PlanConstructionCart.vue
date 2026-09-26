@@ -79,21 +79,19 @@
 		planningStore.fio_storage_timestamp ?? undefined
 	);
 
-	// Get already constructed buildings
+	// Get already constructed buildings, cart must still render if FIO fails
 	let constructedMap: Map<string, number> | null = null;
 	if (useUserStore().hasFIO) {
-		constructedMap = new Map<string, number>();
-		const fioSites = await useQuery("GetFIOStorage").execute();
-		if (
-			fioSites.sites_data[props.planetNaturalId] &&
-			fioSites.sites_data[props.planetNaturalId].Buildings
-		) {
-			const constructedArray =
-				fioSites.sites_data[props.planetNaturalId].Buildings;
-			for (const building of constructedArray) {
+		try {
+			const fioSites = await useQuery("GetFIOStorage").execute();
+			constructedMap = new Map<string, number>();
+			for (const building of fioSites.sites_data[props.planetNaturalId]
+				?.Buildings ?? []) {
 				const count = constructedMap.get(building.BuildingTicker) ?? 0;
 				constructedMap.set(building.BuildingTicker, count + 1);
 			}
+		} catch {
+			// queryStore already logs the error, constructedMap stays null
 		}
 	}
 

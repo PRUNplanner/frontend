@@ -113,6 +113,28 @@ describe("GameData API Calls", async () => {
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
+	it("callDataFIOStorage: backend omits null names and materials", async () => {
+		const data = structuredClone(fio_storage);
+		for (const ship of Object.values(data.storage_data.ships))
+			delete (ship as { Name?: string }).Name;
+		for (const site of Object.values(data.sites_data)) {
+			delete (site as { PlanetName?: string }).PlanetName;
+			for (const building of site.Buildings) {
+				delete (building as { RepairMaterials?: unknown })
+					.RepairMaterials;
+				delete (building as { ReclaimableMaterials?: unknown })
+					.ReclaimableMaterials;
+			}
+		}
+
+		mock.onGet("/data/storage/").reply(200, data);
+
+		const result = await callDataFIOStorage();
+		const building = Object.values(result.sites_data)[0].Buildings[0];
+		expect(building.RepairMaterials).toStrictEqual([]);
+		expect(building.ReclaimableMaterials).toStrictEqual([]);
+	});
+
 	it("callDataPlanetSearchSingle", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 
