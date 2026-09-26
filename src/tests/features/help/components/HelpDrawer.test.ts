@@ -146,4 +146,39 @@ describe("HelpDrawer", () => {
 
 		await expectPage("p", hqEnglish.trim());
 	});
+
+	it("shows no error while the page loads", async () => {
+		const { wrapper } = await mountComponent(HelpDrawer, {
+			fileName: "tools_production_chain",
+		});
+
+		// no flushPromises, the page import is still pending
+		await wrapper.findComponent(PButton).trigger("click");
+
+		expect(shown(wrapper)).toBe(true);
+		expect(drawer().text()).not.toContain("Unable to load");
+		await vi.waitFor(() =>
+			expect(drawer().find("#markdown").exists()).toBe(true)
+		);
+	});
+
+	it("shows an error for a missing page", async () => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper } = await mountComponent(HelpDrawer, {
+			fileName: "no_such_page",
+		});
+
+		await toggle(wrapper);
+
+		expect(drawer().find("#markdown").exists()).toBe(false);
+		expect(drawer().find(".text-red-500").text()).toBe(
+			"Unable to load 'no_such_page'"
+		);
+		expect(error).toHaveBeenCalledWith(
+			new Error(
+				'Markdown file "no_such_page" not found in en_US or en_US.'
+			)
+		);
+		error.mockRestore();
+	});
 });
