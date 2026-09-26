@@ -92,6 +92,16 @@ describe("PlanArea", () => {
 		expect(component.emitted("update:permits")).toEqual([[3], [1]]);
 	});
 
+	it("ignores a cleared permits input", async () => {
+		const { wrapper, component } = await mountArea();
+
+		// the input emits null while empty, PlanView would clamp it to 1
+		await wrapper.find("input").setValue("");
+
+		expect(component.emitted("update:permits")).toBeUndefined();
+		expect(trackEvent).not.toHaveBeenCalled();
+	});
+
 	it("follows new area data", async () => {
 		const { wrapper, setProps } = await mountArea();
 
