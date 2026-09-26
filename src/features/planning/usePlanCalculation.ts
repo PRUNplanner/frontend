@@ -366,21 +366,22 @@ export function usePlanCalculation(
 	 * @param {PLAN_COGCPROGRAM_TYPE} cogc COGC value
 	 * @param {IWorkforceRecord} workforce Workforce result
 	 * @param {IExpertRecord} experts Plans experts
+	 * @param {IPlanet} planetData Planet Data
 	 * @returns {IProductionResult} Production Result
 	 */
 	async function calculateProduction(
 		corphq: boolean,
 		cogc: PLAN_COGCPROGRAM_TYPE,
 		workforce: IWorkforceRecord,
-		experts: IExpertRecord
+		experts: IExpertRecord,
+		planetData: IPlanet
 	): Promise<IProductionResult> {
 		const buildings: IProductionBuilding[] = [];
-		const planetData: IPlanet = await getPlanet(planetNaturalId.value);
+		const computedBuildingInformation =
+			await computeBuildingInformation(planetData);
 
 		// add buildings from data
 		for (const b of data.value.buildings) {
-			const computedBuildingInformation =
-				await computeBuildingInformation();
 			// efficiency calculation
 
 			const buildingData: IBuilding =
@@ -665,10 +666,11 @@ export function usePlanCalculation(
 
 	async function calculateConstructionMaterials(
 		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>,
-		production: IProductionBuilding[]
+		production: IProductionBuilding[],
+		planet?: IPlanet
 	): Promise<IBuildingConstruction[]> {
 		const infrastructureBuildingInformation =
-			await computeInfrastructureBuildingInformation();
+			await computeInfrastructureBuildingInformation(planet);
 
 		const inf: IBuildingConstruction[] =
 			infrastructureBuildingInformation.filter(
@@ -707,6 +709,9 @@ export function usePlanCalculation(
 	const result: Ref<IPlanResult> = ref(planEmptyResult);
 
 	async function calculate(): Promise<IPlanResult> {
+		// load the planet once, every step below uses it
+		const planet: IPlanet = await getPlanet(planetNaturalId.value);
+
 		// pre-calculate individual results
 		const corpHQResult = plan.value.plan_corphq;
 		const cogcResult = plan.value.plan_cogc;
@@ -722,7 +727,8 @@ export function usePlanCalculation(
 			corpHQResult,
 			cogcResult,
 			workforceResult,
-			expertResult
+			expertResult,
+			planet
 		);
 
 		// get individual material IOs
@@ -776,7 +782,8 @@ export function usePlanCalculation(
 		overviewData.value = await calculateOverview(
 			materialIO,
 			productionResult,
-			infrastructureResult
+			infrastructureResult,
+			planet
 		);
 
 		// patch-in to full result
@@ -800,12 +807,11 @@ export function usePlanCalculation(
 			profit: profit,
 			cost: cost,
 			revenue: materialRevenue,
-			infrastructureCosts: await calculateInfrastructureCosts(
-				await getPlanet(planetNaturalId.value)
-			),
+			infrastructureCosts: await calculateInfrastructureCosts(planet),
 			constructionMaterials: await calculateConstructionMaterials(
 				infrastructureResult,
-				productionResult.buildings
+				productionResult.buildings,
+				planet
 			),
 		};
 	}
@@ -813,7 +819,8 @@ export function usePlanCalculation(
 	async function calculateOverview(
 		materialIO: IMaterialIO[],
 		production: IProductionResult,
-		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>
+		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>,
+		planet?: IPlanet
 	) {
 		const dailyCost: number = materialIO.reduce(
 			(sum, current) => sum + (current.delta < 0 ? current.price : 0),
@@ -837,7 +844,8 @@ export function usePlanCalculation(
 
 		const constructionMaterials = await calculateConstructionMaterials(
 			infrastructure,
-			production.buildings
+			production.buildings,
+			planet
 		);
 
 		const totalConstructionCostArray = await Promise.all(

@@ -91,9 +91,12 @@ export function usePlanCalculationPreComputes(
 		() => buildings.value.map((b) => b.name)
 	);
 
-	async function computeBuildingInformation(): Promise<IPreBuildingRecord> {
+	async function computeBuildingInformation(
+		planet?: IPlanet
+	): Promise<IPreBuildingRecord> {
 		const map: IPreBuildingRecord = {};
-		const planetData: IPlanet = await getPlanet(planetNaturalId.value);
+		const planetData: IPlanet =
+			planet ?? (await getPlanet(planetNaturalId.value));
 
 		for (const ticker of computedBuildingTicker.value) {
 			const buildingData: IBuilding = await getBuilding(ticker);
@@ -122,10 +125,11 @@ export function usePlanCalculationPreComputes(
 		return map;
 	}
 
-	async function computeInfrastructureBuildingInformation(): Promise<
-		IBuildingConstruction[]
-	> {
-		const planetData: IPlanet = await getPlanet(planetNaturalId.value);
+	async function computeInfrastructureBuildingInformation(
+		planet?: IPlanet
+	): Promise<IBuildingConstruction[]> {
+		const planetData: IPlanet =
+			planet ?? (await getPlanet(planetNaturalId.value));
 
 		return await Promise.all(
 			["CM", ...infrastructureBuildingNames].map(async (inf) => ({
