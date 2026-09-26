@@ -4,6 +4,12 @@ import { computed, ComputedRef, Ref } from "vue";
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
 
+// Util
+import {
+	calculateAmountAtDay,
+	REPAIR_DAY_MAX,
+} from "@/features/repair_analysis/repairAnalysis.util";
+
 // Types & Interfaces
 import { IPlanRepairAnalysisDataProp } from "@/features/planning/components/tools/planRepairAnalysis.types";
 import {
@@ -17,7 +23,7 @@ export async function useRepairAnalysis(
 	planetNaturalId: Ref<string | undefined>
 ) {
 	const DAY_MIN = 0;
-	const DAY_MAX = 180;
+	const DAY_MAX = REPAIR_DAY_MAX;
 
 	const { combineMaterialIOMinimal, enhanceMaterialIOMinimal } =
 		await useMaterialIOUtil();
@@ -71,14 +77,6 @@ export async function useRepairAnalysis(
 		});
 
 		return result;
-	}
-
-	// See: https://pct.fnar.net/building-degradation/index.html
-	function calculateAmountAtDay(day: number, materialAmount: number): number {
-		return (
-			materialAmount -
-			Math.floor((materialAmount * (180 - Math.min(180, day))) / 180)
-		);
 	}
 
 	const daySelectOptions: ComputedRef<PSelectOption[]> = computed(() =>

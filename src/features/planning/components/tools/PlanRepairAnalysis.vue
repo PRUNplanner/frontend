@@ -8,6 +8,13 @@
 	import { usePrice } from "@/features/cx/usePrice";
 	import { useRepairAnalysis } from "@/features/repair_analysis/useRepairAnalysis";
 
+	// Util
+	import {
+		calculateRepairCurve,
+		findOptimalRepairDay,
+		repairCostSeries,
+	} from "@/features/repair_analysis/repairAnalysis.util";
+
 	// Components
 	import DayRepairMaterialTable from "@/features/repair_analysis/components/DayRepairMaterialTable.vue";
 	import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
@@ -20,10 +27,7 @@
 		IPlanRepairAnalysisElement,
 	} from "@/features/planning/components/tools/planRepairAnalysis.types";
 	import { PSelectOption } from "@/ui/ui.types";
-	import {
-		IMaterialIO,
-		IMaterialIOMinimal,
-	} from "@/features/planning/usePlanCalculation.types";
+	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
 	import { PForm, PFormItem, PSelect } from "@/ui";
@@ -45,9 +49,6 @@
 		},
 	});
 
-	const DAY_MIN: number = 0;
-	const DAY_MAX: number = 180;
-
 	// Local State
 	const localData = computed(() => props.data);
 	const localCxUuid = computed(() => props.cxUuid);
@@ -63,110 +64,39 @@
 	const selectedDay = ref(90);
 	const repairAnalysisElements = ref<IPlanRepairAnalysisElement[]>([]);
 	const dailyRepairMaterials: Ref<Record<number, IMaterialIO[]>> = ref({});
-	const singleMat = ref<{ name: string; data: (number | undefined)[] }[]>([]);
+	const repairPrices = ref<Record<string, number>>({});
 
 	const { getPrice } = await usePrice(localCxUuid, localPlanetNaturalId);
 	const { calculateDailyRepairMaterials, daySelectOptions } =
 		await useRepairAnalysis(localCxUuid, localPlanetNaturalId);
 
 	async function calculateRep() {
-		const r: IPlanRepairAnalysisElement[] = [];
-
 		if (selectedBuilding.value === undefined) {
-			repairAnalysisElements.value = r;
+			repairPrices.value = {};
+			repairAnalysisElements.value = [];
 			return;
 		}
 
-		const materials: IMaterialIOMinimal[] =
-			localData.value[selectedBuilding.value].constructionMaterials;
+		const building = localData.value[selectedBuilding.value];
+		const prices: Record<string, number> = {};
+		for (const m of building.constructionMaterials)
+			prices[m.ticker] = await getPrice(m.ticker, "BUY");
 
-		let previous = 0;
-
-		for (let i = DAY_MIN; i <= DAY_MAX; i++) {
-			const efficiency =
-				0.33 + 0.67 / (1 + Math.exp((1789 / 25000) * (i - 100.87)));
-			const dailyRevenue =
-				efficiency *
-				localData.value[selectedBuilding.value].dailyRevenue;
-			previous += dailyRevenue;
-			const dailyRevenue_norm = previous / (i + 1);
-
-			const mat = materials.map((m) => ({
-				ticker: m.ticker,
-				amount:
-					m.input -
-					Math.floor((m.input * (180 - Math.min(180, i))) / 180),
-			}));
-
-			// Calculate repair cost asynchronously
-			const rep = await mat.reduce(async (sumPromise, element) => {
-				const sum = await sumPromise;
-				const price = await getPrice(element.ticker, "BUY");
-				return sum + element.amount * price;
-			}, Promise.resolve(0));
-
-			const repSum = rep / (i + 1);
-			const profit = i === 0 ? 0 : dailyRevenue_norm - repSum;
-
-			r.push({
-				day: i,
-				efficiency,
-				dailyRevenue,
-				dailyRevenue_integral: previous,
-				dailyRevenue_norm,
-				materials: mat,
-				repair: repSum,
-				dailyRepair: rep,
-				profit,
-			});
-		}
-
-		// Adjust first day's profit if there are at least two entries
-		if (r.length >= 2) {
-			r[0].profit = r[1].profit;
-		}
-
-		repairAnalysisElements.value = r;
+		repairPrices.value = prices;
+		repairAnalysisElements.value = calculateRepairCurve(
+			building.dailyRevenue,
+			building.constructionMaterials,
+			prices
+		);
 	}
 
-	const maxValue: ComputedRef<number> = computed(() => {
-		return Math.max(...repairAnalysisElements.value.map((o) => o.profit));
-	});
+	const optimalDay = computed(() =>
+		findOptimalRepairDay(repairAnalysisElements.value)
+	);
 
-	const maxDay: ComputedRef<number> = computed(() => {
-		return repairAnalysisElements.value.findIndex(
-			(e) => e.profit === maxValue.value
-		);
-	});
-
-	async function calculateSingleMat() {
-		if (!repairAnalysisElements.value.length) {
-			singleMat.value = [];
-			return;
-		}
-
-		const mats = repairAnalysisElements.value[0].materials.map(
-			(m) => m.ticker
-		);
-
-		const results = await Promise.all(
-			mats.map(async (mat) => ({
-				name: mat,
-				data: await Promise.all(
-					repairAnalysisElements.value.map(async (r) => {
-						const material = r.materials.find(
-							(e) => e.ticker === mat
-						);
-						if (!material) return undefined;
-						const price = await getPrice(material.ticker, "BUY");
-						return material.amount * price;
-					})
-				),
-			}))
-		);
-
-		singleMat.value = results;
-	}
+	const singleMat = computed(() =>
+		repairCostSeries(repairAnalysisElements.value, repairPrices.value)
+	);
 
 	const selectPlanTransferMaterials = computed(() => {
 		if (
@@ -195,12 +125,6 @@
 			immediate: true,
 		}
 	);
-
-	// calculate single material if repair materials change
-	watch(repairAnalysisElements, calculateSingleMat, {
-		deep: true,
-		immediate: true,
-	});
 </script>
 
 <template>
@@ -262,7 +186,10 @@
 							:profit-data="
 								repairAnalysisElements.map((r) => r.profit)
 							"
-							:optimal-point="{ x: maxDay, y: maxValue }" />
+							:optimal-point="{
+								x: optimalDay.day,
+								y: optimalDay.profit,
+							}" />
 					</div>
 					<div>
 						<h2 class="font-bold pb-3">
@@ -281,12 +208,7 @@
 											(r) => r.dailyRepair
 										),
 									},
-								].concat(
-									singleMat as {
-										name: string;
-										data: number[];
-									}[]
-								)
+								].concat(singleMat)
 							" />
 					</div>
 				</div>
