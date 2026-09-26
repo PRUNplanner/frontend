@@ -72,10 +72,24 @@ export function useDB<T extends object, K extends keyof T & string>(
 		return item as T;
 	}
 
+	/**
+	 * Synchronous read from the in-memory cache, for code that runs after
+	 * preload (the game data queries preload every store they fill).
+	 * Throws if the store has not been preloaded.
+	 */
+	function getLoaded(key: KeyType): T | undefined {
+		if (!state.loaded)
+			throw new Error(
+				`No data: store '${store.storeName}' is not loaded. Ensure game data has been loaded before calculating.`
+			);
+		return state.cache.get(key as string);
+	}
+
 	return {
 		allData: state.allData,
 		cacheData: state.cache,
 		preload,
 		get,
+		getLoaded,
 	};
 }

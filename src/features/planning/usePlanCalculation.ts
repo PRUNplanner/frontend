@@ -10,7 +10,12 @@ import {
 	useBuildingCalculation,
 } from "@/features/planning/calculations/buildingCalculations";
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
-import { PriceCache, usePrice } from "@/features/cx/usePrice";
+import { usePrice } from "@/features/cx/usePrice";
+import {
+	enhanceMaterialIOMaterial,
+	getMaterialIOTotalPrice,
+	IPriceBook,
+} from "@/features/cx/priceBook";
 import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Calculation Utils
@@ -138,10 +143,8 @@ export function usePlanCalculation(
 	const { calculateSatisfaction, calculateWorkforceConsumption } =
 		useWorkforceCalculation();
 	const {
-		getPrice,
-		getMaterialIOTotalPrice,
-		enhanceMaterialIOMaterial,
-		calculateInfrastructureCosts,
+		getPriceBook,
+		calculateInfrastructureCostsWith,
 	} = usePrice(cxUuid, planetNaturalId);
 	const { calculateMaterialIO } = useBuildingCalculation();
 
@@ -385,7 +388,7 @@ export function usePlanCalculation(
 	 * @param {IWorkforceRecord} workforce Workforce result
 	 * @param {IExpertRecord} experts Plans experts
 	 * @param {IPlanet} planetData Planet Data
-	 * @param {PriceCache} prices Price cache of this run
+	 * @param {IPriceBook} prices Price book of this run
 	 * @returns {IProductionResult} Production Result
 	 */
 	async function calculateProduction(
@@ -394,7 +397,7 @@ export function usePlanCalculation(
 		workforce: IWorkforceRecord,
 		experts: IExpertRecord,
 		planetData: IPlanet,
-		prices: PriceCache
+		prices: IPriceBook
 	): Promise<IProductionResult> {
 		const buildings: IProductionBuilding[] = [];
 		const computedBuildingInformation =
@@ -473,36 +476,36 @@ export function usePlanCalculation(
 
 			const workforceMaterials: IMaterialIOMinimal[] =
 				computedBuildingInformation[b.name].workforceMaterials;
-			const workforceDailyCost: number = await getMaterialIOTotalPrice(
+			const workforceDailyCost: number = getMaterialIOTotalPrice(
+				prices,
 				workforceMaterials,
-				"BUY",
-				prices
+				"BUY"
 			);
 
 			// get recipe options, unless the caller never reads them
 			const recipeOptions: IRecipeBuildingOption[] = await Promise.all(
 				(withRecipeOptions ? buildingRecipes : []).map(async (br) => {
 					// calculate daily revenue
-					const dailyIncome: number = await getMaterialIOTotalPrice(
+					const dailyIncome: number = getMaterialIOTotalPrice(
+						prices,
 						br.outputs.map((o) => ({
 							ticker: o.material_ticker,
 							output: o.material_amount,
 							input: 0,
 						})),
-						"SELL",
-						prices
+						"SELL"
 					);
 
 					const dailyCost: number =
 						-1 *
-						(await getMaterialIOTotalPrice(
+						(getMaterialIOTotalPrice(
+							prices,
 							br.inputs.map((i) => ({
 								ticker: i.material_ticker,
 								output: 0,
 								input: i.material_amount,
 							})),
-							"BUY",
-							prices
+							"BUY"
 						));
 
 					// Daily Revenue of a recipe option
@@ -570,10 +573,9 @@ export function usePlanCalculation(
 
 					const inputCost: ICOGMMaterialCost[] = await Promise.all(
 						ar.recipe.inputs.map(async (inputMat) => {
-							const price = await getPrice(
+							const price = prices.getPrice(
 								inputMat.material_ticker,
-								"BUY",
-								prices
+								"BUY"
 							);
 							return {
 								ticker: inputMat.material_ticker,
@@ -593,10 +595,9 @@ export function usePlanCalculation(
 
 					const outputRevenueArray = await Promise.all(
 						ar.recipe.outputs.map(async (current) => {
-							const price = await getPrice(
+							const price = prices.getPrice(
 								current.material_ticker,
-								"SELL",
-								prices
+								"SELL"
 							);
 							return price * current.material_amount;
 						})
@@ -664,9 +665,9 @@ export function usePlanCalculation(
 
 			// Calculating individual buildings daily contribution
 			const productionMaterialIOEnhanced: IMaterialIO[] =
-				await enhanceMaterialIOMaterial(
-					enhanceMaterialIOMinimal(calculateMaterialIO([building])),
-					prices
+				enhanceMaterialIOMaterial(
+					prices,
+					enhanceMaterialIOMinimal(calculateMaterialIO([building]))
 				);
 
 			const productionRevenue: number =
@@ -738,7 +739,7 @@ export function usePlanCalculation(
 		// load the planet once, every step below uses it
 		const planet: IPlanet = await getPlanet(planetNaturalId.value);
 		// each (ticker, BUY/SELL) is resolved once per run
-		const prices: PriceCache = new Map();
+		const prices: IPriceBook = await getPriceBook();
 
 		// pre-calculate individual results
 		const corpHQResult = plan.value.plan_corphq;
@@ -775,7 +776,7 @@ export function usePlanCalculation(
 		const materialIOMaterial: IMaterialIOMaterial[] =
 			enhanceMaterialIOMinimal(combinedMaterialIOMinimal);
 		const materialIO: IMaterialIO[] =
-			await enhanceMaterialIOMaterial(materialIOMaterial, prices);
+			enhanceMaterialIOMaterial(prices, materialIOMaterial);
 
 		/**
 		 * Revenue, profit and cost calculation
@@ -828,21 +829,18 @@ export function usePlanCalculation(
 			experts: expertResult,
 			production: productionResult,
 			materialio: materialIO,
-			workforceMaterialIO: await enhanceMaterialIOMaterial(
-				enhanceMaterialIOMinimal(workforceMaterialIO),
-				prices
+			workforceMaterialIO: enhanceMaterialIOMaterial(
+				prices,
+				enhanceMaterialIOMinimal(workforceMaterialIO)
 			),
-			productionMaterialIO: await enhanceMaterialIOMaterial(
-				enhanceMaterialIOMinimal(productionMaterialIO),
-				prices
+			productionMaterialIO: enhanceMaterialIOMaterial(
+				prices,
+				enhanceMaterialIOMinimal(productionMaterialIO)
 			),
 			profit: profit,
 			cost: cost,
 			revenue: materialRevenue,
-			infrastructureCosts: await calculateInfrastructureCosts(
-				planet,
-				prices
-			),
+			infrastructureCosts: calculateInfrastructureCostsWith(prices, planet),
 			constructionMaterials: await calculateConstructionMaterials(
 				infrastructureResult,
 				productionResult.buildings,
@@ -856,8 +854,10 @@ export function usePlanCalculation(
 		production: IProductionResult,
 		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>,
 		planet?: IPlanet,
-		prices: PriceCache = new Map()
+		prices?: IPriceBook
 	) {
+		prices ??= await getPriceBook();
+
 		const dailyCost: number = materialIO.reduce(
 			(sum, current) => sum + (current.delta < 0 ? current.price : 0),
 			0
@@ -888,10 +888,9 @@ export function usePlanCalculation(
 			constructionMaterials.map(async (current) => {
 				const innerSumArray = await Promise.all(
 					current.materials.map(async (infCurrent) => {
-						const price = await getPrice(
+						const price = prices.getPrice(
 							infCurrent.ticker,
-							"BUY",
-							prices
+							"BUY"
 						);
 						return price * infCurrent.input;
 					})

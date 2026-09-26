@@ -49,6 +49,15 @@ describe("useBuildingData", async () => {
 
 			await expect(() => getBuilding("FOO")).rejects.toThrowError();
 		});
+
+		it("getBuildingLoaded", () => {
+			const { getBuildingLoaded } = useBuildingData();
+
+			expect(getBuildingLoaded("TNP").building_ticker).toBe("TNP");
+			expect(() => getBuildingLoaded("FOO")).toThrowError(
+				"Building FOO not available."
+			);
+		});
 	});
 
 	describe("getProductionBuildingOptions", async () => {

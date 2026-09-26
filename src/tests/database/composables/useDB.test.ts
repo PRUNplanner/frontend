@@ -100,4 +100,17 @@ describe("useDB composable", () => {
 		const result = await get("404");
 		expect(result).toBeUndefined();
 	});
+
+	it("getLoaded() reads the cache and throws before preload", async () => {
+		fakeStore.getAll.mockResolvedValue([{ id: "1", name: "Alpha" }]);
+		const { preload, getLoaded } = useDB<TestItem, "id">(
+			{ ...fakeStore, storeName: "test" } as any
+		);
+
+		expect(() => getLoaded("1")).toThrowError("store 'test' is not loaded");
+
+		await preload();
+		expect(getLoaded("1")).toEqual({ id: "1", name: "Alpha" });
+		expect(getLoaded("2")).toBeUndefined();
+	});
 });

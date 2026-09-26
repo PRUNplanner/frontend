@@ -139,6 +139,7 @@ export function useIndexedDBStore<T extends object, K extends keyof T & string>(
 	}
 
 	return {
+		storeName,
 		keyPath,
 		get,
 		getAll,

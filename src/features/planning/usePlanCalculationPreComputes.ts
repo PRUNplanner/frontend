@@ -3,7 +3,8 @@ import { computed, ComputedRef, Ref } from "vue";
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePlanetData } from "@/database/services/usePlanetData";
-import { PriceCache, usePrice } from "@/features/cx/usePrice";
+import { usePrice } from "@/features/cx/usePrice";
+import { getMaterialIOTotalPrice, IPriceBook } from "@/features/cx/priceBook";
 
 // Types & Interfaces
 import {
@@ -53,7 +54,7 @@ export function usePlanCalculationPreComputes(
 		getBuildingWorkforceMaterials,
 	} = useBuildingData();
 
-	const { getMaterialIOTotalPrice } = usePrice(cxUuid, planetNaturalId);
+	const { getPriceBook } = usePrice(cxUuid, planetNaturalId);
 	/**
 	 * Holds data of the currently active empire based on all available
 	 * empires and the empireUuid passed to this composable
@@ -93,8 +94,10 @@ export function usePlanCalculationPreComputes(
 
 	async function computeBuildingInformation(
 		planet?: IPlanet,
-		prices?: PriceCache
+		prices?: IPriceBook
 	): Promise<IPreBuildingRecord> {
+		prices ??= await getPriceBook();
+
 		const map: IPreBuildingRecord = {};
 		const planetData: IPlanet =
 			planet ?? (await getPlanet(planetNaturalId.value));
@@ -115,10 +118,10 @@ export function usePlanCalculationPreComputes(
 					planetData.resources
 				),
 				constructionMaterials: constructionMaterials,
-				constructionCost: await getMaterialIOTotalPrice(
+				constructionCost: getMaterialIOTotalPrice(
+					prices,
 					constructionMaterials,
-					"BUY",
-					prices
+					"BUY"
 				),
 				workforceMaterials: workforceMaterials,
 			};

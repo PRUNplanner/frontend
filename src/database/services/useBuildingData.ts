@@ -31,6 +31,7 @@ export function useBuildingData() {
 	const {
 		allData: allDataBuildings,
 		get: getStoreBuilding,
+		getLoaded: getLoadedBuilding,
 		preload: preloadBuildings,
 	} = useDB(buildingsStore);
 
@@ -79,6 +80,19 @@ export function useBuildingData() {
 			throw new Error(`Building ${buildingTicker} not available.`);
 
 		buildingsCache.set(buildingTicker, building);
+		return building;
+	}
+
+	/**
+	 * Synchronous building lookup, for code that runs after preload.
+	 * Throws if buildings are not loaded or the ticker is unknown.
+	 */
+	function getBuildingLoaded(buildingTicker: string): IBuilding {
+		const building = getLoadedBuilding(buildingTicker);
+
+		if (!building)
+			throw new Error(`Building ${buildingTicker} not available.`);
+
 		return building;
 	}
 
@@ -286,6 +300,7 @@ export function useBuildingData() {
 		recipeBuildingMap,
 		// functions
 		getBuilding,
+		getBuildingLoaded,
 		getAllBuildingRecipes,
 		getProductionBuildingOptions,
 		getBuildingRecipes,

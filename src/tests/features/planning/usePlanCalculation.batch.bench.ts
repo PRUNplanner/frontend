@@ -38,7 +38,7 @@ import {
  *
  * Counters, without touching src/:
  * - plans: usePlanCalculation instances created
- * - runs: calculate() executions, counted at calculateInfrastructureCosts,
+ * - runs: calculate() executions, counted at the infrastructure costs call,
  *   which calculate() calls exactly once (explicit calls and watcher runs)
  * - recipeOptions: optimalProduction.find, called once per recipe option
  */
@@ -64,13 +64,19 @@ vi.mock("@/features/cx/usePrice", async () => {
 		...actual,
 		usePrice: (...args: unknown[]) => {
 			const price = actual.usePrice(...args);
-			return {
-				...price,
-				calculateInfrastructureCosts: (...a: unknown[]) => {
-					counters.runs++;
-					return price.calculateInfrastructureCosts(...a);
-				},
-			};
+			// calculate() calls one of these once per run, depending on version
+			for (const name of [
+				"calculateInfrastructureCosts",
+				"calculateInfrastructureCostsWith",
+			])
+				if (price[name]) {
+					const fn = price[name];
+					price[name] = (...a: unknown[]) => {
+						counters.runs++;
+						return fn(...a);
+					};
+				}
+			return price;
 		},
 	};
 });
