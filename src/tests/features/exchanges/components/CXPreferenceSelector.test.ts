@@ -93,6 +93,40 @@ describe("CXPreferenceSelector", () => {
 		expect(wrapper.text()).toBe("PRUN CX REAL");
 	});
 
+	it("hands the shown default CX to the parent", async () => {
+		// the tool views get the user's first CX from the loader
+		const { component, setProps } = await mountSelector(
+			{ cxUuid: SHARE.uuid },
+			{ defaultCX: REAL.uuid }
+		);
+
+		expect(component.emitted("update:cxuuid")).toEqual([[REAL.uuid]]);
+
+		// once the parent passes it back, nothing more is emitted
+		await setProps({ cxUuid: REAL.uuid });
+		expect(component.emitted("update:cxuuid")).toHaveLength(1);
+	});
+
+	it("emits nothing when the given CX is the default CX", async () => {
+		const { component } = await mountSelector(
+			{ cxUuid: REAL.uuid },
+			{ defaultCX: REAL.uuid }
+		);
+
+		expect(component.emitted("update:cxuuid")).toBeUndefined();
+	});
+
+	it("ignores a default CX that no longer exists", async () => {
+		const { wrapper, component } = await mountSelector(
+			{ cxUuid: SHARE.uuid },
+			{ defaultCX: "00000009-0000-4000-8000-000000000000" }
+		);
+
+		expect(select(wrapper).props("value")).toBe(SHARE.uuid);
+		expect(wrapper.text()).toBe("Share CX");
+		expect(component.emitted("update:cxuuid")).toBeUndefined();
+	});
+
 	it("emits the picked CX and stores it as default", async () => {
 		const { wrapper, component, userStore } = await mountSelector({
 			cxUuid: SHARE.uuid,
@@ -115,7 +149,11 @@ describe("CXPreferenceSelector", () => {
 		// PSelect clears to null
 		await pick(wrapper, null);
 
-		expect(component.emitted("update:cxuuid")).toEqual([[null]]);
+		// the default on mount, then the cleared value
+		expect(component.emitted("update:cxuuid")).toEqual([
+			[REAL.uuid],
+			[null],
+		]);
 		expect(userStore.preferences.defaultCXUuid).toBeNull();
 		expect(wrapper.text()).toBe("Share CX");
 	});
