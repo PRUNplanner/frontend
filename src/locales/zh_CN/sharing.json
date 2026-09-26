@@ -7,5 +7,6 @@
 		"stop_sharing": "停止分享",
 		"views": "{count} 次查看",
 		"share": "分享"
-	}
+	},
+	"title": "Share Plan"
 }
