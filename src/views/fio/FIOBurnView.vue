@@ -125,7 +125,8 @@
 						toRef(plan),
 						selectedEmpireUuid,
 						empireList,
-						selectedCXUuid
+						selectedCXUuid,
+						{ live: false }
 					)
 				)!;
 				scope.stop();

@@ -76,11 +76,20 @@ import {
 } from "@/stores/planningStore.types";
 import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 
+interface IPlanCalculationOptions {
+	/**
+	 * Recalculate on plan, empire and CX changes (default). Batch callers
+	 * that only call calculate() pass false, so no extra run starts.
+	 */
+	live?: boolean;
+}
+
 export function usePlanCalculation(
 	plan: Ref<IPlan>,
 	empireUuid: Ref<string | undefined> = ref(undefined),
 	empireOptions: Ref<IPlanEmpireElement[] | undefined> = ref(undefined),
-	cxUuid: Ref<string | undefined> = ref(undefined)
+	cxUuid: Ref<string | undefined> = ref(undefined),
+	{ live = true }: IPlanCalculationOptions = {}
 ) {
 	// stores
 	const planningDataStore = usePlanningStore();
@@ -89,13 +98,14 @@ export function usePlanCalculation(
 	const refreshKey: Ref<number> = ref(0);
 
 	// watches external data to trigger a recalculation
-	watch(
-		() => planningDataStore.cxs,
-		() => {
-			refreshKey.value++;
-		},
-		{ deep: true }
-	);
+	if (live)
+		watch(
+			() => planningDataStore.cxs,
+			() => {
+				refreshKey.value++;
+			},
+			{ deep: true }
+		);
 
 	// data references
 
@@ -985,17 +995,18 @@ export function usePlanCalculation(
 	// - plan data
 	// - refresh key (cx updates)
 	// - empire change
-	watch(
-		[plan, refreshKey, empireUuid],
-		async () => {
-			try {
-				result.value = await calculate();
-			} catch (err) {
-				console.error(err);
-			}
-		},
-		{ immediate: true, deep: true }
-	);
+	if (live)
+		watch(
+			[plan, refreshKey, empireUuid],
+			async () => {
+				try {
+					result.value = await calculate();
+				} catch (err) {
+					console.error(err);
+				}
+			},
+			{ immediate: true, deep: true }
+		);
 
 	return {
 		existing,

@@ -198,7 +198,9 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		const scope = effectScope();
 		const { handleCreateBuilding, calculateOverview, calculate } =
 			scope.run(() =>
-				usePlanCalculation(definition, undefined, undefined, cxUuid)
+				usePlanCalculation(definition, undefined, undefined, cxUuid, {
+					live: false,
+				})
 			)!;
 		scope.stop();
 

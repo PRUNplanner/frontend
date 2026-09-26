@@ -104,7 +104,9 @@ export function useROIOverview(
 			// one-off calculation, stop its live-recalculation watchers
 			const scope = effectScope();
 			const calculation = scope.run(() =>
-				usePlanCalculation(ref(definitionCopy), undefined, undefined, cxUuid)
+				usePlanCalculation(ref(definitionCopy), undefined, undefined, cxUuid, {
+					live: false,
+				})
 			)!;
 			scope.stop();
 			const result = await calculation.calculate();

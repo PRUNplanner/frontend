@@ -119,6 +119,27 @@ describe("usePlanCalculation", async () => {
 		expect(refreshKey.value).toBe(0);
 	});
 
+	it("live: false starts no calculation and watches nothing", async () => {
+		const plan = ref(structuredClone(plan_etherwind));
+		const { result, refreshKey, calculate } = usePlanCalculation(
+			// @ts-expect-error mock data
+			plan,
+			ref(undefined),
+			ref(undefined),
+			ref(undefined),
+			{ live: false }
+		);
+
+		plan.value.plan_data.buildings[0].amount++;
+		// @ts-expect-error mock data
+		planningStore.cxs = "baz";
+		await flushPromises();
+
+		expect(result.value.done).toBe(false);
+		expect(refreshKey.value).toBe(0);
+		expect((await calculate()).materialio.length).toBe(18);
+	});
+
 	it("validate result", async () => {
 		const { calculate } = usePlanCalculation(
 			// @ts-expect-error mock data
