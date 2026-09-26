@@ -135,7 +135,7 @@ export function usePlanCalculation(
 
 	// composables
 
-	const { getBuilding } = useBuildingData();
+	const { getBuildingLoaded, preloadBuildings } = useBuildingData();
 	const { combineMaterialIOMinimal, enhanceMaterialIOMinimal } =
 		useMaterialIOUtil();
 	const { calculateExpertBonus, calculateBuildingEfficiency } =
@@ -179,8 +179,8 @@ export function usePlanCalculation(
 	 * production building needs. This also includes the efficiency calculation
 	 * based on capacity and required workforce under given luxury provision.
 	 */
-	async function calculateWorkforceResult(): Promise<
-		Required<Record<WORKFORCE_TYPE, IWorkforceElement>>
+	function calculateWorkforceResult(): Required<
+		Record<WORKFORCE_TYPE, IWorkforceElement>
 	> {
 		const result: Record<WORKFORCE_TYPE, IWorkforceElement> =
 			Object.fromEntries(
@@ -207,7 +207,7 @@ export function usePlanCalculation(
 		// calculate capacity from infrastructure buildings
 		for (const infrastructure of data.value.infrastructure) {
 			if (infrastructure.amount > 0) {
-				const infBuildingData: IBuilding = await getBuilding(
+				const infBuildingData: IBuilding = getBuildingLoaded(
 					infrastructure.building
 				);
 
@@ -235,7 +235,7 @@ export function usePlanCalculation(
 		// calculate required workforce from production buildings
 		for (const prodBuilding of data.value.buildings) {
 			if (prodBuilding.amount > 0) {
-				const prodBuildingData: IBuilding = await getBuilding(
+				const prodBuildingData: IBuilding = getBuildingLoaded(
 					prodBuilding.name
 				);
 
@@ -274,7 +274,7 @@ export function usePlanCalculation(
 	 *
 	 * @remark Core Modul Area of 25 is always included
 	 */
-	async function calculateAreaResult(): Promise<IAreaResult> {
+	function calculateAreaResult(): IAreaResult {
 		// Core Module holds 25 area
 		let areaUsed: number = 25;
 		const areaTotal: number = 250 + plan.value.plan_permits_used * 250;
@@ -282,7 +282,7 @@ export function usePlanCalculation(
 		// calculate area used based on production and infrastructure buildings
 		for (const infrastructure of data.value.infrastructure) {
 			if (infrastructure.amount > 0) {
-				const infBuildingData: IBuilding = await getBuilding(
+				const infBuildingData: IBuilding = getBuildingLoaded(
 					infrastructure.building
 				);
 
@@ -292,7 +292,7 @@ export function usePlanCalculation(
 
 		for (const building of data.value.buildings) {
 			if (building.amount > 0) {
-				const prodBuildingData: IBuilding = await getBuilding(
+				const prodBuildingData: IBuilding = getBuildingLoaded(
 					building.name
 				);
 
@@ -736,6 +736,8 @@ export function usePlanCalculation(
 	const result: Ref<IPlanResult> = ref(planEmptyResult);
 
 	async function calculate(): Promise<IPlanResult> {
+		// game data is preloaded by the views, this is a no-op there
+		await preloadBuildings();
 		// load the planet once, every step below uses it
 		const planet: IPlanet = await getPlanet(planetNaturalId.value);
 		// each (ticker, BUY/SELL) is resolved once per run
@@ -745,9 +747,8 @@ export function usePlanCalculation(
 		const corpHQResult = plan.value.plan_corphq;
 		const cogcResult = plan.value.plan_cogc;
 
-		const workforceResult: IWorkforceRecord =
-			await calculateWorkforceResult();
-		const areaResult: IAreaResult = await calculateAreaResult();
+		const workforceResult: IWorkforceRecord = calculateWorkforceResult();
+		const areaResult: IAreaResult = calculateAreaResult();
 		const infrastructureResult: IInfrastructureRecord =
 			calculateInfrastructureResult();
 		const storageResult: IStorageRecord = calculateStorageResult();

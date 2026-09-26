@@ -48,7 +48,7 @@ export function usePlanCalculationPreComputes(
 	// Composable function
 	const { getPlanet } = usePlanetData();
 	const {
-		getBuilding,
+		getBuildingLoaded,
 		getBuildingConstructionMaterials,
 		getBuildingRecipes,
 		getBuildingWorkforceMaterials,
@@ -103,7 +103,7 @@ export function usePlanCalculationPreComputes(
 			planet ?? (await getPlanet(planetNaturalId.value));
 
 		for (const ticker of computedBuildingTicker.value) {
-			const buildingData: IBuilding = await getBuilding(ticker);
+			const buildingData: IBuilding = getBuildingLoaded(ticker);
 			const constructionMaterials: IMaterialIOMinimal[] =
 				getBuildingConstructionMaterials(buildingData, planetData);
 
@@ -136,16 +136,14 @@ export function usePlanCalculationPreComputes(
 		const planetData: IPlanet =
 			planet ?? (await getPlanet(planetNaturalId.value));
 
-		return await Promise.all(
-			["CM", ...infrastructureBuildingNames].map(async (inf) => ({
-				ticker: inf,
-				materials: getBuildingConstructionMaterials(
-					await getBuilding(inf),
-					planetData
-				),
-				amount: 1,
-			}))
-		);
+		return ["CM", ...infrastructureBuildingNames].map((inf) => ({
+			ticker: inf,
+			materials: getBuildingConstructionMaterials(
+				getBuildingLoaded(inf),
+				planetData
+			),
+			amount: 1,
+		}));
 	}
 
 	return {
