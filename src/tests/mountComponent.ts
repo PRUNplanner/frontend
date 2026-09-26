@@ -1,6 +1,7 @@
 import { Component, defineComponent, h, shallowReactive, Suspense } from "vue";
 import {
 	DOMWrapper,
+	enableAutoUnmount,
 	flushPromises,
 	mount,
 	RouterLinkStub,
@@ -9,6 +10,10 @@ import {
 import { createPinia, Pinia } from "pinia";
 import { createI18n } from "vue-i18n";
 import { NDialogProvider } from "naive-ui";
+import { afterEach } from "vitest";
+
+// unmount after each test, naive-ui teleports (dialogs) live in document.body
+enableAutoUnmount(afterEach);
 
 /**
  * Mounts a (possibly async-setup) component inside Suspense, with a real
