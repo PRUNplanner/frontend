@@ -87,7 +87,9 @@ const calc = usePlanCalculation(
 | `extractionCalculations.ts` | Extractor output from planet resources (`calculateExtraction`) |
 
 `usePlanCalculationPreComputes.ts` caches per-building data (construction
-and workforce materials, recipes) and resolves the active empire.
+and workforce materials, recipes) and resolves the active empire. It reads
+the planet itself with `getPlanet` inside its async functions (cheap after
+the first read, as `useDB` caches it).
 `usePlanCalculationHandlers.ts` holds every edit operation (`handleUpdate*`,
 `handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data` and
 sets `modified`.
@@ -124,6 +126,9 @@ An empire is a named group of plans with a faction and permits
   `PatchEmpireState`.
 - The FIO burn view, ROI overview and resource ROI overview follow the same
   pattern: they build or load plans, then call `usePlanCalculation` on each.
+- All of these run outside component setup, so each calculation is created
+  in an `effectScope()` that is stopped straight away (see above).
+  Otherwise its watchers would live on and recalculate on every CX change.
 
 ## Plan lifecycle (`src/features/planning_data/usePlan.ts`)
 

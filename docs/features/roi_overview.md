@@ -25,8 +25,9 @@ each building and runs each one through the real plan engine.
 2. For each building × recipe, it `deepClone`s the definition. The COGC is
    set to the building's expertise, the buildings and habs come from the
    optimal layout, and all experts are set to 5.
-3. It runs `usePlanCalculation(...).calculate()`. The loop yields to the UI
-   between buildings (`setTimeout(0)`).
+3. It runs `usePlanCalculation(...).calculate()` inside a stopped
+   `effectScope()`, so no watchers outlive the run. The loop yields to the
+   UI between buildings (`setTimeout(0)`).
 
 ## Gotchas
 

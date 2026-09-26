@@ -28,7 +28,9 @@ The backend proxies the data, and the user links FIO in their profile.
   which `NavigationBar` triggers on app load and `PlanConstructionCart`
   triggers when needed.
 - The burn view runs `usePlanCalculation(...).calculate()` for every plan
-  first, then passes the results into `useFIOBurn`.
+  first, then passes the results into `useFIOBurn`. Each calculation is
+  created in an `effectScope()` that is stopped straight away, so its
+  live-recalculation watchers don't outlive the loop.
 - Burn colour thresholds come from the preferences `burnDaysRed`,
   `burnDaysYellow` and `burnResupplyDays`.
 

@@ -24,7 +24,7 @@ optimal extractor layout (`RIG`, `EXT` or `COL`).
    builds a blank plan with `usePlan().createBlankDefinition` (experts set
    to 5) for each matching optimal extractor setup from
    `roi_overview/assets/optimalProduction.ts`, and runs `usePlanCalculation`
-   on it.
+   on it inside a stopped `effectScope()`, so no watchers outlive the run.
 3. Planets run in parallel through `pLimit(128)`, with cooperative yielding.
    Results are sorted by `dailyYield` and annotated with
    `percentMaxDailyYield`.
