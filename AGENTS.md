@@ -39,6 +39,9 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
 config, imports of static assets, or anything else that only fails at build
 time.
 
+`.eslintrc.json` exists only for Codacy, whose ESLint 8 can't read
+`eslint.config.js`; local ESLint ignores it. Change both together.
+
 ## Hard rules
 
 1. **Import explicitly.** Write `import { ref } from "vue"` and the like.
