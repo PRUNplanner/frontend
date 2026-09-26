@@ -953,7 +953,8 @@
 						<template v-if="!refMaterialIOSplitted">
 							<PlanMaterialIO
 								:material-i-o-data="result.materialio"
-								:show-basked="refMaterialIOShowBasked" />
+								:show-basked="refMaterialIOShowBasked"
+								:cx-uuid="refCXUuid" />
 						</template>
 						<template v-else>
 							<h3 class="font-bold pb-3">
@@ -965,7 +966,8 @@
 							</h3>
 							<PlanMaterialIO
 								:material-i-o-data="result.productionMaterialIO"
-								:show-basked="refMaterialIOShowBasked" />
+								:show-basked="refMaterialIOShowBasked"
+								:cx-uuid="refCXUuid" />
 							<h3 class="font-bold py-3">
 								{{
 									$t(
@@ -975,7 +977,8 @@
 							</h3>
 							<PlanMaterialIO
 								:material-i-o-data="result.workforceMaterialIO"
-								:show-basked="refMaterialIOShowBasked" />
+								:show-basked="refMaterialIOShowBasked"
+								:cx-uuid="refCXUuid" />
 						</template>
 					</div>
 				</div>

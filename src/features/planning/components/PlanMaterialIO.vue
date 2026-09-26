@@ -6,9 +6,14 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import CXVolumeShare from "@/features/cx/components/CXVolumeShare.vue";
+
+	// Composables
+	import { useCXVolumeShare } from "@/features/cx/useCXVolumeShare";
 
 	// Types & Interfaces
 	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+	import { ICXVolumeRow } from "@/features/cx/cxVolumeShare.types";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -25,6 +30,11 @@
 			type: Boolean,
 			required: true,
 		},
+		cxUuid: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
 	});
 
 	// Local State
@@ -34,6 +44,19 @@
 	const localShowBasked: ComputedRef<boolean> = computed(
 		() => props.showBasked
 	);
+	const localCXUuid: ComputedRef<string | undefined> = computed(
+		() => props.cxUuid
+	);
+
+	// units per day each output row sells, its own consumption is
+	// already netted into the delta
+	const localVolumeRows: ComputedRef<ICXVolumeRow[]> = computed(() =>
+		localMaterialIOData.value
+			.filter((row) => row.delta > 0)
+			.map((row) => ({ ticker: row.ticker, soldPerDay: row.delta }))
+	);
+
+	const { volumeShares } = useCXVolumeShare(localVolumeRows, localCXUuid);
 </script>
 
 <template>
@@ -77,6 +100,7 @@
 					">
 					{{ formatNumber(rowData.delta) }}
 				</span>
+				<CXVolumeShare :share="volumeShares.get(rowData.ticker)" />
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn

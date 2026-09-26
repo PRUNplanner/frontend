@@ -1,0 +1,11 @@
+{
+	"share": "{percent}% of {exchange} 7D vol",
+	"share_no_volume": "no {exchange} 7D volume",
+	"illiquid": "{exchange} barely trades",
+	"tooltip_intro": "Selling {units} / day of {ticker} into {exchange}, net of what the plan consumes itself.",
+	"tooltip_window": "{window} at {exchange}: {traded} units traded ({perDay} / day) — your sale is {percent}% of it.",
+	"tooltip_window_empty": "{window} at {exchange}: nothing traded.",
+	"tooltip_illiquid": "{exchange} traded {traded} units of {ticker} in 7 days.",
+	"preferences_yellow": "CX Volume Warning (Yellow, %)",
+	"preferences_red": "CX Volume Warning (Red, %)"
+}

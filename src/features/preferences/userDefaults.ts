@@ -1,4 +1,8 @@
 import { IPreferenceDefault } from "@/features/preferences/userPreferences.types";
+import {
+	CX_VOLUME_RED_PERCENT,
+	CX_VOLUME_YELLOW_PERCENT,
+} from "@/features/cx/cxVolumeShare";
 
 /**
  * Defines default values for user preferences, contains generic tool
@@ -18,6 +22,9 @@ export const preferenceDefaults: IPreferenceDefault = {
 	burnResupplyDays: 20,
 	burnOrigin: "Configure on Execution",
 	layoutNavigationStyle: "full",
+	// CX volume warning thresholds, see cxVolumeShare.ts
+	cxVolumeYellowPercent: CX_VOLUME_YELLOW_PERCENT,
+	cxVolumeRedPercent: CX_VOLUME_RED_PERCENT,
 
 	planOverrides: {},
 	planDefaults: {
