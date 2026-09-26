@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { flushPromises } from "@vue/test-utils";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock the planets store (could be empty)
@@ -86,6 +87,19 @@ describe("usePlanetData", () => {
 
 		expect(name).toBe("Earth (P1)");
 		expect(planetNames.value["P1"]).toBe("Earth (P1)");
+	});
+
+	it("planetName returns the placeholder until the name is cached", async () => {
+		const { planetName } = usePlanetData();
+
+		expect(planetName("P1")).toBe("...");
+		expect(planetName("P2", "Loading...")).toBe("Loading...");
+		await flushPromises();
+
+		expect(planetName("P1")).toBe("Earth (P1)");
+		expect(planetName("P2", "Loading...")).toBe("Mars (P2)");
+		// cached names are not looked up again
+		expect(getMock).toHaveBeenCalledTimes(2);
 	});
 
 	it("reload calls preload", async () => {

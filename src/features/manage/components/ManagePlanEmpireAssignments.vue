@@ -14,7 +14,7 @@
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
-	const { planetNames, loadPlanetName } = usePlanetData();
+	const { planetName } = usePlanetData();
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
@@ -344,9 +344,7 @@
 			<template #render-cell="{ rowData }">
 				<div class="w-43.75 text-wrap">
 					{{
-						planetNames[rowData.planetId] ||
-						loadPlanetName(rowData.planetId) ||
-						"Loading..."
+						planetName(rowData.planetId, "Loading...")
 					}}
 				</div>
 			</template>

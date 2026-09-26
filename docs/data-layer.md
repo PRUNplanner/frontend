@@ -124,7 +124,7 @@ component / composable
   | `useMaterialData()` | `getMaterial`, `materialsMap`, `materialSelectOptions`, `getMaterialClass` (CSS category) |
   | `useBuildingData()` | `getBuilding`, `buildingsMap`, recipes per building, production building options, construction/workforce materials |
   | `useExchangeData()` | `getExchangeTicker`, `getExchangeTickerLoaded` (sync), VWAP analysis, `getMaterialExchangeOverview` |
-  | `usePlanetData()` | `getPlanet`, planet names (`loadPlanetNames`), special materials |
+  | `usePlanetData()` | `getPlanet`, planet names (`loadPlanetNames`, sync `planetName(id)` for templates), special materials |
 
 - **Freshness.**
   - The `Get*` game-data queries write into IndexedDB and then call

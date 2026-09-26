@@ -55,6 +55,24 @@ export function usePlanetData() {
 		return planetNames.value[planetNaturalId];
 	}
 
+	/**
+	 * Planet name for templates: starts loading it and returns the
+	 * placeholder until it is cached
+	 * @author jplacht
+	 *
+	 * @param {string} planetNaturalId Planet Natural Id
+	 * @param {string} [placeholder="..."] Shown while the name loads
+	 * @returns {string} Planet name or placeholder
+	 */
+	function planetName(
+		planetNaturalId: string,
+		placeholder: string = "..."
+	): string {
+		// loadPlanetName skips cached names
+		void loadPlanetName(planetNaturalId);
+		return planetNames.value[planetNaturalId] ?? placeholder;
+	}
+
 	async function loadPlanetNames(planetNaturalIds: string[]) {
 		const uniqueIds = [...new Set(planetNaturalIds)];
 
@@ -73,6 +91,7 @@ export function usePlanetData() {
 		getPlanet,
 		getPlanetName,
 		loadPlanetName,
+		planetName,
 		loadPlanetNames,
 		planetNames,
 		getPlanetSpecialMaterials,

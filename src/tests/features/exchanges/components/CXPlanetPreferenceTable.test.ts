@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeAll,
+	beforeEach,
+	onTestFinished,
+	vi,
+} from "vitest";
 import { h } from "vue";
 import { flushPromises, VueWrapper } from "@vue/test-utils";
 
@@ -136,6 +144,24 @@ describe("CXPlanetPreferenceTable", () => {
 		const { wrapper } = await mountTable();
 
 		expect(names(wrapper)).toEqual([MILLIWAYS, "KW-020a", "ZZ-999z"]);
+	});
+
+	it("shows a placeholder while a planet name loads", async () => {
+		// ZZ-999z is not in memory, hold its IndexedDB lookup
+		const get = vi
+			.spyOn(planetsStore, "get")
+			.mockReturnValue(new Promise(() => {}));
+		onTestFinished(() => {
+			get.mockRestore();
+		});
+
+		const { wrapper } = await mountComponent(CXPlanetPreferenceTable, {
+			planetMap: planetMap(),
+		});
+		await vi.waitFor(() =>
+			expect(names(wrapper)).toEqual([MILLIWAYS, "KW-020a", "..."])
+		);
+		expect(wrapper.text()).not.toContain("[object Promise]");
 	});
 
 	it("sorts by planet", async () => {
