@@ -47,7 +47,7 @@ async function selectMultiple(
 ) {
 	wrapper
 		.findAllComponents(PSelectMultiple)
-		[index].vm.$emit("update:value", value);
+		.at(index)!.vm.$emit("update:value", value);
 	await flushPromises();
 }
 

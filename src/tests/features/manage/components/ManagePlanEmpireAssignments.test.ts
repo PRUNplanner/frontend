@@ -67,7 +67,7 @@ async function clickColumnIcon(
 ) {
 	await wrapper
 		.findAll(`th[data-col-key="ASSIGN#${empireUuid}"] .picon`)
-		[icon].trigger("click");
+		.at(icon)!.trigger("click");
 	await flushPromises();
 }
 
@@ -86,7 +86,7 @@ async function filter(wrapper: VueWrapper, index: 0 | 1, value: string[]) {
 	wrapper
 		.findComponent(ManageAssignmentFilters)
 		.findAllComponents(PSelectMultiple)
-		[index].vm.$emit("update:value", value);
+		.at(index)!.vm.$emit("update:value", value);
 	await flushPromises();
 }
 
@@ -256,7 +256,9 @@ describe("ManagePlanEmpireAssignments", () => {
 		await flushPromises();
 
 		expect(mock.history.delete).toHaveLength(1);
-		expect(mock.history.delete[0].url).toMatch(new RegExp(`planning/plan/${P3}/$`));
+		expect(mock.history.delete[0].url).toMatch(
+			new RegExp(`planning/plan/${P3}/$`)
+		);
 		expect(component.emitted("update:empireList")).toHaveLength(1);
 	});
 

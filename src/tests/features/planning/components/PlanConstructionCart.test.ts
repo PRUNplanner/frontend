@@ -119,7 +119,7 @@ const materialSums = (wrapper: VueWrapper) =>
 /** price, weight and volume of a table's summary */
 function summary(wrapper: VueWrapper, table: 0 | 1) {
 	const cells = tables(wrapper)
-		[table].findAll("tbody tr")
+		.at(table)!.findAll("tbody tr")
 		.at(-1)!
 		.findAll(".grid > div")
 		.map((d) => d.text().split(" ")[0]);

@@ -44,7 +44,7 @@ describe("TargetEditor", () => {
 	});
 
 	it("forces a static target when the operator switches to 'matches'", async () => {
-		const { component, setProps, lastTarget } = await mountEditor(
+		const { setProps, lastTarget } = await mountEditor(
 			{ type: "previous" },
 			"string"
 		);

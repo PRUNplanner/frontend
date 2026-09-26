@@ -70,7 +70,7 @@ async function mountTool(
 function tableCells(wrapper: VueWrapper, index: number) {
 	return wrapper
 		.findAll("table")
-		[index].findAll("tbody tr")
+		.at(index)!.findAll("tbody tr")
 		.map((tr) => tr.findAll("td").map((td) => td.text()));
 }
 
