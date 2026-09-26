@@ -239,7 +239,7 @@ export function groupRecipesByBuilding(
 ): Record<string, IRecipe[]> {
 	const map: Record<string, IRecipe[]> = {};
 	for (const recipe of recipes) {
-		const list = map[recipe.building_ticker];
+		const list: IRecipe[] | undefined = map[recipe.building_ticker];
 		if (list) list.push(recipe);
 		else map[recipe.building_ticker] = [recipe];
 	}

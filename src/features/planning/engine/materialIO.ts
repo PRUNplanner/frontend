@@ -53,7 +53,9 @@ export function enhanceMaterialIOMinimal(
 	const enhancedArray: IMaterialIOMaterial[] = [];
 
 	data.forEach((minimal) => {
-		const material = materials.get(minimal.ticker)!;
+		const material = materials.get(minimal.ticker);
+		if (!material)
+			throw new Error(`Material ${minimal.ticker} not available.`);
 
 		enhancedArray.push({
 			ticker: minimal.ticker,

@@ -67,16 +67,17 @@ export function calculateProduction(
 	const { planet, prices } = ctx;
 	const withRecipeOptions: boolean = input.recipeOptions ?? true;
 
-	// building information, once per building ticker
+	// building information, built once per building ticker
 	const information = new Map<string, IBuildingInformation>();
-	for (const { name } of plan.plan_data.buildings) {
-		if (information.has(name)) continue;
+	const informationFor = (name: string): IBuildingInformation => {
+		const known = information.get(name);
+		if (known) return known;
 
 		const buildingData: IBuilding = getBuilding(ctx.buildings, name);
 		const constructionMaterials: IMaterialIOMinimal[] =
 			getBuildingConstructionMaterials(buildingData, planet);
 
-		information.set(name, {
+		const built: IBuildingInformation = {
 			buildingData,
 			buildingRecipes: getBuildingRecipes(
 				ctx.recipesByBuilding,
@@ -94,8 +95,10 @@ export function calculateProduction(
 				true,
 				true
 			),
-		});
-	}
+		};
+		information.set(name, built);
+		return built;
+	};
 
 	const buildings: IProductionBuilding[] = [];
 
@@ -107,7 +110,7 @@ export function calculateProduction(
 			constructionMaterials,
 			constructionCost,
 			workforceMaterials,
-		} = information.get(b.name)!;
+		} = informationFor(b.name);
 
 		// efficiency calculation
 		const { totalEfficiency, elements } = calculateBuildingEfficiency(

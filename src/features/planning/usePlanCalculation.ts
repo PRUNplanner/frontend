@@ -135,11 +135,14 @@ export function usePlanCalculation(
 
 	// game data and the plan's planet, loaded once
 	const planet = shallowRef<IPlanet>();
-	const loaded: Promise<void> = (async () => {
+	const loaded: Promise<IPlanet> = (async () => {
 		await loadGameData();
 		planet.value = await getPlanet(planetNaturalId.value);
+		return planet.value;
 	})();
-	loaded.catch((err) => console.error(err));
+	loaded.catch((err) => {
+		console.error(err);
+	});
 
 	function input(): IPlanInput {
 		return {
@@ -206,8 +209,7 @@ export function usePlanCalculation(
 	 * @returns {Promise<IPlanResult>} Plan result
 	 */
 	async function calculate(): Promise<IPlanResult> {
-		await loaded;
-		return calculatePlan(input(), context(planet.value!)).result;
+		return calculatePlan(input(), context(await loaded)).result;
 	}
 
 	/**
@@ -223,8 +225,7 @@ export function usePlanCalculation(
 		production: IProductionResult,
 		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>
 	): Promise<IOverviewData> {
-		await loaded;
-		const ctx: IPlanContext = context(planet.value!);
+		const ctx: IPlanContext = context(await loaded);
 
 		return calculateFinance(
 			materialIO,
