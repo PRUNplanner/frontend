@@ -1,4 +1,4 @@
-import { nextTick, ref, Ref } from "vue";
+import { ref, Ref } from "vue";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -12,7 +12,6 @@ import { apiService } from "@/lib/apiService";
 import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
 
 // stores
-import { usePlanningStore } from "@/stores/planningStore";
 import {
 	materialsStore,
 	recipesStore,
@@ -96,20 +95,14 @@ describe("useResourceROIOverview", async () => {
 		expect(result[0].planetSurface.length).toBe(1);
 	});
 
-	it("leaves no live plan calculation watchers behind", async () => {
+	it("calculates through the engine, no live plan calculations", async () => {
 		mock.onPost("/data/planets/search/").reply(200, [planet_etherwind]);
 		planCalculations.length = 0;
 
 		const { calculate } = useResourceROIOverview(ref(undefined));
 
-		await calculate("H2O");
-		expect(planCalculations.length).toBeGreaterThan(0);
-
-		// @ts-expect-error mock data
-		usePlanningStore().cxs = "foo";
-		await nextTick();
-
-		planCalculations.forEach((c) => expect(c.refreshKey.value).toBe(0));
+		expect((await calculate("H2O")).length).toBe(1);
+		expect(planCalculations.length).toBe(0);
 	});
 
 	describe("getPlanetEnvironment", async () => {

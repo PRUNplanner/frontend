@@ -81,28 +81,11 @@ import {
 } from "@/stores/planningStore.types";
 import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 
-interface IPlanCalculationOptions {
-	/**
-	 * Recalculate on plan, empire and CX changes (default). Batch callers
-	 * that only call calculate() pass false, so no extra run starts.
-	 */
-	live?: boolean;
-	/**
-	 * Compute recipe options for every building (default). Batch callers
-	 * that never read `recipeOptions` pass false; the result then has none.
-	 */
-	recipeOptions?: boolean;
-}
-
 export function usePlanCalculation(
 	plan: Ref<IPlan>,
 	empireUuid: Ref<string | undefined> = ref(undefined),
 	empireOptions: Ref<IPlanEmpireElement[] | undefined> = ref(undefined),
-	cxUuid: Ref<string | undefined> = ref(undefined),
-	{
-		live = true,
-		recipeOptions: withRecipeOptions = true,
-	}: IPlanCalculationOptions = {}
+	cxUuid: Ref<string | undefined> = ref(undefined)
 ) {
 	// stores
 	const planningDataStore = usePlanningStore();
@@ -111,14 +94,13 @@ export function usePlanCalculation(
 	const refreshKey: Ref<number> = ref(0);
 
 	// watches external data to trigger a recalculation
-	if (live)
-		watch(
-			() => planningDataStore.cxs,
-			() => {
-				refreshKey.value++;
-			},
-			{ deep: true }
-		);
+	watch(
+		() => planningDataStore.cxs,
+		() => {
+			refreshKey.value++;
+		},
+		{ deep: true }
+	);
 
 	// data references
 
@@ -482,9 +464,9 @@ export function usePlanCalculation(
 				"BUY"
 			);
 
-			// get recipe options, unless the caller never reads them
+			// get recipe options
 			const recipeOptions: IRecipeBuildingOption[] = await Promise.all(
-				(withRecipeOptions ? buildingRecipes : []).map(async (br) => {
+				buildingRecipes.map(async (br) => {
 					// calculate daily revenue
 					const dailyIncome: number = getMaterialIOTotalPrice(
 						prices,
@@ -1027,20 +1009,19 @@ export function usePlanCalculation(
 	// - empire change
 	// only the latest run may set the result, a slower older one is stale
 	let latestRun: number = 0;
-	if (live)
-		watch(
-			[plan, refreshKey, empireUuid],
-			async () => {
-				const run = ++latestRun;
-				try {
-					const runResult = await calculate();
-					if (run === latestRun) result.value = runResult;
-				} catch (err) {
-					console.error(err);
-				}
-			},
-			{ immediate: true, deep: true }
-		);
+	watch(
+		[plan, refreshKey, empireUuid],
+		async () => {
+			const run = ++latestRun;
+			try {
+				const runResult = await calculate();
+				if (run === latestRun) result.value = runResult;
+			} catch (err) {
+				console.error(err);
+			}
+		},
+		{ immediate: true, deep: true }
+	);
 
 	return {
 		existing,

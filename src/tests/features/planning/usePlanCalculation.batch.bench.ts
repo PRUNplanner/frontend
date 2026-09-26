@@ -1,4 +1,4 @@
-import { effectScope, ref, toRef } from "vue";
+import { effectScope, ref } from "vue";
 import { bench, describe, vi } from "vitest";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -31,29 +31,31 @@ import {
 	setupPlanningTestData,
 	smallPlan,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
+import { empireLike } from "@/tests/features/planning/usePlanCalculation.bench.empire";
 
 /**
  * Phase 0 batch baseline (B6-B8) for the planning engine refactor, run with
  * `pnpm vitest bench --run`. Node + jsdom numbers, not browser numbers.
  *
  * Counters, without touching src/:
- * - plans: usePlanCalculation instances created
- * - runs: calculate() executions, counted at the infrastructure costs call,
- *   which calculate() calls exactly once (explicit calls and watcher runs)
+ * - plans: plans in the workload (each runner returns its count)
+ * - runs: plan calculations. The engine counts calls of calculatePlan;
+ *   before the engine, the infrastructure costs call that calculate()
+ *   makes exactly once per run (explicit calls and watcher runs)
  * - recipeOptions: optimalProduction.find, called once per recipe option
  */
 
-const counters = vi.hoisted(() => ({ plans: 0, runs: 0, recipeOptions: 0 }));
+const counters = vi.hoisted(() => ({ runs: 0, recipeOptions: 0 }));
 
-vi.mock("@/features/planning/usePlanCalculation", async () => {
+vi.mock("@/features/planning/engine/calculatePlan", async () => {
 	const actual: any = await vi.importActual(
-		"@/features/planning/usePlanCalculation"
+		"@/features/planning/engine/calculatePlan"
 	);
 	return {
 		...actual,
-		usePlanCalculation: (...args: unknown[]) => {
-			counters.plans++;
-			return actual.usePlanCalculation(...args);
+		calculatePlan: (...args: unknown[]) => {
+			counters.runs++;
+			return actual.calculatePlan(...args);
 		},
 	};
 });
@@ -120,66 +122,62 @@ const etherwindVariants: (() => IPlan)[] = [
 const empirePlans: IPlan[] = Array.from({ length: 30 }, (_, i) =>
 	i % 6 === 5 ? largePlan() : etherwindVariants[i % 5]()
 );
-const empireUuid = ref("a208d74e-d07f-4722-8192-9b55d4140f58");
-const empireOptions = ref(empire_list as unknown as IPlanEmpireElement[]);
-const cxUuid = ref<string | undefined>(undefined);
-
-// mirrors EmpireView.calculateEmpire without its result cache
-async function empireLike(): Promise<void> {
-	for (const plan of empirePlans) {
-		await Promise.resolve();
-		const scope = effectScope();
-		const { calculate } = scope.run(() =>
-			// options as in EmpireView; ignored by versions without them
-			usePlanCalculation(toRef(plan), empireUuid, empireOptions, cxUuid, {
-				live: false,
-				recipeOptions: false,
-			})
-		)!;
-		scope.stop();
-		await calculate();
-		await new Promise((r) => setTimeout(r, 0));
-	}
+async function empire(): Promise<number> {
+	await empireLike(
+		empirePlans,
+		"a208d74e-d07f-4722-8192-9b55d4140f58",
+		empire_list as unknown as IPlanEmpireElement[],
+		undefined
+	);
+	return empirePlans.length;
 }
 
-async function roiOverview(): Promise<void> {
-	await useROIOverview(ref(etherwindPlan()), ref(undefined)).calculate();
+// one plan per recipe
+async function roiOverview(): Promise<number> {
+	return (
+		await useROIOverview(ref(etherwindPlan()), ref(undefined)).calculate()
+	).length;
 }
 
-async function resourceROI(): Promise<void> {
+// one plan per planet and extractor (RIG, EXT, COL)
+async function resourceROI(): Promise<number> {
 	await useResourceROIOverview(ref(undefined)).calculate("N");
+	return planetSearch.length * 3;
 }
 
-const batches: [string, () => Promise<void>][] = [
-	["B6 empire-like, 30 plans", empireLike],
+const batches: [string, () => Promise<number>][] = [
+	["B6 empire-like, 30 plans", empire],
 	["B7 ROI overview", roiOverview],
 	["B8 resource ROI, N", resourceROI],
 ];
 
 // one counted run per batch, letting discarded watcher runs finish
 for (const [name, run] of batches) {
-	Object.assign(counters, { plans: 0, runs: 0, recipeOptions: 0 });
+	Object.assign(counters, { runs: 0, recipeOptions: 0 });
 	const start = performance.now();
-	await run();
+	const plans = await run();
 	const ms = performance.now() - start;
 	await new Promise((r) => setTimeout(r, 200));
 	console.log(
-		`[count] ${name}: plans=${counters.plans} runs=${counters.runs} ` +
-			`runs/plan=${(counters.runs / counters.plans).toFixed(2)} ` +
+		`[count] ${name}: plans=${plans} runs=${counters.runs} ` +
+			`runs/plan=${(counters.runs / plans).toFixed(2)} ` +
 			`recipeOptions=${counters.recipeOptions} once=${ms.toFixed(0)}ms`
 	);
 }
 
 // how many runs one live instance does on creation and per edit
 {
-	Object.assign(counters, { plans: 0, runs: 0, recipeOptions: 0 });
+	Object.assign(counters, { runs: 0, recipeOptions: 0 });
 	const plan = ref(etherwindPlan());
 	const scope = effectScope();
-	scope.run(() => usePlanCalculation(plan));
+	const { result } = scope.run(() => usePlanCalculation(plan))!;
+	// reading the result lets a lazy calculation run; a watcher ran anyway
 	await new Promise((r) => setTimeout(r, 200));
+	void result.value;
 	const created = counters.runs;
 	plan.value.plan_data.buildings[0].amount++;
 	await new Promise((r) => setTimeout(r, 200));
+	void result.value;
 	scope.stop();
 	console.log(
 		`[count] live etherwind: runs on create=${created} ` +

@@ -121,48 +121,6 @@ describe("usePlanCalculation", async () => {
 		expect(refreshKey.value).toBe(0);
 	});
 
-	it("live: false starts no calculation and watches nothing", async () => {
-		const plan = ref(structuredClone(plan_etherwind));
-		const { result, refreshKey, calculate } = usePlanCalculation(
-			// @ts-expect-error mock data
-			plan,
-			ref(undefined),
-			ref(undefined),
-			ref(undefined),
-			{ live: false }
-		);
-
-		plan.value.plan_data.buildings[0].amount++;
-		// @ts-expect-error mock data
-		planningStore.cxs = "baz";
-		await flushPromises();
-
-		expect(result.value.done).toBe(false);
-		expect(refreshKey.value).toBe(0);
-		expect((await calculate()).materialio.length).toBe(18);
-	});
-
-	it("recipeOptions: false only leaves out recipe options", async () => {
-		const calculation = (recipeOptions: boolean) =>
-			usePlanCalculation(
-				// @ts-expect-error mock data
-				ref(structuredClone(plan_etherwind)),
-				ref(undefined),
-				ref(undefined),
-				ref(undefined),
-				{ live: false, recipeOptions }
-			).calculate();
-
-		const full = await calculation(true);
-		const lean = await calculation(false);
-
-		expect(
-			full.production.buildings[1].recipeOptions.length
-		).toBeGreaterThan(0);
-		for (const b of full.production.buildings) b.recipeOptions = [];
-		expect(lean).toStrictEqual(full);
-	});
-
 	it("a slower older run never overwrites a newer result (S2)", async () => {
 		// hold the first run on its planet load until the second run is done
 		let release!: () => void;

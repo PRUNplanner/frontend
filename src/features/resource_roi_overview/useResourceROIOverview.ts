@@ -1,4 +1,4 @@
-import { effectScope, ref, Ref } from "vue";
+import { ref, Ref } from "vue";
 import pLimit from "p-limit";
 
 // API
@@ -14,7 +14,9 @@ import {
 	boundaryTemperatureLow,
 } from "@/database/services/usePlanetData";
 import { usePlan } from "@/features/planning_data/usePlan";
-import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
+import { usePlanContext } from "@/features/planning/usePlanContext";
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { getBuildingRecipes } from "@/features/planning/engine/buildings";
 import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Static
@@ -25,6 +27,10 @@ import { boundaryDescriptor } from "@/util/numbers";
 
 // Types & Interfaces
 import { IPlanet } from "@/features/api/gameData.types";
+import {
+	IGameData,
+	IPlanContext,
+} from "@/features/planning/engine/engine.types";
 import { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
 import { IStaticOptimalProduction } from "../roi_overview/useROIOverview.types";
 import { usePathfinder } from "../pathfinding/usePathfinder";
@@ -34,6 +40,7 @@ let lastYieldTime = 0;
 export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	const { createBlankDefinition } = usePlan();
 	const { planetNames, loadPlanetNames } = usePlanetData();
+	const { loadGameData, createContext } = usePlanContext();
 
 	const planetResults: Ref<IPlanet[]> = ref([]);
 	const resultData: Ref<IResourceROIResult[]> = ref([]);
@@ -150,6 +157,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	}
 
 	async function calculateOptimal(
+		ctx: IPlanContext,
 		planet: IPlanet,
 		optimal: IStaticOptimalProduction,
 		materialTicker: string,
@@ -194,81 +202,75 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		// artificially set cogc to resource extraction
 		definition.value.plan_cogc = "RESOURCE_EXTRACTION";
 
-		// one-off calculation, stop its live-recalculation watchers
-		const scope = effectScope();
-		const { handleCreateBuilding, calculateOverview, calculate } =
-			scope.run(() =>
-				usePlanCalculation(definition, undefined, undefined, cxUuid, {
-					live: false,
-				})
-			)!;
-		scope.stop();
+		// the building's recipes for this planet decide whether it can
+		// extract the material (they are what its recipe options list)
+		const canExtract: boolean = getBuildingRecipes(
+			ctx.recipesByBuilding,
+			optimal.ticker,
+			ctx.planet.resources
+		)
+			.map((e) => e.outputs.map((m) => m.material_ticker))
+			.flat()
+			.includes(materialTicker);
 
-		// create building
-		await handleCreateBuilding(optimal.ticker);
-		const resultData = await calculate();
+		if (canExtract) {
+			definition.value.plan_data.buildings = [
+				{
+					name: optimal.ticker,
+					amount: optimal.amount,
+					active_recipes: [
+						{
+							recipeid: `${optimal.ticker}#${materialTicker}`,
+							amount: 1,
+						},
+					],
+				},
+			];
 
-		for (const productionBuilding of resultData.production.buildings) {
-			if (
-				productionBuilding.recipeOptions
-					.map((e) => e.outputs.map((m) => m.material_ticker))
-					.flat()
-					.includes(materialTicker)
-			) {
-				// manipulate definition daata
-
-				definition.value.plan_data.buildings[0].amount = optimal.amount;
-				definition.value.plan_data.buildings[0].active_recipes = [
+			const { result: newResult, overview: overviewData } =
+				calculatePlan(
 					{
-						recipeid: `${productionBuilding.name}#${materialTicker}`,
-						amount: 1,
+						plan: definition.value,
+						empire: undefined,
+						cxUuid: cxUuid.value,
+						// never read here
+						recipeOptions: false,
 					},
-				];
-
-				const newResult = await calculate();
-
-				// find daily yield from material i/o for given materialticker
-				const dailyYield: number =
-					newResult.materialio.find(
-						(f) => f.ticker === materialTicker
-					)?.output ?? 0;
-
-				const overviewData = await calculateOverview(
-					newResult.materialio,
-					newResult.production,
-					newResult.infrastructure
+					ctx
 				);
 
-				// all matches, push the result
-				results.push({
-					planetNaturalId: planet.planet_natural_id,
-					planetName: planetNames.value[planet.planet_natural_id],
-					buildingTicker: productionBuilding.name,
-					dailyYield,
-					percentMaxDailyYield: 0,
-					cogm: newResult.production.buildings[0].activeRecipes[0]
-						.cogm,
-					outputProfit:
-						newResult.production.buildings[0].activeRecipes[0].cogm
-							?.totalProfit ?? 0,
-					dailyProfit: overviewData.profit,
-					planCost: overviewData.totalConstructionCost,
-					planROI: overviewData.roi,
-					planArea: newResult.area.areaUsed,
-					planProfitArea:
-						overviewData.profit / newResult.area.areaUsed,
-					planetSurface: surface,
-					planetGravity: gravity,
-					planetPressure: pressure,
-					planetTemperature: temperature,
-					planetCOGC: planet.active_cogc_program_type,
-					planetInfrastructures: infrastructures,
-					distanceAI1: planetDistanceMap[planet.planet_natural_id][0],
-					distanceCI1: planetDistanceMap[planet.planet_natural_id][1],
-					distanceIC1: planetDistanceMap[planet.planet_natural_id][2],
-					distanceNC1: planetDistanceMap[planet.planet_natural_id][3],
-				});
-			}
+			// find daily yield from material i/o for given materialticker
+			const dailyYield: number =
+				newResult.materialio.find((f) => f.ticker === materialTicker)
+					?.output ?? 0;
+
+			// all matches, push the result
+			results.push({
+				planetNaturalId: planet.planet_natural_id,
+				planetName: planetNames.value[planet.planet_natural_id],
+				buildingTicker: optimal.ticker,
+				dailyYield,
+				percentMaxDailyYield: 0,
+				cogm: newResult.production.buildings[0].activeRecipes[0].cogm,
+				outputProfit:
+					newResult.production.buildings[0].activeRecipes[0].cogm
+						?.totalProfit ?? 0,
+				dailyProfit: overviewData.profit,
+				planCost: overviewData.totalConstructionCost,
+				planROI: overviewData.roi,
+				planArea: newResult.area.areaUsed,
+				planProfitArea: overviewData.profit / newResult.area.areaUsed,
+				planetSurface: surface,
+				planetGravity: gravity,
+				planetPressure: pressure,
+				planetTemperature: temperature,
+				planetCOGC: planet.active_cogc_program_type,
+				planetInfrastructures: infrastructures,
+				distanceAI1: planetDistanceMap[planet.planet_natural_id][0],
+				distanceCI1: planetDistanceMap[planet.planet_natural_id][1],
+				distanceIC1: planetDistanceMap[planet.planet_natural_id][2],
+				distanceNC1: planetDistanceMap[planet.planet_natural_id][3],
+			});
 		}
 
 		return results;
@@ -276,8 +278,14 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 
 	async function calculatePlanet(
 		planet: IPlanet,
-		materialTicker: string
+		materialTicker: string,
+		gameData: IGameData
 	): Promise<IResourceROIResult[]> {
+		const ctx: IPlanContext = await createContext(
+			gameData,
+			planet.planet_natural_id,
+			cxUuid.value
+		);
 		const { surface, gravity, pressure, temperature, infrastructures } =
 			getPlanetEnvironment(planet);
 
@@ -291,6 +299,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 
 		const calculationPromises = filteredOptimalProduction.map((optimal) =>
 			calculateOptimal(
+				ctx,
 				planet,
 				optimal,
 				materialTicker,
@@ -328,11 +337,14 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		// trigger planet name loading and wait on it
 		await loadPlanetNames(planets.map((p) => p.planet_natural_id));
 
+		// game data once for all plans
+		const gameData: IGameData = await loadGameData();
+
 		// limit parallel execution
 		const limit = pLimit(calculatePLimit);
 
 		const promises = planets.map((planet) =>
-			limit(() => calculatePlanet(planet, materialTicker))
+			limit(() => calculatePlanet(planet, materialTicker, gameData))
 		);
 
 		const allResults = await Promise.all(promises);

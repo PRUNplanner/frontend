@@ -3,10 +3,8 @@
 		computed,
 		ComputedRef,
 		defineAsyncComponent,
-		effectScope,
 		ref,
 		Ref,
-		toRef,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -20,7 +18,11 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
+	import {
+		getActiveEmpire,
+		usePlanContext,
+	} from "@/features/planning/usePlanContext";
+	import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { planResultCacheKey } from "@/features/empire/empire.util";
@@ -107,6 +109,7 @@
 	 */
 
 	const cacheCalculatedPlans = new Map<string, IPlanResult>();
+	const { loadGameData, createContext } = usePlanContext();
 
 	async function calculateEmpire(clearCache = false): Promise<void> {
 		isCalculating.value = true;
@@ -116,6 +119,9 @@
 		progressCurrent.value = 0;
 
 		if (clearCache) cacheCalculatedPlans.clear();
+
+		// game data once for all plans
+		const gameData = await loadGameData();
 
 		for (const plan of planData.value) {
 			// note, calculation depends on empire + cx, so a plan is only
@@ -134,20 +140,23 @@
 			} else {
 				await Promise.resolve();
 
-				// one-off calculation, stop its live-recalculation watchers
-				const scope = effectScope();
-				const { calculate } = scope.run(() =>
-					usePlanCalculation(
-						toRef(plan),
-						selectedEmpireUuid,
-						refEmpireList,
-						selectedCXUuid,
-						{ live: false, recipeOptions: false }
+				const { result } = calculatePlan(
+					{
+						plan,
+						empire: getActiveEmpire(
+							selectedEmpireUuid.value,
+							refEmpireList.value
+						),
+						cxUuid: selectedCXUuid.value,
+						// never read by this view
+						recipeOptions: false,
+					},
+					await createContext(
+						gameData,
+						plan.planet_natural_id,
+						selectedCXUuid.value
 					)
-				)!;
-				scope.stop();
-
-				const result = await calculate();
+				);
 				calculatedPlans.value[plan.uuid!] = result;
 				progressCurrent.value++;
 

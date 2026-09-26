@@ -21,6 +21,23 @@ import {
 	IGameData,
 	IPlanContext,
 } from "@/features/planning/engine/engine.types";
+import { IPlanEmpire, IPlanEmpireElement } from "@/stores/planningStore.types";
+
+/**
+ * The empire a plan is calculated for: the option with the given uuid,
+ * undefined without a uuid or a match
+ *
+ * @param {string | undefined} empireUuid Selected empire
+ * @param {IPlanEmpireElement[] | undefined} empireOptions Empires
+ * @returns {IPlanEmpire | undefined} Active empire
+ */
+export function getActiveEmpire(
+	empireUuid: string | undefined,
+	empireOptions: IPlanEmpireElement[] | undefined
+): IPlanEmpire | undefined {
+	if (!empireUuid) return undefined;
+	return empireOptions?.find((e) => e.uuid === empireUuid);
+}
 
 /**
  * Builds the planning engine's context from the data layer: game data as
