@@ -74,7 +74,10 @@ export const inertClone = (() => {
  * @param {string} value Text
  */
 export function copyToClipboard(value: string): void {
-	navigator.clipboard.writeText(value);
+	// denied without clipboard permission or focus
+	navigator.clipboard.writeText(value).catch((err: unknown) => {
+		console.error(err);
+	});
 }
 
 /**

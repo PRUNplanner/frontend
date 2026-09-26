@@ -151,7 +151,7 @@ describe("copyToClipboard", async () => {
 	});
 
 	it("call navigator.clipboard.writeText with correct value", async () => {
-		const mockWriteText = vi.fn();
+		const mockWriteText = vi.fn(() => Promise.resolve());
 		Object.assign(navigator, {
 			clipboard: {
 				writeText: mockWriteText,
@@ -163,6 +163,18 @@ describe("copyToClipboard", async () => {
 
 		expect(mockWriteText).toHaveBeenCalledWith(testValue);
 		expect(mockWriteText).toHaveBeenCalledTimes(1);
+	});
+
+	it("logs a denied clipboard write", async () => {
+		const denied = new Error("test-denied");
+		Object.assign(navigator, {
+			clipboard: { writeText: vi.fn(() => Promise.reject(denied)) },
+		});
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+
+		copyToClipboard("Foo");
+		await vi.waitFor(() => expect(error).toHaveBeenCalledWith(denied));
+		error.mockRestore();
 	});
 });
 
