@@ -535,87 +535,89 @@ export function usePlanCalculation(
 			 * 	- or just its material output / all output
 			 */
 
-			activeRecipes.forEach(async (ar) => {
-				const runtimeShare: number =
-					ar.recipe.time_ms / totalEfficiency / TOTALMSDAY;
-				const degradation: number = (constructionCost * -1) / 180;
-				const degradationShare: number = degradation * runtimeShare;
-				const workforceCostTotal: number = workforceDailyCost * -1;
-				const workforceCost: number = workforceCostTotal * runtimeShare;
+			await Promise.all(
+				activeRecipes.map(async (ar) => {
+					const runtimeShare: number =
+						ar.recipe.time_ms / totalEfficiency / TOTALMSDAY;
+					const degradation: number = (constructionCost * -1) / 180;
+					const degradationShare: number = degradation * runtimeShare;
+					const workforceCostTotal: number = workforceDailyCost * -1;
+					const workforceCost: number = workforceCostTotal * runtimeShare;
 
-				const inputCost: ICOGMMaterialCost[] = await Promise.all(
-					ar.recipe.inputs.map(async (inputMat) => {
-						const price = await getPrice(
-							inputMat.material_ticker,
-							"BUY"
-						);
-						return {
-							ticker: inputMat.material_ticker,
-							amount: inputMat.material_amount,
-							costUnit: price,
-							costTotal: price * inputMat.material_amount,
-						};
-					})
-				);
+					const inputCost: ICOGMMaterialCost[] = await Promise.all(
+						ar.recipe.inputs.map(async (inputMat) => {
+							const price = await getPrice(
+								inputMat.material_ticker,
+								"BUY"
+							);
+							return {
+								ticker: inputMat.material_ticker,
+								amount: inputMat.material_amount,
+								costUnit: price,
+								costTotal: price * inputMat.material_amount,
+							};
+						})
+					);
 
-				inputCost.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
+					inputCost.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 
-				const inputTotal: number = inputCost.reduce(
-					(sum, current) => sum + current.costTotal,
-					0
-				);
+					const inputTotal: number = inputCost.reduce(
+						(sum, current) => sum + current.costTotal,
+						0
+					);
 
-				const outputRevenueArray = await Promise.all(
-					ar.recipe.outputs.map(async (current) => {
-						const price = await getPrice(
-							current.material_ticker,
-							"SELL"
-						);
-						return price * current.material_amount;
-					})
-				);
+					const outputRevenueArray = await Promise.all(
+						ar.recipe.outputs.map(async (current) => {
+							const price = await getPrice(
+								current.material_ticker,
+								"SELL"
+							);
+							return price * current.material_amount;
+						})
+					);
 
-				const outputRevenue = outputRevenueArray.reduce(
-					(a, b) => a + b,
-					0
-				);
+					const outputRevenue = outputRevenueArray.reduce(
+						(a, b) => a + b,
+						0
+					);
 
-				const totalCost: number =
-					degradationShare + workforceCost + inputTotal;
+					const totalCost: number =
+						degradationShare + workforceCost + inputTotal;
 
-				const sumOutputs: number = ar.recipe.outputs.reduce(
-					(sum, current) => sum + current.material_amount,
-					0
-				);
+					const sumOutputs: number = ar.recipe.outputs.reduce(
+						(sum, current) => sum + current.material_amount,
+						0
+					);
 
-				const totalProfit: number = outputRevenue - totalCost;
+					const totalProfit: number = outputRevenue - totalCost;
 
-				const outputCOGM: ICOGMMaterialReturn[] = ar.recipe.outputs
-					.map((outputMat) => ({
-						ticker: outputMat.material_ticker,
-						amount: outputMat.material_amount,
-						costSplit: totalCost / sumOutputs,
-						costTotal: totalCost / outputMat.material_amount,
-					}))
-					.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
+					const outputCOGM: ICOGMMaterialReturn[] = ar.recipe.outputs
+						.map((outputMat) => ({
+							ticker: outputMat.material_ticker,
+							amount: outputMat.material_amount,
+							costSplit: totalCost / sumOutputs,
+							costTotal: totalCost / outputMat.material_amount,
+						}))
+						.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 
-				ar.cogm = {
-					visible: cxUuid.value !== undefined,
-					runtime: ar.recipe.time_ms / totalEfficiency,
-					runtimeShare,
-					efficiency: totalEfficiency,
-					degradation,
-					degradationShare,
-					workforceCost,
-					workforceCostTotal,
-					inputCost,
-					inputTotal,
-					outputCOGM,
-					totalCost,
-					outputRevenue,
-					totalProfit,
-				} as IProductionBuildingRecipeCOGM;
-			});
+					ar.cogm = {
+						visible: cxUuid.value !== undefined,
+						runtime: ar.recipe.time_ms / totalEfficiency,
+						runtimeShare,
+						efficiency: totalEfficiency,
+						degradation,
+						degradationShare,
+						workforceCost,
+						workforceCostTotal,
+						inputCost,
+						inputTotal,
+						outputCOGM,
+						totalCost,
+						outputRevenue,
+						totalProfit,
+					} as IProductionBuildingRecipeCOGM;
+				})
+			);
 
 			const building: IProductionBuilding = {
 				name: b.name,

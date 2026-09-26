@@ -201,7 +201,7 @@ describe("usePlanCalculation characterization", () => {
 			expect(b.active_recipes.length).toBe(3);
 	});
 
-	it("records whether COGM is set when calculate() resolves (S1)", async () => {
+	it("COGM is set when calculate() resolves (S1)", async () => {
 		const scope = effectScope();
 		const calc = scope.run(() => usePlanCalculation(ref(etherwindPlan())))!;
 		const result = await calc.calculate();
@@ -210,8 +210,7 @@ describe("usePlanCalculation characterization", () => {
 		const cogm = result.production.buildings.flatMap((b) =>
 			b.activeRecipes.map((ar) => ar.cogm)
 		);
-		// characterization, not a guarantee: the later awaits in calculate()
-		// happen to give the un-awaited COGM callbacks time to finish
+		// calculate() awaits COGM (S1), so it is always set
 		expect(cogm.every((c) => c !== undefined)).toBe(true);
 	});
 
