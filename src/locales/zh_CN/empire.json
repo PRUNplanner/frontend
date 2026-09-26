@@ -59,7 +59,7 @@
 		},
 		"table": {
 			"building": "建筑",
-			"flow_inputs": "生产（输入&rarr;输出）",
+			"flow_inputs": "生产（输入→输出）",
 			"analysis": "分析",
 			"sell_inputs": "售出输入项",
 			"sell_outputs": "售出输出项",
