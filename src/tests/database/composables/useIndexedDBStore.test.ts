@@ -38,8 +38,7 @@ describe("useIndexedDBStore", () => {
 
 	// Before each test, clear the store
 	beforeEach(async () => {
-		await indexedDB.deleteDatabase(config.INDEXEDDB_DBNAME);
-		resetDB();
+		await resetDB();
 	});
 
 	it("requestPersistence calls navigator.storage.persist if available", async () => {
@@ -164,6 +163,55 @@ describe("useIndexedDBStore", () => {
 		const result = await store.getAll();
 
 		expect(result).toEqual([fakeMaterial_2]);
+	});
+
+	describe("resetDB", () => {
+		// a deleteDatabase request the test settles by hand
+		function stubDeleteRequest() {
+			const request = {} as IDBOpenDBRequest;
+			vi.spyOn(indexedDB, "deleteDatabase").mockReturnValueOnce(request);
+			return request;
+		}
+
+		it("waits until the database is deleted", async () => {
+			const request = stubDeleteRequest();
+
+			let done = false;
+			const reset = resetDB().then(() => (done = true));
+			await vi.waitFor(() =>
+				expect(request.onsuccess).toBeTypeOf("function")
+			);
+			expect(done).toBe(false);
+
+			request.onsuccess!.call(request, new Event("success"));
+			await reset;
+			expect(done).toBe(true);
+			expect(indexedDB.deleteDatabase).toHaveBeenCalledWith(
+				config.INDEXEDDB_DBNAME
+			);
+		});
+
+		it("rejects when the deletion fails", async () => {
+			const request = stubDeleteRequest();
+			const error = new DOMException("denied");
+			Object.defineProperty(request, "error", { value: error });
+
+			const reset = resetDB();
+			await vi.waitFor(() =>
+				expect(request.onerror).toBeTypeOf("function")
+			);
+			request.onerror!.call(request, new Event("error"));
+
+			await expect(reset).rejects.toBe(error);
+		});
+
+		it("drops stored data", async () => {
+			await store.set(fakeMaterial_1);
+
+			await resetDB();
+
+			expect(await store.getAll()).toEqual([]);
+		});
 	});
 
 	it("gets statistics, existing records", async () => {
