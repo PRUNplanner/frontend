@@ -64,7 +64,7 @@
 				{{ $t(`game.expertise.${expert.name.toUpperCase()}`) }}
 			</div>
 			<PInputNumber
-				v-model:value="localExpertData[expert.name].amount"
+				:value="localExpertData[expert.name].amount"
 				:disabled="disabled"
 				show-buttons
 				:min="0"

@@ -110,7 +110,7 @@
 		<template v-for="inf in infrastructureOrder" :key="inf">
 			<div>{{ inf }}</div>
 			<PInputNumber
-				v-model:value="localInfrastructureData[inf]"
+				:value="localInfrastructureData[inf]"
 				:disabled="
 					disabled ||
 					(localAutoOptimizeHabs && !isStorageInfrastructure(inf))
