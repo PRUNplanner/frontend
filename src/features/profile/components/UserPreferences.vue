@@ -147,21 +147,21 @@
 		<PFormItem :label="t('profile.preferences.form.red_threshold')">
 			<PInputNumber
 				v-model:value="burnDaysRed"
-				show-button
+				show-buttons
 				:min="1"
 				class="w-full" />
 		</PFormItem>
 		<PFormItem :label="t('profile.preferences.form.yellow_threshold')">
 			<PInputNumber
 				v-model:value="burnDaysYellow"
-				show-button
+				show-buttons
 				:min="1"
 				class="w-full" />
 		</PFormItem>
 		<PFormItem :label="t('profile.preferences.form.resupply_days')">
 			<PInputNumber
 				v-model:value="burnResupplyDays"
-				show-button
+				show-buttons
 				:min="1"
 				class="w-full" />
 		</PFormItem>

@@ -336,6 +336,25 @@ describe("UserPreferences", () => {
 		expect(userStore.preferences.burnResupplyDays).toBe(1);
 	});
 
+	it("steps the burn thresholds with the +/- buttons", async () => {
+		const userStore = seed();
+		userStore.preferences.burnDaysYellow = 1;
+		const { wrapper } = await mountPreferences();
+		// minus, plus for each of the 3 inputs
+		const steppers = wrapper.findAll(".ph-no-capture");
+		expect(steppers).toHaveLength(6);
+
+		await steppers.at(0)!.trigger("click");
+		await steppers.at(2)!.trigger("click");
+		await steppers.at(5)!.trigger("click");
+
+		// red 5 - 1 = 4, resupply 20 + 1 = 21
+		expect(userStore.preferences.burnDaysRed).toBe(4);
+		expect(userStore.preferences.burnResupplyDays).toBe(21);
+		// yellow 1 - 1 = 0 is below the minimum of 1
+		expect(userStore.preferences.burnDaysYellow).toBe(1);
+	});
+
 	it("toggles buying from the CX", async () => {
 		const userStore = seed();
 		const { wrapper } = await mountPreferences();
