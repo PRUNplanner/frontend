@@ -71,17 +71,15 @@
 		},
 	});
 
-	const { hasStorage, storageOptions, findStorageValueFromOptions } =
-		useFIOStorage();
+	const {
+		hasStorage,
+		storageOptions,
+		findStorageValueFromOptions,
+		planetStorageId,
+	} = useFIOStorage();
 	const { supplyCartDays: refStockRequirement } = usePreferences();
 	const refSelectedStorage: Ref<string | undefined> = ref(
-		hasStorage.value
-			? storageOptions.value.filter(
-					(e) => e.value === `PLANET#${props.planetNaturalId}`
-				)
-				? `PLANET#${props.planetNaturalId}`
-				: undefined
-			: undefined
+		planetStorageId(props.planetNaturalId)
 	);
 	const refTypeFilter: Ref<TYPE_FILTER> = ref("all");
 	const localMaterialIO: Ref<ISupplyCartElement[]> = ref([]);
