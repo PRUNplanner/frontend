@@ -128,6 +128,13 @@ Write them for logic-heavy components, see
 - **Assert** on rendered text, classes and emitted events with
   hand-computed values. No snapshots. Work that hits IndexedDB (search
   results, planet names) needs `vi.waitFor` rather than `flushPromises`.
+- **Charts**: chart.js has no canvas in jsdom. `vi.mock` the chart
+  component with a stub that declares its props, then assert on
+  `findComponent(Chart).props()`; see `PlanRepairAnalysis.test.ts`.
+- **Overlays**: `NPopover`, `NModal` and `NDrawer` render into
+  `document.body` once shown. Query them through
+  `new DOMWrapper(document.body)`; `PlanProductionRecipe.test.ts` opens a
+  popover and reads its table.
 
 ## Test isolation checklist
 
