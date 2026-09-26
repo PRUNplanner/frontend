@@ -168,7 +168,7 @@ export function calculateBuildingFactionBonus(
 	building: IBuilding,
 	empire: IPlanEmpire | undefined
 ): IBuildingEfficiency | undefined {
-	if (!empire || building.Expertise === null) return undefined;
+	if (!empire || building.expertise === null) return undefined;
 
 	// multiplier using share of used and total available permits
 	const multiplier: number =
@@ -242,7 +242,7 @@ export function calculateBuildingEfficiency(
 	}
 
 	// Expert + Advertising COGC
-	if (building.Expertise !== null) {
+	if (building.expertise !== null) {
 		// COGC on programs
 		if (cogc === building.expertise) {
 			elements.push({

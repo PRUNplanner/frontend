@@ -291,28 +291,18 @@ describe("usePlanCalculation characterization", () => {
 			);
 		}
 
-		it("B1 today: a building without expertise throws", async () => {
+		it("B1: a building without expertise gets no COGC or expert bonus", async () => {
 			const { workforce, experts } = await efficiencyInputs();
-			expect(() =>
-				efficiencyWithoutExpertise(workforce, experts)
-			).toThrow(TypeError);
+			const { elements } = efficiencyWithoutExpertise(
+				workforce,
+				experts
+			);
+			expect(
+				elements.filter((e) =>
+					["COGC", "EXPERT"].includes(e.efficiencyType)
+				)
+			).toStrictEqual([]);
 		});
-
-		it.fails(
-			"B1: a building without expertise gets no COGC or expert bonus",
-			async () => {
-				const { workforce, experts } = await efficiencyInputs();
-				const { elements } = efficiencyWithoutExpertise(
-					workforce,
-					experts
-				);
-				expect(
-					elements.filter((e) =>
-						["COGC", "EXPERT"].includes(e.efficiencyType)
-					)
-				).toStrictEqual([]);
-			}
-		);
 
 		// single building plan: its production material io is the plan's
 		async function singleBuilding(amount: number) {
