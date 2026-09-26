@@ -2,6 +2,7 @@ import { computed, ComputedRef, Ref } from "vue";
 
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
+import { usePlanetData } from "@/database/services/usePlanetData";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
@@ -36,15 +37,15 @@ import { infrastructureBuildingNames } from "@/features/planning/calculations/in
  * remains responsive and efficient, even as users make frequent adjustments
  * to their plans.
  */
-export async function usePlanCalculationPreComputes(
+export function usePlanCalculationPreComputes(
 	buildings: Ref<IPlanDataBuilding[]>,
 	cxUuid: Ref<string | undefined>,
 	empireUuid: Ref<string | undefined>,
 	empireOptions: Ref<IPlanEmpireElement[] | undefined>,
-	planetNaturalId: Ref<string>,
-	planetData: IPlanet
+	planetNaturalId: Ref<string>
 ) {
 	// Composable function
+	const { getPlanet } = usePlanetData();
 	const {
 		getBuilding,
 		getBuildingConstructionMaterials,
@@ -92,6 +93,7 @@ export async function usePlanCalculationPreComputes(
 
 	async function computeBuildingInformation(): Promise<IPreBuildingRecord> {
 		const map: IPreBuildingRecord = {};
+		const planetData: IPlanet = await getPlanet(planetNaturalId.value);
 
 		for (const ticker of computedBuildingTicker.value) {
 			const buildingData: IBuilding = await getBuilding(ticker);
@@ -123,6 +125,8 @@ export async function usePlanCalculationPreComputes(
 	async function computeInfrastructureBuildingInformation(): Promise<
 		IBuildingConstruction[]
 	> {
+		const planetData: IPlanet = await getPlanet(planetNaturalId.value);
+
 		return await Promise.all(
 			["CM", ...infrastructureBuildingNames].map(async (inf) => ({
 				ticker: inf,

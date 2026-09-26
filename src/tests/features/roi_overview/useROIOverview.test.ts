@@ -1,9 +1,10 @@
-import { ref } from "vue";
+import { nextTick, ref, Ref } from "vue";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
 
 // stores
+import { usePlanningStore } from "@/stores/planningStore";
 import {
 	materialsStore,
 	recipesStore,
@@ -33,6 +34,24 @@ vi.mock("@/database/services/usePlanetData", async () => {
 			getPlanetSpecialMaterials:
 				actual.usePlanetData().getPlanetSpecialMaterials,
 		})),
+	};
+});
+
+// record every plan calculation the ROI overview creates
+const planCalculations = vi.hoisted(() => [] as { refreshKey: Ref<number> }[]);
+
+vi.mock("@/features/planning/usePlanCalculation", async () => {
+	const actual: any = await vi.importActual(
+		"@/features/planning/usePlanCalculation"
+	);
+
+	return {
+		...actual,
+		usePlanCalculation: (...args: unknown[]) => {
+			const calculation = actual.usePlanCalculation(...args);
+			planCalculations.push(calculation);
+			return calculation;
+		},
 	};
 });
 
@@ -71,6 +90,25 @@ describe("useROIOverview", async () => {
 		const result = await calculateItem(tnp);
 
 		expect(result.length).toBe(3);
+	});
+
+	it("leaves no live plan calculation watchers behind", async () => {
+		planCalculations.length = 0;
+
+		const { calculateItem } = useROIOverview(
+			// @ts-expect-error mock definition
+			definition,
+			ref(undefined)
+		);
+
+		await calculateItem(tnp);
+		expect(planCalculations.length).toBe(3);
+
+		// @ts-expect-error mock data
+		usePlanningStore().cxs = "foo";
+		await nextTick();
+
+		planCalculations.forEach((c) => expect(c.refreshKey.value).toBe(0));
 	});
 
 	// full recipe sweep, slow under parallel load with coverage

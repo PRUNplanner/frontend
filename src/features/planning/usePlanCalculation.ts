@@ -76,7 +76,7 @@ import {
 } from "@/stores/planningStore.types";
 import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 
-export async function usePlanCalculation(
+export function usePlanCalculation(
 	plan: Ref<IPlan>,
 	empireUuid: Ref<string | undefined> = ref(undefined),
 	empireOptions: Ref<IPlanEmpireElement[] | undefined> = ref(undefined),
@@ -106,7 +106,6 @@ export async function usePlanCalculation(
 		plan.value.empires ? plan.value.empires : []
 	);
 	const planetNaturalId: Ref<string> = toRef(plan.value.planet_natural_id);
-	const planetData: IPlanet = await getPlanet(plan.value.planet_natural_id);
 	const buildings: ComputedRef<IPlanDataBuilding[]> = computed(
 		() => data.value.buildings
 	);
@@ -144,13 +143,12 @@ export async function usePlanCalculation(
 		computedActiveEmpire,
 		computeBuildingInformation,
 		computeInfrastructureBuildingInformation,
-	} = await usePlanCalculationPreComputes(
+	} = usePlanCalculationPreComputes(
 		buildings,
 		cxUuid,
 		empireUuid,
 		empireOptions,
-		planetNaturalId,
-		planetData
+		planetNaturalId
 	);
 
 	// calculations
@@ -377,6 +375,7 @@ export async function usePlanCalculation(
 		experts: IExpertRecord
 	): Promise<IProductionResult> {
 		const buildings: IProductionBuilding[] = [];
+		const planetData: IPlanet = await getPlanet(planetNaturalId.value);
 
 		// add buildings from data
 		for (const b of data.value.buildings) {
@@ -799,7 +798,9 @@ export async function usePlanCalculation(
 			profit: profit,
 			cost: cost,
 			revenue: materialRevenue,
-			infrastructureCosts: await calculateInfrastructureCosts(planetData),
+			infrastructureCosts: await calculateInfrastructureCosts(
+				await getPlanet(planetNaturalId.value)
+			),
 			constructionMaterials: await calculateConstructionMaterials(
 				infrastructureResult,
 				productionResult.buildings

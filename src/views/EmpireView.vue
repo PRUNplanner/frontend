@@ -3,6 +3,7 @@
 		computed,
 		ComputedRef,
 		defineAsyncComponent,
+		effectScope,
 		ref,
 		Ref,
 		toRef,
@@ -133,12 +134,17 @@
 			} else {
 				await Promise.resolve();
 
-				const { calculate } = await usePlanCalculation(
-					toRef(plan),
-					selectedEmpireUuid,
-					refEmpireList,
-					selectedCXUuid
-				);
+				// one-off calculation, stop its live-recalculation watchers
+				const scope = effectScope();
+				const { calculate } = scope.run(() =>
+					usePlanCalculation(
+						toRef(plan),
+						selectedEmpireUuid,
+						refEmpireList,
+						selectedCXUuid
+					)
+				)!;
+				scope.stop();
 
 				const result = await calculate();
 				calculatedPlans.value[plan.uuid!] = result;

@@ -1,5 +1,5 @@
 // Composables
-import { Ref, ref } from "vue";
+import { effectScope, Ref, ref } from "vue";
 
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
@@ -101,12 +101,12 @@ export function useROIOverview(
 				},
 			];
 
-			const calculation = await usePlanCalculation(
-				ref(definitionCopy),
-				undefined,
-				undefined,
-				cxUuid
-			);
+			// one-off calculation, stop its live-recalculation watchers
+			const scope = effectScope();
+			const calculation = scope.run(() =>
+				usePlanCalculation(ref(definitionCopy), undefined, undefined, cxUuid)
+			)!;
+			scope.stop();
 			const result = await calculation.calculate();
 
 			const overviewData = await calculation.calculateOverview(
