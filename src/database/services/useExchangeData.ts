@@ -10,7 +10,7 @@ import {
 	SIGNIFICANCE_LEVEL,
 } from "@/database/services/useExchangeData.types";
 
-export async function useExchangeData() {
+export function useExchangeData() {
 	const exchangeTypesArray: EXCHANGES_TYPE[] = [
 		"AI1",
 		"CI1",

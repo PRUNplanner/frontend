@@ -12,7 +12,7 @@ each building and runs each one through the real plan engine.
 
 | File | Role |
 | --- | --- |
-| `useROIOverview.ts` | `await useROIOverview(definitionRef, cxUuidRef)` exposes `calculate()`, `resultData`, `progressCurrent`/`progressTotal` and `formatOptimal()` |
+| `useROIOverview.ts` | `useROIOverview(definitionRef, cxUuidRef)` exposes `calculate()`, `resultData`, `progressCurrent`/`progressTotal` and `formatOptimal()` |
 | `assets/optimalProduction.ts` | Static table (`IStaticOptimalProduction[]`) of each building's optimal count plus the habs and storage that fill one base |
 | `useROIOverview.types.ts` | `IROIResult`, `IStaticOptimalProduction` |
 | `components/ROIOverviewTable.vue`, `ROIOverviewTableFilters.vue` | Result table and filters |
@@ -25,8 +25,9 @@ each building and runs each one through the real plan engine.
 2. For each building × recipe, it `deepClone`s the definition. The COGC is
    set to the building's expertise, the buildings and habs come from the
    optimal layout, and all experts are set to 5.
-3. It runs `usePlanCalculation(...).calculate()`. The loop yields to the UI
-   between buildings (`setTimeout(0)`).
+3. It runs `usePlanCalculation(...).calculate()` inside a stopped
+   `effectScope()`, so no watchers outlive the run. The loop yields to the
+   UI between buildings (`setTimeout(0)`).
 
 ## Gotchas
 

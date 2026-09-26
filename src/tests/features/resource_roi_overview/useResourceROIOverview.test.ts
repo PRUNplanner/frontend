@@ -1,5 +1,5 @@
-import { ref } from "vue";
-import { beforeAll, describe, expect, it } from "vitest";
+import { nextTick, ref, Ref } from "vue";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axiosSetup from "@/util/axiosSetup";
@@ -12,6 +12,7 @@ import { apiService } from "@/lib/apiService";
 import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
 
 // stores
+import { usePlanningStore } from "@/stores/planningStore";
 import {
 	materialsStore,
 	recipesStore,
@@ -32,6 +33,24 @@ import planet_search_results from "@/tests/test_data/api_data_planet_search.json
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
 
+// record every plan calculation the resource ROI overview creates
+const planCalculations = vi.hoisted(() => [] as { refreshKey: Ref<number> }[]);
+
+vi.mock("@/features/planning/usePlanCalculation", async () => {
+	const actual: any = await vi.importActual(
+		"@/features/planning/usePlanCalculation"
+	);
+
+	return {
+		...actual,
+		usePlanCalculation: (...args: unknown[]) => {
+			const calculation = actual.usePlanCalculation(...args);
+			planCalculations.push(calculation);
+			return calculation;
+		},
+	};
+});
+
 describe("useResourceROIOverview", async () => {
 	beforeAll(async () => {
 		setActivePinia(createPinia());
@@ -45,7 +64,7 @@ describe("useResourceROIOverview", async () => {
 		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
-		const { preloadBuildings, preloadRecipes } = await useBuildingData();
+		const { preloadBuildings, preloadRecipes } = useBuildingData();
 
 		await preload();
 		await preloadBuildings();
@@ -75,6 +94,22 @@ describe("useResourceROIOverview", async () => {
 		expect(result[0].dailyYield).toBe(2359.3500937521458);
 		expect(result[0].dailyProfit).toBe(88631.84364589654);
 		expect(result[0].planetSurface.length).toBe(1);
+	});
+
+	it("leaves no live plan calculation watchers behind", async () => {
+		mock.onPost("/data/planets/search/").reply(200, [planet_etherwind]);
+		planCalculations.length = 0;
+
+		const { calculate } = useResourceROIOverview(ref(undefined));
+
+		await calculate("H2O");
+		expect(planCalculations.length).toBeGreaterThan(0);
+
+		// @ts-expect-error mock data
+		usePlanningStore().cxs = "foo";
+		await nextTick();
+
+		planCalculations.forEach((c) => expect(c.refreshKey.value).toBe(0));
 	});
 
 	describe("getPlanetEnvironment", async () => {

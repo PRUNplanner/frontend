@@ -91,10 +91,16 @@ time.
   - Interfaces are prefixed with `I` (`IPlan`, `IPlanResult`).
   - Components are PascalCase with a feature prefix (`Plan*`, `Empire*`,
     `CX*`, `FIO*`).
-- **Many composables are `async`**: `usePlanCalculation`, `usePrice`,
-  `useBuildingData` and others. Their callers `await` them in
-  `<script setup>`, which works because views render inside `<Suspense>`.
-  Keep that in mind when you add one.
+- **Composables are synchronous.** Register `watch`, `watchEffect` and
+  lifecycle hooks before any `await`, because Vue only binds them to the
+  component during synchronous setup. An `async useX()` that awaits first
+  leaks its watchers. Put async work in the functions a composable returns
+  (`getPrice`, `calculate`, …), or load it up front in a `features/wrapper`
+  loader. `useGraph` is the one async composable left: it loads planets and
+  registers no watchers.
+- **Calling a composable outside setup** (in a loop or an event handler)
+  means no component owns its watchers. Run it in `effectScope()` and
+  stop the scope when done (see `useROIOverview`).
 - **SFC layout.** `<script setup lang="ts">` comes first. Group imports under
   comment headers (`// Composables`, `// Components`, `// Types & Interfaces`,
   `// UI`). Load heavy children with `defineAsyncComponent`.

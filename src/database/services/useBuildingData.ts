@@ -27,7 +27,7 @@ import {
 
 const buildingsCache = new Map<string, IBuilding>();
 
-export async function useBuildingData() {
+export function useBuildingData() {
 	const {
 		allData: allDataBuildings,
 		get: getStoreBuilding,
@@ -43,8 +43,8 @@ export async function useBuildingData() {
 	const { t } = i18n.global as unknown as Composer;
 
 	const { getPlanetSpecialMaterials } = usePlanetData();
-	const { combineMaterialIOMinimal } = await useMaterialIOUtil();
-	const { calculateWorkforceConsumption } = await useWorkforceCalculation();
+	const { combineMaterialIOMinimal } = useMaterialIOUtil();
+	const { calculateWorkforceConsumption } = useWorkforceCalculation();
 
 	const buildingsMap = computed((): Record<string, IBuilding> => {
 		return (allDataBuildings.value ?? []).reduce(

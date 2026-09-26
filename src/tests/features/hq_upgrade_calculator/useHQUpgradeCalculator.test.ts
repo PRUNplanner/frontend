@@ -34,7 +34,7 @@ describe("useHQUpgradeCalculator", async () => {
 	});
 
 	it("levelOptions", async () => {
-		const { levelOptions, levelOptionsTo } = await useHQUpgradeCalculator(
+		const { levelOptions, levelOptionsTo } = useHQUpgradeCalculator(
 			refStart,
 			refTo,
 			refOverride,
@@ -46,13 +46,12 @@ describe("useHQUpgradeCalculator", async () => {
 	});
 
 	it("materialData", async () => {
-		const { materialData, calculateMaterialData } =
-			await useHQUpgradeCalculator(
-				refStart,
-				refTo,
-				refOverride,
-				refCXUuid
-			);
+		const { materialData, calculateMaterialData } = useHQUpgradeCalculator(
+			refStart,
+			refTo,
+			refOverride,
+			refCXUuid
+		);
 
 		await calculateMaterialData();
 
@@ -62,7 +61,7 @@ describe("useHQUpgradeCalculator", async () => {
 
 	it("totalCost", async () => {
 		const { totalCost, materialData, calculateMaterialData } =
-			await useHQUpgradeCalculator(
+			useHQUpgradeCalculator(
 				refStart,
 				refTo,
 				refOverride,
@@ -86,13 +85,12 @@ describe("useHQUpgradeCalculator", async () => {
 	});
 
 	it("totalWeightVolume", async () => {
-		const { totalWeightVolume, calculateMaterialData } =
-			await useHQUpgradeCalculator(
-				refStart,
-				refTo,
-				refOverride,
-				refCXUuid
-			);
+		const { totalWeightVolume, calculateMaterialData } = useHQUpgradeCalculator(
+			refStart,
+			refTo,
+			refOverride,
+			refCXUuid
+		);
 
 		await calculateMaterialData();
 

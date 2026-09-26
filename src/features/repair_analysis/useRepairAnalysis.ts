@@ -18,7 +18,7 @@ import {
 } from "@/features/planning/usePlanCalculation.types";
 import { PSelectOption } from "@/ui/ui.types";
 
-export async function useRepairAnalysis(
+export function useRepairAnalysis(
 	cxUuid: Ref<string | undefined>,
 	planetNaturalId: Ref<string | undefined>
 ) {
@@ -26,9 +26,9 @@ export async function useRepairAnalysis(
 	const DAY_MAX = REPAIR_DAY_MAX;
 
 	const { combineMaterialIOMinimal, enhanceMaterialIOMinimal } =
-		await useMaterialIOUtil();
+		useMaterialIOUtil();
 
-	const { enhanceMaterialIOMaterial } = await usePrice(
+	const { enhanceMaterialIOMaterial } = usePrice(
 		cxUuid,
 		planetNaturalId
 	);

@@ -11,7 +11,7 @@ overrides) and prices the remainder.
 
 - **`hq_levels.json`**: static materials per HQ level. Update it when the
   game changes.
-- **`useHQUpgradeCalculator.ts`**: `await useHQUpgradeCalculator(startRef,
+- **`useHQUpgradeCalculator.ts`**: `useHQUpgradeCalculator(startRef,
   toRef, overrideRef, cxUuidRef)`. It uses:
   - `usePrice` for prices;
   - `useFIOStorage().findMaterial` for owned stock;

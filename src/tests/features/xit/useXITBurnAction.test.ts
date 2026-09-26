@@ -1,10 +1,10 @@
-import { Ref, ref } from "vue";
+import { effectScope, Ref, ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
 // Stores
-import { materialsStore } from "@/database/stores";
+import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Composables
@@ -15,6 +15,7 @@ import { IXITActionElement } from "@/features/xit/xitAction.types";
 
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";
+import exchanges from "@/tests/test_data/api_data_exchanges.json";
 
 describe("useBurnXITAction", async () => {
 	beforeAll(async () => {
@@ -63,7 +64,7 @@ describe("useBurnXITAction", async () => {
 	const materialInactives: Set<string> = new Set(["FEO"]);
 
 	it("materialTable", async () => {
-		const { materialTable } = await useBurnXITAction(
+		const { materialTable } = useBurnXITAction(
 			ref(elements),
 			ref(resupplyDays),
 			ref(hideInfinite),
@@ -80,7 +81,7 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("totalWeightVolume", async () => {
-		const { totalWeightVolume } = await useBurnXITAction(
+		const { totalWeightVolume } = useBurnXITAction(
 			ref(elements),
 			ref(resupplyDays),
 			ref(hideInfinite),
@@ -97,7 +98,7 @@ describe("useBurnXITAction", async () => {
 	it("fit", async () => {
 		const days = ref(5);
 
-		const { fit } = await useBurnXITAction(
+		const { fit } = useBurnXITAction(
 			ref(elements),
 			days,
 			ref(hideInfinite),
@@ -116,5 +117,36 @@ describe("useBurnXITAction", async () => {
 		days.value = 50;
 		fit(50, 50);
 		expect(days.value).toBe(7);
+	});
+
+	it("stops updating totalPrice once its scope is stopped", async () => {
+		// @ts-expect-error mock data date as string
+		await exchangesStore.setMany(exchanges);
+
+		const days = ref(5);
+		const scope = effectScope();
+		const { totalPrice } = scope.run(() =>
+			useBurnXITAction(
+				ref([{ ticker: "RAT", stock: 0, delta: -10 }]),
+				days,
+				ref(true),
+				ref({}),
+				ref(new Set<string>()),
+				ref(undefined),
+				ref(undefined)
+			)
+		)!;
+
+		// live while the scope is active
+		await vi.waitFor(() => expect(totalPrice.value).toBeGreaterThan(0));
+		const initial = totalPrice.value;
+		days.value = 10;
+		await vi.waitFor(() => expect(totalPrice.value).toBe(initial * 2));
+
+		scope.stop();
+		days.value = 20;
+		await flushPromises();
+
+		expect(totalPrice.value).toBe(initial * 2);
 	});
 });

@@ -1,4 +1,4 @@
-import { nextTick, ref } from "vue";
+import { effectScope, nextTick, ref } from "vue";
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
@@ -55,7 +55,7 @@ describe("usePlanCalculation", async () => {
 		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
-		const { preloadBuildings, preloadRecipes } = await useBuildingData();
+		const { preloadBuildings, preloadRecipes } = useBuildingData();
 
 		await preload();
 		await preloadBuildings();
@@ -66,7 +66,7 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("refreshkey", async () => {
-		const calculation = await usePlanCalculation(
+		const calculation = usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
@@ -85,8 +85,42 @@ describe("usePlanCalculation", async () => {
 		expect(refreshKey.value).toBe(1);
 	});
 
+	it("stops recalculating once its effect scope is stopped", async () => {
+		const plan = ref(structuredClone(plan_etherwind));
+
+		const scope = effectScope();
+		const { result, refreshKey, calculate } = scope.run(() =>
+			usePlanCalculation(
+				// @ts-expect-error mock data
+				plan,
+				ref(undefined),
+				ref(undefined),
+				ref(undefined)
+			)
+		)!;
+
+		// live while the scope is active
+		await vi.waitFor(() => expect(result.value.materialio.length).toBe(18));
+		const initial = result.value;
+		plan.value.plan_data.buildings[0].amount++;
+		await vi.waitFor(() => expect(result.value).not.toBe(initial));
+
+		scope.stop();
+		const stopped = result.value;
+		plan.value.plan_data.buildings[0].amount++;
+		// @ts-expect-error mock data
+		planningStore.cxs = "bar";
+
+		// a leaked watcher would be done by the time this finishes
+		await calculate();
+		await flushPromises();
+
+		expect(result.value).toBe(stopped);
+		expect(refreshKey.value).toBe(0);
+	});
+
 	it("validate result", async () => {
-		const { calculate } = await usePlanCalculation(
+		const { calculate } = usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
@@ -111,7 +145,7 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("result figures are internally consistent", async () => {
-		const { calculate } = await usePlanCalculation(
+		const { calculate } = usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
@@ -165,7 +199,7 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("validate overviewData", async () => {
-		const calculation = await usePlanCalculation(
+		const calculation = usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
@@ -185,7 +219,7 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("validate visitationData", async () => {
-		const { calculate, visitationData } = await usePlanCalculation(
+		const { calculate, visitationData } = usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
@@ -199,7 +233,7 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("validate existing and saveable", async () => {
-		const calculation = await usePlanCalculation(
+		const calculation = usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
@@ -213,7 +247,7 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("backendData", async () => {
-		const calculation = await usePlanCalculation(
+		const calculation = usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),

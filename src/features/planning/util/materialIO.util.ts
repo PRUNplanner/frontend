@@ -14,7 +14,7 @@ import {
 } from "@/features/planning/usePlanCalculation.types";
 import { IPlanEmpireElement, PLAN_FACTION } from "@/stores/planningStore.types";
 
-export async function useMaterialIOUtil() {
+export function useMaterialIOUtil() {
 	const { materialsMap } = useMaterialData();
 
 	/**

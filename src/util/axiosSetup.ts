@@ -25,9 +25,7 @@ export default function axiosSetup() {
 	// Request Authorization Header
 	axios.interceptors.request.use(
 		async (config) => setAxiosHeader(config),
-		(error) => {
-			Promise.reject(error);
-		}
+		(error) => Promise.reject(error)
 	);
 
 	// Response Token Expiry interceptor

@@ -11,7 +11,7 @@ import {
 } from "@/features/xit/xitAction.types";
 import { IMaterial } from "@/features/api/gameData.types";
 
-export async function useBurnXITAction(
+export function useBurnXITAction(
 	elements: Ref<IXITActionElement[]>,
 	resupplyDays: Ref<number>,
 	hideInfinite: Ref<boolean>,
@@ -24,7 +24,7 @@ export async function useBurnXITAction(
 	const { materialsMap } = useMaterialData();
 
 	// get price function
-	const { getPrice } = await usePrice(cxUuid, planetNaturalId);
+	const { getPrice } = usePrice(cxUuid, planetNaturalId);
 
 	// buildupo material overrides
 	materialOverrides.value = elements.value.reduce(

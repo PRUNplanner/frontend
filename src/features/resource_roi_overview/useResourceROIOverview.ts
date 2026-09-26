@@ -1,4 +1,4 @@
-import { ref, Ref } from "vue";
+import { effectScope, ref, Ref } from "vue";
 import pLimit from "p-limit";
 
 // API
@@ -194,8 +194,13 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		// artificially set cogc to resource extraction
 		definition.value.plan_cogc = "RESOURCE_EXTRACTION";
 
+		// one-off calculation, stop its live-recalculation watchers
+		const scope = effectScope();
 		const { handleCreateBuilding, calculateOverview, calculate } =
-			await usePlanCalculation(definition, undefined, undefined, cxUuid);
+			scope.run(() =>
+				usePlanCalculation(definition, undefined, undefined, cxUuid)
+			)!;
+		scope.stop();
 
 		// create building
 		await handleCreateBuilding(optimal.ticker);

@@ -8,7 +8,7 @@ Everything that shows those numbers goes through one composable.
 ## `usePlanCalculation` (`src/features/planning/usePlanCalculation.ts`)
 
 ```ts
-const calc = await usePlanCalculation(
+const calc = usePlanCalculation(
   planRef,            // Ref<IPlan>, required
   empireUuidRef,      // Ref<string | undefined>, the empire context (faction, permits)
   empireOptionsRef,   // Ref<IPlanEmpireElement[] | undefined>, the list to resolve that uuid
@@ -16,11 +16,16 @@ const calc = await usePlanCalculation(
 );
 ```
 
-- **It is async and must be awaited.** It loads the planet, building and
-  price data up front.
+- **It is synchronous.** Planet, building and price data are loaded inside
+  `calculate()`, so its watchers are registered during setup and stop with
+  the component.
 - **It recalculates automatically.** A deep watch on `[plan, refreshKey,
   empireUuid]` re-runs `calculate()` and writes `calc.result`.
   `refreshKey` increments whenever `planningStore.cxs` changes.
+- **Batch callers stop the watchers.** Empire, FIO burn and the ROI
+  overviews call it outside setup, so no component owns its watchers. They
+  create it in an `effectScope()`, stop the scope straight away and call
+  `calculate()` themselves.
 - **Returned fields:**
 
   | Field | Meaning |
@@ -82,14 +87,16 @@ const calc = await usePlanCalculation(
 | `extractionCalculations.ts` | Extractor output from planet resources (`calculateExtraction`) |
 
 `usePlanCalculationPreComputes.ts` caches per-building data (construction
-and workforce materials, recipes) and resolves the active empire.
+and workforce materials, recipes) and resolves the active empire. It reads
+the planet itself with `getPlanet` inside its async functions (cheap after
+the first read, as `useDB` caches it).
 `usePlanCalculationHandlers.ts` holds every edit operation (`handleUpdate*`,
 `handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data` and
 sets `modified`.
 
 ## Prices: `usePrice` (`src/features/cx/usePrice.ts`)
 
-`await usePrice(cxUuidRef, planetNaturalIdRef)` gives you `getPrice(ticker,
+`usePrice(cxUuidRef, planetNaturalIdRef)` gives you `getPrice(ticker,
 "BUY" | "SELL")`, `enhanceMaterialIOMaterial`, `getMaterialIOTotalPrice` and
 `calculateInfrastructureCosts`.
 
@@ -119,6 +126,9 @@ An empire is a named group of plans with a faction and permits
   `PatchEmpireState`.
 - The FIO burn view, ROI overview and resource ROI overview follow the same
   pattern: they build or load plans, then call `usePlanCalculation` on each.
+- All of these run outside component setup, so each calculation is created
+  in an `effectScope()` that is stopped straight away (see above).
+  Otherwise its watchers would live on and recalculate on every CX change.
 
 ## Plan lifecycle (`src/features/planning_data/usePlan.ts`)
 

@@ -28,7 +28,7 @@ class Config {
 		this.GAME_DATA_STALE_MINUTES_PLANETS =
 			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_PLANETS || 3 * 60;
 		this.INDEXEDDB_DBNAME =
-			import.meta.env.VITE_INDEXEDDB_DBNANAME || "prunplanner";
+			import.meta.env.VITE_INDEXEDDB_DBNAME || "prunplanner";
 	}
 }
 

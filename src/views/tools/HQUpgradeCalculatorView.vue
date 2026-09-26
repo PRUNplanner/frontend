@@ -50,7 +50,7 @@
 		totalCost,
 		totalWeightVolume,
 		calculateMaterialData,
-	} = await useHQUpgradeCalculator(
+	} = useHQUpgradeCalculator(
 		selectedStart,
 		selectedTo,
 		selectedOverride,

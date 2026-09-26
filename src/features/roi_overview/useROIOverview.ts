@@ -1,5 +1,5 @@
 // Composables
-import { Ref, ref } from "vue";
+import { effectScope, Ref, ref } from "vue";
 
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
@@ -20,11 +20,11 @@ import {
 	IStaticOptimalProduction,
 } from "@/features/roi_overview/useROIOverview.types";
 
-export async function useROIOverview(
+export function useROIOverview(
 	definition: Ref<IPlan>,
 	cxUuid: Ref<string | undefined>
 ) {
-	const { getBuilding, getBuildingRecipes } = await useBuildingData();
+	const { getBuilding, getBuildingRecipes } = useBuildingData();
 
 	// Filter for all non-extracting and non-fertility needing buildings
 	const filteredOptimalProduction = optimalProduction.filter(
@@ -101,12 +101,12 @@ export async function useROIOverview(
 				},
 			];
 
-			const calculation = await usePlanCalculation(
-				ref(definitionCopy),
-				undefined,
-				undefined,
-				cxUuid
-			);
+			// one-off calculation, stop its live-recalculation watchers
+			const scope = effectScope();
+			const calculation = scope.run(() =>
+				usePlanCalculation(ref(definitionCopy), undefined, undefined, cxUuid)
+			)!;
+			scope.stop();
 			const result = await calculation.calculate();
 
 			const overviewData = await calculation.calculateOverview(

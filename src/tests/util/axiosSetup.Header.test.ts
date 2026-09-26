@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 
-import { setAxiosHeader } from "@/util/axiosSetup";
+import axios from "axios";
+
+import axiosSetup, { setAxiosHeader } from "@/util/axiosSetup";
 import { useUserStore } from "@/stores/userStore";
 
 vi.mock("@/stores/userStore", () => ({
@@ -38,5 +40,21 @@ describe("Axios Header", () => {
 
 		expect(result.headers.Authorization).toBeUndefined();
 		expect(result.headers.withCredentials).toBeUndefined();
+	});
+
+	it("Request interceptor rejects on request errors", async () => {
+		const requestUse = vi
+			.spyOn(axios.interceptors.request, "use")
+			.mockReturnValue(0);
+		vi.spyOn(axios.interceptors.response, "use").mockReturnValue(0);
+
+		axiosSetup();
+
+		const onRejected = requestUse.mock.calls[0][1]!;
+		const error = new Error("request failed");
+
+		await expect(onRejected(error)).rejects.toBe(error);
+
+		vi.restoreAllMocks();
 	});
 });

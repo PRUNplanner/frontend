@@ -41,7 +41,7 @@ export function useQuery<K extends keyof IQueryRepository>(
 	return {
 		state: state,
 		loading: state.value?.loading ?? false,
-		error: state.value?.error !== null,
+		error: (state.value?.error ?? null) !== null,
 		data: state.value?.data as DataOfDefinition<IQueryRepository[K]> | null,
 		execute,
 	};

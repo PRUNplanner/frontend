@@ -20,7 +20,7 @@ import materials from "@/tests/test_data/api_data_materials.json";
 // the recipe sweep itself is covered by useROIOverview.test.ts
 const calculate = vi.fn<() => Promise<IROIResult[] | undefined>>();
 vi.mock("@/features/roi_overview/useROIOverview", () => ({
-	useROIOverview: async () => ({
+	useROIOverview: () => ({
 		calculate,
 		formatOptimal: (o: { amount: number; ticker: string }) =>
 			`${o.amount}x ${o.ticker}`,
