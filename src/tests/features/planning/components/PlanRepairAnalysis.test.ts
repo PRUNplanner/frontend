@@ -33,6 +33,28 @@ vi.mock("@/ui/charts/PlanRepairCostChart.vue", () => ({
 	},
 }));
 
+// lets a test fail the next price lookup
+const priceGate = vi.hoisted(() => ({ failNext: false }));
+vi.mock("@/features/cx/usePrice", async (importOriginal) => {
+	const actual =
+		await importOriginal<typeof import("@/features/cx/usePrice")>();
+	return {
+		...actual,
+		usePrice: (...args: Parameters<typeof actual.usePrice>) => {
+			const price = actual.usePrice(...args);
+			return {
+				...price,
+				getPrice: async (...a: Parameters<typeof price.getPrice>) => {
+					if (priceGate.failNext) {
+						priceGate.failNext = false;
+						throw new Error("prices unavailable");
+					}
+					return price.getPrice(...a);
+				},
+			};
+		},
+	};
+});
 const CX_UUID = "cx-uuid";
 // BUY prices of the CX
 const PRICES = { BBH: 100, BSE: 50, MCG: 10 };
@@ -51,7 +73,7 @@ const EXT = {
 	constructionMaterials: [mat("BSE", 16), mat("MCG", 100)],
 };
 
-async function mountAnalysis(data = [FRM, EXT]) {
+async function mountAnalysis(data = [FRM, EXT], waitForTable = true) {
 	const pinia = createPinia();
 	usePlanningStore(pinia).setCXs([
 		// @ts-expect-error mock data
@@ -74,6 +96,7 @@ async function mountAnalysis(data = [FRM, EXT]) {
 		{ data, cxUuid: CX_UUID, planetNaturalId: "ZV-307c" },
 		{ pinia }
 	);
+	if (!waitForTable) return mounted;
 	// 181 days of materials are priced through IndexedDB
 	await vi.waitFor(() =>
 		expect(mounted.wrapper.find("tfoot").exists()).toBe(true)
@@ -252,6 +275,23 @@ describe("PlanRepairAnalysis", () => {
 		expect(
 			wrapper.findComponent(PlanRepairProfitChart).props("profitData")
 		).toHaveLength(181);
+	});
+
+	it("logs a failed price lookup and recovers on the next calculation", async () => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		priceGate.failNext = true;
+
+		const { wrapper } = await mountAnalysis([FRM, EXT], false);
+
+		await vi.waitFor(() =>
+			expect(error).toHaveBeenCalledWith(new Error("prices unavailable"))
+		);
+		expect(dayRows(wrapper)).toEqual([]);
+		error.mockRestore();
+
+		// picking a building calculates again
+		await select(wrapper, 1, 1);
+		await vi.waitFor(() => expect(dayRows(wrapper)).toHaveLength(3));
 	});
 
 	it("hides the charts without buildings", async () => {

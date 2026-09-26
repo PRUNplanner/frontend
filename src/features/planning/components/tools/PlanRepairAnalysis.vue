@@ -120,10 +120,13 @@
 				selectedBuilding.value =
 					localData.value.length > 0 ? 0 : undefined;
 
-			await calculateRep();
-			dailyRepairMaterials.value = await calculateDailyRepairMaterials(
-				localData.value
-			);
+			try {
+				await calculateRep();
+				dailyRepairMaterials.value =
+					await calculateDailyRepairMaterials(localData.value);
+			} catch (err) {
+				console.error(err);
+			}
 		},
 		{
 			deep: true,
