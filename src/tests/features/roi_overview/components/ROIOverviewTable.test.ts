@@ -275,6 +275,37 @@ describe("ROIOverviewTable", () => {
 		).toHaveLength(1);
 	});
 
+	it("keeps calculating until the newest run is done", async () => {
+		const first = deferred();
+		const second = deferred();
+		calculate
+			.mockReturnValueOnce(first.promise)
+			.mockReturnValueOnce(second.promise);
+		const { wrapper, setProps } = await mountComponent(ROIOverviewTable, {
+			planDefinition: {},
+		});
+
+		await setProps({ cxUuid: "cx-uuid" });
+		// the composable ends the superseded run with undefined
+		first.resolve(undefined);
+		await flushPromises();
+		expect(wrapper.findComponent(PProgressBar).exists()).toBe(true);
+
+		second.resolve([RESULTS[1]]);
+		await flushPromises();
+		expect(outputs(wrapper)).toEqual(["BSE"]);
+	});
+
+	it("stops calculating when the calculation fails", async () => {
+		calculate.mockRejectedValue(new Error("failed"));
+		const { wrapper } = await mountComponent(ROIOverviewTable, {
+			planDefinition: {},
+		});
+
+		expect(wrapper.findComponent(PProgressBar).exists()).toBe(false);
+		expect(tableRows(wrapper)).toHaveLength(0);
+	});
+
 	it("renders an empty table without results", async () => {
 		const { wrapper } = await mountTable([]);
 
