@@ -3,7 +3,7 @@ import { computed, ComputedRef, Ref } from "vue";
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePlanetData } from "@/database/services/usePlanetData";
-import { usePrice } from "@/features/cx/usePrice";
+import { PriceCache, usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
 import {
@@ -92,7 +92,8 @@ export function usePlanCalculationPreComputes(
 	);
 
 	async function computeBuildingInformation(
-		planet?: IPlanet
+		planet?: IPlanet,
+		prices?: PriceCache
 	): Promise<IPreBuildingRecord> {
 		const map: IPreBuildingRecord = {};
 		const planetData: IPlanet =
@@ -116,7 +117,8 @@ export function usePlanCalculationPreComputes(
 				constructionMaterials: constructionMaterials,
 				constructionCost: await getMaterialIOTotalPrice(
 					constructionMaterials,
-					"BUY"
+					"BUY",
+					prices
 				),
 				workforceMaterials: workforceMaterials,
 			};

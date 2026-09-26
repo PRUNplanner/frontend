@@ -55,6 +55,18 @@ describe("usePrice", async () => {
 	});
 
 	describe("getPrice", async () => {
+		it("resolves each ticker and type once per cache", async () => {
+			const { getPrice } = usePrice(ref(fakeCXUuid), ref("KW-688c"));
+			const cache = new Map();
+
+			const first = getPrice("NS", "BUY", cache);
+			expect(getPrice("NS", "BUY", cache)).toBe(first);
+			await getPrice("NS", "SELL", cache);
+
+			expect([...cache.keys()]).toStrictEqual(["NS#BUY", "NS#SELL"]);
+			expect(await first).toBe(await getPrice("NS", "BUY"));
+		});
+
 		it("unknown cx uuid", async () => {
 			const { getPrice } = usePrice(ref("meow"), ref("foo"));
 

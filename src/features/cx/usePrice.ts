@@ -19,6 +19,13 @@ import { IPlanet } from "@/features/api/gameData.types";
 import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
 
 /**
+ * Per-calculation price memo: create one Map per calculation run and pass
+ * it along, so each (ticker, type) is resolved once per run while CX
+ * changes still apply to the next run.
+ */
+export type PriceCache = Map<string, Promise<number>>;
+
+/**
  * # Material Price & CX Preference Logic
  *
  * This module operates based on the following key principles to determine prices:
@@ -60,9 +67,26 @@ export function usePrice(
 	 *
 	 * @param {string} materialTicker Material Ticker e.g., "RAT"
 	 * @param {("BUY" | "SELL")} type Buying or Selling
+	 * @param {PriceCache} [cache] Per-run memo, see PriceCache
 	 * @returns {number} Price
 	 */
-	async function getPrice(
+	function getPrice(
+		materialTicker: string,
+		type: "BUY" | "SELL",
+		cache?: PriceCache
+	): Promise<number> {
+		if (!cache) return resolvePrice(materialTicker, type);
+
+		const key = `${materialTicker}#${type}`;
+		let price = cache.get(key);
+		if (!price) {
+			price = resolvePrice(materialTicker, type);
+			cache.set(key, price);
+		}
+		return price;
+	}
+
+	async function resolvePrice(
 		materialTicker: string,
 		type: "BUY" | "SELL"
 	): Promise<number> {
@@ -169,15 +193,17 @@ export function usePrice(
 	 *
 	 * @param {IMaterialIOMinimal[]} data Material IO []
 	 * @param {("BUY" | "SELL")} type Buying or Selling
+	 * @param {PriceCache} [cache] Per-run memo, see PriceCache
 	 * @returns {number} Total Price of MaterialIO[]
 	 */
 	async function getMaterialIOTotalPrice(
 		data: IMaterialIOMinimal[],
-		type: "BUY" | "SELL"
+		type: "BUY" | "SELL",
+		cache?: PriceCache
 	): Promise<number> {
 		let sum = 0;
 		for (const e of data) {
-			const price = await getPrice(e.ticker, type);
+			const price = await getPrice(e.ticker, type, cache);
 			sum += price * (e.output - e.input);
 		}
 		return sum;
@@ -252,18 +278,20 @@ export function usePrice(
 	 * @author jplacht
 	 *
 	 * @param {IMaterialIOMaterial[]} data Minimal Material I/O
+	 * @param {PriceCache} [cache] Per-run memo, see PriceCache
 	 * @returns {IMaterialIO[]} Material I/O
 	 */
 	async function enhanceMaterialIOMaterial(
-		data: IMaterialIOMaterial[]
+		data: IMaterialIOMaterial[],
+		cache?: PriceCache
 	): Promise<IMaterialIO[]> {
 		const enhancedArray: IMaterialIO[] = [];
 
 		for (const material of data) {
 			const price =
 				material.delta >= 0
-					? await getPrice(material.ticker, "SELL")
-					: await getPrice(material.ticker, "BUY");
+					? await getPrice(material.ticker, "SELL", cache)
+					: await getPrice(material.ticker, "BUY", cache);
 
 			enhancedArray.push({
 				...material,
@@ -279,10 +307,12 @@ export function usePrice(
 	 * @author jplacht
 	 *
 	 * @param {IPlanet} planet Planet Information
+	 * @param {PriceCache} [cache] Per-run memo, see PriceCache
 	 * @returns {IInfrastructureCosts} Infrastructure Construction Costs
 	 */
 	async function calculateInfrastructureCosts(
-		planet: IPlanet
+		planet: IPlanet,
+		cache?: PriceCache
 	): Promise<IInfrastructureCosts> {
 		const results: IInfrastructureCosts = {
 			HB1: 0,
@@ -306,7 +336,8 @@ export function usePrice(
 				const building = await getBuilding(buildingTicker);
 				const totalPrice = await getMaterialIOTotalPrice(
 					getBuildingConstructionMaterials(building, planet),
-					"BUY"
+					"BUY",
+					cache
 				);
 
 				results[buildingTicker] = totalPrice * -1;
