@@ -26,6 +26,7 @@ export interface IROIResult {
 	buildingTicker: string;
 	optimalSetup: IStaticOptimalProduction;
 	recipeId: string;
+	dailyRuns: number;
 	recipeInputs: IRecipeMaterial[];
 	recipeOutputs: IRecipeMaterial[];
 	cogc: PLAN_COGCPROGRAM_TYPE;

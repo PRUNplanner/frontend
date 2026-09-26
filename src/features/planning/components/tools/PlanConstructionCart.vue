@@ -393,7 +393,7 @@
 						v-for="mat in uniqueMaterials"
 						:key="`CONSTRUCTIONCART#COLUMN#${mat}`"
 						class="text-center!">
-						<MaterialTile :key="mat" :ticker="mat" />
+						<MaterialTile :key="mat" :ticker="mat" popover-placement="bottom" />
 					</th>
 				</tr>
 			</thead>
