@@ -1,3 +1,5 @@
+import { toRaw } from "vue";
+
 // Stores
 import { usePlanningStore } from "@/stores/planningStore";
 import { useDB } from "@/database/composables/useDB";
@@ -21,7 +23,13 @@ import {
 	IGameData,
 	IPlanContext,
 } from "@/features/planning/engine/engine.types";
+import { IRecipe } from "@/features/api/gameData.types";
 import { IPlanEmpire, IPlanEmpireElement } from "@/stores/planningStore.types";
+
+// recipes grouped by building, for the recipe array loaded last
+let groupedRecipes:
+	| { recipes: IRecipe[]; byBuilding: Record<string, IRecipe[]> }
+	| undefined;
 
 /**
  * The empire a plan is calculated for: the option with the given uuid,
@@ -55,6 +63,28 @@ export function usePlanContext() {
 	const exchangesDB = useDB(exchangesStore);
 
 	/**
+	 * Game data as plain maps, synchronously. Requires loaded game data
+	 * (loadGameData). Inside a computed, it tracks recipe reloads.
+	 *
+	 * @returns {IGameData} Game data
+	 */
+	function getGameData(): IGameData {
+		const recipes: IRecipe[] = toRaw(recipesDB.allData.value) ?? [];
+
+		if (groupedRecipes?.recipes !== recipes)
+			groupedRecipes = {
+				recipes,
+				byBuilding: groupRecipesByBuilding(recipes),
+			};
+
+		return {
+			buildings: buildingsDB.cacheData,
+			recipesByBuilding: groupedRecipes.byBuilding,
+			materials: materialsDB.cacheData,
+		};
+	}
+
+	/**
 	 * Game data as plain maps. Preloads first, which is a no-op once the
 	 * game data loaders have run (see docs/data-layer.md).
 	 *
@@ -68,13 +98,7 @@ export function usePlanContext() {
 			exchangesDB.preload(),
 		]);
 
-		return {
-			buildings: buildingsDB.cacheData,
-			recipesByBuilding: groupRecipesByBuilding(
-				recipesDB.cacheData.values()
-			),
-			materials: materialsDB.cacheData,
-		};
+		return getGameData();
 	}
 
 	/**
@@ -115,5 +139,5 @@ export function usePlanContext() {
 		};
 	}
 
-	return { loadGameData, createPrices, createContext };
+	return { getGameData, loadGameData, createPrices, createContext };
 }

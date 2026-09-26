@@ -5,14 +5,6 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { useExchangeData } from "@/database/services/useExchangeData";
-import { useBuildingData } from "@/database/services/useBuildingData";
-
-// Stores
-import { useDB } from "@/database/composables/useDB";
-import { buildingsStore } from "@/database/stores";
-
-// Engine
-import { calculateInfrastructureCosts as infrastructureCosts } from "@/features/planning/engine/construction";
 
 // Price Book
 import {
@@ -30,8 +22,6 @@ import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
-import { IPlanet } from "@/features/api/gameData.types";
-import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
 
 /**
  * # Material Prices
@@ -48,8 +38,6 @@ export function usePrice(
 
 	const { preload: preloadExchanges, getExchangeTickerLoaded } =
 		useExchangeData();
-	const { preloadBuildings } = useBuildingData();
-	const { cacheData: buildings } = useDB(buildingsStore);
 
 	/**
 	 * Creates a price book for the current CX preference and planet, after
@@ -114,43 +102,10 @@ export function usePrice(
 		return enhanceWithBook(await getPriceBook(), data);
 	}
 
-	/**
-	 * Calculates all infrastructure buildings construction costs with a
-	 * given price book, synchronously. Building data must be loaded.
-	 * @author jplacht
-	 *
-	 * @param {IPriceBook} book Price Book
-	 * @param {IPlanet} planet Planet Information
-	 * @returns {IInfrastructureCosts} Infrastructure Construction Costs
-	 */
-	function calculateInfrastructureCostsWith(
-		book: IPriceBook,
-		planet: IPlanet
-	): IInfrastructureCosts {
-		return infrastructureCosts(book, planet, buildings);
-	}
-
-	/**
-	 * Calculates all infrastructure buildings construction costs
-	 * @author jplacht
-	 *
-	 * @param {IPlanet} planet Planet Information
-	 * @returns {IInfrastructureCosts} Infrastructure Construction Costs
-	 */
-	async function calculateInfrastructureCosts(
-		planet: IPlanet
-	): Promise<IInfrastructureCosts> {
-		await preloadBuildings();
-		return calculateInfrastructureCostsWith(await getPriceBook(), planet);
-	}
-
 	return {
-		getPriceBook,
 		getPrice,
 		getMaterialIOTotalPrice,
 		getExchangeCodeKey,
 		enhanceMaterialIOMaterial,
-		calculateInfrastructureCosts,
-		calculateInfrastructureCostsWith,
 	};
 }

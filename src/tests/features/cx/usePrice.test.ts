@@ -11,7 +11,6 @@ import { useBuildingData } from "@/database/services/useBuildingData";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
 import buildings from "@/tests/test_data/api_data_buildings.json";
-import planet_single from "@/tests/test_data/api_data_planet_etherwind.json";
 import { flushPromises } from "@vue/test-utils";
 
 const fakeCXUuid: string = "2a83a2ca-db0c-49d2-9c43-0db08c1675bb";
@@ -33,25 +32,6 @@ describe("usePrice", async () => {
 
 		await preloadBuildings();
 		await flushPromises();
-	});
-
-	describe("calculateInfrastructureCosts", async () => {
-		it("should calculate infrastructure costs using mocked getMaterialIOTotalPrice", async () => {
-			const mockPlanet = planet_single;
-
-			const { calculateInfrastructureCosts } = usePrice(
-				ref(undefined),
-				ref(undefined)
-			);
-
-			// @ts-expect-error mock planet data
-			const result = await calculateInfrastructureCosts(mockPlanet);
-
-			// Each building ticker should have a cost of -100
-			Object.keys(result).forEach((r) => {
-				expect(result[r]).toBeGreaterThan(0);
-			});
-		});
 	});
 
 	describe("getPrice", async () => {

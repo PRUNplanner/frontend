@@ -121,8 +121,8 @@ describe("usePlanCalculation", async () => {
 		expect(refreshKey.value).toBe(0);
 	});
 
-	it("a slower older run never overwrites a newer result (S2)", async () => {
-		// hold the first run on its planet load until the second run is done
+	it("the result follows the latest plan, also across a slow load (S2)", async () => {
+		// hold the planet load while the plan changes
 		let release!: () => void;
 		const held = new Promise<void>((r) => (release = r));
 		vi.mocked(usePlanetData).mockImplementationOnce(
@@ -140,20 +140,20 @@ describe("usePlanCalculation", async () => {
 
 		const plan = ref(structuredClone(plan_etherwind));
 		const scope = effectScope();
-		const { result } = scope.run(() =>
+		const { result, calculate } = scope.run(() =>
 			// @ts-expect-error mock data
 			usePlanCalculation(plan)
 		)!;
 
 		plan.value.plan_data.buildings[0].amount++;
-		await vi.waitFor(() => expect(result.value.done).toBe(true));
-		const newest = result.value;
+		await flushPromises();
+		expect(result.value.done).toBe(false);
 
 		release();
-		await flushPromises();
+		await vi.waitFor(() => expect(result.value.done).toBe(true));
+		expect(result.value.production.buildings[0].amount).toBe(2);
+		expect(result.value).toStrictEqual(await calculate());
 		scope.stop();
-
-		expect(result.value).toBe(newest);
 	});
 
 	it("validate result", async () => {
