@@ -291,22 +291,6 @@ describe("UserPreferences", () => {
 		);
 	});
 
-	it("sets the default CX, but never clears it", async () => {
-		const userStore = seed();
-		const { wrapper } = await mountPreferences();
-		const selector = wrapper.findComponent(CXPreferenceSelector);
-
-		selector.vm.$emit("update:value", "cx-uuid");
-		await flushPromises();
-		expect(userStore.preferences.defaultCXUuid).toBe("cx-uuid");
-		expect(selector.props("cxUuid")).toBe("cx-uuid");
-
-		selector.vm.$emit("update:value", undefined);
-		selector.vm.$emit("update:value", "");
-		await flushPromises();
-		expect(userStore.preferences.defaultCXUuid).toBe("cx-uuid");
-	});
-
 	it("sets the burn thresholds", async () => {
 		const userStore = seed();
 		const { wrapper } = await mountPreferences();

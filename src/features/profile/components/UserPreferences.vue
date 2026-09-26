@@ -128,14 +128,7 @@
 			<CXPreferenceSelector
 				:cx-uuid="defaultCXUuid"
 				:add-undefined-c-x="false"
-				class="w-full"
-				@update:value="
-					(value: string | undefined) => {
-						if (value && typeof value === 'string') {
-							defaultCXUuid = value;
-						}
-					}
-				" />
+				class="w-full" />
 		</PFormItem>
 
 		<PFormSeperator>
