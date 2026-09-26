@@ -7,12 +7,12 @@ One page per `src/features/*` folder. Each page follows the same outline:
 
 | Feature | One-liner |
 | --- | --- |
-| [planning](planning.md) | The plan engine (`usePlanCalculation`) and the plan editor panels/tools |
+| [planning](planning.md) | The plan engine (`engine/`, `usePlanCalculation`) and the plan editor panels/tools |
 | [planning_data](planning_data.md) | Plan create/save/clone/reload (`usePlan`) |
 | [empire](empire.md) | Empire dashboard components: cost overview, material I/O, opportunities |
 | [manage](manage.md) | Create empires and CX preferences, assign plans to empires |
 | [exchanges](exchanges.md) | Edit CX preferences (exchange and ticker prices), CSV import/export |
-| [cx](cx.md) | Price resolution (`usePrice`) and CX helpers |
+| [cx](cx.md) | Price resolution (`PriceBook`, `usePrice`) and CX helpers |
 | [preferences](preferences.md) | User and per-plan preferences synced to the backend |
 | [sharing](sharing.md) | Public read-only plan links |
 

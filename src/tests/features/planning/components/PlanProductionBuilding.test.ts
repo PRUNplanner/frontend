@@ -158,6 +158,16 @@ describe("PlanProductionBuilding", () => {
 		]);
 	});
 
+	it("emits a new amount without writing into the result (S9)", async () => {
+		const buildingData = building({ amount: 2 });
+		const { wrapper, component } = await mountBuilding({ buildingData });
+
+		wrapper.findComponent(PInputNumber).vm.$emit("update:value", 5);
+
+		expect(component.emitted("update:building:amount")).toEqual([[2, 5]]);
+		expect(buildingData.amount).toBe(2);
+	});
+
 	it("emits adding a recipe and deleting the building", async () => {
 		const { wrapper, component } = await mountBuilding();
 

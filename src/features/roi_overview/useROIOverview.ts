@@ -1,8 +1,8 @@
-// Composables
-import { effectScope, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 
 // Composables
-import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
+import { usePlanContext } from "@/features/planning/usePlanContext";
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { TOTALMSDAY } from "@/features/planning/calculations/buildingCalculations";
 
@@ -15,6 +15,7 @@ import { optimalProduction } from "@/features/roi_overview/assets/optimalProduct
 // Types & Interfaces
 import { IPlan, PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
 import { IRecipe } from "@/features/api/gameData.types";
+import { IPlanContext } from "@/features/planning/engine/engine.types";
 import {
 	IROIResult,
 	IStaticOptimalProduction,
@@ -25,6 +26,7 @@ export function useROIOverview(
 	cxUuid: Ref<string | undefined>
 ) {
 	const { getBuilding, getBuildingRecipes } = useBuildingData();
+	const { loadGameData, createContext } = usePlanContext();
 
 	// Filter for all non-extracting and non-fertility needing buildings
 	const filteredOptimalProduction = optimalProduction.filter(
@@ -36,17 +38,30 @@ export function useROIOverview(
 
 	const resultData: Ref<IROIResult[]> = ref([]);
 
+	// game data, the definition's planet and prices for the selected CX
+	async function createPlanContext(): Promise<IPlanContext> {
+		return createContext(
+			await loadGameData(),
+			definition.value.planet_natural_id,
+			cxUuid.value
+		);
+	}
+
 	/**
 	 * Calculates a single optimal building with all its recipe options
 	 * @author jplacht
 	 *
 	 * @async
 	 * @param {IStaticOptimalProduction} optimal Optimal Building Setup
+	 * @param {IPlanContext} [ctx] Shared plan context, built if not given
 	 * @returns {Promise<void>} Void, adds to resultData directly
 	 */
 	async function calculateItem(
-		optimal: IStaticOptimalProduction
+		optimal: IStaticOptimalProduction,
+		ctx?: IPlanContext
 	): Promise<IROIResult[]> {
+		ctx ??= await createPlanContext();
+
 		// get a deep copy of the definition as otherwise parallel runs would
 		// overwrite each other in terms of setup
 		const definitionCopy = deepClone(definition.value);
@@ -101,18 +116,15 @@ export function useROIOverview(
 				},
 			];
 
-			// one-off calculation, stop its live-recalculation watchers
-			const scope = effectScope();
-			const calculation = scope.run(() =>
-				usePlanCalculation(ref(definitionCopy), undefined, undefined, cxUuid)
-			)!;
-			scope.stop();
-			const result = await calculation.calculate();
-
-			const overviewData = await calculation.calculateOverview(
-				result.materialio,
-				result.production,
-				result.infrastructure
+			const { result, overview: overviewData } = calculatePlan(
+				{
+					plan: definitionCopy,
+					empire: undefined,
+					cxUuid: cxUuid.value,
+					// never read here
+					recipeOptions: false,
+				},
+				ctx
 			);
 
 			itemResults.push({
@@ -161,10 +173,13 @@ export function useROIOverview(
 			(expert) => (expert.amount = 5)
 		);
 
+		// one context for all plans: same planet and CX
+		const ctx: IPlanContext = await createPlanContext();
+
 		for (const optimal of filteredOptimalProduction) {
 			await Promise.resolve();
 
-			const result = await calculateItem(optimal);
+			const result = await calculateItem(optimal, ctx);
 			if (run !== latestRun) return undefined;
 			results.push(...result);
 

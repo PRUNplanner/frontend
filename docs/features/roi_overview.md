@@ -6,7 +6,7 @@ each building and runs each one through the real plan engine.
 
 **Used by.** `views/tools/ROIOverviewView.vue` (`/roi-overview`).
 `optimalProduction` and `COGMButton` are also reused by
-`resource_roi_overview` and `usePlanCalculation`.
+`resource_roi_overview` and the planning engine.
 
 ## Key files
 
@@ -25,9 +25,10 @@ each building and runs each one through the real plan engine.
 2. For each building × recipe, it `deepClone`s the definition. The COGC is
    set to the building's expertise, the buildings and habs come from the
    optimal layout, and all experts are set to 5.
-3. It runs `usePlanCalculation(...).calculate()` inside a stopped
-   `effectScope()`, so no watchers outlive the run. The loop yields to the
-   UI between buildings (`setTimeout(0)`).
+3. It calculates each plan with the planning engine (`calculatePlan`,
+   without recipe options) and one shared context for the definition's
+   planet and CX; the overview comes from the same calculation. The loop
+   yields to the UI between buildings (`setTimeout(0)`).
 
 ## Gotchas
 

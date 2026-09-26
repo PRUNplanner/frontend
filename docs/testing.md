@@ -91,7 +91,23 @@ await preloadBuildings(); await preloadRecipes();
 vi.mock("@/database/services/usePlanetData", …); // getPlanet → fixture
 ```
 
+Preload exchanges and buildings too if the code under test reads them
+synchronously (the planning engine, `PriceBook`). The planning tests share
+`setupPlanningTestData()` and the plan builders in
+`src/tests/features/planning/usePlanCalculation.fixtures.ts`.
+
 Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
+
+### Characterization snapshots and benchmarks
+
+- `usePlanCalculation.characterization.test.ts` snapshots the full plan
+  result for 11 plans (normalized to 10 significant digits). A changed
+  snapshot means changed numbers: update with `-u` only on purpose, in its
+  own commit.
+- `pnpm vitest bench --run` runs the benchmark files
+  (`*.bench.ts`): single-plan edit -> result latency and batch views. They
+  are not part of `pnpm test`. Compare runs on the same, otherwise idle
+  machine; note that they are Node + jsdom numbers.
 
 ### Component tests
 

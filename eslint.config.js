@@ -63,6 +63,33 @@ export default [
 		},
 	},
 
+	// planning engine: plain TypeScript, no Vue, stores or data layer
+	{
+		files: ["src/features/planning/engine/**"],
+		rules: {
+			"no-restricted-imports": [
+				"error",
+				{
+					paths: ["vue", "pinia"].map((name) => ({
+						name,
+						message: "The planning engine must not import Vue.",
+					})),
+					patterns: [
+						{
+							group: ["@vue/*", "vue-*"],
+							message: "The planning engine must not import Vue.",
+						},
+						{
+							group: ["@/stores/*", "!@/stores/*.types", "@/database/*"],
+							message:
+								"The planning engine gets its data through IPlanContext.",
+						},
+					],
+				},
+			],
+		},
+	},
+
 	// vue
 	...vue.configs["flat/recommended"],
 	{
