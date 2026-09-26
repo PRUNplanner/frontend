@@ -124,9 +124,10 @@ async function empireLike(): Promise<void> {
 		await Promise.resolve();
 		const scope = effectScope();
 		const { calculate } = scope.run(() =>
-			// live: false as in EmpireView; ignored by versions without the option
+			// options as in EmpireView; ignored by versions without them
 			usePlanCalculation(toRef(plan), empireUuid, empireOptions, cxUuid, {
 				live: false,
+				recipeOptions: false,
 			})
 		)!;
 		scope.stop();

@@ -82,6 +82,11 @@ interface IPlanCalculationOptions {
 	 * that only call calculate() pass false, so no extra run starts.
 	 */
 	live?: boolean;
+	/**
+	 * Compute recipe options for every building (default). Batch callers
+	 * that never read `recipeOptions` pass false; the result then has none.
+	 */
+	recipeOptions?: boolean;
 }
 
 export function usePlanCalculation(
@@ -89,7 +94,10 @@ export function usePlanCalculation(
 	empireUuid: Ref<string | undefined> = ref(undefined),
 	empireOptions: Ref<IPlanEmpireElement[] | undefined> = ref(undefined),
 	cxUuid: Ref<string | undefined> = ref(undefined),
-	{ live = true }: IPlanCalculationOptions = {}
+	{
+		live = true,
+		recipeOptions: withRecipeOptions = true,
+	}: IPlanCalculationOptions = {}
 ) {
 	// stores
 	const planningDataStore = usePlanningStore();
@@ -468,9 +476,9 @@ export function usePlanCalculation(
 				"BUY"
 			);
 
-			// get recipe options
+			// get recipe options, unless the caller never reads them
 			const recipeOptions: IRecipeBuildingOption[] = await Promise.all(
-				buildingRecipes.map(async (br) => {
+				(withRecipeOptions ? buildingRecipes : []).map(async (br) => {
 					// calculate daily revenue
 					const dailyIncome: number = await getMaterialIOTotalPrice(
 						br.outputs.map((o) => ({

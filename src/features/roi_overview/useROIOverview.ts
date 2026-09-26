@@ -106,6 +106,7 @@ export function useROIOverview(
 			const calculation = scope.run(() =>
 				usePlanCalculation(ref(definitionCopy), undefined, undefined, cxUuid, {
 					live: false,
+					recipeOptions: false,
 				})
 			)!;
 			scope.stop();

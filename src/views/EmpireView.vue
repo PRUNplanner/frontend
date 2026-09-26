@@ -142,7 +142,7 @@
 						selectedEmpireUuid,
 						refEmpireList,
 						selectedCXUuid,
-						{ live: false }
+						{ live: false, recipeOptions: false }
 					)
 				)!;
 				scope.stop();

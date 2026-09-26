@@ -140,6 +140,27 @@ describe("usePlanCalculation", async () => {
 		expect((await calculate()).materialio.length).toBe(18);
 	});
 
+	it("recipeOptions: false only leaves out recipe options", async () => {
+		const calculation = (recipeOptions: boolean) =>
+			usePlanCalculation(
+				// @ts-expect-error mock data
+				ref(structuredClone(plan_etherwind)),
+				ref(undefined),
+				ref(undefined),
+				ref(undefined),
+				{ live: false, recipeOptions }
+			).calculate();
+
+		const full = await calculation(true);
+		const lean = await calculation(false);
+
+		expect(
+			full.production.buildings[1].recipeOptions.length
+		).toBeGreaterThan(0);
+		for (const b of full.production.buildings) b.recipeOptions = [];
+		expect(lean).toStrictEqual(full);
+	});
+
 	it("validate result", async () => {
 		const { calculate } = usePlanCalculation(
 			// @ts-expect-error mock data

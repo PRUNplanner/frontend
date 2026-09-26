@@ -126,7 +126,7 @@
 						selectedEmpireUuid,
 						empireList,
 						selectedCXUuid,
-						{ live: false }
+						{ live: false, recipeOptions: false }
 					)
 				)!;
 				scope.stop();
