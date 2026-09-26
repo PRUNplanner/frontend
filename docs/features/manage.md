@@ -12,8 +12,8 @@
 
 | Component | Role |
 | --- | --- |
-| `ManageEmpire.vue` | Empire CRUD: `CreateEmpire`, `PatchEmpire`, `DeleteEmpire` |
-| `ManageCX.vue` | CX CRUD and empire↔CX junctions: `CreateCX`, `DeleteCX`, `PatchEmpireCXJunctions` |
+| `ManageEmpire.vue` | Empire CRUD: `CreateEmpire`, `PatchEmpire`, `DeleteEmpire`, and empire↔CX junctions: `PatchEmpireCXJunctions` |
+| `ManageCX.vue` | CX create and delete: `CreateCX`, `DeleteCX` |
 | `ManagePlanEmpireAssignments.vue` | Plan↔empire matrix: `PatchEmpirePlanJunctions`, plus `ClonePlan`, `DeletePlan` and `SharingButton` |
 | `ManageAssignmentFilters.vue` | Filters for that matrix |
 | `manage.types.ts` | `IPlanEmpireJunction`, `ICXEmpireJunction` and `IPlanCloneResponse` |
@@ -32,6 +32,7 @@
 
 ## Tests
 
-There are no tests for the components directly. The API calls are covered
-in `src/tests/features/api/empireData.api.test.ts` and
+Component tests live in `src/tests/features/manage/components/` (local
+suite, see [testing.md](../testing.md#component-tests)). The API calls are
+covered in `src/tests/features/api/empireData.api.test.ts` and
 `cxData.api.test.ts`.

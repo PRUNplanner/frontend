@@ -313,17 +313,27 @@
 		return { weight, volume, price };
 	}
 
-	watchEffect(async () => {
+	// prices resolve async, a run started later may finish first: only the
+	// latest run may set a total, a slower older one is stale
+	let latestTotalRun: number = 0;
+	let latestOverviewRun: number = 0;
+
+	watchEffect(() => {
 		generateMatrix();
-		totalInformation.value = await calculateTotal(
-			xitTransferElements.value
-		);
+		const run = ++latestTotalRun;
+		// the sync part of calculateTotal reads the dependencies
+		void calculateTotal(xitTransferElements.value).then((total) => {
+			if (run === latestTotalRun) totalInformation.value = total;
+		});
 	});
 
 	watch(
 		() => xitTransferElementsNeed.value,
 		async (overview) => {
-			overviewTotalInformation.value = await calculateTotal(overview);
+			const run = ++latestOverviewRun;
+			const total = await calculateTotal(overview);
+			if (run === latestOverviewRun)
+				overviewTotalInformation.value = total;
 		},
 		{ deep: true, immediate: true }
 	);

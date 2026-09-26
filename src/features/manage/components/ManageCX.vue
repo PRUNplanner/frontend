@@ -56,16 +56,21 @@
 
 			trackEvent("manage_cx_create");
 
-			await useQuery("CreateCX", {
-				cxName: refNewCXName.value!,
-			}).execute();
+			try {
+				await useQuery("CreateCX", {
+					cxName: refNewCXName.value!,
+				}).execute();
 
-			// forced reload of all CX
-			emit("update:cxList", await useQuery("GetAllCX").execute());
+				// forced reload of all CX
+				emit("update:cxList", await useQuery("GetAllCX").execute());
 
-			refNewCXName.value = "";
-			refShowCreateCX.value = false;
-			refIsCreating.value = false;
+				refNewCXName.value = "";
+				refShowCreateCX.value = false;
+			} catch (err) {
+				console.error(err);
+			} finally {
+				refIsCreating.value = false;
+			}
 		}
 	}
 
@@ -87,16 +92,20 @@
 
 		trackEvent("manage_cx_delete", { cxUuid });
 
-		const deletionResult: boolean = await useQuery("DeleteCX", {
-			cxUuid: cxUuid,
-		}).execute();
+		try {
+			const deletionResult: boolean = await useQuery("DeleteCX", {
+				cxUuid: cxUuid,
+			}).execute();
 
-		if (deletionResult) {
-			// forced reload of all CX
-			emit("update:cxList", await useQuery("GetAllCX").execute());
+			if (deletionResult) {
+				// forced reload of all CX
+				emit("update:cxList", await useQuery("GetAllCX").execute());
+			}
+		} catch (err) {
+			console.error(err);
+		} finally {
+			refIsDeleting.value = undefined;
 		}
-
-		refIsDeleting.value = undefined;
 	}
 </script>
 

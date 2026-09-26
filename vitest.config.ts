@@ -5,8 +5,8 @@ import vue from "@vitejs/plugin-vue";
 
 const alias = { "@": path.resolve(__dirname, "./src") };
 
-// component tests run locally only, see vitest.components.config.ts
-export const COMPONENT_TESTS = "src/tests/**/components/**";
+// component and view tests run locally only, see vitest.components.config.ts
+export const COMPONENT_TESTS = "src/tests/{**/components,views}/**";
 
 export default defineConfig({
 	define: {

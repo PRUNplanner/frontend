@@ -186,14 +186,19 @@
 				location: "exchanges_view",
 			});
 
-			await useQuery("PatchCX", {
-				cxName: selectedName.value ?? "Unnamed",
-				cxUuid: selectedCX.value.uuid,
-				data: data,
-			}).execute();
+			try {
+				await useQuery("PatchCX", {
+					cxName: selectedName.value ?? "Unnamed",
+					cxUuid: selectedCX.value.uuid,
+					data: data,
+				}).execute();
 
-			initialize(selectedCX.value!.uuid);
-			isPatching.value = false;
+				initialize(selectedCX.value!.uuid);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				isPatching.value = false;
+			}
 		}
 	}
 

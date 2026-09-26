@@ -2,7 +2,11 @@ import {
 	ICXDataExchangeOption,
 	ICXDataTickerOption,
 } from "@/stores/planningStore.types";
-import { ExchangeType, ICXPlanetMap, PreferenceType } from "./manageCX.types";
+import { ICXPlanetMap } from "./manageCX.types";
+import {
+	CXDataExchangeOptionSchema,
+	CXDataTickerOptionSchema,
+} from "@/features/api/schemas/planningData.schemas";
 
 import Papa from "papaparse";
 
@@ -11,8 +15,30 @@ interface IExchangeCSVRow {
 	Type: string;
 	CX: string;
 	Ticker: string;
-	Price: string;
+	// papaparse leaves the key out of a row with too few fields
+	Price?: string;
 }
+
+// columns written by generateSettingsCSV
+const CSV_COLUMNS: (keyof IExchangeCSVRow)[] = [
+	"Location",
+	"Type",
+	"CX",
+	"Ticker",
+	"Price",
+];
+
+// validated like the CX payload, so an invalid file is rejected as a whole
+const exchangeOption = (row: IExchangeCSVRow): ICXDataExchangeOption =>
+	CXDataExchangeOptionSchema.parse({ type: row.Type, exchange: row.CX });
+
+// an empty price is no price, Number("") would be 0
+const tickerOption = (row: IExchangeCSVRow): ICXDataTickerOption =>
+	CXDataTickerOptionSchema.parse({
+		type: row.Type,
+		ticker: row.Ticker,
+		value: row.Price?.trim() ? Number(row.Price) : NaN,
+	});
 
 export function useCXImportExport() {
 	const parseSettingsCSV = (
@@ -27,6 +53,17 @@ export function useCXImportExport() {
 			Papa.parse<IExchangeCSVRow>(file, {
 				header: true,
 				complete: (results) => {
+					// not an export, importing would wipe all preferences
+					const missing = CSV_COLUMNS.filter(
+						(c) => !results.meta.fields?.includes(c)
+					);
+					if (missing.length > 0) {
+						reject(
+							new Error(`Missing CSV columns: ${missing.join(", ")}`)
+						);
+						return;
+					}
+
 					const empireCX: ICXDataExchangeOption[] = [];
 					const empireTickerOptions: ICXDataTickerOption[] = [];
 
@@ -39,54 +76,48 @@ export function useCXImportExport() {
 						ICXPlanetMap[string]
 					>();
 
-					results.data.forEach((row) => {
-						if (!row.Location) return;
+					// a row that is no valid preference throws
+					try {
+						results.data.forEach((row) => {
+							if (!row.Location) return;
 
-						const isEmpire = row.Location === "EMPIRE";
-						const isTicker = row.Ticker && row.Ticker.trim() !== "";
-						if (isEmpire) {
-							if (!isTicker) {
-								empireCX.push({
-									type: row.Type as PreferenceType,
-									exchange: row.CX as ExchangeType,
-								});
+							const isEmpire = row.Location === "EMPIRE";
+							const isTicker = row.Ticker && row.Ticker.trim() !== "";
+							if (isEmpire) {
+								if (!isTicker) {
+									empireCX.push(exchangeOption(row));
+								} else {
+									empireTickerOptions.push(tickerOption(row));
+								}
 							} else {
-								empireTickerOptions.push({
-									type: row.Type as PreferenceType,
-									ticker: row.Ticker,
-									value: Number(row.Price),
-								});
-							}
-						} else {
-							const targetMap = isTicker
-								? planetTickerOptionsMap
-								: planetsCXMap;
+								const targetMap = isTicker
+									? planetTickerOptionsMap
+									: planetsCXMap;
 
-							let planetData = targetMap.get(row.Location);
+								let planetData = targetMap.get(row.Location);
 
-							if (!planetData) {
-								planetData = {
-									planet: row.Location,
-									exchanges: [],
-									ticker: [],
-								};
-								targetMap.set(row.Location, planetData);
-							}
+								if (!planetData) {
+									planetData = {
+										planet: row.Location,
+										exchanges: [],
+										ticker: [],
+									};
+									targetMap.set(row.Location, planetData);
+								}
 
-							if (!isTicker) {
-								planetData.exchanges.push({
-									type: row.Type as PreferenceType,
-									exchange: row.CX as ExchangeType,
-								});
-							} else {
-								planetData.ticker.push({
-									type: row.Type as PreferenceType,
-									ticker: row.Ticker,
-									value: Number(row.Price),
-								});
+								if (!isTicker) {
+									planetData.exchanges.push(exchangeOption(row));
+								} else {
+									planetData.ticker.push(tickerOption(row));
+								}
 							}
-						}
-					});
+						});
+					} catch (err) {
+						reject(
+							err instanceof Error ? err : new Error(String(err))
+						);
+						return;
+					}
 
 					resolve({
 						empireCX,

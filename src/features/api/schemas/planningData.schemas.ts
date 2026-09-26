@@ -210,12 +210,13 @@ const CX_EXCHANGE_OPTION_TYPE_ENUM = z.enum([
 
 const CX_PREFERENCE_TYPE_ENUM = z.enum(["BUY", "SELL", "BOTH"]);
 
-const CXDataExchangeOptionSchema: z.ZodType<ICXDataExchangeOption> = z.object({
-	type: CX_PREFERENCE_TYPE_ENUM,
-	exchange: CX_EXCHANGE_OPTION_TYPE_ENUM,
-});
+export const CXDataExchangeOptionSchema: z.ZodType<ICXDataExchangeOption> =
+	z.object({
+		type: CX_PREFERENCE_TYPE_ENUM,
+		exchange: CX_EXCHANGE_OPTION_TYPE_ENUM,
+	});
 
-const CXDataTickerOptionSchema: z.ZodType<ICXDataTickerOption> = z.object({
+export const CXDataTickerOptionSchema: z.ZodType<ICXDataTickerOption> = z.object({
 	type: CX_PREFERENCE_TYPE_ENUM,
 	ticker: z.string().nonempty(),
 	value: z.number(),

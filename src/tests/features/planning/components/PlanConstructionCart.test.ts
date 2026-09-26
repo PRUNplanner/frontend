@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { flushPromises, VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -23,6 +23,30 @@ import buildings from "@/tests/test_data/api_data_buildings.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
+
+// lets a test hold back price lookups, to finish calculations out of order
+const priceGate = vi.hoisted(() => ({
+	wait: undefined as Promise<void> | undefined,
+}));
+vi.mock("@/features/cx/usePrice", async (importOriginal) => {
+	const actual =
+		await importOriginal<typeof import("@/features/cx/usePrice")>();
+	return {
+		...actual,
+		usePrice: (...args: Parameters<typeof actual.usePrice>) => {
+			const price = actual.usePrice(...args);
+			return {
+				...price,
+				getPrice: async (
+					...a: Parameters<typeof price.getPrice>
+				): Promise<number> => {
+					if (priceGate.wait) await priceGate.wait;
+					return price.getPrice(...a);
+				},
+			};
+		},
+	};
+});
 
 const mock = new AxiosMockAdapter(apiService.client);
 
@@ -256,6 +280,22 @@ describe("PlanConstructionCart", () => {
 		});
 	});
 
+	it("keeps the latest building total when an older one finishes last", async () => {
+		let release!: () => void;
+		priceGate.wait = new Promise((r) => (release = r));
+		const { wrapper } = await mountCart();
+
+		// the first totals wait for prices, the ones after the change don't
+		priceGate.wait = undefined;
+		await setBuildingAmount(wrapper, "FRM", 1);
+		// 6 * 100 + 6 * 50 + 100 * 10
+		expect(summary(wrapper, 0).price).toBe("1,900.00");
+
+		release();
+		await flushPromises();
+		expect(summary(wrapper, 0).price).toBe("1,900.00");
+	});
+
 	describe("with FIO", () => {
 		it("subtracts built buildings and flags unplanned ones", async () => {
 			const { wrapper } = await mountCart({ fio: true });
@@ -312,6 +352,25 @@ describe("PlanConstructionCart", () => {
 				["MCG", "0", "7,697", "0"],
 			]);
 			expect(summary(wrapper, 1).price).toBe("0.00");
+		});
+
+		it("keeps the latest total when an older one finishes last", async () => {
+			let release!: () => void;
+			priceGate.wait = new Promise((r) => (release = r));
+			const { wrapper } = await mountCart({ fio: true });
+
+			// the planet's totals wait for prices, the warehouse's don't
+			priceGate.wait = undefined;
+			wrapper.findComponent(PSelect).vm.$emit("update:value", "WAR#ANT");
+			await flushPromises();
+			expect(summary(wrapper, 1).price).toBe("0.00");
+
+			release();
+			await flushPromises();
+			expect(summary(wrapper, 1).price).toBe("0.00");
+			// the held back buildings' total still lands, built ones
+			// subtracted: 12 * 100 + 12 * 50
+			expect(summary(wrapper, 0).price).toBe("1,800.00");
 		});
 
 		it("preselects no storage when the planet has none", async () => {
