@@ -449,6 +449,7 @@
 		await reloadExistingPlan(refPlanData.value.uuid).then(
 			(result: IPlan) => (refPlanData.value = result)
 		);
+		handleResetModified();
 
 		trackEvent("plan_reload", {
 			planetNaturalId: planetData.planet_natural_id,
