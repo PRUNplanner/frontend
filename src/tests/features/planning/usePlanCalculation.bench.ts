@@ -32,7 +32,7 @@ vi.mock("@/database/services/usePlanetData", async () => {
 });
 
 /**
- * Phase 0 latency baseline for the planning engine refactor, run with
+ * Single-plan latency benchmarks of the planning engine, run with
  * `pnpm vitest bench --run`. Node + jsdom numbers, not browser numbers.
  */
 

@@ -34,7 +34,7 @@ import {
 import { empireLike } from "@/tests/features/planning/usePlanCalculation.bench.empire";
 
 /**
- * Phase 0 batch baseline (B6-B8) for the planning engine refactor, run with
+ * Batch benchmarks (B6-B8) of the planning engine, run with
  * `pnpm vitest bench --run`. Node + jsdom numbers, not browser numbers.
  *
  * Counters, without touching src/:

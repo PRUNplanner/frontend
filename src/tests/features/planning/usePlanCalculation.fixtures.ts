@@ -25,7 +25,7 @@ import planet_search from "@/tests/test_data/api_data_planet_search.json";
 
 /**
  * Shared plans and setup for the planning engine characterization tests
- * and the latency benchmark (refactor Phase 0). Callers must mock
+ * and the benchmarks. Callers must mock
  * `usePlanetData` to return `api_data_planet_etherwind.json`.
  */
 

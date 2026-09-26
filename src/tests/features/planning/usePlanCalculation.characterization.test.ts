@@ -49,8 +49,8 @@ vi.mock("@/database/services/usePlanetData", async () => {
 });
 
 /**
- * Phase 0 safety net for the planning engine refactor: freezes today's
- * numbers, bugs included. See docs/refactor/planning-engine/.
+ * Safety net of the planning engine: freezes its numbers, known bugs
+ * included. See docs/planning-engine.md (Tests and benchmarks).
  */
 
 // round finite numbers to 10 significant digits, NaN/Infinity as strings
