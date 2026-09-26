@@ -1,4 +1,4 @@
-The Upkeep Price Calculator helps you find the most cost-effective materials and buildings to fulfill population upkeep needs (Safety, Health, Comfort, Culture, and Education) on governed planets.
+Der "Upkeep Price Calculator" hilft Ihnen, die kostengünstigsten Materialien und Gebäude zu finden, um die Bedürfnisse der Bevölkerung zu befriedigen (Sicher, Gesundheit, Komfort, Kultur und Erziehung) auf verwalteten Planeten.
 
 ## Material Details
 
@@ -12,4 +12,4 @@ Lists all materials consumed by buildings for the selected need, sorted by cost 
 
 Materials without a market price are shown at the bottom of the list.
 
-Buildings providing multiple needs (like EMC for Safety+Health, or WCE for Health+Comfort) are accounted for in the calculations.
+Gebäude, die mehrere Bedürfnisse bieten (wie EMC für Safety+Health, oder WCE für Gesundheit und Komfort) werden in den Berechnungen berücksichtigt.

@@ -1,1 +1,1 @@
-The HQ Upgrade Calculator helps you see exactly which materials and costs are required to upgrade your company headquarters to the next level. You can also adjust it by overwriting stock detected from your FIO integration, and it will automatically apply your exchange preferences to calculate the upgrade price.
+본부 업그레이드 계산기는 본부를 다음 레벨로 업그레이드 하기 위해 필요한 자재와 비용을 정확하게 알려줍니다. FIO를 통해 불러온 현재 저장소의 자재 재고를 변경해 확인해 볼 수도 있으며, 거래소 설정을 자동으로 적용해 업그레이드 비용을 계산합니다.

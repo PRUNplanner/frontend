@@ -1,30 +1,27 @@
-# Browser Storage
+# 브라우저 저장소
 
-To reduce the load on the backend API and improve performance, PRUNplanner stores game data directly in your browser. This allows for faster access and a smoother user experience. The tool also automatically refreshes stored data after a set period to ensure it remains up to date.
+백엔드 API의 부하를 줄이고 성능을 개선하기 위해, PRUNplanner는 게임 데이터를 사용자의 브라우저에 직접 저장합니다. 이를 통해 데이터에 더 빠르게 접근할 수 있으며, 더 부드러운 사용자 경험을 제공합니다. 또한 이 도구는 저장된 데이터가 최신 상태를 유지하도록 일정 기간이 지나면 자동으로 데이터를 새로고침합니다.
 
-## Storage Categories
+## 저장소 카테고리
 
-- **Game Data**
-  This includes mostly static information such as materials, buildings, recipes, planetary data, and exchange details. It is sourced from FIO or, in the case of exchange data, calculated by PRUNplanner. Exchange data is refreshed more frequently to ensure accurate profit and cost calculations.
+- **게임 데이터**에는 자재, 건물, 제조법, 행성 데이터, 거래소 정보처럼 대부분 정적인 정보가 포함됩니다. 이 데이터는 FIO에서 가져오며, 거래소 데이터의 경우 PRUNplanner가 계산한 값을 사용합니다. 거래소 데이터는 정확한 수익 및 비용 계산을 위해 더 자주 새로고침 됩니다.
 
-- **Planning Data**
-  This category contains your personal planning information, including your empires, plans, exchange preferences, and any shared plans.
+- **계획 데이터**에는 사용자의 개인 계획 정보가 포함됩니다. 여기에는 제국, 계획, 거래소 선호 설정, 그리고 공유된 계획이 포함됩니다.
 
-- **FIO Data**
-  This refers to your in-game personal data, such as storage and site information. To access this, you can link your Prosperous Universe account by providing your username and a FIO API key. PRUNplanner will periodically check for updates and automatically sync the latest data from the backend.
+- **FIO 데이터**는 저장고와 기지 정보 같은 사용자의 게임 내 개인 데이터를 의미합니다. 이 데이터를 사용하려면 FIO 아이디와 API 키를 제공해 Prosperous Universe 계정과 연결할 수 있습니다. PRUNplanner는 주기적으로 업데이트 여부를 확인하고, 백엔드에서 최신 데이터를 자동으로 동기화합니다.
 
 ---
 
-# Preferences
+# 설정
 
-Preferences allow you to save frequently used settings and configurations, making your planning process more efficient and personalized.
+설정에서는 자주 사용하는 세팅과 구성을 저장해 계획 작업을 더 효율적이고 개인화된 방향으로 진행할 수 있습니다.
 
-For example:
+예를 들어:
 
-- **Default Empire**
-  Your preferred empire is automatically loaded when you access the empire view, saving you from having to select it manually each time.
+- **기본 제국**
+  선호하는 기본 제국을 설정하면 제국 화면에서 자동으로 불러와지며, 매번 수동으로 선택할 필요가 없습니다.
 
-- **Burn View Thresholds**
-  If you're using PRUNplanner in combination with FIO to monitor your base inventories, you can set red and yellow thresholds for stock levels. These thresholds help you identify when to send resupply ships and are saved in your browser for convenience.
+- **소모율 화면 임계값**
+  기지 재고를 모니터링하기 위해 PRUNplanner를 FIO와 함께 사용하고 있다면, 재고 수준에 대해 빨간색 및 노란색 임계값을 설정할 수 있습니다. 이 임계값은 보급선을 언제 보내야 하는지 파악하는 데 도움을 주며, 편의를 위해 브라우저에 저장됩니다.
 
-Tool-wide preferences can be managed directly from your profile or adjusted within the relevant views. Plan-specific settings can be modified within each linked plan.
+도구 전체에 적용되는 선호 설정은 프로필에서 직접 관리하거나 관련 화면 안에서 조정할 수 있습니다. 계획별 설정은 각각의 연결된 계획 안에서 수정할 수 있습니다.

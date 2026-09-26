@@ -1,33 +1,33 @@
-# Price Calculation: VWAP
+# 가격 계산: 거래량 가중 평균 가격
 
-PRUNplanner utilizes a Volume-Weighted Average Price (VWAP) to estimate a material's fair market value. Unlike a simple average, VWAP gives more "weight" to trades with higher volumes, providing a stable and realistic benchmark by focusing on where the bulk of the market liquidity actually sits.
+PRUNplanner는 자재의 공정 시장 가치를 추정하기 위해 거래량 가중 평균 가격(VWAP, Volume-Weighted Average Price)을 사용합니다. 단순 평균과 달리 거래량 가중 평균은 거래량이 큰 거래에 더 높은 “가중치”를 부여합니다. 이를 통해 시장 유동성이 실제로 많이 형성되어 있는 가격대를 중심으로, 더 안정적이고 현실적인 기준 가격을 제공합니다.
 
-Relying on current Ask (Sell) or Bid (Buy) prices can be misleading because they often represent a single outlier or a tiny fraction of the volume you actually need. These prices change by the day and rarely reflect the true cost. By using VWAP, you filter out market noise and "lowball" orders, ensuring your profit projections are based on actual trades rather than temporary listings.
+현재 매도 호가나 매수 호가에만 의존하면 가격에 대한 오해가 생길 수 있습니다. 이런 가격은 거래량 전체를 대표하기보다는, 단일 이상치이거나 실제로 필요한 물량의 아주 작은 일부만을 반영하는 경우가 많기 때문입니다. 또한 이러한 가격은 날마다 변하며 실제 비용을 제대로 반영하지 않는 경우가 많습니다. 거래량 가중 평균 가격을 사용하면 시장의 잡음과 지나치게 낮은 매수 주문을 걸러낼 수 있습니다. 그 결과 수익 예측이 일시적인 호가가 아니라 실제 거래를 기반으로 계산됩니다.
 
-# Price Priorities
+# 가격 우선순위
 
-When PRUNplanner calculates prices, it follows this order of preference:
+PRUNplanner가 가격을 계산할 때는 다음과 같은 우선순위를 따릅니다:
 
-- Planet Material-based
-- Empire Material-based
-- Planet CX-based
-- Empire CX-based
-- Fallback: 30 Day Universe VWAP
+- 행성 자재 기준
+- 제국 자재 기준
+- 행성 거래소 기준
+- 제국 거래소 기준
+- 대체값: 30일 우주 거래량 가중 평균 가격
 
-# Preference Types
+# 선호 설정
 
-You can set preferences as BUY, SELL, or BOTH:
+선호 설정은 구매, 판매, 또는 모두로 지정할 수 있습니다:
 
-- **BUY** is used when the material is consumed.
-- **SELL** is used when the material is produced.
-- **BOTH** applies to both cases.
+- **구매**는 해당 자재가 소비될 때 사용됩니다.
+- **판매**는 해당 자재가 생산될 때 사용됩니다.
+- **모두**는 양쪽에 모두 사용됩니다.
 
-If only one type is set, and the calculation requires the other, PRUNplanner will check for a higher-level preference. If none exists, the value defaults to 0.
+하나의 유형만 설정되어 있는데 계산에 반대 유형이 필요한 경우, PRUNplanner는 더 상위 단계의 선호 설정을 확인합니다. 해당하는 설정이 없으면 값은 기본적으로 0이 됩니다.
 
-# Examples
+# 예시
 
-1: The price for LST should be used. You haven’t defined a Material-based preference for Limestone. The system checks your CX preferences: first at the Planet level, then at the Empire level. Since you’ve defined both, the Planet CX preference takes priority.
+1: LST의 가격을 사용해야 하는 경우입니다. Limestone에 대한 자재 기준 선호 설정을 정의하지 않았습니다. 시스템은 CX 선호 설정을 확인하며, 먼저 행성 수준을 확인한 뒤 제국 수준을 확인합니다. 두 설정이 모두 정의되어 있으므로 행성 CX 선호 설정이 우선 적용됩니다.
 
-2: The price for NS should be used. You’ve defined Material-based preferences for NS at both the Empire and Planet levels. The Planet Material-based preference overrides the Empire one. Because a Material-based preference exists, no CX preference is applied.
+2: NS의 가격을 사용해야 하는 경우입니다. NS에 대해 제국과 행성 수준 모두에서 자재 기준 선호 설정을 정의했습니다. 이 경우 행성 자재 기준 선호 설정이 제국 설정보다 우선합니다. 자재 기준 선호 설정이 존재하므로 CX 선호 설정은 적용되지 않습니다.
 
-3: The price for BBH should be used. You have not set any Material-based or CX-based preferences. The price for BBH therefore is calculated with the VWAP 30D Universe metric.
+3: BBH의 가격을 사용해야 하는 경우입니다. 자재 기준 선호 설정이나 CX 기준 선호 설정을 아무것도 지정하지 않았습니다. 따라서 BBH의 가격은 30일 우주 거래량 가중 평균 가격을 사용해 계산됩니다.

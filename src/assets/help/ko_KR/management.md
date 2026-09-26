@@ -1,15 +1,15 @@
-# Core Concepts
+# 핵심 개념
 
-PRUNplanner consists of three main components that allow you to plan and manage your Prosperous Universe empire:
+PRUNplanner는 Prosperous Universe 제국을 계획하고 관리할 수 있도록 하는 세 가지 주요 구성 요소로 이루어져 있습니다:
 
-## Plans
+## 계획들
 
-Plans are the backbone of what you do in PRUNplanner. They consist of all buildings, productions and bonuses of a base you can put down in Prosperous Universe. You can create new Plans by searching for the planet you would like to create a base for. Also, a Plan should be assigned a CX Exchange preference, as well as to an Empire. Please note, each Plan can be assigned to multiple empires and therefore reused.
+계획은 PRUNplanner에서 수행하는 작업의 핵심 근간입니다. 계획은 Prosperous Universe에서 설치할 수 있는 하나의 기지에 포함되는 모든 건축물, 생산 공정, 보너스로 구성됩니다. 새로운 계획은 기지를 세우고 싶은 행성을 검색해서 생성할 수 있습니다. 또한 각 계획에는 거래소 선호 설정과 제국이 지정되어야 합니다. 각 계획은 여러 제국에 할당하여 재사용할 수 있습니다.
 
-## Empires
+## 제국들
 
-An Empire is a collection of Plans (e.g. all the bases you currently have settled in Prosperous Universe, or that you would like to settle, all interconnected together). Each empire is like a container that consists of multiple plans. Additionally, a single CX Exchange preference can be assigned to each Empire.
+제국은 여러 계획의 집합입니다. (즉, Prosperous Universe에서 현재 정착해 운영 중인 모든 기지나, 앞으로 정착하고 싶은 기지들을 하나로 연결해 관리하는 단위라고 볼 수 있습니다.) 각 제국은 여러 계획을 담는 컨테이너와 같습니다. 또한 각 제국에는 하나의 거래소 선호 설정을 지정할 수 있습니다.
 
-## CX
+## 거래소
 
-The CX Settings allow you to define market preferences for the pricing of materials. Each CX Exchange can be used in multiple Empires. However, each Empire can only have a single CX Exchange preference assigned to it. This ensures that prices are properly calculated for individual plans that are part of the Empire.
+거래소 설정에서는 자재 가격 계산에 사용할 시장 선호 설정을 정의할 수 있습니다. 각 거래소 설정은 여러 제국에서 사용할 수 있습니다. 하지만 하나의 제국에는 하나의 거래소 선호 설정만 지정할 수 있습니다. 이를 통해 제국에 포함된 개별 계획들의 수익이 올바르게 계산되도록 합니다.
