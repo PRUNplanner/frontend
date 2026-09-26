@@ -106,7 +106,7 @@
 	const refMaterialInactives: Ref<Set<string>> = ref(new Set([]));
 
 	const { materialTable, totalWeightVolume, totalPrice, fit } =
-		await useBurnXITAction(
+		useBurnXITAction(
 			localElements,
 			burnResupplyDays,
 			refHideInfinite,

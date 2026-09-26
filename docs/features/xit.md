@@ -15,7 +15,7 @@ PRUNplanner only produces the JSON. It never talks to the game.
 | File | Role |
 | --- | --- |
 | `useXITAction.ts` | `transferJSON(materials, { name, origin, destination, buy })`: a computed JSON string with an optional `CX Buy` action plus an `MTRA` transfer action |
-| `useBurnXITAction.ts` | `await useBurnXITAction(elements, resupplyDays, hideInfinite, overrides, inactives, cxUuid, planetId)`: resupply material table and totals (weight, volume, cost via `usePrice`) |
+| `useBurnXITAction.ts` | `useBurnXITAction(elements, resupplyDays, hideInfinite, overrides, inactives, cxUuid, planetId)`: resupply material table and totals (weight, volume, cost via `usePrice`) |
 | `xitConstants.ts` | `XITSTATIONWAREHOUSES` (origin options) and `XITSTATIONWAREHOUSESTOCX` (station → exchange code) |
 | `xitAction.types.ts` | The JSON shape (`IXITJSON`, action types) |
 | `components/XITTransferActionButton.vue`, `XITBurnActionButton.vue` | Buttons that open the JSON |

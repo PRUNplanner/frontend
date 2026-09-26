@@ -19,13 +19,13 @@ import { PSelectOption } from "@/ui/ui.types";
 // Static data
 import hqLevels from "@/features/hq_upgrade_calculator/hq_levels.json";
 
-export async function useHQUpgradeCalculator(
+export function useHQUpgradeCalculator(
 	start: Ref<number>,
 	to: Ref<number>,
 	refOverride: Ref<Record<string, number | null>>,
 	cxUuid: Ref<string | undefined>
 ) {
-	const { getPrice } = await usePrice(cxUuid, ref(undefined));
+	const { getPrice } = usePrice(cxUuid, ref(undefined));
 	const { findMaterial } = useFIOStorage();
 	const { materialsMap } = useMaterialData();
 

@@ -77,7 +77,7 @@
 	});
 
 	const { getMaterial, getMaterialClass } = useMaterialData();
-	const { getMaterialExchangeOverview } = await useExchangeData();
+	const { getMaterialExchangeOverview } = useExchangeData();
 
 	const refShowDrawer: Ref<boolean> = ref(false);
 	const refExchangeOverview: Ref<IMaterialExchangeOverview | undefined> =

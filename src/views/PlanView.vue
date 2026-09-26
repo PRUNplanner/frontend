@@ -127,7 +127,7 @@
 		props.planData.planet_natural_id
 	);
 
-	const calculation = await usePlanCalculation(
+	const calculation = usePlanCalculation(
 		refPlanData,
 		refEmpireUuid,
 		refEmpireList,

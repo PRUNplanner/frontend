@@ -28,7 +28,7 @@ describe("useRepairAnalysis", async () => {
 	});
 
 	it("daySelectOptions", async () => {
-		const { daySelectOptions } = await useRepairAnalysis(
+		const { daySelectOptions } = useRepairAnalysis(
 			cxUuid,
 			planetNaturalId
 		);
@@ -37,7 +37,7 @@ describe("useRepairAnalysis", async () => {
 	});
 
 	it("calculateAmountAtDay", async () => {
-		const { calculateAmountAtDay } = await useRepairAnalysis(
+		const { calculateAmountAtDay } = useRepairAnalysis(
 			cxUuid,
 			planetNaturalId
 		);
@@ -85,7 +85,7 @@ describe("useRepairAnalysis", async () => {
 			},
 		];
 
-		const { calculateDailyRepairMaterials } = await useRepairAnalysis(
+		const { calculateDailyRepairMaterials } = useRepairAnalysis(
 			cxUuid,
 			planetNaturalId
 		);

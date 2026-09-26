@@ -58,7 +58,7 @@
 	const filterPostiveROI: Ref<boolean> = ref(false);
 
 	const { calculate, formatOptimal, progressCurrent, progressTotal } =
-		await useROIOverview(definition, cx);
+		useROIOverview(definition, cx);
 
 	const filteredResult: ComputedRef<IROIResult[]> = computed(() => {
 		let filtered = result.value;

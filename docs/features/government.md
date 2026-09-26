@@ -16,19 +16,15 @@
 | File | Role |
 | --- | --- |
 | `upkeepCalculations.constants.ts` | `UPKEEP_NEED_TYPES` and `UPKEEP_BUILDINGS`: static building → needs and materials data |
-| `upkeepCalculations.ts` | Pure functions: `calculatePricePerNeed`, `getBuildingsForNeed`, `getBuildingNeedCount`, `calculateMaterialsForNeed` |
+| `upkeepCalculations.ts` | Pure functions: `calculatePricePerNeed`, `getBuildingsForNeed`, `getBuildingNeedCount`, `calculateMaterialsForNeed`, and `calculateAllNeeds(getPrice)`, which prices every need's materials and sorts them by price per need |
 | `upkeepCalculations.types.d.ts` | `UpkeepNeedType`, `IUpkeepBuilding`, `IUpkeepMaterialCalculation` |
-| `composables/useUpkeepBuildings.ts` | Accessors over the constants |
-| `composables/useUpkeepPriceCalculator.ts` | `await useUpkeepPriceCalculator(cxUuidRef, planetRef?)`: prices each need's materials with `usePrice(... "BUY")` and sorts them by price per need |
-| `components/UpkeepPriceCalculator.vue` | Calculator UI |
+| `components/UpkeepPriceCalculator.vue` | Calculator UI. Passes `usePrice(...).getPrice(ticker, "BUY")` into `calculateAllNeeds` and recalculates when the CX changes |
 | `components/PlanetPOPRButton.vue`, `PlanetPOPRTable.vue` | POPR popup and table, fed by the `GetPlanetLastPOPR` query |
 
 ## Gotchas
 
-- **The helper logic is duplicated.** The functions in
-  `upkeepCalculations.ts` and those in the `composables/` overlap.
-  Consolidate new logic into `upkeepCalculations.ts` (which has tests)
-  rather than adding a third copy.
+- **Keep the logic in `upkeepCalculations.ts`.** It is the tested home for
+  upkeep math. The component should only wire prices and UI state.
 - **Multi-need buildings multiply their need** by the number of needs they
   provide when computing price per need.
 

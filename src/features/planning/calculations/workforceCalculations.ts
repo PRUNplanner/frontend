@@ -65,8 +65,8 @@ export const workforceTypeNames: string[] = [
 	"scientist",
 ];
 
-export async function useWorkforceCalculation() {
-	const { combineMaterialIOMinimal } = await useMaterialIOUtil();
+export function useWorkforceCalculation() {
+	const { combineMaterialIOMinimal } = useMaterialIOUtil();
 
 	/**
 	 * Calculates workforce satisfaction based on capacity and luxuries

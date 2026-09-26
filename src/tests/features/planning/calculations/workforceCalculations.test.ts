@@ -59,8 +59,7 @@ describe("Planning: Workforce Calculations", async () => {
 		it.each(satisfactionCases)(
 			"Test $description",
 			async ({ capacity, required, lux1, lux2, expected }) => {
-				const { calculateSatisfaction } =
-					await useWorkforceCalculation();
+				const { calculateSatisfaction } = useWorkforceCalculation();
 
 				expect(
 					calculateSatisfaction(capacity, required, lux1, lux2)
@@ -217,7 +216,7 @@ describe("Planning: Workforce Calculations", async () => {
 			"Test $description",
 			async ({ workforce, expected }) => {
 				const { calculateSingleWorkforceConsumption } =
-					await useWorkforceCalculation();
+					useWorkforceCalculation();
 
 				expect(
 					// @ts-expect-error test mock data
@@ -229,8 +228,7 @@ describe("Planning: Workforce Calculations", async () => {
 
 	describe("calculateWorkforceConsumption", async () => {
 		it("Full workforce record", async () => {
-			const { calculateWorkforceConsumption } =
-				await useWorkforceCalculation();
+			const { calculateWorkforceConsumption } = useWorkforceCalculation();
 
 			const testData = {
 				pioneer: {

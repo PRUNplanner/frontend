@@ -9,7 +9,7 @@ page, together with the `ui/charts/PlanRepairCostChart.vue` and
 
 ## Key files
 
-- **`useRepairAnalysis.ts`**: `await useRepairAnalysis(cxUuidRef,
+- **`useRepairAnalysis.ts`**: `useRepairAnalysis(cxUuidRef,
   planetNaturalIdRef)`. The function
   `calculateDailyRepairMaterials(buildingData)` returns
   `Record<day, IMaterialIO[]>`. It computes each building's construction

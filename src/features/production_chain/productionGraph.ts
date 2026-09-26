@@ -33,9 +33,9 @@ export class ProductionGraph {
 	}
 
 	async init() {
-		const buildingData = await useBuildingData();
+		const buildingData = useBuildingData();
 		const allRecipes = Object.values(
-			await buildingData.getAllBuildingRecipes() // async version
+			buildingData.getAllBuildingRecipes()
 		);
 
 		allRecipes.forEach((buildingRecipes: IRecipe[]) => {

@@ -14,13 +14,13 @@ describe("useExchangeData", () => {
 
 	describe("getExchangeTicker", () => {
 		it("getExchangeTicker: fail", async () => {
-			const { getExchangeTicker } = await useExchangeData();
+			const { getExchangeTicker } = useExchangeData();
 
 			await expect(() => getExchangeTicker("foo")).rejects.toThrowError();
 		});
 
 		it("getExchangeTicker: valid", async () => {
-			const { getExchangeTicker } = await useExchangeData();
+			const { getExchangeTicker } = useExchangeData();
 
 			const result = await getExchangeTicker("RAT.AI1");
 			expect(result).toBeDefined();
@@ -30,7 +30,7 @@ describe("useExchangeData", () => {
 
 	describe("getMaterialExchangeOverview", () => {
 		it("valid overview result", async () => {
-			const { getMaterialExchangeOverview } = await useExchangeData();
+			const { getMaterialExchangeOverview } = useExchangeData();
 
 			const result = await getMaterialExchangeOverview("CL");
 

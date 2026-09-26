@@ -36,7 +36,7 @@ describe("Util: materialIO ", async () => {
 	});
 
 	it("combineMaterialIOMinimal", async () => {
-		const { combineMaterialIOMinimal } = await useMaterialIOUtil();
+		const { combineMaterialIOMinimal } = useMaterialIOUtil();
 		const firstArray: IMaterialIOMinimal[] = [
 			{
 				ticker: "C",
@@ -92,7 +92,7 @@ describe("Util: materialIO ", async () => {
 	});
 
 	it("enhanceMaterialIOMinimal", async () => {
-		const { enhanceMaterialIOMinimal } = await useMaterialIOUtil();
+		const { enhanceMaterialIOMinimal } = useMaterialIOUtil();
 
 		const fakeArray: IMaterialIOMinimal[] = [
 			{
@@ -135,7 +135,7 @@ describe("Util: materialIO ", async () => {
 	});
 
 	it("enhanceMaterialIOMaterial", async () => {
-		const { enhanceMaterialIOMaterial } = await usePrice(
+		const { enhanceMaterialIOMaterial } = usePrice(
 			ref(undefined),
 			ref(undefined)
 		);
@@ -212,7 +212,7 @@ describe("Util: materialIO ", async () => {
 			},
 		];
 
-		const { combineEmpireMaterialIO } = await useMaterialIOUtil();
+		const { combineEmpireMaterialIO } = useMaterialIOUtil();
 
 		const result = combineEmpireMaterialIO(fakeInput);
 
@@ -251,7 +251,7 @@ describe("Util: materialIO ", async () => {
 			},
 		];
 
-		const { combineEmpireMaterialIO } = await useMaterialIOUtil();
+		const { combineEmpireMaterialIO } = useMaterialIOUtil();
 
 		const result = combineEmpireMaterialIO(fakeInput);
 
@@ -267,7 +267,7 @@ describe("Util: materialIO ", async () => {
 	});
 
 	it("empireMaterialIOState", async () => {
-		const { empireMaterialIOState } = await useMaterialIOUtil();
+		const { empireMaterialIOState } = useMaterialIOUtil();
 
 		const noResult = await empireMaterialIOState(undefined, []);
 		expect(noResult).toBeUndefined();

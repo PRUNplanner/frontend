@@ -85,7 +85,7 @@ await recipesStore.setMany(recipes);
 await materialsStore.setMany(materials);
 await exchangesStore.setMany(exchanges);
 await useMaterialData().preload();
-const { preloadBuildings, preloadRecipes } = await useBuildingData();
+const { preloadBuildings, preloadRecipes } = useBuildingData();
 await preloadBuildings(); await preloadRecipes();
 
 vi.mock("@/database/services/usePlanetData", …); // getPlanet → fixture

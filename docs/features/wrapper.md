@@ -25,7 +25,7 @@ when every step has finished.
   `WrapperPlanningDataLoader` also emits `update:empireUuid` and
   `update:cxUuid`, which resolve the default empire and CX.
 - **Rendering.** The slot renders inside `<Suspense>`, so children can
-  `await` async composables.
+  `await` data in `<script setup>`.
 
 ## Gotchas
 

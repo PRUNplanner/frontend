@@ -26,7 +26,7 @@ describe("productionNode", async () => {
 		//@ts-expect-error mock data
 		await planetsStore.setMany(planets);
 
-		const { preloadBuildings } = await useBuildingData();
+		const { preloadBuildings } = useBuildingData();
 		await preloadBuildings();
 
 		// Load extractable materials from planet data

@@ -66,8 +66,8 @@
 	});
 
 	const { materialsMap } = useMaterialData();
-	const { buildingsMap } = await useBuildingData();
-	const { getPrice } = await usePrice(
+	const { buildingsMap } = useBuildingData();
+	const { getPrice } = usePrice(
 		ref(props.cxUuid),
 		ref(props.planetNaturalId)
 	);

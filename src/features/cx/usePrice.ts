@@ -44,15 +44,14 @@ import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
  * the system uses the Universe VWAP 30d data
  */
 
-export async function usePrice(
+export function usePrice(
 	cxUuid: Ref<string | undefined>,
 	planetNaturalId: Ref<string | undefined>
 ) {
 	const planningStore = usePlanningStore();
 
-	const { getExchangeTicker } = await useExchangeData();
-	const { getBuilding, getBuildingConstructionMaterials } =
-		await useBuildingData();
+	const { getExchangeTicker } = useExchangeData();
+	const { getBuilding, getBuildingConstructionMaterials } = useBuildingData();
 
 	/**
 	 * Finds the correct price information for given exchange preference

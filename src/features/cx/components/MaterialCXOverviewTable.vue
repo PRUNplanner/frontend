@@ -4,8 +4,7 @@
 	// Composables
 	import { useExchangeData } from "@/database/services/useExchangeData";
 	import { useMaterialData } from "@/database/services/useMaterialData";
-	const { exchangeTypesArray, exchangeGameTypesArray } =
-		await useExchangeData();
+	const { exchangeTypesArray, exchangeGameTypesArray } = useExchangeData();
 	const { getMaterialClass } = useMaterialData();
 
 	// Util
