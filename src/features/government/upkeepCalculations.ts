@@ -113,14 +113,18 @@ export async function calculateMaterialsForNeed(
 export async function calculateAllNeeds(
 	getPriceFunc: (ticker: string) => Promise<number>
 ): Promise<Record<UpkeepNeedType, IUpkeepMaterialCalculation[]>> {
-	const results = {} as Record<UpkeepNeedType, IUpkeepMaterialCalculation[]>;
+	const results = await Promise.all(
+		UPKEEP_NEED_TYPES.map(
+			async (needType) =>
+				[
+					needType,
+					await calculateMaterialsForNeed(needType, getPriceFunc),
+				] as const
+		)
+	);
 
-	for (const needType of UPKEEP_NEED_TYPES) {
-		results[needType] = await calculateMaterialsForNeed(
-			needType,
-			getPriceFunc
-		);
-	}
-
-	return results;
+	return Object.fromEntries(results) as Record<
+		UpkeepNeedType,
+		IUpkeepMaterialCalculation[]
+	>;
 }
