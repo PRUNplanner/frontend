@@ -11,7 +11,7 @@ and small CX helpers. Every price in the app comes from `usePrice`.
 
 ## Key files
 
-- **`usePrice.ts`**: `await usePrice(cxUuidRef, planetNaturalIdRef)`
+- **`usePrice.ts`**: `usePrice(cxUuidRef, planetNaturalIdRef)`
   provides:
   - `getPrice(ticker, "BUY" | "SELL")`;
   - `enhanceMaterialIOMaterial(io[])`, which adds a `price` to each

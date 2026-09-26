@@ -8,7 +8,7 @@ Everything that shows those numbers goes through one composable.
 ## `usePlanCalculation` (`src/features/planning/usePlanCalculation.ts`)
 
 ```ts
-const calc = await usePlanCalculation(
+const calc = usePlanCalculation(
   planRef,            // Ref<IPlan>, required
   empireUuidRef,      // Ref<string | undefined>, the empire context (faction, permits)
   empireOptionsRef,   // Ref<IPlanEmpireElement[] | undefined>, the list to resolve that uuid
@@ -16,11 +16,16 @@ const calc = await usePlanCalculation(
 );
 ```
 
-- **It is async and must be awaited.** It loads the planet, building and
-  price data up front.
+- **It is synchronous.** Planet, building and price data are loaded inside
+  `calculate()`, so its watchers are registered during setup and stop with
+  the component.
 - **It recalculates automatically.** A deep watch on `[plan, refreshKey,
   empireUuid]` re-runs `calculate()` and writes `calc.result`.
   `refreshKey` increments whenever `planningStore.cxs` changes.
+- **Batch callers stop the watchers.** Empire, FIO burn and the ROI
+  overviews call it outside setup, so no component owns its watchers. They
+  create it in an `effectScope()`, stop the scope straight away and call
+  `calculate()` themselves.
 - **Returned fields:**
 
   | Field | Meaning |
@@ -89,7 +94,7 @@ sets `modified`.
 
 ## Prices: `usePrice` (`src/features/cx/usePrice.ts`)
 
-`await usePrice(cxUuidRef, planetNaturalIdRef)` gives you `getPrice(ticker,
+`usePrice(cxUuidRef, planetNaturalIdRef)` gives you `getPrice(ticker,
 "BUY" | "SELL")`, `enhanceMaterialIOMaterial`, `getMaterialIOTotalPrice` and
 `calculateInfrastructureCosts`.
 

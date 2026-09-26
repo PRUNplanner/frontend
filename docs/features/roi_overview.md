@@ -12,7 +12,7 @@ each building and runs each one through the real plan engine.
 
 | File | Role |
 | --- | --- |
-| `useROIOverview.ts` | `await useROIOverview(definitionRef, cxUuidRef)` exposes `calculate()`, `resultData`, `progressCurrent`/`progressTotal` and `formatOptimal()` |
+| `useROIOverview.ts` | `useROIOverview(definitionRef, cxUuidRef)` exposes `calculate()`, `resultData`, `progressCurrent`/`progressTotal` and `formatOptimal()` |
 | `assets/optimalProduction.ts` | Static table (`IStaticOptimalProduction[]`) of each building's optimal count plus the habs and storage that fill one base |
 | `useROIOverview.types.ts` | `IROIResult`, `IStaticOptimalProduction` |
 | `components/ROIOverviewTable.vue`, `ROIOverviewTableFilters.vue` | Result table and filters |

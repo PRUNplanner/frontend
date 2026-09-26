@@ -118,8 +118,8 @@ component / composable
   | Service | Provides |
   | --- | --- |
   | `useMaterialData()` | `getMaterial`, `materialsMap`, `materialSelectOptions`, `getMaterialClass` (CSS category) |
-  | `await useBuildingData()` | `getBuilding`, `buildingsMap`, recipes per building, production building options, construction/workforce materials |
-  | `await useExchangeData()` | `getExchangeTicker`, VWAP analysis, `getMaterialExchangeOverview` |
+  | `useBuildingData()` | `getBuilding`, `buildingsMap`, recipes per building, production building options, construction/workforce materials |
+  | `useExchangeData()` | `getExchangeTicker`, VWAP analysis, `getMaterialExchangeOverview` |
   | `usePlanetData()` | `getPlanet`, planet names (`loadPlanetNames`), special materials |
 
 - **Freshness.**
