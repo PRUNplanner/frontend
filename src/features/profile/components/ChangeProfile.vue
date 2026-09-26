@@ -49,13 +49,10 @@
 	async function patchProfile(): Promise<void> {
 		trackEvent("user_profile_change");
 
+		const fioApiKey = localProfile.fio_apikey?.replace(/ /g, "") ?? null;
+
 		// detect if user has fio enabled
-		const userHasFIO: boolean = !!(
-			localProfile.fio_apikey &&
-			localProfile.fio_apikey != "" &&
-			localProfile.prun_username &&
-			localProfile.prun_username != ""
-		);
+		const userHasFIO: boolean = !!(fioApiKey && localProfile.prun_username);
 
 		trackEvent("user_profile_change_fio", { active: userHasFIO });
 
@@ -63,7 +60,7 @@
 
 		try {
 			await useQuery("PatchUserProfile", {
-				fio_apikey: localProfile.fio_apikey?.replace(/ /g, "") ?? null,
+				fio_apikey: fioApiKey,
 				prun_username: localProfile.prun_username ?? null,
 				email: localProfile.email ?? null,
 			}).execute();
@@ -81,10 +78,9 @@
 
 		try {
 			await useQuery("PostUserResendEmailVerification", null).execute();
+			codeResendRequested.value = true;
 		} catch (err) {
 			console.error("Error resending verification code", err);
-		} finally {
-			codeResendRequested.value = true;
 		}
 	}
 </script>

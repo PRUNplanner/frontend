@@ -248,6 +248,20 @@ describe("ChangeProfile", () => {
 		expect(fioActive()).toEqual([{ active: false }, { active: false }]);
 	});
 
+	it("reports FIO as inactive for a key of only spaces", async () => {
+		mock.onPatch(PROFILE_URL).reply(200, profile());
+		const { wrapper } = await mountProfile(profile());
+
+		await inputs(wrapper).at(0)!.setValue("   ");
+		await save(wrapper);
+
+		// without its spaces the key is empty, sent as null
+		expect(patchBody()).toMatchObject({ fio_apikey: null });
+		expect(trackEvent).toHaveBeenCalledWith("user_profile_change_fio", {
+			active: false,
+		});
+	});
+
 	it("reports FIO as inactive for a key without any username", async () => {
 		const noUsername = profile({ prun_username: null });
 		mock.resetHandlers();
@@ -394,6 +408,8 @@ describe("ChangeProfile", () => {
 			"Error resending verification code",
 			expect.any(Error)
 		);
-		expect(wrapper.text()).toContain(REQUESTED);
+		// the link stays, so the user can ask again
+		expect(wrapper.text()).toContain(RESEND);
+		expect(wrapper.text()).not.toContain(REQUESTED);
 	});
 });
