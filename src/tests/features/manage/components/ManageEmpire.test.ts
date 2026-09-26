@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { flushPromises, VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -234,6 +234,31 @@ describe("ManageEmpire", () => {
 
 		expect(mock.history.delete).toHaveLength(1);
 		expect(component.emitted("update:empireList")).toHaveLength(1);
+	});
+
+	it("keeps the list and stops the spinner when deleting fails", async () => {
+		mock.onDelete(new RegExp(`planning/empire/${E2}/$`)).reply(500);
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper, component } = await mountEmpire();
+		const deleteButton = () =>
+			wrapper.findAll('td[data-col-key="configuration"] button')[1];
+
+		await deleteButton().trigger("click");
+		await flushPromises();
+		Array.from(
+			document.body.querySelectorAll<HTMLButtonElement>(
+				".n-dialog button"
+			)
+		)
+			.find((b) => b.textContent?.trim() === "Delete")!
+			.click();
+		await flushPromises();
+
+		expect(mock.history.delete).toHaveLength(1);
+		expect(component.emitted("update:empireList")).toBeUndefined();
+		expect(deleteButton().attributes("aria-busy")).toBe("false");
+		expect(error).toHaveBeenCalled();
+		error.mockRestore();
 	});
 
 	it("shows the empty state without empires", async () => {

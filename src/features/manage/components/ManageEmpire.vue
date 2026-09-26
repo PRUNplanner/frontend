@@ -223,19 +223,24 @@
 	async function deleteEmpire(empireUuid: string): Promise<void> {
 		refIsDeleting.value = empireUuid;
 		trackEvent("manage_empire_delete", { empireUuid: empireUuid });
-		const deletionResult: boolean = await useQuery("DeleteEmpire", {
-			empireUuid: empireUuid,
-		}).execute();
 
-		if (deletionResult) {
-			// forced reload of all Empires
-			emit(
-				"update:empireList",
-				await useQuery("GetAllEmpires").execute()
-			);
+		try {
+			const deletionResult: boolean = await useQuery("DeleteEmpire", {
+				empireUuid: empireUuid,
+			}).execute();
+
+			if (deletionResult) {
+				// forced reload of all Empires
+				emit(
+					"update:empireList",
+					await useQuery("GetAllEmpires").execute()
+				);
+			}
+		} catch (err) {
+			console.error(err);
+		} finally {
+			refIsDeleting.value = undefined;
 		}
-
-		refIsDeleting.value = undefined;
 	}
 </script>
 
