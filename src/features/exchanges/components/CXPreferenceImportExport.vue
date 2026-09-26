@@ -42,11 +42,7 @@
 
 	const fileInput = ref<HTMLInputElement | null>(null);
 
-	const triggerFileSelect = () => {
-		if (fileInput.value && fileInput.value) {
-			fileInput.value.click();
-		}
-	};
+	const triggerFileSelect = () => fileInput.value?.click();
 
 	const handleFileChange = async (event: Event) => {
 		const target = event.target as HTMLInputElement;

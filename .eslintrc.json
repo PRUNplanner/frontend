@@ -1,0 +1,108 @@
+{
+	"root": true,
+	"env": {
+		"browser": true,
+		"node": true,
+		"es2024": true
+	},
+	"globals": {
+		"__APP_VERSION__": "readonly"
+	},
+	"parser": "vue-eslint-parser",
+	"parserOptions": {
+		"parser": "@typescript-eslint/parser",
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:vue/vue3-recommended"
+	],
+	"ignorePatterns": [
+		"dist/",
+		"coverage/",
+		"tsconfig.json",
+		"tailwind.config.js"
+	],
+	"rules": {
+		"@typescript-eslint/no-explicit-any": "warn",
+		"@typescript-eslint/no-unused-expressions": [
+			"error",
+			{ "allowTernary": true }
+		],
+		"no-async-promise-executor": "off",
+		"no-mixed-spaces-and-tabs": "off",
+		"@typescript-eslint/ban-types": "off",
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": [
+			"warn",
+			{
+				"varsIgnorePattern": "^_",
+				"argsIgnorePattern": "^_",
+				"caughtErrorsIgnorePattern": "^_",
+				"ignoreRestSiblings": true
+			}
+		],
+		"vue/no-unused-vars": ["error", { "ignorePattern": "^_" }],
+		"vue/max-attributes-per-line": ["error", { "singleline": 5 }],
+		"vue/html-indent": "off",
+		"vue/singleline-html-element-content-newline": "off",
+		"vue/html-closing-bracket-newline": "off",
+		"vue/html-self-closing": "off",
+		"vue/no-unused-components": [
+			"error",
+			{ "ignoreWhenBindingPresent": true }
+		],
+		"vue/no-unused-properties": [
+			"warn",
+			{ "groups": ["props", "setup"], "deepData": false }
+		]
+	},
+	"overrides": [
+		{
+			"files": ["src/tests/**"],
+			"rules": {
+				"@typescript-eslint/no-explicit-any": "off",
+				"@typescript-eslint/ban-ts-comment": [
+					"error",
+					{ "ts-expect-error": false }
+				]
+			}
+		},
+		{
+			"files": ["src/features/planning/engine/**"],
+			"rules": {
+				"no-restricted-imports": [
+					"error",
+					{
+						"paths": [
+							{
+								"name": "vue",
+								"message": "The planning engine must not import Vue."
+							},
+							{
+								"name": "pinia",
+								"message": "The planning engine must not import Vue."
+							}
+						],
+						"patterns": [
+							{
+								"group": ["@vue/*", "vue-*"],
+								"message": "The planning engine must not import Vue."
+							},
+							{
+								"group": [
+									"@/stores/*",
+									"!@/stores/*.types",
+									"@/database/*"
+								],
+								"message": "The planning engine gets its data through IPlanContext."
+							}
+						]
+					}
+				]
+			}
+		}
+	]
+}

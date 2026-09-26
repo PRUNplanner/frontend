@@ -60,7 +60,16 @@ export async function resetDB(): Promise<void> {
 		(await dbPromise).close();
 		dbPromise = null;
 	}
-	await indexedDB.deleteDatabase(config.INDEXEDDB_DBNAME);
+	// deleteDatabase returns a request, not a promise
+	await new Promise<void>((resolve, reject) => {
+		const request = indexedDB.deleteDatabase(config.INDEXEDDB_DBNAME);
+		request.onsuccess = () => {
+			resolve();
+		};
+		request.onerror = () => {
+			reject(request.error ?? new Error("Deleting the IndexedDB failed"));
+		};
+	});
 }
 
 export function useIndexedDBStore<T extends object, K extends keyof T & string>(

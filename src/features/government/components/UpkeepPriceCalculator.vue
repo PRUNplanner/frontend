@@ -66,11 +66,15 @@
 		isCalculating.value = true;
 
 		const { getPrice } = usePrice(cxUuid, planetNaturalId);
-		calculationResults.value = await calculateAllNeeds((ticker) =>
-			getPrice(ticker, "BUY")
-		);
-
-		isCalculating.value = false;
+		try {
+			calculationResults.value = await calculateAllNeeds((ticker) =>
+				getPrice(ticker, "BUY")
+			);
+		} catch (err) {
+			console.error(err);
+		} finally {
+			isCalculating.value = false;
+		}
 	}
 
 	watch(
