@@ -302,6 +302,20 @@ describe("PlanCOGM", () => {
 		).toBe("false");
 	});
 
+	it("stops the save spinner when saving fails", async () => {
+		mock.resetHandlers();
+		mock.onPut(PUT_URL).reply(500);
+		const { wrapper } = await mountCOGM();
+
+		await clickButton(wrapper, "save");
+
+		expect(mock.history.put).toHaveLength(1);
+		const save = wrapper
+			.findAll("button")
+			.find((b) => b.text() === "common.buttons.save")!;
+		expect(save.attributes("aria-busy")).toBe("false");
+	});
+
 	it("reload discards unsaved edits", async () => {
 		const { wrapper } = await mountCOGM();
 
