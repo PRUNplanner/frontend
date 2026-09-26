@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { usePlanningStore } from "@/stores/planningStore";
 import { usePrice } from "@/features/cx/usePrice";
-import { Ref, ref } from "vue";
+import { ref } from "vue";
 import { buildingsStore } from "@/database/stores";
 import { exchangesStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -33,12 +33,6 @@ describe("usePrice", async () => {
 
 		await preloadBuildings();
 		await flushPromises();
-	});
-
-	it("cache clearing, just trigger", async () => {
-		const cx: Ref<string | undefined> = ref(undefined);
-		usePrice(cx, ref(undefined));
-		cx.value = "foo";
 	});
 
 	describe("calculateInfrastructureCosts", async () => {

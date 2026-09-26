@@ -36,7 +36,9 @@ export function calculatePricePerNeed(
  * @param needType The type of need
  * @returns Array of buildings providing that need
  */
-export function getBuildingsForNeed(needType: UpkeepNeedType): IUpkeepBuilding[] {
+export function getBuildingsForNeed(
+	needType: UpkeepNeedType
+): IUpkeepBuilding[] {
 	return UPKEEP_BUILDINGS.filter((building) => building.needs[needType] > 0);
 }
 
@@ -79,7 +81,7 @@ export async function calculateMaterialsForNeed(
 				effectiveNeed
 			);
 
-		calculations.push({
+			calculations.push({
 				ticker: material.ticker,
 				buildingTicker: building.ticker,
 				qtyPerDay: material.qtyPerDay,
@@ -99,4 +101,30 @@ export async function calculateMaterialsForNeed(
 	});
 
 	return calculations;
+}
+
+/**
+ * Calculates material prices for every need type
+ *
+ * @export
+ * @param {(ticker: string) => Promise<number>} getPriceFunc Material price getter
+ * @returns {Promise<Record<UpkeepNeedType, IUpkeepMaterialCalculation[]>>} Sorted calculations per need
+ */
+export async function calculateAllNeeds(
+	getPriceFunc: (ticker: string) => Promise<number>
+): Promise<Record<UpkeepNeedType, IUpkeepMaterialCalculation[]>> {
+	const results = await Promise.all(
+		UPKEEP_NEED_TYPES.map(
+			async (needType) =>
+				[
+					needType,
+					await calculateMaterialsForNeed(needType, getPriceFunc),
+				] as const
+		)
+	);
+
+	return Object.fromEntries(results) as Record<
+		UpkeepNeedType,
+		IUpkeepMaterialCalculation[]
+	>;
 }

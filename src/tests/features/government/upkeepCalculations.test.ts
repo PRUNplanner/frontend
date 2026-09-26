@@ -5,6 +5,7 @@ import {
 	getBuildingsForNeed,
 	getBuildingNeedCount,
 	calculateMaterialsForNeed,
+	calculateAllNeeds,
 	UPKEEP_BUILDINGS,
 	UPKEEP_NEED_TYPES,
 } from "@/features/government/upkeepCalculations";
@@ -245,19 +246,55 @@ describe("Government: Upkeep Calculations", () => {
 			const zeroPriceCalcs = calculations.filter((c) => c.cxPrice === 0);
 			const pricedCalcs = calculations.filter((c) => c.cxPrice > 0);
 
-			if (zeroPriceCalcs.length > 0 && pricedCalcs.length > 0) {
-				// Get the index of the first zero-price calc
-				const firstZeroIndex = calculations.findIndex((c) => c.cxPrice === 0);
-				// Get the index of the last priced calc
-				const lastPricedIndex =
-					calculations.length -
-					1 -
-					[...calculations].reverse().findIndex((c) => c.cxPrice > 0);
+			expect(zeroPriceCalcs.length).toBeGreaterThan(0);
+			expect(pricedCalcs.length).toBeGreaterThan(0);
 
-				// All zero-price calcs should come after all priced calcs
-				expect(firstZeroIndex).toBeGreaterThan(lastPricedIndex);
-			}
+			// All zero-price calcs should come after all priced calcs
+			expect(calculations).toStrictEqual([
+				...pricedCalcs,
+				...zeroPriceCalcs,
+			]);
 		});
 
+		it("prices a material by its daily cost per need point", async () => {
+			const calculations = await calculateMaterialsForNeed(
+				"safety",
+				async (ticker) => (ticker === "DW" ? 50 : 0)
+			);
+			const dw = calculations.find(
+				(c) => c.ticker === "DW" && c.buildingTicker === "SST"
+			);
+
+			// SST: 10 DW/day provide 833.3 safety
+			expect(dw?.pricePerNeed).toBeCloseTo((50 * 10) / 833.3, 10);
+		});
+
+		it("counts every need a multi-need building provides", async () => {
+			const calculations = await calculateMaterialsForNeed(
+				"safety",
+				async () => 100
+			);
+			const pk = calculations.find(
+				(c) => c.ticker === "PK" && c.buildingTicker === "EMC"
+			);
+
+			// EMC: 2 PK/day provide 200 safety + 200 health
+			expect(pk?.needProvided).toBe(200);
+			expect(pk?.pricePerNeed).toBeCloseTo((100 * 2) / 400, 10);
+		});
+	});
+
+	describe("calculateAllNeeds", () => {
+		it("calculates every need type with the given prices", async () => {
+			const getPrice = async () => 10;
+			const results = await calculateAllNeeds(getPrice);
+
+			expect(Object.keys(results)).toStrictEqual(UPKEEP_NEED_TYPES);
+			for (const needType of UPKEEP_NEED_TYPES) {
+				expect(results[needType]).toStrictEqual(
+					await calculateMaterialsForNeed(needType, getPrice)
+				);
+			}
+		});
 	});
 });
