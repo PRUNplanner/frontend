@@ -113,13 +113,17 @@ component / composable
 - **`composables/useDB.ts`** adds a module-level in-memory layer on top of a
   store. The state is shared across every caller. `preload(force)` loads
   `allData`, and `get(key)` checks the map first and falls back to the DB.
+  `getLoaded(key)` reads the map synchronously and throws if the store was
+  never preloaded; the planning engine and `PriceBook` rely on it. After
+  writing to IndexedDB, call `preload(true)` or synchronous readers won't see
+  the new rows (the `Get*` queries do this).
 - **`services/`** is the API consumers should use:
 
   | Service | Provides |
   | --- | --- |
   | `useMaterialData()` | `getMaterial`, `materialsMap`, `materialSelectOptions`, `getMaterialClass` (CSS category) |
   | `useBuildingData()` | `getBuilding`, `buildingsMap`, recipes per building, production building options, construction/workforce materials |
-  | `useExchangeData()` | `getExchangeTicker`, VWAP analysis, `getMaterialExchangeOverview` |
+  | `useExchangeData()` | `getExchangeTicker`, `getExchangeTickerLoaded` (sync), VWAP analysis, `getMaterialExchangeOverview` |
   | `usePlanetData()` | `getPlanet`, planet names (`loadPlanetNames`), special materials |
 
 - **Freshness.**

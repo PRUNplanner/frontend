@@ -7,7 +7,7 @@ One page per `src/features/*` folder. Each page follows the same outline:
 
 | Feature | One-liner |
 | --- | --- |
-| [planning](planning.md) | The plan engine (`usePlanCalculation`) and the plan editor panels/tools |
+| [planning](planning.md) | The plan engine (`engine/`, `usePlanCalculation`) and the plan editor panels/tools |
 | [planning_data](planning_data.md) | Plan create/save/clone/reload (`usePlan`) |
 | [empire](empire.md) | Empire dashboard components: cost overview, material I/O, opportunities |
 | [manage](manage.md) | Create empires and CX preferences, assign plans to empires |
