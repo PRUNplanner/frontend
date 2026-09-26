@@ -15,7 +15,8 @@ interface IExchangeCSVRow {
 	Type: string;
 	CX: string;
 	Ticker: string;
-	Price: string;
+	// papaparse leaves the key out of a row with too few fields
+	Price?: string;
 }
 
 // columns written by generateSettingsCSV
@@ -112,7 +113,9 @@ export function useCXImportExport() {
 							}
 						});
 					} catch (err) {
-						reject(err);
+						reject(
+							err instanceof Error ? err : new Error(String(err))
+						);
 						return;
 					}
 

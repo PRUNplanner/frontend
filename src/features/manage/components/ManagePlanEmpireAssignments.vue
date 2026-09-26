@@ -282,7 +282,9 @@
 		})
 			.execute()
 			.then(() => updateEmitEmpiresPlans())
-			.catch((err) => console.error(err))
+			.catch((err) => {
+				console.error(err);
+			})
 			.finally(() => {
 				refIsDeleting.value = undefined;
 			});

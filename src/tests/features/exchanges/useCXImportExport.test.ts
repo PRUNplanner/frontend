@@ -122,6 +122,11 @@ describe("useCXImportExport", () => {
 			["a price that is not a number", row("BUY", "", "RAT", "cheap")],
 			["a ticker without price", row("SELL", "", "RAT", "")],
 			["a blank price", row("SELL", "", "RAT", "  ")],
+			// papaparse leaves the key out of a row with too few fields
+			[
+				"a row without the price field",
+				{ Location: "EMPIRE", Type: "SELL", CX: "", Ticker: "RAT" },
+			],
 		])("rejects the whole file for %s", async (_name, invalid) => {
 			const valid = row("BUY", "", "DW", "80");
 
