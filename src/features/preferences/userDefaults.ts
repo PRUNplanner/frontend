@@ -17,6 +17,7 @@ export const preferenceDefaults: IPreferenceDefault = {
 	burnDaysYellow: 10,
 	burnResupplyDays: 20,
 	burnOrigin: "Configure on Execution",
+	supplyCartDays: 20,
 	layoutNavigationStyle: "full",
 
 	planOverrides: {},

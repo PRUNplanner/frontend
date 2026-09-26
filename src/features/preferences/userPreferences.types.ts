@@ -15,6 +15,7 @@ export interface IPreference {
 	burnDaysYellow: number;
 	burnResupplyDays: number;
 	burnOrigin: string;
+	supplyCartDays: number;
 	layoutNavigationStyle: "full" | "collapsed";
 
 	// seeding per plan defaults

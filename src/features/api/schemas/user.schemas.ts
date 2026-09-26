@@ -136,6 +136,7 @@ export const UserPreferenceSchema: z.ZodType<IPreference> = z.object({
 	burnDaysYellow: z.number(),
 	burnResupplyDays: z.number(),
 	burnOrigin: z.string(),
+	supplyCartDays: z.number(),
 	layoutNavigationStyle: z.enum(["full", "collapsed"]),
 	planOverrides: z.record(
 		z.string(),
