@@ -22,6 +22,7 @@
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 	import { usePreferences } from "@/features/preferences/usePreferences";
+	import { planResultCacheKey } from "@/features/empire/empire.util";
 	const { combineEmpireMaterialIO, empireMaterialIOState } =
 		await useMaterialIOUtil();
 	const { defaultEmpireUuid } = usePreferences();
@@ -119,7 +120,11 @@
 			// note, calculation depends on empire + cx, so a plan is only
 			// calculated properly within this context
 
-			const cacheKey: string = `${plan.uuid}#${selectedCXUuid.value}#${selectedCXUuid.value}`;
+			const cacheKey: string = planResultCacheKey(
+				plan.uuid!,
+				selectedEmpireUuid.value,
+				selectedCXUuid.value
+			);
 
 			if (cacheCalculatedPlans.has(cacheKey)) {
 				calculatedPlans.value[plan.uuid!] =

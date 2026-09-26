@@ -77,7 +77,9 @@ component / composable
     [features/user_activity.md](features/user_activity.md)).
 - **`useQuery(name, params)`** is the caller API. Use `.execute()`. The
   `loading`, `error` and `data` fields it returns are **non-reactive
-  snapshots** taken at call time, so don't bind templates to them.
+  snapshots** taken at call time, so don't bind templates to them. Before
+  the query has any cached state, `error` is `false` and `data` is
+  `undefined`.
 - The `/debug` route (`views/QueryCacheView.vue`) shows the live cache.
 
 ### Adding a backend call

@@ -86,6 +86,7 @@ pnpm run test:ui
 | VITE_GAME_DATA_STALE_MINUTES_MATERIALS | int    | 1440                             |
 | VITE_GAME_DATA_STALE_MINUTES_EXCHANGES | int    | 30                               |
 | VITE_GAME_DATA_STALE_MINUTES_PLANETS   | int    | 180                              |
+| VITE_INDEXEDDB_DBNAME             | string | "prunplanner"                    |
 
 # Build & Run Frontend
 
