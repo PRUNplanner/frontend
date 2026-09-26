@@ -81,30 +81,30 @@ baseline, small/etherwind not slower.
 **Gate 2:** snapshots identical; benches not slower than after Phase 1.
 
 ## Phase 3: Pure engine + thin adapter
-- [ ] `src/features/planning/engine/`: `calculatePlan(input, ctx)` as plain
+- [x] `src/features/planning/engine/`: `calculatePlan(input, ctx)` as plain
       synchronous functions with plain data in and out, and no Vue imports.
       Enforce "no `vue` imports in `engine/`" with an ESLint rule.
       `input` holds the plan data plus empire and CX explicitly (S13).
       `ctx` holds game data, planet and `PriceBook`.
-- [ ] Split by concern (workforce, area, efficiency, production, material
+- [x] Split by concern (workforce, area, efficiency, production, material
       IO, finance, COGM, recipe options, construction, visitation) with one
       sign convention (S10). Compute profit/overview once (S5, S6) while
       keeping both outputs (`result.profit`/`cost`/`revenue` and
       `overviewData`) numerically identical. No input mutation (S7).
-- [ ] Unit tests for the engine functions; the characterization snapshots
+- [x] Unit tests for the engine functions; the characterization snapshots
       must pass against the engine directly and through the adapter.
-- [ ] `usePlanCalculation` becomes an adapter: a synchronous `computed`
+- [x] `usePlanCalculation` becomes an adapter: a synchronous `computed`
       over `calculatePlan`, result as `shallowRef` or frozen, same returned
       fields. The recalculation watchers and the async chain disappear.
-- [ ] Batch callers (Empire, FIO burn, ROI overview, resource ROI) call the
+- [x] Batch callers (Empire, FIO burn, ROI overview, resource ROI) call the
       engine directly with one shared `ctx` per batch; drop the
       `effectScope` workaround and `{ live: false }` if unused.
-- [ ] **S9:** `PlanProductionBuilding.vue` must not write into the result
+- [x] **S9:** `PlanProductionBuilding.vue` must not write into the result
       (bind the input to the plan value and keep the emit).
-- [ ] **B1:** fix `building.Expertise` -> `building.expertise`. It changes no
+- [x] **B1:** fix `building.Expertise` -> `building.expertise`. It changes no
       number (latent crash only), so it belongs here; its `it.fails`
       becomes a normal test.
-- [ ] Update `docs/planning-engine.md`, `docs/testing.md` (how to run the
+- [x] Update `docs/planning-engine.md`, `docs/testing.md` (how to run the
       benches) and `AGENTS.md` where they describe the calculation.
 
 **Gate 3:** snapshots identical; `large` edit -> result mean under 8 ms in
@@ -112,14 +112,14 @@ Node (baseline about 16 ms); small/etherwind not slower; B6-B8 clearly
 faster than baseline.
 
 ## Phase 5: Batch workers only if needed
-- [ ] After Phase 3, if any batch case (B6-B8) still takes over 1 s in Node,
+- [x] After Phase 3, if any batch case (B6-B8) still takes over 1 s in Node,
       or blocks the main thread in chunks over 50 ms, add a small pool of
       stateless Web Workers running the engine (shared `ctx` sent once per
       worker, plans as messages with request ids). Otherwise skip this phase
       and write the numbers that justified skipping into `STATUS.md`.
 
 ## Final: comparison benchmark and pull request
-- [ ] **Comparison benchmark:** run the same benchmark files against
+- [x] **Comparison benchmark:** run the same benchmark files against
       `main` (`2134823`) and against the final branch, using
       `vitest bench --outputJson` on the baseline and `--compare` on the
       branch (e.g. check out `main` in a temporary worktree, copy in the

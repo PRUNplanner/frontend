@@ -316,6 +316,186 @@ Runs per plan and recipe options are unchanged from Phase 1: 1.00 / 1.00 /
 **Gate 2: met.** Snapshots are identical and every bench is faster than at
 the end of Phase 1.
 
+
+## Phase 3: pure engine and adapter
+
+### Changes
+- `a0056c5`: `src/features/planning/engine/`, split by concern:
+  - Entry point `calculatePlan(input, ctx)`. There is no Vue in it; an
+    ESLint rule forbids `vue`, `pinia`, `@/stores/*` (except `*.types`) and
+    `@/database/*`.
+  - `usePlanContext` builds `ctx`: game data maps, the planet and a
+    PriceBook.
+  - Engine unit tests.
+  - The characterization snapshots also run through the engine directly,
+    against the same files.
+  - Before wiring it in, a scratch test compared the old `calculate()`,
+    `overviewData`, `calculateOverview()` and visitation against the engine
+    with **strict deep equality, signed zeros included**. All 11 plans
+    matched, and the lean `recipeOptions: false` result as well.
+- `3254802`: the old calculation composables delegate to the engine, so
+  each formula exists once. A first version made `getBuildingRecipes`
+  build the per-instance recipe map even for extractors. That cost B8
+  +30%, and I fixed it before the commit.
+- `43e2175`: Empire, FIO burn, ROI overview and resource ROI call the
+  engine directly:
+  - game data is loaded once per batch, with a context per plan;
+  - the `effectScope` workaround and the `live`/`recipeOptions` options
+    are gone;
+  - resource ROI checks the extractor's recipes (which are exactly its
+    recipe options) instead of calculating a probe plan.
+- `a934f3a`: `usePlanCalculation` is a synchronous `computed` adapter.
+  - The watcher chain, the stale-run guard, the precomputes and the
+    now-unused `usePrice` infrastructure-cost functions are removed.
+  - A stopped scope keeps its last result, as before.
+- `2fb5706`, S9: `PlanProductionBuilding`, `PlanExperts` and
+  `PlanInfrastructure` no longer `v-model` into the result. The same
+  pattern was in all three.
+  - A component test proves the old binding wrote into the result: it
+    fails without the fix.
+- `ada81ed`, B1: `building.expertise`. Its `it.fails` test is now a normal
+  test.
+- `9b5b9de`: docs.
+
+| After commit | fix | small | etherwind | large | large p99 | large B1b | B6 | B7 | B8 | runs per plan | recipe options |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `6880ebb` (end of Phase 2) | | 0.67 | 0.69 | 4.20 | 5.63 | 3.09 | 61 | 209 | 76 | 1.00 / 1.00 / 1.33 | 0 / 0 / 288 |
+| `a0056c5` | engine added (not used yet) | 0.65 | 0.73 | 4.24 | | 3.07 | 66 | 210 | 76 | same | same |
+| `3254802` | helpers delegate to engine | 0.63 | 0.78 | 4.30 | 7.46 | 3.08 | 66 | 210 | 73 | same | same |
+| `43e2175` | batch views on the engine | 0.68 | 0.72 | 4.17 | 6.00 | 3.05 | 50 | 93 | 12.5 | 1.00 / 1.00 / 0.33 | 0 / 0 / 0 |
+| `a934f3a` | synchronous adapter | 0.149 | 0.158 | 1.30 | 2.05 | 1.20 | 49 | 87 | 12.3 | same | same |
+| `2fb5706` | S9 | 0.149 | 0.161 | 1.32 | 2.13 | 1.18 | 49 | 88 | 11.6 | same | same |
+| `ada81ed` | B1 | 0.153 | 0.159 | 1.31 | 2.03 | 1.23 | 49 | 91 | 11.7 | same | same |
+
+B8's 0.33 runs per plan: of 195 planet × extractor setups, only the 65
+where the extractor produces N are calculated.
+
+**Test count correction:** the checks for `a0056c5` through `a934f3a`
+reported 83 files / 11 more tests. That included my scratch exactness test,
+which sat in `.scratch/` as `*.test.ts`. The real count at `a934f3a` is 82
+files.
+
+**Gate 3: met.**
+- Snapshots are identical: no `.snap` change since `7aae74c`.
+- `large` edit -> result mean is 1.31 ms in Node (target under 8 ms,
+  baseline 15.9).
+- small is 0.90 -> 0.15 ms and etherwind 0.97 -> 0.16 ms.
+- B6 / B7 / B8: 235 / 555 / 181 -> 49 / 91 / 12 ms.
+
+## Phase 5: skipped
+The condition is not met:
+- Every batch case takes well under 1 s in Node: B6 49 ms, B7 91 ms,
+  B8 12 ms.
+- The longest main-thread block, measured with an event-loop probe
+  (`setTimeout(0)` ticks during each batch, 2 runs), is B6 3.5-3.9 ms,
+  B7 3.1 ms and B8 15.9-16.8 ms. That is far below 50 ms.
+
+So there are no Web Workers.
+
+## Comparison benchmark: `main` (`2134823`) vs branch (`9b5b9de`)
+- Setup:
+  - Same bench and fixture files on both sides.
+  - `main` ran in a temporary worktree with `--outputJson`, and the branch
+    with `--compare`. Two runs per side on a quiet machine.
+  - The main worktree was removed before the branch runs; the first branch
+    attempt also picked up its copies and was discarded.
+- Per-side adapter: `usePlanCalculation.bench.empire.ts` (B6). The
+  baseline side used the `main` `EmpireView` loop (`usePlanCalculation` +
+  `calculate()` in a stopped scope). The branch uses the engine loop that
+  `EmpireView` now uses.
+- All other cases go through entry points that exist on both sides:
+  `usePlanCalculation`, `useROIOverview`, `useResourceROIOverview`.
+- "B1a" on the branch has no watcher run any more: it creates the
+  instance, runs `calculate()` and waits until the live result is there.
+
+Node 22.19 + jsdom, ms:
+
+| Case | Plan | before mean (run 1 / 2) | after mean (run 1 / 2) | before p75 / p99 | after p75 / p99 | speed-up (mean) |
+| --- | --- | --- | --- | --- | --- | --- |
+| B6 empire-like, 30 plans | batch | 231 / 232 | 49.6 / 45.2 | 233 / 241 | 48.1 / 75.3 | **4.9x** |
+| B7 ROI overview | batch | 541 / 551 | 80.3 / 79.6 | 545 / 570 | 82.2 / 82.6 | **6.8x** |
+| B8 resource ROI, N | batch | 180 / 177 | 11.8 / 11.8 | 180 / 249 | 13.6 / 14.6 | **15.1x** |
+| B1a fresh instance: create + calculate() + watcher run | small | 2.02 / 1.95 | 0.50 / 0.51 | 2.12 / 3.53 | 0.47 / 2.15 | **3.9x** |
+| B1b calculate() on a settled instance | small | 0.40 / 0.39 | 0.13 / 0.13 | 0.38 / 0.94 | 0.12 / 0.38 | **3.0x** |
+| B2 building amount edit -> result | small | 0.85 / 0.87 | 0.16 / 0.16 | 0.80 / 1.84 | 0.14 / 0.55 | **5.5x** |
+| B3 recipe swap -> result | small | 0.82 / 0.83 | 0.14 / 0.15 | 0.80 / 1.72 | 0.14 / 0.41 | **5.6x** |
+| B4 luxury toggle -> result | small | 0.82 / 0.93 | 0.15 / 0.15 | 0.80 / 1.83 | 0.14 / 0.46 | **5.9x** |
+| B5 CX refresh -> result | small | 0.82 / 0.81 | 0.14 / 0.19 | 0.80 / 1.75 | 0.14 / 0.50 | **4.9x** |
+| B1a fresh instance: create + calculate() + watcher run | etherwind | 2.36 / 2.28 | 0.48 / 0.53 | 2.49 / 7.88 | 0.45 / 1.67 | **4.6x** |
+| B1b calculate() on a settled instance | etherwind | 0.51 / 0.50 | 0.15 / 0.15 | 0.48 / 1.21 | 0.14 / 0.51 | **3.4x** |
+| B2 building amount edit -> result | etherwind | 0.95 / 0.95 | 0.16 / 0.17 | 0.93 / 2.01 | 0.16 / 0.50 | **5.8x** |
+| B3 recipe swap -> result | etherwind | 0.97 / 0.92 | 0.17 / 0.17 | 0.95 / 2.02 | 0.16 / 0.52 | **5.7x** |
+| B4 luxury toggle -> result | etherwind | 0.96 / 0.93 | 0.16 / 0.16 | 0.92 / 2.07 | 0.16 / 0.56 | **5.7x** |
+| B5 CX refresh -> result | etherwind | 1.02 / 0.99 | 0.16 / 0.17 | 0.96 / 2.20 | 0.15 / 0.48 | **6.2x** |
+| B1a fresh instance: create + calculate() + watcher run | large | 31.4 / 30.2 | 3.20 / 3.16 | 31.7 / 33.6 | 3.54 / 6.79 | **9.7x** |
+| B1b calculate() on a settled instance | large | 15.0 / 14.6 | 1.18 / 1.24 | 15.3 / 16.5 | 1.24 / 1.72 | **12.2x** |
+| B2 building amount edit -> result | large | 16.1 / 15.5 | 1.38 / 1.35 | 16.5 / 17.4 | 1.45 / 2.14 | **11.6x** |
+| B3 recipe swap -> result | large | 15.9 / 15.3 | 1.37 / 1.36 | 16.2 / 17.5 | 1.43 / 2.15 | **11.4x** |
+| B4 luxury toggle -> result | large | 16.0 / 17.7 | 1.47 / 1.35 | 16.3 / 17.6 | 1.49 / 4.83 | **12.0x** |
+| B5 CX refresh -> result | large | 16.1 / 16.8 | 1.35 / 1.35 | 16.4 / 17.1 | 1.44 / 2.17 | **12.1x** |
+
+Counters (identical in both runs per side):
+
+| Batch | before: runs per plan / recipe options | after |
+| --- | --- | --- |
+| B6 empire-like (30 plans) | 2.00 / 5640 | 1.00 / 0 |
+| B7 ROI overview (370 plans) | 2.00 / 8128 | 1.00 / 0 |
+| B8 resource ROI (195 planet × extractor setups) | 2.33 / 483 | 0.33 / 0 |
+| live plan (etherwind) | 1 run on create, 1 per edit | same |
+
+## Decisions taken without Jan
+Each keeps results and behaviour unchanged unless noted.
+1. **S1 before S3.** S3 removes awaits, which could have let un-awaited
+   COGM land after the result was published.
+2. **Resource ROI** decides which extractor to calculate from the
+   extractor's recipes for the planet instead of calculating a probe plan.
+   Those recipes are exactly the probe's recipe options, so the decision is
+   identical; the results test checks exact values.
+3. **CX as an explicit input (S13).** A CX change alone now recalculates
+   the plan editor. Before, it only did together with an empire change,
+   which is the only way `PlanView` changes the CX, so nothing visible
+   changes.
+4. **S10.** Costs are positive inside the engine, and the result keeps its
+   material-value signs through exact negations.
+   - The plan result and the overview still use their two degradation
+     formulas (`x * (1/180)` vs `x / 180`) and sign conventions. Unifying
+     them would change the last bit and the sign of zero of some numbers.
+   - So `finance.ts` computes both in one pass, bit-identical.
+5. **S9** was fixed in all three components that had the pattern, not only
+   `PlanProductionBuilding`.
+6. **`result` and `overviewData` are read-only `ComputedRef`s** (they were
+   writable refs). Nothing wrote to them except S9's `v-model`.
+7. **Async path kept.**
+   - `usePrice` and `usePlanContext.loadGameData()` await `preload()`,
+     which is a no-op once loaded. `FIORepairView` loads no exchanges and
+     relied on lazy per-ticker reads; it now preloads the same IndexedDB
+     data once.
+   - The planet stays an async `getPlanet`.
+8. **Test adjustments** (no snapshot touched):
+   - `useXITBurnAction.test.ts` reloads the cache after writing, like the
+     query does.
+   - The S2 test now checks that the result follows the latest plan
+     across a held planet load.
+   - The "no live watchers" tests of both ROI overviews now assert that no
+     `usePlanCalculation` is created.
+   - The active-empire cases moved from the deleted precomputes test to
+     `getActiveEmpire`.
+   - The `usePrice` infrastructure-costs test was removed with the
+     function; the snapshots cover the engine's version.
+9. **S12 (`pLimit(128)`) is unchanged.** It isn't in this PR's scope, and
+   resource ROI is now 12 ms.
+10. **Recipe grouping** for the engine is memoized per loaded recipe array
+    and shared by all instances, so a recipe reload regroups it.
+
+## Questions for Cowork
+1. **B3** (building workforce cost always assumes both luxuries) still
+   needs a decision before its PR.
+2. Should the result and the overview use **one degradation formula**
+   (see decision 4)? It would change the last bit of some numbers, so it
+   belongs in a PR with a snapshot update, like B2 and B3.
+3. **S12:** with a synchronous engine, `pLimit(128)` only interleaves
+   planet setup. Drop it in a follow-up?
+
 ## Deviations from TASKS.md
 1. Node 22.19 as `.nvmrc` requires, but with pnpm 12.5.1 instead of 10
    (the one installed). Lockfile unchanged.
