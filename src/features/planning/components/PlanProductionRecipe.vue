@@ -125,7 +125,7 @@
 		:title="t('plan.components.production_recipe.cogm_title')"
 		:class="cogmWithCX ? 'max-w-250' : 'max-w-150'">
 		<PlanCOGM
-			v-if="localRecipeData.cogm && cxUuid"
+			v-if="localRecipeData.cogm"
 			:cogm-data="localRecipeData.cogm"
 			:cx-uuid="cxUuid"
 			:planet-id="planetId" />

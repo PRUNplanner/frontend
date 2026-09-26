@@ -265,6 +265,16 @@ describe("PlanProductionRecipe", () => {
 		expect(body().text()).toContain("plan.tools.cogm.cx_preferences");
 	});
 
+	it("opens the COGM without a CX, without preferences", async () => {
+		const { wrapper } = await mountRecipe();
+
+		await cogmButton(wrapper).trigger("click");
+		await flushPromises();
+
+		expect(body().text()).toContain("plan.tools.cogm.info");
+		expect(body().text()).not.toContain("plan.tools.cogm.cx_preferences");
+	});
+
 	it("emits deleting the recipe", async () => {
 		const { wrapper, component } = await mountRecipe();
 
