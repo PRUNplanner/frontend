@@ -1025,12 +1025,16 @@ export function usePlanCalculation(
 	// - plan data
 	// - refresh key (cx updates)
 	// - empire change
+	// only the latest run may set the result, a slower older one is stale
+	let latestRun: number = 0;
 	if (live)
 		watch(
 			[plan, refreshKey, empireUuid],
 			async () => {
+				const run = ++latestRun;
 				try {
-					result.value = await calculate();
+					const runResult = await calculate();
+					if (run === latestRun) result.value = runResult;
 				} catch (err) {
 					console.error(err);
 				}
