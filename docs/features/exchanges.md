@@ -1,0 +1,47 @@
+# exchanges
+
+**Purpose.** This folder is the editor for a **CX preference** set (`ICX`):
+the rules that decide which price a plan uses for each material. It covers
+exchange-level rules (e.g. "buy at AI1 30D VWAP") and fixed ticker prices,
+at empire level and per planet. It also offers CSV import/export.
+
+**Used by.**
+- `views/ExchangesView.vue` (`/exchanges/:cxUuid?`), which saves with
+  `PatchCX`.
+- `CXPreferenceSelector` is reused as the "pick a CX" dropdown in the tools:
+  `ROIOverviewView`, `ResourceROIOverviewView`, `HQUpgradeCalculatorView`,
+  `UpkeepPriceCalculatorView` and profile `UserPreferences`.
+- `PlanCOGM` embeds `CXTickerPreference`.
+
+## Key files
+
+| File | Role |
+| --- | --- |
+| `useManageCX.ts` → `useCXManagement()` | Select options (preference type BUY/SELL/BOTH, exchange options, materials) and immutable update/delete helpers for exchange and ticker preferences |
+| `useCXImportExport.ts` | Parse and generate the preferences CSV (`papaparse`); columns: Location, Type, CX, Ticker, Price |
+| `manageCX.types.ts` | `ExchangeType`, `PreferenceType`, `ICXPlanetMap` |
+| `components/CXExchangePreference.vue` | Exchange-rule list editor |
+| `components/CXTickerPreference.vue` | Ticker-price list editor |
+| `components/CXPlanetPreferenceTable.vue` | Per-planet overrides |
+| `components/CXPreferenceImportExport.vue` | CSV UI |
+| `components/CXPreferenceSelector.vue` | Reusable CX dropdown, built on `useCXData().getPreferenceOptions` |
+
+## Data
+
+- The shape is `ICXData` in `src/stores/planningStore.types.d.ts`: it holds
+  `cx_empire`, `cx_planets`, `ticker_empire` and `ticker_planets`.
+- CX sets load into `planningStore.cxs` through the `GetAllCX` query.
+- How prices are resolved from these rules is documented in
+  [cx.md](cx.md).
+
+## Gotchas
+
+- The backend rejects a `BOTH` rule alongside a `BUY` or `SELL` rule for the
+  same target, so the UI must prevent that combination.
+- Saving a CX changes `planningStore.cxs`, which makes every mounted
+  `usePlanCalculation` recalculate.
+
+## Tests
+
+`src/tests/features/exchanges/useManageCX.test.ts` and
+`useCXImportExport.test.ts`.
