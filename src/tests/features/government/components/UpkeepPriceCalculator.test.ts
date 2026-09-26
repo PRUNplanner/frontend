@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import { h } from "vue";
 import { flushPromises, VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
@@ -102,6 +102,8 @@ const rows = (wrapper: VueWrapper) =>
 	]);
 
 describe("UpkeepPriceCalculator", () => {
+	afterEach(() => (priceGate.wait = undefined));
+
 	it("lists the safety materials cheapest first", async () => {
 		const { wrapper } = await mountCalculator(CX_CHEAP);
 
@@ -283,6 +285,28 @@ describe("UpkeepPriceCalculator", () => {
 		release();
 		await waitCalculated(wrapper);
 		expect(rows(wrapper).at(0)![3]).toBe("1,000.00  ȼ");
+	});
+
+	it("hides the progress bar when a price lookup fails", async () => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		priceGate.wait = Promise.reject(new Error("prices unavailable"));
+		const pinia = createPinia();
+		// @ts-expect-error mock data
+		usePlanningStore(pinia).setCXs([cx(CX_CHEAP, { DW: 10 })]);
+
+		const { wrapper } = await mountComponent(
+			UpkeepPriceCalculator,
+			{ cxUuid: CX_CHEAP },
+			{ pinia }
+		);
+		await waitCalculated(wrapper);
+
+		expect(wrapper.text()).not.toContain(
+			"upkeep_price_calculator.calculator.calculating"
+		);
+		expect(tableRows(wrapper)).toHaveLength(0);
+		expect(error).toHaveBeenCalledWith(new Error("prices unavailable"));
+		error.mockRestore();
 	});
 
 	it("lists every material without a price without a CX", async () => {
