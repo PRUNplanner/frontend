@@ -4,26 +4,23 @@ import type { Composer } from "vue-i18n";
 
 import { useDB } from "@/database/composables/useDB";
 import { recipesStore, buildingsStore } from "@/database/stores";
-import { usePlanetData } from "@/database/services/usePlanetData";
 
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
-import { useWorkforceCalculation } from "@/features/planning/calculations/workforceCalculations";
+import {
+	getBuildingConstructionMaterials,
+	getBuildingRecipes as getRecipes,
+	getTotalWorkforce,
+	resourceBuildingTicker,
+} from "@/features/planning/engine/buildings";
+import { getBuildingWorkforceMaterials } from "@/features/planning/engine/workforce";
 
 // Types & Interfaces
 import {
 	IBuilding,
-	IPlanet,
 	IPlanetResource,
 	IRecipe,
-	PLANET_RESOURCETYPE_TYPE,
 } from "@/features/api/gameData.types";
 import { PSelectOption } from "@/ui/ui.types";
 import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
-import { calculateExtraction } from "@/features/planning/calculations/extractionCalculations";
-import {
-	IMaterialIOMinimal,
-	IWorkforceRecord,
-} from "@/features/planning/usePlanCalculation.types";
 
 const buildingsCache = new Map<string, IBuilding>();
 
@@ -42,10 +39,6 @@ export function useBuildingData() {
 	} = useDB(recipesStore);
 
 	const { t } = i18n.global as unknown as Composer;
-
-	const { getPlanetSpecialMaterials } = usePlanetData();
-	const { combineMaterialIOMinimal } = useMaterialIOUtil();
-	const { calculateWorkforceConsumption } = useWorkforceCalculation();
 
 	const buildingsMap = computed((): Record<string, IBuilding> => {
 		return (allDataBuildings.value ?? []).reduce(
@@ -130,164 +123,26 @@ export function useBuildingData() {
 
 		return options;
 	}
-
-	// static data
-	const resourceBuildingTicker: Record<string, PLANET_RESOURCETYPE_TYPE> = {
-		EXT: "MINERAL",
-		COL: "GASEOUS",
-		RIG: "LIQUID",
-	};
-
+	/**
+	 * A building's recipes, extraction buildings from planet resources.
+	 * See getBuildingRecipes in the planning engine (engine/buildings.ts).
+	 *
+	 * @param {string} buildingTicker Building Ticker
+	 * @param {IPlanetResource[]} planetResources Planet Resources
+	 * @returns {IRecipe[]} Recipes
+	 */
 	function getBuildingRecipes(
 		buildingTicker: string,
 		planetResources: IPlanetResource[] = []
 	): IRecipe[] {
-		/**
-		 * Resource extraction buildings can only hold recipe options if
-		 * there is a planetary resource available matching their potential
-		 * extraction type.
-		 */
-		if (Object.keys(resourceBuildingTicker).includes(buildingTicker)) {
-			// use planet resources to fetch recipes
-			if (planetResources.length === 0) return [];
-
-			const searchType: PLANET_RESOURCETYPE_TYPE =
-				resourceBuildingTicker[buildingTicker];
-			const relevantResources: IPlanetResource[] = planetResources.filter(
-				(r) => r.resource_type === searchType
-			);
-
-			// create individual resource recipes
-			const resourceRecipes: IRecipe[] = relevantResources.map((res) => {
-				const { timeMs, extractionAmount } = calculateExtraction(
-					res.resource_type,
-					res.daily_extraction
-				);
-
-				return {
-					recipe_id: `${buildingTicker}#${res.material_ticker}`,
-					building_ticker: buildingTicker,
-					recipe_name: buildingTicker,
-					time_ms: timeMs,
-					inputs: [],
-					outputs: [
-						{
-							material_ticker: res.material_ticker,
-							material_amount: extractionAmount,
-						},
-					],
-				};
-			});
-
-			return resourceRecipes;
-		} else {
-			if (
-				!Object.keys(recipeBuildingMap.value).includes(buildingTicker)
-			) {
-				throw new Error(
-					`No recipe data: Building '${buildingTicker}'. Ensure ticker is valid and game data has been loaded.`
-				);
-			}
-
-			/**
-			 * Loose reactivity as recipe information gets transformed in
-			 * plan calculations. E.g. by setting the correct times based
-			 * on building efficiency
-			 */
-			return recipeBuildingMap.value[buildingTicker];
-		}
-	}
-
-	function getTotalWorkforce(building: IBuilding): number {
-		return (
-			building.pioneers +
-			building.settlers +
-			building.technicians +
-			building.engineers +
-			building.scientists
+		// extraction recipes come from planet resources, skip the recipe map
+		return getRecipes(
+			buildingTicker in resourceBuildingTicker
+				? {}
+				: recipeBuildingMap.value,
+			buildingTicker,
+			planetResources
 		);
-	}
-
-	function getBuildingConstructionMaterials(
-		building: IBuilding,
-		planet: IPlanet | undefined
-	): IMaterialIOMinimal[] {
-		const materials: IMaterialIOMinimal[] = [];
-
-		building.costs.forEach((m) => {
-			materials.push({
-				ticker: m.material_ticker,
-				input: m.material_amount,
-				output: 0,
-			});
-		});
-
-		// get and add additional planet construction materials
-		if (planet) {
-			return combineMaterialIOMinimal([
-				materials,
-				getPlanetSpecialMaterials(planet, building.area_cost),
-			]);
-		} else {
-			return materials;
-		}
-	}
-
-	function getBuildingWorkforceMaterials(
-		building: IBuilding,
-		lux1: boolean = true,
-		lux2: boolean = true
-	): IMaterialIOMinimal[] {
-		// create a faked WorkforceRecord based on the buildings workforce
-		const buildingWorkforce: IWorkforceRecord = {
-			pioneer: {
-				name: "pioneer",
-				required: building.pioneers,
-				capacity: building.pioneers,
-				left: 0,
-				lux1: lux1,
-				lux2: lux2,
-				efficiency: 1,
-			},
-			settler: {
-				name: "settler",
-				required: building.settlers,
-				capacity: building.settlers,
-				left: 0,
-				lux1: lux1,
-				lux2: lux2,
-				efficiency: 1,
-			},
-			technician: {
-				name: "technician",
-				required: building.technicians,
-				capacity: building.technicians,
-				left: 0,
-				lux1: lux1,
-				lux2: lux2,
-				efficiency: 1,
-			},
-			engineer: {
-				name: "engineer",
-				required: building.engineers,
-				capacity: building.engineers,
-				left: 0,
-				lux1: lux1,
-				lux2: lux2,
-				efficiency: 1,
-			},
-			scientist: {
-				name: "scientist",
-				required: building.scientists,
-				capacity: building.scientists,
-				left: 0,
-				lux1: lux1,
-				lux2: lux2,
-				efficiency: 1,
-			},
-		};
-
-		return calculateWorkforceConsumption(buildingWorkforce);
 	}
 
 	return {

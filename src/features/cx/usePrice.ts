@@ -7,6 +7,13 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useExchangeData } from "@/database/services/useExchangeData";
 import { useBuildingData } from "@/database/services/useBuildingData";
 
+// Stores
+import { useDB } from "@/database/composables/useDB";
+import { buildingsStore } from "@/database/stores";
+
+// Engine
+import { calculateInfrastructureCosts as infrastructureCosts } from "@/features/planning/engine/construction";
+
 // Price Book
 import {
 	createPriceBook,
@@ -23,7 +30,6 @@ import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
-import { infrastructureBuildingNames } from "@/features/planning/calculations/infrastructureCalculations";
 import { IPlanet } from "@/features/api/gameData.types";
 import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
 
@@ -42,11 +48,8 @@ export function usePrice(
 
 	const { preload: preloadExchanges, getExchangeTickerLoaded } =
 		useExchangeData();
-	const {
-		preloadBuildings,
-		getBuildingLoaded,
-		getBuildingConstructionMaterials,
-	} = useBuildingData();
+	const { preloadBuildings } = useBuildingData();
+	const { cacheData: buildings } = useDB(buildingsStore);
 
 	/**
 	 * Creates a price book for the current CX preference and planet, after
@@ -124,37 +127,7 @@ export function usePrice(
 		book: IPriceBook,
 		planet: IPlanet
 	): IInfrastructureCosts {
-		const results: IInfrastructureCosts = {
-			HB1: 0,
-			HB2: 0,
-			HB3: 0,
-			HB4: 0,
-			HB5: 0,
-			HBB: 0,
-			HBC: 0,
-			HBM: 0,
-			HBL: 0,
-			STO: 0,
-			STA: 0,
-			STE: 0,
-			STV: 0,
-			STW: 0,
-		};
-
-		for (const buildingTicker of infrastructureBuildingNames) {
-			const totalPrice = totalWithBook(
-				book,
-				getBuildingConstructionMaterials(
-					getBuildingLoaded(buildingTicker),
-					planet
-				),
-				"BUY"
-			);
-
-			results[buildingTicker] = totalPrice * -1;
-		}
-
-		return results;
+		return infrastructureCosts(book, planet, buildings);
 	}
 
 	/**

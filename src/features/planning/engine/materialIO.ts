@@ -42,12 +42,12 @@ export function combineMaterialIOMinimal(
  * by ticker. Throws if a material is unknown.
  * @author jplacht
  *
- * @param {ReadonlyMap<string, IMaterial>} materials Material data
+ * @param {Pick<ReadonlyMap<string, IMaterial>, "get">} materials Material lookup
  * @param {IMaterialIOMinimal[]} data Minimal Material IO
  * @returns {IMaterialIOMaterial[]} Material IO with material information
  */
 export function enhanceMaterialIOMinimal(
-	materials: ReadonlyMap<string, IMaterial>,
+	materials: Pick<ReadonlyMap<string, IMaterial>, "get">,
 	data: IMaterialIOMinimal[]
 ): IMaterialIOMaterial[] {
 	const enhancedArray: IMaterialIOMaterial[] = [];
