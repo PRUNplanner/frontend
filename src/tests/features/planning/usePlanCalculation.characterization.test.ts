@@ -70,7 +70,11 @@ interface ICase {
 	cxUuid?: string;
 }
 
-async function runCase(plan: IPlan, options: ICase = {}) {
+async function runCase(
+	plan: IPlan,
+	options: ICase = {},
+	withRecipeOptions = true
+) {
 	const scope = effectScope();
 	const calc = scope.run(() =>
 		usePlanCalculation(
@@ -88,6 +92,10 @@ async function runCase(plan: IPlan, options: ICase = {}) {
 		// visitationData derives from the watcher's result
 		await vi.waitFor(() => expect(calc.result.value.done).toBe(true));
 		await flushPromises();
+
+		if (!withRecipeOptions)
+			for (const b of result.production.buildings)
+				delete (b as Partial<typeof b>).recipeOptions;
 
 		return normalize({
 			result,
@@ -178,7 +186,10 @@ describe("usePlanCalculation characterization", () => {
 	];
 
 	it.each(cases)("snapshot: %s", async (name, plan, options) => {
-		await expect(await runCase(plan(), options())).toMatchFileSnapshot(
+		// large: recipe options are already covered by the etherwind snapshots
+		await expect(
+			await runCase(plan(), options(), name !== "large")
+		).toMatchFileSnapshot(
 			snapshotPath(name)
 		);
 	});
