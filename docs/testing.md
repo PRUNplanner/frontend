@@ -158,7 +158,20 @@ Write them for logic-heavy components, see
 - **Overlays**: `NPopover`, `NModal` and `NDrawer` render into
   `document.body` once shown. Query them through
   `new DOMWrapper(document.body)`; `PlanProductionRecipe.test.ts` opens a
-  popover and reads its table.
+  popover and reads its table. `NModal` and `NDrawer` keep their DOM
+  during the leave transition, so assert a close through
+  `findComponent(NDrawer).props("show")`; see `HelpDrawer.test.ts`.
+- **Number inputs**: `PInputNumber` sets its `v-model` to `null` while
+  the field is empty. A setter that emits it needs a null guard, and a
+  test that clears the input; see `PlanArea.test.ts`.
+- **Lazy content** (`import.meta.glob` help pages, planet names from
+  IndexedDB) needs `vi.waitFor` on the expected text of every row, since
+  stale or placeholder content passes an existence check.
+- **jsdom quirks**: an inline style containing `linear-gradient` is
+  dropped entirely; spy on the `CSSStyleDeclaration.prototype` `cssText`
+  setter instead (`ChainNode.test.ts`). Queries that persist
+  (`GetPlanetLastPOPR`, `GetPlanetSearchSingle`) survive a fresh Pinia, so
+  give each test its own planet or search id.
 
 ## Test isolation checklist
 
