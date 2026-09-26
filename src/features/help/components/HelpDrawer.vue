@@ -114,7 +114,7 @@
 				<VueShowdown :markdown="markdownContent" />
 			</div>
 			<div v-else-if="loadFailed" class="text-center text-red-500">
-				Unable to load '{{ fileName }}'
+				{{ t("help.load_error", { file_name: fileName }) }}
 			</div>
 		</n-drawer-content>
 	</n-drawer>

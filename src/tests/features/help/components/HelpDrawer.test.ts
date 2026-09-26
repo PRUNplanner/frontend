@@ -156,7 +156,7 @@ describe("HelpDrawer", () => {
 		await wrapper.findComponent(PButton).trigger("click");
 
 		expect(shown(wrapper)).toBe(true);
-		expect(drawer().text()).not.toContain("Unable to load");
+		expect(drawer().text()).not.toContain("help.load_error");
 		await vi.waitFor(() =>
 			expect(drawer().find("#markdown").exists()).toBe(true)
 		);
@@ -172,7 +172,7 @@ describe("HelpDrawer", () => {
 
 		expect(drawer().find("#markdown").exists()).toBe(false);
 		expect(drawer().find(".text-red-500").text()).toBe(
-			"Unable to load 'no_such_page'"
+			"help.load_error"
 		);
 		expect(error).toHaveBeenCalledWith(
 			new Error(

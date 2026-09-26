@@ -87,7 +87,7 @@ describe("PlanetPOPRButton", () => {
 			planetNaturalId: "AA-003a",
 		});
 		expect(body().find(".n-card-header").text()).toBe(
-			"Latest Population Report: AA-003a"
+			"government.popr_button.modal_title"
 		);
 		expect(
 			wrapper.findComponent({ name: "PlanetPOPRTable" }).props()

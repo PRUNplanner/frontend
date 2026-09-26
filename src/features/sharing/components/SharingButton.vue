@@ -80,7 +80,7 @@
 		v-model:show="showModal"
 		class="w-fit! max-w-175!"
 		preset="card"
-		title="Share Plan">
+		:title="$t('sharing.title')">
 		<template v-if="!isShared">
 			<div>
 				{{ $t("sharing.info") }}

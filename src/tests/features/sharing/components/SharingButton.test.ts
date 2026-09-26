@@ -146,6 +146,7 @@ describe("SharingButton", () => {
 		const { wrapper } = await mountButton();
 
 		await open(wrapper);
+		expect(modal().find(".n-card-header").text()).toBe("sharing.title");
 		expect(modal().text()).toContain("sharing.info");
 		expect(modal().text()).toContain("sharing.buttons.create_link");
 
