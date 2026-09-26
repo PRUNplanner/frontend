@@ -5,6 +5,9 @@ import vue from "@vitejs/plugin-vue";
 
 const alias = { "@": path.resolve(__dirname, "./src") };
 
+// component tests run locally only, see vitest.components.config.ts
+export const COMPONENT_TESTS = "src/tests/**/components/**";
+
 export default defineConfig({
 	define: {
 		__INDEXEDDB_VERSION__: Date.now(), // force db upgrade each test run
@@ -23,6 +26,7 @@ export default defineConfig({
 			"**/.{idea,git,cache,output,temp}/**",
 			"**/.claude/**",
 			"**/*.md",
+			COMPONENT_TESTS,
 		],
 		environment: "jsdom",
 		// undo vi.stubGlobal / vi.stubEnv after each test
