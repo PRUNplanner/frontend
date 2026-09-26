@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach, vi } from "vitest";
+import { describe, it, expect, afterEach, onTestFinished, vi } from "vitest";
 import { h } from "vue";
 import { DOMWrapper, flushPromises, VueWrapper } from "@vue/test-utils";
 import { NDrawer } from "naive-ui";
@@ -216,6 +216,20 @@ describe("XITTransferActionButton", () => {
 
 		expect(xitJSON().groups[0].materials).toEqual({ RAT: 7 });
 		expect(tableRows()).toEqual([["RAT", "7"]]);
+	});
+
+	it("does not write typing into the generated JSON", async () => {
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+		onTestFinished(() => {
+			warn.mockRestore();
+		});
+		const { wrapper } = await mountButton();
+		await open(wrapper);
+
+		await body().find(".n-drawer textarea").setValue("test-typing");
+
+		// a write would fail: "computed value is readonly"
+		expect(warn).not.toHaveBeenCalled();
 	});
 
 	it("copies the XIT JSON", async () => {

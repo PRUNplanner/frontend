@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, afterEach, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeAll,
+	afterEach,
+	onTestFinished,
+	vi,
+} from "vitest";
 import { h } from "vue";
 import { DOMWrapper, flushPromises, VueWrapper } from "@vue/test-utils";
 
@@ -308,6 +316,20 @@ describe("XITBurnActionButton", () => {
 		expect(xitJSON().actions.map((a: { type: string }) => a.type)).toEqual(
 			["MTRA"]
 		);
+	});
+
+	it("does not write typing into the generated JSON", async () => {
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+		onTestFinished(() => {
+			warn.mockRestore();
+		});
+		const { wrapper } = await mountButton();
+		await open(wrapper);
+
+		await body().find(".n-drawer textarea").setValue("test-typing");
+
+		// a write would fail: "computed value is readonly"
+		expect(warn).not.toHaveBeenCalled();
 	});
 
 	it("copies the XIT JSON", async () => {

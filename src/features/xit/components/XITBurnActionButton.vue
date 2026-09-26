@@ -216,7 +216,7 @@
 						</PButton>
 					</div>
 					<PInput
-						v-model:value="
+						:value="
 							transferJSON(
 								materialTable
 									.filter(
