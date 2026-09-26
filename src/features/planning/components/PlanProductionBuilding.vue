@@ -91,7 +91,7 @@
 				{{ $t("plan.components.production_building.qty") }}
 			</span>
 			<PInputNumber
-				v-model:value="localBuildingData.amount"
+				:value="localBuildingData.amount"
 				size="sm"
 				:disabled="disabled"
 				show-buttons

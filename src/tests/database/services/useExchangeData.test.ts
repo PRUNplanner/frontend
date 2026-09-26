@@ -28,6 +28,14 @@ describe("useExchangeData", () => {
 		});
 	});
 
+	it("getExchangeTickerLoaded", async () => {
+		const { preload, getExchangeTickerLoaded } = useExchangeData();
+		await preload(true);
+
+		expect(getExchangeTickerLoaded("RAT.AI1").ticker_id).toBe("RAT.AI1");
+		expect(() => getExchangeTickerLoaded("foo")).toThrowError("not found");
+	});
+
 	describe("getMaterialExchangeOverview", () => {
 		it("valid overview result", async () => {
 			const { getMaterialExchangeOverview } = useExchangeData();

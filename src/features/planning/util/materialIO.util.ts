@@ -6,8 +6,13 @@ import {
 	IEmpirePlanMaterialIO,
 } from "@/features/empire/empire.types";
 import { useMaterialData } from "@/database/services/useMaterialData";
+import {
+	combineMaterialIOMinimal,
+	enhanceMaterialIOMinimal as enhanceWithMaterials,
+} from "@/features/planning/engine/materialIO";
 
 // Types & Interfaces
+import { IMaterial } from "@/features/api/gameData.types";
 import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
@@ -17,35 +22,11 @@ import { IPlanEmpireElement, PLAN_FACTION } from "@/stores/planningStore.types";
 export function useMaterialIOUtil() {
 	const { materialsMap } = useMaterialData();
 
-	/**
-	 * Combines arrays of MaterialIOMinimal into a singular array
-	 * with summed up input and output amounts per ticker
-	 *
-	 * @author jplacht
-	 *
-	 * @param {IMaterialIOMinimal[][]} arrays Array of MaterialIOMinimals
-	 * @returns {IMaterialIOMinimal[]} combined array
-	 */
-	function combineMaterialIOMinimal(
-		arrays: IMaterialIOMinimal[][]
-	): IMaterialIOMinimal[] {
-		const combinedArray: IMaterialIOMinimal[] = arrays
-			.flat()
-			.filter((v) => v);
-
-		const tickerMap: { [key: string]: IMaterialIOMinimal } = {};
-
-		combinedArray.forEach(({ ticker, input, output }) => {
-			if (!tickerMap[ticker]) {
-				tickerMap[ticker] = { ticker: ticker, input: 0, output: 0 };
-			}
-
-			tickerMap[ticker].input += input as number;
-			tickerMap[ticker].output += output as number;
-		});
-
-		return Object.values(tickerMap);
-	}
+	// material lookup for the engine, reactive through materialsMap
+	const materials = {
+		get: (ticker: string): IMaterial | undefined =>
+			materialsMap.value[ticker],
+	};
 
 	/**
 	 * Enhances a MaterialIO Minimal with weight and volume
@@ -59,25 +40,7 @@ export function useMaterialIOUtil() {
 	function enhanceMaterialIOMinimal(
 		data: IMaterialIOMinimal[]
 	): IMaterialIOMaterial[] {
-		const enhancedArray: IMaterialIOMaterial[] = [];
-
-		data.forEach((minimal) => {
-			const material = materialsMap.value[minimal.ticker];
-
-			enhancedArray.push({
-				ticker: minimal.ticker,
-				input: minimal.input,
-				output: minimal.output,
-				delta: minimal.output - minimal.input,
-				individualWeight: material.weight,
-				individualVolume: material.volume,
-				totalWeight: (minimal.output - minimal.input) * material.weight,
-				totalVolume: (minimal.output - minimal.input) * material.volume,
-			});
-		});
-
-		// return sorted
-		return enhancedArray.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
+		return enhanceWithMaterials(materials, data);
 	}
 
 	function combineEmpireMaterialIO(

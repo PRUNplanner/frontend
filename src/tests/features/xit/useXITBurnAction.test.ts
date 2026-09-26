@@ -6,6 +6,7 @@ import { flushPromises } from "@vue/test-utils";
 // Stores
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
+import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Composables
 import { useBurnXITAction } from "@/features/xit/useBurnXITAction";
@@ -122,6 +123,8 @@ describe("useBurnXITAction", async () => {
 	it("stops updating totalPrice once its scope is stopped", async () => {
 		// @ts-expect-error mock data date as string
 		await exchangesStore.setMany(exchanges);
+		// like the GetExchanges query: write, then reload the memory cache
+		await useExchangeData().preload(true);
 
 		const days = ref(5);
 		const scope = effectScope();

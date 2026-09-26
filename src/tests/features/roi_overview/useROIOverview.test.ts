@@ -1,10 +1,9 @@
-import { nextTick, ref, Ref, watch } from "vue";
+import { ref, Ref, watch } from "vue";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
 
 // stores
-import { usePlanningStore } from "@/stores/planningStore";
 import {
 	materialsStore,
 	recipesStore,
@@ -92,7 +91,7 @@ describe("useROIOverview", async () => {
 		expect(result.length).toBe(3);
 	});
 
-	it("leaves no live plan calculation watchers behind", async () => {
+	it("calculates through the engine, no live plan calculations", async () => {
 		planCalculations.length = 0;
 
 		const { calculateItem } = useROIOverview(
@@ -101,14 +100,8 @@ describe("useROIOverview", async () => {
 			ref(undefined)
 		);
 
-		await calculateItem(tnp);
-		expect(planCalculations.length).toBe(3);
-
-		// @ts-expect-error mock data
-		usePlanningStore().cxs = "foo";
-		await nextTick();
-
-		planCalculations.forEach((c) => expect(c.refreshKey.value).toBe(0));
+		expect((await calculateItem(tnp)).length).toBe(3);
+		expect(planCalculations.length).toBe(0);
 	});
 
 	// full recipe sweep, slow under parallel load with coverage

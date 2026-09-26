@@ -20,6 +20,7 @@ Node `22.19` (see `.nvmrc`) and pnpm 10.
 | Tests (single run) | `pnpm test` |
 | One test file | `pnpm vitest run src/tests/features/cx/usePrice.test.ts` |
 | Component tests (local only, not in CI) | `pnpm test:components` |
+| Benchmarks (planning engine) | `pnpm vitest bench --run` |
 | Type check | `pnpm tsc` (vue-tsc; **excludes `src/tests/`**) |
 | Lint | `pnpm lint` / `pnpm lint:fix` |
 | Unused exports/files | `pnpm knip` |
@@ -62,7 +63,9 @@ time.
    through `src/database/services/use*Data`.** It is cached in IndexedDB and
    loaded by the `WrapperGameDataLoader` gate, so don't fetch it again.
 6. **Keep the plan engine the single source of truth.** Anything that needs
-   a plan's production, cost or profit numbers calls `usePlanCalculation`.
+   a plan's production, cost or profit numbers uses the pure engine in
+   `src/features/planning/engine/`: `usePlanCalculation` in the plan
+   editor, `calculatePlan` with a `usePlanContext` context in batch views.
    Don't duplicate the math. See
    [docs/planning-engine.md](docs/planning-engine.md).
 7. **Keep knip green.** It fails on unused exports, files and dependencies,
@@ -100,7 +103,8 @@ time.
   registers no watchers.
 - **Calling a composable outside setup** (in a loop or an event handler)
   means no component owns its watchers. Run it in `effectScope()` and
-  stop the scope when done (see `useROIOverview`).
+  stop the scope when done. For plan numbers in a loop, call the engine
+  directly instead (see `useROIOverview`).
 - **SFC layout.** `<script setup lang="ts">` comes first. Group imports under
   comment headers (`// Composables`, `// Components`, `// Types & Interfaces`,
   `// UI`). Load heavy children with `defineAsyncComponent`.

@@ -3,10 +3,8 @@
 		computed,
 		ComputedRef,
 		defineAsyncComponent,
-		effectScope,
 		Ref,
 		ref,
-		toRef,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -24,7 +22,11 @@
 
 	// Composables
 	import { useFIOBurn } from "@/features/fio/useFIOBurn";
-	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
+	import {
+		getActiveEmpire,
+		usePlanContext,
+	} from "@/features/planning/usePlanContext";
+	import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	const { defaultEmpireUuid, burnDaysRed, burnDaysYellow } = usePreferences();
 
@@ -95,6 +97,7 @@
 	 * @returns {Promise<void>}
 	 */
 	const cacheCalculatedPlans = new Map<string, IPlanResult>();
+	const { loadGameData, createContext } = usePlanContext();
 
 	async function calculateEmpire(clearCache = false): Promise<void> {
 		isCalculating.value = true;
@@ -104,6 +107,9 @@
 		progressCurrent.value = 0;
 
 		if (clearCache) cacheCalculatedPlans.clear();
+
+		// game data once for all plans
+		const gameData = await loadGameData();
 
 		for (const plan of planData.value) {
 			// note, calculation depends on empire + cx, so a plan is only
@@ -118,19 +124,23 @@
 			} else {
 				await Promise.resolve();
 
-				// one-off calculation, stop its live-recalculation watchers
-				const scope = effectScope();
-				const { calculate } = scope.run(() =>
-					usePlanCalculation(
-						toRef(plan),
-						selectedEmpireUuid,
-						empireList,
-						selectedCXUuid
+				const { result } = calculatePlan(
+					{
+						plan,
+						empire: getActiveEmpire(
+							selectedEmpireUuid.value,
+							empireList.value
+						),
+						cxUuid: selectedCXUuid.value,
+						// never read by this view
+						recipeOptions: false,
+					},
+					await createContext(
+						gameData,
+						plan.planet_natural_id,
+						selectedCXUuid.value
 					)
-				)!;
-				scope.stop();
-
-				const result = await calculate();
+				);
 				calculatedPlans.value[plan.uuid!] = result;
 				progressCurrent.value++;
 

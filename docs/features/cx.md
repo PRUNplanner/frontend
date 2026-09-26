@@ -1,7 +1,8 @@
 # cx
 
 **Purpose.** This folder is responsible for **material price resolution**
-and small CX helpers. Every price in the app comes from `usePrice`.
+and small CX helpers. Every price in the app is resolved by a `PriceBook`
+(`priceBook.ts`); components use it through `usePrice`.
 
 **Used by.**
 - The plan engine.
@@ -11,17 +12,27 @@ and small CX helpers. Every price in the app comes from `usePrice`.
 
 ## Key files
 
-- **`usePrice.ts`**: `usePrice(cxUuidRef, planetNaturalIdRef)`
-  provides:
+- **`priceBook.ts`**: plain TypeScript, no Vue.
+  `createPriceBook(getCXData, planetNaturalId, getExchange)` returns a book
+  whose `getPrice(ticker, "BUY" | "SELL")` is synchronous. It reads the CX
+  once and resolves each (ticker, type) once; create a new book to pick up
+  changes. Also `getMaterialIOTotalPrice(book, io, type)`,
+  `enhanceMaterialIOMaterial(book, io)` and `getExchangeCodeKey`. The
+  header comment documents the resolution order: planet ticker → empire
+  ticker → planet exchange → empire exchange → UNIVERSE 30D VWAP. A price
+  that can't be resolved is 0 and logged.
+- **`usePrice.ts`**: `usePrice(cxUuidRef, planetNaturalIdRef)`, the async
+  API for components:
   - `getPrice(ticker, "BUY" | "SELL")`;
   - `enhanceMaterialIOMaterial(io[])`, which adds a `price` to each
     material I/O row;
-  - `getMaterialIOTotalPrice`;
-  - `calculateInfrastructureCosts(planet)`.
+  - `getMaterialIOTotalPrice`.
 
-  The header comment documents the resolution order: planet ticker →
-  empire ticker → planet exchange → empire exchange → UNIVERSE 30D VWAP.
-- **`usePrice.types.ts`**: `IInfrastructureCosts`.
+  Each call makes sure exchange data is loaded (a no-op once the game data
+  loaders ran) and resolves through a price book. The planning engine
+  builds its own book per calculation (`usePlanContext`).
+- **`usePrice.types.ts`**: `IInfrastructureCosts` (calculated by the
+  planning engine, `engine/construction.ts`).
 - **`useCXData.ts`**:
   - `findEmpireCXUuid(empireUuid)` returns the CX assigned to an empire;
   - `getPreferenceOptions(includeNone)` returns select options, where
@@ -32,17 +43,19 @@ and small CX helpers. Every price in the app comes from `usePrice`.
 ## Data
 
 - Exchange prices come from `useExchangeData()`, which reads the
-  `gamedata_exchanges` table in IndexedDB.
+  `gamedata_exchanges` table in IndexedDB. Price books read the preloaded
+  in-memory cache synchronously (`getExchangeTickerLoaded`).
 - CX rules come from `planningStore.getCX(uuid)`.
 
 ## Gotchas
 
 - **Pass `cxUuid` as `undefined` for universe prices.** Don't pass an empty
   string.
-- **The CX must be loaded first.** `usePrice` reads `planningStore`
+- **The CX must be loaded first.** Price books read `planningStore`
   synchronously, so load the CX set (`WrapperPlanningDataLoader load-c-x`)
   before calculating.
 
 ## Tests
 
-`src/tests/features/cx/usePrice.test.ts` and `useCXData.test.ts`.
+`src/tests/features/cx/priceBook.test.ts`, `usePrice.test.ts` and
+`useCXData.test.ts`.

@@ -1,4 +1,4 @@
-import { BUILDING_EXPERTISE_TYPE, IBuilding, IRecipe } from "@/features/api/gameData.types";
+import { BUILDING_EXPERTISE_TYPE, IRecipe } from "@/features/api/gameData.types";
 import { IBuildingEfficiency } from "@/features/planning/calculations/bonusCalculations.types";
 import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
 import { IInfrastructureCosts } from "../cx/usePrice.types";
@@ -272,18 +272,6 @@ export const planEmptyResult = {
 	},
 	constructionMaterials: [],
 };
-
-// Procomputational values
-interface IPreBuildingInformation {
-	ticker: string;
-	buildingData: IBuilding;
-	buildingRecipes: IRecipe[];
-	constructionMaterials: IMaterialIOMinimal[];
-	constructionCost: number;
-	workforceMaterials: IMaterialIOMinimal[];
-}
-
-export type IPreBuildingRecord = Record<string, IPreBuildingInformation>;
 
 export interface IBuildingConstruction {
 	ticker: string;

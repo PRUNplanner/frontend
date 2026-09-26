@@ -1,81 +1,84 @@
-import { computed, ComputedRef, ref, Ref, toRaw, toRef, watch } from "vue";
+import {
+	computed,
+	ComputedRef,
+	getCurrentScope,
+	onScopeDispose,
+	ref,
+	Ref,
+	shallowRef,
+	toRef,
+	watch,
+} from "vue";
 
 // Stores
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
-import { useBuildingData } from "@/database/services/useBuildingData";
-import {
-	TOTALMSDAY,
-	useBuildingCalculation,
-} from "@/features/planning/calculations/buildingCalculations";
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
-import { usePrice } from "@/features/cx/usePrice";
 import { usePlanetData } from "@/database/services/usePlanetData";
-
-// Calculation Utils
 import {
-	expertNames,
-	useBonusCalculation,
-} from "@/features/planning/calculations/bonusCalculations";
-import {
-	useWorkforceCalculation,
-	workforceTypeNames,
-} from "@/features/planning/calculations/workforceCalculations";
-import {
-	infrastructureBuildingNames,
-	storageBuildingNames,
-	getVolumeOfAllStorages,
-	getWeightOfAllStorages,
-} from "@/features/planning/calculations/infrastructureCalculations";
+	getActiveEmpire,
+	usePlanContext,
+} from "@/features/planning/usePlanContext";
 
 // Submodule composables
 import { usePlanCalculationHandlers } from "@/features/planning/usePlanCalculationHandlers";
-import { usePlanCalculationPreComputes } from "@/features/planning/usePlanCalculationPreComputes";
 
-// Static data
-import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
+// Engine
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import {
+	calculateConstructionMaterials,
+	calculateTotalConstructionCost,
+} from "@/features/planning/engine/construction";
+import { calculateFinance } from "@/features/planning/engine/finance";
+import { calculateVisitation } from "@/features/planning/engine/visitation";
 
 // Types & Interfaces
-import { IBuilding, IPlanet, IRecipe } from "@/features/api/gameData.types";
+import { IPlanet } from "@/features/api/gameData.types";
 import {
-	IAreaResult,
-	IBuildingConstruction,
-	ICOGMMaterialCost,
-	ICOGMMaterialReturn,
-	IExpertRecord,
-	IInfrastructureRecord,
-	IMaterialIO,
-	IMaterialIOMaterial,
-	IMaterialIOMinimal,
+	IPlanCalculation,
+	IPlanContext,
+	IPlanInput,
+} from "@/features/planning/engine/engine.types";
+import {
 	INFRASTRUCTURE_TYPE,
-	IStorageRecord,
+	IMaterialIO,
 	IOverviewData,
 	IPlanResult,
-	IProductionBuilding,
-	IProductionBuildingRecipe,
-	IProductionBuildingRecipeCOGM,
 	IProductionResult,
-	IRecipeBuildingOption,
 	IVisitationData,
-	IWorkforceElement,
-	IWorkforceRecord,
 	planEmptyResult,
-	WORKFORCE_TYPE,
 } from "@/features/planning/usePlanCalculation.types";
 import {
 	IPlan,
 	IPlanData,
-	IPlanDataBuilding,
-	IPlanDataExpert,
-	IPlanDataInfrastructure,
-	IPlanDataWorkforce,
 	IPlanEmpire,
 	IPlanEmpireElement,
-	PLAN_COGCPROGRAM_TYPE,
 } from "@/stores/planningStore.types";
 import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 
+const overviewEmpty: IOverviewData = {
+	dailyCost: 0,
+	dailyProfit: 0,
+	totalConstructionCost: 0,
+	dailyDegradationCost: 0,
+	profit: 0,
+	roi: 0,
+};
+
+/**
+ * # Plan Calculation
+ *
+ * Vue adapter around the planning engine (`engine/calculatePlan.ts`). The
+ * plan's result is a synchronous `computed`: it recalculates when the
+ * plan, the empire, the CX or its preferences change, and is ready as
+ * soon as game data and the plan's planet are loaded (a no-op wait where
+ * a view already loaded them).
+ *
+ * @param {Ref<IPlan>} plan Plan
+ * @param {Ref<string | undefined>} empireUuid Active empire
+ * @param {Ref<IPlanEmpireElement[] | undefined>} empireOptions Empires
+ * @param {Ref<string | undefined>} cxUuid CX preference
+ */
 export function usePlanCalculation(
 	plan: Ref<IPlan>,
 	empireUuid: Ref<string | undefined> = ref(undefined),
@@ -85,6 +88,7 @@ export function usePlanCalculation(
 	// stores
 	const planningDataStore = usePlanningStore();
 	const { getPlanet } = usePlanetData();
+	const { getGameData, loadGameData, createPrices } = usePlanContext();
 
 	const refreshKey: Ref<number> = ref(0);
 
@@ -106,26 +110,6 @@ export function usePlanCalculation(
 		plan.value.empires ? plan.value.empires : []
 	);
 	const planetNaturalId: Ref<string> = toRef(plan.value.planet_natural_id);
-	const buildings: ComputedRef<IPlanDataBuilding[]> = computed(
-		() => data.value.buildings
-	);
-
-	// composables
-
-	const { getBuilding } = useBuildingData();
-	const { combineMaterialIOMinimal, enhanceMaterialIOMinimal } =
-		useMaterialIOUtil();
-	const { calculateExpertBonus, calculateBuildingEfficiency } =
-		useBonusCalculation();
-	const { calculateSatisfaction, calculateWorkforceConsumption } =
-		useWorkforceCalculation();
-	const {
-		getPrice,
-		getMaterialIOTotalPrice,
-		enhanceMaterialIOMaterial,
-		calculateInfrastructureCosts,
-	} = usePrice(cxUuid, planetNaturalId);
-	const { calculateMaterialIO } = useBuildingCalculation();
 
 	// computations
 
@@ -137,765 +121,77 @@ export function usePlanCalculation(
 		return planName.value != undefined && planName.value != "";
 	});
 
-	// pre-computations
-
-	const {
-		computedActiveEmpire,
-		computeBuildingInformation,
-		computeInfrastructureBuildingInformation,
-	} = usePlanCalculationPreComputes(
-		buildings,
-		cxUuid,
-		empireUuid,
-		empireOptions,
-		planetNaturalId
-	);
-
-	// calculations
-
 	/**
-	 * Calculates plan workforce based on infrastructure provisioning and
-	 * production building needs. This also includes the efficiency calculation
-	 * based on capacity and required workforce under given luxury provision.
-	 */
-	async function calculateWorkforceResult(): Promise<
-		Required<Record<WORKFORCE_TYPE, IWorkforceElement>>
-	> {
-		const result: Record<WORKFORCE_TYPE, IWorkforceElement> =
-			Object.fromEntries(
-				workforceTypeNames.map((key) => {
-					// get current workforce value from planet data
-					const dataLuxuries: IPlanDataWorkforce | undefined =
-						data.value.workforce.find((e) => e.type == key);
-
-					return [
-						key,
-						{
-							name: key,
-							required: 0,
-							capacity: 0,
-							left: 0,
-							lux1: dataLuxuries ? dataLuxuries.lux1 : true,
-							lux2: dataLuxuries ? dataLuxuries.lux2 : true,
-							efficiency: 0,
-						} as IWorkforceElement,
-					];
-				})
-			) as Record<WORKFORCE_TYPE, IWorkforceElement>;
-
-		// calculate capacity from infrastructure buildings
-		for (const infrastructure of data.value.infrastructure) {
-			if (infrastructure.amount > 0) {
-				const infBuildingData: IBuilding = await getBuilding(
-					infrastructure.building
-				);
-
-				// must provide workforce habitation
-				if (infBuildingData.habitations !== null) {
-					result.pioneer.capacity +=
-						infBuildingData.habitations.pioneers *
-						infrastructure.amount;
-					result.settler.capacity +=
-						infBuildingData.habitations.settlers *
-						infrastructure.amount;
-					result.technician.capacity +=
-						infBuildingData.habitations.technicians *
-						infrastructure.amount;
-					result.engineer.capacity +=
-						infBuildingData.habitations.engineers *
-						infrastructure.amount;
-					result.scientist.capacity +=
-						infBuildingData.habitations.scientists *
-						infrastructure.amount;
-				}
-			}
-		}
-
-		// calculate required workforce from production buildings
-		for (const prodBuilding of data.value.buildings) {
-			if (prodBuilding.amount > 0) {
-				const prodBuildingData: IBuilding = await getBuilding(
-					prodBuilding.name
-				);
-
-				result.pioneer.required +=
-					prodBuildingData.pioneers * prodBuilding.amount;
-				result.settler.required +=
-					prodBuildingData.settlers * prodBuilding.amount;
-				result.technician.required +=
-					prodBuildingData.technicians * prodBuilding.amount;
-				result.engineer.required +=
-					prodBuildingData.engineers * prodBuilding.amount;
-				result.scientist.required +=
-					prodBuildingData.scientists * prodBuilding.amount;
-			}
-		}
-
-		// calculate satifsfaction and left
-		Object.values(result).forEach((workforce) => {
-			workforce.efficiency = calculateSatisfaction(
-				workforce.capacity,
-				workforce.required,
-				workforce.lux1,
-				workforce.lux2
-			);
-
-			workforce.left = workforce.capacity - workforce.required;
-		});
-
-		return result;
-	}
-
-	/**
-	 * Calculates the plans area result by determining the total amount of
-	 * usable area based on permits and the used area by infrastructure
-	 * and production buildings. C
-	 *
-	 * @remark Core Modul Area of 25 is always included
-	 */
-	async function calculateAreaResult(): Promise<IAreaResult> {
-		// Core Module holds 25 area
-		let areaUsed: number = 25;
-		const areaTotal: number = 250 + plan.value.plan_permits_used * 250;
-
-		// calculate area used based on production and infrastructure buildings
-		for (const infrastructure of data.value.infrastructure) {
-			if (infrastructure.amount > 0) {
-				const infBuildingData: IBuilding = await getBuilding(
-					infrastructure.building
-				);
-
-				areaUsed += infBuildingData.area_cost * infrastructure.amount;
-			}
-		}
-
-		for (const building of data.value.buildings) {
-			if (building.amount > 0) {
-				const prodBuildingData: IBuilding = await getBuilding(
-					building.name
-				);
-
-				areaUsed += prodBuildingData.area_cost * building.amount;
-			}
-		}
-
-		return {
-			permits: plan.value.plan_permits_used,
-			areaUsed: areaUsed,
-			areaTotal: areaTotal,
-			areaLeft: areaTotal - areaUsed,
-		};
-	}
-
-	/**
-	 * Calculates a result record with all infrastructure buildings and
-	 * their currently used amount in the plan
-	 */
-	function calculateInfrastructureResult(): IInfrastructureRecord {
-		const result: IInfrastructureRecord = Object.fromEntries(
-			infrastructureBuildingNames.map((key) => {
-				const currentInf: IPlanDataInfrastructure | undefined =
-					data.value.infrastructure.find((e) => e.building === key);
-
-				if (currentInf) {
-					return [key, currentInf.amount];
-				}
-				return [key, 0];
-			})
-		) as IInfrastructureRecord;
-
-		return result;
-	}
-
-	/**
-	 * Calculates a result record with all infrastructure buildings and
-	 * their currently used amount in the plan
-	 */
-	function calculateStorageResult(): IStorageRecord {
-		const result: IStorageRecord = Object.fromEntries(
-			storageBuildingNames.map((key) => {
-				const currentInf: IPlanDataInfrastructure | undefined =
-					data.value.infrastructure.find((e) => e.building === key);
-
-				if (currentInf) {
-					return [key, currentInf.amount];
-				}
-				return [key, 0];
-			})
-		) as IStorageRecord;
-
-		return result;
-	}
-
-	/**
-	 * Calculates the result for expert setup of the plan returning a
-	 * record with each expert type, its planned amount and the bonus
-	 * efficiency provided by it
-	 *
-	 * @returns {IExpertRecord} Expert Result Record
-	 */
-	function calculateExpertResult(): IExpertRecord {
-		const result: IExpertRecord = Object.fromEntries(
-			expertNames.map((key) => {
-				const currentExpert: IPlanDataExpert | undefined =
-					data.value.experts.find((e) => e.type === key);
-
-				let amount: number = 0;
-				let bonus: number = 0;
-
-				if (currentExpert) {
-					amount = currentExpert.amount;
-					bonus = calculateExpertBonus(amount);
-				}
-
-				return [key, { name: key, amount: amount, bonus: bonus }];
-			})
-		) as IExpertRecord;
-
-		return result;
-	}
-
-	/**
-	 * Calculates plan production taking into account efficiency factors
-	 * for certain production lines, buildings, experts and workforce
-	 * based on the plans active recipes
+	 * Holds data of the currently active empire based on all available
+	 * empires and the empireUuid passed to this composable
 	 *
 	 * @author jplacht
 	 *
-	 * @param {boolean} corphq Has CORPHQ on planet
-	 * @param {PLAN_COGCPROGRAM_TYPE} cogc COGC value
-	 * @param {IWorkforceRecord} workforce Workforce result
-	 * @param {IExpertRecord} experts Plans experts
-	 * @returns {IProductionResult} Production Result
+	 * @type {ComputedRef<IPlanEmpire | undefined>}	Empire Information
 	 */
-	async function calculateProduction(
-		corphq: boolean,
-		cogc: PLAN_COGCPROGRAM_TYPE,
-		workforce: IWorkforceRecord,
-		experts: IExpertRecord
-	): Promise<IProductionResult> {
-		const buildings: IProductionBuilding[] = [];
-		const planetData: IPlanet = await getPlanet(planetNaturalId.value);
+	const computedActiveEmpire: ComputedRef<IPlanEmpire | undefined> = computed(
+		() => getActiveEmpire(empireUuid.value, empireOptions.value)
+	);
 
-		// add buildings from data
-		for (const b of data.value.buildings) {
-			const computedBuildingInformation =
-				await computeBuildingInformation();
-			// efficiency calculation
+	// game data and the plan's planet, loaded once
+	const planet = shallowRef<IPlanet>();
+	const loaded: Promise<IPlanet> = (async () => {
+		await loadGameData();
+		planet.value = await getPlanet(planetNaturalId.value);
+		return planet.value;
+	})();
+	loaded.catch((err) => {
+		console.error(err);
+	});
 
-			const buildingData: IBuilding =
-				computedBuildingInformation[b.name].buildingData;
+	function input(): IPlanInput {
+		return {
+			plan: plan.value,
+			empire: computedActiveEmpire.value,
+			cxUuid: cxUuid.value,
+		};
+	}
 
-			const { totalEfficiency, elements } = calculateBuildingEfficiency(
-				buildingData,
-				planetData,
-				corphq,
-				cogc,
-				workforce,
-				experts,
-				computedActiveEmpire.value
-			);
+	function context(loadedPlanet: IPlanet): IPlanContext {
+		return {
+			...getGameData(),
+			planet: loadedPlanet,
+			prices: createPrices(planetNaturalId.value, cxUuid.value),
+		};
+	}
 
-			const activeRecipes: IProductionBuildingRecipe[] = [];
-			const buildingRecipes: IRecipe[] =
-				computedBuildingInformation[b.name].buildingRecipes;
+	// a stopped scope keeps its last result, like its stopped watchers did
+	let stopped: boolean = false;
+	if (getCurrentScope()) onScopeDispose(() => (stopped = true));
+	let lastCalculation: IPlanCalculation | undefined;
 
-			// add currently active recipes
-			b.active_recipes.forEach((r) => {
-				// go raw to loose Proxy
-				const recipeInfo: IRecipe | undefined = toRaw(
-					buildingRecipes.find((ar) => ar.recipe_id == r.recipeid)
-				);
+	const calculation: ComputedRef<IPlanCalculation | undefined> = computed(
+		() => {
+			// recalculate on CX preference updates
+			const _refresh: number = refreshKey.value;
 
-				if (!recipeInfo) {
-					console.warn(
-						`Unable to find recipe info for ${b.name} with recipe id ${r.recipeid}`
-					);
-				} else {
-					activeRecipes.push({
-						recipeId: r.recipeid,
-						amount: r.amount,
-						dailyShare: 1,
-						// time adjusted to efficiency and amount
-						time: (recipeInfo.time_ms * r.amount) / totalEfficiency,
-						recipe: {
-							...recipeInfo,
-							dailyRevenue: 0,
-							roi: 0,
-							profitPerArea: 0,
-						},
-						cogm: undefined,
-					});
-				}
-			});
+			if (stopped || !planet.value) return lastCalculation;
 
-			// calculate total batchtime and
-			const totalBatchTime: number = activeRecipes.reduce(
-				(sum, ar) => sum + ar.time,
-				0
-			);
-
-			// update active recipes timeshare
-			activeRecipes.forEach(
-				(updateDailyShare) =>
-					(updateDailyShare.dailyShare =
-						updateDailyShare.time / totalBatchTime)
-			);
-
-			// get construction materials
-			const constructionMaterials: IMaterialIOMinimal[] =
-				computedBuildingInformation[b.name].constructionMaterials;
-
-			// calculate construction costs
-			const constructionCost: number =
-				computedBuildingInformation[b.name].constructionCost;
-
-			const workforceMaterials: IMaterialIOMinimal[] =
-				computedBuildingInformation[b.name].workforceMaterials;
-			const workforceDailyCost: number = await getMaterialIOTotalPrice(
-				workforceMaterials,
-				"BUY"
-			);
-
-			// get recipe options
-			const recipeOptions: IRecipeBuildingOption[] = await Promise.all(
-				buildingRecipes.map(async (br) => {
-					// calculate daily revenue
-					const dailyIncome: number = await getMaterialIOTotalPrice(
-						br.outputs.map((o) => ({
-							ticker: o.material_ticker,
-							output: o.material_amount,
-							input: 0,
-						})),
-						"SELL"
-					);
-
-					const dailyCost: number =
-						-1 *
-						(await getMaterialIOTotalPrice(
-							br.inputs.map((i) => ({
-								ticker: i.material_ticker,
-								output: 0,
-								input: i.material_amount,
-							})),
-							"BUY"
-						));
-
-					// Daily Revenue of a recipe option
-					const maxDailyRuns: number =
-						TOTALMSDAY / (br.time_ms / totalEfficiency);
-
-					const dailyRevenue: number =
-						dailyIncome * maxDailyRuns -
-						dailyCost * maxDailyRuns -
-						constructionCost * -1 * (1 / 180) -
-						-1 * workforceDailyCost;
-
-					// Recipe option ROI
-					const roi: number = (constructionCost * -1) / dailyRevenue;
-
-					// Recipe option Profit per Area
-					const optimalProductionData = optimalProduction.find(
-						(op) => op.ticker === br.building_ticker
-					);
-					const areaPerBuilding: number = optimalProductionData
-						? (optimalProductionData.total_area + 25) /
-							optimalProductionData.amount
-						: buildingData.area_cost + 25;
-
-					const profitPerArea = dailyRevenue / areaPerBuilding;
-
-					return {
-						recipe_id: br.recipe_id,
-						recipe_name: br.recipe_name,
-						building_ticker: br.building_ticker,
-						time_ms: br.time_ms / totalEfficiency,
-						inputs: br.inputs,
-						outputs: br.outputs,
-						dailyRevenue,
-						roi,
-						profitPerArea,
-					};
-				})
-			);
-			/*
-			 * COGM
-			 *
-			 * Calculates each active recipes cost of goods manufactured, taking into account
-			 * the active recipes share of a full daily runtime cycle with the following logics:
-			 *
-			 * degradation: share of full daily building degradation
-			 * workforce: share of buildings daily workforce cost
-			 * input cost: buy prices for the required input materials
-			 *
-			 * total cost: degradation share + workforce share + input total
-			 *
-			 * cogm: per output material
-			 * 	- either consuming the full cost
-			 * 	- or just its material output / all output
-			 */
-
-			activeRecipes.forEach(async (ar) => {
-				const runtimeShare: number =
-					ar.recipe.time_ms / totalEfficiency / TOTALMSDAY;
-				const degradation: number = (constructionCost * -1) / 180;
-				const degradationShare: number = degradation * runtimeShare;
-				const workforceCostTotal: number = workforceDailyCost * -1;
-				const workforceCost: number = workforceCostTotal * runtimeShare;
-
-				const inputCost: ICOGMMaterialCost[] = await Promise.all(
-					ar.recipe.inputs.map(async (inputMat) => {
-						const price = await getPrice(
-							inputMat.material_ticker,
-							"BUY"
-						);
-						return {
-							ticker: inputMat.material_ticker,
-							amount: inputMat.material_amount,
-							costUnit: price,
-							costTotal: price * inputMat.material_amount,
-						};
-					})
-				);
-
-				inputCost.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
-
-				const inputTotal: number = inputCost.reduce(
-					(sum, current) => sum + current.costTotal,
-					0
-				);
-
-				const outputRevenueArray = await Promise.all(
-					ar.recipe.outputs.map(async (current) => {
-						const price = await getPrice(
-							current.material_ticker,
-							"SELL"
-						);
-						return price * current.material_amount;
-					})
-				);
-
-				const outputRevenue = outputRevenueArray.reduce(
-					(a, b) => a + b,
-					0
-				);
-
-				const totalCost: number =
-					degradationShare + workforceCost + inputTotal;
-
-				const sumOutputs: number = ar.recipe.outputs.reduce(
-					(sum, current) => sum + current.material_amount,
-					0
-				);
-
-				const totalProfit: number = outputRevenue - totalCost;
-
-				const outputCOGM: ICOGMMaterialReturn[] = ar.recipe.outputs
-					.map((outputMat) => ({
-						ticker: outputMat.material_ticker,
-						amount: outputMat.material_amount,
-						costSplit: totalCost / sumOutputs,
-						costTotal: totalCost / outputMat.material_amount,
-					}))
-					.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
-
-				ar.cogm = {
-					visible: cxUuid.value !== undefined,
-					runtime: ar.recipe.time_ms / totalEfficiency,
-					runtimeShare,
-					efficiency: totalEfficiency,
-					degradation,
-					degradationShare,
-					workforceCost,
-					workforceCostTotal,
-					inputCost,
-					inputTotal,
-					outputCOGM,
-					totalCost,
-					outputRevenue,
-					totalProfit,
-				} as IProductionBuildingRecipeCOGM;
-			});
-
-			const building: IProductionBuilding = {
-				name: b.name,
-				amount: b.amount,
-				areaUsed: buildingData.area_cost * b.amount,
-				activeRecipes: activeRecipes,
-				recipeOptions: recipeOptions,
-				totalEfficiency: totalEfficiency,
-				efficiencyElements: elements,
-				totalBatchTime: totalBatchTime,
-				constructionMaterials: constructionMaterials,
-				constructionCost: constructionCost,
-				workforceMaterials: workforceMaterials,
-				workforceDailyCost: workforceDailyCost,
-				dailyRevenue: 0,
-				expertise: buildingData.expertise,
-			};
-
-			// Calculating individual buildings daily contribution
-			const productionMaterialIOEnhanced: IMaterialIO[] =
-				await enhanceMaterialIOMaterial(
-					enhanceMaterialIOMinimal(calculateMaterialIO([building]))
-				);
-
-			const productionRevenue: number =
-				productionMaterialIOEnhanced.reduce(
-					(sum, element) => sum + element.price,
-					0
-				);
-
-			// WorkforceDailyCost is just per Building, so need to multiply
-			building.dailyRevenue =
-				productionRevenue +
-				workforceDailyCost * building.amount +
-				(1 / 180) * constructionCost;
-
-			buildings.push(building);
+			try {
+				lastCalculation = calculatePlan(input(), context(planet.value));
+			} catch (err) {
+				// keep the last result, as a failed run did before
+				console.error(err);
+			}
+			return lastCalculation;
 		}
-
-		return {
-			buildings: buildings,
-			materialio: calculateMaterialIO(buildings),
-		};
-	}
-
-	async function calculateConstructionMaterials(
-		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>,
-		production: IProductionBuilding[]
-	): Promise<IBuildingConstruction[]> {
-		const infrastructureBuildingInformation =
-			await computeInfrastructureBuildingInformation();
-
-		const inf: IBuildingConstruction[] =
-			infrastructureBuildingInformation.filter(
-				(i) =>
-					(infrastructure[i.ticker as INFRASTRUCTURE_TYPE] &&
-						infrastructure[i.ticker as INFRASTRUCTURE_TYPE] > 0) ||
-					i.ticker === "CM"
-			);
-
-		// Adjust map to add infrastructure building amounts
-		inf.map(
-			(i) =>
-				(i.amount =
-					i.ticker === "CM"
-						? 1
-						: infrastructure[i.ticker as INFRASTRUCTURE_TYPE])
-		);
-
-		return [
-			...production.map((b) => ({
-				ticker: b.name,
-				materials: b.constructionMaterials,
-				amount: b.amount,
-			})),
-			...inf,
-		];
-	}
-
-	// result composing
+	);
 
 	/**
-	 * Combines all result calculations into a single result definition
-	 * while also applying enhancements to data (e.g. prices on Material IO)
-	 * and structures for further use.
+	 * The plan's result, recalculated synchronously on every change
 	 */
-	const result: Ref<IPlanResult> = ref(planEmptyResult);
+	const result: ComputedRef<IPlanResult> = computed(
+		() => calculation.value?.result ?? planEmptyResult
+	);
 
-	async function calculate(): Promise<IPlanResult> {
-		// pre-calculate individual results
-		const corpHQResult = plan.value.plan_corphq;
-		const cogcResult = plan.value.plan_cogc;
-
-		const workforceResult: IWorkforceRecord =
-			await calculateWorkforceResult();
-		const areaResult: IAreaResult = await calculateAreaResult();
-		const infrastructureResult: IInfrastructureRecord =
-			calculateInfrastructureResult();
-		const storageResult: IStorageRecord = calculateStorageResult();
-		const expertResult: IExpertRecord = calculateExpertResult();
-		const productionResult: IProductionResult = await calculateProduction(
-			corpHQResult,
-			cogcResult,
-			workforceResult,
-			expertResult
-		);
-
-		// get individual material IOs
-		const workforceMaterialIO: IMaterialIOMinimal[] =
-			calculateWorkforceConsumption(workforceResult);
-		const productionMaterialIO: IMaterialIOMinimal[] =
-			productionResult.materialio;
-
-		// combine and enhance
-		const combinedMaterialIOMinimal: IMaterialIOMinimal[] =
-			combineMaterialIOMinimal([
-				workforceMaterialIO,
-				productionMaterialIO,
-			]);
-		const materialIOMaterial: IMaterialIOMaterial[] =
-			enhanceMaterialIOMinimal(combinedMaterialIOMinimal);
-		const materialIO: IMaterialIO[] =
-			await enhanceMaterialIOMaterial(materialIOMaterial);
-
-		/**
-		 * Revenue, profit and cost calculation
-		 *
-		 * Revenue: Material IO with positive Delta
-		 * Cost: Material IO with negative delta + 1/180 of all buildings daily degradation
-		 * Profit: Revenue - cost
-		 */
-
-		const materialCost: number = materialIO.reduce(
-			(sum, element) =>
-				sum + (element.delta < 0 ? element.price * -1 : 0),
-			0
-		);
-		const materialRevenue: number = materialIO.reduce(
-			(sum, element) => sum + (element.delta > 0 ? element.price : 0),
-			0
-		);
-		const dailyDegradationCost: number =
-			productionResult.buildings.reduce(
-				(sum, element) =>
-					sum + element.constructionCost * -1 * element.amount,
-				0
-			) *
-			(1 / 180);
-
-		const profit: number =
-			materialRevenue - materialCost - dailyDegradationCost;
-
-		const cost: number = materialCost + dailyDegradationCost;
-
-		// calculate overview
-		overviewData.value = await calculateOverview(
-			materialIO,
-			productionResult,
-			infrastructureResult
-		);
-
-		// patch-in to full result
-		return {
-			done: true,
-			corphq: corpHQResult,
-			cogc: cogcResult,
-			workforce: workforceResult,
-			area: areaResult,
-			infrastructure: infrastructureResult,
-			storage: storageResult,
-			experts: expertResult,
-			production: productionResult,
-			materialio: materialIO,
-			workforceMaterialIO: await enhanceMaterialIOMaterial(
-				enhanceMaterialIOMinimal(workforceMaterialIO)
-			),
-			productionMaterialIO: await enhanceMaterialIOMaterial(
-				enhanceMaterialIOMinimal(productionMaterialIO)
-			),
-			profit: profit,
-			cost: cost,
-			revenue: materialRevenue,
-			infrastructureCosts: await calculateInfrastructureCosts(
-				await getPlanet(planetNaturalId.value)
-			),
-			constructionMaterials: await calculateConstructionMaterials(
-				infrastructureResult,
-				productionResult.buildings
-			),
-		};
-	}
-
-	async function calculateOverview(
-		materialIO: IMaterialIO[],
-		production: IProductionResult,
-		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>
-	) {
-		const dailyCost: number = materialIO.reduce(
-			(sum, current) => sum + (current.delta < 0 ? current.price : 0),
-			0
-		);
-		const dailyProfit: number = materialIO.reduce(
-			(sum, current) => sum + (current.delta > 0 ? current.price : 0),
-			0
-		);
-
-		// degradation
-		const totalProductionConstructionCost: number =
-			production.buildings.reduce(
-				(sum, current) =>
-					sum + current.constructionCost * current.amount,
-				0
-			);
-
-		const dailyDegradationCost: number =
-			totalProductionConstructionCost / 180;
-
-		const constructionMaterials = await calculateConstructionMaterials(
-			infrastructure,
-			production.buildings
-		);
-
-		const totalConstructionCostArray = await Promise.all(
-			constructionMaterials.map(async (current) => {
-				const innerSumArray = await Promise.all(
-					current.materials.map(async (infCurrent) => {
-						const price = await getPrice(infCurrent.ticker, "BUY");
-						return price * infCurrent.input;
-					})
-				);
-
-				const innerSum = innerSumArray.reduce((a, b) => a + b, 0);
-				return current.amount * innerSum;
-			})
-		);
-
-		const totalConstructionCost = totalConstructionCostArray.reduce(
-			(a, b) => a + b,
-			0
-		);
-
-		const profit: number =
-			dailyProfit - -1 * dailyDegradationCost - -1 * dailyCost;
-
-		return {
-			dailyCost: dailyCost * -1,
-			dailyProfit: dailyProfit * 1,
-			totalConstructionCost,
-			dailyDegradationCost: dailyDegradationCost * -1,
-			profit,
-			roi: totalConstructionCost / profit,
-		};
-	}
-
-	const overviewData: Ref<IOverviewData> = ref({
-		dailyCost: 0,
-		dailyProfit: 0,
-		totalConstructionCost: 0,
-		dailyDegradationCost: 0,
-		profit: 0,
-		roi: 0,
-	});
-
-	/**
-	 * Calculates the total weight of the plan's storage
-	 *
-	 * @type {ComputedRef<number>}
-	 */
-	const totalWeight: ComputedRef<number> = computed(() => {
-		return getWeightOfAllStorages(result.value.storage);
-	});
-
-	/**
-	 * Calculates the total volume of the plan's storage
-	 *
-	 * @type {ComputedRef<number>}
-	 */
-	const totalVolume: ComputedRef<number> = computed(() => {
-		return getVolumeOfAllStorages(result.value.storage);
-	});
+	const overviewData: ComputedRef<IOverviewData> = computed(
+		() => calculation.value?.overview ?? overviewEmpty
+	);
 
 	/**
 	 * Calculates a plans visitation data
@@ -903,42 +199,48 @@ export function usePlanCalculation(
 	 *
 	 * @type {ComputedRef<IVisitationData>}
 	 */
-	const visitationData: ComputedRef<IVisitationData> = computed(() => {
-		const dailyWeightImport: number = result.value.materialio.reduce(
-			(sum, e) => sum + (e.delta < 0 ? e.totalWeight * -1 : 0),
-			0
-		);
-		const dailyWeightExport: number = result.value.materialio.reduce(
-			(sum, e) => sum + (e.delta > 0 ? e.totalWeight : 0),
-			0
-		);
-		const dailyVolumeImport: number = result.value.materialio.reduce(
-			(sum, e) => sum + (e.delta < 0 ? e.totalVolume * -1 : 0),
-			0
-		);
-		const dailyVolumeExport: number = result.value.materialio.reduce(
-			(sum, e) => sum + (e.delta > 0 ? e.totalVolume : 0),
-			0
-		);
-		const dailyWeightTotal: number = Math.max(dailyWeightImport, dailyWeightExport);
-		const dailyVolumeTotal: number = Math.max(dailyVolumeImport, dailyVolumeExport);
+	const visitationData: ComputedRef<IVisitationData> = computed(() =>
+		calculateVisitation(result.value)
+	);
 
-		return {
-			storageFilled: Math.max(
-				Math.min(
-					totalWeight.value / dailyWeightTotal,
-					totalVolume.value / dailyVolumeTotal
+	/**
+	 * Calculates the plan once, independent of the live result
+	 *
+	 * @returns {Promise<IPlanResult>} Plan result
+	 */
+	async function calculate(): Promise<IPlanResult> {
+		return calculatePlan(input(), context(await loaded)).result;
+	}
+
+	/**
+	 * Calculates the overview (costs, profit, ROI) for a result's parts
+	 *
+	 * @param {IMaterialIO[]} materialIO Material IO
+	 * @param {IProductionResult} production Production
+	 * @param {Required<Record<INFRASTRUCTURE_TYPE, number>>} infrastructure Infrastructure
+	 * @returns {Promise<IOverviewData>} Overview
+	 */
+	async function calculateOverview(
+		materialIO: IMaterialIO[],
+		production: IProductionResult,
+		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>
+	): Promise<IOverviewData> {
+		const ctx: IPlanContext = context(await loaded);
+
+		return calculateFinance(
+			materialIO,
+			production.buildings,
+			calculateTotalConstructionCost(
+				calculateConstructionMaterials(
+					infrastructure,
+					production.buildings,
+					ctx.planet,
+					ctx.buildings
 				),
-				0
-			),
-			dailyWeightImport: dailyWeightImport,
-			dailyWeightExport: dailyWeightExport,
-			dailyVolumeImport: dailyVolumeImport,
-			dailyVolumeExport: dailyVolumeExport,
-			dailyWeight: dailyWeightTotal,
-			dailyVolume: dailyVolumeTotal,
-		};
-	});
+				ctx.prices
+			)
+		).overview;
+	}
 
 	/**
 	 * Prepares plans data to conform to the Patch or Put payload
@@ -971,22 +273,6 @@ export function usePlanCalculation(
 		result
 	);
 
-	// trigger calculation on changes of:
-	// - plan data
-	// - refresh key (cx updates)
-	// - empire change
-	watch(
-		[plan, refreshKey, empireUuid],
-		async () => {
-			try {
-				result.value = await calculate();
-			} catch (err) {
-				console.error(err);
-			}
-		},
-		{ immediate: true, deep: true }
-	);
-
 	return {
 		existing,
 		saveable,
@@ -997,7 +283,6 @@ export function usePlanCalculation(
 		planName,
 		visitationData,
 		overviewData,
-		// precomputes
 		computedActiveEmpire,
 		// submodules
 		...handlers,

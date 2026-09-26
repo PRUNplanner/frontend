@@ -37,6 +37,8 @@ vi.mock("@/database/services/usePlanetData", async () => {
 	};
 });
 
+import { usePlanetData } from "@/database/services/usePlanetData";
+
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 
@@ -117,6 +119,41 @@ describe("usePlanCalculation", async () => {
 
 		expect(result.value).toBe(stopped);
 		expect(refreshKey.value).toBe(0);
+	});
+
+	it("the result follows the latest plan, also across a slow load (S2)", async () => {
+		// hold the planet load while the plan changes
+		let release!: () => void;
+		const held = new Promise<void>((r) => (release = r));
+		vi.mocked(usePlanetData).mockImplementationOnce(
+			() =>
+				({
+					getPlanet: vi
+						.fn()
+						.mockImplementationOnce(async () => {
+							await held;
+							return planet_etherwind;
+						})
+						.mockResolvedValue(planet_etherwind),
+				}) as unknown as ReturnType<typeof usePlanetData>
+		);
+
+		const plan = ref(structuredClone(plan_etherwind));
+		const scope = effectScope();
+		const { result, calculate } = scope.run(() =>
+			// @ts-expect-error mock data
+			usePlanCalculation(plan)
+		)!;
+
+		plan.value.plan_data.buildings[0].amount++;
+		await flushPromises();
+		expect(result.value.done).toBe(false);
+
+		release();
+		await vi.waitFor(() => expect(result.value.done).toBe(true));
+		expect(result.value.production.buildings[0].amount).toBe(2);
+		expect(result.value).toStrictEqual(await calculate());
+		scope.stop();
 	});
 
 	it("validate result", async () => {

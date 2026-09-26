@@ -14,10 +14,11 @@ editor UI. The engine is documented in depth in
 
 | File | Role |
 | --- | --- |
-| `usePlanCalculation.ts` / `.types.ts` | Engine entry point, `IPlanResult` and the domain unions (`WORKFORCE_TYPE`, `INFRASTRUCTURE_TYPE`, `EXPERT_TYPE`, …) |
+| `engine/*.ts` | The pure calculation engine, `calculatePlan(input, ctx)`. See [planning-engine.md](../planning-engine.md) |
+| `usePlanContext.ts` | Builds the engine context: game data maps, planet, price book; `getActiveEmpire` |
+| `usePlanCalculation.ts` / `.types.ts` | Vue adapter for the plan editor (synchronous `computed` result), `IPlanResult` and the domain unions (`WORKFORCE_TYPE`, `INFRASTRUCTURE_TYPE`, `EXPERT_TYPE`, …) |
 | `usePlanCalculationHandlers.ts` | Every edit operation (`handleUpdate*`, `handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data` and sets `modified` |
-| `usePlanCalculationPreComputes.ts` | Per-building cached data and the active empire |
-| `calculations/*.ts` | Pure-ish math: bonus, workforce, building, infrastructure, extraction, hab LP optimisation |
+| `calculations/*.ts` | Wrappers around the engine (bonus, workforce, building), infrastructure lists, extraction, hab LP optimisation |
 | `util/materialIO.util.ts` | Combine and enrich material I/O. Also combines empire I/O (`combineEmpireMaterialIO`, `empireMaterialIOState`) |
 
 ## Components
@@ -37,17 +38,21 @@ editor UI. The engine is documented in depth in
 
 ## Data
 
-- Game data is read through `useBuildingData`, `useMaterialData` and
-  `usePlanetData`, and prices through `usePrice`.
-- `planningStore.cxs` changes trigger a recalculation.
+- The engine reads game data, the planet and prices from its context
+  (`usePlanContext`: preloaded `useDB` caches, `usePlanetData`, a
+  `PriceBook`). Components still use `useBuildingData`, `useMaterialData`
+  and `usePrice`.
+- The result is a `computed`: plan, empire, CX and `planningStore.cxs`
+  changes recalculate it synchronously.
 
 ## Gotchas
 
 - **Panels don't compute anything.** They receive `result` slices as props
   and emit events, and `PlanView` routes those events to `handle*`
   functions. Keep new panels the same way.
-- **Put new math in `calculations/`** as exported functions with tests, not
-  inline in `usePlanCalculation.ts`, which is already about 1000 lines.
+- **Put new math in `engine/`** as exported plain functions with tests in
+  `src/tests/features/planning/engine/`. Components never write into
+  `result`: bind `:value` and emit.
 - **Hab auto-optimisation** (`optimizeHabs`) is controlled by the per-plan
   preference `autoOptimizeHabs`.
 

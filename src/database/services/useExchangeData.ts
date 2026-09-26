@@ -26,10 +26,24 @@ export function useExchangeData() {
 		"NC1",
 	];
 
-	const { get, preload } = useDB(exchangesStore);
+	const { get, getLoaded, preload } = useDB(exchangesStore);
 
 	async function getExchangeTicker(tickerId: string): Promise<IExchange> {
 		const exchange = await get(tickerId);
+
+		if (exchange) return exchange;
+
+		throw new Error(
+			`Exchange data for ticker '${tickerId}' not found. Ensure game data is loaded and ticker is valid.`
+		);
+	}
+
+	/**
+	 * Synchronous exchange lookup, for code that runs after preload.
+	 * Throws if exchanges are not loaded or the ticker is unknown.
+	 */
+	function getExchangeTickerLoaded(tickerId: string): IExchange {
+		const exchange = getLoaded(tickerId);
 
 		if (exchange) return exchange;
 
@@ -222,6 +236,7 @@ export function useExchangeData() {
 	return {
 		preload,
 		getExchangeTicker,
+		getExchangeTickerLoaded,
 		getMaterialExchangeOverview,
 		exchangeTypesArray,
 		exchangeGameTypesArray,
