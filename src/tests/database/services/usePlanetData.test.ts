@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock the planets store (could be empty)
 vi.mock("@/database/stores", () => ({
@@ -56,7 +56,7 @@ describe("usePlanetData", () => {
 
 		preloadMock = vi.fn(async () => {});
 
-		// @ts-ignore
+		// @ts-expect-error
 		useDB.mockReturnValue({
 			allData: ref([mockPlanet1, mockPlanet2, mockPlanet3]),
 			get: getMock,

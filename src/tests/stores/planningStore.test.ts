@@ -9,7 +9,6 @@ import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
 import empire_list from "@/tests/test_data/api_data_empire_list.json";
 import cx_list from "@/tests/test_data/api_data_cx_list.json";
 import shared_list from "@/tests/test_data/api_data_shared_list.json";
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 
 const etherwindUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
 

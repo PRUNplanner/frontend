@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
 

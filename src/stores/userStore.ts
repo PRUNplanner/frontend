@@ -42,6 +42,7 @@ import {
 	IPreferencePerPlan,
 } from "@/features/preferences/userPreferences.types";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
+import { deepClone } from "@/util/data";
 import { Composer } from "vue-i18n";
 import { localeLazyLoaders, SupportedLocale } from "@/lib/i18n";
 
@@ -55,15 +56,16 @@ export const useUserStore = defineStore(
 
 		const initialProfileCalled: Ref<boolean> = ref(false);
 		const intialPreferencesCalled: Ref<boolean> = ref(false);
-		const preferences: Reactive<IPreference> =
-			reactive<IPreference>(preferenceDefaults);
+		const preferences: Reactive<IPreference> = reactive<IPreference>(
+			deepClone(preferenceDefaults)
+		);
 
 		// state reset
 		function $reset(): void {
 			accessToken.value = undefined;
 			refreshToken.value = undefined;
 			profile.value = undefined;
-			Object.assign(preferences, preferenceDefaults);
+			Object.assign(preferences, deepClone(preferenceDefaults));
 		}
 
 		// user preference handling

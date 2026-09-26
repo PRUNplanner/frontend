@@ -106,7 +106,7 @@ describe("inertClone fallback branch (no structuredClone)", () => {
 	beforeAll(async () => {
 		// remove structuredClone and reload module to hit fallback
 		originalStructuredClone = globalThis.structuredClone;
-		// @ts-ignore
+		// @ts-expect-error
 		delete globalThis.structuredClone;
 		vi.resetModules();
 		const mod = await import("@/util/data");

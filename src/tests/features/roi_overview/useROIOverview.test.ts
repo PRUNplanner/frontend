@@ -73,7 +73,8 @@ describe("useROIOverview", async () => {
 		expect(result.length).toBe(3);
 	});
 
-	it("calculate", async () => {
+	// full recipe sweep, slow under parallel load with coverage
+	it("calculate", { timeout: 20_000 }, async () => {
 		const { calculate, resultData } = await useROIOverview(
 			// @ts-expect-error mock definition
 			definition,

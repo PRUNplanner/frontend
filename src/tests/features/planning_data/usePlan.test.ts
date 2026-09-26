@@ -46,7 +46,7 @@ vi.mock("@/features/api/sharingData.api", async () => {
 
 describe("usePlan", async () => {
 	setActivePinia(createPinia());
-	let planningStore = usePlanningStore();
+	const planningStore = usePlanningStore();
 
 	it("has shared plan uuid", async () => {
 		const { isEditDisabled } = usePlan();

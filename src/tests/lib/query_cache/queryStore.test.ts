@@ -104,7 +104,6 @@ describe("useQueryStore", () => {
 		// reset store
 		store.$reset();
 
-		const key = ["manual", 123];
 		const data = { result: "manual-data" };
 		// @ts-expect-error mock query repository
 		await store.addCacheState("manualKey", "testQuery", { foo: 1 }, data);

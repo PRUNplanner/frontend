@@ -139,7 +139,7 @@ describe("usePlanCalculation", async () => {
 			ref(undefined)
 		);
 
-		const result = await calculate();
+		await calculate();
 
 		expect(visitationData.value.storageFilled).toBe(26.462529131522697);
 	});

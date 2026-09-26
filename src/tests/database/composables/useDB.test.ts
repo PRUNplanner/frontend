@@ -43,7 +43,7 @@ describe("useDB composable", () => {
 	it("preload() skips reload if already loaded", async () => {
 		fakeStore.getAll.mockResolvedValue([{ id: "1", name: "Alpha" }]);
 
-		const { preload, allData } = useDB<TestItem, "id">(fakeStore as any);
+		const { preload } = useDB<TestItem, "id">(fakeStore as any);
 
 		// First call loads
 		await preload();

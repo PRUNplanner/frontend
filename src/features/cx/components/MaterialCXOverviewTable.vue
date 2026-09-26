@@ -35,6 +35,7 @@
 		daily: {
 			type: Number,
 			required: false,
+			default: undefined,
 		},
 		overviewData: {
 			type: Object as PropType<IMaterialExchangeOverview>,

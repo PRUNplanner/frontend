@@ -9,13 +9,11 @@ import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 import { useFIORepair } from "@/features/fio/useFIORepair";
 
 describe("useFIORepair", async () => {
-	let planningStore: ReturnType<typeof usePlanningStore>;
-
 	const test_planets = ref(fio_storage.sites_data);
 
 	beforeAll(() => {
 		setActivePinia(createPinia());
-		planningStore = usePlanningStore();
+		usePlanningStore();
 	});
 
 	it("isInfrastructureBuilding", async () => {

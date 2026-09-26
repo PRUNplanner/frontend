@@ -174,7 +174,7 @@ describe("Planning: Workforce Calculations", async () => {
 				);
 
 			handleUpdateWorkforceLux("pioneer", "lux1", true);
-			expect(fakePlanet.workforce[0].lux1).toBeTruthy;
+			expect(fakePlanet.workforce[0].lux1).toBeTruthy();
 		});
 
 		it("Found, lux 2", async () => {
@@ -188,7 +188,7 @@ describe("Planning: Workforce Calculations", async () => {
 				);
 
 			handleUpdateWorkforceLux("pioneer", "lux2", true);
-			expect(fakePlanet.workforce[0].lux2).toBeTruthy;
+			expect(fakePlanet.workforce[0].lux2).toBeTruthy();
 		});
 	});
 
@@ -242,7 +242,7 @@ describe("Planning: Workforce Calculations", async () => {
 		});
 	});
 
-	describe("handleUpdateWorkforceLux", async () => {
+	describe("handleUpdateInfrastructure", async () => {
 		const fakePlan = {
 			infrastructure: [
 				{
@@ -267,17 +267,22 @@ describe("Planning: Workforce Calculations", async () => {
 		});
 
 		it("Update, infrastructure not yet existing", async () => {
+			const newPlan = ref({
+				infrastructure: [] as { building: string; amount: number }[],
+			});
 			const { handleUpdateInfrastructure } =
 				await usePlanCalculationHandlers(
 					// @ts-expect-error mock data
 					ref({}),
-					ref({ infrastructure: [] }),
+					newPlan,
 					ref(),
 					ref({})
 				);
 
 			handleUpdateInfrastructure("HB1", 6);
-			expect(fakePlan.infrastructure[0].amount).toBe(6);
+			expect(newPlan.value.infrastructure).toStrictEqual([
+				{ building: "HB1", amount: 6 },
+			]);
 		});
 	});
 
