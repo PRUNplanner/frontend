@@ -285,4 +285,43 @@ describe("SharingButton", () => {
 		expect(toggle(wrapper).props("type")).toBe("primary");
 		expect(toggle(wrapper).text()).toBe("sharing.buttons.share");
 	});
+
+	it("stops the create spinner when sharing fails", async () => {
+		mock.onPost(LIST_URL).reply(500);
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper } = await mountButton();
+		await open(wrapper);
+
+		await modalButton("sharing.buttons.create_link").trigger("click");
+		await flushPromises();
+
+		expect(mock.history.post).toHaveLength(1);
+		expect(
+			modalButton("sharing.buttons.create_link").attributes("aria-busy")
+		).toBe("false");
+		expect(tracked()).toEqual([]);
+		expect(toggle(wrapper).props("type")).toBe("primary");
+		expect(error).toHaveBeenCalled();
+		error.mockRestore();
+	});
+
+	it("keeps the modal open when stopping fails", async () => {
+		mock.onDelete(DELETE_URL).reply(500);
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper } = await mountButton({}, true);
+		await open(wrapper);
+
+		await modalButton("sharing.buttons.stop_sharing").trigger("click");
+		await flushPromises();
+
+		expect(mock.history.delete).toHaveLength(1);
+		expect(
+			modalButton("sharing.buttons.stop_sharing").attributes("aria-busy")
+		).toBe("false");
+		expect(shown(wrapper)).toBe(true);
+		expect(tracked()).toEqual([]);
+		expect(toggle(wrapper).props("type")).toBe("success");
+		expect(error).toHaveBeenCalled();
+		error.mockRestore();
+	});
 });
