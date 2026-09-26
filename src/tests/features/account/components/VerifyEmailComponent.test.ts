@@ -94,7 +94,7 @@ describe("VerifyEmailComponent", () => {
 		expect(input(wrapper).element.value).toBe("");
 		expect(sendButton(wrapper).element.disabled).toBe(true);
 		expect(trackEvent).toHaveBeenCalledWith("user_verify_email", {
-			status: expect.anything(),
+			status: true,
 		});
 	});
 

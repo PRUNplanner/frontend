@@ -853,7 +853,8 @@ export function useQueryRepository() {
 			key: () => ["user", "verification", "check"],
 			fetchFn: async (params: IUserVerifyEmailPayload) => {
 				try {
-					return await callVerifyEmail(params);
+					await callVerifyEmail(params);
+					return true;
 				} catch {
 					return false;
 				}
