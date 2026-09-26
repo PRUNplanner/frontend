@@ -52,6 +52,10 @@ describe("useBurnXITAction", async () => {
 		const { preload } = useMaterialData();
 
 		await preload();
+		// like the GetExchanges query: write, then reload the memory cache
+		// @ts-expect-error mock data date as string
+		await exchangesStore.setMany(exchanges);
+		await useExchangeData().preload(true);
 		await flushPromises();
 	});
 
@@ -146,10 +150,6 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("stops updating totalPrice once its scope is stopped", async () => {
-		// @ts-expect-error mock data date as string
-		await exchangesStore.setMany(exchanges);
-		// like the GetExchanges query: write, then reload the memory cache
-		await useExchangeData().preload(true);
 
 		const days = ref(5);
 		const scope = effectScope();
@@ -179,9 +179,6 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("leaves inactive materials out of totalPrice", async () => {
-		// @ts-expect-error mock data date as string
-		await exchangesStore.setMany(exchanges);
-		await useExchangeData().preload(true);
 		const { getPrice } = usePrice(ref(undefined), ref(undefined));
 		const unitPrice = await getPrice("RAT", "BUY");
 		// OVE has a price, so leaving it in would change the total
@@ -209,9 +206,6 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("keeps the latest totalPrice when an older run finishes last", async () => {
-		// @ts-expect-error mock data date as string
-		await exchangesStore.setMany(exchanges);
-		await useExchangeData().preload(true);
 		const unitPrice = await usePrice(ref(undefined), ref(undefined)).getPrice(
 			"RAT",
 			"BUY"
