@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { flushPromises, RouterLinkStub, VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -180,6 +180,26 @@ describe("ManageCX", () => {
 		expect(component.emitted("update:cxList")).toBeUndefined();
 	});
 
+	it("stops the create spinner when creating fails", async () => {
+		mock.onPost(LIST_URL).reply(500);
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper, component } = await mountCX();
+		await button(wrapper, "management.cx.buttons.new_cx").trigger("click");
+
+		await create(wrapper, "My new CX");
+
+		expect(mock.history.post).toHaveLength(1);
+		expect(component.emitted("update:cxList")).toBeUndefined();
+		expect(createButton(wrapper).attributes("aria-busy")).toBe("false");
+		// the form stays open to try again
+		expect(
+			(wrapper.find("input").element as HTMLInputElement).value
+		).toBe("My new CX");
+		expect(wrapper.find(".transition-all").classes()).not.toContain("h-0");
+		expect(error).toHaveBeenCalled();
+		error.mockRestore();
+	});
+
 	it("deletes a CX only after confirmation", async () => {
 		mock.onDelete(deleteURL(SHARE.uuid)).reply(204);
 		const { wrapper, component } = await mountCX();
@@ -205,5 +225,23 @@ describe("ManageCX", () => {
 
 		expect(mock.history.delete).toHaveLength(0);
 		expect(component.emitted("update:cxList")).toBeUndefined();
+	});
+
+	it("keeps the list and stops the spinner when deleting fails", async () => {
+		mock.onDelete(deleteURL(REAL.uuid)).reply(500);
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper, component } = await mountCX();
+
+		await clickDelete(wrapper, 0);
+		await answerDialog("Delete");
+
+		expect(mock.history.delete).toHaveLength(1);
+		expect(mock.history.get).toHaveLength(0);
+		expect(component.emitted("update:cxList")).toBeUndefined();
+		expect(deleteButtons(wrapper).at(0)!.attributes("aria-busy")).toBe(
+			"false"
+		);
+		expect(error).toHaveBeenCalled();
+		error.mockRestore();
 	});
 });
