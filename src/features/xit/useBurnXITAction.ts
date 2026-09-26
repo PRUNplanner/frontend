@@ -124,19 +124,32 @@ export function useBurnXITAction(
 	 */
 	const totalPrice: Ref<number> = ref(0);
 
-	watchEffect(async () => {
-		let price: number = 0;
+	// prices resolve async, a run started later may finish first: only the
+	// latest run may set the total, a slower older one is stale
+	let latestPriceRun: number = 0;
 
-		const activeMaterials = materialTable.value.filter(
-			(f) => f.total !== Infinity && f.active
-		);
+	async function sumPrices(
+		activeMaterials: typeof materialTable.value
+	): Promise<number> {
+		let price: number = 0;
 
 		for (const material of activeMaterials) {
 			const unitPrice = await getPrice(material.ticker, "BUY");
 			price += unitPrice * material.total;
 		}
 
-		totalPrice.value = price;
+		return price;
+	}
+
+	watchEffect(() => {
+		const run = ++latestPriceRun;
+		const activeMaterials = materialTable.value.filter(
+			(f) => f.total !== Infinity && f.active
+		);
+
+		void sumPrices(activeMaterials).then((price) => {
+			if (run === latestPriceRun) totalPrice.value = price;
+		});
 	});
 
 	function fit(targetWeight: number, targetVolume: number): void {
