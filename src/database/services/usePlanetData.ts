@@ -23,7 +23,7 @@ export function usePlanetData() {
 	const { allData, get, preload } = useDB(planetsStore);
 
 	// reactive caches
-	const planetNames = ref<Record<string, string>>({});
+	const planetNames = ref(new Map<string, string>());
 
 	async function getPlanet(planetNaturalId: string): Promise<IPlanet> {
 		const planet = await get(planetNaturalId);
@@ -48,11 +48,13 @@ export function usePlanetData() {
 	}
 
 	async function loadPlanetName(planetNaturalId: string): Promise<string> {
-		if (!planetNames.value[planetNaturalId])
-			planetNames.value[planetNaturalId] =
-				await getPlanetName(planetNaturalId);
+		let name = planetNames.value.get(planetNaturalId);
+		if (!name) {
+			name = await getPlanetName(planetNaturalId);
+			planetNames.value.set(planetNaturalId, name);
+		}
 
-		return planetNames.value[planetNaturalId];
+		return name;
 	}
 
 	/**
@@ -70,7 +72,7 @@ export function usePlanetData() {
 	): string {
 		// loadPlanetName skips cached names
 		void loadPlanetName(planetNaturalId);
-		return planetNames.value[planetNaturalId] ?? placeholder;
+		return planetNames.value.get(planetNaturalId) ?? placeholder;
 	}
 
 	async function loadPlanetNames(planetNaturalIds: string[]) {
@@ -78,8 +80,8 @@ export function usePlanetData() {
 
 		await Promise.all(
 			uniqueIds.map(async (id) => {
-				if (!planetNames.value[id])
-					planetNames.value[id] = await getPlanetName(id);
+				if (!planetNames.value.has(id))
+					planetNames.value.set(id, await getPlanetName(id));
 			})
 		);
 	}

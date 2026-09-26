@@ -86,7 +86,7 @@ describe("usePlanetData", () => {
 		const name = await loadPlanetName("P1");
 
 		expect(name).toBe("Earth (P1)");
-		expect(planetNames.value["P1"]).toBe("Earth (P1)");
+		expect(planetNames.value.get("P1")).toBe("Earth (P1)");
 	});
 
 	it("planetName returns the placeholder until the name is cached", async () => {
@@ -113,8 +113,8 @@ describe("usePlanetData", () => {
 
 		await loadPlanetNames(["P1", "P2", "P1"]); // includes duplicate P1
 
-		expect(planetNames.value["P1"]).toBe("Earth (P1)");
-		expect(planetNames.value["P2"]).toBe("Mars (P2)");
+		expect(planetNames.value.get("P1")).toBe("Earth (P1)");
+		expect(planetNames.value.get("P2")).toBe("Mars (P2)");
 		expect(getMock).toHaveBeenCalledTimes(2); // each planet fetched only once
 	});
 

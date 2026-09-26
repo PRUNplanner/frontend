@@ -61,7 +61,7 @@
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="text-wrap">
-					{{ planetNames[rowData.planet] || "Loading..." }}
+					{{ planetNames.get(rowData.planet) || "Loading..." }}
 				</div>
 			</template>
 		</XNDataTableColumn>
