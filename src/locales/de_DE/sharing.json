@@ -7,5 +7,6 @@
 		"stop_sharing": "Freigabe beenden",
 		"views": "{count} Aufrufe",
 		"share": "Freigeben"
-	}
+	},
+	"title": "Share Plan"
 }
