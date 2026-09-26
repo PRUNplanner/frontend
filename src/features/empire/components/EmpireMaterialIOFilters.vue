@@ -92,16 +92,12 @@
 					<PButtonGroup>
 						<PButton
 							:type="localLoadBalance ? 'secondary' : 'primary'"
-							@click="
-								() => (localLoadBalance = !localLoadBalance)
-							">
+							@click="localLoadBalance = false">
 							{{ $t("empire.filters.all") }}
 						</PButton>
 						<PButton
 							:type="!localLoadBalance ? 'secondary' : 'primary'"
-							@click="
-								() => (localLoadBalance = !localLoadBalance)
-							">
+							@click="localLoadBalance = true">
 							{{ $t("empire.filters.loadbalance") }}
 						</PButton>
 					</PButtonGroup>
@@ -112,22 +108,14 @@
 							:type="
 								localHideConsumables ? 'secondary' : 'primary'
 							"
-							@click="
-								() =>
-									(localHideConsumables =
-										!localHideConsumables)
-							">
+							@click="localHideConsumables = false">
 							{{ $t("common.buttons.show") }}
 						</PButton>
 						<PButton
 							:type="
 								!localHideConsumables ? 'secondary' : 'primary'
 							"
-							@click="
-								() =>
-									(localHideConsumables =
-										!localHideConsumables)
-							">
+							@click="localHideConsumables = true">
 							{{ $t("common.buttons.hide") }}
 						</PButton>
 					</PButtonGroup>
