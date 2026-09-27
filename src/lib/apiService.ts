@@ -17,12 +17,6 @@ class ApiService {
 	constructor() {
 		this.client = axios;
 		this.client.defaults.baseURL = config.API_BASE_URL;
-
-		// Set default headers to disable cache
-		this.client.defaults.headers.get["Cache-Control"] =
-			"no-cache, no-store, must-revalidate";
-		this.client.defaults.headers.get["Pragma"] = "no-cache";
-		this.client.defaults.headers.get["Expires"] = "0";
 	}
 
 	/**
