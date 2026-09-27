@@ -85,7 +85,6 @@ import {
 
 import {
 	ICXEmpireJunction,
-	IPlanCloneResponse,
 	IPlanEmpireJunction,
 } from "@/features/manage/manage.types";
 import {
@@ -353,11 +352,12 @@ export function useQueryRepository() {
 				params.planUuid,
 			],
 			fetchFn: async (params: { planUuid: string }) => {
+				const data = await callCreateSharing(params.planUuid);
 				await queryStore.invalidateKey(["planningdata", "shared"], {
 					exact: false,
 					skipRefetch: true,
 				});
-				return await callCreateSharing(params.planUuid);
+				return data;
 			},
 			persist: false,
 			autoRefetch: false,
@@ -370,11 +370,12 @@ export function useQueryRepository() {
 				params.sharedUuid,
 			],
 			fetchFn: async (params: { sharedUuid: string }) => {
+				const data = await callCloneSharedPlan(params.sharedUuid);
 				await queryStore.invalidateKey(["planningdata", "shared"], {
 					exact: false,
 					skipRefetch: true,
 				});
-				return await callCloneSharedPlan(params.sharedUuid);
+				return data;
 			},
 			persist: false,
 			autoRefetch: false,
@@ -649,25 +650,21 @@ export function useQueryRepository() {
 				planUuid: string;
 				cloneName: string;
 			}) => {
-				return await callClonePlan(
+				const data = await callClonePlan(
 					params.planUuid,
 					params.cloneName
-				).then(async () => {
-					await queryStore.invalidateKey(["planningdata", "empire"], {
-						exact: false,
-					});
-					await queryStore.invalidateKey([
-						"planningdata",
-						"plan",
-						"list",
-					]);
+				);
+				await queryStore.invalidateKey(["planningdata", "empire"], {
+					exact: false,
 				});
+				await queryStore.invalidateKey(["planningdata", "plan", "list"]);
+				return data;
 			},
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<
 			{ planUuid: string; cloneName: string },
-			IPlanCloneResponse
+			IPlan
 		>,
 		DeletePlan: {
 			key: (params: { planUuid: string }) => [
@@ -677,22 +674,18 @@ export function useQueryRepository() {
 				params.planUuid,
 			],
 			fetchFn: async (params: { planUuid: string }) => {
-				return await callDeletePlan(params.planUuid).then(async () => {
-					await queryStore.invalidateKey(["planningdata", "empire"], {
-						exact: false,
-					});
-					await queryStore.invalidateKey([
-						"planningdata",
-						"plan",
-						"list",
-					]);
-					await queryStore.invalidateKey([
-						"planningdata",
-						"plan",
-						params.planUuid,
-					]);
-					planningStore.deletePlan(params.planUuid);
+				const data = await callDeletePlan(params.planUuid);
+				await queryStore.invalidateKey(["planningdata", "empire"], {
+					exact: false,
 				});
+				await queryStore.invalidateKey(["planningdata", "plan", "list"]);
+				await queryStore.invalidateKey([
+					"planningdata",
+					"plan",
+					params.planUuid,
+				]);
+				planningStore.deletePlan(params.planUuid);
+				return data;
 			},
 			autoRefetch: false,
 			persist: false,

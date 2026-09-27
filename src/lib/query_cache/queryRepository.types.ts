@@ -15,7 +15,6 @@ import {
 
 import {
 	ICXEmpireJunction,
-	IPlanCloneResponse,
 	IPlanEmpireJunction,
 } from "@/features/manage/manage.types";
 import {
@@ -145,7 +144,7 @@ export interface IQueryRepository {
 	GetAllPlans: IQueryDefinition<undefined, IPlan[]>;
 	ClonePlan: IQueryDefinition<
 		{ planUuid: string; cloneName: string },
-		IPlanCloneResponse
+		IPlan
 	>;
 	DeletePlan: IQueryDefinition<{ planUuid: string }, boolean>;
 	CreatePlan: IQueryDefinition<
