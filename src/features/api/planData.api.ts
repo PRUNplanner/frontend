@@ -4,18 +4,13 @@ import { apiService } from "@/lib/apiService";
 // Schemas & Schema Types
 import {
 	PlanClonePayloadSchema,
-	PlanClonePayloadType,
 	PlanCreateDataSchema,
-	PlanCreateDataType,
 	PlanListPayload,
 	PlanSaveCreateResponseSchema,
 	PlanSaveCreateResponseType,
 	PlanSaveDataSchema,
-	PlanSaveDataType,
 	PlanSchema,
-	PlanSchemaType,
 	PlanShareSchema,
-	PlanShareSchemaType,
 } from "@/features/api/schemas/planningData.schemas";
 
 // Types & Interfaces
@@ -37,7 +32,7 @@ import {
 export async function callGetShared(
 	sharedPlanUuid: string
 ): Promise<IPlanShare> {
-	return apiService.get<PlanShareSchemaType>(
+	return apiService.get(
 		`/planning/shared/${sharedPlanUuid}/`,
 		PlanShareSchema
 	);
@@ -53,10 +48,7 @@ export async function callGetShared(
  * @returns {Promise<IPlan>} Plan Data
  */
 export async function callGetPlan(planUuid: string): Promise<IPlan> {
-	return apiService.get<PlanSchemaType>(
-		`/planning/plan/${planUuid}/`,
-		PlanSchema
-	);
+	return apiService.get(`/planning/plan/${planUuid}/`, PlanSchema);
 }
 
 /**
@@ -68,7 +60,7 @@ export async function callGetPlan(planUuid: string): Promise<IPlan> {
  * @returns {Promise<IPlan[]>} List of Plan Data
  */
 export async function callGetPlanlist(): Promise<IPlan[]> {
-	return apiService.get<PlanSchemaType[]>("/planning/plan/", PlanListPayload);
+	return apiService.get("/planning/plan/", PlanListPayload);
 }
 
 /**
@@ -84,7 +76,7 @@ export async function callGetPlanlist(): Promise<IPlan[]> {
 export async function callCreatePlan(
 	data: IPlanCreateData
 ): Promise<PlanSaveCreateResponseType> {
-	return apiService.post<PlanCreateDataType, PlanSaveCreateResponseType>(
+	return apiService.post(
 		"/planning/plan/",
 		data,
 		PlanCreateDataSchema,
@@ -107,7 +99,7 @@ export async function callSavePlan(
 	planUuid: string,
 	data: IPlanSaveData
 ): Promise<PlanSaveCreateResponseType> {
-	return apiService.put<PlanSaveDataType, PlanSaveCreateResponseType>(
+	return apiService.put(
 		`/planning/plan/${planUuid}/`,
 		data,
 		PlanSaveDataSchema,
@@ -129,7 +121,7 @@ export async function callClonePlan(
 	planUuid: string,
 	cloneName: string
 ): Promise<IPlan> {
-	return apiService.post<PlanClonePayloadType, PlanSchemaType>(
+	return apiService.post(
 		`/planning/plan/${planUuid}/clone/`,
 		{ plan_name: cloneName },
 		PlanClonePayloadSchema,

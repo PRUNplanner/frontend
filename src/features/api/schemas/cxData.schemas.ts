@@ -9,6 +9,3 @@ const CXEmpireJunctionSchema: z.ZodType<ICXEmpireJunction> = z.object({
 });
 
 export const CXEmpireJunctionSchemaPayload = z.array(CXEmpireJunctionSchema);
-export type CXEmpireJunctionSchemaPayloadType = z.infer<
-	typeof CXEmpireJunctionSchemaPayload
->;

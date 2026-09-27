@@ -7,7 +7,7 @@ import {
 export async function callAnalyticsPlanetInsights(
 	planetNaturalId: string
 ): Promise<AnalyticsPlanetInsightsPayloadType> {
-	return apiService.get<AnalyticsPlanetInsightsPayloadType>(
+	return apiService.get(
 		`/analytics/planet_insights/${planetNaturalId}/`,
 		AnalyticsPlanetInsightsPayloadSchema
 	);

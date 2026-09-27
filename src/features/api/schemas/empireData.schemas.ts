@@ -30,8 +30,6 @@ export const EmpireCreatePayload = z.object({
 	empire_permits_total: z.number().int().min(2),
 	empire_name: z.string(),
 });
-export type EmpirePatchPayloadType = z.infer<typeof EmpirePatchPayload>;
-export type EmpireCreatePayloadType = z.infer<typeof EmpireCreatePayload>;
 
 const EmpireJunctionSchema: z.ZodType<IPlanEmpireJunction> = z.object({
 	empire_uuid: z.string().uuid(),
@@ -39,9 +37,6 @@ const EmpireJunctionSchema: z.ZodType<IPlanEmpireJunction> = z.object({
 });
 
 export const EmpireJunctionPayloadSchema = z.array(EmpireJunctionSchema);
-export type EmpireJunctionPayloadType = z.infer<
-	typeof EmpireJunctionPayloadSchema
->;
 
 const MaterialValueSchema = z.object({
 	p: z.number(),
@@ -72,7 +67,3 @@ export const EmpireMaterialIOStateSchema: z.ZodType<IEmpireMaterialIOState> =
 			})
 		),
 	});
-
-export type EmpireMaterialIOStateType = z.infer<
-	typeof EmpireMaterialIOStateSchema
->;

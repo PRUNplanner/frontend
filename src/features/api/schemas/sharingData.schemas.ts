@@ -1,45 +1,25 @@
 import { z } from "zod";
 
-// Types & Interfaces
-import {
-	IShared,
-	ISharedCloneResponse,
-	ISharedCreatePayload,
-	ISharedCreateResponse,
-} from "@/features/api/sharingData.types";
-
 // Util
 import { PositiveOrZeroNumber } from "@/util/zodValidators";
 
-const SharedSchema: z.ZodType<IShared> = z.object({
+export const SharedSchema = z.object({
 	uuid: z.uuid(),
 	plan: z.uuid(),
 	view_count: PositiveOrZeroNumber,
 	created_at: z.coerce.date(),
 });
+export type Shared = z.infer<typeof SharedSchema>;
 
 export const SharedListResponseSchema = z.array(SharedSchema);
-export type ScharedListResponseType = z.infer<typeof SharedListResponseSchema>;
 
-export const SharedCreateResponseSchema: z.ZodType<ISharedCreateResponse> =
-	z.object({
-		uuid: z.uuid(),
-		created_at: z.coerce.date(),
-		view_count: PositiveOrZeroNumber,
-	});
+export const SharedCreateResponseSchema = SharedSchema.omit({ plan: true });
+export type SharedCreateResponse = z.infer<typeof SharedCreateResponseSchema>;
 
-export type SharedCreateResponseType = z.infer<
-	typeof SharedCreateResponseSchema
->;
+export const SharedCloneResponseSchema = z.object({
+	uuid: z.string().uuid(),
+	plan_name: z.string(),
+});
+export type SharedCloneResponse = z.infer<typeof SharedCloneResponseSchema>;
 
-export const SharedCloneResponseSchema: z.ZodType<ISharedCloneResponse> =
-	z.object({
-		uuid: z.string().uuid(),
-		plan_name: z.string(),
-	});
-
-export type SharedCloneResponseType = z.infer<typeof SharedCloneResponseSchema>;
-
-export const SharedCreatePayloadSchema: z.ZodType<ISharedCreatePayload> =
-	z.object({ plan: z.uuid() });
-export type SharedCreatePayloadType = z.infer<typeof SharedCreatePayloadSchema>;
+export const SharedCreatePayloadSchema = SharedSchema.pick({ plan: true });

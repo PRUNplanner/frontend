@@ -21,17 +21,19 @@ from here.
 | `userData.api.ts` | Login, refresh, profile, email verification, password change/reset, registration, preferences |
 | `analyticsData.api.ts` | Planet insights |
 | `apiKeysData.api.ts` | API key list, create, delete |
-| `schemas/*.schemas.ts` | Zod schemas, usually `z.ZodType<IThing>`, plus `z.infer` aliases |
-| `gameData.types.d.ts`, `userData.types.ts`, `sharingData.types.ts` | Hand-written interfaces |
+| `schemas/*.schemas.ts` | Zod schemas, each with its derived type next to it (`ThingSchema` + `Thing`) |
+| `gameData.types.d.ts`, `userData.types.ts` | Hand-written interfaces (being migrated to schemas) |
 
 ## Conventions
 
 - **The shape of a call function** is `export async function
-  callThing(args): Promise<IThing> { return apiService.get(path, Schema); }`.
+  callThing(args): Promise<Thing> { return apiService.get(path, ThingSchema); }`.
   It contains no store writes and no caching. Those belong in the query
   definition.
-- **Schema changes need matching interface changes.** Typing a schema as
-  `z.ZodType<I…>` makes TypeScript flag the drift.
+- **The schema is the type.** `type Thing = z.infer<typeof ThingSchema>`
+  sits next to the schema; there is no separate interface to keep in sync.
+  Don't annotate schemas as `z.ZodType<…>`. See
+  [../data-layer.md](../data-layer.md) §2.
 - **Use `preprocess`, `catch` and `transform` sparingly.** Use them only
   where the backend can send `null` or legacy values. See
   `UserPreferenceSchema` for an example.

@@ -4,21 +4,14 @@ import { apiService } from "@/lib/apiService";
 // Schemas & Schema Types
 import {
 	PlanEmpireElementPayload,
-	PlanEmpireElementPayloadType,
 	PlanEmpirePlanListPayload,
-	PlanEmpirePlanListType,
 	PlanEmpireSchema,
-	PlanEmpireSchemaType,
 } from "@/features/api/schemas/planningData.schemas";
 import {
 	EmpireCreatePayload,
-	EmpireCreatePayloadType,
 	EmpireJunctionPayloadSchema,
-	EmpireJunctionPayloadType,
 	EmpireMaterialIOStateSchema,
-	EmpireMaterialIOStateType,
 	EmpirePatchPayload,
-	EmpirePatchPayloadType,
 } from "@/features/api/schemas/empireData.schemas";
 
 // Types & Interfaces
@@ -43,10 +36,7 @@ import { IPlanEmpireJunction } from "@/features/manage/manage.types";
  * @returns {Promise<IPlanEmpireElement[]>} User Empire Array
  */
 export async function callGetEmpireList(): Promise<IPlanEmpireElement[]> {
-	return apiService.get<PlanEmpireElementPayloadType>(
-		`planning/empire/`,
-		PlanEmpireElementPayload
-	);
+	return apiService.get(`planning/empire/`, PlanEmpireElementPayload);
 }
 
 /**
@@ -59,7 +49,7 @@ export async function callGetEmpireList(): Promise<IPlanEmpireElement[]> {
  * @returns {Promise<IPlan[]>} List of plans in specified empire
  */
 export async function callGetEmpirePlans(empireUuid: string): Promise<IPlan[]> {
-	return await apiService.get<PlanEmpirePlanListType>(
+	return await apiService.get(
 		`planning/empire/${empireUuid}/plans/`,
 		PlanEmpirePlanListPayload
 	);
@@ -79,7 +69,7 @@ export async function callPatchEmpire(
 	empireUuid: string,
 	data: IEmpirePatchPayload
 ): Promise<IPlanEmpire> {
-	return apiService.put<EmpirePatchPayloadType, PlanEmpireSchemaType>(
+	return apiService.put(
 		`planning/empire/${empireUuid}/`,
 		data,
 		EmpirePatchPayload,
@@ -99,7 +89,7 @@ export async function callPatchEmpire(
 export async function callCreateEmpire(
 	data: IEmpireCreatePayload
 ): Promise<IPlanEmpire> {
-	return apiService.post<EmpireCreatePayloadType, PlanEmpireSchemaType>(
+	return apiService.post(
 		"/planning/empire/",
 		data,
 		EmpireCreatePayload,
@@ -123,10 +113,7 @@ export async function callDeleteEmpire(empireUuid: string): Promise<boolean> {
 export async function callPatchEmpirePlanJunctions(
 	junctions: IPlanEmpireJunction[]
 ): Promise<IPlanEmpireElement[]> {
-	return apiService.post<
-		EmpireJunctionPayloadType,
-		PlanEmpireElementPayloadType
-	>(
+	return apiService.post(
 		"/planning/empire/junctions/",
 		junctions,
 		EmpireJunctionPayloadSchema,
@@ -138,7 +125,7 @@ export async function callPatchEmpireState(
 	empireUuid: string,
 	empireState: IEmpireMaterialIOState
 ): Promise<IPlanEmpire> {
-	return apiService.patch<EmpireMaterialIOStateType, PlanEmpireSchemaType>(
+	return apiService.patch(
 		`/planning/empire/${empireUuid}/state/`,
 		empireState,
 		EmpireMaterialIOStateSchema,

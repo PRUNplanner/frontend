@@ -28,11 +28,11 @@ import {
 	IPlanShare,
 } from "@/stores/planningStore.types";
 
-import {
-	IShared,
-	ISharedCloneResponse,
-	ISharedCreateResponse,
-} from "@/features/api/sharingData.types";
+import type {
+	Shared,
+	SharedCloneResponse,
+	SharedCreateResponse,
+} from "@/features/api/schemas/sharingData.schemas";
 
 import { IExploration } from "@/features/market_exploration/marketExploration.types";
 import {
@@ -104,15 +104,15 @@ export interface IQueryRepository {
 		IPlanet[]
 	>;
 	GetSharedPlan: IQueryDefinition<{ sharedPlanUuid: string }, IPlanShare>;
-	GetAllShared: IQueryDefinition<undefined, IShared[]>;
+	GetAllShared: IQueryDefinition<undefined, Shared[]>;
 	DeleteSharedPlan: IQueryDefinition<{ sharedUuid: string }, boolean>;
 	CreateSharedPlan: IQueryDefinition<
 		{ planUuid: string },
-		ISharedCreateResponse
+		SharedCreateResponse
 	>;
 	PostCloneSharedPlan: IQueryDefinition<
 		{ sharedUuid: string },
-		ISharedCloneResponse
+		SharedCloneResponse
 	>;
 	CreateEmpire: IQueryDefinition<{ data: IEmpireCreatePayload }, IPlanEmpire>;
 	DeleteEmpire: IQueryDefinition<{ empireUuid: string }, boolean>;

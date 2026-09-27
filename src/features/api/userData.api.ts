@@ -4,38 +4,21 @@ import { apiService } from "@/lib/apiService";
 import { z } from "zod";
 import {
 	LoginPayloadSchema,
-	LoginPayloadType,
 	TokenResponseSchema,
-	TokenResponseType,
-	RefreshPayloadType,
 	RefreshPayloadSchema,
-	UserProfilePayloadType,
 	UserProfilePayloadSchema,
-	UserProfilePatchPayloadType,
 	UserProfilePatchSchema,
-	UserChangePasswordPayloadType,
 	UserChangePasswordPayloadSchema,
 	UserChangePasswordResponseSchema,
-	UserChangePasswordResponseType,
-	UserVerifyEmailPayloadType,
 	UserVerifyEmailPayloadSchema,
-	UserRegistrationPayloadType,
 	UserRegistrationPayloadSchema,
-	UserRequestPasswordResetResponseType,
 	UserRequestPasswordResetResponseSchema,
-	UserRequestPasswordResetPayloadType,
 	UserRequestPasswordResetPayloadSchema,
-	UserPasswordResetPayloadType,
-	UserPasswordResetResponseType,
 	UserPasswordResetPayloadSchema,
 	UserPasswordResetResponseSchema,
-	RefreshTokenResponseType,
 	RefreshTokenResponseSchema,
-	UserPreferenceType,
 	UserPreferenceSchema,
-	UserResponseDetailType,
 	UserResponseDetailSchema,
-	UserRegistrationResponseType,
 	UserRegistrationResponseSchema,
 } from "@/features/api/schemas/user.schemas";
 
@@ -70,7 +53,7 @@ export async function callUserLogin(
 	username: string,
 	password: string
 ): Promise<IUserTokenResponse> {
-	return apiService.post<LoginPayloadType, TokenResponseType>(
+	return apiService.post(
 		"/user/login/",
 		{
 			username,
@@ -95,7 +78,7 @@ export async function callUserLogin(
 export async function callRefreshToken(
 	refresh_token: string
 ): Promise<IUserRefreshTokenResponse> {
-	return apiService.post<RefreshPayloadType, RefreshTokenResponseType>(
+	return apiService.post(
 		"/user/refresh/",
 		{
 			refresh: refresh_token,
@@ -115,10 +98,7 @@ export async function callRefreshToken(
  * @returns {Promise<IUserProfile>} User Profile
  */
 export async function callGetProfile(): Promise<IUserProfile> {
-	return apiService.get<UserProfilePayloadType>(
-		"/user/profile/",
-		UserProfilePayloadSchema
-	);
+	return apiService.get("/user/profile/", UserProfilePayloadSchema);
 }
 
 /**
@@ -134,10 +114,7 @@ export async function callGetProfile(): Promise<IUserProfile> {
 export async function callPatchProfile(
 	patchProfile: IUserProfilePatch
 ): Promise<IUserProfile> {
-	return apiService.patch<
-		UserProfilePatchPayloadType,
-		UserProfilePayloadType
-	>(
+	return apiService.patch(
 		"/user/profile/",
 		patchProfile,
 		UserProfilePatchSchema,
@@ -156,7 +133,7 @@ export async function callPatchProfile(
  * @returns {Promise<boolean>} Request Status
  */
 export async function callResendEmailVerification(): Promise<IUserResponseDetail> {
-	return apiService.post<null, UserResponseDetailType>(
+	return apiService.post(
 		"/user/request_email_verification/",
 		null,
 		z.null(),
@@ -178,7 +155,7 @@ export async function callResendEmailVerification(): Promise<IUserResponseDetail
 export async function callVerifyEmail(
 	postCode: IUserVerifyEmailPayload
 ): Promise<IUserResponseDetail> {
-	return apiService.post<UserVerifyEmailPayloadType, UserResponseDetailType>(
+	return apiService.post(
 		"/user/verify_email/",
 		postCode,
 		UserVerifyEmailPayloadSchema,
@@ -200,10 +177,7 @@ export async function callVerifyEmail(
 export async function callChangePassword(
 	patchPassword: IUserChangePasswordPayload
 ): Promise<IUserChangePasswordResponse> {
-	return apiService.post<
-		UserChangePasswordPayloadType,
-		UserChangePasswordResponseType
-	>(
+	return apiService.post(
 		"/user/change_password/",
 		patchPassword,
 		UserChangePasswordPayloadSchema,
@@ -214,10 +188,7 @@ export async function callChangePassword(
 export async function callRegisterUser(
 	data: IUserRegistrationPayload
 ): Promise<IUserRegistrationResponse> {
-	return apiService.post<
-		UserRegistrationPayloadType,
-		UserRegistrationResponseType
-	>(
+	return apiService.post(
 		"/user/signup/",
 		data,
 		UserRegistrationPayloadSchema,
@@ -229,10 +200,7 @@ export async function callRegisterUser(
 export async function callRequestPasswordReset(
 	email: string
 ): Promise<IUserRequestPasswordResetResponse> {
-	return apiService.post<
-		UserRequestPasswordResetPayloadType,
-		UserRequestPasswordResetResponseType
-	>(
+	return apiService.post(
 		"/user/request_password_reset/",
 		{ email },
 		UserRequestPasswordResetPayloadSchema,
@@ -245,10 +213,7 @@ export async function callPasswordReset(
 	code: string,
 	new_password: string
 ): Promise<IUserPasswordResetResponse> {
-	return apiService.post<
-		UserPasswordResetPayloadType,
-		UserPasswordResetResponseType
-	>(
+	return apiService.post(
 		"/user/password_reset/",
 		{ email, code, new_password },
 		UserPasswordResetPayloadSchema,
@@ -259,7 +224,7 @@ export async function callPasswordReset(
 export async function callPatchUserPreferences(
 	preferences: IPreference
 ): Promise<IPreference> {
-	return apiService.patch<UserPreferenceType, UserPreferenceType>(
+	return apiService.patch(
 		"/user/preferences/",
 		preferences,
 		UserPreferenceSchema,
@@ -268,8 +233,5 @@ export async function callPatchUserPreferences(
 }
 
 export async function callGetUserPreferences(): Promise<IPreference> {
-	return apiService.get<UserPreferenceType>(
-		"/user/preferences/",
-		UserPreferenceSchema
-	);
+	return apiService.get("/user/preferences/", UserPreferenceSchema);
 }

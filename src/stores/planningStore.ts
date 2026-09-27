@@ -16,7 +16,7 @@ import {
 	ISharedPlan,
 	ISharedRecord,
 } from "@/stores/planningStore.types";
-import { IShared } from "@/features/api/sharingData.types";
+import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 import {
 	IFIOSitePlanet,
 	IFIOStorage,
@@ -152,9 +152,9 @@ export const usePlanningStore = defineStore(
 		 * Sets Shared Plans information by their Plan Uuid
 		 * @author jplacht
 		 *
-		 * @param {IShared[]} data Shared Data List
+		 * @param {Shared[]} data Shared Data List
 		 */
-		function setSharedList(data: IShared[]): void {
+		function setSharedList(data: Shared[]): void {
 			shared.value = {};
 			data.forEach((s) => {
 				shared.value[s.plan] = inertClone(s);

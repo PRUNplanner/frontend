@@ -98,11 +98,11 @@ import {
 	IPlanShare,
 } from "@/stores/planningStore.types";
 
-import {
-	IShared,
-	ISharedCloneResponse,
-	ISharedCreateResponse,
-} from "@/features/api/sharingData.types";
+import type {
+	Shared,
+	SharedCloneResponse,
+	SharedCreateResponse,
+} from "@/features/api/schemas/sharingData.schemas";
 
 import { IExploration } from "@/features/market_exploration/marketExploration.types";
 import {
@@ -328,7 +328,7 @@ export function useQueryRepository() {
 			persist: true,
 			autoRefetch: true,
 			expireTime: 60_000 * 60,
-		} as IQueryDefinition<void, IShared[]>,
+		} as IQueryDefinition<void, Shared[]>,
 		DeleteSharedPlan: {
 			key: (params: { sharedUuid: string }) => [
 				"planningdata",
@@ -363,7 +363,7 @@ export function useQueryRepository() {
 			},
 			persist: false,
 			autoRefetch: false,
-		} as IQueryDefinition<{ planUuid: string }, ISharedCreateResponse>,
+		} as IQueryDefinition<{ planUuid: string }, SharedCreateResponse>,
 		PostCloneSharedPlan: {
 			key: (params: { sharedUuid: string }) => [
 				"planningdata",
@@ -380,7 +380,7 @@ export function useQueryRepository() {
 			},
 			persist: false,
 			autoRefetch: false,
-		} as IQueryDefinition<{ sharedUuid: string }, ISharedCloneResponse>,
+		} as IQueryDefinition<{ sharedUuid: string }, SharedCloneResponse>,
 		CreateEmpire: {
 			key: () => ["planningdata", "empire", "create"],
 			fetchFn: async (params: { data: IEmpireCreatePayload }) => {

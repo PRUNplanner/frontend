@@ -4,16 +4,10 @@ import { apiService } from "@/lib/apiService";
 // Schemas & Schema Types
 import {
 	CXListPayloadSchema,
-	CXListPayloadSchemaType,
 	CXPutSchema,
-	CXPutType,
 	CXSchema,
-	CXSchemaType,
 } from "@/features/api/schemas/planningData.schemas";
-import {
-	CXEmpireJunctionSchemaPayload,
-	CXEmpireJunctionSchemaPayloadType,
-} from "@/features/api/schemas/cxData.schemas";
+import { CXEmpireJunctionSchemaPayload } from "@/features/api/schemas/cxData.schemas";
 
 // Types & Interfaces
 import { ICX, ICXData } from "@/stores/planningStore.types";
@@ -28,10 +22,7 @@ import { ICXEmpireJunction } from "@/features/manage/manage.types";
  * @returns {Promise<ICX[]>} CX Preference Array
  */
 export async function callGetCXList(): Promise<ICX[]> {
-	return apiService.get<CXListPayloadSchemaType>(
-		`/planning/cx/`,
-		CXListPayloadSchema
-	);
+	return apiService.get(`/planning/cx/`, CXListPayloadSchema);
 }
 
 /**
@@ -44,7 +35,7 @@ export async function callGetCXList(): Promise<ICX[]> {
  * @returns {Promise<ICX>} Created CX data
  */
 export async function callCreateCX(cxName: string): Promise<ICX> {
-	return apiService.post<CXPutType, CXSchemaType>(
+	return apiService.post(
 		"/planning/cx/",
 		{
 			cx_name: cxName,
@@ -85,10 +76,7 @@ export async function callDeleteCX(cxUuid: string): Promise<boolean> {
 export async function callUpdateCXJunctions(
 	junctions: ICXEmpireJunction[]
 ): Promise<ICX[]> {
-	return apiService.post<
-		CXEmpireJunctionSchemaPayloadType,
-		CXListPayloadSchemaType
-	>(
+	return apiService.post(
 		"/planning/cx/junctions/",
 		junctions,
 		CXEmpireJunctionSchemaPayload,
@@ -111,7 +99,7 @@ export async function callPatchCX(
 	cxUuid: string,
 	data: ICXData
 ): Promise<ICX> {
-	return apiService.put<CXPutType, CXSchemaType>(
+	return apiService.put(
 		`/planning/cx/${cxUuid}/`,
 		{
 			cx_name: cxName,

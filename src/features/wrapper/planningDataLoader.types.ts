@@ -6,7 +6,7 @@ import {
 } from "@/stores/planningStore.types";
 import { IPlanet } from "@/features/api/gameData.types";
 import { StepConfig } from "@/features/wrapper/dataLoader.types";
-import { IShared } from "@/features/api/sharingData.types";
+import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 
 export type PlanningDataLoaderProps = {
 	readonly empireList?: boolean | undefined;
@@ -30,7 +30,7 @@ export type PlanningDataLoaderEmits = {
 	(e: "data:plan:list", data: IPlan[]): void;
 	(e: "data:plan:list:planets", data: string[]): void;
 	(e: "data:cx", data: ICX[]): void;
-	(e: "data:shared", data: IShared[]): void;
+	(e: "data:shared", data: Shared[]): void;
 	(e: "update:cxUuid", data: string | undefined): void;
 	(e: "update:empireUuid", data: string): void;
 };
@@ -42,6 +42,6 @@ export type PlanningStepConfigsType = [
 	StepConfig<IPlan[]>,
 	StepConfig<IPlanet>,
 	StepConfig<ICX[]>,
-	StepConfig<IShared[]>,
-	StepConfig<IPlan[]>
+	StepConfig<Shared[]>,
+	StepConfig<IPlan[]>,
 ];

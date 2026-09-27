@@ -220,8 +220,12 @@ const FIOSitePlanetBuildingSchema: z.ZodType<IFIOSitePlanetBuilding> = z.object(
 		BuildingTicker: z.string(),
 		BuildingLastRepair: z.coerce.date().optional(),
 		Condition: z.number(),
-		ReclaimableMaterials: z.array(FIOSitePlanetBuildingMaterialSchema).default([]),
-		RepairMaterials: z.array(FIOSitePlanetBuildingMaterialSchema).default([]),
+		ReclaimableMaterials: z
+			.array(FIOSitePlanetBuildingMaterialSchema)
+			.default([]),
+		RepairMaterials: z
+			.array(FIOSitePlanetBuildingMaterialSchema)
+			.default([]),
 		AgeDays: z.number().optional(),
 	}
 );
@@ -302,19 +306,3 @@ export const PopulationReportPayloadSchema: z.ZodType<IPopulationReport> =
 	});
 
 // Schema Types
-export type MaterialPayloadType = z.infer<typeof MaterialPayloadSchema>;
-export type BuildingPayloadType = z.infer<typeof BuildingPayloadSchema>;
-export type ExchangePayloadType = z.infer<typeof ExchangePayloadSchema>;
-export type RecipePayloadType = z.infer<typeof RecipePayloadSchema>;
-export type PlanetPayloadType = z.infer<typeof PlanetSchema>;
-export type PlanetMultiplePayloadType = z.infer<typeof PlanetMultiplePayload>;
-export type PlanetMultipleRequestType = z.infer<
-	typeof PlanetMultipleRequestPayload
->;
-export type FIOStoragePayloadType = z.infer<typeof FIOStorageSchema>;
-export type PlanetSearchAdvancedPayloadType = z.infer<
-	typeof PlanetSearchAdvancedPayloadSchema
->;
-export type PopulationReportPayloadType = z.infer<
-	typeof PopulationReportPayloadSchema
->;

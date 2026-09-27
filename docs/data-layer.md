@@ -43,13 +43,33 @@ component / composable
   `userData.api.ts`, `analyticsData.api.ts` and `apiKeysData.api.ts`.
 - Each export is a small `call*()` function that makes a single
   `apiService` call.
-- Schemas live in `schemas/*.schemas.ts`.
-  - They are usually declared as `z.ZodType<IThing>` against a hand-written
-    interface, so a drift between the schema and the interface is a type
-    error.
-  - `z.infer` aliases sit at the bottom of each file.
-- Interfaces for game data are in `gameData.types.d.ts`. Planning entities
-  (plans, empires, CX) are in `src/stores/planningStore.types.d.ts`.
+- Schemas live in `schemas/<domain>.schemas.ts` and are the **single source
+  of truth** for every shape that crosses the wire. Each named shape is a
+  schema plus its derived type, side by side:
+
+  ```ts
+  export const SharedSchema = z.object({ uuid: z.uuid(), plan: z.uuid() });
+  export type Shared = z.infer<typeof SharedSchema>;
+
+  export const SharedCreatePayloadSchema = SharedSchema.pick({ plan: true });
+  ```
+
+  - Don't annotate schemas as `z.ZodType<…>`: it hides the concrete type
+    and blocks `.extend/.pick/.omit/.partial/.shape`. Only a recursive
+    schema may keep one, with a comment saying why.
+  - Derive related shapes from each other instead of repeating fields.
+  - Export a type only when something uses it by name. Callers write
+    `Shared[]`, so there are no array aliases.
+  - Responses use `z.infer` (the parsed output). Where a caller builds a
+    payload and the schema coerces or transforms, use `z.input<typeof …>`.
+  - Enums are a `z.enum([...])` with the union type derived from it.
+- `apiService` infers its types from the schemas:
+  `get(path, schema)` returns `z.output<typeof schema>`, and
+  `post/put/patch` type the payload as `z.input` of the request schema. Don't
+  pass explicit type arguments.
+- Shapes that never cross a runtime boundary (engine results, UI state,
+  query cache) are plain TypeScript in the feature's `*.types.ts`. See
+  "Types" in [AGENTS.md](../AGENTS.md).
 
 ## 3. Query cache (`src/lib/query_cache/`)
 
@@ -84,11 +104,16 @@ component / composable
 
 ### Adding a backend call
 
-1. Add a Zod schema to `src/features/api/schemas/<domain>.schemas.ts`.
+1. Add a Zod schema to `src/features/api/schemas/<domain>.schemas.ts`, and
+   next to it `export type Thing = z.infer<typeof ThingSchema>` if the shape
+   is used by name. Reuse or derive from existing schemas where the shapes
+   overlap. Don't write a separate interface.
 2. Add a `call*()` function to `src/features/api/<domain>.api.ts` that uses
-   `apiService`.
+   `apiService` without explicit type arguments, returning
+   `Promise<Thing>` (or `Promise<Thing[]>`).
 3. Add the definition's type to `IQueryRepository` in
-   `queryRepository.types.ts`.
+   `queryRepository.types.ts`, importing the derived type with
+   `import type`.
 4. Add the definition to `queryRepository.ts`: choose a key under an
    existing prefix, set `persist: false` for mutations, and invalidate the
    affected key families.

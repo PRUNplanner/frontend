@@ -175,14 +175,6 @@ const PlanCXEmpireElementPayload = z.array(PlanCXEmpireElementSchema);
 export const PlanEmpirePlanListPayload = z.array(PlanSchema);
 export const PlanListPayload = z.array(PlanSchema);
 
-export type PlanEmpireSchemaType = z.infer<typeof PlanEmpireSchema>;
-export type PlanEmpirePlanListType = z.infer<typeof PlanEmpirePlanListPayload>;
-export type PlanSchemaType = z.infer<typeof PlanSchema>;
-export type PlanShareSchemaType = z.infer<typeof PlanShareSchema>;
-export type PlanEmpireElementPayloadType = z.infer<
-	typeof PlanEmpireElementPayload
->;
-
 /**
  * CX
  */
@@ -216,11 +208,12 @@ export const CXDataExchangeOptionSchema: z.ZodType<ICXDataExchangeOption> =
 		exchange: CX_EXCHANGE_OPTION_TYPE_ENUM,
 	});
 
-export const CXDataTickerOptionSchema: z.ZodType<ICXDataTickerOption> = z.object({
-	type: CX_PREFERENCE_TYPE_ENUM,
-	ticker: z.string().nonempty(),
-	value: z.number(),
-});
+export const CXDataTickerOptionSchema: z.ZodType<ICXDataTickerOption> =
+	z.object({
+		type: CX_PREFERENCE_TYPE_ENUM,
+		ticker: z.string().nonempty(),
+		value: z.number(),
+	});
 
 export const CXDataSchema: z.ZodType<ICXData> = z.object({
 	cx_empire: z.array(CXDataExchangeOptionSchema),
@@ -273,18 +266,10 @@ export const PlanSaveCreateResponseSchema: z.ZodType<IPlanSaveCreateResponse> =
 		uuid: z.uuid(),
 	});
 
-export type PlanCreateDataType = z.infer<typeof PlanCreateDataSchema>;
-export type PlanSaveDataType = z.infer<typeof PlanSaveDataSchema>;
 export type PlanSaveCreateResponseType = z.infer<
 	typeof PlanSaveCreateResponseSchema
 >;
 
-export type CXSchemaType = z.infer<typeof CXSchema>;
-export type CXPutType = z.infer<typeof CXPutSchema>;
-export type CXListPayloadSchemaType = z.infer<typeof CXListPayloadSchema>;
-
 export const PlanClonePayloadSchema: z.ZodType<IPlanClonePayload> = z.object({
 	plan_name: z.string(),
 });
-
-export type PlanClonePayloadType = z.infer<typeof PlanClonePayloadSchema>;

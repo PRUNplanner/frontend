@@ -1,7 +1,6 @@
 import { apiService } from "@/lib/apiService";
 import {
 	APIKeyCreatePayloadSchema,
-	APIKeyCreatePayloadType,
 	APIKeyCreateResponseSchema,
 	APIKeyCreateResponseType,
 	APIKeyListSchema,
@@ -9,13 +8,13 @@ import {
 } from "@/features/api/schemas/apiKeysData.schema";
 
 export async function callGetAPIKeys(): Promise<APIKeyListType> {
-	return apiService.get<APIKeyListType>("/user/api/keys/", APIKeyListSchema);
+	return apiService.get("/user/api/keys/", APIKeyListSchema);
 }
 
 export async function callPostCreateAPIKey(
 	apiKeyName: string
 ): Promise<APIKeyCreateResponseType> {
-	return apiService.post<APIKeyCreatePayloadType, APIKeyCreateResponseType>(
+	return apiService.post(
 		"/user/api/keys/",
 		{ name: apiKeyName },
 		APIKeyCreatePayloadSchema,

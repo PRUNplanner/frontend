@@ -4,25 +4,15 @@ import { apiService } from "@/lib/apiService";
 // schemas
 import {
 	BuildingPayloadSchema,
-	BuildingPayloadType,
 	ExchangePayloadSchema,
-	ExchangePayloadType,
-	FIOStoragePayloadType,
 	FIOStorageSchema,
 	MaterialPayloadSchema,
-	MaterialPayloadType,
 	PlanetMultiplePayload,
-	PlanetMultiplePayloadType,
 	PlanetMultipleRequestPayload,
-	PlanetMultipleRequestType,
-	PlanetPayloadType,
 	PlanetSchema,
 	PlanetSearchAdvancedPayloadSchema,
-	PlanetSearchAdvancedPayloadType,
 	PopulationReportPayloadSchema,
-	PopulationReportPayloadType,
 	RecipePayloadSchema,
-	RecipePayloadType,
 } from "@/features/api/schemas/gameData.schemas";
 
 // types
@@ -37,10 +27,7 @@ import {
 	IPopulationReport,
 } from "@/features/api/gameData.types";
 import { IExploration } from "@/features/market_exploration/marketExploration.types";
-import {
-	ExplorationPayloadSchema,
-	ExplorationPayloadType,
-} from "@/features/market_exploration/marketExploration.schemas";
+import { ExplorationPayloadSchema } from "@/features/market_exploration/marketExploration.schemas";
 
 /**
  * Calls the /data/materials API endpoint
@@ -51,10 +38,7 @@ import {
  * @returns {Promise<IMaterial[]>} List of Materials
  */
 export async function callDataMaterials(): Promise<IMaterial[]> {
-	return apiService.get<MaterialPayloadType>(
-		"/data/materials/",
-		MaterialPayloadSchema
-	);
+	return apiService.get("/data/materials/", MaterialPayloadSchema);
 }
 
 /**
@@ -66,10 +50,7 @@ export async function callDataMaterials(): Promise<IMaterial[]> {
  * @returns {Promise<IExchange[]>} List of Exchange Data
  */
 export async function callDataExchanges(): Promise<IExchange[]> {
-	return apiService.get<ExchangePayloadType>(
-		"/data/exchanges/",
-		ExchangePayloadSchema
-	);
+	return apiService.get("/data/exchanges/", ExchangePayloadSchema);
 }
 
 /**
@@ -81,10 +62,7 @@ export async function callDataExchanges(): Promise<IExchange[]> {
  * @returns {Promise<IRecipe[]>} List of Recipes
  */
 export async function callDataRecipes(): Promise<IRecipe[]> {
-	return apiService.get<RecipePayloadType>(
-		"/data/recipes/",
-		RecipePayloadSchema
-	);
+	return apiService.get("/data/recipes/", RecipePayloadSchema);
 }
 
 /**
@@ -96,10 +74,7 @@ export async function callDataRecipes(): Promise<IRecipe[]> {
  * @returns {Promise<IBuilding[]>} List of Buildings
  */
 export async function callDataBuildings(): Promise<IBuilding[]> {
-	return apiService.get<BuildingPayloadType>(
-		"/data/buildings/",
-		BuildingPayloadSchema
-	);
+	return apiService.get("/data/buildings/", BuildingPayloadSchema);
 }
 
 /**
@@ -115,10 +90,7 @@ export async function callDataBuildings(): Promise<IBuilding[]> {
 export async function callDataPlanet(
 	planetNaturalId: string
 ): Promise<IPlanet> {
-	return apiService.get<PlanetPayloadType>(
-		`/data/planet/${planetNaturalId}/`,
-		PlanetSchema
-	);
+	return apiService.get(`/data/planet/${planetNaturalId}/`, PlanetSchema);
 }
 
 /**
@@ -134,10 +106,7 @@ export async function callDataPlanet(
 export async function callDataMultiplePlanets(
 	planetNaturalIds: string[]
 ): Promise<IPlanet[]> {
-	return apiService.post<
-		PlanetMultipleRequestType,
-		PlanetMultiplePayloadType
-	>(
+	return apiService.post(
 		"/data/planets/multiple/",
 		planetNaturalIds,
 		PlanetMultipleRequestPayload,
@@ -155,10 +124,7 @@ export async function callDataMultiplePlanets(
  * @returns {Promise<IFIOStorage>}
  */
 export async function callDataFIOStorage(): Promise<IFIOStorage> {
-	return apiService.get<FIOStoragePayloadType>(
-		"/data/storage/",
-		FIOStorageSchema
-	);
+	return apiService.get("/data/storage/", FIOStorageSchema);
 }
 
 /**
@@ -173,10 +139,7 @@ export async function callDataFIOStorage(): Promise<IFIOStorage> {
 export async function callDataPlanetSearchSingle(
 	searchId: string
 ): Promise<IPlanet[]> {
-	return apiService.get<PlanetMultiplePayloadType>(
-		`/data/planets/${searchId}/`,
-		PlanetMultiplePayload
-	);
+	return apiService.get(`/data/planets/${searchId}/`, PlanetMultiplePayload);
 }
 
 /**
@@ -191,10 +154,7 @@ export async function callDataPlanetSearchSingle(
 export async function callDataPlanetSearch(
 	searchData: IPlanetSearchAdvanced
 ): Promise<IPlanet[]> {
-	return apiService.post<
-		PlanetSearchAdvancedPayloadType,
-		PlanetMultiplePayloadType
-	>(
+	return apiService.post(
 		"/data/planets/search/",
 		searchData,
 		PlanetSearchAdvancedPayloadSchema,
@@ -217,7 +177,7 @@ export async function callExplorationData(
 	exchange: string,
 	ticker: string
 ): Promise<IExploration[]> {
-	return apiService.get<ExplorationPayloadType>(
+	return apiService.get(
 		`/data/cxpc/${ticker}/${exchange}/`,
 		ExplorationPayloadSchema
 	);
@@ -235,7 +195,7 @@ export async function callExplorationData(
 export async function callPlanetLastPOPR(
 	planetNaturalId: string
 ): Promise<IPopulationReport> {
-	return apiService.get<PopulationReportPayloadType>(
+	return apiService.get(
 		`/data/planet/${planetNaturalId}/popr/`,
 		PopulationReportPayloadSchema
 	);

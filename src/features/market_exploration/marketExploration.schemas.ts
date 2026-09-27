@@ -15,5 +15,3 @@ const ExplorationSchema: z.ZodType<IExploration> = z.object({
 
 export const ExplorationPayloadSchema: z.ZodType<IExploration[]> =
 	z.array(ExplorationSchema);
-
-export type ExplorationPayloadType = z.infer<typeof ExplorationPayloadSchema>;

@@ -27,7 +27,7 @@ import {
 	IPlanShare,
 } from "@/stores/planningStore.types";
 import { IPlanet } from "@/features/api/gameData.types";
-import { IShared } from "@/features/api/sharingData.types";
+import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 
 export function usePlanningDataLoader(
 	props: PlanningDataLoaderProps,
@@ -185,7 +185,7 @@ export function usePlanningDataLoader(
 			name: t("wrapper.planning_data.shared_list"),
 			enabled: () => !!props.loadShared,
 			load: () => queryStore.execute("GetAllShared", undefined),
-			onSuccess: (data: IShared[]) => emits("data:shared", data),
+			onSuccess: (data: Shared[]) => emits("data:shared", data),
 		},
 		{
 			key: "empirePlans",
@@ -290,7 +290,7 @@ export function usePlanningDataLoader(
 			planList: steps.find((s) => s.cfg.key === "planList")
 				?.data as IPlan[],
 			sharedData: steps.find((s) => s.cfg.key === "sharedList")
-				?.data as IShared[],
+				?.data as Shared[],
 			empirePlansData: steps.find((s) => s.cfg.key === "empirePlans")
 				?.data as IPlan[],
 			empirePlanetList: computed(() => {

@@ -14,7 +14,7 @@ import {
 
 // test data
 import shared_list from "@/tests/test_data/api_data_shared_list.json";
-import { ISharedCreateResponse } from "@/features/api/sharingData.types";
+import type { SharedCreateResponse } from "@/features/api/schemas/sharingData.schemas";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -48,7 +48,7 @@ describe("Empire Data API Calls", async () => {
 	it("callCreateSharing", async () => {
 		const spyApiServicePut = vi.spyOn(apiService, "post");
 
-		const fakeSharing: ISharedCreateResponse = {
+		const fakeSharing: SharedCreateResponse = {
 			uuid: "da105ce1-25f2-479d-b1eb-944353f4784f",
 			created_at: new Date(),
 			view_count: 0,

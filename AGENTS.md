@@ -94,7 +94,8 @@ time.
     `defineStore("prunplanner_x", () => {...})`.
   - Generic helpers are in `src/util/`.
 - **Naming.**
-  - Interfaces are prefixed with `I` (`IPlan`, `IPlanResult`).
+  - Frontend-only interfaces are prefixed with `I` (`IPlanResult`).
+    Schema-derived types are not (`Shared`, `SharedSchema`). See "Types".
   - Components are PascalCase with a feature prefix (`Plan*`, `Empire*`,
     `CX*`, `FIO*`).
 - **Composables are synchronous.** Register `watch`, `watchEffect` and
@@ -115,6 +116,37 @@ time.
   commas, 80 columns. Unused variables must be prefixed `_`.
 - **Doc comments.** Existing code uses JSDoc blocks with `@author`. Match the
   surrounding density, and don't write essays.
+
+## Types
+
+Every shape has exactly one definition.
+
+- **Boundary data** is anything parsed at runtime: API, SSE, FIO or
+  localStorage. Its Zod schema is the source of truth.
+  - Write `export const ThingSchema = z.object({...})` and, when the type is
+    used by name, `export type Thing = z.infer<typeof ThingSchema>` right
+    next to it. Put both in `src/features/api/schemas/<domain>.schemas.ts`
+    or the feature's `*.schemas.ts`.
+  - Never annotate a schema as `z.ZodType<…>` (a recursive schema is the only
+    exception, with a comment). Derive related shapes with
+    `.extend/.pick/.omit/.partial`.
+  - Use `z.input` for payloads callers build and `z.infer` for parsed data.
+    Enums are `z.enum([...])` with the union derived from it.
+  - Details: [docs/data-layer.md](docs/data-layer.md) §2.
+- **Frontend-only shapes** (engine, calculations, UI, query cache,
+  composables, store state) are plain TypeScript in `*.types.ts`, with no
+  Zod. Import the derived types when they build on boundary data.
+- **Conventions.**
+  - Schema-derived types have no prefix: `Thing` and `ThingSchema`.
+    Frontend-only interfaces keep the `I` prefix, so the name says whether
+    a shape is validated.
+  - Use `type` for schema-derived types and unions, and `interface` for
+    frontend object shapes.
+  - Use `import type` for type-only imports.
+  - A file holds either schemas or frontend-only types, never both.
+  - App types live in `.ts` files. Only the real ambient files are `.d.ts`
+    (`globals.d.ts`, `vite-env.d.ts`, `router/router.d.ts`), because
+    `skipLibCheck` skips type-checking every `.d.ts`.
 
 ## Git & PRs
 

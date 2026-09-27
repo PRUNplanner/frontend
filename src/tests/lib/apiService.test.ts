@@ -29,27 +29,24 @@ describe("ApiService", () => {
 				id: z.number(),
 				name: z.string(),
 			});
-			type responseType = z.infer<typeof responseSchema>;
 
 			mock.onGet("/test").reply(200, mockDataWrong);
 
 			await expect(
-				apiService.get<responseType>("/test", responseSchema)
+				apiService.get("/test", responseSchema)
 			).rejects.toThrowError();
 		});
 
 		it("post: generic error", async () => {
 			const mockPayload = { foo: "moo" };
 			const payloadSchema = z.object({ foo: z.string() });
-			type payloadType = z.infer<typeof payloadSchema>;
 
 			const responseSchema = z.object({ moo: z.string() });
-			type responseType = z.infer<typeof responseSchema>;
 
 			mock.onPost("/test").timeout();
 
 			await expect(
-				apiService.post<payloadType, responseType>(
+				apiService.post(
 					"/test",
 					mockPayload,
 					payloadSchema,
@@ -64,12 +61,11 @@ describe("ApiService", () => {
 				id: z.number(),
 				name: z.string(),
 			});
-			type responseType = z.infer<typeof responseSchema>;
 
 			mock.onGet("/test").timeout();
 
 			await expect(
-				apiService.get<responseType>("/test", responseSchema)
+				apiService.get("/test", responseSchema)
 			).rejects.toThrowError(/^timeout of 0ms exceeded$/);
 		});
 	});
@@ -81,14 +77,10 @@ describe("ApiService", () => {
 				id: z.number(),
 				name: z.string(),
 			});
-			type responseType = z.infer<typeof responseSchema>;
 
 			mock.onGet("/test").reply(200, mockData);
 
-			const result = await apiService.get<responseType>(
-				"/test",
-				responseSchema
-			);
+			const result = await apiService.get("/test", responseSchema);
 			expect(result).toStrictEqual(mockData);
 		});
 	});
@@ -97,15 +89,13 @@ describe("ApiService", () => {
 		it("successfull call and reponse parsing", async () => {
 			const mockPayload = { foo: "moo" };
 			const payloadSchema = z.object({ foo: z.string() });
-			type payloadType = z.infer<typeof payloadSchema>;
 
 			const mockResponse = { moo: "foo" };
 			const responseSchema = z.object({ moo: z.string() });
-			type responseType = z.infer<typeof responseSchema>;
 
 			mock.onPost("/test").reply(200, mockResponse);
 
-			const result = await apiService.post<payloadType, responseType>(
+			const result = await apiService.post(
 				"/test",
 				mockPayload,
 				payloadSchema,
@@ -120,15 +110,13 @@ describe("ApiService", () => {
 		it("successfull call and reponse parsing", async () => {
 			const mockPayload = { foo: "moo" };
 			const payloadSchema = z.object({ foo: z.string() });
-			type payloadType = z.infer<typeof payloadSchema>;
 
 			const mockResponse = { moo: "foo" };
 			const responseSchema = z.object({ moo: z.string() });
-			type responseType = z.infer<typeof responseSchema>;
 
 			mock.onPut("/test").reply(200, mockResponse);
 
-			const result = await apiService.put<payloadType, responseType>(
+			const result = await apiService.put(
 				"/test",
 				mockPayload,
 				payloadSchema,
@@ -141,15 +129,13 @@ describe("ApiService", () => {
 		it("triggering put error", async () => {
 			const mockPayload = { foo: "moo" };
 			const payloadSchema = z.object({ foo: z.string() });
-			type payloadType = z.infer<typeof payloadSchema>;
 
 			const responseSchema = z.object({ moo: z.string() });
-			type responseType = z.infer<typeof responseSchema>;
 
 			mock.onPut("/test").timeout();
 
 			await expect(
-				apiService.put<payloadType, responseType>(
+				apiService.put(
 					"/test",
 					mockPayload,
 					payloadSchema,
@@ -163,15 +149,13 @@ describe("ApiService", () => {
 		it("successfull call and reponse parsing", async () => {
 			const mockPayload = { foo: "moo" };
 			const payloadSchema = z.object({ foo: z.string() });
-			type payloadType = z.infer<typeof payloadSchema>;
 
 			const mockResponse = { moo: "foo" };
 			const responseSchema = z.object({ moo: z.string() });
-			type responseType = z.infer<typeof responseSchema>;
 
 			mock.onPatch("/test").reply(200, mockResponse);
 
-			const result = await apiService.patch<payloadType, responseType>(
+			const result = await apiService.patch(
 				"/test",
 				mockPayload,
 				payloadSchema,
@@ -184,14 +168,12 @@ describe("ApiService", () => {
 		it("triggering put error", async () => {
 			const mockPayload = { foo: "moo" };
 			const payloadSchema = z.object({ foo: z.string() });
-			type payloadType = z.infer<typeof payloadSchema>;
 			const responseSchema = z.object({ moo: z.string() });
-			type responseType = z.infer<typeof responseSchema>;
 
 			mock.onPatch("/test").timeout();
 
 			await expect(
-				apiService.patch<payloadType, responseType>(
+				apiService.patch(
 					"/test",
 					mockPayload,
 					payloadSchema,
