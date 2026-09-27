@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const ExplorationSchema = z.object({
 	ticker: z.string().min(1).max(3),
-	exchange_code: z.string().min(3).max(3),
+	exchange_code: z.string(),
 	date_epoch: z.number(),
 	open_p: z.number(),
 	close_p: z.number(),

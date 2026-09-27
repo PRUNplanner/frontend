@@ -271,7 +271,7 @@ export type FIOStorageItem = z.infer<typeof FIOStorageItemSchema>;
 const FIOStorageElementSchema = z.object({
 	WeightCapacity: z.number(),
 	VolumeCapacity: z.number(),
-	StorageItems: z.array(FIOStorageItemSchema),
+	StorageItems: z.array(FIOStorageItemSchema).default([]),
 	WeightLoad: z.number(),
 	VolumeLoad: z.number(),
 	Identifier: z.string(),

@@ -43,7 +43,11 @@ import {
 	callVerifyEmail,
 } from "@/features/api/userData.api";
 import { UserPreferenceSchema } from "@/features/api/schemas/user.schemas";
-import { PlanetSchema } from "@/features/api/schemas/gameData.schemas";
+import {
+	FIOStorageSchema,
+	PlanetSchema,
+} from "@/features/api/schemas/gameData.schemas";
+import { ExplorationPayloadSchema } from "@/features/market_exploration/marketExploration.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 // test data
@@ -416,14 +420,42 @@ describe("Backend contract", () => {
 				defaultCXUuid: UUID,
 			}).catch(() => undefined);
 
-			// the backend replaces all stored preferences on PATCH, an omitted
-			// optional field (unset default empire / cx) reads back as null
 			const { url, body } = lastRequest("patch");
 			expect(url).toBe("/user/preferences/");
 			expect(Object.keys(body).sort()).toStrictEqual(
 				[...BACKEND_PREFERENCE_FIELDS].sort()
 			);
 			expect(body.defaultEmpireUuid).toBe(UUID);
+		});
+
+		it("sends unset default empire / cx as null", async () => {
+			// the backend merges PATCH into stored preferences, an omitted
+			// key would keep the previous uuid
+			await callPatchUserPreferences(preferenceDefaults).catch(
+				() => undefined
+			);
+
+			const { body } = lastRequest("patch");
+			expect(body.defaultEmpireUuid).toBeNull();
+			expect(body.defaultCXUuid).toBeNull();
+		});
+
+		it("parses null plan overrides as empty", () => {
+			expect(
+				UserPreferenceSchema.parse({
+					...backendDefaults,
+					planOverrides: null,
+				}).planOverrides
+			).toStrictEqual({});
+		});
+
+		it("falls back to full navigation for unknown styles", () => {
+			expect(
+				UserPreferenceSchema.parse({
+					...backendDefaults,
+					layoutNavigationStyle: "x",
+				}).layoutNavigationStyle
+			).toBe("full");
 		});
 	});
 
@@ -443,6 +475,52 @@ describe("Backend contract", () => {
 		])("parses backend payload $description", ({ production_fees }) => {
 			expect(() =>
 				PlanetSchema.parse({ ...planet_single, production_fees })
+			).not.toThrow();
+		});
+	});
+
+	describe("storage", () => {
+		it("parses a storage without StorageItems as empty", () => {
+			const storage = {
+				WeightCapacity: 1000,
+				VolumeCapacity: 1000,
+				WeightLoad: 0,
+				VolumeLoad: 0,
+				Identifier: "OT-580b",
+			};
+
+			const parsed = FIOStorageSchema.parse({
+				storage_data: {
+					planets: { "OT-580b": storage },
+					warehouses: {},
+					ships: {},
+				},
+				sites_data: {},
+				last_modified: "2026-09-27T10:00:00Z",
+			});
+
+			expect(
+				parsed.storage_data.planets["OT-580b"].StorageItems
+			).toStrictEqual([]);
+		});
+	});
+
+	describe("market exploration", () => {
+		it("accepts the UNIVERSE exchange code", () => {
+			expect(() =>
+				ExplorationPayloadSchema.parse([
+					{
+						ticker: "DW",
+						exchange_code: "UNIVERSE",
+						date_epoch: 1790500000000,
+						open_p: 1,
+						close_p: 1,
+						high_p: 1,
+						low_p: 1,
+						volume: 1,
+						traded: 1,
+					},
+				])
 			).not.toThrow();
 		});
 	});
