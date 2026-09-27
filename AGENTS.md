@@ -121,8 +121,9 @@ time.
 
 Every shape has exactly one definition.
 
-- **Boundary data** is anything parsed at runtime: API, SSE, FIO or
-  localStorage. Its Zod schema is the source of truth.
+- **Boundary data** is anything parsed at runtime: the API, the market's
+  server-sent events (SSE), FIO or localStorage. Its Zod schema is the
+  source of truth.
   - Write `export const ThingSchema = z.object({...})` and, when the type is
     used by name, `export type Thing = z.infer<typeof ThingSchema>` right
     next to it. Put both in `src/features/api/schemas/<domain>.schemas.ts`
@@ -143,7 +144,8 @@ Every shape has exactly one definition.
   - Use `type` for schema-derived types and unions, and `interface` for
     frontend object shapes.
   - Use `import type` for type-only imports.
-  - A file holds either schemas or frontend-only types, never both.
+  - Keep schemas and frontend-only types in separate files. If a file ends
+    up holding both, split it.
   - App types live in `.ts` files. Only the real ambient files are `.d.ts`
     (`globals.d.ts`, `vite-env.d.ts`, `router/router.d.ts`), because
     `skipLibCheck` skips type-checking every `.d.ts`.
