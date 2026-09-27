@@ -26,7 +26,6 @@
 	// Types & Interfaces
 	import type {
 		InfrastructureType,
-		Plan,
 		PlanCreateData,
 	} from "@/features/api/schemas/planningData.schemas";
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
@@ -351,41 +350,39 @@
 	async function save(): Promise<void> {
 		refIsSaving.value = true;
 
-		// plan exists, trigger a save
-		if (existing.value) {
-			await saveExistingPlan(refPlanData.value.uuid!, backendData.value);
+		try {
+			// plan exists, trigger a save
+			if (existing.value) {
+				const savedUuid = await saveExistingPlan(
+					refPlanData.value.uuid!,
+					backendData.value
+				);
+				// keep modified state if the save failed
+				if (!savedUuid) return;
 
-			// reset modified state
-			handleResetModified();
+				handleResetModified();
+				trackEvent("plan_save", {
+					planetNaturalId: planetData.planet_natural_id,
+				});
+			} else {
+				const newUuid = await createNewPlan(backendData.value);
+				if (!newUuid) return;
 
-			trackEvent("plan_save", {
-				planetNaturalId: planetData.planet_natural_id,
-			});
+				refPlanData.value.uuid = newUuid;
+				// Persist the auto-optimize-habs preference
+				userStore.setPlanPreference(newUuid, {
+					autoOptimizeHabs: refAutoOptimizeHabs.value,
+				});
 
-			refIsSaving.value = false;
-		} else {
-			await createNewPlan(backendData.value).then(
-				async (newUuid: string | undefined) => {
-					if (newUuid) {
-						refIsSaving.value = false;
-						refPlanData.value.uuid = newUuid;
-						// Persist the auto-optimize-habs preference
-						userStore.setPlanPreference(newUuid, {
-							autoOptimizeHabs: refAutoOptimizeHabs.value,
-						});
+				// reset modified state
+				handleResetModified();
+				trackEvent("plan_create", {
+					planetNaturalId: planetData.planet_natural_id,
+				});
 
-						// reset modified state
-						handleResetModified();
-						trackEvent("plan_create", {
-							planetNaturalId: planetData.planet_natural_id,
-						});
-
-						router.push(
-							`/plan/${planetData.planet_natural_id}/${newUuid}`
-						);
-					}
-				}
-			);
+				router.push(`/plan/${planetData.planet_natural_id}/${newUuid}`);
+			}
+		} finally {
 			refIsSaving.value = false;
 		}
 	}
@@ -402,9 +399,10 @@
 			empire_uuid: refSaveAsEmpireUuid.value,
 		};
 
-		const newUuid = await createNewPlan(saveAsData);
+		try {
+			const newUuid = await createNewPlan(saveAsData);
+			if (!newUuid) return;
 
-		if (newUuid) {
 			// Persist the auto-optimize-habs preference
 			userStore.setPlanPreference(newUuid, {
 				autoOptimizeHabs: refAutoOptimizeHabs.value,
@@ -420,10 +418,9 @@
 				`/plan/${planetData.planet_natural_id}/${newUuid}`,
 				"_blank"
 			);
-			return;
+		} finally {
+			refIsSavingAs.value = false;
 		}
-
-		refIsSavingAs.value = false;
 	}
 
 	function openSaveAsModal(): void {
@@ -443,15 +440,18 @@
 
 		refIsReloading.value = true;
 
-		await reloadExistingPlan(refPlanData.value.uuid).then(
-			(result: Plan) => (refPlanData.value = result)
-		);
-		handleResetModified();
+		try {
+			refPlanData.value = await reloadExistingPlan(
+				refPlanData.value.uuid
+			);
+			handleResetModified();
 
-		trackEvent("plan_reload", {
-			planetNaturalId: planetData.planet_natural_id,
-		});
-		refIsReloading.value = false;
+			trackEvent("plan_reload", {
+				planetNaturalId: planetData.planet_natural_id,
+			});
+		} finally {
+			refIsReloading.value = false;
+		}
 	}
 
 	// clone shared plan as logged in user
