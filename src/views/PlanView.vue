@@ -173,21 +173,15 @@
 	const refIsSavingAs: Ref<boolean> = ref(false);
 
 	// Plan Preferences
-	const planPrefs = computed<ReturnType<typeof usePlanPreferences> | null>(
-		() => {
-			return props.planData.uuid !== undefined
-				? usePlanPreferences(props.planData.uuid)
-				: null;
-		}
-	);
+	const { autoOptimizeHabs } = usePlanPreferences(() => props.planData.uuid);
 
 	// When the plan hasn't been created, we'll use the local ref which is
-	// stored into planPrefs on plan creation in save()
+	// stored into the plan preferences on plan creation in save()
 	const refLocalAutoOptimizeHabs: Ref<boolean> = ref(true);
 	const refAutoOptimizeHabs =
-		planPrefs.value === null
+		props.planData.uuid === undefined
 			? refLocalAutoOptimizeHabs
-			: planPrefs.value.autoOptimizeHabs;
+			: autoOptimizeHabs;
 
 	/**
 	 * Handle initial empire uuid assignment
@@ -372,11 +366,9 @@
 						refIsSaving.value = false;
 						refPlanData.value.uuid = newUuid;
 						// Persist the auto-optimize-habs preference
-						const prefs = usePlanPreferences(
-							refPlanData.value.uuid!
-						);
-						prefs.autoOptimizeHabs.value =
-							refAutoOptimizeHabs.value;
+						userStore.setPlanPreference(newUuid, {
+							autoOptimizeHabs: refAutoOptimizeHabs.value,
+						});
 
 						// reset modified state
 						handleResetModified();
@@ -410,8 +402,9 @@
 
 		if (newUuid) {
 			// Persist the auto-optimize-habs preference
-			const prefs = usePlanPreferences(newUuid);
-			prefs.autoOptimizeHabs.value = refAutoOptimizeHabs.value;
+			userStore.setPlanPreference(newUuid, {
+				autoOptimizeHabs: refAutoOptimizeHabs.value,
+			});
 
 			trackEvent("plan_save_as", {
 				planetNaturalId: planetData.planet_natural_id,
