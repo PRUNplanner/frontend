@@ -134,7 +134,23 @@ export const UserPreferenceSchema = z.object({
 	burnResupplyDays: z.number(),
 	burnOrigin: z.string(),
 	supplyCartDays: z.number(),
-	layoutNavigationStyle: z.enum(["full", "collapsed"]),
-	planOverrides: z.record(z.string(), PreferencePerPlanSchema),
+	layoutNavigationStyle: z.enum(["full", "collapsed"]).catch("full"),
+	planOverrides: z
+		.record(z.string(), PreferencePerPlanSchema)
+		.nullable()
+		.transform((v) => v ?? {}),
 });
 export type UserPreference = z.infer<typeof UserPreferenceSchema>;
+
+// PATCH merges into the stored preferences, an unset uuid must be sent as
+// null to clear it (undefined is dropped from the JSON body)
+export const UserPreferencePayloadSchema = UserPreferenceSchema.extend({
+	defaultEmpireUuid: z
+		.string()
+		.nullish()
+		.transform((v) => v ?? null),
+	defaultCXUuid: z
+		.string()
+		.nullish()
+		.transform((v) => v ?? null),
+});
