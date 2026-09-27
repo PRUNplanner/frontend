@@ -81,6 +81,19 @@ describe("useResourceROIOverview", async () => {
 		expect(result.length).toBe(65);
 	});
 
+	it("searchPlanets: resets the searching state on failure", async () => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		mock.resetHandlers();
+		mock.onPost("/data/planets/search/").networkErrorOnce();
+
+		const { searchPlanets, progressSearchingPlanets } =
+			useResourceROIOverview(ref(undefined));
+
+		await expect(searchPlanets("FEO")).rejects.toThrow();
+		expect(progressSearchingPlanets.value).toBe(false);
+		error.mockRestore();
+	});
+
 	it("calculate", async () => {
 		mock.onPost("/data/planets/search/").reply(200, [planet_etherwind]);
 

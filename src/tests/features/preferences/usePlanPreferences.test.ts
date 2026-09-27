@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import { ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
+import { useUserStore } from "@/stores/userStore";
 
 // Composables
 import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
@@ -79,5 +81,31 @@ describe("usePreferences", async () => {
 				"DW",
 			]);
 		});
+	});
+
+	it("follows a changing uuid ref", async () => {
+		const userStore = useUserStore();
+		userStore.setPlanPreference("a", { includeCM: true });
+		userStore.setPlanPreference("b", { includeCM: false });
+
+		const uuid = ref("a");
+		const { includeCM } = usePlanPreferences(uuid);
+		expect(includeCM.value).toBe(true);
+
+		uuid.value = "b";
+		expect(includeCM.value).toBe(false);
+	});
+
+	it("undefined uuid reads defaults and ignores writes", async () => {
+		const userStore = useUserStore();
+		const { fullPreferences, includeCM } = usePlanPreferences(undefined);
+
+		expect(fullPreferences.value).toStrictEqual(
+			preferenceDefaults.planDefaults
+		);
+
+		includeCM.value = !preferenceDefaults.planDefaults.includeCM;
+		expect(includeCM.value).toBe(preferenceDefaults.planDefaults.includeCM);
+		expect(userStore.preferences.planOverrides).toStrictEqual({});
 	});
 });

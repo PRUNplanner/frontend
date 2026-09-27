@@ -18,7 +18,7 @@ localStorage and synced to the backend.
 | `userPreferences.types.ts` | `IPreferenceDefault` and `IPlanPreferenceOverview` (frontend-only). `UserPreference` and `PreferencePerPlan` are derived from `UserPreferenceSchema` in `src/features/api/schemas/user.schemas.ts` |
 | `userDefaults.ts` | `preferenceDefaults`: every default, including `planDefaults` for per-plan keys |
 | `usePreferences.ts` | Writable computeds for each global preference, `cleanPlanPreferences()`, `getBurnDisplayClass()`. It watches the store and **debounces a `PatchPreferences` call by 5s** |
-| `usePlanPreferences.ts` | `usePlanPreferences(planUuid)`: writable computeds for one plan's overrides, merged over `planDefaults` |
+| `usePlanPreferences.ts` | `usePlanPreferences(planUuid)`: writable computeds for one plan's overrides, merged over `planDefaults`. `planUuid` is a ref, getter or string; while it is `undefined` it reads `planDefaults` and writes are no-ops |
 
 ## Adding a preference
 

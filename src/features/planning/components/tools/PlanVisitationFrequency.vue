@@ -63,12 +63,8 @@
 	});
 
 	// plan preference patch-in
-	const planPrefs = computed<ReturnType<typeof usePlanPreferences> | null>(
-		() => {
-			return !props.disabled && props.planUuid !== undefined
-				? usePlanPreferences(props.planUuid)
-				: null;
-		}
+	const { visitationMaterialExclusions } = usePlanPreferences(() =>
+		props.disabled ? undefined : props.planUuid
 	);
 
 	function getExclusionOptions(data: IMaterialIO[]): PSelectOption[] {
@@ -131,10 +127,7 @@
 		getExclusionOptions(props.materialIO)
 	);
 	const refMaterialExclusions: Ref<string[]> = ref(
-		planPrefs.value === null ||
-			planPrefs.value.visitationMaterialExclusions.value === undefined
-			? []
-			: planPrefs.value.visitationMaterialExclusions.value
+		visitationMaterialExclusions.value ?? []
 	);
 
 	// Prop Watcher
@@ -378,10 +371,7 @@
 						const stringsOnly = value.filter(
 							(v): v is string => typeof v === 'string'
 						);
-						if (planPrefs !== null) {
-							planPrefs.visitationMaterialExclusions.value =
-								stringsOnly;
-						}
+						visitationMaterialExclusions = stringsOnly;
 						refMaterialExclusions = stringsOnly;
 					}
 				" />

@@ -93,12 +93,13 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 			.execute()
 			.then((data: Planet[]) => {
 				planetResults.value = data;
-			});
+			})
+			// a failed search must not leave the progress state stuck
+			.finally(() => (progressSearchingPlanets.value = false));
 
 		// reset total + current
 		progressCurrent.value = 0;
 		progressTotal.value = planetResults.value.length;
-		progressSearchingPlanets.value = false;
 
 		return planetResults.value;
 	}

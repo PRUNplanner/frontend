@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { ref } from "vue";
 
 import { usePlanetSearchResults } from "@/features/planet_search/usePlanetSearchResults";
 
@@ -60,5 +61,22 @@ describe("usePlanetSearchResults", async () => {
 		);
 
 		expect(results.value.length).toBe(0);
+	});
+
+	it("results: reacts to ref changes", async () => {
+		const planets = ref([]);
+		const { results } = usePlanetSearchResults(
+			planets,
+			["N"],
+			{},
+			undefined,
+			undefined
+		);
+
+		expect(results.value.length).toBe(0);
+
+		// @ts-expect-error mock data
+		planets.value = [planet_etherwind];
+		expect(results.value.length).toBe(1);
 	});
 });

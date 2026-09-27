@@ -1,11 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		type ComputedRef,
-		defineAsyncComponent,
-		type Ref,
-		ref,
-	} from "vue";
+	import { computed, defineAsyncComponent, type Ref, ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -53,10 +47,6 @@
 	import type { Plan } from "@/features/api/schemas/planningData.schemas";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
-	import type {
-		IFIOBurnPlanetTableElement,
-		IFIOBurnTableElement,
-	} from "@/features/fio/useFIOBurn.types";
 
 	// UI
 	import { PSelect, PForm, PFormItem, PInputNumber } from "@/ui";
@@ -164,15 +154,7 @@
 		}
 	}
 
-	const burnTable: ComputedRef<IFIOBurnTableElement[]> = computed(() => {
-		return useFIOBurn(planData, calculatedPlans).burnTable.value;
-	});
-
-	const planTable: ComputedRef<IFIOBurnPlanetTableElement[]> = computed(
-		() => {
-			return useFIOBurn(planData, calculatedPlans).planTable.value;
-		}
-	);
+	const { burnTable, planTable } = useFIOBurn(planData, calculatedPlans);
 </script>
 
 <template>

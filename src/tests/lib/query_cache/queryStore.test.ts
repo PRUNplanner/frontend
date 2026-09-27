@@ -4,11 +4,23 @@ import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { useUserActivity } from "@/features/user_activity/useUserActivity";
 
+// a request that stays in flight until the test resolves it
+const slow = vi.hoisted(() => ({
+	resolvers: [] as ((value: unknown) => void)[],
+}));
+
 // mock repository
 vi.mock("@/lib/query_cache/queryRepository", () => {
 	return {
 		useQueryRepository: () => ({
 			repository: {
+				slowQuery: {
+					key: () => ["slowQuery"],
+					persist: true,
+					autoRefetch: false,
+					fetchFn: () =>
+						new Promise((resolve) => slow.resolvers.push(resolve)),
+				},
 				testQuery: {
 					key: (params: any) => ["testQuery", params],
 					expireTime: 1000,
@@ -208,4 +220,55 @@ describe("checkEntryStatusAndRefresh (Pinia store)", () => {
 		// Expect nothing changed
 		expect(store.cacheState).toHaveProperty('{"id":1}');
 	});
+});
+
+describe("useQueryStore: stale in-flight requests", () => {
+	let store: ReturnType<typeof useQueryStore>;
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		store = useQueryStore();
+		slow.resolvers.length = 0;
+	});
+
+		const cachedSlow = () => store.cacheState[toCacheKey(["slowQuery"])];
+
+		it("do not write into the cache after $reset (logout)", async () => {
+			// @ts-expect-error mock query repository
+			const pending = store.execute("slowQuery", undefined);
+			store.$reset();
+
+			slow.resolvers[0]("old user data");
+			// the caller still gets its result
+			await expect(pending).resolves.toBe("old user data");
+			expect(cachedSlow()).toBeUndefined();
+		});
+
+		it("do not overwrite a newer forced refetch", async () => {
+			// @ts-expect-error mock query repository
+			const first = store.execute("slowQuery", undefined);
+			// @ts-expect-error mock query repository
+			const second = store.execute("slowQuery", undefined, {
+				forceRefetch: true,
+			});
+
+			slow.resolvers[1]("new");
+			await second;
+			slow.resolvers[0]("old");
+			await first;
+
+			expect(cachedSlow()?.data).toBe("new");
+			expect(cachedSlow()?.loading).toBe(false);
+		});
+
+		it("do not write back after invalidateKey", async () => {
+			// @ts-expect-error mock query repository
+			const pending = store.execute("slowQuery", undefined);
+			await store.invalidateKey(["slowQuery"], { skipRefetch: true });
+
+			slow.resolvers[0]("stale");
+			await pending;
+
+			expect(cachedSlow()).toBeUndefined();
+		});
 });

@@ -49,6 +49,22 @@ describe("User Store", () => {
 		expect(userStore.isLoggedIn).toBeFalsy();
 	});
 
+	it("Logout: the next login loads its own profile and preferences", () => {
+		const userStore = useUserStore();
+		const getProfile = vi.mocked(callGetProfile).mockResolvedValue(
+			{} as UserProfile
+		);
+		getProfile.mockClear();
+
+		userStore.setToken("access-a", "refresh-a");
+		userStore.intialPreferencesCalled = true;
+		userStore.logout();
+
+		expect(userStore.intialPreferencesCalled).toBe(false);
+		userStore.setToken("access-b", "refresh-b");
+		expect(getProfile).toHaveBeenCalledTimes(2);
+	});
+
 	it("Perform Login and set token: ok", async () => {
 		const userStore = useUserStore();
 

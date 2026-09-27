@@ -64,6 +64,9 @@ export const useUserStore = defineStore(
 			refreshToken.value = undefined;
 			profile.value = undefined;
 			Object.assign(preferences, deepClone(preferenceDefaults));
+			// the next login must load its own profile and preferences
+			initialProfileCalled.value = false;
+			intialPreferencesCalled.value = false;
 		}
 
 		// user preference handling
