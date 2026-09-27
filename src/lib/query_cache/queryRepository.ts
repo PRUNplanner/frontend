@@ -238,30 +238,28 @@ export function useQueryRepository() {
 				"multiple",
 				params.planetNaturalIds,
 			],
+			// errors must propagate: an empty result would be cached as
+			// fresh and calculations would miss every planet until expiry
 			fetchFn: async (params: { planetNaturalIds: string[] }) => {
-				try {
-					const data: IPlanet[] = await callDataMultiplePlanets(
-						params.planetNaturalIds
+				const data: IPlanet[] = await callDataMultiplePlanets(
+					params.planetNaturalIds
+				);
+
+				// set in indexeddb
+				await planetsStore.setMany(data);
+				await useDB(planetsStore).preload(true);
+
+				// set plans individually
+				data.forEach((p) => {
+					queryStore.addCacheState(
+						["gamedata", "planet", p.planet_natural_id],
+						"GetPlanet",
+						{ planetNaturalId: p.planet_natural_id },
+						p
 					);
+				});
 
-					// set in indexeddb
-					await planetsStore.setMany(data);
-					await useDB(planetsStore).preload(true);
-
-					// set plans individually
-					data.forEach((p) => {
-						queryStore.addCacheState(
-							["gamedata", "planet", p.planet_natural_id],
-							"GetPlanet",
-							{ planetNaturalId: p.planet_natural_id },
-							p
-						);
-					});
-
-					return data;
-				} catch {
-					return [];
-				}
+				return data;
 			},
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			autoRefetch: true,
@@ -495,26 +493,23 @@ export function useQueryRepository() {
 				"plans",
 				params.empireUuid,
 			],
+			// errors must propagate, [] would be cached as an empty empire
 			fetchFn: async (params: { empireUuid: string }) => {
-				try {
-					const data = await callGetEmpirePlans(params.empireUuid);
+				const data = await callGetEmpirePlans(params.empireUuid);
 
-					planningStore.setPlans(data);
+				planningStore.setPlans(data);
 
-					// manually set individual plans
-					data.forEach((p) =>
-						queryStore.addCacheState(
-							["planningdata", "plan", p.uuid],
-							"GetPlan",
-							{ planUuid: p.uuid! },
-							p
-						)
-					);
+				// manually set individual plans
+				data.forEach((p) =>
+					queryStore.addCacheState(
+						["planningdata", "plan", p.uuid],
+						"GetPlan",
+						{ planUuid: p.uuid! },
+						p
+					)
+				);
 
-					return data;
-				} catch {
-					return [];
-				}
+				return data;
 			},
 			autoRefetch: false,
 			persist: true,
@@ -623,25 +618,22 @@ export function useQueryRepository() {
 		} as IQueryDefinition<{ planUuid: string }, IPlan>,
 		GetAllPlans: {
 			key: () => ["planningdata", "plan", "list"],
+			// errors must propagate, [] would be cached as "no plans"
 			fetchFn: async () => {
-				try {
-					const data = await callGetPlanlist();
-					planningStore.setPlans(data);
+				const data = await callGetPlanlist();
+				planningStore.setPlans(data);
 
-					// manually set individual plans
-					data.forEach((p) =>
-						queryStore.addCacheState(
-							["planningdata", "plan", p.uuid],
-							"GetPlan",
-							{ planUuid: p.uuid! },
-							p
-						)
-					);
+				// manually set individual plans
+				data.forEach((p) =>
+					queryStore.addCacheState(
+						["planningdata", "plan", p.uuid],
+						"GetPlan",
+						{ planUuid: p.uuid! },
+						p
+					)
+				);
 
-					return data;
-				} catch {
-					return [];
-				}
+				return data;
 			},
 			autoRefetch: false,
 			persist: true,
