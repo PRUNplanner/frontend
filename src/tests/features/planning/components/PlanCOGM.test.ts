@@ -14,7 +14,7 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { ICXData } from "@/stores/planningStore.types";
+import type { CXData } from "@/features/api/schemas/cxData.schemas";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
@@ -27,13 +27,17 @@ const CX_UUID = "00000001-0000-4000-8000-000000000000";
 const PLANET = "ZV-307c";
 const PUT_URL = new RegExp(`planning/cx/${CX_UUID}/$`);
 
-const pref = (ticker: string, type: "BUY" | "SELL" | "BOTH", value: number) => ({
+const pref = (
+	ticker: string,
+	type: "BUY" | "SELL" | "BOTH",
+	value: number
+) => ({
 	ticker,
 	type,
 	value,
 });
 
-function cxData(): ICXData {
+function cxData(): CXData {
 	return {
 		cx_empire: [{ type: "BOTH", exchange: "AI1_30D" }],
 		cx_planets: [],

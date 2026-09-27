@@ -2,20 +2,13 @@ import { z } from "zod";
 
 // Types & Interfaces
 import {
-	ICX,
-	ICXData,
-	ICXDataExchangeOption,
-	ICXDataTickerOption,
-	ICXPut,
 	IPlan,
-	IPlanCXEmpireElement,
 	IPlanData,
 	IPlanDataBuilding,
 	IPlanDataBuildingRecipe,
 	IPlanDataExpert,
 	IPlanDataInfrastructure,
 	IPlanDataWorkforce,
-	IPlanEmpireElement,
 	IPlanShare,
 } from "@/stores/planningStore.types";
 import { IPlanSaveCreateResponse } from "@/features/planning_data/usePlan.types";
@@ -107,7 +100,7 @@ const PlanDataSchema: z.ZodType<IPlanData> = z.object({
 	infrastructure: z.array(PlanDataInfrastructureSchema),
 });
 
-export const PLAN_FACTION_TYPE_ZOD_ENUM = z.enum([
+export const PlanFactionSchema = z.enum([
 	"NONE",
 	"ANTARES",
 	"BENTEN",
@@ -115,17 +108,29 @@ export const PLAN_FACTION_TYPE_ZOD_ENUM = z.enum([
 	"MORIA",
 	"OUTSIDEREGION",
 ]);
+export type PlanFaction = z.infer<typeof PlanFactionSchema>;
 
+/**
+ * Faction enum that upper-cases its input first. `val` is typed `string` so
+ * `z.input` is `string` rather than `unknown`; non-strings still pass through
+ * to the enum and fail there.
+ */
+export const PlanEmpireFactionSchema = z.preprocess(
+	(val: string) => (typeof val === "string" ? val.toUpperCase() : val),
+	PlanFactionSchema
+);
+
+// Embedded in PlanSchema and returned by the empire endpoints. It lives here
+// rather than in empireData.schemas.ts because the empire schemas depend on
+// the plan schemas; the reverse import would be a cycle.
 export const PlanEmpireSchema = z.object({
-	empire_faction: z.preprocess(
-		(val) => (typeof val === "string" ? val.toUpperCase() : val),
-		PLAN_FACTION_TYPE_ZOD_ENUM
-	) as z.ZodType<z.infer<typeof PLAN_FACTION_TYPE_ZOD_ENUM>>,
+	empire_faction: PlanEmpireFactionSchema,
 	empire_permits_used: z.number().min(0),
 	empire_permits_total: z.number().min(0),
 	uuid: z.uuid(),
 	empire_name: z.string(),
 });
+export type PlanEmpire = z.infer<typeof PlanEmpireSchema>;
 
 export const PlanSchema: z.ZodType<IPlan> = z.object({
 	uuid: z.uuid(),
@@ -147,104 +152,7 @@ export const PlanShareSchema: z.ZodType<IPlanShare> = z.object({
 	plan_details: PlanSchema,
 });
 
-const PlanEmpireElementSchema: z.ZodType<IPlanEmpireElement> =
-	PlanEmpireSchema.extend({
-		plans: z.array(
-			z.object({
-				uuid: z.uuid(),
-				plan_name: z.string(),
-				planet_natural_id: z.string(),
-			})
-		),
-	});
-
-const PlanCXEmpireElementSchema: z.ZodType<IPlanCXEmpireElement> = z.object({
-	uuid: z.uuid(),
-	empire_name: z.string(),
-	plans: z.array(
-		z.object({
-			uuid: z.uuid(),
-			plan_name: z.string(),
-			planet_natural_id: z.string(),
-		})
-	),
-});
-
-export const PlanEmpireElementPayload = z.array(PlanEmpireElementSchema);
-const PlanCXEmpireElementPayload = z.array(PlanCXEmpireElementSchema);
-export const PlanEmpirePlanListPayload = z.array(PlanSchema);
 export const PlanListPayload = z.array(PlanSchema);
-
-/**
- * CX
- */
-
-const CX_EXCHANGE_OPTION_TYPE_ENUM = z.enum([
-	"AI1_7D",
-	"NC1_7D",
-	"CI1_7D",
-	"IC1_7D",
-	"UNIVERSE_7D",
-	"AI1_30D",
-	"NC1_30D",
-	"CI1_30D",
-	"IC1_30D",
-	"UNIVERSE_30D",
-	"AI1_ASK",
-	"AI1_BID",
-	"NC1_ASK",
-	"NC1_BID",
-	"CI1_ASK",
-	"CI1_BID",
-	"IC1_ASK",
-	"IC1_BID",
-]);
-
-const CX_PREFERENCE_TYPE_ENUM = z.enum(["BUY", "SELL", "BOTH"]);
-
-export const CXDataExchangeOptionSchema: z.ZodType<ICXDataExchangeOption> =
-	z.object({
-		type: CX_PREFERENCE_TYPE_ENUM,
-		exchange: CX_EXCHANGE_OPTION_TYPE_ENUM,
-	});
-
-export const CXDataTickerOptionSchema: z.ZodType<ICXDataTickerOption> =
-	z.object({
-		type: CX_PREFERENCE_TYPE_ENUM,
-		ticker: z.string().nonempty(),
-		value: z.number(),
-	});
-
-export const CXDataSchema: z.ZodType<ICXData> = z.object({
-	cx_empire: z.array(CXDataExchangeOptionSchema),
-	cx_planets: z.array(
-		z.object({
-			planet: z.string(),
-			preferences: z.array(CXDataExchangeOptionSchema),
-		})
-	),
-	ticker_empire: z.array(CXDataTickerOptionSchema),
-	ticker_planets: z.array(
-		z.object({
-			planet: z.string(),
-			preferences: z.array(CXDataTickerOptionSchema),
-		})
-	),
-});
-
-export const CXSchema: z.ZodType<ICX> = z.object({
-	uuid: z.uuid(),
-	empires: PlanCXEmpireElementPayload,
-	cx_data: CXDataSchema,
-	cx_name: z.string().nonempty(),
-});
-
-export const CXPutSchema: z.ZodType<ICXPut> = z.object({
-	cx_data: CXDataSchema,
-	cx_name: z.string().nonempty(),
-});
-
-export const CXListPayloadSchema = z.array(CXSchema);
 
 export const PlanCreateDataSchema = z.object({
 	empire_uuid: z.uuid().optional(),

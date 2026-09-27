@@ -21,7 +21,7 @@ import { materialsStore } from "@/database/stores";
 import { exchangesStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { flushPromises } from "@vue/test-utils";
-import { IPlanEmpireElement } from "@/stores/planningStore.types";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 describe("Util: materialIO ", async () => {
 	beforeAll(async () => {
@@ -272,7 +272,7 @@ describe("Util: materialIO ", async () => {
 		const noResult = await empireMaterialIOState(undefined, []);
 		expect(noResult).toBeUndefined();
 
-		const fakeIPlanEmpireElement: IPlanEmpireElement = {
+		const fakeIPlanEmpireElement: PlanEmpireElement = {
 			empire_faction: "Moria",
 			empire_permits_used: 3,
 			empire_permits_total: 3,

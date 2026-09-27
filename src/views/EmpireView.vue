@@ -1,11 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		ComputedRef,
-		defineAsyncComponent,
-		ref,
-		Ref,
-	} from "vue";
+	import { computed, ComputedRef, defineAsyncComponent, ref, Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -54,7 +48,8 @@
 	);
 
 	// Types & Interfaces
-	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
+	import { IPlan } from "@/stores/planningStore.types";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 	import {
 		IEmpireCostOverview,
@@ -91,7 +86,7 @@
 	});
 
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
-	const refEmpireList: Ref<IPlanEmpireElement[]> = ref([]);
+	const refEmpireList: Ref<PlanEmpireElement[]> = ref([]);
 
 	const calculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
 	const planData: Ref<IPlan[]> = ref([]);
@@ -198,14 +193,15 @@
 	 * Holds computed empire data for the currently selected empire.
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<IPlanEmpireElement | undefined>} Empire Data
+	 * @type {ComputedRef<PlanEmpireElement | undefined>} Empire Data
 	 */
-	const selectedEmpire: ComputedRef<IPlanEmpireElement | undefined> =
-		computed(() => {
+	const selectedEmpire: ComputedRef<PlanEmpireElement | undefined> = computed(
+		() => {
 			return refEmpireList.value.find(
 				(e) => e.uuid == selectedEmpireUuid.value
 			);
-		});
+		}
+	);
 
 	/**
 	 * Holds computed cost overview based on plan results.
@@ -333,7 +329,7 @@
 			(value: string | undefined) => (selectedCXUuid = value)
 		"
 		@data:empire:list="
-			(value: IPlanEmpireElement[]) => (refEmpireList = value)
+			(value: PlanEmpireElement[]) => (refEmpireList = value)
 		">
 		<template #default="{ empirePlanetList }">
 			<WrapperGameDataLoader

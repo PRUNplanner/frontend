@@ -19,9 +19,9 @@ import {
 } from "@/features/planning/usePlanCalculation.types";
 import {
 	IPlanDataExpert,
-	IPlanEmpire,
 	PLAN_COGCPROGRAM_TYPE,
 } from "@/stores/planningStore.types";
+import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
 
 export const expertNames: string[] = [
 	"Agriculture",
@@ -147,11 +147,9 @@ export function calculateBuildingWorkforceEfficiency(
 		(building.technicians / totalWorkforce) *
 		workforce.technician.efficiency;
 	efficiency +=
-		(building.engineers / totalWorkforce) *
-		workforce.engineer.efficiency;
+		(building.engineers / totalWorkforce) * workforce.engineer.efficiency;
 	efficiency +=
-		(building.scientists / totalWorkforce) *
-		workforce.scientist.efficiency;
+		(building.scientists / totalWorkforce) * workforce.scientist.efficiency;
 
 	return efficiency;
 }
@@ -161,20 +159,19 @@ export function calculateBuildingWorkforceEfficiency(
  * @author jplacht
  *
  * @param {IBuilding} building Building Data
- * @param {(IPlanEmpire | undefined)} empire Empire Data
+ * @param {(PlanEmpire | undefined)} empire Empire Data
  * @returns {(IBuildingEfficiency | undefined)} Faction Bonus
  */
 export function calculateBuildingFactionBonus(
 	building: IBuilding,
-	empire: IPlanEmpire | undefined
+	empire: PlanEmpire | undefined
 ): IBuildingEfficiency | undefined {
 	if (!empire || building.expertise === null) return undefined;
 
 	// multiplier using share of used and total available permits
 	const multiplier: number =
 		2 *
-		(-2 * (empire.empire_permits_used / empire.empire_permits_total) +
-			3);
+		(-2 * (empire.empire_permits_used / empire.empire_permits_total) + 3);
 
 	const efficiency: number | undefined =
 		FACTION_BONUS_MAP[empire.empire_faction]?.[
@@ -202,7 +199,7 @@ export function calculateBuildingFactionBonus(
  * @param {PLAN_COGCPROGRAM_TYPE} cogc COGC
  * @param {IWorkforceRecord} workforce Workforce Efficiencies
  * @param {IExpertRecord} experts Expert Setup
- * @param {(IPlanEmpire | undefined)} empire Plan Empire
+ * @param {(PlanEmpire | undefined)} empire Plan Empire
  * @returns {{
  * 		totalEfficiency: number;
  * 		elements: IBuildingEfficiency[];
@@ -215,7 +212,7 @@ export function calculateBuildingEfficiency(
 	cogc: PLAN_COGCPROGRAM_TYPE,
 	workforce: IWorkforceRecord,
 	experts: IExpertRecord,
-	empire: IPlanEmpire | undefined
+	empire: PlanEmpire | undefined
 ): {
 	totalEfficiency: number;
 	elements: IBuildingEfficiency[];
@@ -227,9 +224,7 @@ export function calculateBuildingEfficiency(
 		elements.push({
 			efficiencyType: "FERTILITY",
 			value:
-				planet.fertility != -1.0
-					? 1 + planet.fertility * (10 / 33)
-					: 0,
+				planet.fertility != -1.0 ? 1 + planet.fertility * (10 / 33) : 0,
 		});
 	}
 

@@ -24,7 +24,8 @@
 	const userStore = useUserStore();
 
 	// Types & Interfaces
-	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
+	import { IPlan } from "@/stores/planningStore.types";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import { IPlanet } from "@/features/api/gameData.types";
 	import { INFRASTRUCTURE_TYPE } from "@/features/planning/usePlanCalculation.types";
 	import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
@@ -105,7 +106,7 @@
 			required: true,
 		},
 		empireList: {
-			type: Array as PropType<IPlanEmpireElement[]>,
+			type: Array as PropType<PlanEmpireElement[]>,
 			required: false,
 			default: undefined,
 		},
@@ -117,7 +118,7 @@
 	});
 
 	const refPlanData: Ref<IPlan> = ref(inertClone(props.planData));
-	const refEmpireList: Ref<IPlanEmpireElement[] | undefined> = ref(
+	const refEmpireList: Ref<PlanEmpireElement[] | undefined> = ref(
 		props.empireList
 	);
 	const refEmpireUuid: Ref<string | undefined> = ref(undefined);

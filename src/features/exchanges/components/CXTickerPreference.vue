@@ -11,8 +11,10 @@
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// Types & Interfaces
-	import { ICXDataTickerOption } from "@/stores/planningStore.types";
-	import { PreferenceType } from "@/features/exchanges/manageCX.types";
+	import type {
+		CXDataTickerOption,
+		CXPreferenceType,
+	} from "@/features/api/schemas/cxData.schemas";
 
 	// UI
 	import { PSelect, PButton, PInputNumber, PTag, PTable } from "@/ui";
@@ -21,18 +23,18 @@
 
 	const props = defineProps({
 		cxOptions: {
-			type: Array as PropType<ICXDataTickerOption[]>,
+			type: Array as PropType<CXDataTickerOption[]>,
 			required: true,
 		},
 	});
 
 	const emit = defineEmits<{
-		(e: "update:cxOptions", value: ICXDataTickerOption[]): void;
+		(e: "update:cxOptions", value: CXDataTickerOption[]): void;
 	}>();
 
 	const localCXOptions = computed({
 		get: () => props.cxOptions,
-		set: (val: ICXDataTickerOption[]) => emit("update:cxOptions", val),
+		set: (val: CXDataTickerOption[]) => emit("update:cxOptions", val),
 	});
 
 	const {
@@ -43,13 +45,13 @@
 		updateTickerPreference,
 	} = useCXManagement();
 
-	const sortedCXOptions: ComputedRef<ICXDataTickerOption[]> = computed(() => {
+	const sortedCXOptions: ComputedRef<CXDataTickerOption[]> = computed(() => {
 		return [...localCXOptions.value].sort((a, b) =>
 			a.ticker > b.ticker ? 1 : -1
 		);
 	});
 
-	const selectedType: Ref<PreferenceType> = ref("BOTH");
+	const selectedType: Ref<CXPreferenceType> = ref("BOTH");
 	const selectedTicker: Ref<string> = ref("DW");
 	const selectedValue: Ref<number> = ref(0);
 </script>

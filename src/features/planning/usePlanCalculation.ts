@@ -48,12 +48,9 @@ import {
 	IVisitationData,
 	planEmptyResult,
 } from "@/features/planning/usePlanCalculation.types";
-import {
-	IPlan,
-	IPlanData,
-	IPlanEmpire,
-	IPlanEmpireElement,
-} from "@/stores/planningStore.types";
+import { IPlan, IPlanData } from "@/stores/planningStore.types";
+import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 
 const overviewEmpty: IOverviewData = {
@@ -76,13 +73,13 @@ const overviewEmpty: IOverviewData = {
  *
  * @param {Ref<IPlan>} plan Plan
  * @param {Ref<string | undefined>} empireUuid Active empire
- * @param {Ref<IPlanEmpireElement[] | undefined>} empireOptions Empires
+ * @param {Ref<PlanEmpireElement[] | undefined>} empireOptions Empires
  * @param {Ref<string | undefined>} cxUuid CX preference
  */
 export function usePlanCalculation(
 	plan: Ref<IPlan>,
 	empireUuid: Ref<string | undefined> = ref(undefined),
-	empireOptions: Ref<IPlanEmpireElement[] | undefined> = ref(undefined),
+	empireOptions: Ref<PlanEmpireElement[] | undefined> = ref(undefined),
 	cxUuid: Ref<string | undefined> = ref(undefined)
 ) {
 	// stores
@@ -105,8 +102,8 @@ export function usePlanCalculation(
 
 	const planName: Ref<string | undefined> = toRef(plan.value.plan_name);
 	const data: ComputedRef<IPlanData> = computed(() => plan.value.plan_data);
-	const empires: Ref<IPlanEmpire[]> = toRef([]);
-	const planEmpires: ComputedRef<IPlanEmpire[]> = computed(() =>
+	const empires: Ref<PlanEmpire[]> = toRef([]);
+	const planEmpires: ComputedRef<PlanEmpire[]> = computed(() =>
 		plan.value.empires ? plan.value.empires : []
 	);
 	const planetNaturalId: Ref<string> = toRef(plan.value.planet_natural_id);
@@ -127,9 +124,9 @@ export function usePlanCalculation(
 	 *
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<IPlanEmpire | undefined>}	Empire Information
+	 * @type {ComputedRef<PlanEmpire | undefined>}	Empire Information
 	 */
-	const computedActiveEmpire: ComputedRef<IPlanEmpire | undefined> = computed(
+	const computedActiveEmpire: ComputedRef<PlanEmpire | undefined> = computed(
 		() => getActiveEmpire(empireUuid.value, empireOptions.value)
 	);
 
@@ -266,12 +263,7 @@ export function usePlanCalculation(
 	});
 
 	// submodules
-	const handlers = usePlanCalculationHandlers(
-		plan,
-		data,
-		planName,
-		result
-	);
+	const handlers = usePlanCalculationHandlers(plan, data, planName, result);
 
 	return {
 		existing,

@@ -3,10 +3,10 @@
 	import { PButton } from "@/ui";
 	import { ArrowDownwardFilled, ArrowUpwardFilled } from "@vicons/material";
 
-	import {
-		ICXDataExchangeOption,
-		ICXDataTickerOption,
-	} from "@/stores/planningStore.types";
+	import type {
+		CXDataExchangeOption,
+		CXDataTickerOption,
+	} from "@/features/api/schemas/cxData.schemas";
 	import { PropType, ref } from "vue";
 	import { ICXPlanetMap } from "../manageCX.types";
 
@@ -16,7 +16,7 @@
 
 	const props = defineProps({
 		cxEmpire: {
-			type: Array as PropType<ICXDataExchangeOption[]>,
+			type: Array as PropType<CXDataExchangeOption[]>,
 			required: true,
 		},
 		cxPlanets: {
@@ -24,7 +24,7 @@
 			required: true,
 		},
 		empireTickerOptions: {
-			type: Array as PropType<ICXDataTickerOption[]>,
+			type: Array as PropType<CXDataTickerOption[]>,
 			required: true,
 		},
 		planetTickerOptions: {
@@ -34,9 +34,9 @@
 	});
 
 	const emit = defineEmits<{
-		(e: "update:cxEmpire", value: ICXDataExchangeOption[]): void;
+		(e: "update:cxEmpire", value: CXDataExchangeOption[]): void;
 		(e: "update:cxPlanets", value: ICXPlanetMap[string][]): void;
-		(e: "update:empireTickerOptions", value: ICXDataTickerOption[]): void;
+		(e: "update:empireTickerOptions", value: CXDataTickerOption[]): void;
 		(e: "update:planetTickerOptions", value: ICXPlanetMap[string][]): void;
 	}>();
 

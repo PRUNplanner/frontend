@@ -22,10 +22,12 @@
 	import { inertClone } from "@/util/data";
 
 	// Types & Interfaces
-	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
+	import { IPlan } from "@/stores/planningStore.types";
+	import type {
+		PlanEmpireElement,
+		PlanEmpireJunction,
+	} from "@/features/api/schemas/empireData.schemas";
 	import {
-		IPlanEmpireJunction,
-		IPlanEmpireJunctionBasePlanners,
 		IPlanEmpireMatrix,
 		IPlanEmpireMatrixEmpires,
 	} from "@/features/manage/manage.types";
@@ -51,7 +53,7 @@
 
 	const props = defineProps({
 		empires: {
-			type: Array as PropType<IPlanEmpireElement[]>,
+			type: Array as PropType<PlanEmpireElement[]>,
 			required: true,
 		},
 		plans: {
@@ -61,9 +63,9 @@
 	});
 
 	// Local Data & Watcher
-	const localEmpires: WritableComputedRef<IPlanEmpireElement[]> = computed({
+	const localEmpires: WritableComputedRef<PlanEmpireElement[]> = computed({
 		get: () => inertClone(props.empires),
-		set: (value: IPlanEmpireElement[]) => emit("update:empireList", value),
+		set: (value: PlanEmpireElement[]) => emit("update:empireList", value),
 	});
 	const localPlans: ComputedRef<IPlan[]> = computed(() =>
 		inertClone(props.plans)
@@ -74,7 +76,7 @@
 	});
 
 	const emit = defineEmits<{
-		(e: "update:empireList", value: IPlanEmpireElement[]): void;
+		(e: "update:empireList", value: PlanEmpireElement[]): void;
 		(e: "update:planList", value: IPlan[]): void;
 	}>();
 
@@ -191,14 +193,14 @@
 	}
 
 	// junction patch matrix
-	const patchJunctionData: ComputedRef<IPlanEmpireJunction[]> = computed(
+	const patchJunctionData: ComputedRef<PlanEmpireJunction[]> = computed(
 		() => {
-			const junctions: IPlanEmpireJunction[] = [];
+			const junctions: PlanEmpireJunction[] = [];
 
 			matrixEmpires.value.forEach((me) => {
 				const indJunction = {
 					empire_uuid: me.empireUuid,
-					baseplanners: [] as IPlanEmpireJunctionBasePlanners[],
+					baseplanners: [] as PlanEmpireJunction["baseplanners"],
 				};
 
 				matrix.value.forEach((mp) => {
@@ -219,7 +221,7 @@
 	async function updateEmitEmpiresPlans(): Promise<void> {
 		useQuery("GetAllEmpires")
 			.execute()
-			.then((e: IPlanEmpireElement[]) => {
+			.then((e: PlanEmpireElement[]) => {
 				emit("update:empireList", e);
 			});
 
@@ -343,9 +345,7 @@
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="w-43.75 text-wrap">
-					{{
-						planetName(rowData.planetId, "Loading...")
-					}}
+					{{ planetName(rowData.planetId, "Loading...") }}
 				</div>
 			</template>
 		</x-n-data-table-column>

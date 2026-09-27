@@ -6,7 +6,8 @@ import {
 	IRecipe,
 } from "@/features/api/gameData.types";
 import { IPriceBook } from "@/features/cx/priceBook";
-import { IPlan, IPlanEmpire } from "@/stores/planningStore.types";
+import { IPlan } from "@/stores/planningStore.types";
+import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
 import {
 	IOverviewData,
 	IPlanResult,
@@ -41,7 +42,7 @@ export interface IPlanInput {
 		"plan_data" | "plan_cogc" | "plan_corphq" | "plan_permits_used"
 	>;
 	// active empire, for the faction bonus
-	empire: IPlanEmpire | undefined;
+	empire: PlanEmpire | undefined;
 	// CX the prices in the context were built for, undefined for Universe
 	cxUuid: string | undefined;
 	// compute recipe options for every building (default true)

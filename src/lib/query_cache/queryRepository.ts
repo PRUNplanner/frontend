@@ -83,20 +83,20 @@ import {
 	IRecipe,
 } from "@/features/api/gameData.types";
 
-import {
-	ICXEmpireJunction,
-	IPlanCloneResponse,
-	IPlanEmpireJunction,
-} from "@/features/manage/manage.types";
-import {
-	ICX,
-	ICXData,
-	ICXPut,
-	IPlan,
-	IPlanEmpire,
-	IPlanEmpireElement,
-	IPlanShare,
-} from "@/stores/planningStore.types";
+import { IPlanCloneResponse } from "@/features/manage/manage.types";
+import type {
+	CX,
+	CXData,
+	CXEmpireJunction,
+} from "@/features/api/schemas/cxData.schemas";
+import type {
+	EmpireMaterialIOState,
+	EmpirePayload,
+	PlanEmpireElement,
+	PlanEmpireJunction,
+} from "@/features/api/schemas/empireData.schemas";
+import { IPlan, IPlanShare } from "@/stores/planningStore.types";
+import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
 
 import type {
 	Shared,
@@ -105,11 +105,6 @@ import type {
 } from "@/features/api/schemas/sharingData.schemas";
 
 import { IExploration } from "@/features/market_exploration/marketExploration.types";
-import {
-	IEmpireCreatePayload,
-	IEmpireMaterialIOState,
-	IEmpirePatchPayload,
-} from "@/features/empire/empire.types";
 import {
 	IPlanCreateData,
 	IPlanSaveData,
@@ -380,7 +375,7 @@ export function useQueryRepository() {
 		} as IQueryDefinition<{ sharedUuid: string }, SharedCloneResponse>,
 		CreateEmpire: {
 			key: () => ["planningdata", "empire", "create"],
-			fetchFn: async (params: { data: IEmpireCreatePayload }) => {
+			fetchFn: async (params: { data: EmpirePayload }) => {
 				const data = await callCreateEmpire(params.data);
 				await queryStore.invalidateKey(["planningdata", "empire"], {
 					exact: false,
@@ -389,7 +384,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<{ data: IEmpireCreatePayload }, IPlanEmpire>,
+		} as IQueryDefinition<{ data: EmpirePayload }, PlanEmpire>,
 		DeleteEmpire: {
 			key: (params: { empireUuid: string }) => [
 				"planningdata",
@@ -409,7 +404,7 @@ export function useQueryRepository() {
 		} as IQueryDefinition<{ empireUuid: string }, boolean>,
 		PatchEmpireCXJunctions: {
 			key: () => ["planningdata", "empire", "cx", "junctions"],
-			fetchFn: async (params: { junctions: ICXEmpireJunction[] }) => {
+			fetchFn: async (params: { junctions: CXEmpireJunction[] }) => {
 				const data = await callUpdateCXJunctions(params.junctions);
 				await queryStore.invalidateKey(["planningdata", "empire"], {
 					exact: false,
@@ -421,7 +416,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<{ junctions: ICXEmpireJunction[] }, ICX[]>,
+		} as IQueryDefinition<{ junctions: CXEmpireJunction[] }, CX[]>,
 		PatchEmpireState: {
 			key: (params: { empireUuid: string }) => [
 				"planningdata",
@@ -431,7 +426,7 @@ export function useQueryRepository() {
 			],
 			fetchFn: async (params: {
 				empireUuid: string;
-				empireState: IEmpireMaterialIOState;
+				empireState: EmpireMaterialIOState;
 			}) => {
 				return await callPatchEmpireState(
 					params.empireUuid,
@@ -441,8 +436,8 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<
-			{ empireUuid: string; empireState: IEmpireMaterialIOState },
-			IPlanEmpire
+			{ empireUuid: string; empireState: EmpireMaterialIOState },
+			PlanEmpire
 		>,
 		PatchCX: {
 			key: (params: { cxUuid: string }) => [
@@ -454,7 +449,7 @@ export function useQueryRepository() {
 			fetchFn: async (params: {
 				cxName: string;
 				cxUuid: string;
-				data: ICXData;
+				data: CXData;
 			}) => {
 				const data = await callPatchCX(
 					params.cxName,
@@ -472,8 +467,8 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<
-			{ cxName: string; cxUuid: string; data: ICXData },
-			ICXPut
+			{ cxName: string; cxUuid: string; data: CXData },
+			CX
 		>,
 		GetAllEmpires: {
 			key: () => ["planningdata", "empire", "list"],
@@ -484,7 +479,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as IQueryDefinition<void, IPlanEmpireElement[]>,
+		} as IQueryDefinition<void, PlanEmpireElement[]>,
 		GetEmpirePlans: {
 			key: (params: { empireUuid: string }) => [
 				"planningdata",
@@ -525,7 +520,7 @@ export function useQueryRepository() {
 			],
 			fetchFn: async (params: {
 				empireUuid: string;
-				data: IEmpirePatchPayload;
+				data: EmpirePayload;
 			}) => {
 				const data = await callPatchEmpire(
 					params.empireUuid,
@@ -539,12 +534,12 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<
-			{ empireUuid: string; data: IEmpirePatchPayload },
-			IPlanEmpire
+			{ empireUuid: string; data: EmpirePayload },
+			PlanEmpire
 		>,
 		PatchEmpirePlanJunctions: {
 			key: () => ["planningdata", "empire", "plan", "junctions"],
-			fetchFn: async (params: { junctions: IPlanEmpireJunction[] }) => {
+			fetchFn: async (params: { junctions: PlanEmpireJunction[] }) => {
 				const data = await callPatchEmpirePlanJunctions(
 					params.junctions
 				);
@@ -562,8 +557,8 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<
-			{ junctions: IPlanEmpireJunction[] },
-			IPlanEmpireElement[]
+			{ junctions: PlanEmpireJunction[] },
+			PlanEmpireElement[]
 		>,
 		CreateCX: {
 			key: () => ["planningdata", "cx", "create"],
@@ -576,7 +571,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<{ cxName: string }, ICX>,
+		} as IQueryDefinition<{ cxName: string }, CX>,
 		DeleteCX: {
 			key: (params: { cxUuid: string }) => [
 				"planningdata",
@@ -603,7 +598,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as IQueryDefinition<void, ICX[]>,
+		} as IQueryDefinition<void, CX[]>,
 		GetPlan: {
 			key: (params: { planUuid: string }) => [
 				"planningdata",

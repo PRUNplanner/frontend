@@ -19,7 +19,7 @@ import {
 // test data
 import empire_list from "@/tests/test_data/api_data_empire_list.json";
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
-import { IEmpireMaterialIOState } from "@/features/empire/empire.types";
+import type { EmpireMaterialIOState } from "@/features/api/schemas/empireData.schemas";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -138,7 +138,7 @@ describe("Empire Data API Calls", async () => {
 	it("callPatchEmpireState", async () => {
 		const spyApiServicePatch = vi.spyOn(apiService, "patch");
 
-		const mockData: IEmpireMaterialIOState = {
+		const mockData: EmpireMaterialIOState = {
 			metadata: {
 				faction: "MORIA",
 				permits_used: 3,

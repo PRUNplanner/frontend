@@ -1,6 +1,6 @@
+import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+
 type IPlanRecord = Record<string, IPlan>;
-type IEmpireRecord = Record<string, IPlanEmpireElement>;
-type ICXRecord = Record<string, ICX>;
 type ISharedRecord = Record<string, ISharedPlan>;
 
 export type PLAN_COGCPROGRAM_TYPE =
@@ -19,14 +19,6 @@ export type PLAN_COGCPROGRAM_TYPE =
 	| "TECHNICIANS"
 	| "ENGINEERS"
 	| "SCIENTISTS";
-
-export type PLAN_FACTION =
-	| "NONE"
-	| "ANTARES"
-	| "BENTEN"
-	| "HORTUS"
-	| "MORIA"
-	| "OUTSIDEREGION";
 
 export interface IPlanDataInfrastructure {
 	building:
@@ -62,11 +54,7 @@ export interface IPlanDataExpert {
 }
 
 type PLAN_WORKFORCE_TYPE =
-	| "pioneer"
-	| "settler"
-	| "technician"
-	| "engineer"
-	| "scientist";
+	"pioneer" | "settler" | "technician" | "engineer" | "scientist";
 
 export interface IPlanDataWorkforce {
 	type: PLAN_WORKFORCE_TYPE;
@@ -92,22 +80,6 @@ export interface IPlanData {
 	workforce: IPlanDataWorkforce[];
 }
 
-export interface IPlanEmpire {
-	empire_faction: string;
-	empire_permits_used: number;
-	empire_permits_total: number;
-	uuid: string;
-	empire_name: string;
-}
-
-export interface IPlanEmpireElement extends IPlanEmpire {
-	plans: {
-		uuid: string;
-		plan_name: string;
-		planet_natural_id: string;
-	}[];
-}
-
 export interface IPlan {
 	uuid: string | undefined;
 	plan_name: string | undefined;
@@ -116,7 +88,7 @@ export interface IPlan {
 	plan_corphq: boolean;
 	plan_cogc: PLAN_COGCPROGRAM_TYPE;
 	plan_data: IPlanData;
-	empires?: IPlanEmpire[];
+	empires?: PlanEmpire[];
 }
 
 export interface IPlanShare {
@@ -124,73 +96,6 @@ export interface IPlanShare {
 	created_at: string;
 	view_count: number;
 	plan_details: IPlan;
-}
-
-interface IPlanLoadData {
-	planData: IPlan;
-	empires: IPlanEmpireElement[];
-}
-
-type CX_EXCHANGE_OPTION_TYPE =
-	| "AI1_7D"
-	| "NC1_7D"
-	| "CI1_7D"
-	| "IC1_7D"
-	| "UNIVERSE_7D"
-	| "AI1_30D"
-	| "NC1_30D"
-	| "CI1_30D"
-	| "IC1_30D"
-	| "UNIVERSE_30D"
-	| "AI1_ASK"
-	| "AI1_BID"
-	| "NC1_ASK"
-	| "NC1_BID"
-	| "CI1_ASK"
-	| "CI1_BID"
-	| "IC1_ASK"
-	| "IC1_BID";
-
-type CX_PREFERENCE_TYPE = "BUY" | "SELL" | "BOTH";
-
-export interface ICXDataExchangeOption {
-	type: CX_PREFERENCE_TYPE;
-	exchange: CX_EXCHANGE_OPTION_TYPE;
-}
-
-export interface ICXDataTickerOption {
-	type: CX_PREFERENCE_TYPE;
-	ticker: string;
-	value: number;
-}
-
-export interface ICXData {
-	cx_empire: ICXDataExchangeOption[];
-	cx_planets: { planet: string; preferences: ICXDataExchangeOption[] }[];
-	ticker_empire: ICXDataTickerOption[];
-	ticker_planets: { planet: string; preferences: ICXDataTickerOption[] }[];
-}
-
-export interface IPlanCXEmpireElement {
-	uuid: string;
-	empire_name: string;
-	plans: {
-		uuid: string;
-		plan_name: string;
-		planet_natural_id: string;
-	}[];
-}
-
-export interface ICX {
-	uuid: string;
-	cx_name: string;
-	empires: IPlanCXEmpireElement[];
-	cx_data: ICXData;
-}
-
-export interface ICXPut {
-	cx_name: string;
-	cx_data: ICXData;
 }
 
 export interface ISharedPlan {

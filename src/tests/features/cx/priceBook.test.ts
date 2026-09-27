@@ -4,7 +4,7 @@ import { createPriceBook } from "@/features/cx/priceBook";
 
 // Types & Interfaces
 import { IExchange } from "@/features/api/gameData.types";
-import { ICXData } from "@/stores/planningStore.types";
+import type { CXData } from "@/features/api/schemas/cxData.schemas";
 
 const exchange = (vwap_30d: number, vwap_7d: number = 0) =>
 	({ vwap_30d, vwap_7d }) as IExchange;
@@ -19,7 +19,7 @@ const getExchange = vi.fn((id: string) => {
 	return exchanges[id];
 });
 
-const cx: ICXData = {
+const cx: CXData = {
 	cx_empire: [{ type: "BOTH", exchange: "NC1_7D" }],
 	cx_planets: [],
 	ticker_empire: [{ type: "BUY", ticker: "DW", value: 42 }],

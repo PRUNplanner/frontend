@@ -41,7 +41,7 @@
 	import CXPlanetPreferenceTable from "@/features/exchanges/components/CXPlanetPreferenceTable.vue";
 
 	// Types & Interfaces
-	import { ICX, ICXData } from "@/stores/planningStore.types";
+	import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
 	import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 	// UI
@@ -65,11 +65,11 @@
 	});
 
 	const localCXUuid: Ref<string | undefined> = ref(props.cxUuid);
-	const localCXs: Ref<ICX[]> = ref([]);
-	const selectedCX: Ref<ICX | null> = ref(null);
+	const localCXs: Ref<CX[]> = ref([]);
+	const selectedCX: Ref<CX | null> = ref(null);
 	const selectedImportExport: Ref<boolean> = ref(false);
 	const selectedName: Ref<string | null> = ref(null);
-	const rawSelectedCX: Ref<ICX | null> = ref(null);
+	const rawSelectedCX: Ref<CX | null> = ref(null);
 
 	const selectorDropdownOptions = computed(() =>
 		localCXs.value.map((c) => ({
@@ -147,7 +147,7 @@
 		},
 	});
 
-	const patchData: ComputedRef<undefined | ICXData> = computed(() => {
+	const patchData: ComputedRef<undefined | CXData> = computed(() => {
 		const activeCX = selectedCX.value;
 		if (activeCX && selectedName.value && selectedName.value != "") {
 			const patch = {
@@ -177,7 +177,7 @@
 	});
 
 	const isPatching: Ref<boolean> = ref(false);
-	async function patchCX(data: ICXData): Promise<void> {
+	async function patchCX(data: CXData): Promise<void> {
 		if (selectedCX.value) {
 			isPatching.value = true;
 
@@ -257,7 +257,7 @@
 		load-c-x
 		:cx-uuid="props.cxUuid"
 		@update:cx-uuid="(cxUuid: string | undefined) => (localCXUuid = cxUuid)"
-		@data:cx="(data: ICX[]) => (localCXs = data)"
+		@data:cx="(data: CX[]) => (localCXs = data)"
 		@data:plan:list:planets="(data: string[]) => (localPlanetList = data)">
 		<WrapperGameDataLoader load-exchanges load-materials>
 			<template v-if="!localCXUuid">

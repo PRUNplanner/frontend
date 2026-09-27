@@ -13,20 +13,20 @@ import {
 	IRecipe,
 } from "@/features/api/gameData.types";
 
-import {
-	ICXEmpireJunction,
-	IPlanCloneResponse,
-	IPlanEmpireJunction,
-} from "@/features/manage/manage.types";
-import {
-	ICX,
-	ICXData,
-	ICXPut,
-	IPlan,
-	IPlanEmpire,
-	IPlanEmpireElement,
-	IPlanShare,
-} from "@/stores/planningStore.types";
+import { IPlanCloneResponse } from "@/features/manage/manage.types";
+import type {
+	CX,
+	CXData,
+	CXEmpireJunction,
+} from "@/features/api/schemas/cxData.schemas";
+import type {
+	EmpireMaterialIOState,
+	EmpirePayload,
+	PlanEmpireElement,
+	PlanEmpireJunction,
+} from "@/features/api/schemas/empireData.schemas";
+import { IPlan, IPlanShare } from "@/stores/planningStore.types";
+import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
 
 import type {
 	Shared,
@@ -35,11 +35,6 @@ import type {
 } from "@/features/api/schemas/sharingData.schemas";
 
 import { IExploration } from "@/features/market_exploration/marketExploration.types";
-import {
-	IEmpireCreatePayload,
-	IEmpireMaterialIOState,
-	IEmpirePatchPayload,
-} from "@/features/empire/empire.types";
 import {
 	IPlanCreateData,
 	IPlanSaveData,
@@ -112,33 +107,33 @@ export interface IQueryRepository {
 		{ sharedUuid: string },
 		SharedCloneResponse
 	>;
-	CreateEmpire: IQueryDefinition<{ data: IEmpireCreatePayload }, IPlanEmpire>;
+	CreateEmpire: IQueryDefinition<{ data: EmpirePayload }, PlanEmpire>;
 	DeleteEmpire: IQueryDefinition<{ empireUuid: string }, boolean>;
 	PatchEmpireCXJunctions: IQueryDefinition<
-		{ junctions: ICXEmpireJunction[] },
-		ICX[]
+		{ junctions: CXEmpireJunction[] },
+		CX[]
 	>;
 	PatchCX: IQueryDefinition<
-		{ cxName: string; cxUuid: string; data: ICXData },
-		ICXPut
+		{ cxName: string; cxUuid: string; data: CXData },
+		CX
 	>;
-	GetAllEmpires: IQueryDefinition<undefined, IPlanEmpireElement[]>;
+	GetAllEmpires: IQueryDefinition<undefined, PlanEmpireElement[]>;
 	GetEmpirePlans: IQueryDefinition<{ empireUuid: string }, IPlan[]>;
 	PatchEmpire: IQueryDefinition<
-		{ empireUuid: string; data: IEmpirePatchPayload },
-		IPlanEmpire
+		{ empireUuid: string; data: EmpirePayload },
+		PlanEmpire
 	>;
 	PatchEmpirePlanJunctions: IQueryDefinition<
-		{ junctions: IPlanEmpireJunction[] },
-		IPlanEmpireElement[]
+		{ junctions: PlanEmpireJunction[] },
+		PlanEmpireElement[]
 	>;
 	PatchEmpireState: IQueryDefinition<
-		{ empireUuid: string; empireState: IEmpireMaterialIOState },
-		IPlanEmpire
+		{ empireUuid: string; empireState: EmpireMaterialIOState },
+		PlanEmpire
 	>;
-	CreateCX: IQueryDefinition<{ cxName: string }, ICX>;
+	CreateCX: IQueryDefinition<{ cxName: string }, CX>;
 	DeleteCX: IQueryDefinition<{ cxUuid: string }, boolean>;
-	GetAllCX: IQueryDefinition<undefined, ICX[]>;
+	GetAllCX: IQueryDefinition<undefined, CX[]>;
 	GetPlan: IQueryDefinition<{ planUuid: string }, IPlan>;
 	GetAllPlans: IQueryDefinition<undefined, IPlan[]>;
 	ClonePlan: IQueryDefinition<

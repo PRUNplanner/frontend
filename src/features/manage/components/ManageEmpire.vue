@@ -9,12 +9,12 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import {
-		ICX,
-		IPlanEmpireElement,
-		PLAN_FACTION,
-	} from "@/stores/planningStore.types";
-	import { ICXEmpireJunction } from "@/features/manage/manage.types";
+	import type {
+		CX,
+		CXEmpireJunction,
+	} from "@/features/api/schemas/cxData.schemas";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { PlanFaction } from "@/features/api/schemas/planningData.schemas";
 	import { PSelectOption } from "@/ui/ui.types";
 
 	// Util
@@ -37,20 +37,20 @@
 
 	const props = defineProps({
 		empires: {
-			type: Array as PropType<IPlanEmpireElement[]>,
+			type: Array as PropType<PlanEmpireElement[]>,
 			required: true,
 		},
 		cx: {
-			type: Array as PropType<ICX[]>,
+			type: Array as PropType<CX[]>,
 			required: true,
 		},
 	});
 
 	// Local Data & Watcher
-	const localEmpires: ComputedRef<IPlanEmpireElement[]> = computed(() =>
+	const localEmpires: ComputedRef<PlanEmpireElement[]> = computed(() =>
 		inertClone(props.empires)
 	);
-	const localCX: ComputedRef<ICX[]> = computed(() => inertClone(props.cx));
+	const localCX: ComputedRef<CX[]> = computed(() => inertClone(props.cx));
 
 	watch([() => props.empires, () => props.cx], () => {
 		generateCXOptions();
@@ -58,8 +58,8 @@
 	});
 
 	const emit = defineEmits<{
-		(e: "update:cxList", value: ICX[]): void;
-		(e: "update:empireList", value: IPlanEmpireElement[]): void;
+		(e: "update:cxList", value: CX[]): void;
+		(e: "update:empireList", value: PlanEmpireElement[]): void;
 	}>();
 
 	const refCXOptions: Ref<PSelectOption[]> = ref([]);
@@ -67,7 +67,7 @@
 	const refIsUpdatingJunctions: Ref<boolean> = ref(false);
 	const refShowCreateEmpire: Ref<boolean> = ref(false);
 
-	const refCreateFaction: Ref<PLAN_FACTION> = ref("NONE");
+	const refCreateFaction: Ref<PlanFaction> = ref("NONE");
 	const refCreatePermitsUsed: Ref<number> = ref(1);
 	const refCreatePermitsTotal: Ref<number> = ref(2);
 	const refCreateName: Ref<string | undefined> = ref(undefined);
@@ -133,12 +133,12 @@
 		refCXOptions.value = options;
 	}
 
-	const cxEmpireJunctions: ComputedRef<ICXEmpireJunction[]> = computed(() => {
-		const jct: ICXEmpireJunction[] = [];
+	const cxEmpireJunctions: ComputedRef<CXEmpireJunction[]> = computed(() => {
+		const jct: CXEmpireJunction[] = [];
 
 		// use all cx
 		localCX.value.forEach((cx) => {
-			const point: ICXEmpireJunction = {
+			const point: CXEmpireJunction = {
 				cx_uuid: cx.uuid,
 				empires: [],
 			};

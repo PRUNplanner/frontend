@@ -24,25 +24,25 @@ import {
 	IPlanContext,
 } from "@/features/planning/engine/engine.types";
 import { IRecipe } from "@/features/api/gameData.types";
-import { IPlanEmpire, IPlanEmpireElement } from "@/stores/planningStore.types";
+import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 // recipes grouped by building, for the recipe array loaded last
 let groupedRecipes:
-	| { recipes: IRecipe[]; byBuilding: Record<string, IRecipe[]> }
-	| undefined;
+	{ recipes: IRecipe[]; byBuilding: Record<string, IRecipe[]> } | undefined;
 
 /**
  * The empire a plan is calculated for: the option with the given uuid,
  * undefined without a uuid or a match
  *
  * @param {string | undefined} empireUuid Selected empire
- * @param {IPlanEmpireElement[] | undefined} empireOptions Empires
- * @returns {IPlanEmpire | undefined} Active empire
+ * @param {PlanEmpireElement[] | undefined} empireOptions Empires
+ * @returns {PlanEmpire | undefined} Active empire
  */
 export function getActiveEmpire(
 	empireUuid: string | undefined,
-	empireOptions: IPlanEmpireElement[] | undefined
-): IPlanEmpire | undefined {
+	empireOptions: PlanEmpireElement[] | undefined
+): PlanEmpire | undefined {
 	if (!empireUuid) return undefined;
 	return empireOptions?.find((e) => e.uuid === empireUuid);
 }

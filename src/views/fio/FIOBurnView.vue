@@ -1,11 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		ComputedRef,
-		defineAsyncComponent,
-		Ref,
-		ref,
-	} from "vue";
+	import { computed, ComputedRef, defineAsyncComponent, Ref, ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -50,7 +44,8 @@
 	import { relativeFromDate } from "@/util/date";
 
 	// Types & Interfaces
-	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
+	import { IPlan } from "@/stores/planningStore.types";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 	import {
 		IFIOBurnPlanetTableElement,
@@ -76,7 +71,7 @@
 
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
 	const planData: Ref<IPlan[]> = ref([]);
-	const empireList: Ref<IPlanEmpireElement[]> = ref([]);
+	const empireList: Ref<PlanEmpireElement[]> = ref([]);
 	const calculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
 
 	const progressCurrent = ref(0);
@@ -181,9 +176,7 @@
 		@update:cx-uuid="
 			(value: string | undefined) => (selectedCXUuid = value)
 		"
-		@data:empire:list="
-			(value: IPlanEmpireElement[]) => (empireList = value)
-		"
+		@data:empire:list="(value: PlanEmpireElement[]) => (empireList = value)"
 		@data:empire:plans="(value: IPlan[]) => (planData = value)">
 		<template #default="{ empirePlanetList }">
 			<AsyncWrapperGameDataLoader

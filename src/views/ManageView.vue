@@ -28,15 +28,13 @@
 	);
 
 	// Types & Interfaces
-	import {
-		ICX,
-		IPlan,
-		IPlanEmpireElement,
-	} from "@/stores/planningStore.types";
+	import { IPlan } from "@/stores/planningStore.types";
+	import type { CX } from "@/features/api/schemas/cxData.schemas";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
-	const empireList: Ref<IPlanEmpireElement[]> = ref([]);
+	const empireList: Ref<PlanEmpireElement[]> = ref([]);
 	const planList: Ref<IPlan[]> = ref([]);
-	const cxList: Ref<ICX[]> = ref([]);
+	const cxList: Ref<CX[]> = ref([]);
 
 	async function planOnComplete() {
 		trackUser({
@@ -53,10 +51,8 @@
 		plan-list
 		load-c-x
 		load-shared
-		@data:cx="(value: ICX[]) => (cxList = value)"
-		@data:empire:list="
-			(value: IPlanEmpireElement[]) => (empireList = value)
-		"
+		@data:cx="(value: CX[]) => (cxList = value)"
+		@data:empire:list="(value: PlanEmpireElement[]) => (empireList = value)"
 		@data:plan:list="(value: IPlan[]) => (planList = value)"
 		@complete="planOnComplete">
 		<div

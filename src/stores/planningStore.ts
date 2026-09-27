@@ -6,16 +6,13 @@ import { getObjectSize, inertClone } from "@/util/data";
 
 // Types & Interfaces
 import {
-	ICX,
-	ICXData,
-	ICXRecord,
-	IEmpireRecord,
 	IPlan,
-	IPlanEmpireElement,
 	IPlanRecord,
 	ISharedPlan,
 	ISharedRecord,
 } from "@/stores/planningStore.types";
+import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 import {
 	IFIOSitePlanet,
@@ -30,9 +27,9 @@ export const usePlanningStore = defineStore(
 		/** Key: Plan.uuid */
 		const plans: Ref<IPlanRecord> = ref({});
 		/** Key: Empire.uuid */
-		const empires: Ref<IEmpireRecord> = ref({});
+		const empires: Ref<Record<string, PlanEmpireElement>> = ref({});
 		/** Key: CX.uuid */
-		const cxs: Ref<ICXRecord> = ref({});
+		const cxs: Ref<Record<string, CX>> = ref({});
 		/** Key: Plan.uuid */
 		const shared: Ref<ISharedRecord> = ref({});
 		const fio_storage_planets: Ref<Record<string, IFIOStorageElement>> =
@@ -68,9 +65,9 @@ export const usePlanningStore = defineStore(
 		 * Sets empires by their Uuid
 		 * @author jplacht
 		 *
-		 * @param {IPlanEmpireElement[]} empireList Empire Data
+		 * @param {PlanEmpireElement[]} empireList Empire Data
 		 */
-		function setEmpires(empireList: IPlanEmpireElement[]): void {
+		function setEmpires(empireList: PlanEmpireElement[]): void {
 			empires.value = {};
 			// store by Empire.uuid
 			empireList.forEach((e) => {
@@ -115,9 +112,9 @@ export const usePlanningStore = defineStore(
 		 * Sets multiple CX by their Uuid
 		 * @author jplacht
 		 *
-		 * @param {ICX[]} data CX Data List
+		 * @param {CX[]} data CX Data List
 		 */
-		function setCXs(data: ICX[]): void {
+		function setCXs(data: CX[]): void {
 			cxs.value = {};
 
 			// store by CX.uuid
@@ -126,7 +123,7 @@ export const usePlanningStore = defineStore(
 			});
 		}
 
-		function setCX(cxUuid: string, cxName: string, data: ICXData): void {
+		function setCX(cxUuid: string, cxName: string, data: CXData): void {
 			if (cxs.value[cxUuid]) {
 				cxs.value[cxUuid].cx_name = cxName;
 				cxs.value[cxUuid].cx_data = data;
@@ -176,9 +173,9 @@ export const usePlanningStore = defineStore(
 		 * @author jplacht
 		 *
 		 * @param {string} cxUuid UUid
-		 * @returns {ICX} CX Preference Data
+		 * @returns {CX} CX Preference Data
 		 */
-		function getCX(cxUuid: string): ICX {
+		function getCX(cxUuid: string): CX {
 			const findCX = cxs.value[cxUuid];
 
 			if (findCX) return inertClone(findCX);
@@ -214,9 +211,9 @@ export const usePlanningStore = defineStore(
 		 *
 		 * @author jplacht
 		 *
-		 * @returns {ICX[]} CX Preference Data Array
+		 * @returns {CX[]} CX Preference Data Array
 		 */
-		function getAllCX(): ICX[] {
+		function getAllCX(): CX[] {
 			return Object.values(cxs.value);
 		}
 

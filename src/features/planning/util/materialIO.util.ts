@@ -2,9 +2,12 @@
 import {
 	IEmpireMaterialIO,
 	IEmpireMaterialIOPlanet,
-	IEmpireMaterialIOState,
 	IEmpirePlanMaterialIO,
 } from "@/features/empire/empire.types";
+import type {
+	EmpireMaterialIOState,
+	PlanEmpireElement,
+} from "@/features/api/schemas/empireData.schemas";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import {
 	combineMaterialIOMinimal,
@@ -17,7 +20,6 @@ import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
-import { IPlanEmpireElement, PLAN_FACTION } from "@/stores/planningStore.types";
 
 export function useMaterialIOUtil() {
 	const { materialsMap } = useMaterialData();
@@ -144,14 +146,14 @@ export function useMaterialIOUtil() {
 	}
 
 	async function empireMaterialIOState(
-		empire: IPlanEmpireElement | undefined,
+		empire: PlanEmpireElement | undefined,
 		data: IEmpireMaterialIO[]
-	): Promise<IEmpireMaterialIOState | undefined> {
+	): Promise<EmpireMaterialIOState | undefined> {
 		if (!empire) return undefined;
 
-		const result: IEmpireMaterialIOState = {
+		const result: EmpireMaterialIOState = {
 			metadata: {
-				faction: empire.empire_faction as PLAN_FACTION,
+				faction: empire.empire_faction,
 				permits_used: empire.empire_permits_used,
 				permits_total: empire.empire_permits_total,
 				plan_count: empire.plans.length,

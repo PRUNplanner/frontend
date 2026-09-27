@@ -6,9 +6,9 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IPlanEmpire } from "@/stores/planningStore.types";
+import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
 
-const empire = (uuid: string, name: string): IPlanEmpire => ({
+const empire = (uuid: string, name: string): PlanEmpire => ({
 	uuid,
 	empire_name: name,
 	empire_faction: "NONE",

@@ -5,14 +5,12 @@ import { useI18n } from "vue-i18n";
 import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Types & Interfaces
-import {
-	ICXDataExchangeOption,
-	ICXDataTickerOption,
-} from "@/stores/planningStore.types";
-import {
-	ExchangeType,
-	PreferenceType,
-} from "@/features/exchanges/manageCX.types";
+import type {
+	CXDataExchangeOption,
+	CXDataTickerOption,
+	CXExchangeOptionType,
+	CXPreferenceType,
+} from "@/features/api/schemas/cxData.schemas";
 import { PSelectOption } from "@/ui/ui.types";
 
 export function useCXManagement() {
@@ -22,37 +20,43 @@ export function useCXManagement() {
 	const typeOptions: PSelectOption[] = [
 		{
 			label: t("exchanges.preference_type.BOTH"),
-			value: "BOTH" as PreferenceType,
+			value: "BOTH" as CXPreferenceType,
 		},
 		{
 			label: t("exchanges.preference_type.BUY"),
-			value: "BUY" as PreferenceType,
+			value: "BUY" as CXPreferenceType,
 		},
 		{
 			label: t("exchanges.preference_type.SELL"),
-			value: "SELL" as PreferenceType,
+			value: "SELL" as CXPreferenceType,
 		},
 	];
 
 	const exchangeOptions: PSelectOption[] = [
-		{ label: "AI1 VWAP 7D" as ExchangeType, value: "AI1_7D" },
-		{ label: "NC1 VWAP 7D" as ExchangeType, value: "NC1_7D" },
-		{ label: "CI1 VWAP 7D" as ExchangeType, value: "CI1_7D" },
-		{ label: "IC1 VWAP 7D" as ExchangeType, value: "IC1_7D" },
-		{ label: "UNIVERSE VWAP 7D" as ExchangeType, value: "UNIVERSE_7D" },
-		{ label: "AI1 VWAP 30D" as ExchangeType, value: "AI1_30D" },
-		{ label: "NC1 VWAP 30D" as ExchangeType, value: "NC1_30D" },
-		{ label: "CI1 VWAP 30D" as ExchangeType, value: "CI1_30D" },
-		{ label: "IC1 VWAP 30D" as ExchangeType, value: "IC1_30D" },
-		{ label: "UNIVERSE VWAP 30D" as ExchangeType, value: "UNIVERSE_30D" },
-		{ label: "AI1 ASK" as ExchangeType, value: "AI1_ASK" },
-		{ label: "AI1 BID" as ExchangeType, value: "AI1_BID" },
-		{ label: "NC1 ASK" as ExchangeType, value: "NC1_ASK" },
-		{ label: "NC1 BID" as ExchangeType, value: "NC1_BID" },
-		{ label: "CI1 ASK" as ExchangeType, value: "CI1_ASK" },
-		{ label: "CI1 BID" as ExchangeType, value: "CI1_BID" },
-		{ label: "IC1 ASK" as ExchangeType, value: "IC1_ASK" },
-		{ label: "IC1 BID" as ExchangeType, value: "IC1_BID" },
+		{ label: "AI1 VWAP 7D" as CXExchangeOptionType, value: "AI1_7D" },
+		{ label: "NC1 VWAP 7D" as CXExchangeOptionType, value: "NC1_7D" },
+		{ label: "CI1 VWAP 7D" as CXExchangeOptionType, value: "CI1_7D" },
+		{ label: "IC1 VWAP 7D" as CXExchangeOptionType, value: "IC1_7D" },
+		{
+			label: "UNIVERSE VWAP 7D" as CXExchangeOptionType,
+			value: "UNIVERSE_7D",
+		},
+		{ label: "AI1 VWAP 30D" as CXExchangeOptionType, value: "AI1_30D" },
+		{ label: "NC1 VWAP 30D" as CXExchangeOptionType, value: "NC1_30D" },
+		{ label: "CI1 VWAP 30D" as CXExchangeOptionType, value: "CI1_30D" },
+		{ label: "IC1 VWAP 30D" as CXExchangeOptionType, value: "IC1_30D" },
+		{
+			label: "UNIVERSE VWAP 30D" as CXExchangeOptionType,
+			value: "UNIVERSE_30D",
+		},
+		{ label: "AI1 ASK" as CXExchangeOptionType, value: "AI1_ASK" },
+		{ label: "AI1 BID" as CXExchangeOptionType, value: "AI1_BID" },
+		{ label: "NC1 ASK" as CXExchangeOptionType, value: "NC1_ASK" },
+		{ label: "NC1 BID" as CXExchangeOptionType, value: "NC1_BID" },
+		{ label: "CI1 ASK" as CXExchangeOptionType, value: "CI1_ASK" },
+		{ label: "CI1 BID" as CXExchangeOptionType, value: "CI1_BID" },
+		{ label: "IC1 ASK" as CXExchangeOptionType, value: "IC1_ASK" },
+		{ label: "IC1 BID" as CXExchangeOptionType, value: "IC1_BID" },
 	];
 
 	const materialOptions: PSelectOption[] = materialSelectOptions.value;
@@ -64,13 +68,13 @@ export function useCXManagement() {
 	 *
 	 * @author jplacht
 	 *
-	 * @param {ICXDataExchangeOption[]} current To check preferences
-	 * @param {PreferenceType} check Type to check for adding
+	 * @param {CXDataExchangeOption[]} current To check preferences
+	 * @param {CXPreferenceType} check Type to check for adding
 	 * @returns {ComputedRef<boolean>} Check Result
 	 */
 	const canAddExchangePreference = (
-		current: ICXDataExchangeOption[],
-		check: PreferenceType
+		current: CXDataExchangeOption[],
+		check: CXPreferenceType
 	): ComputedRef<boolean> =>
 		computed(() => {
 			if (current.length === 0) return true;
@@ -93,19 +97,19 @@ export function useCXManagement() {
 	 *
 	 * @author jplacht
 	 *
-	 * @param {ICXDataTickerOption[]} current Current Ticker Preferences
+	 * @param {CXDataTickerOption[]} current Current Ticker Preferences
 	 * @param {string} checkTicker Ticker to Check
-	 * @param {PreferenceType} checkType Preference Type to Check
+	 * @param {CXPreferenceType} checkType Preference Type to Check
 	 * @returns {ComputedRef<boolean>} Check Result
 	 */
 	const canAddTickerPreference = (
-		current: ICXDataTickerOption[],
+		current: CXDataTickerOption[],
 		checkTicker: string,
-		checkType: PreferenceType
+		checkType: CXPreferenceType
 	): ComputedRef<boolean> =>
 		computed(() => {
 			// check if options exist
-			const exist: ICXDataTickerOption[] = current.filter(
+			const exist: CXDataTickerOption[] = current.filter(
 				(e) => e.ticker === checkTicker
 			);
 
@@ -130,16 +134,16 @@ export function useCXManagement() {
 	 *
 	 * @author jplacht
 	 *
-	 * @param {ICXDataExchangeOption[]} current Current Preferences
-	 * @param {PreferenceType} updateType Type to Update
-	 * @param {ExchangeType} updateExchange Exchange to Update
-	 * @returns {ICXDataExchangeOption[]} Updated Preferences
+	 * @param {CXDataExchangeOption[]} current Current Preferences
+	 * @param {CXPreferenceType} updateType Type to Update
+	 * @param {CXExchangeOptionType} updateExchange Exchange to Update
+	 * @returns {CXDataExchangeOption[]} Updated Preferences
 	 */
 	function updateExchangePreference(
-		current: ICXDataExchangeOption[],
-		updateType: PreferenceType,
-		updateExchange: ExchangeType
-	): ICXDataExchangeOption[] {
+		current: CXDataExchangeOption[],
+		updateType: CXPreferenceType,
+		updateExchange: CXExchangeOptionType
+	): CXDataExchangeOption[] {
 		if (canAddExchangePreference(current, updateType).value) {
 			const existing = current.find((e) => e.type === updateType);
 			if (existing) existing.exchange = updateExchange;
@@ -157,18 +161,18 @@ export function useCXManagement() {
 	 *
 	 * @author jplacht
 	 *
-	 * @param {ICXDataTickerOption[]} current Current Preferences
+	 * @param {CXDataTickerOption[]} current Current Preferences
 	 * @param {string} updateTicker Ticker to Update
-	 * @param {PreferenceType} updateType Type to Update
+	 * @param {CXPreferenceType} updateType Type to Update
 	 * @param {number} updateValue Value to Update
-	 * @returns {ICXDataTickerOption[]} Updated Preferences
+	 * @returns {CXDataTickerOption[]} Updated Preferences
 	 */
 	function updateTickerPreference(
-		current: ICXDataTickerOption[],
+		current: CXDataTickerOption[],
 		updateTicker: string,
-		updateType: PreferenceType,
+		updateType: CXPreferenceType,
 		updateValue: number
-	): ICXDataTickerOption[] {
+	): CXDataTickerOption[] {
 		if (canAddTickerPreference(current, updateTicker, updateType).value) {
 			const existing = current.find(
 				(e) => e.ticker === updateTicker && e.type === updateType
@@ -193,14 +197,14 @@ export function useCXManagement() {
 	 *
 	 * @author jplacht
 	 *
-	 * @param {ICXDataExchangeOption[]} current Current Preferences
-	 * @param {PreferenceType} deleteType Type to delete
-	 * @returns {ICXDataExchangeOption[]} Updated Preferences
+	 * @param {CXDataExchangeOption[]} current Current Preferences
+	 * @param {CXPreferenceType} deleteType Type to delete
+	 * @returns {CXDataExchangeOption[]} Updated Preferences
 	 */
 	function deleteExchangePreference(
-		current: ICXDataExchangeOption[],
-		deleteType: PreferenceType
-	): ICXDataExchangeOption[] {
+		current: CXDataExchangeOption[],
+		deleteType: CXPreferenceType
+	): CXDataExchangeOption[] {
 		return current.filter((o) => o.type !== deleteType);
 	}
 
@@ -209,16 +213,16 @@ export function useCXManagement() {
 	 *
 	 * @author jplacht
 	 *
-	 * @param {ICXDataTickerOption[]} current Current Preferences
+	 * @param {CXDataTickerOption[]} current Current Preferences
 	 * @param {string} deleteTicker Ticker to delete
-	 * @param {PreferenceType} deleteType Type to delete
-	 * @returns {ICXDataTickerOption[]} Updated Preferences
+	 * @param {CXPreferenceType} deleteType Type to delete
+	 * @returns {CXDataTickerOption[]} Updated Preferences
 	 */
 	function deleteTickerPreference(
-		current: ICXDataTickerOption[],
+		current: CXDataTickerOption[],
 		deleteTicker: string,
-		deleteType: PreferenceType
-	): ICXDataTickerOption[] {
+		deleteType: CXPreferenceType
+	): CXDataTickerOption[] {
 		return current.filter(
 			(o) => !(o.ticker === deleteTicker && o.type === deleteType)
 		);

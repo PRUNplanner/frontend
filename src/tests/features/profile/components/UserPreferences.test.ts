@@ -24,7 +24,8 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
+import { IPlan } from "@/stores/planningStore.types";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 // test data
 import empireList from "@/tests/test_data/api_data_empire_list.json";
@@ -61,14 +62,13 @@ function seed(
 	planningStore.setEmpires(
 		options.empires === false
 			? []
-			: (empireList as unknown as IPlanEmpireElement[])
+			: (empireList as unknown as PlanEmpireElement[])
 	);
 	planningStore.setPlans(options.plans ?? [PLAN, OTHER_PLAN]);
 	return useUserStore();
 }
 
-const mountPreferences = () =>
-	mountComponent(UserPreferences, {}, { pinia });
+const mountPreferences = () => mountComponent(UserPreferences, {}, { pinia });
 
 /** locale, default empire, XIT origin */
 const selects = (wrapper: VueWrapper) => wrapper.findAllComponents(PSelect);
@@ -78,9 +78,9 @@ const numberInputs = (wrapper: VueWrapper) =>
 const checkbox = (wrapper: VueWrapper) =>
 	wrapper.find<HTMLInputElement>("input[type=checkbox]");
 const planRows = (wrapper: VueWrapper) =>
-	wrapper.findAll(".ptable tbody tr").map((tr) =>
-		tr.findAll("td").map((td) => td.text())
-	);
+	wrapper
+		.findAll(".ptable tbody tr")
+		.map((tr) => tr.findAll("td").map((td) => td.text()));
 
 describe("UserPreferences", () => {
 	beforeAll(() => {
@@ -186,9 +186,7 @@ describe("UserPreferences", () => {
 			"00000009-0000-4000-8000-000000000000";
 		await mountPreferences();
 
-		expect(userStore.preferences.defaultEmpireUuid).toBe(
-			FIRST_EMPIRE.uuid
-		);
+		expect(userStore.preferences.defaultEmpireUuid).toBe(FIRST_EMPIRE.uuid);
 	});
 
 	it("keeps a default empire that still exists", async () => {
@@ -359,7 +357,11 @@ describe("UserPreferences", () => {
 		vi.resetModules();
 		const { default: FreshPreferences } =
 			await import("@/features/profile/components/UserPreferences.vue");
-		const { wrapper } = await mountComponent(FreshPreferences, {}, { pinia });
+		const { wrapper } = await mountComponent(
+			FreshPreferences,
+			{},
+			{ pinia }
+		);
 		const inputs = wrapper.findAll("input[inputmode=numeric]");
 
 		await inputs.at(0)!.setValue("3");

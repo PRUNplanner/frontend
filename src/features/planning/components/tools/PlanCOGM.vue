@@ -14,7 +14,10 @@
 
 	// Types & Interfaces
 	import { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
-	import { ICX, ICXDataTickerOption } from "@/stores/planningStore.types";
+	import type {
+		CX,
+		CXDataTickerOption,
+	} from "@/features/api/schemas/cxData.schemas";
 
 	// UI
 	import { PButtonGroup, PButton } from "@/ui";
@@ -45,13 +48,13 @@
 
 	const showCX = computed(() => props.cxUuid && props.planetId);
 
-	const selectedCX: Ref<ICX | null> = ref(null);
+	const selectedCX: Ref<CX | null> = ref(null);
 	// from store always, will not change but used on reload button
-	const rawSelectedCX: Ref<ICX | null> = ref(null);
+	const rawSelectedCX: Ref<CX | null> = ref(null);
 
-	const planetTickerCX: Ref<ICXDataTickerOption[]> = ref([]);
+	const planetTickerCX: Ref<CXDataTickerOption[]> = ref([]);
 
-	const patchData: Ref<ICX | null> = ref(null);
+	const patchData: Ref<CX | null> = ref(null);
 	const isPatching: Ref<boolean> = ref(false);
 
 	function getCXData(): void {

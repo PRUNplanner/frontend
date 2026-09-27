@@ -14,7 +14,8 @@ import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { calculateVisitation } from "@/features/planning/engine/visitation";
 
 // Types & Interfaces
-import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
+import { IPlan } from "@/stores/planningStore.types";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import { IBuilding } from "@/features/api/gameData.types";
 import {
 	IExpertRecord,
@@ -69,7 +70,7 @@ function normalize(value: unknown): unknown {
 
 interface ICase {
 	empireUuid?: string;
-	empireOptions?: IPlanEmpireElement[];
+	empireOptions?: PlanEmpireElement[];
 	cxUuid?: string;
 }
 
@@ -182,7 +183,7 @@ describe("usePlanCalculation characterization", () => {
 			// OUTSIDEREGION: faction bonus on RESOURCE_EXTRACTION (EXT, INC, RIG)
 			() => ({
 				empireUuid: "a208d74e-d07f-4722-8192-9b55d4140f58",
-				empireOptions: empire_list as unknown as IPlanEmpireElement[],
+				empireOptions: empire_list as unknown as PlanEmpireElement[],
 			}),
 		],
 		[
@@ -226,9 +227,7 @@ describe("usePlanCalculation characterization", () => {
 		// large: recipe options are already covered by the etherwind snapshots
 		await expect(
 			await runCase(plan(), options(), name !== "large")
-		).toMatchFileSnapshot(
-			snapshotPath(name)
-		);
+		).toMatchFileSnapshot(snapshotPath(name));
 	});
 
 	it.each(cases)("engine snapshot: %s", async (name, plan, options) => {
@@ -293,10 +292,7 @@ describe("usePlanCalculation characterization", () => {
 
 		it("B1: a building without expertise gets no COGC or expert bonus", async () => {
 			const { workforce, experts } = await efficiencyInputs();
-			const { elements } = efficiencyWithoutExpertise(
-				workforce,
-				experts
-			);
+			const { elements } = efficiencyWithoutExpertise(workforce, experts);
 			expect(
 				elements.filter((e) =>
 					["COGC", "EXPERT"].includes(e.efficiencyType)

@@ -6,7 +6,8 @@ import {
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 
 // Types & Interfaces
-import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
+import { IPlan } from "@/stores/planningStore.types";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 /**
  * B6 workload: calculates plans the way EmpireView.calculateEmpire does,
@@ -16,7 +17,7 @@ import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
 export async function empireLike(
 	plans: IPlan[],
 	empireUuid: string | undefined,
-	empireOptions: IPlanEmpireElement[],
+	empireOptions: PlanEmpireElement[],
 	cxUuid: string | undefined
 ): Promise<void> {
 	const { loadGameData, createContext } = usePlanContext();
