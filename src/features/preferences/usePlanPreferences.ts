@@ -4,7 +4,7 @@ import { computed, ComputedRef, WritableComputedRef } from "vue";
 import { useUserStore } from "@/stores/userStore";
 
 // Types & Interfaces
-import { IPreferencePerPlan } from "@/features/preferences/userPreferences.types";
+import type { PreferencePerPlan } from "@/features/api/schemas/user.schemas";
 
 export function usePlanPreferences(planUuid: string) {
 	const userStore = useUserStore();
@@ -14,9 +14,9 @@ export function usePlanPreferences(planUuid: string) {
 	 *
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<IPreferencePerPlan>}
+	 * @type {ComputedRef<PreferencePerPlan>}
 	 */
-	const fullPreferences: ComputedRef<IPreferencePerPlan> = computed(() =>
+	const fullPreferences: ComputedRef<PreferencePerPlan> = computed(() =>
 		userStore.getPlanPreference(planUuid)
 	);
 

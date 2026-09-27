@@ -5,7 +5,7 @@
 	const { t } = useI18n({ useScope: "global" });
 
 	import { PForm, PFormItem, PFormSeperator, PButton, PInput } from "@/ui";
-	import { IUserRegistrationPayload } from "@/features/api/userData.types";
+	import type { UserRegistrationPayload } from "@/features/api/schemas/user.schemas";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	const isLoading = ref(false);
@@ -59,7 +59,7 @@
 		return true;
 	});
 
-	const registrationPayload: ComputedRef<IUserRegistrationPayload> = computed(
+	const registrationPayload: ComputedRef<UserRegistrationPayload> = computed(
 		() => ({
 			username: inputUsername.value ?? "",
 			password: inputPassword.value ?? "",

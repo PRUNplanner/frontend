@@ -126,33 +126,30 @@ import {
 	callResendEmailVerification,
 	callVerifyEmail,
 } from "@/features/api/userData.api";
-import {
-	IUserChangePasswordPayload,
-	IUserRequestPasswordResetPayload,
-	IUserRequestPasswordResetResponse,
-	IUserProfile,
-	IUserProfilePatch,
-	IUserRegistrationPayload,
-	IUserVerifyEmailPayload,
-	IUserPasswordResetPayload,
-	IUserPasswordResetResponse,
-	IUserResponseDetail,
-	IUserRegistrationResponse,
-} from "@/features/api/userData.types";
-import { IPreference } from "@/features/preferences/userPreferences.types";
-import { UserPreferenceType } from "@/features/api/schemas/user.schemas";
-import { AnalyticsPlanetInsightsPayloadType } from "@/features/api/schemas/analyticsData.schemas";
+import type {
+	UserChangePasswordPayload,
+	UserPasswordResetPayload,
+	UserPreference,
+	UserProfile,
+	UserProfilePatch,
+	UserRegistrationPayload,
+	UserRegistrationResponse,
+	UserRequestPasswordResetPayload,
+	UserResponseDetail,
+	UserVerifyEmailPayload,
+} from "@/features/api/schemas/user.schemas";
+import type { AnalyticsPlanetInsightsPayload } from "@/features/api/schemas/analyticsData.schemas";
 import { callAnalyticsPlanetInsights } from "@/features/api/analyticsData.api";
 import {
 	callDeleteAPIKey,
 	callGetAPIKeys,
 	callPostCreateAPIKey,
 } from "@/features/api/apiKeysData.api";
-import {
-	APIKeyCreatePayloadType,
-	APIKeyCreateResponseType,
-	APIKeyListType,
-} from "@/features/api/schemas/apiKeysData.schema";
+import type {
+	APIKey,
+	APIKeyCreatePayload,
+	APIKeyCreateResponse,
+} from "@/features/api/schemas/apiKeysData.schemas";
 import { Composer } from "vue-i18n";
 
 export function useQueryRepository() {
@@ -819,14 +816,14 @@ export function useQueryRepository() {
 		} as IQueryDefinition<{ planetNaturalId: string }, IPopulationReport>,
 		PatchUserProfile: {
 			key: () => ["user", "profile", "patch"],
-			fetchFn: async (params: IUserProfilePatch) => {
+			fetchFn: async (params: UserProfilePatch) => {
 				const data = await callPatchProfile(params);
 				await userStore.performGetProfile();
 				return data;
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<IUserProfilePatch, IUserProfile>,
+		} as IQueryDefinition<UserProfilePatch, UserProfile>,
 		PostUserResendEmailVerification: {
 			key: () => ["user", "verification", "resend"],
 			fetchFn: async () => {
@@ -834,10 +831,10 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<null, IUserResponseDetail>,
+		} as IQueryDefinition<null, UserResponseDetail>,
 		PatchUserChangePassword: {
 			key: () => ["user", "password", "patch"],
-			fetchFn: async (params: IUserChangePasswordPayload) => {
+			fetchFn: async (params: UserChangePasswordPayload) => {
 				// we skip the actual message just to have a boolean
 				try {
 					await callChangePassword(params);
@@ -848,10 +845,10 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<IUserChangePasswordPayload, boolean>,
+		} as IQueryDefinition<UserChangePasswordPayload, boolean>,
 		PostUserVerifyEmail: {
 			key: () => ["user", "verification", "check"],
-			fetchFn: async (params: IUserVerifyEmailPayload) => {
+			fetchFn: async (params: UserVerifyEmailPayload) => {
 				try {
 					await callVerifyEmail(params);
 					return true;
@@ -861,10 +858,10 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<IUserVerifyEmailPayload, boolean>,
+		} as IQueryDefinition<UserVerifyEmailPayload, boolean>,
 		PostUserRegistration: {
 			key: () => ["user", "account", "registration"],
-			fetchFn: async (params: IUserRegistrationPayload) => {
+			fetchFn: async (params: UserRegistrationPayload) => {
 				trackEvent("user_registration", {
 					username: params.username,
 				});
@@ -892,23 +889,23 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<
-			IUserRegistrationPayload,
-			IUserRegistrationResponse
+			UserRegistrationPayload,
+			UserRegistrationResponse
 		>,
 		PostUserRequestPasswordReset: {
 			key: () => ["user", "account", "request_password_reset"],
-			fetchFn: async (params: IUserRequestPasswordResetPayload) => {
+			fetchFn: async (params: UserRequestPasswordResetPayload) => {
 				return await callRequestPasswordReset(params.email);
 			},
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<
-			IUserRequestPasswordResetPayload,
-			IUserRequestPasswordResetResponse
+			UserRequestPasswordResetPayload,
+			UserResponseDetail
 		>,
 		PostUserPasswordReset: {
 			key: () => ["user", "account", "password_reset"],
-			fetchFn: async (params: IUserPasswordResetPayload) => {
+			fetchFn: async (params: UserPasswordResetPayload) => {
 				try {
 					return await callPasswordReset(
 						params.email,
@@ -923,13 +920,10 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<
-			IUserPasswordResetPayload,
-			IUserPasswordResetResponse
-		>,
+		} as IQueryDefinition<UserPasswordResetPayload, UserResponseDetail>,
 		PatchPreferences: {
 			key: () => ["user", "profile", "patch"],
-			fetchFn: async (prefs: IPreference) => {
+			fetchFn: async (prefs: UserPreference) => {
 				// dont try to patch if not logged in, d'oh!
 				if (!userStore.isLoggedIn) return;
 
@@ -937,7 +931,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<UserPreferenceType, UserPreferenceType>,
+		} as IQueryDefinition<UserPreference, UserPreference>,
 		GetPreferences: {
 			key: () => ["user", "profile"],
 			fetchFn: async () => {
@@ -954,7 +948,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<undefined, UserPreferenceType>,
+		} as IQueryDefinition<undefined, UserPreference>,
 		GetAnalyticsPlanetInsights: {
 			key: (params: { planetNaturalId: string }) => [
 				"analytics",
@@ -971,7 +965,7 @@ export function useQueryRepository() {
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 		} as IQueryDefinition<
 			{ planetNaturalId: string },
-			AnalyticsPlanetInsightsPayloadType
+			AnalyticsPlanetInsightsPayload
 		>,
 		GetAPIKeys: {
 			key: () => ["user", "api", "keys"],
@@ -980,7 +974,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<undefined, APIKeyListType>,
+		} as IQueryDefinition<undefined, APIKey[]>,
 		PostCreateAPIKey: {
 			key: () => ["user", "api", "keys", "create"],
 			fetchFn: async (params: { name: string }) => {
@@ -988,10 +982,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<
-			APIKeyCreatePayloadType,
-			APIKeyCreateResponseType
-		>,
+		} as IQueryDefinition<APIKeyCreatePayload, APIKeyCreateResponse>,
 		DeleteAPIKey: {
 			key: () => ["user", "api", "keys", "delete"],
 			fetchFn: async (params: { id: string }) => {

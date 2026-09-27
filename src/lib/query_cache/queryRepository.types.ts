@@ -45,26 +45,24 @@ import {
 	IPlanSaveData,
 } from "@/features/planning_data/usePlan.types";
 import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
-import {
-	IUserChangePasswordPayload,
-	IUserRequestPasswordResetResponse,
-	IUserProfile,
-	IUserProfilePatch,
-	IUserRegistrationPayload,
-	IUserVerifyEmailPayload,
-	IUserRequestPasswordResetPayload,
-	IUserPasswordResetPayload,
-	IUserPasswordResetResponse,
-	IUserResponseDetail,
-	IUserRegistrationResponse,
-} from "@/features/api/userData.types";
-import { IPreference } from "@/features/preferences/userPreferences.types";
-import { AnalyticsPlanetInsightsPayloadType } from "@/features/api/schemas/analyticsData.schemas";
-import {
-	APIKeyCreatePayloadType,
-	APIKeyCreateResponseType,
-	APIKeyListType,
-} from "@/features/api/schemas/apiKeysData.schema";
+import type {
+	UserChangePasswordPayload,
+	UserPasswordResetPayload,
+	UserPreference,
+	UserProfile,
+	UserProfilePatch,
+	UserRegistrationPayload,
+	UserRegistrationResponse,
+	UserRequestPasswordResetPayload,
+	UserResponseDetail,
+	UserVerifyEmailPayload,
+} from "@/features/api/schemas/user.schemas";
+import type { AnalyticsPlanetInsightsPayload } from "@/features/api/schemas/analyticsData.schemas";
+import type {
+	APIKey,
+	APIKeyCreatePayload,
+	APIKeyCreateResponse,
+} from "@/features/api/schemas/apiKeysData.schemas";
 /*
  * To be honest, this typing for Query Params and their data is a complete
  * shitshow, I'm still not 100 % sure why this is working, but if someone
@@ -169,38 +167,35 @@ export interface IQueryRepository {
 		{ planetNaturalId: string },
 		IPopulationReport
 	>;
-	PatchUserProfile: IQueryDefinition<IUserProfilePatch, IUserProfile>;
-	PostUserResendEmailVerification: IQueryDefinition<
-		null,
-		IUserResponseDetail
-	>;
+	PatchUserProfile: IQueryDefinition<UserProfilePatch, UserProfile>;
+	PostUserResendEmailVerification: IQueryDefinition<null, UserResponseDetail>;
 	PatchUserChangePassword: IQueryDefinition<
-		IUserChangePasswordPayload,
+		UserChangePasswordPayload,
 		boolean
 	>;
-	PostUserVerifyEmail: IQueryDefinition<IUserVerifyEmailPayload, boolean>;
+	PostUserVerifyEmail: IQueryDefinition<UserVerifyEmailPayload, boolean>;
 	PostUserRegistration: IQueryDefinition<
-		IUserRegistrationPayload,
-		IUserRegistrationResponse
+		UserRegistrationPayload,
+		UserRegistrationResponse
 	>;
 	PostUserRequestPasswordReset: IQueryDefinition<
-		IUserRequestPasswordResetPayload,
-		IUserRequestPasswordResetResponse
+		UserRequestPasswordResetPayload,
+		UserResponseDetail
 	>;
 	PostUserPasswordReset: IQueryDefinition<
-		IUserPasswordResetPayload,
-		IUserPasswordResetResponse
+		UserPasswordResetPayload,
+		UserResponseDetail
 	>;
-	PatchPreferences: IQueryDefinition<IPreference, IPreference>;
-	GetPreferences: IQueryDefinition<undefined, IPreference>;
+	PatchPreferences: IQueryDefinition<UserPreference, UserPreference>;
+	GetPreferences: IQueryDefinition<undefined, UserPreference>;
 	GetAnalyticsPlanetInsights: IQueryDefinition<
 		{ planetNaturalId: string },
-		AnalyticsPlanetInsightsPayloadType
+		AnalyticsPlanetInsightsPayload
 	>;
-	GetAPIKeys: IQueryDefinition<undefined, APIKeyListType>;
+	GetAPIKeys: IQueryDefinition<undefined, APIKey[]>;
 	PostCreateAPIKey: IQueryDefinition<
-		APIKeyCreatePayloadType,
-		APIKeyCreateResponseType
+		APIKeyCreatePayload,
+		APIKeyCreateResponse
 	>;
 	DeleteAPIKey: IQueryDefinition<{ id: string }, boolean>;
 }

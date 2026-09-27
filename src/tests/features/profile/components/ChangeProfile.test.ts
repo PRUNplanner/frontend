@@ -20,7 +20,7 @@ import PButton from "@/ui/components/PButton.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IUserProfile } from "@/features/api/userData.types";
+import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	trackEvent: vi.fn(),
@@ -36,7 +36,7 @@ const RESEND_URL = /user\/request_email_verification\/$/;
 const RESEND = "profile.change_profile.buttons.resend_code";
 const REQUESTED = "profile.change_profile.buttons.code_requested";
 
-function profile(patch: Partial<IUserProfile> = {}): IUserProfile {
+function profile(patch: Partial<UserProfile> = {}): UserProfile {
 	return {
 		id: 1,
 		username: "test-user",
@@ -50,10 +50,7 @@ function profile(patch: Partial<IUserProfile> = {}): IUserProfile {
 
 let pinia: Pinia;
 
-async function mountProfile(
-	stored: IUserProfile | undefined,
-	loggedIn = true
-) {
+async function mountProfile(stored: UserProfile | undefined, loggedIn = true) {
 	const userStore = useUserStore();
 	if (loggedIn) {
 		userStore.accessToken = "test-access-token";
@@ -75,8 +72,7 @@ async function save(wrapper: VueWrapper) {
 	await flushPromises();
 }
 
-const patchBody = (index = 0) =>
-	JSON.parse(mock.history.patch.at(index)!.data);
+const patchBody = (index = 0) => JSON.parse(mock.history.patch.at(index)!.data);
 
 describe("ChangeProfile", () => {
 	beforeAll(() => {
@@ -311,7 +307,9 @@ describe("ChangeProfile", () => {
 	});
 
 	it("keeps the edit unsaved when the patch fails", async () => {
-		mock.onPatch(PROFILE_URL).reply(400, { email: ["Enter a valid email."] });
+		mock.onPatch(PROFILE_URL).reply(400, {
+			email: ["Enter a valid email."],
+		});
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountProfile(profile());
 		await inputs(wrapper).at(2)!.setValue("not-an-email");
@@ -330,9 +328,7 @@ describe("ChangeProfile", () => {
 
 	it("shows a verified email as a checked, disabled checkbox", async () => {
 		const { wrapper } = await mountProfile(profile());
-		const checkbox = wrapper.find<HTMLInputElement>(
-			"input[type=checkbox]"
-		);
+		const checkbox = wrapper.find<HTMLInputElement>("input[type=checkbox]");
 
 		expect(checkbox.element.checked).toBe(true);
 		expect(checkbox.element.disabled).toBe(true);

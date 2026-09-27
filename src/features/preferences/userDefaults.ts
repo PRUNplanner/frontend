@@ -1,4 +1,4 @@
-import { IPreferenceDefault } from "@/features/preferences/userPreferences.types";
+import type { IPreferenceDefault } from "@/features/preferences/userPreferences.types";
 
 /**
  * Defines default values for user preferences, contains generic tool

@@ -1,43 +1,26 @@
 import { z } from "zod";
 
-// Types & Interfaces
-import {
-	IUserLoginPayload,
-	IUserRefreshPayload,
-	IUserTokenResponse,
-	IUserRegistrationPayload,
-	IUserRequestPasswordResetResponse,
-	IUserRequestPasswordResetPayload,
-	IUserPasswordResetPayload,
-	IUserRefreshTokenResponse,
-	IUserResponseDetail,
-	IUserChangePasswordPayload,
-	IUserChangePasswordResponse,
-	IUserRegistrationResponse,
-} from "@/features/api/userData.types";
-import { IPreference } from "@/features/preferences/userPreferences.types";
 import { SUPPORTED_LOCALES } from "@/lib/i18n";
 
-export const LoginPayloadSchema: z.ZodType<IUserLoginPayload> = z.object({
+export const LoginPayloadSchema = z.object({
 	username: z.string().min(1),
 	password: z.string().min(1),
 });
 
-export const TokenResponseSchema: z.ZodType<IUserTokenResponse> = z.object({
+export const TokenResponseSchema = z.object({
 	access: z.string().min(120),
 	refresh: z.string().min(120),
 });
+export type TokenResponse = z.infer<typeof TokenResponseSchema>;
 
-export const RefreshPayloadSchema: z.ZodType<IUserRefreshPayload> = z.object({
-	refresh: z.string().min(120),
+export const RefreshPayloadSchema = TokenResponseSchema.pick({ refresh: true });
+
+export const RefreshTokenResponseSchema = TokenResponseSchema.pick({
+	access: true,
 });
+export type RefreshTokenResponse = z.infer<typeof RefreshTokenResponseSchema>;
 
-export const RefreshTokenResponseSchema: z.ZodType<IUserRefreshTokenResponse> =
-	z.object({
-		access: z.string().min(120),
-	});
-
-export const UserProfilePayloadSchema = z.object({
+export const UserProfileSchema = z.object({
 	id: z.number(),
 	username: z.string(),
 	email: z
@@ -54,6 +37,7 @@ export const UserProfilePayloadSchema = z.object({
 		.transform((val) => (val === "" ? null : val))
 		.nullable(),
 });
+export type UserProfile = z.infer<typeof UserProfileSchema>;
 
 export const UserProfilePatchSchema = z.object({
 	fio_apikey: z
@@ -69,57 +53,70 @@ export const UserProfilePatchSchema = z.object({
 		.transform((val) => (val === "" || !val ? null : val))
 		.nullable(),
 });
+export type UserProfilePatch = z.input<typeof UserProfilePatchSchema>;
 
-export const UserChangePasswordPayloadSchema: z.ZodType<IUserChangePasswordPayload> =
-	z.object({
-		old_password: z.string(),
-		new_password: z.string(),
-	});
+export const UserResponseDetailSchema = z.object({
+	detail: z.string(),
+});
+export type UserResponseDetail = z.infer<typeof UserResponseDetailSchema>;
 
-export const UserChangePasswordResponseSchema: z.ZodType<IUserChangePasswordResponse> =
-	z.object({
-		detail: z.string(),
-	});
+export const UserChangePasswordPayloadSchema = z.object({
+	old_password: z.string(),
+	new_password: z.string(),
+});
+export type UserChangePasswordPayload = z.input<
+	typeof UserChangePasswordPayloadSchema
+>;
 
 export const UserVerifyEmailPayloadSchema = z.object({
 	code: z.string(),
 });
+export type UserVerifyEmailPayload = z.input<
+	typeof UserVerifyEmailPayloadSchema
+>;
 
-export const UserRegistrationPayloadSchema: z.ZodType<IUserRegistrationPayload> =
-	z.object({
-		username: z.string().min(3),
-		password: z.string().min(8),
-		email: z.string().optional(),
-		planet_id: z.string(),
-		planet_input: z.string(),
-	});
+export const UserRegistrationPayloadSchema = z.object({
+	username: z.string().min(3),
+	password: z.string().min(8),
+	email: z.string().optional(),
+	planet_id: z.string(),
+	planet_input: z.string(),
+});
+export type UserRegistrationPayload = z.input<
+	typeof UserRegistrationPayloadSchema
+>;
 
-export const UserRegistrationResponseSchema: z.ZodType<IUserRegistrationResponse> =
-	z.object({ username: z.string() });
+export const UserRegistrationResponseSchema = z.object({
+	username: z.string(),
+});
+export type UserRegistrationResponse = z.infer<
+	typeof UserRegistrationResponseSchema
+>;
 
-export const UserRequestPasswordResetPayloadSchema: z.ZodType<IUserRequestPasswordResetPayload> =
-	z.object({
-		email: z.email(),
-	});
+export const UserRequestPasswordResetPayloadSchema = z.object({
+	email: z.email(),
+});
+export type UserRequestPasswordResetPayload = z.input<
+	typeof UserRequestPasswordResetPayloadSchema
+>;
 
-export const UserRequestPasswordResetResponseSchema: z.ZodType<IUserRequestPasswordResetResponse> =
-	z.object({
-		detail: z.string(),
-	});
-
-export const UserPasswordResetPayloadSchema: z.ZodType<IUserPasswordResetPayload> =
-	z.object({
-		email: z.email(),
+export const UserPasswordResetPayloadSchema =
+	UserRequestPasswordResetPayloadSchema.extend({
 		code: z.string(),
 		new_password: z.string(),
 	});
+export type UserPasswordResetPayload = z.input<
+	typeof UserPasswordResetPayloadSchema
+>;
 
-export const UserPasswordResetResponseSchema: z.ZodType<IUserRequestPasswordResetResponse> =
-	z.object({
-		detail: z.string(),
-	});
+const PreferencePerPlanSchema = z.object({
+	includeCM: z.boolean().optional(),
+	visitationMaterialExclusions: z.array(z.string()).optional(),
+	autoOptimizeHabs: z.boolean(),
+});
+export type PreferencePerPlan = z.infer<typeof PreferencePerPlanSchema>;
 
-export const UserPreferenceSchema: z.ZodType<IPreference> = z.object({
+export const UserPreferenceSchema = z.object({
 	locale: z
 		.preprocess((val) => val ?? "en_US", z.enum(SUPPORTED_LOCALES))
 		.catch("en_US"),
@@ -138,19 +135,6 @@ export const UserPreferenceSchema: z.ZodType<IPreference> = z.object({
 	burnOrigin: z.string(),
 	supplyCartDays: z.number(),
 	layoutNavigationStyle: z.enum(["full", "collapsed"]),
-	planOverrides: z.record(
-		z.string(),
-		z.object({
-			includeCM: z.boolean().optional(),
-			visitationMaterialExclusions: z.array(z.string()).optional(),
-			autoOptimizeHabs: z.boolean(),
-		})
-	),
+	planOverrides: z.record(z.string(), PreferencePerPlanSchema),
 });
-
-export const UserResponseDetailSchema: z.ZodType<IUserResponseDetail> =
-	z.object({
-		detail: z.string(),
-	});
-
-export type UserPreferenceType = z.infer<typeof UserPreferenceSchema>;
+export type UserPreference = z.infer<typeof UserPreferenceSchema>;

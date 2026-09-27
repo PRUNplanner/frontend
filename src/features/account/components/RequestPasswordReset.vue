@@ -12,13 +12,12 @@
 
 	// UI
 	import { PInput, PButton } from "@/ui";
-	import { IUserRequestPasswordResetResponse } from "@/features/api/userData.types";
+	import type { UserResponseDetail } from "@/features/api/schemas/user.schemas";
 
 	const inputEmail: Ref<string | null> = ref(null);
 	const isLoading: Ref<boolean> = ref(false);
 
-	const requestResponse: Ref<IUserRequestPasswordResetResponse | null> =
-		ref(null);
+	const requestResponse: Ref<UserResponseDetail | null> = ref(null);
 
 	const canRequest = computed(
 		() =>

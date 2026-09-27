@@ -17,14 +17,14 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 // Types & Interfaces
-import {
-	IPlanPreferenceOverview,
-	IPreference,
-	IPreferencePerPlan,
-} from "@/features/preferences/userPreferences.types";
+import type { IPlanPreferenceOverview } from "@/features/preferences/userPreferences.types";
+import type {
+	PreferencePerPlan,
+	UserPreference,
+} from "@/features/api/schemas/user.schemas";
 
 // debounced update to backend
-const patchPrefs = async (prefs: IPreference) => {
+const patchPrefs = async (prefs: UserPreference) => {
 	try {
 		await useQuery("PatchPreferences", prefs).execute();
 	} catch (err) {
@@ -92,23 +92,23 @@ export function usePreferences() {
 		set: (v) => userStore.setPreference("burnOrigin", v),
 	});
 
-	const supplyCartDays: WritableComputedRef<number, number> =
-		computed({
-			get: () => userStore.preferences.supplyCartDays ?? 20,
-			set: (v) => userStore.setPreference("supplyCartDays", v),
-		});
+	const supplyCartDays: WritableComputedRef<number, number> = computed({
+		get: () => userStore.preferences.supplyCartDays ?? 20,
+		set: (v) => userStore.setPreference("supplyCartDays", v),
+	});
 
 	const planSettings: ComputedRef<
-		Record<string, Partial<IPreferencePerPlan>>
+		Record<string, Partial<PreferencePerPlan>>
 	> = computed(() => {
 		return userStore.preferences.planOverrides;
 	});
 
-	const layoutNavigationStyle: WritableComputedRef<"full" | "collapsed"> =
-		computed({
-			get: () => userStore.preferences.layoutNavigationStyle,
-			set: (v) => userStore.setPreference("layoutNavigationStyle", v),
-		});
+	const layoutNavigationStyle: WritableComputedRef<
+		UserPreference["layoutNavigationStyle"]
+	> = computed({
+		get: () => userStore.preferences.layoutNavigationStyle,
+		set: (v) => userStore.setPreference("layoutNavigationStyle", v),
+	});
 
 	const locale: WritableComputedRef<string> = computed({
 		get: () => userStore.preferences.locale,
@@ -134,7 +134,7 @@ export function usePreferences() {
 
 			for (const [planUuid, preference] of Object.entries(
 				planSettings.value
-			) as [string, Partial<IPreferencePerPlan>][]) {
+			) as [string, Partial<PreferencePerPlan>][]) {
 				// fetch generic plan information
 				try {
 					const { planetId, planName } = getPlanNamePlanet(planUuid);

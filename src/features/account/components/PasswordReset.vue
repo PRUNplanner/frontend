@@ -12,7 +12,7 @@
 
 	// UI
 	import { PForm, PFormItem, PInput, PButton } from "@/ui";
-	import { IUserPasswordResetResponse } from "@/features/api/userData.types";
+	import type { UserResponseDetail } from "@/features/api/schemas/user.schemas";
 
 	const props = defineProps({
 		resetCode: {
@@ -27,7 +27,7 @@
 	const inputPassword: Ref<string | null> = ref(null);
 	const isLoading: Ref<boolean> = ref(false);
 
-	const requestResponse: Ref<IUserPasswordResetResponse | null> = ref(null);
+	const requestResponse: Ref<UserResponseDetail | null> = ref(null);
 
 	const canSend = computed(
 		() =>

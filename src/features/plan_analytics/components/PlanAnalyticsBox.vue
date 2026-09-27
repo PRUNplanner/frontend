@@ -12,9 +12,9 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import {
-		AnalyticsPlanetInsightsDataType,
-		AnalyticsPlanetInsightsRecipeType,
+	import type {
+		AnalyticsPlanetInsightsData,
+		AnalyticsPlanetInsightsRecipe,
 	} from "@/features/api/schemas/analyticsData.schemas";
 
 	const { planetNaturalId } = defineProps<{
@@ -23,7 +23,7 @@
 
 	const isOpen = ref<boolean>(false);
 	const expandedBuildings = ref<Set<string>>(new Set());
-	const planetInsights = ref<AnalyticsPlanetInsightsDataType | null>(null);
+	const planetInsights = ref<AnalyticsPlanetInsightsData | null>(null);
 
 	onMounted(() => {
 		// async fetch planet insights
@@ -48,10 +48,8 @@
 		const sortedRecipeKeys = Object.keys(
 			rawData.recipe_distribution
 		).sort();
-		const sortedRecipes: Record<
-			string,
-			AnalyticsPlanetInsightsRecipeType[]
-		> = {};
+		const sortedRecipes: Record<string, AnalyticsPlanetInsightsRecipe[]> =
+			{};
 
 		for (const key of sortedRecipeKeys) {
 			sortedRecipes[key] = rawData.recipe_distribution[key];
