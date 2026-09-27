@@ -21,6 +21,15 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 					fetchFn: () =>
 						new Promise((resolve) => slow.resolvers.push(resolve)),
 				},
+				// static key, like most mutations
+				slowMutation: {
+					key: () => ["slowMutation"],
+					persist: false,
+					fetchFn: (params: unknown) =>
+						new Promise((resolve) =>
+							slow.resolvers.push(() => resolve(params))
+						),
+				},
 				testQuery: {
 					key: (params: any) => ["testQuery", params],
 					expireTime: 1000,
@@ -259,6 +268,19 @@ describe("useQueryStore: stale in-flight requests", () => {
 
 			expect(cachedSlow()?.data).toBe("new");
 			expect(cachedSlow()?.loading).toBe(false);
+		});
+
+		it("never dedupe mutations sharing a key", async () => {
+			// @ts-expect-error mock query repository
+			const first = store.execute("slowMutation", "a");
+			// @ts-expect-error mock query repository
+			const second = store.execute("slowMutation", "b");
+
+			slow.resolvers.forEach((resolve) => resolve(undefined));
+
+			expect(slow.resolvers).toHaveLength(2);
+			await expect(first).resolves.toBe("a");
+			await expect(second).resolves.toBe("b");
 		});
 
 		it("do not write back after invalidateKey", async () => {

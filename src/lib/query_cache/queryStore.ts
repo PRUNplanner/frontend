@@ -100,8 +100,13 @@ export const useQueryStore = defineStore(
 				return cachedData;
 			}
 
-			// return in-flight promise if exists
-			if (inFlight.has(keyHash) && !options?.forceRefetch) {
+			// return in-flight promise if exists; mutations share static
+			// keys, deduping them would drop a call with other params
+			if (
+				shouldCache &&
+				inFlight.has(keyHash) &&
+				!options?.forceRefetch
+			) {
 				return inFlight.get(keyHash)! as Promise<
 					DataOfDefinition<IQueryRepository[K]>
 				>;
