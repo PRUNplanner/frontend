@@ -88,11 +88,14 @@ describe("usePlan", async () => {
 		it("success, uuid return", async () => {
 			const { createNewPlan } = usePlan();
 			vi.mocked(callCreatePlan).mockResolvedValueOnce({ uuid: fakeUuid });
+			// @ts-expect-error mock data
+			vi.mocked(callGetPlan).mockResolvedValueOnce({ uuid: fakeUuid });
 
 			// @ts-expect-error mock data
 			const result = await createNewPlan({});
 
 			expect(result).toBe(fakeUuid);
+			expect(callGetPlan).toHaveBeenCalledWith(fakeUuid);
 		});
 
 		it("failure, undefined return", async () => {

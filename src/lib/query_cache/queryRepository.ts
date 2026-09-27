@@ -685,22 +685,18 @@ export function useQueryRepository() {
 				params.planUuid,
 			],
 			fetchFn: async (params: { planUuid: string }) => {
-				return await callDeletePlan(params.planUuid).then(async () => {
-					await queryStore.invalidateKey(["planningdata", "empire"], {
-						exact: false,
-					});
-					await queryStore.invalidateKey([
-						"planningdata",
-						"plan",
-						"list",
-					]);
-					await queryStore.invalidateKey([
-						"planningdata",
-						"plan",
-						params.planUuid,
-					]);
-					planningStore.deletePlan(params.planUuid);
+				const result = await callDeletePlan(params.planUuid);
+				await queryStore.invalidateKey(["planningdata", "empire"], {
+					exact: false,
 				});
+				await queryStore.invalidateKey(["planningdata", "plan", "list"]);
+				await queryStore.invalidateKey([
+					"planningdata",
+					"plan",
+					params.planUuid,
+				]);
+				planningStore.deletePlan(params.planUuid);
+				return result;
 			},
 			autoRefetch: false,
 			persist: false,
@@ -781,10 +777,9 @@ export function useQueryRepository() {
 		GetFIOStorage: {
 			key: () => ["gamedata", "fio", "storage"],
 			fetchFn: async () => {
-				return await callDataFIOStorage().then((data: IFIOStorage) => {
-					planningStore.setFIOStorageData(data);
-					return data;
-				});
+				const data = await callDataFIOStorage();
+				planningStore.setFIOStorageData(data);
+				return data;
 			},
 			autoRefetch: true,
 			persist: true,

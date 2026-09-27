@@ -129,7 +129,8 @@
 	}
 
 	onMounted(async () => {
-		await preloadMaterials().then(async () => await generateDataOverview());
+		await preloadMaterials();
+		await generateDataOverview();
 		materialOptions.value = materialSelectOptions.value;
 
 		fetch();

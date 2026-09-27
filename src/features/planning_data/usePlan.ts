@@ -202,7 +202,7 @@ export function usePlan() {
 			// trigger backend data load
 			await useQuery("GetPlan", {
 				planUuid: createdData.uuid,
-			});
+			}).execute();
 			return createdData.uuid;
 		} catch (err) {
 			console.error(`Error creating plan: ${err}`);

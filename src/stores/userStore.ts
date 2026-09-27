@@ -298,31 +298,30 @@ export const useUserStore = defineStore(
 			// only perform if the user is logged in
 			if (isLoggedIn.value) {
 				try {
-					await callGetProfile().then((result: IUserProfile) => {
-						// identify users for posthog
-						identifyUser(result.id.toString(), {
-							username: result.username,
-						});
+					const result: IUserProfile = await callGetProfile();
 
-						if (
-							result.fio_apikey !== profile.value?.fio_apikey ||
-							result.prun_username !==
-								profile.value?.prun_username
-						) {
-							if (
-								result.fio_apikey !== null &&
-								result.prun_username !== null
-							)
-								trackUser({ fio_enabled: true });
-							else trackUser({ fio_enabled: false });
-
-							trackUser({
-								prun_username: result.prun_username,
-							});
-						}
-
-						profile.value = result;
+					// identify users for posthog
+					identifyUser(result.id.toString(), {
+						username: result.username,
 					});
+
+					if (
+						result.fio_apikey !== profile.value?.fio_apikey ||
+						result.prun_username !== profile.value?.prun_username
+					) {
+						if (
+							result.fio_apikey !== null &&
+							result.prun_username !== null
+						)
+							trackUser({ fio_enabled: true });
+						else trackUser({ fio_enabled: false });
+
+						trackUser({
+							prun_username: result.prun_username,
+						});
+					}
+
+					profile.value = result;
 				} catch (error) {
 					console.error(error);
 				}

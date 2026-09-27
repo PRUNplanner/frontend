@@ -34,10 +34,8 @@
 	});
 
 	onMounted(async () => {
-		await getMaterialExplorationData(props.materialTicker).then(
-			(result: IMaterialExplorationRecord) => {
-				chartData.value = result;
-			}
+		chartData.value = await getMaterialExplorationData(
+			props.materialTicker
 		);
 	});
 
