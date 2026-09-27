@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from "vue";
+import { computed, ComputedRef, MaybeRefOrGetter, toValue } from "vue";
 
 // Util
 import { boundaryDescriptor } from "@/util/numbers";
@@ -31,11 +31,11 @@ const {
 } = usePathfinder();
 
 export function usePlanetSearchResults(
-	searchData: IPlanet[],
-	searchMaterials: string[],
-	searchMaterialRichness: Record<string, number>,
-	searchSystem: string | undefined,
-	searchSystemDistance: number | undefined
+	planets: MaybeRefOrGetter<IPlanet[]>,
+	materials: MaybeRefOrGetter<string[]>,
+	richness: MaybeRefOrGetter<Record<string, number>>,
+	system: MaybeRefOrGetter<string | undefined>,
+	distance: MaybeRefOrGetter<number | undefined>
 ) {
 	/**
 	 * Computed Ref with table-ready planet search data
@@ -44,6 +44,13 @@ export function usePlanetSearchResults(
 	 * @type {ComputedRef<IPlanetSearchResult[]>}
 	 */
 	const results: ComputedRef<IPlanetSearchResult[]> = computed(() => {
+		const searchData: IPlanet[] = toValue(planets);
+		const searchMaterials: string[] = toValue(materials);
+		const searchMaterialRichness: Record<string, number> =
+			toValue(richness);
+		const searchSystem: string | undefined = toValue(system);
+		const searchSystemDistance: number | undefined = toValue(distance);
+
 		if (searchData.length === 0) return [];
 
 		const r: IPlanetSearchResult[] = searchData

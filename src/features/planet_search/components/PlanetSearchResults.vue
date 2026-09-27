@@ -18,7 +18,6 @@
 
 	// Types & Interfaces
 	import { IPlanet } from "@/features/api/gameData.types";
-	import { IPlanetSearchResult } from "../usePlanetSearchResults.types";
 
 	// UI
 	import { PButton, PTooltip } from "@/ui";
@@ -69,16 +68,13 @@
 		() => props.searchMaterials
 	);
 
-	const tableResults: ComputedRef<IPlanetSearchResult[]> = computed(() => {
-		if (props.results.length === 0) return [];
-		return usePlanetSearchResults(
-			props.results,
-			props.searchMaterials,
-			props.searchMaterialRichness,
-			props.searchSystem,
-			props.searchSystemDistance
-		).results.value;
-	});
+	const { results: tableResults } = usePlanetSearchResults(
+		() => props.results,
+		() => props.searchMaterials,
+		() => props.searchMaterialRichness,
+		() => props.searchSystem,
+		() => props.searchSystemDistance
+	);
 
 	const tableCheckDistances: ComputedRef<string | null> = computed(() =>
 		props.searchSystem ? getSystemName(props.searchSystem) : null

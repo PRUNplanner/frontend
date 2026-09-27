@@ -132,4 +132,20 @@ describe("useFIOBurn", async () => {
 			planetId: "B",
 		});
 	});
+
+	it("burnTable: reacts to FIO storage refresh", async () => {
+		// @ts-expect-error mock data
+		const { burnTable } = useFIOBurn(ref(fakePlans), ref(fakeData));
+
+		expect(burnTable.value[0].hasStorage).toBe(false);
+
+		// store replaces the whole object on refresh
+		planningStore.fio_storage_planets = {
+			...planningStore.fio_storage_planets,
+			// @ts-expect-error mock data
+			B: { StorageItems: [] },
+		};
+
+		expect(burnTable.value[0].hasStorage).toBe(true);
+	});
 });

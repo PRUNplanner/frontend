@@ -20,15 +20,6 @@ export function useFIOBurn(
 	const planningStore = usePlanningStore();
 
 	/**
-	 * Burn data reference from Game Data Store
-	 * @author jplacht
-	 *
-	 * @type {Record<string, IFIOStorageElement>}
-	 */
-	const burnData: Record<string, IFIOStorageElement> =
-		planningStore.fio_storage_planets;
-
-	/**
 	 * Creates record of plan list
 	 * @author jplacht
 	 *
@@ -76,6 +67,9 @@ export function useFIOBurn(
 	 * @type {ComputedRef<IFIOBurnTableElement[]>}
 	 */
 	const burnTable: ComputedRef<IFIOBurnTableElement[]> = computed(() => {
+		// read inside the computed so FIO storage refreshes are tracked
+		const burnData: Record<string, IFIOStorageElement> =
+			planningStore.fio_storage_planets;
 		const tableData: IFIOBurnTableElement[] = [];
 
 		for (const [planUuid, plan] of Object.entries(data.value) as [
