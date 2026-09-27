@@ -1,3 +1,22 @@
+# 2026-09-27 - v. 0.30.0
+
+A big thank you to our community contributors [lumivient](https://github.com/lumivient), [lilbit-prun](https://github.com/lilbit-prun) and [theit8514](https://github.com/theit8514) for their pull requests in this release!
+
+- Adds 7D/30D market share to the CX overview for plans, empires, the ROI Overview and the material overview [[PR-475]](https://github.com/PRUNplanner/frontend/pull/475)
+- Improves CX tooltip positioning, and the whole material tile now opens the CX overview [[PR-475]](https://github.com/PRUNplanner/frontend/pull/475)
+- The construction cart's material table footer and XIT button now use the Need column [[PR-471]](https://github.com/PRUNplanner/frontend/pull/471)
+- Remembers the supply cart days [[PR-474]](https://github.com/PRUNplanner/frontend/pull/474)
+- Shared plans are no longer auto-optimized [[PR-466]](https://github.com/PRUNplanner/frontend/pull/466)
+- Fixes the storage filling calculation in visitation frequency [[PR-465]](https://github.com/PRUNplanner/frontend/pull/465)
+- Fixes the +/- buttons on empty number inputs producing NaN [[PR-471]](https://github.com/PRUNplanner/frontend/pull/471)
+- Fixes the save button staying marked as modified after reloading a plan [[PR-470]](https://github.com/PRUNplanner/frontend/pull/470)
+- Plan calculations now run on a faster, synchronous engine, which speeds up the Empire, Manage and ROI views [[PR-488]](https://github.com/PRUNplanner/frontend/pull/488), [[PR-487]](https://github.com/PRUNplanner/frontend/pull/487)
+- Fixes several spinners and error states that got stuck when a request failed, such as saving a CX, deleting a plan, empire or CX, sharing, and burn and upkeep calculations [[PR-485]](https://github.com/PRUNplanner/frontend/pull/485), [[PR-489]](https://github.com/PRUNplanner/frontend/pull/489), [[PR-491]](https://github.com/PRUNplanner/frontend/pull/491), [[PR-492]](https://github.com/PRUNplanner/frontend/pull/492)
+- Fixes FIO errors in the construction cart when ship or site fields are missing, and only preselects planet storage that exists [[PR-480]](https://github.com/PRUNplanner/frontend/pull/480), [[PR-486]](https://github.com/PRUNplanner/frontend/pull/486)
+- Rejects CSV imports that aren't a valid CX preference export [[PR-489]](https://github.com/PRUNplanner/frontend/pull/489)
+- Translates the POPR modal, share modal and help error texts, and adds new community translations [[PR-491]](https://github.com/PRUNplanner/frontend/pull/491), [[PR-469]](https://github.com/PRUNplanner/frontend/pull/469), [[PR-493]](https://github.com/PRUNplanner/frontend/pull/493)
+- Stability and testing: a large test suite covering components, backend contracts and calculation snapshots, plus dependency upgrades and security fixes [[PR-464]](https://github.com/PRUNplanner/frontend/pull/464), [[PR-473]](https://github.com/PRUNplanner/frontend/pull/473), [[PR-480]](https://github.com/PRUNplanner/frontend/pull/480), [[PR-481]](https://github.com/PRUNplanner/frontend/pull/481), [[PR-482]](https://github.com/PRUNplanner/frontend/pull/482), [[PR-486]](https://github.com/PRUNplanner/frontend/pull/486), [[PR-489]](https://github.com/PRUNplanner/frontend/pull/489), [[PR-491]](https://github.com/PRUNplanner/frontend/pull/491)
+
 # 2026-05-18 - v. 0.29.0
 
 This release is fully dedicated to bringing localization and community translation support to PRUNplanner. Both the user interface and help pages have been refactored to seamlessly integrate with [Crowdin](https://crowdin.com/project/prunplanner), and the community has already stepped up to deliver complete UI translations for German, Russian, and Chinese. A massive thank you to everyone who contributed to making this milestone possible! If you want to see PRUNplanner in your native language or help refine our existing strings, head over to the [Translations Project](https://crowdin.com/project/prunplanner) and join the effort.
