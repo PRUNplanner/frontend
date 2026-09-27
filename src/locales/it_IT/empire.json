@@ -59,7 +59,7 @@
 		},
 		"table": {
 			"building": "Edificio",
-			"flow_inputs": "Produzione (Input → Output)",
+			"flow_inputs": "Production (Inputs → Outputs)",
 			"analysis": "Analisi",
 			"sell_inputs": "Vendi Input",
 			"sell_outputs": "Vendi Output",

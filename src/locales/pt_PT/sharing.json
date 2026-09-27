@@ -7,5 +7,6 @@
 		"stop_sharing": "Stop Sharing",
 		"views": "{count} Views",
 		"share": "Share"
-	}
+	},
+	"title": "Share Plan"
 }

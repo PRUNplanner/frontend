@@ -71,5 +71,6 @@
 			"title": "A Wealth of Additional Tools",
 			"p": "Dive into historical prices, optimize habitation layouts, estimate visitation frequencies, and fine-tune production efficiency. PRUNplanner is packed with utilities to give you the edge."
 		}
-	}
+	},
+	"load_error": "Unable to load '{file_name}'"
 }
