@@ -26,8 +26,10 @@ import type {
 	PlanetSearchAdvancedPayload,
 	PopulationReport,
 } from "@/features/api/schemas/gameData.schemas";
-import { IExploration } from "@/features/market_exploration/marketExploration.types";
-import { ExplorationPayloadSchema } from "@/features/market_exploration/marketExploration.schemas";
+import {
+	ExplorationPayloadSchema,
+	type Exploration,
+} from "@/features/market_exploration/marketExploration.schemas";
 
 /**
  * Calls the /data/materials API endpoint
@@ -171,13 +173,12 @@ export async function callDataPlanetSearch(
  * @async
  * @param {string} exchange Exchange Code
  * @param {string} ticker Material Ticker
- * @param {IExplorationRequestPayload} payload Payload with start and end date
- * @returns {Promise<IExploration[]>} Exploration data
+ * @returns {Promise<Exploration[]>} Exploration data
  */
 export async function callExplorationData(
 	exchange: string,
 	ticker: string
-): Promise<IExploration[]> {
+): Promise<Exploration[]> {
 	return apiService.get(
 		`/data/cxpc/${ticker}/${exchange}/`,
 		ExplorationPayloadSchema

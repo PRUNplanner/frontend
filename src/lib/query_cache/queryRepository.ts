@@ -109,7 +109,7 @@ import type {
 	SharedCreateResponse,
 } from "@/features/api/schemas/sharingData.schemas";
 
-import { IExploration } from "@/features/market_exploration/marketExploration.types";
+import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
 import {
 	callChangePassword,
 	callGetUserPreferences,
@@ -767,7 +767,7 @@ export function useQueryRepository() {
 				exchangeTicker: string;
 				materialTicker: string;
 			},
-			IExploration[]
+			Exploration[]
 		>,
 		GetFIOStorage: {
 			key: () => ["gamedata", "fio", "storage"],

@@ -39,7 +39,7 @@ import type {
 	SharedCreateResponse,
 } from "@/features/api/schemas/sharingData.schemas";
 
-import { IExploration } from "@/features/market_exploration/marketExploration.types";
+import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
 import type {
 	UserChangePasswordPayload,
 	UserPasswordResetPayload,
@@ -151,7 +151,7 @@ export interface IQueryRepository {
 			exchangeTicker: string;
 			materialTicker: string;
 		},
-		IExploration[]
+		Exploration[]
 	>;
 	GetFIOStorage: IQueryDefinition<undefined, FIOStorage>;
 	// GetFIOSites: IQueryDefinition<undefined, IFIOSites>;

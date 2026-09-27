@@ -43,7 +43,7 @@
 
 	// Util
 	import { formatAmount, formatNumber } from "@/util/numbers";
-	import { CandleInterval } from "@/features/market_exploration/marketExploration.types";
+	import type { CandleInterval } from "@/features/market_exploration/marketExploration.types";
 
 	const exchangeOptions: Ref<PSelectOption[]> = ref(
 		["AI1", "CI1", "IC1", "NC1"].map((e) => {
