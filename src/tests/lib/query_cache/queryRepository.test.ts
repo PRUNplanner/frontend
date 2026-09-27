@@ -117,12 +117,7 @@ describe("queryRepository", () => {
 
 	it("CreateSharedPlan: drops the shared list after the call", async () => {
 		const queryStore = useQueryStore();
-		queryStore.addCacheState(
-			["planningdata", "shared", "list"],
-			"GetAllShared",
-			undefined,
-			[]
-		);
+		queryStore.addCacheState("GetAllShared", undefined, []);
 
 		let listDuringCall: unknown;
 		vi.mocked(callCreateSharing).mockImplementation(async () => {

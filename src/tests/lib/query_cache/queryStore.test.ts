@@ -11,46 +11,43 @@ const slow = vi.hoisted(() => ({
 
 // mock repository
 vi.mock("@/lib/query_cache/queryRepository", () => {
-	return {
-		useQueryRepository: () => ({
-			repository: {
-				slowQuery: {
-					key: () => ["slowQuery"],
-					persist: true,
-					autoRefetch: false,
-					fetchFn: () =>
-						new Promise((resolve) => slow.resolvers.push(resolve)),
-				},
-				// static key, like most mutations
-				slowMutation: {
-					key: () => ["slowMutation"],
-					persist: false,
-					fetchFn: (params: unknown) =>
-						new Promise((resolve) =>
-							slow.resolvers.push(() => resolve(params))
-						),
-				},
-				testQuery: {
-					key: (params: any) => ["testQuery", params],
-					expireTime: 1000,
-					persist: true,
-					autoRefetch: false,
-					fetchFn: vi.fn(async (params) => {
-						return { result: `data-${params}` };
-					}),
-				},
-				autoRefetchQuery: {
-					key: (params: any) => ["autoRefetchQuery", params],
-					expireTime: 1000,
-					persist: true,
-					autoRefetch: true,
-					fetchFn: vi.fn(async (params) => {
-						return { result: `auto-${params}` };
-					}),
-				},
-			},
-		}),
+	const repository: Record<string, unknown> = {
+		slowQuery: {
+			key: () => ["slowQuery"],
+			persist: true,
+			autoRefetch: false,
+			fetchFn: () =>
+				new Promise((resolve) => slow.resolvers.push(resolve)),
+		},
+		// static key, like most mutations
+		slowMutation: {
+			key: () => ["slowMutation"],
+			persist: false,
+			fetchFn: (params: unknown) =>
+				new Promise((resolve) =>
+					slow.resolvers.push(() => resolve(params))
+				),
+		},
+		testQuery: {
+			key: (params: any) => ["testQuery", params],
+			expireTime: 1000,
+			persist: true,
+			autoRefetch: false,
+			fetchFn: vi.fn(async (params) => {
+				return { result: `data-${params}` };
+			}),
+		},
+		autoRefetchQuery: {
+			key: (params: any) => ["autoRefetchQuery", params],
+			expireTime: 1000,
+			persist: true,
+			autoRefetch: true,
+			fetchFn: vi.fn(async (params) => {
+				return { result: `auto-${params}` };
+			}),
+		},
 	};
+	return { getQueryDefinition: (name: string) => repository[name] };
 });
 
 describe("useQueryStore", () => {
@@ -126,10 +123,12 @@ describe("useQueryStore", () => {
 		store.$reset();
 
 		const data = { result: "manual-data" };
+		const key = ["testQuery", { foo: 1 }];
 		// @ts-expect-error mock query repository
-		await store.addCacheState("manualKey", "testQuery", { foo: 1 }, data);
+		store.addCacheState("testQuery", { foo: 1 }, data);
 
-		const state = store.peekQueryState("manualKey");
+		// the key comes from the definition
+		const state = store.peekQueryState(key);
 		expect(state).toBeDefined();
 		expect(state?.data).toEqual(data);
 		expect(state?.loading).toBe(false);
@@ -137,23 +136,17 @@ describe("useQueryStore", () => {
 		expect(state?.params).toEqual({ foo: 1 });
 
 		// calling addCacheState again should NOT overwrite existing state
-		await store.addCacheState(
-			"manualKey",
-			// @ts-expect-error mock query repository
-			"testQuery",
-			{ foo: 2 },
-			{ result: "new" }
-		);
-		const stateAfter = store.peekQueryState("manualKey");
-		expect(stateAfter?.params).toEqual({ foo: 1 });
+		// @ts-expect-error mock query repository
+		store.addCacheState("testQuery", { foo: 1 }, { result: "new" });
+		const stateAfter = store.peekQueryState(key);
 		expect(stateAfter?.data).toEqual(data);
 	});
 	it("should correctly compute isAnythingLoading", async () => {
-		const key = "loadingKey";
+		const key = ["testQuery", {}];
 
 		// add a cache entry
 		// @ts-expect-error mock query repository
-		await store.addCacheState(key, "testQuery", {}, { result: null });
+		store.addCacheState("testQuery", {}, { result: null });
 
 		const keyHash = toCacheKey(key);
 

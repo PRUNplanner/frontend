@@ -3,16 +3,11 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 vi.mock("@/lib/query_cache/queryRepository", () => ({
-	useQueryRepository: () => ({
-		repository: {
-			testQuery: {
-				key: () => ["testQuery"],
-				expireTime: 1000,
-				persist: false,
-				autoRefetch: false,
-				fetchFn: vi.fn(),
-			},
-		},
+	getQueryDefinition: () => ({
+		key: () => ["testQuery"],
+		expireTime: 1000,
+		persist: false,
+		fetchFn: vi.fn(),
 	}),
 }));
 

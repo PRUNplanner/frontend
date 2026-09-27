@@ -12,18 +12,15 @@ export interface IQueryState<TParams, TData> {
 	expireTime?: number;
 }
 
-export type IQueryDefinition<TParams, TData> = [TParams] extends [undefined]
-	? {
-			key: () => JSONValue;
-			fetchFn: () => Promise<TData>;
-			autoRefetch?: boolean;
-			expireTime?: number;
-			persist?: boolean;
-	  }
-	: {
-			key: (params: TParams) => JSONValue;
-			fetchFn: (params: TParams) => Promise<TData>;
-			autoRefetch?: boolean;
-			expireTime?: number;
-			persist?: boolean;
-	  };
+/**
+ * A query definition, typed by its fetchFn: it takes no argument or one
+ * params argument, and `key` receives the same params. Build one with
+ * `defineQuery` so both are inferred from `fetchFn`.
+ */
+export interface IQueryDefinition<A extends [] | [unknown], D> {
+	key: (...args: NoInfer<A>) => JSONValue;
+	fetchFn: (...args: A) => Promise<D>;
+	autoRefetch?: boolean;
+	expireTime?: number;
+	persist?: boolean;
+}
