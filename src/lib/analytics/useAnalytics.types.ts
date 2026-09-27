@@ -1,10 +1,10 @@
-import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
-import {
-	EXPERT_TYPE,
-	INFRASTRUCTURE_TYPE,
-	WORKFORCE_TYPE,
-} from "@/features/planning/usePlanCalculation.types";
-import { IPlanetSearchAdvanced } from "@/features/api/gameData.types";
+import type {
+	ExpertType,
+	InfrastructureType,
+	PlanCOGCProgram,
+	WorkforceType,
+} from "@/features/api/schemas/planningData.schemas";
+import type { PlanetSearchAdvancedPayload } from "@/features/api/schemas/gameData.schemas";
 
 export type ANALYTICS_EVENT_TYPE =
 	| "empire_patch"
@@ -120,7 +120,7 @@ export interface IAnalyticsEventProperties {
 	materialtile_market_drawer: { materialTicker: string };
 	resource_roi_overview: { materialTicker: string };
 	planet_search_basic: { searchId: string };
-	planet_search_advanced: IPlanetSearchAdvanced;
+	planet_search_advanced: PlanetSearchAdvancedPayload;
 	user_password_change: undefined;
 	user_logout: undefined;
 	user_login: { username: string };
@@ -159,16 +159,16 @@ export interface IAnalyticsEventProperties {
 	};
 	plan_update_cogc: {
 		planetNaturalId: string;
-		cogc: PLAN_COGCPROGRAM_TYPE;
+		cogc: PlanCOGCProgram;
 	};
 	plan_update_expert: {
 		planetNaturalId: string;
-		expertType: EXPERT_TYPE;
+		expertType: ExpertType;
 		amount: number;
 	};
 	plan_update_infrastructure: {
 		planetNaturalId: string;
-		infrastructureType: INFRASTRUCTURE_TYPE;
+		infrastructureType: InfrastructureType;
 		amount: number;
 	};
 	plan_create_building: {
@@ -206,7 +206,7 @@ export interface IAnalyticsEventProperties {
 	};
 	plan_update_workforce: {
 		planetNaturalId: string;
-		workforceType: WORKFORCE_TYPE;
+		workforceType: WorkforceType;
 		luxType: string;
 		value: boolean;
 	};

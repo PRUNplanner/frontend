@@ -17,9 +17,9 @@ import {
 	LoginPayloadSchema,
 	TokenResponseSchema,
 	UserChangePasswordPayloadSchema,
-	UserChangePasswordResponseSchema,
+	UserResponseDetailSchema,
 	UserProfilePatchSchema,
-	UserProfilePayloadSchema,
+	UserProfileSchema,
 } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/lib/apiService", () => ({
@@ -89,7 +89,7 @@ describe("Feature: Account", () => {
 
 		expect(apiService.get).toHaveBeenCalledWith(
 			"/user/profile/",
-			UserProfilePayloadSchema
+			UserProfileSchema
 		);
 
 		expect(result).toEqual(mockResponse);
@@ -111,7 +111,7 @@ describe("Feature: Account", () => {
 			"/user/profile/",
 			mockResponse,
 			UserProfilePatchSchema,
-			UserProfilePayloadSchema
+			UserProfileSchema
 		);
 
 		expect(result).toEqual(mockResponse);
@@ -142,7 +142,7 @@ describe("Feature: Account", () => {
 			"/user/change_password/",
 			{ old_password: "moo", new_password: "foo" },
 			UserChangePasswordPayloadSchema,
-			UserChangePasswordResponseSchema
+			UserResponseDetailSchema
 		);
 
 		expect(result).toEqual(mockResponse);

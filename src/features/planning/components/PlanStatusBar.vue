@@ -1,13 +1,13 @@
 <script setup lang="ts">
-	import { computed, PropType } from "vue";
+	import { computed, type PropType } from "vue";
 
 	// Types & Interfaces
-	import {
+	import type {
 		IAreaResult,
 		IExpertRecord,
 		IOverviewData,
 	} from "@/features/planning/usePlanCalculation.types";
-	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 	import { cogcTextMapping } from "@/features/planning_data/usePlan";
 
 	// Util
@@ -26,7 +26,7 @@
 			required: true,
 		},
 		cogc: {
-			type: String as PropType<PLAN_COGCPROGRAM_TYPE>,
+			type: String as PropType<PlanCOGCProgram>,
 			required: true,
 		},
 		expertData: {

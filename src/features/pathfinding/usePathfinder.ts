@@ -1,10 +1,10 @@
-import { ref, Ref } from "vue";
+import { ref, type Ref } from "vue";
 
 // static systemstars .json from FIO
 import systemsJson from "@/assets/static/fio_systemstars.json";
 
 // Types & Interfaces
-import { AdjecentList, ISystemsJSON } from "./usePathfinder.types";
+import type { AdjecentList, ISystemsJSON } from "./usePathfinder.types";
 
 /**
  * Singleton-style state on composable level

@@ -3,7 +3,7 @@ import config from "@/lib/config";
 // Stores
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { usePlanningStore } from "@/stores/planningStore";
-import { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
+import type { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
 import {
 	buildingsStore,
 	exchangesStore,
@@ -36,14 +36,14 @@ import {
 import { callAnalyticsPlanetInsights } from "@/features/api/analyticsData.api";
 
 // Types & Interfaces
-import {
-	IFIOStorage,
-	IPlanet,
-	IPlanetSearchAdvanced,
-	IPopulationReport,
-} from "@/features/api/gameData.types";
-import { IExploration } from "@/features/market_exploration/marketExploration.types";
-import { AnalyticsPlanetInsightsPayloadType } from "@/features/api/schemas/analyticsData.schemas";
+import type {
+	FIOStorage,
+	Planet,
+	PlanetSearchAdvancedPayload,
+	PopulationReport,
+} from "@/features/api/schemas/gameData.schemas";
+import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
+import type { AnalyticsPlanetInsightsPayload } from "@/features/api/schemas/analyticsData.schemas";
 
 /**
  * A full game data list: replaces its IndexedDB store on every fetch and
@@ -98,7 +98,7 @@ export const gameDataQueries = {
 		key: (params) => ["gamedata", "planet", params.planetNaturalId],
 		fetchFn: async (params: {
 			planetNaturalId: string;
-		}): Promise<IPlanet> => {
+		}): Promise<Planet> => {
 			const data = await callDataPlanet(params.planetNaturalId);
 			await storeAndPreload(planetsStore, [data]);
 			return data;
@@ -117,7 +117,7 @@ export const gameDataQueries = {
 		// fresh and calculations would miss every planet until expiry
 		fetchFn: async (params: {
 			planetNaturalIds: string[];
-		}): Promise<IPlanet[]> => {
+		}): Promise<Planet[]> => {
 			const data = await callDataMultiplePlanets(params.planetNaturalIds);
 			await storeAndPreload(planetsStore, data);
 
@@ -138,7 +138,7 @@ export const gameDataQueries = {
 	}),
 	GetPlanetSearchSingle: defineQuery({
 		key: (params) => ["gamedata", "planet", "search", params.searchId],
-		fetchFn: async (params: { searchId: string }): Promise<IPlanet[]> => {
+		fetchFn: async (params: { searchId: string }): Promise<Planet[]> => {
 			const data = await callDataPlanetSearchSingle(params.searchId);
 			await storeAndPreload(planetsStore, data);
 			return data;
@@ -148,8 +148,8 @@ export const gameDataQueries = {
 	PostPlanetSearch: defineQuery({
 		key: (params) => ["gamedata", "planet", "search", params.searchData],
 		fetchFn: async (params: {
-			searchData: IPlanetSearchAdvanced;
-		}): Promise<IPlanet[]> => {
+			searchData: PlanetSearchAdvancedPayload;
+		}): Promise<Planet[]> => {
 			const data = await callDataPlanetSearch(params.searchData);
 			await storeAndPreload(planetsStore, data);
 			return data;
@@ -166,7 +166,7 @@ export const gameDataQueries = {
 		],
 		fetchFn: (params: {
 			planetNaturalId: string;
-		}): Promise<IPopulationReport> =>
+		}): Promise<PopulationReport> =>
 			callPlanetLastPOPR(params.planetNaturalId),
 		expireTime: planetsExpireTime,
 	}),
@@ -180,13 +180,13 @@ export const gameDataQueries = {
 		fetchFn: (params: {
 			exchangeTicker: string;
 			materialTicker: string;
-		}): Promise<IExploration[]> =>
+		}): Promise<Exploration[]> =>
 			callExplorationData(params.exchangeTicker, params.materialTicker),
 		expireTime: staleMinutes(15),
 	}),
 	GetFIOStorage: defineQuery({
 		key: () => ["gamedata", "fio", "storage"],
-		fetchFn: async (): Promise<IFIOStorage> => {
+		fetchFn: async (): Promise<FIOStorage> => {
 			const data = await callDataFIOStorage();
 			usePlanningStore().setFIOStorageData(data);
 			return data;
@@ -202,7 +202,7 @@ export const gameDataQueries = {
 		],
 		fetchFn: (params: {
 			planetNaturalId: string;
-		}): Promise<AnalyticsPlanetInsightsPayloadType> =>
+		}): Promise<AnalyticsPlanetInsightsPayload> =>
 			callAnalyticsPlanetInsights(params.planetNaturalId),
 		expireTime: planetsExpireTime,
 	}),

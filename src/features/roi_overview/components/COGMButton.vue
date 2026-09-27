@@ -1,12 +1,12 @@
 <script setup lang="ts">
-	import { PropType, ref, Ref } from "vue";
+	import { type PropType, ref, type Ref } from "vue";
 
 	// Components
 	import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
 
 	import { PButton } from "@/ui";
 	import { NModal } from "naive-ui";
-	import { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
+	import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
 	import { AnalyticsOutlined } from "@vicons/material";
 
 	defineProps({

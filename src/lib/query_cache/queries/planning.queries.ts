@@ -43,33 +43,30 @@ import {
 } from "@/features/api/sharingData.api";
 
 // Types & Interfaces
-import {
-	ICXEmpireJunction,
-	IPlanEmpireJunction,
-} from "@/features/manage/manage.types";
-import {
-	ICX,
-	ICXData,
-	IPlan,
-	IPlanEmpire,
-	IPlanEmpireElement,
-	IPlanShare,
-} from "@/stores/planningStore.types";
-import {
-	IShared,
-	ISharedCloneResponse,
-	ISharedCreateResponse,
-} from "@/features/api/sharingData.types";
-import {
-	IEmpireCreatePayload,
-	IEmpireMaterialIOState,
-	IEmpirePatchPayload,
-} from "@/features/empire/empire.types";
-import {
-	IPlanCreateData,
-	IPlanSaveData,
-} from "@/features/planning_data/usePlan.types";
-import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
+import type {
+	CX,
+	CXData,
+	CXEmpireJunction,
+} from "@/features/api/schemas/cxData.schemas";
+import type {
+	EmpireMaterialIOState,
+	EmpirePayload,
+	PlanEmpireElement,
+	PlanEmpireJunction,
+} from "@/features/api/schemas/empireData.schemas";
+import type {
+	Plan,
+	PlanCreateData,
+	PlanEmpire,
+	PlanSaveCreateResponse,
+	PlanSaveData,
+	PlanShare,
+} from "@/features/api/schemas/planningData.schemas";
+import type {
+	Shared,
+	SharedCloneResponse,
+	SharedCreateResponse,
+} from "@/features/api/schemas/sharingData.schemas";
 
 const EMPIRES = ["planningdata", "empire"];
 const PLANS = ["planningdata", "plan"];
@@ -84,12 +81,12 @@ function dropShared(): Promise<void> {
 }
 
 /** Stores plans and seeds each plan's own `GetPlan` entry. */
-function setPlans(plans: IPlan[]): void {
+function setPlans(plans: Plan[]): void {
 	usePlanningStore().setPlans(plans);
 
 	const queryStore = useQueryStore();
 	plans.forEach((p) =>
-		queryStore.addCacheState("GetPlan", { planUuid: p.uuid! }, p)
+		queryStore.addCacheState("GetPlan", { planUuid: p.uuid }, p)
 	);
 }
 
@@ -97,13 +94,13 @@ export const planningQueries = {
 	// Sharing
 	GetSharedPlan: defineQuery({
 		key: (params) => ["planningdata", "shared", params.sharedPlanUuid],
-		fetchFn: (params: { sharedPlanUuid: string }): Promise<IPlanShare> =>
+		fetchFn: (params: { sharedPlanUuid: string }): Promise<PlanShare> =>
 			callGetShared(params.sharedPlanUuid),
 		expireTime: 10_000,
 	}),
 	GetAllShared: defineQuery({
 		key: () => ["planningdata", "shared", "list"],
-		fetchFn: async (): Promise<IShared[]> => {
+		fetchFn: async (): Promise<Shared[]> => {
 			const data = await callGetSharedList();
 			usePlanningStore().setSharedList(data);
 			return data;
@@ -129,7 +126,7 @@ export const planningQueries = {
 		key: (params) => ["planningdata", "shared", "create", params.planUuid],
 		fetchFn: async (params: {
 			planUuid: string;
-		}): Promise<ISharedCreateResponse> => {
+		}): Promise<SharedCreateResponse> => {
 			const data = await callCreateSharing(params.planUuid);
 			await dropShared();
 			return data;
@@ -140,7 +137,7 @@ export const planningQueries = {
 		key: (params) => ["planningdata", "shared", "clone", params.sharedUuid],
 		fetchFn: async (params: {
 			sharedUuid: string;
-		}): Promise<ISharedCloneResponse> => {
+		}): Promise<SharedCloneResponse> => {
 			const data = await callCloneSharedPlan(params.sharedUuid);
 			await dropShared();
 			return data;
@@ -151,7 +148,7 @@ export const planningQueries = {
 	// Empires
 	GetAllEmpires: defineQuery({
 		key: () => ["planningdata", "empire", "list"],
-		fetchFn: async (): Promise<IPlanEmpireElement[]> => {
+		fetchFn: async (): Promise<PlanEmpireElement[]> => {
 			const data = await callGetEmpireList();
 			usePlanningStore().setEmpires(data);
 			return data;
@@ -160,7 +157,7 @@ export const planningQueries = {
 	GetEmpirePlans: defineQuery({
 		key: (params) => ["planningdata", "empire", "plans", params.empireUuid],
 		// errors must propagate, [] would be cached as an empty empire
-		fetchFn: async (params: { empireUuid: string }): Promise<IPlan[]> => {
+		fetchFn: async (params: { empireUuid: string }): Promise<Plan[]> => {
 			const data = await callGetEmpirePlans(params.empireUuid);
 			setPlans(data);
 			return data;
@@ -169,8 +166,8 @@ export const planningQueries = {
 	CreateEmpire: defineQuery({
 		key: () => ["planningdata", "empire", "create"],
 		fetchFn: async (params: {
-			data: IEmpireCreatePayload;
-		}): Promise<IPlanEmpire> => {
+			data: EmpirePayload;
+		}): Promise<PlanEmpire> => {
 			const data = await callCreateEmpire(params.data);
 			await invalidate(EMPIRES);
 			return data;
@@ -178,7 +175,12 @@ export const planningQueries = {
 		persist: false,
 	}),
 	DeleteEmpire: defineQuery({
-		key: (params) => ["planningdata", "empire", "delete", params.empireUuid],
+		key: (params) => [
+			"planningdata",
+			"empire",
+			"delete",
+			params.empireUuid,
+		],
 		fetchFn: async (params: { empireUuid: string }): Promise<boolean> => {
 			const data = await callDeleteEmpire(params.empireUuid);
 			await invalidate(EMPIRES);
@@ -190,8 +192,8 @@ export const planningQueries = {
 		key: (params) => ["planningdata", "empire", "patch", params.empireUuid],
 		fetchFn: async (params: {
 			empireUuid: string;
-			data: IEmpirePatchPayload;
-		}): Promise<IPlanEmpire> => {
+			data: EmpirePayload;
+		}): Promise<PlanEmpire> => {
 			const data = await callPatchEmpire(params.empireUuid, params.data);
 			await invalidate(EMPIRES);
 			return data;
@@ -202,16 +204,16 @@ export const planningQueries = {
 		key: (params) => ["planningdata", "empire", "state", params.empireUuid],
 		fetchFn: (params: {
 			empireUuid: string;
-			empireState: IEmpireMaterialIOState;
-		}): Promise<IPlanEmpire> =>
+			empireState: EmpireMaterialIOState;
+		}): Promise<PlanEmpire> =>
 			callPatchEmpireState(params.empireUuid, params.empireState),
 		persist: false,
 	}),
 	PatchEmpirePlanJunctions: defineQuery({
 		key: () => ["planningdata", "empire", "plan", "junctions"],
 		fetchFn: async (params: {
-			junctions: IPlanEmpireJunction[];
-		}): Promise<IPlanEmpireElement[]> => {
+			junctions: PlanEmpireJunction[];
+		}): Promise<PlanEmpireElement[]> => {
 			const data = await callPatchEmpirePlanJunctions(params.junctions);
 			// junctions change both empires and their plans
 			await invalidate(EMPIRES, PLANS);
@@ -222,8 +224,8 @@ export const planningQueries = {
 	PatchEmpireCXJunctions: defineQuery({
 		key: () => ["planningdata", "empire", "cx", "junctions"],
 		fetchFn: async (params: {
-			junctions: ICXEmpireJunction[];
-		}): Promise<ICX[]> => {
+			junctions: CXEmpireJunction[];
+		}): Promise<CX[]> => {
 			const data = await callUpdateCXJunctions(params.junctions);
 			await invalidate(EMPIRES, CXS);
 			return data;
@@ -234,7 +236,7 @@ export const planningQueries = {
 	// CX
 	GetAllCX: defineQuery({
 		key: () => ["planningdata", "cx"],
-		fetchFn: async (): Promise<ICX[]> => {
+		fetchFn: async (): Promise<CX[]> => {
 			const data = await callGetCXList();
 			usePlanningStore().setCXs(data);
 			return data;
@@ -242,7 +244,7 @@ export const planningQueries = {
 	}),
 	CreateCX: defineQuery({
 		key: () => ["planningdata", "cx", "create"],
-		fetchFn: async (params: { cxName: string }): Promise<ICX> => {
+		fetchFn: async (params: { cxName: string }): Promise<CX> => {
 			const data = await callCreateCX(params.cxName);
 			await invalidate(CXS);
 			return data;
@@ -254,8 +256,8 @@ export const planningQueries = {
 		fetchFn: async (params: {
 			cxName: string;
 			cxUuid: string;
-			data: ICXData;
-		}): Promise<ICX> => {
+			data: CXData;
+		}): Promise<CX> => {
 			const data = await callPatchCX(
 				params.cxName,
 				params.cxUuid,
@@ -280,7 +282,7 @@ export const planningQueries = {
 	// Plans
 	GetPlan: defineQuery({
 		key: (params) => ["planningdata", "plan", params.planUuid],
-		fetchFn: async (params: { planUuid: string }): Promise<IPlan> => {
+		fetchFn: async (params: { planUuid: string }): Promise<Plan> => {
 			const data = await callGetPlan(params.planUuid);
 			usePlanningStore().setPlan(data);
 			return data;
@@ -289,7 +291,7 @@ export const planningQueries = {
 	GetAllPlans: defineQuery({
 		key: () => ["planningdata", "plan", "list"],
 		// errors must propagate, [] would be cached as "no plans"
-		fetchFn: async (): Promise<IPlan[]> => {
+		fetchFn: async (): Promise<Plan[]> => {
 			const data = await callGetPlanlist();
 			setPlans(data);
 			return data;
@@ -298,8 +300,8 @@ export const planningQueries = {
 	CreatePlan: defineQuery({
 		key: () => ["planningdata", "plan", "create"],
 		fetchFn: async (params: {
-			data: IPlanCreateData;
-		}): Promise<PlanSaveCreateResponseType> => {
+			data: PlanCreateData;
+		}): Promise<PlanSaveCreateResponse> => {
 			const data = await callCreatePlan(params.data);
 			await invalidate(PLANS, EMPIRES);
 			return data;
@@ -310,8 +312,8 @@ export const planningQueries = {
 		key: (params) => ["planningdata", "plan", "patch", params.planUuid],
 		fetchFn: async (params: {
 			planUuid: string;
-			data: IPlanSaveData;
-		}): Promise<PlanSaveCreateResponseType> => {
+			data: PlanSaveData;
+		}): Promise<PlanSaveCreateResponse> => {
 			const data = await callSavePlan(params.planUuid, params.data);
 			await invalidate(PLANS, EMPIRES);
 			return data;
@@ -323,7 +325,7 @@ export const planningQueries = {
 		fetchFn: async (params: {
 			planUuid: string;
 			cloneName: string;
-		}): Promise<IPlan> => {
+		}): Promise<Plan> => {
 			const data = await callClonePlan(params.planUuid, params.cloneName);
 			await invalidate(EMPIRES);
 			await useQueryStore().invalidateKey([...PLANS, "list"]);

@@ -1,11 +1,9 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, onMounted, ref, Ref } from "vue";
+	import { computed, type ComputedRef, onMounted, ref, type Ref } from "vue";
 
 	// Types & Interfaces
-	import {
-		IMaterialExplorationRecord,
-		IMaterialMarketHistory,
-	} from "@/features/market_exploration/marketExploration.types";
+	import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
+	import type { IMaterialMarketHistory } from "@/features/market_exploration/marketExploration.types";
 
 	// Composables
 	import { useMarketExploration } from "@/features/market_exploration/useMarketExploration";
@@ -35,13 +33,13 @@
 
 	onMounted(async () => {
 		await getMaterialExplorationData(props.materialTicker).then(
-			(result: IMaterialExplorationRecord) => {
+			(result: Record<string, Exploration[]>) => {
 				chartData.value = result;
 			}
 		);
 	});
 
-	const chartData: Ref<IMaterialExplorationRecord | undefined> =
+	const chartData: Ref<Record<string, Exploration[]> | undefined> =
 		ref(undefined);
 
 	const transformedChartData: ComputedRef<IMaterialMarketHistory[]> =
@@ -74,7 +72,9 @@
 						const dayEntry = data[ex].find(
 							(d) => d.date_epoch === epoch
 						);
-						row[ex] = dayEntry ? dayEntry[props.displayValue] : 0;
+						row[ex] = dayEntry
+							? dayEntry[props.displayValue as keyof Exploration]
+							: 0;
 					});
 
 					return row;

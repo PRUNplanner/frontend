@@ -1,9 +1,9 @@
+import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+
 export type EXCHANGES_TYPE = "AI1" | "CI1" | "IC1" | "NC1" | "UNIVERSE";
 
 export type SIGNIFICANCE_LEVEL =
-	| "STABLE"
-	| "SIGNIFICANT"
-	| "HIGHLY-SIGNIFICANT";
+	"STABLE" | "SIGNIFICANT" | "HIGHLY-SIGNIFICANT";
 
 export interface IMaterialExchangeVWAPAnalysis {
 	significance: SIGNIFICANCE_LEVEL;
@@ -24,7 +24,7 @@ export interface IMaterialExchangeOverview {
 	delta_supply_demand: Required<Record<EXCHANGES_TYPE, number>>;
 	calendar_date: Required<Record<EXCHANGES_TYPE, Date>>;
 	exchange_status: Required<
-		Record<EXCHANGES_TYPE, "ACTIVE" | "INACTIVE" | "STALE">
+		Record<EXCHANGES_TYPE, Exchange["exchange_status"]>
 	>;
 	vwap_analysis: Required<
 		Record<EXCHANGES_TYPE, IMaterialExchangeVWAPAnalysis>

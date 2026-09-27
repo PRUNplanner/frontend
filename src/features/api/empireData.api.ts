@@ -3,36 +3,27 @@ import { apiService } from "@/lib/apiService";
 
 // Schemas & Schema Types
 import {
-	PlanEmpireElementPayload,
-	PlanEmpireElementPayloadType,
-	PlanEmpirePlanListPayload,
-	PlanEmpirePlanListType,
 	PlanEmpireSchema,
-	PlanEmpireSchemaType,
+	PlanListSchema,
 } from "@/features/api/schemas/planningData.schemas";
 import {
-	EmpireCreatePayload,
-	EmpireCreatePayloadType,
-	EmpireJunctionPayloadSchema,
-	EmpireJunctionPayloadType,
 	EmpireMaterialIOStateSchema,
-	EmpireMaterialIOStateType,
-	EmpirePatchPayload,
-	EmpirePatchPayloadType,
+	EmpirePayloadSchema,
+	PlanEmpireElementListSchema,
+	PlanEmpireJunctionListSchema,
 } from "@/features/api/schemas/empireData.schemas";
 
 // Types & Interfaces
-import {
-	IPlan,
-	IPlanEmpire,
-	IPlanEmpireElement,
-} from "@/stores/planningStore.types";
-import {
-	IEmpireCreatePayload,
-	IEmpireMaterialIOState,
-	IEmpirePatchPayload,
-} from "@/features/empire/empire.types";
-import { IPlanEmpireJunction } from "@/features/manage/manage.types";
+import type {
+	Plan,
+	PlanEmpire,
+} from "@/features/api/schemas/planningData.schemas";
+import type {
+	EmpireMaterialIOState,
+	EmpirePayload,
+	PlanEmpireElement,
+	PlanEmpireJunction,
+} from "@/features/api/schemas/empireData.schemas";
 
 /**
  * Gets all empires a user has defined
@@ -40,13 +31,10 @@ import { IPlanEmpireJunction } from "@/features/manage/manage.types";
  *
  * @export
  * @async
- * @returns {Promise<IPlanEmpireElement[]>} User Empire Array
+ * @returns {Promise<PlanEmpireElement[]>} User Empire Array
  */
-export async function callGetEmpireList(): Promise<IPlanEmpireElement[]> {
-	return apiService.get<PlanEmpireElementPayloadType>(
-		`planning/empire/`,
-		PlanEmpireElementPayload
-	);
+export async function callGetEmpireList(): Promise<PlanEmpireElement[]> {
+	return apiService.get(`planning/empire/`, PlanEmpireElementListSchema);
 }
 
 /**
@@ -56,12 +44,12 @@ export async function callGetEmpireList(): Promise<IPlanEmpireElement[]> {
  * @export
  * @async
  * @param {string} empireUuid Empire Uuid
- * @returns {Promise<IPlan[]>} List of plans in specified empire
+ * @returns {Promise<Plan[]>} List of plans in specified empire
  */
-export async function callGetEmpirePlans(empireUuid: string): Promise<IPlan[]> {
-	return await apiService.get<PlanEmpirePlanListType>(
+export async function callGetEmpirePlans(empireUuid: string): Promise<Plan[]> {
+	return await apiService.get(
 		`planning/empire/${empireUuid}/plans/`,
-		PlanEmpirePlanListPayload
+		PlanListSchema
 	);
 }
 
@@ -72,17 +60,17 @@ export async function callGetEmpirePlans(empireUuid: string): Promise<IPlan[]> {
  * @export
  * @async
  * @param {string} empireUuid Empire Uuid
- * @param {IEmpirePatchPayload} data Empire Patch data
- * @returns {Promise<IPlanEmpire>} Updated empire data
+ * @param {EmpirePayload} data Empire Patch data
+ * @returns {Promise<PlanEmpire>} Updated empire data
  */
 export async function callPatchEmpire(
 	empireUuid: string,
-	data: IEmpirePatchPayload
-): Promise<IPlanEmpire> {
-	return apiService.put<EmpirePatchPayloadType, PlanEmpireSchemaType>(
+	data: EmpirePayload
+): Promise<PlanEmpire> {
+	return apiService.put(
 		`planning/empire/${empireUuid}/`,
 		data,
-		EmpirePatchPayload,
+		EmpirePayloadSchema,
 		PlanEmpireSchema
 	);
 }
@@ -93,16 +81,16 @@ export async function callPatchEmpire(
  *
  * @export
  * @async
- * @param {IEmpireCreatePayload} data Empire Configuration
- * @returns {Promise<IPlanEmpire>} Empire
+ * @param {EmpirePayload} data Empire Configuration
+ * @returns {Promise<PlanEmpire>} Empire
  */
 export async function callCreateEmpire(
-	data: IEmpireCreatePayload
-): Promise<IPlanEmpire> {
-	return apiService.post<EmpireCreatePayloadType, PlanEmpireSchemaType>(
+	data: EmpirePayload
+): Promise<PlanEmpire> {
+	return apiService.post(
 		"/planning/empire/",
 		data,
-		EmpireCreatePayload,
+		EmpirePayloadSchema,
 		PlanEmpireSchema
 	);
 }
@@ -121,24 +109,21 @@ export async function callDeleteEmpire(empireUuid: string): Promise<boolean> {
 }
 
 export async function callPatchEmpirePlanJunctions(
-	junctions: IPlanEmpireJunction[]
-): Promise<IPlanEmpireElement[]> {
-	return apiService.post<
-		EmpireJunctionPayloadType,
-		PlanEmpireElementPayloadType
-	>(
+	junctions: PlanEmpireJunction[]
+): Promise<PlanEmpireElement[]> {
+	return apiService.post(
 		"/planning/empire/junctions/",
 		junctions,
-		EmpireJunctionPayloadSchema,
-		PlanEmpireElementPayload
+		PlanEmpireJunctionListSchema,
+		PlanEmpireElementListSchema
 	);
 }
 
 export async function callPatchEmpireState(
 	empireUuid: string,
-	empireState: IEmpireMaterialIOState
-): Promise<IPlanEmpire> {
-	return apiService.patch<EmpireMaterialIOStateType, PlanEmpireSchemaType>(
+	empireState: EmpireMaterialIOState
+): Promise<PlanEmpire> {
+	return apiService.patch(
 		`/planning/empire/${empireUuid}/state/`,
 		empireState,
 		EmpireMaterialIOStateSchema,

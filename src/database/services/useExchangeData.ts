@@ -2,8 +2,8 @@ import { exchangesStore } from "@/database/stores";
 import { useDB } from "@/database/composables/useDB";
 
 // Types & Interfaces
-import { IExchange } from "@/features/api/gameData.types";
-import {
+import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type {
 	EXCHANGES_TYPE,
 	IMaterialExchangeOverview,
 	IMaterialExchangeVWAPAnalysis,
@@ -28,7 +28,7 @@ export function useExchangeData() {
 
 	const { get, getLoaded, preload } = useDB(exchangesStore);
 
-	async function getExchangeTicker(tickerId: string): Promise<IExchange> {
+	async function getExchangeTicker(tickerId: string): Promise<Exchange> {
 		const exchange = await get(tickerId);
 
 		if (exchange) return exchange;
@@ -42,7 +42,7 @@ export function useExchangeData() {
 	 * Synchronous exchange lookup, for code that runs after preload.
 	 * Throws if exchanges are not loaded or the ticker is unknown.
 	 */
-	function getExchangeTickerLoaded(tickerId: string): IExchange {
+	function getExchangeTickerLoaded(tickerId: string): Exchange {
 		const exchange = getLoaded(tickerId);
 
 		if (exchange) return exchange;
@@ -94,7 +94,7 @@ export function useExchangeData() {
 			calendar_date: {} as Record<EXCHANGES_TYPE, Date>,
 			exchange_status: {} as Record<
 				EXCHANGES_TYPE,
-				"ACTIVE" | "INACTIVE" | "STALE"
+				Exchange["exchange_status"]
 			>,
 			vwap_analysis: {} as Record<
 				EXCHANGES_TYPE,

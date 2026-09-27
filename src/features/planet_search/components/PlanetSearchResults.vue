@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType } from "vue";
+	import { computed, type ComputedRef, type PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -17,7 +17,7 @@
 	import PlanetPOPRButton from "@/features/government/components/PlanetPOPRButton.vue";
 
 	// Types & Interfaces
-	import { IPlanet } from "@/features/api/gameData.types";
+	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
 	// UI
 	import { PButton, PTooltip } from "@/ui";
@@ -26,7 +26,7 @@
 
 	const props = defineProps({
 		results: {
-			type: Array as PropType<IPlanet[]>,
+			type: Array as PropType<Planet[]>,
 			required: true,
 		},
 		searchMaterials: {
@@ -215,9 +215,7 @@
 							<div>
 								<MaterialTile
 									:key="rowData.environmentTemperature[0]"
-									:ticker="
-										rowData.environmentTemperature[0]
-									"
+									:ticker="rowData.environmentTemperature[0]"
 									popover-placement="left" />
 							</div>
 						</template>

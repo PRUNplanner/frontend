@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { onMounted, PropType, ref, Ref } from "vue";
+	import { onMounted, type PropType, ref, type Ref } from "vue";
 
 	// Composables
 	import { useSharing } from "@/features/sharing/useSharing";

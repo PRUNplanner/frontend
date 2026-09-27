@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
 import { buildingsStore, recipesStore } from "@/database/stores";
-import { IPlanDataBuilding } from "@/stores/planningStore.types";
+import type { PlanDataBuilding } from "@/features/api/schemas/planningData.schemas";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
@@ -427,17 +427,18 @@ describe("Planning: Workforce Calculations", async () => {
 
 	describe("handleCreateBuildingAndRecipe", async () => {
 		it("Create and add Recipe", async () => {
-			const fakePlan: { buildings: IPlanDataBuilding[] } = {
+			const fakePlan: { buildings: PlanDataBuilding[] } = {
 				buildings: [],
 			};
 
-			const { handleCreateBuildingAndRecipe } = usePlanCalculationHandlers(
-				// @ts-expect-error mock data
-				ref({}),
-				ref(fakePlan),
-				ref(),
-				ref({})
-			);
+			const { handleCreateBuildingAndRecipe } =
+				usePlanCalculationHandlers(
+					// @ts-expect-error mock data
+					ref({}),
+					ref(fakePlan),
+					ref(),
+					ref({})
+				);
 
 			expect(fakePlan.buildings.length).toBe(0);
 			await handleCreateBuildingAndRecipe("EXT", "EXT#FEO");
@@ -456,13 +457,14 @@ describe("Planning: Workforce Calculations", async () => {
 				buildings: [],
 			};
 
-			const { handleUpdateBuildingRecipeAmount } = usePlanCalculationHandlers(
-				// @ts-expect-error mock data
-				ref({}),
-				ref(fakePlan),
-				ref(),
-				ref({})
-			);
+			const { handleUpdateBuildingRecipeAmount } =
+				usePlanCalculationHandlers(
+					// @ts-expect-error mock data
+					ref({}),
+					ref(fakePlan),
+					ref(),
+					ref({})
+				);
 
 			expect(() =>
 				handleUpdateBuildingRecipeAmount(0, 0, 5)
@@ -478,13 +480,14 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleUpdateBuildingRecipeAmount } = usePlanCalculationHandlers(
-				// @ts-expect-error mock data
-				ref({}),
-				ref(fakePlan),
-				ref(),
-				ref({})
-			);
+			const { handleUpdateBuildingRecipeAmount } =
+				usePlanCalculationHandlers(
+					// @ts-expect-error mock data
+					ref({}),
+					ref(fakePlan),
+					ref(),
+					ref({})
+				);
 
 			expect(() =>
 				handleUpdateBuildingRecipeAmount(0, 0, 5)
@@ -504,13 +507,14 @@ describe("Planning: Workforce Calculations", async () => {
 				],
 			};
 
-			const { handleUpdateBuildingRecipeAmount } = usePlanCalculationHandlers(
-				// @ts-expect-error mock data
-				ref({}),
-				ref(fakePlan),
-				ref(),
-				ref({})
-			);
+			const { handleUpdateBuildingRecipeAmount } =
+				usePlanCalculationHandlers(
+					// @ts-expect-error mock data
+					ref({}),
+					ref(fakePlan),
+					ref(),
+					ref({})
+				);
 
 			handleUpdateBuildingRecipeAmount(0, 0, 100);
 			expect(fakePlan.buildings[0].active_recipes[0].amount).toBe(100);

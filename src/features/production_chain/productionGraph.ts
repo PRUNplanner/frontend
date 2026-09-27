@@ -11,17 +11,17 @@ import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Types & Interfaces
-import {
-	IRecipe,
-	IPlanet,
-	PLANET_RESOURCETYPE_TYPE,
-} from "@/features/api/gameData.types";
-import {
+import type {
+	Recipe,
+	Planet,
+	PlanetResourceType,
+} from "@/features/api/schemas/gameData.schemas";
+import type {
 	IProductionGraphData,
 	IProductionGraphIO,
 	IProductionGraphSubgraph,
 } from "@/features/production_chain/productionGraph.types";
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 
 export class ProductionGraph {
 	nodes: Record<string, ProductionNode>;
@@ -34,12 +34,10 @@ export class ProductionGraph {
 
 	async init() {
 		const buildingData = useBuildingData();
-		const allRecipes = Object.values(
-			buildingData.getAllBuildingRecipes()
-		);
+		const allRecipes = Object.values(buildingData.getAllBuildingRecipes());
 
-		allRecipes.forEach((buildingRecipes: IRecipe[]) => {
-			buildingRecipes.forEach((recipe: IRecipe) => {
+		allRecipes.forEach((buildingRecipes: Recipe[]) => {
+			buildingRecipes.forEach((recipe: Recipe) => {
 				// outputs
 				recipe.outputs.forEach((output) => {
 					const node = this.getOrCreateNode(output.material_ticker);
@@ -69,7 +67,7 @@ export class ProductionGraph {
 
 			// Map resource types to extraction building tickers
 			const resourceTypeToBuildingTicker: Record<
-				PLANET_RESOURCETYPE_TYPE,
+				PlanetResourceType,
 				string
 			> = {
 				MINERAL: "EXT",
@@ -81,7 +79,7 @@ export class ProductionGraph {
 			const extractableMaterialsMap: Record<string, string> = {};
 
 			if (planets.value && planets.value.length > 0) {
-				planets.value.forEach((planet: IPlanet) => {
+				planets.value.forEach((planet: Planet) => {
 					planet.resources.forEach((resource) => {
 						const buildingTicker =
 							resourceTypeToBuildingTicker[

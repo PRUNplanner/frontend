@@ -1,4 +1,4 @@
-export type IInfrastructureCosts = {
+export interface IInfrastructureCosts {
 	HB1: number;
 	HB2: number;
 	HB3: number;
@@ -15,4 +15,4 @@ export type IInfrastructureCosts = {
 	STW: number;
 
 	[key: string]: number;
-};
+}

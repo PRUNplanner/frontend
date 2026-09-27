@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { h } from "vue";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
@@ -10,7 +10,7 @@ import EmpirePlanMapChart from "@/ui/charts/EmpirePlanMapChart.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import {
+import type {
 	IEmpireMaterialIO,
 	IEmpirePlanListData,
 } from "@/features/empire/empire.types";
@@ -153,29 +153,29 @@ describe("EmpireAnalysis", () => {
 		const { wrapper } = await mountAnalysis();
 
 		// B loses money, C makes none
-		expect(
-			wrapper.findComponent(EmpirePlanMapChart).props("data")
-		).toEqual([
-			{
-				name: "A",
-				value: 100.13,
-				cogc: "Metallurgy",
-				color: "hsl(0, 60%, 40%)",
-			},
-			// unnamed plan, colours step 137.5° around the wheel
-			{
-				name: "",
-				value: 50,
-				cogc: "Food Industries",
-				color: "hsl(137.5, 60%, 40%)",
-			},
-			{
-				name: "E",
-				value: 20,
-				cogc: "Metallurgy",
-				color: "hsl(275, 60%, 40%)",
-			},
-		]);
+		expect(wrapper.findComponent(EmpirePlanMapChart).props("data")).toEqual(
+			[
+				{
+					name: "A",
+					value: 100.13,
+					cogc: "Metallurgy",
+					color: "hsl(0, 60%, 40%)",
+				},
+				// unnamed plan, colours step 137.5° around the wheel
+				{
+					name: "",
+					value: 50,
+					cogc: "Food Industries",
+					color: "hsl(137.5, 60%, 40%)",
+				},
+				{
+					name: "E",
+					value: 20,
+					cogc: "Metallurgy",
+					color: "hsl(275, 60%, 40%)",
+				},
+			]
+		);
 	});
 
 	it("wraps plan colours around the wheel", async () => {
@@ -199,7 +199,9 @@ describe("EmpireAnalysis", () => {
 		const { wrapper } = await mountAnalysis(MATERIAL_IO, PLANS.slice(0, 4));
 
 		expect(wrapper.findComponent(EmpirePlanMapChart).exists()).toBe(false);
-		expect(wrapper.text()).not.toContain("empire.analysis.profitable_plans");
+		expect(wrapper.text()).not.toContain(
+			"empire.analysis.profitable_plans"
+		);
 	});
 
 	it("renders empty charts without data", async () => {

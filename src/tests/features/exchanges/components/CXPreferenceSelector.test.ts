@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
-import { createPinia, Pinia } from "pinia";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
+import { createPinia, type Pinia } from "pinia";
 
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";

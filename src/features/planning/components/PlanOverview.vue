@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType, computed } from "vue";
+	import { type PropType, computed } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -8,7 +8,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import {
+	import type {
 		IAreaResult,
 		IOverviewData,
 		IVisitationData,

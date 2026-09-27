@@ -7,7 +7,7 @@ import { planetsStore } from "@/database/stores";
 import { getPlanetSpecialMaterials } from "@/features/planning/engine/buildings";
 
 // Types & Interfaces
-import { IPlanet } from "@/features/api/gameData.types";
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
 // Planetary type static boundaries, see the planning engine
 export {
@@ -25,7 +25,7 @@ export function usePlanetData() {
 	// reactive caches
 	const planetNames = ref(new Map<string, string>());
 
-	async function getPlanet(planetNaturalId: string): Promise<IPlanet> {
+	async function getPlanet(planetNaturalId: string): Promise<Planet> {
 		const planet = await get(planetNaturalId);
 
 		if (!planet) {
@@ -85,7 +85,6 @@ export function usePlanetData() {
 			})
 		);
 	}
-
 
 	return {
 		planets: allData,

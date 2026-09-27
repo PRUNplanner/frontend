@@ -8,13 +8,13 @@
 	import RuleGroup from "@/features/market_live/components/RuleGroup.vue";
 
 	// Types & Interfaces
-	import { DetectorConfig } from "@/features/market_live/cxDetectors.types";
+	import type { DetectorConfig } from "@/features/market_live/cxDetectors.types";
 
 	// UI
 	import PInput from "@/ui/components/PInput.vue";
 	import PSelect from "@/ui/components/PSelect.vue";
 	import PButton from "@/ui/components/PButton.vue";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	const severityOptions: PSelectOption[] = [
 		{ label: "Low", value: "LOW" },

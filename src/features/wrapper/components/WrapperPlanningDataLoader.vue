@@ -3,7 +3,7 @@
 	import { usePlanningDataLoader } from "@/features/wrapper/usePlanningDataLoader";
 
 	// Types & Interfaces
-	import {
+	import type {
 		PlanningDataLoaderEmits,
 		PlanningDataLoaderProps,
 	} from "@/features/wrapper/planningDataLoader.types";

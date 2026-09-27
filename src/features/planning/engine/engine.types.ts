@@ -1,13 +1,16 @@
 // Types & Interfaces
-import {
-	IBuilding,
-	IMaterial,
-	IPlanet,
-	IRecipe,
-} from "@/features/api/gameData.types";
-import { IPriceBook } from "@/features/cx/priceBook";
-import { IPlan, IPlanEmpire } from "@/stores/planningStore.types";
-import {
+import type {
+	Building,
+	Material,
+	Planet,
+	Recipe,
+} from "@/features/api/schemas/gameData.schemas";
+import type { IPriceBook } from "@/features/cx/priceBook";
+import type {
+	Plan,
+	PlanEmpire,
+} from "@/features/api/schemas/planningData.schemas";
+import type {
 	IOverviewData,
 	IPlanResult,
 } from "@/features/planning/usePlanCalculation.types";
@@ -17,9 +20,9 @@ import {
  * be shared by every plan of a batch.
  */
 export interface IGameData {
-	buildings: ReadonlyMap<string, IBuilding>;
-	recipesByBuilding: Readonly<Record<string, IRecipe[]>>;
-	materials: ReadonlyMap<string, IMaterial>;
+	buildings: ReadonlyMap<string, Building>;
+	recipesByBuilding: Readonly<Record<string, Recipe[]>>;
+	materials: ReadonlyMap<string, Material>;
 }
 
 /**
@@ -27,7 +30,7 @@ export interface IGameData {
  * the plan's planet and the price book for the plan's CX and planet.
  */
 export interface IPlanContext extends IGameData {
-	planet: IPlanet;
+	planet: Planet;
 	prices: IPriceBook;
 }
 
@@ -37,11 +40,11 @@ export interface IPlanContext extends IGameData {
  */
 export interface IPlanInput {
 	plan: Pick<
-		IPlan,
+		Plan,
 		"plan_data" | "plan_cogc" | "plan_corphq" | "plan_permits_used"
 	>;
 	// active empire, for the faction bonus
-	empire: IPlanEmpire | undefined;
+	empire: PlanEmpire | undefined;
 	// CX the prices in the context were built for, undefined for Universe
 	cxUuid: string | undefined;
 	// compute recipe options for every building (default true)

@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanInfrastructure from "@/features/planning/components/PlanInfrastructure.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IInfrastructureRecord } from "@/features/planning/usePlanCalculation.types";
+import type { IInfrastructureRecord } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
@@ -55,8 +55,7 @@ async function mountInfrastructure(props: Record<string, unknown> = {}) {
 	});
 }
 
-const checkbox = (wrapper: VueWrapper) =>
-	wrapper.find("input[type=checkbox]");
+const checkbox = (wrapper: VueWrapper) => wrapper.find("input[type=checkbox]");
 const numberInputs = (wrapper: VueWrapper) =>
 	wrapper.findAll("input:not([type=checkbox])");
 const numberInput = (wrapper: VueWrapper, index: number) =>
@@ -66,13 +65,9 @@ const disabledInputs = (wrapper: VueWrapper) =>
 	numberInputs(wrapper).map((i) => (i.element as HTMLInputElement).disabled);
 const buttons = (wrapper: VueWrapper) => wrapper.findAll("button");
 const costButton = (wrapper: VueWrapper) =>
-	buttons(wrapper).find((b) =>
-		b.text().includes("buttons.optimize_cost")
-	)!;
+	buttons(wrapper).find((b) => b.text().includes("buttons.optimize_cost"))!;
 const areaButton = (wrapper: VueWrapper) =>
-	buttons(wrapper).find((b) =>
-		b.text().includes("buttons.optimize_area")
-	)!;
+	buttons(wrapper).find((b) => b.text().includes("buttons.optimize_area"))!;
 
 describe("PlanInfrastructure", () => {
 	beforeEach(() => {
@@ -103,9 +98,9 @@ describe("PlanInfrastructure", () => {
 	it("enables everything without auto-optimize", async () => {
 		const { wrapper } = await mountInfrastructure();
 
-		expect(
-			(checkbox(wrapper).element as HTMLInputElement).checked
-		).toBe(false);
+		expect((checkbox(wrapper).element as HTMLInputElement).checked).toBe(
+			false
+		);
 		expect(checkbox(wrapper).attributes("disabled")).toBeUndefined();
 		expect(disabledInputs(wrapper)).toEqual(ORDER.map(() => false));
 		expect(costButton(wrapper).attributes("disabled")).toBeUndefined();
@@ -117,9 +112,9 @@ describe("PlanInfrastructure", () => {
 			autoOptimizeHabs: true,
 		});
 
-		expect(
-			(checkbox(wrapper).element as HTMLInputElement).checked
-		).toBe(true);
+		expect((checkbox(wrapper).element as HTMLInputElement).checked).toBe(
+			true
+		);
 		// the solver owns the 9 habitations, storages stay editable
 		expect(disabledInputs(wrapper)).toEqual(
 			ORDER.map((inf) => !inf.startsWith("ST"))

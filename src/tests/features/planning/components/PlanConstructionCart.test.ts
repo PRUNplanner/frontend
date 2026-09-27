@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -143,7 +143,8 @@ const materialSums = (wrapper: VueWrapper) =>
 /** price, weight and volume of a table's summary */
 function summary(wrapper: VueWrapper, table: 0 | 1) {
 	const cells = tables(wrapper)
-		.at(table)!.findAll("tbody tr")
+		.at(table)!
+		.findAll("tbody tr")
 		.at(-1)!
 		.findAll(".grid > div")
 		.map((d) => d.text().split(" ")[0]);
@@ -374,7 +375,10 @@ describe("PlanConstructionCart", () => {
 		});
 
 		it("preselects no storage when the planet has none", async () => {
-			const { wrapper } = await mountCart({ fio: true, planet: "XX-000a" });
+			const { wrapper } = await mountCart({
+				fio: true,
+				planet: "XX-000a",
+			});
 
 			expect(wrapper.findComponent(PSelect).text()).toContain(
 				"No FIO Storage"

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 	import {
 		computed,
-		ComputedRef,
+		type ComputedRef,
 		nextTick,
 		onBeforeUnmount,
-		Ref,
+		type Ref,
 		ref,
 		watch,
 	} from "vue";
@@ -13,11 +13,11 @@
 	const { t } = useI18n();
 
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 	import PInput from "./PInput.vue";
 	import PSelectElement from "./PSelectElement.vue";
 	import PTag from "./PTag.vue";
-	import { createPopper, Instance } from "@popperjs/core";
+	import { createPopper, type Instance } from "@popperjs/core";
 	import { ClearSharp } from "@vicons/material";
 
 	const value = defineModel<Array<null | string | number | undefined>>(

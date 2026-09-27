@@ -1,5 +1,5 @@
-import { FieldConfig } from "@/features/market_live/cxDetectors.types";
-import { CXDataPoint } from "@/features/market_live/cxExchange.types";
+import type { FieldConfig } from "@/features/market_live/cxDetectors.types";
+import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 export const FieldConfigs: Partial<Record<keyof CXDataPoint, FieldConfig>> = {
 	material_ticker: {

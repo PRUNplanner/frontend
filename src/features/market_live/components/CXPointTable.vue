@@ -3,7 +3,7 @@
 	const { t } = useI18n();
 
 	// Types & Interfaces
-	import { CXDataPoint } from "@/features/market_live/cxExchange.types";
+	import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 	// Util
 	import { formatNumber, formatAmount } from "@/util/numbers";

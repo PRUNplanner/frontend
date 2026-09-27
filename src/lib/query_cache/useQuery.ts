@@ -1,6 +1,6 @@
 import { computed } from "vue";
 import { useQueryStore } from "./queryStore";
-import {
+import type {
 	QueryArgs,
 	QueryData,
 	QueryName,

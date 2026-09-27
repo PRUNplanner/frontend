@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, isAxiosError } from "axios";
-import { ZodError, ZodType } from "zod";
+import axios, { type AxiosInstance, isAxiosError } from "axios";
+import { ZodError, type ZodType, type z } from "zod";
 import config from "@/lib/config";
 
 /**
@@ -31,15 +31,15 @@ class ApiService {
 	 *
 	 * @public
 	 * @async
-	 * @template Response Response Type
+	 * @template Res Response Schema
 	 * @param {string} path URL
-	 * @param {ZodType<Response>} responseSchema Response Schema
-	 * @returns {Promise<Response>}
+	 * @param {Res} responseSchema Response Schema
+	 * @returns {Promise<z.output<Res>>}
 	 */
-	public async get<Response>(
+	public async get<Res extends ZodType>(
 		path: string,
-		responseSchema: ZodType<Response>
-	): Promise<Response> {
+		responseSchema: Res
+	): Promise<z.output<Res>> {
 		try {
 			const { data } = await this.client.get(path);
 			return responseSchema.parse(data);
@@ -54,22 +54,22 @@ class ApiService {
 	 *
 	 * @public
 	 * @async
-	 * @template Request Request Type
-	 * @template Response Response Type
+	 * @template Req Request Schema
+	 * @template Res Response Schema
 	 * @param {string} path URL
-	 * @param {unknown} payload Payload data
-	 * @param {ZodType<Request>} requestSchema Request Schema
-	 * @param {ZodType<Response>} responseSchema Response Schema
+	 * @param {z.input<Req>} payload Payload data
+	 * @param {Req} requestSchema Request Schema
+	 * @param {Res} responseSchema Response Schema
 	 * @param {?boolean} [asForm] adds multipart/form-data header
-	 * @returns {Promise<Response>}
+	 * @returns {Promise<z.output<Res>>}
 	 */
-	public async post<Request, Response>(
+	public async post<Req extends ZodType, Res extends ZodType>(
 		path: string,
-		payload: unknown,
-		requestSchema: ZodType<Request>,
-		responseSchema: ZodType<Response>,
+		payload: z.input<Req>,
+		requestSchema: Req,
+		responseSchema: Res,
 		asForm?: boolean
-	): Promise<Response> {
+	): Promise<z.output<Res>> {
 		try {
 			const body = requestSchema.parse(payload);
 
@@ -91,20 +91,20 @@ class ApiService {
 	 *
 	 * @public
 	 * @async
-	 * @template Request Request Type
-	 * @template Response Response Type
+	 * @template Req Request Schema
+	 * @template Res Response Schema
 	 * @param {string} path URL
-	 * @param {unknown} payload Payload data
-	 * @param {ZodType<Request>} requestSchema Request Schema
-	 * @param {ZodType<Response>} responseSchema Response Schema
-	 * @returns {Promise<Response>}
+	 * @param {z.input<Req>} payload Payload data
+	 * @param {Req} requestSchema Request Schema
+	 * @param {Res} responseSchema Response Schema
+	 * @returns {Promise<z.output<Res>>}
 	 */
-	public async put<Request, Response>(
+	public async put<Req extends ZodType, Res extends ZodType>(
 		path: string,
-		payload: unknown,
-		requestSchema: ZodType<Request>,
-		responseSchema: ZodType<Response>
-	): Promise<Response> {
+		payload: z.input<Req>,
+		requestSchema: Req,
+		responseSchema: Res
+	): Promise<z.output<Res>> {
 		try {
 			const body = requestSchema.parse(payload);
 
@@ -122,20 +122,20 @@ class ApiService {
 	 *
 	 * @public
 	 * @async
-	 * @template Request Request Type
-	 * @template Response Response Type
+	 * @template Req Request Schema
+	 * @template Res Response Schema
 	 * @param {string} path URL
-	 * @param {unknown} payload Payload data
-	 * @param {ZodType<Request>} requestSchema Request Schema
-	 * @param {ZodType<Response>} responseSchema Response Schema
-	 * @returns {Promise<Response>}
+	 * @param {z.input<Req>} payload Payload data
+	 * @param {Req} requestSchema Request Schema
+	 * @param {Res} responseSchema Response Schema
+	 * @returns {Promise<z.output<Res>>}
 	 */
-	public async patch<Request, Response>(
+	public async patch<Req extends ZodType, Res extends ZodType>(
 		path: string,
-		payload: unknown,
-		requestSchema: ZodType<Request>,
-		responseSchema: ZodType<Response>
-	): Promise<Response> {
+		payload: z.input<Req>,
+		requestSchema: Req,
+		responseSchema: Res
+	): Promise<z.output<Res>> {
 		try {
 			const body = requestSchema.parse(payload);
 

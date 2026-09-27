@@ -9,7 +9,7 @@ import {
 
 import { useUserStore } from "@/stores/userStore";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
-import { IUserProfile } from "@/features/api/userData.types";
+import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/features/api/userData.api", () => ({
 	callUserLogin: vi.fn(),
@@ -52,7 +52,7 @@ describe("User Store", () => {
 	it("Logout: the next login loads its own profile and preferences", () => {
 		const userStore = useUserStore();
 		const getProfile = vi.mocked(callGetProfile).mockResolvedValue(
-			{} as IUserProfile
+			{} as UserProfile
 		);
 		getProfile.mockClear();
 
@@ -248,7 +248,7 @@ describe("User Store", () => {
 
 	describe("performGetProfile", async () => {
 		it("fio enabled", async () => {
-			const mockProfile: IUserProfile = {
+			const mockProfile: UserProfile = {
 				id: 1,
 				username: "johndoe",
 				email: "a@b.com",
@@ -270,7 +270,7 @@ describe("User Store", () => {
 		});
 
 		it("fio not enabled", async () => {
-			const mockProfile: IUserProfile = {
+			const mockProfile: UserProfile = {
 				id: 1,
 				username: "johndoe",
 				email: "a@b.com",

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 // Composables
 import { useBuildingCalculation } from "@/features/planning/calculations/buildingCalculations";
-import { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
+import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
 
 describe("Planning: Workforce Calculations", async () => {
 	describe("calculateMaterialIO", async () => {

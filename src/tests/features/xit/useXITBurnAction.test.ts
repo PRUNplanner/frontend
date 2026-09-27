@@ -1,4 +1,4 @@
-import { effectScope, Ref, ref } from "vue";
+import { effectScope, type Ref, ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
@@ -13,7 +13,7 @@ import { useBurnXITAction } from "@/features/xit/useBurnXITAction";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
-import { IXITActionElement } from "@/features/xit/xitAction.types";
+import type { IXITActionElement } from "@/features/xit/xitAction.types";
 
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";
@@ -150,7 +150,6 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("stops updating totalPrice once its scope is stopped", async () => {
-
 		const days = ref(5);
 		const scope = effectScope();
 		const { totalPrice } = scope.run(() =>
@@ -206,10 +205,10 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("keeps the latest totalPrice when an older run finishes last", async () => {
-		const unitPrice = await usePrice(ref(undefined), ref(undefined)).getPrice(
-			"RAT",
-			"BUY"
-		);
+		const unitPrice = await usePrice(
+			ref(undefined),
+			ref(undefined)
+		).getPrice("RAT", "BUY");
 		expect(unitPrice).toBeGreaterThan(0);
 
 		// the run for 5 days waits for its price

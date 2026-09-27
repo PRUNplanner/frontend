@@ -1,4 +1,4 @@
-import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
 
 export interface IPlanRepairAnalysisDataProp {
 	name: string;

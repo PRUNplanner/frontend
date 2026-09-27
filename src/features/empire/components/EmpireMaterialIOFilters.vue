@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType } from "vue";
+	import { computed, type PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -14,7 +14,7 @@
 	} from "@/ui";
 
 	// Types & Interfaces
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	const props = defineProps({
 		loadBalance: {

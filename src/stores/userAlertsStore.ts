@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 // Types & Interfaces
-import { DetectorConfig } from "@/features/market_live/cxDetectors.types";
+import type { DetectorConfig } from "@/features/market_live/cxDetectors.types";
 
 // NOTE: Need to connect alert preferences to user preferences + backend
 

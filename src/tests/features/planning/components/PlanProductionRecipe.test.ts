@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { DOMWrapper, flushPromises, VueWrapper } from "@vue/test-utils";
+import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
@@ -11,7 +11,7 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import {
+import type {
 	IProductionBuildingRecipe,
 	IRecipeBuildingOption,
 } from "@/features/planning/usePlanCalculation.types";
@@ -155,7 +155,12 @@ describe("PlanProductionRecipe", () => {
 		const rows = await openOptions(wrapper);
 
 		// multiple outputs sort as "AL#C"
-		expect(rows.map((r) => r.TimeMs)).toEqual(["6h 0m", "8h 0m", "4h 0m", "12h 0m"]);
+		expect(rows.map((r) => r.TimeMs)).toEqual([
+			"6h 0m",
+			"8h 0m",
+			"4h 0m",
+			"12h 0m",
+		]);
 		expect(rows.at(0)).toMatchObject({
 			dailyRevenue: "-100.00 ȼ",
 			// -100 / 100

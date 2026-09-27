@@ -44,6 +44,16 @@
 				"ignoreRestSiblings": true
 			}
 		],
+		"@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+		"@typescript-eslint/no-import-type-side-effects": "error",
+		"@typescript-eslint/consistent-type-imports": [
+			"error",
+			{
+				"prefer": "type-imports",
+				"fixStyle": "inline-type-imports",
+				"disallowTypeAnnotations": false
+			}
+		],
 		"vue/no-unused-vars": ["error", { "ignorePattern": "^_" }],
 		"vue/max-attributes-per-line": ["error", { "singleline": 5 }],
 		"vue/html-indent": "off",
@@ -60,6 +70,18 @@
 		]
 	},
 	"overrides": [
+		{
+			"files": ["src/features/api/schemas/**", "src/**/*.schemas.ts"],
+			"rules": {
+				"no-restricted-syntax": [
+					"error",
+					{
+						"selector": "TSTypeReference[typeName.name='ZodType'], TSTypeReference[typeName.right.name='ZodType']",
+						"message": "Don't annotate schemas as z.ZodType<…>; derive the type with z.infer."
+					}
+				]
+			}
+		},
 		{
 			"files": ["src/tests/**"],
 			"rules": {

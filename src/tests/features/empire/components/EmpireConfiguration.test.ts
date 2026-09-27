@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { reactive } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -11,17 +11,15 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IPlanEmpireElement } from "@/stores/planningStore.types";
-import { IEmpirePlanListData } from "@/features/empire/empire.types";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { IEmpirePlanListData } from "@/features/empire/empire.types";
 
 const mock = new AxiosMockAdapter(apiService.client);
 
 const EMPIRE_UUID = "00000001-0000-4000-8000-000000000000";
 const PUT_URL = new RegExp(`planning/empire/${EMPIRE_UUID}/$`);
 
-function empire(
-	overrides: Partial<IPlanEmpireElement> = {}
-): IPlanEmpireElement {
+function empire(overrides: Partial<PlanEmpireElement> = {}): PlanEmpireElement {
 	return {
 		uuid: EMPIRE_UUID,
 		empire_name: "Main Empire",
@@ -114,7 +112,9 @@ describe("EmpireConfiguration", () => {
 		// 5 used, 1 + 3 planned
 		expect(warning(wrapper).exists()).toBe(true);
 
-		await wrapper.findAllComponents(PInputNumber).at(1)!
+		await wrapper
+			.findAllComponents(PInputNumber)
+			.at(1)!
 			.find("input")
 			.setValue("4");
 		expect(warning(wrapper).exists()).toBe(false);

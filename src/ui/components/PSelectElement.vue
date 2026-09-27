@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PSelectOption } from "../ui.types";
+	import type { PSelectOption } from "../ui.types";
 
 	const {
 		option,

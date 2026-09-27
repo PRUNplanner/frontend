@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 
-import {
-	ICXDataExchangeOption,
-	ICXDataTickerOption,
-} from "@/stores/planningStore.types";
+import type {
+	CXDataExchangeOption,
+	CXDataTickerOption,
+} from "@/features/api/schemas/cxData.schemas";
 import { useCXManagement } from "@/features/exchanges/useManageCX";
 import { createPinia, setActivePinia } from "pinia";
 
@@ -33,28 +33,28 @@ describe("useCXManagement", async () => {
 		});
 
 		it("should not allow BOTH if BUY or SELL exists", () => {
-			const current: ICXDataExchangeOption[] = [
+			const current: CXDataExchangeOption[] = [
 				{ type: "BUY", exchange: "AI1_30D" },
 			];
 			expect(canAddExchangePreference(current, "BOTH").value).toBe(false);
 		});
 
 		it("should not allow BUY if BOTH exists", () => {
-			const current: ICXDataExchangeOption[] = [
+			const current: CXDataExchangeOption[] = [
 				{ type: "BOTH", exchange: "AI1_30D" },
 			];
 			expect(canAddExchangePreference(current, "BUY").value).toBe(false);
 		});
 
 		it("should allow SELL if only BUY exists", () => {
-			const current: ICXDataExchangeOption[] = [
+			const current: CXDataExchangeOption[] = [
 				{ type: "BUY", exchange: "AI1_30D" },
 			];
 			expect(canAddExchangePreference(current, "SELL").value).toBe(true);
 		});
 
 		it("should return false for invalid preference type", () => {
-			const current: ICXDataExchangeOption[] = [
+			const current: CXDataExchangeOption[] = [
 				{ type: "BUY", exchange: "AI1_30D" },
 			];
 			// @ts-expect-error: testing invalid input
@@ -70,7 +70,7 @@ describe("useCXManagement", async () => {
 		});
 
 		it("should not allow BOTH if BUY exists for ticker", () => {
-			const current: ICXDataTickerOption[] = [
+			const current: CXDataTickerOption[] = [
 				{ ticker: "LST", type: "BUY", value: 10 },
 			];
 			expect(canAddTickerPreference(current, "LST", "BOTH").value).toBe(
@@ -79,7 +79,7 @@ describe("useCXManagement", async () => {
 		});
 
 		it("should not allow SELL if BOTH exists for ticker", () => {
-			const current: ICXDataTickerOption[] = [
+			const current: CXDataTickerOption[] = [
 				{ ticker: "LST", type: "BOTH", value: 10 },
 			];
 			expect(canAddTickerPreference(current, "LST", "SELL").value).toBe(
@@ -88,7 +88,7 @@ describe("useCXManagement", async () => {
 		});
 
 		it("should allow SELL if only BUY exists for ticker", () => {
-			const current: ICXDataTickerOption[] = [
+			const current: CXDataTickerOption[] = [
 				{ ticker: "LST", type: "BUY", value: 10 },
 			];
 			expect(canAddTickerPreference(current, "LST", "SELL").value).toBe(
@@ -97,7 +97,7 @@ describe("useCXManagement", async () => {
 		});
 
 		it("should return false for invalid ticker preference type", () => {
-			const current: ICXDataTickerOption[] = [
+			const current: CXDataTickerOption[] = [
 				{ ticker: "LST", type: "BUY", value: 100 },
 			];
 			expect(
@@ -109,7 +109,7 @@ describe("useCXManagement", async () => {
 
 	describe("updateExchangePreference", () => {
 		it("should add new preference", () => {
-			const current: ICXDataExchangeOption[] = [];
+			const current: CXDataExchangeOption[] = [];
 			const updated = updateExchangePreference(current, "BUY", "AI1_30D");
 			expect(updated).toContainEqual({
 				type: "BUY",
@@ -118,7 +118,7 @@ describe("useCXManagement", async () => {
 		});
 
 		it("should update existing preference", () => {
-			const current: ICXDataExchangeOption[] = [
+			const current: CXDataExchangeOption[] = [
 				{ type: "BUY", exchange: "AI1_30D" },
 			];
 			const updated = updateExchangePreference(current, "BUY", "AI1_30D");
@@ -129,7 +129,7 @@ describe("useCXManagement", async () => {
 		});
 
 		it("should not add if not allowed", () => {
-			const current: ICXDataExchangeOption[] = [
+			const current: CXDataExchangeOption[] = [
 				{ type: "BOTH", exchange: "AI1_30D" },
 			];
 			const updated = updateExchangePreference(current, "BUY", "AI1_30D");
@@ -140,7 +140,7 @@ describe("useCXManagement", async () => {
 
 	describe("updateTickerPreference", () => {
 		it("should add new ticker preference", () => {
-			const current: ICXDataTickerOption[] = [];
+			const current: CXDataTickerOption[] = [];
 			const updated = updateTickerPreference(current, "LST", "BUY", 100);
 			expect(updated).toContainEqual({
 				ticker: "LST",
@@ -150,7 +150,7 @@ describe("useCXManagement", async () => {
 		});
 
 		it("should update existing ticker preference", () => {
-			const current: ICXDataTickerOption[] = [
+			const current: CXDataTickerOption[] = [
 				{ ticker: "LST", type: "BUY", value: 50 },
 			];
 			const updated = updateTickerPreference(current, "LST", "BUY", 200);
@@ -162,7 +162,7 @@ describe("useCXManagement", async () => {
 		});
 
 		it("should not add if not allowed", () => {
-			const current: ICXDataTickerOption[] = [
+			const current: CXDataTickerOption[] = [
 				{ ticker: "LST", type: "BOTH", value: 100 },
 			];
 			const updated = updateTickerPreference(current, "LST", "SELL", 50);
@@ -173,7 +173,7 @@ describe("useCXManagement", async () => {
 
 	describe("deleteExchangePreference", () => {
 		it("should delete existing type", () => {
-			const current: ICXDataExchangeOption[] = [
+			const current: CXDataExchangeOption[] = [
 				{ type: "BUY", exchange: "AI1_30D" },
 				{ type: "SELL", exchange: "AI1_30D" },
 			];
@@ -185,7 +185,7 @@ describe("useCXManagement", async () => {
 
 	describe("deleteTickerPreference", () => {
 		it("should delete existing ticker+type", () => {
-			const current: ICXDataTickerOption[] = [
+			const current: CXDataTickerOption[] = [
 				{ ticker: "LST", type: "BUY", value: 100 },
 				{ ticker: "LST", type: "SELL", value: 50 },
 			];

@@ -1,5 +1,12 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, nextTick, PropType, ref, Ref } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		nextTick,
+		type PropType,
+		ref,
+		type Ref,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -43,7 +50,7 @@
 	import { XITSTATIONWAREHOUSES } from "@/features/xit/xitConstants";
 
 	// Types & Interfaces
-	import { IXITActionElement } from "@/features/xit/xitAction.types";
+	import type { IXITActionElement } from "@/features/xit/xitAction.types";
 
 	const props = defineProps({
 		elements: {

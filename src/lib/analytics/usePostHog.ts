@@ -1,4 +1,4 @@
-import posthog, { Properties } from "posthog-js";
+import posthog, { type Properties } from "posthog-js";
 
 // Util
 import { redact } from "@/util/data";

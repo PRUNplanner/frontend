@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType, WritableComputedRef } from "vue";
+	import { computed, type PropType, type WritableComputedRef } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -7,7 +7,7 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import { IAreaResult } from "@/features/planning/usePlanCalculation.types";
+	import type { IAreaResult } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
 	import { PForm, PFormItem, PInputNumber } from "@/ui";

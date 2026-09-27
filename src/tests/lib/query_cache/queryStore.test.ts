@@ -1,5 +1,5 @@
 import { setActivePinia, createPinia } from "pinia";
-import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
+import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { useUserActivity } from "@/features/user_activity/useUserActivity";

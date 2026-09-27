@@ -1,12 +1,12 @@
 <script setup lang="ts">
 	import {
 		computed,
-		ComputedRef,
-		PropType,
+		type ComputedRef,
+		type PropType,
 		ref,
-		Ref,
+		type Ref,
 		watch,
-		WritableComputedRef,
+		type WritableComputedRef,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -22,14 +22,16 @@
 	import { inertClone } from "@/util/data";
 
 	// Types & Interfaces
-	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
-	import {
-		IPlanEmpireJunction,
-		IPlanEmpireJunctionBasePlanners,
+	import type { Plan } from "@/features/api/schemas/planningData.schemas";
+	import type {
+		PlanEmpireElement,
+		PlanEmpireJunction,
+	} from "@/features/api/schemas/empireData.schemas";
+	import type {
 		IPlanEmpireMatrix,
 		IPlanEmpireMatrixEmpires,
 	} from "@/features/manage/manage.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// Components
 	import SharingButton from "@/features/sharing/components/SharingButton.vue";
@@ -51,21 +53,21 @@
 
 	const props = defineProps({
 		empires: {
-			type: Array as PropType<IPlanEmpireElement[]>,
+			type: Array as PropType<PlanEmpireElement[]>,
 			required: true,
 		},
 		plans: {
-			type: Array as PropType<IPlan[]>,
+			type: Array as PropType<Plan[]>,
 			required: true,
 		},
 	});
 
 	// Local Data & Watcher
-	const localEmpires: WritableComputedRef<IPlanEmpireElement[]> = computed({
+	const localEmpires: WritableComputedRef<PlanEmpireElement[]> = computed({
 		get: () => inertClone(props.empires),
-		set: (value: IPlanEmpireElement[]) => emit("update:empireList", value),
+		set: (value: PlanEmpireElement[]) => emit("update:empireList", value),
 	});
-	const localPlans: ComputedRef<IPlan[]> = computed(() =>
+	const localPlans: ComputedRef<Plan[]> = computed(() =>
 		inertClone(props.plans)
 	);
 
@@ -74,8 +76,8 @@
 	});
 
 	const emit = defineEmits<{
-		(e: "update:empireList", value: IPlanEmpireElement[]): void;
-		(e: "update:planList", value: IPlan[]): void;
+		(e: "update:empireList", value: PlanEmpireElement[]): void;
+		(e: "update:planList", value: Plan[]): void;
 	}>();
 
 	const matrixEmpires: Ref<IPlanEmpireMatrixEmpires[]> = ref([]);
@@ -150,12 +152,12 @@
 			matrix.value.push({
 				// all plans coming from backend have a name and uuid, force it
 				planName: plan.plan_name!,
-				planUuid: plan.uuid!,
+				planUuid: plan.uuid,
 				planetId: plan.planet_natural_id,
 				empires: localEmpires.value.reduce(
 					(acc, item) => (
 						(acc[item.uuid] = empirePlans[item.uuid].includes(
-							plan.uuid!
+							plan.uuid
 						)),
 						acc
 					),
@@ -191,14 +193,14 @@
 	}
 
 	// junction patch matrix
-	const patchJunctionData: ComputedRef<IPlanEmpireJunction[]> = computed(
+	const patchJunctionData: ComputedRef<PlanEmpireJunction[]> = computed(
 		() => {
-			const junctions: IPlanEmpireJunction[] = [];
+			const junctions: PlanEmpireJunction[] = [];
 
 			matrixEmpires.value.forEach((me) => {
 				const indJunction = {
 					empire_uuid: me.empireUuid,
-					baseplanners: [] as IPlanEmpireJunctionBasePlanners[],
+					baseplanners: [] as PlanEmpireJunction["baseplanners"],
 				};
 
 				matrix.value.forEach((mp) => {
@@ -219,13 +221,13 @@
 	async function updateEmitEmpiresPlans(): Promise<void> {
 		useQuery("GetAllEmpires")
 			.execute()
-			.then((e: IPlanEmpireElement[]) => {
+			.then((e: PlanEmpireElement[]) => {
 				emit("update:empireList", e);
 			});
 
 		useQuery("GetAllPlans")
 			.execute()
-			.then((p: IPlan[]) => emit("update:planList", p));
+			.then((p: Plan[]) => emit("update:planList", p));
 	}
 
 	async function patchJunctions(): Promise<void> {
@@ -343,9 +345,7 @@
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="w-43.75 text-wrap">
-					{{
-						planetName(rowData.planetId, "Loading...")
-					}}
+					{{ planetName(rowData.planetId, "Loading...") }}
 				</div>
 			</template>
 		</x-n-data-table-column>

@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { flushPromises, RouterLinkStub, VueWrapper } from "@vue/test-utils";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -163,9 +167,9 @@ describe("ManageCX", () => {
 		expect(component.emitted("update:cxList")).toEqual([[cxList]]);
 
 		// the form is reset and closed
-		expect(
-			(wrapper.find("input").element as HTMLInputElement).value
-		).toBe("");
+		expect((wrapper.find("input").element as HTMLInputElement).value).toBe(
+			""
+		);
 		expect(wrapper.find(".transition-all").classes()).toContain("h-0");
 		expect(createButton(wrapper).attributes("aria-busy")).toBe("false");
 	});
@@ -192,9 +196,9 @@ describe("ManageCX", () => {
 		expect(component.emitted("update:cxList")).toBeUndefined();
 		expect(createButton(wrapper).attributes("aria-busy")).toBe("false");
 		// the form stays open to try again
-		expect(
-			(wrapper.find("input").element as HTMLInputElement).value
-		).toBe("My new CX");
+		expect((wrapper.find("input").element as HTMLInputElement).value).toBe(
+			"My new CX"
+		);
 		expect(wrapper.find(".transition-all").classes()).not.toContain("h-0");
 		expect(error).toHaveBeenCalled();
 		error.mockRestore();

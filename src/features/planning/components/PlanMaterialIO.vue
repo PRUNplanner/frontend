@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType } from "vue";
+	import { computed, type ComputedRef, type PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -8,7 +8,7 @@
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// Types & Interfaces
-	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+	import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";

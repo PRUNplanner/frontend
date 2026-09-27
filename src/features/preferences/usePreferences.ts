@@ -1,7 +1,12 @@
-import { computed, ComputedRef, watch, WritableComputedRef } from "vue";
+import {
+	computed,
+	type ComputedRef,
+	watch,
+	type WritableComputedRef,
+} from "vue";
 import { debounce, isEqual, cloneDeep } from "lodash";
-import { i18n, SupportedLocale } from "@/lib/i18n";
-import { Composer } from "vue-i18n";
+import { i18n, type SupportedLocale } from "@/lib/i18n";
+import type { Composer } from "vue-i18n";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
@@ -17,15 +22,18 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 // Types & Interfaces
-import {
-	IPlanPreferenceOverview,
-	IPreference,
-	IPreferencePerPlan,
-} from "@/features/preferences/userPreferences.types";
+import type { IPlanPreferenceOverview } from "@/features/preferences/userPreferences.types";
+import type {
+	PreferencePerPlan,
+	UserPreference,
+} from "@/features/api/schemas/user.schemas";
 
 // debounced update to backend, dropped if the session (refresh token) it
 // was scheduled in has ended: never send one user's preferences as another
-const patchPrefs = async (prefs: IPreference, session: string | undefined) => {
+const patchPrefs = async (
+	prefs: UserPreference,
+	session: string | undefined
+) => {
 	if (session !== useUserStore().refreshToken) return;
 
 	try {
@@ -95,23 +103,23 @@ export function usePreferences() {
 		set: (v) => userStore.setPreference("burnOrigin", v),
 	});
 
-	const supplyCartDays: WritableComputedRef<number, number> =
-		computed({
-			get: () => userStore.preferences.supplyCartDays ?? 20,
-			set: (v) => userStore.setPreference("supplyCartDays", v),
-		});
+	const supplyCartDays: WritableComputedRef<number, number> = computed({
+		get: () => userStore.preferences.supplyCartDays ?? 20,
+		set: (v) => userStore.setPreference("supplyCartDays", v),
+	});
 
 	const planSettings: ComputedRef<
-		Record<string, Partial<IPreferencePerPlan>>
+		Record<string, Partial<PreferencePerPlan>>
 	> = computed(() => {
 		return userStore.preferences.planOverrides;
 	});
 
-	const layoutNavigationStyle: WritableComputedRef<"full" | "collapsed"> =
-		computed({
-			get: () => userStore.preferences.layoutNavigationStyle,
-			set: (v) => userStore.setPreference("layoutNavigationStyle", v),
-		});
+	const layoutNavigationStyle: WritableComputedRef<
+		UserPreference["layoutNavigationStyle"]
+	> = computed({
+		get: () => userStore.preferences.layoutNavigationStyle,
+		set: (v) => userStore.setPreference("layoutNavigationStyle", v),
+	});
 
 	const locale: WritableComputedRef<string> = computed({
 		get: () => userStore.preferences.locale,
@@ -137,7 +145,7 @@ export function usePreferences() {
 
 			for (const [planUuid, preference] of Object.entries(
 				planSettings.value
-			) as [string, Partial<IPreferencePerPlan>][]) {
+			) as [string, Partial<PreferencePerPlan>][]) {
 				// fetch generic plan information
 				try {
 					const { planetId, planName } = getPlanNamePlanet(planUuid);

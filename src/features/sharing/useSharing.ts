@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from "vue";
+import { computed, type ComputedRef } from "vue";
 
 // API
 import { useQuery } from "@/lib/query_cache/useQuery";

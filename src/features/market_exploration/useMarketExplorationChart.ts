@@ -1,4 +1,4 @@
-import { computed, ref, Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 
 // Util
 
@@ -6,11 +6,11 @@ import { computed, ref, Ref } from "vue";
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Types & Interfaces
-import {
+import type {
 	CandleInterval,
 	CandleTuple,
-	IExploration,
 } from "@/features/market_exploration/marketExploration.types";
+import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
 
 const MS_PER_DAY = 86400000;
 
@@ -18,7 +18,7 @@ export function useMarketExplorationChart(
 	exchangeTicker: Ref<string>,
 	materialTicker: Ref<string>
 ) {
-	const data: Ref<IExploration[]> = ref([]);
+	const data: Ref<Exploration[]> = ref([]);
 	const loading: Ref<boolean> = ref(false);
 	const error: Ref<boolean> = ref(false);
 
@@ -136,7 +136,7 @@ export function useMarketExplorationChart(
 			materialTicker: materialTicker.value,
 		})
 			.execute()
-			.then((result: IExploration[]) => {
+			.then((result: Exploration[]) => {
 				data.value = result;
 			})
 			.catch(() => {

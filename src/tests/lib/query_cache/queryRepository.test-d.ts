@@ -1,21 +1,21 @@
 import { describe, expectTypeOf, it } from "vitest";
 
 import { useQuery } from "@/lib/query_cache/useQuery";
-import { QueryParams } from "@/lib/query_cache/queryRepository.types";
+import type { QueryParams } from "@/lib/query_cache/queryRepository.types";
 
 // Types & Interfaces
-import { IMaterial } from "@/features/api/gameData.types";
-import { IPlan } from "@/stores/planningStore.types";
+import type { Material } from "@/features/api/schemas/gameData.schemas";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 
 // type-level only: run by `vitest --typecheck`, checks the inferred repository
 describe("query repository types", () => {
 	it("infers data from fetchFn", () => {
 		expectTypeOf(
 			useQuery("GetPlan", { planUuid: "p" }).execute
-		).returns.resolves.toEqualTypeOf<IPlan>();
+		).returns.resolves.toEqualTypeOf<Plan>();
 		expectTypeOf(
 			useQuery("GetMaterials").execute
-		).returns.resolves.toEqualTypeOf<IMaterial[]>();
+		).returns.resolves.toEqualTypeOf<Material[]>();
 	});
 
 	it("requires params exactly when a query takes them", () => {

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import type { PropType } from "vue";
 
 	// Util
 	import { formatAmount, formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IPopulationReport } from "@/features/api/gameData.types";
-	import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
+	import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
 	import { PTable, PIcon } from "@/ui";
@@ -18,7 +18,7 @@
 			required: true,
 		},
 		poprData: {
-			type: Object as PropType<IPopulationReport>,
+			type: Object as PropType<PopulationReport>,
 			required: false,
 			default: undefined,
 		},

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { h } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { buildingsStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -11,8 +11,8 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
-import { IPlanetResource } from "@/features/api/gameData.types";
+import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
+import type { PlanetResource } from "@/features/api/schemas/gameData.schemas";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
@@ -60,9 +60,9 @@ function building(name: string): IProductionBuilding {
 
 const resource = (
 	ticker: string,
-	type: IPlanetResource["resource_type"],
+	type: PlanetResource["resource_type"],
 	daily: number
-): IPlanetResource => ({
+): PlanetResource => ({
 	material_ticker: ticker,
 	resource_type: type,
 	factor: 0.5,

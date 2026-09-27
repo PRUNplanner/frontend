@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, watch } from "vue";
+	import { computed, type ComputedRef, watch } from "vue";
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
@@ -24,7 +24,7 @@
 	import { relativeFromDate } from "@/util/date";
 
 	// Types & Interfaces
-	import { IMenuSection } from "@/layout/components/navigation.types";
+	import type { IMenuSection } from "@/layout/components/navigation.types";
 
 	// UI
 	import { PTag, PTooltip, PTable, PIcon } from "@/ui";

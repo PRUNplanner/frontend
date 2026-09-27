@@ -1,21 +1,23 @@
 import { describe, it, expect, vi } from "vitest";
 import { h } from "vue";
-import { flushPromises, RouterLinkStub, VueWrapper } from "@vue/test-utils";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
 
 import PlanetSearchResults from "@/features/planet_search/components/PlanetSearchResults.vue";
-import { IPlanet } from "@/features/api/gameData.types";
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // jumps from a market or the checked system to each planet's system
-const JUMPS = vi.hoisted(
-	(): Record<string, Record<string, number>> => ({
-		"sys-a": { AI1: 3, CI1: 5, IC1: 7, NC1: 2, CHECK: 4 },
-		// unreachable without a colony ship
-		"sys-b": { AI1: -1, CI1: -1, IC1: -1, NC1: -1, CHECK: -1 },
-		"sys-c": { AI1: 1, CI1: 0, IC1: 12, NC1: 9, CHECK: 10 },
-		"sys-d": { AI1: 6, CI1: 6, IC1: 6, NC1: 6, CHECK: 0 },
-	})
-);
+const JUMPS = vi.hoisted((): Record<string, Record<string, number>> => ({
+	"sys-a": { AI1: 3, CI1: 5, IC1: 7, NC1: 2, CHECK: 4 },
+	// unreachable without a colony ship
+	"sys-b": { AI1: -1, CI1: -1, IC1: -1, NC1: -1, CHECK: -1 },
+	"sys-c": { AI1: 1, CI1: 0, IC1: 12, NC1: 9, CHECK: 10 },
+	"sys-d": { AI1: 6, CI1: 6, IC1: 6, NC1: 6, CHECK: 0 },
+}));
 vi.mock("@/features/pathfinding/usePathfinder", () => ({
 	usePathfinder: () => ({
 		systemidAI1: "AI1",
@@ -52,7 +54,7 @@ const resource = (ticker: string, daily: number, max: number) => ({
 	factor: 0.1,
 });
 
-function planet(p: Partial<IPlanet>): IPlanet {
+function planet(p: Partial<Planet>): Planet {
 	return {
 		planet_id: "0",
 		planet_natural_id: "AA-000a",
@@ -76,10 +78,10 @@ function planet(p: Partial<IPlanet>): IPlanet {
 		resources: [],
 		cogc_programs: [],
 		...p,
-	} as IPlanet;
+	} as Planet;
 }
 
-const PLANETS: IPlanet[] = [
+const PLANETS: Planet[] = [
 	planet({
 		planet_natural_id: "OT-580b",
 		planet_name: "Montem",
@@ -214,9 +216,9 @@ describe("PlanetSearchResults", () => {
 	it("splits searched from additional resources", async () => {
 		const { wrapper } = await mountResults();
 
-		expect(
-			wrapper.find('th[data-col-key="Search#FEO"]').text()
-		).toContain("FEO");
+		expect(wrapper.find('th[data-col-key="Search#FEO"]').text()).toContain(
+			"FEO"
+		);
 		expect(tiles(wrapper, "Search#FEO")).toEqual([
 			["FEO"],
 			["FEO"],
@@ -317,9 +319,9 @@ describe("PlanetSearchResults", () => {
 		);
 
 		const { wrapper: noSystem } = await mountResults();
-		expect(
-			noSystem.find('th[data-col-key="checkDistance"]').exists()
-		).toBe(false);
+		expect(noSystem.find('th[data-col-key="checkDistance"]').exists()).toBe(
+			false
+		);
 	});
 
 	it("sorts unreachable planets as the farthest", async () => {

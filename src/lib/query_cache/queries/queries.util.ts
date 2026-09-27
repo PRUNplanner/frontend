@@ -1,9 +1,9 @@
 import { useDB } from "@/database/composables/useDB";
-import { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
+import type { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Types & Interfaces
-import {
+import type {
 	IQueryDefinition,
 	JSONValue,
 } from "@/lib/query_cache/queryCache.types";

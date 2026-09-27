@@ -1,4 +1,6 @@
-export type JSONObject = { [key: string]: JSONValue };
+export interface JSONObject {
+	[key: string]: JSONValue;
+}
 export type JSONValue = null | boolean | number | string | object;
 
 export interface IQueryState<TParams, TData> {

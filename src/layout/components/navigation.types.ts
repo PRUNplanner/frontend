@@ -1,4 +1,4 @@
-import { Component } from "vue";
+import type { Component } from "vue";
 
 interface IMenuItem {
 	label: string;
@@ -10,7 +10,7 @@ interface IMenuItem {
 	display: boolean;
 }
 
-interface IMenuSection {
+export interface IMenuSection {
 	label: string;
 	labelShort?: string;
 	display: boolean;

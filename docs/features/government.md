@@ -17,7 +17,7 @@
 | --- | --- |
 | `upkeepCalculations.constants.ts` | `UPKEEP_NEED_TYPES` and `UPKEEP_BUILDINGS`: static building → needs and materials data |
 | `upkeepCalculations.ts` | Pure functions: `calculatePricePerNeed`, `getBuildingsForNeed`, `getBuildingNeedCount`, `calculateMaterialsForNeed`, and `calculateAllNeeds(getPrice)`, which prices every need's materials and sorts them by price per need |
-| `upkeepCalculations.types.d.ts` | `UpkeepNeedType`, `IUpkeepBuilding`, `IUpkeepMaterialCalculation` |
+| `upkeepCalculations.types.ts` | `UpkeepNeedType`, `IUpkeepBuilding`, `IUpkeepMaterialCalculation` |
 | `components/UpkeepPriceCalculator.vue` | Calculator UI. Passes `usePrice(...).getPrice(ticker, "BUY")` into `calculateAllNeeds` and recalculates when the CX changes |
 | `components/PlanetPOPRButton.vue`, `PlanetPOPRTable.vue` | POPR popup and table, fed by the `GetPlanetLastPOPR` query |
 

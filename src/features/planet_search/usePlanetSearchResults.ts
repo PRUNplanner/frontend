@@ -1,4 +1,9 @@
-import { computed, ComputedRef, MaybeRefOrGetter, toValue } from "vue";
+import {
+	computed,
+	type ComputedRef,
+	type MaybeRefOrGetter,
+	toValue,
+} from "vue";
 
 // Util
 import { boundaryDescriptor } from "@/util/numbers";
@@ -15,12 +20,12 @@ import {
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
 
 // Types & Interfaces
-import { IPlanet } from "@/features/api/gameData.types";
-import {
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type {
 	IPlanetSearchResult,
 	IPlanetSearchResultResource,
 } from "@/features/planet_search/usePlanetSearchResults.types";
-import { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
+import type { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
 
 const {
 	getPathBetweenLength,
@@ -31,7 +36,7 @@ const {
 } = usePathfinder();
 
 export function usePlanetSearchResults(
-	planets: MaybeRefOrGetter<IPlanet[]>,
+	planets: MaybeRefOrGetter<Planet[]>,
 	materials: MaybeRefOrGetter<string[]>,
 	richness: MaybeRefOrGetter<Record<string, number>>,
 	system: MaybeRefOrGetter<string | undefined>,
@@ -44,7 +49,7 @@ export function usePlanetSearchResults(
 	 * @type {ComputedRef<IPlanetSearchResult[]>}
 	 */
 	const results: ComputedRef<IPlanetSearchResult[]> = computed(() => {
-		const searchData: IPlanet[] = toValue(planets);
+		const searchData: Planet[] = toValue(planets);
 		const searchMaterials: string[] = toValue(materials);
 		const searchMaterialRichness: Record<string, number> =
 			toValue(richness);

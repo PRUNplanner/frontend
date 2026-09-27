@@ -1,21 +1,20 @@
 import { apiService } from "@/lib/apiService";
 import {
 	APIKeyCreatePayloadSchema,
-	APIKeyCreatePayloadType,
 	APIKeyCreateResponseSchema,
-	APIKeyCreateResponseType,
+	type APIKeyCreateResponse,
 	APIKeyListSchema,
-	APIKeyListType,
-} from "@/features/api/schemas/apiKeysData.schema";
+	type APIKey,
+} from "@/features/api/schemas/apiKeysData.schemas";
 
-export async function callGetAPIKeys(): Promise<APIKeyListType> {
-	return apiService.get<APIKeyListType>("/user/api/keys/", APIKeyListSchema);
+export async function callGetAPIKeys(): Promise<APIKey[]> {
+	return apiService.get("/user/api/keys/", APIKeyListSchema);
 }
 
 export async function callPostCreateAPIKey(
 	apiKeyName: string
-): Promise<APIKeyCreateResponseType> {
-	return apiService.post<APIKeyCreatePayloadType, APIKeyCreateResponseType>(
+): Promise<APIKeyCreateResponse> {
+	return apiService.post(
 		"/user/api/keys/",
 		{ name: apiKeyName },
 		APIKeyCreatePayloadSchema,

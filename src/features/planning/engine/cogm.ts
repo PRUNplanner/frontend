@@ -1,11 +1,11 @@
 // Prices
-import { IPriceBook } from "@/features/cx/priceBook";
+import type { IPriceBook } from "@/features/cx/priceBook";
 
 // Material IO
 import { TOTALMSDAY } from "@/features/planning/engine/materialIO";
 
 // Types & Interfaces
-import {
+import type {
 	ICOGMMaterialCost,
 	ICOGMMaterialReturn,
 	IProductionBuildingRecipe,

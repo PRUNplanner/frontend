@@ -1,11 +1,11 @@
 <script setup lang="ts">
-	import { computed, PropType } from "vue";
+	import { computed, type PropType } from "vue";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// Types & Interfaces
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import { PCheckbox, PSelect } from "@/ui";

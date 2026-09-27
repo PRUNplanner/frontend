@@ -1,13 +1,13 @@
-import {
-	IBuilding,
-	IExchange,
-	IMaterial,
-	IPlanet,
-	IRecipe,
-} from "@/features/api/gameData.types";
-import { StepConfig } from "./dataLoader.types";
+import type {
+	Building,
+	Exchange,
+	Material,
+	Planet,
+	Recipe,
+} from "@/features/api/schemas/gameData.schemas";
+import type { StepConfig } from "./dataLoader.types";
 
-export type GameDataLoaderProps = {
+export interface GameDataLoaderProps {
 	readonly minimal?: boolean | undefined;
 	readonly loadMaterials?: boolean | undefined;
 	readonly loadExchanges?: boolean | undefined;
@@ -15,23 +15,23 @@ export type GameDataLoaderProps = {
 	readonly loadRecipes?: boolean | undefined;
 	readonly loadPlanet?: string | undefined;
 	readonly loadPlanetMultiple?: string[] | undefined;
-};
+}
 
-export type GameDataLoaderEmits = {
+export interface GameDataLoaderEmits {
 	(e: "complete"): void;
-	(e: "data:materials", data: IMaterial[]): void;
-	(e: "data:exchanges", data: IExchange[]): void;
-	(e: "data:buildings", data: IBuilding[]): void;
-	(e: "data:recipes", data: IRecipe[]): void;
-	(e: "data:planet", data: IPlanet): void;
-	(e: "data:planet:multiple", data: IPlanet[]): void;
-};
+	(e: "data:materials", data: Material[]): void;
+	(e: "data:exchanges", data: Exchange[]): void;
+	(e: "data:buildings", data: Building[]): void;
+	(e: "data:recipes", data: Recipe[]): void;
+	(e: "data:planet", data: Planet): void;
+	(e: "data:planet:multiple", data: Planet[]): void;
+}
 
 export type GameDataStepConfigsType = [
-	StepConfig<IMaterial[]>,
-	StepConfig<IExchange[]>,
-	StepConfig<IBuilding[]>,
-	StepConfig<IRecipe[]>,
-	StepConfig<IPlanet>,
-	StepConfig<IPlanet[]>,
+	StepConfig<Material[]>,
+	StepConfig<Exchange[]>,
+	StepConfig<Building[]>,
+	StepConfig<Recipe[]>,
+	StepConfig<Planet>,
+	StepConfig<Planet[]>,
 ];

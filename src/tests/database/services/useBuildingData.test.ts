@@ -4,7 +4,10 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildingsStore, recipesStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
 
-import { IBuilding, IPlanetResource } from "@/features/api/gameData.types";
+import type {
+	Building,
+	PlanetResource,
+} from "@/features/api/schemas/gameData.schemas";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
@@ -26,7 +29,7 @@ describe("useBuildingData", async () => {
 	it("getTotalWorkforce", async () => {
 		const { getBuilding } = useBuildingData();
 
-		const TNP: IBuilding = await getBuilding("TNP");
+		const TNP: Building = await getBuilding("TNP");
 
 		const { getTotalWorkforce } = useBuildingData();
 
@@ -37,7 +40,7 @@ describe("useBuildingData", async () => {
 	describe("getBuilding", async () => {
 		it("Get valid building", async () => {
 			const { getBuilding } = useBuildingData();
-			const TNP: IBuilding = await getBuilding("TNP");
+			const TNP: Building = await getBuilding("TNP");
 
 			expect(TNP.building_ticker).toBe(
 				building_single_tnp.building_ticker
@@ -99,7 +102,7 @@ describe("useBuildingData", async () => {
 		it("Resource Building, planet resources", async () => {
 			const { getBuildingRecipes } = useBuildingData();
 
-			const fakePlanetResources: IPlanetResource[] = [
+			const fakePlanetResources: PlanetResource[] = [
 				{
 					resource_type: "GASEOUS",
 					factor: 1,

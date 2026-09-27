@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { IStoreStatistic } from "@/database/composables/useIndexedDBStore";
+	import type { IStoreStatistic } from "@/database/composables/useIndexedDBStore";
 	import {
 		materialsStore,
 		buildingsStore,
@@ -7,7 +7,7 @@
 		planetsStore,
 		exchangesStore,
 	} from "@/database/stores";
-	import { onMounted, ref, Ref } from "vue";
+	import { onMounted, ref, type Ref } from "vue";
 
 	interface IStatistic extends IStoreStatistic {
 		name: string;

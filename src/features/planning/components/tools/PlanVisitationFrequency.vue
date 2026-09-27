@@ -1,5 +1,12 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, ref, Ref, watch } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		ref,
+		type Ref,
+		watch,
+	} from "vue";
 
 	// Composables
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
@@ -8,8 +15,8 @@
 	import { formatAmount, formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { PSelectOption } from "@/ui/ui.types";
-	import {
+	import type { PSelectOption } from "@/ui/ui.types";
+	import type {
 		IMaterialIO,
 		IStorageRecord,
 	} from "@/features/planning/usePlanCalculation.types";
@@ -86,8 +93,14 @@
 			(sum, e) => sum + (e.delta > 0 ? e.totalVolume : 0),
 			0
 		);
-		const dailyWeightTotal: number = Math.max(dailyWeightImport, dailyWeightExport);
-		const dailyVolumeTotal: number = Math.max(dailyVolumeImport, dailyVolumeExport);
+		const dailyWeightTotal: number = Math.max(
+			dailyWeightImport,
+			dailyWeightExport
+		);
+		const dailyVolumeTotal: number = Math.max(
+			dailyVolumeImport,
+			dailyVolumeExport
+		);
 
 		return {
 			storageFilled: Math.max(
@@ -246,15 +259,11 @@
 					</template>
 				</template>
 				<template #total_weight>
-{{
-					formatAmount(totalWeight)
-				}}
-</template>
+					{{ formatAmount(totalWeight) }}
+				</template>
 				<template #total_volume>
-{{
-					formatAmount(totalVolume)
-				}}
-</template>
+					{{ formatAmount(totalVolume) }}
+				</template>
 			</i18n-t>
 
 			<i18n-t
@@ -263,15 +272,11 @@
 				tag="p"
 				class="pb-3">
 				<template #total_weight>
-{{
-					formatAmount(totalWeight)
-				}}
-</template>
+					{{ formatAmount(totalWeight) }}
+				</template>
 				<template #total_volume>
-{{
-					formatAmount(totalVolume)
-				}}
-</template>
+					{{ formatAmount(totalVolume) }}
+				</template>
 			</i18n-t>
 
 			<PTable striped>

@@ -16,7 +16,7 @@
 | `ManageCX.vue` | CX create and delete: `CreateCX`, `DeleteCX` |
 | `ManagePlanEmpireAssignments.vue` | Plan↔empire matrix: `PatchEmpirePlanJunctions`, plus `ClonePlan`, `DeletePlan` and `SharingButton` |
 | `ManageAssignmentFilters.vue` | Filters for that matrix |
-| `manage.types.ts` | `IPlanEmpireJunction`, `ICXEmpireJunction` and `IPlanCloneResponse` |
+| `manage.types.ts` | `IPlanEmpireMatrix` and `IPlanEmpireMatrixEmpires`. The junction payloads are `PlanEmpireJunction` (`empireData.schemas.ts`) and `CXEmpireJunction` (`cxData.schemas.ts`) |
 
 ## Data
 

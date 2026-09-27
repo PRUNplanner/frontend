@@ -5,12 +5,12 @@
 	*/
 	import {
 		computed,
-		ComputedRef,
+		type ComputedRef,
 		getCurrentInstance,
 		onMounted,
-		PropType,
+		type PropType,
 		ref,
-		Ref,
+		type Ref,
 	} from "vue";
 	import type { Placement } from "@popperjs/core";
 
@@ -30,9 +30,9 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Interfaces & Types
-	import { IMaterial } from "@/features/api/gameData.types";
-	import { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { Material } from "@/features/api/schemas/gameData.schemas";
+	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import { PTooltip, PSelect, PTable } from "@/ui";
@@ -99,7 +99,7 @@
 		},
 	]);
 
-	const material = ref<IMaterial | null>(null);
+	const material = ref<Material | null>(null);
 	const categoryCssClass = ref<string>("");
 
 	const indicatorPercentage: ComputedRef<number> = computed(() => {

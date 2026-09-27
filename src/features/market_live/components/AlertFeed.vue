@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { MarketEvent } from "@/features/market_live/cxDetectors.types";
+	import type { MarketEvent } from "@/features/market_live/cxDetectors.types";
 	import { formatNumber } from "@/util/numbers";
 	import { formatDate } from "@/util/date";
 

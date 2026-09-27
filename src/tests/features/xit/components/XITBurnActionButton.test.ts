@@ -8,7 +8,7 @@ import {
 	vi,
 } from "vitest";
 import { h } from "vue";
-import { DOMWrapper, flushPromises, VueWrapper } from "@vue/test-utils";
+import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
@@ -83,8 +83,7 @@ const rowCheckboxes = () =>
 
 const xitJSON = () =>
 	JSON.parse(
-		(body().find(".n-drawer textarea").element as HTMLTextAreaElement)
-			.value
+		(body().find(".n-drawer textarea").element as HTMLTextAreaElement).value
 	);
 
 const transferred = () => xitJSON().groups[0].materials;
@@ -313,9 +312,9 @@ describe("XITBurnActionButton", () => {
 			.at(0)!
 			.setValue(false);
 		await flushPromises();
-		expect(xitJSON().actions.map((a: { type: string }) => a.type)).toEqual(
-			["MTRA"]
-		);
+		expect(xitJSON().actions.map((a: { type: string }) => a.type)).toEqual([
+			"MTRA",
+		]);
 	});
 
 	it("does not write typing into the generated JSON", async () => {

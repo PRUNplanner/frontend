@@ -1,12 +1,12 @@
-import { Ref, ref } from "vue";
+import { type Ref, ref } from "vue";
 
-import { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
+import type { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
 
-type SharedState<T extends object> = {
+interface SharedState<T extends object> {
 	allData: ReturnType<typeof ref<T[]>>;
 	cache: Map<string, T>;
 	loaded: boolean;
-};
+}
 
 const storeStateMap = new WeakMap<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

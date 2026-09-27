@@ -26,9 +26,11 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 - `useProductionOpportunities(empireIO, cxUuid)` works out which recipes
   could use the empire's surplus materials. It prices them with
   `usePrice(...).getPrice(…, "SELL")` and loads its data on mount.
-- `empire.types.d.ts` holds `IEmpireCostOverview`, `IEmpireMaterialIO`,
-  `IEmpirePlanListData`, `IEmpireMaterialIOState` and the empire
-  create/patch payloads.
+- `empire.types.ts` holds the frontend-only `IEmpireCostOverview`,
+  `IEmpireMaterialIO` and `IEmpirePlanListData`. The wire shapes
+  (`PlanEmpireElement`, `EmpirePayload` for create/patch,
+  `EmpireMaterialIOState`) are schema-derived in
+  `src/features/api/schemas/empireData.schemas.ts`.
 
 ## Data
 

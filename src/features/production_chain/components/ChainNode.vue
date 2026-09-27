@@ -11,11 +11,11 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IFlowNodeData } from "@/features/production_chain/productionGraph.types";
+	import type { IFlowNodeData } from "@/features/production_chain/productionGraph.types";
 	import { nodeDimensions } from "@/features/production_chain/dagre.config";
 	import {
 		EXPERTISECOLORS,
-		NodeColorType,
+		type NodeColorType,
 		WORKFORCECOLORS,
 	} from "@/features/production_chain/components/ChainNode.types";
 

@@ -3,8 +3,8 @@ import { planningQueries } from "@/lib/query_cache/queries/planning.queries";
 import { userQueries } from "@/lib/query_cache/queries/user.queries";
 
 // Types & Interfaces
-import { IQueryDefinition } from "@/lib/query_cache/queryCache.types";
-import {
+import type { IQueryDefinition } from "@/lib/query_cache/queryCache.types";
+import type {
 	QueryData,
 	QueryName,
 	QueryParams,

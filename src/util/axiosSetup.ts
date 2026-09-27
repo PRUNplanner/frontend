@@ -1,7 +1,7 @@
 import axios, {
-	AxiosRequestConfig,
+	type AxiosRequestConfig,
 	CanceledError,
-	InternalAxiosRequestConfig,
+	type InternalAxiosRequestConfig,
 } from "axios";
 
 import router from "@/router";
@@ -37,9 +37,7 @@ const requestSession = new WeakMap<object, string | undefined>();
  * @param {AxiosRequestConfig | undefined} config Request config
  * @returns {boolean} From a previous session
  */
-function isPreviousSession(
-	config: AxiosRequestConfig | undefined
-): boolean {
+function isPreviousSession(config: AxiosRequestConfig | undefined): boolean {
 	if (!config) return false;
 	const session = requestSession.get(config);
 	return session !== undefined && session !== useUserStore().refreshToken;

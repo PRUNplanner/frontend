@@ -1,47 +1,41 @@
 import { z } from "zod";
 
-// Types & Interfaces
 import {
-	PLAN_COGCPROGRAM_TYPE_ENUM,
-	PLAN_FACTION_TYPE_ZOD_ENUM,
+	PlanCOGCProgramSchema,
+	PlanEmpireFactionSchema,
+	PlanEmpireSchema,
+	PlanFactionSchema,
 } from "@/features/api/schemas/planningData.schemas";
-import {
-	IEmpireMaterialIOState,
-	IEmpirePatchPayload,
-} from "@/features/empire/empire.types";
-import { IPlanEmpireJunction } from "@/features/manage/manage.types";
 
-export const EmpirePatchPayload: z.ZodType<IEmpirePatchPayload> = z.object({
+export const PlanEmpireElementSchema = PlanEmpireSchema.extend({
+	plans: z.array(
+		z.object({
+			uuid: z.uuid(),
+			plan_name: z.string(),
+			planet_natural_id: z.string(),
+		})
+	),
+});
+export type PlanEmpireElement = z.infer<typeof PlanEmpireElementSchema>;
+
+export const PlanEmpireElementListSchema = z.array(PlanEmpireElementSchema);
+
+// Create and patch send the same body.
+export const EmpirePayloadSchema = z.object({
 	empire_name: z.string(),
-	empire_faction: z.preprocess(
-		(val) => (typeof val === "string" ? val.toUpperCase() : val),
-		PLAN_FACTION_TYPE_ZOD_ENUM
-	) as z.ZodType<z.infer<typeof PLAN_FACTION_TYPE_ZOD_ENUM>>,
+	empire_faction: PlanEmpireFactionSchema,
 	empire_permits_used: z.number().int().min(1),
 	empire_permits_total: z.number().int().min(2),
 });
+export type EmpirePayload = z.input<typeof EmpirePayloadSchema>;
 
-export const EmpireCreatePayload = z.object({
-	empire_faction: z.preprocess(
-		(val) => (typeof val === "string" ? val.toUpperCase() : val),
-		PLAN_FACTION_TYPE_ZOD_ENUM
-	) as z.ZodType<z.infer<typeof PLAN_FACTION_TYPE_ZOD_ENUM>>,
-	empire_permits_used: z.number().int().min(1),
-	empire_permits_total: z.number().int().min(2),
-	empire_name: z.string(),
-});
-export type EmpirePatchPayloadType = z.infer<typeof EmpirePatchPayload>;
-export type EmpireCreatePayloadType = z.infer<typeof EmpireCreatePayload>;
-
-const EmpireJunctionSchema: z.ZodType<IPlanEmpireJunction> = z.object({
+const PlanEmpireJunctionSchema = z.object({
 	empire_uuid: z.string().uuid(),
 	baseplanners: z.array(z.object({ baseplanner_uuid: z.string().uuid() })),
 });
+export type PlanEmpireJunction = z.input<typeof PlanEmpireJunctionSchema>;
 
-export const EmpireJunctionPayloadSchema = z.array(EmpireJunctionSchema);
-export type EmpireJunctionPayloadType = z.infer<
-	typeof EmpireJunctionPayloadSchema
->;
+export const PlanEmpireJunctionListSchema = z.array(PlanEmpireJunctionSchema);
 
 const MaterialValueSchema = z.object({
 	p: z.number(),
@@ -49,30 +43,26 @@ const MaterialValueSchema = z.object({
 	d: z.number(),
 });
 
-export const EmpireMaterialIOStateSchema: z.ZodType<IEmpireMaterialIOState> =
-	z.object({
-		metadata: z.object({
-			faction: PLAN_FACTION_TYPE_ZOD_ENUM,
-			permits_used: z.number(),
-			permits_total: z.number(),
-			plan_count: z.number(),
-			timestamp: z.iso.datetime(),
-		}),
+export const EmpireMaterialIOStateSchema = z.object({
+	metadata: z.object({
+		faction: PlanFactionSchema,
+		permits_used: z.number(),
+		permits_total: z.number(),
+		plan_count: z.number(),
+		timestamp: z.iso.datetime(),
+	}),
 
-		empire_total: z.record(z.string(), MaterialValueSchema),
+	empire_total: z.record(z.string(), MaterialValueSchema),
 
-		plan_details: z.record(
-			z.string(),
-			z.object({
-				metadata: z.object({
-					planet_natural_id: z.string(),
-					cogc: PLAN_COGCPROGRAM_TYPE_ENUM,
-				}),
-				deltas: z.record(z.string(), MaterialValueSchema),
-			})
-		),
-	});
-
-export type EmpireMaterialIOStateType = z.infer<
-	typeof EmpireMaterialIOStateSchema
->;
+	plan_details: z.record(
+		z.string(),
+		z.object({
+			metadata: z.object({
+				planet_natural_id: z.string(),
+				cogc: PlanCOGCProgramSchema,
+			}),
+			deltas: z.record(z.string(), MaterialValueSchema),
+		})
+	),
+});
+export type EmpireMaterialIOState = z.input<typeof EmpireMaterialIOStateSchema>;

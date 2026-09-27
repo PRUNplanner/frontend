@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import DetectorRow from "@/features/market_live/components/DetectorRow.vue";
 import TargetEditor from "@/features/market_live/components/TargetEditor.vue";
@@ -25,8 +25,7 @@ async function mountRow(modelValue: Detector = PRICE) {
 	const mounted = await mountComponent(DetectorRow, { modelValue });
 	const lastDetector = () =>
 		mounted.component.emitted("update:modelValue")?.at(-1)?.[0] as
-			| Detector
-			| undefined;
+			Detector | undefined;
 	return { ...mounted, lastDetector };
 }
 

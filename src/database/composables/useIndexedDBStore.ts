@@ -1,13 +1,13 @@
-import { IDBPDatabase, openDB } from "idb";
+import { type IDBPDatabase, openDB } from "idb";
 
 import config from "@/lib/config";
 import { DB_SCHEMA } from "@/database/schema";
 
 type KeyOfStore<T, K extends keyof T> = T[K] extends IDBValidKey ? T[K] : never;
-export type IStoreStatistic = {
+export interface IStoreStatistic {
 	records: number;
 	sizeMB: number;
-};
+}
 
 let dbPromise: Promise<IDBPDatabase> | null = null;
 
@@ -137,7 +137,7 @@ export function useIndexedDBStore<T extends object, K extends keyof T & string>(
 			? records.reduce(
 					(sum, r) => sum + new Blob([JSON.stringify(r)]).size,
 					0
-			  ) / records.length
+				) / records.length
 			: 0;
 		const approxSize = (avgSize * recordCount) / 1024 / 1024;
 

@@ -1,5 +1,5 @@
-import { BUILDING_EXPERTISE_TYPE } from "@/features/api/gameData.types";
-import { PSelectOption } from "@/ui/ui.types";
+import type { BuildingExpertise } from "@/features/api/schemas/gameData.schemas";
+import type { PSelectOption } from "@/ui/ui.types";
 
 export type NodeColorType = "Material" | "Workforce" | "Expertise";
 
@@ -27,7 +27,7 @@ export const WORKFORCECOLORS: Record<string, string> = {
 	Scientists: "rgba(245, 72, 127, 0.99)",
 };
 
-export const EXPERTISECOLORS: Record<BUILDING_EXPERTISE_TYPE, string> = {
+export const EXPERTISECOLORS: Record<BuildingExpertise, string> = {
 	AGRICULTURE: "#1b6600",
 	CHEMISTRY: "#8f0077",
 	CONSTRUCTION: "#007573",

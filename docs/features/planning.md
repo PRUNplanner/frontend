@@ -16,7 +16,7 @@ editor UI. The engine is documented in depth in
 | --- | --- |
 | `engine/*.ts` | The pure calculation engine, `calculatePlan(input, ctx)`. See [planning-engine.md](../planning-engine.md) |
 | `usePlanContext.ts` | Builds the engine context: game data maps, planet, price book; `getActiveEmpire` |
-| `usePlanCalculation.ts` / `.types.ts` | Vue adapter for the plan editor (synchronous `computed` result), `IPlanResult` and the domain unions (`WORKFORCE_TYPE`, `INFRASTRUCTURE_TYPE`, `EXPERT_TYPE`, …) |
+| `usePlanCalculation.ts` / `.types.ts` | Vue adapter for the plan editor (synchronous `computed` result), `IPlanResult` and its sub-records. The domain unions (`WorkforceType`, `InfrastructureType`, `ExpertType`, `StorageType`) derive from the enums in `api/schemas/planningData.schemas.ts` |
 | `usePlanCalculationHandlers.ts` | Every edit operation (`handleUpdate*`, `handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data` and sets `modified` |
 | `calculations/*.ts` | Wrappers around the engine (bonus, workforce, building), infrastructure lists, extraction, hab LP optimisation |
 | `util/materialIO.util.ts` | Combine and enrich material I/O. Also combines empire I/O (`combineEmpireMaterialIO`, `empireMaterialIOState`) |

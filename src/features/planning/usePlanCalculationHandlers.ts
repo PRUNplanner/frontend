@@ -1,24 +1,22 @@
-import { ref, Ref } from "vue";
+import { ref, type Ref } from "vue";
 
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Types & Interfaces
-import {
-	IPlan,
-	IPlanData,
-	IPlanDataExpert,
-	IPlanDataInfrastructure,
-	IPlanDataWorkforce,
-	PLAN_COGCPROGRAM_TYPE,
-} from "@/stores/planningStore.types";
-import {
-	EXPERT_TYPE,
-	INFRASTRUCTURE_TYPE,
-	IPlanResult,
-	WORKFORCE_TYPE,
-} from "@/features/planning/usePlanCalculation.types";
-import { IBuilding } from "@/features/api/gameData.types";
+import type {
+	ExpertType,
+	InfrastructureType,
+	PlanCOGCProgram,
+	PlanData,
+	PlanDataExpert,
+	PlanDataInfrastructure,
+	PlanDataWorkforce,
+	WorkforceType,
+} from "@/features/api/schemas/planningData.schemas";
+import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
+import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { Building } from "@/features/api/schemas/gameData.schemas";
 
 // Util
 import { clamp } from "@/util/numbers";
@@ -31,13 +29,13 @@ import { clamp } from "@/util/numbers";
  *
  * @export
  * @param {Ref<IPlanDataPlanet>} planet Planet Data
- * @param {Ref<IPlanData>} planData Plan Data
+ * @param {Ref<PlanData>} planData Plan Data
  * @param {Ref<string | undefined>} planName Plan Name
  * @param {Ref<IPlanResult>} planResult Plan Calculation Result
  */
 export function usePlanCalculationHandlers(
-	plan: Ref<IPlan>,
-	planData: Ref<IPlanData>,
+	plan: Ref<IPlanDefinition>,
+	planData: Ref<PlanData>,
 	planName: Ref<string | undefined>,
 	planResult: Ref<IPlanResult>
 ) {
@@ -66,9 +64,9 @@ export function usePlanCalculationHandlers(
 	 * Changes to currently active COGC
 	 * @author jplacht
 	 *
-	 * @param {PLAN_COGCPROGRAM_TYPE} value COGC Program
+	 * @param {PlanCOGCProgram} value COGC Program
 	 */
-	function handleUpdateCOGC(value: PLAN_COGCPROGRAM_TYPE): void {
+	function handleUpdateCOGC(value: PlanCOGCProgram): void {
 		plan.value.plan_cogc = value;
 		modified.value = true;
 	}
@@ -88,16 +86,16 @@ export function usePlanCalculationHandlers(
 	 * Updates luxury setup for given workforce and luxury type
 	 * @author jplacht
 	 *
-	 * @param {WORKFORCE_TYPE} workforce Workforce, e.g. "pioneer"
+	 * @param {WorkforceType} workforce Workforce, e.g. "pioneer"
 	 * @param {("lux1" | "lux2")} luxType Luxury 1 or 2
 	 * @param {boolean} value If this luxury is available to workforce
 	 */
 	function handleUpdateWorkforceLux(
-		workforce: WORKFORCE_TYPE,
+		workforce: WorkforceType,
 		luxType: "lux1" | "lux2",
 		value: boolean
 	): void {
-		const workforceData: IPlanDataWorkforce | undefined =
+		const workforceData: PlanDataWorkforce | undefined =
 			planData.value.workforce.find((e) => e.type == workforce);
 
 		if (workforceData) {
@@ -114,11 +112,11 @@ export function usePlanCalculationHandlers(
 	 * Updates the amount of assigned experts, clamps it between 0 and 5
 	 * @author jplacht
 	 *
-	 * @param {EXPERT_TYPE} expert Expert Type
+	 * @param {ExpertType} expert Expert Type
 	 * @param {number} value Experts set for type in plan
 	 */
-	function handleUpdateExpert(expert: EXPERT_TYPE, value: number): void {
-		const expertData: IPlanDataExpert | undefined =
+	function handleUpdateExpert(expert: ExpertType, value: number): void {
+		const expertData: PlanDataExpert | undefined =
 			planData.value.experts.find((e) => e.type === expert);
 
 		if (expertData) {
@@ -131,14 +129,14 @@ export function usePlanCalculationHandlers(
 	 * Updates the amount of a specific infrastructure building in the plan
 	 * @author jplacht
 	 *
-	 * @param {INFRASTRUCTURE_TYPE} infrastructure Infrastructure Building e.g. "STO"
+	 * @param {InfrastructureType} infrastructure Infrastructure Building e.g. "STO"
 	 * @param {number} value Building amount
 	 */
 	function handleUpdateInfrastructure(
-		infrastructure: INFRASTRUCTURE_TYPE,
+		infrastructure: InfrastructureType,
 		value: number
 	): void {
-		const infData: IPlanDataInfrastructure | undefined =
+		const infData: PlanDataInfrastructure | undefined =
 			planData.value.infrastructure.find(
 				(i) => i.building === infrastructure
 			);
@@ -202,7 +200,7 @@ export function usePlanCalculationHandlers(
 	 */
 	async function handleCreateBuilding(ticker: string): Promise<boolean> {
 		// validate building
-		const building: IBuilding = await getBuilding(ticker);
+		const building: Building = await getBuilding(ticker);
 
 		// check if building already exists
 		const hasTicker: boolean = !!planData.value.buildings.find(

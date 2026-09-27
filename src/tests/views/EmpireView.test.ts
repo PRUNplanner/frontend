@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { nextTick, ref, Slots } from "vue";
-import { VueWrapper } from "@vue/test-utils";
+import { nextTick, ref, type Slots } from "vue";
+import type { VueWrapper } from "@vue/test-utils";
 
 import EmpireView from "@/views/EmpireView.vue";
 import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";

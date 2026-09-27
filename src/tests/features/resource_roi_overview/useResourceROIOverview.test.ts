@@ -1,4 +1,4 @@
-import { ref, Ref } from "vue";
+import { ref, type Ref } from "vue";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";

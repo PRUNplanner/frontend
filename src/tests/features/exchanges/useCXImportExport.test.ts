@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Papa from "papaparse";
-import {
-	ICXDataExchangeOption,
-	ICXDataTickerOption,
-} from "@/stores/planningStore.types";
+import type {
+	CXDataExchangeOption,
+	CXDataTickerOption,
+} from "@/features/api/schemas/cxData.schemas";
 import { useCXImportExport } from "@/features/exchanges/useCXImportExport";
-import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
+import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 vi.mock("papaparse", () => ({
 	default: {
@@ -58,7 +58,10 @@ describe("useCXImportExport", () => {
 
 			(Papa.parse as any).mockImplementation(
 				(_file: File, config: any) => {
-					config.complete({ data: mockRows, meta: { fields: COLUMNS } });
+					config.complete({
+						data: mockRows,
+						meta: { fields: COLUMNS },
+					});
 				}
 			);
 
@@ -89,7 +92,12 @@ describe("useCXImportExport", () => {
 			});
 		});
 
-		const row = (Type: string, CX: string, Ticker: string, Price: string) => ({
+		const row = (
+			Type: string,
+			CX: string,
+			Ticker: string,
+			Price: string
+		) => ({
 			Location: "EMPIRE",
 			Type,
 			CX,
@@ -98,9 +106,8 @@ describe("useCXImportExport", () => {
 		});
 
 		function parseRows(rows: unknown[], fields: string[] = COLUMNS) {
-			(Papa.parse as any).mockImplementation(
-				(_file: File, config: any) =>
-					config.complete({ data: rows, meta: { fields } })
+			(Papa.parse as any).mockImplementation((_file: File, config: any) =>
+				config.complete({ data: rows, meta: { fields } })
 			);
 			return parseSettingsCSV(new File([""], "test.csv"));
 		}
@@ -158,10 +165,10 @@ describe("useCXImportExport", () => {
 
 	describe("generateSettingsCSV", () => {
 		it("should generate a valid CSV string", () => {
-			const empireCX: ICXDataExchangeOption[] = [
+			const empireCX: CXDataExchangeOption[] = [
 				{ type: "BUY", exchange: "AI1_30D" },
 			];
-			const empireTickerOptions: ICXDataTickerOption[] = [
+			const empireTickerOptions: CXDataTickerOption[] = [
 				{ type: "SELL", ticker: "MAT", value: 100 },
 			];
 

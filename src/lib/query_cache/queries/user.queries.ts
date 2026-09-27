@@ -1,4 +1,4 @@
-import { Composer } from "vue-i18n";
+import type { Composer } from "vue-i18n";
 
 import { i18n } from "@/lib/i18n";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -28,33 +28,31 @@ import {
 } from "@/features/api/apiKeysData.api";
 
 // Types & Interfaces
-import {
-	IUserChangePasswordPayload,
-	IUserPasswordResetPayload,
-	IUserPasswordResetResponse,
-	IUserProfile,
-	IUserProfilePatch,
-	IUserRegistrationPayload,
-	IUserRegistrationResponse,
-	IUserRequestPasswordResetPayload,
-	IUserRequestPasswordResetResponse,
-	IUserResponseDetail,
-	IUserVerifyEmailPayload,
-} from "@/features/api/userData.types";
-import { IPreference } from "@/features/preferences/userPreferences.types";
-import {
-	APIKeyCreatePayloadType,
-	APIKeyCreateResponseType,
-	APIKeyListType,
-} from "@/features/api/schemas/apiKeysData.schema";
+import type {
+	UserChangePasswordPayload,
+	UserPasswordResetPayload,
+	UserPreference,
+	UserProfile,
+	UserProfilePatch,
+	UserRegistrationPayload,
+	UserRegistrationResponse,
+	UserRequestPasswordResetPayload,
+	UserResponseDetail,
+	UserVerifyEmailPayload,
+} from "@/features/api/schemas/user.schemas";
+import type {
+	APIKey,
+	APIKeyCreatePayload,
+	APIKeyCreateResponse,
+} from "@/features/api/schemas/apiKeysData.schemas";
 
 export const userQueries = {
 	// Account
 	PostUserRegistration: defineQuery({
 		key: () => ["user", "account", "registration"],
 		fetchFn: async (
-			params: IUserRegistrationPayload
-		): Promise<IUserRegistrationResponse> => {
+			params: UserRegistrationPayload
+		): Promise<UserRegistrationResponse> => {
 			trackEvent("user_registration", {
 				username: params.username,
 			});
@@ -82,7 +80,7 @@ export const userQueries = {
 	}),
 	PostUserVerifyEmail: defineQuery({
 		key: () => ["user", "verification", "check"],
-		fetchFn: async (params: IUserVerifyEmailPayload): Promise<boolean> => {
+		fetchFn: async (params: UserVerifyEmailPayload): Promise<boolean> => {
 			try {
 				await callVerifyEmail(params);
 				return true;
@@ -94,23 +92,23 @@ export const userQueries = {
 	}),
 	PostUserResendEmailVerification: defineQuery({
 		key: () => ["user", "verification", "resend"],
-		fetchFn: (): Promise<IUserResponseDetail> =>
+		fetchFn: (): Promise<UserResponseDetail> =>
 			callResendEmailVerification(),
 		persist: false,
 	}),
 	PostUserRequestPasswordReset: defineQuery({
 		key: () => ["user", "account", "request_password_reset"],
 		fetchFn: (
-			params: IUserRequestPasswordResetPayload
-		): Promise<IUserRequestPasswordResetResponse> =>
+			params: UserRequestPasswordResetPayload
+		): Promise<UserResponseDetail> =>
 			callRequestPasswordReset(params.email),
 		persist: false,
 	}),
 	PostUserPasswordReset: defineQuery({
 		key: () => ["user", "account", "password_reset"],
 		fetchFn: async (
-			params: IUserPasswordResetPayload
-		): Promise<IUserPasswordResetResponse> => {
+			params: UserPasswordResetPayload
+		): Promise<UserResponseDetail> => {
 			try {
 				return await callPasswordReset(
 					params.email,
@@ -128,7 +126,9 @@ export const userQueries = {
 	PatchUserChangePassword: defineQuery({
 		key: () => ["user", "password", "patch"],
 		// we skip the actual message just to have a boolean
-		fetchFn: async (params: IUserChangePasswordPayload): Promise<boolean> => {
+		fetchFn: async (
+			params: UserChangePasswordPayload
+		): Promise<boolean> => {
 			try {
 				await callChangePassword(params);
 				return true;
@@ -142,7 +142,7 @@ export const userQueries = {
 	// Profile & preferences
 	PatchUserProfile: defineQuery({
 		key: () => ["user", "profile", "patch"],
-		fetchFn: async (params: IUserProfilePatch): Promise<IUserProfile> => {
+		fetchFn: async (params: UserProfilePatch): Promise<UserProfile> => {
 			const data = await callPatchProfile(params);
 			await useUserStore().performGetProfile();
 			return data;
@@ -151,7 +151,7 @@ export const userQueries = {
 	}),
 	GetPreferences: defineQuery({
 		key: () => ["user", "profile"],
-		fetchFn: async (): Promise<IPreference> => {
+		fetchFn: async (): Promise<UserPreference> => {
 			const userStore = useUserStore();
 			const prefs = await callGetUserPreferences();
 			Object.assign(userStore.preferences, prefs);
@@ -168,7 +168,9 @@ export const userQueries = {
 	}),
 	PatchPreferences: defineQuery({
 		key: () => ["user", "preferences", "patch"],
-		fetchFn: async (prefs: IPreference): Promise<IPreference | undefined> => {
+		fetchFn: async (
+			prefs: UserPreference
+		): Promise<UserPreference | undefined> => {
 			// dont try to patch if not logged in, d'oh!
 			if (!useUserStore().isLoggedIn) return undefined;
 
@@ -180,14 +182,12 @@ export const userQueries = {
 	// API keys
 	GetAPIKeys: defineQuery({
 		key: () => ["user", "api", "keys"],
-		fetchFn: (): Promise<APIKeyListType> => callGetAPIKeys(),
+		fetchFn: (): Promise<APIKey[]> => callGetAPIKeys(),
 		persist: false,
 	}),
 	PostCreateAPIKey: defineQuery({
 		key: () => ["user", "api", "keys", "create"],
-		fetchFn: (
-			params: APIKeyCreatePayloadType
-		): Promise<APIKeyCreateResponseType> =>
+		fetchFn: (params: APIKeyCreatePayload): Promise<APIKeyCreateResponse> =>
 			callPostCreateAPIKey(params.name),
 		persist: false,
 	}),

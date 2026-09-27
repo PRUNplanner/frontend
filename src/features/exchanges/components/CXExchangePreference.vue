@@ -1,12 +1,15 @@
 <script setup lang="ts">
-	import { computed, PropType, ref, Ref } from "vue";
+	import { computed, type PropType, ref, type Ref } from "vue";
 
 	// Composables
 	import { useCXManagement } from "@/features/exchanges/useManageCX";
 
 	// Types & Interfaces
-	import { ICXDataExchangeOption } from "@/stores/planningStore.types";
-	import { ExchangeType, PreferenceType } from "../manageCX.types";
+	import type {
+		CXDataExchangeOption,
+		CXExchangeOptionType,
+		CXPreferenceType,
+	} from "@/features/api/schemas/cxData.schemas";
 
 	// UI
 	import { PSelect, PButton, PTag, PTable } from "@/ui";
@@ -14,18 +17,18 @@
 
 	const props = defineProps({
 		cxOptions: {
-			type: Array as PropType<ICXDataExchangeOption[]>,
+			type: Array as PropType<CXDataExchangeOption[]>,
 			required: true,
 		},
 	});
 
 	const emit = defineEmits<{
-		(e: "update:cxOptions", value: ICXDataExchangeOption[]): void;
+		(e: "update:cxOptions", value: CXDataExchangeOption[]): void;
 	}>();
 
 	const localCXOptions = computed({
 		get: () => props.cxOptions,
-		set: (val: ICXDataExchangeOption[]) => emit("update:cxOptions", val),
+		set: (val: CXDataExchangeOption[]) => emit("update:cxOptions", val),
 	});
 
 	const {
@@ -36,8 +39,8 @@
 		deleteExchangePreference,
 	} = useCXManagement();
 
-	const selectedType: Ref<PreferenceType> = ref("BOTH");
-	const selectedExchange: Ref<ExchangeType> = ref("UNIVERSE_30D");
+	const selectedType: Ref<CXPreferenceType> = ref("BOTH");
+	const selectedExchange: Ref<CXExchangeOptionType> = ref("UNIVERSE_30D");
 </script>
 
 <template>

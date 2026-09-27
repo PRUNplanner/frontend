@@ -15,20 +15,20 @@ localStorage and synced to the backend.
 
 | File | Role |
 | --- | --- |
-| `userPreferences.types.ts` | `IPreference`, `IPreferencePerPlan` and `IPreferenceDefault` |
+| `userPreferences.types.ts` | `IPreferenceDefault` and `IPlanPreferenceOverview` (frontend-only). `UserPreference` and `PreferencePerPlan` are derived from `UserPreferenceSchema` in `src/features/api/schemas/user.schemas.ts` |
 | `userDefaults.ts` | `preferenceDefaults`: every default, including `planDefaults` for per-plan keys |
 | `usePreferences.ts` | Writable computeds for each global preference, `cleanPlanPreferences()`, `getBurnDisplayClass()`. It watches the store and **debounces a `PatchPreferences` call by 5s** |
 | `usePlanPreferences.ts` | `usePlanPreferences(planUuid)`: writable computeds for one plan's overrides, merged over `planDefaults`. `planUuid` is a ref, getter or string; while it is `undefined` it reads `planDefaults` and writes are no-ops |
 
 ## Adding a preference
 
-1. Add the field to `IPreference`, or to `IPreferencePerPlan` for a per-plan
-   preference.
+1. Add the field to `UserPreferenceSchema` in
+   `src/features/api/schemas/user.schemas.ts` (per-plan preferences go
+   into `PreferencePerPlanSchema`). The `UserPreference` and
+   `PreferencePerPlan` types derive from it, and the backend round-trip
+   validates against it.
 2. Add its default to `preferenceDefaults` (or `planDefaults`).
-3. Add it to `UserPreferenceSchema` in
-   `src/features/api/schemas/user.schemas.ts`. **If you skip this step, the
-   backend round-trip fails validation.**
-4. Expose a writable computed from `usePreferences` or `usePlanPreferences`.
+3. Expose a writable computed from `usePreferences` or `usePlanPreferences`.
 
 ## Gotchas
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanBonuses from "@/features/planning/components/PlanBonuses.vue";
@@ -19,8 +19,7 @@ async function mountBonuses(props: Record<string, unknown> = {}) {
 }
 
 const select = (wrapper: VueWrapper) => wrapper.findComponent(PSelect);
-const checkbox = (wrapper: VueWrapper) =>
-	wrapper.find("input[type=checkbox]");
+const checkbox = (wrapper: VueWrapper) => wrapper.find("input[type=checkbox]");
 
 describe("PlanBonuses", () => {
 	beforeEach(() => {
@@ -46,12 +45,16 @@ describe("PlanBonuses", () => {
 				value: p,
 				label: `game.cogc_program.ADVERTISING_${p}`,
 			})),
-			...["PIONEERS", "SETTLERS", "TECHNICIANS", "ENGINEERS", "SCIENTISTS"].map(
-				(p) => ({
-					value: p,
-					label: `game.cogc_program.WORKFORCE_${p}`,
-				})
-			),
+			...[
+				"PIONEERS",
+				"SETTLERS",
+				"TECHNICIANS",
+				"ENGINEERS",
+				"SCIENTISTS",
+			].map((p) => ({
+				value: p,
+				label: `game.cogc_program.WORKFORCE_${p}`,
+			})),
 		]);
 	});
 
@@ -61,9 +64,9 @@ describe("PlanBonuses", () => {
 			cogc: "METALLURGY",
 		});
 
-		expect(
-			(checkbox(wrapper).element as HTMLInputElement).checked
-		).toBe(true);
+		expect((checkbox(wrapper).element as HTMLInputElement).checked).toBe(
+			true
+		);
 		expect(select(wrapper).props("value")).toBe("METALLURGY");
 		expect(select(wrapper).text()).toContain(
 			"game.cogc_program.ADVERTISING_METALLURGY"
@@ -73,9 +76,9 @@ describe("PlanBonuses", () => {
 	it("shows no corp HQ", async () => {
 		const { wrapper } = await mountBonuses();
 
-		expect(
-			(checkbox(wrapper).element as HTMLInputElement).checked
-		).toBe(false);
+		expect((checkbox(wrapper).element as HTMLInputElement).checked).toBe(
+			false
+		);
 	});
 
 	it("emits and tracks corp HQ", async () => {
@@ -119,9 +122,9 @@ describe("PlanBonuses", () => {
 
 		await setProps({ corphq: true, cogc: "CHEMISTRY" });
 
-		expect(
-			(checkbox(wrapper).element as HTMLInputElement).checked
-		).toBe(true);
+		expect((checkbox(wrapper).element as HTMLInputElement).checked).toBe(
+			true
+		);
 		expect(select(wrapper).props("value")).toBe("CHEMISTRY");
 	});
 

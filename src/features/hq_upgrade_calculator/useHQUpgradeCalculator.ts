@@ -1,4 +1,4 @@
-import { computed, ComputedRef, ref, Ref } from "vue";
+import { computed, type ComputedRef, ref, type Ref } from "vue";
 
 // Composables
 import { usePrice } from "@/features/cx/usePrice";
@@ -9,12 +9,12 @@ import { useMaterialData } from "@/database/services/useMaterialData";
 import { clamp } from "@/util/numbers";
 
 // Types & Interfaces
-import {
+import type {
 	IHQLevelRecord,
 	IHQMaterial,
 	IHQMaterialData,
 } from "@/features/hq_upgrade_calculator/useHQUpgradeCalculator.types";
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 
 // Static data
 import hqLevels from "@/features/hq_upgrade_calculator/hq_levels.json";

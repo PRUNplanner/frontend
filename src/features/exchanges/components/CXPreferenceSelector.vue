@@ -1,12 +1,17 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, watch, WritableComputedRef } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		watch,
+		type WritableComputedRef,
+	} from "vue";
 
 	// Composables
 	import { useCXData } from "@/features/cx/useCXData";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 
 	// Types & Interfaces
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import { PSelect } from "@/ui";

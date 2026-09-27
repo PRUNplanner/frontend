@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, onMounted, Ref, ref } from "vue";
+	import { computed, onMounted, type Ref, ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -33,8 +33,8 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import { PSelectOption } from "@/ui/ui.types";
-	import { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
+	import type { PSelectOption } from "@/ui/ui.types";
+	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 
 	// UI
 	import { PSelect, PButton } from "@/ui";
@@ -43,7 +43,7 @@
 
 	// Util
 	import { formatAmount, formatNumber } from "@/util/numbers";
-	import { CandleInterval } from "@/features/market_exploration/marketExploration.types";
+	import type { CandleInterval } from "@/features/market_exploration/marketExploration.types";
 
 	const exchangeOptions: Ref<PSelectOption[]> = ref(
 		["AI1", "CI1", "IC1", "NC1"].map((e) => {

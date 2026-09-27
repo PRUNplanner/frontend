@@ -1,6 +1,6 @@
 # exchanges
 
-**Purpose.** This folder is the editor for a **CX preference** set (`ICX`):
+**Purpose.** This folder is the editor for a **CX preference** set (`CX`):
 the rules that decide which price a plan uses for each material. It covers
 exchange-level rules (e.g. "buy at AI1 30D VWAP") and fixed ticker prices,
 at empire level and per planet. It also offers CSV import/export.
@@ -22,7 +22,7 @@ at empire level and per planet. It also offers CSV import/export.
 | --- | --- |
 | `useManageCX.ts` → `useCXManagement()` | Select options (preference type BUY/SELL/BOTH, exchange options, materials) and immutable update/delete helpers for exchange and ticker preferences |
 | `useCXImportExport.ts` | Parse and generate the preferences CSV (`papaparse`); columns: Location, Type, CX, Ticker, Price |
-| `manageCX.types.ts` | `ExchangeType`, `PreferenceType`, `ICXPlanetMap` |
+| `manageCX.types.ts` | `ICXPlanetMap` (the exchange and preference type unions are `CXExchangeOptionType` / `CXPreferenceType` in `api/schemas/cxData.schemas.ts`) |
 | `components/CXExchangePreference.vue` | Exchange-rule list editor |
 | `components/CXTickerPreference.vue` | Ticker-price list editor |
 | `components/CXPlanetPreferenceTable.vue` | Per-planet overrides |
@@ -31,7 +31,7 @@ at empire level and per planet. It also offers CSV import/export.
 
 ## Data
 
-- The shape is `ICXData` in `src/stores/planningStore.types.d.ts`: it holds
+- The shape is `CXData` in `src/features/api/schemas/cxData.schemas.ts`: it holds
   `cx_empire`, `cx_planets`, `ticker_empire` and `ticker_planets`.
 - CX sets load into `planningStore.cxs` through the `GetAllCX` query.
 - How prices are resolved from these rules is documented in

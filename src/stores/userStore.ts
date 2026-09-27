@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import {
 	computed,
-	ComputedRef,
+	type ComputedRef,
 	nextTick,
-	Reactive,
+	type Reactive,
 	reactive,
 	ref,
-	Ref,
+	type Ref,
 } from "vue";
 import merge from "lodash/merge";
 
@@ -32,19 +32,17 @@ import {
 } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
-import {
-	IUserProfile,
-	IUserRefreshTokenResponse,
-	IUserTokenResponse,
-} from "@/features/api/userData.types";
-import {
-	IPreference,
-	IPreferencePerPlan,
-} from "@/features/preferences/userPreferences.types";
+import type {
+	PreferencePerPlan,
+	RefreshTokenResponse,
+	TokenResponse,
+	UserPreference,
+	UserProfile,
+} from "@/features/api/schemas/user.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import { deepClone } from "@/util/data";
-import { Composer } from "vue-i18n";
-import { localeLazyLoaders, SupportedLocale } from "@/lib/i18n";
+import type { Composer } from "vue-i18n";
+import { localeLazyLoaders, type SupportedLocale } from "@/lib/i18n";
 
 export const useUserStore = defineStore(
 	"prunplanner_user",
@@ -52,11 +50,11 @@ export const useUserStore = defineStore(
 		// state
 		const accessToken: Ref<string | undefined> = ref(undefined);
 		const refreshToken: Ref<string | undefined> = ref(undefined);
-		const profile: Ref<IUserProfile | undefined> = ref(undefined);
+		const profile: Ref<UserProfile | undefined> = ref(undefined);
 
 		const initialProfileCalled: Ref<boolean> = ref(false);
 		const intialPreferencesCalled: Ref<boolean> = ref(false);
-		const preferences: Reactive<IPreference> = reactive<IPreference>(
+		const preferences: Reactive<UserPreference> = reactive<UserPreference>(
 			deepClone(preferenceDefaults)
 		);
 
@@ -76,7 +74,7 @@ export const useUserStore = defineStore(
 		type PreferenceType = typeof preferences;
 
 		// generic setter for top-level preferences
-		function setPreference<K extends keyof IPreference>(
+		function setPreference<K extends keyof UserPreference>(
 			key: K,
 			value: PreferenceType[K]
 		): void {
@@ -86,13 +84,13 @@ export const useUserStore = defineStore(
 		// per plan override setter
 		function setPlanPreference(
 			planUuid: string,
-			patch: Partial<IPreferencePerPlan>
+			patch: Partial<PreferencePerPlan>
 		): void {
 			const current = preferences.planOverrides[planUuid] || {};
 			preferences.planOverrides[planUuid] = { ...current, ...patch };
 		}
 
-		function getPlanPreference(planUuid: string): IPreferencePerPlan {
+		function getPlanPreference(planUuid: string): PreferencePerPlan {
 			return merge(
 				{},
 				preferenceDefaults.planDefaults,
@@ -243,7 +241,7 @@ export const useUserStore = defineStore(
 			password: string
 		): Promise<boolean> {
 			try {
-				const tokenData: IUserTokenResponse = await callUserLogin(
+				const tokenData: TokenResponse = await callUserLogin(
 					username,
 					password
 				);
@@ -275,7 +273,7 @@ export const useUserStore = defineStore(
 		async function performTokenRefresh(): Promise<boolean> {
 			if (refreshToken.value) {
 				try {
-					const tokenData: IUserRefreshTokenResponse =
+					const tokenData: RefreshTokenResponse =
 						await callRefreshToken(refreshToken.value);
 
 					setToken(tokenData.access, refreshToken.value);
@@ -301,7 +299,7 @@ export const useUserStore = defineStore(
 			// only perform if the user is logged in
 			if (isLoggedIn.value) {
 				try {
-					await callGetProfile().then((result: IUserProfile) => {
+					await callGetProfile().then((result: UserProfile) => {
 						// identify users for posthog
 						identifyUser(result.id.toString(), {
 							username: result.username,

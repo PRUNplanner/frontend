@@ -54,8 +54,9 @@ const { result, overview } = calculatePlan(input, ctx);
 | `buildings.ts` | Game data helpers: building lookup, construction materials with planet additions, recipes (extraction from planet resources), planet boundaries |
 
 `IPlanResult` (typed in `usePlanCalculation.types.ts`, together with every
-sub-record and the `WORKFORCE_TYPE`, `INFRASTRUCTURE_TYPE`, `EXPERT_TYPE` and
-`STORAGE_TYPE` unions) contains:
+sub-record; the `WorkforceType`, `InfrastructureType`, `ExpertType` and
+`StorageType` unions derive from `api/schemas/planningData.schemas.ts`)
+contains:
 
 - `workforce`, `area`, `infrastructure`, `storage` and `experts`;
 - `production.buildings` (per-building efficiency, active recipes with
@@ -103,9 +104,9 @@ The Vue adapter for the plan editor.
 
 ```ts
 const calc = usePlanCalculation(
-  planRef,            // Ref<IPlan>, required
+  planRef,            // Ref<IPlanDefinition>, required
   empireUuidRef,      // Ref<string | undefined>, the empire context (faction, permits)
-  empireOptionsRef,   // Ref<IPlanEmpireElement[] | undefined>, the list to resolve that uuid
+  empireOptionsRef,   // Ref<PlanEmpireElement[] | undefined>, the list to resolve that uuid
   cxUuidRef           // Ref<string | undefined>, the exchange preference for prices
 );
 ```
@@ -127,7 +128,7 @@ const calc = usePlanCalculation(
   | `overviewData`, `visitationData` | Derived summaries for `PlanOverview` / `PlanVisitationFrequency` |
   | `calculate()` | Calculates once (async, waits for loading) and returns a fresh result |
   | `calculateOverview(materialIO, production, infrastructure)` | The overview for a result's parts |
-  | `backendData` | The `IPlanCreateData` payload for save/create |
+  | `backendData` | The `PlanCreateData` payload for save/create |
   | `existing`, `saveable`, `modified`, `planName`, `planEmpires`, `computedActiveEmpire` | Editor state |
   | `handle*` | Mutators from `usePlanCalculationHandlers` |
 
@@ -168,7 +169,7 @@ CX is read once. Create a new book per calculation to pick up changes.
 `getMaterialIOTotalPrice` and `enhanceMaterialIOMaterial` for components;
 they resolve through a book.
 
-A CX preference (`ICX.cx_data`) is resolved from the most specific level to
+A CX preference (`CX.cx_data`) is resolved from the most specific level to
 the least specific; the first match wins:
 
 1. planet ticker preference;
@@ -193,7 +194,7 @@ and logged.
 ## Empires
 
 An empire is a named group of plans with a faction and permits
-(`IPlanEmpireElement`). There is **no separate empire engine**:
+(`PlanEmpireElement`). There is **no separate empire engine**:
 `EmpireView.calculateEmpire()` calculates each plan (see batch above),
 caches results in a `Map` keyed by plan, empire and CX, and aggregates cost,
 material I/O and plan lists for the `features/empire` components. The

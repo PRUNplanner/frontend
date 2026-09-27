@@ -1,4 +1,4 @@
-import { Ref, ref } from "vue";
+import { type Ref, ref } from "vue";
 
 // Composables
 import { usePlanContext } from "@/features/planning/usePlanContext";
@@ -13,16 +13,17 @@ import { deepClone } from "@/util/data";
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // Types & Interfaces
-import { IPlan, PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
-import { IRecipe } from "@/features/api/gameData.types";
-import { IPlanContext } from "@/features/planning/engine/engine.types";
-import {
+import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
+import type { Recipe } from "@/features/api/schemas/gameData.schemas";
+import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type {
 	IROIResult,
 	IStaticOptimalProduction,
 } from "@/features/roi_overview/useROIOverview.types";
 
 export function useROIOverview(
-	definition: Ref<IPlan>,
+	definition: Ref<IPlanDefinition>,
 	cxUuid: Ref<string | undefined>
 ) {
 	const { getBuilding, getBuildingRecipes } = useBuildingData();
@@ -66,7 +67,7 @@ export function useROIOverview(
 		// overwrite each other in terms of setup
 		const definitionCopy = deepClone(definition.value);
 
-		const buildingRecipes: IRecipe[] = await getBuildingRecipes(
+		const buildingRecipes: Recipe[] = await getBuildingRecipes(
 			optimal.ticker,
 			[]
 		);
@@ -79,7 +80,7 @@ export function useROIOverview(
 		for (const recipe of buildingRecipes) {
 			// as we're using production buildings, they all have a COGC
 			definitionCopy.plan_cogc =
-				`${building.expertise}` as PLAN_COGCPROGRAM_TYPE;
+				`${building.expertise}` as PlanCOGCProgram;
 
 			// set building
 			definitionCopy.plan_data.buildings = [

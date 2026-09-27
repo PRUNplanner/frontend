@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import type { PropType } from "vue";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -8,7 +8,7 @@
 	import { humanizeTimeMs } from "@/util/date";
 	import { formatNumber } from "@/util/numbers";
 
-	import { IProductionBuildingRecipeCOGM } from "../../usePlanCalculation.types";
+	import type { IProductionBuildingRecipeCOGM } from "../../usePlanCalculation.types";
 
 	// UI
 	import { PTable } from "@/ui";

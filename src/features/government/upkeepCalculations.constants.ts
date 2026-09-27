@@ -1,5 +1,5 @@
 // Types & Interfaces
-import {
+import type {
 	IUpkeepBuilding,
 	UpkeepNeedType,
 } from "@/features/government/upkeepCalculations.types";
@@ -21,7 +21,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "OFF", qtyPerDay: 10 },
 			{ ticker: "SUN", qtyPerDay: 2 },
 		],
-		needs: { safety: 833.3, health: 0, comfort: 0, culture: 0, education: 0 },
+		needs: {
+			safety: 833.3,
+			health: 0,
+			comfort: 0,
+			culture: 0,
+			education: 0,
+		},
 	},
 	{
 		ticker: "SDP",
@@ -32,7 +38,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "CCD", qtyPerDay: 0.07 },
 			{ ticker: "SUD", qtyPerDay: 0.07 },
 		],
-		needs: { safety: 1250, health: 0, comfort: 0, culture: 0, education: 0 },
+		needs: {
+			safety: 1250,
+			health: 0,
+			comfort: 0,
+			culture: 0,
+			education: 0,
+		},
 	},
 	{
 		ticker: "EMC",
@@ -44,7 +56,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "RED", qtyPerDay: 0.07 },
 			{ ticker: "BSC", qtyPerDay: 0.07 },
 		],
-		needs: { safety: 200, health: 200, comfort: 0, culture: 0, education: 0 },
+		needs: {
+			safety: 200,
+			health: 200,
+			comfort: 0,
+			culture: 0,
+			education: 0,
+		},
 	},
 	{
 		ticker: "INF",
@@ -54,7 +72,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "TUB", qtyPerDay: 6.67 },
 			{ ticker: "STR", qtyPerDay: 0.67 },
 		],
-		needs: { safety: 0, health: 833.33, comfort: 0, culture: 0, education: 0 },
+		needs: {
+			safety: 0,
+			health: 833.33,
+			comfort: 0,
+			culture: 0,
+			education: 0,
+		},
 	},
 	{
 		ticker: "HOS",
@@ -67,7 +91,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "RED", qtyPerDay: 0.07 },
 			{ ticker: "BSC", qtyPerDay: 0.13 },
 		],
-		needs: { safety: 0, health: 833.33, comfort: 0, culture: 0, education: 0 },
+		needs: {
+			safety: 0,
+			health: 833.33,
+			comfort: 0,
+			culture: 0,
+			education: 0,
+		},
 	},
 	{
 		ticker: "WCE",
@@ -80,7 +110,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "PFE", qtyPerDay: 2.67 },
 			{ ticker: "SOI", qtyPerDay: 6.67 },
 		],
-		needs: { safety: 0, health: 166.67, comfort: 166.7, culture: 0, education: 0 },
+		needs: {
+			safety: 0,
+			health: 166.67,
+			comfort: 166.7,
+			culture: 0,
+			education: 0,
+		},
 	},
 	{
 		ticker: "PAR",
@@ -105,7 +141,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "HOG", qtyPerDay: 0.2 },
 			{ ticker: "EDC", qtyPerDay: 0.2 },
 		],
-		needs: { safety: 0, health: 0, comfort: 833.3, culture: 0, education: 0 },
+		needs: {
+			safety: 0,
+			health: 0,
+			comfort: 833.3,
+			culture: 0,
+			education: 0,
+		},
 	},
 	{
 		ticker: "ACA",
@@ -118,7 +160,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "GL", qtyPerDay: 6.67 },
 			{ ticker: "DEC", qtyPerDay: 0.67 },
 		],
-		needs: { safety: 0, health: 0, comfort: 166.7, culture: 166.7, education: 0 },
+		needs: {
+			safety: 0,
+			health: 0,
+			comfort: 166.7,
+			culture: 166.7,
+			education: 0,
+		},
 	},
 	{
 		ticker: "ART",
@@ -142,7 +190,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "BID", qtyPerDay: 0.33 },
 			{ ticker: "DEC", qtyPerDay: 0.67 },
 		],
-		needs: { safety: 0, health: 0, comfort: 0, culture: 833.3, education: 0 },
+		needs: {
+			safety: 0,
+			health: 0,
+			comfort: 0,
+			culture: 833.3,
+			education: 0,
+		},
 	},
 	{
 		ticker: "PBH",
@@ -155,7 +209,13 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "EDC", qtyPerDay: 0.27 },
 			{ ticker: "IDC", qtyPerDay: 0.13 },
 		],
-		needs: { safety: 0, health: 0, comfort: 0, culture: 166.7, education: 166.7 },
+		needs: {
+			safety: 0,
+			health: 0,
+			comfort: 0,
+			culture: 166.7,
+			education: 166.7,
+		},
 	},
 	{
 		ticker: "LIB",
@@ -180,6 +240,12 @@ export const UPKEEP_BUILDINGS: IUpkeepBuilding[] = [
 			{ ticker: "HD", qtyPerDay: 0.67 },
 			{ ticker: "IDC", qtyPerDay: 0.2 },
 		],
-		needs: { safety: 0, health: 0, comfort: 0, culture: 0, education: 833.3 },
+		needs: {
+			safety: 0,
+			health: 0,
+			comfort: 0,
+			culture: 0,
+			education: 833.3,
+		},
 	},
 ];

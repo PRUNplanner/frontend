@@ -1,4 +1,4 @@
-import {
+import type {
 	ComparableValue,
 	ComparisonTarget,
 	Detector,
@@ -7,7 +7,7 @@ import {
 	RuleGroup,
 	TriggerContext,
 } from "@/features/market_live/cxDetectors.types";
-import { CXDataPoint } from "@/features/market_live/cxExchange.types";
+import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 const getTargetValue = (
 	target: ComparisonTarget,

@@ -1,9 +1,9 @@
 import {
 	computed,
-	ComputedRef,
-	MaybeRefOrGetter,
+	type ComputedRef,
+	type MaybeRefOrGetter,
 	toValue,
-	WritableComputedRef,
+	type WritableComputedRef,
 } from "vue";
 
 // Stores
@@ -14,7 +14,7 @@ import { deepClone } from "@/util/data";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 // Types & Interfaces
-import { IPreferencePerPlan } from "@/features/preferences/userPreferences.types";
+import type { PreferencePerPlan } from "@/features/api/schemas/user.schemas";
 
 /**
  * Preferences of a single plan. Without a uuid (plan not created yet) it
@@ -34,9 +34,9 @@ export function usePlanPreferences(
 	 *
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<IPreferencePerPlan>}
+	 * @type {ComputedRef<PreferencePerPlan>}
 	 */
-	const fullPreferences: ComputedRef<IPreferencePerPlan> = computed(() => {
+	const fullPreferences: ComputedRef<PreferencePerPlan> = computed(() => {
 		const uuid = toValue(planUuid);
 		return uuid
 			? userStore.getPlanPreference(uuid)

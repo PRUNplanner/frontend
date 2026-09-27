@@ -25,12 +25,12 @@ import {
 import { calculateFinance } from "@/features/planning/engine/finance";
 
 // Types & Interfaces
-import {
+import type {
 	IPlanCalculation,
 	IPlanContext,
 	IPlanInput,
 } from "@/features/planning/engine/engine.types";
-import {
+import type {
 	IMaterialIO,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";

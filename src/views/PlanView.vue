@@ -1,12 +1,12 @@
 <script setup lang="ts">
 	import {
 		computed,
-		ComputedRef,
+		type ComputedRef,
 		defineAsyncComponent,
 		nextTick,
-		PropType,
+		type PropType,
 		ref,
-		Ref,
+		type Ref,
 		watch,
 	} from "vue";
 
@@ -24,14 +24,18 @@
 	const userStore = useUserStore();
 
 	// Types & Interfaces
-	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
-	import { IPlanet } from "@/features/api/gameData.types";
-	import { INFRASTRUCTURE_TYPE } from "@/features/planning/usePlanCalculation.types";
-	import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
+	import type {
+		InfrastructureType,
+		Plan,
+		PlanCreateData,
+	} from "@/features/api/schemas/planningData.schemas";
+	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 	import {
 		optimizeHabs,
 		calculateAvailableArea,
-		HabSolverGoal,
+		type HabSolverGoal,
 	} from "@/features/planning/calculations/habOptimization";
 
 	// Composables
@@ -81,7 +85,7 @@
 		PInput,
 		PSelect,
 	} from "@/ui";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 	import {
 		ShoppingBasketSharp,
 		AttachMoneySharp,
@@ -101,11 +105,11 @@
 			default: false,
 		},
 		planData: {
-			type: Object as PropType<IPlan>,
+			type: Object as PropType<IPlanDefinition>,
 			required: true,
 		},
 		empireList: {
-			type: Array as PropType<IPlanEmpireElement[]>,
+			type: Array as PropType<PlanEmpireElement[]>,
 			required: false,
 			default: undefined,
 		},
@@ -116,14 +120,14 @@
 		},
 	});
 
-	const refPlanData: Ref<IPlan> = ref(inertClone(props.planData));
-	const refEmpireList: Ref<IPlanEmpireElement[] | undefined> = ref(
+	const refPlanData: Ref<IPlanDefinition> = ref(inertClone(props.planData));
+	const refEmpireList: Ref<PlanEmpireElement[] | undefined> = ref(
 		props.empireList
 	);
 	const refEmpireUuid: Ref<string | undefined> = ref(undefined);
 	const refCXUuid: Ref<string | undefined> = ref(undefined);
 
-	const planetData: IPlanet = await getPlanet(
+	const planetData: Planet = await getPlanet(
 		props.planData.planet_natural_id
 	);
 
@@ -392,7 +396,7 @@
 		refIsSavingAs.value = true;
 
 		// Create new plan data with the new name and selected empire
-		const saveAsData: IPlanCreateData = {
+		const saveAsData: PlanCreateData = {
 			...backendData.value,
 			plan_name: refSaveAsName.value.trim(),
 			empire_uuid: refSaveAsEmpireUuid.value,
@@ -440,7 +444,7 @@
 		refIsReloading.value = true;
 
 		await reloadExistingPlan(refPlanData.value.uuid).then(
-			(result: IPlan) => (refPlanData.value = result)
+			(result: Plan) => (refPlanData.value = result)
 		);
 		handleResetModified();
 
@@ -527,7 +531,7 @@
 
 		if (solution.status === "optimal") {
 			for (const [hab, count] of solution.variables) {
-				const habType = hab as INFRASTRUCTURE_TYPE;
+				const habType = hab as InfrastructureType;
 				// Don't update the plan if nothing changed
 				if (result.value.infrastructure[habType] === count) continue;
 				handleUpdateInfrastructure(habType, count);

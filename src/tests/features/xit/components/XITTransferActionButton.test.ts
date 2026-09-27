@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach, onTestFinished, vi } from "vitest";
 import { h } from "vue";
-import { DOMWrapper, flushPromises, VueWrapper } from "@vue/test-utils";
+import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 import { NDrawer } from "naive-ui";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -52,8 +52,7 @@ async function open(wrapper: VueWrapper) {
 
 const xitJSON = () =>
 	JSON.parse(
-		(body().find(".n-drawer textarea").element as HTMLTextAreaElement)
-			.value
+		(body().find(".n-drawer textarea").element as HTMLTextAreaElement).value
 	);
 
 const buyCheckbox = () =>
@@ -107,9 +106,7 @@ describe("XITTransferActionButton", () => {
 			show: true,
 			width: 650,
 		});
-		expect(body().find(".n-drawer-header").text()).toContain(
-			"XIT Action"
-		);
+		expect(body().find(".n-drawer-header").text()).toContain("XIT Action");
 
 		// a second click while open does not show it again
 		await open(wrapper);
@@ -125,9 +122,7 @@ describe("XITTransferActionButton", () => {
 		await open(wrapper);
 
 		expect(wrapper.findComponent(NDrawer).props("width")).toBe(400);
-		expect(body().find(".n-drawer-header").text()).toContain(
-			"Supply Cart"
-		);
+		expect(body().find(".n-drawer-header").text()).toContain("Supply Cart");
 	});
 
 	it("shows it again after closing", async () => {

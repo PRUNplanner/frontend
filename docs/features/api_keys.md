@@ -14,7 +14,7 @@ the PRUNplanner backend. External tools use them to read the user's data.
   `resetCreation()`. These use the `GetAPIKeys`, `PostCreateAPIKey` and
   `DeleteAPIKey` queries.
 
-Schemas are in `features/api/schemas/apiKeysData.schema.ts`.
+Schemas are in `features/api/schemas/apiKeysData.schemas.ts`.
 
 ## Tests
 

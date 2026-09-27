@@ -55,7 +55,7 @@ app.use(VueShowdownPlugin, { flavor: "github", tables: true, emoji: true });
 // directives
 import clickOutsideDirective from "@/layout/directives/clickOutsideDirective";
 import { useUserStore } from "./stores/userStore";
-import { Composer } from "vue-i18n";
+import type { Composer } from "vue-i18n";
 
 app.directive("click-outside", clickOutsideDirective);
 

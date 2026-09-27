@@ -1,5 +1,5 @@
 // Types & Interfaces
-import {
+import type {
 	IMaterialIO,
 	IOverviewData,
 	IProductionBuilding,

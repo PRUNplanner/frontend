@@ -4,57 +4,34 @@ import { apiService } from "@/lib/apiService";
 import { z } from "zod";
 import {
 	LoginPayloadSchema,
-	LoginPayloadType,
 	TokenResponseSchema,
-	TokenResponseType,
-	RefreshPayloadType,
 	RefreshPayloadSchema,
-	UserProfilePayloadType,
-	UserProfilePayloadSchema,
-	UserProfilePatchPayloadType,
+	UserProfileSchema,
 	UserProfilePatchSchema,
-	UserChangePasswordPayloadType,
 	UserChangePasswordPayloadSchema,
-	UserChangePasswordResponseSchema,
-	UserChangePasswordResponseType,
-	UserVerifyEmailPayloadType,
-	UserVerifyEmailPayloadSchema,
-	UserRegistrationPayloadType,
-	UserRegistrationPayloadSchema,
-	UserRequestPasswordResetResponseType,
-	UserRequestPasswordResetResponseSchema,
-	UserRequestPasswordResetPayloadType,
-	UserRequestPasswordResetPayloadSchema,
-	UserPasswordResetPayloadType,
-	UserPasswordResetResponseType,
-	UserPasswordResetPayloadSchema,
-	UserPasswordResetResponseSchema,
-	RefreshTokenResponseType,
-	RefreshTokenResponseSchema,
-	UserPreferenceType,
-	UserPreferenceSchema,
-	UserResponseDetailType,
 	UserResponseDetailSchema,
-	UserRegistrationResponseType,
+	UserVerifyEmailPayloadSchema,
+	UserRegistrationPayloadSchema,
+	UserRequestPasswordResetPayloadSchema,
+	UserPasswordResetPayloadSchema,
+	RefreshTokenResponseSchema,
+	UserPreferenceSchema,
 	UserRegistrationResponseSchema,
 } from "@/features/api/schemas/user.schemas";
 
 // Types & Interfaces
-import {
-	IUserChangePasswordPayload,
-	IUserChangePasswordResponse,
-	IUserRequestPasswordResetResponse,
-	IUserProfile,
-	IUserProfilePatch,
-	IUserRegistrationPayload,
-	IUserTokenResponse,
-	IUserVerifyEmailPayload,
-	IUserPasswordResetResponse,
-	IUserRefreshTokenResponse,
-	IUserResponseDetail,
-	IUserRegistrationResponse,
-} from "@/features/api/userData.types";
-import { IPreference } from "../preferences/userPreferences.types";
+import type {
+	RefreshTokenResponse,
+	TokenResponse,
+	UserChangePasswordPayload,
+	UserPreference,
+	UserProfile,
+	UserProfilePatch,
+	UserRegistrationPayload,
+	UserRegistrationResponse,
+	UserResponseDetail,
+	UserVerifyEmailPayload,
+} from "@/features/api/schemas/user.schemas";
 
 /**
  * Calls the backends Login endpoint to return Token
@@ -69,8 +46,8 @@ import { IPreference } from "../preferences/userPreferences.types";
 export async function callUserLogin(
 	username: string,
 	password: string
-): Promise<IUserTokenResponse> {
-	return apiService.post<LoginPayloadType, TokenResponseType>(
+): Promise<TokenResponse> {
+	return apiService.post(
 		"/user/login/",
 		{
 			username,
@@ -90,12 +67,12 @@ export async function callUserLogin(
  * @export
  * @async
  * @param {string} refresh_token Current Refresh Token
- * @returns {Promise<IUserTokenResponse>} Token Response
+ * @returns {Promise<TokenResponse>} Token Response
  */
 export async function callRefreshToken(
 	refresh_token: string
-): Promise<IUserRefreshTokenResponse> {
-	return apiService.post<RefreshPayloadType, RefreshTokenResponseType>(
+): Promise<RefreshTokenResponse> {
+	return apiService.post(
 		"/user/refresh/",
 		{
 			refresh: refresh_token,
@@ -112,13 +89,10 @@ export async function callRefreshToken(
  *
  * @export
  * @async
- * @returns {Promise<IUserProfile>} User Profile
+ * @returns {Promise<UserProfile>} User Profile
  */
-export async function callGetProfile(): Promise<IUserProfile> {
-	return apiService.get<UserProfilePayloadType>(
-		"/user/profile/",
-		UserProfilePayloadSchema
-	);
+export async function callGetProfile(): Promise<UserProfile> {
+	return apiService.get("/user/profile/", UserProfileSchema);
 }
 
 /**
@@ -128,20 +102,17 @@ export async function callGetProfile(): Promise<IUserProfile> {
  *
  * @export
  * @async
- * @param {IUserProfilePatch} patchProfile Patched profile
- * @returns {Promise<IUserProfile>} Updated user profile
+ * @param {UserProfilePatch} patchProfile Patched profile
+ * @returns {Promise<UserProfile>} Updated user profile
  */
 export async function callPatchProfile(
-	patchProfile: IUserProfilePatch
-): Promise<IUserProfile> {
-	return apiService.patch<
-		UserProfilePatchPayloadType,
-		UserProfilePayloadType
-	>(
+	patchProfile: UserProfilePatch
+): Promise<UserProfile> {
+	return apiService.patch(
 		"/user/profile/",
 		patchProfile,
 		UserProfilePatchSchema,
-		UserProfilePayloadSchema
+		UserProfileSchema
 	);
 }
 
@@ -155,8 +126,8 @@ export async function callPatchProfile(
  * @async
  * @returns {Promise<boolean>} Request Status
  */
-export async function callResendEmailVerification(): Promise<IUserResponseDetail> {
-	return apiService.post<null, UserResponseDetailType>(
+export async function callResendEmailVerification(): Promise<UserResponseDetail> {
+	return apiService.post(
 		"/user/request_email_verification/",
 		null,
 		z.null(),
@@ -172,13 +143,13 @@ export async function callResendEmailVerification(): Promise<IUserResponseDetail
  *
  * @export
  * @async
- * @param {IUserVerifyEmailPayload} postCode Verification code
- * @returns {Promise<IUserResponseDetail>} Verification status
+ * @param {UserVerifyEmailPayload} postCode Verification code
+ * @returns {Promise<UserResponseDetail>} Verification status
  */
 export async function callVerifyEmail(
-	postCode: IUserVerifyEmailPayload
-): Promise<IUserResponseDetail> {
-	return apiService.post<UserVerifyEmailPayloadType, UserResponseDetailType>(
+	postCode: UserVerifyEmailPayload
+): Promise<UserResponseDetail> {
+	return apiService.post(
 		"/user/verify_email/",
 		postCode,
 		UserVerifyEmailPayloadSchema,
@@ -194,30 +165,24 @@ export async function callVerifyEmail(
  *
  * @export
  * @async
- * @param {IUserChangePasswordPayload} patchPassword Old and New password
- * @returns {Promise<IUserChangePasswordResponse>} Update status message
+ * @param {UserChangePasswordPayload} patchPassword Old and New password
+ * @returns {Promise<UserResponseDetail>} Update status message
  */
 export async function callChangePassword(
-	patchPassword: IUserChangePasswordPayload
-): Promise<IUserChangePasswordResponse> {
-	return apiService.post<
-		UserChangePasswordPayloadType,
-		UserChangePasswordResponseType
-	>(
+	patchPassword: UserChangePasswordPayload
+): Promise<UserResponseDetail> {
+	return apiService.post(
 		"/user/change_password/",
 		patchPassword,
 		UserChangePasswordPayloadSchema,
-		UserChangePasswordResponseSchema
+		UserResponseDetailSchema
 	);
 }
 
 export async function callRegisterUser(
-	data: IUserRegistrationPayload
-): Promise<IUserRegistrationResponse> {
-	return apiService.post<
-		UserRegistrationPayloadType,
-		UserRegistrationResponseType
-	>(
+	data: UserRegistrationPayload
+): Promise<UserRegistrationResponse> {
+	return apiService.post(
 		"/user/signup/",
 		data,
 		UserRegistrationPayloadSchema,
@@ -228,15 +193,12 @@ export async function callRegisterUser(
 
 export async function callRequestPasswordReset(
 	email: string
-): Promise<IUserRequestPasswordResetResponse> {
-	return apiService.post<
-		UserRequestPasswordResetPayloadType,
-		UserRequestPasswordResetResponseType
-	>(
+): Promise<UserResponseDetail> {
+	return apiService.post(
 		"/user/request_password_reset/",
 		{ email },
 		UserRequestPasswordResetPayloadSchema,
-		UserRequestPasswordResetResponseSchema
+		UserResponseDetailSchema
 	);
 }
 
@@ -244,22 +206,19 @@ export async function callPasswordReset(
 	email: string,
 	code: string,
 	new_password: string
-): Promise<IUserPasswordResetResponse> {
-	return apiService.post<
-		UserPasswordResetPayloadType,
-		UserPasswordResetResponseType
-	>(
+): Promise<UserResponseDetail> {
+	return apiService.post(
 		"/user/password_reset/",
 		{ email, code, new_password },
 		UserPasswordResetPayloadSchema,
-		UserPasswordResetResponseSchema
+		UserResponseDetailSchema
 	);
 }
 
 export async function callPatchUserPreferences(
-	preferences: IPreference
-): Promise<IPreference> {
-	return apiService.patch<UserPreferenceType, UserPreferenceType>(
+	preferences: UserPreference
+): Promise<UserPreference> {
+	return apiService.patch(
 		"/user/preferences/",
 		preferences,
 		UserPreferenceSchema,
@@ -267,9 +226,6 @@ export async function callPatchUserPreferences(
 	);
 }
 
-export async function callGetUserPreferences(): Promise<IPreference> {
-	return apiService.get<UserPreferenceType>(
-		"/user/preferences/",
-		UserPreferenceSchema
-	);
+export async function callGetUserPreferences(): Promise<UserPreference> {
+	return apiService.get("/user/preferences/", UserPreferenceSchema);
 }

@@ -1,18 +1,18 @@
 <script setup lang="ts">
 	import {
 		computed,
-		ComputedRef,
-		PropType,
+		type ComputedRef,
+		type PropType,
 		ref,
-		Ref,
-		WritableComputedRef,
+		type Ref,
+		type WritableComputedRef,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
 	// Types & Interfaces
-	import {
+	import type {
 		IProductionBuildingRecipe,
 		IRecipeBuildingOption,
 	} from "@/features/planning/usePlanCalculation.types";

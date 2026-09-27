@@ -1,12 +1,15 @@
-import { reactive, computed, ComputedRef, Reactive } from "vue";
+import { reactive, computed, type ComputedRef, type Reactive } from "vue";
 import { defineStore } from "pinia";
 
 import { userActivity } from "@/features/user_activity/userActivityStore";
 import { getQueryDefinition } from "@/lib/query_cache/queryRepository";
 import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
 
-import { IQueryState, JSONValue } from "@/lib/query_cache/queryCache.types";
-import {
+import type {
+	IQueryState,
+	JSONValue,
+} from "@/lib/query_cache/queryCache.types";
+import type {
 	QueryData,
 	QueryName,
 	QueryParams,
@@ -35,8 +38,7 @@ export const useQueryStore = defineStore(
 			updateData: Partial<IQueryState<unknown, unknown>>
 		): void {
 			const existing = cacheState[cacheKey] as
-				| IQueryState<TParams, TData>
-				| undefined;
+				IQueryState<TParams, TData> | undefined;
 			// update existing
 			if (existing) cacheState[cacheKey] = { ...existing, ...updateData };
 			// set new with data
@@ -271,7 +273,8 @@ export const useQueryStore = defineStore(
 				// in the query definition itself
 				if (
 					!options.skipRefetch &&
-					(options.forceRefetch || getQueryDefinition(name)?.autoRefetch)
+					(options.forceRefetch ||
+						getQueryDefinition(name)?.autoRefetch)
 				) {
 					execute(name, entry.params as QueryParams<QueryName>);
 				}

@@ -1,4 +1,4 @@
-import { Ref } from "vue";
+import type { Ref } from "vue";
 
 // Stores
 import { usePlanningStore } from "@/stores/planningStore";
@@ -12,12 +12,12 @@ import {
 	getExchangeCodeKey,
 	enhanceMaterialIOMaterial as enhanceWithBook,
 	getMaterialIOTotalPrice as totalWithBook,
-	IPriceBook,
-	PriceType,
+	type IPriceBook,
+	type PriceType,
 } from "@/features/cx/priceBook";
 
 // Types & Interfaces
-import {
+import type {
 	IMaterialIO,
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,

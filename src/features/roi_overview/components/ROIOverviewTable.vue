@@ -1,8 +1,8 @@
 <script setup lang="ts">
 	import {
-		ComputedRef,
-		PropType,
-		Ref,
+		type ComputedRef,
+		type PropType,
+		type Ref,
 		computed,
 		onMounted,
 		ref,
@@ -25,9 +25,9 @@
 	import ROIOverviewTableFilters from "@/features/roi_overview/components/ROIOverviewTableFilters.vue";
 
 	// Types & Interfaces
-	import { IPlan } from "@/stores/planningStore.types";
-	import { IROIResult } from "@/features/roi_overview/useROIOverview.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
+	import type { IROIResult } from "@/features/roi_overview/useROIOverview.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import { PProgressBar } from "@/ui";
@@ -35,7 +35,7 @@
 
 	const props = defineProps({
 		planDefinition: {
-			type: Object as PropType<IPlan>,
+			type: Object as PropType<IPlanDefinition>,
 			required: true,
 		},
 		cxUuid: {
@@ -45,7 +45,9 @@
 		},
 	});
 
-	const definition: ComputedRef<IPlan> = computed(() => props.planDefinition);
+	const definition: ComputedRef<IPlanDefinition> = computed(
+		() => props.planDefinition
+	);
 	const cx: ComputedRef<string | undefined> = computed(() => props.cxUuid);
 
 	const result: Ref<IROIResult[]> = ref([]);
@@ -214,10 +216,10 @@
 							:ticker="output.material_ticker"
 							:amount="output.material_amount"
 							:daily="
-								output.material_amount
-								* rowData.optimalSetup.amount
-								* rowData.dailyRuns
-								* 1.25
+								output.material_amount *
+								rowData.optimalSetup.amount *
+								rowData.dailyRuns *
+								1.25
 							"
 							popover-placement="right" />
 					</div>
@@ -234,10 +236,10 @@
 							:ticker="input.material_ticker"
 							:amount="input.material_amount"
 							:daily="
-								input.material_amount
-								* rowData.optimalSetup.amount
-								* rowData.dailyRuns
-								* 1.25
+								input.material_amount *
+								rowData.optimalSetup.amount *
+								rowData.dailyRuns *
+								1.25
 							"
 							popover-placement="right" />
 					</div>
