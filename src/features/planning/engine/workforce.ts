@@ -3,7 +3,7 @@ import { combineMaterialIOMinimal } from "@/features/planning/engine/materialIO"
 import { getBuilding } from "@/features/planning/engine/buildings";
 
 // Types & Interfaces
-import { IBuilding } from "@/features/api/gameData.types";
+import type { Building } from "@/features/api/schemas/gameData.schemas";
 import type {
 	PlanData,
 	PlanDataWorkforce,
@@ -199,13 +199,13 @@ export function calculateWorkforceConsumption(
  * workforce were fully provided with the given luxuries
  * @author jplacht
  *
- * @param {IBuilding} building Building Data
+ * @param {Building} building Building Data
  * @param {boolean} lux1 Luxury 1 provided
  * @param {boolean} lux2 Luxury 2 provided
  * @returns {IMaterialIOMinimal[]} Consumption Material IO
  */
 export function getBuildingWorkforceMaterials(
-	building: IBuilding,
+	building: Building,
 	lux1: boolean = true,
 	lux2: boolean = true
 ): IMaterialIOMinimal[] {
@@ -267,12 +267,12 @@ export function getBuildingWorkforceMaterials(
  * based on capacity and required workforce under given luxury provision.
  *
  * @param {PlanData} data Plan Data
- * @param {ReadonlyMap<string, IBuilding>} buildings Building data
+ * @param {ReadonlyMap<string, Building>} buildings Building data
  * @returns {Required<Record<WorkforceType, IWorkforceElement>>} Workforce
  */
 export function calculateWorkforce(
 	data: PlanData,
-	buildings: ReadonlyMap<string, IBuilding>
+	buildings: ReadonlyMap<string, Building>
 ): Required<Record<WorkforceType, IWorkforceElement>> {
 	const result: Record<WorkforceType, IWorkforceElement> = Object.fromEntries(
 		workforceTypeNames.map((key) => {
@@ -298,7 +298,7 @@ export function calculateWorkforce(
 	// calculate capacity from infrastructure buildings
 	for (const infrastructure of data.infrastructure) {
 		if (infrastructure.amount > 0) {
-			const infBuildingData: IBuilding = getBuilding(
+			const infBuildingData: Building = getBuilding(
 				buildings,
 				infrastructure.building
 			);
@@ -327,7 +327,7 @@ export function calculateWorkforce(
 	// calculate required workforce from production buildings
 	for (const prodBuilding of data.buildings) {
 		if (prodBuilding.amount > 0) {
-			const prodBuildingData: IBuilding = getBuilding(
+			const prodBuildingData: Building = getBuilding(
 				buildings,
 				prodBuilding.name
 			);

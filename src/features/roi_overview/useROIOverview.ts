@@ -15,7 +15,7 @@ import { optimalProduction } from "@/features/roi_overview/assets/optimalProduct
 // Types & Interfaces
 import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-import { IRecipe } from "@/features/api/gameData.types";
+import type { Recipe } from "@/features/api/schemas/gameData.schemas";
 import { IPlanContext } from "@/features/planning/engine/engine.types";
 import {
 	IROIResult,
@@ -67,7 +67,7 @@ export function useROIOverview(
 		// overwrite each other in terms of setup
 		const definitionCopy = deepClone(definition.value);
 
-		const buildingRecipes: IRecipe[] = await getBuildingRecipes(
+		const buildingRecipes: Recipe[] = await getBuildingRecipes(
 			optimal.ticker,
 			[]
 		);

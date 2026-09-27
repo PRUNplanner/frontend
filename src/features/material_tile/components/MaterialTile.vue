@@ -30,7 +30,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Interfaces & Types
-	import { IMaterial } from "@/features/api/gameData.types";
+	import type { Material } from "@/features/api/schemas/gameData.schemas";
 	import { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 	import { PSelectOption } from "@/ui/ui.types";
 
@@ -99,7 +99,7 @@
 		},
 	]);
 
-	const material = ref<IMaterial | null>(null);
+	const material = ref<Material | null>(null);
 	const categoryCssClass = ref<string>("");
 
 	const indicatorPercentage: ComputedRef<number> = computed(() => {

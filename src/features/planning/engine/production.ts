@@ -20,7 +20,7 @@ import {
 } from "@/features/planning/engine/materialIO";
 
 // Types & Interfaces
-import { IBuilding, IRecipe } from "@/features/api/gameData.types";
+import type { Building, Recipe } from "@/features/api/schemas/gameData.schemas";
 import {
 	IExpertRecord,
 	IMaterialIOMinimal,
@@ -29,11 +29,14 @@ import {
 	IProductionResult,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
-import { IPlanContext, IPlanInput } from "@/features/planning/engine/engine.types";
+import {
+	IPlanContext,
+	IPlanInput,
+} from "@/features/planning/engine/engine.types";
 
 interface IBuildingInformation {
-	buildingData: IBuilding;
-	buildingRecipes: IRecipe[];
+	buildingData: Building;
+	buildingRecipes: Recipe[];
 	constructionMaterials: IMaterialIOMinimal[];
 	// value of the construction materials, negative
 	constructionCost: number;
@@ -73,7 +76,7 @@ export function calculateProduction(
 		const known = information.get(name);
 		if (known) return known;
 
-		const buildingData: IBuilding = getBuilding(ctx.buildings, name);
+		const buildingData: Building = getBuilding(ctx.buildings, name);
 		const constructionMaterials: IMaterialIOMinimal[] =
 			getBuildingConstructionMaterials(buildingData, planet);
 
@@ -127,7 +130,7 @@ export function calculateProduction(
 
 		// add currently active recipes
 		b.active_recipes.forEach((r) => {
-			const recipeInfo: IRecipe | undefined = buildingRecipes.find(
+			const recipeInfo: Recipe | undefined = buildingRecipes.find(
 				(ar) => ar.recipe_id == r.recipeid
 			);
 

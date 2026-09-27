@@ -1,5 +1,5 @@
 import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
-import { IRecipeMaterial } from "../api/gameData.types";
+import type { RecipeMaterial } from "@/features/api/schemas/gameData.schemas";
 import { IProductionBuildingRecipeCOGM } from "../planning/usePlanCalculation.types";
 
 export type IStaticOptimalProduction = {
@@ -27,8 +27,8 @@ export interface IROIResult {
 	optimalSetup: IStaticOptimalProduction;
 	recipeId: string;
 	dailyRuns: number;
-	recipeInputs: IRecipeMaterial[];
-	recipeOutputs: IRecipeMaterial[];
+	recipeInputs: RecipeMaterial[];
+	recipeOutputs: RecipeMaterial[];
 	cogc: PlanCOGCProgram;
 	cogm: IProductionBuildingRecipeCOGM | undefined;
 	outputProfit: number;

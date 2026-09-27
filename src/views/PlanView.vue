@@ -31,7 +31,7 @@
 	} from "@/features/api/schemas/planningData.schemas";
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-	import { IPlanet } from "@/features/api/gameData.types";
+	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 	import {
 		optimizeHabs,
 		calculateAvailableArea,
@@ -127,7 +127,7 @@
 	const refEmpireUuid: Ref<string | undefined> = ref(undefined);
 	const refCXUuid: Ref<string | undefined> = ref(undefined);
 
-	const planetData: IPlanet = await getPlanet(
+	const planetData: Planet = await getPlanet(
 		props.planData.planet_natural_id
 	);
 

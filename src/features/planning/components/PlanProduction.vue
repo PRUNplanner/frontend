@@ -13,10 +13,10 @@
 	import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 
 	// Types & Interfaces
-	import {
-		IPlanetResource,
-		PLANET_RESOURCETYPE_TYPE,
-	} from "@/features/api/gameData.types";
+	import type {
+		PlanetResource,
+		PlanetResourceType,
+	} from "@/features/api/schemas/gameData.schemas";
 	import { IProductionResult } from "@/features/planning/usePlanCalculation.types";
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
@@ -51,7 +51,7 @@
 			required: true,
 		},
 		planetResources: {
-			type: Object as PropType<IPlanetResource[]>,
+			type: Object as PropType<PlanetResource[]>,
 			required: true,
 		},
 	});
@@ -93,7 +93,7 @@
 	const { getProductionBuildingOptions } = useBuildingData();
 
 	function emitCreateBuildingWithRecipe(
-		resourceType: PLANET_RESOURCETYPE_TYPE,
+		resourceType: PlanetResourceType,
 		resourceTicker: string
 	): void {
 		const buildingTicker =

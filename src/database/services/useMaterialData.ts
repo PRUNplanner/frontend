@@ -3,29 +3,29 @@ import { computed, ComputedRef } from "vue";
 import { materialsStore } from "@/database/stores";
 import { useDB } from "@/database/composables/useDB";
 
-import { IMaterial } from "@/features/api/gameData.types";
+import type { Material } from "@/features/api/schemas/gameData.schemas";
 import { PSelectOption } from "@/ui/ui.types";
 
-const materialCache = new Map<string, IMaterial>();
+const materialCache = new Map<string, Material>();
 const materialClassCache = new Map<string, string>();
 
 export function useMaterialData() {
 	const { allData, get, preload } = useDB(materialsStore);
 
 	// reactive caches
-	const materialsMap = computed((): Record<string, IMaterial> => {
+	const materialsMap = computed((): Record<string, Material> => {
 		return allData.value
 			? allData.value.reduce(
 					(acc, mat) => {
 						acc[mat.ticker] = mat;
 						return acc;
 					},
-					{} as Record<string, IMaterial>
+					{} as Record<string, Material>
 				)
 			: {};
 	});
 
-	async function getMaterial(ticker: string): Promise<IMaterial> {
+	async function getMaterial(ticker: string): Promise<Material> {
 		if (materialCache.has(ticker)) return materialCache.get(ticker)!;
 
 		const material = await get(ticker);

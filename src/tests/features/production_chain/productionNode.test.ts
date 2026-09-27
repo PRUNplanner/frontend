@@ -8,10 +8,10 @@ import {
 import { buildingsStore, planetsStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePlanetData } from "@/database/services/usePlanetData";
-import {
-	IPlanet,
-	PLANET_RESOURCETYPE_TYPE,
-} from "@/features/api/gameData.types";
+import type {
+	Planet,
+	PlanetResourceType,
+} from "@/features/api/schemas/gameData.schemas";
 
 // test data
 
@@ -33,18 +33,16 @@ describe("productionNode", async () => {
 		const { planets: planetsData, reload } = usePlanetData();
 		await reload();
 
-		const resourceTypeToBuildingTicker: Record<
-			PLANET_RESOURCETYPE_TYPE,
-			string
-		> = {
-			MINERAL: "EXT",
-			GASEOUS: "COL",
-			LIQUID: "RIG",
-		};
+		const resourceTypeToBuildingTicker: Record<PlanetResourceType, string> =
+			{
+				MINERAL: "EXT",
+				GASEOUS: "COL",
+				LIQUID: "RIG",
+			};
 
 		const extractableMaterialsMap: Record<string, string> = {};
 		if (planetsData.value) {
-			planetsData.value.forEach((planet: IPlanet) => {
+			planetsData.value.forEach((planet: Planet) => {
 				planet.resources.forEach((resource) => {
 					const buildingTicker =
 						resourceTypeToBuildingTicker[resource.resource_type];

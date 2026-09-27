@@ -15,7 +15,7 @@ import {
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
 
 // Types & Interfaces
-import { IPlanet } from "@/features/api/gameData.types";
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
 import {
 	IPlanetSearchResult,
 	IPlanetSearchResultResource,
@@ -31,7 +31,7 @@ const {
 } = usePathfinder();
 
 export function usePlanetSearchResults(
-	searchData: IPlanet[],
+	searchData: Planet[],
 	searchMaterials: string[],
 	searchMaterialRichness: Record<string, number>,
 	searchSystem: string | undefined,

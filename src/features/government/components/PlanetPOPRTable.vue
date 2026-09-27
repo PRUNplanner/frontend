@@ -5,7 +5,7 @@
 	import { formatAmount, formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IPopulationReport } from "@/features/api/gameData.types";
+	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
 	import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
@@ -18,7 +18,7 @@
 			required: true,
 		},
 		poprData: {
-			type: Object as PropType<IPopulationReport>,
+			type: Object as PropType<PopulationReport>,
 			required: false,
 			default: undefined,
 		},

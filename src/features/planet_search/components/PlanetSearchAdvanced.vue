@@ -11,11 +11,11 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import {
-		IPlanet,
-		IPlanetSearchAdvanced,
-		PLANET_COGCPROGRAM_TYPE,
-	} from "@/features/api/gameData.types";
+	import type {
+		Planet,
+		PlanetSearchAdvancedPayload,
+		PlanetCOGCProgramType,
+	} from "@/features/api/schemas/gameData.schemas";
 	import {
 		PLANETSEARCHOPTIONMATERIALS,
 		PLANETSEARCHSYSTEMS,
@@ -39,7 +39,7 @@
 	const refIsLoading: Ref<boolean> = ref(false);
 
 	const emit = defineEmits<{
-		(e: "update:results", value: IPlanet[]): void;
+		(e: "update:results", value: Planet[]): void;
 		(e: "update:materials", value: string[]): void;
 		(
 			e: "update:distance",
@@ -65,50 +65,52 @@
 	const inputIncludeLowTemperature: Ref<boolean> = ref(false);
 	const inputIncludeHighTemperature: Ref<boolean> = ref(false);
 
-	const searchPayload: ComputedRef<IPlanetSearchAdvanced> = computed(() => {
-		return {
-			materials: inputMaterials.value,
-			cogc_programs: inputCOGC.value as PLANET_COGCPROGRAM_TYPE[],
-			environment_rocky: inputIncludeRocky.value,
-			environment_gaseous: inputIncludeGaseous.value,
-			environment_low_gravity: inputIncludeLowGravity.value,
-			environment_high_gravity: inputIncludeHighGravity.value,
-			environment_low_pressure: inputIncludeLowPressure.value,
-			environment_high_pressure: inputIncludeHighPressure.value,
-			environment_low_temperature: inputIncludeLowTemperature.value,
-			environment_high_temperature: inputIncludeHighTemperature.value,
-			must_be_fertile:
-				inputInfrastructure.value &&
-				inputInfrastructure.value.includes("Fertile")
-					? true
-					: false,
-			must_have_localmarket:
-				inputInfrastructure.value &&
-				inputInfrastructure.value.includes("LM")
-					? true
-					: false,
-			must_have_chamberofcommerce:
-				inputInfrastructure.value &&
-				inputInfrastructure.value.includes("COGC")
-					? true
-					: false,
-			must_have_warehouse:
-				inputInfrastructure.value &&
-				inputInfrastructure.value.includes("WAR")
-					? true
-					: false,
-			must_have_administrationcenter:
-				inputInfrastructure.value &&
-				inputInfrastructure.value.includes("ADM")
-					? true
-					: false,
-			must_have_shipyard:
-				inputInfrastructure.value &&
-				inputInfrastructure.value.includes("SHY")
-					? true
-					: false,
-		};
-	});
+	const searchPayload: ComputedRef<PlanetSearchAdvancedPayload> = computed(
+		() => {
+			return {
+				materials: inputMaterials.value,
+				cogc_programs: inputCOGC.value as PlanetCOGCProgramType[],
+				environment_rocky: inputIncludeRocky.value,
+				environment_gaseous: inputIncludeGaseous.value,
+				environment_low_gravity: inputIncludeLowGravity.value,
+				environment_high_gravity: inputIncludeHighGravity.value,
+				environment_low_pressure: inputIncludeLowPressure.value,
+				environment_high_pressure: inputIncludeHighPressure.value,
+				environment_low_temperature: inputIncludeLowTemperature.value,
+				environment_high_temperature: inputIncludeHighTemperature.value,
+				must_be_fertile:
+					inputInfrastructure.value &&
+					inputInfrastructure.value.includes("Fertile")
+						? true
+						: false,
+				must_have_localmarket:
+					inputInfrastructure.value &&
+					inputInfrastructure.value.includes("LM")
+						? true
+						: false,
+				must_have_chamberofcommerce:
+					inputInfrastructure.value &&
+					inputInfrastructure.value.includes("COGC")
+						? true
+						: false,
+				must_have_warehouse:
+					inputInfrastructure.value &&
+					inputInfrastructure.value.includes("WAR")
+						? true
+						: false,
+				must_have_administrationcenter:
+					inputInfrastructure.value &&
+					inputInfrastructure.value.includes("ADM")
+						? true
+						: false,
+				must_have_shipyard:
+					inputInfrastructure.value &&
+					inputInfrastructure.value.includes("SHY")
+						? true
+						: false,
+			};
+		}
+	);
 
 	function environmentDefault(): void {
 		inputIncludeRocky.value = true;
@@ -162,7 +164,7 @@
 		trackEvent("planet_search_advanced", searchPayload.value);
 
 		try {
-			const data: IPlanet[] = await useQuery("PostPlanetSearch", {
+			const data: Planet[] = await useQuery("PostPlanetSearch", {
 				searchData: searchPayload.value,
 			}).execute();
 

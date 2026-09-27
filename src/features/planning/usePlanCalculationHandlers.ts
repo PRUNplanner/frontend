@@ -16,7 +16,7 @@ import type {
 } from "@/features/api/schemas/planningData.schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
-import { IBuilding } from "@/features/api/gameData.types";
+import type { Building } from "@/features/api/schemas/gameData.schemas";
 
 // Util
 import { clamp } from "@/util/numbers";
@@ -200,7 +200,7 @@ export function usePlanCalculationHandlers(
 	 */
 	async function handleCreateBuilding(ticker: string): Promise<boolean> {
 		// validate building
-		const building: IBuilding = await getBuilding(ticker);
+		const building: Building = await getBuilding(ticker);
 
 		// check if building already exists
 		const hasTicker: boolean = !!planData.value.buildings.find(

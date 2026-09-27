@@ -26,7 +26,7 @@ import type {
 } from "@/features/api/schemas/planningData.schemas";
 import type { CX } from "@/features/api/schemas/cxData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import { IPlanet } from "@/features/api/gameData.types";
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
 import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 
 export function usePlanningDataLoader(
@@ -166,7 +166,7 @@ export function usePlanningDataLoader(
 					planetNaturalId: id,
 				});
 			},
-			onSuccess: (data: IPlanet) => emits("data:planet", data),
+			onSuccess: (data: Planet) => emits("data:planet", data),
 		},
 		{
 			key: "cx",
@@ -285,7 +285,7 @@ export function usePlanningDataLoader(
 			empireList: steps.find((s) => s.cfg.key === "empireList")
 				?.data as PlanEmpireElement[],
 			planetData: steps.find((s) => s.cfg.key === "planet")
-				?.data as IPlanet,
+				?.data as Planet,
 			planData: steps.find((s) => s.cfg.key === "plan")?.data as Plan,
 			planList: steps.find((s) => s.cfg.key === "planList")
 				?.data as Plan[],

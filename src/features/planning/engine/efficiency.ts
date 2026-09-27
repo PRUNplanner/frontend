@@ -2,11 +2,11 @@
 import { getTotalWorkforce } from "@/features/planning/engine/buildings";
 
 // Types & Interfaces
-import {
-	BUILDING_EXPERTISE_TYPE,
-	IBuilding,
-	IPlanet,
-} from "@/features/api/gameData.types";
+import type {
+	BuildingExpertise,
+	Building,
+	Planet,
+} from "@/features/api/schemas/gameData.schemas";
 import {
 	EfficiencyMap,
 	IBuildingEfficiency,
@@ -41,14 +41,11 @@ export const expertNames: string[] = [
  * @author jplacht
  *
  * @type {Record<
- * 	BUILDING_EXPERTISE_TYPE,
+ * 	BuildingExpertise,
  * 	ExpertType
  * >}
  */
-const MAP_BUILDING_EXPERTISE_EXPERTS: Record<
-	BUILDING_EXPERTISE_TYPE,
-	ExpertType
-> = {
+const MAP_BUILDING_EXPERTISE_EXPERTS: Record<BuildingExpertise, ExpertType> = {
 	AGRICULTURE: "Agriculture",
 	CHEMISTRY: "Chemistry",
 	CONSTRUCTION: "Construction",
@@ -128,12 +125,12 @@ export function calculateExpertBonus(amount: number): number {
  *
  * @author jplacht
  *
- * @param {IBuilding} building Building Data
+ * @param {Building} building Building Data
  * @param {IWorkforceRecord} workforce Plan Workforce Result
  * @returns {number} Building Workforce Efficiency
  */
 export function calculateBuildingWorkforceEfficiency(
-	building: IBuilding,
+	building: Building,
 	workforce: IWorkforceRecord
 ): number {
 	const totalWorkforce: number = getTotalWorkforce(building);
@@ -158,12 +155,12 @@ export function calculateBuildingWorkforceEfficiency(
  * Calculates the buildings potential faction efficiency bonus
  * @author jplacht
  *
- * @param {IBuilding} building Building Data
+ * @param {Building} building Building Data
  * @param {(PlanEmpire | undefined)} empire Empire Data
  * @returns {(IBuildingEfficiency | undefined)} Faction Bonus
  */
 export function calculateBuildingFactionBonus(
-	building: IBuilding,
+	building: Building,
 	empire: PlanEmpire | undefined
 ): IBuildingEfficiency | undefined {
 	if (!empire || building.expertise === null) return undefined;
@@ -175,7 +172,7 @@ export function calculateBuildingFactionBonus(
 
 	const efficiency: number | undefined =
 		FACTION_BONUS_MAP[empire.empire_faction]?.[
-			building.expertise as BUILDING_EXPERTISE_TYPE
+			building.expertise as BuildingExpertise
 		];
 
 	if (!efficiency) return undefined;
@@ -193,8 +190,8 @@ export function calculateBuildingFactionBonus(
  *
  * @author jplacht
  *
- * @param {IBuilding} building Building Data
- * @param {IPlanet} planet Planet Data
+ * @param {Building} building Building Data
+ * @param {Planet} planet Planet Data
  * @param {boolean} corphq Is Corporation HQ on Planet
  * @param {PlanCOGCProgram} cogc COGC
  * @param {IWorkforceRecord} workforce Workforce Efficiencies
@@ -206,8 +203,8 @@ export function calculateBuildingFactionBonus(
  * 	}} Total Efficiency and individual contributing factors
  */
 export function calculateBuildingEfficiency(
-	building: IBuilding,
-	planet: IPlanet,
+	building: Building,
+	planet: Planet,
 	corphq: boolean,
 	cogc: PlanCOGCProgram,
 	workforce: IWorkforceRecord,
@@ -249,7 +246,7 @@ export function calculateBuildingEfficiency(
 		const expertElement: IExpertElement =
 			experts[
 				MAP_BUILDING_EXPERTISE_EXPERTS[
-					building.expertise as BUILDING_EXPERTISE_TYPE
+					building.expertise as BuildingExpertise
 				]
 			];
 

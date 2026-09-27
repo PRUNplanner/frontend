@@ -1,5 +1,5 @@
 import { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
-import { PLANET_COGCPROGRAM_TYPE } from "@/features/api/gameData.types";
+import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
 export interface IResourceROIResult {
 	planetNaturalId: string;
@@ -18,7 +18,7 @@ export interface IResourceROIResult {
 	planetGravity: string[];
 	planetPressure: string[];
 	planetTemperature: string[];
-	planetCOGC: PLANET_COGCPROGRAM_TYPE | null;
+	planetCOGC: PlanetCOGCProgramType | null;
 	planetInfrastructures: string[];
 	distanceAI1: number;
 	distanceCI1: number;

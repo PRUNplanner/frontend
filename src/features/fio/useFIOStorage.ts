@@ -5,10 +5,10 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
 import { PSelectOption } from "@/ui/ui.types";
-import {
-	IFIOStorageElement,
-	IFIOStorageItem,
-} from "@/features/api/gameData.types";
+import type {
+	FIOStorageElement,
+	FIOStorageItem,
+} from "@/features/api/schemas/gameData.schemas";
 import { IFIOFindMaterialResult } from "@/features/fio/useFIOStorage.types";
 
 export function useFIOStorage() {
@@ -148,23 +148,23 @@ export function useFIOStorage() {
 			{
 				data: planningStore.fio_storage_planets,
 				type: "PLANET",
-				getName: (item: IFIOStorageElement) => item.Identifier,
+				getName: (item: FIOStorageElement) => item.Identifier,
 			},
 			{
 				data: planningStore.fio_storage_warehouses,
 				type: "WAR",
-				getName: (item: IFIOStorageElement) => item.Identifier,
+				getName: (item: FIOStorageElement) => item.Identifier,
 			},
 			{
 				data: planningStore.fio_storage_ships,
 				type: "SHIP",
-				getName: (item: IFIOStorageElement) => item.Identifier,
+				getName: (item: FIOStorageElement) => item.Identifier,
 			},
 		];
 
 		sources.forEach(({ data, type, getName }) => {
 			Object.values(data).forEach((location) => {
-				location.StorageItems.forEach((item: IFIOStorageItem) => {
+				location.StorageItems.forEach((item: FIOStorageItem) => {
 					if (item.MaterialTicker === ticker) {
 						amountAndLocations.amount += item.MaterialAmount;
 						amountAndLocations.locations.push({

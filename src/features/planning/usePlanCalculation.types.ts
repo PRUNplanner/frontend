@@ -1,7 +1,7 @@
-import {
-	BUILDING_EXPERTISE_TYPE,
-	IRecipe,
-} from "@/features/api/gameData.types";
+import type {
+	BuildingExpertise,
+	Recipe,
+} from "@/features/api/schemas/gameData.schemas";
 import { IBuildingEfficiency } from "@/features/planning/calculations/bonusCalculations.types";
 import type {
 	ExpertType,
@@ -47,7 +47,7 @@ export type IStorageRecord = Required<Record<StorageType, number>>;
 
 export type IExpertRecord = Required<Record<ExpertType, IExpertElement>>;
 
-export interface IRecipeBuildingOption extends IRecipe {
+export interface IRecipeBuildingOption extends Recipe {
 	dailyRevenue: number;
 	roi: number;
 	profitPerArea: number;
@@ -107,7 +107,7 @@ export interface IProductionBuilding {
 	workforceMaterials: IMaterialIOMinimal[];
 	workforceDailyCost: number;
 	dailyRevenue: number;
-	expertise: BUILDING_EXPERTISE_TYPE | null;
+	expertise: BuildingExpertise | null;
 }
 
 export interface IProductionResult {

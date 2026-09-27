@@ -72,16 +72,16 @@ import {
 // Types & Interfaces
 import { IQueryRepository } from "@/lib/query_cache/queryRepository.types";
 
-import {
-	IBuilding,
-	IExchange,
-	IFIOStorage,
-	IMaterial,
-	IPlanet,
-	IPlanetSearchAdvanced,
-	IPopulationReport,
-	IRecipe,
-} from "@/features/api/gameData.types";
+import type {
+	Building,
+	Exchange,
+	FIOStorage,
+	Material,
+	Planet,
+	PlanetSearchAdvancedPayload,
+	PopulationReport,
+	Recipe,
+} from "@/features/api/schemas/gameData.schemas";
 
 import type {
 	CX,
@@ -156,7 +156,7 @@ export function useQueryRepository() {
 		GetMaterials: {
 			key: () => ["gamedata", "materials"],
 			fetchFn: async () => {
-				const data: IMaterial[] = await callDataMaterials();
+				const data: Material[] = await callDataMaterials();
 				await materialsStore.setMany(data, true);
 				await useDB(materialsStore).preload(true);
 
@@ -165,11 +165,11 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_MATERIALS,
 			persist: true,
-		} as IQueryDefinition<undefined, IMaterial[]>,
+		} as IQueryDefinition<undefined, Material[]>,
 		GetExchanges: {
 			key: () => ["gamedata", "exchanges"],
 			fetchFn: async () => {
-				const data: IExchange[] = await callDataExchanges();
+				const data: Exchange[] = await callDataExchanges();
 				await exchangesStore.setMany(data, true);
 				await useDB(exchangesStore).preload(true);
 
@@ -178,11 +178,11 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_EXCHANGES,
 			persist: true,
-		} as IQueryDefinition<undefined, IExchange[]>,
+		} as IQueryDefinition<undefined, Exchange[]>,
 		GetRecipes: {
 			key: () => ["gamedata", "recipes"],
 			fetchFn: async () => {
-				const data: IRecipe[] = await callDataRecipes();
+				const data: Recipe[] = await callDataRecipes();
 				await recipesStore.setMany(data, true);
 				await useDB(recipesStore).preload(true);
 
@@ -191,11 +191,11 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_RECIPES,
 			persist: true,
-		} as IQueryDefinition<undefined, IRecipe[]>,
+		} as IQueryDefinition<undefined, Recipe[]>,
 		GetBuildings: {
 			key: () => ["gamedata", "buildings"],
 			fetchFn: async () => {
-				const data: IBuilding[] = await callDataBuildings();
+				const data: Building[] = await callDataBuildings();
 				await buildingsStore.setMany(data, true);
 				await useDB(buildingsStore).preload(true);
 				return data;
@@ -203,7 +203,7 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_BUILDINGS,
 			persist: true,
-		} as IQueryDefinition<undefined, IBuilding[]>,
+		} as IQueryDefinition<undefined, Building[]>,
 		GetPlanet: {
 			key: (params: { planetNaturalId: string }) => [
 				"gamedata",
@@ -211,7 +211,7 @@ export function useQueryRepository() {
 				params.planetNaturalId,
 			],
 			fetchFn: async (params: { planetNaturalId: string }) => {
-				const data: IPlanet = await callDataPlanet(
+				const data: Planet = await callDataPlanet(
 					params.planetNaturalId
 				);
 				await planetsStore.set(data);
@@ -222,7 +222,7 @@ export function useQueryRepository() {
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			autoRefetch: true,
 			persist: true,
-		} as IQueryDefinition<{ planetNaturalId: string }, IPlanet>,
+		} as IQueryDefinition<{ planetNaturalId: string }, Planet>,
 		GetMultiplePlanets: {
 			key: (params: { planetNaturalIds: string[] }) => [
 				"gamedata",
@@ -232,7 +232,7 @@ export function useQueryRepository() {
 			],
 			fetchFn: async (params: { planetNaturalIds: string[] }) => {
 				try {
-					const data: IPlanet[] = await callDataMultiplePlanets(
+					const data: Planet[] = await callDataMultiplePlanets(
 						params.planetNaturalIds
 					);
 
@@ -258,7 +258,7 @@ export function useQueryRepository() {
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			autoRefetch: true,
 			persist: true,
-		} as IQueryDefinition<{ planetNaturalIds: string[] }, IPlanet[]>,
+		} as IQueryDefinition<{ planetNaturalIds: string[] }, Planet[]>,
 		GetPlanetSearchSingle: {
 			key: (params: { searchId: string }) => [
 				"gamedata",
@@ -277,15 +277,17 @@ export function useQueryRepository() {
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			persist: true,
 			autoRefetch: false,
-		} as IQueryDefinition<{ searchId: string }, IPlanet[]>,
+		} as IQueryDefinition<{ searchId: string }, Planet[]>,
 		PostPlanetSearch: {
-			key: (params: { searchData: IPlanetSearchAdvanced }) => [
+			key: (params: { searchData: PlanetSearchAdvancedPayload }) => [
 				"gamedata",
 				"planet",
 				"search",
 				params.searchData,
 			],
-			fetchFn: async (params: { searchData: IPlanetSearchAdvanced }) => {
+			fetchFn: async (params: {
+				searchData: PlanetSearchAdvancedPayload;
+			}) => {
 				const data = await callDataPlanetSearch(params.searchData);
 
 				await planetsStore.setMany(data);
@@ -296,7 +298,10 @@ export function useQueryRepository() {
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			persist: true,
 			autoRefetch: false,
-		} as IQueryDefinition<{ searchData: IPlanetSearchAdvanced }, IPlanet[]>,
+		} as IQueryDefinition<
+			{ searchData: PlanetSearchAdvancedPayload },
+			Planet[]
+		>,
 		GetSharedPlan: {
 			key: (params: { sharedPlanUuid: string }) => [
 				"planningdata",
@@ -767,7 +772,7 @@ export function useQueryRepository() {
 		GetFIOStorage: {
 			key: () => ["gamedata", "fio", "storage"],
 			fetchFn: async () => {
-				return await callDataFIOStorage().then((data: IFIOStorage) => {
+				return await callDataFIOStorage().then((data: FIOStorage) => {
 					planningStore.setFIOStorageData(data);
 					return data;
 				});
@@ -775,7 +780,7 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			persist: true,
 			expireTime: 60_000 * 5, // 5 minutes
-		} as IQueryDefinition<void, IFIOStorage>,
+		} as IQueryDefinition<void, FIOStorage>,
 		// GetFIOSites: {
 		// 	key: () => ["gamedata", "fio", "sites"],
 		// 	fetchFn: async () => {
@@ -802,7 +807,7 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
-		} as IQueryDefinition<{ planetNaturalId: string }, IPopulationReport>,
+		} as IQueryDefinition<{ planetNaturalId: string }, PopulationReport>,
 		PatchUserProfile: {
 			key: () => ["user", "profile", "patch"],
 			fetchFn: async (params: UserProfilePatch) => {

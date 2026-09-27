@@ -2,11 +2,11 @@
 import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Types & Interfaces
-import {
-	IBuilding,
-	IRecipe,
-	IRecipeMaterial,
-} from "@/features/api/gameData.types";
+import type {
+	Building,
+	Recipe,
+	RecipeMaterial,
+} from "@/features/api/schemas/gameData.schemas";
 import { IProductionGraphIO } from "@/features/production_chain/productionGraph.types";
 
 /**
@@ -51,7 +51,7 @@ function getExtractionBuilding(materialTicker: string): string | undefined {
 
 export class ProductionNode {
 	readonly materialTicker: string;
-	recipes: IRecipe[];
+	recipes: Recipe[];
 	amount: number = 0;
 	recipeAmount: number = 1;
 	hasInput: boolean = false;
@@ -70,7 +70,7 @@ export class ProductionNode {
 		return "chain";
 	}
 
-	addRecipe(recipe: IRecipe): void {
+	addRecipe(recipe: Recipe): void {
 		if (!this.recipes.includes(recipe)) this.recipes.push(recipe);
 	}
 
@@ -78,10 +78,10 @@ export class ProductionNode {
 		ticker: string,
 		selectedRecipes: string[]
 	): undefined | IProductionGraphIO {
-		const recipe: IRecipe | undefined = this.getRecipe(selectedRecipes);
+		const recipe: Recipe | undefined = this.getRecipe(selectedRecipes);
 
 		if (recipe) {
-			const output: IRecipeMaterial[] = recipe.outputs.filter(
+			const output: RecipeMaterial[] = recipe.outputs.filter(
 				(o) => o.material_ticker === ticker
 			);
 
@@ -99,7 +99,7 @@ export class ProductionNode {
 		const inputs: IProductionGraphIO[] = [];
 
 		// find the correct recipe
-		const recipe: IRecipe | undefined = this.getRecipe(selectedRecipes);
+		const recipe: Recipe | undefined = this.getRecipe(selectedRecipes);
 
 		if (recipe)
 			recipe.inputs.map((i) => {
@@ -112,13 +112,13 @@ export class ProductionNode {
 		return inputs;
 	}
 
-	getRecipe(selectedRecipes: string[]): IRecipe | undefined {
+	getRecipe(selectedRecipes: string[]): Recipe | undefined {
 		// skip if there is no recipe and not extractable
 		if (!isExtractable(this.materialTicker) && this.recipes.length === 0)
 			return undefined;
 
 		// Build the extraction recipe if this material is extractable
-		const extractionRecipe: IRecipe | undefined = isExtractable(
+		const extractionRecipe: Recipe | undefined = isExtractable(
 			this.materialTicker
 		)
 			? {
@@ -148,7 +148,7 @@ export class ProductionNode {
 			}
 
 			// Check if a production recipe is selected
-			const selectionMatch: IRecipe[] = this.recipes.filter((f) =>
+			const selectionMatch: Recipe[] = this.recipes.filter((f) =>
 				selectedRecipes.includes(f.recipe_id)
 			);
 
@@ -167,8 +167,8 @@ export class ProductionNode {
 
 	async getBuildingData(
 		selectedRecipes: string[]
-	): Promise<IBuilding | undefined> {
-		const recipe: IRecipe | undefined = this.getRecipe(selectedRecipes);
+	): Promise<Building | undefined> {
+		const recipe: Recipe | undefined = this.getRecipe(selectedRecipes);
 		const { getBuilding } = useBuildingData();
 
 		if (recipe) return await getBuilding(recipe.building_ticker);

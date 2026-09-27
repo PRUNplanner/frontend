@@ -8,7 +8,7 @@
 	// Types & Interfaces
 	import { IGraphFlowExpertiseAnalyis } from "@/features/production_chain//productionGraph.types";
 	import { EXPERTISECOLORS } from "@/features/production_chain/components/ChainNode.types";
-	import { BUILDING_EXPERTISE_TYPE } from "@/features/api/gameData.types";
+	import type { BuildingExpertise } from "@/features/api/schemas/gameData.schemas";
 
 	// UI
 	import { PTable } from "@/ui";
@@ -53,7 +53,7 @@
 					<span
 						class="py-1 px-2"
 						:style="`background-color:
-											${EXPERTISECOLORS[expertise as BUILDING_EXPERTISE_TYPE]};`">
+											${EXPERTISECOLORS[expertise as BuildingExpertise]};`">
 						{{ capitalizeString(expertise) }}
 					</span>
 				</td>

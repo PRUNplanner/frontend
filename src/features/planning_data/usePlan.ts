@@ -14,7 +14,7 @@ import type {
 	IPlanDefinition,
 	IPlanRouteParams,
 } from "@/features/planning_data/usePlan.types";
-import { PLANET_COGCPROGRAM_TYPE } from "@/features/api/gameData.types";
+import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
 const cogcValues: readonly string[] = PlanCOGCProgramSchema.options;
 
@@ -62,11 +62,11 @@ export function usePlan() {
 	 *
 	 * @author jplacht
 	 *
-	 * @param {(PLANET_COGCPROGRAM_TYPE | null | undefined)} input Planet COGC Type
+	 * @param {(PlanetCOGCProgramType | null | undefined)} input Planet COGC Type
 	 * @returns {PlanCOGCProgram} Plan COGC Type
 	 */
 	function mapPlanetToPlanType(
-		input: PLANET_COGCPROGRAM_TYPE | null | undefined
+		input: PlanetCOGCProgramType | null | undefined
 	): PlanCOGCProgram {
 		if (!input) return "---";
 		const parts = input.split("_");
@@ -83,12 +83,12 @@ export function usePlan() {
 	 * @author jplacht
 	 *
 	 * @param {string} planetNaturalId Planet Natural Id (e.g. 'OT-580b')
-	 * @param {(PLANET_COGCPROGRAM_TYPE | null)} cogc Planet COGC
+	 * @param {(PlanetCOGCProgramType | null)} cogc Planet COGC
 	 * @returns {IPlanDefinition} Blank plan definition
 	 */
 	function createBlankDefinition(
 		planetNaturalId: string,
-		cogc: PLANET_COGCPROGRAM_TYPE | null
+		cogc: PlanetCOGCProgramType | null
 	): IPlanDefinition {
 		return {
 			plan_name: undefined,

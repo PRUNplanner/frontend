@@ -10,9 +10,9 @@ in-game resources.
 | **Plan** | One simulated base on one planet: buildings, recipes, habs/storage, experts, workforce luxuries, COGC, HQ, permits | `Plan` / `PlanData` (`api/schemas/planningData.schemas.ts`). Engine: [planning-engine.md](planning-engine.md) |
 | **Empire** | A named group of plans with a **faction** and **permits**. It supplies the context for faction bonuses | `PlanEmpireElement` (`api/schemas/empireData.schemas.ts`); `src/features/empire`, `src/features/manage` |
 | **Faction** | The player's in-game faction (`ANTARES`, `BENTEN`, `HORTUS`, `MORIA`, `OUTSIDEREGION`, `NONE`), which grants building efficiency bonuses | `PlanFaction` (`api/schemas/planningData.schemas.ts`); `FACTION_BONUS_MAP` in `features/planning/engine/efficiency.ts` |
-| **Ticker** | Short material or building code, e.g. `DW` (drinking water) or `PP1` (prefab plant) | `IMaterial.ticker`, `IBuilding.building_ticker` |
-| **Recipe** | A building's production step: inputs → outputs over a duration | `IRecipe`; `useBuildingData` |
-| **CX** | Commodity exchange. The four player markets are **AI1** (Antares), **CI1** (Benten), **IC1** (Hortus) and **NC1** (Moria). **UNIVERSE** is the aggregate across all of them | `IExchange`; `useExchangeData` |
+| **Ticker** | Short material or building code, e.g. `DW` (drinking water) or `PP1` (prefab plant) | `Material.ticker`, `Building.building_ticker` |
+| **Recipe** | A building's production step: inputs → outputs over a duration | `Recipe`; `useBuildingData` |
+| **CX** | Commodity exchange. The four player markets are **AI1** (Antares), **CI1** (Benten), **IC1** (Hortus) and **NC1** (Moria). **UNIVERSE** is the aggregate across all of them | `Exchange`; `useExchangeData` |
 | **CX preference** | A user-defined price source. Exchange options are `AI1_7D`, `AI1_30D`, `AI1_ASK`, `AI1_BID`, …, `UNIVERSE_30D`, and fixed ticker prices can be added. Each option applies at empire or planet level and to BUY, SELL or BOTH | `CX` / `CXData` (`api/schemas/cxData.schemas.ts`); `src/features/exchanges`; resolution in `features/cx/priceBook.ts` (`usePrice` for components) |
 | **VWAP** | Volume-weighted average price over 7 or 30 days. `UNIVERSE_30D` VWAP is the global price fallback | `priceBook.ts`, `usePrice`, `useExchangeData` |
 | **Workforce** | Five tiers: pioneer, settler, technician, engineer, scientist. Buildings require them and habs house them | `WorkforceType` (`api/schemas/planningData.schemas.ts`); `features/planning/engine/workforce.ts` |

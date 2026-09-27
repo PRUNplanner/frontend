@@ -4,7 +4,7 @@ import type {
 } from "@/features/api/schemas/planningData.schemas";
 import type { CX } from "@/features/api/schemas/cxData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import { IPlanet } from "@/features/api/gameData.types";
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
 import { StepConfig } from "@/features/wrapper/dataLoader.types";
 import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 
@@ -25,7 +25,7 @@ export type PlanningDataLoaderEmits = {
 	(e: "data:shared:plan", data: PlanShare): void;
 	(e: "data:empire:list", data: PlanEmpireElement[]): void;
 	(e: "data:empire:plans", data: Plan[]): void;
-	(e: "data:planet", data: IPlanet): void;
+	(e: "data:planet", data: Planet): void;
 	(e: "data:plan", data: Plan): void;
 	(e: "data:plan:list", data: Plan[]): void;
 	(e: "data:plan:list:planets", data: string[]): void;
@@ -40,7 +40,7 @@ export type PlanningStepConfigsType = [
 	StepConfig<PlanEmpireElement[]>,
 	StepConfig<Plan>,
 	StepConfig<Plan[]>,
-	StepConfig<IPlanet>,
+	StepConfig<Planet>,
 	StepConfig<CX[]>,
 	StepConfig<Shared[]>,
 	StepConfig<Plan[]>,

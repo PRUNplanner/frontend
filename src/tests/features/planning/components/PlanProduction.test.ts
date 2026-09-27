@@ -12,7 +12,7 @@ import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
-import { IPlanetResource } from "@/features/api/gameData.types";
+import type { PlanetResource } from "@/features/api/schemas/gameData.schemas";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
@@ -60,9 +60,9 @@ function building(name: string): IProductionBuilding {
 
 const resource = (
 	ticker: string,
-	type: IPlanetResource["resource_type"],
+	type: PlanetResource["resource_type"],
 	daily: number
-): IPlanetResource => ({
+): PlanetResource => ({
 	material_ticker: ticker,
 	resource_type: type,
 	factor: 0.5,

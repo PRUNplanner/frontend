@@ -11,7 +11,7 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import { IPlanet } from "@/features/api/gameData.types";
+	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
 	// UI
 	import { PForm, PFormItem, PInput, PButton } from "@/ui";
@@ -20,7 +20,7 @@
 	const refSearchId: Ref<string | null> = ref(null);
 
 	const emit = defineEmits<{
-		(e: "update:results", value: IPlanet[]): void;
+		(e: "update:results", value: Planet[]): void;
 	}>();
 
 	const isLoading: Ref<boolean> = ref(false);
@@ -39,7 +39,7 @@
 					searchId: refSearchId.value!,
 				})
 					.execute()
-					.then((data: IPlanet[]) => emit("update:results", data))
+					.then((data: Planet[]) => emit("update:results", data))
 					.finally(() => (isLoading.value = false));
 			} catch {
 				emit("update:results", []);

@@ -8,15 +8,15 @@ import { TOTALMSDAY } from "@/features/planning/engine/materialIO";
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // Types & Interfaces
-import { IBuilding, IRecipe } from "@/features/api/gameData.types";
+import type { Building, Recipe } from "@/features/api/schemas/gameData.schemas";
 import { IRecipeBuildingOption } from "@/features/planning/usePlanCalculation.types";
 
 /**
  * Calculates every recipe option of a building: its daily revenue at the
  * building's efficiency, ROI and profit per area
  *
- * @param {IBuilding} building Building Data
- * @param {IRecipe[]} recipes The building's recipes
+ * @param {Building} building Building Data
+ * @param {Recipe[]} recipes The building's recipes
  * @param {number} totalEfficiency Building efficiency
  * @param {number} constructionCost Construction cost (positive)
  * @param {number} workforceCost Daily workforce cost (positive)
@@ -24,8 +24,8 @@ import { IRecipeBuildingOption } from "@/features/planning/usePlanCalculation.ty
  * @returns {IRecipeBuildingOption[]} Recipe options
  */
 export function calculateRecipeOptions(
-	building: IBuilding,
-	recipes: IRecipe[],
+	building: Building,
+	recipes: Recipe[],
 	totalEfficiency: number,
 	constructionCost: number,
 	workforceCost: number,

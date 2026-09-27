@@ -15,7 +15,7 @@ import {
 } from "@/features/planning/engine/materialIO";
 
 // Types & Interfaces
-import { IMaterial } from "@/features/api/gameData.types";
+import type { Material } from "@/features/api/schemas/gameData.schemas";
 import {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
@@ -26,7 +26,7 @@ export function useMaterialIOUtil() {
 
 	// material lookup for the engine, reactive through materialsMap
 	const materials = {
-		get: (ticker: string): IMaterial | undefined =>
+		get: (ticker: string): Material | undefined =>
 			materialsMap.value[ticker],
 	};
 

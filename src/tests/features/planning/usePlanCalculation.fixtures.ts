@@ -13,7 +13,7 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Types & Interfaces
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import { IPlanet } from "@/features/api/gameData.types";
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
@@ -141,8 +141,8 @@ export function findRecipeSwap(plan: Plan): {
  * The planet search fixture where every planet has N, like a real search
  * for N returns. Planets without N get a gaseous N deposit.
  */
-export function planetSearchWithN(): IPlanet[] {
-	return (structuredClone(planet_search) as unknown as IPlanet[]).map((p) => {
+export function planetSearchWithN(): Planet[] {
+	return (structuredClone(planet_search) as unknown as Planet[]).map((p) => {
 		if (!p.resources.some((r) => r.material_ticker === "N"))
 			p.resources.push({
 				material_ticker: "N",
@@ -150,7 +150,7 @@ export function planetSearchWithN(): IPlanet[] {
 				factor: 0.04132271185517311,
 				daily_extraction: 2.4793627113103867,
 				max_daily_extraction: 52.013511061668396,
-			} as IPlanet["resources"][number]);
+			} as Planet["resources"][number]);
 		return p;
 	});
 }

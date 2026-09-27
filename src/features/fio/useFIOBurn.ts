@@ -5,7 +5,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
 import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
-import { IFIOStorageElement } from "@/features/api/gameData.types";
+import type { FIOStorageElement } from "@/features/api/schemas/gameData.schemas";
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import {
 	IFIOBurnPlanetTableElement,
@@ -23,9 +23,9 @@ export function useFIOBurn(
 	 * Burn data reference from Game Data Store
 	 * @author jplacht
 	 *
-	 * @type {Record<string, IFIOStorageElement>}
+	 * @type {Record<string, FIOStorageElement>}
 	 */
-	const burnData: Record<string, IFIOStorageElement> =
+	const burnData: Record<string, FIOStorageElement> =
 		planningStore.fio_storage_planets;
 
 	/**

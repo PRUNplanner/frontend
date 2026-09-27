@@ -9,7 +9,7 @@
 
 	// Types & Interfaces
 	import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
-	import { IPopulationReport } from "@/features/api/gameData.types";
+	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
 
 	// UI
 	import { PSpin } from "@/ui";
@@ -27,7 +27,7 @@
 
 	const isLoading: Ref<boolean> = ref(false);
 	const hasError: Ref<boolean> = ref(false);
-	const poprData: Ref<IPopulationReport | null> = ref(null);
+	const poprData: Ref<PopulationReport | null> = ref(null);
 
 	async function fetchPOPR(planetNaturalId: string) {
 		isLoading.value = true;
@@ -36,7 +36,7 @@
 				planetNaturalId: planetNaturalId,
 			})
 				.execute()
-				.then((data: IPopulationReport) => (poprData.value = data))
+				.then((data: PopulationReport) => (poprData.value = data))
 				.finally(() => (isLoading.value = false));
 		} catch {
 			hasError.value = true;

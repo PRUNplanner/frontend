@@ -4,7 +4,7 @@ import type {
 	PlanCOGCProgram,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
-import { IPlanetSearchAdvanced } from "@/features/api/gameData.types";
+import type { PlanetSearchAdvancedPayload } from "@/features/api/schemas/gameData.schemas";
 
 export type ANALYTICS_EVENT_TYPE =
 	| "empire_patch"
@@ -120,7 +120,7 @@ export interface IAnalyticsEventProperties {
 	materialtile_market_drawer: { materialTicker: string };
 	resource_roi_overview: { materialTicker: string };
 	planet_search_basic: { searchId: string };
-	planet_search_advanced: IPlanetSearchAdvanced;
+	planet_search_advanced: PlanetSearchAdvancedPayload;
 	user_password_change: undefined;
 	user_logout: undefined;
 	user_login: { username: string };

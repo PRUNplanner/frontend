@@ -6,7 +6,7 @@ import {
 } from "@/features/planning/calculations/infrastructureCalculations";
 
 // Types & Interfaces
-import { IBuilding } from "@/features/api/gameData.types";
+import type { Building } from "@/features/api/schemas/gameData.schemas";
 import {
 	IAreaResult,
 	IInfrastructureRecord,
@@ -26,13 +26,13 @@ import type {
  *
  * @param {PlanData} data Plan Data
  * @param {number} permits Permits used
- * @param {ReadonlyMap<string, IBuilding>} buildings Building data
+ * @param {ReadonlyMap<string, Building>} buildings Building data
  * @returns {IAreaResult} Area
  */
 export function calculateArea(
 	data: PlanData,
 	permits: number,
-	buildings: ReadonlyMap<string, IBuilding>
+	buildings: ReadonlyMap<string, Building>
 ): IAreaResult {
 	// Core Module holds 25 area
 	let areaUsed: number = 25;

@@ -4,10 +4,10 @@ import { computed, ComputedRef, Ref } from "vue";
 import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Types & Interfaces
-import { IFIOSitePlanet } from "@/features/api/gameData.types";
+import type { FIOSitePlanet } from "@/features/api/schemas/gameData.schemas";
 import { IFIOSitesRepairTablePlanetElement } from "@/features/fio/useFIORepair.types";
 
-export function useFIORepair(planets: Ref<Record<string, IFIOSitePlanet>>) {
+export function useFIORepair(planets: Ref<Record<string, FIOSitePlanet>>) {
 	const { planetNames, loadPlanetNames } = usePlanetData();
 
 	const MINTCONDITION: number = 1.0;
@@ -21,8 +21,15 @@ export function useFIORepair(planets: Ref<Record<string, IFIOSitePlanet>>) {
 	 * @returns {boolean} Is infrastructure Building
 	 */
 	function isInfrastructureBuilding(ticker: string): boolean {
-		return ticker.startsWith("HB") || ticker === "STO" || ticker === "CM" ||
-			ticker === "STA" || ticker === "STE" || ticker === "STV" || ticker === "STW";
+		return (
+			ticker.startsWith("HB") ||
+			ticker === "STO" ||
+			ticker === "CM" ||
+			ticker === "STA" ||
+			ticker === "STE" ||
+			ticker === "STV" ||
+			ticker === "STW"
+		);
 	}
 
 	/**

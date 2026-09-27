@@ -9,11 +9,11 @@ import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { Shared } from "@/features/api/schemas/sharingData.schemas";
-import {
-	IFIOSitePlanet,
-	IFIOStorage,
-	IFIOStorageElement,
-} from "@/features/api/gameData.types";
+import type {
+	FIOSitePlanet,
+	FIOStorage,
+	FIOStorageElement,
+} from "@/features/api/schemas/gameData.schemas";
 
 export const usePlanningStore = defineStore(
 	"prunplanner_planning",
@@ -27,14 +27,15 @@ export const usePlanningStore = defineStore(
 		const cxs: Ref<Record<string, CX>> = ref({});
 		/** Key: Plan.uuid */
 		const shared: Ref<Record<string, Shared>> = ref({});
-		const fio_storage_planets: Ref<Record<string, IFIOStorageElement>> =
-			ref({});
-		const fio_storage_warehouses: Ref<Record<string, IFIOStorageElement>> =
-			ref({});
-		const fio_storage_ships: Ref<Record<string, IFIOStorageElement>> = ref(
+		const fio_storage_planets: Ref<Record<string, FIOStorageElement>> = ref(
 			{}
 		);
-		const fio_sites_planets: Ref<Record<string, IFIOSitePlanet>> = ref({});
+		const fio_storage_warehouses: Ref<Record<string, FIOStorageElement>> =
+			ref({});
+		const fio_storage_ships: Ref<Record<string, FIOStorageElement>> = ref(
+			{}
+		);
+		const fio_sites_planets: Ref<Record<string, FIOSitePlanet>> = ref({});
 
 		const fio_storage_timestamp: Ref<Date | null> = ref(null);
 
@@ -129,9 +130,9 @@ export const usePlanningStore = defineStore(
 		 * Sets FIO Storage data separated by Planets, Warehouses and Ships
 		 * @author jplacht
 		 *
-		 * @param {IFIOStorage} data FIO Storage Data
+		 * @param {FIOStorage} data FIO Storage Data
 		 */
-		function setFIOStorageData(data: IFIOStorage): void {
+		function setFIOStorageData(data: FIOStorage): void {
 			fio_storage_planets.value = data.storage_data.planets;
 			fio_storage_warehouses.value = data.storage_data.warehouses;
 			fio_storage_ships.value = data.storage_data.ships;

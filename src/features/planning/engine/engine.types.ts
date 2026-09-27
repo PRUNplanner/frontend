@@ -1,10 +1,10 @@
 // Types & Interfaces
-import {
-	IBuilding,
-	IMaterial,
-	IPlanet,
-	IRecipe,
-} from "@/features/api/gameData.types";
+import type {
+	Building,
+	Material,
+	Planet,
+	Recipe,
+} from "@/features/api/schemas/gameData.schemas";
 import { IPriceBook } from "@/features/cx/priceBook";
 import type {
 	Plan,
@@ -20,9 +20,9 @@ import {
  * be shared by every plan of a batch.
  */
 export interface IGameData {
-	buildings: ReadonlyMap<string, IBuilding>;
-	recipesByBuilding: Readonly<Record<string, IRecipe[]>>;
-	materials: ReadonlyMap<string, IMaterial>;
+	buildings: ReadonlyMap<string, Building>;
+	recipesByBuilding: Readonly<Record<string, Recipe[]>>;
+	materials: ReadonlyMap<string, Material>;
 }
 
 /**
@@ -30,7 +30,7 @@ export interface IGameData {
  * the plan's planet and the price book for the plan's CX and planet.
  */
 export interface IPlanContext extends IGameData {
-	planet: IPlanet;
+	planet: Planet;
 	prices: IPriceBook;
 }
 

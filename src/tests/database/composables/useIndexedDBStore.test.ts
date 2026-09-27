@@ -9,9 +9,9 @@ import {
 } from "@/database/composables/useIndexedDBStore";
 import { DB_SCHEMA } from "@/database/schema";
 
-import { IMaterial } from "@/features/api/gameData.types";
+import type { Material } from "@/features/api/schemas/gameData.schemas";
 
-const fakeMaterial_1: IMaterial = {
+const fakeMaterial_1: Material = {
 	material_id: "foo",
 	category_name: "foo category",
 	category_id: "foo category id",
@@ -20,7 +20,7 @@ const fakeMaterial_1: IMaterial = {
 	weight: 5,
 	volume: 7,
 };
-const fakeMaterial_2: IMaterial = {
+const fakeMaterial_2: Material = {
 	material_id: "moo",
 	category_name: "moo category",
 	category_id: "moo category id",
@@ -31,7 +31,7 @@ const fakeMaterial_2: IMaterial = {
 };
 
 describe("useIndexedDBStore", () => {
-	const store = useIndexedDBStore<IMaterial, "ticker">(
+	const store = useIndexedDBStore<Material, "ticker">(
 		"gamedata_materials",
 		"ticker"
 	);
@@ -126,7 +126,7 @@ describe("useIndexedDBStore", () => {
 	});
 
 	it("should insert and get multiple items with getAll", async () => {
-		const materials: IMaterial[] = [fakeMaterial_1, fakeMaterial_2];
+		const materials: Material[] = [fakeMaterial_1, fakeMaterial_2];
 
 		await store.setMany(materials, true);
 		const result = await store.getAll();
@@ -136,11 +136,11 @@ describe("useIndexedDBStore", () => {
 	});
 
 	it("should clear the store if wipe = true", async () => {
-		const materials: IMaterial[] = [fakeMaterial_1, fakeMaterial_2];
+		const materials: Material[] = [fakeMaterial_1, fakeMaterial_2];
 		await store.setMany(materials, true);
 
 		// wipe with a single item
-		const newMaterials: IMaterial[] = [fakeMaterial_1];
+		const newMaterials: Material[] = [fakeMaterial_1];
 		await store.setMany(newMaterials, true);
 
 		const result = await store.getAll();
@@ -156,7 +156,7 @@ describe("useIndexedDBStore", () => {
 	});
 
 	it("should remove an item", async () => {
-		const materials: IMaterial[] = [fakeMaterial_1, fakeMaterial_2];
+		const materials: Material[] = [fakeMaterial_1, fakeMaterial_2];
 		await store.setMany(materials, true);
 
 		await store.remove("m1");
@@ -230,7 +230,7 @@ describe("useIndexedDBStore", () => {
 	});
 
 	it("gets statistics, existing records", async () => {
-		const materials: IMaterial[] = [fakeMaterial_1, fakeMaterial_2];
+		const materials: Material[] = [fakeMaterial_1, fakeMaterial_2];
 		await store.setMany(materials, true);
 
 		const result = await store.statistics();

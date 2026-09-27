@@ -9,7 +9,7 @@ import {
 	IXITActionElement,
 	IXITActionMaterialElement,
 } from "@/features/xit/xitAction.types";
-import { IMaterial } from "@/features/api/gameData.types";
+import type { Material } from "@/features/api/schemas/gameData.schemas";
 
 export function useBurnXITAction(
 	elements: Ref<IXITActionElement[]>,
@@ -102,7 +102,7 @@ export function useBurnXITAction(
 		materialTable.value
 			.filter((f) => f.total !== Infinity && f.active)
 			.forEach((material) => {
-				const mat: IMaterial = materialsMap.value[material.ticker];
+				const mat: Material = materialsMap.value[material.ticker];
 
 				totalWeight += mat.weight * material.total;
 				totalVolume += mat.volume * material.total;

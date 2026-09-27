@@ -17,7 +17,7 @@
 	import PlanetPOPRButton from "@/features/government/components/PlanetPOPRButton.vue";
 
 	// Types & Interfaces
-	import { IPlanet } from "@/features/api/gameData.types";
+	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 	import { IPlanetSearchResult } from "../usePlanetSearchResults.types";
 
 	// UI
@@ -27,7 +27,7 @@
 
 	const props = defineProps({
 		results: {
-			type: Array as PropType<IPlanet[]>,
+			type: Array as PropType<Planet[]>,
 			required: true,
 		},
 		searchMaterials: {
@@ -219,9 +219,7 @@
 							<div>
 								<MaterialTile
 									:key="rowData.environmentTemperature[0]"
-									:ticker="
-										rowData.environmentTemperature[0]
-									"
+									:ticker="rowData.environmentTemperature[0]"
 									popover-placement="left" />
 							</div>
 						</template>

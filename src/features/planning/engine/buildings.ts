@@ -5,13 +5,13 @@ import { calculateExtraction } from "@/features/planning/calculations/extraction
 import { combineMaterialIOMinimal } from "@/features/planning/engine/materialIO";
 
 // Types & Interfaces
-import {
-	IBuilding,
-	IPlanet,
-	IPlanetResource,
-	IRecipe,
-	PLANET_RESOURCETYPE_TYPE,
-} from "@/features/api/gameData.types";
+import type {
+	Building,
+	Planet,
+	PlanetResource,
+	Recipe,
+	PlanetResourceType,
+} from "@/features/api/schemas/gameData.schemas";
 import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
 
 /**
@@ -39,9 +39,9 @@ export const boundaryTemperatureHigh: number = 75.0;
  * Synchronous building lookup, throws if the ticker is unknown
  */
 export function getBuilding(
-	buildings: ReadonlyMap<string, IBuilding>,
+	buildings: ReadonlyMap<string, Building>,
 	buildingTicker: string
-): IBuilding {
+): Building {
 	const building = buildings.get(buildingTicker);
 
 	if (!building) throw new Error(`Building ${buildingTicker} not available.`);
@@ -49,7 +49,7 @@ export function getBuilding(
 	return building;
 }
 
-export function getTotalWorkforce(building: IBuilding): number {
+export function getTotalWorkforce(building: Building): number {
 	return (
 		building.pioneers +
 		building.settlers +
@@ -65,12 +65,12 @@ export function getTotalWorkforce(building: IBuilding): number {
  *
  * @author jplacht
  *
- * @param {IPlanet} planet Planet Data
+ * @param {Planet} planet Planet Data
  * @param {number} areaCost Buildings AreaCost
  * @returns {IMaterialIOMinimal[]} Special Construction Materials
  */
 export function getPlanetSpecialMaterials(
-	planet: IPlanet,
+	planet: Planet,
 	areaCost: number
 ): IMaterialIOMinimal[] {
 	const additions: IMaterialIOMinimal[] = [];
@@ -130,13 +130,13 @@ export function getPlanetSpecialMaterials(
  * materials if a planet is given
  * @author jplacht
  *
- * @param {IBuilding} building Building Data
- * @param {IPlanet | undefined} planet Planet Data
+ * @param {Building} building Building Data
+ * @param {Planet | undefined} planet Planet Data
  * @returns {IMaterialIOMinimal[]} Construction Materials
  */
 export function getBuildingConstructionMaterials(
-	building: IBuilding,
-	planet: IPlanet | undefined
+	building: Building,
+	planet: Planet | undefined
 ): IMaterialIOMinimal[] {
 	const materials: IMaterialIOMinimal[] = [];
 
@@ -160,28 +160,27 @@ export function getBuildingConstructionMaterials(
 }
 
 // extraction buildings and the resource type they extract
-export const resourceBuildingTicker: Record<string, PLANET_RESOURCETYPE_TYPE> =
-	{
-		EXT: "MINERAL",
-		COL: "GASEOUS",
-		RIG: "LIQUID",
-	};
+export const resourceBuildingTicker: Record<string, PlanetResourceType> = {
+	EXT: "MINERAL",
+	COL: "GASEOUS",
+	RIG: "LIQUID",
+};
 
 /**
  * A building's recipes. Extraction buildings get one recipe per matching
  * planet resource; they have none without planet resources.
  * @author jplacht
  *
- * @param {Readonly<Record<string, IRecipe[]>>} recipesByBuilding Recipes
+ * @param {Readonly<Record<string, Recipe[]>>} recipesByBuilding Recipes
  * @param {string} buildingTicker Building Ticker
- * @param {IPlanetResource[]} planetResources Planet Resources
- * @returns {IRecipe[]} Recipes
+ * @param {PlanetResource[]} planetResources Planet Resources
+ * @returns {Recipe[]} Recipes
  */
 export function getBuildingRecipes(
-	recipesByBuilding: Readonly<Record<string, IRecipe[]>>,
+	recipesByBuilding: Readonly<Record<string, Recipe[]>>,
 	buildingTicker: string,
-	planetResources: IPlanetResource[] = []
-): IRecipe[] {
+	planetResources: PlanetResource[] = []
+): Recipe[] {
 	/**
 	 * Resource extraction buildings can only hold recipe options if
 	 * there is a planetary resource available matching their potential
@@ -191,9 +190,9 @@ export function getBuildingRecipes(
 		// use planet resources to fetch recipes
 		if (planetResources.length === 0) return [];
 
-		const searchType: PLANET_RESOURCETYPE_TYPE =
+		const searchType: PlanetResourceType =
 			resourceBuildingTicker[buildingTicker];
-		const relevantResources: IPlanetResource[] = planetResources.filter(
+		const relevantResources: PlanetResource[] = planetResources.filter(
 			(r) => r.resource_type === searchType
 		);
 
@@ -231,15 +230,15 @@ export function getBuildingRecipes(
 
 /**
  * Groups recipes by their building, keeping their order
- * @param {Iterable<IRecipe>} recipes Recipes
- * @returns {Record<string, IRecipe[]>} Recipes by building ticker
+ * @param {Iterable<Recipe>} recipes Recipes
+ * @returns {Record<string, Recipe[]>} Recipes by building ticker
  */
 export function groupRecipesByBuilding(
-	recipes: Iterable<IRecipe>
-): Record<string, IRecipe[]> {
-	const map: Record<string, IRecipe[]> = {};
+	recipes: Iterable<Recipe>
+): Record<string, Recipe[]> {
+	const map: Record<string, Recipe[]> = {};
 	for (const recipe of recipes) {
-		const list: IRecipe[] | undefined = map[recipe.building_ticker];
+		const list: Recipe[] | undefined = map[recipe.building_ticker];
 		if (list) list.push(recipe);
 		else map[recipe.building_ticker] = [recipe];
 	}

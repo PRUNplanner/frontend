@@ -3,13 +3,13 @@ import { describe, it, expect, vi } from "vitest";
 import { createPriceBook } from "@/features/cx/priceBook";
 
 // Types & Interfaces
-import { IExchange } from "@/features/api/gameData.types";
+import type { Exchange } from "@/features/api/schemas/gameData.schemas";
 import type { CXData } from "@/features/api/schemas/cxData.schemas";
 
 const exchange = (vwap_30d: number, vwap_7d: number = 0) =>
-	({ vwap_30d, vwap_7d }) as IExchange;
+	({ vwap_30d, vwap_7d }) as Exchange;
 
-const exchanges: Record<string, IExchange> = {
+const exchanges: Record<string, Exchange> = {
 	"RAT.UNIVERSE": exchange(100),
 	"RAT.NC1": exchange(0, 120),
 	"DW.UNIVERSE": exchange(50),

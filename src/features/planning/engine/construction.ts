@@ -9,7 +9,7 @@ import {
 import { infrastructureBuildingNames } from "@/features/planning/calculations/infrastructureCalculations";
 
 // Types & Interfaces
-import { IBuilding, IPlanet } from "@/features/api/gameData.types";
+import type { Building, Planet } from "@/features/api/schemas/gameData.schemas";
 import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
 import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
 import {
@@ -23,15 +23,15 @@ import {
  *
  * @param {Required<Record<InfrastructureType, number>>} infrastructure Plan infrastructure
  * @param {IProductionBuilding[]} production Production buildings
- * @param {IPlanet} planet Planet
- * @param {ReadonlyMap<string, IBuilding>} buildings Building data
+ * @param {Planet} planet Planet
+ * @param {ReadonlyMap<string, Building>} buildings Building data
  * @returns {IBuildingConstruction[]} Buildings with materials and amount
  */
 export function calculateConstructionMaterials(
 	infrastructure: Required<Record<InfrastructureType, number>>,
 	production: IProductionBuilding[],
-	planet: IPlanet,
-	buildings: ReadonlyMap<string, IBuilding>
+	planet: Planet,
+	buildings: ReadonlyMap<string, Building>
 ): IBuildingConstruction[] {
 	const inf: IBuildingConstruction[] = [];
 
@@ -91,14 +91,14 @@ export function calculateTotalConstructionCost(
  * @author jplacht
  *
  * @param {IPriceBook} prices Price Book
- * @param {IPlanet} planet Planet Information
- * @param {ReadonlyMap<string, IBuilding>} buildings Building data
+ * @param {Planet} planet Planet Information
+ * @param {ReadonlyMap<string, Building>} buildings Building data
  * @returns {IInfrastructureCosts} Infrastructure Construction Costs
  */
 export function calculateInfrastructureCosts(
 	prices: IPriceBook,
-	planet: IPlanet,
-	buildings: ReadonlyMap<string, IBuilding>
+	planet: Planet,
+	buildings: ReadonlyMap<string, Building>
 ): IInfrastructureCosts {
 	const results: IInfrastructureCosts = {
 		HB1: 0,

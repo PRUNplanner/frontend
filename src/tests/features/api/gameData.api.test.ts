@@ -17,7 +17,7 @@ import {
 	callExplorationData,
 	callPlanetLastPOPR,
 } from "@/features/api/gameData.api";
-import { IPlanetSearchAdvanced } from "@/features/api/gameData.types";
+import type { PlanetSearchAdvancedPayload } from "@/features/api/schemas/gameData.schemas";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -152,7 +152,7 @@ describe("GameData API Calls", async () => {
 
 		mock.onPost("/data/planets/search/").reply(200, planet_search_results);
 
-		const params: IPlanetSearchAdvanced = {
+		const params: PlanetSearchAdvancedPayload = {
 			materials: [],
 			cogc_programs: [],
 			environment_rocky: true,

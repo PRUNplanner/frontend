@@ -1,5 +1,5 @@
 // Types & Interfaces
-import { IExchange } from "@/features/api/gameData.types";
+import type { Exchange } from "@/features/api/schemas/gameData.schemas";
 import type {
 	CXData,
 	CXExchangeOptionType,
@@ -54,6 +54,8 @@ type SplitOption<T> = T extends `${infer Prefix}_${infer Suffix}`
 type PrefixPart = SplitOption<CXExchangeOptionType>[0];
 type SuffixPart = SplitOption<CXExchangeOptionType>[1];
 
+type ExchangePriceKey = "vwap_7d" | "vwap_30d" | "ask" | "bid";
+
 function splitExchangeOption(option: CXExchangeOptionType) {
 	const [prefix, suffix] = option.split("_") as [PrefixPart, SuffixPart];
 	return { prefix, suffix };
@@ -61,20 +63,20 @@ function splitExchangeOption(option: CXExchangeOptionType) {
 
 /**
  * Splits Exchange Preference codes into parts and identifies
- * the correct key of IExchange to use.
+ * the correct key of Exchange to use.
  * @author jplacht
  *
  * @param {string} preference Preference, e.g., "IC1_BUY"
  * @returns {{
  * 		exchangeCode: string;
- * 		key: string;
+ * 		key: ExchangePriceKey;
  * 	}} Exchange code and value key
  */
 export function getExchangeCodeKey(preference: CXExchangeOptionType): {
 	exchangeCode: string;
-	key: string;
+	key: ExchangePriceKey;
 } {
-	let key: string;
+	let key: ExchangePriceKey;
 
 	// split by underscore
 	const splitted: string[] = preference.split("_");
@@ -119,14 +121,14 @@ export function getExchangeCodeKey(preference: CXExchangeOptionType): {
  * @param {(() => CXData) | undefined} getCXData CX preference data, read
  * once on first use; undefined uses the Universe VWAP 30d for everything
  * @param {string | undefined} planetNaturalId Planet for planet preferences
- * @param {(tickerId: string) => IExchange} getExchange Exchange data by id,
+ * @param {(tickerId: string) => Exchange} getExchange Exchange data by id,
  * e.g. "RAT.UNIVERSE"; throws if missing
  * @returns {IPriceBook} Price Book
  */
 export function createPriceBook(
 	getCXData: (() => CXData) | undefined,
 	planetNaturalId: string | undefined,
-	getExchange: (tickerId: string) => IExchange
+	getExchange: (tickerId: string) => Exchange
 ): IPriceBook {
 	const prices = new Map<string, number>();
 	let cxData: CXData | undefined;
@@ -138,7 +140,7 @@ export function createPriceBook(
 		const { exchangeCode, key } = getExchangeCodeKey(preference);
 		const tickerData = getExchange(`${materialTicker}.${exchangeCode}`);
 
-		return (tickerData[key as keyof IExchange] ?? 0) as number;
+		return tickerData[key] ?? 0;
 	}
 
 	function resolvePrice(materialTicker: string, type: PriceType): number {

@@ -15,13 +15,13 @@ import {
 	GameDataStepConfigsType,
 } from "@/features/wrapper/gameDataLoader.types";
 import { StepState } from "@/features/wrapper/dataLoader.types";
-import {
-	IBuilding,
-	IExchange,
-	IMaterial,
-	IPlanet,
-	IRecipe,
-} from "@/features/api/gameData.types";
+import type {
+	Building,
+	Exchange,
+	Material,
+	Planet,
+	Recipe,
+} from "@/features/api/schemas/gameData.schemas";
 
 export function useGameDataLoader(
 	props: GameDataLoaderProps,
@@ -40,7 +40,7 @@ export function useGameDataLoader(
 			load: () => {
 				return queryStore.execute("GetMaterials", undefined);
 			},
-			onSuccess: (d: IMaterial[]) => emits("data:materials", d),
+			onSuccess: (d: Material[]) => emits("data:materials", d),
 		},
 		{
 			key: "exchange",
@@ -49,7 +49,7 @@ export function useGameDataLoader(
 			load: () => {
 				return queryStore.execute("GetExchanges", undefined);
 			},
-			onSuccess: (d: IExchange[]) => emits("data:exchanges", d),
+			onSuccess: (d: Exchange[]) => emits("data:exchanges", d),
 		},
 		{
 			key: "building",
@@ -58,7 +58,7 @@ export function useGameDataLoader(
 			load: () => {
 				return queryStore.execute("GetBuildings", undefined);
 			},
-			onSuccess: (d: IBuilding[]) => emits("data:buildings", d),
+			onSuccess: (d: Building[]) => emits("data:buildings", d),
 		},
 		{
 			key: "recipe",
@@ -67,7 +67,7 @@ export function useGameDataLoader(
 			load: () => {
 				return queryStore.execute("GetRecipes", undefined);
 			},
-			onSuccess: (d: IRecipe[]) => emits("data:recipes", d),
+			onSuccess: (d: Recipe[]) => emits("data:recipes", d),
 		},
 		{
 			key: "planet",
@@ -78,7 +78,7 @@ export function useGameDataLoader(
 					planetNaturalId: props.loadPlanet!,
 				});
 			},
-			onSuccess: (d: IPlanet) => emits("data:planet", d),
+			onSuccess: (d: Planet) => emits("data:planet", d),
 		},
 		{
 			key: "planetMultiple",
@@ -91,7 +91,7 @@ export function useGameDataLoader(
 					planetNaturalIds: props.loadPlanetMultiple!,
 				});
 			},
-			onSuccess: (d: IPlanet[]) => emits("data:planet:multiple", d),
+			onSuccess: (d: Planet[]) => emits("data:planet:multiple", d),
 		},
 	];
 
@@ -171,18 +171,18 @@ export function useGameDataLoader(
 	const results = computed(() => {
 		const data = {
 			materialData: steps.find((s) => s.cfg.key === "material")
-				?.data as IMaterial[],
+				?.data as Material[],
 			exchangeData: steps.find((s) => s.cfg.key === "exchange")
-				?.data as IExchange[],
+				?.data as Exchange[],
 			buildingData: steps.find((s) => s.cfg.key === "building")
-				?.data as IBuilding[],
+				?.data as Building[],
 			recipeData: steps.find((s) => s.cfg.key === "recipe")
-				?.data as IRecipe[],
+				?.data as Recipe[],
 			planetData: steps.find((s) => s.cfg.key === "planet")
-				?.data as IPlanet,
+				?.data as Planet,
 			planetMultipleData: steps.find(
 				(s) => s.cfg.key === "planetMultiple"
-			)?.data as IPlanet[],
+			)?.data as Planet[],
 		};
 
 		return data;

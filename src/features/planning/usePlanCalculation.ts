@@ -33,7 +33,7 @@ import { calculateFinance } from "@/features/planning/engine/finance";
 import { calculateVisitation } from "@/features/planning/engine/visitation";
 
 // Types & Interfaces
-import { IPlanet } from "@/features/api/gameData.types";
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
 import {
 	IPlanCalculation,
 	IPlanContext,
@@ -134,8 +134,8 @@ export function usePlanCalculation(
 	);
 
 	// game data and the plan's planet, loaded once
-	const planet = shallowRef<IPlanet>();
-	const loaded: Promise<IPlanet> = (async () => {
+	const planet = shallowRef<Planet>();
+	const loaded: Promise<Planet> = (async () => {
 		await loadGameData();
 		planet.value = await getPlanet(planetNaturalId.value);
 		return planet.value;
@@ -152,7 +152,7 @@ export function usePlanCalculation(
 		};
 	}
 
-	function context(loadedPlanet: IPlanet): IPlanContext {
+	function context(loadedPlanet: Planet): IPlanContext {
 		return {
 			...getGameData(),
 			planet: loadedPlanet,

@@ -22,7 +22,6 @@ from here.
 | `analyticsData.api.ts` | Planet insights |
 | `apiKeysData.api.ts` | API key list, create, delete |
 | `schemas/*.schemas.ts` | Zod schemas, each with its derived type next to it (`ThingSchema` + `Thing`) |
-| `gameData.types.d.ts` | Hand-written interfaces (being migrated to schemas) |
 
 ## Conventions
 

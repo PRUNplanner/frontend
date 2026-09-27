@@ -6,7 +6,7 @@ import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
 import { IEmpireMaterialIO } from "@/features/empire/empire.types";
-import { IRecipe } from "@/features/api/gameData.types";
+import type { Recipe } from "@/features/api/schemas/gameData.schemas";
 import { IOpportunityStats } from "@/features/empire/useProductionOpportunities.types";
 
 interface IPriceSellMap {
@@ -17,7 +17,7 @@ export function useProductionOpportunities(
 	empireIO: Ref<IEmpireMaterialIO[]>,
 	cxUuid: Ref<string | undefined>
 ) {
-	const recipeMap = ref<Record<string, IRecipe[]>>({});
+	const recipeMap = ref<Record<string, Recipe[]>>({});
 	const priceSellMap = ref<IPriceSellMap>({});
 	const isLoading = ref<boolean>(true);
 

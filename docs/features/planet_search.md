@@ -12,7 +12,7 @@ and distance to a system. Results can be turned into a new plan.
 | File | Role |
 | --- | --- |
 | `components/PlanetSearchBasic.vue` | `GetPlanetSearchSingle` query |
-| `components/PlanetSearchAdvanced.vue` | Builds `IPlanetSearchAdvanced` → `PostPlanetSearch` query |
+| `components/PlanetSearchAdvanced.vue` | Builds `PlanetSearchAdvancedPayload` → `PostPlanetSearch` query |
 | `components/PlanetSearchResults.vue` | Results table: POPR button, jump distances, "create plan" link |
 | `usePlanetSearchResults.ts` | `usePlanetSearchResults(planets, materials, richness, system, distance)` → table rows with fertility, COGC, environment, resource richness, and jumps to each exchange |
 | `searchConstants.ts` | Select options: materials, infrastructure, COGC programs, systems |

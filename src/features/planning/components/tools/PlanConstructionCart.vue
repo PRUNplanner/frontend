@@ -36,7 +36,7 @@
 		IBuildingConstruction,
 		IProductionBuilding,
 	} from "@/features/planning/usePlanCalculation.types";
-	import { IBuilding } from "@/features/api/gameData.types";
+	import type { Building } from "@/features/api/schemas/gameData.schemas";
 	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
@@ -146,7 +146,7 @@
 					const building = buildingsMap.value[ticker];
 					const amount = getTotalBuildingAmount(ticker);
 					const field = `${workforceType}s` as keyof NonNullable<
-						IBuilding["habitations"]
+						Building["habitations"]
 					>;
 					return sum + (building ? building[field] * amount : 0);
 				}, 0) >
@@ -154,7 +154,7 @@
 					const building = buildingsMap.value[ticker];
 					const amount = getTotalBuildingAmount(ticker);
 					const field = `${workforceType}s` as keyof NonNullable<
-						IBuilding["habitations"]
+						Building["habitations"]
 					>;
 					return (
 						sum +
@@ -174,7 +174,7 @@
 			(workforceType) =>
 				(building.habitations?.[
 					`${workforceType}s` as keyof NonNullable<
-						IBuilding["habitations"]
+						Building["habitations"]
 					>
 				] ?? 0) > 0
 		);

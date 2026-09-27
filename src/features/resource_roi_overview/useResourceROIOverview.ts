@@ -26,7 +26,7 @@ import { optimalProduction } from "@/features/roi_overview/assets/optimalProduct
 import { boundaryDescriptor } from "@/util/numbers";
 
 // Types & Interfaces
-import { IPlanet } from "@/features/api/gameData.types";
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
 import {
 	IGameData,
 	IPlanContext,
@@ -42,7 +42,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	const { planetNames, loadPlanetNames } = usePlanetData();
 	const { loadGameData, createContext } = usePlanContext();
 
-	const planetResults: Ref<IPlanet[]> = ref([]);
+	const planetResults: Ref<Planet[]> = ref([]);
 	const resultData: Ref<IResourceROIResult[]> = ref([]);
 
 	const progressSearchingPlanets = ref(false);
@@ -67,7 +67,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		["RIG", "EXT", "COL"].includes(e.ticker)
 	);
 
-	async function searchPlanets(materialTicker: string): Promise<IPlanet[]> {
+	async function searchPlanets(materialTicker: string): Promise<Planet[]> {
 		progressSearchingPlanets.value = true;
 
 		await useQuery("PostPlanetSearch", {
@@ -91,7 +91,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 			},
 		})
 			.execute()
-			.then((data: IPlanet[]) => {
+			.then((data: Planet[]) => {
 				planetResults.value = data;
 			});
 
@@ -103,7 +103,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		return planetResults.value;
 	}
 
-	function getPlanetEnvironment(planet: IPlanet) {
+	function getPlanetEnvironment(planet: Planet) {
 		const surface = planet.surface ? ["MCG"] : ["AEF"];
 
 		const gravityType = boundaryDescriptor(
@@ -158,7 +158,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 
 	async function calculateOptimal(
 		ctx: IPlanContext,
-		planet: IPlanet,
+		planet: Planet,
 		optimal: IStaticOptimalProduction,
 		materialTicker: string,
 		surface: string[],
@@ -227,17 +227,16 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 				},
 			];
 
-			const { result: newResult, overview: overviewData } =
-				calculatePlan(
-					{
-						plan: definition.value,
-						empire: undefined,
-						cxUuid: cxUuid.value,
-						// never read here
-						recipeOptions: false,
-					},
-					ctx
-				);
+			const { result: newResult, overview: overviewData } = calculatePlan(
+				{
+					plan: definition.value,
+					empire: undefined,
+					cxUuid: cxUuid.value,
+					// never read here
+					recipeOptions: false,
+				},
+				ctx
+			);
 
 			// find daily yield from material i/o for given materialticker
 			const dailyYield: number =
@@ -279,7 +278,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	}
 
 	async function calculatePlanet(
-		planet: IPlanet,
+		planet: Planet,
 		materialTicker: string,
 		gameData: IGameData
 	): Promise<IResourceROIResult[]> {
@@ -330,7 +329,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		materialTicker: string
 	): Promise<IResourceROIResult[]> {
 		// fetch planets
-		const planets: IPlanet[] = await searchPlanets(materialTicker);
+		const planets: Planet[] = await searchPlanets(materialTicker);
 		const localResults: IResourceROIResult[] = [];
 
 		progressCurrent.value = 0;

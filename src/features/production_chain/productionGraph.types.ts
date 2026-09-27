@@ -2,7 +2,7 @@ import { PSelectOption } from "@/ui/ui.types";
 import { ProductionEdge } from "./productionEdge";
 import { ProductionNode } from "./productionNode";
 import type { Position } from "@vue-flow/core";
-import { BUILDING_EXPERTISE_TYPE } from "../api/gameData.types";
+import type { BuildingExpertise } from "@/features/api/schemas/gameData.schemas";
 
 export interface IProductionGraphIO {
 	materialTicker: string;
@@ -24,7 +24,7 @@ export interface IProductionGraphData {
 export interface IFlowNodeData {
 	materialTicker: string;
 	buildingTicker: string;
-	buildingExpertise: BUILDING_EXPERTISE_TYPE | null | undefined;
+	buildingExpertise: BuildingExpertise | null | undefined;
 	buildingWorkforce: {
 		Pioneers: number;
 		Settlers: number;
@@ -66,7 +66,7 @@ export type IGraphFlowMaterialAnalysis = {
 }[];
 
 export type IGraphFlowExpertiseAnalyis = Record<
-	Partial<BUILDING_EXPERTISE_TYPE>,
+	Partial<BuildingExpertise>,
 	number
 >;
 

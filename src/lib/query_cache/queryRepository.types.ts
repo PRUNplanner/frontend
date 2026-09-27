@@ -2,16 +2,16 @@ import {
 	IQueryDefinition,
 	JSONValue,
 } from "@/lib/query_cache/queryCache.types";
-import {
-	IBuilding,
-	IExchange,
-	IFIOStorage,
-	IMaterial,
-	IPlanet,
-	IPlanetSearchAdvanced,
-	IPopulationReport,
-	IRecipe,
-} from "@/features/api/gameData.types";
+import type {
+	Building,
+	Exchange,
+	FIOStorage,
+	Material,
+	Planet,
+	PlanetSearchAdvancedPayload,
+	PopulationReport,
+	Recipe,
+} from "@/features/api/schemas/gameData.schemas";
 
 import type {
 	CX,
@@ -82,19 +82,19 @@ export type DataOfDefinition<Q> =
 				: never;
 
 export interface IQueryRepository {
-	GetMaterials: IQueryDefinition<undefined, IMaterial[]>;
-	GetExchanges: IQueryDefinition<undefined, IExchange[]>;
-	GetRecipes: IQueryDefinition<undefined, IRecipe[]>;
-	GetBuildings: IQueryDefinition<undefined, IBuilding[]>;
-	GetPlanet: IQueryDefinition<{ planetNaturalId: string }, IPlanet>;
+	GetMaterials: IQueryDefinition<undefined, Material[]>;
+	GetExchanges: IQueryDefinition<undefined, Exchange[]>;
+	GetRecipes: IQueryDefinition<undefined, Recipe[]>;
+	GetBuildings: IQueryDefinition<undefined, Building[]>;
+	GetPlanet: IQueryDefinition<{ planetNaturalId: string }, Planet>;
 	GetMultiplePlanets: IQueryDefinition<
 		{ planetNaturalIds: string[] },
-		IPlanet[]
+		Planet[]
 	>;
-	GetPlanetSearchSingle: IQueryDefinition<{ searchId: string }, IPlanet[]>;
+	GetPlanetSearchSingle: IQueryDefinition<{ searchId: string }, Planet[]>;
 	PostPlanetSearch: IQueryDefinition<
-		{ searchData: IPlanetSearchAdvanced },
-		IPlanet[]
+		{ searchData: PlanetSearchAdvancedPayload },
+		Planet[]
 	>;
 	GetSharedPlan: IQueryDefinition<{ sharedPlanUuid: string }, PlanShare>;
 	GetAllShared: IQueryDefinition<undefined, Shared[]>;
@@ -153,11 +153,11 @@ export interface IQueryRepository {
 		},
 		IExploration[]
 	>;
-	GetFIOStorage: IQueryDefinition<undefined, IFIOStorage>;
+	GetFIOStorage: IQueryDefinition<undefined, FIOStorage>;
 	// GetFIOSites: IQueryDefinition<undefined, IFIOSites>;
 	GetPlanetLastPOPR: IQueryDefinition<
 		{ planetNaturalId: string },
-		IPopulationReport
+		PopulationReport
 	>;
 	PatchUserProfile: IQueryDefinition<UserProfilePatch, UserProfile>;
 	PostUserResendEmailVerification: IQueryDefinition<null, UserResponseDetail>;

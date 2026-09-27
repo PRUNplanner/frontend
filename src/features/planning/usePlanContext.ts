@@ -23,13 +23,13 @@ import {
 	IGameData,
 	IPlanContext,
 } from "@/features/planning/engine/engine.types";
-import { IRecipe } from "@/features/api/gameData.types";
+import type { Recipe } from "@/features/api/schemas/gameData.schemas";
 import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 // recipes grouped by building, for the recipe array loaded last
 let groupedRecipes:
-	{ recipes: IRecipe[]; byBuilding: Record<string, IRecipe[]> } | undefined;
+	{ recipes: Recipe[]; byBuilding: Record<string, Recipe[]> } | undefined;
 
 /**
  * The empire a plan is calculated for: the option with the given uuid,
@@ -69,7 +69,7 @@ export function usePlanContext() {
 	 * @returns {IGameData} Game data
 	 */
 	function getGameData(): IGameData {
-		const recipes: IRecipe[] = toRaw(recipesDB.allData.value) ?? [];
+		const recipes: Recipe[] = toRaw(recipesDB.allData.value) ?? [];
 
 		if (groupedRecipes?.recipes !== recipes)
 			groupedRecipes = {
