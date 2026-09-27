@@ -1,10 +1,13 @@
 // Composables
-import {
+import type {
 	IEmpireMaterialIO,
 	IEmpireMaterialIOPlanet,
-	IEmpireMaterialIOState,
 	IEmpirePlanMaterialIO,
 } from "@/features/empire/empire.types";
+import type {
+	EmpireMaterialIOState,
+	PlanEmpireElement,
+} from "@/features/api/schemas/empireData.schemas";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import {
 	combineMaterialIOMinimal,
@@ -12,19 +15,18 @@ import {
 } from "@/features/planning/engine/materialIO";
 
 // Types & Interfaces
-import { IMaterial } from "@/features/api/gameData.types";
-import {
+import type { Material } from "@/features/api/schemas/gameData.schemas";
+import type {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
-import { IPlanEmpireElement, PLAN_FACTION } from "@/stores/planningStore.types";
 
 export function useMaterialIOUtil() {
 	const { materialsMap } = useMaterialData();
 
 	// material lookup for the engine, reactive through materialsMap
 	const materials = {
-		get: (ticker: string): IMaterial | undefined =>
+		get: (ticker: string): Material | undefined =>
 			materialsMap.value[ticker],
 	};
 
@@ -144,14 +146,14 @@ export function useMaterialIOUtil() {
 	}
 
 	async function empireMaterialIOState(
-		empire: IPlanEmpireElement | undefined,
+		empire: PlanEmpireElement | undefined,
 		data: IEmpireMaterialIO[]
-	): Promise<IEmpireMaterialIOState | undefined> {
+	): Promise<EmpireMaterialIOState | undefined> {
 		if (!empire) return undefined;
 
-		const result: IEmpireMaterialIOState = {
+		const result: EmpireMaterialIOState = {
 			metadata: {
-				faction: empire.empire_faction as PLAN_FACTION,
+				faction: empire.empire_faction,
 				permits_used: empire.empire_permits_used,
 				permits_total: empire.empire_permits_total,
 				plan_count: empire.plans.length,

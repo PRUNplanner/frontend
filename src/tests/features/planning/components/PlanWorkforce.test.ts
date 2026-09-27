@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanWorkforce from "@/features/planning/components/PlanWorkforce.vue";
@@ -8,16 +8,16 @@ import PButton from "@/ui/components/PButton.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import {
+import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+import type {
 	IWorkforceElement,
 	IWorkforceRecord,
-	WORKFORCE_TYPE,
 } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 const wf = (
-	name: WORKFORCE_TYPE,
+	name: WorkforceType,
 	data: Partial<IWorkforceElement> = {}
 ): IWorkforceElement => ({
 	name,
@@ -168,15 +168,7 @@ describe("PlanWorkforce", () => {
 			);
 
 		// name, need, supply, open, lux1, lux2, efficiency
-		expect(gray(2)).toEqual([
-			false,
-			true,
-			true,
-			true,
-			false,
-			false,
-			true,
-		]);
+		expect(gray(2)).toEqual([false, true, true, true, false, false, true]);
 		expect(gray(0)).toEqual([
 			false,
 			false,
@@ -204,15 +196,7 @@ describe("PlanWorkforce", () => {
 				td.classes().includes("text-white/50!")
 			);
 
-		expect(gray(2)).toEqual([
-			false,
-			false,
-			true,
-			true,
-			false,
-			false,
-			true,
-		]);
+		expect(gray(2)).toEqual([false, false, true, true, false, false, true]);
 		expect(gray(4)).toEqual([
 			false,
 			true,

@@ -1,12 +1,32 @@
-import { computed, ComputedRef, WritableComputedRef } from "vue";
+import {
+	computed,
+	type ComputedRef,
+	type MaybeRefOrGetter,
+	toValue,
+	type WritableComputedRef,
+} from "vue";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
 
-// Types & Interfaces
-import { IPreferencePerPlan } from "@/features/preferences/userPreferences.types";
+// Util
+import { deepClone } from "@/util/data";
+import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
-export function usePlanPreferences(planUuid: string) {
+// Types & Interfaces
+import type { PreferencePerPlan } from "@/features/api/schemas/user.schemas";
+
+/**
+ * Preferences of a single plan. Without a uuid (plan not created yet) it
+ * reads the plan defaults and writes are no-ops.
+ *
+ * @author jplacht
+ *
+ * @param {MaybeRefOrGetter<string | undefined>} planUuid Plan Uuid
+ */
+export function usePlanPreferences(
+	planUuid: MaybeRefOrGetter<string | undefined>
+) {
 	const userStore = useUserStore();
 
 	/**
@@ -14,11 +34,14 @@ export function usePlanPreferences(planUuid: string) {
 	 *
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<IPreferencePerPlan>}
+	 * @type {ComputedRef<PreferencePerPlan>}
 	 */
-	const fullPreferences: ComputedRef<IPreferencePerPlan> = computed(() =>
-		userStore.getPlanPreference(planUuid)
-	);
+	const fullPreferences: ComputedRef<PreferencePerPlan> = computed(() => {
+		const uuid = toValue(planUuid);
+		return uuid
+			? userStore.getPlanPreference(uuid)
+			: deepClone(preferenceDefaults.planDefaults);
+	});
 
 	/**
 	 * Set a plans preferences key to specified value
@@ -33,7 +56,8 @@ export function usePlanPreferences(planUuid: string) {
 		key: K,
 		value: (typeof fullPreferences.value)[K]
 	): void {
-		userStore.setPlanPreference(planUuid, { [key]: value });
+		const uuid = toValue(planUuid);
+		if (uuid) userStore.setPlanPreference(uuid, { [key]: value });
 	}
 
 	/**

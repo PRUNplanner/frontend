@@ -19,7 +19,8 @@ import { useResourceROIOverview } from "@/features/resource_roi_overview/useReso
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // Types & Interfaces
-import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
@@ -100,7 +101,7 @@ await planetsStore.setMany([planet_etherwind, ...planetSearch]);
 await useDB(planetsStore).preload(true);
 
 // B6: 25 etherwind variants and 5 large plans
-const etherwindVariants: (() => IPlan)[] = [
+const etherwindVariants: (() => Plan)[] = [
 	etherwindPlan,
 	smallPlan,
 	() => {
@@ -119,14 +120,14 @@ const etherwindVariants: (() => IPlan)[] = [
 		return p;
 	},
 ];
-const empirePlans: IPlan[] = Array.from({ length: 30 }, (_, i) =>
+const empirePlans: Plan[] = Array.from({ length: 30 }, (_, i) =>
 	i % 6 === 5 ? largePlan() : etherwindVariants[i % 5]()
 );
 async function empire(): Promise<number> {
 	await empireLike(
 		empirePlans,
 		"a208d74e-d07f-4722-8192-9b55d4140f58",
-		empire_list as unknown as IPlanEmpireElement[],
+		empire_list as unknown as PlanEmpireElement[],
 		undefined
 	);
 	return empirePlans.length;
@@ -134,9 +135,10 @@ async function empire(): Promise<number> {
 
 // one plan per recipe
 async function roiOverview(): Promise<number> {
-	return (
-		await useROIOverview(ref(etherwindPlan()), ref(undefined)).calculate()
-	)!.length;
+	return (await useROIOverview(
+		ref(etherwindPlan()),
+		ref(undefined)
+	).calculate())!.length;
 }
 
 // one plan per planet and extractor (RIG, EXT, COL)

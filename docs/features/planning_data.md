@@ -11,9 +11,9 @@ mapping.
 ## Key files
 
 - **`usePlan.ts`**:
-  - `createBlankDefinition(planet…)` builds a new `IPlan` for a planet.
+  - `createBlankDefinition(planet…)` builds a new `IPlanDefinition` for a planet (no uuid or name until saved).
   - `mapPlanetToPlanType` translates the planet's COGC program to the
-    plan's `PLAN_COGCPROGRAM_TYPE`.
+    plan's `PlanCOGCProgram`.
   - `createNewPlan`, `saveExistingPlan`, `reloadExistingPlan` and
     `cloneSharedPlan` go through `useQuery` (`CreatePlan`, `PatchPlan`,
     `GetPlan`, `PostCloneSharedPlan`).
@@ -21,8 +21,9 @@ mapping.
     store.
   - `isEditDisabled(routeParams)` returns true for shared plans.
   - `cogcTextMapping` holds display names for COGC programs.
-- **`usePlan.types.d.ts`**: `IPlanCreateData`, `IPlanSaveData` and
-  `IPlanRouteParams`.
+- **`usePlan.types.ts`**: `IPlanRouteParams` and `IPlanDefinition`, the plan
+  as the editor holds it. The save/create payloads are `PlanCreateData` and
+  `PlanSaveData` (`api/schemas/planningData.schemas.ts`).
 
 ## Data
 

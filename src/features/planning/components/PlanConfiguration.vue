@@ -1,12 +1,17 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, WritableComputedRef } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		type WritableComputedRef,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
 	// Types & Interfaces
-	import { IPlanEmpire } from "@/stores/planningStore.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import { PForm, PFormItem, PInput, PSelect } from "@/ui";
@@ -22,33 +27,33 @@
 			default: undefined,
 		},
 		empireOptions: {
-			type: Array as PropType<IPlanEmpire[]>,
+			type: Array as PropType<PlanEmpire[]>,
 			required: false,
 			default: undefined,
 		},
 		activeEmpire: {
-			type: Object as PropType<IPlanEmpire>,
+			type: Object as PropType<PlanEmpire>,
 			required: false,
 			default: undefined,
 		},
 		planEmpires: {
-			type: Array as PropType<IPlanEmpire[]>,
+			type: Array as PropType<PlanEmpire[]>,
 			required: true,
 		},
 	});
 
 	function createEmpireOptions(
-		data: IPlanEmpire[] | undefined
+		data: PlanEmpire[] | undefined
 	): PSelectOption[] {
 		if (!data) return [];
 
 		const selectOptions: PSelectOption[] = [];
 
-		data.forEach((e: IPlanEmpire) => {
+		data.forEach((e: PlanEmpire) => {
 			// check if the option is also assigned to the plan
 			// by trying to find it in planEmpires
 
-			const pE: IPlanEmpire | undefined = props.planEmpires.find(
+			const pE: PlanEmpire | undefined = props.planEmpires.find(
 				(f) => f.uuid === e.uuid
 			);
 

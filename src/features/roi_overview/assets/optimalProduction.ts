@@ -1,4 +1,4 @@
-import { IStaticOptimalProduction } from "@/features/roi_overview/useROIOverview.types";
+import type { IStaticOptimalProduction } from "@/features/roi_overview/useROIOverview.types";
 
 export const optimalProduction: IStaticOptimalProduction[] = [
 	{

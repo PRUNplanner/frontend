@@ -1,11 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		ComputedRef,
-		defineAsyncComponent,
-		Ref,
-		ref,
-	} from "vue";
+	import { computed, defineAsyncComponent, type Ref, ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -50,12 +44,9 @@
 	import { relativeFromDate } from "@/util/date";
 
 	// Types & Interfaces
-	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
-	import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
-	import {
-		IFIOBurnPlanetTableElement,
-		IFIOBurnTableElement,
-	} from "@/features/fio/useFIOBurn.types";
+	import type { Plan } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
 	import { PSelect, PForm, PFormItem, PInputNumber } from "@/ui";
@@ -75,8 +66,8 @@
 	});
 
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
-	const planData: Ref<IPlan[]> = ref([]);
-	const empireList: Ref<IPlanEmpireElement[]> = ref([]);
+	const planData: Ref<Plan[]> = ref([]);
+	const empireList: Ref<PlanEmpireElement[]> = ref([]);
 	const calculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
 
 	const progressCurrent = ref(0);
@@ -124,7 +115,7 @@
 				);
 
 				if (cacheCalculatedPlans.has(cacheKey)) {
-					calculatedPlans.value[plan.uuid!] =
+					calculatedPlans.value[plan.uuid] =
 						cacheCalculatedPlans.get(cacheKey)!;
 					progressCurrent.value++;
 				} else {
@@ -147,7 +138,7 @@
 							selectedCXUuid.value
 						)
 					);
-					calculatedPlans.value[plan.uuid!] = result;
+					calculatedPlans.value[plan.uuid] = result;
 					progressCurrent.value++;
 
 					// cache
@@ -163,15 +154,7 @@
 		}
 	}
 
-	const burnTable: ComputedRef<IFIOBurnTableElement[]> = computed(() => {
-		return useFIOBurn(planData, calculatedPlans).burnTable.value;
-	});
-
-	const planTable: ComputedRef<IFIOBurnPlanetTableElement[]> = computed(
-		() => {
-			return useFIOBurn(planData, calculatedPlans).planTable.value;
-		}
-	);
+	const { burnTable, planTable } = useFIOBurn(planData, calculatedPlans);
 </script>
 
 <template>
@@ -181,10 +164,8 @@
 		@update:cx-uuid="
 			(value: string | undefined) => (selectedCXUuid = value)
 		"
-		@data:empire:list="
-			(value: IPlanEmpireElement[]) => (empireList = value)
-		"
-		@data:empire:plans="(value: IPlan[]) => (planData = value)">
+		@data:empire:list="(value: PlanEmpireElement[]) => (empireList = value)"
+		@data:empire:plans="(value: Plan[]) => (planData = value)">
 		<template #default="{ empirePlanetList }">
 			<AsyncWrapperGameDataLoader
 				:key="`GAMEDATAWRAPPER#${selectedEmpireUuid}`"

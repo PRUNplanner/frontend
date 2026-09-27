@@ -1,8 +1,8 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType } from "vue";
+	import { computed, type ComputedRef, type PropType } from "vue";
 
 	// Types & Interfaces
-	import { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
+	import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
 
 	// Components
 	import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";

@@ -1,19 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanExperts from "@/features/planning/components/PlanExperts.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import {
-	EXPERT_TYPE,
-	IExpertRecord,
-} from "@/features/planning/usePlanCalculation.types";
+import type { ExpertType } from "@/features/api/schemas/planningData.schemas";
+import type { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
-const EXPERTS: EXPERT_TYPE[] = [
+const EXPERTS: ExpertType[] = [
 	"Agriculture",
 	"Chemistry",
 	"Construction",
@@ -27,7 +25,7 @@ const EXPERTS: EXPERT_TYPE[] = [
 
 /** all experts at 0 / 0 %, overridden by `set` */
 function expertData(
-	set: Partial<Record<EXPERT_TYPE, [number, number]>> = {}
+	set: Partial<Record<ExpertType, [number, number]>> = {}
 ): IExpertRecord {
 	return Object.fromEntries(
 		EXPERTS.map((name) => [

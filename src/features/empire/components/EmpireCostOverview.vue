@@ -1,11 +1,11 @@
 <script setup lang="ts">
-	import { PropType, computed } from "vue";
+	import { type PropType, computed } from "vue";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IEmpireCostOverview } from "@/features/empire/empire.types";
+	import type { IEmpireCostOverview } from "@/features/empire/empire.types";
 
 	const props = defineProps({
 		costOverview: {

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 	import {
 		computed,
-		ComputedRef,
+		type ComputedRef,
 		defineAsyncComponent,
 		ref,
-		Ref,
+		type Ref,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -54,9 +54,10 @@
 	);
 
 	// Types & Interfaces
-	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
-	import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
-	import {
+	import type { Plan } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+	import type {
 		IEmpireCostOverview,
 		IEmpireMaterialIO,
 		IEmpirePlanListData,
@@ -91,10 +92,10 @@
 	});
 
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
-	const refEmpireList: Ref<IPlanEmpireElement[]> = ref([]);
+	const refEmpireList: Ref<PlanEmpireElement[]> = ref([]);
 
 	const calculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
-	const planData: Ref<IPlan[]> = ref([]);
+	const planData: Ref<Plan[]> = ref([]);
 
 	const isCalculating: Ref<boolean> = ref(true);
 	const progressCurrent = ref(0);
@@ -114,13 +115,13 @@
 	async function calculateEmpire(clearCache = false): Promise<void> {
 		isCalculating.value = true;
 
+		calculatedPlans.value = {};
+		progressTotal.value = planData.value.length;
+		progressCurrent.value = 0;
+
+		if (clearCache) cacheCalculatedPlans.clear();
+
 		try {
-			calculatedPlans.value = {};
-			progressTotal.value = planData.value.length;
-			progressCurrent.value = 0;
-
-			if (clearCache) cacheCalculatedPlans.clear();
-
 			// game data once for all plans
 			const gameData = await loadGameData();
 
@@ -129,13 +130,13 @@
 				// calculated properly within this context
 
 				const cacheKey: string = planResultCacheKey(
-					plan.uuid!,
+					plan.uuid,
 					selectedEmpireUuid.value,
 					selectedCXUuid.value
 				);
 
 				if (cacheCalculatedPlans.has(cacheKey)) {
-					calculatedPlans.value[plan.uuid!] =
+					calculatedPlans.value[plan.uuid] =
 						cacheCalculatedPlans.get(cacheKey)!;
 					progressCurrent.value++;
 				} else {
@@ -158,7 +159,7 @@
 							selectedCXUuid.value
 						)
 					);
-					calculatedPlans.value[plan.uuid!] = result;
+					calculatedPlans.value[plan.uuid] = result;
 					progressCurrent.value++;
 
 					// cache
@@ -168,7 +169,7 @@
 				}
 			}
 		} catch (err) {
-			// don't persist the state of a partial calculation
+			// e.g. game data missing, never persist a partial empire state
 			console.error(err);
 			return;
 		} finally {
@@ -204,14 +205,15 @@
 	 * Holds computed empire data for the currently selected empire.
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<IPlanEmpireElement | undefined>} Empire Data
+	 * @type {ComputedRef<PlanEmpireElement | undefined>} Empire Data
 	 */
-	const selectedEmpire: ComputedRef<IPlanEmpireElement | undefined> =
-		computed(() => {
+	const selectedEmpire: ComputedRef<PlanEmpireElement | undefined> = computed(
+		() => {
 			return refEmpireList.value.find(
 				(e) => e.uuid == selectedEmpireUuid.value
 			);
-		});
+		}
+	);
 
 	/**
 	 * Holds computed cost overview based on plan results.
@@ -265,7 +267,7 @@
 	const planListData: ComputedRef<IEmpirePlanListData[]> = computed(() => {
 		return Object.entries(calculatedPlans.value).map(
 			([planUuid, planResult]) => {
-				const plan: IPlan = planData.value.find(
+				const plan: Plan = planData.value.find(
 					(p) => p.uuid == planUuid
 				)!;
 
@@ -291,7 +293,7 @@
 		() => {
 			return Object.entries(calculatedPlans.value).map(
 				([planUuid, planResult]) => {
-					const plan: IPlan = planData.value.find(
+					const plan: Plan = planData.value.find(
 						(p) => p.uuid == planUuid
 					)!;
 					return {
@@ -333,13 +335,13 @@
 	<WrapperPlanningDataLoader
 		empire-list
 		:empire-uuid="selectedEmpireUuid"
-		@data:empire:plans="(value: IPlan[]) => (planData = value)"
+		@data:empire:plans="(value: Plan[]) => (planData = value)"
 		@update:empire-uuid="(value: string) => (selectedEmpireUuid = value)"
 		@update:cx-uuid="
 			(value: string | undefined) => (selectedCXUuid = value)
 		"
 		@data:empire:list="
-			(value: IPlanEmpireElement[]) => (refEmpireList = value)
+			(value: PlanEmpireElement[]) => (refEmpireList = value)
 		">
 		<template #default="{ empirePlanetList }">
 			<WrapperGameDataLoader

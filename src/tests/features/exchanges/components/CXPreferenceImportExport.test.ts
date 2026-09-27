@@ -1,20 +1,20 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import CXPreferenceImportExport from "@/features/exchanges/components/CXPreferenceImportExport.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import {
-	ICXDataExchangeOption,
-	ICXDataTickerOption,
-} from "@/stores/planningStore.types";
-import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
+import type {
+	CXDataExchangeOption,
+	CXDataTickerOption,
+} from "@/features/api/schemas/cxData.schemas";
+import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
-const CX_EMPIRE: ICXDataExchangeOption[] = [
+const CX_EMPIRE: CXDataExchangeOption[] = [
 	{ type: "BOTH", exchange: "AI1_30D" },
 ];
-const EMPIRE_TICKERS: ICXDataTickerOption[] = [
+const EMPIRE_TICKERS: CXDataTickerOption[] = [
 	{ type: "BUY", ticker: "RAT", value: 150 },
 	{ type: "SELL", ticker: "DW", value: 80.5 },
 ];
@@ -146,7 +146,9 @@ describe("CXPreferenceImportExport", () => {
 		const input = await selectFile(wrapper, CSV);
 
 		await vi.waitFor(() =>
-			expect(component.emitted("update:planetTickerOptions")).toBeDefined()
+			expect(
+				component.emitted("update:planetTickerOptions")
+			).toBeDefined()
 		);
 		expect(component.emitted("update:cxEmpire")).toEqual([[CX_EMPIRE]]);
 		expect(component.emitted("update:empireTickerOptions")).toEqual([
@@ -192,15 +194,13 @@ describe("CXPreferenceImportExport", () => {
 				ticker: [],
 			},
 		]);
-		expect(component.emitted("update:planetTickerOptions")![0][0]).toEqual(
-			[
-				{
-					planet: "ZV-307c",
-					exchanges: [],
-					ticker: [{ type: "BUY", ticker: "FE", value: 12 }],
-				},
-			]
-		);
+		expect(component.emitted("update:planetTickerOptions")![0][0]).toEqual([
+			{
+				planet: "ZV-307c",
+				exchanges: [],
+				ticker: [{ type: "BUY", ticker: "FE", value: 12 }],
+			},
+		]);
 		expect(component.emitted("update:cxEmpire")).toEqual([[[]]]);
 	});
 
@@ -245,7 +245,8 @@ describe("CXPreferenceImportExport", () => {
 		const input = await selectFile(wrapper, content);
 
 		await vi.waitFor(() => expect(error).toHaveBeenCalledTimes(1));
-		for (const event of EVENTS) expect(component.emitted(event)).toBeUndefined();
+		for (const event of EVENTS)
+			expect(component.emitted(event)).toBeUndefined();
 		expect(input.value).toBe("");
 	});
 });

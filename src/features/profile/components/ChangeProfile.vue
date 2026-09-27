@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { reactive, watch, Ref, ref, onMounted } from "vue";
+	import { reactive, watch, type Ref, ref, onMounted } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -77,7 +77,7 @@
 		trackEvent("user_request_email_verification");
 
 		try {
-			await useQuery("PostUserResendEmailVerification", null).execute();
+			await useQuery("PostUserResendEmailVerification").execute();
 			codeResendRequested.value = true;
 		} catch (err) {
 			console.error("Error resending verification code", err);

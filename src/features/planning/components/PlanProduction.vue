@@ -1,5 +1,11 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, ref, Ref } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		ref,
+		type Ref,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -13,12 +19,12 @@
 	import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 
 	// Types & Interfaces
-	import {
-		IPlanetResource,
-		PLANET_RESOURCETYPE_TYPE,
-	} from "@/features/api/gameData.types";
-	import { IProductionResult } from "@/features/planning/usePlanCalculation.types";
-	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+	import type {
+		PlanetResource,
+		PlanetResourceType,
+	} from "@/features/api/schemas/gameData.schemas";
+	import type { IProductionResult } from "@/features/planning/usePlanCalculation.types";
+	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 	// UI
 	import PCheckbox from "@/ui/components/PCheckbox.vue";
@@ -38,7 +44,7 @@
 			required: true,
 		},
 		cogc: {
-			type: String as PropType<PLAN_COGCPROGRAM_TYPE>,
+			type: String as PropType<PlanCOGCProgram>,
 			required: true,
 		},
 		cxUuid: {
@@ -51,7 +57,7 @@
 			required: true,
 		},
 		planetResources: {
-			type: Object as PropType<IPlanetResource[]>,
+			type: Object as PropType<PlanetResource[]>,
 			required: true,
 		},
 	});
@@ -87,15 +93,13 @@
 		() => props.productionData
 	);
 	const localSelectedBuilding: Ref<string | undefined> = ref(undefined);
-	const localCOGC: ComputedRef<PLAN_COGCPROGRAM_TYPE> = computed(
-		() => props.cogc
-	);
+	const localCOGC: ComputedRef<PlanCOGCProgram> = computed(() => props.cogc);
 	const localMatchCOGC: Ref<boolean> = ref(false);
 
 	const { getProductionBuildingOptions } = useBuildingData();
 
 	function emitCreateBuildingWithRecipe(
-		resourceType: PLANET_RESOURCETYPE_TYPE,
+		resourceType: PlanetResourceType,
 		resourceTicker: string
 	): void {
 		const buildingTicker =

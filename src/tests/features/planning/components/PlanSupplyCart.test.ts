@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
@@ -10,7 +10,7 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
@@ -172,9 +172,7 @@ describe("PlanSupplyCart", () => {
 		const { wrapper } = await mountCart();
 
 		expect(wrapper.findComponent(PSelect).exists()).toBe(false);
-		expect(
-			wrapper.find('th[data-col-key="stock"]').exists()
-		).toBe(false);
+		expect(wrapper.find('th[data-col-key="stock"]').exists()).toBe(false);
 	});
 
 	it("subtracts the planet's FIO storage from the need", async () => {

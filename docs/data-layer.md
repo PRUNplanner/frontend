@@ -6,7 +6,7 @@ Data moves through four layers:
 component / composable
   └─ useQuery("Name", params).execute()          src/lib/query_cache/useQuery.ts
        └─ queryStore.execute  (TTL, dedup, cache)  src/lib/query_cache/queryStore.ts
-            └─ definition.fetchFn                 src/lib/query_cache/queryRepository.ts
+            └─ definition.fetchFn                 src/lib/query_cache/queries/*.queries.ts
                  ├─ call*()  → apiService (axios + Zod)   src/features/api/*.api.ts
                  └─ side effects: write IndexedDB / planningStore / invalidate keys
 ```
@@ -34,7 +34,13 @@ component / composable
     once.
   - If the refresh fails, or the 401 comes from `/user/refresh/` itself, it
     calls `logout()` and routes to `/`.
-  - `logout()` resets the user, planning and query stores and PostHog.
+  - `logout()` resets the user, planning and query stores and PostHog. The
+    next login loads its own profile and preferences again.
+  - A response to a request sent logged in, in a session that has since
+    ended (the refresh token changed), is discarded as a `CanceledError`.
+    It never triggers a token refresh or logout, and it can't leak into
+    the next user's stores. A pending preference sync is dropped the same
+    way.
 
 ## 2. Endpoints & schemas (`src/features/api/`)
 
@@ -43,30 +49,67 @@ component / composable
   `userData.api.ts`, `analyticsData.api.ts` and `apiKeysData.api.ts`.
 - Each export is a small `call*()` function that makes a single
   `apiService` call.
-- Schemas live in `schemas/*.schemas.ts`.
-  - They are usually declared as `z.ZodType<IThing>` against a hand-written
-    interface, so a drift between the schema and the interface is a type
-    error.
-  - `z.infer` aliases sit at the bottom of each file.
-- Interfaces for game data are in `gameData.types.d.ts`. Planning entities
-  (plans, empires, CX) are in `src/stores/planningStore.types.d.ts`.
+- Schemas live in `schemas/<domain>.schemas.ts` and are the **single source
+  of truth** for every shape that crosses the wire. Each named shape is a
+  schema plus its derived type, side by side:
+
+  ```ts
+  export const SharedSchema = z.object({ uuid: z.uuid(), plan: z.uuid() });
+  export type Shared = z.infer<typeof SharedSchema>;
+
+  export const SharedCreatePayloadSchema = SharedSchema.pick({ plan: true });
+  ```
+
+  - Don't annotate schemas as `z.ZodType<…>`: it hides the concrete type
+    and blocks `.extend/.pick/.omit/.partial/.shape`. Only a recursive
+    schema may keep one, with a comment saying why.
+  - Derive related shapes from each other instead of repeating fields.
+  - Export a type only when something uses it by name. Callers write
+    `Shared[]`, so there are no array aliases.
+  - Responses use `z.infer` (the parsed output). Where a caller builds a
+    payload and the schema coerces or transforms, use `z.input<typeof …>`.
+  - Enums are a `z.enum([...])` with the union type derived from it.
+- `apiService` infers its types from the schemas:
+  `get(path, schema)` returns `z.output<typeof schema>`, and
+  `post/put/patch` type the payload as `z.input` of the request schema. Don't
+  pass explicit type arguments.
+- Shapes that never cross a runtime boundary (engine results, UI state,
+  query cache) are plain TypeScript in the feature's `*.types.ts`. See
+  "Types" in [AGENTS.md](../AGENTS.md).
 
 ## 3. Query cache (`src/lib/query_cache/`)
 
 - **`queryRepository.ts`** is the single catalogue of every backend
   interaction: `GetMaterials`, `GetPlan`, `PatchEmpire`, `CreateCX` and so
-  on. Each definition has:
+  on. It merges the definitions in `queries/`, which are split by domain
+  (`gameData`, `planning`, `user`). Each definition is wrapped in
+  `defineQuery()` and has:
   - `key(params)`: a JSON array such as `["planningdata", "plan", uuid]`.
     Object keys are sorted by `toCacheKey`.
   - `fetchFn(params)`: calls `call*()`, then performs side effects. It
-    writes to IndexedDB or `planningStore`, seeds sibling cache entries
-    (`addCacheState`), or invalidates related keys.
-  - `expireTime` (ms, optional), `autoRefetch` and `persist`.
-    `persist: false` drops the result after the call, which is what
-    mutations use.
+    writes to IndexedDB or `planningStore` (`storeAndPreload`), seeds
+    sibling cache entries (`addCacheState(name, params, data)`), or
+    invalidates related keys (`invalidate(...prefixes)`). A cached query's
+    `fetchFn` must let errors throw. If it returns `[]` or `false` on
+    failure, that value is cached as fresh data, so loaders report success
+    and later calculations fail (for example "Planet … not available").
+  - `expireTime` (ms, optional), `autoRefetch` (default `false`) and
+    `persist` (default `true`). `persist: false` drops the result after
+    the call, which is what mutations use.
+- **Types come from the definitions.** Annotate `fetchFn`'s params and
+  return type; `key`'s params are inferred from it. Annotate the return
+  type even when it looks inferable: a body that touches the query store
+  would make the inference circular. `IQueryRepository` is
+  `typeof queryRepository`, and `QueryParams<"Name">` /
+  `QueryData<"Name">` (`queryRepository.types.ts`) read a query's types.
+  There is nothing to register by hand.
 - **`queryStore.ts`** is a Pinia store and is **not** persisted.
   - `execute(name, params, { forceRefetch })` returns cached data while it is
-    fresh, and dedupes concurrent calls through an in-flight map.
+    fresh, and dedupes concurrent calls through an in-flight map. Mutations
+    (`persist: false`) are never deduped, since most share a static key.
+    A request that was replaced (forced refetch) or dropped
+    (`invalidateKey`, `$reset` on logout) no longer writes to the cache
+    when it settles.
   - `invalidateKey(key, { exact, forceRefetch, skipRefetch })` deletes
     either the exact key or every key that the given key is a subset of. It
     refetches when `autoRefetch` is set or `forceRefetch` is passed.
@@ -75,25 +118,31 @@ component / composable
   - A 10s interval refetches expired `autoRefetch` entries and evicts the
     other expired ones. It pauses while the user is idle (`userActivity`, see
     [features/user_activity.md](features/user_activity.md)).
-- **`useQuery(name, params)`** is the caller API. Use `.execute()`. The
-  `loading`, `error` and `data` fields it returns are **non-reactive
-  snapshots** taken at call time, so don't bind templates to them. Before
-  the query has any cached state, `error` is `false` and `data` is
-  `undefined`.
+- **`useQuery(name, params)`** is the caller API. Use `.execute()`.
+  `params` is required exactly when the query takes them, so
+  `useQuery("GetMaterials")` has none and `useQuery("GetPlan")` without
+  params is a type error. The `loading`, `error` and `data` fields it
+  returns are **non-reactive snapshots** taken at call time, so don't bind
+  templates to them. Before the query has any cached state, `error` is
+  `false` and `data` is `undefined`.
 - The `/debug` route (`views/QueryCacheView.vue`) shows the live cache.
 
 ### Adding a backend call
 
-1. Add a Zod schema to `src/features/api/schemas/<domain>.schemas.ts`.
+1. Add a Zod schema to `src/features/api/schemas/<domain>.schemas.ts`, and
+   next to it `export type Thing = z.infer<typeof ThingSchema>` if the shape
+   is used by name. Reuse or derive from existing schemas where the shapes
+   overlap. Don't write a separate interface.
 2. Add a `call*()` function to `src/features/api/<domain>.api.ts` that uses
-   `apiService`.
-3. Add the definition's type to `IQueryRepository` in
-   `queryRepository.types.ts`.
-4. Add the definition to `queryRepository.ts`: choose a key under an
-   existing prefix, set `persist: false` for mutations, and invalidate the
-   affected key families.
-5. Call it with `useQuery("YourName", params).execute()`.
-6. Add a test with `axios-mock-adapter`. For a pattern, see
+   `apiService` without explicit type arguments, returning
+   `Promise<Thing>` (or `Promise<Thing[]>`).
+3. Add a `defineQuery({...})` to the matching `queries/<domain>.queries.ts`.
+   Choose a key under an existing prefix, annotate `fetchFn`'s params and
+   return type with the derived types (`import type`), set
+   `persist: false` for mutations, and invalidate the affected key
+   families.
+4. Call it with `useQuery("YourName", params).execute()`.
+5. Add a test with `axios-mock-adapter`. For a pattern, see
    `src/tests/features/api/*.api.test.ts` and
    [testing.md](testing.md).
 

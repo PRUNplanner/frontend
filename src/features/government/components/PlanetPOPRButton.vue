@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, Ref, computed } from "vue";
+	import { ref, type Ref, computed } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -12,7 +12,7 @@
 	import PlanetPOPRTable from "./PlanetPOPRTable.vue";
 
 	// Typoes & Interfaces
-	import { IPopulationReport } from "@/features/api/gameData.types";
+	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
 
 	// UI
 	import { PButton } from "@/ui";
@@ -31,7 +31,7 @@
 	const showPOPRModal: Ref<boolean> = ref(false);
 	const buttonLoading: Ref<boolean> = ref(false);
 	const buttonDisabled: Ref<boolean> = ref(false);
-	const poprData: Ref<IPopulationReport | null> = ref(null);
+	const poprData: Ref<PopulationReport | null> = ref(null);
 
 	async function loadData(planetNaturalId: string): Promise<void> {
 		buttonLoading.value = true;
@@ -43,7 +43,7 @@
 				planetNaturalId: planetNaturalId,
 			})
 				.execute()
-				.then((data: IPopulationReport) => {
+				.then((data: PopulationReport) => {
 					poprData.value = data;
 					showPOPRModal.value = true;
 				})
@@ -70,7 +70,11 @@
 	<n-modal
 		v-model:show="showPOPRModal"
 		preset="card"
-		:title="t('government.popr_button.modal_title', { planet_id: planetNaturalId })"
+		:title="
+			t('government.popr_button.modal_title', {
+				planet_id: planetNaturalId,
+			})
+		"
 		class="max-w-150">
 		<PlanetPOPRTable
 			v-if="poprData"

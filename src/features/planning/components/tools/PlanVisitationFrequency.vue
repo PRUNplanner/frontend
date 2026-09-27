@@ -1,5 +1,12 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, ref, Ref, watch } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		ref,
+		type Ref,
+		watch,
+	} from "vue";
 
 	// Composables
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
@@ -8,8 +15,8 @@
 	import { formatAmount, formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { PSelectOption } from "@/ui/ui.types";
-	import {
+	import type { PSelectOption } from "@/ui/ui.types";
+	import type {
 		IMaterialIO,
 		IStorageRecord,
 	} from "@/features/planning/usePlanCalculation.types";
@@ -56,12 +63,8 @@
 	});
 
 	// plan preference patch-in
-	const planPrefs = computed<ReturnType<typeof usePlanPreferences> | null>(
-		() => {
-			return !props.disabled && props.planUuid !== undefined
-				? usePlanPreferences(props.planUuid)
-				: null;
-		}
+	const { visitationMaterialExclusions } = usePlanPreferences(() =>
+		props.disabled ? undefined : props.planUuid
 	);
 
 	function getExclusionOptions(data: IMaterialIO[]): PSelectOption[] {
@@ -90,8 +93,14 @@
 			(sum, e) => sum + (e.delta > 0 ? e.totalVolume : 0),
 			0
 		);
-		const dailyWeightTotal: number = Math.max(dailyWeightImport, dailyWeightExport);
-		const dailyVolumeTotal: number = Math.max(dailyVolumeImport, dailyVolumeExport);
+		const dailyWeightTotal: number = Math.max(
+			dailyWeightImport,
+			dailyWeightExport
+		);
+		const dailyVolumeTotal: number = Math.max(
+			dailyVolumeImport,
+			dailyVolumeExport
+		);
 
 		return {
 			storageFilled: Math.max(
@@ -118,10 +127,7 @@
 		getExclusionOptions(props.materialIO)
 	);
 	const refMaterialExclusions: Ref<string[]> = ref(
-		planPrefs.value === null ||
-			planPrefs.value.visitationMaterialExclusions.value === undefined
-			? []
-			: planPrefs.value.visitationMaterialExclusions.value
+		visitationMaterialExclusions.value ?? []
 	);
 
 	// Prop Watcher
@@ -253,15 +259,11 @@
 					</template>
 				</template>
 				<template #total_weight>
-{{
-					formatAmount(totalWeight)
-				}}
-</template>
+					{{ formatAmount(totalWeight) }}
+				</template>
 				<template #total_volume>
-{{
-					formatAmount(totalVolume)
-				}}
-</template>
+					{{ formatAmount(totalVolume) }}
+				</template>
 			</i18n-t>
 
 			<i18n-t
@@ -270,15 +272,11 @@
 				tag="p"
 				class="pb-3">
 				<template #total_weight>
-{{
-					formatAmount(totalWeight)
-				}}
-</template>
+					{{ formatAmount(totalWeight) }}
+				</template>
 				<template #total_volume>
-{{
-					formatAmount(totalVolume)
-				}}
-</template>
+					{{ formatAmount(totalVolume) }}
+				</template>
 			</i18n-t>
 
 			<PTable striped>
@@ -373,10 +371,7 @@
 						const stringsOnly = value.filter(
 							(v): v is string => typeof v === 'string'
 						);
-						if (planPrefs !== null) {
-							planPrefs.visitationMaterialExclusions.value =
-								stringsOnly;
-						}
+						visitationMaterialExclusions = stringsOnly;
 						refMaterialExclusions = stringsOnly;
 					}
 				" />

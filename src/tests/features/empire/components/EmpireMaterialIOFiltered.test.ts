@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
@@ -8,7 +8,7 @@ import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IEmpireMaterialIO } from "@/features/empire/empire.types";
+import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-	import { computed, PropType, WritableComputedRef } from "vue";
+	import { computed, type PropType, type WritableComputedRef } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	// Types & Interfaces
-	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 	// UI
 	import { PForm, PFormItem, PCheckbox, PSelect, PTooltip } from "@/ui";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	const props = defineProps({
 		disabled: {
@@ -22,7 +22,7 @@
 			required: true,
 		},
 		cogc: {
-			type: String as PropType<PLAN_COGCPROGRAM_TYPE>,
+			type: String as PropType<PlanCOGCProgram>,
 			required: true,
 		},
 		planetNaturalId: {
@@ -33,7 +33,7 @@
 
 	const emit = defineEmits<{
 		(e: "update:corphq", value: boolean): void;
-		(e: "update:cogc", value: PLAN_COGCPROGRAM_TYPE): void;
+		(e: "update:cogc", value: PlanCOGCProgram): void;
 	}>();
 
 	// Local State
@@ -48,9 +48,9 @@
 		},
 	});
 
-	const localCOGC: WritableComputedRef<PLAN_COGCPROGRAM_TYPE> = computed({
+	const localCOGC: WritableComputedRef<PlanCOGCProgram> = computed({
 		get: () => props.cogc,
-		set: (value: PLAN_COGCPROGRAM_TYPE) => {
+		set: (value: PlanCOGCProgram) => {
 			emit("update:cogc", value);
 			trackEvent("plan_update_cogc", {
 				planetNaturalId: props.planetNaturalId,

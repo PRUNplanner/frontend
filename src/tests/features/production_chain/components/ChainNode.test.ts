@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { h } from "vue";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import ChainNode from "@/features/production_chain/components/ChainNode.vue";
-import { IFlowNodeData } from "@/features/production_chain/productionGraph.types";
-import { NodeColorType } from "@/features/production_chain/components/ChainNode.types";
+import type { IFlowNodeData } from "@/features/production_chain/productionGraph.types";
+import type { NodeColorType } from "@/features/production_chain/components/ChainNode.types";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
@@ -70,7 +70,11 @@ describe("ChainNode", () => {
 	it("shows amount, material and building", async () => {
 		const { wrapper } = await mountNode("Material");
 
-		expect(tile(wrapper).findAll("div").map((d) => d.text())).toEqual([
+		expect(
+			tile(wrapper)
+				.findAll("div")
+				.map((d) => d.text())
+		).toEqual([
 			// thousand separated, two decimals
 			"1,234.50",
 			"DW",
@@ -90,10 +94,11 @@ describe("ChainNode", () => {
 			buildingTicker: "N/A",
 		});
 
-		expect(tile(wrapper).findAll("div").map((d) => d.text())).toEqual([
-			"1,234.50",
-			"DW",
-		]);
+		expect(
+			tile(wrapper)
+				.findAll("div")
+				.map((d) => d.text())
+		).toEqual(["1,234.50", "DW"]);
 	});
 
 	it("adds input and output handles", async () => {
@@ -175,9 +180,7 @@ describe("ChainNode", () => {
 		});
 
 		// #353535
-		expect(style(wrapper)).toContain(
-			"background-color: rgb(53, 53, 53);"
-		);
+		expect(style(wrapper)).toContain("background-color: rgb(53, 53, 53);");
 	});
 
 	it("splits two workforces into a gradient", async () => {

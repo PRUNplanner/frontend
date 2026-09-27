@@ -8,7 +8,7 @@ import {
 	vi,
 } from "vitest";
 import { h } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { planetsStore } from "@/database/stores";
 import { usePlanetData } from "@/database/services/usePlanetData";
@@ -20,7 +20,7 @@ import { PButton, PTag } from "@/ui";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
+import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 // test data
 import planets from "@/tests/test_data/api_data_planets.json";

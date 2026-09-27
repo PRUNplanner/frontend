@@ -1,5 +1,11 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, ref, Ref } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		ref,
+		type Ref,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -9,7 +15,7 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import { ICX } from "@/stores/planningStore.types";
+	import type { CX } from "@/features/api/schemas/cxData.schemas";
 
 	// Util
 	import { inertClone } from "@/util/data";
@@ -23,13 +29,13 @@
 
 	const props = defineProps({
 		cx: {
-			type: Array as PropType<ICX[]>,
+			type: Array as PropType<CX[]>,
 			required: true,
 		},
 	});
 
 	// Local Data
-	const localCX: ComputedRef<ICX[]> = computed(() => inertClone(props.cx));
+	const localCX: ComputedRef<CX[]> = computed(() => inertClone(props.cx));
 
 	const refShowCreateCX: Ref<boolean> = ref(false);
 	const refIsCreating: Ref<boolean> = ref(false);
@@ -47,7 +53,7 @@
 	});
 
 	const emit = defineEmits<{
-		(e: "update:cxList", value: ICX[]): void;
+		(e: "update:cxList", value: CX[]): void;
 	}>();
 
 	async function createCX(): Promise<void> {

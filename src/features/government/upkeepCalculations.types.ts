@@ -1,9 +1,5 @@
 export type UpkeepNeedType =
-	| "safety"
-	| "health"
-	| "comfort"
-	| "culture"
-	| "education";
+	"safety" | "health" | "comfort" | "culture" | "education";
 
 export interface IUpkeepMaterial {
 	ticker: string;

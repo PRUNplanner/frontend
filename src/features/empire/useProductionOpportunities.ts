@@ -1,13 +1,13 @@
-import { ref, computed, onMounted, Ref } from "vue";
+import { ref, computed, onMounted, type Ref } from "vue";
 
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
-import { IEmpireMaterialIO } from "@/features/empire/empire.types";
-import { IRecipe } from "@/features/api/gameData.types";
-import { IOpportunityStats } from "@/features/empire/useProductionOpportunities.types";
+import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
+import type { Recipe } from "@/features/api/schemas/gameData.schemas";
+import type { IOpportunityStats } from "@/features/empire/useProductionOpportunities.types";
 
 interface IPriceSellMap {
 	[ticker: string]: number;
@@ -17,7 +17,7 @@ export function useProductionOpportunities(
 	empireIO: Ref<IEmpireMaterialIO[]>,
 	cxUuid: Ref<string | undefined>
 ) {
-	const recipeMap = ref<Record<string, IRecipe[]>>({});
+	const recipeMap = ref<Record<string, Recipe[]>>({});
 	const priceSellMap = ref<IPriceSellMap>({});
 	const isLoading = ref<boolean>(true);
 

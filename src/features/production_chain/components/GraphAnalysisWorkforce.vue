@@ -1,12 +1,12 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import type { PropType } from "vue";
 
 	// Util
 	import { formatAmount } from "@/util/numbers";
 	import { capitalizeString } from "@/util/text";
 
 	// Types & Interfaces
-	import { IGraphFlowWorkforceAnalysis } from "@/features/production_chain/productionGraph.types";
+	import type { IGraphFlowWorkforceAnalysis } from "@/features/production_chain/productionGraph.types";
 	import { WORKFORCECOLORS } from "@/features/production_chain/components/ChainNode.types";
 
 	// UI

@@ -4,7 +4,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	import { SizeKey } from "@/ui/ui.types";
+	import type { SizeKey } from "@/ui/ui.types";
 	import { inputConfig } from "@/ui/styles";
 
 	const value = defineModel<string | null | undefined>("value", {

@@ -1,48 +1,41 @@
 import { defineStore } from "pinia";
-import { ref, Ref } from "vue";
+import { ref, type Ref } from "vue";
 
 // Util
 import { getObjectSize, inertClone } from "@/util/data";
 
 // Types & Interfaces
-import {
-	ICX,
-	ICXData,
-	ICXRecord,
-	IEmpireRecord,
-	IPlan,
-	IPlanEmpireElement,
-	IPlanRecord,
-	ISharedPlan,
-	ISharedRecord,
-} from "@/stores/planningStore.types";
-import { IShared } from "@/features/api/sharingData.types";
-import {
-	IFIOSitePlanet,
-	IFIOStorage,
-	IFIOStorageElement,
-} from "@/features/api/gameData.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Shared } from "@/features/api/schemas/sharingData.schemas";
+import type {
+	FIOSitePlanet,
+	FIOStorage,
+	FIOStorageElement,
+} from "@/features/api/schemas/gameData.schemas";
 
 export const usePlanningStore = defineStore(
 	"prunplanner_planning",
 	() => {
 		// state
 		/** Key: Plan.uuid */
-		const plans: Ref<IPlanRecord> = ref({});
+		const plans: Ref<Record<string, Plan>> = ref({});
 		/** Key: Empire.uuid */
-		const empires: Ref<IEmpireRecord> = ref({});
+		const empires: Ref<Record<string, PlanEmpireElement>> = ref({});
 		/** Key: CX.uuid */
-		const cxs: Ref<ICXRecord> = ref({});
+		const cxs: Ref<Record<string, CX>> = ref({});
 		/** Key: Plan.uuid */
-		const shared: Ref<ISharedRecord> = ref({});
-		const fio_storage_planets: Ref<Record<string, IFIOStorageElement>> =
-			ref({});
-		const fio_storage_warehouses: Ref<Record<string, IFIOStorageElement>> =
-			ref({});
-		const fio_storage_ships: Ref<Record<string, IFIOStorageElement>> = ref(
+		const shared: Ref<Record<string, Shared>> = ref({});
+		const fio_storage_planets: Ref<Record<string, FIOStorageElement>> = ref(
 			{}
 		);
-		const fio_sites_planets: Ref<Record<string, IFIOSitePlanet>> = ref({});
+		const fio_storage_warehouses: Ref<Record<string, FIOStorageElement>> =
+			ref({});
+		const fio_storage_ships: Ref<Record<string, FIOStorageElement>> = ref(
+			{}
+		);
+		const fio_sites_planets: Ref<Record<string, FIOSitePlanet>> = ref({});
 
 		const fio_storage_timestamp: Ref<Date | null> = ref(null);
 
@@ -68,9 +61,9 @@ export const usePlanningStore = defineStore(
 		 * Sets empires by their Uuid
 		 * @author jplacht
 		 *
-		 * @param {IPlanEmpireElement[]} empireList Empire Data
+		 * @param {PlanEmpireElement[]} empireList Empire Data
 		 */
-		function setEmpires(empireList: IPlanEmpireElement[]): void {
+		function setEmpires(empireList: PlanEmpireElement[]): void {
 			empires.value = {};
 			// store by Empire.uuid
 			empireList.forEach((e) => {
@@ -82,9 +75,9 @@ export const usePlanningStore = defineStore(
 		 * Sets plans by their UUID
 		 * @author jplacht
 		 *
-		 * @param {IPlan} data Plan Data
+		 * @param {Plan} data Plan Data
 		 */
-		function setPlan(data: IPlan): void {
+		function setPlan(data: Plan): void {
 			if (!data.uuid)
 				throw new Error("Can't set plan data for undefined uuid.");
 
@@ -95,9 +88,9 @@ export const usePlanningStore = defineStore(
 		 * Sets multiple plans by their Uuid
 		 * @author jplacht
 		 *
-		 * @param {IPlan[]} data Plan Data List
+		 * @param {Plan[]} data Plan Data List
 		 */
-		function setPlans(data: IPlan[]): void {
+		function setPlans(data: Plan[]): void {
 			data.forEach((p) => setPlan(p));
 		}
 
@@ -115,9 +108,9 @@ export const usePlanningStore = defineStore(
 		 * Sets multiple CX by their Uuid
 		 * @author jplacht
 		 *
-		 * @param {ICX[]} data CX Data List
+		 * @param {CX[]} data CX Data List
 		 */
-		function setCXs(data: ICX[]): void {
+		function setCXs(data: CX[]): void {
 			cxs.value = {};
 
 			// store by CX.uuid
@@ -126,7 +119,7 @@ export const usePlanningStore = defineStore(
 			});
 		}
 
-		function setCX(cxUuid: string, cxName: string, data: ICXData): void {
+		function setCX(cxUuid: string, cxName: string, data: CXData): void {
 			if (cxs.value[cxUuid]) {
 				cxs.value[cxUuid].cx_name = cxName;
 				cxs.value[cxUuid].cx_data = data;
@@ -137,9 +130,9 @@ export const usePlanningStore = defineStore(
 		 * Sets FIO Storage data separated by Planets, Warehouses and Ships
 		 * @author jplacht
 		 *
-		 * @param {IFIOStorage} data FIO Storage Data
+		 * @param {FIOStorage} data FIO Storage Data
 		 */
-		function setFIOStorageData(data: IFIOStorage): void {
+		function setFIOStorageData(data: FIOStorage): void {
 			fio_storage_planets.value = data.storage_data.planets;
 			fio_storage_warehouses.value = data.storage_data.warehouses;
 			fio_storage_ships.value = data.storage_data.ships;
@@ -152,9 +145,9 @@ export const usePlanningStore = defineStore(
 		 * Sets Shared Plans information by their Plan Uuid
 		 * @author jplacht
 		 *
-		 * @param {IShared[]} data Shared Data List
+		 * @param {Shared[]} data Shared Data List
 		 */
-		function setSharedList(data: IShared[]): void {
+		function setSharedList(data: Shared[]): void {
 			shared.value = {};
 			data.forEach((s) => {
 				shared.value[s.plan] = inertClone(s);
@@ -176,9 +169,9 @@ export const usePlanningStore = defineStore(
 		 * @author jplacht
 		 *
 		 * @param {string} cxUuid UUid
-		 * @returns {ICX} CX Preference Data
+		 * @returns {CX} CX Preference Data
 		 */
-		function getCX(cxUuid: string): ICX {
+		function getCX(cxUuid: string): CX {
 			const findCX = cxs.value[cxUuid];
 
 			if (findCX) return inertClone(findCX);
@@ -195,11 +188,11 @@ export const usePlanningStore = defineStore(
 		 *
 		 * @async
 		 * @param {string} planUuid Uuid
-		 * @returns {Promise<IPlan>} Plan Data
+		 * @returns {Promise<Plan>} Plan Data
 		 */
-		async function getPlan(planUuid: string): Promise<IPlan> {
+		async function getPlan(planUuid: string): Promise<Plan> {
 			// try getting from already fetched data first
-			const findPlan: IPlan | undefined = plans.value[planUuid];
+			const findPlan: Plan | undefined = plans.value[planUuid];
 
 			if (findPlan) return inertClone(plans.value[planUuid]);
 
@@ -214,9 +207,9 @@ export const usePlanningStore = defineStore(
 		 *
 		 * @author jplacht
 		 *
-		 * @returns {ICX[]} CX Preference Data Array
+		 * @returns {CX[]} CX Preference Data Array
 		 */
-		function getAllCX(): ICX[] {
+		function getAllCX(): CX[] {
 			return Object.values(cxs.value);
 		}
 
@@ -224,9 +217,9 @@ export const usePlanningStore = defineStore(
 		 * Gets all sharing information from backend
 		 * @author jplacht
 		 *
-		 * @returns {ISharedPlan[]} Sharing Information List
+		 * @returns {Shared[]} Sharing Information List
 		 */
-		function getSharedList(): ISharedPlan[] {
+		function getSharedList(): Shared[] {
 			return Object.values(shared.value);
 		}
 		async function getStoreSize() {

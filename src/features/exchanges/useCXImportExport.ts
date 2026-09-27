@@ -1,12 +1,12 @@
-import {
-	ICXDataExchangeOption,
-	ICXDataTickerOption,
-} from "@/stores/planningStore.types";
-import { ICXPlanetMap } from "./manageCX.types";
+import type {
+	CXDataExchangeOption,
+	CXDataTickerOption,
+} from "@/features/api/schemas/cxData.schemas";
+import type { ICXPlanetMap } from "./manageCX.types";
 import {
 	CXDataExchangeOptionSchema,
 	CXDataTickerOptionSchema,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@/features/api/schemas/cxData.schemas";
 
 import Papa from "papaparse";
 
@@ -29,11 +29,11 @@ const CSV_COLUMNS: (keyof IExchangeCSVRow)[] = [
 ];
 
 // validated like the CX payload, so an invalid file is rejected as a whole
-const exchangeOption = (row: IExchangeCSVRow): ICXDataExchangeOption =>
+const exchangeOption = (row: IExchangeCSVRow): CXDataExchangeOption =>
 	CXDataExchangeOptionSchema.parse({ type: row.Type, exchange: row.CX });
 
 // an empty price is no price, Number("") would be 0
-const tickerOption = (row: IExchangeCSVRow): ICXDataTickerOption =>
+const tickerOption = (row: IExchangeCSVRow): CXDataTickerOption =>
 	CXDataTickerOptionSchema.parse({
 		type: row.Type,
 		ticker: row.Ticker,
@@ -44,8 +44,8 @@ export function useCXImportExport() {
 	const parseSettingsCSV = (
 		file: File
 	): Promise<{
-		empireCX: ICXDataExchangeOption[];
-		empireTickerOptions: ICXDataTickerOption[];
+		empireCX: CXDataExchangeOption[];
+		empireTickerOptions: CXDataTickerOption[];
 		planetsCX: ICXPlanetMap[string][];
 		plantesTickerOptions: ICXPlanetMap[string][];
 	}> => {
@@ -59,13 +59,15 @@ export function useCXImportExport() {
 					);
 					if (missing.length > 0) {
 						reject(
-							new Error(`Missing CSV columns: ${missing.join(", ")}`)
+							new Error(
+								`Missing CSV columns: ${missing.join(", ")}`
+							)
 						);
 						return;
 					}
 
-					const empireCX: ICXDataExchangeOption[] = [];
-					const empireTickerOptions: ICXDataTickerOption[] = [];
+					const empireCX: CXDataExchangeOption[] = [];
+					const empireTickerOptions: CXDataTickerOption[] = [];
 
 					const planetsCXMap = new Map<
 						string,
@@ -82,7 +84,8 @@ export function useCXImportExport() {
 							if (!row.Location) return;
 
 							const isEmpire = row.Location === "EMPIRE";
-							const isTicker = row.Ticker && row.Ticker.trim() !== "";
+							const isTicker =
+								row.Ticker && row.Ticker.trim() !== "";
 							if (isEmpire) {
 								if (!isTicker) {
 									empireCX.push(exchangeOption(row));
@@ -106,7 +109,9 @@ export function useCXImportExport() {
 								}
 
 								if (!isTicker) {
-									planetData.exchanges.push(exchangeOption(row));
+									planetData.exchanges.push(
+										exchangeOption(row)
+									);
 								} else {
 									planetData.ticker.push(tickerOption(row));
 								}
@@ -133,8 +138,8 @@ export function useCXImportExport() {
 		});
 	};
 	const generateSettingsCSV = (
-		empireCX: ICXDataExchangeOption[],
-		empireTickerOptions: ICXDataTickerOption[],
+		empireCX: CXDataExchangeOption[],
+		empireTickerOptions: CXDataTickerOption[],
 		planetsCX: ICXPlanetMap[string][],
 		plantesTickerOptions: ICXPlanetMap[string][]
 	): string => {

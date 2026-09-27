@@ -1,21 +1,24 @@
-export interface CXDataPoint {
-	ticker: string;
-	material_ticker: string;
-	exchange_code: string;
-	last_updated: number;
+import type { SSECX } from "@/features/market_live/schemas/cxSSE.schemas";
 
-	price?: number;
-	bid?: number;
-	ask?: number;
+export interface CXDataPoint extends Pick<
+	SSECX,
+	| "material_ticker"
+	| "exchange_code"
+	| "price"
+	| "bid"
+	| "ask"
+	| "demand"
+	| "supply"
+	| "traded"
+> {
+	ticker: string;
+	last_updated: number;
 
 	price_change?: number;
 	price_change_pct?: number;
 	bid_change?: number;
 	ask_change?: number;
 
-	demand: number;
-	supply: number;
-	traded: number;
 	volume: number;
 
 	buy_volume_total: number;

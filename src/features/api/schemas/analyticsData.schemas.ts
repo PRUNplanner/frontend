@@ -46,13 +46,13 @@ export const AnalyticsPlanetInsightsPayloadSchema = z.discriminatedUnion(
 	[AnalyticsPlanetInsightsDataSchema, AnalyticsPlanetInsightsEmptySchema]
 );
 
-export type AnalyticsPlanetInsightsRecipeType = z.infer<
+export type AnalyticsPlanetInsightsRecipe = z.infer<
 	typeof AnalyticsPlanetInsightsRecipeSchema
 >;
 
-export type AnalyticsPlanetInsightsDataType = z.infer<
+export type AnalyticsPlanetInsightsData = z.infer<
 	typeof AnalyticsPlanetInsightsDataSchema
 >;
-export type AnalyticsPlanetInsightsPayloadType = z.infer<
+export type AnalyticsPlanetInsightsPayload = z.infer<
 	typeof AnalyticsPlanetInsightsPayloadSchema
 >;

@@ -2,38 +2,29 @@
 import { getTotalWorkforce } from "@/features/planning/engine/buildings";
 
 // Types & Interfaces
-import {
-	BUILDING_EXPERTISE_TYPE,
-	IBuilding,
-	IPlanet,
-} from "@/features/api/gameData.types";
-import {
+import type {
+	BuildingExpertise,
+	Building,
+	Planet,
+} from "@/features/api/schemas/gameData.schemas";
+import type {
 	EfficiencyMap,
 	IBuildingEfficiency,
 } from "@/features/planning/calculations/bonusCalculations.types";
 import {
-	EXPERT_TYPE,
+	ExpertTypeSchema,
+	type ExpertType,
+	type PlanCOGCProgram,
+	type PlanDataExpert,
+	type PlanEmpire,
+} from "@/features/api/schemas/planningData.schemas";
+import type {
 	IExpertElement,
 	IExpertRecord,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
-import {
-	IPlanDataExpert,
-	IPlanEmpire,
-	PLAN_COGCPROGRAM_TYPE,
-} from "@/stores/planningStore.types";
 
-export const expertNames: string[] = [
-	"Agriculture",
-	"Chemistry",
-	"Construction",
-	"Electronics",
-	"Food_Industries",
-	"Fuel_Refining",
-	"Manufacturing",
-	"Metallurgy",
-	"Resource_Extraction",
-];
+export const expertNames = ExpertTypeSchema.options;
 
 /**
  * Static, map of building expertise and plan calculation
@@ -41,14 +32,11 @@ export const expertNames: string[] = [
  * @author jplacht
  *
  * @type {Record<
- * 	BUILDING_EXPERTISE_TYPE,
- * 	EXPERT_TYPE
+ * 	BuildingExpertise,
+ * 	ExpertType
  * >}
  */
-const MAP_BUILDING_EXPERTISE_EXPERTS: Record<
-	BUILDING_EXPERTISE_TYPE,
-	EXPERT_TYPE
-> = {
+const MAP_BUILDING_EXPERTISE_EXPERTS: Record<BuildingExpertise, ExpertType> = {
 	AGRICULTURE: "Agriculture",
 	CHEMISTRY: "Chemistry",
 	CONSTRUCTION: "Construction",
@@ -128,12 +116,12 @@ export function calculateExpertBonus(amount: number): number {
  *
  * @author jplacht
  *
- * @param {IBuilding} building Building Data
+ * @param {Building} building Building Data
  * @param {IWorkforceRecord} workforce Plan Workforce Result
  * @returns {number} Building Workforce Efficiency
  */
 export function calculateBuildingWorkforceEfficiency(
-	building: IBuilding,
+	building: Building,
 	workforce: IWorkforceRecord
 ): number {
 	const totalWorkforce: number = getTotalWorkforce(building);
@@ -147,11 +135,9 @@ export function calculateBuildingWorkforceEfficiency(
 		(building.technicians / totalWorkforce) *
 		workforce.technician.efficiency;
 	efficiency +=
-		(building.engineers / totalWorkforce) *
-		workforce.engineer.efficiency;
+		(building.engineers / totalWorkforce) * workforce.engineer.efficiency;
 	efficiency +=
-		(building.scientists / totalWorkforce) *
-		workforce.scientist.efficiency;
+		(building.scientists / totalWorkforce) * workforce.scientist.efficiency;
 
 	return efficiency;
 }
@@ -160,25 +146,24 @@ export function calculateBuildingWorkforceEfficiency(
  * Calculates the buildings potential faction efficiency bonus
  * @author jplacht
  *
- * @param {IBuilding} building Building Data
- * @param {(IPlanEmpire | undefined)} empire Empire Data
+ * @param {Building} building Building Data
+ * @param {(PlanEmpire | undefined)} empire Empire Data
  * @returns {(IBuildingEfficiency | undefined)} Faction Bonus
  */
 export function calculateBuildingFactionBonus(
-	building: IBuilding,
-	empire: IPlanEmpire | undefined
+	building: Building,
+	empire: PlanEmpire | undefined
 ): IBuildingEfficiency | undefined {
 	if (!empire || building.expertise === null) return undefined;
 
 	// multiplier using share of used and total available permits
 	const multiplier: number =
 		2 *
-		(-2 * (empire.empire_permits_used / empire.empire_permits_total) +
-			3);
+		(-2 * (empire.empire_permits_used / empire.empire_permits_total) + 3);
 
 	const efficiency: number | undefined =
 		FACTION_BONUS_MAP[empire.empire_faction]?.[
-			building.expertise as BUILDING_EXPERTISE_TYPE
+			building.expertise as BuildingExpertise
 		];
 
 	if (!efficiency) return undefined;
@@ -196,26 +181,26 @@ export function calculateBuildingFactionBonus(
  *
  * @author jplacht
  *
- * @param {IBuilding} building Building Data
- * @param {IPlanet} planet Planet Data
+ * @param {Building} building Building Data
+ * @param {Planet} planet Planet Data
  * @param {boolean} corphq Is Corporation HQ on Planet
- * @param {PLAN_COGCPROGRAM_TYPE} cogc COGC
+ * @param {PlanCOGCProgram} cogc COGC
  * @param {IWorkforceRecord} workforce Workforce Efficiencies
  * @param {IExpertRecord} experts Expert Setup
- * @param {(IPlanEmpire | undefined)} empire Plan Empire
+ * @param {(PlanEmpire | undefined)} empire Plan Empire
  * @returns {{
  * 		totalEfficiency: number;
  * 		elements: IBuildingEfficiency[];
  * 	}} Total Efficiency and individual contributing factors
  */
 export function calculateBuildingEfficiency(
-	building: IBuilding,
-	planet: IPlanet,
+	building: Building,
+	planet: Planet,
 	corphq: boolean,
-	cogc: PLAN_COGCPROGRAM_TYPE,
+	cogc: PlanCOGCProgram,
 	workforce: IWorkforceRecord,
 	experts: IExpertRecord,
-	empire: IPlanEmpire | undefined
+	empire: PlanEmpire | undefined
 ): {
 	totalEfficiency: number;
 	elements: IBuildingEfficiency[];
@@ -227,9 +212,7 @@ export function calculateBuildingEfficiency(
 		elements.push({
 			efficiencyType: "FERTILITY",
 			value:
-				planet.fertility != -1.0
-					? 1 + planet.fertility * (10 / 33)
-					: 0,
+				planet.fertility != -1.0 ? 1 + planet.fertility * (10 / 33) : 0,
 		});
 	}
 
@@ -254,7 +237,7 @@ export function calculateBuildingEfficiency(
 		const expertElement: IExpertElement =
 			experts[
 				MAP_BUILDING_EXPERTISE_EXPERTS[
-					building.expertise as BUILDING_EXPERTISE_TYPE
+					building.expertise as BuildingExpertise
 				]
 			];
 
@@ -325,15 +308,13 @@ export function calculateBuildingEfficiency(
  * record with each expert type, its planned amount and the bonus
  * efficiency provided by it
  *
- * @param {IPlanDataExpert[]} planExperts Plan experts
+ * @param {PlanDataExpert[]} planExperts Plan experts
  * @returns {IExpertRecord} Expert Result Record
  */
-export function calculateExperts(
-	planExperts: IPlanDataExpert[]
-): IExpertRecord {
+export function calculateExperts(planExperts: PlanDataExpert[]): IExpertRecord {
 	return Object.fromEntries(
 		expertNames.map((key) => {
-			const currentExpert: IPlanDataExpert | undefined = planExperts.find(
+			const currentExpert: PlanDataExpert | undefined = planExperts.find(
 				(e) => e.type === key
 			);
 

@@ -1,4 +1,4 @@
-import { computed, ComputedRef, Ref } from "vue";
+import { computed, type ComputedRef, type Ref } from "vue";
 
 // Composables
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
@@ -11,12 +11,12 @@ import {
 } from "@/features/repair_analysis/repairAnalysis.util";
 
 // Types & Interfaces
-import { IPlanRepairAnalysisDataProp } from "@/features/planning/components/tools/planRepairAnalysis.types";
-import {
+import type { IPlanRepairAnalysisDataProp } from "@/features/planning/components/tools/planRepairAnalysis.types";
+import type {
 	IMaterialIO,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 
 export function useRepairAnalysis(
 	cxUuid: Ref<string | undefined>,
@@ -28,10 +28,7 @@ export function useRepairAnalysis(
 	const { combineMaterialIOMinimal, enhanceMaterialIOMinimal } =
 		useMaterialIOUtil();
 
-	const { enhanceMaterialIOMaterial } = usePrice(
-		cxUuid,
-		planetNaturalId
-	);
+	const { enhanceMaterialIOMaterial } = usePrice(cxUuid, planetNaturalId);
 
 	async function calculateDailyRepairMaterials(
 		buildingData: IPlanRepairAnalysisDataProp[]

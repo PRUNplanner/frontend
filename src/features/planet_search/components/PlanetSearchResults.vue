@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType } from "vue";
+	import { computed, type ComputedRef, type PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -17,8 +17,7 @@
 	import PlanetPOPRButton from "@/features/government/components/PlanetPOPRButton.vue";
 
 	// Types & Interfaces
-	import { IPlanet } from "@/features/api/gameData.types";
-	import { IPlanetSearchResult } from "../usePlanetSearchResults.types";
+	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
 	// UI
 	import { PButton, PTooltip } from "@/ui";
@@ -27,7 +26,7 @@
 
 	const props = defineProps({
 		results: {
-			type: Array as PropType<IPlanet[]>,
+			type: Array as PropType<Planet[]>,
 			required: true,
 		},
 		searchMaterials: {
@@ -69,16 +68,13 @@
 		() => props.searchMaterials
 	);
 
-	const tableResults: ComputedRef<IPlanetSearchResult[]> = computed(() => {
-		if (props.results.length === 0) return [];
-		return usePlanetSearchResults(
-			props.results,
-			props.searchMaterials,
-			props.searchMaterialRichness,
-			props.searchSystem,
-			props.searchSystemDistance
-		).results.value;
-	});
+	const { results: tableResults } = usePlanetSearchResults(
+		() => props.results,
+		() => props.searchMaterials,
+		() => props.searchMaterialRichness,
+		() => props.searchSystem,
+		() => props.searchSystemDistance
+	);
 
 	const tableCheckDistances: ComputedRef<string | null> = computed(() =>
 		props.searchSystem ? getSystemName(props.searchSystem) : null
@@ -219,9 +215,7 @@
 							<div>
 								<MaterialTile
 									:key="rowData.environmentTemperature[0]"
-									:ticker="
-										rowData.environmentTemperature[0]
-									"
+									:ticker="rowData.environmentTemperature[0]"
 									popover-placement="left" />
 							</div>
 						</template>

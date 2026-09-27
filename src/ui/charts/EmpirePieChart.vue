@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { computed } from "vue";
 
-	import { IChartEmpirePieElement } from "@/ui/charts/charts.types";
+	import type { IChartEmpirePieElement } from "@/ui/charts/charts.types";
 
 	import {
 		Chart as ChartJS,

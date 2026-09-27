@@ -1,11 +1,11 @@
 <script setup lang="ts">
 	import {
 		computed,
-		PropType,
-		Ref,
+		type PropType,
+		type Ref,
 		ref,
 		watchEffect,
-		ComputedRef,
+		type ComputedRef,
 		watch,
 	} from "vue";
 
@@ -28,14 +28,13 @@
 	import { workforceTypeNames } from "@/features/planning/calculations/workforceCalculations";
 
 	// Types & Interfaces
-	import {
+	import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
+	import type {
 		IBuildingConstruction,
-		INFRASTRUCTURE_TYPE,
 		IProductionBuilding,
-		WORKFORCE_TYPE,
 	} from "@/features/planning/usePlanCalculation.types";
-	import { IBuilding } from "@/features/api/gameData.types";
-	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
+	import type { Building } from "@/features/api/schemas/gameData.schemas";
+	import type { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
 	import { PIcon, PInputNumber, PSelect, PTable, PTooltip } from "@/ui";
@@ -60,7 +59,7 @@
 			required: true,
 		},
 		infrastructureData: {
-			type: Object as PropType<Record<INFRASTRUCTURE_TYPE, number>>,
+			type: Object as PropType<Record<InfrastructureType, number>>,
 			required: true,
 		},
 	});
@@ -138,13 +137,13 @@
 	}
 
 	const deficitWorkforceTypes = computed(() => {
-		return (workforceTypeNames as WORKFORCE_TYPE[]).filter(
+		return workforceTypeNames.filter(
 			(workforceType) =>
 				buildingTicker.value.reduce((sum, ticker) => {
 					const building = buildingsMap.value[ticker];
 					const amount = getTotalBuildingAmount(ticker);
 					const field = `${workforceType}s` as keyof NonNullable<
-						IBuilding["habitations"]
+						Building["habitations"]
 					>;
 					return sum + (building ? building[field] * amount : 0);
 				}, 0) >
@@ -152,7 +151,7 @@
 					const building = buildingsMap.value[ticker];
 					const amount = getTotalBuildingAmount(ticker);
 					const field = `${workforceType}s` as keyof NonNullable<
-						IBuilding["habitations"]
+						Building["habitations"]
 					>;
 					return (
 						sum +
@@ -172,7 +171,7 @@
 			(workforceType) =>
 				(building.habitations?.[
 					`${workforceType}s` as keyof NonNullable<
-						IBuilding["habitations"]
+						Building["habitations"]
 					>
 				] ?? 0) > 0
 		);
@@ -199,7 +198,7 @@
 					props.productionBuildingData.find(
 						(pf) => pf.name === bticker
 					)?.amount ??
-					props.infrastructureData[bticker as INFRASTRUCTURE_TYPE];
+					props.infrastructureData[bticker as InfrastructureType];
 				if (bticker === "CM") planned = 1;
 				let need = planned;
 				if (planned !== undefined) {
@@ -401,7 +400,10 @@
 						v-for="mat in uniqueMaterials"
 						:key="`CONSTRUCTIONCART#COLUMN#${mat}`"
 						class="text-center!">
-						<MaterialTile :key="mat" :ticker="mat" popover-placement="bottom" />
+						<MaterialTile
+							:key="mat"
+							:ticker="mat"
+							popover-placement="bottom" />
 					</th>
 				</tr>
 			</thead>

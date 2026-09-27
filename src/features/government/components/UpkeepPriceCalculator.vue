@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ComputedRef, Ref, computed, ref, watch } from "vue";
+	import { type ComputedRef, type Ref, computed, ref, watch } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -20,7 +20,7 @@
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// Types & Interfaces
-	import {
+	import type {
 		IUpkeepMaterialCalculation,
 		UpkeepNeedType,
 	} from "@/features/government/upkeepCalculations.types";

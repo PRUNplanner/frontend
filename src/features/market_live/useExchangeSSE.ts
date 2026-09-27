@@ -7,16 +7,16 @@ import { useAlertsStore } from "@/stores/userAlertsStore";
 
 // Types & Interfaces
 import {
-	SSECXOrderSchema,
 	SSECXSchema,
-	type SSECXSchemaType,
-} from "@/features/market_live/schemas/cxSSE.schema";
-import {
+	type SSECX,
+	type SSECXOrder,
+} from "@/features/market_live/schemas/cxSSE.schemas";
+import type {
 	MarketEvent,
 	MessageHistory,
 } from "@/features/market_live/cxDetectors.types";
 import { processUserDetectors } from "@/features/market_live/cxDetectors";
-import { CXDataPoint } from "@/features/market_live/cxExchange.types";
+import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 const isConnected = ref(false);
 const connectionError = ref<string | null>(null);
@@ -55,12 +55,9 @@ export function useExchangeSSE() {
 		return next - prev;
 	}
 
-	function transformSSEToPoint(data: SSECXSchemaType): CXDataPoint {
+	function transformSSEToPoint(data: SSECX): CXDataPoint {
 		// processing orders
-		const processOrders = (
-			orders: z.infer<typeof SSECXOrderSchema>[],
-			type: "BUY" | "SELL"
-		) => {
+		const processOrders = (orders: SSECXOrder[], type: "BUY" | "SELL") => {
 			if (!orders || orders.length === 0) return null;
 
 			// book processing
@@ -135,7 +132,7 @@ export function useExchangeSSE() {
 	}
 
 	function processIncomingData(
-		rawData: SSECXSchemaType,
+		rawData: SSECX,
 		prev: CXDataPoint | undefined
 	): CXDataPoint {
 		const key = `${rawData.material_ticker}.${rawData.exchange_code}`;

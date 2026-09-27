@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -67,16 +67,15 @@ async function clickColumnIcon(
 ) {
 	await wrapper
 		.findAll(`th[data-col-key="ASSIGN#${empireUuid}"] .picon`)
-		.at(icon)!.trigger("click");
+		.at(icon)!
+		.trigger("click");
 	await flushPromises();
 }
 
 async function clickHeaderButton(wrapper: VueWrapper, key: string) {
 	const button = wrapper
 		.findAll("button")
-		.find(
-			(b) => b.text() === `management.assignments.buttons.${key}`
-		);
+		.find((b) => b.text() === `management.assignments.buttons.${key}`);
 	expect(button).toBeDefined();
 	await button!.trigger("click");
 	await flushPromises();
@@ -86,7 +85,8 @@ async function filter(wrapper: VueWrapper, index: 0 | 1, value: string[]) {
 	wrapper
 		.findComponent(ManageAssignmentFilters)
 		.findAllComponents(PSelectMultiple)
-		.at(index)!.vm.$emit("update:value", value);
+		.at(index)!
+		.vm.$emit("update:value", value);
 	await flushPromises();
 }
 
@@ -161,10 +161,7 @@ describe("ManagePlanEmpireAssignments", () => {
 
 		expect(JSON.parse(mock.history.post[0].data)[1]).toEqual({
 			empire_uuid: E2,
-			baseplanners: [
-				{ baseplanner_uuid: P1 },
-				{ baseplanner_uuid: P3 },
-			],
+			baseplanners: [{ baseplanner_uuid: P1 }, { baseplanner_uuid: P3 }],
 		});
 	});
 

@@ -1,13 +1,19 @@
-import { Component, defineComponent, h, shallowReactive, Suspense } from "vue";
 import {
-	DOMWrapper,
+	type Component,
+	defineComponent,
+	h,
+	shallowReactive,
+	Suspense,
+} from "vue";
+import {
+	type DOMWrapper,
 	enableAutoUnmount,
 	flushPromises,
 	mount,
 	RouterLinkStub,
-	VueWrapper,
+	type VueWrapper,
 } from "@vue/test-utils";
-import { createPinia, Pinia } from "pinia";
+import { createPinia, type Pinia } from "pinia";
 import { createI18n } from "vue-i18n";
 import { NDialogProvider } from "naive-ui";
 import { afterEach } from "vitest";

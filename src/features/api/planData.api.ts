@@ -4,26 +4,22 @@ import { apiService } from "@/lib/apiService";
 // Schemas & Schema Types
 import {
 	PlanClonePayloadSchema,
-	PlanClonePayloadType,
 	PlanCreateDataSchema,
-	PlanCreateDataType,
-	PlanListPayload,
+	PlanListSchema,
 	PlanSaveCreateResponseSchema,
-	PlanSaveCreateResponseType,
 	PlanSaveDataSchema,
-	PlanSaveDataType,
 	PlanSchema,
-	PlanSchemaType,
 	PlanShareSchema,
-	PlanShareSchemaType,
 } from "@/features/api/schemas/planningData.schemas";
 
 // Types & Interfaces
-import { IPlan, IPlanShare } from "@/stores/planningStore.types";
-import {
-	IPlanCreateData,
-	IPlanSaveData,
-} from "@/features/planning_data/usePlan.types";
+import type {
+	Plan,
+	PlanCreateData,
+	PlanSaveCreateResponse,
+	PlanSaveData,
+	PlanShare,
+} from "@/features/api/schemas/planningData.schemas";
 
 /**
  * Fetches data of a shared plans uuid from the API
@@ -32,12 +28,12 @@ import {
  * @export
  * @async
  * @param {string} sharedPlanUuid Shared Plan Uuid
- * @returns {Promise<IPlanShare>} Shared Plan Data
+ * @returns {Promise<PlanShare>} Shared Plan Data
  */
 export async function callGetShared(
 	sharedPlanUuid: string
-): Promise<IPlanShare> {
-	return apiService.get<PlanShareSchemaType>(
+): Promise<PlanShare> {
+	return apiService.get(
 		`/planning/shared/${sharedPlanUuid}/`,
 		PlanShareSchema
 	);
@@ -50,13 +46,10 @@ export async function callGetShared(
  * @export
  * @async
  * @param {string} planUuid Uuid of the plan to fetch
- * @returns {Promise<IPlan>} Plan Data
+ * @returns {Promise<Plan>} Plan Data
  */
-export async function callGetPlan(planUuid: string): Promise<IPlan> {
-	return apiService.get<PlanSchemaType>(
-		`/planning/plan/${planUuid}/`,
-		PlanSchema
-	);
+export async function callGetPlan(planUuid: string): Promise<Plan> {
+	return apiService.get(`/planning/plan/${planUuid}/`, PlanSchema);
 }
 
 /**
@@ -65,10 +58,10 @@ export async function callGetPlan(planUuid: string): Promise<IPlan> {
  *
  * @export
  * @async
- * @returns {Promise<IPlan[]>} List of Plan Data
+ * @returns {Promise<Plan[]>} List of Plan Data
  */
-export async function callGetPlanlist(): Promise<IPlan[]> {
-	return apiService.get<PlanSchemaType[]>("/planning/plan/", PlanListPayload);
+export async function callGetPlanlist(): Promise<Plan[]> {
+	return apiService.get("/planning/plan/", PlanListSchema);
 }
 
 /**
@@ -78,13 +71,13 @@ export async function callGetPlanlist(): Promise<IPlan[]> {
  *
  * @export
  * @async
- * @param {IPlanCreateData} data Plan data to be created
- * @returns {Promise<PlanSaveCreateResponseType>}  Plan Uuid
+ * @param {PlanCreateData} data Plan data to be created
+ * @returns {Promise<PlanSaveCreateResponse>}  Plan Uuid
  */
 export async function callCreatePlan(
-	data: IPlanCreateData
-): Promise<PlanSaveCreateResponseType> {
-	return apiService.post<PlanCreateDataType, PlanSaveCreateResponseType>(
+	data: PlanCreateData
+): Promise<PlanSaveCreateResponse> {
+	return apiService.post(
 		"/planning/plan/",
 		data,
 		PlanCreateDataSchema,
@@ -100,14 +93,14 @@ export async function callCreatePlan(
  * @export
  * @async
  * @param {string} planUuid Plan Uuid
- * @param {IPlanSaveData} data Plan Data to be stored
- * @returns {Promise<PlanSaveCreateResponseType>} Plan Uuid
+ * @param {PlanSaveData} data Plan Data to be stored
+ * @returns {Promise<PlanSaveCreateResponse>} Plan Uuid
  */
 export async function callSavePlan(
 	planUuid: string,
-	data: IPlanSaveData
-): Promise<PlanSaveCreateResponseType> {
-	return apiService.put<PlanSaveDataType, PlanSaveCreateResponseType>(
+	data: PlanSaveData
+): Promise<PlanSaveCreateResponse> {
+	return apiService.put(
 		`/planning/plan/${planUuid}/`,
 		data,
 		PlanSaveDataSchema,
@@ -123,13 +116,13 @@ export async function callSavePlan(
  * @async
  * @param {string} planUuid Plan Uuid
  * @param {string} cloneName Name of cloned Plan
- * @returns {Promise<IPlanCloneResponse>} Clone Message
+ * @returns {Promise<Plan>} Cloned Plan
  */
 export async function callClonePlan(
 	planUuid: string,
 	cloneName: string
-): Promise<IPlan> {
-	return apiService.post<PlanClonePayloadType, PlanSchemaType>(
+): Promise<Plan> {
+	return apiService.post(
 		`/planning/plan/${planUuid}/clone/`,
 		{ plan_name: cloneName },
 		PlanClonePayloadSchema,

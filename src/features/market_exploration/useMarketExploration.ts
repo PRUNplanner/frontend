@@ -2,10 +2,7 @@
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Types & Interfaces
-import {
-	IExploration,
-	IMaterialExplorationRecord,
-} from "@/features/market_exploration/marketExploration.types";
+import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
 
 export function useMarketExploration() {
 	/**
@@ -15,12 +12,12 @@ export function useMarketExploration() {
 	 *
 	 * @async
 	 * @param {string} ticker Material Ticker, e.g. "DW"
-	 * @returns {Promise<IMaterialExplorationRecord>} Exploration Data of last 7 days
+	 * @returns {Promise<Record<string, Exploration[]>>} Exploration Data of last 7 days
 	 */
 	async function getMaterialExplorationData(
 		ticker: string
-	): Promise<IMaterialExplorationRecord> {
-		const data: IMaterialExplorationRecord = {
+	): Promise<Record<string, Exploration[]>> {
+		const data: Record<string, Exploration[]> = {
 			AI1: [],
 			CI1: [],
 			IC1: [],
@@ -28,7 +25,7 @@ export function useMarketExploration() {
 		};
 
 		// fetch multiple exploration data
-		const fetchPromises: Promise<IExploration[]>[] = [
+		const fetchPromises: Promise<Exploration[]>[] = [
 			"AI1",
 			"CI1",
 			"IC1",
@@ -40,7 +37,7 @@ export function useMarketExploration() {
 			})
 				.execute()
 				.then(
-					(result: IExploration[]) => (data[exchangeTicker] = result)
+					(result: Exploration[]) => (data[exchangeTicker] = result)
 				)
 		);
 

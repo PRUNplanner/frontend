@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType, ref, Ref, watch } from "vue";
+	import { computed, type PropType, ref, type Ref, watch } from "vue";
 
 	// Components
 	import EmpireMaterialIOFilters from "@/features/empire/components/EmpireMaterialIOFilters.vue";
@@ -15,11 +15,11 @@
 	import { inertClone } from "@/util/data";
 
 	// Types & Interfaces
-	import {
+	import type {
 		IEmpireMaterialIO,
 		IEmpirePlanListData,
 	} from "@/features/empire/empire.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 	import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/calculations/workforceCalculations";
 
 	const props = defineProps({

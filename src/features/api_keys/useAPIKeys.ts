@@ -1,11 +1,11 @@
 import { ref } from "vue";
 
 import { useQuery } from "@/lib/query_cache/useQuery";
-import { APIKeyListType } from "@/features/api/schemas/apiKeysData.schema";
+import type { APIKey } from "@/features/api/schemas/apiKeysData.schemas";
 
 export function useAPIKeys() {
 	const loaded = ref<boolean>(false);
-	const apiKeyData = ref<APIKeyListType | null>(null);
+	const apiKeyData = ref<APIKey[] | null>(null);
 	const inDeletionId = ref<string | null>(null);
 
 	const lastCreatedKey = ref<string | null>(null);

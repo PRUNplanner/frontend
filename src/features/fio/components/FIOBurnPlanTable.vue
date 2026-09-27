@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import type { PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -15,7 +15,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IFIOBurnPlanetTableElement } from "@/features/fio/useFIOBurn.types";
+	import type { IFIOBurnPlanetTableElement } from "@/features/fio/useFIOBurn.types";
 
 	// UI
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
@@ -46,9 +46,7 @@
 			key="planetId"
 			:title="t('fio.burn.components.overview.table.planet')">
 			<template #render-cell="{ rowData }">
-				{{
-					planetName(rowData.planetId, "Loading...")
-				}}
+				{{ planetName(rowData.planetId, "Loading...") }}
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn

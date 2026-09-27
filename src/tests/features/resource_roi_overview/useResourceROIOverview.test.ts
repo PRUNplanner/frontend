@@ -1,4 +1,4 @@
-import { ref, Ref } from "vue";
+import { ref, type Ref } from "vue";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -79,6 +79,19 @@ describe("useResourceROIOverview", async () => {
 		const result = await searchPlanets("N");
 
 		expect(result.length).toBe(65);
+	});
+
+	it("searchPlanets: resets the searching state on failure", async () => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		mock.resetHandlers();
+		mock.onPost("/data/planets/search/").networkErrorOnce();
+
+		const { searchPlanets, progressSearchingPlanets } =
+			useResourceROIOverview(ref(undefined));
+
+		await expect(searchPlanets("FEO")).rejects.toThrow();
+		expect(progressSearchingPlanets.value).toBe(false);
+		error.mockRestore();
 	});
 
 	it("calculate", async () => {

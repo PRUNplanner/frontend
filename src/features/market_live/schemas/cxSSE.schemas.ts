@@ -1,17 +1,25 @@
 import { z } from "zod";
 
-const EXCHANGE_TYPE_ZOD = z.enum(["AI1", "CI1", "CI2", "IC1", "NC1", "NC2"]);
+const SSECXExchangeCodeSchema = z.enum([
+	"AI1",
+	"CI1",
+	"CI2",
+	"IC1",
+	"NC1",
+	"NC2",
+]);
 
-export const SSECXOrderSchema = z.object({
+const SSECXOrderSchema = z.object({
 	company_name: z.string().max(200),
 	company_code: z.string().min(1).max(10),
 	item_count: z.number().int().min(1).nullish(),
 	item_cost: z.number().min(0),
 });
+export type SSECXOrder = z.infer<typeof SSECXOrderSchema>;
 
 export const SSECXSchema = z.object({
 	material_ticker: z.string().min(1).max(3),
-	exchange_code: EXCHANGE_TYPE_ZOD,
+	exchange_code: SSECXExchangeCodeSchema,
 	timestamp: z.iso.datetime(),
 	demand: z.number().int().min(0),
 	supply: z.number().int().min(0),
@@ -31,5 +39,4 @@ export const SSECXSchema = z.object({
 	mm_buy: z.number().min(0).optional(),
 	mm_sell: z.number().min(0).optional(),
 });
-
-export type SSECXSchemaType = z.infer<typeof SSECXSchema>;
+export type SSECX = z.infer<typeof SSECXSchema>;

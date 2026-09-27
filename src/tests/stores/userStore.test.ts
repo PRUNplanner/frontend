@@ -9,7 +9,7 @@ import {
 
 import { useUserStore } from "@/stores/userStore";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
-import { IUserProfile } from "@/features/api/userData.types";
+import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/features/api/userData.api", () => ({
 	callUserLogin: vi.fn(),
@@ -47,6 +47,22 @@ describe("User Store", () => {
 		expect(userStore.accessToken).toBeUndefined();
 		expect(userStore.refreshToken).toBeUndefined();
 		expect(userStore.isLoggedIn).toBeFalsy();
+	});
+
+	it("Logout: the next login loads its own profile and preferences", () => {
+		const userStore = useUserStore();
+		const getProfile = vi.mocked(callGetProfile).mockResolvedValue(
+			{} as UserProfile
+		);
+		getProfile.mockClear();
+
+		userStore.setToken("access-a", "refresh-a");
+		userStore.intialPreferencesCalled = true;
+		userStore.logout();
+
+		expect(userStore.intialPreferencesCalled).toBe(false);
+		userStore.setToken("access-b", "refresh-b");
+		expect(getProfile).toHaveBeenCalledTimes(2);
 	});
 
 	it("Perform Login and set token: ok", async () => {
@@ -232,7 +248,7 @@ describe("User Store", () => {
 
 	describe("performGetProfile", async () => {
 		it("fio enabled", async () => {
-			const mockProfile: IUserProfile = {
+			const mockProfile: UserProfile = {
 				id: 1,
 				username: "johndoe",
 				email: "a@b.com",
@@ -254,7 +270,7 @@ describe("User Store", () => {
 		});
 
 		it("fio not enabled", async () => {
-			const mockProfile: IUserProfile = {
+			const mockProfile: UserProfile = {
 				id: 1,
 				username: "johndoe",
 				email: "a@b.com",

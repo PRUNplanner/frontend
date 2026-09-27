@@ -14,15 +14,15 @@ import {
 import { getBuildingWorkforceMaterials } from "@/features/planning/engine/workforce";
 
 // Types & Interfaces
-import {
-	IBuilding,
-	IPlanetResource,
-	IRecipe,
-} from "@/features/api/gameData.types";
-import { PSelectOption } from "@/ui/ui.types";
-import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+import type {
+	Building,
+	PlanetResource,
+	Recipe,
+} from "@/features/api/schemas/gameData.schemas";
+import type { PSelectOption } from "@/ui/ui.types";
+import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
-const buildingsCache = new Map<string, IBuilding>();
+const buildingsCache = new Map<string, Building>();
 
 export function useBuildingData() {
 	const {
@@ -39,17 +39,17 @@ export function useBuildingData() {
 
 	const { t } = i18n.global as unknown as Composer;
 
-	const buildingsMap = computed((): Record<string, IBuilding> => {
+	const buildingsMap = computed((): Record<string, Building> => {
 		return (allDataBuildings.value ?? []).reduce(
 			(acc, building) => {
 				acc[building.building_ticker] = building;
 				return acc;
 			},
-			{} as Record<string, IBuilding>
+			{} as Record<string, Building>
 		);
 	});
 
-	const recipeBuildingMap = computed((): Record<string, IRecipe[]> => {
+	const recipeBuildingMap = computed((): Record<string, Recipe[]> => {
 		return (allDataRecipes.value ?? []).reduce(
 			(acc, recipe) => {
 				if (acc[recipe.building_ticker])
@@ -58,11 +58,11 @@ export function useBuildingData() {
 
 				return acc;
 			},
-			{} as Record<string, IRecipe[]>
+			{} as Record<string, Recipe[]>
 		);
 	});
 
-	async function getBuilding(buildingTicker: string): Promise<IBuilding> {
+	async function getBuilding(buildingTicker: string): Promise<Building> {
 		if (buildingsCache.has(buildingTicker))
 			return buildingsCache.get(buildingTicker)!;
 
@@ -75,13 +75,13 @@ export function useBuildingData() {
 		return building;
 	}
 
-	function getAllBuildingRecipes(): Record<string, IRecipe[]> {
+	function getAllBuildingRecipes(): Record<string, Recipe[]> {
 		return recipeBuildingMap.value;
 	}
 
 	function getProductionBuildingOptions(
 		existing: string[],
-		cogc: PLAN_COGCPROGRAM_TYPE | undefined = undefined
+		cogc: PlanCOGCProgram | undefined = undefined
 	): PSelectOption[] {
 		const options: PSelectOption[] = [];
 
@@ -114,13 +114,13 @@ export function useBuildingData() {
 	 * See getBuildingRecipes in the planning engine (engine/buildings.ts).
 	 *
 	 * @param {string} buildingTicker Building Ticker
-	 * @param {IPlanetResource[]} planetResources Planet Resources
-	 * @returns {IRecipe[]} Recipes
+	 * @param {PlanetResource[]} planetResources Planet Resources
+	 * @returns {Recipe[]} Recipes
 	 */
 	function getBuildingRecipes(
 		buildingTicker: string,
-		planetResources: IPlanetResource[] = []
-	): IRecipe[] {
+		planetResources: PlanetResource[] = []
+	): Recipe[] {
 		// extraction recipes come from planet resources, skip the recipe map
 		return getRecipes(
 			buildingTicker in resourceBuildingTicker

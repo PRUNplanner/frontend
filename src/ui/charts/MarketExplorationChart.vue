@@ -6,9 +6,9 @@
 		type ISeriesApi,
 		CandlestickSeries,
 		HistogramSeries,
-		CandlestickData,
-		HistogramData,
-		Time,
+		type CandlestickData,
+		type HistogramData,
+		type Time,
 	} from "lightweight-charts";
 
 	type OhlcArray = [number, number, number, number, number, number];

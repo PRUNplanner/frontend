@@ -1,6 +1,6 @@
 // Types & Interfaces
-import { IMaterial } from "@/features/api/gameData.types";
-import {
+import type { Material } from "@/features/api/schemas/gameData.schemas";
+import type {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 	IProductionBuilding,
@@ -19,9 +19,7 @@ export const TOTALMSDAY: number = 24 * 60 * 60 * 1000;
 export function combineMaterialIOMinimal(
 	arrays: IMaterialIOMinimal[][]
 ): IMaterialIOMinimal[] {
-	const combinedArray: IMaterialIOMinimal[] = arrays
-		.flat()
-		.filter((v) => v);
+	const combinedArray: IMaterialIOMinimal[] = arrays.flat().filter((v) => v);
 
 	const tickerMap: { [key: string]: IMaterialIOMinimal } = {};
 
@@ -42,12 +40,12 @@ export function combineMaterialIOMinimal(
  * by ticker. Throws if a material is unknown.
  * @author jplacht
  *
- * @param {Pick<ReadonlyMap<string, IMaterial>, "get">} materials Material lookup
+ * @param {Pick<ReadonlyMap<string, Material>, "get">} materials Material lookup
  * @param {IMaterialIOMinimal[]} data Minimal Material IO
  * @returns {IMaterialIOMaterial[]} Material IO with material information
  */
 export function enhanceMaterialIOMinimal(
-	materials: Pick<ReadonlyMap<string, IMaterial>, "get">,
+	materials: Pick<ReadonlyMap<string, Material>, "get">,
 	data: IMaterialIOMinimal[]
 ): IMaterialIOMaterial[] {
 	const enhancedArray: IMaterialIOMaterial[] = [];

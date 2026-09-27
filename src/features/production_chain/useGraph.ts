@@ -4,24 +4,24 @@ import { Position } from "@vue-flow/core";
 
 // Classes
 import { ProductionGraph } from "@/features/production_chain/productionGraph";
-import { ProductionNode } from "@/features/production_chain/productionNode";
-import { ProductionEdge } from "@/features/production_chain/productionEdge";
+import type { ProductionNode } from "@/features/production_chain/productionNode";
+import type { ProductionEdge } from "@/features/production_chain/productionEdge";
 
 // Types & Interfaces
 import {
 	dagreSetGraphConfig,
 	dagreSetNodeConfig,
 } from "@/features/production_chain/dagre.config";
-import {
+import type {
 	IFlowEdge,
 	IFlowNode,
 	IGraphFlow,
 	IProductionGraphData,
 } from "@/features/production_chain/productionGraph.types";
-import {
-	BUILDING_EXPERTISE_TYPE,
-	IBuilding,
-} from "@/features/api/gameData.types";
+import type {
+	BuildingExpertise,
+	Building,
+} from "@/features/api/schemas/gameData.schemas";
 
 // Util
 import { formatNumber } from "@/util/numbers";
@@ -37,7 +37,7 @@ export async function useGraph() {
 		const flowNodes: IFlowNode[] = [];
 
 		for (const node of nodes) {
-			const buildingData: IBuilding | undefined =
+			const buildingData: Building | undefined =
 				await node.getBuildingData(selectedRecipes);
 
 			flowNodes.push({
@@ -170,7 +170,7 @@ export async function useGraph() {
 					sum[current] = (sum[current] ?? 0) + 1;
 					return sum;
 				},
-				{} as Record<Partial<BUILDING_EXPERTISE_TYPE>, number>
+				{} as Record<Partial<BuildingExpertise>, number>
 			);
 
 		const workforceAnalysis = Object.entries(

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { onMounted, ref, Ref } from "vue";
+	import { onMounted, ref, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -14,7 +14,7 @@
 	import { XITSTATIONWAREHOUSES } from "@/features/xit/xitConstants";
 
 	// Types & Interfaces
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// Components
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";

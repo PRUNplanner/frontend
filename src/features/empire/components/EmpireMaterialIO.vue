@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType, computed, watch } from "vue";
+	import { type PropType, computed, watch } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -15,7 +15,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IEmpireMaterialIO } from "@/features/empire/empire.types";
+	import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
 
 	// UI
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";

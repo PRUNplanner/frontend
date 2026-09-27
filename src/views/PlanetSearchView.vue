@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, Ref } from "vue";
+	import { ref, type Ref } from "vue";
 	import { useHead } from "@unhead/vue";
 
 	import { useI18n } from "vue-i18n";
@@ -16,9 +16,9 @@
 	import PlanetSearchAdvanced from "@/features/planet_search/components/PlanetSearchAdvanced.vue";
 	import PlanetSearchResults from "@/features/planet_search/components/PlanetSearchResults.vue";
 
-	import { IPlanet } from "@/features/api/gameData.types";
+	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
-	const refResults: Ref<IPlanet[]> = ref([]);
+	const refResults: Ref<Planet[]> = ref([]);
 	const refSearchMaterials: Ref<string[]> = ref([]);
 	const refSearchMaterialRichness: Ref<Record<string, number>> = ref({});
 	const refSearchSystem: Ref<string | undefined> = ref(undefined);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import type { PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -18,7 +18,7 @@
 	import { formatNumber, formatAmount } from "@/util/numbers";
 
 	// Type & Interfaces
-	import {
+	import type {
 		IFIOBurnTableElement,
 		IFIOBurnTableElementMaterial,
 	} from "@/features/fio/useFIOBurn.types";
@@ -144,9 +144,7 @@
 						</span>
 						<span class="text-white/50!">
 							&mdash;
-							{{
-								planetName(rowData.planetId)
-							}}
+							{{ planetName(rowData.planetId) }}
 						</span>
 					</div>
 					<div class="flex flex-row items-center gap-x-3">

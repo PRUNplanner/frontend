@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
 import { useUserStore } from "@/stores/userStore";
@@ -8,7 +8,7 @@ import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import {
+import type {
 	IMaterialIO,
 	IStorageRecord,
 } from "@/features/planning/usePlanCalculation.types";
@@ -70,7 +70,8 @@ async function mountTool(
 function tableCells(wrapper: VueWrapper, index: number) {
 	return wrapper
 		.findAll("table")
-		.at(index)!.findAll("tbody tr")
+		.at(index)!
+		.findAll("tbody tr")
 		.map((tr) => tr.findAll("td").map((td) => td.text()));
 }
 

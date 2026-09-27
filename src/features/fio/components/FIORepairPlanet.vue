@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import type { PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -8,7 +8,7 @@
 	import { formatAmount, formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IFIOSitesRepairTablePlanetElement } from "@/features/fio/useFIORepair.types";
+	import type { IFIOSitesRepairTablePlanetElement } from "@/features/fio/useFIORepair.types";
 
 	// UI
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";

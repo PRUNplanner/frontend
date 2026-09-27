@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType, ref, Ref, watch } from "vue";
+	import { computed, type PropType, ref, type Ref, watch } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -12,15 +12,12 @@
 	import { inertClone } from "@/util/data";
 
 	// Types & Interfaces
-	import {
-		IPlanEmpireElement,
-		PLAN_FACTION,
-	} from "@/stores/planningStore.types";
-	import {
-		IEmpirePatchPayload,
-		IEmpirePlanListData,
-	} from "@/features/empire/empire.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type {
+		EmpirePayload,
+		PlanEmpireElement,
+	} from "@/features/api/schemas/empireData.schemas";
+	import type { IEmpirePlanListData } from "@/features/empire/empire.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import {
@@ -35,7 +32,7 @@
 
 	const props = defineProps({
 		data: {
-			type: Object as PropType<IPlanEmpireElement>,
+			type: Object as PropType<PlanEmpireElement>,
 			required: true,
 		},
 		planListData: {
@@ -51,12 +48,11 @@
 	const isLoading: Ref<boolean> = ref(false);
 
 	// Local Data & Watcher
-	const localData: Ref<IPlanEmpireElement> = ref(inertClone(props.data));
+	const localData: Ref<PlanEmpireElement> = ref(inertClone(props.data));
 
 	watch(
 		() => props.data,
-		(newData: IPlanEmpireElement) =>
-			(localData.value = inertClone(newData)),
+		(newData: PlanEmpireElement) => (localData.value = inertClone(newData)),
 		{ deep: true }
 	);
 
@@ -91,9 +87,9 @@
 		isLoading.value = true;
 		trackEvent("empire_patch");
 
-		const patchData: IEmpirePatchPayload = {
+		const patchData: EmpirePayload = {
 			empire_name: localData.value.empire_name,
-			empire_faction: localData.value.empire_faction as PLAN_FACTION,
+			empire_faction: localData.value.empire_faction,
 			empire_permits_used: localData.value.empire_permits_used,
 			empire_permits_total: localData.value.empire_permits_total,
 		};

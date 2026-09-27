@@ -7,11 +7,11 @@
 		LinearScale,
 		type ChartData,
 		type ChartOptions,
-		ChartDataset,
+		type ChartDataset,
 	} from "chart.js";
 	import { Chart } from "vue-chartjs";
 	import { TreemapController, TreemapElement } from "chartjs-chart-treemap";
-	import { IChartEmpireTreeElement } from "./charts.types";
+	import type { IChartEmpireTreeElement } from "./charts.types";
 
 	ChartJS.register(
 		Tooltip,

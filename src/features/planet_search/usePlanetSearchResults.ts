@@ -1,4 +1,9 @@
-import { computed, ComputedRef } from "vue";
+import {
+	computed,
+	type ComputedRef,
+	type MaybeRefOrGetter,
+	toValue,
+} from "vue";
 
 // Util
 import { boundaryDescriptor } from "@/util/numbers";
@@ -15,12 +20,12 @@ import {
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
 
 // Types & Interfaces
-import { IPlanet } from "@/features/api/gameData.types";
-import {
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type {
 	IPlanetSearchResult,
 	IPlanetSearchResultResource,
 } from "@/features/planet_search/usePlanetSearchResults.types";
-import { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
+import type { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
 
 const {
 	getPathBetweenLength,
@@ -31,11 +36,11 @@ const {
 } = usePathfinder();
 
 export function usePlanetSearchResults(
-	searchData: IPlanet[],
-	searchMaterials: string[],
-	searchMaterialRichness: Record<string, number>,
-	searchSystem: string | undefined,
-	searchSystemDistance: number | undefined
+	planets: MaybeRefOrGetter<Planet[]>,
+	materials: MaybeRefOrGetter<string[]>,
+	richness: MaybeRefOrGetter<Record<string, number>>,
+	system: MaybeRefOrGetter<string | undefined>,
+	distance: MaybeRefOrGetter<number | undefined>
 ) {
 	/**
 	 * Computed Ref with table-ready planet search data
@@ -44,6 +49,13 @@ export function usePlanetSearchResults(
 	 * @type {ComputedRef<IPlanetSearchResult[]>}
 	 */
 	const results: ComputedRef<IPlanetSearchResult[]> = computed(() => {
+		const searchData: Planet[] = toValue(planets);
+		const searchMaterials: string[] = toValue(materials);
+		const searchMaterialRichness: Record<string, number> =
+			toValue(richness);
+		const searchSystem: string | undefined = toValue(system);
+		const searchSystemDistance: number | undefined = toValue(distance);
+
 		if (searchData.length === 0) return [];
 
 		const r: IPlanetSearchResult[] = searchData

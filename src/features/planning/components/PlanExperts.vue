@@ -1,12 +1,10 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType } from "vue";
+	import { computed, type ComputedRef, type PropType } from "vue";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import {
-		EXPERT_TYPE,
-		IExpertRecord,
-	} from "@/features/planning/usePlanCalculation.types";
+	import type { ExpertType } from "@/features/api/schemas/planningData.schemas";
+	import type { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -30,7 +28,7 @@
 	});
 
 	const emit = defineEmits<{
-		(e: "update:expert", expert: EXPERT_TYPE, value: number): void;
+		(e: "update:expert", expert: ExpertType, value: number): void;
 	}>();
 
 	// Local State
@@ -42,7 +40,7 @@
 		let total: number = 0;
 
 		Object.keys(localExpertData.value).forEach((expertKey) => {
-			total += localExpertData.value[expertKey as EXPERT_TYPE].amount;
+			total += localExpertData.value[expertKey as ExpertType].amount;
 		});
 
 		return total;

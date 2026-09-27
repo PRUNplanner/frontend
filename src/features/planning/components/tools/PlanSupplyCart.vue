@@ -1,9 +1,9 @@
 <script setup lang="ts">
 	import {
 		computed,
-		ComputedRef,
-		PropType,
-		Ref,
+		type ComputedRef,
+		type PropType,
+		type Ref,
 		ref,
 		watchEffect,
 	} from "vue";
@@ -20,7 +20,7 @@
 	import { usePreferences } from "@/features/preferences/usePreferences";
 
 	// Types & Interfaces
-	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+	import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 	interface ISupplyCartElement extends IMaterialIO {
 		workforce: boolean;
@@ -50,7 +50,7 @@
 		CheckCircleOutlineSharp,
 		RemoveCircleOutlineSharp,
 	} from "@vicons/material";
-	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
+	import type { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	const props = defineProps({
 		planetNaturalId: {

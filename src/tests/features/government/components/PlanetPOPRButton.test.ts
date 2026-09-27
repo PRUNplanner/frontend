@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { h } from "vue";
-import { DOMWrapper, flushPromises, VueWrapper } from "@vue/test-utils";
+import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 import { NModal } from "naive-ui";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -93,7 +93,10 @@ describe("PlanetPOPRButton", () => {
 			wrapper.findComponent({ name: "PlanetPOPRTable" }).props()
 		).toMatchObject({
 			planetNaturalId: "AA-003a",
-			poprData: { simulation_period: 255, next_population_pioneer: 74034 },
+			poprData: {
+				simulation_period: 255,
+				next_population_pioneer: 74034,
+			},
 		});
 		expect(wrapper.findComponent(PButton).props()).toMatchObject({
 			loading: false,
@@ -115,9 +118,7 @@ describe("PlanetPOPRButton", () => {
 
 		respond([200, popr]);
 		await vi.waitFor(() =>
-			expect(wrapper.find("button").attributes("aria-busy")).toBe(
-				"false"
-			)
+			expect(wrapper.find("button").attributes("aria-busy")).toBe("false")
 		);
 		expect(body().find(".n-modal").exists()).toBe(true);
 	});

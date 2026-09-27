@@ -1,26 +1,11 @@
 import { z } from "zod";
 import { PositiveOrZeroNumber } from "@/util/zodValidators";
-import {
-	IMaterial,
-	IExchange,
-	IRecipeMaterial,
-	IRecipe,
-	IBuildingCost,
-	IBuildingHabitation,
-	IBuilding,
-	IPlanetResource,
-	IPlanetCOGCProgram,
-	IPlanet,
-	IFIOStorageItem,
-	IFIOSitePlanetBuildingMaterial,
-	IFIOSitePlanetBuilding,
-	IFIOSitePlanet,
-	IPlanetSearchAdvanced,
-	IPopulationReport,
-} from "@/features/api/gameData.types";
 
-// Schemas
-export const MaterialSchema: z.ZodType<IMaterial> = z.object({
+/**
+ * MATERIALS
+ */
+
+export const MaterialSchema = z.object({
 	material_id: z.string(),
 	category_name: z.string(),
 	category_id: z.string(),
@@ -29,11 +14,15 @@ export const MaterialSchema: z.ZodType<IMaterial> = z.object({
 	weight: z.number(),
 	volume: z.number(),
 });
+export type Material = z.infer<typeof MaterialSchema>;
 
-export const MaterialPayloadSchema: z.ZodType<IMaterial[]> =
-	z.array(MaterialSchema);
+export const MaterialPayloadSchema = z.array(MaterialSchema);
 
-export const ExchangeSchema: z.ZodType<IExchange> = z.object({
+/**
+ * EXCHANGES
+ */
+
+export const ExchangeSchema = z.object({
 	ticker_id: z.string().min(5).max(12),
 	ticker: z.string().min(1).max(3),
 	exchange_code: z.string(),
@@ -52,16 +41,21 @@ export const ExchangeSchema: z.ZodType<IExchange> = z.object({
 	demand: z.number(),
 	exchange_status: z.literal(["STALE", "ACTIVE", "INACTIVE"]),
 });
+export type Exchange = z.infer<typeof ExchangeSchema>;
 
-export const ExchangePayloadSchema: z.ZodType<IExchange[]> =
-	z.array(ExchangeSchema);
+export const ExchangePayloadSchema = z.array(ExchangeSchema);
 
-const RecipeMaterialSchema: z.ZodType<IRecipeMaterial> = z.object({
+/**
+ * RECIPES
+ */
+
+const RecipeMaterialSchema = z.object({
 	material_ticker: z.string().min(1).max(3),
 	material_amount: PositiveOrZeroNumber,
 });
+export type RecipeMaterial = z.infer<typeof RecipeMaterialSchema>;
 
-export const RecipeSchema: z.ZodType<IRecipe> = z.object({
+export const RecipeSchema = z.object({
 	recipe_id: z.string(),
 	building_ticker: z.string().min(2).max(3),
 	recipe_name: z.string(),
@@ -69,15 +63,20 @@ export const RecipeSchema: z.ZodType<IRecipe> = z.object({
 	inputs: z.array(RecipeMaterialSchema),
 	outputs: z.array(RecipeMaterialSchema),
 });
+export type Recipe = z.infer<typeof RecipeSchema>;
 
-export const RecipePayloadSchema: z.ZodType<IRecipe[]> = z.array(RecipeSchema);
+export const RecipePayloadSchema = z.array(RecipeSchema);
 
-const BuildingCostSchema: z.ZodType<IBuildingCost> = z.object({
+/**
+ * BUILDINGS
+ */
+
+const BuildingCostSchema = z.object({
 	material_ticker: z.string().min(1).max(3),
 	material_amount: PositiveOrZeroNumber,
 });
 
-const BuildingHabitationSchema: z.ZodType<IBuildingHabitation> = z.object({
+const BuildingHabitationSchema = z.object({
 	pioneers: PositiveOrZeroNumber,
 	settlers: PositiveOrZeroNumber,
 	technicians: PositiveOrZeroNumber,
@@ -85,8 +84,13 @@ const BuildingHabitationSchema: z.ZodType<IBuildingHabitation> = z.object({
 	scientists: PositiveOrZeroNumber,
 });
 
-const BUILDING_TYPE_ZOD = z.enum(["INFRASTRUCTURE", "PLANETARY", "PRODUCTION"]);
-const EXPERTISE_TYPE_ZOD = z.enum([
+const BuildingTypeSchema = z.enum([
+	"INFRASTRUCTURE",
+	"PLANETARY",
+	"PRODUCTION",
+]);
+
+const BuildingExpertiseSchema = z.enum([
 	"AGRICULTURE",
 	"CHEMISTRY",
 	"CONSTRUCTION",
@@ -97,11 +101,12 @@ const EXPERTISE_TYPE_ZOD = z.enum([
 	"METALLURGY",
 	"RESOURCE_EXTRACTION",
 ]);
+export type BuildingExpertise = z.infer<typeof BuildingExpertiseSchema>;
 
-export const BuildingSchema: z.ZodType<IBuilding> = z.object({
+export const BuildingSchema = z.object({
 	building_name: z.string(),
 	building_ticker: z.string().min(2).max(3),
-	expertise: EXPERTISE_TYPE_ZOD.nullable(),
+	expertise: BuildingExpertiseSchema.nullable(),
 	pioneers: PositiveOrZeroNumber,
 	settlers: PositiveOrZeroNumber,
 	technicians: PositiveOrZeroNumber,
@@ -110,23 +115,31 @@ export const BuildingSchema: z.ZodType<IBuilding> = z.object({
 	area_cost: PositiveOrZeroNumber,
 	costs: z.array(BuildingCostSchema),
 	habitations: BuildingHabitationSchema.nullable(),
-	building_type: BUILDING_TYPE_ZOD,
+	building_type: BuildingTypeSchema,
 });
+export type Building = z.infer<typeof BuildingSchema>;
 
-export const BuildingPayloadSchema: z.ZodType<IBuilding[]> =
-	z.array(BuildingSchema);
+export const BuildingPayloadSchema = z.array(BuildingSchema);
 
-const PLANET_RESOURCETYPE_TYPE_ZOD = z.enum(["MINERAL", "GASEOUS", "LIQUID"]);
+/**
+ * PLANETS
+ */
 
-const PlanetResourceSchema: z.ZodType<IPlanetResource> = z.object({
-	resource_type: PLANET_RESOURCETYPE_TYPE_ZOD,
+const PlanetResourceTypeSchema = z.enum(["MINERAL", "GASEOUS", "LIQUID"]);
+export type PlanetResourceType = z.infer<typeof PlanetResourceTypeSchema>;
+
+const PlanetResourceSchema = z.object({
+	resource_type: PlanetResourceTypeSchema,
 	factor: z.number(),
 	daily_extraction: z.number(),
 	material_ticker: z.string().min(1).max(3),
 	max_daily_extraction: z.number(),
 });
+export type PlanetResource = z.infer<typeof PlanetResourceSchema>;
 
-const PLANET_COGCPROGRAM_TYPE_ZOD = z.enum([
+// Not PlanCOGCProgramSchema (planningData.schemas.ts): the game's program
+// names differ from the plan's COGC options.
+const PlanetCOGCProgramTypeSchema = z.enum([
 	"Invalid",
 	"ADVERTISING_AGRICULTURE",
 	"ADVERTISING_CHEMISTRY",
@@ -143,20 +156,21 @@ const PLANET_COGCPROGRAM_TYPE_ZOD = z.enum([
 	"WORKFORCE_ENGINEERS",
 	"WORKFORCE_SCIENTISTS",
 ]);
+export type PlanetCOGCProgramType = z.infer<typeof PlanetCOGCProgramTypeSchema>;
 
-const PlanetCOGCProgramSchema: z.ZodType<IPlanetCOGCProgram> = z.object({
-	program_type: PLANET_COGCPROGRAM_TYPE_ZOD.nullable(),
+const PlanetCOGCProgramSchema = z.object({
+	program_type: PlanetCOGCProgramTypeSchema.nullable(),
 	start_epochms: z.number(),
 	end_epochms: z.number(),
 });
 
-const PLANET_COGCPGROGRAM_STATUS_TYPE_ZOD = z.enum([
+const PlanetCOGCProgramStatusSchema = z.enum([
 	"ACTIVE",
 	"ON_STRIKE",
 	"PLANNED",
 ]);
 
-export const PlanetSchema: z.ZodType<IPlanet> = z.object({
+export const PlanetSchema = z.object({
 	planet_id: z.string().min(32).max(32),
 	planet_natural_id: z.string(),
 	planet_name: z.string(),
@@ -173,26 +187,88 @@ export const PlanetSchema: z.ZodType<IPlanet> = z.object({
 	gravity: z.number(),
 	faction_code: z.string().nullable(),
 	faction_name: z.string().nullable(),
-	cogc_program_status: PLANET_COGCPGROGRAM_STATUS_TYPE_ZOD.nullable(),
+	cogc_program_status: PlanetCOGCProgramStatusSchema.nullable(),
 
 	resources: z.array(PlanetResourceSchema),
 	cogc_programs: z.array(PlanetCOGCProgramSchema),
-	active_cogc_program_type: PLANET_COGCPROGRAM_TYPE_ZOD.nullable(),
+	active_cogc_program_type: PlanetCOGCProgramTypeSchema.nullable(),
 });
+export type Planet = z.infer<typeof PlanetSchema>;
 
-export const PlanetMultiplePayload: z.ZodType<IPlanet[]> =
-	z.array(PlanetSchema);
+export const PlanetMultiplePayloadSchema = z.array(PlanetSchema);
 
-export const PlanetMultipleRequestPayload: z.ZodType<string[]> = z.array(
-	z.string()
-);
+export const PlanetMultipleRequestPayloadSchema = z.array(z.string());
 
-const FIOStorageItemSchema: z.ZodType<IFIOStorageItem> = z.object({
+export const PlanetSearchAdvancedPayloadSchema = z.object({
+	materials: z.array(z.string().min(1).max(3)),
+	cogc_programs: z.array(PlanetCOGCProgramTypeSchema),
+	environment_rocky: z.boolean(),
+	environment_gaseous: z.boolean(),
+	environment_low_gravity: z.boolean(),
+	environment_high_gravity: z.boolean(),
+	environment_low_pressure: z.boolean(),
+	environment_high_pressure: z.boolean(),
+	environment_low_temperature: z.boolean(),
+	environment_high_temperature: z.boolean(),
+	must_be_fertile: z.boolean(),
+	must_have_localmarket: z.boolean(),
+	must_have_chamberofcommerce: z.boolean(),
+	must_have_warehouse: z.boolean(),
+	must_have_administrationcenter: z.boolean(),
+	must_have_shipyard: z.boolean(),
+});
+export type PlanetSearchAdvancedPayload = z.input<
+	typeof PlanetSearchAdvancedPayloadSchema
+>;
+
+export const PopulationReportSchema = z.object({
+	explorers_grace_enabled: z.boolean(),
+	simulation_period: z.number().int(),
+	next_population_pioneer: z.number().int(),
+	next_population_settler: z.number().int(),
+	next_population_technician: z.number().int(),
+	next_population_engineer: z.number().int(),
+	next_population_scientist: z.number().int(),
+	population_difference_pioneer: z.number().int(),
+	population_difference_settler: z.number().int(),
+	population_difference_technician: z.number().int(),
+	population_difference_engineer: z.number().int(),
+	population_difference_scientist: z.number().int(),
+	unemployment_rate_pioneer: z.number(),
+	unemployment_rate_settler: z.number(),
+	unemployment_rate_technician: z.number(),
+	unemployment_rate_engineer: z.number(),
+	unemployment_rate_scientist: z.number(),
+	open_jobs_pioneer: z.number(),
+	open_jobs_settler: z.number(),
+	open_jobs_technician: z.number(),
+	open_jobs_engineer: z.number(),
+	open_jobs_scientist: z.number(),
+	need_fulfillment_life_support: z.number(),
+	need_fulfillment_safety: z.number(),
+	need_fulfillment_health: z.number(),
+	need_fulfillment_comfort: z.number(),
+	need_fulfillment_culture: z.number(),
+	need_fulfillment_education: z.number(),
+	free_pioneer: z.number().int(),
+	free_settler: z.number().int(),
+	free_technician: z.number().int(),
+	free_engineer: z.number().int(),
+	free_scientist: z.number().int(),
+});
+export type PopulationReport = z.infer<typeof PopulationReportSchema>;
+
+/**
+ * FIO STORAGE & SITES
+ */
+
+const FIOStorageItemSchema = z.object({
 	MaterialTicker: z.string(),
 	MaterialAmount: z.number(),
 });
+export type FIOStorageItem = z.infer<typeof FIOStorageItemSchema>;
 
-const FIOStorageBaseSchema = z.object({
+const FIOStorageElementSchema = z.object({
 	WeightCapacity: z.number(),
 	VolumeCapacity: z.number(),
 	StorageItems: z.array(FIOStorageItemSchema),
@@ -200,121 +276,44 @@ const FIOStorageBaseSchema = z.object({
 	VolumeLoad: z.number(),
 	Identifier: z.string(),
 });
+export type FIOStorageElement = z.infer<typeof FIOStorageElementSchema>;
 
-const FIOStoragePlanetSchema = FIOStorageBaseSchema.extend({});
-
-const FIOStorageWarehouseSchema = FIOStorageBaseSchema.extend({});
-
-const FIOStorageShipSchema = FIOStorageBaseSchema.extend({
+const FIOStorageShipSchema = FIOStorageElementSchema.extend({
 	Name: z.string().optional(),
 });
 
-const FIOSitePlanetBuildingMaterialSchema: z.ZodType<IFIOSitePlanetBuildingMaterial> =
-	z.object({
-		MaterialTicker: z.string(),
-		MaterialAmount: PositiveOrZeroNumber,
-	});
+const FIOSitePlanetBuildingMaterialSchema = z.object({
+	MaterialTicker: z.string(),
+	MaterialAmount: PositiveOrZeroNumber,
+});
 
-const FIOSitePlanetBuildingSchema: z.ZodType<IFIOSitePlanetBuilding> = z.object(
-	{
-		BuildingTicker: z.string(),
-		BuildingLastRepair: z.coerce.date().optional(),
-		Condition: z.number(),
-		ReclaimableMaterials: z.array(FIOSitePlanetBuildingMaterialSchema).default([]),
-		RepairMaterials: z.array(FIOSitePlanetBuildingMaterialSchema).default([]),
-		AgeDays: z.number().optional(),
-	}
-);
+const FIOSitePlanetBuildingSchema = z.object({
+	BuildingTicker: z.string(),
+	BuildingLastRepair: z.coerce.date().optional(),
+	Condition: z.number(),
+	ReclaimableMaterials: z
+		.array(FIOSitePlanetBuildingMaterialSchema)
+		.default([]),
+	RepairMaterials: z.array(FIOSitePlanetBuildingMaterialSchema).default([]),
+	AgeDays: z.number().optional(),
+});
 
-const FIOSitePlanetSchema: z.ZodType<IFIOSitePlanet> = z.object({
+const FIOSitePlanetSchema = z.object({
 	PlanetIdentifier: z.string(),
 	PlanetName: z.string().optional(),
 	InvestedPermits: z.number(),
 	MaximumPermits: z.number(),
 	Buildings: z.array(FIOSitePlanetBuildingSchema),
 });
+export type FIOSitePlanet = z.infer<typeof FIOSitePlanetSchema>;
 
 export const FIOStorageSchema = z.object({
 	storage_data: z.object({
-		planets: z.record(z.string(), FIOStoragePlanetSchema),
-		warehouses: z.record(z.string(), FIOStorageWarehouseSchema),
+		planets: z.record(z.string(), FIOStorageElementSchema),
+		warehouses: z.record(z.string(), FIOStorageElementSchema),
 		ships: z.record(z.string(), FIOStorageShipSchema),
 	}),
 	sites_data: z.record(z.string(), FIOSitePlanetSchema),
 	last_modified: z.coerce.date(),
 });
-
-export const PlanetSearchAdvancedPayloadSchema: z.ZodType<IPlanetSearchAdvanced> =
-	z.object({
-		materials: z.array(z.string().min(1).max(3)),
-		cogc_programs: z.array(PLANET_COGCPROGRAM_TYPE_ZOD),
-		environment_rocky: z.boolean(),
-		environment_gaseous: z.boolean(),
-		environment_low_gravity: z.boolean(),
-		environment_high_gravity: z.boolean(),
-		environment_low_pressure: z.boolean(),
-		environment_high_pressure: z.boolean(),
-		environment_low_temperature: z.boolean(),
-		environment_high_temperature: z.boolean(),
-		must_be_fertile: z.boolean(),
-		must_have_localmarket: z.boolean(),
-		must_have_chamberofcommerce: z.boolean(),
-		must_have_warehouse: z.boolean(),
-		must_have_administrationcenter: z.boolean(),
-		must_have_shipyard: z.boolean(),
-	});
-
-export const PopulationReportPayloadSchema: z.ZodType<IPopulationReport> =
-	z.object({
-		explorers_grace_enabled: z.boolean(),
-		simulation_period: z.number().int(),
-		next_population_pioneer: z.number().int(),
-		next_population_settler: z.number().int(),
-		next_population_technician: z.number().int(),
-		next_population_engineer: z.number().int(),
-		next_population_scientist: z.number().int(),
-		population_difference_pioneer: z.number().int(),
-		population_difference_settler: z.number().int(),
-		population_difference_technician: z.number().int(),
-		population_difference_engineer: z.number().int(),
-		population_difference_scientist: z.number().int(),
-		unemployment_rate_pioneer: z.number(),
-		unemployment_rate_settler: z.number(),
-		unemployment_rate_technician: z.number(),
-		unemployment_rate_engineer: z.number(),
-		unemployment_rate_scientist: z.number(),
-		open_jobs_pioneer: z.number(),
-		open_jobs_settler: z.number(),
-		open_jobs_technician: z.number(),
-		open_jobs_engineer: z.number(),
-		open_jobs_scientist: z.number(),
-		need_fulfillment_life_support: z.number(),
-		need_fulfillment_safety: z.number(),
-		need_fulfillment_health: z.number(),
-		need_fulfillment_comfort: z.number(),
-		need_fulfillment_culture: z.number(),
-		need_fulfillment_education: z.number(),
-		free_pioneer: z.number().int(),
-		free_settler: z.number().int(),
-		free_technician: z.number().int(),
-		free_engineer: z.number().int(),
-		free_scientist: z.number().int(),
-	});
-
-// Schema Types
-export type MaterialPayloadType = z.infer<typeof MaterialPayloadSchema>;
-export type BuildingPayloadType = z.infer<typeof BuildingPayloadSchema>;
-export type ExchangePayloadType = z.infer<typeof ExchangePayloadSchema>;
-export type RecipePayloadType = z.infer<typeof RecipePayloadSchema>;
-export type PlanetPayloadType = z.infer<typeof PlanetSchema>;
-export type PlanetMultiplePayloadType = z.infer<typeof PlanetMultiplePayload>;
-export type PlanetMultipleRequestType = z.infer<
-	typeof PlanetMultipleRequestPayload
->;
-export type FIOStoragePayloadType = z.infer<typeof FIOStorageSchema>;
-export type PlanetSearchAdvancedPayloadType = z.infer<
-	typeof PlanetSearchAdvancedPayloadSchema
->;
-export type PopulationReportPayloadType = z.infer<
-	typeof PopulationReportPayloadSchema
->;
+export type FIOStorage = z.infer<typeof FIOStorageSchema>;

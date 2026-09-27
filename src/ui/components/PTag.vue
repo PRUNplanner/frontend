@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ColorKey, SizeKey } from "@/ui/ui.types";
+	import type { ColorKey, SizeKey } from "@/ui/ui.types";
 	import { tagConfig } from "@/ui/styles";
 
 	const {

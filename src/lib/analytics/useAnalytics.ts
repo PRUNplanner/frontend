@@ -1,8 +1,8 @@
 import { usePostHog } from "@/lib/analytics/usePostHog";
 
 // Types & Interfaces
-import { Properties } from "posthog-js";
-import {
+import type { Properties } from "posthog-js";
+import type {
 	ANALYTICS_EVENT_TYPE,
 	IAnalyticsEventProperties,
 } from "@/lib/analytics/useAnalytics.types";

@@ -17,8 +17,8 @@ import {
 import { usePlanContext } from "@/features/planning/usePlanContext";
 
 // Types & Interfaces
-import { IPlanContext } from "@/features/planning/engine/engine.types";
-import {
+import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type {
 	IMaterialIO,
 	IProductionBuilding,
 } from "@/features/planning/usePlanCalculation.types";
@@ -69,7 +69,10 @@ describe("planning engine", () => {
 			const before = JSON.stringify(plan);
 
 			expect(() =>
-				calculatePlan({ plan, empire: undefined, cxUuid: undefined }, ctx)
+				calculatePlan(
+					{ plan, empire: undefined, cxUuid: undefined },
+					ctx
+				)
 			).not.toThrow();
 			expect(JSON.stringify(plan)).toBe(before);
 		});
@@ -94,14 +97,20 @@ describe("planning engine", () => {
 				ctx
 			);
 			const lean = calculatePlan(
-				{ plan, empire: undefined, cxUuid: undefined, recipeOptions: false },
+				{
+					plan,
+					empire: undefined,
+					cxUuid: undefined,
+					recipeOptions: false,
+				},
 				ctx
 			);
 
-			expect(full.result.production.buildings[1].recipeOptions.length).toBe(
-				21
-			);
-			for (const b of full.result.production.buildings) b.recipeOptions = [];
+			expect(
+				full.result.production.buildings[1].recipeOptions.length
+			).toBe(21);
+			for (const b of full.result.production.buildings)
+				b.recipeOptions = [];
 			expect(lean).toStrictEqual(full);
 		});
 
@@ -112,15 +121,20 @@ describe("planning engine", () => {
 			);
 
 			expect(overview.totalConstructionCost).toBe(
-				calculateTotalConstructionCost(result.constructionMaterials, ctx.prices)
+				calculateTotalConstructionCost(
+					result.constructionMaterials,
+					ctx.prices
+				)
 			);
 			expect(overview.dailyProfit).toBe(result.revenue);
 		});
 
 		it("shows COGM when a CX is given", () => {
 			const cogm = (cxUuid: string | undefined) =>
-				calculatePlan({ plan: etherwindPlan(), empire: undefined, cxUuid }, ctx)
-					.result.production.buildings[0].activeRecipes[0].cogm!.visible;
+				calculatePlan(
+					{ plan: etherwindPlan(), empire: undefined, cxUuid },
+					ctx
+				).result.production.buildings[0].activeRecipes[0].cogm!.visible;
 
 			expect(cogm(undefined)).toBe(false);
 			expect(cogm("some-cx")).toBe(true);
@@ -165,9 +179,14 @@ describe("planning engine", () => {
 
 	describe("area, construction and visitation", () => {
 		it("area counts the core module, infrastructure and buildings", () => {
-			expect(calculateArea(emptyPlan().plan_data, 1, ctx.buildings)).toEqual(
-				{ permits: 1, areaUsed: 25, areaTotal: 500, areaLeft: 475 }
-			);
+			expect(
+				calculateArea(emptyPlan().plan_data, 1, ctx.buildings)
+			).toEqual({
+				permits: 1,
+				areaUsed: 25,
+				areaTotal: 500,
+				areaLeft: 475,
+			});
 		});
 
 		it("construction always has the core module, only used infrastructure", () => {
@@ -215,9 +234,9 @@ describe("planning engine", () => {
 		});
 
 		it("extraction recipes come from planet resources", () => {
-			expect(getBuildingRecipes(ctx.recipesByBuilding, "EXT", [])).toEqual(
-				[]
-			);
+			expect(
+				getBuildingRecipes(ctx.recipesByBuilding, "EXT", [])
+			).toEqual([]);
 			expect(
 				getBuildingRecipes(
 					ctx.recipesByBuilding,

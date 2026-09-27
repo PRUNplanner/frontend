@@ -3,33 +3,22 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
-import {
-	IPlanCreateData,
+import type {
+	Plan,
+	PlanCOGCProgram,
+	PlanCreateData,
+	PlanSaveCreateResponse,
+} from "@/features/api/schemas/planningData.schemas";
+import { PlanCOGCProgramSchema } from "@/features/api/schemas/planningData.schemas";
+import type {
+	IPlanDefinition,
 	IPlanRouteParams,
-	IPlanSaveCreateResponse,
 } from "@/features/planning_data/usePlan.types";
-import { PLANET_COGCPROGRAM_TYPE } from "@/features/api/gameData.types";
-import { IPlan, PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
-const cogcValues: string[] = [
-	"---",
-	"AGRICULTURE",
-	"CHEMISTRY",
-	"CONSTRUCTION",
-	"ELECTRONICS",
-	"FOOD_INDUSTRIES",
-	"FUEL_REFINING",
-	"MANUFACTURING",
-	"METALLURGY",
-	"RESOURCE_EXTRACTION",
-	"PIONEERS",
-	"SETTLERS",
-	"TECHNICIANS",
-	"ENGINEERS",
-	"SCIENTISTS",
-];
+const cogcValues: readonly string[] = PlanCOGCProgramSchema.options;
 
-export const cogcTextMapping: Record<PLAN_COGCPROGRAM_TYPE, string> = {
+export const cogcTextMapping: Record<PlanCOGCProgram, string> = {
 	"---": "game.cogc_program_short.NONE",
 	AGRICULTURE: "game.cogc_program_short.ADVERTISING_AGRICULTURE",
 	CHEMISTRY: "game.cogc_program_short.ADVERTISING_CHEMISTRY",
@@ -73,19 +62,19 @@ export function usePlan() {
 	 *
 	 * @author jplacht
 	 *
-	 * @param {(PLANET_COGCPROGRAM_TYPE | null | undefined)} input Planet COGC Type
-	 * @returns {PLAN_COGCPROGRAM_TYPE} Plan COGC Type
+	 * @param {(PlanetCOGCProgramType | null | undefined)} input Planet COGC Type
+	 * @returns {PlanCOGCProgram} Plan COGC Type
 	 */
 	function mapPlanetToPlanType(
-		input: PLANET_COGCPROGRAM_TYPE | null | undefined
-	): PLAN_COGCPROGRAM_TYPE {
+		input: PlanetCOGCProgramType | null | undefined
+	): PlanCOGCProgram {
 		if (!input) return "---";
 		const parts = input.split("_");
 		const identifiedType = parts.slice(1).join("_").toUpperCase();
 
 		// value could be invalid or on strike, check to ensure we got a proper cogc
 		if (!cogcValues.includes(identifiedType)) return "---";
-		else return identifiedType as PLAN_COGCPROGRAM_TYPE;
+		else return identifiedType as PlanCOGCProgram;
 	}
 
 	/**
@@ -94,13 +83,13 @@ export function usePlan() {
 	 * @author jplacht
 	 *
 	 * @param {string} planetNaturalId Planet Natural Id (e.g. 'OT-580b')
-	 * @param {(PLANET_COGCPROGRAM_TYPE | null)} cogc Planet COGC
-	 * @returns {IPlan} Blank plan definition
+	 * @param {(PlanetCOGCProgramType | null)} cogc Planet COGC
+	 * @returns {IPlanDefinition} Blank plan definition
 	 */
 	function createBlankDefinition(
 		planetNaturalId: string,
-		cogc: PLANET_COGCPROGRAM_TYPE | null
-	): IPlan {
+		cogc: PlanetCOGCProgramType | null
+	): IPlanDefinition {
 		return {
 			plan_name: undefined,
 			uuid: undefined,
@@ -187,14 +176,14 @@ export function usePlan() {
 	 * @author jplacht
 	 *
 	 * @async
-	 * @param {IPlanCreateData} data Plan Data
+	 * @param {PlanCreateData} data Plan Data
 	 * @returns {Promise<string | undefined>} Plan Uuid
 	 */
 	async function createNewPlan(
-		data: IPlanCreateData
+		data: PlanCreateData
 	): Promise<string | undefined> {
 		try {
-			const createdData: IPlanSaveCreateResponse = await useQuery(
+			const createdData: PlanSaveCreateResponse = await useQuery(
 				"CreatePlan",
 				{ data: data }
 			).execute();
@@ -217,15 +206,15 @@ export function usePlan() {
 	 *
 	 * @async
 	 * @param {string} planUuid Plan Uuid
-	 * @param {IPlanCreateData} data Plan Data
+	 * @param {PlanCreateData} data Plan Data
 	 * @returns {Promise<string | undefined>} Plan Uuid
 	 */
 	async function saveExistingPlan(
 		planUuid: string,
-		data: IPlanCreateData
+		data: PlanCreateData
 	): Promise<string | undefined> {
 		try {
-			const savedData: IPlanSaveCreateResponse = await useQuery(
+			const savedData: PlanSaveCreateResponse = await useQuery(
 				"PatchPlan",
 				{
 					planUuid: planUuid,
@@ -256,9 +245,9 @@ export function usePlan() {
 	 *
 	 * @async
 	 * @param {string} planUuid Plan Uuid
-	 * @returns {Promise<IPlan>} Plan Data
+	 * @returns {Promise<Plan>} Plan Data
 	 */
-	async function reloadExistingPlan(planUuid: string): Promise<IPlan> {
+	async function reloadExistingPlan(planUuid: string): Promise<Plan> {
 		return await planningStore.getPlan(planUuid);
 	}
 

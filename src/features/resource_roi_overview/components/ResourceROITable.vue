@@ -1,5 +1,11 @@
 <script setup lang="ts">
-	import { ComputedRef, PropType, Ref, computed, ref } from "vue";
+	import {
+		type ComputedRef,
+		type PropType,
+		type Ref,
+		computed,
+		ref,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -15,8 +21,8 @@
 	import ResourceROITableFilters from "@/features/resource_roi_overview/components/ResourceROITableFilters.vue";
 
 	// Types & Interfaces
-	import { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";

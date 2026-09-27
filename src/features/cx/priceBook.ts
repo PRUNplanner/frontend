@@ -1,7 +1,10 @@
 // Types & Interfaces
-import { IExchange } from "@/features/api/gameData.types";
-import { CX_EXCHANGE_OPTION_TYPE, ICXData } from "@/stores/planningStore.types";
-import {
+import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type {
+	CXData,
+	CXExchangeOptionType,
+} from "@/features/api/schemas/cxData.schemas";
+import type {
 	IMaterialIO,
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
@@ -48,30 +51,32 @@ export interface IPriceBook {
 type SplitOption<T> = T extends `${infer Prefix}_${infer Suffix}`
 	? [Prefix, Suffix]
 	: never;
-type PrefixPart = SplitOption<CX_EXCHANGE_OPTION_TYPE>[0];
-type SuffixPart = SplitOption<CX_EXCHANGE_OPTION_TYPE>[1];
+type PrefixPart = SplitOption<CXExchangeOptionType>[0];
+type SuffixPart = SplitOption<CXExchangeOptionType>[1];
 
-function splitExchangeOption(option: CX_EXCHANGE_OPTION_TYPE) {
+type ExchangePriceKey = "vwap_7d" | "vwap_30d" | "ask" | "bid";
+
+function splitExchangeOption(option: CXExchangeOptionType) {
 	const [prefix, suffix] = option.split("_") as [PrefixPart, SuffixPart];
 	return { prefix, suffix };
 }
 
 /**
  * Splits Exchange Preference codes into parts and identifies
- * the correct key of IExchange to use.
+ * the correct key of Exchange to use.
  * @author jplacht
  *
  * @param {string} preference Preference, e.g., "IC1_BUY"
  * @returns {{
  * 		exchangeCode: string;
- * 		key: string;
+ * 		key: ExchangePriceKey;
  * 	}} Exchange code and value key
  */
-export function getExchangeCodeKey(preference: CX_EXCHANGE_OPTION_TYPE): {
+export function getExchangeCodeKey(preference: CXExchangeOptionType): {
 	exchangeCode: string;
-	key: string;
+	key: ExchangePriceKey;
 } {
-	let key: string;
+	let key: ExchangePriceKey;
 
 	// split by underscore
 	const splitted: string[] = preference.split("_");
@@ -113,29 +118,29 @@ export function getExchangeCodeKey(preference: CX_EXCHANGE_OPTION_TYPE): {
  * Creates a price book
  * @author jplacht
  *
- * @param {(() => ICXData) | undefined} getCXData CX preference data, read
+ * @param {(() => CXData) | undefined} getCXData CX preference data, read
  * once on first use; undefined uses the Universe VWAP 30d for everything
  * @param {string | undefined} planetNaturalId Planet for planet preferences
- * @param {(tickerId: string) => IExchange} getExchange Exchange data by id,
+ * @param {(tickerId: string) => Exchange} getExchange Exchange data by id,
  * e.g. "RAT.UNIVERSE"; throws if missing
  * @returns {IPriceBook} Price Book
  */
 export function createPriceBook(
-	getCXData: (() => ICXData) | undefined,
+	getCXData: (() => CXData) | undefined,
 	planetNaturalId: string | undefined,
-	getExchange: (tickerId: string) => IExchange
+	getExchange: (tickerId: string) => Exchange
 ): IPriceBook {
 	const prices = new Map<string, number>();
-	let cxData: ICXData | undefined;
+	let cxData: CXData | undefined;
 
 	function exchangePrice(
 		materialTicker: string,
-		preference: CX_EXCHANGE_OPTION_TYPE
+		preference: CXExchangeOptionType
 	): number {
 		const { exchangeCode, key } = getExchangeCodeKey(preference);
 		const tickerData = getExchange(`${materialTicker}.${exchangeCode}`);
 
-		return (tickerData[key as keyof IExchange] ?? 0) as number;
+		return tickerData[key] ?? 0;
 	}
 
 	function resolvePrice(materialTicker: string, type: PriceType): number {

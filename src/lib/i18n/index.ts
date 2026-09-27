@@ -1,6 +1,6 @@
-import { createI18n, I18n } from "vue-i18n";
+import { createI18n, type I18n } from "vue-i18n";
 
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 
 // eager load all en_US as initial version + message object
 const enModules = import.meta.glob("@/locales/en_US/*.json", { eager: true });

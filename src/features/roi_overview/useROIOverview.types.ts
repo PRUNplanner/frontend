@@ -1,8 +1,8 @@
-import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
-import { IRecipeMaterial } from "../api/gameData.types";
-import { IProductionBuildingRecipeCOGM } from "../planning/usePlanCalculation.types";
+import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+import type { RecipeMaterial } from "@/features/api/schemas/gameData.schemas";
+import type { IProductionBuildingRecipeCOGM } from "../planning/usePlanCalculation.types";
 
-export type IStaticOptimalProduction = {
+export interface IStaticOptimalProduction {
 	ticker: string;
 	amount: number;
 	sto: number;
@@ -20,16 +20,16 @@ export type IStaticOptimalProduction = {
 	HBC: number;
 	HBM: number;
 	HBL: number;
-};
+}
 
 export interface IROIResult {
 	buildingTicker: string;
 	optimalSetup: IStaticOptimalProduction;
 	recipeId: string;
 	dailyRuns: number;
-	recipeInputs: IRecipeMaterial[];
-	recipeOutputs: IRecipeMaterial[];
-	cogc: PLAN_COGCPROGRAM_TYPE;
+	recipeInputs: RecipeMaterial[];
+	recipeOutputs: RecipeMaterial[];
+	cogc: PlanCOGCProgram;
 	cogm: IProductionBuildingRecipeCOGM | undefined;
 	outputProfit: number;
 	dailyProfit: number;

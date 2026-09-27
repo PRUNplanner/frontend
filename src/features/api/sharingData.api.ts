@@ -4,22 +4,14 @@ import { apiService } from "@/lib/apiService";
 // Schemas & Schema Types
 import { z } from "zod";
 import {
-	ScharedListResponseType,
 	SharedCloneResponseSchema,
-	SharedCloneResponseType,
 	SharedCreatePayloadSchema,
-	SharedCreatePayloadType,
 	SharedCreateResponseSchema,
-	SharedCreateResponseType,
 	SharedListResponseSchema,
+	type Shared,
+	type SharedCloneResponse,
+	type SharedCreateResponse,
 } from "@/features/api/schemas/sharingData.schemas";
-
-// Types & Interfaces
-import {
-	IShared,
-	ISharedCloneResponse,
-	ISharedCreateResponse,
-} from "@/features/api/sharingData.types";
 
 /**
  * Fetches all shared plan information for user from API
@@ -27,13 +19,10 @@ import {
  *
  * @export
  * @async
- * @returns {Promise<IShared[]>} List of Shared Plans
+ * @returns {Promise<Shared[]>} List of Shared Plans
  */
-export async function callGetSharedList(): Promise<IShared[]> {
-	return apiService.get<ScharedListResponseType>(
-		"/planning/shared/",
-		SharedListResponseSchema
-	);
+export async function callGetSharedList(): Promise<Shared[]> {
+	return apiService.get("/planning/shared/", SharedListResponseSchema);
 }
 
 /**
@@ -56,12 +45,12 @@ export async function callDeleteSharing(sharedUuid: string): Promise<boolean> {
  * @export
  * @async
  * @param {string} planUuid Plan Uuid
- * @returns {Promise<ISharedCreateResponse>} Sharing Information
+ * @returns {Promise<SharedCreateResponse>} Sharing Information
  */
 export async function callCreateSharing(
 	planUuid: string
-): Promise<ISharedCreateResponse> {
-	return apiService.post<SharedCreatePayloadType, SharedCreateResponseType>(
+): Promise<SharedCreateResponse> {
+	return apiService.post(
 		`/planning/shared/`,
 		{
 			plan: planUuid,
@@ -73,8 +62,8 @@ export async function callCreateSharing(
 
 export async function callCloneSharedPlan(
 	sharedUuid: string
-): Promise<ISharedCloneResponse> {
-	return apiService.post<null, SharedCloneResponseType>(
+): Promise<SharedCloneResponse> {
+	return apiService.post(
 		`/planning/shared/${sharedUuid}/clone/`,
 		null,
 		z.null(),

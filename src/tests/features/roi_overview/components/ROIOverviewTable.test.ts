@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { ref } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
@@ -11,7 +11,7 @@ import PProgressBar from "@/ui/components/PProgressBar.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IROIResult } from "@/features/roi_overview/useROIOverview.types";
+import type { IROIResult } from "@/features/roi_overview/useROIOverview.types";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
@@ -70,9 +70,7 @@ const RESULTS = [
 /** resolvable calculation, to look at the table while it runs */
 function deferred() {
 	let resolve!: (v: IROIResult[] | undefined) => void;
-	const promise = new Promise<IROIResult[] | undefined>(
-		(r) => (resolve = r)
-	);
+	const promise = new Promise<IROIResult[] | undefined>((r) => (resolve = r));
 	return { promise, resolve };
 }
 
@@ -91,7 +89,8 @@ const filters = (wrapper: VueWrapper) =>
 async function filter(wrapper: VueWrapper, index: number, value: string[]) {
 	filters(wrapper)
 		.findAllComponents(PSelectMultiple)
-		.at(index)!.vm.$emit("update:value", value);
+		.at(index)!
+		.vm.$emit("update:value", value);
 	await flushPromises();
 }
 

@@ -1,13 +1,13 @@
 import { apiService } from "@/lib/apiService";
 import {
 	AnalyticsPlanetInsightsPayloadSchema,
-	AnalyticsPlanetInsightsPayloadType,
+	type AnalyticsPlanetInsightsPayload,
 } from "@/features/api/schemas/analyticsData.schemas";
 
 export async function callAnalyticsPlanetInsights(
 	planetNaturalId: string
-): Promise<AnalyticsPlanetInsightsPayloadType> {
-	return apiService.get<AnalyticsPlanetInsightsPayloadType>(
+): Promise<AnalyticsPlanetInsightsPayload> {
+	return apiService.get(
 		`/analytics/planet_insights/${planetNaturalId}/`,
 		AnalyticsPlanetInsightsPayloadSchema
 	);

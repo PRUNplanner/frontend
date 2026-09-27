@@ -1,47 +1,21 @@
-import { BUILDING_EXPERTISE_TYPE, IRecipe } from "@/features/api/gameData.types";
-import { IBuildingEfficiency } from "@/features/planning/calculations/bonusCalculations.types";
-import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
-import { IInfrastructureCosts } from "../cx/usePrice.types";
-
-export type WORKFORCE_TYPE =
-	| "pioneer"
-	| "settler"
-	| "technician"
-	| "engineer"
-	| "scientist";
-
-export type STORAGE_TYPE =
-	| "STO"
-	| "STA"
-	| "STE"
-	| "STV"
-	| "STW";
-
-export type INFRASTRUCTURE_TYPE =
-	| "HB1"
-	| "HB2"
-	| "HB3"
-	| "HB4"
-	| "HB5"
-	| "HBB"
-	| "HBC"
-	| "HBM"
-	| "HBL"
-	| STORAGE_TYPE;
-
-export type EXPERT_TYPE =
-	| "Agriculture"
-	| "Chemistry"
-	| "Construction"
-	| "Electronics"
-	| "Food_Industries"
-	| "Fuel_Refining"
-	| "Manufacturing"
-	| "Metallurgy"
-	| "Resource_Extraction";
+import type {
+	BuildingExpertise,
+	Recipe,
+} from "@/features/api/schemas/gameData.schemas";
+import type { IBuildingEfficiency } from "@/features/planning/calculations/bonusCalculations.types";
+import {
+	ExpertTypeSchema,
+	WorkforceTypeSchema,
+	type ExpertType,
+	type InfrastructureType,
+	type PlanCOGCProgram,
+	type StorageType,
+	type WorkforceType,
+} from "@/features/api/schemas/planningData.schemas";
+import type { IInfrastructureCosts } from "../cx/usePrice.types";
 
 export interface IWorkforceElement {
-	name: WORKFORCE_TYPE;
+	name: WorkforceType;
 	required: number;
 	capacity: number;
 	left: number;
@@ -58,24 +32,24 @@ export interface IAreaResult {
 }
 
 export interface IExpertElement {
-	name: EXPERT_TYPE;
+	name: ExpertType;
 	amount: number;
 	bonus: number;
 }
 
 export type IWorkforceRecord = Required<
-	Record<WORKFORCE_TYPE, IWorkforceElement>
+	Record<WorkforceType, IWorkforceElement>
 >;
 
 export type IInfrastructureRecord = Required<
-	Record<INFRASTRUCTURE_TYPE, number>
+	Record<InfrastructureType, number>
 >;
 
-export type IStorageRecord = Required<Record<STORAGE_TYPE, number>>;
+export type IStorageRecord = Required<Record<StorageType, number>>;
 
-export type IExpertRecord = Required<Record<EXPERT_TYPE, IExpertElement>>;
+export type IExpertRecord = Required<Record<ExpertType, IExpertElement>>;
 
-export interface IRecipeBuildingOption extends IRecipe {
+export interface IRecipeBuildingOption extends Recipe {
 	dailyRevenue: number;
 	roi: number;
 	profitPerArea: number;
@@ -135,7 +109,7 @@ export interface IProductionBuilding {
 	workforceMaterials: IMaterialIOMinimal[];
 	workforceDailyCost: number;
 	dailyRevenue: number;
-	expertise: BUILDING_EXPERTISE_TYPE | null;
+	expertise: BuildingExpertise | null;
 }
 
 export interface IProductionResult {
@@ -163,7 +137,7 @@ export interface IMaterialIO extends IMaterialIOMaterial {
 export interface IPlanResult {
 	done: boolean;
 	corphq: boolean;
-	cogc: PLAN_COGCPROGRAM_TYPE;
+	cogc: PlanCOGCProgram;
 	workforce: IWorkforceRecord;
 	area: IAreaResult;
 	infrastructure: IInfrastructureRecord;
@@ -183,16 +157,10 @@ export interface IPlanResult {
 export const planEmptyResult = {
 	done: false,
 	corphq: false,
-	cogc: "---" as PLAN_COGCPROGRAM_TYPE,
-	workforce: [
-		"pioneer",
-		"settler",
-		"technician",
-		"engineer",
-		"scientist",
-	].reduce((sum, w) => {
-		sum[w as WORKFORCE_TYPE] = {
-			name: w as WORKFORCE_TYPE,
+	cogc: "---" as PlanCOGCProgram,
+	workforce: WorkforceTypeSchema.options.reduce((sum, w) => {
+		sum[w] = {
+			name: w,
 			required: 0,
 			capacity: 0,
 			left: 0,
@@ -226,19 +194,9 @@ export const planEmptyResult = {
 		STV: 0,
 		STW: 0,
 	},
-	experts: [
-		"Agriculture",
-		"Chemistry",
-		"Construction",
-		"Electronics",
-		"Food_Industries",
-		"Fuel_Refining",
-		"Manufacturing",
-		"Metallurgy",
-		"Resource_Extraction",
-	].reduce((sum, e) => {
-		sum[e as EXPERT_TYPE] = {
-			name: e as EXPERT_TYPE,
+	experts: ExpertTypeSchema.options.reduce((sum, e) => {
+		sum[e] = {
+			name: e,
 			amount: 0,
 			bonus: 0,
 		};

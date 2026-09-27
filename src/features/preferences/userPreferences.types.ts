@@ -1,37 +1,10 @@
-import { SupportedLocale } from "@/lib/i18n";
+import type {
+	PreferencePerPlan,
+	UserPreference,
+} from "@/features/api/schemas/user.schemas";
 
-export interface IPreferencePerPlan {
-	includeCM?: boolean;
-	visitationMaterialExclusions?: string[];
-	autoOptimizeHabs: boolean;
-}
-
-export interface IPreference {
-	locale: SupportedLocale;
-	defaultEmpireUuid: string | undefined;
-	defaultCXUuid: string | undefined;
-	defaultBuyItemsFromCX: boolean;
-	burnDaysRed: number;
-	burnDaysYellow: number;
-	burnResupplyDays: number;
-	burnOrigin: string;
-	supplyCartDays: number;
-	layoutNavigationStyle: "full" | "collapsed";
-
-	// seeding per plan defaults
-	planOverrides: Record<string, Partial<IPreferencePerPlan>>;
-
-	[key: string]:
-		| string
-		| undefined
-		| number
-		| boolean
-		| Record<string, Partial<IPreferencePerPlan>>
-		| IPreferencePerPlan;
-}
-
-export interface IPreferenceDefault extends IPreference {
-	planDefaults: IPreferencePerPlan;
+export interface IPreferenceDefault extends UserPreference {
+	planDefaults: PreferencePerPlan;
 }
 
 export interface IPlanPreferenceOverview {

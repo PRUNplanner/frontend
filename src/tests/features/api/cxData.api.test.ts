@@ -13,7 +13,7 @@ import {
 	callPatchCX,
 	callUpdateCXJunctions,
 } from "@/features/api/cxData.api";
-import { ICXData } from "@/stores/planningStore.types";
+import type { CXData } from "@/features/api/schemas/cxData.schemas";
 
 // test data
 import cx_list from "@/tests/test_data/api_data_cx_list.json";
@@ -72,7 +72,7 @@ describe("CX Data API Calls", async () => {
 		mock.onPut(`/planning/cx/${fakeUuid}/`).reply(200, cx_patch);
 
 		expect(
-			await callPatchCX("fakecx", fakeUuid, cx_patch.cx_data as ICXData)
+			await callPatchCX("fakecx", fakeUuid, cx_patch.cx_data as CXData)
 		).toBeTruthy();
 		expect(spyApiServicePatch).toHaveBeenCalled();
 	});

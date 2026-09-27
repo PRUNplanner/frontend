@@ -9,7 +9,7 @@ import MaterialCXOverviewTable from "@/features/cx/components/MaterialCXOverview
 import { formatNumber } from "@/util/numbers";
 
 // Types & Interfaces
-import { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
+import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
