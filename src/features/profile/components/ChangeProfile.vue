@@ -77,7 +77,7 @@
 		trackEvent("user_request_email_verification");
 
 		try {
-			await useQuery("PostUserResendEmailVerification", null).execute();
+			await useQuery("PostUserResendEmailVerification").execute();
 			codeResendRequested.value = true;
 		} catch (err) {
 			console.error("Error resending verification code", err);

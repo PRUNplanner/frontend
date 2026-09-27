@@ -25,7 +25,7 @@ pnpm test:watch / pnpm test:ui / pnpm test:coverage
   directly. **Never mutate a fixture.** Module imports are shared across
   tests, so clone it first (`structuredClone` / `deepClone`).
 - **Coverage.** It is always on (v8, lcov + html). Views, `components/`
-  folders, `ui/`, `layout/`, `features/wrapper/`, `queryRepository.ts`, the
+  folders, `ui/`, `layout/`, `features/wrapper/`, `queryRepository.ts` and `queries/*.queries.ts`, the
   router and analytics are **excluded**, so tests target composables, stores,
   utils and the API layer.
 
@@ -43,6 +43,11 @@ pnpm test:watch / pnpm test:ui / pnpm test:coverage
   (`tsconfig.typecheck.json` excludes `src/tests`). Tests often use
   `// @ts-expect-error mock data` when a fixture doesn't match the strict
   types.
+- **Type-level tests** live in `*.test-d.ts` (for example
+  `src/tests/lib/query_cache/queryRepository.test-d.ts`). `pnpm test` runs
+  them through `vitest --typecheck` with `tsconfig.vitest.json`, using
+  `expectTypeOf` and `// @ts-expect-error`. Only errors in these files
+  count (`ignoreSourceErrors`).
 
 ## Patterns
 

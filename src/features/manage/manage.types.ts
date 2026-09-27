@@ -27,7 +27,3 @@ export interface ICXEmpireJunction {
 export interface IPlanClonePayload {
 	plan_name: string;
 }
-
-export interface IPlanCloneResponse {
-	message: string;
-}

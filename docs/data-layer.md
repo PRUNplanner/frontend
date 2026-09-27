@@ -6,7 +6,7 @@ Data moves through four layers:
 component / composable
   └─ useQuery("Name", params).execute()          src/lib/query_cache/useQuery.ts
        └─ queryStore.execute  (TTL, dedup, cache)  src/lib/query_cache/queryStore.ts
-            └─ definition.fetchFn                 src/lib/query_cache/queryRepository.ts
+            └─ definition.fetchFn                 src/lib/query_cache/queries/*.queries.ts
                  ├─ call*()  → apiService (axios + Zod)   src/features/api/*.api.ts
                  └─ side effects: write IndexedDB / planningStore / invalidate keys
 ```
@@ -61,23 +61,35 @@ component / composable
 
 - **`queryRepository.ts`** is the single catalogue of every backend
   interaction: `GetMaterials`, `GetPlan`, `PatchEmpire`, `CreateCX` and so
-  on. Each definition has:
+  on. It merges the definitions in `queries/`, which are split by domain
+  (`gameData`, `planning`, `user`). Each definition is wrapped in
+  `defineQuery()` and has:
   - `key(params)`: a JSON array such as `["planningdata", "plan", uuid]`.
     Object keys are sorted by `toCacheKey`.
   - `fetchFn(params)`: calls `call*()`, then performs side effects. It
-    writes to IndexedDB or `planningStore`, seeds sibling cache entries
-    (`addCacheState`), or invalidates related keys. A cached query's
+    writes to IndexedDB or `planningStore` (`storeAndPreload`), seeds
+    sibling cache entries (`addCacheState(name, params, data)`), or
+    invalidates related keys (`invalidate(...prefixes)`). A cached query's
     `fetchFn` must let errors throw. If it returns `[]` or `false` on
     failure, that value is cached as fresh data, so loaders report success
     and later calculations fail (for example "Planet … not available").
-  - `expireTime` (ms, optional), `autoRefetch` and `persist`.
-    `persist: false` drops the result after the call, which is what
-    mutations use.
+  - `expireTime` (ms, optional), `autoRefetch` (default `false`) and
+    `persist` (default `true`). `persist: false` drops the result after
+    the call, which is what mutations use.
+- **Types come from the definitions.** Annotate `fetchFn`'s params and
+  return type; `key`'s params are inferred from it. Annotate the return
+  type even when it looks inferable: a body that touches the query store
+  would make the inference circular. `IQueryRepository` is
+  `typeof queryRepository`, and `QueryParams<"Name">` /
+  `QueryData<"Name">` (`queryRepository.types.ts`) read a query's types.
+  There is nothing to register by hand.
 - **`queryStore.ts`** is a Pinia store and is **not** persisted.
   - `execute(name, params, { forceRefetch })` returns cached data while it is
-    fresh, and dedupes concurrent calls through an in-flight map. A request
-    that was replaced (forced refetch) or dropped (`invalidateKey`,
-    `$reset` on logout) no longer writes to the cache when it settles.
+    fresh, and dedupes concurrent calls through an in-flight map. Mutations
+    (`persist: false`) are never deduped, since most share a static key.
+    A request that was replaced (forced refetch) or dropped
+    (`invalidateKey`, `$reset` on logout) no longer writes to the cache
+    when it settles.
   - `invalidateKey(key, { exact, forceRefetch, skipRefetch })` deletes
     either the exact key or every key that the given key is a subset of. It
     refetches when `autoRefetch` is set or `forceRefetch` is passed.
@@ -86,11 +98,13 @@ component / composable
   - A 10s interval refetches expired `autoRefetch` entries and evicts the
     other expired ones. It pauses while the user is idle (`userActivity`, see
     [features/user_activity.md](features/user_activity.md)).
-- **`useQuery(name, params)`** is the caller API. Use `.execute()`. The
-  `loading`, `error` and `data` fields it returns are **non-reactive
-  snapshots** taken at call time, so don't bind templates to them. Before
-  the query has any cached state, `error` is `false` and `data` is
-  `undefined`.
+- **`useQuery(name, params)`** is the caller API. Use `.execute()`.
+  `params` is required exactly when the query takes them, so
+  `useQuery("GetMaterials")` has none and `useQuery("GetPlan")` without
+  params is a type error. The `loading`, `error` and `data` fields it
+  returns are **non-reactive snapshots** taken at call time, so don't bind
+  templates to them. Before the query has any cached state, `error` is
+  `false` and `data` is `undefined`.
 - The `/debug` route (`views/QueryCacheView.vue`) shows the live cache.
 
 ### Adding a backend call
@@ -98,13 +112,12 @@ component / composable
 1. Add a Zod schema to `src/features/api/schemas/<domain>.schemas.ts`.
 2. Add a `call*()` function to `src/features/api/<domain>.api.ts` that uses
    `apiService`.
-3. Add the definition's type to `IQueryRepository` in
-   `queryRepository.types.ts`.
-4. Add the definition to `queryRepository.ts`: choose a key under an
-   existing prefix, set `persist: false` for mutations, and invalidate the
+3. Add a `defineQuery({...})` to the matching `queries/<domain>.queries.ts`.
+   Choose a key under an existing prefix, annotate `fetchFn`'s params and
+   return type, set `persist: false` for mutations, and invalidate the
    affected key families.
-5. Call it with `useQuery("YourName", params).execute()`.
-6. Add a test with `axios-mock-adapter`. For a pattern, see
+4. Call it with `useQuery("YourName", params).execute()`.
+5. Add a test with `axios-mock-adapter`. For a pattern, see
    `src/tests/features/api/*.api.test.ts` and
    [testing.md](testing.md).
 

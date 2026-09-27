@@ -29,6 +29,13 @@ export default defineConfig({
 			COMPONENT_TESTS,
 		],
 		environment: "jsdom",
+		// type-level tests (*.test-d.ts); `pnpm tsc` skips src/tests, whose
+		// other files aren't type clean, so only these files' errors count
+		typecheck: {
+			enabled: true,
+			tsconfig: "./tsconfig.vitest.json",
+			ignoreSourceErrors: true,
+		},
 		// undo vi.stubGlobal / vi.stubEnv after each test
 		unstubGlobals: true,
 		unstubEnvs: true,
@@ -48,6 +55,7 @@ export default defineConfig({
 				"**/dist/**",
 				"src/tests/**",
 				"**/queryRepository.ts",
+				"src/lib/query_cache/queries/*.queries.ts",
 				"**/QueryCacheView.vue",
 				"src/features/wrapper/**",
 				"src/util/axiosSetup.ts",

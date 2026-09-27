@@ -123,7 +123,7 @@ export async function callSavePlan(
  * @async
  * @param {string} planUuid Plan Uuid
  * @param {string} cloneName Name of cloned Plan
- * @returns {Promise<IPlanCloneResponse>} Clone Message
+ * @returns {Promise<IPlan>} Cloned Plan
  */
 export async function callClonePlan(
 	planUuid: string,

@@ -58,8 +58,8 @@ time.
    `src/assets/help/en_US/`.
 4. **Backend calls follow a fixed chain:** a `call*()` function in
    `src/features/api/*.api.ts`, a Zod schema in `src/features/api/schemas/`,
-   then a named query in `src/lib/query_cache/queryRepository.ts` (typed in
-   `queryRepository.types.ts`). Components and composables call
+   then a named `defineQuery()` in `src/lib/query_cache/queries/*.queries.ts`
+   (its types are inferred from `fetchFn`). Components and composables call
    `useQuery("Name", params).execute()`, never axios or `call*()` directly.
    See [docs/data-layer.md](docs/data-layer.md).
 5. **Read game data (materials, buildings, recipes, exchanges, planets)
