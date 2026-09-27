@@ -2,26 +2,23 @@ import { reactive, computed, type ComputedRef, type Reactive } from "vue";
 import { defineStore } from "pinia";
 
 import { userActivity } from "@/features/user_activity/userActivityStore";
-import { useQueryRepository } from "@/lib/query_cache/queryRepository";
+import { getQueryDefinition } from "@/lib/query_cache/queryRepository";
 import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
 
 import type {
-	IQueryDefinition,
 	IQueryState,
 	JSONValue,
 } from "@/lib/query_cache/queryCache.types";
 import type {
-	DataOfDefinition,
-	IQueryRepository,
-	ParamsOfDefinition,
+	QueryData,
+	QueryName,
+	QueryParams,
 } from "@/lib/query_cache/queryRepository.types";
 
 export const useQueryStore = defineStore(
 	"prunplanner_query_store",
 	() => {
 		const inFlight = new Map<string, Promise<unknown>>();
-
-		const queryRepository = useQueryRepository();
 
 		const cacheState: Reactive<
 			Record<string, IQueryState<unknown, unknown>>
@@ -58,24 +55,19 @@ export const useQueryStore = defineStore(
 				};
 		}
 
-		function getCachedData<K extends keyof IQueryRepository>(
+		function getCachedData<K extends QueryName>(
 			keyHash: string
-		): DataOfDefinition<IQueryRepository[K]> | null {
+		): QueryData<K> | null {
 			const state = cacheState[keyHash];
-			return state?.data as DataOfDefinition<IQueryRepository[K]> | null;
+			return state?.data as QueryData<K> | null;
 		}
 
-		async function execute<K extends keyof IQueryRepository>(
+		async function execute<K extends QueryName>(
 			definitionName: K,
-			params: ParamsOfDefinition<IQueryRepository[K]>,
+			params: QueryParams<K>,
 			options?: { forceRefetch?: boolean }
-		): Promise<DataOfDefinition<IQueryRepository[K]>> {
-			const definition = queryRepository.repository[
-				definitionName
-			] as IQueryDefinition<
-				ParamsOfDefinition<IQueryRepository[K]>,
-				DataOfDefinition<IQueryRepository[K]>
-			>;
+		): Promise<QueryData<K>> {
+			const definition = getQueryDefinition(definitionName);
 
 			const keyHash = toCacheKey(definition.key(params));
 
@@ -99,11 +91,14 @@ export const useQueryStore = defineStore(
 				return cachedData;
 			}
 
-			// return in-flight promise if exists
-			if (inFlight.has(keyHash) && !options?.forceRefetch) {
-				return inFlight.get(keyHash)! as Promise<
-					DataOfDefinition<IQueryRepository[K]>
-				>;
+			// return in-flight promise if exists; mutations share static
+			// keys, deduping them would drop a call with other params
+			if (
+				shouldCache &&
+				inFlight.has(keyHash) &&
+				!options?.forceRefetch
+			) {
+				return inFlight.get(keyHash)! as Promise<QueryData<K>>;
 			}
 
 			// mark as loading
@@ -119,15 +114,12 @@ export const useQueryStore = defineStore(
 			// let, not const: a fetchFn throwing synchronously would read
 			// a const promise before its initialization
 			// eslint-disable-next-line prefer-const
-			let promise: Promise<DataOfDefinition<IQueryRepository[K]>>;
+			let promise: Promise<QueryData<K>>;
 			const isCurrent = () => inFlight.get(keyHash) === promise;
 
-			promise = (async () => {
+			promise = (async (): Promise<QueryData<K>> => {
 				try {
-					const result: DataOfDefinition<IQueryRepository[K]> =
-						await definition.fetchFn(
-							params as ParamsOfDefinition<IQueryRepository[K]>
-						);
+					const result = await definition.fetchFn(params);
 
 					if (shouldCache && isCurrent()) {
 						updateState(keyHash, {
@@ -136,7 +128,7 @@ export const useQueryStore = defineStore(
 						});
 					}
 
-					return result as DataOfDefinition<IQueryRepository[K]>;
+					return result;
 				} catch (err) {
 					if (isCurrent())
 						updateState(keyHash, {
@@ -159,7 +151,7 @@ export const useQueryStore = defineStore(
 
 			inFlight.set(keyHash, promise);
 
-			return promise as Promise<DataOfDefinition<IQueryRepository[K]>>;
+			return promise;
 		}
 
 		/**
@@ -226,8 +218,6 @@ export const useQueryStore = defineStore(
 		 * @author jplacht
 		 *
 		 * @async
-		 * @template TParams Query Params Type
-		 * @template TData Query Data Type
 		 * @param {JSONValue} key Query Key
 		 * @param {{ exact?: boolean; forceRefetch?: boolean; skipRefetch?: boolean }} [options={
 		 * 			exact: true,
@@ -236,7 +226,7 @@ export const useQueryStore = defineStore(
 		 * 		}] Options, by default will check for exact matches and doesn't force refresh
 		 * @returns {Promise<void>}
 		 */
-		async function invalidateKey<K extends keyof IQueryRepository, TParams>(
+		async function invalidateKey(
 			key: JSONValue,
 			options: {
 				exact?: boolean;
@@ -250,18 +240,12 @@ export const useQueryStore = defineStore(
 		): Promise<void> {
 			const keyHash: string = toCacheKey(key);
 
-			const toRefetch: {
-				definitionKey: K;
-				params: TParams | null;
-			}[] = [];
+			const toRefetch: IQueryState<unknown, unknown>[] = [];
 
 			if (options.exact) {
 				const existingEntry = cacheState[keyHash];
 				if (existingEntry) {
-					toRefetch.push({
-						definitionKey: existingEntry.definitionName as K,
-						params: existingEntry.params as TParams | null,
-					});
+					toRefetch.push(existingEntry);
 				}
 
 				// delete exact matched key and inflight
@@ -273,10 +257,7 @@ export const useQueryStore = defineStore(
 					if (isSubset(key, JSON.parse(existingKey) as JSONValue)) {
 						// add subset query
 						const existingEntry = cacheState[existingKey];
-						toRefetch.push({
-							definitionKey: existingEntry.definitionName as K,
-							params: existingEntry.params as TParams | null,
-						});
+						toRefetch.push(existingEntry);
 
 						// delete non-exact matched key and inflight
 						deleteState(existingKey);
@@ -286,56 +267,37 @@ export const useQueryStore = defineStore(
 			}
 
 			// check and trigger refetches if defined or forced
-			toRefetch.map(async (refetchEntry) => {
-				// get definition
-				const definition: IQueryRepository[K] =
-					queryRepository.repository[refetchEntry.definitionKey];
+			toRefetch.forEach((entry) => {
+				const name = entry.definitionName as QueryName;
 				// refetch can be forced from invalidate options or set
 				// in the query definition itself
-
 				if (
 					!options.skipRefetch &&
-					(options.forceRefetch || definition!.autoRefetch)
+					(options.forceRefetch ||
+						getQueryDefinition(name)?.autoRefetch)
 				) {
-					// if params are null, no params required, pass undefined
-					await execute(
-						refetchEntry.definitionKey as K,
-						refetchEntry.params as ParamsOfDefinition<
-							IQueryRepository[K]
-						>
-					);
+					execute(name, entry.params as QueryParams<QueryName>);
 				}
 			});
 		}
 
 		/**
-		 * Allows manually creating a cache state
+		 * Seeds a query's cache state, e.g. each plan from a plan list.
+		 * Never overwrites an existing state.
 		 *
 		 * @author jplacht
 		 *
-		 * @async
-		 * @template TParams Params
-		 * @template TData Data
-		 * @param {JSONValue} key Key Value
-		 * @param {QueryDefinition<TParams, TData>} definition Query Definition
-		 * @param {TParams} params Query Params
-		 * @param {TData} data Result Data
-		 * @returns {Promise<void>} void
+		 * @param {K} definitionName Query name
+		 * @param {QueryParams<K>} params Query params, also build the key
+		 * @param {QueryData<K>} data Result data
 		 */
-		async function addCacheState<
-			K extends keyof IQueryRepository,
-			TParams,
-			TData,
-		>(
-			key: JSONValue,
+		function addCacheState<K extends QueryName>(
 			definitionName: K,
-			params: TParams,
-			data: TData
-		): Promise<void> {
-			const keyHash: string = toCacheKey(key);
-			// identify correct definition
-			const definition: IQueryRepository[K] =
-				queryRepository.repository[definitionName];
+			params: QueryParams<K>,
+			data: QueryData<K>
+		): void {
+			const definition = getQueryDefinition(definitionName);
+			const keyHash: string = toCacheKey(definition.key(params));
 
 			// do not overwrite existing state for key
 			if (!cacheState[keyHash]) {
@@ -370,9 +332,7 @@ export const useQueryStore = defineStore(
 		 *
 		 * @author jplacht
 		 */
-		function checkEntryStatusAndRefresh<
-			K extends keyof IQueryRepository,
-		>() {
+		function checkEntryStatusAndRefresh() {
 			// inactivity check, skip if true
 			if (userActivity.shouldDelay()) return;
 
@@ -387,17 +347,10 @@ export const useQueryStore = defineStore(
 					entry.expireTime &&
 					now - entry.timestamp > entry.expireTime
 				) {
-					// identify correct definition
-					const definition: IQueryRepository[K] =
-						queryRepository.repository[entry.definitionName as K];
+					const name = entry.definitionName as QueryName;
 
-					if (definition && definition.autoRefetch) {
-						execute(
-							entry.definitionName as K,
-							entry.params as ParamsOfDefinition<
-								IQueryRepository[K]
-							>
-						);
+					if (getQueryDefinition(name)?.autoRefetch) {
+						execute(name, entry.params as QueryParams<QueryName>);
 					} else {
 						// delete as stale and should not refetch
 						invalidateKey(JSON.parse(key) as JSONValue);

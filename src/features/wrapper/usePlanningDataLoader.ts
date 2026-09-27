@@ -3,7 +3,7 @@ import { computed, reactive, ref, type Ref, watch, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 
 // Stores & Repository
-import { useQueryRepository } from "@/lib/query_cache/queryRepository";
+import { queryRepository } from "@/lib/query_cache/queryRepository";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Composables
@@ -154,11 +154,9 @@ export function usePlanningDataLoader(
 				const id = props.sharedPlanUuid
 					? (
 							queryStore.peekQueryState(
-								useQueryRepository().repository.GetSharedPlan.key(
-									{
-										sharedPlanUuid: props.sharedPlanUuid!,
-									}
-								)
+								queryRepository.GetSharedPlan.key({
+									sharedPlanUuid: props.sharedPlanUuid!,
+								})
 							)!.data as PlanShare
 						).plan_details.planet_natural_id
 					: props.planetNaturalId!;
