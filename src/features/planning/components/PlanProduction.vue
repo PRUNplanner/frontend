@@ -18,7 +18,7 @@
 		PLANET_RESOURCETYPE_TYPE,
 	} from "@/features/api/gameData.types";
 	import { IProductionResult } from "@/features/planning/usePlanCalculation.types";
-	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 	// UI
 	import PCheckbox from "@/ui/components/PCheckbox.vue";
@@ -38,7 +38,7 @@
 			required: true,
 		},
 		cogc: {
-			type: String as PropType<PLAN_COGCPROGRAM_TYPE>,
+			type: String as PropType<PlanCOGCProgram>,
 			required: true,
 		},
 		cxUuid: {
@@ -87,9 +87,7 @@
 		() => props.productionData
 	);
 	const localSelectedBuilding: Ref<string | undefined> = ref(undefined);
-	const localCOGC: ComputedRef<PLAN_COGCPROGRAM_TYPE> = computed(
-		() => props.cogc
-	);
+	const localCOGC: ComputedRef<PlanCOGCProgram> = computed(() => props.cogc);
 	const localMatchCOGC: Ref<boolean> = ref(false);
 
 	const { getProductionBuildingOptions } = useBuildingData();

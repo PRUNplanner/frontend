@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 import {
-	PLAN_COGCPROGRAM_TYPE_ENUM,
-	PlanFactionSchema,
+	PlanCOGCProgramSchema,
 	PlanEmpireFactionSchema,
 	PlanEmpireSchema,
+	PlanFactionSchema,
 } from "@/features/api/schemas/planningData.schemas";
 
 export const PlanEmpireElementSchema = PlanEmpireSchema.extend({
@@ -59,7 +59,7 @@ export const EmpireMaterialIOStateSchema = z.object({
 		z.object({
 			metadata: z.object({
 				planet_natural_id: z.string(),
-				cogc: PLAN_COGCPROGRAM_TYPE_ENUM,
+				cogc: PlanCOGCProgramSchema,
 			}),
 			deltas: z.record(z.string(), MaterialValueSchema),
 		})

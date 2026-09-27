@@ -4,7 +4,7 @@ import { apiService } from "@/lib/apiService";
 // Schemas & Schema Types
 import {
 	PlanEmpireSchema,
-	PlanListPayload,
+	PlanListSchema,
 } from "@/features/api/schemas/planningData.schemas";
 import {
 	EmpireMaterialIOStateSchema,
@@ -14,8 +14,10 @@ import {
 } from "@/features/api/schemas/empireData.schemas";
 
 // Types & Interfaces
-import type { IPlan } from "@/stores/planningStore.types";
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+import type {
+	Plan,
+	PlanEmpire,
+} from "@/features/api/schemas/planningData.schemas";
 import type {
 	EmpireMaterialIOState,
 	EmpirePayload,
@@ -42,12 +44,12 @@ export async function callGetEmpireList(): Promise<PlanEmpireElement[]> {
  * @export
  * @async
  * @param {string} empireUuid Empire Uuid
- * @returns {Promise<IPlan[]>} List of plans in specified empire
+ * @returns {Promise<Plan[]>} List of plans in specified empire
  */
-export async function callGetEmpirePlans(empireUuid: string): Promise<IPlan[]> {
+export async function callGetEmpirePlans(empireUuid: string): Promise<Plan[]> {
 	return await apiService.get(
 		`planning/empire/${empireUuid}/plans/`,
-		PlanListPayload
+		PlanListSchema
 	);
 }
 

@@ -19,7 +19,7 @@ import { useResourceROIOverview } from "@/features/resource_roi_overview/useReso
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // Types & Interfaces
-import { IPlan } from "@/stores/planningStore.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 // test data
@@ -101,7 +101,7 @@ await planetsStore.setMany([planet_etherwind, ...planetSearch]);
 await useDB(planetsStore).preload(true);
 
 // B6: 25 etherwind variants and 5 large plans
-const etherwindVariants: (() => IPlan)[] = [
+const etherwindVariants: (() => Plan)[] = [
 	etherwindPlan,
 	smallPlan,
 	() => {
@@ -120,7 +120,7 @@ const etherwindVariants: (() => IPlan)[] = [
 		return p;
 	},
 ];
-const empirePlans: IPlan[] = Array.from({ length: 30 }, (_, i) =>
+const empirePlans: Plan[] = Array.from({ length: 30 }, (_, i) =>
 	i % 6 === 5 ? largePlan() : etherwindVariants[i % 5]()
 );
 async function empire(): Promise<number> {

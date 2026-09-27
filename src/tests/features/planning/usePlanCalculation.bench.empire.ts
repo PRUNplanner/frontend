@@ -6,7 +6,7 @@ import {
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 
 // Types & Interfaces
-import { IPlan } from "@/stores/planningStore.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 /**
@@ -15,7 +15,7 @@ import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schema
  * the baseline side replaces this file with its usePlanCalculation loop.
  */
 export async function empireLike(
-	plans: IPlan[],
+	plans: Plan[],
 	empireUuid: string | undefined,
 	empireOptions: PlanEmpireElement[],
 	cxUuid: string | undefined

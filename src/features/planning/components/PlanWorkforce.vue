@@ -8,10 +8,8 @@
 	import { WORKFORCE_CONSUMPTION_MAP } from "../calculations/workforceCalculations";
 
 	// Types & Interfaces
-	import {
-		IWorkforceRecord,
-		WORKFORCE_TYPE,
-	} from "@/features/planning/usePlanCalculation.types";
+	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+	import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
 	import { PButton, PTable } from "@/ui";
@@ -35,7 +33,7 @@
 	const emit = defineEmits<{
 		(
 			e: "update:lux",
-			workforce: WORKFORCE_TYPE,
+			workforce: WorkforceType,
 			luxType: "lux1" | "lux2",
 			value: boolean
 		): void;
@@ -48,7 +46,7 @@
 
 	// Click Handlers
 	function updateLux(
-		workforce: WORKFORCE_TYPE,
+		workforce: WorkforceType,
 		luxType: "lux1" | "lux2",
 		value: boolean
 	) {
@@ -62,7 +60,7 @@
 	}
 
 	function getLuxuryTicker(
-		workforce: WORKFORCE_TYPE,
+		workforce: WorkforceType,
 		luxType: "lux1" | "lux2"
 	): string {
 		return (

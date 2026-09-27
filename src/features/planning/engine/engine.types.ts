@@ -6,8 +6,10 @@ import {
 	IRecipe,
 } from "@/features/api/gameData.types";
 import { IPriceBook } from "@/features/cx/priceBook";
-import { IPlan } from "@/stores/planningStore.types";
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+import type {
+	Plan,
+	PlanEmpire,
+} from "@/features/api/schemas/planningData.schemas";
 import {
 	IOverviewData,
 	IPlanResult,
@@ -38,7 +40,7 @@ export interface IPlanContext extends IGameData {
  */
 export interface IPlanInput {
 	plan: Pick<
-		IPlan,
+		Plan,
 		"plan_data" | "plan_cogc" | "plan_corphq" | "plan_permits_used"
 	>;
 	// active empire, for the faction bonus

@@ -83,7 +83,6 @@ import {
 	IRecipe,
 } from "@/features/api/gameData.types";
 
-import { IPlanCloneResponse } from "@/features/manage/manage.types";
 import type {
 	CX,
 	CXData,
@@ -95,8 +94,14 @@ import type {
 	PlanEmpireElement,
 	PlanEmpireJunction,
 } from "@/features/api/schemas/empireData.schemas";
-import { IPlan, IPlanShare } from "@/stores/planningStore.types";
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+import type {
+	Plan,
+	PlanCreateData,
+	PlanEmpire,
+	PlanSaveCreateResponse,
+	PlanSaveData,
+	PlanShare,
+} from "@/features/api/schemas/planningData.schemas";
 
 import type {
 	Shared,
@@ -105,11 +110,6 @@ import type {
 } from "@/features/api/schemas/sharingData.schemas";
 
 import { IExploration } from "@/features/market_exploration/marketExploration.types";
-import {
-	IPlanCreateData,
-	IPlanSaveData,
-} from "@/features/planning_data/usePlan.types";
-import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
 import {
 	callChangePassword,
 	callGetUserPreferences,
@@ -309,7 +309,7 @@ export function useQueryRepository() {
 			persist: true,
 			autoRefetch: false,
 			expireTime: 10_000,
-		} as IQueryDefinition<{ sharedPlanUuid: string }, IPlanShare>,
+		} as IQueryDefinition<{ sharedPlanUuid: string }, PlanShare>,
 		GetAllShared: {
 			key: () => ["planningdata", "shared", "list"],
 			fetchFn: async () => {
@@ -498,7 +498,7 @@ export function useQueryRepository() {
 						queryStore.addCacheState(
 							["planningdata", "plan", p.uuid],
 							"GetPlan",
-							{ planUuid: p.uuid! },
+							{ planUuid: p.uuid },
 							p
 						)
 					);
@@ -510,7 +510,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as IQueryDefinition<{ empireUuid: string }, IPlan[]>,
+		} as IQueryDefinition<{ empireUuid: string }, Plan[]>,
 		PatchEmpire: {
 			key: (params: { empireUuid: string }) => [
 				"planningdata",
@@ -612,7 +612,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as IQueryDefinition<{ planUuid: string }, IPlan>,
+		} as IQueryDefinition<{ planUuid: string }, Plan>,
 		GetAllPlans: {
 			key: () => ["planningdata", "plan", "list"],
 			fetchFn: async () => {
@@ -625,7 +625,7 @@ export function useQueryRepository() {
 						queryStore.addCacheState(
 							["planningdata", "plan", p.uuid],
 							"GetPlan",
-							{ planUuid: p.uuid! },
+							{ planUuid: p.uuid },
 							p
 						)
 					);
@@ -637,7 +637,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as IQueryDefinition<void, IPlan[]>,
+		} as IQueryDefinition<void, Plan[]>,
 		ClonePlan: {
 			key: (params: { planUuid: string; cloneName: string }) => [
 				"planningdata",
@@ -665,10 +665,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<
-			{ planUuid: string; cloneName: string },
-			IPlanCloneResponse
-		>,
+		} as IQueryDefinition<{ planUuid: string; cloneName: string }, void>,
 		DeletePlan: {
 			key: (params: { planUuid: string }) => [
 				"planningdata",
@@ -699,7 +696,7 @@ export function useQueryRepository() {
 		} as IQueryDefinition<{ planUuid: string }, boolean>,
 		CreatePlan: {
 			key: () => ["planningdata", "plan", "create"],
-			fetchFn: async (params: { data: IPlanCreateData }) => {
+			fetchFn: async (params: { data: PlanCreateData }) => {
 				const data = await callCreatePlan(params.data);
 				await queryStore.invalidateKey(["planningdata", "plan"], {
 					exact: false,
@@ -711,10 +708,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as IQueryDefinition<
-			{ data: IPlanCreateData },
-			PlanSaveCreateResponseType
-		>,
+		} as IQueryDefinition<{ data: PlanCreateData }, PlanSaveCreateResponse>,
 		PatchPlan: {
 			key: (params: { planUuid: string }) => [
 				"planningdata",
@@ -724,7 +718,7 @@ export function useQueryRepository() {
 			],
 			fetchFn: async (params: {
 				planUuid: string;
-				data: IPlanSaveData;
+				data: PlanSaveData;
 			}) => {
 				const data = await callSavePlan(params.planUuid, params.data);
 				await queryStore.invalidateKey(["planningdata", "plan"], {
@@ -738,8 +732,8 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<
-			{ planUuid: string; data: IPlanSaveData },
-			PlanSaveCreateResponseType
+			{ planUuid: string; data: PlanSaveData },
+			PlanSaveCreateResponse
 		>,
 		GetExplorationData: {
 			key: (params: {

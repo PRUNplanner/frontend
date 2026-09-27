@@ -13,7 +13,6 @@ import {
 	IRecipe,
 } from "@/features/api/gameData.types";
 
-import { IPlanCloneResponse } from "@/features/manage/manage.types";
 import type {
 	CX,
 	CXData,
@@ -25,8 +24,14 @@ import type {
 	PlanEmpireElement,
 	PlanEmpireJunction,
 } from "@/features/api/schemas/empireData.schemas";
-import { IPlan, IPlanShare } from "@/stores/planningStore.types";
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+import type {
+	Plan,
+	PlanCreateData,
+	PlanEmpire,
+	PlanSaveCreateResponse,
+	PlanSaveData,
+	PlanShare,
+} from "@/features/api/schemas/planningData.schemas";
 
 import type {
 	Shared,
@@ -35,11 +40,6 @@ import type {
 } from "@/features/api/schemas/sharingData.schemas";
 
 import { IExploration } from "@/features/market_exploration/marketExploration.types";
-import {
-	IPlanCreateData,
-	IPlanSaveData,
-} from "@/features/planning_data/usePlan.types";
-import { PlanSaveCreateResponseType } from "@/features/api/schemas/planningData.schemas";
 import type {
 	UserChangePasswordPayload,
 	UserPasswordResetPayload,
@@ -96,7 +96,7 @@ export interface IQueryRepository {
 		{ searchData: IPlanetSearchAdvanced },
 		IPlanet[]
 	>;
-	GetSharedPlan: IQueryDefinition<{ sharedPlanUuid: string }, IPlanShare>;
+	GetSharedPlan: IQueryDefinition<{ sharedPlanUuid: string }, PlanShare>;
 	GetAllShared: IQueryDefinition<undefined, Shared[]>;
 	DeleteSharedPlan: IQueryDefinition<{ sharedUuid: string }, boolean>;
 	CreateSharedPlan: IQueryDefinition<
@@ -118,7 +118,7 @@ export interface IQueryRepository {
 		CX
 	>;
 	GetAllEmpires: IQueryDefinition<undefined, PlanEmpireElement[]>;
-	GetEmpirePlans: IQueryDefinition<{ empireUuid: string }, IPlan[]>;
+	GetEmpirePlans: IQueryDefinition<{ empireUuid: string }, Plan[]>;
 	PatchEmpire: IQueryDefinition<
 		{ empireUuid: string; data: EmpirePayload },
 		PlanEmpire
@@ -134,20 +134,17 @@ export interface IQueryRepository {
 	CreateCX: IQueryDefinition<{ cxName: string }, CX>;
 	DeleteCX: IQueryDefinition<{ cxUuid: string }, boolean>;
 	GetAllCX: IQueryDefinition<undefined, CX[]>;
-	GetPlan: IQueryDefinition<{ planUuid: string }, IPlan>;
-	GetAllPlans: IQueryDefinition<undefined, IPlan[]>;
-	ClonePlan: IQueryDefinition<
-		{ planUuid: string; cloneName: string },
-		IPlanCloneResponse
-	>;
+	GetPlan: IQueryDefinition<{ planUuid: string }, Plan>;
+	GetAllPlans: IQueryDefinition<undefined, Plan[]>;
+	ClonePlan: IQueryDefinition<{ planUuid: string; cloneName: string }, void>;
 	DeletePlan: IQueryDefinition<{ planUuid: string }, boolean>;
 	CreatePlan: IQueryDefinition<
-		{ data: IPlanCreateData },
-		PlanSaveCreateResponseType
+		{ data: PlanCreateData },
+		PlanSaveCreateResponse
 	>;
 	PatchPlan: IQueryDefinition<
-		{ planUuid: string; data: IPlanSaveData },
-		PlanSaveCreateResponseType
+		{ planUuid: string; data: PlanSaveData },
+		PlanSaveCreateResponse
 	>;
 	GetExplorationData: IQueryDefinition<
 		{

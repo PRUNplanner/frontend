@@ -28,12 +28,12 @@
 	);
 
 	// Types & Interfaces
-	import { IPlan } from "@/stores/planningStore.types";
+	import type { Plan } from "@/features/api/schemas/planningData.schemas";
 	import type { CX } from "@/features/api/schemas/cxData.schemas";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 	const empireList: Ref<PlanEmpireElement[]> = ref([]);
-	const planList: Ref<IPlan[]> = ref([]);
+	const planList: Ref<Plan[]> = ref([]);
 	const cxList: Ref<CX[]> = ref([]);
 
 	async function planOnComplete() {
@@ -53,7 +53,7 @@
 		load-shared
 		@data:cx="(value: CX[]) => (cxList = value)"
 		@data:empire:list="(value: PlanEmpireElement[]) => (empireList = value)"
-		@data:plan:list="(value: IPlan[]) => (planList = value)"
+		@data:plan:list="(value: Plan[]) => (planList = value)"
 		@complete="planOnComplete">
 		<div
 			class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">

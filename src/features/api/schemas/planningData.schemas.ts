@@ -1,19 +1,5 @@
 import { z } from "zod";
 
-// Types & Interfaces
-import {
-	IPlan,
-	IPlanData,
-	IPlanDataBuilding,
-	IPlanDataBuildingRecipe,
-	IPlanDataExpert,
-	IPlanDataInfrastructure,
-	IPlanDataWorkforce,
-	IPlanShare,
-} from "@/stores/planningStore.types";
-import { IPlanSaveCreateResponse } from "@/features/planning_data/usePlan.types";
-import { IPlanClonePayload } from "@/features/manage/manage.types";
-
 // Util
 import { PositiveOrZeroNumber } from "@/util/zodValidators";
 
@@ -21,7 +7,7 @@ import { PositiveOrZeroNumber } from "@/util/zodValidators";
  * PLAN
  */
 
-export const PLAN_COGCPROGRAM_TYPE_ENUM = z.enum([
+export const PlanCOGCProgramSchema = z.enum([
 	"---",
 	"AGRICULTURE",
 	"CHEMISTRY",
@@ -38,67 +24,87 @@ export const PLAN_COGCPROGRAM_TYPE_ENUM = z.enum([
 	"ENGINEERS",
 	"SCIENTISTS",
 ]);
+export type PlanCOGCProgram = z.infer<typeof PlanCOGCProgramSchema>;
 
-const PlanDataExpertSchema: z.ZodType<IPlanDataExpert> = z.object({
-	type: z.enum([
-		"Agriculture",
-		"Chemistry",
-		"Construction",
-		"Electronics",
-		"Food_Industries",
-		"Fuel_Refining",
-		"Manufacturing",
-		"Metallurgy",
-		"Resource_Extraction",
-	]),
+const ExpertTypeSchema = z.enum([
+	"Agriculture",
+	"Chemistry",
+	"Construction",
+	"Electronics",
+	"Food_Industries",
+	"Fuel_Refining",
+	"Manufacturing",
+	"Metallurgy",
+	"Resource_Extraction",
+]);
+export type ExpertType = z.infer<typeof ExpertTypeSchema>;
+
+const WorkforceTypeSchema = z.enum([
+	"pioneer",
+	"settler",
+	"technician",
+	"engineer",
+	"scientist",
+]);
+export type WorkforceType = z.infer<typeof WorkforceTypeSchema>;
+
+const StorageTypeSchema = z.enum(["STO", "STA", "STE", "STV", "STW"]);
+export type StorageType = z.infer<typeof StorageTypeSchema>;
+
+const InfrastructureTypeSchema = z.enum([
+	"HB1",
+	"HB2",
+	"HB3",
+	"HB4",
+	"HB5",
+	"HBB",
+	"HBC",
+	"HBM",
+	"HBL",
+	...StorageTypeSchema.options,
+]);
+export type InfrastructureType = z.infer<typeof InfrastructureTypeSchema>;
+
+const PlanDataExpertSchema = z.object({
+	type: ExpertTypeSchema,
 	amount: PositiveOrZeroNumber,
 });
+export type PlanDataExpert = z.infer<typeof PlanDataExpertSchema>;
 
-const PlanDataWorkforceSchema: z.ZodType<IPlanDataWorkforce> = z.object({
-	type: z.enum(["pioneer", "settler", "technician", "engineer", "scientist"]),
+const PlanDataWorkforceSchema = z.object({
+	type: WorkforceTypeSchema,
 	lux1: z.boolean(),
 	lux2: z.boolean(),
 });
+export type PlanDataWorkforce = z.infer<typeof PlanDataWorkforceSchema>;
 
-const PlanDataInfrastructureSchema: z.ZodType<IPlanDataInfrastructure> =
-	z.object({
-		building: z.enum([
-			"HB1",
-			"HB2",
-			"HB3",
-			"HB4",
-			"HB5",
-			"HBB",
-			"HBC",
-			"HBM",
-			"HBL",
-			"STO",
-			"STA",
-			"STE",
-			"STV",
-			"STW",
-		]),
-		amount: PositiveOrZeroNumber,
-	});
+const PlanDataInfrastructureSchema = z.object({
+	building: InfrastructureTypeSchema,
+	amount: PositiveOrZeroNumber,
+});
+export type PlanDataInfrastructure = z.infer<
+	typeof PlanDataInfrastructureSchema
+>;
 
-const PlanDataBuildingRecipeSchema: z.ZodType<IPlanDataBuildingRecipe> =
-	z.object({
-		recipeid: z.string(),
-		amount: PositiveOrZeroNumber,
-	});
+const PlanDataBuildingRecipeSchema = z.object({
+	recipeid: z.string(),
+	amount: PositiveOrZeroNumber,
+});
 
-const PlanDataBuildingSchema: z.ZodType<IPlanDataBuilding> = z.object({
+const PlanDataBuildingSchema = z.object({
 	name: z.string().min(2).max(3),
 	amount: PositiveOrZeroNumber,
 	active_recipes: z.array(PlanDataBuildingRecipeSchema),
 });
+export type PlanDataBuilding = z.infer<typeof PlanDataBuildingSchema>;
 
-const PlanDataSchema: z.ZodType<IPlanData> = z.object({
+const PlanDataSchema = z.object({
 	experts: z.array(PlanDataExpertSchema),
 	buildings: z.array(PlanDataBuildingSchema),
 	workforce: z.array(PlanDataWorkforceSchema),
 	infrastructure: z.array(PlanDataInfrastructureSchema),
 });
+export type PlanData = z.infer<typeof PlanDataSchema>;
 
 export const PlanFactionSchema = z.enum([
 	"NONE",
@@ -132,18 +138,19 @@ export const PlanEmpireSchema = z.object({
 });
 export type PlanEmpire = z.infer<typeof PlanEmpireSchema>;
 
-export const PlanSchema: z.ZodType<IPlan> = z.object({
+export const PlanSchema = z.object({
 	uuid: z.uuid(),
 	plan_name: z.string(),
 	planet_natural_id: z.string(),
 	plan_permits_used: z.number().min(0),
 	plan_corphq: z.boolean(),
-	plan_cogc: PLAN_COGCPROGRAM_TYPE_ENUM,
+	plan_cogc: PlanCOGCProgramSchema,
 	plan_data: PlanDataSchema,
 	empires: z.array(PlanEmpireSchema).optional(),
 });
+export type Plan = z.infer<typeof PlanSchema>;
 
-export const PlanShareSchema: z.ZodType<IPlanShare> = z.object({
+export const PlanShareSchema = z.object({
 	uuid: z.uuid(),
 	created_at: z.string().refine((val) => !isNaN(Date.parse(val)), {
 		message: "Invalid date string",
@@ -151,33 +158,31 @@ export const PlanShareSchema: z.ZodType<IPlanShare> = z.object({
 	view_count: PositiveOrZeroNumber,
 	plan_details: PlanSchema,
 });
+export type PlanShare = z.infer<typeof PlanShareSchema>;
 
-export const PlanListPayload = z.array(PlanSchema);
+export const PlanListSchema = z.array(PlanSchema);
 
-export const PlanCreateDataSchema = z.object({
+// Permits aren't bounded on create/save, unlike on a parsed plan.
+export const PlanCreateDataSchema = PlanSchema.pick({
+	plan_name: true,
+	planet_natural_id: true,
+	plan_corphq: true,
+	plan_cogc: true,
+	plan_data: true,
+}).extend({
 	empire_uuid: z.uuid().optional(),
-
-	plan_name: z.string(),
-	planet_natural_id: z.string(),
 	plan_permits_used: z.number(),
-	plan_corphq: z.boolean(),
-	plan_cogc: PLAN_COGCPROGRAM_TYPE_ENUM,
-	plan_data: PlanDataSchema,
 });
+export type PlanCreateData = z.input<typeof PlanCreateDataSchema>;
 
 export const PlanSaveDataSchema = PlanCreateDataSchema.extend({
 	uuid: z.uuid(),
 });
+export type PlanSaveData = z.input<typeof PlanSaveDataSchema>;
 
-export const PlanSaveCreateResponseSchema: z.ZodType<IPlanSaveCreateResponse> =
-	z.object({
-		uuid: z.uuid(),
-	});
-
-export type PlanSaveCreateResponseType = z.infer<
+export const PlanSaveCreateResponseSchema = PlanSchema.pick({ uuid: true });
+export type PlanSaveCreateResponse = z.infer<
 	typeof PlanSaveCreateResponseSchema
 >;
 
-export const PlanClonePayloadSchema: z.ZodType<IPlanClonePayload> = z.object({
-	plan_name: z.string(),
-});
+export const PlanClonePayloadSchema = PlanSchema.pick({ plan_name: true });

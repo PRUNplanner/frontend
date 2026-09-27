@@ -20,7 +20,7 @@ import {
 	IRecipe,
 } from "@/features/api/gameData.types";
 import { PSelectOption } from "@/ui/ui.types";
-import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 const buildingsCache = new Map<string, IBuilding>();
 
@@ -81,7 +81,7 @@ export function useBuildingData() {
 
 	function getProductionBuildingOptions(
 		existing: string[],
-		cogc: PLAN_COGCPROGRAM_TYPE | undefined = undefined
+		cogc: PlanCOGCProgram | undefined = undefined
 	): PSelectOption[] {
 		const options: PSelectOption[] = [];
 

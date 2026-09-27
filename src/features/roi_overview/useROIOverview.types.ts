@@ -1,4 +1,4 @@
-import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 import { IRecipeMaterial } from "../api/gameData.types";
 import { IProductionBuildingRecipeCOGM } from "../planning/usePlanCalculation.types";
 
@@ -29,7 +29,7 @@ export interface IROIResult {
 	dailyRuns: number;
 	recipeInputs: IRecipeMaterial[];
 	recipeOutputs: IRecipeMaterial[];
-	cogc: PLAN_COGCPROGRAM_TYPE;
+	cogc: PlanCOGCProgram;
 	cogm: IProductionBuildingRecipeCOGM | undefined;
 	outputProfit: number;
 	dailyProfit: number;

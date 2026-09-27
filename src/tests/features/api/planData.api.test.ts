@@ -19,7 +19,7 @@ import {
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
 import shared from "@/tests/test_data/api_data_shared.json";
-import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
+import type { PlanCreateData } from "@/features/api/schemas/planningData.schemas";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -29,7 +29,7 @@ describe("PlanData API Calls", async () => {
 	const sharedUuid: string = "0f7161c8-7bc9-4ab6-af4a-10105be4180a";
 	const fakeUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
 
-	const fakeSaveCreateData: IPlanCreateData = {
+	const fakeSaveCreateData: PlanCreateData = {
 		plan_name: "meow",
 		planet_natural_id: "foo",
 		plan_permits_used: 1,

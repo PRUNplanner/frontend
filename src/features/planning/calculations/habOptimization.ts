@@ -2,10 +2,8 @@
 import { solve, lessEq, greaterEq, Model, Constraint, Solution } from "yalps";
 
 // Types & Interfaces
-import {
-	INFRASTRUCTURE_TYPE,
-	IWorkforceRecord,
-} from "@/features/planning/usePlanCalculation.types";
+import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
+import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
 export type HabSolverGoal = "auto" | "cost" | "area";
 
@@ -24,11 +22,11 @@ const HabArea = {
 export function calculateAvailableArea(
 	totalArea: number,
 	usedArea: number,
-	infrastructure: Record<INFRASTRUCTURE_TYPE, number>
+	infrastructure: Record<InfrastructureType, number>
 ): number {
 	let currentHabArea = 0;
 	for (const habType in HabArea) {
-		const habCount = infrastructure[habType as INFRASTRUCTURE_TYPE] || 0;
+		const habCount = infrastructure[habType as InfrastructureType] || 0;
 		const habArea = HabArea[habType as keyof typeof HabArea];
 		currentHabArea += habCount * habArea;
 	}

@@ -11,9 +11,9 @@ import { infrastructureBuildingNames } from "@/features/planning/calculations/in
 // Types & Interfaces
 import { IBuilding, IPlanet } from "@/features/api/gameData.types";
 import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
+import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
 import {
 	IBuildingConstruction,
-	INFRASTRUCTURE_TYPE,
 	IProductionBuilding,
 } from "@/features/planning/usePlanCalculation.types";
 
@@ -21,14 +21,14 @@ import {
  * All buildings to construct: production buildings, the Core Module (CM)
  * and every infrastructure building the plan uses
  *
- * @param {Required<Record<INFRASTRUCTURE_TYPE, number>>} infrastructure Plan infrastructure
+ * @param {Required<Record<InfrastructureType, number>>} infrastructure Plan infrastructure
  * @param {IProductionBuilding[]} production Production buildings
  * @param {IPlanet} planet Planet
  * @param {ReadonlyMap<string, IBuilding>} buildings Building data
  * @returns {IBuildingConstruction[]} Buildings with materials and amount
  */
 export function calculateConstructionMaterials(
-	infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>,
+	infrastructure: Required<Record<InfrastructureType, number>>,
 	production: IProductionBuilding[],
 	planet: IPlanet,
 	buildings: ReadonlyMap<string, IBuilding>
@@ -37,7 +37,7 @@ export function calculateConstructionMaterials(
 
 	for (const ticker of ["CM", ...infrastructureBuildingNames]) {
 		const amount: number | undefined =
-			infrastructure[ticker as INFRASTRUCTURE_TYPE];
+			infrastructure[ticker as InfrastructureType];
 
 		if ((amount && amount > 0) || ticker === "CM")
 			inf.push({

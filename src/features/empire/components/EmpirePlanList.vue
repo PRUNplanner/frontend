@@ -13,7 +13,7 @@
 
 	// Types & Interfaces
 	import { IEmpirePlanListData } from "@/features/empire/empire.types";
-	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 	import { cogcTextMapping } from "@/features/planning_data/usePlan";
 
 	// UI
@@ -68,13 +68,7 @@
 		<XNDataTableColumn key="cogc" :title="t('terms.cogc')" sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="text-nowrap">
-					{{
-						$t(
-							cogcTextMapping[
-								rowData.cogc as PLAN_COGCPROGRAM_TYPE
-							]
-						)
-					}}
+					{{ $t(cogcTextMapping[rowData.cogc as PlanCOGCProgram]) }}
 				</div>
 			</template>
 		</XNDataTableColumn>

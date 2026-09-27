@@ -48,7 +48,7 @@
 	);
 
 	// Types & Interfaces
-	import { IPlan } from "@/stores/planningStore.types";
+	import type { Plan } from "@/features/api/schemas/planningData.schemas";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 	import {
@@ -89,7 +89,7 @@
 	const refEmpireList: Ref<PlanEmpireElement[]> = ref([]);
 
 	const calculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
-	const planData: Ref<IPlan[]> = ref([]);
+	const planData: Ref<Plan[]> = ref([]);
 
 	const isCalculating: Ref<boolean> = ref(true);
 	const progressCurrent = ref(0);
@@ -123,13 +123,13 @@
 			// calculated properly within this context
 
 			const cacheKey: string = planResultCacheKey(
-				plan.uuid!,
+				plan.uuid,
 				selectedEmpireUuid.value,
 				selectedCXUuid.value
 			);
 
 			if (cacheCalculatedPlans.has(cacheKey)) {
-				calculatedPlans.value[plan.uuid!] =
+				calculatedPlans.value[plan.uuid] =
 					cacheCalculatedPlans.get(cacheKey)!;
 				progressCurrent.value++;
 			} else {
@@ -152,7 +152,7 @@
 						selectedCXUuid.value
 					)
 				);
-				calculatedPlans.value[plan.uuid!] = result;
+				calculatedPlans.value[plan.uuid] = result;
 				progressCurrent.value++;
 
 				// cache
@@ -255,7 +255,7 @@
 	const planListData: ComputedRef<IEmpirePlanListData[]> = computed(() => {
 		return Object.entries(calculatedPlans.value).map(
 			([planUuid, planResult]) => {
-				const plan: IPlan = planData.value.find(
+				const plan: Plan = planData.value.find(
 					(p) => p.uuid == planUuid
 				)!;
 
@@ -281,7 +281,7 @@
 		() => {
 			return Object.entries(calculatedPlans.value).map(
 				([planUuid, planResult]) => {
-					const plan: IPlan = planData.value.find(
+					const plan: Plan = planData.value.find(
 						(p) => p.uuid == planUuid
 					)!;
 					return {
@@ -323,7 +323,7 @@
 	<WrapperPlanningDataLoader
 		empire-list
 		:empire-uuid="selectedEmpireUuid"
-		@data:empire:plans="(value: IPlan[]) => (planData = value)"
+		@data:empire:plans="(value: Plan[]) => (planData = value)"
 		@update:empire-uuid="(value: string) => (selectedEmpireUuid = value)"
 		@update:cx-uuid="
 			(value: string | undefined) => (selectedCXUuid = value)

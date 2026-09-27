@@ -12,10 +12,10 @@ import {
 	IInfrastructureRecord,
 	IStorageRecord,
 } from "@/features/planning/usePlanCalculation.types";
-import {
-	IPlanData,
-	IPlanDataInfrastructure,
-} from "@/stores/planningStore.types";
+import type {
+	PlanData,
+	PlanDataInfrastructure,
+} from "@/features/api/schemas/planningData.schemas";
 
 /**
  * Calculates the plans area result by determining the total amount of
@@ -24,13 +24,13 @@ import {
  *
  * @remark Core Modul Area of 25 is always included
  *
- * @param {IPlanData} data Plan Data
+ * @param {PlanData} data Plan Data
  * @param {number} permits Permits used
  * @param {ReadonlyMap<string, IBuilding>} buildings Building data
  * @returns {IAreaResult} Area
  */
 export function calculateArea(
-	data: IPlanData,
+	data: PlanData,
 	permits: number,
 	buildings: ReadonlyMap<string, IBuilding>
 ): IAreaResult {
@@ -63,10 +63,10 @@ export function calculateArea(
 	};
 }
 
-function amountsOf(data: IPlanData, names: string[]): Record<string, number> {
+function amountsOf(data: PlanData, names: string[]): Record<string, number> {
 	return Object.fromEntries(
 		names.map((key) => {
-			const currentInf: IPlanDataInfrastructure | undefined =
+			const currentInf: PlanDataInfrastructure | undefined =
 				data.infrastructure.find((e) => e.building === key);
 
 			return [key, currentInf ? currentInf.amount : 0];
@@ -77,9 +77,7 @@ function amountsOf(data: IPlanData, names: string[]): Record<string, number> {
 /**
  * A record with all infrastructure buildings and their amount in the plan
  */
-export function calculateInfrastructure(
-	data: IPlanData
-): IInfrastructureRecord {
+export function calculateInfrastructure(data: PlanData): IInfrastructureRecord {
 	return amountsOf(
 		data,
 		infrastructureBuildingNames
@@ -89,6 +87,6 @@ export function calculateInfrastructure(
 /**
  * A record with all storage buildings and their amount in the plan
  */
-export function calculateStorage(data: IPlanData): IStorageRecord {
+export function calculateStorage(data: PlanData): IStorageRecord {
 	return amountsOf(data, storageBuildingNames) as IStorageRecord;
 }

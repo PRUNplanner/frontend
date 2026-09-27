@@ -24,7 +24,7 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IPlan } from "@/stores/planningStore.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 // test data
@@ -44,19 +44,19 @@ const mock = new AxiosMockAdapter(apiService.client);
 const PREFERENCES_URL = /user\/preferences\/$/;
 
 const [FIRST_EMPIRE, SECOND_EMPIRE] = empireList;
-const PLAN = plan_etherwind as unknown as IPlan;
+const PLAN = plan_etherwind as unknown as Plan;
 const OTHER_PLAN = {
 	...PLAN,
 	uuid: "00000002-0000-4000-8000-000000000000",
 	plan_name: "Other Plan",
 	planet_natural_id: "OT-580b",
-} as IPlan;
+} as Plan;
 const DELETED_PLAN = "00000003-0000-4000-8000-000000000000";
 
 let pinia: Pinia;
 
 function seed(
-	options: { empires?: boolean; plans?: IPlan[] } = {}
+	options: { empires?: boolean; plans?: Plan[] } = {}
 ): ReturnType<typeof useUserStore> {
 	const planningStore = usePlanningStore();
 	planningStore.setEmpires(

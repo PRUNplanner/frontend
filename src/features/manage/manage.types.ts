@@ -9,11 +9,3 @@ export interface IPlanEmpireMatrixEmpires {
 	empireUuid: string;
 	empireName: string;
 }
-
-export interface IPlanClonePayload {
-	plan_name: string;
-}
-
-export interface IPlanCloneResponse {
-	message: string;
-}

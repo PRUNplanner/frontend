@@ -1,4 +1,4 @@
-import type { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 export interface IEmpirePlanListData {
@@ -6,7 +6,7 @@ export interface IEmpirePlanListData {
 	name: string | undefined;
 	planet: string;
 	permits: number;
-	cogc: PLAN_COGCPROGRAM_TYPE;
+	cogc: PlanCOGCProgram;
 	profit: number;
 }
 
@@ -14,7 +14,7 @@ export interface IEmpireMaterialIOPlanet {
 	planetId: string;
 	planUuid: string;
 	planName: string;
-	planCOGC: PLAN_COGCPROGRAM_TYPE;
+	planCOGC: PlanCOGCProgram;
 	delta: number;
 	input: number;
 	output: number;
@@ -35,7 +35,7 @@ export interface IEmpirePlanMaterialIO {
 	planetId: string;
 	planUuid: string;
 	planName: string;
-	planCOGC: PLAN_COGCPROGRAM_TYPE;
+	planCOGC: PlanCOGCProgram;
 	materialIO: IMaterialIO[];
 }
 

@@ -13,7 +13,8 @@ import { deepClone } from "@/util/data";
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // Types & Interfaces
-import { IPlan, PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import { IRecipe } from "@/features/api/gameData.types";
 import { IPlanContext } from "@/features/planning/engine/engine.types";
 import {
@@ -22,7 +23,7 @@ import {
 } from "@/features/roi_overview/useROIOverview.types";
 
 export function useROIOverview(
-	definition: Ref<IPlan>,
+	definition: Ref<IPlanDefinition>,
 	cxUuid: Ref<string | undefined>
 ) {
 	const { getBuilding, getBuildingRecipes } = useBuildingData();
@@ -79,7 +80,7 @@ export function useROIOverview(
 		for (const recipe of buildingRecipes) {
 			// as we're using production buildings, they all have a COGC
 			definitionCopy.plan_cogc =
-				`${building.expertise}` as PLAN_COGCPROGRAM_TYPE;
+				`${building.expertise}` as PlanCOGCProgram;
 
 			// set building
 			definitionCopy.plan_data.buildings = [

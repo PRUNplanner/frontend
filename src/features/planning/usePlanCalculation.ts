@@ -39,8 +39,14 @@ import {
 	IPlanContext,
 	IPlanInput,
 } from "@/features/planning/engine/engine.types";
+import type {
+	InfrastructureType,
+	PlanCreateData,
+	PlanData,
+	PlanEmpire,
+} from "@/features/api/schemas/planningData.schemas";
+import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import {
-	INFRASTRUCTURE_TYPE,
 	IMaterialIO,
 	IOverviewData,
 	IPlanResult,
@@ -48,10 +54,7 @@ import {
 	IVisitationData,
 	planEmptyResult,
 } from "@/features/planning/usePlanCalculation.types";
-import { IPlan, IPlanData } from "@/stores/planningStore.types";
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 
 const overviewEmpty: IOverviewData = {
 	dailyCost: 0,
@@ -71,13 +74,13 @@ const overviewEmpty: IOverviewData = {
  * soon as game data and the plan's planet are loaded (a no-op wait where
  * a view already loaded them).
  *
- * @param {Ref<IPlan>} plan Plan
+ * @param {Ref<IPlanDefinition>} plan Plan
  * @param {Ref<string | undefined>} empireUuid Active empire
  * @param {Ref<PlanEmpireElement[] | undefined>} empireOptions Empires
  * @param {Ref<string | undefined>} cxUuid CX preference
  */
 export function usePlanCalculation(
-	plan: Ref<IPlan>,
+	plan: Ref<IPlanDefinition>,
 	empireUuid: Ref<string | undefined> = ref(undefined),
 	empireOptions: Ref<PlanEmpireElement[] | undefined> = ref(undefined),
 	cxUuid: Ref<string | undefined> = ref(undefined)
@@ -101,7 +104,7 @@ export function usePlanCalculation(
 	// data references
 
 	const planName: Ref<string | undefined> = toRef(plan.value.plan_name);
-	const data: ComputedRef<IPlanData> = computed(() => plan.value.plan_data);
+	const data: ComputedRef<PlanData> = computed(() => plan.value.plan_data);
 	const empires: Ref<PlanEmpire[]> = toRef([]);
 	const planEmpires: ComputedRef<PlanEmpire[]> = computed(() =>
 		plan.value.empires ? plan.value.empires : []
@@ -214,13 +217,13 @@ export function usePlanCalculation(
 	 *
 	 * @param {IMaterialIO[]} materialIO Material IO
 	 * @param {IProductionResult} production Production
-	 * @param {Required<Record<INFRASTRUCTURE_TYPE, number>>} infrastructure Infrastructure
+	 * @param {Required<Record<InfrastructureType, number>>} infrastructure Infrastructure
 	 * @returns {Promise<IOverviewData>} Overview
 	 */
 	async function calculateOverview(
 		materialIO: IMaterialIO[],
 		production: IProductionResult,
-		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>
+		infrastructure: Required<Record<InfrastructureType, number>>
 	): Promise<IOverviewData> {
 		const ctx: IPlanContext = context(await loaded);
 
@@ -243,9 +246,9 @@ export function usePlanCalculation(
 	 * Prepares plans data to conform to the Patch or Put payload
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<IPlanCreateData>}
+	 * @type {ComputedRef<PlanCreateData>}
 	 */
-	const backendData: ComputedRef<IPlanCreateData> = computed(() => {
+	const backendData: ComputedRef<PlanCreateData> = computed(() => {
 		return {
 			empire_uuid: empireUuid.value,
 			plan_name: planName.value ?? "missing name",

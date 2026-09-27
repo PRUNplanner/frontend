@@ -5,12 +5,7 @@ import { ref, Ref } from "vue";
 import { getObjectSize, inertClone } from "@/util/data";
 
 // Types & Interfaces
-import {
-	IPlan,
-	IPlanRecord,
-	ISharedPlan,
-	ISharedRecord,
-} from "@/stores/planningStore.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { Shared } from "@/features/api/schemas/sharingData.schemas";
@@ -25,13 +20,13 @@ export const usePlanningStore = defineStore(
 	() => {
 		// state
 		/** Key: Plan.uuid */
-		const plans: Ref<IPlanRecord> = ref({});
+		const plans: Ref<Record<string, Plan>> = ref({});
 		/** Key: Empire.uuid */
 		const empires: Ref<Record<string, PlanEmpireElement>> = ref({});
 		/** Key: CX.uuid */
 		const cxs: Ref<Record<string, CX>> = ref({});
 		/** Key: Plan.uuid */
-		const shared: Ref<ISharedRecord> = ref({});
+		const shared: Ref<Record<string, Shared>> = ref({});
 		const fio_storage_planets: Ref<Record<string, IFIOStorageElement>> =
 			ref({});
 		const fio_storage_warehouses: Ref<Record<string, IFIOStorageElement>> =
@@ -79,9 +74,9 @@ export const usePlanningStore = defineStore(
 		 * Sets plans by their UUID
 		 * @author jplacht
 		 *
-		 * @param {IPlan} data Plan Data
+		 * @param {Plan} data Plan Data
 		 */
-		function setPlan(data: IPlan): void {
+		function setPlan(data: Plan): void {
 			if (!data.uuid)
 				throw new Error("Can't set plan data for undefined uuid.");
 
@@ -92,9 +87,9 @@ export const usePlanningStore = defineStore(
 		 * Sets multiple plans by their Uuid
 		 * @author jplacht
 		 *
-		 * @param {IPlan[]} data Plan Data List
+		 * @param {Plan[]} data Plan Data List
 		 */
-		function setPlans(data: IPlan[]): void {
+		function setPlans(data: Plan[]): void {
 			data.forEach((p) => setPlan(p));
 		}
 
@@ -192,11 +187,11 @@ export const usePlanningStore = defineStore(
 		 *
 		 * @async
 		 * @param {string} planUuid Uuid
-		 * @returns {Promise<IPlan>} Plan Data
+		 * @returns {Promise<Plan>} Plan Data
 		 */
-		async function getPlan(planUuid: string): Promise<IPlan> {
+		async function getPlan(planUuid: string): Promise<Plan> {
 			// try getting from already fetched data first
-			const findPlan: IPlan | undefined = plans.value[planUuid];
+			const findPlan: Plan | undefined = plans.value[planUuid];
 
 			if (findPlan) return inertClone(plans.value[planUuid]);
 
@@ -221,9 +216,9 @@ export const usePlanningStore = defineStore(
 		 * Gets all sharing information from backend
 		 * @author jplacht
 		 *
-		 * @returns {ISharedPlan[]} Sharing Information List
+		 * @returns {Shared[]} Sharing Information List
 		 */
-		function getSharedList(): ISharedPlan[] {
+		function getSharedList(): Shared[] {
 			return Object.values(shared.value);
 		}
 		async function getStoreSize() {

@@ -1,4 +1,7 @@
-import { IPlan, IPlanShare } from "@/stores/planningStore.types";
+import type {
+	Plan,
+	PlanShare,
+} from "@/features/api/schemas/planningData.schemas";
 import type { CX } from "@/features/api/schemas/cxData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import { IPlanet } from "@/features/api/gameData.types";
@@ -19,12 +22,12 @@ export type PlanningDataLoaderProps = {
 
 export type PlanningDataLoaderEmits = {
 	(e: "complete"): void;
-	(e: "data:shared:plan", data: IPlanShare): void;
+	(e: "data:shared:plan", data: PlanShare): void;
 	(e: "data:empire:list", data: PlanEmpireElement[]): void;
-	(e: "data:empire:plans", data: IPlan[]): void;
+	(e: "data:empire:plans", data: Plan[]): void;
 	(e: "data:planet", data: IPlanet): void;
-	(e: "data:plan", data: IPlan): void;
-	(e: "data:plan:list", data: IPlan[]): void;
+	(e: "data:plan", data: Plan): void;
+	(e: "data:plan:list", data: Plan[]): void;
 	(e: "data:plan:list:planets", data: string[]): void;
 	(e: "data:cx", data: CX[]): void;
 	(e: "data:shared", data: Shared[]): void;
@@ -33,12 +36,12 @@ export type PlanningDataLoaderEmits = {
 };
 
 export type PlanningStepConfigsType = [
-	StepConfig<IPlanShare>,
+	StepConfig<PlanShare>,
 	StepConfig<PlanEmpireElement[]>,
-	StepConfig<IPlan>,
-	StepConfig<IPlan[]>,
+	StepConfig<Plan>,
+	StepConfig<Plan[]>,
 	StepConfig<IPlanet>,
 	StepConfig<CX[]>,
 	StepConfig<Shared[]>,
-	StepConfig<IPlan[]>,
+	StepConfig<Plan[]>,
 ];

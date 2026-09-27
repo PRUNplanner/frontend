@@ -8,10 +8,8 @@
 	import { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
 
 	// Types & Interfaces
-	import {
-		IInfrastructureRecord,
-		INFRASTRUCTURE_TYPE,
-	} from "@/features/planning/usePlanCalculation.types";
+	import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
+	import { IInfrastructureRecord } from "@/features/planning/usePlanCalculation.types";
 	import { isStorageInfrastructure } from "@/features/planning/calculations/infrastructureCalculations";
 
 	// UI
@@ -46,7 +44,7 @@
 	const emit = defineEmits<{
 		(
 			e: "update:infrastructure",
-			infrastructure: INFRASTRUCTURE_TYPE,
+			infrastructure: InfrastructureType,
 			value: number
 		): void;
 		(
@@ -61,7 +59,7 @@
 	const localInfrastructureData: ComputedRef<IInfrastructureRecord> =
 		computed(() => props.infrastructureData);
 
-	const infrastructureOrder: INFRASTRUCTURE_TYPE[] = [
+	const infrastructureOrder: InfrastructureType[] = [
 		"HB1",
 		"HBB",
 		"HB2",

@@ -5,7 +5,7 @@ import { bench, describe, vi } from "vitest";
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 
 // Types & Interfaces
-import { IPlan } from "@/stores/planningStore.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
@@ -38,14 +38,14 @@ vi.mock("@/database/services/usePlanetData", async () => {
 
 await setupPlanningTestData();
 
-const plans: [string, () => IPlan][] = [
+const plans: [string, () => Plan][] = [
 	["small", smallPlan],
 	["etherwind", etherwindPlan],
 	["large", largePlan],
 ];
 
 // a live instance (watchers active) that has its first result
-async function liveInstance(planFactory: () => IPlan) {
+async function liveInstance(planFactory: () => Plan) {
 	const plan = ref(planFactory());
 	const scope = effectScope();
 	const calc = scope.run(() => usePlanCalculation(plan))!;

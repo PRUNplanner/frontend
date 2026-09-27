@@ -22,7 +22,7 @@
 	import { inertClone } from "@/util/data";
 
 	// Types & Interfaces
-	import { IPlan } from "@/stores/planningStore.types";
+	import type { Plan } from "@/features/api/schemas/planningData.schemas";
 	import type {
 		PlanEmpireElement,
 		PlanEmpireJunction,
@@ -57,7 +57,7 @@
 			required: true,
 		},
 		plans: {
-			type: Array as PropType<IPlan[]>,
+			type: Array as PropType<Plan[]>,
 			required: true,
 		},
 	});
@@ -67,7 +67,7 @@
 		get: () => inertClone(props.empires),
 		set: (value: PlanEmpireElement[]) => emit("update:empireList", value),
 	});
-	const localPlans: ComputedRef<IPlan[]> = computed(() =>
+	const localPlans: ComputedRef<Plan[]> = computed(() =>
 		inertClone(props.plans)
 	);
 
@@ -77,7 +77,7 @@
 
 	const emit = defineEmits<{
 		(e: "update:empireList", value: PlanEmpireElement[]): void;
-		(e: "update:planList", value: IPlan[]): void;
+		(e: "update:planList", value: Plan[]): void;
 	}>();
 
 	const matrixEmpires: Ref<IPlanEmpireMatrixEmpires[]> = ref([]);
@@ -152,12 +152,12 @@
 			matrix.value.push({
 				// all plans coming from backend have a name and uuid, force it
 				planName: plan.plan_name!,
-				planUuid: plan.uuid!,
+				planUuid: plan.uuid,
 				planetId: plan.planet_natural_id,
 				empires: localEmpires.value.reduce(
 					(acc, item) => (
 						(acc[item.uuid] = empirePlans[item.uuid].includes(
-							plan.uuid!
+							plan.uuid
 						)),
 						acc
 					),
@@ -227,7 +227,7 @@
 
 		useQuery("GetAllPlans")
 			.execute()
-			.then((p: IPlan[]) => emit("update:planList", p));
+			.then((p: Plan[]) => emit("update:planList", p));
 	}
 
 	async function patchJunctions(): Promise<void> {

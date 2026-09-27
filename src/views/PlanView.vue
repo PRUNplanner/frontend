@@ -24,11 +24,14 @@
 	const userStore = useUserStore();
 
 	// Types & Interfaces
-	import { IPlan } from "@/stores/planningStore.types";
+	import type {
+		InfrastructureType,
+		Plan,
+		PlanCreateData,
+	} from "@/features/api/schemas/planningData.schemas";
+	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import { IPlanet } from "@/features/api/gameData.types";
-	import { INFRASTRUCTURE_TYPE } from "@/features/planning/usePlanCalculation.types";
-	import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 	import {
 		optimizeHabs,
 		calculateAvailableArea,
@@ -102,7 +105,7 @@
 			default: false,
 		},
 		planData: {
-			type: Object as PropType<IPlan>,
+			type: Object as PropType<IPlanDefinition>,
 			required: true,
 		},
 		empireList: {
@@ -117,7 +120,7 @@
 		},
 	});
 
-	const refPlanData: Ref<IPlan> = ref(inertClone(props.planData));
+	const refPlanData: Ref<IPlanDefinition> = ref(inertClone(props.planData));
 	const refEmpireList: Ref<PlanEmpireElement[] | undefined> = ref(
 		props.empireList
 	);
@@ -401,7 +404,7 @@
 		refIsSavingAs.value = true;
 
 		// Create new plan data with the new name and selected empire
-		const saveAsData: IPlanCreateData = {
+		const saveAsData: PlanCreateData = {
 			...backendData.value,
 			plan_name: refSaveAsName.value.trim(),
 			empire_uuid: refSaveAsEmpireUuid.value,
@@ -448,7 +451,7 @@
 		refIsReloading.value = true;
 
 		await reloadExistingPlan(refPlanData.value.uuid).then(
-			(result: IPlan) => (refPlanData.value = result)
+			(result: Plan) => (refPlanData.value = result)
 		);
 		handleResetModified();
 
@@ -535,7 +538,7 @@
 
 		if (solution.status === "optimal") {
 			for (const [hab, count] of solution.variables) {
-				const habType = hab as INFRASTRUCTURE_TYPE;
+				const habType = hab as InfrastructureType;
 				// Don't update the plan if nothing changed
 				if (result.value.infrastructure[habType] === count) continue;
 				handleUpdateInfrastructure(habType, count);

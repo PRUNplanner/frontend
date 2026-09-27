@@ -54,8 +54,9 @@ const { result, overview } = calculatePlan(input, ctx);
 | `buildings.ts` | Game data helpers: building lookup, construction materials with planet additions, recipes (extraction from planet resources), planet boundaries |
 
 `IPlanResult` (typed in `usePlanCalculation.types.ts`, together with every
-sub-record and the `WORKFORCE_TYPE`, `INFRASTRUCTURE_TYPE`, `EXPERT_TYPE` and
-`STORAGE_TYPE` unions) contains:
+sub-record; the `WorkforceType`, `InfrastructureType`, `ExpertType` and
+`StorageType` unions derive from `api/schemas/planningData.schemas.ts`)
+contains:
 
 - `workforce`, `area`, `infrastructure`, `storage` and `experts`;
 - `production.buildings` (per-building efficiency, active recipes with
@@ -103,7 +104,7 @@ The Vue adapter for the plan editor.
 
 ```ts
 const calc = usePlanCalculation(
-  planRef,            // Ref<IPlan>, required
+  planRef,            // Ref<IPlanDefinition>, required
   empireUuidRef,      // Ref<string | undefined>, the empire context (faction, permits)
   empireOptionsRef,   // Ref<PlanEmpireElement[] | undefined>, the list to resolve that uuid
   cxUuidRef           // Ref<string | undefined>, the exchange preference for prices
@@ -127,7 +128,7 @@ const calc = usePlanCalculation(
   | `overviewData`, `visitationData` | Derived summaries for `PlanOverview` / `PlanVisitationFrequency` |
   | `calculate()` | Calculates once (async, waits for loading) and returns a fresh result |
   | `calculateOverview(materialIO, production, infrastructure)` | The overview for a result's parts |
-  | `backendData` | The `IPlanCreateData` payload for save/create |
+  | `backendData` | The `PlanCreateData` payload for save/create |
   | `existing`, `saveable`, `modified`, `planName`, `planEmpires`, `computedActiveEmpire` | Editor state |
   | `handle*` | Mutators from `usePlanCalculationHandlers` |
 

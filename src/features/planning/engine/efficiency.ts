@@ -11,17 +11,17 @@ import {
 	EfficiencyMap,
 	IBuildingEfficiency,
 } from "@/features/planning/calculations/bonusCalculations.types";
+import type {
+	ExpertType,
+	PlanCOGCProgram,
+	PlanDataExpert,
+	PlanEmpire,
+} from "@/features/api/schemas/planningData.schemas";
 import {
-	EXPERT_TYPE,
 	IExpertElement,
 	IExpertRecord,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
-import {
-	IPlanDataExpert,
-	PLAN_COGCPROGRAM_TYPE,
-} from "@/stores/planningStore.types";
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
 
 export const expertNames: string[] = [
 	"Agriculture",
@@ -42,12 +42,12 @@ export const expertNames: string[] = [
  *
  * @type {Record<
  * 	BUILDING_EXPERTISE_TYPE,
- * 	EXPERT_TYPE
+ * 	ExpertType
  * >}
  */
 const MAP_BUILDING_EXPERTISE_EXPERTS: Record<
 	BUILDING_EXPERTISE_TYPE,
-	EXPERT_TYPE
+	ExpertType
 > = {
 	AGRICULTURE: "Agriculture",
 	CHEMISTRY: "Chemistry",
@@ -196,7 +196,7 @@ export function calculateBuildingFactionBonus(
  * @param {IBuilding} building Building Data
  * @param {IPlanet} planet Planet Data
  * @param {boolean} corphq Is Corporation HQ on Planet
- * @param {PLAN_COGCPROGRAM_TYPE} cogc COGC
+ * @param {PlanCOGCProgram} cogc COGC
  * @param {IWorkforceRecord} workforce Workforce Efficiencies
  * @param {IExpertRecord} experts Expert Setup
  * @param {(PlanEmpire | undefined)} empire Plan Empire
@@ -209,7 +209,7 @@ export function calculateBuildingEfficiency(
 	building: IBuilding,
 	planet: IPlanet,
 	corphq: boolean,
-	cogc: PLAN_COGCPROGRAM_TYPE,
+	cogc: PlanCOGCProgram,
 	workforce: IWorkforceRecord,
 	experts: IExpertRecord,
 	empire: PlanEmpire | undefined
@@ -320,15 +320,13 @@ export function calculateBuildingEfficiency(
  * record with each expert type, its planned amount and the bonus
  * efficiency provided by it
  *
- * @param {IPlanDataExpert[]} planExperts Plan experts
+ * @param {PlanDataExpert[]} planExperts Plan experts
  * @returns {IExpertRecord} Expert Result Record
  */
-export function calculateExperts(
-	planExperts: IPlanDataExpert[]
-): IExpertRecord {
+export function calculateExperts(planExperts: PlanDataExpert[]): IExpertRecord {
 	return Object.fromEntries(
 		expertNames.map((key) => {
-			const currentExpert: IPlanDataExpert | undefined = planExperts.find(
+			const currentExpert: PlanDataExpert | undefined = planExperts.find(
 				(e) => e.type === key
 			);
 

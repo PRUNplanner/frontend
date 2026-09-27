@@ -28,11 +28,13 @@
 	import { workforceTypeNames } from "@/features/planning/calculations/workforceCalculations";
 
 	// Types & Interfaces
+	import type {
+		InfrastructureType,
+		WorkforceType,
+	} from "@/features/api/schemas/planningData.schemas";
 	import {
 		IBuildingConstruction,
-		INFRASTRUCTURE_TYPE,
 		IProductionBuilding,
-		WORKFORCE_TYPE,
 	} from "@/features/planning/usePlanCalculation.types";
 	import { IBuilding } from "@/features/api/gameData.types";
 	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
@@ -60,7 +62,7 @@
 			required: true,
 		},
 		infrastructureData: {
-			type: Object as PropType<Record<INFRASTRUCTURE_TYPE, number>>,
+			type: Object as PropType<Record<InfrastructureType, number>>,
 			required: true,
 		},
 	});
@@ -138,7 +140,7 @@
 	}
 
 	const deficitWorkforceTypes = computed(() => {
-		return (workforceTypeNames as WORKFORCE_TYPE[]).filter(
+		return (workforceTypeNames as WorkforceType[]).filter(
 			(workforceType) =>
 				buildingTicker.value.reduce((sum, ticker) => {
 					const building = buildingsMap.value[ticker];
@@ -199,7 +201,7 @@
 					props.productionBuildingData.find(
 						(pf) => pf.name === bticker
 					)?.amount ??
-					props.infrastructureData[bticker as INFRASTRUCTURE_TYPE];
+					props.infrastructureData[bticker as InfrastructureType];
 				if (bticker === "CM") planned = 1;
 				let need = planned;
 				if (planned !== undefined) {
@@ -401,7 +403,10 @@
 						v-for="mat in uniqueMaterials"
 						:key="`CONSTRUCTIONCART#COLUMN#${mat}`"
 						class="text-center!">
-						<MaterialTile :key="mat" :ticker="mat" popover-placement="bottom" />
+						<MaterialTile
+							:key="mat"
+							:ticker="mat"
+							popover-placement="bottom" />
 					</th>
 				</tr>
 			</thead>

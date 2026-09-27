@@ -14,7 +14,7 @@ import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { calculateVisitation } from "@/features/planning/engine/visitation";
 
 // Types & Interfaces
-import { IPlan } from "@/stores/planningStore.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import { IBuilding } from "@/features/api/gameData.types";
 import {
@@ -75,7 +75,7 @@ interface ICase {
 }
 
 async function runCase(
-	plan: IPlan,
+	plan: Plan,
 	options: ICase = {},
 	withRecipeOptions = true
 ) {
@@ -113,7 +113,7 @@ async function runCase(
 
 // the same plans straight through the engine, without the Vue adapter
 async function runEngine(
-	plan: IPlan,
+	plan: Plan,
 	options: ICase = {},
 	withRecipeOptions = true
 ) {
@@ -145,7 +145,7 @@ async function runEngine(
 	});
 }
 
-function withPlan(mutate: (plan: IPlan) => void): IPlan {
+function withPlan(mutate: (plan: Plan) => void): Plan {
 	const plan = etherwindPlan();
 	mutate(plan);
 	return plan;
@@ -163,7 +163,7 @@ describe("usePlanCalculation characterization", () => {
 		usePlanningStore().cxs = {};
 	});
 
-	const cases: [string, () => IPlan, () => ICase][] = [
+	const cases: [string, () => Plan, () => ICase][] = [
 		["etherwind", etherwindPlan, () => ({})],
 		["empty", emptyPlan, () => ({})],
 		["small", smallPlan, () => ({})],

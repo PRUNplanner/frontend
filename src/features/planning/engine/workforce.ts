@@ -4,17 +4,20 @@ import { getBuilding } from "@/features/planning/engine/buildings";
 
 // Types & Interfaces
 import { IBuilding } from "@/features/api/gameData.types";
+import type {
+	PlanData,
+	PlanDataWorkforce,
+	WorkforceType,
+} from "@/features/api/schemas/planningData.schemas";
 import {
 	IMaterialIOMinimal,
 	IWorkforceElement,
 	IWorkforceRecord,
-	WORKFORCE_TYPE,
 } from "@/features/planning/usePlanCalculation.types";
 import {
 	WorkforceConsumptionElement,
 	WorkforceConsumptionMap,
 } from "@/features/planning/calculations/workforceCalculations.types";
-import { IPlanData, IPlanDataWorkforce } from "@/stores/planningStore.types";
 
 export const WORKFORCE_CONSUMPTION_MAP: WorkforceConsumptionMap = {
 	pioneer: [
@@ -98,8 +101,7 @@ export function calculateSatisfaction(
 	}
 
 	let efficiency: number = 0;
-	const baseEfficiency: number =
-		0.02 * (1 + 10 / 3) * (1 + 4) * (1 + 5 / 6);
+	const baseEfficiency: number = 0.02 * (1 + 10 / 3) * (1 + 4) * (1 + 5 / 6);
 	const lux1Efficiency: number = 1 + 1 / 11;
 	const lux2Efficiency: number = 1 + 2 / 13;
 
@@ -264,35 +266,34 @@ export function getBuildingWorkforceMaterials(
  * production building needs. This also includes the efficiency calculation
  * based on capacity and required workforce under given luxury provision.
  *
- * @param {IPlanData} data Plan Data
+ * @param {PlanData} data Plan Data
  * @param {ReadonlyMap<string, IBuilding>} buildings Building data
- * @returns {Required<Record<WORKFORCE_TYPE, IWorkforceElement>>} Workforce
+ * @returns {Required<Record<WorkforceType, IWorkforceElement>>} Workforce
  */
 export function calculateWorkforce(
-	data: IPlanData,
+	data: PlanData,
 	buildings: ReadonlyMap<string, IBuilding>
-): Required<Record<WORKFORCE_TYPE, IWorkforceElement>> {
-	const result: Record<WORKFORCE_TYPE, IWorkforceElement> =
-		Object.fromEntries(
-			workforceTypeNames.map((key) => {
-				// get current workforce value from planet data
-				const dataLuxuries: IPlanDataWorkforce | undefined =
-					data.workforce.find((e) => e.type == key);
+): Required<Record<WorkforceType, IWorkforceElement>> {
+	const result: Record<WorkforceType, IWorkforceElement> = Object.fromEntries(
+		workforceTypeNames.map((key) => {
+			// get current workforce value from planet data
+			const dataLuxuries: PlanDataWorkforce | undefined =
+				data.workforce.find((e) => e.type == key);
 
-				return [
-					key,
-					{
-						name: key,
-						required: 0,
-						capacity: 0,
-						left: 0,
-						lux1: dataLuxuries ? dataLuxuries.lux1 : true,
-						lux2: dataLuxuries ? dataLuxuries.lux2 : true,
-						efficiency: 0,
-					} as IWorkforceElement,
-				];
-			})
-		) as Record<WORKFORCE_TYPE, IWorkforceElement>;
+			return [
+				key,
+				{
+					name: key,
+					required: 0,
+					capacity: 0,
+					left: 0,
+					lux1: dataLuxuries ? dataLuxuries.lux1 : true,
+					lux2: dataLuxuries ? dataLuxuries.lux2 : true,
+					efficiency: 0,
+				} as IWorkforceElement,
+			];
+		})
+	) as Record<WorkforceType, IWorkforceElement>;
 
 	// calculate capacity from infrastructure buildings
 	for (const infrastructure of data.infrastructure) {

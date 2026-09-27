@@ -6,7 +6,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Types & Interfaces
 import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 import { IFIOStorageElement } from "@/features/api/gameData.types";
-import { IPlan } from "@/stores/planningStore.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import {
 	IFIOBurnPlanetTableElement,
 	IFIOBurnTableElement,
@@ -14,7 +14,7 @@ import {
 } from "@/features/fio/useFIOBurn.types";
 
 export function useFIOBurn(
-	plans: Ref<IPlan[]>,
+	plans: Ref<Plan[]>,
 	data: Ref<Record<string, IPlanResult>>
 ) {
 	const planningStore = usePlanningStore();
@@ -32,12 +32,12 @@ export function useFIOBurn(
 	 * Creates record of plan list
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<Record<string, IPlan>>}
+	 * @type {ComputedRef<Record<string, Plan>>}
 	 */
-	const planRecord: ComputedRef<Record<string, IPlan>> = computed(() => {
+	const planRecord: ComputedRef<Record<string, Plan>> = computed(() => {
 		return plans.value.reduce(
-			(acc, item) => ((acc[item.uuid!] = item), acc),
-			{} as Record<string, IPlan>
+			(acc, item) => ((acc[item.uuid] = item), acc),
+			{} as Record<string, Plan>
 		);
 	});
 
@@ -82,7 +82,7 @@ export function useFIOBurn(
 			string,
 			IPlanResult,
 		][]) {
-			const planData: IPlan = planRecord.value[planUuid];
+			const planData: Plan = planRecord.value[planUuid];
 			const hasStorage: boolean = burnData[planData.planet_natural_id]
 				? true
 				: false;

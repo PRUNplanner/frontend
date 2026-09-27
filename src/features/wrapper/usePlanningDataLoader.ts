@@ -20,7 +20,10 @@ import {
 	PlanningStepConfigsType,
 } from "@/features/wrapper/planningDataLoader.types";
 import { StepState } from "@/features/wrapper/dataLoader.types";
-import { IPlan, IPlanShare } from "@/stores/planningStore.types";
+import type {
+	Plan,
+	PlanShare,
+} from "@/features/api/schemas/planningData.schemas";
 import type { CX } from "@/features/api/schemas/cxData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import { IPlanet } from "@/features/api/gameData.types";
@@ -99,7 +102,7 @@ export function usePlanningDataLoader(
 				queryStore.execute("GetSharedPlan", {
 					sharedPlanUuid: props.sharedPlanUuid!,
 				}),
-			onSuccess: (data: IPlanShare) => emits("data:shared:plan", data),
+			onSuccess: (data: PlanShare) => emits("data:shared:plan", data),
 		},
 		{
 			key: "empireList",
@@ -125,14 +128,14 @@ export function usePlanningDataLoader(
 				queryStore.execute("GetPlan", {
 					planUuid: props.planUuid!,
 				}),
-			onSuccess: (data: IPlan) => emits("data:plan", data),
+			onSuccess: (data: Plan) => emits("data:plan", data),
 		},
 		{
 			key: "planList",
 			name: t("wrapper.planning_data.plans_all"),
 			enabled: () => !!props.planList,
 			load: () => queryStore.execute("GetAllPlans", undefined),
-			onSuccess: (data: IPlan[]) => {
+			onSuccess: (data: Plan[]) => {
 				const planetList: string[] = Array.from(
 					new Set(data.map((e) => e.planet_natural_id)).values()
 				);
@@ -156,7 +159,7 @@ export function usePlanningDataLoader(
 										sharedPlanUuid: props.sharedPlanUuid!,
 									}
 								)
-							)!.data as IPlanShare
+							)!.data as PlanShare
 						).plan_details.planet_natural_id
 					: props.planetNaturalId!;
 				return queryStore.execute("GetPlanet", {
@@ -192,7 +195,7 @@ export function usePlanningDataLoader(
 				queryStore.execute("GetEmpirePlans", {
 					empireUuid: props.empireUuid!,
 				}),
-			onSuccess: (data: IPlan[]) => {
+			onSuccess: (data: Plan[]) => {
 				// emit empire data
 				// emit potential empire cx uuid
 				if (!props.cxUuid) {
@@ -278,18 +281,18 @@ export function usePlanningDataLoader(
 	const results = computed(() => {
 		const data = {
 			sharedPlan: steps.find((s) => s.cfg.key === "sharedPlan")
-				?.data as IPlanShare,
+				?.data as PlanShare,
 			empireList: steps.find((s) => s.cfg.key === "empireList")
 				?.data as PlanEmpireElement[],
 			planetData: steps.find((s) => s.cfg.key === "planet")
 				?.data as IPlanet,
-			planData: steps.find((s) => s.cfg.key === "plan")?.data as IPlan,
+			planData: steps.find((s) => s.cfg.key === "plan")?.data as Plan,
 			planList: steps.find((s) => s.cfg.key === "planList")
-				?.data as IPlan[],
+				?.data as Plan[],
 			sharedData: steps.find((s) => s.cfg.key === "sharedList")
 				?.data as Shared[],
 			empirePlansData: steps.find((s) => s.cfg.key === "empirePlans")
-				?.data as IPlan[],
+				?.data as Plan[],
 			empirePlanetList: computed(() => {
 				/*
 					empire planet list can either come from loading empire plans
@@ -298,7 +301,7 @@ export function usePlanningDataLoader(
 				*/
 				const empirePlans = steps.find(
 					(s) => s.cfg.key === "empirePlans"
-				)?.data as undefined | IPlan[];
+				)?.data as undefined | Plan[];
 
 				const empireList = steps.find((s) => s.cfg.key === "empireList")
 					?.data as undefined | PlanEmpireElement[];

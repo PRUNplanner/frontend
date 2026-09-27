@@ -1,9 +1,9 @@
-import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
-import {
-	EXPERT_TYPE,
-	INFRASTRUCTURE_TYPE,
-	WORKFORCE_TYPE,
-} from "@/features/planning/usePlanCalculation.types";
+import type {
+	ExpertType,
+	InfrastructureType,
+	PlanCOGCProgram,
+	WorkforceType,
+} from "@/features/api/schemas/planningData.schemas";
 import { IPlanetSearchAdvanced } from "@/features/api/gameData.types";
 
 export type ANALYTICS_EVENT_TYPE =
@@ -159,16 +159,16 @@ export interface IAnalyticsEventProperties {
 	};
 	plan_update_cogc: {
 		planetNaturalId: string;
-		cogc: PLAN_COGCPROGRAM_TYPE;
+		cogc: PlanCOGCProgram;
 	};
 	plan_update_expert: {
 		planetNaturalId: string;
-		expertType: EXPERT_TYPE;
+		expertType: ExpertType;
 		amount: number;
 	};
 	plan_update_infrastructure: {
 		planetNaturalId: string;
-		infrastructureType: INFRASTRUCTURE_TYPE;
+		infrastructureType: InfrastructureType;
 		amount: number;
 	};
 	plan_create_building: {
@@ -206,7 +206,7 @@ export interface IAnalyticsEventProperties {
 	};
 	plan_update_workforce: {
 		planetNaturalId: string;
-		workforceType: WORKFORCE_TYPE;
+		workforceType: WorkforceType;
 		luxType: string;
 		value: boolean;
 	};
