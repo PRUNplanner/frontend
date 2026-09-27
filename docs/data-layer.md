@@ -34,7 +34,13 @@ component / composable
     once.
   - If the refresh fails, or the 401 comes from `/user/refresh/` itself, it
     calls `logout()` and routes to `/`.
-  - `logout()` resets the user, planning and query stores and PostHog.
+  - `logout()` resets the user, planning and query stores and PostHog. The
+    next login loads its own profile and preferences again.
+  - A response to a request sent logged in, in a session that has since
+    ended (the refresh token changed), is discarded as a `CanceledError`.
+    It never triggers a token refresh or logout, and it can't leak into
+    the next user's stores. A pending preference sync is dropped the same
+    way.
 
 ## 2. Endpoints & schemas (`src/features/api/`)
 
@@ -69,7 +75,9 @@ component / composable
     mutations use.
 - **`queryStore.ts`** is a Pinia store and is **not** persisted.
   - `execute(name, params, { forceRefetch })` returns cached data while it is
-    fresh, and dedupes concurrent calls through an in-flight map.
+    fresh, and dedupes concurrent calls through an in-flight map. A request
+    that was replaced (forced refetch) or dropped (`invalidateKey`,
+    `$reset` on logout) no longer writes to the cache when it settles.
   - `invalidateKey(key, { exact, forceRefetch, skipRefetch })` deletes
     either the exact key or every key that the given key is a subset of. It
     refetches when `autoRefetch` is set or `forceRefetch` is passed.
