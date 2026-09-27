@@ -23,8 +23,11 @@ import {
 	IPreferencePerPlan,
 } from "@/features/preferences/userPreferences.types";
 
-// debounced update to backend
-const patchPrefs = async (prefs: IPreference) => {
+// debounced update to backend, dropped if the session (refresh token) it
+// was scheduled in has ended: never send one user's preferences as another
+const patchPrefs = async (prefs: IPreference, session: string | undefined) => {
+	if (session !== useUserStore().refreshToken) return;
+
 	try {
 		await useQuery("PatchPreferences", prefs).execute();
 	} catch (err) {
@@ -43,7 +46,7 @@ export function usePreferences() {
 		() => cloneDeep(userStore.preferences),
 		(newVal, oldVal) => {
 			if (isEqual(newVal, oldVal)) return;
-			syncToBackend(newVal);
+			syncToBackend(newVal, userStore.refreshToken);
 		},
 		{ deep: true }
 	);

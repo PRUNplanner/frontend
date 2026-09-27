@@ -115,14 +115,22 @@ export const useQueryStore = defineStore(
 				autoRefetch: definition.autoRefetch,
 			});
 
-			const promise = (async () => {
+			// $reset (logout), invalidateKey or a forced refetch replace or
+			// drop this request; it must then not write into the cache.
+			// let, not const: a fetchFn throwing synchronously would read
+			// a const promise before its initialization
+			// eslint-disable-next-line prefer-const
+			let promise: Promise<DataOfDefinition<IQueryRepository[K]>>;
+			const isCurrent = () => inFlight.get(keyHash) === promise;
+
+			promise = (async () => {
 				try {
 					const result: DataOfDefinition<IQueryRepository[K]> =
 						await definition.fetchFn(
 							params as ParamsOfDefinition<IQueryRepository[K]>
 						);
 
-					if (shouldCache) {
+					if (shouldCache && isCurrent()) {
 						updateState(keyHash, {
 							data: result,
 							timestamp: Date.now(),
@@ -131,17 +139,22 @@ export const useQueryStore = defineStore(
 
 					return result as DataOfDefinition<IQueryRepository[K]>;
 				} catch (err) {
-					updateState(keyHash, {
-						error:
-							err instanceof Error ? err : new Error(String(err)),
-						timestamp: Date.now(),
-					});
+					if (isCurrent())
+						updateState(keyHash, {
+							error:
+								err instanceof Error
+									? err
+									: new Error(String(err)),
+							timestamp: Date.now(),
+						});
 					console.error(err);
 					throw err;
 				} finally {
-					updateState(keyHash, { loading: false });
-					inFlight.delete(keyHash);
-					if (!shouldCache) deleteState(keyHash);
+					if (isCurrent()) {
+						updateState(keyHash, { loading: false });
+						inFlight.delete(keyHash);
+						if (!shouldCache) deleteState(keyHash);
+					}
 				}
 			})();
 
