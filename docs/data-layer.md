@@ -60,7 +60,10 @@ component / composable
     Object keys are sorted by `toCacheKey`.
   - `fetchFn(params)`: calls `call*()`, then performs side effects. It
     writes to IndexedDB or `planningStore`, seeds sibling cache entries
-    (`addCacheState`), or invalidates related keys.
+    (`addCacheState`), or invalidates related keys. A cached query's
+    `fetchFn` must let errors throw. If it returns `[]` or `false` on
+    failure, that value is cached as fresh data, so loaders report success
+    and later calculations fail (for example "Planet … not available").
   - `expireTime` (ms, optional), `autoRefetch` and `persist`.
     `persist: false` drops the result after the call, which is what
     mutations use.

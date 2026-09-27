@@ -120,54 +120,60 @@
 
 		if (clearCache) cacheCalculatedPlans.clear();
 
-		// game data once for all plans
-		const gameData = await loadGameData();
+		try {
+			// game data once for all plans
+			const gameData = await loadGameData();
 
-		for (const plan of planData.value) {
-			// note, calculation depends on empire + cx, so a plan is only
-			// calculated properly within this context
+			for (const plan of planData.value) {
+				// note, calculation depends on empire + cx, so a plan is only
+				// calculated properly within this context
 
-			const cacheKey: string = planResultCacheKey(
-				plan.uuid!,
-				selectedEmpireUuid.value,
-				selectedCXUuid.value
-			);
-
-			if (cacheCalculatedPlans.has(cacheKey)) {
-				calculatedPlans.value[plan.uuid!] =
-					cacheCalculatedPlans.get(cacheKey)!;
-				progressCurrent.value++;
-			} else {
-				await Promise.resolve();
-
-				const { result } = calculatePlan(
-					{
-						plan,
-						empire: getActiveEmpire(
-							selectedEmpireUuid.value,
-							refEmpireList.value
-						),
-						cxUuid: selectedCXUuid.value,
-						// never read by this view
-						recipeOptions: false,
-					},
-					await createContext(
-						gameData,
-						plan.planet_natural_id,
-						selectedCXUuid.value
-					)
+				const cacheKey: string = planResultCacheKey(
+					plan.uuid!,
+					selectedEmpireUuid.value,
+					selectedCXUuid.value
 				);
-				calculatedPlans.value[plan.uuid!] = result;
-				progressCurrent.value++;
 
-				// cache
-				cacheCalculatedPlans.set(cacheKey, result);
-				// yield back to vue and update DOM
-				await new Promise((r) => setTimeout(r, 0));
+				if (cacheCalculatedPlans.has(cacheKey)) {
+					calculatedPlans.value[plan.uuid!] =
+						cacheCalculatedPlans.get(cacheKey)!;
+					progressCurrent.value++;
+				} else {
+					await Promise.resolve();
+
+					const { result } = calculatePlan(
+						{
+							plan,
+							empire: getActiveEmpire(
+								selectedEmpireUuid.value,
+								refEmpireList.value
+							),
+							cxUuid: selectedCXUuid.value,
+							// never read by this view
+							recipeOptions: false,
+						},
+						await createContext(
+							gameData,
+							plan.planet_natural_id,
+							selectedCXUuid.value
+						)
+					);
+					calculatedPlans.value[plan.uuid!] = result;
+					progressCurrent.value++;
+
+					// cache
+					cacheCalculatedPlans.set(cacheKey, result);
+					// yield back to vue and update DOM
+					await new Promise((r) => setTimeout(r, 0));
+				}
 			}
+		} catch (err) {
+			// e.g. game data missing, never persist a partial empire state
+			console.error(err);
+			return;
+		} finally {
+			isCalculating.value = false;
 		}
-
-		isCalculating.value = false;
 
 		empireMaterialIOState(
 			selectedEmpire.value,
