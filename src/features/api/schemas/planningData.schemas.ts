@@ -26,7 +26,7 @@ export const PlanCOGCProgramSchema = z.enum([
 ]);
 export type PlanCOGCProgram = z.infer<typeof PlanCOGCProgramSchema>;
 
-const ExpertTypeSchema = z.enum([
+export const ExpertTypeSchema = z.enum([
 	"Agriculture",
 	"Chemistry",
 	"Construction",
@@ -39,7 +39,7 @@ const ExpertTypeSchema = z.enum([
 ]);
 export type ExpertType = z.infer<typeof ExpertTypeSchema>;
 
-const WorkforceTypeSchema = z.enum([
+export const WorkforceTypeSchema = z.enum([
 	"pioneer",
 	"settler",
 	"technician",
@@ -48,10 +48,10 @@ const WorkforceTypeSchema = z.enum([
 ]);
 export type WorkforceType = z.infer<typeof WorkforceTypeSchema>;
 
-const StorageTypeSchema = z.enum(["STO", "STA", "STE", "STV", "STW"]);
+export const StorageTypeSchema = z.enum(["STO", "STA", "STE", "STV", "STW"]);
 export type StorageType = z.infer<typeof StorageTypeSchema>;
 
-const InfrastructureTypeSchema = z.enum([
+export const HabTypeSchema = z.enum([
 	"HB1",
 	"HB2",
 	"HB3",
@@ -61,6 +61,10 @@ const InfrastructureTypeSchema = z.enum([
 	"HBC",
 	"HBM",
 	"HBL",
+]);
+
+export const InfrastructureTypeSchema = z.enum([
+	...HabTypeSchema.options,
 	...StorageTypeSchema.options,
 ]);
 export type InfrastructureType = z.infer<typeof InfrastructureTypeSchema>;

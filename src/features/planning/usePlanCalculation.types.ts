@@ -3,12 +3,14 @@ import type {
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
 import type { IBuildingEfficiency } from "@/features/planning/calculations/bonusCalculations.types";
-import type {
-	ExpertType,
-	InfrastructureType,
-	PlanCOGCProgram,
-	StorageType,
-	WorkforceType,
+import {
+	ExpertTypeSchema,
+	WorkforceTypeSchema,
+	type ExpertType,
+	type InfrastructureType,
+	type PlanCOGCProgram,
+	type StorageType,
+	type WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
 import type { IInfrastructureCosts } from "../cx/usePrice.types";
 
@@ -156,15 +158,9 @@ export const planEmptyResult = {
 	done: false,
 	corphq: false,
 	cogc: "---" as PlanCOGCProgram,
-	workforce: [
-		"pioneer",
-		"settler",
-		"technician",
-		"engineer",
-		"scientist",
-	].reduce((sum, w) => {
-		sum[w as WorkforceType] = {
-			name: w as WorkforceType,
+	workforce: WorkforceTypeSchema.options.reduce((sum, w) => {
+		sum[w] = {
+			name: w,
 			required: 0,
 			capacity: 0,
 			left: 0,
@@ -198,19 +194,9 @@ export const planEmptyResult = {
 		STV: 0,
 		STW: 0,
 	},
-	experts: [
-		"Agriculture",
-		"Chemistry",
-		"Construction",
-		"Electronics",
-		"Food_Industries",
-		"Fuel_Refining",
-		"Manufacturing",
-		"Metallurgy",
-		"Resource_Extraction",
-	].reduce((sum, e) => {
-		sum[e as ExpertType] = {
-			name: e as ExpertType,
+	experts: ExpertTypeSchema.options.reduce((sum, e) => {
+		sum[e] = {
+			name: e,
 			amount: 0,
 			bonus: 0,
 		};

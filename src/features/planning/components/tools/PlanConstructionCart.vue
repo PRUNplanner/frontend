@@ -28,10 +28,7 @@
 	import { workforceTypeNames } from "@/features/planning/calculations/workforceCalculations";
 
 	// Types & Interfaces
-	import type {
-		InfrastructureType,
-		WorkforceType,
-	} from "@/features/api/schemas/planningData.schemas";
+	import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
 	import type {
 		IBuildingConstruction,
 		IProductionBuilding,
@@ -140,7 +137,7 @@
 	}
 
 	const deficitWorkforceTypes = computed(() => {
-		return (workforceTypeNames as WorkforceType[]).filter(
+		return workforceTypeNames.filter(
 			(workforceType) =>
 				buildingTicker.value.reduce((sum, ticker) => {
 					const building = buildingsMap.value[ticker];

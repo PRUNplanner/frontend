@@ -4,10 +4,11 @@ import { getBuilding } from "@/features/planning/engine/buildings";
 
 // Types & Interfaces
 import type { Building } from "@/features/api/schemas/gameData.schemas";
-import type {
-	PlanData,
-	PlanDataWorkforce,
-	WorkforceType,
+import {
+	WorkforceTypeSchema,
+	type PlanData,
+	type PlanDataWorkforce,
+	type WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
 import type {
 	IMaterialIOMinimal,
@@ -64,13 +65,7 @@ export const WORKFORCE_CONSUMPTION_MAP: WorkforceConsumptionMap = {
 	],
 };
 
-export const workforceTypeNames: string[] = [
-	"pioneer",
-	"settler",
-	"technician",
-	"engineer",
-	"scientist",
-];
+export const workforceTypeNames = WorkforceTypeSchema.options;
 
 /**
  * Calculates workforce satisfaction based on capacity and luxuries

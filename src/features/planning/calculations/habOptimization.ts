@@ -9,7 +9,10 @@ import {
 } from "yalps";
 
 // Types & Interfaces
-import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
+import {
+	HabTypeSchema,
+	type InfrastructureType,
+} from "@/features/api/schemas/planningData.schemas";
 import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 import type { IInfrastructureCosts } from "@/features/cx/usePrice.types";
 export type HabSolverGoal = "auto" | "cost" | "area";
@@ -94,8 +97,7 @@ export function optimizeHabs(
 		objective: goal,
 		constraints: constraints,
 		variables: variables,
-		// prettier-ignore
-		integers: ["HB1", "HB2", "HB3", "HB4", "HB5", "HBB", "HBC", "HBM", "HBL"],
+		integers: HabTypeSchema.options,
 	};
 
 	return solve(model, { includeZeroVariables: true });

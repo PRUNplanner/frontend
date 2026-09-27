@@ -1,24 +1,13 @@
-import type { StorageType } from "@/features/api/schemas/planningData.schemas";
+import {
+	InfrastructureTypeSchema,
+	StorageTypeSchema,
+	type StorageType,
+} from "@/features/api/schemas/planningData.schemas";
 
-export const storageBuildingNames: string[] = [
-	"STO",
-	"STA",
-	"STE",
-	"STV",
-	"STW",
-];
+export const storageBuildingNames: string[] = StorageTypeSchema.options;
 
-export const infrastructureBuildingNames: string[] = [
-	"HB1",
-	"HB2",
-	"HB3",
-	"HB4",
-	"HB5",
-	"HBB",
-	"HBC",
-	"HBM",
-	"HBL",
-].concat(storageBuildingNames);
+export const infrastructureBuildingNames: string[] =
+	InfrastructureTypeSchema.options;
 
 const STORAGE_WEIGHT_MAP: Record<StorageType, number> = {
 	STO: 5000,

@@ -11,11 +11,12 @@ import type {
 	EfficiencyMap,
 	IBuildingEfficiency,
 } from "@/features/planning/calculations/bonusCalculations.types";
-import type {
-	ExpertType,
-	PlanCOGCProgram,
-	PlanDataExpert,
-	PlanEmpire,
+import {
+	ExpertTypeSchema,
+	type ExpertType,
+	type PlanCOGCProgram,
+	type PlanDataExpert,
+	type PlanEmpire,
 } from "@/features/api/schemas/planningData.schemas";
 import type {
 	IExpertElement,
@@ -23,17 +24,7 @@ import type {
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
 
-export const expertNames: string[] = [
-	"Agriculture",
-	"Chemistry",
-	"Construction",
-	"Electronics",
-	"Food_Industries",
-	"Fuel_Refining",
-	"Manufacturing",
-	"Metallurgy",
-	"Resource_Extraction",
-];
+export const expertNames = ExpertTypeSchema.options;
 
 /**
  * Static, map of building expertise and plan calculation
