@@ -5,7 +5,7 @@ payload shapes. It holds one `call*()` function per endpoint plus the Zod
 schemas that validate requests and responses. The full flow is in
 [../data-layer.md](../data-layer.md).
 
-**Used by.** `src/lib/query_cache/queryRepository.ts`. That is the intended
+**Used by.** `src/lib/query_cache/queries/*.queries.ts`. That is the intended
 caller: UI code goes through `useQuery`. Other features import the **types**
 from here.
 
