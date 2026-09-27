@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType, ref, Ref } from "vue";
+	import { computed, type PropType, ref, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -16,7 +16,7 @@
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// Types & Interfaces
-	import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
+	import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 	// UI
 	import { PButton, PTag } from "@/ui";
@@ -65,9 +65,7 @@
 		{{ $t("exchanges.components.planet_preferences.title")
 		}}<span v-if="selectedPlanet"
 			>:
-			{{
-				planetName(selectedPlanet)
-			}}
+			{{ planetName(selectedPlanet) }}
 		</span>
 	</h2>
 	<div
@@ -128,9 +126,7 @@
 			:title="t('exchanges.components.planet_preferences.table.planet')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
-				{{
-					planetName(rowData.planet)
-				}}
+				{{ planetName(rowData.planet) }}
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn

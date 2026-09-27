@@ -15,11 +15,11 @@ import { usePlanetData } from "@/database/services/usePlanetData";
 import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Engine
-import { createPriceBook, IPriceBook } from "@/features/cx/priceBook";
+import { createPriceBook, type IPriceBook } from "@/features/cx/priceBook";
 import { groupRecipesByBuilding } from "@/features/planning/engine/buildings";
 
 // Types & Interfaces
-import {
+import type {
 	IGameData,
 	IPlanContext,
 } from "@/features/planning/engine/engine.types";

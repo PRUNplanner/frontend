@@ -1,4 +1,4 @@
-import { IQueryDefinition } from "@/lib/query_cache/queryCache.types";
+import type { IQueryDefinition } from "@/lib/query_cache/queryCache.types";
 
 // i18n
 import { i18n } from "@/lib/i18n";
@@ -70,7 +70,7 @@ import {
 } from "@/features/api/sharingData.api";
 
 // Types & Interfaces
-import { IQueryRepository } from "@/lib/query_cache/queryRepository.types";
+import type { IQueryRepository } from "@/lib/query_cache/queryRepository.types";
 
 import type {
 	Building,
@@ -145,7 +145,7 @@ import type {
 	APIKeyCreatePayload,
 	APIKeyCreateResponse,
 } from "@/features/api/schemas/apiKeysData.schemas";
-import { Composer } from "vue-i18n";
+import type { Composer } from "vue-i18n";
 
 export function useQueryRepository() {
 	const queryStore = useQueryStore();

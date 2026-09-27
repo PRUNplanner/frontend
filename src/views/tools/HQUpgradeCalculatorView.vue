@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, onMounted, Ref, ref } from "vue";
+	import { computed, onMounted, type Ref, ref } from "vue";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
@@ -24,7 +24,7 @@
 	import { formatNumber, formatAmount } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IFIOFindMaterialLocation } from "@/features/fio/useFIOStorage.types";
+	import type { IFIOFindMaterialLocation } from "@/features/fio/useFIOStorage.types";
 
 	// UI
 	import { PForm, PFormItem, PInputNumber, PCheckbox, PSelect } from "@/ui";

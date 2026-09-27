@@ -16,12 +16,12 @@ import type {
 	Planet,
 	PlanetResourceType,
 } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	IProductionGraphData,
 	IProductionGraphIO,
 	IProductionGraphSubgraph,
 } from "@/features/production_chain/productionGraph.types";
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 
 export class ProductionGraph {
 	nodes: Record<string, ProductionNode>;

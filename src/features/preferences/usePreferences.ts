@@ -1,7 +1,12 @@
-import { computed, ComputedRef, watch, WritableComputedRef } from "vue";
+import {
+	computed,
+	type ComputedRef,
+	watch,
+	type WritableComputedRef,
+} from "vue";
 import { debounce, isEqual, cloneDeep } from "lodash";
-import { i18n, SupportedLocale } from "@/lib/i18n";
-import { Composer } from "vue-i18n";
+import { i18n, type SupportedLocale } from "@/lib/i18n";
+import type { Composer } from "vue-i18n";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";

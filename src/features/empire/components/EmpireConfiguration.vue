@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType, ref, Ref, watch } from "vue";
+	import { computed, type PropType, ref, type Ref, watch } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -16,8 +16,8 @@
 		EmpirePayload,
 		PlanEmpireElement,
 	} from "@/features/api/schemas/empireData.schemas";
-	import { IEmpirePlanListData } from "@/features/empire/empire.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { IEmpirePlanListData } from "@/features/empire/empire.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import {

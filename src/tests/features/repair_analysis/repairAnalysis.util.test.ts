@@ -8,7 +8,7 @@ import {
 } from "@/features/repair_analysis/repairAnalysis.util";
 
 // Types & Interfaces
-import { IPlanRepairAnalysisElement } from "@/features/planning/components/tools/planRepairAnalysis.types";
+import type { IPlanRepairAnalysisElement } from "@/features/planning/components/tools/planRepairAnalysis.types";
 
 const MATERIALS = [
 	{ ticker: "A", input: 180, output: 0 },

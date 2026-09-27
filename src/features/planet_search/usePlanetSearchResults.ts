@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from "vue";
+import { computed, type ComputedRef } from "vue";
 
 // Util
 import { boundaryDescriptor } from "@/util/numbers";
@@ -16,11 +16,11 @@ import { usePathfinder } from "@/features/pathfinding/usePathfinder";
 
 // Types & Interfaces
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	IPlanetSearchResult,
 	IPlanetSearchResultResource,
 } from "@/features/planet_search/usePlanetSearchResults.types";
-import { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
+import type { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
 
 const {
 	getPathBetweenLength,

@@ -48,6 +48,40 @@ export default [
 					ignoreRestSiblings: true,
 				},
 			],
+
+			// types: `interface` for object shapes, `import type` for types
+			"@typescript-eslint/no-import-type-side-effects": "error",
+			"@typescript-eslint/consistent-type-definitions": [
+				"error",
+				"interface",
+			],
+			"@typescript-eslint/consistent-type-imports": [
+				"error",
+				{
+					prefer: "type-imports",
+					fixStyle: "inline-type-imports",
+					// vitest mocks use `importOriginal<typeof import("…")>()`
+					disallowTypeAnnotations: false,
+				},
+			],
+		},
+	},
+
+	// schemas are the source of truth: derive types from them, never
+	// annotate them as `z.ZodType<…>` (only recursive schemas may, with a
+	// disable comment saying why)
+	{
+		files: ["src/features/api/schemas/**", "src/**/*.schemas.ts"],
+		rules: {
+			"no-restricted-syntax": [
+				"error",
+				{
+					selector:
+						"TSTypeReference[typeName.name='ZodType'], TSTypeReference[typeName.right.name='ZodType']",
+					message:
+						"Don't annotate schemas as z.ZodType<…>; derive the type with z.infer.",
+				},
+			],
 		},
 	},
 
@@ -80,7 +114,11 @@ export default [
 							message: "The planning engine must not import Vue.",
 						},
 						{
-							group: ["@/stores/*", "!@/stores/*.types", "@/database/*"],
+							group: [
+								"@/stores/*",
+								"!@/stores/*.types",
+								"@/database/*",
+							],
 							message:
 								"The planning engine gets its data through IPlanContext.",
 						},

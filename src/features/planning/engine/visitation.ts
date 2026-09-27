@@ -5,7 +5,7 @@ import {
 } from "@/features/planning/calculations/infrastructureCalculations";
 
 // Types & Interfaces
-import {
+import type {
 	IPlanResult,
 	IVisitationData,
 } from "@/features/planning/usePlanCalculation.types";

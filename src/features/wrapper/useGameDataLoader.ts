@@ -1,4 +1,4 @@
-import { computed, reactive, ref, Ref, watch, watchEffect } from "vue";
+import { computed, reactive, ref, type Ref, watch, watchEffect } from "vue";
 
 import { useI18n } from "vue-i18n";
 
@@ -9,12 +9,12 @@ import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { inertClone } from "@/util/data";
 
 // Types & Interfaces
-import {
+import type {
 	GameDataLoaderEmits,
 	GameDataLoaderProps,
 	GameDataStepConfigsType,
 } from "@/features/wrapper/gameDataLoader.types";
-import { StepState } from "@/features/wrapper/dataLoader.types";
+import type { StepState } from "@/features/wrapper/dataLoader.types";
 import type {
 	Building,
 	Exchange,

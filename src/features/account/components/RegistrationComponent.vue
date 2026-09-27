@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { onMounted, ref, Ref, computed, ComputedRef } from "vue";
+	import { onMounted, ref, type Ref, computed, type ComputedRef } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n({ useScope: "global" });

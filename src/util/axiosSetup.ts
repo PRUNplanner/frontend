@@ -1,4 +1,7 @@
-import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
+import axios, {
+	type AxiosRequestConfig,
+	type InternalAxiosRequestConfig,
+} from "axios";
 
 import router from "@/router";
 

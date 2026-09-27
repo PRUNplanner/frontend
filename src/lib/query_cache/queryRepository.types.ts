@@ -1,4 +1,4 @@
-import {
+import type {
 	IQueryDefinition,
 	JSONValue,
 } from "@/lib/query_cache/queryCache.types";

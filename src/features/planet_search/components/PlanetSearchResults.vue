@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType } from "vue";
+	import { computed, type ComputedRef, type PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -18,7 +18,7 @@
 
 	// Types & Interfaces
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
-	import { IPlanetSearchResult } from "../usePlanetSearchResults.types";
+	import type { IPlanetSearchResult } from "../usePlanetSearchResults.types";
 
 	// UI
 	import { PButton, PTooltip } from "@/ui";

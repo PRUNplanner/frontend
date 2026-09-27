@@ -1,6 +1,6 @@
 import { afterEach, describe, it, expect, vi } from "vitest";
 import { h } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
 import { usePlanningStore } from "@/stores/planningStore";
@@ -170,7 +170,13 @@ describe("UpkeepPriceCalculator", () => {
 
 		expect(
 			wrapper.findAllComponents(PButton).map((b) => b.props("type"))
-		).toEqual(["primary", "secondary", "secondary", "secondary", "secondary"]);
+		).toEqual([
+			"primary",
+			"secondary",
+			"secondary",
+			"secondary",
+			"secondary",
+		]);
 
 		await needButton(wrapper, "health").trigger("click");
 
@@ -189,9 +195,11 @@ describe("UpkeepPriceCalculator", () => {
 			// INF: 20 * 10 / 833.33
 			["OFF", "INF", "0.2400", "20.00  ȼ", "10.00"],
 		]);
-		expect(rows(wrapper).slice(5).map((r) => r[2])).toEqual(
-			Array(15).fill("-")
-		);
+		expect(
+			rows(wrapper)
+				.slice(5)
+				.map((r) => r[2])
+		).toEqual(Array(15).fill("-"));
 	});
 
 	it.each([

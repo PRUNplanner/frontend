@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType } from "vue";
+	import { computed, type PropType } from "vue";
 
 	// Composables
 	import { useExchangeData } from "@/database/services/useExchangeData";
@@ -11,7 +11,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import {
+	import type {
 		IMaterialExchangeOverview,
 		IMaterialExchangeVWAPAnalysis,
 	} from "@/database/services/useExchangeData.types";
@@ -200,7 +200,7 @@
 						:class="
 							row.marketShare[cx] >= 5 // red at 5% market share
 								? 'text-negative'
-							: 'text-white/50'
+								: 'text-white/50'
 						">
 						{{
 							row.marketShare[cx]

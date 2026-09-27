@@ -2,7 +2,7 @@ import { describe, expect, test, it } from "vitest";
 
 // Types & Interfaces
 import { useBonusCalculation } from "@/features/planning/calculations/bonusCalculations";
-import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 const bonusCases = [
 	{ amount: -5, expected: 0 },
@@ -199,7 +199,8 @@ describe("Planning: Bonus Calculations ", async () => {
 		test.each(workforceCases)(
 			"Efficiency: $expected",
 			async ({ building, workforce, expected }) => {
-				const { calculateBuildingWorkforceEfficiency } = useBonusCalculation();
+				const { calculateBuildingWorkforceEfficiency } =
+					useBonusCalculation();
 
 				expect(
 					calculateBuildingWorkforceEfficiency(building, workforce)

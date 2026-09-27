@@ -1,6 +1,6 @@
-import { PSelectOption } from "@/ui/ui.types";
-import { ProductionEdge } from "./productionEdge";
-import { ProductionNode } from "./productionNode";
+import type { PSelectOption } from "@/ui/ui.types";
+import type { ProductionEdge } from "./productionEdge";
+import type { ProductionNode } from "./productionNode";
 import type { Position } from "@vue-flow/core";
 import type { BuildingExpertise } from "@/features/api/schemas/gameData.schemas";
 

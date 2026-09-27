@@ -7,8 +7,8 @@ import {
 	afterEach,
 	vi,
 } from "vitest";
-import { DOMWrapper, flushPromises, VueWrapper } from "@vue/test-utils";
-import { createPinia, Pinia } from "pinia";
+import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
+import { createPinia, type Pinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";

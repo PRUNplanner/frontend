@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { useQueryStore } from "./queryStore";
-import { IQueryDefinition } from "./queryCache.types";
-import {
+import type { IQueryDefinition } from "./queryCache.types";
+import type {
 	DataOfDefinition,
 	IQueryRepository,
 	ParamsOfDefinition,

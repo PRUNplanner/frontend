@@ -1,5 +1,5 @@
 // Composables
-import {
+import type {
 	IEmpireMaterialIO,
 	IEmpireMaterialIOPlanet,
 	IEmpirePlanMaterialIO,
@@ -16,7 +16,7 @@ import {
 
 // Types & Interfaces
 import type { Material } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";

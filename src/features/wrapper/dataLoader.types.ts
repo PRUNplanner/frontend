@@ -7,10 +7,10 @@ export interface StepConfig<TData> {
 	onSuccess: (d: TData) => void;
 }
 
-export type StepState<TData> = {
+export interface StepState<TData> {
 	cfg: StepConfig<TData>;
 	data: TData | null;
 	loading: boolean;
 	error: Error | null;
 	triggered: boolean;
-};
+}

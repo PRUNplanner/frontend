@@ -5,7 +5,7 @@ import type {
 	CXDataTickerOption,
 } from "@/features/api/schemas/cxData.schemas";
 import { useCXImportExport } from "@/features/exchanges/useCXImportExport";
-import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
+import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 vi.mock("papaparse", () => ({
 	default: {

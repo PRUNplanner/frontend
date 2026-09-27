@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import CXPreferenceImportExport from "@/features/exchanges/components/CXPreferenceImportExport.vue";
 import { mountComponent } from "@/tests/mountComponent";
@@ -9,7 +9,7 @@ import type {
 	CXDataExchangeOption,
 	CXDataTickerOption,
 } from "@/features/api/schemas/cxData.schemas";
-import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
+import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 const CX_EMPIRE: CXDataExchangeOption[] = [
 	{ type: "BOTH", exchange: "AI1_30D" },

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { DOMWrapper, flushPromises, VueWrapper } from "@vue/test-utils";
+import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 import { NDrawer } from "naive-ui";
@@ -171,9 +171,7 @@ describe("HelpDrawer", () => {
 		await toggle(wrapper);
 
 		expect(drawer().find("#markdown").exists()).toBe(false);
-		expect(drawer().find(".text-red-500").text()).toBe(
-			"help.load_error"
-		);
+		expect(drawer().find(".text-red-500").text()).toBe("help.load_error");
 		expect(error).toHaveBeenCalledWith(
 			new Error(
 				'Markdown file "no_such_page" not found in en_US or en_US.'

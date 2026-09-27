@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanExperts from "@/features/planning/components/PlanExperts.vue";
@@ -7,7 +7,7 @@ import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type { ExpertType } from "@/features/api/schemas/planningData.schemas";
-import { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
+import type { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 

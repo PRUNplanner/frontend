@@ -1,4 +1,4 @@
-import { ref, Ref } from "vue";
+import { ref, type Ref } from "vue";
 
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -15,7 +15,7 @@ import type {
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 import type { Building } from "@/features/api/schemas/gameData.schemas";
 
 // Util

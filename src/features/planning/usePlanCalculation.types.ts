@@ -2,7 +2,7 @@ import type {
 	BuildingExpertise,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
-import { IBuildingEfficiency } from "@/features/planning/calculations/bonusCalculations.types";
+import type { IBuildingEfficiency } from "@/features/planning/calculations/bonusCalculations.types";
 import type {
 	ExpertType,
 	InfrastructureType,
@@ -10,7 +10,7 @@ import type {
 	StorageType,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
-import { IInfrastructureCosts } from "../cx/usePrice.types";
+import type { IInfrastructureCosts } from "../cx/usePrice.types";
 
 export interface IWorkforceElement {
 	name: WorkforceType;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import PlanConfiguration from "@/features/planning/components/PlanConfiguration.vue";
 import PSelect from "@/ui/components/PSelect.vue";

@@ -9,12 +9,12 @@ import type {
 	PlanDataWorkforce,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
-import {
+import type {
 	IMaterialIOMinimal,
 	IWorkforceElement,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
-import {
+import type {
 	WorkforceConsumptionElement,
 	WorkforceConsumptionMap,
 } from "@/features/planning/calculations/workforceCalculations.types";

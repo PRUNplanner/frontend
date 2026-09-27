@@ -11,12 +11,12 @@ import {
 	type SSECX,
 	type SSECXOrder,
 } from "@/features/market_live/schemas/cxSSE.schemas";
-import {
+import type {
 	MarketEvent,
 	MessageHistory,
 } from "@/features/market_live/cxDetectors.types";
 import { processUserDetectors } from "@/features/market_live/cxDetectors";
-import { CXDataPoint } from "@/features/market_live/cxExchange.types";
+import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 const isConnected = ref(false);
 const connectionError = ref<string | null>(null);

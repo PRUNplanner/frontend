@@ -1,12 +1,12 @@
 <script setup lang="ts">
 	import {
 		computed,
-		ComputedRef,
-		PropType,
+		type ComputedRef,
+		type PropType,
 		ref,
-		Ref,
+		type Ref,
 		watch,
-		WritableComputedRef,
+		type WritableComputedRef,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -27,11 +27,11 @@
 		PlanEmpireElement,
 		PlanEmpireJunction,
 	} from "@/features/api/schemas/empireData.schemas";
-	import {
+	import type {
 		IPlanEmpireMatrix,
 		IPlanEmpireMatrixEmpires,
 	} from "@/features/manage/manage.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// Components
 	import SharingButton from "@/features/sharing/components/SharingButton.vue";

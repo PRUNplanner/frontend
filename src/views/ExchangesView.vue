@@ -1,10 +1,10 @@
 <script setup lang="ts">
 	import {
 		computed,
-		ComputedRef,
+		type ComputedRef,
 		defineAsyncComponent,
 		ref,
-		Ref,
+		type Ref,
 		watch,
 	} from "vue";
 
@@ -42,7 +42,7 @@
 
 	// Types & Interfaces
 	import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
-	import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
+	import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 	// UI
 	import { PButton, PInput, PIcon } from "@/ui";

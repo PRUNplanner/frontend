@@ -1,5 +1,11 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, ref, Ref } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		ref,
+		type Ref,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -17,7 +23,7 @@
 		PlanetResource,
 		PlanetResourceType,
 	} from "@/features/api/schemas/gameData.schemas";
-	import { IProductionResult } from "@/features/planning/usePlanCalculation.types";
+	import type { IProductionResult } from "@/features/planning/usePlanCalculation.types";
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 	// UI

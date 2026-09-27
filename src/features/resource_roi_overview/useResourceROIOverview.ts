@@ -1,4 +1,4 @@
-import { ref, Ref } from "vue";
+import { ref, type Ref } from "vue";
 import pLimit from "p-limit";
 
 // API
@@ -27,12 +27,12 @@ import { boundaryDescriptor } from "@/util/numbers";
 
 // Types & Interfaces
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	IGameData,
 	IPlanContext,
 } from "@/features/planning/engine/engine.types";
-import { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
-import { IStaticOptimalProduction } from "../roi_overview/useROIOverview.types";
+import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
+import type { IStaticOptimalProduction } from "../roi_overview/useROIOverview.types";
 import { usePathfinder } from "../pathfinding/usePathfinder";
 
 let lastYieldTime = 0;

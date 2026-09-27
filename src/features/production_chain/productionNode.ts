@@ -7,7 +7,7 @@ import type {
 	Recipe,
 	RecipeMaterial,
 } from "@/features/api/schemas/gameData.schemas";
-import { IProductionGraphIO } from "@/features/production_chain/productionGraph.types";
+import type { IProductionGraphIO } from "@/features/production_chain/productionGraph.types";
 
 /**
  * Map of extractable material tickers to their extraction building tickers.

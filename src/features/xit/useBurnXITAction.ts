@@ -1,11 +1,11 @@
-import { computed, ComputedRef, Ref, ref, watchEffect } from "vue";
+import { computed, type ComputedRef, type Ref, ref, watchEffect } from "vue";
 
 // Composables
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
-import {
+import type {
 	IXITActionElement,
 	IXITActionMaterialElement,
 } from "@/features/xit/xitAction.types";

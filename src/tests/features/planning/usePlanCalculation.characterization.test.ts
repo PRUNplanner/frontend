@@ -17,7 +17,7 @@ import { calculateVisitation } from "@/features/planning/engine/visitation";
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { Building } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	IExpertRecord,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";

@@ -1,11 +1,11 @@
-import { computed, ComputedRef, Ref } from "vue";
+import { computed, type ComputedRef, type Ref } from "vue";
 
 // Composables
 import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Types & Interfaces
 import type { FIOSitePlanet } from "@/features/api/schemas/gameData.schemas";
-import { IFIOSitesRepairTablePlanetElement } from "@/features/fio/useFIORepair.types";
+import type { IFIOSitesRepairTablePlanetElement } from "@/features/fio/useFIORepair.types";
 
 export function useFIORepair(planets: Ref<Record<string, FIOSitePlanet>>) {
 	const { planetNames, loadPlanetNames } = usePlanetData();

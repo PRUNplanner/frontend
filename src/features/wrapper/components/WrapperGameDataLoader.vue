@@ -3,7 +3,7 @@
 	import { useGameDataLoader } from "@/features/wrapper/useGameDataLoader";
 
 	// Types & Interfaces
-	import {
+	import type {
 		GameDataLoaderEmits,
 		GameDataLoaderProps,
 	} from "@/features/wrapper/gameDataLoader.types";

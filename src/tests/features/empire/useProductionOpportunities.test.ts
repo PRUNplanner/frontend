@@ -11,7 +11,7 @@ import { useProductionOpportunities } from "@/features/empire/useProductionOppor
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import recipes from "@/tests/test_data/api_data_recipes.json";
 import { ref } from "vue";
-import { IEmpireMaterialIO } from "@/features/empire/empire.types";
+import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
 
 const fakeIEmpireMaterialIO: IEmpireMaterialIO[] = [
 	{

@@ -7,8 +7,8 @@ import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
-import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
-import {
+import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type {
 	IEmpireMaterialIO,
 	IEmpirePlanMaterialIO,
 } from "@/features/empire/empire.types";

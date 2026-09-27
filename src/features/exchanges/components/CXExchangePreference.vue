@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType, ref, Ref } from "vue";
+	import { computed, type PropType, ref, type Ref } from "vue";
 
 	// Composables
 	import { useCXManagement } from "@/features/exchanges/useManageCX";

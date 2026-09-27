@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { h, Slots } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { h, type Slots } from "vue";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -21,8 +21,10 @@ const { passThrough, stub } = vi.hoisted(() => ({
 	passThrough: (name: string) => ({
 		default: {
 			name,
-			setup: (_: unknown, { slots }: { slots: Slots }) => () =>
-				slots.default?.(),
+			setup:
+				(_: unknown, { slots }: { slots: Slots }) =>
+				() =>
+					slots.default?.(),
 		},
 	}),
 	// the preference editors have their own tests

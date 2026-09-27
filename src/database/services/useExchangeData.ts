@@ -3,7 +3,7 @@ import { useDB } from "@/database/composables/useDB";
 
 // Types & Interfaces
 import type { Exchange } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	EXCHANGES_TYPE,
 	IMaterialExchangeOverview,
 	IMaterialExchangeVWAPAnalysis,

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { h } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
@@ -112,7 +112,10 @@ function dayRows(wrapper: VueWrapper) {
 }
 
 async function select(wrapper: VueWrapper, index: 0 | 1, value: number) {
-	wrapper.findAllComponents(PSelect).at(index)!.vm.$emit("update:value", value);
+	wrapper
+		.findAllComponents(PSelect)
+		.at(index)!
+		.vm.$emit("update:value", value);
 	await flushPromises();
 }
 
@@ -300,12 +303,10 @@ describe("PlanRepairAnalysis", () => {
 		expect(wrapper.findComponent(PlanRepairProfitChart).exists()).toBe(
 			false
 		);
-		expect(wrapper.findComponent(PlanRepairCostChart).exists()).toBe(
-			false
-		);
-		expect(wrapper.findAllComponents(PSelect).at(1)!.props("options")).toEqual(
-			[]
-		);
+		expect(wrapper.findComponent(PlanRepairCostChart).exists()).toBe(false);
+		expect(
+			wrapper.findAllComponents(PSelect).at(1)!.props("options")
+		).toEqual([]);
 		expect(dayRows(wrapper)).toEqual([]);
 		expect(xitElements(wrapper)).toEqual([]);
 	});

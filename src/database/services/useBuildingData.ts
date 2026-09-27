@@ -19,7 +19,7 @@ import type {
 	PlanetResource,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 const buildingsCache = new Map<string, Building>();

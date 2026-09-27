@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType, ref, Ref, watch } from "vue";
+	import { computed, type PropType, ref, type Ref, watch } from "vue";
 
 	// pre-parsing glob
 	const HELP_FILES = import.meta.glob("@/assets/help/**/*.md", {

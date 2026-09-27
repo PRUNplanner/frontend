@@ -1,13 +1,13 @@
-import { ref, computed, onMounted, Ref } from "vue";
+import { ref, computed, onMounted, type Ref } from "vue";
 
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
-import { IEmpireMaterialIO } from "@/features/empire/empire.types";
+import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
 import type { Recipe } from "@/features/api/schemas/gameData.schemas";
-import { IOpportunityStats } from "@/features/empire/useProductionOpportunities.types";
+import type { IOpportunityStats } from "@/features/empire/useProductionOpportunities.types";
 
 interface IPriceSellMap {
 	[ticker: string]: number;

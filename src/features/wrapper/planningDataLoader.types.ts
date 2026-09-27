@@ -5,10 +5,10 @@ import type {
 import type { CX } from "@/features/api/schemas/cxData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import { StepConfig } from "@/features/wrapper/dataLoader.types";
+import type { StepConfig } from "@/features/wrapper/dataLoader.types";
 import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 
-export type PlanningDataLoaderProps = {
+export interface PlanningDataLoaderProps {
 	readonly empireList?: boolean | undefined;
 	readonly empireUuid?: string | undefined;
 	readonly sharedPlanUuid?: string | undefined;
@@ -18,9 +18,9 @@ export type PlanningDataLoaderProps = {
 	readonly cxUuid?: string | undefined;
 	readonly loadShared?: boolean | undefined;
 	readonly planList?: boolean | undefined;
-};
+}
 
-export type PlanningDataLoaderEmits = {
+export interface PlanningDataLoaderEmits {
 	(e: "complete"): void;
 	(e: "data:shared:plan", data: PlanShare): void;
 	(e: "data:empire:list", data: PlanEmpireElement[]): void;
@@ -33,7 +33,7 @@ export type PlanningDataLoaderEmits = {
 	(e: "data:shared", data: Shared[]): void;
 	(e: "update:cxUuid", data: string | undefined): void;
 	(e: "update:empireUuid", data: string): void;
-};
+}
 
 export type PlanningStepConfigsType = [
 	StepConfig<PlanShare>,

@@ -147,6 +147,9 @@ Every shape has exactly one definition.
   - App types live in `.ts` files. Only the real ambient files are `.d.ts`
     (`globals.d.ts`, `vite-env.d.ts`, `router/router.d.ts`), because
     `skipLibCheck` skips type-checking every `.d.ts`.
+- **Lint enforces** the `z.ZodType<…>` ban in schema files,
+  `interface` over object type aliases, and `import type`
+  (`pnpm lint:fix` fixes the last two).
 
 ## Git & PRs
 

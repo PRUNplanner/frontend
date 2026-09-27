@@ -1,8 +1,8 @@
 <script setup lang="ts">
 	import {
-		ComputedRef,
-		PropType,
-		Ref,
+		type ComputedRef,
+		type PropType,
+		type Ref,
 		computed,
 		onMounted,
 		ref,
@@ -26,8 +26,8 @@
 
 	// Types & Interfaces
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-	import { IROIResult } from "@/features/roi_overview/useROIOverview.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { IROIResult } from "@/features/roi_overview/useROIOverview.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import { PProgressBar } from "@/ui";

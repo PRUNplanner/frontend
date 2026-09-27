@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanArea from "@/features/planning/components/PlanArea.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IAreaResult } from "@/features/planning/usePlanCalculation.types";
+import type { IAreaResult } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
@@ -106,7 +106,12 @@ describe("PlanArea", () => {
 		const { wrapper, setProps } = await mountArea();
 
 		await setProps({
-			areaData: { permits: 3, areaUsed: 10, areaTotal: 750, areaLeft: 740 },
+			areaData: {
+				permits: 3,
+				areaUsed: 10,
+				areaTotal: 750,
+				areaLeft: 740,
+			},
 		});
 
 		expect(permitsInput(wrapper).value).toBe("3");

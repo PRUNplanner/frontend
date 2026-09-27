@@ -3,7 +3,7 @@
 	import { relativeFromDate } from "@/util/date";
 
 	// Types & Interfaces
-	import { MessageHistory } from "@/features/market_live/cxDetectors.types";
+	import type { MessageHistory } from "@/features/market_live/cxDetectors.types";
 
 	defineProps<{
 		data: MessageHistory[];

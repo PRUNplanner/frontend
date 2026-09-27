@@ -1,11 +1,11 @@
 <script setup lang="ts">
 	import {
 		computed,
-		PropType,
-		Ref,
+		type PropType,
+		type Ref,
 		ref,
 		watchEffect,
-		ComputedRef,
+		type ComputedRef,
 		watch,
 	} from "vue";
 
@@ -32,12 +32,12 @@
 		InfrastructureType,
 		WorkforceType,
 	} from "@/features/api/schemas/planningData.schemas";
-	import {
+	import type {
 		IBuildingConstruction,
 		IProductionBuilding,
 	} from "@/features/planning/usePlanCalculation.types";
 	import type { Building } from "@/features/api/schemas/gameData.schemas";
-	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
+	import type { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
 	import { PIcon, PInputNumber, PSelect, PTable, PTooltip } from "@/ui";

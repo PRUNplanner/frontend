@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { h } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { buildingsStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -11,7 +11,7 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
+import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
 import type { PlanetResource } from "@/features/api/schemas/gameData.schemas";
 
 // test data

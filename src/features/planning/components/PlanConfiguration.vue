@@ -1,12 +1,17 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, WritableComputedRef } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		type WritableComputedRef,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
 	// Types & Interfaces
 	import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import { PForm, PFormItem, PInput, PSelect } from "@/ui";

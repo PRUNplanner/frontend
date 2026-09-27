@@ -4,7 +4,7 @@ import type {
 	CXData,
 	CXExchangeOptionType,
 } from "@/features/api/schemas/cxData.schemas";
-import {
+import type {
 	IMaterialIO,
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,

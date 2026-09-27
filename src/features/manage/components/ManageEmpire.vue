@@ -1,5 +1,12 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, ref, Ref, watch } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		ref,
+		type Ref,
+		watch,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -15,7 +22,7 @@
 	} from "@/features/api/schemas/cxData.schemas";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import type { PlanFaction } from "@/features/api/schemas/planningData.schemas";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// Util
 	import { inertClone } from "@/util/data";

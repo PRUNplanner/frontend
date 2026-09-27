@@ -1,15 +1,15 @@
-import { computed, ComputedRef } from "vue";
+import { computed, type ComputedRef } from "vue";
 
 // Stores
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 import type {
 	FIOStorageElement,
 	FIOStorageItem,
 } from "@/features/api/schemas/gameData.schemas";
-import { IFIOFindMaterialResult } from "@/features/fio/useFIOStorage.types";
+import type { IFIOFindMaterialResult } from "@/features/fio/useFIOStorage.types";
 
 export function useFIOStorage() {
 	const planningStore = usePlanningStore();

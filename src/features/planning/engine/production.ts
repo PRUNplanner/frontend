@@ -21,7 +21,7 @@ import {
 
 // Types & Interfaces
 import type { Building, Recipe } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	IExpertRecord,
 	IMaterialIOMinimal,
 	IProductionBuilding,
@@ -29,7 +29,7 @@ import {
 	IProductionResult,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
-import {
+import type {
 	IPlanContext,
 	IPlanInput,
 } from "@/features/planning/engine/engine.types";

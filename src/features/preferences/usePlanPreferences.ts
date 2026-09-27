@@ -1,4 +1,4 @@
-import { computed, ComputedRef, WritableComputedRef } from "vue";
+import { computed, type ComputedRef, type WritableComputedRef } from "vue";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";

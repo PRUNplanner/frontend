@@ -7,7 +7,7 @@ import type {
 	Building,
 	Planet,
 } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	EfficiencyMap,
 	IBuildingEfficiency,
 } from "@/features/planning/calculations/bonusCalculations.types";
@@ -17,7 +17,7 @@ import type {
 	PlanDataExpert,
 	PlanEmpire,
 } from "@/features/api/schemas/planningData.schemas";
-import {
+import type {
 	IExpertElement,
 	IExpertRecord,
 	IWorkforceRecord,

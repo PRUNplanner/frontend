@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, PropType, WritableComputedRef } from "vue";
+	import { computed, type PropType, type WritableComputedRef } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -10,7 +10,7 @@
 
 	// UI
 	import { PForm, PFormItem, PCheckbox, PSelect, PTooltip } from "@/ui";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	const props = defineProps({
 		disabled: {

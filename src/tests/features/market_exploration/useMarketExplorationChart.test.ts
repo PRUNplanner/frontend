@@ -5,7 +5,7 @@ import { createPinia, setActivePinia } from "pinia";
 
 // test data
 import exploration_7d_dw from "@/tests/test_data/api_data_exploration_7d_dw.json";
-import { ref, Ref } from "vue";
+import { ref, type Ref } from "vue";
 import { useMarketExplorationChart } from "@/features/market_exploration/useMarketExplorationChart";
 
 // mock apiService client

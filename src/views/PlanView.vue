@@ -1,12 +1,12 @@
 <script setup lang="ts">
 	import {
 		computed,
-		ComputedRef,
+		type ComputedRef,
 		defineAsyncComponent,
 		nextTick,
-		PropType,
+		type PropType,
 		ref,
-		Ref,
+		type Ref,
 		watch,
 	} from "vue";
 
@@ -35,7 +35,7 @@
 	import {
 		optimizeHabs,
 		calculateAvailableArea,
-		HabSolverGoal,
+		type HabSolverGoal,
 	} from "@/features/planning/calculations/habOptimization";
 
 	// Composables
@@ -85,7 +85,7 @@
 		PInput,
 		PSelect,
 	} from "@/ui";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 	import {
 		ShoppingBasketSharp,
 		AttachMoneySharp,

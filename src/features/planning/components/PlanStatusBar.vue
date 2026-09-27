@@ -1,8 +1,8 @@
 <script setup lang="ts">
-	import { computed, PropType } from "vue";
+	import { computed, type PropType } from "vue";
 
 	// Types & Interfaces
-	import {
+	import type {
 		IAreaResult,
 		IExpertRecord,
 		IOverviewData,

@@ -1,10 +1,17 @@
 // Linear Solver
-import { solve, lessEq, greaterEq, Model, Constraint, Solution } from "yalps";
+import {
+	solve,
+	lessEq,
+	greaterEq,
+	type Model,
+	type Constraint,
+	type Solution,
+} from "yalps";
 
 // Types & Interfaces
 import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
-import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
-import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
+import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+import type { IInfrastructureCosts } from "@/features/cx/usePrice.types";
 export type HabSolverGoal = "auto" | "cost" | "area";
 
 const HabArea = {

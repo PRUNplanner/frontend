@@ -1,4 +1,4 @@
-import { JSONObject, JSONValue } from "@/lib/query_cache/queryCache.types";
+import type { JSONObject, JSONValue } from "@/lib/query_cache/queryCache.types";
 
 /**
  * Transforms any JSONValue cache key to its string representation
@@ -18,10 +18,13 @@ export function toCacheKey(key: JSONValue): string {
 
 		return Object.keys(val)
 			.sort()
-			.reduce((result, key) => {
-				result[key] = val[key];
-				return result;
-			}, {} as Record<string, unknown>);
+			.reduce(
+				(result, key) => {
+					result[key] = val[key];
+					return result;
+				},
+				{} as Record<string, unknown>
+			);
 	});
 }
 

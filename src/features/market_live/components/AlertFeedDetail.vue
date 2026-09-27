@@ -5,7 +5,7 @@
 	import { formatNumber, formatAmount } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { CXDataPoint } from "@/features/market_live/cxExchange.types";
+	import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 	const { data } = defineProps<{
 		data: CXDataPoint;

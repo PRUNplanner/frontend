@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import type { PropType } from "vue";
 
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
@@ -9,7 +9,7 @@
 	// Components
 
 	// Types & Interfaces
-	import { IGraphFlowMaterialAnalysis } from "@/features/production_chain/productionGraph.types";
+	import type { IGraphFlowMaterialAnalysis } from "@/features/production_chain/productionGraph.types";
 
 	// UI
 	import { PTable } from "@/ui";

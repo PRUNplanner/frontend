@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, Ref } from "vue";
+	import { ref, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -28,10 +28,10 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import { IGraphFlow } from "@/features/production_chain/productionGraph.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { IGraphFlow } from "@/features/production_chain/productionGraph.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 	import {
-		NodeColorType,
+		type NodeColorType,
 		NodeColorTypeOptions,
 	} from "@/features/production_chain/components/ChainNode.types";
 

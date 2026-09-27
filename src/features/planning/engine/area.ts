@@ -7,7 +7,7 @@ import {
 
 // Types & Interfaces
 import type { Building } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	IAreaResult,
 	IInfrastructureRecord,
 	IStorageRecord,

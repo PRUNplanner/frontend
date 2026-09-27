@@ -1,5 +1,5 @@
 // Util
-import { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
+import type { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
 import { boundaryDescriptor } from "@/util/numbers";
 import { calculateExtraction } from "@/features/planning/calculations/extractionCalculations";
 import { combineMaterialIOMinimal } from "@/features/planning/engine/materialIO";
@@ -12,7 +12,7 @@ import type {
 	Recipe,
 	PlanetResourceType,
 } from "@/features/api/schemas/gameData.schemas";
-import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
 
 /**
  * Game data helpers of the planning engine: building lookup, construction

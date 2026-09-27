@@ -7,7 +7,7 @@ import {
 	afterEach,
 	vi,
 } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -44,10 +44,8 @@ async function fill(
 	}
 ) {
 	const [username, password, email, planet] = inputs(wrapper);
-	if (values.username !== undefined)
-		await username.setValue(values.username);
-	if (values.password !== undefined)
-		await password.setValue(values.password);
+	if (values.username !== undefined) await username.setValue(values.username);
+	if (values.password !== undefined) await password.setValue(values.password);
 	if (values.email !== undefined) await email.setValue(values.email);
 	if (values.planet !== undefined) await planet.setValue(values.planet);
 	await flushPromises();

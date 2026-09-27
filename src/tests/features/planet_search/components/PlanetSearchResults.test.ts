@@ -1,6 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
 import { h } from "vue";
-import { flushPromises, RouterLinkStub, VueWrapper } from "@vue/test-utils";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
 
 import PlanetSearchResults from "@/features/planet_search/components/PlanetSearchResults.vue";
 import type { Planet } from "@/features/api/schemas/gameData.schemas";

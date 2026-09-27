@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType } from "vue";
+	import { computed, type ComputedRef, type PropType } from "vue";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Utils
@@ -9,7 +9,7 @@
 
 	// Types & Interfaces
 	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
-	import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+	import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
 	import { PButton, PTable } from "@/ui";

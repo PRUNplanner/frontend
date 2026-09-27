@@ -1,8 +1,8 @@
 import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 import type { RecipeMaterial } from "@/features/api/schemas/gameData.schemas";
-import { IProductionBuildingRecipeCOGM } from "../planning/usePlanCalculation.types";
+import type { IProductionBuildingRecipeCOGM } from "../planning/usePlanCalculation.types";
 
-export type IStaticOptimalProduction = {
+export interface IStaticOptimalProduction {
 	ticker: string;
 	amount: number;
 	sto: number;
@@ -20,7 +20,7 @@ export type IStaticOptimalProduction = {
 	HBC: number;
 	HBM: number;
 	HBL: number;
-};
+}
 
 export interface IROIResult {
 	buildingTicker: string;

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { h } from "vue";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
@@ -8,7 +8,7 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import {
+import type {
 	IProductionBuilding,
 	IProductionBuildingRecipe,
 	IRecipeBuildingOption,

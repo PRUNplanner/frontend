@@ -1,5 +1,12 @@
 <script setup lang="ts">
-	import { ComputedRef, computed, PropType, Ref, ref, watch } from "vue";
+	import {
+		type ComputedRef,
+		computed,
+		type PropType,
+		type Ref,
+		ref,
+		watch,
+	} from "vue";
 
 	// Stores
 	import { usePlanningStore } from "@/stores/planningStore";
@@ -13,7 +20,7 @@
 	import CXTickerPreference from "@/features/exchanges/components/CXTickerPreference.vue";
 
 	// Types & Interfaces
-	import { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
+	import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
 	import type {
 		CX,
 		CXDataTickerOption,

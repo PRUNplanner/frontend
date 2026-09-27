@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from "vue";
+import { computed, type ComputedRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 // Stores
@@ -11,7 +11,7 @@ import type {
 	CXExchangeOptionType,
 	CXPreferenceType,
 } from "@/features/api/schemas/cxData.schemas";
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 
 export function useCXManagement() {
 	const { t } = useI18n();

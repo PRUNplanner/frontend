@@ -1,4 +1,6 @@
-export type JSONObject = { [key: string]: JSONValue };
+export interface JSONObject {
+	[key: string]: JSONValue;
+}
 export type JSONValue = null | boolean | number | string | object;
 
 export interface IQueryState<TParams, TData> {
@@ -19,11 +21,11 @@ export type IQueryDefinition<TParams, TData> = [TParams] extends [undefined]
 			autoRefetch?: boolean;
 			expireTime?: number;
 			persist?: boolean;
-	  }
+		}
 	: {
 			key: (params: TParams) => JSONValue;
 			fetchFn: (params: TParams) => Promise<TData>;
 			autoRefetch?: boolean;
 			expireTime?: number;
 			persist?: boolean;
-	  };
+		};

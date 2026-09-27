@@ -1,5 +1,8 @@
 // Prices
-import { getMaterialIOTotalPrice, IPriceBook } from "@/features/cx/priceBook";
+import {
+	getMaterialIOTotalPrice,
+	type IPriceBook,
+} from "@/features/cx/priceBook";
 
 // Engine
 import {
@@ -10,9 +13,9 @@ import { infrastructureBuildingNames } from "@/features/planning/calculations/in
 
 // Types & Interfaces
 import type { Building, Planet } from "@/features/api/schemas/gameData.schemas";
-import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
+import type { IInfrastructureCosts } from "@/features/cx/usePrice.types";
 import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
-import {
+import type {
 	IBuildingConstruction,
 	IProductionBuilding,
 } from "@/features/planning/usePlanCalculation.types";

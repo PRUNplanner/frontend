@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { h, Slots } from "vue";
+import { h, type Slots } from "vue";
 import { flushPromises } from "@vue/test-utils";
 
 import ProductionChainView from "@/views/tools/ProductionChainView.vue";
@@ -39,8 +39,10 @@ vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () => ({
 			loadRecipes: Boolean,
 			loadBuildings: Boolean,
 		},
-		setup: (_: unknown, { slots }: { slots: Slots }) => () =>
-			slots.default?.(),
+		setup:
+			(_: unknown, { slots }: { slots: Slots }) =>
+			() =>
+				slots.default?.(),
 	},
 }));
 vi.mock("@/features/production_chain/useGraph", () => ({

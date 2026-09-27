@@ -1,10 +1,10 @@
 import {
 	computed,
-	ComputedRef,
+	type ComputedRef,
 	getCurrentScope,
 	onScopeDispose,
 	ref,
-	Ref,
+	type Ref,
 	shallowRef,
 	toRef,
 	watch,
@@ -34,7 +34,7 @@ import { calculateVisitation } from "@/features/planning/engine/visitation";
 
 // Types & Interfaces
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	IPlanCalculation,
 	IPlanContext,
 	IPlanInput,
@@ -47,11 +47,11 @@ import type {
 } from "@/features/api/schemas/planningData.schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import {
-	IMaterialIO,
-	IOverviewData,
-	IPlanResult,
-	IProductionResult,
-	IVisitationData,
+	type IMaterialIO,
+	type IOverviewData,
+	type IPlanResult,
+	type IProductionResult,
+	type IVisitationData,
 	planEmptyResult,
 } from "@/features/planning/usePlanCalculation.types";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";

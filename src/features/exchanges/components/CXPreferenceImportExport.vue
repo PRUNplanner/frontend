@@ -7,8 +7,8 @@
 		CXDataExchangeOption,
 		CXDataTickerOption,
 	} from "@/features/api/schemas/cxData.schemas";
-	import { PropType, ref } from "vue";
-	import { ICXPlanetMap } from "../manageCX.types";
+	import { type PropType, ref } from "vue";
+	import type { ICXPlanetMap } from "../manageCX.types";
 
 	import { useCXImportExport } from "../useCXImportExport";
 

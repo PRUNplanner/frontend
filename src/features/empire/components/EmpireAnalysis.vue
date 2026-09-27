@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ComputedRef, PropType, computed } from "vue";
+	import { type ComputedRef, type PropType, computed } from "vue";
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
@@ -10,11 +10,11 @@
 	import EmpirePlanMapChart from "@/ui/charts/EmpirePlanMapChart.vue";
 
 	// Types & Interfaces
-	import {
+	import type {
 		IEmpireMaterialIO,
 		IEmpirePlanListData,
 	} from "@/features/empire/empire.types";
-	import {
+	import type {
 		IChartEmpirePieElement,
 		IChartEmpireTreeElement,
 	} from "@/ui/charts/charts.types";

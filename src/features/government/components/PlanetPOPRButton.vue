@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, Ref, computed } from "vue";
+	import { ref, type Ref, computed } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();

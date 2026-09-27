@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -47,7 +47,8 @@ async function selectMultiple(
 ) {
 	wrapper
 		.findAllComponents(PSelectMultiple)
-		.at(index)!.vm.$emit("update:value", value);
+		.at(index)!
+		.vm.$emit("update:value", value);
 	await flushPromises();
 }
 
@@ -80,9 +81,8 @@ describe("PlanetSearchAdvanced", () => {
 	});
 
 	it("searches rocky planets by default and emits the results", async () => {
-		const { wrapper, component } = await mountComponent(
-			PlanetSearchAdvanced
-		);
+		const { wrapper, component } =
+			await mountComponent(PlanetSearchAdvanced);
 
 		await search(wrapper);
 
@@ -151,7 +151,9 @@ describe("PlanetSearchAdvanced", () => {
 		const checked = () =>
 			wrapper
 				.findAllComponents(PCheckbox)
-				.map((c) => (c.find("input").element as HTMLInputElement).checked);
+				.map(
+					(c) => (c.find("input").element as HTMLInputElement).checked
+				);
 
 		// rocky, low gravity, low temperature, low pressure, gaseous, high ...
 		expect(checked()).toEqual([
@@ -200,9 +202,8 @@ describe("PlanetSearchAdvanced", () => {
 	});
 
 	it("keeps a richness threshold per selected material", async () => {
-		const { wrapper, component } = await mountComponent(
-			PlanetSearchAdvanced
-		);
+		const { wrapper, component } =
+			await mountComponent(PlanetSearchAdvanced);
 		const lastRichness = () =>
 			component.emitted("update:richness")?.at(-1)?.[0];
 
@@ -227,25 +228,21 @@ describe("PlanetSearchAdvanced", () => {
 	});
 
 	it("emits the system and distance to check", async () => {
-		const { wrapper, component } = await mountComponent(
-			PlanetSearchAdvanced
-		);
+		const { wrapper, component } =
+			await mountComponent(PlanetSearchAdvanced);
 
 		wrapper.findComponent(PSelect).vm.$emit("update:value", SYSTEM_ID);
 		const distance = wrapper.findAllComponents(PInputNumber).at(-1)!;
 		await distance.find("input").setValue("12");
 		await search(wrapper);
 
-		expect(component.emitted("update:distance")).toEqual([
-			[SYSTEM_ID, 12],
-		]);
+		expect(component.emitted("update:distance")).toEqual([[SYSTEM_ID, 12]]);
 	});
 
 	it("resets all results when the search fails", async () => {
 		mock.onPost(SEARCH_URL).reply(500);
-		const { wrapper, component } = await mountComponent(
-			PlanetSearchAdvanced
-		);
+		const { wrapper, component } =
+			await mountComponent(PlanetSearchAdvanced);
 
 		await selectMultiple(wrapper, 0, ["FEO"]);
 		await search(wrapper);

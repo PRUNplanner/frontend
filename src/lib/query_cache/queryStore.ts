@@ -1,16 +1,16 @@
-import { reactive, computed, ComputedRef, Reactive } from "vue";
+import { reactive, computed, type ComputedRef, type Reactive } from "vue";
 import { defineStore } from "pinia";
 
 import { userActivity } from "@/features/user_activity/userActivityStore";
 import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
 
-import {
+import type {
 	IQueryDefinition,
 	IQueryState,
 	JSONValue,
 } from "@/lib/query_cache/queryCache.types";
-import {
+import type {
 	DataOfDefinition,
 	IQueryRepository,
 	ParamsOfDefinition,
@@ -41,8 +41,7 @@ export const useQueryStore = defineStore(
 			updateData: Partial<IQueryState<unknown, unknown>>
 		): void {
 			const existing = cacheState[cacheKey] as
-				| IQueryState<TParams, TData>
-				| undefined;
+				IQueryState<TParams, TData> | undefined;
 			// update existing
 			if (existing) cacheState[cacheKey] = { ...existing, ...updateData };
 			// set new with data

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import RuleGroup from "@/features/market_live/components/RuleGroup.vue";
 import DetectorRow from "@/features/market_live/components/DetectorRow.vue";
@@ -27,10 +27,7 @@ const SUPPLY = detector("supply", 7);
 function tree(): RuleGroupType {
 	return {
 		operator: "AND",
-		conditions: [
-			PRICE,
-			{ operator: "OR", conditions: [DEMAND, SUPPLY] },
-		],
+		conditions: [PRICE, { operator: "OR", conditions: [DEMAND, SUPPLY] }],
 	};
 }
 
@@ -39,8 +36,7 @@ async function mountGroup(group: RuleGroupType = tree()) {
 	/** last group emitted by the top level */
 	const lastGroup = () =>
 		mounted.component.emitted("update:group")?.at(-1)?.[0] as
-			| RuleGroupType
-			| undefined;
+			RuleGroupType | undefined;
 	return { ...mounted, lastGroup };
 }
 
@@ -54,7 +50,8 @@ async function click(group: VueWrapper, text: string) {
 	await flushPromises();
 }
 
-const btn = (key: string) => `market_live.components.rule_builder.buttons.${key}`;
+const btn = (key: string) =>
+	`market_live.components.rule_builder.buttons.${key}`;
 
 describe("RuleGroup", () => {
 	it("renders the tree recursively", async () => {
@@ -62,7 +59,9 @@ describe("RuleGroup", () => {
 
 		expect(wrapper.findAllComponents(RuleGroup)).toHaveLength(2);
 		expect(
-			wrapper.findAllComponents(DetectorRow).map((d) => d.props("modelValue"))
+			wrapper
+				.findAllComponents(DetectorRow)
+				.map((d) => d.props("modelValue"))
 		).toEqual([PRICE, DEMAND, SUPPLY]);
 	});
 
@@ -90,7 +89,11 @@ describe("RuleGroup", () => {
 
 		expect(lastGroup()!.conditions).toEqual([
 			...tree().conditions,
-			{ field: "demand", operator: "eq", target: { type: "static", value: 0 } },
+			{
+				field: "demand",
+				operator: "eq",
+				target: { type: "static", value: 0 },
+			},
 		]);
 	});
 
@@ -198,7 +201,10 @@ describe("RuleGroup", () => {
 	});
 
 	it("shows the empty state and unknown conditions", async () => {
-		const { wrapper } = await mountGroup({ operator: "AND", conditions: [] });
+		const { wrapper } = await mountGroup({
+			operator: "AND",
+			conditions: [],
+		});
 		expect(wrapper.text()).toContain(
 			"market_live.components.rule_builder.empty"
 		);

@@ -1,4 +1,4 @@
-import { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
+import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
 import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
 export interface IResourceROIResult {

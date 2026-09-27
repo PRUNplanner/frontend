@@ -1,6 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
 import { h } from "vue";
-import { flushPromises, RouterLinkStub, VueWrapper } from "@vue/test-utils";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
 
 import ResourceROITable from "@/features/resource_roi_overview/components/ResourceROITable.vue";
 import ResourceROITableFilters from "@/features/resource_roi_overview/components/ResourceROITableFilters.vue";
@@ -11,8 +15,8 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
-import { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
+import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
+import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
 
 // the table only renders the composable's result, which the view passes in
 // as a prop; useResourceROIOverview.test.ts covers the calculation
@@ -93,7 +97,8 @@ const shown = (wrapper: VueWrapper) =>
 async function select(wrapper: VueWrapper, index: 0 | 1, value: unknown) {
 	filters(wrapper)
 		.findAllComponents(PSelect)
-		.at(index)!.vm.$emit("update:value", value);
+		.at(index)!
+		.vm.$emit("update:value", value);
 	await flushPromises();
 }
 
@@ -245,8 +250,7 @@ describe("ResourceROITable", () => {
 
 	it("sorts every distance column the same way", async () => {
 		const { wrapper } = await mountTable();
-		const column = (key: string) =>
-			tableRows(wrapper).map((r) => r[key]);
+		const column = (key: string) => tableRows(wrapper).map((r) => r[key]);
 
 		// CI1: -1, 4, 8, -1
 		await sortBy(wrapper, "distanceCI1");

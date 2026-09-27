@@ -1,5 +1,5 @@
 // Types & Interfaces
-import {
+import type {
 	IUpkeepBuilding,
 	IUpkeepMaterialCalculation,
 	UpkeepNeedType,

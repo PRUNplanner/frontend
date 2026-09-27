@@ -1,12 +1,12 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import type { PropType } from "vue";
 
 	// Util
 	import { formatAmount, formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
 	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
-	import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+	import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
 	import { PTable, PIcon } from "@/ui";

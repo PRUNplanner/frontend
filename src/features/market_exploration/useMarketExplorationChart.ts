@@ -1,4 +1,4 @@
-import { computed, ref, Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 
 // Util
 

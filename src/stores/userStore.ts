@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import {
 	computed,
-	ComputedRef,
+	type ComputedRef,
 	nextTick,
-	Reactive,
+	type Reactive,
 	reactive,
 	ref,
-	Ref,
+	type Ref,
 } from "vue";
 import merge from "lodash/merge";
 
@@ -41,8 +41,8 @@ import type {
 } from "@/features/api/schemas/user.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import { deepClone } from "@/util/data";
-import { Composer } from "vue-i18n";
-import { localeLazyLoaders, SupportedLocale } from "@/lib/i18n";
+import type { Composer } from "vue-i18n";
+import { localeLazyLoaders, type SupportedLocale } from "@/lib/i18n";
 
 export const useUserStore = defineStore(
 	"prunplanner_user",

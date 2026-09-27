@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -265,6 +265,8 @@ describe("ManageEmpire", () => {
 		const { wrapper } = await mountEmpire([], []);
 
 		expect(tableRows(wrapper)).toHaveLength(0);
-		expect(wrapper.text()).toContain("management.empire.table.nodata_title");
+		expect(wrapper.text()).toContain(
+			"management.empire.table.nodata_title"
+		);
 	});
 });

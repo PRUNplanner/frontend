@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { defineAsyncComponent, ref, Ref } from "vue";
+	import { defineAsyncComponent, ref, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();

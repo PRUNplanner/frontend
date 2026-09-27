@@ -1,6 +1,6 @@
 // Types & Interfaces
 import type { Material } from "@/features/api/schemas/gameData.schemas";
-import {
+import type {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 	IProductionBuilding,

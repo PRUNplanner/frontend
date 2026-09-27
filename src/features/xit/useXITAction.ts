@@ -1,7 +1,7 @@
-import { computed, ComputedRef } from "vue";
+import { computed, type ComputedRef } from "vue";
 
 // Types & Interfaces
-import {
+import type {
 	IXITJSON,
 	IXITTransferMaterial,
 	XITACTIONTYPE,
@@ -79,7 +79,8 @@ export function useXITAction() {
 						name: "A1",
 						materials: materials.reduce(
 							(acc, item) => (
-								(acc[item.ticker] = item.value), acc
+								(acc[item.ticker] = item.value),
+								acc
 							),
 							{} as Record<string, number>
 						),

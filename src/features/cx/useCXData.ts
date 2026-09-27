@@ -1,7 +1,7 @@
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 
 export function useCXData() {
 	const planningStore = usePlanningStore();

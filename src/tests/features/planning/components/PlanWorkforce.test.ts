@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanWorkforce from "@/features/planning/components/PlanWorkforce.vue";
@@ -9,7 +9,7 @@ import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
-import {
+import type {
 	IWorkforceElement,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";

@@ -1,4 +1,4 @@
-import { CXDataPoint } from "@/features/market_live/cxExchange.types";
+import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 export type LogicalOperator = "AND" | "OR";
 export type DetectorOperator = "gt" | "lt" | "eq" | "neq" | "matches";

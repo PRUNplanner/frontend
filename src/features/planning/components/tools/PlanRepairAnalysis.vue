@@ -1,5 +1,12 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, Ref, ref, watch } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		type Ref,
+		ref,
+		watch,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -22,12 +29,12 @@
 	import PlanRepairCostChart from "@/ui/charts/PlanRepairCostChart.vue";
 
 	// Types & Interfaces
-	import {
+	import type {
 		IPlanRepairAnalysisDataProp,
 		IPlanRepairAnalysisElement,
 	} from "@/features/planning/components/tools/planRepairAnalysis.types";
-	import { PSelectOption } from "@/ui/ui.types";
-	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+	import type { PSelectOption } from "@/ui/ui.types";
+	import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
 	import { PForm, PFormItem, PSelect } from "@/ui";

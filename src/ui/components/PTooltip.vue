@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { ref, onBeforeUnmount, nextTick } from "vue";
 	import { tooltipConfig } from "@/ui/styles";
-	import { createPopper, Instance } from "@popperjs/core";
+	import { createPopper, type Instance } from "@popperjs/core";
 	import type { Placement } from "@popperjs/core";
 
 	const {

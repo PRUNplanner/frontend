@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { reactive } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -12,7 +12,7 @@ import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import { IEmpirePlanListData } from "@/features/empire/empire.types";
+import type { IEmpirePlanListData } from "@/features/empire/empire.types";
 
 const mock = new AxiosMockAdapter(apiService.client);
 

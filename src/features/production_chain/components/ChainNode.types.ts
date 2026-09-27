@@ -1,5 +1,5 @@
 import type { BuildingExpertise } from "@/features/api/schemas/gameData.schemas";
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 
 export type NodeColorType = "Material" | "Workforce" | "Expertise";
 

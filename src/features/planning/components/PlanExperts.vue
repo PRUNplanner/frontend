@@ -1,10 +1,10 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType } from "vue";
+	import { computed, type ComputedRef, type PropType } from "vue";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import type { ExpertType } from "@/features/api/schemas/planningData.schemas";
-	import { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
+	import type { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";

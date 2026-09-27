@@ -2,7 +2,7 @@ import type {
 	CXDataExchangeOption,
 	CXDataTickerOption,
 } from "@/features/api/schemas/cxData.schemas";
-import { ICXPlanetMap } from "./manageCX.types";
+import type { ICXPlanetMap } from "./manageCX.types";
 import {
 	CXDataExchangeOptionSchema,
 	CXDataTickerOptionSchema,

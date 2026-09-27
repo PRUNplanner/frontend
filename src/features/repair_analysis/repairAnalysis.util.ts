@@ -1,6 +1,6 @@
 // Types & Interfaces
-import { IPlanRepairAnalysisElement } from "@/features/planning/components/tools/planRepairAnalysis.types";
-import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanRepairAnalysisElement } from "@/features/planning/components/tools/planRepairAnalysis.types";
+import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
 
 export const REPAIR_DAY_MAX: number = 180;
 
@@ -20,7 +20,8 @@ export function calculateAmountAtDay(
 	return (
 		materialAmount -
 		Math.floor(
-			(materialAmount * (REPAIR_DAY_MAX - Math.min(REPAIR_DAY_MAX, day))) /
+			(materialAmount *
+				(REPAIR_DAY_MAX - Math.min(REPAIR_DAY_MAX, day))) /
 				REPAIR_DAY_MAX
 		)
 	);

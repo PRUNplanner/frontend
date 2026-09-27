@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import type { PropType } from "vue";
 
 	// Components
 	import ChainNode from "@/features/production_chain/components/ChainNode.vue";
@@ -9,11 +9,11 @@
 	import { MiniMap } from "@vue-flow/minimap";
 
 	// Types & Interfaces
-	import {
+	import type {
 		IFlowEdge,
 		IFlowNode,
 	} from "@/features/production_chain/productionGraph.types";
-	import { NodeColorType } from "@/features/production_chain/components/ChainNode.types";
+	import type { NodeColorType } from "@/features/production_chain/components/ChainNode.types";
 
 	defineProps({
 		nodes: {

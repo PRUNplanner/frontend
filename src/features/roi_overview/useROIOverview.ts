@@ -1,4 +1,4 @@
-import { Ref, ref } from "vue";
+import { type Ref, ref } from "vue";
 
 // Composables
 import { usePlanContext } from "@/features/planning/usePlanContext";
@@ -16,8 +16,8 @@ import { optimalProduction } from "@/features/roi_overview/assets/optimalProduct
 import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import type { Recipe } from "@/features/api/schemas/gameData.schemas";
-import { IPlanContext } from "@/features/planning/engine/engine.types";
-import {
+import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type {
 	IROIResult,
 	IStaticOptimalProduction,
 } from "@/features/roi_overview/useROIOverview.types";

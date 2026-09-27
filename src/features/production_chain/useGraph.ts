@@ -4,15 +4,15 @@ import { Position } from "@vue-flow/core";
 
 // Classes
 import { ProductionGraph } from "@/features/production_chain/productionGraph";
-import { ProductionNode } from "@/features/production_chain/productionNode";
-import { ProductionEdge } from "@/features/production_chain/productionEdge";
+import type { ProductionNode } from "@/features/production_chain/productionNode";
+import type { ProductionEdge } from "@/features/production_chain/productionEdge";
 
 // Types & Interfaces
 import {
 	dagreSetGraphConfig,
 	dagreSetNodeConfig,
 } from "@/features/production_chain/dagre.config";
-import {
+import type {
 	IFlowEdge,
 	IFlowNode,
 	IGraphFlow,

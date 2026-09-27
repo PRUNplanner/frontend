@@ -8,8 +8,12 @@ import {
 	vi,
 } from "vitest";
 import { h } from "vue";
-import { flushPromises, RouterLinkStub, VueWrapper } from "@vue/test-utils";
-import { createPinia, Pinia, setActivePinia } from "pinia";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
+import { createPinia, type Pinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";

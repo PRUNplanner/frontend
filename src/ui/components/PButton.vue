@@ -3,7 +3,7 @@
 
 	import PSpin from "./PSpin.vue";
 
-	import { ColorKey, SizeKey } from "@/ui/ui.types";
+	import type { ColorKey, SizeKey } from "@/ui/ui.types";
 	import { buttonConfig } from "@/ui/styles";
 
 	const {

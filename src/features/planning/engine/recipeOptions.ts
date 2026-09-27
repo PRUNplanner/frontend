@@ -1,5 +1,8 @@
 // Prices
-import { getMaterialIOTotalPrice, IPriceBook } from "@/features/cx/priceBook";
+import {
+	getMaterialIOTotalPrice,
+	type IPriceBook,
+} from "@/features/cx/priceBook";
 
 // Material IO
 import { TOTALMSDAY } from "@/features/planning/engine/materialIO";
@@ -9,7 +12,7 @@ import { optimalProduction } from "@/features/roi_overview/assets/optimalProduct
 
 // Types & Interfaces
 import type { Building, Recipe } from "@/features/api/schemas/gameData.schemas";
-import { IRecipeBuildingOption } from "@/features/planning/usePlanCalculation.types";
+import type { IRecipeBuildingOption } from "@/features/planning/usePlanCalculation.types";
 
 /**
  * Calculates every recipe option of a building: its daily revenue at the

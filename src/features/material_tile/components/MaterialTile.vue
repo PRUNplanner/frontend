@@ -5,12 +5,12 @@
 	*/
 	import {
 		computed,
-		ComputedRef,
+		type ComputedRef,
 		getCurrentInstance,
 		onMounted,
-		PropType,
+		type PropType,
 		ref,
-		Ref,
+		type Ref,
 	} from "vue";
 	import type { Placement } from "@popperjs/core";
 
@@ -31,8 +31,8 @@
 
 	// Interfaces & Types
 	import type { Material } from "@/features/api/schemas/gameData.schemas";
-	import { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
-	import { PSelectOption } from "@/ui/ui.types";
+	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import { PTooltip, PSelect, PTable } from "@/ui";

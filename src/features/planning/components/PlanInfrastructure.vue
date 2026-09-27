@@ -1,15 +1,20 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, WritableComputedRef } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		type PropType,
+		type WritableComputedRef,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
-	import { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
+	import type { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
 
 	// Types & Interfaces
 	import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
-	import { IInfrastructureRecord } from "@/features/planning/usePlanCalculation.types";
+	import type { IInfrastructureRecord } from "@/features/planning/usePlanCalculation.types";
 	import { isStorageInfrastructure } from "@/features/planning/calculations/infrastructureCalculations";
 
 	// UI

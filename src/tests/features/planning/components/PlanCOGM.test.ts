@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach } from "vitest";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
-import { createPinia, Pinia } from "pinia";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
+import { createPinia, type Pinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";

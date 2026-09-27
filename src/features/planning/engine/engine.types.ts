@@ -5,12 +5,12 @@ import type {
 	Planet,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
-import { IPriceBook } from "@/features/cx/priceBook";
+import type { IPriceBook } from "@/features/cx/priceBook";
 import type {
 	Plan,
 	PlanEmpire,
 } from "@/features/api/schemas/planningData.schemas";
-import {
+import type {
 	IOverviewData,
 	IPlanResult,
 } from "@/features/planning/usePlanCalculation.types";

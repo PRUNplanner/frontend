@@ -1,4 +1,4 @@
-import { computed, reactive, ref, Ref, watch, watchEffect } from "vue";
+import { computed, reactive, ref, type Ref, watch, watchEffect } from "vue";
 
 import { useI18n } from "vue-i18n";
 
@@ -14,12 +14,12 @@ import { useCXData } from "@/features/cx/useCXData";
 import { inertClone } from "@/util/data";
 
 // Types & Interfaces
-import {
+import type {
 	PlanningDataLoaderEmits,
 	PlanningDataLoaderProps,
 	PlanningStepConfigsType,
 } from "@/features/wrapper/planningDataLoader.types";
-import { StepState } from "@/features/wrapper/dataLoader.types";
+import type { StepState } from "@/features/wrapper/dataLoader.types";
 import type {
 	Plan,
 	PlanShare,

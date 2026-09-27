@@ -1,10 +1,10 @@
-import { computed, ComputedRef } from "vue";
+import { computed, type ComputedRef } from "vue";
 
 import { materialsStore } from "@/database/stores";
 import { useDB } from "@/database/composables/useDB";
 
 import type { Material } from "@/features/api/schemas/gameData.schemas";
-import { PSelectOption } from "@/ui/ui.types";
+import type { PSelectOption } from "@/ui/ui.types";
 
 const materialCache = new Map<string, Material>();
 const materialClassCache = new Map<string, string>();

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, onMounted, Ref, ref } from "vue";
+	import { computed, onMounted, type Ref, ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -33,8 +33,8 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import { PSelectOption } from "@/ui/ui.types";
-	import { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
+	import type { PSelectOption } from "@/ui/ui.types";
+	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 
 	// UI
 	import { PSelect, PButton } from "@/ui";

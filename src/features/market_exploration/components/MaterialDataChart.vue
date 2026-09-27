@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, onMounted, ref, Ref } from "vue";
+	import { computed, type ComputedRef, onMounted, ref, type Ref } from "vue";
 
 	// Types & Interfaces
 	import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";

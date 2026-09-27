@@ -8,7 +8,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+	import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
 	import { PTable } from "@/ui";

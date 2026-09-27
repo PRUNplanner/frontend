@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, isAxiosError } from "axios";
+import axios, { type AxiosInstance, isAxiosError } from "axios";
 import { ZodError, type ZodType, type z } from "zod";
 import config from "@/lib/config";
 

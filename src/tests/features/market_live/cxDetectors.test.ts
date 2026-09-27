@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-import { CXDataPoint } from "@/features/market_live/cxExchange.types";
-import { DetectorConfig } from "@/features/market_live/cxDetectors.types";
+import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
+import type { DetectorConfig } from "@/features/market_live/cxDetectors.types";
 import { processUserDetectors } from "@/features/market_live/cxDetectors";
 
 describe("Market Detector Engine", () => {
