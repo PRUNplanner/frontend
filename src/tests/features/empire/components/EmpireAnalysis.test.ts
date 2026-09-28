@@ -5,8 +5,7 @@ import type { VueWrapper } from "@vue/test-utils";
 import { materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import EmpireAnalysis from "@/features/empire/components/EmpireAnalysis.vue";
-import EmpirePieChart from "@/ui/charts/EmpirePieChart.vue";
-import EmpirePlanMapChart from "@/ui/charts/EmpirePlanMapChart.vue";
+import EmpireBarChart from "@/ui/charts/EmpireBarChart.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -19,17 +18,10 @@ import type {
 import materials from "@/tests/test_data/api_data_materials.json";
 
 // chart.js has no canvas in jsdom, stubs only keep the data
-vi.mock("@/ui/charts/EmpirePieChart.vue", () => ({
+vi.mock("@/ui/charts/EmpireBarChart.vue", () => ({
 	default: {
-		name: "EmpirePieChart",
-		props: { data: Array },
-		render: () => h("div"),
-	},
-}));
-vi.mock("@/ui/charts/EmpirePlanMapChart.vue", () => ({
-	default: {
-		name: "EmpirePlanMapChart",
-		props: { data: Array },
+		name: "EmpireBarChart",
+		props: { items: Array },
 		render: () => h("div"),
 	},
 }));
@@ -100,12 +92,14 @@ async function mountAnalysis(
 	return mountComponent(EmpireAnalysis, { empireMaterialIO, planListData });
 }
 
-/** pie chart data in template order */
-function pies(wrapper: VueWrapper) {
-	const [profit, cost, netProd, netCons, exclProd, exclCons] = wrapper
-		.findAllComponents(EmpirePieChart)
-		.map((c) => c.props("data"));
-	return { profit, cost, netProd, netCons, exclProd, exclCons };
+/** bar chart items in template order */
+function charts(wrapper: VueWrapper, withPlans = true) {
+	const items = wrapper
+		.findAllComponents(EmpireBarChart)
+		.map((c) => c.props("items"));
+	const plans = withPlans ? items.shift() : undefined;
+	const [profit, cost, netProd, netCons, exclProd, exclCons] = items;
+	return { plans, profit, cost, netProd, netCons, exclProd, exclCons };
 }
 
 describe("EmpireAnalysis", () => {
@@ -116,11 +110,11 @@ describe("EmpireAnalysis", () => {
 
 	it("splits material value into profits and costs", async () => {
 		const { wrapper } = await mountAnalysis();
-		const { profit, cost } = pies(wrapper);
+		const { profit, cost } = charts(wrapper);
 
 		// rounded to 2 decimals, H2O at 0 is neither
 		expect(profit).toEqual([{ name: "FE", value: 1234.57, color: FE_C }]);
-		// costs as positive slices
+		// costs as positive bars
 		expect(cost).toEqual([
 			{ name: "RAT", value: 3000, color: RAT_C },
 			{ name: "C", value: 20, color: C_C },
@@ -129,7 +123,7 @@ describe("EmpireAnalysis", () => {
 
 	it("splits the material delta into net production and consumption", async () => {
 		const { wrapper } = await mountAnalysis();
-		const { netProd, netCons } = pies(wrapper);
+		const { netProd, netCons } = charts(wrapper);
 
 		// C with delta 0 is neither
 		expect(netProd).toEqual([
@@ -142,72 +136,39 @@ describe("EmpireAnalysis", () => {
 
 	it("shows materials only produced or only consumed", async () => {
 		const { wrapper } = await mountAnalysis();
-		const { exclProd, exclCons } = pies(wrapper);
+		const { exclProd, exclCons } = charts(wrapper);
 
 		// H2O and C are both produced and consumed
 		expect(exclProd).toEqual([{ name: "FE", value: 10, color: FE_C }]);
 		expect(exclCons).toEqual([{ name: "RAT", value: 30, color: RAT_C }]);
 	});
 
-	it("maps profitable plans once there are at least 3", async () => {
+	it("charts every plan's profit, losses included", async () => {
 		const { wrapper } = await mountAnalysis();
 
-		// B loses money, C makes none
-		expect(wrapper.findComponent(EmpirePlanMapChart).props("data")).toEqual(
-			[
-				{
-					name: "A",
-					value: 100.13,
-					cogc: "Metallurgy",
-					color: "hsl(0, 60%, 40%)",
-				},
-				// unnamed plan, colours step 137.5° around the wheel
-				{
-					name: "",
-					value: 50,
-					cogc: "Food Industries",
-					color: "hsl(137.5, 60%, 40%)",
-				},
-				{
-					name: "E",
-					value: 20,
-					cogc: "Metallurgy",
-					color: "hsl(275, 60%, 40%)",
-				},
-			]
-		);
-	});
-
-	it("wraps plan colours around the wheel", async () => {
-		const { wrapper } = await mountAnalysis(MATERIAL_IO, [
-			plan("A", 1),
-			plan("B", 1),
-			plan("C", 1),
-			plan("D", 1),
+		// no colour: the chart colours by sign; unnamed plans use the planet
+		expect(charts(wrapper).plans).toEqual([
+			{ name: "A", value: 100.13 },
+			{ name: "B", value: -5 },
+			{ name: "C", value: 0 },
+			{ name: "ZV-307c", value: 50 },
+			{ name: "E", value: 20 },
 		]);
-
-		const colors = (
-			wrapper.findComponent(EmpirePlanMapChart).props("data") as {
-				color: string;
-			}[]
-		).map((d) => d.color);
-		// 3 * 137.5 = 412.5 -> 52.5
-		expect(colors.at(3)).toBe("hsl(52.5, 60%, 40%)");
+		expect(wrapper.text()).toContain("empire.analysis.plan_profit");
 	});
 
-	it("hides the plan map with fewer than 3 profitable plans", async () => {
-		const { wrapper } = await mountAnalysis(MATERIAL_IO, PLANS.slice(0, 4));
+	it("hides the plan chart without plans", async () => {
+		const { wrapper } = await mountAnalysis(MATERIAL_IO, []);
 
-		expect(wrapper.findComponent(EmpirePlanMapChart).exists()).toBe(false);
-		expect(wrapper.text()).not.toContain(
-			"empire.analysis.profitable_plans"
-		);
+		expect(wrapper.findAllComponents(EmpireBarChart)).toHaveLength(6);
+		expect(wrapper.text()).not.toContain("empire.analysis.plan_profit");
 	});
 
-	it("renders empty charts without data", async () => {
+	it("passes empty series to the charts without data", async () => {
 		const { wrapper } = await mountAnalysis([], []);
 
-		expect(Object.values(pies(wrapper))).toEqual([[], [], [], [], [], []]);
-		expect(wrapper.findComponent(EmpirePlanMapChart).exists()).toBe(false);
+		const { plans, ...materialCharts } = charts(wrapper, false);
+		expect(plans).toBeUndefined();
+		expect(Object.values(materialCharts)).toEqual([[], [], [], [], [], []]);
 	});
 });

@@ -55,9 +55,10 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
     plus `useDialog()`. `AppProvider.vue` supplies the providers.
   - **Icons:** `@vicons/material`, wrapped in `PIcon`:
     `<PIcon><CheckSharp /></PIcon>`.
-  - **Charts:** `src/ui/charts/*.vue` wrap chart.js (`vue-chartjs`, treemap,
+  - **Charts:** `src/ui/charts/*.vue` wrap chart.js (`vue-chartjs`,
     datalabels) and `lightweight-charts` (candlesticks). Reuse or extend
-    these rather than wiring chart.js in a feature.
+    these rather than wiring chart.js in a feature. Ranked values (top N
+    plus "Other") use `EmpireBarChart.vue`.
   - **Material chips:** `features/material_tile/components/MaterialTile.vue`
     is the standard way to show a material ticker. It is colour-coded by
     category and has a popover and a market drawer.
