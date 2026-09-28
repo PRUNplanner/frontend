@@ -1,7 +1,7 @@
 {
 	"universe": "全宇宙",
 	"vwap": "@:terms.vwap",
-	"traded_volume": "成交量",
+	"traded_volume": "@:terms.traded_volume",
 	"market_live_data": "实时市场数据",
 	"supply_vs_demand": "供应/需求",
 	"insights": "市场洞察",
