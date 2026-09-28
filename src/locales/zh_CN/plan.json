@@ -1,6 +1,7 @@
 {
 	"notifications": {
-		"must_have_name": "必须先在配置中设置计划名称才能保存"
+		"must_have_name": "必须先在配置中设置计划名称才能保存",
+		"leave_unsaved": "Do you really want to leave? Unsaved changes will be lost."
 	},
 	"tools": {
 		"labels": {
@@ -31,7 +32,8 @@
 					"storage_filled": "仓储占用",
 					"filled_unit": "天"
 				},
-				"exclusion_info": "对于完全在行星本地处理的物资，例如本地市场销售、采购或合同，可将本地物资排除在访问频率计算之外。"
+				"exclusion_info": "对于完全在行星本地处理的物资，例如本地市场销售、采购或合同，可将本地物资排除在访问频率计算之外。",
+				"exclusion_label": "Excluded materials"
 			},
 			"shipping": {
 				"label": "运输",
@@ -63,7 +65,9 @@
 				"stock": "库存",
 				"stock_override": "库存覆盖",
 				"need": "需要"
-			}
+			},
+			"amount_label": "Amount of {building}",
+			"override_label": "Stock override for {ticker}"
 		},
 		"supply_cart": {
 			"title": "补给清单",
@@ -119,7 +123,7 @@
 			"info": "成品成本会根据计划设置计算，并计入生产效率、配方运行时间、建筑损耗、输入物资成本、劳动力需求及相关劳动力成本。最终成本会按每单位产出显示，并基于数量或完整成本分摊计算。",
 			"cx_preferences": "@:terms.cx_plural 偏好设置",
 			"empire_ticker": "@:terms.empire 代码",
-			"planet_ticker": "@:terms.planet 代码",
+			"planet_ticker": "@:terms.planets Ticker",
 			"table": {
 				"parameters": "参数",
 				"recipe_runtime": "@:terms.recipes 运行时间",
@@ -146,7 +150,8 @@
 				"experts": "专家",
 				"production_buildings": "生产 @:terms.buildings_plural",
 				"recipes": "@:terms.recipes_plural"
-			}
+			},
+			"toggle": "Toggle insights"
 		}
 	},
 	"components": {
@@ -165,7 +170,8 @@
 		"area": {
 			"permits": "@:terms.permits_plural",
 			"area": "@:terms.area",
-			"free": "空闲"
+			"free": "空闲",
+			"exceeded": "Exceeded by {amount}"
 		},
 		"bonuses": {
 			"corp_hq": "集团 HQ",
@@ -179,11 +185,13 @@
 			"buttons": {
 				"optimize_cost": "优化成本",
 				"optimize_area": "优化区域"
-			}
+			},
+			"amount_label": "Amount of {infrastructure}"
 		},
 		"experts": {
 			"label": "专家",
-			"warning": "每个基地最多可分配 6 名专家。你当前已分配 {expert_number} 名专家。"
+			"warning": "每个基地最多可分配 6 名专家。你当前已分配 {expert_number} 名专家。",
+			"amount_label": "{expert} experts"
 		},
 		"workforce": {
 			"label": "劳动力",
@@ -269,7 +277,12 @@
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
 				"construction": "土木"
-			}
+			},
+			"zero_reason": {
+				"FERTILITY": "Planet not fertile",
+				"WORKFORCE": "No workforce housed"
+			},
+			"qty_label": "Amount of {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "成品成本",
@@ -292,7 +305,8 @@
 				"p2": "表示每日收入除以一个生产建筑所占区域，以及在配方 ROI 中为该类建筑的最优基地分摊的 CM 与住房建筑所占区域。",
 				"p3_strong": "ROI",
 				"p3": "表示一个持续运行的配方产生足够收入以抵消建筑建造成本所需的时间，同时也会计入每日损耗和劳动力成本。"
-			}
+			},
+			"amount_label": "Amount of recipe {recipe}"
 		}
 	}
 }
