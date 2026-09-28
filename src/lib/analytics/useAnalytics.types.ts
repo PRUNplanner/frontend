@@ -7,6 +7,7 @@ import type {
 import type { PlanetSearchAdvancedPayload } from "@/features/api/schemas/gameData.schemas";
 
 export type ANALYTICS_EVENT_TYPE =
+	| "empire_create"
 	| "empire_patch"
 	| "empire_reload"
 	| "exchange_patch"
@@ -106,6 +107,7 @@ export interface IAnalyticsEventProperties {
 	user_verify_email: { status: boolean };
 	empire_reload: { status: boolean };
 	empire_patch: { status: boolean };
+	empire_create: undefined;
 	popr_load: { planetNaturalId: string };
 	manage_cx_create: undefined;
 	manage_cx_delete: { cxUuid: string };

@@ -166,7 +166,8 @@
 		"area": {
 			"permits": "@:terms.permits_plural",
 			"area": "@:terms.area",
-			"free": "Free"
+			"free": "Free",
+			"exceeded": "Exceeded by {amount}"
 		},
 		"bonuses": {
 			"corp_hq": "Corp. HQ",
@@ -270,6 +271,10 @@
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
 				"construction": "Construction"
+			},
+			"zero_reason": {
+				"FERTILITY": "Planet not fertile",
+				"WORKFORCE": "No workforce housed"
 			}
 		},
 		"production_recipe": {
