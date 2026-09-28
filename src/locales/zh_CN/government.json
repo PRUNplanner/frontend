@@ -12,6 +12,6 @@
 			"plan_need": "@:terms.plan需求",
 			"plan_check": "@:terms.plan检查"
 		},
-		"modal_title": "Latest Population Report: {planet_id}"
+		"modal_title": "最新人口报告：{planet_id}"
 	}
 }
