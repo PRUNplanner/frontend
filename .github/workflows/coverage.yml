@@ -1,8 +1,9 @@
 name: Coverage
 
 on:
-  - push
-  - pull_request
+  push:
+    branches: [main]
+  pull_request:
 jobs:
   test:
     if: github.repository == 'PRUNplanner/frontend'
@@ -25,6 +26,7 @@ jobs:
       - name: "Run Tests"
         run: pnpm run test
       - name: Upload Codacy
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/lcov.info
