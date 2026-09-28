@@ -166,7 +166,7 @@ describe("PlanProductionRecipe", () => {
 			// -100 / 100
 			profitPerArea: "-1.00 ȼ",
 			// negative ROI never pays back
-			roi: "—",
+			roi: "never",
 		});
 		expect(rows.at(3)!.roi).toBe("20.00 d");
 	});

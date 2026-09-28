@@ -1,4 +1,6 @@
 import dayjs from "dayjs";
+
+import { i18n } from "@/lib/i18n";
 import utc from "dayjs/plugin/utc";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -68,7 +70,7 @@ export function formatDate(value: Date, format: string = "YYYY-MM-DD"): string {
  * @returns {string} Humanized time
  */
 export function humanizeTimeMs(value: number): string {
-	if (value === Infinity || isNaN(value)) return "∞";
+	if (!Number.isFinite(value)) return i18n.global.t("common.values.never");
 
 	const mduration = dayjs.duration(value, "milliseconds");
 

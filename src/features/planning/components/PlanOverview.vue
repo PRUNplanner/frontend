@@ -5,7 +5,7 @@
 	const { t } = useI18n();
 
 	// Util
-	import { formatNumber } from "@/util/numbers";
+	import { formatNumber, formatPayback } from "@/util/numbers";
 
 	// Types & Interfaces
 	import type {
@@ -111,8 +111,7 @@
 									? 'text-positive!'
 									: 'text-negative!'
 							">
-							{{ formatNumber(overviewData.roi) }}
-							<span class="font-light text-white/50"> d </span>
+							{{ formatPayback(overviewData.roi) }}
 						</td>
 					</tr>
 					<tr>

@@ -1,6 +1,6 @@
 {
-	"view_title": "ROI Overview",
-	"title": "ROI Overview",
+	"view_title": "Recipe ROI",
+	"title": "Recipe ROI",
 	"calculating": "Calculating Building Recipe ROI",
 	"cx_select": "@:terms.cx Preference",
 	"filters": {

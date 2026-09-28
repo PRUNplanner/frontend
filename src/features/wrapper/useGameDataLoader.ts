@@ -71,7 +71,11 @@ export function useGameDataLoader(
 		},
 		{
 			key: "planet",
-			name: t("wrapper.gamedata.planet_data", { name: props.loadPlanet }),
+			get name() {
+				return t("wrapper.gamedata.planet_data", {
+					name: props.loadPlanet ?? "",
+				});
+			},
 			enabled: () => !!props.loadPlanet,
 			load: () => {
 				return queryStore.execute("GetPlanet", {
@@ -82,9 +86,11 @@ export function useGameDataLoader(
 		},
 		{
 			key: "planetMultiple",
-			name: t("wrapper.gamedata.planet_multiple_data", {
-				names: props.loadPlanetMultiple?.join(", "),
-			}),
+			get name() {
+				return t("wrapper.gamedata.planet_multiple_data", {
+					names: props.loadPlanetMultiple?.join(", ") ?? "",
+				});
+			},
 			enabled: () => !!props.loadPlanetMultiple,
 			load: () => {
 				return queryStore.execute("GetMultiplePlanets", {

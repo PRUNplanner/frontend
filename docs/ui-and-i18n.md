@@ -18,6 +18,12 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
   `success`, `error`, `warning`, `secondary`). Both types are in
   `ui/ui.types.ts`.
 - **Select options** use `PSelectOption` (`{ label, value, children? }`).
+- **Forms:** `<PForm as-form @submit="…">` renders a real `<form>`, so Enter
+  in an input submits. Give its button `html-type="submit"` and no `@click`.
+  `PButton` defaults to `type="button"` and never submits on its own.
+- **Numbers:** `formatNumber` / `formatAmount` (`util/numbers.ts`) show "—"
+  for ∞ or NaN; payback periods use `formatPayback` ("never" when negative
+  or infinite), and `humanizeTimeMs` shows "never" for an infinite runtime.
 - **Styling:** the Tailwind class sets for each component live in
   `ui/styles.ts`. Change the look there, not per usage.
 - **Other libraries, used alongside the kit:**

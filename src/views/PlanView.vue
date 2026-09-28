@@ -4,6 +4,7 @@
 		type ComputedRef,
 		defineAsyncComponent,
 		nextTick,
+		onUnmounted,
 		type PropType,
 		ref,
 		type Ref,
@@ -488,13 +489,30 @@
 				planetNaturalId: planetData.planet_natural_id,
 			});
 
-			const answer = confirm(
-				"Do you really want to leave? Unsaved changes will be lost."
-			);
+			const answer = confirm(t("plan.notifications.leave_unsaved"));
 
 			if (!answer) return false;
 		}
 	});
+
+	// Browser Guard: tab close or reload with unsaved changes
+	function onBeforeUnload(e: BeforeUnloadEvent): void {
+		e.preventDefault();
+	}
+
+	watch(
+		() => modified.value && !props.sharedPlanUuid,
+		(unsaved) => {
+			if (unsaved)
+				window.addEventListener("beforeunload", onBeforeUnload);
+			else window.removeEventListener("beforeunload", onBeforeUnload);
+		},
+		{ immediate: true }
+	);
+
+	onUnmounted(() =>
+		window.removeEventListener("beforeunload", onBeforeUnload)
+	);
 
 	// Auto Optimize Habitation on Workforce Change
 	const availableHabArea: ComputedRef<number> = computed(() => {

@@ -61,8 +61,8 @@
 			"plan": "@:terms.plan",
 			"planet": "@:terms.planets",
 			"configuration": "Configuration",
-			"nodata_title": "No @:terms.plans available",
-			"nodata_label": "Use Planet Search to create your first @:terms.plans."
+			"nodata_title": "No @:terms.plans_plural available",
+			"nodata_label": "Use Planet Search to create your first @:{'terms.plan'}."
 		}
 	}
 }

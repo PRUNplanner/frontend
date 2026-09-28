@@ -146,7 +146,11 @@ export function usePlanningDataLoader(
 		},
 		{
 			key: "planet",
-			name: t("wrapper.planning_data.planet_data"),
+			get name() {
+				return t("wrapper.planning_data.planet_data", {
+					name: props.planetNaturalId ?? "",
+				});
+			},
 			// If sharedPlanId, wait for sharedPlan; else if planetId, no depends; else never
 			dependsOn: props.sharedPlanUuid ? "sharedPlan" : undefined,
 			enabled: () => !!(props.sharedPlanUuid || props.planetNaturalId),

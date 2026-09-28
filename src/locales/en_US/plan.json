@@ -1,6 +1,7 @@
 {
 	"notifications": {
-		"must_have_name": "Must set a plan name in Configuration to save"
+		"must_have_name": "Must set a plan name in Configuration to save",
+		"leave_unsaved": "Do you really want to leave? Unsaved changes will be lost."
 	},
 	"tools": {
 		"labels": {
@@ -119,7 +120,7 @@
 			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, labor requirements, and associated labor costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
 			"cx_preferences": "@:terms.cx_plural Preferences",
 			"empire_ticker": "@:terms.empire Ticker",
-			"planet_ticker": "@:terms.planet Ticker",
+			"planet_ticker": "@:terms.planets Ticker",
 			"table": {
 				"parameters": "Parameters",
 				"recipe_runtime": "@:terms.recipes Runtime",

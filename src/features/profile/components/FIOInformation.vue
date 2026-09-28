@@ -23,8 +23,26 @@
 			</i18n-t>
 
 			<p>{{ $t("profile.fio_information.help.p2") }}</p>
-			<p>{{ $t("profile.fio_information.help.p3") }}</p>
-			<p>{{ $t("profile.fio_information.help.p4") }}</p>
+			<i18n-t keypath="profile.fio_information.help.p3" tag="p">
+				<template #link>
+					<a
+						href="https://fio.fnar.net/"
+						target="_blank"
+						class="text-link-primary underline">
+						{{ $t("profile.fio_information.links.fio_website") }}
+					</a>
+				</template>
+			</i18n-t>
+			<i18n-t keypath="profile.fio_information.help.p4" tag="p">
+				<template #link>
+					<a
+						href="https://fio.fnar.net/settings"
+						target="_blank"
+						class="text-link-primary underline">
+						{{ $t("profile.fio_information.links.fio_settings") }}
+					</a>
+				</template>
+			</i18n-t>
 			<p>{{ $t("profile.fio_information.help.p5") }}</p>
 
 			<h2 class="text-white/80 font-bold text-lg">

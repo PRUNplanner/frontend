@@ -1,6 +1,6 @@
 {
 	"view_title": "Resource ROI",
-	"title": "Resource ROI Overview",
+	"title": "Resource ROI",
 	"info": "Select a Resource and press 'Search & Calculate'",
 	"calculating": "Calculating resource ROI for planets.",
 	"searching": "Searching for @:terms.planet_plural with '{resource}'. Awaiting backend response",

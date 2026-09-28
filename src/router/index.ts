@@ -8,6 +8,27 @@ import { useUserStore } from "@/stores/userStore";
 
 const router = createRouter({
 	history: createWebHistory(),
+	scrollBehavior(to, from, savedPosition) {
+		// back/forward restores, query or hash change on the same page keeps
+		if (savedPosition) {
+			// views render behind data loaders, so wait until the page is
+			// tall enough to scroll back
+			// ponytail: 3s cap, a slower load lands short of the position
+			const deadline = Date.now() + 3000;
+			return new Promise((resolve) => {
+				const tick = () => {
+					const max =
+						document.documentElement.scrollHeight - window.innerHeight;
+					if (max >= savedPosition.top || Date.now() > deadline)
+						resolve(savedPosition);
+					else requestAnimationFrame(tick);
+				};
+				tick();
+			});
+		}
+		if (to.path === from.path) return false;
+		return { top: 0 };
+	},
 	routes: [
 		{
 			name: "homepage",

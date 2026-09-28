@@ -63,7 +63,7 @@
 		{{ $t("planet_search.basic.description") }}
 	</div>
 
-	<PForm>
+	<PForm as-form @submit="doSearch">
 		<PFormItem :label="t('planet_search.basic.form_id')">
 			<PInput v-model:value="refSearchId" class="w-full" />
 		</PFormItem>

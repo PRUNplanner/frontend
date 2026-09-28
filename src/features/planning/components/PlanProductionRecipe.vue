@@ -20,7 +20,7 @@
 	// Util
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { humanizeTimeMs } from "@/util/date";
-	import { formatNumber } from "@/util/numbers";
+	import { formatNumber, formatPayback } from "@/util/numbers";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -293,11 +293,7 @@
 									? 'text-positive!'
 									: 'text-negative!'
 							">
-							{{
-								rowData.roi < 0
-									? "—"
-									: formatNumber(rowData.roi) + " d"
-							}}
+							{{ formatPayback(rowData.roi) }}
 						</span>
 					</template>
 				</XNDataTableColumn>
