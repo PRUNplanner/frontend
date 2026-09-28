@@ -1,9 +1,23 @@
 <script setup lang="ts">
 	import { formConfig } from "@/ui/styles";
+
+	const { asForm = false } = defineProps<{
+		asForm?: boolean;
+	}>();
+
+	const emit = defineEmits<{
+		(e: "submit"): void;
+	}>();
 </script>
 
 <template>
-	<div :class="formConfig.container">
+	<form
+		v-if="asForm"
+		:class="formConfig.container"
+		@submit.prevent="emit('submit')">
+		<slot />
+	</form>
+	<div v-else :class="formConfig.container">
 		<slot />
 	</div>
 </template>

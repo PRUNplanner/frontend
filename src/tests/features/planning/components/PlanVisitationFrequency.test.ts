@@ -133,7 +133,7 @@ describe("PlanVisitationFrequency", () => {
 		expect(storageTable(none).filled).toBe("30.00");
 	});
 
-	it("leaves excluded materials out and shows ∞ without exports", async () => {
+	it("leaves excluded materials out and shows — without exports", async () => {
 		const { wrapper } = await mountTool();
 
 		await exclude(wrapper, ["FE"]);
@@ -148,7 +148,7 @@ describe("PlanVisitationFrequency", () => {
 		expect(tableCells(wrapper, 1)[0]).toEqual([
 			"500",
 			"500",
-			"∞",
+			"—",
 			"t",
 			"21.74",
 			"t",

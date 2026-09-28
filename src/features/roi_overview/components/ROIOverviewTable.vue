@@ -16,7 +16,7 @@
 	import { useROIOverview } from "@/features/roi_overview/useROIOverview";
 
 	// Util
-	import { formatNumber } from "@/util/numbers";
+	import { formatNumber, formatPayback } from "@/util/numbers";
 	import { capitalizeString } from "@/util/text";
 
 	// Components
@@ -318,8 +318,7 @@
 								? 'text-positive'
 								: 'text-negative'
 						">
-						{{ formatNumber(rowData.planROI) }}
-						<span class="pl-1 font-light text-white/50"> d </span>
+						{{ formatPayback(rowData.planROI) }}
 					</div>
 				</template>
 			</XNDataTableColumn>

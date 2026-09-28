@@ -20,7 +20,7 @@
 			"resend_code": "Resend Code",
 			"code_requested": "Code requested."
 		},
-		"fio_info": "FIO Data Updates are handled by PRUNplanners backend automatically.",
+		"fio_info": "FIO Data Updates are handled by PRUNplanner's backend automatically.",
 		"form": {
 			"fio_apikey": "FIO API Key",
 			"prun_username": "PrUn Username",

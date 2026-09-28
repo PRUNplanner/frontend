@@ -1,4 +1,6 @@
 import numbro from "numbro";
+
+import { i18n } from "@/lib/i18n";
 import type { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
 
 /**
@@ -12,9 +14,7 @@ export function formatNumber(
 	optionalDecimals: boolean = false,
 	forceSign: boolean = false
 ): string {
-	if (value === Infinity || isNaN(value)) {
-		return "∞";
-	}
+	if (!Number.isFinite(value)) return "—";
 
 	const format: numbro.Format = {
 		thousandSeparated: true,
@@ -36,10 +36,23 @@ export function formatNumber(
  * @returns {string} formatted number as string
  */
 export function formatAmount(value: number): string {
-	if (value == Infinity || isNaN(value)) {
-		return "∞";
-	}
+	if (!Number.isFinite(value)) return "—";
 	return numbro(value).format({ thousandSeparated: true });
+}
+
+/**
+ * Formats a payback period in days. Values that never pay back
+ * (non-finite or negative) render as "never". 0 means no
+ * construction cost, which pays back at once.
+ *
+ * @export
+ * @param {number} days payback period in days
+ * @returns {string} e.g. "12.34 d" or "never"
+ */
+export function formatPayback(days: number): string {
+	if (!Number.isFinite(days) || days < 0)
+		return i18n.global.t("common.values.never");
+	return formatNumber(days) + " d";
 }
 
 /**

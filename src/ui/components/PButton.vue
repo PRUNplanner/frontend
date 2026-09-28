@@ -11,11 +11,13 @@
 		disabled = false,
 		size = "md",
 		type = "primary",
+		htmlType = "button",
 	} = defineProps<{
 		loading?: boolean;
 		disabled?: boolean;
 		size?: SizeKey;
 		type?: ColorKey;
+		htmlType?: "button" | "submit";
 	}>();
 
 	defineEmits<{
@@ -36,6 +38,7 @@
 <template>
 	<button
 		class="pbutton"
+		:type="htmlType"
 		:class="buttonBase"
 		:disabled="disabled"
 		:aria-busy="loading ? 'true' : 'false'"

@@ -60,5 +60,8 @@
 			"no_results": "No Results",
 			"select_options": "Select Options"
 		}
+	},
+	"values": {
+		"never": "never"
 	}
 }

@@ -29,7 +29,12 @@
 			<div class="text-white text-xl">
 				{{ formatNumber(costOverview.totalProfit) }}
 			</div>
-			<div class="text-white/40 text-xs">
+			<div
+				v-if="costOverview.totalRevenue === 0"
+				class="text-white/40 text-xs">
+				—
+			</div>
+			<div v-else class="text-white/40 text-xs">
 				{{
 					formatNumber(
 						(costOverview.totalProfit / costOverview.totalRevenue) *

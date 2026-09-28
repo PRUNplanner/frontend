@@ -149,7 +149,7 @@ describe("ROIOverviewTable", () => {
 			dailyProfit: "1,000.00  ȼ",
 			// 1000 / 500
 			planProfitArea: "2.00  ȼ",
-			planROI: "40.00  d",
+			planROI: "40.00 d",
 		});
 		// underscores become spaces, every word capitalized
 		expect(rows[2].cogc).toBe("Food Industries");

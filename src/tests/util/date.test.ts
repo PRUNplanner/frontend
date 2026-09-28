@@ -78,7 +78,8 @@ describe("Util: date", async () => {
 		expect(hour).toStrictEqual("7h 36m");
 
 		const nan = humanizeTimeMs(NaN);
-		expect(nan).toStrictEqual("∞");
+		expect(nan).toStrictEqual("never");
+		expect(humanizeTimeMs(Infinity)).toStrictEqual("never");
 	});
 
 	it("relativeFromDate", async () => {

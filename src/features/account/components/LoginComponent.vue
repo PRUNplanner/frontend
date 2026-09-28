@@ -27,7 +27,7 @@
 	});
 
 	async function handleLogin(): Promise<void> {
-		if (!canLogin.value) return;
+		if (!canLogin.value || isLoggingIn.value) return;
 
 		isLoggingIn.value = true;
 		hasError.value = false;
@@ -61,7 +61,7 @@
 		<div v-if="hasError" class="pb-3 text-red-600">
 			{{ $t("account.components.login.error") }}
 		</div>
-		<PForm>
+		<PForm as-form @submit="handleLogin">
 			<PFormSeperator>
 				<div class="font-mono text-xs text-white/60 pb-3">
 					<i18n-t keypath="account.components.login.tos" tag="p">
@@ -101,7 +101,7 @@
 				<PButton
 					:loading="isLoggingIn"
 					:disabled="!canLogin"
-					@click="handleLogin">
+					html-type="submit">
 					{{ $t("account.components.login.buttons.login") }}
 				</PButton>
 			</PFormItem>
