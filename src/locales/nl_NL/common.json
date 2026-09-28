@@ -28,7 +28,10 @@
 			"fio": "FIO",
 			"fio_active": "FIO Actief",
 			"fio_inactive": "FIO inactief"
-		}
+		},
+		"collapse": "Collapse navigation",
+		"expand": "Expand navigation",
+		"menu": "Menu"
 	},
 	"buttons": {
 		"create": "Maken",
@@ -48,7 +51,10 @@
 		"cancel": "Annuleren",
 		"clone_plan": "Clone Plan",
 		"clone_complete": "Cloning Complete",
-		"copy": "Copy"
+		"copy": "Copy",
+		"add": "Add",
+		"fullscreen": "Toggle fullscreen",
+		"edit": "Edit"
 	},
 	"ui": {
 		"placeholder": {
@@ -59,6 +65,20 @@
 		"select": {
 			"no_results": "No Results",
 			"select_options": "Select Options"
-		}
+		},
+		"input_number": {
+			"decrease": "Decrease",
+			"increase": "Increase"
+		},
+		"pagination": {
+			"previous": "Previous page",
+			"next": "Next page",
+			"page": "Page {page}",
+			"more": "More pages"
+		},
+		"language": "Language"
+	},
+	"values": {
+		"never": "never"
 	}
 }
