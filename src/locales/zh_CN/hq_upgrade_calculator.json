@@ -18,8 +18,9 @@
 		"storage": "@:terms.storage",
 		"override_stock": "已覆盖库存",
 		"required": "需要",
-		"cost_unit": "费用/单位",
-		"cost_total": "总费用",
-		"storage_locations": "@:terms.storage 位置"
+		"cost_unit": "Cost / Unit (ȼ)",
+		"cost_total": "Total Cost (ȼ)",
+		"storage_locations": "@:terms.storage 位置",
+		"override_label": "Override stock for {ticker}"
 	}
 }
