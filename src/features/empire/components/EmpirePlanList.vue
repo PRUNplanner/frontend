@@ -73,23 +73,21 @@
 		<XNDataTableColumn
 			key="permits"
 			:title="t('terms.permits', 2)"
+			align="right"
+			title-align="right"
 			sorter="default">
 			<template #title>
 				<div class="text-nowrap">#</div>
 			</template>
-			<template #render-cell="{ rowData }">
-				<div class="text-center">{{ rowData.permits }}</div>
-			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn
 			key="profit"
-			:title="t('terms.profit')"
+			:title="t('empire.plan_list.profit')"
+			align="right"
+			title-align="right"
 			sorter="default">
 			<template #render-cell="{ rowData }">
-				<div class="text-nowrap text-end">
-					<PValue :value="rowData.profit" />
-					<span class="pl-1 font-light text-muted">ȼ</span>
-				</div>
+				<PValue class="text-nowrap" :value="rowData.profit" />
 			</template>
 		</XNDataTableColumn>
 		<template #empty>

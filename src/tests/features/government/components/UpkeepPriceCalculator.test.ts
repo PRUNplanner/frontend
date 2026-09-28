@@ -111,15 +111,15 @@ describe("UpkeepPriceCalculator", () => {
 		// EMC provides safety and health: its need counts twice (2 * 200)
 		expect(rows(wrapper)).toEqual([
 			// 5 * 2 / 400
-			["PK", "EMC", "0.0250", "5.00  ȼ", "2.00"],
+			["PK", "EMC", "0.0250", "5.00", "2.00"],
 			// 50 * 1 / 1250
-			["POW", "SDP", "0.0400", "50.00  ȼ", "1.00"],
+			["POW", "SDP", "0.0400", "50.00", "1.00"],
 			// 50 * 0.4 / 400
-			["POW", "EMC", "0.0500", "50.00  ȼ", "0.40"],
+			["POW", "EMC", "0.0500", "50.00", "0.40"],
 			// 10 * 10 / 833.3
-			["DW", "SST", "0.1200", "10.00  ȼ", "10.00"],
+			["DW", "SST", "0.1200", "10.00", "10.00"],
 			// 20 * 10 / 833.3
-			["OFF", "SST", "0.2400", "20.00  ȼ", "10.00"],
+			["OFF", "SST", "0.2400", "20.00", "10.00"],
 			// no price, last and in building order
 			["SUN", "SST", "-", "-", "2.00"],
 			["RAD", "SDP", "-", "-", "0.47"],
@@ -156,11 +156,11 @@ describe("UpkeepPriceCalculator", () => {
 		await wrapper.find("th[data-col-key=cxPrice]").trigger("click");
 
 		expect(rows(wrapper).map((r) => r[3])).toEqual([
-			"50.00  ȼ",
-			"50.00  ȼ",
-			"20.00  ȼ",
-			"10.00  ȼ",
-			"5.00  ȼ",
+			"50.00",
+			"50.00",
+			"20.00",
+			"10.00",
+			"5.00",
 			...Array(7).fill("-"),
 		]);
 	});
@@ -185,15 +185,15 @@ describe("UpkeepPriceCalculator", () => {
 		// the priced health materials
 		expect(rows(wrapper).slice(0, 5)).toEqual([
 			// HOS: 5 * 2 / 833.33
-			["PK", "HOS", "0.0120", "5.00  ȼ", "2.00"],
+			["PK", "HOS", "0.0120", "5.00", "2.00"],
 			// EMC: 5 * 2 / (2 * 200)
-			["PK", "EMC", "0.0250", "5.00  ȼ", "2.00"],
+			["PK", "EMC", "0.0250", "5.00", "2.00"],
 			// EMC: 50 * 0.4 / 400
-			["POW", "EMC", "0.0500", "50.00  ȼ", "0.40"],
+			["POW", "EMC", "0.0500", "50.00", "0.40"],
 			// WCE, health and comfort: 10 * 6 / (2 * 166.67)
-			["DW", "WCE", "0.1800", "10.00  ȼ", "6.00"],
+			["DW", "WCE", "0.1800", "10.00", "6.00"],
 			// INF: 20 * 10 / 833.33
-			["OFF", "INF", "0.2400", "20.00  ȼ", "10.00"],
+			["OFF", "INF", "0.2400", "20.00", "10.00"],
 		]);
 		expect(
 			rows(wrapper)
@@ -292,7 +292,7 @@ describe("UpkeepPriceCalculator", () => {
 		priceGate.wait = undefined;
 		release();
 		await waitCalculated(wrapper);
-		expect(rows(wrapper).at(0)![3]).toBe("1,000.00  ȼ");
+		expect(rows(wrapper).at(0)![3]).toBe("1,000.00");
 	});
 
 	it("hides the progress bar when a price lookup fails", async () => {

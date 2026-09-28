@@ -162,11 +162,12 @@
 							'upkeep_price_calculator.calculator.details.table.price_need'
 						)
 					"
+					align="right"
 					title-align="right"
 					sorter="default">
 					<template #render-cell="{ rowData }">
 						<div
-							class="text-end text-nowrap"
+							class="text-nowrap"
 							:class="rowData.cxPrice <= 0 ? 'text-muted' : ''">
 							<template v-if="rowData.cxPrice > 0">
 								{{ formatNumber(rowData.pricePerNeed, 4) }}
@@ -182,17 +183,15 @@
 							'upkeep_price_calculator.calculator.details.table.cx_price'
 						)
 					"
+					align="right"
 					title-align="right"
 					sorter="default">
 					<template #render-cell="{ rowData }">
 						<div
-							class="text-end text-nowrap"
+							class="text-nowrap"
 							:class="rowData.cxPrice <= 0 ? 'text-muted' : ''">
 							<template v-if="rowData.cxPrice > 0">
 								{{ formatNumber(rowData.cxPrice, 2) }}
-								<span class="pl-1 font-light text-muted">
-									ȼ
-								</span>
 							</template>
 							<template v-else>-</template>
 						</div>
@@ -206,10 +205,11 @@
 							'upkeep_price_calculator.calculator.details.table.qty_day'
 						)
 					"
+					align="right"
 					title-align="right"
 					sorter="default">
 					<template #render-cell="{ rowData }">
-						<div class="text-end text-nowrap">
+						<div class="text-nowrap">
 							{{ formatNumber(rowData.qtyPerDay, 2) }}
 						</div>
 					</template>

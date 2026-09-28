@@ -127,14 +127,14 @@ describe("ResourceROITable", () => {
 		expect(rows[0]).toMatchObject({
 			dailyYield: "12.35",
 			// 0.5 * 100
-			percentMaxDailyYield: "50.00 %",
+			percentMaxDailyYield: "50.00",
 			// the prefix is dropped, underscores become spaces
 			planetCOGC: "Food Industries",
 			planetInfrastructures: "LM, COGC",
-			planCost: "250,000.00  ȼ",
+			planCost: "250,000.00",
 			// 40 * 10
-			dailyProfit: "+400.00ȼ",
-			planROI: "40.00  d",
+			dailyProfit: "+400.00",
+			planROI: "40.00",
 			distanceAI1: "7",
 			distanceCI1: "—",
 		});
@@ -169,12 +169,12 @@ describe("ResourceROITable", () => {
 	it("colours profit and ROI by sign, 0 counts as negative", async () => {
 		const { wrapper } = await mountTable();
 
-		const positive = (key: string, el = "div") =>
+		const positive = (key: string) =>
 			wrapper
-				.findAll(`td[data-col-key="${key}"] ${el}`)
-				.map((d) => d.classes("text-positive"));
+				.findAll(`td[data-col-key="${key}"]`)
+				.map((td) => td.find("span").classes("text-positive"));
 
-		expect(positive("dailyProfit", "div > span:first-child")).toEqual([
+		expect(positive("dailyProfit")).toEqual([
 			true,
 			false,
 			false,

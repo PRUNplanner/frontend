@@ -32,11 +32,12 @@
 			<XNDataTableColumn
 				key="price"
 				:title="t('market_live.components.point_table.table.price')"
-				align="right">
+				align="right"
+				title-align="right">
 				<template #render-cell="{ rowData }">
 					<div class="text-nowrap">
 						<span v-if="rowData.price !== undefined">
-							{{ formatNumber(rowData.price, 2, true) }}
+							{{ formatNumber(rowData.price) }}
 						</span>
 						<span v-else-if="rowData.price === undefined" class="">
 							&mdash;
@@ -47,11 +48,12 @@
 			<XNDataTableColumn
 				key="bid"
 				:title="t('market_live.components.point_table.table.bid')"
-				align="right">
+				align="right"
+				title-align="right">
 				<template #render-cell="{ rowData }">
 					<div class="font-mono text-sky-500">
 						<span v-if="rowData.bid">
-							{{ formatNumber(rowData.bid, 2, true) }}
+							{{ formatNumber(rowData.bid) }}
 						</span>
 						<span v-else>&mdash;</span>
 					</div>
@@ -60,11 +62,12 @@
 			<XNDataTableColumn
 				key="ask"
 				:title="t('market_live.components.point_table.table.ask')"
-				align="right">
+				align="right"
+				title-align="right">
 				<template #render-cell="{ rowData }">
 					<div class="font-mono text-negative">
 						<span v-if="rowData.ask">
-							{{ formatNumber(rowData.ask, 2, true) }}
+							{{ formatNumber(rowData.ask) }}
 						</span>
 						<span v-else>&mdash;</span>
 					</div>
@@ -75,12 +78,12 @@
 				:title="
 					t('market_live.components.point_table.table.spread_pct')
 				"
-				align="right">
+				align="right"
+				title-align="right">
 				<template #render-cell="{ rowData }">
 					<div class="font-mono">
 						<span v-if="rowData.spread_pct">
 							{{ formatNumber(rowData.spread_pct, 2) }}
-							%
 						</span>
 					</div>
 				</template>
@@ -90,7 +93,8 @@
 				:title="
 					t('market_live.components.point_table.table.buy_volume')
 				"
-				align="right">
+				align="right"
+				title-align="right">
 				<template #render-cell="{ rowData }">
 					<span class="font-mono">
 						{{ formatAmount(rowData.buy_volume_total) }}
@@ -102,7 +106,8 @@
 				:title="
 					t('market_live.components.point_table.table.sell_volume')
 				"
-				align="right">
+				align="right"
+				title-align="right">
 				<template #render-cell="{ rowData }">
 					<span class="font-mono">
 						{{ formatAmount(rowData.sell_volume_total) }}

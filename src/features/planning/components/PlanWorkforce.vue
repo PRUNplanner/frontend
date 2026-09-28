@@ -75,13 +75,19 @@
 		<thead>
 			<tr>
 				<th>{{ $t("plan.components.workforce.table.type") }}</th>
-				<th>{{ $t("plan.components.workforce.table.need") }}</th>
-				<th>{{ $t("plan.components.workforce.table.supply") }}</th>
-				<th>{{ $t("plan.components.workforce.table.open") }}</th>
+				<th class="numeric">
+					{{ $t("plan.components.workforce.table.need") }}
+				</th>
+				<th class="numeric">
+					{{ $t("plan.components.workforce.table.supply") }}
+				</th>
+				<th class="numeric">
+					{{ $t("plan.components.workforce.table.open") }}
+				</th>
 				<th colspan="2" class="text-center!">
 					{{ $t("plan.components.workforce.table.luxuries") }}
 				</th>
-				<th class="text-end!">
+				<th class="numeric">
 					{{ $t("plan.components.workforce.table.pct_eff") }}
 				</th>
 			</tr>
@@ -95,13 +101,19 @@
 						)
 					}}
 				</td>
-				<td :class="workforce.required === 0 ? 'text-muted!' : ''">
+				<td
+					class="numeric"
+					:class="workforce.required === 0 ? 'text-muted!' : ''">
 					{{ formatAmount(workforce.required) }}
 				</td>
-				<td :class="workforce.capacity === 0 ? 'text-muted!' : ''">
+				<td
+					class="numeric"
+					:class="workforce.capacity === 0 ? 'text-muted!' : ''">
 					{{ formatAmount(workforce.capacity) }}
 				</td>
-				<td :class="workforce.left === 0 ? 'text-muted!' : ''">
+				<td
+					class="numeric"
+					:class="workforce.left === 0 ? 'text-muted!' : ''">
 					{{ formatAmount(workforce.left) }}
 				</td>
 				<td class="text-center">
@@ -145,7 +157,7 @@
 					</PButton>
 				</td>
 				<td
-					class="text-end"
+					class="numeric"
 					:class="workforce.efficiency === 0 ? 'text-muted!' : ''">
 					{{ formatNumber(workforce.efficiency * 100) }}
 				</td>

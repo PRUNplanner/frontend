@@ -159,6 +159,21 @@ describe("PlanWorkforce", () => {
 		expect(icons(1)).toEqual(["block", "check"]);
 	});
 
+	it("right-aligns the numeric columns", async () => {
+		const { wrapper } = await mountWorkforce();
+
+		// type, need, supply, open, lux (colspan 2), eff
+		expect(
+			wrapper.findAll("th").map((th) => th.classes("numeric"))
+		).toEqual([false, true, true, true, false, true]);
+		expect(
+			wrapper
+				.find("tbody tr")
+				.findAll("td")
+				.map((td) => td.classes("numeric"))
+		).toEqual([false, true, true, true, false, false, true]);
+	});
+
 	it("grays out zero values", async () => {
 		const { wrapper } = await mountWorkforce();
 

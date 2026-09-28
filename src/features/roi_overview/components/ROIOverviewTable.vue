@@ -261,53 +261,52 @@
 				key="planCost"
 				:title="t('recipe_roi.table.plan_cost')"
 				sorter="default"
+				align="right"
 				title-align="right">
 				<template #render-cell="{ rowData }">
-					<div class="text-end text-nowrap">
+					<span class="text-nowrap">
 						{{ formatNumber(rowData.planCost) }}
-						<span class="pl-1 font-light text-muted"> ȼ </span>
-					</div>
+					</span>
 				</template>
 			</XNDataTableColumn>
 			<XNDataTableColumn
 				key="dailyProfit"
 				:title="t('recipe_roi.table.daily_profit')"
+				align="right"
 				title-align="right"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<div class="text-end text-nowrap">
-						<PValue :value="rowData.dailyProfit" />
-						<span class="pl-1 font-light text-muted">ȼ</span>
-					</div>
+					<PValue class="text-nowrap" :value="rowData.dailyProfit" />
 				</template>
 			</XNDataTableColumn>
 			<XNDataTableColumn
 				key="planProfitArea"
 				:title="t('recipe_roi.table.profit_area')"
+				align="right"
 				title-align="right"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<div class="text-end">
-						<PValue :value="rowData.planProfitArea" />
-						<span class="pl-1 font-light text-muted">ȼ</span>
-					</div>
+					<PValue
+						class="text-nowrap"
+						:value="rowData.planProfitArea" />
 				</template>
 			</XNDataTableColumn>
 			<XNDataTableColumn
 				key="planROI"
 				:title="t('recipe_roi.table.plan_roi')"
+				align="right"
 				title-align="right"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<div
-						class="text-end text-nowrap"
+					<span
+						class="text-nowrap"
 						:class="
 							rowData.planROI > 0
 								? 'text-positive'
 								: 'text-negative'
 						">
-						{{ formatPayback(rowData.planROI) }}
-					</div>
+						{{ formatPayback(rowData.planROI, false) }}
+					</span>
 				</template>
 			</XNDataTableColumn>
 		</XNDataTable>
