@@ -19,7 +19,7 @@
 				"material": "@:terms.materials",
 				"building": "@:terms.buildings",
 				"price_need": "ȼ/Need",
-				"cx_price": "@:terms.cx Price",
+				"cx_price": "@:terms.cx Price (ȼ)",
 				"qty_day": "Qty/Day"
 			}
 		}
