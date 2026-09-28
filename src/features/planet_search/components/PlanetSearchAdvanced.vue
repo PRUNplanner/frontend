@@ -238,7 +238,7 @@
 								:min="0"
 								:max="100"
 								class="flex-1" />
-							<span class="text-sm text-white/50">%</span>
+							<span class="text-sm text-muted">%</span>
 						</div>
 					</div>
 				</PFormItem>

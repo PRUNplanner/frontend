@@ -37,7 +37,7 @@
 	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 
 	// UI
-	import { PSelect, PButton } from "@/ui";
+	import { PSelect, PButton, PValue } from "@/ui";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import { CloseFullscreenSharp, OpenInFullSharp } from "@vicons/material";
 
@@ -147,7 +147,7 @@
 		return data;
 	}
 
-	function getTrendClass(value: number, reverse: boolean = false): string {
+	function getTrendClass(value: number): string {
 		const trend = Math.round(value);
 
 		if (
@@ -159,9 +159,7 @@
 			return "";
 		}
 
-		const isPositive = trend > 0;
-		const finalOutcome = reverse ? !isPositive : isPositive;
-		return finalOutcome ? "text-positive" : "text-negative";
+		return trend > 0 ? "text-positive" : "text-negative";
 	}
 
 	function switchChartFullscreen(): void {
@@ -214,7 +212,7 @@
 							<div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
 								<div
 									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-white/50">
+									<div class="pb-1 text-muted">
 										{{
 											$t(
 												"market_exploration.kpis.universe_vwap_7d"
@@ -229,7 +227,7 @@
 											)
 										}}
 										<span
-											class="pl-1 font-light text-white/50">
+											class="pl-1 font-light text-muted">
 											ȼ
 										</span>
 									</div>
@@ -260,7 +258,7 @@
 								</div>
 								<div
 									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-white/50">
+									<div class="pb-1 text-muted">
 										{{
 											$t(
 												"market_exploration.kpis.universe_traded_7d"
@@ -274,7 +272,7 @@
 											)
 										}}
 									</div>
-									<div class="text-white/50">
+									<div class="text-muted">
 										{{ $t("market_exploration.kpis.30d") }}
 										{{
 											formatAmount(
@@ -286,7 +284,7 @@
 								</div>
 								<div
 									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-white/50">
+									<div class="pb-1 text-muted">
 										{{
 											$t(
 												"market_exploration.kpis.universe_market_delta"
@@ -294,24 +292,32 @@
 										}}
 									</div>
 									<div class="text-3xl font-bold">
+										<PValue
+											:value="
+												materialOverviewData()
+													.delta_supply_demand_universe
+											"
+											:decimals="0" />
 										<span
-											:class="
-												getTrendClass(
-													materialOverviewData()
-														.delta_supply_demand_universe,
-													true
-												)
-											">
+											v-if="
+												materialOverviewData()
+													.delta_supply_demand_universe !==
+												0
+											"
+											class="pl-2 text-lg font-normal text-muted">
 											{{
-												formatAmount(
+												$t(
 													materialOverviewData()
-														.delta_supply_demand_universe
+														.delta_supply_demand_universe <
+														0
+														? "market_exploration.kpis.shortage"
+														: "market_exploration.kpis.surplus"
 												)
 											}}
 										</span>
 									</div>
 									<div
-										class="text-white/50 flex flex-row justify-between">
+										class="text-muted flex flex-row justify-between">
 										<div>
 											{{
 												$t(
@@ -342,7 +348,7 @@
 								</div>
 								<div
 									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-white/50">
+									<div class="pb-1 text-muted">
 										{{
 											$t(
 												"market_exploration.kpis.weighted_trend"
@@ -368,7 +374,7 @@
 											</span>
 										</span>
 									</div>
-									<div class="text-white/50">
+									<div class="text-muted">
 										{{
 											$t(
 												"market_exploration.kpis.volume_adjusted_delta"
@@ -378,7 +384,7 @@
 								</div>
 								<div
 									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-white/50">
+									<div class="pb-1 text-muted">
 										{{
 											$t(
 												"market_exploration.kpis.price_cohesion"
@@ -404,7 +410,7 @@
 											</span>
 										</span>
 									</div>
-									<div class="text-white/50">
+									<div class="text-muted">
 										{{
 											$t(
 												"market_exploration.kpis.variance_index"
@@ -541,9 +547,7 @@
 						sorter="default">
 						<template #render-cell="{ rowData }">
 							{{ formatNumber(rowData.vwap_universe_7d) }}
-							<span class="pl-1 font-light text-white/50">
-								ȼ
-							</span>
+							<span class="pl-1 font-light text-muted"> ȼ </span>
 						</template>
 					</XNDataTableColumn>
 					<XNDataTableColumn
@@ -552,9 +556,7 @@
 						sorter="default">
 						<template #render-cell="{ rowData }">
 							{{ formatNumber(rowData.vwap_universe_30d) }}
-							<span class="pl-1 font-light text-white/50">
-								ȼ
-							</span>
+							<span class="pl-1 font-light text-muted"> ȼ </span>
 						</template>
 					</XNDataTableColumn>
 					<XNDataTableColumn

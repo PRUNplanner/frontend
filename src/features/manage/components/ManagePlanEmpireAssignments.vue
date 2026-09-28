@@ -388,13 +388,13 @@
 				<template #title>
 					<div class="py-1 flex flex-row justify-center gap-1">
 						<PIcon
-							color="rgb(192,226,24)"
+							color="var(--color-positive)"
 							:size="16"
 							@click="changeAllToEmpire(e.empireUuid, true)">
 							<AddCircleOutlineSharp />
 						</PIcon>
 						<PIcon
-							color="rgb(199,0,57)"
+							color="var(--color-negative)"
 							:size="16"
 							@click="changeAllToEmpire(e.empireUuid, false)">
 							<CircleOutlined />

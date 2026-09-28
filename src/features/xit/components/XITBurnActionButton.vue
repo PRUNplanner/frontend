@@ -274,7 +274,7 @@
 											),
 										})
 									}}
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										t
 									</span>
 								</div>
@@ -287,7 +287,7 @@
 										})
 									}}
 
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										m³
 									</span>
 								</div>
@@ -297,7 +297,7 @@
 											value: formatNumber(totalPrice),
 										})
 									}}
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										ȼ
 									</span>
 								</div>

@@ -164,7 +164,7 @@ describe("PlanWorkforce", () => {
 
 		const gray = (index: number) =>
 			cells(wrapper, index).map((td) =>
-				td.classes().includes("text-white/50!")
+				td.classes().includes("text-muted!")
 			);
 
 		// name, need, supply, open, lux1, lux2, efficiency
@@ -193,7 +193,7 @@ describe("PlanWorkforce", () => {
 
 		const gray = (index: number) =>
 			cells(wrapper, index).map((td) =>
-				td.classes().includes("text-white/50!")
+				td.classes().includes("text-muted!")
 			);
 
 		expect(gray(2)).toEqual([false, false, true, true, false, false, true]);

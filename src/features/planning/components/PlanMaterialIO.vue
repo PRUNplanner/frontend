@@ -14,6 +14,9 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// UI
+	import { PValue } from "@/ui";
+
+	// UI
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 
 	const props = defineProps({
@@ -52,7 +55,7 @@
 			:title="t('plan.components.materialio.table.input')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
-				<span :class="rowData.input === 0 ? 'text-white/20' : ''">
+				<span :class="rowData.input === 0 ? 'text-muted' : ''">
 					{{ formatNumber(rowData.input) }}
 				</span>
 			</template>
@@ -62,7 +65,7 @@
 			:title="t('plan.components.materialio.table.output')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
-				<span :class="rowData.output === 0 ? 'text-white/20' : ''">
+				<span :class="rowData.output === 0 ? 'text-muted' : ''">
 					{{ formatNumber(rowData.output) }}
 				</span>
 			</template>
@@ -72,12 +75,7 @@
 			:title="t('plan.components.materialio.table.delta')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
-				<span
-					:class="
-						rowData.delta > 0 ? 'text-positive' : 'text-negative'
-					">
-					{{ formatNumber(rowData.delta) }}
-				</span>
+				<PValue :value="rowData.delta" />
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn
@@ -86,12 +84,7 @@
 			:title="t('plan.components.materialio.table.cost_day')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
-				<span
-					:class="
-						rowData.price > 0 ? 'text-positive' : 'text-negative'
-					">
-					{{ formatNumber(rowData.price) }}
-				</span>
+				<PValue :value="rowData.price" />
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn
@@ -100,14 +93,7 @@
 			:title="t('plan.components.materialio.table.total_weight')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
-				<span
-					:class="
-						rowData.totalWeight > 0
-							? 'text-positive'
-							: 'text-negative'
-					">
-					{{ formatNumber(rowData.totalWeight) }}
-				</span>
+				<PValue :value="rowData.totalWeight" />
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn
@@ -116,14 +102,7 @@
 			:title="t('plan.components.materialio.table.total_volume')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
-				<span
-					:class="
-						rowData.totalVolume > 0
-							? 'text-positive'
-							: 'text-negative'
-					">
-					{{ formatNumber(rowData.totalVolume) }}
-				</span>
+				<PValue :value="rowData.totalVolume" />
 			</template>
 		</XNDataTableColumn>
 	</XNDataTable>

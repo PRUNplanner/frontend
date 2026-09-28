@@ -10,11 +10,8 @@
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 	import { cogcTextMapping } from "@/features/planning_data/usePlan";
 
-	// Util
-	import { formatNumber } from "@/util/numbers";
-
 	// UI
-	import {} from "@/ui";
+	import { PValue } from "@/ui";
 
 	const props = defineProps({
 		areaData: {
@@ -80,7 +77,7 @@
 			<span>/{{ areaData.areaTotal }}</span>
 			<span
 				v-if="areaData.areaUsed > areaData.areaTotal"
-				class="block text-xs text-red-300">
+				class="block text-xs text-negative">
 				{{
 					$t("plan.components.area.exceeded", {
 						amount: areaData.areaUsed - areaData.areaTotal,
@@ -90,12 +87,7 @@
 		</div>
 		<div>
 			<span class="pr-1">{{ $t("plan.components.status.profit") }}</span>
-			<span
-				:class="
-					overviewData.profit > 0 ? 'text-positive' : 'text-negative'
-				">
-				{{ formatNumber(overviewData.profit) }}
-			</span>
+			<PValue :value="overviewData.profit" />
 		</div>
 		<div>
 			<span class="pr-1">{{ $t("plan.components.status.experts") }}</span>

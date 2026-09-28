@@ -12,7 +12,7 @@
 	import { zeroEfficiencyReason } from "@/features/planning/engine/efficiency";
 
 	// UI
-	import { PTooltip, PButton, PInputNumber } from "@/ui";
+	import { PTooltip, PButton, PInputNumber, PValue } from "@/ui";
 	import { ClearSharp, PlusSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -92,7 +92,7 @@
 		:class="
 			localBuildingData.amount > 0
 				? 'border-l-prunplanner'
-				: 'border-l-red-500'
+				: 'border-l-negative'
 		">
 		<div class="col-span-6 xl:col-span-2 text-lg font-mono">
 			{{ localBuildingData.amount }}x
@@ -100,7 +100,7 @@
 		</div>
 		<div
 			class="col-span-6 justify-end xl:justify-normal xl:col-span-4 flex items-center gap-x-1">
-			<span class="text-[10px] text-white/50 pr-1">
+			<span class="text-xs text-muted pr-1">
 				{{ $t("plan.components.production_building.qty") }}
 			</span>
 			<PInputNumber
@@ -135,19 +135,19 @@
 		<div
 			class="col-span-12 xl:col-span-6 flex flex-wrap justify-end items-center gap-x-6 gap-y-2 text-white/80">
 			<div class="flex flex-col items-end min-w-max text-right">
-				<span
-					class="text-[10px] text-white/50 uppercase tracking-wider">
+				<span class="text-xs text-muted uppercase tracking-wider">
 					{{
 						$t(
 							"plan.components.production_building.table.expertise"
 						)
 					}}
 				</span>
-				<span class="text-xs font-mono">
+				<span class="text-xs">
 					<span
 						:class="
 							isPlanetCogc ? 'text-positive' : 'text-negative'
 						">
+						{{ isPlanetCogc ? "✓" : "✗" }}
 						{{
 							$t(`game.expertise.${localBuildingData.expertise}`)
 						}}</span
@@ -155,14 +155,14 @@
 				</span>
 			</div>
 			<div class="flex flex-col items-end min-w-max text-right">
-				<span class="text-[10px] text-white/50 uppercase tracking-wide">
+				<span class="text-xs text-muted uppercase tracking-wide">
 					{{
 						$t(
 							"plan.components.production_building.table.efficiency"
 						)
 					}}
 				</span>
-				<span class="text-xs font-mono font-bold whitespace-nowrap">
+				<span class="text-xs font-bold whitespace-nowrap">
 					<PTooltip>
 						<template #trigger>
 							<div class="flex gap-x-1 hover:cursor-help">
@@ -193,46 +193,40 @@
 						</div>
 					</PTooltip>
 				</span>
-				<span v-if="zeroReason" class="text-xs text-red-300">
+				<span v-if="zeroReason" class="text-xs text-negative">
 					{{ $t(zeroReason) }}
 				</span>
 			</div>
 			<div class="flex flex-col items-end min-w-max text-right">
-				<span class="text-[10px] text-white/50 uppercase tracking-wide">
+				<span class="text-xs text-muted uppercase tracking-wide">
 					{{
 						$t("plan.components.production_building.table.revenue")
 					}}
 				</span>
-				<span
-					class="text-xs font-mono font-bold text-positive whitespace-nowrap"
-					:class="
-						localBuildingData.dailyRevenue >= 0
-							? 'text-positive!'
-							: 'text-negative!'
-					">
-					{{ formatNumber(localBuildingData.dailyRevenue) }}
-					<span class="font-light text-white/50">ȼ</span>
+				<span class="text-xs font-bold whitespace-nowrap">
+					<PValue :value="localBuildingData.dailyRevenue" />
+					<span class="pl-1 font-light text-muted">ȼ</span>
 				</span>
 			</div>
 			<div class="flex flex-col items-end min-w-max text-right">
-				<span class="text-[10px] text-white/50 uppercase tracking-wide">
+				<span class="text-xs text-muted uppercase tracking-wide">
 					{{ $t("plan.components.production_building.table.area") }}
 				</span>
-				<span class="text-xs font-mono font-bold whitespace-nowrap">
+				<span class="text-xs font-bold whitespace-nowrap">
 					{{ localBuildingData.areaUsed }}
 				</span>
 			</div>
 			<div class="flex flex-col items-end min-w-max text-right">
-				<span class="text-[10px] text-white/50 uppercase tracking-wide">
+				<span class="text-xs text-muted uppercase tracking-wide">
 					{{
 						$t(
 							"plan.components.production_building.table.construction"
 						)
 					}}
 				</span>
-				<span class="text-xs font-mono font-bold whitespace-nowrap">
+				<span class="text-xs font-bold whitespace-nowrap">
 					{{ formatNumber(localBuildingData.constructionCost * -1) }}
-					<span class="font-light text-white/50">ȼ</span>
+					<span class="font-light text-muted">ȼ</span>
 				</span>
 			</div>
 			<div class="flex justify-end">
@@ -292,7 +286,7 @@
 		</div>
 		<div
 			v-else
-			class="h-full w-full flex items-center justify-center py-2 font-mono text-white/60 text-xs">
+			class="h-full w-full flex items-center justify-center py-2 text-white/60 text-xs">
 			{{ $t("plan.components.production_building.no_recipe") }}
 		</div>
 	</div>

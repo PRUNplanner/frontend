@@ -74,7 +74,7 @@
 						>{{ areaData.areaLeft }}</span
 					>
 					{{ $t("plan.components.area.free") }}
-					<span v-if="areaData.areaLeft < 0" class="text-red-300">
+					<span v-if="areaData.areaLeft < 0" class="text-negative">
 						·
 						{{
 							$t("plan.components.area.exceeded", {

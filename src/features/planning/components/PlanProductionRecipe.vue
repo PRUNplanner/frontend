@@ -30,6 +30,7 @@
 	import PButton from "@/ui/components/PButton.vue";
 	import PInputNumber from "@/ui/components/PInputNumber.vue";
 	import PTooltip from "@/ui/components/PTooltip.vue";
+	import PValue from "@/ui/components/PValue.vue";
 	import { NModal, NPopover } from "naive-ui";
 	import { ClearSharp, AnalyticsOutlined } from "@vicons/material";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
@@ -253,14 +254,9 @@
 					"
 					sorter="default">
 					<template #render-cell="{ rowData }">
-						<span
-							:class="
-								rowData.dailyRevenue >= 0
-									? 'text-positive!'
-									: 'text-negative!'
-							">
-							{{ formatNumber(rowData.dailyRevenue) }}
-							<span class="font-light text-white/50">ȼ</span>
+						<span class="text-nowrap">
+							<PValue :value="rowData.dailyRevenue" />
+							<span class="pl-1 font-light text-muted">ȼ</span>
 						</span>
 					</template>
 				</XNDataTableColumn>
@@ -271,14 +267,9 @@
 					"
 					sorter="default">
 					<template #render-cell="{ rowData }">
-						<span
-							:class="
-								rowData.profitPerArea >= 0
-									? 'text-positive!'
-									: 'text-negative!'
-							">
-							{{ formatNumber(rowData.profitPerArea) }}
-							<span class="font-light text-white/50">ȼ</span>
+						<span class="text-nowrap">
+							<PValue :value="rowData.profitPerArea" />
+							<span class="pl-1 font-light text-muted">ȼ</span>
 						</span>
 					</template>
 				</XNDataTableColumn>

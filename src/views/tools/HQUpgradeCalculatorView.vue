@@ -144,7 +144,7 @@
 							</div>
 							<div>
 								{{ formatNumber(totalCost) }}
-								<span class="pl-1 font-light text-white/50">
+								<span class="pl-1 font-light text-muted">
 									ȼ
 								</span>
 							</div>
@@ -157,7 +157,7 @@
 								{{
 									formatNumber(totalWeightVolume.totalWeight)
 								}}
-								<span class="pl-1 font-light text-white/50">
+								<span class="pl-1 font-light text-muted">
 									t
 								</span>
 							</div>
@@ -170,7 +170,7 @@
 								{{
 									formatNumber(totalWeightVolume.totalVolume)
 								}}
-								<span class="pl-1 font-light text-white/50">
+								<span class="pl-1 font-light text-muted">
 									m³
 								</span>
 							</div>
@@ -251,7 +251,7 @@
 							sorter="default">
 							<template #render-cell="{ rowData }">
 								{{ formatNumber(rowData.unitCost) }}
-								<span class="pl-1 font-light text-white/50">
+								<span class="pl-1 font-light text-muted">
 									ȼ
 								</span>
 							</template>
@@ -262,7 +262,7 @@
 							sorter="default">
 							<template #render-cell="{ rowData }">
 								{{ formatNumber(rowData.totalCost) }}
-								<span class="pl-1 font-light text-white/50">
+								<span class="pl-1 font-light text-muted">
 									ȼ
 								</span>
 							</template>

@@ -12,7 +12,7 @@ import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui
 The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
 `PFormItem`, `PFormSeperator` (the misspelling is the real name), `PIcon`,
 `PInput`, `PInputNumber`, `PProgressBar`, `PSelect`, `PSelectElement`,
-`PSelectMultiple`, `PSpin`, `PTable`, `PTag` and `PTooltip`.
+`PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PTooltip` and `PValue`.
 
 - **Shared props:** `size` (`"sm" | "md"`) and `color` (`primary`,
   `success`, `error`, `warning`, `secondary`). Both types are in
@@ -24,6 +24,9 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
 - **Numbers:** `formatNumber` / `formatAmount` (`util/numbers.ts`) show "—"
   for ∞ or NaN; payback periods use `formatPayback` ("never" when negative
   or infinite), and `humanizeTimeMs` shows "never" for an infinite runtime.
+- **Signed values:** show a profit, delta or other good/bad number with
+  `<PValue :value="x" />`. It prints the sign (`+1.00` / `-1.00`) and colours
+  by it (zero stays neutral), so it reads without colour. `arrow` adds ▲/▼.
 - **Styling:** the Tailwind class sets for each component live in
   `ui/styles.ts`. Change the look there, not per usage.
 - **Other libraries, used alongside the kit:**
@@ -48,8 +51,16 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
   - `src/assets/css/style.css` imports the legacy `tailwind.config.js` with
     `@config` and adds a small `@theme`.
   - Material category colours are in `assets/css/materials.css`.
-- **Custom colours:** `pp-primary`, `pp-secondary`, `pp-border`,
-  `pp-card-header`, `prunplanner` (brand lime), `positive`, `negative`,
+- **Semantic colours** are CSS variables in the `@theme` of `style.css`:
+  `positive`, `negative`, `warning`, `muted` (secondary text, instead of
+  `text-white/40`–`/50`) and `muted-strong`. All pass 4.5:1 on every app
+  surface. The colour-blind preference sets `data-palette="colorblind"` on
+  `<html>`, which swaps `positive`/`negative` to blue/orange, so use the
+  tokens, never raw green/red. Text is at least `text-xs` (12 px).
+- **Fonts:** Roboto and Roboto Mono are self-hosted via `@fontsource`
+  (`main.ts`). Use `font-mono` only for tickers, ids and code.
+- **Other custom colours:** `pp-primary`, `pp-secondary`, `pp-border`,
+  `pp-card-header`, `prunplanner` (brand lime),
   `row`, `row-alternate` and `table-border`.
 - **Custom variants:** `child:`, `child-hover:` and `not-first:`.
 - **The app is dark-only.** naive-ui theme overrides live in

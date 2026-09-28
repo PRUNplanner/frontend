@@ -140,7 +140,7 @@ describe("UpkeepPriceCalculator", () => {
 				.map((tr) =>
 					tr
 						.find(`td[data-col-key=${column}] div`)
-						.classes("text-white/40")
+						.classes("text-muted")
 				);
 
 		// 5 priced materials, then 7 without

@@ -8,9 +8,6 @@
 	import { usePlanetData } from "@/database/services/usePlanetData";
 	const { planetNames, loadPlanetNames } = usePlanetData();
 
-	// Util
-	import { formatNumber } from "@/util/numbers";
-
 	// Types & Interfaces
 	import type { IEmpirePlanListData } from "@/features/empire/empire.types";
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
@@ -23,6 +20,7 @@
 		XNDataTableSummaryRow,
 		XNDataTableSummaryCell,
 	} from "@skit/x.naive-ui";
+	import { PValue } from "@/ui";
 
 	const props = defineProps({
 		planListData: {
@@ -89,15 +87,8 @@
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="text-nowrap text-end">
-					<span
-						:class="
-							rowData.profit >= 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.profit) }}
-					</span>
-					<span class="pl-1 font-light text-white/50">ȼ</span>
+					<PValue :value="rowData.profit" />
+					<span class="pl-1 font-light text-muted">ȼ</span>
 				</div>
 			</template>
 		</XNDataTableColumn>

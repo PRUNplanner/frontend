@@ -10,7 +10,7 @@
 	<div :class="formItemConfig.content">
 		<slot />
 	</div>
-	<div v-if="$slots.info" class="col-2 pb-1 text-xs text-white/50">
+	<div v-if="$slots.info" class="col-2 pb-1 text-xs text-muted">
 		<slot name="info" />
 	</div>
 </template>

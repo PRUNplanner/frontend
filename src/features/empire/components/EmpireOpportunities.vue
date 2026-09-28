@@ -212,7 +212,7 @@
 									v-if="!stat.isMissing"
 									:class="
 										stat.currentDelta >= stat.requiredAmount
-											? 'text-white/50'
+											? 'text-muted'
 											: 'text-orange-400'
 									"
 									class="text-xs mt-1 font-mono">
@@ -311,9 +311,7 @@
 										: 'text-negative'
 								">
 								{{ formatNumber(rowData.inputSellCost, 2) }}
-								<span class="font-light text-white/50">
-									ȼ
-								</span>
+								<span class="font-light text-muted"> ȼ </span>
 							</span>
 						</div>
 						<div v-else>&mdash;</div>
@@ -338,9 +336,7 @@
 										: 'text-positive'
 								">
 								{{ formatNumber(rowData.outputSellCost, 2) }}
-								<span class="font-light text-white/50">
-									ȼ
-								</span>
+								<span class="font-light text-muted"> ȼ </span>
 							</span>
 						</div>
 						<div v-else>&mdash;</div>

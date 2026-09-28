@@ -310,8 +310,8 @@ describe("PlanConstructionCart", () => {
 			const built = tables(wrapper)[0]
 				.findAll("tbody tr")
 				.map((tr) => tr.findAll("th")[1]?.classes());
-			expect(built[0]).toContain("text-neutral-500");
-			expect(built[2]).toContain("text-red-500");
+			expect(built[0]).toContain("text-muted");
+			expect(built[2]).toContain("text-negative");
 
 			expect(wrapper.find("h2 .picon").exists()).toBe(true);
 			// built habitations count towards housing

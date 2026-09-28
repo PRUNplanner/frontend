@@ -94,9 +94,7 @@
 			]"
 			@update:value="(val: any) => setType(val)" />
 
-		<span
-			v-else
-			class="text-[10px] font-bold uppercase px-2 text-slate-400">
+		<span v-else class="text-xs font-bold uppercase px-2 text-slate-400">
 			{{ $t("market_live.rule_type.text") }}
 		</span>
 

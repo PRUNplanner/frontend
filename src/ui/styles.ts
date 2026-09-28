@@ -33,9 +33,9 @@ export const buttonConfig: PButtonConfig = {
 			disabled: "disabled:bg-blue-800/50 disabled:text-white/80",
 		},
 		success: {
-			base: "bg-lime-500 text-black active:bg-lime-300",
-			hover: "hover:bg-lime-400",
-			disabled: "disabled:bg-lime-500/50 disabled:text-white/80",
+			base: "bg-positive text-black active:bg-positive/70",
+			hover: "hover:bg-positive/85",
+			disabled: "disabled:bg-positive/50 disabled:text-white/80",
 		},
 		secondary: {
 			base: "bg-gray-800 text-white active:bg-gray-600",
@@ -131,21 +131,21 @@ export const inputConfig: PInputConfig = {
 export const tagConfig: PTagConfig = {
 	colors: {
 		primary: "bg-blue-900 border border-white/20 text-white",
-		success: "bg-[#1af09a] border border-white/20 text-black/90",
+		success: "bg-positive border border-white/20 text-black/90",
 		secondary: "bg-black/50 border border-white/20 text-white",
-		error: "bg-[#e86f6f] border border-white/20 text-black/90",
+		error: "bg-negative border border-white/20 text-black/90",
 		warning: "bg-gray-100 border border-white/20 text-gray-900",
 	},
 	sizes: {
 		sm: {
 			container:
 				"inline-flex text-xs items-center rounded-xs gap-x-0.5 py-0.25 px-1 mr-0.5",
-			icon: "w-[14px] hover:text-white text-white/50 hover:bg-gray-800",
+			icon: "w-[14px] hover:text-white text-muted hover:bg-gray-800",
 		},
 		md: {
 			container:
 				"inline-flex items-center text-xs rounded-xs gap-x-1 py-0.5 px-1 mr-1",
-			icon: "w-[16px] hover:text-white text-white/50 hover:bg-gray-800",
+			icon: "w-[16px] hover:text-white text-muted hover:bg-gray-800",
 		},
 	},
 };

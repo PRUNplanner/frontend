@@ -164,9 +164,7 @@
 					<template #render-cell="{ rowData }">
 						<div
 							class="text-end text-nowrap"
-							:class="
-								rowData.cxPrice <= 0 ? 'text-white/40' : ''
-							">
+							:class="rowData.cxPrice <= 0 ? 'text-muted' : ''">
 							<template v-if="rowData.cxPrice > 0">
 								{{ formatNumber(rowData.pricePerNeed, 4) }}
 							</template>
@@ -186,12 +184,10 @@
 					<template #render-cell="{ rowData }">
 						<div
 							class="text-end text-nowrap"
-							:class="
-								rowData.cxPrice <= 0 ? 'text-white/40' : ''
-							">
+							:class="rowData.cxPrice <= 0 ? 'text-muted' : ''">
 							<template v-if="rowData.cxPrice > 0">
 								{{ formatNumber(rowData.cxPrice, 2) }}
-								<span class="pl-1 font-light text-white/50">
+								<span class="pl-1 font-light text-muted">
 									ȼ
 								</span>
 							</template>

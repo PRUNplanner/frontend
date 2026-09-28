@@ -251,7 +251,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="text-xs text-white/50">
+				<div class="text-xs text-muted">
 					{{
 						$t("plan.tools.plan_analytics.info", {
 							planet: planetNaturalId,

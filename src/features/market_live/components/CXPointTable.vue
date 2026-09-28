@@ -62,7 +62,7 @@
 				:title="t('market_live.components.point_table.table.ask')"
 				align="right">
 				<template #render-cell="{ rowData }">
-					<div class="font-mono text-rose-600">
+					<div class="font-mono text-negative">
 						<span v-if="rowData.ask">
 							{{ formatNumber(rowData.ask, 2, true) }}
 						</span>

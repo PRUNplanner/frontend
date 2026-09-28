@@ -135,6 +135,7 @@ export const UserPreferenceSchema = z.object({
 	burnOrigin: z.string(),
 	supplyCartDays: z.number(),
 	layoutNavigationStyle: z.enum(["full", "collapsed"]).catch("full"),
+	colorPalette: z.enum(["default", "colorblind"]).catch("default"),
 	planOverrides: z
 		.record(z.string(), PreferencePerPlanSchema)
 		.nullable()

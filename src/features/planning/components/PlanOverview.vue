@@ -15,7 +15,7 @@
 	} from "@/features/planning/usePlanCalculation.types";
 
 	// UI
-	import { PTable } from "@/ui";
+	import { PTable, PValue } from "@/ui";
 
 	const props = defineProps({
 		visitationData: {
@@ -58,7 +58,7 @@
 						</td>
 						<td>
 							{{ formatNumber(overviewData.dailyCost) }}
-							<span class="font-light text-white/50"> ȼ </span>
+							<span class="font-light text-muted"> ȼ </span>
 						</td>
 					</tr>
 					<tr>
@@ -71,7 +71,7 @@
 							{{
 								formatNumber(overviewData.dailyDegradationCost)
 							}}
-							<span class="font-light text-white/50"> ȼ </span>
+							<span class="font-light text-muted"> ȼ </span>
 						</td>
 					</tr>
 					<tr>
@@ -82,7 +82,7 @@
 							{{
 								formatNumber(overviewData.totalConstructionCost)
 							}}
-							<span class="font-light text-white/50"> ȼ </span>
+							<span class="font-light text-muted"> ȼ </span>
 						</td>
 					</tr>
 					<tr>
@@ -93,14 +93,9 @@
 								)
 							}}
 						</td>
-						<td
-							:class="
-								overviewData.profit >= 0
-									? 'text-positive!'
-									: 'text-negative!'
-							">
-							{{ formatNumber(overviewData.profit) }}
-							<span class="font-light text-white/50"> ȼ </span>
+						<td>
+							<PValue :value="overviewData.profit" />
+							<span class="font-light text-muted"> ȼ </span>
 						</td>
 					</tr>
 					<tr>
@@ -120,14 +115,9 @@
 								$t("plan.components.overview.table.profit_area")
 							}}
 						</td>
-						<td
-							:class="
-								profitPerArea >= 0
-									? 'text-positive!'
-									: 'text-negative!'
-							">
-							{{ formatNumber(profitPerArea) }}
-							<span class="font-light text-white/50"> ȼ </span>
+						<td>
+							<PValue :value="profitPerArea" />
+							<span class="font-light text-muted"> ȼ </span>
 						</td>
 					</tr>
 				</tbody>
@@ -185,7 +175,7 @@
 						</td>
 						<td colspan="2" class="font-bold">
 							{{ formatNumber(visitationData.storageFilled) }}
-							<span class="font-light text-white/50"> d </span>
+							<span class="font-light text-muted"> d </span>
 						</td>
 					</tr>
 				</tbody>

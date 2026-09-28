@@ -22,7 +22,7 @@
 					<div class="text-prunplanner px-4 py-2">
 						{{ relativeFromDate(burst.timestamp) }}
 					</div>
-					<div class="px-4 py-2 text-[10px] text-white/50">
+					<div class="px-4 py-2 text-xs text-muted">
 						{{
 							$t("market_live.components.history.received", {
 								value: burst.tickers.length,

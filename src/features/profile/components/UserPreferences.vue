@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { onMounted, ref, type Ref } from "vue";
+	import { computed, onMounted, ref, type ComputedRef, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -38,6 +38,7 @@
 		burnResupplyDays,
 		burnOrigin,
 		locale,
+		colorPalette,
 		planSettingsOverview,
 		cleanPlanPreferences,
 	} = usePreferences();
@@ -45,6 +46,17 @@
 		usePreferences();
 
 	import { SupportedLanguages } from "@/lib/i18n";
+
+	const paletteOptions: ComputedRef<PSelectOption[]> = computed(() => [
+		{
+			label: t("profile.preferences.form.palette_default"),
+			value: "default",
+		},
+		{
+			label: t("profile.preferences.form.palette_colorblind"),
+			value: "colorblind",
+		},
+	]);
 
 	const empireOptions: Ref<PSelectOption[]> = ref(
 		Object.values(planningStore.empires).map((e) => {
@@ -111,6 +123,12 @@
 				</template>
 			</i18n-t>
 		</PFormSeperator>
+		<PFormItem :label="t('profile.preferences.form.color_palette')">
+			<PSelect
+				v-model:value="colorPalette"
+				:options="paletteOptions"
+				class="w-full" />
+		</PFormItem>
 		<PFormItem :label="t('profile.preferences.form.default_empire')">
 			<PSelect
 				v-model:value="defaultEmpireUuid"

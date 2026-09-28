@@ -84,7 +84,7 @@
 					<PInput v-model:value="creationAPIKeyName" class="w-full" />
 				</PFormItem>
 				<PFormSeperator>
-					<span class="py-1 text-white/50 text-xs">
+					<span class="py-1 text-muted text-xs">
 						{{ $t("api_keys.create.form.key_description") }}
 					</span>
 				</PFormSeperator>

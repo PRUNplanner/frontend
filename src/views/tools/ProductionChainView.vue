@@ -218,4 +218,9 @@
 
 	/* this contains the default theme, these are optional styles */
 	@import "@vue-flow/core/dist/theme-default.css";
+
+	/* the theme sets 10px edge labels */
+	.vue-flow__edge-text {
+		font-size: 12px;
+	}
 </style>

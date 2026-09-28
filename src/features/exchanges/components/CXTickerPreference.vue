@@ -130,7 +130,7 @@
 				</td>
 				<td class="text-right">
 					{{ formatNumber(preference.value) }}
-					<span class="pl-1 font-light text-white/50">ȼ</span>
+					<span class="pl-1 font-light text-muted">ȼ</span>
 				</td>
 				<td>
 					<div class="flex justify-end">
@@ -151,7 +151,7 @@
 			</tr>
 			<tr
 				v-if="localCXOptions.length === 0"
-				class="text-center child:text-white/50!">
+				class="text-center child:text-muted!">
 				<td colspan="4">
 					{{ $t("exchanges.components.ticker.no_data") }}
 				</td>

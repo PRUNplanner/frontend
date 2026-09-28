@@ -89,8 +89,8 @@
 
 		<div
 			v-if="localData.empire_permits_used !== plannedPermits"
-			class="text-xs bg-amber-500/20 text-white p-2 flex flex-row gap-x-2 items-start">
-			<PIcon :size="16" class="shrink-0 text-amber-400">
+			class="text-xs bg-warning/20 text-white p-2 flex flex-row gap-x-2 items-start">
+			<PIcon :size="16" class="shrink-0 text-warning">
 				<WarningSharp />
 			</PIcon>
 			<i18n-t keypath="empire.configuration.sync_warning.body" tag="div">

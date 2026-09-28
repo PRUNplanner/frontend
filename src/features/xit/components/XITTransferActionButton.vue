@@ -129,7 +129,7 @@
 
 						<div
 							v-if="burnOrigin === 'Configure on Execution'"
-							class="pl-3 text-xs text-white/50">
+							class="pl-3 text-xs text-muted">
 							{{ $t("xit.form.buy_from_cx_warning") }}
 						</div>
 					</div>

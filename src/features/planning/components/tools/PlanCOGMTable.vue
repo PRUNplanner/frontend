@@ -54,12 +54,12 @@
 				</td>
 				<td class="font-bold">
 					{{ formatNumber(data.degradationShare) }}
-					<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 				<td colspan="2" class="text-end">
 					{{ formatNumber(data.runtimeShare * 100) }} % /
 					{{ formatNumber(data.degradation) }}
-					<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 			</tr>
 			<template v-if="data.inputCost.length > 0">
@@ -70,7 +70,7 @@
 					<td>{{ $t("plan.tools.cogm.table.input_total") }}</td>
 					<td colspan="2" class="text-end font-bold">
 						{{ formatNumber(data.inputTotal) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</td>
 				</tr>
 				<tr>
@@ -91,11 +91,11 @@
 					</td>
 					<td>
 						{{ formatNumber(input.costUnit) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</td>
 					<td class="text-end">
 						{{ formatNumber(input.costTotal) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</td>
 				</tr>
 			</template>
@@ -105,12 +105,12 @@
 				</td>
 				<td class="font-bold">
 					{{ formatNumber(data.workforceCost) }}
-					<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 				<td colspan="2" class="text-end">
 					{{ formatNumber(data.runtimeShare * 100) }} % /
 					{{ formatNumber(data.workforceCostTotal) }}
-					<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 			</tr>
 			<tr class="child:border-t-2!">
@@ -119,7 +119,7 @@
 				</td>
 				<td colspan="3" class="font-bold">
 					{{ formatNumber(data.totalCost) }}
-					<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 			</tr>
 			<tr class="child:border-b-2!">
@@ -128,7 +128,7 @@
 				</td>
 				<td colspan="3" class="font-bold">
 					{{ formatNumber(data.totalProfit) }}
-					<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 			</tr>
 			<tr>
@@ -157,11 +157,11 @@
 				</td>
 				<td>
 					{{ formatNumber(output.costSplit) }}
-					<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 				<td class="text-end">
 					{{ formatNumber(output.costTotal) }}
-					<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 			</tr>
 		</tbody>

@@ -9,7 +9,7 @@
 
 <template>
 	<footer
-		class="sticky top-[100vh] pr-3 py-1 text-white/50 text-[10px] text-end flex flex-row gap-1.5 justify-end items-center">
+		class="sticky top-[100vh] pr-3 py-1 text-muted text-xs text-end flex flex-row gap-1.5 justify-end items-center">
 		<router-link :to="'/imprint-tos'" class="hover:cursor-pointer">
 			Imprint & Terms of Service
 		</router-link>

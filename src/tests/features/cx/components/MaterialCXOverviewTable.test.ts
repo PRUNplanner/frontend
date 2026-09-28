@@ -100,7 +100,7 @@ describe("MaterialCXOverviewTable", () => {
 					share ? `${formatNumber(share)}%` : "—"
 				);
 				expect(cell.classes()).toContain(
-					share >= 5 ? "text-negative" : "text-white/50"
+					share >= 5 ? "text-negative" : "text-muted"
 				);
 			});
 		}

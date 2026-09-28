@@ -178,7 +178,7 @@
 				: ''
 		">
 		<div>
-			<div class="pb-2 text-white/50 text-xs">
+			<div class="pb-2 text-muted text-xs">
 				{{ $t("plan.tools.cogm.info") }}
 			</div>
 			<PlanCOGMTable :data="data" />

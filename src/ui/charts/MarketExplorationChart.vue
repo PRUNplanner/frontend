@@ -22,6 +22,20 @@
 	let resizeObserver: ResizeObserver | null = null;
 	let candleSeries: ISeriesApi<"Candlestick"> | null = null;
 	let volumeSeries: ISeriesApi<"Histogram"> | null = null;
+	let paletteObserver: MutationObserver | null = null;
+
+	// candle colours follow the semantic tokens in style.css
+	function paletteColors() {
+		const css = getComputedStyle(document.documentElement);
+		const up = css.getPropertyValue("--color-positive").trim();
+		const down = css.getPropertyValue("--color-negative").trim();
+		return {
+			upColor: up,
+			downColor: down,
+			wickUpColor: up,
+			wickDownColor: down,
+		};
+	}
 
 	const hoverData = ref({
 		open: "0",
@@ -86,11 +100,16 @@
 		});
 
 		candleSeries = chart.addSeries(CandlestickSeries, {
-			upColor: "#4ade80",
-			downColor: "#f87171",
+			...paletteColors(),
 			borderVisible: false,
-			wickUpColor: "#4ade80",
-			wickDownColor: "#f87171",
+		});
+		// the colour-blind preference flips data-palette on <html>
+		paletteObserver = new MutationObserver(() =>
+			candleSeries?.applyOptions(paletteColors())
+		);
+		paletteObserver.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ["data-palette"],
 		});
 
 		volumeSeries = chart.addSeries(HistogramSeries, {
@@ -143,7 +162,9 @@
 				hoverData.value.low = priceData.low.toFixed(2);
 				hoverData.value.close = priceData.close.toFixed(2);
 				hoverData.value.color =
-					priceData.close >= priceData.open ? "#4ade80" : "#f87171";
+					priceData.close >= priceData.open
+						? "var(--color-positive)"
+						: "var(--color-negative)";
 				hoverData.value.price = true;
 			}
 
@@ -190,6 +211,8 @@
 	);
 
 	onUnmounted(() => {
+		paletteObserver?.disconnect();
+		paletteObserver = null;
 		if (resizeObserver) {
 			resizeObserver.disconnect();
 			resizeObserver = null;
