@@ -1,7 +1,7 @@
 {
 	"universe": "ВСЕЛЕННАЯ",
 	"vwap": "@:terms.vwap",
-	"traded_volume": "Объем продаж",
+	"traded_volume": "@:terms.traded_volume",
 	"market_live_data": "Рыночные данные в реальном времени",
 	"supply_vs_demand": "Пред / Спрос",
 	"insights": "Аналитика",
