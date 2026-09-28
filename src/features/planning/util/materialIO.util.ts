@@ -148,16 +148,18 @@ export function useMaterialIOUtil() {
 
 	function calculateEmpireCostOverview(
 		data: IEmpireMaterialIO[],
-		totalAreaUsed: number
+		totalAreaUsed: number,
+		nonMaterialCost: number
 	): IEmpireCostOverview {
-		const { totalRevenue, totalCost } = data.reduce(
+		const { totalRevenue, materialCost } = data.reduce(
 			(totals, { deltaPrice }) => {
 				if (deltaPrice > 0) totals.totalRevenue += deltaPrice;
-				if (deltaPrice < 0) totals.totalCost -= deltaPrice;
+				if (deltaPrice < 0) totals.materialCost -= deltaPrice;
 				return totals;
 			},
-			{ totalRevenue: 0, totalCost: 0 }
+			{ totalRevenue: 0, materialCost: 0 }
 		);
+		const totalCost = materialCost + nonMaterialCost;
 
 		return {
 			totalRevenue,

@@ -217,12 +217,27 @@ describe("Util: materialIO ", async () => {
 		expect(result[0].output).toBe(3);
 		expect(result[0].inputPlanets.length).toBe(1);
 		expect(result[0].outputPlanets.length).toBe(1);
-		expect(calculateEmpireCostOverview(result, 25)).toMatchObject({
+		expect(calculateEmpireCostOverview(result, 25, 0)).toMatchObject({
 			totalRevenue: 5,
 			totalCost: 9,
 			totalProfit: -4,
 		});
 	});
+
+	it("includes building degradation in empire cost", () => {
+		const { calculateEmpireCostOverview } = useMaterialIOUtil();
+		const materialIO = [
+			{ deltaPrice: 5 },
+			{ deltaPrice: -9 },
+		] as IEmpireMaterialIO[];
+
+		expect(calculateEmpireCostOverview(materialIO, 25, 20)).toMatchObject({
+			totalRevenue: 5,
+			totalCost: 29,
+			totalProfit: -24,
+		});
+	});
+
 	it("combineEmpireMaterialIO", async () => {
 		const fakeInput: IEmpirePlanMaterialIO[] = [
 			{

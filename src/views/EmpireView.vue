@@ -306,6 +306,18 @@
 			Object.values(calculatedPlans.value).reduce(
 				(sum, element) => sum + element.area.areaUsed,
 				0
+			),
+			Object.values(calculatedPlans.value).reduce(
+				(sum, planResult) =>
+					sum +
+					planResult.cost -
+					planResult.materialio.reduce(
+						(materialCost, material) =>
+							materialCost +
+							(material.delta < 0 ? -material.price : 0),
+						0
+					),
+				0
 			)
 		)
 	);
