@@ -4,7 +4,7 @@
 	"switch_material": "Cambia Materiale",
 	"kpis": {
 		"universe_vwap_7d": "Universe VWAP @:terms.7d",
-		"universe_traded_7d": "Volume scambiato nell'universo @:terms.7d",
+		"universe_traded_7d": "Universe @:terms.traded_volume @:terms.7d",
 		"universe_market_delta": "Delta del Mercato Universale",
 		"percent_trend": "% Tendenza",
 		"30d": "@:{'terms.30d'}:",
@@ -33,8 +33,8 @@
 			"vwap_7d": "@:terms.vwap @:terms.7d",
 			"vwap_30d": "@:terms.vwap @:terms.30d",
 			"trend": "Tendenza",
-			"volume_7d": "@:terms.volume @:terms.7d",
-			"volume_30d": "@:terms.volume @:terms.30d",
+			"volume_7d": "@:terms.traded_volume @:terms.7d",
+			"volume_30d": "@:terms.traded_volume @:terms.30d",
 			"details": "Dettagli"
 		}
 	}
