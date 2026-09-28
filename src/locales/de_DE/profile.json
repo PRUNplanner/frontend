@@ -20,7 +20,7 @@
 			"resend_code": "Code erneut senden",
 			"code_requested": "Code angefordert."
 		},
-		"fio_info": "FIO Updates werden automatisch von PRUNplanner verwaltet.",
+		"fio_info": "FIO Data Updates are handled by PRUNplanner's backend automatically.",
 		"form": {
 			"fio_apikey": "FIO API Key",
 			"prun_username": "PrUn Benutzername",
@@ -71,6 +71,9 @@
 		"form": {
 			"tool_preferences": "PRUNplanner Einstellungen",
 			"language": "Sprache",
+			"color_palette": "Color palette",
+			"palette_default": "Default (green / red)",
+			"palette_colorblind": "Color-blind (blue / orange)",
 			"language_note": "Wir wollen PRUNplanner für alle zugänglich machen. Wenn du das Tool in deiner Muttersprache sehen oder uns helfen möchtest, eine vorhandene Übersetzung zu verbessern, tritt unserem Lokalisierungsprojekt auf {link} bei.",
 			"default_empire": "Standard-Imperium",
 			"default_cx": "Standard CX",
