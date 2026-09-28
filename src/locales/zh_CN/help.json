@@ -72,5 +72,5 @@
 			"p": "深入查看历史价格，优化居住布局，估算访问频率，并微调生产效率。PRUNplanner 提供了丰富的实用工具，帮助你获得优势。"
 		}
 	},
-	"load_error": "Unable to load '{file_name}'"
+	"load_error": "未能加载 '{file_name}'"
 }
