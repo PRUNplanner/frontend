@@ -4,7 +4,7 @@
 	"switch_material": "Material wechseln",
 	"kpis": {
 		"universe_vwap_7d": "Universum VWAP @:terms.7d",
-		"universe_traded_7d": "Universe @:terms.traded_volume @:terms.7d",
+		"universe_traded_7d": "Universum @:terms.traded_volume @:terms.7d",
 		"universe_market_delta": "Universum Markt Delta",
 		"percent_trend": "% Trend",
 		"30d": "@:{'terms.30d'}:",
