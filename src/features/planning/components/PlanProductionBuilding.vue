@@ -133,8 +133,8 @@
 			</PButton>
 		</div>
 		<div
-			class="col-span-12 xl:col-span-6 grid grid-cols-12 items-center gap-x-3 text-white/80">
-			<div class="col-span-3 flex flex-col items-end min-w-0 text-right">
+			class="col-span-12 xl:col-span-6 flex flex-wrap justify-end items-center gap-x-6 gap-y-2 text-white/80">
+			<div class="flex flex-col items-end min-w-max text-right">
 				<span
 					class="text-[10px] text-white/50 uppercase tracking-wider">
 					{{
@@ -154,7 +154,7 @@
 					>
 				</span>
 			</div>
-			<div class="col-span-2 flex flex-col items-end text-right">
+			<div class="flex flex-col items-end min-w-max text-right">
 				<span class="text-[10px] text-white/50 uppercase tracking-wide">
 					{{
 						$t(
@@ -197,7 +197,7 @@
 					{{ $t(zeroReason) }}
 				</span>
 			</div>
-			<div class="col-span-3 flex flex-col items-end text-right">
+			<div class="flex flex-col items-end min-w-max text-right">
 				<span class="text-[10px] text-white/50 uppercase tracking-wide">
 					{{
 						$t("plan.components.production_building.table.revenue")
@@ -214,7 +214,7 @@
 					<span class="font-light text-white/50">ȼ</span>
 				</span>
 			</div>
-			<div class="col-span-1 flex flex-col items-end text-right">
+			<div class="flex flex-col items-end min-w-max text-right">
 				<span class="text-[10px] text-white/50 uppercase tracking-wide">
 					{{ $t("plan.components.production_building.table.area") }}
 				</span>
@@ -222,7 +222,7 @@
 					{{ localBuildingData.areaUsed }}
 				</span>
 			</div>
-			<div class="col-span-2 flex flex-col items-end text-right">
+			<div class="flex flex-col items-end min-w-max text-right">
 				<span class="text-[10px] text-white/50 uppercase tracking-wide">
 					{{
 						$t(
@@ -235,7 +235,7 @@
 					<span class="font-light text-white/50">ȼ</span>
 				</span>
 			</div>
-			<div class="col-span-1 flex justify-end">
+			<div class="flex justify-end">
 				<PButton
 					:disabled="disabled"
 					size="sm"

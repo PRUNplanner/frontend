@@ -48,26 +48,26 @@
 		<div class="my-auto font-bold pr-3">
 			{{ $t("management.filter.title") }}
 		</div>
-		<div class="flex flex-row gap-3 child:my-auto">
+		<div class="flex flex-row flex-wrap gap-3 child:my-auto max-w-full">
 			<div>{{ $t("management.filter.plan") }}</div>
-			<div>
+			<div class="max-w-full">
 				<PSelectMultiple
 					v-model:value="localFilterPlanNames"
 					:options="optionsPlanNames"
 					searchable
 					clearable
-					class="w-100!" />
+					class="w-100! max-w-full" />
 			</div>
 		</div>
-		<div class="flex flex-row gap-3 child:my-auto">
+		<div class="flex flex-row flex-wrap gap-3 child:my-auto max-w-full">
 			<div>{{ $t("management.filter.active_empire") }}</div>
-			<div>
+			<div class="max-w-full">
 				<PSelectMultiple
 					v-model:value="localFilterEmpires"
 					:options="optionsEmpires"
 					searchable
 					clearable
-					class="w-100!" />
+					class="w-100! max-w-full" />
 			</div>
 		</div>
 	</div>

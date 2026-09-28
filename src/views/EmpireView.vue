@@ -394,7 +394,7 @@
 
 				<div v-else>
 					<div
-						class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
+						class="px-3 sm:px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">
 						<div class="flex flex-row gap-3">
 							<h1 class="text-2xl font-bold my-auto">
 								{{ empireName }}
@@ -441,9 +441,9 @@
 					</div>
 
 					<div
-						class="grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6 m-3 sm:m-6 items-start">
+						class="grid grid-cols-1 xl:grid-cols-[minmax(0,600px)_minmax(0,1fr)] gap-6 m-3 sm:m-6 items-start">
 						<div
-							class="min-h-screen w-[600px] flex flex-col gap-6 justify-items-start">
+							class="min-h-screen w-full max-w-[600px] min-w-0 flex flex-col gap-6 justify-items-start">
 							<div>
 								<PForm>
 									<PFormItem

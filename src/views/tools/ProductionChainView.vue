@@ -88,14 +88,14 @@
 		@complete="generate()">
 		<div class="min-h-screen flex flex-col">
 			<div
-				class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
+				class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">
 				<h1 class="text-2xl font-bold my-auto">
 					{{ $t("production_chains.title") }}
 				</h1>
 				<HelpDrawer file-name="tools_production_chain" />
 			</div>
 			<div
-				class="grow grid grid-cols-1 xl:grid-cols-[400px_auto_300px] gap-3 divide-x divide-white/10">
+				class="grow grid grid-cols-1 xl:grid-cols-[400px_minmax(0,1fr)_300px] gap-3 divide-x divide-white/10">
 				<div class="px-6 py-3">
 					<h3 class="font-bold pb-3">
 						{{ $t("production_chains.configuration.title") }}
@@ -191,14 +191,14 @@
 						v-if="graphData"
 						:material-analysis="graphData.materialAnalysis" />
 				</div>
-				<div class="py-3 pr-3">
+				<div class="py-3 pr-3 min-w-0 overflow-hidden">
 					<GraphVueFlow
 						v-if="graphData"
 						:nodes="graphData.nodes"
 						:edges="graphData.edges"
 						:selected-node-color-type="selectedNodeColorType" />
 				</div>
-				<div class="pl-3 pr-6 py-3">
+				<div class="pl-3 pr-6 py-3 min-w-0 overflow-x-auto">
 					<GraphAnalysisExpertise
 						v-if="graphData"
 						:expertise-analysis="graphData.expertiseAnalysis" />

@@ -48,7 +48,7 @@
 	<main class="flex w-full text-white/80">
 		<NavigationBar v-if="isLoggedIn" />
 
-		<div class="flex-1 flex flex-col">
+		<div class="flex-1 min-w-0 flex flex-col">
 			<div class="h-full min-h-screen">
 				<HomepageHeader
 					v-if="!isLoggedIn"

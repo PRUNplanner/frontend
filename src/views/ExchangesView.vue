@@ -267,7 +267,7 @@
 			</template>
 			<div v-else class="min-h-screen flex flex-col">
 				<div
-					class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
+					class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">
 					<h1 class="text-2xl font-bold my-auto hover:cursor-pointer">
 						<n-dropdown
 							v-if="selectorDropdownOptions.length > 0"
@@ -283,7 +283,7 @@
 						</n-dropdown>
 						<template v-else>{{ $t("exchanges.title") }}</template>
 					</h1>
-					<div class="flex flex-row gap-x-3">
+					<div class="flex flex-row flex-wrap gap-3">
 						<PButton @click="toggleImportExport">
 							<template #icon>
 								<ImportExportOutlined />

@@ -27,22 +27,22 @@
 </script>
 
 <template>
-	<div class="w-full border border-white/10 rounded">
+	<div class="@container w-full border border-white/10 rounded">
 		<div
-			class="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-dark text-xs uppercase border-b border-white/10">
-			<div class="col-span-2">
+			class="grid grid-cols-[minmax(0,1fr)_5rem_5rem] @sm:grid-cols-[minmax(0,1fr)_5rem_minmax(0,1fr)_5rem] @2xl:grid-cols-[minmax(0,2fr)_5rem_minmax(0,5fr)_minmax(0,2fr)_5rem] gap-2 @2xl:gap-4 px-4 py-2 bg-gray-dark text-xs uppercase border-b border-white/10">
+			<div class="min-w-0">
 				{{ $t("market_live.components.alert_feed.table.ticker_alert") }}
 			</div>
-			<div class="col-span-1 text-center">
+			<div class="text-center">
 				{{ $t("market_live.components.alert_feed.table.severity") }}
 			</div>
-			<div class="col-span-5">
+			<div class="hidden @2xl:block">
 				{{ $t("market_live.components.alert_feed.table.logic") }}
 			</div>
-			<div class="col-span-2 text-end">
+			<div class="hidden @sm:block text-end">
 				{{ $t("market_live.components.alert_feed.table.event") }}
 			</div>
-			<div class="col-span-2 text-end">
+			<div class="text-end">
 				{{ $t("market_live.components.alert_feed.table.time") }}
 			</div>
 		</div>
@@ -51,14 +51,14 @@
 			<template v-for="event in eventLog" :key="event.id">
 				<div class="group mx-auto cursor-pointer">
 					<div
-						class="grid grid-cols-12 gap-4 px-2 py-1 items-center hover:bg-white/5 transition-colors border-l-4 border-b-dark-gray"
+						class="grid grid-cols-[minmax(0,1fr)_5rem_5rem] @sm:grid-cols-[minmax(0,1fr)_5rem_minmax(0,1fr)_5rem] @2xl:grid-cols-[minmax(0,2fr)_5rem_minmax(0,5fr)_minmax(0,2fr)_5rem] gap-2 @2xl:gap-4 px-2 py-1 items-center hover:bg-white/5 transition-colors border-l-4 border-b-dark-gray"
 						:class="{
 							'border-transparent': event.severity === 'LOW',
 							'border-orange-400': event.severity === 'MEDIUM',
 							'border-red-600': event.severity === 'HIGH',
 							'bg-red-500/20': event.severity === 'HIGH',
 						}">
-						<div class="col-span-2">
+						<div class="min-w-0">
 							<p
 								class="text-white font-bold text-sm tracking-tight group-hover:text-prunplanner transition-colors">
 								{{ event.ticker }}
@@ -68,7 +68,7 @@
 							</p>
 						</div>
 
-						<div class="col-span-1 flex justify-center">
+						<div class="flex justify-center">
 							<span
 								class="text-xs px-2 py-0.5 rounded"
 								:class="{
@@ -87,7 +87,7 @@
 							</span>
 						</div>
 
-						<div class="col-span-5 flex flex-wrap gap-2 font-mono">
+						<div class="hidden @2xl:flex flex-wrap gap-2 font-mono">
 							<div
 								v-for="(trigger, idx) in event.metadata
 									.triggers"
@@ -122,7 +122,8 @@
 							</div>
 						</div>
 
-						<div class="col-span-2 text-end font-mono text-xs">
+						<div
+							class="col-span-3 @sm:col-span-1 order-last @sm:order-none @sm:text-end font-mono text-xs">
 							<template
 								v-for="(trigger, idx) in event.metadata
 									.triggers"
@@ -179,7 +180,7 @@
 						</div>
 
 						<div
-							class="col-span-2 flex flex-row gap-x-3 text-white/80 text-xs font-mono text-end">
+							class="flex flex-row gap-x-1 text-white/80 text-xs font-mono text-end">
 							<div class="flex-grow">
 								{{ formatDate(event.timestamp, "HH:mm:ss") }}
 							</div>
