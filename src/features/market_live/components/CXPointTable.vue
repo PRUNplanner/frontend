@@ -23,6 +23,7 @@
 			striped
 			virtual-scroll
 			flex-height
+			:scroll-x="700"
 			class="h-full"
 			:row-key="(row) => row.ticker">
 			<XNDataTableColumn

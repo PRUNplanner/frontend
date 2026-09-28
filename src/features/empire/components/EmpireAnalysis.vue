@@ -182,7 +182,7 @@
 <template>
 	<div class="border rounded-[3px] border-white/15 p-3">
 		<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
-			<div v-if="chartDataProfitablePlans.length >= 3" class="col-span-2">
+			<div v-if="chartDataProfitablePlans.length >= 3" class="xl:col-span-2">
 				<h2 class="text-lg font-bold pb-3">
 					{{ $t("empire.analysis.profitable_plans") }}
 				</h2>

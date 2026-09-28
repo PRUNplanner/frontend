@@ -581,7 +581,7 @@
 		:planet-natural-id="planetData.planet_natural_id" />
 	<div class="@container">
 		<div
-			class="grid grid-cols-1 grid-rows-[repeat(5,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
+			class="grid grid-cols-[minmax(0,1fr)] grid-rows-[repeat(5,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
 			<!-- Plan Name & Selector -->
 			<div
 				class="p-3 row-1 col-1 flex flex-row flex-wrap gap-x-3 pt-3 pb-3 md:pb-0 @6xl:pb-3 items-baseline">
@@ -853,10 +853,10 @@
 			</div>
 			<!-- Main Plan View -->
 			<div
-				class="p-3 row-5 col-span-full grid grid-cols-1 @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
+				class="p-3 row-5 col-span-full grid grid-cols-[minmax(0,1fr)] @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
 				<div>
 					<div
-						class="flex flex-row flex-wrap sm:justify-center-safe gap-6">
+						class="flex flex-row flex-wrap sm:justify-center-safe gap-6 child:max-w-full child:overflow-x-auto">
 						<div>
 							<h2 class="text-white/80 font-bold text-lg pb-3">
 								{{ $t("plan.components.workforce.label") }}

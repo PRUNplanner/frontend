@@ -67,7 +67,7 @@
 			@update:cx-uuid="(d) => (refSelectedCXUuid = d)">
 			<div class="min-h-screen flex flex-col">
 				<div
-					class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
+					class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">
 					<h1 class="text-2xl font-bold my-auto">
 						{{ $t("hq_upgrade_calculator.title") }}
 					</h1>

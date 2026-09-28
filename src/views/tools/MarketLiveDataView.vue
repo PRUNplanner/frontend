@@ -105,11 +105,11 @@
 					<div
 						class="flex-1 flex flex-col min-h-0 rounded border border-white/10 p-3">
 						<div
-							class="pb-3 flex flex-row justify-between items-center shrink-0">
+							class="pb-3 flex flex-row flex-wrap justify-between items-center gap-2 shrink-0">
 							<h2 class="text-lg font-bold">
 								{{ $t("market_live.components.feed.title") }}
 							</h2>
-							<div class="flex flex-row gap-3">
+							<div class="flex flex-row flex-wrap gap-3">
 								<PButton
 									:type="
 										showAlertManager ? 'error' : 'secondary'

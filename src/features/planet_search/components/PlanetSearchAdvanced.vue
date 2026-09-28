@@ -280,7 +280,7 @@
 				{{ $t("planet_search.advanced.labels.planet_environment") }}
 			</h3>
 
-			<div class="flex flex-row gap-x-3">
+			<div class="flex flex-col sm:flex-row gap-3">
 				<PTable class="w-full">
 					<tbody>
 						<tr class="child:w-[25%]">
@@ -372,7 +372,7 @@
 					</tbody>
 				</PTable>
 
-				<div class="flex flex-col gap-y-3">
+				<div class="flex flex-row sm:flex-col gap-3 shrink-0">
 					<PButton secondary @click="environmentDefault">
 						{{ $t("common.buttons.default") }}
 					</PButton>

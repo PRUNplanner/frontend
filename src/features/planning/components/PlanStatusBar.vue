@@ -55,8 +55,8 @@
 </script>
 
 <template>
-	<div class="flex flex-row font-bold child:mr-3">
-		<div :class="corphq ? 'visible' : 'collapse md:invisible'">
+	<div class="flex flex-row flex-wrap gap-x-3 gap-y-1 font-bold">
+		<div :class="corphq ? 'visible' : 'hidden md:block md:invisible'">
 			<span class="text-positive">
 				{{ $t("plan.components.status.hq") }}
 			</span>

@@ -88,7 +88,7 @@
 			<div class="font-bold pr-3">
 				{{ $t("recipe_roi.filters.title") }}
 			</div>
-			<div class="flex flex-row gap-3 child:my-auto">
+			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
 				<div>{{ $t("recipe_roi.filters.building") }}</div>
 				<PSelectMultiple
 					v-model:value="localFilterBuilding"
@@ -97,7 +97,7 @@
 					clearable
 					class="w-40" />
 			</div>
-			<div class="flex flex-row gap-3 child:my-auto">
+			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
 				<div>{{ $t("recipe_roi.filters.cogc") }}</div>
 				<PSelectMultiple
 					v-model:value="localFilterCogc"
@@ -106,7 +106,7 @@
 					clearable
 					class="w-50" />
 			</div>
-			<div class="flex flex-row gap-3 child:my-auto">
+			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
 				<div>{{ $t("recipe_roi.filters.output") }}</div>
 				<PSelectMultiple
 					v-model:value="localFilterOutputMaterial"
@@ -115,7 +115,7 @@
 					clearable
 					class="w-75" />
 			</div>
-			<div class="flex flex-row gap-3 child:my-auto">
+			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
 				<div>{{ $t("recipe_roi.filters.input") }}</div>
 				<PSelectMultiple
 					v-model:value="localFilterInputMaterial"

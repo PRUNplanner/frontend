@@ -28,7 +28,7 @@
 
 <template>
 	<div
-		class="mx-auto w-full max-w-7xl mt-10 px-3 flex flex-row justify-between">
+		class="mx-auto w-full max-w-7xl mt-10 px-3 flex flex-row flex-wrap justify-between gap-3">
 		<div>
 			<h2 class="text-3xl text-prunplanner font-light">
 				<span class="font-bold">PRUN</span>planner
@@ -46,7 +46,7 @@
 				</RouterLink>
 			</div>
 			<div
-				class="flex flex-row gap-x-7 child:px-3 child:py-1 child:text-lg child:font-light child:hover:bg-white/10 child:hover:rounded-lg">
+				class="flex flex-row gap-x-2 sm:gap-x-7 child:px-3 child:py-1 child:text-lg child:font-light child:hover:bg-white/10 child:hover:rounded-lg">
 				<div @click="toggleRegistration">
 					{{ $t("homepage.navigation.registration") }}
 				</div>

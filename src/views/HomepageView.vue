@@ -39,10 +39,10 @@
 </script>
 
 <template>
-	<div class="mx-auto w-full max-w-7xl pb-5 md:px-10 lg:px-0">
+	<div class="mx-auto w-full max-w-7xl px-4 pb-5 md:px-10 lg:px-0">
 		<div class="lg:mb-10">
 			<h1
-				class="bg-linear-to-b bg-clip-text pb-4 text-7xl font-extrabold leading-tight text-transparent from-white/50 to-white">
+				class="bg-linear-to-b bg-clip-text pb-4 text-5xl md:text-7xl font-extrabold leading-tight text-transparent from-white/50 to-white">
 				{{ $t("homepage.hero.title") }} <br />
 				{{ $t("homepage.hero.subtitle") }}
 			</h1>
@@ -56,7 +56,7 @@
 		</h1>
 		<p
 			class="text-white/60 text-center text-xl"
-			:class="showLanguageSelector ? 'mb-' : 'mb-10'">
+			:class="showLanguageSelector ? 'mb-4' : 'mb-10'">
 			{{ $t("homepage.features.section_lead") }}
 		</p>
 
@@ -189,7 +189,7 @@
 		<h1 class="pb-4 text-4xl tracking-tight text-white text-center mt-20">
 			{{ $t("homepage.tools.section_title") }}
 		</h1>
-		<div class="flex flex-row items-center justify-center pt-3 gap-10">
+		<div class="flex flex-row flex-wrap items-center justify-center pt-3 gap-10">
 			<a href="https://posthog.com/" target="_blank">
 				<img
 					src="/images/homepage/posthog-logo-white@2x.png"

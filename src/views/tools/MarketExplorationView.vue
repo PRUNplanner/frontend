@@ -180,12 +180,12 @@
 		load-exchanges>
 		<div class="min-h-screen flex flex-col">
 			<div
-				class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
+				class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">
 				<h1 class="text-2xl font-bold">
 					{{ $t("market_exploration.title") }}
 				</h1>
 				<div>
-					<div class="flex flex-row gap-x-3 child:my-auto">
+					<div class="flex flex-row flex-wrap gap-3 child:my-auto">
 						<div>
 							{{ $t("market_exploration.switch_material") }}
 						</div>
