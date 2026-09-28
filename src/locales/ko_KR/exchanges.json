@@ -50,6 +50,8 @@
 				"import": "Import Settings",
 				"export": "Export Settings"
 			}
-		}
+		},
+		"type_label": "Preference type",
+		"value_label": "Price"
 	}
 }
