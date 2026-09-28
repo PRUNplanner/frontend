@@ -6,6 +6,8 @@
 		"universe_vwap_7d": "Universe VWAP @:terms.7d",
 		"universe_traded_7d": "Universe @:terms.traded_volume @:terms.7d",
 		"universe_market_delta": "Delta del Mercato Universale",
+		"shortage": "Shortage",
+		"surplus": "Surplus",
 		"percent_trend": "% Tendenza",
 		"30d": "@:{'terms.30d'}:",
 		"supply": "@:{'terms.supply'}:",
