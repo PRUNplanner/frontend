@@ -50,6 +50,8 @@
 				"import": "导入设置",
 				"export": "导出设置"
 			}
-		}
+		},
+		"type_label": "Preference type",
+		"value_label": "Price"
 	}
 }
