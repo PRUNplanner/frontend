@@ -55,8 +55,13 @@
 </script>
 
 <template>
-	<div class="h-dvh flex-1">
-		<x-n-data-table :data="localEmpireMaterialIO" striped>
+	<div class="flex-1 min-h-0">
+		<x-n-data-table
+			:data="localEmpireMaterialIO"
+			striped
+			flex-height
+			:scroll-x="900"
+			class="h-full">
 			<x-n-data-table-column
 				key="ticker"
 				:title="t('terms.material_ticker')"
@@ -70,6 +75,8 @@
 			</x-n-data-table-column>
 			<x-n-data-table-column
 				key="delta"
+				align="right"
+				title-align="right"
 				:title="t('terms.delta')"
 				sorter="default">
 				<template #render-cell="{ rowData }">
@@ -78,6 +85,8 @@
 			</x-n-data-table-column>
 			<x-n-data-table-column
 				key="output"
+				align="right"
+				title-align="right"
 				:title="t('terms.production')"
 				sorter="default">
 				<template #render-cell="{ rowData }">
@@ -90,6 +99,8 @@
 			</x-n-data-table-column>
 			<x-n-data-table-column
 				key="input"
+				align="right"
+				title-align="right"
 				:title="t('terms.consumption')"
 				sorter="default">
 				<template #render-cell="{ rowData }">
@@ -100,6 +111,8 @@
 			</x-n-data-table-column>
 			<x-n-data-table-column
 				key="deltaPrice"
+				align="right"
+				title-align="right"
 				:title="t('terms.delta_price')"
 				sorter="default">
 				<template #render-cell="{ rowData }">

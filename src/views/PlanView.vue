@@ -980,6 +980,7 @@
 						<template v-if="!refMaterialIOSplitted">
 							<PlanMaterialIO
 								:material-i-o-data="result.materialio"
+								max-height="calc(100dvh - 10rem)"
 								:show-basked="refMaterialIOShowBasked" />
 						</template>
 						<template v-else>
@@ -992,6 +993,7 @@
 							</h3>
 							<PlanMaterialIO
 								:material-i-o-data="result.productionMaterialIO"
+								max-height="calc(50dvh - 8rem)"
 								:show-basked="refMaterialIOShowBasked" />
 							<h3 class="font-bold py-3">
 								{{
@@ -1002,6 +1004,7 @@
 							</h3>
 							<PlanMaterialIO
 								:material-i-o-data="result.workforceMaterialIO"
+								max-height="calc(50dvh - 8rem)"
 								:show-basked="refMaterialIOShowBasked" />
 						</template>
 					</div>

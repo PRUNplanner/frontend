@@ -18,9 +18,9 @@
 		"recipe_input": "@:terms.recipes Input",
 		"cogc": "@:terms.cogc",
 		"cogm": "@:terms.cogm",
-		"plan_cost": "@:terms.plan Cost",
-		"daily_profit": "Daily Profit",
-		"profit_area": "Profit/Area",
-		"plan_roi": "@:terms.plan ROI"
+		"plan_cost": "@:terms.plan Cost (ȼ)",
+		"daily_profit": "Daily Profit (ȼ)",
+		"profit_area": "Profit/Area (ȼ)",
+		"plan_roi": "@:terms.plan ROI (d)"
 	}
 }

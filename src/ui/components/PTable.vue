@@ -41,6 +41,11 @@
 		@apply odd:bg-white/3;
 	}
 
+	.ptable th.numeric,
+	.ptable td.numeric {
+		@apply text-right;
+	}
+
 	.ptable tr:last-child td {
 		@apply border-b-0;
 	}

@@ -18,9 +18,9 @@
 		"environment": "Environment",
 		"infrastructure": "Infrastructure",
 		"cost_profit": "Cost / Profit",
-		"plan_cost": "@:terms.plan @:terms.cost",
-		"daily_profit": "Daily @:terms.profit",
-		"plan_roi": "@:terms.plan ROI",
+		"plan_cost": "@:terms.plan @:terms.cost (ȼ)",
+		"daily_profit": "Daily @:terms.profit (ȼ)",
+		"plan_roi": "@:terms.plan ROI (d)",
 		"distances": "Distances"
 	}
 }

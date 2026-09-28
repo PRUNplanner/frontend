@@ -59,6 +59,7 @@ describe("Util: text", () => {
 	describe("formatPayback", () => {
 		it("positive days", () => {
 			expect(formatPayback(12.345)).toStrictEqual("12.35 d");
+			expect(formatPayback(12.345, false)).toStrictEqual("12.35");
 		});
 
 		it("0 pays back at once", () => {

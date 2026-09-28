@@ -123,6 +123,8 @@
 			</XNDataTableColumn>
 			<XNDataTableColumn
 				key="dailyYield"
+				align="right"
+				title-align="right"
 				:title="t('resource_roi.table.daily')"
 				sorter="default">
 				<template #render-cell="{ rowData }">
@@ -131,10 +133,12 @@
 			</XNDataTableColumn>
 			<XNDataTableColumn
 				key="percentMaxDailyYield"
+				align="right"
+				title-align="right"
 				:title="t('resource_roi.table.percent_max')"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					{{ formatNumber(rowData.percentMaxDailyYield * 100) }} %
+					{{ formatNumber(rowData.percentMaxDailyYield * 100) }}
 				</template>
 			</XNDataTableColumn>
 		</XNDataTableColumn>
@@ -202,13 +206,13 @@
 			<XNDataTableColumn
 				key="planCost"
 				:title="t('resource_roi.table.plan_cost')"
+				align="right"
 				title-align="right"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<div class="text-end text-nowrap">
+					<span class="text-nowrap">
 						{{ formatNumber(rowData.planCost) }}
-						<span class="pl-1 font-light text-muted"> ȼ </span>
-					</div>
+					</span>
 				</template>
 			</XNDataTableColumn>
 			<!-- <XNDataTableColumn
@@ -228,13 +232,11 @@
 			<XNDataTableColumn
 				key="dailyProfit"
 				:title="t('resource_roi.table.daily_profit')"
+				align="right"
 				title-align="right"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<div class="text-end text-nowrap">
-						<PValue :value="rowData.dailyProfit" />
-						<span class="pl-1 font-light text-muted">ȼ</span>
-					</div>
+					<PValue class="text-nowrap" :value="rowData.dailyProfit" />
 				</template>
 			</XNDataTableColumn>
 			<!-- <XNDataTableColumn
@@ -254,19 +256,19 @@
 			<XNDataTableColumn
 				key="planROI"
 				:title="t('resource_roi.table.plan_roi')"
+				align="right"
 				title-align="right"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<div
-						class="text-end"
+					<span
+						class="text-nowrap"
 						:class="
 							rowData.planROI > 0
 								? 'text-positive'
 								: 'text-negative'
 						">
 						{{ formatNumber(rowData.planROI) }}
-						<span class="pl-1 font-light text-muted"> d </span>
-					</div>
+					</span>
 				</template>
 			</XNDataTableColumn>
 		</XNDataTableColumn>
@@ -275,6 +277,8 @@
 			:title="t('resource_roi.table.distances')">
 			<XNDataTableColumn
 				key="distanceAI1"
+				align="right"
+				title-align="right"
 				title="AI1"
 				:sorter="distanceSorter('distanceAI1')">
 				<template #render-cell="{ rowData }">
@@ -284,6 +288,8 @@
 			</XNDataTableColumn>
 			<XNDataTableColumn
 				key="distanceCI1"
+				align="right"
+				title-align="right"
 				title="CI1"
 				:sorter="distanceSorter('distanceCI1')">
 				<template #render-cell="{ rowData }">
@@ -293,6 +299,8 @@
 			</XNDataTableColumn>
 			<XNDataTableColumn
 				key="distanceIC1"
+				align="right"
+				title-align="right"
 				title="IC1"
 				:sorter="distanceSorter('distanceIC1')">
 				<template #render-cell="{ rowData }">
@@ -302,6 +310,8 @@
 			</XNDataTableColumn>
 			<XNDataTableColumn
 				key="distanceNC1"
+				align="right"
+				title-align="right"
 				title="NC1"
 				:sorter="distanceSorter('distanceNC1')">
 				<template #render-cell="{ rowData }">

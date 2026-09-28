@@ -204,6 +204,8 @@
 						</XNDataTableColumn>
 						<XNDataTableColumn
 							key="amount"
+							align="right"
+							title-align="right"
 							:title="t('hq_upgrade_calculator.table.amount')"
 							sorter="default">
 							<template #render-cell="{ rowData }">
@@ -212,6 +214,8 @@
 						</XNDataTableColumn>
 						<XNDataTableColumn
 							key="storage"
+							align="right"
+							title-align="right"
 							:title="t('hq_upgrade_calculator.table.storage')"
 							sorter="default">
 							<template #render-cell="{ rowData }">
@@ -245,6 +249,8 @@
 						</XNDataTableColumn>
 						<XNDataTableColumn
 							key="required"
+							align="right"
+							title-align="right"
 							:title="t('hq_upgrade_calculator.table.required')"
 							sorter="default">
 							<template #render-cell="{ rowData }">
@@ -253,24 +259,22 @@
 						</XNDataTableColumn>
 						<XNDataTableColumn
 							key="unitCost"
+							align="right"
+							title-align="right"
 							:title="t('hq_upgrade_calculator.table.cost_unit')"
 							sorter="default">
 							<template #render-cell="{ rowData }">
 								{{ formatNumber(rowData.unitCost) }}
-								<span class="pl-1 font-light text-muted">
-									ȼ
-								</span>
 							</template>
 						</XNDataTableColumn>
 						<XNDataTableColumn
 							key="totalCost"
+							align="right"
+							title-align="right"
 							:title="t('hq_upgrade_calculator.table.cost_total')"
 							sorter="default">
 							<template #render-cell="{ rowData }">
 								{{ formatNumber(rowData.totalCost) }}
-								<span class="pl-1 font-light text-muted">
-									ȼ
-								</span>
 							</template>
 						</XNDataTableColumn>
 						<XNDataTableColumn

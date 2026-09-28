@@ -62,6 +62,32 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
     is the standard way to show a material ticker. It is colour-coded by
     category and has a popover and a market drawer.
 
+## Tables
+
+Every numeric column follows one pattern, so numbers line up and compare
+across the app:
+
+- **Right-aligned, header too.** On `XNDataTableColumn` set
+  `align="right" title-align="right"`. In `PTable` (native table) put
+  `class="numeric"` on the `th` and `td`. Text columns stay left.
+- **One precision per column.** Render `formatNumber(v, decimals)` with the
+  same `decimals` for every row (no `optionalDecimals`), `formatAmount(v)`
+  for counts, or `<PValue :value="v" />` for signed values. "—" and "never"
+  are the only non-numbers in a numeric cell.
+- **Units in the header, not the cell.** Put ȼ, %, d, t, m³ into the en_US
+  header string (`"Daily Profit (ȼ)"`, `"ȼ / day"`, `"Spread %"`); the cell
+  holds just the number. `formatPayback(days, false)` drops its " d".
+- **Long tables keep their header.** A table that can outgrow the viewport
+  gets a fixed header: `max-height="calc(100dvh - …)"` (the body scrolls
+  under the header), or `flex-height class="h-full"` inside a
+  `flex-1 min-h-0` wrapper of known height (`CXPointTable`,
+  `EmpireMaterialIO`). Leave room for sticky bars above it, such as the plan
+  status bar. Paginated tables (50 rows) don't need it.
+
+Examples: `features/planning/components/PlanMaterialIO.vue`,
+`features/roi_overview/components/ROIOverviewTable.vue`,
+`features/planning/components/PlanWorkforce.vue` (`PTable`).
+
 ## Styling
 
 - **Tailwind v4** via `@tailwindcss/vite`.

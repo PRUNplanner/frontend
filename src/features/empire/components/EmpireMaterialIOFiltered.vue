@@ -168,7 +168,9 @@
 </script>
 
 <template>
-	<div class="flex flex-col flex-1">
+	<div
+		class="flex flex-col flex-1"
+		:class="content === 'materialio' ? 'min-h-0' : ''">
 		<div
 			v-if="content != 'opportunities'"
 			class="border rounded-[3px] border-b-0 border-white/15 p-3">

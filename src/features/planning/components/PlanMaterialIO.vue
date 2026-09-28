@@ -24,6 +24,12 @@
 			type: Array as PropType<IMaterialIO[]>,
 			required: true,
 		},
+		// body height; the header stays fixed above it
+		maxHeight: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
 		showBasked: {
 			type: Boolean,
 			required: true,
@@ -40,7 +46,10 @@
 </script>
 
 <template>
-	<XNDataTable :data="localMaterialIOData" striped>
+	<XNDataTable
+		:data="localMaterialIOData"
+		:max-height="maxHeight"
+		striped>
 		<XNDataTableColumn key="ticker" title="" sorter="default">
 			<template #render-cell="{ rowData }">
 				<MaterialTile
@@ -52,6 +61,8 @@
 		</XNDataTableColumn>
 		<XNDataTableColumn
 			key="input"
+			align="right"
+			title-align="right"
 			:title="t('plan.components.materialio.table.input')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
@@ -62,6 +73,8 @@
 		</XNDataTableColumn>
 		<XNDataTableColumn
 			key="output"
+			align="right"
+			title-align="right"
 			:title="t('plan.components.materialio.table.output')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
@@ -72,6 +85,8 @@
 		</XNDataTableColumn>
 		<XNDataTableColumn
 			key="delta"
+			align="right"
+			title-align="right"
 			:title="t('plan.components.materialio.table.delta')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
@@ -81,6 +96,8 @@
 		<XNDataTableColumn
 			v-if="!localShowBasked"
 			key="price"
+			align="right"
+			title-align="right"
 			:title="t('plan.components.materialio.table.cost_day')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
@@ -90,6 +107,8 @@
 		<XNDataTableColumn
 			v-if="localShowBasked"
 			key="totalWeight"
+			align="right"
+			title-align="right"
 			:title="t('plan.components.materialio.table.total_weight')"
 			sorter="default">
 			<template #render-cell="{ rowData }">
@@ -99,6 +118,8 @@
 		<XNDataTableColumn
 			v-if="localShowBasked"
 			key="totalVolume"
+			align="right"
+			title-align="right"
 			:title="t('plan.components.materialio.table.total_volume')"
 			sorter="default">
 			<template #render-cell="{ rowData }">

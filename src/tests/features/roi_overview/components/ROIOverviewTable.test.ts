@@ -145,11 +145,11 @@ describe("ROIOverviewTable", () => {
 		expect(rows[0]).toMatchObject({
 			optimalSetup: "10x SME",
 			cogc: "Metallurgy",
-			planCost: "250,000.00  ȼ",
-			dailyProfit: "+1,000.00ȼ",
+			planCost: "250,000.00",
+			dailyProfit: "+1,000.00",
 			// 1000 / 500
-			planProfitArea: "+2.00ȼ",
-			planROI: "40.00 d",
+			planProfitArea: "+2.00",
+			planROI: "40.00",
 		});
 		// underscores become spaces, every word capitalized
 		expect(rows[2].cogc).toBe("Food Industries");
@@ -158,19 +158,19 @@ describe("ROIOverviewTable", () => {
 	it("colours profit and ROI by sign", async () => {
 		const { wrapper } = await mountTable();
 
-		const positive = (key: string, el = "div") =>
+		const positive = (key: string) =>
 			wrapper
-				.findAll(`td[data-col-key="${key}"] ${el}`)
-				.map((d) => d.classes("text-positive"));
+				.findAll(`td[data-col-key="${key}"]`)
+				.map((td) => td.find("span").classes("text-positive"));
 
 		// FP makes exactly 0, which is not positive
-		expect(positive("dailyProfit", "div > span:first-child")).toEqual([
+		expect(positive("dailyProfit")).toEqual([
 			true,
 			false,
 			false,
 			true,
 		]);
-		expect(positive("planProfitArea", "div > span:first-child")).toEqual([
+		expect(positive("planProfitArea")).toEqual([
 			true,
 			false,
 			false,

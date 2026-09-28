@@ -47,12 +47,13 @@ export function formatAmount(value: number): string {
  *
  * @export
  * @param {number} days payback period in days
+ * @param {boolean} withUnit append " d" (off when the header carries the unit)
  * @returns {string} e.g. "12.34 d" or "never"
  */
-export function formatPayback(days: number): string {
+export function formatPayback(days: number, withUnit = true): string {
 	if (!Number.isFinite(days) || days < 0)
 		return i18n.global.t("common.values.never");
-	return formatNumber(days) + " d";
+	return formatNumber(days) + (withUnit ? " d" : "");
 }
 
 /**
