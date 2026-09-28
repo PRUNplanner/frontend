@@ -6,7 +6,9 @@
 		"buy_from_cx_warning": "只有来源地为仓库时才能采购。",
 		"fit_ship": "适配飞船",
 		"hide_infinite": "隐藏无限项",
-		"json": "JSON"
+		"json": "JSON",
+		"include_label": "Include {ticker}",
+		"override_label": "Override for {ticker}"
 	},
 	"buttons": {
 		"copy_json": "复制 XIT JSON",
