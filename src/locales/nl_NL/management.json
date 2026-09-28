@@ -61,8 +61,11 @@
 			"plan": "plan",
 			"planet": "planeet",
 			"configuration": "Configuratie",
-			"nodata_title": "Geen plan beschikbaar",
-			"nodata_label": "Gebruik planeet zoeken om je eerste @:terms.plans te maken."
+			"nodata_title": "No @:terms.plans_plural available",
+			"nodata_label": "Use Planet Search to create your first @:{'terms.plan'}.",
+			"assign_label": "{plan} in {empire}",
+			"assign_all": "Assign all plans to {empire}",
+			"unassign_all": "Remove all plans from {empire}"
 		}
 	}
 }
