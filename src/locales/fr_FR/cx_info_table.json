@@ -1,7 +1,7 @@
 {
 	"universe": "UNIVERS",
 	"vwap": "@:terms.vwap",
-	"traded_volume": "Volume d'échange",
+	"traded_volume": "@:terms.traded_volume",
 	"market_live_data": "Données de marché en temps réel",
 	"supply_vs_demand": "O / D",
 	"insights": "Analyses",
