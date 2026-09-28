@@ -6,7 +6,7 @@ Lists all materials consumed by buildings for the selected need, sorted by cost 
 
 - **Material**: The material consumed by the building.
 - **Building**: The infrastructure building that consumes the material.
-- **$/Need**: Cost per unit of need provided. Lower is better.
+- **ȼ/Need**: Cost per unit of need provided. Lower is better.
 - **CX Price**: Market price based on your exchange preferences.
 - **Qty/Day**: Material consumed per day by the building.
 
