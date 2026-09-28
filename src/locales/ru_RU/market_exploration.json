@@ -6,6 +6,8 @@
 		"universe_vwap_7d": "VWAP вселенной @:terms.7d",
 		"universe_traded_7d": "Universe @:terms.traded_volume @:terms.7d",
 		"universe_market_delta": "Дельта рынка вселенной",
+		"shortage": "Shortage",
+		"surplus": "Surplus",
 		"percent_trend": "% Тренд",
 		"30d": "@:{'terms.30d'}:",
 		"supply": "@:{'terms.supply'}:",
