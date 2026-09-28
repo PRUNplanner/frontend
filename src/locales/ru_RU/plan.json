@@ -1,6 +1,7 @@
 {
 	"notifications": {
-		"must_have_name": "Необходимо выбрать название плана в конфигурации, чтобы сохранить"
+		"must_have_name": "Необходимо выбрать название плана в конфигурации, чтобы сохранить",
+		"leave_unsaved": "Do you really want to leave? Unsaved changes will be lost."
 	},
 	"tools": {
 		"labels": {
@@ -31,7 +32,8 @@
 					"storage_filled": "Заполненность хранилища",
 					"filled_unit": "дни"
 				},
-				"exclusion_info": "Исключить местные материалы из расчета частоты посещений для предметов торгующихся на внутреннем рынке планеты."
+				"exclusion_info": "Исключить местные материалы из расчета частоты посещений для предметов торгующихся на внутреннем рынке планеты.",
+				"exclusion_label": "Excluded materials"
 			},
 			"shipping": {
 				"label": "Доставка",
@@ -63,7 +65,9 @@
 				"stock": "Запас",
 				"stock_override": "Переопределение запаса",
 				"need": "Необходимо"
-			}
+			},
+			"amount_label": "Amount of {building}",
+			"override_label": "Stock override for {ticker}"
 		},
 		"supply_cart": {
 			"title": "Корзина снабжения",
@@ -119,7 +123,7 @@
 			"info": "Себестоимость произведённой продукции рассчитывается с использованием настроек плана, учитывающих эффективность производства, время выполнения рецепта, износ зданий, стоимость входных материалов, потребность в рабочей силе и связанные с ней затраты. Итоговая стоимость отображается за единицу продукции на основе количества или полного распределения затрат.",
 			"cx_preferences": "Настройки @:terms.cx_plural",
 			"empire_ticker": "@:terms.empire Тикер",
-			"planet_ticker": "@:terms.planet Тикер",
+			"planet_ticker": "@:terms.planets Ticker",
 			"table": {
 				"parameters": "Параметры",
 				"recipe_runtime": "Время выполнения @:terms.recipes",
@@ -146,7 +150,8 @@
 				"experts": "Эксперты",
 				"production_buildings": "Производство @terms.buildings_plural",
 				"recipes": "@:terms.recipes_plural"
-			}
+			},
+			"toggle": "Toggle insights"
 		}
 	},
 	"components": {
@@ -165,7 +170,8 @@
 		"area": {
 			"permits": "@:terms.permits_plural",
 			"area": "@:terms.area",
-			"free": "Свободно"
+			"free": "Свободно",
+			"exceeded": "Exceeded by {amount}"
 		},
 		"bonuses": {
 			"corp_hq": "Штаб-квартира корпорации",
@@ -179,11 +185,13 @@
 			"buttons": {
 				"optimize_cost": "Оптимизация по цене",
 				"optimize_area": "Оптимизация по площади"
-			}
+			},
+			"amount_label": "Amount of {infrastructure}"
 		},
 		"experts": {
 			"label": "Эксперты",
-			"warning": "Максимальное количество экспертов на базе - 6. В настоящее время назначены эксперты {expert_number}."
+			"warning": "Максимальное количество экспертов на базе - 6. В настоящее время назначены эксперты {expert_number}.",
+			"amount_label": "{expert} experts"
 		},
 		"workforce": {
 			"label": "Рабочая сила",
@@ -269,7 +277,12 @@
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
 				"construction": "Строительство"
-			}
+			},
+			"zero_reason": {
+				"FERTILITY": "Planet not fertile",
+				"WORKFORCE": "No workforce housed"
+			},
+			"qty_label": "Amount of {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "Затраты на изготовленные товары",
@@ -292,7 +305,8 @@
 				"p2": "это ежедневный доход от площади для одного производственного здания и пропорциональная доля этого участка для КМ и жилищ, необходимых для оптимальной застройки таких зданий в доходности рецепта.",
 				"p3_strong": "Доходность",
 				"p3": "Время окупаемости проекта с учетом затрат на ремонт и обслуживание."
-			}
+			},
+			"amount_label": "Amount of recipe {recipe}"
 		}
 	}
 }
