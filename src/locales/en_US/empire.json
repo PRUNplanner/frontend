@@ -67,5 +67,30 @@
 			"delta_required": "Delta Required",
 			"missing_material": "Missing Material"
 		}
+	},
+	"onboarding": {
+		"title": "Welcome to PRUNplanner",
+		"intro": "Three steps to your first base plan.",
+		"empire": {
+			"title": "Your empire",
+			"help": "Faction and permits affect your plans' faction bonus and available area.",
+			"saved": "Saved"
+		},
+		"plan": {
+			"title": "Plan your first base",
+			"help": "Find a planet and create a plan there. It's added to this empire automatically.",
+			"action": "@:common.navigation.planet_search"
+		},
+		"prices": {
+			"title": "Prices",
+			"help": "Prices use the universe 30-day average. Change which exchange each material is bought and sold on in {exchanges}.",
+			"exchanges": "Exchanges"
+		}
+	},
+	"empty": {
+		"title": "No empires yet",
+		"text": "An empire groups your base plans and holds your faction and permits.",
+		"create": "Create empire",
+		"manage": "Manage empires"
 	}
 }

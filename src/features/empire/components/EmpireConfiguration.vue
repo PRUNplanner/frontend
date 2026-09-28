@@ -1,34 +1,24 @@
 <script setup lang="ts">
-	import { computed, type PropType, ref, type Ref, watch } from "vue";
-
-	import { useI18n } from "vue-i18n";
-	const { t } = useI18n();
+	import { computed, type PropType } from "vue";
 
 	// Composables
-	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useEmpireForm } from "@/features/empire/useEmpireForm";
 
-	// Util
-	import { inertClone } from "@/util/data";
+	// Components
+	import EmpireConfigurationForm from "@/features/empire/components/EmpireConfigurationForm.vue";
 
 	// Types & Interfaces
-	import type {
-		EmpirePayload,
-		PlanEmpireElement,
-	} from "@/features/api/schemas/empireData.schemas";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import type { IEmpirePlanListData } from "@/features/empire/empire.types";
-	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
+	import { PButton, PIcon } from "@/ui";
 	import {
-		PButton,
-		PForm,
-		PFormItem,
-		PInputNumber,
-		PInput,
-		PSelect,
-	} from "@/ui";
-	import { SaveSharp, ChangeCircleOutlined } from "@vicons/material";
+		SaveSharp,
+		ChangeCircleOutlined,
+		WarningSharp,
+	} from "@vicons/material";
 
 	const props = defineProps({
 		data: {
@@ -45,25 +35,9 @@
 		(e: "reload:empires"): void;
 	}>();
 
-	const isLoading: Ref<boolean> = ref(false);
-
-	// Local Data & Watcher
-	const localData: Ref<PlanEmpireElement> = ref(inertClone(props.data));
-
-	watch(
-		() => props.data,
-		(newData: PlanEmpireElement) => (localData.value = inertClone(newData)),
-		{ deep: true }
+	const { localData, isLoading, reload, save } = useEmpireForm(
+		() => props.data
 	);
-
-	const factionOptions: PSelectOption[] = [
-		{ label: "No Faction", value: "NONE" },
-		{ label: "Antares", value: "ANTARES" },
-		{ label: "Benten", value: "BENTEN" },
-		{ label: "Hortus", value: "HORTUS" },
-		{ label: "Moria", value: "MORIA" },
-		{ label: "Outside Region", value: "OUTSIDEREGION" },
-	];
 
 	/**
 	 * Reloads data from props again
@@ -71,9 +45,9 @@
 	 *
 	 * @returns {void}
 	 */
-	function reload(): void {
+	function reloadForm(): void {
 		trackEvent("empire_reload");
-		localData.value = inertClone(props.data);
+		reload();
 	}
 
 	/**
@@ -83,28 +57,8 @@
 	 * @async
 	 * @returns {Promise<void>}
 	 */
-	async function save(): Promise<void> {
-		isLoading.value = true;
-		trackEvent("empire_patch");
-
-		const patchData: EmpirePayload = {
-			empire_name: localData.value.empire_name,
-			empire_faction: localData.value.empire_faction,
-			empire_permits_used: localData.value.empire_permits_used,
-			empire_permits_total: localData.value.empire_permits_total,
-		};
-
-		try {
-			await useQuery("PatchEmpire", {
-				empireUuid: localData.value.uuid,
-				data: patchData,
-			}).execute();
-			emit("reload:empires");
-		} catch (err) {
-			console.error("Error patching empire", err);
-		} finally {
-			isLoading.value = false;
-		}
+	async function saveForm(): Promise<void> {
+		if (await save()) emit("reload:empires");
 	}
 
 	const plannedPermits = computed(() =>
@@ -120,64 +74,45 @@
 			</h2>
 
 			<div class="flex gap-x-3">
-				<PButton size="md" :loading="isLoading" @click="save">
+				<PButton size="md" :loading="isLoading" @click="saveForm">
 					<template #icon><SaveSharp /></template>
 					{{ $t("common.buttons.save") }}
 				</PButton>
-				<PButton size="md" @click="reload">
+				<PButton size="md" @click="reloadForm">
 					<template #icon><ChangeCircleOutlined /></template>
 					{{ $t("common.buttons.reload") }}
 				</PButton>
 			</div>
 		</div>
 
-		<PForm>
-			<PFormItem :label="t('empire.configuration.form.name')">
-				<PInput v-model:value="localData.empire_name" class="w-full" />
-			</PFormItem>
-			<PFormItem :label="t('empire.configuration.form.faction')">
-				<PSelect
-					v-model:value="localData.empire_faction"
-					class="w-full"
-					:options="factionOptions" />
-			</PFormItem>
-			<PFormItem :label="t('empire.configuration.form.permits_total')">
-				<PInputNumber
-					v-model:value="localData.empire_permits_total"
-					show-buttons
-					:min="2" />
-			</PFormItem>
-			<PFormItem :label="t('empire.configuration.form.permits_used')">
-				<PInputNumber
-					v-model:value="localData.empire_permits_used"
-					show-buttons
-					:min="1" />
-			</PFormItem>
-		</PForm>
+		<EmpireConfigurationForm v-model="localData" />
 
-		<i18n-t
+		<div
 			v-if="localData.empire_permits_used !== plannedPermits"
-			keypath="empire.configuration.sync_warning.body"
-			tag="div"
-			class="text-xs bg-red-500/50 p-2">
-			<template #title>
-				<strong>
-					{{ $t("empire.configuration.sync_warning.title") }}
-				</strong>
-			</template>
+			class="text-xs bg-amber-500/20 text-white p-2 flex flex-row gap-x-2 items-start">
+			<PIcon :size="16" class="shrink-0 text-amber-400">
+				<WarningSharp />
+			</PIcon>
+			<i18n-t keypath="empire.configuration.sync_warning.body" tag="div">
+				<template #title>
+					<strong>
+						{{ $t("empire.configuration.sync_warning.title") }}
+					</strong>
+				</template>
 
-			<template #configured>
-				{{ localData.empire_permits_used }}
-			</template>
+				<template #configured>
+					{{ localData.empire_permits_used }}
+				</template>
 
-			<template #planned>
-				{{ plannedPermits }}
-			</template>
+				<template #planned>
+					{{ plannedPermits }}
+				</template>
 
-			<template #hq_buffer>
-				<span class="font-mono bg-white/10 px-1.5"> HQ </span>
-				{{ $t("terms.buffer") }}
-			</template>
-		</i18n-t>
+				<template #hq_buffer>
+					<span class="font-mono bg-white/10 px-1.5"> HQ </span>
+					{{ $t("terms.buffer") }}
+				</template>
+			</i18n-t>
+		</div>
 	</div>
 </template>

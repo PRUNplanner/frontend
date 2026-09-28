@@ -20,6 +20,7 @@
 		min = -Infinity,
 		max = Infinity,
 		placeholder = undefined,
+		ariaLabel = undefined,
 	} = defineProps<{
 		disabled?: boolean;
 		size?: SizeKey;
@@ -28,6 +29,8 @@
 		min?: number;
 		max?: number;
 		placeholder?: string;
+		/** accessible name when no <label> is linked to the field */
+		ariaLabel?: string;
 	}>();
 
 	const placeholderText = computed(
@@ -90,6 +93,7 @@
 				:max="max"
 				:value="value"
 				:placeholder="placeholderText"
+				:aria-label="ariaLabel"
 				:class="`${inputNumberConfig.input} ${inputNumberConfig.sizes[size].input}`"
 				@input="onInput" />
 

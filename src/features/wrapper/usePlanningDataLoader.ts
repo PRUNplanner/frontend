@@ -51,6 +51,9 @@ export function usePlanningDataLoader(
 		);
 	}
 	const { findEmpireCXUuid } = useCXData();
+
+	const knowsEmpire = (list: PlanEmpireElement[], empireUuid: string) =>
+		list.some((e) => e.uuid === empireUuid);
 	const queryStore = useQueryStore();
 	const done: Ref<boolean> = ref(false);
 
@@ -79,6 +82,20 @@ export function usePlanningDataLoader(
 					stepEmpirePlans.triggered = false;
 					stepEmpirePlans.data = null;
 					done.value = false;
+				}
+
+				// an empire the loaded list doesn't know (just created):
+				// reload the list, its plans wait for it
+				const stepEmpireList = steps.find(
+					(s) => s.cfg.key === "empireList"
+				);
+				if (
+					newEmpire &&
+					stepEmpireList?.data &&
+					!knowsEmpire(stepEmpireList.data, newEmpire as string)
+				) {
+					stepEmpireList.triggered = false;
+					stepEmpireList.data = null;
 				}
 			}
 
@@ -110,8 +127,9 @@ export function usePlanningDataLoader(
 			enabled: () => !!props.empireList,
 			load: () => queryStore.execute("GetAllEmpires", undefined),
 			onSuccess: (data: PlanEmpireElement[]) => {
+				// no selection, or a stored one that no longer exists
 				const hasNoSelection =
-					!props.empireUuid || props.empireUuid === "";
+					!props.empireUuid || !knowsEmpire(data, props.empireUuid);
 
 				if (hasNoSelection && data.length > 0) {
 					emits("update:empireUuid", data[0].uuid);
@@ -192,7 +210,15 @@ export function usePlanningDataLoader(
 		{
 			key: "empirePlans",
 			name: t("wrapper.planning_data.empire_plans"),
-			enabled: () => !!props.empireUuid,
+			// with the empire list, only load plans of an empire in it: a
+			// deleted empire's uuid (e.g. the stored default) would fail
+			enabled: () => {
+				if (!props.empireUuid) return false;
+				if (!props.empireList) return true;
+				const list = steps.find((s) => s.cfg.key === "empireList")
+					?.data as PlanEmpireElement[] | null;
+				return !!list && knowsEmpire(list, props.empireUuid);
+			},
 			load: () =>
 				queryStore.execute("GetEmpirePlans", {
 					empireUuid: props.empireUuid!,

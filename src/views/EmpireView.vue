@@ -49,8 +49,11 @@
 		() => import("@/features/empire/components/EmpireConfiguration.vue")
 	);
 
-	const AsyncWrapperGenericError = defineAsyncComponent(
-		() => import("@/features/wrapper/components/WrapperGenericError.vue")
+	const AsyncEmpireOnboarding = defineAsyncComponent(
+		() => import("@/features/empire/components/EmpireOnboarding.vue")
+	);
+	const AsyncEmpireEmpty = defineAsyncComponent(
+		() => import("@/features/empire/components/EmpireEmpty.vue")
 	);
 
 	// Types & Interfaces
@@ -199,6 +202,17 @@
 		refEmpireList.value = await useQuery("GetAllEmpires").execute();
 		// trigger recalculation, changed config required new calculation
 		await calculateEmpire(true);
+	}
+
+	/**
+	 * Selects a newly created empire, the loader then reloads the empire
+	 * list and loads its plans
+	 * @author jplacht
+	 *
+	 * @param {string} empireUuid Created Empire Uuid
+	 */
+	function selectCreatedEmpire(empireUuid: string): void {
+		selectedEmpireUuid.value = empireUuid;
 	}
 
 	/**
@@ -351,10 +365,26 @@
 				load-exchanges
 				:load-planet-multiple="empirePlanetList"
 				@complete="calculateEmpire">
-				<AsyncWrapperGenericError
+				<AsyncEmpireEmpty
 					v-if="refEmpireList.length === 0"
-					message-title="No Empires"
-					message-text="You don't have any empires. Head to Management to create your first." />
+					@created="selectCreatedEmpire" />
+
+				<!-- before the calculation: stays mounted while a save recalculates -->
+				<div v-else-if="selectedEmpire && planData.length === 0">
+					<PForm
+						v-if="empireOptions.length > 1"
+						class="max-w-2xl px-3 sm:px-6 pt-3 sm:pt-6">
+						<PFormItem :label="t('empire.switch_empire')">
+							<PSelect
+								v-model:value="selectedEmpireUuid"
+								class="w-full"
+								:options="empireOptions" />
+						</PFormItem>
+					</PForm>
+					<AsyncEmpireOnboarding
+						:empire="selectedEmpire"
+						@reload:empires="reloadEmpires" />
+				</div>
 
 				<ComputingProgress
 					v-else-if="isCalculating"

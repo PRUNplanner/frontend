@@ -330,3 +330,18 @@ export function calculateExperts(planExperts: PlanDataExpert[]): IExpertRecord {
 		})
 	) as IExpertRecord;
 }
+
+/**
+ * The factor that zeroes a building's efficiency, e.g. FERTILITY on a
+ * non-fertile planet or WORKFORCE without housing
+ *
+ * @author jplacht
+ *
+ * @param {IBuildingEfficiency[]} elements Efficiency factors
+ * @returns {(IBuildingEfficiency["efficiencyType"] | undefined)} First zero factor
+ */
+export function zeroEfficiencyReason(
+	elements: IBuildingEfficiency[]
+): IBuildingEfficiency["efficiencyType"] | undefined {
+	return elements.find((e) => e.value === 0)?.efficiencyType;
+}

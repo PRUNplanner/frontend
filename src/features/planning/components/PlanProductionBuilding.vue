@@ -9,6 +9,7 @@
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
+	import { zeroEfficiencyReason } from "@/features/planning/engine/efficiency";
 
 	// UI
 	import { PTooltip, PButton, PInputNumber } from "@/ui";
@@ -65,6 +66,18 @@
 	const localBuildingData: ComputedRef<IProductionBuilding> = computed(
 		() => props.buildingData
 	);
+
+	// why a building produces nothing, shown next to "0.00 %"
+	const zeroReason: ComputedRef<string | undefined> = computed(() => {
+		if (localBuildingData.value.totalEfficiency !== 0) return undefined;
+		const type = zeroEfficiencyReason(
+			localBuildingData.value.efficiencyElements
+		);
+		if (!type) return undefined;
+		return type === "FERTILITY" || type === "WORKFORCE"
+			? `plan.components.production_building.zero_reason.${type}`
+			: `game.efficiency_type.${type}`;
+	});
 
 	const isPlanetCogc = computed(() => {
 		return localBuildingData.value.efficiencyElements.some(
@@ -179,6 +192,9 @@
 							<div>{{ formatNumber(element.value * 100) }} %</div>
 						</div>
 					</PTooltip>
+				</span>
+				<span v-if="zeroReason" class="text-xs text-red-300">
+					{{ $t(zeroReason) }}
 				</span>
 			</div>
 			<div class="col-span-3 flex flex-col items-end text-right">

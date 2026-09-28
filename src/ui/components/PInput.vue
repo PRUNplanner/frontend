@@ -17,12 +17,15 @@
 		placeholder = undefined,
 		rows = 5,
 		type = "input",
+		ariaLabel = undefined,
 	} = defineProps<{
 		disabled?: boolean;
 		size?: SizeKey;
 		placeholder?: string;
 		rows?: number;
 		type?: "input" | "textarea" | "password";
+		/** accessible name when no <label> is linked to the field */
+		ariaLabel?: string;
 	}>();
 
 	const inputEl = ref<HTMLInputElement | null>(null);
@@ -55,6 +58,7 @@
 				type="text"
 				:value="value"
 				:placeholder="placeholderText"
+				:aria-label="ariaLabel"
 				:class="`${inputConfig.sizes[size].input}`"
 				autocomplete="off"
 				@input="onInput" />
@@ -66,6 +70,7 @@
 				type="password"
 				:value="value"
 				:placeholder="placeholderText"
+				:aria-label="ariaLabel"
 				:class="`${inputConfig.sizes[size].input}`"
 				autocomplete="off"
 				@input="onInput" />
@@ -78,6 +83,7 @@
 				:value="value"
 				:rows="rows"
 				:placeholder="placeholderText"
+				:aria-label="ariaLabel"
 				:class="`${inputConfig.sizes[size].input}`"
 				autocomplete="off"
 				@input="onInput" />
