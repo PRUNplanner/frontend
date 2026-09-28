@@ -74,16 +74,26 @@
 		<PForm>
 			<PFormItem
 				:label="t('account.components.password_reset.form.email')">
-				<PInput v-model:value="inputEmail" class="w-full" />
+				<PInput
+					v-model:value="inputEmail"
+					autocomplete="email"
+					:placeholder="t('account.components.hints.email')"
+					class="w-full" />
 			</PFormItem>
 			<PFormItem
 				:label="t('account.components.password_reset.form.code')">
-				<PInput v-model:value="inputCode" class="w-full" />
+				<PInput
+					v-model:value="inputCode"
+					autocomplete="one-time-code"
+					:placeholder="t('account.components.hints.code')"
+					class="w-full" />
 			</PFormItem>
 			<PFormItem
 				:label="t('account.components.password_reset.form.password')">
 				<PInput
 					v-model:value="inputPassword"
+					autocomplete="new-password"
+					:placeholder="t('account.components.hints.new_password')"
 					type="password"
 					class="w-full" />
 				<template #info>

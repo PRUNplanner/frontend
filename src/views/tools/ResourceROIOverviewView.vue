@@ -76,12 +76,14 @@
 						<div>{{ $t("resource_roi.resource_select") }}</div>
 						<PSelect
 							v-model:value="refSearchMaterial"
+							:aria-label="$t('resource_roi.resource_select')"
 							:options="PLANETSEARCHOPTIONMATERIALS"
 							placeholder=""
 							searchable
 							class="w-50" />
 						<div>{{ $t("resource_roi.cx_select") }}</div>
 						<CXPreferenceSelector
+							:aria-label="$t('resource_roi.cx_select')"
 							:cx-uuid="refSelectedCXUuid"
 							class="w-50"
 							@update:cxuuid="

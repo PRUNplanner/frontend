@@ -10,19 +10,24 @@
 <template>
 	<footer
 		class="sticky top-[100vh] pr-3 py-1 text-muted text-xs text-end flex flex-row gap-1.5 justify-end items-center">
-		<router-link :to="'/imprint-tos'" class="hover:cursor-pointer">
+		<router-link
+			:to="'/imprint-tos'"
+			class="inline-flex items-center min-h-6 hover:cursor-pointer">
 			Imprint & Terms of Service
 		</router-link>
 		<div>
 			<a
 				href="https://crowdin.com/project/prunplanner"
 				target="_blank"
-				class="text-prunplanner hover:underline"
+				class="inline-flex items-center min-h-6 text-prunplanner hover:underline"
 				>Translate?</a
 			>
 		</div>
 		<div>
-			<PSelect v-model:value="locale" :options="SupportedLanguages" />
+			<PSelect
+				v-model:value="locale"
+				:options="SupportedLanguages"
+				:aria-label="$t('common.ui.language')" />
 		</div>
 	</footer>
 </template>

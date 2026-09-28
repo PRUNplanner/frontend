@@ -200,7 +200,9 @@
 										$t("api_keys.manage.buttons.new_apikey")
 									}}
 								</PButton>
-								<PButton @click="fetchAPIKeys">
+								<PButton
+									:aria-label="$t('common.buttons.reload')"
+									@click="fetchAPIKeys">
 									<template #icon>
 										<RestartAltSharp />
 									</template>

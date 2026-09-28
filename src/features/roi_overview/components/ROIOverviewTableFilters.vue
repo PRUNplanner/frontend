@@ -92,6 +92,7 @@
 				<div>{{ $t("recipe_roi.filters.building") }}</div>
 				<PSelectMultiple
 					v-model:value="localFilterBuilding"
+					:aria-label="$t('recipe_roi.filters.building')"
 					:options="buildingOptions"
 					searchable
 					clearable
@@ -101,6 +102,7 @@
 				<div>{{ $t("recipe_roi.filters.cogc") }}</div>
 				<PSelectMultiple
 					v-model:value="localFilterCogc"
+					:aria-label="$t('recipe_roi.filters.cogc')"
 					:options="cogcOptions"
 					searchable
 					clearable
@@ -110,6 +112,7 @@
 				<div>{{ $t("recipe_roi.filters.output") }}</div>
 				<PSelectMultiple
 					v-model:value="localFilterOutputMaterial"
+					:aria-label="$t('recipe_roi.filters.output')"
 					:options="outputMaterialOptions"
 					searchable
 					clearable
@@ -119,6 +122,7 @@
 				<div>{{ $t("recipe_roi.filters.input") }}</div>
 				<PSelectMultiple
 					v-model:value="localFilterInputMaterial"
+					:aria-label="$t('recipe_roi.filters.input')"
 					:options="inputMaterialOptions"
 					searchable
 					clearable
@@ -127,7 +131,9 @@
 		</div>
 		<div class="flex flex-row flex-wrap gap-3 items-center">
 			<div>{{ $t("recipe_roi.filters.positive_roi") }}</div>
-			<PCheckbox v-model:checked="localFilterPositiveROI" />
+			<PCheckbox
+				v-model:checked="localFilterPositiveROI"
+				:aria-label="$t('recipe_roi.filters.positive_roi')" />
 		</div>
 	</div>
 </template>

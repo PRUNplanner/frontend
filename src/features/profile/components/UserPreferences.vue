@@ -111,7 +111,7 @@
 		<PFormSeperator>
 			<i18n-t
 				keypath="profile.preferences.form.language_note"
-				tag="div"
+				tag="p"
 				class="text-xs text-white/60 pt-1 pb-2">
 				<template #link>
 					<a

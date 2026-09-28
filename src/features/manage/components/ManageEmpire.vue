@@ -367,6 +367,7 @@
 					<PSelect
 						:key="`${rowData.uuid}#${refEmpireCXMap[rowData.uuid]}`"
 						v-model:value="refEmpireCXMap[rowData.uuid]"
+						:aria-label="$t('management.empire.table.cx')"
 						:options="refCXOptions" />
 				</div>
 			</template>
@@ -375,6 +376,7 @@
 			<template #render-cell="{ rowData }">
 				<div class="justify-end flex gap-x-3">
 					<PButton
+						:aria-label="$t('common.buttons.delete')"
 						size="sm"
 						type="error"
 						:loading="refIsDeleting === rowData.uuid"

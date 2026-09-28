@@ -579,7 +579,8 @@
 	<PlanAnalyticsBox
 		:key="`INSIGHTS#${planetData.planet_natural_id}`"
 		:planet-natural-id="planetData.planet_natural_id" />
-	<div class="@container">
+	<!-- keep focused controls clear of the sticky status bar -->
+	<div class="@container [&_*]:scroll-mt-28">
 		<div
 			class="grid grid-cols-[minmax(0,1fr)] grid-rows-[repeat(5,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
 			<!-- Plan Name & Selector -->
@@ -918,6 +919,11 @@
 								<PTooltip>
 									<template #trigger>
 										<PButton
+											:aria-label="
+												$t(
+													'plan.components.materialio.buttons.toggle_weight_volume'
+												)
+											"
 											size="sm"
 											secondary
 											@click="
@@ -943,6 +949,11 @@
 								<PTooltip>
 									<template #trigger>
 										<PButton
+											:aria-label="
+												$t(
+													'plan.components.materialio.buttons.toggle_production_workforce'
+												)
+											"
 											size="sm"
 											secondary
 											@click="

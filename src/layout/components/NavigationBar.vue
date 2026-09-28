@@ -319,7 +319,11 @@
 
 <template>
 	<!-- Mobile menu toggle button -->
-	<input id="menu-toggle" type="checkbox" class="hidden peer" />
+	<input
+		id="menu-toggle"
+		type="checkbox"
+		class="sr-only md:hidden peer"
+		:aria-label="t('common.navigation.menu')" />
 	<!-- Sidebar -->
 	<div
 		class="hidden peer-checked:flex md:h-screen md:sticky md:top-0 md:flex border-r border-white/5 flex-col bg-gray-dark transition-all duration-300 ease-in-out"
@@ -337,7 +341,9 @@
 					</router-link>
 				</div>
 				<div v-if="isFull" class="text-end text-xs text-muted">
-					<RouterLink to="/debug">
+					<RouterLink
+						to="/debug"
+						class="inline-flex items-center min-h-6">
 						{{ appVersion }}
 					</RouterLink>
 				</div>
@@ -394,9 +400,13 @@
 							</RouterLink>
 							<template
 								v-else-if="!item.children && item.functionCall">
-								<div
-									class="flex items-center hover:bg-white/20 hover:rounded-sm group hover:cursor-pointer"
+								<button
+									type="button"
+									class="flex items-center w-full hover:bg-white/20 hover:rounded-sm group hover:cursor-pointer"
 									:class="itemClass"
+									:aria-label="
+										isFull ? undefined : item.label
+									"
 									@click="item.functionCall()">
 									<PTooltip v-if="!isFull" placement="right">
 										<template #trigger>
@@ -418,7 +428,7 @@
 										</PIcon>
 										{{ item.label }}
 									</template>
-								</div>
+								</button>
 							</template>
 							<template v-else>
 								<div v-if="item.display" class="relative group">
@@ -426,10 +436,11 @@
 										:id="item.label + '-toggle'"
 										type="checkbox"
 										:checked="isFull ? false : true"
-										class="hidden peer" />
+										:tabindex="isFull ? 0 : -1"
+										class="sr-only peer" />
 									<label
 										:for="item.label + '-toggle'"
-										class="flex items-center hover:bg-white/20 hover:rounded-sm cursor-pointer w-full"
+										class="flex items-center hover:bg-white/20 hover:rounded-sm cursor-pointer w-full peer-focus-visible:outline-2 peer-focus-visible:outline-(--color-focus)"
 										:class="[
 											itemClass,
 											isFull ? 'visible' : 'hidden',
@@ -563,7 +574,10 @@
 							</tbody>
 						</PTable>
 					</PTooltip>
-					<RouterLink v-else to="/profile">
+					<RouterLink
+						v-else
+						to="/profile"
+						class="inline-flex items-center min-h-6">
 						<PTag size="sm" type="warning" :bordered="false">
 							{{
 								isFull
@@ -573,14 +587,21 @@
 						</PTag>
 					</RouterLink>
 				</div>
-				<div @click="toggleNavigationSize">
-					<div class="hover:bg-white/20 hover:rounded-sm p-2">
-						<KeyboardDoubleArrowLeftSharp
-							v-if="isFull"
-							class="w-5 h-5" />
-						<KeyboardDoubleArrowRightSharp v-else class="w-5 h-5" />
-					</div>
-				</div>
+				<button
+					type="button"
+					class="cursor-pointer hover:bg-white/20 hover:rounded-sm p-2"
+					:aria-label="
+						isFull
+							? t('common.navigation.collapse')
+							: t('common.navigation.expand')
+					"
+					:aria-expanded="isFull"
+					@click="toggleNavigationSize">
+					<KeyboardDoubleArrowLeftSharp
+						v-if="isFull"
+						class="w-5 h-5" />
+					<KeyboardDoubleArrowRightSharp v-else class="w-5 h-5" />
+				</button>
 			</div>
 		</div>
 	</div>

@@ -104,6 +104,11 @@
 				{{ $t("plan.components.production_building.qty") }}
 			</span>
 			<PInputNumber
+				:aria-label="
+					$t('plan.components.production_building.qty_label', {
+						building: localBuildingData.name,
+					})
+				"
 				:value="localBuildingData.amount"
 				size="sm"
 				:disabled="disabled"
@@ -231,6 +236,7 @@
 			</div>
 			<div class="flex justify-end">
 				<PButton
+					:aria-label="$t('common.buttons.delete')"
 					:disabled="disabled"
 					size="sm"
 					type="error"

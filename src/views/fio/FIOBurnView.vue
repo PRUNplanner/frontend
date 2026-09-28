@@ -223,6 +223,7 @@
 
 									<PSelect
 										v-model:value="selectedEmpireUuid"
+										:aria-label="$t('fio.burn.form.empire')"
 										:options="
 											empireList.map((e) => {
 												return {

@@ -229,6 +229,12 @@
 									v-model:value="
 										overrideBinding(rowData.ticker).value
 									"
+									:aria-label="
+										$t(
+											'hq_upgrade_calculator.table.override_label',
+											{ ticker: rowData.ticker }
+										)
+									"
 									:min="0"
 									clearable
 									show-buttons

@@ -16,7 +16,7 @@ export const buttonConfig: PButtonConfig = {
 	defaultColor: "primary",
 	sizes: {
 		sm: {
-			base: "py-0.5 px-1 gap-0.5 text-xs min-w-[22px] h-[22px]",
+			base: "py-0.5 px-1 gap-0.5 text-xs min-w-6 h-6",
 			icon: "w-[12px] h-[12px]",
 			spinner: "w-[12px] h-[12px]",
 		},
@@ -95,20 +95,22 @@ export const formItemConfig: PFormItemConfig = {
 export const inputNumberConfig: PInputNumberConfig = {
 	container:
 		"inline-flex w-full items-center leading-none rounded-sm text-nowrap bg-white/5 text-white/80",
-	input: "w-full outline-0 ",
-	buttonContainer: "flex flex-row ",
-	buttonChangeAllowed: "text-white/70 cursor-pointer",
-	buttonChangeUnallowed: "text-white/20 cursor-auto",
+	input: "w-full h-full focus-visible:-outline-offset-2",
+	buttonContainer: "flex flex-row pr-1",
+	buttonChangeAllowed:
+		"flex items-center justify-center w-6 h-6 rounded-sm text-white/70 cursor-pointer hover:bg-white/10",
+	buttonChangeUnallowed:
+		"flex items-center justify-center w-6 h-6 rounded-sm text-white/20 cursor-auto",
 	sizes: {
 		sm: {
-			container: "gap-1 child:py-0.75 text-[12px]",
+			container: "gap-1 h-6 text-[12px]",
 			input: "px-1",
-			buttonContainer: "pr-2 child:w-[16px] child:h-[16px]",
+			buttonContainer: "child:p-1",
 		},
 		md: {
-			container: "gap-1 child:py-1 h-[28px]",
+			container: "gap-1 h-[28px]",
 			input: "px-2",
-			buttonContainer: "pr-2 child:w-[20px] child:h-[20px]",
+			buttonContainer: "child:p-0.5",
 		},
 	},
 };
@@ -119,11 +121,11 @@ export const inputConfig: PInputConfig = {
 	sizes: {
 		sm: {
 			container: "child:py-1 child:px-2",
-			input: "w-full outline-0",
+			input: "w-full focus-visible:-outline-offset-2",
 		},
 		md: {
 			container: "child:py-1 child:px-2 h-[28px]",
-			input: "w-full outline-0",
+			input: "w-full focus-visible:-outline-offset-2",
 		},
 	},
 };

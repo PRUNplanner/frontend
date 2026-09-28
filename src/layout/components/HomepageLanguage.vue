@@ -10,7 +10,7 @@
 <template>
 	<div
 		class="border border-dashed border-prunplanner/50 py-3 px-2 flex flex-row items-center gap-6 divide-x divide-prunplanner/50 divide-dashed">
-		<div class="flex-grow px-3">
+		<p class="flex-grow px-3">
 			Thanks to the incredible efforts of the PRUNplanner community, our
 			planning tools and features are accessible globally. The platform
 			natively supports
@@ -24,9 +24,12 @@
 				class="underline hover:text-prunplanner">
 				Crowdin</a
 			>!
-		</div>
+		</p>
 		<div class="text-end">
-			<PSelect v-model:value="locale" :options="SupportedLanguages" />
+			<PSelect
+				v-model:value="locale"
+				:options="SupportedLanguages"
+				:aria-label="$t('common.ui.language')" />
 		</div>
 	</div>
 </template>

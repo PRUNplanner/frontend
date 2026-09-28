@@ -32,6 +32,7 @@
 	// UI
 	import { PProgressBar, PValue } from "@/ui";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { tablePagination } from "@/util/pagination";
 
 	const props = defineProps({
 		planDefinition: {
@@ -164,6 +165,8 @@
 	onMounted(async () => {
 		get();
 	});
+
+	const pagination = tablePagination(50);
 </script>
 
 <template>
@@ -186,10 +189,7 @@
 			:cogc-options="filterOptionCOGC"
 			:output-material-options="filterOptionOutputMaterial"
 			:input-material-options="filterOptionInputMaterial" />
-		<XNDataTable
-			:data="filteredResult"
-			striped
-			:pagination="{ pageSize: 50 }">
+		<XNDataTable :data="filteredResult" striped :pagination="pagination">
 			<XNDataTableColumn
 				key="buildingTicker"
 				:title="t('recipe_roi.table.building')"

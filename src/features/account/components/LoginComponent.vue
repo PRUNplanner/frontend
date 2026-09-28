@@ -76,11 +76,17 @@
 				</div>
 			</PFormSeperator>
 			<PFormItem :label="t('account.components.login.form.username')">
-				<PInput v-model:value="inputUsername" class="w-full" />
+				<PInput
+					v-model:value="inputUsername"
+					autocomplete="username"
+					:placeholder="t('account.components.hints.username')"
+					class="w-full" />
 			</PFormItem>
 			<PFormItem :label="t('account.components.login.form.password')">
 				<PInput
 					v-model:value="inputPassword"
+					autocomplete="current-password"
+					:placeholder="t('account.components.hints.password')"
 					type="password"
 					class="w-full" />
 			</PFormItem>

@@ -106,6 +106,7 @@
 		<XNDataTableColumn key="buttons" title="" width="50">
 			<template #render-cell="{ rowData }">
 				<PButton
+					:aria-label="$t('common.buttons.edit')"
 					size="sm"
 					:type="
 						selectedPlanet === rowData.planet

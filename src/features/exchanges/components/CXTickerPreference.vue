@@ -65,11 +65,15 @@
 <template>
 	<div class="flex flex-row gap-x-1 w-full items-end">
 		<div class="flex-0">
-			<PSelect v-model:value="selectedType" :options="typeOptions" />
+			<PSelect
+				v-model:value="selectedType"
+				:aria-label="$t('exchanges.components.type_label')"
+				:options="typeOptions" />
 		</div>
 		<div class="flex-1">
 			<PSelect
 				v-model:value="selectedTicker"
+				:aria-label="$t('exchanges.configuration.form.ticker')"
 				:options="materialOptions"
 				searchable
 				size="small"
@@ -81,12 +85,14 @@
 		<div class="flex-1">
 			<PInputNumber
 				v-model:value="selectedValue"
+				:aria-label="$t('exchanges.components.value_label')"
 				:min="0"
 				decimals
 				class="w-full" />
 		</div>
 		<div class="flex-none">
 			<PButton
+				:aria-label="$t('common.buttons.add')"
 				:disabled="
 					!canAddTickerPreference(
 						localCXOptions,
@@ -135,6 +141,7 @@
 				<td>
 					<div class="flex justify-end">
 						<PButton
+							:aria-label="$t('common.buttons.delete')"
 							size="sm"
 							type="error"
 							@click="

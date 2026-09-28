@@ -125,6 +125,13 @@
 	<PButton
 		:size="buttonSize"
 		:type="isShared ? 'success' : 'primary'"
+		:aria-label="
+			buttonSize !== 'sm'
+				? undefined
+				: isShared
+					? $t('sharing.buttons.views', { count: viewCount })
+					: $t('sharing.buttons.share')
+		"
 		@click="() => (showModal = !showModal)">
 		<template v-if="isShared" #icon><RemoveRedEyeSharp /></template>
 		<template v-else #icon><LinkSharp /></template>

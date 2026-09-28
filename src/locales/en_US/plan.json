@@ -32,7 +32,8 @@
 					"storage_filled": "Storage Filled",
 					"filled_unit": "days"
 				},
-				"exclusion_info": "Exclude local materials from visitation frequency calculation for items handled exclusively planet-side, like local market sales, purchases or contracts."
+				"exclusion_info": "Exclude local materials from visitation frequency calculation for items handled exclusively planet-side, like local market sales, purchases or contracts.",
+				"exclusion_label": "Excluded materials"
 			},
 			"shipping": {
 				"label": "Shipping",
@@ -64,7 +65,9 @@
 				"stock": "Stock",
 				"stock_override": "Stock Override",
 				"need": "Need"
-			}
+			},
+			"amount_label": "Amount of {building}",
+			"override_label": "Stock override for {ticker}"
 		},
 		"supply_cart": {
 			"title": "Supply Cart",
@@ -147,7 +150,8 @@
 				"experts": "Experts",
 				"production_buildings": "Production @:terms.buildings_plural",
 				"recipes": "@:terms.recipes_plural"
-			}
+			},
+			"toggle": "Toggle insights"
 		}
 	},
 	"components": {
@@ -181,11 +185,13 @@
 			"buttons": {
 				"optimize_cost": "Optimize Cost",
 				"optimize_area": "Optimize Area"
-			}
+			},
+			"amount_label": "Amount of {infrastructure}"
 		},
 		"experts": {
 			"label": "Experts",
-			"warning": "Maximum number of experts on a base is 6. You currently have {expert_number} experts assigned."
+			"warning": "Maximum number of experts on a base is 6. You currently have {expert_number} experts assigned.",
+			"amount_label": "{expert} experts"
 		},
 		"workforce": {
 			"label": "Workforce",
@@ -275,7 +281,8 @@
 			"zero_reason": {
 				"FERTILITY": "Planet not fertile",
 				"WORKFORCE": "No workforce housed"
-			}
+			},
+			"qty_label": "Amount of {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "Cost Of Goods Manufactured",
@@ -298,7 +305,8 @@
 				"p2": "is the daily revenue divided by the area for one production building and its proportionate share of the area for a CM and habs required for an optimal base of such buildings in Recipe ROI.",
 				"p3_strong": "ROI",
 				"p3": "is the time required for a continuously operating recipe to generate enough revenue to offset the building's construction cost. This considers daily degradation and workforce costs as well."
-			}
+			},
+			"amount_label": "Amount of recipe {recipe}"
 		}
 	}
 }

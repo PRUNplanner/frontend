@@ -35,7 +35,7 @@
 			</h2>
 		</div>
 		<div
-			class="flex flex-row justify-between gap-x-7 child:text-white child:cursor-pointer child:my-auto">
+			class="flex flex-row justify-between gap-x-7 child:text-white child:my-auto">
 			<div>
 				<RouterLink to="/">
 					<h2
@@ -46,13 +46,13 @@
 				</RouterLink>
 			</div>
 			<div
-				class="flex flex-row gap-x-2 sm:gap-x-7 child:px-3 child:py-1 child:text-lg child:font-light child:hover:bg-white/10 child:hover:rounded-lg">
-				<div @click="toggleRegistration">
+				class="flex flex-row gap-x-2 sm:gap-x-7 child:cursor-pointer child:px-3 child:py-1 child:text-lg child:font-light child:hover:bg-white/10 child:hover:rounded-lg">
+				<button type="button" @click="toggleRegistration">
 					{{ $t("homepage.navigation.registration") }}
-				</div>
-				<div @click="toggleLogin">
+				</button>
+				<button type="button" @click="toggleLogin">
 					{{ $t("homepage.navigation.login") }}
-				</div>
+				</button>
 			</div>
 		</div>
 	</div>

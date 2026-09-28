@@ -138,6 +138,7 @@
 			<div class="grow">
 				<PInput
 					v-model:value="refNewCXName"
+					:aria-label="$t('management.cx.form.cx_name')"
 					:placeholder="t('management.cx.form.cx_placeholder')" />
 			</div>
 			<PButton
@@ -182,6 +183,7 @@
 			<template #render-cell="{ rowData }">
 				<div class="text-end">
 					<PButton
+						:aria-label="$t('common.buttons.delete')"
 						size="sm"
 						type="error"
 						:loading="refIsDeleting === rowData.uuid ? true : false"

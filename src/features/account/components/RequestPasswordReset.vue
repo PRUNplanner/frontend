@@ -58,6 +58,12 @@
 	<div>
 		<PInput
 			v-model:value="inputEmail"
+			:aria-label="
+				$t(
+					'account.components.request_password_reset.form.email_placeholder'
+				)
+			"
+			autocomplete="email"
 			:placeholder="
 				t(
 					'account.components.request_password_reset.form.email_placeholder'

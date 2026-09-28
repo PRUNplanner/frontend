@@ -1,7 +1,6 @@
 <template>
-	<div
-		class="flex md:hidden text-white p-2 rounded focus:outline-none cursor-pointer">
-		<label for="menu-toggle">
+	<div class="flex md:hidden text-white p-2 rounded">
+		<label for="menu-toggle" class="cursor-pointer">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="h-6 w-6 text-gray-500"

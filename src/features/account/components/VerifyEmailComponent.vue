@@ -73,6 +73,9 @@
 		<div>
 			<PInput
 				v-model:value="refVerificationCode"
+				:aria-label="
+					$t('account.components.verify_email.form.code_placeholder')
+				"
 				:placeholder="
 					t('account.components.verify_email.form.code_placeholder')
 				"

@@ -83,12 +83,16 @@
 				:label="t('profile.change_password.form.current_password')">
 				<PInput
 					v-model:value="refCurrentPassword"
+					autocomplete="current-password"
+					:placeholder="t('account.components.hints.password')"
 					type="password"
 					class="w-full min-w-50 max-w-[50%]" />
 			</PFormItem>
 			<PFormItem :label="t('profile.change_password.form.new_password')">
 				<PInput
 					v-model:value="refNewPassword"
+					autocomplete="new-password"
+					:placeholder="t('account.components.hints.new_password')"
 					type="password"
 					class="w-full min-w-50 max-w-[50%]" />
 			</PFormItem>

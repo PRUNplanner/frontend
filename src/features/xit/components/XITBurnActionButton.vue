@@ -223,6 +223,7 @@
 						</PButton>
 					</div>
 					<PInput
+						:aria-label="$t('xit.form.json')"
 						:value="
 							transferJSON(
 								materialTable
@@ -310,6 +311,11 @@
 						<td>
 							<PCheckbox
 								v-model:checked="e.active"
+								:aria-label="
+									$t('xit.form.include_label', {
+										ticker: e.ticker,
+									})
+								"
 								@update:checked="
 									(value) => {
 										if (value)
@@ -342,6 +348,11 @@
 						<td>
 							<PInputNumber
 								v-model:value="refMaterialOverrides[e.ticker]"
+								:aria-label="
+									$t('xit.form.override_label', {
+										ticker: e.ticker,
+									})
+								"
 								size="sm"
 								:min="0"
 								class="max-w-25" />

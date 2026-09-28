@@ -169,11 +169,17 @@
 				</div>
 				<PCheckbox
 					v-model:checked="localMatchCOGC"
+					:aria-label="
+						$t('plan.components.production.form.match_cogc')
+					"
 					:disabled="disabled" />
 			</div>
 
 			<PSelect
 				v-model:value="localSelectedBuilding"
+				:aria-label="
+					$t('plan.components.production.form.select_placeholder')
+				"
 				:disabled="disabled"
 				searchable
 				:placeholder="

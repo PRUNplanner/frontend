@@ -62,6 +62,13 @@
 				{{ $t(`game.expertise.${expert.name.toUpperCase()}`) }}
 			</div>
 			<PInputNumber
+				:aria-label="
+					$t('plan.components.experts.amount_label', {
+						expert: $t(
+							`game.expertise.${expert.name.toUpperCase()}`
+						),
+					})
+				"
 				:value="localExpertData[expert.name].amount"
 				:disabled="disabled"
 				show-buttons

@@ -425,6 +425,12 @@
 					<th class="border-r!">
 						<PInputNumber
 							v-model:value="localBuildingAmount[building]"
+							:aria-label="
+								$t(
+									'plan.tools.construction_cart.amount_label',
+									{ building }
+								)
+							"
 							show-buttons
 							size="sm"
 							:class="
@@ -543,6 +549,9 @@
 						<PSelect
 							v-if="storageOptions"
 							v-model:value="refSelectedStorage"
+							:aria-label="
+								$t('plan.tools.construction_cart.table.storage')
+							"
 							searchable
 							:options="storageOptions"
 							class="w-62.5!" />
@@ -603,6 +612,12 @@
 							<PInputNumber
 								v-model:value="
 									refStorageOverride[material.ticker]
+								"
+								:aria-label="
+									$t(
+										'plan.tools.construction_cart.override_label',
+										{ ticker: material.ticker }
+									)
 								"
 								placeholder=""
 								show-buttons

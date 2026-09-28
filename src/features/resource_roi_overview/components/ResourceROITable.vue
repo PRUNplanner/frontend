@@ -26,6 +26,7 @@
 
 	// UI
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { tablePagination } from "@/util/pagination";
 	import { PValue } from "@/ui";
 
 	const props = defineProps({
@@ -84,6 +85,8 @@
 			return d1 - d2;
 		};
 	}
+
+	const pagination = tablePagination(50);
 </script>
 
 <template>
@@ -94,7 +97,7 @@
 		:planet-options="filterOptionPlanet"
 		:building-options="filterOptionBuilding"
 		:searched-material="searchedMaterial" />
-	<XNDataTable :data="localResult" striped :pagination="{ pageSize: 50 }">
+	<XNDataTable :data="localResult" striped :pagination="pagination">
 		<XNDataTableColumn
 			key="planetName"
 			:title="t('resource_roi.table.planet')"

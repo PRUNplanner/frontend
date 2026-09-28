@@ -48,18 +48,21 @@
 		<div class="flex-0">
 			<PSelect
 				v-model:value="selectedType"
+				:aria-label="$t('exchanges.components.type_label')"
 				:options="typeOptions"
 				class="w-full" />
 		</div>
 		<div class="flex-1">
 			<PSelect
 				v-model:value="selectedExchange"
+				:aria-label="$t('exchanges.configuration.form.exchange')"
 				class="w-full"
 				searchable
 				:options="exchangeOptions" />
 		</div>
 		<div class="flex-none">
 			<PButton
+				:aria-label="$t('common.buttons.add')"
 				:disabled="
 					!canAddExchangePreference(localCXOptions, selectedType)
 						.value
@@ -96,6 +99,7 @@
 				<td>
 					<div class="flex justify-end">
 						<PButton
+							:aria-label="$t('common.buttons.delete')"
 							size="sm"
 							type="error"
 							@click="

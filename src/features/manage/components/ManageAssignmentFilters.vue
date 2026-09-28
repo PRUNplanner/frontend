@@ -53,6 +53,7 @@
 			<div class="max-w-full">
 				<PSelectMultiple
 					v-model:value="localFilterPlanNames"
+					:aria-label="$t('management.filter.plan')"
 					:options="optionsPlanNames"
 					searchable
 					clearable
@@ -64,6 +65,7 @@
 			<div class="max-w-full">
 				<PSelectMultiple
 					v-model:value="localFilterEmpires"
+					:aria-label="$t('management.filter.active_empire')"
 					:options="optionsEmpires"
 					searchable
 					clearable
