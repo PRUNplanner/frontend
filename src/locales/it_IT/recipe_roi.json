@@ -1,6 +1,6 @@
 {
-	"view_title": "Panoramica ROI",
-	"title": "Panoramica ROI",
+	"view_title": "Recipe ROI",
+	"title": "Recipe ROI",
 	"calculating": "Calcolo ROI ricette",
 	"cx_select": "Preferenza @:terms.cx",
 	"filters": {
@@ -18,9 +18,9 @@
 		"recipe_input": "@:terms.recipes Input",
 		"cogc": "@:terms.cogc",
 		"cogm": "@:terms.cogm",
-		"plan_cost": "Costo del Piano",
-		"daily_profit": "Profitto Giornaliero",
-		"profit_area": "Profitto / Area",
-		"plan_roi": "ROI del Piano"
+		"plan_cost": "@:terms.plan Cost (ȼ)",
+		"daily_profit": "Daily Profit (ȼ)",
+		"profit_area": "Profit/Area (ȼ)",
+		"plan_roi": "@:terms.plan ROI (d)"
 	}
 }
