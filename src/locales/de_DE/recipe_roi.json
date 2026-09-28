@@ -1,6 +1,6 @@
 {
-	"view_title": "ROI-Übersicht",
-	"title": "ROI-Übersicht",
+	"view_title": "Recipe ROI",
+	"title": "Recipe ROI",
 	"calculating": "Berechne alle Gebäude-Auftrage und ihr ROI",
 	"cx_select": "@:terms.cx Präferenz",
 	"filters": {
@@ -18,9 +18,9 @@
 		"recipe_input": "@:terms.recipes Eingang",
 		"cogc": "@:terms.cogc",
 		"cogm": "@:terms.cogm",
-		"plan_cost": "@:terms.plan Kosten",
-		"daily_profit": "Täglicher Gewinn",
-		"profit_area": "Profit / Fläche",
-		"plan_roi": "@:terms.plan ROI"
+		"plan_cost": "@:terms.plan Cost (ȼ)",
+		"daily_profit": "Daily Profit (ȼ)",
+		"profit_area": "Profit/Area (ȼ)",
+		"plan_roi": "@:terms.plan ROI (d)"
 	}
 }
