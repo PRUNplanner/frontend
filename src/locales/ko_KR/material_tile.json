@@ -15,7 +15,7 @@
 	"chart": {
 		"title": "Market History",
 		"labels": {
-			"traded": "Traded Volume",
+			"traded": "@:terms.traded_volume",
 			"low_p": "Daily Minimum Price",
 			"high_p": "Daily Maximum Price"
 		}
