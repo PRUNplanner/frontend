@@ -1,6 +1,6 @@
 {
-	"view_title": "Обзор ROI",
-	"title": "Обзор ROI",
+	"view_title": "Recipe ROI",
+	"title": "Recipe ROI",
 	"calculating": "Расчёт ROI рецептов зданий",
 	"cx_select": "Установки @:terms.cx",
 	"filters": {
@@ -18,9 +18,9 @@
 		"recipe_input": "Затраты @:terms.recipes",
 		"cogc": "@:terms.cogc",
 		"cogm": "@:terms.cogm",
-		"plan_cost": "Стоимость @:terms.plan",
-		"daily_profit": "Дневной доход",
-		"profit_area": "Прибыль / Область",
-		"plan_roi": "@:terms.plan ROI"
+		"plan_cost": "@:terms.plan Cost (ȼ)",
+		"daily_profit": "Daily Profit (ȼ)",
+		"profit_area": "Profit/Area (ȼ)",
+		"plan_roi": "@:terms.plan ROI (d)"
 	}
 }
