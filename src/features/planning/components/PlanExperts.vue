@@ -82,7 +82,7 @@
 				" />
 			<div
 				class="pl-1 text-end text-xs text-nowrap"
-				:class="expert.bonus === 0 ? 'text-white/50' : ''">
+				:class="expert.bonus === 0 ? 'text-muted' : ''">
 				{{ formatNumber(expert.bonus * 100, 2) }} %
 			</div>
 		</template>

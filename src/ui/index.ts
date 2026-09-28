@@ -15,3 +15,4 @@ export { default as PSpin } from "@/ui/components/PSpin.vue";
 export { default as PTable } from "@/ui/components/PTable.vue";
 export { default as PTag } from "@/ui/components/PTag.vue";
 export { default as PTooltip } from "@/ui/components/PTooltip.vue";
+export { default as PValue } from "@/ui/components/PValue.vue";

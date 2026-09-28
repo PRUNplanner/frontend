@@ -156,7 +156,7 @@
 									)
 								}}
 							</span>
-							<span v-else class="text-lime-600">
+							<span v-else class="text-positive">
 								{{
 									$t(
 										"profile.change_profile.buttons.code_requested"

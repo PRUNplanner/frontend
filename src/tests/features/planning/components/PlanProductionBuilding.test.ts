@@ -5,6 +5,7 @@ import type { VueWrapper } from "@vue/test-utils";
 import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
 import PInputNumber from "@/ui/components/PInputNumber.vue";
+import PValue from "@/ui/components/PValue.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -73,7 +74,7 @@ async function mountBuilding(props: Record<string, unknown> = {}) {
 const expertise = (wrapper: VueWrapper) =>
 	wrapper
 		.findAll("span")
-		.filter((s) => s.text() === "game.expertise.METALLURGY")
+		.filter((s) => s.text().endsWith("game.expertise.METALLURGY"))
 		.at(-1)!;
 
 function button(wrapper: VueWrapper, text: string) {
@@ -103,6 +104,8 @@ describe("PlanProductionBuilding", () => {
 	it("marks the expertise positive with a COGC bonus", async () => {
 		const { wrapper, setProps } = await mountBuilding();
 		expect(expertise(wrapper).classes()).toContain("text-positive");
+		// readable without colour
+		expect(expertise(wrapper).text()).toMatch(/^✓/);
 
 		// an expert bonus alone is no COGC match
 		await setProps({
@@ -111,24 +114,25 @@ describe("PlanProductionBuilding", () => {
 			}),
 		});
 		expect(expertise(wrapper).classes()).toEqual(["text-negative"]);
+		expect(expertise(wrapper).text()).toMatch(/^✗/);
 
 		await setProps({ buildingData: building({ efficiencyElements: [] }) });
 		expect(expertise(wrapper).classes()).toEqual(["text-negative"]);
 	});
 
-	it("colours the revenue by sign, 0 counts as positive", async () => {
+	it("shows the revenue with its sign", async () => {
 		const { wrapper, setProps } = await mountBuilding();
-		// the static text-positive is overridden by the ! variants
-		const revenue = () => wrapper.find("span.font-bold.text-positive");
+		const revenue = () => wrapper.findComponent(PValue);
 
-		expect(revenue().classes()).toContain("text-positive!");
+		expect(revenue().classes()).toEqual(["text-positive"]);
+		expect(revenue().text()).toMatch(/^\+/);
 
 		await setProps({ buildingData: building({ dailyRevenue: 0 }) });
-		expect(revenue().classes()).toContain("text-positive!");
+		expect(revenue().classes()).toEqual([]);
 
 		await setProps({ buildingData: building({ dailyRevenue: -0.01 }) });
-		expect(revenue().classes()).toContain("text-negative!");
-		expect(revenue().classes()).not.toContain("text-positive!");
+		expect(revenue().classes()).toEqual(["text-negative"]);
+		expect(revenue().text()).toBe("-0.01");
 	});
 
 	it("flags a building without amount", async () => {
@@ -138,7 +142,7 @@ describe("PlanProductionBuilding", () => {
 		expect(row().classes()).toContain("border-l-prunplanner");
 
 		await setProps({ buildingData: building({ amount: 0 }) });
-		expect(row().classes()).toContain("border-l-red-500");
+		expect(row().classes()).toContain("border-l-negative");
 	});
 
 	it("emits the new amount, but not an empty one", async () => {

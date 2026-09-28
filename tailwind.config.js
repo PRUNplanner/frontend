@@ -29,7 +29,7 @@ module.exports = {
 				"Lucida Grande",
 				"sans-serif",
 			],
-			mono: ["monospace"],
+			mono: ["Roboto Mono", "monospace"],
 		},
 
 		extend: {
@@ -46,8 +46,6 @@ module.exports = {
 				"dark-gray": "#404040",
 				"table-border": "#495057",
 				prunplanner: "#c0e219",
-				positive: "rgba(192,226,24,1)",
-				negative: "rgba(199,0,57,1)",
 			},
 			spacing: {
 				em: "1em",

@@ -5,9 +5,26 @@
 @import "./materials.css";
 
 @theme {
+	/* semantic colours, AA (4.5:1) on every app surface; swapped by data-palette */
+	--color-positive: #c0e218;
+	--color-negative: #ff5c7a;
+	--color-warning: #fbbf24;
+	--color-muted: rgb(255 255 255 / 0.55);
+	--color-muted-strong: rgb(255 255 255 / 0.7);
 	--text-md: 14px;
 	--text-lg: 16px;
 	--app-bg: #030707;
+}
+
+/* colour-blind palette (user preference), unlayered so it beats @theme */
+[data-palette="colorblind"] {
+	--color-positive: #60a5fa;
+	--color-negative: #fb923c;
+}
+
+/* naive-ui injects body { font-family: v-sans } at runtime */
+html body {
+	@apply font-sans;
 }
 
 body {

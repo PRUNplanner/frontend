@@ -14,7 +14,7 @@ export const prunplannerTheme: GlobalThemeOverrides = {
 		inputColorDisabled: BASE,
 		baseColor: BLACK,
 		fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-		fontFamilyMono: "Roboto, serif",
+		fontFamilyMono: "Roboto Mono, monospace",
 		hoverColor: "#222222",
 		actionColor: WHITE,
 	},
@@ -58,6 +58,9 @@ export const prunplannerTheme: GlobalThemeOverrides = {
 		tdColorStripedPopover: GRAY_DARK,
 		tdColorSortingPopover: GRAY_DARK,
 		tdColorHoverPopover: "rgba(255,255,255,0.03)",
+	},
+	Empty: {
+		textColor: "rgba(255,255,255,0.55)",
 	},
 	Popover: {
 		color: BLACK,

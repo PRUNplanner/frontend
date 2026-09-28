@@ -46,7 +46,7 @@
 				{{ $t("homepage.hero.title") }} <br />
 				{{ $t("homepage.hero.subtitle") }}
 			</h1>
-			<p class="text-xl text-white/60 font-mono">
+			<p class="text-xl text-white/60">
 				{{ $t("homepage.hero.lead") }}
 			</p>
 		</div>
@@ -71,7 +71,7 @@
 					<div class="text-white text-2xl font-bold mb-2">
 						{{ $t("homepage.features.simulation.label") }}
 					</div>
-					<div class="text-white/60 text-lg font-mono">
+					<div class="text-white/60 text-lg">
 						{{ $t("homepage.features.simulation.text") }}
 					</div>
 				</div>
@@ -81,7 +81,7 @@
 					<div class="text-white text-2xl font-bold mb-2">
 						{{ $t("homepage.features.planning.label") }}
 					</div>
-					<div class="text-white/60 text-lg font-mono">
+					<div class="text-white/60 text-lg">
 						{{ $t("homepage.features.planning.text") }}
 					</div>
 				</div>
@@ -91,7 +91,7 @@
 					<div class="text-white text-2xl font-bold mb-2">
 						{{ $t("homepage.features.gamedata.label") }}
 					</div>
-					<div class="text-white/60 text-lg font-mono">
+					<div class="text-white/60 text-lg">
 						{{ $t("homepage.features.gamedata.text") }}
 					</div>
 				</div>
@@ -101,7 +101,7 @@
 					<div class="text-white text-2xl font-bold mb-2">
 						{{ $t("homepage.features.burn_repair.label") }}
 					</div>
-					<div class="text-white/60 text-lg font-mono">
+					<div class="text-white/60 text-lg">
 						{{ $t("homepage.features.burn_repair.text") }}
 					</div>
 				</div>
@@ -111,7 +111,7 @@
 					<div class="text-white text-2xl font-bold mb-2">
 						{{ $t("homepage.features.market_exploration.label") }}
 					</div>
-					<div class="text-white/60 text-lg font-mono">
+					<div class="text-white/60 text-lg">
 						{{ $t("homepage.features.market_exploration.text") }}
 					</div>
 				</div>
@@ -121,7 +121,7 @@
 					<div class="text-white text-2xl font-bold mb-2">
 						{{ $t("homepage.features.tools.label") }}
 					</div>
-					<div class="text-white/60 text-lg font-mono">
+					<div class="text-white/60 text-lg">
 						{{ $t("homepage.features.tools.text") }}
 					</div>
 				</div>
@@ -142,7 +142,7 @@
 					:key="screenshot.image"
 					:class="[index >= 3 ? 'hidden xl:block' : '']">
 					<img :src="screenshot.image" :alt="screenshot.text" />
-					<div class="text-center font-mono text-white/60 px-2">
+					<div class="text-center text-white/60 px-2">
 						{{ $t(screenshot.text) }}
 					</div>
 				</div>
@@ -163,7 +163,7 @@
 				<div class="text-white text-2xl font-bold mb-2">
 					{{ $t("homepage.concepts.plans.label") }}
 				</div>
-				<div class="text-lg font-mono text-white/60">
+				<div class="text-lg text-white/60">
 					{{ $t("homepage.concepts.plans.text") }}
 				</div>
 			</div>
@@ -171,7 +171,7 @@
 				<div class="text-white text-2xl font-bold mb-2">
 					{{ $t("homepage.concepts.empires.label") }}
 				</div>
-				<div class="text-lg font-mono text-white/60">
+				<div class="text-lg text-white/60">
 					{{ $t("homepage.concepts.empires.text") }}
 				</div>
 			</div>
@@ -179,7 +179,7 @@
 				<div class="text-white text-2xl font-bold mb-2">
 					{{ $t("homepage.concepts.exchanges.label") }}
 				</div>
-				<div class="text-lg font-mono text-white/60">
+				<div class="text-lg text-white/60">
 					{{ $t("homepage.concepts.exchanges.text") }}
 				</div>
 			</div>
@@ -189,7 +189,8 @@
 		<h1 class="pb-4 text-4xl tracking-tight text-white text-center mt-20">
 			{{ $t("homepage.tools.section_title") }}
 		</h1>
-		<div class="flex flex-row flex-wrap items-center justify-center pt-3 gap-10">
+		<div
+			class="flex flex-row flex-wrap items-center justify-center pt-3 gap-10">
 			<a href="https://posthog.com/" target="_blank">
 				<img
 					src="/images/homepage/posthog-logo-white@2x.png"
@@ -220,7 +221,7 @@
 
 		<span>{{ $t("homepage.open_source.prompt") }}</span>
 	</p>
-	<p class="text-white/60 text-center font-mono">
+	<p class="text-white/60 text-center">
 		{{ $t("homepage.love") }}
 	</p>
 </template>

@@ -80,7 +80,7 @@ async function edit(wrapper: VueWrapper) {
 	await flushPromises();
 }
 
-const warning = (wrapper: VueWrapper) => wrapper.find(".bg-amber-500\\/20");
+const warning = (wrapper: VueWrapper) => wrapper.find(".bg-warning\\/20");
 
 describe("EmpireConfiguration", () => {
 	beforeAll(() => {

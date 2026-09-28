@@ -26,6 +26,7 @@
 
 	// UI
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { PValue } from "@/ui";
 
 	const props = defineProps({
 		searchedMaterial: {
@@ -203,7 +204,7 @@
 				<template #render-cell="{ rowData }">
 					<div class="text-end text-nowrap">
 						{{ formatNumber(rowData.planCost) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</div>
 				</template>
 			</XNDataTableColumn>
@@ -215,15 +216,9 @@
 					<div class="text-end">Output Profit</div>
 				</template>
 				<template #render-cell="{ rowData }">
-					<div
-						class="text-end text-nowrap"
-						:class="
-							rowData.outputProfit > 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.outputProfit) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<div class="text-end text-nowrap">
+						<PValue :value="rowData.outputProfit" />
+						<span class="pl-1 font-light text-muted">ȼ</span>
 					</div>
 				</template>
 			</XNDataTableColumn> -->
@@ -233,15 +228,9 @@
 				title-align="right"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<div
-						class="text-end text-nowrap"
-						:class="
-							rowData.dailyProfit > 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.dailyProfit) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<div class="text-end text-nowrap">
+						<PValue :value="rowData.dailyProfit" />
+						<span class="pl-1 font-light text-muted">ȼ</span>
 					</div>
 				</template>
 			</XNDataTableColumn>
@@ -253,15 +242,9 @@
 					<div class="text-end">Profit/Area</div>
 				</template>
 				<template #render-cell="{ rowData }">
-					<div
-						class="text-end text-nowrap"
-						:class="
-							rowData.planProfitArea > 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.planProfitArea) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<div class="text-end text-nowrap">
+						<PValue :value="rowData.planProfitArea" />
+						<span class="pl-1 font-light text-muted">ȼ</span>
 					</div>
 				</template>
 			</XNDataTableColumn> -->
@@ -279,7 +262,7 @@
 								: 'text-negative'
 						">
 						{{ formatNumber(rowData.planROI) }}
-						<span class="pl-1 font-light text-white/50"> d </span>
+						<span class="pl-1 font-light text-muted"> d </span>
 					</div>
 				</template>
 			</XNDataTableColumn>

@@ -66,7 +66,7 @@
 			<li class="flex flex-row gap-3">
 				<span
 					class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold"
-					:class="saved ? 'bg-lime-500 text-black' : 'bg-white/10'">
+					:class="saved ? 'bg-positive text-black' : 'bg-white/10'">
 					<PIcon v-if="saved" :size="16"><CheckSharp /></PIcon>
 					<template v-else>1</template>
 				</span>
@@ -90,7 +90,7 @@
 						</PButton>
 						<span
 							v-if="saved"
-							class="text-sm text-lime-400"
+							class="text-sm text-positive"
 							role="status">
 							{{ $t("empire.onboarding.empire.saved") }}
 						</span>

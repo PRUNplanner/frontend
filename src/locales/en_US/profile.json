@@ -71,6 +71,9 @@
 		"form": {
 			"tool_preferences": "Tool Preferences",
 			"language": "Language",
+			"color_palette": "Color palette",
+			"palette_default": "Default (green / red)",
+			"palette_colorblind": "Color-blind (blue / orange)",
 			"language_note": "We want to make PRUNplanner accessible to everyone. If you'd like to see the tool in your native language - or help us polish an existing translation - join our localization project on {link}.",
 			"default_empire": "Default Empire",
 			"default_cx": "Default CX",

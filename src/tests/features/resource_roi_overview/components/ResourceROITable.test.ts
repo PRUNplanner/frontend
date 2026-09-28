@@ -133,7 +133,7 @@ describe("ResourceROITable", () => {
 			planetInfrastructures: "LM, COGC",
 			planCost: "250,000.00  ȼ",
 			// 40 * 10
-			dailyProfit: "400.00  ȼ",
+			dailyProfit: "+400.00ȼ",
 			planROI: "40.00  d",
 			distanceAI1: "7",
 			distanceCI1: "—",
@@ -169,12 +169,17 @@ describe("ResourceROITable", () => {
 	it("colours profit and ROI by sign, 0 counts as negative", async () => {
 		const { wrapper } = await mountTable();
 
-		const positive = (key: string) =>
+		const positive = (key: string, el = "div") =>
 			wrapper
-				.findAll(`td[data-col-key="${key}"] div`)
+				.findAll(`td[data-col-key="${key}"] ${el}`)
 				.map((d) => d.classes("text-positive"));
 
-		expect(positive("dailyProfit")).toEqual([true, false, false, true]);
+		expect(positive("dailyProfit", "div > span:first-child")).toEqual([
+			true,
+			false,
+			false,
+			true,
+		]);
 		expect(positive("planROI")).toEqual([true, false, false, true]);
 	});
 

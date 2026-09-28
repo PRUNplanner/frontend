@@ -11,6 +11,12 @@ importers:
       '@dagrejs/dagre':
         specifier: ^2.0.4
         version: 2.0.4
+      '@fontsource/roboto':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/roboto-mono':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@popperjs/core':
         specifier: ^2.11.8
         version: 2.11.8
@@ -504,6 +510,12 @@ packages:
     peerDependenciesMeta:
       '@noble/hashes':
         optional: true
+
+  '@fontsource/roboto-mono@5.3.0':
+    resolution: {integrity: sha512-yhwplHMHW9dCk+1pZuERfcJe+K3rosGVZEoK0XktkxRSqQ9qsipSwwiuW2/8Qmtp9lzu3Ixa/ie4BMH3i8CkZQ==}
+
+  '@fontsource/roboto@5.3.0':
+    resolution: {integrity: sha512-BapRJOWYP+LZ21zp+wBQjfpPYKRoxc4LspJ/RLuI+HSMBD5u/X4O+ESDrSvEqDSy0rAl7GwBJ+09mdc16cVQ1Q==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -3192,6 +3204,10 @@ snapshots:
       levn: 0.4.1
 
   '@exodus/bytes@1.16.0': {}
+
+  '@fontsource/roboto-mono@5.3.0': {}
+
+  '@fontsource/roboto@5.3.0': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

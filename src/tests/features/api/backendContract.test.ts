@@ -368,6 +368,7 @@ describe("Backend contract", () => {
 			"burnOrigin",
 			"supplyCartDays",
 			"layoutNavigationStyle",
+			"colorPalette",
 			"planOverrides",
 		];
 
@@ -383,6 +384,7 @@ describe("Backend contract", () => {
 			burnOrigin: "Antares Station Warehouse",
 			supplyCartDays: 20,
 			layoutNavigationStyle: "full",
+			colorPalette: "default",
 			planOverrides: {},
 		};
 
@@ -456,6 +458,20 @@ describe("Backend contract", () => {
 					layoutNavigationStyle: "x",
 				}).layoutNavigationStyle
 			).toBe("full");
+		});
+
+		it("falls back to the default palette for unknown or missing values", () => {
+			expect(
+				UserPreferenceSchema.parse({
+					...backendDefaults,
+					colorPalette: "x",
+				}).colorPalette
+			).toBe("default");
+
+			const { colorPalette: _, ...oldBackend } = backendDefaults;
+			expect(UserPreferenceSchema.parse(oldBackend).colorPalette).toBe(
+				"default"
+			);
 		});
 	});
 

@@ -344,7 +344,7 @@
 			{{ $t("plan.tools.construction_cart.title") }}
 			<PTooltip v-if="unplannedBuildings.length > 0">
 				<template #trigger>
-					<PIcon class="text-amber-400 ml-1 relative top-px">
+					<PIcon class="text-warning ml-1 relative top-px">
 						<WarningAmberRound />
 					</PIcon>
 				</template>
@@ -381,7 +381,7 @@
 							<PTooltip v-if="deficitWorkforceTypes.length > 0">
 								<template #trigger>
 									<PIcon
-										class="text-amber-400 ml-1 relative top-px">
+										class="text-warning ml-1 relative top-px">
 										<WarningAmberRound />
 									</PIcon>
 								</template>
@@ -417,8 +417,8 @@
 						:class="
 							(constructedMap.get(building) ?? 0) >
 							plannedBuildings[building]
-								? 'text-red-500'
-								: 'text-neutral-500'
+								? 'text-negative'
+								: 'text-muted'
 						">
 						{{ constructedMap.get(building) ?? 0 }}
 					</th>
@@ -444,7 +444,7 @@
 						<span
 							:class="
 								!localBuildingMaterials[building][mat]
-									? 'text-white/20'
+									? 'text-muted'
 									: ''
 							">
 							{{
@@ -488,7 +488,7 @@
 								</div>
 								<div>
 									{{ formatNumber(totalInformation.price) }}
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										ȼ
 									</span>
 								</div>
@@ -504,7 +504,7 @@
 								</div>
 								<div>
 									{{ formatNumber(totalInformation.weight) }}
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										t
 									</span>
 								</div>
@@ -517,7 +517,7 @@
 								</div>
 								<div>
 									{{ formatNumber(totalInformation.volume) }}
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										m³
 									</span>
 								</div>
@@ -634,7 +634,7 @@
 											)
 										}}
 										<span
-											class="pl-1 font-light text-white/50">
+											class="pl-1 font-light text-muted">
 											ȼ
 										</span>
 									</div>
@@ -655,7 +655,7 @@
 											)
 										}}
 										<span
-											class="pl-1 font-light text-white/50">
+											class="pl-1 font-light text-muted">
 											t
 										</span>
 									</div>
@@ -673,7 +673,7 @@
 											)
 										}}
 										<span
-											class="pl-1 font-light text-white/50">
+											class="pl-1 font-light text-muted">
 											m³
 										</span>
 									</div>

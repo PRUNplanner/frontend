@@ -177,7 +177,7 @@
 	<i18n-t
 		keypath="plan.tools.supply_cart.info.p"
 		tag="div"
-		class="text-white/50 pb-3">
+		class="text-muted pb-3">
 		<template #link>
 			<router-link
 				to="/fio/burn"
@@ -353,7 +353,7 @@
 								</div>
 								<div>
 									{{ formatNumber(dailyCost) }}
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										ȼ
 									</span>
 								</div>
@@ -366,7 +366,7 @@
 								</div>
 								<div>
 									{{ formatNumber(totalCost) }}
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										ȼ
 									</span>
 								</div>
@@ -382,7 +382,7 @@
 								</div>
 								<div>
 									{{ formatNumber(totalWeight) }}
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										t
 									</span>
 								</div>
@@ -395,7 +395,7 @@
 								</div>
 								<div>
 									{{ formatNumber(totalVolume) }}
-									<span class="pl-1 font-light text-white/50">
+									<span class="pl-1 font-light text-muted">
 										m³
 									</span>
 								</div>

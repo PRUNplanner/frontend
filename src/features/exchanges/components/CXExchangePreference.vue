@@ -111,7 +111,7 @@
 			</tr>
 			<tr
 				v-if="localCXOptions.length === 0"
-				class="text-center child:text-white/50!">
+				class="text-center child:text-muted!">
 				<td colspan="3">
 					{{ $t("exchanges.components.exchanges.no_data") }}
 				</td>

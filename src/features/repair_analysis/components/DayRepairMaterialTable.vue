@@ -55,7 +55,7 @@
 				</td>
 				<td class="text-end">
 					{{ formatNumber(-1 * material.price) }}
-					<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 			</tr>
 		</tbody>
@@ -73,9 +73,7 @@
 						</div>
 						<div>
 							{{ formatNumber(totalData.cost) }}
-							<span class="pl-1 font-light text-white/50">
-								ȼ
-							</span>
+							<span class="pl-1 font-light text-muted"> ȼ </span>
 						</div>
 						<div>
 							{{
@@ -86,9 +84,7 @@
 						</div>
 						<div>
 							{{ formatNumber(totalData.weight) }}
-							<span class="pl-1 font-light text-white/50">
-								t
-							</span>
+							<span class="pl-1 font-light text-muted"> t </span>
 						</div>
 						<div>
 							{{
@@ -99,9 +95,7 @@
 						</div>
 						<div>
 							{{ formatNumber(totalData.volume) }}
-							<span class="pl-1 font-light text-white/50">
-								m³
-							</span>
+							<span class="pl-1 font-light text-muted"> m³ </span>
 						</div>
 					</div>
 				</td>

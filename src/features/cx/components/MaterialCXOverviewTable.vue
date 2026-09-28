@@ -17,7 +17,7 @@
 	} from "@/database/services/useExchangeData.types";
 
 	// UI
-	import { PTable, PIcon } from "@/ui";
+	import { PTable, PIcon, PValue } from "@/ui";
 	import {
 		KeyboardArrowUpSharp,
 		KeyboardDoubleArrowUpSharp,
@@ -146,7 +146,7 @@
 								:class="
 									overviewData.vwap_analysis[cx]
 										.significance === 'STABLE'
-										? 'text-white/50'
+										? 'text-muted'
 										: overviewData.vwap_analysis[cx]
 													.percentChange > 0
 											? 'text-positive'
@@ -157,7 +157,7 @@
 							:class="
 								overviewData.vwap_analysis[cx].significance ===
 								'STABLE'
-									? 'text-white/50'
+									? 'text-muted'
 									: overviewData.vwap_analysis[cx]
 												.percentChange > 0
 										? 'text-positive'
@@ -168,6 +168,7 @@
 									overviewData.vwap_analysis[cx]
 										.percentChange * 100,
 									2,
+									true,
 									true
 								)
 							}}
@@ -186,7 +187,7 @@
 				class="[&>td:nth-child(6)]:border-l-2 [&>td:nth-child(6)]:border-dark-gray">
 				<td>
 					{{ $t(row.label) }}
-					<div v-if="daily" class="text-white/50 font-mono">
+					<div v-if="daily" class="text-muted font-mono">
 						{{ formatNumber(row.daily, 2, true) }}
 					</div>
 				</td>
@@ -200,7 +201,7 @@
 						:class="
 							row.marketShare[cx] >= 5 // red at 5% market share
 								? 'text-negative'
-								: 'text-white/50'
+								: 'text-muted'
 						">
 						{{
 							row.marketShare[cx]
@@ -270,20 +271,10 @@
 				<td
 					v-for="cx in exchangeTypesArray"
 					:key="`delta_supply_demand#${cx}`"
-					class="font-mono"
-					:class="
-						overviewData.delta_supply_demand[cx] > 0
-							? 'text-negative'
-							: 'text-positive'
-					">
-					{{
-						formatNumber(
-							overviewData.delta_supply_demand[cx],
-							2,
-							true,
-							true
-						)
-					}}
+					class="font-mono">
+					<PValue
+						:value="overviewData.delta_supply_demand[cx]"
+						optional-decimals />
 				</td>
 			</tr>
 			<tr
@@ -295,8 +286,7 @@
 					<div class="flex flex-col gap-y-2">
 						<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 							<div class="flex flex-col">
-								<span
-									class="text-[10px] text-white/50 uppercase">
+								<span class="text-xs text-muted uppercase">
 									{{ $t("cx_info_table.market_breadth") }}
 								</span>
 								<span class="text-lg font-mono"
@@ -319,8 +309,7 @@
 							</div>
 
 							<div class="flex flex-col">
-								<span
-									class="text-[10px] text-white/50 uppercase">
+								<span class="text-xs text-muted uppercase">
 									{{ $t("cx_info_table.liquidity_ratio") }}
 								</span>
 								<span
@@ -339,15 +328,13 @@
 										)
 									}}
 								</span>
-								<span
-									class="text-[10px] text-white/50 font-normal">
+								<span class="text-xs text-muted font-normal">
 									{{ $t("cx_info_table.demand_vs_supply") }}
 								</span>
 							</div>
 
 							<div class="flex flex-col">
-								<span
-									class="text-[10px] text-white/50 uppercase">
+								<span class="text-xs text-muted uppercase">
 									{{ $t("cx_info_table.weighted_trend") }}
 								</span>
 								<span
@@ -368,8 +355,7 @@
 										)
 									}}%
 								</span>
-								<span
-									class="text-[10px] text-white/50 font-normal">
+								<span class="text-xs text-muted font-normal">
 									{{
 										$t(
 											"cx_info_table.volume_adjusted_delta"
@@ -379,8 +365,7 @@
 							</div>
 
 							<div class="flex flex-col">
-								<span
-									class="text-[10px] text-white/50 uppercase">
+								<span class="text-xs text-muted uppercase">
 									{{ $t("cx_info_table.price_cohesion") }}
 								</span>
 								<span
@@ -399,8 +384,7 @@
 										)
 									}}%
 								</span>
-								<span
-									class="text-[10px] text-white/50 font-normal">
+								<span class="text-xs text-muted font-normal">
 									{{ $t("cx_info_table.variance_index") }}
 								</span>
 							</div>

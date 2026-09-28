@@ -30,7 +30,7 @@
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { PProgressBar } from "@/ui";
+	import { PProgressBar, PValue } from "@/ui";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 
 	const props = defineProps({
@@ -265,7 +265,7 @@
 				<template #render-cell="{ rowData }">
 					<div class="text-end text-nowrap">
 						{{ formatNumber(rowData.planCost) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</div>
 				</template>
 			</XNDataTableColumn>
@@ -275,15 +275,9 @@
 				title-align="right"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<div
-						class="text-end text-nowrap"
-						:class="
-							rowData.dailyProfit > 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.dailyProfit) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<div class="text-end text-nowrap">
+						<PValue :value="rowData.dailyProfit" />
+						<span class="pl-1 font-light text-muted">ȼ</span>
 					</div>
 				</template>
 			</XNDataTableColumn>
@@ -293,15 +287,9 @@
 				title-align="right"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<div
-						class="text-end"
-						:class="
-							rowData.planProfitArea > 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.planProfitArea) }}
-						<span class="pl-1 font-light text-white/50"> ȼ </span>
+					<div class="text-end">
+						<PValue :value="rowData.planProfitArea" />
+						<span class="pl-1 font-light text-muted">ȼ</span>
 					</div>
 				</template>
 			</XNDataTableColumn>

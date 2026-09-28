@@ -19,6 +19,7 @@ export const preferenceDefaults: IPreferenceDefault = {
 	burnOrigin: "Configure on Execution",
 	supplyCartDays: 20,
 	layoutNavigationStyle: "full",
+	colorPalette: "default",
 
 	planOverrides: {},
 	planDefaults: {

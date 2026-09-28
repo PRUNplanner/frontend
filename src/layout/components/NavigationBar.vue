@@ -336,7 +336,7 @@
 						<span v-else class="font-bold">PP</span>
 					</router-link>
 				</div>
-				<div v-if="isFull" class="text-end text-[10px] text-white/40">
+				<div v-if="isFull" class="text-end text-xs text-muted">
 					<RouterLink to="/debug">
 						{{ appVersion }}
 					</RouterLink>

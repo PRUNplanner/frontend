@@ -146,9 +146,9 @@ describe("ROIOverviewTable", () => {
 			optimalSetup: "10x SME",
 			cogc: "Metallurgy",
 			planCost: "250,000.00  ȼ",
-			dailyProfit: "1,000.00  ȼ",
+			dailyProfit: "+1,000.00ȼ",
 			// 1000 / 500
-			planProfitArea: "2.00  ȼ",
+			planProfitArea: "+2.00ȼ",
 			planROI: "40.00 d",
 		});
 		// underscores become spaces, every word capitalized
@@ -158,14 +158,24 @@ describe("ROIOverviewTable", () => {
 	it("colours profit and ROI by sign", async () => {
 		const { wrapper } = await mountTable();
 
-		const positive = (key: string) =>
+		const positive = (key: string, el = "div") =>
 			wrapper
-				.findAll(`td[data-col-key="${key}"] div`)
+				.findAll(`td[data-col-key="${key}"] ${el}`)
 				.map((d) => d.classes("text-positive"));
 
 		// FP makes exactly 0, which is not positive
-		expect(positive("dailyProfit")).toEqual([true, false, false, true]);
-		expect(positive("planProfitArea")).toEqual([true, false, false, true]);
+		expect(positive("dailyProfit", "div > span:first-child")).toEqual([
+			true,
+			false,
+			false,
+			true,
+		]);
+		expect(positive("planProfitArea", "div > span:first-child")).toEqual([
+			true,
+			false,
+			false,
+			true,
+		]);
 		expect(positive("planROI")).toEqual([true, false, false, true]);
 	});
 

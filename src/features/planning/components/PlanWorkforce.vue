@@ -95,13 +95,13 @@
 						)
 					}}
 				</td>
-				<td :class="workforce.required === 0 ? 'text-white/50!' : ''">
+				<td :class="workforce.required === 0 ? 'text-muted!' : ''">
 					{{ formatAmount(workforce.required) }}
 				</td>
-				<td :class="workforce.capacity === 0 ? 'text-white/50!' : ''">
+				<td :class="workforce.capacity === 0 ? 'text-muted!' : ''">
 					{{ formatAmount(workforce.capacity) }}
 				</td>
-				<td :class="workforce.left === 0 ? 'text-white/50!' : ''">
+				<td :class="workforce.left === 0 ? 'text-muted!' : ''">
 					{{ formatAmount(workforce.left) }}
 				</td>
 				<td class="text-center">
@@ -144,7 +144,7 @@
 				</td>
 				<td
 					class="text-end"
-					:class="workforce.efficiency === 0 ? 'text-white/50!' : ''">
+					:class="workforce.efficiency === 0 ? 'text-muted!' : ''">
 					{{ formatNumber(workforce.efficiency * 100) }}
 				</td>
 			</tr>

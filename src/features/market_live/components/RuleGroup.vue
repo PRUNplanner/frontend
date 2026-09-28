@@ -126,7 +126,7 @@
 
 				<div
 					v-else
-					class="p-2 border border-red-200 bg-red-50 text-red-500 text-[10px]">
+					class="p-2 border border-red-200 bg-red-50 text-red-500 text-xs">
 					{{
 						$t("market_live.components.rule_builder.error", {
 							value: JSON.stringify(item),
@@ -137,7 +137,7 @@
 
 			<div
 				v-if="group.conditions.length === 0"
-				class="text-[10px] text-slate-400 italic pl-2">
+				class="text-xs text-slate-400 italic pl-2">
 				{{ $t("market_live.components.rule_builder.empty") }}
 			</div>
 		</div>

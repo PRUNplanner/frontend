@@ -63,7 +63,7 @@
 								class="text-white font-bold text-sm tracking-tight group-hover:text-prunplanner transition-colors">
 								{{ event.ticker }}
 							</p>
-							<p class="text-white/50 text-[10px] uppercase">
+							<p class="text-muted text-xs uppercase">
 								{{ event.metadata.name }}
 							</p>
 						</div>
@@ -72,7 +72,7 @@
 							<span
 								class="text-xs px-2 py-0.5 rounded"
 								:class="{
-									'bg-gray-dark text-white/50':
+									'bg-gray-dark text-muted':
 										event.severity === 'LOW',
 									'bg-orange-500/10 text-orange-500 border border-orange-500/20':
 										event.severity === 'MEDIUM',
@@ -93,7 +93,7 @@
 									.triggers"
 								:key="idx"
 								class="flex items-center gap-1.5 bg-gray-dark border border-white/10 px-2 py-1 rounded text-xs shadow-inner">
-								<span class="text-white/50 italic">
+								<span class="text-muted italic">
 									{{ trigger.field }}
 								</span>
 								<span class="text-white font-bold">
@@ -105,13 +105,13 @@
 										trigger.operator
 									}}
 								</span>
-								<span class="text-white/50">
+								<span class="text-muted">
 									{{ formatVal(trigger.targetValue) }}
 								</span>
 
 								<span
 									v-if="trigger.comparisonType !== 'static'"
-									class="text-[9px] px-1 rounded bg-gray-dark border border-white/10 text-white/50">
+									class="text-xs px-1 rounded bg-gray-dark border border-white/10 text-muted">
 									{{
 										trigger.comparisonType ===
 										"previous_pct"
@@ -218,7 +218,7 @@
 
 			<div
 				v-if="eventLog.length === 0"
-				class="p-6 text-white/50 text-center text-xs">
+				class="p-6 text-muted text-center text-xs">
 				{{ $t("market_live.components.alert_feed.waiting") }}
 			</div>
 		</div>

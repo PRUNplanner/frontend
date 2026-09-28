@@ -61,9 +61,7 @@
 						<template #render-cell="data">
 							<span
 								:class="
-									data.rowData.input <= 0
-										? 'text-white/50'
-										: ''
+									data.rowData.input <= 0 ? 'text-muted' : ''
 								">
 								{{ formatNumber(data.rowData.input) }}
 							</span>
@@ -76,9 +74,7 @@
 						<template #render-cell="data">
 							<span
 								:class="
-									data.rowData.output <= 0
-										? 'text-white/50'
-										: ''
+									data.rowData.output <= 0 ? 'text-muted' : ''
 								">
 								{{ formatNumber(data.rowData.output) }}
 							</span>
@@ -142,7 +138,7 @@
 						<span class="font-bold">
 							{{ rowData.planName }}
 						</span>
-						<span class="text-white/50!">
+						<span class="text-muted!">
 							&mdash;
 							{{ planetName(rowData.planetId) }}
 						</span>

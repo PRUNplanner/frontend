@@ -14,6 +14,9 @@
 	// Util
 	import { formatNumber } from "@/util/numbers";
 
+	// UI
+	import { PValue } from "@/ui";
+
 	// Types & Interfaces
 	import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
 
@@ -70,15 +73,7 @@
 				:title="t('terms.delta')"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<span
-						class="text-nowrap"
-						:class="
-							rowData.delta >= 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.delta) }}
-					</span>
+					<PValue class="text-nowrap" :value="rowData.delta" />
 				</template>
 			</x-n-data-table-column>
 			<x-n-data-table-column
@@ -88,7 +83,7 @@
 				<template #render-cell="{ rowData }">
 					<span
 						class="text-nowrap"
-						:class="rowData.output <= 0 ? 'text-white/50' : ''">
+						:class="rowData.output <= 0 ? 'text-muted' : ''">
 						{{ formatNumber(rowData.output) }}
 					</span>
 				</template>
@@ -98,7 +93,7 @@
 				:title="t('terms.consumption')"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<span :class="rowData.input <= 0 ? 'text-white/50' : ''">
+					<span :class="rowData.input <= 0 ? 'text-muted' : ''">
 						{{ formatNumber(rowData.input) }}
 					</span>
 				</template>
@@ -108,15 +103,7 @@
 				:title="t('terms.delta_price')"
 				sorter="default">
 				<template #render-cell="{ rowData }">
-					<span
-						class="text-nowrap"
-						:class="
-							rowData.deltaPrice >= 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.deltaPrice) }}
-					</span>
+					<PValue class="text-nowrap" :value="rowData.deltaPrice" />
 				</template>
 			</x-n-data-table-column>
 			<x-n-data-table-column

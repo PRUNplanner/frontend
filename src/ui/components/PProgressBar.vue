@@ -13,7 +13,7 @@
 				class="flex h-full overflow-hidden transition-all duration-300 ease-out bg-prunplanner"
 				:style="{ width: percentage + '%' }"></div>
 		</div>
-		<div class="w-12.5 text-[10px] text-end text-nowrap text-white/60">
+		<div class="w-12.5 text-xs text-end text-nowrap text-white/60">
 			{{ step }} / {{ total }}
 		</div>
 	</div>

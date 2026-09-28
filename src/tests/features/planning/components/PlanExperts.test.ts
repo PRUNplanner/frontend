@@ -96,8 +96,8 @@ describe("PlanExperts", () => {
 	it("grays out experts without bonus", async () => {
 		const { wrapper } = await mountExperts();
 
-		expect(bonus(wrapper, 0).classes()).toContain("text-white/50");
-		expect(bonus(wrapper, 1).classes()).not.toContain("text-white/50");
+		expect(bonus(wrapper, 0).classes()).toContain("text-muted");
+		expect(bonus(wrapper, 1).classes()).not.toContain("text-muted");
 	});
 
 	it("does not warn at 6 experts", async () => {

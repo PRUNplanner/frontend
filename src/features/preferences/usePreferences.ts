@@ -121,6 +121,12 @@ export function usePreferences() {
 		set: (v) => userStore.setPreference("layoutNavigationStyle", v),
 	});
 
+	const colorPalette: WritableComputedRef<UserPreference["colorPalette"]> =
+		computed({
+			get: () => userStore.preferences.colorPalette,
+			set: (v) => userStore.setPreference("colorPalette", v),
+		});
+
 	const locale: WritableComputedRef<string> = computed({
 		get: () => userStore.preferences.locale,
 		set: (v: SupportedLocale) => {
@@ -255,6 +261,7 @@ export function usePreferences() {
 		planSettings,
 		planSettingsOverview,
 		layoutNavigationStyle,
+		colorPalette,
 		locale,
 		// functions
 		cleanPlanPreferences,

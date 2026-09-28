@@ -162,26 +162,36 @@ describe("PlanProductionRecipe", () => {
 			"12h 0m",
 		]);
 		expect(rows.at(0)).toMatchObject({
-			dailyRevenue: "-100.00 ȼ",
+			dailyRevenue: "-100.00ȼ",
 			// -100 / 100
-			profitPerArea: "-1.00 ȼ",
+			profitPerArea: "-1.00ȼ",
 			// negative ROI never pays back
 			roi: "never",
 		});
 		expect(rows.at(3)!.roi).toBe("20.00 d");
 	});
 
-	it("colours option figures by sign, 0 counts as positive", async () => {
+	it("signs and colours option figures, 0 is neutral", async () => {
 		const { wrapper } = await mountRecipe();
 		await openOptions(wrapper);
 
+		const signs = (key: string) =>
+			body()
+				.findAll(`td[data-col-key="${key}"] .text-nowrap > span`)
+				.filter((_, i) => i % 2 === 0)
+				.map((s) => s.classes().join(" "));
 		const positive = (key: string) =>
 			body()
 				.findAll(`td[data-col-key="${key}"] > span`)
 				.map((s) => s.classes("text-positive!"));
 
-		expect(positive("dailyRevenue")).toEqual([false, true, true, true]);
-		expect(positive("profitPerArea")).toEqual([false, true, true, true]);
+		// ALC -100, ALN 50, BSE 0, FE 500
+		const bySign = ["text-negative", "text-positive", "", "text-positive"];
+		expect(signs("dailyRevenue")).toEqual(bySign);
+		expect(signs("profitPerArea")).toEqual(bySign);
+		expect(
+			body().findAll('td[data-col-key="dailyRevenue"]').at(1)!.text()
+		).toBe("+50.00ȼ");
 		expect(positive("roi")).toEqual([false, true, true, true]);
 		expect(body().findAll('td[data-col-key="roi"]').at(2)!.text()).toBe(
 			"0.00 d"

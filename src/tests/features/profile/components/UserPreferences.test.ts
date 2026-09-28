@@ -108,6 +108,7 @@ describe("UserPreferences", () => {
 
 		expect(selects(wrapper).map((s) => s.props("value"))).toEqual([
 			"en_US",
+			"default",
 			// no default empire yet, so the first one is picked
 			FIRST_EMPIRE.uuid,
 			"Configure on Execution",
@@ -136,6 +137,7 @@ describe("UserPreferences", () => {
 
 		expect(selects(wrapper).map((s) => s.props("value"))).toEqual([
 			"en_US",
+			"default",
 			SECOND_EMPIRE.uuid,
 			"Moria Station Warehouse",
 		]);
@@ -158,7 +160,7 @@ describe("UserPreferences", () => {
 				.props("options")
 				.map((o) => o.value)
 		).toEqual(expect.arrayContaining(["en_US", "de_DE"]));
-		const origins = selects(wrapper).at(2)!.props("options");
+		const origins = selects(wrapper).at(3)!.props("options");
 		// "Configure on Execution" plus 6 stations
 		expect(origins).toHaveLength(7);
 		expect(origins.at(0)!.value).toBe("Configure on Execution");
@@ -172,7 +174,7 @@ describe("UserPreferences", () => {
 		seed();
 		const { wrapper } = await mountPreferences();
 
-		const options = selects(wrapper).at(1)!.props("options");
+		const options = selects(wrapper).at(2)!.props("options");
 		expect(options).toHaveLength(7);
 		expect(options.at(0)).toEqual({
 			label: "PRUN REAL",
@@ -209,7 +211,7 @@ describe("UserPreferences", () => {
 		const { wrapper } = await mountPreferences();
 
 		expect(userStore.preferences.defaultEmpireUuid).toBeUndefined();
-		expect(selects(wrapper).at(1)!.props("options")).toEqual([]);
+		expect(selects(wrapper).at(2)!.props("options")).toEqual([]);
 	});
 
 	it("drops plan preferences of deleted plans on mount", async () => {
@@ -275,13 +277,29 @@ describe("UserPreferences", () => {
 		expect(setLocale).toHaveBeenCalledWith("de_DE", expect.anything());
 	});
 
+	it("switches the color palette", async () => {
+		const userStore = seed();
+		const { wrapper } = await mountPreferences();
+
+		expect(
+			selects(wrapper)
+				.at(1)!
+				.props("options")
+				.map((o: { value: string }) => o.value)
+		).toEqual(["default", "colorblind"]);
+		selects(wrapper).at(1)!.vm.$emit("update:value", "colorblind");
+		await flushPromises();
+
+		expect(userStore.preferences.colorPalette).toBe("colorblind");
+	});
+
 	it("sets the default empire and XIT origin", async () => {
 		const userStore = seed();
 		const { wrapper } = await mountPreferences();
 
-		selects(wrapper).at(1)!.vm.$emit("update:value", SECOND_EMPIRE.uuid);
+		selects(wrapper).at(2)!.vm.$emit("update:value", SECOND_EMPIRE.uuid);
 		selects(wrapper)
-			.at(2)!
+			.at(3)!
 			.vm.$emit("update:value", "Benten Station Warehouse");
 		await flushPromises();
 
