@@ -61,8 +61,11 @@
 			"plan": "@:terms.plan",
 			"planet": "@:terms.planets",
 			"configuration": "配置",
-			"nodata_title": "没有 @:terms.plans 可用",
-			"nodata_label": "使用行星搜索创建你的第一个 @:terms.plan。"
+			"nodata_title": "No @:terms.plans_plural available",
+			"nodata_label": "Use Planet Search to create your first @:{'terms.plan'}.",
+			"assign_label": "{plan} in {empire}",
+			"assign_all": "Assign all plans to {empire}",
+			"unassign_all": "Remove all plans from {empire}"
 		}
 	}
 }
