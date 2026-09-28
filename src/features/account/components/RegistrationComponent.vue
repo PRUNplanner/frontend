@@ -141,7 +141,11 @@
 			<PForm>
 				<PFormItem
 					:label="t('account.components.registration.form.username')">
-					<PInput v-model:value="inputUsername" class="w-full" />
+					<PInput
+						v-model:value="inputUsername"
+						autocomplete="username"
+						:placeholder="t('account.components.hints.username')"
+						class="w-full" />
 					<template #info>
 						{{
 							$t(
@@ -154,6 +158,10 @@
 					:label="t('account.components.registration.form.password')">
 					<PInput
 						v-model:value="inputPassword"
+						autocomplete="new-password"
+						:placeholder="
+							t('account.components.hints.new_password')
+						"
 						type="password"
 						class="w-full" />
 					<template #info>
@@ -168,6 +176,7 @@
 					:label="t('account.components.registration.form.email')">
 					<PInput
 						v-model:value="inputEmail"
+						autocomplete="email"
 						:placeholder="
 							t(
 								'account.components.registration.form.email_placeholder'

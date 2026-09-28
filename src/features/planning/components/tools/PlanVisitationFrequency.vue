@@ -361,6 +361,11 @@
 
 			<PSelectMultiple
 				v-model:value="refMaterialExclusions"
+				:aria-label="
+					$t(
+						'plan.tools.visitation_frequency.storage.exclusion_label'
+					)
+				"
 				:disabled="disabled"
 				:options="refMaterialExclusionOption"
 				multiple

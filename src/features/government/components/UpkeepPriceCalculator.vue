@@ -28,6 +28,7 @@
 	// UI
 	import { PProgressBar, PButton, PButtonGroup } from "@/ui";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { tablePagination } from "@/util/pagination";
 
 	const props = defineProps({
 		cxUuid: {
@@ -84,6 +85,8 @@
 		},
 		{ immediate: true }
 	);
+
+	const pagination = tablePagination(50);
 </script>
 
 <template>
@@ -123,7 +126,7 @@
 			<XNDataTable
 				:data="currentResults"
 				striped
-				:pagination="{ pageSize: 50 }">
+				:pagination="pagination">
 				<XNDataTableColumn
 					key="ticker"
 					:title="

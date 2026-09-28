@@ -194,11 +194,13 @@
 			<a href="https://posthog.com/" target="_blank">
 				<img
 					src="/images/homepage/posthog-logo-white@2x.png"
+					alt="PostHog"
 					class="h-7.5" />
 			</a>
 			<a href="https://crowdin.com/" target="_blank">
 				<img
 					src="/images/homepage/crowdin-core-logo-white.png"
+					alt="Crowdin"
 					class="h-7.5" />
 			</a>
 		</div>

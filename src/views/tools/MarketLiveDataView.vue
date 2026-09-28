@@ -152,6 +152,12 @@
 									:type="
 										detectorsActive ? 'success' : 'error'
 									"
+									:aria-label="
+										$t(
+											'market_live.components.feed.buttons.alerts'
+										)
+									"
+									:aria-pressed="detectorsActive"
 									:loading="isProcessing"
 									@click="
 										() => {

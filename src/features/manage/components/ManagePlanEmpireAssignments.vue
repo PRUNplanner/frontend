@@ -42,6 +42,7 @@
 	import { useDialog } from "naive-ui";
 	const dialog = useDialog();
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { tablePagination } from "@/util/pagination";
 	import {
 		ContentCopySharp,
 		ClearSharp,
@@ -291,6 +292,8 @@
 				refIsDeleting.value = undefined;
 			});
 	}
+
+	const pagination = tablePagination(50);
 </script>
 
 <template>
@@ -323,7 +326,7 @@
 		:data="filteredMatrix"
 		striped
 		:single-line="false"
-		:pagination="{ pageSize: 50 }">
+		:pagination="pagination">
 		<x-n-data-table-column
 			key="planName"
 			:title="t('management.assignments.table.plan')"
@@ -356,6 +359,7 @@
 			<template #render-cell="{ rowData }">
 				<div class="flex flex-row flex-wrap gap-1">
 					<PButton
+						:aria-label="$t('common.buttons.delete')"
 						size="sm"
 						type="error"
 						:loading="refIsDeleting === rowData.planUuid"
@@ -363,6 +367,7 @@
 						<template #icon><ClearSharp /></template>
 					</PButton>
 					<PButton
+						:aria-label="$t('common.buttons.clone_plan')"
 						size="sm"
 						:loading="refIsCloning === rowData.planUuid"
 						@click="clonePlan(rowData.planUuid, rowData.planName)">
@@ -387,24 +392,50 @@
 			<x-n-data-table-column :key="`ASSIGN#${e.empireUuid}`">
 				<template #title>
 					<div class="py-1 flex flex-row justify-center gap-1">
-						<PIcon
-							color="var(--color-positive)"
-							:size="16"
+						<button
+							type="button"
+							class="p-1 cursor-pointer"
+							:aria-label="
+								$t('management.assignments.table.assign_all', {
+									empire: e.empireName,
+								})
+							"
 							@click="changeAllToEmpire(e.empireUuid, true)">
-							<AddCircleOutlineSharp />
-						</PIcon>
-						<PIcon
-							color="var(--color-negative)"
-							:size="16"
+							<PIcon color="var(--color-positive)" :size="16">
+								<AddCircleOutlineSharp />
+							</PIcon>
+						</button>
+						<button
+							type="button"
+							class="p-1 cursor-pointer"
+							:aria-label="
+								$t(
+									'management.assignments.table.unassign_all',
+									{
+										empire: e.empireName,
+									}
+								)
+							"
 							@click="changeAllToEmpire(e.empireUuid, false)">
-							<CircleOutlined />
-						</PIcon>
+							<PIcon color="var(--color-negative)" :size="16">
+								<CircleOutlined />
+							</PIcon>
+						</button>
 					</div>
 				</template>
 				<template #render-cell="{ rowData }">
 					<div class="flex flex-col items-center">
 						<PCheckbox
-							v-model:checked="rowData.empires[e.empireUuid]" />
+							v-model:checked="rowData.empires[e.empireUuid]"
+							:aria-label="
+								$t(
+									'management.assignments.table.assign_label',
+									{
+										plan: rowData.planName,
+										empire: e.empireName,
+									}
+								)
+							" />
 					</div>
 				</template>
 			</x-n-data-table-column>

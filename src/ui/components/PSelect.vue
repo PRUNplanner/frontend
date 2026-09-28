@@ -4,6 +4,8 @@
 		type ComputedRef,
 		nextTick,
 		onBeforeUnmount,
+		provide,
+		inject,
 		type Ref,
 		ref,
 		watch,
@@ -12,6 +14,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	import { formItemKey } from "@/ui/formItem";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 	import type { PSelectOption } from "@/ui/ui.types";
 	import PInput from "./PInput.vue";
@@ -29,12 +32,15 @@
 		disabled = false,
 		clearable = false,
 		placeholder = undefined,
+		ariaLabel = undefined,
 	} = defineProps<{
 		options: PSelectOption[];
 		searchable?: boolean;
 		disabled?: boolean;
 		clearable?: boolean;
 		placeholder?: string;
+		/** accessible name when not inside a PFormItem */
+		ariaLabel?: string;
 	}>();
 
 	const placeholderText = computed(
@@ -145,8 +151,25 @@
 		}
 	};
 
+	// labelled by the surrounding PFormItem; the inner search PInput is not
+	const formItem = inject(formItemKey, null);
+	provide(formItemKey, null);
+
 	function onKeyDown(e: KeyboardEvent) {
-		if (!open.value) return;
+		if (!open.value) {
+			if (["Enter", " ", "ArrowDown"].includes(e.key)) {
+				e.preventDefault();
+				toggleOpen();
+			}
+			return;
+		}
+
+		if (e.key === "Escape") {
+			open.value = false;
+			// the search input may have had focus; keep it on the select
+			triggerRef.value?.focus();
+			return;
+		}
 
 		if (e.key === "ArrowDown") {
 			e.preventDefault();
@@ -161,6 +184,7 @@
 			e.preventDefault();
 			const option = filteredOptions.value[highlightedIndex.value];
 			if (option) change(option.value);
+			triggerRef.value?.focus();
 		}
 	}
 
@@ -211,8 +235,14 @@
 <template>
 	<div
 		ref="triggerRef"
-		class="pselect leading-none outline-none"
+		class="pselect leading-none focus-visible:-outline-offset-2"
 		tabindex="0"
+		role="combobox"
+		aria-haspopup="listbox"
+		:aria-expanded="open"
+		:aria-disabled="disabled"
+		:aria-label="ariaLabel"
+		:aria-labelledby="ariaLabel ? undefined : formItem?.labelId"
 		@keydown="onKeyDown">
 		<label name="pselect-label">
 			<div

@@ -14,6 +14,8 @@
 	--text-md: 14px;
 	--text-lg: 16px;
 	--app-bg: #030707;
+	/* focus ring, >= 3:1 on every app surface */
+	--color-focus: #60a5fa;
 }
 
 /* colour-blind palette (user preference), unlayered so it beats @theme */
@@ -34,6 +36,14 @@ body {
 
 html {
 	font-size: 16px;
+}
+
+/* one focus ring for every control (base layer: kit inputs inset it with a utility) */
+@layer base {
+	:focus-visible {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 2px;
+	}
 }
 
 ::-webkit-scrollbar {
@@ -107,4 +117,20 @@ html {
 
 .n-data-table-th__title {
 	@apply text-nowrap;
+}
+
+/* pagination items hold a button (util/pagination.ts), which is the target */
+.n-pagination .n-pagination-item {
+	cursor: default;
+	padding: 0;
+}
+
+.n-pagination-button {
+	@apply flex items-center justify-center w-full h-full min-w-6 px-1.5 cursor-pointer disabled:cursor-not-allowed;
+}
+
+/* the mobile menu is a visually hidden checkbox; ring its label instead */
+body:has(#menu-toggle:focus-visible) label[for="menu-toggle"] {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
 }

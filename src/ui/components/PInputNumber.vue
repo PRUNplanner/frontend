@@ -1,10 +1,11 @@
 <script setup lang="ts">
-	import { computed } from "vue";
+	import { computed, inject } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
 	import type { SizeKey } from "@/ui/ui.types";
+	import { formItemKey } from "@/ui/formItem";
 	import { inputNumberConfig } from "@/ui/styles";
 
 	const value = defineModel<number | null>("value", {
@@ -32,6 +33,10 @@
 		/** accessible name when no <label> is linked to the field */
 		ariaLabel?: string;
 	}>();
+
+	// labelled by the surrounding PFormItem unless it has its own name
+	const formItem = inject(formItemKey, null);
+	const inputId = computed(() => (ariaLabel ? undefined : formItem?.inputId));
 
 	const placeholderText = computed(
 		() => placeholder ?? t("common.ui.placeholder.please_input")
@@ -80,6 +85,13 @@
 			value.value = (value.value ?? 0) + e;
 		}
 	}
+
+	// spinbutton keys; the +/- buttons are for the mouse only
+	function onKeyDown(e: KeyboardEvent) {
+		if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+		e.preventDefault();
+		change(e.key === "ArrowUp" ? 1 : -1);
+	}
 </script>
 
 <template>
@@ -87,6 +99,7 @@
 		<div
 			:class="`${inputNumberConfig.container} ${inputNumberConfig.sizes[size].container}`">
 			<input
+				:id="inputId"
 				:disabled="disabled"
 				:inputmode="decimals ? 'decimal' : 'numeric'"
 				:min="min"
@@ -95,13 +108,18 @@
 				:placeholder="placeholderText"
 				:aria-label="ariaLabel"
 				:class="`${inputNumberConfig.input} ${inputNumberConfig.sizes[size].input}`"
-				@input="onInput" />
+				@input="onInput"
+				@keydown="onKeyDown" />
 
 			<div
 				v-if="showButtons"
 				:class="`${inputNumberConfig.buttonContainer} ${inputNumberConfig.sizes[size].buttonContainer}`">
-				<div
+				<button
+					type="button"
+					tabindex="-1"
 					class="ph-no-capture"
+					:aria-label="t('common.ui.input_number.decrease')"
+					:disabled="!canChange(-1)"
 					:class="
 						canChange(-1)
 							? inputNumberConfig.buttonChangeAllowed
@@ -116,9 +134,13 @@
 							d="M19 12.998H5v-2h14z"
 							fill="currentColor"></path>
 					</svg>
-				</div>
-				<div
+				</button>
+				<button
+					type="button"
+					tabindex="-1"
 					class="ph-no-capture"
+					:aria-label="t('common.ui.input_number.increase')"
+					:disabled="!canChange(1)"
 					:class="
 						canChange(1)
 							? inputNumberConfig.buttonChangeAllowed
@@ -133,7 +155,7 @@
 							d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
 							fill="currentColor"></path>
 					</svg>
-				</div>
+				</button>
 			</div>
 		</div>
 	</div>

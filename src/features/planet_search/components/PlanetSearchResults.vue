@@ -20,8 +20,10 @@
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
 	// UI
-	import { PButton, PTooltip } from "@/ui";
+	import { PTooltip } from "@/ui";
+	import { buttonConfig } from "@/ui/styles";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { tablePagination } from "@/util/pagination";
 	import { PlusSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -79,21 +81,31 @@
 	const tableCheckDistances: ComputedRef<string | null> = computed(() =>
 		props.searchSystem ? getSystemName(props.searchSystem) : null
 	);
+
+	const pagination = tablePagination(50);
 </script>
 
 <template>
-	<XNDataTable :data="tableResults" striped :pagination="{ pageSize: 50 }">
+	<XNDataTable :data="tableResults" striped :pagination="pagination">
 		<XNDataTableColumn
 			key="Plan"
 			:title="t('planet_search.results.columns.plan')"
 			width="50">
 			<template #render-cell="{ rowData }">
-				<router-link :to="`/plan/${rowData.planetId}`">
-					<PButton size="sm">
-						<template #icon>
-							<PlusSharp />
-						</template>
-					</PButton>
+				<router-link
+					:to="`/plan/${rowData.planetId}`"
+					:class="[
+						buttonConfig.base,
+						buttonConfig.sizes.sm.base,
+						buttonConfig.colors.primary.base,
+						buttonConfig.colors.primary.hover,
+					]"
+					:aria-label="
+						t('planet_search.results.create_plan', {
+							planet: rowData.planetName,
+						})
+					">
+					<PlusSharp :class="buttonConfig.sizes.sm.icon" />
 				</router-link>
 			</template>
 		</XNDataTableColumn>
