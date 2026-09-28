@@ -6,7 +6,9 @@
 		"buy_from_cx_warning": "Nur Warenhäuser als Ursprung erlauben den direkten Einkauf.",
 		"fit_ship": "Auf Schiff anpassen",
 		"hide_infinite": "Unendliche ausblenden",
-		"json": "JSON"
+		"json": "JSON",
+		"include_label": "Include {ticker}",
+		"override_label": "Override for {ticker}"
 	},
 	"buttons": {
 		"copy_json": "XIT JSON kopieren",
