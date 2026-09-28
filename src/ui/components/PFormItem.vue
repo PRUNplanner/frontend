@@ -1,12 +1,19 @@
 <script setup lang="ts">
+	import { provide, useId } from "vue";
+
+	import { formItemKey } from "@/ui/formItem";
 	import { formItemConfig } from "@/ui/styles";
 	const { label } = defineProps<{ label: string }>();
+
+	const inputId = useId();
+	const labelId = `${inputId}-label`;
+	provide(formItemKey, { inputId, labelId });
 </script>
 
 <template>
-	<div :class="formItemConfig.label">
+	<label :id="labelId" :for="inputId" :class="formItemConfig.label">
 		{{ label }}
-	</div>
+	</label>
 	<div :class="formItemConfig.content">
 		<slot />
 	</div>

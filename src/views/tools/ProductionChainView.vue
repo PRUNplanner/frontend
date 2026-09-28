@@ -223,4 +223,11 @@
 	.vue-flow__edge-text {
 		font-size: 12px;
 	}
+
+	/* the theme removes the focus outline of nodes and edges */
+	.vue-flow .vue-flow__node:focus-visible,
+	.vue-flow .vue-flow__edge:focus-visible {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 2px;
+	}
 </style>

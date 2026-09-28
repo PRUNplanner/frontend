@@ -262,8 +262,9 @@
 		</div>
 
 		<button
-			class="bg-prunplanner flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110 active:scale-80 focus:outline-none"
-			aria-label="Toggle Insights"
+			class="bg-prunplanner flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110 active:scale-80"
+			type="button"
+			:aria-label="$t('plan.tools.plan_analytics.toggle')"
 			@click="isOpen = !isOpen">
 			<span class="h-5 w-5 flex items-center justify-center text-black">
 				<InsightsSharp v-if="!isOpen" />

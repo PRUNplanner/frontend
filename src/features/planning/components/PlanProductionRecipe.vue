@@ -135,11 +135,16 @@
 	<div class="col-span-6 xl:col-span-1">
 		<PInputNumber
 			v-model:value="localRecipeAmount"
+			:aria-label="
+				$t('plan.components.production_recipe.amount_label', {
+					recipe: localRecipeData.recipeId,
+				})
+			"
 			:disabled="disabled"
 			show-buttons
 			size="sm"
 			:min="0"
-			class="w-20"
+			class="w-full max-w-24"
 			@update:value="
 				(value) => {
 					if (value !== null && value !== undefined) {
@@ -346,6 +351,7 @@
 	</div>
 	<div class="col-span-6 xl:col-span-1 flex xl:justify-end">
 		<PButton
+			:aria-label="$t('common.buttons.delete')"
 			size="sm"
 			type="error"
 			@click="

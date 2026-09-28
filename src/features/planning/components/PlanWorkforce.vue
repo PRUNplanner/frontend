@@ -109,6 +109,7 @@
 						:disabled="disabled"
 						size="sm"
 						:type="workforce.lux1 ? 'success' : 'secondary'"
+						:aria-pressed="workforce.lux1"
 						@click="
 							updateLux(workforce.name, 'lux1', !workforce.lux1)
 						">
@@ -128,6 +129,7 @@
 						:disabled="disabled"
 						size="sm"
 						:type="workforce.lux2 ? 'success' : 'secondary'"
+						:aria-pressed="workforce.lux2"
 						@click="
 							updateLux(workforce.name, 'lux2', !workforce.lux2)
 						">

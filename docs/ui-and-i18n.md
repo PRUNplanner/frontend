@@ -21,6 +21,23 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
 - **Forms:** `<PForm as-form @submit="…">` renders a real `<form>`, so Enter
   in an input submits. Give its button `html-type="submit"` and no `@click`.
   `PButton` defaults to `type="button"` and never submits on its own.
+- **Accessibility:** every control needs a name.
+  - Inside a `PFormItem`, `PInput`, `PInputNumber`, `PCheckbox` and
+    `PSelect*` are labelled by it automatically (`label[for]` /
+    `aria-labelledby`).
+  - Elsewhere pass `aria-label` (an i18n string with context, e.g.
+    "Amount of {building}"); `PCheckbox` can also take its label as slot text.
+  - Icon-only `PButton`s need `aria-label`; the dev build warns without it.
+  - Auth fields set `autocomplete` (`username`, `current-password`,
+    `new-password`); the kit default is `off`.
+  - Keyboard: `PInputNumber` steps with ↑/↓ (its +/- are mouse-only);
+    `PSelect` opens with Enter, Space or ↓ and closes with Esc.
+  - One focus ring for all controls (`:focus-visible`, `--color-focus` in
+    `style.css`); don't add `outline-none`. Clickable things are `<button>`
+    or `<a>`, never a `div` with `@click`.
+  - Paginated tables use `:pagination="tablePagination(50)"`
+    (`util/pagination.ts`), which puts real buttons in naive-ui's pager.
+  - `src/tests/ui/components/a11y.test.ts` runs axe-core on the kit.
 - **Numbers:** `formatNumber` / `formatAmount` (`util/numbers.ts`) show "—"
   for ∞ or NaN; payback periods use `formatPayback` ("never" when negative
   or infinite), and `humanizeTimeMs` shows "never" for an infinite runtime.

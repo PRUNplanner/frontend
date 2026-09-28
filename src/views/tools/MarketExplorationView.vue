@@ -189,6 +189,9 @@
 						</div>
 						<PSelect
 							v-model:value="selectedMaterial"
+							:aria-label="
+								$t('market_exploration.switch_material')
+							"
 							searchable
 							:options="materialOptions"
 							class="w-30"
@@ -492,7 +495,11 @@
 											</PButton>
 										</template>
 									</div>
-									<PButton @click="switchChartFullscreen">
+									<PButton
+										:aria-label="
+											$t('common.buttons.fullscreen')
+										"
+										@click="switchChartFullscreen">
 										<template #icon>
 											<OpenInFullSharp
 												v-if="

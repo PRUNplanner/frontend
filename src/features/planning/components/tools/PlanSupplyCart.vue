@@ -218,6 +218,7 @@
 			</div>
 			<PInputNumber
 				v-model:value="refStockRequirement"
+				:aria-label="$t('plan.tools.supply_cart.table.stock_duration')"
 				show-buttons
 				:min="0"
 				class="w-25!" />
@@ -227,6 +228,7 @@
 				</div>
 				<PSelect
 					v-model:value="refSelectedStorage"
+					:aria-label="$t('plan.tools.supply_cart.table.storage')"
 					searchable
 					:options="storageOptions"
 					class="w-62.5!" />

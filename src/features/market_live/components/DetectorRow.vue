@@ -56,6 +56,7 @@
 	<div class="flex flex-row justify-between items-center gap-3 p-1">
 		<div class="flex flex-row items-center gap-3">
 			<PSelect
+				:aria-label="$t('market_live.components.detector.field')"
 				:value="modelValue.field"
 				:options="
 					Object.keys(FieldConfigs).map((k) => ({
@@ -66,6 +67,7 @@
 				class="w-[250px]"
 				@update:value="(val) => updateField(val as SchemaKey)" />
 			<PSelect
+				:aria-label="$t('market_live.components.detector.operator')"
 				:value="modelValue.operator"
 				:options="configOptions"
 				@update:value="
@@ -81,7 +83,12 @@
 				" />
 		</div>
 
-		<PButton type="error" @click="emit('remove')">
+		<PButton
+			:aria-label="
+				$t('market_live.components.rule_builder.buttons.remove')
+			"
+			type="error"
+			@click="emit('remove')">
 			<template #icon><ClearSharp /></template>
 		</PButton>
 	</div>

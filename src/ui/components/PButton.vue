@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed } from "vue";
+	import { computed, useAttrs, useSlots } from "vue";
 
 	import PSpin from "./PSpin.vue";
 
@@ -23,6 +23,14 @@
 	defineEmits<{
 		(e: "click"): void;
 	}>();
+
+	// icon-only buttons need a name for screen readers
+	if (import.meta.env.DEV) {
+		const slots = useSlots();
+		const attrs = useAttrs();
+		if (!slots.default && !attrs["aria-label"] && !attrs["aria-labelledby"])
+			console.warn("PButton: icon-only button needs an aria-label");
+	}
 
 	const buttonBase = computed(() =>
 		[

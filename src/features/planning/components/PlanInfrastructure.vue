@@ -113,6 +113,11 @@
 		<template v-for="inf in infrastructureOrder" :key="inf">
 			<div>{{ inf }}</div>
 			<PInputNumber
+				:aria-label="
+					$t('plan.components.infrastructure.amount_label', {
+						infrastructure: inf,
+					})
+				"
 				:value="localInfrastructureData[inf]"
 				:disabled="
 					disabled ||

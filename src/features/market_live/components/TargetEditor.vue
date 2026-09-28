@@ -80,6 +80,7 @@
 	<div class="flex gap-2 items-center p-1 rounded-md">
 		<PSelect
 			v-if="!isStaticOnly"
+			:aria-label="$t('market_live.components.detector.target_type')"
 			:value="modelValue.type"
 			:options="[
 				{ label: t('market_live.rule_type.static'), value: 'static' },
@@ -103,6 +104,7 @@
 				<PInputNumber
 					v-if="fieldType === 'number'"
 					v-model:value="internalValue as number"
+					:aria-label="$t('market_live.rule_type.static')"
 					class="w-50"
 					show-buttons
 					@update:value="
@@ -111,6 +113,7 @@
 				<PInput
 					v-else
 					v-model:value="internalValue as string"
+					:aria-label="$t('market_live.rule_type.static')"
 					class="w-50"
 					@update:value="
 						(val) => (internalValue = val ?? undefined)
@@ -120,6 +123,7 @@
 			<PInputNumber
 				v-if="modelValue.type === 'previous_pct'"
 				v-model:value="internalValue as number"
+				:aria-label="$t('market_live.rule_type.previous_pct')"
 				class="w-50"
 				show-buttons
 				@update:value="(val) => (internalValue = val ?? undefined)" />

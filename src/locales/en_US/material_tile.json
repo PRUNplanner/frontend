@@ -18,6 +18,7 @@
 			"traded": "@:terms.traded_volume",
 			"low_p": "Daily Minimum Price",
 			"high_p": "Daily Maximum Price"
-		}
+		},
+		"value_label": "Chart value"
 	}
 }

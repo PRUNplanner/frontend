@@ -70,6 +70,7 @@
 				<div>Planet</div>
 				<PSelect
 					v-model:value="localFilterPlanet"
+					:aria-label="$t('resource_roi.table.planet')"
 					:options="planetOptions"
 					searchable
 					clearable
@@ -79,6 +80,7 @@
 				<div>Building</div>
 				<PSelect
 					v-model:value="localFilterBuilding"
+					:aria-label="$t('resource_roi.table.building')"
 					:options="buildingOptions"
 					searchable
 					clearable
@@ -86,7 +88,9 @@
 			</div>
 			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
 				<div>Positive ROI</div>
-				<PCheckbox v-model:checked="localFilterPositiveROI" />
+				<PCheckbox
+					v-model:checked="localFilterPositiveROI"
+					:aria-label="$t('recipe_roi.filters.positive_roi')" />
 			</div>
 		</div>
 		<div class="flex flex-row flex-wrap gap-3 pr-3">

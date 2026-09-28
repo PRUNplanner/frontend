@@ -321,6 +321,11 @@
 						</h3>
 						<PInput
 							v-model:value="selectedName"
+							:aria-label="
+								$t(
+									'exchanges.configuration.form.preference_name'
+								)
+							"
 							:status="
 								!selectedName || selectedName === ''
 									? 'warning'

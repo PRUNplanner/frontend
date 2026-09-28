@@ -235,6 +235,14 @@
 							}}</span>
 							<PInputNumber
 								v-model:value="inputMaterialRichness[material]"
+								:aria-label="
+									t(
+										'planet_search.advanced.labels.min_richness_for',
+										{
+											material,
+										}
+									)
+								"
 								:min="0"
 								:max="100"
 								class="flex-1" />
@@ -263,6 +271,7 @@
 					:label="t('planet_search.advanced.labels.system_distance')">
 					<PSelect
 						v-model:value="inputSystem"
+						:aria-label="t('planet_search.advanced.labels.system')"
 						:options="PLANETSEARCHSYSTEMS"
 						searchable
 						clearable
@@ -271,7 +280,8 @@
 						v-model:value="inputSystemDistance"
 						show-buttons
 						:min="0"
-						:max="30" />
+						:max="30"
+						class="w-28 shrink-0" />
 				</PFormItem>
 			</PForm>
 		</div>
@@ -294,7 +304,8 @@
 								<div
 									class="flex flex-row gap-x-3 child:my-auto">
 									<PCheckbox
-										v-model:checked="inputIncludeRocky" />
+										v-model:checked="inputIncludeRocky"
+										:aria-label="$t('terms.rocky')" />
 									{{ $t("terms.rocky") }}
 								</div>
 							</td>
@@ -302,9 +313,8 @@
 								<div
 									class="flex flex-row gap-x-3 child:my-auto">
 									<PCheckbox
-										v-model:checked="
-											inputIncludeLowGravity
-										" />
+										v-model:checked="inputIncludeLowGravity"
+										:aria-label="`${$t('terms.gravity')}: ${$t('terms.low')}`" />
 									{{ $t("terms.low") }}
 								</div>
 							</td>
@@ -314,7 +324,8 @@
 									<PCheckbox
 										v-model:checked="
 											inputIncludeLowTemperature
-										" />
+										"
+										:aria-label="`${$t('terms.temperature')}: ${$t('terms.low')}`" />
 									{{ $t("terms.low") }}
 								</div>
 							</td>
@@ -324,7 +335,8 @@
 									<PCheckbox
 										v-model:checked="
 											inputIncludeLowPressure
-										" />
+										"
+										:aria-label="`${$t('terms.pressure')}: ${$t('terms.low')}`" />
 									{{ $t("terms.low") }}
 								</div>
 							</td>
@@ -334,7 +346,8 @@
 								<div
 									class="flex flex-row gap-x-3 child:my-auto">
 									<PCheckbox
-										v-model:checked="inputIncludeGaseous" />
+										v-model:checked="inputIncludeGaseous"
+										:aria-label="$t('terms.gaseous')" />
 									{{ $t("terms.gaseous") }}
 								</div>
 							</td>
@@ -344,7 +357,8 @@
 									<PCheckbox
 										v-model:checked="
 											inputIncludeHighGravity
-										" />
+										"
+										:aria-label="`${$t('terms.gravity')}: ${$t('terms.high')}`" />
 									{{ $t("terms.high") }}
 								</div>
 							</td>
@@ -354,7 +368,8 @@
 									<PCheckbox
 										v-model:checked="
 											inputIncludeHighTemperature
-										" />
+										"
+										:aria-label="`${$t('terms.temperature')}: ${$t('terms.high')}`" />
 									{{ $t("terms.high") }}
 								</div>
 							</td>
@@ -364,7 +379,8 @@
 									<PCheckbox
 										v-model:checked="
 											inputIncludeHighPressure
-										" />
+										"
+										:aria-label="`${$t('terms.pressure')}: ${$t('terms.high')}`" />
 									{{ $t("terms.high") }}
 								</div>
 							</td>
