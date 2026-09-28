@@ -1,6 +1,7 @@
 {
 	"notifications": {
-		"must_have_name": "È necessario impostare un nome del piano in Configurazione per poter salvare"
+		"must_have_name": "È necessario impostare un nome del piano in Configurazione per poter salvare",
+		"leave_unsaved": "Do you really want to leave? Unsaved changes will be lost."
 	},
 	"tools": {
 		"labels": {
@@ -31,7 +32,8 @@
 					"storage_filled": "Stoccaggio Pieno",
 					"filled_unit": "giorni"
 				},
-				"exclusion_info": "Escludere i materiali locali dal calcolo della frequenza di visita per gli oggetti gestiti esclusivamente a livello planetario, come le vendite e acquisti sul mercato locale o i contratti."
+				"exclusion_info": "Escludere i materiali locali dal calcolo della frequenza di visita per gli oggetti gestiti esclusivamente a livello planetario, come le vendite e acquisti sul mercato locale o i contratti.",
+				"exclusion_label": "Excluded materials"
 			},
 			"shipping": {
 				"label": "Trasporto",
@@ -63,7 +65,9 @@
 				"stock": "Inventario",
 				"stock_override": "Sovrascrivi inventario",
 				"need": "Necessario"
-			}
+			},
+			"amount_label": "Amount of {building}",
+			"override_label": "Stock override for {ticker}"
 		},
 		"supply_cart": {
 			"title": "Carrello per il Rifornimento",
@@ -119,7 +123,7 @@
 			"info": "Il costo di produzione dei beni è calcolato usando le impostazioni del piano, includendo efficienza, durata delle ricette, stato dell'edificio, costo dei materiali in ingresso e il costo della manodopera. Il costo finale è indicato per unità prodotta, basandosi sulla quantità o sulla ripartizione completa dei costi.",
 			"cx_preferences": "Preferenza @:terms.cx_plural",
 			"empire_ticker": "Override per l'Impero",
-			"planet_ticker": "Override per il pianeta",
+			"planet_ticker": "@:terms.planets Ticker",
 			"table": {
 				"parameters": "Parametri",
 				"recipe_runtime": "Durata della @:terms.recipes",
@@ -146,7 +150,8 @@
 				"experts": "Experts",
 				"production_buildings": "Production @:terms.buildings_plural",
 				"recipes": "@:terms.recipes_plural"
-			}
+			},
+			"toggle": "Toggle insights"
 		}
 	},
 	"components": {
@@ -165,7 +170,8 @@
 		"area": {
 			"permits": "@:terms.permits_plural",
 			"area": "@:terms.area",
-			"free": "Libera"
+			"free": "Libera",
+			"exceeded": "Exceeded by {amount}"
 		},
 		"bonuses": {
 			"corp_hq": "Corp. HQ",
@@ -179,11 +185,13 @@
 			"buttons": {
 				"optimize_cost": "Ottimizza Costo",
 				"optimize_area": "Ottimizza Area"
-			}
+			},
+			"amount_label": "Amount of {infrastructure}"
 		},
 		"experts": {
 			"label": "Esperti",
-			"warning": "Il numero massimo di esperti in una base è 6. Al momento hai {expert_number} esperti assegnati."
+			"warning": "Il numero massimo di esperti in una base è 6. Al momento hai {expert_number} esperti assegnati.",
+			"amount_label": "{expert} experts"
 		},
 		"workforce": {
 			"label": "Lavoratori",
@@ -269,7 +277,12 @@
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
 				"construction": "Costruzione"
-			}
+			},
+			"zero_reason": {
+				"FERTILITY": "Planet not fertile",
+				"WORKFORCE": "No workforce housed"
+			},
+			"qty_label": "Amount of {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "Costo di produzione dei beni",
@@ -292,7 +305,8 @@
 				"p2": "è il ricavo giornaliero diviso per l’area occupata da un edificio di produzione e dalla sua quota proporzionale dell’area di un CM e degli alloggi necessari per una base ottimale composta da tali edifici.",
 				"p3_strong": "ROI",
 				"p3": "è il tempo di funzionamento continuo di una ricetta richiesto per generare abbastanza profitto per compensare i costi di costruzione dell'edificio. Tiene conto anche della degradazione dell'edificio."
-			}
+			},
+			"amount_label": "Amount of recipe {recipe}"
 		}
 	}
 }
