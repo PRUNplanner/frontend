@@ -1,6 +1,7 @@
 // Composables
 import type {
 	IEmpireMaterialIO,
+	IEmpireCostOverview,
 	IEmpireMaterialIOPlanet,
 	IEmpirePlanMaterialIO,
 } from "@/features/empire/empire.types";
@@ -114,9 +115,9 @@ export function useMaterialIOUtil() {
 		 */
 
 		Object.entries(combinedMap).map(([ticker, pre]) => {
-			const flatPlanets = [pre.inputPlanets, pre.outputPlanets]
-				.flat()
-				.filter((v) => v);
+			const flatPlanets = [...pre.inputPlanets, ...pre.outputPlanets].filter(
+				(p) => p.delta
+			);
 
 			const flatValues: number[] = flatPlanets.map((pv) =>
 				Math.abs(pv.delta)
@@ -143,6 +144,29 @@ export function useMaterialIOUtil() {
 		return Object.values(combinedMap).sort((a, b) =>
 			a.ticker > b.ticker ? 1 : -1
 		);
+	}
+
+	function calculateEmpireCostOverview(
+		data: IEmpireMaterialIO[],
+		totalAreaUsed: number,
+		nonMaterialCost: number
+	): IEmpireCostOverview {
+		const { totalRevenue, materialCost } = data.reduce(
+			(totals, { deltaPrice }) => {
+				if (deltaPrice > 0) totals.totalRevenue += deltaPrice;
+				if (deltaPrice < 0) totals.materialCost -= deltaPrice;
+				return totals;
+			},
+			{ totalRevenue: 0, materialCost: 0 }
+		);
+		const totalCost = materialCost + nonMaterialCost;
+
+		return {
+			totalRevenue,
+			totalCost,
+			totalProfit: totalRevenue - totalCost,
+			totalAreaUsed,
+		};
 	}
 
 	async function empireMaterialIOState(
@@ -215,6 +239,7 @@ export function useMaterialIOUtil() {
 		combineMaterialIOMinimal,
 		enhanceMaterialIOMinimal,
 		combineEmpireMaterialIO,
+		calculateEmpireCostOverview,
 		empireMaterialIOState,
 	};
 }

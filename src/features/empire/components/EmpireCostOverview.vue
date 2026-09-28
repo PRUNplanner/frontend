@@ -22,35 +22,20 @@
 			? props.costOverview.totalProfit / props.costOverview.totalAreaUsed
 			: 0;
 	});
+
+	const revenuePercentage = (value: number) =>
+		props.costOverview.totalRevenue
+			? (value / props.costOverview.totalRevenue) * 100
+			: 0;
 </script>
 
 <template>
 	<div
 		class="grid grid-cols-2 sm:grid-cols-[1fr_auto_auto_auto_auto_1fr] gap-6 child:child:text-center">
 		<div class="sm:col-2">
-			<div class="text-muted text-xs">{{ $t("terms.profit") }}</div>
-			<div class="text-white text-xl">
-				<PValue :value="costOverview.totalProfit" />
-			</div>
-			<div
-				v-if="costOverview.totalRevenue === 0"
-				class="text-muted text-xs">
-				—
-			</div>
-			<div v-else class="text-muted text-xs">
-				{{
-					formatNumber(
-						(costOverview.totalProfit / costOverview.totalRevenue) *
-							100
-					)
-				}}
-				%
-			</div>
-		</div>
-		<div>
 			<div class="text-muted text-xs">{{ $t("terms.revenue") }}</div>
 			<div class="text-white text-xl">
-				{{ formatNumber(costOverview.totalRevenue) }}
+				<PValue :value="costOverview.totalRevenue" />
 			</div>
 		</div>
 		<div>
@@ -59,12 +44,17 @@
 				{{ formatNumber(costOverview.totalCost) }}
 			</div>
 			<div class="text-muted text-xs">
-				{{
-					formatNumber(
-						(costOverview.totalCost / costOverview.totalRevenue) *
-							100
-					)
-				}}
+				{{ formatNumber(revenuePercentage(costOverview.totalCost)) }}
+				%
+			</div>
+		</div>
+		<div>
+			<div class="text-muted text-xs">{{ $t("terms.profit") }}</div>
+			<div class="text-white text-xl">
+				<PValue :value="costOverview.totalProfit" />
+			</div>
+			<div class="text-muted text-xs">
+				{{ formatNumber(revenuePercentage(costOverview.totalProfit)) }}
 				%
 			</div>
 		</div>
