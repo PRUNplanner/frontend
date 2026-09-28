@@ -6,7 +6,9 @@
 		"buy_from_cx_warning": "Закупка доступна только со склада.",
 		"fit_ship": "Загрузить корабль",
 		"hide_infinite": "Скрыть бесконечные",
-		"json": "JSON"
+		"json": "JSON",
+		"include_label": "Include {ticker}",
+		"override_label": "Override for {ticker}"
 	},
 	"buttons": {
 		"copy_json": "Копировать XIT JSON",
