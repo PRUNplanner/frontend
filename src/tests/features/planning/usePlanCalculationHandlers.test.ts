@@ -25,25 +25,6 @@ describe("Planning: Workforce Calculations", async () => {
 		await flushPromises();
 	});
 
-	it("handleResetModified", async () => {
-		const fakeName = ref(undefined);
-
-		const { handleChangePlanName, modified, handleResetModified } =
-			usePlanCalculationHandlers(
-				// @ts-expect-error mock data
-				ref({}),
-				ref({}),
-				fakeName,
-				ref({})
-			);
-
-		expect(modified.value).toBeFalsy();
-		handleChangePlanName("moo");
-		expect(modified.value).toBeTruthy();
-		handleResetModified();
-		expect(modified.value).toBeFalsy();
-	});
-
 	it("handleChangePlanName", async () => {
 		const fakeName = ref(undefined);
 

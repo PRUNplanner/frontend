@@ -1,4 +1,4 @@
-import { ref, type Ref } from "vue";
+import type { Ref } from "vue";
 
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -39,15 +39,8 @@ export function usePlanCalculationHandlers(
 	planName: Ref<string | undefined>,
 	planResult: Ref<IPlanResult>
 ) {
-	// internal state
-	const modified: Ref<boolean> = ref(false);
-
 	// Composables
 	const { getBuilding } = useBuildingData();
-
-	function handleResetModified(): void {
-		modified.value = false;
-	}
 
 	/**
 	 * Updates the CORP HQ Setting
@@ -57,7 +50,6 @@ export function usePlanCalculationHandlers(
 	 */
 	function handleUpdateCorpHQ(value: boolean): void {
 		plan.value.plan_corphq = value;
-		modified.value = true;
 	}
 
 	/**
@@ -68,7 +60,6 @@ export function usePlanCalculationHandlers(
 	 */
 	function handleUpdateCOGC(value: PlanCOGCProgram): void {
 		plan.value.plan_cogc = value;
-		modified.value = true;
 	}
 
 	/**
@@ -79,7 +70,6 @@ export function usePlanCalculationHandlers(
 	 */
 	function handleUpdatePermits(value: number): void {
 		plan.value.plan_permits_used = clamp(value, 1, 3);
-		modified.value = true;
 	}
 
 	/**
@@ -105,7 +95,6 @@ export function usePlanCalculationHandlers(
 				workforceData.lux2 = value;
 			}
 		}
-		modified.value = true;
 	}
 
 	/**
@@ -122,7 +111,6 @@ export function usePlanCalculationHandlers(
 		if (expertData) {
 			expertData.amount = clamp(value, 0, 5);
 		}
-		modified.value = true;
 	}
 
 	/**
@@ -149,7 +137,6 @@ export function usePlanCalculationHandlers(
 				amount: value,
 			});
 		}
-		modified.value = true;
 	}
 
 	/**
@@ -166,7 +153,6 @@ export function usePlanCalculationHandlers(
 		}
 
 		planData.value.buildings[index].amount = value;
-		modified.value = true;
 	}
 
 	/**
@@ -186,8 +172,6 @@ export function usePlanCalculationHandlers(
 		} else {
 			planData.value.buildings.splice(index, 1);
 		}
-
-		modified.value = true;
 	}
 
 	/**
@@ -215,7 +199,6 @@ export function usePlanCalculationHandlers(
 				active_recipes: [],
 			});
 
-			modified.value = true;
 			return true;
 		} else {
 			return false;
@@ -256,8 +239,6 @@ export function usePlanCalculationHandlers(
 					recipeid: recipeId,
 					amount: 1,
 				});
-
-				modified.value = true;
 			}
 		}
 	}
@@ -297,8 +278,6 @@ export function usePlanCalculationHandlers(
 		planData.value.buildings[buildingIndex].active_recipes[
 			recipeIndex
 		].amount = value;
-
-		modified.value = true;
 	}
 
 	/**
@@ -339,8 +318,6 @@ export function usePlanCalculationHandlers(
 				1
 			);
 		}
-
-		modified.value = true;
 	}
 
 	/**
@@ -381,8 +358,6 @@ export function usePlanCalculationHandlers(
 					.recipeOptions[0].recipe_id,
 			amount: 1,
 		});
-
-		modified.value = true;
 	}
 
 	/**
@@ -421,8 +396,6 @@ export function usePlanCalculationHandlers(
 		planData.value.buildings[buildingIndex].active_recipes[
 			recipeIndex
 		].recipeid = recipeId;
-
-		modified.value = true;
 	}
 
 	/**
@@ -438,13 +411,10 @@ export function usePlanCalculationHandlers(
 	function handleChangePlanName(value: string): void {
 		const transfValue: string = value.trimStart().trimEnd();
 		planName.value = transfValue;
-		modified.value = true;
 	}
 
 	return {
-		modified,
 		// handlers
-		handleResetModified,
 		handleUpdateCorpHQ,
 		handleUpdateCOGC,
 		handleUpdatePermits,

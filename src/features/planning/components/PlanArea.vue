@@ -74,14 +74,6 @@
 						>{{ areaData.areaLeft }}</span
 					>
 					{{ $t("plan.components.area.free") }}
-					<span v-if="areaData.areaLeft < 0" class="text-negative">
-						·
-						{{
-							$t("plan.components.area.exceeded", {
-								amount: -areaData.areaLeft,
-							})
-						}}
-					</span>
 				</div>
 			</div>
 		</PFormItem>

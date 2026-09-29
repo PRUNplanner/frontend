@@ -13,6 +13,7 @@ import {
 	PInputNumber,
 	PSelect,
 } from "@/ui";
+import PToast from "@/ui/components/PToast.vue";
 
 enableAutoUnmount(afterEach);
 
@@ -37,6 +38,16 @@ async function violations(el: Element) {
 }
 
 describe("UI kit accessibility", () => {
+	it("PToast: info with an action and error with an icon pass", async () => {
+		const wrapper = mountA11y(() =>
+			h("div", [
+				h(PToast, { text: "Building removed", actionLabel: "Undo" }),
+				h(PToast, { type: "error", text: "Save failed" }),
+			])
+		);
+		expect(await violations(wrapper.element)).toEqual([]);
+	});
+
 	it("the axe check catches an unlabelled input", async () => {
 		// axe accepts a placeholder as a name, so there is none here
 		const wrapper = mountA11y(() =>

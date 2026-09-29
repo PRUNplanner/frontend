@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
 import PlanConfiguration from "@/features/planning/components/PlanConfiguration.vue";
@@ -76,13 +76,16 @@ describe("PlanConfiguration", () => {
 		expect(select(wrapper).text()).toContain("» Beta");
 	});
 
-	it("emits a new plan name, but not an empty one", async () => {
+	it("emits a new plan name, also an empty one", async () => {
 		const { wrapper, component } = await mountConfiguration();
 
 		await wrapper.find("input").setValue("Renamed");
 		await wrapper.find("input").setValue("");
 
-		expect(component.emitted("update:plan-name")).toEqual([["Renamed"]]);
+		expect(component.emitted("update:plan-name")).toEqual([
+			["Renamed"],
+			[""],
+		]);
 	});
 
 	it("emits the selected empire", async () => {
@@ -115,5 +118,17 @@ describe("PlanConfiguration", () => {
 
 		expect(nameInput(wrapper).disabled).toBe(false);
 		expect(select(wrapper).props("disabled")).toBe(false);
+	});
+
+	it("focuses the name only for a new plan", async () => {
+		const focus = vi.spyOn(HTMLElement.prototype, "focus");
+
+		await mountConfiguration();
+		expect(focus).not.toHaveBeenCalled();
+
+		const { wrapper } = await mountConfiguration({ newPlan: true });
+		expect(focus.mock.contexts).toEqual([nameInput(wrapper)]);
+
+		focus.mockRestore();
 	});
 });

@@ -12,7 +12,8 @@ import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui
 The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
 `PFormItem`, `PFormSeperator` (the misspelling is the real name), `PIcon`,
 `PInput`, `PInputNumber`, `PProgressBar`, `PSelect`, `PSelectElement`,
-`PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PTooltip` and `PValue`.
+`PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast` (through
+`useToast()`, see "Toasts" below), `PTooltip` and `PValue`.
 
 - **Shared props:** `size` (`"sm" | "md"`) and `color` (`primary`,
   `success`, `error`, `warning`, `secondary`). Both types are in
@@ -53,6 +54,12 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
   - **Overlays** come from raw naive-ui, imported explicitly:
     `import { NModal, NDrawer, NDrawerContent, NPopover } from "naive-ui"`,
     plus `useDialog()`. `AppProvider.vue` supplies the providers.
+  - **Toasts:** `const toast = useToast()` from `@/ui`, then
+    `toast(text, { type: "error" })` or
+    `toast(text, { action: { label, onClick } })`. It renders the kit's
+    `PToast` in naive-ui's message queue (bottom-right, kept open on hover)
+    and returns the message, so `.destroy()` closes it early. Don't call
+    `useMessage()` directly.
   - **Icons:** `@vicons/material`, wrapped in `PIcon`:
     `<PIcon><CheckSharp /></PIcon>`.
   - **Charts:** `src/ui/charts/*.vue` wrap chart.js (`vue-chartjs`,

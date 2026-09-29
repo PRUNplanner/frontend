@@ -2,7 +2,10 @@
 	import {
 		computed,
 		type ComputedRef,
+		onMounted,
 		type PropType,
+		ref,
+		type Ref,
 		type WritableComputedRef,
 	} from "vue";
 
@@ -40,6 +43,17 @@
 			type: Array as PropType<PlanEmpire[]>,
 			required: true,
 		},
+		// new plans start with naming them, the hint says why Create waits
+		newPlan: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+	});
+
+	const refNameInput: Ref<{ focus: () => void } | null> = ref(null);
+	onMounted(() => {
+		if (props.newPlan) refNameInput.value?.focus();
 	});
 
 	function createEmpireOptions(
@@ -77,7 +91,7 @@
 	const localPlanName: WritableComputedRef<string | undefined> = computed({
 		get: () => props.planName,
 		set: (value: string | undefined) =>
-			value ? emit("update:plan-name", value) : {},
+			emit("update:plan-name", value ?? ""),
 	});
 
 	const localActiveEmpireUuid: WritableComputedRef<string | undefined> =
@@ -95,10 +109,15 @@
 	<PForm>
 		<PFormItem :label="t('plan.components.configuration.name')">
 			<PInput
+				ref="refNameInput"
 				v-model:value="localPlanName"
 				class="w-full"
 				:disabled="disabled"
-				placeholder="Plan Name" />
+				:placeholder="
+					newPlan
+						? t('plan.save_status.name_to_create')
+						: t('plan.save_status.name_to_save')
+				" />
 		</PFormItem>
 		<PFormItem :label="t('plan.components.configuration.empire')">
 			<PSelect

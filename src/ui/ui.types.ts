@@ -72,3 +72,15 @@ export interface PTagConfig {
 	colors: Record<ColorKey, string>;
 	sizes: Record<SizeKey, { container: string; icon: string }>;
 }
+
+export interface PToastOptions {
+	type?: "info" | "error";
+	/** one button, e.g. "Undo" */
+	action?: { label: string; onClick: () => void };
+	duration?: number;
+}
+
+export interface PToastConfig {
+	container: string;
+	types: Record<"info" | "error", string>;
+}
