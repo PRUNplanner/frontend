@@ -84,23 +84,11 @@ export function useMaterialIOUtil() {
 					price: element.price,
 				};
 
-				/*
-				 * Delta check, handle delta === 0 separately, as the planet is
-				 * full consuming all its producing, so it needs to be on both sides
-				 */
-				if (element.input > 0) {
-					// only consuming
+				// a plan that uses what it makes sits on both sides, once each
+				if (element.input > 0)
 					combinedMap[element.ticker].inputPlanets.push(planetPart);
-				}
-				if (element.output > 0) {
-					// only producing
+				if (element.output > 0)
 					combinedMap[element.ticker].outputPlanets.push(planetPart);
-				}
-				if (element.delta === 0) {
-					// full consuming all its producing
-					combinedMap[element.ticker].inputPlanets.push(planetPart);
-					combinedMap[element.ticker].outputPlanets.push(planetPart);
-				}
 			});
 		});
 

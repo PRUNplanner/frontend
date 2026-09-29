@@ -4,6 +4,7 @@ import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import EmpireMaterialIOFiltered from "@/features/empire/components/EmpireMaterialIOFiltered.vue";
+import EmpireMaterialIODetail from "@/features/empire/components/EmpireMaterialIODetail.vue";
 import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
@@ -186,5 +187,59 @@ describe("EmpireMaterialIOFiltered", () => {
 		});
 
 		expect(tickers(wrapper)).toEqual(["FE", "BSE", "SF"]);
+	});
+
+	it("expands every visible row, filters still apply", async () => {
+		const { wrapper } = await mountFiltered();
+		const open = () =>
+			wrapper.findAllComponents(EmpireMaterialIODetail).length;
+
+		await clickButton(wrapper, "empire.material_io.expand_all");
+		expect(open()).toBe(4);
+
+		await select(wrapper, 0, ["BSE", "RAT"]);
+		expect(tickers(wrapper)).toEqual(["RAT", "BSE"]);
+		expect(open()).toBe(2);
+
+		await clickButton(wrapper, "common.buttons.hide");
+		expect(tickers(wrapper)).toEqual(["BSE"]);
+		expect(open()).toBe(1);
+
+		await clickButton(wrapper, "empire.material_io.summary");
+		expect(open()).toBe(0);
+	});
+
+	it("closes every open row with Summary, also when already selected", async () => {
+		const { wrapper } = await mountFiltered();
+		const open = () =>
+			wrapper.findAllComponents(EmpireMaterialIODetail).length;
+		const toggle = (i: number) =>
+			wrapper.findAll("button[aria-expanded]")[i].trigger("click");
+
+		// rows opened by hand
+		await toggle(0);
+		await toggle(1);
+		await flushPromises();
+		expect(open()).toBe(2);
+		await clickButton(wrapper, "empire.material_io.summary");
+		expect(open()).toBe(0);
+
+		// Expand all, close one row: the others stay open until Summary
+		await clickButton(wrapper, "empire.material_io.expand_all");
+		await toggle(0);
+		await flushPromises();
+		expect(open()).toBe(3);
+		await clickButton(wrapper, "empire.material_io.summary");
+		expect(open()).toBe(0);
+	});
+
+	it("offers Expand all only on the Material I/O table", async () => {
+		const { wrapper } = await mountComponent(EmpireMaterialIOFiltered, {
+			content: "analysis",
+			empireMaterialIO: MATERIAL_IO,
+			planListData: [],
+		});
+
+		expect(wrapper.text()).not.toContain("empire.material_io.expand_all");
 	});
 });

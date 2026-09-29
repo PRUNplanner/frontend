@@ -1,5 +1,12 @@
 <script setup lang="ts">
-	import { computed, type PropType, ref, type Ref, watch } from "vue";
+	import {
+		computed,
+		type PropType,
+		ref,
+		type Ref,
+		useTemplateRef,
+		watch,
+	} from "vue";
 
 	// Components
 	import EmpireMaterialIOFilters from "@/features/empire/components/EmpireMaterialIOFilters.vue";
@@ -63,6 +70,9 @@
 	const refFilterPlanets: Ref<string[]> = ref([]);
 	const refFilterLoadbalance: Ref<boolean> = ref(false);
 	const refFilterHideConsumables: Ref<boolean> = ref(false);
+	const refExpandAll: Ref<boolean> = ref(false);
+	const refMaterialIO =
+		useTemplateRef<InstanceType<typeof EmpireMaterialIO>>("materialIO");
 
 	// Prop Watcher
 	watch(
@@ -177,14 +187,19 @@
 			<EmpireMaterialIOFilters
 				v-model:load-balance="refFilterLoadbalance"
 				v-model:hide-consumables="refFilterHideConsumables"
+				v-model:expand-all="refExpandAll"
 				v-model:filter-materials="refFilterMaterials"
 				v-model:filter-planets="refFilterPlanets"
+				:show-expand-all="content === 'materialio'"
 				:material-options="refMaterialSelectOptions"
 				:planet-options="refPlanetSelectOptions"
+				@collapse-all="refMaterialIO?.collapseAll()"
 				@apply-filter="applyFilter" />
 		</div>
 		<EmpireMaterialIO
 			v-if="content === 'materialio'"
+			ref="materialIO"
+			v-model:expand-all="refExpandAll"
 			:empire-material-i-o="filteredMaterialIO" />
 		<EmpireAnalysis
 			v-else-if="content === 'analysis'"

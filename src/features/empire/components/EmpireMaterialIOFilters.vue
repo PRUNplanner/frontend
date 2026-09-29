@@ -25,6 +25,15 @@
 			type: Boolean,
 			required: true,
 		},
+		expandAll: {
+			type: Boolean,
+			required: true,
+		},
+		// the Planets control only applies to the Material I/O table
+		showExpandAll: {
+			type: Boolean,
+			default: false,
+		},
 		filterMaterials: {
 			type: Array as PropType<string[]>,
 			required: true,
@@ -47,6 +56,8 @@
 		(e: "applyFilter"): void;
 		(e: "update:loadBalance", value: boolean): void;
 		(e: "update:hideConsumables", value: boolean): void;
+		(e: "update:expandAll", value: boolean): void;
+		(e: "collapseAll"): void;
 		(e: "update:filterMaterials", value: string[]): void;
 		(e: "update:filterPlanets", value: string[]): void;
 	}>();
@@ -66,6 +77,18 @@
 			emit("applyFilter");
 		},
 	});
+
+	// display only, the data is unchanged
+	const localExpandAll = computed({
+		get: () => props.expandAll,
+		set: (v: boolean) => emit("update:expandAll", v),
+	});
+
+	// Summary closes every row, also when it is already selected
+	function summary(): void {
+		localExpandAll.value = false;
+		emit("collapseAll");
+	}
 
 	const localFilterMaterials = computed({
 		get: () => props.filterMaterials,
@@ -117,6 +140,22 @@
 							"
 							@click="localHideConsumables = true">
 							{{ $t("common.buttons.hide") }}
+						</PButton>
+					</PButtonGroup>
+				</PFormItem>
+				<PFormItem
+					v-if="showExpandAll"
+					:label="t('empire.material_io.planets')">
+					<PButtonGroup>
+						<PButton
+							:type="localExpandAll ? 'secondary' : 'primary'"
+							@click="summary">
+							{{ $t("empire.material_io.summary") }}
+						</PButton>
+						<PButton
+							:type="!localExpandAll ? 'secondary' : 'primary'"
+							@click="localExpandAll = true">
+							{{ $t("empire.material_io.expand_all") }}
 						</PButton>
 					</PButtonGroup>
 				</PFormItem>

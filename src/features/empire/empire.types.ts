@@ -45,3 +45,41 @@ export interface IEmpireCostOverview {
 	totalCost: number;
 	totalAreaUsed: number;
 }
+
+export interface IEmpireMaterialIOSideEntry {
+	planetId: string;
+	planUuid: string;
+	planName: string;
+	amount: number;
+	share: number;
+}
+
+export interface IEmpireMaterialIOSide {
+	entries: IEmpireMaterialIOSideEntry[];
+	total: number;
+	top: IEmpireMaterialIOSideEntry | undefined;
+	more: number;
+	fillPct: number;
+}
+
+export interface IEmpireMaterialIONetPlan {
+	planUuid: string;
+	planName: string;
+	volume: number;
+}
+
+export interface IEmpireMaterialIONetEntry {
+	planetId: string;
+	produces: number;
+	consumes: number;
+	net: number;
+	balanced: boolean;
+	plans: IEmpireMaterialIONetPlan[];
+}
+
+export interface IEmpireMaterialIONet {
+	surplus: IEmpireMaterialIONetEntry[];
+	needs: IEmpireMaterialIONetEntry[];
+	surplusTotal: number;
+	needsTotal: number;
+}

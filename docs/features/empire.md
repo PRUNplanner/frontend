@@ -20,8 +20,10 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 | `EmpireOnboarding` | Welcome card shown instead of the dashboard while the selected empire has 0 plans |
 | `EmpireEmpty` | "No empires" state: creates one with the signup defaults and the first CX |
 | `EmpireMaterialIOFiltered` | Material I/O with filters. Hosts the sub-views below |
-| `EmpireMaterialIO` | Material I/O table |
-| `EmpireMaterialIOFilters` | The filter controls |
+| `EmpireMaterialIO` | Material I/O table: one line per material, a row expands to its planets. Owns the detail view choice and the open rows ("Expand all" opens every visible row, closing one switches back to "Summary") |
+| `EmpireMaterialIOSummaryCell` | "Produced by" / "Consumed by" cell: largest plan, `+N` and a bar with one segment per plan, filled against the row's larger side |
+| `EmpireMaterialIODetail` | Expanded row: "Producers · Consumers" (every plan) or "Net per planet" (surplus, balanced, needs), linking to the plans |
+| `EmpireMaterialIOFilters` | The filter controls, plus "Planets: Summary \| Expand all" on the Material I/O table (session only) |
 | `EmpireAnalysis` | Sorted bar charts (top 10 plus "Other"), using `ui/charts/EmpireBarChart.vue` |
 | `EmpireOpportunities` | Production opportunities |
 
@@ -31,6 +33,10 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 - `useProductionOpportunities(empireIO, cxUuid)` works out which recipes
   could use the empire's surplus materials. It prices them with
   `usePrice(...).getPrice(…, "SELL")` and loads its data on mount.
+- `util/empireMaterialIO.util.ts` has the pure helpers behind the table:
+  `summarizeSide` (a side sorted by amount, with shares and bar fill),
+  `netPerPlanet` (net per planet, balanced when it rounds to 0.00) and
+  `shortPlanetName`.
 - `empire.types.ts` holds the frontend-only `IEmpireCostOverview`,
   `IEmpireMaterialIO` and `IEmpirePlanListData`. The wire shapes
   (`PlanEmpireElement`, `EmpirePayload` for create/patch,
