@@ -30,8 +30,24 @@
 		"permits_planned": "Total @:terms.permits planned: {permits}"
 	},
 	"material_io": {
-		"production_planets": "Production Planets",
-		"consumption_planets": "Consumption Planets"
+		"produced_by": "Produced by",
+		"consumed_by": "Consumed by",
+		"planets": "Planets",
+		"summary": "Summary",
+		"expand_all": "Expand all",
+		"expand_row": "Show planets for {ticker}",
+		"view_sides": "Producers · Consumers",
+		"view_net": "Net per planet",
+		"surplus": "Surplus",
+		"needs": "Needs",
+		"plan_count": "{count} plan | {count} plans",
+		"planet_count": "{count} planet | {count} planets",
+		"per_day": "{value} / day",
+		"makes_uses": "makes {makes} · uses {uses}",
+		"not_produced": "Not produced in this empire.",
+		"not_consumed": "Not consumed in this empire.",
+		"no_surplus": "No planet has a surplus.",
+		"no_needs": "No planet needs it."
 	},
 	"filters": {
 		"display": "Display",
