@@ -20,7 +20,7 @@
 			"resend_code": "重新发送验证码",
 			"code_requested": "验证码已发送。"
 		},
-		"fio_info": "FIO Data Updates are handled by PRUNplanner's backend automatically.",
+		"fio_info": "FIO 数据更新由 PRUNplanner 后端自动处理。",
 		"form": {
 			"fio_apikey": "FIO API Key",
 			"prun_username": "PrUn 用户名",
@@ -71,9 +71,9 @@
 		"form": {
 			"tool_preferences": "工具偏好设置",
 			"language": "语言",
-			"color_palette": "Color palette",
-			"palette_default": "Default (green / red)",
-			"palette_colorblind": "Color-blind (blue / orange)",
+			"color_palette": "调色板",
+			"palette_default": "默认 (绿色/红色)",
+			"palette_colorblind": "色盲(蓝色/橙色)",
 			"language_note": "我们希望让所有人都能使用 PRUNplanner。如果你希望看到自己的母语版本，或帮助我们完善现有翻译，欢迎加入我们的本地化项目：{link}。",
 			"default_empire": "默认帝国",
 			"default_cx": "默认 CX",
