@@ -128,6 +128,34 @@ describe("ManageEmpire", () => {
 		]);
 	});
 
+	it("counts changed CX selects and discards them", async () => {
+		const { wrapper, component } = await mountEmpire();
+		const vm = component.vm as unknown as {
+			changedCount: number;
+			discard: () => void;
+		};
+		expect(vm.changedCount).toBe(0);
+		expect(
+			wrapper
+				.findAll("button")
+				.some((b) => b.text() === "management.empire.buttons.update_cx")
+		).toBe(false);
+
+		const [alpha, beta] = cxSelects(wrapper);
+		alpha.vm.$emit("update:value", undefined);
+		beta.vm.$emit("update:value", CX2);
+		await flushPromises();
+		expect(vm.changedCount).toBe(2);
+
+		vm.discard();
+		await flushPromises();
+		expect(vm.changedCount).toBe(0);
+		expect(cxSelects(wrapper).map((s) => s.text())).toEqual([
+			"Main CX",
+			"None",
+		]);
+	});
+
 	it("saves the CX assignment of every empire", async () => {
 		mock.onPost(/planning\/cx\/junctions\/$/).reply(200, cxList);
 		const { wrapper, component } = await mountEmpire();
@@ -137,10 +165,7 @@ describe("ManageEmpire", () => {
 		beta.vm.$emit("update:value", CX2);
 		await flushPromises();
 
-		await button(wrapper, "management.empire.buttons.update_cx").trigger(
-			"click"
-		);
-		await flushPromises();
+		await (component.vm as unknown as { save: () => Promise<void> }).save();
 
 		expect(JSON.parse(mock.history.post[0].data)).toEqual([
 			{ cx_uuid: CX1, empires: [] },
@@ -149,6 +174,37 @@ describe("ManageEmpire", () => {
 		expect(component.emitted("update:cxList")?.[0][0]).toHaveLength(
 			cxList.length
 		);
+	});
+
+	it("rejects when saving fails", async () => {
+		mock.onPost(/planning\/cx\/junctions\/$/).reply(500);
+		const { component } = await mountEmpire();
+
+		await expect(
+			(component.vm as unknown as { save: () => Promise<void> }).save()
+		).rejects.toThrow();
+		expect(component.emitted("update:cxList")).toBeUndefined();
+	});
+
+	it("keeps unsaved CX selects when the empires reload", async () => {
+		const { wrapper, component, setProps } = await mountEmpire();
+
+		cxSelects(wrapper)[1].vm.$emit("update:value", CX2);
+		await flushPromises();
+
+		// an empire is created elsewhere, the list reloads
+		await setProps({
+			empires: [...EMPIRES, empire(uuid(5), "Gamma", "NONE", 1, 2, 0)],
+		});
+
+		expect(cxSelects(wrapper).map((s) => s.text())).toEqual([
+			"Main CX",
+			"Alt CX",
+			"None",
+		]);
+		expect(
+			(component.vm as unknown as { changedCount: number }).changedCount
+		).toBe(1);
 	});
 
 	it("follows CX changes from the parent", async () => {

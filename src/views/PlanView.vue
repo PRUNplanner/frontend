@@ -70,6 +70,7 @@
 	import PlanOverview from "@/features/planning/components/PlanOverview.vue";
 	import PlanStatusBar from "@/features/planning/components/PlanStatusBar.vue";
 	import PlanSaveButton from "@/features/planning/components/PlanSaveButton.vue";
+	import PlanToolFallback from "@/features/planning/components/PlanToolFallback.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
 	const ShareButton = defineAsyncComponent(
@@ -81,7 +82,6 @@
 		PButton,
 		PButtonGroup,
 		PTooltip,
-		PSpin,
 		PForm,
 		PFormItem,
 		PInput,
@@ -886,7 +886,7 @@
 				</div>
 				<!-- Tool View -->
 				<div
-					class="transition-discrete transition-opacity duration-500"
+					class="transition-discrete transition-opacity duration-150"
 					:class="
 						!refShowTool
 							? 'opacity-0 overflow-hidden h-0!'
@@ -983,7 +983,9 @@
 							</div>
 						</div>
 					</div>
-					<Suspense v-else-if="refShowTool && compViewToolMeta">
+					<Suspense
+						v-else-if="refShowTool && compViewToolMeta"
+						:timeout="200">
 						<template #default>
 							<component
 								:is="compViewToolComponent"
@@ -991,9 +993,7 @@
 								v-on="compViewToolMeta.listeners" />
 						</template>
 						<template #fallback>
-							<div class="w-full text-center py-5">
-								<PSpin />
-							</div>
+							<PlanToolFallback />
 						</template>
 					</Suspense>
 				</div>

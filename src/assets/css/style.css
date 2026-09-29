@@ -134,3 +134,12 @@ body:has(#menu-toggle:focus-visible) label[for="menu-toggle"] {
 	outline: 2px solid var(--color-focus);
 	outline-offset: 2px;
 }
+
+/* unsaved edits: the loaders' hazard stripes, half their stripe width */
+@utility bg-unsaved-stripes {
+	background-image: repeating-linear-gradient(
+		-45deg,
+		rgb(96 113 12 / 0.75) 0 7px,
+		transparent 7px 14px
+	);
+}

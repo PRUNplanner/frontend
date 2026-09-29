@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	// Composables
 	import { usePlanningDataLoader } from "@/features/wrapper/usePlanningDataLoader";
+	import { useDelay } from "@/features/wrapper/useDelay";
 
 	// Types & Interfaces
 	import type {
@@ -21,11 +22,15 @@
 
 	const { done, allLoaded, hasError, loadingSteps, results } =
 		usePlanningDataLoader(props, emit);
+
+	// fast (cached) loads show nothing, errors show at once
+	const showLoader = useDelay(400);
 </script>
 
 <template>
 	<template v-if="!done && !allLoaded">
 		<div
+			v-if="hasError || showLoader"
 			class="relative w-full h-full bg-center bg-repeat"
 			:class="
 				!hasError

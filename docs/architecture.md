@@ -65,7 +65,10 @@ like this:
 ```
 
 The wrappers (`src/features/wrapper/`) run their loading steps through the
-query cache and show progress. They emit `data:*` events and render their
+query cache and show progress: the step checklist appears only when loading
+takes longer than 400 ms (`useDelay`), errors show at once, and
+`RenderingProgress` waits 400 ms too, so cached pages open without a loading
+screen. They emit `data:*` events and render their
 slot inside `<Suspense>` once every step has finished, so views can `await`
 data in `<script setup>`. Composables themselves are synchronous (see
 AGENTS.md). Heavy children are loaded with `defineAsyncComponent`.

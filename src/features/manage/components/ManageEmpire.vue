@@ -40,7 +40,7 @@
 	import { useDialog } from "naive-ui";
 	const dialog = useDialog();
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
-	import { ClearSharp, PlusSharp, SaveSharp } from "@vicons/material";
+	import { ClearSharp, PlusSharp } from "@vicons/material";
 
 	const props = defineProps({
 		empires: {
@@ -71,7 +71,8 @@
 
 	const refCXOptions: Ref<PSelectOption[]> = ref([]);
 	const refEmpireCXMap: Ref<Record<string, string | undefined>> = ref({});
-	const refIsUpdatingJunctions: Ref<boolean> = ref(false);
+	// CX per empire as saved, to count and keep unsaved select changes
+	const loadedCXMap: Ref<Record<string, string | undefined>> = ref({});
 	const refShowCreateEmpire: Ref<boolean> = ref(false);
 
 	const refCreateFaction: Ref<PlanFaction> = ref("NONE");
@@ -119,7 +120,31 @@
 			});
 		});
 
-		refEmpireCXMap.value = map;
+		// re-apply unsaved selects of empires and CX that still exist
+		const cxUuids = new Set(localCX.value.map((c) => c.uuid));
+		const edited: Record<string, string | undefined> = { ...map };
+		Object.entries(refEmpireCXMap.value).forEach(([empire, cx]) => {
+			if (
+				empire in map &&
+				cx !== loadedCXMap.value[empire] &&
+				(cx === undefined || cxUuids.has(cx))
+			)
+				edited[empire] = cx;
+		});
+
+		loadedCXMap.value = map;
+		refEmpireCXMap.value = edited;
+	}
+
+	const changedCount: ComputedRef<number> = computed(
+		() =>
+			Object.keys(loadedCXMap.value).filter(
+				(e) => refEmpireCXMap.value[e] !== loadedCXMap.value[e]
+			).length
+	);
+
+	function discard(): void {
+		refEmpireCXMap.value = { ...loadedCXMap.value };
 	}
 
 	function generateCXOptions(): void {
@@ -165,24 +190,21 @@
 		return jct;
 	});
 
-	async function updateCXJunctions(): Promise<void> {
-		refIsUpdatingJunctions.value = true;
+	/**
+	 * Saves the CX selects and reloads the CX list, throws on failure
+	 * @author jplacht
+	 */
+	async function save(): Promise<void> {
+		trackEvent("manage_empire_junctions_update");
 
-		try {
-			trackEvent("manage_empire_junctions_update");
+		await useQuery("PatchEmpireCXJunctions", {
+			junctions: cxEmpireJunctions.value,
+		}).execute();
 
-			await useQuery("PatchEmpireCXJunctions", {
-				junctions: cxEmpireJunctions.value,
-			}).execute();
-
-			emit("update:cxList", await useQuery("GetAllCX").execute());
-			refCreateName.value = "";
-		} catch (err) {
-			console.error(err);
-		} finally {
-			refIsUpdatingJunctions.value = false;
-		}
+		emit("update:cxList", await useQuery("GetAllCX").execute());
 	}
+
+	defineExpose({ changedCount, save, discard });
 
 	async function createEmpire(): Promise<void> {
 		refIsCreating.value = true;
@@ -257,12 +279,6 @@
 			{{ $t("management.empire.title") }}
 		</h2>
 		<div class="flex gap-x-3">
-			<PButton
-				:loading="refIsUpdatingJunctions"
-				@click="updateCXJunctions">
-				<template #icon><SaveSharp /></template>
-				{{ $t("management.empire.buttons.update_cx") }}
-			</PButton>
 			<PButton @click="refShowCreateEmpire = !refShowCreateEmpire">
 				<template #icon><PlusSharp /></template>
 				{{ $t("management.empire.buttons.new_empire") }}

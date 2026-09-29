@@ -4,7 +4,7 @@
 plan (`/shared/:sharedPlanUuid`) and shows their view counts.
 
 **Used by.** `PlanView.vue` (`SharingButton`, loaded async) and
-`ManagePlanEmpireAssignments.vue`.
+`ManagePlanEmpireAssignments.vue` (`SharingModal`).
 
 ## Key files
 
@@ -13,7 +13,11 @@ plan (`/shared/:sharedPlanUuid`) and shows their view counts.
     `config.SHARE_BASE_URL/<shared uuid>`;
   - `createSharing()`, `deleteSharing()` and `refreshStore()`, which run the
     `CreateSharedPlan`, `DeleteSharedPlan` and `GetAllShared` queries.
-- **`components/SharingButton.vue`**: the UI for the above.
+- **`components/SharingModal.vue`**: the sharing dialog for one plan
+  (`planUuid`, `v-model:show`). Management renders a single instance for
+  all rows.
+- **`components/SharingButton.vue`**: button with the view count that
+  opens `SharingModal`.
 
 ## Data
 

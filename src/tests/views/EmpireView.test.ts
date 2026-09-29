@@ -60,6 +60,8 @@ vi.mock("@/features/preferences/usePreferences", () => ({
 }));
 vi.mock("@/features/planning/util/materialIO.util", () => ({
 	useMaterialIOUtil: () => ({
+		// its result only feeds the stubbed EmpireCostOverview
+		calculateEmpireCostOverview: () => ({}),
 		combineEmpireMaterialIO: () => [],
 		empireMaterialIOState: async () => ({ state: true }),
 	}),

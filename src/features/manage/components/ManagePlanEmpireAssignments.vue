@@ -2,11 +2,13 @@
 	import {
 		computed,
 		type ComputedRef,
+		onUnmounted,
 		type PropType,
+		reactive,
 		ref,
 		type Ref,
+		shallowRef,
 		watch,
-		type WritableComputedRef,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -14,42 +16,43 @@
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
-	const { planetName } = usePlanetData();
+	const { getPlanet } = usePlanetData();
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import {
+		cellKey,
+		splitKey,
+		toJunctions,
+		useAssignmentMatrix,
+	} from "@/features/manage/useAssignmentMatrix";
 
-	// Util
-	import { inertClone } from "@/util/data";
+	// Stores
+	import { usePlanningStore } from "@/stores/planningStore";
+	const planningStore = usePlanningStore();
 
 	// Types & Interfaces
 	import type { Plan } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import type {
-		PlanEmpireElement,
-		PlanEmpireJunction,
-	} from "@/features/api/schemas/empireData.schemas";
-	import type {
-		IPlanEmpireMatrix,
-		IPlanEmpireMatrixEmpires,
-	} from "@/features/manage/manage.types";
+		AssignmentCell,
+		IAssignmentEmpire,
+		IAssignmentRow,
+	} from "@/features/manage/useAssignmentMatrix.types";
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	// Components
-	import SharingButton from "@/features/sharing/components/SharingButton.vue";
-	import ManageAssignmentFilters from "@/features/manage/components/ManageAssignmentFilters.vue";
+	import SharingModal from "@/features/sharing/components/SharingModal.vue";
+	import ManageAssignmentRow from "@/features/manage/components/ManageAssignmentRow.vue";
+	import ManageAssignmentCard from "@/features/manage/components/ManageAssignmentCard.vue";
 
 	// UI
-	import { PCheckbox, PButton, PIcon } from "@/ui";
-	import { useDialog } from "naive-ui";
+	import { PButton, PIcon, PInput, PSelect } from "@/ui";
+	import { NDropdown, type DropdownOption, useDialog } from "naive-ui";
 	const dialog = useDialog();
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
-	import { tablePagination } from "@/util/pagination";
 	import {
-		ContentCopySharp,
-		ClearSharp,
-		SaveSharp,
-		ChangeCircleOutlined,
-		AddCircleOutlineSharp,
-		CircleOutlined,
+		ArrowDownwardSharp,
+		ArrowUpwardSharp,
+		CheckSharp,
 	} from "@vicons/material";
 
 	const props = defineProps({
@@ -61,19 +64,12 @@
 			type: Array as PropType<Plan[]>,
 			required: true,
 		},
-	});
-
-	// Local Data & Watcher
-	const localEmpires: WritableComputedRef<PlanEmpireElement[]> = computed({
-		get: () => inertClone(props.empires),
-		set: (value: PlanEmpireElement[]) => emit("update:empireList", value),
-	});
-	const localPlans: ComputedRef<Plan[]> = computed(() =>
-		inertClone(props.plans)
-	);
-
-	watch([() => props.empires, () => props.plans], () => {
-		generateMatrix();
+		/** shows "All changes saved" next to the counts */
+		saved: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -81,186 +77,283 @@
 		(e: "update:planList", value: Plan[]): void;
 	}>();
 
-	const matrixEmpires: Ref<IPlanEmpireMatrixEmpires[]> = ref([]);
-	const matrix: Ref<IPlanEmpireMatrix[]> = ref([]);
-	const refIsPatching: Ref<boolean> = ref(false);
-	const refIsCloning: Ref<string | undefined> = ref(undefined);
-	const refIsDeleting: Ref<string | undefined> = ref(undefined);
+	// Rows: plain frozen objects, planet names resolved once per planet
+	// before the rows are built, so the table renders once
+	const rows: Ref<readonly IAssignmentRow[]> = shallowRef([]);
+	const rowsReady: Ref<boolean> = ref(false);
+	const planetNames = new Map<string, string | undefined>();
 
-	const filterPlanNames: Ref<string[]> = ref([]);
-	const filterEmpires: Ref<string[]> = ref([]);
-	const filterOptionsPlanNames: ComputedRef<PSelectOption[]> = computed(() =>
-		localPlans.value.map((e) => ({
-			label: e.plan_name ?? "Missing Plan Name",
-			value: e.uuid,
-		}))
+	function buildRows(): void {
+		rows.value = props.plans.map((p) =>
+			Object.freeze({
+				planUuid: p.uuid,
+				planName: p.plan_name,
+				planetId: p.planet_natural_id,
+				planetName: planetNames.get(p.planet_natural_id),
+			})
+		);
+	}
+
+	async function loadPlanetNames(ids: string[]): Promise<void> {
+		await Promise.all(
+			ids.map(async (id) => {
+				try {
+					const planet = await getPlanet(id);
+					planetNames.set(
+						id,
+						planet.planet_name !== id ? planet.planet_name : undefined
+					);
+				} catch {
+					planetNames.set(id, undefined);
+				}
+			})
+		);
+	}
+
+	watch(
+		() => props.plans,
+		async (plans) => {
+			const missing = [
+				...new Set(plans.map((p) => p.planet_natural_id)),
+			].filter((id) => !planetNames.has(id));
+			if (missing.length > 0) await loadPlanetNames(missing);
+			buildRows();
+			rowsReady.value = true;
+		},
+		{ immediate: true }
 	);
-	const filterOptionsEmpires: ComputedRef<PSelectOption[]> = computed(() =>
-		localEmpires.value.map((e) => ({ label: e.empire_name, value: e.uuid }))
+
+	const empires: ComputedRef<IAssignmentEmpire[]> = computed(() =>
+		props.empires
+			.map((e) => ({ empireUuid: e.uuid, empireName: e.empire_name }))
+			.sort((a, b) => a.empireName.localeCompare(b.empireName))
 	);
 
-	// generate initial matrix upon props passing
-	generateMatrix();
+	// Assignment state, pending edits survive reloads (clone, delete, save)
+	const matrix = useAssignmentMatrix();
+	watch(
+		[() => props.empires, () => props.plans],
+		() =>
+			matrix.load(
+				props.empires,
+				new Set(props.plans.map((p) => p.uuid))
+			),
+		{ immediate: true }
+	);
 
-	const filteredMatrix = computed(() => {
-		let filtered = matrix.value;
-
-		// filter plan names
-		if (filterPlanNames.value.length > 0) {
-			filtered = filtered.filter((f) =>
-				filterPlanNames.value.includes(f.planUuid)
-			);
+	const assignedCounts = computed(() => {
+		const perPlan = new Map<string, number>();
+		const perEmpire = new Map<string, number>();
+		for (const k of matrix.current.value) {
+			const [plan, empire] = splitKey(k);
+			perPlan.set(plan, (perPlan.get(plan) ?? 0) + 1);
+			perEmpire.set(empire, (perEmpire.get(empire) ?? 0) + 1);
 		}
-
-		// filter for active in empire
-		if (filterEmpires.value.length > 0) {
-			filtered = filtered.filter((f) =>
-				Object.entries(f.empires)
-					.filter(([_, value]) => value === true)
-					.map(([key]) => key)
-					.find((e) => filterEmpires.value.includes(e))
-			);
-		}
-
-		return filtered;
+		return { perPlan, perEmpire };
 	});
 
-	function generateMatrix(): void {
-		// reset matrix and empires
-		matrix.value = [];
-		matrixEmpires.value = [];
-
-		matrixEmpires.value = localEmpires.value
-			.map((e) => {
-				return {
-					empireUuid: e.uuid,
-					empireName: e.empire_name,
-				};
-			})
-			.sort((a, b) => (a.empireName > b.empireName ? 1 : -1));
-
-		// prepare flatmap of all plan uuids within an empire
-		const empirePlans: Record<string, string[]> = localEmpires.value.reduce(
-			(acc, item) => (
-				(acc[item.uuid] = item.plans.map((p) => p.uuid)),
-				acc
-			),
-			{} as Record<string, string[]>
-		);
-
-		// prepare matrix based on plans
-		localPlans.value.forEach((plan) => {
-			matrix.value.push({
-				// all plans coming from backend have a name and uuid, force it
-				planName: plan.plan_name!,
-				planUuid: plan.uuid,
-				planetId: plan.planet_natural_id,
-				empires: localEmpires.value.reduce(
-					(acc, item) => (
-						(acc[item.uuid] = empirePlans[item.uuid].includes(
-							plan.uuid
-						)),
-						acc
-					),
-					{} as Record<string, boolean>
-				),
-			});
-		});
-	}
-
-	function reload(): void {
-		trackEvent("manage_plans_reload");
-		localEmpires.value = inertClone(props.empires);
-		generateMatrix();
-	}
-
-	function changeAllToEmpire(empireUuid: string, value: boolean): void {
-		trackEvent("manage_plans_assign_all", { value });
-
-		matrix.value.forEach((mv) => {
-			// check if part of filtered view
-			if (filteredMatrix.value.length != matrix.value.length) {
-				if (
-					filteredMatrix.value
-						.map((e) => e.planUuid)
-						.includes(mv.planUuid)
-				) {
-					mv.empires[empireUuid] = value;
-				}
-			} else {
-				mv.empires[empireUuid] = value;
-			}
-		});
-	}
-
-	// junction patch matrix
-	const patchJunctionData: ComputedRef<PlanEmpireJunction[]> = computed(
-		() => {
-			const junctions: PlanEmpireJunction[] = [];
-
-			matrixEmpires.value.forEach((me) => {
-				const indJunction = {
-					empire_uuid: me.empireUuid,
-					baseplanners: [] as PlanEmpireJunction["baseplanners"],
-				};
-
-				matrix.value.forEach((mp) => {
-					if (mp.empires[me.empireUuid]) {
-						indJunction.baseplanners.push({
-							baseplanner_uuid: mp.planUuid,
-						});
-					}
-				});
-
-				return junctions.push(indJunction);
-			});
-
-			return junctions;
-		}
+	const unassignedCount: ComputedRef<number> = computed(
+		() =>
+			rows.value.filter(
+				(r) => !assignedCounts.value.perPlan.has(r.planUuid)
+			).length
 	);
 
-	async function updateEmitEmpiresPlans(): Promise<void> {
-		useQuery("GetAllEmpires")
-			.execute()
-			.then((e: PlanEmpireElement[]) => {
-				emit("update:empireList", e);
-			});
-
-		useQuery("GetAllPlans")
-			.execute()
-			.then((p: Plan[]) => emit("update:planList", p));
+	function cells(planUuid: string): string {
+		const loaded = matrix.loaded.value;
+		const current = matrix.current.value;
+		return empires.value
+			.map((e): AssignmentCell => {
+				const k = cellKey(planUuid, e.empireUuid);
+				const was = loaded.has(k);
+				const is = current.has(k);
+				if (was === is) return is ? "1" : "0";
+				return is ? "+" : "-";
+			})
+			.join("");
 	}
 
-	async function patchJunctions(): Promise<void> {
-		refIsPatching.value = true;
+	function toggle(planUuid: string, empireUuid: string): void {
+		const k = cellKey(planUuid, empireUuid);
+		matrix.set([k], !matrix.current.value.has(k));
+	}
 
-		trackEvent("manage_plans_junctions_update");
+	// Toolbar: search, empire filter, unassigned only, sorting
+	const search: Ref<string | null | undefined> = ref("");
+	const filterEmpire: Ref<string | number | null | undefined> = ref(undefined);
+	const unassignedOnly: Ref<boolean> = ref(false);
+	const sortAsc: Ref<boolean> = ref(true);
 
-		useQuery("PatchEmpirePlanJunctions", {
-			junctions: patchJunctionData.value,
-		})
-			.execute()
-			.then(() => updateEmitEmpiresPlans())
-			.finally(() => (refIsPatching.value = false));
+	const empireOptions: ComputedRef<PSelectOption[]> = computed(() => [
+		{ label: t("management.assignments.all_empires"), value: undefined },
+		...empires.value.map((e) => ({
+			label: e.empireName,
+			value: e.empireUuid,
+		})),
+	]);
+
+	const shownRows: ComputedRef<IAssignmentRow[]> = computed(() => {
+		const q = (search.value ?? "").trim().toLowerCase();
+		const empire = filterEmpire.value;
+
+		let shown = rows.value.filter(
+			(r) =>
+				!q ||
+				r.planName.toLowerCase().includes(q) ||
+				r.planetId.toLowerCase().includes(q) ||
+				(r.planetName?.toLowerCase().includes(q) ?? false)
+		);
+		if (typeof empire === "string") {
+			const current = matrix.current.value;
+			shown = shown.filter((r) =>
+				current.has(cellKey(r.planUuid, empire))
+			);
+		}
+		if (unassignedOnly.value) {
+			const perPlan = assignedCounts.value.perPlan;
+			shown = shown.filter((r) => !perPlan.has(r.planUuid));
+		}
+
+		const dir = sortAsc.value ? 1 : -1;
+		return shown.sort((a, b) => dir * a.planName.localeCompare(b.planName));
+	});
+
+	/** header checkbox per empire, over the shown rows */
+	const headerStates: ComputedRef<Map<string, "none" | "some" | "all">> =
+		computed(() => {
+			const current = matrix.current.value;
+			return new Map(
+				empires.value.map((e) => {
+					const n = shownRows.value.filter((r) =>
+						current.has(cellKey(r.planUuid, e.empireUuid))
+					).length;
+					return [
+						e.empireUuid,
+						n === 0
+							? "none"
+							: n === shownRows.value.length
+								? "all"
+								: "some",
+					];
+				})
+			);
+		});
+
+	function toggleAllShown(empireUuid: string): void {
+		const value = headerStates.value.get(empireUuid) !== "all";
+		trackEvent("manage_plans_assign_all", { value });
+		matrix.set(
+			shownRows.value.map((r) => cellKey(r.planUuid, empireUuid)),
+			value
+		);
+	}
+
+	// Long lists render in chunks, one per frame, so the page never blocks
+	// for long; a filter change starts over with the first chunk
+	const RENDER_CHUNK = 20;
+	const renderLimit: Ref<number> = ref(RENDER_CHUNK);
+	let growFrame = 0;
+
+	function grow(): void {
+		renderLimit.value += RENDER_CHUNK;
+		growFrame =
+			renderLimit.value < shownRows.value.length
+				? requestAnimationFrame(grow)
+				: 0;
+	}
+
+	function ensureGrowing(): void {
+		if (renderLimit.value < shownRows.value.length && !growFrame)
+			growFrame = requestAnimationFrame(grow);
+	}
+
+	watch(() => shownRows.value.length, ensureGrowing, { immediate: true });
+	watch([search, filterEmpire, unassignedOnly], () => {
+		renderLimit.value = RENDER_CHUNK;
+		ensureGrowing();
+	});
+	onUnmounted(() => cancelAnimationFrame(growFrame));
+
+	const renderedRows: ComputedRef<IAssignmentRow[]> = computed(() =>
+		shownRows.value.length > renderLimit.value
+			? shownRows.value.slice(0, renderLimit.value)
+			: shownRows.value
+	);
+
+	// Narrow screens get cards instead of the table
+	const media =
+		typeof window.matchMedia === "function"
+			? window.matchMedia("(min-width: 768px)")
+			: undefined;
+	const isWide: Ref<boolean> = ref(media?.matches ?? true);
+	const onMedia = (e: MediaQueryListEvent) => (isWide.value = e.matches);
+	media?.addEventListener("change", onMedia);
+	onUnmounted(() => media?.removeEventListener("change", onMedia));
+
+	// Row menu: one dropdown and one sharing modal for the whole table
+	const menu = reactive({ show: false, x: 0, y: 0, planUuid: "" });
+	const busyPlan: Ref<string | undefined> = ref(undefined);
+	const sharePlan: Ref<string | undefined> = ref(undefined);
+	const showShare: Ref<boolean> = ref(false);
+
+	const menuOptions: ComputedRef<DropdownOption[]> = computed(() => [
+		{ label: t("management.assignments.menu.clone"), key: "clone" },
+		{ label: t("management.assignments.menu.share"), key: "share" },
+		{ type: "divider", key: "divider" },
+		{
+			label: t("management.assignments.menu.delete"),
+			key: "delete",
+			props: { style: "color: var(--color-negative)" },
+		},
+	]);
+
+	function openMenu(planUuid: string, target: HTMLElement): void {
+		const rect = target.getBoundingClientRect();
+		menu.x = rect.left;
+		menu.y = rect.bottom;
+		menu.planUuid = planUuid;
+		menu.show = true;
+	}
+
+	function onMenuSelect(key: string): void {
+		menu.show = false;
+		const row = rows.value.find((r) => r.planUuid === menu.planUuid);
+		if (!row) return;
+
+		if (key === "clone") clonePlan(row.planUuid, row.planName);
+		else if (key === "share") {
+			sharePlan.value = row.planUuid;
+			showShare.value = true;
+		} else if (key === "delete") handleDeleteConfirm(row.planUuid);
+	}
+
+	async function refetch(): Promise<void> {
+		const [empireList, planList] = await Promise.all([
+			useQuery("GetAllEmpires").execute(),
+			useQuery("GetAllPlans").execute(),
+		]);
+		emit("update:empireList", empireList);
+		emit("update:planList", planList);
 	}
 
 	async function clonePlan(
 		planUuid: string,
 		planName: string
 	): Promise<void> {
-		refIsCloning.value = planUuid;
-
+		busyPlan.value = planUuid;
 		trackEvent("manage_plans_clone", { planUuid });
 
-		useQuery("ClonePlan", {
-			planUuid: planUuid,
-			cloneName: `${planName} (Clone)`,
-		})
-			.execute()
-			.then(() => updateEmitEmpiresPlans())
-			.finally(() => {
-				refIsCloning.value = undefined;
-			});
+		try {
+			await useQuery("ClonePlan", {
+				planUuid: planUuid,
+				cloneName: `${planName} (Clone)`,
+			}).execute();
+			await refetch();
+		} catch (err) {
+			console.error(err);
+		} finally {
+			busyPlan.value = undefined;
+		}
 	}
 
 	function handleDeleteConfirm(planUuid: string): void {
@@ -276,179 +369,244 @@
 	}
 
 	async function deletePlan(planUuid: string): Promise<void> {
-		refIsDeleting.value = planUuid;
-
+		busyPlan.value = planUuid;
 		trackEvent("manage_plans_delete", { planUuid });
 
-		useQuery("DeletePlan", {
-			planUuid: planUuid,
-		})
-			.execute()
-			.then(() => updateEmitEmpiresPlans())
-			.catch((err) => {
-				console.error(err);
-			})
-			.finally(() => {
-				refIsDeleting.value = undefined;
-			});
+		try {
+			await useQuery("DeletePlan", { planUuid: planUuid }).execute();
+			await refetch();
+		} catch (err) {
+			console.error(err);
+		} finally {
+			busyPlan.value = undefined;
+		}
 	}
 
-	const pagination = tablePagination(50);
+	/**
+	 * Saves the changed empires' assignments and reloads, throws on failure
+	 * @author jplacht
+	 */
+	async function save(): Promise<void> {
+		const { changedKeys } = matrix.changes.value;
+		if (changedKeys.size === 0) return;
+
+		trackEvent("manage_plans_junctions_update");
+		await useQuery("PatchEmpirePlanJunctions", {
+			junctions: toJunctions(
+				props.empires,
+				matrix.current.value,
+				changedKeys
+			),
+		}).execute();
+		await refetch();
+	}
+
+	const changes = matrix.changes;
+	const discard = matrix.discard;
+	defineExpose({ changes, save, discard });
 </script>
 
 <template>
-	<div class="flex flex-row flex-wrap gap-3 justify-between">
-		<h2 class="text-xl font-bold my-auto">
-			{{ $t("management.assignments.title") }}
-		</h2>
-		<div class="flex gap-x-3">
-			<PButton :loading="refIsPatching" @click="patchJunctions">
-				<template #icon><SaveSharp /></template>
-				{{ $t("management.assignments.buttons.update_assignments") }}
-			</PButton>
-			<PButton @click="reload">
-				<template #icon><ChangeCircleOutlined /></template>
-				{{ $t("management.assignments.buttons.reload") }}
-			</PButton>
+	<div class="flex flex-row flex-wrap gap-x-6 gap-y-1 justify-between">
+		<div>
+			<h2 class="text-xl font-bold">
+				{{ $t("management.assignments.title") }}
+			</h2>
+			<div class="pt-1 text-white/60">
+				{{ $t("management.assignments.description") }}
+			</div>
+		</div>
+		<div class="flex items-end gap-4 text-white/60">
+			<span
+				v-if="saved"
+				class="flex items-center gap-1.5 text-positive"
+				role="status">
+				<PIcon :size="14"><CheckSharp /></PIcon>
+				{{ $t("management.save_bar.all_saved") }}
+			</span>
+			<span>
+				{{
+					$t("management.assignments.plan_count", {
+						plans: $t(
+							"management.assignments.plans",
+							plans.length
+						),
+						empires: $t(
+							"management.assignments.empires",
+							empires.length
+						),
+					})
+				}}
+			</span>
 		</div>
 	</div>
-	<div class="py-3 text-white/60">
-		{{ $t("management.assignments.description") }}
+
+	<div class="flex flex-wrap items-center gap-3 py-4">
+		<PInput
+			v-model:value="search"
+			class="w-85 max-w-full"
+			:placeholder="$t('management.assignments.search')"
+			:aria-label="$t('management.assignments.search')" />
+		<div class="flex items-center gap-2">
+			<span class="text-white/70">
+				{{ $t("management.assignments.filter_empire") }}
+			</span>
+			<PSelect
+				v-model:value="filterEmpire"
+				class="w-50"
+				:options="empireOptions"
+				:aria-label="$t('management.assignments.filter_empire')" />
+		</div>
+		<PButton
+			:type="unassignedOnly ? 'primary' : 'secondary'"
+			:aria-pressed="unassignedOnly"
+			@click="unassignedOnly = !unassignedOnly">
+			{{
+				$t("management.assignments.unassigned_only", {
+					count: unassignedCount,
+				})
+			}}
+		</PButton>
 	</div>
 
-	<ManageAssignmentFilters
-		v-model:filter-plan-names="filterPlanNames"
-		v-model:filter-empires="filterEmpires"
-		:options-plan-names="filterOptionsPlanNames"
-		:options-empires="filterOptionsEmpires"
-		@apply:filter="generateMatrix" />
-	<x-n-data-table
-		:data="filteredMatrix"
-		striped
-		:single-line="false"
-		:pagination="pagination">
-		<x-n-data-table-column
-			key="planName"
-			:title="t('management.assignments.table.plan')"
-			sorter="default"
-			default-sort-order="ascend">
-			<template #render-cell="{ rowData }">
-				<div class="w-43.75 text-wrap">
-					<router-link
-						:to="`/plan/${rowData.planetId}/${rowData.planUuid}`"
-						class="text-link-primary font-bold hover:underline">
-						{{ rowData.planName }}
-					</router-link>
-				</div>
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column
-			key="planetId"
-			:title="t('management.assignments.table.planet')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<div class="w-43.75 text-wrap">
-					{{ planetName(rowData.planetId, "Loading...") }}
-				</div>
-			</template>
-		</x-n-data-table-column>
+	<div
+		v-if="rowsReady && rows.length === 0"
+		class="p-10 text-center text-white/60 flex flex-col gap-y-3">
+		<div>{{ $t("management.assignments.table.nodata_title") }}</div>
+		<div>{{ $t("management.assignments.table.nodata_label") }}</div>
+	</div>
 
-		<x-n-data-table-column
-			key="options"
-			:title="t('management.assignments.table.configuration')">
-			<template #render-cell="{ rowData }">
-				<div class="flex flex-row flex-wrap gap-1">
-					<PButton
-						:aria-label="$t('common.buttons.delete')"
-						size="sm"
-						type="error"
-						:loading="refIsDeleting === rowData.planUuid"
-						@click="handleDeleteConfirm(rowData.planUuid)">
-						<template #icon><ClearSharp /></template>
-					</PButton>
-					<PButton
-						:aria-label="$t('common.buttons.clone_plan')"
-						size="sm"
-						:loading="refIsCloning === rowData.planUuid"
-						@click="clonePlan(rowData.planUuid, rowData.planName)">
-						<template #icon><ContentCopySharp /></template>
-					</PButton>
-					<SharingButton
-						:key="rowData.planUuid"
-						#
-						button-size="sm"
-						:plan-uuid="rowData.planUuid" />
-				</div>
-			</template>
-		</x-n-data-table-column>
-
-		<!-- Empire Columns -->
-		<x-n-data-table-column v-for="e in matrixEmpires" :key="e.empireUuid">
-			<template #title>
-				<div class="max-w-25 text-wrap">
-					{{ e.empireName }}
-				</div>
-			</template>
-			<x-n-data-table-column :key="`ASSIGN#${e.empireUuid}`">
-				<template #title>
-					<div class="py-1 flex flex-row justify-center gap-1">
+	<div
+		v-else-if="rowsReady && isWide"
+		class="overflow-auto max-h-[80vh] border border-white/10 rounded">
+		<table
+			class="w-full table-fixed border-collapse"
+			:style="{ minWidth: `${280 + 52 + empires.length * 128}px` }">
+			<colgroup>
+				<col />
+				<col class="w-13" />
+				<col v-for="e in empires" :key="e.empireUuid" class="w-32" />
+			</colgroup>
+			<thead class="sticky top-0 z-2 bg-gray-dark">
+				<tr>
+					<th
+						class="sticky left-0 z-3 bg-gray-dark text-left px-4 py-2.5 align-bottom border-b border-white/10"
+						:aria-sort="sortAsc ? 'ascending' : 'descending'">
 						<button
 							type="button"
-							class="p-1 cursor-pointer"
-							:aria-label="
-								$t('management.assignments.table.assign_all', {
-									empire: e.empireName,
-								})
-							"
-							@click="changeAllToEmpire(e.empireUuid, true)">
-							<PIcon color="var(--color-positive)" :size="16">
-								<AddCircleOutlineSharp />
+							class="flex items-center gap-1.5 font-bold cursor-pointer"
+							@click="sortAsc = !sortAsc">
+							{{ $t("management.assignments.table.plan") }}
+							<PIcon :size="14" class="text-white/60">
+								<ArrowUpwardSharp v-if="sortAsc" />
+								<ArrowDownwardSharp v-else />
 							</PIcon>
 						</button>
-						<button
-							type="button"
-							class="p-1 cursor-pointer"
-							:aria-label="
-								$t(
-									'management.assignments.table.unassign_all',
-									{
-										empire: e.empireName,
-									}
-								)
-							"
-							@click="changeAllToEmpire(e.empireUuid, false)">
-							<PIcon color="var(--color-negative)" :size="16">
-								<CircleOutlined />
-							</PIcon>
-						</button>
-					</div>
-				</template>
-				<template #render-cell="{ rowData }">
-					<div class="flex flex-col items-center">
-						<PCheckbox
-							v-model:checked="rowData.empires[e.empireUuid]"
-							:aria-label="
-								$t(
-									'management.assignments.table.assign_label',
-									{
-										plan: rowData.planName,
-										empire: e.empireName,
-									}
-								)
-							" />
-					</div>
-				</template>
-			</x-n-data-table-column>
-		</x-n-data-table-column>
-		<template #empty>
-			<div class="flex flex-col gap-y-3">
-				<div class="text-center">
-					{{ $t("management.assignments.table.nodata_title") }}
-				</div>
-				<div class="text-center">
-					{{ $t("management.assignments.table.nodata_label") }}
-				</div>
-			</div>
-		</template>
-	</x-n-data-table>
+					</th>
+					<th class="border-b border-white/10">
+						<span class="sr-only">
+							{{ $t("management.assignments.row_actions_header") }}
+						</span>
+					</th>
+					<th
+						v-for="e in empires"
+						:key="e.empireUuid"
+						class="px-1.5 pt-2.5 pb-2 align-bottom border-b border-l border-b-white/10 border-l-white/5">
+						<div class="flex flex-col items-center gap-1">
+							<div
+								class="max-w-full truncate text-[13px] font-bold"
+								:title="e.empireName">
+								{{ e.empireName }}
+							</div>
+							<div class="text-xs font-normal text-white/55">
+								{{
+									$t(
+										"management.assignments.empire_plans",
+										assignedCounts.perEmpire.get(
+											e.empireUuid
+										) ?? 0
+									)
+								}}
+							</div>
+							<input
+								type="checkbox"
+								class="size-4.5 accent-blue-700 cursor-pointer"
+								:checked="headerStates.get(e.empireUuid) === 'all'"
+								:indeterminate="
+									headerStates.get(e.empireUuid) === 'some'
+								"
+								:aria-label="
+									headerStates.get(e.empireUuid) === 'all'
+										? $t(
+												'management.assignments.remove_all_shown',
+												{ empire: e.empireName }
+											)
+										: $t(
+												'management.assignments.add_all_shown',
+												{ empire: e.empireName }
+											)
+								"
+								@change="toggleAllShown(e.empireUuid)" />
+						</div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<ManageAssignmentRow
+					v-for="r in renderedRows"
+					:key="r.planUuid"
+					:row="r"
+					:empires="empires"
+					:cells="cells(r.planUuid)"
+					:view-count="planningStore.shared[r.planUuid]?.view_count"
+					:busy="busyPlan === r.planUuid"
+					@toggle="toggle"
+					@menu="openMenu" />
+				<tr v-if="shownRows.length === 0">
+					<td
+						:colspan="2 + empires.length"
+						class="p-10 text-center text-white/60">
+						{{ $t("management.assignments.no_match") }}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div v-else-if="rowsReady" class="flex flex-col gap-3">
+		<!-- off-screen cards skip layout and paint -->
+		<ManageAssignmentCard
+			v-for="r in renderedRows"
+			:key="r.planUuid"
+			:row="r"
+			:empires="empires"
+			:cells="cells(r.planUuid)"
+			:busy="busyPlan === r.planUuid"
+			@toggle="toggle"
+			@menu="openMenu" />
+		<div
+			v-if="shownRows.length === 0"
+			class="p-10 text-center text-white/60">
+			{{ $t("management.assignments.no_match") }}
+		</div>
+	</div>
+
+	<!-- created on first use -->
+	<n-dropdown
+		v-if="menu.planUuid"
+		trigger="manual"
+		placement="bottom-start"
+		:show="menu.show"
+		:x="menu.x"
+		:y="menu.y"
+		:options="menuOptions"
+		@select="onMenuSelect"
+		@update:show="(show: boolean) => (menu.show = show)"
+		@clickoutside="menu.show = false" />
+
+	<SharingModal
+		v-if="sharePlan"
+		:key="sharePlan"
+		v-model:show="showShare"
+		:plan-uuid="sharePlan" />
 </template>
