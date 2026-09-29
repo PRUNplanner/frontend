@@ -104,6 +104,13 @@
 	const refShowRecipeOptions: Ref<boolean> = ref(false);
 	const refShowCOGM: Ref<boolean> = ref(false);
 
+	// below xl the recipe tile sits in the right half of the row, so the popover
+	// hangs left from its right edge to stay inside narrow windows (#294)
+	const recipePlacement = () =>
+		window.matchMedia?.("(min-width: 1280px)").matches === false
+			? "bottom-end"
+			: "bottom-start";
+
 	const cogmEnabled = computed(
 		() => localRecipeData.value.cogm && localRecipeData.value.cogm.visible
 	);
@@ -160,9 +167,9 @@
 
 	<n-popover
 		trigger="click"
-		placement="bottom-start"
+		:placement="recipePlacement()"
 		scrollable
-		style="padding: 0; max-height: 500px"
+		style="padding: 0; max-height: min(500px, 45vh); max-width: calc(100vw - 48px)"
 		:show="refShowRecipeOptions"
 		@update-show="(val) => (refShowRecipeOptions = val)">
 		<template #trigger>
