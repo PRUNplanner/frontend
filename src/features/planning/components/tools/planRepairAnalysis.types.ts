@@ -4,6 +4,9 @@ export interface IPlanRepairAnalysisDataProp {
 	name: string;
 	amount: number;
 	dailyRevenue: number;
+	// per building, negative like in the plan result
+	workforceDailyCost: number;
+	constructionCost: number;
 	constructionMaterials: IMaterialIOMinimal[];
 }
 

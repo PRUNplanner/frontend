@@ -312,6 +312,8 @@
 								name: b.name,
 								amount: b.amount,
 								dailyRevenue: b.dailyRevenue,
+								workforceDailyCost: b.workforceDailyCost,
+								constructionCost: b.constructionCost,
 								constructionMaterials: b.constructionMaterials,
 							};
 						}),

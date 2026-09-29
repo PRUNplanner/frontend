@@ -90,9 +90,20 @@
 			prices[m.ticker] = await getPrice(m.ticker, "BUY");
 
 		repairPrices.value = prices;
+		// one building: dailyRevenue covers all of them and already subtracts
+		// workforce and construction / 180 (see engine/production.ts), take
+		// those back out, the curve charges workforce and real repair cost
+		const workforceCost = -building.workforceDailyCost;
+		const productionValue =
+			building.amount > 0
+				? building.dailyRevenue / building.amount +
+					workforceCost -
+					building.constructionCost / 180
+				: 0;
+
 		repairAnalysisElements.value = calculateRepairCurve(
-			// dailyRevenue covers all buildings, the curve is per building
-			building.amount > 0 ? building.dailyRevenue / building.amount : 0,
+			productionValue,
+			workforceCost,
 			building.constructionMaterials,
 			prices
 		);
