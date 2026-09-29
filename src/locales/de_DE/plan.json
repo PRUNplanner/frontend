@@ -1,7 +1,27 @@
 {
 	"notifications": {
-		"must_have_name": "Zum Speichern muss zuerst ein Plan-Name gesetzt werden",
 		"leave_unsaved": "Do you really want to leave? Unsaved changes will be lost."
+	},
+	"save_status": {
+		"unsaved": "Unsaved changes",
+		"saving": "Saving…",
+		"saved_at": "Saved at {time}",
+		"failed": "Save failed",
+		"saved": "Saved",
+		"retry": "Retry save",
+		"failed_message": "Saving the plan failed. Your changes are kept, try again.",
+		"name_to_create": "Name your plan to create it",
+		"name_to_save": "Name your plan to save it"
+	},
+	"history": {
+		"undo": "Undo",
+		"redo": "Redo",
+		"building_removed": "Building removed",
+		"recipe_removed": "Recipe removed",
+		"recipe_changed": "{building} recipe changed"
+	},
+	"name": {
+		"untitled": "Unnamed plan"
 	},
 	"tools": {
 		"labels": {
@@ -170,8 +190,7 @@
 		"area": {
 			"permits": "@:terms.permits_plural",
 			"area": "@:terms.area",
-			"free": "Frei",
-			"exceeded": "Exceeded by {amount}"
+			"free": "Frei"
 		},
 		"bonuses": {
 			"corp_hq": "Corp. HQ",
