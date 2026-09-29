@@ -29,9 +29,9 @@
 			},
 			"form": {
 				"username": "用户名",
-				"username_info": "至少 3 个字符，不能包含空格。",
+				"username_info": "至少3个字符，不能包含空格。",
 				"password": "密码",
-				"password_info": "至少 8 个字符。",
+				"password_info": "至少8个字符。",
 				"email": "邮箱",
 				"email_placeholder": "可选，但建议填写。",
 				"email_info": "可选，可提升账户安全性。",
@@ -50,7 +50,7 @@
 				"email": "邮箱",
 				"code": "验证码",
 				"password": "密码",
-				"password_info": "至少 8 个字符。"
+				"password_info": "至少8个字符。"
 			}
 		},
 		"request_password_reset": {
@@ -65,7 +65,7 @@
 		},
 		"verify_email": {
 			"title": "邮箱验证",
-			"info": "请输入系统发送到邮箱的验证码。若未收到，请检查垃圾邮件文件夹。",
+			"info": "请输入系统发送到邮箱的验证码。若未收到，请检查垃圾邮件。",
 			"buttons": {
 				"send": "发送验证邮件"
 			},
@@ -78,11 +78,11 @@
 			}
 		},
 		"hints": {
-			"username": "e.g. your in-game name",
-			"password": "Your password",
-			"new_password": "At least 8 characters",
-			"email": "e.g. name@example.com",
-			"code": "Code from the email"
+			"username": "例：你的游戏内昵称",
+			"password": "你的密码",
+			"new_password": "至少8个字符",
+			"email": "例：name@example.com",
+			"code": "邮箱里的验证码"
 		}
 	}
 }
