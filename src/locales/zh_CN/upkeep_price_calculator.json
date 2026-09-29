@@ -19,7 +19,7 @@
 				"material": "@:terms.materials",
 				"building": "@:terms.buildings",
 				"price_need": "ȼ/需求",
-				"cx_price": "@:terms.cx Price (ȼ)",
+				"cx_price": "@:terms.cx价格 (ȼ)",
 				"qty_day": "数量/天"
 			}
 		}
