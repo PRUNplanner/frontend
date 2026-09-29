@@ -7,8 +7,8 @@
 		"fit_ship": "适配飞船",
 		"hide_infinite": "隐藏无限项",
 		"json": "JSON",
-		"include_label": "Include {ticker}",
-		"override_label": "Override for {ticker}"
+		"include_label": "包括{ticker}",
+		"override_label": "覆盖{ticker}"
 	},
 	"buttons": {
 		"copy_json": "复制 XIT JSON",
