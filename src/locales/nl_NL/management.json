@@ -5,7 +5,6 @@
 		"title": "Rijk Configuratie",
 		"description": "Het verwijderen van een rijk zal geen geassocieerde plannen verwijderen - geassocieerde plannen zullen losgekoppeld worden. Je kunt bestaande rijken bewerken vanuit het rijk overzicht. Zorg dat elk rijk de correcte vergunningen heeft voor jouw factie om zeker te zijn van efficiënte plan berekeningen.",
 		"buttons": {
-			"update_cx": "CX Toewijzingen Vernieuwen",
 			"new_empire": "Nieuw Rijk"
 		},
 		"form": {
@@ -41,31 +40,49 @@
 			"nodata_label": "Creëer je eerste beurs voorkeur."
 		}
 	},
-	"filter": {
-		"title": "Filter",
-		"plan": "Plan",
-		"active_empire": "Actief"
-	},
 	"assignments": {
 		"title": "Plan ↔ Rijk Toewijzingen",
-		"description": "Elke geplande basis kan aan meerdere rijken toegewezen worden. Dit laat je tegelijk je rijk, corporatie productie ketens, of uitbreidingsplannen, in de gaten houden.",
-		"buttons": {
-			"update_assignments": "Vernieuwen Toegewezen Plan",
-			"reload": "Herladen"
-		},
+		"description": "Every planned base can be assigned to multiple empires. This allows you to simultaneously keep track of your existing Prosperous Universe empire, corporation production chains or future expansion plans. Changes are saved together from the bar at the bottom.",
 		"deletion": {
 			"title": "Plan Verwijdering Bevestigen",
 			"content": "Weet je dit zeker? Het verwijderen van dit plan kan niet worden teruggedraaid."
 		},
 		"table": {
 			"plan": "plan",
-			"planet": "planeet",
-			"configuration": "Configuratie",
 			"nodata_title": "No @:terms.plans_plural available",
 			"nodata_label": "Use Planet Search to create your first @:{'terms.plan'}.",
-			"assign_label": "{plan} in {empire}",
-			"assign_all": "Assign all plans to {empire}",
-			"unassign_all": "Remove all plans from {empire}"
+			"assign_label": "{plan} in {empire}"
+		},
+		"search": "Search plan or planet",
+		"filter_empire": "In empire",
+		"all_empires": "All empires",
+		"unassigned_only": "Unassigned only · {count}",
+		"plan_count": "{plans} · {empires}",
+		"plans": "{count} plan | {count} plans",
+		"empires": "{count} empire | {count} empires",
+		"empire_plans": "{count} plan | {count} plans",
+		"row_actions": "Actions for {plan}",
+		"row_actions_header": "Actions",
+		"will_add": "Will be added to {empire}",
+		"will_remove": "Will be removed from {empire}",
+		"add_all_shown": "Add all shown plans to {empire}",
+		"remove_all_shown": "Remove all shown plans from {empire}",
+		"no_match": "No plans match the search and filters.",
+		"menu": {
+			"clone": "Clone",
+			"share": "Share…",
+			"delete": "Delete…"
 		}
+	},
+	"save_bar": {
+		"label": "Unsaved changes",
+		"unsaved": "{count} unsaved change | {count} unsaved changes",
+		"saving": "Saving {count} change… | Saving {count} changes…",
+		"error": "Couldn't save. Changes kept.",
+		"save": "Save changes",
+		"retry": "Retry",
+		"discard": "Discard",
+		"all_saved": "All changes saved",
+		"leave_unsaved": "You have unsaved Management changes. Leave without saving?"
 	}
 }
