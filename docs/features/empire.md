@@ -22,7 +22,7 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 | `EmpireMaterialIOFiltered` | Material I/O with filters. Hosts the sub-views below |
 | `EmpireMaterialIO` | Material I/O table |
 | `EmpireMaterialIOFilters` | The filter controls |
-| `EmpireAnalysis` | Charts, using `ui/charts/EmpirePieChart.vue` and `EmpirePlanMapChart.vue` |
+| `EmpireAnalysis` | Sorted bar charts (top 10 plus "Other"), using `ui/charts/EmpireBarChart.vue` |
 | `EmpireOpportunities` | Production opportunities |
 
 **Composables and types:**

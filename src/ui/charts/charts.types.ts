@@ -1,9 +1,6 @@
-export interface IChartEmpirePieElement {
+export interface IChartBarItem {
 	name: string;
 	value: number;
-	color: string;
-}
-
-export interface IChartEmpireTreeElement extends IChartEmpirePieElement {
-	cogc: string;
+	/** bar colour, else by sign (positive / negative token) */
+	color?: string;
 }

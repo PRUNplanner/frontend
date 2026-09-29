@@ -6,19 +6,14 @@
 	const { getMaterialClass } = useMaterialData();
 
 	// Components
-	import EmpirePieChart from "@/ui/charts/EmpirePieChart.vue";
-	import EmpirePlanMapChart from "@/ui/charts/EmpirePlanMapChart.vue";
+	import EmpireBarChart from "@/ui/charts/EmpireBarChart.vue";
 
 	// Types & Interfaces
 	import type {
 		IEmpireMaterialIO,
 		IEmpirePlanListData,
 	} from "@/features/empire/empire.types";
-	import type {
-		IChartEmpirePieElement,
-		IChartEmpireTreeElement,
-	} from "@/ui/charts/charts.types";
-	import { capitalizeString } from "@/util/text";
+	import type { IChartBarItem } from "@/ui/charts/charts.types";
 
 	const props = defineProps({
 		empireMaterialIO: {
@@ -78,21 +73,15 @@
 		];
 	}
 
-	const chartDataProfitablePlans: ComputedRef<IChartEmpireTreeElement[]> =
-		computed(() => {
-			const data = localPlanListData.value.filter((f) => f.profit > 0);
+	// every plan, losses included; the sign picks the bar colour
+	const chartDataPlanProfit: ComputedRef<IChartBarItem[]> = computed(() =>
+		localPlanListData.value.map((e) => ({
+			name: e.name || e.planet,
+			value: Math.round(e.profit * 100) / 100,
+		}))
+	);
 
-			return data.map((e, index) => {
-				return {
-					name: e.name ?? "",
-					value: Math.round(e.profit * 100) / 100,
-					cogc: capitalizeString(e.cogc),
-					color: `hsl(${(index * 137.5) % 360}, 60%, 40%)`,
-				};
-			});
-		});
-
-	const chartDataMaterialProfit: ComputedRef<IChartEmpirePieElement[]> =
+	const chartDataMaterialProfit: ComputedRef<IChartBarItem[]> =
 		computed(() => {
 			const data = localEmpireMaterialIO.value.filter(
 				(f) => f.deltaPrice > 0
@@ -107,7 +96,7 @@
 			});
 		});
 
-	const chartDataMaterialCost: ComputedRef<IChartEmpirePieElement[]> =
+	const chartDataMaterialCost: ComputedRef<IChartBarItem[]> =
 		computed(() => {
 			const data = localEmpireMaterialIO.value.filter(
 				(f) => f.deltaPrice < 0
@@ -122,7 +111,7 @@
 			});
 		});
 
-	const chartDataNetProduction: ComputedRef<IChartEmpirePieElement[]> =
+	const chartDataNetProduction: ComputedRef<IChartBarItem[]> =
 		computed(() => {
 			const data = localEmpireMaterialIO.value.filter((f) => f.delta > 0);
 
@@ -135,7 +124,7 @@
 			});
 		});
 
-	const chartDataNetConsumption: ComputedRef<IChartEmpirePieElement[]> =
+	const chartDataNetConsumption: ComputedRef<IChartBarItem[]> =
 		computed(() => {
 			const data = localEmpireMaterialIO.value.filter((f) => f.delta < 0);
 
@@ -148,7 +137,7 @@
 			});
 		});
 
-	const chartDataExclusiveProduction: ComputedRef<IChartEmpirePieElement[]> =
+	const chartDataExclusiveProduction: ComputedRef<IChartBarItem[]> =
 		computed(() => {
 			const data = localEmpireMaterialIO.value.filter(
 				(f) => f.output > 0 && f.input === 0
@@ -163,7 +152,7 @@
 			});
 		});
 
-	const chartDataExclusiveConsumption: ComputedRef<IChartEmpirePieElement[]> =
+	const chartDataExclusiveConsumption: ComputedRef<IChartBarItem[]> =
 		computed(() => {
 			const data = localEmpireMaterialIO.value.filter(
 				(f) => f.output === 0 && f.input > 0
@@ -180,49 +169,51 @@
 </script>
 
 <template>
-	<div class="border rounded-[3px] border-white/15 p-3">
-		<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
-			<div v-if="chartDataProfitablePlans.length >= 3" class="xl:col-span-2">
+	<div class="@container border rounded-[3px] border-white/15 p-3">
+		<!-- columns follow the panel, not the viewport: beside the empire
+			table it is only ~400px wide at 1440 -->
+		<div class="grid grid-cols-1 @3xl:grid-cols-2 gap-3">
+			<div v-if="chartDataPlanProfit.length" class="@3xl:col-span-2 min-w-0">
 				<h2 class="text-lg font-bold pb-3">
-					{{ $t("empire.analysis.profitable_plans") }}
+					{{ $t("empire.analysis.plan_profit") }}
 				</h2>
-				<EmpirePlanMapChart :data="chartDataProfitablePlans" />
+				<EmpireBarChart :items="chartDataPlanProfit" />
 			</div>
-			<div>
-				<h2 class="text-lg font-bold">
+			<div class="min-w-0">
+				<h2 class="text-lg font-bold pb-3">
 					{{ $t("empire.analysis.material_profits") }}
 				</h2>
-				<EmpirePieChart :data="chartDataMaterialProfit" />
+				<EmpireBarChart :items="chartDataMaterialProfit" />
 			</div>
-			<div>
-				<h2 class="text-lg font-bold">
+			<div class="min-w-0">
+				<h2 class="text-lg font-bold pb-3">
 					{{ $t("empire.analysis.material_costs") }}
 				</h2>
-				<EmpirePieChart :data="chartDataMaterialCost" />
+				<EmpireBarChart :items="chartDataMaterialCost" />
 			</div>
-			<div>
-				<h2 class="text-lg font-bold">
+			<div class="min-w-0">
+				<h2 class="text-lg font-bold pb-3">
 					{{ $t("empire.analysis.net_production") }}
 				</h2>
-				<EmpirePieChart :data="chartDataNetProduction" />
+				<EmpireBarChart :items="chartDataNetProduction" />
 			</div>
-			<div>
-				<h2 class="text-lg font-bold">
+			<div class="min-w-0">
+				<h2 class="text-lg font-bold pb-3">
 					{{ $t("empire.analysis.net_consumption") }}
 				</h2>
-				<EmpirePieChart :data="chartDataNetConsumption" />
+				<EmpireBarChart :items="chartDataNetConsumption" />
 			</div>
-			<div>
-				<h2 class="text-lg font-bold">
+			<div class="min-w-0">
+				<h2 class="text-lg font-bold pb-3">
 					{{ $t("empire.analysis.exclusive_production") }}
 				</h2>
-				<EmpirePieChart :data="chartDataExclusiveProduction" />
+				<EmpireBarChart :items="chartDataExclusiveProduction" />
 			</div>
-			<div>
-				<h2 class="text-lg font-bold">
+			<div class="min-w-0">
+				<h2 class="text-lg font-bold pb-3">
 					{{ $t("empire.analysis.exclusive_consumption") }}
 				</h2>
-				<EmpirePieChart :data="chartDataExclusiveConsumption" />
+				<EmpireBarChart :items="chartDataExclusiveConsumption" />
 			</div>
 		</div>
 	</div>
