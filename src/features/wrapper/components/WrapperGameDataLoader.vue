@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	// Composables
 	import { useGameDataLoader } from "@/features/wrapper/useGameDataLoader";
+	import { useDelay } from "@/features/wrapper/useDelay";
 
 	// Types & Interfaces
 	import type {
@@ -20,12 +21,15 @@
 
 	const { done, allLoaded, hasError, loadingSteps, results } =
 		useGameDataLoader(props, emit);
+
+	// fast (cached) loads show nothing, errors show at once
+	const showLoader = useDelay(400);
 </script>
 
 <template>
 	<template v-if="!done && !allLoaded">
 		<div
-			v-if="!props.minimal"
+			v-if="!props.minimal && (hasError || showLoader)"
 			class="relative w-full h-full bg-center bg-repeat"
 			:class="
 				!hasError
@@ -56,7 +60,7 @@
 				</div>
 			</div>
 		</div>
-		<div v-else class="relative w-full h-full">
+		<div v-else-if="props.minimal" class="relative w-full h-full">
 			<div class="absolute inset-0 flex items-center justify-center">
 				<PSpin />
 			</div>

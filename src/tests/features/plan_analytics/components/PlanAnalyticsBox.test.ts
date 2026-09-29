@@ -60,7 +60,7 @@ async function mountBox(response: [number, unknown?] = [200, INSIGHTS]) {
 }
 
 const toggle = (wrapper: VueWrapper) =>
-	wrapper.find('button[aria-label="Toggle Insights"]');
+	wrapper.find('button[aria-label="plan.tools.plan_analytics.toggle"]');
 
 async function open(wrapper: VueWrapper) {
 	await toggle(wrapper).trigger("click");
