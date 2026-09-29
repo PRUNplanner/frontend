@@ -40,9 +40,9 @@
 		"loadbalance": "Bilancio produzione/consumo"
 	},
 	"analysis": {
-		"profitable_plans": "Profitable Plans",
-		"material_profits": "Profitti dei Materiali",
-		"material_costs": "Costi dei Materiali",
+		"plan_profit": "Plan Profit (ȼ)",
+		"material_profits": "Material Profits (ȼ)",
+		"material_costs": "Material Costs (ȼ)",
 		"net_production": "Produzione Netta",
 		"net_consumption": "Consumo netto",
 		"exclusive_production": "Produzione Esclusiva",
