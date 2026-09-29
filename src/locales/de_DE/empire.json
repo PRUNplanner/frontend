@@ -40,9 +40,9 @@
 		"loadbalance": "Ladeausgleich"
 	},
 	"analysis": {
-		"profitable_plans": "Profitable Pläne",
-		"material_profits": "Material Gewinn",
-		"material_costs": "Material Kosten",
+		"plan_profit": "Plan Profit (ȼ)",
+		"material_profits": "Material Profits (ȼ)",
+		"material_costs": "Material Costs (ȼ)",
 		"net_production": "Nettoproduktion",
 		"net_consumption": "Nettoverbrauch",
 		"exclusive_production": "Exklusive Produktion",
