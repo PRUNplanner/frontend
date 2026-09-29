@@ -26,7 +26,7 @@ editor UI. The engine is documented in depth in
 
 - **Editor panels** (`components/`) are wired together by `PlanView.vue`:
   `PlanConfiguration`, `PlanBonuses`, `PlanArea`, `PlanWorkforce`,
-  `PlanInfrastructure`, `PlanExperts`, `PlanSaveStatus`, `PlanProduction` (→
+  `PlanInfrastructure`, `PlanExperts`, `PlanSaveButton`, `PlanProduction` (→
   `PlanProductionBuilding` → `PlanProductionRecipe`), `PlanMaterialIO`,
   `PlanOverview` and `PlanStatusBar`.
 - **Tools** (`components/tools/`) are extra panels on the plan page:

@@ -75,15 +75,6 @@
 				{{ areaData.areaUsed }}
 			</span>
 			<span>/{{ areaData.areaTotal }}</span>
-			<span
-				v-if="areaData.areaUsed > areaData.areaTotal"
-				class="block text-xs text-negative">
-				{{
-					$t("plan.components.area.exceeded", {
-						amount: areaData.areaUsed - areaData.areaTotal,
-					})
-				}}
-			</span>
 		</div>
 		<div>
 			<span class="pr-1">{{ $t("plan.components.status.profit") }}</span>

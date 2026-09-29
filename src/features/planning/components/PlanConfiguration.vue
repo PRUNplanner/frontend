@@ -43,8 +43,8 @@
 			type: Array as PropType<PlanEmpire[]>,
 			required: true,
 		},
-		// new plans start with naming them
-		focusName: {
+		// new plans start with naming them, the hint says why Create waits
+		newPlan: {
 			type: Boolean,
 			required: false,
 			default: false,
@@ -53,7 +53,7 @@
 
 	const refNameInput: Ref<{ focus: () => void } | null> = ref(null);
 	onMounted(() => {
-		if (props.focusName) refNameInput.value?.focus();
+		if (props.newPlan) refNameInput.value?.focus();
 	});
 
 	function createEmpireOptions(
@@ -113,7 +113,11 @@
 				v-model:value="localPlanName"
 				class="w-full"
 				:disabled="disabled"
-				:placeholder="t('plan.name.placeholder')" />
+				:placeholder="
+					newPlan
+						? t('plan.save_status.name_to_create')
+						: t('plan.save_status.name_to_save')
+				" />
 		</PFormItem>
 		<PFormItem :label="t('plan.components.configuration.empire')">
 			<PSelect

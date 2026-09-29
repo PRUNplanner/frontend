@@ -7,6 +7,7 @@ import type {
 	PInputConfig,
 	PInputNumberConfig,
 	PTagConfig,
+	PToastConfig,
 	PTooltipConfig,
 } from "@/ui/ui.types";
 
@@ -79,6 +80,16 @@ export const tooltipConfig: PTooltipConfig = {
 	trigger: "ptooltip",
 	tooltip:
 		"z-50 py-1 px-2 text-sm text-white bg-black/90 border border-white/20 rounded shadow-lg",
+};
+
+export const toastConfig: PToastConfig = {
+	container:
+		"flex items-center gap-3 min-w-64 max-w-[calc(100vw-2rem)] py-2 pl-3 pr-2 text-sm text-white/80 bg-gray-dark border border-white/10 border-l-4 rounded shadow-lg",
+	// accent bar: brand for info, the semantic negative for errors
+	types: {
+		info: "border-l-prunplanner",
+		error: "border-l-negative",
+	},
 };
 
 export const formConfig: PFormConfig = {

@@ -126,7 +126,7 @@ describe("PlanConfiguration", () => {
 		await mountConfiguration();
 		expect(focus).not.toHaveBeenCalled();
 
-		const { wrapper } = await mountConfiguration({ focusName: true });
+		const { wrapper } = await mountConfiguration({ newPlan: true });
 		expect(focus.mock.contexts).toEqual([nameInput(wrapper)]);
 
 		focus.mockRestore();

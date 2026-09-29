@@ -3,7 +3,6 @@
 		computed,
 		type ComputedRef,
 		defineAsyncComponent,
-		h,
 		nextTick,
 		onMounted,
 		onUnmounted,
@@ -17,8 +16,7 @@
 	const { t } = useI18n();
 
 	// Naive UI
-	import { type MessageReactive, NModal, useMessage } from "naive-ui";
-	const message = useMessage();
+	import { type MessageReactive, NModal } from "naive-ui";
 
 	// Router
 	import router from "@/router";
@@ -71,7 +69,7 @@
 	import PlanConfiguration from "@/features/planning/components/PlanConfiguration.vue";
 	import PlanOverview from "@/features/planning/components/PlanOverview.vue";
 	import PlanStatusBar from "@/features/planning/components/PlanStatusBar.vue";
-	import PlanSaveStatus from "@/features/planning/components/PlanSaveStatus.vue";
+	import PlanSaveButton from "@/features/planning/components/PlanSaveButton.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
 	const ShareButton = defineAsyncComponent(
@@ -88,14 +86,15 @@
 		PFormItem,
 		PInput,
 		PSelect,
+		useToast,
 	} from "@/ui";
 	import type { PSelectOption } from "@/ui/ui.types";
+	const toast = useToast();
 	import {
 		ShoppingBasketSharp,
 		AttachMoneySharp,
 		DataSaverOffSharp,
 		DataObjectRound,
-		SaveSharp,
 		ChangeCircleOutlined,
 		ContentCopySharp,
 		SettingsSharp,
@@ -366,7 +365,7 @@
 	function saveFailed(): void {
 		// keep modified state, the status offers a retry
 		refSaveFailed.value = true;
-		message.error(t("plan.save_status.failed_message"));
+		toast(t("plan.save_status.failed_message"), { type: "error" });
 	}
 
 	async function save(): Promise<void> {
@@ -607,16 +606,9 @@
 
 	function toastUndo(text: string): void {
 		undoToast?.destroy();
-		undoToast = message.info(
-			() =>
-				h("span", { class: "flex items-center gap-x-3" }, [
-					text,
-					h(PButton, { size: "sm", onClick: undo }, () =>
-						t("plan.history.undo")
-					),
-				]),
-			{ duration: 6000, keepAliveOnHover: true }
-		);
+		undoToast = toast(text, {
+			action: { label: t("plan.history.undo"), onClick: undo },
+		});
 	}
 
 	function deleteBuilding(index: number): void {
@@ -730,8 +722,39 @@
 			</div>
 			<!-- Plan Actions -->
 			<div
-				class="p-3 row-2 md:row-1 md:col-3 py-3 flex flex-row flex-wrap gap-x-3">
+				class="p-3 row-2 md:row-1 md:col-3 py-3 flex flex-row flex-wrap items-start gap-x-3">
 				<HelpDrawer file-name="plan" />
+
+				<div v-if="!disabled" class="flex gap-x-1">
+					<PTooltip placement="bottom">
+						<template #trigger>
+							<PButton
+								:aria-label="t('plan.history.undo')"
+								type="secondary"
+								:disabled="!canUndo"
+								@click="undo">
+								<template #icon>
+									<UndoSharp />
+								</template>
+							</PButton>
+						</template>
+						{{ t("plan.history.undo") }}
+					</PTooltip>
+					<PTooltip placement="bottom">
+						<template #trigger>
+							<PButton
+								:aria-label="t('plan.history.redo')"
+								type="secondary"
+								:disabled="!canRedo"
+								@click="redo">
+								<template #icon>
+									<RedoSharp />
+								</template>
+							</PButton>
+						</template>
+						{{ t("plan.history.redo") }}
+					</PTooltip>
+				</div>
 
 				<PButtonGroup v-if="userStore.isLoggedIn">
 					<PButton
@@ -749,19 +772,15 @@
 							{{ $t("common.buttons.clone_complete") }}
 						</span>
 					</PButton>
-					<PButton
-						:loading="refIsSaving"
-						:disabled="disabled || !saveable"
-						@click="save">
-						<template #icon>
-							<SaveSharp />
-						</template>
-						{{
-							existing
-								? t("common.buttons.save")
-								: t("common.buttons.create")
-						}}
-					</PButton>
+					<PlanSaveButton
+						v-else
+						:existing="existing"
+						:saveable="saveable"
+						:saving="refIsSaving"
+						:failed="refSaveFailed"
+						:modified="modified"
+						:saved-at="savedAt"
+						@save="save" />
 					<PButton
 						v-if="existing && !disabled"
 						@click="openSaveAsModal">
@@ -787,51 +806,12 @@
 				</PButtonGroup>
 				<!-- empty div to maintain layout -->
 				<div v-else class="@[1290px]:w-112.5" />
-				<PlanSaveStatus
-					v-if="userStore.isLoggedIn && !disabled"
-					:existing="existing"
-					:saveable="saveable"
-					:saving="refIsSaving"
-					:failed="refSaveFailed"
-					:modified="modified"
-					:saved-at="savedAt"
-					@retry="save" />
 			</div>
 			<!-- Tools Container -->
 			<div class="row-4 md:col-span-3">
 				<!-- Toolbar -->
 				<div
 					class="flex flex-wrap grow @3xl:justify-end border-y border-white/10 gap-3 py-3 child:my-auto px-3">
-					<div v-if="!disabled" class="flex gap-x-1">
-						<PTooltip>
-							<template #trigger>
-								<PButton
-									:aria-label="t('plan.history.undo')"
-									type="secondary"
-									:disabled="!canUndo"
-									@click="undo">
-									<template #icon>
-										<UndoSharp />
-									</template>
-								</PButton>
-							</template>
-							{{ t("plan.history.undo") }}
-						</PTooltip>
-						<PTooltip>
-							<template #trigger>
-								<PButton
-									:aria-label="t('plan.history.redo')"
-									type="secondary"
-									:disabled="!canRedo"
-									@click="redo">
-									<template #icon>
-										<RedoSharp />
-									</template>
-								</PButton>
-							</template>
-							{{ t("plan.history.redo") }}
-						</PTooltip>
-					</div>
 					<PButton
 						:type="
 							refShowTool === 'configuration'
@@ -908,7 +888,7 @@
 								<PlanConfiguration
 									:disabled="disabled"
 									:plan-name="planName"
-									:focus-name="!existing"
+									:new-plan="!existing"
 									:empire-options="refEmpireList"
 									:active-empire="computedActiveEmpire"
 									:plan-empires="planEmpires"

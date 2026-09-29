@@ -7,7 +7,8 @@
 		"saving": "Saving…",
 		"saved_at": "Saved at {time}",
 		"failed": "Save failed",
-		"retry": "Retry",
+		"saved": "Saved",
+		"retry": "Retry save",
 		"failed_message": "Saving the plan failed. Your changes are kept, try again.",
 		"name_to_create": "Name your plan to create it",
 		"name_to_save": "Name your plan to save it"
@@ -19,8 +20,7 @@
 		"recipe_removed": "Recipe removed"
 	},
 	"name": {
-		"untitled": "Unnamed plan",
-		"placeholder": "Plan name"
+		"untitled": "Unnamed plan"
 	},
 	"tools": {
 		"labels": {
@@ -189,8 +189,7 @@
 		"area": {
 			"permits": "@:terms.permits_plural",
 			"area": "@:terms.area",
-			"free": "Free",
-			"exceeded": "Exceeded by {amount}"
+			"free": "Free"
 		},
 		"bonuses": {
 			"corp_hq": "Corp. HQ",
