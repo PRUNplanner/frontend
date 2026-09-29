@@ -1,10 +1,10 @@
 {
 	"loading": "正在加载数据……",
 	"gamedata": {
-		"material_data": "@:terms.materials数据",
-		"exchange_data": "@:terms.exchanges数据",
-		"building_data": "@:terms.buildings数据",
-		"recipe_data": "@:terms.recipes数据",
+		"material_data": "@:{terms.materials}数据",
+		"exchange_data": "@:{terms.exchanges}数据",
+		"building_data": "@:{terms.buildings}数据",
+		"recipe_data": "@:{terms.recipes}数据",
 		"planet_data": "@:terms.planets数据：{name}",
 		"planet_multiple_data": "@:terms.planet_plural数据：{names}"
 	},
