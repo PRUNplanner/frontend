@@ -29,7 +29,7 @@
 				"clear_feed": "清空动态",
 				"show_overview": "显示概览",
 				"hide_overview": "隐藏概览",
-				"alerts": "Alert notifications"
+				"alerts": "警示通知"
 			}
 		},
 		"alert_feed": {
@@ -99,9 +99,9 @@
 			}
 		},
 		"detector": {
-			"field": "Field",
-			"operator": "Operator",
-			"target_type": "Target type"
+			"field": "字段",
+			"operator": "运算符",
+			"target_type": "目标类型"
 		}
 	}
 }
