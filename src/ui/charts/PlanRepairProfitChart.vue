@@ -11,7 +11,7 @@
 		Tooltip,
 		type ChartData,
 	} from "chart.js";
-	import ChartDataLabels from "chartjs-plugin-datalabels";
+	import ChartDataLabels, { type Context } from "chartjs-plugin-datalabels";
 
 	ChartJS.register(
 		LineElement,
@@ -22,6 +22,9 @@
 		Tooltip,
 		ChartDataLabels
 	);
+
+	// about half the optimal point label's width, in px
+	const EDGE_MARGIN = 60;
 
 	const props = defineProps<{
 		profitData: number[];
@@ -53,7 +56,17 @@
 				borderWidth: 2,
 				datalabels: {
 					display: true,
-					align: "bottom",
+					// keep the label inside the chart at the edges
+					align: (ctx: Context) => {
+						// from the scale, the element's x is still animating
+						const x = ctx.chart.scales.x.getPixelForValue(
+							props.optimalPoint.x
+						);
+						const { left, right } = ctx.chart.chartArea;
+						if (right - x < EDGE_MARGIN) return 135; // bottom left
+						if (x - left < EDGE_MARGIN) return 45; // bottom right
+						return "bottom";
+					},
 					anchor: "end",
 					offset: 10,
 					color: "#fff",
