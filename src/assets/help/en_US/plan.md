@@ -22,4 +22,4 @@ When selecting a recipe, a dropdown of that buildings recipes appears.  For each
 
 Name your plan in Configuration and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). The Save button shows the plan's state: "Saved" when there is nothing to save (hover it to see when it was last saved), a dot when there are unsaved changes, "Saving…" while it saves, and "Retry save" if a save fails. Your changes are kept until it succeeds.
 
-Every change can be undone with the Undo and Redo buttons next to Save, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). The history covers the last 50 changes and starts fresh after saving or reloading the plan.
+Every change can be undone with the Undo and Redo buttons next to Save, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). Removing a building or recipe, or changing a recipe, also shows a message with an Undo button for a few seconds. The history covers the last 50 changes and starts fresh after saving or reloading the plan.

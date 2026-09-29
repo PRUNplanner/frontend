@@ -17,7 +17,8 @@
 		"undo": "Undo",
 		"redo": "Redo",
 		"building_removed": "Building removed",
-		"recipe_removed": "Recipe removed"
+		"recipe_removed": "Recipe removed",
+		"recipe_changed": "{building} recipe changed"
 	},
 	"name": {
 		"untitled": "Unnamed plan"

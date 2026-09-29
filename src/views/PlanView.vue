@@ -589,9 +589,9 @@
 		undoToast?.destroy();
 	});
 
-	// Deleting shows a toast to take it back. Any later change to the
-	// history (edit, undo, redo, save) closes it, so its Undo only ever
-	// undoes the delete it announced.
+	// Deleting or changing a recipe shows a toast to take it back. Any later
+	// change to the history (edit, undo, redo, save) closes it, so its Undo
+	// only ever undoes the edit it announced.
 	let undoToast: MessageReactive | undefined;
 
 	watch(
@@ -622,6 +622,23 @@
 	): void {
 		handleDeleteBuildingRecipe(buildingIndex, recipeIndex);
 		toastUndo(t("plan.history.recipe_removed"));
+	}
+
+	function changeBuildingRecipe(
+		buildingIndex: number,
+		recipeIndex: number,
+		recipeId: string
+	): void {
+		const building = refPlanData.value.plan_data.buildings[buildingIndex];
+		// picking the recipe it already has changes nothing, and the toast's
+		// Undo would take back the edit before it
+		if (building?.active_recipes[recipeIndex]?.recipeid === recipeId)
+			return;
+
+		handleChangeBuildingRecipe(buildingIndex, recipeIndex, recipeId);
+		toastUndo(
+			t("plan.history.recipe_changed", { building: building.name })
+		);
 	}
 
 	// Auto Optimize Habitation on Workforce Change
@@ -1032,9 +1049,7 @@
 							"
 							@delete:building:recipe="deleteBuildingRecipe"
 							@add:building:recipe="handleAddBuildingRecipe"
-							@update:building:recipe="
-								handleChangeBuildingRecipe
-							" />
+							@update:building:recipe="changeBuildingRecipe" />
 					</div>
 				</div>
 				<div>
