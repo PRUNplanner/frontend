@@ -40,9 +40,9 @@
 		"loadbalance": "负载平衡"
 	},
 	"analysis": {
-		"profitable_plans": "盈利计划",
-		"material_profits": "材料收益",
-		"material_costs": "材料成本",
+		"plan_profit": "Plan Profit (ȼ)",
+		"material_profits": "Material Profits (ȼ)",
+		"material_costs": "Material Costs (ȼ)",
 		"net_production": "净生产",
 		"net_consumption": "净消耗",
 		"exclusive_production": "纯生产物资",
