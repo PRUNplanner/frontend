@@ -4,7 +4,6 @@ import type {
 	PlanCOGCProgram,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
-import type { PlanetSearchAdvancedPayload } from "@/features/api/schemas/gameData.schemas";
 
 export type ANALYTICS_EVENT_TYPE =
 	| "empire_create"
@@ -52,8 +51,7 @@ export type ANALYTICS_EVENT_TYPE =
 	| "plan_update_permits"
 	| "plan_update_workforce"
 	| "plan_view"
-	| "planet_search_advanced"
-	| "planet_search_basic"
+	| "planet_search"
 	| "popr_load"
 	| "production_chain"
 	| "resource_roi_overview"
@@ -121,8 +119,7 @@ export interface IAnalyticsEventProperties {
 	manage_plans_delete: { planUuid: string };
 	materialtile_market_drawer: { materialTicker: string };
 	resource_roi_overview: { materialTicker: string };
-	planet_search_basic: { searchId: string };
-	planet_search_advanced: PlanetSearchAdvancedPayload;
+	planet_search: { filter: Record<string, string>; results: number };
 	user_password_change: undefined;
 	user_logout: undefined;
 	user_login: { username: string };

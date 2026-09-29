@@ -51,4 +51,17 @@ describe("usePathfinder", async () => {
 
 		expect(name).toBeNull();
 	});
+
+	it("getJumpsFrom: matches path lengths, cached, unknown source", async () => {
+		const { getJumpsFrom, getPathBetweenLength, systemidNC1, systemidAI1 } =
+			usePathfinder();
+
+		const jumps = getJumpsFrom(systemidNC1);
+		expect(jumps.get(systemidNC1)).toBe(0);
+		expect(jumps.get(systemidAI1)).toBe(
+			getPathBetweenLength(systemidNC1, systemidAI1)
+		);
+		expect(getJumpsFrom(systemidNC1)).toBe(jumps);
+		expect(getJumpsFrom("unknown").size).toBe(0);
+	});
 });

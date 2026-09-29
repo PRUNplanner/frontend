@@ -5,14 +5,6 @@ import pLimit from "p-limit";
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Composables
-import {
-	boundaryGravityHigh,
-	boundaryGravityLow,
-	boundaryPressureHigh,
-	boundaryPressureLow,
-	boundaryTemperatureHigh,
-	boundaryTemperatureLow,
-} from "@/database/services/usePlanetData";
 import { usePlan } from "@/features/planning_data/usePlan";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
@@ -23,7 +15,10 @@ import { usePlanetData } from "@/database/services/usePlanetData";
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // Util
-import { boundaryDescriptor } from "@/util/numbers";
+import {
+	environmentExtras,
+	planetBuckets,
+} from "@/features/planet_search/environmentExtras.util";
 
 // Types & Interfaces
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
@@ -105,43 +100,14 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	}
 
 	function getPlanetEnvironment(planet: Planet) {
-		const surface = planet.surface ? ["MCG"] : ["AEF"];
+		const extras = environmentExtras(planetBuckets(planet));
+		const of = (...reasons: string[]) =>
+			extras.filter((e) => reasons.includes(e.reason)).map((e) => e.ticker);
 
-		const gravityType = boundaryDescriptor(
-			planet.gravity,
-			boundaryGravityLow,
-			boundaryGravityHigh
-		);
-		const gravity =
-			gravityType === "LOW"
-				? ["MGC"]
-				: gravityType === "HIGH"
-					? ["BL"]
-					: [];
-
-		const pressureType = boundaryDescriptor(
-			planet.pressure,
-			boundaryPressureLow,
-			boundaryPressureHigh
-		);
-		const pressure =
-			pressureType === "LOW"
-				? ["SEA"]
-				: pressureType === "HIGH"
-					? ["HSE"]
-					: [];
-
-		const temperatureType = boundaryDescriptor(
-			planet.temperature,
-			boundaryTemperatureLow,
-			boundaryTemperatureHigh
-		);
-		const temperature =
-			temperatureType === "LOW"
-				? ["INS"]
-				: temperatureType === "HIGH"
-					? ["TSH"]
-					: [];
+		const surface = of("rocky", "gaseous");
+		const gravity = of("low_gravity", "high_gravity");
+		const pressure = of("low_pressure", "high_pressure");
+		const temperature = of("low_temperature", "high_temperature");
 
 		// infrastructures
 		const infrastructures: string[] = [];

@@ -14,6 +14,7 @@ import {
 	callDataFIOStorage,
 	callDataPlanetSearch,
 	callDataPlanetSearchSingle,
+	callDataPlanetSearchIndex,
 	callExplorationData,
 	callPlanetLastPOPR,
 } from "@/features/api/gameData.api";
@@ -28,6 +29,7 @@ import planets from "@/tests/test_data/api_data_planets.json";
 import planet_single from "@/tests/test_data/api_data_planet_single.json";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 import planet_search_results from "@/tests/test_data/api_data_planet_search.json";
+import planet_search_index from "@/tests/test_data/api_data_planet_search_index.json";
 import exploration_7d_dw from "@/tests/test_data/api_data_exploration_7d_dw.json";
 import latest_popr from "@/tests/test_data/api_data_popr_latest.json";
 
@@ -133,6 +135,15 @@ describe("GameData API Calls", async () => {
 		const building = Object.values(result.sites_data)[0].Buildings[0];
 		expect(building.RepairMaterials).toStrictEqual([]);
 		expect(building.ReclaimableMaterials).toStrictEqual([]);
+	});
+
+	it("callDataPlanetSearchIndex", async () => {
+		mock.onGet("/data/planets/search-index/").reply(200, planet_search_index);
+
+		const result = await callDataPlanetSearchIndex();
+
+		expect(result.length).toBe(planet_search_index.length);
+		expect(result[0]).toStrictEqual(planet_search_index[0]);
 	});
 
 	it("callDataPlanetSearchSingle", async () => {

@@ -119,7 +119,7 @@
 		} else if (percentage > 50) {
 			color = "rgb(255, 165, 0)";
 		} else if (percentage > 25) {
-			color = "rgb(255, 299, 71)";
+			color = "rgb(255, 255, 71)";
 		} else {
 			color = "rgb(60, 179, 113)";
 		}

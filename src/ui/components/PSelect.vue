@@ -286,6 +286,7 @@
 			<div
 				v-if="open"
 				ref="dropdownRef"
+				data-pselect-dropdown
 				class="z-5000 p-1 bg-gray-900 text-white rounded-sm shadow-lg max-h-75 overflow-auto">
 				<div
 					class="w-full flex flex-col bg-gray-900 child:py-1 child:px-2 child:hover:bg-gray-800 rounded-b-sm">
