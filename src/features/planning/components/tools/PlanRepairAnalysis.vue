@@ -91,7 +91,8 @@
 
 		repairPrices.value = prices;
 		repairAnalysisElements.value = calculateRepairCurve(
-			building.dailyRevenue,
+			// dailyRevenue covers all buildings, the curve is per building
+			building.amount > 0 ? building.dailyRevenue / building.amount : 0,
 			building.constructionMaterials,
 			prices
 		);

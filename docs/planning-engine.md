@@ -237,9 +237,8 @@ aggregated material I/O is pushed back to the backend with
   `__snapshots__/usePlanCalculation.characterization/`. **They are the
   contract: a change to them is a change of calculated numbers.** Update
   them only on purpose, in their own commit, with `-u`.
-- Known bugs are pinned with `it.fails` tests (building `dailyRevenue`
-  degradation not multiplied by amount; workforce cost per building always
-  assumes both luxuries).
+- Known bugs are pinned with `it.fails` tests (workforce cost per
+  building always assumes both luxuries).
 - Benchmarks: `pnpm vitest bench --run` runs
   `usePlanCalculation.bench.ts` (single plan: `calculate()` and
   edit -> result for amount, recipe, luxury and CX edits) and

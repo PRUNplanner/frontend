@@ -200,6 +200,19 @@ describe("PlanRepairAnalysis", () => {
 		expect(profit.slice(0, 2)).toEqual([-75, -75]);
 	});
 
+	it("draws the profit curve per building, whatever the amount (#520)", async () => {
+		// dailyRevenue covers all buildings of the type
+		const curve = async (amount: number) => {
+			const { wrapper } = await mountAnalysis([
+				{ ...FRM, amount, dailyRevenue: 300 * amount },
+			]);
+			const chart = wrapper.findComponent(PlanRepairProfitChart);
+			return [chart.props("profitData"), chart.props("optimalPoint")];
+		};
+
+		expect(await curve(36)).toEqual(await curve(1));
+	});
+
 	it("breaks the repair cost down per material", async () => {
 		const { wrapper } = await mountAnalysis();
 		const series = wrapper

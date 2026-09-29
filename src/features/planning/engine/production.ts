@@ -225,11 +225,11 @@ export function calculateProduction(
 			)
 		).reduce((sum, element) => sum + element.price, 0);
 
-		// WorkforceDailyCost is just per Building, so need to multiply
+		// workforce and construction costs are per building, so multiply
 		building.dailyRevenue =
 			productionRevenue -
 			workforceCostPositive * building.amount -
-			(1 / 180) * constructionCostPositive;
+			(1 / 180) * constructionCostPositive * building.amount;
 
 		buildings.push(building);
 	}
