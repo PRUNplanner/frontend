@@ -80,5 +80,9 @@
 	},
 	"values": {
 		"never": "never"
+	},
+	"charts": {
+		"other": "Other ({n})",
+		"empty": "Nothing to show"
 	}
 }
