@@ -27,7 +27,7 @@ describe("repairAnalysis.util", () => {
 	});
 
 	it("calculateRepairCurve has one element per day 0..180", () => {
-		const curve = calculateRepairCurve(0, MATERIALS, PRICES);
+		const curve = calculateRepairCurve(0, 0, MATERIALS, PRICES);
 
 		expect(curve).toHaveLength(181);
 		expect(curve.map((c) => c.day)).toEqual(
@@ -36,7 +36,7 @@ describe("repairAnalysis.util", () => {
 	});
 
 	it("calculateRepairCurve sums and averages the repair cost", () => {
-		const curve = calculateRepairCurve(0, MATERIALS, PRICES);
+		const curve = calculateRepairCurve(0, 0, MATERIALS, PRICES);
 
 		// day 0: nothing to repair
 		expect(curve[0].materials).toEqual([
@@ -65,14 +65,14 @@ describe("repairAnalysis.util", () => {
 	});
 
 	it("calculateRepairCurve copies day 1's profit to day 0", () => {
-		const curve = calculateRepairCurve(0, MATERIALS, PRICES);
+		const curve = calculateRepairCurve(0, 0, MATERIALS, PRICES);
 
 		// day 0 would be 0 by definition
 		expect(curve[0].profit).toBe(-6);
 	});
 
 	it("calculateRepairCurve integrates and averages the revenue", () => {
-		const curve = calculateRepairCurve(1000, [], {});
+		const curve = calculateRepairCurve(1000, 0, [], {});
 
 		// efficiency 0.999509 on day 0, 0.999473 on day 1
 		expect(curve[0].dailyRevenue).toBeCloseTo(999.509, 2);
@@ -86,6 +86,16 @@ describe("repairAnalysis.util", () => {
 		// revenue keeps falling, so does its running average
 		expect(curve[180].dailyRevenue_norm).toBeLessThan(
 			curve[90].dailyRevenue_norm
+		);
+	});
+
+	it("calculateRepairCurve charges workforce in full, wear or not", () => {
+		const curve = calculateRepairCurve(1000, 300, [], {});
+		const production = calculateRepairCurve(1000, 0, [], {});
+
+		// workers eat the same at 100 % and 33 % efficiency
+		curve.forEach((c, day) =>
+			expect(c.profit).toBeCloseTo(production[day].profit - 300, 10)
 		);
 	});
 
@@ -110,7 +120,7 @@ describe("repairAnalysis.util", () => {
 	});
 
 	it("repairCostSeries splits the daily repair cost per material", () => {
-		const curve = calculateRepairCurve(0, MATERIALS, PRICES);
+		const curve = calculateRepairCurve(0, 0, MATERIALS, PRICES);
 		const series = repairCostSeries(curve, PRICES);
 
 		expect(series.map((s) => s.name)).toEqual(["A", "B"]);

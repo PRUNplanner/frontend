@@ -15,6 +15,12 @@ page, together with the `ui/charts/PlanRepairCostChart.vue` and
   `Record<day, IMaterialIO[]>`. It computes each building's construction
   materials scaled by age, then combines and prices them with
   `materialIO.util` and `usePrice`.
+- **`repairAnalysis.util.ts`**: `calculateRepairCurve` gives one
+  building's average daily profit when repairing every n days: production
+  value times the average wear efficiency (100 % down to 33 %), minus the
+  full workforce cost, minus the repair cost averaged over the n days. The
+  repair cost is the only degradation cost, the plan's 1/180 construction
+  share is taken out. `findOptimalRepairDay` picks the best n.
 - **`components/DayRepairMaterialTable.vue`**: the materials needed for a
   selected day.
 - **`planning/components/tools/planRepairAnalysis.types.ts`**: the prop
@@ -22,4 +28,5 @@ page, together with the `ui/charts/PlanRepairCostChart.vue` and
 
 ## Tests
 
-`src/tests/features/repair_analysis/useRepairAnalysis.test.ts`
+`src/tests/features/repair_analysis/useRepairAnalysis.test.ts` and
+`repairAnalysis.util.test.ts`

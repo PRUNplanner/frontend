@@ -322,17 +322,7 @@ describe("usePlanCalculation characterization", () => {
 			};
 		}
 
-		it("B2 today: degradation is added once per building entry", async () => {
-			const { building, productionRevenue } = await singleBuilding(19);
-			expect(building.dailyRevenue).toBeCloseTo(
-				productionRevenue +
-					building.workforceDailyCost * building.amount +
-					building.constructionCost / 180,
-				6
-			);
-		});
-
-		it.fails("B2: degradation scales with building amount", async () => {
+		it("B2: degradation scales with building amount (#520)", async () => {
 			const { building, productionRevenue } = await singleBuilding(19);
 			expect(building.dailyRevenue).toBeCloseTo(
 				productionRevenue +

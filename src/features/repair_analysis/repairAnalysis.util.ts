@@ -40,16 +40,20 @@ export function repairEfficiency(day: number): number {
 
 /**
  * Per-day repair curve of a single building from day 0 to 180: efficiency,
- * averaged revenue, averaged repair cost and resulting daily profit
+ * averaged revenue, averaged repair cost and resulting daily profit when
+ * repairing every n days. Only production slows down with wear, workforce
+ * cost stays; the repair cost is the building's whole degradation cost.
  * @author jplacht
  *
- * @param {number} dailyRevenue Building revenue at full efficiency
+ * @param {number} productionValue Daily production value at full efficiency
+ * @param {number} workforceCost Daily workforce cost, positive
  * @param {IMaterialIOMinimal[]} materials Construction materials
  * @param {Record<string, number>} prices Unit price per material ticker
  * @returns {IPlanRepairAnalysisElement[]} One element per day
  */
 export function calculateRepairCurve(
-	dailyRevenue: number,
+	productionValue: number,
+	workforceCost: number,
 	materials: IMaterialIOMinimal[],
 	prices: Record<string, number>
 ): IPlanRepairAnalysisElement[] {
@@ -58,7 +62,7 @@ export function calculateRepairCurve(
 
 	for (let i = 0; i <= REPAIR_DAY_MAX; i++) {
 		const efficiency = repairEfficiency(i);
-		const revenue = efficiency * dailyRevenue;
+		const revenue = efficiency * productionValue;
 		previous += revenue;
 		const dailyRevenue_norm = previous / (i + 1);
 
@@ -73,7 +77,8 @@ export function calculateRepairCurve(
 		);
 
 		const repSum = rep / (i + 1);
-		const profit = i === 0 ? 0 : dailyRevenue_norm - repSum;
+		const profit =
+			i === 0 ? 0 : dailyRevenue_norm - workforceCost - repSum;
 
 		r.push({
 			day: i,

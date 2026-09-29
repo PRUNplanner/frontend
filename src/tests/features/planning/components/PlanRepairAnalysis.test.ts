@@ -11,6 +11,7 @@ import XITTransferActionButton from "@/features/xit/components/XITTransferAction
 import PlanRepairProfitChart from "@/ui/charts/PlanRepairProfitChart.vue";
 import PlanRepairCostChart from "@/ui/charts/PlanRepairCostChart.vue";
 import PSelect from "@/ui/components/PSelect.vue";
+import { calculateRepairCurve } from "@/features/repair_analysis/repairAnalysis.util";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
@@ -64,12 +65,16 @@ const FRM = {
 	name: "FRM",
 	amount: 2,
 	dailyRevenue: 0,
+	workforceDailyCost: 0,
+	constructionCost: 0,
 	constructionMaterials: [mat("BBH", 4), mat("BSE", 4)],
 };
 const EXT = {
 	name: "EXT",
 	amount: 1,
 	dailyRevenue: 0,
+	workforceDailyCost: 0,
+	constructionCost: 0,
 	constructionMaterials: [mat("BSE", 16), mat("MCG", 100)],
 };
 
@@ -198,6 +203,46 @@ describe("PlanRepairAnalysis", () => {
 		expect(profit).toHaveLength(181);
 		// day 0 copies day 1: -150 / 2
 		expect(profit.slice(0, 2)).toEqual([-75, -75]);
+	});
+
+	it("draws the profit curve per building, whatever the amount (#520)", async () => {
+		// dailyRevenue covers all buildings of the type
+		const curve = async (amount: number) => {
+			const { wrapper } = await mountAnalysis([
+				{ ...FRM, amount, dailyRevenue: 300 * amount },
+			]);
+			const chart = wrapper.findComponent(PlanRepairProfitChart);
+			return [chart.props("profitData"), chart.props("optimalPoint")];
+		};
+
+		expect(await curve(36)).toEqual(await curve(1));
+	});
+
+	it("charges wear once, as repair cost, and workforce in full", async () => {
+		// FRM x2 as the engine reports it: production 500, workforce 100,
+		// construction 4 BBH + 4 BSE = 600, 1/180 of it per day as wear
+		const perBuilding = 500 - 100 - 600 / 180;
+		const { wrapper } = await mountAnalysis([
+			{
+				...FRM,
+				dailyRevenue: 2 * perBuilding,
+				workforceDailyCost: -100,
+				constructionCost: -600,
+			},
+		]);
+
+		const expected = calculateRepairCurve(
+			500,
+			100,
+			FRM.constructionMaterials,
+			PRICES
+		);
+		const profit = wrapper
+			.findComponent(PlanRepairProfitChart)
+			.props("profitData") as number[];
+		profit.forEach((p, day) =>
+			expect(p).toBeCloseTo(expected[day].profit, 8)
+		);
 	});
 
 	it("breaks the repair cost down per material", async () => {
