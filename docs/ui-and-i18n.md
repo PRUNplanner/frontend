@@ -52,7 +52,9 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
     and `features/resource_roi_overview/components/ResourceROITable.vue`.
   - **Overlays** come from raw naive-ui, imported explicitly:
     `import { NModal, NDrawer, NDrawerContent, NPopover } from "naive-ui"`,
-    plus `useDialog()`. `AppProvider.vue` supplies the providers.
+    plus `useDialog()` and `useMessage()` (toasts, e.g. the plan editor's save
+    failure and "Building removed – Undo"). `AppProvider.vue` supplies the
+    providers.
   - **Icons:** `@vicons/material`, wrapped in `PIcon`:
     `<PIcon><CheckSharp /></PIcon>`.
   - **Charts:** `src/ui/charts/*.vue` wrap chart.js (`vue-chartjs`,

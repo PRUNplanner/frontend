@@ -488,4 +488,40 @@ describe("usePlanCalculation", async () => {
 			},
 		});
 	});
+
+	it("undoes a deleted building back to the saved profit", async () => {
+		const plan = ref(structuredClone(plan_etherwind));
+		const {
+			result,
+			overviewData,
+			modified,
+			handleDeleteBuilding,
+			undo,
+			redo,
+		} = usePlanCalculation(
+			// @ts-expect-error mock data
+			plan,
+			ref(undefined),
+			ref(undefined),
+			ref(undefined)
+		);
+
+		await vi.waitFor(() => expect(result.value.materialio.length).toBe(18));
+		const profit: number = overviewData.value.profit;
+		const buildings: number = plan.value.plan_data.buildings.length;
+
+		handleDeleteBuilding(0);
+		await flushPromises();
+		expect(plan.value.plan_data.buildings).toHaveLength(buildings - 1);
+		expect(overviewData.value.profit).not.toBe(profit);
+		expect(modified.value).toBe(true);
+
+		undo();
+		expect(plan.value.plan_data.buildings).toHaveLength(buildings);
+		expect(overviewData.value.profit).toBe(profit);
+		expect(modified.value).toBe(false);
+
+		redo();
+		expect(plan.value.plan_data.buildings).toHaveLength(buildings - 1);
+	});
 });

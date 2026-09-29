@@ -17,7 +17,8 @@ editor UI. The engine is documented in depth in
 | `engine/*.ts` | The pure calculation engine, `calculatePlan(input, ctx)`. See [planning-engine.md](../planning-engine.md) |
 | `usePlanContext.ts` | Builds the engine context: game data maps, planet, price book; `getActiveEmpire` |
 | `usePlanCalculation.ts` / `.types.ts` | Vue adapter for the plan editor (synchronous `computed` result), `IPlanResult` and its sub-records. The domain unions (`WorkforceType`, `InfrastructureType`, `ExpertType`, `StorageType`) derive from the enums in `api/schemas/planningData.schemas.ts` |
-| `usePlanCalculationHandlers.ts` | Every edit operation (`handleUpdate*`, `handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data` and sets `modified` |
+| `usePlanCalculationHandlers.ts` | Every edit operation (`handleUpdate*`, `handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data` |
+| `usePlanHistory.ts` | Undo/redo for the editor: wraps the handlers so each edit is one step, and owns `modified` (differs from the last save) and `savedAt` |
 | `calculations/*.ts` | Wrappers around the engine (bonus, workforce, building), infrastructure lists, extraction, hab LP optimisation |
 | `util/materialIO.util.ts` | Combine and enrich material I/O. Also combines empire I/O (`combineEmpireMaterialIO`, `empireMaterialIOState`) |
 
@@ -25,7 +26,7 @@ editor UI. The engine is documented in depth in
 
 - **Editor panels** (`components/`) are wired together by `PlanView.vue`:
   `PlanConfiguration`, `PlanBonuses`, `PlanArea`, `PlanWorkforce`,
-  `PlanInfrastructure`, `PlanExperts`, `PlanProduction` (→
+  `PlanInfrastructure`, `PlanExperts`, `PlanSaveStatus`, `PlanProduction` (→
   `PlanProductionBuilding` → `PlanProductionRecipe`), `PlanMaterialIO`,
   `PlanOverview` and `PlanStatusBar`.
 - **Tools** (`components/tools/`) are extra panels on the plan page:

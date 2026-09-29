@@ -3,7 +3,9 @@
 		computed,
 		type ComputedRef,
 		defineAsyncComponent,
+		h,
 		nextTick,
+		onMounted,
 		onUnmounted,
 		type PropType,
 		ref,
@@ -15,7 +17,8 @@
 	const { t } = useI18n();
 
 	// Naive UI
-	import { NModal } from "naive-ui";
+	import { type MessageReactive, NModal, useMessage } from "naive-ui";
+	const message = useMessage();
 
 	// Router
 	import router from "@/router";
@@ -68,6 +71,7 @@
 	import PlanConfiguration from "@/features/planning/components/PlanConfiguration.vue";
 	import PlanOverview from "@/features/planning/components/PlanOverview.vue";
 	import PlanStatusBar from "@/features/planning/components/PlanStatusBar.vue";
+	import PlanSaveStatus from "@/features/planning/components/PlanSaveStatus.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
 	const ShareButton = defineAsyncComponent(
@@ -95,6 +99,8 @@
 		ChangeCircleOutlined,
 		ContentCopySharp,
 		SettingsSharp,
+		UndoSharp,
+		RedoSharp,
 	} from "@vicons/material";
 	import { onBeforeRouteLeave } from "vue-router";
 
@@ -149,7 +155,15 @@
 		planEmpires,
 		visitationData,
 		overviewData,
-		handleResetModified,
+		savedAt,
+		canUndo,
+		canRedo,
+		undo,
+		redo,
+		markSaved,
+		isRestoring,
+		snapshot,
+		revision,
 		handleUpdateCorpHQ,
 		handleUpdateCOGC,
 		handleUpdatePermits,
@@ -347,9 +361,19 @@
 	 */
 
 	const refIsSaving: Ref<boolean> = ref(false);
+	const refSaveFailed: Ref<boolean> = ref(false);
+
+	function saveFailed(): void {
+		// keep modified state, the status offers a retry
+		refSaveFailed.value = true;
+		message.error(t("plan.save_status.failed_message"));
+	}
 
 	async function save(): Promise<void> {
 		refIsSaving.value = true;
+		refSaveFailed.value = false;
+		// edits made while saving stay unsaved
+		const sent: string = snapshot();
 
 		try {
 			// plan exists, trigger a save
@@ -358,16 +382,15 @@
 					refPlanData.value.uuid!,
 					backendData.value
 				);
-				// keep modified state if the save failed
-				if (!savedUuid) return;
+				if (!savedUuid) return saveFailed();
 
-				handleResetModified();
+				markSaved(sent);
 				trackEvent("plan_save", {
 					planetNaturalId: planetData.planet_natural_id,
 				});
 			} else {
 				const newUuid = await createNewPlan(backendData.value);
-				if (!newUuid) return;
+				if (!newUuid) return saveFailed();
 
 				refPlanData.value.uuid = newUuid;
 				// Persist the auto-optimize-habs preference
@@ -375,13 +398,25 @@
 					autoOptimizeHabs: refAutoOptimizeHabs.value,
 				});
 
-				// reset modified state
-				handleResetModified();
+				markSaved(sent);
 				trackEvent("plan_create", {
 					planetNaturalId: planetData.planet_natural_id,
 				});
+			}
 
-				router.push(`/plan/${planetData.planet_natural_id}/${newUuid}`);
+			// A new plan moves to its uuid URL, which remounts this page.
+			// Save edits made while creating first, or they'd be lost.
+			if (props.planData.uuid === undefined) {
+				const planUuid: string = refPlanData.value.uuid!;
+				while (modified.value) {
+					const again: string = snapshot();
+					if (!(await saveExistingPlan(planUuid, backendData.value)))
+						return saveFailed();
+					markSaved(again);
+				}
+				router.push(
+					`/plan/${planetData.planet_natural_id}/${planUuid}`
+				);
 			}
 		} finally {
 			refIsSaving.value = false;
@@ -445,7 +480,9 @@
 			refPlanData.value = await reloadExistingPlan(
 				refPlanData.value.uuid
 			);
-			handleResetModified();
+			planName.value = refPlanData.value.plan_name;
+			refSaveFailed.value = false;
+			markSaved();
 
 			trackEvent("plan_reload", {
 				planetNaturalId: planetData.planet_natural_id,
@@ -514,6 +551,87 @@
 		window.removeEventListener("beforeunload", onBeforeUnload)
 	);
 
+	// Keyboard: Ctrl/Cmd+S saves, Ctrl/Cmd+Z undoes, +Shift redoes
+	const canSave: ComputedRef<boolean> = computed(
+		() =>
+			userStore.isLoggedIn &&
+			!props.disabled &&
+			saveable.value &&
+			!refIsSaving.value
+	);
+
+	function isTextField(target: EventTarget | null): boolean {
+		return (
+			target instanceof HTMLElement &&
+			(target.isContentEditable ||
+				["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
+		);
+	}
+
+	function onKeydown(e: KeyboardEvent): void {
+		if (!(e.ctrlKey || e.metaKey)) return;
+		const key: string = e.key.toLowerCase();
+
+		if (key === "s") {
+			// never open the browser's save dialog on the plan page
+			e.preventDefault();
+			if (canSave.value) save();
+		} else if (key === "z" && !props.disabled && !isTextField(e.target)) {
+			e.preventDefault();
+			if (e.shiftKey) redo();
+			else undo();
+		}
+	}
+
+	onMounted(() => window.addEventListener("keydown", onKeydown));
+	onUnmounted(() => {
+		window.removeEventListener("keydown", onKeydown);
+		// toasts belong to the app, don't let one outlive its plan
+		undoToast?.destroy();
+	});
+
+	// Deleting shows a toast to take it back. Any later change to the
+	// history (edit, undo, redo, save) closes it, so its Undo only ever
+	// undoes the delete it announced.
+	let undoToast: MessageReactive | undefined;
+
+	watch(
+		revision,
+		() => {
+			undoToast?.destroy();
+			undoToast = undefined;
+		},
+		// before the next toast opens in the same call
+		{ flush: "sync" }
+	);
+
+	function toastUndo(text: string): void {
+		undoToast?.destroy();
+		undoToast = message.info(
+			() =>
+				h("span", { class: "flex items-center gap-x-3" }, [
+					text,
+					h(PButton, { size: "sm", onClick: undo }, () =>
+						t("plan.history.undo")
+					),
+				]),
+			{ duration: 6000, keepAliveOnHover: true }
+		);
+	}
+
+	function deleteBuilding(index: number): void {
+		handleDeleteBuilding(index);
+		toastUndo(t("plan.history.building_removed"));
+	}
+
+	function deleteBuildingRecipe(
+		buildingIndex: number,
+		recipeIndex: number
+	): void {
+		handleDeleteBuildingRecipe(buildingIndex, recipeIndex);
+		toastUndo(t("plan.history.recipe_removed"));
+	}
+
 	// Auto Optimize Habitation on Workforce Change
 	const availableHabArea: ComputedRef<number> = computed(() => {
 		return calculateAvailableArea(
@@ -569,6 +687,8 @@
 			() => result.value.infrastructureCosts,
 		],
 		() => {
+			// undo/redo restore a snapshot as it was
+			if (isRestoring()) return;
 			applyOptimizeHabs("auto", false);
 		}
 	);
@@ -587,7 +707,7 @@
 			<div
 				class="p-3 row-1 col-1 flex flex-row flex-wrap gap-x-3 pt-3 pb-3 md:pb-0 @6xl:pb-3 items-baseline">
 				<h1 class="text-2xl font-bold text-white">
-					{{ planName }}
+					{{ planName || t("plan.name.untitled") }}
 				</h1>
 				<span class="text-white/60">
 					{{
@@ -629,30 +749,19 @@
 							{{ $t("common.buttons.clone_complete") }}
 						</span>
 					</PButton>
-					<PTooltip :disabled="saveable">
-						<template #trigger>
-							<!-- ButtonGroup styling doesn't work quite right with this
-							 being wrapped in a tooltip, explicitly set rounded on it -->
-							<PButton
-								:loading="refIsSaving"
-								:type="
-									modified || !saveable ? 'error' : 'success'
-								"
-								:disabled="disabled || !saveable"
-								class="rounded-none! rounded-l-sm!"
-								@click="save">
-								<template #icon>
-									<SaveSharp />
-								</template>
-								{{
-									existing
-										? t("common.buttons.save")
-										: t("common.buttons.create")
-								}}
-							</PButton>
+					<PButton
+						:loading="refIsSaving"
+						:disabled="disabled || !saveable"
+						@click="save">
+						<template #icon>
+							<SaveSharp />
 						</template>
-						{{ $t("plan.notifications.must_have_name") }}
-					</PTooltip>
+						{{
+							existing
+								? t("common.buttons.save")
+								: t("common.buttons.create")
+						}}
+					</PButton>
 					<PButton
 						v-if="existing && !disabled"
 						@click="openSaveAsModal">
@@ -678,12 +787,51 @@
 				</PButtonGroup>
 				<!-- empty div to maintain layout -->
 				<div v-else class="@[1290px]:w-112.5" />
+				<PlanSaveStatus
+					v-if="userStore.isLoggedIn && !disabled"
+					:existing="existing"
+					:saveable="saveable"
+					:saving="refIsSaving"
+					:failed="refSaveFailed"
+					:modified="modified"
+					:saved-at="savedAt"
+					@retry="save" />
 			</div>
 			<!-- Tools Container -->
 			<div class="row-4 md:col-span-3">
 				<!-- Toolbar -->
 				<div
 					class="flex flex-wrap grow @3xl:justify-end border-y border-white/10 gap-3 py-3 child:my-auto px-3">
+					<div v-if="!disabled" class="flex gap-x-1">
+						<PTooltip>
+							<template #trigger>
+								<PButton
+									:aria-label="t('plan.history.undo')"
+									type="secondary"
+									:disabled="!canUndo"
+									@click="undo">
+									<template #icon>
+										<UndoSharp />
+									</template>
+								</PButton>
+							</template>
+							{{ t("plan.history.undo") }}
+						</PTooltip>
+						<PTooltip>
+							<template #trigger>
+								<PButton
+									:aria-label="t('plan.history.redo')"
+									type="secondary"
+									:disabled="!canRedo"
+									@click="redo">
+									<template #icon>
+										<RedoSharp />
+									</template>
+								</PButton>
+							</template>
+							{{ t("plan.history.redo") }}
+						</PTooltip>
+					</div>
 					<PButton
 						:type="
 							refShowTool === 'configuration'
@@ -760,6 +908,7 @@
 								<PlanConfiguration
 									:disabled="disabled"
 									:plan-name="planName"
+									:focus-name="!existing"
 									:empire-options="refEmpireList"
 									:active-empire="computedActiveEmpire"
 									:plan-empires="planEmpires"
@@ -893,7 +1042,7 @@
 							:cx-uuid="refCXUuid"
 							:planet-id="planetData.planet_natural_id"
 							@update:building:amount="handleUpdateBuildingAmount"
-							@delete:building="handleDeleteBuilding"
+							@delete:building="deleteBuilding"
 							@create:building="handleCreateBuilding"
 							@create:building:recipe="
 								handleCreateBuildingAndRecipe
@@ -901,7 +1050,7 @@
 							@update:building:recipe:amount="
 								handleUpdateBuildingRecipeAmount
 							"
-							@delete:building:recipe="handleDeleteBuildingRecipe"
+							@delete:building:recipe="deleteBuildingRecipe"
 							@add:building:recipe="handleAddBuildingRecipe"
 							@update:building:recipe="
 								handleChangeBuildingRecipe

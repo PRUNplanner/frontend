@@ -22,6 +22,7 @@ import {
 
 // Submodule composables
 import { usePlanCalculationHandlers } from "@/features/planning/usePlanCalculationHandlers";
+import { usePlanHistory } from "@/features/planning/usePlanHistory";
 
 // Engine
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
@@ -266,7 +267,13 @@ export function usePlanCalculation(
 	});
 
 	// submodules
-	const handlers = usePlanCalculationHandlers(plan, data, planName, result);
+	const { handleChangePlanName, ...edits } = usePlanCalculationHandlers(
+		plan,
+		data,
+		planName,
+		result
+	);
+	const { record, wrap, ...history } = usePlanHistory(plan, planName);
 
 	return {
 		existing,
@@ -280,7 +287,10 @@ export function usePlanCalculation(
 		overviewData,
 		computedActiveEmpire,
 		// submodules
-		...handlers,
+		...wrap(edits),
+		// typing a name is one undo step
+		handleChangePlanName: record(handleChangePlanName, "plan_name"),
+		...history,
 		// internal,
 		refreshKey,
 		calculate,

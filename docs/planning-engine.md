@@ -129,13 +129,19 @@ const calc = usePlanCalculation(
   | `calculate()` | Calculates once (async, waits for loading) and returns a fresh result |
   | `calculateOverview(materialIO, production, infrastructure)` | The overview for a result's parts |
   | `backendData` | The `PlanCreateData` payload for save/create |
-  | `existing`, `saveable`, `modified`, `planName`, `planEmpires`, `computedActiveEmpire` | Editor state |
-  | `handle*` | Mutators from `usePlanCalculationHandlers` |
+  | `existing`, `saveable`, `modified`, `planName`, `planEmpires`, `computedActiveEmpire` | Editor state. `modified` means "differs from the last save or load" |
+  | `undo`, `redo`, `canUndo`, `canRedo`, `markSaved(snapshot?)`, `snapshot`, `savedAt`, `revision`, `isRestoring` | Undo history from `usePlanHistory`. A save passes the `snapshot()` it sent to `markSaved`; `revision` bumps on every new step, undo, redo and save |
+  | `handle*` | Mutators from `usePlanCalculationHandlers`, each one an undo step |
 
 `usePlanCalculationHandlers.ts` holds every edit operation (`handleUpdate*`,
-`handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data` and
-sets `modified`. Components never write into `result`; they emit and the
-plan update drives the new result.
+`handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data`.
+`usePlanCalculation` wraps them with `usePlanHistory.ts`: every call becomes
+an undo step (edits made by watchers in the same flush, like hab
+auto-optimisation, join it; typing the plan name is one step), capped at 50
+and cleared by `markSaved()` on load, save and reload. `modified` compares
+the plan with the last saved snapshot, so undoing back to it clears it.
+Components never write into `result`; they emit and the plan update drives
+the new result.
 
 ## Batch calculation
 

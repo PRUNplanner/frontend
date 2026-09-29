@@ -16,3 +16,10 @@ When selecting a recipe, a dropdown of that buildings recipes appears.  For each
 - ROI is the building cost for this production building divided by the profit per day of the building.  
 
 
+
+
+**Saving and Undo**
+
+Name your plan in Configuration and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). Next to the buttons you see whether the plan has unsaved changes, is saving, or when it was last saved; if a save fails, your changes are kept and Retry saves them again.
+
+Every change can be undone with the Undo and Redo buttons above the tools, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). The history covers the last 50 changes and starts fresh after saving or reloading the plan.

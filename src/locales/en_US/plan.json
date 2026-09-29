@@ -1,7 +1,26 @@
 {
 	"notifications": {
-		"must_have_name": "Must set a plan name in Configuration to save",
 		"leave_unsaved": "Do you really want to leave? Unsaved changes will be lost."
+	},
+	"save_status": {
+		"unsaved": "Unsaved changes",
+		"saving": "Saving…",
+		"saved_at": "Saved at {time}",
+		"failed": "Save failed",
+		"retry": "Retry",
+		"failed_message": "Saving the plan failed. Your changes are kept, try again.",
+		"name_to_create": "Name your plan to create it",
+		"name_to_save": "Name your plan to save it"
+	},
+	"history": {
+		"undo": "Undo",
+		"redo": "Redo",
+		"building_removed": "Building removed",
+		"recipe_removed": "Recipe removed"
+	},
+	"name": {
+		"untitled": "Unnamed plan",
+		"placeholder": "Plan name"
 	},
 	"tools": {
 		"labels": {
