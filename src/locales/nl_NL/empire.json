@@ -40,9 +40,9 @@
 		"loadbalance": "Loadbalance"
 	},
 	"analysis": {
-		"profitable_plans": "Profitable Plans",
-		"material_profits": "Material Profits",
-		"material_costs": "Material Costs",
+		"plan_profit": "Plan Profit (ȼ)",
+		"material_profits": "Material Profits (ȼ)",
+		"material_costs": "Material Costs (ȼ)",
 		"net_production": "Net Production",
 		"net_consumption": "Net Consumption",
 		"exclusive_production": "Exclusive Production",
