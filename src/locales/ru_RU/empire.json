@@ -40,9 +40,9 @@
 		"loadbalance": "Баланс нагрузки"
 	},
 	"analysis": {
-		"profitable_plans": "Прибыльные планы",
-		"material_profits": "Материальные Выгоды",
-		"material_costs": "Стоимость материалов",
+		"plan_profit": "Plan Profit (ȼ)",
+		"material_profits": "Material Profits (ȼ)",
+		"material_costs": "Material Costs (ȼ)",
 		"net_production": "Объем производства",
 		"net_consumption": "Объем потребления",
 		"exclusive_production": "Эксклюзивное производство",
