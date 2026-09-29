@@ -1,6 +1,6 @@
 {
-	"view_title": "Recipe ROI",
-	"title": "Recipe ROI",
+	"view_title": "生产模板 ROI",
+	"title": "生产模板 ROI",
 	"calculating": "正在计算建筑配方 ROI",
 	"cx_select": "@:terms.cx 偏好",
 	"filters": {
@@ -18,9 +18,9 @@
 		"recipe_input": "@:terms.recipes 输入",
 		"cogc": "@:terms.cogc",
 		"cogm": "@:terms.cogm",
-		"plan_cost": "@:terms.plan Cost (ȼ)",
-		"daily_profit": "Daily Profit (ȼ)",
-		"profit_area": "Profit/Area (ȼ)",
-		"plan_roi": "@:terms.plan ROI (d)"
+		"plan_cost": "@:terms.plan成本 (ȼ)",
+		"daily_profit": "每日利润 (ȼ)",
+		"profit_area": "单位面积利润 (ȼ)",
+		"plan_roi": "@:terms.plan ROI (天)"
 	}
 }
