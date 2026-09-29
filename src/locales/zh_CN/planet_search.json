@@ -14,7 +14,9 @@
 			"min_richness": "最低丰度",
 			"planet_features": "行星特性",
 			"system_distance": "星系距离",
-			"planet_environment": "行星环境"
+			"planet_environment": "行星环境",
+			"min_richness_for": "{material}的最低丰度 (%)",
+			"system": "恒星系"
 		}
 	},
 	"results": {
@@ -29,6 +31,7 @@
 			"infrastructure": "行星项目",
 			"distance": "距离"
 		},
-		"colony_ship_required": "需要拓殖船"
+		"colony_ship_required": "需要拓殖船",
+		"create_plan": "在{planet}上创建一份计划"
 	}
 }

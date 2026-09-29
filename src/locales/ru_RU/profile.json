@@ -20,7 +20,7 @@
 			"resend_code": "Отправить код повторно",
 			"code_requested": "Код запрошен."
 		},
-		"fio_info": "Данные FIO обновляются автоматически через сервера PRUNplanner.",
+		"fio_info": "FIO Data Updates are handled by PRUNplanner's backend automatically.",
 		"form": {
 			"fio_apikey": "FIO API Key",
 			"prun_username": "Имя пользователя PrUn",
@@ -71,6 +71,9 @@
 		"form": {
 			"tool_preferences": "Настройки инструментов",
 			"language": "Язык",
+			"color_palette": "Color palette",
+			"palette_default": "Default (green / red)",
+			"palette_colorblind": "Color-blind (blue / orange)",
 			"language_note": "Мы хотим сделать PRUNplanner доступным для всех. Если вы хотите видеть инструмент на своём родном языке или помочь улучшить существующий перевод — присоединяйтесь к нашему проекту локализации на {link}.",
 			"default_empire": "Империя по умолчанию",
 			"default_cx": "CX по умолчанию",

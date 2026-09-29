@@ -50,6 +50,8 @@
 				"import": "Präferenzen Importieren",
 				"export": "Präferenzen Exportieren"
 			}
-		}
+		},
+		"type_label": "Preference type",
+		"value_label": "Price"
 	}
 }

@@ -15,9 +15,10 @@
 	"chart": {
 		"title": "市场历史",
 		"labels": {
-			"traded": "成交量",
+			"traded": "@:terms.traded_volume",
 			"low_p": "日最低价",
 			"high_p": "日最高价"
-		}
+		},
+		"value_label": "图表值"
 	}
 }

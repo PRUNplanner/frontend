@@ -28,7 +28,8 @@
 				"close_manager": "Закрыть менеджер оповещений",
 				"clear_feed": "Очистить Ленту",
 				"show_overview": "Показать обзор",
-				"hide_overview": "Скрыть обзор"
+				"hide_overview": "Скрыть обзор",
+				"alerts": "Alert notifications"
 			}
 		},
 		"alert_feed": {
@@ -96,6 +97,11 @@
 				"logic_configuration": "Конфигурация логики",
 				"previous_datapoint": "Предыдущая точка"
 			}
+		},
+		"detector": {
+			"field": "Field",
+			"operator": "Operator",
+			"target_type": "Target type"
 		}
 	}
 }

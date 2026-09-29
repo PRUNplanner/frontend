@@ -1,7 +1,7 @@
 {
 	"universe": "UNIVERSUM",
 	"vwap": "@:terms.vwap",
-	"traded_volume": "Handelsvolumen",
+	"traded_volume": "@:terms.traded_volume",
 	"market_live_data": "Markt-Live-Daten",
 	"supply_vs_demand": "A / D",
 	"insights": "Einblicke",

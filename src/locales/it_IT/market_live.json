@@ -28,7 +28,8 @@
 				"close_manager": "Close Alert Manager",
 				"clear_feed": "Clear Feed",
 				"show_overview": "Show Overview",
-				"hide_overview": "Hide Overview"
+				"hide_overview": "Hide Overview",
+				"alerts": "Alert notifications"
 			}
 		},
 		"alert_feed": {
@@ -96,6 +97,11 @@
 				"logic_configuration": "Logic Configuration",
 				"previous_datapoint": "Previous Datepoint"
 			}
+		},
+		"detector": {
+			"field": "Field",
+			"operator": "Operator",
+			"target_type": "Target type"
 		}
 	}
 }

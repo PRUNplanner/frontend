@@ -28,7 +28,8 @@
 				"close_manager": "Alarm-Manager schließen",
 				"clear_feed": "Feed leeren",
 				"show_overview": "Übersicht anzeigen",
-				"hide_overview": "Übersicht ausblenden"
+				"hide_overview": "Übersicht ausblenden",
+				"alerts": "Alert notifications"
 			}
 		},
 		"alert_feed": {
@@ -96,6 +97,11 @@
 				"logic_configuration": "Logik Konfiguration",
 				"previous_datapoint": "Vorheriger Datenpunkt"
 			}
+		},
+		"detector": {
+			"field": "Field",
+			"operator": "Operator",
+			"target_type": "Target type"
 		}
 	}
 }

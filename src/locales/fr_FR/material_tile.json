@@ -15,9 +15,10 @@
 	"chart": {
 		"title": "Historique du marché",
 		"labels": {
-			"traded": "Volume des échanges",
+			"traded": "@:terms.traded_volume",
 			"low_p": "Prix minimum journalier",
 			"high_p": "Prix maximum journalier"
-		}
+		},
+		"value_label": "Chart value"
 	}
 }

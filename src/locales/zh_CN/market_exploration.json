@@ -4,8 +4,10 @@
 	"switch_material": "切换物料",
 	"kpis": {
 		"universe_vwap_7d": "宇宙VWAP @:terms.7d",
-		"universe_traded_7d": "宇宙交易量 @:terms.7d",
+		"universe_traded_7d": "宇宙@:terms.traded_volume @:terms.7d",
 		"universe_market_delta": "宇宙市场差值",
+		"shortage": "欠缺",
+		"surplus": "盈余",
 		"percent_trend": "% 趋势",
 		"30d": "@:{'terms.30d'}：",
 		"supply": "@:{'terms.supply'}：",
@@ -33,8 +35,8 @@
 			"vwap_7d": "@:terms.vwap @:terms.7d",
 			"vwap_30d": "@:terms.vwap @:terms.30d",
 			"trend": "趋势",
-			"volume_7d": "@:terms.volume @:terms.7d",
-			"volume_30d": "@:terms.volume @:terms.30d",
+			"volume_7d": "@:terms.traded_volume @:terms.7d",
+			"volume_30d": "@:terms.traded_volume @:terms.30d",
 			"details": "详情"
 		}
 	}

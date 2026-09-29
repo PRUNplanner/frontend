@@ -14,7 +14,9 @@
 			"min_richness": "% Ricchezza Min.",
 			"planet_features": "Caratteristiche Del Pianeta",
 			"system_distance": "Distanze dal Sistema",
-			"planet_environment": "Ambiente Del Pianeta"
+			"planet_environment": "Ambiente Del Pianeta",
+			"min_richness_for": "Min. richness of {material} %",
+			"system": "System"
 		}
 	},
 	"results": {
@@ -29,6 +31,7 @@
 			"infrastructure": "Infrastruttura",
 			"distance": "Distanza"
 		},
-		"colony_ship_required": ""
+		"colony_ship_required": "",
+		"create_plan": "Create a plan on {planet}"
 	}
 }

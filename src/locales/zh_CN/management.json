@@ -5,7 +5,6 @@
 		"title": "帝国配置",
 		"description": "移除帝国将不会删除任何关联的计划——他们将被取消分配。你可以在帝国视图中创建编辑现有的帝国。为了确保正确的计算效率加成，请确保每个帝国都有设置派系和正确的许可。",
 		"buttons": {
-			"update_cx": "更新商品交易所分配",
 			"new_empire": "新帝国"
 		},
 		"form": {
@@ -41,28 +40,49 @@
 			"nodata_label": "创建你的第一个市场偏好。"
 		}
 	},
-	"filter": {
-		"title": "筛选",
-		"plan": "@:terms.plan",
-		"active_empire": "当前 @:terms.empire"
-	},
 	"assignments": {
 		"title": "计划 ↔ 帝国分配",
-		"description": "每个被计划的基地都可以分配给多个帝国。这允许你同时跟踪现有的PrUn帝国、公司生产链或未来的扩展计划。",
-		"buttons": {
-			"update_assignments": "更新计划分配",
-			"reload": "@:common.buttons.reload"
-		},
+		"description": "每份基地规划都可以分配至多个帝国。这允许你同时追踪你现有的PrUn帝国、集团生产链条或未来的扩展规划。更改将会在下方的栏中一并保存。",
 		"deletion": {
 			"title": "确认删除计划",
 			"content": "你确定吗？删除操作不能被撤销。"
 		},
 		"table": {
 			"plan": "@:terms.plan",
-			"planet": "@:terms.planets",
-			"configuration": "配置",
-			"nodata_title": "没有 @:terms.plans 可用",
-			"nodata_label": "使用行星搜索创建你的第一个 @:terms.plan。"
+			"nodata_title": "没有可用@:terms.plans_plural",
+			"nodata_label": "使用行星搜索创建你的第一份@:{'terms.plan'}。",
+			"assign_label": "{empire}中的{plan}"
+		},
+		"search": "搜索计划或行星",
+		"filter_empire": "于帝国中",
+		"all_empires": "全部帝国",
+		"unassigned_only": "仅未分配 · {count}",
+		"plan_count": "{plans} · {empires}",
+		"plans": "{count}份计划 | {count}份计划",
+		"empires": "{count}座帝国 | {count}座帝国",
+		"empire_plans": "{count}份计划 | {count}份计划",
+		"row_actions": "针对{plan}的操作",
+		"row_actions_header": "操作",
+		"will_add": "将添加至{empire}",
+		"will_remove": "将移除出{empire}",
+		"add_all_shown": "将全部已显示的计划添加至{empire}",
+		"remove_all_shown": "将全部已显示的计划移除出{empire}",
+		"no_match": "无匹配搜索和筛选条件的计划。",
+		"menu": {
+			"clone": "复制",
+			"share": "分享…",
+			"delete": "删除…"
 		}
+	},
+	"save_bar": {
+		"label": "未保存的更改",
+		"unsaved": "{count}处未保存的更改 | {count}处未保存的更改",
+		"saving": "正在保存{count}处更改… | 正在保存{count}处更改…",
+		"error": "无法保存。更改已保留。",
+		"save": "保存更改",
+		"retry": "重试",
+		"discard": "放弃",
+		"all_saved": "已保存所有更改",
+		"leave_unsaved": "您有未保存的管理更改。离开而不保存吗？"
 	}
 }

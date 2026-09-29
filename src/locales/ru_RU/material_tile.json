@@ -15,9 +15,10 @@
 	"chart": {
 		"title": "История рынка",
 		"labels": {
-			"traded": "Объем продаж",
+			"traded": "@:terms.traded_volume",
 			"low_p": "Ежедневная минимальная цена",
 			"high_p": "Ежедневная максимальная цена"
-		}
+		},
+		"value_label": "Chart value"
 	}
 }

@@ -18,8 +18,9 @@
 		"storage": "@:terms.storage",
 		"override_stock": "Override Stock",
 		"required": "Required",
-		"cost_unit": "Cost / Unit",
-		"cost_total": "Total Cost",
-		"storage_locations": "@:terms.storage Locations"
+		"cost_unit": "Cost / Unit (ȼ)",
+		"cost_total": "Total Cost (ȼ)",
+		"storage_locations": "@:terms.storage Locations",
+		"override_label": "Override stock for {ticker}"
 	}
 }

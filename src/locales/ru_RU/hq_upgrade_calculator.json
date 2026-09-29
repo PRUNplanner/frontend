@@ -18,8 +18,9 @@
 		"storage": "@:terms.storage",
 		"override_stock": "Переопределить запас",
 		"required": "Требуется",
-		"cost_unit": "Цена за единицу",
-		"cost_total": "Общая стоимость",
-		"storage_locations": "@:terms.storage Местоположения"
+		"cost_unit": "Cost / Unit (ȼ)",
+		"cost_total": "Total Cost (ȼ)",
+		"storage_locations": "@:terms.storage Местоположения",
+		"override_label": "Override stock for {ticker}"
 	}
 }

@@ -1,6 +1,27 @@
 {
 	"notifications": {
-		"must_have_name": "Zum Speichern muss zuerst ein Plan-Name gesetzt werden"
+		"leave_unsaved": "Do you really want to leave? Unsaved changes will be lost."
+	},
+	"save_status": {
+		"unsaved": "Unsaved changes",
+		"saving": "Saving…",
+		"saved_at": "Saved at {time}",
+		"failed": "Save failed",
+		"saved": "Saved",
+		"retry": "Retry save",
+		"failed_message": "Saving the plan failed. Your changes are kept, try again.",
+		"name_to_create": "Name your plan to create it",
+		"name_to_save": "Name your plan to save it"
+	},
+	"history": {
+		"undo": "Undo",
+		"redo": "Redo",
+		"building_removed": "Building removed",
+		"recipe_removed": "Recipe removed",
+		"recipe_changed": "{building} recipe changed"
+	},
+	"name": {
+		"untitled": "Unnamed plan"
 	},
 	"tools": {
 		"labels": {
@@ -31,7 +52,8 @@
 					"storage_filled": "Lager gefüllt",
 					"filled_unit": "Tage"
 				},
-				"exclusion_info": "Schließe lokale Materialien, die du nur auf diesem Planeten verwaltest, kaufst oder handelst, von der Besuchsfrequenz aus."
+				"exclusion_info": "Schließe lokale Materialien, die du nur auf diesem Planeten verwaltest, kaufst oder handelst, von der Besuchsfrequenz aus.",
+				"exclusion_label": "Excluded materials"
 			},
 			"shipping": {
 				"label": "Versand",
@@ -63,7 +85,9 @@
 				"stock": "Lagerbestand",
 				"stock_override": "Bestand überschreiben",
 				"need": "Bedarf"
-			}
+			},
+			"amount_label": "Amount of {building}",
+			"override_label": "Stock override for {ticker}"
 		},
 		"supply_cart": {
 			"title": "Versorgung",
@@ -119,7 +143,7 @@
 			"info": "Die Kosten der hergestellten Waren werden anhand von Planeinstellungen berechnet, die die Produktionseffizienz erhöhen Rezeptlaufzeit, Bauabbau, Materialkosten, Arbeitsanforderungen und damit verbundene Arbeitskosten. Die Endkosten werden pro Ausgabeeinheit angezeigt, basierend auf der Menge oder der vollen Kostenzuweisung.",
 			"cx_preferences": "@:terms.cx_plural Präferenzen",
 			"empire_ticker": "@:terms.empire Ticker",
-			"planet_ticker": "@:terms.planet Ticker",
+			"planet_ticker": "@:terms.planets Ticker",
 			"table": {
 				"parameters": "Parameter",
 				"recipe_runtime": "@:terms.recipes Laufzeit",
@@ -146,7 +170,8 @@
 				"experts": "Experten",
 				"production_buildings": "Produktions-@:terms.buildings_plural",
 				"recipes": "@:terms.recipes_plural"
-			}
+			},
+			"toggle": "Toggle insights"
 		}
 	},
 	"components": {
@@ -179,11 +204,13 @@
 			"buttons": {
 				"optimize_cost": "Kosten optimieren",
 				"optimize_area": "Fläche optimieren"
-			}
+			},
+			"amount_label": "Amount of {infrastructure}"
 		},
 		"experts": {
 			"label": "Experten",
-			"warning": "Maximale Anzahl von Experten auf einer Basis ist 6. Du hast derzeit {expert_number} Experten zugewiesen."
+			"warning": "Maximale Anzahl von Experten auf einer Basis ist 6. Du hast derzeit {expert_number} Experten zugewiesen.",
+			"amount_label": "{expert} experts"
 		},
 		"workforce": {
 			"label": "Belegschaft",
@@ -269,7 +296,12 @@
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
 				"construction": "Konstruktion"
-			}
+			},
+			"zero_reason": {
+				"FERTILITY": "Planet not fertile",
+				"WORKFORCE": "No workforce housed"
+			},
+			"qty_label": "Amount of {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "Kosten der hergestellten Waren",
@@ -292,7 +324,8 @@
 				"p2": "ist der tägliche Umsatz für ein Produktionsgebäude und sein proportionaler Anteil an der Fläche für eine Kolonisationseinheit und Belegschaftsgebäude für eine optimale Basis für dieses Gebäude und Auftrag.",
 				"p3_strong": "ROI",
 				"p3": "is die benötigte Zeit für einen ständig laufenen Auftrag, um Umsatz zu erzeugen, der alle Konstruktionskosten berücksichtigt. Dies beinhaltet die täglichen Verfalls- und Belegschaftskosten."
-			}
+			},
+			"amount_label": "Amount of recipe {recipe}"
 		}
 	}
 }

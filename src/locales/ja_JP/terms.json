@@ -66,6 +66,7 @@
 	"temperature": "Temperature",
 	"total_volume": "Total Volume",
 	"total_weight": "Total Weight",
+	"traded_volume": "Traded Volume",
 	"trend": "Trend",
 	"volume": "Volume",
 	"vwap": "VWAP",

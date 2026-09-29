@@ -14,7 +14,9 @@
 			"min_richness": "Мин. концентрация %",
 			"planet_features": "Особенности планеты",
 			"system_distance": "Расстояние между системами",
-			"planet_environment": "Условия среды"
+			"planet_environment": "Условия среды",
+			"min_richness_for": "Min. richness of {material} %",
+			"system": "System"
 		}
 	},
 	"results": {
@@ -29,6 +31,7 @@
 			"infrastructure": "Инфраструктура",
 			"distance": "Расстояние"
 		},
-		"colony_ship_required": "Требуется Колониальный корабль"
+		"colony_ship_required": "Требуется Колониальный корабль",
+		"create_plan": "Create a plan on {planet}"
 	}
 }

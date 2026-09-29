@@ -1,5 +1,3 @@
-Needs to be expanded...
-
 **개요**
 
 개요는 계획 분석의 핵심입니다.  여기에서는 투입 자재와 인력 소모품의 일일 비용, 그리고 생산 건물의 일일 열화 비용을 확인할 수 있습니다.  계획의 초기 건설 비용(코어 모듈을 포함)도 여기에 포함되며, 이후 기지의 ROI(투자 회수 기간)을 계산하는 데 사용됩니다.  일일 수익은 매일 생산되는 산출물의 가치에서 일일 비용을 차감하여 계산됩니다.  마지막으로 면적당 수익은 기지의 일일 수익을 해당 기지에서 사용한 면적으로 나눈 값입니다; 중요한 점은, 계획 개요의 면적당 수익은 실제 기지 면적을 분모로 사용한다는 것입니다. 반면 아래에서 설명하는 제조법의 면적당 수익은 비교 목적을 위해 표준화된 분모를 사용합니다.
@@ -10,10 +8,14 @@ Needs to be expanded...
 
 계획에 추가된 각 건물은 이 섹션에 표시됩니다.  사용자는 오른쪽 위의 +제조법 버튼을 사용해 제조법을 추가해야 합니다.  제조법을 선택하면 계획 전체에 반영되며, 상단의 개요와 오른쪽의 재료 입출고에도 반영됩니다.
 
-제조법을 선택할 때, 해당 건물에서 사용할 수 있는 제조법들이 드롭다운으로 표시됩니다.  각 제조법에는 투입 자재, 소요 시간, 산출물이 표시됩니다.  또한 해당 건물의 일일 수익($ / 일), 면적당 수익($ / 면적), 그리고 건물 건설 비용 기준의 투자 회수 기간도 자동으로 계산되어 표시됩니다.
+제조법을 선택할 때, 해당 건물에서 사용할 수 있는 제조법들이 드롭다운으로 표시됩니다.  각 제조법에는 투입 자재, 소요 시간, 산출물이 표시됩니다.  The profit per day (ȼ / Day), profit per area (ȼ / Area), and ROI (payback period) for the building's construction cost are also automatically calculated and displayed.
 
 - 일일 수익은 계획의 CX 설정에 따라 산출물을 판매했을 때의 수익에서 투입 자재, 인력, 감가상각 비용을 차감한 순수익입니다.
 - 면적당 수익은 해당 일일 수익을 생산 건물의 면적과, 건물의 “최적” 배치에서 필요한 HAB 및 STO의 비례 면적으로 나눈 값입니다 (제조법 ROI 도구에서도 사용되는 기준입니다).  이 값은 서로 다른 건물의 제조법 수익성을 일관된 기준으로 비교할 수 있도록 제공됩니다.
 - 투자 회수 기간은 해당 생산 건물의 건설 비용을 그 건물의 일일 수익으로 나눈 값입니다.
 
+**Saving and Undo**
 
+Name your plan in Configuration and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). The Save button shows the plan's state: "Saved" when there is nothing to save (hover it to see when it was last saved), a dot when there are unsaved changes, "Saving…" while it saves, and "Retry save" if a save fails. Your changes are kept until it succeeds.
+
+Every change can be undone with the Undo and Redo buttons next to Save, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). Removing a building or recipe, or changing a recipe, also shows a message with an Undo button for a few seconds. The history covers the last 50 changes and starts fresh after saving or reloading the plan.

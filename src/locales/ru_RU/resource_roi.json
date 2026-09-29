@@ -1,6 +1,6 @@
 {
 	"view_title": "Окупаемость ресурсов",
-	"title": "Обзор окупаемости ресурсов",
+	"title": "Resource ROI",
 	"info": "Выберите ресурс и нажмите «Поиск и вычисление»",
 	"calculating": "Расчёт окупаемости ресурсов для планет.",
 	"searching": "Поиск @:terms.planet_plural с '{resource}'. Ожидание ответа сервера",
@@ -18,9 +18,9 @@
 		"environment": "Окружение",
 		"infrastructure": "Инфраструктура",
 		"cost_profit": "Стоимость / Прибыль",
-		"plan_cost": "@:terms.plan @:terms.cost",
-		"daily_profit": "Ежедневный @:terms.profit",
-		"plan_roi": "@:terms.plan ROI",
+		"plan_cost": "@:terms.plan @:terms.cost (ȼ)",
+		"daily_profit": "Daily @:terms.profit (ȼ)",
+		"plan_roi": "@:terms.plan ROI (d)",
 		"distances": "Расстояния"
 	}
 }

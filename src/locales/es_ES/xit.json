@@ -6,7 +6,9 @@
 		"buy_from_cx_warning": "Only warehouse origin allows purchasing.",
 		"fit_ship": "Fit Ship",
 		"hide_infinite": "Hide Infinite",
-		"json": "JSON"
+		"json": "JSON",
+		"include_label": "Include {ticker}",
+		"override_label": "Override for {ticker}"
 	},
 	"buttons": {
 		"copy_json": "Copy XIT JSON",

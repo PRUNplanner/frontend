@@ -21,6 +21,7 @@
 	},
 	"plan_list": {
 		"no_plans": "@:terms.empire中没有规划",
+		"profit": "@:terms.profit (ȼ)",
 		"setup_prompt": "在{management}中分配已有规划，或使用{search}创建一个。",
 		"links": {
 			"management": "@:common.navigation.management",
@@ -29,8 +30,24 @@
 		"permits_planned": "规划的@:terms.permits总数：{permits}"
 	},
 	"material_io": {
-		"production_planets": "生产行星",
-		"consumption_planets": "消费行星"
+		"produced_by": "生产端",
+		"consumed_by": "消耗端",
+		"planets": "行星",
+		"summary": "概要",
+		"expand_all": "全部展开",
+		"expand_row": "显示与{ticker}关联的行星",
+		"view_sides": "生产端 · 消费端",
+		"view_net": "每行星净值",
+		"surplus": "盈余",
+		"needs": "需求",
+		"plan_count": "{count}份计划 | {count}份计划",
+		"planet_count": "{count}颗行星 | {count}颗行星",
+		"per_day": "{value} / 天",
+		"makes_uses": "生产{makes} · 消耗{uses}",
+		"not_produced": "该帝国不生产此商品。",
+		"not_consumed": "该帝国不消耗此商品。",
+		"no_surplus": "全部行星均无剩余。",
+		"no_needs": "全部行星均无需求。"
 	},
 	"filters": {
 		"display": "显示",
@@ -39,9 +56,9 @@
 		"loadbalance": "负载平衡"
 	},
 	"analysis": {
-		"profitable_plans": "盈利计划",
-		"material_profits": "材料收益",
-		"material_costs": "材料成本",
+		"plan_profit": "计划盈利 (ȼ)",
+		"material_profits": "材料利润 (ȼ)",
+		"material_costs": "材料成本 (ȼ)",
 		"net_production": "净生产",
 		"net_consumption": "净消耗",
 		"exclusive_production": "纯生产物资",
@@ -67,5 +84,30 @@
 			"delta_required": "所需缺口",
 			"missing_material": "缺少物料"
 		}
+	},
+	"onboarding": {
+		"title": "欢迎使用 PRUNplanner",
+		"intro": "在开始您的第一份基地规划前需要完成的三个步骤。",
+		"empire": {
+			"title": "你的帝国",
+			"help": "派系和许可分别影响您计划的派系增益和可用面积。",
+			"saved": "已保存"
+		},
+		"plan": {
+			"title": "规划您的第一座基地",
+			"help": "找一颗行星并在那里创建一份计划。其将会自动添加至这个帝国中。",
+			"action": "@:common.navigation.planet_search"
+		},
+		"prices": {
+			"title": "价格",
+			"help": "价格采用全宇宙30天均值。可以在{exchanges}界面修改某一商品进行交易的交易所。",
+			"exchanges": "交易所"
+		}
+	},
+	"empty": {
+		"title": "暂无帝国",
+		"text": "帝国将你的基地规划分组并储存你的派系和许可数。",
+		"create": "创建帝国",
+		"manage": "管理帝国"
 	}
 }

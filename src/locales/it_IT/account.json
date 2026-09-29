@@ -76,6 +76,13 @@
 				"ok": "Indirizzo email verificato.",
 				"error": "Codice non valido o già verificato."
 			}
+		},
+		"hints": {
+			"username": "e.g. your in-game name",
+			"password": "Your password",
+			"new_password": "At least 8 characters",
+			"email": "e.g. name@example.com",
+			"code": "Code from the email"
 		}
 	}
 }

@@ -1,7 +1,7 @@
 {
 	"navigation": {
 		"planning": "规划",
-		"planning_short": "计划",
+		"planning_short": "规划",
 		"empire": "帝国",
 		"planet_search": "行星搜索",
 		"management": "管理",
@@ -10,9 +10,9 @@
 		"tools_short": "工具",
 		"market_exploration": "市场探索",
 		"market_live": "实时市场",
-		"recipe_roi": "配方 ROI",
+		"recipe_roi": "生产模板 ROI",
 		"resource_roi": "资源 ROI",
-		"hq_calculator": "HQ 计算器",
+		"hq_calculator": "总部计算器",
 		"production_chains": "生产链",
 		"upkeep_price_calculator": "维护价格",
 		"fio_burn": "FIO 消耗",
@@ -28,13 +28,16 @@
 			"fio": "FIO",
 			"fio_active": "FIO 已启用",
 			"fio_inactive": "FIO 未启用"
-		}
+		},
+		"collapse": "折叠导航栏",
+		"expand": "展开导航栏",
+		"menu": "菜单"
 	},
 	"buttons": {
 		"create": "创建",
 		"save": "保存",
 		"save_as": "另存为",
-		"reload": "刷新",
+		"reload": "重新加载",
 		"show": "显示",
 		"hide": "隐藏",
 		"help": "帮助",
@@ -48,7 +51,10 @@
 		"cancel": "取消",
 		"clone_plan": "复制计划",
 		"clone_complete": "复制完成",
-		"copy": "复制"
+		"copy": "复制",
+		"add": "添加",
+		"fullscreen": "切换全屏",
+		"edit": "编辑"
 	},
 	"ui": {
 		"placeholder": {
@@ -59,6 +65,24 @@
 		"select": {
 			"no_results": "无结果",
 			"select_options": "选择选项"
-		}
+		},
+		"input_number": {
+			"decrease": "减少",
+			"increase": "增加"
+		},
+		"pagination": {
+			"previous": "上一页",
+			"next": "下一页",
+			"page": "第{page}页",
+			"more": "更多页面"
+		},
+		"language": "语言"
+	},
+	"values": {
+		"never": "从不"
+	},
+	"charts": {
+		"other": "其它（{n}）",
+		"empty": "无待显示内容"
 	}
 }

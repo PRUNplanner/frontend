@@ -50,6 +50,8 @@
 				"import": "Настройки импорта",
 				"export": "Настройки экспорта"
 			}
-		}
+		},
+		"type_label": "Preference type",
+		"value_label": "Price"
 	}
 }

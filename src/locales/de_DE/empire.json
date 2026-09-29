@@ -21,6 +21,7 @@
 	},
 	"plan_list": {
 		"no_plans": "Keine Pläne im @:terms.empire",
+		"profit": "@:terms.profit (ȼ)",
 		"setup_prompt": "Weise bestehende Pläne im {management} zu oder benutze die {search}, um neue zu erstellen.",
 		"links": {
 			"management": "Management",
@@ -29,8 +30,24 @@
 		"permits_planned": "Insgesamt @:terms.permits geplant: {permits}"
 	},
 	"material_io": {
-		"production_planets": "Produzierende Planeten",
-		"consumption_planets": "Verbrauchende Planeten"
+		"produced_by": "Produced by",
+		"consumed_by": "Consumed by",
+		"planets": "Planets",
+		"summary": "Summary",
+		"expand_all": "Expand all",
+		"expand_row": "Show planets for {ticker}",
+		"view_sides": "Producers · Consumers",
+		"view_net": "Net per planet",
+		"surplus": "Surplus",
+		"needs": "Needs",
+		"plan_count": "{count} plan | {count} plans",
+		"planet_count": "{count} planet | {count} planets",
+		"per_day": "{value} / day",
+		"makes_uses": "makes {makes} · uses {uses}",
+		"not_produced": "Not produced in this empire.",
+		"not_consumed": "Not consumed in this empire.",
+		"no_surplus": "No planet has a surplus.",
+		"no_needs": "No planet needs it."
 	},
 	"filters": {
 		"display": "Anzeige",
@@ -39,9 +56,9 @@
 		"loadbalance": "Ladeausgleich"
 	},
 	"analysis": {
-		"profitable_plans": "Profitable Pläne",
-		"material_profits": "Material Gewinn",
-		"material_costs": "Material Kosten",
+		"plan_profit": "Plan Profit (ȼ)",
+		"material_profits": "Material Profits (ȼ)",
+		"material_costs": "Material Costs (ȼ)",
 		"net_production": "Nettoproduktion",
 		"net_consumption": "Nettoverbrauch",
 		"exclusive_production": "Exklusive Produktion",
@@ -67,5 +84,30 @@
 			"delta_required": "Delta erforderlich",
 			"missing_material": "fehlende Materialien"
 		}
+	},
+	"onboarding": {
+		"title": "Welcome to PRUNplanner",
+		"intro": "Three steps to your first base plan.",
+		"empire": {
+			"title": "Your empire",
+			"help": "Faction and permits affect your plans' faction bonus and available area.",
+			"saved": "Saved"
+		},
+		"plan": {
+			"title": "Plan your first base",
+			"help": "Find a planet and create a plan there. It's added to this empire automatically.",
+			"action": "@:common.navigation.planet_search"
+		},
+		"prices": {
+			"title": "Prices",
+			"help": "Prices use the universe 30-day average. Change which exchange each material is bought and sold on in {exchanges}.",
+			"exchanges": "Exchanges"
+		}
+	},
+	"empty": {
+		"title": "No empires yet",
+		"text": "An empire groups your base plans and holds your faction and permits.",
+		"create": "Create empire",
+		"manage": "Manage empires"
 	}
 }
