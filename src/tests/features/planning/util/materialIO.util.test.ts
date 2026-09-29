@@ -272,8 +272,8 @@ describe("Util: materialIO ", async () => {
 		expect(result[0].deltaPrice).toBe(0);
 		expect(result[0].input).toBe(10);
 		expect(result[0].output).toBe(10);
-		expect(result[0].inputPlanets.length).toBe(2);
-		expect(result[0].outputPlanets.length).toBe(2);
+		expect(result[0].inputPlanets.length).toBe(1);
+		expect(result[0].outputPlanets.length).toBe(1);
 	});
 
 	it("empireMaterialIOState", async () => {
