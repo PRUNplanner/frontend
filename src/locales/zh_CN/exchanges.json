@@ -51,7 +51,7 @@
 				"export": "导出设置"
 			}
 		},
-		"type_label": "Preference type",
-		"value_label": "Price"
+		"type_label": "偏好类型",
+		"value_label": "价格"
 	}
 }
