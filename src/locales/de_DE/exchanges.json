@@ -51,7 +51,7 @@
 				"export": "Präferenzen Exportieren"
 			}
 		},
-		"type_label": "Preference type",
-		"value_label": "Price"
+		"type_label": "Präferenztyp",
+		"value_label": "Preis"
 	}
 }
