@@ -33,7 +33,9 @@ component / composable
   - On a 401 response, it calls `userStore.performTokenRefresh()` and retries
     once.
   - If the refresh fails, or the 401 comes from `/user/refresh/` itself, it
-    calls `logout()` and routes to `/`.
+    calls `logout()`. A route with `meta.requiresAuth` then goes to `/`; a
+    public route (a shared plan) stays, and the failed request is sent once
+    more without the token.
   - `logout()` resets the user, planning and query stores and PostHog. The
     next login loads its own profile and preferences again.
   - A response to a request sent logged in, in a session that has since

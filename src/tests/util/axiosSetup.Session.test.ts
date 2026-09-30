@@ -6,7 +6,11 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import axiosSetup from "@/util/axiosSetup";
 import { useUserStore } from "@/stores/userStore";
 
-vi.mock("@/router", () => ({ default: { push: vi.fn() } }));
+const route = vi.hoisted(() => ({ value: { meta: {} as object } }));
+vi.mock("@/router", () => ({
+	default: { push: vi.fn(), currentRoute: route },
+}));
+import router from "@/router";
 
 const mock = new AxiosMockAdapter(axios);
 
@@ -93,5 +97,56 @@ describe("axiosSetup: responses of a previous session", () => {
 		expect(refresh).not.toHaveBeenCalled();
 		expect(logout).not.toHaveBeenCalled();
 		expect(userStore.refreshToken).toBe("refresh-b");
+	});
+});
+
+describe("axiosSetup: a session that can't be refreshed", () => {
+	let userStore: ReturnType<typeof useUserStore>;
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		userStore = useUserStore();
+		mock.reset();
+		vi.mocked(router.push).mockClear();
+		mock.onPost("/user/refresh/").reply(401);
+		userStore.setToken("access-a", "refresh-a");
+	});
+
+	it("keeps a public page open and asks again logged out", async () => {
+		route.value = { meta: {} };
+		mock.onGet("/shared").reply((config) =>
+			config.headers?.Authorization ? [401] : [200, "plan"]
+		);
+
+		expect((await axios.get("/shared")).data).toBe("plan");
+		expect(userStore.isLoggedIn).toBe(false);
+		expect(router.push).not.toHaveBeenCalled();
+	});
+
+	it("asks a public page's login-only endpoint only once more", async () => {
+		route.value = { meta: {} };
+		mock.onGet("/private").reply(401);
+
+		const error = await axios.get("/private").catch((e) => e);
+
+		expect(error.response.status).toBe(401);
+		expect(mock.history.get.filter((r) => r.url === "/private")).toHaveLength(
+			2
+		);
+		expect(router.push).not.toHaveBeenCalled();
+	});
+
+	it("sends the user home from a page that needs a login", async () => {
+		route.value = { meta: { requiresAuth: true } };
+		mock.onGet("/private").reply(401);
+
+		const error = await axios.get("/private").catch((e) => e);
+
+		expect(error.response.status).toBe(401);
+		expect(userStore.isLoggedIn).toBe(false);
+		expect(router.push).toHaveBeenCalledWith("/");
+		expect(mock.history.get.filter((r) => r.url === "/private")).toHaveLength(
+			1
+		);
 	});
 });

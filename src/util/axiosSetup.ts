@@ -52,6 +52,15 @@ const discard = (config: InternalAxiosRequestConfig) =>
 		)
 	);
 
+/**
+ * Ends a session that can't be refreshed. Only a page that needs a login
+ * sends the user home, public pages (a shared plan) stay open.
+ */
+function endSession(): void {
+	useUserStore().logout();
+	if (router.currentRoute.value.meta.requiresAuth) router.push("/");
+}
+
 export default function axiosSetup() {
 	// Interceptors
 
@@ -75,28 +84,35 @@ export default function axiosSetup() {
 			if (isPreviousSession(error.config)) return discard(error.config);
 
 			const userStore = useUserStore();
-			const originalRequest: AxiosRequestConfig = error.config;
+			const originalRequest: InternalAxiosRequestConfig = error.config;
 
 			if (error.response && error.response.status === 401) {
 				if (
 					originalRequest.url &&
 					originalRequest.url.includes("/user/refresh/")
 				) {
-					userStore.logout();
-					router.push("/");
+					endSession();
 					return Promise.reject(error);
 				}
 
 				const tokenRefreshStatus: boolean =
 					await userStore.performTokenRefresh();
 
-				if (tokenRefreshStatus) {
+				if (tokenRefreshStatus) return axios(originalRequest);
+
+				endSession();
+
+				// a public page asks again without the dead token, once:
+				// the retry carries no token, so its 401 ends here
+				if (
+					!router.currentRoute.value.meta.requiresAuth &&
+					originalRequest.headers.Authorization
+				) {
+					delete originalRequest.headers.Authorization;
 					return axios(originalRequest);
-				} else {
-					userStore.logout();
-					router.push("/");
-					return Promise.reject(error);
 				}
+
+				return Promise.reject(error);
 			}
 
 			return Promise.reject(error);
