@@ -1,10 +1,10 @@
-import { createWebHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter, START_LOCATION } from "vue-router";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
 
 // Composables
-import { trackContext } from "@/lib/analytics/useAnalytics";
+import { trackPageview } from "@/lib/analytics/useAnalytics";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -214,8 +214,12 @@ router.beforeEach((to, _) => {
 	}
 });
 
-router.afterEach((to) => {
-	trackContext({ route_name: to.name?.toString() });
+router.afterEach((to, from, failure) => {
+	// a pageview is a page reached: not a cancelled or duplicated
+	// navigation, and not a query change on the same page (search filters)
+	if (failure || (from !== START_LOCATION && to.path === from.path)) return;
+
+	trackPageview(to.name?.toString());
 });
 
 export default router;

@@ -93,7 +93,7 @@
 
 	function show(): void {
 		if (!showDrawer.value) {
-			trackEvent("xit_transfer_show");
+			trackEvent("xit:transfer_open");
 			loadDrawer.value = true;
 			nextTick().then(() => (showDrawer.value = true));
 		}
@@ -152,7 +152,7 @@
 							<PButton
 								@click="
 									() => {
-										trackEvent('xit_transfer_copy');
+										trackEvent('xit:transfer_copy');
 										copyToClipboard(
 											transferJSON(localElements, {
 												name: transferName,

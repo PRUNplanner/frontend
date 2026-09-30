@@ -37,7 +37,7 @@
 		try {
 			await deleteSharing();
 			show.value = false;
-			trackEvent("plan_share_delete");
+			trackEvent("plan:share_delete");
 		} catch (err) {
 			console.error(err);
 		} finally {
@@ -49,7 +49,7 @@
 		isCreating.value = true;
 		try {
 			await createSharing();
-			trackEvent("plan_share_create");
+			trackEvent("plan:share_create");
 		} catch (err) {
 			console.error(err);
 		} finally {

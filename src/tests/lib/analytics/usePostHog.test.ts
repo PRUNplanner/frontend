@@ -77,9 +77,9 @@ describe("usePostHog", () => {
 			});
 			await settle();
 
-			capture("plan_save", { planetNaturalId: "OT-580b" });
+			capture("plan:save", { planet_natural_id: "OT-580b" });
 			identify("1", { username: "foo" });
-			setUserProp({ fio_enabled: true });
+			setUserProp({ is_fio_enabled: true });
 			reset();
 
 			expect(posthog.init).not.toHaveBeenCalled();
@@ -118,9 +118,13 @@ describe("usePostHog", () => {
 			app_version: __APP_VERSION__,
 		});
 
-		capture("user_login", { username: "foo", password: "secret" });
-		expect(posthog.capture).toHaveBeenCalledWith("user_login", {
-			username: "foo",
+		capture("account:signup_fail", {
+			fields: ["email"],
+			password: "secret",
+		});
+		// keys are redacted, the field names of a failed signup are values
+		expect(posthog.capture).toHaveBeenCalledWith("account:signup_fail", {
+			fields: ["email"],
 			password: "***",
 		});
 	});
@@ -131,7 +135,7 @@ describe("usePostHog", () => {
 
 		// logged in before the choice
 		identify("1", { username: "foo" });
-		setUserProp({ fio_enabled: true });
+		setUserProp({ is_fio_enabled: true });
 		expect(posthog.init).not.toHaveBeenCalled();
 
 		grant();
@@ -140,8 +144,117 @@ describe("usePostHog", () => {
 		expect(posthog.init).toHaveBeenCalledTimes(1);
 		expect(posthog.identify).toHaveBeenCalledWith("1", {
 			username: "foo",
-			fio_enabled: true,
+			is_fio_enabled: true,
 		});
+	});
+
+	it("leaves pageviews to the router", async () => {
+		await load({ consent: "granted" });
+		await settle();
+
+		expect(posthog.init).toHaveBeenCalledWith(
+			"phc_test",
+			expect.objectContaining({
+				capture_pageview: false,
+				capture_pageleave: true,
+			})
+		);
+	});
+
+	const pageviews = () =>
+		posthog.capture.mock.calls.filter(([event]) => event === "$pageview");
+
+	it("sends the pageview of the page consent is granted on", async () => {
+		const { capture, grant } = await load();
+		await settle();
+		// the landing page, before the visitor answered
+		capture("$pageview");
+
+		grant();
+		await settle();
+
+		expect(pageviews()).toHaveLength(1);
+	});
+
+	it("sends no second pageview when consent was given before", async () => {
+		const { capture } = await load({ consent: "granted" });
+		capture("$pageview");
+		await settle();
+
+		expect(pageviews()).toHaveLength(1);
+	});
+
+	it("sends the missed pageview after a deny and a new grant", async () => {
+		const { capture, grant, deny } = await load({ consent: "granted" });
+		await settle();
+		capture("$pageview");
+		deny();
+		await settle();
+
+		// same page: already counted
+		grant();
+		await settle();
+		expect(pageviews()).toHaveLength(1);
+
+		deny();
+		await settle();
+		capture("$pageview");
+		grant();
+		await settle();
+		expect(pageviews()).toHaveLength(2);
+	});
+
+	it("keeps person properties of an anonymous visitor for identify", async () => {
+		const { setUserProp, identify } = await load({ consent: "granted" });
+		await settle();
+
+		setUserProp({ plan_count: 3 });
+		expect(posthog.people.set).not.toHaveBeenCalled();
+
+		identify("1", { username: "foo" });
+		expect(posthog.identify).toHaveBeenCalledWith("1", {
+			plan_count: 3,
+			username: "foo",
+		});
+	});
+
+	it("drops pending person properties on logout", async () => {
+		const { setUserProp, identify, reset } = await load({
+			consent: "granted",
+		});
+		await settle();
+
+		setUserProp({ plan_count: 3 });
+		reset();
+		identify("2", { username: "bar" });
+
+		expect(posthog.identify).toHaveBeenCalledWith("2", { username: "bar" });
+	});
+
+	it("identifies the same user again only when a property changed", async () => {
+		const { identify } = await load({ consent: "granted" });
+		await settle();
+
+		identify("1", { username: "foo", is_fio_enabled: true });
+		identify("1", { username: "foo", is_fio_enabled: true });
+		identify("1", { username: "foo", is_fio_enabled: false });
+
+		expect(posthog.identify).toHaveBeenCalledTimes(2);
+	});
+
+	it("sends a person property only when its value changed", async () => {
+		const { setUserProp, identify } = await load({ consent: "granted" });
+		await settle();
+		identify("1", { username: "foo" });
+
+		setUserProp({ plan_count: 3 });
+		setUserProp({ plan_count: 3 });
+		setUserProp({ plan_count: 4 });
+
+		expect(posthog.people.set.mock.calls).toEqual([
+			[{ plan_count: 3 }],
+			[{ plan_count: 4 }],
+		]);
 	});
 
 	it("does not identify after a logout", async () => {
@@ -161,15 +274,15 @@ describe("usePostHog", () => {
 		gate.promise = new Promise((resolve) => (open = resolve));
 
 		const { capture } = await load({ consent: "granted" });
-		capture("plan_view", { shared: false });
+		capture("plan:view", { is_shared: false });
 		expect(posthog.capture).not.toHaveBeenCalled();
 
 		open();
 		await settle();
 
 		expect(posthog.capture).toHaveBeenCalledTimes(1);
-		expect(posthog.capture).toHaveBeenCalledWith("plan_view", {
-			shared: false,
+		expect(posthog.capture).toHaveBeenCalledWith("plan:view", {
+			is_shared: false,
 		});
 	});
 
@@ -178,7 +291,7 @@ describe("usePostHog", () => {
 		gate.promise = new Promise((resolve) => (open = resolve));
 
 		const { capture, deny } = await load({ consent: "granted" });
-		capture("plan_view", { shared: false });
+		capture("plan:view", { is_shared: false });
 		deny();
 		await new Promise((resolve) => setTimeout(resolve));
 
@@ -222,7 +335,7 @@ describe("usePostHog", () => {
 		expect(posthog.__loaded).toBe(false);
 		expect(localStorage.getItem("ph_phc_test_posthog")).toBeNull();
 
-		capture("plan_save", { planetNaturalId: "OT-580b" });
+		capture("plan:save", { planet_natural_id: "OT-580b" });
 		expect(posthog.capture).not.toHaveBeenCalled();
 
 		posthog.identify.mockClear();
@@ -243,7 +356,7 @@ describe("usePostHog", () => {
 			username: "foo",
 		});
 
-		capture("plan_save", { planetNaturalId: "OT-580b" });
+		capture("plan:save", { planet_natural_id: "OT-580b" });
 		expect(posthog.capture).toHaveBeenCalledTimes(1);
 	});
 
@@ -386,7 +499,7 @@ describe("usePostHog", () => {
 				// the shortest batch interval posthog-js allows
 				request_queue_config: { flush_interval_ms: 250 },
 			});
-			real.capture("plan_view");
+			real.capture("plan:view");
 
 			return { real, send };
 		}

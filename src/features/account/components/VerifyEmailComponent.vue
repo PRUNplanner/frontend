@@ -43,7 +43,7 @@
 			.execute()
 			.then((result: boolean) => {
 				verifyStatus.value = result;
-				trackEvent("user_verify_email", { status: result });
+				trackEvent("account:email_verify", { is_success: result });
 			})
 			.finally(() => {
 				isVerifying.value = false;

@@ -11,6 +11,7 @@
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	const { planetNames, loadPlanetNames } = usePlanetData();
 
 	// Util
@@ -93,6 +94,8 @@
 	function updateExpanded(keys: (string | number)[]): void {
 		if (expandAll.value && keys.length < expandedKeys.value.length)
 			expandAll.value = false;
+		if (keys.length > expandedKeys.value.length)
+			trackEvent("empire:material_io_expand");
 		expandedKeys.value = keys.map(String);
 	}
 

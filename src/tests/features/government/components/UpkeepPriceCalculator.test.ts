@@ -1,4 +1,5 @@
 import { afterEach, describe, it, expect, vi } from "vitest";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { h } from "vue";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
@@ -101,8 +102,13 @@ const rows = (wrapper: VueWrapper) =>
 		r.qtyPerDay,
 	]);
 
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+
 describe("UpkeepPriceCalculator", () => {
-	afterEach(() => (priceGate.wait = undefined));
+	afterEach(() => {
+		priceGate.wait = undefined;
+		vi.mocked(trackEvent).mockClear();
+	});
 
 	it("lists the safety materials cheapest first", async () => {
 		const { wrapper } = await mountCalculator(CX_CHEAP);
@@ -313,8 +319,25 @@ describe("UpkeepPriceCalculator", () => {
 			"upkeep_price_calculator.calculator.calculating"
 		);
 		expect(tableRows(wrapper)).toHaveLength(0);
+		await new Promise((resolve) => setTimeout(resolve, 1100));
+		expect(trackEvent).not.toHaveBeenCalled();
 		expect(error).toHaveBeenCalledWith(new Error("prices unavailable"));
 		error.mockRestore();
+	});
+
+	it("reports one use per settled calculation", async () => {
+		const { setProps } = await mountCalculator(CX_CHEAP);
+		// the exchange preference arrives after the first calculation
+		await setProps({ cxUuid: CX_PRICEY });
+		expect(trackEvent).not.toHaveBeenCalled();
+
+		await vi.waitFor(() => expect(trackEvent).toHaveBeenCalled(), {
+			timeout: 2000,
+		});
+		expect(trackEvent).toHaveBeenCalledTimes(1);
+		expect(trackEvent).toHaveBeenCalledWith("tool:use", {
+			tool_name: "upkeep_price",
+		});
 	});
 
 	it("lists every material without a price without a CX", async () => {

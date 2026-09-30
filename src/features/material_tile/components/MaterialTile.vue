@@ -137,8 +137,8 @@
 	function toggleDrawer(): void {
 		if (!props.disableDrawer) {
 			refShowDrawer.value = !refShowDrawer.value;
-			trackEvent("materialtile_market_drawer", {
-				materialTicker: props.ticker,
+			trackEvent("material:market_drawer_open", {
+				material_ticker: props.ticker,
 			});
 		}
 	}

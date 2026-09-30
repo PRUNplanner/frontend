@@ -12,7 +12,7 @@
 
 	// Composables
 	import { useBuildingData } from "@/database/services/useBuildingData";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -195,9 +195,10 @@
 				@update:value="
 					(value) => {
 						emit('create:building', value as string);
-						trackEvent('plan_create_building', {
-							planetNaturalId: props.planetId,
-							buildingTicker: value as string,
+						trackPlanEdit({
+							field: 'building_add',
+							planet_natural_id: props.planetId,
+							building_ticker: value as string,
 						});
 					}
 				" />
@@ -232,9 +233,10 @@
 				@update:building:amount="
 					(index: number, value: number) => {
 						emit('update:building:amount', index, value);
-						trackEvent('plan_update_building', {
-							planetNaturalId: props.planetId,
-							buildingTicker: building.name,
+						trackPlanEdit({
+							field: 'building_amount',
+							planet_natural_id: props.planetId,
+							building_ticker: building.name,
 							amount: value,
 						});
 					}
@@ -254,10 +256,10 @@
 							recipeIndex,
 							value
 						);
-						trackEvent('plan_update_building_recipe_amount', {
-							planetNaturalId: props.planetId,
-							buildingTicker: building.name,
-							recipeIndex: recipeIndex,
+						trackPlanEdit({
+							field: 'recipe_amount',
+							planet_natural_id: props.planetId,
+							building_ticker: building.name,
 							amount: value,
 						});
 					}
@@ -269,19 +271,20 @@
 							buildingIndex,
 							recipeIndex
 						);
-						trackEvent('plan_update_building_delete_recipe', {
-							planetNaturalId: props.planetId,
-							buildingTicker: building.name,
-							recipeIndex: recipeIndex,
+						trackPlanEdit({
+							field: 'recipe_delete',
+							planet_natural_id: props.planetId,
+							building_ticker: building.name,
 						});
 					}
 				"
 				@add:building:recipe="
 					(buildingIndex: number) => {
 						emit('add:building:recipe', buildingIndex);
-						trackEvent('plan_update_building_add_recipe', {
-							planetNaturalId: props.planetId,
-							buildingTicker: building.name,
+						trackPlanEdit({
+							field: 'recipe_add',
+							planet_natural_id: props.planetId,
+							building_ticker: building.name,
 						});
 					}
 				"
@@ -297,10 +300,11 @@
 							recipeIndex,
 							recipeId
 						);
-						trackEvent('plan_update_building_change_recipe', {
-							planetNaturalId: props.planetId,
-							buildingTicker: building.name,
-							recipeId,
+						trackPlanEdit({
+							field: 'recipe_change',
+							planet_natural_id: props.planetId,
+							building_ticker: building.name,
+							recipe_id: recipeId,
 						});
 					}
 				" />

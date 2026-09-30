@@ -93,8 +93,8 @@ describe("VerifyEmailComponent", () => {
 		expect(wrapper.text()).not.toContain(ERROR);
 		expect(input(wrapper).element.value).toBe("");
 		expect(sendButton(wrapper).element.disabled).toBe(true);
-		expect(trackEvent).toHaveBeenCalledWith("user_verify_email", {
-			status: true,
+		expect(trackEvent).toHaveBeenCalledWith("account:email_verify", {
+			is_success: true,
 		});
 	});
 
@@ -109,8 +109,8 @@ describe("VerifyEmailComponent", () => {
 		expect(wrapper.text()).toContain(ERROR);
 		expect(wrapper.text()).not.toContain(OK);
 		expect(input(wrapper).element.value).toBe("");
-		expect(trackEvent).toHaveBeenCalledWith("user_verify_email", {
-			status: false,
+		expect(trackEvent).toHaveBeenCalledWith("account:email_verify", {
+			is_success: false,
 		});
 	});
 

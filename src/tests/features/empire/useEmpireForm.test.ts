@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { nextTick, ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -24,6 +25,8 @@ const EMPIRE: PlanEmpireElement = {
 	plans: [],
 };
 
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+
 describe("useEmpireForm", () => {
 	beforeAll(() => {
 		setActivePinia(createPinia());
@@ -44,6 +47,9 @@ describe("useEmpireForm", () => {
 		localData.value.empire_permits_total = 3;
 
 		expect(await save()).toBe(true);
+		expect(trackEvent).toHaveBeenLastCalledWith("empire:update", {
+			is_success: true,
+		});
 
 		expect(JSON.parse(mock.history.put[0].data)).toEqual({
 			empire_name: "Test Empire",
@@ -62,6 +68,9 @@ describe("useEmpireForm", () => {
 		const { isLoading, save } = useEmpireForm(() => EMPIRE);
 
 		expect(await save()).toBe(false);
+		expect(trackEvent).toHaveBeenLastCalledWith("empire:update", {
+			is_success: false,
+		});
 
 		expect(isLoading.value).toBe(false);
 		expect(error).toHaveBeenCalledWith(

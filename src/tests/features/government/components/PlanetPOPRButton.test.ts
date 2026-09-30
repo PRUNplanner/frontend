@@ -83,8 +83,8 @@ describe("PlanetPOPRButton", () => {
 		expect(mock.history.get.map((r) => r.url)).toEqual([
 			poprUrl("AA-003a"),
 		]);
-		expect(trackEvent).toHaveBeenCalledWith("popr_load", {
-			planetNaturalId: "AA-003a",
+		expect(trackEvent).toHaveBeenCalledWith("planet:popr_load", {
+			planet_natural_id: "AA-003a",
 		});
 		expect(body().find(".n-card-header").text()).toBe(
 			"government.popr_button.modal_title"

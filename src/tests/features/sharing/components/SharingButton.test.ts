@@ -210,7 +210,7 @@ describe("SharingButton", () => {
 		expect(JSON.parse(mock.history.post[0].data)).toEqual({ plan: PLAN });
 		// the list is reloaded after creating
 		expect(mock.history.get).toHaveLength(1);
-		expect(tracked()).toEqual(["plan_share_create"]);
+		expect(tracked()).toEqual(["plan:share_create"]);
 		expect(modal().find(".font-mono").text()).toBe(SHARE_URL);
 		expect(toggle(wrapper).props("type")).toBe("success");
 	});
@@ -281,7 +281,7 @@ describe("SharingButton", () => {
 
 		expect(mock.history.delete).toHaveLength(1);
 		expect(mock.history.get).toHaveLength(1);
-		expect(tracked()).toEqual(["plan_share_delete"]);
+		expect(tracked()).toEqual(["plan:share_delete"]);
 		expect(shown(wrapper)).toBe(false);
 		expect(toggle(wrapper).props("type")).toBe("primary");
 		expect(toggle(wrapper).text()).toBe("sharing.buttons.share");

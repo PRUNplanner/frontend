@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanInfrastructure from "@/features/planning/components/PlanInfrastructure.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type { IInfrastructureRecord } from "@/features/planning/usePlanCalculation.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
 
 const INFRASTRUCTURE: IInfrastructureRecord = {
 	HB1: 1,
@@ -71,7 +71,7 @@ const areaButton = (wrapper: VueWrapper) =>
 
 describe("PlanInfrastructure", () => {
 	beforeEach(() => {
-		vi.mocked(trackEvent).mockClear();
+		vi.mocked(trackPlanEdit).mockClear();
 	});
 
 	it("lists habitations, then storages, with their amounts", async () => {
@@ -195,9 +195,10 @@ describe("PlanInfrastructure", () => {
 		expect(component.emitted("update:infrastructure")).toEqual([
 			["HBC", 25],
 		]);
-		expect(trackEvent).toHaveBeenCalledWith("plan_update_infrastructure", {
-			planetNaturalId: "ZZ-000a",
-			infrastructureType: "HBC",
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "infrastructure",
+			planet_natural_id: "ZZ-000a",
+			infrastructure_type: "HBC",
 			amount: 25,
 		});
 	});
@@ -233,7 +234,7 @@ describe("PlanInfrastructure", () => {
 		await numberInput(wrapper, 9).setValue("");
 
 		expect(component.emitted("update:infrastructure")).toBeUndefined();
-		expect(trackEvent).not.toHaveBeenCalled();
+		expect(trackPlanEdit).not.toHaveBeenCalled();
 	});
 
 	it("follows new amounts", async () => {

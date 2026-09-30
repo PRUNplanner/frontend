@@ -54,15 +54,9 @@
 	const recipeOptions: Ref<Record<string, PSelectOption[]>> = ref({});
 	const selectedNodeColorType: Ref<NodeColorType> = ref("Material");
 
-	async function generate(resetSelection: boolean = false) {
+	// track: false for the default chain built when the page opens
+	async function generate(resetSelection: boolean = false, track = true) {
 		if (resetSelection) selectedRecipes.value = {};
-
-		trackEvent("production_chain", {
-			materialTicker: selectedMaterial.value,
-			amount: selectedAmount.value,
-			recipes: Object.values(selectedRecipes.value),
-			terminals: selectedTerminals.value,
-		});
 
 		graph ??= useGraph();
 		const { create } = await graph;
@@ -76,6 +70,15 @@
 
 		selectedRecipes.value = graphData.value.recipeSelection;
 		recipeOptions.value = graphData.value.recipeOptions;
+
+		if (track)
+			trackEvent("tool:use", {
+				tool_name: "production_chain",
+				material_ticker: selectedMaterial.value,
+				amount: selectedAmount.value,
+				recipes: Object.values(selectedRecipes.value),
+				terminals: selectedTerminals.value,
+			});
 	}
 </script>
 
@@ -85,7 +88,7 @@
 		load-materials
 		load-recipes
 		load-buildings
-		@complete="generate()">
+		@complete="generate(false, false)">
 		<div class="min-h-screen flex flex-col">
 			<div
 				class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">

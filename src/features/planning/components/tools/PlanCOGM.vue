@@ -83,7 +83,7 @@
 	}
 
 	function reload(): void {
-		trackEvent("exchange_reload", { location: "cogm" });
+		trackEvent("exchange:reload", { location: "cogm" });
 		getCXData();
 	}
 
@@ -94,8 +94,8 @@
 			isPatching.value = true;
 
 			try {
-				trackEvent("exchange_patch", {
-					cxUuid: selectedCX.value.uuid,
+				trackEvent("exchange:update", {
+					cx_uuid: selectedCX.value.uuid,
 					location: "cogm",
 				});
 

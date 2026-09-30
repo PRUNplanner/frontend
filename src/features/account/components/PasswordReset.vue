@@ -47,7 +47,7 @@
 		isLoading.value = true;
 		requestResponse.value = null;
 
-		trackEvent("user_password_reset");
+		trackEvent("account:password_reset");
 
 		await useQuery("PostUserPasswordReset", {
 			email: inputEmail.value!,

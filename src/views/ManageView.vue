@@ -19,9 +19,6 @@
 		title: `${t("management.view_title")} | PRUNplanner`,
 	});
 
-	// Composables
-	import { trackUser } from "@/lib/analytics/useAnalytics";
-
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
@@ -51,14 +48,6 @@
 	const empireList: Ref<PlanEmpireElement[]> = ref([]);
 	const planList: Ref<Plan[]> = ref([]);
 	const cxList: Ref<CX[]> = ref([]);
-
-	async function planOnComplete() {
-		trackUser({
-			user_plans: planList.value.length,
-			user_empires: empireList.value.length,
-			user_exchanges: cxList.value.length,
-		});
-	}
 
 	// Save bar: CX selects and plan assignments, saved together
 	const empireRef: Ref<InstanceType<typeof ManageEmpire> | null> = ref(null);
@@ -132,8 +121,7 @@
 		load-shared
 		@data:cx="(value: CX[]) => (cxList = value)"
 		@data:empire:list="(value: PlanEmpireElement[]) => (empireList = value)"
-		@data:plan:list="(value: Plan[]) => (planList = value)"
-		@complete="planOnComplete">
+		@data:plan:list="(value: Plan[]) => (planList = value)">
 		<div
 			class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">
 			<h1 class="text-2xl font-bold my-auto">

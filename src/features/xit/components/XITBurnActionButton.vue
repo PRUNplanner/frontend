@@ -87,7 +87,7 @@
 
 	function show(): void {
 		if (!showDrawer.value) {
-			trackEvent("xit_burn_show");
+			trackEvent("xit:burn_open");
 
 			loadDrawer.value = true;
 			nextTick().then(() => (showDrawer.value = true));
@@ -173,7 +173,7 @@
 												fitOption.weight,
 												fitOption.volume
 											);
-											trackEvent('xit_burn_fit_ship', {
+											trackEvent('xit:burn_ship_fit', {
 												weight: fitOption.weight,
 												volume: fitOption.volume,
 											});
@@ -193,7 +193,7 @@
 						<PButton
 							@click="
 								() => {
-									trackEvent('xit_burn_copy');
+									trackEvent('xit:burn_copy');
 
 									copyToClipboard(
 										transferJSON(

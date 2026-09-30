@@ -118,7 +118,7 @@ describe("ChangePassword", () => {
 			old_password: OLD,
 			new_password: NEW,
 		});
-		expect(trackEvent).toHaveBeenCalledWith("user_password_change");
+		expect(trackEvent).toHaveBeenCalledWith("account:password_change");
 		expect(wrapper.text()).toContain(SUCCESS);
 		expect(wrapper.text()).not.toContain(ERROR);
 		expect(inputs(wrapper).map((i) => i.element.value)).toEqual(["", ""]);

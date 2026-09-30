@@ -36,7 +36,9 @@
 	async function loadData(planetNaturalId: string): Promise<void> {
 		buttonLoading.value = true;
 
-		trackEvent("popr_load", { planetNaturalId });
+		trackEvent("planet:popr_load", {
+			planet_natural_id: planetNaturalId,
+		});
 
 		try {
 			await useQuery("GetPlanetLastPOPR", {

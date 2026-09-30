@@ -4,7 +4,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import type { IAreaResult } from "@/features/planning/usePlanCalculation.types";
@@ -39,9 +39,10 @@
 			if (value === null) return;
 
 			emit("update:permits", value);
-			trackEvent("plan_update_permits", {
-				permits: value,
-				planetNaturalId: props.planetNaturalId,
+			trackPlanEdit({
+				field: "permits",
+				amount: value,
+				planet_natural_id: props.planetNaturalId,
 			});
 		},
 	});

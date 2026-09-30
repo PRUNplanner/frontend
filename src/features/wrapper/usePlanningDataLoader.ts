@@ -11,6 +11,7 @@ import { useCXData } from "@/features/cx/useCXData";
 
 // Util
 import { inertClone } from "@/util/data";
+import { trackUser } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type {
@@ -135,6 +136,7 @@ export function usePlanningDataLoader(
 				}
 
 				emits("data:empire:list", data);
+				trackUser({ empire_count: data.length });
 			},
 		},
 		{
@@ -157,6 +159,7 @@ export function usePlanningDataLoader(
 					new Set(data.map((e) => e.planet_natural_id)).values()
 				);
 
+				trackUser({ plan_count: data.length });
 				emits("data:plan:list", data);
 				emits("data:plan:list:planets", planetList);
 			},
@@ -193,6 +196,7 @@ export function usePlanningDataLoader(
 			load: () => queryStore.execute("GetAllCX", undefined),
 			onSuccess: (d: CX[]) => {
 				emits("data:cx", d);
+				trackUser({ cx_count: d.length });
 				if (!props.cxUuid && d.length > 0) {
 					emits("update:cxUuid", d[0].uuid);
 				}

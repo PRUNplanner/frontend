@@ -4,7 +4,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 	// Types & Interfaces
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
@@ -41,9 +41,10 @@
 		get: () => props.corphq,
 		set: (value: boolean) => {
 			emit("update:corphq", value);
-			trackEvent("plan_update_corphq", {
-				planetNaturalId: props.planetNaturalId,
-				corphq: value,
+			trackPlanEdit({
+				field: "corphq",
+				planet_natural_id: props.planetNaturalId,
+				value,
 			});
 		},
 	});
@@ -52,9 +53,10 @@
 		get: () => props.cogc,
 		set: (value: PlanCOGCProgram) => {
 			emit("update:cogc", value);
-			trackEvent("plan_update_cogc", {
-				planetNaturalId: props.planetNaturalId,
-				cogc: value,
+			trackPlanEdit({
+				field: "cogc",
+				planet_natural_id: props.planetNaturalId,
+				value,
 			});
 		},
 	});

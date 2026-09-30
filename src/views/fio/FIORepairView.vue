@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref } from "vue";
+	import { onMounted, ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -15,6 +15,7 @@
 
 	// Composables
 	import { useFIORepair } from "@/features/fio/useFIORepair";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
@@ -28,6 +29,12 @@
 	const { planetRepairTable } = useFIORepair(
 		ref(planningStore.fio_sites_planets)
 	);
+
+	// a use of the tool is a repair table shown, not the empty page
+	onMounted(() => {
+		if (planetRepairTable.value.length > 0)
+			trackEvent("tool:use", { tool_name: "fio_repair" });
+	});
 </script>
 
 <template>

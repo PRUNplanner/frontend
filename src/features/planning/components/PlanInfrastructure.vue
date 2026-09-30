@@ -9,7 +9,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 	import type { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
 
 	// Types & Interfaces
@@ -130,9 +130,10 @@
 					(value) => {
 						if (value !== null && value !== undefined) {
 							emit('update:infrastructure', inf, value);
-							trackEvent('plan_update_infrastructure', {
-								planetNaturalId: props.planetNaturalId,
-								infrastructureType: inf,
+							trackPlanEdit({
+								field: 'infrastructure',
+								planet_natural_id: props.planetNaturalId,
+								infrastructure_type: inf,
 								amount: value,
 							});
 						}

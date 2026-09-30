@@ -26,7 +26,6 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 import { useVersionCheck } from "@/lib/useVersionCheck";
 import {
 	trackEvent,
-	trackUser,
 	resetUser,
 	identifyUser,
 } from "@/lib/analytics/useAnalytics";
@@ -212,7 +211,7 @@ export const useUserStore = defineStore(
 		 * @author jplacht
 		 */
 		function logout(): void {
-			trackEvent("user_logout");
+			trackEvent("account:logout");
 
 			// reset user store
 			$reset();
@@ -257,7 +256,7 @@ export const useUserStore = defineStore(
 
 				setToken(tokenData.access, tokenData.refresh);
 
-				trackEvent("user_login", { username });
+				trackEvent("account:login");
 
 				// sets the current version to the available version
 				const { markUpdated } = useVersionCheck();
@@ -311,25 +310,7 @@ export const useUserStore = defineStore(
 					const result: UserProfile = await callGetProfile();
 
 					// identify users for posthog
-					identifyUser(result.id.toString(), {
-						username: result.username,
-					});
-
-					if (
-						result.fio_apikey !== profile.value?.fio_apikey ||
-						result.prun_username !== profile.value?.prun_username
-					) {
-						if (
-							result.fio_apikey !== null &&
-							result.prun_username !== null
-						)
-							trackUser({ fio_enabled: true });
-						else trackUser({ fio_enabled: false });
-
-						trackUser({
-							prun_username: result.prun_username,
-						});
-					}
+					identifyUser(result);
 
 					profile.value = result;
 				} catch (error) {

@@ -345,9 +345,9 @@
 					@click="
 						() => {
 							refShowCOGM = true;
-							trackEvent('plan_tool_cogm', {
-								planetNaturalId: props.planetId,
-								recipeId: localRecipeData.recipeId,
+							trackEvent('plan:cogm_open', {
+								planet_natural_id: props.planetId,
+								recipe_id: localRecipeData.recipeId,
 							});
 						}
 					">

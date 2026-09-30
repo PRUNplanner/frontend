@@ -301,7 +301,9 @@
 			? (layoutNavigationStyle.value = "collapsed")
 			: (layoutNavigationStyle.value = "full");
 
-		trackEvent("navigation_toggle", { size: layoutNavigationStyle.value });
+		trackEvent("app:navigation_toggle", {
+			navigation_style: layoutNavigationStyle.value,
+		});
 	}
 
 	const isFull = computed(() => !!(layoutNavigationStyle.value === "full"));

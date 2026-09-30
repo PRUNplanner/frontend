@@ -64,15 +64,20 @@
 	const selectedMaterial: Ref<string> = ref("DW");
 	const selectedChartFullscreen: Ref<boolean> = ref(false);
 
-	const { fetchData, dataCandlestick, selectedInterval } =
+	const { fetchData, hasError, dataCandlestick, selectedInterval } =
 		useMarketExplorationChart(selectedExchange, selectedMaterial);
 
-	function fetch(): void {
-		trackEvent("marketexploration_explore", {
-			exchange: selectedExchange.value,
-			materialTicker: selectedMaterial.value,
-		});
-		fetchData();
+	async function fetch(track = true): Promise<void> {
+		const exchange = selectedExchange.value;
+		const material_ticker = selectedMaterial.value;
+
+		await fetchData();
+		if (track && !hasError.value)
+			trackEvent("tool:use", {
+				tool_name: "market_exploration",
+				exchange,
+				material_ticker,
+			});
 	}
 
 	interface IExchangeOverview {
@@ -133,7 +138,8 @@
 		await generateDataOverview();
 		materialOptions.value = materialSelectOptions.value;
 
-		fetch();
+		// the default material on page open is not a use of the tool
+		fetch(false);
 	});
 
 	function materialOverviewData(): IExchangeOverview {
@@ -195,7 +201,7 @@
 							searchable
 							:options="materialOptions"
 							class="w-30"
-							@update:value="fetch" />
+							@update:value="fetch()" />
 
 						<HelpDrawer file-name="tools_market_exploration" />
 					</div>

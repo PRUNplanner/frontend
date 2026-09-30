@@ -19,7 +19,7 @@ more.
   `src/assets/css/materials.css`.
 - **The market drawer** shows `market_exploration/components/MaterialDataChart`
   and `cx/components/MaterialCXOverviewTable`, and tracks a
-  `materialtile_market_drawer` analytics event.
+  `material:market_drawer_open` analytics event.
 
 ## Gotchas
 

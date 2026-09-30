@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanBonuses from "@/features/planning/components/PlanBonuses.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
 
 async function mountBonuses(props: Record<string, unknown> = {}) {
 	return mountComponent(PlanBonuses, {
@@ -23,7 +23,7 @@ const checkbox = (wrapper: VueWrapper) => wrapper.find("input[type=checkbox]");
 
 describe("PlanBonuses", () => {
 	beforeEach(() => {
-		vi.mocked(trackEvent).mockClear();
+		vi.mocked(trackPlanEdit).mockClear();
 	});
 
 	it("offers no program, the advertising and the workforce programs", async () => {
@@ -87,9 +87,10 @@ describe("PlanBonuses", () => {
 		await checkbox(wrapper).setValue(true);
 
 		expect(component.emitted("update:corphq")).toEqual([[true]]);
-		expect(trackEvent).toHaveBeenCalledWith("plan_update_corphq", {
-			planetNaturalId: "ZZ-000a",
-			corphq: true,
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "corphq",
+			planet_natural_id: "ZZ-000a",
+			value: true,
 		});
 	});
 
@@ -99,9 +100,10 @@ describe("PlanBonuses", () => {
 		await checkbox(wrapper).setValue(false);
 
 		expect(component.emitted("update:corphq")).toEqual([[false]]);
-		expect(trackEvent).toHaveBeenCalledWith("plan_update_corphq", {
-			planetNaturalId: "ZZ-000a",
-			corphq: false,
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "corphq",
+			planet_natural_id: "ZZ-000a",
+			value: false,
 		});
 	});
 
@@ -111,9 +113,10 @@ describe("PlanBonuses", () => {
 		select(wrapper).vm.$emit("update:value", "PIONEERS");
 
 		expect(component.emitted("update:cogc")).toEqual([["PIONEERS"]]);
-		expect(trackEvent).toHaveBeenCalledWith("plan_update_cogc", {
-			planetNaturalId: "ZZ-000a",
-			cogc: "PIONEERS",
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "cogc",
+			planet_natural_id: "ZZ-000a",
+			value: "PIONEERS",
 		});
 	});
 

@@ -3,6 +3,12 @@ import { setActivePinia, createPinia } from "pinia";
 import { useUserStore } from "@/stores/userStore";
 
 import router from "@/router";
+import { trackPageview } from "@/lib/analytics/useAnalytics";
+
+vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
+	trackPageview: vi.fn(),
+}));
 
 // mock views, otherwise loading of components will take long
 
@@ -15,6 +21,14 @@ vi.mock("@/views/PlanLoadView.vue", () => ({
 }));
 
 vi.mock("@/views/EmpireView.vue", () => ({
+	default: { template: "<div />" },
+}));
+
+vi.mock("@/views/PlanetSearchView.vue", () => ({
+	default: { template: "<div />" },
+}));
+
+vi.mock("@/views/ManageView.vue", () => ({
 	default: { template: "<div />" },
 }));
 
@@ -86,5 +100,31 @@ describe("Router NavigationGuard", () => {
 		await router.isReady();
 
 		expect(router.currentRoute.value.name).toBe("plan");
+		// pageviews are grouped by route name, the URL carries ids
+		expect(trackPageview).toHaveBeenLastCalledWith("plan");
+	});
+
+	it("counts a query change on the same page as no pageview", async () => {
+		useUserStore().setToken("foo", "moo");
+		await router.push({ name: "search" });
+		vi.mocked(trackPageview).mockClear();
+
+		// planet search writes its filters into the query
+		await router.replace({ name: "search", query: { q: "fertile" } });
+
+		expect(trackPageview).not.toHaveBeenCalled();
+	});
+
+	it("counts a refused navigation as no pageview", async () => {
+		useUserStore().setToken("foo", "moo");
+		await router.push({ name: "search" });
+		vi.mocked(trackPageview).mockClear();
+		const stop = router.beforeEach(() => false);
+
+		await router.push({ name: "manage" });
+		stop();
+
+		expect(router.currentRoute.value.name).toBe("search");
+		expect(trackPageview).not.toHaveBeenCalled();
 	});
 });

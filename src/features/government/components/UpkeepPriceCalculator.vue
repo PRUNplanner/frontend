@@ -1,11 +1,20 @@
 <script setup lang="ts">
-	import { type ComputedRef, type Ref, computed, ref, watch } from "vue";
+	import {
+		type ComputedRef,
+		type Ref,
+		computed,
+		onBeforeUnmount,
+		ref,
+		watch,
+	} from "vue";
+	import { debounce } from "lodash";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
 	// Composables
 	import { usePrice } from "@/features/cx/usePrice";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Calculations
 	import {
@@ -63,6 +72,14 @@
 		() => calculationResults.value[selectedNeedType.value]
 	);
 
+	// one analytics event per settled calculation: it runs on open and
+	// again once the exchange preference is known
+	const trackUse = debounce(
+		() => trackEvent("tool:use", { tool_name: "upkeep_price" }),
+		1000
+	);
+	onBeforeUnmount(trackUse.cancel);
+
 	async function calculate() {
 		isCalculating.value = true;
 
@@ -71,6 +88,7 @@
 			calculationResults.value = await calculateAllNeeds((ticker) =>
 				getPrice(ticker, "BUY")
 			);
+			trackUse();
 		} catch (err) {
 			console.error(err);
 		} finally {
