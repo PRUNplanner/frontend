@@ -46,7 +46,8 @@
 			// successfull login should redirect back to origin, if present
 			if (urlParams.has("redirectTo") && urlParams.get("redirectTo")) {
 				router.push({ path: urlParams.get("redirectTo")! });
-			} else {
+			} else if (router.currentRoute.value.name !== "shared-plan") {
+				// a shared plan stays open, to be cloned right away
 				router.push({ path: "/empire" });
 			}
 		}
