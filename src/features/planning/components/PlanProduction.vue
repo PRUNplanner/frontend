@@ -162,7 +162,9 @@
 				</PTooltip>
 			</div>
 		</div>
-		<div class="sm:justify-self-end-safe flex child:my-auto gap-3">
+		<div
+			v-if="!disabled"
+			class="sm:justify-self-end-safe flex child:my-auto gap-3">
 			<div class="flex gap-3">
 				<div class="text-sm text-nowrap">
 					{{ $t("plan.components.production.form.match_cogc") }}
@@ -171,8 +173,7 @@
 					v-model:checked="localMatchCOGC"
 					:aria-label="
 						$t('plan.components.production.form.match_cogc')
-					"
-					:disabled="disabled" />
+					" />
 			</div>
 
 			<PSelect
@@ -180,7 +181,6 @@
 				:aria-label="
 					$t('plan.components.production.form.select_placeholder')
 				"
-				:disabled="disabled"
 				searchable
 				:placeholder="
 					t('plan.components.production.form.select_placeholder')

@@ -758,9 +758,8 @@
 					</PTooltip>
 				</div>
 
-				<PButtonGroup v-if="userStore.isLoggedIn">
+				<PButtonGroup v-if="userStore.isLoggedIn && !disabled">
 					<PlanSaveButton
-						v-if="!disabled"
 						:existing="existing"
 						:saveable="saveable"
 						:saving="refIsSaving"
@@ -768,9 +767,7 @@
 						:modified="modified"
 						:saved-at="savedAt"
 						@save="save" />
-					<PButton
-						v-if="existing && !disabled"
-						@click="openSaveAsModal">
+					<PButton v-if="existing" @click="openSaveAsModal">
 						<template #icon>
 							<ContentCopySharp />
 						</template>
@@ -778,7 +775,6 @@
 					</PButton>
 					<PButton
 						v-if="existing"
-						:disabled="disabled"
 						:loading="refIsReloading"
 						@click="reloadPlan">
 						<template #icon>
@@ -788,7 +784,7 @@
 					</PButton>
 
 					<ShareButton
-						v-if="!disabled && refPlanData.uuid"
+						v-if="refPlanData.uuid"
 						:plan-uuid="refPlanData.uuid" />
 				</PButtonGroup>
 				<!-- empty div to maintain layout -->

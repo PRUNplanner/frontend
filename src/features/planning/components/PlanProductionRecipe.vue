@@ -148,7 +148,7 @@
 				})
 			"
 			:disabled="disabled"
-			show-buttons
+			:show-buttons="!disabled"
 			size="sm"
 			:min="0"
 			class="w-full max-w-24"

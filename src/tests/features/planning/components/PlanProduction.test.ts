@@ -135,10 +135,9 @@ describe("PlanProduction", () => {
 			disabled: true,
 			cxUuid: undefined,
 		});
-		expect(wrapper.find("input[type=checkbox]").element).toHaveProperty(
-			"disabled",
-			true
-		);
+		// read-only: nothing to add a building with
+		expect(wrapper.find("input[type=checkbox]").exists()).toBe(false);
+		expect(wrapper.findComponent(PSelect).exists()).toBe(false);
 	});
 
 	it("offers production buildings not in the plan yet", async () => {
