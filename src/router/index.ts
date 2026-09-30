@@ -4,7 +4,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import { useUserStore } from "@/stores/userStore";
 
 // Composables
-// import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackContext } from "@/lib/analytics/useAnalytics";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -214,11 +214,8 @@ router.beforeEach((to, _) => {
 	}
 });
 
-// router.afterEach((to, from) => {
-// 	trackEvent("page_view", {
-// 		page_name: to.name?.toString() ?? to.path,
-// 		referrer: from.name?.toString(),
-// 	});
-// });
+router.afterEach((to) => {
+	trackContext({ route_name: to.name?.toString() });
+});
 
 export default router;

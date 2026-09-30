@@ -95,6 +95,9 @@ and `/shared/:sharedPlanUuid`, which is read-only.
   - PostHog (`lib/analytics/`) is loaded only after the user consents
     (`useAnalyticsConsent`, asked once by `AnalyticsConsentDialog`, changed
     in Profile); without consent nothing is stored or sent.
+  - Component errors reach PostHog through `app.config.errorHandler`
+    (`trackVueError`, set in `main.ts`); `router.afterEach` registers
+    `route_name` on every event and exception.
   - The PostHog key comes from `window.__APP_CONFIG__`, injected at deploy
     time through `env.js` (see `netlify.toml` and `docker-compose.yaml`).
 - **Deploy.**
