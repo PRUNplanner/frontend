@@ -29,7 +29,7 @@
 				"clear_feed": "Feed leeren",
 				"show_overview": "Übersicht anzeigen",
 				"hide_overview": "Übersicht ausblenden",
-				"alerts": "Alert notifications"
+				"alerts": "Warnmeldungen"
 			}
 		},
 		"alert_feed": {
@@ -99,9 +99,9 @@
 			}
 		},
 		"detector": {
-			"field": "Field",
-			"operator": "Operator",
-			"target_type": "Target type"
+			"field": "Feld",
+			"operator": "Vergleichszeichen",
+			"target_type": "Zieltyp"
 		}
 	}
 }
