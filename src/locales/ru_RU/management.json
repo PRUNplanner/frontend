@@ -42,7 +42,7 @@
 	},
 	"assignments": {
 		"title": "План ↔ Назначения империи",
-		"description": "Every planned base can be assigned to multiple empires. This allows you to simultaneously keep track of your existing Prosperous Universe empire, corporation production chains or future expansion plans. Changes are saved together from the bar at the bottom.",
+		"description": "Каждая запланированная база может быть назначена нескольким империям. Это позволяет одновременно отслеживать вашу текущую империю в Prosperous Universe, производственные цепочки корпорации или планы будущего расширения.",
 		"deletion": {
 			"title": "Подтверждение удаления плана",
 			"content": "Вы уверены? Удаление плана нельзя отменить."
