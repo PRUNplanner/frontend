@@ -57,8 +57,8 @@
 	},
 	"analysis": {
 		"plan_profit": "计划盈利 (ȼ)",
-		"material_profits": "材料利润 (ȼ)",
-		"material_costs": "材料成本 (ȼ)",
+		"material_profits": "材料收益",
+		"material_costs": "材料成本",
 		"net_production": "净生产",
 		"net_consumption": "净消耗",
 		"exclusive_production": "纯生产物资",
