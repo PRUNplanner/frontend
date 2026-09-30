@@ -36,7 +36,7 @@ const { passThrough, fake, toast, guards } = vi.hoisted(() => {
 		}),
 		fake,
 		toast: vi.fn(),
-		guards: [] as (() => boolean | undefined)[],
+		guards: [] as ((to: { fullPath: string }) => boolean | undefined)[],
 	};
 });
 
@@ -86,7 +86,9 @@ vi.mock(
 vi.mock("@/ui/useToast", () => ({ useToast: () => toast }));
 vi.mock("vue-router", async (original) => ({
 	...(await original<typeof import("vue-router")>()),
-	onBeforeRouteLeave: (guard: () => boolean | undefined) =>
+	onBeforeRouteLeave: (
+		guard: (to: { fullPath: string }) => boolean | undefined
+	) =>
 		guards.push(guard),
 }));
 
@@ -229,13 +231,14 @@ describe("ManageView", () => {
 		const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
 		await mountView();
 		const guard = guards.at(-1)!;
+		const to = { fullPath: "/empire" };
 
-		expect(guard()).toBeUndefined();
+		expect(guard(to)).toBeUndefined();
 		expect(confirm).not.toHaveBeenCalled();
 
 		setChanges(0, 1);
 		await flushPromises();
-		expect(guard()).toBe(false);
+		expect(guard(to)).toBe(false);
 		expect(confirm).toHaveBeenCalledWith(
 			"management.save_bar.leave_unsaved"
 		);

@@ -101,7 +101,7 @@
 		UndoSharp,
 		RedoSharp,
 	} from "@vicons/material";
-	import { onBeforeRouteLeave } from "vue-router";
+	import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 
 	const props = defineProps({
 		disabled: {
@@ -520,36 +520,14 @@
 		),
 	});
 
-	// Route Guard
-	onBeforeRouteLeave(() => {
-		if (modified.value && !props.sharedPlanUuid) {
+	// Route and Browser Guard: leaving with unsaved changes
+	useUnsavedGuard(
+		() => modified.value && !props.sharedPlanUuid,
+		() => t("plan.notifications.leave_unsaved"),
+		() =>
 			trackEvent("plan_leave_changed", {
 				planetNaturalId: planetData.planet_natural_id,
-			});
-
-			const answer = confirm(t("plan.notifications.leave_unsaved"));
-
-			if (!answer) return false;
-		}
-	});
-
-	// Browser Guard: tab close or reload with unsaved changes
-	function onBeforeUnload(e: BeforeUnloadEvent): void {
-		e.preventDefault();
-	}
-
-	watch(
-		() => modified.value && !props.sharedPlanUuid,
-		(unsaved) => {
-			if (unsaved)
-				window.addEventListener("beforeunload", onBeforeUnload);
-			else window.removeEventListener("beforeunload", onBeforeUnload);
-		},
-		{ immediate: true }
-	);
-
-	onUnmounted(() =>
-		window.removeEventListener("beforeunload", onBeforeUnload)
+			})
 	);
 
 	// Keyboard: Ctrl/Cmd+S saves, Ctrl/Cmd+Z undoes, +Shift redoes
