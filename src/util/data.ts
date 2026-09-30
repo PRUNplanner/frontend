@@ -1,6 +1,40 @@
 import { toRaw, isRef } from "vue";
 
 /**
+ * Unwraps reactive proxies at every level of plain objects and arrays.
+ * Anything else (Date, Map, Set, typed arrays, primitives) is returned as is.
+ * Unlike structuredClone it keeps neither cycles nor shared references.
+ */
+function toRawDeep<T>(value: T): T {
+	const raw = toRaw(value);
+	if (Array.isArray(raw)) return raw.map(toRawDeep) as T;
+	if (
+		raw !== null &&
+		typeof raw === "object" &&
+		Object.getPrototypeOf(raw) === Object.prototype
+	) {
+		return Object.fromEntries(
+			Object.entries(raw).map(([key, v]) => [key, toRawDeep(v)])
+		) as T;
+	}
+	return raw;
+}
+
+/**
+ * structuredClone that survives reactive proxies below the top level, as
+ * left behind by spreading reactive state (`{ ...props.filter }`). Only
+ * values structuredClone rejects pay for the unwrapping walk.
+ */
+function cloneRaw<T>(raw: T): T {
+	try {
+		return structuredClone(raw);
+	} catch (err) {
+		if ((err as Error)?.name !== "DataCloneError") throw err;
+		return structuredClone(toRawDeep(raw));
+	}
+}
+
+/**
  * Deep-clones a ref/reactive value into a completely inert (non-proxy) copy.
  *
  * - Uses native structuredClone when available (fastest, handles Map/Set/Date/etc).
@@ -42,7 +76,7 @@ export const inertClone = (() => {
 				return raw as T;
 			}
 
-			return structuredClone(raw) as T;
+			return cloneRaw(raw) as T;
 		};
 	} else {
 		// Slower branch: primitives/arrays/objects only
@@ -116,7 +150,7 @@ export function redact<T>(obj: T, keysToRedact: string[]): T {
 export function deepClone<T>(obj: T): T {
 	const raw = toRaw(obj);
 	return typeof structuredClone === "function"
-		? structuredClone(raw)
+		? cloneRaw(raw)
 		: JSON.parse(JSON.stringify(raw));
 }
 

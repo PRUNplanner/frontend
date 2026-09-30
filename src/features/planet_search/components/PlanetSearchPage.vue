@@ -73,12 +73,11 @@
 	// Types & Interfaces
 	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-	import {
-		PlanetSearchFilterSchema,
-		type PlanetSearchFilter,
-		type PlanetSearchReference,
-		type PlanetSearchSaved,
-		type PlanetSearchView,
+	import type {
+		PlanetSearchFilter,
+		PlanetSearchReference,
+		PlanetSearchSaved,
+		PlanetSearchView,
 	} from "@/features/planet_search/planetSearch.schemas";
 	import type { IPlanetSearchSort } from "@/features/planet_search/planetSearch.types";
 
@@ -373,9 +372,7 @@
 		prefs.value.savedSearches.push({
 			id: crypto.randomUUID(),
 			name,
-			// a plain copy: after a panel change the filter holds reactive
-			// proxies, which deepClone (structuredClone) can't copy
-			filter: PlanetSearchFilterSchema.parse(filter.value),
+			filter: deepClone(filter.value),
 			view: view.value,
 		});
 		toast(t("planet_search.header.saved_toast", { name }));
