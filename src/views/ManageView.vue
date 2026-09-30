@@ -7,9 +7,8 @@
 		onUnmounted,
 		ref,
 		type Ref,
-		watch,
 	} from "vue";
-	import { onBeforeRouteLeave } from "vue-router";
+	import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -116,34 +115,13 @@
 		saveState.value = "idle";
 	}
 
-	// Route Guard
-	onBeforeRouteLeave(() => {
-		if (totalChanged.value > 0) {
-			const answer = confirm(t("management.save_bar.leave_unsaved"));
-
-			if (!answer) return false;
-		}
-	});
-
-	// Browser Guard: tab close or reload with unsaved changes
-	function onBeforeUnload(e: BeforeUnloadEvent): void {
-		e.preventDefault();
-	}
-
-	watch(
+	// Route and Browser Guard: leaving with unsaved changes
+	useUnsavedGuard(
 		() => totalChanged.value > 0,
-		(unsaved) => {
-			if (unsaved)
-				window.addEventListener("beforeunload", onBeforeUnload);
-			else window.removeEventListener("beforeunload", onBeforeUnload);
-		},
-		{ immediate: true }
+		() => t("management.save_bar.leave_unsaved")
 	);
 
-	onUnmounted(() => {
-		window.removeEventListener("beforeunload", onBeforeUnload);
-		clearTimeout(savedTimer);
-	});
+	onUnmounted(() => clearTimeout(savedTimer));
 </script>
 
 <template>
