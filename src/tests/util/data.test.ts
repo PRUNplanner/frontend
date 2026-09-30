@@ -7,7 +7,7 @@ import {
 	beforeAll,
 	afterAll,
 } from "vitest";
-import { ref, reactive, isReactive } from "vue";
+import { ref, reactive, isReactive, toRaw } from "vue";
 import {
 	copyToClipboard,
 	deepClone,
@@ -270,6 +270,65 @@ describe("deepClone (JSON fallback)", () => {
 		expect(clone).toEqual({ a: 1, b: { c: 2 } });
 		expect(clone).not.toBe(source.value);
 		expect(clone.b).not.toBe(source.value.b);
+	});
+});
+
+describe("nested reactive proxies", () => {
+	const helpers = { deepClone, inertClone: inertCloneDefault };
+
+	describe.each(Object.entries(helpers))("%s", (_name, clone) => {
+		it("clones an object holding a reactive value", () => {
+			const result = clone({ nested: reactive({ a: [1, 2] }) });
+
+			expect(result).toEqual({ nested: { a: [1, 2] } });
+			expect(isReactive(result.nested)).toBe(false);
+		});
+
+		it("clones an array of reactive objects", () => {
+			const result = clone([reactive({ a: 1 }), reactive({ a: 2 })]);
+
+			expect(result).toEqual([{ a: 1 }, { a: 2 }]);
+			expect(isReactive(result[0])).toBe(false);
+		});
+
+		it("clones a spread of reactive state", () => {
+			const source = reactive({ list: [1, 2], deep: { b: { c: 3 } } });
+			const result = clone({ ...source, x: 1 });
+
+			expect(result).toEqual({
+				list: [1, 2],
+				deep: { b: { c: 3 } },
+				x: 1,
+			});
+			expect(isReactive(result.deep)).toBe(false);
+			expect(result.list).not.toBe(toRaw(source.list));
+		});
+
+		it("keeps Date and Map next to a reactive value", () => {
+			const result = clone({
+				nested: reactive({ a: 1 }),
+				date: new Date(0),
+				map: new Map([["k", 1]]),
+			});
+
+			expect(result.nested).toEqual({ a: 1 });
+			expect(result.date).toBeInstanceOf(Date);
+			expect(result.map.get("k")).toBe(1);
+		});
+
+		it("still throws for values that can't be cloned", () => {
+			expect(() => clone({ fn: () => 1 })).toThrow();
+		});
+
+		it("rethrows errors other than DataCloneError", () => {
+			const source = {
+				get x(): number {
+					throw new TypeError("boom");
+				},
+			};
+
+			expect(() => clone(source)).toThrow(TypeError);
+		});
 	});
 });
 

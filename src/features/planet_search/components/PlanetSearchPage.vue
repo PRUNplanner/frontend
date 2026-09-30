@@ -373,8 +373,8 @@
 		prefs.value.savedSearches.push({
 			id: crypto.randomUUID(),
 			name,
-			// a plain copy: after a panel change the filter holds reactive
-			// proxies, which deepClone (structuredClone) can't copy
+			// a plain, validated copy: after a panel change the filter
+			// holds reactive proxies
 			filter: PlanetSearchFilterSchema.parse(filter.value),
 			view: view.value,
 		});
