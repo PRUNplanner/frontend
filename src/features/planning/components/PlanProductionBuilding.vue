@@ -112,7 +112,7 @@
 				:value="localBuildingData.amount"
 				size="sm"
 				:disabled="disabled"
-				show-buttons
+				:show-buttons="!disabled"
 				:min="0"
 				class="max-w-25"
 				@update:value="
@@ -127,9 +127,8 @@
 					}
 				" />
 			<PButton
-				v-if="localBuildingData.recipeOptions.length > 0"
+				v-if="!disabled && localBuildingData.recipeOptions.length > 0"
 				size="sm"
-				:disabled="disabled"
 				@click="emit('add:building:recipe', buildingIndex)">
 				<template #icon><PlusSharp /></template>
 				{{
@@ -236,8 +235,8 @@
 			</div>
 			<div class="flex justify-end">
 				<PButton
+					v-if="!disabled"
 					:aria-label="$t('common.buttons.delete')"
-					:disabled="disabled"
 					size="sm"
 					type="error"
 					@click="emit('delete:building', buildingIndex)">

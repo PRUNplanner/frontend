@@ -26,6 +26,9 @@ when every step has finished.
   `update:cxUuid`, which resolve the default empire and CX.
 - **Rendering.** The slot renders inside `<Suspense>`, so children can
   `await` data in `<script setup>`.
+- **Missing shared plan.** A 404 on the `shared-plan-uuid` step
+  (`sharedPlanMissing`) shows "no longer available" with a link home instead
+  of the step list. Other errors keep the loader with the failed step.
 
 ## Gotchas
 
@@ -36,4 +39,5 @@ when every step has finished.
 
 ## Tests
 
-None. Coverage excludes this folder.
+`src/tests/features/wrapper/components/WrapperPlanningDataLoader.test.ts`
+(`pnpm test:components`). Coverage excludes this folder.

@@ -18,15 +18,23 @@ plan (`/shared/:sharedPlanUuid`) and shows their view counts.
   all rows.
 - **`components/SharingButton.vue`**: button with the view count that
   opens `SharingModal`.
+- **`components/SharedPlanBanner.vue`**: shown by `PlanView` above a shared
+  plan. It says the plan is read-only and priced with the universe 30-day
+  average. Logged in it emits `clone`; visitors get Create Account and
+  Login, which open the header panels through
+  `features/account/useAuthPanel`.
 
 ## Data
 
 - `planningStore.shared` is keyed by **plan uuid**, not by the shared uuid.
 - Opening a shared link loads the plan through `WrapperPlanningDataLoader
-  shared-plan-uuid` (the `GetSharedPlan` query). Visitors can clone it
-  through `usePlan().cloneSharedPlan`.
+  shared-plan-uuid` (the `GetSharedPlan` query). Logged in users can clone
+  it through `usePlan().cloneSharedPlan`.
+- A shared plan never uses a CX preference: the backend sends only the plan,
+  and viewers see the universe 30-day average prices.
 
 ## Tests
 
-`src/tests/features/sharing/useSharing.test.ts` and
-`src/tests/features/api/sharingData.api.test.ts`.
+`src/tests/features/sharing/useSharing.test.ts`,
+`src/tests/features/api/sharingData.api.test.ts` and, with
+`pnpm test:components`, `src/tests/features/sharing/components/`.

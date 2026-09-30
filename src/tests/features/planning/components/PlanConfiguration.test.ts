@@ -106,11 +106,11 @@ describe("PlanConfiguration", () => {
 		expect(select(wrapper).props("value")).toBe("e-alpha");
 	});
 
-	it("disables name and empire", async () => {
+	it("read-only: disables the name and hides the empire", async () => {
 		const { wrapper } = await mountConfiguration({ disabled: true });
 
 		expect(nameInput(wrapper).disabled).toBe(true);
-		expect(select(wrapper).props("disabled")).toBe(true);
+		expect(select(wrapper).exists()).toBe(false);
 	});
 
 	it("enables name and empire", async () => {

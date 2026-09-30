@@ -13,11 +13,15 @@ email verification, and requesting and performing a password reset.
 
 | Component | Calls |
 | --- | --- |
-| `LoginComponent.vue` | `userStore.performLogin(username, password)`. It stores the tokens, loads the profile, then navigates (honours `?redirectTo=`) |
+| `LoginComponent.vue` | `userStore.performLogin(username, password)`. It stores the tokens, loads the profile, then navigates: to `?redirectTo=`, else to `/empire`, but a shared plan (`shared-plan` route) stays open |
 | `RegistrationComponent.vue` | `PostUserRegistration` |
 | `VerifyEmailComponent.vue` | `PostUserVerifyEmail` / `PostUserResendEmailVerification` |
 | `RequestPasswordReset.vue` | `PostUserRequestPasswordReset` |
 | `PasswordReset.vue` | `PostUserPasswordReset` |
+
+`useAuthPanel.ts` holds which header panel (login or registration) is open,
+as module state: `HomepageHeader` renders and toggles the panels,
+`SharedPlanBanner` opens them with `open("login" | "registration")`.
 
 ## Data
 
@@ -29,4 +33,6 @@ email verification, and requesting and performing a password reset.
 ## Tests
 
 The API is covered in `src/tests/features/api/userData.api.test.ts`. Login
-and refresh are covered in `src/tests/stores/userStore.test.ts`.
+and refresh are covered in `src/tests/stores/userStore.test.ts`, where the
+login navigates in `src/tests/features/account/components/LoginComponent.test.ts`
+(`pnpm test:components`).

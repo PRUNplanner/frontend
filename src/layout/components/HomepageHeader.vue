@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, type Ref } from "vue";
+	import { onUnmounted } from "vue";
 
 	const { showHeader = true } = defineProps<{
 		showHeader?: boolean;
@@ -8,22 +8,23 @@
 	// UI
 	import { NCollapseTransition } from "naive-ui";
 
+	// Composables
+	import { useAuthPanel } from "@/features/account/useAuthPanel";
+
 	// Components
 	import LoginComponent from "@/features/account/components/LoginComponent.vue";
 	import RegistrationComponent from "@/features/account/components/RegistrationComponent.vue";
 
-	const refShowLogin: Ref<boolean> = ref(false);
-	const refShowRegistration: Ref<boolean> = ref(false);
+	const {
+		showLogin: refShowLogin,
+		showRegistration: refShowRegistration,
+		toggleLogin,
+		toggleRegistration,
+		close,
+	} = useAuthPanel();
 
-	function toggleLogin(): void {
-		refShowRegistration.value = false;
-		refShowLogin.value = !refShowLogin.value;
-	}
-
-	function toggleRegistration(): void {
-		refShowLogin.value = false;
-		refShowRegistration.value = !refShowRegistration.value;
-	}
+	// the header leaves on login, the next visitor starts with closed panels
+	onUnmounted(close);
 </script>
 
 <template>

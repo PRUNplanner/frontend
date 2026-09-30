@@ -51,6 +51,10 @@ editor UI. The engine is documented in depth in
 - **Panels don't compute anything.** They receive `result` slices as props
   and emit events, and `PlanView` routes those events to `handle*`
   functions. Keep new panels the same way.
+- **`disabled` means read-only** (a shared plan). Panels hide what only
+  makes sense while editing (add building, add or delete recipe, recipe
+  picker, empire, amount steppers) instead of greying it out. Inputs that
+  show a value stay, disabled.
 - **Put new math in `engine/`** as exported plain functions with tests in
   `src/tests/features/planning/engine/`. Components never write into
   `result`: bind `:value` and emit.

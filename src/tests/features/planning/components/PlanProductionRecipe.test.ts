@@ -241,6 +241,17 @@ describe("PlanProductionRecipe", () => {
 		).toBe(true);
 	});
 
+	it("read-only: the recipe can't be changed or deleted", async () => {
+		const { wrapper, component } = await mountRecipe({ disabled: true });
+
+		expect(await openOptions(wrapper)).toHaveLength(0);
+		expect(wrapper.find("svg[aria-hidden='true']").exists()).toBe(false);
+		expect(
+			wrapper.find('button[aria-label="common.buttons.delete"]').exists()
+		).toBe(false);
+		expect(component.emitted()).toEqual({});
+	});
+
 	it("shows the daily share unless the recipe runs all day", async () => {
 		const { wrapper, setProps } = await mountRecipe();
 

@@ -119,11 +119,13 @@
 						: t('plan.save_status.name_to_save')
 				" />
 		</PFormItem>
-		<PFormItem :label="t('plan.components.configuration.empire')">
+		<!-- a read-only (shared) plan has no empire to pick -->
+		<PFormItem
+			v-if="!disabled"
+			:label="t('plan.components.configuration.empire')">
 			<PSelect
 				v-model:value="localActiveEmpireUuid"
 				class="w-full"
-				:disabled="disabled"
 				:options="empireSelectOptions" />
 		</PFormItem>
 	</PForm>

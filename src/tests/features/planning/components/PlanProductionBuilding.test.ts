@@ -191,14 +191,20 @@ describe("PlanProductionBuilding", () => {
 		expect(button(wrapper, ADD_RECIPE)).toBeUndefined();
 	});
 
-	it("disables the inputs and buttons", async () => {
+	it("read-only: disables the amount and hides the buttons", async () => {
 		const { wrapper } = await mountBuilding({ disabled: true });
 
 		expect(
 			wrapper.findComponent(PInputNumber).find("input").element.disabled
 		).toBe(true);
-		expect(button(wrapper, ADD_RECIPE)!.element.disabled).toBe(true);
-		expect(wrapper.findAll("button").at(-1)!.element.disabled).toBe(true);
+		// no add recipe, delete or amount steppers: only the recipes' COGM
+		expect(button(wrapper, ADD_RECIPE)).toBeUndefined();
+		expect(
+			wrapper.find('button[aria-label="common.buttons.delete"]').exists()
+		).toBe(false);
+		expect(
+			wrapper.findAll("button").every((b) => b.text().includes("cogm"))
+		).toBe(true);
 		expect(
 			wrapper
 				.findAllComponents(PlanProductionRecipe)
