@@ -19,6 +19,11 @@
 		() => import("@/layout/components/VersionUpdateNotification.vue")
 	);
 
+	const AnalyticsConsentDialog = defineAsyncComponent(
+		() =>
+			import("@/features/analytics/components/AnalyticsConsentDialog.vue")
+	);
+
 	// Composables
 	import { useVersionCheck } from "@/lib/useVersionCheck";
 	const { updateAvailable, startWatch } = useVersionCheck();
@@ -27,6 +32,7 @@
 	import { useUserStore } from "@/stores/userStore";
 	const userStore = useUserStore();
 	import { userActivity } from "@/features/user_activity/userActivityStore";
+	import { identifyUser } from "@/lib/analytics/useAnalytics";
 
 	const isLoggedIn = computed(() => userStore.isLoggedIn);
 	const showUpdateNotification = computed(
@@ -34,6 +40,13 @@
 	);
 	onMounted(() => {
 		startWatch();
+
+		// a session restored from storage loads no profile, analytics still
+		// needs to know the user once they consent
+		if (userStore.profile)
+			identifyUser(userStore.profile.id.toString(), {
+				username: userStore.profile.username,
+			});
 
 		if (userStore.isLoggedIn) {
 			// start user activity monitor if logged in
@@ -44,6 +57,9 @@
 
 <template>
 	<VersionUpdateNotification v-if="showUpdateNotification" />
+	<!-- not over the terms the dialog links to -->
+	<AnalyticsConsentDialog
+		v-if="isLoggedIn && routeData.name !== 'imprint-tos'" />
 
 	<main class="flex w-full text-white/80">
 		<NavigationBar v-if="isLoggedIn" />

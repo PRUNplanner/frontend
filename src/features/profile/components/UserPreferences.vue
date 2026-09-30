@@ -9,6 +9,8 @@
 
 	// Composables
 	import { usePreferences } from "@/features/preferences/usePreferences";
+	import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
+	import { getPostHogKey } from "@/lib/analytics/usePostHog";
 
 	// Constants
 	import { XITSTATIONWAREHOUSES } from "@/features/xit/xitConstants";
@@ -31,6 +33,10 @@
 	} from "@/ui";
 
 	const planningStore = usePlanningStore();
+
+	// analytics consent lives in this browser, not in the saved preferences
+	const { consent, isDNT, grant, deny } = useAnalyticsConsent();
+	const analyticsAvailable: boolean = getPostHogKey() !== undefined;
 
 	const {
 		burnDaysRed,
@@ -185,6 +191,29 @@
 		<PFormItem :label="t('profile.preferences.form.buy_from_cx')">
 			<PCheckbox v-model:checked="defaultBuyItemsFromCX" />
 		</PFormItem>
+
+		<template v-if="analyticsAvailable">
+			<PFormSeperator>
+				<h4 class="font-bold py-1">
+					{{ $t("profile.preferences.form.privacy") }}
+				</h4>
+			</PFormSeperator>
+			<PFormItem :label="t('profile.preferences.form.analytics')">
+				<PCheckbox
+					:checked="consent === 'granted'"
+					:disabled="isDNT"
+					@update:checked="(value) => (value ? grant() : deny())" />
+			</PFormItem>
+			<PFormSeperator>
+				<p class="text-xs text-white/60 pt-1 pb-2">
+					{{
+						isDNT
+							? $t("profile.preferences.form.analytics_dnt")
+							: $t("profile.preferences.form.analytics_note")
+					}}
+				</p>
+			</PFormSeperator>
+		</template>
 	</PForm>
 
 	<h3 class="font-bold py-3">

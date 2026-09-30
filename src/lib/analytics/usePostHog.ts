@@ -1,81 +1,197 @@
-import posthog, { type Properties } from "posthog-js";
+import { watch } from "vue";
+
+// Composables
+import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
 
 // Util
 import { redact } from "@/util/data";
 
-// Key can be public, as its web sdk + has configured authorized urls
-const POSTHOG_PUBLIC_KEY = window.__APP_CONFIG__?.POSTHOG_KEY;
+// Types & Interfaces
+import type { PostHog, Properties } from "posthog-js";
+
 const POSTHOG_NAME = "prunplanner_frontend";
 
-// initialize only once
-let isInitialized = false;
+const SENSITIVE_KEYS: string[] = [
+	"password",
+	"access_token",
+	"refresh_token",
+	"fio_apikey",
+	"email",
+	"old",
+	"new",
+	"code",
+];
 
-export function usePostHog() {
-	const posthogName: string = POSTHOG_NAME;
+// storage keys PostHog writes: its own, the opt-out flag and survey state
+const POSTHOG_STORAGE_KEY =
+	/^((__)?ph_|seenSurvey_|inProgressSurvey_|lastSeenSurveyDate$)/;
 
-	const SENSITIVE_KEYS: string[] = [
-		"password",
-		"access_token",
-		"refresh_token",
-		"fio_apikey",
-		"email",
-		"old",
-		"new",
-		"code",
-	];
+// after a deny: nothing stored means off, and no feature flag requests
+const OFF_BY_DEFAULT = (off: boolean) => ({
+	opt_out_capturing_by_default: off,
+	opt_out_persistence_by_default: off,
+	advanced_disable_flags: off,
+});
 
-	function isClient() {
-		return typeof window !== "undefined";
+const { consent } = useAnalyticsConsent();
+
+// loaded on the first grant, kept for a later grant after a deny
+let posthog: PostHog | undefined = undefined;
+// true while PostHog captures
+let started = false;
+// events between a grant and posthog-js being loaded, null otherwise
+let queue: Array<[string, Properties | null | undefined]> | null = null;
+// last identified user, so a later grant can identify them
+let identity: { id: string; props?: Properties } | null = null;
+
+/**
+ * Key can be public, as its web sdk + has configured authorized urls
+ */
+export function getPostHogKey(): string | undefined {
+	return window.__APP_CONFIG__?.POSTHOG_KEY || undefined;
+}
+
+/**
+ * Removes everything PostHog stored in this browser, including the
+ * cookie of the setup before consent existed.
+ */
+function removePostHogStorage(): void {
+	try {
+		for (const storage of [localStorage, sessionStorage]) {
+			Array.from({ length: storage.length }, (_, i) => storage.key(i))
+				.filter(
+					(key): key is string =>
+						key !== null && POSTHOG_STORAGE_KEY.test(key)
+				)
+				.forEach((key) => storage.removeItem(key));
+		}
+
+		// the cookie was set on the host or on a parent domain
+		const domains: string[] = location.hostname
+			.split(".")
+			.map((_, i, parts) => `; domain=.${parts.slice(i).join(".")}`);
+		document.cookie
+			.split(";")
+			.map((cookie) => cookie.split("=")[0].trim())
+			.filter((name) => name.startsWith("ph_"))
+			.forEach((name) => {
+				["", ...domains].forEach((domain) => {
+					document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${domain}`;
+				});
+			});
+	} catch {
+		// storage blocked, nothing to remove
+	}
+}
+
+async function startAnalytics(): Promise<void> {
+	const key = getPostHogKey();
+	if (started || queue || !key) return;
+
+	if (posthog) {
+		// granted again after a deny, reopens the send path first
+		posthog.__loaded = true;
+		posthog.set_config(OFF_BY_DEFAULT(false));
+		posthog.opt_in_capturing({ captureEventName: false });
+		posthog.startSessionRecording();
+		started = true;
+		if (identity) posthog.identify(identity.id, identity.props);
+		return;
 	}
 
-	// Queue, in case PostHog is not yet ready
-	const eventQueue: Array<[string, Properties | null | undefined]> = [];
+	queue = [];
+	try {
+		// own chunk (vendor_posthog), only fetched with consent
+		const loaded = (await import("posthog-js")).default;
 
-	if (!isInitialized && POSTHOG_PUBLIC_KEY && isClient()) {
-		posthog.init(POSTHOG_PUBLIC_KEY, {
+		// denied while loading
+		if (consent.value !== "granted" || started) return;
+
+		loaded.init(key, {
 			api_host: "https://squirrel.prunplanner.org/relay-DWJJ",
 			ui_host: "https://eu.posthog.com",
-			defaults: "2025-05-24",
+			defaults: "2026-08-30",
 			person_profiles: "identified_only",
-			name: posthogName,
+			name: POSTHOG_NAME,
 			autocapture: true,
 			capture_pageview: true,
+			// no cookie
+			persistence: "localStorage",
+			respect_dnt: true,
 		});
 
 		// register global versions
-		posthog.register({
+		loaded.register({
 			app_version: __APP_VERSION__,
 		});
 
-		// flush event queue on load
-		posthog.onFeatureFlags(() => {
-			eventQueue.forEach(([event, props]) =>
-				posthog.capture(event, props)
-			);
-			eventQueue.length = 0;
-		});
+		posthog = loaded;
+		started = true;
 
-		isInitialized = true;
+		if (identity) loaded.identify(identity.id, identity.props);
+		queue?.forEach(([event, props]) => loaded.capture(event, props));
+	} catch (error) {
+		console.warn("Analytics failed to load", error);
+	} finally {
+		queue = null;
 	}
+}
 
-	function capture<T extends Properties | null | undefined>(
-		eventName: string,
-		props?: T
-	) {
-		// redact props
-		const safeProps = props ? redact(props, SENSITIVE_KEYS) : props;
+function stopAnalytics(): void {
+	queue = null;
 
-		if (posthog.__loaded) {
-			posthog.capture(eventName, safeProps);
-		} else {
-			// queue up
-			eventQueue.push([eventName, safeProps]);
-		}
+	if (posthog && started) {
+		// reset() clears the stored opt-out (and would reload the feature
+		// flags), and the cleanup below removes the opt-out as well, so
+		// "nothing stored" has to mean off from here on
+		posthog.set_config(OFF_BY_DEFAULT(true));
+		posthog.opt_out_capturing();
+		posthog.reset();
+		posthog.stopSessionRecording();
+		// closes the send path: posthog-js drops every request while not
+		// loaded, so events it captured but has not sent yet (batch and
+		// retry queue, the beacon on page leave) stay unsent
+		posthog.__loaded = false;
 	}
+	started = false;
 
-	function setUserProp(props: string | Properties) {
-		posthog.people.set(props);
-	}
+	removePostHogStorage();
+}
 
-	return { posthog, capture, setUserProp };
+// PostHog follows the consent: runs once on app start, then on each choice
+watch(
+	consent,
+	(value) => {
+		if (value === "granted") void startAnalytics();
+		else stopAnalytics();
+	},
+	{ immediate: true }
+);
+
+export function capture(
+	eventName: string,
+	props?: Properties | null | undefined
+): void {
+	if (!started && !queue) return;
+
+	// redact props
+	const safeProps = props ? redact(props, SENSITIVE_KEYS) : props;
+
+	if (started) posthog?.capture(eventName, safeProps);
+	else queue?.push([eventName, safeProps]);
+}
+
+export function setUserProp(props: Properties): void {
+	if (identity) identity.props = { ...identity.props, ...props };
+	if (started) posthog?.people.set(props);
+}
+
+export function identify(id: string, props?: Properties): void {
+	identity = { id, props };
+	if (started) posthog?.identify(id, props);
+}
+
+export function reset(): void {
+	identity = null;
+	if (started) posthog?.reset();
 }

@@ -75,11 +75,12 @@
 				<h3 class="text-lg py-3">Information Storage</h3>
 				<p class="pb-3">
 					PRUNplanner stores information in your browsers LocalStorage
-					(gamedata, backend responses) as well as SessionStorage
-					(authentication information) and IndexedDB. PRUNplanner
-					itself does not use any cookies. 3rd-Party integrations may
-					make use of cookies, you can opt-out on the respective tools
-					or via your browsers Do-Not-Track configuration.
+					(gamedata, backend responses, your analytics choice) as well
+					as SessionStorage (authentication information) and
+					IndexedDB. PRUNplanner does not use any cookies. Only after
+					you have consented to usage analytics, PostHog stores an
+					identifier and session information in your browsers
+					LocalStorage and SessionStorage; it sets no cookies either.
 				</p>
 				<h3 class="text-lg py-3">3rd-Party Interactions</h3>
 				<p>
@@ -100,14 +101,24 @@
 					unauthorized access. This information is not used for
 					marketing or profiling purposes.
 				</p>
-				<p class="py-3">
+				<p id="analytics" class="py-3">
 					PRUNplanner uses PostHog, a EU-hosted analytics tool, to
-					better understand how users interact with our Service. We
-					track Pages visited, clicks, navigation flows, errors, and
-					performance metrics to improving usability, debugging
-					issues, and analyzing feature adoption. You can opt out of
-					tracking where technically feasible or via your browser's Do
-					Not Track settings.
+					better understand how users interact with our Service.
+					PostHog is only loaded after you have given your consent
+					(Art. 6 (1) a GDPR, § 25 (1) TDDDG), which you are asked for
+					once after logging in. With your
+					consent we collect usage events (pages visited, clicks,
+					navigation flows and actions in the tool), error reports
+					and performance metrics, session recordings of a sample of
+					visits (everything you type is masked) and your answers to
+					optional in-app surveys. This data is linked to your
+					account id and is used to improve usability, fix bugs and
+					analyze feature adoption. Consent is voluntary. You can
+					withdraw it at any time in your Profile under Usage
+					analytics, which stops the collection and removes the
+					PostHog data stored in your browser. If your browser sends
+					a Do-Not-Track or Global Privacy Control signal, PostHog is
+					never loaded and you are not asked.
 				</p>
 				<p class="py-3">
 					In the event that you opt to provide your email address for

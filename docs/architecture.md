@@ -92,6 +92,9 @@ and `/shared/:sharedPlanUuid`, which is read-only.
   - In tests it is `Date.now()`.
 - **Runtime config.**
   - `src/lib/config.ts` reads `VITE_*` env vars, listed in the README.
+  - PostHog (`lib/analytics/`) is loaded only after the user consents
+    (`useAnalyticsConsent`, asked once by `AnalyticsConsentDialog`, changed
+    in Profile); without consent nothing is stored or sent.
   - The PostHog key comes from `window.__APP_CONFIG__`, injected at deploy
     time through `env.js` (see `netlify.toml` and `docker-compose.yaml`).
 - **Deploy.**
