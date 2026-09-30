@@ -1,9 +1,16 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { z } from "zod";
 import { apiService } from "@/lib/apiService";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axiosSetup from "@/util/axiosSetup";
 import { createPinia, setActivePinia } from "pinia";
+import { CanceledError } from "axios";
+import { trackException } from "@/lib/analytics/useAnalytics";
+
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	trackException: vi.fn(),
+	trackContext: vi.fn(),
+}));
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -67,6 +74,155 @@ describe("ApiService", () => {
 			await expect(
 				apiService.get("/test", responseSchema)
 			).rejects.toThrowError(/^timeout of 0ms exceeded$/);
+		});
+	});
+
+	describe("error tracking", () => {
+		const PLAN = "/planning/plan/0b1e2c3d-1111-4222-8333-444455556666/";
+		const schema = z.object({ id: z.number() });
+
+		beforeEach(() => {
+			vi.mocked(trackException).mockClear();
+		});
+
+		const tracked = () => {
+			const [error, props] = vi.mocked(trackException).mock.calls[0];
+			return { error: error as Error, props };
+		};
+
+		it("validation error: issue paths and codes, no values", async () => {
+			mock.onGet(PLAN).reply(200, { id: "secret-value" });
+
+			await expect(apiService.get(PLAN, schema)).rejects.toThrowError(
+				/^Validation error/
+			);
+
+			expect(trackException).toHaveBeenCalledTimes(1);
+			const { error, props } = tracked();
+			expect(error.name).toBe("ApiValidationError");
+			expect(error.message).toBe("GET /planning/plan/:uuid/");
+			expect(props).toStrictEqual({
+				path_template: "/planning/plan/:uuid/",
+				method: "GET",
+				issues: ["id: invalid_type"],
+			});
+			expect(JSON.stringify([error.message, props])).not.toContain(
+				"secret-value"
+			);
+		});
+
+		it("validation error: no record keys, one line per field", async () => {
+			const records = z.object({
+				plan_details: z.record(
+					z.string(),
+					z.object({ profit: z.number() })
+				),
+				rows: z.array(z.object({ id: z.number() })),
+			});
+			mock.onGet(PLAN).reply(200, {
+				plan_details: {
+					"0b1e2c3d-1111-4222-8333-444455556666": { profit: "x" },
+					"ffffffff-1111-4222-8333-444455556666": { profit: "y" },
+				},
+				rows: [{ id: "a" }, { id: "b" }, { id: "c" }],
+			});
+
+			await expect(apiService.get(PLAN, records)).rejects.toThrowError();
+
+			expect(tracked().props?.issues).toStrictEqual([
+				"plan_details.:key.profit: invalid_type",
+				"rows.[].id: invalid_type",
+			]);
+		});
+
+		it("validation error of a request payload", async () => {
+			await expect(
+				apiService.post(PLAN, { id: "nope" }, schema, schema)
+			).rejects.toThrowError(/^Validation error/);
+
+			const { error, props } = tracked();
+			expect(error.name).toBe("ApiValidationError");
+			expect(props).toMatchObject({
+				method: "POST",
+				issues: ["id: invalid_type"],
+			});
+		});
+
+		it("server error", async () => {
+			mock.onPut(PLAN).reply(500, { detail: "down" });
+
+			await expect(
+				apiService.put(PLAN, { id: 1 }, schema, schema)
+			).rejects.toThrowError();
+
+			const { error, props } = tracked();
+			expect(error.name).toBe("ApiServerError");
+			expect(error.message).toBe("PUT /planning/plan/:uuid/ 500");
+			expect(props).toStrictEqual({
+				path_template: "/planning/plan/:uuid/",
+				method: "PUT",
+				status: 500,
+			});
+		});
+
+		it("network error", async () => {
+			mock.onGet("/data/planet/OT-580b/").networkError();
+
+			await expect(
+				apiService.get("/data/planet/OT-580b/", schema)
+			).rejects.toThrowError();
+
+			const { error, props } = tracked();
+			expect(error.name).toBe("ApiNetworkError");
+			expect(props).toStrictEqual({
+				path_template: "/data/planet/:planet/",
+				method: "GET",
+				status: undefined,
+			});
+		});
+
+		it("throttled", async () => {
+			mock.onDelete(PLAN).reply(429);
+
+			await expect(apiService.delete(PLAN)).rejects.toThrowError();
+
+			const { error, props } = tracked();
+			expect(error.name).toBe("ApiClientError");
+			expect(props).toMatchObject({ method: "DELETE", status: 429 });
+		});
+
+		it("401 of the token refresh", async () => {
+			mock.onPost("/user/refresh/").reply(401);
+
+			await expect(
+				apiService.post("/user/refresh/", { id: 1 }, schema, schema)
+			).rejects.toThrowError();
+
+			const { error, props } = tracked();
+			expect(error.name).toBe("ApiClientError");
+			expect(props).toStrictEqual({
+				path_template: "/user/refresh/",
+				method: "POST",
+				status: 401,
+			});
+		});
+
+		it.each([400, 401, 403, 404])("not a %i", async (status) => {
+			mock.onGet(PLAN).reply(status);
+
+			await expect(apiService.get(PLAN, schema)).rejects.toThrowError();
+
+			expect(trackException).not.toHaveBeenCalled();
+		});
+
+		it("not a response discarded for a previous session", async () => {
+			mock.onGet(PLAN).reply(() =>
+				Promise.reject(new CanceledError("discarded"))
+			);
+
+			await expect(apiService.get(PLAN, schema)).rejects.toThrowError();
+
+			expect(trackException).not.toHaveBeenCalled();
 		});
 	});
 

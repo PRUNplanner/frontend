@@ -43,6 +43,8 @@ let started = false;
 let queue: Array<[string, Properties | null | undefined]> | null = null;
 // last identified user, so a later grant can identify them
 let identity: { id: string; props?: Properties } | null = null;
+// super properties, so a later grant can register them again
+let superProps: Properties = {};
 
 /**
  * Key can be public, as its web sdk + has configured authorized urls
@@ -94,6 +96,8 @@ async function startAnalytics(): Promise<void> {
 		posthog.set_config(OFF_BY_DEFAULT(false));
 		posthog.opt_in_capturing({ captureEventName: false });
 		posthog.startSessionRecording();
+		// reset() on the deny dropped them
+		posthog.register({ app_version: __APP_VERSION__, ...superProps });
 		started = true;
 		if (identity) posthog.identify(identity.id, identity.props);
 		return;
@@ -123,6 +127,7 @@ async function startAnalytics(): Promise<void> {
 		// register global versions
 		loaded.register({
 			app_version: __APP_VERSION__,
+			...superProps,
 		});
 
 		posthog = loaded;
@@ -181,6 +186,27 @@ export function capture(
 	else queue?.push([eventName, safeProps]);
 }
 
+/**
+ * Sends an error to PostHog error tracking. Not queued while PostHog
+ * loads: without a started PostHog nothing is sent.
+ */
+export function captureException(error: unknown, props?: Properties): void {
+	if (!started) return;
+
+	posthog?.captureException(
+		error,
+		props ? redact(props, SENSITIVE_KEYS) : props
+	);
+}
+
+/**
+ * Sets super properties, sent with every event, exception and web vital.
+ */
+export function register(props: Properties): void {
+	superProps = { ...superProps, ...props };
+	if (started) posthog?.register(props);
+}
+
 export function setUserProp(props: Properties): void {
 	if (identity) identity.props = { ...identity.props, ...props };
 	if (started) posthog?.people.set(props);
@@ -193,5 +219,9 @@ export function identify(id: string, props?: Properties): void {
 
 export function reset(): void {
 	identity = null;
-	if (started) posthog?.reset();
+	if (!started) return;
+
+	posthog?.reset();
+	// reset() drops the super properties as well
+	posthog?.register({ app_version: __APP_VERSION__, ...superProps });
 }

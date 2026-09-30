@@ -9,6 +9,7 @@ const { posthog, gate } = vi.hoisted(() => ({
 		init: vi.fn(),
 		register: vi.fn(),
 		capture: vi.fn(),
+		captureException: vi.fn(),
 		identify: vi.fn(),
 		reset: vi.fn(),
 		set_config: vi.fn(),
@@ -244,6 +245,86 @@ describe("usePostHog", () => {
 
 		capture("plan_save", { planetNaturalId: "OT-580b" });
 		expect(posthog.capture).toHaveBeenCalledTimes(1);
+	});
+
+	it("sends exceptions with redacted props", async () => {
+		const { captureException } = await load({ consent: "granted" });
+		await settle();
+
+		const error = new Error("boom");
+		captureException(error, { component: "PlanView", email: "a@b.c" });
+
+		expect(posthog.captureException).toHaveBeenCalledWith(error, {
+			component: "PlanView",
+			email: "***",
+		});
+	});
+
+	it.each([undefined, "denied"] as const)(
+		"sends no exception with consent %s",
+		async (consent) => {
+			const { captureException } = await load({ consent });
+			await settle();
+
+			captureException(new Error("boom"), { component: "PlanView" });
+
+			expect(posthog.captureException).not.toHaveBeenCalled();
+		}
+	);
+
+	it("does not queue exceptions while loading", async () => {
+		let open: () => void = () => {};
+		gate.promise = new Promise((resolve) => (open = resolve));
+
+		const { captureException } = await load({ consent: "granted" });
+		captureException(new Error("boom"));
+
+		open();
+		await settle();
+
+		expect(posthog.captureException).not.toHaveBeenCalled();
+	});
+
+	it("registers super properties, again on a later grant", async () => {
+		const { register, reset, grant, deny } = await load();
+		await settle();
+
+		// set before the choice, e.g. the first route
+		register({ route_name: "homepage" });
+		expect(posthog.register).not.toHaveBeenCalled();
+
+		grant();
+		await settle();
+		expect(posthog.register).toHaveBeenLastCalledWith({
+			app_version: __APP_VERSION__,
+			route_name: "homepage",
+		});
+
+		register({ route_name: "empire" });
+		expect(posthog.register).toHaveBeenLastCalledWith({
+			route_name: "empire",
+		});
+
+		// a logout resets PostHog, the super properties stay
+		posthog.register.mockClear();
+		reset();
+		expect(posthog.register).toHaveBeenLastCalledWith({
+			app_version: __APP_VERSION__,
+			route_name: "empire",
+		});
+
+		deny();
+		await settle();
+		posthog.register.mockClear();
+		register({ route_name: "plan" });
+		expect(posthog.register).not.toHaveBeenCalled();
+
+		grant();
+		await settle();
+		expect(posthog.register).toHaveBeenLastCalledWith({
+			app_version: __APP_VERSION__,
+			route_name: "plan",
+		});
 	});
 
 	it.each([undefined, "denied"] as const)(

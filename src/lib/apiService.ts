@@ -1,6 +1,8 @@
-import axios, { type AxiosInstance, isAxiosError } from "axios";
+import axios, { type AxiosInstance, isAxiosError, isCancel } from "axios";
 import { ZodError, type ZodType, type z } from "zod";
 import config from "@/lib/config";
+import { trackException } from "@/lib/analytics/useAnalytics";
+import { issuePathTemplate, pathTemplate } from "@/util/pathTemplate";
 
 /**
  * Service making calls to PRUNplanner backend
@@ -38,7 +40,7 @@ class ApiService {
 			const { data } = await this.client.get(path);
 			return responseSchema.parse(data);
 		} catch (e) {
-			throw this.normalizeError(e);
+			throw this.normalizeError(e, "GET", path);
 		}
 	}
 
@@ -75,7 +77,7 @@ class ApiService {
 
 			return responseSchema.parse(data);
 		} catch (e) {
-			throw this.normalizeError(e);
+			throw this.normalizeError(e, "POST", path);
 		}
 	}
 
@@ -106,7 +108,7 @@ class ApiService {
 
 			return responseSchema.parse(data);
 		} catch (e) {
-			throw this.normalizeError(e);
+			throw this.normalizeError(e, "PUT", path);
 		}
 	}
 
@@ -137,7 +139,7 @@ class ApiService {
 
 			return responseSchema.parse(data);
 		} catch (e) {
-			throw this.normalizeError(e);
+			throw this.normalizeError(e, "PATCH", path);
 		}
 	}
 
@@ -154,7 +156,56 @@ class ApiService {
 		try {
 			return await this.client.delete(path);
 		} catch (e) {
-			throw this.normalizeError(e);
+			throw this.normalizeError(e, "DELETE", path);
+		}
+	}
+
+	/**
+	 * Sends contract breaks, server and network errors to error tracking.
+	 * Of the 4xx only 429 and a 401 of the token refresh are sent, and
+	 * never a response discarded for a previous session.
+	 *
+	 * @private
+	 * @param {unknown} err Error
+	 * @param {string} method HTTP method
+	 * @param {string} path URL
+	 */
+	private reportError(err: unknown, method: string, path: string): void {
+		if (isCancel(err)) return;
+
+		const path_template = pathTemplate(path);
+		const error = new Error(`${method} ${path_template}`);
+
+		if (err instanceof ZodError) {
+			error.name = "ApiValidationError";
+			trackException(error, {
+				path_template,
+				method,
+				// which field and what kind, once per field: never the
+				// received values, record keys or a line per list row
+				issues: [
+					...new Set(
+						err.issues.map(
+							(issue) =>
+								`${issuePathTemplate(issue.path)}: ${issue.code}`
+						)
+					),
+				],
+			});
+		} else if (isAxiosError(err)) {
+			const status = err.response?.status;
+
+			if (status === undefined) error.name = "ApiNetworkError";
+			else if (status >= 500) error.name = "ApiServerError";
+			else if (
+				status === 429 ||
+				(status === 401 && path.includes("/user/refresh/"))
+			)
+				error.name = "ApiClientError";
+			else return;
+
+			if (status) error.message += ` ${status}`;
+			trackException(error, { path_template, method, status });
 		}
 	}
 
@@ -164,9 +215,13 @@ class ApiService {
 	 *
 	 * @private
 	 * @param {unknown} err Error
+	 * @param {string} method HTTP method
+	 * @param {string} path URL
 	 * @returns {Error} Error
 	 */
-	private normalizeError(err: unknown): Error {
+	private normalizeError(err: unknown, method: string, path: string): Error {
+		this.reportError(err, method, path);
+
 		if (err instanceof ZodError) {
 			return new Error(`Validation error: ${err.message}`);
 		} else if (isAxiosError(err)) {

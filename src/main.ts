@@ -21,8 +21,11 @@ pinia.use(piniaPluginPersistedstate);
 import router from "@/router";
 
 // app + uses
+import { trackVueError } from "@/lib/analytics/useAnalytics";
+
 const app = createApp(AppProvider);
 app.config.performance = true;
+app.config.errorHandler = trackVueError;
 
 app.use(router);
 app.use(pinia);

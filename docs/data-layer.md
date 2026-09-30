@@ -28,6 +28,12 @@ component / composable
   - a `ZodError` becomes `Error("Validation error: …")`;
   - an axios error becomes an `Error` whose message is the JSON response
     body, with `.status` and `.responseData` attached.
+  - it also reports to PostHog error tracking (`trackException`, only
+    with consent): `ApiValidationError` (field names and issue codes,
+    never values, record keys or indices), `ApiServerError` (5xx), `ApiNetworkError` (no response) and
+    `ApiClientError` (429, or a 401 of `/user/refresh/`). Other 4xx and
+    discarded responses are not reported. Paths are sent as templates
+    (`src/util/pathTemplate.ts`: `/planning/plan/:uuid/`).
 - **Auth** is handled in `src/util/axiosSetup.ts`, which runs from `main.ts`:
   - A request interceptor adds `Authorization: Bearer <userStore.accessToken>`.
   - On a 401 response, it calls `userStore.performTokenRefresh()` and retries
