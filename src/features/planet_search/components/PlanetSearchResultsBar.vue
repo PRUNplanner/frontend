@@ -42,6 +42,12 @@
 		filter: PlanetSearchFilter;
 		chips: IPlanetSearchChip[];
 		hints: { label: string; filter: PlanetSearchFilter }[];
+		/** name matches hidden by the other filters, null when there are none */
+		nameNote: {
+			text: string;
+			hints: { label: string; filter: PlanetSearchFilter }[];
+			showAll: { label: string; filter: PlanetSearchFilter };
+		} | null;
 		isDesktop: boolean;
 		refName: (ref: PlanetSearchReference) => string;
 		sorts: IPlanetSearchSort[];
@@ -122,6 +128,28 @@
 				</button>
 			</li>
 		</ul>
+
+		<!-- always in the DOM, so its content is announced when it appears -->
+		<div role="status" :class="{ '-mt-3': !nameNote }">
+			<div
+				v-if="nameNote"
+				class="border border-white/20 rounded px-3 py-2 flex flex-row flex-wrap items-center gap-2">
+				<p>{{ nameNote.text }}</p>
+				<PButton
+					v-for="h in nameNote.hints"
+					:key="h.label"
+					size="sm"
+					type="secondary"
+					@click="emit('update:filter', h.filter)">
+					{{ h.label }}
+				</PButton>
+				<PButton
+					size="sm"
+					@click="emit('update:filter', nameNote.showAll.filter)">
+					{{ nameNote.showAll.label }}
+				</PButton>
+			</div>
+		</div>
 
 		<div
 			v-if="hints.length"

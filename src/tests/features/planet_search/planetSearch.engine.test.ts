@@ -17,9 +17,12 @@ import {
 	rankValues,
 	filterPlanets,
 	indexMaterials,
+	isSectionWide,
+	nameSearchNote,
 	parseRefKey,
 	planetJumps,
 	refKey,
+	restrictionHints,
 	SEARCH_COGC,
 	SEARCH_CX,
 	SEARCH_EXTRAS,
@@ -29,7 +32,7 @@ import {
 	sortPlanets,
 	toggle,
 	toggleReference,
-	zeroResultHints,
+	widenSection,
 } from "@/features/planet_search/planetSearch.engine";
 import {
 	environmentExtras,
@@ -44,7 +47,10 @@ import type {
 	PlanetEnvironmentType,
 	PlanetSearchIndexEntry,
 } from "@/features/api/schemas/gameData.schemas";
-import type { IPlanetSearchContext } from "@/features/planet_search/planetSearch.types";
+import type {
+	IPlanetSearchContext,
+	IPlanetSearchSection,
+} from "@/features/planet_search/planetSearch.types";
 import type {
 	PlanetSearchFilter,
 	PlanetSearchReference,
@@ -98,6 +104,13 @@ function filter(overrides: Partial<PlanetSearchFilter>): PlanetSearchFilter {
 		...overrides,
 	};
 }
+
+const SECTIONS: IPlanetSearchSection[] = [
+	"conditions",
+	"extras",
+	"cogc",
+	"infrastructure",
+];
 
 const ids = (list: PlanetSearchIndexEntry[]) =>
 	list.map((p) => p.planet_natural_id);
@@ -452,7 +465,7 @@ describe("planet search engine", () => {
 			});
 			expect(count(f)).toBe(0);
 
-			const hints = zeroResultHints(index, f, realCtx);
+			const hints = restrictionHints(index, f, realCtx, { baseline: "all" });
 			expect(hints.length).toBeGreaterThan(0);
 			expect(hints.length).toBeLessThanOrEqual(3);
 			for (let i = 1; i < hints.length; i++)
@@ -460,11 +473,148 @@ describe("planet search engine", () => {
 			for (const h of hints) expect(count(h.filter)).toBe(h.count);
 		});
 
+		it("any counts equal the widened section's result count", () => {
+			for (let run = 0; run < 8; run++) {
+				const f = randomFilter();
+				const facets = facetCounts(index, f, realCtx, materials, refs);
+				for (const s of SECTIONS)
+					expect(facets.any[s]).toBe(count(widenSection(f, s)));
+			}
+		});
+
+		it("name note: hidden count, ranked relaxations and show all", () => {
+			const f: PlanetSearchFilter = { ...defaultFilter(), text: "KI-" };
+			const nameMatches = index.filter((p) =>
+				`${p.planet_natural_id} ${p.planet_name}`
+					.toLowerCase()
+					.includes("ki-")
+			);
+			const note = nameSearchNote(index, f, realCtx)!;
+
+			expect(note.matches).toBe(nameMatches.length);
+			expect(note.hidden).toBe(nameMatches.length - count(f));
+			expect(note.hidden).toBeGreaterThan(0);
+
+			expect(note.hints).toEqual(
+				restrictionHints(index, f, realCtx, { baseline: "name" })
+			);
+			expect(note.hints.length).toBeGreaterThan(0);
+			expect(note.hints.length).toBeLessThanOrEqual(3);
+			for (let i = 1; i < note.hints.length; i++)
+				expect(note.hints[i - 1].count).toBeGreaterThanOrEqual(
+					note.hints[i].count
+				);
+			for (const h of note.hints) {
+				// totals after the relaxation, and more than now
+				expect(count(h.filter)).toBe(h.count);
+				expect(h.count).toBeGreaterThan(count(f));
+				expect(h.filter.text).toBe("KI-");
+			}
+
+			expect(ids(filterPlanets(index, note.showAll, realCtx))).toEqual(
+				ids(nameMatches)
+			);
+		});
+
+		it("name note: show all resets everything but the name", () => {
+			const f: PlanetSearchFilter = {
+				...defaultFilter(),
+				text: " KI- ",
+				materialGroups: [{ op: "all", materials: ["HE3"] }],
+				minDaily: { HE3: 5 },
+				cogc: [SEARCH_COGC[0]],
+				infrastructure: ["SHY"],
+				fertile: true,
+				references: [{ kind: "cx", code: "NC1" }],
+				maxJumps: 0,
+			};
+			const note = nameSearchNote(index, f, realCtx)!;
+			expect(count(f)).toBe(0);
+			expect(note.hidden).toBe(note.matches);
+			expect(note.showAll).toEqual({
+				...defaultFilter(),
+				text: " KI- ",
+				surface: ["rocky", "gaseous"],
+				acceptedExtras: [...SEARCH_EXTRAS],
+			});
+
+			// removing the COGC chip and "any COGC" are the same: listed once
+			const outcomes = restrictionHints(index, { ...f, maxJumps: 30 }, realCtx, {
+				baseline: "name",
+			}).map((h) => JSON.stringify(h.filter));
+			expect(new Set(outcomes).size).toBe(outcomes.length);
+			// the name chip is no relaxation of a name search
+			expect(
+				note.hints.some((h) => h.kind === "chip" && h.chip.kind === "text")
+			).toBe(false);
+		});
+
+		it("no name note without name text or when nothing is hidden", () => {
+			expect(nameSearchNote(index, defaultFilter(), realCtx)).toBeNull();
+			expect(
+				nameSearchNote(index, filter({ text: "KI-" }), realCtx)
+			).toBeNull();
+			expect(
+				nameSearchNote(index, { ...defaultFilter(), text: "no such planet" }, realCtx)
+			).toBeNull();
+		});
+
 		it("hints are empty when nothing relaxes to results", () => {
 			const f = filter({ text: "no such planet" });
-			const hints = zeroResultHints(index, f, realCtx);
+			const hints = restrictionHints(index, f, realCtx, { baseline: "all" });
 			expect(hints.map((h) => h.kind)).toEqual(["chip"]);
-			expect(zeroResultHints([], f, realCtx)).toEqual([]);
+			expect(restrictionHints([], f, realCtx, { baseline: "all" })).toEqual([]);
+		});
+	});
+
+	describe("sections (Any)", () => {
+		const narrow: PlanetSearchFilter = {
+			...defaultFilter(),
+			surface: ["gaseous"],
+			fertile: true,
+			acceptedExtras: ["MGC"],
+			cogc: [SEARCH_COGC[0]],
+			infrastructure: ["LM", "WAR"],
+		};
+
+		it("widens to the state hiding the fewest planets, not to everything ticked", () => {
+			expect(widenSection(narrow, "conditions")).toEqual({
+				...narrow,
+				surface: ["rocky", "gaseous"],
+				fertile: false,
+			});
+			expect(widenSection(narrow, "extras")).toEqual({
+				...narrow,
+				acceptedExtras: [...SEARCH_EXTRAS],
+			});
+			expect(widenSection(narrow, "cogc")).toEqual({ ...narrow, cogc: [] });
+			expect(widenSection(narrow, "infrastructure")).toEqual({
+				...narrow,
+				infrastructure: [],
+			});
+
+			for (const s of SECTIONS) {
+				expect(isSectionWide(narrow, s)).toBe(false);
+				expect(isSectionWide(widenSection(narrow, s), s)).toBe(true);
+				expect(
+					filterPlanets(index, widenSection(narrow, s), ctx).length
+				).toBeGreaterThanOrEqual(filterPlanets(index, narrow, ctx).length);
+			}
+		});
+
+		it("the default filter is wide for cogc and infrastructure only", () => {
+			const def = defaultFilter();
+			expect(SECTIONS.filter((s) => isSectionWide(def, s))).toEqual([
+				"cogc",
+				"infrastructure",
+			]);
+			// fertile alone narrows the conditions
+			expect(
+				isSectionWide(
+					{ ...def, surface: ["rocky", "gaseous"], fertile: true },
+					"conditions"
+				)
+			).toBe(false);
 		});
 	});
 

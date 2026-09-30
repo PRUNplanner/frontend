@@ -6,6 +6,7 @@ import {
 	facetCounts,
 	filterPlanets,
 	indexMaterials,
+	nameSearchNote,
 	SEARCH_CX,
 	SEARCH_EXTRAS,
 } from "@/features/planet_search/planetSearch.engine";
@@ -53,6 +54,12 @@ describe("planet search recompute", () => {
 			surface: ["rocky", "gaseous"],
 			acceptedExtras: [...SEARCH_EXTRAS],
 		});
+	});
+
+	bench('name: "KI-" with the default filters, and its note', () => {
+		const filter = { ...defaultFilter(), text: "KI-" };
+		recompute(filter);
+		nameSearchNote(index, filter, ctx);
 	});
 
 	bench("heavy: two groups, two plans and NC1", () => {

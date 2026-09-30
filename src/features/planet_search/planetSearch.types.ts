@@ -55,8 +55,17 @@ export interface IPlanetSearchContext {
 	refJumps: (ref: PlanetSearchReference) => Map<string, number> | undefined;
 }
 
+/** Panel sections that have a widest state (the "Any" buttons) */
+export type IPlanetSearchSection =
+	| "conditions"
+	| "extras"
+	| "cogc"
+	| "infrastructure";
+
 /** Toggled-option result counts, keyed like the panel's options */
 export interface IPlanetSearchFacets {
+	/** result count with that section at its widest */
+	any: Record<IPlanetSearchSection, number>;
 	/** per group index: ticker → count if added to that group */
 	materials: Record<string, number>[];
 	surface: Record<PlanetSearchSurface, number>;
@@ -90,4 +99,15 @@ export type IPlanetSearchHint = (
 	| { kind: "gaseous" }
 	| { kind: "extras" }
 	| { kind: "jumps"; maxJumps: number }
+	| { kind: "section"; section: IPlanetSearchSection }
 ) & { filter: PlanetSearchFilter; count: number };
+
+/** Planets that match the name text but are hidden by the other filters */
+export interface IPlanetSearchNameNote {
+	/** planets matching the name alone */
+	matches: number;
+	hidden: number;
+	hints: IPlanetSearchHint[];
+	/** everything but the name text reset to its widest */
+	showAll: PlanetSearchFilter;
+}

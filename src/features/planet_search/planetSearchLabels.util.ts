@@ -78,6 +78,27 @@ export function chipLabel(
 	}
 }
 
+/** What a hint does, e.g. "Include gaseous planets" */
+export function hintText(
+	hint: IPlanetSearchHint,
+	minDaily: Record<string, number>,
+	t: ITranslate,
+	refName: (ref: PlanetSearchReference) => string
+): string {
+	switch (hint.kind) {
+		case "chip":
+			return t("planet_search.hints.chip", {
+				label: chipLabel(hint.chip, minDaily, t, refName),
+			});
+		case "jumps":
+			return t("planet_search.hints.jumps", { n: hint.maxJumps });
+		case "section":
+			return t(`planet_search.hints.section.${hint.section}`);
+		default:
+			return t(`planet_search.hints.${hint.kind}`);
+	}
+}
+
 /** Hint button text, e.g. "Include gaseous planets → 12 planets" */
 export function hintLabel(
 	hint: IPlanetSearchHint,
@@ -85,20 +106,10 @@ export function hintLabel(
 	t: ITranslate,
 	refName: (ref: PlanetSearchReference) => string
 ): string {
-	let label: string;
-	switch (hint.kind) {
-		case "chip":
-			label = t("planet_search.hints.chip", {
-				label: chipLabel(hint.chip, minDaily, t, refName),
-			});
-			break;
-		case "jumps":
-			label = t("planet_search.hints.jumps", { n: hint.maxJumps });
-			break;
-		default:
-			label = t(`planet_search.hints.${hint.kind}`);
-	}
-	return t("planet_search.hints.result", { label, n: hint.count });
+	return t("planet_search.hints.result", {
+		label: hintText(hint, minDaily, t, refName),
+		n: hint.count,
+	});
 }
 
 /** Column name of a sort key, e.g. "FEO", "NC1", a plan's name */

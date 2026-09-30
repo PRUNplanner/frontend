@@ -7,6 +7,7 @@
 	// Engine
 	import {
 		addMaterial,
+		isSectionWide,
 		refKey,
 		SEARCH_COGC,
 		SEARCH_CX,
@@ -15,6 +16,7 @@
 		setGroups,
 		toggle,
 		toggleReference,
+		widenSection,
 	} from "@/features/planet_search/planetSearch.engine";
 
 	// Components
@@ -27,7 +29,10 @@
 		PlanetSearchMaterialGroup,
 		PlanetSearchReference,
 	} from "@/features/planet_search/planetSearch.schemas";
-	import type { IPlanetSearchFacets } from "@/features/planet_search/planetSearch.types";
+	import type {
+		IPlanetSearchFacets,
+		IPlanetSearchSection,
+	} from "@/features/planet_search/planetSearch.types";
 
 	// UI
 	import { PCheckbox, PInput, PInputNumber, PSelect } from "@/ui";
@@ -151,6 +156,26 @@
 	const pillOff = "border-white/20 hover:bg-white/10";
 	const segment =
 		"px-2 min-h-11 lg:min-h-7 text-xs cursor-pointer whitespace-nowrap";
+
+	/** "Any" button of a section: sets it to its widest state */
+	function anyButton(section: IPlanetSearchSection, title: string) {
+		const wide = isSectionWide(props.filter, section);
+		return {
+			class: [
+				segment,
+				"border border-white/20 rounded disabled:cursor-default",
+				wide ? "bg-blue-800" : "hover:bg-white/10",
+			],
+			disabled: wide,
+			"aria-pressed": wide,
+			"aria-label": t("planet_search.filters.any_label", {
+				section: title,
+				n: props.facets.any[section],
+			}),
+			onClick: () =>
+				emit("update:filter", widenSection(props.filter, section)),
+		};
+	}
 </script>
 
 <template>
@@ -328,9 +353,16 @@
 
 		<!-- Planet conditions -->
 		<section class="flex flex-col gap-2">
-			<h3 class="text-base font-bold">
-				{{ t("planet_search.conditions.title") }}
-			</h3>
+			<div class="flex flex-row justify-between items-center gap-2">
+				<h3 class="text-base font-bold">
+					{{ t("planet_search.conditions.title") }}
+				</h3>
+				<button
+					type="button"
+					v-bind="anyButton('conditions', t('planet_search.conditions.title'))">
+					{{ t("planet_search.filters.any", { n: facets.any.conditions }) }}
+				</button>
+			</div>
 			<p class="text-muted">
 				{{ t("planet_search.conditions.description") }}
 			</p>
@@ -362,9 +394,16 @@
 				</button>
 			</div>
 
-			<p class="text-muted mt-2">
-				{{ t("planet_search.conditions.extras_title") }}
-			</p>
+			<div class="flex flex-row justify-between items-center gap-2 mt-2">
+				<p class="text-muted">
+					{{ t("planet_search.conditions.extras_title") }}
+				</p>
+				<button
+					type="button"
+					v-bind="anyButton('extras', t('planet_search.conditions.extras_title'))">
+					{{ t("planet_search.filters.any", { n: facets.any.extras }) }}
+				</button>
+			</div>
 			<div class="grid grid-cols-2 gap-2">
 				<button
 					v-for="e in SEARCH_EXTRAS"
@@ -396,9 +435,16 @@
 
 		<!-- COGC -->
 		<section class="flex flex-col gap-2">
-			<h3 class="text-base font-bold">
-				{{ t("planet_search.cogc.title") }}
-			</h3>
+			<div class="flex flex-row justify-between items-center gap-2">
+				<h3 class="text-base font-bold">
+					{{ t("planet_search.cogc.title") }}
+				</h3>
+				<button
+					type="button"
+					v-bind="anyButton('cogc', t('planet_search.cogc.title'))">
+					{{ t("planet_search.filters.any", { n: facets.any.cogc }) }}
+				</button>
+			</div>
 			<div class="flex flex-row flex-wrap gap-2">
 				<button
 					v-for="c in SEARCH_COGC"
@@ -417,9 +463,16 @@
 
 		<!-- Infrastructure -->
 		<section class="flex flex-col gap-2">
-			<h3 class="text-base font-bold">
-				{{ t("planet_search.infrastructure.title") }}
-			</h3>
+			<div class="flex flex-row justify-between items-center gap-2">
+				<h3 class="text-base font-bold">
+					{{ t("planet_search.infrastructure.title") }}
+				</h3>
+				<button
+					type="button"
+					v-bind="anyButton('infrastructure', t('planet_search.infrastructure.title'))">
+					{{ t("planet_search.filters.any", { n: facets.any.infrastructure }) }}
+				</button>
+			</div>
 			<div class="flex flex-row flex-wrap gap-2">
 				<button
 					v-for="v in SEARCH_INFRASTRUCTURE"

@@ -31,10 +31,11 @@
 		filterPlanets,
 		indexMaterials,
 		materialMax,
+		nameSearchNote,
 		refKey,
+		restrictionHints,
 		SEARCH_CX,
 		sortPlanets,
-		zeroResultHints,
 	} from "@/features/planet_search/planetSearch.engine";
 	import { createSearchContext } from "@/features/planet_search/planetSearchContext.util";
 	import {
@@ -43,7 +44,10 @@
 		MAX_PINS,
 		type IPlanetSearchQuery,
 	} from "@/features/planet_search/planetSearchUrl.util";
-	import { hintLabel } from "@/features/planet_search/planetSearchLabels.util";
+	import {
+		hintLabel,
+		hintText,
+	} from "@/features/planet_search/planetSearchLabels.util";
 	import { deepClone } from "@/util/data";
 
 	// Components
@@ -69,11 +73,12 @@
 	// Types & Interfaces
 	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-	import type {
-		PlanetSearchFilter,
-		PlanetSearchReference,
-		PlanetSearchSaved,
-		PlanetSearchView,
+	import {
+		PlanetSearchFilterSchema,
+		type PlanetSearchFilter,
+		type PlanetSearchReference,
+		type PlanetSearchSaved,
+		type PlanetSearchView,
 	} from "@/features/planet_search/planetSearch.schemas";
 	import type { IPlanetSearchSort } from "@/features/planet_search/planetSearch.types";
 
@@ -278,9 +283,15 @@
 		)
 	);
 	const chips = computed(() => activeChips(filter.value));
+	const nameNote = computed(() =>
+		nameSearchNote(index.value, filter.value, ctx.value)
+	);
+	// the name note takes over when the filters hide every name match
 	const hints = computed(() =>
-		index.value.length && !matched.value.length
-			? zeroResultHints(index.value, filter.value, ctx.value)
+		index.value.length && !matched.value.length && !nameNote.value
+			? restrictionHints(index.value, filter.value, ctx.value, {
+					baseline: "all",
+				})
 			: []
 	);
 
@@ -298,6 +309,30 @@
 			filter: h.filter,
 		}))
 	);
+
+	const nameNoteItem = computed(() => {
+		const note = nameNote.value;
+		if (!note) return null;
+		const shown = note.matches - note.hidden;
+		return {
+			text: t(
+				"planet_search.name_note.text",
+				{ n: note.hidden, text: filter.value.text.trim() },
+				note.hidden
+			),
+			hints: note.hints.map((h) => ({
+				label: t("planet_search.name_note.relaxation", {
+					label: hintText(h, filter.value.minDaily, t, refName),
+					n: h.count - shown,
+				}),
+				filter: h.filter,
+			})),
+			showAll: {
+				label: t("planet_search.name_note.show_all", { n: note.matches }),
+				filter: note.showAll,
+			},
+		};
+	});
 
 	// one analytics event per settled search
 	let trackTimer: ReturnType<typeof setTimeout> | undefined;
@@ -338,7 +373,9 @@
 		prefs.value.savedSearches.push({
 			id: crypto.randomUUID(),
 			name,
-			filter: deepClone(filter.value),
+			// a plain copy: after a panel change the filter holds reactive
+			// proxies, which deepClone (structuredClone) can't copy
+			filter: PlanetSearchFilterSchema.parse(filter.value),
 			view: view.value,
 		});
 		toast(t("planet_search.header.saved_toast", { name }));
@@ -487,6 +524,7 @@
 					:filter="filter"
 					:chips="chips"
 					:hints="hintItems"
+					:name-note="nameNoteItem"
 					:is-desktop="isDesktop"
 					:ref-name="refName"
 					:sorts="sort"

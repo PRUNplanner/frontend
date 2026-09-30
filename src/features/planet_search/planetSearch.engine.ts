@@ -21,6 +21,8 @@ import type {
 	IPlanetSearchContext,
 	IPlanetSearchFacets,
 	IPlanetSearchHint,
+	IPlanetSearchNameNote,
+	IPlanetSearchSection,
 	IPlanetSearchSort,
 } from "@/features/planet_search/planetSearch.types";
 import {
@@ -59,6 +61,53 @@ export function defaultFilter(): PlanetSearchFilter {
 		references: [],
 		maxJumps: 10,
 	};
+}
+
+const SEARCH_SECTIONS: IPlanetSearchSection[] = [
+	"conditions",
+	"extras",
+	"cogc",
+	"infrastructure",
+];
+
+/**
+ * The section at its widest, the state hiding the fewest planets. Not
+ * "everything ticked": a ticked COGC program or infrastructure narrows.
+ * @author jplacht
+ */
+export function widenSection(
+	filter: PlanetSearchFilter,
+	section: IPlanetSearchSection
+): PlanetSearchFilter {
+	switch (section) {
+		case "conditions":
+			return { ...filter, surface: [...SEARCH_SURFACES], fertile: false };
+		case "extras":
+			return { ...filter, acceptedExtras: [...SEARCH_EXTRAS] };
+		case "cogc":
+			return { ...filter, cogc: [] };
+		case "infrastructure":
+			return { ...filter, infrastructure: [] };
+	}
+}
+
+export function isSectionWide(
+	filter: PlanetSearchFilter,
+	section: IPlanetSearchSection
+): boolean {
+	switch (section) {
+		case "conditions":
+			return (
+				!filter.fertile &&
+				SEARCH_SURFACES.every((s) => filter.surface.includes(s))
+			);
+		case "extras":
+			return SEARCH_EXTRAS.every((e) => filter.acceptedExtras.includes(e));
+		case "cogc":
+			return !filter.cogc.length;
+		case "infrastructure":
+			return !filter.infrastructure.length;
+	}
 }
 
 /*
@@ -227,6 +276,13 @@ const DIMENSIONS = [
 ] as const;
 type Dimension = (typeof DIMENSIONS)[number];
 
+const SECTION_DIMENSIONS: Record<IPlanetSearchSection, Dimension[]> = {
+	conditions: ["surface", "fertile"],
+	extras: ["extras"],
+	cogc: ["cogc"],
+	infrastructure: ["infrastructure"],
+};
+
 const PASS: Predicate = () => true;
 
 function predicate(
@@ -308,6 +364,17 @@ function failMasks(
 	return masks;
 }
 
+function countIn(
+	pool: IPrepared[],
+	f: PlanetSearchFilter,
+	ctx: IPlanetSearchContext
+): number {
+	const preds = DIMENSIONS.map((d) => predicate(d, f, ctx));
+	let n = 0;
+	for (const p of pool) if (preds.every((pred) => pred(p))) n++;
+	return n;
+}
+
 /**
  * Planets matching the filter, in index order
  * @author jplacht
@@ -361,7 +428,20 @@ export function facetCounts(
 	const countInfra = counter("infrastructure");
 	const countRefs = counter("references");
 
+	// a widened section passes every planet on its own dimensions
+	const countAny = (section: IPlanetSearchSection): number => {
+		let own = 0;
+		for (const d of SECTION_DIMENSIONS[section])
+			own |= 1 << DIMENSIONS.indexOf(d);
+		let n = 0;
+		for (const m of masks) if ((m & ~own) === 0) n++;
+		return n;
+	};
+
 	return {
+		any: Object.fromEntries(
+			SEARCH_SECTIONS.map((s) => [s, countAny(s)])
+		) as Record<IPlanetSearchSection, number>,
 		materials: filter.materialGroups.map((g, gi) =>
 			Object.fromEntries(
 				materials
@@ -501,21 +581,36 @@ export function activeChips(filter: PlanetSearchFilter): IPlanetSearchChip[] {
 }
 
 /**
- * Up to 3 relaxations that give results, most results first
+ * Up to 3 relaxations that show more planets, most planets first. Counts
+ * are the totals after the relaxation.
  * @author jplacht
+ *
+ * @param options.baseline "all": relaxations of a search without results.
+ * "name": only the planets matching the name text count, and a relaxation
+ * must show more of them than the filter does now.
  */
-export function zeroResultHints(
+export function restrictionHints(
 	index: PlanetSearchIndexEntry[],
 	filter: PlanetSearchFilter,
-	ctx: IPlanetSearchContext
+	ctx: IPlanetSearchContext,
+	options: { baseline: "all" | "name" }
 ): IPlanetSearchHint[] {
+	const byName = options.baseline === "name";
+	// the name shrinks the set once, every candidate is counted within it
+	const pool = byName
+		? prepare(index).filter(predicate("text", filter, ctx))
+		: prepare(index);
+	const floor = byName ? countIn(pool, filter, ctx) : 0;
+
 	// counts are filled in below
-	const candidates: IPlanetSearchHint[] = activeChips(filter).map((chip) => ({
-		kind: "chip",
-		chip,
-		filter: chip.remove,
-		count: 0,
-	}));
+	const candidates: IPlanetSearchHint[] = activeChips(filter)
+		.filter((chip) => !(byName && chip.kind === "text"))
+		.map((chip) => ({
+			kind: "chip",
+			chip,
+			filter: chip.remove,
+			count: 0,
+		}));
 
 	if (!filter.surface.includes("gaseous"))
 		candidates.push({
@@ -523,10 +618,10 @@ export function zeroResultHints(
 			filter: { ...filter, surface: [...filter.surface, "gaseous"] },
 			count: 0,
 		});
-	if (filter.acceptedExtras.length < SEARCH_EXTRAS.length)
+	if (!isSectionWide(filter, "extras"))
 		candidates.push({
 			kind: "extras",
-			filter: { ...filter, acceptedExtras: [...SEARCH_EXTRAS] },
+			filter: widenSection(filter, "extras"),
 			count: 0,
 		});
 	if (filter.references.length && filter.maxJumps < MAX_JUMPS) {
@@ -539,11 +634,57 @@ export function zeroResultHints(
 		});
 	}
 
+	if (byName)
+		for (const section of ["conditions", "cogc", "infrastructure"] as const)
+			if (!isSectionWide(filter, section))
+				candidates.push({
+					kind: "section",
+					section,
+					filter: widenSection(filter, section),
+					count: 0,
+				});
+
+	// the first of two candidates with the same outcome stays
+	const seen = new Set<string>();
 	return candidates
-		.map((c) => ({ ...c, count: filterPlanets(index, c.filter, ctx).length }))
-		.filter((h) => h.count > 0)
+		.filter((c) => {
+			const key = JSON.stringify(c.filter);
+			if (seen.has(key)) return false;
+			seen.add(key);
+			return true;
+		})
+		.map((c) => ({ ...c, count: countIn(pool, c.filter, ctx) }))
+		.filter((h) => h.count > floor)
 		.sort((a, b) => b.count - a.count)
 		.slice(0, 3);
+}
+
+/**
+ * Tells when the other filters hide planets that match the name text:
+ * how many, what would show them, and the filter showing all of them.
+ * Null without name text or when nothing is hidden.
+ * @author jplacht
+ */
+export function nameSearchNote(
+	index: PlanetSearchIndexEntry[],
+	filter: PlanetSearchFilter,
+	ctx: IPlanetSearchContext
+): IPlanetSearchNameNote | null {
+	if (!filter.text.trim()) return null;
+
+	const pool = prepare(index).filter(predicate("text", filter, ctx));
+	const hidden = pool.length - countIn(pool, filter, ctx);
+	if (hidden <= 0) return null;
+
+	return {
+		matches: pool.length,
+		hidden,
+		hints: restrictionHints(index, filter, ctx, { baseline: "name" }),
+		showAll: SEARCH_SECTIONS.reduce(widenSection, {
+			...defaultFilter(),
+			text: filter.text,
+		}),
+	};
 }
 
 /*
