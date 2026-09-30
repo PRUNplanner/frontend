@@ -1,4 +1,5 @@
 import { createI18n, type I18n } from "vue-i18n";
+import { baseCompile } from "@intlify/message-compiler";
 
 import type { PSelectOption } from "@/ui/ui.types";
 
@@ -17,6 +18,47 @@ const en_US = Object.entries(enModules).reduce(
 );
 
 export const localeLazyLoaders = import.meta.glob("@/locales/**/*.json");
+
+/**
+ * Splits off the messages vue-i18n can't compile (e.g. a translated
+ * `@:{terms.x}`). A production build throws on those while rendering,
+ * which blanks the page; without them the key falls back to en_US.
+ */
+export function dropInvalidMessages(
+	messages: Record<string, unknown>,
+	path: string = ""
+): { messages: Record<string, unknown>; dropped: string[] } {
+	const valid: Record<string, unknown> = {};
+	const dropped: string[] = [];
+
+	for (const [key, value] of Object.entries(messages)) {
+		const keyPath = path ? `${path}.${key}` : key;
+
+		if (typeof value === "string") {
+			try {
+				baseCompile(value, {
+					onError: (err) => {
+						throw err;
+					},
+				});
+				valid[key] = value;
+			} catch {
+				dropped.push(keyPath);
+			}
+		} else if (value && typeof value === "object") {
+			const nested = dropInvalidMessages(
+				value as Record<string, unknown>,
+				keyPath
+			);
+			valid[key] = nested.messages;
+			dropped.push(...nested.dropped);
+		} else {
+			valid[key] = value;
+		}
+	}
+
+	return { messages: valid, dropped };
+}
 
 export const SUPPORTED_LOCALES = [
 	"de_DE",

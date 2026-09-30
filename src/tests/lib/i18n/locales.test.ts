@@ -1,8 +1,42 @@
 import { describe, expect, it } from "vitest";
 
-import { i18n } from "@/lib/i18n";
+import { dropInvalidMessages, i18n } from "@/lib/i18n";
 
 const { t } = i18n.global;
+
+describe("dropInvalidMessages", () => {
+	it("finds no invalid message in en_US", () => {
+		const en_US = i18n.global.getLocaleMessage("en_US");
+
+		expect(
+			dropInvalidMessages(en_US as Record<string, unknown>).dropped
+		).toStrictEqual([]);
+	});
+
+	it("drops messages vue-i18n can't compile and keeps the rest", () => {
+		const result = dropInvalidMessages({
+			wrapper: {
+				broken_link: "@:{terms.materials}数据",
+				raw_at: "name@example.com",
+				ok_link: "@:{'terms.materials'}数据",
+				ok_at: "name{'@'}example.com",
+				ok_named: "Volume: {value}",
+			},
+		});
+
+		expect(result.dropped).toStrictEqual([
+			"wrapper.broken_link",
+			"wrapper.raw_at",
+		]);
+		expect(result.messages).toStrictEqual({
+			wrapper: {
+				ok_link: "@:{'terms.materials'}数据",
+				ok_at: "name{'@'}example.com",
+				ok_named: "Volume: {value}",
+			},
+		});
+	});
+});
 
 describe("en_US volume terms", () => {
 	it("uses traded volume for market data", () => {

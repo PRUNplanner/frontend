@@ -42,7 +42,11 @@ import type {
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import { deepClone } from "@/util/data";
 import type { Composer } from "vue-i18n";
-import { localeLazyLoaders, type SupportedLocale } from "@/lib/i18n";
+import {
+	dropInvalidMessages,
+	localeLazyLoaders,
+	type SupportedLocale,
+} from "@/lib/i18n";
 
 export const useUserStore = defineStore(
 	"prunplanner_user",
@@ -148,8 +152,13 @@ export const useUserStore = defineStore(
 					{} as Record<string, any>
 				);
 
-				// 5. Register and switch
-				composer.setLocaleMessage(v, messages);
+				// 5. Register and switch, untranslatable messages fall back
+				const { messages: validMessages, dropped } =
+					dropInvalidMessages(messages);
+				if (dropped.length > 0) {
+					console.warn(`Invalid ${v} messages, using en_US:`, dropped);
+				}
+				composer.setLocaleMessage(v, validMessages);
 				composer.locale.value = v;
 
 				nextTick(() => {
