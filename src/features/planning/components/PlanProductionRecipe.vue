@@ -171,10 +171,12 @@
 		scrollable
 		style="padding: 0; max-height: min(500px, 45vh); max-width: calc(100vw - 48px)"
 		:show="refShowRecipeOptions"
+		:disabled="disabled"
 		@update-show="(val) => (refShowRecipeOptions = val)">
 		<template #trigger>
 			<div
-				class="col-span-6 xl:col-span-2 flex items-center gap-1 hover:cursor-pointer group justify-between">
+				class="col-span-6 xl:col-span-2 flex items-center gap-1 group justify-between"
+				:class="{ 'hover:cursor-pointer': !disabled }">
 				<div class="flex flex-row flex-wrap gap-1">
 					<MaterialTile
 						v-for="material in localRecipeData.recipe.outputs"
@@ -185,7 +187,7 @@
 						"
 						:enable-popover="false" />
 				</div>
-				<div class="pr-3">
+				<div v-if="!disabled" class="pr-3">
 					<svg
 						viewBox="0 0 24 24"
 						fill="currentColor"
@@ -358,6 +360,7 @@
 	</div>
 	<div class="col-span-6 xl:col-span-1 flex xl:justify-end">
 		<PButton
+			v-if="!disabled"
 			:aria-label="$t('common.buttons.delete')"
 			size="sm"
 			type="error"
