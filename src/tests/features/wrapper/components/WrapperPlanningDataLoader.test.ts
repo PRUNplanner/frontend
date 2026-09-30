@@ -8,6 +8,12 @@ import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlan
 import { mountComponent } from "@/tests/mountComponent";
 import { useQuery } from "@/lib/query_cache/useQuery";
 import { useUserStore } from "@/stores/userStore";
+import { trackUser } from "@/lib/analytics/useAnalytics";
+
+vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
+	trackUser: vi.fn(),
+}));
 
 // test data
 import plan from "@/tests/test_data/api_data_plan_etherwind.json";
@@ -118,6 +124,8 @@ describe("WrapperPlanningDataLoader with an empire list", () => {
 		// never asks for the deleted empire's plans
 		expect(planRequests()).toEqual([]);
 		expect(component.emitted("update:empireUuid")).toEqual([[E1]]);
+		// person property, from every page that loads the list
+		expect(trackUser).toHaveBeenCalledWith({ empire_count: 1 });
 
 		await setProps({ empireUuid: E1 });
 

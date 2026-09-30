@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanExperts from "@/features/planning/components/PlanExperts.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
@@ -9,7 +9,7 @@ import { mountComponent } from "@/tests/mountComponent";
 import type { ExpertType } from "@/features/api/schemas/planningData.schemas";
 import type { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
 
 const EXPERTS: ExpertType[] = [
 	"Agriculture",
@@ -63,7 +63,7 @@ const warning = (wrapper: VueWrapper) => wrapper.find(".bg-red-500\\/50");
 
 describe("PlanExperts", () => {
 	beforeEach(() => {
-		vi.mocked(trackEvent).mockClear();
+		vi.mocked(trackPlanEdit).mockClear();
 	});
 
 	it("lists every expert with amount and bonus", async () => {
@@ -142,9 +142,10 @@ describe("PlanExperts", () => {
 		expect(component.emitted("update:expert")).toEqual([
 			["Food_Industries", 3],
 		]);
-		expect(trackEvent).toHaveBeenCalledWith("plan_update_expert", {
-			planetNaturalId: "ZZ-000a",
-			expertType: "Food_Industries",
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "expert",
+			planet_natural_id: "ZZ-000a",
+			expert_type: "Food_Industries",
 			amount: 3,
 		});
 	});
@@ -167,7 +168,7 @@ describe("PlanExperts", () => {
 		await input(wrapper, 1).setValue("");
 
 		expect(component.emitted("update:expert")).toBeUndefined();
-		expect(trackEvent).not.toHaveBeenCalled();
+		expect(trackPlanEdit).not.toHaveBeenCalled();
 	});
 
 	it("disables the inputs", async () => {

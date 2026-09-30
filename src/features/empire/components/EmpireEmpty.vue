@@ -25,7 +25,7 @@
 	 */
 	async function createEmpire(): Promise<void> {
 		isCreating.value = true;
-		trackEvent("empire_create");
+		trackEvent("empire:create");
 
 		try {
 			const empire = await useQuery("CreateEmpire", {

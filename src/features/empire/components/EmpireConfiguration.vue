@@ -46,7 +46,7 @@
 	 * @returns {void}
 	 */
 	function reloadForm(): void {
-		trackEvent("empire_reload");
+		trackEvent("empire:reload");
 		reload();
 	}
 

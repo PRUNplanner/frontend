@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { ref } from "vue";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
@@ -100,6 +101,8 @@ const outputs = (wrapper: VueWrapper) =>
 		.findAll('td[data-col-key="recipeOutputs"]')
 		.map((td) => td.find(".font-bold").text());
 
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+
 describe("ROIOverviewTable", () => {
 	beforeAll(async () => {
 		// @ts-expect-error mock data
@@ -110,6 +113,7 @@ describe("ROIOverviewTable", () => {
 
 	beforeEach(() => {
 		calculate.mockReset();
+		vi.mocked(trackEvent).mockClear();
 	});
 
 	it("shows the progress while calculating", async () => {
@@ -123,12 +127,17 @@ describe("ROIOverviewTable", () => {
 		expect(bar.props()).toMatchObject({ step: 3, total: 10 });
 		expect(wrapper.text()).toContain("recipe_roi.calculating");
 		expect(filters(wrapper).exists()).toBe(false);
+		// no result yet
+		expect(trackEvent).not.toHaveBeenCalled();
 
 		run.resolve(RESULTS);
 		await flushPromises();
 
 		expect(wrapper.findComponent(PProgressBar).exists()).toBe(false);
 		expect(tableRows(wrapper)).toHaveLength(4);
+		expect(trackEvent).toHaveBeenCalledWith("tool:use", {
+			tool_name: "recipe_roi",
+		});
 	});
 
 	it("renders one row per building recipe", async () => {
@@ -313,6 +322,7 @@ describe("ROIOverviewTable", () => {
 
 		expect(wrapper.findComponent(PProgressBar).exists()).toBe(false);
 		expect(tableRows(wrapper)).toHaveLength(0);
+		expect(trackEvent).not.toHaveBeenCalled();
 	});
 
 	it("renders an empty table without results", async () => {

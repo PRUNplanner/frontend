@@ -35,9 +35,9 @@
 		props.sharedPlanUuid === undefined ? true : false;
 
 	onMounted(() =>
-		trackEvent("plan_view", {
-			planetNaturalId: props.planetNaturalId,
-			shared: !notShared,
+		trackEvent("plan:view", {
+			planet_natural_id: props.planetNaturalId,
+			is_shared: !notShared,
 		})
 	);
 </script>

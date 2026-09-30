@@ -14,6 +14,7 @@
 
 	// Composables
 	import { useROIOverview } from "@/features/roi_overview/useROIOverview";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
 	import { formatNumber, formatPayback } from "@/util/numbers";
@@ -148,6 +149,7 @@
 				if (d === undefined) return;
 				result.value = d;
 				isCalculating.value = false;
+				trackEvent("tool:use", { tool_name: "recipe_roi" });
 			},
 			() => (isCalculating.value = false)
 		);

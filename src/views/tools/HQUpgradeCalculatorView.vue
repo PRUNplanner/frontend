@@ -1,5 +1,13 @@
 <script setup lang="ts">
-	import { computed, onMounted, type Ref, ref } from "vue";
+	import {
+		computed,
+		onBeforeUnmount,
+		onMounted,
+		type Ref,
+		ref,
+		watch,
+	} from "vue";
+	import { debounce } from "lodash";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
@@ -11,6 +19,7 @@
 
 	// Composables
 	import { useHQUpgradeCalculator } from "@/features/hq_upgrade_calculator/useHQUpgradeCalculator";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
@@ -58,6 +67,16 @@
 	);
 
 	onMounted(async () => calculateMaterialData());
+
+	// one analytics event per settled input, the defaults on open don't count
+	const trackUse = debounce(
+		() => trackEvent("tool:use", { tool_name: "hq_upgrade" }),
+		1000
+	);
+	watch([selectedStart, selectedTo, selectedOverride], trackUse, {
+		deep: true,
+	});
+	onBeforeUnmount(trackUse.cancel);
 </script>
 
 <template>

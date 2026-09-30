@@ -136,7 +136,7 @@ describe("XITBurnActionButton", () => {
 		expect(
 			vi
 				.mocked(trackEvent)
-				.mock.calls.filter(([e]) => e === "xit_burn_show")
+				.mock.calls.filter(([e]) => e === "xit:burn_open")
 		).toHaveLength(1);
 	});
 

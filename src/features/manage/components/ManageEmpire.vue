@@ -195,7 +195,7 @@
 	 * @author jplacht
 	 */
 	async function save(): Promise<void> {
-		trackEvent("manage_empire_junctions_update");
+		trackEvent("manage:empire_cx_assign");
 
 		await useQuery("PatchEmpireCXJunctions", {
 			junctions: cxEmpireJunctions.value,
@@ -211,7 +211,7 @@
 
 		try {
 			if (compCanCreate.value) {
-				trackEvent("manage_empire_create");
+				trackEvent("manage:empire_create");
 
 				await useQuery("CreateEmpire", {
 					data: {
@@ -251,7 +251,7 @@
 
 	async function deleteEmpire(empireUuid: string): Promise<void> {
 		refIsDeleting.value = empireUuid;
-		trackEvent("manage_empire_delete", { empireUuid: empireUuid });
+		trackEvent("manage:empire_delete", { empire_uuid: empireUuid });
 
 		try {
 			const deletionResult: boolean = await useQuery("DeleteEmpire", {

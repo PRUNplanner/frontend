@@ -1,7 +1,7 @@
 import type { Composer } from "vue-i18n";
 
 import { i18n } from "@/lib/i18n";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackEvent, trackUser } from "@/lib/analytics/useAnalytics";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
@@ -46,6 +46,17 @@ import type {
 	APIKeyCreateResponse,
 } from "@/features/api/schemas/apiKeysData.schemas";
 
+/**
+ * Person properties of the preferences worth segmenting by
+ */
+function trackPreferences(prefs: UserPreference): void {
+	trackUser({
+		language: prefs.locale,
+		color_palette: prefs.colorPalette,
+		navigation_style: prefs.layoutNavigationStyle,
+	});
+}
+
 export const userQueries = {
 	// Account
 	PostUserRegistration: defineQuery({
@@ -53,14 +64,21 @@ export const userQueries = {
 		fetchFn: async (
 			params: UserRegistrationPayload
 		): Promise<UserRegistrationResponse> => {
-			trackEvent("user_registration", {
-				username: params.username,
-			});
 			try {
-				return await callRegisterUser(params);
+				const result = await callRegisterUser(params);
+				trackEvent("account:signup_complete");
+				return result;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (error: any) {
 				const apiErrors = error.responseData;
+
+				// field names only, the values are personal data
+				trackEvent("account:signup_fail", {
+					fields:
+						apiErrors && typeof apiErrors === "object"
+							? Object.keys(apiErrors)
+							: [],
+				});
 
 				if (apiErrors && typeof apiErrors === "object") {
 					const firstKey = Object.keys(apiErrors)[0];
@@ -155,6 +173,7 @@ export const userQueries = {
 			const userStore = useUserStore();
 			const prefs = await callGetUserPreferences();
 			Object.assign(userStore.preferences, prefs);
+			trackPreferences(userStore.preferences);
 
 			// handle locale
 			const userLocale = userStore.preferences.locale || "en_US";
@@ -174,6 +193,7 @@ export const userQueries = {
 			// dont try to patch if not logged in, d'oh!
 			if (!useUserStore().isLoggedIn) return undefined;
 
+			trackPreferences(prefs);
 			return callPatchUserPreferences(prefs);
 		},
 		persist: false,
@@ -187,8 +207,13 @@ export const userQueries = {
 	}),
 	PostCreateAPIKey: defineQuery({
 		key: () => ["user", "api", "keys", "create"],
-		fetchFn: (params: APIKeyCreatePayload): Promise<APIKeyCreateResponse> =>
-			callPostCreateAPIKey(params.name),
+		fetchFn: async (
+			params: APIKeyCreatePayload
+		): Promise<APIKeyCreateResponse> => {
+			const key = await callPostCreateAPIKey(params.name);
+			trackEvent("account:api_key_create");
+			return key;
+		},
 		persist: false,
 	}),
 	DeleteAPIKey: defineQuery({

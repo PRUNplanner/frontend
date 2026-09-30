@@ -60,7 +60,7 @@
 		if (compCanCreate.value) {
 			refIsCreating.value = true;
 
-			trackEvent("manage_cx_create");
+			trackEvent("manage:cx_create");
 
 			try {
 				await useQuery("CreateCX", {
@@ -96,7 +96,7 @@
 	async function deleteCX(cxUuid: string): Promise<void> {
 		refIsDeleting.value = cxUuid;
 
-		trackEvent("manage_cx_delete", { cxUuid });
+		trackEvent("manage:cx_delete", { cx_uuid: cxUuid });
 
 		try {
 			const deletionResult: boolean = await useQuery("DeleteCX", {

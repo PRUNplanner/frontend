@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanArea from "@/features/planning/components/PlanArea.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type { IAreaResult } from "@/features/planning/usePlanCalculation.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
 
 const AREA: IAreaResult = {
 	permits: 2,
@@ -32,7 +32,7 @@ const areaLeft = (wrapper: VueWrapper) => wrapper.find("span.font-bold");
 
 describe("PlanArea", () => {
 	beforeEach(() => {
-		vi.mocked(trackEvent).mockClear();
+		vi.mocked(trackPlanEdit).mockClear();
 	});
 
 	it("shows permits, used / total and the free area", async () => {
@@ -77,9 +77,10 @@ describe("PlanArea", () => {
 		await wrapper.find("input").setValue("3");
 
 		expect(component.emitted("update:permits")).toEqual([[3]]);
-		expect(trackEvent).toHaveBeenCalledWith("plan_update_permits", {
-			permits: 3,
-			planetNaturalId: "ZZ-000a",
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "permits",
+			amount: 3,
+			planet_natural_id: "ZZ-000a",
 		});
 	});
 
@@ -99,7 +100,7 @@ describe("PlanArea", () => {
 		await wrapper.find("input").setValue("");
 
 		expect(component.emitted("update:permits")).toBeUndefined();
-		expect(trackEvent).not.toHaveBeenCalled();
+		expect(trackPlanEdit).not.toHaveBeenCalled();
 	});
 
 	it("follows new area data", async () => {

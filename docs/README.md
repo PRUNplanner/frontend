@@ -15,7 +15,9 @@ disagree, trust the code and fix the doc.
    to its code.
 5. [ui-and-i18n.md](ui-and-i18n.md): the UI kit, styling and translations.
 6. [testing.md](testing.md): Vitest setup, mocking and test isolation.
-7. [features/](features/README.md): one page per `src/features/*` folder.
+7. [analytics.md](analytics.md): the tracking plan: events, properties and
+   naming rules.
+8. [features/](features/README.md): one page per `src/features/*` folder.
 
 The rules and the command cheat-sheet are in the root [AGENTS.md](../AGENTS.md).
 

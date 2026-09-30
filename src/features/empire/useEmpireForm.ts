@@ -43,7 +43,7 @@ export function useEmpireForm(data: () => PlanEmpireElement) {
 	 */
 	async function save(): Promise<boolean> {
 		isLoading.value = true;
-		trackEvent("empire_patch");
+		let saved = false;
 
 		try {
 			await useQuery("PatchEmpire", {
@@ -55,13 +55,14 @@ export function useEmpireForm(data: () => PlanEmpireElement) {
 					empire_permits_total: localData.value.empire_permits_total,
 				},
 			}).execute();
-			return true;
+			saved = true;
 		} catch (err) {
 			console.error("Error patching empire", err);
-			return false;
 		} finally {
 			isLoading.value = false;
+			trackEvent("empire:update", { is_success: saved });
 		}
+		return saved;
 	}
 
 	return { localData, isLoading, reload, save };

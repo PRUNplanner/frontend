@@ -16,6 +16,7 @@
 
 	// Composables
 	import { useFIOBurn } from "@/features/fio/useFIOBurn";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import {
 		getActiveEmpire,
 		usePlanContext,
@@ -147,6 +148,9 @@
 					await new Promise((r) => setTimeout(r, 0));
 				}
 			}
+
+			if (planData.value.length > 0)
+				trackEvent("tool:use", { tool_name: "fio_burn" });
 		} catch (err) {
 			console.error(err);
 		} finally {

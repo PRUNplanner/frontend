@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { flushPromises, RouterLinkStub, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -44,6 +45,8 @@ function form(wrapper: VueWrapper) {
 const saveButton = (wrapper: VueWrapper) =>
 	wrapper.findAll("button").find((b) => b.text() === "common.buttons.save")!;
 
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+
 describe("EmpireOnboarding", () => {
 	beforeAll(() => {
 		axiosSetup();
@@ -51,6 +54,7 @@ describe("EmpireOnboarding", () => {
 
 	beforeEach(() => {
 		mock.reset();
+		vi.mocked(trackEvent).mockClear();
 		mock.onPut(PUT_URL).reply((config) => [
 			200,
 			{ uuid: EMPIRE_UUID, ...JSON.parse(config.data) },
@@ -91,6 +95,9 @@ describe("EmpireOnboarding", () => {
 			empire_permits_total: 3,
 		});
 		expect(component.emitted("reload:empires")).toEqual([[]]);
+		expect(trackEvent).toHaveBeenCalledWith("onboarding:step_click", {
+			step: "empire_save",
+		});
 		expect(wrapper.text()).toContain("empire.onboarding.empire.saved");
 	});
 
@@ -112,9 +119,13 @@ describe("EmpireOnboarding", () => {
 	// i18n doesn't interpolate
 	it("links step 2 to planet search", async () => {
 		const { wrapper } = await mountOnboarding();
+		const link = wrapper.findComponent(RouterLinkStub);
 
-		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe(
-			"/search"
-		);
+		expect(link.props("to")).toBe("/search");
+
+		await link.trigger("click");
+		expect(trackEvent).toHaveBeenCalledWith("onboarding:step_click", {
+			step: "planet_search",
+		});
 	});
 });

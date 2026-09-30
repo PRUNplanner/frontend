@@ -3,6 +3,7 @@
 
 	// Composables
 	import { useEmpireForm } from "@/features/empire/useEmpireForm";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import EmpireConfigurationForm from "@/features/empire/components/EmpireConfigurationForm.vue";
@@ -37,6 +38,7 @@
 	 * @returns {Promise<void>}
 	 */
 	async function saveEmpire(): Promise<void> {
+		trackEvent("onboarding:step_click", { step: "empire_save" });
 		saved.value = await save();
 		if (saved.value) emit("reload:empires");
 	}
@@ -112,7 +114,14 @@
 							{{ $t("empire.onboarding.plan.help") }}
 						</p>
 					</div>
-					<router-link to="/search" :class="primaryLink">
+					<router-link
+						to="/search"
+						:class="primaryLink"
+						@click="
+							trackEvent('onboarding:step_click', {
+								step: 'planet_search',
+							})
+						">
 						<PIcon :size="16"><SearchSharp /></PIcon>
 						{{ $t("empire.onboarding.plan.action") }}
 					</router-link>
@@ -135,7 +144,12 @@
 						<template #exchanges>
 							<router-link
 								to="/exchanges"
-								class="text-link-primary hover:underline">
+								class="text-link-primary hover:underline"
+								@click="
+									trackEvent('onboarding:step_click', {
+										step: 'exchanges',
+									})
+								">
 								{{ $t("empire.onboarding.prices.exchanges") }}
 							</router-link>
 						</template>

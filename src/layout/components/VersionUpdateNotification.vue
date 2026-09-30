@@ -7,7 +7,7 @@
 	async function reload(): Promise<void> {
 		markUpdated()
 			.then(() => {
-				trackEvent("version_reload");
+				trackEvent("app:version_reload");
 			})
 			.finally(() => {
 				window.location.reload();

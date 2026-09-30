@@ -111,7 +111,7 @@ describe("XITTransferActionButton", () => {
 		// a second click while open does not show it again
 		await open(wrapper);
 		expect(trackEvent).toHaveBeenCalledTimes(1);
-		expect(trackEvent).toHaveBeenCalledWith("xit_transfer_show");
+		expect(trackEvent).toHaveBeenCalledWith("xit:transfer_open");
 	});
 
 	it("takes a drawer title and width", async () => {
@@ -244,7 +244,7 @@ describe("XITTransferActionButton", () => {
 
 		expect(writeText).toHaveBeenCalledTimes(1);
 		expect(JSON.parse(writeText.mock.calls[0][0])).toEqual(xitJSON());
-		expect(trackEvent).toHaveBeenCalledWith("xit_transfer_copy");
+		expect(trackEvent).toHaveBeenCalledWith("xit:transfer_copy");
 		// @ts-expect-error jsdom has no clipboard, remove the stub again
 		delete navigator.clipboard;
 	});

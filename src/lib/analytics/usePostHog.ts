@@ -43,6 +43,10 @@ let started = false;
 let queue: Array<[string, Properties | null | undefined]> | null = null;
 // last identified user, so a later grant can identify them
 let identity: { id: string; props?: Properties } | null = null;
+// person properties set before the user is identified
+let pendingUserProps: Properties = {};
+// a pageview was dropped while off, sent once PostHog starts
+let missedPageview = false;
 // super properties, so a later grant can register them again
 let superProps: Properties = {};
 
@@ -86,6 +90,15 @@ function removePostHogStorage(): void {
 	}
 }
 
+/**
+ * The page a visitor is on when they grant: its pageview came before
+ * the grant and was dropped.
+ */
+function sendMissedPageview(): void {
+	if (missedPageview) posthog?.capture("$pageview");
+	missedPageview = false;
+}
+
 async function startAnalytics(): Promise<void> {
 	const key = getPostHogKey();
 	if (started || queue || !key) return;
@@ -100,6 +113,7 @@ async function startAnalytics(): Promise<void> {
 		posthog.register({ app_version: __APP_VERSION__, ...superProps });
 		started = true;
 		if (identity) posthog.identify(identity.id, identity.props);
+		sendMissedPageview();
 		return;
 	}
 
@@ -118,7 +132,10 @@ async function startAnalytics(): Promise<void> {
 			person_profiles: "identified_only",
 			name: POSTHOG_NAME,
 			autocapture: true,
-			capture_pageview: true,
+			// the router sends $pageview with route_name
+			capture_pageview: false,
+			// would follow capture_pageview otherwise
+			capture_pageleave: true,
 			// no cookie
 			persistence: "localStorage",
 			respect_dnt: true,
@@ -134,6 +151,7 @@ async function startAnalytics(): Promise<void> {
 		started = true;
 
 		if (identity) loaded.identify(identity.id, identity.props);
+		sendMissedPageview();
 		queue?.forEach(([event, props]) => loaded.capture(event, props));
 	} catch (error) {
 		console.warn("Analytics failed to load", error);
@@ -177,7 +195,11 @@ export function capture(
 	eventName: string,
 	props?: Properties | null | undefined
 ): void {
-	if (!started && !queue) return;
+	if (!started && !queue) {
+		if (eventName === "$pageview") missedPageview = true;
+		return;
+	}
+	if (eventName === "$pageview") missedPageview = false;
 
 	// redact props
 	const safeProps = props ? redact(props, SENSITIVE_KEYS) : props;
@@ -207,18 +229,43 @@ export function register(props: Properties): void {
 	if (started) posthog?.register(props);
 }
 
+/**
+ * Sets person properties. Before the user is identified they are kept
+ * for identify(): set on an anonymous visitor they would create a person
+ * profile.
+ */
 export function setUserProp(props: Properties): void {
-	if (identity) identity.props = { ...identity.props, ...props };
+	if (!identity) {
+		pendingUserProps = { ...pendingUserProps, ...props };
+		return;
+	}
+
+	// unchanged values are not sent again, loaders set them on every page
+	const known: Properties = identity.props ?? {};
+	if (Object.entries(props).every(([key, value]) => known[key] === value))
+		return;
+
+	identity.props = { ...known, ...props };
 	if (started) posthog?.people.set(props);
 }
 
 export function identify(id: string, props?: Properties): void {
-	identity = { id, props };
-	if (started) posthog?.identify(id, props);
+	const known: Properties = identity?.id === id ? (identity.props ?? {}) : {};
+	const merged: Properties = { ...known, ...pendingUserProps, ...props };
+	pendingUserProps = {};
+
+	// the profile reloads after every change, nothing new to send then
+	const unchanged: boolean =
+		identity?.id === id &&
+		Object.entries(merged).every(([key, value]) => known[key] === value);
+
+	identity = { id, props: merged };
+	if (started && !unchanged) posthog?.identify(id, merged);
 }
 
 export function reset(): void {
 	identity = null;
+	pendingUserProps = {};
 	if (!started) return;
 
 	posthog?.reset();

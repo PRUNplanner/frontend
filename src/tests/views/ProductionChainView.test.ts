@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { h, type Slots } from "vue";
 import { flushPromises } from "@vue/test-utils";
 
@@ -68,6 +69,7 @@ vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
 describe("ProductionChainView", () => {
 	beforeEach(() => {
 		create.mockClear();
+		vi.mocked(trackEvent).mockClear();
 		useGraph.mockClear();
 	});
 
@@ -85,11 +87,20 @@ describe("ProductionChainView", () => {
 		// the default: 1 RAT, no recipe selection, no terminals
 		expect(create).toHaveBeenCalledTimes(1);
 		expect(create).toHaveBeenCalledWith("RAT", 1, [], "");
+		// the default chain on open is not a use of the tool
+		expect(trackEvent).not.toHaveBeenCalled();
 
 		// a new material reuses the graph
 		wrapper.findComponent(PSelect).vm.$emit("update:value", "DW");
 		await flushPromises();
 		expect(create).toHaveBeenLastCalledWith("DW", 1, [], "");
+		expect(trackEvent).toHaveBeenCalledWith("tool:use", {
+			tool_name: "production_chain",
+			material_ticker: "DW",
+			amount: 1,
+			recipes: [],
+			terminals: "",
+		});
 		expect(useGraph).toHaveBeenCalledTimes(1);
 	});
 

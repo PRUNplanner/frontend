@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanWorkforce from "@/features/planning/components/PlanWorkforce.vue";
 import { CheckSharp, BlockOutlined } from "@vicons/material";
 import PButton from "@/ui/components/PButton.vue";
@@ -14,7 +14,7 @@ import type {
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
 
 const wf = (
 	name: WorkforceType,
@@ -80,7 +80,7 @@ const luxButtons = (wrapper: VueWrapper, index: number) =>
 
 describe("PlanWorkforce", () => {
 	beforeEach(() => {
-		vi.mocked(trackEvent).mockClear();
+		vi.mocked(trackPlanEdit).mockClear();
 	});
 
 	it("lists every workforce with need, supply, open and efficiency", async () => {
@@ -232,10 +232,11 @@ describe("PlanWorkforce", () => {
 		expect(component.emitted("update:lux")).toEqual([
 			["settler", "lux1", true],
 		]);
-		expect(trackEvent).toHaveBeenCalledWith("plan_update_workforce", {
-			planetNaturalId: "ZZ-000a",
-			workforceType: "settler",
-			luxType: "Lux1",
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "workforce",
+			planet_natural_id: "ZZ-000a",
+			workforce_type: "settler",
+			lux_type: "Lux1",
 			value: true,
 		});
 	});
@@ -249,10 +250,11 @@ describe("PlanWorkforce", () => {
 		expect(component.emitted("update:lux")).toEqual([
 			["settler", "lux2", false],
 		]);
-		expect(trackEvent).toHaveBeenCalledWith("plan_update_workforce", {
-			planetNaturalId: "ZZ-000a",
-			workforceType: "settler",
-			luxType: "Lux2",
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "workforce",
+			planet_natural_id: "ZZ-000a",
+			workforce_type: "settler",
+			lux_type: "Lux2",
 			value: false,
 		});
 	});

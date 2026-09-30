@@ -5,209 +5,133 @@ import type {
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
 
-export type ANALYTICS_EVENT_TYPE =
-	| "empire_create"
-	| "empire_patch"
-	| "empire_reload"
-	| "exchange_patch"
-	| "exchange_reload"
-	| "manage_cx_create"
-	| "manage_cx_delete"
-	| "manage_empire_create"
-	| "manage_empire_delete"
-	| "manage_empire_junctions_update"
-	| "manage_plans_assign_all"
-	| "manage_plans_clone"
-	| "manage_plans_delete"
-	| "manage_plans_junctions_update"
-	| "marketexploration_explore"
-	| "materialtile_market_drawer"
-	| "navigation_toggle"
-	| "plan_create_building"
-	| "plan_create"
-	| "plan_leave_changed"
-	| "plan_reload"
-	| "plan_save"
-	| "plan_save_as"
-	| "plan_share_create"
-	| "plan_share_delete"
-	| "plan_shared_cloned"
-	| "plan_tool_optimize_habitation"
-	| "plan_tool_optimize_habitation_active"
-	| "plan_tool_view"
-	| "plan_tool_cogm"
-	| "plan_update_building_add_recipe"
-	| "plan_update_building_change_recipe"
-	| "plan_update_building_delete_recipe"
-	| "plan_update_building_recipe_amount"
-	| "plan_update_building"
-	| "plan_update_cogc"
-	| "plan_update_corphq"
-	| "plan_update_expert"
-	| "plan_update_infrastructure"
-	| "plan_update_permits"
-	| "plan_update_workforce"
-	| "plan_view"
-	| "planet_search"
-	| "popr_load"
-	| "production_chain"
-	| "resource_roi_overview"
-	| "user_login"
-	| "user_logout"
-	| "user_password_change"
-	| "user_password_reset"
-	| "user_profile_change"
-	| "user_profile_change_fio"
-	| "user_registration"
-	| "user_request_email_verification"
-	| "user_request_password_reset"
-	| "user_verify_email"
-	| "version_reload"
-	| "xit_burn_copy"
-	| "xit_burn_fit_ship"
-	| "xit_burn_show"
-	| "xit_transfer_copy"
-	| "xit_transfer_show";
+export type PlanEditField =
+	| "building_add"
+	| "building_amount"
+	| "recipe_add"
+	| "recipe_change"
+	| "recipe_delete"
+	| "recipe_amount"
+	| "workforce"
+	| "infrastructure"
+	| "expert"
+	| "cogc"
+	| "corphq"
+	| "permits";
 
+export interface IPlanEditProperties {
+	planet_natural_id: string;
+	field: PlanEditField;
+	building_ticker?: string;
+	recipe_id?: string;
+	amount?: number;
+	infrastructure_type?: InfrastructureType;
+	expert_type?: ExpertType;
+	workforce_type?: WorkforceType;
+	lux_type?: string;
+	value?: boolean | number | PlanCOGCProgram;
+}
+
+// tools that report a result without further properties
+type SimpleToolName =
+	| "recipe_roi"
+	| "hq_upgrade"
+	| "upkeep_price"
+	| "market_live"
+	| "fio_repair"
+	| "fio_burn";
+
+export type ToolUseProperties =
+	| { tool_name: SimpleToolName }
+	| { tool_name: "market_exploration"; exchange: string; material_ticker: string }
+	| { tool_name: "resource_roi"; material_ticker: string }
+	| {
+			tool_name: "planet_search";
+			filter: Record<string, string>;
+			result_count: number;
+	  }
+	| {
+			tool_name: "production_chain";
+			material_ticker: string;
+			amount: number;
+			recipes: string[];
+			terminals: string;
+	  };
+
+type Trigger = "button" | "shortcut";
+
+/**
+ * The tracking plan: every event and its properties, documented in
+ * docs/analytics.md. Names are `category:object_action`.
+ */
 export interface IAnalyticsEventProperties {
-	plan_tool_view: {
-		name: string | null;
-	};
-	plan_save: {
-		planetNaturalId: string;
-	};
-	plan_save_as: {
-		planetNaturalId: string;
-	};
-	plan_create: {
-		planetNaturalId: string;
-	};
-	plan_reload: {
-		planetNaturalId: string;
-	};
-	plan_shared_cloned: {
-		sharedUuid: string;
-		planetNaturalId: string;
-	};
-	plan_leave_changed: {
-		planetNaturalId: string;
-	};
-	user_password_reset: undefined;
-	user_request_password_reset: undefined;
-	user_verify_email: { status: boolean };
-	empire_reload: { status: boolean };
-	empire_patch: { status: boolean };
-	empire_create: undefined;
-	popr_load: { planetNaturalId: string };
-	manage_cx_create: undefined;
-	manage_cx_delete: { cxUuid: string };
-	manage_empire_delete: { empireUuid: string };
-	manage_empire_junctions_update: undefined;
-	manage_empire_create: undefined;
-	manage_plans_assign_all: { value: boolean };
-	manage_plans_junctions_update: undefined;
-	manage_plans_clone: { planUuid: string };
-	manage_plans_delete: { planUuid: string };
-	materialtile_market_drawer: { materialTicker: string };
-	resource_roi_overview: { materialTicker: string };
-	planet_search: { filter: Record<string, string>; results: number };
-	user_password_change: undefined;
-	user_logout: undefined;
-	user_login: { username: string };
-	user_registration: { username: string };
-	user_profile_change: undefined;
-	user_profile_change_fio: { active: boolean };
-	user_request_email_verification: undefined;
-	version_reload: undefined;
-	navigation_toggle: { size: "full" | "collapsed" };
-	xit_burn_show: undefined;
-	xit_burn_copy: undefined;
-	xit_transfer_show: undefined;
-	xit_transfer_copy: undefined;
-	plan_share_delete: undefined;
-	plan_share_create: undefined;
-	exchange_reload: { location: string };
-	exchange_patch: { cxUuid: string; location: string };
-	marketexploration_explore: { exchange: string; materialTicker: string };
-	production_chain: {
-		materialTicker: string;
-		amount: number;
-		recipes: string[];
-		terminals: string;
-	};
-	plan_view: {
-		planetNaturalId: string | undefined;
-		shared: boolean;
-	};
-	plan_update_permits: {
-		planetNaturalId: string;
-		permits: number;
-	};
-	plan_update_corphq: {
-		planetNaturalId: string;
-		corphq: boolean;
-	};
-	plan_update_cogc: {
-		planetNaturalId: string;
-		cogc: PlanCOGCProgram;
-	};
-	plan_update_expert: {
-		planetNaturalId: string;
-		expertType: ExpertType;
-		amount: number;
-	};
-	plan_update_infrastructure: {
-		planetNaturalId: string;
-		infrastructureType: InfrastructureType;
-		amount: number;
-	};
-	plan_create_building: {
-		planetNaturalId: string;
-		buildingTicker: string;
-	};
-	plan_update_building: {
-		planetNaturalId: string;
-		buildingTicker: string;
-		amount: number;
-	};
-	plan_update_building_recipe_amount: {
-		planetNaturalId: string;
-		buildingTicker: string;
-		recipeIndex: number;
-		amount: number;
-	};
-	plan_tool_cogm: {
-		planetNaturalId: string;
-		recipeId: string;
-	};
-	plan_update_building_delete_recipe: {
-		planetNaturalId: string;
-		buildingTicker: string;
-		recipeIndex: number;
-	};
-	plan_update_building_add_recipe: {
-		planetNaturalId: string;
-		buildingTicker: string;
-	};
-	plan_update_building_change_recipe: {
-		planetNaturalId: string;
-		buildingTicker: string;
-		recipeId: string;
-	};
-	plan_update_workforce: {
-		planetNaturalId: string;
-		workforceType: WorkforceType;
-		luxType: string;
-		value: boolean;
-	};
-	plan_tool_optimize_habitation: {
-		applyType: "auto" | "area" | "cost";
-	};
-	plan_tool_optimize_habitation_active: {
-		active: boolean;
-	};
-	xit_burn_fit_ship: {
-		weight: number;
-		volume: number;
+	"account:signup_complete": undefined;
+	"account:signup_fail": { fields: string[] };
+	"account:login": undefined;
+	"account:logout": undefined;
+	"account:email_verify": { is_success: boolean };
+	"account:email_verify_request": undefined;
+	"account:password_reset_request": undefined;
+	"account:password_reset": undefined;
+	"account:password_change": undefined;
+	"account:profile_update": undefined;
+	"account:fio_update": { is_active: boolean };
+	"account:fio_link": undefined;
+	"account:api_key_create": undefined;
+
+	"plan:view": { planet_natural_id: string | undefined; is_shared: boolean };
+	"plan:create": { planet_natural_id: string; is_first_plan: boolean };
+	"plan:save": { planet_natural_id: string; trigger: Trigger };
+	"plan:save_as": { planet_natural_id: string };
+	"plan:reload": { planet_natural_id: string };
+	"plan:leave_unsaved": { planet_natural_id: string };
+	"plan:shared_clone": { planet_natural_id: string; shared_uuid: string };
+	"plan:share_create": undefined;
+	"plan:share_delete": undefined;
+	"plan:tool_toggle": { tool_name: string | null };
+	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
+	"plan:hab_optimize": { goal: "auto" | "area" | "cost" };
+	"plan:hab_auto_toggle": { is_active: boolean };
+	"plan:edit": IPlanEditProperties;
+	"plan:undo": { trigger: Trigger };
+	"plan:redo": { trigger: Trigger };
+
+	"planet:popr_load": { planet_natural_id: string };
+
+	"empire:create": undefined;
+	"empire:update": { is_success: boolean };
+	"empire:reload": undefined;
+	"empire:material_io_expand": undefined;
+
+	"manage:cx_create": undefined;
+	"manage:cx_delete": { cx_uuid: string };
+	"manage:empire_create": undefined;
+	"manage:empire_delete": { empire_uuid: string };
+	"manage:empire_cx_assign": undefined;
+	"manage:plan_empire_assign": undefined;
+	"manage:plan_assign_all": { is_assigned: boolean };
+	"manage:plan_clone": { plan_uuid: string };
+	"manage:plan_delete": { plan_uuid: string };
+
+	"exchange:update": { location: string; cx_uuid: string };
+	"exchange:reload": { location: string };
+
+	"material:market_drawer_open": { material_ticker: string };
+
+	"tool:use": ToolUseProperties;
+
+	"xit:burn_open": undefined;
+	"xit:burn_copy": undefined;
+	"xit:burn_ship_fit": { weight: number; volume: number };
+	"xit:transfer_open": undefined;
+	"xit:transfer_copy": undefined;
+
+	"app:navigation_toggle": { navigation_style: "full" | "collapsed" };
+	"app:version_reload": undefined;
+
+	"onboarding:step_click": {
+		step: "empire_save" | "planet_search" | "exchanges";
 	};
 }
+
+export type ANALYTICS_EVENT_TYPE = keyof IAnalyticsEventProperties;

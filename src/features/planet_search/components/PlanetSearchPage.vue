@@ -341,14 +341,15 @@
 			clearTimeout(trackTimer);
 			trackTimer = setTimeout(
 				() =>
-					trackEvent("planet_search", {
+					trackEvent("tool:use", {
+						tool_name: "planet_search",
 						filter: encodeSearch({
 							filter: filter.value,
 							sort: [],
 							view: "list",
 							pins: [],
 						}),
-						results: matched.value.length,
+						result_count: matched.value.length,
 					}),
 				1000
 			);

@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { flushPromises, RouterLinkStub, type VueWrapper } from "@vue/test-utils";
 
 import { materialsStore } from "@/database/stores";
@@ -78,6 +79,8 @@ const details = (wrapper: VueWrapper) =>
 const linkTargets = (el: VueWrapper) =>
 	el.findAllComponents(RouterLinkStub).map((l) => l.props("to"));
 
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+
 describe("EmpireMaterialIO", () => {
 	beforeAll(async () => {
 		await materialsStore.setMany(materials);
@@ -99,6 +102,7 @@ describe("EmpireMaterialIO", () => {
 		expect(details(wrapper)).toHaveLength(0);
 	});
 
+		vi.mocked(trackEvent).mockClear();
 	it("expands a row with a real toggle button", async () => {
 		const { wrapper } = await mountComponent(EmpireMaterialIO, {
 			empireMaterialIO: MATERIAL_IO,
@@ -113,6 +117,8 @@ describe("EmpireMaterialIO", () => {
 		await click(button);
 		expect(toggle(wrapper, "DW").attributes("aria-expanded")).toBe("true");
 		expect(details(wrapper)).toHaveLength(1);
+		expect(trackEvent).toHaveBeenCalledTimes(1);
+		expect(trackEvent).toHaveBeenCalledWith("empire:material_io_expand");
 
 		// every plan of both sides, sorted by amount, planets with two
 		// plans on one side are labelled with the plan
@@ -131,6 +137,8 @@ describe("EmpireMaterialIO", () => {
 
 		await click(toggle(wrapper, "DW"));
 		expect(details(wrapper)).toHaveLength(0);
+		// closing a row is not tracked
+		expect(trackEvent).toHaveBeenCalledTimes(1);
 	});
 
 	it("switches every open row to net per planet", async () => {

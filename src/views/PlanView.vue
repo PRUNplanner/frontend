@@ -23,7 +23,9 @@
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
+	import { usePlanningStore } from "@/stores/planningStore";
 	const userStore = useUserStore();
+	const planningStore = usePlanningStore();
 
 	// Types & Interfaces
 	import type {
@@ -53,7 +55,7 @@
 		reloadExistingPlan,
 		cloneSharedPlan,
 	} = usePlan();
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { flushPlanEdits, trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
 	import { inertClone } from "@/util/data";
@@ -242,7 +244,7 @@
 		refShowTool.value = null;
 		if (isVisisble) return;
 
-		trackEvent("plan_tool_view", { name: key });
+		trackEvent("plan:tool_toggle", { tool_name: key });
 		nextTick(() => {
 			key != refShowTool.value
 				? (refShowTool.value = key)
@@ -371,7 +373,11 @@
 		toast(t("plan.save_status.failed_message"), { type: "error" });
 	}
 
-	async function save(): Promise<void> {
+	async function save(
+		trigger: "button" | "shortcut" = "button"
+	): Promise<void> {
+		// pending plan:edit events belong before the save
+		flushPlanEdits();
 		refIsSaving.value = true;
 		refSaveFailed.value = false;
 		// edits made while saving stay unsaved
@@ -387,10 +393,15 @@
 				if (!savedUuid) return saveFailed();
 
 				markSaved(sent);
-				trackEvent("plan_save", {
-					planetNaturalId: planetData.planet_natural_id,
+				trackEvent("plan:save", {
+					planet_natural_id: planetData.planet_natural_id,
+					trigger,
 				});
 			} else {
+				// ponytail: from the persisted plan store, so an account
+				// whose plans this browser never loaded counts as first
+				const isFirstPlan: boolean =
+					Object.keys(planningStore.plans).length === 0;
 				const newUuid = await createNewPlan(backendData.value);
 				if (!newUuid) return saveFailed();
 
@@ -401,8 +412,9 @@
 				});
 
 				markSaved(sent);
-				trackEvent("plan_create", {
-					planetNaturalId: planetData.planet_natural_id,
+				trackEvent("plan:create", {
+					planet_natural_id: planetData.planet_natural_id,
+					is_first_plan: isFirstPlan,
 				});
 			}
 
@@ -446,8 +458,8 @@
 				autoOptimizeHabs: refAutoOptimizeHabs.value,
 			});
 
-			trackEvent("plan_save_as", {
-				planetNaturalId: planetData.planet_natural_id,
+			trackEvent("plan:save_as", {
+				planet_natural_id: planetData.planet_natural_id,
 			});
 
 			// Close modal and open new plan in a new tab
@@ -486,8 +498,8 @@
 			refSaveFailed.value = false;
 			markSaved();
 
-			trackEvent("plan_reload", {
-				planetNaturalId: planetData.planet_natural_id,
+			trackEvent("plan:reload", {
+				planet_natural_id: planetData.planet_natural_id,
 			});
 		} finally {
 			refIsReloading.value = false;
@@ -502,9 +514,9 @@
 
 		const newPlanUuid = await cloneSharedPlan(props.sharedPlanUuid);
 		sharedWasCloned.value = newPlanUuid !== null;
-		trackEvent("plan_shared_cloned", {
-			planetNaturalId: planetData.planet_natural_id,
-			sharedUuid: props.sharedPlanUuid,
+		trackEvent("plan:shared_clone", {
+			planet_natural_id: planetData.planet_natural_id,
+			shared_uuid: props.sharedPlanUuid,
 		});
 		if (newPlanUuid) {
 			router.push(`/plan/${planetData.planet_natural_id}/${newPlanUuid}`);
@@ -526,8 +538,8 @@
 		() => modified.value && !props.sharedPlanUuid,
 		() => t("plan.notifications.leave_unsaved"),
 		() =>
-			trackEvent("plan_leave_changed", {
-				planetNaturalId: planetData.planet_natural_id,
+			trackEvent("plan:leave_unsaved", {
+				planet_natural_id: planetData.planet_natural_id,
 			})
 	);
 
@@ -548,6 +560,16 @@
 		);
 	}
 
+	function trackedUndo(trigger: "button" | "shortcut"): void {
+		if (canUndo.value) trackEvent("plan:undo", { trigger });
+		undo();
+	}
+
+	function trackedRedo(trigger: "button" | "shortcut"): void {
+		if (canRedo.value) trackEvent("plan:redo", { trigger });
+		redo();
+	}
+
 	function onKeydown(e: KeyboardEvent): void {
 		if (!(e.ctrlKey || e.metaKey)) return;
 		const key: string = e.key.toLowerCase();
@@ -555,16 +577,17 @@
 		if (key === "s") {
 			// never open the browser's save dialog on the plan page
 			e.preventDefault();
-			if (canSave.value) save();
+			if (canSave.value) save("shortcut");
 		} else if (key === "z" && !props.disabled && !isTextField(e.target)) {
 			e.preventDefault();
-			if (e.shiftKey) redo();
-			else undo();
+			if (e.shiftKey) trackedRedo("shortcut");
+			else trackedUndo("shortcut");
 		}
 	}
 
 	onMounted(() => window.addEventListener("keydown", onKeydown));
 	onUnmounted(() => {
+		flushPlanEdits();
 		window.removeEventListener("keydown", onKeydown);
 		// toasts belong to the app, don't let one outlive its plan
 		undoToast?.destroy();
@@ -588,7 +611,10 @@
 	function toastUndo(text: string): void {
 		undoToast?.destroy();
 		undoToast = toast(text, {
-			action: { label: t("plan.history.undo"), onClick: undo },
+			action: {
+				label: t("plan.history.undo"),
+				onClick: () => trackedUndo("button"),
+			},
 		});
 	}
 
@@ -646,7 +672,7 @@
 
 		if (!refAutoOptimizeHabs.value && !force) return;
 
-		trackEvent("plan_tool_optimize_habitation", { applyType: goal });
+		trackEvent("plan:hab_optimize", { goal });
 
 		const solution = optimizeHabs(
 			goal,
@@ -734,7 +760,7 @@
 								:aria-label="t('plan.history.undo')"
 								type="secondary"
 								:disabled="!canUndo"
-								@click="undo">
+								@click="trackedUndo('button')">
 								<template #icon>
 									<UndoSharp />
 								</template>
@@ -748,7 +774,7 @@
 								:aria-label="t('plan.history.redo')"
 								type="secondary"
 								:disabled="!canRedo"
-								@click="redo">
+								@click="trackedRedo('button')">
 								<template #icon>
 									<RedoSharp />
 								</template>
@@ -766,7 +792,7 @@
 						:failed="refSaveFailed"
 						:modified="modified"
 						:saved-at="savedAt"
-						@save="save" />
+						@save="save()" />
 					<PButton v-if="existing" @click="openSaveAsModal">
 						<template #icon>
 							<ContentCopySharp />
@@ -921,8 +947,8 @@
 										(v: boolean, goal: HabSolverGoal) => {
 											refAutoOptimizeHabs = v;
 											trackEvent(
-												'plan_tool_optimize_habitation_active',
-												{ active: v }
+												'plan:hab_auto_toggle',
+												{ is_active: v }
 											);
 											applyOptimizeHabs(goal, false);
 										}

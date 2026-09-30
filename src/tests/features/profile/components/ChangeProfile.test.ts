@@ -164,10 +164,29 @@ describe("ChangeProfile", () => {
 			prun_username: "test-prun-user",
 			email: "test@example.com",
 		});
-		expect(trackEvent).toHaveBeenCalledWith("user_profile_change");
-		expect(trackEvent).toHaveBeenCalledWith("user_profile_change_fio", {
-			active: true,
+		expect(trackEvent).toHaveBeenCalledWith("account:profile_update");
+		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
+			is_active: true,
 		});
+		// FIO was active before
+		expect(trackEvent).not.toHaveBeenCalledWith("account:fio_link");
+	});
+
+	it("reports the first FIO link once the profile is saved", async () => {
+		const noFIO = profile({ fio_apikey: null, prun_username: null });
+		mock.onGet(PROFILE_URL).reply(200, noFIO);
+		mock.onPatch(PROFILE_URL).reply(200, profile());
+		const { wrapper } = await mountProfile(noFIO);
+		await inputs(wrapper).at(0)!.setValue("key");
+		await inputs(wrapper).at(1)!.setValue("PRUN");
+		await flushPromises();
+
+		await save(wrapper);
+
+		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
+			is_active: true,
+		});
+		expect(trackEvent).toHaveBeenCalledWith("account:fio_link");
 	});
 
 	it("reloads the profile after saving and counts as saved again", async () => {
@@ -211,8 +230,8 @@ describe("ChangeProfile", () => {
 			prun_username: null,
 			email: null,
 		});
-		expect(trackEvent).toHaveBeenCalledWith("user_profile_change_fio", {
-			active: false,
+		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
+			is_active: false,
 		});
 	});
 
@@ -236,7 +255,7 @@ describe("ChangeProfile", () => {
 		const fioActive = () =>
 			vi
 				.mocked(trackEvent)
-				.mock.calls.filter(([e]) => e === "user_profile_change_fio")
+				.mock.calls.filter(([e]) => e === "account:fio_update")
 				.map(([, props]) => props);
 
 		await inputs(wrapper).at(1)!.setValue("");
@@ -245,7 +264,7 @@ describe("ChangeProfile", () => {
 		await inputs(wrapper).at(0)!.setValue("");
 		await save(wrapper);
 
-		expect(fioActive()).toEqual([{ active: false }, { active: false }]);
+		expect(fioActive()).toEqual([{ is_active: false }, { is_active: false }]);
 	});
 
 	it("reports FIO as inactive for a key of only spaces", async () => {
@@ -257,8 +276,8 @@ describe("ChangeProfile", () => {
 
 		// without its spaces the key is empty, sent as null
 		expect(patchBody()).toMatchObject({ fio_apikey: null });
-		expect(trackEvent).toHaveBeenCalledWith("user_profile_change_fio", {
-			active: false,
+		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
+			is_active: false,
 		});
 	});
 
@@ -272,8 +291,8 @@ describe("ChangeProfile", () => {
 		await save(wrapper);
 
 		expect(patchBody()).toMatchObject({ prun_username: null });
-		expect(trackEvent).toHaveBeenCalledWith("user_profile_change_fio", {
-			active: false,
+		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
+			is_active: false,
 		});
 	});
 
@@ -287,8 +306,8 @@ describe("ChangeProfile", () => {
 		await save(wrapper);
 
 		expect(patchBody()).toMatchObject({ fio_apikey: null });
-		expect(trackEvent).toHaveBeenCalledWith("user_profile_change_fio", {
-			active: false,
+		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
+			is_active: false,
 		});
 	});
 
@@ -380,7 +399,7 @@ describe("ChangeProfile", () => {
 
 		expect(mock.history.post).toHaveLength(1);
 		expect(trackEvent).toHaveBeenCalledWith(
-			"user_request_email_verification"
+			"account:email_verify_request"
 		);
 		expect(wrapper.text()).toContain(REQUESTED);
 		expect(wrapper.text()).not.toContain(RESEND);

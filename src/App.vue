@@ -43,10 +43,7 @@
 
 		// a session restored from storage loads no profile, analytics still
 		// needs to know the user once they consent
-		if (userStore.profile)
-			identifyUser(userStore.profile.id.toString(), {
-				username: userStore.profile.username,
-			});
+		if (userStore.profile) identifyUser(userStore.profile);
 
 		if (userStore.isLoggedIn) {
 			// start user activity monitor if logged in

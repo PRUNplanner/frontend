@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { computed, type ComputedRef, type PropType } from "vue";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 
 	// Utils
 	import { capitalizeString } from "@/util/text";
@@ -51,10 +51,11 @@
 		value: boolean
 	) {
 		emit("update:lux", workforce, luxType, value);
-		trackEvent("plan_update_workforce", {
-			planetNaturalId: props.planetNaturalId,
-			workforceType: workforce,
-			luxType: luxType === "lux1" ? "Lux1" : "Lux2",
+		trackPlanEdit({
+			field: "workforce",
+			planet_natural_id: props.planetNaturalId,
+			workforce_type: workforce,
+			lux_type: luxType === "lux1" ? "Lux1" : "Lux2",
 			value: value,
 		});
 	}

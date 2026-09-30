@@ -42,16 +42,18 @@
 	} = useResourceROIOverview(refSelectedCXUuid);
 
 	async function performSearchAndCalculation(): Promise<void> {
-		if (refSearchMaterial.value) {
-			trackEvent("resource_roi_overview", {
-				materialTicker: refSearchMaterial.value,
-			});
-
+		const materialTicker = refSearchMaterial.value;
+		if (materialTicker) {
 			refInitialized.value = true;
 			refIsLoading.value = true;
-			calculate(refSearchMaterial.value).finally(
-				() => (refIsLoading.value = false)
-			);
+			calculate(materialTicker)
+				.then(() =>
+					trackEvent("tool:use", {
+						tool_name: "resource_roi",
+						material_ticker: materialTicker,
+					})
+				)
+				.finally(() => (refIsLoading.value = false));
 		}
 	}
 </script>

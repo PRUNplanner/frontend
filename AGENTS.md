@@ -173,6 +173,7 @@ Start at [docs/README.md](docs/README.md).
 | [domain-glossary.md](docs/domain-glossary.md) | meet a game term (COGC, HQ, CX, POPR, XIT, …) |
 | [ui-and-i18n.md](docs/ui-and-i18n.md) | build UI or add text |
 | [testing.md](docs/testing.md) | write or fix tests |
+| [analytics.md](docs/analytics.md) | add or change a tracked event or person property |
 | [features/](docs/features/README.md) | work inside a specific `src/features/*` folder |
 
 **Keep the docs true.** When your change moves a file, renames a symbol or

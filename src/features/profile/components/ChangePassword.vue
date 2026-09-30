@@ -34,7 +34,7 @@
 	async function patchPassword(): Promise<void> {
 		isChanging.value = true;
 
-		trackEvent("user_password_change");
+		trackEvent("account:password_change");
 
 		await useQuery("PatchUserChangePassword", {
 			old_password: refCurrentPassword.value,

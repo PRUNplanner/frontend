@@ -241,7 +241,7 @@
 
 	function toggleAllShown(empireUuid: string): void {
 		const value = headerStates.value.get(empireUuid) !== "all";
-		trackEvent("manage_plans_assign_all", { value });
+		trackEvent("manage:plan_assign_all", { is_assigned: value });
 		matrix.set(
 			shownRows.value.map((r) => cellKey(r.planUuid, empireUuid)),
 			value
@@ -341,7 +341,7 @@
 		planName: string
 	): Promise<void> {
 		busyPlan.value = planUuid;
-		trackEvent("manage_plans_clone", { planUuid });
+		trackEvent("manage:plan_clone", { plan_uuid: planUuid });
 
 		try {
 			await useQuery("ClonePlan", {
@@ -370,7 +370,7 @@
 
 	async function deletePlan(planUuid: string): Promise<void> {
 		busyPlan.value = planUuid;
-		trackEvent("manage_plans_delete", { planUuid });
+		trackEvent("manage:plan_delete", { plan_uuid: planUuid });
 
 		try {
 			await useQuery("DeletePlan", { planUuid: planUuid }).execute();
@@ -390,7 +390,7 @@
 		const { changedKeys } = matrix.changes.value;
 		if (changedKeys.size === 0) return;
 
-		trackEvent("manage_plans_junctions_update");
+		trackEvent("manage:plan_empire_assign");
 		await useQuery("PatchEmpirePlanJunctions", {
 			junctions: toJunctions(
 				props.empires,

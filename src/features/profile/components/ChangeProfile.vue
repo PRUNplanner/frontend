@@ -47,14 +47,17 @@
 	);
 
 	async function patchProfile(): Promise<void> {
-		trackEvent("user_profile_change");
+		trackEvent("account:profile_update");
 
 		const fioApiKey = localProfile.fio_apikey?.replace(/ /g, "") ?? null;
 
 		// detect if user has fio enabled
 		const userHasFIO: boolean = !!(fioApiKey && localProfile.prun_username);
+		const userHadFIO: boolean = !!(
+			userStore.profile?.fio_apikey && userStore.profile?.prun_username
+		);
 
-		trackEvent("user_profile_change_fio", { active: userHasFIO });
+		trackEvent("account:fio_update", { is_active: userHasFIO });
 
 		isUpdating.value = true;
 
@@ -65,6 +68,8 @@
 				email: localProfile.email ?? null,
 			}).execute();
 
+			if (userHasFIO && !userHadFIO) trackEvent("account:fio_link");
+
 			wasSaved.value = true;
 		} catch (err) {
 			console.error("Error patching user profile", err);
@@ -74,7 +79,7 @@
 	}
 
 	async function requestVerification(): Promise<void> {
-		trackEvent("user_request_email_verification");
+		trackEvent("account:email_verify_request");
 
 		try {
 			await useQuery("PostUserResendEmailVerification").execute();

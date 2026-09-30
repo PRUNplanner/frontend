@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { nextTick, ref, type Slots } from "vue";
 import type { VueWrapper } from "@vue/test-utils";
 
@@ -105,9 +106,12 @@ const calculatedEmpires = () =>
 		(c) => (c[0] as { empire?: { uuid: string } }).empire?.uuid
 	);
 
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+
 describe("FIOBurnView", () => {
 	beforeEach(() => {
 		calculatePlan.mockClear();
+		vi.mocked(trackEvent).mockClear();
 		createContext.mockReset().mockResolvedValue({});
 	});
 
@@ -117,6 +121,9 @@ describe("FIOBurnView", () => {
 
 		expect(calculatedEmpires()).toEqual(["E1"]);
 		expect(createContext).toHaveBeenCalledWith({}, "OT-580b", "CX1");
+		expect(trackEvent).toHaveBeenCalledWith("tool:use", {
+			tool_name: "fio_burn",
+		});
 	});
 
 	it("recalculates a shared plan for another empire", async () => {
@@ -140,6 +147,7 @@ describe("FIOBurnView", () => {
 
 		expect(wrapper.findComponent(ComputingProgress).exists()).toBe(false);
 		expect(calculatePlan).not.toHaveBeenCalled();
+		expect(trackEvent).not.toHaveBeenCalled();
 		expect(error).toHaveBeenCalledWith(new Error("no context"));
 		error.mockRestore();
 	});

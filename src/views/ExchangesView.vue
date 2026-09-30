@@ -181,8 +181,8 @@
 		if (selectedCX.value) {
 			isPatching.value = true;
 
-			trackEvent("exchange_patch", {
-				cxUuid: selectedCX.value.uuid,
+			trackEvent("exchange:update", {
+				cx_uuid: selectedCX.value.uuid,
 				location: "exchanges_view",
 			});
 
@@ -203,7 +203,7 @@
 	}
 
 	function reloadCXData(): void {
-		trackEvent("exchange_reload", { location: "exchanges_view" });
+		trackEvent("exchange:reload", { location: "exchanges_view" });
 		selectedCX.value = inertClone(rawSelectedCX.value);
 		selectedName.value = selectedCX.value!.cx_name;
 	}

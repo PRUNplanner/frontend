@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, onMounted, onUnmounted, ref } from "vue";
+	import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -12,6 +12,7 @@
 
 	// Composables
 	import { useExchangeSSE } from "@/features/market_live/useExchangeSSE";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
@@ -50,6 +51,16 @@
 		isConnected,
 		isProcessing,
 	} = useExchangeSSE();
+
+	// a use of the tool is live data shown, once per visit
+	const stopTrackUse = watch(
+		() => isConnected.value && cxPointTableData.value.length > 0,
+		(hasData: boolean) => {
+			if (!hasData) return;
+			trackEvent("tool:use", { tool_name: "market_live" });
+			stopTrackUse();
+		}
+	);
 
 	// connect + disconnect  hooks
 	onMounted(async () => {
