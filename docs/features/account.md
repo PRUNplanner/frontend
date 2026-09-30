@@ -19,6 +19,10 @@ email verification, and requesting and performing a password reset.
 | `RequestPasswordReset.vue` | `PostUserRequestPasswordReset` |
 | `PasswordReset.vue` | `PostUserPasswordReset` |
 
+`useAuthPanel.ts` holds which header panel (login or registration) is open,
+as module state: `HomepageHeader` renders and toggles the panels,
+`SharedPlanBanner` opens them with `open("login" | "registration")`.
+
 ## Data
 
 - Tokens and the profile live in `useUserStore` and are persisted.

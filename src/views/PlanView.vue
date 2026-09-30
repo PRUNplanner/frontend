@@ -73,6 +73,7 @@
 	import PlanToolFallback from "@/features/planning/components/PlanToolFallback.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
+	import SharedPlanBanner from "@/features/sharing/components/SharedPlanBanner.vue";
 	const ShareButton = defineAsyncComponent(
 		() => import("@/features/sharing/components/SharingButton.vue")
 	);
@@ -688,6 +689,10 @@
 	<PlanAnalyticsBox
 		:key="`INSIGHTS#${planetData.planet_natural_id}`"
 		:planet-natural-id="planetData.planet_natural_id" />
+	<SharedPlanBanner
+		v-if="sharedPlanUuid"
+		:cloned="sharedWasCloned"
+		@clone="cloneShared" />
 	<!-- keep focused controls clear of the sticky status bar -->
 	<div class="@container [&_*]:scroll-mt-28">
 		<div
@@ -754,23 +759,8 @@
 				</div>
 
 				<PButtonGroup v-if="userStore.isLoggedIn">
-					<PButton
-						v-if="disabled"
-						:disabled="sharedWasCloned"
-						:type="!sharedWasCloned ? 'primary' : 'success'"
-						@click="cloneShared">
-						<template #icon>
-							<ContentCopySharp />
-						</template>
-						<span v-if="!sharedWasCloned">
-							{{ $t("common.buttons.clone_plan") }}
-						</span>
-						<span v-else>
-							{{ $t("common.buttons.clone_complete") }}
-						</span>
-					</PButton>
 					<PlanSaveButton
-						v-else
+						v-if="!disabled"
 						:existing="existing"
 						:saveable="saveable"
 						:saving="refIsSaving"
