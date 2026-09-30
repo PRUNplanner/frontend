@@ -33,7 +33,9 @@
 		"expand": "Expand filters",
 		"open": "Filters ({n})",
 		"close": "Close filters",
-		"show_results": "Show {n} planets"
+		"show_results": "Show {n} planets",
+		"any": "Any · {n}",
+		"any_label": "{section}: any, {n} planets"
 	},
 	"materials": {
 		"title": "Materials",
@@ -178,7 +180,17 @@
 		"gaseous": "Include gaseous planets",
 		"extras": "Accept all extra building materials",
 		"jumps": "Max jumps {n}",
+		"section": {
+			"conditions": "Any surface, fertile or not",
+			"cogc": "Any COGC program",
+			"infrastructure": "Any infrastructure"
+		},
 		"result": "{label} → {n} planets"
+	},
+	"name_note": {
+		"text": "{n} more planet matches \"{text}\" but is hidden by filters: | {n} more planets match \"{text}\" but are hidden by filters:",
+		"relaxation": "{label} (+{n})",
+		"show_all": "Show all {n}"
 	},
 	"compare": {
 		"title": "Compare ({n}/{max})",
