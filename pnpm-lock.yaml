@@ -17,6 +17,9 @@ importers:
       '@fontsource/roboto-mono':
         specifier: ^5.3.0
         version: 5.3.0
+      '@intlify/message-compiler':
+        specifier: ^11.4.12
+        version: 11.4.12
       '@popperjs/core':
         specifier: ^2.11.8
         version: 2.11.8

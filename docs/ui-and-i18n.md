@@ -154,7 +154,10 @@ Examples: `features/planning/components/PlanMaterialIO.vue`,
   namespace, so `locales/en_US/plan.json` → `t("plan.tools.labels.popr")`.
   A new file is picked up automatically through `import.meta.glob`.
 - **Loading.** `en_US` loads eagerly and is also the fallback. Other
-  locales load lazily in `userStore.setLocale`.
+  locales load lazily in `userStore.setLocale`, which drops messages
+  vue-i18n can't compile (`dropInvalidMessages`) so they fall back to
+  English instead of throwing in a production build. A literal `@` in a
+  message is written `{'@'}`.
 - **Language picker.** Only the entries in `SupportedLanguages` show up
   there. The rest are commented out until their translations are complete.
 - **`keymode`.** This pseudo-locale renders the raw keys, which helps you
