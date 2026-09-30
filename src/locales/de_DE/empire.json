@@ -30,24 +30,24 @@
 		"permits_planned": "Insgesamt @:terms.permits geplant: {permits}"
 	},
 	"material_io": {
-		"produced_by": "Produced by",
-		"consumed_by": "Consumed by",
-		"planets": "Planets",
-		"summary": "Summary",
-		"expand_all": "Expand all",
-		"expand_row": "Show planets for {ticker}",
-		"view_sides": "Producers · Consumers",
-		"view_net": "Net per planet",
-		"surplus": "Surplus",
-		"needs": "Needs",
-		"plan_count": "{count} plan | {count} plans",
-		"planet_count": "{count} planet | {count} planets",
-		"per_day": "{value} / day",
-		"makes_uses": "makes {makes} · uses {uses}",
-		"not_produced": "Not produced in this empire.",
-		"not_consumed": "Not consumed in this empire.",
-		"no_surplus": "No planet has a surplus.",
-		"no_needs": "No planet needs it."
+		"produced_by": "Produziert von",
+		"consumed_by": "Verbraucht von",
+		"planets": "Planeten",
+		"summary": "Zusammenfassung",
+		"expand_all": "Alle ausklappen",
+		"expand_row": "Planeten für {ticker} anzeigen",
+		"view_sides": "Produzenten · Verbraucher",
+		"view_net": "Netto pro Planet",
+		"surplus": "Überschuss",
+		"needs": "Bedarf",
+		"plan_count": "{count} Plan | {count} Pläne",
+		"planet_count": "{count} Planet | {count} Planeten",
+		"per_day": "{value} / Tag",
+		"makes_uses": "produziert {makes} · verbraucht {uses}",
+		"not_produced": "In diesem Imperium nicht produziert.",
+		"not_consumed": "In diesem Imperium nicht verbraucht.",
+		"no_surplus": "Kein Planet hat einen Überschuss.",
+		"no_needs": "Kein Planet braucht es."
 	},
 	"filters": {
 		"display": "Anzeige",
@@ -56,9 +56,9 @@
 		"loadbalance": "Ladeausgleich"
 	},
 	"analysis": {
-		"plan_profit": "Plan Profit (ȼ)",
-		"material_profits": "Material Gewinn",
-		"material_costs": "Material Kosten",
+		"plan_profit": "Plan Gewinn (ȼ)",
+		"material_profits": "Material Gewinn (ȼ)",
+		"material_costs": "Material Kosten (ȼ)",
 		"net_production": "Nettoproduktion",
 		"net_consumption": "Nettoverbrauch",
 		"exclusive_production": "Exklusive Produktion",
@@ -86,28 +86,28 @@
 		}
 	},
 	"onboarding": {
-		"title": "Welcome to PRUNplanner",
-		"intro": "Three steps to your first base plan.",
+		"title": "Willkommen bei PRUNplanner",
+		"intro": "Drei Schritte zu deinem ersten Plan.",
 		"empire": {
-			"title": "Your empire",
-			"help": "Faction and permits affect your plans' faction bonus and available area.",
-			"saved": "Saved"
+			"title": "Dein Imperium",
+			"help": "Fraktion und Erlaubnis beeinflussen den Fraktions-Bonus und den verfügbaren Bereich deiner Pläne.",
+			"saved": "Gespeichert"
 		},
 		"plan": {
-			"title": "Plan your first base",
-			"help": "Find a planet and create a plan there. It's added to this empire automatically.",
+			"title": "Plane deine erste Basis",
+			"help": "Finde einen Planeten und erstelle dort einen Plan. Er wird diesem Imperium automatisch hinzugefügt.",
 			"action": "@:common.navigation.planet_search"
 		},
 		"prices": {
-			"title": "Prices",
-			"help": "Prices use the universe 30-day average. Change which exchange each material is bought and sold on in {exchanges}.",
-			"exchanges": "Exchanges"
+			"title": "Preise",
+			"help": "Preise verwenden den Universums-Durchschnittswert von 30 Tagen. Ändere, welche Materialien in {exchanges} gekauft und verkauft werden.",
+			"exchanges": "Marktplätze"
 		}
 	},
 	"empty": {
-		"title": "No empires yet",
-		"text": "An empire groups your base plans and holds your faction and permits.",
-		"create": "Create empire",
-		"manage": "Manage empires"
+		"title": "Noch keine Imperien",
+		"text": "Ein Imperium gruppiert deine Pläne und hält deine Fraktion und Genehmigungen.",
+		"create": "Imperium erstellen",
+		"manage": "Imperien verwalten"
 	}
 }
