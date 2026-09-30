@@ -8,6 +8,7 @@ import type {
 	PInputNumberConfig,
 	PTagConfig,
 	PToastConfig,
+	PPopoverConfig,
 	PTooltipConfig,
 } from "@/ui/ui.types";
 
@@ -74,6 +75,10 @@ export const buttonGroupConfig: PButtonGroupConfig = {
 		"inline-flex child:rounded-none [&_button]:first:rounded-l-sm [&_button]:last:rounded-r-sm",
 	vertical:
 		"inline-flex flex-col child:rounded-none [&_button]:first:rounded-t-sm [&_button]:last:rounded-b-sm",
+};
+
+export const popoverConfig: PPopoverConfig = {
+	panel: "rounded-md! border! border-white/15! bg-gray-dark! p-3! shadow-lg!",
 };
 
 export const tooltipConfig: PTooltipConfig = {

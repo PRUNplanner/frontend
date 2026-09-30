@@ -31,6 +31,11 @@ export interface PButtonGroupConfig {
 	vertical: string;
 }
 
+/** panel look for raw naive-ui NPopover overlays */
+export interface PPopoverConfig {
+	panel: string;
+}
+
 export interface PTooltipConfig {
 	trigger: string;
 	tooltip: string;

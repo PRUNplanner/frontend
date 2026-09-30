@@ -23,6 +23,7 @@ let adjecents: AdjecentList;
 let idToIndex: Map<string, number>;
 let indexToId: string[];
 let parentCache: Map<number, Int32Array>;
+const jumpsCache = new Map<string, Map<string, number>>();
 
 export function usePathfinder() {
 	const ready: Ref<boolean> = ref(false);
@@ -263,10 +264,48 @@ export function usePathfinder() {
 		return systemsJson[systemIdx].Name;
 	}
 
+	/**
+	 * Jumps from a system to every reachable system, one BFS per source,
+	 * cached for the session. Unreachable systems are missing from the map.
+	 *
+	 * @author jplacht
+	 *
+	 * @param {string} sourceId Source system id
+	 * @returns {Map<string, number>} Target system id → jumps
+	 */
+	function getJumpsFrom(sourceId: string): Map<string, number> {
+		const cached = jumpsCache.get(sourceId);
+		if (cached) return cached;
+
+		const jumps = new Map<string, number>();
+		const sourceIdx = idToIndex.get(sourceId);
+
+		if (sourceIdx !== undefined) {
+			const dist = new Int32Array(adjecents.length).fill(-1);
+			const queue: number[] = [sourceIdx];
+			dist[sourceIdx] = 0;
+
+			for (let head = 0; head < queue.length; head++) {
+				const cur = queue[head];
+				jumps.set(indexToId[cur], dist[cur]);
+
+				for (const nb of adjecents[cur]) {
+					if (dist[nb] !== -1) continue;
+					dist[nb] = dist[cur] + 1;
+					queue.push(nb);
+				}
+			}
+		}
+
+		jumpsCache.set(sourceId, jumps);
+		return jumps;
+	}
+
 	return {
 		ready,
 		getPathBetween,
 		getPathBetweenLength,
+		getJumpsFrom,
 		getSystemName,
 		// systemid statics
 		systemidNC1: systemIdNC1,

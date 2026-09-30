@@ -28,6 +28,7 @@ import {
 	callDataMultiplePlanets,
 	callDataPlanet,
 	callDataPlanetSearch,
+	callDataPlanetSearchIndex,
 	callDataPlanetSearchSingle,
 	callDataRecipes,
 	callExplorationData,
@@ -40,6 +41,7 @@ import type {
 	FIOStorage,
 	Planet,
 	PlanetSearchAdvancedPayload,
+	PlanetSearchIndexEntry,
 	PopulationReport,
 } from "@/features/api/schemas/gameData.schemas";
 import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
@@ -154,6 +156,13 @@ export const gameDataQueries = {
 			await storeAndPreload(planetsStore, data);
 			return data;
 		},
+		expireTime: planetsExpireTime,
+	}),
+	// a different shape than Planet, so not written into planetsStore
+	GetPlanetSearchIndex: defineQuery({
+		key: () => ["gamedata", "planet", "search-index"],
+		fetchFn: (): Promise<PlanetSearchIndexEntry[]> =>
+			callDataPlanetSearchIndex(),
 		expireTime: planetsExpireTime,
 	}),
 	GetPlanetLastPOPR: defineQuery({

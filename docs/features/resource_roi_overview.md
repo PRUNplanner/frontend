@@ -34,8 +34,9 @@ optimal extractor layout (`RIG`, `EXT` or `COL`).
 
 - **The parallelism is large.** Keep per-planet work allocation-light.
 - **Environment → infrastructure material mapping** lives in
-  `getPlanetEnvironment`, alongside `boundaryDescriptor` from
-  `src/util/numbers.ts`.
+  `getPlanetEnvironment`, which reads `environmentExtras` from
+  `planet_search/environmentExtras.util.ts` (shared with planet search).
+  The material choices are `resourceROIOverview.constants.ts`.
 
 ## Tests
 

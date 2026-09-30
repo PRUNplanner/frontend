@@ -139,7 +139,7 @@ export type PlanetResource = z.infer<typeof PlanetResourceSchema>;
 
 // Not PlanCOGCProgramSchema (planningData.schemas.ts): the game's program
 // names differ from the plan's COGC options.
-const PlanetCOGCProgramTypeSchema = z.enum([
+export const PlanetCOGCProgramTypeSchema = z.enum([
 	"Invalid",
 	"ADVERTISING_AGRICULTURE",
 	"ADVERTISING_CHEMISTRY",
@@ -196,6 +196,35 @@ export const PlanetSchema = z.object({
 export type Planet = z.infer<typeof PlanetSchema>;
 
 export const PlanetMultiplePayloadSchema = z.array(PlanetSchema);
+
+const PlanetEnvironmentTypeSchema = z.enum(["LOW", "NORMAL", "HIGH"]);
+export type PlanetEnvironmentType = z.infer<typeof PlanetEnvironmentTypeSchema>;
+
+// slim planet from /data/planets/search-index/, cogc_programs without expired ones
+const PlanetSearchIndexEntrySchema = PlanetSchema.pick({
+	planet_natural_id: true,
+	planet_name: true,
+	system_id: true,
+	surface: true,
+	fertility: true,
+	has_localmarket: true,
+	has_chamberofcommerce: true,
+	has_warehouse: true,
+	has_administrationcenter: true,
+	has_shipyard: true,
+	cogc_program_status: true,
+	cogc_programs: true,
+}).extend({
+	gravity_type: PlanetEnvironmentTypeSchema,
+	pressure_type: PlanetEnvironmentTypeSchema,
+	temperature_type: PlanetEnvironmentTypeSchema,
+	resources: z.array(PlanetResourceSchema.omit({ factor: true })),
+});
+export type PlanetSearchIndexEntry = z.infer<
+	typeof PlanetSearchIndexEntrySchema
+>;
+
+export const PlanetSearchIndexSchema = z.array(PlanetSearchIndexEntrySchema);
 
 export const PlanetMultipleRequestPayloadSchema = z.array(z.string());
 

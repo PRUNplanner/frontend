@@ -23,7 +23,7 @@
 	import ResourceROITable from "@/features/resource_roi_overview/components/ResourceROITable.vue";
 
 	// Statics
-	import { PLANETSEARCHOPTIONMATERIALS } from "@/features/planet_search/searchConstants";
+	import { RESOURCE_MATERIAL_OPTIONS } from "@/features/resource_roi_overview/resourceROIOverview.constants";
 
 	// UI
 	import { PSelect, PButton, PSpin } from "@/ui";
@@ -77,7 +77,7 @@
 						<PSelect
 							v-model:value="refSearchMaterial"
 							:aria-label="$t('resource_roi.resource_select')"
-							:options="PLANETSEARCHOPTIONMATERIALS"
+							:options="RESOURCE_MATERIAL_OPTIONS"
 							placeholder=""
 							searchable
 							class="w-50" />

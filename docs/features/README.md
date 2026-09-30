@@ -30,7 +30,7 @@ One page per `src/features/*` folder. Each page follows the same outline:
 | [production_chain](production_chain.md) | Production dependency graph (vue-flow + dagre) |
 | [market_exploration](market_exploration.md) | Historical CX charts |
 | [market_live](market_live.md) | Live CX feed over SSE with user alert rules |
-| [planet_search](planet_search.md) | Basic and advanced planet search |
+| [planet_search](planet_search.md) | Live planet search over a cached index: filters, list/matrix, compare |
 | [pathfinding](pathfinding.md) | Jump distances between systems |
 
 ## Infrastructure & shared UI

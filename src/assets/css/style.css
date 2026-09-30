@@ -47,12 +47,18 @@ html {
 }
 
 ::-webkit-scrollbar {
+	height: 12px;
 	width: 12px;
 }
 
 ::-webkit-scrollbar-track {
 	box-shadow: inset 0 0 10px 10px #1e1e1e;
 	border: solid 1px #1e1e1e;
+}
+
+/* where both scrollbars meet; unstyled it renders white */
+::-webkit-scrollbar-corner {
+	background: #1e1e1e;
 }
 
 ::-webkit-scrollbar-thumb {

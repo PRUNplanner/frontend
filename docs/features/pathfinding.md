@@ -3,13 +3,14 @@
 **Purpose.** This folder computes jump paths and distances between star
 systems. It is used to show how far a planet is from each exchange.
 
-**Used by.** `planet_search` (`usePlanetSearchResults`,
-`PlanetSearchResults.vue`).
+**Used by.** `planet_search` (`planetSearchContext.util.ts`, jumps from
+exchanges and plans via `getJumpsFrom`) and `resource_roi_overview`.
 
 ## Key files
 
 - **`usePathfinder.ts`**: `usePathfinder()` returns `ready`,
-  `getPathBetween(a, b)`, `getPathBetweenLength(a, b)`, `getSystemName(id)`,
+  `getPathBetween(a, b)`, `getPathBetweenLength(a, b)`, `getJumpsFrom(id)`
+  (BFS jumps to every system, cached per source), `getSystemName(id)`,
   and the exchange system IDs (`systemidAI1`, `systemidCI1`, `systemidIC1`,
   `systemidNC1`).
 - **`usePathfinder.types.ts`**: the system JSON and adjacency types.

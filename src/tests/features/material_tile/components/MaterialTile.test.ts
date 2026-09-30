@@ -27,7 +27,6 @@ vi.mock(
 
 const RED = "rgb(255, 0, 0)";
 const ORANGE = "rgb(255, 165, 0)";
-// the component writes rgb(255, 299, 71), CSS clamps it like browsers do
 const YELLOW = "rgb(255, 255, 71)";
 const GREEN = "rgb(60, 179, 113)";
 

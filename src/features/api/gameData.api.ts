@@ -11,6 +11,7 @@ import {
 	PlanetMultipleRequestPayloadSchema,
 	PlanetSchema,
 	PlanetSearchAdvancedPayloadSchema,
+	PlanetSearchIndexSchema,
 	PopulationReportSchema,
 	RecipePayloadSchema,
 } from "@/features/api/schemas/gameData.schemas";
@@ -24,6 +25,7 @@ import type {
 	Planet,
 	FIOStorage,
 	PlanetSearchAdvancedPayload,
+	PlanetSearchIndexEntry,
 	PopulationReport,
 } from "@/features/api/schemas/gameData.schemas";
 import {
@@ -142,6 +144,21 @@ export async function callDataPlanetSearchSingle(
 	return apiService.get(
 		`/data/planets/${searchId}/`,
 		PlanetMultiplePayloadSchema
+	);
+}
+
+/**
+ * Fetches the slim planet index the planet search filters client-side
+ * @author jplacht
+ *
+ * @returns {Promise<PlanetSearchIndexEntry[]>} Every planet
+ */
+export async function callDataPlanetSearchIndex(): Promise<
+	PlanetSearchIndexEntry[]
+> {
+	return apiService.get(
+		"/data/planets/search-index/",
+		PlanetSearchIndexSchema
 	);
 }
 
