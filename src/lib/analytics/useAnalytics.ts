@@ -1,4 +1,9 @@
-import { usePostHog } from "@/lib/analytics/usePostHog";
+import {
+	capture,
+	identify,
+	reset,
+	setUserProp,
+} from "@/lib/analytics/usePostHog";
 
 // Types & Interfaces
 import type { Properties } from "posthog-js";
@@ -6,8 +11,6 @@ import type {
 	ANALYTICS_EVENT_TYPE,
 	IAnalyticsEventProperties,
 } from "@/lib/analytics/useAnalytics.types";
-
-const { posthog, capture, setUserProp } = usePostHog();
 
 export function trackEvent<E extends ANALYTICS_EVENT_TYPE>(
 	event: E,
@@ -28,9 +31,9 @@ export function trackUser(props: Properties): void {
 }
 
 export function resetUser(): void {
-	posthog.reset();
+	reset();
 }
 
 export function identifyUser(distinct_id: string, props?: Properties): void {
-	posthog.identify(distinct_id, props);
+	identify(distinct_id, props);
 }

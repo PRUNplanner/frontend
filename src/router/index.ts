@@ -27,6 +27,7 @@ const router = createRouter({
 			});
 		}
 		if (to.path === from.path) return false;
+		if (to.hash) return { el: to.hash };
 		return { top: 0 };
 	},
 	routes: [

@@ -44,6 +44,33 @@ vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () => ({
 	},
 }));
 
+
+const analytics = vi.hoisted(() => ({
+	// set by the mock factory below
+	consent: undefined as unknown as { value: "granted" | "denied" | null },
+	isDNT: false,
+	key: undefined as string | undefined,
+	grant: vi.fn(),
+	deny: vi.fn(),
+}));
+
+vi.mock("@/lib/analytics/useAnalyticsConsent", async () => {
+	const { ref } = await import("vue");
+	analytics.consent = ref(null);
+	return {
+		useAnalyticsConsent: () => ({
+			consent: analytics.consent,
+			isDNT: analytics.isDNT,
+			grant: analytics.grant,
+			deny: analytics.deny,
+		}),
+	};
+});
+
+vi.mock("@/lib/analytics/usePostHog", async (importOriginal) => ({
+	...(await importOriginal<object>()),
+	getPostHogKey: () => analytics.key,
+}));
 const mock = new AxiosMockAdapter(apiService.client);
 const PREFERENCES_URL = /user\/preferences\/$/;
 
@@ -401,6 +428,75 @@ describe("UserPreferences", () => {
 			burnDaysRed: 3,
 			burnDaysYellow: 8,
 			defaultEmpireUuid: FIRST_EMPIRE.uuid,
+		});
+	});
+
+	describe("usage analytics", () => {
+		/** buy from CX, usage analytics */
+		const checkboxes = (wrapper: VueWrapper) =>
+			wrapper.findAll<HTMLInputElement>("input[type=checkbox]");
+
+		beforeEach(() => {
+			analytics.consent.value = null;
+			analytics.isDNT = false;
+			analytics.key = "phc_test";
+			vi.clearAllMocks();
+		});
+
+		afterEach(() => {
+			analytics.key = undefined;
+		});
+
+		it("is hidden without a PostHog key", async () => {
+			analytics.key = undefined;
+			seed();
+			const { wrapper } = await mountPreferences();
+
+			expect(checkboxes(wrapper)).toHaveLength(1);
+			expect(wrapper.text()).not.toContain(
+				"profile.preferences.form.analytics"
+			);
+		});
+
+		it("shows the choice of this browser", async () => {
+			analytics.consent.value = "granted";
+			seed();
+			const { wrapper } = await mountPreferences();
+
+			expect(checkboxes(wrapper)[1].element.checked).toBe(true);
+			expect(wrapper.text()).toContain(
+				"profile.preferences.form.analytics_note"
+			);
+
+			analytics.consent.value = "denied";
+			await flushPromises();
+			expect(checkboxes(wrapper)[1].element.checked).toBe(false);
+		});
+
+		it("grants and denies without saving preferences", async () => {
+			seed();
+			const { wrapper } = await mountPreferences();
+
+			await checkboxes(wrapper)[1].setValue(true);
+			expect(analytics.grant).toHaveBeenCalledTimes(1);
+
+			await checkboxes(wrapper)[1].setValue(false);
+			expect(analytics.deny).toHaveBeenCalledTimes(1);
+
+			expect(mock.history.patch).toHaveLength(0);
+		});
+
+		it("is disabled with Do-Not-Track", async () => {
+			analytics.isDNT = true;
+			analytics.consent.value = "denied";
+			seed();
+			const { wrapper } = await mountPreferences();
+
+			expect(checkboxes(wrapper)[1].element.disabled).toBe(true);
+			expect(checkboxes(wrapper)[1].element.checked).toBe(false);
+			expect(wrapper.text()).toContain(
+				"profile.preferences.form.analytics_dnt"
+			);
 		});
 	});
 });

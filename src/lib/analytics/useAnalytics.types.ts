@@ -20,11 +20,9 @@ export type ANALYTICS_EVENT_TYPE =
 	| "manage_plans_clone"
 	| "manage_plans_delete"
 	| "manage_plans_junctions_update"
-	| "manage_plans_reload"
 	| "marketexploration_explore"
 	| "materialtile_market_drawer"
 	| "navigation_toggle"
-	| "page_view"
 	| "plan_create_building"
 	| "plan_create"
 	| "plan_leave_changed"
@@ -34,7 +32,6 @@ export type ANALYTICS_EVENT_TYPE =
 	| "plan_share_create"
 	| "plan_share_delete"
 	| "plan_shared_cloned"
-	| "plan_show_configuration"
 	| "plan_tool_optimize_habitation"
 	| "plan_tool_optimize_habitation_active"
 	| "plan_tool_view"
@@ -66,7 +63,6 @@ export type ANALYTICS_EVENT_TYPE =
 	| "user_request_password_reset"
 	| "user_verify_email"
 	| "version_reload"
-	| "version_reload"
 	| "xit_burn_copy"
 	| "xit_burn_fit_ship"
 	| "xit_burn_show"
@@ -74,10 +70,6 @@ export type ANALYTICS_EVENT_TYPE =
 	| "xit_transfer_show";
 
 export interface IAnalyticsEventProperties {
-	page_view: {
-		page_name: string;
-		referrer?: string;
-	};
 	plan_tool_view: {
 		name: string | null;
 	};
@@ -112,7 +104,6 @@ export interface IAnalyticsEventProperties {
 	manage_empire_delete: { empireUuid: string };
 	manage_empire_junctions_update: undefined;
 	manage_empire_create: undefined;
-	manage_plans_reload: undefined;
 	manage_plans_assign_all: { value: boolean };
 	manage_plans_junctions_update: undefined;
 	manage_plans_clone: { planUuid: string };
@@ -214,9 +205,6 @@ export interface IAnalyticsEventProperties {
 	};
 	plan_tool_optimize_habitation_active: {
 		active: boolean;
-	};
-	plan_show_configuration: {
-		visible: boolean;
 	};
 	xit_burn_fit_ship: {
 		weight: number;

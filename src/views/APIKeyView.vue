@@ -106,7 +106,7 @@
 					class="uppercase font-bold text-xs text-center text-white/80">
 					{{ $t("api_keys.create.form.success_key") }}
 				</span>
-				<span class="font-mono text-prunplanner text-nowrap">
+				<span class="ph-no-capture font-mono text-prunplanner text-nowrap">
 					{{ lastCreatedKey }}
 				</span>
 			</div>

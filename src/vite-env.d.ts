@@ -11,8 +11,6 @@ interface ImportMetaEnv {
 	readonly VITE_GAME_DATA_STALE_MINUTES_EXCHANGES: number;
 	readonly VITE_GAME_DATA_STALE_MINUTES_PLANETS: number;
 	readonly VITE_INDEXEDDB_DBNAME: string | undefined;
-	readonly VITE_POSTHOG_TOKEN: string | undefined;
-	readonly VITE_POSTHOG_TOKEN: string | undefined;
 }
 
 interface ImportMeta {
