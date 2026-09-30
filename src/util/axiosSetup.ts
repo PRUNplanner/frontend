@@ -57,8 +57,31 @@ const discard = (config: InternalAxiosRequestConfig) =>
  * sends the user home, public pages (a shared plan) stay open.
  */
 function endSession(): void {
-	useUserStore().logout();
+	const userStore = useUserStore();
+	// several requests can fail on the same dead token, log out once
+	if (userStore.isLoggedIn) userStore.logout();
 	if (router.currentRoute.value.meta.requiresAuth) router.push("/");
+}
+
+/**
+ * On a public page, repeats a request that its dead token failed, logged
+ * out. Once: the retry carries no token, so its own 401 is not repeated.
+ *
+ * @param {InternalAxiosRequestConfig} config Request that got the 401
+ * @returns {Promise<unknown> | undefined} The retry, if there is one
+ */
+function retryLoggedOut(
+	config: InternalAxiosRequestConfig
+): Promise<unknown> | undefined {
+	if (
+		useUserStore().isLoggedIn ||
+		router.currentRoute.value.meta.requiresAuth ||
+		!config.headers.Authorization
+	)
+		return undefined;
+
+	delete config.headers.Authorization;
+	return axios(config);
 }
 
 export default function axiosSetup() {
@@ -80,13 +103,20 @@ export default function axiosSetup() {
 				? discard(response.config)
 				: response,
 		async (error) => {
-			// never refresh, retry or log out for a previous session
-			if (isPreviousSession(error.config)) return discard(error.config);
-
 			const userStore = useUserStore();
 			const originalRequest: InternalAxiosRequestConfig = error.config;
+			const isUnauthorized: boolean = error.response?.status === 401;
 
-			if (error.response && error.response.status === 401) {
+			// never refresh or log out for a previous session. Its 401 can
+			// only be asked again logged out: another request already
+			// ended the session on the same dead token
+			if (isPreviousSession(originalRequest))
+				return (
+					(isUnauthorized && retryLoggedOut(originalRequest)) ||
+					discard(originalRequest)
+				);
+
+			if (isUnauthorized) {
 				if (
 					originalRequest.url &&
 					originalRequest.url.includes("/user/refresh/")
@@ -102,17 +132,7 @@ export default function axiosSetup() {
 
 				endSession();
 
-				// a public page asks again without the dead token, once:
-				// the retry carries no token, so its 401 ends here
-				if (
-					!router.currentRoute.value.meta.requiresAuth &&
-					originalRequest.headers.Authorization
-				) {
-					delete originalRequest.headers.Authorization;
-					return axios(originalRequest);
-				}
-
-				return Promise.reject(error);
+				return retryLoggedOut(originalRequest) ?? Promise.reject(error);
 			}
 
 			return Promise.reject(error);

@@ -3,7 +3,6 @@ import { computed, reactive, ref, type Ref, watch, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 
 // Stores & Repository
-import { queryRepository } from "@/lib/query_cache/queryRepository";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Composables
@@ -173,13 +172,12 @@ export function usePlanningDataLoader(
 			dependsOn: props.sharedPlanUuid ? "sharedPlan" : undefined,
 			enabled: () => !!(props.sharedPlanUuid || props.planetNaturalId),
 			load: () => {
+				// from the step, not the query cache: a logout while the
+				// shared plan loads (expired session) empties the cache
 				const id = props.sharedPlanUuid
 					? (
-							queryStore.peekQueryState(
-								queryRepository.GetSharedPlan.key({
-									sharedPlanUuid: props.sharedPlanUuid!,
-								})
-							)!.data as PlanShare
+							steps.find((s) => s.cfg.key === "sharedPlan")!
+								.data as PlanShare
 						).plan_details.planet_natural_id
 					: props.planetNaturalId!;
 				return queryStore.execute("GetPlanet", {

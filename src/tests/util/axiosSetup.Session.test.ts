@@ -123,6 +123,24 @@ describe("axiosSetup: a session that can't be refreshed", () => {
 		expect(router.push).not.toHaveBeenCalled();
 	});
 
+	it("asks again for every request the dead token failed", async () => {
+		route.value = { meta: {} };
+		const logout = vi.spyOn(userStore, "logout");
+		const reply = (config: { headers?: { Authorization?: string } }) =>
+			config.headers?.Authorization ? [401] : [200, "public"];
+		mock.onGet("/shared").reply(reply);
+		mock.onGet("/planet").reply(reply);
+
+		// the second 401 is handled after the first has logged out
+		const answers = await Promise.all([
+			axios.get("/shared"),
+			axios.get("/planet"),
+		]);
+
+		expect(answers.map((a) => a.data)).toEqual(["public", "public"]);
+		expect(logout).toHaveBeenCalledTimes(1);
+	});
+
 	it("asks a public page's login-only endpoint only once more", async () => {
 		route.value = { meta: {} };
 		mock.onGet("/private").reply(401);

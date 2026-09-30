@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { createPinia, setActivePinia } from "pinia";
 
@@ -7,6 +7,11 @@ import axiosSetup from "@/util/axiosSetup";
 import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { useQuery } from "@/lib/query_cache/useQuery";
+import { useUserStore } from "@/stores/userStore";
+
+// test data
+import plan from "@/tests/test_data/api_data_plan_etherwind.json";
+import planet from "@/tests/test_data/api_data_planet_etherwind.json";
 
 const mock = new AxiosMockAdapter(apiService.client);
 
@@ -40,6 +45,43 @@ describe("WrapperPlanningDataLoader with a shared plan", () => {
 		});
 
 		expect(wrapper.text()).toContain("sharing.unavailable.title");
+		expect(loading(wrapper.text())).toBe(false);
+	});
+
+	it("loads for a visitor whose session has expired", async () => {
+		const pinia = createPinia();
+		setActivePinia(pinia);
+		axiosSetup();
+		mock.onPost(/user\/refresh\/$/).reply(401);
+		mock.onGet(/user\/profile\/$/).reply(401);
+		// the dead token is refused, the logged out retry answered
+		mock.onGet(/planning\/shared\//).reply((config) =>
+			config.headers?.Authorization
+				? [401]
+				: [
+						200,
+						{
+							uuid: DELETED,
+							created_at: "2026-02-09T12:07:21.068265Z",
+							view_count: 1,
+							plan_details: plan,
+						},
+					]
+		);
+		mock.onGet(/data\/planet\//).reply(200, planet);
+		useUserStore().setToken("access", "r".repeat(120));
+
+		const { wrapper, component } = await mountComponent(
+			WrapperPlanningDataLoader,
+			{ sharedPlanUuid: DELETED },
+			{ pinia }
+		);
+		await vi.waitFor(() =>
+			expect(component.emitted("complete")).toHaveLength(1)
+		);
+
+		expect(component.emitted("data:planet")).toHaveLength(1);
+		expect(useUserStore().isLoggedIn).toBe(false);
 		expect(loading(wrapper.text())).toBe(false);
 	});
 
