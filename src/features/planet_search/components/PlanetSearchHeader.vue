@@ -87,7 +87,7 @@
 				:placeholder="t('planet_search.header.search_placeholder')" />
 		</label>
 
-		<div class="flex flex-row flex-wrap items-center gap-2">
+		<div class="ml-auto flex flex-row flex-wrap items-center gap-2">
 			<span class="text-sm text-muted">
 				{{ t("planet_search.header.saved") }}
 			</span>

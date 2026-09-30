@@ -22,6 +22,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Components
+	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PlanetSearchRowActions from "@/features/planet_search/components/PlanetSearchRowActions.vue";
 	import PlanetSearchSortHeader from "@/features/planet_search/components/PlanetSearchSortHeader.vue";
 
@@ -36,6 +37,9 @@
 		IPlanetSearchContext,
 		IPlanetSearchSort,
 	} from "@/features/planet_search/planetSearch.types";
+
+	// UI
+	import { ConstructionSharp } from "@vicons/material";
 
 	const props = defineProps<{
 		planets: PlanetSearchIndexEntry[];
@@ -104,7 +108,7 @@
 					const max = props.maxDaily[c.ticker] || 1;
 					return { ...c, daily, share: daily === undefined ? 0 : Math.min(1, daily / max) };
 				}),
-				extras: environmentExtras(p).map((e) => e.ticker).join(" "),
+				extras: environmentExtras(p),
 				cogc: activeProgram(p, props.ctx.now),
 				infrastructure: planetInfrastructure(p),
 				planJumps: planRefs.value.map((r) => planetJumps(p, r, props.ctx)),
@@ -189,7 +193,10 @@
 							:label="code" />
 					</th>
 				</template>
-				<th v-if="show('extras')">{{ t("planet_search.results.extras") }}</th>
+				<th v-if="show('extras')" :title="t('planet_search.results.extras')">
+					<ConstructionSharp class="w-4 h-4" aria-hidden="true" />
+					<span class="sr-only">{{ t("planet_search.results.extras") }}</span>
+				</th>
 				<th v-if="show('cogc')">{{ t("planet_search.results.cogc_infra") }}</th>
 			</tr>
 		</thead>
@@ -247,8 +254,15 @@
 						<template v-else>{{ j }}</template>
 					</td>
 				</template>
-				<td v-if="show('extras')" class="whitespace-nowrap font-mono text-xs">
-					{{ row.extras }}
+				<td v-if="show('extras')">
+					<div class="flex flex-row gap-1 whitespace-nowrap">
+						<span
+							v-for="e in row.extras"
+							:key="e.ticker"
+							:title="t(`planet_search.reasons.${e.reason}`)">
+							<MaterialTile :ticker="e.ticker" :enable-popover="false" />
+						</span>
+					</div>
 				</td>
 				<td v-if="show('cogc')" class="whitespace-nowrap text-xs">
 					{{ row.cogc ? t(`game.cogc_program.${row.cogc}`) : t("planet_search.results.no_cogc") }}

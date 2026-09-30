@@ -15,7 +15,7 @@ link and saved in the browser. A result can be turned into a new plan.
 
 | File | Role |
 | --- | --- |
-| `planetSearch.engine.ts` | Pure engine: `filterPlanets`, `facetCounts`, `activeChips`, `zeroResultHints`, `sortPlanets` (a chain of sort keys), `applySortClick`, `defaultSort`, `rankValues` and small helpers. Each planet gets a bitmask of the filter dimensions it fails; a facet only re-evaluates its own dimension on the planets failing nothing else |
+| `planetSearch.engine.ts` | Pure engine: `filterPlanets`, `facetCounts` (incl. the `any` count per section), `widenSection` / `isSectionWide` (the "Any" buttons), `activeChips`, `restrictionHints` (relaxations for a search without results, or within the name matches), `nameSearchNote` (name matches hidden by the other filters), `sortPlanets` (a chain of sort keys), `applySortClick`, `defaultSort`, `rankValues` and small helpers. Each planet gets a bitmask of the filter dimensions it fails; a facet only re-evaluates its own dimension on the planets failing nothing else |
 | `planetSearch.schemas.ts` | Zod source of truth for the filter model and the localStorage prefs |
 | `planetSearch.types.ts` | Engine context, facets, chips, hints, sort |
 | `planetSearchContext.util.ts` | `createSearchContext(index, planPlanets, now)`: resolves CX and the viewer's plans to jumps maps (`usePathfinder().getJumpsFrom`) |

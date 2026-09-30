@@ -146,6 +146,63 @@ describe("PlanetSearchPage", () => {
 		});
 	});
 
+	it("notes name matches hidden by the filters and relaxes them", async () => {
+		stubMedia(true);
+		route.query = { q: "KI-" };
+		const { wrapper } = await mountComponent(PlanetSearchPage);
+		await flushPromises();
+		const note = () =>
+			wrapper
+				.findComponent({ name: "PlanetSearchResultsBar" })
+				.find('[role="status"]');
+		const current = () => panel(wrapper).props("filter") as PlanetSearchFilter;
+
+		expect(note().text()).toContain("planet_search.name_note.text");
+		expect(note().text()).toContain("planet_search.name_note.show_all");
+		expect(note().findAll("button").length).toBeGreaterThan(1);
+
+		// the first relaxation
+		const before = current();
+		await note().findAll("button")[0].trigger("click");
+		await flushPromises();
+		expect(current()).not.toEqual(before);
+		expect(current().text).toBe("KI-");
+		expect(Object.keys(replace.mock.lastCall![0].query).length).toBeGreaterThan(1);
+		expect(replace.mock.lastCall![0].query.q).toBe("KI-");
+
+		// show all: everything but the name at its widest
+		await note().findAll("button").at(-1)!.trigger("click");
+		await flushPromises();
+		expect(replace).toHaveBeenLastCalledWith({
+			query: { q: "KI-", surf: "rg", x: "MGC,BL,SEA,HSE,INS,TSH" },
+		});
+		expect(note().text()).toBe("");
+
+		// narrowed again, but without name text: no note
+		panel(wrapper).vm.$emit("update:filter", { ...before, text: "" });
+		await flushPromises();
+		expect(note().text()).toBe("");
+	});
+
+	it("saves a search that was changed in the panel", async () => {
+		stubMedia(true);
+		const { wrapper } = await mountComponent(PlanetSearchPage);
+		await flushPromises();
+		const header = wrapper.findComponent({ name: "PlanetSearchHeader" });
+
+		// the panel spreads its reactive filter prop, like every toggle does
+		const current = panel(wrapper).props("filter") as PlanetSearchFilter;
+		panel(wrapper).vm.$emit("update:filter", { ...current, fertile: true });
+		await flushPromises();
+		header.vm.$emit("save", "Fertile");
+		await flushPromises();
+
+		expect(toast).toHaveBeenCalledWith("planet_search.header.saved_toast");
+		expect(header.props("saved")).toMatchObject([
+			{ name: "Fertile", filter: { fertile: true, surface: ["rocky"] } },
+		]);
+	});
+
 	it("shows an error when the index can't load", async () => {
 		stubMedia(true);
 		failIndex.value = true;
