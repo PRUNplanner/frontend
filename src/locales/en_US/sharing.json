@@ -8,5 +8,10 @@
 		"views": "{count} Views",
 		"share": "Share"
 	},
-	"title": "Share Plan"
+	"title": "Share Plan",
+	"unavailable": {
+		"title": "This shared plan is no longer available",
+		"text": "Its owner stopped sharing it or deleted the plan, or the link is incomplete.",
+		"home": "Go to PRUNplanner"
+	}
 }

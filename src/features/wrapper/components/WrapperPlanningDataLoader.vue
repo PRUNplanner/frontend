@@ -20,15 +20,36 @@
 		defineProps<PlanningDataLoaderProps>();
 	const emit = defineEmits<PlanningDataLoaderEmits>();
 
-	const { done, allLoaded, hasError, loadingSteps, results } =
-		usePlanningDataLoader(props, emit);
+	const {
+		done,
+		allLoaded,
+		hasError,
+		sharedPlanMissing,
+		loadingSteps,
+		results,
+	} = usePlanningDataLoader(props, emit);
 
 	// fast (cached) loads show nothing, errors show at once
 	const showLoader = useDelay(400);
 </script>
 
 <template>
-	<template v-if="!done && !allLoaded">
+	<div
+		v-if="sharedPlanMissing"
+		class="min-h-[50vh] flex items-center justify-center p-6">
+		<div class="max-w-125 text-center flex flex-col gap-y-3">
+			<h1 class="text-2xl font-bold text-white">
+				{{ $t("sharing.unavailable.title") }}
+			</h1>
+			<p>{{ $t("sharing.unavailable.text") }}</p>
+			<RouterLink
+				to="/"
+				class="text-link-primary font-bold hover:underline">
+				{{ $t("sharing.unavailable.home") }}
+			</RouterLink>
+		</div>
+	</div>
+	<template v-else-if="!done && !allLoaded">
 		<div
 			v-if="hasError || showLoader"
 			class="relative w-full h-full bg-center bg-repeat"

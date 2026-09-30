@@ -29,6 +29,32 @@ const planRequests = () =>
 
 const loading = (text: string) => text.includes("wrapper.loading");
 
+describe("WrapperPlanningDataLoader with a shared plan", () => {
+	beforeEach(() => mock.reset());
+
+	it("says that a share link is gone instead of loading forever", async () => {
+		mock.onGet(/planning\/shared\//).reply(404, { detail: "No match" });
+
+		const { wrapper } = await mountComponent(WrapperPlanningDataLoader, {
+			sharedPlanUuid: DELETED,
+		});
+
+		expect(wrapper.text()).toContain("sharing.unavailable.title");
+		expect(loading(wrapper.text())).toBe(false);
+	});
+
+	it("keeps the loader with its failed step for other errors", async () => {
+		mock.onGet(/planning\/shared\//).reply(500);
+
+		const { wrapper } = await mountComponent(WrapperPlanningDataLoader, {
+			sharedPlanUuid: DELETED,
+		});
+
+		expect(wrapper.text()).not.toContain("sharing.unavailable.title");
+		expect(loading(wrapper.text())).toBe(true);
+	});
+});
+
 describe("WrapperPlanningDataLoader with an empire list", () => {
 	beforeAll(() => {
 		axiosSetup();

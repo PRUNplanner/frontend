@@ -289,6 +289,13 @@ export function usePlanningDataLoader(
 		loadingSteps.value.some((l) => l.error != null)
 	);
 
+	// a share link that was revoked, deleted or mistyped
+	const sharedPlanMissing = computed(() => {
+		const error: (Error & { status?: number }) | null | undefined =
+			steps.find((s) => s.cfg.key === "sharedPlan")?.error;
+		return error?.status === 404;
+	});
+
 	const allLoaded = computed(() =>
 		steps
 			.filter((s) => s.cfg.enabled())
@@ -384,6 +391,7 @@ export function usePlanningDataLoader(
 		done,
 		allLoaded,
 		hasError,
+		sharedPlanMissing,
 		loadingSteps,
 		results: results,
 	};
