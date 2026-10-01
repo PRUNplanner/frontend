@@ -18,6 +18,7 @@ import type {
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 import type { Building } from "@/features/api/schemas/gameData.schemas";
+import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 
 // Util
 import { clamp } from "@/util/numbers";
@@ -388,6 +389,31 @@ export function usePlanCalculationHandlers(
 	}
 
 	/**
+	 * Adds a typical setup to the plan: each building with its amount and
+	 * recipes, then the experts. Wrapped like every handler, so the whole
+	 * setup is one undo step.
+	 *
+	 * @author jplacht
+	 *
+	 * @async
+	 * @param {IStarterSetup} setup Buildings and experts to add
+	 * @returns {Promise<void>} void
+	 */
+	async function handleApplyStarterSetup(setup: IStarterSetup): Promise<void> {
+		for (const { ticker, amount, recipes } of setup.buildings) {
+			await handleCreateBuilding(ticker);
+			const index = planData.value.buildings.findIndex(
+				(e) => e.name === ticker
+			);
+			handleUpdateBuildingAmount(index, amount);
+			handleAddBuildingRecipes(index, recipes);
+		}
+		setup.experts.forEach(({ type, amount }) =>
+			handleUpdateExpert(type, amount)
+		);
+	}
+
+	/**
 	 * Changes the Building Recipe for a building defined by its array index
 	 * and its active recipes defined by index to a new recipe id
 	 * @author jplacht
@@ -456,6 +482,7 @@ export function usePlanCalculationHandlers(
 		handleDeleteBuildingRecipe,
 		handleAddBuildingRecipe,
 		handleAddBuildingRecipes,
+		handleApplyStarterSetup,
 		handleChangeBuildingRecipe,
 		handleChangePlanName,
 	};

@@ -186,6 +186,29 @@
 				"recipes": "@:terms.recipes_plural"
 			},
 			"toggle": "Toggle insights"
+		},
+		"plan_starter": {
+			"title": "Start from a typical setup on {planet}",
+			"description": "What the {plans} active plans on this planet build most (up to {max}; those in at least {percent} of plans are pre-selected). Adds the checked ones to this plan as a starting point; nothing is saved until you save.",
+			"columns": {
+				"building": "Building",
+				"in_plans": "In plans here",
+				"amount": "Amount",
+				"recipes": "Typical recipes"
+			},
+			"typical_amount": "typ. {amount}x",
+			"no_recipe": "no typical recipe",
+			"experts": "Experts in plans here",
+			"expert_share": "{expert} in {percent} of plans",
+			"expert_added": "adds {amount}",
+			"based_on": "Based on plans of players active in the last 90 days · updated daily",
+			"turn_off": "You can turn off plan suggestions in {link}",
+			"turn_off_link": "Profile › Preferences",
+			"start_empty": "Start empty",
+			"apply": "Use typical setup ({count})",
+			"applied": "Typical setup added: {n} building | Typical setup added: {n} buildings",
+			"empty": "No buildings yet. Add one above, or {link}",
+			"show": "start from a typical setup"
 		}
 	},
 	"components": {

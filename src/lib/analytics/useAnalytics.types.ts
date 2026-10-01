@@ -97,6 +97,17 @@ export interface IAnalyticsEventProperties {
 	"plan:tool_toggle": { tool_name: string | null };
 	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
 	"plan:insights_open": { planet_natural_id: string };
+	"plan:starter_show": {
+		planet_natural_id: string;
+		candidate_count: number;
+	};
+	"plan:starter_apply": {
+		planet_natural_id: string;
+		building_count: number;
+		expert_count: number;
+		is_selection_changed: boolean;
+	};
+	"plan:starter_dismiss": { planet_natural_id: string };
 	"plan:hab_optimize": { goal: "auto" | "area" | "cost" };
 	"plan:hab_auto_toggle": { is_active: boolean };
 	"plan:edit": IPlanEditProperties;

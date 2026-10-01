@@ -6,6 +6,7 @@ import { buildingsStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
 import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
+import PlanStarterSetup from "@/features/plan_analytics/components/PlanStarterSetup.vue";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
@@ -33,9 +34,21 @@ vi.mock("@/features/plan_analytics/usePlanetInsights", () => ({
 	}),
 }));
 const trackPlanEdit = vi.hoisted(() => vi.fn());
+const trackEvent = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
 	trackPlanEdit,
+	trackEvent,
+}));
+
+// PlanStarterSetup has its own test
+vi.mock("@/features/plan_analytics/components/PlanStarterSetup.vue", () => ({
+	default: {
+		name: "PlanStarterSetup",
+		props: { planetId: String, planetResources: Array },
+		emits: ["apply", "dismiss"],
+		render: () => h("div"),
+	},
 }));
 
 // PlanProductionBuilding has its own test, the stub only keeps the props
@@ -97,8 +110,13 @@ const RESOURCES = [
 	resource("H2O", "LIQUID", 20),
 ];
 
-async function mountProduction(props: Record<string, unknown> = {}) {
-	return mountComponent(PlanProduction, {
+async function mountProduction(
+	props: Record<string, unknown> = {},
+	messages?: Record<string, unknown>
+) {
+	return mountComponent(
+		PlanProduction,
+		{
 		disabled: false,
 		productionData: {
 			buildings: [building("SME"), building("FP")],
@@ -109,7 +127,9 @@ async function mountProduction(props: Record<string, unknown> = {}) {
 		planetId: "ZV-307c",
 		planetResources: RESOURCES,
 		...props,
-	});
+		},
+		{ messages }
+	);
 }
 
 const children = (wrapper: VueWrapper) =>
@@ -131,6 +151,7 @@ describe("PlanProduction", () => {
 		insights.available = ref(false);
 		insights.mostPlanned = undefined;
 		trackPlanEdit.mockReset();
+		trackEvent.mockReset();
 	});
 
 	it("offers the planet's popular buildings first", async () => {
@@ -384,5 +405,76 @@ describe("PlanProduction", () => {
 		expect(component.emitted("update:building:recipe")).toEqual([
 			[1, 0, "FP#DW"],
 		]);
+	});
+
+	describe("starter setup", () => {
+		const empty = { productionData: { buildings: [], materialio: [] } };
+		const starter = (wrapper: VueWrapper) =>
+			wrapper.findComponent(PlanStarterSetup);
+		const showLink = (wrapper: VueWrapper) =>
+			wrapper
+				.findAll("button")
+				.find((b) => b.text() === "show");
+
+		it("shows the card on an empty plan with insights, tracked once", async () => {
+			insights.available = ref(true);
+			const { wrapper } = await mountProduction(empty);
+
+			expect(starter(wrapper).exists()).toBe(true);
+			expect(starter(wrapper).props("planetId")).toBe("ZV-307c");
+			expect(trackEvent).toHaveBeenCalledTimes(1);
+			expect(trackEvent).toHaveBeenCalledWith("plan:starter_show", {
+				planet_natural_id: "ZV-307c",
+				candidate_count: 2,
+			});
+		});
+
+		it.each([
+			["without insights (setting off, below threshold, v1)", false, empty],
+			["for a disabled (shared) plan", true, { ...empty, disabled: true }],
+			["once the plan has a building", true, {}],
+		])("is hidden %s", async (_name, available, props) => {
+			insights.available = ref(available);
+			const { wrapper } = await mountProduction(props);
+
+			expect(starter(wrapper).exists()).toBe(false);
+			expect(showLink(wrapper)).toBeUndefined();
+			expect(trackEvent).not.toHaveBeenCalled();
+		});
+
+		it("Start empty hides it, the link brings it back", async () => {
+			insights.available = ref(true);
+			const { wrapper } = await mountProduction(empty, {
+				// the link sits in an i18n-t slot
+				plan: {
+					tools: {
+						plan_starter: { empty: "No buildings, or {link}", show: "show" },
+					},
+				},
+			});
+
+			starter(wrapper).vm.$emit("dismiss");
+			await flushPromises();
+			expect(starter(wrapper).exists()).toBe(false);
+			expect(trackEvent).toHaveBeenLastCalledWith("plan:starter_dismiss", {
+				planet_natural_id: "ZV-307c",
+			});
+
+			await showLink(wrapper)!.trigger("click");
+			expect(starter(wrapper).exists()).toBe(true);
+			// shown once per plan view
+			expect(trackEvent).toHaveBeenCalledTimes(2);
+		});
+
+		it("passes apply on", async () => {
+			insights.available = ref(true);
+			const { wrapper, component } = await mountProduction(empty);
+			const setup = { buildings: [], experts: [] };
+
+			starter(wrapper).vm.$emit("apply", setup, true);
+			expect(component.emitted("apply:starter")).toStrictEqual([
+				[setup, true],
+			]);
+		});
 	});
 });

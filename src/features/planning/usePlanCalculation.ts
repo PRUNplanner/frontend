@@ -291,6 +291,8 @@ export function usePlanCalculation(
 		// typing a name is one undo step
 		handleChangePlanName: record(handleChangePlanName, "plan_name"),
 		...history,
+		// several edits as one undo step
+		record,
 		// internal,
 		refreshKey,
 		calculate,

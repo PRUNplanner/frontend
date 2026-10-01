@@ -195,4 +195,19 @@ describe("usePlanetInsights", () => {
 		expect(execute).toHaveBeenLastCalledWith({ planetNaturalId: "B" });
 		expect(isAvailable.value).toBe(false);
 	});
+
+	it("exposes the v2 experts, empty without insights", async () => {
+		const experts = [
+			{ type: "Chemistry", plans_percentage: 80, median_amount: 2 },
+		];
+		execute.mockResolvedValue({
+			...v2,
+			insights_data: { ...v2.insights_data, experts },
+		});
+		const insights = usePlanetInsights("KW-688c");
+		expect(insights.experts.value).toStrictEqual([]);
+
+		await flushPromises();
+		expect(insights.experts.value).toStrictEqual(experts);
+	});
 });

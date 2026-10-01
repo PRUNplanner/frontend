@@ -74,6 +74,9 @@ the tables here list the same events; a test
 | `plan:tool_toggle` | `tool_name` | a plan tool panel was opened |
 | `plan:cogm_open` | `planet_natural_id`, `recipe_id` | |
 | `plan:insights_open` | `planet_natural_id` | the planet insights box was opened |
+| `plan:starter_show` | `planet_natural_id`, `candidate_count` | the "Start from a typical setup" card was shown on an empty plan, once per plan view |
+| `plan:starter_apply` | `planet_natural_id`, `building_count`, `expert_count`, `is_selection_changed` | the typical setup was added to the plan (`is_selection_changed`: the user changed the preselected buildings) |
+| `plan:starter_dismiss` | `planet_natural_id` | "Start empty" on the card |
 | `plan:hab_optimize` | `goal` (`area`, `cost`) | the optimize buttons; the automatic run (`auto`) is not sent |
 | `plan:hab_auto_toggle` | `is_active` | |
 | `plan:edit` | `planet_natural_id`, `field`, and the relevant of `building_ticker`, `recipe_id`, `amount`, `infrastructure_type`, `expert_type`, `workforce_type`, `lux_type`, `value`, `is_from_popular`, `is_most_planned` | see below |
@@ -92,6 +95,10 @@ building). It is sent through `trackPlanEdit`, which waits one second per
 edited control (field, building, and infrastructure, expert or workforce
 type): ten quick clicks on a building's + are one event with the final
 amount. Pending edits are sent before a save and when the plan page closes.
+
+The typical setup is not also sent as `plan:edit` events; undoing it is a
+`plan:undo`. Funnel (built in PostHog): `plan:starter_show` →
+`plan:starter_apply` → `plan:create` in the same session.
 
 ### Planet, empire, management, exchanges
 

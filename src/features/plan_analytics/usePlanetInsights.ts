@@ -84,6 +84,11 @@ export function usePlanetInsights(planetNaturalId: MaybeRefOrGetter<string>) {
 		() => buildings.value.size > 0
 	);
 
+	/** v2 expert counts, empty for v1 rows */
+	const experts: ComputedRef<
+		AnalyticsPlanetInsightsData["insights_data"]["experts"]
+	> = computed(() => insights.value?.insights_data.experts ?? []);
+
 	const totalPlans: ComputedRef<number> = computed(
 		() => insights.value?.total_plans_analyzed ?? 0
 	);
@@ -154,6 +159,7 @@ export function usePlanetInsights(planetNaturalId: MaybeRefOrGetter<string>) {
 		isEnabled,
 		isAvailable,
 		totalPlans,
+		experts,
 		popularBuildings,
 		buildingPopularity,
 		recipePopularity,
