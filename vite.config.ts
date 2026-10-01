@@ -120,46 +120,23 @@ export default defineConfig({
 				chunkFileNames: "assets/chunks/[name].[hash].js",
 				assetFileNames: "assets/[ext]/[name].[hash].[ext]",
 
-				// manual chunking
+				// Named chunks only for what the shell needs on every page;
+				// Rollup splits everything else per route. posthog-js stays
+				// its own chunk, fetched only after consent.
 				manualChunks(id) {
-					if (id.includes("node_modules")) {
-						const parts = id
-							.split("node_modules/")
-							.pop()!
-							.split("/");
+					if (!id.includes("node_modules")) return;
+					const parts = id.split("node_modules/").pop()!.split("/");
+					const pkg = parts[0].startsWith("@")
+						? `${parts[0]}/${parts[1]}`
+						: parts[0];
 
-						let pkg = parts[0];
-						if (pkg.startsWith("@") && parts.length > 1) {
-							pkg = `${parts[0]}/${parts[1]}`;
-						}
-
-						if (pkg === "chartjs") return "vendor_chartjs";
-						if (pkg === "showdown") return "vendor_showdown";
-						if (pkg === "lightweight-charts")
-							return "vendor_lightweight";
-						if (pkg === "posthog-js") return "vendor_posthog";
-
-						// Sanitize vendor name for the general vendor chunk
-						return (
-							"vendor_" +
-							pkg
-								.replace(/^@/, "")
-								.replace(/[^a-zA-Z0-9]/g, "_")
-								.replace(/_+$/, "")
-						);
-					}
-
-					if (
-						id.includes("src/ui/") ||
-						id.includes("/features/") ||
-						id.includes("/components/")
-					) {
-						return "app-core";
-					}
-
-					if (id.includes("/views/")) {
-						return;
-					}
+					if (pkg === "posthog-js") return "vendor_posthog";
+					if (pkg === "vue" || pkg.startsWith("@vue/"))
+						return "vendor_vue";
+					if (pkg === "vue-router") return "vendor_vue_router";
+					if (pkg.startsWith("pinia")) return "vendor_pinia";
+					if (pkg === "vue-i18n" || pkg.startsWith("@intlify/"))
+						return "vendor_vue_i18n";
 				},
 			},
 		},

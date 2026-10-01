@@ -79,7 +79,8 @@
 			"page": "Page {page}",
 			"more": "More pages"
 		},
-		"language": "Language"
+		"language": "Language",
+		"page_load_failed": "This page couldn't load. Reload to get the latest version."
 	},
 	"values": {
 		"never": "never"

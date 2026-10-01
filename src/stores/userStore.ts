@@ -9,7 +9,7 @@ import {
 	type Ref,
 	watch,
 } from "vue";
-import merge from "lodash/merge";
+import { merge } from "lodash-es";
 
 // API
 import {

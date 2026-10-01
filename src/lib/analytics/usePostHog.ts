@@ -164,6 +164,8 @@ async function startAnalytics(): Promise<void> {
 			capture_pageview: false,
 			// would follow capture_pageview otherwise
 			capture_pageleave: true,
+			// names the element behind a slow LCP or a layout shift
+			capture_performance: { web_vitals_attribution: true },
 			// no cookie
 			persistence: "localStorage",
 			respect_dnt: true,

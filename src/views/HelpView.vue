@@ -52,7 +52,10 @@
 					v-if="markdownContent != ''"
 					id="markdown"
 					class="h-screen overflow-auto">
-					<VueShowdown :markdown="markdownContent" />
+					<VueShowdown
+					:markdown="markdownContent"
+					flavor="github"
+					:options="{ tables: true, emoji: true }" />
 				</div>
 			</div>
 		</div>

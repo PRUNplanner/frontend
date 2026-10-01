@@ -1,4 +1,4 @@
-import { debounce, type DebouncedFunc } from "lodash";
+import { debounce, type DebouncedFunc } from "lodash-es";
 
 import {
 	capture,
