@@ -3,73 +3,116 @@
 		"registration": "Konto erstellen",
 		"login": "Anmelden"
 	},
-	"images": {
-		"section_title": "Verwalte dein Imperium von Überall",
-		"section_lead": "Überwache deine Basen, verwalte Produktionen und steuere deine Pläne mühelos. Mit intuitiven und leistungsstarken Tools kannst du Strategien finden, Erweiterungen planen und deine Rivalen mühelos ausspielen.",
-		"empire": "Imperium: Verfolge Produktionen, Lieferketten und dein Wachstum über alle Planeten hinweg.",
-		"plan": "Pläne: Plane und analysiere ohne im Spiel Geld ausgeben zu müssen.",
-		"management": "Verwaltung: Koordiniere Pläne, Erweiterungen und deinen nächsten Schritt mühelos.",
-		"exchanges": "Warenbörsen: Optimiere deine Preis- und Handelsstrategien.",
-		"market_exploration": "Entdecken: Analysiere jahrelange Marktdaten und gewinne intelligente Erkenntnisse.",
-		"planet_search": "Planeten Suche: Finde den besten Planeten für deinen Bedarf."
-	},
 	"hero": {
-		"title": "Plane dein Imperium",
-		"subtitle": "Beherrsche Prosperous Universe",
-		"lead": "Verabschiede dich von nervigen Tabellen und erlebe, wie einfach die Verwaltung deines Spiel-Vermögens sein kann."
+		"eyebrow": "Plan- und Imperiumplaner für Prosperous Universe",
+		"title": "Plane eine Basis, bevor du sie baust.",
+		"lead": "Wähle einen Planeten, füge Gebäude und Rezepte hinzu und beobachte den täglichen Gewinn, deine Arbeitskräfte, die genutzte Fläche und den ROI. Dann gruppiere deine Pläne in ein Imperium und sehe was produziert wird, den Verbrauch und deinen Transportbedarf.",
+		"cta": "Fange an zu planen - kostenlos",
+		"cta_logged_in": "Imperium öffnen",
+		"how": "Wie es funktioniert",
+		"facts": "Kostenlos · Open Source · Preise von FIO",
+		"image_alt": "Der Plan-Editor für eine Eisenbasis auf Montem: Arbeitskräfte, Produktionsgebäude und Material I/O",
+		"image_caption": "Eine Eisenbasis auf Montem (OT-580b): 19,313 ȼ Profit pro Tag, ROI 64 Tage."
 	},
-	"features": {
-		"section_title": "Mächtige Funktionen, Kostenlos für alle",
-		"section_lead": "Vereinfache deine Pläne und ihre Verwaltung, bleibe der Galaxie einen Schritt voraus.",
-		"simulation": {
-			"label": "Plan-Simulation",
-			"text": "PRUNplanner erlaubt dir neue Basen zu planen ohne Ressourcen im Spiel verwenden zu müssen. Es spiegelt alle Aspekte von Gebäuden für deine Belegschaft, Produktionsstätten, COGC-Programmen."
+	"setup": {
+		"title": "Drei Dinge zum Einrichten",
+		"lead": "Alles im PRUNplanner hängt von Plänen, Imperien und Preispräferenzen ab.",
+		"plan": {
+			"label": "Plan",
+			"text": "Jeder Plan gehört zu einem Planeten: Gebäude, Produktionsrezepte, Unterkünfte, Experten und COGC. Los geht es von der Planetensuche.",
+			"alt": "Produktionsgebäude und ihre Rezepte im Plan-Editor"
 		},
-		"planning": {
-			"label": "Imperiale Planung",
-			"text": "Organisiere und verwalte dein Imperium so einfach wie noch nie. Mit PRUNplanner kannst du Pläne für mehrere Planeten erstellen, komplizierte Lieferketten plane und sicherstellen, dass deine Materialströme effizient bleiben."
+		"empire": {
+			"label": "Imperium",
+			"text": "Deine Pläne an einer Stelle. Siehe deinen Gesamtgewinn und welche Material knapp werden oder einen Überschuss haben.",
+			"alt": "Imperium Material I/O mit Überschuss und Defizit pro Material"
 		},
-		"gamedata": {
-			"label": "Spieldaten",
-			"text": "Sei Dank der Community-Schnittstelle (FIO) mit aktuellen Marktinformationen der Warenbörsen anderen einen Schritt voraus. Du kannst Entscheidungen direkt auf Basis der aktuellen Marktlage und dem besten ROI treffen."
-		},
-		"burn_repair": {
-			"label": "Verbrauch & Instandhaltung",
-			"text": "Verhindere Engpässe mit detaillierten Verwaltungsmöglichkeiten. PRUNplanner verfolgt deine Produktionsressourcen und die Belegschaftsversorgung, um sicherzugehen, dass du immer alles vorhanden hast, was du benötigst."
-		},
-		"market_exploration": {
-			"label": "Marktübersicht",
-			"text": "Entdecke historische Markttrends der vergangenen Jahre und erfahre, wie Märkte sich wirklich bewegen. Dadurch findest du neue Chancen und kannst ganz einfach ausrechnen, ob sich Investitionen einen Auftrag oder die Produktion eines neuen Materials lohnt. Vorsprung durch intelligente Planung."
-		},
-		"tools": {
-			"label": "So viele weitere Werkzeuge",
-			"text": "Entdecke Materialpreise von heute bis Jahre zurück, finde die optimalen Zeitpunkte um Gebäude zu reparieren, wann Produktionsexperten verfügbar werden und optimiere Unterkünfte automatisch für minimale Flächennutzung oder geringste Kosten. PRUNplanner bietet all das und noch viel mehr."
+		"exchange": {
+			"label": "Exchange-Präferenz",
+			"text": "Welche Marktplatz-Preise zu verwenden sind, mit Ihren eigenen Preisen pro Material oder pro Planeten. Jeder Plan im Imperium wird damit berechnet.",
+			"alt": "An exchange preference with ticker overrides"
 		}
 	},
-	"concepts": {
-		"section_title": "Grundkonzepte",
-		"section_lead": "PRUNplanner besteht aus drei Hauptkomponenten, mit denen du dein Prosperous Universe Imperium planen und verwalten kannst.",
-		"plans": {
-			"label": "Pläne",
-			"text": "Pläne sind das Rückgrat dessen, was du in PRUNplanner tust. Sie bestehen aus allen Unterkünften, Produktionsgebäuden und Bonus-Kalkulationen aus Proserous Universe. Du kannst neue Pläne einfach erstellen, indem du nach Planeten suchst, auf denen du eine neue Basis bauen möchtest. Jeder Plan sollte einer Warenbörse zugeordnet sein, damit deine Präferenz für Preisberechnungen genutzt wird."
+	"most_used": {
+		"title": "Was Spieler am meisten nutzen",
+		"lead": "Wo man sich ansiedelt, wann es sich auszahlt und wann eine Basis trocken läuft.",
+		"needs_fio": "Benötigt FIO Konto",
+		"planet_search": {
+			"label": "Planetensuche",
+			"title": "Finde den Planeten für deine nächste Basis.",
+			"lead": "Filtere jeden Planeten im Universum und starte deinen nächsten Plan.",
+			"point_1": "Materialien, die du extrahieren möchtest mit einem Minimum-Filter pro Tag",
+			"point_2": "Oberfläche, Schwerkraft, Druck, Temperatur und Fruchtbarkeit",
+			"point_3": "COGC-Programm und planetare Infrastruktur",
+			"point_4": "Compare up to four planets side by side",
+			"alt": "Planet Search: filters on the left, matching planets with their resources, COGC and infrastructure"
 		},
-		"empires": {
-			"label": "Imperien",
-			"text": "Ein Imperium ist die Sammlung aller Pläne (z.B. aller Basen, die du aktuell in Prosperous Universe besitzt oder noch bauen möchtest). Jedes Imperium funktioniert wie ein Container für eine Vielzahl an Plänen. Zusätzlich kannst du deine präferierte Warenbörse hinterlegen."
+		"resource_roi": {
+			"label": "Resource ROI",
+			"title": "See which planet pays back fastest.",
+			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan.",
+			"point_1": "Plan cost, daily profit and ROI in days",
+			"point_2": "Daily output and % of the best planet",
+			"point_3": "POPR, COGC, environment and infrastructure next to it",
+			"alt": "Resource ROI for ALO: planets ranked with daily output, plan cost, daily profit and ROI in days"
 		},
-		"exchanges": {
-			"label": "Marktplätze",
-			"text": "Die Warenbörsen-Einstellungen erlauben dir zu definieren, welcher Marktplatz für die Preisberechnung von Materialien genutzt werden soll. Jede Einstellung kann in mehreren Imperien verwendet werden, aber jedes Imperium ist einem Marktplatz zugeordnet. Dies stellt sicher, dass alle Preise für jeden Plan korrekt berechnet werden."
+		"fio_burn": {
+			"label": "FIO Burn",
+			"title": "Know when a base runs out.",
+			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses.",
+			"point_1": "Days left per material and base",
+			"point_2": "Red and yellow thresholds you set",
+			"point_3": "A resupply list per base, exported as XIT actions",
+			"alt": "FIO Burn: burn per plan, with one base expanded to show consumption, stock and days left per material"
 		}
 	},
 	"tools": {
-		"section_title": "Unterstützt von Tools, die wir gerne verwenden"
+		"title": "And the tools around it",
+		"lead": "Market data and calculators, priced from FIO. Link your FIO account and Repair uses your real bases too.",
+		"with_fio": "with FIO",
+		"market_live": {
+			"label": "Market Live",
+			"text": "Live CX prices, and alerts from rules on price, spread and volume."
+		},
+		"market_exploration": {
+			"label": "Market Exploration",
+			"text": "Price and volume history per material and exchange."
+		},
+		"recipe_roi": {
+			"label": "Recipe ROI",
+			"text": "Every recipe ranked by payback at current prices."
+		},
+		"production_chains": {
+			"label": "Production Chains",
+			"text": "What a material takes to make, all the way down."
+		},
+		"hq_calculator": {
+			"label": "HQ Calculator",
+			"text": "Materials needed for your next HQ level."
+		},
+		"repair": {
+			"label": "Repair",
+			"text": "When each of your buildings is due for repair."
+		},
+		"carts": {
+			"label": "Supply and Construction Cart",
+			"text": "Shopping lists per plan, exportable as XIT actions."
+		},
+		"upkeep": {
+			"label": "Upkeep Price Calculator",
+			"text": "ȼ per need point for safety, health, comfort, culture and education."
+		}
 	},
-	"open_source": {
-		"section_title": "Kostenlos & Open Source",
-		"section_lead": "PRUNplanner ist völlig frei zu verwenden und {link}.",
-		"prompt": "Du magst es? Wir würden uns freuen, wenn du mitmachst!",
-		"link_open_source": "Open Source"
+	"closing": {
+		"title": "Free, open source and translated by players.",
+		"text": "No ads, no paid tier. Code on GitHub, translations on Crowdin.",
+		"github": "View on GitHub",
+		"cta": "Start planning"
 	},
-	"love": "Mit ♥️ aus München und Beteiligten aus aller Welt."
+	"footer": {
+		"made_in": "Made in Munich, with contributions from around the world.",
+		"imprint": "Imprint and terms",
+		"translate": "Translate on Crowdin",
+		"language": "Language"
+	}
 }
