@@ -1,8 +1,10 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { createPinia, setActivePinia, type Pinia } from "pinia";
 import { RouterLinkStub } from "@vue/test-utils";
 
 import HomepageView from "@/views/HomepageView.vue";
+import HomepageLanguage from "@/layout/components/HomepageLanguage.vue";
+import PSelect from "@/ui/components/PSelect.vue";
 import { useAuthPanel } from "@/features/account/useAuthPanel";
 import { useUserStore } from "@/stores/userStore";
 import { mountComponent } from "@/tests/mountComponent";
@@ -16,6 +18,8 @@ describe("HomepageView", () => {
 		setActivePinia(pinia);
 		panel.close();
 	});
+
+	afterEach(() => vi.restoreAllMocks());
 
 	it("has one hero CTA that opens the registration panel", async () => {
 		const { wrapper } = await mountComponent(HomepageView, {}, { pinia });
@@ -48,5 +52,29 @@ describe("HomepageView", () => {
 		expect(
 			wrapper.findAllComponents(RouterLinkStub).map((l) => l.props("to"))
 		).toContain("/empire");
+	});
+
+	it.each([
+		["en-US", false],
+		["en", false],
+		["de-DE", true],
+	])(
+		"with browser language %s shows the translation banner: %s",
+		async (language, banner) => {
+			vi.spyOn(navigator, "language", "get").mockReturnValue(language);
+			const { wrapper } = await mountComponent(HomepageView, {}, { pinia });
+
+			expect(wrapper.findComponent(HomepageLanguage).exists()).toBe(banner);
+			// the footer select is always there
+			expect(wrapper.findAllComponents(PSelect)).toHaveLength(banner ? 2 : 1);
+		}
+	);
+
+	it("hides the translation banner when the active locale is the browser's", async () => {
+		vi.spyOn(navigator, "language", "get").mockReturnValue("de-DE");
+		useUserStore().preferences.locale = "de_DE";
+		const { wrapper } = await mountComponent(HomepageView, {}, { pinia });
+
+		expect(wrapper.findComponent(HomepageLanguage).exists()).toBe(false);
 	});
 });

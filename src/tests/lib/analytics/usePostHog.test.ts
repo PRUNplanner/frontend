@@ -478,6 +478,121 @@ describe("usePostHog", () => {
 		expect(localStorage.getItem("ph_phc_test_posthog")).toBe("{}");
 	});
 
+	describe("maskUrlCodes", () => {
+		const event = (
+			name: string,
+			properties: Record<string, unknown>,
+			extra: Record<string, unknown> = {}
+		) => ({ uuid: "u", event: name, properties, ...extra });
+
+		it("is passed to posthog.init as before_send", async () => {
+			const { maskUrlCodes } = await load({ consent: "granted" });
+			await settle();
+
+			expect(posthog.init).toHaveBeenCalledWith(
+				"phc_test",
+				expect.objectContaining({ before_send: maskUrlCodes })
+			);
+		});
+
+		it.each(["$pageview", "$pageleave", "$autocapture", "$exception"])(
+			"masks reset and verify codes in every URL property of %s",
+			async (name) => {
+				const { maskUrlCodes } = await load();
+				const masked = maskUrlCodes(
+					event(
+						name,
+						{
+							$current_url:
+								"https://prunplanner.org/password-reset/abc123?x=1",
+							$pathname: "/verify-email/def456",
+							$referrer: "https://prunplanner.org/verify-email/def456#top",
+							$session_entry_url:
+								"https://prunplanner.org/password-reset/abc123",
+							$exception_list: [
+								{ value: "failed on /password-reset/abc123" },
+							],
+						},
+						{
+							$set_once: {
+								$initial_referrer:
+									"https://prunplanner.org/password-reset/abc123",
+								$initial_pathname: "/verify-email/def456",
+							},
+						}
+					)
+				);
+
+				expect(masked?.properties).toEqual({
+					$current_url:
+						"https://prunplanner.org/password-reset/:code?x=1",
+					$pathname: "/verify-email/:code",
+					$referrer: "https://prunplanner.org/verify-email/:code#top",
+					$session_entry_url:
+						"https://prunplanner.org/password-reset/:code",
+					$exception_list: [
+						{ value: "failed on /password-reset/:code" },
+					],
+				});
+				expect(masked?.$set_once).toEqual({
+					$initial_referrer:
+						"https://prunplanner.org/password-reset/:code",
+					$initial_pathname: "/verify-email/:code",
+				});
+				expect(JSON.stringify(masked)).not.toMatch(/abc123|def456/);
+			}
+		);
+
+		it("masks the page URL in session replay snapshots", async () => {
+			const { maskUrlCodes } = await load();
+			const masked = maskUrlCodes(
+				event("$snapshot", {
+					$snapshot_data: [
+						{
+							type: 4,
+							data: { href: "https://prunplanner.org/verify-email/def456" },
+						},
+					],
+				})
+			);
+
+			expect(masked?.properties.$snapshot_data[0].data.href).toBe(
+				"https://prunplanner.org/verify-email/:code"
+			);
+		});
+
+		it("leaves other URLs and the bare routes untouched", async () => {
+			const { maskUrlCodes } = await load();
+			const properties = {
+				$current_url: "https://prunplanner.org/plan/1234-abcd",
+				$pathname: "/password-reset",
+				$referrer: "https://prunplanner.org/verify-email/",
+			};
+			const input = event("$pageview", properties);
+
+			const masked = maskUrlCodes(input);
+
+			expect(masked?.properties).toBe(properties);
+			expect(masked?.properties).toEqual({
+				$current_url: "https://prunplanner.org/plan/1234-abcd",
+				$pathname: "/password-reset",
+				$referrer: "https://prunplanner.org/verify-email/",
+			});
+		});
+
+		it("does not throw on events without URL properties", async () => {
+			const { maskUrlCodes } = await load();
+
+			expect(maskUrlCodes(null)).toBeNull();
+			expect(maskUrlCodes(event("plan:view", {}))).toEqual(
+				event("plan:view", {})
+			);
+			expect(
+				maskUrlCodes(event("plan:view", { count: 2, ok: null }))?.properties
+			).toEqual({ count: 2, ok: null });
+		});
+	});
+
 	// deny relies on posthog-js dropping requests while `__loaded` is false
 	describe("real posthog-js", () => {
 		async function captureWithRealPostHog() {

@@ -7,7 +7,7 @@ import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
 import { redact } from "@/util/data";
 
 // Types & Interfaces
-import type { PostHog, Properties } from "posthog-js";
+import type { BeforeSendFn, PostHog, Properties } from "posthog-js";
 
 const POSTHOG_NAME = "prunplanner_frontend";
 
@@ -21,6 +21,34 @@ const SENSITIVE_KEYS: string[] = [
 	"new",
 	"code",
 ];
+
+// one-time codes in /password-reset/:resetCode and /verify-email/:verifyCode
+const URL_CODE = /\/(password-reset|verify-email)\/[^/?#"\s\\]+/g;
+
+function maskObject<T>(value: T): T {
+	if (value === undefined) return value;
+	const json = JSON.stringify(value);
+	URL_CODE.lastIndex = 0;
+	if (!URL_CODE.test(json)) return value;
+	return JSON.parse(json.replace(URL_CODE, "/$1/:code"));
+}
+
+/**
+ * before_send: replaces reset and verify codes in every URL PostHog sends,
+ * nested ones included ($current_url, $referrer, $set_once.$initial_*,
+ * $exception_list, the session replay's $snapshot_data). Replay sends DOM
+ * snapshots gzipped, so page text there is not scanned; the replay masks
+ * inputs, the only place the code shows up.
+ */
+export const maskUrlCodes: BeforeSendFn = (event) => {
+	if (!event) return event;
+	return {
+		...event,
+		properties: maskObject(event.properties),
+		$set: maskObject(event.$set),
+		$set_once: maskObject(event.$set_once),
+	};
+};
 
 // storage keys PostHog writes: its own, the opt-out flag and survey state
 const POSTHOG_STORAGE_KEY =
@@ -139,6 +167,7 @@ async function startAnalytics(): Promise<void> {
 			// no cookie
 			persistence: "localStorage",
 			respect_dnt: true,
+			before_send: maskUrlCodes,
 		});
 
 		// register global versions

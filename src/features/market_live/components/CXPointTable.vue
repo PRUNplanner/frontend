@@ -85,6 +85,7 @@
 						<span v-if="rowData.spread_pct">
 							{{ formatNumber(rowData.spread_pct, 2) }}
 						</span>
+						<span v-else>&mdash;</span>
 					</div>
 				</template>
 			</XNDataTableColumn>

@@ -127,13 +127,13 @@ describe("UpkeepPriceCalculator", () => {
 			// 20 * 10 / 833.3
 			["OFF", "SST", "0.2400", "20.00", "10.00"],
 			// no price, last and in building order
-			["SUN", "SST", "-", "-", "2.00"],
-			["RAD", "SDP", "-", "-", "0.47"],
-			["CCD", "SDP", "-", "-", "0.07"],
-			["SUD", "SDP", "-", "-", "0.07"],
-			["BND", "EMC", "-", "-", "4.00"],
-			["RED", "EMC", "-", "-", "0.07"],
-			["BSC", "EMC", "-", "-", "0.07"],
+			["SUN", "SST", "—", "—", "2.00"],
+			["RAD", "SDP", "—", "—", "0.47"],
+			["CCD", "SDP", "—", "—", "0.07"],
+			["SUD", "SDP", "—", "—", "0.07"],
+			["BND", "EMC", "—", "—", "4.00"],
+			["RED", "EMC", "—", "—", "0.07"],
+			["BSC", "EMC", "—", "—", "0.07"],
 		]);
 	});
 
@@ -167,7 +167,7 @@ describe("UpkeepPriceCalculator", () => {
 			"20.00",
 			"10.00",
 			"5.00",
-			...Array(7).fill("-"),
+			...Array(7).fill("—"),
 		]);
 	});
 
@@ -205,7 +205,7 @@ describe("UpkeepPriceCalculator", () => {
 			rows(wrapper)
 				.slice(5)
 				.map((r) => r[2])
-		).toEqual(Array(15).fill("-"));
+		).toEqual(Array(15).fill("—"));
 	});
 
 	it.each([
@@ -239,7 +239,7 @@ describe("UpkeepPriceCalculator", () => {
 		// only DW has a price: 1000 * 10 / 833.3
 		expect(rows(wrapper).map((r) => r[2])).toEqual([
 			"12.0005",
-			...Array(11).fill("-"),
+			...Array(11).fill("—"),
 		]);
 	});
 
@@ -344,7 +344,7 @@ describe("UpkeepPriceCalculator", () => {
 		const { wrapper } = await mountCalculator();
 
 		expect(rows(wrapper)).toHaveLength(12);
-		expect(rows(wrapper).every((r) => r[2] === "-" && r[3] === "-")).toBe(
+		expect(rows(wrapper).every((r) => r[2] === "—" && r[3] === "—")).toBe(
 			true
 		);
 	});

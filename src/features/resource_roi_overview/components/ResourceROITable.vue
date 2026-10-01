@@ -97,7 +97,15 @@
 		:planet-options="filterOptionPlanet"
 		:building-options="filterOptionBuilding"
 		:searched-material="searchedMaterial" />
-	<XNDataTable :data="localResult" striped :pagination="pagination">
+	<!-- naive's table breaks words anywhere: cells wrap between words only,
+		and below about its natural width the table scrolls instead of
+		squeezing numbers and names ("Reso urce Extra ction") -->
+	<XNDataTable
+		:data="localResult"
+		striped
+		:pagination="pagination"
+		:scroll-x="1700"
+		class="[&_td]:[word-break:normal]">
 		<XNDataTableColumn
 			key="planetName"
 			:title="t('resource_roi.table.planet')"
@@ -159,7 +167,7 @@
 							? capitalizeString(rowData.planetCOGC)
 									.replace("Advertising ", "")
 									.replace("Workforce ", "")
-							: "-"
+							: "—"
 					}}
 				</template>
 			</XNDataTableColumn>

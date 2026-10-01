@@ -3,6 +3,7 @@ import {
 	formatNumber,
 	formatAmount,
 	formatPayback,
+	formatPercent,
 	clamp,
 	boundaryDescriptor,
 } from "@/util/numbers";
@@ -36,6 +37,18 @@ describe("Util: text", () => {
 
 		it("negative infinity", () => {
 			expect(formatNumber(-Infinity)).toStrictEqual("—");
+		});
+	});
+
+	describe("formatPercent", () => {
+		it("adds the unit to a number", () => {
+			expect(formatPercent(12.345)).toBe("12.35 %");
+			expect(formatPercent(0)).toBe("0.00 %");
+		});
+
+		it("shows a bare dash for ∞ and NaN", () => {
+			expect(formatPercent(NaN)).toBe("—");
+			expect(formatPercent(Infinity)).toBe("—");
 		});
 	});
 

@@ -168,3 +168,80 @@ describe("axiosSetup: a session that can't be refreshed", () => {
 		);
 	});
 });
+
+describe("axiosSetup: parallel 401s", () => {
+	// the token schemas want 120+ characters
+	const token = (name: string) => name.padEnd(120, "x");
+	let userStore: ReturnType<typeof useUserStore>;
+	let valid: string;
+
+	const refreshes = () =>
+		mock.history.post.filter((r) => r.url === "/user/refresh/");
+	const parallel = (n: number) =>
+		Promise.allSettled(Array.from({ length: n }, () => axios.get("/data")));
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		userStore = useUserStore();
+		mock.reset();
+		vi.mocked(router.push).mockClear();
+		route.value = { meta: { requiresAuth: true } };
+		userStore.setToken(token("access-old"), token("refresh"));
+		valid = token("access-new-1");
+		mock.onGet("/data").reply((config) =>
+			config.headers?.Authorization === `Bearer ${valid}`
+				? [200, "payload"]
+				: [401]
+		);
+	});
+
+	it("share one refresh and are all asked again", async () => {
+		mock.onPost("/user/refresh/").reply(200, { access: valid });
+
+		const answers = await parallel(3);
+
+		expect(refreshes()).toHaveLength(1);
+		expect(answers).toEqual(
+			Array(3).fill(
+				expect.objectContaining({
+					status: "fulfilled",
+					value: expect.objectContaining({ data: "payload" }),
+				})
+			)
+		);
+		expect(userStore.isLoggedIn).toBe(true);
+	});
+
+	it("end the session once when the shared refresh fails", async () => {
+		mock.onPost("/user/refresh/").reply(401);
+		const logout = vi.spyOn(userStore, "logout");
+
+		const answers = await parallel(3);
+
+		expect(refreshes()).toHaveLength(1);
+		expect(answers.map((a) => a.status)).toEqual([
+			"rejected",
+			"rejected",
+			"rejected",
+		]);
+		expect(logout).toHaveBeenCalledTimes(1);
+		expect(router.push).toHaveBeenCalledTimes(1);
+		expect(userStore.isLoggedIn).toBe(false);
+	});
+
+	it("refresh again on a 401 after the last refresh settled", async () => {
+		mock
+			.onPost("/user/refresh/")
+			.replyOnce(200, { access: token("access-new-1") })
+			.onPost("/user/refresh/")
+			.replyOnce(200, { access: token("access-new-2") });
+
+		await parallel(2);
+		// the server drops the first refreshed token
+		valid = token("access-new-2");
+		const later = await axios.get("/data");
+
+		expect(later.data).toBe("payload");
+		expect(refreshes()).toHaveLength(2);
+	});
+});

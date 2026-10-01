@@ -138,7 +138,7 @@ describe("ResourceROITable", () => {
 			distanceAI1: "7",
 			distanceCI1: "—",
 		});
-		expect(rows[1].planetCOGC).toBe("-");
+		expect(rows[1].planetCOGC).toBe("—");
 		expect(rows[2].planetCOGC).toBe("Pioneers");
 		expect(rows[2].distanceIC1).toBe("—");
 	});

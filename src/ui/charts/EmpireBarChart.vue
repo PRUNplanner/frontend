@@ -61,6 +61,8 @@
 	});
 	onBeforeUnmount(() => paletteObserver?.disconnect());
 
+	const LABEL_SIZE = 12;
+
 	// chart.js caps the value axis at ~1/4 of the chart width, so values stay
 	// short: no decimals from 100 up, the unit goes into the heading
 	function format(value: number): string {
@@ -124,7 +126,28 @@
 			},
 			y: {
 				grid: { display: false },
-				ticks: { color: "#999999", font: { family: "monospace" } },
+				ticks: {
+					color: "#999999",
+					font: { family: "monospace", size: LABEL_SIZE },
+				},
+				// chart.js caps a side axis at ~1/4 of the chart width and
+				// clips longer labels from the left ("ther (12)" at 375 px):
+				// widen the axis to the longest label, up to 45 % of the chart
+				// so long plan names leave room for the bars
+				afterFit: (scale) => {
+					const ctx = scale.ctx;
+					ctx.save();
+					ctx.font = `${LABEL_SIZE}px monospace`;
+					const widest = Math.max(
+						...bars.value.map((b) => ctx.measureText(b.name).width)
+					);
+					ctx.restore();
+					// tick padding (3 px) and some air
+					scale.width = Math.min(
+						Math.max(scale.width, Math.ceil(widest) + 12),
+						scale.chart.width * 0.45
+					);
+				},
 			},
 			// values as a right-hand column level with each bar; the axis
 			// sizes itself to the longest value, so no label is clipped

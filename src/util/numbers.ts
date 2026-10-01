@@ -27,6 +27,16 @@ export function formatNumber(
 }
 
 /**
+ * Formats a percentage as "12.34 %", or "—" without a unit for ∞ or NaN
+ * @param {number} value percentage, 0-100
+ * @param {number} decimals decimals
+ * @returns {string} formatted percentage
+ */
+export function formatPercent(value: number, decimals: number = 2): string {
+	return Number.isFinite(value) ? `${formatNumber(value, decimals)} %` : "—";
+}
+
+/**
  * Formats a number representing an amount as String
  * with thousand separation.
  * @author jplacht

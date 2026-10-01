@@ -63,6 +63,27 @@ function endSession(): void {
 	if (router.currentRoute.value.meta.requiresAuth) router.push("/");
 }
 
+let sessionRefresh: Promise<boolean> | null = null;
+
+/**
+ * Refreshes the access token, or ends the session if that fails. Parallel
+ * 401s share one call, so a failed refresh ends the session once.
+ *
+ * @returns {Promise<boolean>} Refreshed
+ */
+function refreshOrEndSession(): Promise<boolean> {
+	sessionRefresh ??= useUserStore()
+		.performTokenRefresh()
+		.then((refreshed) => {
+			if (!refreshed) endSession();
+			return refreshed;
+		})
+		.finally(() => {
+			sessionRefresh = null;
+		});
+	return sessionRefresh;
+}
+
 /**
  * On a public page, repeats a request that its dead token failed, logged
  * out. Once: the retry carries no token, so its own 401 is not repeated.
@@ -103,7 +124,6 @@ export default function axiosSetup() {
 				? discard(response.config)
 				: response,
 		async (error) => {
-			const userStore = useUserStore();
 			const originalRequest: InternalAxiosRequestConfig = error.config;
 			const isUnauthorized: boolean = error.response?.status === 401;
 
@@ -117,20 +137,14 @@ export default function axiosSetup() {
 				);
 
 			if (isUnauthorized) {
+				// refreshOrEndSession sees the failure and ends the session
 				if (
 					originalRequest.url &&
 					originalRequest.url.includes("/user/refresh/")
-				) {
-					endSession();
+				)
 					return Promise.reject(error);
-				}
 
-				const tokenRefreshStatus: boolean =
-					await userStore.performTokenRefresh();
-
-				if (tokenRefreshStatus) return axios(originalRequest);
-
-				endSession();
+				if (await refreshOrEndSession()) return axios(originalRequest);
 
 				return retryLoggedOut(originalRequest) ?? Promise.reject(error);
 			}
