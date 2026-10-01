@@ -25,8 +25,11 @@ The backend proxies the data, and the user links FIO in their profile.
 
 - FIO storage and sites live in `planningStore.fio_*` and are persisted.
   They are loaded by the `GetFIOStorage` query (`callDataFIOStorage`),
-  which `NavigationBar` triggers on app load and `PlanConstructionCart`
-  triggers when needed.
+  which `NavigationBar` triggers whenever `userStore.fioStatus` is `ok` or
+  `error` (the states that can have stored data, so also when polling turns
+  `syncing` into `ok`) and `PlanConstructionCart` triggers when needed. In
+  every other state the nav drops the query cache, but the persisted
+  `planningStore.fio_*` stays until logout.
 - The burn view calculates every plan with the planning engine
   (`calculatePlan`, game data loaded once) first, then passes the results
   into `useFIOBurn`.

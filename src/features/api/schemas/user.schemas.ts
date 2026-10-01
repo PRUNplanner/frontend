@@ -20,6 +20,16 @@ export const RefreshTokenResponseSchema = TokenResponseSchema.pick({
 });
 export type RefreshTokenResponse = z.infer<typeof RefreshTokenResponseSchema>;
 
+export const FIOStatusSchema = z.enum([
+	"none",
+	"syncing",
+	"ok",
+	"no_data",
+	"invalid_credentials",
+	"error",
+]);
+export type FIOStatus = z.infer<typeof FIOStatusSchema>;
+
 export const UserProfileSchema = z.object({
 	id: z.number(),
 	username: z.string(),
@@ -36,6 +46,8 @@ export const UserProfileSchema = z.object({
 		.string()
 		.transform((val) => (val === "" ? null : val))
 		.nullable(),
+	fio_status: FIOStatusSchema,
+	fio_last_refreshed_at: z.string().nullable(),
 });
 export type UserProfile = z.infer<typeof UserProfileSchema>;
 

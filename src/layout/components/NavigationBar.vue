@@ -25,6 +25,8 @@
 
 	// Types & Interfaces
 	import type { IMenuSection } from "@/layout/components/navigation.types";
+	import type { FIOStatus } from "@/features/api/schemas/user.schemas";
+	import type { ColorKey } from "@/ui/ui.types";
 
 	// UI
 	import { PTag, PTooltip, PTable, PIcon } from "@/ui";
@@ -60,10 +62,16 @@
 	 */
 
 	watch(
-		() => userStore.hasFIO,
+		// only these states can have stored FIO data; asking in the others is a 404
+		() => userStore.hasFIO && ["ok", "error"].includes(userStore.fioStatus),
 		(newValue: boolean) => {
 			if (newValue) {
-				useQuery("GetFIOStorage").execute();
+				// still 404 for an error before any FIO data arrived
+				useQuery("GetFIOStorage")
+					.execute()
+					.catch((err: { status?: number }) => {
+						if (err.status !== 404) throw err;
+					});
 			} else {
 				queryStore.invalidateKey(["gamedata", "fio"], {
 					exact: false,
@@ -81,6 +89,21 @@
 	);
 
 	const storageAge = computed(() => planningStore.fio_storage_timestamp ?? 0);
+
+	// every state but ok links to the profile, where the status is explained
+	const FIO_TAGS: Record<
+		Exclude<FIOStatus, "ok">,
+		{ label: string; type: ColorKey }
+	> = {
+		none: { label: "fio_inactive", type: "warning" },
+		error: { label: "fio_inactive", type: "warning" },
+		syncing: { label: "fio_syncing", type: "secondary" },
+		no_data: { label: "fio_no_data", type: "warning" },
+		invalid_credentials: { label: "fio_rejected", type: "error" },
+	};
+	const fioTag = computed(() =>
+		userStore.fioStatus === "ok" ? undefined : FIO_TAGS[userStore.fioStatus]
+	);
 
 	const menuItems: ComputedRef<IMenuSection[]> = computed(() => [
 		{
@@ -541,7 +564,7 @@
 				class="flex gap-1 justify-between items-center"
 				:class="isFull ? 'flex-row' : 'flex-col'">
 				<div>
-					<PTooltip v-if="userStore.hasFIO && storageTimestamp !== 0">
+					<PTooltip v-if="!fioTag">
 						<template #trigger>
 							<PTag size="sm" type="success" :bordered="false">
 								{{
@@ -567,10 +590,10 @@
 							<tbody>
 								<tr>
 									<td>
-										{{ relativeFromDate(storageTimestamp) }}
+										{{ relativeFromDate(storageTimestamp || undefined) }}
 									</td>
 									<td>
-										{{ relativeFromDate(storageAge) }}
+										{{ relativeFromDate(storageAge || undefined) }}
 									</td>
 								</tr>
 							</tbody>
@@ -580,10 +603,10 @@
 						v-else
 						to="/profile"
 						class="inline-flex items-center min-h-6">
-						<PTag size="sm" type="warning" :bordered="false">
+						<PTag size="sm" :type="fioTag.type" :bordered="false">
 							{{
 								isFull
-									? t("common.navigation.fio.fio_inactive")
+									? t(`common.navigation.fio.${fioTag.label}`)
 									: t("common.navigation.fio.fio")
 							}}
 						</PTag>

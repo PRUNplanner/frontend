@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, nextTick } from "vue";
 import { setActivePinia, createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import {
@@ -203,6 +203,112 @@ describe("User Store", () => {
 		expect(result).toBe(false);
 	});
 
+	describe("fioStatus", () => {
+		it("is none without a profile", () => {
+			expect(useUserStore().fioStatus).toBe("none");
+		});
+
+		it("follows the profile", () => {
+			const userStore = useUserStore();
+			userStore.profile = {
+				id: 1,
+				username: "test",
+				email: null,
+				is_email_verified: false,
+				fio_apikey: "foo",
+				prun_username: "moo",
+				fio_status: "invalid_credentials",
+				fio_last_refreshed_at: null,
+			};
+
+			expect(userStore.fioStatus).toBe("invalid_credentials");
+		});
+
+		describe("polling while syncing", () => {
+			const withStatus = (
+				fio_status: UserProfile["fio_status"]
+			): UserProfile => ({
+				id: 1,
+				username: "test",
+				email: null,
+				is_email_verified: false,
+				fio_apikey: "foo",
+				prun_username: "moo",
+				fio_status,
+				fio_last_refreshed_at: null,
+			});
+			const getProfile = callGetProfile as unknown as ReturnType<
+				typeof vi.fn
+			>;
+
+			beforeEach(() => {
+				vi.useFakeTimers();
+				getProfile.mockReset();
+				onTestFinished(() => {
+					vi.useRealTimers();
+				});
+			});
+
+			it("reloads the profile until the status moves on", async () => {
+				const userStore = useUserStore();
+				userStore.accessToken = "foo";
+				userStore.refreshToken = "moo";
+				getProfile
+					.mockResolvedValueOnce(withStatus("syncing"))
+					.mockResolvedValueOnce(withStatus("ok"));
+
+				userStore.profile = withStatus("syncing");
+				await nextTick();
+				await vi.advanceTimersByTimeAsync(15_000);
+				expect(getProfile).toHaveBeenCalledTimes(1);
+
+				await vi.advanceTimersByTimeAsync(15_000);
+				expect(userStore.fioStatus).toBe("ok");
+
+				await vi.advanceTimersByTimeAsync(60_000);
+				expect(getProfile).toHaveBeenCalledTimes(2);
+			});
+
+			it("gives up after 20 tries", async () => {
+				const userStore = useUserStore();
+				userStore.accessToken = "foo";
+				userStore.refreshToken = "moo";
+				getProfile.mockResolvedValue(withStatus("syncing"));
+
+				userStore.profile = withStatus("syncing");
+				await nextTick();
+				await vi.advanceTimersByTimeAsync(30 * 15_000);
+
+				expect(getProfile).toHaveBeenCalledTimes(20);
+			});
+
+			it("stops on logout", async () => {
+				const userStore = useUserStore();
+				userStore.accessToken = "foo";
+				userStore.refreshToken = "moo";
+				userStore.profile = withStatus("syncing");
+				// the poll is running
+				await nextTick();
+
+				userStore.$reset();
+				await vi.advanceTimersByTimeAsync(60_000);
+
+				expect(getProfile).not.toHaveBeenCalled();
+			});
+
+			it("does not poll other states", async () => {
+				const userStore = useUserStore();
+				userStore.accessToken = "foo";
+				userStore.refreshToken = "moo";
+
+				userStore.profile = withStatus("no_data");
+				await vi.advanceTimersByTimeAsync(60_000);
+
+				expect(getProfile).not.toHaveBeenCalled();
+			});
+		});
+	});
+
 	describe("hasFIO", async () => {
 		const hasFIOCases = [
 			{
@@ -292,6 +398,8 @@ describe("User Store", () => {
 				is_email_verified: true,
 				fio_apikey: "foo",
 				prun_username: "moo",
+				fio_status: "ok",
+				fio_last_refreshed_at: null,
 			};
 
 			const userStore = useUserStore();
