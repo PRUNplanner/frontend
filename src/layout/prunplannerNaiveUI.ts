@@ -62,6 +62,19 @@ export const prunplannerTheme: GlobalThemeOverrides = {
 	Empty: {
 		textColor: "rgba(255,255,255,0.55)",
 	},
+	// menus (More, row actions) on the same surface as cards and drawers,
+	// not naive's grey
+	Dropdown: {
+		color: GRAY_DARK,
+		dividerColor: "rgba(255,255,255,0.1)",
+		optionColorHover: "rgba(255,255,255,0.08)",
+		peers: {
+			Popover: {
+				boxShadow:
+					"0 0 0 1px rgba(255,255,255,0.1), 0 10px 15px -3px rgba(0,0,0,0.6)",
+			},
+		},
+	},
 	Popover: {
 		color: BLACK,
 		borderRadius: 0,
