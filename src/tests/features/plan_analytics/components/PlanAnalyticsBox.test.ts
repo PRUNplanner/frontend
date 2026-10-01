@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { createPinia } from "pinia";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -6,8 +7,15 @@ import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
 import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { useUserStore } from "@/stores/userStore";
 
 const mock = new AxiosMockAdapter(apiService.client);
+
+const trackEvent = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
+	trackEvent,
+}));
 
 const PLANET = "ZV-307c";
 const URL = new RegExp(`analytics/planet_insights/${PLANET}/$`);
@@ -77,6 +85,35 @@ describe("PlanAnalyticsBox", () => {
 
 	beforeEach(() => {
 		mock.reset();
+	});
+
+	it("makes no request and stays hidden with plan suggestions off", async () => {
+		mock.onGet(URL).reply(200, INSIGHTS);
+		const pinia = createPinia();
+		useUserStore(pinia).preferences.planSuggestions = false;
+
+		const { wrapper } = await mountComponent(
+			PlanAnalyticsBox,
+			{ planetNaturalId: PLANET },
+			{ pinia }
+		);
+		await flushPromises();
+
+		expect(mock.history.get).toHaveLength(0);
+		expect(toggle(wrapper).exists()).toBe(false);
+	});
+
+	it("tracks opening the insights", async () => {
+		trackEvent.mockReset();
+		const { wrapper } = await mountBox();
+
+		await open(wrapper);
+		await open(wrapper);
+
+		expect(trackEvent).toHaveBeenCalledOnce();
+		expect(trackEvent).toHaveBeenCalledWith("plan:insights_open", {
+			planet_natural_id: PLANET,
+		});
 	});
 
 	it("loads the planet's insights once", async () => {

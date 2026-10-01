@@ -73,16 +73,22 @@ the tables here list the same events; a test
 | `plan:share_delete` | | |
 | `plan:tool_toggle` | `tool_name` | a plan tool panel was opened |
 | `plan:cogm_open` | `planet_natural_id`, `recipe_id` | |
+| `plan:insights_open` | `planet_natural_id` | the planet insights box was opened |
 | `plan:hab_optimize` | `goal` (`area`, `cost`) | the optimize buttons; the automatic run (`auto`) is not sent |
 | `plan:hab_auto_toggle` | `is_active` | |
-| `plan:edit` | `planet_natural_id`, `field`, and the relevant of `building_ticker`, `recipe_id`, `amount`, `infrastructure_type`, `expert_type`, `workforce_type`, `lux_type`, `value` | see below |
+| `plan:edit` | `planet_natural_id`, `field`, and the relevant of `building_ticker`, `recipe_id`, `amount`, `infrastructure_type`, `expert_type`, `workforce_type`, `lux_type`, `value`, `is_from_popular`, `is_most_planned` | see below |
 | `plan:undo` | `trigger` (`button`, `shortcut`) | |
 | `plan:redo` | `trigger` (`button`, `shortcut`) | |
 
 `plan:edit` replaces one event per click. `field` is one of `building_add`,
-`building_amount`, `recipe_add`, `recipe_change`, `recipe_delete`,
-`recipe_amount`, `workforce`, `infrastructure`, `expert`, `cogc`, `corphq`,
-`permits`. It is sent through `trackPlanEdit`, which waits one second per
+`building_amount`, `recipe_add`, `recipe_mix_add`, `recipe_change`,
+`recipe_delete`, `recipe_amount`, `workforce`, `infrastructure`, `expert`,
+`cogc`, `corphq`, `permits`. `recipe_mix_add` is the "Add" of the typical
+mix hint on a building without recipes (`amount`: recipes added). While
+plan suggestions are on, `building_add` has `is_from_popular` (picked from
+the "Popular on" group) and `recipe_add` / `recipe_change` have
+`is_most_planned` (the recipe is the planet's most planned one for that
+building). It is sent through `trackPlanEdit`, which waits one second per
 edited control (field, building, and infrastructure, expert or workforce
 type): ten quick clicks on a building's + are one event with the final
 amount. Pending edits are sent before a save and when the plan page closes.
@@ -175,7 +181,7 @@ exception carries `route_name` too.
 | Property | Set from |
 | --- | --- |
 | `username`, `prun_username`, `is_fio_enabled`, `has_verified_email` | the profile, on load and change (`identifyUser`) |
-| `language`, `color_palette`, `navigation_style` | the preferences, on load and change |
+| `language`, `color_palette`, `navigation_style`, `is_plan_suggestions_enabled` | the preferences, on load and change |
 | `plan_count`, `empire_count`, `cx_count` | the planning data loader, on every page that loads the lists |
 
 Person properties set before the user is identified are kept and sent with

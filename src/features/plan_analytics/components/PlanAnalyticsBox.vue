@@ -2,7 +2,9 @@
 	import { computed, onMounted, ref } from "vue";
 
 	// Composables
+	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// UI
 	import PIcon from "@/ui/components/PIcon.vue";
@@ -25,7 +27,19 @@
 	const expandedBuildings = ref<Set<string>>(new Set());
 	const planetInsights = ref<AnalyticsPlanetInsightsData | null>(null);
 
+	// the "Plan suggestions" preference turns the box off
+	const { planSuggestions: isEnabled } = usePreferences();
+
+	function toggleOpen(): void {
+		isOpen.value = !isOpen.value;
+		if (isOpen.value)
+			trackEvent("plan:insights_open", {
+				planet_natural_id: planetNaturalId,
+			});
+	}
+
 	onMounted(() => {
+		if (!isEnabled.value) return;
 		// async fetch planet insights
 		useQuery("GetAnalyticsPlanetInsights", { planetNaturalId })
 			.execute()
@@ -38,7 +52,9 @@
 			.catch(() => {});
 	});
 
-	const hasData = computed(() => planetInsights.value?.status === "success");
+	const hasData = computed(
+		() => isEnabled.value && planetInsights.value?.status === "success"
+	);
 
 	const analyticsData = computed(() => {
 		const rawData = planetInsights.value?.insights_data;
@@ -265,7 +281,7 @@
 			class="bg-prunplanner flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110 active:scale-80"
 			type="button"
 			:aria-label="$t('plan.tools.plan_analytics.toggle')"
-			@click="isOpen = !isOpen">
+			@click="toggleOpen">
 			<span class="h-5 w-5 flex items-center justify-center text-black">
 				<InsightsSharp v-if="!isOpen" />
 				<CloseSharp v-else />

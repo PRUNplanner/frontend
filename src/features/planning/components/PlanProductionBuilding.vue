@@ -3,12 +3,18 @@
 
 	// Types & Interfaces
 	import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
+	import type { PlanDataBuilding } from "@/features/api/schemas/planningData.schemas";
+	import type { ITypicalRecipes } from "@/features/plan_analytics/usePlanetInsights.types";
+
+	// Composables
+	import { usePlanetInsights } from "@/features/plan_analytics/usePlanetInsights";
 
 	// Components
+	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
 
 	// Util
-	import { formatNumber } from "@/util/numbers";
+	import { formatNumber, formatPercent } from "@/util/numbers";
 	import { zeroEfficiencyReason } from "@/features/planning/engine/efficiency";
 
 	// UI
@@ -55,6 +61,11 @@
 		): void;
 		(e: "add:building:recipe", buildingIndex: number): void;
 		(
+			e: "add:building:recipes",
+			buildingIndex: number,
+			recipes: PlanDataBuilding["active_recipes"]
+		): void;
+		(
 			e: "update:building:recipe",
 			buildingIndex: number,
 			recipeIndex: number,
@@ -65,6 +76,32 @@
 	// Local State
 	const localBuildingData: ComputedRef<IProductionBuilding> = computed(
 		() => props.buildingData
+	);
+
+	const { typicalRecipes } = usePlanetInsights(() => props.planetId);
+
+	// the planet's typical recipes for an empty building, only ones it can run
+	const typicalMix: ComputedRef<ITypicalRecipes | undefined> = computed(() => {
+		if (props.disabled || localBuildingData.value.activeRecipes.length > 0)
+			return undefined;
+		const typical = typicalRecipes(localBuildingData.value.name);
+		if (!typical) return undefined;
+		const optionIds = new Set(
+			localBuildingData.value.recipeOptions.map((o) => o.recipe_id)
+		);
+		const recipes = typical.recipes.filter((r) =>
+			optionIds.has(r.recipeid)
+		);
+		return recipes.length > 0 ? { ...typical, recipes } : undefined;
+	});
+
+	const typicalMixOutputs: ComputedRef<string[]> = computed(() =>
+		(typicalMix.value?.recipes ?? []).flatMap(
+			(r) =>
+				localBuildingData.value.recipeOptions
+					.find((o) => o.recipe_id === r.recipeid)
+					?.outputs.map((m) => m.material_ticker) ?? []
+		)
 	);
 
 	// why a building produces nothing, shown next to "0.00 %"
@@ -329,8 +366,42 @@
 		</div>
 		<div
 			v-else
-			class="h-full w-full flex items-center justify-center py-2 text-white/60 text-xs">
-			{{ $t("plan.components.production_building.no_recipe") }}
+			class="h-full w-full flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 py-2 text-white/60 text-xs">
+			<span>
+				{{ $t("plan.components.production_building.no_recipe") }}
+			</span>
+			<template v-if="typicalMix">
+				<span>
+					{{ $t("plan.components.production_building.mix_hint") }}
+				</span>
+				<PButton
+					size="sm"
+					:aria-label="
+						$t('plan.components.production_building.mix_add_label', {
+							building: localBuildingData.name,
+						})
+					"
+					@click="
+						emit(
+							'add:building:recipes',
+							buildingIndex,
+							typicalMix.recipes
+						)
+					">
+					<span class="flex items-center gap-1.5">
+						<MaterialTile
+							v-for="ticker in typicalMixOutputs"
+							:key="`${localBuildingData.name}#MIX#${ticker}`"
+							:ticker="ticker"
+							disable-drawer
+							:enable-popover="false" />
+						<span class="text-prunplanner">
+							{{ formatPercent(typicalMix.percentage, 0) }}
+						</span>
+						{{ $t("plan.components.production_building.mix_add") }}
+					</span>
+				</PButton>
+			</template>
 		</div>
 	</div>
 </template>

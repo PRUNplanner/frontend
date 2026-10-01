@@ -18,7 +18,7 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
 - **Shared props:** `size` (`"sm" | "md"`) and `color` (`primary`,
   `success`, `error`, `warning`, `secondary`). Both types are in
   `ui/ui.types.ts`.
-- **Select options** use `PSelectOption` (`{ label, value, children? }`).
+- **Select options** use `PSelectOption` (`{ label, value, badge?, children? }`). `badge` is shown on the right and not searched; arrow keys and Enter move through group children, not group headers.
 - **Forms:** `<PForm as-form @submit="…">` renders a real `<form>`, so Enter
   in an input submits. Give its button `html-type="submit"` and no `@click`.
   `PButton` defaults to `type="button"` and never submits on its own.

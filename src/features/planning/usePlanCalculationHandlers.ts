@@ -9,6 +9,7 @@ import type {
 	InfrastructureType,
 	PlanCOGCProgram,
 	PlanData,
+	PlanDataBuilding,
 	PlanDataExpert,
 	PlanDataInfrastructure,
 	PlanDataWorkforce,
@@ -361,6 +362,32 @@ export function usePlanCalculationHandlers(
 	}
 
 	/**
+	 * Adds several recipes to the building at specified index, e.g. the
+	 * planet's typical mix. Recipes it already runs are skipped.
+	 *
+	 * @author jplacht
+	 *
+	 * @param {number} buildingIndex Building Array Index
+	 * @param {PlanDataBuilding["active_recipes"]} recipes Recipes and amounts
+	 */
+	function handleAddBuildingRecipes(
+		buildingIndex: number,
+		recipes: PlanDataBuilding["active_recipes"]
+	): void {
+		const building = planData.value.buildings[buildingIndex];
+		if (typeof building === "undefined") {
+			throw new Error(
+				`Building at index '${buildingIndex}' does not exist.`
+			);
+		}
+
+		recipes.forEach(({ recipeid, amount }) => {
+			if (!building.active_recipes.some((r) => r.recipeid === recipeid))
+				building.active_recipes.push({ recipeid, amount });
+		});
+	}
+
+	/**
 	 * Changes the Building Recipe for a building defined by its array index
 	 * and its active recipes defined by index to a new recipe id
 	 * @author jplacht
@@ -428,6 +455,7 @@ export function usePlanCalculationHandlers(
 		handleUpdateBuildingRecipeAmount,
 		handleDeleteBuildingRecipe,
 		handleAddBuildingRecipe,
+		handleAddBuildingRecipes,
 		handleChangeBuildingRecipe,
 		handleChangePlanName,
 	};

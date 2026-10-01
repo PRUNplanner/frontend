@@ -72,7 +72,9 @@ export interface PInputConfig {
 export interface PSelectOption {
 	label: string;
 	value: string | number | undefined;
-	children?: { label: string; value: string | number | undefined }[];
+	/** shown on the right, not searched */
+	badge?: string;
+	children?: Omit<PSelectOption, "children">[];
 }
 
 export interface PTagConfig {

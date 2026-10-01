@@ -127,6 +127,11 @@ export function usePreferences() {
 			set: (v) => userStore.setPreference("colorPalette", v),
 		});
 
+	const planSuggestions: WritableComputedRef<boolean> = computed({
+		get: () => userStore.preferences.planSuggestions ?? true,
+		set: (v) => userStore.setPreference("planSuggestions", v),
+	});
+
 	const locale: WritableComputedRef<string> = computed({
 		get: () => userStore.preferences.locale,
 		set: (v: SupportedLocale) => {
@@ -269,6 +274,7 @@ export function usePreferences() {
 		planSettingsOverview,
 		layoutNavigationStyle,
 		colorPalette,
+		planSuggestions,
 		locale,
 		// functions
 		cleanPlanPreferences,

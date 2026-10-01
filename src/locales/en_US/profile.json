@@ -99,6 +99,8 @@
 			"resupply_days": "Resupply Days",
 			"xit_origin": "XIT Origin",
 			"buy_from_cx": "XIT Buy from CX",
+			"plan_suggestions": "Plan suggestions",
+			"plan_suggestions_help": "Popular buildings and recipes on the planet, planet insights and a typical setup for empty plans",
 			"privacy": "Privacy",
 			"analytics": "Usage analytics",
 			"analytics_note": "Allows PRUNplanner to collect usage events, error reports and session recordings. This choice is stored in this browser only, so set it on each device you use.",

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
@@ -19,6 +19,21 @@ import type {
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import materials from "@/tests/test_data/api_data_materials.json";
+
+const insights = vi.hoisted(() => ({
+	available: false,
+	popularity: {} as Record<string, number>,
+}));
+vi.mock("@/features/plan_analytics/usePlanetInsights", async () => {
+	const { computed } = await import("vue");
+	return {
+		usePlanetInsights: () => ({
+			isAvailable: computed(() => insights.available),
+			recipePopularity: (_ticker: string, id: string) =>
+				insights.popularity[id],
+		}),
+	};
+});
 
 const HOUR = 60 * 60 * 1000;
 const CX_UUID = "cx-uuid";
@@ -138,6 +153,65 @@ describe("PlanProductionRecipe", () => {
 		await exchangesStore.setMany(exchanges);
 		await materialsStore.setMany(materials);
 		await useMaterialData().preload();
+	});
+
+	beforeEach(() => {
+		insights.available = false;
+		insights.popularity = {};
+	});
+
+	describe("Plans here", () => {
+		const PLANS_HERE = "plan.components.production_recipe.table.plans_here";
+		const header = () =>
+			body()
+				.findAll("th")
+				.find((th) => th.text().includes(PLANS_HERE));
+
+		it("sorts by plans here, recipes without data show < 5 %", async () => {
+			insights.available = true;
+			insights.popularity = { R_BSE: 60, R_FE: 25.4 };
+			const { wrapper } = await mountRecipe();
+
+			const rows = await openOptions(wrapper);
+			expect(rows.map((r) => r.plansHere)).toEqual([
+				"60 %",
+				"25 %",
+				"plan.components.production_recipe.table.below_threshold",
+				"plan.components.production_recipe.table.below_threshold",
+			]);
+			expect(rows.at(0)!.TimeMs).toBe("4h 0m");
+			expect(body().text()).toContain(
+				"plan.components.production_recipe.info.p4_strong"
+			);
+
+			// a click on the header toggles the order
+			await header()!.trigger("click");
+			expect(tableRows(body()).at(-1)!.plansHere).toBe("60 %");
+		});
+
+		it("keeps the ticker order without data for the building", async () => {
+			insights.available = true;
+			const { wrapper } = await mountRecipe();
+
+			const rows = await openOptions(wrapper);
+			expect(rows.map((r) => r.TimeMs)).toEqual([
+				"6h 0m",
+				"8h 0m",
+				"4h 0m",
+				"12h 0m",
+			]);
+		});
+
+		it("has no column without insights or with suggestions off", async () => {
+			const { wrapper } = await mountRecipe();
+
+			const rows = await openOptions(wrapper);
+			expect(rows.at(0)).not.toHaveProperty("plansHere");
+			expect(header()).toBeUndefined();
+			expect(body().text()).not.toContain(
+				"plan.components.production_recipe.info.p4_strong"
+			);
+		});
 	});
 
 	it("shows the outputs of all buildings and the runtime", async () => {

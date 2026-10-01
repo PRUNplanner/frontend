@@ -369,6 +369,7 @@ describe("Backend contract", () => {
 			"supplyCartDays",
 			"layoutNavigationStyle",
 			"colorPalette",
+			"planSuggestions",
 			"planOverrides",
 		];
 
@@ -385,6 +386,7 @@ describe("Backend contract", () => {
 			supplyCartDays: 20,
 			layoutNavigationStyle: "full",
 			colorPalette: "default",
+			planSuggestions: true,
 			planOverrides: {},
 		};
 
@@ -489,6 +491,25 @@ describe("Backend contract", () => {
 			expect(UserPreferenceSchema.parse(oldBackend).colorPalette).toBe(
 				"default"
 			);
+		});
+
+		it("turns plan suggestions on when missing or invalid", () => {
+			const { planSuggestions: _, ...oldBackend } = backendDefaults;
+			expect(UserPreferenceSchema.parse(oldBackend).planSuggestions).toBe(
+				true
+			);
+			expect(
+				UserPreferenceSchema.parse({
+					...backendDefaults,
+					planSuggestions: "x",
+				}).planSuggestions
+			).toBe(true);
+			expect(
+				UserPreferenceSchema.parse({
+					...backendDefaults,
+					planSuggestions: false,
+				}).planSuggestions
+			).toBe(false);
 		});
 	});
 

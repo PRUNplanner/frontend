@@ -93,6 +93,22 @@
 			.filter((x: PSelectOption | null): x is PSelectOption => x != null);
 	});
 
+	// what arrow keys and Enter move through: group children, not headers
+	const selectableOptions: ComputedRef<PSelectOption[]> = computed(() =>
+		filteredOptions.value.flatMap((o) => o.children ?? [o])
+	);
+	// index in selectableOptions of each filtered option's first entry
+	const selectableOffsets: ComputedRef<number[]> = computed(() => {
+		let offset = 0;
+		return filteredOptions.value.map((o) => {
+			const start = offset;
+			offset += o.children?.length ?? 1;
+			return start;
+		});
+	});
+
+	watch(searchString, () => (highlightedIndex.value = 0));
+
 	function change(e: string | number | undefined) {
 		if (disabled) return;
 
@@ -175,14 +191,14 @@
 			e.preventDefault();
 			highlightedIndex.value = Math.min(
 				highlightedIndex.value + 1,
-				filteredOptions.value.length - 1
+				selectableOptions.value.length - 1
 			);
 		} else if (e.key === "ArrowUp") {
 			e.preventDefault();
 			highlightedIndex.value = Math.max(highlightedIndex.value - 1, 0);
 		} else if (e.key === "Enter") {
 			e.preventDefault();
-			const option = filteredOptions.value[highlightedIndex.value];
+			const option = selectableOptions.value[highlightedIndex.value];
 			if (option) change(option.value);
 			triggerRef.value?.focus();
 		}
@@ -295,7 +311,9 @@
 						:key="option.value"
 						:option="option"
 						:selected-value="value"
-						:highlighted="idx === highlightedIndex"
+						:highlighted-index="
+							highlightedIndex - selectableOffsets[idx]
+						"
 						@click="(v) => change(v)" />
 
 					<template v-if="filteredOptions.length === 0">

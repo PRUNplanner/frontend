@@ -17,6 +17,9 @@
 		IRecipeBuildingOption,
 	} from "@/features/planning/usePlanCalculation.types";
 
+	// Composables
+	import { usePlanetInsights } from "@/features/plan_analytics/usePlanetInsights";
+
 	// Util
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { humanizeTimeMs } from "@/util/date";
@@ -117,6 +120,29 @@
 
 	const cogmWithCX = computed(() => !!props.cxUuid);
 
+	const { isAvailable: hasInsights, recipePopularity } = usePlanetInsights(
+		() => props.planetId
+	);
+	const buildingTicker: ComputedRef<string> = computed(
+		() => props.recipeData.recipe.building_ticker
+	);
+	const plansHere = (recipeId: string): number | undefined =>
+		recipePopularity(buildingTicker.value, recipeId);
+	// most planned first, when any recipe of this building has data
+	const sortByPlansHere: ComputedRef<boolean> = computed(() =>
+		props.recipeOptions.some((r) => plansHere(r.recipe_id) !== undefined)
+	);
+
+	function plansHereSorter(
+		row1: Record<string, unknown>,
+		row2: Record<string, unknown>
+	): number {
+		return (
+			(plansHere(row1.recipe_id as string) ?? 0) -
+			(plansHere(row2.recipe_id as string) ?? 0)
+		);
+	}
+
 	function roiSorter(
 		row1: Record<string, unknown>,
 		row2: Record<string, unknown>
@@ -215,6 +241,37 @@
 							),
 					})
 				">
+				<XNDataTableColumn
+					v-if="hasInsights"
+					key="plansHere"
+					:title="
+						t('plan.components.production_recipe.table.plans_here')
+					"
+					:sorter="plansHereSorter"
+					:default-sort-order="sortByPlansHere ? 'descend' : false">
+					<template #render-cell="{ rowData }">
+						<span
+							v-if="plansHere(rowData.recipe_id) !== undefined"
+							class="flex items-center gap-2 text-nowrap">
+							<span
+								class="h-1.5 w-12 overflow-hidden rounded-full bg-white/5">
+								<span
+									class="block bg-prunplanner h-full"
+									:style="{
+										width: `${plansHere(rowData.recipe_id)}%`,
+									}" />
+							</span>
+							{{ formatPercent(plansHere(rowData.recipe_id) ?? 0, 0) }}
+						</span>
+						<span v-else class="text-white/40 text-nowrap">
+							{{
+								$t(
+									"plan.components.production_recipe.table.below_threshold"
+								)
+							}}
+						</span>
+					</template>
+				</XNDataTableColumn>
 				<XNDataTableColumn
 					key="input"
 					:title="t('plan.components.production_recipe.table.input')">
@@ -317,6 +374,17 @@
 					$t("plan.components.production_recipe.info.p3_strong")
 				}}</strong>
 				{{ $t("plan.components.production_recipe.info.p3") }}
+				<template v-if="hasInsights">
+					<strong>{{
+						$t("plan.components.production_recipe.info.p4_strong")
+					}}</strong>
+					{{
+						$t("plan.components.production_recipe.info.p4", {
+							planet: planetId,
+							building: buildingTicker,
+						})
+					}}
+				</template>
 			</div>
 		</div>
 	</n-popover>

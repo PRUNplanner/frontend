@@ -4,7 +4,7 @@
 	const {
 		option,
 		selectedValue,
-		highlighted = false,
+		highlightedIndex = -1,
 	} = defineProps<{
 		option: PSelectOption;
 		selectedValue:
@@ -13,7 +13,8 @@
 			| string
 			| number
 			| undefined;
-		highlighted?: boolean;
+		/** highlighted child of a group, 0 for an option without children */
+		highlightedIndex?: number;
 	}>();
 
 	const emit = defineEmits<{
@@ -33,13 +34,13 @@
 			{{ option.label }}
 		</div>
 		<template
-			v-for="child in option.children"
+			v-for="(child, childIndex) in option.children"
 			:key="`${option.value}#${child.value}`">
 			<div
 				class="flex flex-row items-center"
 				:class="[
-					highlighted ? 'bg-gray-700' : '',
-					isSelected(option.value)
+					childIndex === highlightedIndex ? 'bg-gray-700' : '',
+					isSelected(child.value)
 						? 'text-link-primary font-bold'
 						: '',
 				]"
@@ -47,6 +48,11 @@
 				<div class="pl-3 grow hover:cursor-pointer">
 					{{ child.label }}
 				</div>
+				<span
+					v-if="child.badge"
+					class="pl-3 text-xs font-mono text-white/60 text-nowrap">
+					{{ child.badge }}
+				</span>
 				<div
 					v-if="isSelected(child.value)"
 					class="text-white fill-white h-4 w-4">
@@ -71,13 +77,18 @@
 		<div
 			class="flex flex-row items-center"
 			:class="[
-				highlighted ? 'bg-gray-700' : '',
+				highlightedIndex === 0 ? 'bg-gray-700' : '',
 				isSelected(option.value) ? 'text-link-primary font-bold' : '',
 			]"
 			@click="emit('click', option.value)">
 			<div class="grow hover:cursor-pointer">
 				{{ option.label }}
 			</div>
+			<span
+				v-if="option.badge"
+				class="pl-3 text-xs font-mono text-white/60 text-nowrap">
+				{{ option.badge }}
+			</span>
 			<div
 				v-if="isSelected(option.value)"
 				class="text-white fill-white h-4 w-4">

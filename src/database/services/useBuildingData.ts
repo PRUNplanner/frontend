@@ -20,6 +20,7 @@ import type {
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
 import type { PSelectOption } from "@/ui/ui.types";
+import { formatPercent } from "@/util/numbers";
 import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 const buildingsCache = new Map<string, Building>();
@@ -81,7 +82,13 @@ export function useBuildingData() {
 
 	function getProductionBuildingOptions(
 		existing: string[],
-		cogc: PlanCOGCProgram | undefined = undefined
+		cogc: PlanCOGCProgram | undefined = undefined,
+		popular:
+			| {
+					label: string;
+					buildings: { ticker: string; percentage: number }[];
+			  }
+			| undefined = undefined
 	): PSelectOption[] {
 		const options: PSelectOption[] = [];
 
@@ -107,7 +114,35 @@ export function useBuildingData() {
 				}
 			});
 
-		return options;
+		if (!popular) return options;
+
+		// most planned on the planet first, from what the filters left
+		const byTicker = new Map(options.map((o) => [o.value, o]));
+		const popularOptions: PSelectOption[] = popular.buildings
+			.flatMap((b) => {
+				const option = byTicker.get(b.ticker);
+				if (!option) return [];
+				return [
+					{
+						// distinct from the "All buildings" entry
+						value: `POPULAR#${b.ticker}`,
+						label: option.label,
+						badge: formatPercent(b.percentage, 0),
+					},
+				];
+			})
+			.slice(0, 8);
+
+		if (popularOptions.length === 0) return options;
+
+		return [
+			{ label: popular.label, value: "POPULAR", children: popularOptions },
+			{
+				label: t("plan.components.production.form.all_buildings"),
+				value: "ALL",
+				children: options,
+			},
+		];
 	}
 	/**
 	 * A building's recipes, extraction buildings from planet resources.

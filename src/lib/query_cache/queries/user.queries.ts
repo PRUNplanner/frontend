@@ -54,6 +54,7 @@ function trackPreferences(prefs: UserPreference): void {
 		language: prefs.locale,
 		color_palette: prefs.colorPalette,
 		navigation_style: prefs.layoutNavigationStyle,
+		is_plan_suggestions_enabled: prefs.planSuggestions,
 	});
 }
 
