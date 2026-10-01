@@ -84,6 +84,14 @@
 			(element) => element.efficiencyType === "COGC"
 		);
 	});
+
+	// area and revenue are for all buildings of this row, so is construction;
+	// the engine's constructionCost stays per building (COGM, finance)
+	const constructionCostTotal: ComputedRef<number> = computed(
+		() =>
+			localBuildingData.value.constructionCost *
+			localBuildingData.value.amount
+	);
 </script>
 
 <template>
@@ -231,8 +239,36 @@
 					}}
 				</span>
 				<span class="text-xs font-bold whitespace-nowrap">
-					{{ formatNumber(localBuildingData.constructionCost * -1) }}
-					<span class="font-light text-muted">ȼ</span>
+					<PTooltip :disabled="localBuildingData.amount <= 1">
+						<template #trigger>
+							<span
+								:class="{
+									'hover:cursor-help':
+										localBuildingData.amount > 1,
+								}">
+								{{ formatNumber(constructionCostTotal * -1) }}
+								<span class="font-light text-muted">ȼ</span>
+							</span>
+						</template>
+						<div
+							class="flex flex-row justify-between align-center gap-x-3 child:p-1">
+							<div>
+								{{
+									$t(
+										"plan.components.production_building.table.construction_per_building"
+									)
+								}}
+							</div>
+							<div>
+								{{
+									formatNumber(
+										localBuildingData.constructionCost * -1
+									)
+								}}
+								ȼ
+							</div>
+						</div>
+					</PTooltip>
 				</span>
 			</div>
 			<div class="flex justify-end">
