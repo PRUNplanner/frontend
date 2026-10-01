@@ -96,7 +96,12 @@
 				"need": "需要"
 			},
 			"amount_label": "{building}数量",
-			"override_label": "覆盖{ticker}库存数量"
+			"override_label": "覆盖{ticker}库存数量",
+			"built_label": "Built {building}",
+			"built_manual": "Entered by you, not from FIO",
+			"built_reset": "Reset built {building}",
+			"built_reset_all": "Reset built",
+			"built_not_saved": "Built counts aren't saved for this plan."
 		},
 		"supply_cart": {
 			"title": "补给清单",
@@ -181,6 +186,29 @@
 				"recipes": "@:terms.recipes_plural"
 			},
 			"toggle": "切换洞察"
+		},
+		"plan_starter": {
+			"title": "Start from a typical setup on {planet}",
+			"description": "What the {plans} active plans on this planet build most (up to {max}; those in at least {percent} of plans are pre-selected). Adds the checked ones to this plan as a starting point; nothing is saved until you save.",
+			"columns": {
+				"building": "Building",
+				"in_plans": "In plans here",
+				"amount": "Amount",
+				"recipes": "Typical recipes"
+			},
+			"typical_amount": "typ. {amount}x",
+			"no_recipe": "no typical recipe",
+			"experts": "Experts in plans here",
+			"expert_share": "{expert} in {percent} of plans",
+			"expert_added": "adds {amount}",
+			"based_on": "Based on plans of players active in the last 90 days · updated daily",
+			"turn_off": "You can turn off plan suggestions in {link}",
+			"turn_off_link": "Profile › Preferences",
+			"start_empty": "Start empty",
+			"apply": "Use typical setup ({count})",
+			"applied": "Typical setup added: {n} building | Typical setup added: {n} buildings",
+			"empty": "No buildings yet. Add one above, or {link}",
+			"show": "start from a typical setup"
 		}
 	},
 	"components": {
@@ -288,7 +316,9 @@
 			"planet_resources": "@:terms.planets @:terms.resources_plural",
 			"form": {
 				"match_cogc": "匹配 @:terms.cogc",
-				"select_placeholder": "选择@:terms.buildings并添加到@:terms.plan中"
+				"select_placeholder": "选择@:terms.buildings并添加到@:terms.plan中",
+				"popular_on": "Popular on {planet} · {plans} plans",
+				"all_buildings": "All buildings"
 			},
 			"table": {
 				"building_recipe": "@:terms.buildings / @:terms.recipes",
@@ -308,13 +338,17 @@
 				"efficiency": "效率",
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
-				"construction": "土木"
+				"construction": "土木",
+				"construction_per_building": "Per building"
 			},
 			"zero_reason": {
 				"FERTILITY": "行星无肥沃土壤",
 				"WORKFORCE": "无生产力住所"
 			},
-			"qty_label": "{building}数量"
+			"qty_label": "{building}数量",
+			"mix_hint": "Most planned here:",
+			"mix_add": "Add",
+			"mix_add_label": "Add the most planned @:terms.recipes_plural of {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "成品成本",
@@ -328,7 +362,9 @@
 				"output": "输出",
 				"daily_revenue": "ȼ / 天",
 				"profit_area": "ȼ / 区域",
-				"roi": "ROI"
+				"roi": "ROI",
+				"plans_here": "Plans here",
+				"below_threshold": "< 5 %"
 			},
 			"info": {
 				"p1_strong": "收入/天",
@@ -336,7 +372,9 @@
 				"p2_strong": "ȼ / 区域",
 				"p2": "表示每日收入除以一个生产建筑所占区域，以及在配方 ROI 中为该类建筑的最优基地分摊的 CM 与住房建筑所占区域。",
 				"p3_strong": "ROI",
-				"p3": "表示一个持续运行的配方产生足够收入以抵消建筑建造成本所需的时间，同时也会计入每日损耗和劳动力成本。"
+				"p3": "表示一个持续运行的配方产生足够收入以抵消建筑建造成本所需的时间，同时也会计入每日损耗和劳动力成本。",
+				"p4_strong": "Plans here",
+				"p4": "is the share of plans on {planet} with a {building} that run this recipe, from active players, updated daily."
 			},
 			"amount_label": "{recipe}的生产模板数量"
 		}
