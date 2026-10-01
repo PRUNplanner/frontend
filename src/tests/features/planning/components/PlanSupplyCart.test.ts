@@ -136,6 +136,20 @@ describe("PlanSupplyCart", () => {
 		]);
 	});
 
+	it("accepts decimal days", async () => {
+		const { wrapper } = await mountCart();
+
+		await wrapper.find("input").setValue("2.5");
+		await flushPromises();
+
+		// 2.5x the daily need, 2.4 * 2.5 = 6
+		expect(tableRows(wrapper).map((r) => r.stockNeed)).toEqual([
+			"250",
+			"10",
+			"6",
+		]);
+	});
+
 	it("marks and filters workforce and production materials", async () => {
 		const { wrapper } = await mountCart();
 
