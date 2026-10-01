@@ -96,7 +96,12 @@
 				"need": "Необходимо"
 			},
 			"amount_label": "Amount of {building}",
-			"override_label": "Stock override for {ticker}"
+			"override_label": "Stock override for {ticker}",
+			"built_label": "Built {building}",
+			"built_manual": "Entered by you, not from FIO",
+			"built_reset": "Reset built {building}",
+			"built_reset_all": "Reset built",
+			"built_not_saved": "Built counts aren't saved for this plan."
 		},
 		"supply_cart": {
 			"title": "Корзина снабжения",
@@ -181,6 +186,29 @@
 				"recipes": "@:terms.recipes_plural"
 			},
 			"toggle": "Toggle insights"
+		},
+		"plan_starter": {
+			"title": "Start from a typical setup on {planet}",
+			"description": "What the {plans} active plans on this planet build most (up to {max}; those in at least {percent} of plans are pre-selected). Adds the checked ones to this plan as a starting point; nothing is saved until you save.",
+			"columns": {
+				"building": "Building",
+				"in_plans": "In plans here",
+				"amount": "Amount",
+				"recipes": "Typical recipes"
+			},
+			"typical_amount": "typ. {amount}x",
+			"no_recipe": "no typical recipe",
+			"experts": "Experts in plans here",
+			"expert_share": "{expert} in {percent} of plans",
+			"expert_added": "adds {amount}",
+			"based_on": "Based on plans of players active in the last 90 days · updated daily",
+			"turn_off": "You can turn off plan suggestions in {link}",
+			"turn_off_link": "Profile › Preferences",
+			"start_empty": "Start empty",
+			"apply": "Use typical setup ({count})",
+			"applied": "Typical setup added: {n} building | Typical setup added: {n} buildings",
+			"empty": "No buildings yet. Add one above, or {link}",
+			"show": "start from a typical setup"
 		}
 	},
 	"components": {
@@ -288,7 +316,9 @@
 			"planet_resources": "@:terms.planets @:terms.resources_plural",
 			"form": {
 				"match_cogc": "Соответствие @:terms.cogc",
-				"select_placeholder": "Выбрать @:terms.buildings и добавить в @:terms.plan"
+				"select_placeholder": "Выбрать @:terms.buildings и добавить в @:terms.plan",
+				"popular_on": "Popular on {planet} · {plans} plans",
+				"all_buildings": "All buildings"
 			},
 			"table": {
 				"building_recipe": "@:terms.buildings / @:terms.recipes",
@@ -308,13 +338,17 @@
 				"efficiency": "Эффективность",
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
-				"construction": "Строительство"
+				"construction": "Строительство",
+				"construction_per_building": "Per building"
 			},
 			"zero_reason": {
 				"FERTILITY": "Planet not fertile",
 				"WORKFORCE": "No workforce housed"
 			},
-			"qty_label": "Amount of {building}"
+			"qty_label": "Amount of {building}",
+			"mix_hint": "Most planned here:",
+			"mix_add": "Add",
+			"mix_add_label": "Add the most planned @:terms.recipes_plural of {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "Затраты на изготовленные товары",
@@ -328,7 +362,9 @@
 				"output": "Вывод",
 				"daily_revenue": "ȼ / День",
 				"profit_area": "ȼ / Площадь",
-				"roi": "Доходность"
+				"roi": "Доходность",
+				"plans_here": "Plans here",
+				"below_threshold": "< 5 %"
 			},
 			"info": {
 				"p1_strong": "Доход в день",
@@ -336,7 +372,9 @@
 				"p2_strong": "ȼ / Площадь",
 				"p2": "это ежедневный доход от площади для одного производственного здания и пропорциональная доля этого участка для КМ и жилищ, необходимых для оптимальной застройки таких зданий в доходности рецепта.",
 				"p3_strong": "Доходность",
-				"p3": "Время окупаемости проекта с учетом затрат на ремонт и обслуживание."
+				"p3": "Время окупаемости проекта с учетом затрат на ремонт и обслуживание.",
+				"p4_strong": "Plans here",
+				"p4": "is the share of plans on {planet} with a {building} that run this recipe, from active players, updated daily."
 			},
 			"amount_label": "Amount of recipe {recipe}"
 		}
