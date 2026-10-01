@@ -20,6 +20,15 @@
 		"recipe_removed": "Rezept entfernt",
 		"recipe_changed": "{building} Rezept geändert"
 	},
+	"actions": {
+		"more": "Mehr",
+		"save_as_copy": "Als Kopie speichern",
+		"share_link": "Link teilen",
+		"reload": "Gespeicherte Version laden",
+		"reload_hint": "Ungespeicherte Änderungen verwerfen",
+		"reload_confirm": "Die gespeicherte Version neu laden? Deine ungespeicherten Änderungen gehen verloren.",
+		"tools": "Plan-Werkzeuge"
+	},
 	"name": {
 		"untitled": "Unbenannter Plan"
 	},
@@ -177,10 +186,14 @@
 	"components": {
 		"status": {
 			"hq": "HQ",
-			"cogc": "@:{'terms.cogc'}:",
-			"area": "@:{'terms.area'}:",
-			"profit": "@:{'terms.profit'}:",
-			"experts": "@:{'terms.experts_plural'}:"
+			"cogc": "@:{'terms.cogc'}",
+			"area": "@:{'terms.area'}",
+			"profit": "@:{'terms.profit'}",
+			"experts": "@:{'terms.experts_plural'}",
+			"experts_none": "Keine",
+			"area_free": "{count} frei",
+			"area_over": "{count} darüber",
+			"per_day": "ȼ/Tag"
 		},
 		"configuration": {
 			"label": "Konfiguration",
