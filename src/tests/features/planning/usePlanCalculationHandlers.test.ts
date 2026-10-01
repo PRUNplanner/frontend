@@ -593,6 +593,57 @@ describe("Planning: Workforce Calculations", async () => {
 		});
 	});
 
+	describe("handleApplyStarterSetup", async () => {
+		it("adds buildings with amounts and recipes, then the experts", async () => {
+			const fakePlan = {
+				buildings: [],
+				experts: [
+					{ type: "Chemistry", amount: 0 },
+					{ type: "Metallurgy", amount: 1 },
+				],
+			};
+
+			const { handleApplyStarterSetup } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
+
+			await handleApplyStarterSetup({
+				buildings: [
+					{
+						ticker: "PP1",
+						amount: 3,
+						recipes: [
+							{ recipeid: "a", amount: 2 },
+							{ recipeid: "b", amount: 1 },
+						],
+					},
+					{ ticker: "FRM", amount: 1, recipes: [] },
+				],
+				experts: [{ type: "Chemistry", amount: 2 }],
+			});
+
+			expect(fakePlan.buildings).toStrictEqual([
+				{
+					name: "PP1",
+					amount: 3,
+					active_recipes: [
+						{ recipeid: "a", amount: 2 },
+						{ recipeid: "b", amount: 1 },
+					],
+				},
+				{ name: "FRM", amount: 1, active_recipes: [] },
+			]);
+			expect(fakePlan.experts).toStrictEqual([
+				{ type: "Chemistry", amount: 2 },
+				{ type: "Metallurgy", amount: 1 },
+			]);
+		});
+	});
+
 	describe("handleAddBuildingRecipe", async () => {
 		it("Add Recipe, invalid building index", async () => {
 			const fakePlan = {

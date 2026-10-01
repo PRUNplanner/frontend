@@ -32,9 +32,23 @@ here" mix hint on a building without recipes (`PlanProductionBuilding`,
 store makes one request per planet. Nothing is requested while
 `planSuggestions` is off.
 
+`components/PlanStarterSetup.vue`: the "Start from a typical setup" card,
+rendered by `PlanProduction` in an empty, editable plan while the planet
+has v2 insights (hidden for this view by "Start empty", which leaves a
+link to bring it back). It lists the 8 most planned buildings (those in
+≥ 20 % of plans checked) with their median amount and `typicalRecipes`,
+and the experts split; it emits an `IStarterSetup` that `PlanView` adds
+with `handleApplyStarterSetup` as one undo step, switching hab
+auto-optimise on. Sends `plan:starter_show`, `plan:starter_apply` and
+`plan:starter_dismiss`.
+
+`planInsights.util.ts`: `segmentColor` (split bar colours, shared with the
+box), the starter constants and `starterExperts` (types in ≥ 50 % of plans
+with their median amount, within the expert limits).
+
 ## Tests
 
 The API is covered in `src/tests/features/api/analyticsData.api.test.ts`,
 the composable in `src/tests/features/plan_analytics/usePlanetInsights.test.ts`,
-the box in the local component suite
-(`src/tests/features/plan_analytics/components/`).
+the helpers in `planInsights.util.test.ts`, the box and the starter card
+in the local component suite (`src/tests/features/plan_analytics/components/`).

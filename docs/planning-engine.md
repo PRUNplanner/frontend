@@ -131,10 +131,11 @@ const calc = usePlanCalculation(
   | `backendData` | The `PlanCreateData` payload for save/create |
   | `existing`, `saveable`, `modified`, `planName`, `planEmpires`, `computedActiveEmpire` | Editor state. `modified` means "differs from the last save or load" |
   | `undo`, `redo`, `canUndo`, `canRedo`, `markSaved(snapshot?)`, `snapshot`, `savedAt`, `revision`, `isRestoring` | Undo history from `usePlanHistory`. A save passes the `snapshot()` it sent to `markSaved`; `revision` bumps on every new step, undo, redo and save |
+  | `record(fn)` | Wraps a function so every handler it calls is one undo step (PlanView applies the typical setup and its habs this way) |
   | `handle*` | Mutators from `usePlanCalculationHandlers`, each one an undo step |
 
 `usePlanCalculationHandlers.ts` holds every edit operation (`handleUpdate*`,
-`handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data`.
+`handleCreate*`, `handleDelete*`), plus `handleApplyStarterSetup` (several buildings, recipes and experts at once). Each one mutates `plan.plan_data`.
 `usePlanCalculation` wraps them with `usePlanHistory.ts`: every call becomes
 an undo step (edits made by watchers in the same flush, like hab
 auto-optimisation, join it; typing the plan name is one step), capped at 50

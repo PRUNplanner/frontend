@@ -524,4 +524,54 @@ describe("usePlanCalculation", async () => {
 		redo();
 		expect(plan.value.plan_data.buildings).toHaveLength(buildings - 1);
 	});
+
+	it("a starter setup and its habs are one undo step", async () => {
+		const plan = ref(structuredClone(plan_etherwind));
+		plan.value.plan_data.buildings = [];
+		const experts = structuredClone(plan_etherwind.plan_data.experts);
+		const infrastructure = structuredClone(
+			plan_etherwind.plan_data.infrastructure
+		);
+		const {
+			result,
+			record,
+			handleApplyStarterSetup,
+			handleUpdateInfrastructure,
+			canUndo,
+			undo,
+		} = usePlanCalculation(
+			// @ts-expect-error mock data
+			plan,
+			ref(undefined),
+			ref(undefined),
+			ref(undefined)
+		);
+		await vi.waitFor(() => expect(result.value.done).toBe(true));
+
+		// as PlanView applies it: the setup, then the habs for its workforce
+		await record(async () => {
+			await handleApplyStarterSetup({
+				buildings: [
+					{
+						ticker: "RIG",
+						amount: 6,
+						recipes: [{ recipeid: "RIG#H2O", amount: 1 }],
+					},
+					{ ticker: "INC", amount: 2, recipes: [] },
+				],
+				experts: [{ type: "Chemistry", amount: 2 }],
+			});
+			handleUpdateInfrastructure("HB1", 9);
+		})();
+		await flushPromises();
+
+		expect(plan.value.plan_data.buildings).toHaveLength(2);
+		expect(canUndo.value).toBe(true);
+
+		undo();
+		expect(plan.value.plan_data.buildings).toStrictEqual([]);
+		expect(plan.value.plan_data.experts).toStrictEqual(experts);
+		expect(plan.value.plan_data.infrastructure).toStrictEqual(infrastructure);
+		expect(canUndo.value).toBe(false);
+	});
 });

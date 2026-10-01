@@ -33,6 +33,7 @@
 		PlanCreateData,
 	} from "@/features/api/schemas/planningData.schemas";
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
+	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 	import {
@@ -162,6 +163,7 @@
 		redo,
 		markSaved,
 		isRestoring,
+		record,
 		snapshot,
 		revision,
 		handleUpdateCorpHQ,
@@ -178,6 +180,7 @@
 		handleDeleteBuildingRecipe,
 		handleAddBuildingRecipe,
 		handleAddBuildingRecipes,
+		handleApplyStarterSetup,
 		handleChangeBuildingRecipe,
 		handleChangePlanName,
 	} = calculation;
@@ -663,6 +666,34 @@
 		);
 	}
 
+	// One undo step: the setup and the habs for its workforce. Auto-optimise
+	// is a preference, not plan data, so undo leaves it on.
+	const addStarterSetup = record(async (setup: IStarterSetup) => {
+		refAutoOptimizeHabs.value = true;
+		await handleApplyStarterSetup(setup);
+		applyOptimizeHabs("auto", false);
+	});
+
+	async function applyStarterSetup(
+		setup: IStarterSetup,
+		isSelectionChanged: boolean
+	): Promise<void> {
+		await addStarterSetup(setup);
+		toastUndo(
+			t(
+				"plan.tools.plan_starter.applied",
+				{ n: setup.buildings.length },
+				setup.buildings.length
+			)
+		);
+		trackEvent("plan:starter_apply", {
+			planet_natural_id: planetData.planet_natural_id,
+			building_count: setup.buildings.length,
+			expert_count: setup.experts.reduce((sum, e) => sum + e.amount, 0),
+			is_selection_changed: isSelectionChanged,
+		});
+	}
+
 	// Auto Optimize Habitation on Workforce Change
 	const availableHabArea: ComputedRef<number> = computed(() => {
 		return calculateAvailableArea(
@@ -998,6 +1029,7 @@
 							@delete:building:recipe="deleteBuildingRecipe"
 							@add:building:recipe="handleAddBuildingRecipe"
 							@add:building:recipes="handleAddBuildingRecipes"
+							@apply:starter="applyStarterSetup"
 							@update:building:recipe="changeBuildingRecipe" />
 					</div>
 				</div>

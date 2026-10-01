@@ -236,6 +236,66 @@ describe("usePlanCalculation characterization", () => {
 		).toMatchFileSnapshot(snapshotPath(name));
 	});
 
+	// what the starter card builds from a planet's insights: median building
+	// amounts, the top mix with median slots, experts in half of the plans
+	it("starter setup: added to an empty plan as typical amounts", async () => {
+		const scope = effectScope();
+		const plan = ref(emptyPlan());
+		const calc = scope.run(() =>
+			usePlanCalculation(plan, ref(undefined), ref(undefined), ref(undefined))
+		)!;
+
+		try {
+			await calc.calculate();
+			await calc.handleApplyStarterSetup({
+				buildings: [
+					{
+						ticker: "HYF",
+						amount: 4,
+						recipes: [
+							{ recipeid: "HYF#22xH2O 3xNS=>2xCAF", amount: 3 },
+							{ recipeid: "HYF#4xNS=>12xMUS", amount: 1 },
+						],
+					},
+					{
+						ticker: "RIG",
+						amount: 6,
+						recipes: [{ recipeid: "RIG#H2O", amount: 1 }],
+					},
+					{ ticker: "INC", amount: 2, recipes: [] },
+				],
+				experts: [{ type: "Agriculture", amount: 2 }],
+			});
+			await flushPromises();
+
+			const result = await calc.calculate();
+			expect(
+				result.production.buildings.map((b) => [
+					b.name,
+					b.amount,
+					b.activeRecipes.map((r) => [r.recipeId, r.amount]),
+				])
+			).toStrictEqual([
+				[
+					"HYF",
+					4,
+					[
+						["HYF#22xH2O 3xNS=>2xCAF", 3],
+						["HYF#4xNS=>12xMUS", 1],
+					],
+				],
+				["RIG", 6, [["RIG#H2O", 1]]],
+				["INC", 2, []],
+			]);
+			expect(result.experts.Agriculture.amount).toBe(2);
+			await expect(
+				await runEngine(plan.value, {}, false)
+			).toMatchFileSnapshot(snapshotPath("starter_setup"));
+		} finally {
+			scope.stop();
+		}
+	});
+
 	it("large plan has 30+ buildings with several active recipes", () => {
 		const plan = largePlan();
 		expect(plan.plan_data.buildings.length).toBeGreaterThanOrEqual(30);

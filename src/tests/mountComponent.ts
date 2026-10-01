@@ -27,17 +27,22 @@ enableAutoUnmount(afterEach);
  *
  * Pass listeners as props (`"onUpdate:value": fn`), or read them via
  * `component.emitted()`. `withDialog` wraps in NDialogProvider for
- * components calling useDialog().
+ * components calling useDialog(). `messages` (en_US) lets `<i18n-t>` render
+ * its slots, which a key-only i18n drops.
  */
 export async function mountComponent(
 	component: Component,
 	props: Record<string, unknown> = {},
-	options: { pinia?: Pinia; withDialog?: boolean } = {}
+	options: {
+		pinia?: Pinia;
+		withDialog?: boolean;
+		messages?: Record<string, unknown>;
+	} = {}
 ) {
 	const i18n = createI18n({
 		legacy: false,
 		locale: "en_US",
-		messages: {},
+		messages: { en_US: options.messages ?? {} },
 		missingWarn: false,
 		fallbackWarn: false,
 	});

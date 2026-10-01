@@ -12,6 +12,7 @@
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
+	import { segmentColor } from "@/features/plan_analytics/planInsights.util";
 
 	// Types & Interfaces
 	import type {
@@ -81,19 +82,6 @@
 		return id.split("#")[1]?.replace("=>", " ➔ ") || id;
 	};
 
-	const getSegmentColor = (index: number): string => {
-		const colors = [
-			"bg-prunplanner",
-			"bg-white",
-			"bg-white/80",
-			"bg-white/60",
-			"bg-white/40",
-			"bg-white/20",
-			"bg-white/10",
-		];
-		return colors[index] || colors[colors.length - 1];
-	};
-
 	const toggleBuilding = (building: string) => {
 		if (expandedBuildings.value.has(building)) {
 			expandedBuildings.value.delete(building);
@@ -136,7 +124,7 @@
 							) in analyticsData.expert_distribution"
 							:key="item.type"
 							class="h-full transition-all duration-500"
-							:class="getSegmentColor(index)"
+							:class="segmentColor(index)"
 							:style="{ width: `${item.percentage}%` }"
 							:title="`${item.type}: ${item.percentage}%`"></div>
 					</div>
@@ -152,7 +140,7 @@
 								<span
 									:class="[
 										'h-2 w-2 rounded-full',
-										getSegmentColor(index),
+										segmentColor(index),
 									]"></span>
 								<span class="text-white/60"
 									>{{

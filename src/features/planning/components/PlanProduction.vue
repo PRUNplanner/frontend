@@ -5,6 +5,7 @@
 		type PropType,
 		ref,
 		type Ref,
+		watch,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -12,12 +13,13 @@
 
 	// Composables
 	import { useBuildingData } from "@/database/services/useBuildingData";
-	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, trackPlanEdit } from "@/lib/analytics/useAnalytics";
 	import { usePlanetInsights } from "@/features/plan_analytics/usePlanetInsights";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
+	import PlanStarterSetup from "@/features/plan_analytics/components/PlanStarterSetup.vue";
 
 	// Types & Interfaces
 	import type {
@@ -30,14 +32,17 @@
 		PlanDataBuilding,
 	} from "@/features/api/schemas/planningData.schemas";
 	import type { PSelectOption } from "@/ui/ui.types";
+	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 
 	// UI
+	import PButton from "@/ui/components/PButton.vue";
 	import PCheckbox from "@/ui/components/PCheckbox.vue";
 	import PSelect from "@/ui/components/PSelect.vue";
 	import PTooltip from "@/ui/components/PTooltip.vue";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
+	import { STARTER_MAX_BUILDINGS } from "@/features/plan_analytics/planInsights.util";
 
 	const props = defineProps({
 		disabled: {
@@ -86,6 +91,11 @@
 		): void;
 		(e: "add:building:recipe", buildingIndex: number): void;
 		(
+			e: "apply:starter",
+			setup: IStarterSetup,
+			isSelectionChanged: boolean
+		): void;
+		(
 			e: "add:building:recipes",
 			buildingIndex: number,
 			recipes: PlanDataBuilding["active_recipes"]
@@ -109,6 +119,38 @@
 	const { getProductionBuildingOptions } = useBuildingData();
 	const { isAvailable, totalPlans, popularBuildings, mostPlannedRecipe } =
 		usePlanetInsights(() => props.planetId);
+
+	// "Start empty" hides the starter card for this view
+	const isStarterDismissed: Ref<boolean> = ref(false);
+	const isEmpty: ComputedRef<boolean> = computed(
+		() => !props.disabled && localProductionData.value.buildings.length === 0
+	);
+	const showStarter: ComputedRef<boolean> = computed(
+		() => isEmpty.value && isAvailable.value && !isStarterDismissed.value
+	);
+
+	// once per plan view, the first step of the starter funnel
+	let isStarterTracked = false;
+	watch(
+		showStarter,
+		(show) => {
+			if (!show || isStarterTracked) return;
+			isStarterTracked = true;
+			trackEvent("plan:starter_show", {
+				planet_natural_id: props.planetId,
+				candidate_count: Math.min(
+					popularBuildings.value.length,
+					STARTER_MAX_BUILDINGS
+				),
+			});
+		},
+		{ immediate: true }
+	);
+
+	function dismissStarter(): void {
+		isStarterDismissed.value = true;
+		trackEvent("plan:starter_dismiss", { planet_natural_id: props.planetId });
+	}
 
 	const buildingOptions: ComputedRef<PSelectOption[]> = computed(() =>
 		getProductionBuildingOptions(
@@ -257,6 +299,30 @@
 			<div class="col-span-3 text-end">
 				{{ $t("plan.components.production.table.tools") }}
 			</div>
+		</div>
+		<PlanStarterSetup
+			v-if="showStarter"
+			:planet-id="planetId"
+			:planet-resources="planetResources"
+			@apply="
+				(setup: IStarterSetup, isSelectionChanged: boolean) =>
+					emit('apply:starter', setup, isSelectionChanged)
+			"
+			@dismiss="dismissStarter" />
+		<div
+			v-else-if="isEmpty && isAvailable"
+			class="p-3 flex flex-wrap justify-center items-center gap-2 text-xs text-muted-strong">
+			<i18n-t keypath="plan.tools.plan_starter.empty" tag="span">
+				<template #link>
+					<PButton
+						size="sm"
+						type="ghost"
+						class="text-link-primary"
+						@click="isStarterDismissed = false">
+						{{ $t("plan.tools.plan_starter.show") }}
+					</PButton>
+				</template>
+			</i18n-t>
 		</div>
 		<template
 			v-for="(building, index) in localProductionData.buildings"
