@@ -81,7 +81,7 @@
 			"username": "z.B. dein In-Game-Name",
 			"password": "Dein Passwort",
 			"new_password": "Mindestens 8 Zeichen",
-			"email": "e.g. name{'@'}example.com",
+			"email": "z.B. name{'@'}example.com",
 			"code": "Code aus der E-Mail"
 		}
 	}
