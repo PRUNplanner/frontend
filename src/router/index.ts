@@ -5,6 +5,7 @@ import { useUserStore } from "@/stores/userStore";
 
 // Composables
 import { trackPageview } from "@/lib/analytics/useAnalytics";
+import { setClientErrorRoute } from "@/lib/clientErrors";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -220,6 +221,7 @@ router.afterEach((to, from, failure) => {
 	if (failure || (from !== START_LOCATION && to.path === from.path)) return;
 
 	trackPageview(to.name?.toString());
+	setClientErrorRoute(to.name?.toString());
 });
 
 export default router;

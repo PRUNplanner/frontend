@@ -1,7 +1,14 @@
-import axios, { type AxiosInstance, isAxiosError, isCancel } from "axios";
+import axios, {
+	type AxiosInstance,
+	type InternalAxiosRequestConfig,
+	isAxiosError,
+	isCancel,
+} from "axios";
 import { ZodError, type ZodType, type z } from "zod";
-import config from "@/lib/config";
+import apiConfig from "@/lib/config";
 import { trackException } from "@/lib/analytics/useAnalytics";
+import { correlationId } from "@/lib/requestIds";
+import { type IClientErrorReport, reportClientError } from "@/lib/clientErrors";
 import { issuePathTemplate, pathTemplate } from "@/util/pathTemplate";
 
 /**
@@ -12,13 +19,36 @@ import { issuePathTemplate, pathTemplate } from "@/util/pathTemplate";
  * @class ApiService
  * @typedef {ApiService}
  */
+// when each API call was sent, for client_ms
+const sentAt = new WeakMap<object, number>();
+
+/**
+ * Sets the request and session id on calls to the API. The client is
+ * the global axios instance, so other origins must not get them.
+ *
+ * @param {InternalAxiosRequestConfig} config Request config
+ * @returns {InternalAxiosRequestConfig} Request config
+ */
+function setRequestIds(
+	config: InternalAxiosRequestConfig
+): InternalAxiosRequestConfig {
+	const origin = new URL(axios.getUri(config), location.href).origin;
+	if (origin !== new URL(apiConfig.API_BASE_URL).origin) return config;
+
+	config.headers.set("X-Request-ID", crypto.randomUUID());
+	config.headers.set("X-Correlation-ID", correlationId());
+	sentAt.set(config, performance.now());
+	return config;
+}
+
 class ApiService {
 	// needs to be public for axios-mock-adapter
 	public readonly client: AxiosInstance;
 
 	constructor() {
 		this.client = axios;
-		this.client.defaults.baseURL = config.API_BASE_URL;
+		this.client.defaults.baseURL = apiConfig.API_BASE_URL;
+		this.client.interceptors.request.use(setRequestIds);
 	}
 
 	/**
@@ -36,11 +66,15 @@ class ApiService {
 		path: string,
 		responseSchema: Res
 	): Promise<z.output<Res>> {
+		// the call whose response failed validation
+		let request: InternalAxiosRequestConfig | undefined;
+
 		try {
-			const { data } = await this.client.get(path);
+			const { data, config } = await this.client.get(path);
+			request = config;
 			return responseSchema.parse(data);
 		} catch (e) {
-			throw this.normalizeError(e, "GET", path);
+			throw this.normalizeError(e, "GET", path, request);
 		}
 	}
 
@@ -66,6 +100,9 @@ class ApiService {
 		responseSchema: Res,
 		asForm?: boolean
 	): Promise<z.output<Res>> {
+		// the call whose response failed validation
+		let request: InternalAxiosRequestConfig | undefined;
+
 		try {
 			const body = requestSchema.parse(payload);
 
@@ -73,11 +110,12 @@ class ApiService {
 				? { headers: { "Content-Type": "multipart/form-data" } }
 				: {};
 
-			const { data } = await this.client.post(path, body, headers);
+			const { data, config } = await this.client.post(path, body, headers);
+			request = config;
 
 			return responseSchema.parse(data);
 		} catch (e) {
-			throw this.normalizeError(e, "POST", path);
+			throw this.normalizeError(e, "POST", path, request);
 		}
 	}
 
@@ -101,14 +139,18 @@ class ApiService {
 		requestSchema: Req,
 		responseSchema: Res
 	): Promise<z.output<Res>> {
+		// the call whose response failed validation
+		let request: InternalAxiosRequestConfig | undefined;
+
 		try {
 			const body = requestSchema.parse(payload);
 
-			const { data } = await this.client.put(path, body);
+			const { data, config } = await this.client.put(path, body);
+			request = config;
 
 			return responseSchema.parse(data);
 		} catch (e) {
-			throw this.normalizeError(e, "PUT", path);
+			throw this.normalizeError(e, "PUT", path, request);
 		}
 	}
 
@@ -132,14 +174,18 @@ class ApiService {
 		requestSchema: Req,
 		responseSchema: Res
 	): Promise<z.output<Res>> {
+		// the call whose response failed validation
+		let request: InternalAxiosRequestConfig | undefined;
+
 		try {
 			const body = requestSchema.parse(payload);
 
-			const { data } = await this.client.patch(path, body);
+			const { data, config } = await this.client.patch(path, body);
+			request = config;
 
 			return responseSchema.parse(data);
 		} catch (e) {
-			throw this.normalizeError(e, "PATCH", path);
+			throw this.normalizeError(e, "PATCH", path, request);
 		}
 	}
 
@@ -163,35 +209,60 @@ class ApiService {
 	/**
 	 * Sends contract breaks, server and network errors to error tracking.
 	 * Of the 4xx only 429 and a 401 of the token refresh are sent, and
-	 * never a response discarded for a previous session.
+	 * never a response discarded for a previous session. Contract breaks,
+	 * server and network errors also go to the backend (Axiom), from every
+	 * user: 429 and the refresh 401 the backend already logs itself.
 	 *
 	 * @private
 	 * @param {unknown} err Error
 	 * @param {string} method HTTP method
 	 * @param {string} path URL
+	 * @param {InternalAxiosRequestConfig} [request] Call whose response failed validation
 	 */
-	private reportError(err: unknown, method: string, path: string): void {
+	private reportError(
+		err: unknown,
+		method: string,
+		path: string,
+		request?: InternalAxiosRequestConfig
+	): void {
 		if (isCancel(err)) return;
 
 		const path_template = pathTemplate(path);
 		const error = new Error(`${method} ${path_template}`);
 
+		const failed = isAxiosError(err) ? err.config : request;
+		const request_id = failed?.headers.get("X-Request-ID")?.toString();
+		const start = failed && sentAt.get(failed);
+		const report: Omit<IClientErrorReport, "kind"> = {
+			method,
+			path_template,
+			failed_request_id: request_id,
+			client_ms:
+				start === undefined
+					? undefined
+					: Math.round(performance.now() - start),
+		};
+
 		if (err instanceof ZodError) {
+			// which field and what kind, once per field: never the
+			// received values, record keys or a line per list row
+			const issues = [
+				...new Set(
+					err.issues.map(
+						(issue) =>
+							`${issuePathTemplate(issue.path)}: ${issue.code}`
+					)
+				),
+			];
+
 			error.name = "ApiValidationError";
 			trackException(error, {
 				path_template,
 				method,
-				// which field and what kind, once per field: never the
-				// received values, record keys or a line per list row
-				issues: [
-					...new Set(
-						err.issues.map(
-							(issue) =>
-								`${issuePathTemplate(issue.path)}: ${issue.code}`
-						)
-					),
-				],
+				issues,
+				request_id,
 			});
+			reportClientError({ ...report, kind: "validation", issues });
 		} else if (isAxiosError(err)) {
 			const status = err.response?.status;
 
@@ -205,7 +276,17 @@ class ApiService {
 			else return;
 
 			if (status) error.message += ` ${status}`;
-			trackException(error, { path_template, method, status });
+			trackException(error, {
+				path_template,
+				method,
+				status,
+				request_id,
+			});
+
+			if (status === undefined)
+				reportClientError({ ...report, kind: "network" });
+			else if (status >= 500)
+				reportClientError({ ...report, kind: "server", status });
 		}
 	}
 
@@ -217,10 +298,16 @@ class ApiService {
 	 * @param {unknown} err Error
 	 * @param {string} method HTTP method
 	 * @param {string} path URL
+	 * @param {InternalAxiosRequestConfig} [request] Call whose response failed validation
 	 * @returns {Error} Error
 	 */
-	private normalizeError(err: unknown, method: string, path: string): Error {
-		this.reportError(err, method, path);
+	private normalizeError(
+		err: unknown,
+		method: string,
+		path: string,
+		request?: InternalAxiosRequestConfig
+	): Error {
+		this.reportError(err, method, path, request);
 
 		if (err instanceof ZodError) {
 			return new Error(`Validation error: ${err.message}`);

@@ -18,6 +18,7 @@ const { posthog, gate } = vi.hoisted(() => ({
 		startSessionRecording: vi.fn(),
 		stopSessionRecording: vi.fn(),
 		people: { set: vi.fn() },
+		get_session_id: vi.fn(() => "ph-session"),
 		__loaded: true,
 	},
 	// holds back the posthog-js import, to test the time while it loads
@@ -469,6 +470,20 @@ describe("usePostHog", () => {
 			expect(document.cookie).toContain("other=1");
 		}
 	);
+
+	it("returns the session id only while PostHog runs", async () => {
+		const { getSessionId, grant, deny } = await load();
+		await settle();
+		expect(getSessionId()).toBeUndefined();
+
+		grant();
+		await settle();
+		expect(getSessionId()).toBe("ph-session");
+
+		deny();
+		await settle();
+		expect(getSessionId()).toBeUndefined();
+	});
 
 	it("keeps PostHog storage with a grant", async () => {
 		localStorage.setItem("ph_phc_test_posthog", "{}");

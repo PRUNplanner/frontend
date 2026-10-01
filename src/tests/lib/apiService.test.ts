@@ -6,11 +6,16 @@ import axiosSetup from "@/util/axiosSetup";
 import { createPinia, setActivePinia } from "pinia";
 import { CanceledError } from "axios";
 import { trackException } from "@/lib/analytics/useAnalytics";
+import { reportClientError } from "@/lib/clientErrors";
+import config from "@/lib/config";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	trackException: vi.fn(),
 	trackContext: vi.fn(),
 }));
+vi.mock("@/lib/clientErrors", () => ({ reportClientError: vi.fn() }));
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -77,13 +82,47 @@ describe("ApiService", () => {
 		});
 	});
 
+	describe("request ids", () => {
+		const echoHeaders = (cfg: { headers?: unknown }) =>
+			[200, { ...(cfg.headers as object) }] as [number, object];
+
+		it("sets a new request id and the session id on API calls", async () => {
+			mock.onGet("/ids").reply(echoHeaders);
+			const anyHeaders = z.record(z.string(), z.unknown());
+
+			const first = await apiService.get("/ids", anyHeaders);
+			const second = await apiService.get("/ids", anyHeaders);
+
+			expect(first["X-Request-ID"]).toMatch(UUID);
+			expect(second["X-Request-ID"]).toMatch(UUID);
+			expect(second["X-Request-ID"]).not.toBe(first["X-Request-ID"]);
+			expect(first["X-Correlation-ID"]).toMatch(UUID);
+			expect(second["X-Correlation-ID"]).toBe(first["X-Correlation-ID"]);
+		});
+
+		it("sets them on absolute API URLs, not on other origins", async () => {
+			mock.onGet(`${config.API_BASE_URL}/ids`).reply(echoHeaders);
+			mock.onGet("https://other.example/ids").reply(echoHeaders);
+
+			const api = await apiService.client.get(`${config.API_BASE_URL}/ids`);
+			const other = await apiService.client.get("https://other.example/ids");
+
+			expect(api.data["X-Request-ID"]).toMatch(UUID);
+			expect(other.data).not.toHaveProperty("X-Request-ID");
+			expect(other.data).not.toHaveProperty("X-Correlation-ID");
+		});
+	});
+
 	describe("error tracking", () => {
 		const PLAN = "/planning/plan/0b1e2c3d-1111-4222-8333-444455556666/";
 		const schema = z.object({ id: z.number() });
 
 		beforeEach(() => {
 			vi.mocked(trackException).mockClear();
+			vi.mocked(reportClientError).mockClear();
 		});
+
+		const reported = () => vi.mocked(reportClientError).mock.calls[0][0];
 
 		const tracked = () => {
 			const [error, props] = vi.mocked(trackException).mock.calls[0];
@@ -91,7 +130,11 @@ describe("ApiService", () => {
 		};
 
 		it("validation error: issue paths and codes, no values", async () => {
-			mock.onGet(PLAN).reply(200, { id: "secret-value" });
+			let requestId: unknown;
+			mock.onGet(PLAN).reply((cfg) => {
+				requestId = cfg.headers?.["X-Request-ID"];
+				return [200, { id: "secret-value" }];
+			});
 
 			await expect(apiService.get(PLAN, schema)).rejects.toThrowError(
 				/^Validation error/
@@ -105,10 +148,23 @@ describe("ApiService", () => {
 				path_template: "/planning/plan/:uuid/",
 				method: "GET",
 				issues: ["id: invalid_type"],
+				request_id: requestId,
 			});
+			expect(requestId).toMatch(UUID);
 			expect(JSON.stringify([error.message, props])).not.toContain(
 				"secret-value"
 			);
+
+			expect(reportClientError).toHaveBeenCalledTimes(1);
+			expect(reported()).toStrictEqual({
+				kind: "validation",
+				method: "GET",
+				path_template: "/planning/plan/:uuid/",
+				failed_request_id: requestId,
+				issues: ["id: invalid_type"],
+				client_ms: expect.any(Number),
+			});
+			expect(JSON.stringify(reported())).not.toContain("secret-value");
 		});
 
 		it("validation error: no record keys, one line per field", async () => {
@@ -146,6 +202,12 @@ describe("ApiService", () => {
 				method: "POST",
 				issues: ["id: invalid_type"],
 			});
+			// no call was made
+			expect(reported()).toMatchObject({
+				kind: "validation",
+				failed_request_id: undefined,
+				client_ms: undefined,
+			});
 		});
 
 		it("server error", async () => {
@@ -162,6 +224,15 @@ describe("ApiService", () => {
 				path_template: "/planning/plan/:uuid/",
 				method: "PUT",
 				status: 500,
+				request_id: expect.stringMatching(UUID),
+			});
+			expect(reported()).toStrictEqual({
+				kind: "server",
+				method: "PUT",
+				path_template: "/planning/plan/:uuid/",
+				status: 500,
+				failed_request_id: props?.request_id,
+				client_ms: expect.any(Number),
 			});
 		});
 
@@ -178,6 +249,11 @@ describe("ApiService", () => {
 				path_template: "/data/planet/:planet/",
 				method: "GET",
 				status: undefined,
+				request_id: expect.stringMatching(UUID),
+			});
+			expect(reported()).toMatchObject({
+				kind: "network",
+				failed_request_id: props?.request_id,
 			});
 		});
 
@@ -189,6 +265,7 @@ describe("ApiService", () => {
 			const { error, props } = tracked();
 			expect(error.name).toBe("ApiClientError");
 			expect(props).toMatchObject({ method: "DELETE", status: 429 });
+			expect(reportClientError).not.toHaveBeenCalled();
 		});
 
 		it("401 of the token refresh", async () => {
@@ -204,7 +281,9 @@ describe("ApiService", () => {
 				path_template: "/user/refresh/",
 				method: "POST",
 				status: 401,
+				request_id: expect.stringMatching(UUID),
 			});
+			expect(reportClientError).not.toHaveBeenCalled();
 		});
 
 		it.each([400, 401, 403, 404])("not a %i", async (status) => {
@@ -213,6 +292,7 @@ describe("ApiService", () => {
 			await expect(apiService.get(PLAN, schema)).rejects.toThrowError();
 
 			expect(trackException).not.toHaveBeenCalled();
+			expect(reportClientError).not.toHaveBeenCalled();
 		});
 
 		it("not a response discarded for a previous session", async () => {
@@ -223,6 +303,7 @@ describe("ApiService", () => {
 			await expect(apiService.get(PLAN, schema)).rejects.toThrowError();
 
 			expect(trackException).not.toHaveBeenCalled();
+			expect(reportClientError).not.toHaveBeenCalled();
 		});
 	});
 
