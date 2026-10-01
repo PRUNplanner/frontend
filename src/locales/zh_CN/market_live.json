@@ -57,9 +57,9 @@
 		"point_table": {
 			"table": {
 				"ticker": "@:terms.material_ticker",
-				"price": "@:terms.price",
-				"bid": "@:terms.bid",
-				"ask": "@:terms.ask",
+				"price": "@:terms.price (ȼ)",
+				"bid": "@:terms.bid (ȼ)",
+				"ask": "@:terms.ask (ȼ)",
 				"spread_pct": "价差 %",
 				"buy_volume": "买入量。",
 				"sell_volume": "卖出量。"
