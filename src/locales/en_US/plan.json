@@ -308,7 +308,8 @@
 				"efficiency": "Efficiency",
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
-				"construction": "Construction"
+				"construction": "Construction",
+				"construction_per_building": "Per building"
 			},
 			"zero_reason": {
 				"FERTILITY": "Planet not fertile",

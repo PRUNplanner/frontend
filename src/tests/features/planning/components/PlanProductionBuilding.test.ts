@@ -6,6 +6,7 @@ import PlanProductionBuilding from "@/features/planning/components/PlanProductio
 import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
 import PInputNumber from "@/ui/components/PInputNumber.vue";
 import PValue from "@/ui/components/PValue.vue";
+import PTooltip from "@/ui/components/PTooltip.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -82,6 +83,8 @@ function button(wrapper: VueWrapper, text: string) {
 }
 
 const ADD_RECIPE = "plan.components.production_building.buttons.add_recipe";
+const PER_BUILDING =
+	"plan.components.production_building.table.construction_per_building";
 
 describe("PlanProductionBuilding", () => {
 	it("shows amount, name and the building figures", async () => {
@@ -94,11 +97,41 @@ describe("PlanProductionBuilding", () => {
 		expect(text).toContain("133.75 %");
 		expect(text).toContain("2,500.00");
 		expect(text).toContain("105");
-		// construction cost shown negated
-		expect(text).toContain("-123,456.79");
+		// construction cost for all 3 buildings, shown negated
+		expect(text).toContain("-370,370.37");
 		expect(
 			wrapper.findComponent(PInputNumber).find("input").element.value
 		).toBe("3");
+	});
+
+	it("shows the single building construction cost in a tooltip", async () => {
+		// PTooltip observes its size, the test DOM has no ResizeObserver
+		vi.stubGlobal("ResizeObserver", class {
+			observe() {}
+			disconnect() {}
+		});
+		// efficiency comes first, construction last
+		const hover = (wrapper: VueWrapper) =>
+			wrapper
+				.findAllComponents(PTooltip)
+				.at(-1)!
+				.find("div")
+				.trigger("mouseenter");
+
+		const { wrapper } = await mountBuilding();
+		await hover(wrapper);
+		expect(document.body.textContent).toContain(PER_BUILDING);
+		expect(document.body.textContent).toContain("-123,456.79");
+		// unmounting removes the teleported tooltip
+		wrapper.unmount();
+
+		// one building: total and single cost are the same, no tooltip
+		const { wrapper: single } = await mountBuilding({
+			buildingData: building({ amount: 1 }),
+		});
+		expect(single.text()).toContain("-123,456.79");
+		await hover(single);
+		expect(document.body.textContent).not.toContain(PER_BUILDING);
 	});
 
 	it("marks the expertise positive with a COGC bonus", async () => {
