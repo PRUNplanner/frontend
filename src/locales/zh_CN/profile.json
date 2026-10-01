@@ -26,7 +26,23 @@
 			"prun_username": "PrUn 用户名",
 			"email_info": "邮箱不是必填项，但强烈建议填写，以提高账户安全性并用于密码找回。",
 			"email_address": "邮箱地址",
-			"email_verified": "邮箱已验证"
+			"email_verified": "邮箱已验证",
+			"fio_status": "FIO Status"
+		},
+		"fio_connected": "Connected. Your data will appear in a few minutes.",
+		"fio_status": {
+			"none": "Not connected. Enter your FIO API key and PrUn username.",
+			"syncing": "Connected, loading your FIO data.",
+			"ok": "Connected. Last FIO update {time}.",
+			"no_data": "Connected, but FIO has no data for you yet. Open Prosperous Universe with the FIO extension running.",
+			"invalid_credentials": "FIO rejected your API key. Enter a valid key and save again.",
+			"error": "FIO updates are failing right now. Check your FIO key and username."
+		},
+		"fio_errors": {
+			"fio_required": "Enter both the FIO API key and the PrUn username.",
+			"fio_invalid_key": "FIO doesn't accept this API key.",
+			"fio_username_mismatch": "This API key belongs to a different PrUn username.",
+			"unknown": "Saving failed. Please try again."
 		}
 	},
 	"storage_data": {
@@ -83,6 +99,8 @@
 			"resupply_days": "补给天数",
 			"xit_origin": "XIT 来源",
 			"buy_from_cx": "XIT 从 CX 购买",
+			"plan_suggestions": "Plan suggestions",
+			"plan_suggestions_help": "Popular buildings and recipes on the planet, planet insights and a typical setup for empty plans",
 			"privacy": "Privacy",
 			"analytics": "Usage analytics",
 			"analytics_note": "Allows PRUNplanner to collect usage events, error reports and session recordings. This choice is stored in this browser only, so set it on each device you use.",
