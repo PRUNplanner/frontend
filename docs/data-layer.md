@@ -126,6 +126,9 @@ component / composable
   - A 10s interval refetches expired `autoRefetch` entries and evicts the
     other expired ones. It pauses while the user is idle (`userActivity`, see
     [features/user_activity.md](features/user_activity.md)).
+    Expired `GetPlanet` entries are refetched together in one
+    `GetMultiplePlanets` request (or taken from an expiring multiple query
+    that covers them); a planet missing from the result gets an `error`.
 - **`useQuery(name, params)`** is the caller API. Use `.execute()`.
   `params` is required exactly when the query takes them, so
   `useQuery("GetMaterials")` has none and `useQuery("GetPlan")` without

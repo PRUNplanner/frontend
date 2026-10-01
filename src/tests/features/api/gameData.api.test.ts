@@ -92,8 +92,28 @@ describe("GameData API Calls", async () => {
 
 		mock.onPost("/data/planets/multiple/").reply(200, planets);
 
-		expect(await callDataMultiplePlanets([])).toStrictEqual(planets);
+		expect(await callDataMultiplePlanets(["OT-580b"])).toStrictEqual(
+			planets
+		);
 		expect(spyApiServicePost).toHaveBeenCalled();
+	});
+
+	it("callDataMultiplePlanets: requests at most 200 ids at once", async () => {
+		const spyApiServicePost = vi
+			.spyOn(apiService, "post")
+			.mockResolvedValue([]);
+		spyApiServicePost.mockClear();
+		const ids = Array.from({ length: 201 }, (_, i) => `AB-${i}`);
+
+		await callDataMultiplePlanets(ids);
+
+		expect(spyApiServicePost.mock.calls.map((c) => c[1])).toStrictEqual([
+			ids.slice(0, 200),
+			ids.slice(200),
+		]);
+		spyApiServicePost.mockRestore();
+
+		expect(await callDataMultiplePlanets([])).toStrictEqual([]);
 	});
 
 	it("callDataFIOStorage", async () => {
