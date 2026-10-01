@@ -29,8 +29,14 @@
 
 	const show: Ref<boolean> = ref(false);
 
+	// as tall as one option row and at the top, so on a two-line option
+	// the icon stays on the first line
 	const icon = (component: object) => () =>
-		h(PIcon, null, { default: () => h(component) });
+		h(
+			"span",
+			{ class: "self-start h-(--n-option-height) flex items-center" },
+			h(PIcon, null, { default: () => h(component) })
+		);
 
 	const options: ComputedRef<DropdownOption[]> = computed(() => {
 		const items: DropdownOption[] = [];
@@ -51,12 +57,18 @@
 				{ type: "divider", key: "divider-reload" },
 				{
 					key: "reload",
+					// naive fixes every option to one row; this one has two
+					props: { class: "h-auto!" },
 					label: () =>
-						h("div", { class: "flex flex-col py-1" }, [
-							h("span", t("plan.actions.reload")),
+						h("div", { class: "flex flex-col pb-2" }, [
 							h(
 								"span",
-								{ class: "text-xs text-muted" },
+								{ class: "leading-(--n-option-height)" },
+								t("plan.actions.reload")
+							),
+							h(
+								"span",
+								{ class: "text-xs leading-4 text-muted" },
 								t("plan.actions.reload_hint")
 							),
 						]),
@@ -73,7 +85,10 @@
 				render: () =>
 					h(
 						"div",
-						{ class: "px-3 py-1.5 text-xs text-muted" },
+						{
+							// in line with the option labels
+							class: "pl-(--n-option-icon-prefix-width) pr-3 py-2 text-xs leading-4 text-muted",
+						},
 						t("plan.actions.shortcuts")
 					),
 			},
