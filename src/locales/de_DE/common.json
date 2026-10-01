@@ -29,9 +29,9 @@
 			"fio_active": "FIO Aktiv",
 			"fio_inactive": "FIO Inaktiv"
 		},
-		"collapse": "Collapse navigation",
-		"expand": "Expand navigation",
-		"menu": "Menu"
+		"collapse": "Navigation minimieren",
+		"expand": "Navigation erweitern",
+		"menu": "Menü"
 	},
 	"buttons": {
 		"create": "Erstellen",
@@ -52,9 +52,9 @@
 		"clone_plan": "Plan duplizieren",
 		"clone_complete": "Klonen abgeschlossen",
 		"copy": "Kopieren",
-		"add": "Add",
-		"fullscreen": "Toggle fullscreen",
-		"edit": "Edit"
+		"add": "Hinzufügen",
+		"fullscreen": "Vollbildmodus an/aus",
+		"edit": "Bearbeiten"
 	},
 	"ui": {
 		"placeholder": {
@@ -67,22 +67,22 @@
 			"select_options": "Optionen wählen"
 		},
 		"input_number": {
-			"decrease": "Decrease",
-			"increase": "Increase"
+			"decrease": "Verringern",
+			"increase": "Erhöhen"
 		},
 		"pagination": {
-			"previous": "Previous page",
-			"next": "Next page",
-			"page": "Page {page}",
-			"more": "More pages"
+			"previous": "Vorherige Seite",
+			"next": "Nächste Seite",
+			"page": "Seite {page}",
+			"more": "Weitere Seiten"
 		},
-		"language": "Language"
+		"language": "Sprache"
 	},
 	"values": {
-		"never": "never"
+		"never": "nie"
 	},
 	"charts": {
-		"other": "Other ({n})",
-		"empty": "Nothing to show"
+		"other": "Andere ({n})",
+		"empty": "Nichts zum Anzeigen"
 	}
 }

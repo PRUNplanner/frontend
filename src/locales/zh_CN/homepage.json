@@ -1,75 +1,118 @@
 {
 	"navigation": {
-		"registration": "创建账户",
-		"login": "登录"
-	},
-	"images": {
-		"section_title": "随时随地掌控你的帝国",
-		"section_lead": "轻松监控基地、管理生产并掌控你的计划。借助直观而强大的工具，你可以随时制定策略、扩张，并领先竞争对手一步。",
-		"empire": "帝国：追踪所有行星上的生产、供应链和发展情况。",
-		"plan": "计划：无需消耗游戏资源即可制定策略并进行分析。",
-		"management": "管理：轻松协调计划、扩张和下一步行动。",
-		"exchanges": "交易所：优化游戏内价格与交易策略。",
-		"market_exploration": "探索：分析多年市场数据，获得更明智的洞察。",
-		"planet_search": "搜索：快速找到你需要的行星和资源。"
+		"registration": "Create account",
+		"login": "Log in"
 	},
 	"hero": {
-		"title": "规划你的帝国",
-		"subtitle": "掌控 Prosperous Universe",
-		"lead": "告别繁琐的电子表格，轻松管理你的游戏内资产。"
+		"eyebrow": "Base and empire planner for Prosperous Universe",
+		"title": "Plan a base before you build it.",
+		"lead": "Pick a planet, add buildings and recipes, and watch daily profit, workforce, area and payback update as you go. Then group your bases into an empire and see what it makes, burns and has to ship.",
+		"cta": "Start planning, it's free",
+		"cta_logged_in": "Open your empire",
+		"how": "How it works",
+		"facts": "Free · Open source · Prices from FIO",
+		"image_alt": "The plan editor for an iron base on Montem: workforce, overview, production buildings and material I/O",
+		"image_caption": "An iron base on Montem (OT-580b): 19,313 ȼ profit a day, pays back in 64 days."
 	},
-	"features": {
-		"section_title": "强大功能，人人免费",
-		"section_lead": "简化你的规划与资源管理，确保你在银河中保持领先。",
-		"simulation": {
-			"label": "基地模拟",
-			"text": "PRUNplanner 让你无需消耗游戏资源即可设计并测试新基地。它会模拟基地的各个方面，从住房和生产建筑，到全球商会项目和行星资源。"
+	"setup": {
+		"title": "Three things to set up",
+		"lead": "Everything in PRUNplanner hangs off plans, empires and exchange preferences.",
+		"plan": {
+			"label": "Plan",
+			"text": "One base on one planet: buildings, recipes, habitation, experts and COGC. Start from Planet Search.",
+			"alt": "Production buildings and recipes in the plan editor"
 		},
-		"planning": {
-			"label": "帝国规划",
-			"text": "轻松组织并管理你的整个帝国。借助 PRUNplanner，你可以跨多个基地和复杂供应链进行规划，确保物资流按计划运转，让帝国顺畅运行。"
+		"empire": {
+			"label": "Empire",
+			"text": "Your plans together. See total profit, and which materials you're short of or have spare across all bases.",
+			"alt": "Empire material I/O with surplus and deficit per material"
 		},
-		"gamedata": {
-			"label": "游戏数据",
-			"text": "通过直接集成自游戏社区 API（FIO）的最新市场信息保持领先。基于真实市场和最佳 ROI，做出更有依据的规划与扩张决策。"
-		},
-		"burn_repair": {
-			"label": "消耗与维修",
-			"text": "通过详细的管理工具避免短缺和瓶颈。PRUNplanner 会跟踪你的资源和消耗品，确保你在需要时拥有所需物资，让运营保持顺畅。"
-		},
-		"market_exploration": {
-			"label": "市场探索",
-			"text": "探索过去数年的历史市场趋势，了解市场的真实运行方式。发现有价值的机会，并轻松计算每个配方和资源的投资回报率，为更聪明的规划提供战略优势。"
-		},
-		"tools": {
-			"label": "丰富的附加工具",
-			"text": "查看从当前到多年以前的物资价格，了解维修生产建筑的最佳时机，监控专家刷新时间，并按最小面积或最低成本优化居住建筑。PRUNplanner 提供这些功能以及更多实用工具。"
+		"exchange": {
+			"label": "Exchange preference",
+			"text": "Which CX prices to use, with your own prices per material or per planet. Every plan in the empire is priced with it.",
+			"alt": "An exchange preference with ticker overrides"
 		}
 	},
-	"concepts": {
-		"section_title": "核心概念",
-		"section_lead": "PRUNplanner 由三个主要组件组成，帮助你规划和管理 Prosperous Universe 中的帝国。",
-		"plans": {
-			"label": "计划",
-			"text": "计划是你在 PRUNplanner 中进行规划的核心。它包含你可以在 Prosperous Universe 中建立的一个基地的所有建筑、生产和加成。你可以通过搜索目标行星来创建新计划。此外，计划还应分配一个商品交易所偏好设置，并归属于一个帝国。"
+	"most_used": {
+		"title": "What players use most",
+		"lead": "Where to settle, what pays back, and when a base runs dry.",
+		"needs_fio": "Needs FIO",
+		"planet_search": {
+			"label": "Planet Search",
+			"title": "Find the planet for your next base.",
+			"lead": "Filter every planet in the universe and start a plan from the result.",
+			"point_1": "Materials you want to extract, with a minimum per day",
+			"point_2": "Surface, gravity, pressure, temperature and fertility",
+			"point_3": "COGC program and infrastructure",
+			"point_4": "Compare up to four planets side by side",
+			"alt": "Planet Search: filters on the left, matching planets with their resources, COGC and infrastructure"
 		},
-		"empires": {
-			"label": "帝国",
-			"text": "帝国是一组计划的集合（例如你当前已在 Prosperous Universe 中建立的所有基地，或你未来想建立并相互连接的基地）。每个帝国都像一个容器，包含多个计划。此外，每个帝国都可以分配一个交易所偏好设置。"
+		"resource_roi": {
+			"label": "Resource ROI",
+			"title": "See which planet pays back fastest.",
+			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan.",
+			"point_1": "Plan cost, daily profit and ROI in days",
+			"point_2": "Daily output and % of the best planet",
+			"point_3": "POPR, COGC, environment and infrastructure next to it",
+			"alt": "Resource ROI for ALO: planets ranked with daily output, plan cost, daily profit and ROI in days"
 		},
-		"exchanges": {
-			"label": "交易所",
-			"text": "交易所设置允许你为物资定价定义市场偏好。每个偏好设置可以被多个帝国使用。不过，每个帝国只能分配一个交易所偏好设置。这可以确保该帝国下所有单独计划的价格都能正确计算。"
+		"fio_burn": {
+			"label": "FIO Burn",
+			"title": "Know when a base runs out.",
+			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses.",
+			"point_1": "Days left per material and base",
+			"point_2": "Red and yellow thresholds you set",
+			"point_3": "A resupply list per base, exported as XIT actions",
+			"alt": "FIO Burn: burn per plan, with one base expanded to show consumption, stock and days left per material"
 		}
 	},
 	"tools": {
-		"section_title": "由我们喜爱的工具驱动"
+		"title": "And the tools around it",
+		"lead": "Market data and calculators, priced from FIO. Link your FIO account and Repair uses your real bases too.",
+		"with_fio": "with FIO",
+		"market_live": {
+			"label": "Market Live",
+			"text": "Live CX prices, and alerts from rules on price, spread and volume."
+		},
+		"market_exploration": {
+			"label": "Market Exploration",
+			"text": "Price and volume history per material and exchange."
+		},
+		"recipe_roi": {
+			"label": "Recipe ROI",
+			"text": "Every recipe ranked by payback at current prices."
+		},
+		"production_chains": {
+			"label": "Production Chains",
+			"text": "What a material takes to make, all the way down."
+		},
+		"hq_calculator": {
+			"label": "HQ Calculator",
+			"text": "Materials needed for your next HQ level."
+		},
+		"repair": {
+			"label": "Repair",
+			"text": "When each of your buildings is due for repair."
+		},
+		"carts": {
+			"label": "Supply and Construction Cart",
+			"text": "Shopping lists per plan, exportable as XIT actions."
+		},
+		"upkeep": {
+			"label": "Upkeep Price Calculator",
+			"text": "ȼ per need point for safety, health, comfort, culture and education."
+		}
 	},
-	"open_source": {
-		"section_title": "免费且开源",
-		"section_lead": "PRUNplanner 完全免费使用，其前端也完全 {link}。",
-		"prompt": "喜欢它吗？欢迎你一起贡献！",
-		"link_open_source": "开源"
+	"closing": {
+		"title": "Free, open source and translated by players.",
+		"text": "No ads, no paid tier. Code on GitHub, translations on Crowdin.",
+		"github": "View on GitHub",
+		"cta": "Start planning"
 	},
-	"love": "在慕尼黑用 ♥ 制作，并由来自世界各地的贡献者共同完善。"
+	"footer": {
+		"made_in": "Made in Munich, with contributions from around the world.",
+		"imprint": "Imprint and terms",
+		"translate": "Translate on Crowdin",
+		"language": "Language"
+	}
 }

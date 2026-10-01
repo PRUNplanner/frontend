@@ -1,6 +1,6 @@
 {
 	"view_title": "Ressourcen ROI",
-	"title": "Resource ROI",
+	"title": "Ressourcen ROI",
 	"info": "Wähle eine Ressource und drücke 'Suchen & Berechnen'",
 	"calculating": "Kalkuliere Ressourcen ROI für gefundene Planeten.",
 	"searching": "Suche nach '{resource}' auf @:terms.planet_plural und warte auf Antwort vom Backend",
@@ -19,8 +19,8 @@
 		"infrastructure": "Infrastruktur",
 		"cost_profit": "Kosten / Gewinn",
 		"plan_cost": "@:terms.plan @:terms.cost (ȼ)",
-		"daily_profit": "Daily @:terms.profit (ȼ)",
-		"plan_roi": "@:terms.plan ROI (d)",
+		"daily_profit": "Täglicher @:terms.profit (ȼ)",
+		"plan_roi": "@:terms.plan ROI (Tag)",
 		"distances": "Entfernungen"
 	}
 }

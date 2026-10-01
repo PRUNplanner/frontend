@@ -20,7 +20,7 @@
 			"resend_code": "Code erneut senden",
 			"code_requested": "Code angefordert."
 		},
-		"fio_info": "FIO Data Updates are handled by PRUNplanner's backend automatically.",
+		"fio_info": "FIO Updates werden automatisch von PRUNplanner verwaltet.",
 		"form": {
 			"fio_apikey": "FIO API Key",
 			"prun_username": "PrUn Benutzername",
@@ -71,9 +71,9 @@
 		"form": {
 			"tool_preferences": "PRUNplanner Einstellungen",
 			"language": "Sprache",
-			"color_palette": "Color palette",
-			"palette_default": "Default (green / red)",
-			"palette_colorblind": "Color-blind (blue / orange)",
+			"color_palette": "Farbpalette",
+			"palette_default": "Standard (grün / rot)",
+			"palette_colorblind": "Farbenblind (blau / orange)",
 			"language_note": "Wir wollen PRUNplanner für alle zugänglich machen. Wenn du das Tool in deiner Muttersprache sehen oder uns helfen möchtest, eine vorhandene Übersetzung zu verbessern, tritt unserem Lokalisierungsprojekt auf {link} bei.",
 			"default_empire": "Standard-Imperium",
 			"default_cx": "Standard CX",
@@ -83,6 +83,10 @@
 			"resupply_days": "Nachschub-Tage",
 			"xit_origin": "XIT Origin",
 			"buy_from_cx": "XIT Buy from CX",
+			"privacy": "Privatsphäre",
+			"analytics": "Nutzungsanalyse",
+			"analytics_note": "Ermöglicht PRUNplanner Nutzungsereignisse, Fehlerberichte und Sitzungsaufzeichnungen zu sammeln. Diese Auswahl wird nur in diesem Browser gespeichert, also setze sie auf jedem Gerät, das du verwendest.",
+			"analytics_dnt": "Dein Browser sendet ein Do-Not-Track oder Global Privacy Control Signal, so dass die Nutzungsanalyse ausgeschaltet bleibt.",
 			"plan_specific": "Planspezifische Einstellungen",
 			"plan_specific_description": "Diese Einstellungen werden in einzelnen Plänen verwaltet. Dieser Abschnitt bietet eine Übersicht über die Einstellungen, die du bisher angepasst hast - um sie zu ändern, wähle den entsprechenden Plan.",
 			"plan": "Plan",

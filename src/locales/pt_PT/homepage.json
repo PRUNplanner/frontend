@@ -1,75 +1,118 @@
 {
 	"navigation": {
-		"registration": "Create Account",
-		"login": "Login"
-	},
-	"images": {
-		"section_title": "Command Your Empire from Anywhere",
-		"section_lead": "Monitor bases, manage production, and control your plans effortlessly. With intuitive, powerful tools, you can strategize, expand, and outsmart your rivals wherever you are.",
-		"empire": "Empire: Track production, supply chains, and growth across all your planets.",
-		"plan": "Plan: Strategize and analyze without spending in-game resources.",
-		"management": "Management: Coordinate plans, expansions, and your next moves effortlessly.",
-		"exchanges": "Exchanges: Optimize in-game pricing and trading strategies.",
-		"market_exploration": "Exploration: Analyze years of market data for smarter insights.",
-		"planet_search": "Search: Find the exact planets and resources you need instantly."
+		"registration": "Create account",
+		"login": "Log in"
 	},
 	"hero": {
-		"title": "Plan your empire",
-		"subtitle": "Rule Prosperous Universe",
-		"lead": "Say goodbye to cumbersome spreadsheets and hello to seamless management of your in-game assets."
+		"eyebrow": "Base and empire planner for Prosperous Universe",
+		"title": "Plan a base before you build it.",
+		"lead": "Pick a planet, add buildings and recipes, and watch daily profit, workforce, area and payback update as you go. Then group your bases into an empire and see what it makes, burns and has to ship.",
+		"cta": "Start planning, it's free",
+		"cta_logged_in": "Open your empire",
+		"how": "How it works",
+		"facts": "Free · Open source · Prices from FIO",
+		"image_alt": "The plan editor for an iron base on Montem: workforce, overview, production buildings and material I/O",
+		"image_caption": "An iron base on Montem (OT-580b): 19,313 ȼ profit a day, pays back in 64 days."
 	},
-	"features": {
-		"section_title": "Powerful Features, Free For Everyone",
-		"section_lead": "Streamline your planning and resource management, ensure you stay ahead in the galaxy.",
-		"simulation": {
-			"label": "Base Simulation",
-			"text": "PRUNplanner lets you design and try new bases without spending in-game resources. It mirrors all aspects of a base, from habitation and production buildings to COGC programs and planet resources."
+	"setup": {
+		"title": "Three things to set up",
+		"lead": "Everything in PRUNplanner hangs off plans, empires and exchange preferences.",
+		"plan": {
+			"label": "Plan",
+			"text": "One base on one planet: buildings, recipes, habitation, experts and COGC. Start from Planet Search.",
+			"alt": "Production buildings and recipes in the plan editor"
 		},
-		"planning": {
-			"label": "Empire Planning",
-			"text": "Effortlessly organize and manage your entire empire. With PRUNplanner, you can plan across multiple bases and complex supply chains, ensuring your material flows remain on schedule and your empire runs smoothly."
+		"empire": {
+			"label": "Empire",
+			"text": "Your plans together. See total profit, and which materials you're short of or have spare across all bases.",
+			"alt": "Empire material I/O with surplus and deficit per material"
 		},
-		"gamedata": {
-			"label": "Game Data",
-			"text": "Stay ahead with up-to-date market information integrated directly from the game's community API (FIO). Make informed planning and expansion decisions based on actual markets and the best ROI."
-		},
-		"burn_repair": {
-			"label": "Burn & Repair",
-			"text": "Prevent shortages and bottlenecks with detailed management tools. PRUNplanner tracks your resources and consumables, ensuring you have everything you need right when you need it, keeping your operations seamless."
-		},
-		"market_exploration": {
-			"label": "Market Exploration",
-			"text": "Explore historic market trends from past years and uncover how markets truly behave. Spot exciting opportunities, and effortlessly calculate Return on Investment for every recipe and resource — giving you the strategic edge you need for smarter planning."
-		},
-		"tools": {
-			"label": "A Wealth of Additional Tools",
-			"text": "Explore material prices from now to years past, know the optimal times for repairing production buildings, monitor expert spawn times, and optimize habitation buildings for minimal area or cost. PRUNplanner offers these features and many more."
+		"exchange": {
+			"label": "Exchange preference",
+			"text": "Which CX prices to use, with your own prices per material or per planet. Every plan in the empire is priced with it.",
+			"alt": "An exchange preference with ticker overrides"
 		}
 	},
-	"concepts": {
-		"section_title": "Core Concepts",
-		"section_lead": "PRUNplanner consists of three main components that allow you to plan and manage your Prosperous Universe empire.",
-		"plans": {
-			"label": "Plans",
-			"text": "Plans are the backbone of what you do in PRUNplanner. They consist of all buildings, productions and bonuses of a base you can put down in Prosperous Universe. You can create new plans by searching for the planet you would like to create a base for. Also, a plan should be assigned a CX Exchange preference, as well as be assigned to an Empire."
+	"most_used": {
+		"title": "What players use most",
+		"lead": "Where to settle, what pays back, and when a base runs dry.",
+		"needs_fio": "Needs FIO",
+		"planet_search": {
+			"label": "Planet Search",
+			"title": "Find the planet for your next base.",
+			"lead": "Filter every planet in the universe and start a plan from the result.",
+			"point_1": "Materials you want to extract, with a minimum per day",
+			"point_2": "Surface, gravity, pressure, temperature and fertility",
+			"point_3": "COGC program and infrastructure",
+			"point_4": "Compare up to four planets side by side",
+			"alt": "Planet Search: filters on the left, matching planets with their resources, COGC and infrastructure"
 		},
-		"empires": {
-			"label": "Empires",
-			"text": "An Empire is a collection of plans (e.g. all the bases you currently have settled in Prosperous Universe, or that you would like to settle, all interconnected together). Each empire is like a container that consists of multiple plans. Additionally, an exchange preference can be assigned to each Empire."
+		"resource_roi": {
+			"label": "Resource ROI",
+			"title": "See which planet pays back fastest.",
+			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan.",
+			"point_1": "Plan cost, daily profit and ROI in days",
+			"point_2": "Daily output and % of the best planet",
+			"point_3": "POPR, COGC, environment and infrastructure next to it",
+			"alt": "Resource ROI for ALO: planets ranked with daily output, plan cost, daily profit and ROI in days"
 		},
-		"exchanges": {
-			"label": "Exchanges",
-			"text": "The Exchange Settings allow you to define market preferences for the pricing of materials. Each preference can be used in multiple Empires. However, each Empire can only have a single Exchange preference assigned to it. This ensures that prices are properly calculated for all individual plans that are part of the Empire."
+		"fio_burn": {
+			"label": "FIO Burn",
+			"title": "Know when a base runs out.",
+			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses.",
+			"point_1": "Days left per material and base",
+			"point_2": "Red and yellow thresholds you set",
+			"point_3": "A resupply list per base, exported as XIT actions",
+			"alt": "FIO Burn: burn per plan, with one base expanded to show consumption, stock and days left per material"
 		}
 	},
 	"tools": {
-		"section_title": "Powered by tools we love to use"
+		"title": "And the tools around it",
+		"lead": "Market data and calculators, priced from FIO. Link your FIO account and Repair uses your real bases too.",
+		"with_fio": "with FIO",
+		"market_live": {
+			"label": "Market Live",
+			"text": "Live CX prices, and alerts from rules on price, spread and volume."
+		},
+		"market_exploration": {
+			"label": "Market Exploration",
+			"text": "Price and volume history per material and exchange."
+		},
+		"recipe_roi": {
+			"label": "Recipe ROI",
+			"text": "Every recipe ranked by payback at current prices."
+		},
+		"production_chains": {
+			"label": "Production Chains",
+			"text": "What a material takes to make, all the way down."
+		},
+		"hq_calculator": {
+			"label": "HQ Calculator",
+			"text": "Materials needed for your next HQ level."
+		},
+		"repair": {
+			"label": "Repair",
+			"text": "When each of your buildings is due for repair."
+		},
+		"carts": {
+			"label": "Supply and Construction Cart",
+			"text": "Shopping lists per plan, exportable as XIT actions."
+		},
+		"upkeep": {
+			"label": "Upkeep Price Calculator",
+			"text": "ȼ per need point for safety, health, comfort, culture and education."
+		}
 	},
-	"open_source": {
-		"section_title": "Free & Open Source",
-		"section_lead": "PRUNplanner is completely free to use, and its frontend is fully {link}.",
-		"prompt": "Love it? We'd be thrilled if you contributed!",
-		"link_open_source": "Open Source"
+	"closing": {
+		"title": "Free, open source and translated by players.",
+		"text": "No ads, no paid tier. Code on GitHub, translations on Crowdin.",
+		"github": "View on GitHub",
+		"cta": "Start planning"
 	},
-	"love": "Made with ♥  in Munich, with contributions from around the world."
+	"footer": {
+		"made_in": "Made in Munich, with contributions from around the world.",
+		"imprint": "Imprint and terms",
+		"translate": "Translate on Crowdin",
+		"language": "Language"
+	}
 }

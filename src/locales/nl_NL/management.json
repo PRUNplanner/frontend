@@ -42,7 +42,7 @@
 	},
 	"assignments": {
 		"title": "Plan ↔ Rijk Toewijzingen",
-		"description": "Every planned base can be assigned to multiple empires. This allows you to simultaneously keep track of your existing Prosperous Universe empire, corporation production chains or future expansion plans. Changes are saved together from the bar at the bottom.",
+		"description": "Elke geplande basis kan aan meerdere rijken toegewezen worden. Dit laat je tegelijk je rijk, corporatie productie ketens, of uitbreidingsplannen, in de gaten houden.",
 		"deletion": {
 			"title": "Plan Verwijdering Bevestigen",
 			"content": "Weet je dit zeker? Het verwijderen van dit plan kan niet worden teruggedraaid."

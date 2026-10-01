@@ -18,9 +18,9 @@
 		"storage": "@:terms.storage",
 		"override_stock": "Bestand überschreiben",
 		"required": "Benötigt",
-		"cost_unit": "Cost / Unit (ȼ)",
-		"cost_total": "Total Cost (ȼ)",
+		"cost_unit": "Kosten / Einheit (ȼ)",
+		"cost_total": "Gesamtkosten (ȼ)",
 		"storage_locations": "@:terms.storage Standorte",
-		"override_label": "Override stock for {ticker}"
+		"override_label": "Lagerbestand für {ticker} überschreiben"
 	}
 }

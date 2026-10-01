@@ -20,6 +20,15 @@
 		"recipe_removed": "生产模板已移除",
 		"recipe_changed": "{building}的生产模板已更改"
 	},
+	"actions": {
+		"more": "More",
+		"save_as_copy": "Save as copy…",
+		"share_link": "Share link",
+		"reload": "Reload saved version",
+		"reload_hint": "Discards unsaved changes",
+		"reload_confirm": "Reload the saved version? Your unsaved changes will be lost.",
+		"tools": "Plan tools"
+	},
 	"name": {
 		"untitled": "未命名的计划"
 	},
@@ -177,10 +186,14 @@
 	"components": {
 		"status": {
 			"hq": "HQ",
-			"cogc": "@:{'terms.cogc'}：",
-			"area": "@:{'terms.area'}：",
-			"profit": "@:{'terms.profit'}：",
-			"experts": "@:{'terms.experts_plural'}："
+			"cogc": "@:{'terms.cogc'}",
+			"area": "@:{'terms.area'}",
+			"profit": "@:{'terms.profit'}",
+			"experts": "@:{'terms.experts_plural'}",
+			"experts_none": "None",
+			"area_free": "{count} free",
+			"area_over": "{count} over",
+			"per_day": "ȼ/day"
 		},
 		"configuration": {
 			"label": "配置",

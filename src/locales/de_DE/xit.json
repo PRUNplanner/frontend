@@ -7,8 +7,8 @@
 		"fit_ship": "Auf Schiff anpassen",
 		"hide_infinite": "Unendliche ausblenden",
 		"json": "JSON",
-		"include_label": "Include {ticker}",
-		"override_label": "Override for {ticker}"
+		"include_label": "{ticker} Einschließen",
+		"override_label": "Überschreiben von {ticker}"
 	},
 	"buttons": {
 		"copy_json": "XIT JSON kopieren",

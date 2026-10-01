@@ -29,7 +29,7 @@
 				"clear_feed": "Feed leeren",
 				"show_overview": "Übersicht anzeigen",
 				"hide_overview": "Übersicht ausblenden",
-				"alerts": "Alert notifications"
+				"alerts": "Warnmeldungen"
 			}
 		},
 		"alert_feed": {
@@ -57,9 +57,9 @@
 		"point_table": {
 			"table": {
 				"ticker": "@:terms.material_ticker",
-				"price": "@:terms.price",
-				"bid": "@:terms.bid",
-				"ask": "@:terms.ask",
+				"price": "@:terms.price (ȼ)",
+				"bid": "@:terms.bid (ȼ)",
+				"ask": "@:terms.ask (ȼ)",
 				"spread_pct": "Spread %",
 				"buy_volume": "Kauf-Vol.",
 				"sell_volume": "Verkauf-Vol."
@@ -99,9 +99,9 @@
 			}
 		},
 		"detector": {
-			"field": "Field",
-			"operator": "Operator",
-			"target_type": "Target type"
+			"field": "Feld",
+			"operator": "Vergleichszeichen",
+			"target_type": "Zieltyp"
 		}
 	}
 }

@@ -57,8 +57,8 @@
 	},
 	"analysis": {
 		"plan_profit": "Plan Profit (ȼ)",
-		"material_profits": "Material Profits (ȼ)",
-		"material_costs": "Material Costs (ȼ)",
+		"material_profits": "Profitti dei Materiali",
+		"material_costs": "Costi dei Materiali",
 		"net_production": "Produzione Netta",
 		"net_consumption": "Consumo netto",
 		"exclusive_production": "Produzione Esclusiva",

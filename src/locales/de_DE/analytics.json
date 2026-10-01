@@ -1,0 +1,14 @@
+{
+	"consent": {
+		"title": "Möchtest du bei der Verbesserung von PRUNplanner helfen?",
+		"intro": "Mit deiner Erlaubnis sammelt PRUNplanner Daten, wie das Tool verwendet wird. Das hilft zu entscheiden, welche Funktionen als nächstes Gebaut werden, Fehler zu finden und sie schnell zu beheben.",
+		"collected_events": "Ereignisse, wie Seiten, die du aufrufst und Aktionen, die du durchführst",
+		"collected_errors": "Fehlermeldungen, wenn etwas nicht funktioniert",
+		"collected_recordings": "Sitzungsaufnahmen einiger Besuche. Alle deine Eingaben sind geschwärzt",
+		"linked": "Diese Daten werden mit deinem Konto verbunden und mit PostHog in der EU gespeichert.",
+		"optional": "Dies ist optional und du kannst deine Wahl jederzeit im Profil ändern. Alle Details findest du in den {link}.",
+		"tos_link": "Nutzungsbedingungen",
+		"allow": "Erlauben",
+		"deny": "Nein, danke"
+	}
+}

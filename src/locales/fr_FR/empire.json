@@ -57,8 +57,8 @@
 	},
 	"analysis": {
 		"plan_profit": "Plan Profit (ȼ)",
-		"material_profits": "Material Profits (ȼ)",
-		"material_costs": "Material Costs (ȼ)",
+		"material_profits": "Bénéfices matériels",
+		"material_costs": "Coûts des matériaux",
 		"net_production": "Production nette",
 		"net_consumption": "Consommation nette",
 		"exclusive_production": "Production exclusive",

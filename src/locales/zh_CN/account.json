@@ -81,7 +81,7 @@
 			"username": "例：你的游戏内昵称",
 			"password": "你的密码",
 			"new_password": "至少8个字符",
-			"email": "例：name@example.com",
+			"email": "e.g. name{'@'}example.com",
 			"code": "邮箱里的验证码"
 		}
 	}

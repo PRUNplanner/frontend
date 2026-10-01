@@ -1,27 +1,36 @@
 {
 	"notifications": {
-		"leave_unsaved": "Do you really want to leave? Unsaved changes will be lost."
+		"leave_unsaved": "Willst du wirklich verlassen? Ungespeicherte Änderungen gehen verloren."
 	},
 	"save_status": {
-		"unsaved": "Unsaved changes",
-		"saving": "Saving…",
-		"saved_at": "Saved at {time}",
-		"failed": "Save failed",
-		"saved": "Saved",
-		"retry": "Retry save",
-		"failed_message": "Saving the plan failed. Your changes are kept, try again.",
-		"name_to_create": "Name your plan to create it",
-		"name_to_save": "Name your plan to save it"
+		"unsaved": "Nicht gespeicherte Änderungen",
+		"saving": "Speichern…",
+		"saved_at": "Gespeichert um {time}",
+		"failed": "Speichern fehlgeschlagen",
+		"saved": "Gespeichert",
+		"retry": "Speichern wiederholen",
+		"failed_message": "Speichern des Plans fehlgeschlagen. Änderungen werden beibehalten, versuche es erneut.",
+		"name_to_create": "Gib deinem Plan einen Namen, um ihn zu erstellen",
+		"name_to_save": "Gib deinem Plan einen Namen, um ihn zu speichern"
 	},
 	"history": {
-		"undo": "Undo",
-		"redo": "Redo",
-		"building_removed": "Building removed",
-		"recipe_removed": "Recipe removed",
-		"recipe_changed": "{building} recipe changed"
+		"undo": "Widerrufen",
+		"redo": "Wiederherstellen",
+		"building_removed": "Gebäude entfernt",
+		"recipe_removed": "Rezept entfernt",
+		"recipe_changed": "{building} Rezept geändert"
+	},
+	"actions": {
+		"more": "Mehr",
+		"save_as_copy": "Als Kopie speichern",
+		"share_link": "Link teilen",
+		"reload": "Gespeicherte Version laden",
+		"reload_hint": "Ungespeicherte Änderungen verwerfen",
+		"reload_confirm": "Die gespeicherte Version neu laden? Deine ungespeicherten Änderungen gehen verloren.",
+		"tools": "Plan-Werkzeuge"
 	},
 	"name": {
-		"untitled": "Unnamed plan"
+		"untitled": "Unbenannter Plan"
 	},
 	"tools": {
 		"labels": {
@@ -53,7 +62,7 @@
 					"filled_unit": "Tage"
 				},
 				"exclusion_info": "Schließe lokale Materialien, die du nur auf diesem Planeten verwaltest, kaufst oder handelst, von der Besuchsfrequenz aus.",
-				"exclusion_label": "Excluded materials"
+				"exclusion_label": "Ausgeschlossene Materialien"
 			},
 			"shipping": {
 				"label": "Versand",
@@ -86,8 +95,8 @@
 				"stock_override": "Bestand überschreiben",
 				"need": "Bedarf"
 			},
-			"amount_label": "Amount of {building}",
-			"override_label": "Stock override for {ticker}"
+			"amount_label": "Anzahl {building}",
+			"override_label": "Überschreiben von {ticker}"
 		},
 		"supply_cart": {
 			"title": "Versorgung",
@@ -171,16 +180,20 @@
 				"production_buildings": "Produktions-@:terms.buildings_plural",
 				"recipes": "@:terms.recipes_plural"
 			},
-			"toggle": "Toggle insights"
+			"toggle": "Einblicke ein-/ausblenden"
 		}
 	},
 	"components": {
 		"status": {
 			"hq": "HQ",
-			"cogc": "@:{'terms.cogc'}:",
-			"area": "@:{'terms.area'}:",
-			"profit": "@:{'terms.profit'}:",
-			"experts": "@:{'terms.experts_plural'}:"
+			"cogc": "@:{'terms.cogc'}",
+			"area": "@:{'terms.area'}",
+			"profit": "@:{'terms.profit'}",
+			"experts": "@:{'terms.experts_plural'}",
+			"experts_none": "Keine",
+			"area_free": "{count} frei",
+			"area_over": "{count} darüber",
+			"per_day": "ȼ/Tag"
 		},
 		"configuration": {
 			"label": "Konfiguration",
@@ -205,12 +218,12 @@
 				"optimize_cost": "Kosten optimieren",
 				"optimize_area": "Fläche optimieren"
 			},
-			"amount_label": "Amount of {infrastructure}"
+			"amount_label": "Anzahl {infrastructure}"
 		},
 		"experts": {
 			"label": "Experten",
 			"warning": "Maximale Anzahl von Experten auf einer Basis ist 6. Du hast derzeit {expert_number} Experten zugewiesen.",
-			"amount_label": "{expert} experts"
+			"amount_label": "{expert} Experten"
 		},
 		"workforce": {
 			"label": "Belegschaft",
@@ -298,10 +311,10 @@
 				"construction": "Konstruktion"
 			},
 			"zero_reason": {
-				"FERTILITY": "Planet not fertile",
-				"WORKFORCE": "No workforce housed"
+				"FERTILITY": "Planet ist nicht fruchtbar",
+				"WORKFORCE": "Keine Arbeitskräfte"
 			},
-			"qty_label": "Amount of {building}"
+			"qty_label": "Anzahl {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "Kosten der hergestellten Waren",
@@ -325,7 +338,7 @@
 				"p3_strong": "ROI",
 				"p3": "is die benötigte Zeit für einen ständig laufenen Auftrag, um Umsatz zu erzeugen, der alle Konstruktionskosten berücksichtigt. Dies beinhaltet die täglichen Verfalls- und Belegschaftskosten."
 			},
-			"amount_label": "Amount of recipe {recipe}"
+			"amount_label": "Anzahl Rezept {recipe}"
 		}
 	}
 }

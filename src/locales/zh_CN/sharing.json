@@ -8,5 +8,15 @@
 		"views": "{count}次查看",
 		"share": "分享"
 	},
-	"title": "分享计划"
+	"title": "分享计划",
+	"banner": {
+		"title": "Shared plan",
+		"info": "Read-only. Prices use the universe 30-day average.",
+		"signup_hint": "Create a free account to clone and edit it."
+	},
+	"unavailable": {
+		"title": "This shared plan is no longer available",
+		"text": "Its owner stopped sharing it or deleted the plan, or the link is incomplete.",
+		"home": "Go to PRUNplanner"
+	}
 }
