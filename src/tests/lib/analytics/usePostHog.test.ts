@@ -112,6 +112,7 @@ describe("usePostHog", () => {
 				persistence: "localStorage",
 				respect_dnt: true,
 				person_profiles: "identified_only",
+				capture_performance: { web_vitals_attribution: true },
 			})
 		);
 		expect(posthog.register).toHaveBeenCalledWith({

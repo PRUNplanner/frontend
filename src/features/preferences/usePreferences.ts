@@ -4,7 +4,7 @@ import {
 	watch,
 	type WritableComputedRef,
 } from "vue";
-import { debounce, isEqual, cloneDeep } from "lodash";
+import { debounce, isEqual, cloneDeep } from "lodash-es";
 import { i18n, type SupportedLocale } from "@/lib/i18n";
 import type { Composer } from "vue-i18n";
 

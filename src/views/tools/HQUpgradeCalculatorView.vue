@@ -7,7 +7,7 @@
 		ref,
 		watch,
 	} from "vue";
-	import { debounce } from "lodash";
+	import { debounce } from "lodash-es";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 

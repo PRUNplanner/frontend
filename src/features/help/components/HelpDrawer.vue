@@ -111,7 +111,10 @@
 				{{ displayDrawerTitle }}
 			</template>
 			<div v-if="markdownContent != ''" id="markdown">
-				<VueShowdown :markdown="markdownContent" />
+				<VueShowdown
+					:markdown="markdownContent"
+					flavor="github"
+					:options="{ tables: true, emoji: true }" />
 			</div>
 			<div v-else-if="loadFailed" class="text-center text-red-500">
 				{{ t("help.load_error", { file_name: fileName }) }}
