@@ -27,7 +27,6 @@
 		"reload": "Reload saved version",
 		"reload_hint": "Discards unsaved changes",
 		"reload_confirm": "Reload the saved version? Your unsaved changes will be lost.",
-		"shortcuts": "Ctrl/Cmd+S saves · Ctrl/Cmd+Z undoes",
 		"tools": "Plan tools"
 	},
 	"name": {

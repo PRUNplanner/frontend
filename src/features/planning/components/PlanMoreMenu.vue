@@ -75,24 +75,7 @@
 					icon: icon(ChangeCircleOutlined),
 				}
 			);
-		if (items.length === 0) return items;
-		return [
-			...items,
-			{ type: "divider", key: "divider-footer" },
-			{
-				type: "render",
-				key: "shortcuts",
-				render: () =>
-					h(
-						"div",
-						{
-							// in line with the option labels
-							class: "pl-(--n-option-icon-prefix-width) pr-3 py-2 text-xs leading-4 text-muted",
-						},
-						t("plan.actions.shortcuts")
-					),
-			},
-		];
+		return items;
 	});
 
 	function onSelect(key: "save-as" | "share" | "reload"): void {
