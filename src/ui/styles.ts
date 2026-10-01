@@ -54,6 +54,11 @@ export const buttonConfig: PButtonConfig = {
 			hover: "hover:bg-gray-200",
 			disabled: "disabled:bg-gray-100/50 disabled:text-gray-900",
 		},
+		ghost: {
+			base: "bg-transparent text-white active:bg-white/15",
+			hover: "hover:bg-white/10",
+			disabled: "disabled:bg-transparent disabled:text-white/40",
+		},
 	},
 };
 

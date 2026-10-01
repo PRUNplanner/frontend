@@ -51,7 +51,9 @@ time.
 2. **Reuse the UI kit.** Use `import { PButton, PSelect, … } from "@/ui"`
    (`src/ui/`), and `XNDataTable` from `@skit/x.naive-ui` for tables. Use raw
    naive-ui only for overlays (`NModal`, `NDrawer`, `NPopover`, `useDialog`).
-   See [docs/ui-and-i18n.md](docs/ui-and-i18n.md).
+   See [docs/ui-and-i18n.md](docs/ui-and-i18n.md), and its
+   [Layout & hierarchy](docs/ui-and-i18n.md#layout--hierarchy) rules for
+   every new or changed view.
 3. **Never hard-code user-facing strings.** Add keys to
    `src/locales/en_US/<namespace>.json` only. Crowdin owns every other locale
    folder, so don't edit those. Help pages follow the same rule and live in

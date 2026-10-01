@@ -5,12 +5,14 @@ export type ColorKey =
 	| "error"
 	| "warning"
 	| "secondary";
+// buttons also come quiet, without a fill
+export type ButtonColorKey = ColorKey | "ghost";
 
 export interface PButtonConfig {
 	base: string;
 	sizes: Record<SizeKey, { base: string; icon: string; spinner: string }>;
 	colors: Record<
-		ColorKey,
+		ButtonColorKey,
 		{ base: string; hover?: string; text?: string; disabled?: string }
 	>;
 	defaultSize: SizeKey;
