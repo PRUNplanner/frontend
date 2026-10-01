@@ -1,14 +1,14 @@
 {
 	"consent": {
-		"title": "Help improve PRUNplanner?",
-		"intro": "With your permission, PRUNplanner collects how the tool is used. This helps to decide which features to build next and to find and fix bugs.",
-		"collected_events": "Usage events, such as pages you open and actions you take",
-		"collected_errors": "Error reports when something breaks",
-		"collected_recordings": "Session recordings of some visits, with everything you type masked",
-		"linked": "This data is linked to your account id and stored with PostHog in the EU.",
-		"optional": "This is optional and you can change your choice any time in your Profile. Details are in the {link}.",
-		"tos_link": "Terms of Service",
-		"allow": "Allow",
-		"deny": "No thanks"
+		"title": "Möchtest du bei der Verbesserung von PRUNplanner helfen?",
+		"intro": "Mit deiner Erlaubnis sammelt PRUNplanner Daten, wie das Tool verwendet wird. Das hilft zu entscheiden, welche Funktionen als nächstes Gebaut werden, Fehler zu finden und sie schnell zu beheben.",
+		"collected_events": "Ereignisse, wie Seiten, die du aufrufst und Aktionen, die du durchführst",
+		"collected_errors": "Fehlermeldungen, wenn etwas nicht funktioniert",
+		"collected_recordings": "Sitzungsaufnahmen einiger Besuche. Alle deine Eingaben sind geschwärzt",
+		"linked": "Diese Daten werden mit deinem Konto verbunden und mit PostHog in der EU gespeichert.",
+		"optional": "Dies ist optional und du kannst deine Wahl jederzeit im Profil ändern. Alle Details findest du in den {link}.",
+		"tos_link": "Nutzungsbedingungen",
+		"allow": "Erlauben",
+		"deny": "Nein, danke"
 	}
 }
