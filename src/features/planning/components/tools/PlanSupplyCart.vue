@@ -221,6 +221,7 @@
 				:aria-label="$t('plan.tools.supply_cart.table.stock_duration')"
 				show-buttons
 				:min="0"
+				decimals
 				class="w-25!" />
 			<template v-if="hasStorage">
 				<div class="my-auto font-bold">
