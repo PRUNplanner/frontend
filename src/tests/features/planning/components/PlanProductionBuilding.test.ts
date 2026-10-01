@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { h } from "vue";
 import type { VueWrapper } from "@vue/test-utils";
 
@@ -15,6 +15,22 @@ import type {
 	IProductionBuildingRecipe,
 	IRecipeBuildingOption,
 } from "@/features/planning/usePlanCalculation.types";
+
+import type { ITypicalRecipes } from "@/features/plan_analytics/usePlanetInsights.types";
+
+const typical = vi.hoisted(() => ({
+	value: undefined as ITypicalRecipes | undefined,
+}));
+vi.mock("@/features/plan_analytics/usePlanetInsights", () => ({
+	usePlanetInsights: () => ({ typicalRecipes: () => typical.value }),
+}));
+vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
+	default: {
+		name: "MaterialTile",
+		props: { ticker: String },
+		render: () => h("span"),
+	},
+}));
 
 // PlanProductionRecipe has its own test, the stub only keeps the props
 vi.mock("@/features/planning/components/PlanProductionRecipe.vue", () => ({
@@ -303,5 +319,81 @@ describe("PlanProductionBuilding", () => {
 		});
 
 		expect(wrapper.text()).toContain("game.expertise.null");
+	});
+
+	describe("typical mix hint", () => {
+		const MIX_LABEL = "plan.components.production_building.mix_add_label";
+		const options = [
+			{ recipe_id: "SME#FE", outputs: [{ material_ticker: "FE" }] },
+			{ recipe_id: "SME#AL", outputs: [{ material_ticker: "AL" }] },
+		] as IRecipeBuildingOption[];
+		const empty = () =>
+			building({ activeRecipes: [], recipeOptions: options });
+		const mixButton = (wrapper: VueWrapper) =>
+			wrapper.find(`button[aria-label="${MIX_LABEL}"]`);
+
+		beforeEach(() => {
+			typical.value = {
+				percentage: 50,
+				recipes: [
+					{ recipeid: "SME#FE", amount: 3 },
+					{ recipeid: "SME#AL", amount: 1 },
+					// not a recipe this building can run here
+					{ recipeid: "SME#XX", amount: 2 },
+				],
+			};
+		});
+
+		it("adds the mix recipes a building without recipes can run", async () => {
+			const { wrapper, component } = await mountBuilding({
+				buildingData: empty(),
+			});
+
+			expect(wrapper.text()).toContain(
+				"plan.components.production_building.mix_hint"
+			);
+			expect(mixButton(wrapper).text()).toContain("50 %");
+			expect(
+				wrapper
+					.findAllComponents({ name: "MaterialTile" })
+					.map((t) => t.props("ticker"))
+			).toEqual(["FE", "AL"]);
+
+			await mixButton(wrapper).trigger("click");
+			expect(component.emitted("add:building:recipes")).toEqual([
+				[
+					2,
+					[
+						{ recipeid: "SME#FE", amount: 3 },
+						{ recipeid: "SME#AL", amount: 1 },
+					],
+				],
+			]);
+		});
+
+		it("is not shown with recipes, read-only, or without a typical mix", async () => {
+			const withRecipes = await mountBuilding();
+			expect(mixButton(withRecipes.wrapper).exists()).toBe(false);
+
+			const readOnly = await mountBuilding({
+				buildingData: empty(),
+				disabled: true,
+			});
+			expect(mixButton(readOnly.wrapper).exists()).toBe(false);
+
+			typical.value = {
+				percentage: 10,
+				recipes: [{ recipeid: "SME#XX", amount: 1 }],
+			};
+			const unknown = await mountBuilding({ buildingData: empty() });
+			expect(mixButton(unknown.wrapper).exists()).toBe(false);
+
+			typical.value = undefined;
+			const none = await mountBuilding({ buildingData: empty() });
+			expect(mixButton(none.wrapper).exists()).toBe(false);
+			expect(none.wrapper.text()).toContain(
+				"plan.components.production_building.no_recipe"
+			);
+		});
 	});
 });

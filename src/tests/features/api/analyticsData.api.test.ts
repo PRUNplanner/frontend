@@ -124,10 +124,68 @@ describe("API Keys Data API Calls", async () => {
 			mockData
 		);
 
-		expect(await callAnalyticsPlanetInsights(fakePlanetId)).toStrictEqual(
-			mockData
-		);
+		// a v1 row gets the v2 keys as defaults
+		expect(await callAnalyticsPlanetInsights(fakePlanetId)).toStrictEqual({
+			...mockData,
+			total_users: 0,
+			insights_data: {
+				...mockData.insights_data,
+				buildings: [],
+				experts: [],
+			},
+		});
 		expect(spyApiService).toHaveBeenCalledOnce();
+	});
+
+	it("callAnalyticsPlanetInsights v2", async () => {
+		const mockData = {
+			status: "success",
+			planet_natural_id: "KW-688c",
+			total_plans_analyzed: 24,
+			total_users: 12,
+			insights_data: {
+				expert_distribution: [],
+				building_distribution: [],
+				recipe_distribution: {},
+				buildings: [
+					{
+						ticker: "FRM",
+						plans: 24,
+						users: 12,
+						percentage: 100,
+						median_amount: 3,
+						recipes: [
+							{
+								recipe_id: "FRM#1xH2O=>4xGRN",
+								plans: 24,
+								percentage: 100,
+								median_amount: 2,
+							},
+						],
+						mixes: [
+							{
+								recipe_ids: ["FRM#1xH2O=>4xGRN"],
+								plans: 12,
+								percentage: 50,
+								median_building_amount: 3,
+								recipe_amounts: { "FRM#1xH2O=>4xGRN": 2 },
+							},
+						],
+					},
+				],
+				experts: [
+					{
+						type: "Food_Industries",
+						plans_percentage: 80,
+						median_amount: 2,
+					},
+				],
+			},
+			last_updated: "2026-10-01T03:43:09.504511Z",
+		};
+		mock.onGet("/analytics/planet_insights/V2/").reply(200, mockData);
+
+		expect(await callAnalyticsPlanetInsights("V2")).toStrictEqual(mockData);
 	});
 
 	it.each([

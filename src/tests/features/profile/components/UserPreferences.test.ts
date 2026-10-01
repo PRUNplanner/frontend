@@ -395,6 +395,22 @@ describe("UserPreferences", () => {
 		expect(userStore.preferences.defaultBuyItemsFromCX).toBe(false);
 	});
 
+	it("toggles plan suggestions, on by default", async () => {
+		const userStore = seed();
+		const { wrapper } = await mountPreferences();
+		const suggestions = wrapper.findAll<HTMLInputElement>(
+			"input[type=checkbox]"
+		)[1];
+
+		expect(suggestions.element.checked).toBe(true);
+		expect(wrapper.text()).toContain(
+			"profile.preferences.form.plan_suggestions_help"
+		);
+
+		await suggestions.setValue(false);
+		expect(userStore.preferences.planSuggestions).toBe(false);
+	});
+
 	it("saves changes to the backend 5 seconds after the last one", async () => {
 		const userStore = seed();
 		userStore.accessToken = "test-access-token";
@@ -452,7 +468,7 @@ describe("UserPreferences", () => {
 			seed();
 			const { wrapper } = await mountPreferences();
 
-			expect(checkboxes(wrapper)).toHaveLength(1);
+			expect(checkboxes(wrapper)).toHaveLength(2);
 			expect(wrapper.text()).not.toContain(
 				"profile.preferences.form.analytics"
 			);
@@ -463,24 +479,24 @@ describe("UserPreferences", () => {
 			seed();
 			const { wrapper } = await mountPreferences();
 
-			expect(checkboxes(wrapper)[1].element.checked).toBe(true);
+			expect(checkboxes(wrapper)[2].element.checked).toBe(true);
 			expect(wrapper.text()).toContain(
 				"profile.preferences.form.analytics_note"
 			);
 
 			analytics.consent.value = "denied";
 			await flushPromises();
-			expect(checkboxes(wrapper)[1].element.checked).toBe(false);
+			expect(checkboxes(wrapper)[2].element.checked).toBe(false);
 		});
 
 		it("grants and denies without saving preferences", async () => {
 			seed();
 			const { wrapper } = await mountPreferences();
 
-			await checkboxes(wrapper)[1].setValue(true);
+			await checkboxes(wrapper)[2].setValue(true);
 			expect(analytics.grant).toHaveBeenCalledTimes(1);
 
-			await checkboxes(wrapper)[1].setValue(false);
+			await checkboxes(wrapper)[2].setValue(false);
 			expect(analytics.deny).toHaveBeenCalledTimes(1);
 
 			expect(mock.history.patch).toHaveLength(0);
@@ -492,8 +508,8 @@ describe("UserPreferences", () => {
 			seed();
 			const { wrapper } = await mountPreferences();
 
-			expect(checkboxes(wrapper)[1].element.disabled).toBe(true);
-			expect(checkboxes(wrapper)[1].element.checked).toBe(false);
+			expect(checkboxes(wrapper)[2].element.disabled).toBe(true);
+			expect(checkboxes(wrapper)[2].element.checked).toBe(false);
 			expect(wrapper.text()).toContain(
 				"profile.preferences.form.analytics_dnt"
 			);

@@ -52,6 +52,27 @@ describe("usePlanHistory", () => {
 		expect(history.canRedo.value).toBe(false);
 	});
 
+	it("undoes several recipes added by one handler in one step", async () => {
+		const { plan, history } = setup();
+		const addRecipes = history.record(() => {
+			plan.value.plan_data.buildings[0].active_recipes.push(
+				{ recipeid: "a", amount: 2 },
+				{ recipeid: "b", amount: 3 }
+			);
+		});
+
+		addRecipes();
+		await flushPromises();
+		expect(plan.value.plan_data.buildings[0].active_recipes.length).toBe(2);
+
+		history.undo();
+		await flushPromises();
+		expect(plan.value.plan_data.buildings[0].active_recipes).toStrictEqual(
+			[]
+		);
+		expect(history.canUndo.value).toBe(false);
+	});
+
 	it("undoes and redoes an edit", async () => {
 		const { plan, history, setAmount } = setup();
 

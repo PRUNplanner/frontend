@@ -13,6 +13,7 @@
 	// Composables
 	import { useBuildingData } from "@/database/services/useBuildingData";
 	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
+	import { usePlanetInsights } from "@/features/plan_analytics/usePlanetInsights";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -24,7 +25,11 @@
 		PlanetResourceType,
 	} from "@/features/api/schemas/gameData.schemas";
 	import type { IProductionResult } from "@/features/planning/usePlanCalculation.types";
-	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+	import type {
+		PlanCOGCProgram,
+		PlanDataBuilding,
+	} from "@/features/api/schemas/planningData.schemas";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
 	import PCheckbox from "@/ui/components/PCheckbox.vue";
@@ -81,6 +86,11 @@
 		): void;
 		(e: "add:building:recipe", buildingIndex: number): void;
 		(
+			e: "add:building:recipes",
+			buildingIndex: number,
+			recipes: PlanDataBuilding["active_recipes"]
+		): void;
+		(
 			e: "update:building:recipe",
 			buildingIndex: number,
 			recipeIndex: number,
@@ -97,6 +107,47 @@
 	const localMatchCOGC: Ref<boolean> = ref(false);
 
 	const { getProductionBuildingOptions } = useBuildingData();
+	const { isAvailable, totalPlans, popularBuildings, mostPlannedRecipe } =
+		usePlanetInsights(() => props.planetId);
+
+	const buildingOptions: ComputedRef<PSelectOption[]> = computed(() =>
+		getProductionBuildingOptions(
+			localProductionData.value.buildings.map((e) => e.name),
+			localMatchCOGC.value ? localCOGC.value : undefined,
+			isAvailable.value
+				? {
+						label: t("plan.components.production.form.popular_on", {
+							planet: props.planetId,
+							plans: totalPlans.value,
+						}),
+						buildings: popularBuildings.value,
+					}
+				: undefined
+		)
+	);
+
+	const POPULAR_PREFIX = "POPULAR#";
+
+	function selectBuilding(value: string): void {
+		const isFromPopular = value.startsWith(POPULAR_PREFIX);
+		const ticker = value.replace(POPULAR_PREFIX, "");
+		emit("create:building", ticker);
+		trackPlanEdit({
+			field: "building_add",
+			planet_natural_id: props.planetId,
+			building_ticker: ticker,
+			...(isAvailable.value ? { is_from_popular: isFromPopular } : {}),
+		});
+	}
+
+	/** is_most_planned, only while the planet has insights to compare */
+	function mostPlanned(
+		ticker: string,
+		recipeId: string | undefined
+	): { is_most_planned?: boolean } {
+		if (!isAvailable.value || recipeId === undefined) return {};
+		return { is_most_planned: mostPlannedRecipe(ticker) === recipeId };
+	}
 
 	function emitCreateBuildingWithRecipe(
 		resourceType: PlanetResourceType,
@@ -186,22 +237,8 @@
 					t('plan.components.production.form.select_placeholder')
 				"
 				class="w-full sm:w-75!"
-				:options="
-					getProductionBuildingOptions(
-						localProductionData.buildings.map((e) => e.name),
-						localMatchCOGC ? localCOGC : undefined
-					)
-				"
-				@update:value="
-					(value) => {
-						emit('create:building', value as string);
-						trackPlanEdit({
-							field: 'building_add',
-							planet_natural_id: props.planetId,
-							building_ticker: value as string,
-						});
-					}
-				" />
+				:options="buildingOptions"
+				@update:value="(value) => selectBuilding(value as string)" />
 		</div>
 	</div>
 
@@ -285,6 +322,24 @@
 							field: 'recipe_add',
 							planet_natural_id: props.planetId,
 							building_ticker: building.name,
+							...mostPlanned(
+								building.name,
+								building.recipeOptions[0]?.recipe_id
+							),
+						});
+					}
+				"
+				@add:building:recipes="
+					(
+						buildingIndex: number,
+						recipes: PlanDataBuilding['active_recipes']
+					) => {
+						emit('add:building:recipes', buildingIndex, recipes);
+						trackPlanEdit({
+							field: 'recipe_mix_add',
+							planet_natural_id: props.planetId,
+							building_ticker: building.name,
+							amount: recipes.length,
 						});
 					}
 				"
@@ -305,6 +360,7 @@
 							planet_natural_id: props.planetId,
 							building_ticker: building.name,
 							recipe_id: recipeId,
+							...mostPlanned(building.name, recipeId),
 						});
 					}
 				" />

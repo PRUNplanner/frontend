@@ -9,6 +9,7 @@ export type PlanEditField =
 	| "building_add"
 	| "building_amount"
 	| "recipe_add"
+	| "recipe_mix_add"
 	| "recipe_change"
 	| "recipe_delete"
 	| "recipe_amount"
@@ -30,6 +31,9 @@ export interface IPlanEditProperties {
 	workforce_type?: WorkforceType;
 	lux_type?: string;
 	value?: boolean | number | PlanCOGCProgram;
+	// only while plan suggestions are on
+	is_from_popular?: boolean;
+	is_most_planned?: boolean;
 }
 
 // tools that report a result without further properties
@@ -92,6 +96,7 @@ export interface IAnalyticsEventProperties {
 	"plan:share_delete": undefined;
 	"plan:tool_toggle": { tool_name: string | null };
 	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
+	"plan:insights_open": { planet_natural_id: string };
 	"plan:hab_optimize": { goal: "auto" | "area" | "cost" };
 	"plan:hab_auto_toggle": { is_active: boolean };
 	"plan:edit": IPlanEditProperties;

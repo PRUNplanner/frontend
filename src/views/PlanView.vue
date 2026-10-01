@@ -177,6 +177,7 @@
 		handleUpdateBuildingRecipeAmount,
 		handleDeleteBuildingRecipe,
 		handleAddBuildingRecipe,
+		handleAddBuildingRecipes,
 		handleChangeBuildingRecipe,
 		handleChangePlanName,
 	} = calculation;
@@ -996,6 +997,7 @@
 							"
 							@delete:building:recipe="deleteBuildingRecipe"
 							@add:building:recipe="handleAddBuildingRecipe"
+							@add:building:recipes="handleAddBuildingRecipes"
 							@update:building:recipe="changeBuildingRecipe" />
 					</div>
 				</div>

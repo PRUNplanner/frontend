@@ -690,6 +690,47 @@ describe("Planning: Workforce Calculations", async () => {
 		});
 	});
 
+	describe("handleAddBuildingRecipes", async () => {
+		it("throws for an invalid building index", async () => {
+			const { handleAddBuildingRecipes } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref({ buildings: [] }),
+				ref(),
+				ref({})
+			);
+
+			expect(() => handleAddBuildingRecipes(0, [])).toThrowError();
+		});
+
+		it("adds all recipes, skipping ones the building runs", async () => {
+			const fakePlan = {
+				buildings: [
+					{ name: "FRM", active_recipes: [{ recipeid: "a", amount: 1 }] },
+				],
+			};
+
+			const { handleAddBuildingRecipes } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
+
+			handleAddBuildingRecipes(0, [
+				{ recipeid: "a", amount: 5 },
+				{ recipeid: "b", amount: 2 },
+				{ recipeid: "c", amount: 3 },
+			]);
+			expect(fakePlan.buildings[0].active_recipes).toStrictEqual([
+				{ recipeid: "a", amount: 1 },
+				{ recipeid: "b", amount: 2 },
+				{ recipeid: "c", amount: 3 },
+			]);
+		});
+	});
+
 	describe("handleAddBuildingRecipe", async () => {
 		it("Change, wrong building Index", async () => {
 			const fakePlan = {

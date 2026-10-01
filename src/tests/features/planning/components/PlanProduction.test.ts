@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeAll, vi } from "vitest";
-import { h } from "vue";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { h, ref } from "vue";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { buildingsStore } from "@/database/stores";
@@ -16,6 +16,27 @@ import type { PlanetResource } from "@/features/api/schemas/gameData.schemas";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
+
+const insights = vi.hoisted(() => ({
+	available: { value: false },
+	mostPlanned: undefined as string | undefined,
+}));
+vi.mock("@/features/plan_analytics/usePlanetInsights", () => ({
+	usePlanetInsights: () => ({
+		isAvailable: insights.available,
+		totalPlans: ref(24),
+		popularBuildings: ref([
+			{ ticker: "PP1", percentage: 58.4 },
+			{ ticker: "SME", percentage: 40 },
+		]),
+		mostPlannedRecipe: () => insights.mostPlanned,
+	}),
+}));
+const trackPlanEdit = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
+	trackPlanEdit,
+}));
 
 // PlanProductionBuilding has its own test, the stub only keeps the props
 vi.mock("@/features/planning/components/PlanProductionBuilding.vue", () => ({
@@ -104,6 +125,105 @@ describe("PlanProduction", () => {
 		// @ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
 		await useBuildingData().preloadBuildings();
+	});
+
+	beforeEach(() => {
+		insights.available = ref(false);
+		insights.mostPlanned = undefined;
+		trackPlanEdit.mockReset();
+	});
+
+	it("offers the planet's popular buildings first", async () => {
+		insights.available = ref(true);
+		const { wrapper } = await mountProduction();
+
+		const groups = wrapper.findComponent(PSelect).props("options") as {
+			label: string;
+			children: { value: string; badge?: string }[];
+		}[];
+		expect(groups.map((g) => g.label)).toEqual([
+			"plan.components.production.form.popular_on",
+			"All buildings",
+		]);
+		// SME is in the plan already
+		expect(groups[0].children).toEqual([
+			expect.objectContaining({ value: "POPULAR#PP1", badge: "58 %" }),
+		]);
+		expect(groups[1].children.map((c) => c.value)).toContain("PP1");
+	});
+
+	it("tracks a building picked from the popular group", async () => {
+		insights.available = ref(true);
+		const { wrapper, component } = await mountProduction();
+
+		wrapper.findComponent(PSelect).vm.$emit("update:value", "POPULAR#PP1");
+		wrapper.findComponent(PSelect).vm.$emit("update:value", "FS");
+		await flushPromises();
+
+		expect(component.emitted("create:building")).toEqual([["PP1"], ["FS"]]);
+		expect(trackPlanEdit.mock.calls.map((c) => c[0])).toEqual([
+			expect.objectContaining({
+				building_ticker: "PP1",
+				is_from_popular: true,
+			}),
+			expect.objectContaining({
+				building_ticker: "FS",
+				is_from_popular: false,
+			}),
+		]);
+	});
+
+	it("tracks without suggestion fields when the planet has no insights", async () => {
+		const { wrapper } = await mountProduction();
+
+		wrapper.findComponent(PSelect).vm.$emit("update:value", "PP1");
+		children(wrapper).at(1)!.vm.$emit("update:building:recipe", 1, 0, "x");
+		await flushPromises();
+
+		trackPlanEdit.mock.calls.forEach(([props]) => {
+			expect(props).not.toHaveProperty("is_from_popular");
+			expect(props).not.toHaveProperty("is_most_planned");
+		});
+	});
+
+	it("tracks whether a picked recipe is the most planned one", async () => {
+		insights.available = ref(true);
+		insights.mostPlanned = "FP#DW";
+		const { wrapper } = await mountProduction();
+
+		children(wrapper).at(1)!.vm.$emit("update:building:recipe", 1, 0, "FP#DW");
+		children(wrapper).at(1)!.vm.$emit("update:building:recipe", 1, 0, "FP#X");
+
+		expect(trackPlanEdit.mock.calls.map((c) => c[0])).toEqual([
+			expect.objectContaining({
+				field: "recipe_change",
+				is_most_planned: true,
+			}),
+			expect.objectContaining({
+				field: "recipe_change",
+				is_most_planned: false,
+			}),
+		]);
+	});
+
+	it("re-emits and tracks adding the typical mix", async () => {
+		const { wrapper, component } = await mountProduction();
+		const recipes = [
+			{ recipeid: "FP#DW", amount: 2 },
+			{ recipeid: "FP#X", amount: 1 },
+		];
+
+		children(wrapper).at(1)!.vm.$emit("add:building:recipes", 1, recipes);
+
+		expect(component.emitted("add:building:recipes")).toEqual([
+			[1, recipes],
+		]);
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "recipe_mix_add",
+			planet_natural_id: "ZV-307c",
+			building_ticker: "FP",
+			amount: 2,
+		});
 	});
 
 	it("renders one building row per production building", async () => {

@@ -89,6 +89,66 @@ describe("useBuildingData", async () => {
 
 			expect(result.length).toBe(3);
 		});
+
+		it("groups the popular buildings first", async () => {
+			const { getProductionBuildingOptions } = useBuildingData();
+
+			const result = getProductionBuildingOptions(["POL"], undefined, {
+				label: "Popular",
+				buildings: [
+					{ ticker: "CHP", percentage: 58.4 },
+					{ ticker: "POL", percentage: 36 },
+					{ ticker: "NOPE", percentage: 20 },
+				],
+			});
+
+			expect(result.map((g) => g.label)).toStrictEqual([
+				"Popular",
+				"All buildings",
+			]);
+			// buildings in the plan or unknown are left out
+			expect(result[0].children).toStrictEqual([
+				{
+					value: "POPULAR#CHP",
+					label: expect.stringContaining("CHP"),
+					badge: "58 %",
+				},
+			]);
+			expect(result[1].children!.length).toBe(48);
+		});
+
+		it("keeps at most 8 popular buildings, filtered by COGC", async () => {
+			const { getProductionBuildingOptions } = useBuildingData();
+			const all = getProductionBuildingOptions([]).map((o) => ({
+				ticker: o.value as string,
+				percentage: 10,
+			}));
+
+			expect(
+				getProductionBuildingOptions([], undefined, {
+					label: "Popular",
+					buildings: all,
+				})[0].children!.length
+			).toBe(8);
+			expect(
+				getProductionBuildingOptions([], "AGRICULTURE", {
+					label: "Popular",
+					buildings: all,
+				})[0].children!.length
+			).toBe(3);
+		});
+
+		it("stays a flat list when no popular building is left", async () => {
+			const { getProductionBuildingOptions } = useBuildingData();
+
+			const result = getProductionBuildingOptions(["CHP"], undefined, {
+				label: "Popular",
+				buildings: [{ ticker: "CHP", percentage: 58 }],
+			});
+
+			expect(result.length).toBe(48);
+			expect(result[0].children).toBeUndefined();
+		});
 	});
 
 	describe("getBuildingRecipes", async () => {

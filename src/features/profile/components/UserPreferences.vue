@@ -45,6 +45,7 @@
 		burnOrigin,
 		locale,
 		colorPalette,
+		planSuggestions,
 		planSettingsOverview,
 		cleanPlanPreferences,
 	} = usePreferences();
@@ -191,6 +192,14 @@
 		<PFormItem :label="t('profile.preferences.form.buy_from_cx')">
 			<PCheckbox v-model:checked="defaultBuyItemsFromCX" />
 		</PFormItem>
+		<PFormItem :label="t('profile.preferences.form.plan_suggestions')">
+			<PCheckbox v-model:checked="planSuggestions" />
+		</PFormItem>
+		<PFormSeperator>
+			<p class="text-xs text-white/60 pt-1 pb-2">
+				{{ $t("profile.preferences.form.plan_suggestions_help") }}
+			</p>
+		</PFormSeperator>
 
 		<template v-if="analyticsAvailable">
 			<PFormSeperator>

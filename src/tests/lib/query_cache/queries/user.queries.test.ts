@@ -99,12 +99,14 @@ describe("userQueries analytics", () => {
 			locale: "de_DE",
 			colorPalette: "colorblind",
 			layoutNavigationStyle: "collapsed",
+			planSuggestions: false,
 		} as never);
 
 		expect(trackUser).toHaveBeenCalledWith({
 			language: "de_DE",
 			color_palette: "colorblind",
 			navigation_style: "collapsed",
+			is_plan_suggestions_enabled: false,
 		});
 	});
 

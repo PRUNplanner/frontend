@@ -20,6 +20,7 @@ export const preferenceDefaults: IPreferenceDefault = {
 	supplyCartDays: 20,
 	layoutNavigationStyle: "full",
 	colorPalette: "default",
+	planSuggestions: true,
 
 	planOverrides: {},
 	planDefaults: {
