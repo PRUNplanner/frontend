@@ -10,13 +10,13 @@
 	},
 	"title": "Plan teilen",
 	"banner": {
-		"title": "Shared plan",
-		"info": "Read-only. Prices use the universe 30-day average.",
-		"signup_hint": "Create a free account to clone and edit it."
+		"title": "Geteilter Plan",
+		"info": "Nur Lesen. Preise verwenden den 30-tägigen Durchschnitt.",
+		"signup_hint": "Erstelle ein kostenloses Konto, um den Plan zu klonen und bearbeiten."
 	},
 	"unavailable": {
-		"title": "This shared plan is no longer available",
-		"text": "Its owner stopped sharing it or deleted the plan, or the link is incomplete.",
-		"home": "Go to PRUNplanner"
+		"title": "Dieser geteilte Plan ist nicht mehr verfügbar",
+		"text": "Der Besitzer hat die Freigabe beendet, ihn gelöscht oder dein Link ist fehlerhaft.",
+		"home": "Zu PRUNplanner"
 	}
 }
