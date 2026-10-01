@@ -96,7 +96,12 @@
 				"need": "Bedarf"
 			},
 			"amount_label": "Anzahl {building}",
-			"override_label": "Überschreiben von {ticker}"
+			"override_label": "Überschreiben von {ticker}",
+			"built_label": "{building} gebaut",
+			"built_manual": "Von dir eingegeben, nicht von FIO",
+			"built_reset": "Gebautes {building} zurücksetzen",
+			"built_reset_all": "Gebäude zurücksetzen",
+			"built_not_saved": "Gebäudezähler werden für diesen Plan nicht gespeichert."
 		},
 		"supply_cart": {
 			"title": "Versorgung",
@@ -181,6 +186,29 @@
 				"recipes": "@:terms.recipes_plural"
 			},
 			"toggle": "Einblicke ein-/ausblenden"
+		},
+		"plan_starter": {
+			"title": "Start from a typical setup on {planet}",
+			"description": "What the {plans} active plans on this planet build most (up to {max}; those in at least {percent} of plans are pre-selected). Adds the checked ones to this plan as a starting point; nothing is saved until you save.",
+			"columns": {
+				"building": "Building",
+				"in_plans": "In plans here",
+				"amount": "Amount",
+				"recipes": "Typical recipes"
+			},
+			"typical_amount": "typ. {amount}x",
+			"no_recipe": "no typical recipe",
+			"experts": "Experts in plans here",
+			"expert_share": "{expert} in {percent} of plans",
+			"expert_added": "adds {amount}",
+			"based_on": "Based on plans of players active in the last 90 days · updated daily",
+			"turn_off": "You can turn off plan suggestions in {link}",
+			"turn_off_link": "Profile › Preferences",
+			"start_empty": "Start empty",
+			"apply": "Use typical setup ({count})",
+			"applied": "Typical setup added: {n} building | Typical setup added: {n} buildings",
+			"empty": "No buildings yet. Add one above, or {link}",
+			"show": "start from a typical setup"
 		}
 	},
 	"components": {
@@ -288,7 +316,9 @@
 			"planet_resources": "@:terms.planets @:terms.resources_plural",
 			"form": {
 				"match_cogc": "Filter auf @:terms.cogc",
-				"select_placeholder": "@:terms.buildings auswählen & zu @:terms.plan hinzufügen"
+				"select_placeholder": "@:terms.buildings auswählen & zu @:terms.plan hinzufügen",
+				"popular_on": "Popular on {planet} · {plans} plans",
+				"all_buildings": "All buildings"
 			},
 			"table": {
 				"building_recipe": "@:terms.buildings / @:terms.recipes",
@@ -308,13 +338,17 @@
 				"efficiency": "Effizienz",
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
-				"construction": "Konstruktion"
+				"construction": "Konstruktion",
+				"construction_per_building": "Pro Gebäude"
 			},
 			"zero_reason": {
 				"FERTILITY": "Planet ist nicht fruchtbar",
 				"WORKFORCE": "Keine Arbeitskräfte"
 			},
-			"qty_label": "Anzahl {building}"
+			"qty_label": "Anzahl {building}",
+			"mix_hint": "Most planned here:",
+			"mix_add": "Add",
+			"mix_add_label": "Add the most planned @:terms.recipes_plural of {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "Kosten der hergestellten Waren",
@@ -328,7 +362,9 @@
 				"output": "Output",
 				"daily_revenue": "ȼ / Tag",
 				"profit_area": "ȼ  / Fläche",
-				"roi": "ROI"
+				"roi": "ROI",
+				"plans_here": "Plans here",
+				"below_threshold": "< 5 %"
 			},
 			"info": {
 				"p1_strong": "Umsatz / Tag",
@@ -336,7 +372,9 @@
 				"p2_strong": "ȼ  / Fläche",
 				"p2": "ist der tägliche Umsatz für ein Produktionsgebäude und sein proportionaler Anteil an der Fläche für eine Kolonisationseinheit und Belegschaftsgebäude für eine optimale Basis für dieses Gebäude und Auftrag.",
 				"p3_strong": "ROI",
-				"p3": "is die benötigte Zeit für einen ständig laufenen Auftrag, um Umsatz zu erzeugen, der alle Konstruktionskosten berücksichtigt. Dies beinhaltet die täglichen Verfalls- und Belegschaftskosten."
+				"p3": "is die benötigte Zeit für einen ständig laufenen Auftrag, um Umsatz zu erzeugen, der alle Konstruktionskosten berücksichtigt. Dies beinhaltet die täglichen Verfalls- und Belegschaftskosten.",
+				"p4_strong": "Plans here",
+				"p4": "is the share of plans on {planet} with a {building} that run this recipe, from active players, updated daily."
 			},
 			"amount_label": "Anzahl Rezept {recipe}"
 		}
