@@ -338,6 +338,13 @@ export const useQueryStore = defineStore(
 
 			const now = Date.now();
 
+			// planet natural id => cache key, refetched in one batch below
+			const expiredPlanets = new Map<string, string>();
+			const multipleRefetches: {
+				ids: string[];
+				request: Promise<QueryData<"GetMultiplePlanets">>;
+			}[] = [];
+
 			for (const [key, entry] of Object.entries(cacheState)) {
 				if (
 					entry.expireTime &&
@@ -349,14 +356,96 @@ export const useQueryStore = defineStore(
 				) {
 					const name = entry.definitionName as QueryName;
 
-					if (getQueryDefinition(name)?.autoRefetch) {
-						execute(name, entry.params as QueryParams<QueryName>);
+					if (name === "GetPlanet") {
+						const params = entry.params as QueryParams<"GetPlanet">;
+						expiredPlanets.set(params.planetNaturalId, key);
+					} else if (getQueryDefinition(name)?.autoRefetch) {
+						const request = execute(
+							name,
+							entry.params as QueryParams<QueryName>
+						);
+						if (name === "GetMultiplePlanets")
+							multipleRefetches.push({
+								ids: (
+									entry.params as QueryParams<"GetMultiplePlanets">
+								).planetNaturalIds,
+								request: request as Promise<
+									QueryData<"GetMultiplePlanets">
+								>,
+							});
 					} else {
 						// delete as stale and should not refetch
 						invalidateKey(JSON.parse(key) as JSONValue);
 					}
 				}
 			}
+
+			// planets an expiring multiple query refetches anyway take its result
+			for (const { ids, request } of multipleRefetches) {
+				const covered = new Map<string, string>();
+				ids.forEach((id) => {
+					const key = expiredPlanets.get(id);
+					if (key === undefined) return;
+					covered.set(id, key);
+					expiredPlanets.delete(id);
+				});
+				if (covered.size) refreshPlanets(covered, request);
+			}
+
+			if (expiredPlanets.size)
+				refreshPlanets(
+					expiredPlanets,
+					getQueryDefinition("GetMultiplePlanets").fetchFn({
+						planetNaturalIds: [...expiredPlanets.keys()],
+					})
+				);
+		}
+
+		/**
+		 * Refreshes GetPlanet entries from one multiple planets request
+		 * instead of one request per planet. Planets missing from the
+		 * result get an error, so the watcher stops refetching them.
+		 *
+		 * @author jplacht
+		 *
+		 * @param {Map<string, string>} keys Planet natural id => cache key
+		 * @param {Promise<QueryData<"GetMultiplePlanets">>} request Planets
+		 */
+		function refreshPlanets(
+			keys: Map<string, string>,
+			request: Promise<QueryData<"GetMultiplePlanets">>
+		): void {
+			keys.forEach((key) => updateState(key, { loading: true }));
+
+			const settle = (
+				update: (id: string) => Partial<IQueryState<unknown, unknown>>
+			) =>
+				keys.forEach((key, id) => {
+					// dropped meanwhile, e.g. by $reset on logout
+					if (!cacheState[key]) return;
+					updateState(key, {
+						loading: false,
+						timestamp: Date.now(),
+						...update(id),
+					});
+				});
+
+			request.then(
+				(planets) => {
+					const byId = new Map(
+						planets.map((p) => [p.planet_natural_id, p])
+					);
+					settle((id) =>
+						byId.has(id)
+							? { data: byId.get(id), error: null }
+							: { error: new Error(`Planet ${id} not found`) }
+					);
+				},
+				(err) =>
+					settle(() => ({
+						error: err instanceof Error ? err : new Error(String(err)),
+					}))
+			);
 		}
 
 		/**

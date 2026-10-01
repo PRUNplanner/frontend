@@ -3,6 +3,8 @@ import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { useUserActivity } from "@/features/user_activity/useUserActivity";
+import { userActivity } from "@/features/user_activity/userActivityStore";
+import { getQueryDefinition } from "@/lib/query_cache/queryRepository";
 
 // a request that stays in flight until the test resolves it
 const slow = vi.hoisted(() => ({
@@ -36,6 +38,30 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 			fetchFn: vi.fn(async (params) => {
 				return { result: `data-${params}` };
 			}),
+		},
+		GetPlanet: {
+			key: (params: any) => ["gamedata", "planet", params.planetNaturalId],
+			expireTime: 1000,
+			autoRefetch: true,
+			fetchFn: vi.fn(async (params) => ({
+				planet_natural_id: params.planetNaturalId,
+			})),
+		},
+		// returns every id but "XX-000x", like the backend for unknown ids
+		GetMultiplePlanets: {
+			key: (params: any) => [
+				"gamedata",
+				"planet",
+				"multiple",
+				params.planetNaturalIds,
+			],
+			expireTime: 1000,
+			autoRefetch: true,
+			fetchFn: vi.fn(async (params) =>
+				params.planetNaturalIds
+					.filter((id: string) => id !== "XX-000x")
+					.map((id: string) => ({ planet_natural_id: id, fresh: true }))
+			),
 		},
 		autoRefetchQuery: {
 			key: (params: any) => ["autoRefetchQuery", params],
@@ -286,4 +312,104 @@ describe("useQueryStore: stale in-flight requests", () => {
 
 			expect(cachedSlow()).toBeUndefined();
 		});
+});
+
+describe("checkEntryStatusAndRefresh: expired planets", () => {
+	let store: ReturnType<typeof useQueryStore>;
+	const getPlanet = getQueryDefinition("GetPlanet").fetchFn as Mock;
+	const getMultiple = getQueryDefinition("GetMultiplePlanets")
+		.fetchFn as Mock;
+	const planetState = (id: string) =>
+		store.cacheState[toCacheKey(["gamedata", "planet", id])];
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		store = useQueryStore();
+		vi.useFakeTimers();
+		vi.setSystemTime(1000); // a 0 timestamp counts as never fetched
+		vi.clearAllMocks();
+		vi.spyOn(userActivity, "shouldDelay").mockReturnValue(false);
+	});
+
+	function seedPlanets(ids: string[]) {
+		ids.forEach((id) =>
+			store.addCacheState("GetPlanet", { planetNaturalId: id }, {
+				planet_natural_id: id,
+			} as any)
+		);
+	}
+
+	it("refetches them in one multiple request, none per planet", async () => {
+		seedPlanets(["AB-001c", "AB-002c", "AB-003c"]);
+		vi.setSystemTime(3000);
+
+		store.checkEntryStatusAndRefresh();
+		expect(planetState("AB-001c").loading).toBe(true);
+		await vi.runAllTimersAsync();
+
+		expect(getPlanet).not.toHaveBeenCalled();
+		expect(getMultiple).toHaveBeenCalledTimes(1);
+		expect(getMultiple).toHaveBeenCalledWith({
+			planetNaturalIds: ["AB-001c", "AB-002c", "AB-003c"],
+		});
+		expect(planetState("AB-002c")).toMatchObject({
+			data: { planet_natural_id: "AB-002c", fresh: true },
+			timestamp: 3000,
+			loading: false,
+			error: null,
+		});
+	});
+
+	it("takes planets an expiring multiple query covers from its result", async () => {
+		await store.execute("GetMultiplePlanets", {
+			planetNaturalIds: ["AB-001c", "AB-002c"],
+		});
+		seedPlanets(["AB-001c", "AB-002c"]);
+		getMultiple.mockClear();
+		vi.setSystemTime(3000);
+
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+
+		expect(getPlanet).not.toHaveBeenCalled();
+		expect(getMultiple).toHaveBeenCalledTimes(1);
+		expect(planetState("AB-001c")).toMatchObject({
+			data: { fresh: true },
+			timestamp: 3000,
+			loading: false,
+		});
+	});
+
+	it("marks planets missing from the result as errored, no refetch loop", async () => {
+		seedPlanets(["AB-001c", "XX-000x"]);
+		vi.setSystemTime(3000);
+
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+		vi.setSystemTime(6000);
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+
+		expect(planetState("XX-000x").error).toBeInstanceOf(Error);
+		expect(planetState("XX-000x").loading).toBe(false);
+		// the second tick only refetches the found planet
+		expect(getMultiple).toHaveBeenLastCalledWith({
+			planetNaturalIds: ["AB-001c"],
+		});
+	});
+
+	it("keeps the planets on a failed request, errored", async () => {
+		getMultiple.mockRejectedValueOnce(new Error("offline"));
+		seedPlanets(["AB-001c"]);
+		vi.setSystemTime(3000);
+
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+
+		expect(planetState("AB-001c")).toMatchObject({
+			data: { planet_natural_id: "AB-001c" },
+			loading: false,
+		});
+		expect(planetState("AB-001c").error?.message).toBe("offline");
+	});
 });

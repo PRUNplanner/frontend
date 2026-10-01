@@ -97,7 +97,8 @@ export async function callDataPlanet(planetNaturalId: string): Promise<Planet> {
 
 /**
  * Calls the /data/planet/multiple API endpoint to fetch
- * multiple planets and their data
+ * multiple planets and their data, in requests of at most
+ * 200 ids (the backend's limit)
  * @author jplacht
  *
  * @export
@@ -108,12 +109,21 @@ export async function callDataPlanet(planetNaturalId: string): Promise<Planet> {
 export async function callDataMultiplePlanets(
 	planetNaturalIds: string[]
 ): Promise<Planet[]> {
-	return apiService.post(
-		"/data/planets/multiple/",
-		planetNaturalIds,
-		PlanetMultipleRequestPayloadSchema,
-		PlanetMultiplePayloadSchema
+	const chunks: string[][] = [];
+	for (let i = 0; i < planetNaturalIds.length; i += 200)
+		chunks.push(planetNaturalIds.slice(i, i + 200));
+
+	const results = await Promise.all(
+		chunks.map((chunk) =>
+			apiService.post(
+				"/data/planets/multiple/",
+				chunk,
+				PlanetMultipleRequestPayloadSchema,
+				PlanetMultiplePayloadSchema
+			)
+		)
 	);
+	return results.flat();
 }
 
 /**
