@@ -100,6 +100,13 @@
 					of debugging, monitoring service health, and preventing
 					unauthorized access. This information is not used for
 					marketing or profiling purposes.
+					If a request to our server fails or returns data the app
+					cannot read, your browser reports this to our server, which
+					adds it to these logs: the kind of error, the API address
+					with ids removed, the HTTP status, timings, the app version,
+					and random request and session ids that link the report to
+					the matching server log entries. Nothing you entered is
+					included.
 				</p>
 				<p id="analytics" class="py-3">
 					PRUNplanner uses PostHog, a EU-hosted analytics tool, to
@@ -119,6 +126,9 @@
 					PostHog data stored in your browser. If your browser sends
 					a Do-Not-Track or Global Privacy Control signal, PostHog is
 					never loaded and you are not asked.
+					With your consent, the session id PostHog assigns is also
+					sent with requests to our server and appears in its logs, so
+					an error can be matched to its session recording.
 				</p>
 				<p class="py-3">
 					In the event that you opt to provide your email address for

@@ -294,6 +294,13 @@ export function identify(id: string, props?: Properties): void {
 	if (started && !unchanged) posthog?.identify(id, merged);
 }
 
+/**
+ * PostHog's session id while it runs, undefined otherwise
+ */
+export function getSessionId(): string | undefined {
+	return started ? posthog?.get_session_id() : undefined;
+}
+
 export function reset(): void {
 	identity = null;
 	pendingUserProps = {};
