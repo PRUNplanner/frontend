@@ -132,6 +132,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | `market_live` | | live data arrived, once per visit |
 | `fio_repair` | | the page opened with a repair table |
 | `fio_burn` | | the burn calculation finished for at least one plan |
+| `construction_cart` | `built_edited` (Built was changed in this visit) | the cart closed |
 
 ### XIT, app, onboarding
 

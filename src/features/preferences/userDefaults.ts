@@ -29,5 +29,6 @@ export const preferenceDefaults: IPreferenceDefault = {
 		// be stored into the prefs on saving. But for existing plans, we want it
 		// to be false by default
 		autoOptimizeHabs: false,
+		constructionBuilt: {},
 	},
 };

@@ -404,6 +404,7 @@ describe("Backend contract", () => {
 						includeCM: true,
 						visitationMaterialExclusions: ["DW"],
 						autoOptimizeHabs: false,
+						constructionBuilt: { FRM: 3 },
 					},
 				},
 			});
@@ -412,7 +413,23 @@ describe("Backend contract", () => {
 				includeCM: true,
 				visitationMaterialExclusions: ["DW"],
 				autoOptimizeHabs: false,
+				constructionBuilt: { FRM: 3 },
 			});
+		});
+
+		it("rejects negative or fractional built counts", () => {
+			for (const count of [-1, 1.5])
+				expect(() =>
+					UserPreferenceSchema.parse({
+						...backendDefaults,
+						planOverrides: {
+							[UUID]: {
+								autoOptimizeHabs: true,
+								constructionBuilt: { FRM: count },
+							},
+						},
+					})
+				).toThrow();
 		});
 
 		it("only sends fields the backend knows", async () => {

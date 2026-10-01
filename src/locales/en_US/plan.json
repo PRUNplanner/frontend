@@ -96,7 +96,12 @@
 				"need": "Need"
 			},
 			"amount_label": "Amount of {building}",
-			"override_label": "Stock override for {ticker}"
+			"override_label": "Stock override for {ticker}",
+			"built_label": "Built {building}",
+			"built_manual": "Entered by you, not from FIO",
+			"built_reset": "Reset built {building}",
+			"built_reset_all": "Reset built",
+			"built_not_saved": "Built counts aren't saved for this plan."
 		},
 		"supply_cart": {
 			"title": "Supply Cart",

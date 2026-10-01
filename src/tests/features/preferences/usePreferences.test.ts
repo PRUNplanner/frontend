@@ -176,6 +176,20 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	it("lists manual construction built values", async () => {
+		userStore.setPlanPreference("foo", { constructionBuilt: { FRM: 1 } });
+		userStore.setPlanPreference("moo", { constructionBuilt: {} });
+		planningStore.plans["foo"] = { planet_id: "1", name: "2" };
+		planningStore.plans["moo"] = { planet_id: "3", name: "4" };
+
+		const { planSettingsOverview } = usePreferences();
+
+		expect(planSettingsOverview.value).toHaveLength(1);
+		expect(planSettingsOverview.value[0].preferences).toStrictEqual([
+			"Construction Cart: Built",
+		]);
+	});
+
 	it("cleanPlanPreferences", async () => {
 		userStore.setPlanPreference("foo", { includeCM: true });
 		userStore.setPlanPreference("moo", {

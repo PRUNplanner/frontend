@@ -17,6 +17,7 @@ import { useUserStore } from "@/stores/userStore";
 import PlanConstructionCart from "@/features/planning/components/tools/PlanConstructionCart.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
@@ -48,7 +49,10 @@ vi.mock("@/features/cx/usePrice", async (importOriginal) => {
 	};
 });
 
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+
 const mock = new AxiosMockAdapter(apiService.client);
+const PLAN_UUID = "plan-uuid";
 
 const CX_UUID = "cx-uuid";
 // BUY prices of the CX
@@ -68,9 +72,17 @@ async function mountCart(
 		fio?: boolean;
 		fioFails?: boolean;
 		construction?: typeof CONSTRUCTION;
+		planUuid?: string;
+		disabled?: boolean;
+		built?: Record<string, number>;
 	} = {}
 ) {
 	const pinia = createPinia();
+	const userStore = useUserStore(pinia);
+	if (options.built)
+		userStore.setPlanPreference(PLAN_UUID, {
+			constructionBuilt: options.built,
+		});
 	const planningStore = usePlanningStore(pinia);
 	planningStore.setCXs([
 		// @ts-expect-error mock data
@@ -90,7 +102,7 @@ async function mountCart(
 
 	if (options.fio || options.fioFails) {
 		// @ts-expect-error partial profile
-		useUserStore(pinia).profile = {
+		userStore.profile = {
 			fio_apikey: "key",
 			prun_username: "user",
 		};
@@ -104,13 +116,15 @@ async function mountCart(
 		PlanConstructionCart,
 		{
 			planetNaturalId: options.planet ?? "ZV-307c",
+			planUuid: options.planUuid,
+			disabled: options.disabled,
 			cxUuid: CX_UUID,
 			constructionData: options.construction ?? CONSTRUCTION,
 			productionBuildingData: [{ name: "FRM", amount: 3 }],
 			infrastructureData: { HB1: 1 },
 		},
 		{ pinia }
-	);
+	).then((r) => ({ ...r, userStore }));
 }
 
 const tables = (wrapper: VueWrapper) => wrapper.findAll("table");
@@ -172,9 +186,40 @@ async function setBuildingAmount(
 	const row = tables(wrapper)[0]
 		.findAll("tbody tr")
 		.find((tr) => tr.find("th").text() === building)!;
-	await row.find("input").setValue(String(value));
+	// inputs: built, amount
+	await row.findAll("input")[1].setValue(String(value));
 	await flushPromises();
 }
+
+const buildingRow = (wrapper: VueWrapper, building: string) =>
+	tables(wrapper)[0]
+		.findAll("tbody tr")
+		.find((tr) => tr.find("th").text().startsWith(building))!;
+
+async function setBuilt(wrapper: VueWrapper, building: string, value: string) {
+	await buildingRow(wrapper, building).find("input").setValue(value);
+	await flushPromises();
+}
+
+const manualMarker = (wrapper: VueWrapper, building: string) =>
+	buildingRow(wrapper, building).find(
+		"[aria-label='plan.tools.construction_cart.built_manual']"
+	);
+
+const resetBuiltButton = (wrapper: VueWrapper, building: string) =>
+	buildingRow(wrapper, building).find(
+		"button[aria-label='plan.tools.construction_cart.built_reset']"
+	);
+
+const resetAllButton = (wrapper: VueWrapper) =>
+	wrapper
+		.findAll("button")
+		.find((b) =>
+			b.text().includes("plan.tools.construction_cart.built_reset_all")
+		);
+
+const notSavedHint = (wrapper: VueWrapper) =>
+	wrapper.text().includes("plan.tools.construction_cart.built_not_saved");
 
 async function setOverride(wrapper: VueWrapper, ticker: string, value: number) {
 	const row = tables(wrapper)[1]
@@ -200,16 +245,18 @@ describe("PlanConstructionCart", () => {
 
 	beforeEach(() => {
 		mock.reset();
+		vi.mocked(trackEvent).mockClear();
 	});
 
 	it("lists planned buildings with their construction materials", async () => {
 		const { wrapper } = await mountCart();
 
-		// building, amount, planned, BBH, BSE, MCG; core module is always 1
+		// building, built, amount, planned, BBH, BSE, MCG; core module is
+		// always 1
 		expect(buildingRows(wrapper)).toEqual([
-			["CM", "1", "1", "0", "0", "100"],
-			["FRM", "3", "3", "12", "12", "0"],
-			["HB1", "1", "1", "2", "2", "0"],
+			["CM", "0", "1", "1", "0", "0", "100"],
+			["FRM", "0", "3", "3", "12", "12", "0"],
+			["HB1", "0", "1", "1", "2", "2", "0"],
 		]);
 		expect(materialSums(wrapper)).toEqual(["14", "14", "100"]);
 	});
@@ -234,6 +281,7 @@ describe("PlanConstructionCart", () => {
 
 		expect(buildingRows(wrapper)[1]).toEqual([
 			"FRM",
+			"0",
 			"1",
 			"3",
 			"4",
@@ -251,7 +299,7 @@ describe("PlanConstructionCart", () => {
 		expect(habitationWarning(wrapper)).toBe(true);
 		const hb1Input = tables(wrapper)[0]
 			.findAll("tbody tr")[2]
-			.find(".min-w-20");
+			.findAll(".min-w-20")[1];
 		expect(hb1Input.classes()).toContain("[&>div>input]:text-negative");
 
 		// 2 FRM need exactly 100
@@ -307,11 +355,15 @@ describe("PlanConstructionCart", () => {
 				["FRM", "0", "3", "3", "12", "12", "0"],
 				["HB1", "21", "0", "1", "0", "0", "0"],
 			]);
+			// more built than planned is flagged
 			const built = tables(wrapper)[0]
 				.findAll("tbody tr")
-				.map((tr) => tr.findAll("th")[1]?.classes());
-			expect(built[0]).toContain("text-muted");
-			expect(built[2]).toContain("text-negative");
+				.slice(0, 3)
+				.map((tr) => tr.find(".min-w-20").classes());
+			expect(built[0]).not.toContain("[&>div>input]:text-negative");
+			expect(built[2]).toContain("[&>div>input]:text-negative");
+			// FIO counts aren't manual values
+			expect(manualMarker(wrapper, "HB1").exists()).toBe(false);
 
 			expect(wrapper.find("h2 .picon").exists()).toBe(true);
 			// built habitations count towards housing
@@ -394,10 +446,171 @@ describe("PlanConstructionCart", () => {
 		it("still renders when FIO storage fails to load", async () => {
 			const { wrapper } = await mountCart({ fioFails: true });
 
-			expect(wrapper.text()).not.toContain(
-				"plan.tools.construction_cart.table.built"
-			);
+			expect(buildingRows(wrapper).map((r) => r[1])).toEqual([
+				"0",
+				"0",
+				"0",
+			]);
 			expect(materialSums(wrapper)).toEqual(["14", "14", "100"]);
+		});
+
+		it("overrides a FIO count and resets it back", async () => {
+			const { wrapper, userStore } = await mountCart({
+				fio: true,
+				planUuid: PLAN_UUID,
+			});
+
+			await setBuilt(wrapper, "FRM", "2");
+			expect(buildingRows(wrapper)[1].slice(0, 4)).toEqual([
+				"FRM",
+				"2",
+				"1",
+				"3",
+			]);
+			expect(manualMarker(wrapper, "FRM").exists()).toBe(true);
+			expect(
+				userStore.getPlanPreference(PLAN_UUID).constructionBuilt
+			).toEqual({ FRM: 2 });
+
+			await resetBuiltButton(wrapper, "FRM").trigger("click");
+			await flushPromises();
+
+			expect(buildingRows(wrapper)[1].slice(0, 3)).toEqual([
+				"FRM",
+				"0",
+				"3",
+			]);
+			expect(manualMarker(wrapper, "FRM").exists()).toBe(false);
+			expect(
+				userStore.getPlanPreference(PLAN_UUID).constructionBuilt
+			).toEqual({});
+		});
+
+		it("drops a manual value equal to the FIO count", async () => {
+			const { wrapper, userStore } = await mountCart({
+				fio: true,
+				planUuid: PLAN_UUID,
+			});
+
+			await setBuilt(wrapper, "HB1", "21");
+
+			expect(manualMarker(wrapper, "HB1").exists()).toBe(false);
+			expect(
+				userStore.getPlanPreference(PLAN_UUID).constructionBuilt
+			).toEqual({});
+		});
+	});
+
+	describe("built without FIO", () => {
+		it("subtracts entered built buildings and saves them", async () => {
+			const { wrapper, userStore } = await mountCart({
+				planUuid: PLAN_UUID,
+			});
+
+			await setBuilt(wrapper, "FRM", "1");
+
+			// 3 planned, 1 built: 2 left, 8 BBH and BSE
+			expect(buildingRows(wrapper)[1]).toEqual([
+				"FRM",
+				"1",
+				"2",
+				"3",
+				"8",
+				"8",
+				"0",
+			]);
+			expect(materialSums(wrapper)).toEqual(["10", "10", "100"]);
+			expect(manualMarker(wrapper, "FRM").exists()).toBe(true);
+			expect(notSavedHint(wrapper)).toBe(false);
+			expect(
+				userStore.getPlanPreference(PLAN_UUID).constructionBuilt
+			).toEqual({ FRM: 1 });
+		});
+
+		it("prefills saved built values", async () => {
+			const { wrapper } = await mountCart({
+				planUuid: PLAN_UUID,
+				built: { FRM: 3, HB1: 1 },
+			});
+
+			expect(buildingRows(wrapper)).toEqual([
+				["CM", "0", "1", "1", "0", "0", "100"],
+				["FRM", "3", "0", "3", "0", "0", "0"],
+				["HB1", "1", "0", "1", "0", "0", "0"],
+			]);
+			// built habitations still house the built farms
+			expect(habitationWarning(wrapper)).toBe(true);
+		});
+
+		it("resets all built values of the plan", async () => {
+			const { wrapper, userStore } = await mountCart({
+				planUuid: PLAN_UUID,
+				built: { FRM: 3, HB1: 1 },
+			});
+			userStore.setPlanPreference("other-plan", {
+				constructionBuilt: { FRM: 1 },
+			});
+
+			await resetAllButton(wrapper)!.trigger("click");
+			await flushPromises();
+
+			expect(buildingRows(wrapper).map((r) => r.slice(1, 3))).toEqual([
+				["0", "1"],
+				["0", "3"],
+				["0", "1"],
+			]);
+			expect(resetAllButton(wrapper)).toBeUndefined();
+			expect(
+				userStore.getPlanPreference(PLAN_UUID).constructionBuilt
+			).toEqual({});
+			expect(
+				userStore.getPlanPreference("other-plan").constructionBuilt
+			).toEqual({ FRM: 1 });
+		});
+
+		it("removes the value when the field is emptied", async () => {
+			const { wrapper, userStore } = await mountCart({
+				planUuid: PLAN_UUID,
+				built: { FRM: 2 },
+			});
+
+			await setBuilt(wrapper, "FRM", "");
+
+			expect(
+				userStore.getPlanPreference(PLAN_UUID).constructionBuilt
+			).toEqual({});
+			expect(buildingRows(wrapper)[1][2]).toBe("3");
+		});
+
+		it.each([
+			["an unsaved plan", { planUuid: undefined }],
+			["a shared plan", { planUuid: PLAN_UUID, disabled: true }],
+		])("keeps built values for the visit on %s", async (_, options) => {
+			const { wrapper, userStore } = await mountCart(options);
+
+			expect(notSavedHint(wrapper)).toBe(true);
+			await setBuilt(wrapper, "FRM", "1");
+
+			expect(buildingRows(wrapper)[1].slice(1, 3)).toEqual(["1", "2"]);
+			expect(manualMarker(wrapper, "FRM").exists()).toBe(true);
+			expect(userStore.preferences.planOverrides).toEqual({});
+		});
+
+		it("reports whether built was edited when closed", async () => {
+			const first = await mountCart({ planUuid: PLAN_UUID });
+			first.wrapper.unmount();
+			expect(trackEvent).toHaveBeenLastCalledWith("tool:use", {
+				tool_name: "construction_cart",
+				built_edited: false,
+			});
+
+			const second = await mountCart({ planUuid: PLAN_UUID });
+			await setBuilt(second.wrapper, "FRM", "1");
+			second.wrapper.unmount();
+			expect(trackEvent).toHaveBeenLastCalledWith("tool:use", {
+				tool_name: "construction_cart",
+				built_edited: true,
+			});
 		});
 	});
 });
