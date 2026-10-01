@@ -1,5 +1,14 @@
+import { createApp } from "vue";
 import { setActivePinia, createPinia } from "pinia";
-import { beforeEach, describe, it, expect, vi } from "vitest";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import {
+	beforeEach,
+	describe,
+	it,
+	expect,
+	onTestFinished,
+	vi,
+} from "vitest";
 
 import {
 	callUserLogin,
@@ -8,8 +17,12 @@ import {
 } from "@/features/api/userData.api";
 
 import { useUserStore } from "@/stores/userStore";
+import { memoryStorage } from "@/tests/memoryStorage";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
-import type { UserProfile } from "@/features/api/schemas/user.schemas";
+import {
+	UserPreferencePayloadSchema,
+	type UserProfile,
+} from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/features/api/userData.api", () => ({
 	callUserLogin: vi.fn(),
@@ -364,6 +377,52 @@ describe("User Store", () => {
 			expect(userStore.getPlanPreference("foo").includeCM).toBe(
 				preferenceDefaults.planDefaults.includeCM
 			);
+		});
+
+		it("stores a complete plan override that passes the payload schema", async () => {
+			const userStore = useUserStore();
+			userStore.setPlanPreference("foo", {
+				constructionBuilt: { FRM: 3 },
+			});
+
+			expect(userStore.preferences.planOverrides["foo"]).toStrictEqual({
+				...preferenceDefaults.planDefaults,
+				constructionBuilt: { FRM: 3 },
+			});
+			expect(() =>
+				UserPreferencePayloadSchema.parse(userStore.preferences)
+			).not.toThrow();
+		});
+
+		it("completes partial plan overrides persisted by older versions", async () => {
+			onTestFinished(() => vi.unstubAllGlobals());
+			vi.stubGlobal(
+				"localStorage",
+				memoryStorage({
+					prunplanner_user: JSON.stringify({
+						preferences: {
+							...preferenceDefaults,
+							planOverrides: {
+								foo: { includeCM: true },
+								moo: { autoOptimizeHabs: true },
+							},
+						},
+					}),
+				})
+			);
+			const pinia = createPinia().use(piniaPluginPersistedstate);
+			createApp({}).use(pinia);
+			setActivePinia(pinia);
+
+			const userStore = useUserStore();
+
+			expect(userStore.preferences.planOverrides).toStrictEqual({
+				foo: { ...preferenceDefaults.planDefaults, includeCM: true },
+				moo: { ...preferenceDefaults.planDefaults, autoOptimizeHabs: true },
+			});
+			expect(() =>
+				UserPreferencePayloadSchema.parse(userStore.preferences)
+			).not.toThrow();
 		});
 
 		it("Preference changes never touch the defaults and reset restores them", async () => {

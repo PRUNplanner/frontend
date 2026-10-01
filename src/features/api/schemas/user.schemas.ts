@@ -113,6 +113,8 @@ const PreferencePerPlanSchema = z.object({
 	includeCM: z.boolean().optional(),
 	visitationMaterialExclusions: z.array(z.string()).optional(),
 	autoOptimizeHabs: z.boolean(),
+	// building ticker → count already built on the planet
+	constructionBuilt: z.record(z.string(), z.number().int().min(0)).optional(),
 });
 export type PreferencePerPlan = z.infer<typeof PreferencePerPlanSchema>;
 

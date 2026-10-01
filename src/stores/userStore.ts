@@ -89,8 +89,14 @@ export const useUserStore = defineStore(
 			planUuid: string,
 			patch: Partial<PreferencePerPlan>
 		): void {
+			// a stored override is always complete: the PATCH schema needs
+			// every required field, and the backend defaults differ
 			const current = preferences.planOverrides[planUuid] || {};
-			preferences.planOverrides[planUuid] = { ...current, ...patch };
+			preferences.planOverrides[planUuid] = {
+				...deepClone(preferenceDefaults.planDefaults),
+				...current,
+				...patch,
+			};
 		}
 
 		function getPlanPreference(planUuid: string): PreferencePerPlan {
@@ -359,6 +365,18 @@ export const useUserStore = defineStore(
 	{
 		persist: {
 			pick: ["accessToken", "refreshToken", "profile", "preferences"],
+			// overrides persisted before setPlanPreference stored complete
+			// ones fail the PATCH schema, which blocks every preference sync
+			afterHydrate: ({ store }) => {
+				const overrides: UserPreference["planOverrides"] =
+					store.preferences.planOverrides ?? {};
+				for (const uuid of Object.keys(overrides))
+					overrides[uuid] = {
+						...deepClone(preferenceDefaults.planDefaults),
+						...overrides[uuid],
+					};
+				store.preferences.planOverrides = overrides;
+			},
 		},
 	}
 );

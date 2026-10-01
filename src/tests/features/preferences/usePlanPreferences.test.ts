@@ -83,6 +83,27 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	describe("constructionBuilt", async () => {
+		it("get", async () => {
+			const { constructionBuilt } = usePlanPreferences("meow");
+			expect(constructionBuilt.value).toStrictEqual({});
+		});
+
+		it("set", async () => {
+			const userStore = useUserStore();
+			const { constructionBuilt } = usePlanPreferences("meow");
+			constructionBuilt.value = { FRM: 3 };
+			expect(constructionBuilt.value).toStrictEqual({ FRM: 3 });
+
+			// a removed key is gone, not merged back from before
+			constructionBuilt.value = {};
+			expect(constructionBuilt.value).toStrictEqual({});
+			expect(
+				userStore.preferences.planOverrides["meow"].constructionBuilt
+			).toStrictEqual({});
+		});
+	});
+
 	it("follows a changing uuid ref", async () => {
 		const userStore = useUserStore();
 		userStore.setPlanPreference("a", { includeCM: true });

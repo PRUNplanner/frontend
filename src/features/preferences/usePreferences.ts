@@ -183,6 +183,13 @@ export function usePreferences() {
 					}
 
 					if (
+						preference.constructionBuilt &&
+						Object.keys(preference.constructionBuilt).length > 0
+					) {
+						planOverview.preferences.push("Construction Cart: Built");
+					}
+
+					if (
 						"autoOptimizeHabs" in preference &&
 						preference.autoOptimizeHabs !==
 							preferenceDefaults.planDefaults.autoOptimizeHabs

@@ -97,6 +97,25 @@ export function usePlanPreferences(
 		set: (v) => setPlanPreference("autoOptimizeHabs", v),
 	});
 
+	/**
+	 * Writable computed for the construction carts manually entered built
+	 * buildings, building ticker to count
+	 *
+	 * @author jplacht
+	 *
+	 * @type {WritableComputedRef<
+	 * 		Record<string, number> | undefined,
+	 * 		Record<string, number>
+	 * 	>}
+	 */
+	const constructionBuilt: WritableComputedRef<
+		Record<string, number> | undefined,
+		Record<string, number>
+	> = computed({
+		get: () => fullPreferences.value.constructionBuilt,
+		set: (v) => setPlanPreference("constructionBuilt", v),
+	});
+
 	return {
 		fullPreferences,
 		setPlanPreference,
@@ -104,5 +123,6 @@ export function usePlanPreferences(
 		includeCM,
 		visitationMaterialExclusions,
 		autoOptimizeHabs,
+		constructionBuilt,
 	};
 }

@@ -45,6 +45,7 @@ export type ToolUseProperties =
 	| { tool_name: SimpleToolName }
 	| { tool_name: "market_exploration"; exchange: string; material_ticker: string }
 	| { tool_name: "resource_roi"; material_ticker: string }
+	| { tool_name: "construction_cart"; built_edited: boolean }
 	| {
 			tool_name: "planet_search";
 			filter: Record<string, string>;

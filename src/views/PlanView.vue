@@ -363,6 +363,8 @@
 				return {
 					props: {
 						planetNaturalId: planetData.planet_natural_id,
+						planUuid: refPlanData.value.uuid,
+						disabled: props.disabled,
 						cxUuid: refCXUuid.value,
 						constructionData: result.value.constructionMaterials,
 						productionBuildingData:

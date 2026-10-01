@@ -7,6 +7,7 @@
 		watchEffect,
 		type ComputedRef,
 		watch,
+		onBeforeUnmount,
 	} from "vue";
 
 	// Composables
@@ -14,6 +15,8 @@
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { usePrice } from "@/features/cx/usePrice";
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
+	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { usePlanningStore } from "@/stores/planningStore";
 	import { useUserStore } from "@/stores/userStore";
@@ -37,13 +40,34 @@
 	import type { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
-	import { PIcon, PInputNumber, PSelect, PTable, PTooltip } from "@/ui";
-	import { WarningAmberRound } from "@vicons/material";
+	import {
+		PButton,
+		PIcon,
+		PInputNumber,
+		PSelect,
+		PTable,
+		PTooltip,
+	} from "@/ui";
+	import {
+		EditSharp,
+		RestartAltSharp,
+		WarningAmberRound,
+	} from "@vicons/material";
 
 	const props = defineProps({
 		planetNaturalId: {
 			type: String,
 			required: true,
+		},
+		planUuid: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: false,
 		},
 		cxUuid: {
 			type: String,
@@ -98,6 +122,79 @@
 		}
 	}
 
+	// manually entered built counts, saved per plan; unsaved and shared plans
+	// keep them for this visit only
+	const saveUuid = computed(() =>
+		props.disabled ? undefined : props.planUuid
+	);
+	const { constructionBuilt } = usePlanPreferences(saveUuid);
+	const sessionBuilt: Ref<Record<string, number>> = ref({});
+	const manualBuilt = computed<Record<string, number>>(() =>
+		saveUuid.value ? (constructionBuilt.value ?? {}) : sessionBuilt.value
+	);
+	let builtEdited: boolean = false;
+
+	function setManualBuilt(next: Record<string, number>): void {
+		if (saveUuid.value) constructionBuilt.value = next;
+		else sessionBuilt.value = next;
+	}
+
+	function getBuilt(ticker: string): number {
+		return manualBuilt.value[ticker] ?? constructedMap?.get(ticker) ?? 0;
+	}
+
+	function isManualBuilt(ticker: string): boolean {
+		return (
+			ticker in manualBuilt.value &&
+			manualBuilt.value[ticker] !== constructedMap?.get(ticker)
+		);
+	}
+
+	function resetAmount(ticker: string): void {
+		const planned = plannedBuildings.value[ticker];
+		if (planned !== undefined)
+			localBuildingAmount.value[ticker] = Math.max(
+				planned - getBuilt(ticker),
+				0
+			);
+	}
+
+	/**
+	 * Stores a built count, a value matching the FIO count (or 0 without
+	 * FIO) or an emptied field removes the manual value
+	 *
+	 * @author jplacht
+	 *
+	 * @param {string} ticker Building Ticker
+	 * @param {number | null | undefined} value Built count
+	 */
+	function setBuilt(ticker: string, value: number | null | undefined): void {
+		const next = { ...manualBuilt.value };
+		if (
+			value === null ||
+			value === undefined ||
+			value === (constructedMap?.get(ticker) ?? 0)
+		)
+			delete next[ticker];
+		else next[ticker] = value;
+		setManualBuilt(next);
+		builtEdited = true;
+		resetAmount(ticker);
+	}
+
+	function resetAllBuilt(): void {
+		setManualBuilt({});
+		builtEdited = true;
+		buildingTicker.value.forEach(resetAmount);
+	}
+
+	onBeforeUnmount(() =>
+		trackEvent("tool:use", {
+			tool_name: "construction_cart",
+			built_edited: builtEdited,
+		})
+	);
+
 	const plannedBuildings: Ref<Record<string, number>> = ref({});
 	const localBuildingAmount: Ref<Record<string, number>> = ref({});
 	const localBuildingMaterials: Ref<Record<string, Record<string, number>>> =
@@ -131,7 +228,7 @@
 	});
 
 	function getTotalBuildingAmount(ticker: string): number {
-		const builtAmount = constructedMap?.get(ticker) ?? 0;
+		const builtAmount = getBuilt(ticker);
 		const plannedAmount = localBuildingAmount.value[ticker] ?? 0;
 		return builtAmount + plannedAmount;
 	}
@@ -203,11 +300,7 @@
 				let need = planned;
 				if (planned !== undefined) {
 					plannedBuildings.value[bticker] = planned;
-					if (constructedMap !== null)
-						need = Math.max(
-							planned - (constructedMap.get(bticker) ?? 0),
-							0
-						);
+					need = Math.max(planned - getBuilt(bticker), 0);
 				}
 				localBuildingAmount.value[bticker] = need;
 			}
@@ -357,6 +450,17 @@
 			</PTooltip>
 		</h2>
 		<div class="flex flex-row gap-x-3 child:my-auto!">
+			<span v-if="!saveUuid" class="text-muted text-sm">
+				{{ $t("plan.tools.construction_cart.built_not_saved") }}
+			</span>
+			<PButton
+				v-if="Object.keys(manualBuilt).length > 0"
+				size="sm"
+				type="secondary"
+				@click="resetAllBuilt">
+				<template #icon><RestartAltSharp /></template>
+				{{ $t("plan.tools.construction_cart.built_reset_all") }}
+			</PButton>
 			<XITTransferActionButton
 				:elements="xitTransferElementsOverview"
 				transfer-name="Construct"
@@ -370,7 +474,7 @@
 					<th>
 						{{ $t("plan.tools.construction_cart.table.building") }}
 					</th>
-					<th v-if="constructedMap">
+					<th>
 						{{ $t("plan.tools.construction_cart.table.built") }}
 					</th>
 					<th>
@@ -412,15 +516,60 @@
 					v-for="building in buildingTicker"
 					:key="`CONSTRUCTIONCART#ROW#${building}`">
 					<th>{{ building }}</th>
-					<th
-						v-if="constructedMap"
-						:class="
-							(constructedMap.get(building) ?? 0) >
-							plannedBuildings[building]
-								? 'text-negative'
-								: 'text-muted'
-						">
-						{{ constructedMap.get(building) ?? 0 }}
+					<th>
+						<div class="flex flex-row items-center gap-x-1">
+							<PInputNumber
+								:value="getBuilt(building)"
+								:aria-label="
+									$t(
+										'plan.tools.construction_cart.built_label',
+										{ building }
+									)
+								"
+								show-buttons
+								size="sm"
+								:class="
+									getBuilt(building) >
+									(plannedBuildings[building] ?? 0)
+										? 'min-w-20 [&>div>input]:text-negative'
+										: 'min-w-20'
+								"
+								:min="0"
+								@update:value="(v) => setBuilt(building, v)" />
+							<template v-if="isManualBuilt(building)">
+								<PTooltip>
+									<template #trigger>
+										<PIcon
+											class="text-muted"
+											role="img"
+											:aria-label="
+												$t(
+													'plan.tools.construction_cart.built_manual'
+												)
+											">
+											<EditSharp />
+										</PIcon>
+									</template>
+									{{
+										$t(
+											"plan.tools.construction_cart.built_manual"
+										)
+									}}
+								</PTooltip>
+								<PButton
+									size="sm"
+									type="ghost"
+									:aria-label="
+										$t(
+											'plan.tools.construction_cart.built_reset',
+											{ building }
+										)
+									"
+									@click="setBuilt(building, null)">
+									<template #icon><RestartAltSharp /></template>
+								</PButton>
+							</template>
+						</div>
 					</th>
 					<th class="border-r!">
 						<PInputNumber
@@ -462,7 +611,7 @@
 					</td>
 				</tr>
 				<tr class="child:border-t-2! child:border-b-2!">
-					<td :colspan="constructedMap ? 4 : 3">
+					<td :colspan="4">
 						{{
 							$t(
 								"plan.tools.construction_cart.table.materials_sum"
@@ -479,7 +628,7 @@
 				<tr>
 					<td
 						:colspan="
-							uniqueMaterials.length + (constructedMap ? 4 : 3)
+							uniqueMaterials.length + 4
 						">
 						<div
 							class="flex flex-row justify-between child:my-auto">
