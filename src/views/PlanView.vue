@@ -72,18 +72,19 @@
 	import PlanOverview from "@/features/planning/components/PlanOverview.vue";
 	import PlanStatusBar from "@/features/planning/components/PlanStatusBar.vue";
 	import PlanSaveButton from "@/features/planning/components/PlanSaveButton.vue";
+	import PlanMoreMenu from "@/features/planning/components/PlanMoreMenu.vue";
+	import PlanToolTabs from "@/features/planning/components/PlanToolTabs.vue";
 	import PlanToolFallback from "@/features/planning/components/PlanToolFallback.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
 	import SharedPlanBanner from "@/features/sharing/components/SharedPlanBanner.vue";
-	const ShareButton = defineAsyncComponent(
-		() => import("@/features/sharing/components/SharingButton.vue")
+	const SharingModal = defineAsyncComponent(
+		() => import("@/features/sharing/components/SharingModal.vue")
 	);
 
 	// UI
 	import {
 		PButton,
-		PButtonGroup,
 		PTooltip,
 		PForm,
 		PFormItem,
@@ -98,9 +99,6 @@
 		AttachMoneySharp,
 		DataSaverOffSharp,
 		DataObjectRound,
-		ChangeCircleOutlined,
-		ContentCopySharp,
-		SettingsSharp,
 		UndoSharp,
 		RedoSharp,
 	} from "@vicons/material";
@@ -251,6 +249,24 @@
 				: (refShowTool.value = null);
 		});
 	}
+
+	const toolTabs = computed(() =>
+		(
+			[
+				["configuration", "plan.components.configuration.label"],
+				...(userStore.isLoggedIn
+					? [["popr", "plan.tools.labels.popr"]]
+					: []),
+				[
+					"visitation-frequency",
+					"plan.tools.labels.visitation_frequency",
+				],
+				["construction-cart", "plan.tools.labels.construction_cart"],
+				["supply-cart", "plan.tools.labels.supply_cart"],
+				["repair-analysis", "plan.tools.labels.repair_analysis"],
+			] as [NonNullable<toolOptions>, string][]
+		).map(([key, label]) => ({ key, label: t(label) }))
+	);
 
 	/*
 	 * NOTE: This is somewhat hacky to prevent a loaded tool component to re-render on prop change.
@@ -481,29 +497,25 @@
 		refShowSaveAsModal.value = true;
 	}
 
-	const refIsReloading: Ref<boolean> = ref(false);
+	// Share link: the sharing modal creates, copies and stops the link
+	const refShowShare: Ref<boolean> = ref(false);
 
 	async function reloadPlan(): Promise<void> {
 		if (!existing.value || !refPlanData.value.uuid) {
 			throw new Error(`Unable to reload plan without uuid.`);
 		}
+		// reloading throws away unsaved edits
+		if (modified.value && !confirm(t("plan.actions.reload_confirm")))
+			return;
 
-		refIsReloading.value = true;
+		refPlanData.value = await reloadExistingPlan(refPlanData.value.uuid);
+		planName.value = refPlanData.value.plan_name;
+		refSaveFailed.value = false;
+		markSaved();
 
-		try {
-			refPlanData.value = await reloadExistingPlan(
-				refPlanData.value.uuid
-			);
-			planName.value = refPlanData.value.plan_name;
-			refSaveFailed.value = false;
-			markSaved();
-
-			trackEvent("plan:reload", {
-				planet_natural_id: planetData.planet_natural_id,
-			});
-		} finally {
-			refIsReloading.value = false;
-		}
+		trackEvent("plan:reload", {
+			planet_natural_id: planetData.planet_natural_id,
+		});
 	}
 
 	// clone shared plan as logged in user
@@ -722,14 +734,14 @@
 	<!-- keep focused controls clear of the sticky status bar -->
 	<div class="@container [&_*]:scroll-mt-28">
 		<div
-			class="grid grid-cols-[minmax(0,1fr)] grid-rows-[repeat(5,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
+			class="grid grid-cols-[minmax(0,1fr)] grid-rows-[repeat(5,auto)] md:grid-cols-[minmax(0,1fr)_auto] gap-x-3">
 			<!-- Plan Name & Selector -->
 			<div
-				class="p-3 row-1 col-1 flex flex-row flex-wrap gap-x-3 pt-3 pb-3 md:pb-0 @6xl:pb-3 items-baseline">
+				class="p-3 row-1 col-1 flex flex-row flex-wrap gap-x-3 items-baseline">
 				<h1 class="text-2xl font-bold text-white">
 					{{ planName || t("plan.name.untitled") }}
 				</h1>
-				<span class="text-white/60">
+				<span class="text-muted-strong">
 					{{
 						planetData.planet_name != planetData.planet_natural_id
 							? planetData.planet_name + " - "
@@ -740,7 +752,7 @@
 			</div>
 			<!-- Status Bar (sticky) -->
 			<div
-				class="row-3 md:row-2 md:col-span-full @6xl:row-1 @6xl:col-span-1 w-full md:w-auto justify-self-start md:justify-self-center my-auto p-3 sticky top-0 z-1000 bg-(--app-bg) md:rounded-b-lg">
+				class="row-3 md:row-2 col-span-full justify-self-start w-full px-3 py-2 sticky top-0 z-1000 bg-(--app-bg)">
 				<PlanStatusBar
 					:area-data="result.area"
 					:corphq="result.corphq"
@@ -748,43 +760,44 @@
 					:expert-data="result.experts"
 					:overview-data="overviewData" />
 			</div>
-			<!-- Plan Actions -->
+			<!-- Plan Actions: Save is the one primary, the rest under More -->
 			<div
-				class="p-3 row-2 md:row-1 md:col-3 py-3 flex flex-row flex-wrap items-start gap-x-3">
-				<HelpDrawer file-name="plan" />
+				class="p-3 row-2 md:row-1 md:col-2 flex flex-row flex-wrap items-center gap-x-3 gap-y-2 md:justify-end">
+				<template v-if="!disabled">
+					<div class="flex gap-x-1">
+						<PTooltip placement="bottom">
+							<template #trigger>
+								<PButton
+									:aria-label="t('plan.history.undo')"
+									type="ghost"
+									:disabled="!canUndo"
+									@click="trackedUndo('button')">
+									<template #icon>
+										<UndoSharp />
+									</template>
+								</PButton>
+							</template>
+							{{ t("plan.history.undo") }}
+						</PTooltip>
+						<PTooltip placement="bottom">
+							<template #trigger>
+								<PButton
+									:aria-label="t('plan.history.redo')"
+									type="ghost"
+									:disabled="!canRedo"
+									@click="trackedRedo('button')">
+									<template #icon>
+										<RedoSharp />
+									</template>
+								</PButton>
+							</template>
+							{{ t("plan.history.redo") }}
+						</PTooltip>
+					</div>
+					<div aria-hidden="true" class="w-px h-5 bg-white/10" />
+				</template>
 
-				<div v-if="!disabled" class="flex gap-x-1">
-					<PTooltip placement="bottom">
-						<template #trigger>
-							<PButton
-								:aria-label="t('plan.history.undo')"
-								type="secondary"
-								:disabled="!canUndo"
-								@click="trackedUndo('button')">
-								<template #icon>
-									<UndoSharp />
-								</template>
-							</PButton>
-						</template>
-						{{ t("plan.history.undo") }}
-					</PTooltip>
-					<PTooltip placement="bottom">
-						<template #trigger>
-							<PButton
-								:aria-label="t('plan.history.redo')"
-								type="secondary"
-								:disabled="!canRedo"
-								@click="trackedRedo('button')">
-								<template #icon>
-									<RedoSharp />
-								</template>
-							</PButton>
-						</template>
-						{{ t("plan.history.redo") }}
-					</PTooltip>
-				</div>
-
-				<PButtonGroup v-if="userStore.isLoggedIn && !disabled">
+				<template v-if="userStore.isLoggedIn && !disabled">
 					<PlanSaveButton
 						:existing="existing"
 						:saveable="saveable"
@@ -793,88 +806,28 @@
 						:modified="modified"
 						:saved-at="savedAt"
 						@save="save()" />
-					<PButton v-if="existing" @click="openSaveAsModal">
-						<template #icon>
-							<ContentCopySharp />
-						</template>
-						{{ $t("common.buttons.save_as") }}
-					</PButton>
-					<PButton
-						v-if="existing"
-						:loading="refIsReloading"
-						@click="reloadPlan">
-						<template #icon>
-							<ChangeCircleOutlined />
-						</template>
-						{{ $t("common.buttons.reload") }}
-					</PButton>
-
-					<ShareButton
+					<PlanMoreMenu
+						:existing="existing"
+						:can-share="!!refPlanData.uuid"
+						@save-as="openSaveAsModal"
+						@share="refShowShare = true"
+						@reload="reloadPlan" />
+					<SharingModal
 						v-if="refPlanData.uuid"
+						v-model:show="refShowShare"
 						:plan-uuid="refPlanData.uuid" />
-				</PButtonGroup>
-				<!-- empty div to maintain layout -->
-				<div v-else class="@[1290px]:w-112.5" />
+				</template>
+
+				<HelpDrawer file-name="plan" />
 			</div>
 			<!-- Tools Container -->
-			<div class="row-4 md:col-span-3">
-				<!-- Toolbar -->
-				<div
-					class="flex flex-wrap grow @3xl:justify-end border-y border-white/10 gap-3 py-3 child:my-auto px-3">
-					<PButton
-						:type="
-							refShowTool === 'configuration'
-								? 'primary'
-								: 'secondary'
-						"
-						@click="toggleTool('configuration')">
-						<template #icon>
-							<SettingsSharp />
-						</template>
-						{{ $t("plan.components.configuration.label") }}
-					</PButton>
-					<PButton
-						v-if="userStore.isLoggedIn"
-						:type="refShowTool === 'popr' ? 'primary' : 'secondary'"
-						@click="toggleTool('popr')">
-						{{ $t("plan.tools.labels.popr") }}
-					</PButton>
-					<PButton
-						:type="
-							refShowTool === 'visitation-frequency'
-								? 'primary'
-								: 'secondary'
-						"
-						@click="toggleTool('visitation-frequency')">
-						{{ $t("plan.tools.labels.visitation_frequency") }}
-					</PButton>
-					<PButton
-						:type="
-							refShowTool === 'construction-cart'
-								? 'primary'
-								: 'secondary'
-						"
-						@click="toggleTool('construction-cart')">
-						{{ $t("plan.tools.labels.construction_cart") }}
-					</PButton>
-					<PButton
-						:type="
-							refShowTool === 'supply-cart'
-								? 'primary'
-								: 'secondary'
-						"
-						@click="toggleTool('supply-cart')">
-						{{ $t("plan.tools.labels.supply_cart") }}
-					</PButton>
-					<PButton
-						:type="
-							refShowTool === 'repair-analysis'
-								? 'primary'
-								: 'secondary'
-						"
-						@click="toggleTool('repair-analysis')">
-						{{ $t("plan.tools.labels.repair_analysis") }}
-					</PButton>
+			<div class="row-4 col-span-full">
+				<div class="border-y border-white/10 px-3">
+					<PlanToolTabs
+						:tabs="toolTabs"
+						:active="refShowTool"
+						:label="t('plan.actions.tools')"
+						@toggle="toggleTool" />
 				</div>
 				<!-- Tool View -->
 				<div

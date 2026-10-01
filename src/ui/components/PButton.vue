@@ -3,7 +3,7 @@
 
 	import PSpin from "./PSpin.vue";
 
-	import type { ColorKey, SizeKey } from "@/ui/ui.types";
+	import type { ButtonColorKey, SizeKey } from "@/ui/ui.types";
 	import { buttonConfig } from "@/ui/styles";
 
 	const {
@@ -16,7 +16,7 @@
 		loading?: boolean;
 		disabled?: boolean;
 		size?: SizeKey;
-		type?: ColorKey;
+		type?: ButtonColorKey;
 		htmlType?: "button" | "submit";
 	}>();
 

@@ -118,6 +118,44 @@ Examples: `features/planning/components/PlanMaterialIO.vue`,
   `src/layout/prunplannerNaiveUI.ts`.
 - Prefer utility classes in templates. `<style>` blocks are rare.
 
+## Layout & hierarchy
+
+Generated UI gives every element the same weight. Decide what matters
+on each view and make the rest quieter.
+
+- **One primary action per view.** Only the main action (Save, Create,
+  Search) uses `type="primary"`. Other actions are `secondary`, a
+  text/ghost button (`type="ghost"`), or go into a "More" menu
+  (`NDropdown` with an icon, a label, and a hint on anything that loses
+  data). `PButton` defaults to `primary`, so always set `type` on
+  non-primary buttons.
+- **Every number once per view.** Don't show the same KPI in a status
+  bar, a card and a table. A sticky summary (the plan status bar) is the
+  exception, as long as the body doesn't repeat it as a KPI.
+- **Big type for values, small for labels.** Labels are `text-muted`,
+  values bold and `tabular-nums`, and the value users compare is the
+  largest thing in its group.
+- **Tabs for switching views, buttons for doing things.** A row of
+  toggles that shows one panel at a time is a tab strip (underline,
+  `aria-pressed`), not a row of buttons.
+- **Advanced options start collapsed** in forms and modals; show the
+  2–3 fields most people need.
+- **Colour carries meaning, not decoration.** No gradients, glows or
+  coloured card borders for decoration; material colours and semantic
+  tokens only.
+- **One spacing and type scale.** Tailwind steps only (no `text-[13px]`,
+  `p-[7px]`); page padding `px-6`, section gaps `gap-6`, inside cards
+  `gap-3`.
+- **Icons:** `@vicons/material` through `PIcon`, never emoji, and never
+  an icon next to every label; use them where they speed up scanning.
+- **Copy is plain and specific.** Say what the thing does, in game terms,
+  with a number if there is one. Avoid "effortlessly", "seamless",
+  "powerful", "unlock", "supercharge", "stay ahead" and anything a
+  generic SaaS page could say.
+
+Example: the plan editor header (`views/PlanView.vue`, `PlanMoreMenu`,
+`PlanToolTabs`).
+
 ## SFC conventions
 
 ```vue

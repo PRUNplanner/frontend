@@ -3,7 +3,7 @@
 **Purpose.** This folder creates and deletes public, read-only links to a
 plan (`/shared/:sharedPlanUuid`) and shows their view counts.
 
-**Used by.** `PlanView.vue` (`SharingButton`, loaded async) and
+**Used by.** `PlanView.vue` (`SharingModal` from the More menu, loaded async) and
 `ManagePlanEmpireAssignments.vue` (`SharingModal`).
 
 ## Key files
@@ -16,8 +16,6 @@ plan (`/shared/:sharedPlanUuid`) and shows their view counts.
 - **`components/SharingModal.vue`**: the sharing dialog for one plan
   (`planUuid`, `v-model:show`). Management renders a single instance for
   all rows.
-- **`components/SharingButton.vue`**: button with the view count that
-  opens `SharingModal`.
 - **`components/SharedPlanBanner.vue`**: shown by `PlanView` above a shared
   plan. It says the plan is read-only and priced with the universe 30-day
   average. Logged in it emits `clone`; visitors get Create Account and

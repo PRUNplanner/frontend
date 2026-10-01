@@ -8,7 +8,7 @@
 	import type { ColorKey } from "@/ui/ui.types";
 
 	// UI
-	import { PButton, PTooltip } from "@/ui";
+	import { PButton } from "@/ui";
 	import { CheckSharp, ErrorOutlineSharp, SaveSharp } from "@vicons/material";
 
 	const props = defineProps<{
@@ -51,7 +51,7 @@
 		}
 	});
 
-	// the same state in words, for the tooltip and screen readers
+	// the same state in words, shown next to the button
 	const status: ComputedRef<string> = computed(() => {
 		switch (state.value) {
 			case "unnamed":
@@ -82,35 +82,27 @@
 </script>
 
 <template>
-	<!-- one box-less root, so it sits in a PButtonGroup like a button -->
-	<div class="contents">
-		<PTooltip
-			placement="bottom"
-			:disabled="state !== 'saved' && state !== 'unnamed'">
-			<template #trigger>
-				<!-- the tooltip wrapper hides it from PButtonGroup's rounding:
-				 it's the group's first button, and on a new plan also its last -->
-				<PButton
-					:type="type"
-					:loading="saving"
-					:disabled="!saveable"
-					class="min-w-30 rounded-l-sm!"
-					:class="{ 'rounded-r-none!': existing }"
-					@click="emit('save')">
-					<template #icon>
-						<CheckSharp v-if="state === 'saved'" />
-						<ErrorOutlineSharp v-else-if="state === 'failed'" />
-						<SaveSharp v-else />
-					</template>
-					{{ label }}
-					<span
-						v-if="state === 'unsaved'"
-						aria-hidden="true"
-						class="inline-block size-1.5 ml-1 align-middle rounded-full bg-current" />
-				</PButton>
-			</template>
+	<div class="flex items-center gap-x-3">
+		<!-- the same state in words, next to the button for everyone -->
+		<span role="status" class="text-sm text-muted text-nowrap">
 			{{ status }}
-		</PTooltip>
-		<span role="status" class="sr-only">{{ status }}</span>
+		</span>
+		<PButton
+			:type="type"
+			:loading="saving"
+			:disabled="!saveable"
+			class="min-w-30"
+			@click="emit('save')">
+			<template #icon>
+				<CheckSharp v-if="state === 'saved'" />
+				<ErrorOutlineSharp v-else-if="state === 'failed'" />
+				<SaveSharp v-else />
+			</template>
+			{{ label }}
+			<span
+				v-if="state === 'unsaved'"
+				aria-hidden="true"
+				class="inline-block size-1.5 ml-1 align-middle rounded-full bg-current" />
+		</PButton>
 	</div>
 </template>
