@@ -6,7 +6,7 @@
 | --- | --- |
 | `main.ts` | Bootstrap (see below) |
 | `AppProvider.vue` | naive-ui providers: `n-config-provider` (dark theme + `prunplannerTheme`), modal and dialog providers |
-| `App.vue` | Shell. Shows `NavigationBar` when logged in and `HomepageHeader` otherwise, then `<Suspense><RouterView/></Suspense>` |
+| `App.vue` | Shell. Shows `NavigationBar` when logged in and `HomepageHeader` otherwise, then `<Suspense><RouterView/></Suspense>` and `AppFooter` (not on the homepage, which has its own footer) |
 | `router/` | Flat route table (`index.ts`); typed meta in `router.d.ts` |
 | `views/` | Route pages (`*View.vue`), plus `views/fio/` and `views/tools/` |
 | `features/<name>/` | Feature code: composables, components and types. See [features/](features/README.md) |

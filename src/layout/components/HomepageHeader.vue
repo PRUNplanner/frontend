@@ -7,6 +7,7 @@
 
 	// UI
 	import { NCollapseTransition } from "naive-ui";
+	import { PButton } from "@/ui";
 
 	// Composables
 	import { useAuthPanel } from "@/features/account/useAuthPanel";
@@ -46,14 +47,16 @@
 					</h2>
 				</RouterLink>
 			</div>
-			<div
-				class="flex flex-row gap-x-2 sm:gap-x-7 child:cursor-pointer child:px-3 child:py-1 child:text-lg child:font-light child:hover:bg-white/10 child:hover:rounded-lg">
-				<button type="button" @click="toggleRegistration">
-					{{ $t("homepage.navigation.registration") }}
-				</button>
-				<button type="button" @click="toggleLogin">
+			<div class="flex flex-row items-center gap-x-4 sm:gap-x-6">
+				<button
+					type="button"
+					class="cursor-pointer text-base text-muted-strong hover:text-white hover:underline"
+					@click="toggleLogin">
 					{{ $t("homepage.navigation.login") }}
 				</button>
+				<PButton @click="toggleRegistration">
+					{{ $t("homepage.navigation.registration") }}
+				</PButton>
 			</div>
 		</div>
 	</div>

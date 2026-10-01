@@ -72,7 +72,8 @@
 					<RouterView />
 				</Suspense>
 
-				<AppFooter />
+				<!-- the landing page has its own footer -->
+				<AppFooter v-if="routeData.name !== 'homepage'" />
 			</div>
 		</div>
 	</main>
