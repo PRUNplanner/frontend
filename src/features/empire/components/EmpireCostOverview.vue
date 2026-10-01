@@ -2,7 +2,7 @@
 	import { type PropType, computed } from "vue";
 
 	// Util
-	import { formatNumber } from "@/util/numbers";
+	import { formatNumber, formatPercent } from "@/util/numbers";
 
 	// Types & Interfaces
 	import type { IEmpireCostOverview } from "@/features/empire/empire.types";
@@ -23,10 +23,11 @@
 			: 0;
 	});
 
+	// no ratio without revenue: shown as "—"
 	const revenuePercentage = (value: number) =>
 		props.costOverview.totalRevenue
 			? (value / props.costOverview.totalRevenue) * 100
-			: 0;
+			: NaN;
 </script>
 
 <template>
@@ -44,8 +45,7 @@
 				{{ formatNumber(costOverview.totalCost) }}
 			</div>
 			<div class="text-muted text-xs">
-				{{ formatNumber(revenuePercentage(costOverview.totalCost)) }}
-				%
+				{{ formatPercent(revenuePercentage(costOverview.totalCost)) }}
 			</div>
 		</div>
 		<div>
@@ -54,8 +54,7 @@
 				<PValue :value="costOverview.totalProfit" />
 			</div>
 			<div class="text-muted text-xs">
-				{{ formatNumber(revenuePercentage(costOverview.totalProfit)) }}
-				%
+				{{ formatPercent(revenuePercentage(costOverview.totalProfit)) }}
 			</div>
 		</div>
 		<div>

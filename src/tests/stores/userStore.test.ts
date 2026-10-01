@@ -133,6 +133,30 @@ describe("User Store", () => {
 		expect(userStore.refreshToken).toBe(mockToken);
 	});
 
+	it("Perform Token Refresh, concurrent calls share one request", async () => {
+		const userStore = useUserStore();
+		userStore.refreshToken = "testtoken";
+		let resolve!: (value: { access: string }) => void;
+		const mocked = callRefreshToken as unknown as ReturnType<typeof vi.fn>;
+		mocked.mockClear();
+		mocked.mockReturnValueOnce(new Promise((r) => (resolve = r)));
+		(
+			callGetProfile as unknown as ReturnType<typeof vi.fn>
+		).mockResolvedValue({});
+
+		const first = userStore.performTokenRefresh();
+		const second = userStore.performTokenRefresh();
+		resolve({ access: "mockAccessToken" });
+
+		expect(await Promise.all([first, second])).toEqual([true, true]);
+		expect(mocked).toHaveBeenCalledTimes(1);
+
+		// settled: the next call refreshes again
+		mocked.mockResolvedValueOnce({ access: "mockAccessToken2" });
+		expect(await userStore.performTokenRefresh()).toBe(true);
+		expect(mocked).toHaveBeenCalledTimes(2);
+	});
+
 	it("Perform Token Refresh, no refresh token", async () => {
 		const userStore = useUserStore();
 

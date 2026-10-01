@@ -136,9 +136,11 @@
 				}}
 			</PButton>
 		</div>
+		<!-- each stat has a fixed width (min-w-max lets a long value grow), so the
+			stats line up in columns from one building to the next -->
 		<div
 			class="col-span-12 xl:col-span-6 flex flex-wrap justify-end items-center gap-x-6 gap-y-2 text-white/80">
-			<div class="flex flex-col items-end min-w-max text-right">
+			<div class="flex flex-col items-end sm:w-[7.5rem] min-w-max text-right">
 				<span class="text-xs text-muted uppercase tracking-wider">
 					{{
 						$t(
@@ -158,7 +160,7 @@
 					>
 				</span>
 			</div>
-			<div class="flex flex-col items-end min-w-max text-right">
+			<div class="flex flex-col items-end sm:w-[5.5rem] min-w-max text-right">
 				<span class="text-xs text-muted uppercase tracking-wide">
 					{{
 						$t(
@@ -201,7 +203,7 @@
 					{{ $t(zeroReason) }}
 				</span>
 			</div>
-			<div class="flex flex-col items-end min-w-max text-right">
+			<div class="flex flex-col items-end sm:w-[6rem] min-w-max text-right">
 				<span class="text-xs text-muted uppercase tracking-wide">
 					{{
 						$t("plan.components.production_building.table.revenue")
@@ -212,7 +214,7 @@
 					<span class="pl-1 font-light text-muted">ȼ</span>
 				</span>
 			</div>
-			<div class="flex flex-col items-end min-w-max text-right">
+			<div class="flex flex-col items-end sm:w-[2.5rem] min-w-max text-right">
 				<span class="text-xs text-muted uppercase tracking-wide">
 					{{ $t("plan.components.production_building.table.area") }}
 				</span>
@@ -220,7 +222,7 @@
 					{{ localBuildingData.areaUsed }}
 				</span>
 			</div>
-			<div class="flex flex-col items-end min-w-max text-right">
+			<div class="flex flex-col items-end sm:w-[7rem] min-w-max text-right">
 				<span class="text-xs text-muted uppercase tracking-wide">
 					{{
 						$t(

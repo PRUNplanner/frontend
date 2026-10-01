@@ -20,10 +20,12 @@
 	const { locale } = usePreferences();
 	const userStore = useUserStore();
 
-	// check, if user language is not English
+	// the translation banner, only when the browser language is not the
+	// active locale's (English by default); the footer select is always there
 	const showLanguageSelector = computed<boolean>(() => {
-		if (typeof window === "undefined") return true;
-		return !!navigator.language.startsWith("en");
+		if (typeof navigator === "undefined") return false;
+		const browser = navigator.language.toLowerCase().split("-")[0];
+		return browser !== locale.value.toLowerCase().split("_")[0];
 	});
 
 	// landing buttons are larger than PButton's sizes, colors come from the kit

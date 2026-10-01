@@ -20,7 +20,7 @@
 	// Util
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { humanizeTimeMs } from "@/util/date";
-	import { formatNumber, formatPayback } from "@/util/numbers";
+	import { formatPayback, formatPercent } from "@/util/numbers";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -332,7 +332,7 @@
 					:style="`width: ${localRecipeData.dailyShare * 100}%`" />
 			</div>
 			<div class="text-xs text-white/80 text-nowrap">
-				{{ formatNumber(localRecipeData.dailyShare * 100) }} %
+				{{ formatPercent(localRecipeData.dailyShare * 100) }}
 			</div>
 		</template>
 	</div>

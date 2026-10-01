@@ -162,6 +162,11 @@ exception carries `route_name` too.
   starts; it was dropped before the grant.
 - Saving a new plan moves to its uuid URL, which counts as a second `plan`
   pageview.
+- The one-time codes in `/password-reset/<code>` and `/verify-email/<code>`
+  never leave the browser: `before_send` (`maskUrlCodes`) replaces them with
+  `:code` in every property of every event, nested ones included
+  (`$current_url`, `$pathname`, `$referrer`, `$initial_*`, exceptions,
+  session replay snapshots).
 
 ## Person properties
 

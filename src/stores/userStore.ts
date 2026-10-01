@@ -271,14 +271,7 @@ export const useUserStore = defineStore(
 			}
 		}
 
-		/**
-		 * Performs a token refresh
-		 * @author jplacht
-		 *
-		 * @async
-		 * @returns {Promise<boolean>}
-		 */
-		async function performTokenRefresh(): Promise<boolean> {
+		async function refreshAccessToken(): Promise<boolean> {
 			if (refreshToken.value) {
 				try {
 					const tokenData: RefreshTokenResponse =
@@ -294,6 +287,24 @@ export const useUserStore = defineStore(
 			} else {
 				return false;
 			}
+		}
+
+		// the refresh in flight, shared by everyone asking while it runs
+		let refreshInFlight: Promise<boolean> | null = null;
+
+		/**
+		 * Performs a token refresh. Concurrent callers (parallel 401s) share
+		 * one request and get the same promise; the next call after it
+		 * settled refreshes again.
+		 * @author jplacht
+		 *
+		 * @returns {Promise<boolean>}
+		 */
+		function performTokenRefresh(): Promise<boolean> {
+			refreshInFlight ??= refreshAccessToken().finally(() => {
+				refreshInFlight = null;
+			});
+			return refreshInFlight;
 		}
 
 		/**

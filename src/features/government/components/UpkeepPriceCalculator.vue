@@ -190,7 +190,7 @@
 							<template v-if="rowData.cxPrice > 0">
 								{{ formatNumber(rowData.pricePerNeed, 4) }}
 							</template>
-							<template v-else>-</template>
+							<template v-else>&mdash;</template>
 						</div>
 					</template>
 				</XNDataTableColumn>
@@ -211,7 +211,7 @@
 							<template v-if="rowData.cxPrice > 0">
 								{{ formatNumber(rowData.cxPrice, 2) }}
 							</template>
-							<template v-else>-</template>
+							<template v-else>&mdash;</template>
 						</div>
 					</template>
 				</XNDataTableColumn>
