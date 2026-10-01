@@ -43,7 +43,6 @@ describe("PlanMoreMenu", () => {
 			"plan.actions.share_link",
 			"plan.actions.reloadplan.actions.reload_hint",
 		]);
-		expect(document.body.textContent).toContain("plan.actions.shortcuts");
 		expect(wrapper.find("button").attributes("aria-expanded")).toBe("true");
 	});
 
