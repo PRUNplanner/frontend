@@ -9,7 +9,7 @@
 
 | Component | Does |
 | --- | --- |
-| `ChangeProfile.vue` | Edit profile fields (e.g. FIO username/key): `PatchUserProfile`, then `userStore.performGetProfile()` |
+| `ChangeProfile.vue` | Edit profile fields (e.g. FIO username/key): `PatchUserProfile`, then `userStore.performGetProfile()`. The backend checks changed FIO credentials and answers 400 with a code per field (`fio_required`, `fio_invalid_key`, `fio_username_mismatch`), shown under the field; the FIO status line reads `userStore.fioStatus` (the same state drives the nav FIO tag) |
 | `ChangePassword.vue` | `PatchUserChangePassword` |
 | `FIOInformation.vue` | Explains how to link FIO (static, i18n `profile.fio_information.*`) |
 | `UserPreferences.vue` | Edits global preferences through `usePreferences`: default empire and CX (`CXPreferenceSelector`), burn thresholds, XIT defaults, and so on |

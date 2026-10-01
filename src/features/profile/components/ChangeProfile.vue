@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { reactive, watch, type Ref, ref, onMounted } from "vue";
+	import { computed, reactive, watch, type Ref, ref, onMounted } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -12,6 +12,9 @@
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
+
+	// Util
+	import { relativeFromDate } from "@/util/date";
 
 	// UI
 	import {
@@ -30,6 +33,36 @@
 	const isUpdating: Ref<boolean> = ref(false);
 	const wasSaved: Ref<boolean> = ref(true);
 	const codeResendRequested: Ref<boolean> = ref(false);
+
+	// backend error codes per FIO field, shown under the field
+	type FIOField = "fio_apikey" | "prun_username";
+	const KNOWN_ERRORS = [
+		"fio_required",
+		"fio_invalid_key",
+		"fio_username_mismatch",
+	];
+	const fioErrors: Ref<Partial<Record<FIOField, string>>> = ref({});
+	const fioConnected: Ref<boolean> = ref(false);
+	// until the first refresh replaces it with the real status
+	const showConnected = computed(
+		() => fioConnected.value && userStore.fioStatus === "syncing"
+	);
+
+	const fioStatusText = computed(() =>
+		t(`profile.change_profile.fio_status.${userStore.fioStatus}`, {
+			time: relativeFromDate(
+				userStore.profile?.fio_last_refreshed_at
+					? new Date(userStore.profile.fio_last_refreshed_at)
+					: undefined
+			),
+		})
+	);
+
+	function errorText(code: string): string {
+		return t(
+			`profile.change_profile.fio_errors.${KNOWN_ERRORS.includes(code) ? code : "unknown"}`
+		);
+	}
 
 	watch(
 		() => userStore.profile,
@@ -58,8 +91,14 @@
 		);
 
 		trackEvent("account:fio_update", { is_active: userHasFIO });
+		const fioChanged: boolean =
+			fioApiKey !== (userStore.profile?.fio_apikey ?? null) ||
+			(localProfile.prun_username ?? null) !==
+				(userStore.profile?.prun_username ?? null);
 
 		isUpdating.value = true;
+		fioErrors.value = {};
+		fioConnected.value = false;
 
 		try {
 			await useQuery("PatchUserProfile", {
@@ -69,10 +108,21 @@
 			}).execute();
 
 			if (userHasFIO && !userHadFIO) trackEvent("account:fio_link");
+			fioConnected.value = userHasFIO && fioChanged;
 
 			wasSaved.value = true;
 		} catch (err) {
 			console.error("Error patching user profile", err);
+			// DRF field errors: { field: [code] }
+			const data = (err as { responseData?: Record<string, unknown> })
+				.responseData;
+			for (const field of ["fio_apikey", "prun_username"] as const) {
+				const messages = data?.[field];
+				if (Array.isArray(messages) && typeof messages[0] === "string")
+					fioErrors.value[field] = messages[0];
+			}
+			const reason = fioErrors.value.fio_apikey ?? fioErrors.value.prun_username;
+			if (reason) trackEvent("account:fio_link_failed", { reason });
 		} finally {
 			isUpdating.value = false;
 		}
@@ -113,11 +163,39 @@
 				<PInput
 					v-model:value="localProfile.fio_apikey"
 					class="w-full min-w-50 max-w-[50%]" />
+				<template v-if="fioErrors.fio_apikey" #info>
+					<span class="text-negative" role="alert">
+						{{ errorText(fioErrors.fio_apikey) }}
+					</span>
+				</template>
 			</PFormItem>
 			<PFormItem :label="t('profile.change_profile.form.prun_username')">
 				<PInput
 					v-model:value="localProfile.prun_username"
 					class="w-full min-w-50 max-w-[50%]" />
+				<template v-if="fioErrors.prun_username" #info>
+					<span class="text-negative" role="alert">
+						{{ errorText(fioErrors.prun_username) }}
+					</span>
+				</template>
+			</PFormItem>
+			<PFormItem :label="t('profile.change_profile.form.fio_status')">
+				<div
+					class="text-sm"
+					:class="{
+						'text-positive': showConnected,
+						'text-negative':
+							!showConnected &&
+							userStore.fioStatus === 'invalid_credentials',
+					}"
+					role="status"
+					data-testid="fio-status">
+					{{
+						showConnected
+							? t("profile.change_profile.fio_connected")
+							: fioStatusText
+					}}
+				</div>
 			</PFormItem>
 			<PFormSeperator>
 				<div class="py-3 text-white/60">

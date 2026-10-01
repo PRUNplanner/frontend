@@ -80,6 +80,8 @@ describe("Feature: Account", () => {
 			is_email_verified: true,
 			fio_apikey: "foo@moo.de",
 			prun_username: "foo",
+			fio_status: "ok",
+			fio_last_refreshed_at: "2026-10-01T12:00:00Z",
 		};
 
 		// @ts-expect-error - mock post typing
@@ -100,6 +102,8 @@ describe("Feature: Account", () => {
 			email: "",
 			fio_apikey: "foo@moo.de",
 			prun_username: "foo",
+			fio_status: "ok",
+			fio_last_refreshed_at: "2026-10-01T12:00:00Z",
 		};
 
 		// @ts-expect-error - mock post typing

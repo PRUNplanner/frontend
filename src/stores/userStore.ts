@@ -7,6 +7,7 @@ import {
 	reactive,
 	ref,
 	type Ref,
+	watch,
 } from "vue";
 import merge from "lodash/merge";
 
@@ -36,6 +37,7 @@ import type {
 	RefreshTokenResponse,
 	TokenResponse,
 	UserPreference,
+	FIOStatus,
 	UserProfile,
 } from "@/features/api/schemas/user.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
@@ -46,6 +48,9 @@ import {
 	localeLazyLoaders,
 	type SupportedLocale,
 } from "@/lib/i18n";
+
+const FIO_POLL_MS = 15_000;
+const FIO_POLL_TRIES = 20;
 
 export const useUserStore = defineStore(
 	"prunplanner_user",
@@ -179,6 +184,11 @@ export const useUserStore = defineStore(
 			() =>
 				accessToken.value !== undefined &&
 				refreshToken.value !== undefined
+		);
+
+		// a profile persisted before fio_status existed has none until it reloads
+		const fioStatus: ComputedRef<FIOStatus> = computed(
+			() => profile.value?.fio_status ?? "none"
 		);
 
 		const hasFIO: ComputedRef<boolean> = computed(
@@ -336,6 +346,31 @@ export const useUserStore = defineStore(
 			}
 		}
 
+		/*
+		 * New FIO credentials read "syncing" until the worker's first refresh,
+		 * usually seconds: reload the profile until the status moves on, for at
+		 * most FIO_POLL_TRIES * FIO_POLL_MS
+		 */
+		let fioPoll: ReturnType<typeof setTimeout> | undefined;
+		watch(
+			fioStatus,
+			(status) => {
+				clearTimeout(fioPoll);
+				if (status !== "syncing") return;
+
+				let tries = 0;
+				const poll = () => {
+					fioPoll = setTimeout(async () => {
+						await performGetProfile();
+						if (fioStatus.value === "syncing" && ++tries < FIO_POLL_TRIES)
+							poll();
+					}, FIO_POLL_MS);
+				};
+				poll();
+			},
+			{ immediate: true }
+		);
+
 		return {
 			accessToken,
 			refreshToken,
@@ -345,6 +380,7 @@ export const useUserStore = defineStore(
 			// getters
 			isLoggedIn,
 			hasFIO,
+			fioStatus,
 			// preferences
 			intialPreferencesCalled,
 			preferences,

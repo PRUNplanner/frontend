@@ -55,6 +55,7 @@ the tables here list the same events; a test
 | `account:profile_update` | | the profile form was submitted |
 | `account:fio_update` | `is_active` | the profile form was submitted |
 | `account:fio_link` | | FIO became active for a profile that had none |
+| `account:fio_link_failed` | `reason` | saving FIO credentials was refused: `fio_required`, `fio_invalid_key` or `fio_username_mismatch` |
 | `account:api_key_create` | | |
 
 ### Plan

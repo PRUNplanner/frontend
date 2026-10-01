@@ -48,6 +48,8 @@ function profile(patch: Partial<UserProfile> = {}): UserProfile {
 		is_email_verified: true,
 		fio_apikey: "test-fio-key",
 		prun_username: "test-prun-user",
+		fio_status: "ok",
+		fio_last_refreshed_at: null,
 		...patch,
 	};
 }
@@ -430,5 +432,126 @@ describe("ChangeProfile", () => {
 		// the link stays, so the user can ask again
 		expect(wrapper.text()).toContain(RESEND);
 		expect(wrapper.text()).not.toContain(REQUESTED);
+	});
+
+	describe("FIO credential check", () => {
+		const ERRORS = "profile.change_profile.fio_errors";
+		const noFIO = profile({
+			fio_apikey: null,
+			prun_username: null,
+			fio_status: "none",
+		});
+
+		async function link(patchStatus: number, body: object) {
+			mock.resetHandlers();
+			mock.onGet(PROFILE_URL).reply(200, noFIO);
+			mock.onPatch(PROFILE_URL).reply(patchStatus, body);
+			vi.spyOn(console, "error").mockImplementation(() => {});
+			const { wrapper } = await mountProfile(noFIO);
+			await inputs(wrapper).at(0)!.setValue("key");
+			await inputs(wrapper).at(1)!.setValue("PRUN");
+			await save(wrapper);
+			return wrapper;
+		}
+
+		it.each([
+			["fio_apikey", "fio_invalid_key"],
+			["prun_username", "fio_username_mismatch"],
+			["fio_apikey", "fio_required"],
+		])("shows %s: %s under its field", async (field, code) => {
+			const wrapper = await link(400, { [field]: [code] });
+
+			const alerts = wrapper.findAll("[role=alert]");
+			expect(alerts.map((a) => a.text())).toEqual([`${ERRORS}.${code}`]);
+			// the error sits in the field's own form item
+			const label =
+				field === "fio_apikey"
+					? "profile.change_profile.form.fio_apikey"
+					: "profile.change_profile.form.prun_username";
+			const labelId = wrapper
+				.findAll("label")
+				.find((l) => l.text() === label)!
+				.attributes("id");
+			expect(
+				alerts[0].element.closest("div")!.previousElementSibling!
+					.previousElementSibling!.id
+			).toBe(labelId);
+			expect(saveType(wrapper)).toBe("error");
+			expect(trackEvent).toHaveBeenCalledWith("account:fio_link_failed", {
+				reason: code,
+			});
+			expect(trackEvent).not.toHaveBeenCalledWith("account:fio_link");
+		});
+
+		it("falls back to a generic message for an unknown code", async () => {
+			const wrapper = await link(400, { prun_username: ["other"] });
+
+			expect(wrapper.find("[role=alert]").text()).toBe(`${ERRORS}.unknown`);
+		});
+
+		it("shows no FIO error for other failures", async () => {
+			const wrapper = await link(500, {});
+
+			expect(wrapper.findAll("[role=alert]")).toHaveLength(0);
+			expect(trackEvent).not.toHaveBeenCalledWith(
+				"account:fio_link_failed",
+				expect.anything()
+			);
+		});
+
+		it("confirms the connection and clears old errors on success", async () => {
+			const wrapper = await link(400, { fio_apikey: ["fio_invalid_key"] });
+			mock.resetHandlers();
+			mock.onPatch(PROFILE_URL).reply(
+				200,
+				profile({ prun_username: "PRUN", fio_apikey: "key" })
+			);
+			mock.onGet(PROFILE_URL).reply(
+				200,
+				profile({
+					prun_username: "PRUN",
+					fio_apikey: "key",
+					fio_status: "syncing",
+				})
+			);
+
+			await save(wrapper);
+
+			expect(wrapper.findAll("[role=alert]")).toHaveLength(0);
+			expect(wrapper.find("[data-testid=fio-status]").text()).toBe(
+				"profile.change_profile.fio_connected"
+			);
+			expect(trackEvent).toHaveBeenCalledWith("account:fio_link");
+
+			// the first refresh replaces it with the real status
+			useUserStore().profile = profile({
+				prun_username: "PRUN",
+				fio_apikey: "key",
+				fio_status: "ok",
+			});
+			await flushPromises();
+			expect(wrapper.find("[data-testid=fio-status]").text()).toBe(
+				"profile.change_profile.fio_status.ok"
+			);
+		});
+
+		it.each([
+			"none",
+			"syncing",
+			"ok",
+			"no_data",
+			"invalid_credentials",
+			"error",
+		] as const)("shows the %s status", async (status) => {
+			mock.resetHandlers();
+			mock.onGet(PROFILE_URL).reply(200, profile({ fio_status: status }));
+			const { wrapper } = await mountProfile(
+				profile({ fio_status: status })
+			);
+
+			expect(wrapper.find("[data-testid=fio-status]").text()).toBe(
+				`profile.change_profile.fio_status.${status}`
+			);
+		});
 	});
 });

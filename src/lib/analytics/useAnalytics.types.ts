@@ -78,6 +78,7 @@ export interface IAnalyticsEventProperties {
 	"account:profile_update": undefined;
 	"account:fio_update": { is_active: boolean };
 	"account:fio_link": undefined;
+	"account:fio_link_failed": { reason: string };
 	"account:api_key_create": undefined;
 
 	"plan:view": { planet_natural_id: string | undefined; is_shared: boolean };
