@@ -96,7 +96,12 @@
 				"need": "Necessario"
 			},
 			"amount_label": "Amount of {building}",
-			"override_label": "Stock override for {ticker}"
+			"override_label": "Stock override for {ticker}",
+			"built_label": "Built {building}",
+			"built_manual": "Entered by you, not from FIO",
+			"built_reset": "Reset built {building}",
+			"built_reset_all": "Reset built",
+			"built_not_saved": "Built counts aren't saved for this plan."
 		},
 		"supply_cart": {
 			"title": "Carrello per il Rifornimento",
@@ -181,6 +186,29 @@
 				"recipes": "@:terms.recipes_plural"
 			},
 			"toggle": "Toggle insights"
+		},
+		"plan_starter": {
+			"title": "Start from a typical setup on {planet}",
+			"description": "What the {plans} active plans on this planet build most (up to {max}; those in at least {percent} of plans are pre-selected). Adds the checked ones to this plan as a starting point; nothing is saved until you save.",
+			"columns": {
+				"building": "Building",
+				"in_plans": "In plans here",
+				"amount": "Amount",
+				"recipes": "Typical recipes"
+			},
+			"typical_amount": "typ. {amount}x",
+			"no_recipe": "no typical recipe",
+			"experts": "Experts in plans here",
+			"expert_share": "{expert} in {percent} of plans",
+			"expert_added": "adds {amount}",
+			"based_on": "Based on plans of players active in the last 90 days · updated daily",
+			"turn_off": "You can turn off plan suggestions in {link}",
+			"turn_off_link": "Profile › Preferences",
+			"start_empty": "Start empty",
+			"apply": "Use typical setup ({count})",
+			"applied": "Typical setup added: {n} building | Typical setup added: {n} buildings",
+			"empty": "No buildings yet. Add one above, or {link}",
+			"show": "start from a typical setup"
 		}
 	},
 	"components": {
@@ -288,7 +316,9 @@
 			"planet_resources": "@:terms.resources_plural del @:terms.planets",
 			"form": {
 				"match_cogc": "Solo corrispondenza @:terms.cogc",
-				"select_placeholder": "Seleziona @:terms.buildings e aggiungi al @:terms.plan"
+				"select_placeholder": "Seleziona @:terms.buildings e aggiungi al @:terms.plan",
+				"popular_on": "Popular on {planet} · {plans} plans",
+				"all_buildings": "All buildings"
 			},
 			"table": {
 				"building_recipe": "@:terms.buildings / @:terms.recipes",
@@ -308,13 +338,17 @@
 				"efficiency": "Efficienza",
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
-				"construction": "Costruzione"
+				"construction": "Costruzione",
+				"construction_per_building": "Per building"
 			},
 			"zero_reason": {
 				"FERTILITY": "Planet not fertile",
 				"WORKFORCE": "No workforce housed"
 			},
-			"qty_label": "Amount of {building}"
+			"qty_label": "Amount of {building}",
+			"mix_hint": "Most planned here:",
+			"mix_add": "Add",
+			"mix_add_label": "Add the most planned @:terms.recipes_plural of {building}"
 		},
 		"production_recipe": {
 			"cogm_title": "Costo di produzione dei beni",
@@ -328,7 +362,9 @@
 				"output": "Output",
 				"daily_revenue": "ȼ / giorno",
 				"profit_area": "ȼ / area",
-				"roi": "ROI"
+				"roi": "ROI",
+				"plans_here": "Plans here",
+				"below_threshold": "< 5 %"
 			},
 			"info": {
 				"p1_strong": "I ricavi giornalieri",
@@ -336,7 +372,9 @@
 				"p2_strong": "ȼ / area",
 				"p2": "è il ricavo giornaliero diviso per l’area occupata da un edificio di produzione e dalla sua quota proporzionale dell’area di un CM e degli alloggi necessari per una base ottimale composta da tali edifici.",
 				"p3_strong": "ROI",
-				"p3": "è il tempo di funzionamento continuo di una ricetta richiesto per generare abbastanza profitto per compensare i costi di costruzione dell'edificio. Tiene conto anche della degradazione dell'edificio."
+				"p3": "è il tempo di funzionamento continuo di una ricetta richiesto per generare abbastanza profitto per compensare i costi di costruzione dell'edificio. Tiene conto anche della degradazione dell'edificio.",
+				"p4_strong": "Plans here",
+				"p4": "is the share of plans on {planet} with a {building} that run this recipe, from active players, updated daily."
 			},
 			"amount_label": "Amount of recipe {recipe}"
 		}
