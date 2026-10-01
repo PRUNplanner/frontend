@@ -30,7 +30,7 @@
 		"exchange": {
 			"label": "Exchange-Präferenz",
 			"text": "Welche Marktplatz-Preise zu verwenden sind, mit Ihren eigenen Preisen pro Material oder pro Planeten. Jeder Plan im Imperium wird damit berechnet.",
-			"alt": "An exchange preference with ticker overrides"
+			"alt": "Eine Marktplatz-Präferenz mit Material-Überschreibungen."
 		}
 	},
 	"most_used": {
@@ -44,75 +44,75 @@
 			"point_1": "Materialien, die du extrahieren möchtest mit einem Minimum-Filter pro Tag",
 			"point_2": "Oberfläche, Schwerkraft, Druck, Temperatur und Fruchtbarkeit",
 			"point_3": "COGC-Programm und planetare Infrastruktur",
-			"point_4": "Compare up to four planets side by side",
-			"alt": "Planet Search: filters on the left, matching planets with their resources, COGC and infrastructure"
+			"point_4": "Vergleiche bis zu vier Planeten nebeneinander",
+			"alt": "Planetensuche: Filter auf der linken Seite, übereinstimmende Planeten mit ihren Ressourcen, COGC und Infrastruktur daneben"
 		},
 		"resource_roi": {
-			"label": "Resource ROI",
-			"title": "See which planet pays back fastest.",
-			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan.",
-			"point_1": "Plan cost, daily profit and ROI in days",
-			"point_2": "Daily output and % of the best planet",
-			"point_3": "POPR, COGC, environment and infrastructure next to it",
-			"alt": "Resource ROI for ALO: planets ranked with daily output, plan cost, daily profit and ROI in days"
+			"label": "Ressourcen ROI",
+			"title": "Sehe, welcher Planet sich am schnellsten auszahlt.",
+			"lead": "Wähle eine Ressource und deine Tauschpräferenz. Jeder Planeten, der es hat, erhält einen Plan.",
+			"point_1": "Plankosten, täglicher Gewinn und ROI in Tagen",
+			"point_2": "Tägliche Produktion und % des besten Planeten",
+			"point_3": "POPR, COGC, Umgebung und Infrastruktur daneben",
+			"alt": "Ressourcen-ROI für ALO: Planeten mit täglicher Produktion, Plankosten, täglicher Gewinn und ROI in Tagen"
 		},
 		"fio_burn": {
-			"label": "FIO Burn",
-			"title": "Know when a base runs out.",
-			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses.",
-			"point_1": "Days left per material and base",
-			"point_2": "Red and yellow thresholds you set",
-			"point_3": "A resupply list per base, exported as XIT actions",
-			"alt": "FIO Burn: burn per plan, with one base expanded to show consumption, stock and days left per material"
+			"label": "FIO Verbrauch",
+			"title": "Erfahre, wann deine Basis keine Materialien mehr hat.",
+			"lead": "Verbinde dein FIO-Konto und Verbrauch vergleicht deinen realen Bestand mit dem, was jeder Plan verwendet.",
+			"point_1": "Verbleibende Tage pro Material und Basis",
+			"point_2": "Rote und gelbe Schwellenwerte",
+			"point_3": "Eine Liste für deinen nächsten Transport, exportiert als XIT Aktion",
+			"alt": "FIO Verbrauch: Verbrauch pro Plan, mit einer erweiterten Basis, um deinen Verbrauch, Lagerbestand und die übrigen Tage pro Material anzuzeigen"
 		}
 	},
 	"tools": {
-		"title": "And the tools around it",
-		"lead": "Market data and calculators, priced from FIO. Link your FIO account and Repair uses your real bases too.",
-		"with_fio": "with FIO",
+		"title": "Die Werkzeuge drumherum",
+		"lead": "Marktdaten und Rechner mit Preisen von FIO. Verbinde deinen FIO Account und die Reparatur-Übersicht nutzt deine realen Basen im Spiel.",
+		"with_fio": "mit FIO",
 		"market_live": {
-			"label": "Market Live",
-			"text": "Live CX prices, and alerts from rules on price, spread and volume."
+			"label": "Live Markt",
+			"text": "Live Marktpreise und Warnungen zu Preisen, Spread und Volumen."
 		},
 		"market_exploration": {
-			"label": "Market Exploration",
-			"text": "Price and volume history per material and exchange."
+			"label": "Marktforschung",
+			"text": "Preis- und Volumenentwicklung je Material und Marktplatz."
 		},
 		"recipe_roi": {
-			"label": "Recipe ROI",
-			"text": "Every recipe ranked by payback at current prices."
+			"label": "Rezept-ROI",
+			"text": "Jedes Rezept sortiert nach seinem ROI auf Basis aktueller Preise."
 		},
 		"production_chains": {
-			"label": "Production Chains",
-			"text": "What a material takes to make, all the way down."
+			"label": "Produktionsketten",
+			"text": "Was ein Material braucht, um produziert zu werden."
 		},
 		"hq_calculator": {
-			"label": "HQ Calculator",
-			"text": "Materials needed for your next HQ level."
+			"label": "HQ Kalkulator",
+			"text": "Materialien, die für dein nächstes Hauptquartier benötigt werden."
 		},
 		"repair": {
-			"label": "Repair",
-			"text": "When each of your buildings is due for repair."
+			"label": "Reparatur",
+			"text": "Wenn jedes deiner Gebäude repariert werden muss."
 		},
 		"carts": {
-			"label": "Supply and Construction Cart",
-			"text": "Shopping lists per plan, exportable as XIT actions."
+			"label": "Liefer- und Konstruktionswarenkorb",
+			"text": "Einkaufslisten pro Plan, exportierbar als XIT-Aktionen."
 		},
 		"upkeep": {
-			"label": "Upkeep Price Calculator",
-			"text": "ȼ per need point for safety, health, comfort, culture and education."
+			"label": "Infrakstrukture-Beitrag-Rechner",
+			"text": "ȼ pro Bedarf an Sicherheit, Gesundheit, Komfort, Kultur und Bildung."
 		}
 	},
 	"closing": {
-		"title": "Free, open source and translated by players.",
-		"text": "No ads, no paid tier. Code on GitHub, translations on Crowdin.",
-		"github": "View on GitHub",
-		"cta": "Start planning"
+		"title": "Kostenlos, Open Source und von anderen Spielern übersetzt.",
+		"text": "Keine Werbung, keine Abos. Code auf Github, Übersetzungen auf Crowdin.",
+		"github": "Auf Github anschauen",
+		"cta": "Planung beginnen"
 	},
 	"footer": {
-		"made_in": "Made in Munich, with contributions from around the world.",
-		"imprint": "Imprint and terms",
-		"translate": "Translate on Crowdin",
-		"language": "Language"
+		"made_in": "Mit ♥️ aus München und Beteiligten aus aller Welt.",
+		"imprint": "Impressum und Nutzungsbedingungen",
+		"translate": "Auf Crowdin übersetzen",
+		"language": "Sprache"
 	}
 }
