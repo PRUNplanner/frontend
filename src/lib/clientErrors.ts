@@ -31,11 +31,14 @@ export function setClientErrorRoute(name: string | undefined): void {
  * Reports an API error to the backend, which logs it to Axiom. Sent
  * whether or not the user consented to analytics, with plain fetch and
  * no token: never through apiService, so a failing report can't report
- * itself. Fire and forget, errors are swallowed.
+ * itself. Fire and forget, errors are swallowed. Production builds only,
+ * so dev servers and tests never report to the live API.
  *
  * @param {IClientErrorReport} report Error report
  */
 export function reportClientError(report: IClientErrorReport): void {
+	if (import.meta.env.DEV) return;
+
 	const key = [report.kind, report.path_template, report.issues].join("|");
 	const now = Date.now();
 	if (sent >= MAX_REPORTS || now - (lastSent.get(key) ?? -Infinity) < DEDUPE_MS)
