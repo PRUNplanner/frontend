@@ -11,6 +11,8 @@
 	},
 	"manage": {
 		"title": "Clés API PRUNplanner",
+		"loading": "Loading API Keys.",
+		"empty": "No API Keys yet. Create your first API Key.",
 		"buttons": {
 			"new_apikey": "Créer nouvelle clé",
 			"revoke_apikey": "Révoquer"
