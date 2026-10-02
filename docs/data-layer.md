@@ -176,7 +176,13 @@ component / composable
   `getLoaded(key)` reads the map synchronously and throws if the store was
   never preloaded; the planning engine and `PriceBook` rely on it. After
   writing to IndexedDB, call `preload(true)` or synchronous readers won't see
-  the new rows (the `Get*` queries do this).
+  the new rows (the `Get*` queries do this through `storeAndPreload`).
+  `fill(rows, replace)` loads rows into memory without the DB; `storeAndPreload`
+  falls back to it when IndexedDB fails (connection closed, quota), so a
+  broken cache never fails a query. `getDB` reopens after the browser closes
+  the connection; on an `InvalidStateError` or `UnknownError` (a connection
+  lost without a `close` event) `storeAndPreload` calls `dropDB` so the next
+  `getDB` reopens it.
 - **`services/`** is the API consumers should use:
 
   | Service | Provides |

@@ -39,8 +39,16 @@ export async function getDB() {
 						}
 					}
 				},
+				// the browser closed the connection (site data cleared, eviction):
+				// the next call reopens it
+				terminated() {
+					dbPromise = null;
+				},
 			}
-		);
+		).catch((err: unknown) => {
+			dbPromise = null;
+			throw err;
+		});
 	}
 	// Request persistence after DB is ready
 	try {
@@ -50,6 +58,19 @@ export async function getDB() {
 	}
 
 	return dbPromise;
+}
+
+/**
+ * Drops the cached connection so the next `getDB` reopens it, for a
+ * connection that died without a `close` event.
+ */
+export function dropDB(): void {
+	dbPromise
+		?.then((db) => db.close())
+		.catch(() => {
+			// already closed or never opened
+		});
+	dbPromise = null;
 }
 
 /**
@@ -100,12 +121,14 @@ export function useIndexedDBStore<T extends object, K extends keyof T & string>(
 		const tx = db.transaction(storeName, "readwrite");
 		const store = tx.objectStore(storeName);
 
-		// if set, clears existing store data
-		if (wipe) await store.clear();
-
-		items.forEach((i) => store.put(i));
-
-		await tx.done;
+		// requests run in order, so the clear (if set) lands before the puts.
+		// Await every request: an aborted transaction (e.g. quota) rejects
+		// them all, and unawaited ones become unhandled rejections
+		await Promise.all([
+			...(wipe ? [store.clear()] : []),
+			...items.map((i) => store.put(i)),
+			tx.done,
+		]);
 	}
 
 	async function remove<K extends keyof T>(
