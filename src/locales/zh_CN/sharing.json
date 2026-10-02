@@ -5,8 +5,7 @@
 		"create_link": "创建分享链接",
 		"copy_url": "复制链接",
 		"stop_sharing": "停止分享",
-		"views": "{count}次查看",
-		"share": "分享"
+		"views": "{count}次查看"
 	},
 	"title": "分享计划",
 	"banner": {
