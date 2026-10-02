@@ -1,3 +1,11 @@
+# 2026-10-02 - v. 0.31.1
+
+- **Plan suggestions**: the building and recipe pickers show what is most often planned on the planet, and a new plan can start from the planet's typical setup (one Undo takes it back). Turn it off with the "Plan suggestions" setting [[PR-545]](https://github.com/PRUNplanner/frontend/pull/545), [[PR-546]](https://github.com/PRUNplanner/frontend/pull/546)
+- **Construction cart**: enter how many buildings already stand on the planet, with or without FIO, and the cart shows only what is left to build [[PR-541]](https://github.com/PRUNplanner/frontend/pull/541)
+- **FIO**: wrong keys or usernames are explained when you save them, and the navigation shows your FIO status [[PR-542]](https://github.com/PRUNplanner/frontend/pull/542)
+- **Plan editor**: construction cost covers all buildings of a row, and the supply cart accepts decimal days [[PR-540]](https://github.com/PRUNplanner/frontend/pull/540), [[PR-539]](https://github.com/PRUNplanner/frontend/pull/539)
+- **Fixes and under the hood**: faster loading, more reliable syncing and caching, text fixes and new community translations [[PR-543]](https://github.com/PRUNplanner/frontend/pull/543), [[PR-552]](https://github.com/PRUNplanner/frontend/pull/552), [[PR-553]](https://github.com/PRUNplanner/frontend/pull/553), [[PR-555]](https://github.com/PRUNplanner/frontend/pull/555), [[PR-558]](https://github.com/PRUNplanner/frontend/pull/558)
+
 # 2026-10-01 - v. 0.31.0
 
 The headline of this release is the completely rebuilt **Planet Search**, together with a broad pass over the whole UI to make PRUNplanner clearer, faster and easier to use. A big thank you to [lumivient](https://github.com/lumivient) for their pull request in this release!
