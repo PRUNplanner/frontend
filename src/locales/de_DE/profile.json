@@ -29,20 +29,20 @@
 			"email_verified": "E-Mail verifiziert",
 			"fio_status": "FIO Status"
 		},
-		"fio_connected": "Connected. Your data will appear in a few minutes.",
+		"fio_connected": "Verbunden. Deine Daten werden in wenigen Minuten angezeigt.",
 		"fio_status": {
-			"none": "Not connected. Enter your FIO API key and PrUn username.",
-			"syncing": "Connected, loading your FIO data.",
-			"ok": "Connected. Last FIO update {time}.",
-			"no_data": "Connected, but FIO has no data for you yet. Open Prosperous Universe with the FIO extension running.",
-			"invalid_credentials": "FIO rejected your API key. Enter a valid key and save again.",
-			"error": "FIO updates are failing right now. Check your FIO key and username."
+			"none": "Nicht verbunden. Gebe deinen FIO-API-Schlüssel und den PrUn Spielernamen ein.",
+			"syncing": "Verbunden, lade deine FIO-Daten.",
+			"ok": "Verbunden. Letztes FIO-Update {time}.",
+			"no_data": "Verbunden, aber FIO hat noch keine Daten für dich. Öffne Prosperous Universum mit der laufenden FIO-Erweiterung.",
+			"invalid_credentials": "FIO hat deinen API-Schlüssel abgelehnt. Gib einen gültigen Schlüssel ein und speichere erneut.",
+			"error": "FIO-Updates schlagen aktuell fehl. Prüfe deinen FIO-Schlüssel und Spielnamen."
 		},
 		"fio_errors": {
-			"fio_required": "Enter both the FIO API key and the PrUn username.",
-			"fio_invalid_key": "FIO doesn't accept this API key.",
-			"fio_username_mismatch": "This API key belongs to a different PrUn username.",
-			"unknown": "Saving failed. Please try again."
+			"fio_required": "Gib deinen FIO-Schlüssel und PrUn Spielernamen ein.",
+			"fio_invalid_key": "FIO akzeptiert diesen API-Schlüssel nicht.",
+			"fio_username_mismatch": "Dieser API-Schlüssel gehört zu einem anderen PrUn Spieler.",
+			"unknown": "Speichern fehlgeschlagen. Bitte versuche es erneut."
 		}
 	},
 	"storage_data": {
@@ -99,8 +99,8 @@
 			"resupply_days": "Nachschub-Tage",
 			"xit_origin": "XIT Origin",
 			"buy_from_cx": "XIT Buy from CX",
-			"plan_suggestions": "Plan suggestions",
-			"plan_suggestions_help": "Popular buildings and recipes on the planet, planet insights and a typical setup for empty plans",
+			"plan_suggestions": "Plan-Vorschläge",
+			"plan_suggestions_help": "Beliebte Gebäude und Rezepte auf dem Planeten, Analytics und ein typisches Setup für leere Pläne",
 			"privacy": "Privatsphäre",
 			"analytics": "Nutzungsanalyse",
 			"analytics_note": "Ermöglicht PRUNplanner Nutzungsereignisse, Fehlerberichte und Sitzungsaufzeichnungen zu sammeln. Diese Auswahl wird nur in diesem Browser gespeichert, also setze sie auf jedem Gerät, das du verwendest.",
