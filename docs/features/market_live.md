@@ -15,7 +15,7 @@ calls `connect()` and `disconnect()` from its lifecycle hooks.
 | `cxDetectors.ts` | `processUserDetectors(...)` evaluates `DetectorConfig` rule groups against old/new points. A comparison target is `static`, `previous` or `previous_pct` |
 | `cxDetectors.types.ts`, `cxExchange.types.ts` | Detector, rule and event types, and `CXDataPoint` (frontend-only; builds on `SSECX` via `Pick`) |
 | `fieldConfigs.ts` | Which `CXDataPoint` fields rules can target, with labels and formats |
-| `components/AlertManager.vue`, `RuleBuilder.vue`, `RuleGroup.vue`, `DetectorRow.vue`, `TargetEditor.vue` | Rule editor |
+| `components/AlertManager.vue`, `RuleGroup.vue`, `DetectorRow.vue`, `TargetEditor.vue` | Rule editor |
 | `components/AlertFeed.vue`, `AlertFeedDetail.vue`, `CXPointTable.vue`, `MessageHistory.vue` | Live output |
 
 ## Data

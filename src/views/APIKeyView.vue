@@ -211,7 +211,7 @@
 						</div>
 						<div>
 							<PTable
-								v-if="apiKeyData !== null"
+								v-if="apiKeyData?.length"
 								class="w-full"
 								striped>
 								<thead>

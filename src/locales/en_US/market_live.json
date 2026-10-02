@@ -70,12 +70,10 @@
 			"received": "{value} @:terms.material_ticker received"
 		},
 		"rule_builder": {
-			"new_rule_name": "New Rule",
 			"buttons": {
 				"add_condition": "Condition",
 				"add_group": "Group",
-				"remove": "Remove",
-				"save": "@:common.buttons.save"
+				"remove": "Remove"
 			},
 			"error": "Error: {value}",
 			"empty": "Empty Group"
