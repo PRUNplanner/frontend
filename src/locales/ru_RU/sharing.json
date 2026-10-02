@@ -5,8 +5,7 @@
 		"create_link": "Создать ссылку общего доступа",
 		"copy_url": "Копировать адрес",
 		"stop_sharing": "Остановить общий доступ",
-		"views": "{count} просмотров",
-		"share": "Поделиться"
+		"views": "{count} просмотров"
 	},
 	"title": "Share Plan",
 	"banner": {
