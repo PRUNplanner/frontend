@@ -182,6 +182,10 @@ exception carries `route_name` too.
   `:code` in every property of every event, nested ones included
   (`$current_url`, `$pathname`, `$referrer`, `$initial_*`, exceptions,
   session replay snapshots).
+- Chunk-load errors are not sent: `before_send`
+  (`dropChunkLoadErrors`) drops an exception whose entries are all
+  chunk-load errors. `chunkReload` handles them, but a programmatic
+  `router.push()` still rejects and posthog-js would report it as unhandled.
 
 ## Person properties
 
