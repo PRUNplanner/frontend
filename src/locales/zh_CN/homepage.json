@@ -1,15 +1,15 @@
 {
 	"navigation": {
-		"registration": "Create account",
-		"login": "Log in"
+		"registration": "新建账户",
+		"login": "登录"
 	},
 	"hero": {
-		"eyebrow": "Base and empire planner for Prosperous Universe",
-		"title": "Plan a base before you build it.",
-		"lead": "Pick a planet, add buildings and recipes, and watch daily profit, workforce, area and payback update as you go. Then group your bases into an empire and see what it makes, burns and has to ship.",
-		"cta": "Start planning, it's free",
-		"cta_logged_in": "Open your empire",
-		"how": "How it works",
+		"eyebrow": "Prosperous Universe 的基地与帝国规划工具",
+		"title": "规划一个基地，在你开发之前。",
+		"lead": "选择一个星球，添加建筑物和配方，并盯紧每日利润、劳动力、面积和回本周期的更新。 然后将你的基地分配到帝国，看看它的生产、消耗和运输成本。",
+		"cta": "开始规划，免费使用",
+		"cta_logged_in": "掌管你的帝国",
+		"how": "如何使用",
 		"facts": "Free · Open source · Prices from FIO",
 		"image_alt": "The plan editor for an iron base on Montem: workforce, overview, production buildings and material I/O",
 		"image_caption": "An iron base on Montem (OT-580b): 19,313 ȼ profit a day, pays back in 64 days."
@@ -106,13 +106,13 @@
 	"closing": {
 		"title": "Free, open source and translated by players.",
 		"text": "No ads, no paid tier. Code on GitHub, translations on Crowdin.",
-		"github": "View on GitHub",
-		"cta": "Start planning"
+		"github": "前往 GitHub 查看",
+		"cta": "开始规划"
 	},
 	"footer": {
 		"made_in": "Made in Munich, with contributions from around the world.",
 		"imprint": "Imprint and terms",
-		"translate": "Translate on Crowdin",
+		"translate": "前往 Crowdin 翻译",
 		"language": "Language"
 	}
 }
