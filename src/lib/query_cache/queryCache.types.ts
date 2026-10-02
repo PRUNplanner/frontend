@@ -9,6 +9,8 @@ export interface IQueryState<TParams, TData> {
 	data: TData | null;
 	loading: boolean;
 	error: Error | null;
+	// when the last fetch failed; timestamp stays the last success
+	errorAt?: number;
 	timestamp: number;
 	autoRefetch?: boolean;
 	expireTime?: number;

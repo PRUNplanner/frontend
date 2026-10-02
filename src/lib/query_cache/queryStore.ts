@@ -15,6 +15,19 @@ import type {
 	QueryParams,
 } from "@/lib/query_cache/queryRepository.types";
 
+/**
+ * Network failure or server error (status set by apiService's
+ * normalizeError), worth retrying; validation errors carry no status
+ *
+ * @param {Error} err Error
+ * @returns {boolean} Transient error
+ */
+function isTransientError(err: Error): boolean {
+	if (!("status" in err)) return false;
+	const status = (err as { status?: number }).status;
+	return status === undefined || status >= 500;
+}
+
 export const useQueryStore = defineStore(
 	"prunplanner_query_store",
 	() => {
@@ -136,7 +149,7 @@ export const useQueryStore = defineStore(
 								err instanceof Error
 									? err
 									: new Error(String(err)),
-							timestamp: Date.now(),
+							errorAt: Date.now(),
 						});
 					console.error(err);
 					throw err;
@@ -346,24 +359,35 @@ export const useQueryStore = defineStore(
 			}[] = [];
 
 			for (const [key, entry] of Object.entries(cacheState)) {
+				const name = entry.definitionName as QueryName;
+				const refreshed =
+					name === "GetPlanet" ||
+					!!getQueryDefinition(name)?.autoRefetch;
+				// a transient failure of a refreshed entry is retried one
+				// expireTime after it, any other error stops the refresh
+				const since =
+					entry.error === null
+						? entry.timestamp
+						: refreshed && isTransientError(entry.error)
+							? entry.errorAt
+							: undefined;
+
 				if (
 					entry.expireTime &&
 					!entry.loading &&
-					entry.error === null &&
-					entry.timestamp &&
-					entry.expireTime &&
-					now - entry.timestamp > entry.expireTime
+					since &&
+					now - since > entry.expireTime
 				) {
-					const name = entry.definitionName as QueryName;
-
 					if (name === "GetPlanet") {
 						const params = entry.params as QueryParams<"GetPlanet">;
 						expiredPlanets.set(params.planetNaturalId, key);
-					} else if (getQueryDefinition(name)?.autoRefetch) {
+					} else if (refreshed) {
 						const request = execute(
 							name,
 							entry.params as QueryParams<QueryName>
 						);
+						// logged and reported in execute already
+						request.catch(() => {});
 						if (name === "GetMultiplePlanets")
 							multipleRefetches.push({
 								ids: (
@@ -423,11 +447,7 @@ export const useQueryStore = defineStore(
 				keys.forEach((key, id) => {
 					// dropped meanwhile, e.g. by $reset on logout
 					if (!cacheState[key]) return;
-					updateState(key, {
-						loading: false,
-						timestamp: Date.now(),
-						...update(id),
-					});
+					updateState(key, { loading: false, ...update(id) });
 				});
 
 			request.then(
@@ -437,13 +457,21 @@ export const useQueryStore = defineStore(
 					);
 					settle((id) =>
 						byId.has(id)
-							? { data: byId.get(id), error: null }
-							: { error: new Error(`Planet ${id} not found`) }
+							? {
+									data: byId.get(id),
+									error: null,
+									timestamp: Date.now(),
+								}
+							: {
+									error: new Error(`Planet ${id} not found`),
+									errorAt: Date.now(),
+								}
 					);
 				},
 				(err) =>
 					settle(() => ({
 						error: err instanceof Error ? err : new Error(String(err)),
+						errorAt: Date.now(),
 					}))
 			);
 		}
