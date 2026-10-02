@@ -1,7 +1,7 @@
 {
 	"name": "prunplanner_frontend",
 	"private": true,
-	"version": "0.31.0",
+	"version": "0.31.1",
 	"dbVersion": "26.3.6",
 	"type": "module",
 	"packageManager": "pnpm@10.30.3",
