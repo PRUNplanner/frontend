@@ -5,8 +5,7 @@
 		"create_link": "Créer un lien pour partager",
 		"copy_url": "Copier l'URL",
 		"stop_sharing": "Arrêter de partager",
-		"views": "{count} Vues",
-		"share": "Partager"
+		"views": "{count} Vues"
 	},
 	"title": "Share Plan",
 	"banner": {
