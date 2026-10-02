@@ -143,8 +143,12 @@ export function calculateProduction(
 					recipeId: r.recipeid,
 					amount: r.amount,
 					dailyShare: 1,
-					// time adjusted to efficiency and amount
-					time: (recipeInfo.time_ms * r.amount) / totalEfficiency,
+					// time adjusted to efficiency and amount, an amount of 0
+					// takes no time even at 0% efficiency (0 / 0 is NaN)
+					time:
+						r.amount === 0
+							? 0
+							: (recipeInfo.time_ms * r.amount) / totalEfficiency,
 					recipe: {
 						...recipeInfo,
 						dailyRevenue: 0,
@@ -162,11 +166,15 @@ export function calculateProduction(
 			0
 		);
 
-		// update active recipes timeshare
+		// update active recipes timeshare, none when nothing runs (all
+		// amounts 0) or nothing finishes (0% efficiency, infinite time)
+		const runs: boolean =
+			Number.isFinite(totalBatchTime) && totalBatchTime > 0;
 		activeRecipes.forEach(
 			(updateDailyShare) =>
-				(updateDailyShare.dailyShare =
-					updateDailyShare.time / totalBatchTime)
+				(updateDailyShare.dailyShare = runs
+					? updateDailyShare.time / totalBatchTime
+					: 0)
 		);
 
 		const workforceDailyCost: number = getMaterialIOTotalPrice(

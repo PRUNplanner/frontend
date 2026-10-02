@@ -301,7 +301,7 @@
                 "workforceCost": "Infinity",
                 "workforceCostTotal": 1320.810382,
               },
-              "dailyShare": "NaN",
+              "dailyShare": 0,
               "recipe": {
                 "building_ticker": "HYF",
                 "dailyRevenue": 0,
@@ -362,7 +362,7 @@
                 "workforceCost": "Infinity",
                 "workforceCostTotal": 1320.810382,
               },
-              "dailyShare": "NaN",
+              "dailyShare": 0,
               "recipe": {
                 "building_ticker": "HYF",
                 "dailyRevenue": 0,
@@ -509,7 +509,7 @@
                 "workforceCost": "Infinity",
                 "workforceCostTotal": 515.7556536,
               },
-              "dailyShare": "NaN",
+              "dailyShare": 0,
               "recipe": {
                 "building_ticker": "RIG",
                 "dailyRevenue": 0,
