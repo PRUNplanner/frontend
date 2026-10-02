@@ -70,7 +70,6 @@
 			"received": "{value} @:terms.material_ticker erhalten"
 		},
 		"rule_builder": {
-			"new_rule_name": "Neue Regel",
 			"buttons": {
 				"add_condition": "Bedingung",
 				"add_group": "Gruppe",
@@ -88,7 +87,8 @@
 				"create_alert": "Neuen Alarm erstellen",
 				"discard": "@:common.buttons.discard",
 				"save": "@:common.buttons.save",
-				"delete": "@:common.buttons.delete"
+				"delete": "@:common.buttons.delete",
+				"edit": "@:common.buttons.edit"
 			},
 			"form": {
 				"alert_name": "Alarmname",
@@ -101,7 +101,32 @@
 		"detector": {
 			"field": "Feld",
 			"operator": "Vergleichszeichen",
-			"target_type": "Zieltyp"
+			"target_type": "Zieltyp",
+			"fields": {
+				"material_ticker": "Ticker",
+				"exchange_code": "Warenbörsen-Code",
+				"price": "Preis",
+				"bid": "Verkauf",
+				"ask": "Ankauf",
+				"price_change": "Preisänderung",
+				"price_change_pct": "Preisänderung (Prozent)",
+				"bid_change": "Gebotsänderung",
+				"ask_change": "Ankaufsänderung",
+				"demand": "Nachfrage",
+				"supply": "Angebot",
+				"traded": "Gehandelt",
+				"volume": "Volumen",
+				"buy_volume_total": "Kauf-Volumen",
+				"sell_volume_total": "Verkaufs-Volumen",
+				"buy_volume_change": "Volumenänderung kaufen (Abs.)",
+				"sell_volume_change": "Volumenänderung verkaufen (Abs.)",
+				"buy_vwap": "VWAP-Kauf",
+				"sell_vwap": "VWAP-Verkauf",
+				"lowest_sell_cost": "Bester Ankaufspreis",
+				"highest_buy_cost": "Bester Gebotspreis",
+				"spread": "Spread",
+				"spread_pct": "Spread (Prozent)"
+			}
 		}
 	}
 }
