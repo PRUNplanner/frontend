@@ -5,6 +5,7 @@ import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
 
 // Util
 import { redact } from "@/util/data";
+import { isChunkLoadError } from "@/lib/chunkReload";
 
 // Types & Interfaces
 import type { BeforeSendFn, PostHog, Properties } from "posthog-js";
@@ -48,6 +49,19 @@ export const maskUrlCodes: BeforeSendFn = (event) => {
 		$set: maskObject(event.$set),
 		$set_once: maskObject(event.$set_once),
 	};
+};
+
+/**
+ * before_send: drops exceptions that are only chunk-load errors. chunkReload
+ * already handles those (reload or message), but vue-router still rejects
+ * the router.push() that hit them, and posthog-js reports that rejection as
+ * unhandled after every deploy.
+ */
+export const dropChunkLoadErrors: BeforeSendFn = (event) => {
+	if (event?.event !== "$exception") return event;
+	const list = event.properties.$exception_list;
+	if (!Array.isArray(list) || !list.length) return event;
+	return list.every((entry) => isChunkLoadError(entry?.value)) ? null : event;
 };
 
 // storage keys PostHog writes: its own, the opt-out flag and survey state
@@ -169,7 +183,7 @@ async function startAnalytics(): Promise<void> {
 			// no cookie
 			persistence: "localStorage",
 			respect_dnt: true,
-			before_send: maskUrlCodes,
+			before_send: [maskUrlCodes, dropChunkLoadErrors],
 		});
 
 		// register global versions

@@ -502,12 +502,16 @@ describe("usePostHog", () => {
 		) => ({ uuid: "u", event: name, properties, ...extra });
 
 		it("is passed to posthog.init as before_send", async () => {
-			const { maskUrlCodes } = await load({ consent: "granted" });
+			const { maskUrlCodes, dropChunkLoadErrors } = await load({
+				consent: "granted",
+			});
 			await settle();
 
 			expect(posthog.init).toHaveBeenCalledWith(
 				"phc_test",
-				expect.objectContaining({ before_send: maskUrlCodes })
+				expect.objectContaining({
+					before_send: [maskUrlCodes, dropChunkLoadErrors],
+				})
 			);
 		});
 
@@ -606,6 +610,51 @@ describe("usePostHog", () => {
 			expect(
 				maskUrlCodes(event("plan:view", { count: 2, ok: null }))?.properties
 			).toEqual({ count: 2, ok: null });
+		});
+	});
+
+	describe("dropChunkLoadErrors", () => {
+		const CHUNK =
+			"Failed to fetch dynamically imported module: https://prunplanner.org/assets/chunks/HomepageView.abc123.js";
+		const exception = (...values: string[]) => ({
+			uuid: "u",
+			event: "$exception",
+			properties: {
+				$exception_list: values.map((value) => ({
+					type: "TypeError",
+					value,
+					mechanism: { handled: false },
+				})),
+			},
+		});
+
+		it("drops an exception that is only a chunk-load error", async () => {
+			const { dropChunkLoadErrors } = await load();
+
+			expect(dropChunkLoadErrors(exception(CHUNK))).toBeNull();
+		});
+
+		it("keeps other exceptions, mixed ones included", async () => {
+			const { dropChunkLoadErrors } = await load();
+			const other = exception("Cannot read properties of undefined");
+			const mixed = exception(CHUNK, "Cannot read properties of undefined");
+
+			expect(dropChunkLoadErrors(other)).toBe(other);
+			expect(dropChunkLoadErrors(mixed)).toBe(mixed);
+		});
+
+		it("keeps other events and exceptions without a list", async () => {
+			const { dropChunkLoadErrors } = await load();
+			const pageview = {
+				uuid: "u",
+				event: "$pageview",
+				properties: { message: CHUNK },
+			};
+			const empty = { uuid: "u", event: "$exception", properties: {} };
+
+			expect(dropChunkLoadErrors(null)).toBeNull();
+			expect(dropChunkLoadErrors(pageview)).toBe(pageview);
+			expect(dropChunkLoadErrors(empty)).toBe(empty);
 		});
 	});
 
