@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { openDB } from "idb";
+import { openDB, unwrap } from "idb";
+import { forceCloseDatabase } from "fake-indexeddb";
 
 import config from "@/lib/config";
 import {
+	dropDB,
 	getDB,
 	resetDB,
 	useIndexedDBStore,
@@ -66,6 +68,31 @@ describe("useIndexedDBStore", () => {
 		const db2 = await getDB();
 
 		expect(db1).toBe(db2);
+	});
+
+	it("getDB reopens after the browser closes the connection", async () => {
+		const db1 = await getDB();
+		forceCloseDatabase(unwrap(db1));
+
+		const db2 = await getDB();
+
+		expect(db2).not.toBe(db1);
+		await store.set(fakeMaterial_1);
+		expect(await store.get("m1")).toEqual(fakeMaterial_1);
+	});
+
+	it("getDB retries after a failed open", async () => {
+		// a newer version on disk makes the open fail with a VersionError
+		const newer = await openDB(
+			config.INDEXEDDB_DBNAME,
+			Number(__INDEXEDDB_VERSION__) + 1
+		);
+		newer.close();
+		await expect(getDB()).rejects.toThrow();
+
+		await resetDB();
+
+		expect((await getDB()).name).toBe(config.INDEXEDDB_DBNAME);
 	});
 
 	describe("IndexedDB upgrade", () => {
@@ -153,6 +180,42 @@ describe("useIndexedDBStore", () => {
 
 		const result = await store.getAll();
 		expect(result).toHaveLength(2);
+	});
+
+	it("setMany rejects once, without unhandled rejections, when the transaction aborts", async () => {
+		const unhandled: unknown[] = [];
+		const onUnhandled = (reason: unknown) => unhandled.push(reason);
+		// survives only if the clear is rolled back with the failed puts
+		await store.set(fakeMaterial_2);
+		process.on("unhandledRejection", onUnhandled);
+
+		// the duplicate material_id breaks the unique index and aborts the tx
+		await expect(
+			store.setMany(
+				[
+					fakeMaterial_1,
+					{ ...fakeMaterial_2, material_id: "foo" },
+					{ ...fakeMaterial_2, ticker: "m3", material_id: "m3" },
+				],
+				true
+			)
+		).rejects.toThrow();
+		await new Promise((resolve) => setTimeout(resolve, 10));
+		process.off("unhandledRejection", onUnhandled);
+
+		expect(unhandled).toEqual([]);
+		expect(await store.getAll()).toEqual([fakeMaterial_2]);
+	});
+
+	it("dropDB makes the next getDB reopen", async () => {
+		const db1 = await getDB();
+
+		dropDB();
+		const db2 = await getDB();
+
+		expect(db2).not.toBe(db1);
+		await store.set(fakeMaterial_1);
+		expect(await store.get("m1")).toEqual(fakeMaterial_1);
 	});
 
 	it("should remove an item", async () => {

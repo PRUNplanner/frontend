@@ -1,5 +1,8 @@
 import { useDB } from "@/database/composables/useDB";
-import type { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
+import {
+	dropDB,
+	type useIndexedDBStore,
+} from "@/database/composables/useIndexedDBStore";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Types & Interfaces
@@ -34,7 +37,9 @@ export function staleMinutes(minutes: number): number {
 
 /**
  * Writes game data into IndexedDB and reloads the in-memory layer, so
- * synchronous readers (`getLoaded`) see the new rows.
+ * synchronous readers (`getLoaded`) see the new rows. If IndexedDB fails
+ * (connection closed, quota exceeded), the rows go into the in-memory layer
+ * only, so the query still succeeds with the API data.
  *
  * @param store IndexedDB store
  * @param {T[]} data Rows to write
@@ -48,8 +53,24 @@ export async function storeAndPreload<
 	data: T[],
 	wipe: boolean = false
 ): Promise<void> {
-	await store.setMany(data, wipe);
-	await useDB(store).preload(true);
+	const db = useDB(store);
+	try {
+		await store.setMany(data, wipe);
+		await db.preload(true);
+	} catch (err) {
+		console.warn(
+			`IndexedDB cache for '${store.storeName}' failed, keeping data in memory.`,
+			err
+		);
+		// a dead connection that never fired `close` (WebKit reports a lost
+		// connection as UnknownError): reopen on the next call
+		if (
+			err instanceof DOMException &&
+			(err.name === "InvalidStateError" || err.name === "UnknownError")
+		)
+			dropDB();
+		db.fill(data, wipe);
+	}
 }
 
 /**

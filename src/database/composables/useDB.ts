@@ -48,16 +48,25 @@ export function useDB<T extends object, K extends keyof T & string>(
 		// skip if already loaded
 		if (!force && state.loaded) return;
 
-		const all = await store.getAll();
+		fill(await store.getAll(), true);
+	}
 
-		state.allData.value = all;
-		state.cache.clear();
+	/**
+	 * Loads rows into the in-memory layer without IndexedDB, for when the
+	 * database can't be written or read.
+	 *
+	 * @param {T[]} rows Rows to load
+	 * @param {boolean} replace Drop the rows already loaded, else upsert
+	 */
+	function fill(rows: T[], replace: boolean) {
+		if (replace) state.cache.clear();
 
-		for (const item of all) {
+		for (const item of rows) {
 			// @ts-expect-error keyPath dynamically
 			state.cache.set(item[store.keyPath], item);
 		}
 
+		state.allData.value = replace ? rows : [...state.cache.values()];
 		state.loaded = true;
 	}
 
@@ -89,6 +98,7 @@ export function useDB<T extends object, K extends keyof T & string>(
 		allData: state.allData,
 		cacheData: state.cache,
 		preload,
+		fill,
 		get,
 		getLoaded,
 	};

@@ -113,4 +113,26 @@ describe("useDB composable", () => {
 		expect(getLoaded("1")).toEqual({ id: "1", name: "Alpha" });
 		expect(getLoaded("2")).toBeUndefined();
 	});
+
+	it("fill() replaces or upserts without touching the store", () => {
+		const { fill, getLoaded, allData } = useDB<TestItem, "id">(
+			fakeStore as any
+		);
+
+		fill([{ id: "1", name: "Alpha" }], true);
+		fill(
+			[
+				{ id: "1", name: "Alpha 2" },
+				{ id: "2", name: "Beta" },
+			],
+			false
+		);
+		expect(getLoaded("1")).toEqual({ id: "1", name: "Alpha 2" });
+		expect(allData.value).toHaveLength(2);
+
+		fill([{ id: "3", name: "Gamma" }], true);
+		expect(getLoaded("1")).toBeUndefined();
+		expect(allData.value).toEqual([{ id: "3", name: "Gamma" }]);
+		expect(fakeStore.getAll).not.toHaveBeenCalled();
+	});
 });
