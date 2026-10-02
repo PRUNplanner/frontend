@@ -38,8 +38,7 @@
 			"visitation_frequency": "访问频率",
 			"construction_cart": "建造清单",
 			"supply_cart": "补给清单",
-			"repair_analysis": "维修分析",
-			"workforce": "劳动力"
+			"repair_analysis": "维修分析"
 		},
 		"popr": {
 			"title": "最新人口报告",
