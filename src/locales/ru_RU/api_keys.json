@@ -11,6 +11,8 @@
 	},
 	"manage": {
 		"title": "API Ключи PRUNplanner",
+		"loading": "Loading API Keys.",
+		"empty": "No API Keys yet. Create your first API Key.",
 		"buttons": {
 			"new_apikey": "Создать новый ключ",
 			"revoke_apikey": "Отозвать"
