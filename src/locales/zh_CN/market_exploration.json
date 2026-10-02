@@ -37,7 +37,8 @@
 			"trend": "趋势",
 			"volume_7d": "@:terms.traded_volume @:terms.7d",
 			"volume_30d": "@:terms.traded_volume @:terms.30d",
-			"details": "详情"
+			"details": "详情",
+			"explore": "Explore"
 		}
 	}
 }
