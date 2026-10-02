@@ -4,7 +4,7 @@
 
 当有用户在 Prosperous Universe 中看到变化时，FIO API 会接收数据，并每 30 秒批量发送给 PRUNplanner。 PRUNplanner 本身会保留最近 500 个数据点，因此你打开此视图时不必从零开始。
 
-请注意：并不是所有物资和交易所都会有数据点，只有当某项数据发生变化且有用户在游戏内访问过时，才会产生数据点。随着接收到更多数据，实时概览会持续累积完善。
+Please note: there won't be datapoints for all available materials and exchanges, only those where a change happened and a user accessed it ingame. 随着接收到更多数据，实时概览会持续累积完善。
 
 # 实时视图
 
