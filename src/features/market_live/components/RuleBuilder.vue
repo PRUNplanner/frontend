@@ -17,9 +17,9 @@
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	const severityOptions: PSelectOption[] = [
-		{ label: "Low", value: "LOW" },
-		{ label: "Medium", value: "MEDIUM" },
-		{ label: "High", value: "HIGH" },
+		{ label: t("market_live.severity_type.LOW"), value: "LOW" },
+		{ label: t("market_live.severity_type.MEDIUM"), value: "MEDIUM" },
+		{ label: t("market_live.severity_type.HIGH"), value: "HIGH" },
 	];
 
 	const state = reactive<DetectorConfig>({
@@ -43,7 +43,9 @@
 				<PSelect
 					v-model:value="state.severity"
 					:options="severityOptions" />
-				<PButton @click="save">Save</PButton>
+				<PButton @click="save">
+					{{ t("market_live.components.rule_builder.buttons.save") }}
+				</PButton>
 			</div>
 		</div>
 

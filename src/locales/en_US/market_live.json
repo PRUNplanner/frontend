@@ -74,7 +74,8 @@
 			"buttons": {
 				"add_condition": "Condition",
 				"add_group": "Group",
-				"remove": "Remove"
+				"remove": "Remove",
+				"save": "@:common.buttons.save"
 			},
 			"error": "Error: {value}",
 			"empty": "Empty Group"
@@ -88,7 +89,8 @@
 				"create_alert": "Create New Alert",
 				"discard": "@:common.buttons.discard",
 				"save": "@:common.buttons.save",
-				"delete": "@:common.buttons.delete"
+				"delete": "@:common.buttons.delete",
+				"edit": "@:common.buttons.edit"
 			},
 			"form": {
 				"alert_name": "Alert Name",
