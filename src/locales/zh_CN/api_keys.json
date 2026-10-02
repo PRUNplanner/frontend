@@ -11,6 +11,8 @@
 	},
 	"manage": {
 		"title": "PRUNplanner API 密钥",
+		"loading": "Loading API Keys.",
+		"empty": "No API Keys yet. Create your first API Key.",
 		"buttons": {
 			"new_apikey": "创建新密钥",
 			"revoke_apikey": "撤销"
