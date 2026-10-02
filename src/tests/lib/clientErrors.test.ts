@@ -26,6 +26,16 @@ describe("reportClientError", () => {
 	beforeEach(() => {
 		fetchMock.mockReset().mockResolvedValue(new Response(null));
 		vi.stubGlobal("fetch", fetchMock);
+		vi.stubEnv("DEV", false);
+	});
+
+	it("sends nothing outside production builds", async () => {
+		vi.stubEnv("DEV", true);
+		const { reportClientError } = await load();
+
+		reportClientError(REPORT);
+
+		expect(fetchMock).not.toHaveBeenCalled();
 	});
 
 	it("posts the report with keepalive and no token", async () => {
