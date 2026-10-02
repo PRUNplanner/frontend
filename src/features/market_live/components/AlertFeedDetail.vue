@@ -57,7 +57,9 @@
 				</div>
 			</div>
 			<div class="flex flex-col gap-y-1 uppercase">
-				<div class="text-muted">Buy Volume</div>
+				<div class="text-muted">
+					{{ $t("market_live.components.details.buy_volume") }}
+				</div>
 				<div class="text-lg font-mono text-white">
 					{{ formatAmount(data.buy_volume_total) }}
 				</div>

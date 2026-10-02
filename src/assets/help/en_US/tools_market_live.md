@@ -4,7 +4,7 @@ This system provides near-real-time monitoring of Commodity Exchanges (CX) via F
 
 FIO API receives data from Prosperous Universe once a user sees a change happening and sends data to PRUNplanner bundled every 30 seconds. PRUNplanner itself will persist the last 500 datapoints so you don't start from scratch when opening this view.
 
-Please note: there won't be datapoints for all available materials and exchanges, only those were a change happened and a user accessed it ingame. The live overview will continuously build up the more data was received.
+Please note: there won't be datapoints for all available materials and exchanges, only those where a change happened and a user accessed it ingame. The live overview will continuously build up the more data was received.
 
 # Live View
 

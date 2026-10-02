@@ -99,7 +99,13 @@
 
 					<div
 						class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-						<PButton @click="startEditing(alert)"> Edit </PButton>
+						<PButton @click="startEditing(alert)">
+							{{
+								$t(
+									"market_live.components.alert_manager.buttons.edit"
+								)
+							}}
+						</PButton>
 						<PButton type="error" @click="deleteAlert(alert.id)">
 							{{
 								$t(

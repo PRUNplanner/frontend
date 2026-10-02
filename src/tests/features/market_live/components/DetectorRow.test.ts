@@ -6,6 +6,7 @@ import TargetEditor from "@/features/market_live/components/TargetEditor.vue";
 import PButton from "@/ui/components/PButton.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import market_live from "@/locales/en_US/market_live.json";
 
 // Types & Interfaces
 import type { Detector } from "@/features/market_live/cxDetectors.types";
@@ -22,7 +23,11 @@ const TICKER: Detector = {
 };
 
 async function mountRow(modelValue: Detector = PRICE) {
-	const mounted = await mountComponent(DetectorRow, { modelValue });
+	const mounted = await mountComponent(
+		DetectorRow,
+		{ modelValue },
+		{ messages: { market_live } }
+	);
 	const lastDetector = () =>
 		mounted.component.emitted("update:modelValue")?.at(-1)?.[0] as
 			Detector | undefined;

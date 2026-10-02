@@ -113,7 +113,7 @@
 								<PSpin size="xl" />
 								<div class="pt-3 text-xs text-white/60">
 									{{
-										$t("resource_roi.calculating", {
+										$t("resource_roi.searching", {
 											resource: refSearchMaterial,
 										})
 									}}

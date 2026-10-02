@@ -618,7 +618,9 @@
 										fetch();
 									}
 								">
-								Explore
+								{{
+									t("market_exploration.overview.table.explore")
+								}}
 							</PButton>
 						</template>
 					</XNDataTableColumn>
