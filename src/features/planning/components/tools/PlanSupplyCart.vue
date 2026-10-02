@@ -292,12 +292,18 @@
 				{{ formatAmount(rowData.needLeft) }}
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="needWeight" title="t" sorter="default">
+		<XNDataTableColumn
+			key="needWeight"
+			:title="t('plan.tools.supply_cart.table.weight')"
+			sorter="default">
 			<template #render-cell="{ rowData }">
 				{{ formatNumber(rowData.needWeight) }}
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="needVolume" title="m³" sorter="default">
+		<XNDataTableColumn
+			key="needVolume"
+			:title="t('plan.tools.supply_cart.table.volume')"
+			sorter="default">
 			<template #render-cell="{ rowData }">
 				{{ formatNumber(rowData.needVolume) }}
 			</template>

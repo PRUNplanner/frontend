@@ -61,7 +61,7 @@
 									tag="span">
 									<template #link>
 										<router-link
-											to="/manage"
+											to="/search"
 											class="text-link-primary">
 											{{
 												$t(

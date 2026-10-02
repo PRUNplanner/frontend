@@ -60,7 +60,9 @@
 				:value="modelValue.field"
 				:options="
 					Object.keys(FieldConfigs).map((k) => ({
-						label: FieldConfigs[k as SchemaKey]!.label,
+						label: $t(
+							`market_live.components.detector.fields.${k}`
+						),
 						value: k,
 					}))
 				"

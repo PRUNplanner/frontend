@@ -49,8 +49,8 @@ type NumberOperator = "gt" | "lt" | "eq" | "neq";
 type StringOperator = "matches";
 
 export type FieldConfig =
-	| { type: "number"; label: string; operators: readonly NumberOperator[] }
-	| { type: "string"; label: string; operators: readonly StringOperator[] };
+	| { type: "number"; operators: readonly NumberOperator[] }
+	| { type: "string"; operators: readonly StringOperator[] };
 
 export interface MarketEvent {
 	id: string;

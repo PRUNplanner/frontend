@@ -95,13 +95,38 @@
 				"severity": "Severity",
 				"status": "Status",
 				"logic_configuration": "Logic Configuration",
-				"previous_datapoint": "Previous Datepoint"
+				"previous_datapoint": "Previous Datapoint"
 			}
 		},
 		"detector": {
 			"field": "Field",
 			"operator": "Operator",
-			"target_type": "Target type"
+			"target_type": "Target type",
+			"fields": {
+				"material_ticker": "Ticker",
+				"exchange_code": "Exchange Code",
+				"price": "Price",
+				"bid": "Bid",
+				"ask": "Ask",
+				"price_change": "Price Change",
+				"price_change_pct": "Price Change (Percent)",
+				"bid_change": "Bid Change",
+				"ask_change": "Ask Change",
+				"demand": "Demand",
+				"supply": "Supply",
+				"traded": "Traded",
+				"volume": "Volume",
+				"buy_volume_total": "Buy Volume",
+				"sell_volume_total": "Sell Volume",
+				"buy_volume_change": "Buy Volume Change (Abs.)",
+				"sell_volume_change": "Sell Volume Change (Abs.)",
+				"buy_vwap": "Buy VWAP",
+				"sell_vwap": "Sell VWAP",
+				"lowest_sell_cost": "Best Ask Price",
+				"highest_buy_cost": "Best Bid Price",
+				"spread": "Spread",
+				"spread_pct": "Spread (Percent)"
+			}
 		}
 	}
 }

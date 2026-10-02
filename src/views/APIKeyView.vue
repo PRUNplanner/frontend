@@ -187,7 +187,7 @@
 						<div
 							class="flex flex-row justify-between items-center pt-6 pb-3">
 							<h2 class="text-lg font-bold">
-								{{ $t("api_keys.info.manage.title") }}
+								{{ $t("api_keys.manage.title") }}
 							</h2>
 							<div class="flex flex-row gap-3">
 								<PButton
@@ -292,12 +292,12 @@
 							<div
 								v-else-if="!loaded"
 								class="text-center font-mono text-white/80">
-								Loading API Keys.
+								{{ $t("api_keys.manage.loading") }}
 							</div>
 							<div
 								v-else
 								class="text-center font-mono text-white/80">
-								No API Keys yet. Create your first API Key.
+								{{ $t("api_keys.manage.empty") }}
 							</div>
 						</div>
 					</div>
