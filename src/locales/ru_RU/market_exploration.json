@@ -37,7 +37,8 @@
 			"trend": "Тренд",
 			"volume_7d": "@:terms.traded_volume @:terms.7d",
 			"volume_30d": "@:terms.traded_volume @:terms.30d",
-			"details": "Детали"
+			"details": "Детали",
+			"explore": "Explore"
 		}
 	}
 }
