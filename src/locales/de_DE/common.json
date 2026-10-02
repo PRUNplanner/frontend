@@ -2,7 +2,7 @@
 	"navigation": {
 		"planning": "Planen",
 		"planning_short": "Plan",
-		"empire": "Empire",
+		"empire": "Imperium",
 		"planet_search": "Planeten Suchen",
 		"management": "Verwaltung",
 		"exchanges": "Marktplätze",
@@ -28,9 +28,9 @@
 			"fio": "FIO",
 			"fio_active": "FIO Aktiv",
 			"fio_inactive": "FIO Inaktiv",
-			"fio_syncing": "FIO Syncing",
-			"fio_no_data": "FIO Waiting for Data",
-			"fio_rejected": "FIO Key Rejected"
+			"fio_syncing": "FIO synchronisiert",
+			"fio_no_data": "Warten auf FIO Daten",
+			"fio_rejected": "FIO-Key abgelehnt"
 		},
 		"collapse": "Navigation minimieren",
 		"expand": "Navigation erweitern",
@@ -39,14 +39,11 @@
 	"buttons": {
 		"create": "Erstellen",
 		"save": "Speichern",
-		"save_as": "Speichern unter",
 		"reload": "Aktualisieren",
 		"show": "Anzeigen",
 		"hide": "Verstecken",
 		"help": "Hilfe",
 		"search": "Suchen",
-		"default": "Standard",
-		"select_all": "Alles Auswählen",
 		"discard": "Verwerfen",
 		"yes": "Ja",
 		"no": "Nein",
@@ -80,7 +77,7 @@
 			"more": "Weitere Seiten"
 		},
 		"language": "Sprache",
-		"page_load_failed": "This page couldn't load. Reload to get the latest version."
+		"page_load_failed": "Diese Seite konnte nicht geladen werden. Lade sie neu, um die neueste Version zu erhalten."
 	},
 	"values": {
 		"never": "nie"
