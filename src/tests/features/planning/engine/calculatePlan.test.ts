@@ -29,6 +29,7 @@ import recipes from "@/tests/test_data/api_data_recipes.json";
 import {
 	emptyPlan,
 	etherwindPlan,
+	findRecipeSwap,
 	setupPlanningTestData,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
@@ -127,6 +128,40 @@ describe("planning engine", () => {
 				)
 			);
 			expect(overview.dailyProfit).toBe(result.revenue);
+		});
+
+		it("0% efficiency gives finite material I/O, also with an amount-0 recipe (#547)", () => {
+			// no housing: workforce satisfaction and so efficiency are 0
+			const plan = etherwindPlan();
+			plan.plan_data.infrastructure = [];
+			const run = () =>
+				calculatePlan(
+					{ plan, empire: undefined, cxUuid: undefined },
+					ctx
+				).result;
+
+			const expectFinite = (result: ReturnType<typeof run>) => {
+				for (const b of result.production.buildings) {
+					expect(b.totalEfficiency).toBe(0);
+					for (const ar of b.activeRecipes)
+						expect(ar.dailyShare).toBe(0);
+				}
+				for (const m of result.production.materialio) {
+					expect(m.input).toBe(0);
+					expect(m.output).toBe(0);
+				}
+				for (const m of result.materialio)
+					expect(Number.isFinite(m.delta)).toBe(true);
+			};
+
+			expectFinite(run());
+
+			const { index, recipeid } = findRecipeSwap(plan);
+			plan.plan_data.buildings[index].active_recipes.push({
+				recipeid,
+				amount: 0,
+			});
+			expectFinite(run());
 		});
 
 		it("shows COGM when a CX is given", () => {
