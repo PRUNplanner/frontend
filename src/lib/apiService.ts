@@ -22,6 +22,27 @@ import { issuePathTemplate, pathTemplate } from "@/util/pathTemplate";
 // when each API call was sent, for client_ms
 const sentAt = new WeakMap<object, number>();
 
+// last network error per GET path: a lone one is a blip (e.g. a backend
+// deploy) the next refresh retries, only a repeat is worth reporting
+// ponytail: only catches the retry of queries expiring within it (GetAllShared
+// expires after 60 min), track the query retry instead if those matter
+const NETWORK_REPEAT_MS = 10 * 60_000;
+const lastNetworkFailure = new Map<string, number>();
+
+/**
+ * Records a GET network error and tells if the same path failed
+ * within NETWORK_REPEAT_MS before
+ *
+ * @param {string} pathTemplate Path template
+ * @returns {boolean} Repeated failure
+ */
+function isRepeatedNetworkFailure(pathTemplate: string): boolean {
+	const now = Date.now();
+	const last = lastNetworkFailure.get(pathTemplate);
+	lastNetworkFailure.set(pathTemplate, now);
+	return last !== undefined && now - last < NETWORK_REPEAT_MS;
+}
+
 /**
  * Sets the request and session id on calls to the API. The client is
  * the global axios instance, so other origins must not get them.
@@ -265,6 +286,13 @@ class ApiService {
 			reportClientError({ ...report, kind: "validation", issues });
 		} else if (isAxiosError(err)) {
 			const status = err.response?.status;
+
+			if (
+				status === undefined &&
+				method === "GET" &&
+				!isRepeatedNetworkFailure(path_template)
+			)
+				return;
 
 			if (status === undefined) error.name = "ApiNetworkError";
 			else if (status >= 500) error.name = "ApiServerError";

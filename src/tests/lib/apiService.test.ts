@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, onTestFinished, vi } from "vitest";
 import { z } from "zod";
 import { apiService } from "@/lib/apiService";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -236,13 +236,65 @@ describe("ApiService", () => {
 			});
 		});
 
-		it("network error", async () => {
+		it("network error: a lone GET one is not reported", async () => {
+			mock.onGet("/data/storage/").networkError();
+
+			await expect(
+				apiService.get("/data/storage/", schema)
+			).rejects.toThrowError();
+
+			expect(trackException).not.toHaveBeenCalled();
+			expect(reportClientError).not.toHaveBeenCalled();
+		});
+
+		it("network error: a lone GET one long after the last", async () => {
+			const now = vi.spyOn(Date, "now").mockReturnValue(1_000_000);
+			onTestFinished(() => now.mockRestore());
+			mock.onGet("/data/fio/").networkError();
+			const get = () => apiService.get("/data/fio/", schema);
+
+			await expect(get()).rejects.toThrowError();
+			now.mockReturnValue(1_000_000 + 10 * 60_000);
+			await expect(get()).rejects.toThrowError();
+
+			expect(trackException).not.toHaveBeenCalled();
+			expect(reportClientError).not.toHaveBeenCalled();
+		});
+
+		it("server error: a GET one is reported at once", async () => {
+			mock.onGet("/data/storage/500/").reply(500);
+
+			await expect(
+				apiService.get("/data/storage/500/", schema)
+			).rejects.toThrowError();
+
+			expect(tracked().error.name).toBe("ApiServerError");
+			expect(reported()).toMatchObject({ kind: "server", method: "GET" });
+		});
+
+		it("network error: a POST one is reported at once", async () => {
+			mock.onPost(PLAN).networkError();
+
+			await expect(
+				apiService.post(PLAN, { id: 1 }, schema, schema)
+			).rejects.toThrowError();
+
+			expect(tracked().error.name).toBe("ApiNetworkError");
+			expect(reported()).toMatchObject({ kind: "network", method: "POST" });
+		});
+
+		it("network error: a repeated GET one", async () => {
 			mock.onGet("/data/planet/OT-580b/").networkError();
 
 			await expect(
 				apiService.get("/data/planet/OT-580b/", schema)
 			).rejects.toThrowError();
+			// same path, within ten minutes
+			await expect(
+				apiService.get("/data/planet/OT-580b/", schema)
+			).rejects.toThrowError();
 
+			expect(trackException).toHaveBeenCalledOnce();
 			const { error, props } = tracked();
 			expect(error.name).toBe("ApiNetworkError");
 			expect(props).toStrictEqual({

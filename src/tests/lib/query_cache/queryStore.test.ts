@@ -413,3 +413,118 @@ describe("checkEntryStatusAndRefresh: expired planets", () => {
 		expect(planetState("AB-001c").error?.message).toBe("offline");
 	});
 });
+
+describe("checkEntryStatusAndRefresh: failed refreshes", () => {
+	let store: ReturnType<typeof useQueryStore>;
+	const autoFetch = getQueryDefinition("autoRefetchQuery").fetchFn as Mock;
+	const testFetch = getQueryDefinition("testQuery").fetchFn as Mock;
+	const getMultiple = getQueryDefinition("GetMultiplePlanets")
+		.fetchFn as Mock;
+	const autoState = () =>
+		store.cacheState[toCacheKey(["autoRefetchQuery", "a"])];
+
+	// like apiService's normalizeError: status set, undefined if offline
+	const apiError = (status: number | undefined) =>
+		Object.assign(new Error(`failed ${status}`), { status });
+
+	// a successful fetch at 1000, then a failed refresh at 3000
+	async function failRefresh(err: Error) {
+		await store.execute("autoRefetchQuery", "a");
+		autoFetch.mockRejectedValueOnce(err);
+		vi.setSystemTime(3000);
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+		autoFetch.mockClear();
+	}
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		store = useQueryStore();
+		vi.useFakeTimers();
+		vi.setSystemTime(1000);
+		vi.clearAllMocks();
+		vi.spyOn(userActivity, "shouldDelay").mockReturnValue(false);
+		vi.spyOn(console, "error").mockImplementation(() => {});
+	});
+
+	it.each([undefined, 500])(
+		"retries a transient error (status %s) one expireTime after it",
+		async (status) => {
+			await failRefresh(apiError(status));
+
+			// the last success stays the timestamp
+			expect(autoState()).toMatchObject({
+				data: { result: "auto-a" },
+				timestamp: 1000,
+				errorAt: 3000,
+			});
+
+			vi.setSystemTime(3500);
+			store.checkEntryStatusAndRefresh();
+			expect(autoFetch).not.toHaveBeenCalled();
+
+			autoFetch.mockResolvedValueOnce({ result: "fresh" });
+			vi.setSystemTime(4500);
+			store.checkEntryStatusAndRefresh();
+			await vi.runAllTimersAsync();
+
+			expect(autoFetch).toHaveBeenCalledOnce();
+			expect(autoState()).toMatchObject({
+				data: { result: "fresh" },
+				error: null,
+				timestamp: 4500,
+			});
+		}
+	);
+
+	it.each([
+		["a 404", apiError(404)],
+		["a validation error", new Error("Validation error: id")],
+	])("never retries %s", async (_, err) => {
+		await failRefresh(err);
+
+		vi.setSystemTime(60_000);
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+
+		expect(autoFetch).not.toHaveBeenCalled();
+		expect(autoState().error).toBe(err);
+	});
+
+	it("keeps an errored entry that is not refreshed, without refetch", async () => {
+		testFetch.mockRejectedValueOnce(apiError(undefined));
+		await expect(store.execute("testQuery", "a")).rejects.toThrow();
+
+		vi.setSystemTime(60_000);
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+
+		expect(testFetch).toHaveBeenCalledOnce();
+		expect(store.cacheState[toCacheKey(["testQuery", "a"])]).toBeDefined();
+	});
+
+	it("retries planets after a failed batch refresh", async () => {
+		store.addCacheState("GetPlanet", { planetNaturalId: "AB-001c" }, {
+			planet_natural_id: "AB-001c",
+		} as any);
+		getMultiple.mockRejectedValueOnce(apiError(undefined));
+		vi.setSystemTime(3000);
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+
+		const planet = () =>
+			store.cacheState[toCacheKey(["gamedata", "planet", "AB-001c"])];
+		expect(planet()).toMatchObject({ timestamp: 1000, errorAt: 3000 });
+
+		vi.setSystemTime(4500);
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+
+		expect(getMultiple).toHaveBeenCalledTimes(2);
+		expect(planet()).toMatchObject({
+			data: { fresh: true },
+			error: null,
+			timestamp: 4500,
+		});
+	});
+});

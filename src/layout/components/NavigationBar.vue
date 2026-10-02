@@ -4,6 +4,7 @@
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
 	import { useQueryStore } from "@/lib/query_cache/queryStore";
+	import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Composables
@@ -82,9 +83,10 @@
 		{ immediate: true }
 	);
 
+	// last successful fetch, also while a refresh keeps failing
 	const storageTimestamp = computed(
 		() =>
-			queryStore.peekQueryState(["gamedata", "fio", "storage"])
+			queryStore.cacheState[toCacheKey(["gamedata", "fio", "storage"])]
 				?.timestamp ?? 0
 	);
 
