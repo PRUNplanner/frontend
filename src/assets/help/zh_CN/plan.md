@@ -6,7 +6,7 @@
 
 **生产建筑**
 
-添加到计划中的每个建筑都会显示在此部分。用户应使用右上角的 +RECIPE 按钮添加配方。选择后，该配方会应用到整个计划，并计入顶部的概览以及右侧的物资 I/O。
+添加到计划中的每个建筑都会显示在此部分。  Users should add a recipe using the +RECIPE button on the top right.  Once selected, that recipe will propagate through the plan and contribute to the Overview at the top and Material I/O on the right.
 
 选择配方时，会出现该建筑可用配方的下拉列表。每个配方都会显示输入、运行时间和输出。系统还会自动计算并显示该建筑建造成本对应的每日利润（ȼ / 天）、单位面积利润（ȼ / 面积）以及 ROI（回本周期）。
 

@@ -5,8 +5,7 @@
 		"create_link": "Freigabelink erstellen",
 		"copy_url": "URL kopieren",
 		"stop_sharing": "Freigabe beenden",
-		"views": "{count} Aufrufe",
-		"share": "Freigeben"
+		"views": "{count} Aufrufe"
 	},
 	"title": "Plan teilen",
 	"banner": {

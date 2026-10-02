@@ -70,7 +70,6 @@
 			"received": "{value} @:terms.material_ticker получено"
 		},
 		"rule_builder": {
-			"new_rule_name": "Новое правило",
 			"buttons": {
 				"add_condition": "Условие",
 				"add_group": "Группа",
@@ -88,20 +87,46 @@
 				"create_alert": "Создать оповещение",
 				"discard": "@:common.buttons.discard",
 				"save": "@:common.buttons.save",
-				"delete": "@:common.buttons.delete"
+				"delete": "@:common.buttons.delete",
+				"edit": "@:common.buttons.edit"
 			},
 			"form": {
 				"alert_name": "Название оповещения",
 				"severity": "Критичность",
 				"status": "Состояние",
 				"logic_configuration": "Конфигурация логики",
-				"previous_datapoint": "Предыдущая точка"
+				"previous_datapoint": "Previous Datapoint"
 			}
 		},
 		"detector": {
 			"field": "Field",
 			"operator": "Operator",
-			"target_type": "Target type"
+			"target_type": "Target type",
+			"fields": {
+				"material_ticker": "Ticker",
+				"exchange_code": "Exchange Code",
+				"price": "Price",
+				"bid": "Bid",
+				"ask": "Ask",
+				"price_change": "Price Change",
+				"price_change_pct": "Price Change (Percent)",
+				"bid_change": "Bid Change",
+				"ask_change": "Ask Change",
+				"demand": "Demand",
+				"supply": "Supply",
+				"traded": "Traded",
+				"volume": "Volume",
+				"buy_volume_total": "Buy Volume",
+				"sell_volume_total": "Sell Volume",
+				"buy_volume_change": "Buy Volume Change (Abs.)",
+				"sell_volume_change": "Sell Volume Change (Abs.)",
+				"buy_vwap": "Buy VWAP",
+				"sell_vwap": "Sell VWAP",
+				"lowest_sell_cost": "Best Ask Price",
+				"highest_buy_cost": "Best Bid Price",
+				"spread": "Spread",
+				"spread_pct": "Spread (Percent)"
+			}
 		}
 	}
 }

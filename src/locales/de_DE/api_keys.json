@@ -11,6 +11,8 @@
 	},
 	"manage": {
 		"title": "PRUNplanner API Schlüssel",
+		"loading": "API-Schlüssel werden geladen.",
+		"empty": "Noch keine API-Schlüssel. Erstelle deinen ersten API-Schlüssel.",
 		"buttons": {
 			"new_apikey": "Neuen Schlüssel erstellen",
 			"revoke_apikey": "Widerrufen"

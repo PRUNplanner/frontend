@@ -1,9 +1,4 @@
 {
-	"building_type": {
-		"INFRASTRUCTURE": "Infrastructure",
-		"PLANETARY": "Planétaire",
-		"PRODUCTION": "Production"
-	},
 	"workforce_type": {
 		"pioneer": "Pionnier",
 		"settler": "Colon",
@@ -139,7 +134,6 @@
 		"WORKFORCE_SCIENTISTS": "Scientifiques"
 	},
 	"cogc_program_short": {
-		"Invalid": "Invalide",
 		"NONE": "Aucun",
 		"ADVERTISING_AGRICULTURE": "AGRI",
 		"ADVERTISING_CHEMISTRY": "CHIM",

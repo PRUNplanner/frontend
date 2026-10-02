@@ -38,8 +38,7 @@
 			"visitation_frequency": "Besuchsfrequenz",
 			"construction_cart": "Konstruktion",
 			"supply_cart": "Versorgung",
-			"repair_analysis": "Reparatur-Analyse",
-			"workforce": "Belegschaft"
+			"repair_analysis": "Reparatur-Analyse"
 		},
 		"popr": {
 			"title": "Aktuellster Bevölkerungsbericht",
@@ -96,7 +95,12 @@
 				"need": "Bedarf"
 			},
 			"amount_label": "Anzahl {building}",
-			"override_label": "Überschreiben von {ticker}"
+			"override_label": "Überschreiben von {ticker}",
+			"built_label": "{building} gebaut",
+			"built_manual": "Von dir eingegeben, nicht von FIO",
+			"built_reset": "Gebautes {building} zurücksetzen",
+			"built_reset_all": "Gebäude zurücksetzen",
+			"built_not_saved": "Gebäudezähler werden für diesen Plan nicht gespeichert."
 		},
 		"supply_cart": {
 			"title": "Versorgung",
@@ -181,6 +185,29 @@
 				"recipes": "@:terms.recipes_plural"
 			},
 			"toggle": "Einblicke ein-/ausblenden"
+		},
+		"plan_starter": {
+			"title": "Beginne mit einem typischen Setup auf {planet}",
+			"description": "Was die {plans} aktiven Pläne auf diesem Planeten am meisten bauen (bis zu {max}; diejenigen mit mindestens {percent} der Pläne sind vorausgewählt). Fügt die markierten zu diesem Plan hinzu; wird erst gespeichert, wenn du speichern möchtest.",
+			"columns": {
+				"building": "Gebäude",
+				"in_plans": "In Plänen",
+				"amount": "Anzahl",
+				"recipes": "Typische Rezepte"
+			},
+			"typical_amount": "typ. {amount}x",
+			"no_recipe": "kein typisches Rezept",
+			"experts": "Experten in Plänen hier",
+			"expert_share": "{expert} in {percent} von Plänen",
+			"expert_added": "fügt {amount} hinzu",
+			"based_on": "Basierend auf Plänen von Spielern, die in den letzten 90 Tagen aktiv waren · täglich aktualisiert",
+			"turn_off": "Du kannst Planvorschläge im {link} deaktivieren",
+			"turn_off_link": "Profil & Präferenzen",
+			"start_empty": "Leer starten",
+			"apply": "Typisches Setup verwenden ({count})",
+			"applied": "Typisches Setup hinzugefügt: {n} Gebäude | Typisches Setup hinzugefügt: {n} Gebäude",
+			"empty": "Noch keine Gebäude. Füge oben eines hinzu, oder {link}",
+			"show": "starte mit einem typischen Setup"
 		}
 	},
 	"components": {
@@ -288,7 +315,9 @@
 			"planet_resources": "@:terms.planets @:terms.resources_plural",
 			"form": {
 				"match_cogc": "Filter auf @:terms.cogc",
-				"select_placeholder": "@:terms.buildings auswählen & zu @:terms.plan hinzufügen"
+				"select_placeholder": "@:terms.buildings auswählen & zu @:terms.plan hinzufügen",
+				"popular_on": "Beliebt auf {planet} · {plans} Pläne",
+				"all_buildings": "Alle Gebäude"
 			},
 			"table": {
 				"building_recipe": "@:terms.buildings / @:terms.recipes",
@@ -308,13 +337,17 @@
 				"efficiency": "Effizienz",
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
-				"construction": "Konstruktion"
+				"construction": "Konstruktion",
+				"construction_per_building": "Pro Gebäude"
 			},
 			"zero_reason": {
 				"FERTILITY": "Planet ist nicht fruchtbar",
 				"WORKFORCE": "Keine Arbeitskräfte"
 			},
-			"qty_label": "Anzahl {building}"
+			"qty_label": "Anzahl {building}",
+			"mix_hint": "Meist geplant:",
+			"mix_add": "Hinzufügen",
+			"mix_add_label": "Füge die geplanten @:terms.recipes_plural von {building} hinzu"
 		},
 		"production_recipe": {
 			"cogm_title": "Kosten der hergestellten Waren",
@@ -328,7 +361,9 @@
 				"output": "Output",
 				"daily_revenue": "ȼ / Tag",
 				"profit_area": "ȼ  / Fläche",
-				"roi": "ROI"
+				"roi": "ROI",
+				"plans_here": "Pläne hier",
+				"below_threshold": "< 5 %"
 			},
 			"info": {
 				"p1_strong": "Umsatz / Tag",
@@ -336,7 +371,9 @@
 				"p2_strong": "ȼ  / Fläche",
 				"p2": "ist der tägliche Umsatz für ein Produktionsgebäude und sein proportionaler Anteil an der Fläche für eine Kolonisationseinheit und Belegschaftsgebäude für eine optimale Basis für dieses Gebäude und Auftrag.",
 				"p3_strong": "ROI",
-				"p3": "is die benötigte Zeit für einen ständig laufenen Auftrag, um Umsatz zu erzeugen, der alle Konstruktionskosten berücksichtigt. Dies beinhaltet die täglichen Verfalls- und Belegschaftskosten."
+				"p3": "is die benötigte Zeit für einen ständig laufenen Auftrag, um Umsatz zu erzeugen, der alle Konstruktionskosten berücksichtigt. Dies beinhaltet die täglichen Verfalls- und Belegschaftskosten.",
+				"p4_strong": "Pläne hier",
+				"p4": "ist der Anteil der Pläne auf {planet} mit einem {building} das dieses Rezept nutzt, auf Basis aktiver Spieler, täglich aktualisiert."
 			},
 			"amount_label": "Anzahl Rezept {recipe}"
 		}

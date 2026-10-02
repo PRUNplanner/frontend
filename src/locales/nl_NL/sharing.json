@@ -5,8 +5,7 @@
 		"create_link": "Create Sharing Link",
 		"copy_url": "Copy URL",
 		"stop_sharing": "Stop Sharing",
-		"views": "{count} Views",
-		"share": "Share"
+		"views": "{count} Views"
 	},
 	"title": "Share Plan",
 	"banner": {

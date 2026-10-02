@@ -70,7 +70,6 @@
 			"received": "已收到 {value} @:terms.material_ticker"
 		},
 		"rule_builder": {
-			"new_rule_name": "新规则",
 			"buttons": {
 				"add_condition": "条件",
 				"add_group": "分组",
@@ -88,20 +87,46 @@
 				"create_alert": "创建新提醒",
 				"discard": "@:common.butons.discard",
 				"save": "@:common.butons.save",
-				"delete": "@:common.buttons.delete"
+				"delete": "@:common.buttons.delete",
+				"edit": "@:common.buttons.edit"
 			},
 			"form": {
 				"alert_name": "提醒名称",
 				"severity": "告警级别",
 				"status": "状态",
 				"logic_configuration": "逻辑配置",
-				"previous_datapoint": "上一个数据点"
+				"previous_datapoint": "Previous Datapoint"
 			}
 		},
 		"detector": {
 			"field": "字段",
 			"operator": "运算符",
-			"target_type": "目标类型"
+			"target_type": "目标类型",
+			"fields": {
+				"material_ticker": "Ticker",
+				"exchange_code": "Exchange Code",
+				"price": "Price",
+				"bid": "Bid",
+				"ask": "Ask",
+				"price_change": "Price Change",
+				"price_change_pct": "Price Change (Percent)",
+				"bid_change": "Bid Change",
+				"ask_change": "Ask Change",
+				"demand": "Demand",
+				"supply": "Supply",
+				"traded": "Traded",
+				"volume": "Volume",
+				"buy_volume_total": "Buy Volume",
+				"sell_volume_total": "Sell Volume",
+				"buy_volume_change": "Buy Volume Change (Abs.)",
+				"sell_volume_change": "Sell Volume Change (Abs.)",
+				"buy_vwap": "Buy VWAP",
+				"sell_vwap": "Sell VWAP",
+				"lowest_sell_cost": "Best Ask Price",
+				"highest_buy_cost": "Best Bid Price",
+				"spread": "Spread",
+				"spread_pct": "Spread (Percent)"
+			}
 		}
 	}
 }

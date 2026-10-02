@@ -6,7 +6,7 @@
 
 **생산 건물**
 
-계획에 추가된 각 건물은 이 섹션에 표시됩니다.  사용자는 오른쪽 위의 +제조법 버튼을 사용해 제조법을 추가해야 합니다.  제조법을 선택하면 계획 전체에 반영되며, 상단의 개요와 오른쪽의 재료 입출고에도 반영됩니다.
+계획에 추가된 각 건물은 이 섹션에 표시됩니다.  Users should add a recipe using the +RECIPE button on the top right.  Once selected, that recipe will propagate through the plan and contribute to the Overview at the top and Material I/O on the right.
 
 제조법을 선택할 때, 해당 건물에서 사용할 수 있는 제조법들이 드롭다운으로 표시됩니다.  각 제조법에는 투입 자재, 소요 시간, 산출물이 표시됩니다.  The profit per day (ȼ / Day), profit per area (ȼ / Area), and ROI (payback period) for the building's construction cost are also automatically calculated and displayed.
 

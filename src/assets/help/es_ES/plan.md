@@ -6,7 +6,7 @@ The overview is the heart of the plan analysis.  It provides the daily cost of i
 
 **Production Buildings**
 
-Each building added to the plan appears in this section.  Users should add a recipe using the +RECIPE button on the rop right.  Once selected, that recipe will propogate through the plan and contribute to the Overview at the top and Material I/O on the right.
+Each building added to the plan appears in this section.  Users should add a recipe using the +RECIPE button on the top right.  Once selected, that recipe will propagate through the plan and contribute to the Overview at the top and Material I/O on the right.
 
 When selecting a recipe, a dropdown of that buildings recipes appears.  For each recipe, the inputs, duration, and output are given.  The profit per day (ȼ / Day), profit per area (ȼ / Area), and ROI (payback period) for the building's construction cost are also automatically calculated and displayed.
 

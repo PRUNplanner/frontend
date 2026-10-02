@@ -27,7 +27,10 @@
 			"backend": "后端",
 			"fio": "FIO",
 			"fio_active": "FIO 已启用",
-			"fio_inactive": "FIO 未启用"
+			"fio_inactive": "FIO 未启用",
+			"fio_syncing": "FIO Syncing",
+			"fio_no_data": "FIO Waiting for Data",
+			"fio_rejected": "FIO Key Rejected"
 		},
 		"collapse": "折叠导航栏",
 		"expand": "展开导航栏",
@@ -36,14 +39,11 @@
 	"buttons": {
 		"create": "创建",
 		"save": "保存",
-		"save_as": "另存为",
 		"reload": "重新加载",
 		"show": "显示",
 		"hide": "隐藏",
 		"help": "帮助",
 		"search": "搜索",
-		"default": "默认",
-		"select_all": "全选",
 		"discard": "放弃",
 		"yes": "是",
 		"no": "否",
@@ -76,7 +76,8 @@
 			"page": "第{page}页",
 			"more": "更多页面"
 		},
-		"language": "语言"
+		"language": "语言",
+		"page_load_failed": "This page couldn't load. Reload to get the latest version."
 	},
 	"values": {
 		"never": "从不"

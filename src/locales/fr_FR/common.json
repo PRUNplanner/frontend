@@ -27,7 +27,10 @@
 			"backend": "Front-end",
 			"fio": "FIO",
 			"fio_active": "FIO Actif",
-			"fio_inactive": "FIO Inactif"
+			"fio_inactive": "FIO Inactif",
+			"fio_syncing": "FIO Syncing",
+			"fio_no_data": "FIO Waiting for Data",
+			"fio_rejected": "FIO Key Rejected"
 		},
 		"collapse": "Collapse navigation",
 		"expand": "Expand navigation",
@@ -36,14 +39,11 @@
 	"buttons": {
 		"create": "Créer",
 		"save": "Enregistrer",
-		"save_as": "Enregistrer sous",
 		"reload": "Recharger",
 		"show": "Montrer",
 		"hide": "Masquer",
 		"help": "Aide",
 		"search": "Rechercher",
-		"default": "Défaut",
-		"select_all": "Sélectionner tout",
 		"discard": "Supprimer",
 		"yes": "Oui",
 		"no": "Non",
@@ -76,7 +76,8 @@
 			"page": "Page {page}",
 			"more": "More pages"
 		},
-		"language": "Language"
+		"language": "Language",
+		"page_load_failed": "This page couldn't load. Reload to get the latest version."
 	},
 	"values": {
 		"never": "never"

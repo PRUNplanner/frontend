@@ -26,7 +26,23 @@
 			"prun_username": "PrUn Benutzername",
 			"email_info": "Es ist nicht erforderlich, eine E-Mail anzugeben, aber dringend empfohlen, um die Sicherheit zu erhöhen und das Passwort wiederherzustellen.",
 			"email_address": "E-Mail-Adresse",
-			"email_verified": "E-Mail verifiziert"
+			"email_verified": "E-Mail verifiziert",
+			"fio_status": "FIO Status"
+		},
+		"fio_connected": "Verbunden. Deine Daten werden in wenigen Minuten angezeigt.",
+		"fio_status": {
+			"none": "Nicht verbunden. Gebe deinen FIO-API-Schlüssel und den PrUn Spielernamen ein.",
+			"syncing": "Verbunden, lade deine FIO-Daten.",
+			"ok": "Verbunden. Letztes FIO-Update {time}.",
+			"no_data": "Verbunden, aber FIO hat noch keine Daten für dich. Öffne Prosperous Universum mit der laufenden FIO-Erweiterung.",
+			"invalid_credentials": "FIO hat deinen API-Schlüssel abgelehnt. Gib einen gültigen Schlüssel ein und speichere erneut.",
+			"error": "FIO-Updates schlagen aktuell fehl. Prüfe deinen FIO-Schlüssel und Spielnamen."
+		},
+		"fio_errors": {
+			"fio_required": "Gib deinen FIO-Schlüssel und PrUn Spielernamen ein.",
+			"fio_invalid_key": "FIO akzeptiert diesen API-Schlüssel nicht.",
+			"fio_username_mismatch": "Dieser API-Schlüssel gehört zu einem anderen PrUn Spieler.",
+			"unknown": "Speichern fehlgeschlagen. Bitte versuche es erneut."
 		}
 	},
 	"storage_data": {
@@ -83,6 +99,8 @@
 			"resupply_days": "Nachschub-Tage",
 			"xit_origin": "XIT Origin",
 			"buy_from_cx": "XIT Buy from CX",
+			"plan_suggestions": "Plan-Vorschläge",
+			"plan_suggestions_help": "Beliebte Gebäude und Rezepte auf dem Planeten, Analytics und ein typisches Setup für leere Pläne",
 			"privacy": "Privatsphäre",
 			"analytics": "Nutzungsanalyse",
 			"analytics_note": "Ermöglicht PRUNplanner Nutzungsereignisse, Fehlerberichte und Sitzungsaufzeichnungen zu sammeln. Diese Auswahl wird nur in diesem Browser gespeichert, also setze sie auf jedem Gerät, das du verwendest.",
