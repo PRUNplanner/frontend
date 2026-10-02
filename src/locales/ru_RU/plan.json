@@ -38,8 +38,7 @@
 			"visitation_frequency": "Частота посещений",
 			"construction_cart": "Корзина строительства",
 			"supply_cart": "Корзина снабжения",
-			"repair_analysis": "Анализ ремонта",
-			"workforce": "Рабочая сила"
+			"repair_analysis": "Анализ ремонта"
 		},
 		"popr": {
 			"title": "Последний отчет по популяции",
