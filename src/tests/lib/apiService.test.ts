@@ -320,21 +320,14 @@ describe("ApiService", () => {
 			expect(reportClientError).not.toHaveBeenCalled();
 		});
 
-		it("401 of the token refresh", async () => {
+		it("not a 401 of the token refresh", async () => {
 			mock.onPost("/user/refresh/").reply(401);
 
 			await expect(
 				apiService.post("/user/refresh/", { id: 1 }, schema, schema)
 			).rejects.toThrowError();
 
-			const { error, props } = tracked();
-			expect(error.name).toBe("ApiClientError");
-			expect(props).toStrictEqual({
-				path_template: "/user/refresh/",
-				method: "POST",
-				status: 401,
-				request_id: expect.stringMatching(UUID),
-			});
+			expect(trackException).not.toHaveBeenCalled();
 			expect(reportClientError).not.toHaveBeenCalled();
 		});
 
