@@ -1,4 +1,5 @@
 import config from "@/lib/config";
+import { correlationId } from "@/lib/requestIds";
 
 export interface IClientErrorReport {
 	kind: "validation" | "server" | "network";
@@ -50,7 +51,10 @@ export function reportClientError(report: IClientErrorReport): void {
 		fetch(`${config.API_BASE_URL}/client-errors/`, {
 			method: "POST",
 			keepalive: true,
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				"X-Correlation-ID": correlationId(),
+			},
 			body: JSON.stringify({
 				...report,
 				// the backend's bounds
