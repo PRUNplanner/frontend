@@ -30,8 +30,10 @@
 	// Types & Interfaces
 	import type {
 		InfrastructureType,
+		Plan,
 		PlanCreateData,
 	} from "@/features/api/schemas/planningData.schemas";
+	import type { IPlanDiffable } from "@/features/planning_data/planDiff";
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
@@ -57,6 +59,14 @@
 		cloneSharedPlan,
 	} = usePlan();
 	import { flushPlanEdits, trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { remoteChange } from "@/lib/crossTab";
+	import { useSaveConflict } from "@/features/save_conflict/useSaveConflict";
+	import {
+		getSaveError,
+		threeWay,
+	} from "@/features/save_conflict/saveConflict.util";
+	import { diffPlan } from "@/features/planning_data/planDiff";
 
 	// Util
 	import { inertClone } from "@/util/data";
@@ -79,6 +89,10 @@
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
 	import SharedPlanBanner from "@/features/sharing/components/SharedPlanBanner.vue";
+	const SaveConflictDialog = defineAsyncComponent(
+		() =>
+			import("@/features/save_conflict/components/SaveConflictDialog.vue")
+	);
 	const SharingModal = defineAsyncComponent(
 		() => import("@/features/sharing/components/SharingModal.vue")
 	);
@@ -128,6 +142,11 @@
 	});
 
 	const refPlanData: Ref<IPlanDefinition> = ref(inertClone(props.planData));
+	// save version the edits started from, sent so a save over another
+	// tab's newer one fails as a conflict
+	const refBaseModifiedAt: Ref<string | undefined> = ref(
+		props.planData.modified_at
+	);
 	const refEmpireList: Ref<PlanEmpireElement[] | undefined> = ref(
 		props.empireList
 	);
@@ -165,6 +184,7 @@
 		isRestoring,
 		record,
 		snapshot,
+		savedSnapshot,
 		revision,
 		handleUpdateCorpHQ,
 		handleUpdateCOGC,
@@ -408,12 +428,20 @@
 		try {
 			// plan exists, trigger a save
 			if (existing.value) {
-				const savedUuid = await saveExistingPlan(
+				const saved = await saveExistingPlan(
 					refPlanData.value.uuid!,
-					backendData.value
+					backendData.value,
+					refBaseModifiedAt.value
 				);
-				if (!savedUuid) return saveFailed();
+				if ("error" in saved) {
+					const kind = saved.error;
+					if (kind === "failed") return saveFailed();
+					// after the save settled, the dialog waits on the user
+					void nextTick(() => resolveConflict(kind));
+					return;
+				}
 
+				refBaseModifiedAt.value = saved.modifiedAt;
 				markSaved(sent);
 				trackEvent("plan:save", {
 					planet_natural_id: planetData.planet_natural_id,
@@ -424,12 +452,13 @@
 				// whose plans this browser never loaded counts as first
 				const isFirstPlan: boolean =
 					Object.keys(planningStore.plans).length === 0;
-				const newUuid = await createNewPlan(backendData.value);
-				if (!newUuid) return saveFailed();
+				const created = await createNewPlan(backendData.value);
+				if (!created) return saveFailed();
 
-				refPlanData.value.uuid = newUuid;
+				refPlanData.value.uuid = created.uuid;
+				refBaseModifiedAt.value = created.modifiedAt;
 				// Persist the auto-optimize-habs preference
-				userStore.setPlanPreference(newUuid, {
+				userStore.setPlanPreference(created.uuid, {
 					autoOptimizeHabs: refAutoOptimizeHabs.value,
 				});
 
@@ -446,8 +475,13 @@
 				const planUuid: string = refPlanData.value.uuid!;
 				while (modified.value) {
 					const again: string = snapshot();
-					if (!(await saveExistingPlan(planUuid, backendData.value)))
-						return saveFailed();
+					const saved = await saveExistingPlan(
+						planUuid,
+						backendData.value,
+						refBaseModifiedAt.value
+					);
+					if ("error" in saved) return saveFailed();
+					refBaseModifiedAt.value = saved.modifiedAt;
 					markSaved(again);
 				}
 				router.push(
@@ -472,11 +506,11 @@
 		};
 
 		try {
-			const newUuid = await createNewPlan(saveAsData);
-			if (!newUuid) return;
+			const created = await createNewPlan(saveAsData);
+			if (!created) return;
 
 			// Persist the auto-optimize-habs preference
-			userStore.setPlanPreference(newUuid, {
+			userStore.setPlanPreference(created.uuid, {
 				autoOptimizeHabs: refAutoOptimizeHabs.value,
 			});
 
@@ -487,7 +521,7 @@
 			// Close modal and open new plan in a new tab
 			refShowSaveAsModal.value = false;
 			window.open(
-				`/plan/${planetData.planet_natural_id}/${newUuid}`,
+				`/plan/${planetData.planet_natural_id}/${created.uuid}`,
 				"_blank"
 			);
 		} finally {
@@ -514,15 +548,165 @@
 		if (modified.value && !confirm(t("plan.actions.reload_confirm")))
 			return;
 
-		refPlanData.value = await reloadExistingPlan(refPlanData.value.uuid);
-		planName.value = refPlanData.value.plan_name;
-		refSaveFailed.value = false;
-		markSaved();
+		applySavedPlan(await reloadExistingPlan(refPlanData.value.uuid));
 
 		trackEvent("plan:reload", {
 			planet_natural_id: planetData.planet_natural_id,
 		});
 	}
+
+	/**
+	 * Shows the saved plan, dropping unsaved edits and the history
+	 *
+	 * @param {IPlanDefinition} plan Saved plan
+	 */
+	function applySavedPlan(plan: IPlanDefinition): void {
+		refPlanData.value = inertClone(plan);
+		planName.value = refPlanData.value.plan_name;
+		refBaseModifiedAt.value = plan.modified_at;
+		refSaveFailed.value = false;
+		markSaved();
+	}
+
+	/**
+	 * Loads the plan as saved in the backend
+	 *
+	 * @returns {Promise<Plan>} Saved plan
+	 */
+	function fetchSavedPlan(): Promise<Plan> {
+		return useQuery("GetPlan", {
+			planUuid: refPlanData.value.uuid!,
+		}).execute({ forceRefetch: true });
+	}
+
+	/*
+	 * Save conflicts: saved or deleted in another tab since this tab loaded
+	 * the plan. The dialog lists both sides' changes and lets the user keep
+	 * theirs as a new plan, overwrite or reload.
+	 */
+	const conflict = useSaveConflict();
+
+	async function resolveConflict(
+		kind: "conflict" | "deleted"
+	): Promise<void> {
+		const loaded: IPlanDiffable = JSON.parse(savedSnapshot());
+		const mine: IPlanDiffable = JSON.parse(snapshot());
+
+		const choice = await conflict.ask({
+			deleted: kind === "deleted",
+			options:
+				kind === "deleted"
+					? ["save_as_new"]
+					: ["save_as_new", "overwrite", "reload"],
+			loadChanges:
+				kind === "deleted"
+					? undefined
+					: async () =>
+							threeWay(
+								loaded,
+								await fetchSavedPlan(),
+								mine,
+								diffPlan
+							),
+		});
+		trackEvent("plan:save_conflict", {
+			planet_natural_id: planetData.planet_natural_id,
+			is_deleted: kind === "deleted",
+			choice: choice ?? "close",
+		});
+
+		if (choice === "save_as_new") await saveAsNewPlan();
+		else if (choice === "overwrite") {
+			refBaseModifiedAt.value = undefined;
+			await save();
+		} else if (choice === "reload") await reloadSavedPlan();
+	}
+
+	/**
+	 * Drops the edits for the saved plan, a failed load keeps them
+	 */
+	async function reloadSavedPlan(): Promise<void> {
+		try {
+			applySavedPlan(await fetchSavedPlan());
+		} catch (err) {
+			console.error("Reloading the saved plan", err);
+		}
+	}
+
+	/**
+	 * Saves this tab's edits as "<name> (copy)" in the original's empire
+	 * and opens it, the original keeps the other tab's version
+	 */
+	async function saveAsNewPlan(): Promise<void> {
+		refIsSaving.value = true;
+		try {
+			const created = await createNewPlan({
+				...backendData.value,
+				plan_name: t("save_conflict.copy_name", {
+					name: planName.value ?? "",
+				}),
+				empire_uuid: planEmpires.value[0]?.uuid ?? refEmpireUuid.value,
+			});
+			if (!created) return saveFailed();
+
+			userStore.setPlanPreference(created.uuid, {
+				autoOptimizeHabs: refAutoOptimizeHabs.value,
+			});
+			// leaving is no loss now
+			markSaved();
+			router.push(
+				`/plan/${planetData.planet_natural_id}/${created.uuid}`
+			);
+		} finally {
+			refIsSaving.value = false;
+		}
+	}
+
+	/*
+	 * Saved or deleted in another tab: without unsaved edits the plan
+	 * reloads, with them a notice offers to
+	 */
+	let remoteToast: MessageReactive | undefined;
+
+	watch(remoteChange, async (change) => {
+		const planUuid: string | undefined = refPlanData.value.uuid;
+		if (!change || !planUuid || change.uuid !== planUuid) return;
+
+		remoteToast?.destroy();
+		try {
+			// the other tab's change invalidated it, this refetches
+			const plan: Plan = await useQuery("GetPlan", {
+				planUuid,
+			}).execute();
+			if (plan.modified_at === refBaseModifiedAt.value) return;
+
+			trackEvent("app:remote_change", {
+				object_type: "plan",
+				has_unsaved_edits: modified.value,
+				is_deleted: false,
+			});
+			if (!modified.value) applySavedPlan(plan);
+			else
+				remoteToast = toast(t("save_conflict.notice.saved_elsewhere"), {
+					duration: 15_000,
+					action: {
+						label: t("save_conflict.notice.reload"),
+						onClick: reloadSavedPlan,
+					},
+				});
+		} catch (err) {
+			if (getSaveError(err) !== "deleted") return;
+			trackEvent("app:remote_change", {
+				object_type: "plan",
+				has_unsaved_edits: modified.value,
+				is_deleted: true,
+			});
+			remoteToast = toast(t("save_conflict.notice.deleted_elsewhere"), {
+				type: "error",
+				duration: 15_000,
+			});
+		}
+	});
 
 	// clone shared plan as logged in user
 	const sharedWasCloned: Ref<boolean> = ref(false);
@@ -609,6 +793,7 @@
 		window.removeEventListener("keydown", onKeydown);
 		// toasts belong to the app, don't let one outlive its plan
 		undoToast?.destroy();
+		remoteToast?.destroy();
 	});
 
 	// Deleting or changing a recipe shows a toast to take it back. Any later
@@ -933,10 +1118,9 @@
 									@update:auto-optimize-habs="
 										(v: boolean, goal: HabSolverGoal) => {
 											refAutoOptimizeHabs = v;
-											trackEvent(
-												'plan:hab_auto_toggle',
-												{ is_active: v }
-											);
+											trackEvent('plan:hab_auto_toggle', {
+												is_active: v,
+											});
 											applyOptimizeHabs(goal, false);
 										}
 									"
@@ -1139,6 +1323,7 @@
 	</div>
 
 	<!-- Save As Modal -->
+	<SaveConflictDialog v-if="conflict.show.value" :conflict="conflict" />
 	<n-modal
 		v-model:show="refShowSaveAsModal"
 		class="w-120! max-w-[90vw]!"

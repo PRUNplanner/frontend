@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { type PropType, ref } from "vue";
+	import { defineAsyncComponent, type PropType, ref } from "vue";
 
 	// Composables
 	import { useEmpireForm } from "@/features/empire/useEmpireForm";
@@ -7,6 +7,11 @@
 
 	// Components
 	import EmpireConfigurationForm from "@/features/empire/components/EmpireConfigurationForm.vue";
+	import SaveConflictNotice from "@/features/save_conflict/components/SaveConflictNotice.vue";
+	const SaveConflictDialog = defineAsyncComponent(
+		() =>
+			import("@/features/save_conflict/components/SaveConflictDialog.vue")
+	);
 
 	// Types & Interfaces
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
@@ -27,7 +32,8 @@
 		(e: "reload:empires"): void;
 	}>();
 
-	const { localData, isLoading, save } = useEmpireForm(() => props.empire);
+	const { localData, isLoading, conflict, remoteNotice, reloadSaved, save } =
+		useEmpireForm(() => props.empire);
 	const saved = ref(false);
 
 	/**
@@ -81,6 +87,9 @@
 							{{ $t("empire.onboarding.empire.help") }}
 						</p>
 					</div>
+					<SaveConflictNotice
+						:notice="remoteNotice"
+						@reload="reloadSaved" />
 					<EmpireConfigurationForm v-model="localData" />
 					<div class="flex flex-row items-center gap-3">
 						<PButton
@@ -157,5 +166,6 @@
 				</div>
 			</li>
 		</ol>
+		<SaveConflictDialog v-if="conflict.show.value" :conflict="conflict" />
 	</section>
 </template>

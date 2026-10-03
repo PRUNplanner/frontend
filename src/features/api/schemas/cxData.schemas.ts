@@ -69,10 +69,17 @@ export const CXSchema = z.object({
 	),
 	cx_data: CXDataSchema,
 	cx_name: z.string().nonempty(),
+	modified_at: z.string(),
 });
 export type CX = z.infer<typeof CXSchema>;
 
-export const CXPutSchema = CXSchema.pick({ cx_data: true, cx_name: true });
+export const CXPutSchema = CXSchema.pick({
+	cx_data: true,
+	cx_name: true,
+}).extend({
+	// save version, ignored on create
+	base_modified_at: z.string().nullish(),
+});
 
 export const CXListSchema = z.array(CXSchema);
 

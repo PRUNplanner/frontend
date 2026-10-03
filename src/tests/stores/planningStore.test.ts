@@ -74,7 +74,7 @@ describe("Planning Store", async () => {
 
 			// can't set as not existis
 			// @ts-expect-error mock data
-			planningStore.setCX(cx_list[0].uuid, cx_list[0].cx_data);
+			planningStore.setCX({ ...cx_list[0], cx_name: "renamed" });
 			expect(Object.keys(planningStore.cxs).length).toBe(0);
 
 			// @ts-expect-error mock data
@@ -82,8 +82,9 @@ describe("Planning Store", async () => {
 			expect(Object.keys(planningStore.cxs).length).toBe(1);
 
 			// @ts-expect-error mock data
-			planningStore.setCX(cx_list[0].uuid, cx_list[0].cx_data);
+			planningStore.setCX({ ...cx_list[0], cx_name: "renamed" });
 			expect(Object.keys(planningStore.cxs).length).toBe(1);
+			expect(planningStore.cxs[cx_list[0].uuid].cx_name).toBe("renamed");
 		});
 
 		it("getCX", async () => {

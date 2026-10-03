@@ -151,6 +151,8 @@ export const PlanSchema = z.object({
 	plan_cogc: PlanCOGCProgramSchema,
 	plan_data: PlanDataSchema,
 	empires: z.array(PlanEmpireSchema).optional(),
+	// save version, the shared payload has none
+	modified_at: z.string().optional(),
 });
 export type Plan = z.infer<typeof PlanSchema>;
 
@@ -179,12 +181,18 @@ export const PlanCreateDataSchema = PlanSchema.pick({
 });
 export type PlanCreateData = z.input<typeof PlanCreateDataSchema>;
 
+// base_modified_at: the version the edit started from, a newer stored one
+// makes the save fail with 409; absent or null overwrites
 export const PlanSaveDataSchema = PlanCreateDataSchema.extend({
 	uuid: z.uuid(),
+	base_modified_at: z.string().nullish(),
 });
 export type PlanSaveData = z.input<typeof PlanSaveDataSchema>;
 
-export const PlanSaveCreateResponseSchema = PlanSchema.pick({ uuid: true });
+export const PlanSaveCreateResponseSchema = PlanSchema.pick({
+	uuid: true,
+	modified_at: true,
+});
 export type PlanSaveCreateResponse = z.infer<
 	typeof PlanSaveCreateResponseSchema
 >;

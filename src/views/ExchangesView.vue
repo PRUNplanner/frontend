@@ -21,8 +21,9 @@
 	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Composables
-	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useCXSave } from "@/features/cx/useCXSave";
+	const cxSave = useCXSave("exchanges_view");
 
 	// Util
 	import { inertClone } from "@/util/data";
@@ -39,6 +40,11 @@
 	import CXPreferenceImportExport from "@/features/exchanges/components/CXPreferenceImportExport.vue";
 	import CXTickerPreference from "@/features/exchanges/components/CXTickerPreference.vue";
 	import CXPlanetPreferenceTable from "@/features/exchanges/components/CXPlanetPreferenceTable.vue";
+	import SaveConflictNotice from "@/features/save_conflict/components/SaveConflictNotice.vue";
+	const SaveConflictDialog = defineAsyncComponent(
+		() =>
+			import("@/features/save_conflict/components/SaveConflictDialog.vue")
+	);
 
 	// Types & Interfaces
 	import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
@@ -80,14 +86,19 @@
 
 	const cxName = computed(() => {
 		if (!localCXUuid.value) return "Exchanges";
-		return planningStore.getCX(localCXUuid.value).cx_name;
+		// deleted in another tab while open
+		return (
+			planningStore.cxs[localCXUuid.value]?.cx_name ?? selectedName.value
+		);
 	});
 
 	const localPlanetList: Ref<string[]> = ref([]);
 
+	// planetMap follows the planet list itself: a list another tab's plan
+	// change reloads must not reset unsaved edits
 	watch(
-		[() => localCXUuid.value, () => localPlanetList.value],
-		([cxUuid, _planetList]) => {
+		() => localCXUuid.value,
+		(cxUuid) => {
 			if (cxUuid) {
 				initialize(cxUuid);
 			}
@@ -96,6 +107,7 @@
 	);
 
 	function initialize(cxUuid: string): void {
+		cxSave.remoteNotice.value = null;
 		selectedCX.value = planningStore.getCX(cxUuid);
 		selectedName.value = selectedCX.value.cx_name;
 
@@ -187,13 +199,13 @@
 			});
 
 			try {
-				await useQuery("PatchCX", {
-					cxName: selectedName.value ?? "Unnamed",
-					cxUuid: selectedCX.value.uuid,
-					data: data,
-				}).execute();
-
-				initialize(selectedCX.value!.uuid);
+				if (
+					await cxSave.save(rawSelectedCX.value!, {
+						cx_name: selectedName.value ?? "Unnamed",
+						cx_data: data,
+					})
+				)
+					initialize(selectedCX.value!.uuid);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -201,6 +213,35 @@
 			}
 		}
 	}
+
+	/*
+	 * Saved or deleted in another tab: without unsaved edits the CX
+	 * reloads, with them a notice offers to
+	 */
+	watch(
+		() =>
+			localCXUuid.value
+				? planningStore.cxs[localCXUuid.value]
+				: undefined,
+		(cx) => {
+			const loaded = rawSelectedCX.value;
+			if (isPatching.value || !loaded || !selectedCX.value) return;
+			if (
+				cx &&
+				(cx.uuid !== loaded.uuid ||
+					cx.modified_at === loaded.modified_at)
+			)
+				return;
+
+			// the edit state as is: patchData leaves out planets without a
+			// plan, a CX with preferences there would always look edited
+			const reload = cxSave.onRemoteChange(cx, loaded, {
+				cx_name: selectedName.value ?? "",
+				cx_data: selectedCX.value.cx_data,
+			});
+			if (reload) initialize(loaded.uuid);
+		}
+	);
 
 	function reloadCXData(): void {
 		trackEvent("exchange:reload", { location: "exchanges_view" });
@@ -308,6 +349,10 @@
 						<HelpDrawer file-name="exchanges" />
 					</div>
 				</div>
+				<SaveConflictNotice
+					class="mx-6 mt-3"
+					:notice="cxSave.remoteNotice.value"
+					@reload="initialize(localCXUuid)" />
 				<div
 					:kex="`EXCHANGE#${localCXUuid}`"
 					class="grow grid grid-cols-1 lg:grid-cols-[350px_auto] divide-x divide-white/10">
@@ -372,5 +417,8 @@
 				</div>
 			</div>
 		</WrapperGameDataLoader>
+		<SaveConflictDialog
+			v-if="cxSave.conflict.show.value"
+			:conflict="cxSave.conflict" />
 	</WrapperPlanningDataLoader>
 </template>

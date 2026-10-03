@@ -95,18 +95,21 @@ export async function callUpdateCXJunctions(
  * @async
  * @param {string} cxUuid CX Uuid
  * @param {CXData} data CX Preference Data
+ * @param {string} [baseModifiedAt] Version the edit started from
  * @returns {Promise<CXData>} Updated CX Preference Data
  */
 export async function callPatchCX(
 	cxName: string,
 	cxUuid: string,
-	data: CXData
+	data: CXData,
+	baseModifiedAt?: string
 ): Promise<CX> {
 	return apiService.put(
 		`/planning/cx/${cxUuid}/`,
 		{
 			cx_name: cxName,
 			cx_data: data,
+			base_modified_at: baseModifiedAt,
 		},
 		CXPutSchema,
 		CXSchema

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, type PropType } from "vue";
+	import { computed, defineAsyncComponent, type PropType } from "vue";
 
 	// Composables
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -7,6 +7,11 @@
 
 	// Components
 	import EmpireConfigurationForm from "@/features/empire/components/EmpireConfigurationForm.vue";
+	import SaveConflictNotice from "@/features/save_conflict/components/SaveConflictNotice.vue";
+	const SaveConflictDialog = defineAsyncComponent(
+		() =>
+			import("@/features/save_conflict/components/SaveConflictDialog.vue")
+	);
 
 	// Types & Interfaces
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
@@ -35,9 +40,25 @@
 		(e: "reload:empires"): void;
 	}>();
 
-	const { localData, isLoading, reload, save } = useEmpireForm(
-		() => props.data
-	);
+	const {
+		localData,
+		isLoading,
+		conflict,
+		remoteNotice,
+		reload,
+		reloadSaved,
+		save,
+	} = useEmpireForm(() => props.data);
+
+	/**
+	 * Loads the configuration another tab saved
+	 *
+	 * @async
+	 * @returns {Promise<void>}
+	 */
+	async function reloadSavedForm(): Promise<void> {
+		if (await reloadSaved()) emit("reload:empires");
+	}
 
 	/**
 	 * Reloads data from props again
@@ -85,6 +106,8 @@
 			</div>
 		</div>
 
+		<SaveConflictNotice :notice="remoteNotice" @reload="reloadSavedForm" />
+
 		<EmpireConfigurationForm v-model="localData" />
 
 		<div
@@ -114,5 +137,6 @@
 				</template>
 			</i18n-t>
 		</div>
+		<SaveConflictDialog v-if="conflict.show.value" :conflict="conflict" />
 	</div>
 </template>

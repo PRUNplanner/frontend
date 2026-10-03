@@ -41,6 +41,8 @@ import type {
 	UserProfile,
 } from "@/features/api/schemas/user.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
+import { setSyncedPreferences } from "@/features/preferences/preferenceSync";
+import { persistStorage } from "@/lib/persistStorage";
 import { deepClone } from "@/util/data";
 import type { Composer } from "vue-i18n";
 import {
@@ -65,6 +67,8 @@ export const useUserStore = defineStore(
 		const preferences: Reactive<UserPreference> = reactive<UserPreference>(
 			deepClone(preferenceDefaults)
 		);
+		// until hydrated or fetched, the defaults are what's synced
+		setSyncedPreferences(preferences);
 
 		// state reset
 		function $reset(): void {
@@ -72,6 +76,7 @@ export const useUserStore = defineStore(
 			refreshToken.value = undefined;
 			profile.value = undefined;
 			Object.assign(preferences, deepClone(preferenceDefaults));
+			setSyncedPreferences(preferences);
 			// the next login must load its own profile and preferences
 			initialProfileCalled.value = false;
 			intialPreferencesCalled.value = false;
@@ -110,10 +115,6 @@ export const useUserStore = defineStore(
 				preferenceDefaults.planDefaults,
 				preferences.planOverrides[planUuid] || {}
 			);
-		}
-
-		function clearPlanPreference(planUuid: string): void {
-			delete preferences.planOverrides[planUuid];
 		}
 
 		async function initLocale(composer: Composer) {
@@ -166,7 +167,10 @@ export const useUserStore = defineStore(
 				const { messages: validMessages, dropped } =
 					dropInvalidMessages(messages);
 				if (dropped.length > 0) {
-					console.warn(`Invalid ${v} messages, using en_US:`, dropped);
+					console.warn(
+						`Invalid ${v} messages, using en_US:`,
+						dropped
+					);
 				}
 				composer.setLocaleMessage(v, validMessages);
 				composer.locale.value = v;
@@ -228,7 +232,15 @@ export const useUserStore = defineStore(
 		 */
 		function logout(): void {
 			trackEvent("account:logout");
+			resetSession();
+		}
 
+		/**
+		 * Clears the session's data: user, plans and query cache. Also used
+		 * when another tab logged out.
+		 * @author jplacht
+		 */
+		function resetSession(): void {
 			// reset user store
 			$reset();
 
@@ -362,7 +374,10 @@ export const useUserStore = defineStore(
 				const poll = () => {
 					fioPoll = setTimeout(async () => {
 						await performGetProfile();
-						if (fioStatus.value === "syncing" && ++tries < FIO_POLL_TRIES)
+						if (
+							fioStatus.value === "syncing" &&
+							++tries < FIO_POLL_TRIES
+						)
 							poll();
 					}, FIO_POLL_MS);
 				};
@@ -386,13 +401,13 @@ export const useUserStore = defineStore(
 			preferences,
 			setPreference,
 			setPlanPreference,
-			clearPlanPreference,
 			getPlanPreference,
 			setLocale,
 			initLocale,
 			// functions
 			setToken,
 			logout,
+			resetSession,
 			performLogin,
 			performTokenRefresh,
 			performGetProfile,
@@ -400,6 +415,7 @@ export const useUserStore = defineStore(
 	},
 	{
 		persist: {
+			storage: persistStorage,
 			pick: ["accessToken", "refreshToken", "profile", "preferences"],
 			// overrides persisted before setPlanPreference stored complete
 			// ones fail the PATCH schema, which blocks every preference sync
@@ -412,6 +428,8 @@ export const useUserStore = defineStore(
 						...overrides[uuid],
 					};
 				store.preferences.planOverrides = overrides;
+				// a PATCH sends what changed since this state
+				setSyncedPreferences(store.preferences);
 			},
 		},
 	}

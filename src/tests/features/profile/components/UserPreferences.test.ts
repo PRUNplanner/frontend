@@ -44,7 +44,6 @@ vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () => ({
 	},
 }));
 
-
 const analytics = vi.hoisted(() => ({
 	// set by the mock factory below
 	consent: undefined as unknown as { value: "granted" | "denied" | null },
@@ -241,7 +240,8 @@ describe("UserPreferences", () => {
 		expect(selects(wrapper).at(2)!.props("options")).toEqual([]);
 	});
 
-	it("drops plan preferences of deleted plans on mount", async () => {
+	it("keeps plan preferences of plans this tab doesn't know", async () => {
+		// e.g. created in another tab; the backend drops a deleted plan's
 		const userStore = seed();
 		userStore.preferences.planOverrides = {
 			[PLAN.uuid!]: { autoOptimizeHabs: true },
@@ -251,6 +251,7 @@ describe("UserPreferences", () => {
 
 		expect(Object.keys(userStore.preferences.planOverrides)).toEqual([
 			PLAN.uuid,
+			DELETED_PLAN,
 		]);
 	});
 

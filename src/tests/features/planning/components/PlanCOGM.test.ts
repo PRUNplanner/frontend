@@ -72,7 +72,13 @@ const COGM = {
 function seedCX(pinia: Pinia, data = cxData()) {
 	usePlanningStore(pinia).setCXs([
 		// @ts-expect-error partial CX
-		{ uuid: CX_UUID, cx_name: "My CX", cx_data: data, empires: [] },
+		{
+			uuid: CX_UUID,
+			cx_name: "My CX",
+			cx_data: data,
+			empires: [],
+			modified_at: "v1",
+		},
 	]);
 }
 
@@ -159,7 +165,12 @@ describe("PlanCOGM", () => {
 		// the backend answers with the saved CX
 		mock.onPut(PUT_URL).reply((config) => [
 			200,
-			{ uuid: CX_UUID, empires: [], ...JSON.parse(config.data) },
+			{
+				uuid: CX_UUID,
+				empires: [],
+				...JSON.parse(config.data),
+				modified_at: "v2",
+			},
 		]);
 	});
 
@@ -284,7 +295,10 @@ describe("PlanCOGM", () => {
 		mock.onPut(PUT_URL).reply((config) => {
 			const body = JSON.parse(config.data);
 			body.cx_data.ticker_planets[1].preferences[0].value = 31;
-			return [200, { uuid: CX_UUID, empires: [], ...body }];
+			return [
+				200,
+				{ uuid: CX_UUID, empires: [], ...body, modified_at: "v2" },
+			];
 		});
 		const { wrapper, pinia } = await mountCOGM();
 

@@ -24,6 +24,12 @@ when every step has finished.
   `data:empire:plans`), and the loader emits `complete` at the end.
   `WrapperPlanningDataLoader` also emits `update:empireUuid` and
   `update:cxUuid`, which resolve the default empire and CX.
+- **Changes from other tabs.** Planning steps with a `refreshKey` reload
+  when another tab changes data under it (`remoteChange`, see
+  [data-layer.md §6](../data-layer.md#6-several-tabs-srclibcrosstabts)).
+  The old data stays until the new arrives, so the page never falls back to
+  the loading screen; the step's `data:*` event fires again and the loader
+  emits `refreshed`. A refreshed CX list keeps the selected CX.
 - **Rendering.** The slot renders inside `<Suspense>`, so children can
   `await` data in `<script setup>`.
 - **Missing shared plan.** A 404 on the `shared-plan-uuid` step

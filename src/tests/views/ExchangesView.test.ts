@@ -79,7 +79,12 @@ describe("ExchangesView", () => {
 	it("saves the CX and stops the spinner", async () => {
 		mock.onPut(PUT_URL).reply((config) => [
 			200,
-			{ uuid: CX.uuid, empires: [], ...JSON.parse(config.data) },
+			{
+				uuid: CX.uuid,
+				empires: [],
+				...JSON.parse(config.data),
+				modified_at: "v2",
+			},
 		]);
 		const { wrapper } = await mountView();
 
@@ -103,5 +108,41 @@ describe("ExchangesView", () => {
 		expect(saveButton(wrapper).attributes("aria-busy")).toBe("false");
 		expect(error).toHaveBeenCalled();
 		error.mockRestore();
+	});
+
+	describe("saved in another tab", () => {
+		const nameInput = (wrapper: VueWrapper) =>
+			wrapper.find<HTMLInputElement>("input");
+
+		// the fixture has ticker preferences on planets without a plan here
+		async function savedElsewhere(): Promise<void> {
+			usePlanningStore().setCX({
+				...CX,
+				cx_name: "Renamed",
+				modified_at: "v2",
+			} as never);
+			await flushPromises();
+		}
+
+		it("reloads a CX without edits", async () => {
+			const { wrapper } = await mountView();
+
+			await savedElsewhere();
+
+			expect(nameInput(wrapper).element.value).toBe("Renamed");
+			expect(wrapper.find("[role=status]").exists()).toBe(false);
+		});
+
+		it("keeps unsaved edits and says so", async () => {
+			const { wrapper } = await mountView();
+			await nameInput(wrapper).setValue("Mine");
+
+			await savedElsewhere();
+
+			expect(nameInput(wrapper).element.value).toBe("Mine");
+			expect(wrapper.find("[role=status]").text()).toContain(
+				"save_conflict.notice.saved_elsewhere"
+			);
+		});
 	});
 });

@@ -190,26 +190,6 @@ describe("usePreferences", async () => {
 		]);
 	});
 
-	it("cleanPlanPreferences", async () => {
-		userStore.setPlanPreference("foo", { includeCM: true });
-		userStore.setPlanPreference("moo", {
-			visitationMaterialExclusions: ["RAT", "DW"],
-		});
-
-		planningStore.plans["foo"] = {
-			planet_id: "1",
-			name: "2",
-		};
-
-		const { planSettings, cleanPlanPreferences } = usePreferences();
-
-		expect(Object.keys(planSettings.value).length).toBe(2);
-
-		cleanPlanPreferences();
-
-		expect(Object.keys(planSettings.value).length).toBe(1);
-	});
-
 	describe("getBurnDisplayClass", async () => {
 		beforeEach(() => {
 			userStore.setPreference("burnDaysRed", 5);

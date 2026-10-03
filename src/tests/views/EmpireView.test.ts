@@ -12,34 +12,43 @@ vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
 // vi.mock factories are hoisted, so are their helpers. __esModule lets
 // defineAsyncComponent pick the default export of a mocked module
-const { stub, passThrough, calculatePlan, createContext, queries } =
-	vi.hoisted(() => ({
-		stub: (name: string) => ({
-			__esModule: true,
-			default: { name, render: () => null },
-		}),
-		passThrough: (name: string) => ({
-			__esModule: true,
-			default: {
-				name,
-				setup:
-					(_: unknown, { slots }: { slots: Slots }) =>
-					() =>
-						slots.default?.({ empirePlanetList: [] }),
-			},
-		}),
-		calculatePlan: vi.fn(() => ({
-			result: {
-				profit: 0,
-				revenue: 0,
-				cost: 0,
-				area: { areaUsed: 0 },
-				materialio: [],
-			},
-		})),
-		createContext: vi.fn(async () => ({})),
-		queries: [] as string[],
-	}));
+const {
+	stub,
+	passThrough,
+	calculatePlan,
+	createContext,
+	queries,
+	toast,
+	replace,
+} = vi.hoisted(() => ({
+	stub: (name: string) => ({
+		__esModule: true,
+		default: { name, render: () => null },
+	}),
+	passThrough: (name: string) => ({
+		__esModule: true,
+		default: {
+			name,
+			setup:
+				(_: unknown, { slots }: { slots: Slots }) =>
+				() =>
+					slots.default?.({ empirePlanetList: [] }),
+		},
+	}),
+	calculatePlan: vi.fn(() => ({
+		result: {
+			profit: 0,
+			revenue: 0,
+			cost: 0,
+			area: { areaUsed: 0 },
+			materialio: [],
+		},
+	})),
+	createContext: vi.fn(async () => ({})),
+	queries: [] as string[],
+	toast: vi.fn(),
+	replace: vi.fn(),
+}));
 
 // the loaders fetch data, here they only hand through their slot
 vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
@@ -86,10 +95,17 @@ vi.mock("@/features/empire/components/EmpireConfiguration.vue", () =>
 	stub("EmpireConfiguration")
 );
 vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/ui/useToast", () => ({ useToast: () => toast }));
+vi.mock("vue-router", async (importOriginal) => ({
+	...(await importOriginal<typeof import("vue-router")>()),
+	useRouter: () => ({ replace }),
+}));
 
 // the planning loader hands over the empire and its plans
-async function mountView(): Promise<VueWrapper> {
-	const { wrapper } = await mountComponent(EmpireView);
+async function mountView(
+	props: Record<string, unknown> = {}
+): Promise<VueWrapper> {
+	const { wrapper } = await mountComponent(EmpireView, props);
 	await vi.waitFor(() =>
 		expect(wrapper.findComponent(WrapperPlanningDataLoader).exists()).toBe(
 			true
@@ -118,6 +134,8 @@ async function mountView(): Promise<VueWrapper> {
 describe("EmpireView", () => {
 	beforeEach(() => {
 		queries.length = 0;
+		toast.mockClear();
+		replace.mockClear();
 		calculatePlan.mockClear();
 		createContext.mockReset().mockResolvedValue({});
 	});
@@ -145,5 +163,63 @@ describe("EmpireView", () => {
 			new Error("Planet OT-580b not available.")
 		);
 		error.mockRestore();
+	});
+
+	describe("changes from another tab", () => {
+		const loader = (wrapper: VueWrapper) =>
+			wrapper.findComponent(WrapperPlanningDataLoader);
+
+		it("no notice when the first load picks an empire", async () => {
+			const { wrapper } = await mountComponent(EmpireView);
+			await vi.waitFor(() => expect(loader(wrapper).exists()).toBe(true));
+
+			loader(wrapper).vm.$emit("update:empire-uuid", "E1");
+			await nextTick();
+
+			expect(toast).not.toHaveBeenCalled();
+		});
+
+		it.each([
+			["the selected empire", {}, false],
+			["the route's empire", { empireUuid: "E1" }, true],
+		])("deleted: %s says so and switches", async (_, props, leaves) => {
+			const wrapper = await mountView(props);
+
+			// the refreshed list lost E1, the loader picks another
+			loader(wrapper).vm.$emit("update:empire-uuid", "E2");
+			await nextTick();
+
+			expect(toast).toHaveBeenCalledWith(
+				"save_conflict.notice.deleted_elsewhere",
+				expect.anything()
+			);
+			if (leaves) expect(replace).toHaveBeenCalledWith("/empire/E2");
+			else expect(replace).not.toHaveBeenCalled();
+		});
+
+		it("recalculates a refresh without the progress screen", async () => {
+			const wrapper = await mountView();
+			let finish!: (value: object) => void;
+			createContext.mockImplementationOnce(
+				() => new Promise((resolve) => (finish = resolve))
+			);
+
+			loader(wrapper).vm.$emit("refreshed");
+			await vi.waitFor(() =>
+				expect(createContext).toHaveBeenCalledTimes(2)
+			);
+
+			// the page, and an open form with its edits, stays
+			expect(wrapper.findComponent(ComputingProgress).exists()).toBe(
+				false
+			);
+			finish({});
+			await vi.waitFor(() =>
+				expect(calculatePlan).toHaveBeenCalledTimes(2)
+			);
+			expect(wrapper.findComponent(ComputingProgress).exists()).toBe(
+				false
+			);
+		});
 	});
 });

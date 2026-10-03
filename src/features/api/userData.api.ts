@@ -15,7 +15,7 @@ import {
 	UserRequestPasswordResetPayloadSchema,
 	UserPasswordResetPayloadSchema,
 	RefreshTokenResponseSchema,
-	UserPreferencePayloadSchema,
+	UserPreferencePatchSchema,
 	UserPreferenceSchema,
 	UserRegistrationResponseSchema,
 } from "@/features/api/schemas/user.schemas";
@@ -26,6 +26,7 @@ import type {
 	TokenResponse,
 	UserChangePasswordPayload,
 	UserPreference,
+	UserPreferencePatch,
 	UserProfile,
 	UserProfilePatch,
 	UserRegistrationPayload,
@@ -217,12 +218,12 @@ export async function callPasswordReset(
 }
 
 export async function callPatchUserPreferences(
-	preferences: UserPreference
+	preferences: UserPreferencePatch
 ): Promise<UserPreference> {
 	return apiService.patch(
 		"/user/preferences/",
 		preferences,
-		UserPreferencePayloadSchema,
+		UserPreferencePatchSchema,
 		UserPreferenceSchema
 	);
 }
