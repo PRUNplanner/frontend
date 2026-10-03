@@ -40,6 +40,7 @@ describe("reportClientError", () => {
 
 	it("posts the report with keepalive and no token", async () => {
 		const { reportClientError, setClientErrorRoute } = await load();
+		const { correlationId } = await import("@/lib/requestIds");
 		setClientErrorRoute("plan");
 
 		reportClientError(REPORT);
@@ -50,6 +51,7 @@ describe("reportClientError", () => {
 		expect(init).toMatchObject({ method: "POST", keepalive: true });
 		expect(init?.headers).toStrictEqual({
 			"Content-Type": "application/json",
+			"X-Correlation-ID": correlationId(),
 		});
 		expect(sentBodies()[0]).toStrictEqual(
 			JSON.parse(
