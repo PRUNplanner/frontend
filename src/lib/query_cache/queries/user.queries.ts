@@ -7,6 +7,7 @@ import { trackEvent, trackUser } from "@/lib/analytics/useAnalytics";
 import { useUserStore } from "@/stores/userStore";
 
 // Util
+import { setSyncedPreferences } from "@/features/preferences/preferenceSync";
 import { defineQuery } from "@/lib/query_cache/queries/queries.util";
 
 // API Calls
@@ -32,6 +33,7 @@ import type {
 	UserChangePasswordPayload,
 	UserPasswordResetPayload,
 	UserPreference,
+	UserPreferencePatch,
 	UserProfile,
 	UserProfilePatch,
 	UserRegistrationPayload,
@@ -174,6 +176,7 @@ export const userQueries = {
 			const userStore = useUserStore();
 			const prefs = await callGetUserPreferences();
 			Object.assign(userStore.preferences, prefs);
+			setSyncedPreferences(prefs);
 			trackPreferences(userStore.preferences);
 
 			// handle locale
@@ -189,13 +192,17 @@ export const userQueries = {
 	PatchPreferences: defineQuery({
 		key: () => ["user", "preferences", "patch"],
 		fetchFn: async (
-			prefs: UserPreference
+			patch: UserPreferencePatch
 		): Promise<UserPreference | undefined> => {
+			const userStore = useUserStore();
 			// dont try to patch if not logged in, d'oh!
-			if (!useUserStore().isLoggedIn) return undefined;
+			if (!userStore.isLoggedIn) return undefined;
 
-			trackPreferences(prefs);
-			return callPatchUserPreferences(prefs);
+			trackPreferences({
+				...userStore.preferences,
+				...patch,
+			} as UserPreference);
+			return callPatchUserPreferences(patch);
 		},
 		persist: false,
 	}),

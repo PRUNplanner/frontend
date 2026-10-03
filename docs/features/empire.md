@@ -29,7 +29,10 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 
 **Composables and types:**
 - `useEmpireForm(data)` keeps an editable copy of an empire's configuration
-  and saves it with `PatchEmpire`.
+  and saves it with `PatchEmpire`, sending the version it started from. A
+  save over another tab's newer one opens the save conflict dialog
+  (`conflict`, see [save_conflict](save_conflict.md)); a newer empire from
+  another tab replaces a clean form, or sets `remoteNotice` if it has edits.
 - `useProductionOpportunities(empireIO, cxUuid)` works out which recipes
   could use the empire's surplus materials. It prices them with
   `usePrice(...).getPrice(…, "SELL")` and loads its data on mount.

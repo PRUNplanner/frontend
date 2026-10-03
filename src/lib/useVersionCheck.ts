@@ -62,9 +62,18 @@ export function useVersionCheck(interval = 60_000) {
 		updateAvailable.value = false;
 	}
 
+	/**
+	 * Shows the update notification without a version check, e.g. when a
+	 * newer version took over the IndexedDB in another tab
+	 */
+	function markOutdated(): void {
+		updateAvailable.value = true;
+	}
+
 	return {
 		currentVersion,
 		updateAvailable,
+		markOutdated,
 		markUpdated,
 		checkVersion,
 		startWatch,

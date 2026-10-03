@@ -13,7 +13,10 @@ import { PlanCOGCProgramSchema } from "@/features/api/schemas/planningData.schem
 import type {
 	IPlanDefinition,
 	IPlanRouteParams,
+	IPlanSaved,
+	IPlanSaveResult,
 } from "@/features/planning_data/usePlan.types";
+import { getSaveError } from "@/features/save_conflict/saveConflict.util";
 import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
 const cogcValues: readonly string[] = PlanCOGCProgramSchema.options;
@@ -177,11 +180,11 @@ export function usePlan() {
 	 *
 	 * @async
 	 * @param {PlanCreateData} data Plan Data
-	 * @returns {Promise<string | undefined>} Plan Uuid
+	 * @returns {Promise<IPlanSaved | undefined>} Plan Uuid and version
 	 */
 	async function createNewPlan(
 		data: PlanCreateData
-	): Promise<string | undefined> {
+	): Promise<IPlanSaved | undefined> {
 		try {
 			const createdData: PlanSaveCreateResponse = await useQuery(
 				"CreatePlan",
@@ -192,7 +195,10 @@ export function usePlan() {
 			await useQuery("GetPlan", {
 				planUuid: createdData.uuid,
 			}).execute();
-			return createdData.uuid;
+			return {
+				uuid: createdData.uuid,
+				modifiedAt: createdData.modified_at,
+			};
 		} catch (err) {
 			console.error(`Error creating plan: ${err}`);
 			return undefined;
@@ -200,19 +206,21 @@ export function usePlan() {
 	}
 
 	/**
-	 * Updates an existing plan in the backend api and returns
-	 * its uuid again on successful operation in the backend
+	 * Updates an existing plan in the backend api. With a base version
+	 * the save fails as a conflict if it was saved elsewhere since.
 	 * @author jplacht
 	 *
 	 * @async
 	 * @param {string} planUuid Plan Uuid
 	 * @param {PlanCreateData} data Plan Data
-	 * @returns {Promise<string | undefined>} Plan Uuid
+	 * @param {string} [baseModifiedAt] Version the edit started from
+	 * @returns {Promise<IPlanSaveResult>} Uuid and new version, or the error
 	 */
 	async function saveExistingPlan(
 		planUuid: string,
-		data: PlanCreateData
-	): Promise<string | undefined> {
+		data: PlanCreateData,
+		baseModifiedAt?: string
+	): Promise<IPlanSaveResult> {
 		try {
 			const savedData: PlanSaveCreateResponse = await useQuery(
 				"PatchPlan",
@@ -221,19 +229,18 @@ export function usePlan() {
 					data: {
 						uuid: planUuid,
 						...data,
+						base_modified_at: baseModifiedAt,
 					},
 				}
 			).execute();
 
-			if (savedData) {
-				await useQuery("GetPlan", {
-					planUuid: savedData.uuid,
-				}).execute();
-				return savedData.uuid;
-			}
+			await useQuery("GetPlan", {
+				planUuid: savedData.uuid,
+			}).execute();
+			return { uuid: savedData.uuid, modifiedAt: savedData.modified_at };
 		} catch (err) {
 			console.error(`Error updating plan: ${err}`);
-			return undefined;
+			return { error: getSaveError(err) ?? "failed" };
 		}
 	}
 

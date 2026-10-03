@@ -33,6 +33,10 @@ app.use(router);
 import { registerChunkReload } from "@/lib/chunkReload";
 registerChunkReload(router);
 
+// share login state and planning changes with the user's other tabs
+import { registerCrossTab } from "@/lib/crossTab";
+registerCrossTab(router);
+
 app.use(pinia);
 
 // locale

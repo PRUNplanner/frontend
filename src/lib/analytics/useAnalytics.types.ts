@@ -47,7 +47,11 @@ type SimpleToolName =
 
 export type ToolUseProperties =
 	| { tool_name: SimpleToolName }
-	| { tool_name: "market_exploration"; exchange: string; material_ticker: string }
+	| {
+			tool_name: "market_exploration";
+			exchange: string;
+			material_ticker: string;
+	  }
 	| { tool_name: "resource_roi"; material_ticker: string }
 	| { tool_name: "construction_cart"; built_edited: boolean }
 	| {
@@ -64,6 +68,16 @@ export type ToolUseProperties =
 	  };
 
 type Trigger = "button" | "shortcut";
+
+// the save conflict dialog's options, "close" keeps the edits unsaved
+type SaveConflictChoice = "save_as_new" | "overwrite" | "reload" | "close";
+
+/** Another tab saved or deleted what an open editor shows */
+export interface IRemoteChangeProperties {
+	object_type: "plan" | "empire" | "cx";
+	has_unsaved_edits: boolean;
+	is_deleted: boolean;
+}
 
 /**
  * The tracking plan: every event and its properties, documented in
@@ -113,6 +127,11 @@ export interface IAnalyticsEventProperties {
 	"plan:edit": IPlanEditProperties;
 	"plan:undo": { trigger: Trigger };
 	"plan:redo": { trigger: Trigger };
+	"plan:save_conflict": {
+		planet_natural_id: string;
+		is_deleted: boolean;
+		choice: SaveConflictChoice;
+	};
 
 	"planet:popr_load": { planet_natural_id: string };
 
@@ -120,6 +139,7 @@ export interface IAnalyticsEventProperties {
 	"empire:update": { is_success: boolean };
 	"empire:reload": undefined;
 	"empire:material_io_expand": undefined;
+	"empire:save_conflict": { choice: SaveConflictChoice };
 
 	"manage:cx_create": undefined;
 	"manage:cx_delete": { cx_uuid: string };
@@ -133,6 +153,7 @@ export interface IAnalyticsEventProperties {
 
 	"exchange:update": { location: string; cx_uuid: string };
 	"exchange:reload": { location: string };
+	"exchange:save_conflict": { location: string; choice: SaveConflictChoice };
 
 	"material:market_drawer_open": { material_ticker: string };
 
@@ -146,6 +167,9 @@ export interface IAnalyticsEventProperties {
 
 	"app:navigation_toggle": { navigation_style: "full" | "collapsed" };
 	"app:version_reload": undefined;
+	"app:remote_change": IRemoteChangeProperties;
+	"app:session_change": { reason: "logout" | "login" | "other_user" };
+	"app:db_blocked": undefined;
 
 	"onboarding:step_click": {
 		step: "empire_save" | "planet_search" | "exchanges";

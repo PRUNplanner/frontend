@@ -5,12 +5,15 @@ import {
 	type WritableComputedRef,
 } from "vue";
 import { debounce, isEqual, cloneDeep } from "lodash-es";
+import {
+	markPreferencesSynced,
+	unsyncedPreferences,
+} from "@/features/preferences/preferenceSync";
 import { i18n, type SupportedLocale } from "@/lib/i18n";
 import type { Composer } from "vue-i18n";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
-import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { usePlan } from "@/features/planning_data/usePlan";
@@ -30,27 +33,28 @@ import type {
 
 // debounced update to backend, dropped if the session (refresh token) it
 // was scheduled in has ended: never send one user's preferences as another.
-// A failed sync is retried once on the next debounce with the current prefs.
-const patchPrefs = async (
-	prefs: UserPreference,
-	session: string | undefined,
-	retry = true
-) => {
-	if (session !== useUserStore().refreshToken) return;
+// Only what changed since the last sync is sent, so a tab never resets keys
+// another tab or device changed. A failed sync is retried once on the next
+// debounce.
+const patchPrefs = async (session: string | undefined, retry = true) => {
+	const userStore = useUserStore();
+	if (session !== userStore.refreshToken) return;
+
+	const patch = unsyncedPreferences(userStore.preferences);
+	if (Object.keys(patch).length === 0) return;
 
 	try {
-		await useQuery("PatchPreferences", prefs).execute();
+		await useQuery("PatchPreferences", patch).execute();
+		markPreferencesSynced(patch);
 	} catch (err) {
 		console.error("Sync failed", err);
-		if (retry)
-			syncToBackend(cloneDeep(useUserStore().preferences), session, false);
+		if (retry) syncToBackend(session, false);
 	}
 };
 const syncToBackend = debounce(patchPrefs, 5000);
 
 export function usePreferences() {
 	const userStore = useUserStore();
-	const planningStore = usePlanningStore();
 
 	const { getPlanNamePlanet } = usePlan();
 
@@ -58,7 +62,7 @@ export function usePreferences() {
 		() => cloneDeep(userStore.preferences),
 		(newVal, oldVal) => {
 			if (isEqual(newVal, oldVal)) return;
-			syncToBackend(newVal, userStore.refreshToken);
+			syncToBackend(userStore.refreshToken);
 		},
 		{ deep: true }
 	);
@@ -195,7 +199,9 @@ export function usePreferences() {
 						preference.constructionBuilt &&
 						Object.keys(preference.constructionBuilt).length > 0
 					) {
-						planOverview.preferences.push("Construction Cart: Built");
+						planOverview.preferences.push(
+							"Construction Cart: Built"
+						);
 					}
 
 					if (
@@ -217,33 +223,6 @@ export function usePreferences() {
 
 			return overview;
 		});
-
-	/**
-	 * Gets all existing Plan UUIDs from the planning store that must have
-	 * been fetched previously, also looks for plan-specific settings defined
-	 * by the user and cleans up those settings where the plan does not exist
-	 * anymore and has been deleted. Should only be called if a full plan
-	 * load has been executed before within the planning store.
-	 *
-	 * @author jplacht
-	 */
-	function cleanPlanPreferences(): void {
-		const existingPlanUuids: string[] = Object.keys(planningStore.plans);
-		const existingPlanPreferenceUuids: string[] = Object.keys(
-			planSettings.value
-		);
-
-		const notExistAnymore = existingPlanPreferenceUuids.filter(
-			(id) => !new Set(existingPlanUuids).has(id)
-		);
-
-		// clear all plans settings that don't exist anymore
-		if (notExistAnymore.length > 0) {
-			notExistAnymore.forEach((planUuid) => {
-				userStore.clearPlanPreference(planUuid);
-			});
-		}
-	}
 
 	/**
 	 * Generates CSS classes to visualize a value in relation to the users
@@ -281,7 +260,6 @@ export function usePreferences() {
 		planSuggestions,
 		locale,
 		// functions
-		cleanPlanPreferences,
 		getBurnDisplayClass,
 	};
 }

@@ -14,3 +14,16 @@ export interface IPlanDefinition extends Omit<Plan, "uuid" | "plan_name"> {
 	uuid: string | undefined;
 	plan_name: string | undefined;
 }
+
+export interface IPlanSaved {
+	uuid: string;
+	/** the new save version */
+	modifiedAt: string | undefined;
+}
+
+export interface IPlanSaveFailed {
+	/** conflict: saved elsewhere meanwhile, deleted: gone (404) */
+	error: "conflict" | "deleted" | "failed";
+}
+
+export type IPlanSaveResult = IPlanSaved | IPlanSaveFailed;

@@ -452,9 +452,10 @@ describe("Backend contract", () => {
 		it("sends unset default empire / cx as null", async () => {
 			// the backend merges PATCH into stored preferences, an omitted
 			// key would keep the previous uuid
-			await callPatchUserPreferences(preferenceDefaults).catch(
-				() => undefined
-			);
+			await callPatchUserPreferences({
+				defaultEmpireUuid: null,
+				defaultCXUuid: null,
+			}).catch(() => undefined);
 
 			const { body } = lastRequest("patch");
 			expect(body.defaultEmpireUuid).toBeNull();

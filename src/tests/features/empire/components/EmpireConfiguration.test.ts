@@ -27,6 +27,7 @@ function empire(overrides: Partial<PlanEmpireElement> = {}): PlanEmpireElement {
 		empire_permits_used: 5,
 		empire_permits_total: 7,
 		plans: [],
+		modified_at: "v1",
 		...overrides,
 	};
 }
@@ -91,7 +92,11 @@ describe("EmpireConfiguration", () => {
 		mock.reset();
 		mock.onPut(PUT_URL).reply((config) => [
 			200,
-			{ uuid: EMPIRE_UUID, ...JSON.parse(config.data) },
+			{
+				uuid: EMPIRE_UUID,
+				...JSON.parse(config.data),
+				modified_at: "v2",
+			},
 		]);
 	});
 
@@ -153,6 +158,7 @@ describe("EmpireConfiguration", () => {
 			empire_faction: "MORIA",
 			empire_permits_used: 4,
 			empire_permits_total: 9,
+			base_modified_at: "v1",
 		});
 		expect(component.emitted("reload:empires")).toEqual([[]]);
 		expect(button(wrapper, "save").attributes("aria-busy")).toBe("false");
@@ -161,10 +167,15 @@ describe("EmpireConfiguration", () => {
 	it("shows the reloaded empire from its parent", async () => {
 		const { wrapper, setProps } = await mountConfiguration();
 		await edit(wrapper);
+		await click(wrapper, "save");
 
 		// the parent reloads and the backend trimmed the name
 		await setProps({
-			data: empire({ empire_name: "Backend", empire_permits_used: 4 }),
+			data: empire({
+				empire_name: "Backend",
+				empire_permits_used: 4,
+				modified_at: "v2",
+			}),
 		});
 
 		expect(form(wrapper)).toEqual({
@@ -179,18 +190,26 @@ describe("EmpireConfiguration", () => {
 	it("follows changes inside the empire object", async () => {
 		const data = reactive(empire());
 		const { wrapper } = await mountConfiguration({ data });
-		await edit(wrapper);
 
 		data.empire_permits_total = 12;
 		await flushPromises();
 
-		// the edits are replaced by the changed empire
-		expect(form(wrapper)).toEqual({
-			name: "Main Empire",
-			faction: "ANTARES",
-			total: "12",
-			used: "5",
-		});
+		expect(form(wrapper).total).toBe("12");
+	});
+
+	it("keeps unsaved edits when another tab saved, and says so", async () => {
+		const data = reactive(empire());
+		const { wrapper } = await mountConfiguration({ data });
+		await edit(wrapper);
+
+		data.empire_permits_total = 12;
+		data.modified_at = "v2";
+		await flushPromises();
+
+		expect(form(wrapper).name).toBe("Renamed");
+		expect(wrapper.find("[role=status]").text()).toContain(
+			"save_conflict.notice.saved_elsewhere"
+		);
 	});
 
 	it("reload discards unsaved edits", async () => {

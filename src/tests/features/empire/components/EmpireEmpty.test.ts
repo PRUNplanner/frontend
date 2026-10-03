@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { flushPromises, RouterLinkStub, type VueWrapper } from "@vue/test-utils";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -22,6 +26,7 @@ const SIGNUP_EMPIRE = {
 const cx = (id: string) => ({
 	uuid: id,
 	cx_name: "CX",
+	modified_at: "v1",
 	cx_data: {
 		cx_empire: [],
 		cx_planets: [],
@@ -90,6 +95,8 @@ describe("EmpireEmpty", () => {
 	it("links to management", async () => {
 		const { wrapper } = await mountComponent(EmpireEmpty, {});
 
-		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe("/manage");
+		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe(
+			"/manage"
+		);
 	});
 });

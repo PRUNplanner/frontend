@@ -87,14 +87,17 @@ describe("usePlan", async () => {
 
 		it("success, uuid return", async () => {
 			const { createNewPlan } = usePlan();
-			vi.mocked(callCreatePlan).mockResolvedValueOnce({ uuid: fakeUuid });
+			vi.mocked(callCreatePlan).mockResolvedValueOnce({
+				uuid: fakeUuid,
+				modified_at: "v1",
+			});
 			// @ts-expect-error mock data
 			vi.mocked(callGetPlan).mockResolvedValueOnce({ uuid: fakeUuid });
 
 			// @ts-expect-error mock data
 			const result = await createNewPlan({});
 
-			expect(result).toBe(fakeUuid);
+			expect(result).toStrictEqual({ uuid: fakeUuid, modifiedAt: "v1" });
 			expect(callGetPlan).toHaveBeenCalledWith(fakeUuid);
 		});
 
@@ -110,24 +113,45 @@ describe("usePlan", async () => {
 	describe("saveExistingPlan", async () => {
 		const fakeUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
 
-		it("success, uuid return", async () => {
+		it("success, uuid and new version", async () => {
 			const { saveExistingPlan } = usePlan();
-			vi.mocked(callSavePlan).mockResolvedValueOnce({ uuid: fakeUuid });
+			vi.mocked(callSavePlan).mockResolvedValueOnce({
+				uuid: fakeUuid,
+				modified_at: "v2",
+			});
 			// @ts-expect-error mock data
 			vi.mocked(callGetPlan).mockResolvedValueOnce({ uuid: fakeUuid });
 
 			// @ts-expect-error mock data
-			const result = await saveExistingPlan({});
+			const result = await saveExistingPlan(fakeUuid, {}, "v1");
 
-			expect(result).toBe(fakeUuid);
+			expect(result).toStrictEqual({ uuid: fakeUuid, modifiedAt: "v2" });
+			expect(callSavePlan).toHaveBeenLastCalledWith(fakeUuid, {
+				uuid: fakeUuid,
+				base_modified_at: "v1",
+			});
 		});
 
-		it("failure, undefined return", async () => {
+		it.each([
+			[Object.assign(new Error(), { status: 500 }), "failed"],
+			[
+				Object.assign(new Error(), {
+					status: 409,
+					responseData: { code: "conflict" },
+				}),
+				"conflict",
+			],
+			[Object.assign(new Error(), { status: 404 }), "deleted"],
+		])("failure %#, error kind", async (err, error) => {
 			const { saveExistingPlan } = usePlan();
-			vi.mocked(callSavePlan).mockRejectedValueOnce(new Error());
+			vi.mocked(callSavePlan).mockRejectedValueOnce(err);
 
 			// @ts-expect-error mock data
-			await expect(saveExistingPlan({})).resolves.toBe(undefined);
+			await expect(saveExistingPlan(fakeUuid, {})).resolves.toStrictEqual(
+				{
+					error,
+				}
+			);
 		});
 	});
 
@@ -185,7 +209,9 @@ describe("usePlan", async () => {
 			plan_name: "CH-771a (Shared Clone)",
 		});
 
-		const result = await cloneSharedPlan("da105ce1-25f2-479d-b1eb-944353f4784f");
+		const result = await cloneSharedPlan(
+			"da105ce1-25f2-479d-b1eb-944353f4784f"
+		);
 
 		expect(result).toBe("f13ca1e0-179b-4380-92bf-b58855c28313");
 	});
@@ -194,7 +220,9 @@ describe("usePlan", async () => {
 		const { cloneSharedPlan } = usePlan();
 		vi.mocked(callCloneSharedPlan).mockRejectedValueOnce(new Error());
 
-		const result = await cloneSharedPlan("da105ce1-25f2-479d-b1eb-944353f4784f");
+		const result = await cloneSharedPlan(
+			"da105ce1-25f2-479d-b1eb-944353f4784f"
+		);
 
 		expect(result).toBeNull();
 	});

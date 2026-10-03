@@ -23,9 +23,13 @@ export function useQuery<K extends QueryName>(
 
 	/**
 	 * Triggers the query execution
+	 *
+	 * @param {{ forceRefetch?: boolean }} [options] forceRefetch skips the cache
 	 */
-	async function execute(): Promise<QueryData<K>> {
-		return queryStore.execute(definitionName, params);
+	async function execute(options?: {
+		forceRefetch?: boolean;
+	}): Promise<QueryData<K>> {
+		return queryStore.execute(definitionName, params, options);
 	}
 
 	return {

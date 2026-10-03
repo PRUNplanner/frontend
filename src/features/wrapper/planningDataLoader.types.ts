@@ -22,6 +22,8 @@ export interface PlanningDataLoaderProps {
 
 export interface PlanningDataLoaderEmits {
 	(e: "complete"): void;
+	/** a step reloaded after another tab changed its data */
+	(e: "refreshed"): void;
 	(e: "data:shared:plan", data: PlanShare): void;
 	(e: "data:empire:list", data: PlanEmpireElement[]): void;
 	(e: "data:empire:plans", data: Plan[]): void;

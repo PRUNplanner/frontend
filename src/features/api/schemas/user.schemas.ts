@@ -171,3 +171,13 @@ export const UserPreferencePayloadSchema = UserPreferenceSchema.extend({
 		.nullish()
 		.transform((v) => v ?? null),
 });
+
+// PATCH sends only the changed keys; the backend merges planOverrides per
+// uuid and deletes the ones sent as null
+export const UserPreferencePatchSchema =
+	UserPreferencePayloadSchema.partial().extend({
+		planOverrides: z
+			.record(z.string(), PreferencePerPlanSchema.nullable())
+			.optional(),
+	});
+export type UserPreferencePatch = z.input<typeof UserPreferencePatchSchema>;

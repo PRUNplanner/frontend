@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
-import { flushPromises, RouterLinkStub, type VueWrapper } from "@vue/test-utils";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -26,9 +30,11 @@ const EMPIRE: PlanEmpireElement = {
 	empire_permits_used: 1,
 	empire_permits_total: 2,
 	plans: [],
+	modified_at: "v1",
 };
 
-const mountOnboarding = () => mountComponent(EmpireOnboarding, { empire: EMPIRE });
+const mountOnboarding = () =>
+	mountComponent(EmpireOnboarding, { empire: EMPIRE });
 
 function form(wrapper: VueWrapper) {
 	const [total, used] = wrapper
@@ -57,7 +63,11 @@ describe("EmpireOnboarding", () => {
 		vi.mocked(trackEvent).mockClear();
 		mock.onPut(PUT_URL).reply((config) => [
 			200,
-			{ uuid: EMPIRE_UUID, ...JSON.parse(config.data) },
+			{
+				uuid: EMPIRE_UUID,
+				...JSON.parse(config.data),
+				modified_at: "v2",
+			},
 		]);
 	});
 
@@ -93,6 +103,7 @@ describe("EmpireOnboarding", () => {
 			empire_faction: "MORIA",
 			empire_permits_used: 2,
 			empire_permits_total: 3,
+			base_modified_at: "v1",
 		});
 		expect(component.emitted("reload:empires")).toEqual([[]]);
 		expect(trackEvent).toHaveBeenCalledWith("onboarding:step_click", {

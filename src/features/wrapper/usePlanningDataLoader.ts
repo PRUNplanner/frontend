@@ -11,6 +11,8 @@ import { useCXData } from "@/features/cx/useCXData";
 
 // Util
 import { inertClone } from "@/util/data";
+import { isSubset } from "@/lib/query_cache/cacheKeys";
+import { remoteChange } from "@/lib/crossTab";
 import { trackUser } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
@@ -126,6 +128,7 @@ export function usePlanningDataLoader(
 			name: t("wrapper.planning_data.empires"),
 			enabled: () => !!props.empireList,
 			load: () => queryStore.execute("GetAllEmpires", undefined),
+			refreshKey: () => ["planningdata", "empire", "list"],
 			onSuccess: (data: PlanEmpireElement[]) => {
 				// no selection, or a stored one that no longer exists
 				const hasNoSelection =
@@ -154,6 +157,7 @@ export function usePlanningDataLoader(
 			name: t("wrapper.planning_data.plans_all"),
 			enabled: () => !!props.planList,
 			load: () => queryStore.execute("GetAllPlans", undefined),
+			refreshKey: () => ["planningdata", "plan", "list"],
 			onSuccess: (data: Plan[]) => {
 				const planetList: string[] = Array.from(
 					new Set(data.map((e) => e.planet_natural_id)).values()
@@ -194,10 +198,12 @@ export function usePlanningDataLoader(
 			name: t("wrapper.planning_data.cx"),
 			enabled: () => !!props.loadCX,
 			load: () => queryStore.execute("GetAllCX", undefined),
-			onSuccess: (d: CX[]) => {
+			refreshKey: () => ["planningdata", "cx"],
+			onSuccess: (d: CX[], refreshed?: boolean) => {
 				emits("data:cx", d);
 				trackUser({ cx_count: d.length });
-				if (!props.cxUuid && d.length > 0) {
+				// a refresh keeps the CX the page shows
+				if (!props.cxUuid && d.length > 0 && !refreshed) {
 					emits("update:cxUuid", d[0].uuid);
 				}
 			},
@@ -207,6 +213,7 @@ export function usePlanningDataLoader(
 			name: t("wrapper.planning_data.shared_list"),
 			enabled: () => !!props.loadShared,
 			load: () => queryStore.execute("GetAllShared", undefined),
+			refreshKey: () => ["planningdata", "shared", "list"],
 			onSuccess: (data: Shared[]) => emits("data:shared", data),
 		},
 		{
@@ -225,6 +232,12 @@ export function usePlanningDataLoader(
 				queryStore.execute("GetEmpirePlans", {
 					empireUuid: props.empireUuid!,
 				}),
+			refreshKey: () => [
+				"planningdata",
+				"empire",
+				"plans",
+				props.empireUuid!,
+			],
 			onSuccess: (data: Plan[]) => {
 				// emit empire data
 				// emit potential empire cx uuid
@@ -274,6 +287,35 @@ export function usePlanningDataLoader(
 						});
 				}
 			}
+		});
+	});
+
+	/*
+	 * Another tab changed data a loaded step shows: load it again, keeping
+	 * the old data (and the page) until the new one is there
+	 */
+	watch(remoteChange, (change) => {
+		if (!change) return;
+		steps.forEach((s) => {
+			const key = s.cfg.refreshKey?.();
+			if (
+				key === undefined ||
+				s.data == null ||
+				!s.cfg.enabled() ||
+				!change.keys.some((prefix) => isSubset(prefix, key))
+			)
+				return;
+
+			s.cfg
+				.load()
+				.then((d) => {
+					const shallowData = inertClone(d);
+					s.data = shallowData;
+					s.cfg.onSuccess(shallowData, true);
+					emits("refreshed");
+				})
+				// the old data stays, the next change or visit retries
+				.catch(console.error);
 		});
 	});
 

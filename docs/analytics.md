@@ -82,6 +82,7 @@ the tables here list the same events; a test
 | `plan:edit` | `planet_natural_id`, `field`, and the relevant of `building_ticker`, `recipe_id`, `amount`, `infrastructure_type`, `expert_type`, `workforce_type`, `lux_type`, `value`, `is_from_popular`, `is_most_planned` | see below |
 | `plan:undo` | `trigger` (`button`, `shortcut`) | |
 | `plan:redo` | `trigger` (`button`, `shortcut`) | |
+| `plan:save_conflict` | `planet_natural_id`, `is_deleted`, `choice` (`save_as_new`, `overwrite`, `reload`, `close`) | the save conflict dialog was answered: the plan was saved (`is_deleted`: deleted) in another tab or device since it was loaded |
 
 `plan:edit` replaces one event per click. `field` is one of `building_add`,
 `building_amount`, `recipe_add`, `recipe_mix_add`, `recipe_change`,
@@ -109,6 +110,7 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `empire:update` | `is_success` | the empire configuration was saved |
 | `empire:reload` | | |
 | `empire:material_io_expand` | | a Material I/O row was opened |
+| `empire:save_conflict` | `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of the empire configuration was answered |
 | `manage:cx_create` | | |
 | `manage:cx_delete` | `cx_uuid` | |
 | `manage:empire_create` | | |
@@ -120,6 +122,7 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `manage:plan_delete` | `plan_uuid` | |
 | `exchange:update` | `location`, `cx_uuid` | |
 | `exchange:reload` | `location` | |
+| `exchange:save_conflict` | `location` (`exchanges_view`, `cogm`), `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of a CX was answered |
 | `material:market_drawer_open` | `material_ticker` | |
 
 ### Tools
@@ -159,6 +162,9 @@ so for them `tool:use` is close to a pageview that got a result:
 | `xit:transfer_copy` | | |
 | `app:navigation_toggle` | `navigation_style` | |
 | `app:version_reload` | | |
+| `app:remote_change` | `object_type` (`plan`, `empire`, `cx`), `has_unsaved_edits`, `is_deleted` | another tab saved or deleted what an open editor shows: it reloaded, or (with unsaved edits, or deleted) showed a notice. A deleted empire is sent by the empire page, always with `has_unsaved_edits: false` |
+| `app:session_change` | `reason` (`logout`, `login`, `other_user`) | another tab logged out, logged in, or logged in as another user; sent before this tab resets or reloads |
+| `app:db_blocked` | | the local game data database waits on an older PRUNplanner tab after a deploy |
 | `onboarding:step_click` | `step` (`empire_save`, `planet_search`, `exchanges`) | a step of the first-run card on the Empire page |
 
 ## Pageviews

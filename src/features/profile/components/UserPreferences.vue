@@ -47,7 +47,6 @@
 		colorPalette,
 		planSuggestions,
 		planSettingsOverview,
-		cleanPlanPreferences,
 	} = usePreferences();
 	let { defaultEmpireUuid, defaultCXUuid, defaultBuyItemsFromCX } =
 		usePreferences();
@@ -89,9 +88,6 @@
 			// or, reset to undefined
 			else defaultEmpireUuid.value = undefined;
 		}
-
-		// all plans loaded, clear up non-existing plans preferences
-		cleanPlanPreferences();
 	});
 </script>
 
