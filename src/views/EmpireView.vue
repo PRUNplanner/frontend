@@ -191,7 +191,7 @@
 				useQuery("PatchEmpireState", {
 					empireUuid: selectedEmpire.value.uuid,
 					empireState: data,
-				}).execute();
+				}).execute().catch(console.error);
 		});
 	}
 

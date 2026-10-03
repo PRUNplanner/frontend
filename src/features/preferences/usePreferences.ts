@@ -29,10 +29,12 @@ import type {
 } from "@/features/api/schemas/user.schemas";
 
 // debounced update to backend, dropped if the session (refresh token) it
-// was scheduled in has ended: never send one user's preferences as another
+// was scheduled in has ended: never send one user's preferences as another.
+// A failed sync is retried once on the next debounce with the current prefs.
 const patchPrefs = async (
 	prefs: UserPreference,
-	session: string | undefined
+	session: string | undefined,
+	retry = true
 ) => {
 	if (session !== useUserStore().refreshToken) return;
 
@@ -40,6 +42,8 @@ const patchPrefs = async (
 		await useQuery("PatchPreferences", prefs).execute();
 	} catch (err) {
 		console.error("Sync failed", err);
+		if (retry)
+			syncToBackend(cloneDeep(useUserStore().preferences), session, false);
 	}
 };
 const syncToBackend = debounce(patchPrefs, 5000);
