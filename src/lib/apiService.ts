@@ -229,10 +229,10 @@ class ApiService {
 
 	/**
 	 * Sends contract breaks, server and network errors to error tracking.
-	 * Of the 4xx only 429 and a 401 of the token refresh are sent, and
-	 * never a response discarded for a previous session. Contract breaks,
-	 * server and network errors also go to the backend (Axiom), from every
-	 * user: 429 and the refresh 401 the backend already logs itself.
+	 * Of the 4xx only 429 is sent (an expired refresh token is a normal
+	 * logout), and never a response discarded for a previous session.
+	 * Contract breaks, server and network errors also go to the backend
+	 * (Axiom), from every user: 429 the backend already logs itself.
 	 *
 	 * @private
 	 * @param {unknown} err Error
@@ -296,11 +296,7 @@ class ApiService {
 
 			if (status === undefined) error.name = "ApiNetworkError";
 			else if (status >= 500) error.name = "ApiServerError";
-			else if (
-				status === 429 ||
-				(status === 401 && path.includes("/user/refresh/"))
-			)
-				error.name = "ApiClientError";
+			else if (status === 429) error.name = "ApiClientError";
 			else return;
 
 			if (status) error.message += ` ${status}`;

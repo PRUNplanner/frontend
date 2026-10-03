@@ -31,8 +31,8 @@ component / composable
   - it also reports to PostHog error tracking (`trackException`, only
     with consent): `ApiValidationError` (field names and issue codes,
     never values, record keys or indices), `ApiServerError` (5xx), `ApiNetworkError` (no response) and
-    `ApiClientError` (429, or a 401 of `/user/refresh/`). Other 4xx and
-    discarded responses are not reported. Paths are sent as templates
+    `ApiClientError` (429). Other 4xx (including the 401 of an expired
+    refresh token) and discarded responses are not reported. Paths are sent as templates
     (`src/util/pathTemplate.ts`: `/planning/plan/:uuid/`).
 - **Auth** is handled in `src/util/axiosSetup.ts`, which runs from `main.ts`:
   - A request interceptor adds `Authorization: Bearer <userStore.accessToken>`.
