@@ -1,9 +1,9 @@
 {
 	"consent": {
-		"title": "Help improve PRUNplanner?",
-		"intro": "With your permission, PRUNplanner collects how the tool is used. This helps to decide which features to build next and to find and fix bugs.",
-		"collected_events": "Usage events, such as pages you open and actions you take",
-		"collected_errors": "Error reports when something breaks",
+		"title": "想帮助改进PRUNplanner？",
+		"intro": "PRUNplanner会在您授权后收集该工具的使用信息。这有助于找出并修复问题以及决定后续推出的内容。",
+		"collected_events": "关键操作，例如您打开的页面和进行的操作",
+		"collected_errors": "出现问题时的错误报告",
 		"collected_recordings": "Session recordings of some visits, with everything you type masked",
 		"linked": "This data is linked to your account id and stored with PostHog in the EU.",
 		"optional": "This is optional and you can change your choice any time in your Profile. Details are in the {link}.",
