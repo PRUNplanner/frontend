@@ -3,9 +3,9 @@
 	"title": "资源 ROI",
 	"info": "选择一种资源，然后点击“搜索并计算”",
 	"calculating": "正在计算各行星的资源 ROI。",
-	"searching": "正在搜索含有 {resource} 的 @terms.planet_plural。等待后端响应",
-	"resource_select": "选择 @:terms.resources",
-	"cx_select": "@:terms.cx 偏好",
+	"searching": "正在搜索含有“{resource}”的@:{'terms.planet_plural'}，等待后端响应",
+	"resource_select": "选择@:{'terms.resources'}",
+	"cx_select": "@:{'terms.cx'}偏好",
 	"button_calculate": "搜索并计算",
 	"table": {
 		"planet": "@:terms.planets",
@@ -18,9 +18,9 @@
 		"environment": "环境",
 		"infrastructure": "基础设施",
 		"cost_profit": "成本 / 利润",
-		"plan_cost": "@:terms.plan@:terms.cost (ȼ)",
-		"daily_profit": "每日@:terms.profit (ȼ)",
-		"plan_roi": "@:terms.plan ROI (天)",
+		"plan_cost": "@:{'terms.plan'}@:{'terms.cost'} (ȼ)",
+		"daily_profit": "每日@:{'terms.profit'} (ȼ)",
+		"plan_roi": "@:{'terms.plan'} ROI (天)",
 		"distances": "距离"
 	}
 }
