@@ -3,9 +3,9 @@
 	"title": "市场探索",
 	"switch_material": "切换物料",
 	"kpis": {
-		"universe_vwap_7d": "宇宙VWAP @:terms.7d",
-		"universe_traded_7d": "宇宙@:terms.traded_volume @:terms.7d",
-		"universe_market_delta": "宇宙市场差值",
+		"universe_vwap_7d": "全宇宙@:{’terms.7d‘}VWAP",
+		"universe_traded_7d": "全宇宙@:{'terms.7d'}@:{'terms.traded_volume'}",
+		"universe_market_delta": "全宇宙市场差值",
 		"shortage": "欠缺",
 		"surplus": "盈余",
 		"percent_trend": "% 趋势",
@@ -32,13 +32,13 @@
 		"title": "材料市场概览",
 		"table": {
 			"material": "@:terms.materials",
-			"vwap_7d": "@:terms.vwap @:terms.7d",
-			"vwap_30d": "@:terms.vwap @:terms.30d",
+			"vwap_7d": "@:{'terms.7d'}@:{'terms.vwap'}",
+			"vwap_30d": "@:{'terms.30d'}@:{'terms.vwap'}",
 			"trend": "趋势",
-			"volume_7d": "@:terms.traded_volume @:terms.7d",
-			"volume_30d": "@:terms.traded_volume @:terms.30d",
+			"volume_7d": "@:{'terms.7d'}@:{'terms.traded_volume'}",
+			"volume_30d": "@:{'terms.30d'}@:{'terms.traded_volume'}",
 			"details": "详情",
-			"explore": "Explore"
+			"explore": "探索"
 		}
 	}
 }
