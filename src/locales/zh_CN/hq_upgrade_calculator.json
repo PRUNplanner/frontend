@@ -4,23 +4,23 @@
 	"form": {
 		"from_level": "从总部等级",
 		"to_level": "到总部等级",
-		"cx_preference": "@:terms.cx 偏好",
+		"cx_preference": "@:{'terms.cx'}偏好",
 		"show_locations": "显示位置"
 	},
 	"cost": {
-		"total_cost": "总计 @:terms.cost",
-		"total_weight": "总计 @:terms.weight",
-		"total_volume": "总计 @:terms.volume"
+		"total_cost": "总计 @:{'terms.cost'}",
+		"total_weight": "总计 @:{'terms.weight'}",
+		"total_volume": "总计 @:{'terms.volume'}"
 	},
 	"table": {
 		"material": "@:terms.materials",
 		"amount": "@:terms.amount",
 		"storage": "@:terms.storage",
-		"override_stock": "已覆盖库存",
+		"override_stock": "库存已有",
 		"required": "需要",
 		"cost_unit": "单位面积成本 (ȼ)",
 		"cost_total": "总成本 (ȼ)",
-		"storage_locations": "@:terms.storage 位置",
+		"storage_locations": "@:{'terms.storage'}位置",
 		"override_label": "覆盖{ticker}的库存量"
 	}
 }
