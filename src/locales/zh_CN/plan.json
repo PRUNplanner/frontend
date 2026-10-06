@@ -9,9 +9,9 @@
 		"failed": "保存失败",
 		"saved": "已保存",
 		"retry": "重试保存",
-		"failed_message": "保存计划失败。您的更改已保留，请重试。",
-		"name_to_create": "命名以创建计划",
-		"name_to_save": "命名以保存计划"
+		"failed_message": "保存规划失败。您的更改已保留，请重试。",
+		"name_to_create": "命名以创建规划",
+		"name_to_save": "命名以保存规划"
 	},
 	"history": {
 		"undo": "撤销",
@@ -21,20 +21,20 @@
 		"recipe_changed": "{building}的生产模板已更改"
 	},
 	"actions": {
-		"more": "More",
-		"save_as_copy": "Save as copy…",
-		"share_link": "Share link",
-		"reload": "Reload saved version",
-		"reload_hint": "Discards unsaved changes",
-		"reload_confirm": "Reload the saved version? Your unsaved changes will be lost.",
-		"tools": "Plan tools"
+		"more": "更多",
+		"save_as_copy": "另存为副本…",
+		"share_link": "分享链接",
+		"reload": "重新加载保存的版本",
+		"reload_hint": "放弃未保存的更改",
+		"reload_confirm": "重新加载已保存的版本？您未保存的更改将丢失。",
+		"tools": "规划工具"
 	},
 	"name": {
-		"untitled": "未命名的计划"
+		"untitled": "未命名的规划"
 	},
 	"tools": {
 		"labels": {
-			"popr": "POPR",
+			"popr": "人口报告",
 			"visitation_frequency": "访问频率",
 			"construction_cart": "建造清单",
 			"supply_cart": "补给清单",
@@ -49,8 +49,8 @@
 			"title": "访问频率",
 			"storage": {
 				"label": "仓储",
-				"info": "你的计划包含新增 {storages}，总仓储容量为 {total_weight} t 和 {total_volume} m³。",
-				"info_no_storage": "你的计划总仓储容量为 {total_weight} t 和 {total_volume} m³。",
+				"info": "你规划的包含附加{storages}，总仓储容量为 {total_weight}t 和 {total_volume}m³。",
+				"info_no_storage": "你规划的总仓储容量为 {total_weight}t 和 {total_volume}m³。",
 				"table": {
 					"weight": "吨",
 					"volume": "立方米",
@@ -70,14 +70,14 @@
 					"ship_volume": "飞船容积 m³",
 					"visitation_days": "访问间隔（天）",
 					"limit": "限制",
-					"export_frequency": "@:terms.export 频率",
-					"import_frequency": "@:terms.import 频率"
+					"export_frequency": "@:{'terms.export'}频率",
+					"import_frequency": "@:{'terms.import'}频率"
 				}
 			}
 		},
 		"construction_cart": {
 			"title": "建造清单",
-			"unplanned_info": "基地存在未规划的 {buildings}（FIO：{fio_updated}）。请拆除以确保面积、居住需求和物资数据准确。",
+			"unplanned_info": "基地存在未规划的{buildings}（FIO：{fio_updated}）。请拆除以确保面积、居住需求和物资数据准确。",
 			"table": {
 				"building": "@:terms.buildings",
 				"built": "已建造",
@@ -96,16 +96,16 @@
 			},
 			"amount_label": "{building}数量",
 			"override_label": "覆盖{ticker}库存数量",
-			"built_label": "Built {building}",
-			"built_manual": "Entered by you, not from FIO",
-			"built_reset": "Reset built {building}",
-			"built_reset_all": "Reset built",
-			"built_not_saved": "Built counts aren't saved for this plan."
+			"built_label": "已建造{building}",
+			"built_manual": "由您输入而非来自FIO",
+			"built_reset": "重置建筑{building}",
+			"built_reset_all": "重置已建造的建筑",
+			"built_not_saved": "此规划不保存已建造的建筑数量。"
 		},
 		"supply_cart": {
 			"title": "补给清单",
 			"info": {
-				"p": "补给清单会结合 FIO 提供的现有库存，更新你的计划需求。你可以灵活选择其他仓储位置来为基地补给。根据你是想补充劳动力与生产所需物资，还是专注于特定类别，自定义补给范围，并指定补给库存需要维持的天数。若需要更高级的补给清单选项，请使用 {link} 工具。",
+				"p": "补给清单会结合 FIO 提供的现有库存，更新你的规划需求。你可以灵活选择其他仓储位置来为基地补给。根据你是想补充劳动力与生产所需物资，还是专注于特定类别，自定义补给范围，并指定补给库存需要维持的天数。若需要更高级的补给清单选项，请使用 {link} 工具。",
 				"link": "FIO 消耗"
 			},
 			"buttons": {
@@ -114,10 +114,10 @@
 				"production": "生产"
 			},
 			"table": {
-				"stock_duration": "库存维持（天数）",
+				"stock_duration": "库存维持天数",
 				"storage": "仓储",
 				"xit_name": "补给清单",
-				"ticker": "代码",
+				"ticker": "信息签",
 				"daily_need": "每日需求",
 				"daily_cost": "每日成本",
 				"stock": "库存",
@@ -145,82 +145,82 @@
 				"total_volume": "@:terms.total_volume"
 			},
 			"graph": {
-				"select_building": "选择 @:terms.buildings",
-				"individual_building": "单个 @terms.buildings",
+				"select_building": "选择@:{'terms.buildings'}",
+				"individual_building": "单个@:{'terms.buildings'}",
 				"repair_cost_breakdown": "维修成本明细"
 			}
 		},
 		"cogm": {
 			"title": "成品成本",
 			"cogm": "@:terms.cogm",
-			"info": "成品成本会根据计划设置计算，并计入生产效率、配方运行时间、建筑损耗、输入物资成本、劳动力需求及相关劳动力成本。最终成本会按每单位产出显示，并基于数量或完整成本分摊计算。",
-			"cx_preferences": "@:terms.cx_plural 偏好设置",
-			"empire_ticker": "@:terms.empire 代码",
-			"planet_ticker": "@:terms.planets识别码",
+			"info": "成品成本会根据规划设置计算，并计入生产效率、配方运行时间、建筑损耗、输入物资成本、劳动力需求及相关劳动力成本。最终成本会按每单位产出显示，并基于数量或完整成本分摊计算。",
+			"cx_preferences": "@:{'terms.cx_plural'}偏好设置",
+			"empire_ticker": "@:{'terms.empire'}代码",
+			"planet_ticker": "@:{‘terms.planets’}识别码",
 			"table": {
 				"parameters": "参数",
-				"recipe_runtime": "@:terms.recipes 运行时间",
+				"recipe_runtime": "@:{'terms.recipes'}运行时间",
 				"percent_day": "% / 天",
 				"efficiency": "效率",
 				"degradation": "损耗",
 				"cost": "@:terms.cost",
 				"materials": "@:terms.materials_plural",
-				"input_total": "输入合计",
+				"input_total": "累计输入",
 				"material": "@:terms.materials",
 				"cost_unit": "ȼ / 单位",
-				"cost_total": "成本合计",
+				"cost_total": "累计成本",
 				"cost_total_unit": "ȼ 合计",
 				"workforce": "劳动力",
 				"total_cost": "总成本",
-				"recipe_profit": "@:terms.recipes 利润",
+				"recipe_profit": "@:{'terms.recipes'}利润",
 				"cost_split": "成本拆分"
 			}
 		},
 		"plan_analytics": {
 			"title": "规划洞察",
-			"info": "洞察数据汇总自 {planet} 上活跃玩家的计划。PRUNplanner 会设置最低样本阈值，以确保匿名性和统计准确性。",
+			"info": "洞察数据汇总自 {planet} 上活跃玩家的规划。PRUNplanner 会设置最低样本阈值，以确保匿名性和统计准确性。",
 			"labels": {
 				"experts": "专家",
-				"production_buildings": "生产 @:terms.buildings_plural",
+				"production_buildings": "生产@:{'terms.buildings_plural'}",
 				"recipes": "@:terms.recipes_plural"
 			},
 			"toggle": "切换洞察"
 		},
 		"plan_starter": {
-			"title": "Start from a typical setup on {planet}",
-			"description": "What the {plans} active plans on this planet build most (up to {max}; those in at least {percent} of plans are pre-selected). Adds the checked ones to this plan as a starting point; nothing is saved until you save.",
+			"title": "以{planet}的常规配置开始",
+			"description": "这颗行星上的{plans}份活跃规划都修了什么（至多{max}种；预选择出现频率不低于{percent}的建筑）。将勾选的建筑添加进初始规划；在您保存前不会保存任何更改。",
 			"columns": {
-				"building": "Building",
-				"in_plans": "In plans here",
-				"amount": "Amount",
-				"recipes": "Typical recipes"
+				"building": "建筑",
+				"in_plans": "于规划中",
+				"amount": "数量",
+				"recipes": "常规生产模板"
 			},
-			"typical_amount": "typ. {amount}x",
-			"no_recipe": "no typical recipe",
-			"experts": "Experts in plans here",
-			"expert_share": "{expert} in {percent} of plans",
-			"expert_added": "adds {amount}",
-			"based_on": "Based on plans of players active in the last 90 days · updated daily",
-			"turn_off": "You can turn off plan suggestions in {link}",
-			"turn_off_link": "Profile › Preferences",
-			"start_empty": "Start empty",
-			"apply": "Use typical setup ({count})",
-			"applied": "Typical setup added: {n} building | Typical setup added: {n} buildings",
-			"empty": "No buildings yet. Add one above, or {link}",
-			"show": "start from a typical setup"
+			"typical_amount": "一般{amount}座",
+			"no_recipe": "无常规生产模板",
+			"experts": "此规划中的专家",
+			"expert_share": "{percent}的规划为{expert}",
+			"expert_added": "外加{amount}名",
+			"based_on": "基于在过去90天内活跃的玩家的规划 · 每日更新",
+			"turn_off": "你可以在{link}中关闭规划建议",
+			"turn_off_link": "个人资料 › 偏好设置",
+			"start_empty": "全新开始",
+			"apply": "使用常规配置 ({count})",
+			"applied": "已添加常规配置：{n}座建筑",
+			"empty": "暂无建筑。通过上方添加建筑，或者{link}",
+			"show": "以常规的配置开始"
 		}
 	},
 	"components": {
 		"status": {
-			"hq": "HQ",
+			"hq": "总部",
 			"cogc": "@:{'terms.cogc'}",
 			"area": "@:{'terms.area'}",
 			"profit": "@:{'terms.profit'}",
 			"experts": "@:{'terms.experts_plural'}",
-			"experts_none": "None",
-			"area_free": "{count} free",
-			"area_over": "{count} over",
-			"per_day": "ȼ/day"
+			"experts_none": "无",
+			"area_free": "{count}面积可用",
+			"area_over": "超限{count}面积",
+			"per_day": "ȼ/天"
 		},
 		"configuration": {
 			"label": "配置",
@@ -233,7 +233,7 @@
 			"free": "空闲"
 		},
 		"bonuses": {
-			"corp_hq": "集团 HQ",
+			"corp_hq": "集团总部",
 			"corp_hq_tooltip": "你所属的集团在该行星设有总部（不是你个人的公司总部）。",
 			"cogc": "@:terms.cogc"
 		},
@@ -268,7 +268,7 @@
 			"table": {
 				"daily_cost": "每日成本",
 				"degradation": "损耗",
-				"plan_cost": "计划成本",
+				"plan_cost": "规划成本",
 				"daily_profit": "每日利润",
 				"roi": "ROI",
 				"profit_area": "@:terms.profit_per_area"
@@ -282,7 +282,7 @@
 				"import": "@:terms.import",
 				"export": "@:terms.export",
 				"sum": "@:terms.sum",
-				"filled": "被填满"
+				"filled": "满储"
 			}
 		},
 		"materialio": {
@@ -299,59 +299,59 @@
 				"delta": "Δ",
 				"cost_day": "ȼ / 天",
 				"total_weight": "Δ t",
-				"total_volume": "Δ m3"
+				"total_volume": "Δ m³"
 			}
 		},
 		"save_as": {
 			"title": "另存为",
 			"form": {
 				"plan_name": "名称",
-				"plan_name_placeholder": "新@:terms.plan 名称",
+				"plan_name_placeholder": "新@:{'terms.plan'}名称",
 				"empire": "@:terms.empire"
 			}
 		},
 		"production": {
 			"label": "生产",
-			"planet_resources": "@:terms.planets @:terms.resources_plural",
+			"planet_resources": "@:{'terms.planets'}@:{'terms.resources_plural'}",
 			"form": {
-				"match_cogc": "匹配 @:terms.cogc",
-				"select_placeholder": "选择@:terms.buildings并添加到@:terms.plan中",
-				"popular_on": "Popular on {planet} · {plans} plans",
-				"all_buildings": "All buildings"
+				"match_cogc": "匹配@:{'terms.cogc'}",
+				"select_placeholder": "选择@:{'terms.buildings'}并添加到@:{'terms.plan'}中",
+				"popular_on": "{planet}的热门 · {plans}规划",
+				"all_buildings": "全部建筑"
 			},
 			"table": {
-				"building_recipe": "@:terms.buildings / @:terms.recipes",
+				"building_recipe": "@:{'terms.buildings'} / @:{'terms.recipes'}",
 				"runtime": "运行时间",
 				"share": "分享",
 				"tools": "工具"
 			}
 		},
 		"production_building": {
-			"no_recipe": "无活动@:terms.convenes_plural",
+			"no_recipe": "无活动@:{'terms.convenes_plural'}",
 			"qty": "数量",
 			"buttons": {
 				"add_recipe": "@:terms.recipes"
 			},
 			"table": {
-				"expertise": "专长",
+				"expertise": "专精",
 				"efficiency": "效率",
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
 				"construction": "土木",
-				"construction_per_building": "Per building"
+				"construction_per_building": "每栋建筑"
 			},
 			"zero_reason": {
 				"FERTILITY": "行星无肥沃土壤",
 				"WORKFORCE": "无生产力住所"
 			},
 			"qty_label": "{building}数量",
-			"mix_hint": "Most planned here:",
-			"mix_add": "Add",
-			"mix_add_label": "Add the most planned @:terms.recipes_plural of {building}"
+			"mix_hint": "此地的热门规划：",
+			"mix_add": "添加",
+			"mix_add_label": "添加{building}最常使用的@:{'terms.recipes_plural'}"
 		},
 		"production_recipe": {
 			"cogm_title": "成品成本",
-			"cogm_error": "无法计算 COGM。请在“管理”页面检查你的帝国是否已分配 CX。",
+			"cogm_error": "无法计算 COGM。请在“管理”页面检查你的帝国是否已分配交易所偏好。",
 			"buttons": {
 				"cogm": "@:terms.cogm"
 			},
@@ -360,20 +360,20 @@
 				"time": "时间",
 				"output": "输出",
 				"daily_revenue": "ȼ / 天",
-				"profit_area": "ȼ / 区域",
+				"profit_area": "ȼ / 面积",
 				"roi": "ROI",
-				"plans_here": "Plans here",
-				"below_threshold": "< 5 %"
+				"plans_here": "此地的规划",
+				"below_threshold": "< 5%"
 			},
 			"info": {
 				"p1_strong": "收入/天",
 				"p1": "是根据配方产生的每日收入，减去每日劳动力成本（包含所有奢侈品供给）以及每日建筑损耗成本（建造成本的 1/180）后计算得出。配方收入基于输入物资成本与输出物资价值之间的差额。",
-				"p2_strong": "ȼ / 区域",
-				"p2": "表示每日收入除以一个生产建筑所占区域，以及在配方 ROI 中为该类建筑的最优基地分摊的 CM 与住房建筑所占区域。",
+				"p2_strong": "ȼ / 面积",
+				"p2": "表示每日收入除以一个生产建筑所占面积，以及在生产模板 ROI 中为该类建筑的最优基地分摊的核心模块与住房建筑所占面积。",
 				"p3_strong": "ROI",
-				"p3": "表示一个持续运行的配方产生足够收入以抵消建筑建造成本所需的时间，同时也会计入每日损耗和劳动力成本。",
-				"p4_strong": "Plans here",
-				"p4": "is the share of plans on {planet} with a {building} that run this recipe, from active players, updated daily."
+				"p3": "表示一个持续运行的生产模板产生足够收入以抵消建筑建造成本所需的时间，同时也会计入每日损耗和劳动力成本。",
+				"p4_strong": "此地的规划",
+				"p4": "是每日更新的收集于活跃玩家的在{planet}上带有使用此生产模板的{building}的百分比。"
 			},
 			"amount_label": "{recipe}的生产模板数量"
 		}
