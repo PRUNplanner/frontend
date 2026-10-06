@@ -3,15 +3,15 @@
 	"title": "管理",
 	"empire": {
 		"title": "帝国配置",
-		"description": "移除帝国将不会删除任何关联的计划——他们将被取消分配。你可以在帝国视图中创建编辑现有的帝国。为了确保正确的计算效率加成，请确保每个帝国都有设置派系和正确的许可。",
+		"description": "移除帝国将不会删除任何关联的规划——他们将被取消分配。你可以在帝国视图中创建编辑现有的帝国。为了确保正确的计算效率加成，请确保每个帝国均已正确设置派系和许可。",
 		"buttons": {
 			"new_empire": "新帝国"
 		},
 		"form": {
-			"empire_name": "@:terms.empire 名称",
+			"empire_name": "@:{'terms.empire'}名称",
 			"faction": "@:terms.faction",
-			"permits_total": "@:terms.permits_plural 总计",
-			"permits_used": "@:terms.permits_plural 已用"
+			"permits_total": "@:{'terms.permits_plural'}总数",
+			"permits_used": "已用@:{'terms.permits_plural'}"
 		},
 		"table": {
 			"empire_name": "@:terms.empire",
@@ -24,50 +24,50 @@
 		}
 	},
 	"cx": {
-		"title": "商品交易所配置",
+		"title": "交易所偏好配置",
 		"description": "移除商品交易所偏好将删除其所有市场和材料设置。已分配的帝国将不受影响，但他们将不再使用已删除的偏好。请确保分配一个新的商品交易所偏好。",
 		"buttons": {
-			"new_cx": "新 @:terms.cx"
+			"new_cx": "新@:{'terms.cx'}"
 		},
 		"form": {
-			"cx_name": "@:terms.cx 名称",
+			"cx_name": "@:{'terms.cx'}名称",
 			"cx_placeholder": "商品交易所名称（最多100字符）"
 		},
 		"table": {
-			"cx_name": "@:terms.cx 名称",
+			"cx_name": "@:{'terms.cx'}名称",
 			"assigned_to_empire": "分配给帝国？",
-			"nodata_title": "没有 @:terms.cx 可用。",
-			"nodata_label": "创建你的第一个市场偏好。"
+			"nodata_title": "没有@:{'terms.cx'}可用。",
+			"nodata_label": "创建你的第一个交易所偏好。"
 		}
 	},
 	"assignments": {
-		"title": "计划 ↔ 帝国分配",
-		"description": "每个被计划的基地都可以分配给多个帝国。这允许你同时跟踪现有的PrUn帝国、公司生产链或未来的扩展计划。",
+		"title": "规划 ↔ 帝国分配",
+		"description": "每份基地规划都可以分配至多个帝国。这允许你同时追踪你现有的PrUn帝国、集团生产链条或未来的扩展规划。更改将会在下方的栏中一并保存。",
 		"deletion": {
-			"title": "确认删除计划",
-			"content": "你确定吗？删除操作不能被撤销。"
+			"title": "确认删除规划",
+			"content": "你确定吗？删除操作不能撤销。"
 		},
 		"table": {
 			"plan": "@:terms.plan",
-			"nodata_title": "没有可用@:terms.plans_plural",
+			"nodata_title": "没有可用@:{'terms.plans_plural'}",
 			"nodata_label": "使用行星搜索创建你的第一份@:{'terms.plan'}。",
 			"assign_label": "{empire}中的{plan}"
 		},
-		"search": "搜索计划或行星",
+		"search": "搜索规划或行星",
 		"filter_empire": "于帝国中",
 		"all_empires": "全部帝国",
 		"unassigned_only": "仅未分配 · {count}",
 		"plan_count": "{plans} · {empires}",
-		"plans": "{count}份计划 | {count}份计划",
+		"plans": "{count}份规划",
 		"empires": "{count}座帝国 | {count}座帝国",
-		"empire_plans": "{count}份计划 | {count}份计划",
+		"empire_plans": "{count}份规划",
 		"row_actions": "针对{plan}的操作",
 		"row_actions_header": "操作",
 		"will_add": "将添加至{empire}",
 		"will_remove": "将移除出{empire}",
-		"add_all_shown": "将全部已显示的计划添加至{empire}",
-		"remove_all_shown": "将全部已显示的计划移除出{empire}",
-		"no_match": "无匹配搜索和筛选条件的计划。",
+		"add_all_shown": "将全部已显示的规划添加至{empire}",
+		"remove_all_shown": "将全部已显示的规划移除出{empire}",
+		"no_match": "无匹配搜索和筛选条件的规划。",
 		"menu": {
 			"clone": "复制",
 			"share": "分享…",
