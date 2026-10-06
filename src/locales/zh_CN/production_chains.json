@@ -4,11 +4,11 @@
 	"configuration": {
 		"title": "配置",
 		"material": "@:terms.materials",
-		"recipe_runs": "配方运行",
+		"recipe_runs": "订单大小",
 		"node_color": "节点颜色",
 		"terminals": "终端物资",
 		"terminals_placeholder": "用英文逗号分隔的物资代码",
-		"terminals_info": "终端物资是指其输入项会从图表中排除的物资。如果你会在 CX 或本地购买这些物资，而不需要自行生产，它们就很有用。",
+		"terminals_info": "终端物资是指其输入项会从图表中排除的物资。如果你在交易所或本地购买这些物资，而非自行生产，它们就很有用。",
 		"recipe_selection": "配方选择"
 	},
 	"analysis_materials": {
@@ -19,16 +19,16 @@
 		}
 	},
 	"analysis_expertise": {
-		"title": "建筑专长",
+		"title": "建筑所属产业",
 		"table": {
-			"expertise": "专长",
+			"expertise": "产业",
 			"materials": "@:terms.materials_plural"
 		}
 	},
 	"analysis_workforce": {
-		"title": "劳动力",
+		"title": "生产力",
 		"table": {
-			"workforce": "劳动力",
+			"workforce": "生产力",
 			"required": "需要"
 		}
 	}
