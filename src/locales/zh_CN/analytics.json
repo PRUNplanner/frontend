@@ -4,11 +4,11 @@
 		"intro": "PRUNplanner会在您授权后收集该工具的使用信息。这有助于找出并修复问题以及决定后续推出的内容。",
 		"collected_events": "关键操作，例如您打开的页面和进行的操作",
 		"collected_errors": "出现问题时的错误报告",
-		"collected_recordings": "Session recordings of some visits, with everything you type masked",
-		"linked": "This data is linked to your account id and stored with PostHog in the EU.",
-		"optional": "This is optional and you can change your choice any time in your Profile. Details are in the {link}.",
-		"tos_link": "Terms of Service",
-		"allow": "Allow",
-		"deny": "No thanks"
+		"collected_recordings": "部分访问的会话记录，但对您的全部输入项进行隐私处理",
+		"linked": "此数据关联至您的账户ID并储存于位于欧盟的PostHog平台。",
+		"optional": "这是一项可选内容，您可随时在您的个人资料页面中修改决策。详细内容参见{link}。",
+		"tos_link": "服务条款",
+		"allow": "允许",
+		"deny": "算了吧"
 	}
 }
