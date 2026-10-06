@@ -1,21 +1,21 @@
 {
-	"info": "这将创建一个可分享给他人的专属链接。其他人可以查看你的计划，但不能修改。链接将在你停止分享或删除该计划后失效。",
-	"share_count": "你正在分享此计划。该计划已被查看{count}次",
+	"info": "这将创建一个可分享给他人的专属链接。其他人可以查看你的规划，但不能修改。链接将在你停止分享或删除该规划后失效。",
+	"share_count": "你正在分享此规划。该规划已被查看{count}次",
 	"buttons": {
 		"create_link": "创建分享链接",
 		"copy_url": "复制链接",
 		"stop_sharing": "停止分享",
 		"views": "{count}次查看"
 	},
-	"title": "分享计划",
+	"title": "分享规划",
 	"banner": {
-		"title": "Shared plan",
-		"info": "Read-only. Prices use the universe 30-day average.",
-		"signup_hint": "Create a free account to clone and edit it."
+		"title": "已分享的规划",
+		"info": "仅供查看。价格偏好使用全宇宙30天均值。",
+		"signup_hint": "免费创建一个账户来复制并编辑它。"
 	},
 	"unavailable": {
-		"title": "This shared plan is no longer available",
-		"text": "Its owner stopped sharing it or deleted the plan, or the link is incomplete.",
-		"home": "Go to PRUNplanner"
+		"title": "此分享的规划已不再可用",
+		"text": "其所有者已停止分享或将其删除，或者分享链接不完整。",
+		"home": "前往PRUNplanner"
 	}
 }
