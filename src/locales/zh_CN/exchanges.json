@@ -25,11 +25,11 @@
 	},
 	"components": {
 		"ticker": {
-			"no_data": "未配置 @:terms.material_ticker 的偏好设置",
+			"no_data": "未配置@:{'terms.material_ticker'}的偏好设置",
 			"material_placeholder": "@:terms.materials"
 		},
 		"exchanges": {
-			"no_data": "未配置 @:terms.exchanges 的偏好设置"
+			"no_data": "未配置{'@:terms.exchanges'}的偏好设置"
 		},
 		"planet_preferences": {
 			"title": "行星偏好设置",
@@ -39,8 +39,8 @@
 			},
 			"table": {
 				"planet": "@:terms.planets",
-				"exchange_preference": "@:terms.exchanges偏好设置",
-				"ticker_preference": "@:terms.material_ticker偏好设置"
+				"exchange_preference": "@:{'terms.exchanges'}偏好设置",
+				"ticker_preference": "@:{'terms.material_ticker'}偏好设置"
 			}
 		},
 		"csv_import_export": {
