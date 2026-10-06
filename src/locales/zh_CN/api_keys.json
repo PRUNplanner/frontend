@@ -3,7 +3,7 @@
 	"title": "API密钥",
 	"info": {
 		"description": {
-			"p1": "{link}提供对所有规划数据、游戏内元数据（建筑、配方、物资）以及 VWAP 等计算市场指标的程序化访问。公共端点仍可供社区使用，但访问私人规划数据（包括你的计划配置）则需要安全认证。",
+			"p1": "{link}提供对所有规划数据、游戏内元数据（建筑、配方、物资）以及 VWAP 等计算市场指标的程序化访问。公共端点仍可供社区使用，但访问私人规划数据（包括你的规划配置）则需要安全认证。",
 			"p2": "通过使用这些端点，你可以将规划操作与外部电子表格、自定义仪表板，甚至优化算法同步。",
 			"link": "PRUNplanner REST API",
 			"warning": "API 密钥使本工具可无限期完全访问你的账户数据。请像保护密码一样保护这些凭据。切勿将密钥提交到公开代码库，或分享给未经验证的第三方服务。如果密钥泄露，请立即撤销并生成新的密钥。"
@@ -11,8 +11,8 @@
 	},
 	"manage": {
 		"title": "PRUNplanner API 密钥",
-		"loading": "Loading API Keys.",
-		"empty": "No API Keys yet. Create your first API Key.",
+		"loading": "正在加载API密钥。",
+		"empty": "暂无API密钥。创建您的第一份API密钥。",
 		"buttons": {
 			"new_apikey": "创建新密钥",
 			"revoke_apikey": "撤销"
