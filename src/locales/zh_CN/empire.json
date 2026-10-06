@@ -11,23 +11,23 @@
 		"form": {
 			"name": "名称",
 			"faction": "派系",
-			"permits_total": "总计@:terms.permits_plural",
-			"permits_used": "已用@:terms.permits_plural"
+			"permits_total": "总计@:{'terms.permits_plural'}",
+			"permits_used": "已用@:{'terms.permits_plural'}"
 		},
 		"sync_warning": {
 			"title": "检测到不匹配：",
-			"body": "@:empire.configuration.sync_warning.title已配置{configured}份许可，但规划使用{planned}份许可。请使用游戏内的{hq_buffer}同步这些数值，以确保派系加成计算准确。"
+			"body": "@:{'empire.configuration.sync_warning.title'}已配置{configured}份许可，但规划使用{planned}份许可。请使用游戏内的{hq_buffer}同步这些数值，以确保派系加成计算准确。"
 		}
 	},
 	"plan_list": {
-		"no_plans": "@:terms.empire中没有规划",
+		"no_plans": "@:{'terms.empire'}中没有规划",
 		"profit": "@:terms.profit (ȼ)",
 		"setup_prompt": "在{management}中分配已有规划，或使用{search}创建一个。",
 		"links": {
 			"management": "@:common.navigation.management",
 			"planet_search": "@:common.navigation.planet_search"
 		},
-		"permits_planned": "规划的@:terms.permits总数：{permits}"
+		"permits_planned": "规划的@:{'terms.permits'}总数：{permits}"
 	},
 	"material_io": {
 		"produced_by": "生产端",
@@ -36,11 +36,11 @@
 		"summary": "概要",
 		"expand_all": "全部展开",
 		"expand_row": "显示与{ticker}关联的行星",
-		"view_sides": "生产端 · 消费端",
+		"view_sides": "生产端 · 消耗端",
 		"view_net": "每行星净值",
 		"surplus": "盈余",
 		"needs": "需求",
-		"plan_count": "{count}份计划 | {count}份计划",
+		"plan_count": "{count}份规划",
 		"planet_count": "{count}颗行星 | {count}颗行星",
 		"per_day": "{value} / 天",
 		"makes_uses": "生产{makes} · 消耗{uses}",
@@ -56,7 +56,7 @@
 		"loadbalance": "负载平衡"
 	},
 	"analysis": {
-		"plan_profit": "计划盈利 (ȼ)",
+		"plan_profit": "规划盈利 (ȼ)",
 		"material_profits": "材料收益 (ȼ)",
 		"material_costs": "材料成本",
 		"net_production": "净生产",
@@ -81,7 +81,7 @@
 			"sell_inputs": "售出输入项",
 			"sell_outputs": "售出输出项",
 			"potential_batches": "潜在批次",
-			"delta_required": "所需缺口",
+			"delta_required": "需要缺口",
 			"missing_material": "缺少物料"
 		}
 	},
@@ -90,12 +90,12 @@
 		"intro": "在开始您的第一份基地规划前需要完成的三个步骤。",
 		"empire": {
 			"title": "你的帝国",
-			"help": "派系和许可分别影响您计划的派系增益和可用面积。",
+			"help": "派系和许可分别影响您规划的派系增益和可用面积。",
 			"saved": "已保存"
 		},
 		"plan": {
 			"title": "规划您的第一座基地",
-			"help": "找一颗行星并在那里创建一份计划。其将会自动添加至这个帝国中。",
+			"help": "找一颗行星并在那里创建一份规划。其将会自动添加至这个帝国中。",
 			"action": "@:common.navigation.planet_search"
 		},
 		"prices": {
