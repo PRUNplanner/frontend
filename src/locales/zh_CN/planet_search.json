@@ -18,8 +18,8 @@
 		"default_name": "所有行星",
 		"link_copied": "链接复制成功",
 		"copy_failed": "链接复制失败",
-		"saved_toast": "\"{name}\" 已保存至浏览器",
-		"loaded_toast": "\"{name}\" 已加载",
+		"saved_toast": "“{name}”已保存至浏览器",
+		"loaded_toast": "“{name}”已加载",
 		"deleted_toast": "\"{name}\" 已删除",
 		"no_saved": "尚未有已保存的搜索，请使用“保存搜索”保存当前的筛选。",
 		"rename_label": "重命名已保存的搜索 {n}",
@@ -31,11 +31,11 @@
 		"active": "已启用 {n} 种",
 		"collapse": "折叠筛选",
 		"expand": "展开筛选",
-		"open": "筛选（{n}）",
+		"open": "筛选 ({n})",
 		"close": "关闭筛选",
-		"show_results": "展示 {n} 颗行星",
+		"show_results": "展示{n}颗行星",
 		"any": "任意 · {n}",
-		"any_label": "{section}：任意，{n} 颗行星"
+		"any_label": "{section}：任意，{n}颗行星"
 	},
 	"materials": {
 		"title": "物料",
@@ -57,7 +57,7 @@
 		"remove_material": "移除{material}",
 		"add_material": "添加物料……",
 		"add_material_label": "添加物料到分组{n}",
-		"option": "{material}（{n}）",
+		"option": "{material} ({n})",
 		"add_group": "+ 添加分组"
 	},
 	"conditions": {
@@ -98,19 +98,19 @@
 	"distance": {
 		"title": "距离",
 		"empire": "帝国规划",
-		"empire_option": "{name}（{n} 份计划）",
+		"empire_option": "{name}（{n}份规划）",
 		"no_empires": "你还没有任何帝国。",
-		"plan_filter": "输入 计划名称 或 行星名称，来筛选此处 {n} 份计划",
+		"plan_filter": "输入规划名称或行星名称，来筛选此处的{n}份规划",
 		"plan_option": "{plan} · {planet}",
-		"no_plans": "没有匹配的计划。",
+		"no_plans": "没有匹配的规划。",
 		"remove_plan": "移除{plan}",
 		"exchanges": "交易所",
-		"max_jumps": "最大跃迁数",
-		"max_jumps_value": "距每个选中项 ≤ {n} 次跃迁"
+		"max_jumps": "最大跃迁次数",
+		"max_jumps_value": "距每个选中项 ≤ {n}次跃迁"
 	},
 	"results": {
-		"count": "共 {n} / {total} 颗星球",
-		"view_label": "结果查看",
+		"count": "{total}颗星球中的第{n}颗",
+		"view_label": "结果视图",
 		"list": "列表",
 		"matrix": "矩阵",
 		"planet": "行星",
@@ -120,21 +120,21 @@
 		"cogc_infra": "全球商会 · 基础设施",
 		"jumps": "跃迁数",
 		"actions": "操作",
-		"create_plan": "为 {planet} 创建一份计划（在新标签页中打开）",
+		"create_plan": "为 {planet} 创建一份规划（在新标签页中打开）",
 		"pin": "添加 {planet} 至对比",
 		"unpin": "从对比中移除 {planet}",
 		"not_present": "{material}：此行星无法开采",
 		"no_infrastructure": "没有基础设施",
 		"no_cogc": "—",
 		"unreachable": "需要拓殖船",
-		"material_count": "总共 {total} 颗行星上有 {n} 颗可开采 {material}",
+		"material_count": "{total}颗行星中的{n}颗可开采{material}",
 		"cell": "{material} {value}/天 · 最大开采量的 {pct}%",
 		"sort": "按{column}排序",
 		"sort_hint": "点击按此列排序，按住 Shift 点击可添加为次级排序条件",
 		"loading_more": "正在加载更多的行星……"
 	},
 	"sort": {
-		"button": "排序（{n}）",
+		"button": "排序 ({n})",
 		"title": "排序依据",
 		"hint": "后续列依次区分前方持平项。按住 Shift 点击列标题也可将其加入。",
 		"direction": "{column}的顺序",
@@ -143,11 +143,11 @@
 		"remove": "移除{column}排序",
 		"then_by": "其次依据",
 		"pick_column": "选择一列……",
-		"full": "最多 {max} 列。",
+		"full": "最多{max}列。",
 		"default": "默认排序：{column}，{dir}"
 	},
 	"columns": {
-		"button": "列（{shown}/{total}）",
+		"button": "列 ({shown}/{total})",
 		"fert": "肥沃",
 		"other": "其他资源",
 		"extras": "额外建材",
@@ -156,7 +156,7 @@
 		"CI1": "CI1 跃迁数",
 		"IC1": "IC1 跃迁数",
 		"NC1": "NC1 跃迁数",
-		"found": "可开采物料（{shown}/{total}）",
+		"found": "可开采物料 ({shown}/{total})",
 		"all": "全选",
 		"none": "不选",
 		"reset": "重置"
@@ -167,11 +167,11 @@
 		"and": " 和 ",
 		"or": " 或 ",
 		"groups_or": " 或者 ",
-		"cogc": "商会：{programs}",
+		"cogc": "全球商会：{programs}",
 		"fertile": "肥沃",
 		"surface": "表面：{surfaces}",
-		"extras": "建材：{extras}",
-		"references": "≤ {n} 次跃迁，距离 {refs}",
+		"extras": "包括{extras}",
+		"references": "距离{refs} ≤ {n}次跃迁",
 		"remove": "移除筛选{label}"
 	},
 	"hints": {
@@ -181,32 +181,32 @@
 		"extras": "不限建筑材料",
 		"jumps": "最大跃迁数 {n}",
 		"section": {
-			"conditions": "不限地表与肥沃",
+			"conditions": "不限地表和肥沃度",
 			"cogc": "不限全球商会项目",
 			"infrastructure": "不限基础设施"
 		},
-		"result": "{label} → {n} 颗行星"
+		"result": "{label} → {n}颗行星"
 	},
 	"name_note": {
-		"text": "另有 {n} 颗星球匹配“{text}”，但因筛选条件未显示： | 另有 {n} 颗星球匹配“{text}”，但因筛选条件未显示：",
+		"text": "另有{n}颗星球匹配“{text}”，但因筛选条件未显示： | 另有{n}颗星球匹配“{text}”，但因筛选条件未显示：",
 		"relaxation": "{label}（+{n}）",
-		"show_all": "展示全部 {n} 颗行星"
+		"show_all": "展示全部{n}颗行星"
 	},
 	"compare": {
-		"title": "对比（{n}/{max}）",
+		"title": "对比 ({n}/{max})",
 		"toggle": "显示或隐藏对比表格",
-		"hint_empty": "在表格中点击 ☆ 以标记行星，即可将其加入对比。",
+		"hint_empty": "在表格中通过点击 ☆ 标记行星，即可将其加入对比。",
 		"hint": "颜色标记优劣，加粗是为最优；蓝色背景代表具有差异。",
-		"full": "对比最多可加入 {max} 颗星球",
+		"full": "对比最多可加入{max}颗星球",
 		"remove": "从对比中移除 {planet}",
-		"row_label": "参数",
+		"row_label": "属性",
 		"extras": "额外建材",
 		"fertility": "肥沃度（%）",
-		"per_day": "{material} /天",
+		"per_day": "{material}/天",
 		"other": "其他资源",
 		"cogc": "全球商会",
 		"infrastructure": "基础设施",
 		"cx": "AI1 / CI1 / IC1 / NC1",
-		"jumps": "跃迁数：距离 {ref}"
+		"jumps": "距{ref}的跃迁数"
 	}
 }
