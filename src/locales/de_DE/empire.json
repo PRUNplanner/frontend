@@ -104,6 +104,9 @@
 			"exchanges": "Marktplätze"
 		}
 	},
+	"cost_overview": {
+		"shipping": "Shipping"
+	},
 	"empty": {
 		"title": "Noch keine Imperien",
 		"text": "Ein Imperium gruppiert deine Pläne und hält deine Fraktion und Genehmigungen.",
