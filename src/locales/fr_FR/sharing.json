@@ -1,5 +1,5 @@
 {
-	"info": "Cela créera un lien unique qui peut être partagé avec les autres. Ils pourront voir votre plan, mais pas le modifier. Le lien devient indisponible une fois que vous choisissez d'arrêter le partage ou de supprimer le plan.",
+	"info": "This will create a unique link that can be shared with others. They can look at your plan and try changes on their own copy, but they never change your plan. The link becomes unavailable once you choose to stop sharing or delete the plan.",
 	"share_count": "Vous partagez actuellement ce plan. Il a été consulté {count} fois",
 	"buttons": {
 		"create_link": "Créer un lien pour partager",
@@ -10,8 +10,38 @@
 	"title": "Share Plan",
 	"banner": {
 		"title": "Shared plan",
-		"info": "Read-only. Prices use the universe 30-day average.",
-		"signup_hint": "Create a free account to clone and edit it."
+		"info": "Try changes on your own copy. The shared plan never changes.",
+		"changed": "Changed from the shared version",
+		"prices": "Prices: {source}.",
+		"prices_hint": "The person who shared it may see different numbers.",
+		"price_universe": "universe 30-day average",
+		"price_cx": "your exchange settings: {name}",
+		"reset": "Reset to shared version",
+		"copy": "Copy changes",
+		"copied": "Changes copied, paste them into Discord",
+		"copy_failed": "Couldn't copy the changes",
+		"save": "Save to my plans",
+		"signup": "Sign up to save this"
+	},
+	"compare": {
+		"label": "vs. shared:",
+		"profit": "{delta} ȼ/day",
+		"roi": "ROI {from} → {to}",
+		"area": "Area {delta}",
+		"workforce": "Workforce {delta}",
+		"buildings": "Buildings {delta}",
+		"added": "new",
+		"new": "new",
+		"amount": "amount changed",
+		"recipe": "recipe changed",
+		"removed": "removed"
+	},
+	"changes": {
+		"recipe": "{label} recipes {from} → {to}",
+		"profit": "Profit: {from} → {to} ȼ/day",
+		"roi": "ROI: {from} → {to}",
+		"prices": "Prices: {source}",
+		"more": "…and {n} more"
 	},
 	"unavailable": {
 		"title": "This shared plan is no longer available",
