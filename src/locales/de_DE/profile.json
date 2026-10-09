@@ -83,7 +83,7 @@
 	},
 	"preferences": {
 		"title": "Einstellungen",
-		"description": "Deine Einstellungen werden lokal in deinem Browser gespeichert und noch nicht vollständig mit dem Backend synchronisiert. Hier kannst du sie anpassen und überprüfen.",
+		"description": "Use this panel to review and customize your PRUNplanner settings.",
 		"form": {
 			"tool_preferences": "PRUNplanner Einstellungen",
 			"language": "Sprache",
