@@ -13,13 +13,13 @@
 	import RenderingProgress from "@/layout/components/RenderingProgress.vue";
 
 	// UI
-	import { PSpin, PIcon } from "@/ui";
+	import { PButton, PSpin, PIcon } from "@/ui";
 	import { CheckSharp, ClearSharp } from "@vicons/material";
 
 	const props: GameDataLoaderProps = defineProps<GameDataLoaderProps>();
 	const emit: GameDataLoaderEmits = defineEmits<GameDataLoaderEmits>();
 
-	const { done, allLoaded, hasError, loadingSteps, results } =
+	const { done, allLoaded, hasError, loadingSteps, results, retry } =
 		useGameDataLoader(props, emit);
 
 	// fast (cached) loads show nothing, errors show at once
@@ -57,6 +57,9 @@
 						</div>
 						<div class="text-left!">{{ e.name }}</div>
 					</div>
+					<PButton v-if="hasError" class="mt-3" @click="retry">
+						{{ $t("wrapper.retry") }}
+					</PButton>
 				</div>
 			</div>
 		</div>

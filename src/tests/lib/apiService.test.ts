@@ -284,12 +284,15 @@ describe("ApiService", () => {
 		});
 
 		it("network error: a repeated GET one", async () => {
+			const now = vi.spyOn(Date, "now").mockReturnValue(2_000_000);
+			onTestFinished(() => now.mockRestore());
 			mock.onGet("/data/planet/OT-580b/").networkError();
 
 			await expect(
 				apiService.get("/data/planet/OT-580b/", schema)
 			).rejects.toThrowError();
 			// same path, within ten minutes
+			now.mockReturnValue(2_000_000 + 60_000);
 			await expect(
 				apiService.get("/data/planet/OT-580b/", schema)
 			).rejects.toThrowError();
@@ -302,10 +305,73 @@ describe("ApiService", () => {
 				method: "GET",
 				status: undefined,
 				request_id: expect.stringMatching(UUID),
+				code: undefined,
 			});
 			expect(reported()).toMatchObject({
 				kind: "network",
 				failed_request_id: props?.request_id,
+			});
+		});
+
+		describe("network error: planets/multiple, a read sent as POST", () => {
+			const PLANETS = "/data/planets/multiple/";
+			const ids = z.array(z.string());
+			const post = () =>
+				apiService.post(PLANETS, ["OT-580b"], ids, z.array(schema));
+
+			it("a lone one and its burst are not reported", async () => {
+				const now = vi.spyOn(Date, "now").mockReturnValue(10_000_000);
+				onTestFinished(() => now.mockRestore());
+				mock.onPost(PLANETS).networkError();
+
+				await expect(post()).rejects.toThrowError();
+				// parallel chunks, other expired queries of the same wake
+				now.mockReturnValue(10_000_000 + 400);
+				await expect(post()).rejects.toThrowError();
+				now.mockReturnValue(10_000_000 + 4_000);
+				await expect(post()).rejects.toThrowError();
+
+				expect(trackException).not.toHaveBeenCalled();
+				expect(reportClientError).not.toHaveBeenCalled();
+			});
+
+			it("a later blip is reported once, with the error code", async () => {
+				const now = vi.spyOn(Date, "now").mockReturnValue(20_000_000);
+				onTestFinished(() => now.mockRestore());
+				mock.onPost(PLANETS).timeout();
+
+				await expect(post()).rejects.toThrowError();
+				now.mockReturnValue(20_000_000 + 60_000);
+				await expect(post()).rejects.toThrowError();
+				now.mockReturnValue(20_000_000 + 61_000);
+				await expect(post()).rejects.toThrowError();
+
+				expect(trackException).toHaveBeenCalledOnce();
+				expect(tracked().props).toMatchObject({
+					method: "POST",
+					code: "ECONNABORTED",
+				});
+				expect(reportClientError).toHaveBeenCalledOnce();
+				expect(reported()).not.toHaveProperty("code");
+			});
+
+			it("not while offline", async () => {
+				const now = vi.spyOn(Date, "now").mockReturnValue(30_000_000);
+				const onLine = vi
+					.spyOn(navigator, "onLine", "get")
+					.mockReturnValue(false);
+				onTestFinished(() => {
+					now.mockRestore();
+					onLine.mockRestore();
+				});
+				mock.onPost(PLANETS).networkError();
+
+				await expect(post()).rejects.toThrowError();
+				now.mockReturnValue(30_000_000 + 60_000);
+				await expect(post()).rejects.toThrowError();
+
+				expect(trackException).not.toHaveBeenCalled();
+				expect(reportClientError).not.toHaveBeenCalled();
 			});
 		});
 

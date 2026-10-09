@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 
 /*
  * Hooks into user activity and keeps track of last action
@@ -37,13 +37,9 @@ export function useUserActivity(
 		lastForcedActivity.value = Date.now();
 	}
 
-	const timeSinceLastActivity = computed(
-		() => Date.now() - lastActivity.value
-	);
-
 	function shouldDelay(): boolean {
 		// user active
-		if (timeSinceLastActivity.value < inactivityThreshold) {
+		if (Date.now() - lastActivity.value < inactivityThreshold) {
 			return false;
 		}
 
