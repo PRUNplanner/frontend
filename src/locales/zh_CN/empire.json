@@ -104,6 +104,9 @@
 			"exchanges": "交易所"
 		}
 	},
+	"cost_overview": {
+		"shipping": "Shipping"
+	},
 	"empty": {
 		"title": "暂无帝国",
 		"text": "帝国将你的基地规划分组并储存你的派系和许可数。",
