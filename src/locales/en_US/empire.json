@@ -104,6 +104,9 @@
 			"exchanges": "Exchanges"
 		}
 	},
+	"cost_overview": {
+		"shipping": "Shipping"
+	},
 	"empty": {
 		"title": "No empires yet",
 		"text": "An empire groups your base plans and holds your faction and permits.",

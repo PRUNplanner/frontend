@@ -30,6 +30,7 @@
 	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { planResultCacheKey } from "@/features/empire/empire.util";
+	import { calculateEmpireShippingDemand } from "@/features/empire/util/empireShippingDemand.util";
 	const {
 		calculateEmpireCostOverview,
 		combineEmpireMaterialIO,
@@ -72,6 +73,7 @@
 		IEmpireMaterialIO,
 		IEmpirePlanListData,
 		IEmpirePlanMaterialIO,
+		IEmpireShippingDemand,
 	} from "@/features/empire/empire.types";
 
 	// UI
@@ -351,6 +353,10 @@
 		() => combineEmpireMaterialIO(empireMaterialIO.value)
 	);
 
+	const shippingDemand: ComputedRef<IEmpireShippingDemand> = computed(() =>
+		calculateEmpireShippingDemand(Object.values(calculatedPlans.value))
+	);
+
 	const costOverview: ComputedRef<IEmpireCostOverview> = computed(() =>
 		calculateEmpireCostOverview(
 			combinedEmpireMaterialIO.value,
@@ -505,7 +511,8 @@
 							</div>
 							<div>
 								<AsyncEmpireCostOverview
-									:cost-overview="costOverview" />
+									:cost-overview="costOverview"
+									:shipping-demand="shippingDemand" />
 							</div>
 							<div class="flex flex-col gap-6">
 								<div class="overflow-x-auto">

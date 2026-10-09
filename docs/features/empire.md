@@ -13,7 +13,7 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 
 | Component | Shows |
 | --- | --- |
-| `EmpireCostOverview` | Totals across the empire |
+| `EmpireCostOverview` | Totals across the empire, including daily shipping demand (t, m³) |
 | `EmpirePlanList` | Plan list with per-plan results |
 | `EmpireConfiguration` | Faction and permits of an empire, with the permit mismatch hint |
 | `EmpireConfigurationForm` | The name, faction and permit fields, shared by the two above and below |
@@ -40,9 +40,12 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
   `summarizeSide` (a side sorted by amount, with shares and bar fill),
   `netPerPlanet` (net per planet, balanced when it rounds to 0.00) and
   `shortPlanetName`.
+- `util/empireShippingDemand.util.ts`: `calculateEmpireShippingDemand` sums
+  each plan's `calculateVisitation` (its max(import, export) per plan, plus
+  the import and export totals) for the overview's shipping tiles.
 - `empire.types.ts` holds the frontend-only `IEmpireCostOverview`,
-  `IEmpireMaterialIO` and `IEmpirePlanListData`. The wire shapes
-  (`PlanEmpireElement`, `EmpirePayload` for create/patch,
+  `IEmpireShippingDemand`, `IEmpireMaterialIO` and `IEmpirePlanListData`.
+  The wire shapes (`PlanEmpireElement`, `EmpirePayload` for create/patch,
   `EmpireMaterialIOState`) are schema-derived in
   `src/features/api/schemas/empireData.schemas.ts`.
 

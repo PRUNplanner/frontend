@@ -42,6 +42,7 @@ const {
 			cost: 0,
 			area: { areaUsed: 0 },
 			materialio: [],
+			storage: {},
 		},
 	})),
 	createContext: vi.fn(async () => ({})),

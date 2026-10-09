@@ -1,5 +1,8 @@
 import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
-import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+import type {
+	IMaterialIO,
+	IVisitationData,
+} from "@/features/planning/usePlanCalculation.types";
 
 export interface IEmpirePlanListData {
 	uuid: string;
@@ -45,6 +48,8 @@ export interface IEmpireCostOverview {
 	totalCost: number;
 	totalAreaUsed: number;
 }
+
+export type IEmpireShippingDemand = Omit<IVisitationData, "storageFilled">;
 
 export interface IEmpireMaterialIOSideEntry {
 	planetId: string;
