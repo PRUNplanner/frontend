@@ -157,6 +157,16 @@ export function useGameDataLoader(
 		loadingSteps.value.some((l) => l.error != null)
 	);
 
+	// failed steps run again through the orchestrator
+	function retry(): void {
+		steps
+			.filter((s) => s.error != null)
+			.forEach((s) => {
+				s.error = null;
+				s.triggered = false;
+			});
+	}
+
 	const allLoaded = computed(() =>
 		steps
 			.filter((s) => s.cfg.enabled())
@@ -200,5 +210,6 @@ export function useGameDataLoader(
 		hasError,
 		loadingSteps,
 		results,
+		retry,
 	};
 }

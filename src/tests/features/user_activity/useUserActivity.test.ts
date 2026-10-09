@@ -27,6 +27,16 @@ describe("useUserActivity", () => {
 		expect(shouldDelay()).toBe(true);
 	});
 
+	it("should delay once idle after an earlier check", () => {
+		const { shouldDelay } = useUserActivity(300_000, 10_800_000);
+		expect(shouldDelay()).toBe(false);
+
+		vi.advanceTimersByTime(301_000);
+		vi.setSystemTime(new Date(301_000));
+
+		expect(shouldDelay()).toBe(true);
+	});
+
 	it("should reset forced activity after maxDelay", () => {
 		const { shouldDelay } = useUserActivity(300_000, 10_800_000);
 

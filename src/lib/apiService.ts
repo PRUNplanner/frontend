@@ -22,16 +22,22 @@ import { issuePathTemplate, pathTemplate } from "@/util/pathTemplate";
 // when each API call was sent, for client_ms
 const sentAt = new WeakMap<object, number>();
 
-// last network error per GET path: a lone one is a blip (e.g. a backend
-// deploy) the next refresh retries, only a repeat is worth reporting
+// last network error per read path: a lone one is a blip (e.g. a backend
+// deploy, a tab waking from sleep) the next refresh retries, only a repeat
+// is worth reporting. Failures within NETWORK_BURST_MS of it are the same
+// blip (parallel chunks, every expired query refetched at once)
 // ponytail: only catches the retry of queries expiring within it (GetAllShared
 // expires after 60 min), track the query retry instead if those matter
 const NETWORK_REPEAT_MS = 10 * 60_000;
+const NETWORK_BURST_MS = 5_000;
 const lastNetworkFailure = new Map<string, number>();
 
+// path templates of reads sent as POST for their body
+const READ_POSTS = new Set(["/data/planets/multiple/"]);
+
 /**
- * Records a GET network error and tells if the same path failed
- * within NETWORK_REPEAT_MS before
+ * Records a network error of a read and tells if the same path failed
+ * in an earlier blip within NETWORK_REPEAT_MS before
  *
  * @param {string} pathTemplate Path template
  * @returns {boolean} Repeated failure
@@ -39,6 +45,7 @@ const lastNetworkFailure = new Map<string, number>();
 function isRepeatedNetworkFailure(pathTemplate: string): boolean {
 	const now = Date.now();
 	const last = lastNetworkFailure.get(pathTemplate);
+	if (last !== undefined && now - last < NETWORK_BURST_MS) return false;
 	lastNetworkFailure.set(pathTemplate, now);
 	return last !== undefined && now - last < NETWORK_REPEAT_MS;
 }
@@ -287,9 +294,12 @@ class ApiService {
 		} else if (isAxiosError(err)) {
 			const status = err.response?.status;
 
+			// offline: nothing is wrong on our side
+			if (status === undefined && !navigator.onLine) return;
+
 			if (
 				status === undefined &&
-				method === "GET" &&
+				(method === "GET" || READ_POSTS.has(path_template)) &&
 				!isRepeatedNetworkFailure(path_template)
 			)
 				return;
@@ -305,6 +315,8 @@ class ApiService {
 				method,
 				status,
 				request_id,
+				// ERR_NETWORK, ECONNABORTED, …
+				...(status === undefined && { code: err.code }),
 			});
 
 			if (status === undefined)
