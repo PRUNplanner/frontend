@@ -1,14 +1,14 @@
 {
 	"consent": {
-		"title": "Help improve PRUNplanner?",
-		"intro": "With your permission, PRUNplanner collects how the tool is used. This helps to decide which features to build next and to find and fix bugs.",
-		"collected_events": "Usage events, such as pages you open and actions you take",
-		"collected_errors": "Error reports when something breaks",
-		"collected_recordings": "Session recordings of some visits, with everything you type masked",
-		"linked": "This data is linked to your account id and stored with PostHog in the EU.",
-		"optional": "This is optional and you can change your choice any time in your Profile. Details are in the {link}.",
-		"tos_link": "Terms of Service",
-		"allow": "Allow",
-		"deny": "No thanks"
+		"title": "PRUNplanner 개선을 돕고 싶나요?",
+		"intro": "동의하신다면 PRUNplanner 사용 방법이 수집됩니다. 이는 향후 어떤 기능을 개발할지 결정하고 버그를 찾고 고치는 데 도움이 됩니다.",
+		"collected_events": "귀하가 여는 페이지와 취하는 행동",
+		"collected_errors": "무언가 잘못됐을 때 발생하는 에러 리포트",
+		"collected_recordings": "입력 내용이 비공개 된 세션 방문 기록 등 사용자 이벤트",
+		"linked": "해당 데이터는 귀하의 계정 아이디와 연결되고 EU PostHog에 저장됩니다.",
+		"optional": "이는 선택 가능하며 프로필에서 언제든 선택을 바꿀 수 있습니다. 세부 정보는 {link}를 참고해 주세요.",
+		"tos_link": "서비스 이용 약관",
+		"allow": "허용함",
+		"deny": "괜찮습니다"
 	}
 }
