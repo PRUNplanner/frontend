@@ -100,6 +100,12 @@
 			title-align="right"
 			:title="t('plan.components.materialio.table.cost_day')"
 			sorter="default">
+			<!-- may wrap: at phone width the fixed-layout column is too narrow -->
+			<template #title>
+				<span class="whitespace-normal">
+					{{ t("plan.components.materialio.table.cost_day") }}
+				</span>
+			</template>
 			<template #render-cell="{ rowData }">
 				<PValue :value="rowData.price" />
 			</template>

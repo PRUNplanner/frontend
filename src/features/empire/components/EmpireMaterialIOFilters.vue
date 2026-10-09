@@ -108,8 +108,9 @@
 </script>
 
 <template>
-	<div class="grid grid-cols-1 xl:grid-cols-[max-content_auto] gap-6">
-		<div>
+	<!-- the selects wrap below the buttons when there is less than 15rem left -->
+	<div class="flex flex-wrap gap-6">
+		<div class="max-w-full">
 			<PForm>
 				<PFormItem :label="t('empire.filters.display')">
 					<PButtonGroup>
@@ -161,7 +162,7 @@
 				</PFormItem>
 			</PForm>
 		</div>
-		<div class="">
+		<div class="grow basis-60">
 			<PForm>
 				<PFormItem :label="t('terms.materials', 2)">
 					<PSelectMultiple

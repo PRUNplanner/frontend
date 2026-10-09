@@ -221,8 +221,9 @@
 	<h2 class="text-white/80 font-bold text-lg">
 		{{ $t("plan.components.production.label") }}
 	</h2>
-	<div
-		class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-3 py-3 child:my-auto">
+	<!-- the building controls wrap below the planet resources when both
+		don't fit on one line -->
+	<div class="flex flex-wrap justify-between gap-3 py-3 child:my-auto">
 		<div class="flex gap-3 child:my-auto">
 			<div v-if="planetResources.length" class="text-sm">
 				{{ $t("plan.components.production.planet_resources") }}
@@ -264,7 +265,7 @@
 		</div>
 		<div
 			v-if="!disabled"
-			class="sm:justify-self-end-safe flex child:my-auto gap-3">
+			class="w-full sm:w-auto sm:ml-auto flex child:my-auto gap-3">
 			<div class="flex gap-3">
 				<div class="text-sm text-nowrap">
 					{{ $t("plan.components.production.form.match_cogc") }}
