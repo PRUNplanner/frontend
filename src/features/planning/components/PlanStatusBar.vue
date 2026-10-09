@@ -10,8 +10,12 @@
 		IExpertRecord,
 		IOverviewData,
 	} from "@/features/planning/usePlanCalculation.types";
+	import type { IPlanCompare } from "@/features/sharing/sharedPlan.types";
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 	import { cogcTextMapping } from "@/features/planning_data/usePlan";
+
+	// Components
+	import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
 
 	// UI
 	import { PValue } from "@/ui";
@@ -36,6 +40,12 @@
 		overviewData: {
 			type: Object as PropType<IOverviewData>,
 			required: true,
+		},
+		// a shared plan's copy: the shared plan's figures and its own
+		compare: {
+			type: Object as PropType<IPlanCompare>,
+			required: false,
+			default: undefined,
 		},
 	});
 
@@ -119,5 +129,6 @@
 				<span class="font-bold @6xl:hidden">{{ expertsShort }}</span>
 			</template>
 		</div>
+		<SharedPlanDeltas v-if="compare" class="basis-full" :compare="compare" />
 	</div>
 </template>

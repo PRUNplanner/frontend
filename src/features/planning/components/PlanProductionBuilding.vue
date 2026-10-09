@@ -5,6 +5,7 @@
 	import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
 	import type { PlanDataBuilding } from "@/features/api/schemas/planningData.schemas";
 	import type { ITypicalRecipes } from "@/features/plan_analytics/usePlanetInsights.types";
+	import type { IBuildingChange } from "@/features/sharing/sharedPlan.types";
 
 	// Composables
 	import { usePlanetInsights } from "@/features/plan_analytics/usePlanetInsights";
@@ -42,6 +43,12 @@
 		planetId: {
 			type: String,
 			required: true,
+		},
+		// what changed against the shared plan
+		change: {
+			type: Object as PropType<IBuildingChange>,
+			required: false,
+			default: undefined,
 		},
 	});
 
@@ -142,6 +149,13 @@
 		<div class="col-span-6 xl:col-span-2 text-lg font-mono">
 			{{ localBuildingData.amount }}x
 			<strong>{{ localBuildingData.name }}</strong>
+			<span
+				v-for="kind in change?.kinds"
+				:key="kind"
+				class="ml-2 align-middle text-xs font-sans font-bold uppercase"
+				:class="kind === 'added' ? 'text-positive' : 'text-warning'">
+				{{ $t(`sharing.compare.${kind}`) }}
+			</span>
 		</div>
 		<div
 			class="col-span-6 justify-end xl:justify-normal xl:col-span-4 flex items-center gap-x-1">
@@ -333,6 +347,7 @@
 					:recipe-options="localBuildingData.recipeOptions"
 					:cx-uuid="cxUuid"
 					:planet-id="planetId"
+					:is-new="!!change?.newRecipes.includes(recipe.recipeId)"
 					@update:building:recipe:amount="
 						(index: number, value: number) => {
 							emit(

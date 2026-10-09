@@ -212,10 +212,8 @@ aggregated material I/O is pushed back to the backend with
 
 - `createBlankDefinition` builds a new plan from planet data.
   `mapPlanetToPlanType` translates the planet's COGC program for the plan.
-- `createNewPlan`, `saveExistingPlan`, `reloadExistingPlan` and
-  `cloneSharedPlan` go through the query cache. The body they send is
-  `calc.backendData`.
-- `isEditDisabled` returns true for shared plans, which are read-only.
+- `createNewPlan`, `saveExistingPlan` and `reloadExistingPlan` go through
+  the query cache. The body they send is `calc.backendData`.
 
 ## Where it is used
 

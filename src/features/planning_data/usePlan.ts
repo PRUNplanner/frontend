@@ -12,7 +12,6 @@ import type {
 import { PlanCOGCProgramSchema } from "@/features/api/schemas/planningData.schemas";
 import type {
 	IPlanDefinition,
-	IPlanRouteParams,
 	IPlanSaved,
 	IPlanSaveResult,
 } from "@/features/planning_data/usePlan.types";
@@ -42,23 +41,6 @@ export const cogcTextMapping: Record<PlanCOGCProgram, string> = {
 
 export function usePlan() {
 	const planningStore = usePlanningStore();
-
-	/**
-	 * Checks if route parameters contain the uuid of a
-	 * shared plan, if so the whole plan is read-only
-	 *
-	 * @author jplacht
-	 *
-	 * @param {IPlanRouteParams} routeParams Route Parameters
-	 * @returns {boolean} True if shared uuid is present
-	 */
-	function isEditDisabled(routeParams: IPlanRouteParams): boolean {
-		if (routeParams.sharedPlanUuid) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	/**
 	 * Maps planets COGC Program Type to Plans COGC Program Type
@@ -286,25 +268,12 @@ export function usePlan() {
 		);
 	}
 
-	async function cloneSharedPlan(sharedUuid: string): Promise<string | null> {
-		try {
-			const result = await useQuery("PostCloneSharedPlan", {
-				sharedUuid,
-			}).execute();
-			return result?.uuid ?? null;
-		} catch {
-			return null;
-		}
-	}
-
 	return {
-		isEditDisabled,
 		mapPlanetToPlanType,
 		createBlankDefinition,
 		createNewPlan,
 		saveExistingPlan,
 		reloadExistingPlan,
 		getPlanNamePlanet,
-		cloneSharedPlan,
 	};
 }

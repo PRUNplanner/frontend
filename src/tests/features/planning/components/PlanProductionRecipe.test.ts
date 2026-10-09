@@ -214,6 +214,18 @@ describe("PlanProductionRecipe", () => {
 		});
 	});
 
+	it("shows inputs only when another recipe has the same outputs", async () => {
+		const FE2 = { ...option("R_FE2", [m("FE", 2)], 6, 0, 0), inputs: [m("MAG", 1)] };
+		const { wrapper, setProps } = await mountRecipe();
+		expect(wrapper.find(".group").text()).not.toContain("FEO");
+
+		await setProps({ recipeOptions: [FE, FE2, ALN] });
+		// FEO 2 per run, 2 buildings
+		expect(wrapper.find(".group").text()).toContain("FEO");
+		expect(wrapper.find(".group").text()).toContain("4x");
+		expect(wrapper.find(".group").text()).toContain("→");
+	});
+
 	it("shows the outputs of all buildings and the runtime", async () => {
 		const { wrapper } = await mountRecipe();
 
@@ -315,10 +327,18 @@ describe("PlanProductionRecipe", () => {
 		).toBe(true);
 	});
 
-	it("read-only: the recipe can't be changed or deleted", async () => {
+	it("read-only: the recipes show, but can't be changed or deleted", async () => {
 		const { wrapper, component } = await mountRecipe({ disabled: true });
 
-		expect(await openOptions(wrapper)).toHaveLength(0);
+		// the options open and mark the active recipe
+		expect(await openOptions(wrapper)).toHaveLength(4);
+		expect(
+			body()
+				.findAll('td[data-col-key="input"]')
+				.map((td) => td.find(".animate-pulse").exists())
+		).toEqual([false, false, false, true]);
+		await body().findAll("tbody tr").at(2)!.trigger("click");
+
 		expect(wrapper.find("svg[aria-hidden='true']").exists()).toBe(false);
 		expect(
 			wrapper.find('button[aria-label="common.buttons.delete"]').exists()

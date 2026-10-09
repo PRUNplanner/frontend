@@ -33,6 +33,7 @@
 	} from "@/features/api/schemas/planningData.schemas";
 	import type { PSelectOption } from "@/ui/ui.types";
 	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
+	import type { IPlanChanges } from "@/features/sharing/sharedPlan.types";
 
 	// UI
 	import PButton from "@/ui/components/PButton.vue";
@@ -69,6 +70,12 @@
 		planetResources: {
 			type: Object as PropType<PlanetResource[]>,
 			required: true,
+		},
+		// a shared plan's copy: what changed against it
+		changes: {
+			type: Object as PropType<IPlanChanges>,
+			required: false,
+			default: undefined,
 		},
 	});
 
@@ -333,6 +340,7 @@
 				:building-index="index"
 				:cx-uuid="cxUuid"
 				:planet-id="planetId"
+				:change="changes?.buildings[building.name]"
 				@update:building:amount="
 					(index: number, value: number) => {
 						emit('update:building:amount', index, value);
@@ -431,5 +439,14 @@
 					}
 				" />
 		</template>
+		<div
+			v-for="name in changes?.removed"
+			:key="`REMOVED#${name}`"
+			class="px-3 py-1.5 bg-white/5 border-b border-white/5 border-l-2 border-l-negative text-muted">
+			<span class="text-lg font-mono line-through">{{ name }}</span>
+			<span class="ml-2 text-xs font-bold uppercase text-negative">
+				{{ $t("sharing.compare.removed") }}
+			</span>
+		</div>
 	</div>
 </template>

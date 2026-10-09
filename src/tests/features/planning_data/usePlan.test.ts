@@ -12,7 +12,6 @@ import {
 	callGetPlan,
 	callSavePlan,
 } from "@/features/api/planData.api";
-import { callCloneSharedPlan } from "@/features/api/sharingData.api";
 
 vi.mock("@/features/api/planData.api", async () => {
 	return {
@@ -37,25 +36,9 @@ vi.mock("@/features/api/gameData.api", async () => {
 	};
 });
 
-vi.mock("@/features/api/sharingData.api", async () => {
-	return {
-		...(await vi.importActual("@/features/api/sharingData.api")),
-		callCloneSharedPlan: vi.fn(),
-	};
-});
-
 describe("usePlan", async () => {
 	setActivePinia(createPinia());
 	const planningStore = usePlanningStore();
-
-	it("has shared plan uuid", async () => {
-		const { isEditDisabled } = usePlan();
-
-		// @ts-expect-error mock data
-		expect(isEditDisabled({ sharedPlanUuid: "foo" })).toBeTruthy();
-		// @ts-expect-error mock data
-		expect(isEditDisabled({ sharedPlanUuid: undefined })).toBeFalsy();
-	});
 
 	it("mapPlanetToPlanType", async () => {
 		const { mapPlanetToPlanType } = usePlan();
@@ -200,30 +183,5 @@ describe("usePlan", async () => {
 			expect(planetId).toBe("1");
 			expect(planName).toBe("Unnamed");
 		});
-	});
-
-	it("cloneSharedPlan, okay", async () => {
-		const { cloneSharedPlan } = usePlan();
-		vi.mocked(callCloneSharedPlan).mockResolvedValueOnce({
-			uuid: "f13ca1e0-179b-4380-92bf-b58855c28313",
-			plan_name: "CH-771a (Shared Clone)",
-		});
-
-		const result = await cloneSharedPlan(
-			"da105ce1-25f2-479d-b1eb-944353f4784f"
-		);
-
-		expect(result).toBe("f13ca1e0-179b-4380-92bf-b58855c28313");
-	});
-
-	it("cloneSharedPlan, failure", async () => {
-		const { cloneSharedPlan } = usePlan();
-		vi.mocked(callCloneSharedPlan).mockRejectedValueOnce(new Error());
-
-		const result = await cloneSharedPlan(
-			"da105ce1-25f2-479d-b1eb-944353f4784f"
-		);
-
-		expect(result).toBeNull();
 	});
 });

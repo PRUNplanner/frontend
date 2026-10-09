@@ -126,6 +126,11 @@ describe("useAnalytics", () => {
 			building_ticker,
 			amount,
 		});
+		// as sent: trackPlanEdit adds whether it is a shared plan's copy
+		const sent = (amount: number, is_shared = false) => ({
+			...edit(amount),
+			is_shared,
+		});
 
 		it("sends a burst of clicks as one event with the final amount", () => {
 			for (let amount = 1; amount <= 10; amount++)
@@ -135,7 +140,7 @@ describe("useAnalytics", () => {
 			vi.advanceTimersByTime(1000);
 
 			expect(capture).toHaveBeenCalledTimes(1);
-			expect(capture).toHaveBeenCalledWith("plan:edit", edit(10));
+			expect(capture).toHaveBeenCalledWith("plan:edit", sent(10));
 		});
 
 		it("keeps edits of other controls apart", () => {
@@ -166,17 +171,26 @@ describe("useAnalytics", () => {
 			vi.advanceTimersByTime(1000);
 
 			expect(capture).toHaveBeenCalledTimes(2);
-			expect(capture).toHaveBeenLastCalledWith("plan:edit", edit(3));
+			expect(capture).toHaveBeenLastCalledWith("plan:edit", sent(3));
 		});
 
 		it("flushPlanEdits sends pending edits now, once", () => {
 			trackPlanEdit(edit(5));
 
 			flushPlanEdits();
-			expect(capture).toHaveBeenCalledWith("plan:edit", edit(5));
+			expect(capture).toHaveBeenCalledWith("plan:edit", sent(5));
 
 			vi.advanceTimersByTime(1000);
 			expect(capture).toHaveBeenCalledTimes(1);
+		});
+
+		it("marks edits on a shared plan's copy", () => {
+			window.history.pushState({}, "", "/shared/abc");
+			trackPlanEdit(edit(7));
+			flushPlanEdits();
+			window.history.pushState({}, "", "/");
+
+			expect(capture).toHaveBeenCalledWith("plan:edit", sent(7, true));
 		});
 	});
 

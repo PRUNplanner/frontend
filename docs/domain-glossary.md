@@ -38,4 +38,4 @@ in-game resources.
 | **Upkeep / government** | Planetary infrastructure buildings (SST, HOS, …) that meet population needs (safety, health, comfort, culture, education) | `src/features/government` |
 | **FIO** | The community API that mirrors a player's in-game data (storage, sites). Users link it in their profile | `src/features/fio`; `planningStore.fio_*` |
 | **XIT** | Community in-game tooling that imports "XIT action" JSON and runs it, for example CX buys and material transfers (`MTRA`). PRUNplanner only generates the JSON | `src/features/xit` |
-| **Shared plan** | A read-only public link to a plan (`/shared/:uuid`) | `src/features/sharing` |
+| **Shared plan** | A public link to a plan (`/shared/:uuid`); viewers open it as their own working copy, never changing the plan | `src/features/sharing` |

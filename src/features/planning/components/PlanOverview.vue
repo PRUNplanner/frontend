@@ -13,6 +13,10 @@
 		IOverviewData,
 		IVisitationData,
 	} from "@/features/planning/usePlanCalculation.types";
+	import type { IPlanCompare } from "@/features/sharing/sharedPlan.types";
+
+	// Components
+	import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
 
 	// UI
 	import { PTable, PValue } from "@/ui";
@@ -25,6 +29,12 @@
 		overviewData: {
 			type: Object as PropType<IOverviewData>,
 			required: true,
+		},
+		// a shared plan's copy: the shared plan's figures and its own
+		compare: {
+			type: Object as PropType<IPlanCompare>,
+			required: false,
+			default: undefined,
 		},
 		areaData: {
 			type: Object as PropType<IAreaResult>,
@@ -45,6 +55,10 @@
 			<slot
 				name="heading"
 				:text="t('plan.components.overview.label')"></slot>
+			<SharedPlanDeltas
+				v-if="compare"
+				class="pb-3 max-w-80"
+				:compare="compare" />
 			<PTable striped>
 				<tbody
 					class="child:child:first:font-bold child:child:last:text-end">

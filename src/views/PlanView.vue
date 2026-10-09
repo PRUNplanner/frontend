@@ -38,6 +38,10 @@
 	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
+	import type {
+		IPlanChanges,
+		IPlanCompare,
+	} from "@/features/sharing/sharedPlan.types";
 	import {
 		optimizeHabs,
 		calculateAvailableArea,
@@ -56,7 +60,6 @@
 		createNewPlan,
 		saveExistingPlan,
 		reloadExistingPlan,
-		cloneSharedPlan,
 	} = usePlan();
 	import { flushPlanEdits, trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useQuery } from "@/lib/query_cache/useQuery";
@@ -67,6 +70,12 @@
 		threeWay,
 	} from "@/features/save_conflict/saveConflict.util";
 	import { diffPlan } from "@/features/planning_data/planDiff";
+	import {
+		buildChangeSummary,
+		buildingChanges,
+		planFigures,
+	} from "@/features/sharing/sharedPlan.util";
+	import config from "@/lib/config";
 
 	// Util
 	import { inertClone } from "@/util/data";
@@ -139,6 +148,12 @@
 			required: false,
 			default: undefined,
 		},
+		// a shared plan, edited as the viewer's working copy
+		shared: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	});
 
 	const refPlanData: Ref<IPlanDefinition> = ref(inertClone(props.planData));
@@ -205,6 +220,47 @@
 		handleChangePlanName,
 	} = calculation;
 
+	/*
+	 * Shared plan: the working copy is compared against the shared version,
+	 * calculated with the same empire and prices
+	 */
+	const sharedBaseline: IPlanDefinition = inertClone(props.planData);
+	const baselineCalculation = props.shared
+		? usePlanCalculation(
+				ref(inertClone(sharedBaseline)),
+				refEmpireUuid,
+				refEmpireList,
+				refCXUuid
+			)
+		: undefined;
+
+	const sharedChanged: ComputedRef<boolean> = computed(
+		() => props.shared && modified.value
+	);
+
+	const sharedCompare: ComputedRef<IPlanCompare | undefined> = computed(
+		() =>
+			sharedChanged.value && baselineCalculation
+				? {
+						before: planFigures(
+							baselineCalculation.result.value,
+							baselineCalculation.overviewData.value
+						),
+						after: planFigures(result.value, overviewData.value),
+					}
+				: undefined
+	);
+
+	const sharedChanges: ComputedRef<IPlanChanges | undefined> = computed(
+		() =>
+			sharedChanged.value
+				? buildingChanges(
+						JSON.parse(savedSnapshot()),
+						JSON.parse(snapshot())
+					)
+				: undefined
+	);
+
 	const refMaterialIOShowBasked: Ref<boolean> = ref(false);
 	const refMaterialIOSplitted: Ref<boolean> = ref(false);
 
@@ -218,8 +274,9 @@
 	const { autoOptimizeHabs } = usePlanPreferences(() => props.planData.uuid);
 
 	// When the plan hasn't been created, we'll use the local ref which is
-	// stored into the plan preferences on plan creation in save()
-	const refLocalAutoOptimizeHabs: Ref<boolean> = ref(true);
+	// stored into the plan preferences on plan creation in save(). A shared
+	// plan keeps the sharer's habs until the viewer turns it on.
+	const refLocalAutoOptimizeHabs: Ref<boolean> = ref(!props.shared);
 	const refAutoOptimizeHabs =
 		props.planData.uuid === undefined
 			? refLocalAutoOptimizeHabs
@@ -257,7 +314,7 @@
 		| "construction-cart"
 		| null;
 	const refShowTool: Ref<toolOptions> = ref(null);
-	if (!refPlanData.value.uuid) {
+	if (!refPlanData.value.uuid && !props.shared) {
 		refShowTool.value = "configuration";
 	}
 
@@ -514,12 +571,26 @@
 				autoOptimizeHabs: refAutoOptimizeHabs.value,
 			});
 
+			refShowSaveAsModal.value = false;
+
+			// a shared plan's copy opens in place
+			if (props.shared) {
+				trackEvent("plan:shared_clone", {
+					planet_natural_id: planetData.planet_natural_id,
+					shared_uuid: props.sharedPlanUuid!,
+					modified: modified.value,
+				});
+				router.push(
+					`/plan/${planetData.planet_natural_id}/${created.uuid}`
+				);
+				return;
+			}
+
 			trackEvent("plan:save_as", {
 				planet_natural_id: planetData.planet_natural_id,
 			});
 
-			// Close modal and open new plan in a new tab
-			refShowSaveAsModal.value = false;
+			// open new plan in a new tab
 			window.open(
 				`/plan/${planetData.planet_natural_id}/${created.uuid}`,
 				"_blank"
@@ -708,20 +779,78 @@
 		}
 	});
 
-	// clone shared plan as logged in user
-	const sharedWasCloned: Ref<boolean> = ref(false);
+	/*
+	 * Shared plan actions: prices, reset and the change summary
+	 */
+	const sharedPriceSource: ComputedRef<string> = computed(() => {
+		const cxName: string | undefined = refCXUuid.value
+			? planningStore.cxs[refCXUuid.value]?.cx_name
+			: undefined;
+		return cxName
+			? t("sharing.banner.price_cx", { name: cxName })
+			: t("sharing.banner.price_universe");
+	});
 
-	async function cloneShared(): Promise<void> {
-		if (!props.sharedPlanUuid) return;
+	// a logged in viewer prices the copy with their empire's CX, also
+	// after logging in on the page (the default empire first)
+	if (props.shared) {
+		let picked: boolean = false;
+		watch(
+			[() => props.empireList, () => planningStore.cxs],
+			([list]) => {
+				if (!list?.length) return;
+				refEmpireList.value = list;
+				if (
+					!picked ||
+					!list.some((e) => e.uuid === refEmpireUuid.value)
+				) {
+					const preferred: string | undefined =
+						userStore.preferences.defaultEmpireUuid;
+					refEmpireUuid.value = (
+						list.find((e) => e.uuid === preferred) ?? list[0]
+					).uuid;
+					picked = true;
+				}
+				refCXUuid.value = findEmpireCXUuid(refEmpireUuid.value);
+			},
+			{ immediate: true, deep: true }
+		);
+	}
 
-		const newPlanUuid = await cloneSharedPlan(props.sharedPlanUuid);
-		sharedWasCloned.value = newPlanUuid !== null;
-		trackEvent("plan:shared_clone", {
+	function resetShared(): void {
+		applySavedPlan(sharedBaseline);
+		trackEvent("plan:shared_reset", {
 			planet_natural_id: planetData.planet_natural_id,
-			shared_uuid: props.sharedPlanUuid,
 		});
-		if (newPlanUuid) {
-			router.push(`/plan/${planetData.planet_natural_id}/${newPlanUuid}`);
+	}
+
+	async function copySharedChanges(): Promise<void> {
+		const changes = diffPlan(
+			JSON.parse(savedSnapshot()),
+			JSON.parse(snapshot())
+		);
+		const text: string = buildChangeSummary(
+			{
+				name: planName.value || t("plan.name.untitled"),
+				planet: planetData.planet_natural_id,
+				changes,
+				before: sharedCompare.value!.before,
+				after: sharedCompare.value!.after,
+				priceSource: sharedPriceSource.value,
+				url: `${config.SHARE_BASE_URL}/${props.sharedPlanUuid}`,
+			},
+			t
+		);
+
+		try {
+			await navigator.clipboard.writeText(text);
+			toast(t("sharing.banner.copied"));
+			trackEvent("plan:shared_copy_changes", {
+				planet_natural_id: planetData.planet_natural_id,
+				change_count: changes.length,
+			});
+		} catch {
+			toast(t("sharing.banner.copy_failed"), { type: "error" });
 		}
 	}
 
@@ -779,7 +908,9 @@
 		if (key === "s") {
 			// never open the browser's save dialog on the plan page
 			e.preventDefault();
-			if (canSave.value) save("shortcut");
+			if (props.shared) {
+				if (userStore.isLoggedIn) openSaveAsModal();
+			} else if (canSave.value) save("shortcut");
 		} else if (key === "z" && !props.disabled && !isTextField(e.target)) {
 			e.preventDefault();
 			if (e.shiftKey) trackedRedo("shortcut");
@@ -947,9 +1078,12 @@
 		:key="`INSIGHTS#${planetData.planet_natural_id}`"
 		:planet-natural-id="planetData.planet_natural_id" />
 	<SharedPlanBanner
-		v-if="sharedPlanUuid"
-		:cloned="sharedWasCloned"
-		@clone="cloneShared" />
+		v-if="shared"
+		:changed="sharedChanged"
+		:price-source="sharedPriceSource"
+		@reset="resetShared"
+		@copy="copySharedChanges"
+		@save="openSaveAsModal" />
 	<!-- keep focused controls clear of the sticky status bar -->
 	<div class="@container [&_*]:scroll-mt-28">
 		<div
@@ -977,7 +1111,8 @@
 					:corphq="result.corphq"
 					:cogc="result.cogc"
 					:expert-data="result.experts"
-					:overview-data="overviewData" />
+					:overview-data="overviewData"
+					:compare="sharedCompare" />
 			</div>
 			<!-- Plan Actions: Save is the one primary, the rest under More -->
 			<div
@@ -1016,7 +1151,7 @@
 					<div aria-hidden="true" class="w-px h-5 bg-white/10" />
 				</template>
 
-				<template v-if="userStore.isLoggedIn && !disabled">
+				<template v-if="userStore.isLoggedIn && !disabled && !shared">
 					<PlanSaveButton
 						:existing="existing"
 						:saveable="saveable"
@@ -1183,7 +1318,8 @@
 							<PlanOverview
 								:visitation-data="visitationData"
 								:overview-data="overviewData"
-								:area-data="result.area">
+								:area-data="result.area"
+								:compare="sharedCompare">
 								<template #heading="{ text }">
 									<h2
 										class="text-white/80 font-bold text-lg pb-3">
@@ -1201,6 +1337,7 @@
 							:cogc="result.cogc"
 							:cx-uuid="refCXUuid"
 							:planet-id="planetData.planet_natural_id"
+							:changes="sharedChanges"
 							@update:building:amount="handleUpdateBuildingAmount"
 							@delete:building="deleteBuilding"
 							@create:building="handleCreateBuilding"
@@ -1328,7 +1465,11 @@
 		v-model:show="refShowSaveAsModal"
 		class="w-120! max-w-[90vw]!"
 		preset="card"
-		:title="t('plan.components.save_as.title')">
+		:title="
+			shared
+				? t('sharing.banner.save')
+				: t('plan.components.save_as.title')
+		">
 		<PForm>
 			<PFormItem :label="t('plan.components.save_as.form.plan_name')">
 				<PInput

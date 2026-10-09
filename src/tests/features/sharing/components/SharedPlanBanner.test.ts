@@ -6,9 +6,11 @@ import { useAuthPanel } from "@/features/account/useAuthPanel";
 import { useUserStore } from "@/stores/userStore";
 import { mountComponent } from "@/tests/mountComponent";
 
-const CLONE = "common.buttons.clone_plan";
-const REGISTER = "homepage.navigation.registration";
+const SAVE = "sharing.banner.save";
+const SIGNUP = "sharing.banner.signup";
 const LOGIN = "homepage.navigation.login";
+const RESET = "sharing.banner.reset";
+const COPY = "sharing.banner.copy";
 
 describe("SharedPlanBanner", () => {
 	let pinia: Pinia;
@@ -17,7 +19,7 @@ describe("SharedPlanBanner", () => {
 	async function mountBanner(props = {}) {
 		const { wrapper, component } = await mountComponent(
 			SharedPlanBanner,
-			props,
+			{ priceSource: "universe", ...props },
 			{ pinia }
 		);
 		const button = (text: string) =>
@@ -32,20 +34,24 @@ describe("SharedPlanBanner", () => {
 		window.scrollTo = vi.fn();
 	});
 
-	it("says the plan is read-only and which prices it uses", async () => {
-		const { wrapper } = await mountBanner();
+	it("says it is a copy and which prices it uses", async () => {
+		const { wrapper, button } = await mountBanner();
 
 		expect(wrapper.text()).toContain("sharing.banner.title");
 		expect(wrapper.text()).toContain("sharing.banner.info");
+		expect(wrapper.text()).toContain("sharing.banner.prices");
+		expect(wrapper.text()).toContain("sharing.banner.prices_hint");
+		// nothing to reset or copy yet
+		expect(button(RESET)).toBeUndefined();
+		expect(button(COPY)).toBeUndefined();
 	});
 
 	it("offers visitors an account and opens the header panels", async () => {
-		const { wrapper, button } = await mountBanner();
+		const { button } = await mountBanner();
 
-		expect(wrapper.text()).toContain("sharing.banner.signup_hint");
-		expect(button(CLONE)).toBeUndefined();
+		expect(button(SAVE)).toBeUndefined();
 
-		await button(REGISTER)!.trigger("click");
+		await button(SIGNUP)!.trigger("click");
 		expect(panel.showRegistration.value).toBe(true);
 
 		await button(LOGIN)!.trigger("click");
@@ -53,17 +59,24 @@ describe("SharedPlanBanner", () => {
 		expect(panel.showRegistration.value).toBe(false);
 	});
 
-	it("lets a logged in user clone, once", async () => {
+	it("lets a logged in viewer save the copy", async () => {
 		useUserStore().setToken("access", "refresh");
 		const { component, button } = await mountBanner();
 
-		expect(button(REGISTER)).toBeUndefined();
-		await button(CLONE)!.trigger("click");
-		expect(component.emitted("clone")).toHaveLength(1);
+		expect(button(SIGNUP)).toBeUndefined();
+		await button(SAVE)!.trigger("click");
+		expect(component.emitted("save")).toHaveLength(1);
+	});
 
-		const done = await mountBanner({ cloned: true });
-		expect(
-			done.button("common.buttons.clone_complete")!.element.disabled
-		).toBe(true);
+	it("offers reset and copy once changed", async () => {
+		const { wrapper, component, button } = await mountBanner({
+			changed: true,
+		});
+
+		expect(wrapper.text()).toContain("sharing.banner.changed");
+		await button(RESET)!.trigger("click");
+		await button(COPY)!.trigger("click");
+		expect(component.emitted("reset")).toHaveLength(1);
+		expect(component.emitted("copy")).toHaveLength(1);
 	});
 });

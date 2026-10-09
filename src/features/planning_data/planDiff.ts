@@ -76,6 +76,15 @@ function recipes(building: PlanDataBuilding): Map<string, number> {
 }
 
 /**
+ * Recipes as "2x 1xCAF 3xDW=>3xCOF", the recipe id without its building
+ */
+function recipeText(building: PlanDataBuilding): string {
+	return [...recipes(building)]
+		.map(([id, n]) => `${n}x ${id.slice(id.indexOf("#") + 1)}`)
+		.join(", ");
+}
+
+/**
  * What changed from one version of a plan to another, matched by building,
  * hab, expert and workforce type, never by position
  *
@@ -152,7 +161,11 @@ export function diffPlan(
 			lines.push({
 				area: `building:${after.name}`,
 				key: "recipe",
-				params: { label: after.name },
+				params: {
+					label: after.name,
+					from: recipeText(before),
+					to: recipeText(after),
+				},
 			});
 	});
 

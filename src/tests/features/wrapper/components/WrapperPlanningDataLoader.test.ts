@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { createPinia, setActivePinia } from "pinia";
+import { defineComponent, h } from "vue";
 
 import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
@@ -92,6 +93,44 @@ describe("WrapperPlanningDataLoader with a shared plan", () => {
 		expect(component.emitted("data:planet")).toHaveLength(1);
 		expect(useUserStore().isLoggedIn).toBe(false);
 		expect(loading(wrapper.text())).toBe(false);
+	});
+
+	it("hands out a working copy with the viewer's empires", async () => {
+		mock.onGet(/planning\/shared\//).reply(200, {
+			uuid: DELETED,
+			created_at: "2026-02-09T12:07:21.068265Z",
+			view_count: 1,
+			plan_details: plan,
+		});
+		mock.onGet(/data\/planet\//).reply(200, planet);
+		mock.onGet(/planning\/empire\/$/).reply(200, [empire(E1)]);
+
+		// the slot's props, as PlanLoadView gets them
+		let slot: Record<string, unknown> = {};
+		const Host = defineComponent({
+			setup: () => () =>
+				h(
+					WrapperPlanningDataLoader,
+					{ sharedPlanUuid: DELETED, empireList: true },
+					{
+						default: (props: Record<string, unknown>) => {
+							slot = props;
+							return null;
+						},
+					}
+				),
+		});
+
+		await mountComponent(Host);
+		await vi.waitFor(() => expect(slot.planDefinition).toBeDefined());
+
+		const definition = slot.planDefinition as Record<string, unknown>;
+		expect(slot.shared).toBe(true);
+		expect(slot.disabled).toBe(false);
+		expect(definition.uuid).toBeUndefined();
+		expect(definition).not.toHaveProperty("empires");
+		expect(definition.plan_name).toBe(plan.plan_name);
+		expect(slot.empireList).toHaveLength(1);
 	});
 
 	it("keeps the loader with its failed step for other errors", async () => {
