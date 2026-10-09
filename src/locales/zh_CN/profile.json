@@ -83,7 +83,7 @@
 	},
 	"preferences": {
 		"title": "偏好设置",
-		"description": "Use this panel to review and customize your PRUNplanner settings.",
+		"description": "使用此面板查看并修改您的 PRUNplanner 设置。",
 		"form": {
 			"tool_preferences": "工具偏好设置",
 			"language": "语言",
