@@ -58,6 +58,15 @@ export function usePreferences() {
 
 	const { getPlanNamePlanet } = usePlan();
 
+	// a cleared or half-typed number field gives null or NaN, which the
+	// PATCH schema rejects: keep the last valid value
+	const setNumber = (
+		key: "burnDaysRed" | "burnDaysYellow" | "burnResupplyDays" | "supplyCartDays",
+		v: number
+	) => {
+		if (Number.isFinite(v)) userStore.setPreference(key, v);
+	};
+
 	watch(
 		() => cloneDeep(userStore.preferences),
 		(newVal, oldVal) => {
@@ -91,19 +100,19 @@ export function usePreferences() {
 
 	const burnDaysRed: WritableComputedRef<number, number> = computed<number>({
 		get: () => userStore.preferences.burnDaysRed,
-		set: (v) => userStore.setPreference("burnDaysRed", v),
+		set: (v) => setNumber("burnDaysRed", v),
 	});
 
 	const burnDaysYellow: WritableComputedRef<number, number> =
 		computed<number>({
 			get: () => userStore.preferences.burnDaysYellow,
-			set: (v) => userStore.setPreference("burnDaysYellow", v),
+			set: (v) => setNumber("burnDaysYellow", v),
 		});
 
 	const burnResupplyDays: WritableComputedRef<number, number> =
 		computed<number>({
 			get: () => userStore.preferences.burnResupplyDays,
-			set: (v) => userStore.setPreference("burnResupplyDays", v),
+			set: (v) => setNumber("burnResupplyDays", v),
 		});
 
 	const burnOrigin: WritableComputedRef<string, string> = computed<string>({
@@ -113,7 +122,7 @@ export function usePreferences() {
 
 	const supplyCartDays: WritableComputedRef<number, number> = computed({
 		get: () => userStore.preferences.supplyCartDays ?? 20,
-		set: (v) => userStore.setPreference("supplyCartDays", v),
+		set: (v) => setNumber("supplyCartDays", v),
 	});
 
 	const planSettings: ComputedRef<

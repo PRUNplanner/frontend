@@ -428,6 +428,15 @@ export const useUserStore = defineStore(
 						...overrides[uuid],
 					};
 				store.preferences.planOverrides = overrides;
+				// a cleared number field once stored null or NaN (persisted as null)
+				for (const key of [
+					"burnDaysRed",
+					"burnDaysYellow",
+					"burnResupplyDays",
+					"supplyCartDays",
+				] as const)
+					if (!Number.isFinite(store.preferences[key]))
+						store.preferences[key] = preferenceDefaults[key];
 				// a PATCH sends what changed since this state
 				setSyncedPreferences(store.preferences);
 			},
