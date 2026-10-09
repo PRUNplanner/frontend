@@ -83,7 +83,7 @@
 	},
 	"preferences": {
 		"title": "Параметры",
-		"description": "Ваши настройки сохраняются локально в браузере и пока не синхронизируются с сервером. Используйте эту панель для просмотра и настройки параметров PRUNplanner.",
+		"description": "Use this panel to review and customize your PRUNplanner settings.",
 		"form": {
 			"tool_preferences": "Настройки инструментов",
 			"language": "Язык",
