@@ -83,7 +83,7 @@
 	},
 	"preferences": {
 		"title": "Opzioni",
-		"description": "Le opzioni sono salvate localmente nel browser e non sono ancora sincronizzate con il backend. Usa questo pannello per rivedere e personalizzare le opzioni di PRUNplanner.",
+		"description": "Use this panel to review and customize your PRUNplanner settings.",
 		"form": {
 			"tool_preferences": "Opzioni degli strumenti",
 			"language": "Lingua",
