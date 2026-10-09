@@ -1,41 +1,41 @@
 {
-	"title": "Saved in another tab",
-	"text": "This was saved in another tab or device after you opened it. Nothing is overwritten until you choose.",
-	"deleted_title": "Deleted in another tab",
-	"deleted_text": "This was deleted in another tab or device. Your edits are still here.",
-	"theirs": "Changed in the other tab",
-	"mine": "Your changes",
-	"none": "No changes",
-	"both": "changed in both tabs",
-	"more": "and {n} more",
-	"loading": "Loading the saved version…",
-	"load_failed": "The saved version couldn't be loaded.",
-	"copy_name": "{name} (copy)",
+	"title": "已于另一标签页中保存",
+	"text": "已在您打开后于另一标签页或设备上保存。在您选择前不会覆盖任何内容。",
+	"deleted_title": "已于另一标签页中删除",
+	"deleted_text": "已于另一标签页或设备上删除。您的更改仍保留于此。",
+	"theirs": "已于另一标签页中更改",
+	"mine": "您的更改",
+	"none": "无更改",
+	"both": "已于两个标签页中更改",
+	"more": "以及另外{n}项",
+	"loading": "正在加载保存的版本……",
+	"load_failed": "无法加载保存的版本。",
+	"copy_name": "{name}（副本）",
 	"option": {
-		"save_as_new": "Save as new plan",
-		"overwrite": "Overwrite",
-		"reload": "Reload",
-		"close": "Keep editing"
+		"save_as_new": "另存为新计划",
+		"overwrite": "覆盖",
+		"reload": "重新加载",
+		"close": "继续编辑"
 	},
 	"option_help": {
-		"save_as_new": "Creates a copy with your edits, the original keeps the other version.",
-		"overwrite": "Replaces the other version with yours.",
-		"reload": "Drops your edits and loads the saved version."
+		"save_as_new": "将您的更改保存为副本，原始规划将保持不变。",
+		"overwrite": "将其它版本替换为您的版本。",
+		"reload": "放弃您的更改并加载保存的版本。"
 	},
 	"deleted_option_help": {
-		"save_as_new": "Creates a new plan with your edits."
+		"save_as_new": "将您的修改创建为新规划。"
 	},
 	"type": {
-		"BUY": "buy",
-		"SELL": "sell",
-		"BOTH": "buy and sell"
+		"BUY": "买入",
+		"SELL": "卖出",
+		"BOTH": "买入和卖出"
 	},
 	"change": {
-		"name": "Name {from} → {to}",
-		"permits": "Permits {from} → {to}",
-		"cogc": "COGC {from} → {to}",
-		"corphq_on": "Corp HQ on",
-		"corphq_off": "Corp HQ off",
+		"name": "名称：{from} → {to}",
+		"permits": "许可：{from} → {to}",
+		"cogc": "COGC：{from} → {to}",
+		"corphq_on": "有集团总部",
+		"corphq_off": "无集团总部",
 		"added": "{label} added ({amount})",
 		"removed": "{label} removed",
 		"amount": "{label} {from} → {to}",
@@ -52,10 +52,10 @@
 		"ticker_planet": "{ticker} {type} price {from} → {to} on {planet}"
 	},
 	"notice": {
-		"saved_elsewhere": "Saved in another tab. Your edits are kept.",
-		"deleted_elsewhere": "Deleted in another tab.",
-		"reload": "Reload",
-		"session_replaced": "You logged in in another tab. Reload this tab to continue; it no longer saves anything.",
-		"db_blocked": "PRUNplanner is open in another tab with an older version. Close the other tabs or reload them to continue."
+		"saved_elsewhere": "已于另一标签页中保存。您的更改已保留。",
+		"deleted_elsewhere": "已于另一标签页中删除。",
+		"reload": "重新加载",
+		"session_replaced": "您已于另一标签页中登录。请重新加载此页面以继续；其不再保存任何内容。",
+		"db_blocked": "旧版 PRUNplanner 已于另一标签页中打开。关闭或重新加载其它标签页以继续。"
 	}
 }
