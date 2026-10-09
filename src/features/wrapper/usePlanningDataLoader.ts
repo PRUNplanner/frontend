@@ -14,6 +14,7 @@ import { inertClone } from "@/util/data";
 import { isSubset } from "@/lib/query_cache/cacheKeys";
 import { remoteChange } from "@/lib/crossTab";
 import { trackUser } from "@/lib/analytics/useAnalytics";
+import { toWorkingCopy } from "@/features/sharing/sharedPlan.util";
 
 // Types & Interfaces
 import type {
@@ -37,19 +38,19 @@ export function usePlanningDataLoader(
 ) {
 	/*
 		Validate props for proper use of the component:
-		It can either load a shared plan uuid and the related planet by passing
-		the sharedPlan uuid or other elements like empires, a plan or planet.
-		Loading both is not permitted as it doesn't make sense.
+		A shared plan brings its own plan and planet, so it must not load
+		another plan or planet. The viewer's empires, CX and plans may load
+		with it (logged in viewers price and save their copy with them).
 	*/
 
 	const { t } = useI18n();
 
 	if (
 		props.sharedPlanUuid &&
-		(props.empireList || props.planUuid || props.planetNaturalId)
+		(props.planUuid || props.planetNaturalId)
 	) {
 		throw new Error(
-			"PlanningDataLoader: Loading shared plan must not load any other planning data."
+			"PlanningDataLoader: Loading shared plan must not load any other plan data."
 		);
 	}
 	const { findEmpireCXUuid } = useCXData();
@@ -410,12 +411,12 @@ export function usePlanningDataLoader(
 			The plan definition (i.e. the actual plan setup) depends on the
 			requested parameters with the following variants:
 
-			1) shared plan uuid provided, shared plan to use
+			1) shared plan uuid provided, a working copy of the shared plan
 			2) plan uuid provided, plan data to use
 			3) only planet natural id provided, new plan definition created
 		*/
 		const planDefinition = props.sharedPlanUuid
-			? data.sharedPlan.plan_details
+			? toWorkingCopy(data.sharedPlan.plan_details)
 			: props.planUuid
 				? data.planData
 				: data.planetData
@@ -425,10 +426,10 @@ export function usePlanningDataLoader(
 						)
 					: undefined;
 
-		// if there is a shared plan uuid, the plan editing is disabled
-		const disabled: boolean = props.sharedPlanUuid ? true : false;
+		// a shared plan is edited as the viewer's working copy
+		const shared: boolean = !!props.sharedPlanUuid;
 
-		return { ...data, planDefinition, disabled };
+		return { ...data, planDefinition, shared, disabled: false };
 	});
 
 	return {

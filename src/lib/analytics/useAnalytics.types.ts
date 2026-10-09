@@ -34,6 +34,8 @@ export interface IPlanEditProperties {
 	// only while plan suggestions are on
 	is_from_popular?: boolean;
 	is_most_planned?: boolean;
+	// set by trackPlanEdit: edited on a shared plan's working copy
+	is_shared?: boolean;
 }
 
 // tools that report a result without further properties
@@ -105,7 +107,16 @@ export interface IAnalyticsEventProperties {
 	"plan:save_as": { planet_natural_id: string };
 	"plan:reload": { planet_natural_id: string };
 	"plan:leave_unsaved": { planet_natural_id: string };
-	"plan:shared_clone": { planet_natural_id: string; shared_uuid: string };
+	"plan:shared_clone": {
+		planet_natural_id: string;
+		shared_uuid: string;
+		modified: boolean;
+	};
+	"plan:shared_reset": { planet_natural_id: string };
+	"plan:shared_copy_changes": {
+		planet_natural_id: string;
+		change_count: number;
+	};
 	"plan:share_create": undefined;
 	"plan:share_delete": undefined;
 	"plan:tool_toggle": { tool_name: string | null };

@@ -22,6 +22,7 @@
 
 	// Util
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { hasOutputTwin } from "@/features/planning/recipeOutputs.util";
 	import { humanizeTimeMs } from "@/util/date";
 	import { formatPayback, formatPercent } from "@/util/numbers";
 
@@ -63,6 +64,12 @@
 		planetId: {
 			type: String,
 			required: true,
+		},
+		// a recipe the shared plan didn't have
+		isNew: {
+			type: Boolean,
+			required: false,
+			default: false,
 		},
 	});
 
@@ -119,6 +126,11 @@
 	);
 
 	const cogmWithCX = computed(() => !!props.cxUuid);
+
+	// recipes that only differ in their inputs show them in the row
+	const showInputs: ComputedRef<boolean> = computed(() =>
+		hasOutputTwin(props.recipeData.recipe, props.recipeOptions)
+	);
 
 	const { isAvailable: hasInsights, recipePopularity } = usePlanetInsights(
 		() => props.planetId
@@ -197,13 +209,30 @@
 		scrollable
 		style="padding: 0; max-height: min(500px, 45vh); max-width: calc(100vw - 48px)"
 		:show="refShowRecipeOptions"
-		:disabled="disabled"
 		@update-show="(val) => (refShowRecipeOptions = val)">
 		<template #trigger>
 			<div
-				class="col-span-6 xl:col-span-2 flex items-center gap-1 group justify-between"
-				:class="{ 'hover:cursor-pointer': !disabled }">
-				<div class="flex flex-row flex-wrap gap-1">
+				class="col-span-6 xl:col-span-2 flex items-center gap-1 group justify-between hover:cursor-pointer">
+				<div class="flex flex-row flex-wrap items-center gap-1">
+					<span
+						v-if="isNew"
+						class="text-xs font-bold uppercase text-positive pr-1">
+						{{ $t("sharing.compare.new") }}
+					</span>
+					<template v-if="showInputs">
+						<MaterialTile
+							v-for="material in localRecipeData.recipe.inputs"
+							:key="`${localRecipeData.recipe.building_ticker}#ROW#INPUT#${material.material_ticker}`"
+							:ticker="material.material_ticker"
+							:amount="
+								material.material_amount *
+								localRecipeData.amount
+							"
+							:enable-popover="false" />
+						<span aria-hidden="true" class="text-muted px-1">
+							→
+						</span>
+					</template>
 					<MaterialTile
 						v-for="material in localRecipeData.recipe.outputs"
 						:key="`${localRecipeData.recipe.building_ticker}#${material.material_ticker}`"
@@ -228,17 +257,23 @@
 		<div class="border border-pp-border max-w-[700px]" @click.stop>
 			<XNDataTable
 				:data="localRecipeOptions"
-				row-class-name="child:whitespace-nowrap hover:cursor-pointer"
+				:row-class-name="
+					disabled
+						? 'child:whitespace-nowrap'
+						: 'child:whitespace-nowrap hover:cursor-pointer'
+				"
 				:bordered="false"
 				striped
 				:row-props="
 					(recipe) => ({
-						onClick: () =>
+						onClick: () => {
+							if (disabled) return;
 							emit(
 								'update:building:recipe',
 								localRecipeIndex,
 								recipe.recipe_id
-							),
+							);
+						},
 					})
 				">
 				<XNDataTableColumn

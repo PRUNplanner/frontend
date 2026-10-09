@@ -75,7 +75,8 @@ AGENTS.md). Heavy children are loaded with `defineAsyncComponent`.
 
 `PlanLoadView` loads the data and then renders `PlanView`, which is the
 actual plan editor. The same pair serves `/plan/:planetNaturalId/:planUuid?`
-and `/shared/:sharedPlanUuid`, which is read-only.
+and `/shared/:sharedPlanUuid`, which edits a working copy that is never
+saved over the shared plan.
 
 ## Build & tooling notes
 

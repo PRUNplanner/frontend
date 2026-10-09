@@ -87,6 +87,7 @@
 		<slot
 			:complete="allLoaded"
 			:disabled="results.disabled"
+			:shared="results.shared"
 			:shared-plan="results.sharedPlan"
 			:empire-list="results.empireList"
 			:empire-planet-list="results.empirePlanetList.value"

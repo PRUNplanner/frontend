@@ -68,7 +68,9 @@ the tables here list the same events; a test
 | `plan:save_as` | `planet_natural_id` | |
 | `plan:reload` | `planet_natural_id` | |
 | `plan:leave_unsaved` | `planet_natural_id` | the plan page was left with unsaved changes |
-| `plan:shared_clone` | `planet_natural_id`, `shared_uuid` | |
+| `plan:shared_clone` | `planet_natural_id`, `shared_uuid`, `modified` | a shared plan's working copy was saved to the viewer's plans (`modified`: changed from the shared version) |
+| `plan:shared_reset` | `planet_natural_id` | the working copy was reset to the shared version |
+| `plan:shared_copy_changes` | `planet_natural_id`, `change_count` | the working copy's change summary was copied for Discord |
 | `plan:share_create` | | |
 | `plan:share_delete` | | |
 | `plan:tool_toggle` | `tool_name` | a plan tool panel was opened |
@@ -79,7 +81,7 @@ the tables here list the same events; a test
 | `plan:starter_dismiss` | `planet_natural_id` | "Start empty" on the card |
 | `plan:hab_optimize` | `goal` (`area`, `cost`) | the optimize buttons; the automatic run (`auto`) is not sent |
 | `plan:hab_auto_toggle` | `is_active` | |
-| `plan:edit` | `planet_natural_id`, `field`, and the relevant of `building_ticker`, `recipe_id`, `amount`, `infrastructure_type`, `expert_type`, `workforce_type`, `lux_type`, `value`, `is_from_popular`, `is_most_planned` | see below |
+| `plan:edit` | `planet_natural_id`, `field`, and the relevant of `building_ticker`, `recipe_id`, `amount`, `infrastructure_type`, `expert_type`, `workforce_type`, `lux_type`, `value`, `is_from_popular`, `is_most_planned`, `is_shared` | see below |
 | `plan:undo` | `trigger` (`button`, `shortcut`) | |
 | `plan:redo` | `trigger` (`button`, `shortcut`) | |
 | `plan:save_conflict` | `planet_natural_id`, `is_deleted`, `choice` (`save_as_new`, `overwrite`, `reload`, `close`) | the save conflict dialog was answered: the plan was saved (`is_deleted`: deleted) in another tab or device since it was loaded |
@@ -92,7 +94,8 @@ mix hint on a building without recipes (`amount`: recipes added). While
 plan suggestions are on, `building_add` has `is_from_popular` (picked from
 the "Popular on" group) and `recipe_add` / `recipe_change` have
 `is_most_planned` (the recipe is the planet's most planned one for that
-building). It is sent through `trackPlanEdit`, which waits one second per
+building). `is_shared` is true for edits on a shared plan's working copy
+(`/shared/…`). It is sent through `trackPlanEdit`, which waits one second per
 edited control (field, building, and infrastructure, expert or workforce
 type): ten quick clicks on a building's + are one event with the final
 amount. Pending edits are sent before a save and when the plan page closes.

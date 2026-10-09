@@ -119,7 +119,7 @@
 						: t('plan.save_status.name_to_save')
 				" />
 		</PFormItem>
-		<!-- a read-only (shared) plan has no empire to pick -->
+		<!-- a read-only plan, or a visitor's shared copy, has no empire to pick -->
 		<PFormItem
 			v-if="!disabled"
 			:label="t('plan.components.configuration.empire')">

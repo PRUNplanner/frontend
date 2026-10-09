@@ -93,7 +93,11 @@ describe("diffPlan", () => {
 				params: { label: "FRM", amount: 2 },
 			},
 			{ area: "building:RIG", key: "removed", params: { label: "RIG" } },
-			{ area: "building:EXT", key: "recipe", params: { label: "EXT" } },
+			{
+				area: "building:EXT",
+				key: "recipe",
+				params: { label: "EXT", from: "1x 1", to: "1x 2" },
+			},
 			{
 				area: "infrastructure:HB1",
 				key: "amount",
@@ -128,7 +132,11 @@ describe("diffPlan", () => {
 		to.plan_data.buildings[0].active_recipes[0].amount = 2;
 
 		expect(diffPlan(plan(), to)).toStrictEqual([
-			{ area: "building:EXT", key: "recipe", params: { label: "EXT" } },
+			{
+				area: "building:EXT",
+				key: "recipe",
+				params: { label: "EXT", from: "1x 1", to: "2x 1" },
+			},
 			{
 				area: "building:RIG",
 				key: "amount",

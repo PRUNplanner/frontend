@@ -14,7 +14,7 @@ One page per `src/features/*` folder. Each page follows the same outline:
 | [exchanges](exchanges.md) | Edit CX preferences (exchange and ticker prices), CSV import/export |
 | [cx](cx.md) | Price resolution (`PriceBook`, `usePrice`) and CX helpers |
 | [preferences](preferences.md) | User and per-plan preferences synced to the backend |
-| [sharing](sharing.md) | Public read-only plan links |
+| [sharing](sharing.md) | Public plan links, opened by viewers as a working copy |
 
 ## Tools
 

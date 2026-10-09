@@ -35,6 +35,10 @@ when every step has finished.
 - **Missing shared plan.** A 404 on the `shared-plan-uuid` step
   (`sharedPlanMissing`) shows "no longer available" with a link home instead
   of the step list. Other errors keep the loader with the failed step.
+- **Shared plan.** `shared-plan-uuid` must not come with `plan-uuid` or
+  `planet-natural-id`; the viewer's empires, CX and plans may load with it.
+  The slot gets the shared plan as a working copy (`planDefinition`
+  without uuid, empires and save version) and `shared: true`.
 
 ## Gotchas
 

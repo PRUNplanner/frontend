@@ -51,7 +51,16 @@ editor UI. The engine is documented in depth in
 - **Panels don't compute anything.** They receive `result` slices as props
   and emit events, and `PlanView` routes those events to `handle*`
   functions. Keep new panels the same way.
-- **`disabled` means read-only** (a shared plan). Panels hide what only
+- **A shared plan is the viewer's working copy** (`shared`): editable like
+  a new plan, never saved over the owner's. See
+  [sharing.md](sharing.md). Optional props compare it with the shared
+  version: `compare` on `PlanStatusBar` and `PlanOverview`, `changes` on
+  `PlanProduction` (marks per building and recipe row, removed buildings
+  struck through).
+- **Recipe rows show their inputs** when another recipe of the building has
+  the same outputs (`hasOutputTwin`, `recipeOutputs.util.ts`). The recipe
+  popover always opens; read-only, a click on an option does nothing.
+- **`disabled` means read-only**. Panels hide what only
   makes sense while editing (add building, add or delete recipe, recipe
   picker, empire, amount steppers) instead of greying it out. Inputs that
   show a value stay, disabled.

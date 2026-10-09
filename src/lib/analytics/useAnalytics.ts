@@ -69,7 +69,10 @@ export function trackPlanEdit(props: IPlanEditProperties): void {
 		);
 		planEdits.set(key, send);
 	}
-	send(props);
+	send({
+		...props,
+		is_shared: window.location.pathname.startsWith("/shared/"),
+	});
 }
 
 /**
