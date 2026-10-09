@@ -104,6 +104,19 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	// a cleared or half-typed field must not block the preferences PATCH
+	describe("number preferences ignore non-numbers", async () => {
+		it.each([null, NaN])("%s", async (bad) => {
+			const { burnDaysRed, supplyCartDays } = usePreferences();
+			burnDaysRed.value = 55;
+			supplyCartDays.value = 7.5;
+			burnDaysRed.value = bad as unknown as number;
+			supplyCartDays.value = bad as unknown as number;
+			expect(userStore.preferences.burnDaysRed).toBe(55);
+			expect(userStore.preferences.supplyCartDays).toBe(7.5);
+		});
+	});
+
 	describe("burnDaysYellow", async () => {
 		it("get", async () => {
 			const { burnDaysYellow } = usePreferences();

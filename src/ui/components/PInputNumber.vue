@@ -63,6 +63,9 @@
 
 		let numValue = Number(target.value);
 
+		// "-", "." or "-." while typing: nothing to emit yet
+		if (!Number.isFinite(numValue)) return;
+
 		// Clamp to min/max, only updating the text field if the value is out of bounds.
 		// Otherwise we may inadvertently move the user's cursor or remove decimal points they are in the process of typing.
 		if (numValue < min || numValue > max) {
