@@ -1,0 +1,61 @@
+{
+	"title": "Saved in another tab",
+	"text": "This was saved in another tab or device after you opened it. Nothing is overwritten until you choose.",
+	"deleted_title": "Deleted in another tab",
+	"deleted_text": "This was deleted in another tab or device. Your edits are still here.",
+	"theirs": "Changed in the other tab",
+	"mine": "Your changes",
+	"none": "No changes",
+	"both": "changed in both tabs",
+	"more": "and {n} more",
+	"loading": "Loading the saved version…",
+	"load_failed": "The saved version couldn't be loaded.",
+	"copy_name": "{name} (copy)",
+	"option": {
+		"save_as_new": "Save as new plan",
+		"overwrite": "Overwrite",
+		"reload": "Reload",
+		"close": "Keep editing"
+	},
+	"option_help": {
+		"save_as_new": "Creates a copy with your edits, the original keeps the other version.",
+		"overwrite": "Replaces the other version with yours.",
+		"reload": "Drops your edits and loads the saved version."
+	},
+	"deleted_option_help": {
+		"save_as_new": "Creates a new plan with your edits."
+	},
+	"type": {
+		"BUY": "buy",
+		"SELL": "sell",
+		"BOTH": "buy and sell"
+	},
+	"change": {
+		"name": "Name {from} → {to}",
+		"permits": "Permits {from} → {to}",
+		"cogc": "COGC {from} → {to}",
+		"corphq_on": "Corp HQ on",
+		"corphq_off": "Corp HQ off",
+		"added": "{label} added ({amount})",
+		"removed": "{label} removed",
+		"amount": "{label} {from} → {to}",
+		"recipe": "{label}: recipe changed",
+		"experts": "{label} experts {from} → {to}",
+		"lux_on": "{label} luxury {n} on",
+		"lux_off": "{label} luxury {n} off",
+		"faction": "Faction {from} → {to}",
+		"permits_used": "Permits used {from} → {to}",
+		"permits_total": "Permits total {from} → {to}",
+		"exchange": "{type} exchange {from} → {to}",
+		"exchange_planet": "{type} exchange {from} → {to} on {planet}",
+		"ticker": "{ticker} {type} price {from} → {to}",
+		"ticker_planet": "{ticker} {type} price {from} → {to} on {planet}"
+	},
+	"notice": {
+		"saved_elsewhere": "Saved in another tab. Your edits are kept.",
+		"deleted_elsewhere": "Deleted in another tab.",
+		"reload": "Reload",
+		"session_replaced": "You logged in in another tab. Reload this tab to continue; it no longer saves anything.",
+		"db_blocked": "PRUNplanner is open in another tab with an older version. Close the other tabs or reload them to continue."
+	}
+}
