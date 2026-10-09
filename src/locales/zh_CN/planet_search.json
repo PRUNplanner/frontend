@@ -109,7 +109,7 @@
 		"max_jumps_value": "距每个选中项 ≤ {n}次跃迁"
 	},
 	"results": {
-		"count": "{total}颗星球中的第{n}颗",
+		"count": "{total}颗星球中的{n}颗",
 		"view_label": "结果视图",
 		"list": "列表",
 		"matrix": "矩阵",
