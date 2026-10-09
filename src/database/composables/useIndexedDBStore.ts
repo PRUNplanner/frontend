@@ -1,7 +1,9 @@
 import { type IDBPDatabase, openDB } from "idb";
+import { ref, type Ref } from "vue";
 
 import config from "@/lib/config";
 import { DB_SCHEMA } from "@/database/schema";
+import { useVersionCheck } from "@/lib/useVersionCheck";
 
 type KeyOfStore<T, K extends keyof T> = T[K] extends IDBValidKey ? T[K] : never;
 export interface IStoreStatistic {
@@ -10,6 +12,12 @@ export interface IStoreStatistic {
 }
 
 let dbPromise: Promise<IDBPDatabase> | null = null;
+// a newer version of the app opened the database in another tab: this tab
+// works from the data it has in memory and never reopens the old version
+let outdated: boolean = false;
+
+/** Opening waits on other tabs that still have an older version open */
+export const dbBlocked: Ref<boolean> = ref(false);
 
 export async function requestPersistence() {
 	if (navigator && navigator.storage && navigator.storage.persist) {
@@ -18,6 +26,9 @@ export async function requestPersistence() {
 }
 
 export async function getDB() {
+	if (outdated)
+		throw new Error("IndexedDB is used by a newer PRUNplanner version.");
+
 	if (!dbPromise) {
 		dbPromise = openDB(
 			config.INDEXEDDB_DBNAME,
@@ -44,11 +55,32 @@ export async function getDB() {
 				terminated() {
 					dbPromise = null;
 				},
+				// another tab opens a newer version: let it upgrade, and show
+				// this one's update notification
+				blocking(_currentVersion, blockedVersion, event) {
+					// null: another tab deletes the database, that waits
+					if (blockedVersion === null) return;
+					(event.target as IDBDatabase).close();
+					dbPromise = null;
+					outdated = true;
+					useVersionCheck().markOutdated();
+				},
+				// tabs of an older release without `blocking` keep the
+				// database open, the upgrade waits until they close
+				blocked() {
+					dbBlocked.value = true;
+				},
 			}
-		).catch((err: unknown) => {
-			dbPromise = null;
-			throw err;
-		});
+		)
+			.then((db) => {
+				dbBlocked.value = false;
+				return db;
+			})
+			.catch((err: unknown) => {
+				dbPromise = null;
+				dbBlocked.value = false;
+				throw err;
+			});
 	}
 	// Request persistence after DB is ready
 	try {

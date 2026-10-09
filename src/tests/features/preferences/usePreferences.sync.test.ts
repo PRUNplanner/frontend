@@ -48,6 +48,40 @@ describe("usePreferences: backend sync", () => {
 		expect(patched[0]).toMatchObject({ defaultEmpireUuid: "empire-a" });
 	});
 
+	it("sends only what changed: keys, overrides per uuid, null removals", async () => {
+		userStore.setToken("access-a", "refresh-a");
+		const { burnDaysRed } = usePreferences();
+		userStore.setPlanPreference("plan-a", { includeCM: true });
+		userStore.setPlanPreference("plan-b", { includeCM: true });
+		await nextTick();
+		await vi.advanceTimersByTimeAsync(5000);
+		expect(Object.keys(patched[0] as object)).toStrictEqual([
+			"planOverrides",
+		]);
+		patched.length = 0;
+
+		burnDaysRed.value = 2;
+		userStore.setPlanPreference("plan-a", { includeCM: false });
+		delete userStore.preferences.planOverrides["plan-b"];
+		await nextTick();
+		await vi.advanceTimersByTimeAsync(5000);
+
+		expect(patched).toStrictEqual([
+			{
+				burnDaysRed: 2,
+				planOverrides: {
+					"plan-a": expect.objectContaining({ includeCM: false }),
+					"plan-b": null,
+				},
+			},
+		]);
+
+		// nothing left to send
+		burnDaysRed.value = 2;
+		await vi.advanceTimersByTimeAsync(5000);
+		expect(patched).toHaveLength(1);
+	});
+
 	it("never sends a pending sync as the next logged in user", async () => {
 		userStore.setToken("access-a", "refresh-a");
 		const { defaultEmpireUuid } = usePreferences();

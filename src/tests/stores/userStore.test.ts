@@ -1,14 +1,7 @@
 import { createApp, nextTick } from "vue";
 import { setActivePinia, createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
-import {
-	beforeEach,
-	describe,
-	it,
-	expect,
-	onTestFinished,
-	vi,
-} from "vitest";
+import { beforeEach, describe, it, expect, onTestFinished, vi } from "vitest";
 
 import {
 	callUserLogin,
@@ -64,9 +57,9 @@ describe("User Store", () => {
 
 	it("Logout: the next login loads its own profile and preferences", () => {
 		const userStore = useUserStore();
-		const getProfile = vi.mocked(callGetProfile).mockResolvedValue(
-			{} as UserProfile
-		);
+		const getProfile = vi
+			.mocked(callGetProfile)
+			.mockResolvedValue({} as UserProfile);
 		getProfile.mockClear();
 
 		userStore.setToken("access-a", "refresh-a");
@@ -478,13 +471,6 @@ describe("User Store", () => {
 			userStore.setPlanPreference("foo", { includeCM: true });
 
 			expect(userStore.getPlanPreference("foo").includeCM).toBeTruthy();
-
-			// clear a preference
-			userStore.clearPlanPreference("foo");
-
-			expect(userStore.getPlanPreference("foo").includeCM).toBe(
-				preferenceDefaults.planDefaults.includeCM
-			);
 		});
 
 		it("stores a complete plan override that passes the payload schema", async () => {
@@ -526,7 +512,10 @@ describe("User Store", () => {
 
 			expect(userStore.preferences.planOverrides).toStrictEqual({
 				foo: { ...preferenceDefaults.planDefaults, includeCM: true },
-				moo: { ...preferenceDefaults.planDefaults, autoOptimizeHabs: true },
+				moo: {
+					...preferenceDefaults.planDefaults,
+					autoOptimizeHabs: true,
+				},
 			});
 			expect(() =>
 				UserPreferencePayloadSchema.parse(userStore.preferences)

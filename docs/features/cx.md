@@ -37,6 +37,13 @@ and small CX helpers. Every price in the app is resolved by a `PriceBook`
   - `findEmpireCXUuid(empireUuid)` returns the CX assigned to an empire;
   - `getPreferenceOptions(includeNone)` returns select options, where
     "None" means Universe 30D.
+- **`useCXSave.ts`**: saves a CX edited on the Exchanges page or in a
+  plan's COGM tool with the version the edit started from; saved or
+  deleted in another tab opens the save conflict dialog or sets
+  `remoteNotice` (see [save_conflict](save_conflict.md)). `isEdited`
+  compares through `cxDiff`.
+- **`cxDiff.ts`**: `diffCX(from, to)`, what changed in a CX's name,
+  exchanges and ticker prices, for the empire and per planet.
 - **`components/MaterialCXOverviewTable.vue`**: per-exchange price and
   volume table for one material, including market share.
 
@@ -57,5 +64,5 @@ and small CX helpers. Every price in the app is resolved by a `PriceBook`
 
 ## Tests
 
-`src/tests/features/cx/priceBook.test.ts`, `usePrice.test.ts` and
-`useCXData.test.ts`.
+`src/tests/features/cx/priceBook.test.ts`, `usePrice.test.ts`,
+`useCXData.test.ts`, `useCXSave.test.ts` and `cxDiff.test.ts`.

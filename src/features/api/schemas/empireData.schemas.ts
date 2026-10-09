@@ -15,6 +15,8 @@ export const PlanEmpireElementSchema = PlanEmpireSchema.extend({
 			planet_natural_id: z.string(),
 		})
 	),
+	// version of the configuration (name, faction, permits)
+	modified_at: z.string(),
 });
 export type PlanEmpireElement = z.infer<typeof PlanEmpireElementSchema>;
 
@@ -26,6 +28,8 @@ export const EmpirePayloadSchema = z.object({
 	empire_faction: PlanEmpireFactionSchema,
 	empire_permits_used: z.number().int().min(1),
 	empire_permits_total: z.number().int().min(2),
+	// save version, ignored on create
+	base_modified_at: z.string().nullish(),
 });
 export type EmpirePayload = z.input<typeof EmpirePayloadSchema>;
 
@@ -34,6 +38,12 @@ const PlanEmpireJunctionSchema = z.object({
 	baseplanners: z.array(z.object({ baseplanner_uuid: z.string().uuid() })),
 });
 export type PlanEmpireJunction = z.input<typeof PlanEmpireJunctionSchema>;
+
+// embedded plan empires carry no version, the saved one does
+export const EmpireSaveResponseSchema = PlanEmpireSchema.extend({
+	modified_at: z.string(),
+});
+export type EmpireSaveResponse = z.infer<typeof EmpireSaveResponseSchema>;
 
 export const PlanEmpireJunctionListSchema = z.array(PlanEmpireJunctionSchema);
 

@@ -39,6 +39,7 @@ One page per `src/features/*` folder. Each page follows the same outline:
 | --- | --- |
 | [api](api.md) | Backend `call*()` functions and Zod schemas |
 | [wrapper](wrapper.md) | Data-loading gates used by every view |
+| [save_conflict](save_conflict.md) | Dialog when a plan, empire or CX was saved or deleted in another tab |
 | [material_tile](material_tile.md) | The standard material ticker chip |
 | [plan_analytics](plan_analytics.md) | Planet insights box on the plan page |
 | [help](help.md) | Markdown help drawer and tutorial |

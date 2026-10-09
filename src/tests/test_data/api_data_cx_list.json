@@ -1,6 +1,7 @@
 [
 	{
 		"uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
+		"modified_at": "2026-10-01T12:00:00.000000Z",
 		"empires": [
 			{
 				"uuid": "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6",
@@ -448,6 +449,7 @@
 	},
 	{
 		"uuid": "41c6f4dc-d1cd-4bde-b61a-c1595101d980",
+		"modified_at": "2026-10-01T12:00:00.000000Z",
 		"empires": [
 			{
 				"uuid": "a208d74e-d07f-4722-8192-9b55d4140f58",
@@ -496,6 +498,7 @@
 	},
 	{
 		"uuid": "4907f10d-982e-4f6c-b068-221bd0fb8b86",
+		"modified_at": "2026-10-01T12:00:00.000000Z",
 		"empires": [],
 		"cx_data": {
 			"cx_empire": [
@@ -633,6 +636,7 @@
 	},
 	{
 		"uuid": "88295b65-fe32-4634-82c2-1c94eaf22577",
+		"modified_at": "2026-10-01T12:00:00.000000Z",
 		"empires": [
 			{
 				"uuid": "c92db9b8-ef3b-44c4-9fb5-a61964f6fc5a",
@@ -666,6 +670,7 @@
 	},
 	{
 		"uuid": "b4af6f5f-3916-4bde-b801-224c9651a5a0",
+		"modified_at": "2026-10-01T12:00:00.000000Z",
 		"empires": [],
 		"cx_data": {
 			"cx_empire": [

@@ -9,6 +9,7 @@ import {
 import {
 	EmpireMaterialIOStateSchema,
 	EmpirePayloadSchema,
+	EmpireSaveResponseSchema,
 	PlanEmpireElementListSchema,
 	PlanEmpireJunctionListSchema,
 } from "@/features/api/schemas/empireData.schemas";
@@ -21,6 +22,7 @@ import type {
 import type {
 	EmpireMaterialIOState,
 	EmpirePayload,
+	EmpireSaveResponse,
 	PlanEmpireElement,
 	PlanEmpireJunction,
 } from "@/features/api/schemas/empireData.schemas";
@@ -61,17 +63,17 @@ export async function callGetEmpirePlans(empireUuid: string): Promise<Plan[]> {
  * @async
  * @param {string} empireUuid Empire Uuid
  * @param {EmpirePayload} data Empire Patch data
- * @returns {Promise<PlanEmpire>} Updated empire data
+ * @returns {Promise<EmpireSaveResponse>} Updated empire data
  */
 export async function callPatchEmpire(
 	empireUuid: string,
 	data: EmpirePayload
-): Promise<PlanEmpire> {
+): Promise<EmpireSaveResponse> {
 	return apiService.put(
 		`planning/empire/${empireUuid}/`,
 		data,
 		EmpirePayloadSchema,
-		PlanEmpireSchema
+		EmpireSaveResponseSchema
 	);
 }
 

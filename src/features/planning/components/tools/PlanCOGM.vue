@@ -2,6 +2,7 @@
 	import {
 		type ComputedRef,
 		computed,
+		defineAsyncComponent,
 		type PropType,
 		type Ref,
 		ref,
@@ -12,11 +13,17 @@
 	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Composables
-	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useCXSave } from "@/features/cx/useCXSave";
+	const cxSave = useCXSave("cogm");
 
 	// Components
 	import PlanCOGMTable from "@/features/planning/components/tools/PlanCOGMTable.vue";
+	import SaveConflictNotice from "@/features/save_conflict/components/SaveConflictNotice.vue";
+	const SaveConflictDialog = defineAsyncComponent(
+		() =>
+			import("@/features/save_conflict/components/SaveConflictDialog.vue")
+	);
 	import CXTickerPreference from "@/features/exchanges/components/CXTickerPreference.vue";
 
 	// Types & Interfaces
@@ -67,6 +74,7 @@
 	function getCXData(): void {
 		if (!props.cxUuid || !props.planetId) return;
 
+		cxSave.remoteNotice.value = null;
 		selectedCX.value = planningStore.getCX(props.cxUuid);
 		rawSelectedCX.value = planningStore.getCX(props.cxUuid);
 
@@ -99,19 +107,18 @@
 					location: "cogm",
 				});
 
-				await useQuery("PatchCX", {
-					cxName: selectedCX.value.cx_name,
-					cxUuid: props.cxUuid,
-					data: {
+				const saved = await cxSave.save(rawSelectedCX.value!, {
+					cx_name: selectedCX.value.cx_name,
+					cx_data: {
 						cx_empire: selectedCX.value.cx_data.cx_empire,
 						ticker_empire: selectedCX.value.cx_data.ticker_empire,
 						cx_planets: selectedCX.value.cx_data.cx_planets,
 						ticker_planets: patchData.value.cx_data.ticker_planets,
 					},
-				}).execute();
+				});
 
 				// reload the CX data from store
-				getCXData();
+				if (saved) getCXData();
 			} catch (err) {
 				console.error("Error patching CX", err);
 			} finally {
@@ -124,6 +131,27 @@
 		() => props.cxUuid,
 		() => getCXData(),
 		{ immediate: true }
+	);
+
+	/*
+	 * Saved or deleted in another tab: without unsaved edits the CX
+	 * reloads, with them a notice offers to
+	 */
+	watch(
+		() => (props.cxUuid ? planningStore.cxs[props.cxUuid] : undefined),
+		(cx) => {
+			const loaded = rawSelectedCX.value;
+			if (isPatching.value || !loaded || !selectedCX.value) return;
+			if (
+				cx &&
+				(cx.uuid !== loaded.uuid ||
+					cx.modified_at === loaded.modified_at)
+			)
+				return;
+
+			if (cxSave.onRemoteChange(cx, loaded, selectedCX.value))
+				getCXData();
+		}
 	);
 
 	watch(
@@ -205,6 +233,10 @@
 					</PButtonGroup>
 				</div>
 			</div>
+			<SaveConflictNotice
+				class="mb-3"
+				:notice="cxSave.remoteNotice.value"
+				@reload="getCXData" />
 			<h2 class="font-bold pb-3">
 				{{ $t("plan.tools.cogm.empire_ticker") }}
 			</h2>
@@ -218,5 +250,8 @@
 				v-if="planetTickerCX"
 				v-model:cx-options="planetTickerCX" />
 		</div>
+		<SaveConflictDialog
+			v-if="cxSave.conflict.show.value"
+			:conflict="cxSave.conflict" />
 	</div>
 </template>

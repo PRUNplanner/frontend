@@ -183,6 +183,13 @@ component / composable
   the connection; on an `InvalidStateError` or `UnknownError` (a connection
   lost without a `close` event) `storeAndPreload` calls `dropDB` so the next
   `getDB` reopens it.
+- **Upgrades with several tabs open.** Every release bumps the DB version.
+  When a newer tab opens it, the older tab's `blocking` handler closes its
+  connection, marks the app outdated (`useVersionCheck().markOutdated()`
+  shows the update notification) and never reopens the old version:
+  `getDB` throws, and the tab keeps working from its in-memory layer. A tab
+  of a release without that handler keeps the upgrade waiting; the new tab
+  sets `dbBlocked` and `App.vue` asks to close or reload the other tabs.
 - **`services/`** is the API consumers should use:
 
   | Service | Provides |
@@ -229,6 +236,41 @@ The stores are setup-style. Persistence uses `pinia-plugin-persistedstate`
   them doesn't touch the store.
 - `userAlertsStore` is not synced to the backend. Alert rules stay
   per-browser.
+
+## 6. Several tabs (`src/lib/crossTab.ts`)
+
+Each tab hydrates the persisted stores once and then keeps its own copy, so
+the tabs of one browser are kept in step explicitly (registered in
+`main.ts`):
+
+- **Planning changes.** Every planning mutation in `planning.queries.ts`
+  invalidates through `changed(prefixes, uuid)`, which also posts
+  `{userId, keys, uuid}` on the `"prunplanner"` `BroadcastChannel`. The
+  user's other tabs run the same `invalidate`, then set `remoteChange`.
+  `usePlanningDataLoader` reloads its loaded steps under those keys
+  (`refreshKey`) without clearing them and emits `refreshed`; open editors
+  (plan, empire configuration, CX) reload when they have no unsaved edits,
+  otherwise they show a "Saved in another tab" notice.
+- **Save versions.** Plans, empires and CXs carry `modified_at`. A save
+  sends the version its edit started from as `base_modified_at` and takes
+  the new one from the response. A 409 (saved elsewhere) or 404 (deleted)
+  opens the save conflict dialog, see
+  [features/save_conflict.md](features/save_conflict.md).
+- **Login state.** A `storage` listener on `prunplanner_user`: no refresh
+  token means another tab logged out (`userStore.resetSession()`, leave
+  pages that need a login); another user, or a login while this tab had
+  none, ends this tab's session and reloads. It first stops this tab's
+  persisted stores from writing (`lib/persistStorage.ts`, the `storage` of
+  the user and planning stores), so a tab kept open by the leave-page
+  prompt can never write the old login or plans back; it shows a notice to
+  reload. The same user adopts the tokens and only the preference
+  keys the other tab changed. Values are assigned only when they differ,
+  so the persist plugin can't bounce writes between tabs.
+- **Preferences** (`features/preferences/preferenceSync.ts`) keep the last
+  state known to match the backend. The debounced PATCH sends only what
+  changed since: top-level keys, and `planOverrides` per uuid with `null`
+  for a removed one (the backend merges per uuid). `GetPreferences` runs
+  on every app start when logged in.
 
 ## Config (`src/lib/config.ts`)
 

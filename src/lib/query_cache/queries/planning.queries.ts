@@ -3,6 +3,7 @@ import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Util
+import { broadcastChange } from "@/lib/crossTab";
 import {
 	defineQuery,
 	invalidate,
@@ -51,6 +52,7 @@ import type {
 import type {
 	EmpireMaterialIOState,
 	EmpirePayload,
+	EmpireSaveResponse,
 	PlanEmpireElement,
 	PlanEmpireJunction,
 } from "@/features/api/schemas/empireData.schemas";
@@ -62,6 +64,7 @@ import type {
 	PlanSaveData,
 	PlanShare,
 } from "@/features/api/schemas/planningData.schemas";
+import type { JSONValue } from "@/lib/query_cache/queryCache.types";
 import type {
 	Shared,
 	SharedCloneResponse,
@@ -72,12 +75,24 @@ const EMPIRES = ["planningdata", "empire"];
 const PLANS = ["planningdata", "plan"];
 const CXS = ["planningdata", "cx"];
 
+/**
+ * Invalidates the keys after a change and tells the user's other tabs
+ *
+ * @param {JSONValue[]} prefixes Key prefixes
+ * @param {string} [uuid] Changed plan, empire or CX
+ */
+async function changed(prefixes: JSONValue[], uuid?: string): Promise<void> {
+	await invalidate(...prefixes);
+	broadcastChange(prefixes, uuid);
+}
+
 /** Drops every shared plan entry without refetching the list. */
-function dropShared(): Promise<void> {
-	return useQueryStore().invalidateKey(["planningdata", "shared"], {
+async function dropShared(): Promise<void> {
+	await useQueryStore().invalidateKey(["planningdata", "shared"], {
 		exact: false,
 		skipRefetch: true,
 	});
+	broadcastChange([["planningdata", "shared"]]);
 }
 
 /** Stores plans and seeds each plan's own `GetPlan` entry. */
@@ -140,6 +155,7 @@ export const planningQueries = {
 		}): Promise<SharedCloneResponse> => {
 			const data = await callCloneSharedPlan(params.sharedUuid);
 			await dropShared();
+			await changed([PLANS, EMPIRES], data.uuid);
 			return data;
 		},
 		persist: false,
@@ -169,7 +185,7 @@ export const planningQueries = {
 			data: EmpirePayload;
 		}): Promise<PlanEmpire> => {
 			const data = await callCreateEmpire(params.data);
-			await invalidate(EMPIRES);
+			await changed([EMPIRES], data.uuid);
 			return data;
 		},
 		persist: false,
@@ -183,7 +199,7 @@ export const planningQueries = {
 		],
 		fetchFn: async (params: { empireUuid: string }): Promise<boolean> => {
 			const data = await callDeleteEmpire(params.empireUuid);
-			await invalidate(EMPIRES);
+			await changed([EMPIRES], params.empireUuid);
 			return data;
 		},
 		persist: false,
@@ -193,9 +209,9 @@ export const planningQueries = {
 		fetchFn: async (params: {
 			empireUuid: string;
 			data: EmpirePayload;
-		}): Promise<PlanEmpire> => {
+		}): Promise<EmpireSaveResponse> => {
 			const data = await callPatchEmpire(params.empireUuid, params.data);
-			await invalidate(EMPIRES);
+			await changed([EMPIRES], params.empireUuid);
 			return data;
 		},
 		persist: false,
@@ -216,7 +232,7 @@ export const planningQueries = {
 		}): Promise<PlanEmpireElement[]> => {
 			const data = await callPatchEmpirePlanJunctions(params.junctions);
 			// junctions change both empires and their plans
-			await invalidate(EMPIRES, PLANS);
+			await changed([EMPIRES, PLANS]);
 			return data;
 		},
 		persist: false,
@@ -227,7 +243,7 @@ export const planningQueries = {
 			junctions: CXEmpireJunction[];
 		}): Promise<CX[]> => {
 			const data = await callUpdateCXJunctions(params.junctions);
-			await invalidate(EMPIRES, CXS);
+			await changed([EMPIRES, CXS]);
 			return data;
 		},
 		persist: false,
@@ -246,7 +262,7 @@ export const planningQueries = {
 		key: () => ["planningdata", "cx", "create"],
 		fetchFn: async (params: { cxName: string }): Promise<CX> => {
 			const data = await callCreateCX(params.cxName);
-			await invalidate(CXS);
+			await changed([CXS], data.uuid);
 			return data;
 		},
 		persist: false,
@@ -257,14 +273,16 @@ export const planningQueries = {
 			cxName: string;
 			cxUuid: string;
 			data: CXData;
+			baseModifiedAt?: string;
 		}): Promise<CX> => {
 			const data = await callPatchCX(
 				params.cxName,
 				params.cxUuid,
-				params.data
+				params.data,
+				params.baseModifiedAt
 			);
-			await invalidate(CXS);
-			usePlanningStore().setCX(params.cxUuid, data.cx_name, data.cx_data);
+			await changed([CXS], params.cxUuid);
+			usePlanningStore().setCX(data);
 			return data;
 		},
 		persist: false,
@@ -273,7 +291,7 @@ export const planningQueries = {
 		key: (params) => ["planningdata", "cx", "delete", params.cxUuid],
 		fetchFn: async (params: { cxUuid: string }): Promise<boolean> => {
 			const data = await callDeleteCX(params.cxUuid);
-			await invalidate(CXS);
+			await changed([CXS], params.cxUuid);
 			return data;
 		},
 		persist: false,
@@ -303,7 +321,7 @@ export const planningQueries = {
 			data: PlanCreateData;
 		}): Promise<PlanSaveCreateResponse> => {
 			const data = await callCreatePlan(params.data);
-			await invalidate(PLANS, EMPIRES);
+			await changed([PLANS, EMPIRES], data.uuid);
 			return data;
 		},
 		persist: false,
@@ -315,7 +333,7 @@ export const planningQueries = {
 			data: PlanSaveData;
 		}): Promise<PlanSaveCreateResponse> => {
 			const data = await callSavePlan(params.planUuid, params.data);
-			await invalidate(PLANS, EMPIRES);
+			await changed([PLANS, EMPIRES], params.planUuid);
 			return data;
 		},
 		persist: false,
@@ -329,6 +347,7 @@ export const planningQueries = {
 			const data = await callClonePlan(params.planUuid, params.cloneName);
 			await invalidate(EMPIRES);
 			await useQueryStore().invalidateKey([...PLANS, "list"]);
+			broadcastChange([EMPIRES, [...PLANS, "list"]], data.uuid);
 			return data;
 		},
 		persist: false,
@@ -342,6 +361,10 @@ export const planningQueries = {
 			await queryStore.invalidateKey([...PLANS, "list"]);
 			await queryStore.invalidateKey([...PLANS, params.planUuid]);
 			usePlanningStore().deletePlan(params.planUuid);
+			broadcastChange(
+				[EMPIRES, [...PLANS, "list"], [...PLANS, params.planUuid]],
+				params.planUuid
+			);
 			return data;
 		},
 		persist: false,

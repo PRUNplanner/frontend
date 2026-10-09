@@ -3,10 +3,11 @@ import { ref, type Ref } from "vue";
 
 // Util
 import { getObjectSize, inertClone } from "@/util/data";
+import { persistStorage } from "@/lib/persistStorage";
 
 // Types & Interfaces
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@/features/api/schemas/cxData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 import type {
@@ -119,11 +120,14 @@ export const usePlanningStore = defineStore(
 			});
 		}
 
-		function setCX(cxUuid: string, cxName: string, data: CXData): void {
-			if (cxs.value[cxUuid]) {
-				cxs.value[cxUuid].cx_name = cxName;
-				cxs.value[cxUuid].cx_data = data;
-			}
+		/**
+		 * Updates a known CX with its saved data
+		 * @author jplacht
+		 *
+		 * @param {CX} data Saved CX
+		 */
+		function setCX(data: CX): void {
+			if (cxs.value[data.uuid]) cxs.value[data.uuid] = inertClone(data);
 		}
 
 		/**
@@ -285,6 +289,7 @@ export const usePlanningStore = defineStore(
 	},
 	{
 		persist: {
+			storage: persistStorage,
 			pick: [
 				"plans",
 				"empires",

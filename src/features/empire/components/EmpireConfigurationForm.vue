@@ -4,21 +4,12 @@
 
 	// Types & Interfaces
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-	import type { PSelectOption } from "@/ui/ui.types";
+	import { factionOptions } from "@/features/empire/empire.constants";
 
 	// UI
 	import { PForm, PFormItem, PInputNumber, PInput, PSelect } from "@/ui";
 
 	const empire = defineModel<PlanEmpireElement>({ required: true });
-
-	const factionOptions: PSelectOption[] = [
-		{ label: "No Faction", value: "NONE" },
-		{ label: "Antares", value: "ANTARES" },
-		{ label: "Benten", value: "BENTEN" },
-		{ label: "Hortus", value: "HORTUS" },
-		{ label: "Moria", value: "MORIA" },
-		{ label: "Outside Region", value: "OUTSIDEREGION" },
-	];
 </script>
 
 <template>

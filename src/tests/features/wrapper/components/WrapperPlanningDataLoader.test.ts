@@ -9,6 +9,8 @@ import { mountComponent } from "@/tests/mountComponent";
 import { useQuery } from "@/lib/query_cache/useQuery";
 import { useUserStore } from "@/stores/userStore";
 import { trackUser } from "@/lib/analytics/useAnalytics";
+import { remoteChange } from "@/lib/crossTab";
+import { invalidate } from "@/lib/query_cache/queries/queries.util";
 
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
@@ -31,6 +33,7 @@ const empire = (id: string) => ({
 	empire_permits_used: 1,
 	empire_permits_total: 2,
 	plans: [],
+	modified_at: "v1",
 });
 
 const planRequests = () =>
@@ -176,5 +179,94 @@ describe("WrapperPlanningDataLoader with an empire list", () => {
 			[[empire(E2)]],
 		]);
 		expect(planRequests()).toEqual([`planning/empire/${E2}/plans/`]);
+	});
+
+	it("reloads loaded lists another tab changed, keeping the page", async () => {
+		const pinia = createPinia();
+		setActivePinia(pinia);
+		const cx = {
+			uuid: E1,
+			cx_name: "CX",
+			empires: [],
+			modified_at: "v1",
+			cx_data: {
+				cx_empire: [],
+				cx_planets: [],
+				ticker_empire: [],
+				ticker_planets: [],
+			},
+		};
+		mock.onGet(/planning\/empire\/$/).replyOnce(200, [empire(E1)]);
+		mock.onGet(/planning\/empire\/$/).reply(200, [empire(E1), empire(E2)]);
+		mock.onGet(/planning\/cx\/$/).reply(200, [cx]);
+
+		const { wrapper, component } = await mountComponent(
+			WrapperPlanningDataLoader,
+			{ empireList: true, empireUuid: E1, loadCX: true },
+			{ pinia }
+		);
+		await vi.waitFor(() =>
+			expect(component.emitted("complete")).toHaveLength(1)
+		);
+
+		// as the cross-tab receiver does for an empire change
+		await invalidate(["planningdata", "empire"]);
+		remoteChange.value = {
+			keys: [["planningdata", "empire"]],
+			uuid: E2,
+			seq: (remoteChange.value?.seq ?? 0) + 1,
+		};
+		// the list and the empire's plans
+		await vi.waitFor(() =>
+			expect(component.emitted("refreshed")).toHaveLength(2)
+		);
+
+		expect(component.emitted("data:empire:list")).toEqual([
+			[[empire(E1)]],
+			[[empire(E1), empire(E2)]],
+		]);
+		// the CX list wasn't changed, it isn't reloaded
+		expect(component.emitted("data:cx")).toHaveLength(1);
+		expect(loading(wrapper.text())).toBe(false);
+	});
+
+	it("a reloaded CX list keeps the selected CX", async () => {
+		const pinia = createPinia();
+		setActivePinia(pinia);
+		const cx = (id: string) => ({
+			uuid: id,
+			cx_name: `CX ${id}`,
+			empires: [],
+			modified_at: "v1",
+			cx_data: {
+				cx_empire: [],
+				cx_planets: [],
+				ticker_empire: [],
+				ticker_planets: [],
+			},
+		});
+		mock.onGet(/planning\/cx\/$/).replyOnce(200, [cx(E1)]);
+		mock.onGet(/planning\/cx\/$/).reply(200, [cx(E2), cx(E1)]);
+
+		const { component } = await mountComponent(
+			WrapperPlanningDataLoader,
+			{ loadCX: true },
+			{ pinia }
+		);
+		await vi.waitFor(() =>
+			expect(component.emitted("complete")).toHaveLength(1)
+		);
+
+		await invalidate(["planningdata", "cx"]);
+		remoteChange.value = {
+			keys: [["planningdata", "cx"]],
+			uuid: E2,
+			seq: (remoteChange.value?.seq ?? 0) + 1,
+		};
+		await vi.waitFor(() =>
+			expect(component.emitted("data:cx")).toHaveLength(2)
+		);
+
+		expect(component.emitted("update:cxUuid")).toEqual([[E1]]);
 	});
 });

@@ -73,6 +73,7 @@ describe("Empire Data API Calls", async () => {
 			empire_permits_total: 2,
 			uuid: "f39c84a5-e7ba-4aeb-a04d-0618df58fd74",
 			empire_name: "CAAP",
+			modified_at: "2026-10-01T12:00:00.000000Z",
 		};
 
 		mock.onPut(`/planning/empire/${fakeEmpireUuid}/`).reply(

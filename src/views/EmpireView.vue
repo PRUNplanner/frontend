@@ -3,6 +3,7 @@
 		computed,
 		type ComputedRef,
 		defineAsyncComponent,
+		onUnmounted,
 		ref,
 		type Ref,
 	} from "vue";
@@ -15,6 +16,9 @@
 	useHead({
 		title: `${t("empire.view_title")} | PRUNplanner`,
 	});
+
+	import { debounce } from "lodash-es";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
@@ -30,8 +34,7 @@
 		calculateEmpireCostOverview,
 		combineEmpireMaterialIO,
 		empireMaterialIOState,
-	} =
-		useMaterialIOUtil();
+	} = useMaterialIOUtil();
 	const { defaultEmpireUuid } = usePreferences();
 
 	// Components
@@ -77,6 +80,10 @@
 	import PSelect from "@/ui/components/PSelect.vue";
 	import PButton from "@/ui/components/PButton.vue";
 	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
+	import { useToast } from "@/ui";
+	const toast = useToast();
+	import { useRouter } from "vue-router";
+	const router = useRouter();
 
 	const props = defineProps({
 		empireUuid: {
@@ -113,16 +120,24 @@
 	 * @author jplacht
 	 *
 	 * @async
+	 * @param {boolean} [clearCache=false] Recalculate cached plans
+	 * @param {boolean} [quiet=false] Keep the page (and an open form's
+	 * edits) instead of the progress screen, show the results when done
 	 * @returns {Promise<void>}
 	 */
 
 	const cacheCalculatedPlans = new Map<string, IPlanResult>();
 	const { loadGameData, createContext } = usePlanContext();
 
-	async function calculateEmpire(clearCache = false): Promise<void> {
-		isCalculating.value = true;
-
-		calculatedPlans.value = {};
+	async function calculateEmpire(
+		clearCache = false,
+		quiet = false
+	): Promise<void> {
+		if (!quiet) {
+			isCalculating.value = true;
+			calculatedPlans.value = {};
+		}
+		const results: Record<string, IPlanResult> = {};
 		progressTotal.value = planData.value.length;
 		progressCurrent.value = 0;
 
@@ -143,8 +158,7 @@
 				);
 
 				if (cacheCalculatedPlans.has(cacheKey)) {
-					calculatedPlans.value[plan.uuid] =
-						cacheCalculatedPlans.get(cacheKey)!;
+					results[plan.uuid] = cacheCalculatedPlans.get(cacheKey)!;
 					progressCurrent.value++;
 				} else {
 					await Promise.resolve();
@@ -166,7 +180,7 @@
 							selectedCXUuid.value
 						)
 					);
-					calculatedPlans.value[plan.uuid] = result;
+					results[plan.uuid] = result;
 					progressCurrent.value++;
 
 					// cache
@@ -175,6 +189,7 @@
 					await new Promise((r) => setTimeout(r, 0));
 				}
 			}
+			calculatedPlans.value = results;
 		} catch (err) {
 			// e.g. game data missing, never persist a partial empire state
 			console.error(err);
@@ -191,7 +206,9 @@
 				useQuery("PatchEmpireState", {
 					empireUuid: selectedEmpire.value.uuid,
 					empireState: data,
-				}).execute().catch(console.error);
+				})
+					.execute()
+					.catch(console.error);
 		});
 	}
 
@@ -206,6 +223,40 @@
 		refEmpireList.value = await useQuery("GetAllEmpires").execute();
 		// trigger recalculation, changed config required new calculation
 		await calculateEmpire(true);
+	}
+
+	// another tab changed the empire or its plans; the list and the plans
+	// steps refresh one after the other, calculate once
+	const recalculateRefreshed = debounce(
+		() => calculateEmpire(true, true),
+		200
+	);
+	onUnmounted(() => recalculateRefreshed.cancel());
+
+	/**
+	 * Selects the empire the loader picked: the first one, when none is
+	 * selected or the selected one is gone. Gone from a list that had it
+	 * means deleted in another tab.
+	 *
+	 * @param {string} empireUuid Empire Uuid
+	 */
+	function selectLoadedEmpire(empireUuid: string): void {
+		if (
+			refEmpireList.value.some((e) => e.uuid === selectedEmpireUuid.value)
+		) {
+			trackEvent("app:remote_change", {
+				object_type: "empire",
+				has_unsaved_edits: false,
+				is_deleted: true,
+			});
+			toast(t("save_conflict.notice.deleted_elsewhere"), {
+				type: "error",
+				duration: 15_000,
+			});
+			// the route's empire wins over the selection, leave it
+			if (props.empireUuid) router.replace(`/empire/${empireUuid}`);
+		}
+		selectedEmpireUuid.value = empireUuid;
 	}
 
 	/**
@@ -346,13 +397,14 @@
 		empire-list
 		:empire-uuid="selectedEmpireUuid"
 		@data:empire:plans="(value: Plan[]) => (planData = value)"
-		@update:empire-uuid="(value: string) => (selectedEmpireUuid = value)"
+		@update:empire-uuid="selectLoadedEmpire"
 		@update:cx-uuid="
 			(value: string | undefined) => (selectedCXUuid = value)
 		"
 		@data:empire:list="
 			(value: PlanEmpireElement[]) => (refEmpireList = value)
-		">
+		"
+		@refreshed="recalculateRefreshed">
 		<template #default="{ empirePlanetList }">
 			<WrapperGameDataLoader
 				load-materials

@@ -16,7 +16,12 @@ mapping.
     plan's `PlanCOGCProgram`.
   - `createNewPlan`, `saveExistingPlan`, `reloadExistingPlan` and
     `cloneSharedPlan` go through `useQuery` (`CreatePlan`, `PatchPlan`,
-    `GetPlan`, `PostCloneSharedPlan`).
+    `GetPlan`, `PostCloneSharedPlan`). `createNewPlan` returns the uuid
+    and save version (`IPlanSaved`); `saveExistingPlan(uuid, data, base)`
+    returns that or `{ error: "conflict" | "deleted" | "failed" }`.
+- **`planDiff.ts`**: `diffPlan(from, to)` lists what changed between two
+  plan versions for the save conflict dialog, matched by building, hab,
+  expert and workforce type.
   - `getPlanNamePlanet(uuid)` looks a plan's name and planet up from the
     store.
   - `isEditDisabled(routeParams)` returns true for shared plans.

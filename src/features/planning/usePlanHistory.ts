@@ -180,6 +180,8 @@ export function usePlanHistory(
 		isRestoring: (): boolean => restoring,
 		/** the current state, to pass to `markSaved` after a save */
 		snapshot: serialize,
+		/** the last saved state, the base of a save conflict */
+		savedSnapshot: (): string => saved.value,
 		record,
 		wrap,
 	};
