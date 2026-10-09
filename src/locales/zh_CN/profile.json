@@ -83,7 +83,7 @@
 	},
 	"preferences": {
 		"title": "偏好设置",
-		"description": "你的偏好设置会保存在本地浏览器中，目前尚未与后端同步。你可以使用此面板查看并自定义 PRUNplanner 设置。",
+		"description": "Use this panel to review and customize your PRUNplanner settings.",
 		"form": {
 			"tool_preferences": "工具偏好设置",
 			"language": "语言",
