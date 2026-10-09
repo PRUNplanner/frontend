@@ -83,7 +83,7 @@
 	},
 	"preferences": {
 		"title": "Preferences",
-		"description": "Your preferences are saved locally in your browser and aren't synced with the backend yet. Use this panel to review and customize your PRUNplanner settings.",
+		"description": "Use this panel to review and customize your PRUNplanner settings.",
 		"form": {
 			"tool_preferences": "Tool Preferences",
 			"language": "Language",
