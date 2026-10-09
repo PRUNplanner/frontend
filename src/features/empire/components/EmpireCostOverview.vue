@@ -5,7 +5,10 @@
 	import { formatNumber, formatPercent } from "@/util/numbers";
 
 	// Types & Interfaces
-	import type { IEmpireCostOverview } from "@/features/empire/empire.types";
+	import type {
+		IEmpireCostOverview,
+		IEmpireShippingDemand,
+	} from "@/features/empire/empire.types";
 
 	// UI
 	import { PValue } from "@/ui";
@@ -13,6 +16,10 @@
 	const props = defineProps({
 		costOverview: {
 			type: Object as PropType<IEmpireCostOverview>,
+			required: true,
+		},
+		shippingDemand: {
+			type: Object as PropType<IEmpireShippingDemand>,
 			required: true,
 		},
 	});
@@ -63,6 +70,41 @@
 			</div>
 			<div class="text-white text-xl">
 				<PValue :value="profitPerArea" />
+			</div>
+		</div>
+		<!-- second row, centred under Cost and Profit -->
+		<div class="sm:col-3">
+			<div class="text-muted text-xs">
+				{{ $t("empire.cost_overview.shipping") }}
+				({{ $t("plan.components.storage.table.weight") }})
+			</div>
+			<div class="text-white text-xl">
+				{{ formatNumber(shippingDemand.dailyWeight) }}
+			</div>
+			<div class="text-muted text-xs">
+				{{ $t("plan.components.storage.table.import") }}
+				{{ formatNumber(shippingDemand.dailyWeightImport) }}
+			</div>
+			<div class="text-muted text-xs">
+				{{ $t("plan.components.storage.table.export") }}
+				{{ formatNumber(shippingDemand.dailyWeightExport) }}
+			</div>
+		</div>
+		<div>
+			<div class="text-muted text-xs">
+				{{ $t("empire.cost_overview.shipping") }}
+				({{ $t("plan.components.storage.table.volume") }})
+			</div>
+			<div class="text-white text-xl">
+				{{ formatNumber(shippingDemand.dailyVolume) }}
+			</div>
+			<div class="text-muted text-xs">
+				{{ $t("plan.components.storage.table.import") }}
+				{{ formatNumber(shippingDemand.dailyVolumeImport) }}
+			</div>
+			<div class="text-muted text-xs">
+				{{ $t("plan.components.storage.table.export") }}
+				{{ formatNumber(shippingDemand.dailyVolumeExport) }}
 			</div>
 		</div>
 	</div>
