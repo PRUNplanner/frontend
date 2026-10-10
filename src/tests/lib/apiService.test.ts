@@ -193,6 +193,7 @@ describe("ApiService", () => {
 
 		it("validation error of a request payload", async () => {
 			await expect(
+				// @ts-expect-error invalid payload on purpose
 				apiService.post(PLAN, { id: "nope" }, schema, schema)
 			).rejects.toThrowError(/^Validation error/);
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
-import axios, { isCancel } from "axios";
+import axios, { type AxiosRequestConfig, isCancel } from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import axiosSetup from "@/util/axiosSetup";
@@ -126,7 +126,7 @@ describe("axiosSetup: a session that can't be refreshed", () => {
 	it("asks again for every request the dead token failed", async () => {
 		route.value = { meta: {} };
 		const logout = vi.spyOn(userStore, "logout");
-		const reply = (config: { headers?: { Authorization?: string } }) =>
+		const reply = (config: AxiosRequestConfig): [number, string?] =>
 			config.headers?.Authorization ? [401] : [200, "public"];
 		mock.onGet("/shared").reply(reply);
 		mock.onGet("/planet").reply(reply);

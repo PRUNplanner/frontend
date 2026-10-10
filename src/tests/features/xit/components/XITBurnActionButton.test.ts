@@ -332,7 +332,7 @@ describe("XITBurnActionButton", () => {
 	});
 
 	it("copies the XIT JSON", async () => {
-		const writeText = vi.fn(() => Promise.resolve());
+		const writeText = vi.fn((_text: string) => Promise.resolve());
 		Object.defineProperty(navigator, "clipboard", {
 			value: { writeText },
 			configurable: true,

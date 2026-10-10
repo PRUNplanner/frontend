@@ -238,6 +238,7 @@ describe("PlanConstructionCart", () => {
 		// @ts-expect-error mock data
 		await exchangesStore.setMany(exchanges);
 		await materialsStore.setMany(materials);
+		// @ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
 		await useMaterialData().preload();
 		await (await useBuildingData()).preloadBuildings();

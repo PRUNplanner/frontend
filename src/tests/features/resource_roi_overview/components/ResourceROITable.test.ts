@@ -87,7 +87,10 @@ async function mountTable(resultData = RESULTS) {
 const filters = (wrapper: VueWrapper) =>
 	wrapper.findComponent(ResourceROITableFilters);
 
-const optionValues = (wrapper: VueWrapper, prop: string) =>
+const optionValues = (
+	wrapper: VueWrapper,
+	prop: "planetOptions" | "buildingOptions"
+) =>
 	(filters(wrapper).props(prop) as { value: string }[]).map((o) => o.value);
 
 /** planet and building per row */

@@ -416,7 +416,9 @@ describe("checkEntryStatusAndRefresh: expired planets", () => {
 
 describe("checkEntryStatusAndRefresh: failed refreshes", () => {
 	let store: ReturnType<typeof useQueryStore>;
+	// @ts-expect-error mock query repository
 	const autoFetch = getQueryDefinition("autoRefetchQuery").fetchFn as Mock;
+	// @ts-expect-error mock query repository
 	const testFetch = getQueryDefinition("testQuery").fetchFn as Mock;
 	const getMultiple = getQueryDefinition("GetMultiplePlanets")
 		.fetchFn as Mock;
@@ -429,6 +431,7 @@ describe("checkEntryStatusAndRefresh: failed refreshes", () => {
 
 	// a successful fetch at 1000, then a failed refresh at 3000
 	async function failRefresh(err: Error) {
+		// @ts-expect-error mock query repository
 		await store.execute("autoRefetchQuery", "a");
 		autoFetch.mockRejectedValueOnce(err);
 		vi.setSystemTime(3000);
@@ -493,6 +496,7 @@ describe("checkEntryStatusAndRefresh: failed refreshes", () => {
 
 	it("keeps an errored entry that is not refreshed, without refetch", async () => {
 		testFetch.mockRejectedValueOnce(apiError(undefined));
+		// @ts-expect-error mock query repository
 		await expect(store.execute("testQuery", "a")).rejects.toThrow();
 
 		vi.setSystemTime(60_000);

@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { flushPromises, type VueWrapper } from "@vue/test-utils";
+import {
+	type BaseWrapper,
+	flushPromises,
+	type VueWrapper,
+} from "@vue/test-utils";
 
 import PlanetSearchHeader from "@/features/planet_search/components/PlanetSearchHeader.vue";
 import PlanetSearchResultsBar from "@/features/planet_search/components/PlanetSearchResultsBar.vue";
@@ -24,7 +28,7 @@ const saved = [
 ];
 const refName = () => "ref";
 
-const button = (w: VueWrapper, text: string) =>
+const button = (w: BaseWrapper<Node>, text: string) =>
 	w.findAll("button").find((b) => b.text() === text)!;
 const bodyButton = (text: string) =>
 	[...document.body.querySelectorAll("button")].find(
@@ -103,11 +107,11 @@ describe("PlanetSearchHeader actions", () => {
 		).toBe(true);
 		expect(group.text()).toContain("planet_search.header.saved");
 		for (const key of ["manage", "save", "copy_link", "reset"])
-			expect(button(group as VueWrapper, `planet_search.header.${key}`)).toBeDefined();
+			expect(button(group, `planet_search.header.${key}`)).toBeDefined();
 
-		await button(group as VueWrapper, "planet_search.header.copy_link").trigger("click");
+		await button(group, "planet_search.header.copy_link").trigger("click");
 		expect(header.emitted("copy")).toHaveLength(1);
-		await button(group as VueWrapper, "planet_search.header.reset").trigger("click");
+		await button(group, "planet_search.header.reset").trigger("click");
 		expect(header.emitted("reset")).toHaveLength(1);
 	});
 });

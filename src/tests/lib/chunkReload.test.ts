@@ -29,8 +29,8 @@ describe("chunkReload", () => {
 		vi.stubGlobal("location", { reload, assign });
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		vi.spyOn(window, "addEventListener").mockImplementation(
-			(type: string, listener: EventListener) => {
-				listeners.push(listener);
+			(type: string, listener: EventListenerOrEventListenerObject) => {
+				listeners.push(listener as EventListener);
 				addEventListener(type, listener);
 			}
 		);

@@ -218,6 +218,8 @@ describe("useAnalytics", () => {
 				is_email_verified: true,
 				fio_apikey,
 				prun_username,
+				fio_status: "none",
+				fio_last_refreshed_at: null,
 			});
 
 			expect(identify).toHaveBeenCalledWith("7", {

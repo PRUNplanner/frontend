@@ -82,7 +82,6 @@ describe("Empire Data API Calls", async () => {
 		);
 
 		expect(
-			// @ts-expect-error mock data
 			await callPatchEmpire(fakeEmpireUuid, fakePatchPayload)
 		).toStrictEqual(fakePatchResponse);
 
@@ -108,7 +107,6 @@ describe("Empire Data API Calls", async () => {
 
 		mock.onPost(`/planning/empire/`).reply(200, fakePutResponse);
 
-		// @ts-expect-error mock data
 		expect(await callCreateEmpire(fakePutPayload)).toStrictEqual(
 			fakePutResponse
 		);

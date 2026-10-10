@@ -72,7 +72,8 @@ describe("useIndexedDBStore", () => {
 
 	it("getDB reopens after the browser closes the connection", async () => {
 		const db1 = await getDB();
-		forceCloseDatabase(unwrap(db1));
+		// fake-indexeddb types the db as `typeof FDBDatabase`, it takes an instance
+		forceCloseDatabase(unwrap(db1) as never);
 
 		const db2 = await getDB();
 

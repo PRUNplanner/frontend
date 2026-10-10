@@ -10,7 +10,7 @@
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"composite": true,
-		"lib": ["ESNext", "DOM"],
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
 		"strict": true,
 		"moduleResolution": "node",
 		"outDir": "./dist",

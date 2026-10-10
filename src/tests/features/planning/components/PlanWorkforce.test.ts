@@ -76,7 +76,7 @@ const texts = (wrapper: VueWrapper, index: number) =>
 	cells(wrapper, index).map((td) => td.text());
 /** lux1 / lux2 buttons of a row */
 const luxButtons = (wrapper: VueWrapper, index: number) =>
-	row(wrapper, index).findAllComponents(PButton);
+	row(wrapper, index).findAllComponents(PButton) as VueWrapper[];
 
 describe("PlanWorkforce", () => {
 	beforeEach(() => {
@@ -133,7 +133,9 @@ describe("PlanWorkforce", () => {
 		// pioneer lux1 only, settler lux2 only, engineer both
 		expect(
 			[0, 1, 2, 3].map((i) =>
-				luxButtons(wrapper, i).map((b) => b.props("type"))
+				luxButtons(wrapper, i).map(
+					(b) => (b.props() as { type: string }).type
+				)
 			)
 		).toEqual([
 			["success", "secondary"],
@@ -282,10 +284,11 @@ describe("PlanWorkforce", () => {
 		});
 
 		expect(texts(wrapper, 0).slice(1, 4)).toEqual(["5,000", "0", "0"]);
-		expect(luxButtons(wrapper, 0).map((b) => b.props("type"))).toEqual([
-			"secondary",
-			"success",
-		]);
+		expect(
+			luxButtons(wrapper, 0).map(
+				(b) => (b.props() as { type: string }).type
+			)
+		).toEqual(["secondary", "success"]);
 	});
 
 	it("disables the luxury buttons", async () => {

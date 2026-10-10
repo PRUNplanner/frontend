@@ -189,10 +189,16 @@ for (const [name, run] of batches) {
 
 describe("batch", () => {
 	for (const [name, run] of batches)
-		bench(name, run, {
-			iterations: 10,
-			warmupIterations: 1,
-			time: 0,
-			warmupTime: 0,
-		});
+		bench(
+			name,
+			async () => {
+				await run();
+			},
+			{
+				iterations: 10,
+				warmupIterations: 1,
+				time: 0,
+				warmupTime: 0,
+			}
+		);
 });

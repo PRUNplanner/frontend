@@ -72,6 +72,10 @@ const infrastructure = {
 	HBM: 0,
 	HBL: 0,
 	STO: 1,
+	STA: 0,
+	STE: 0,
+	STV: 0,
+	STW: 0,
 };
 
 import {

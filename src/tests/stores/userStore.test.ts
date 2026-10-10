@@ -317,7 +317,11 @@ describe("User Store", () => {
 	});
 
 	describe("hasFIO", async () => {
-		const hasFIOCases = [
+		const hasFIOCases: {
+			profile: UserProfile | undefined;
+			expected: boolean;
+			description: string;
+		}[] = [
 			{
 				profile: {
 					id: 1,
@@ -326,6 +330,8 @@ describe("User Store", () => {
 					is_email_verified: false,
 					fio_apikey: "foo",
 					prun_username: "moo",
+					fio_status: "none",
+					fio_last_refreshed_at: null,
 				},
 				expected: true,
 				description: "Proper values, true",
@@ -343,6 +349,8 @@ describe("User Store", () => {
 					is_email_verified: false,
 					fio_apikey: "",
 					prun_username: "",
+					fio_status: "none",
+					fio_last_refreshed_at: null,
 				},
 				expected: false,
 				description: "Empty strings, false",
@@ -355,6 +363,8 @@ describe("User Store", () => {
 					is_email_verified: false,
 					fio_apikey: "test",
 					prun_username: "",
+					fio_status: "none",
+					fio_last_refreshed_at: null,
 				},
 				expected: false,
 				description: "Username missing, false",
@@ -367,6 +377,8 @@ describe("User Store", () => {
 					is_email_verified: false,
 					fio_apikey: "",
 					prun_username: "moo",
+					fio_status: "none",
+					fio_last_refreshed_at: null,
 				},
 				expected: false,
 				description: "Apikey missing, false",
@@ -379,6 +391,8 @@ describe("User Store", () => {
 					is_email_verified: false,
 					fio_apikey: null,
 					prun_username: null,
+					fio_status: "none",
+					fio_last_refreshed_at: null,
 				},
 				expected: false,
 				description: "Nulls, false",
@@ -429,6 +443,8 @@ describe("User Store", () => {
 				is_email_verified: true,
 				fio_apikey: null,
 				prun_username: "moo",
+				fio_status: "none",
+				fio_last_refreshed_at: null,
 			};
 
 			const userStore = useUserStore();
@@ -503,7 +519,9 @@ describe("User Store", () => {
 		});
 
 		it("completes partial plan overrides persisted by older versions", async () => {
-			onTestFinished(() => vi.unstubAllGlobals());
+			onTestFinished(() => {
+				vi.unstubAllGlobals();
+			});
 			vi.stubGlobal(
 				"localStorage",
 				memoryStorage({

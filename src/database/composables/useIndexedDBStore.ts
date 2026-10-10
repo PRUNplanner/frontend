@@ -131,9 +131,7 @@ export function useIndexedDBStore<T extends object, K extends keyof T & string>(
 ) {
 	// Basic CRUD methods for all IndexedDBStores
 
-	async function get<K extends keyof T>(
-		key: KeyOfStore<T, K>
-	): Promise<T | undefined> {
+	async function get(key: KeyOfStore<T, K>): Promise<T | undefined> {
 		const db = await getDB();
 		return db.get(storeName, key);
 	}
