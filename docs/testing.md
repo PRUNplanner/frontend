@@ -116,11 +116,12 @@ Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
 
 ### Component tests
 
-Component tests are a **separate, local-only suite**. Every test under
+Component tests are a **separate suite**. Every test under
 `src/tests/**/components/**`, and view tests under `src/tests/views/`, is
-excluded from `pnpm test` (which CI runs), so they cost no GitHub Actions
-minutes. A view test stubs the `features/wrapper` loaders with a
-pass-through and seeds the stores instead; see `ExchangesView.test.ts`. Run them yourself before a PR that
+excluded from `pnpm test` and runs with `pnpm test:components` instead, in
+its own CI job on pull requests (`components.yml`, no coverage). A view
+test stubs the `features/wrapper` loaders with a pass-through and seeds the
+stores instead; see `ExchangesView.test.ts`. Run them before a PR that
 touches a tested component:
 
 ```bash

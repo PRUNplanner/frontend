@@ -1,6 +1,6 @@
 import baseConfig, { COMPONENT_TESTS } from "./vitest.config";
 
-// local only: `pnpm test:components`, CI runs `pnpm test` which excludes these.
+// `pnpm test:components`, its own CI job on PRs (components.yml); `pnpm test` excludes these
 // plain spread on purpose, mergeConfig would concatenate the exclude arrays
 export default {
 	...baseConfig,
