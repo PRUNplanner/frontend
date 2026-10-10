@@ -28,6 +28,7 @@ import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	trackEvent: vi.fn(),
+	trackException: vi.fn(),
 	trackUser: vi.fn(),
 	identifyUser: vi.fn(),
 	resetUser: vi.fn(),
@@ -349,6 +350,48 @@ describe("ChangeProfile", () => {
 		expect(saveType(wrapper)).toBe("error");
 		expect(saveButton(wrapper).attributes("aria-busy")).toBe("false");
 		expect(values(wrapper).at(2)).toBe("not-an-email");
+	});
+
+	it("sends no second patch while one is in flight", async () => {
+		let answer!: () => void;
+		mock.onPatch(PROFILE_URL).reply(
+			() =>
+				new Promise((r) => {
+					answer = () => r([200, profile()]);
+				})
+		);
+		const { wrapper } = await mountProfile(profile());
+
+		await save(wrapper);
+		expect(saveButton(wrapper).props("disabled")).toBe(true);
+		// the guard, past the disabled button
+		saveButton(wrapper).vm.$emit("click");
+		await save(wrapper);
+		expect(mock.history.patch).toHaveLength(1);
+
+		answer();
+		await flushPromises();
+		expect(saveButton(wrapper).props("disabled")).toBe(false);
+	});
+
+	it("asks to wait when the patch is throttled", async () => {
+		mock.onPatch(PROFILE_URL).reply(429, {
+			detail: "Request was throttled. Expected available in 42 seconds.",
+		});
+		vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper } = await mountProfile(profile());
+
+		await save(wrapper);
+
+		const alerts = wrapper.findAll("[role=alert]");
+		expect(alerts).toHaveLength(1);
+		expect(alerts[0].text()).toBe("profile.change_profile.throttled");
+
+		mock.resetHandlers();
+		mock.onPatch(PROFILE_URL).reply(200, profile());
+		mock.onGet(PROFILE_URL).reply(200, profile());
+		await save(wrapper);
+		expect(wrapper.findAll("[role=alert]")).toHaveLength(0);
 	});
 
 	it("shows a verified email as a checked, disabled checkbox", async () => {

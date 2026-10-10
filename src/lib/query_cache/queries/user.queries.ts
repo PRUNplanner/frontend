@@ -136,7 +136,9 @@ export const userQueries = {
 					params.code,
 					params.new_password
 				);
-			} catch {
+			} catch (err) {
+				// throttled: the caller shows its own message
+				if ((err as { status?: number }).status === 429) throw err;
 				return {
 					detail: "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
 				};

@@ -91,7 +91,21 @@ describe("User Store", () => {
 
 		expect(callUserLogin).toHaveBeenCalledWith(mockUsername, mockPassword);
 
-		expect(result).toBe(true);
+		expect(result).toBe("ok");
+	});
+
+	it("Perform Login: throttled", async () => {
+		const userStore = useUserStore();
+
+		(
+			callUserLogin as unknown as ReturnType<typeof vi.fn>
+		).mockRejectedValue(
+			Object.assign(new Error("throttled"), { status: 429 })
+		);
+
+		expect(await userStore.performLogin("testuser", "testpassword")).toBe(
+			"throttled"
+		);
 	});
 
 	it("Perform Login and set token: error response", async () => {
@@ -110,7 +124,7 @@ describe("User Store", () => {
 		const result = await userStore.performLogin(mockUsername, mockPassword);
 		expect(callUserLogin).toHaveBeenCalledWith(mockUsername, mockPassword);
 
-		expect(result).toBe(false);
+		expect(result).toBe("failed");
 	});
 
 	it("Perform Token Refresh", async () => {

@@ -33,6 +33,7 @@
 	const isUpdating: Ref<boolean> = ref(false);
 	const wasSaved: Ref<boolean> = ref(true);
 	const codeResendRequested: Ref<boolean> = ref(false);
+	const isThrottled: Ref<boolean> = ref(false);
 
 	// backend error codes per FIO field, shown under the field
 	type FIOField = "fio_apikey" | "prun_username";
@@ -80,6 +81,8 @@
 	);
 
 	async function patchProfile(): Promise<void> {
+		if (isUpdating.value) return;
+
 		trackEvent("account:profile_update");
 
 		const fioApiKey = localProfile.fio_apikey?.replace(/ /g, "") ?? null;
@@ -99,6 +102,7 @@
 		isUpdating.value = true;
 		fioErrors.value = {};
 		fioConnected.value = false;
+		isThrottled.value = false;
 
 		try {
 			await useQuery("PatchUserProfile", {
@@ -113,6 +117,7 @@
 			wasSaved.value = true;
 		} catch (err) {
 			console.error("Error patching user profile", err);
+			isThrottled.value = (err as { status?: number }).status === 429;
 			// DRF field errors: { field: [code] }
 			const data = (err as { responseData?: Record<string, unknown> })
 				.responseData;
@@ -148,10 +153,14 @@
 			</h2>
 			<PButton
 				:loading="isUpdating"
+				:disabled="isUpdating"
 				:type="wasSaved ? 'primary' : 'error'"
 				@click="patchProfile">
 				{{ $t("profile.change_profile.buttons.update_profile") }}
 			</PButton>
+		</div>
+		<div v-if="isThrottled" class="pt-3 text-sm text-negative" role="alert">
+			{{ $t("profile.change_profile.throttled") }}
 		</div>
 		<PForm v-if="localProfile">
 			<PFormSeperator>
