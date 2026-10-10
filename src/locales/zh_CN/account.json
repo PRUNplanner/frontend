@@ -3,6 +3,7 @@
 		"login": {
 			"title": "登录",
 			"error": "登录时出错。请检查您的用户名和密码。",
+			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
 				"login": "登录"
 			},
@@ -43,6 +44,7 @@
 		"password_reset": {
 			"title": "重置密码",
 			"info": "请输入系统发送到邮箱的验证码及新密码。",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
 			"buttons": {
 				"send": "发送重置密码"
 			},
