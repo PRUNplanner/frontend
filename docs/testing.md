@@ -25,7 +25,7 @@ pnpm test:watch / pnpm test:ui / pnpm test:coverage
   directly. **Never mutate a fixture.** Module imports are shared across
   tests, so clone it first (`structuredClone` / `deepClone`).
 - **Coverage.** It is always on (v8, lcov + html). Views, `components/`
-  folders, `ui/`, `layout/`, `features/wrapper/`, `queryRepository.ts` and `queries/*.queries.ts`, the
+  folders, `ui/`, `layout/`, `usePlanningDataLoader.ts`, `queryRepository.ts` and `queries/*.queries.ts`, the
   router and analytics are **excluded**, so tests target composables, stores,
   utils and the API layer.
 
