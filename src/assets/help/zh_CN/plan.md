@@ -10,7 +10,7 @@
 
 选择配方时，会出现该建筑可用配方的下拉列表。每个配方都会显示输入、运行时间和输出。系统还会自动计算并显示该建筑建造成本对应的每日利润（ȼ / 天）、单位面积利润（ȼ / 面积）以及 ROI（回本周期）。
 
-- 每日利润是按规划的交易所偏好设置出售产品后，扣除输入物资、劳动力和折旧成本后的净利润。
+- Profit per day is the net profit from selling the output at the plan's CX setting minus input, workforce, and depreciation costs. Workforce costs follow the plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.
 - 单位区域利润是将每日利润除以生产建筑所占区域，以及该建筑在“最优”布局中按比例分摊的必要 HAB 和 STO 区域后得到的数值（该布局用于配方 ROI 工具）。这样可以在不同建筑之间，用一致的标准比较配方盈利能力。
 - ROI 是该生产建筑的建造成本除以该建筑每日利润后得到的回本周期。
 
