@@ -3,6 +3,7 @@
 		"login": {
 			"title": "Anmelden",
 			"error": "Fehler beim Anmelden. Bitte überprüfe deinen Benutzernamen und dein Passwort.",
+			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
 				"login": "Anmelden"
 			},
@@ -43,6 +44,7 @@
 		"password_reset": {
 			"title": "Passwort zurücksetzen",
 			"info": "Bitte gib den an deine E-Mail gesendeten Code zusammen mit deinem neuen Passwort sein.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
 			"buttons": {
 				"send": "Passwort zurücksetzen"
 			},

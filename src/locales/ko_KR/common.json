@@ -1,89 +1,87 @@
 {
 	"navigation": {
-		"planning": "Planning",
-		"planning_short": "Plan",
-		"empire": "Empire",
-		"planet_search": "Planet Search",
-		"management": "Management",
-		"exchanges": "Exchanges",
-		"tools": "Tools",
-		"tools_short": "Tool",
-		"market_exploration": "Market Exploration",
-		"market_live": "Market Live",
-		"recipe_roi": "Recipe ROI",
-		"resource_roi": "Resource ROI",
-		"hq_calculator": "HQ Calculator",
-		"production_chains": "Production Chains",
-		"upkeep_price_calculator": "Upkeep Prices",
-		"fio_burn": "FIO Burn",
-		"fio_repair": "FIO Repair",
-		"account": "Account",
-		"account_short": "Acc",
-		"profile": "Profile",
+		"planning": "플래닝",
+		"planning_short": "플랜",
+		"empire": "제국",
+		"planet_search": "행성 탐색",
+		"management": "관리",
+		"exchanges": "거래소",
+		"tools": "도구",
+		"tools_short": "도구",
+		"market_exploration": "시장 탐색",
+		"market_live": "실시간 시세",
+		"recipe_roi": "레시피 수익률",
+		"resource_roi": "자원 수익률",
+		"hq_calculator": "HQ 계산기",
+		"production_chains": "생산 체인",
+		"upkeep_price_calculator": "유지비 가격",
+		"fio_burn": "FIO 소모량",
+		"fio_repair": "FIO 수리",
+		"account": "계정",
+		"account_short": "계정",
+		"profile": "프로필",
 		"api": "API",
-		"help": "Help",
-		"logout": "Logout",
+		"help": "도움말",
+		"logout": "로그아웃",
 		"fio": {
-			"backend": "Backend",
+			"backend": "백엔드",
 			"fio": "FIO",
-			"fio_active": "FIO Active",
-			"fio_inactive": "FIO Inactive",
-			"fio_syncing": "FIO Syncing",
-			"fio_no_data": "FIO Waiting for Data",
-			"fio_rejected": "FIO Key Rejected"
+			"fio_active": "FIO 활성화",
+			"fio_inactive": "FIO 비활성화",
+			"fio_syncing": "FIO 동기화 중",
+			"fio_no_data": "FIO 데이터를 기다리는 중",
+			"fio_rejected": "FIO 키 거부됨"
 		},
-		"collapse": "Collapse navigation",
-		"expand": "Expand navigation",
-		"menu": "Menu"
+		"collapse": "메뉴 접기",
+		"expand": "메뉴 확장",
+		"menu": "메뉴"
 	},
 	"buttons": {
-		"create": "Create",
-		"save": "Save",
-		"reload": "Reload",
-		"show": "Show",
-		"hide": "Hide",
-		"help": "Help",
-		"search": "Search",
-		"discard": "Discard",
-		"yes": "Yes",
-		"no": "No",
-		"delete": "Delete",
-		"cancel": "Cancel",
-		"clone_plan": "Clone Plan",
-		"clone_complete": "Cloning Complete",
-		"copy": "Copy",
-		"add": "Add",
-		"fullscreen": "Toggle fullscreen",
-		"edit": "Edit"
+		"create": "생성",
+		"save": "저장",
+		"reload": "새로고침",
+		"show": "보이기",
+		"hide": "숨기기",
+		"help": "도움말",
+		"search": "검색",
+		"discard": "무시",
+		"yes": "예",
+		"no": "아니오",
+		"delete": "삭제",
+		"cancel": "취소",
+		"copy": "복사",
+		"add": "추가",
+		"fullscreen": "전체 화면 전환",
+		"edit": "편집"
 	},
 	"ui": {
 		"placeholder": {
-			"please_input": "Please Input",
-			"please_select": "Please Select",
-			"search": "Search"
+			"please_input": "입력하십시오",
+			"please_select": "선택하세요",
+			"search": "검색"
 		},
 		"select": {
-			"no_results": "No Results",
-			"select_options": "Select Options"
+			"no_results": "결과 없음",
+			"select_options": "옵션 선택"
 		},
 		"input_number": {
-			"decrease": "Decrease",
-			"increase": "Increase"
+			"decrease": "감소",
+			"increase": "증가"
 		},
 		"pagination": {
-			"previous": "Previous page",
-			"next": "Next page",
-			"page": "Page {page}",
-			"more": "More pages"
+			"previous": "이전 페이지",
+			"next": "다음 페이지",
+			"page": "{page}페이지",
+			"more": "페이지 더 보기"
 		},
-		"language": "Language",
-		"page_load_failed": "This page couldn't load. Reload to get the latest version."
+		"language": "언어",
+		"page_load_failed": "이 페이지를 로드할 수 없습니다. 최신 버전을 이용하려면 다시 로드하세요."
 	},
 	"values": {
-		"never": "never"
+		"never": "하지 않음"
 	},
 	"charts": {
-		"other": "Other ({n})",
-		"empty": "Nothing to show"
+		"other": "기타({n})",
+		"empty": "표시할 내용 없음"
 	}
 }

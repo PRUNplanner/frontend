@@ -14,6 +14,7 @@
 	},
 	"change_profile": {
 		"title": "Profilo",
+		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
 			"update_profile": "Aggiorna Profilo",
 			"verify_email": "Verifica email",
@@ -83,7 +84,7 @@
 	},
 	"preferences": {
 		"title": "Opzioni",
-		"description": "Le opzioni sono salvate localmente nel browser e non sono ancora sincronizzate con il backend. Usa questo pannello per rivedere e personalizzare le opzioni di PRUNplanner.",
+		"description": "Use this panel to review and customize your PRUNplanner settings.",
 		"form": {
 			"tool_preferences": "Opzioni degli strumenti",
 			"language": "Lingua",

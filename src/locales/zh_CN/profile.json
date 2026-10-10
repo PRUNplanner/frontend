@@ -14,6 +14,7 @@
 	},
 	"change_profile": {
 		"title": "个人资料",
+		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
 			"update_profile": "更新个人资料",
 			"verify_email": "验证电子邮件",
@@ -22,27 +23,27 @@
 		},
 		"fio_info": "FIO 数据更新由 PRUNplanner 后端自动处理。",
 		"form": {
-			"fio_apikey": "FIO API Key",
+			"fio_apikey": "FIO API 密钥",
 			"prun_username": "PrUn 用户名",
 			"email_info": "邮箱不是必填项，但强烈建议填写，以提高账户安全性并用于密码找回。",
 			"email_address": "邮箱地址",
 			"email_verified": "邮箱已验证",
-			"fio_status": "FIO Status"
+			"fio_status": "FIO 状态"
 		},
-		"fio_connected": "Connected. Your data will appear in a few minutes.",
+		"fio_connected": "已连接。您的数据将稍后显示。",
 		"fio_status": {
-			"none": "Not connected. Enter your FIO API key and PrUn username.",
-			"syncing": "Connected, loading your FIO data.",
-			"ok": "Connected. Last FIO update {time}.",
-			"no_data": "Connected, but FIO has no data for you yet. Open Prosperous Universe with the FIO extension running.",
-			"invalid_credentials": "FIO rejected your API key. Enter a valid key and save again.",
-			"error": "FIO updates are failing right now. Check your FIO key and username."
+			"none": "未连接。请输入您的 FIO API 密钥和PrUn用户名。",
+			"syncing": "已连接，正在加载您的 FIO 数据。",
+			"ok": "已连接。FIO 最后更新于{time}。",
+			"no_data": "已连接，但 FIO 暂不持有您的数据。请在 FIO 拓展启用的状态下打开 PrUn。",
+			"invalid_credentials": "FIO 拒绝了您的 API 密钥。请输入一份有效的密钥并重新保存。",
+			"error": "FIO 更新当前失效。请核对您的 FIO 密钥和用户名。"
 		},
 		"fio_errors": {
-			"fio_required": "Enter both the FIO API key and the PrUn username.",
-			"fio_invalid_key": "FIO doesn't accept this API key.",
-			"fio_username_mismatch": "This API key belongs to a different PrUn username.",
-			"unknown": "Saving failed. Please try again."
+			"fio_required": "输入 FIO API 密钥和 PrUn 用户名。",
+			"fio_invalid_key": "FIO 不接受此 API 密钥。",
+			"fio_username_mismatch": "此 API 密钥属于另一 PrUn 用户。",
+			"unknown": "保存失败，请稍后重试。"
 		}
 	},
 	"storage_data": {
@@ -57,20 +58,20 @@
 	"fio_information": {
 		"title": "什么是 FIO？为什么要使用它？",
 		"help": {
-			"title": "5 个简单步骤：集成 FIO 与 PRUNplanner",
-			"p1": "FIO 是由社区开发的 {link}，用于收集你的游戏数据，并让这些数据可在 Prosperous Universe 外部使用，而且完全免费。",
+			"title": "五步实现 PRUNplanner 集成 FIO",
+			"p1": "FIO 是由社区开发的{link}，用于收集你的游戏数据，并让这些数据可在 Prosperous Universe 外部使用，而且完全免费。",
 			"p2": "安装 Chrome 或 Firefox 扩展，在打开 APEX 的情况下重新加载浏览器，然后点击浏览器右上角的扩展按钮创建账户。之后你继续游戏时，FIO 会自动收集（仅限）你的游戏数据。",
 			"p3": "现在你可以登录{link}查看你的数据，并创建一个 API 密钥。PRUNplanner 将使用它导入你的仓储数据（你在各处拥有的物资）以及站点数据（行星、飞船、仓库）。",
-			"p4": "创建 Key 很简单：前往 {link} 页面并点击“Create API Key”按钮。为你的 Key 输入一个名称（例如“PRUNplanner”）以及你的 FIO 密码。你不需要启用“Allow Writes”，因为 PRUNplanner 不会修改你的任何数据，只会读取并使用它。",
-			"p5": "等待 PRUNplanner 几分钟后，你的游戏数据就会显示出来。之后你就可以查看何时维修飞船、在创建或修改计划时查看已建建筑，以及判断何时为基地补给。",
+			"p4": "创建密钥很简单：前往{link}页面并点击“Create API Key”（创建API密钥）按钮。为你的密钥输入一个名称（例如“PRUNplanner”）以及你的 FIO 密码。你不需要启用“Allow Writes”（允许写入），因为 PRUNplanner 不会修改你的任何数据，只会读取并使用它。",
+			"p5": "等待 PRUNplanner 几分钟后，你的游戏数据就会显示出来。之后你就可以查看何时维修飞船、在创建或修改规划时查看已建建筑，以及判断何时为基地补给。",
 			"steps": {
-				"1": "下载并安装 {link}",
+				"1": "下载并安装{link}",
 				"2": "打开游戏，点击扩展按钮并注册你的 FIO 账户",
-				"3": "前往 FIO 网站，打开你的 {link}，并为 PRUNplanner 创建一个 API Key",
-				"4": "复制并在上方个人资料中输入你的 API Key 和 Prosperous Universe 用户名，然后点击“更新资料”按钮",
+				"3": "前往 FIO 网站，打开你的{link}，并为 PRUNplanner 创建一份 API 密钥",
+				"4": "复制并在上方个人资料中输入你的 API 密钥和 Prosperous Universe 用户名，然后点击“更新资料”按钮",
 				"5": "等待几分钟，让 PRUNplanner 获取你的数据，然后就可以使用更多规划功能。你的数据会在后台自动更新，无需额外操作。"
 			},
-			"refined_prun": "在增强游戏体验的同时，也可以看看 {link}：这是另一个浏览器扩展，可以大幅简化用户界面并添加大量功能。"
+			"refined_prun": "在增强游戏体验的同时，也可以看看{link}：这是另一个浏览器扩展，可以大幅简化用户界面并添加大量功能。"
 		},
 		"links": {
 			"browser_extension": "浏览器扩展",
@@ -83,31 +84,31 @@
 	},
 	"preferences": {
 		"title": "偏好设置",
-		"description": "你的偏好设置会保存在本地浏览器中，目前尚未与后端同步。你可以使用此面板查看并自定义 PRUNplanner 设置。",
+		"description": "使用此面板查看并修改您的 PRUNplanner 设置。",
 		"form": {
 			"tool_preferences": "工具偏好设置",
 			"language": "语言",
 			"color_palette": "调色板",
-			"palette_default": "默认 (绿色/红色)",
-			"palette_colorblind": "色盲(蓝色/橙色)",
+			"palette_default": "默认（绿色/红色）",
+			"palette_colorblind": "色盲（蓝色/橙色）",
 			"language_note": "我们希望让所有人都能使用 PRUNplanner。如果你希望看到自己的母语版本，或帮助我们完善现有翻译，欢迎加入我们的本地化项目：{link}。",
 			"default_empire": "默认帝国",
-			"default_cx": "默认 CX",
+			"default_cx": "默认交易所偏好",
 			"fio_burn": "FIO 消耗",
 			"red_threshold": "红色阈值",
 			"yellow_threshold": "黄色阈值",
 			"resupply_days": "补给天数",
 			"xit_origin": "XIT 来源",
-			"buy_from_cx": "XIT 从 CX 购买",
-			"plan_suggestions": "Plan suggestions",
-			"plan_suggestions_help": "Popular buildings and recipes on the planet, planet insights and a typical setup for empty plans",
-			"privacy": "Privacy",
-			"analytics": "Usage analytics",
-			"analytics_note": "Allows PRUNplanner to collect usage events, error reports and session recordings. This choice is stored in this browser only, so set it on each device you use.",
-			"analytics_dnt": "Your browser sends a Do-Not-Track or Global Privacy Control signal, so usage analytics stays off.",
-			"plan_specific": "计划专属设置",
-			"plan_specific_description": "这些设置在各个计划中单独管理。本部分展示你目前已自定义的偏好设置概览；如需修改，请前往对应的计划。",
-			"plan": "计划",
+			"buy_from_cx": "XIT 从交易所购买",
+			"plan_suggestions": "规划建议",
+			"plan_suggestions_help": "行星上受欢迎的建筑物和生产模板、 星球洞察和新规划的典型设置",
+			"privacy": "隐私",
+			"analytics": "使用分析",
+			"analytics_note": "允许 PRUNplanner 收集关键操作、错误报告和会话录制。此选项仅储存于浏览器，请在您使用的每台设备上进行设置。",
+			"analytics_dnt": "您的浏览器发送了一支“禁用跟踪”或“全局隐私控制”信号，因此使用分析将保持关闭。",
+			"plan_specific": "规划专属设置",
+			"plan_specific_description": "这些设置在各个规划中单独管理。本部分展示你目前已自定义的偏好设置概览；如需修改，请前往对应的规划。",
+			"plan": "规划",
 			"preferences": "偏好设置"
 		}
 	}

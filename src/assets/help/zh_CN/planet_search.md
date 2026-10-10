@@ -1,14 +1,14 @@
-**Planet Search** finds a planet you already know, or places for new production. Every change to a filter updates the results right away.
+**行星搜索** 可以找到你已经知道的行星，或用于新生产的地点。每次更改筛选条件都会立即更新结果。
 
-**Name or ID.** Type part of a planet's name or natural ID (e.g. "OT-580" or "Montem") in the box at the top. The name is one more filter: it combines with everything set in the filter panel. When the filters hide planets that match the name, a note above the results says how many and offers up to three changes that would show more of them, each with the number of planets it adds. _Show all_ keeps the name and resets every other filter, so you see every planet matching it.
+**名称或编号**。在顶部框中输入行星名称或自然编号的一部分（例如“OT-580”或“Montem”）。名称也是一个筛选条件：它会与筛选面板中设置的所有条件进行组合。当筛选条件隐藏了与名称匹配的行星时，结果上方会有一条提示，说明隐藏了多少颗，并提供最多三项能显示更多匹配行星的更改，每项都附带其增加的行星数量。**展示全部** 会保留名称并重置其他所有筛选条件，这样你就能看到所有与名称匹配的行星。
 
-**Materials.** Each group matches _any of_ or _all of_ its materials, and the groups combine with _all groups_ or _any group_. That covers searches like "(FEO and H2O) or (MAG and O)". Every material can have a minimum daily extraction in units per day.
+**材料**。每个分组按 _任一匹配_ 或 _全部匹配_ 来匹配其材料，各分组之间按 _全部分组匹配_ 或 _任一分组匹配_ 组合。这覆盖了诸如“(FEO 与 H2O) 或者 (MAG 与 O)”这样的搜索。每种材料都可以按“单位/天”设置最低每日开采量。
 
-**Planet conditions.** Pick Rocky and/or Gaseous planets, and whether they must be fertile. A new search starts with Rocky planets only. Gravity, pressure and temperature only matter through the extra building materials they require (MGC, BL, SEA, HSE, INS, TSH). Tick the ones you are willing to ship in; planets needing any other one are hidden, so with none ticked you only see planets that need no extra material.
+**行星条件**。选择 岩质 与/或 气态 行星，及其是否肥沃。新搜索默认仅限岩质行星。重力、压强和温度只影响其是否需要额外建材（MGC、BL、SEA、HSE、INS、TSH）。勾选你愿意运送的那些；任何需要其他建材的行星都会被隐藏，因此在都不勾选时，你只会看到不需要额外建材的行星。
 
-**COGC and infrastructure.** _Active COGC program_ keeps planets running one of the ticked programs right now. _Infrastructure_ is a separate filter and stricter: a planet must have every ticked building (LM Local Market, COGC Chamber of Commerce, WAR Warehouse, ADM Administration Center, SHY Shipyard).
+**全球商会和基础设施**。_生效的全球商会项目_ 只保留当前正在运行的已勾选某个项目的行星。_基础设施_ 是单独的筛选条件，并且更严格：行星必须拥有所有已勾选的建筑（LM 本地市场、COGC 全球商会、WAR 仓库、ADM 行星监管中心、SHY 船厂）。
 
-**Counts and Any.** The number next to an option that isn't ticked is how many planets you would get by ticking it. The _Any_ button in the header of Planet conditions, Accept extra building materials, Active COGC program and Infrastructure sets that section to the state that hides the fewest planets, and shows how many planets that gives: both surfaces and no fertility requirement, all extra building materials accepted, no COGC program ticked, no infrastructure ticked. It is highlighted and can no longer be clicked when the section is already there.
+**计数与任意匹配**。对于未勾选的选项，其旁边的数字是勾选它后你会搜到的总的行星数量。_任意_ 按钮位于“行星条件、接受额外建筑材料、生效的全球商会项目和基础设施”的标题栏中；点击后，会切换该部分状态以隐藏最少的行星，并显示这样可得到多少颗星球：不限地表、不限肥沃、不限建材、不限全球商会、不限基础设施。当该部分已经处于任意状态时，按钮会被高亮且无法再点击。
 
 **Distance.** Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns.
 

@@ -57,8 +57,8 @@
 	},
 	"analysis": {
 		"plan_profit": "Plan Profit (ȼ)",
-		"material_profits": "Материальные Выгоды",
-		"material_costs": "Стоимость материалов",
+		"material_profits": "Материальные Выгоды (ȼ)",
+		"material_costs": "Стоимость материалов (ȼ)",
 		"net_production": "Объем производства",
 		"net_consumption": "Объем потребления",
 		"exclusive_production": "Эксклюзивное производство",
@@ -103,6 +103,9 @@
 			"help": "Prices use the universe 30-day average. Change which exchange each material is bought and sold on in {exchanges}.",
 			"exchanges": "Exchanges"
 		}
+	},
+	"cost_overview": {
+		"shipping": "Shipping"
 	},
 	"empty": {
 		"title": "No empires yet",

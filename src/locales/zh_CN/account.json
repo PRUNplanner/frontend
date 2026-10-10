@@ -3,6 +3,7 @@
 		"login": {
 			"title": "登录",
 			"error": "登录时出错。请检查您的用户名和密码。",
+			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
 				"login": "登录"
 			},
@@ -43,6 +44,7 @@
 		"password_reset": {
 			"title": "重置密码",
 			"info": "请输入系统发送到邮箱的验证码及新密码。",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
 			"buttons": {
 				"send": "发送重置密码"
 			},
@@ -67,7 +69,7 @@
 			"title": "邮箱验证",
 			"info": "请输入系统发送到邮箱的验证码。若未收到，请检查垃圾邮件。",
 			"buttons": {
-				"send": "发送验证邮件"
+				"send": "验证邮件地址"
 			},
 			"form": {
 				"code_placeholder": "验证码"
@@ -81,7 +83,7 @@
 			"username": "例：你的游戏内昵称",
 			"password": "你的密码",
 			"new_password": "至少8个字符",
-			"email": "e.g. name{'@'}example.com",
+			"email": "例如：name{'@'}example.com",
 			"code": "邮箱里的验证码"
 		}
 	}

@@ -15,9 +15,9 @@
 		"paused": "已暂停"
 	},
 	"rule_type": {
-		"static": "数值",
+		"static": "值",
 		"previous": "上一次",
-		"previous_pct": "偏移 %",
+		"previous_pct": "百分比偏移",
 		"text": "文本"
 	},
 	"components": {
@@ -35,7 +35,7 @@
 		"alert_feed": {
 			"waiting": "正在等待触发提醒的市场事件……",
 			"table": {
-				"ticker_alert": "代码 / 提醒",
+				"ticker_alert": "信息签 / 提醒",
 				"severity": "严重程度",
 				"logic": "触发逻辑",
 				"event": "事件",
@@ -44,11 +44,11 @@
 		},
 		"details": {
 			"price": "价格",
-			"ask": "@:{'terms.ask'}: {value}",
-			"bid": "@:{'terms.bid'}: {value}",
+			"ask": "@:{'terms.ask'}：{value}",
+			"bid": "@:{'terms.bid'}：{value}",
 			"spread": "@:{'terms.spread'}",
 			"buy_volume": "买入量",
-			"vwap": "@:{'terms.vwap'}: {value}",
+			"vwap": "@:{'terms.vwap'}：{value}",
 			"change": "变化：{value}",
 			"sell_volume": "卖出量",
 			"buy_volume_value": "买入量：{value}",
@@ -60,14 +60,14 @@
 				"price": "@:terms.price (ȼ)",
 				"bid": "@:terms.bid (ȼ)",
 				"ask": "@:terms.ask (ȼ)",
-				"spread_pct": "价差 %",
-				"buy_volume": "买入量。",
-				"sell_volume": "卖出量。"
+				"spread_pct": "价差百分比",
+				"buy_volume": "买入量",
+				"sell_volume": "卖出量"
 			}
 		},
 		"history": {
 			"title": "数据历史",
-			"received": "已收到 {value} @:terms.material_ticker"
+			"received": "已收到{value}条@:{'terms.material_ticker'}"
 		},
 		"rule_builder": {
 			"buttons": {
@@ -95,7 +95,7 @@
 				"severity": "告警级别",
 				"status": "状态",
 				"logic_configuration": "逻辑配置",
-				"previous_datapoint": "Previous Datapoint"
+				"previous_datapoint": "上一数据点"
 			}
 		},
 		"detector": {
@@ -103,29 +103,29 @@
 			"operator": "运算符",
 			"target_type": "目标类型",
 			"fields": {
-				"material_ticker": "Ticker",
-				"exchange_code": "Exchange Code",
-				"price": "Price",
-				"bid": "Bid",
-				"ask": "Ask",
-				"price_change": "Price Change",
-				"price_change_pct": "Price Change (Percent)",
-				"bid_change": "Bid Change",
-				"ask_change": "Ask Change",
-				"demand": "Demand",
-				"supply": "Supply",
-				"traded": "Traded",
-				"volume": "Volume",
-				"buy_volume_total": "Buy Volume",
-				"sell_volume_total": "Sell Volume",
-				"buy_volume_change": "Buy Volume Change (Abs.)",
-				"sell_volume_change": "Sell Volume Change (Abs.)",
-				"buy_vwap": "Buy VWAP",
-				"sell_vwap": "Sell VWAP",
-				"lowest_sell_cost": "Best Ask Price",
-				"highest_buy_cost": "Best Bid Price",
-				"spread": "Spread",
-				"spread_pct": "Spread (Percent)"
+				"material_ticker": "信息签",
+				"exchange_code": "交易所代码",
+				"price": "价格",
+				"bid": "出价",
+				"ask": "要价",
+				"price_change": "价格变化",
+				"price_change_pct": "价格变化（百分比）",
+				"bid_change": "出价变化",
+				"ask_change": "要价变化",
+				"demand": "需求",
+				"supply": "供应",
+				"traded": "交易量",
+				"volume": "交易额",
+				"buy_volume_total": "买入量",
+				"sell_volume_total": "卖出量",
+				"buy_volume_change": "买入量变化（绝对值）",
+				"sell_volume_change": "卖出量变化（绝对值）",
+				"buy_vwap": "买入 VWAP",
+				"sell_vwap": "卖出 VWAP",
+				"lowest_sell_cost": "最佳要价",
+				"highest_buy_cost": "最佳出价",
+				"spread": "价差",
+				"spread_pct": "价差（百分比）"
 			}
 		}
 	}

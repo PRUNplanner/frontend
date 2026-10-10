@@ -3,6 +3,7 @@
 		"login": {
 			"title": "Se connecter",
 			"error": "Erreur de connexion. Veuillez vérifier votre nom d'utilisateur et mot de passe.",
+			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
 				"login": "Connexion"
 			},
@@ -43,6 +44,7 @@
 		"password_reset": {
 			"title": "Réinitialisez votre mot de passe",
 			"info": "Veuillez entrer le code reçu par e-mail ainsi que votre nouveau mot de passe.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
 			"buttons": {
 				"send": "Réinitialisation du mot de passe"
 			},

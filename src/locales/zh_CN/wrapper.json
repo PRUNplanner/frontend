@@ -1,21 +1,22 @@
 {
 	"loading": "正在加载数据……",
+	"retry": "Retry",
 	"gamedata": {
-		"material_data": "@:{terms.materials}数据",
-		"exchange_data": "@:{terms.exchanges}数据",
-		"building_data": "@:{terms.buildings}数据",
-		"recipe_data": "@:{terms.recipes}数据",
-		"planet_data": "@:terms.planets数据：{name}",
-		"planet_multiple_data": "@:terms.planet_plural数据：{names}"
+		"material_data": "@:{'terms.materials'}数据",
+		"exchange_data": "@:{'terms.exchanges'}数据",
+		"building_data": "@:{'terms.buildings'}数据",
+		"recipe_data": "@:{'terms.recipes'}数据",
+		"planet_data": "@:{'terms.planets'}数据：{name}",
+		"planet_multiple_data": "@:{'terms.planet_plural'}数据：{names}"
 	},
 	"planning_data": {
-		"shared_plan": "共享@:terms.plan配置",
-		"empires": "@:terms.empire配置",
-		"plan": "@:terms.plan配置",
-		"plans_all": "全部@:terms.plans_plural配置",
-		"planet_data": "@:terms.planets数据：{name}",
-		"cx": "@:terms.cx配置",
-		"shared_list": "共享@:terms.plans_plural配置",
-		"empire_plans": "@:terms.empire@:terms.plans_plural配置"
+		"shared_plan": "共享@:{'terms.plan'}配置",
+		"empires": "@:{'terms.empire'}配置",
+		"plan": "@:{'terms.plan'}配置",
+		"plans_all": "全部@:{'terms.plans_plural'}配置",
+		"planet_data": "@:{'terms.planets'}数据：{name}",
+		"cx": "@:{'terms.cx'}配置",
+		"shared_list": "共享@:{'terms.plans_plural'}配置",
+		"empire_plans": "@:{'terms.empire'}@:{'terms.plans_plural'}配置"
 	}
 }

@@ -3,6 +3,7 @@
 		"login": {
 			"title": "Вход",
 			"error": "Ошибка входа. Пожалуйста, проверьте имя пользователя и пароль.",
+			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
 				"login": "Вход"
 			},
@@ -43,6 +44,7 @@
 		"password_reset": {
 			"title": "Сбросить пароль",
 			"info": "Пожалуйста, введите код отправленный на вашу почту, а также новый пароль.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
 			"buttons": {
 				"send": "Сброс пароля"
 			},

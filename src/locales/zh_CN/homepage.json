@@ -1,118 +1,118 @@
 {
 	"navigation": {
-		"registration": "Create account",
-		"login": "Log in"
+		"registration": "新建账户",
+		"login": "登录"
 	},
 	"hero": {
-		"eyebrow": "Base and empire planner for Prosperous Universe",
-		"title": "Plan a base before you build it.",
-		"lead": "Pick a planet, add buildings and recipes, and watch daily profit, workforce, area and payback update as you go. Then group your bases into an empire and see what it makes, burns and has to ship.",
-		"cta": "Start planning, it's free",
-		"cta_logged_in": "Open your empire",
-		"how": "How it works",
-		"facts": "Free · Open source · Prices from FIO",
-		"image_alt": "The plan editor for an iron base on Montem: workforce, overview, production buildings and material I/O",
-		"image_caption": "An iron base on Montem (OT-580b): 19,313 ȼ profit a day, pays back in 64 days."
+		"eyebrow": "Prosperous Universe 的基地与帝国规划工具",
+		"title": "规划一个基地，在你开发之前。",
+		"lead": "选择一个星球，添加建筑物和配方，并盯紧每日利润、劳动力、面积和回本周期的更新。 然后将你的基地分配到帝国，看看它的生产、消耗和运输成本。",
+		"cta": "开始规划，免费使用",
+		"cta_logged_in": "掌管你的帝国",
+		"how": "如何使用",
+		"facts": "免费 · 开源 · FIO 价格数据",
+		"image_alt": "位于 Montem 的铁基地的规划编辑器：生产力、概览、生产建筑以及物料输入/输出",
+		"image_caption": "位于 Montem (OT-580b) 的铁基地：日利润 19,313 ȼ，64天回本。"
 	},
 	"setup": {
-		"title": "Three things to set up",
-		"lead": "Everything in PRUNplanner hangs off plans, empires and exchange preferences.",
+		"title": "三步即上手",
+		"lead": "PRUNplanner 中的一切均围绕着规划、帝国和交易所偏好展开。",
 		"plan": {
-			"label": "Plan",
-			"text": "One base on one planet: buildings, recipes, habitation, experts and COGC. Start from Planet Search.",
-			"alt": "Production buildings and recipes in the plan editor"
+			"label": "规划",
+			"text": "一颗行星上一座基地：建筑、生产模板、住房、专家以及全球商会，都从行星搜索开始。",
+			"alt": "规划编辑器中的生产建筑和生产模板"
 		},
 		"empire": {
-			"label": "Empire",
-			"text": "Your plans together. See total profit, and which materials you're short of or have spare across all bases.",
-			"alt": "Empire material I/O with surplus and deficit per material"
+			"label": "帝国",
+			"text": "你的规划合并到一起后的样子。看看总利润以及哪些物料在全部这些基地中存在缺口或盈余。",
+			"alt": "帝国物料输入/输出包含每种物料的盈余和缺口数据"
 		},
 		"exchange": {
-			"label": "Exchange preference",
-			"text": "Which CX prices to use, with your own prices per material or per planet. Every plan in the empire is priced with it.",
-			"alt": "An exchange preference with ticker overrides"
+			"label": "交易所偏好",
+			"text": "使用某处交易所的价格，或配置你自己的专属每种物料或行星的价格。帝国中的每份规划都会用它定价。",
+			"alt": "带有信息签覆盖的交易所偏好"
 		}
 	},
 	"most_used": {
-		"title": "What players use most",
-		"lead": "Where to settle, what pays back, and when a base runs dry.",
-		"needs_fio": "Needs FIO",
+		"title": "看看其它玩家都在用什么",
+		"lead": "基地修到哪、钱啥时候转回手里，以及基地啥时候会停摆。",
+		"needs_fio": "需要 FIO",
 		"planet_search": {
-			"label": "Planet Search",
-			"title": "Find the planet for your next base.",
-			"lead": "Filter every planet in the universe and start a plan from the result.",
-			"point_1": "Materials you want to extract, with a minimum per day",
-			"point_2": "Surface, gravity, pressure, temperature and fertility",
-			"point_3": "COGC program and infrastructure",
-			"point_4": "Compare up to four planets side by side",
-			"alt": "Planet Search: filters on the left, matching planets with their resources, COGC and infrastructure"
+			"label": "行星搜索",
+			"title": "为你的下一座基地找到对的球。",
+			"lead": "筛遍整个宇宙仅为找到最适合您后续规划的那一颗。",
+			"point_1": "你想开采的物料，当然要考虑最低日产量",
+			"point_2": "表面环境、重力、压强、温度和土壤肥沃度",
+			"point_3": "全球商会项目以及基础设施",
+			"point_4": "同时比较至多四颗候选行星",
+			"alt": "行星搜索：左侧的筛选条件将行星依据资源、全球商会以及基础设施进行匹配"
 		},
 		"resource_roi": {
-			"label": "Resource ROI",
-			"title": "See which planet pays back fastest.",
-			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan.",
-			"point_1": "Plan cost, daily profit and ROI in days",
-			"point_2": "Daily output and % of the best planet",
-			"point_3": "POPR, COGC, environment and infrastructure next to it",
-			"alt": "Resource ROI for ALO: planets ranked with daily output, plan cost, daily profit and ROI in days"
+			"label": "资源 ROI",
+			"title": "看看哪颗星球最会画K线。",
+			"lead": "选取一种资源和你的交易所偏好。带有这种设置的行星会获得一份包含财务信息的规划。",
+			"point_1": "规划成本、日利润以及 ROI 天数",
+			"point_2": "每日产出量和相对最佳行星的百分比",
+			"point_3": "随手便可查看人口报告、全球商会、环境和基础设施",
+			"alt": "ALO 的资源 ROI：行星依据日产量、规划成本、日利润和 ROI 天数排列"
 		},
 		"fio_burn": {
-			"label": "FIO Burn",
-			"title": "Know when a base runs out.",
-			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses.",
-			"point_1": "Days left per material and base",
-			"point_2": "Red and yellow thresholds you set",
-			"point_3": "A resupply list per base, exported as XIT actions",
-			"alt": "FIO Burn: burn per plan, with one base expanded to show consumption, stock and days left per material"
+			"label": "FIO 消耗",
+			"title": "提前知道基地何时停摆。",
+			"lead": "仅需链接你的 FIO 账户便可通过消耗界面将实际库存量与每份规划的用量进行比较。",
+			"point_1": "每座基地和每种物料的剩余天数",
+			"point_2": "自行调整红色和黄色阈值",
+			"point_3": "为每座基地分别列出的补给清单，并可直接导出为 XIT 操作",
+			"alt": "FIO 消耗：每份规划的消耗数据，并可扩展查看一座基地的每种物料的消耗、库存量和库余天数"
 		}
 	},
 	"tools": {
-		"title": "And the tools around it",
-		"lead": "Market data and calculators, priced from FIO. Link your FIO account and Repair uses your real bases too.",
-		"with_fio": "with FIO",
+		"title": "以及其它小工具",
+		"lead": "从 FIO 拉取价格信息的市场数据和计算器。连接你的 FIO 账户后还能让维修页面使用实际基地的数据。",
+		"with_fio": "使用 FIO",
 		"market_live": {
-			"label": "Market Live",
-			"text": "Live CX prices, and alerts from rules on price, spread and volume."
+			"label": "实时市场",
+			"text": "实时交易所价格，并依据价格、价差和交易量获得提醒。"
 		},
 		"market_exploration": {
-			"label": "Market Exploration",
-			"text": "Price and volume history per material and exchange."
+			"label": "市场探索",
+			"text": "每种物料在每处交易所的历史价格和交易量。"
 		},
 		"recipe_roi": {
-			"label": "Recipe ROI",
-			"text": "Every recipe ranked by payback at current prices."
+			"label": "生产模板 ROI",
+			"text": "依照当前价格排列每种生产模板的盈利能力。"
 		},
 		"production_chains": {
-			"label": "Production Chains",
-			"text": "What a material takes to make, all the way down."
+			"label": "生产链",
+			"text": "一种物料需要的所有原材料，直达源头。"
 		},
 		"hq_calculator": {
-			"label": "HQ Calculator",
-			"text": "Materials needed for your next HQ level."
+			"label": "总部计算器",
+			"text": "升级总部需要的全部材料列表。"
 		},
 		"repair": {
-			"label": "Repair",
-			"text": "When each of your buildings is due for repair."
+			"label": "维修",
+			"text": "让建筑维修不再捉襟见肘。"
 		},
 		"carts": {
-			"label": "Supply and Construction Cart",
-			"text": "Shopping lists per plan, exportable as XIT actions."
+			"label": "供应和建筑购物车",
+			"text": "每份规划的购物清单，还能导出为 XIT 操作。"
 		},
 		"upkeep": {
-			"label": "Upkeep Price Calculator",
-			"text": "ȼ per need point for safety, health, comfort, culture and education."
+			"label": "维护价格计算器",
+			"text": "每一点安全、健康、舒适、文化和教育需求背后的成本。"
 		}
 	},
 	"closing": {
-		"title": "Free, open source and translated by players.",
-		"text": "No ads, no paid tier. Code on GitHub, translations on Crowdin.",
-		"github": "View on GitHub",
-		"cta": "Start planning"
+		"title": "免费、开源，并由玩家翻译。",
+		"text": "无广告、无付费。源码在GitHub、本地化在Crowdin。",
+		"github": "前往 GitHub 查看",
+		"cta": "开始规划"
 	},
 	"footer": {
-		"made_in": "Made in Munich, with contributions from around the world.",
-		"imprint": "Imprint and terms",
-		"translate": "Translate on Crowdin",
-		"language": "Language"
+		"made_in": "汇聚四海之才华，于慕尼黑熔铸成器。",
+		"imprint": "条款、所有权与作者身份说明",
+		"translate": "前往 Crowdin 翻译",
+		"language": "语言"
 	}
 }

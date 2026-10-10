@@ -10,7 +10,7 @@
 
 제조법을 선택할 때, 해당 건물에서 사용할 수 있는 제조법들이 드롭다운으로 표시됩니다.  각 제조법에는 투입 자재, 소요 시간, 산출물이 표시됩니다.  The profit per day (ȼ / Day), profit per area (ȼ / Area), and ROI (payback period) for the building's construction cost are also automatically calculated and displayed.
 
-- 일일 수익은 계획의 CX 설정에 따라 산출물을 판매했을 때의 수익에서 투입 자재, 인력, 감가상각 비용을 차감한 순수익입니다.
+- Profit per day is the net profit from selling the output at the plan's CX setting minus input, workforce, and depreciation costs. Workforce costs follow the plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.
 - 면적당 수익은 해당 일일 수익을 생산 건물의 면적과, 건물의 “최적” 배치에서 필요한 HAB 및 STO의 비례 면적으로 나눈 값입니다 (제조법 ROI 도구에서도 사용되는 기준입니다).  이 값은 서로 다른 건물의 제조법 수익성을 일관된 기준으로 비교할 수 있도록 제공됩니다.
 - 투자 회수 기간은 해당 생산 건물의 건설 비용을 그 건물의 일일 수익으로 나눈 값입니다.
 

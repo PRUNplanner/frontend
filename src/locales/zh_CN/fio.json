@@ -11,7 +11,7 @@
 		},
 		"components": {
 			"overview": {
-				"title": "计划消耗概览",
+				"title": "规划消耗概览",
 				"table": {
 					"plan": "@:terms.plan",
 					"planet": "@:terms.planets",

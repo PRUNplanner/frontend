@@ -3,6 +3,7 @@
 		"login": {
 			"title": "Accedi",
 			"error": "Errore durante l'accesso. Controlla il tuo nome utente e password.",
+			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
 				"login": "Accedi"
 			},
@@ -43,6 +44,7 @@
 		"password_reset": {
 			"title": "Reimposta la tua password",
 			"info": "Inserisci il codice inviato alla tua email, insieme alla tua nuova password.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
 			"buttons": {
 				"send": "Reimposta password"
 			},

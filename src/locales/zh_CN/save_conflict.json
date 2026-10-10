@@ -1,0 +1,61 @@
+{
+	"title": "已于另一标签页中保存",
+	"text": "已在您打开后于另一标签页或设备上保存。在您选择前不会覆盖任何内容。",
+	"deleted_title": "已于另一标签页中删除",
+	"deleted_text": "已于另一标签页或设备上删除。您的更改仍保留于此。",
+	"theirs": "已于另一标签页中更改",
+	"mine": "您的更改",
+	"none": "无更改",
+	"both": "已于两个标签页中更改",
+	"more": "以及另外{n}项",
+	"loading": "正在加载保存的版本……",
+	"load_failed": "无法加载保存的版本。",
+	"copy_name": "{name}（副本）",
+	"option": {
+		"save_as_new": "另存为新计划",
+		"overwrite": "覆盖",
+		"reload": "重新加载",
+		"close": "继续编辑"
+	},
+	"option_help": {
+		"save_as_new": "将您的更改保存为副本，原始规划将保持不变。",
+		"overwrite": "将其它版本替换为您的版本。",
+		"reload": "放弃您的更改并加载保存的版本。"
+	},
+	"deleted_option_help": {
+		"save_as_new": "将您的修改创建为新规划。"
+	},
+	"type": {
+		"BUY": "买入",
+		"SELL": "卖出",
+		"BOTH": "买入和卖出"
+	},
+	"change": {
+		"name": "名称：{from} → {to}",
+		"permits": "许可：{from} → {to}",
+		"cogc": "COGC：{from} → {to}",
+		"corphq_on": "有集团总部",
+		"corphq_off": "无集团总部",
+		"added": "{label} added ({amount})",
+		"removed": "{label} removed",
+		"amount": "{label} {from} → {to}",
+		"recipe": "{label}: recipe changed",
+		"experts": "{label} experts {from} → {to}",
+		"lux_on": "{label} luxury {n} on",
+		"lux_off": "{label} luxury {n} off",
+		"faction": "Faction {from} → {to}",
+		"permits_used": "Permits used {from} → {to}",
+		"permits_total": "Permits total {from} → {to}",
+		"exchange": "{type} exchange {from} → {to}",
+		"exchange_planet": "{type} exchange {from} → {to} on {planet}",
+		"ticker": "{ticker} {type} price {from} → {to}",
+		"ticker_planet": "{ticker} {type} price {from} → {to} on {planet}"
+	},
+	"notice": {
+		"saved_elsewhere": "已于另一标签页中保存。您的更改已保留。",
+		"deleted_elsewhere": "已于另一标签页中删除。",
+		"reload": "重新加载",
+		"session_replaced": "您已于另一标签页中登录。请重新加载此页面以继续；其不再保存任何内容。",
+		"db_blocked": "旧版 PRUNplanner 已于另一标签页中打开。关闭或重新加载其它标签页以继续。"
+	}
+}

@@ -3,6 +3,7 @@
 		"login": {
 			"title": "Login",
 			"error": "Error logging in. Please check your username and password.",
+			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
 				"login": "Login"
 			},
@@ -43,6 +44,7 @@
 		"password_reset": {
 			"title": "Reset your Password",
 			"info": "Please enter the code sent to your email, along with your new password.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
 			"buttons": {
 				"send": "Reset Password"
 			},
