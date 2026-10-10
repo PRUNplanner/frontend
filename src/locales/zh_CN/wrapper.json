@@ -1,5 +1,6 @@
 {
 	"loading": "正在加载数据……",
+	"retry": "Retry",
 	"gamedata": {
 		"material_data": "@:{'terms.materials'}数据",
 		"exchange_data": "@:{'terms.exchanges'}数据",
