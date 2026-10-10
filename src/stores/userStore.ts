@@ -270,12 +270,12 @@ export const useUserStore = defineStore(
 		 * @async
 		 * @param {string} username
 		 * @param {string} password
-		 * @returns {Promise<boolean>}
+		 * @returns {Promise<"ok" | "throttled" | "failed">} "throttled" on a 429
 		 */
 		async function performLogin(
 			username: string,
 			password: string
-		): Promise<boolean> {
+		): Promise<"ok" | "throttled" | "failed"> {
 			try {
 				const tokenData: TokenResponse = await callUserLogin(
 					username,
@@ -292,10 +292,12 @@ export const useUserStore = defineStore(
 
 				await queryPreferences();
 
-				return true;
+				return "ok";
 			} catch (err) {
 				console.error(err);
-				return false;
+				return (err as { status?: number }).status === 429
+					? "throttled"
+					: "failed";
 			}
 		}
 

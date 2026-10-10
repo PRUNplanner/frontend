@@ -12,10 +12,10 @@ vi.mock("@/router", () => ({
 }));
 import router from "@/router";
 
-async function login(success = true) {
+async function login(result: "ok" | "throttled" | "failed" = "ok") {
 	const pinia = createPinia();
 	setActivePinia(pinia);
-	vi.spyOn(useUserStore(), "performLogin").mockResolvedValue(success);
+	vi.spyOn(useUserStore(), "performLogin").mockResolvedValue(result);
 
 	const { wrapper } = await mountComponent(LoginComponent, {}, { pinia });
 	const [username, password] = wrapper.findAll("input");
@@ -56,9 +56,21 @@ describe("LoginComponent", () => {
 
 	it("stays and shows the error after a failed login", async () => {
 		route.value = { name: "homepage" };
-		const wrapper = await login(false);
+		const wrapper = await login("failed");
 
 		expect(router.push).not.toHaveBeenCalled();
 		expect(wrapper.text()).toContain("account.components.login.error");
+		expect(wrapper.text()).not.toContain(
+			"account.components.login.throttled"
+		);
+	});
+
+	it("asks to wait instead of blaming the password when throttled", async () => {
+		route.value = { name: "homepage" };
+		const wrapper = await login("throttled");
+
+		expect(router.push).not.toHaveBeenCalled();
+		expect(wrapper.text()).toContain("account.components.login.throttled");
+		expect(wrapper.text()).not.toContain("account.components.login.error");
 	});
 });

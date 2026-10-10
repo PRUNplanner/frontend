@@ -15,7 +15,7 @@
 	const inputUsername: Ref<string | null> = ref(null);
 	const inputPassword: Ref<string | null> = ref(null);
 	const isLoggingIn: Ref<boolean> = ref(false);
-	const hasError: Ref<boolean> = ref(false);
+	const loginError: Ref<"throttled" | "failed" | null> = ref(null);
 
 	const canLogin = computed(() => {
 		if (inputUsername.value === null || inputUsername.value.length < 3)
@@ -30,7 +30,7 @@
 		if (!canLogin.value || isLoggingIn.value) return;
 
 		isLoggingIn.value = true;
-		hasError.value = false;
+		loginError.value = null;
 
 		const result = await userStore.performLogin(
 			inputUsername.value!,
@@ -39,7 +39,7 @@
 
 		isLoggingIn.value = false;
 
-		if (!result) hasError.value = true;
+		if (result !== "ok") loginError.value = result;
 		else {
 			let urlParams = new URLSearchParams(window.location.search);
 
@@ -59,8 +59,12 @@
 		<div class="text-xl text-white font-bold font-mono pb-3">
 			{{ $t("account.components.login.title") }}
 		</div>
-		<div v-if="hasError" class="pb-3 text-red-600">
-			{{ $t("account.components.login.error") }}
+		<div v-if="loginError" class="pb-3 text-red-600" role="alert">
+			{{
+				loginError === "throttled"
+					? $t("account.components.login.throttled")
+					: $t("account.components.login.error")
+			}}
 		</div>
 		<PForm as-form @submit="handleLogin">
 			<PFormSeperator>

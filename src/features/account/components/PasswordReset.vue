@@ -26,6 +26,7 @@
 	const inputCode: Ref<string | null> = ref(props.resetCode);
 	const inputPassword: Ref<string | null> = ref(null);
 	const isLoading: Ref<boolean> = ref(false);
+	const isThrottled: Ref<boolean> = ref(false);
 
 	const requestResponse: Ref<UserResponseDetail | null> = ref(null);
 
@@ -46,17 +47,22 @@
 
 		isLoading.value = true;
 		requestResponse.value = null;
+		isThrottled.value = false;
 
 		trackEvent("account:password_reset");
 
-		await useQuery("PostUserPasswordReset", {
-			email: inputEmail.value!,
-			code: inputCode.value!,
-			new_password: inputPassword.value!,
-		})
-			.execute()
-			.then((result) => (requestResponse.value = result))
-			.finally(() => (isLoading.value = false));
+		try {
+			requestResponse.value = await useQuery("PostUserPasswordReset", {
+				email: inputEmail.value!,
+				code: inputCode.value!,
+				new_password: inputPassword.value!,
+			}).execute();
+		} catch {
+			// the query only rethrows a 429
+			isThrottled.value = true;
+		} finally {
+			isLoading.value = false;
+		}
 	}
 </script>
 
@@ -69,6 +75,12 @@
 	</div>
 	<div v-if="requestResponse" class="pb-3 text-xs font-mono text-prunplanner">
 		{{ requestResponse.detail }}
+	</div>
+	<div
+		v-if="isThrottled"
+		class="pb-3 text-xs font-mono text-negative"
+		role="alert">
+		{{ $t("account.components.password_reset.throttled") }}
 	</div>
 	<div>
 		<PForm>

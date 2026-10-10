@@ -13,11 +13,11 @@ email verification, and requesting and performing a password reset.
 
 | Component | Calls |
 | --- | --- |
-| `LoginComponent.vue` | `userStore.performLogin(username, password)`. It stores the tokens, loads the profile, then navigates: to `?redirectTo=`, else to `/empire`, but a shared plan (`shared-plan` route) stays open |
+| `LoginComponent.vue` | `userStore.performLogin(username, password)`, which returns `"ok"`, `"throttled"` (429) or `"failed"`. On `"ok"` it has stored the tokens and loaded the profile, then navigates: to `?redirectTo=`, else to `/empire`, but a shared plan (`shared-plan` route) stays open. A 429 shows "too many login attempts" instead of the credentials error |
 | `RegistrationComponent.vue` | `PostUserRegistration` |
 | `VerifyEmailComponent.vue` | `PostUserVerifyEmail` / `PostUserResendEmailVerification` |
 | `RequestPasswordReset.vue` | `PostUserRequestPasswordReset` |
-| `PasswordReset.vue` | `PostUserPasswordReset` |
+| `PasswordReset.vue` | `PostUserPasswordReset`. It turns every error into a message, except a 429, which it rethrows so the component shows the throttled message |
 
 `useAuthPanel.ts` holds which header panel (login or registration) is open,
 as module state: `HomepageHeader` renders and toggles the panels,
