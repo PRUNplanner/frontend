@@ -56,7 +56,8 @@ export default defineConfig({
 				"**/queryRepository.ts",
 				"src/lib/query_cache/queries/*.queries.ts",
 				"**/QueryCacheView.vue",
-				"src/features/wrapper/**",
+				// tested through its component test (pnpm test:components)
+				"src/features/wrapper/usePlanningDataLoader.ts",
 				"src/util/axiosSetup.ts",
 				"**/*.d.ts",
 				"src/router/**",

@@ -45,9 +45,11 @@ when every step has finished.
 - **Nest the gates.** Put the planning loader outside the game-data loader
   when the planet list depends on the plans. `EmpireView` passes
   `:load-planet-multiple` computed from the plans.
-- **Coverage excludes this folder.** Keep its logic thin.
+- **Coverage** counts this folder except `usePlanningDataLoader.ts`, which
+  its component test covers. Keep its logic thin.
 
 ## Tests
 
-`src/tests/features/wrapper/components/WrapperPlanningDataLoader.test.ts`
-(`pnpm test:components`). Coverage excludes this folder.
+`src/tests/features/wrapper/useGameDataLoader.test.ts` (`pnpm test`) and
+`src/tests/features/wrapper/components/Wrapper*DataLoader.test.ts`
+(`pnpm test:components`, CI runs both).
