@@ -10,7 +10,7 @@ Each building added to the plan appears in this section.  Users should add a rec
 
 When selecting a recipe, a dropdown of that buildings recipes appears.  For each recipe, the inputs, duration, and output are given.  The profit per day (ȼ / Day), profit per area (ȼ / Area), and ROI (payback period) for the building's construction cost are also automatically calculated and displayed.
 
-- Profit per day is the net profit from selling the output at the plan's CX setting minus input, workforce, and depreciation costs.
+- Profit per day is the net profit from selling the output at the plan's CX setting minus input, workforce, and depreciation costs. Workforce costs follow the plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.
 - Profit per area is that profit per day divided by the area of the production building and a proportionate share of the necessary HABs and STOs from the buildings "optimal" layout (used in the Recipe ROI tool).  This is provided to allow a consistent measure of comparative recipe profitability across buildings.
 - ROI is the building cost for this production building divided by the profit per day of the building.
 
