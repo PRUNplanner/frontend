@@ -1,5 +1,9 @@
 import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
+import { expect } from "vitest";
+
+// Engine
+import { getBuildingWorkforceMaterials } from "@/features/planning/engine/workforce";
 
 import {
 	materialsStore,
@@ -13,7 +17,8 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Types & Interfaces
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { Building, Planet } from "@/features/api/schemas/gameData.schemas";
+import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
@@ -153,4 +158,29 @@ export function planetSearchWithN(): Planet[] {
 			} as Planet["resources"][number]);
 		return p;
 	});
+}
+
+/**
+ * The ROI tools compare buildings at full housing with both luxuries:
+ * every workforce type of every plan is fully housed with both luxuries,
+ * and every building's workforce cost is that fully provided reference.
+ */
+export function expectFullWorkforceCost(results: IPlanResult[]): void {
+	expect(results.length).toBeGreaterThan(0);
+
+	for (const result of results) {
+		for (const w of Object.values(result.workforce)) {
+			expect(w.lux1 && w.lux2).toBe(true);
+			expect(w.capacity).toBeGreaterThanOrEqual(w.required);
+		}
+
+		for (const b of result.production.buildings)
+			expect(b.workforceMaterials).toStrictEqual(
+				getBuildingWorkforceMaterials(
+					buildings.find(
+						(e) => e.building_ticker === b.name
+					) as unknown as Building
+				)
+			);
+	}
 }

@@ -21,6 +21,9 @@ import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
 import { useROIOverview } from "@/features/roi_overview/useROIOverview";
+import { usePlan } from "@/features/planning_data/usePlan";
+import { expectFullWorkforceCost } from "@/tests/features/planning/usePlanCalculation.fixtures";
+import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/database/services/usePlanetData", async () => {
 	const actual: any = await vi.importActual(
@@ -49,6 +52,24 @@ vi.mock("@/features/planning/usePlanCalculation", async () => {
 		usePlanCalculation: (...args: unknown[]) => {
 			const calculation = actual.usePlanCalculation(...args);
 			planCalculations.push(calculation);
+			return calculation;
+		},
+	};
+});
+
+// record every engine result, to check the workforce cost they use
+const planResults = vi.hoisted(() => [] as IPlanResult[]);
+
+vi.mock("@/features/planning/engine/calculatePlan", async () => {
+	const actual: any = await vi.importActual(
+		"@/features/planning/engine/calculatePlan"
+	);
+
+	return {
+		...actual,
+		calculatePlan: (...args: unknown[]) => {
+			const calculation = actual.calculatePlan(...args);
+			planResults.push(calculation.result);
 			return calculation;
 		},
 	};
@@ -103,6 +124,23 @@ describe("useROIOverview", async () => {
 		expect((await calculateItem(tnp)).length).toBe(3);
 		expect(planCalculations.length).toBe(0);
 	});
+
+	// like ROIOverviewView: a blank definition, every optimal setup
+	it(
+		"calculates with full housing and both luxuries",
+		{ timeout: 20_000 },
+		async () => {
+			const { calculate } = useROIOverview(
+				ref(usePlan().createBlankDefinition("KW-688c", null)),
+				ref(undefined)
+			);
+
+			planResults.length = 0;
+			await calculate();
+
+			expectFullWorkforceCost(planResults);
+		}
+	);
 
 	// full recipe sweep, slow under parallel load with coverage
 	it("calculate", { timeout: 20_000 }, async () => {
