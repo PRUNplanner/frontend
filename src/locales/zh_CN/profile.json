@@ -14,6 +14,7 @@
 	},
 	"change_profile": {
 		"title": "个人资料",
+		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
 			"update_profile": "更新个人资料",
 			"verify_email": "验证电子邮件",
