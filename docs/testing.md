@@ -39,15 +39,15 @@ pnpm test:watch / pnpm test:ui / pnpm test:coverage
     global `beforeEach`.
   - Seed data yourself in `beforeAll`/`beforeEach`.
 - **Env vars.** `import.meta.env` comes from `loadEnv("", "")`.
-- **Type checking.** `pnpm tsc` **does not type-check tests**
-  (`tsconfig.typecheck.json` excludes `src/tests`). Tests often use
-  `// @ts-expect-error mock data` when a fixture doesn't match the strict
-  types.
+- **Type checking.** `pnpm tsc` type-checks tests too, so a mock or
+  fixture that drifts from its type fails CI. Type mocks with the real type
+  (`const x: PlanEmpireElement = {...}`). Use `// @ts-expect-error mock data`
+  only for deliberately partial data; an unused one is an error as well. JSON
+  fixtures widen enums to `string`, so cast them (`as PlanEmpireElement[]`).
 - **Type-level tests** live in `*.test-d.ts` (for example
   `src/tests/lib/query_cache/queryRepository.test-d.ts`). `pnpm test` runs
-  them through `vitest --typecheck` with `tsconfig.vitest.json`, using
-  `expectTypeOf` and `// @ts-expect-error`. Only errors in these files
-  count (`ignoreSourceErrors`).
+  them through `vitest --typecheck` with `tsconfig.typecheck.json`, using
+  `expectTypeOf` and `// @ts-expect-error`.
 
 ## Patterns
 

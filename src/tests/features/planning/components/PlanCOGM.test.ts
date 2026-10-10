@@ -71,7 +71,6 @@ const COGM = {
 
 function seedCX(pinia: Pinia, data = cxData()) {
 	usePlanningStore(pinia).setCXs([
-		// @ts-expect-error partial CX
 		{
 			uuid: CX_UUID,
 			cx_name: "My CX",

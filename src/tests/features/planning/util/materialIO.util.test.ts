@@ -283,11 +283,12 @@ describe("Util: materialIO ", async () => {
 		expect(noResult).toBeUndefined();
 
 		const fakeIPlanEmpireElement: PlanEmpireElement = {
-			empire_faction: "Moria",
+			empire_faction: "MORIA",
 			empire_permits_used: 3,
 			empire_permits_total: 3,
 			uuid: "foo",
 			empire_name: "foo",
+			modified_at: "2026-01-01T00:00:00Z",
 			plans: [
 				{
 					uuid: "moo",

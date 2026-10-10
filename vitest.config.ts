@@ -29,11 +29,10 @@ export default defineConfig({
 			COMPONENT_TESTS,
 		],
 		environment: "jsdom",
-		// type-level tests (*.test-d.ts); `pnpm tsc` skips src/tests, whose
-		// other files aren't type clean, so only these files' errors count
+		// type-level tests (*.test-d.ts); `pnpm tsc` checks every other file
 		typecheck: {
 			enabled: true,
-			tsconfig: "./tsconfig.vitest.json",
+			tsconfig: "./tsconfig.typecheck.json",
 			ignoreSourceErrors: true,
 		},
 		// undo vi.stubGlobal / vi.stubEnv after each test

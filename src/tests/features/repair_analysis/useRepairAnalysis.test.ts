@@ -54,6 +54,8 @@ describe("useRepairAnalysis", async () => {
 				name: "EXT",
 				amount: 2,
 				dailyRevenue: -1565.000993316393,
+				workforceDailyCost: 0,
+				constructionCost: 0,
 				constructionMaterials: [
 					{ ticker: "BSE", input: 16, output: 0 },
 					{ ticker: "MCG", input: 100, output: 0 },
@@ -63,6 +65,8 @@ describe("useRepairAnalysis", async () => {
 				name: "FP",
 				amount: 17,
 				dailyRevenue: 84794.95120639441,
+				workforceDailyCost: 0,
+				constructionCost: 0,
 				constructionMaterials: [
 					{ ticker: "BBH", input: 3, output: 0 },
 					{ ticker: "BSE", input: 3, output: 0 },
@@ -74,6 +78,8 @@ describe("useRepairAnalysis", async () => {
 				name: "IVP",
 				amount: 3,
 				dailyRevenue: 29106.960063711726,
+				workforceDailyCost: 0,
+				constructionCost: 0,
 				constructionMaterials: [
 					{ ticker: "RSE", input: 4, output: 0 },
 					{ ticker: "RBH", input: 6, output: 0 },

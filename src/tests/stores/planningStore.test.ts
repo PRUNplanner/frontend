@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from "pinia";
 
 // stores
 import { usePlanningStore } from "@/stores/planningStore";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
@@ -24,7 +25,8 @@ describe("Planning Store", async () => {
 
 	describe("setters and getters", async () => {
 		it("setEmpires", async () => {
-			planningStore.setEmpires(empire_list);
+			// JSON imports widen enums like empire_faction to string
+			planningStore.setEmpires(empire_list as PlanEmpireElement[]);
 			expect(Object.keys(planningStore.empires).length).toBe(7);
 		});
 

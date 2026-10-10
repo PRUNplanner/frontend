@@ -85,14 +85,12 @@ describe("queryRepository", () => {
 			const queryStore = useQueryStore();
 
 			vi.mocked(api).mockRejectedValueOnce(new Error("network"));
-			await expect(
-				// @ts-expect-error union of query params
-				queryStore.execute(name, params)
-			).rejects.toThrow("network");
+			await expect(queryStore.execute(name, params)).rejects.toThrow(
+				"network"
+			);
 
 			// @ts-expect-error mock data
 			vi.mocked(api).mockResolvedValueOnce(data);
-			// @ts-expect-error union of query params
 			expect(await queryStore.execute(name, params)).toStrictEqual(data);
 			expect(api).toHaveBeenCalledTimes(2);
 		});
@@ -126,8 +124,7 @@ describe("queryRepository", () => {
 				"shared",
 				"list",
 			]);
-			// @ts-expect-error mock data
-			return { uuid: "shared-1" };
+			return { uuid: "shared-1", view_count: 0, created_at: new Date() };
 		});
 
 		await queryStore.execute("CreateSharedPlan", { planUuid: "plan-1" });
