@@ -65,4 +65,55 @@ describe("createPriceBook", () => {
 		expect(error).toHaveBeenCalledOnce();
 		error.mockRestore();
 	});
+
+	it("applies a planet exchange preference only on its own planet", () => {
+		const ci1 = { ask: 130, bid: 90 } as Exchange;
+		const lookup = (id: string) =>
+			id === "RAT.CI1" ? ci1 : getExchange(id);
+		const planets: CXData = {
+			cx_empire: [{ type: "BOTH", exchange: "UNIVERSE_30D" }],
+			cx_planets: [
+				{
+					planet: "OT-580b",
+					preferences: [{ type: "BOTH", exchange: "NC1_7D" }],
+				},
+				{
+					planet: "KW-688c",
+					preferences: [{ type: "BOTH", exchange: "CI1_ASK" }],
+				},
+			],
+			ticker_empire: [],
+			ticker_planets: [],
+		};
+		const price = (planet: string) =>
+			createPriceBook(() => planets, planet, lookup).getPrice(
+				"RAT",
+				"BUY"
+			);
+
+		expect(price("KW-688c")).toBe(130);
+		expect(price("OT-580b")).toBe(120);
+		expect(price("ZV-307d")).toBe(100);
+	});
+
+	it("uses the empire exchange preference of the requested type", () => {
+		const ci1 = { ask: 130, bid: 90 } as Exchange;
+		const split: CXData = {
+			cx_empire: [
+				{ type: "SELL", exchange: "CI1_BID" },
+				{ type: "BUY", exchange: "CI1_ASK" },
+			],
+			cx_planets: [],
+			ticker_empire: [],
+			ticker_planets: [],
+		};
+		const book = createPriceBook(
+			() => split,
+			undefined,
+			() => ci1
+		);
+
+		expect(book.getPrice("RAT", "BUY")).toBe(130);
+		expect(book.getPrice("RAT", "SELL")).toBe(90);
+	});
 });

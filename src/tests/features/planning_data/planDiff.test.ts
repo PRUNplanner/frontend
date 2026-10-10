@@ -167,4 +167,28 @@ describe("diffPlan", () => {
 		]);
 		expect(result.both).toStrictEqual(["infrastructure:HB1"]);
 	});
+
+	it("a zero amount equals a missing one, for recipes and habs", () => {
+		const to = plan();
+		to.plan_data.buildings[0].active_recipes.push({
+			recipeid: "EXT#2",
+			amount: 0,
+		});
+		to.plan_data.infrastructure.push({ building: "STO", amount: 0 });
+
+		expect(diffPlan(plan(), to)).toStrictEqual([]);
+	});
+
+	it("lists experts set back to 0", () => {
+		const to = plan();
+		to.plan_data.experts[1].amount = 0;
+
+		expect(diffPlan(plan(), to)).toStrictEqual([
+			{
+				area: "expert:Chemistry",
+				key: "experts",
+				params: { label: "Chemistry", from: 1, to: 0 },
+			},
+		]);
+	});
 });

@@ -160,4 +160,40 @@ describe("Market Detector Engine", () => {
 			processUserDetectors([mismatchConfig], mockOldData, mockNewData)
 		).toHaveLength(0);
 	});
+
+	it.each([
+		["gt", 149, true],
+		["gt", 150, false],
+		["lt", 151, true],
+		["lt", 150, false],
+		["eq", 150, true],
+		["eq", 151, false],
+		["neq", 151, true],
+		["neq", 150, false],
+		["eq", "Metal", true],
+		["eq", "metal", false],
+		["matches", "metal", true],
+		["matches", "Steel", false],
+	] as const)("%s %s fires: %s", (operator, value, fires) => {
+		const config = {
+			id: "op",
+			name: "Operator",
+			enabled: true,
+			severity: "HIGH",
+			logic: {
+				operator: "AND",
+				conditions: [
+					{
+						field: typeof value === "number" ? "price" : "category",
+						operator,
+						target: { type: "static", value },
+					},
+				],
+			},
+		} as DetectorConfig;
+
+		expect(
+			processUserDetectors([config], mockOldData, mockNewData)
+		).toHaveLength(fires ? 1 : 0);
+	});
 });
