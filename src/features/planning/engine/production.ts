@@ -70,7 +70,8 @@ export function calculateProduction(
 	const { planet, prices } = ctx;
 	const withRecipeOptions: boolean = input.recipeOptions ?? true;
 
-	// building information, built once per building ticker
+	// building information, built once per building ticker; it lives for
+	// this call only, so the plan workforce is fixed
 	const information = new Map<string, IBuildingInformation>();
 	const informationFor = (name: string): IBuildingInformation => {
 		const known = information.get(name);
@@ -95,8 +96,7 @@ export function calculateProduction(
 			),
 			workforceMaterials: getBuildingWorkforceMaterials(
 				buildingData,
-				true,
-				true
+				workforce
 			),
 		};
 		information.set(name, built);

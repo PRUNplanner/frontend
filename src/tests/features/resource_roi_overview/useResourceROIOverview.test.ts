@@ -20,6 +20,8 @@ import {
 } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { useBuildingData } from "@/database/services/useBuildingData";
+import { expectFullWorkforceCost } from "@/tests/features/planning/usePlanCalculation.fixtures";
+import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -45,6 +47,24 @@ vi.mock("@/features/planning/usePlanCalculation", async () => {
 		usePlanCalculation: (...args: unknown[]) => {
 			const calculation = actual.usePlanCalculation(...args);
 			planCalculations.push(calculation);
+			return calculation;
+		},
+	};
+});
+
+// record every engine result, to check the workforce cost they use
+const planResults = vi.hoisted(() => [] as IPlanResult[]);
+
+vi.mock("@/features/planning/engine/calculatePlan", async () => {
+	const actual: any = await vi.importActual(
+		"@/features/planning/engine/calculatePlan"
+	);
+
+	return {
+		...actual,
+		calculatePlan: (...args: unknown[]) => {
+			const calculation = actual.calculatePlan(...args);
+			planResults.push(calculation.result);
 			return calculation;
 		},
 	};
@@ -106,6 +126,21 @@ describe("useResourceROIOverview", async () => {
 		expect(result[0].dailyYield).toBe(2359.3500937521458);
 		expect(result[0].dailyProfit).toBe(88631.84364589654);
 		expect(result[0].planetSurface.length).toBe(1);
+	});
+
+	// RIG, EXT and COL: the etherwind resources H2O, SIO and O
+	it("calculates with full housing and both luxuries", async () => {
+		mock.onPost("/data/planets/search/").reply(200, [planet_etherwind]);
+		const { calculate } = useResourceROIOverview(ref(undefined));
+
+		planResults.length = 0;
+		for (const ticker of ["H2O", "SIO", "O"])
+			expect((await calculate(ticker)).length).toBe(1);
+
+		expect(
+			new Set(planResults.map((r) => r.production.buildings[0].name))
+		).toStrictEqual(new Set(["RIG", "EXT", "COL"]));
+		expectFullWorkforceCost(planResults);
 	});
 
 	it("calculates through the engine, no live plan calculations", async () => {

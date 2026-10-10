@@ -298,8 +298,8 @@
                 "totalCost": "Infinity",
                 "totalProfit": "-Infinity",
                 "visible": false,
-                "workforceCost": "Infinity",
-                "workforceCostTotal": 1320.810382,
+                "workforceCost": 0,
+                "workforceCostTotal": 0,
               },
               "dailyShare": 0,
               "recipe": {
@@ -359,8 +359,8 @@
                 "totalCost": "Infinity",
                 "totalProfit": "-Infinity",
                 "visible": false,
-                "workforceCost": "Infinity",
-                "workforceCostTotal": 1320.810382,
+                "workforceCost": 0,
+                "workforceCostTotal": 0,
               },
               "dailyShare": 0,
               "recipe": {
@@ -418,7 +418,7 @@
               "ticker": "MCG",
             },
           ],
-          "dailyRevenue": -7950.44003,
+          "dailyRevenue": -2667.198501,
           "efficiencyElements": [
             {
               "efficiencyType": "EXPERT",
@@ -433,54 +433,8 @@
           "name": "HYF",
           "totalBatchTime": "Infinity",
           "totalEfficiency": 0,
-          "workforceDailyCost": -1320.810382,
-          "workforceMaterials": [
-            {
-              "input": 2.6,
-              "output": 0,
-              "ticker": "DW",
-            },
-            {
-              "input": 2.8,
-              "output": 0,
-              "ticker": "RAT",
-            },
-            {
-              "input": 0.2,
-              "output": 0,
-              "ticker": "OVE",
-            },
-            {
-              "input": 0.08,
-              "output": 0,
-              "ticker": "PWO",
-            },
-            {
-              "input": 0.2,
-              "output": 0,
-              "ticker": "COF",
-            },
-            {
-              "input": 0.1,
-              "output": 0,
-              "ticker": "EXO",
-            },
-            {
-              "input": 0.1,
-              "output": 0,
-              "ticker": "PT",
-            },
-            {
-              "input": 0.04,
-              "output": 0,
-              "ticker": "REP",
-            },
-            {
-              "input": 0.2,
-              "output": 0,
-              "ticker": "KOM",
-            },
-          ],
+          "workforceDailyCost": 0,
+          "workforceMaterials": [],
         },
         {
           "activeRecipes": [
@@ -506,8 +460,8 @@
                 "totalCost": "Infinity",
                 "totalProfit": "-Infinity",
                 "visible": false,
-                "workforceCost": "Infinity",
-                "workforceCostTotal": 515.7556536,
+                "workforceCost": 0,
+                "workforceCostTotal": 0,
               },
               "dailyShare": 0,
               "recipe": {
@@ -545,7 +499,7 @@
               "ticker": "MCG",
             },
           ],
-          "dailyRevenue": -3867.300666,
+          "dailyRevenue": -772.7667442,
           "efficiencyElements": [
             {
               "efficiencyType": "COGC",
@@ -564,34 +518,8 @@
           "name": "RIG",
           "totalBatchTime": "Infinity",
           "totalEfficiency": 0,
-          "workforceDailyCost": -515.7556536,
-          "workforceMaterials": [
-            {
-              "input": 1.2,
-              "output": 0,
-              "ticker": "DW",
-            },
-            {
-              "input": 1.2,
-              "output": 0,
-              "ticker": "RAT",
-            },
-            {
-              "input": 0.15,
-              "output": 0,
-              "ticker": "OVE",
-            },
-            {
-              "input": 0.06,
-              "output": 0,
-              "ticker": "PWO",
-            },
-            {
-              "input": 0.15,
-              "output": 0,
-              "ticker": "COF",
-            },
-          ],
+          "workforceDailyCost": 0,
+          "workforceMaterials": [],
         },
         {
           "activeRecipes": [],
@@ -625,7 +553,7 @@
               "ticker": "MCG",
             },
           ],
-          "dailyRevenue": -1625.405102,
+          "dailyRevenue": -250.0566924,
           "efficiencyElements": [
             {
               "efficiencyType": "COGC",
@@ -644,34 +572,8 @@
           "name": "INC",
           "totalBatchTime": 0,
           "totalEfficiency": 0,
-          "workforceDailyCost": -687.6742048,
-          "workforceMaterials": [
-            {
-              "input": 1.6,
-              "output": 0,
-              "ticker": "DW",
-            },
-            {
-              "input": 1.6,
-              "output": 0,
-              "ticker": "RAT",
-            },
-            {
-              "input": 0.2,
-              "output": 0,
-              "ticker": "OVE",
-            },
-            {
-              "input": 0.08,
-              "output": 0,
-              "ticker": "PWO",
-            },
-            {
-              "input": 0.2,
-              "output": 0,
-              "ticker": "COF",
-            },
-          ],
+          "workforceDailyCost": 0,
+          "workforceMaterials": [],
         },
       ],
       "materialio": [

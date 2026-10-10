@@ -82,7 +82,11 @@ contains:
    - **FACTION**: the empire's faction bonus.
 
    Recipe runtimes then turn into daily input and output, per building
-   information is built once per ticker.
+   information is built once per ticker. A building's workforce cost
+   (COGM, recipe options, its daily revenue) is its workers per type times
+   the plan-wide housed share of that type (capacity / required, at most 1)
+   with that type's luxuries, so summed over buildings it is the plan's
+   workforce consumption.
 3. Workforce consumption plus the production I/O are combined, enriched
    with weight and volume and priced.
 4. Money:
@@ -236,8 +240,6 @@ aggregated material I/O is pushed back to the backend with
   `__snapshots__/usePlanCalculation.characterization/`. **They are the
   contract: a change to them is a change of calculated numbers.** Update
   them only on purpose, in their own commit, with `-u`.
-- Known bugs are pinned with `it.fails` tests (workforce cost per
-  building always assumes both luxuries).
 - Benchmarks: `pnpm vitest bench --run` runs
   `usePlanCalculation.bench.ts` (single plan: `calculate()` and
   edit -> result for amount, recipe, luxury and CX edits) and

@@ -9,6 +9,7 @@ import {
 	calculateTotalConstructionCost,
 } from "@/features/planning/engine/construction";
 import { calculateVisitation } from "@/features/planning/engine/visitation";
+import { calculateWorkforceConsumption } from "@/features/planning/engine/workforce";
 import {
 	getBuilding,
 	getBuildingRecipes,
@@ -18,6 +19,7 @@ import { usePlanContext } from "@/features/planning/usePlanContext";
 
 // Types & Interfaces
 import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type {
 	IMaterialIO,
 	IProductionBuilding,
@@ -30,6 +32,7 @@ import {
 	emptyPlan,
 	etherwindPlan,
 	findRecipeSwap,
+	largePlan,
 	setupPlanningTestData,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
@@ -174,6 +177,126 @@ describe("planning engine", () => {
 			expect(cogm(undefined)).toBe(false);
 			expect(cogm("some-cx")).toBe(true);
 		});
+	});
+
+	describe("building workforce cost (#254, #490)", () => {
+		const technicianOnly = ["HMS", "SCN", "SC", "ALE"];
+
+		it("no housing: no workforce cost and no NaN in COGM", () => {
+			const plan = etherwindPlan();
+			plan.plan_data.infrastructure = [];
+			const { result } = calculatePlan(
+				{ plan, empire: undefined, cxUuid: "some-cx" },
+				ctx
+			);
+
+			for (const b of result.production.buildings) {
+				expect(b.workforceDailyCost).toBe(0);
+				for (const ar of b.activeRecipes) {
+					expect(ar.cogm!.workforceCost).toBe(0);
+					expect(
+						Object.values(ar.cogm!).some(
+							(v) => typeof v === "number" && Number.isNaN(v)
+						)
+					).toBe(false);
+					for (const o of ar.cogm!.outputCOGM)
+						expect(Number.isNaN(o.costTotal)).toBe(false);
+				}
+			}
+		});
+
+		// ORC needs settlers and technicians, HB2 only houses settlers
+		function orcOnSettlerHabs(): Plan {
+			const plan = etherwindPlan();
+			plan.plan_data.buildings = [
+				{
+					name: "ORC",
+					amount: 1,
+					active_recipes: [
+						{
+							recipeid: ctx.recipesByBuilding["ORC"][0].recipe_id,
+							amount: 1,
+						},
+					],
+				},
+			];
+			plan.plan_data.infrastructure = [{ building: "HB2", amount: 1 }];
+			return plan;
+		}
+
+		it("charges no technician consumables without technician housing", () => {
+			const plan = orcOnSettlerHabs();
+			const run = (c: IPlanContext) =>
+				calculatePlan(
+					{ plan, empire: undefined, cxUuid: undefined },
+					c
+				).result.production.buildings[0];
+
+			const orc = run(ctx);
+			expect(
+				orc.workforceMaterials.filter((m) =>
+					technicianOnly.includes(m.ticker)
+				)
+			).toStrictEqual([]);
+
+			// technician consumable prices don't reach the building's cost
+			const expensive = run({
+				...ctx,
+				prices: {
+					getPrice: (ticker, type) =>
+						technicianOnly.includes(ticker)
+							? 1e6
+							: ctx.prices.getPrice(ticker, type),
+				},
+			});
+			expect(expensive.activeRecipes[0].cogm).toStrictEqual(
+				orc.activeRecipes[0].cogm
+			);
+			expect(expensive.recipeOptions).toStrictEqual(orc.recipeOptions);
+			expect(expensive.dailyRevenue).toBe(orc.dailyRevenue);
+		});
+
+		it.each([
+			["etherwind, luxuries off", false],
+			["large, technicians under-housed", true],
+			["ORC on settler habitats", undefined],
+		])(
+			"sums over buildings to the plan's workforce consumption: %s",
+			(_, large) => {
+				const plan =
+					large === undefined
+						? orcOnSettlerHabs()
+						: large
+							? largePlan()
+							: etherwindPlan();
+				if (large === false)
+					plan.plan_data.workforce.forEach((w) => {
+						w.lux1 = false;
+						w.lux2 = false;
+					});
+				const { result } = calculatePlan(
+					{ plan, empire: undefined, cxUuid: undefined },
+					ctx
+				);
+
+				const summed = new Map<string, number>();
+				for (const b of result.production.buildings)
+					for (const m of b.workforceMaterials)
+						summed.set(
+							m.ticker,
+							(summed.get(m.ticker) ?? 0) + m.input * b.amount
+						);
+				const planConsumption = calculateWorkforceConsumption(
+					result.workforce
+				);
+
+				expect([...summed.keys()].sort()).toStrictEqual(
+					planConsumption.map((m) => m.ticker).sort()
+				);
+				for (const m of planConsumption)
+					expect(summed.get(m.ticker)).toBeCloseTo(m.input, 9);
+			}
+		);
 	});
 
 	describe("calculateFinance", () => {

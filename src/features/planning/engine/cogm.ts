@@ -50,7 +50,9 @@ export function calculateCOGM(
 	const degradation: number = constructionCost / 180;
 	const degradationShare: number = degradation * runtimeShare;
 	const workforceCostTotal: number = workforceCost;
-	const workforceCostShare: number = workforceCostTotal * runtimeShare;
+	// no workforce cost has no share, also at 0% efficiency (0 * ∞ is NaN)
+	const workforceCostShare: number =
+		workforceCostTotal === 0 ? 0 : workforceCostTotal * runtimeShare;
 
 	const inputCost: ICOGMMaterialCost[] = ar.recipe.inputs.map((inputMat) => {
 		const price = prices.getPrice(inputMat.material_ticker, "BUY");
