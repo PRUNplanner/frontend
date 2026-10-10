@@ -25,7 +25,7 @@ pnpm test:watch / pnpm test:ui / pnpm test:coverage
   directly. **Never mutate a fixture.** Module imports are shared across
   tests, so clone it first (`structuredClone` / `deepClone`).
 - **Coverage.** It is always on (v8, lcov + html). Views, `components/`
-  folders, `ui/`, `layout/`, `features/wrapper/`, `queryRepository.ts` and `queries/*.queries.ts`, the
+  folders, `ui/`, `layout/`, `usePlanningDataLoader.ts`, `queryRepository.ts` and `queries/*.queries.ts`, the
   router and analytics are **excluded**, so tests target composables, stores,
   utils and the API layer.
 
@@ -39,15 +39,15 @@ pnpm test:watch / pnpm test:ui / pnpm test:coverage
     global `beforeEach`.
   - Seed data yourself in `beforeAll`/`beforeEach`.
 - **Env vars.** `import.meta.env` comes from `loadEnv("", "")`.
-- **Type checking.** `pnpm tsc` **does not type-check tests**
-  (`tsconfig.typecheck.json` excludes `src/tests`). Tests often use
-  `// @ts-expect-error mock data` when a fixture doesn't match the strict
-  types.
+- **Type checking.** `pnpm tsc` type-checks tests too, so a mock or
+  fixture that drifts from its type fails CI. Type mocks with the real type
+  (`const x: PlanEmpireElement = {...}`). Use `// @ts-expect-error mock data`
+  only for deliberately partial data; an unused one is an error as well. JSON
+  fixtures widen enums to `string`, so cast them (`as PlanEmpireElement[]`).
 - **Type-level tests** live in `*.test-d.ts` (for example
   `src/tests/lib/query_cache/queryRepository.test-d.ts`). `pnpm test` runs
-  them through `vitest --typecheck` with `tsconfig.vitest.json`, using
-  `expectTypeOf` and `// @ts-expect-error`. Only errors in these files
-  count (`ignoreSourceErrors`).
+  them through `vitest --typecheck` with `tsconfig.typecheck.json`, using
+  `expectTypeOf` and `// @ts-expect-error`.
 
 ## Patterns
 
@@ -116,11 +116,12 @@ Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
 
 ### Component tests
 
-Component tests are a **separate, local-only suite**. Every test under
+Component tests are a **separate suite**. Every test under
 `src/tests/**/components/**`, and view tests under `src/tests/views/`, is
-excluded from `pnpm test` (which CI runs), so they cost no GitHub Actions
-minutes. A view test stubs the `features/wrapper` loaders with a
-pass-through and seeds the stores instead; see `ExchangesView.test.ts`. Run them yourself before a PR that
+excluded from `pnpm test` and runs with `pnpm test:components` instead, in
+its own CI job on pull requests (`components.yml`, no coverage). A view
+test stubs the `features/wrapper` loaders with a pass-through and seeds the
+stores instead; see `ExchangesView.test.ts`. Run them before a PR that
 touches a tested component:
 
 ```bash

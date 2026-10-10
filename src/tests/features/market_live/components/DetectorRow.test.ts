@@ -45,7 +45,9 @@ async function select(select: VueWrapper, value: string) {
 }
 
 const values = (select: VueWrapper) =>
-	(select.props("options") as { value: string }[]).map((o) => o.value);
+	(select.props() as { options: { value: string }[] }).options.map(
+		(o) => o.value
+	);
 
 describe("DetectorRow", () => {
 	it("offers every field and the field's operators", async () => {

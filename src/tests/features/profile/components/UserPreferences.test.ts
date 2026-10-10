@@ -313,7 +313,7 @@ describe("UserPreferences", () => {
 			selects(wrapper)
 				.at(1)!
 				.props("options")
-				.map((o: { value: string }) => o.value)
+				.map((o) => o.value)
 		).toEqual(["default", "colorblind"]);
 		selects(wrapper).at(1)!.vm.$emit("update:value", "colorblind");
 		await flushPromises();

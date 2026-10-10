@@ -42,7 +42,8 @@ export async function mountComponent(
 	const i18n = createI18n({
 		legacy: false,
 		locale: "en_US",
-		messages: { en_US: options.messages ?? {} },
+		// untyped like the app i18n (lib/i18n), vue-i18n types messages recursively
+		messages: { en_US: options.messages ?? {} } as never,
 		missingWarn: false,
 		fallbackWarn: false,
 	});

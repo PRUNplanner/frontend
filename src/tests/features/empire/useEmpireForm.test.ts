@@ -108,7 +108,11 @@ describe("useEmpireForm", () => {
 	});
 
 	describe("saved or deleted in another tab", () => {
-		const SAVED = { ...EMPIRE, empire_faction: "MORIA", modified_at: "v3" };
+		const SAVED: PlanEmpireElement = {
+			...EMPIRE,
+			empire_faction: "MORIA",
+			modified_at: "v3",
+		};
 
 		beforeEach(() => {
 			vi.spyOn(console, "error").mockImplementation(() => {});

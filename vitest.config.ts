@@ -5,7 +5,7 @@ import vue from "@vitejs/plugin-vue";
 
 const alias = { "@": path.resolve(__dirname, "./src") };
 
-// component and view tests run locally only, see vitest.components.config.ts
+// component and view tests run separately, see vitest.components.config.ts
 export const COMPONENT_TESTS = "src/tests/{**/components,views}/**";
 
 export default defineConfig({
@@ -29,11 +29,10 @@ export default defineConfig({
 			COMPONENT_TESTS,
 		],
 		environment: "jsdom",
-		// type-level tests (*.test-d.ts); `pnpm tsc` skips src/tests, whose
-		// other files aren't type clean, so only these files' errors count
+		// type-level tests (*.test-d.ts); `pnpm tsc` checks every other file
 		typecheck: {
 			enabled: true,
-			tsconfig: "./tsconfig.vitest.json",
+			tsconfig: "./tsconfig.typecheck.json",
 			ignoreSourceErrors: true,
 		},
 		// undo vi.stubGlobal / vi.stubEnv after each test
@@ -57,7 +56,8 @@ export default defineConfig({
 				"**/queryRepository.ts",
 				"src/lib/query_cache/queries/*.queries.ts",
 				"**/QueryCacheView.vue",
-				"src/features/wrapper/**",
+				// tested through its component test (pnpm test:components)
+				"src/features/wrapper/usePlanningDataLoader.ts",
 				"src/util/axiosSetup.ts",
 				"**/*.d.ts",
 				"src/router/**",

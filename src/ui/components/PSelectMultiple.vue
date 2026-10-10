@@ -84,34 +84,48 @@
 	const filteredOptions: ComputedRef<PSelectOption[]> = computed(() => {
 		if (searchString.value === null || searchString.value === "")
 			return options;
-		else {
-			return options.filter(
-				(f) =>
-					f.label
-						.toLowerCase()
-						.includes(searchString.value!.toLowerCase()) ||
-					f.children?.filter((c) =>
-						c.label
-							.toLowerCase()
-							.includes(searchString.value!.toLowerCase())
-					)
-			);
-		}
+		const search = searchString.value.toLowerCase();
+		return options
+			.map((f: PSelectOption) => {
+				if (f.children) {
+					const matchingChildren = f.children.filter(
+						(c: PSelectOption) =>
+							c.label.toLowerCase().includes(search)
+					);
+					if (matchingChildren.length === 0) return null;
+					return { ...f, children: matchingChildren };
+				}
+				if (f.label.toLowerCase().includes(search)) return f;
+				return null;
+			})
+			.filter((x: PSelectOption | null): x is PSelectOption => x != null);
 	});
 
+	// what arrow keys and Enter move through: group children, not headers
+	const selectableOptions: ComputedRef<PSelectOption[]> = computed(() =>
+		filteredOptions.value.flatMap((o) => o.children ?? [o])
+	);
+	// index in selectableOptions of each filtered option's first entry
+	const selectableOffsets: ComputedRef<number[]> = computed(() => {
+		let offset = 0;
+		return filteredOptions.value.map((o) => {
+			const start = offset;
+			offset += o.children?.length ?? 1;
+			return start;
+		});
+	});
+
+	watch(searchString, () => (highlightedIndex.value = 0));
+
+	// new arrays only, the parent's array is never changed in place
 	function change(e: string | number | undefined) {
 		if (disabled) return;
-		if (!(value.value.length + 1 <= maxItems)) return;
 
-		const index = value.value.indexOf(e);
-
-		// not in value, add it
-		if (index === -1) {
-			value.value.push(e);
-		} else {
-			value.value.splice(index, 1);
-		}
-		value.value = [...value.value];
+		if (value.value.includes(e))
+			value.value = value.value.filter((v) => v !== e);
+		// maxItems limits adding, removing always works
+		else if (value.value.length < maxItems)
+			value.value = [...value.value, e];
 	}
 
 	const toggleOpen = async () => {
@@ -154,18 +168,14 @@
 	};
 
 	function clear(): void {
+		if (disabled) return;
 		value.value = [];
 		searchString.value = null;
 	}
 
 	function removeElement(v: string | number | undefined): void {
-		if (!disabled && v !== undefined) {
-			const index = value.value.indexOf(v, 0);
-			if (index !== -1) {
-				value.value.splice(index, 1);
-				value.value = [...value.value];
-			}
-		}
+		if (!disabled && v !== undefined && value.value.includes(v))
+			value.value = value.value.filter((x) => x !== v);
 	}
 
 	// labelled by the surrounding PFormItem; the inner search PInput is not
@@ -192,14 +202,14 @@
 			e.preventDefault();
 			highlightedIndex.value = Math.min(
 				highlightedIndex.value + 1,
-				filteredOptions.value.length - 1
+				selectableOptions.value.length - 1
 			);
 		} else if (e.key === "ArrowUp") {
 			e.preventDefault();
 			highlightedIndex.value = Math.max(highlightedIndex.value - 1, 0);
 		} else if (e.key === "Enter") {
 			e.preventDefault();
-			const option = filteredOptions.value[highlightedIndex.value];
+			const option = selectableOptions.value[highlightedIndex.value];
 			if (option) change(option.value);
 		}
 	}
@@ -287,7 +297,7 @@
 				</div>
 
 				<div
-					v-if="clearable && value.length !== 0"
+					v-if="clearable && !disabled && value.length !== 0"
 					class="text-white/60 w-4"
 					@click.stop="clear">
 					<ClearSharp />
@@ -323,7 +333,9 @@
 						:key="option.value"
 						:option="option"
 						:selected-value="value"
-						:highlighted="idx === highlightedIndex"
+						:highlighted-index="
+							highlightedIndex - selectableOffsets[idx]
+						"
 						@click="(v) => change(v)" />
 
 					<template v-if="filteredOptions.length === 0">

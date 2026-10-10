@@ -12,36 +12,47 @@
 
 	// UI
 	import { PInput, PButton } from "@/ui";
-	import type { UserResponseDetail } from "@/features/api/schemas/user.schemas";
+	import {
+		UserRequestPasswordResetPayloadSchema,
+		type UserResponseDetail,
+	} from "@/features/api/schemas/user.schemas";
 
 	const inputEmail: Ref<string | null> = ref(null);
 	const isLoading: Ref<boolean> = ref(false);
+	const failure: Ref<"throttled" | "error" | null> = ref(null);
 
 	const requestResponse: Ref<UserResponseDetail | null> = ref(null);
 
+	// the request's own schema, so the button never sends an invalid email
 	const canRequest = computed(
 		() =>
-			!!(
-				inputEmail.value &&
-				inputEmail.value !== "" &&
-				inputEmail.value.includes("@")
-			)
+			UserRequestPasswordResetPayloadSchema.safeParse({
+				email: inputEmail.value,
+			}).success
 	);
 
 	async function requestReset() {
-		if (!canRequest.value) return;
+		if (!canRequest.value || isLoading.value) return;
 
 		isLoading.value = true;
 		requestResponse.value = null;
+		failure.value = null;
 
 		trackEvent("account:password_reset_request");
 
-		await useQuery("PostUserRequestPasswordReset", {
-			email: inputEmail.value!,
-		})
-			.execute()
-			.then((result) => (requestResponse.value = result))
-			.finally(() => (isLoading.value = false));
+		try {
+			requestResponse.value = await useQuery(
+				"PostUserRequestPasswordReset",
+				{ email: inputEmail.value! }
+			).execute();
+		} catch (err) {
+			failure.value =
+				(err as { status?: number }).status === 429
+					? "throttled"
+					: "error";
+		} finally {
+			isLoading.value = false;
+		}
 	}
 </script>
 
@@ -54,6 +65,16 @@
 	</div>
 	<div v-if="requestResponse" class="pb-3 text-xs font-mono text-prunplanner">
 		{{ requestResponse.detail }}.
+	</div>
+	<div
+		v-if="failure"
+		class="pb-3 text-xs font-mono text-negative"
+		role="alert">
+		{{
+			failure === "throttled"
+				? $t("account.components.request_password_reset.throttled")
+				: $t("account.components.request_password_reset.error")
+		}}
 	</div>
 	<div>
 		<PInput
@@ -73,7 +94,7 @@
 	</div>
 	<div class="pt-3">
 		<PButton
-			:disabled="!canRequest"
+			:disabled="!canRequest || isLoading"
 			:loading="isLoading"
 			@click="requestReset">
 			{{ $t("account.components.request_password_reset.buttons.send") }}

@@ -78,7 +78,6 @@ function deferred() {
 async function mountTable(results = RESULTS) {
 	calculate.mockResolvedValue(results);
 	return mountComponent(ROIOverviewTable, {
-		// @ts-expect-error only passed through to the mocked composable
 		planDefinition: {},
 		cxUuid: undefined,
 	});
@@ -191,7 +190,13 @@ describe("ROIOverviewTable", () => {
 	it("builds sorted, distinct filter options", async () => {
 		const { wrapper } = await mountTable();
 
-		const options = (prop: string) =>
+		const options = (
+			prop:
+				| "buildingOptions"
+				| "cogcOptions"
+				| "inputMaterialOptions"
+				| "outputMaterialOptions"
+		) =>
 			(filters(wrapper).props(prop) as { value: string }[]).map(
 				(o) => o.value
 			);
