@@ -778,6 +778,8 @@ describe("planet search engine", () => {
 			expect(rankValues([1, 3, 2], true)).toEqual([0, 1, 0.5]);
 			expect(rankValues([1, 3, 2], false)).toEqual([1, 0, 0.5]);
 			expect(rankValues([4, 4], true)).toEqual([1, 1]);
+			expect(rankValues([4, 4], false)).toEqual([1, 1]);
+			expect(rankValues([4, null, 4], false)).toEqual([1, 0, 1]);
 			// a missing value is worst, the others scale from 0.4
 			expect(rankValues([1, null, 3], true)).toEqual([0.4, 0, 1]);
 		});

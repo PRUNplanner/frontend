@@ -865,8 +865,9 @@ export function rankValues(
 
 	return values.map((v) => {
 		if (v === null) return 0;
-		let rank = max === min ? 1 : (v - min) / (max - min);
-		if (!higherIsBetter) rank = 1 - rank;
+		// equal values are all best, whichever direction is better
+		const scaled = max === min ? 1 : (v - min) / (max - min);
+		const rank = higherIsBetter || max === min ? scaled : 1 - scaled;
 		return missing ? 0.4 + 0.6 * rank : rank;
 	});
 }
