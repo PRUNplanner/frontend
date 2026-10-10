@@ -153,7 +153,8 @@
 		"cogm": {
 			"title": "Себестоимость произведённой продукции",
 			"cogm": "@:terms.cogm",
-			"info": "Себестоимость произведённой продукции рассчитывается с использованием настроек плана, учитывающих эффективность производства, время выполнения рецепта, износ зданий, стоимость входных материалов, потребность в рабочей силе и связанные с ней затраты. Итоговая стоимость отображается за единицу продукции на основе количества или полного распределения затрат.",
+			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
+			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
 			"cx_preferences": "Настройки @:terms.cx_plural",
 			"empire_ticker": "@:terms.empire Тикер",
 			"planet_ticker": "@:terms.planets Ticker",
@@ -367,7 +368,7 @@
 			},
 			"info": {
 				"p1_strong": "Доход в день",
-				"p1": "рассчитывается на основе ежедневного дохода, полученного от рецепта и вычитающего как ежедневную стоимость рабочей силы (С учетом предметов роскоши), так и ежедневную стоимость ремонта зданий (1/180-е место от стоимости строительства). Доход от рецепта основан на разнице между входными затратами и стоимостью выходного материала.",
+				"p1": "is calculated by taking the daily income generated from a recipe and subtracting both the daily workforce cost (for the workers this plan houses and the luxuries it provides) and the daily building degradation cost (1/180th of the construction cost). The income from the recipe is based on the difference between the input material costs and the output material values.",
 				"p2_strong": "ȼ / Площадь",
 				"p2": "это ежедневный доход от площади для одного производственного здания и пропорциональная доля этого участка для КМ и жилищ, необходимых для оптимальной застройки таких зданий в доходности рецепта.",
 				"p3_strong": "Доходность",
