@@ -33,7 +33,6 @@ async function mountSelect(
 	const picked: unknown[][] = [];
 	let sync: (v: unknown[]) => Promise<void> = async () => {};
 	const mounted = await mountComponent(PSelectMultiple, {
-		// a fresh array: the component mutates its prop in place
 		value: [...value],
 		options: OPTIONS.map((o) => ({ ...o })),
 		searchable: true,
@@ -69,9 +68,7 @@ async function clickOption(label: string) {
 describe("PSelectMultiple", () => {
 	it("shows selected values as tags in value order, skipping unknown values", async () => {
 		const { wrapper } = await mountSelect(["b", "zzz", 3]);
-		const tags = wrapper
-			.findAll(".flex-wrap > div")
-			.map((t) => t.text());
+		const tags = wrapper.findAll(".flex-wrap > div").map((t) => t.text());
 		expect(tags).toEqual(["Beta", "Gamma"]);
 		expect(wrapper.text()).not.toContain("common.ui.select.select_options");
 	});
@@ -165,12 +162,7 @@ describe("PSelectMultiple", () => {
 		for (let i = 0; i < 5; i++) await key(wrapper, "ArrowUp");
 		await key(wrapper, "Enter"); // clamped to the first, deselects it
 
-		expect(picked).toEqual([
-			["a"],
-			["a", 3],
-			["a", 3, "ab"],
-			[3, "ab"],
-		]);
+		expect(picked).toEqual([["a"], ["a", 3], ["a", 3, "ab"], [3, "ab"]]);
 	});
 
 	it("picks the highlighted entry of the filtered list from the search input", async () => {
@@ -326,5 +318,82 @@ describe("PSelectMultiple", () => {
 		await wrapper.find("button").trigger("click");
 		await flushPromises();
 		expect(currentlyOpenId.value).toBeNull();
+	});
+
+	it("removes a value at maxItems", async () => {
+		const { wrapper, picked } = await mountSelect(["a", "b"], {
+			maxItems: 2,
+		});
+		await openByClick(wrapper);
+
+		await clickOption("Alpha");
+		expect(picked).toEqual([["b"]]);
+	});
+
+	it("hides the clear button when disabled", async () => {
+		const { wrapper } = await mountSelect(["a"], { disabled: true });
+		expect(wrapper.find(".text-white\\/60").exists()).toBe(false);
+	});
+
+	it("never changes the parent's array in place", async () => {
+		const value = ["a"];
+		const { wrapper } = await mountComponent(PSelectMultiple, {
+			value,
+			options: OPTIONS,
+			"onUpdate:value": () => {},
+		});
+		await openByClick(wrapper);
+		await clickOption("Beta");
+		await clickOption("Alpha");
+		await wrapper.find(".flex-wrap svg").trigger("click");
+		await flushPromises();
+
+		expect(value).toEqual(["a"]);
+	});
+
+	it("highlights the keyboard position and resets it on search", async () => {
+		const { wrapper } = await mountSelect();
+		const highlighted = () => body().find(".z-5000 .bg-gray-700");
+		await key(wrapper, "Enter");
+		expect(highlighted().text()).toBe("Alpha");
+
+		await key(wrapper, "ArrowDown");
+		await key(wrapper, "ArrowDown");
+		expect(highlighted().text()).toBe("Gamma");
+
+		await body().find(".z-5000 input").setValue("alpha");
+		await flushPromises();
+		expect(highlighted().text()).toBe("Alpha");
+	});
+
+	it("filters and picks group children, not the group", async () => {
+		const { wrapper, picked } = await mountSelect([], {
+			options: [
+				{
+					label: "Metals",
+					value: "G",
+					children: [
+						{ label: "Xenon", value: "xe" },
+						{ label: "Yttrium", value: "y" },
+					],
+				},
+			],
+		});
+		await key(wrapper, "Enter");
+		const input = body().find(".z-5000 input");
+
+		await input.setValue("zzz");
+		await flushPromises();
+		expect(body().text()).toContain("common.ui.select.no_results");
+		expect(body().text()).not.toContain("Xenon");
+
+		await input.setValue("ytt");
+		await flushPromises();
+		expect(body().text()).toContain("Yttrium");
+		expect(body().text()).not.toContain("Xenon");
+
+		await input.trigger("keydown", { key: "Enter" });
+		await flushPromises();
+		expect(picked).toEqual([["y"]]);
 	});
 });
