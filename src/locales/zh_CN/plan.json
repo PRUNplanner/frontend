@@ -153,7 +153,8 @@
 		"cogm": {
 			"title": "成品成本",
 			"cogm": "@:terms.cogm",
-			"info": "成品成本会根据规划设置计算，并计入生产效率、配方运行时间、建筑损耗、输入物资成本、劳动力需求及相关劳动力成本。最终成本会按每单位产出显示，并基于数量或完整成本分摊计算。",
+			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
+			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
 			"cx_preferences": "@:{'terms.cx_plural'}偏好设置",
 			"empire_ticker": "@:{'terms.empire'}代码",
 			"planet_ticker": "@:{‘terms.planets’}识别码",
@@ -367,7 +368,7 @@
 			},
 			"info": {
 				"p1_strong": "收入/天",
-				"p1": "是根据配方产生的每日收入，减去每日劳动力成本（包含所有奢侈品供给）以及每日建筑损耗成本（建造成本的 1/180）后计算得出。配方收入基于输入物资成本与输出物资价值之间的差额。",
+				"p1": "is calculated by taking the daily income generated from a recipe and subtracting both the daily workforce cost (for the workers this plan houses and the luxuries it provides) and the daily building degradation cost (1/180th of the construction cost). The income from the recipe is based on the difference between the input material costs and the output material values.",
 				"p2_strong": "ȼ / 面积",
 				"p2": "表示每日收入除以一个生产建筑所占面积，以及在生产模板 ROI 中为该类建筑的最优基地分摊的核心模块与住房建筑所占面积。",
 				"p3_strong": "ROI",
