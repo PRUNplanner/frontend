@@ -14,6 +14,7 @@
 	},
 	"change_profile": {
 		"title": "Профиль",
+		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
 			"update_profile": "Редактирование профиля",
 			"verify_email": "Подтвердить Email",
