@@ -18,7 +18,8 @@ page, together with the `ui/charts/PlanRepairCostChart.vue` and
 - **`repairAnalysis.util.ts`**: `calculateRepairCurve` gives one
   building's average daily profit when repairing every n days: production
   value times the average wear efficiency (100 % down to 33 %), minus the
-  full workforce cost, minus the repair cost averaged over the n days. The
+  building's workforce cost (at the plan's staffing and luxuries), minus
+  the repair cost averaged over the n days. The
   repair cost is the only degradation cost, the plan's 1/180 construction
   share is taken out. `findOptimalRepairDay` picks the best n.
 - **`components/DayRepairMaterialTable.vue`**: the materials needed for a

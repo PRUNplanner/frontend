@@ -190,70 +190,52 @@ export function calculateWorkforceConsumption(
 }
 
 /**
- * Calculates a single building's workforce consumption as if its
- * workforce were fully provided with the given luxuries
+ * Calculates a single building's workforce consumption as the plan staffs
+ * it: per workforce type, the building's workers scaled by the plan-wide
+ * housed share (capacity / required, at most 1) with that type's luxuries.
+ * Without a plan workforce, fully staffed with both luxuries.
  * @author jplacht
  *
  * @param {Building} building Building Data
- * @param {boolean} lux1 Luxury 1 provided
- * @param {boolean} lux2 Luxury 2 provided
+ * @param {IWorkforceRecord} [workforce] Plan workforce
  * @returns {IMaterialIOMinimal[]} Consumption Material IO
  */
 export function getBuildingWorkforceMaterials(
 	building: Building,
-	lux1: boolean = true,
-	lux2: boolean = true
+	workforce?: IWorkforceRecord
 ): IMaterialIOMinimal[] {
-	// create a faked WorkforceRecord based on the buildings workforce
-	const buildingWorkforce: IWorkforceRecord = {
-		pioneer: {
-			name: "pioneer",
-			required: building.pioneers,
-			capacity: building.pioneers,
-			left: 0,
-			lux1: lux1,
-			lux2: lux2,
-			efficiency: 1,
-		},
-		settler: {
-			name: "settler",
-			required: building.settlers,
-			capacity: building.settlers,
-			left: 0,
-			lux1: lux1,
-			lux2: lux2,
-			efficiency: 1,
-		},
-		technician: {
-			name: "technician",
-			required: building.technicians,
-			capacity: building.technicians,
-			left: 0,
-			lux1: lux1,
-			lux2: lux2,
-			efficiency: 1,
-		},
-		engineer: {
-			name: "engineer",
-			required: building.engineers,
-			capacity: building.engineers,
-			left: 0,
-			lux1: lux1,
-			lux2: lux2,
-			efficiency: 1,
-		},
-		scientist: {
-			name: "scientist",
-			required: building.scientists,
-			capacity: building.scientists,
-			left: 0,
-			lux1: lux1,
-			lux2: lux2,
-			efficiency: 1,
-		},
+	const workers: Record<WorkforceType, number> = {
+		pioneer: building.pioneers,
+		settler: building.settlers,
+		technician: building.technicians,
+		engineer: building.engineers,
+		scientist: building.scientists,
 	};
 
-	return calculateWorkforceConsumption(buildingWorkforce);
+	return combineMaterialIOMinimal(
+		workforceTypeNames.map((name) => {
+			const plan: IWorkforceElement | undefined = workforce?.[name];
+			// a building at amount 0 isn't in required, housing is enough
+			const share: number = !plan
+				? 1
+				: plan.capacity <= 0
+					? 0
+					: plan.required <= 0
+						? 1
+						: Math.min(1, plan.capacity / plan.required);
+			const consuming: number = workers[name] * share;
+
+			return calculateSingleWorkforceConsumption({
+				name,
+				required: consuming,
+				capacity: consuming,
+				left: 0,
+				lux1: plan?.lux1 ?? true,
+				lux2: plan?.lux2 ?? true,
+				efficiency: 1,
+			});
+		})
+	);
 }
 
 /**

@@ -209,6 +209,9 @@
 			<div class="pb-2 text-muted text-xs">
 				{{ $t("plan.tools.cogm.info") }}
 			</div>
+			<div class="pb-2 text-muted text-xs">
+				{{ $t("plan.tools.cogm.workforce_note") }}
+			</div>
 			<PlanCOGMTable :data="data" />
 		</div>
 		<div v-if="showCX" class="max-h-150 overflow-y-auto">

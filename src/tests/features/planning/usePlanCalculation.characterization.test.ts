@@ -12,6 +12,7 @@ import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { calculateVisitation } from "@/features/planning/engine/visitation";
+import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/engine/workforce";
 
 // Types & Interfaces
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
@@ -407,33 +408,22 @@ describe("usePlanCalculation characterization", () => {
 			return result.production.buildings;
 		}
 
-		it("B3 today: building workforce materials assume both luxuries", async () => {
+		it("B3: building workforce materials follow the plan's luxuries", async () => {
+			// etherwind houses everyone, so only the luxuries drop out
+			const luxuries = new Set(
+				Object.values(WORKFORCE_CONSUMPTION_MAP)
+					.flat()
+					.filter((m) => m.lux1 || m.lux2)
+					.map((m) => m.ticker)
+			);
 			const { getBuilding, getBuildingWorkforceMaterials } =
 				useBuildingData();
 			for (const b of await luxuriesOffBuildings())
 				expect(b.workforceMaterials).toStrictEqual(
 					getBuildingWorkforceMaterials(
-						await getBuilding(b.name),
-						true,
-						true
-					)
+						await getBuilding(b.name)
+					).filter((m) => !luxuries.has(m.ticker))
 				);
 		});
-
-		it.fails(
-			"B3: building workforce materials follow the plan's luxuries",
-			async () => {
-				const { getBuilding, getBuildingWorkforceMaterials } =
-					useBuildingData();
-				for (const b of await luxuriesOffBuildings())
-					expect(b.workforceMaterials).toStrictEqual(
-						getBuildingWorkforceMaterials(
-							await getBuilding(b.name),
-							false,
-							false
-						)
-					);
-			}
-		);
 	});
 });
