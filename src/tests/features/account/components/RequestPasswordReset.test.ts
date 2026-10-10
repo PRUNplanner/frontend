@@ -60,12 +60,14 @@ describe("RequestPasswordReset", () => {
 		vi.restoreAllMocks();
 	});
 
-	it("keeps the button disabled until the email has an @", async () => {
+	it("keeps the button disabled until the email is valid", async () => {
 		const wrapper = await mountForm();
 		const input = wrapper.find("input");
 
 		expect(button(wrapper).attributes("disabled")).toBeDefined();
 		await input.setValue("test.example.com");
+		expect(button(wrapper).attributes("disabled")).toBeDefined();
+		await input.setValue("test@");
 		expect(button(wrapper).attributes("disabled")).toBeDefined();
 		await input.setValue("test@example.com");
 		expect(button(wrapper).attributes("disabled")).toBeUndefined();
@@ -73,9 +75,10 @@ describe("RequestPasswordReset", () => {
 		expect(button(wrapper).attributes("disabled")).toBeDefined();
 	});
 
-	it("sends no request for an email without an @", async () => {
+	it("sends no request for an invalid email", async () => {
 		const wrapper = await mountForm();
 		await request(wrapper, "test.example.com");
+		await request(wrapper, "test@");
 
 		expect(mock.history.post).toHaveLength(0);
 		expect(trackEvent).not.toHaveBeenCalled();
@@ -143,46 +146,54 @@ describe("RequestPasswordReset", () => {
 		expect(wrapper.find(".text-prunplanner").text()).toBe("Sent again.");
 	});
 
-	// The form has no error state: the query rethrows, the app's Vue
-	// errorHandler only logs it. Without one, Vue rethrows it here, so the
-	// tests collect it as an unhandled rejection.
-	async function requestFailing(
-		status: number,
-		body?: unknown
-	): Promise<{ wrapper: VueWrapper; errors: unknown[] }> {
-		const errors: unknown[] = [];
-		const onUnhandled = (reason: unknown) => errors.push(reason);
-		process.on("unhandledRejection", onUnhandled);
-		try {
-			mock.onPost(REQUEST_URL).reply(status, body);
-			const wrapper = await mountForm();
-			await request(wrapper);
-			await new Promise((resolve) => setTimeout(resolve, 10));
-			return { wrapper, errors };
-		} finally {
-			process.off("unhandledRejection", onUnhandled);
-		}
-	}
+	it("sends one request for a double click", async () => {
+		let release!: () => void;
+		mock.onPost(REQUEST_URL).reply(
+			() =>
+				new Promise((resolve) => {
+					release = () => resolve([200, { detail: SENT }]);
+				})
+		);
+		const wrapper = await mountForm();
+		await request(wrapper);
+		await button(wrapper).trigger("click");
+		await flushPromises();
 
-	it("stops loading and shows no answer on a server error", async () => {
-		const { wrapper, errors } = await requestFailing(500);
-
-		expect(errors).toEqual([expect.objectContaining({ status: 500 })]);
+		expect(button(wrapper).attributes("disabled")).toBeDefined();
 		expect(mock.history.post).toHaveLength(1);
+		release();
+		await flushPromises();
+	});
+
+	const alert = (wrapper: VueWrapper) => wrapper.find('[role="alert"]');
+
+	it("says the request failed on a server error", async () => {
+		mock.onPost(REQUEST_URL).reply(500);
+		const wrapper = await mountForm();
+		await request(wrapper);
+
+		expect(alert(wrapper).text()).toBe(
+			"account.components.request_password_reset.error"
+		);
 		expect(button(wrapper).attributes("aria-busy")).toBe("false");
 		expect(button(wrapper).attributes("disabled")).toBeUndefined();
 		expect(wrapper.find(".text-prunplanner").exists()).toBe(false);
 	});
 
-	it("stops loading and shows no answer on a 429", async () => {
-		const { wrapper, errors } = await requestFailing(429, {
-			detail: "Request was throttled.",
-		});
+	it("asks to wait on a 429 and clears it on the next try", async () => {
+		mock.onPost(REQUEST_URL)
+			.replyOnce(429, { detail: "Request was throttled." })
+			.onPost(REQUEST_URL)
+			.reply(200, { detail: SENT });
+		const wrapper = await mountForm();
+		await request(wrapper);
 
-		expect(errors).toEqual([expect.objectContaining({ status: 429 })]);
-		expect(button(wrapper).attributes("aria-busy")).toBe("false");
-		expect(wrapper.find(".text-prunplanner").exists()).toBe(false);
-		// unlike PasswordReset, no throttled message exists here (yet)
-		expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+		expect(alert(wrapper).text()).toBe(
+			"account.components.request_password_reset.throttled"
+		);
+
+		await request(wrapper);
+		expect(alert(wrapper).exists()).toBe(false);
+		expect(wrapper.find(".text-prunplanner").text()).toBe(`${SENT}.`);
 	});
 });
