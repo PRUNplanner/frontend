@@ -58,6 +58,8 @@
 		"request_password_reset": {
 			"title": "Demande de réinitialisation de mot de passe",
 			"info": "Entrez l'adresse e-mail vérifiée associée à votre compte PRUNplanner. Si nous la reconnaissons, nous vous enverrons un code pour réinitialiser votre mot de passe.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"error": "The request failed. Please try again later.",
 			"form": {
 				"email_placeholder": "Adresse e-mail"
 			},
