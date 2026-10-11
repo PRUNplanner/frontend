@@ -6,7 +6,8 @@
  */
 
 import type { Router } from "vue-router";
-import { createDiscreteApi, darkTheme } from "naive-ui";
+import { createDiscreteApi } from "naive-ui";
+import { prunplannerDarkTheme } from "@/layout/prunplannerNaiveUI";
 import { i18n } from "@/lib/i18n";
 
 const KEY = "prunplanner_chunk_reload";
@@ -36,7 +37,7 @@ export function reloadOnce(url?: string): boolean {
 function showError(error: unknown): void {
 	console.error(error);
 	const { message } = createDiscreteApi(["message"], {
-		configProviderProps: { theme: darkTheme },
+		configProviderProps: { theme: prunplannerDarkTheme },
 	});
 	message.error(i18n.global.t("common.ui.page_load_failed"), {
 		duration: 0,

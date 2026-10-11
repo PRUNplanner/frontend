@@ -1,11 +1,19 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { Router } from "vue-router";
 
-const messageError = vi.fn();
-vi.mock("naive-ui", () => ({
-	darkTheme: {},
-	createDiscreteApi: () => ({ message: { error: messageError } }),
+const { messageError, createDiscreteApi } = vi.hoisted(() => {
+	const messageError = vi.fn();
+	return {
+		messageError,
+		createDiscreteApi: vi.fn(() => ({ message: { error: messageError } })),
+	};
+});
+vi.mock("naive-ui", async (importOriginal) => ({
+	...(await importOriginal<typeof import("naive-ui")>()),
+	createDiscreteApi,
 }));
+
+import { prunplannerDarkTheme } from "@/layout/prunplannerNaiveUI";
 
 import {
 	isChunkLoadError,
@@ -135,6 +143,9 @@ describe("chunkReload", () => {
 		router.fail(error, "/help");
 		expect(assign).toHaveBeenCalledTimes(1);
 		expect(messageError).toHaveBeenCalledTimes(1);
+		expect(createDiscreteApi).toHaveBeenLastCalledWith(["message"], {
+			configProviderProps: { theme: prunplannerDarkTheme },
+		});
 
 		// other router errors are left alone
 		router.fail(new Error("guard failed"), "/x");

@@ -5,9 +5,11 @@
 		NModalProvider,
 		NDialogProvider,
 		NMessageProvider,
-		darkTheme,
 	} from "naive-ui";
-	import { prunplannerTheme } from "@/layout/prunplannerNaiveUI";
+	import {
+		prunplannerDarkTheme,
+		prunplannerTheme,
+	} from "@/layout/prunplannerNaiveUI";
 
 	// Components
 
@@ -28,7 +30,9 @@
 </script>
 
 <template>
-	<n-config-provider :theme="darkTheme" :theme-overrides="prunplannerTheme">
+	<n-config-provider
+		:theme="prunplannerDarkTheme"
+		:theme-overrides="prunplannerTheme">
 		<n-modal-provider>
 			<n-dialog-provider>
 				<!-- bottom-right, above the plan page's floating Insights button -->
