@@ -58,6 +58,8 @@
 		"request_password_reset": {
 			"title": "重置密码请求",
 			"info": "输入与你的 PRUNplanner 账户绑定的已验证邮箱。如果识别成功，我们将发送验证码以重置密码。",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"error": "The request failed. Please try again later.",
 			"form": {
 				"email_placeholder": "邮箱地址"
 			},
