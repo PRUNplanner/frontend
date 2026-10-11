@@ -1,6 +1,6 @@
 {
-	"loading": "Loading Data...",
-	"retry": "Retry",
+	"loading": "데이터 로딩 중...",
+	"retry": "다시 시도",
 	"gamedata": {
 		"material_data": "@:terms.materials Data",
 		"exchange_data": "@:terms.exchanges Data",
@@ -10,13 +10,13 @@
 		"planet_multiple_data": "@:terms.planet_plural '{names}' Data"
 	},
 	"planning_data": {
-		"shared_plan": "Shared @:terms.plan Configuration",
+		"shared_plan": "공유된 @:terms.plan Configuration",
 		"empires": "@:terms.empire Configuration",
 		"plan": "@:terms.plan Configuration",
-		"plans_all": "All @:terms.plans_plural Configuration",
+		"plans_all": "모든 @:terms.plans_plural Configuration",
 		"planet_data": "@:terms.planets '{name}' Data",
 		"cx": "@:terms.cx Configurations",
-		"shared_list": "Shared @:terms.plans_plural Configurations",
+		"shared_list": "공유된 @:terms.plans_plural Configurations",
 		"empire_plans": "@:terms.empire @:terms.plans_plural Configurations"
 	}
 }
