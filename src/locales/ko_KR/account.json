@@ -1,90 +1,92 @@
 {
 	"components": {
 		"login": {
-			"title": "Login",
-			"error": "Error logging in. Please check your username and password.",
-			"throttled": "Too many login attempts. Please wait and try again later.",
+			"title": "로그인",
+			"error": "로그인에 실패하였습니다. 사용자명과 비밀번호를 확인해 주세요.",
+			"throttled": "로그인 시도가 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요.",
 			"buttons": {
-				"login": "Login"
+				"login": "로그인"
 			},
 			"form": {
-				"username": "Username",
-				"password": "Password"
+				"username": "사용자명",
+				"password": "비밀번호"
 			},
-			"tos": "By using PRUNplanner you agree to the {tos_link}.",
-			"tos_link": "Terms of Service",
-			"forgot": "Forgot your password? Request a {forgot_link}.",
-			"forgot_link": "Password Reset"
+			"tos": "PRUNplanner를 사용하면 {tos_link}에 동의하는 것으로 간주됩니다.",
+			"tos_link": "서비스 이용 약관",
+			"forgot": "비밀번호를 잊으셨나요? {forgot_link}에서 요청하세요.",
+			"forgot_link": "비밀번호 재설정"
 		},
 		"registration": {
-			"title": "Account Information",
-			"tos": "PRUNplanner is free to use. By creating an account, you acknowledge and agree to the {tos_link}.",
-			"tos_link": "Terms of Service",
+			"title": "계정 정보",
+			"tos": "PRUNplanner는 무료입니다. 계정을 만들면 {tos_link}을 이해하고 동의한 것으로 간주됩니다.",
+			"tos_link": "서비스 이용 약관",
 			"result": {
-				"ok_header": "Welcome, {username}!",
-				"ok_message": "Registration succesful. You can now login to PRUNplanner.",
-				"error": "Error during registration."
+				"ok_header": "{username}님, 환영합니다!",
+				"ok_message": "가입에 성공하였습니다. 이제 PRUNplanner에 로그인할 수 있습니다.",
+				"error": "회원가입 오류."
 			},
 			"buttons": {
-				"register": "Create Account"
+				"register": "계정 만들기"
 			},
 			"form": {
-				"username": "Username",
-				"username_info": "Must be at least 3 characters long. Can't contain spaces.",
-				"password": "Password",
-				"password_info": "Must be at least 8 characters long.",
-				"email": "Email",
-				"email_placeholder": "Not mandatory, but recommended.",
-				"email_info": "Not mandatory. Increases your account security.",
-				"security_question": "Security Question",
-				"question": "Enter the name of planet {planet}. To find it, open a new Prosperous Universe buffer with the command {command}. You'll see the planets name listed under 'Name' in the planet information",
-				"planet_name": "Name"
+				"username": "사용자명",
+				"username_info": "최소 3글자 이상이어야 합니다. 공백은 사용할 수 없습니다.",
+				"password": "비밀번호",
+				"password_info": "최소 8글자 이상이어야 합니다.",
+				"email": "이메일",
+				"email_placeholder": "필수는 아니지만 권장됩니다.",
+				"email_info": "필수가 아닙니다. 계정 보안을 높이기 위함입니다.",
+				"security_question": "보안 질문",
+				"question": "{planet} 행성의 이름을 입력하세요. 이름을 확인하려면 {command} 명령어로 Prosperous Universe에서 새 버퍼를 여세요. 행성 정보의 '이름' 항목에서 행성 이름을 확인할 수 있습니다",
+				"planet_name": "이름"
 			}
 		},
 		"password_reset": {
-			"title": "Reset your Password",
-			"info": "Please enter the code sent to your email, along with your new password.",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"title": "비밀번호 재설정",
+			"info": "이메일로 전송된 코드와 새로운 비밀번호를 입력하세요.",
+			"throttled": "시도 횟수가 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요.",
 			"buttons": {
-				"send": "Reset Password"
+				"send": "비밀번호 재설정"
 			},
 			"form": {
-				"email": "Email",
-				"code": "Code",
-				"password": "Password",
-				"password_info": "Must be at least 8 characters long."
+				"email": "이메일",
+				"code": "코드",
+				"password": "비밀번호",
+				"password_info": "최소 8글자 이상이어야 합니다."
 			}
 		},
 		"request_password_reset": {
-			"title": "Password Reset Request",
-			"info": "Enter the verified email address linked to your PRUNplanner account. If we recognize it, we'll send you a code to reset your password.",
+			"title": "비밀번호 재설정 요청",
+			"info": "PRUNplanner 계정과 연결된 인증된 이메일 주소를 입력하세요. 확인한 후 비밀번호를 재설정할 수 있는 코드를 보내드리겠습니다.",
+			"throttled": "시도 횟수가 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요.",
+			"error": "요청이 실패하였습니다. 잠시 후 다시 시도해 주세요.",
 			"form": {
-				"email_placeholder": "Email Address"
+				"email_placeholder": "이메일 주소"
 			},
 			"buttons": {
-				"send": "Request Password Reset"
+				"send": "비밀번호 재설정 요청"
 			}
 		},
 		"verify_email": {
-			"title": "Email Verification",
-			"info": "Please enter the verification code you received via email. Maybe check your spam folder.",
+			"title": "이메일 인증",
+			"info": "이메일로 전송된 인증 코드를 입력해 주세요. 스팸함을 확인해야 할 수도 있습니다.",
 			"buttons": {
-				"send": "Verify Email Address"
+				"send": "이메일 주소 인증"
 			},
 			"form": {
-				"code_placeholder": "Verification Code"
+				"code_placeholder": "인증 코드"
 			},
 			"result": {
-				"ok": "Email address verified.",
-				"error": "Invalid code or already verified."
+				"ok": "이메일 주소가 인증되었습니다.",
+				"error": "유효하지 않은 코드이거나 이미 인증이 완료되었습니다."
 			}
 		},
 		"hints": {
-			"username": "e.g. your in-game name",
-			"password": "Your password",
-			"new_password": "At least 8 characters",
-			"email": "e.g. name{'@'}example.com",
-			"code": "Code from the email"
+			"username": "예: 인게임 이름",
+			"password": "비밀번호",
+			"new_password": "최소 8글자 이상",
+			"email": "예: name{'@'}example.com",
+			"code": "이메일로 받은 코드"
 		}
 	}
 }
