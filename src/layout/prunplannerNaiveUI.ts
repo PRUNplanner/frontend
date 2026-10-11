@@ -1,4 +1,31 @@
+import {
+	createTheme,
+	cardDark,
+	dataTableDark,
+	dialogDark,
+	drawerDark,
+	dropdownDark,
+	emptyDark,
+	messageDark,
+	modalDark,
+	popoverDark,
+} from "naive-ui";
 import type { GlobalThemeOverrides } from "naive-ui";
+
+// only the dark themes of the naive components the app renders (peers like
+// pagination or select come with them); naive's full dark theme would pull
+// in all of them
+export const prunplannerDarkTheme = createTheme([
+	cardDark,
+	dataTableDark,
+	dialogDark,
+	drawerDark,
+	dropdownDark,
+	emptyDark,
+	messageDark,
+	modalDark,
+	popoverDark,
+]);
 
 const WHITE: string = "#ffffff";
 const BLACK: string = "#000000";
