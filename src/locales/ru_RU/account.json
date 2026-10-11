@@ -58,6 +58,8 @@
 		"request_password_reset": {
 			"title": "Запросить восстановление пароля",
 			"info": "Введите подтверждённый email адрес привязанный к вашему аккаунту PRUNplanner. Если мы его найдём, мы отправим вам код для сброса пароля.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"error": "The request failed. Please try again later.",
 			"form": {
 				"email_placeholder": "Адрес электронной почты"
 			},
