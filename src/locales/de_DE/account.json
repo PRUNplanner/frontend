@@ -58,6 +58,8 @@
 		"request_password_reset": {
 			"title": "Anfrage zum Zurücksetzen des Passworts",
 			"info": "Gib deine E-Mail-Adresse ein, die du zuvor mit deinem PRUNplanner Konto verifiziert hast. Wenn wir sie erkennen, senden wir dir einen Code zum Zurücksetzen des Passworts zu.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"error": "The request failed. Please try again later.",
 			"form": {
 				"email_placeholder": "E-Mail-Adresse"
 			},
