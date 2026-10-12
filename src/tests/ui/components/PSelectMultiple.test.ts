@@ -192,6 +192,32 @@ describe("PSelectMultiple", () => {
 		expect(document.activeElement).toBe(combobox.element);
 	});
 
+	it("claims Esc while open and frees the open id however it closes", async () => {
+		const { wrapper } = await mountSelect([], { searchable: false });
+		const esc = () => {
+			const event = new KeyboardEvent("keydown", {
+				key: "Escape",
+				bubbles: true,
+				cancelable: true,
+			});
+			wrapper.find('[role="combobox"]').element.dispatchEvent(event);
+			return event;
+		};
+
+		// an open list keeps Esc from the modal or drawer around it
+		await key(wrapper, "Enter");
+		expect(currentlyOpenId.value).not.toBeNull();
+		expect(esc().defaultPrevented).toBe(true);
+		await flushPromises();
+		expect(currentlyOpenId.value).toBeNull();
+		expect(esc().defaultPrevented).toBe(false);
+
+		await openByClick(wrapper);
+		document.body.click();
+		await flushPromises();
+		expect(currentlyOpenId.value).toBeNull();
+	});
+
 	it("focuses the search input when a searchable select opens", async () => {
 		const { wrapper } = await mountSelect();
 		document.body.appendChild(wrapper.element);

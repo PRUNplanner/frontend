@@ -16,7 +16,7 @@
 	const { t } = useI18n();
 
 	// Naive UI
-	import { type MessageReactive, NModal } from "naive-ui";
+	import type { MessageReactive } from "naive-ui";
 
 	// Router
 	import router from "@/router";
@@ -113,6 +113,7 @@
 		PForm,
 		PFormItem,
 		PInput,
+		PModal,
 		PSelect,
 		useToast,
 	} from "@/ui";
@@ -1461,10 +1462,9 @@
 
 	<!-- Save As Modal -->
 	<SaveConflictDialog v-if="conflict.show.value" :conflict="conflict" />
-	<n-modal
+	<PModal
 		v-model:show="refShowSaveAsModal"
 		class="w-120! max-w-[90vw]!"
-		preset="card"
 		:title="
 			shared
 				? t('sharing.banner.save')
@@ -1502,5 +1502,5 @@
 				</PButton>
 			</div>
 		</template>
-	</n-modal>
+	</PModal>
 </template>

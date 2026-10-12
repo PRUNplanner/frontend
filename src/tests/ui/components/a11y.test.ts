@@ -7,10 +7,12 @@ import axe from "axe-core";
 import {
 	PButton,
 	PCheckbox,
+	PDrawer,
 	PForm,
 	PFormItem,
 	PInput,
 	PInputNumber,
+	PModal,
 	PSelect,
 } from "@/ui";
 import PToast from "@/ui/components/PToast.vue";
@@ -38,6 +40,25 @@ async function violations(el: Element) {
 }
 
 describe("UI kit accessibility", () => {
+	it("PModal and PDrawer: named dialogs with a named close button", async () => {
+		mountA11y(() =>
+			h("div", [
+				h(PModal, { show: true, title: "Save as" }, () =>
+					h("p", "Body")
+				),
+				h(PDrawer, { show: true, title: "Market" }, () =>
+					h("p", "Body")
+				),
+			])
+		);
+		await flushPromises();
+
+		const dialogs = document.querySelectorAll("[role=dialog]");
+		expect(dialogs).toHaveLength(2);
+		for (const dialog of dialogs)
+			expect(await violations(dialog)).toEqual([]);
+	});
+
 	it("PToast: info with an action and error with an icon pass", async () => {
 		const wrapper = mountA11y(() =>
 			h("div", [

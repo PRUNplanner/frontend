@@ -9,11 +9,12 @@ Build UI from the in-house `P*` components first. The barrel is
 import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui";
 ```
 
-The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
-`PFormItem`, `PFormSeperator` (the misspelling is the real name), `PIcon`,
-`PInput`, `PInputNumber`, `PProgressBar`, `PSelect`, `PSelectElement`,
-`PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast` (through
-`useToast()`, see "Toasts" below), `PTooltip` and `PValue`.
+The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDrawer`,
+`PForm`, `PFormItem`, `PFormSeperator` (the misspelling is the real name),
+`PIcon`, `PInput`, `PInputNumber`, `PModal`, `PProgressBar`, `PSelect`,
+`PSelectElement`, `PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast`
+(through `useToast()`, see "Toasts" below), `PTooltip` and `PValue`, plus
+`useConfirm()` (see "Overlays" below).
 
 - **Shared props:** `size` (`"sm" | "md"`) and `color` (`primary`,
   `success`, `error`, `warning`, `secondary`). Both types are in
@@ -51,9 +52,19 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PForm`,
   - **Data tables:** `XNDataTable` / `XNDataTableColumn` from
     `@skit/x.naive-ui`. Examples: `features/market_live/components/CXPointTable.vue`
     and `features/resource_roi_overview/components/ResourceROITable.vue`.
-  - **Overlays** come from raw naive-ui, imported explicitly:
-    `import { NModal, NDrawer, NDrawerContent, NPopover } from "naive-ui"`,
-    plus `useDialog()`. `AppProvider.vue` supplies the providers.
+  - **Overlays:** modals, drawers and confirms come from the kit.
+    - `<PModal v-model:show="x" :title="…">` with an `#action` slot for the
+      footer; widths go in `class` (e.g. `class="w-120! max-w-[90vw]!"`).
+    - `<PDrawer v-model:show="x" :title="…" :width="600">`, with
+      `placement`, `bodyClass` and a `#header` slot.
+    - Confirms: `if (await useConfirm()({ title, content, positiveText,
+      negativeText })) …`; the one `PConfirmHost` sits in `AppProvider.vue`.
+    - Both layers teleport to `body`, set `inert` on `#app` and lock the page
+      scroll. Focus moves in and returns to the opener, Tab stays inside, and
+      Esc closes the top layer (an open `PSelect` list first). `PSelect` lists
+      and `PTooltip`s stack above them.
+    - Popovers and menus are still raw naive-ui (`NPopover`, `NDropdown`),
+      until nu-03.
   - **Toasts:** `const toast = useToast()` from `@/ui`, then
     `toast(text, { type: "error" })` or
     `toast(text, { action: { label, onClick } })`. It renders the kit's

@@ -181,6 +181,8 @@
 		}
 
 		if (e.key === "Escape") {
+			// handled: a modal or drawer around it stays open
+			e.preventDefault();
 			open.value = false;
 			// the search input may have had focus; keep it on the select
 			triggerRef.value?.focus();
@@ -227,6 +229,9 @@
 			document.addEventListener("click", handleClickOutside);
 		} else {
 			document.removeEventListener("click", handleClickOutside);
+			// a closed list must not keep the layers' Esc for itself
+			if (currentlyOpenId.value === componentId)
+				currentlyOpenId.value = null;
 			useSearch.value = false;
 			searchString.value = null;
 		}

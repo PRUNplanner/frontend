@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
-import { NDrawer } from "naive-ui";
+import { PDrawer } from "@/ui";
 import { PButton } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
 
@@ -13,7 +13,7 @@ import hqChinese from "@/assets/help/zh_CN/tools_hq_upgrade_calculator.md?raw";
 const PAGE = "tools_hq_upgrade_calculator";
 
 const body = () => new DOMWrapper(document.body);
-const drawer = () => body().find(".n-drawer");
+const drawer = () => body().find("[role=dialog]");
 // the page is a lazy import, wait for it
 const expectPage = (selector: string, text: string) =>
 	vi.waitFor(() =>
@@ -21,7 +21,7 @@ const expectPage = (selector: string, text: string) =>
 	);
 // the drawer slides out, its show state is final
 const shown = (wrapper: VueWrapper) =>
-	wrapper.findComponent(NDrawer).props("show");
+	wrapper.findComponent(PDrawer).props("show");
 
 async function toggle(wrapper: VueWrapper) {
 	await wrapper.findComponent(PButton).trigger("click");
@@ -61,10 +61,12 @@ describe("HelpDrawer", () => {
 		expect(button.text()).toBe("Open the manual");
 		expect(button.props("size")).toBe("sm");
 		expect(button.classes()).toContain("w-full");
-		expect(wrapper.findComponent(NDrawer).props("width")).toBe(800);
+		expect(wrapper.findComponent(PDrawer).props("width")).toBe(800);
 
 		await toggle(wrapper);
-		expect(drawer().find(".n-drawer-header").text()).toBe("The manual");
+		expect(drawer().find("[role=dialog] [data-layer-header]").text()).toBe(
+			"The manual"
+		);
 	});
 
 	it("opens the page of the file name", async () => {
@@ -75,8 +77,8 @@ describe("HelpDrawer", () => {
 		await toggle(wrapper);
 
 		expect(shown(wrapper)).toBe(true);
-		expect(wrapper.findComponent(NDrawer).props("width")).toBe(600);
-		expect(drawer().find(".n-drawer-header").text()).toBe(
+		expect(wrapper.findComponent(PDrawer).props("width")).toBe(600);
+		expect(drawer().find("[role=dialog] [data-layer-header]").text()).toBe(
 			"common.buttons.help"
 		);
 		await expectPage("p", hqEnglish.trim());
@@ -104,7 +106,9 @@ describe("HelpDrawer", () => {
 
 		await toggle(wrapper);
 		expect(shown(wrapper)).toBe(true);
-		await drawer().find(".n-base-close").trigger("click");
+		await drawer()
+			.find('button[aria-label="common.ui.close"]')
+			.trigger("click");
 		await flushPromises();
 		expect(shown(wrapper)).toBe(false);
 	});

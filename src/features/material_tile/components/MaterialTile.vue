@@ -35,8 +35,7 @@
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { PTooltip, PSelect, PTable } from "@/ui";
-	import { NDrawer, NDrawerContent } from "naive-ui";
+	import { PDrawer, PTooltip, PSelect, PTable } from "@/ui";
 
 	// Props
 	const props = defineProps({
@@ -249,75 +248,73 @@
 		</div>
 	</div>
 
-	<n-drawer
+	<PDrawer
 		v-if="refShowDrawer && material"
 		v-model:show="refShowDrawer"
 		:width="600"
-		placement="right">
-		<n-drawer-content :title="t('material_tile.information.title')">
-			<div class="flex gap-x-5">
-				<div class="flex items-center">
-					<div
-						:class="categoryCssClass"
-						class="text-nowrap p-2 px-4 text-2xl text-shadow-[0_1px_1px_rgb(34,34,34)]">
-						{{ material.ticker }}
-					</div>
+		:title="t('material_tile.information.title')">
+		<div class="flex gap-x-5">
+			<div class="flex items-center">
+				<div
+					:class="categoryCssClass"
+					class="text-nowrap p-2 px-4 text-2xl text-shadow-[0_1px_1px_rgb(34,34,34)]">
+					{{ material.ticker }}
 				</div>
-				<div class="grow">
-					<div
-						class="w-full grid grid-cols-[25%_auto] child:odd:font-bold">
-						<div>
-							{{ $t("material_tile.information.table.category") }}
-						</div>
-						<div>
-							{{
-								$t(
-									`game.material_category.${material.category_name.replace(" ", "_")}`
-								)
-							}}
-						</div>
-						<div>
-							{{ $t("material_tile.information.table.weight") }}
-						</div>
-						<div>
-							{{ formatNumber(material.weight, 4) }}
-							t
-						</div>
-						<div>
-							{{ $t("material_tile.information.table.volume") }}
-						</div>
-						<div>
-							{{ formatNumber(material.volume, 4) }}
-							m³
-						</div>
+			</div>
+			<div class="grow">
+				<div
+					class="w-full grid grid-cols-[25%_auto] child:odd:font-bold">
+					<div>
+						{{ $t("material_tile.information.table.category") }}
+					</div>
+					<div>
+						{{
+							$t(
+								`game.material_category.${material.category_name.replace(" ", "_")}`
+							)
+						}}
+					</div>
+					<div>
+						{{ $t("material_tile.information.table.weight") }}
+					</div>
+					<div>
+						{{ formatNumber(material.weight, 4) }}
+						t
+					</div>
+					<div>
+						{{ $t("material_tile.information.table.volume") }}
+					</div>
+					<div>
+						{{ formatNumber(material.volume, 4) }}
+						m³
 					</div>
 				</div>
 			</div>
-			<h3 class="font-bold text-lg py-5">Markets</h3>
-			<MaterialCXOverviewTable
-				v-if="refExchangeOverview"
-				:ticker="ticker"
-				:overview-data="refExchangeOverview" />
+		</div>
+		<h3 class="font-bold text-lg py-5">Markets</h3>
+		<MaterialCXOverviewTable
+			v-if="refExchangeOverview"
+			:ticker="ticker"
+			:overview-data="refExchangeOverview" />
 
-			<div class="flex py-5">
-				<div class="my-auto grow">
-					<h3 class="font-bold text-lg">
-						{{ $t("material_tile.chart.title") }}
-					</h3>
-				</div>
-				<div>
-					<PSelect
-						v-model:value="refChartValue"
-						:aria-label="$t('material_tile.chart.value_label')"
-						class="w-50!"
-						size="sm"
-						:options="refChartValueOptions" />
-				</div>
+		<div class="flex py-5">
+			<div class="my-auto grow">
+				<h3 class="font-bold text-lg">
+					{{ $t("material_tile.chart.title") }}
+				</h3>
 			</div>
+			<div>
+				<PSelect
+					v-model:value="refChartValue"
+					:aria-label="$t('material_tile.chart.value_label')"
+					class="w-50!"
+					size="sm"
+					:options="refChartValueOptions" />
+			</div>
+		</div>
 
-			<MaterialDataChart
-				:material-ticker="ticker"
-				:display-value="refChartValue" />
-		</n-drawer-content>
-	</n-drawer>
+		<MaterialDataChart
+			:material-ticker="ticker"
+			:display-value="refChartValue" />
+	</PDrawer>
 </template>

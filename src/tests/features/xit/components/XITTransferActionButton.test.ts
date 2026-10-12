@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach, onTestFinished, vi } from "vitest";
 import { h } from "vue";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
-import { NDrawer } from "naive-ui";
+import { PDrawer } from "@/ui";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
@@ -52,15 +52,17 @@ async function open(wrapper: VueWrapper) {
 
 const xitJSON = () =>
 	JSON.parse(
-		(body().find(".n-drawer textarea").element as HTMLTextAreaElement).value
+		(body().find("[role=dialog] textarea").element as HTMLTextAreaElement)
+			.value
 	);
 
 const buyCheckbox = () =>
-	body().find(".n-drawer input[type=checkbox]").element as HTMLInputElement;
+	body().find("[role=dialog] input[type=checkbox]")
+		.element as HTMLInputElement;
 
 const tableRows = () =>
 	body()
-		.findAll(".n-drawer tbody tr")
+		.findAll("[role=dialog] tbody tr")
 		.map((tr) => tr.findAll("td").map((td) => td.text()));
 
 async function selectOrigin(wrapper: VueWrapper, origin: string) {
@@ -81,7 +83,7 @@ describe("XITTransferActionButton", () => {
 			size: "md",
 			type: "primary",
 		});
-		expect(wrapper.findComponent(NDrawer).exists()).toBe(false);
+		expect(wrapper.findComponent(PDrawer).exists()).toBe(false);
 	});
 
 	it("takes button text, size and a secondary style", async () => {
@@ -102,11 +104,13 @@ describe("XITTransferActionButton", () => {
 		const { wrapper } = await mountButton();
 
 		await open(wrapper);
-		expect(wrapper.findComponent(NDrawer).props()).toMatchObject({
+		expect(wrapper.findComponent(PDrawer).props()).toMatchObject({
 			show: true,
 			width: 650,
 		});
-		expect(body().find(".n-drawer-header").text()).toContain("XIT Action");
+		expect(
+			body().find("[role=dialog] [data-layer-header]").text()
+		).toContain("XIT Action");
 
 		// a second click while open does not show it again
 		await open(wrapper);
@@ -121,20 +125,22 @@ describe("XITTransferActionButton", () => {
 		});
 		await open(wrapper);
 
-		expect(wrapper.findComponent(NDrawer).props("width")).toBe(400);
-		expect(body().find(".n-drawer-header").text()).toContain("Supply Cart");
+		expect(wrapper.findComponent(PDrawer).props("width")).toBe(400);
+		expect(
+			body().find("[role=dialog] [data-layer-header]").text()
+		).toContain("Supply Cart");
 	});
 
 	it("shows it again after closing", async () => {
 		const { wrapper } = await mountButton();
 		await open(wrapper);
 
-		wrapper.findComponent(NDrawer).vm.$emit("update:show", false);
+		wrapper.findComponent(PDrawer).vm.$emit("update:show", false);
 		await flushPromises();
-		expect(wrapper.findComponent(NDrawer).props("show")).toBe(false);
+		expect(wrapper.findComponent(PDrawer).props("show")).toBe(false);
 
 		await open(wrapper);
-		expect(wrapper.findComponent(NDrawer).props("show")).toBe(true);
+		expect(wrapper.findComponent(PDrawer).props("show")).toBe(true);
 		expect(trackEvent).toHaveBeenCalledTimes(2);
 	});
 
@@ -198,7 +204,7 @@ describe("XITTransferActionButton", () => {
 		]);
 
 		// buying is a preference
-		await body().find(".n-drawer input[type=checkbox]").setValue(false);
+		await body().find("[role=dialog] input[type=checkbox]").setValue(false);
 		await flushPromises();
 		expect(xitJSON().actions).toEqual([MTRA("Moria Station Warehouse")]);
 	});
@@ -221,7 +227,7 @@ describe("XITTransferActionButton", () => {
 		const { wrapper } = await mountButton();
 		await open(wrapper);
 
-		await body().find(".n-drawer textarea").setValue("test-typing");
+		await body().find("[role=dialog] textarea").setValue("test-typing");
 
 		// a write would fail: "computed value is readonly"
 		expect(warn).not.toHaveBeenCalled();
@@ -238,7 +244,7 @@ describe("XITTransferActionButton", () => {
 		await selectOrigin(wrapper, "Antares Station Warehouse");
 
 		await body()
-			.findAll(".n-drawer button")
+			.findAll("[role=dialog] button")
 			.find((b) => b.text() === "xit.buttons.copy")!
 			.trigger("click");
 

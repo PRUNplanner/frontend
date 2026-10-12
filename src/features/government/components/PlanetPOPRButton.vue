@@ -15,8 +15,7 @@
 	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
 
 	// UI
-	import { PButton } from "@/ui";
-	import { NModal } from "naive-ui";
+	import { PButton, PModal } from "@/ui";
 
 	const {
 		planetNaturalId,
@@ -69,9 +68,8 @@
 </script>
 
 <template>
-	<n-modal
+	<PModal
 		v-model:show="showPOPRModal"
-		preset="card"
 		:title="
 			t('government.popr_button.modal_title', {
 				planet_id: planetNaturalId,
@@ -82,7 +80,7 @@
 			v-if="poprData"
 			:planet-natural-id="planetNaturalId"
 			:popr-data="poprData" />
-	</n-modal>
+	</PModal>
 	<PButton
 		:size="buttonSize"
 		:loading="buttonLoading"

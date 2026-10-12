@@ -140,7 +140,7 @@ Write them for logic-heavy components, see
   from `src/tests/mountComponent.ts`. It renders inside `<Suspense>`
   (async setup), installs a message-less i18n instance, so `t(key)` and
   `$t(key)` render the key itself, stubs `RouterLink`, and unmounts after
-  each test. `withDialog` adds `NDialogProvider` for `useDialog()`.
+  each test. `withDialog` renders `PConfirmHost` for `useConfirm()`.
   `setProps` updates props, `component.emitted()` holds emitted events.
 - **Data**: seed fixtures into the IndexedDB stores and preload, as in
   engine tests. Mock the backend with axios-mock-adapter and assert on
@@ -161,12 +161,14 @@ Write them for logic-heavy components, see
 - **File inputs**: define `files` on the hidden `<input type="file">` and
   `trigger("change")`, then `vi.waitFor` the parse; see
   `CXPreferenceImportExport.test.ts`.
-- **Overlays**: `NPopover`, `NModal` and `NDrawer` render into
+- **Overlays**: `PModal`, `PDrawer` and `NPopover` render into
   `document.body` once shown. Query them through
-  `new DOMWrapper(document.body)`; `PlanProductionRecipe.test.ts` opens a
-  popover and reads its table. `NModal` and `NDrawer` keep their DOM
-  during the leave transition, so assert a close through
-  `findComponent(NDrawer).props("show")`; see `HelpDrawer.test.ts`.
+  `new DOMWrapper(document.body)`: modals, drawers and confirms by
+  `[role=dialog]`, their close button by
+  `button[aria-label="common.ui.close"]`; `PlanProductionRecipe.test.ts`
+  opens a popover and reads its table. Test utils stub the transitions, so
+  a closed modal or drawer is gone at once; `findComponent(PDrawer).props("show")`
+  also works, see `HelpDrawer.test.ts`.
 - **Number inputs**: `PInputNumber` sets its `v-model` to `null` while
   the field is empty. A setter that emits it needs a null guard, and a
   test that clears the input; see `PlanArea.test.ts`.

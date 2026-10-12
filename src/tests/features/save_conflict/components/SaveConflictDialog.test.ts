@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach, vi } from "vitest";
 import { DOMWrapper, flushPromises } from "@vue/test-utils";
-import { NModal } from "naive-ui";
+import { PModal } from "@/ui";
 
 import { planetsStore } from "@/database/stores";
 import { usePlanetData } from "@/database/services/usePlanetData";
@@ -20,7 +20,7 @@ import type {
 } from "@/features/save_conflict/saveConflict.types";
 
 const body = () => new DOMWrapper(document.body);
-const modal = () => body().find(".n-modal");
+const modal = () => body().find("[role=dialog]");
 const button = (label: string) =>
 	modal()
 		.findAll("button")
@@ -261,7 +261,7 @@ describe("SaveConflictDialog", () => {
 				{ conflict },
 				{ messages: { save_conflict, game } }
 			);
-			const show = () => component.findComponent(NModal).props("show");
+			const show = () => component.findComponent(PModal).props("show");
 
 			expect(show()).toBe(false);
 			expect(modal().exists()).toBe(false);
@@ -372,7 +372,7 @@ describe("SaveConflictDialog", () => {
 		it("closing the modal resolves null", async () => {
 			const { component, answer } = await openDialog();
 
-			component.findComponent(NModal).vm.$emit("update:show", false);
+			component.findComponent(PModal).vm.$emit("update:show", false);
 			await expect(answer).resolves.toBeNull();
 		});
 	});

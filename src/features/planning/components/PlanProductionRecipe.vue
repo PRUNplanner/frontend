@@ -33,9 +33,10 @@
 	// UI
 	import PButton from "@/ui/components/PButton.vue";
 	import PInputNumber from "@/ui/components/PInputNumber.vue";
+	import PModal from "@/ui/components/PModal.vue";
 	import PTooltip from "@/ui/components/PTooltip.vue";
 	import PValue from "@/ui/components/PValue.vue";
-	import { NModal, NPopover } from "naive-ui";
+	import { NPopover } from "naive-ui";
 	import { ClearSharp, AnalyticsOutlined } from "@vicons/material";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 
@@ -164,10 +165,9 @@
 </script>
 
 <template>
-	<n-modal
+	<PModal
 		:key="`COGM#RECIPE#${recipeData.recipe.building_ticker}#${localRecipeIndex}`"
 		v-model:show="refShowCOGM"
-		preset="card"
 		:title="t('plan.components.production_recipe.cogm_title')"
 		:class="cogmWithCX ? 'max-w-250' : 'max-w-150'">
 		<PlanCOGM
@@ -175,7 +175,7 @@
 			:cogm-data="localRecipeData.cogm"
 			:cx-uuid="cxUuid"
 			:planet-id="planetId" />
-	</n-modal>
+	</PModal>
 
 	<div class="col-span-6 xl:col-span-1">
 		<PInputNumber

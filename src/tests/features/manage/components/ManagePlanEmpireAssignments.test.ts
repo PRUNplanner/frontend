@@ -131,7 +131,7 @@ function menuOption(label: string) {
 
 function confirmDialog() {
 	Array.from(
-		document.body.querySelectorAll<HTMLButtonElement>(".n-dialog button")
+		document.body.querySelectorAll<HTMLButtonElement>("[role=dialog] button")
 	)
 		.find((b) => b.textContent?.trim() === "common.buttons.delete")!
 		.click();

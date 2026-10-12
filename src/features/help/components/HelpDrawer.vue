@@ -10,8 +10,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t, locale } = useI18n({ useScope: "global" });
 
-	import { PButton } from "@/ui";
-	import { NDrawer, NDrawerContent } from "naive-ui";
+	import { PButton, PDrawer } from "@/ui";
 	import { VueShowdown } from "vue-showdown";
 
 	const showDrawer: Ref<boolean> = ref(false);
@@ -105,20 +104,18 @@
 		@click="() => (showDrawer = !showDrawer)">
 		{{ displayButtonTitle }}
 	</PButton>
-	<n-drawer v-model:show="showDrawer" :width="drawerWidth" placement="right">
-		<n-drawer-content closable>
-			<template #header>
-				{{ displayDrawerTitle }}
-			</template>
-			<div v-if="markdownContent != ''" id="markdown">
-				<VueShowdown
-					:markdown="markdownContent"
-					flavor="github"
-					:options="{ tables: true, emoji: true }" />
-			</div>
-			<div v-else-if="loadFailed" class="text-center text-red-500">
-				{{ t("help.load_error", { file_name: fileName }) }}
-			</div>
-		</n-drawer-content>
-	</n-drawer>
+	<PDrawer
+		v-model:show="showDrawer"
+		:width="drawerWidth"
+		:title="displayDrawerTitle">
+		<div v-if="markdownContent != ''" id="markdown">
+			<VueShowdown
+				:markdown="markdownContent"
+				flavor="github"
+				:options="{ tables: true, emoji: true }" />
+		</div>
+		<div v-else-if="loadFailed" class="text-center text-red-500">
+			{{ t("help.load_error", { file_name: fileName }) }}
+		</div>
+	</PDrawer>
 </template>

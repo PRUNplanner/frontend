@@ -58,7 +58,7 @@ const tile = (wrapper: VueWrapper) => wrapper.find(".material-tile");
 const indicator = (wrapper: VueWrapper) =>
 	wrapper.find(".material-tile div[style]");
 const body = () => new DOMWrapper(document.body);
-const drawer = () => body().find(".n-drawer");
+const drawer = () => body().find("[role=dialog]");
 
 describe("MaterialTile", () => {
 	beforeAll(async () => {

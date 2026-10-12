@@ -7,6 +7,10 @@
 		"buttons": {
 			"new_empire": "New Empire"
 		},
+		"deletion": {
+			"title": "Confirm Empire Deletion",
+			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+		},
 		"form": {
 			"empire_name": "@:terms.empire Name",
 			"faction": "@:terms.faction",
@@ -28,6 +32,10 @@
 		"description": "Removing a CX preference will delete all its exchange and material settings. Assigned empires will remain unaffected, but they will no longer use the removed preferences. Make sure to assign a new CX preference.",
 		"buttons": {
 			"new_cx": "New @:terms.cx"
+		},
+		"deletion": {
+			"title": "Confirm CX Deletion",
+			"content": "Are you sure? Deleting the CX will delete all preferences."
 		},
 		"form": {
 			"cx_name": "@:terms.cx Name",

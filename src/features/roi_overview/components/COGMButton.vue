@@ -4,8 +4,7 @@
 	// Components
 	import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
 
-	import { PButton } from "@/ui";
-	import { NModal } from "naive-ui";
+	import { PButton, PModal } from "@/ui";
 	import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
 	import { AnalyticsOutlined } from "@vicons/material";
 
@@ -21,14 +20,13 @@
 </script>
 
 <template>
-	<n-modal
+	<PModal
 		key="COGM"
 		v-model:show="refShowCOGM"
-		preset="card"
 		title="Cost Of Goods Manufactured"
 		class="max-w-150">
 		<PlanCOGM v-if="cogmData" :cogm-data="cogmData" />
-	</n-modal>
+	</PModal>
 	<PButton
 		size="sm"
 		secondary

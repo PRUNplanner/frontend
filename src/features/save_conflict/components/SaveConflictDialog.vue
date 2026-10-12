@@ -21,8 +21,7 @@
 	} from "@/features/save_conflict/saveConflict.types";
 
 	// UI
-	import { NModal } from "naive-ui";
-	import { PButton } from "@/ui";
+	import { PButton, PModal } from "@/ui";
 
 	const props = defineProps({
 		conflict: {
@@ -113,10 +112,9 @@
 </script>
 
 <template>
-	<NModal
+	<PModal
 		:show="show"
 		class="w-160! max-w-[90vw]!"
-		preset="card"
 		:title="
 			conflict.deleted.value
 				? t('save_conflict.deleted_title')
@@ -190,5 +188,5 @@
 				</PButton>
 			</div>
 		</template>
-	</NModal>
+	</PModal>
 </template>

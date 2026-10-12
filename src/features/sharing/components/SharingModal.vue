@@ -9,8 +9,7 @@
 	import { copyToClipboard } from "@/util/data";
 
 	// UI
-	import { NModal } from "naive-ui";
-	import { PButton } from "@/ui";
+	import { PButton, PModal } from "@/ui";
 
 	const props = defineProps({
 		planUuid: {
@@ -59,10 +58,9 @@
 </script>
 
 <template>
-	<n-modal
+	<PModal
 		v-model:show="show"
 		class="w-fit! max-w-175!"
-		preset="card"
 		:title="$t('sharing.title')">
 		<template v-if="!isShared">
 			<div>
@@ -103,5 +101,5 @@
 				</PButton>
 			</div>
 		</template>
-	</n-modal>
+	</PModal>
 </template>
