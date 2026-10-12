@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import numbro from "numbro";
 import {
 	formatNumber,
 	formatAmount,
@@ -37,6 +38,49 @@ describe("Util: text", () => {
 
 		it("negative infinity", () => {
 			expect(formatNumber(-Infinity)).toStrictEqual("—");
+		});
+
+		it("matches numbro exactly", () => {
+			const values = [
+				0,
+				-0,
+				Number.MAX_SAFE_INTEGER,
+				-Number.MAX_SAFE_INTEGER,
+				...[
+					0.5, 1.5, 2.5, 1.005, 2.675, 999.995, 123456789.125, 1e-7,
+					1e21, 0.004, 0.005, 1.45, 1.55, 0.1 + 0.2,
+				].flatMap((v) => [v, -v]),
+			];
+			// seeded, so a mismatch reproduces
+			let seed = 7;
+			const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+			for (let i = 0; i < 4000; i++) {
+				const magnitude = [1, 100, 1e4, 1e7][i % 4];
+				values.push((random() - 0.5) * magnitude);
+				values.push(Math.round((random() - 0.5) * magnitude * 1000) / 1000);
+			}
+
+			const mismatches: string[] = [];
+			for (let decimals = 0; decimals <= 4; decimals++)
+				for (const optional of [false, true])
+					for (const sign of [false, true])
+						for (const v of values) {
+							const expected = numbro(v).format({
+								thousandSeparated: true,
+								mantissa: decimals,
+								optionalMantissa: optional,
+								forceSign: sign,
+							});
+							const actual = formatNumber(v, decimals, optional, sign);
+							if (actual !== expected)
+								mismatches.push(
+									`${v} ${decimals} ${optional} ${sign}: ${actual} != ${expected}`
+								);
+						}
+
+			expect(mismatches).toStrictEqual([]);
+			for (const v of [NaN, Infinity, -Infinity])
+				expect(formatNumber(v, 3, true, true)).toBe("—");
 		});
 	});
 
