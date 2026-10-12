@@ -1,17 +1,17 @@
 {
 	"popr_button": {
-		"no_data": "Planet {planet_id} has no population data",
+		"no_data": "{planet_id} 행성의 인구 데이터가 없습니다",
 		"buttons": {
-			"no_popr": "No POPR"
+			"no_popr": "POPR 없음"
 		},
 		"table": {
-			"total_population": "Total Population",
-			"free_population": "Free Population",
-			"free_population_pct": "Free Population %",
-			"unfilled_jobs": "Unfilled Jobs",
-			"plan_need": "@:terms.plan Need",
-			"plan_check": "@:terms.plan Check"
+			"total_population": "총 인구",
+			"free_population": "가용 인구",
+			"free_population_pct": "가용 인구 %",
+			"unfilled_jobs": "빈 일자리",
+			"plan_need": "@:terms.plan 필요량",
+			"plan_check": "@:terms.plan 확인"
 		},
-		"modal_title": "Latest Population Report: {planet_id}"
+		"modal_title": "최신 인구 보고서: {planet_id}"
 	}
 }
