@@ -7,6 +7,10 @@
 		"buttons": {
 			"new_empire": "Neues Imperium"
 		},
+		"deletion": {
+			"title": "Confirm Empire Deletion",
+			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+		},
 		"form": {
 			"empire_name": "@:terms.empire Name",
 			"faction": "@:terms.faction",
@@ -28,6 +32,10 @@
 		"description": "Das Entfernen einer Handelskammer-Konfiguration löscht alle Warenbörsen- und Materialeinstellungen. Zugewiesene Imperien bleiben davon unberührt, aber verlieren ihre Preisberechnungen. Stelle sicher, dass du dem Imperium eine neue Handelskammer zuweist.",
 		"buttons": {
 			"new_cx": "Neue @:terms.cx"
+		},
+		"deletion": {
+			"title": "Confirm CX Deletion",
+			"content": "Are you sure? Deleting the CX will delete all preferences."
 		},
 		"form": {
 			"cx_name": "@:terms.cx Name",
