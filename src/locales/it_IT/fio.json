@@ -20,6 +20,7 @@
 			},
 			"plans": {
 				"xit_title": "XIT Resupply: {plan_name}",
+				"expand_row": "Show materials of {plan_name}",
 				"table": {
 					"ticker": "@:terms.material_ticker",
 					"consumption": "@:terms.consumption",
