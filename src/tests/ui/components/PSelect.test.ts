@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import PSelect from "@/ui/components/PSelect.vue";
@@ -126,5 +126,30 @@ describe("PSelect", () => {
 		document.body.click();
 		await flushPromises();
 		expect(currentlyOpenId.value).toBeNull();
+	});
+
+	it("renders and moves through options with repeated or missing values", async () => {
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+		const options = [
+			{ label: "A", value: "x" },
+			{ label: "B", value: "x" },
+			{ label: "C", value: undefined },
+			{ label: "D", value: undefined },
+			{ label: "Group", value: "g", children: [{ label: "E", value: "x" }, { label: "F", value: "x" }] },
+		];
+		const { wrapper, setProps } = await mountSelect(options);
+
+		const seen: string[] = [];
+		for (let i = 0; i < 6; i++) {
+			await key(wrapper, "ArrowDown");
+			seen.push(highlighted().text());
+		}
+		expect(seen).toEqual(["A", "B", "C", "D", "E", "F"]);
+
+		// an update of the open list patches by key
+		await setProps({ options: [...options].reverse() });
+		expect(body().findAll("[data-pselect-dropdown] .grow").map((o) => o.text())).toEqual(["E", "F", "D", "C", "B", "A"]);
+		expect(warn.mock.calls.flat().join(" ")).not.toContain("Duplicate keys");
+		warn.mockRestore();
 	});
 });
