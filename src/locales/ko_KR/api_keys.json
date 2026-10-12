@@ -1,17 +1,17 @@
 {
-	"view_title": "API Keys",
-	"title": "API Keys",
+	"view_title": "API 키",
+	"title": "API 키",
 	"info": {
 		"description": {
-			"p1": "The {link} provides programmatic access to all your planning data, ingame metadata (buildings, recipes, materials) and calculated market metrics like VWAP. While public endpoints remain open for community use, access to private planning data - including your plan configurations - require secure authentication.",
-			"p2": "By utilizing these endpoints, you can synchronize your planning operations with external spreadsheets, custom dashboards, or even optimization algorithms.",
-			"link": "PRUNplanner REST API",
-			"warning": "API keys grant full access to your account data and remain valid indefinitely. Treat these credentials as sensitive as your password. Never commit keys to public repositories or share them with unverified third-party services. If a key is compromised, revoke it immediately and generate a replacement."
+			"p1": "{link}에서는 모든 플래닝 데이터, 게임 내 메타데이터(건물, 레시피, 물자), VWAP 같은 시장 지표 계산값에 프로그래밍 방식으로 접근할 수 있습니다. 공개 엔드포인트는 커뮤니티가 자유롭게 사용할 수 있지만, 플랜 구성을 포함한 개인 플래닝 데이터에 접근하려면 보안 인증이 필요합니다.",
+			"p2": "이 엔드포인트를 활용하면 플래닝 작업을 외부 스프레드시트, 맞춤 대시보드, 또는 최적화 알고리즘과도 동기화할 수 있습니다.",
+			"link": "PRUNplanner 리셋 API",
+			"warning": "API 키는 계정 데이터에 대한 전체 접근 권한을 가지며 기한 없이 유효합니다. 이 인증 정보를 비밀번호만큼 민감사헤 다루세요. 키를 공재 저장소에 커밋하거나 검증되지 않은 외부 서비스와 공유하지 마세요. 키가 유출되었다면 즉시 폐기하고 새 키를 발급하세요."
 		}
 	},
 	"manage": {
-		"title": "PRUNplanner API Keys",
-		"loading": "Loading API Keys.",
+		"title": "PRUNplanner API 키",
+		"loading": "API 키를 불러오는 중입니다.",
 		"empty": "No API Keys yet. Create your first API Key.",
 		"buttons": {
 			"new_apikey": "Create New Key",
