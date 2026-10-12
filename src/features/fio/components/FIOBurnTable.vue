@@ -72,19 +72,19 @@
 			sorter: true,
 		},
 	]);
+
+	// stable, inline functions re-render the whole table
+	const rowKey = (row: IFIOBurnTableElement) => row.key;
+	const expandLabel = (row: IFIOBurnTableElement) =>
+		t("fio.burn.components.plans.expand_row", { plan_name: row.planName });
 </script>
 
 <template>
 	<PDataTable
 		:columns="columns"
 		:data="props.burnTable"
-		:row-key="(row) => row.key"
-		:expand-label="
-			(row) =>
-				t('fio.burn.components.plans.expand_row', {
-					plan_name: row.planName,
-				})
-		"
+		:row-key="rowKey"
+		:expand-label="expandLabel"
 		striped>
 		<template #expand="{ row }">
 			<PDataTable :columns="materialColumns" :data="row.burnMaterials" striped>

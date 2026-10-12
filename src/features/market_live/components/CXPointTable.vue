@@ -36,6 +36,8 @@
 		numeric("buy_volume_total", "buy_volume"),
 		numeric("sell_volume_total", "sell_volume"),
 	]);
+	// stable, an inline function re-renders the whole table
+	const rowKey = (row: CXDataPoint) => row.ticker;
 </script>
 
 <template>
@@ -47,7 +49,7 @@
 			fill
 			virtual
 			:min-width="700"
-			:row-key="(row) => row.ticker">
+			:row-key="rowKey">
 			<template #cell-price="{ row }">
 				<div class="text-nowrap">
 					<span v-if="row.price !== undefined">
