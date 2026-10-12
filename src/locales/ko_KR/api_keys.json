@@ -5,43 +5,43 @@
 		"description": {
 			"p1": "{link}에서는 모든 플래닝 데이터, 게임 내 메타데이터(건물, 레시피, 물자), VWAP 같은 시장 지표 계산값에 프로그래밍 방식으로 접근할 수 있습니다. 공개 엔드포인트는 커뮤니티가 자유롭게 사용할 수 있지만, 플랜 구성을 포함한 개인 플래닝 데이터에 접근하려면 보안 인증이 필요합니다.",
 			"p2": "이 엔드포인트를 활용하면 플래닝 작업을 외부 스프레드시트, 맞춤 대시보드, 또는 최적화 알고리즘과도 동기화할 수 있습니다.",
-			"link": "PRUNplanner 리셋 API",
+			"link": "PRUNplanner REST API",
 			"warning": "API 키는 계정 데이터에 대한 전체 접근 권한을 가지며 기한 없이 유효합니다. 이 인증 정보를 비밀번호만큼 민감사헤 다루세요. 키를 공재 저장소에 커밋하거나 검증되지 않은 외부 서비스와 공유하지 마세요. 키가 유출되었다면 즉시 폐기하고 새 키를 발급하세요."
 		}
 	},
 	"manage": {
 		"title": "PRUNplanner API 키",
 		"loading": "API 키를 불러오는 중입니다.",
-		"empty": "No API Keys yet. Create your first API Key.",
+		"empty": "아직 API 키가 없습니다. 먼저 API 키를 생성해 주세요.",
 		"buttons": {
-			"new_apikey": "Create New Key",
-			"revoke_apikey": "Revoke"
+			"new_apikey": "새로운 키 생성",
+			"revoke_apikey": "폐기"
 		},
 		"table": {
-			"apikey_name": "Name",
-			"apikey_prefix": "Prefix",
-			"apikey_created": "Created",
-			"apikey_lastused": "Last Used"
+			"apikey_name": "이름",
+			"apikey_prefix": "접두사",
+			"apikey_created": "생성됨",
+			"apikey_lastused": "마지막 사용"
 		}
 	},
 	"implementation": {
-		"title": "Authorization Implementation",
-		"link": "View REST API Reference →"
+		"title": "인증 구현 방법",
+		"link": "REST API 레퍼런스 보기 →"
 	},
 	"create": {
-		"title": "Create API Key",
+		"title": "API 키 생성",
 		"form": {
-			"key_name": "Key Name",
-			"key_description": "Give your key a descriptive name to help you identify it later.",
-			"success_title": "Key Generated Successfully",
-			"success_key": "Your Secret Key (Save this Now!)",
-			"success_note": "For security, we cannot show this key again. If you lose it, you must revoke and create a new one.",
-			"error": "Error creating your API Key. Please try again later."
+			"key_name": "키 이름",
+			"key_description": "나중에 쉽게 알아볼 수 있도록 키에 구분하기 좋은 이름을 지어 주세요.",
+			"success_title": "키 생성 완료",
+			"success_key": "시크릿 키(지금 바로 저장하세요!)",
+			"success_note": "보안을 위해 이 키는 다시 표시할 수 없습니다. 키를 분실하면 기존 키를 폐기하고 새 키를 만들어야 합니다.",
+			"error": "API 키를 생성하는 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 		},
 		"buttons": {
 			"create": "@:common.buttons.create",
 			"cancel": "@:common.buttons.cancel",
-			"saved": "I've saved my key"
+			"saved": "키를 저장했습니다"
 		}
 	}
 }
