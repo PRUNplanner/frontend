@@ -6,8 +6,10 @@ import {
 	mount,
 } from "@vue/test-utils";
 import { defineComponent, h, ref } from "vue";
+import { createI18n } from "vue-i18n";
 
 import PPopover from "@/ui/components/PPopover.vue";
+import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
 
 enableAutoUnmount(afterEach);
 
@@ -50,7 +52,20 @@ function mountPopover(
 					h("p", { id: "outside" }, "page"),
 				]),
 		}),
-		{ attachTo: document.body }
+		{
+			attachTo: document.body,
+			// for a PSelectMultiple inside
+			global: {
+				plugins: [
+					createI18n({
+						legacy: false,
+						locale: "en_US",
+						missingWarn: false,
+						fallbackWarn: false,
+					}),
+				],
+			},
+		}
 	);
 	return { wrapper, show, onClickoutside };
 }
@@ -111,6 +126,36 @@ describe("PPopover", () => {
 		down(wrapper.find("#outside").element);
 		expect(onClickoutside).toHaveBeenCalledTimes(1);
 		expect(show.value).toBe(true);
+	});
+
+	it("stays open while an option of a PSelectMultiple inside is picked", async () => {
+		const picked = ref<(string | number | null | undefined)[]>([]);
+		const { show, onClickoutside } = mountPopover({}, () =>
+			h(PSelectMultiple, {
+				value: picked.value,
+				options: [
+					{ label: "A", value: "a" },
+					{ label: "B", value: "b" },
+				],
+				"onUpdate:value": (v: typeof picked.value) => (picked.value = v),
+			})
+		);
+		show.value = true;
+		await flushPromises();
+
+		// the panel is teleported, so the select is found in the body
+		await body().find('[role="combobox"]').trigger("keydown", { key: "ArrowDown" });
+		await flushPromises();
+		const option = body()
+			.findAll<HTMLElement>("[data-pselect-dropdown] .grow")
+			.find((o) => o.text() === "B")!;
+		down(option.element);
+		await option.trigger("click");
+		await flushPromises();
+
+		expect(picked.value).toEqual(["b"]);
+		expect(show.value).toBe(true);
+		expect(onClickoutside).not.toHaveBeenCalled();
 	});
 
 	it("closes on Esc and returns focus only from inside", async () => {
