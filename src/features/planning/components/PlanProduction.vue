@@ -295,16 +295,16 @@
 	<div class="border border-white/10 rounded overflow-hidden">
 		<div
 			class="grid grid-cols-12 text-xs uppercase p-3 bg-white/5 font-bold">
-			<div class="col-span-3">
+			<div class="col-span-6">
 				{{ $t("plan.components.production.table.building_recipe") }}
 			</div>
-			<div class="col-span-3">
+			<div class="hidden xl:block col-span-2">
 				{{ $t("plan.components.production.table.runtime") }}
 			</div>
-			<div class="col-span-3">
+			<div class="hidden xl:block col-span-2">
 				{{ $t("plan.components.production.table.share") }}
 			</div>
-			<div class="col-span-3 text-end">
+			<div class="hidden xl:block col-span-2 text-end">
 				{{ $t("plan.components.production.table.tools") }}
 			</div>
 		</div>

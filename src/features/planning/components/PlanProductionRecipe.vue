@@ -115,8 +115,8 @@
 	const refShowRecipeOptions: Ref<boolean> = ref(false);
 	const refShowCOGM: Ref<boolean> = ref(false);
 
-	// below xl the recipe tile sits in the right half of the row, so the popover
-	// hangs left from its right edge to stay inside narrow windows (#294)
+	// below xl the recipe formula runs to the right edge of the row, so the
+	// popover hangs left from there to stay inside narrow windows (#294)
 	const recipePlacement = () =>
 		window.matchMedia?.("(min-width: 1280px)").matches === false
 			? "bottom-end"
@@ -177,7 +177,8 @@
 			:planet-id="planetId" />
 	</PModal>
 
-	<div class="col-span-6 xl:col-span-1">
+	<!-- below xl: line 2, first; at xl: first column -->
+	<div class="col-1 row-2 xl:row-1 w-24">
 		<PInputNumber
 			v-model:value="localRecipeAmount"
 			:aria-label="
@@ -189,7 +190,7 @@
 			:show-buttons="!disabled"
 			size="sm"
 			:min="0"
-			class="w-full max-w-24"
+			class="w-full"
 			@update:value="
 				(value) => {
 					if (value !== null && value !== undefined) {
@@ -212,14 +213,14 @@
 		@update-show="(val) => (refShowRecipeOptions = val)">
 		<template #trigger>
 			<div
-				class="col-span-6 xl:col-span-2 flex items-center gap-1 group justify-between hover:cursor-pointer">
-				<div class="flex flex-row flex-wrap items-center gap-1">
+				class="col-span-full row-1 xl:col-2 xl:pl-3 min-w-0 flex items-center gap-1 group justify-between hover:cursor-pointer">
+				<div class="flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0">
 					<span
 						v-if="isNew"
 						class="text-xs font-bold uppercase text-positive pr-1">
 						{{ $t("sharing.compare.new") }}
 					</span>
-					<template v-if="showInputs">
+					<div v-if="showInputs" class="flex flex-wrap gap-1">
 						<MaterialTile
 							v-for="material in localRecipeData.recipe.inputs"
 							:key="`${localRecipeData.recipe.building_ticker}#ROW#INPUT#${material.material_ticker}`"
@@ -229,18 +230,27 @@
 								localRecipeData.amount
 							"
 							:enable-popover="false" />
-						<span aria-hidden="true" class="text-muted px-1">
+					</div>
+					<!-- the arrow stays with the outputs when they wrap below -->
+					<div class="flex items-center gap-2">
+						<span
+							v-if="showInputs"
+							aria-hidden="true"
+							class="text-muted">
 							→
 						</span>
-					</template>
-					<MaterialTile
-						v-for="material in localRecipeData.recipe.outputs"
-						:key="`${localRecipeData.recipe.building_ticker}#${material.material_ticker}`"
-						:ticker="material.material_ticker"
-						:amount="
-							material.material_amount * localRecipeData.amount
-						"
-						:enable-popover="false" />
+						<div class="flex flex-wrap gap-1">
+							<MaterialTile
+								v-for="material in localRecipeData.recipe.outputs"
+								:key="`${localRecipeData.recipe.building_ticker}#${material.material_ticker}`"
+								:ticker="material.material_ticker"
+								:amount="
+									material.material_amount *
+									localRecipeData.amount
+								"
+								:enable-popover="false" />
+						</div>
+					</div>
 				</div>
 				<div v-if="!disabled" class="pr-3">
 					<svg
@@ -424,12 +434,15 @@
 		</div>
 	</n-popover>
 
-	<div class="col-span-6 xl:col-span-3 text-xs text-white/80">
+	<div class="col-2 row-2 xl:col-3 xl:row-1 text-xs text-white/80">
 		{{ humanizeTimeMs(localRecipeData.time) }}
 	</div>
-	<div class="col-span-6 xl:col-span-2 flex flex-row gap-x-3 items-center">
+	<div
+		class="col-3 row-2 xl:col-4 xl:row-1 xl:pr-3 min-w-0 flex flex-row gap-x-3 items-center">
 		<template v-if="localRecipeData.dailyShare != 1">
-			<div class="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+			<!-- phones: percentage only, the bar would be a sliver -->
+			<div
+				class="hidden sm:block h-1.5 w-full overflow-hidden rounded-full bg-white/5">
 				<div
 					class="bg-prunplanner h-full transition-all duration-500 ease-out"
 					:style="`width: ${localRecipeData.dailyShare * 100}%`" />
@@ -439,11 +452,15 @@
 			</div>
 		</template>
 	</div>
-	<div class="col-span-6 xl:col-span-3 flex xl:justify-end">
+	<div
+		class="col-4 row-2 xl:col-5 xl:row-1 flex justify-end items-center gap-3">
 		<PTooltip :disabled="cogmEnabled">
 			<template #trigger>
 				<PButton
 					size="sm"
+					:aria-label="
+						$t('plan.components.production_recipe.buttons.cogm')
+					"
 					:disabled="!cogmEnabled"
 					@click="
 						() => {
@@ -455,13 +472,15 @@
 						}
 					">
 					<template #icon><AnalyticsOutlined /> </template>
-					{{ $t("plan.components.production_recipe.buttons.cogm") }}
+					<span class="hidden sm:inline">
+						{{
+							$t("plan.components.production_recipe.buttons.cogm")
+						}}
+					</span>
 				</PButton>
 			</template>
 			{{ $t("plan.components.production_recipe.cogm_error") }}
 		</PTooltip>
-	</div>
-	<div class="col-span-6 xl:col-span-1 flex xl:justify-end">
 		<PButton
 			v-if="!disabled"
 			:aria-label="$t('common.buttons.delete')"

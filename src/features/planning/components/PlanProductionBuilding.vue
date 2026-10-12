@@ -339,7 +339,7 @@
 			<div
 				v-for="(recipe, index) in localBuildingData.activeRecipes"
 				:key="`RECIPE#${index}#${recipe.recipeId}`"
-				class="grid grid-cols-12 px-3 py-2 border-l-2 border-transparent items-center even:bg-white/5 border-b border-b-white/10 last:border-b-0 items-center gap-3 xl:gap-0">
+				class="grid grid-cols-[auto_4.5rem_minmax(0,1fr)_auto] xl:grid-cols-[6rem_minmax(0,1fr)_repeat(3,16.6667%)] px-3 py-2 border-l-2 border-transparent items-center even:bg-white/5 border-b border-b-white/10 last:border-b-0 gap-x-3 gap-y-2 xl:gap-0">
 				<PlanProductionRecipe
 					:disabled="disabled"
 					:recipe-index="index"

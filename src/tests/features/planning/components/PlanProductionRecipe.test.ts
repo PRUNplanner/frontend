@@ -218,6 +218,7 @@ describe("PlanProductionRecipe", () => {
 		const FE2 = { ...option("R_FE2", [m("FE", 2)], 6, 0, 0), inputs: [m("MAG", 1)] };
 		const { wrapper, setProps } = await mountRecipe();
 		expect(wrapper.find(".group").text()).not.toContain("FEO");
+		expect(wrapper.find(".group").text()).not.toContain("→");
 
 		await setProps({ recipeOptions: [FE, FE2, ALN] });
 		// FEO 2 per run, 2 buildings
@@ -361,6 +362,10 @@ describe("PlanProductionRecipe", () => {
 	it("enables COGM only for visible COGM data", async () => {
 		const { wrapper, setProps } = await mountRecipe();
 		expect(cogmButton(wrapper).element.disabled).toBe(false);
+		// icon-only on phones: the label stays its accessible name
+		expect(cogmButton(wrapper).attributes("aria-label")).toBe(
+			"plan.components.production_recipe.buttons.cogm"
+		);
 
 		await setProps({
 			recipeData: recipe({ cogm: { ...COGM, visible: false } }),
