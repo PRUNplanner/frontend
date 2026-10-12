@@ -109,6 +109,13 @@
 
 	watch(searchString, () => (highlightedIndex.value = 0));
 
+	// -1 for every option but the one holding the highlight, so an arrow key
+	// re-renders two options instead of the whole list
+	function highlightOf(option: PSelectOption, idx: number): number {
+		const local = highlightedIndex.value - selectableOffsets.value[idx];
+		return local >= 0 && local < (option.children?.length ?? 1) ? local : -1;
+	}
+
 	function change(e: string | number | undefined) {
 		if (disabled) return;
 
@@ -316,9 +323,7 @@
 						:key="option.value"
 						:option="option"
 						:selected-value="value"
-						:highlighted-index="
-							highlightedIndex - selectableOffsets[idx]
-						"
+						:highlighted-index="highlightOf(option, idx)"
 						@click="(v) => change(v)" />
 
 					<template v-if="filteredOptions.length === 0">
