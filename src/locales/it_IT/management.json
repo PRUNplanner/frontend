@@ -7,6 +7,10 @@
 		"buttons": {
 			"new_empire": "Nuovo Impero"
 		},
+		"deletion": {
+			"title": "Confirm Empire Deletion",
+			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+		},
 		"form": {
 			"empire_name": "Name @:terms.empire",
 			"faction": "@:terms.faction",
@@ -28,6 +32,10 @@
 		"description": "La rimozione di una preferenza di borsa eliminerà tutte le sue impostazioni di scambio e materiale. Gli imperi assegnati resteranno inalterati, ma non useranno più le preferenze rimosse. Assicurati di assegnare una nuova preferenza di borsa.",
 		"buttons": {
 			"new_cx": "Nuova Configurazione"
+		},
+		"deletion": {
+			"title": "Confirm CX Deletion",
+			"content": "Are you sure? Deleting the CX will delete all preferences."
 		},
 		"form": {
 			"cx_name": "Nome Configurazione",
