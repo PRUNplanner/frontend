@@ -74,6 +74,10 @@
 			"page": "第{page}页",
 			"more": "更多页面"
 		},
+		"table": {
+			"no_data": "No Data",
+			"expand_row": "Show details"
+		},
 		"close": "Close",
 		"language": "语言",
 		"page_load_failed": "此页面无法加载。重新加载以获取最新版本。"
