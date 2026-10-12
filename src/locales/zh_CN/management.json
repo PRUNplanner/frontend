@@ -7,6 +7,10 @@
 		"buttons": {
 			"new_empire": "新帝国"
 		},
+		"deletion": {
+			"title": "Confirm Empire Deletion",
+			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+		},
 		"form": {
 			"empire_name": "@:{'terms.empire'}名称",
 			"faction": "@:terms.faction",
@@ -28,6 +32,10 @@
 		"description": "移除商品交易所偏好将删除其所有市场和材料设置。已分配的帝国将不受影响，但他们将不再使用已删除的偏好。请确保分配一个新的商品交易所偏好。",
 		"buttons": {
 			"new_cx": "新@:{'terms.cx'}"
+		},
+		"deletion": {
+			"title": "Confirm CX Deletion",
+			"content": "Are you sure? Deleting the CX will delete all preferences."
 		},
 		"form": {
 			"cx_name": "@:{'terms.cx'}名称",
