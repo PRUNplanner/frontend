@@ -111,7 +111,7 @@ async function setPositiveROI(wrapper: VueWrapper, value: boolean) {
 }
 
 async function sortBy(wrapper: VueWrapper, key: string) {
-	await wrapper.find(`th[data-col-key="${key}"]`).trigger("click");
+	await wrapper.find(`th[data-col-key="${key}"] button`).trigger("click");
 	await flushPromises();
 }
 

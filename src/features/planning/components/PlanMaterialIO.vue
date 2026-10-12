@@ -13,11 +13,10 @@
 	// Util
 	import { formatNumber } from "@/util/numbers";
 
-	// UI
-	import { PValue } from "@/ui";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	// UI
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { PDataTable, PValue } from "@/ui";
 
 	const props = defineProps({
 		materialIOData: {
@@ -43,94 +42,73 @@
 	const localShowBasked: ComputedRef<boolean> = computed(
 		() => props.showBasked
 	);
+
+	const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => {
+		const numeric = (key: string, title: string) => ({
+			key,
+			title: t(`plan.components.materialio.table.${title}`),
+			align: "right" as const,
+			sorter: true as const,
+		});
+		return [
+			{ key: "ticker", title: "", sorter: true },
+			numeric("input", "input"),
+			numeric("output", "output"),
+			numeric("delta", "delta"),
+			...(localShowBasked.value
+				? [
+						numeric("totalWeight", "total_weight"),
+						numeric("totalVolume", "total_volume"),
+					]
+				: [numeric("price", "cost_day")]),
+		];
+	});
 </script>
 
 <template>
-	<XNDataTable
+	<PDataTable
+		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"
 		striped>
-		<XNDataTableColumn key="ticker" title="" sorter="default">
-			<template #render-cell="{ rowData }">
-				<MaterialTile
-					:key="`MATERIALIO#MATERIALTILE#${rowData.ticker}`"
-					:ticker="rowData.ticker"
-					:daily="rowData.delta"
-					:disable-drawer="false" />
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="input"
-			align="right"
-			title-align="right"
-			:title="t('plan.components.materialio.table.input')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<span :class="rowData.input === 0 ? 'text-muted' : ''">
-					{{ formatNumber(rowData.input) }}
-				</span>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="output"
-			align="right"
-			title-align="right"
-			:title="t('plan.components.materialio.table.output')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<span :class="rowData.output === 0 ? 'text-muted' : ''">
-					{{ formatNumber(rowData.output) }}
-				</span>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="delta"
-			align="right"
-			title-align="right"
-			:title="t('plan.components.materialio.table.delta')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<PValue :value="rowData.delta" />
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			v-if="!localShowBasked"
-			key="price"
-			align="right"
-			title-align="right"
-			:title="t('plan.components.materialio.table.cost_day')"
-			sorter="default">
-			<!-- may wrap: at phone width the fixed-layout column is too narrow -->
-			<template #title>
-				<span class="whitespace-normal">
-					{{ t("plan.components.materialio.table.cost_day") }}
-				</span>
-			</template>
-			<template #render-cell="{ rowData }">
-				<PValue :value="rowData.price" />
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			v-if="localShowBasked"
-			key="totalWeight"
-			align="right"
-			title-align="right"
-			:title="t('plan.components.materialio.table.total_weight')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<PValue :value="rowData.totalWeight" />
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			v-if="localShowBasked"
-			key="totalVolume"
-			align="right"
-			title-align="right"
-			:title="t('plan.components.materialio.table.total_volume')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<PValue :value="rowData.totalVolume" />
-			</template>
-		</XNDataTableColumn>
-	</XNDataTable>
+		<!-- the ticker title is visually empty, as before, but names the sort button -->
+		<template #header-ticker>
+			<span class="sr-only">{{ t("terms.material_ticker") }}</span>
+		</template>
+		<template #cell-ticker="{ row }">
+			<MaterialTile
+				:key="`MATERIALIO#MATERIALTILE#${row.ticker}`"
+				:ticker="row.ticker"
+				:daily="row.delta"
+				:disable-drawer="false" />
+		</template>
+		<template #cell-input="{ row }">
+			<span :class="row.input === 0 ? 'text-muted' : ''">
+				{{ formatNumber(row.input) }}
+			</span>
+		</template>
+		<template #cell-output="{ row }">
+			<span :class="row.output === 0 ? 'text-muted' : ''">
+				{{ formatNumber(row.output) }}
+			</span>
+		</template>
+		<template #cell-delta="{ row }">
+			<PValue :value="row.delta" />
+		</template>
+		<!-- may wrap: at phone width the column is too narrow -->
+		<template #header-price>
+			<span class="whitespace-normal">
+				{{ t("plan.components.materialio.table.cost_day") }}
+			</span>
+		</template>
+		<template #cell-price="{ row }">
+			<PValue :value="row.price" />
+		</template>
+		<template #cell-totalWeight="{ row }">
+			<PValue :value="row.totalWeight" />
+		</template>
+		<template #cell-totalVolume="{ row }">
+			<PValue :value="row.totalVolume" />
+		</template>
+	</PDataTable>
 </template>

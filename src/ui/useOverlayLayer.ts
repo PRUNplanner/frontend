@@ -15,7 +15,7 @@ const anyModal = () => stack.some((l) => l.modal);
 let pageOverflow = "";
 let pageMarginRight = "";
 
-// as naive-ui did: the scrollbar's width moves to a margin, so nothing shifts
+// the scrollbar's width moves to a margin, so nothing shifts
 function lockPage(): void {
 	const html = document.documentElement;
 	const scrollbarWidth = window.innerWidth - html.offsetWidth;

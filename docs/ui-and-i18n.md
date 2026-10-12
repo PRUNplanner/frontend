@@ -9,12 +9,13 @@ Build UI from the in-house `P*` components first. The barrel is
 import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui";
 ```
 
-The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDrawer`,
-`PDropdown`, `PForm`, `PFormItem`, `PFormSeperator` (the misspelling is the
-real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`, `PPopover`,
-`PProgressBar`, `PSelect`, `PSelectElement`, `PSelectMultiple`, `PSpin`,
-`PTable`, `PTag`, `PToast` (through `useToast()`, see "Toasts" below),
-`PTooltip` and `PValue`, plus `useConfirm()` (see "Overlays" below).
+The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDataTable`,
+`PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeperator` (the
+misspelling is the real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`,
+`PPagination`, `PPopover`, `PProgressBar`, `PSelect`, `PSelectElement`,
+`PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast` (through
+`useToast()`, see "Toasts" below), `PTooltip` and `PValue`, plus
+`useConfirm()` (see "Overlays" below).
 
 - **Shared props:** `size` (`"sm" | "md"`) and `color` (`primary`,
   `success`, `error`, `warning`, `secondary`). Both types are in
@@ -37,8 +38,8 @@ real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`, `PPopover`,
   - One focus ring for all controls (`:focus-visible`, `--color-focus` in
     `style.css`); don't add `outline-none`. Clickable things are `<button>`
     or `<a>`, never a `div` with `@click`.
-  - Paginated tables use `:pagination="tablePagination(50)"`
-    (`util/pagination.ts`), which puts real buttons in naive-ui's pager.
+  - Paginated tables use `PDataTable`'s `:page-size="50"`; its
+    `PPagination` pages are real buttons with `aria-current`.
   - `src/tests/ui/components/a11y.test.ts` runs axe-core on the kit.
 - **Numbers:** `formatNumber` / `formatAmount` (`util/numbers.ts`) show "—"
   for ∞ or NaN; payback periods use `formatPayback` ("never" when negative
@@ -48,12 +49,12 @@ real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`, `PPopover`,
   by it (zero stays neutral), so it reads without colour. `arrow` adds ▲/▼.
 - **Styling:** the Tailwind class sets for each component live in
   `ui/styles.ts`. Change the look there, not per usage.
-- **Other libraries, used alongside the kit:**
-  - **Data tables:** `XNDataTable` / `XNDataTableColumn` from
-    `@skit/x.naive-ui`. Examples: `features/market_live/components/CXPointTable.vue`
-    and `features/resource_roi_overview/components/ResourceROITable.vue`.
+- **Data tables:** `PDataTable`, see "Tables" below. Examples:
+  `features/market_live/components/CXPointTable.vue` and
+  `features/resource_roi_overview/components/ResourceROITable.vue`.
+- **Overlays and the rest:**
   - **Overlays:** modals, drawers, confirms, popovers and menus come from
-    the kit. naive-ui only renders the data table.
+    the kit.
     - `<PModal v-model:show="x" :title="…">` with an `#action` slot for the
       footer; widths go in `class` (e.g. `class="w-120! max-w-[90vw]!"`).
     - `<PDrawer v-model:show="x" :title="…" :width="600">`, with
@@ -96,12 +97,55 @@ real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`, `PPopover`,
 
 ## Tables
 
+Data tables are `PDataTable`; `PTable` is a plain styled `<table>` for small
+static ones. `PDataTable` takes a typed `columns` array instead of child
+column components:
+
+```ts
+const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => [
+	{ key: "ticker", title: t("…ticker"), sorter: true },
+	{ key: "delta", title: t("…delta"), align: "right", sorter: true },
+]);
+```
+
+```vue
+<PDataTable :columns="columns" :data="rows" :row-key="(r) => r.ticker" striped>
+	<template #cell-delta="{ row }"><PValue :value="row.delta" /></template>
+</PDataTable>
+```
+
+- **Cells** render `row[key]`, or the `cell-<key>` slot (`{ row, index }`).
+  `header-<key>` replaces a title. Cells carry `data-col-key`, rows
+  `data-row-key`.
+- **Sorting:** `sorter: true` compares `row[key]` (numbers, strings, empty
+  values first when ascending); pass a function to compare otherwise, e.g.
+  by the name shown instead of an id. A header click cycles descend →
+  ascend → none; the header is a button with `aria-sort`, so it sorts by
+  keyboard. `defaultSortOrder` sorts on mount.
+- **Columns:** `width`, `minWidth` (keeps a column from being squeezed; the
+  table scrolls sideways instead), `children` for grouped headers,
+  `titleColSpan` to let one title span the next columns.
+- **Rows:** `rowClick` makes rows clickable and keyboard-operable (Enter,
+  Space), `rowClass` adds classes. The `expand` slot adds an expand button
+  per row (`expandLabel` names it) and `v-model:expanded-row-keys`.
+- **Slots** `summary` (a full-width footer row) and `empty`. `pageSize`
+  paginates with `PPagination`. `popover` switches to the colours used
+  inside a popover.
+- **Width and height:** `minWidth` on the table (e.g. `:min-width="960"`)
+  makes it scroll sideways in its box instead of squeezing columns.
+  `maxHeight` limits the body; the header comes on top. A table with
+  `maxHeight` or `fill` uses fixed layout, so columns share the width.
+- **Long lists:** `virtual` (with `fill` or `maxHeight`) renders only the
+  rows in view, measuring their heights as they render. Use it for tables of
+  hundreds of rows (CX live, Market Exploration, Production Opportunities).
+
 Every numeric column follows one pattern, so numbers line up and compare
 across the app:
 
-- **Right-aligned, header too.** On `XNDataTableColumn` set
-  `align="right" title-align="right"`. In `PTable` (native table) put
-  `class="numeric"` on the `th` and `td`. Text columns stay left.
+- **Right-aligned, header too.** On a `PDataTable` column set
+  `align: "right"` (the header follows unless `titleAlign` says otherwise).
+  In `PTable` put `class="numeric"` on the `th` and `td`. Text columns stay
+  left.
 - **One precision per column.** Render `formatNumber(v, decimals)` with the
   same `decimals` for every row (no `optionalDecimals`), `formatAmount(v)`
   for counts, or `<PValue :value="v" />` for signed values. "—" and "never"
@@ -110,11 +154,11 @@ across the app:
   header string (`"Daily Profit (ȼ)"`, `"ȼ / day"`, `"Spread %"`); the cell
   holds just the number. `formatPayback(days, false)` drops its " d".
 - **Long tables keep their header.** A table that can outgrow the viewport
-  gets a fixed header: `max-height="calc(100dvh - …)"` (the body scrolls
-  under the header), or `flex-height class="h-full"` inside a
+  gets a sticky header: `max-height="calc(100dvh - …)"` (the body scrolls
+  under the header, which comes on top of that height), or `fill` inside a
   `flex-1 min-h-0` wrapper of known height (`CXPointTable`,
   `EmpireMaterialIO`). Leave room for sticky bars above it, such as the plan
-  status bar. Paginated tables (50 rows) don't need it.
+  status bar. Paginated tables (`:page-size="50"`) don't need it.
 
 Examples: `features/planning/components/PlanMaterialIO.vue`,
 `features/roi_overview/components/ROIOverviewTable.vue`,
@@ -138,8 +182,7 @@ Examples: `features/planning/components/PlanMaterialIO.vue`,
   `pp-card-header`, `prunplanner` (brand lime),
   `row`, `row-alternate` and `table-border`.
 - **Custom variants:** `child:`, `child-hover:` and `not-first:`.
-- **The app is dark-only.** naive-ui theme overrides live in
-  `src/layout/prunplannerNaiveUI.ts`.
+- **The app is dark-only.**
 - Prefer utility classes in templates. `<style>` blocks are rare.
 
 ## Layout & hierarchy

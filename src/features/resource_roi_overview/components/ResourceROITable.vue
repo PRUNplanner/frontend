@@ -22,12 +22,10 @@
 
 	// Types & Interfaces
 	import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
-	import type { PSelectOption } from "@/ui/ui.types";
+	import type { PDataTableColumn, PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
-	import { tablePagination } from "@/util/pagination";
-	import { PValue } from "@/ui";
+	import { PDataTable, PValue } from "@/ui";
 
 	const props = defineProps({
 		searchedMaterial: {
@@ -76,17 +74,82 @@
 	});
 
 	function distanceSorter(key: string) {
-		return (
-			row1: Record<string, unknown>,
-			row2: Record<string, unknown>
-		): number => {
-			const d1 = row1[key] === -1 ? Infinity : (row1[key] as number);
-			const d2 = row2[key] === -1 ? Infinity : (row2[key] as number);
+		return (row1: IResourceROIResult, row2: IResourceROIResult): number => {
+			const v1 = (row1 as unknown as Record<string, number>)[key];
+			const v2 = (row2 as unknown as Record<string, number>)[key];
+			const d1 = v1 === -1 ? Infinity : v1;
+			const d2 = v2 === -1 ? Infinity : v2;
 			return d1 - d2;
 		};
 	}
 
-	const pagination = tablePagination(50);
+	type Column = PDataTableColumn<IResourceROIResult>;
+	const columns = computed<Column[]>(() => {
+		const title = (key: string) => t(`resource_roi.table.${key}`);
+		const numeric = (
+			key: string,
+			text: string,
+			sorter: Column["sorter"] = true
+		): Column => ({ key, title: text, align: "right", sorter });
+		const distance = (key: string, text: string) =>
+			numeric(key, text, distanceSorter(key));
+		return [
+			{
+				key: "planetName",
+				title: title("planet"),
+				sorter: true,
+			},
+			{
+				key: "production",
+				title: title("production"),
+				children: [
+					{
+						key: "buildingTicker",
+						title: title("building"),
+						sorter: true,
+					},
+					numeric("dailyYield", title("daily")),
+					numeric("percentMaxDailyYield", title("percent_max")),
+				],
+			},
+			{
+				key: "planet",
+				title: title("planet"),
+				children: [
+					{ key: "popr", title: title("popr") },
+					{ key: "planetCOGC", title: title("cogc") },
+					{
+						key: "environment",
+						title: title("environment"),
+					},
+					{
+						key: "planetInfrastructures",
+						title: title("infrastructure"),
+					},
+				],
+			},
+			{
+				key: "profit",
+				title: title("cost_profit"),
+				children: [
+					{ key: "cogm", title: "COGM" },
+					numeric("planCost", title("plan_cost")),
+					numeric("dailyProfit", title("daily_profit")),
+					numeric("planROI", title("plan_roi")),
+				],
+			},
+			{
+				key: "distances",
+				title: title("distances"),
+				children: [
+					distance("distanceAI1", "AI1"),
+					distance("distanceCI1", "CI1"),
+					distance("distanceIC1", "IC1"),
+					distance("distanceNC1", "NC1"),
+				],
+			},
+		];
+	});
 </script>
 
 <template>
@@ -97,236 +160,103 @@
 		:planet-options="filterOptionPlanet"
 		:building-options="filterOptionBuilding"
 		:searched-material="searchedMaterial" />
-	<!-- naive's table breaks words anywhere: cells wrap between words only,
-		and below about its natural width the table scrolls instead of
-		squeezing numbers and names ("Reso urce Extra ction") -->
-	<XNDataTable
+	<!-- below 1700 px the table scrolls instead of squeezing names -->
+	<PDataTable
+		:columns="columns"
 		:data="localResult"
 		striped
-		:pagination="pagination"
-		:scroll-x="1700"
-		class="[&_td]:[word-break:normal]">
-		<XNDataTableColumn
-			key="planetName"
-			:title="t('resource_roi.table.planet')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<router-link
-					:to="`/plan/${rowData.planetNaturalId}`"
-					class="text-link-primary font-bold hover:underline">
-					{{ rowData.planetName }}
-				</router-link>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="production"
-			:title="t('resource_roi.table.production')">
-			<XNDataTableColumn
-				key="buildingTicker"
-				:title="t('resource_roi.table.building')"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<span class="font-bold">{{ rowData.buildingTicker }}</span>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="dailyYield"
-				align="right"
-				title-align="right"
-				:title="t('resource_roi.table.daily')"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					{{ formatNumber(rowData.dailyYield) }}
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="percentMaxDailyYield"
-				align="right"
-				title-align="right"
-				:title="t('resource_roi.table.percent_max')"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					{{ formatNumber(rowData.percentMaxDailyYield * 100) }}
-				</template>
-			</XNDataTableColumn>
-		</XNDataTableColumn>
-		<XNDataTableColumn key="planet" :title="t('resource_roi.table.planet')">
-			<XNDataTableColumn key="popr" :title="t('resource_roi.table.popr')">
-				<template #render-cell="{ rowData }">
-					<PlanetPOPRButton
-						:planet-natural-id="rowData.planetNaturalId"
-						button-size="sm" />
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="planetCOGC"
-				:title="t('resource_roi.table.cogc')">
-				<template #render-cell="{ rowData }">
-					{{
-						rowData.planetCOGC
-							? capitalizeString(rowData.planetCOGC)
-									.replace("Advertising ", "")
-									.replace("Workforce ", "")
-							: "—"
-					}}
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="environment"
-				:title="t('resource_roi.table.environment')">
-				<template #render-cell="{ rowData }">
-					<div class="flex flex-row flex-wrap gap-1">
-						<MaterialTile
-							v-for="element in rowData.planetSurface"
-							:key="element"
-							:ticker="element" />
-						<MaterialTile
-							v-for="element in rowData.planetPressure"
-							:key="element"
-							:ticker="element" />
-						<MaterialTile
-							v-for="element in rowData.planetGravity"
-							:key="element"
-							:ticker="element" />
-						<MaterialTile
-							v-for="element in rowData.planetTemperature"
-							:key="element"
-							:ticker="element" />
-					</div>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="planetInfrastructures"
-				:title="t('resource_roi.table.infrastructure')">
-				<template #render-cell="{ rowData }">
-					{{ rowData.planetInfrastructures.join(", ") }}
-				</template>
-			</XNDataTableColumn>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="profit"
-			:title="t('resource_roi.table.cost_profit')">
-			<XNDataTableColumn key="cogm" title="COGM">
-				<template #render-cell="{ rowData }">
-					<COGMButton :cogm-data="rowData.cogm" />
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="planCost"
-				:title="t('resource_roi.table.plan_cost')"
-				align="right"
-				title-align="right"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<span class="text-nowrap">
-						{{ formatNumber(rowData.planCost) }}
-					</span>
-				</template>
-			</XNDataTableColumn>
-			<!-- <XNDataTableColumn
-				key="outputProfit"
-				title="Output Profit"
-				sorter="default">
-				<template #title>
-					<div class="text-end">Output Profit</div>
-				</template>
-				<template #render-cell="{ rowData }">
-					<div class="text-end text-nowrap">
-						<PValue :value="rowData.outputProfit" />
-						<span class="pl-1 font-light text-muted">ȼ</span>
-					</div>
-				</template>
-			</XNDataTableColumn> -->
-			<XNDataTableColumn
-				key="dailyProfit"
-				:title="t('resource_roi.table.daily_profit')"
-				align="right"
-				title-align="right"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<PValue class="text-nowrap" :value="rowData.dailyProfit" />
-				</template>
-			</XNDataTableColumn>
-			<!-- <XNDataTableColumn
-				key="planProfitArea"
-				title="Profit/Area"
-				sorter="default">
-				<template #title>
-					<div class="text-end">Profit/Area</div>
-				</template>
-				<template #render-cell="{ rowData }">
-					<div class="text-end text-nowrap">
-						<PValue :value="rowData.planProfitArea" />
-						<span class="pl-1 font-light text-muted">ȼ</span>
-					</div>
-				</template>
-			</XNDataTableColumn> -->
-			<XNDataTableColumn
-				key="planROI"
-				:title="t('resource_roi.table.plan_roi')"
-				align="right"
-				title-align="right"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<span
-						class="text-nowrap"
-						:class="
-							rowData.planROI > 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.planROI) }}
-					</span>
-				</template>
-			</XNDataTableColumn>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="distances"
-			:title="t('resource_roi.table.distances')">
-			<XNDataTableColumn
-				key="distanceAI1"
-				align="right"
-				title-align="right"
-				title="AI1"
-				:sorter="distanceSorter('distanceAI1')">
-				<template #render-cell="{ rowData }">
-					<span v-if="rowData.distanceAI1 === -1">&mdash;</span>
-					<span v-else>{{ rowData.distanceAI1 }}</span>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="distanceCI1"
-				align="right"
-				title-align="right"
-				title="CI1"
-				:sorter="distanceSorter('distanceCI1')">
-				<template #render-cell="{ rowData }">
-					<span v-if="rowData.distanceCI1 === -1">&mdash;</span>
-					<span v-else>{{ rowData.distanceCI1 }}</span>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="distanceIC1"
-				align="right"
-				title-align="right"
-				title="IC1"
-				:sorter="distanceSorter('distanceIC1')">
-				<template #render-cell="{ rowData }">
-					<span v-if="rowData.distanceIC1 === -1">&mdash;</span>
-					<span v-else>{{ rowData.distanceIC1 }}</span>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="distanceNC1"
-				align="right"
-				title-align="right"
-				title="NC1"
-				:sorter="distanceSorter('distanceNC1')">
-				<template #render-cell="{ rowData }">
-					<span v-if="rowData.distanceNC1 === -1">&mdash;</span>
-					<span v-else>{{ rowData.distanceNC1 }}</span>
-				</template>
-			</XNDataTableColumn>
-		</XNDataTableColumn>
-	</XNDataTable>
+		:page-size="50"
+		:min-width="1700">
+		<template #cell-planetName="{ row }">
+			<router-link
+				:to="`/plan/${row.planetNaturalId}`"
+				class="text-link-primary font-bold hover:underline">
+				{{ row.planetName }}
+			</router-link>
+		</template>
+		<template #cell-buildingTicker="{ row }">
+			<span class="font-bold">{{ row.buildingTicker }}</span>
+		</template>
+		<template #cell-dailyYield="{ row }">
+			{{ formatNumber(row.dailyYield) }}
+		</template>
+		<template #cell-percentMaxDailyYield="{ row }">
+			{{ formatNumber(row.percentMaxDailyYield * 100) }}
+		</template>
+		<template #cell-popr="{ row }">
+			<PlanetPOPRButton
+				:planet-natural-id="row.planetNaturalId"
+				button-size="sm" />
+		</template>
+		<template #cell-planetCOGC="{ row }">
+			{{
+				row.planetCOGC
+					? capitalizeString(row.planetCOGC)
+							.replace("Advertising ", "")
+							.replace("Workforce ", "")
+					: "—"
+			}}
+		</template>
+		<template #cell-environment="{ row }">
+			<div class="flex flex-row flex-wrap gap-1">
+				<MaterialTile
+					v-for="element in row.planetSurface"
+					:key="element"
+					:ticker="element" />
+				<MaterialTile
+					v-for="element in row.planetPressure"
+					:key="element"
+					:ticker="element" />
+				<MaterialTile
+					v-for="element in row.planetGravity"
+					:key="element"
+					:ticker="element" />
+				<MaterialTile
+					v-for="element in row.planetTemperature"
+					:key="element"
+					:ticker="element" />
+			</div>
+		</template>
+		<template #cell-planetInfrastructures="{ row }">
+			{{ row.planetInfrastructures.join(", ") }}
+		</template>
+		<template #cell-cogm="{ row }">
+			<COGMButton :cogm-data="row.cogm" />
+		</template>
+		<template #cell-planCost="{ row }">
+			<span class="text-nowrap">
+				{{ formatNumber(row.planCost) }}
+			</span>
+		</template>
+		<template #cell-dailyProfit="{ row }">
+			<PValue class="text-nowrap" :value="row.dailyProfit" />
+		</template>
+		<template #cell-planROI="{ row }">
+			<span
+				class="text-nowrap"
+				:class="
+					row.planROI > 0
+						? 'text-positive'
+						: 'text-negative'
+				">
+				{{ formatNumber(row.planROI) }}
+			</span>
+		</template>
+		<template #cell-distanceAI1="{ row }">
+			<span v-if="row.distanceAI1 === -1">&mdash;</span>
+			<span v-else>{{ row.distanceAI1 }}</span>
+		</template>
+		<template #cell-distanceCI1="{ row }">
+			<span v-if="row.distanceCI1 === -1">&mdash;</span>
+			<span v-else>{{ row.distanceCI1 }}</span>
+		</template>
+		<template #cell-distanceIC1="{ row }">
+			<span v-if="row.distanceIC1 === -1">&mdash;</span>
+			<span v-else>{{ row.distanceIC1 }}</span>
+		</template>
+		<template #cell-distanceNC1="{ row }">
+			<span v-if="row.distanceNC1 === -1">&mdash;</span>
+			<span v-else>{{ row.distanceNC1 }}</span>
+		</template>
+	</PDataTable>
 </template>

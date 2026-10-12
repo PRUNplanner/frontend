@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import type { PropType } from "vue";
+	import { computed, type PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -9,9 +9,10 @@
 
 	// Types & Interfaces
 	import type { IFIOSitesRepairTablePlanetElement } from "@/features/fio/useFIORepair.types";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	// UI
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { PDataTable } from "@/ui";
 
 	defineProps({
 		repairData: {
@@ -19,6 +20,32 @@
 			required: true,
 		},
 	});
+
+	const columns = computed<
+		PDataTableColumn<IFIOSitesRepairTablePlanetElement>[]
+	>(() => [
+		{ key: "planetName", title: t("fio.repair.table.planet"), sorter: true },
+		{
+			key: "amountProductionBuildings",
+			title: t("fio.repair.table.buildings"),
+			sorter: true,
+		},
+		{
+			key: "averageCondition",
+			title: t("fio.repair.table.avg_condition"),
+			sorter: true,
+		},
+		{
+			key: "minCondition",
+			title: t("fio.repair.table.min_condition"),
+			sorter: true,
+		},
+		{
+			key: "maxLastRepairDays",
+			title: t("fio.repair.table.repair_age"),
+			sorter: true,
+		},
+	]);
 </script>
 
 <template>
@@ -26,38 +53,15 @@
 		{{ $t("fio.repair.table.title") }}
 	</h2>
 
-	<x-n-data-table :data="repairData" striped>
-		<x-n-data-table-column
-			key="planetName"
-			:title="t('fio.repair.table.planet')"
-			sorter="default" />
-		<x-n-data-table-column
-			key="amountProductionBuildings"
-			:title="t('fio.repair.table.buildings')"
-			sorter="default" />
-		<x-n-data-table-column
-			key="averageCondition"
-			:title="t('fio.repair.table.avg_condition')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				{{ formatNumber(rowData.averageCondition * 100) }} %
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column
-			key="minCondition"
-			:title="t('fio.repair.table.min_condition')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				{{ formatNumber(rowData.minCondition * 100) }} %
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column
-			key="maxLastRepairDays"
-			:title="t('fio.repair.table.repair_age')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				{{ formatAmount(rowData.maxLastRepairDays) }}
-			</template>
-		</x-n-data-table-column>
-	</x-n-data-table>
+	<PDataTable :columns="columns" :data="repairData" striped>
+		<template #cell-averageCondition="{ row }">
+			{{ formatNumber(row.averageCondition * 100) }} %
+		</template>
+		<template #cell-minCondition="{ row }">
+			{{ formatNumber(row.minCondition * 100) }} %
+		</template>
+		<template #cell-maxLastRepairDays="{ row }">
+			{{ formatAmount(row.maxLastRepairDays) }}
+		</template>
+	</PDataTable>
 </template>

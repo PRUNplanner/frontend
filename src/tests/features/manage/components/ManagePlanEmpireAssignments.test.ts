@@ -161,7 +161,7 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(headers[2]).toContain("Alpha");
 		expect(headers[3]).toContain("Beta");
 		// no pagination, no planet or configuration column
-		expect(wrapper.find(".n-pagination").exists()).toBe(false);
+		expect(wrapper.find(".ppagination").exists()).toBe(false);
 		expect(wrapper.findAll("thead th")).toHaveLength(4);
 	});
 

@@ -19,8 +19,8 @@
 	import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 	// UI
-	import { PButton, PTag } from "@/ui";
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { PButton, PDataTable, PTag } from "@/ui";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 	import { EditSharp } from "@vicons/material";
 
 	const { planetName } = usePlanetData();
@@ -58,6 +58,32 @@
 	}
 
 	const selectedPlanet: Ref<string | null> = ref(null);
+
+	type PlanetRow = ICXPlanetMap[string];
+	const columns = computed<PDataTableColumn<PlanetRow>[]>(() => [
+		{ key: "buttons", title: "", width: 50 },
+		{
+			key: "planet",
+			title: t("exchanges.components.planet_preferences.table.planet"),
+			// by the name shown, not the id
+			sorter: (a, b) =>
+				planetName(a.planet).localeCompare(planetName(b.planet)),
+		},
+		{
+			key: "exchanges",
+			title: t(
+				"exchanges.components.planet_preferences.table.exchange_preference"
+			),
+			width: "20%",
+		},
+		{
+			key: "ticker",
+			title: t(
+				"exchanges.components.planet_preferences.table.ticker_preference"
+			),
+			width: "50%",
+		},
+	]);
 </script>
 
 <template>
@@ -102,47 +128,32 @@
 				" />
 		</div>
 	</div>
-	<XNDataTable :data="Object.values(localMap)" striped>
-		<XNDataTableColumn key="buttons" title="" width="50">
-			<template #render-cell="{ rowData }">
+	<PDataTable :columns="columns" :data="Object.values(localMap)" striped>
+		<template #cell-buttons="{ row }">
 				<PButton
 					:aria-label="$t('common.buttons.edit')"
 					size="sm"
 					:type="
-						selectedPlanet === rowData.planet
+						selectedPlanet === row.planet
 							? 'success'
 							: 'primary'
 					"
 					@click="
-						selectedPlanet === rowData.planet
+						selectedPlanet === row.planet
 							? (selectedPlanet = null)
-							: (selectedPlanet = rowData.planet)
+							: (selectedPlanet = row.planet)
 					">
 					<template #icon><EditSharp /></template>
 				</PButton>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="planet"
-			:title="t('exchanges.components.planet_preferences.table.planet')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				{{ planetName(rowData.planet) }}
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="exchanges"
-			:title="
-				t(
-					'exchanges.components.planet_preferences.table.exchange_preference'
-				)
-			"
-			width="20%">
-			<template #render-cell="{ rowData }">
+		</template>
+		<template #cell-planet="{ row }">
+				{{ planetName(row.planet) }}
+		</template>
+		<template #cell-exchanges="{ row }">
 				<div class="flex flex-col gap-y-1">
 					<div
-						v-for="exchange in rowData.exchanges"
-						:key="`${rowData.planet}#${exchange.type}#${exchange.exchange}`">
+						v-for="exchange in row.exchanges"
+						:key="`${row.planet}#${exchange.type}#${exchange.exchange}`">
 						<PTag
 							:type="
 								exchange.type === 'BUY'
@@ -160,21 +171,12 @@
 						</PTag>
 					</div>
 				</div>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="ticker"
-			:title="
-				t(
-					'exchanges.components.planet_preferences.table.ticker_preference'
-				)
-			"
-			width="50%">
-			<template #render-cell="{ rowData }">
+		</template>
+		<template #cell-ticker="{ row }">
 				<div class="flex flex-wrap gap-3">
 					<div
-						v-for="ticker in rowData.ticker"
-						:key="`${rowData.planet}#${ticker.type}#${ticker.value}`"
+						v-for="ticker in row.ticker"
+						:key="`${row.planet}#${ticker.type}#${ticker.value}`"
 						class="flex flex-row gap-x-1">
 						<MaterialTile
 							:key="ticker.ticker"
@@ -195,7 +197,6 @@
 						</PTag>
 					</div>
 				</div>
-			</template>
-		</XNDataTableColumn>
-	</XNDataTable>
+		</template>
+	</PDataTable>
 </template>

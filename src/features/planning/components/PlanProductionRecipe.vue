@@ -16,6 +16,7 @@
 		IProductionBuildingRecipe,
 		IRecipeBuildingOption,
 	} from "@/features/planning/usePlanCalculation.types";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	// Composables
 	import { usePlanetInsights } from "@/features/plan_analytics/usePlanetInsights";
@@ -38,7 +39,7 @@
 	import PTooltip from "@/ui/components/PTooltip.vue";
 	import PValue from "@/ui/components/PValue.vue";
 	import { ClearSharp, AnalyticsOutlined } from "@vicons/material";
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import PDataTable from "@/ui/components/PDataTable.vue";
 
 	const props = defineProps({
 		disabled: {
@@ -146,22 +147,43 @@
 		props.recipeOptions.some((r) => plansHere(r.recipe_id) !== undefined)
 	);
 
-	function plansHereSorter(
-		row1: Record<string, unknown>,
-		row2: Record<string, unknown>
-	): number {
-		return (
-			(plansHere(row1.recipe_id as string) ?? 0) -
-			(plansHere(row2.recipe_id as string) ?? 0)
-		);
-	}
-
-	function roiSorter(
-		row1: Record<string, unknown>,
-		row2: Record<string, unknown>
-	): number {
-		return (row1.dailyRevenue as number) - (row2.dailyRevenue as number);
-	}
+	type RecipeColumn = PDataTableColumn<IRecipeBuildingOption>;
+	const recipeColumns = computed<RecipeColumn[]>(() => {
+		const title = (key: string) =>
+			t(`plan.components.production_recipe.table.${key}`);
+		return [
+			...(hasInsights.value
+				? [
+						{
+							key: "plansHere",
+							title: title("plans_here"),
+							sorter: (a, b) =>
+								(plansHere(a.recipe_id) ?? 0) -
+								(plansHere(b.recipe_id) ?? 0),
+							defaultSortOrder: sortByPlansHere.value
+								? "descend"
+								: false,
+						} satisfies RecipeColumn,
+					]
+				: []),
+			{ key: "input", title: title("input") },
+			{
+				key: "TimeMs",
+				title: title("time"),
+				// the column has no TimeMs field: sorting did nothing before
+				sorter: (a, b) => a.time_ms - b.time_ms,
+			},
+			{ key: "output", title: title("output") },
+			{ key: "dailyRevenue", title: title("daily_revenue"), sorter: true },
+			{ key: "profitPerArea", title: title("profit_area"), sorter: true },
+			{
+				key: "roi",
+				title: title("roi"),
+				// by daily revenue, as decided 2026-10-11
+				sorter: (a, b) => a.dailyRevenue - b.dailyRevenue,
+			},
+		];
+	});
 </script>
 
 <template>
@@ -262,156 +284,91 @@
 			</div>
 		</template>
 
-		<!-- scrolls like naive-ui's popover: the border scrolls with the table -->
+		<!-- the border scrolls with the table -->
 		<div
 			class="max-h-[min(500px,45vh)] overflow-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
 			<div class="border border-pp-border max-w-[700px]" @click.stop>
-				<!-- naive-ui's table colours inside a popover -->
-				<XNDataTable
-					:theme-overrides="{
-						tdColorStriped: '#151515',
-						tdColorSorting: '#151515',
-						borderColor: 'rgb(88, 88, 94)',
-					}"
+				<PDataTable
+					:columns="recipeColumns"
 					:data="localRecipeOptions"
-					:row-class-name="
-						disabled
-							? 'child:whitespace-nowrap'
-							: 'child:whitespace-nowrap hover:cursor-pointer'
-					"
-					:bordered="false"
 					striped
-					:row-props="
-						(recipe) => ({
-							onClick: () => {
-								if (disabled) return;
-								emit(
-									'update:building:recipe',
-									localRecipeIndex,
-									recipe.recipe_id
-								);
-							},
-						})
-					">
-					<XNDataTableColumn
-						v-if="hasInsights"
-						key="plansHere"
-						:title="
-							t('plan.components.production_recipe.table.plans_here')
-						"
-						:sorter="plansHereSorter"
-						:default-sort-order="sortByPlansHere ? 'descend' : false">
-						<template #render-cell="{ rowData }">
+					popover
+					:row-class="disabled ? 'child:whitespace-nowrap' : 'child:whitespace-nowrap hover:cursor-pointer'"
+					:row-click="disabled ? undefined : (recipe) => emit('update:building:recipe', localRecipeIndex, recipe.recipe_id)">
+					<template #cell-plansHere="{ row }">
+						<span
+							v-if="plansHere(row.recipe_id) !== undefined"
+							class="flex items-center gap-2 text-nowrap">
 							<span
-								v-if="plansHere(rowData.recipe_id) !== undefined"
-								class="flex items-center gap-2 text-nowrap">
+								class="h-1.5 w-12 overflow-hidden rounded-full bg-white/5">
 								<span
-									class="h-1.5 w-12 overflow-hidden rounded-full bg-white/5">
-									<span
-										class="block bg-prunplanner h-full"
-										:style="{
-											width: `${plansHere(rowData.recipe_id)}%`,
-										}" />
-								</span>
-								{{ formatPercent(plansHere(rowData.recipe_id) ?? 0, 0) }}
+									class="block bg-prunplanner h-full"
+									:style="{
+										width: `${plansHere(row.recipe_id)}%`,
+									}" />
 							</span>
-							<span v-else class="text-white/40 text-nowrap">
-								{{
-									$t(
-										"plan.components.production_recipe.table.below_threshold"
-									)
-								}}
-							</span>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="input"
-						:title="t('plan.components.production_recipe.table.input')">
-						<template #render-cell="{ rowData }">
-							<div class="flex flex-row flex-wrap gap-1">
-								<span
-									v-if="
-										rowData.recipe_id ===
-										localRecipeData.recipeId
-									"
-									class="w-2 h-2 bg-prunplanner animate-pulse rounded-full my-auto mr-1" />
-								<MaterialTile
-									v-for="material in rowData.inputs"
-									:key="`${rowData.building_ticker}#INPUT#${material.material_ticker}`"
-									:ticker="material.material_ticker"
-									:amount="material.material_amount"
-									:enable-popover="false" />
-							</div>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="TimeMs"
-						:title="t('plan.components.production_recipe.table.time')"
-						sorter="default">
-						<template #render-cell="{ rowData }">
-							{{ humanizeTimeMs(rowData.time_ms) }}
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="output"
-						:title="
-							t('plan.components.production_recipe.table.output')
-						">
-						<template #render-cell="{ rowData }">
-							<div class="flex flex-row gap-1">
-								<MaterialTile
-									v-for="material in rowData.outputs"
-									:key="`${rowData.building_ticker}#OUTPUT#${material.material_ticker}`"
-									:ticker="material.material_ticker"
-									:amount="material.material_amount"
-									:enable-popover="false" />
-							</div>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="dailyRevenue"
-						:title="
-							t(
-								'plan.components.production_recipe.table.daily_revenue'
-							)
-						"
-						sorter="default">
-						<template #render-cell="{ rowData }">
-							<span class="text-nowrap">
-								<PValue :value="rowData.dailyRevenue" />
-								<span class="pl-1 font-light text-muted">ȼ</span>
-							</span>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="profitPerArea"
-						:title="
-							t('plan.components.production_recipe.table.profit_area')
-						"
-						sorter="default">
-						<template #render-cell="{ rowData }">
-							<span class="text-nowrap">
-								<PValue :value="rowData.profitPerArea" />
-								<span class="pl-1 font-light text-muted">ȼ</span>
-							</span>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="roi"
-						:title="t('plan.components.production_recipe.table.roi')"
-						:sorter="roiSorter">
-						<template #render-cell="{ rowData }">
+							{{ formatPercent(plansHere(row.recipe_id) ?? 0, 0) }}
+						</span>
+						<span v-else class="text-white/40 text-nowrap">
+							{{
+								$t(
+									"plan.components.production_recipe.table.below_threshold"
+								)
+							}}
+						</span>
+					</template>
+					<template #cell-input="{ row }">
+						<div class="flex flex-row flex-wrap gap-1">
 							<span
-								:class="
-									rowData.roi >= 0
-										? 'text-positive!'
-										: 'text-negative!'
-								">
-								{{ formatPayback(rowData.roi) }}
-							</span>
-						</template>
-					</XNDataTableColumn>
-				</XNDataTable>
+								v-if="
+									row.recipe_id ===
+									localRecipeData.recipeId
+								"
+								class="w-2 h-2 bg-prunplanner animate-pulse rounded-full my-auto mr-1" />
+							<MaterialTile
+								v-for="material in row.inputs"
+								:key="`${row.building_ticker}#INPUT#${material.material_ticker}`"
+								:ticker="material.material_ticker"
+								:amount="material.material_amount"
+								:enable-popover="false" />
+						</div>
+					</template>
+					<template #cell-TimeMs="{ row }">
+						{{ humanizeTimeMs(row.time_ms) }}
+					</template>
+					<template #cell-output="{ row }">
+						<div class="flex flex-row gap-1">
+							<MaterialTile
+								v-for="material in row.outputs"
+								:key="`${row.building_ticker}#OUTPUT#${material.material_ticker}`"
+								:ticker="material.material_ticker"
+								:amount="material.material_amount"
+								:enable-popover="false" />
+						</div>
+					</template>
+					<template #cell-dailyRevenue="{ row }">
+						<span class="text-nowrap">
+							<PValue :value="row.dailyRevenue" />
+							<span class="pl-1 font-light text-muted">ȼ</span>
+						</span>
+					</template>
+					<template #cell-profitPerArea="{ row }">
+						<span class="text-nowrap">
+							<PValue :value="row.profitPerArea" />
+							<span class="pl-1 font-light text-muted">ȼ</span>
+						</span>
+					</template>
+					<template #cell-roi="{ row }">
+						<span
+							:class="
+								row.roi >= 0
+									? 'text-positive!'
+									: 'text-negative!'
+							">
+							{{ formatPayback(row.roi) }}
+						</span>
+					</template>
+				</PDataTable>
 
 				<div class="text-xs p-2! text-white/60!">
 					<strong>{{

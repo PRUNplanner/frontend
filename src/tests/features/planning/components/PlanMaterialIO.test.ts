@@ -47,12 +47,20 @@ describe("PlanMaterialIO", () => {
 		for (const key of NUMERIC) {
 			const th = wrapper.find(`th[data-col-key="${key}"]`);
 			const td = wrapper.find(`td[data-col-key="${key}"]`);
-			expect(th.attributes("style"), key).toContain("text-align: right");
-			expect(td.attributes("style"), key).toContain("text-align: right");
+			expect(th.classes(), key).toContain("numeric");
+			expect(td.classes(), key).toContain("numeric");
 		}
+		expect(wrapper.find('th[data-col-key="ticker"]').classes()).not.toContain(
+			"numeric"
+		);
+	});
+
+	it("names the ticker sort button, though its title is empty", async () => {
+		const { wrapper } = await mountTable();
+
 		expect(
-			wrapper.find('th[data-col-key="ticker"]').attributes("style") ?? ""
-		).not.toContain("text-align: right");
+			wrapper.find('th[data-col-key="ticker"] button .sr-only').text()
+		).toBe("terms.material_ticker");
 	});
 
 	it("keeps the unit in the header, the cell holds the number", async () => {
@@ -69,13 +77,16 @@ describe("PlanMaterialIO", () => {
 		);
 	});
 
-	it("renders a fixed header when given a max height", async () => {
-		const header = ".n-data-table-base-table-header";
+	it("limits the body under its header when given a max height", async () => {
+		const box = ".p-data-table-box";
 
-		expect((await mountTable()).wrapper.find(header).exists()).toBe(false);
 		expect(
-			(await mountTable({ maxHeight: "300px" })).wrapper.find(header)
-				.exists()
-		).toBe(true);
+			(await mountTable()).wrapper.find(box).attributes("style") ?? ""
+		).not.toContain("max-height");
+		expect(
+			(await mountTable({ maxHeight: "300px" })).wrapper
+				.find(box)
+				.attributes("style")
+		).toContain("max-height: calc(302px)");
 	});
 });

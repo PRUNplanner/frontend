@@ -7,7 +7,7 @@
 <template>
 	<div class="relative w-full h-full">
 		<div class="absolute inset-0 flex items-center justify-center">
-			<!-- naive-ui's empty state look -->
+			<!-- the tables' empty state look -->
 			<div class="flex flex-col items-center text-[14px]">
 				<PIcon :size="40" class="text-white/38">
 					<HourglassEmptySharp />

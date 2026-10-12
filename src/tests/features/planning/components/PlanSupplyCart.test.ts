@@ -63,7 +63,7 @@ async function mountCart(planetNaturalId = "XX-000a", withFIO = false) {
 
 /** summary figures: daily cost, total cost, weight, volume */
 function summary(wrapper: VueWrapper) {
-	const cells = wrapper.findAll(".n-data-table-tr--summary .grid > div");
+	const cells = wrapper.findAll("tfoot .grid > div");
 	const value = (key: string) => {
 		const idx = cells.findIndex(
 			(c) => c.text() === `plan.tools.supply_cart.table.${key}`
@@ -153,12 +153,12 @@ describe("PlanSupplyCart", () => {
 	it("marks and filters workforce and production materials", async () => {
 		const { wrapper } = await mountCart();
 
-		const marks = (key: "workforce" | "producton") =>
+		const marks = (key: "workforce" | "production") =>
 			wrapper
 				.findAll(`td[data-col-key="${key}"] .picon`)
 				.map((i) => i.classes("text-positive"));
 		expect(marks("workforce")).toEqual([true, true, false]);
-		expect(marks("producton")).toEqual([false, false, true]);
+		expect(marks("production")).toEqual([false, false, true]);
 
 		await clickFilter(wrapper, "workforce");
 		expect(tableRows(wrapper).map((r) => r.ticker)).toEqual(["RAT", "DW"]);
@@ -180,6 +180,21 @@ describe("PlanSupplyCart", () => {
 
 		await clickFilter(wrapper, "all");
 		expect(tableRows(wrapper)).toHaveLength(3);
+	});
+
+	it("sorts by the workforce and production marks", async () => {
+		const { wrapper } = await mountCart();
+		const tickers = () => tableRows(wrapper).map((r) => r.ticker);
+		const sort = (key: string) =>
+			wrapper.find(`th[data-col-key="${key}"] button`).trigger("click");
+
+		// descending first: yes before no, ties keep their order
+		await sort("production");
+		expect(tickers()[0]).toBe("H2O");
+		await sort("workforce");
+		expect(tickers().slice(0, 2).sort()).toEqual(["DW", "RAT"]);
+		await sort("workforce");
+		expect(tickers()[0]).toBe("H2O");
 	});
 
 	it("hides storage options without FIO data", async () => {
@@ -241,6 +256,6 @@ describe("PlanSupplyCart", () => {
 		});
 
 		expect(tableRows(wrapper)).toHaveLength(0);
-		expect(wrapper.find(".n-data-table-empty").exists()).toBe(true);
+		expect(wrapper.find(".p-data-table-empty").exists()).toBe(true);
 	});
 });

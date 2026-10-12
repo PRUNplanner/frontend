@@ -1,11 +1,4 @@
 <script setup lang="ts">
-	// Theme
-	import { NConfigProvider } from "naive-ui";
-	import {
-		prunplannerDarkTheme,
-		prunplannerTheme,
-	} from "@/layout/prunplannerNaiveUI";
-
 	// Components
 
 	import App from "@/App.vue";
@@ -22,17 +15,11 @@
 		htmlAttrs: {
 			"data-palette": computed(() => userStore.preferences.colorPalette),
 		},
-		// naive-ui's body style, see style.css
-		bodyAttrs: { class: "naive-global" },
 	});
 </script>
 
 <template>
-	<n-config-provider
-		:theme="prunplannerDarkTheme"
-		:theme-overrides="prunplannerTheme">
-		<App />
-		<PConfirmHost />
-		<PToastHost />
-	</n-config-provider>
+	<App />
+	<PConfirmHost />
+	<PToastHost />
 </template>

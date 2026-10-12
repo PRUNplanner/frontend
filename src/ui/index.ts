@@ -1,6 +1,7 @@
 export { default as PButton } from "@/ui/components/PButton.vue";
 export { default as PButtonGroup } from "@/ui/components/PButtonGroup.vue";
 export { default as PCheckbox } from "@/ui/components/PCheckbox.vue";
+export { default as PDataTable } from "@/ui/components/PDataTable.vue";
 export { default as PConfirmHost } from "@/ui/components/PConfirmHost.vue";
 export { default as PDrawer } from "@/ui/components/PDrawer.vue";
 export { default as PDropdown } from "@/ui/components/PDropdown.vue";
@@ -11,6 +12,7 @@ export { default as PIcon } from "@/ui/components/PIcon.vue";
 export { default as PInput } from "@/ui/components/PInput.vue";
 export { default as PInputNumber } from "@/ui/components/PInputNumber.vue";
 export { default as PModal } from "@/ui/components/PModal.vue";
+export { default as PPagination } from "@/ui/components/PPagination.vue";
 export { default as PPopover } from "@/ui/components/PPopover.vue";
 export { default as PProgressBar } from "@/ui/components/PProgressBar.vue";
 export { default as PSelect } from "@/ui/components/PSelect.vue";

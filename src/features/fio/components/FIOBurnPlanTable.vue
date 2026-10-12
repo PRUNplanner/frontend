@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import type { PropType } from "vue";
+	import { computed, type PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -16,9 +16,10 @@
 
 	// Types & Interfaces
 	import type { IFIOBurnPlanetTableElement } from "@/features/fio/useFIOBurn.types";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	// UI
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { PDataTable } from "@/ui";
 
 	defineProps({
 		planTable: {
@@ -26,42 +27,48 @@
 			required: true,
 		},
 	});
+
+	const columns = computed<PDataTableColumn<IFIOBurnPlanetTableElement>[]>(
+		() => [
+			{
+				key: "planUuid",
+				title: t("fio.burn.components.overview.table.plan"),
+				// by the name shown, not the id
+				sorter: (a, b) => a.planName.localeCompare(b.planName),
+			},
+			{
+				key: "planetId",
+				title: t("fio.burn.components.overview.table.planet"),
+			},
+			{
+				key: "minDays",
+				title: t("fio.burn.components.overview.table.burn"),
+				sorter: true,
+			},
+		]
+	);
 </script>
 
 <template>
-	<XNDataTable :data="planTable" striped>
-		<XNDataTableColumn
-			key="planUuid"
-			:title="t('fio.burn.components.overview.table.plan')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<router-link
-					:to="`/plan/${rowData.planetId}/${rowData.planUuid}`"
-					class="text-link-primary font-bold hover:underline">
-					{{ rowData.planName }}
-				</router-link>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="planetId"
-			:title="t('fio.burn.components.overview.table.planet')">
-			<template #render-cell="{ rowData }">
-				{{ planetName(rowData.planetId, "Loading...") }}
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="minDays"
-			:title="t('fio.burn.components.overview.table.burn')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<div class="text-center">
-					<span
-						:class="getBurnDisplayClass(rowData.minDays).value"
-						class="py-1 px-2">
-						{{ formatNumber(rowData.minDays) }}
-					</span>
-				</div>
-			</template>
-		</XNDataTableColumn>
-	</XNDataTable>
+	<PDataTable :columns="columns" :data="planTable" striped>
+		<template #cell-planUuid="{ row }">
+			<router-link
+				:to="`/plan/${row.planetId}/${row.planUuid}`"
+				class="text-link-primary font-bold hover:underline">
+				{{ row.planName }}
+			</router-link>
+		</template>
+		<template #cell-planetId="{ row }">
+			{{ planetName(row.planetId, "Loading...") }}
+		</template>
+		<template #cell-minDays="{ row }">
+			<div class="text-center">
+				<span
+					:class="getBurnDisplayClass(row.minDays).value"
+					class="py-1 px-2">
+					{{ formatNumber(row.minDays) }}
+				</span>
+			</div>
+		</template>
+	</PDataTable>
 </template>

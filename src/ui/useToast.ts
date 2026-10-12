@@ -39,7 +39,7 @@ export function pauseToast(id: number): void {
 }
 
 /**
- * Starts a toast's full duration again, as naive-ui did after a hover
+ * Starts a toast's full duration again, e.g. after a hover
  *
  * @param {number} id Toast id
  */

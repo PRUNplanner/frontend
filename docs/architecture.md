@@ -5,7 +5,7 @@
 | Path | What lives there |
 | --- | --- |
 | `main.ts` | Bootstrap (see below) |
-| `AppProvider.vue` | naive-ui's `n-config-provider` (data-table dark theme + `prunplannerTheme`), plus the kit's `PConfirmHost` and `PToastHost` |
+| `AppProvider.vue` | `App` plus the kit's `PConfirmHost` and `PToastHost` |
 | `App.vue` | Shell. Shows `NavigationBar` when logged in and `HomepageHeader` otherwise, then `<Suspense><RouterView/></Suspense>` and `AppFooter` (not on the homepage, which has its own footer) |
 | `router/` | Flat route table (`index.ts`); typed meta in `router.d.ts` |
 | `views/` | Route pages (`*View.vue`), plus `views/fio/` and `views/tools/` |
@@ -14,7 +14,7 @@
 | `lib/` | Infrastructure: `apiService.ts`, `config.ts`, `query_cache/`, `i18n/`, `analytics/`, `useVersionCheck.ts` |
 | `database/` | IndexedDB game-data cache (`idb`): `schema.ts`, `stores.ts`, `composables/`, `services/` |
 | `ui/` | In-house component kit (`P*` components, barrel `ui/index.ts`) and `ui/charts/` |
-| `layout/` | Navigation, header, footer, progress indicators, the `v-click-outside` directive, naive-ui theme overrides |
+| `layout/` | Navigation, header, footer, progress indicators, the `v-click-outside` directive |
 | `locales/<locale>/*.json` | i18n messages, one file per namespace |
 | `assets/help/<locale>/*.md` | Help drawer pages. `assets/help/changelog.md` is the changelog |
 | `assets/static/` | Large static data, e.g. `fio_systemstars.json` for pathfinding |
@@ -83,9 +83,8 @@ saved over the shared plan.
 - **Alias.** `@` → `src/`, defined in `tsconfig.app.json`, `vite.config.ts`
   and `vitest.config.ts`.
 - **Auto-imports.**
-  - `AutoImport` (vue, vue-router, pinia) and `Components` (the naive-ui
-    resolver, for `<n-*>` tags) are enabled in `vite.config.ts`.
-  - The generated `auto-imports.d.ts` and `components.d.ts` are gitignored.
+  - `AutoImport` (vue, vue-router, pinia) is enabled in `vite.config.ts`.
+  - The generated `auto-imports.d.ts` is gitignored.
   - Code imports explicitly anyway. Keep it that way.
 - **Build-time globals.**
   - `__INDEXEDDB_VERSION__` is derived from the app version. A version bump

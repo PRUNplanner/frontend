@@ -12,7 +12,7 @@
 </script>
 
 <template>
-	<!-- naive-ui's message container: bottom-right, above the plan page's
+	<!-- the message container: bottom-right, above the plan page's
 	 floating Insights button, above layers and outside the inert #app -->
 	<Teleport to="body">
 		<TransitionGroup

@@ -59,7 +59,7 @@ const MATERIAL_IO = [
 
 const rowOf = (wrapper: VueWrapper, ticker: string) =>
 	wrapper
-		.findAll("tbody tr.n-data-table-tr")
+		.findAll("tbody tr[data-row-key]")
 		.find((tr) => {
 			const cell = tr.find(`td[data-col-key="ticker"]`);
 			return cell.exists() && cell.text() === ticker;

@@ -15,7 +15,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	// Naive UI
+	// UI
 	import type { PToastHandle } from "@/ui/ui.types";
 
 	// Router

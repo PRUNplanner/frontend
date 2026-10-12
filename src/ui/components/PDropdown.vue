@@ -41,7 +41,7 @@
 
 	const id = useId();
 	const menu: Ref<HTMLElement | null> = ref(null);
-	// keyboard or hover highlight, -1 for none (as naive-ui after a click)
+	// keyboard or hover highlight, -1 for none (also after a click)
 	const active: Ref<number> = ref(-1);
 
 	const items: ComputedRef<Item[]> = computed(() =>
