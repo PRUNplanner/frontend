@@ -7,6 +7,10 @@
 		"buttons": {
 			"new_empire": "Nieuw Rijk"
 		},
+		"deletion": {
+			"title": "Confirm Empire Deletion",
+			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+		},
 		"form": {
 			"empire_name": "Naam van Rijk",
 			"faction": "Factie",
@@ -28,6 +32,10 @@
 		"description": "Het verwijderen van een CX-voorkeur verwijdert alle beurs en materiaal instellingen. Aangewezen rijken zullen ongedeerd zijn, maar ze zullen niet meer de verwijderde voorkeur gebruiken. Zorg dat er een nieuwe CX-voorkeur aangewezen wordt.",
 		"buttons": {
 			"new_cx": "Nieuw"
+		},
+		"deletion": {
+			"title": "Confirm CX Deletion",
+			"content": "Are you sure? Deleting the CX will delete all preferences."
 		},
 		"form": {
 			"cx_name": "Naam",
