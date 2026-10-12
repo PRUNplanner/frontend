@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	// Theme
-	import { NConfigProvider, NMessageProvider } from "naive-ui";
+	import { NConfigProvider } from "naive-ui";
 	import {
 		prunplannerDarkTheme,
 		prunplannerTheme,
@@ -9,7 +9,7 @@
 	// Components
 
 	import App from "@/App.vue";
-	import { PConfirmHost } from "@/ui";
+	import { PConfirmHost, PToastHost } from "@/ui";
 
 	// Unhead
 	import { computed } from "vue";
@@ -23,9 +23,7 @@
 			"data-palette": computed(() => userStore.preferences.colorPalette),
 		},
 		// naive-ui's body style, see style.css
-		bodyAttrs: {
-			class: computed(() => (userStore.isLoggedIn ? "naive-global" : "")),
-		},
+		bodyAttrs: { class: "naive-global" },
 	});
 </script>
 
@@ -33,12 +31,8 @@
 	<n-config-provider
 		:theme="prunplannerDarkTheme"
 		:theme-overrides="prunplannerTheme">
-		<!-- bottom-right, above the plan page's floating Insights button -->
-		<n-message-provider
-			placement="bottom-right"
-			container-style="bottom: 5rem; right: 1rem">
-			<App />
-			<PConfirmHost />
-		</n-message-provider>
+		<App />
+		<PConfirmHost />
+		<PToastHost />
 	</n-config-provider>
 </template>

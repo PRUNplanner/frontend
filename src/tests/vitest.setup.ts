@@ -25,3 +25,10 @@ if (typeof navigator === "undefined") {
 		},
 	};
 }
+
+// jsdom has no ResizeObserver; PTooltip and PPopover observe their panel
+globalThis.ResizeObserver ??= class {
+	observe() {}
+	unobserve() {}
+	disconnect() {}
+};

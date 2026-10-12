@@ -1,24 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { Router } from "vue-router";
 
-const { messageError, themes } = vi.hoisted(() => ({
-	messageError: vi.fn(),
-	themes: [] as unknown[],
-}));
-// the message app: its config provider's theme and the message it shows
-vi.mock("naive-ui", async (importOriginal) => ({
-	...(await importOriginal<typeof import("naive-ui")>()),
-	NConfigProvider: (
-		props: { theme: unknown },
-		{ slots }: { slots: { default?: () => unknown } }
-	) => {
-		themes.push(props.theme);
-		return slots.default?.();
-	},
-	useMessage: () => ({ error: messageError }),
-}));
-
-import { prunplannerDarkTheme } from "@/layout/prunplannerNaiveUI";
+const { toast } = vi.hoisted(() => ({ toast: vi.fn() }));
+vi.mock("@/ui/useToast", () => ({ toast }));
 
 import {
 	isChunkLoadError,
@@ -38,8 +22,7 @@ describe("chunkReload", () => {
 		sessionStorage.clear();
 		reload.mockReset();
 		assign.mockReset();
-		messageError.mockReset();
-		themes.length = 0;
+		toast.mockReset();
 		vi.stubGlobal("location", { reload, assign });
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		vi.spyOn(window, "addEventListener").mockImplementation(
@@ -143,21 +126,21 @@ describe("chunkReload", () => {
 
 		router.fail(error, "/help");
 		expect(assign).toHaveBeenCalledWith("/help");
-		expect(messageError).not.toHaveBeenCalled();
+		expect(toast).not.toHaveBeenCalled();
 
 		router.navigate();
 		router.fail(error, "/help");
 		expect(assign).toHaveBeenCalledTimes(1);
-		expect(messageError).toHaveBeenCalledTimes(1);
-		expect(messageError).toHaveBeenCalledWith(expect.any(String), {
+		expect(toast).toHaveBeenCalledTimes(1);
+		expect(toast).toHaveBeenCalledWith(expect.any(String), {
+			type: "error",
 			duration: 0,
 			closable: true,
 		});
-		expect(themes).toEqual([prunplannerDarkTheme]);
 
 		// other router errors are left alone
 		router.fail(new Error("guard failed"), "/x");
-		expect(messageError).toHaveBeenCalledTimes(1);
+		expect(toast).toHaveBeenCalledTimes(1);
 	});
 
 	it("handles chunks again after the navigation ended", () => {

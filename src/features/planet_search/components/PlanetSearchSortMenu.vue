@@ -25,9 +25,7 @@
 	import type { IPlanetSearchSort } from "@/features/planet_search/planetSearch.types";
 
 	// UI
-	import { PButton, PButtonGroup, PSelect } from "@/ui";
-	import { popoverConfig } from "@/ui/styles";
-	import { NPopover } from "naive-ui";
+	import { PButton, PButtonGroup, PPopover, PSelect } from "@/ui";
 	import { CloseSharp } from "@vicons/material";
 
 	const props = defineProps<{
@@ -103,52 +101,18 @@
 		);
 	}
 
-	/*
-	 * Stays open while the chain is edited: the "then by" dropdown renders
-	 * outside the popover, so its clicks don't count as clicking away.
-	 */
-	const open: Ref<boolean> = ref(false);
-	const triggerEl: Ref<HTMLElement | null> = ref(null);
-	function onClickOutside(e: MouseEvent) {
-		const target = e.target as Element | null;
-		// a picked option is already removed from the page when this runs
-		if (!target?.isConnected || target.closest("[data-pselect-dropdown]"))
-			return;
-		// the trigger's own click toggles the menu
-		if (triggerEl.value?.contains(target)) return;
-		open.value = false;
-	}
-
-	/*
-	 * Escape in an open "then by" dropdown only closes that dropdown. Runs in
-	 * the capture phase, before the select removes its dropdown.
-	 */
-	function onEscape() {
-		if (!document.querySelector("[data-pselect-dropdown]")) open.value = false;
-	}
 </script>
 
 <template>
-	<NPopover
-		trigger="manual"
-		placement="bottom-end"
-		:show="open"
-		:show-arrow="false"
-		:class="popoverConfig.panel"
-		@clickoutside="onClickOutside">
+	<!-- stays open while the chain is edited: PPopover ignores clicks and Esc
+	 in the "then by" list -->
+	<PPopover placement="bottom-end">
 		<template #trigger>
-			<span ref="triggerEl" class="inline-flex">
-				<PButton
-					type="secondary"
-					:aria-expanded="open"
-					@click="open = !open">
-					{{ t("planet_search.sort.button", { n: sorts.length }) }}
-				</PButton>
-			</span>
+			<PButton type="secondary">
+				{{ t("planet_search.sort.button", { n: sorts.length }) }}
+			</PButton>
 		</template>
-		<div
-			class="flex flex-col gap-3 w-[320px] max-w-[90vw]"
-			@keydown.capture.esc="onEscape">
+		<div class="flex flex-col gap-3 w-[320px] max-w-[90vw]">
 			<div>
 				<h3 class="font-bold text-white">
 					{{ t("planet_search.sort.title") }}
@@ -236,5 +200,5 @@
 				{{ t("planet_search.sort.full", { max: MAX_SORT_KEYS }) }}
 			</p>
 		</div>
-	</NPopover>
+	</PPopover>
 </template>

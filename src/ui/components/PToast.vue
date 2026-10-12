@@ -2,6 +2,7 @@
 	// UI
 	import PButton from "./PButton.vue";
 	import PIcon from "./PIcon.vue";
+	import PLayerClose from "./PLayerClose.vue";
 	import { ErrorOutlineSharp } from "@vicons/material";
 
 	import { toastConfig } from "@/ui/styles";
@@ -10,14 +11,16 @@
 		type = "info",
 		text,
 		actionLabel = undefined,
+		closable = false,
 	} = defineProps<{
 		type?: "info" | "error";
 		text: string;
 		actionLabel?: string;
+		closable?: boolean;
 	}>();
 
 	defineEmits<{
-		(e: "action"): void;
+		(e: "action" | "close"): void;
 	}>();
 </script>
 
@@ -36,5 +39,6 @@
 			@click="$emit('action')">
 			{{ actionLabel }}
 		</PButton>
+		<PLayerClose v-if="closable" @click="$emit('close')" />
 	</div>
 </template>

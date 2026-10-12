@@ -8,6 +8,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
 import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
 import PInputNumber from "@/ui/components/PInputNumber.vue";
+import PPopover from "@/ui/components/PPopover.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -299,6 +300,25 @@ describe("PlanProductionRecipe", () => {
 		expect(component.emitted("update:building:recipe")).toEqual([
 			[3, "R_BSE"],
 		]);
+	});
+
+	it("hangs the picker left below 1280 px, with naive's arrow", async () => {
+		for (const [wide, placement] of [
+			[true, "bottom-start"],
+			[false, "bottom-end"],
+		] as const) {
+			vi.stubGlobal("matchMedia", (query: string) => ({
+				matches: query === "(min-width: 1280px)" && wide,
+			}));
+			const { wrapper } = await mountRecipe();
+			await openOptions(wrapper);
+
+			const popover = wrapper.findComponent(PPopover);
+			expect(popover.props("placement")).toBe(placement);
+			expect(popover.props("arrow")).toBe(true);
+			wrapper.unmount();
+		}
+		vi.unstubAllGlobals();
 	});
 
 	it("emits the new amount, but not an empty one", async () => {

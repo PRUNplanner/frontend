@@ -5,7 +5,6 @@ import PlanetSearchSortMenu from "@/features/planet_search/components/PlanetSear
 import { mountComponent } from "@/tests/mountComponent";
 import { defaultFilter } from "@/features/planet_search/planetSearch.engine";
 import { PSelect } from "@/ui";
-import { NPopover } from "naive-ui";
 
 // Types & Interfaces
 import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
@@ -69,30 +68,25 @@ describe("PlanetSearchSortMenu", () => {
 
 	it("stays open while picking columns, closes on a click away", async () => {
 		const menu = await openMenu();
-		const popover = () => menu.findComponent(NPopover);
-		const clickAt = async (target: Element) => {
-			popover().vm.$emit("clickoutside", { target } as unknown as MouseEvent);
-			await flushPromises();
-		};
-		expect(popover().props("show")).toBe(true);
+		const open = () =>
+			body("h3").some((h) => h.textContent === "planet_search.sort.title");
+		expect(open()).toBe(true);
 
-		// a click inside the teleported "then by" dropdown
-		menu.findComponent(PSelect).vm.$emit("update:value", "name");
-		const dropdown = document.createElement("div");
-		dropdown.setAttribute("data-pselect-dropdown", "");
-		document.body.appendChild(dropdown);
-		await clickAt(dropdown);
-		expect(menu.emitted("sort")!.at(-1)![0]).toContainEqual({ key: "name", dir: "asc" });
-		expect(popover().props("show")).toBe(true);
+		// pick in the teleported "then by" list
+		const select = body<HTMLElement>(".pselect")[0];
+		select.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+		await flushPromises();
+		const option = body<HTMLElement>("[data-pselect-dropdown] .grow")
+			.find((o) => o.textContent?.trim() === "CI1")!;
+		option.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+		option.click();
+		await flushPromises();
+		expect(menu.emitted("sort")!.at(-1)![0]).toContainEqual({ key: "ref:cx:CI1", dir: "asc" });
+		expect(open()).toBe(true);
 
-		// the picked option is already gone from the page when the click lands
-		const option = document.createElement("div");
-		await clickAt(option);
-		expect(popover().props("show")).toBe(true);
-		dropdown.remove();
-
-		await clickAt(document.body);
-		expect(popover().props("show")).toBe(false);
+		document.body.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+		await flushPromises();
+		expect(open()).toBe(false);
 	});
 
 	it("removes the last key and shows the default order", async () => {
@@ -107,38 +101,34 @@ describe("PlanetSearchSortMenu", () => {
 
 	it("the trigger toggles, Escape spares an open dropdown", async () => {
 		const menu = await openMenu();
-		const popover = () => menu.findComponent(NPopover);
+		const open = () =>
+			body("h3").some((h) => h.textContent === "planet_search.sort.title");
 		const trigger = menu.find("button");
 
-		// clicking the trigger while open: its outside-click is ignored, the click closes
-		popover().vm.$emit("clickoutside", { target: trigger.element } as unknown as MouseEvent);
-		await flushPromises();
-		expect(popover().props("show")).toBe(true);
 		await trigger.trigger("click");
-		expect(popover().props("show")).toBe(false);
+		expect(open()).toBe(false);
 		await trigger.trigger("click");
-		expect(popover().props("show")).toBe(true);
-
-		const panel = body<HTMLElement>(".n-popover").find((p) =>
-			p.textContent?.includes("planet_search.sort.title")
-		)!;
-		const escape = () =>
-			panel
-				.querySelector(".pselect")!
-				.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
-
-		// dropdown open: Escape is left to the dropdown
-		const dropdown = document.createElement("div");
-		dropdown.setAttribute("data-pselect-dropdown", "");
-		document.body.appendChild(dropdown);
-		escape();
 		await flushPromises();
-		expect(popover().props("show")).toBe(true);
-		dropdown.remove();
+		expect(open()).toBe(true);
 
-		// no dropdown: Escape closes the menu
-		escape();
+		const select = () => body<HTMLElement>(".pselect")[0];
+		const key = (k: string) =>
+			select().dispatchEvent(
+				new KeyboardEvent("keydown", { key: k, bubbles: true, cancelable: true })
+			);
+
+		// list open: Escape only closes the list
+		key("Enter");
 		await flushPromises();
-		expect(popover().props("show")).toBe(false);
+		expect(body("[data-pselect-dropdown]")).toHaveLength(1);
+		key("Escape");
+		await flushPromises();
+		expect(body("[data-pselect-dropdown]")).toHaveLength(0);
+		expect(open()).toBe(true);
+
+		// no list: Escape closes the menu
+		key("Escape");
+		await flushPromises();
+		expect(open()).toBe(false);
 	});
 });

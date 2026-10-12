@@ -21,9 +21,7 @@
 	} from "@/features/planet_search/planetSearch.schemas";
 
 	// UI
-	import { PButton, PCheckbox } from "@/ui";
-	import { popoverConfig } from "@/ui/styles";
-	import { NPopover } from "naive-ui";
+	import { PButton, PCheckbox, PPopover } from "@/ui";
 
 	const hiddenColumns = defineModel<PlanetSearchColumn[]>("hiddenColumns", {
 		required: true,
@@ -70,12 +68,7 @@
 </script>
 
 <template>
-	<NPopover
-		trigger="click"
-		placement="bottom-end"
-		scrollable
-		:show-arrow="false"
-		:class="popoverConfig.panel">
+	<PPopover placement="bottom-end">
 		<template #trigger>
 			<PButton type="secondary">
 				{{ t("planet_search.columns.button", { shown, total }) }}
@@ -152,5 +145,5 @@
 				{{ t("planet_search.columns.reset") }}
 			</PButton>
 		</div>
-	</NPopover>
+	</PPopover>
 </template>

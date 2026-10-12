@@ -1,29 +1,15 @@
-import {
-	createTheme,
-	dataTableDark,
-	dropdownDark,
-	emptyDark,
-	messageDark,
-	popoverDark,
-} from "naive-ui";
+import { createTheme, dataTableDark, emptyDark } from "naive-ui";
 import type { GlobalThemeOverrides } from "naive-ui";
 
-// only the dark themes of the naive components the app renders (peers like
-// pagination or select come with them); naive's full dark theme would pull
-// in all of them
-export const prunplannerDarkTheme = createTheme([
-	dataTableDark,
-	dropdownDark,
-	emptyDark,
-	messageDark,
-	popoverDark,
-]);
+// only the dark themes of the one naive component the app renders, the data
+// table (its peers like pagination or select come with it), and of the empty
+// state it shows without rows; naive's full dark theme would pull in all
+export const prunplannerDarkTheme = createTheme([dataTableDark, emptyDark]);
 
 const WHITE: string = "#ffffff";
 const BLACK: string = "#000000";
 const BASE: string = "#212529";
 const DARK_BLUE: string = "#212d40";
-const GRAY_DARK: string = "#151515";
 
 export const prunplannerTheme: GlobalThemeOverrides = {
 	common: {
@@ -50,53 +36,9 @@ export const prunplannerTheme: GlobalThemeOverrides = {
 		tdPaddingMedium: "5px 10px",
 		tdColorSorting: "rgba(255,255,255,0)",
 		tdColorHover: "rgba(255,255,255,0.03)",
-
-		// Popover colors
-		thColorPopover: BLACK,
-		tdColorPopover: "rgba(255,255,255,0.02)",
-		tdColorStripedPopover: GRAY_DARK,
-		tdColorSortingPopover: GRAY_DARK,
-		tdColorHoverPopover: "rgba(255,255,255,0.03)",
 	},
+	// the data table's "No Data"
 	Empty: {
 		textColor: "rgba(255,255,255,0.55)",
-	},
-	// menus (More, row actions) on the same surface as cards and drawers,
-	// not naive's grey
-	Dropdown: {
-		color: GRAY_DARK,
-		dividerColor: "rgba(255,255,255,0.1)",
-		optionColorHover: "rgba(255,255,255,0.08)",
-		peers: {
-			Popover: {
-				boxShadow:
-					"0 0 0 1px rgba(255,255,255,0.1), 0 10px 15px -3px rgba(0,0,0,0.6)",
-			},
-		},
-	},
-	Popover: {
-		color: BLACK,
-		borderRadius: 0,
-		padding: 0,
-	},
-	Table: {
-		thTextColor: "rgba(255,255,255,0.9)",
-		tdTextColor: "rgba(255,255,255,0.8)",
-		fontSizeMedium: "14px",
-		thFontWeight: "bold",
-		// color
-		thColor: BLACK,
-		tdColorStriped: "rgb(3,5,10)",
-		tdColor: "rgba(255,255,255,0.02)",
-		tdColorHover: "rgba(255,255,255,0.03)",
-		thColorModal: GRAY_DARK,
-		thColorPopover: GRAY_DARK,
-		tdColorStripedModal: GRAY_DARK,
-		tdColorStripedPopover: GRAY_DARK,
-		tdColorModal: "rgba(255,255,255,0.02)",
-		tdColorPopover: "rgba(255,255,255,0.02)",
-		// padding
-		thPaddingMedium: "5px 10px",
-		tdPaddingMedium: "5px 10px",
 	},
 };

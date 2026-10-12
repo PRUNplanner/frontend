@@ -16,7 +16,7 @@
 	const { t } = useI18n();
 
 	// Naive UI
-	import type { MessageReactive } from "naive-ui";
+	import type { PToastHandle } from "@/ui/ui.types";
 
 	// Router
 	import router from "@/router";
@@ -738,7 +738,7 @@
 	 * Saved or deleted in another tab: without unsaved edits the plan
 	 * reloads, with them a notice offers to
 	 */
-	let remoteToast: MessageReactive | undefined;
+	let remoteToast: PToastHandle | undefined;
 
 	watch(remoteChange, async (change) => {
 		const planUuid: string | undefined = refPlanData.value.uuid;
@@ -931,7 +931,7 @@
 	// Deleting or changing a recipe shows a toast to take it back. Any later
 	// change to the history (edit, undo, redo, save) closes it, so its Undo
 	// only ever undoes the edit it announced.
-	let undoToast: MessageReactive | undefined;
+	let undoToast: PToastHandle | undefined;
 
 	watch(
 		revision,

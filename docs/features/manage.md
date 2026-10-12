@@ -14,7 +14,7 @@
 | --- | --- |
 | `ManageEmpire.vue` | Empire CRUD: `CreateEmpire`, `PatchEmpire`, `DeleteEmpire`, and the CX select per empire. Exposes `changedCount`, `save()` (`PatchEmpireCXJunctions`) and `discard()` to the save bar |
 | `ManageCX.vue` | CX create and delete: `CreateCX`, `DeleteCX` |
-| `ManagePlanEmpireAssignments.vue` | Plan↔empire matrix: toolbar (search, "In empire", unassigned only), sortable plain table (cards below `md`), one ⋯ `NDropdown` (`ClonePlan`, `SharingModal`, `DeletePlan`). Exposes `changes`, `save()` (`PatchEmpirePlanJunctions`) and `discard()` |
+| `ManagePlanEmpireAssignments.vue` | Plan↔empire matrix: toolbar (search, "In empire", unassigned only), sortable plain table (cards below `md`), one ⋯ `PDropdown` (`ClonePlan`, `SharingModal`, `DeletePlan`). Exposes `changes`, `save()` (`PatchEmpirePlanJunctions`) and `discard()` |
 | `ManageAssignmentRow.vue` / `ManageAssignmentCard.vue` | One plan as table row / card. Cell state arrives as one string (`cells`), so a toggle re-renders only that row. The ⋯ menu button is a plain `<button>` with an inline SVG, cheap in every row |
 | `ManageSaveBar.vue` | Sticky "n unsaved changes" bar: Discard, Save changes, saving and error states |
 | `useAssignmentMatrix.ts` | Matrix state as two `Set`s of `"<plan>|<empire>"` keys (`loaded`, `current`) in `shallowRef`s, plus pure `buildLoaded`, `diff`, `toJunctions`, `setMany`, `rebase`. Types in `useAssignmentMatrix.types.ts`; payloads are `PlanEmpireJunction` (`empireData.schemas.ts`) and `CXEmpireJunction` (`cxData.schemas.ts`) |

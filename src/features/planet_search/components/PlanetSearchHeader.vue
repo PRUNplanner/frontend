@@ -16,9 +16,7 @@
 	import type { IPlanetSearchChip } from "@/features/planet_search/planetSearch.types";
 
 	// UI
-	import { PButton, PInput, PSelect } from "@/ui";
-	import { popoverConfig } from "@/ui/styles";
-	import { NPopover } from "naive-ui";
+	import { PButton, PInput, PPopover, PSelect } from "@/ui";
 	import { SearchSharp } from "@vicons/material";
 
 	const props = defineProps<{
@@ -100,14 +98,9 @@
 				:placeholder="t('planet_search.header.load_saved')"
 				@update:value="onLoad" />
 
-			<NPopover
-				v-model:show="manageOpen"
-				trigger="click"
-				placement="bottom-end"
-				:show-arrow="false"
-				:class="popoverConfig.panel">
+			<PPopover v-model:show="manageOpen" placement="bottom-end">
 				<template #trigger>
-					<PButton type="secondary" :aria-expanded="manageOpen">
+					<PButton type="secondary">
 						{{ t("planet_search.header.manage") }}
 					</PButton>
 				</template>
@@ -144,7 +137,7 @@
 						</PButton>
 					</div>
 				</div>
-			</NPopover>
+			</PPopover>
 
 			<form
 				v-if="saving"

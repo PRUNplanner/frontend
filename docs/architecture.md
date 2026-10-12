@@ -5,7 +5,7 @@
 | Path | What lives there |
 | --- | --- |
 | `main.ts` | Bootstrap (see below) |
-| `AppProvider.vue` | naive-ui providers: `n-config-provider` (dark theme + `prunplannerTheme`) and the message provider, plus the kit's `PConfirmHost` |
+| `AppProvider.vue` | naive-ui's `n-config-provider` (data-table dark theme + `prunplannerTheme`), plus the kit's `PConfirmHost` and `PToastHost` |
 | `App.vue` | Shell. Shows `NavigationBar` when logged in and `HomepageHeader` otherwise, then `<Suspense><RouterView/></Suspense>` and `AppFooter` (not on the homepage, which has its own footer) |
 | `router/` | Flat route table (`index.ts`); typed meta in `router.d.ts` |
 | `views/` | Route pages (`*View.vue`), plus `views/fio/` and `views/tools/` |

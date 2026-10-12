@@ -1,32 +1,86 @@
-import { h } from "vue";
-import { type MessageReactive, useMessage } from "naive-ui";
+import { ref, type Ref } from "vue";
 
-import PToast from "@/ui/components/PToast.vue";
-import type { PToastOptions } from "@/ui/ui.types";
+import type {
+	PToastEntry,
+	PToastHandle,
+	PToastOptions,
+} from "@/ui/ui.types";
+
+// the open toasts, rendered by the one PToastHost in AppProvider
+export const toasts: Ref<PToastEntry[]> = ref([]);
+
+// hide timer and duration per toast that closes by itself
+const timers = new Map<
+	number,
+	{ duration: number; timer?: ReturnType<typeof setTimeout> }
+>();
+let nextId = 0;
 
 /**
- * Toasts in the kit's look: naive-ui's message queue (placement,
- * timing, hover to keep) rendering a `PToast`
+ * Removes a toast and its timer
  *
- * @returns {Function} toast(text, options), returns the message to close it early
+ * @param {number} id Toast id
+ */
+export function closeToast(id: number): void {
+	clearTimeout(timers.get(id)?.timer);
+	timers.delete(id);
+	toasts.value = toasts.value.filter((t) => t.id !== id);
+}
+
+/**
+ * Hover keeps a toast: stops its timer
+ *
+ * @param {number} id Toast id
+ */
+export function pauseToast(id: number): void {
+	const entry = timers.get(id);
+	clearTimeout(entry?.timer);
+	if (entry) entry.timer = undefined;
+}
+
+/**
+ * Starts a toast's full duration again, as naive-ui did after a hover
+ *
+ * @param {number} id Toast id
+ */
+export function resumeToast(id: number): void {
+	const entry = timers.get(id);
+	if (!entry || entry.timer) return;
+	entry.timer = setTimeout(() => closeToast(id), entry.duration);
+}
+
+/**
+ * Shows a toast bottom-right. Works outside components too (chunkReload).
+ *
+ * @author jplacht
+ *
+ * @param {string} text Message
+ * @param {PToastOptions} options type, action, duration (0 stays), closable
+ * @returns {PToastHandle} destroy() closes it early
+ */
+export function toast(
+	text: string,
+	{
+		type = "info",
+		action,
+		duration = 6000,
+		closable = false,
+	}: PToastOptions = {}
+): PToastHandle {
+	const id = nextId++;
+	toasts.value = [...toasts.value, { id, text, type, action, closable }];
+	if (duration > 0) {
+		timers.set(id, { duration });
+		resumeToast(id);
+	}
+	return { destroy: () => closeToast(id) };
+}
+
+/**
+ * Toasts in the kit's look
+ *
+ * @returns {Function} toast(text, options), returns a handle to close it early
  */
 export function useToast() {
-	const message = useMessage();
-
-	return function toast(
-		text: string,
-		{ type = "info", action, duration = 6000 }: PToastOptions = {}
-	): MessageReactive {
-		return message.create(text, {
-			duration,
-			keepAliveOnHover: true,
-			render: () =>
-				h(PToast, {
-					type,
-					text,
-					actionLabel: action?.label,
-					onAction: action?.onClick,
-				}),
-		});
-	};
+	return toast;
 }

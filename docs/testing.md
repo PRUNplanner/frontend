@@ -161,14 +161,18 @@ Write them for logic-heavy components, see
 - **File inputs**: define `files` on the hidden `<input type="file">` and
   `trigger("change")`, then `vi.waitFor` the parse; see
   `CXPreferenceImportExport.test.ts`.
-- **Overlays**: `PModal`, `PDrawer` and `NPopover` render into
-  `document.body` once shown. Query them through
+- **Overlays**: `PModal`, `PDrawer`, `PPopover`, `PDropdown` and toasts
+  render into `document.body` once shown. Query them through
   `new DOMWrapper(document.body)`: modals, drawers and confirms by
   `[role=dialog]`, their close button by
-  `button[aria-label="common.ui.close"]`; `PlanProductionRecipe.test.ts`
-  opens a popover and reads its table. Test utils stub the transitions, so
-  a closed modal or drawer is gone at once; `findComponent(PDrawer).props("show")`
-  also works, see `HelpDrawer.test.ts`.
+  `button[aria-label="common.ui.close"]`, menus by `[role=menu]` and
+  `[role=menuitem]` (see `PlanMoreMenu.test.ts`);
+  `PlanProductionRecipe.test.ts` opens a popover and reads its table. A
+  click outside is a `mousedown` on the document. For focus checks pass
+  `{ attach: true }` to `mountComponent`. The setup file stubs
+  `ResizeObserver`. Test utils stub the transitions, so a closed modal or
+  drawer is gone at once; `findComponent(PDrawer).props("show")` also
+  works, see `HelpDrawer.test.ts`.
 - **Number inputs**: `PInputNumber` sets its `v-model` to `null` while
   the field is empty. A setter that emits it needs a null guard, and a
   test that clears the input; see `PlanArea.test.ts`.

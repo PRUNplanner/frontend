@@ -30,8 +30,9 @@ html body {
 }
 
 /* naive-ui's global body style, which its components inject once one mounts;
-   its consent modal did that on every logged-in page. Kept for logged-in
-   pages (class from AppProvider) until naive-ui is gone */
+   on main its consent modal did that on every logged-in page and the
+   homepage header's collapse on every logged-out one. Kept on every page
+   (class from AppProvider) until naive-ui is gone */
 body.naive-global {
 	margin: 0;
 	font-size: 14px;

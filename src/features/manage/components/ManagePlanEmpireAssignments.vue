@@ -38,7 +38,7 @@
 		IAssignmentEmpire,
 		IAssignmentRow,
 	} from "@/features/manage/useAssignmentMatrix.types";
-	import type { PSelectOption } from "@/ui/ui.types";
+	import type { PDropdownOption, PSelectOption } from "@/ui/ui.types";
 
 	// Components
 	import SharingModal from "@/features/sharing/components/SharingModal.vue";
@@ -46,8 +46,14 @@
 	import ManageAssignmentCard from "@/features/manage/components/ManageAssignmentCard.vue";
 
 	// UI
-	import { PButton, PIcon, PInput, PSelect, useConfirm } from "@/ui";
-	import { NDropdown, type DropdownOption } from "naive-ui";
+	import {
+		PButton,
+		PDropdown,
+		PIcon,
+		PInput,
+		PSelect,
+		useConfirm,
+	} from "@/ui";
 
 	const confirm = useConfirm();
 	import {
@@ -292,26 +298,28 @@
 	onUnmounted(() => media?.removeEventListener("change", onMedia));
 
 	// Row menu: one dropdown and one sharing modal for the whole table
-	const menu = reactive({ show: false, x: 0, y: 0, planUuid: "" });
+	const menu = reactive({
+		show: false,
+		anchor: undefined as HTMLElement | undefined,
+		planUuid: "",
+	});
 	const busyPlan: Ref<string | undefined> = ref(undefined);
 	const sharePlan: Ref<string | undefined> = ref(undefined);
 	const showShare: Ref<boolean> = ref(false);
 
-	const menuOptions: ComputedRef<DropdownOption[]> = computed(() => [
+	const menuOptions: ComputedRef<PDropdownOption[]> = computed(() => [
 		{ label: t("management.assignments.menu.clone"), key: "clone" },
 		{ label: t("management.assignments.menu.share"), key: "share" },
-		{ type: "divider", key: "divider" },
+		{ type: "divider" },
 		{
 			label: t("management.assignments.menu.delete"),
 			key: "delete",
-			props: { style: "color: var(--color-negative)" },
+			danger: true,
 		},
 	]);
 
 	function openMenu(planUuid: string, target: HTMLElement): void {
-		const rect = target.getBoundingClientRect();
-		menu.x = rect.left;
-		menu.y = rect.bottom;
+		menu.anchor = target;
 		menu.planUuid = planUuid;
 		menu.show = true;
 	}
@@ -591,17 +599,14 @@
 	</div>
 
 	<!-- created on first use -->
-	<n-dropdown
+	<PDropdown
 		v-if="menu.planUuid"
+		v-model:show="menu.show"
 		trigger="manual"
 		placement="bottom-start"
-		:show="menu.show"
-		:x="menu.x"
-		:y="menu.y"
+		:anchor="menu.anchor"
 		:options="menuOptions"
-		@select="onMenuSelect"
-		@update:show="(show: boolean) => (menu.show = show)"
-		@clickoutside="menu.show = false" />
+		@select="onMenuSelect" />
 
 	<SharingModal
 		v-if="sharePlan"

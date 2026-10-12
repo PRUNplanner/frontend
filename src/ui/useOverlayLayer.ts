@@ -9,7 +9,9 @@ const FOCUSABLE =
 const BASE_Z_INDEX = 2000;
 
 // open layers, the last one is on top
-const stack: symbol[] = [];
+const stack: { id: symbol; modal: boolean; panel: Ref<HTMLElement | null> }[] =
+	[];
+const anyModal = () => stack.some((l) => l.modal);
 let pageOverflow = "";
 let pageMarginRight = "";
 
@@ -41,18 +43,24 @@ function focusables(panel: HTMLElement): HTMLElement[] {
  *
  * Esc closes only the topmost layer, and first closes an open PSelect list.
  *
+ * Non-modal layers (PPopover, PDropdown) only stack and close on Esc: no
+ * scroll lock, inert, focus move or trap. They return focus to the opener
+ * only when it was inside them.
+ *
  * @author jplacht
  *
  * @param {Ref<boolean>} show Layer open
  * @param {Ref<HTMLElement | null>} panel Dialog panel element
- * @param {Object} options autoFocus getter and close callback
- * @returns {{ zIndex, maskDown, maskClick }} z-index and mask handlers
+ * @param {Object} options autoFocus getter, close callback, modal (default true)
+ * @returns {{ zIndex, maskDown, maskClick, inLayerAbove }} z-index, mask
+ * handlers and whether an element is in a layer stacked above this one
  */
 export function useOverlayLayer(
 	show: Ref<boolean>,
 	panel: Ref<HTMLElement | null>,
-	options: { autoFocus: () => boolean; close: () => void }
+	options: { autoFocus: () => boolean; close: () => void; modal?: boolean }
 ) {
+	const modal = options.modal ?? true;
 	const id = Symbol();
 	const zIndex: Ref<number> = ref(BASE_Z_INDEX);
 	let opener: HTMLElement | null = null;
@@ -60,13 +68,13 @@ export function useOverlayLayer(
 
 	function onKeydown(e: KeyboardEvent): void {
 		const el = panel.value;
-		if (stack.at(-1) !== id || e.defaultPrevented || !el) return;
+		if (stack.at(-1)?.id !== id || e.defaultPrevented || !el) return;
 
 		if (e.key === "Escape") {
 			e.preventDefault();
 			if (currentlyOpenId.value) currentlyOpenId.value = null;
 			else options.close();
-		} else if (e.key === "Tab") {
+		} else if (e.key === "Tab" && modal) {
 			const items = focusables(el);
 			const first = items[0] ?? el;
 			const last = items.at(-1) ?? el;
@@ -86,18 +94,18 @@ export function useOverlayLayer(
 	}
 
 	function open(): void {
-		if (stack.includes(id)) return;
+		if (stack.some((l) => l.id === id)) return;
 		opener =
 			document.activeElement instanceof HTMLElement
 				? document.activeElement
 				: null;
-		if (stack.length === 0) lockPage();
-		stack.push(id);
+		if (modal && !anyModal()) lockPage();
+		stack.push({ id, modal, panel });
 		zIndex.value = BASE_Z_INDEX + stack.length;
 		document.addEventListener("keydown", onKeydown);
 
 		const el = panel.value;
-		if (!el) return;
+		if (!el || !modal) return;
 		if (!options.autoFocus()) return el.focus();
 		// content first, the header's close button only as fallback
 		const items = focusables(el);
@@ -109,14 +117,22 @@ export function useOverlayLayer(
 	}
 
 	function release(): void {
-		const index = stack.indexOf(id);
+		const index = stack.findIndex((l) => l.id === id);
 		if (index === -1) return;
 		stack.splice(index, 1);
 		document.removeEventListener("keydown", onKeydown);
-		if (stack.length === 0) unlockPage();
-		if (opener?.isConnected) opener.focus();
+		if (modal && !anyModal()) unlockPage();
+		if (modal && opener?.isConnected) opener.focus();
 		opener = null;
 	}
+
+	// a non-modal layer returns focus before the render removes its panel,
+	// and before a modal opened by its pick makes the page inert
+	watch(show, (value) => {
+		if (value || modal) return;
+		if (panel.value?.contains(document.activeElement) && opener?.isConnected)
+			opener.focus();
+	});
 
 	// after the render, so the panel ref is set (an immediate watcher would
 	// run in setup, before it is)
@@ -136,5 +152,13 @@ export function useOverlayLayer(
 		maskPressed = false;
 	}
 
-	return { zIndex, maskDown, maskClick };
+	function inLayerAbove(target: Node): boolean {
+		const index = stack.findIndex((l) => l.id === id);
+		return (
+			index !== -1 &&
+			stack.slice(index + 1).some((l) => l.panel.value?.contains(target))
+		);
+	}
+
+	return { zIndex, maskDown, maskClick, inLayerAbove };
 }
