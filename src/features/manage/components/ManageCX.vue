@@ -21,9 +21,8 @@
 	import { inertClone } from "@/util/data";
 
 	// UI
-	import { PButton, PInput, PTag } from "@/ui";
-	import { useDialog } from "naive-ui";
-	const dialog = useDialog();
+	import { PButton, PInput, PTag, useConfirm } from "@/ui";
+	const confirm = useConfirm();
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import { ClearSharp, PlusSharp } from "@vicons/material";
 
@@ -80,17 +79,14 @@
 		}
 	}
 
-	function handleDeleteConfirm(cxUuid: string): void {
-		dialog.warning({
-			title: "Confirm CX Deletion",
-			content:
-				"Are you sure? Deleting the CX will delete all preferences.",
-			positiveText: "Delete",
-			negativeText: "Cancel",
-			onPositiveClick: () => {
-				deleteCX(cxUuid);
-			},
+	async function handleDeleteConfirm(cxUuid: string): Promise<void> {
+		const confirmed = await confirm({
+			title: t("management.cx.deletion.title"),
+			content: t("management.cx.deletion.content"),
+			positiveText: t("common.buttons.delete"),
+			negativeText: t("common.buttons.cancel"),
 		});
+		if (confirmed) deleteCX(cxUuid);
 	}
 
 	async function deleteCX(cxUuid: string): Promise<void> {

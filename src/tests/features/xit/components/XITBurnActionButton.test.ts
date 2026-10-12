@@ -61,7 +61,8 @@ async function open(wrapper: VueWrapper) {
 	await flushPromises();
 }
 
-const materialRows = () => body().findAll(".n-drawer tbody:last-of-type tr");
+const materialRows = () =>
+	body().findAll("[role=dialog] tbody:last-of-type tr");
 
 /** stock, delta, burn and amount per material row */
 const rowTexts = () =>
@@ -79,18 +80,19 @@ const rowInputs = (wrapper: VueWrapper) =>
 	wrapper.findAllComponents(PInputNumber).slice(1);
 
 const rowCheckboxes = () =>
-	body().findAll(".n-drawer tbody:last-of-type input[type=checkbox]");
+	body().findAll("[role=dialog] tbody:last-of-type input[type=checkbox]");
 
 const xitJSON = () =>
 	JSON.parse(
-		(body().find(".n-drawer textarea").element as HTMLTextAreaElement).value
+		(body().find("[role=dialog] textarea").element as HTMLTextAreaElement)
+			.value
 	);
 
 const transferred = () => xitJSON().groups[0].materials;
 
 async function clickFit(label: string) {
 	await body()
-		.findAll(".n-drawer button")
+		.findAll("[role=dialog] button")
 		.find((b) => b.text() === label)!
 		.trigger("click");
 	await flushPromises();
@@ -118,7 +120,7 @@ describe("XITBurnActionButton", () => {
 		});
 
 		expect(wrapper.find("button").text()).toBe("Burn XIT");
-		expect(body().find(".n-drawer").exists()).toBe(false);
+		expect(body().find("[role=dialog]").exists()).toBe(false);
 		expect(wrapper.findAllComponents(PInputNumber)).toHaveLength(0);
 	});
 
@@ -126,10 +128,10 @@ describe("XITBurnActionButton", () => {
 		const { wrapper } = await mountButton();
 
 		await open(wrapper);
-		expect(body().find(".n-drawer").exists()).toBe(true);
-		expect(body().find(".n-drawer-header").text()).toContain(
-			"Burn of Plan A"
-		);
+		expect(body().find("[role=dialog]").exists()).toBe(true);
+		expect(
+			body().find("[role=dialog] [data-layer-header]").text()
+		).toContain("Burn of Plan A");
 
 		// a second click while open does not show it again
 		await open(wrapper);
@@ -250,7 +252,7 @@ describe("XITBurnActionButton", () => {
 
 		// without a station the buy checkbox is hidden, hide infinite is first
 		await body()
-			.findAll(".n-drawer input[type=checkbox]")
+			.findAll("[role=dialog] input[type=checkbox]")
 			.at(0)!
 			.setValue(true);
 		await flushPromises();
@@ -308,7 +310,7 @@ describe("XITBurnActionButton", () => {
 
 		// buying is a preference, the first checkbox once a station is set
 		await body()
-			.findAll(".n-drawer input[type=checkbox]")
+			.findAll("[role=dialog] input[type=checkbox]")
 			.at(0)!
 			.setValue(false);
 		await flushPromises();
@@ -325,7 +327,7 @@ describe("XITBurnActionButton", () => {
 		const { wrapper } = await mountButton();
 		await open(wrapper);
 
-		await body().find(".n-drawer textarea").setValue("test-typing");
+		await body().find("[role=dialog] textarea").setValue("test-typing");
 
 		// a write would fail: "computed value is readonly"
 		expect(warn).not.toHaveBeenCalled();
@@ -341,7 +343,7 @@ describe("XITBurnActionButton", () => {
 		await open(wrapper);
 
 		await body()
-			.findAll(".n-drawer button")
+			.findAll("[role=dialog] button")
 			.find((b) => b.text() === "xit.buttons.copy_json")!
 			.trigger("click");
 

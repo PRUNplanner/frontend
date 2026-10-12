@@ -23,7 +23,7 @@
 	import PFormItem from "@/ui/components/PFormItem.vue";
 	import PFormSeperator from "@/ui/components/PFormSeperator.vue";
 	import PInput from "@/ui/components/PInput.vue";
-	import { NModal } from "naive-ui";
+	import PModal from "@/ui/components/PModal.vue";
 	import { CheckSharp, RestartAltSharp } from "@vicons/material";
 
 	const {
@@ -72,12 +72,11 @@
 </script>
 
 <template>
-	<n-modal
+	<!-- 446 px, the width it had as a naive-ui dialog -->
+	<PModal
 		v-model:show="showCreateModal"
-		preset="dialog"
-		:title="t('api_keys.create.title')"
-		:show-icon="false">
-		<template #header>{{ $t("api_keys.create.title") }}</template>
+		class="w-111.5! max-w-[calc(100vw-32px)]"
+		:title="t('api_keys.create.title')">
 		<div v-if="creationStep === 'start'">
 			<PForm>
 				<PFormItem :label="t('api_keys.create.form.key_name')">
@@ -122,7 +121,7 @@
 		<template #action>
 			<div
 				v-if="creationStep === 'start'"
-				class="flex flex-row gap-3 items-end">
+				class="flex flex-row justify-end gap-3 items-end">
 				<PButton
 					@click="
 						{
@@ -152,7 +151,7 @@
 				</PButton>
 			</div>
 		</template>
-	</n-modal>
+	</PModal>
 
 	<div class="min-h-screen flex flex-col">
 		<div

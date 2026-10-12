@@ -93,3 +93,10 @@ export interface PToastConfig {
 	container: string;
 	types: Record<"info" | "error", string>;
 }
+
+export interface PConfirmOptions {
+	title: string;
+	content: string;
+	positiveText: string;
+	negativeText: string;
+}

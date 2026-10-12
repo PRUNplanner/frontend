@@ -9,8 +9,7 @@
 	import { useUserStore } from "@/stores/userStore";
 
 	// UI
-	import { NModal } from "naive-ui";
-	import { PButton } from "@/ui";
+	import { PButton, PModal } from "@/ui";
 
 	const userStore = useUserStore();
 	const { consent, grant, deny } = useAnalyticsConsent();
@@ -31,11 +30,10 @@
 </script>
 
 <template>
-	<n-modal
+	<PModal
 		v-model:show="show"
-		class="w-fit! max-w-175! [&_.n-base-close]:size-6!"
+		class="w-fit! max-w-175!"
 		:auto-focus="false"
-		preset="card"
 		:title="$t('analytics.consent.title')">
 		<div class="flex flex-col gap-3">
 			<p>{{ $t("analytics.consent.intro") }}</p>
@@ -69,5 +67,5 @@
 				</PButton>
 			</div>
 		</template>
-	</n-modal>
+	</PModal>
 </template>

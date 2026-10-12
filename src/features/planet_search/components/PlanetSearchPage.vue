@@ -82,8 +82,7 @@
 	import type { IPlanetSearchSort } from "@/features/planet_search/planetSearch.types";
 
 	// UI
-	import { PButton, PSpin, useToast } from "@/ui";
-	import { NDrawer, NDrawerContent } from "naive-ui";
+	import { PButton, PDrawer, PSpin, useToast } from "@/ui";
 	import {
 		KeyboardDoubleArrowLeftSharp,
 		KeyboardDoubleArrowRightSharp,
@@ -578,54 +577,57 @@
 			</section>
 		</div>
 
-		<NDrawer
+		<!-- a full-screen filter panel, unlike other drawers -->
+		<PDrawer
 			v-if="!isDesktop"
 			v-model:show="drawerOpen"
+			class="max-w-none!"
 			width="100%"
 			placement="left"
-			:auto-focus="false">
-			<NDrawerContent body-content-class="!p-0">
-				<div class="flex flex-col min-h-full">
-					<div
-						class="flex flex-row justify-between items-center px-4 py-2 border-b border-white/10">
-						<h2 class="font-bold">
-							{{ t("planet_search.filters.title") }} ·
-							{{
-								t("planet_search.filters.active", {
-									n: chips.length,
-								})
-							}}
-						</h2>
-						<button
-							type="button"
-							class="min-w-11 min-h-11 text-xl hover:bg-white/20 rounded-sm"
-							:aria-label="t('planet_search.filters.close')"
-							@click="drawerOpen = false">
-							×
-						</button>
-					</div>
-					<!-- 44 px touch targets in the drawer -->
-					<div
-						class="flex-1 px-4 pb-4 [&_.pselect_label>div]:min-h-11 [&_input:not(.peer)]:min-h-11 [&_.pcheckbox_label]:min-h-11">
-						<PlanetSearchFilterPanel
-							v-bind="panelProps"
-							@update:filter="(f) => (filter = f)"
-							@update:empire="changeEmpire" />
-					</div>
-					<div
-						class="sticky bottom-0 p-3 bg-black border-t border-white/10">
-						<PButton
-							class="w-full min-h-11"
-							@click="drawerOpen = false">
-							{{
-								t("planet_search.filters.show_results", {
-									n: results.length,
-								})
-							}}
-						</PButton>
-					</div>
+			:auto-focus="false"
+			:closable="false"
+			body-class="p-0!"
+			:aria-label="t('planet_search.filters.title')">
+			<div class="flex flex-col min-h-full">
+				<div
+					class="flex flex-row justify-between items-center px-4 py-2 border-b border-white/10">
+					<h2 class="font-bold">
+						{{ t("planet_search.filters.title") }} ·
+						{{
+							t("planet_search.filters.active", {
+								n: chips.length,
+							})
+						}}
+					</h2>
+					<button
+						type="button"
+						class="min-w-11 min-h-11 text-xl hover:bg-white/20 rounded-sm"
+						:aria-label="t('planet_search.filters.close')"
+						@click="drawerOpen = false">
+						×
+					</button>
 				</div>
-			</NDrawerContent>
-		</NDrawer>
+				<!-- 44 px touch targets in the drawer -->
+				<div
+					class="flex-1 px-4 pb-4 [&_.pselect_label>div]:min-h-11 [&_input:not(.peer)]:min-h-11 [&_.pcheckbox_label]:min-h-11">
+					<PlanetSearchFilterPanel
+						v-bind="panelProps"
+						@update:filter="(f) => (filter = f)"
+						@update:empire="changeEmpire" />
+				</div>
+				<div
+					class="sticky bottom-0 p-3 bg-black border-t border-white/10">
+					<PButton
+						class="w-full min-h-11"
+						@click="drawerOpen = false">
+						{{
+							t("planet_search.filters.show_results", {
+								n: results.length,
+							})
+						}}
+					</PButton>
+				</div>
+			</div>
+		</PDrawer>
 	</div>
 </template>

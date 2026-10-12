@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { DOMWrapper, flushPromises } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
-import { NModal } from "naive-ui";
+import { PModal } from "@/ui";
 
 import { useUserStore } from "@/stores/userStore";
 import AnalyticsConsentDialog from "@/features/analytics/components/AnalyticsConsentDialog.vue";
@@ -44,7 +44,7 @@ function login(): void {
 const mountDialog = () => mountComponent(AnalyticsConsentDialog, {}, { pinia });
 
 const body = () => new DOMWrapper(document.body);
-const modal = () => body().find(".n-modal");
+const modal = () => body().find("[role=dialog]");
 const button = (label: string) =>
 	modal()
 		.findAll("button")
@@ -128,10 +128,10 @@ describe("AnalyticsConsentDialog", () => {
 		const { wrapper } = await mountDialog();
 
 		// Esc, mask click and the close button all end here
-		wrapper.findComponent(NModal).vm.$emit("update:show", false);
+		wrapper.findComponent(PModal).vm.$emit("update:show", false);
 		await flushPromises();
 
-		expect(wrapper.findComponent(NModal).props("show")).toBe(false);
+		expect(wrapper.findComponent(PModal).props("show")).toBe(false);
 		expect(state.grant).not.toHaveBeenCalled();
 		expect(state.deny).not.toHaveBeenCalled();
 	});

@@ -43,8 +43,8 @@
 		PSelect,
 		PInput,
 		PTable,
+		PDrawer,
 	} from "@/ui";
-	import { NDrawer, NDrawerContent } from "naive-ui";
 
 	// Constants
 	import { XITSTATIONWAREHOUSES } from "@/features/xit/xitConstants";
@@ -129,237 +129,232 @@
 		{{ buttonText }}
 	</PButton>
 
-	<n-drawer v-if="loadDrawer" v-model:show="showDrawer" :width="drawerWidth">
-		<n-drawer-content closable body-class="bg-black">
-			<template #header> {{ drawerTitle }} </template>
-
-			<div class="mb-3 grid grid-cols-1 xl:grid-cols-[60%_auto] gap-3">
-				<div>
-					<PForm>
-						<PFormItem :label="t('xit.form.origin')">
-							<PSelect
-								v-model:value="burnOrigin"
-								:options="XITSTATIONWAREHOUSES"
-								class="w-full" />
-						</PFormItem>
-						<PFormItem :label="t('xit.form.target_days')">
-							<PInputNumber
-								v-model:value="burnResupplyDays"
-								:min="0"
-								show-buttons
-								class="w-full" />
-						</PFormItem>
-						<PFormItem :label="t('xit.form.buy_from_cx')">
-							<p
-								v-if="burnOrigin === 'Configure on Execution'"
-								class="text-xs text-negative">
-								{{ $t("xit.form.buy_from_cx_warning") }}
-							</p>
-							<PCheckbox
-								v-else
-								v-model:checked="defaultBuyItemsFromCX"
-								:disabled="
-									burnOrigin === 'Configure on Execution'
-								" />
-						</PFormItem>
-						<PFormItem :label="t('xit.form.fit_ship')">
-							<PButtonGroup>
-								<PButton
-									v-for="fitOption in fitOptions"
-									:key="fitOption.label"
-									@click="
-										() => {
-											fit(
-												fitOption.weight,
-												fitOption.volume
-											);
-											trackEvent('xit:burn_ship_fit', {
-												weight: fitOption.weight,
-												volume: fitOption.volume,
-											});
-										}
-									">
-									{{ fitOption.label }}
-								</PButton>
-							</PButtonGroup>
-						</PFormItem>
-						<PFormItem :label="t('xit.form.hide_infinite')">
-							<PCheckbox v-model:checked="refHideInfinite" />
-						</PFormItem>
-					</PForm>
-				</div>
-				<div class="flex flex-col gap-3 pb-3 items-end">
-					<div>
-						<PButton
-							@click="
-								() => {
-									trackEvent('xit:burn_copy');
-
-									copyToClipboard(
-										transferJSON(
-											materialTable
-												.filter(
-													(mt) =>
-														mt.total !== Infinity &&
-														mt.total > 0 &&
-														mt.active
-												)
-												.map((m) => {
-													return {
-														ticker: m.ticker,
-														value: m.total,
-													};
-												}),
-											{
-												name: 'Burn Supply',
-												origin: burnOrigin,
-												buy: defaultBuyItemsFromCX,
-											}
-										).value
-									);
-								}
-							">
-							{{ $t("xit.buttons.copy_json") }}
-						</PButton>
-					</div>
-					<PInput
-						:aria-label="$t('xit.form.json')"
-						:value="
-							transferJSON(
-								materialTable
-									.filter(
-										(mt) =>
-											mt.total !== Infinity &&
-											mt.total > 0 &&
-											mt.active
-									)
-									.map((m) => {
-										return {
-											ticker: m.ticker,
-											value: m.total,
-										};
-									}),
-								{
-									name: 'Burn Supply',
-									origin: burnOrigin,
-									buy: defaultBuyItemsFromCX,
-								}
-							).value
-						"
-						type="textarea"
-						class="w-full" />
-				</div>
-			</div>
-
-			<PTable striped>
-				<thead>
-					<tr>
-						<th></th>
-						<th>{{ $t("xit.table.ticker") }}</th>
-						<th>{{ $t("xit.table.stock") }}</th>
-						<th>{{ $t("xit.table.delta") }}</th>
-						<th>{{ $t("xit.table.burn") }}</th>
-						<th>{{ $t("xit.table.amount") }}</th>
-						<th>{{ $t("xit.table.override") }}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="child:border-b!">
-						<td colspan="7">
-							<div class="flex flex-row justify-between">
-								<div>
-									{{
-										$t("xit.table.weight_value", {
-											value: formatNumber(
-												totalWeightVolume.totalWeight
-											),
-										})
-									}}
-									<span class="pl-1 font-light text-muted">
-										t
-									</span>
-								</div>
-								<div>
-									{{
-										$t("xit.table.volume_value", {
-											value: formatNumber(
-												totalWeightVolume.totalVolume
-											),
-										})
-									}}
-
-									<span class="pl-1 font-light text-muted">
-										m³
-									</span>
-								</div>
-								<div>
-									{{
-										$t("xit.table.price_value", {
-											value: formatNumber(totalPrice),
-										})
-									}}
-									<span class="pl-1 font-light text-muted">
-										ȼ
-									</span>
-								</div>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-				<tbody>
-					<tr v-for="e in materialTable" :key="e.ticker">
-						<td>
-							<PCheckbox
-								v-model:checked="e.active"
-								:aria-label="
-									$t('xit.form.include_label', {
-										ticker: e.ticker,
-									})
-								"
-								@update:checked="
-									(value) => {
-										if (value)
-											refMaterialInactives.delete(
-												e.ticker
-											);
-										else refMaterialInactives.add(e.ticker);
+	<PDrawer
+		v-if="loadDrawer"
+		v-model:show="showDrawer"
+		:width="drawerWidth"
+		:title="drawerTitle"
+		body-class="bg-black">
+		<div class="mb-3 grid grid-cols-1 xl:grid-cols-[60%_auto] gap-3">
+			<div>
+				<PForm>
+					<PFormItem :label="t('xit.form.origin')">
+						<PSelect
+							v-model:value="burnOrigin"
+							:options="XITSTATIONWAREHOUSES"
+							class="w-full" />
+					</PFormItem>
+					<PFormItem :label="t('xit.form.target_days')">
+						<PInputNumber
+							v-model:value="burnResupplyDays"
+							:min="0"
+							show-buttons
+							class="w-full" />
+					</PFormItem>
+					<PFormItem :label="t('xit.form.buy_from_cx')">
+						<p
+							v-if="burnOrigin === 'Configure on Execution'"
+							class="text-xs text-negative">
+							{{ $t("xit.form.buy_from_cx_warning") }}
+						</p>
+						<PCheckbox
+							v-else
+							v-model:checked="defaultBuyItemsFromCX"
+							:disabled="
+								burnOrigin === 'Configure on Execution'
+							" />
+					</PFormItem>
+					<PFormItem :label="t('xit.form.fit_ship')">
+						<PButtonGroup>
+							<PButton
+								v-for="fitOption in fitOptions"
+								:key="fitOption.label"
+								@click="
+									() => {
+										fit(fitOption.weight, fitOption.volume);
+										trackEvent('xit:burn_ship_fit', {
+											weight: fitOption.weight,
+											volume: fitOption.volume,
+										});
 									}
-								" />
-						</td>
-						<td>
-							<MaterialTile :key="e.ticker" :ticker="e.ticker" />
-						</td>
-						<td>{{ formatAmount(e.stock) }}</td>
-						<td>{{ formatNumber(e.delta) }}</td>
-						<td>
-							<span
-								:class="
-									getBurnDisplayClass(e.burn).value != ''
-										? `${
-												getBurnDisplayClass(e.burn)
-													.value
-											} px-2 py-0.75`
-										: ''
 								">
-								{{ formatNumber(e.burn) }}
-							</span>
-						</td>
-						<td>{{ formatAmount(e.total) }}</td>
-						<td>
-							<PInputNumber
-								v-model:value="refMaterialOverrides[e.ticker]"
-								:aria-label="
-									$t('xit.form.override_label', {
-										ticker: e.ticker,
+								{{ fitOption.label }}
+							</PButton>
+						</PButtonGroup>
+					</PFormItem>
+					<PFormItem :label="t('xit.form.hide_infinite')">
+						<PCheckbox v-model:checked="refHideInfinite" />
+					</PFormItem>
+				</PForm>
+			</div>
+			<div class="flex flex-col gap-3 pb-3 items-end">
+				<div>
+					<PButton
+						@click="
+							() => {
+								trackEvent('xit:burn_copy');
+
+								copyToClipboard(
+									transferJSON(
+										materialTable
+											.filter(
+												(mt) =>
+													mt.total !== Infinity &&
+													mt.total > 0 &&
+													mt.active
+											)
+											.map((m) => {
+												return {
+													ticker: m.ticker,
+													value: m.total,
+												};
+											}),
+										{
+											name: 'Burn Supply',
+											origin: burnOrigin,
+											buy: defaultBuyItemsFromCX,
+										}
+									).value
+								);
+							}
+						">
+						{{ $t("xit.buttons.copy_json") }}
+					</PButton>
+				</div>
+				<PInput
+					:aria-label="$t('xit.form.json')"
+					:value="
+						transferJSON(
+							materialTable
+								.filter(
+									(mt) =>
+										mt.total !== Infinity &&
+										mt.total > 0 &&
+										mt.active
+								)
+								.map((m) => {
+									return {
+										ticker: m.ticker,
+										value: m.total,
+									};
+								}),
+							{
+								name: 'Burn Supply',
+								origin: burnOrigin,
+								buy: defaultBuyItemsFromCX,
+							}
+						).value
+					"
+					type="textarea"
+					class="w-full" />
+			</div>
+		</div>
+
+		<PTable striped>
+			<thead>
+				<tr>
+					<th></th>
+					<th>{{ $t("xit.table.ticker") }}</th>
+					<th>{{ $t("xit.table.stock") }}</th>
+					<th>{{ $t("xit.table.delta") }}</th>
+					<th>{{ $t("xit.table.burn") }}</th>
+					<th>{{ $t("xit.table.amount") }}</th>
+					<th>{{ $t("xit.table.override") }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="child:border-b!">
+					<td colspan="7">
+						<div class="flex flex-row justify-between">
+							<div>
+								{{
+									$t("xit.table.weight_value", {
+										value: formatNumber(
+											totalWeightVolume.totalWeight
+										),
 									})
-								"
-								size="sm"
-								:min="0"
-								class="max-w-25" />
-						</td>
-					</tr>
-				</tbody>
-			</PTable>
-		</n-drawer-content>
-	</n-drawer>
+								}}
+								<span class="pl-1 font-light text-muted">
+									t
+								</span>
+							</div>
+							<div>
+								{{
+									$t("xit.table.volume_value", {
+										value: formatNumber(
+											totalWeightVolume.totalVolume
+										),
+									})
+								}}
+
+								<span class="pl-1 font-light text-muted">
+									m³
+								</span>
+							</div>
+							<div>
+								{{
+									$t("xit.table.price_value", {
+										value: formatNumber(totalPrice),
+									})
+								}}
+								<span class="pl-1 font-light text-muted">
+									ȼ
+								</span>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+			<tbody>
+				<tr v-for="e in materialTable" :key="e.ticker">
+					<td>
+						<PCheckbox
+							v-model:checked="e.active"
+							:aria-label="
+								$t('xit.form.include_label', {
+									ticker: e.ticker,
+								})
+							"
+							@update:checked="
+								(value) => {
+									if (value)
+										refMaterialInactives.delete(e.ticker);
+									else refMaterialInactives.add(e.ticker);
+								}
+							" />
+					</td>
+					<td>
+						<MaterialTile :key="e.ticker" :ticker="e.ticker" />
+					</td>
+					<td>{{ formatAmount(e.stock) }}</td>
+					<td>{{ formatNumber(e.delta) }}</td>
+					<td>
+						<span
+							:class="
+								getBurnDisplayClass(e.burn).value != ''
+									? `${
+											getBurnDisplayClass(e.burn).value
+										} px-2 py-0.75`
+									: ''
+							">
+							{{ formatNumber(e.burn) }}
+						</span>
+					</td>
+					<td>{{ formatAmount(e.total) }}</td>
+					<td>
+						<PInputNumber
+							v-model:value="refMaterialOverrides[e.ticker]"
+							:aria-label="
+								$t('xit.form.override_label', {
+									ticker: e.ticker,
+								})
+							"
+							size="sm"
+							:min="0"
+							class="max-w-25" />
+					</td>
+				</tr>
+			</tbody>
+		</PTable>
+	</PDrawer>
 </template>

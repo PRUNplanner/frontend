@@ -1,6 +1,7 @@
 import {
 	type Component,
 	defineComponent,
+	Fragment,
 	h,
 	shallowReactive,
 	Suspense,
@@ -15,10 +16,10 @@ import {
 } from "@vue/test-utils";
 import { createPinia, type Pinia } from "pinia";
 import { createI18n } from "vue-i18n";
-import { NDialogProvider } from "naive-ui";
+import { PConfirmHost } from "@/ui";
 import { afterEach } from "vitest";
 
-// unmount after each test, naive-ui teleports (dialogs) live in document.body
+// unmount after each test, teleported layers (modals, drawers) live in document.body
 enableAutoUnmount(afterEach);
 
 /**
@@ -26,8 +27,8 @@ enableAutoUnmount(afterEach);
  * i18n instance without messages, so `t(key)` and `$t(key)` render the key.
  *
  * Pass listeners as props (`"onUpdate:value": fn`), or read them via
- * `component.emitted()`. `withDialog` wraps in NDialogProvider for
- * components calling useDialog(). `messages` (en_US) lets `<i18n-t>` render
+ * `component.emitted()`. `withDialog` renders PConfirmHost next to it
+ * for components calling useConfirm(). `messages` (en_US) lets `<i18n-t>` render
  * its slots, which a key-only i18n drops.
  */
 export async function mountComponent(
@@ -57,7 +58,7 @@ export async function mountComponent(
 		defineComponent({
 			render: () =>
 				options.withDialog
-					? h(NDialogProvider, null, { default: content })
+					? h(Fragment, [content(), h(PConfirmHost)])
 					: content(),
 		}),
 		{

@@ -1,13 +1,9 @@
 import {
 	createTheme,
-	cardDark,
 	dataTableDark,
-	dialogDark,
-	drawerDark,
 	dropdownDark,
 	emptyDark,
 	messageDark,
-	modalDark,
 	popoverDark,
 } from "naive-ui";
 import type { GlobalThemeOverrides } from "naive-ui";
@@ -16,21 +12,16 @@ import type { GlobalThemeOverrides } from "naive-ui";
 // pagination or select come with them); naive's full dark theme would pull
 // in all of them
 export const prunplannerDarkTheme = createTheme([
-	cardDark,
 	dataTableDark,
-	dialogDark,
-	drawerDark,
 	dropdownDark,
 	emptyDark,
 	messageDark,
-	modalDark,
 	popoverDark,
 ]);
 
 const WHITE: string = "#ffffff";
 const BLACK: string = "#000000";
 const BASE: string = "#212529";
-const BACKGROUND: string = "#1e1e1e";
 const DARK_BLUE: string = "#212d40";
 const GRAY_DARK: string = "#151515";
 
@@ -44,25 +35,6 @@ export const prunplannerTheme: GlobalThemeOverrides = {
 		fontFamilyMono: "Roboto Mono, monospace",
 		hoverColor: "#222222",
 		actionColor: WHITE,
-	},
-	Card: {
-		color: GRAY_DARK,
-		colorModal: GRAY_DARK,
-		actionColor: GRAY_DARK,
-
-		borderRadius: "6px",
-		borderColor: "rgba(255,255,255,0.05)",
-		boxShadow:
-			"0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1)",
-
-		textColor: "rgba(255,255,255,0.8)",
-
-		// font sizes
-		titleFontWeight: "bold",
-		titleFontSizeMedium: "16px",
-		fontSizeMedium: "14px",
-		// paddings
-		paddingMedium: "5px 10px",
 	},
 	DataTable: {
 		thTextColor: "rgba(255,255,255,0.9)",
@@ -126,11 +98,5 @@ export const prunplannerTheme: GlobalThemeOverrides = {
 		// padding
 		thPaddingMedium: "5px 10px",
 		tdPaddingMedium: "5px 10px",
-	},
-	Drawer: {
-		color: GRAY_DARK,
-	},
-	Modal: {
-		color: BACKGROUND,
 	},
 };

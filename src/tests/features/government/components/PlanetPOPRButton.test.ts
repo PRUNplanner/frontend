@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { h } from "vue";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
-import { NModal } from "naive-ui";
+import { PModal } from "@/ui";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -60,7 +60,7 @@ describe("PlanetPOPRButton", () => {
 		});
 		// nothing loaded until clicked
 		expect(mock.history.get).toHaveLength(0);
-		expect(body().find(".n-modal").exists()).toBe(false);
+		expect(body().find("[role=dialog]").exists()).toBe(false);
 	});
 
 	it("takes a button size and text", async () => {
@@ -86,7 +86,7 @@ describe("PlanetPOPRButton", () => {
 		expect(trackEvent).toHaveBeenCalledWith("planet:popr_load", {
 			planet_natural_id: "AA-003a",
 		});
-		expect(body().find(".n-card-header").text()).toBe(
+		expect(body().find("[role=dialog] h2").text()).toBe(
 			"government.popr_button.modal_title"
 		);
 		expect(
@@ -114,13 +114,13 @@ describe("PlanetPOPRButton", () => {
 
 		await click(wrapper);
 		expect(wrapper.find("button").attributes("aria-busy")).toBe("true");
-		expect(body().find(".n-modal").exists()).toBe(false);
+		expect(body().find("[role=dialog]").exists()).toBe(false);
 
 		respond([200, popr]);
 		await vi.waitFor(() =>
 			expect(wrapper.find("button").attributes("aria-busy")).toBe("false")
 		);
-		expect(body().find(".n-modal").exists()).toBe(true);
+		expect(body().find("[role=dialog]").exists()).toBe(true);
 	});
 
 	it("reopens the modal after closing it", async () => {
@@ -128,12 +128,14 @@ describe("PlanetPOPRButton", () => {
 		const { wrapper } = await mountButton({ planetNaturalId: "AA-005a" });
 
 		await click(wrapper);
-		await body().find(".n-card-header__close").trigger("click");
+		await body()
+			.find('button[aria-label="common.ui.close"]')
+			.trigger("click");
 		await flushPromises();
-		expect(wrapper.findComponent(NModal).props("show")).toBe(false);
+		expect(wrapper.findComponent(PModal).props("show")).toBe(false);
 
 		await click(wrapper);
-		expect(wrapper.findComponent(NModal).props("show")).toBe(true);
+		expect(wrapper.findComponent(PModal).props("show")).toBe(true);
 		expect(trackEvent).toHaveBeenCalledTimes(2);
 	});
 
@@ -152,7 +154,7 @@ describe("PlanetPOPRButton", () => {
 			disabled: true,
 			type: "error",
 		});
-		expect(body().find(".n-modal").exists()).toBe(false);
+		expect(body().find("[role=dialog]").exists()).toBe(false);
 		vi.mocked(console.error).mockRestore();
 	});
 });

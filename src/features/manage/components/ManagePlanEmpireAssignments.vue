@@ -46,9 +46,10 @@
 	import ManageAssignmentCard from "@/features/manage/components/ManageAssignmentCard.vue";
 
 	// UI
-	import { PButton, PIcon, PInput, PSelect } from "@/ui";
-	import { NDropdown, type DropdownOption, useDialog } from "naive-ui";
-	const dialog = useDialog();
+	import { PButton, PIcon, PInput, PSelect, useConfirm } from "@/ui";
+	import { NDropdown, type DropdownOption } from "naive-ui";
+
+	const confirm = useConfirm();
 	import {
 		ArrowDownwardSharp,
 		ArrowUpwardSharp,
@@ -356,16 +357,14 @@
 		}
 	}
 
-	function handleDeleteConfirm(planUuid: string): void {
-		dialog.warning({
+	async function handleDeleteConfirm(planUuid: string): Promise<void> {
+		const confirmed = await confirm({
 			title: t("management.assignments.deletion.title"),
 			content: t("management.assignments.deletion.content"),
 			positiveText: t("common.buttons.delete"),
 			negativeText: t("common.buttons.cancel"),
-			onPositiveClick: () => {
-				deletePlan(planUuid);
-			},
 		});
+		if (confirmed) deletePlan(planUuid);
 	}
 
 	async function deletePlan(planUuid: string): Promise<void> {

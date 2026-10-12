@@ -36,9 +36,9 @@
 		PInput,
 		PInputNumber,
 		PSelect,
+		useConfirm,
 	} from "@/ui";
-	import { useDialog } from "naive-ui";
-	const dialog = useDialog();
+	const confirm = useConfirm();
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import { ClearSharp, PlusSharp } from "@vicons/material";
 
@@ -236,17 +236,14 @@
 		}
 	}
 
-	function handleDeleteConfirm(empireUuid: string): void {
-		dialog.warning({
-			title: "Confirm Empire Deletion",
-			content:
-				"Are you sure? Deleting the Empire will not delete plans assigned to it.",
-			positiveText: "Delete",
-			negativeText: "Cancel",
-			onPositiveClick: () => {
-				deleteEmpire(empireUuid);
-			},
+	async function handleDeleteConfirm(empireUuid: string): Promise<void> {
+		const confirmed = await confirm({
+			title: t("management.empire.deletion.title"),
+			content: t("management.empire.deletion.content"),
+			positiveText: t("common.buttons.delete"),
+			negativeText: t("common.buttons.cancel"),
 		});
+		if (confirmed) deleteEmpire(empireUuid);
 	}
 
 	async function deleteEmpire(empireUuid: string): Promise<void> {

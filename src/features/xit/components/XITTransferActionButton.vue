@@ -40,8 +40,8 @@
 		PInput,
 		PSelect,
 		PTable,
+		PDrawer,
 	} from "@/ui";
-	import { NDrawer, NDrawerContent } from "naive-ui";
 
 	const props = defineProps({
 		elements: {
@@ -108,87 +108,85 @@
 		{{ buttonText }}
 	</PButton>
 
-	<n-drawer v-if="loadDrawer" v-model:show="showDrawer" :width="drawerWidth">
-		<n-drawer-content closable body-class="bg-black">
-			<template #header> {{ drawerTitle }} </template>
+	<PDrawer
+		v-if="loadDrawer"
+		v-model:show="showDrawer"
+		:width="drawerWidth"
+		:title="drawerTitle"
+		body-class="bg-black">
+		<PForm>
+			<PFormItem :label="t('xit.form.origin')">
+				<PSelect
+					v-model:value="burnOrigin"
+					:options="XITSTATIONWAREHOUSES" />
+			</PFormItem>
+			<PFormItem :label="t('xit.form.buy_from_cx')">
+				<div class="w-full flex flex-row gap-1 my-3 h-8 items-center">
+					<PCheckbox
+						v-model:checked="defaultBuyItemsFromCX"
+						:disabled="burnOrigin === 'Configure on Execution'" />
 
-			<PForm>
-				<PFormItem :label="t('xit.form.origin')">
-					<PSelect
-						v-model:value="burnOrigin"
-						:options="XITSTATIONWAREHOUSES" />
-				</PFormItem>
-				<PFormItem :label="t('xit.form.buy_from_cx')">
 					<div
-						class="w-full flex flex-row gap-1 my-3 h-8 items-center">
-						<PCheckbox
-							v-model:checked="defaultBuyItemsFromCX"
-							:disabled="
-								burnOrigin === 'Configure on Execution'
-							" />
-
-						<div
-							v-if="burnOrigin === 'Configure on Execution'"
-							class="pl-3 text-xs text-muted">
-							{{ $t("xit.form.buy_from_cx_warning") }}
-						</div>
+						v-if="burnOrigin === 'Configure on Execution'"
+						class="pl-3 text-xs text-muted">
+						{{ $t("xit.form.buy_from_cx_warning") }}
 					</div>
-				</PFormItem>
-				<PFormItem :label="t('xit.form.json')">
-					<div class="w-full flex flex-row gap-1">
-						<div class="grow">
-							<PInput
-								:value="
-									transferJSON(localElements, {
-										name: transferName,
-										origin: burnOrigin,
-										buy: defaultBuyItemsFromCX,
-									}).value
-								"
-								type="textarea"
-								class="w-full" />
-						</div>
-						<div>
-							<PButton
-								@click="
-									() => {
-										trackEvent('xit:transfer_copy');
-										copyToClipboard(
-											transferJSON(localElements, {
-												name: transferName,
-												origin: burnOrigin,
-												buy: defaultBuyItemsFromCX,
-											}).value
-										);
-									}
-								">
-								{{ $t("xit.buttons.copy") }}
-							</PButton>
-						</div>
+				</div>
+			</PFormItem>
+			<PFormItem :label="t('xit.form.json')">
+				<div class="w-full flex flex-row gap-1">
+					<div class="grow">
+						<PInput
+							:value="
+								transferJSON(localElements, {
+									name: transferName,
+									origin: burnOrigin,
+									buy: defaultBuyItemsFromCX,
+								}).value
+							"
+							type="textarea"
+							class="w-full" />
 					</div>
-				</PFormItem>
-			</PForm>
+					<div>
+						<PButton
+							@click="
+								() => {
+									trackEvent('xit:transfer_copy');
+									copyToClipboard(
+										transferJSON(localElements, {
+											name: transferName,
+											origin: burnOrigin,
+											buy: defaultBuyItemsFromCX,
+										}).value
+									);
+								}
+							">
+							{{ $t("xit.buttons.copy") }}
+						</PButton>
+					</div>
+				</div>
+			</PFormItem>
+		</PForm>
 
-			<PTable striped class="mt-3">
-				<thead>
-					<tr>
-						<th>{{ $t("xit.table.ticker") }}</th>
-						<th>{{ $t("xit.table.amount") }}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr
-						v-for="element in localElements"
-						:key="`TRANSFER#${element.ticker}`">
-						<td>
-							<MaterialTile
-								:key="element.ticker"
-								:ticker="element.ticker" />
-						</td>
-						<td>{{ formatAmount(element.value) }}</td>
-					</tr>
-				</tbody>
-			</PTable>
-		</n-drawer-content>
-	</n-drawer>
+		<PTable striped class="mt-3">
+			<thead>
+				<tr>
+					<th>{{ $t("xit.table.ticker") }}</th>
+					<th>{{ $t("xit.table.amount") }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr
+					v-for="element in localElements"
+					:key="`TRANSFER#${element.ticker}`">
+					<td>
+						<MaterialTile
+							:key="element.ticker"
+							:ticker="element.ticker" />
+					</td>
+					<td>{{ formatAmount(element.value) }}</td>
+				</tr>
+			</tbody>
+		</PTable>
+	</PDrawer>
 </template>

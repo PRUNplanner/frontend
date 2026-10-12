@@ -281,9 +281,9 @@ describe("ManageEmpire", () => {
 
 		const confirm = Array.from(
 			document.body.querySelectorAll<HTMLButtonElement>(
-				".n-dialog button"
+				"[role=dialog] button"
 			)
-		).find((b) => b.textContent?.trim() === "Delete");
+		).find((b) => b.textContent?.trim() === "common.buttons.delete");
 		expect(confirm).toBeDefined();
 		confirm!.click();
 		await flushPromises();
@@ -303,10 +303,10 @@ describe("ManageEmpire", () => {
 		await flushPromises();
 		Array.from(
 			document.body.querySelectorAll<HTMLButtonElement>(
-				".n-dialog button"
+				"[role=dialog] button"
 			)
 		)
-			.find((b) => b.textContent?.trim() === "Delete")!
+			.find((b) => b.textContent?.trim() === "common.buttons.delete")!
 			.click();
 		await flushPromises();
 

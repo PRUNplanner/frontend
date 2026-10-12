@@ -1,16 +1,21 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { Router } from "vue-router";
 
-const { messageError, createDiscreteApi } = vi.hoisted(() => {
-	const messageError = vi.fn();
-	return {
-		messageError,
-		createDiscreteApi: vi.fn(() => ({ message: { error: messageError } })),
-	};
-});
+const { messageError, themes } = vi.hoisted(() => ({
+	messageError: vi.fn(),
+	themes: [] as unknown[],
+}));
+// the message app: its config provider's theme and the message it shows
 vi.mock("naive-ui", async (importOriginal) => ({
 	...(await importOriginal<typeof import("naive-ui")>()),
-	createDiscreteApi,
+	NConfigProvider: (
+		props: { theme: unknown },
+		{ slots }: { slots: { default?: () => unknown } }
+	) => {
+		themes.push(props.theme);
+		return slots.default?.();
+	},
+	useMessage: () => ({ error: messageError }),
 }));
 
 import { prunplannerDarkTheme } from "@/layout/prunplannerNaiveUI";
@@ -34,6 +39,7 @@ describe("chunkReload", () => {
 		reload.mockReset();
 		assign.mockReset();
 		messageError.mockReset();
+		themes.length = 0;
 		vi.stubGlobal("location", { reload, assign });
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		vi.spyOn(window, "addEventListener").mockImplementation(
@@ -143,9 +149,11 @@ describe("chunkReload", () => {
 		router.fail(error, "/help");
 		expect(assign).toHaveBeenCalledTimes(1);
 		expect(messageError).toHaveBeenCalledTimes(1);
-		expect(createDiscreteApi).toHaveBeenLastCalledWith(["message"], {
-			configProviderProps: { theme: prunplannerDarkTheme },
+		expect(messageError).toHaveBeenCalledWith(expect.any(String), {
+			duration: 0,
+			closable: true,
 		});
+		expect(themes).toEqual([prunplannerDarkTheme]);
 
 		// other router errors are left alone
 		router.fail(new Error("guard failed"), "/x");

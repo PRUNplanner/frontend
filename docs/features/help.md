@@ -14,7 +14,7 @@ localized markdown page, and the getting-started tutorial.
   - **Usage:** `<HelpDrawer file-name="plan" />`.
   - **Lookup:** it loads `src/assets/help/<current locale>/<file-name>.md`
     through `import.meta.glob(..., { query: "?raw" })`, falls back to
-    `en_US`, and renders it with `VueShowdown` in an `NDrawer`.
+    `en_US`, and renders it with `VueShowdown` in a `PDrawer`.
   - **Missing file:** if the file exists in neither locale, it logs the
     error and shows "Unable to load"; nothing shows while a page loads.
 - **`components/HelpTutorial.vue`**: static tutorial built from the `help.*`

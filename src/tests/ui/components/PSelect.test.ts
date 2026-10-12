@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import PSelect from "@/ui/components/PSelect.vue";
+import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 import { mountComponent } from "@/tests/mountComponent";
 
 const GROUPED = [
@@ -92,5 +93,38 @@ describe("PSelect", () => {
 		await key(wrapper, "ArrowDown");
 		await key(wrapper, "Enter");
 		expect(picked).toEqual(["b"]);
+	});
+
+	it("claims Esc while open and frees the open id however it closes", async () => {
+		const { wrapper } = await mountSelect([
+			{ label: "A", value: "a" },
+			{ label: "B", value: "b" },
+		]);
+		const esc = () => {
+			const event = new KeyboardEvent("keydown", {
+				key: "Escape",
+				bubbles: true,
+				cancelable: true,
+			});
+			wrapper.find('[role="combobox"]').element.dispatchEvent(event);
+			return event;
+		};
+
+		// an open list keeps Esc from the modal or drawer around it
+		await key(wrapper, "ArrowDown");
+		expect(currentlyOpenId.value).not.toBeNull();
+		expect(esc().defaultPrevented).toBe(true);
+		await flushPromises();
+		expect(currentlyOpenId.value).toBeNull();
+		expect(esc().defaultPrevented).toBe(false);
+
+		await key(wrapper, "ArrowDown");
+		await key(wrapper, "Enter");
+		expect(currentlyOpenId.value).toBeNull();
+
+		await key(wrapper, "ArrowDown");
+		document.body.click();
+		await flushPromises();
+		expect(currentlyOpenId.value).toBeNull();
 	});
 });

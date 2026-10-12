@@ -53,9 +53,13 @@ async function clickDelete(wrapper: VueWrapper, row: number) {
 	await flushPromises();
 }
 
-async function answerDialog(text: "Delete" | "Cancel") {
+async function answerDialog(
+	text: "common.buttons.delete" | "common.buttons.cancel"
+) {
 	const b = Array.from(
-		document.body.querySelectorAll<HTMLButtonElement>(".n-dialog button")
+		document.body.querySelectorAll<HTMLButtonElement>(
+			"[role=dialog] button"
+		)
 	).find((b) => b.textContent?.trim() === text);
 	expect(b).toBeDefined();
 	b!.click();
@@ -120,7 +124,7 @@ describe("ManageCX", () => {
 		const { wrapper } = await mountCX();
 
 		await clickDelete(wrapper, 1);
-		await answerDialog("Delete");
+		await answerDialog("common.buttons.delete");
 
 		const busy = () =>
 			deleteButtons(wrapper).map((b) => b.attributes("aria-busy"));
@@ -211,7 +215,7 @@ describe("ManageCX", () => {
 		await clickDelete(wrapper, 1);
 		expect(mock.history.delete).toHaveLength(0);
 
-		await answerDialog("Delete");
+		await answerDialog("common.buttons.delete");
 
 		expect(mock.history.delete).toHaveLength(1);
 		expect(mock.history.delete[0].url).toMatch(deleteURL(SHARE.uuid));
@@ -225,7 +229,7 @@ describe("ManageCX", () => {
 		const { wrapper, component } = await mountCX();
 
 		await clickDelete(wrapper, 0);
-		await answerDialog("Cancel");
+		await answerDialog("common.buttons.cancel");
 
 		expect(mock.history.delete).toHaveLength(0);
 		expect(component.emitted("update:cxList")).toBeUndefined();
@@ -237,7 +241,7 @@ describe("ManageCX", () => {
 		const { wrapper, component } = await mountCX();
 
 		await clickDelete(wrapper, 0);
-		await answerDialog("Delete");
+		await answerDialog("common.buttons.delete");
 
 		expect(mock.history.delete).toHaveLength(1);
 		expect(mock.history.get).toHaveLength(0);

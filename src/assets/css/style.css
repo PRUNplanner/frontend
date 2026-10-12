@@ -29,6 +29,23 @@ html body {
 	@apply font-sans;
 }
 
+/* naive-ui's global body style, which its components inject once one mounts;
+   its consent modal did that on every logged-in page. Kept for logged-in
+   pages (class from AppProvider) until naive-ui is gone */
+body.naive-global {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.6;
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	-webkit-tap-highlight-color: transparent;
+}
+
+body.naive-global input {
+	font-family: inherit;
+	font-size: inherit;
+}
+
 body {
 	font-size: 14px;
 	background-color: var(--app-bg);
