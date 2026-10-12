@@ -74,6 +74,7 @@
 			"page": "Seite {page}",
 			"more": "Weitere Seiten"
 		},
+		"close": "Close",
 		"language": "Sprache",
 		"page_load_failed": "Diese Seite konnte nicht geladen werden. Lade sie neu, um die neueste Version zu erhalten."
 	},
