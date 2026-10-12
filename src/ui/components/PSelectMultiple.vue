@@ -327,9 +327,8 @@
 			</div>
 		</label>
 
-		<Teleport to="body">
+		<Teleport v-if="open" to="body">
 			<div
-				v-if="open"
 				ref="dropdownRef"
 				class="z-5000 p-1 bg-gray-900 text-white rounded-sm shadow-lg max-h-75 overflow-auto">
 				<div

@@ -108,9 +108,8 @@
 	<span ref="wrap" class="contents" @click="onTriggerClick">
 		<slot name="trigger" />
 	</span>
-	<Teleport to="body">
+	<Teleport v-if="show" to="body">
 		<div
-			v-if="show"
 			ref="panel"
 			v-bind="$attrs"
 			class="text-white/82"
