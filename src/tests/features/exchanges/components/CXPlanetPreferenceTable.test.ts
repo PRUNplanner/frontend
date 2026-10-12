@@ -164,16 +164,24 @@ describe("CXPlanetPreferenceTable", () => {
 		expect(wrapper.text()).not.toContain("[object Promise]");
 	});
 
-	it("sorts by planet", async () => {
-		const { wrapper } = await mountTable();
-		const header = wrapper.find('th[data-col-key="planet"]');
+	it("sorts by the planet name shown, not the id", async () => {
+		// KW-020d is Kakrafoon Kappa: before KW-020a by name, after it by id
+		const KAKRAFOON = "Kakrafoon Kappa (KW-020d)";
+		const { wrapper } = await mountComponent(CXPlanetPreferenceTable, {
+			planetMap: {
+				...planetMap(),
+				"KW-020d": { planet: "KW-020d", exchanges: [], ticker: [] },
+			},
+		});
 		const order = () => names(wrapper);
+		await vi.waitFor(() => expect(order()).toContain(KAKRAFOON));
+		const header = wrapper.find('th[data-col-key="planet"] button');
 
-		// by natural id, descending on the first click
+		// descending on the first click
 		await header.trigger("click");
-		expect(order()).toEqual(["ZZ-999z", MILLIWAYS, "KW-020a"]);
+		expect(order()).toEqual(["ZZ-999z", MILLIWAYS, "KW-020a", KAKRAFOON]);
 		await header.trigger("click");
-		expect(order()).toEqual(["KW-020a", MILLIWAYS, "ZZ-999z"]);
+		expect(order()).toEqual([KAKRAFOON, "KW-020a", MILLIWAYS, "ZZ-999z"]);
 	});
 
 	it("tags the exchange preferences by type", async () => {

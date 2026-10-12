@@ -1,4 +1,6 @@
 <script setup lang="ts">
+	import { computed } from "vue";
+
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
@@ -8,113 +10,88 @@
 	// Util
 	import { formatNumber, formatAmount } from "@/util/numbers";
 
+	import type { PDataTableColumn } from "@/ui/ui.types";
+
 	// UI
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { PDataTable } from "@/ui";
 
 	defineProps<{
 		data: CXDataPoint[];
 	}>();
+
+	const numeric = (key: string, title: string): PDataTableColumn<CXDataPoint> => ({
+		key,
+		title: t(`market_live.components.point_table.table.${title}`),
+		align: "right",
+	});
+	const columns = computed<PDataTableColumn<CXDataPoint>[]>(() => [
+		{
+			key: "ticker",
+			title: t("market_live.components.point_table.table.ticker"),
+		},
+		numeric("price", "price"),
+		numeric("bid", "bid"),
+		numeric("ask", "ask"),
+		numeric("spread_pct", "spread_pct"),
+		numeric("buy_volume_total", "buy_volume"),
+		numeric("sell_volume_total", "sell_volume"),
+	]);
 </script>
 
 <template>
 	<div class="flex-1 min-h-0">
-		<XNDataTable
+		<PDataTable
+			:columns="columns"
 			:data="data"
 			striped
-			virtual-scroll
-			flex-height
-			:scroll-x="700"
-			class="h-full"
+			fill
+			virtual
+			:min-width="700"
 			:row-key="(row) => row.ticker">
-			<XNDataTableColumn
-				key="ticker"
-				:title="t('market_live.components.point_table.table.ticker')" />
-			<XNDataTableColumn
-				key="price"
-				:title="t('market_live.components.point_table.table.price')"
-				align="right"
-				title-align="right">
-				<template #render-cell="{ rowData }">
-					<div class="text-nowrap">
-						<span v-if="rowData.price !== undefined">
-							{{ formatNumber(rowData.price) }}
-						</span>
-						<span v-else-if="rowData.price === undefined" class="">
-							&mdash;
-						</span>
-					</div>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="bid"
-				:title="t('market_live.components.point_table.table.bid')"
-				align="right"
-				title-align="right">
-				<template #render-cell="{ rowData }">
-					<div class="font-mono text-sky-500">
-						<span v-if="rowData.bid">
-							{{ formatNumber(rowData.bid) }}
-						</span>
-						<span v-else>&mdash;</span>
-					</div>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="ask"
-				:title="t('market_live.components.point_table.table.ask')"
-				align="right"
-				title-align="right">
-				<template #render-cell="{ rowData }">
-					<div class="font-mono text-negative">
-						<span v-if="rowData.ask">
-							{{ formatNumber(rowData.ask) }}
-						</span>
-						<span v-else>&mdash;</span>
-					</div>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="spread_pct"
-				:title="
-					t('market_live.components.point_table.table.spread_pct')
-				"
-				align="right"
-				title-align="right">
-				<template #render-cell="{ rowData }">
-					<div class="font-mono">
-						<span v-if="rowData.spread_pct">
-							{{ formatNumber(rowData.spread_pct, 2) }}
-						</span>
-						<span v-else>&mdash;</span>
-					</div>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="buy_volume_total"
-				:title="
-					t('market_live.components.point_table.table.buy_volume')
-				"
-				align="right"
-				title-align="right">
-				<template #render-cell="{ rowData }">
-					<span class="font-mono">
-						{{ formatAmount(rowData.buy_volume_total) }}
+			<template #cell-price="{ row }">
+				<div class="text-nowrap">
+					<span v-if="row.price !== undefined">
+						{{ formatNumber(row.price) }}
 					</span>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="sell_volume_total"
-				:title="
-					t('market_live.components.point_table.table.sell_volume')
-				"
-				align="right"
-				title-align="right">
-				<template #render-cell="{ rowData }">
-					<span class="font-mono">
-						{{ formatAmount(rowData.sell_volume_total) }}
+					<span v-else-if="row.price === undefined" class="">
+						&mdash;
 					</span>
-				</template>
-			</XNDataTableColumn>
-		</XNDataTable>
+				</div>
+			</template>
+			<template #cell-bid="{ row }">
+				<div class="font-mono text-sky-500">
+					<span v-if="row.bid">
+						{{ formatNumber(row.bid) }}
+					</span>
+					<span v-else>&mdash;</span>
+				</div>
+			</template>
+			<template #cell-ask="{ row }">
+				<div class="font-mono text-negative">
+					<span v-if="row.ask">
+						{{ formatNumber(row.ask) }}
+					</span>
+					<span v-else>&mdash;</span>
+				</div>
+			</template>
+			<template #cell-spread_pct="{ row }">
+				<div class="font-mono">
+					<span v-if="row.spread_pct">
+						{{ formatNumber(row.spread_pct, 2) }}
+					</span>
+					<span v-else>&mdash;</span>
+				</div>
+			</template>
+			<template #cell-buy_volume_total="{ row }">
+				<span class="font-mono">
+					{{ formatAmount(row.buy_volume_total) }}
+				</span>
+			</template>
+			<template #cell-sell_volume_total="{ row }">
+				<span class="font-mono">
+					{{ formatAmount(row.sell_volume_total) }}
+				</span>
+			</template>
+		</PDataTable>
 	</div>
 </template>

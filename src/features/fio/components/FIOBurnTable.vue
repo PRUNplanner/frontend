@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import type { PropType } from "vue";
+	import { computed, type PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -22,159 +22,155 @@
 		IFIOBurnTableElement,
 		IFIOBurnTableElementMaterial,
 	} from "@/features/fio/useFIOBurn.types";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	// UI
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { PDataTable } from "@/ui";
 
-	defineProps({
+	const props = defineProps({
 		burnTable: {
 			type: Array as PropType<IFIOBurnTableElement[]>,
 			required: true,
 		},
 	});
+
+	const columns = computed<PDataTableColumn<IFIOBurnTableElement>[]>(() => [
+		{ key: "planName", title: t("fio.burn.components.plans.table.plan") },
+	]);
+
+	const materialColumns = computed<
+		PDataTableColumn<IFIOBurnTableElementMaterial>[]
+	>(() => [
+		{
+			key: "ticker",
+			title: t("fio.burn.components.plans.table.ticker"),
+			sorter: true,
+		},
+		{
+			key: "input",
+			title: t("fio.burn.components.plans.table.consumption"),
+			sorter: true,
+		},
+		{
+			key: "output",
+			title: t("fio.burn.components.plans.table.production"),
+			sorter: true,
+		},
+		{
+			key: "delta",
+			title: t("fio.burn.components.plans.table.delta"),
+			sorter: true,
+		},
+		{
+			key: "stock",
+			title: t("fio.burn.components.plans.table.stock"),
+			sorter: true,
+		},
+		{
+			key: "exhaustion",
+			title: t("fio.burn.components.plans.table.burn"),
+			sorter: true,
+		},
+	]);
 </script>
 
 <template>
-	<XNDataTable :data="burnTable" striped>
-		<XNDataTableColumn title="" type="expand">
-			<template #render-cell="{ rowData }">
-				{{ rowData.planName }}
-			</template>
-			<template #render-expand="{ rowData }">
-				<XNDataTable :data="rowData.burnMaterials" striped>
-					<XNDataTableColumn
-						key="ticker"
-						:title="t('fio.burn.components.plans.table.ticker')"
-						sorter="default">
-						<template #render-cell="data">
-							<MaterialTile
-								:key="data.rowData.ticker"
-								:ticker="data.rowData.ticker" />
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="input"
-						:title="
-							t('fio.burn.components.plans.table.consumption')
-						"
-						sorter="default">
-						<template #render-cell="data">
-							<span
-								:class="
-									data.rowData.input <= 0 ? 'text-muted' : ''
-								">
-								{{ formatNumber(data.rowData.input) }}
-							</span>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="output"
-						:title="t('fio.burn.components.plans.table.production')"
-						sorter="default">
-						<template #render-cell="data">
-							<span
-								:class="
-									data.rowData.output <= 0 ? 'text-muted' : ''
-								">
-								{{ formatNumber(data.rowData.output) }}
-							</span>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="delta"
-						:title="t('fio.burn.components.plans.table.delta')"
-						sorter="default">
-						<template #render-cell="data">
-							<span
-								:class="
-									data.rowData.delta >= 0
-										? 'text-positive'
-										: 'text-negative'
-								">
-								{{ formatNumber(data.rowData.delta) }}
-							</span>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="stock"
-						:title="t('fio.burn.components.plans.table.stock')"
-						sorter="default">
-						<template #render-cell="data">
-							{{ formatAmount(data.rowData.stock) }}
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="exhaustion"
-						:title="t('fio.burn.components.plans.table.burn')"
-						sorter="default">
-						<template #render-cell="data">
-							<span
-								:class="
-									getBurnDisplayClass(data.rowData.exhaustion)
-										.value
-								"
-								class="py-1 px-2">
-								{{ formatNumber(data.rowData.exhaustion) }}
-							</span>
-						</template>
-					</XNDataTableColumn>
-				</XNDataTable>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="planName"
-			:title="t('fio.burn.components.plans.table.plan')">
-			<template #title>
-				<div class="flex flex-row justify-between">
-					<div>{{ $t("fio.burn.components.plans.table.plan") }}</div>
+	<PDataTable
+		:columns="columns"
+		:data="props.burnTable"
+		:row-key="(row) => row.key"
+		:expand-label="
+			(row) =>
+				t('fio.burn.components.plans.expand_row', {
+					plan_name: row.planName,
+				})
+		"
+		striped>
+		<template #expand="{ row }">
+			<PDataTable :columns="materialColumns" :data="row.burnMaterials" striped>
+				<template #cell-ticker="{ row: material }">
+					<MaterialTile :key="material.ticker" :ticker="material.ticker" />
+				</template>
+				<template #cell-input="{ row: material }">
+					<span :class="material.input <= 0 ? 'text-muted' : ''">
+						{{ formatNumber(material.input) }}
+					</span>
+				</template>
+				<template #cell-output="{ row: material }">
+					<span :class="material.output <= 0 ? 'text-muted' : ''">
+						{{ formatNumber(material.output) }}
+					</span>
+				</template>
+				<template #cell-delta="{ row: material }">
+					<span
+						:class="
+							material.delta >= 0 ? 'text-positive' : 'text-negative'
+						">
+						{{ formatNumber(material.delta) }}
+					</span>
+				</template>
+				<template #cell-stock="{ row: material }">
+					{{ formatAmount(material.stock) }}
+				</template>
+				<template #cell-exhaustion="{ row: material }">
+					<span
+						:class="getBurnDisplayClass(material.exhaustion).value"
+						class="py-1 px-2">
+						{{ formatNumber(material.exhaustion) }}
+					</span>
+				</template>
+			</PDataTable>
+		</template>
+		<template #header-planName>
+			<div class="flex flex-row justify-between">
+				<div>{{ $t("fio.burn.components.plans.table.plan") }}</div>
+				<div>
+					{{ $t("fio.burn.components.plans.table.exhaustion") }}
+				</div>
+			</div>
+		</template>
+		<template #cell-planName="{ row }">
+			<div class="flex flex-row justify-between">
+				<div class="my-auto">
+					<span class="font-bold">
+						{{ row.planName }}
+					</span>
+					<span class="text-muted!">
+						&mdash;
+						{{ planetName(row.planetId) }}
+					</span>
+				</div>
+				<div class="flex flex-row items-center gap-x-3">
 					<div>
-						{{ $t("fio.burn.components.plans.table.exhaustion") }}
-					</div>
-				</div>
-			</template>
-			<template #render-cell="{ rowData }">
-				<div class="flex flex-row justify-between">
-					<div class="my-auto">
-						<span class="font-bold">
-							{{ rowData.planName }}
-						</span>
-						<span class="text-muted!">
-							&mdash;
-							{{ planetName(rowData.planetId) }}
+						<span
+							class="py-1 px-2"
+							:class="
+								getBurnDisplayClass(row.minDays).value
+							">
+							{{ formatNumber(row.minDays) }}
 						</span>
 					</div>
-					<div class="flex flex-row items-center gap-x-3">
-						<div>
-							<span
-								class="py-1 px-2"
-								:class="
-									getBurnDisplayClass(rowData.minDays).value
-								">
-								{{ formatNumber(rowData.minDays) }}
-							</span>
-						</div>
-						<div>
-							<XITBurnActionButton
-								:drawer-title="
-									t('fio.burn.components.plans.xit_title', {
-										plan_name: rowData.planName,
-									})
-								"
-								:elements="
-									rowData.burnMaterials.map(
-										(e: IFIOBurnTableElementMaterial) => {
-											return {
-												ticker: e.ticker,
-												stock: e.stock,
-												delta: e.delta,
-											};
-										}
-									)
-								" />
-						</div>
+					<div>
+						<XITBurnActionButton
+							:drawer-title="
+								t('fio.burn.components.plans.xit_title', {
+									plan_name: row.planName,
+								})
+							"
+							:elements="
+								row.burnMaterials.map(
+									(e: IFIOBurnTableElementMaterial) => {
+										return {
+											ticker: e.ticker,
+											stock: e.stock,
+											delta: e.delta,
+										};
+									}
+								)
+							" />
 					</div>
 				</div>
-			</template>
-		</XNDataTableColumn>
-	</XNDataTable>
+			</div>
+		</template>
+	</PDataTable>
 </template>

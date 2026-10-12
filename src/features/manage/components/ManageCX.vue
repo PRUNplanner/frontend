@@ -21,9 +21,9 @@
 	import { inertClone } from "@/util/data";
 
 	// UI
-	import { PButton, PInput, PTag, useConfirm } from "@/ui";
+	import { PButton, PDataTable, PInput, PTag, useConfirm } from "@/ui";
 	const confirm = useConfirm();
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 	import { ClearSharp, PlusSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -109,6 +109,16 @@
 			refIsDeleting.value = undefined;
 		}
 	}
+
+	const columns = computed<PDataTableColumn<CX>[]>(() => [
+		{ key: "cx_name", title: t("management.cx.table.cx_name") },
+		{
+			key: "uuid",
+			title: t("management.cx.table.assigned_to_empire"),
+			titleAlign: "center",
+		},
+		{ key: "configuration", title: "" },
+	]);
 </script>
 
 <template>
@@ -146,49 +156,38 @@
 		</div>
 	</div>
 
-	<x-n-data-table :data="localCX" striped class="pt-3">
-		<x-n-data-table-column
-			key="cx_name"
-			:title="t('management.cx.table.cx_name')">
-			<template #render-cell="{ rowData }">
+	<PDataTable :columns="columns" :data="localCX" striped class="pt-3">
+		<template #cell-cx_name="{ row }">
 				<router-link
-					:to="`/exchanges/${rowData.uuid}`"
+					:to="`/exchanges/${row.uuid}`"
 					class="text-link-primary font-bold hover:underline">
-					{{ rowData.cx_name }}
+					{{ row.cx_name }}
 				</router-link>
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column
-			key="uuid"
-			:title="t('management.cx.table.assigned_to_empire')"
-			title-align="center">
-			<template #render-cell="{ rowData }">
+		</template>
+		<template #cell-uuid="{ row }">
 				<div class="text-center">
-					<PTag v-if="rowData.empires.length > 0" type="success">
+					<PTag v-if="row.empires.length > 0" type="success">
 						{{ $t("common.buttons.yes") }} ({{
-							rowData.empires.length
+							row.empires.length
 						}})
 					</PTag>
 					<PTag v-else type="error">
 						{{ $t("common.buttons.no") }}
 					</PTag>
 				</div>
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column key="configuration" title="">
-			<template #render-cell="{ rowData }">
+		</template>
+		<template #cell-configuration="{ row }">
 				<div class="text-end">
 					<PButton
 						:aria-label="$t('common.buttons.delete')"
 						size="sm"
 						type="error"
-						:loading="refIsDeleting === rowData.uuid ? true : false"
-						@click="handleDeleteConfirm(rowData.uuid)">
+						:loading="refIsDeleting === row.uuid ? true : false"
+						@click="handleDeleteConfirm(row.uuid)">
 						<template #icon><ClearSharp /></template>
 					</PButton>
 				</div>
-			</template>
-		</x-n-data-table-column>
+		</template>
 		<template #empty>
 			<div class="flex flex-col gap-y-3">
 				<div class="text-center">
@@ -199,5 +198,5 @@
 				</div>
 			</div>
 		</template>
-	</x-n-data-table>
+	</PDataTable>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { watch, type PropType } from "vue";
+	import { computed, watch, type PropType } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -13,14 +13,10 @@
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 	import { cogcTextMapping } from "@/features/planning_data/usePlan";
 
+	import type { PDataTableColumn } from "@/ui/ui.types";
+
 	// UI
-	import {
-		XNDataTable,
-		XNDataTableColumn,
-		XNDataTableSummaryRow,
-		XNDataTableSummaryCell,
-	} from "@skit/x.naive-ui";
-	import { PValue } from "@/ui";
+	import { PDataTable, PValue } from "@/ui";
 
 	const props = defineProps({
 		planListData: {
@@ -34,62 +30,66 @@
 		() => loadPlanetNames(props.planListData.map((p) => p.planet)),
 		{ immediate: true }
 	);
+
+	const planetLabel = (id: string) => planetNames.value.get(id) || "Loading...";
+
+	const columns = computed<PDataTableColumn<IEmpirePlanListData>[]>(() => [
+		{
+			key: "name",
+			title: t("terms.plan"),
+			sorter: true,
+			defaultSortOrder: "ascend",
+		},
+		{
+			key: "planet",
+			title: t("terms.planets"),
+			// by the name shown, not the id
+			sorter: (a, b) =>
+				planetLabel(a.planet).localeCompare(planetLabel(b.planet)),
+		},
+		{ key: "cogc", title: t("terms.cogc"), sorter: true },
+		{
+			key: "permits",
+			title: t("terms.permits", 2),
+			align: "right",
+			sorter: true,
+		},
+		{
+			key: "profit",
+			title: t("empire.plan_list.profit"),
+			align: "right",
+			sorter: true,
+		},
+	]);
 </script>
 
 <template>
-	<XNDataTable :data="planListData" striped>
-		<XNDataTableColumn
-			key="name"
-			:title="t('terms.plan')"
-			sorter="default"
-			default-sort-order="ascend">
-			<template #render-cell="{ rowData }">
-				<div class="text-wrap">
-					<router-link
-						:to="`/plan/${rowData.planet}/${rowData.uuid}`"
-						class="text-link-primary font-bold hover:underline">
-						{{ rowData.name }}
-					</router-link>
-				</div>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="planet"
-			:title="t('terms.planets')"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<div class="text-wrap">
-					{{ planetNames.get(rowData.planet) || "Loading..." }}
-				</div>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn key="cogc" :title="t('terms.cogc')" sorter="default">
-			<template #render-cell="{ rowData }">
-				<div class="text-nowrap">
-					{{ $t(cogcTextMapping[rowData.cogc as PlanCOGCProgram]) }}
-				</div>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="permits"
-			:title="t('terms.permits', 2)"
-			align="right"
-			title-align="right"
-			sorter="default">
-			<template #title>
-				<div class="text-nowrap">#</div>
-			</template>
-		</XNDataTableColumn>
-		<XNDataTableColumn
-			key="profit"
-			:title="t('empire.plan_list.profit')"
-			align="right"
-			title-align="right"
-			sorter="default">
-			<template #render-cell="{ rowData }">
-				<PValue class="text-nowrap" :value="rowData.profit" />
-			</template>
-		</XNDataTableColumn>
+	<PDataTable :columns="columns" :data="planListData" striped>
+		<template #cell-name="{ row }">
+			<div class="text-wrap">
+				<router-link
+					:to="`/plan/${row.planet}/${row.uuid}`"
+					class="text-link-primary font-bold hover:underline">
+					{{ row.name }}
+				</router-link>
+			</div>
+		</template>
+		<template #cell-planet="{ row }">
+			<div class="text-wrap">
+				{{ planetLabel(row.planet) }}
+			</div>
+		</template>
+		<template #cell-cogc="{ row }">
+			<div class="text-nowrap">
+				{{ $t(cogcTextMapping[row.cogc as PlanCOGCProgram]) }}
+			</div>
+		</template>
+		<template #header-permits>
+			<div class="text-nowrap">#</div>
+		</template>
+		<template #cell-profit="{ row }">
+			<PValue class="text-nowrap" :value="row.profit" />
+		</template>
 		<template #empty>
 			<div class="flex flex-col gap-y-3">
 				<div class="text-center">
@@ -117,22 +117,16 @@
 			</div>
 		</template>
 		<template #summary>
-			<XNDataTableSummaryRow>
-				<XNDataTableSummaryCell key="name" :col-span="5">
-					<template #default>
-						<strong class="text-white/80">
-							{{
-								t("empire.plan_list.permits_planned", {
-									permits: planListData.reduce(
-										(sum, elem) => sum + elem.permits,
-										0
-									),
-								})
-							}}
-						</strong>
-					</template>
-				</XNDataTableSummaryCell>
-			</XNDataTableSummaryRow>
+			<strong class="text-white/80">
+				{{
+					t("empire.plan_list.permits_planned", {
+						permits: planListData.reduce(
+							(sum, elem) => sum + elem.permits,
+							0
+						),
+					})
+				}}
+			</strong>
 		</template>
-	</XNDataTable>
+	</PDataTable>
 </template>

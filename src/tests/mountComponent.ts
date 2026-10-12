@@ -82,14 +82,12 @@ export async function mountComponent(
 }
 
 /**
- * Body rows of a naive-ui data table (XNDataTable) as column key → text,
- * expanded detail rows and the summary row are left out
+ * Body rows of a PDataTable as column key → text; expanded detail rows
+ * and the summary row are left out
  */
 export function tableRows(wrapper: DOMWrapper<Element> | VueWrapper) {
 	return wrapper
-		.findAll("tbody tr.n-data-table-tr:not(.n-data-table-tr--summary)")
-		// expanded detail rows have no column cells
-		.filter((tr) => tr.find("td[data-col-key]").exists())
+		.findAll("tbody tr[data-row-key]")
 		.map((tr) =>
 			Object.fromEntries(
 				tr

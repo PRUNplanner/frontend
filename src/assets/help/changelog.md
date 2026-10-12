@@ -182,7 +182,7 @@ Additional changes:
 
 - Fix a Bug where Infrastructures or Experts could not be set to 0 [[#277]](https://github.com/PRUNplanner/frontend/pull/277)
 - Remove Output Profit from ROI Overview Table [[PR-280]](https://github.com/PRUNplanner/frontend/pull/280)
-- Replace more Naive UI with own componenents: Table [[#273]](https://github.com/PRUNplanner/frontend/pull/273), Icons [[#275]](https://github.com/PRUNplanner/frontend/pull/275)
+- Replace more of the UI library with own components: Table [[#273]](https://github.com/PRUNplanner/frontend/pull/273), Icons [[#275]](https://github.com/PRUNplanner/frontend/pull/275)
 - Add appreciations for PostHog and Highcharts to Homepage [[#274]](https://github.com/PRUNplanner/frontend/pull/274)
 
 

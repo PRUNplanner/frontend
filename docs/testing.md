@@ -148,7 +148,8 @@ Write them for logic-heavy components, see
   uuids where the schema demands them.
 - **Interact** through the DOM (`setValue`, `trigger("click")`), or emit
   `update:value` on a `PSelect` / `PSelectMultiple`. `tableRows(wrapper)`
-  reads naive-ui data tables as column key → text.
+  reads `PDataTable` body rows as column key → text; sort by clicking the
+  header's button (`th[data-col-key="x"] button`).
 - **Assert** on rendered text, classes and emitted events with
   hand-computed values. No snapshots. Work that hits IndexedDB (search
   results, planet names) needs `vi.waitFor` rather than `flushPromises`.

@@ -27,7 +27,7 @@
 		panelClass?: string;
 		/** positions at this element instead of the trigger slot */
 		anchor?: HTMLElement;
-		/** naive-ui's arrow, on a black panel */
+		/** an arrow, on a black panel */
 		arrow?: boolean;
 	}>();
 
@@ -125,7 +125,7 @@
 </template>
 
 <style scoped>
-	/* naive-ui's arrow: a rotated square half outside the panel's edge */
+	/* the arrow: a rotated square half outside the panel's edge */
 	.parrow-wrap {
 		position: absolute;
 		left: 0;

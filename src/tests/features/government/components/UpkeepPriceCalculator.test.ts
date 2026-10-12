@@ -158,8 +158,8 @@ describe("UpkeepPriceCalculator", () => {
 	it("sorts by CX price", async () => {
 		const { wrapper } = await mountCalculator(CX_CHEAP);
 
-		// naive-ui sorts descending first
-		await wrapper.find("th[data-col-key=cxPrice]").trigger("click");
+		// the first click sorts descending
+		await wrapper.find("th[data-col-key=cxPrice] button").trigger("click");
 
 		expect(rows(wrapper).map((r) => r[3])).toEqual([
 			"50.00",

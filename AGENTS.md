@@ -5,7 +5,7 @@ working in this repository. Humans are welcome too.
 
 **PRUNplanner frontend**: the web app behind [prunplanner.org](https://prunplanner.org),
 a base, empire and market planning tool for the game _Prosperous Universe_.
-It is built with Vue 3 (`<script setup>`), Vite, TypeScript, Pinia, naive-ui,
+It is built with Vue 3 (`<script setup>`), Vite, TypeScript, Pinia,
 Tailwind v4, Zod and Vitest. The backend is a separate service at
 `https://api.prunplanner.org`.
 
@@ -52,10 +52,9 @@ time.
    gitignored and Vitest doesn't load the plugin. Use the `@/` alias for
    everything under `src/`.
 2. **Reuse the UI kit.** Use `import { PButton, PSelect, … } from "@/ui"`
-   (`src/ui/`), and `XNDataTable` from `@skit/x.naive-ui` for tables. All
-   overlays come from the kit: `PModal`, `PDrawer`, `useConfirm`,
-   `PPopover`, `PDropdown` and `useToast`. Don't use raw naive-ui
-   components.
+   (`src/ui/`), and `PDataTable` for data tables. All overlays come from the
+   kit: `PModal`, `PDrawer`, `useConfirm`, `PPopover`, `PDropdown` and
+   `useToast`. Don't add a component library.
    See [docs/ui-and-i18n.md](docs/ui-and-i18n.md), and its
    [Layout & hierarchy](docs/ui-and-i18n.md#layout--hierarchy) rules for
    every new or changed view.

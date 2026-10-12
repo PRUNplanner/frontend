@@ -130,3 +130,22 @@ export interface PConfirmOptions {
 	positiveText: string;
 	negativeText: string;
 }
+
+export type PDataTableAlign = "left" | "right" | "center";
+export type PDataTableSortOrder = "ascend" | "descend" | false;
+
+/** one column of PDataTable; `children` group columns under one header */
+export interface PDataTableColumn<T> {
+	key: string;
+	title?: string;
+	align?: PDataTableAlign;
+	titleAlign?: PDataTableAlign;
+	/** true compares row[key]: numbers, strings, empty values first */
+	sorter?: true | ((a: T, b: T) => number);
+	defaultSortOrder?: PDataTableSortOrder;
+	width?: number | string;
+	minWidth?: number | string;
+	/** the header spans this many columns, covering the next ones' */
+	titleColSpan?: number;
+	children?: PDataTableColumn<T>[];
+}

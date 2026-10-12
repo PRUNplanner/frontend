@@ -31,9 +31,8 @@
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { PProgressBar, PValue } from "@/ui";
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
-	import { tablePagination } from "@/util/pagination";
+	import { PDataTable, PProgressBar, PValue } from "@/ui";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	const props = defineProps({
 		planDefinition: {
@@ -168,7 +167,27 @@
 		get();
 	});
 
-	const pagination = tablePagination(50);
+	const columns = computed<PDataTableColumn<IROIResult>[]>(() => {
+		const title = (key: string) => t(`recipe_roi.table.${key}`);
+		const numeric = (key: string, titleKey: string) => ({
+			key,
+			title: title(titleKey),
+			align: "right" as const,
+			sorter: true as const,
+		});
+		return [
+			{ key: "buildingTicker", title: title("building"), sorter: true },
+			{ key: "optimalSetup", title: title("optimal_setup") },
+			{ key: "recipeOutputs", title: title("recipe_output") },
+			{ key: "recipeInputs", title: title("recipe_input") },
+			{ key: "cogc", title: title("cogc") },
+			{ key: "cogm", title: title("cogm") },
+			numeric("planCost", "plan_cost"),
+			numeric("dailyProfit", "daily_profit"),
+			numeric("planProfitArea", "profit_area"),
+			numeric("planROI", "plan_roi"),
+		];
+	});
 </script>
 
 <template>
@@ -191,126 +210,81 @@
 			:cogc-options="filterOptionCOGC"
 			:output-material-options="filterOptionOutputMaterial"
 			:input-material-options="filterOptionInputMaterial" />
-		<XNDataTable :data="filteredResult" striped :pagination="pagination">
-			<XNDataTableColumn
-				key="buildingTicker"
-				:title="t('recipe_roi.table.building')"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<span class="font-bold">{{ rowData.buildingTicker }}</span>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="optimalSetup"
-				:title="t('recipe_roi.table.optimal_setup')">
-				<template #render-cell="{ rowData }">
-					{{ formatOptimal(rowData.optimalSetup) }}
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="recipeOutputs"
-				:title="t('recipe_roi.table.recipe_output')">
-				<template #render-cell="{ rowData }">
-					<div class="flex flex-row flex-wrap gap-1">
-						<MaterialTile
-							v-for="output in rowData.recipeOutputs"
-							:key="`${rowData.buildingTicker}#output#${output.material_ticker}`"
-							:ticker="output.material_ticker"
-							:amount="output.material_amount"
-							:daily="
-								output.material_amount *
-								rowData.optimalSetup.amount *
-								rowData.dailyRuns *
-								1.25
-							"
-							popover-placement="right" />
-					</div>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="recipeInputs"
-				:title="t('recipe_roi.table.recipe_input')">
-				<template #render-cell="{ rowData }">
-					<div class="flex flex-row flex-wrap gap-1">
-						<MaterialTile
-							v-for="input in rowData.recipeInputs"
-							:key="`${rowData.buildingTicker}#input#${input.material_ticker}`"
-							:ticker="input.material_ticker"
-							:amount="input.material_amount"
-							:daily="
-								input.material_amount *
-								rowData.optimalSetup.amount *
-								rowData.dailyRuns *
-								1.25
-							"
-							popover-placement="right" />
-					</div>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn key="cogc" :title="t('recipe_roi.table.cogc')">
-				<template #render-cell="{ rowData }">
-					<span class="text-nowrap">
-						{{ capitalizeString(rowData.cogc) }}
-					</span>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn key="cogm" :title="t('recipe_roi.table.cogm')">
-				<template #render-cell="{ rowData }">
-					<COGMButton :cogm-data="rowData.cogm" />
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="planCost"
-				:title="t('recipe_roi.table.plan_cost')"
-				sorter="default"
-				align="right"
-				title-align="right">
-				<template #render-cell="{ rowData }">
-					<span class="text-nowrap">
-						{{ formatNumber(rowData.planCost) }}
-					</span>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="dailyProfit"
-				:title="t('recipe_roi.table.daily_profit')"
-				align="right"
-				title-align="right"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<PValue class="text-nowrap" :value="rowData.dailyProfit" />
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="planProfitArea"
-				:title="t('recipe_roi.table.profit_area')"
-				align="right"
-				title-align="right"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<PValue
-						class="text-nowrap"
-						:value="rowData.planProfitArea" />
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="planROI"
-				:title="t('recipe_roi.table.plan_roi')"
-				align="right"
-				title-align="right"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<span
-						class="text-nowrap"
-						:class="
-							rowData.planROI > 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatPayback(rowData.planROI, false) }}
-					</span>
-				</template>
-			</XNDataTableColumn>
-		</XNDataTable>
+		<PDataTable
+			:columns="columns"
+			:data="filteredResult"
+			striped
+			:page-size="50">
+			<template #cell-buildingTicker="{ row }">
+				<span class="font-bold">{{ row.buildingTicker }}</span>
+			</template>
+			<template #cell-optimalSetup="{ row }">
+				{{ formatOptimal(row.optimalSetup) }}
+			</template>
+			<template #cell-recipeOutputs="{ row }">
+				<div class="flex flex-row flex-wrap gap-1">
+					<MaterialTile
+						v-for="output in row.recipeOutputs"
+						:key="`${row.buildingTicker}#output#${output.material_ticker}`"
+						:ticker="output.material_ticker"
+						:amount="output.material_amount"
+						:daily="
+							output.material_amount *
+							row.optimalSetup.amount *
+							row.dailyRuns *
+							1.25
+						"
+						popover-placement="right" />
+				</div>
+			</template>
+			<template #cell-recipeInputs="{ row }">
+				<div class="flex flex-row flex-wrap gap-1">
+					<MaterialTile
+						v-for="input in row.recipeInputs"
+						:key="`${row.buildingTicker}#input#${input.material_ticker}`"
+						:ticker="input.material_ticker"
+						:amount="input.material_amount"
+						:daily="
+							input.material_amount *
+							row.optimalSetup.amount *
+							row.dailyRuns *
+							1.25
+						"
+						popover-placement="right" />
+				</div>
+			</template>
+			<template #cell-cogc="{ row }">
+				<span class="text-nowrap">
+					{{ capitalizeString(row.cogc) }}
+				</span>
+			</template>
+			<template #cell-cogm="{ row }">
+				<COGMButton :cogm-data="row.cogm" />
+			</template>
+			<template #cell-planCost="{ row }">
+				<span class="text-nowrap">
+					{{ formatNumber(row.planCost) }}
+				</span>
+			</template>
+			<template #cell-dailyProfit="{ row }">
+				<PValue class="text-nowrap" :value="row.dailyProfit" />
+			</template>
+			<template #cell-planProfitArea="{ row }">
+				<PValue
+					class="text-nowrap"
+					:value="row.planProfitArea" />
+			</template>
+			<template #cell-planROI="{ row }">
+				<span
+					class="text-nowrap"
+					:class="
+						row.planROI > 0
+							? 'text-positive'
+							: 'text-negative'
+					">
+					{{ formatPayback(row.planROI, false) }}
+				</span>
+			</template>
+		</PDataTable>
 	</div>
 </template>

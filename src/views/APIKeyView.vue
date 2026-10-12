@@ -72,7 +72,7 @@
 </script>
 
 <template>
-	<!-- 446 px, the width it had as a naive-ui dialog -->
+	<!-- 446 px, the dialog's width -->
 	<PModal
 		v-model:show="showCreateModal"
 		class="w-111.5! max-w-[calc(100vw-32px)]"

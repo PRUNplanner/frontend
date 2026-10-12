@@ -35,9 +35,8 @@
 	} from "@/features/government/upkeepCalculations.types";
 
 	// UI
-	import { PProgressBar, PButton, PButtonGroup } from "@/ui";
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
-	import { tablePagination } from "@/util/pagination";
+	import { PProgressBar, PButton, PButtonGroup, PDataTable } from "@/ui";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	const props = defineProps({
 		cxUuid: {
@@ -104,7 +103,34 @@
 		{ immediate: true }
 	);
 
-	const pagination = tablePagination(50);
+	const columns = computed<PDataTableColumn<IUpkeepMaterialCalculation>[]>(
+		() => {
+			const title = (key: string) =>
+				t(`upkeep_price_calculator.calculator.details.table.${key}`);
+			return [
+				{ key: "ticker", title: title("material"), sorter: true },
+				{ key: "buildingTicker", title: title("building"), sorter: true },
+				{
+					key: "pricePerNeed",
+					title: title("price_need"),
+					align: "right",
+					sorter: true,
+				},
+				{
+					key: "cxPrice",
+					title: title("cx_price"),
+					align: "right",
+					sorter: true,
+				},
+				{
+					key: "qtyPerDay",
+					title: title("qty_day"),
+					align: "right",
+					sorter: true,
+				},
+			];
+		}
+	);
 </script>
 
 <template>
@@ -141,98 +167,47 @@
 			<h3 class="text-sm font-semibold text-white/80 mb-3">
 				{{ $t("upkeep_price_calculator.calculator.details.title") }}
 			</h3>
-			<XNDataTable
+			<PDataTable
+				:columns="columns"
 				:data="currentResults"
 				striped
-				:pagination="pagination">
-				<XNDataTableColumn
-					key="ticker"
-					:title="
-						t(
-							'upkeep_price_calculator.calculator.details.table.material'
-						)
-					"
-					sorter="default">
-					<template #render-cell="{ rowData }">
-						<MaterialTile
-							:key="`${rowData.ticker}-${rowData.buildingTicker}`"
-							:ticker="rowData.ticker" />
-					</template>
-				</XNDataTableColumn>
-				<XNDataTableColumn
-					key="buildingTicker"
-					:title="
-						t(
-							'upkeep_price_calculator.calculator.details.table.building'
-						)
-					"
-					sorter="default">
-					<template #render-cell="{ rowData }">
-						<span class="font-bold">{{
-							rowData.buildingTicker
-						}}</span>
-					</template>
-				</XNDataTableColumn>
-				<XNDataTableColumn
-					key="pricePerNeed"
-					:title="
-						t(
-							'upkeep_price_calculator.calculator.details.table.price_need'
-						)
-					"
-					align="right"
-					title-align="right"
-					sorter="default">
-					<template #render-cell="{ rowData }">
-						<div
-							class="text-nowrap"
-							:class="rowData.cxPrice <= 0 ? 'text-muted' : ''">
-							<template v-if="rowData.cxPrice > 0">
-								{{ formatNumber(rowData.pricePerNeed, 4) }}
-							</template>
-							<template v-else>&mdash;</template>
-						</div>
-					</template>
-				</XNDataTableColumn>
-				<XNDataTableColumn
-					key="cxPrice"
-					:title="
-						t(
-							'upkeep_price_calculator.calculator.details.table.cx_price'
-						)
-					"
-					align="right"
-					title-align="right"
-					sorter="default">
-					<template #render-cell="{ rowData }">
-						<div
-							class="text-nowrap"
-							:class="rowData.cxPrice <= 0 ? 'text-muted' : ''">
-							<template v-if="rowData.cxPrice > 0">
-								{{ formatNumber(rowData.cxPrice, 2) }}
-							</template>
-							<template v-else>&mdash;</template>
-						</div>
-					</template>
-				</XNDataTableColumn>
-
-				<XNDataTableColumn
-					key="qtyPerDay"
-					:title="
-						t(
-							'upkeep_price_calculator.calculator.details.table.qty_day'
-						)
-					"
-					align="right"
-					title-align="right"
-					sorter="default">
-					<template #render-cell="{ rowData }">
-						<div class="text-nowrap">
-							{{ formatNumber(rowData.qtyPerDay, 2) }}
-						</div>
-					</template>
-				</XNDataTableColumn>
-			</XNDataTable>
+				:page-size="50">
+				<template #cell-ticker="{ row }">
+					<MaterialTile
+						:key="`${row.ticker}-${row.buildingTicker}`"
+						:ticker="row.ticker" />
+				</template>
+				<template #cell-buildingTicker="{ row }">
+					<span class="font-bold">{{
+						row.buildingTicker
+					}}</span>
+				</template>
+				<template #cell-pricePerNeed="{ row }">
+					<div
+						class="text-nowrap"
+						:class="row.cxPrice <= 0 ? 'text-muted' : ''">
+						<template v-if="row.cxPrice > 0">
+							{{ formatNumber(row.pricePerNeed, 4) }}
+						</template>
+						<template v-else>&mdash;</template>
+					</div>
+				</template>
+				<template #cell-cxPrice="{ row }">
+					<div
+						class="text-nowrap"
+						:class="row.cxPrice <= 0 ? 'text-muted' : ''">
+						<template v-if="row.cxPrice > 0">
+							{{ formatNumber(row.cxPrice, 2) }}
+						</template>
+						<template v-else>&mdash;</template>
+					</div>
+				</template>
+				<template #cell-qtyPerDay="{ row }">
+					<div class="text-nowrap">
+						{{ formatNumber(row.qtyPerDay, 2) }}
+					</div>
+				</template>
+			</PDataTable>
 		</div>
 	</div>
 </template>

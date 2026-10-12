@@ -33,12 +33,11 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import type { PSelectOption } from "@/ui/ui.types";
+	import type { PDataTableColumn, PSelectOption } from "@/ui/ui.types";
 	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 
 	// UI
-	import { PSelect, PButton, PValue } from "@/ui";
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import { PDataTable, PSelect, PButton, PValue } from "@/ui";
 	import { CloseFullscreenSharp, OpenInFullSharp } from "@vicons/material";
 
 	// Util
@@ -174,6 +173,28 @@
 
 	const chartFullscreenClass = computed(() =>
 		!selectedChartFullscreen.value ? "xl:grid-cols-2" : ""
+	);
+
+	const overviewColumns = computed<PDataTableColumn<IExchangeOverview>[]>(
+		() => {
+			const sortable = (key: string, title: string) => ({
+				key,
+				title: t(`market_exploration.overview.table.${title}`),
+				sorter: true as const,
+			});
+			return [
+				sortable("material_ticker", "material"),
+				sortable("vwap_universe_7d", "vwap_7d"),
+				sortable("vwap_universe_30d", "vwap_30d"),
+				sortable("weighted_trend", "trend"),
+				sortable("volume_7d", "volume_7d"),
+				sortable("volume_30d", "volume_30d"),
+				{
+					key: "explore",
+					title: t("market_exploration.overview.table.details"),
+				},
+			];
+		}
 	);
 </script>
 
@@ -539,92 +560,56 @@
 					{{ $t("market_exploration.overview.title") }}
 				</h3>
 
-				<XNDataTable
+				<PDataTable
+					:columns="overviewColumns"
 					:data="dataOverview"
 					striped
-					virtual-scroll
-					:max-height="800">
-					<XNDataTableColumn
-						key="material_ticker"
-						:title="t('market_exploration.overview.table.material')"
-						sorter="default">
-						<template #render-cell="{ rowData }">
-							<MaterialTile
-								:key="rowData.material_ticker"
-								:ticker="rowData.material_ticker" />
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="vwap_universe_7d"
-						:title="t('market_exploration.overview.table.vwap_7d')"
-						sorter="default">
-						<template #render-cell="{ rowData }">
-							{{ formatNumber(rowData.vwap_universe_7d) }}
-							<span class="pl-1 font-light text-muted"> ȼ </span>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="vwap_universe_30d"
-						:title="t('market_exploration.overview.table.vwap_30d')"
-						sorter="default">
-						<template #render-cell="{ rowData }">
-							{{ formatNumber(rowData.vwap_universe_30d) }}
-							<span class="pl-1 font-light text-muted"> ȼ </span>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="weighted_trend"
-						:title="t('market_exploration.overview.table.trend')"
-						sorter="default">
-						<template #render-cell="{ rowData }">
-							<span
-								:class="
-									getTrendClass(rowData.weighted_trend * 100)
-								">
-								{{ formatNumber(rowData.weighted_trend * 100) }}
-								<span class="pl-1 font-light"> % </span>
-							</span>
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="volume_7d"
-						:title="
-							t('market_exploration.overview.table.volume_7d')
-						"
-						sorter="default">
-						<template #render-cell="{ rowData }">
-							{{ formatAmount(rowData.volume_7d) }}
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="volume_30d"
-						:title="
-							t('market_exploration.overview.table.volume_30d')
-						"
-						sorter="default">
-						<template #render-cell="{ rowData }">
-							{{ formatAmount(rowData.volume_30d) }}
-						</template>
-					</XNDataTableColumn>
-					<XNDataTableColumn
-						key="explore"
-						:title="t('market_exploration.overview.table.details')">
-						<template #render-cell="{ rowData }">
-							<PButton
-								@click="
-									() => {
-										selectedMaterial =
-											rowData.material_ticker;
-										fetch();
-									}
-								">
-								{{
-									t("market_exploration.overview.table.explore")
-								}}
-							</PButton>
-						</template>
-					</XNDataTableColumn>
-				</XNDataTable>
+					:max-height="800"
+					:min-width="1180"
+					virtual>
+					<template #cell-material_ticker="{ row }">
+						<MaterialTile
+							:key="row.material_ticker"
+							:ticker="row.material_ticker" />
+					</template>
+					<template #cell-vwap_universe_7d="{ row }">
+						{{ formatNumber(row.vwap_universe_7d) }}
+						<span class="pl-1 font-light text-muted"> ȼ </span>
+					</template>
+					<template #cell-vwap_universe_30d="{ row }">
+						{{ formatNumber(row.vwap_universe_30d) }}
+						<span class="pl-1 font-light text-muted"> ȼ </span>
+					</template>
+					<template #cell-weighted_trend="{ row }">
+						<span
+							:class="
+								getTrendClass(row.weighted_trend * 100)
+							">
+							{{ formatNumber(row.weighted_trend * 100) }}
+							<span class="pl-1 font-light"> % </span>
+						</span>
+					</template>
+					<template #cell-volume_7d="{ row }">
+						{{ formatAmount(row.volume_7d) }}
+					</template>
+					<template #cell-volume_30d="{ row }">
+						{{ formatAmount(row.volume_30d) }}
+					</template>
+					<template #cell-explore="{ row }">
+						<PButton
+							@click="
+								() => {
+									selectedMaterial =
+										row.material_ticker;
+									fetch();
+								}
+							">
+							{{
+								t("market_exploration.overview.table.explore")
+							}}
+						</PButton>
+					</template>
+				</PDataTable>
 			</div>
 		</div>
 	</WrapperGameDataLoader>

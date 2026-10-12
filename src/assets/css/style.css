@@ -24,32 +24,19 @@
 	--color-negative: #fb923c;
 }
 
-/* naive-ui injects body { font-family: v-sans } at runtime */
-html body {
-	@apply font-sans;
-}
-
-/* naive-ui's global body style, which its components inject once one mounts;
-   on main its consent modal did that on every logged-in page and the
-   homepage header's collapse on every logged-out one. Kept on every page
-   (class from AppProvider) until naive-ui is gone */
-body.naive-global {
+body {
 	margin: 0;
 	font-size: 14px;
 	line-height: 1.6;
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 	-webkit-tap-highlight-color: transparent;
+	background-color: var(--app-bg);
 }
 
-body.naive-global input {
+body input {
 	font-family: inherit;
 	font-size: inherit;
-}
-
-body {
-	font-size: 14px;
-	background-color: var(--app-bg);
 }
 
 html {
@@ -135,22 +122,6 @@ html {
 
 #markdown a {
 	@apply text-link-primary hover:underline;
-}
-
-/** NAIVE UI Fixes **/
-
-.n-data-table-th__title {
-	@apply text-nowrap;
-}
-
-/* pagination items hold a button (util/pagination.ts), which is the target */
-.n-pagination .n-pagination-item {
-	cursor: default;
-	padding: 0;
-}
-
-.n-pagination-button {
-	@apply flex items-center justify-center w-full h-full min-w-6 px-1.5 cursor-pointer disabled:cursor-not-allowed;
 }
 
 /* the mobile menu is a visually hidden checkbox; ring its label instead */

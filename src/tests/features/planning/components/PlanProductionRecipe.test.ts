@@ -186,8 +186,23 @@ describe("PlanProductionRecipe", () => {
 			);
 
 			// a click on the header toggles the order
-			await header()!.trigger("click");
+			await header()!.find("button").trigger("click");
 			expect(tableRows(body()).at(-1)!.plansHere).toBe("60 %");
+		});
+
+		it("sorts by recipe time", async () => {
+			const { wrapper } = await mountRecipe();
+			await openOptions(wrapper);
+			await body()
+				.find('th[data-col-key="TimeMs"] button')
+				.trigger("click");
+
+			expect(tableRows(body()).map((r) => r.TimeMs)).toEqual([
+				"12h 0m",
+				"8h 0m",
+				"6h 0m",
+				"4h 0m",
+			]);
 		});
 
 		it("keeps the ticker order without data for the building", async () => {
@@ -302,7 +317,7 @@ describe("PlanProductionRecipe", () => {
 		]);
 	});
 
-	it("hangs the picker left below 1280 px, with naive's arrow", async () => {
+	it("hangs the picker left below 1280 px, with an arrow", async () => {
 		for (const [wide, placement] of [
 			[true, "bottom-start"],
 			[false, "bottom-end"],

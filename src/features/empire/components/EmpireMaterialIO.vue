@@ -19,8 +19,7 @@
 	import { summarizeSide } from "@/features/empire/util/empireMaterialIO.util";
 
 	// UI
-	import { PValue } from "@/ui";
-	import { ChevronRightSharp } from "@vicons/material";
+	import { PDataTable, PValue } from "@/ui";
 
 	// Types & Interfaces
 	import type {
@@ -28,8 +27,7 @@
 		IEmpireMaterialIOSide,
 	} from "@/features/empire/empire.types";
 
-	// UI
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	const props = defineProps({
 		empireMaterialIO: {
@@ -118,132 +116,89 @@
 			),
 		{ immediate: true }
 	);
+
+	const columns = computed<PDataTableColumn<IEmpireMaterialIO>[]>(() => {
+		const numeric = (key: string, title: string) => ({
+			key,
+			title: t(title),
+			align: "right" as const,
+			sorter: true as const,
+		});
+		return [
+			{ key: "ticker", title: t("terms.material_ticker"), sorter: true },
+			numeric("delta", "terms.delta"),
+			numeric("output", "terms.production"),
+			numeric("input", "terms.consumption"),
+			numeric("deltaPrice", "terms.delta_price"),
+			{
+				key: "outputPlanets",
+				title: t("empire.material_io.produced_by"),
+				minWidth: 200,
+			},
+			{
+				key: "inputPlanets",
+				title: t("empire.material_io.consumed_by"),
+				minWidth: 200,
+			},
+		];
+	});
 </script>
 
 <template>
 	<div class="flex-1 min-h-0">
-		<x-n-data-table
+		<PDataTable
+			:columns="columns"
 			:data="localEmpireMaterialIO"
-			:row-key="(row: IEmpireMaterialIO) => row.ticker"
+			:row-key="(row) => row.ticker"
 			:expanded-row-keys="expandedKeys"
+			:expand-label="(row) => t('empire.material_io.expand_row', { ticker: row.ticker })"
 			striped
-			flex-height
-			sticky-expanded-rows
-			:scroll-x="960"
-			class="empire-material-io h-full"
+			fill
+			:min-width="960"
 			@update:expanded-row-keys="updateExpanded">
-			<template #render-expand-icon="{ expanded, rowData }">
-				<button
-					type="button"
-					class="inline-flex items-center justify-center size-6 rounded-sm cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-400"
-					:aria-expanded="expanded"
-					:aria-label="
-						t('empire.material_io.expand_row', {
-							ticker: rowData.ticker,
-						})
-					">
-					<ChevronRightSharp
-						class="size-4 transition-transform"
-						:class="expanded ? 'rotate-90' : ''" />
-				</button>
+			<template #cell-ticker="{ row }">
+				<MaterialTile
+					:key="row.ticker"
+					:ticker="row.ticker"
+					:daily="row.delta" />
 			</template>
-			<x-n-data-table-column key="expand" type="expand" :width="48">
-				<template #render-expand="{ rowData }">
-					<EmpireMaterialIODetail
-						v-model:view="detailView"
-						:row="rowData"
-						:planet-names="planetNames" />
-				</template>
-			</x-n-data-table-column>
-			<x-n-data-table-column
-				key="ticker"
-				:title="t('terms.material_ticker')"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<MaterialTile
-						:key="rowData.ticker"
-						:ticker="rowData.ticker"
-						:daily="rowData.delta" />
-				</template>
-			</x-n-data-table-column>
-			<x-n-data-table-column
-				key="delta"
-				align="right"
-				title-align="right"
-				:title="t('terms.delta')"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<PValue class="text-nowrap" :value="rowData.delta" />
-				</template>
-			</x-n-data-table-column>
-			<x-n-data-table-column
-				key="output"
-				align="right"
-				title-align="right"
-				:title="t('terms.production')"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<span
-						class="text-nowrap"
-						:class="rowData.output <= 0 ? 'text-muted' : ''">
-						{{ formatNumber(rowData.output) }}
-					</span>
-				</template>
-			</x-n-data-table-column>
-			<x-n-data-table-column
-				key="input"
-				align="right"
-				title-align="right"
-				:title="t('terms.consumption')"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<span
-						class="text-nowrap"
-						:class="rowData.input <= 0 ? 'text-muted' : ''">
-						{{ formatNumber(rowData.input) }}
-					</span>
-				</template>
-			</x-n-data-table-column>
-			<x-n-data-table-column
-				key="deltaPrice"
-				align="right"
-				title-align="right"
-				:title="t('terms.delta_price')"
-				sorter="default">
-				<template #render-cell="{ rowData }">
-					<PValue class="text-nowrap" :value="rowData.deltaPrice" />
-				</template>
-			</x-n-data-table-column>
-			<x-n-data-table-column
-				key="outputPlanets"
-				:min-width="200"
-				:title="t('empire.material_io.produced_by')">
-				<template #render-cell="{ rowData }">
-					<EmpireMaterialIOSummaryCell
-						:side="summaries.get(rowData.ticker)!.output"
-						:planet-names="planetNames" />
-				</template>
-			</x-n-data-table-column>
-			<x-n-data-table-column
-				key="inputPlanets"
-				:min-width="200"
-				:title="t('empire.material_io.consumed_by')">
-				<template #render-cell="{ rowData }">
-					<EmpireMaterialIOSummaryCell
-						:side="summaries.get(rowData.ticker)!.input"
-						:planet-names="planetNames" />
-				</template>
-			</x-n-data-table-column>
-		</x-n-data-table>
+			<template #cell-delta="{ row }">
+				<PValue class="text-nowrap" :value="row.delta" />
+			</template>
+			<template #cell-output="{ row }">
+				<span
+					class="text-nowrap"
+					:class="row.output <= 0 ? 'text-muted' : ''">
+					{{ formatNumber(row.output) }}
+				</span>
+			</template>
+			<template #cell-input="{ row }">
+				<span
+					class="text-nowrap"
+					:class="row.input <= 0 ? 'text-muted' : ''">
+					{{ formatNumber(row.input) }}
+				</span>
+			</template>
+			<template #cell-deltaPrice="{ row }">
+				<PValue class="text-nowrap" :value="row.deltaPrice" />
+			</template>
+			<template #cell-outputPlanets="{ row }">
+				<EmpireMaterialIOSummaryCell
+					:side="summaries.get(row.ticker)!.output"
+					:planet-names="planetNames" />
+			</template>
+			<template #cell-inputPlanets="{ row }">
+				<EmpireMaterialIOSummaryCell
+					:side="summaries.get(row.ticker)!.input"
+					:planet-names="planetNames" />
+			</template>
+			<template #expand="{ row }">
+				<EmpireMaterialIODetail
+					v-model:view="detailView"
+					:row="row"
+					:planet-names="planetNames" />
+			</template>
+		</PDataTable>
 	</div>
 </template>
 
-<style>
-	/* the row toggle is the button inside, not naive's clickable div */
-	.empire-material-io .n-data-table-expand-trigger {
-		cursor: default;
-		width: auto;
-		height: auto;
-		vertical-align: middle;
-	}
-</style>

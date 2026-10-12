@@ -5,8 +5,6 @@ import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { compression } from "vite-plugin-compression2";
 import AutoImport from "unplugin-auto-import/vite";
-import Components from "unplugin-vue-components/vite";
-import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { Plugin } from "vite";
 
@@ -67,9 +65,6 @@ export default defineConfig({
 		tailwindcss(),
 		tsconfigPaths(),
 		AutoImport({ imports: ["vue", "vue-router", "pinia"] }),
-		Components({
-			resolvers: [NaiveUiResolver()],
-		}),
 		skipEmptyChunks(),
 		compression({
 			algorithms: ["gzip", "brotliCompress"],

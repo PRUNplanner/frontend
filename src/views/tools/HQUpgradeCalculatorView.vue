@@ -34,10 +34,18 @@
 
 	// Types & Interfaces
 	import type { IFIOFindMaterialLocation } from "@/features/fio/useFIOStorage.types";
+	import type { IHQMaterial } from "@/features/hq_upgrade_calculator/useHQUpgradeCalculator.types";
 
 	// UI
-	import { PForm, PFormItem, PInputNumber, PCheckbox, PSelect } from "@/ui";
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import {
+		PDataTable,
+		PForm,
+		PFormItem,
+		PInputNumber,
+		PCheckbox,
+		PSelect,
+	} from "@/ui";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	const selectedStart: Ref<number> = ref(1);
 	const selectedTo: Ref<number> = ref(3);
@@ -77,6 +85,40 @@
 		deep: true,
 	});
 	onBeforeUnmount(trackUse.cancel);
+
+	const columns = computed<PDataTableColumn<IHQMaterial>[]>(() => {
+		const numeric = (key: string, title: string) => ({
+			key,
+			title: t(`hq_upgrade_calculator.table.${title}`),
+			align: "right" as const,
+			sorter: true as const,
+		});
+		return [
+			{
+				key: "ticker",
+				title: t("hq_upgrade_calculator.table.material"),
+				sorter: true,
+			},
+			numeric("amount", "amount"),
+			numeric("storage", "storage"),
+			{
+				key: "override",
+				title: t("hq_upgrade_calculator.table.override_stock"),
+			},
+			numeric("required", "required"),
+			numeric("unitCost", "cost_unit"),
+			numeric("totalCost", "cost_total"),
+			...(selectedShowLocations.value
+				? [
+						{
+							key: "storageLocations",
+							title: t("hq_upgrade_calculator.table.storage_locations"),
+							width: "25%",
+						},
+					]
+				: []),
+		];
+	});
 </script>
 
 <template>
@@ -209,114 +251,58 @@
 				</div>
 
 				<div class="px-6 py-3">
-					<XNDataTable :data="materialData" striped>
-						<XNDataTableColumn
-							key="ticker"
-							:title="t('hq_upgrade_calculator.table.material')"
-							sorter="default">
-							<template #render-cell="{ rowData }">
-								<MaterialTile
-									:key="rowData.ticker"
-									:ticker="rowData.ticker"
-									:disable-drawer="false" />
-							</template>
-						</XNDataTableColumn>
-						<XNDataTableColumn
-							key="amount"
-							align="right"
-							title-align="right"
-							:title="t('hq_upgrade_calculator.table.amount')"
-							sorter="default">
-							<template #render-cell="{ rowData }">
-								{{ formatAmount(rowData.amount) }}
-							</template>
-						</XNDataTableColumn>
-						<XNDataTableColumn
-							key="storage"
-							align="right"
-							title-align="right"
-							:title="t('hq_upgrade_calculator.table.storage')"
-							sorter="default">
-							<template #render-cell="{ rowData }">
-								{{ formatAmount(rowData.storage) }}
-							</template>
-						</XNDataTableColumn>
-						<XNDataTableColumn
-							key="override"
-							:title="
-								t('hq_upgrade_calculator.table.override_stock')
-							">
-							<template #render-cell="{ rowData }">
-								<PInputNumber
-									:key="`OVERRIDE#${rowData.ticker}`"
-									v-model:value="
-										overrideBinding(rowData.ticker).value
-									"
-									:aria-label="
-										$t(
-											'hq_upgrade_calculator.table.override_label',
-											{ ticker: rowData.ticker }
-										)
-									"
-									:min="0"
-									clearable
-									show-buttons
-									placeholder=""
-									class="max-w-37.5"
-									@update:value="calculateMaterialData" />
-							</template>
-						</XNDataTableColumn>
-						<XNDataTableColumn
-							key="required"
-							align="right"
-							title-align="right"
-							:title="t('hq_upgrade_calculator.table.required')"
-							sorter="default">
-							<template #render-cell="{ rowData }">
-								{{ formatAmount(rowData.required) }}
-							</template>
-						</XNDataTableColumn>
-						<XNDataTableColumn
-							key="unitCost"
-							align="right"
-							title-align="right"
-							:title="t('hq_upgrade_calculator.table.cost_unit')"
-							sorter="default">
-							<template #render-cell="{ rowData }">
-								{{ formatNumber(rowData.unitCost) }}
-							</template>
-						</XNDataTableColumn>
-						<XNDataTableColumn
-							key="totalCost"
-							align="right"
-							title-align="right"
-							:title="t('hq_upgrade_calculator.table.cost_total')"
-							sorter="default">
-							<template #render-cell="{ rowData }">
-								{{ formatNumber(rowData.totalCost) }}
-							</template>
-						</XNDataTableColumn>
-						<XNDataTableColumn
-							v-if="selectedShowLocations"
-							key="storageLocations"
-							:title="
-								t(
-									'hq_upgrade_calculator.table.storage_locations'
-								)
-							"
-							:width="'25%'">
-							<template #render-cell="{ rowData }">
-								{{
-									rowData.storageLocations
-										.map(
-											(e: IFIOFindMaterialLocation) =>
-												`${e.amount}x @ ${e.name} (${e.type})`
-										)
-										.join(", ")
-								}}
-							</template>
-						</XNDataTableColumn>
-					</XNDataTable>
+					<PDataTable :columns="columns" :data="materialData" striped>
+						<template #cell-ticker="{ row }">
+							<MaterialTile
+								:key="row.ticker"
+								:ticker="row.ticker"
+								:disable-drawer="false" />
+						</template>
+						<template #cell-amount="{ row }">
+							{{ formatAmount(row.amount) }}
+						</template>
+						<template #cell-storage="{ row }">
+							{{ formatAmount(row.storage) }}
+						</template>
+						<template #cell-override="{ row }">
+							<PInputNumber
+								:key="`OVERRIDE#${row.ticker}`"
+								v-model:value="
+									overrideBinding(row.ticker).value
+								"
+								:aria-label="
+									$t(
+										'hq_upgrade_calculator.table.override_label',
+										{ ticker: row.ticker }
+									)
+								"
+								:min="0"
+								clearable
+								show-buttons
+								placeholder=""
+								class="max-w-37.5"
+								@update:value="calculateMaterialData" />
+						</template>
+						<template #cell-required="{ row }">
+							{{ formatAmount(row.required) }}
+						</template>
+						<template #cell-unitCost="{ row }">
+							{{ formatNumber(row.unitCost) }}
+						</template>
+						<template #cell-totalCost="{ row }">
+							{{ formatNumber(row.totalCost) }}
+						</template>
+						<template #cell-storageLocations="{ row }">
+							{{
+								row.storageLocations
+									.map(
+										(e: IFIOFindMaterialLocation) =>
+											`${e.amount}x @ ${e.name} (${e.type})`
+									)
+									.join(", ")
+							}}
+						</template>
+					</PDataTable>
 				</div>
 			</div>
 		</WrapperPlanningDataLoader>

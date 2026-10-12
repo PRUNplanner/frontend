@@ -4,7 +4,7 @@
 </script>
 
 <template>
-	<!-- 24 px target, pulled 3 px right so the 18 px icon sits where naive-ui's did -->
+	<!-- 24 px target, pulled 3 px right so the 18 px icon keeps its place -->
 	<button
 		type="button"
 		:aria-label="t('common.ui.close')"

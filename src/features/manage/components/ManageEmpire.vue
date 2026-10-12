@@ -30,6 +30,7 @@
 
 	// UI
 	import {
+		PDataTable,
 		PForm,
 		PFormItem,
 		PButton,
@@ -39,7 +40,7 @@
 		useConfirm,
 	} from "@/ui";
 	const confirm = useConfirm();
-	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
+	import type { PDataTableColumn } from "@/ui/ui.types";
 	import { ClearSharp, PlusSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -268,6 +269,20 @@
 			refIsDeleting.value = undefined;
 		}
 	}
+
+	const columns = computed<PDataTableColumn<PlanEmpireElement>[]>(() => [
+		{
+			key: "empire_name",
+			title: t("management.empire.table.empire_name"),
+			sorter: true,
+			defaultSortOrder: "ascend",
+		},
+		{ key: "empire_faction", title: t("management.empire.table.faction") },
+		{ key: "permits", title: t("management.empire.table.permits") },
+		{ key: "plans", title: t("management.empire.table.plans") },
+		{ key: "cx", title: t("management.empire.table.cx"), width: 200 },
+		{ key: "configuration", title: "" },
+	]);
 </script>
 
 <template>
@@ -335,70 +350,45 @@
 			</div>
 		</div>
 	</div>
-	<x-n-data-table :data="localEmpires" striped class="pt-3">
-		<x-n-data-table-column
-			key="empire_name"
-			:title="t('management.empire.table.empire_name')"
-			sorter="default"
-			default-sort-order="ascend">
-			<template #render-cell="{ rowData }">
+	<PDataTable :columns="columns" :data="localEmpires" striped class="pt-3">
+		<template #cell-empire_name="{ row }">
 				<router-link
-					:to="`/empire/${rowData.uuid}`"
+					:to="`/empire/${row.uuid}`"
 					class="text-link-primary font-bold hover:underline">
-					{{ rowData.empire_name }}
+					{{ row.empire_name }}
 				</router-link>
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column
-			key="empire_faction"
-			:title="t('management.empire.table.faction')">
-			<template #render-cell="{ rowData }">
-				{{ capitalizeString(rowData.empire_faction) }}
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column
-			key="permits"
-			:title="t('management.empire.table.permits')">
-			<template #render-cell="{ rowData }">
-				{{ rowData.empire_permits_used }} /
-				{{ rowData.empire_permits_total }}
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column
-			key="plans"
-			:title="t('management.empire.table.plans')">
-			<template #render-cell="{ rowData }">
-				{{ rowData.plans.length }}
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column
-			key="cx"
-			:title="t('management.empire.table.cx')"
-			width="200">
-			<template #render-cell="{ rowData }">
+		</template>
+		<template #cell-empire_faction="{ row }">
+				{{ capitalizeString(row.empire_faction) }}
+		</template>
+		<template #cell-permits="{ row }">
+				{{ row.empire_permits_used }} /
+				{{ row.empire_permits_total }}
+		</template>
+		<template #cell-plans="{ row }">
+				{{ row.plans.length }}
+		</template>
+		<template #cell-cx="{ row }">
 				<div class="max-w-50">
 					<PSelect
-						:key="`${rowData.uuid}#${refEmpireCXMap[rowData.uuid]}`"
-						v-model:value="refEmpireCXMap[rowData.uuid]"
+						:key="`${row.uuid}#${refEmpireCXMap[row.uuid]}`"
+						v-model:value="refEmpireCXMap[row.uuid]"
 						:aria-label="$t('management.empire.table.cx')"
 						:options="refCXOptions" />
 				</div>
-			</template>
-		</x-n-data-table-column>
-		<x-n-data-table-column key="configuration" title="">
-			<template #render-cell="{ rowData }">
+		</template>
+		<template #cell-configuration="{ row }">
 				<div class="justify-end flex gap-x-3">
 					<PButton
 						:aria-label="$t('common.buttons.delete')"
 						size="sm"
 						type="error"
-						:loading="refIsDeleting === rowData.uuid"
-						@click="handleDeleteConfirm(rowData.uuid)">
+						:loading="refIsDeleting === row.uuid"
+						@click="handleDeleteConfirm(row.uuid)">
 						<template #icon><ClearSharp /></template>
 					</PButton>
 				</div>
-			</template>
-		</x-n-data-table-column>
+		</template>
 		<template #empty>
 			<div class="flex flex-col gap-y-3">
 				<div class="text-center">
@@ -409,5 +399,5 @@
 				</div>
 			</div>
 		</template>
-	</x-n-data-table>
+	</PDataTable>
 </template>

@@ -207,7 +207,7 @@ describe("PPopover", () => {
 		anchor.remove();
 	});
 
-	it("draws naive-ui's arrow on request", async () => {
+	it("draws the arrow on request", async () => {
 		const { show } = mountPopover({ arrow: true, panelClass: "bg-black" });
 		show.value = true;
 		await flushPromises();

@@ -60,7 +60,7 @@
 		</div>
 	</div>
 	<div class="lg:pb-5">
-		<!-- the height animates from 0fr to 1fr, as naive-ui's collapse did -->
+		<!-- the height animates from 0fr to 1fr -->
 		<Transition
 			enter-active-class="transition-[grid-template-rows] duration-300 ease-[cubic-bezier(.4,0,.2,1)]"
 			leave-active-class="transition-[grid-template-rows] duration-300 ease-[cubic-bezier(.4,0,.2,1)]"
