@@ -7,7 +7,7 @@ import axiosSetup from "@/util/axiosSetup";
 import ManagePlanEmpireAssignments from "@/features/manage/components/ManagePlanEmpireAssignments.vue";
 import PInput from "@/ui/components/PInput.vue";
 import PSelect from "@/ui/components/PSelect.vue";
-import { NDropdown } from "naive-ui";
+import PDropdown from "@/ui/components/PDropdown.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
@@ -125,7 +125,7 @@ async function openMenu(wrapper: VueWrapper, row: number) {
 
 function menuOption(label: string) {
 	return Array.from(
-		document.body.querySelectorAll<HTMLElement>(".n-dropdown-option-body")
+		document.body.querySelectorAll<HTMLElement>("[role=menuitem]")
 	).find((o) => o.textContent?.trim() === label);
 }
 
@@ -309,18 +309,33 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(exposed(component).changes.changedCount).toBe(1);
 	});
 
-	it("Escape closes the row menu", async () => {
+	it("opens the row menu at the row's button, Escape and a click away close it", async () => {
 		const { wrapper } = await mountAssignments();
+		const menu = () => wrapper.findComponent(PDropdown);
 
 		await openMenu(wrapper, 0);
-		expect(wrapper.findComponent(NDropdown).props("show")).toBe(true);
+		expect(menu().props("show")).toBe(true);
+		expect(menu().props("anchor")).toBe(
+			bodyRows(wrapper)[0].find("button[aria-busy]").element
+		);
+		expect(menuOption("management.assignments.menu.delete")!.className).toContain(
+			"text-negative"
+		);
 
 		// the dropdown listens on the whole page, the key press has to bubble
 		document.body.dispatchEvent(
 			new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
 		);
 		await flushPromises();
-		expect(wrapper.findComponent(NDropdown).props("show")).toBe(false);
+		expect(menu().props("show")).toBe(false);
+
+		await openMenu(wrapper, 1);
+		expect(menu().props("anchor")).toBe(
+			bodyRows(wrapper)[1].find("button[aria-busy]").element
+		);
+		document.body.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+		await flushPromises();
+		expect(menu().props("show")).toBe(false);
 	});
 
 	it("row menu clones a plan with a suffixed name", async () => {

@@ -1,3 +1,5 @@
+import type { Component } from "vue";
+
 export type SizeKey = "sm" | "md";
 export type ColorKey =
 	| "primary"
@@ -33,10 +35,22 @@ export interface PButtonGroupConfig {
 	vertical: string;
 }
 
-/** panel look for raw naive-ui NPopover overlays */
+/** default panel look of PPopover */
 export interface PPopoverConfig {
 	panel: string;
 }
+
+export type PDropdownOption =
+	| {
+			key: string;
+			label: string;
+			icon?: Component;
+			/** second, muted line under the label */
+			hint?: string;
+			/** destructive action, shown in the negative colour */
+			danger?: boolean;
+	  }
+	| { type: "divider" };
 
 export interface PTooltipConfig {
 	trigger: string;
@@ -86,7 +100,23 @@ export interface PToastOptions {
 	type?: "info" | "error";
 	/** one button, e.g. "Undo" */
 	action?: { label: string; onClick: () => void };
+	/** 0 keeps the toast until it is destroyed or closed */
 	duration?: number;
+	/** adds an X */
+	closable?: boolean;
+}
+
+/** returned by toast(), closes it early */
+export interface PToastHandle {
+	destroy: () => void;
+}
+
+export interface PToastEntry {
+	id: number;
+	text: string;
+	type: "info" | "error";
+	action?: { label: string; onClick: () => void };
+	closable: boolean;
 }
 
 export interface PToastConfig {

@@ -1,16 +1,19 @@
 <script setup lang="ts">
-	import { NEmpty } from "naive-ui";
+	// UI
+	import { PIcon } from "@/ui";
 	import { HourglassEmptySharp } from "@vicons/material";
 </script>
 
 <template>
 	<div class="relative w-full h-full">
 		<div class="absolute inset-0 flex items-center justify-center">
-			<n-empty description="Feature Not Yet Implemented">
-				<template #icon>
+			<!-- naive-ui's empty state look -->
+			<div class="flex flex-col items-center text-[14px]">
+				<PIcon :size="40" class="text-white/38">
 					<HourglassEmptySharp />
-				</template>
-				<template #extra>
+				</PIcon>
+				<div class="mt-2 text-white/55">Feature Not Yet Implemented</div>
+				<div class="mt-3 text-center text-white/82">
 					<div>
 						PRUNplanner v2 is Open Source. Check out the
 						<a
@@ -29,8 +32,8 @@
 							>PrUn Community Tools Discord</a
 						>.
 					</div>
-				</template>
-			</n-empty>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>

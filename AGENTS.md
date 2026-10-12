@@ -52,9 +52,10 @@ time.
    gitignored and Vitest doesn't load the plugin. Use the `@/` alias for
    everything under `src/`.
 2. **Reuse the UI kit.** Use `import { PButton, PSelect, … } from "@/ui"`
-   (`src/ui/`), and `XNDataTable` from `@skit/x.naive-ui` for tables. Modals,
-   drawers and confirms are kit too (`PModal`, `PDrawer`, `useConfirm`). Use
-   raw naive-ui only for `NPopover` and `NDropdown`.
+   (`src/ui/`), and `XNDataTable` from `@skit/x.naive-ui` for tables. All
+   overlays come from the kit: `PModal`, `PDrawer`, `useConfirm`,
+   `PPopover`, `PDropdown` and `useToast`. Don't use raw naive-ui
+   components.
    See [docs/ui-and-i18n.md](docs/ui-and-i18n.md), and its
    [Layout & hierarchy](docs/ui-and-i18n.md#layout--hierarchy) rules for
    every new or changed view.

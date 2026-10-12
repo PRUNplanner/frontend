@@ -39,11 +39,11 @@
 	import { dbBlocked } from "@/database/composables/useIndexedDBStore";
 	import { sessionReplaced } from "@/lib/crossTab";
 	import { useToast } from "@/ui";
-	import type { MessageReactive } from "naive-ui";
+	import type { PToastHandle } from "@/ui/ui.types";
 	const toast = useToast();
 
 	// an older PRUNplanner tab holds the database, game data waits on it
-	let blockedToast: MessageReactive | undefined;
+	let blockedToast: PToastHandle | undefined;
 	watch(dbBlocked, (blocked) => {
 		if (blocked) trackEvent("app:db_blocked");
 		blockedToast?.destroy();

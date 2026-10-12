@@ -83,7 +83,7 @@ export const buttonGroupConfig: PButtonGroupConfig = {
 };
 
 export const popoverConfig: PPopoverConfig = {
-	panel: "rounded-md! border! border-white/15! bg-gray-dark! p-3! shadow-lg!",
+	panel: "rounded-md border border-white/15 bg-gray-dark p-3 shadow-lg",
 };
 
 export const tooltipConfig: PTooltipConfig = {

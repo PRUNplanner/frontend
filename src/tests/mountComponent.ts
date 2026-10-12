@@ -29,7 +29,8 @@ enableAutoUnmount(afterEach);
  * Pass listeners as props (`"onUpdate:value": fn`), or read them via
  * `component.emitted()`. `withDialog` renders PConfirmHost next to it
  * for components calling useConfirm(). `messages` (en_US) lets `<i18n-t>` render
- * its slots, which a key-only i18n drops.
+ * its slots, which a key-only i18n drops. `attach` mounts it into the
+ * document, for focus checks.
  */
 export async function mountComponent(
 	component: Component,
@@ -38,6 +39,7 @@ export async function mountComponent(
 		pinia?: Pinia;
 		withDialog?: boolean;
 		messages?: Record<string, unknown>;
+		attach?: boolean;
 	} = {}
 ) {
 	const i18n = createI18n({
@@ -62,6 +64,7 @@ export async function mountComponent(
 					: content(),
 		}),
 		{
+			attachTo: options.attach ? document.body : undefined,
 			global: {
 				plugins: [options.pinia ?? createPinia(), i18n],
 				stubs: { RouterLink: RouterLinkStub },

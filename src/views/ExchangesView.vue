@@ -51,8 +51,7 @@
 	import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 	// UI
-	import { PButton, PInput, PIcon } from "@/ui";
-	import { NDropdown } from "naive-ui";
+	import { PButton, PDropdown, PInput, PIcon } from "@/ui";
 	import {
 		ArrowDropDownSharp,
 		SaveSharp,
@@ -310,18 +309,22 @@
 				<div
 					class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">
 					<h1 class="text-2xl font-bold my-auto hover:cursor-pointer">
-						<n-dropdown
+						<PDropdown
 							v-if="selectorDropdownOptions.length > 0"
 							trigger="hover"
 							:options="selectorDropdownOptions"
 							@select="(value: string) => (localCXUuid = value)">
-							<div>
+							<!-- a button, so the switch opens by keyboard too -->
+							<button
+								type="button"
+								aria-haspopup="menu"
+								class="block text-left cursor-pointer">
 								<PIcon class="-mr-1">
 									<ArrowDropDownSharp />
 								</PIcon>
 								{{ cxName }}
-							</div>
-						</n-dropdown>
+							</button>
+						</PDropdown>
 						<template v-else>{{ $t("exchanges.title") }}</template>
 					</h1>
 					<div class="flex flex-row flex-wrap gap-3">

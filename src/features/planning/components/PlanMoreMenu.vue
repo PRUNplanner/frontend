@@ -1,12 +1,14 @@
 <script setup lang="ts">
-	import { computed, type ComputedRef, h, ref, type Ref } from "vue";
+	import { computed, type ComputedRef } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Types & Interfaces
+	import type { PDropdownOption } from "@/ui/ui.types";
+
 	// UI
-	import { NDropdown, type DropdownOption } from "naive-ui";
-	import { PButton, PIcon } from "@/ui";
+	import { PButton, PDropdown, PIcon } from "@/ui";
 	import {
 		ArrowDropDownSharp,
 		ChangeCircleOutlined,
@@ -27,83 +29,49 @@
 		(e: "save-as" | "share" | "reload"): void;
 	}>();
 
-	const show: Ref<boolean> = ref(false);
-
-	// as tall as one option row and at the top, so on a two-line option
-	// the icon stays on the first line
-	const icon = (component: object) => () =>
-		h(
-			"span",
-			{ class: "self-start h-(--n-option-height) flex items-center" },
-			h(PIcon, null, { default: () => h(component) })
-		);
-
-	const options: ComputedRef<DropdownOption[]> = computed(() => {
-		const items: DropdownOption[] = [];
+	const options: ComputedRef<PDropdownOption[]> = computed(() => {
+		const items: PDropdownOption[] = [];
 		if (existing)
 			items.push({
 				key: "save-as",
 				label: t("plan.actions.save_as_copy"),
-				icon: icon(ContentCopySharp),
+				icon: ContentCopySharp,
 			});
 		if (canShare)
 			items.push({
 				key: "share",
 				label: t("plan.actions.share_link"),
-				icon: icon(LinkSharp),
+				icon: LinkSharp,
 			});
 		if (existing)
 			items.push(
-				{ type: "divider", key: "divider-reload" },
+				{ type: "divider" },
 				{
 					key: "reload",
-					// naive fixes every option to one row; this one has two
-					props: { class: "h-auto!" },
-					label: () =>
-						h("div", { class: "flex flex-col pb-2" }, [
-							h(
-								"span",
-								{ class: "leading-(--n-option-height)" },
-								t("plan.actions.reload")
-							),
-							h(
-								"span",
-								{ class: "text-xs leading-4 text-muted" },
-								t("plan.actions.reload_hint")
-							),
-						]),
-					icon: icon(ChangeCircleOutlined),
+					label: t("plan.actions.reload"),
+					hint: t("plan.actions.reload_hint"),
+					icon: ChangeCircleOutlined,
 				}
 			);
 		return items;
 	});
 
-	function onSelect(key: "save-as" | "share" | "reload"): void {
-		show.value = false;
-		emit(key);
+	function onSelect(key: string): void {
+		emit(key as "save-as" | "share" | "reload");
 	}
 </script>
 
 <template>
-	<n-dropdown
+	<PDropdown
 		v-if="options.length > 0"
-		trigger="click"
 		placement="bottom-end"
-		:show="show"
 		:options="options"
-		@select="onSelect"
-		@update:show="(v: boolean) => (show = v)">
-		<!-- naive's dropdown handles ↑/↓/Enter/Esc while open; the
-		 focus stays on this button -->
-		<PButton
-			type="secondary"
-			aria-haspopup="menu"
-			:aria-expanded="show ? 'true' : 'false'"
-			@keydown.down.prevent="show = true">
+		@select="onSelect">
+		<PButton type="secondary" aria-haspopup="menu">
 			{{ t("plan.actions.more") }}
 			<PIcon class="-mr-1 align-middle">
 				<ArrowDropDownSharp />
 			</PIcon>
 		</PButton>
-	</n-dropdown>
+	</PDropdown>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { ref, onBeforeUnmount, nextTick } from "vue";
 	import { tooltipConfig } from "@/ui/styles";
-	import { createPopper, type Instance } from "@popperjs/core";
+	import { createFloating } from "@/ui/popper";
 	import type { Placement } from "@popperjs/core";
 
 	const {
@@ -16,8 +16,7 @@
 
 	const triggerRef = ref<HTMLElement | null>(null);
 	const tooltipRef = ref<HTMLElement | null>(null);
-	let popperInstance: Instance | null = null;
-	let ro: ResizeObserver | null = null;
+	let floating: { destroy: () => void } | null = null;
 	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
 	const isVisible = ref(false);
 
@@ -31,35 +30,13 @@
 		isVisible.value = true;
 		await nextTick();
 
-		if (triggerRef.value && tooltipRef.value) {
-			popperInstance = createPopper(triggerRef.value, tooltipRef.value, {
-				placement: placement,
-				strategy: "fixed",
-				modifiers: [
-					{ name: "offset", options: { offset: [0, offset] } },
-					{
-						name: "flip",
-						options: {
-							boundary: "viewport",
-							padding: 8,
-							altAxis: false,
-						},
-					},
-					{
-						name: "preventOverflow",
-						options: {
-							boundary: "viewport",
-							padding: 8,
-							tether: false,
-						},
-					},
-				],
-			});
-
-			requestAnimationFrame(() => popperInstance?.update());
-			ro = new ResizeObserver(() => popperInstance?.update());
-			ro.observe(tooltipRef.value);
-		}
+		if (triggerRef.value && tooltipRef.value)
+			floating = createFloating(
+				triggerRef.value,
+				tooltipRef.value,
+				placement,
+				offset
+			);
 	}
 
 	function scheduleHide() {
@@ -72,10 +49,8 @@
 
 	function hide() {
 		isVisible.value = false;
-		ro?.disconnect();
-		ro = null;
-		popperInstance?.destroy();
-		popperInstance = null;
+		floating?.destroy();
+		floating = null;
 	}
 
 	onBeforeUnmount(() => {

@@ -5,11 +5,9 @@
  * chunk is really broken, so the error is shown instead of looping.
  */
 
-import { createApp, defineComponent, h } from "vue";
 import type { Router } from "vue-router";
-import { NConfigProvider, NMessageProvider, useMessage } from "naive-ui";
-import { prunplannerDarkTheme } from "@/layout/prunplannerNaiveUI";
 import { i18n } from "@/lib/i18n";
+import { toast } from "@/ui/useToast";
 
 const KEY = "prunplanner_chunk_reload";
 const GUARD_MS = 30_000;
@@ -35,26 +33,15 @@ export function reloadOnce(url?: string): boolean {
 	return true;
 }
 
-// the message in an app of its own, outside the broken one. Not naive-ui's
-// createDiscreteApi: it bundles the dialog, modal, notification and
-// loading-bar providers into the entry chunk
-const PageLoadFailed = defineComponent({
-	setup() {
-		useMessage().error(i18n.global.t("common.ui.page_load_failed"), {
-			duration: 0,
-			closable: true,
-		});
-		return () => null;
-	},
-});
-
+// the toast host lives in AppProvider, which stays mounted when a route's
+// chunk fails
 function showError(error: unknown): void {
 	console.error(error);
-	createApp(() =>
-		h(NConfigProvider, { theme: prunplannerDarkTheme }, () =>
-			h(NMessageProvider, null, () => h(PageLoadFailed))
-		)
-	).mount(document.body.appendChild(document.createElement("div")));
+	toast(i18n.global.t("common.ui.page_load_failed"), {
+		type: "error",
+		duration: 0,
+		closable: true,
+	});
 }
 
 export function registerChunkReload(router: Router): void {

@@ -10,11 +10,11 @@ import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui
 ```
 
 The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDrawer`,
-`PForm`, `PFormItem`, `PFormSeperator` (the misspelling is the real name),
-`PIcon`, `PInput`, `PInputNumber`, `PModal`, `PProgressBar`, `PSelect`,
-`PSelectElement`, `PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast`
-(through `useToast()`, see "Toasts" below), `PTooltip` and `PValue`, plus
-`useConfirm()` (see "Overlays" below).
+`PDropdown`, `PForm`, `PFormItem`, `PFormSeperator` (the misspelling is the
+real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`, `PPopover`,
+`PProgressBar`, `PSelect`, `PSelectElement`, `PSelectMultiple`, `PSpin`,
+`PTable`, `PTag`, `PToast` (through `useToast()`, see "Toasts" below),
+`PTooltip` and `PValue`, plus `useConfirm()` (see "Overlays" below).
 
 - **Shared props:** `size` (`"sm" | "md"`) and `color` (`primary`,
   `success`, `error`, `warning`, `secondary`). Both types are in
@@ -52,7 +52,8 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDrawer`,
   - **Data tables:** `XNDataTable` / `XNDataTableColumn` from
     `@skit/x.naive-ui`. Examples: `features/market_live/components/CXPointTable.vue`
     and `features/resource_roi_overview/components/ResourceROITable.vue`.
-  - **Overlays:** modals, drawers and confirms come from the kit.
+  - **Overlays:** modals, drawers, confirms, popovers and menus come from
+    the kit. naive-ui only renders the data table.
     - `<PModal v-model:show="x" :title="…">` with an `#action` slot for the
       footer; widths go in `class` (e.g. `class="w-120! max-w-[90vw]!"`).
     - `<PDrawer v-model:show="x" :title="…" :width="600">`, with
@@ -63,14 +64,26 @@ The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDrawer`,
       scroll. Focus moves in and returns to the opener, Tab stays inside, and
       Esc closes the top layer (an open `PSelect` list first). `PSelect` lists
       and `PTooltip`s stack above them.
-    - Popovers and menus are still raw naive-ui (`NPopover`, `NDropdown`),
-      until nu-03.
+    - `<PPopover>` with a `#trigger` slot: `trigger` `click` (toggles) or
+      `manual` (`v-model:show`), `placement`, `panelClass` (default
+      `popoverConfig.panel`), `anchor` (an element to position at instead of
+      the trigger) and `arrow`. Emits `clickoutside`.
+    - `<PDropdown :options @select>`: `{ key, label, icon?, hint?, danger? }`
+      or `{ type: "divider" }`, `trigger` `click`, `hover` or `manual`, and
+      `anchor`. A `role="menu"`: ↓ on the trigger opens it, ↑/↓/Home/End
+      move, Enter or Space picks, Esc closes and returns focus.
+    - Popovers and menus are non-modal layers on the same stack: Esc closes
+      the topmost, no inert, scroll lock or focus trap. A click outside
+      closes them, except on the trigger, inside, in a `PSelect` list or in
+      a layer opened from inside.
   - **Toasts:** `const toast = useToast()` from `@/ui`, then
-    `toast(text, { type: "error" })` or
-    `toast(text, { action: { label, onClick } })`. It renders the kit's
-    `PToast` in naive-ui's message queue (bottom-right, kept open on hover)
-    and returns the message, so `.destroy()` closes it early. Don't call
-    `useMessage()` directly.
+    `toast(text, { type: "error" })`,
+    `toast(text, { action: { label, onClick } })` or
+    `toast(text, { duration: 0, closable: true })`. `duration` defaults to
+    6 s, 0 keeps it, hover pauses it. It returns a handle, `.destroy()`
+    closes it early. The one `PToastHost` in `AppProvider.vue` shows them
+    bottom-right above layers; outside components import `toast` from
+    `@/ui/useToast`.
   - **Icons:** `@vicons/material`, wrapped in `PIcon`:
     `<PIcon><CheckSharp /></PIcon>`.
   - **Charts:** `src/ui/charts/*.vue` wrap chart.js (`vue-chartjs`,
@@ -137,7 +150,7 @@ on each view and make the rest quieter.
 - **One primary action per view.** Only the main action (Save, Create,
   Search) uses `type="primary"`. Other actions are `secondary`, a
   text/ghost button (`type="ghost"`), or go into a "More" menu
-  (`NDropdown` with an icon, a label, and a hint on anything that loses
+  (`PDropdown` with an icon, a label, and a hint on anything that loses
   data). `PButton` defaults to `primary`, so always set `type` on
   non-primary buttons.
 - **Every number once per view.** Don't show the same KPI in a status

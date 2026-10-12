@@ -6,7 +6,6 @@
 	}>();
 
 	// UI
-	import { NCollapseTransition } from "naive-ui";
 	import { PButton } from "@/ui";
 
 	// Composables
@@ -61,21 +60,42 @@
 		</div>
 	</div>
 	<div class="lg:pb-5">
-		<n-collapse-transition :show="refShowLogin">
-			<div
-				class="mt-5 md:px-10 lg:px-0 bg-white/5 border-t border-b border-white/10">
-				<div class="mx-auto max-w-7xl py-10">
-					<LoginComponent />
+		<!-- the height animates from 0fr to 1fr, as naive-ui's collapse did -->
+		<Transition
+			enter-active-class="transition-[grid-template-rows] duration-300 ease-[cubic-bezier(.4,0,.2,1)]"
+			leave-active-class="transition-[grid-template-rows] duration-300 ease-[cubic-bezier(.4,0,.2,1)]"
+			enter-from-class="grid-rows-[0fr]"
+			enter-to-class="grid-rows-[1fr]"
+			leave-from-class="grid-rows-[1fr]"
+			leave-to-class="grid-rows-[0fr]">
+			<div v-if="refShowLogin" class="grid">
+				<div class="overflow-hidden min-h-0">
+					<div
+						class="mt-5 md:px-10 lg:px-0 bg-white/5 border-t border-b border-white/10">
+						<div class="mx-auto max-w-7xl py-10">
+							<LoginComponent />
+						</div>
+					</div>
 				</div>
 			</div>
-		</n-collapse-transition>
-		<n-collapse-transition :show="refShowRegistration">
-			<div
-				class="mt-5 md:px-10 lg:px-0 bg-white/5 border-t border-b border-white/10">
-				<div class="mx-auto max-w-7xl py-10">
-					<RegistrationComponent />
+		</Transition>
+		<Transition
+			enter-active-class="transition-[grid-template-rows] duration-300 ease-[cubic-bezier(.4,0,.2,1)]"
+			leave-active-class="transition-[grid-template-rows] duration-300 ease-[cubic-bezier(.4,0,.2,1)]"
+			enter-from-class="grid-rows-[0fr]"
+			enter-to-class="grid-rows-[1fr]"
+			leave-from-class="grid-rows-[1fr]"
+			leave-to-class="grid-rows-[0fr]">
+			<div v-if="refShowRegistration" class="grid">
+				<div class="overflow-hidden min-h-0">
+					<div
+						class="mt-5 md:px-10 lg:px-0 bg-white/5 border-t border-b border-white/10">
+						<div class="mx-auto max-w-7xl py-10">
+							<RegistrationComponent />
+						</div>
+					</div>
 				</div>
 			</div>
-		</n-collapse-transition>
+		</Transition>
 	</div>
 </template>
