@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import PSelect from "@/ui/components/PSelect.vue";
@@ -126,5 +126,17 @@ describe("PSelect", () => {
 		document.body.click();
 		await flushPromises();
 		expect(currentlyOpenId.value).toBeNull();
+	});
+
+	it("opens the list at least as wide as the select", async () => {
+		const width = vi
+			.spyOn(HTMLElement.prototype, "offsetWidth", "get")
+			.mockReturnValue(240);
+		const { wrapper } = await mountSelect([{ label: "A", value: "a" }]);
+
+		await key(wrapper, "ArrowDown");
+		const list = body().find("[data-pselect-dropdown]");
+		expect((list.element as HTMLElement).style.minWidth).toBe("240px");
+		width.mockRestore();
 	});
 });

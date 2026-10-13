@@ -33,6 +33,9 @@
 	 * pagination, expandable rows, summary and empty slots. Columns are an
 	 * array; cells render `row[key]` or the `cell-<key>` slot.
 	 *
+	 * Pass `columns`, `data` and `rowKey` as stable references (not inline
+	 * functions or literals): a new one re-renders the whole table.
+	 *
 	 * @author jplacht
 	 */
 	const {
@@ -250,15 +253,20 @@
 		return Math.max(lo, 0);
 	}
 
-	const range = computed<[number, number]>(() => {
+	// the previous tuple while the window holds the same rows: a scroll
+	// inside it changes nothing that renders
+	const range = computed<[number, number]>((prev) => {
 		const count = rows.value.length;
-		if (!windowed.value) return [0, count];
-		const start = indexAt(scrollTop.value - OVERSCAN);
-		const end = Math.min(
-			indexAt(scrollTop.value + (viewHeight.value || 800) + OVERSCAN) + 1,
-			count
-		);
-		return [start, end];
+		let start = 0;
+		let end = count;
+		if (windowed.value) {
+			start = indexAt(scrollTop.value - OVERSCAN);
+			end = Math.min(
+				indexAt(scrollTop.value + (viewHeight.value || 800) + OVERSCAN) + 1,
+				count
+			);
+		}
+		return prev?.[0] === start && prev[1] === end ? prev : [start, end];
 	});
 
 	/** the rendered rows with their index in `rows` and their key */

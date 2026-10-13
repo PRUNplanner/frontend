@@ -69,6 +69,9 @@
 			align: "right",
 		},
 	]);
+	// stable, an inline function re-renders the whole table
+	const rowKey = (row: (typeof opportunities.value)[number]) =>
+		row.recipe.recipe_name;
 </script>
 
 <template>
@@ -208,7 +211,7 @@
 				fill
 				virtual
 				:min-width="540"
-				:row-key="(row) => row.recipe.recipe_name">
+				:row-key="rowKey">
 				<template #cell-building_recipe="{ row }">
 					<span class="text-lg font-bold text-nowrap">
 						{{ row.recipe.building_ticker }}

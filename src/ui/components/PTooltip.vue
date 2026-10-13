@@ -68,9 +68,8 @@
 		<slot name="trigger"></slot>
 	</div>
 
-	<Teleport to="body">
+	<Teleport v-if="isVisible" to="body">
 		<div
-			v-if="isVisible"
 			ref="tooltipRef"
 			class="z-9999"
 			:class="tooltipConfig.tooltip"

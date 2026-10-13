@@ -142,6 +142,11 @@
 			},
 		];
 	});
+
+	// stable, inline functions re-render the whole table
+	const rowKey = (row: IEmpireMaterialIO) => row.ticker;
+	const expandLabel = (row: IEmpireMaterialIO) =>
+		t("empire.material_io.expand_row", { ticker: row.ticker });
 </script>
 
 <template>
@@ -149,9 +154,9 @@
 		<PDataTable
 			:columns="columns"
 			:data="localEmpireMaterialIO"
-			:row-key="(row) => row.ticker"
+			:row-key="rowKey"
 			:expanded-row-keys="expandedKeys"
-			:expand-label="(row) => t('empire.material_io.expand_row', { ticker: row.ticker })"
+			:expand-label="expandLabel"
 			striped
 			fill
 			:min-width="960"

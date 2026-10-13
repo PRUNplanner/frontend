@@ -84,6 +84,8 @@
 			width: "50%",
 		},
 	]);
+	// a computed: a new array per render re-renders the whole table
+	const rows = computed(() => Object.values(localMap.value));
 </script>
 
 <template>
@@ -128,7 +130,7 @@
 				" />
 		</div>
 	</div>
-	<PDataTable :columns="columns" :data="Object.values(localMap)" striped>
+	<PDataTable :columns="columns" :data="rows" striped>
 		<template #cell-buttons="{ row }">
 				<PButton
 					:aria-label="$t('common.buttons.edit')"
