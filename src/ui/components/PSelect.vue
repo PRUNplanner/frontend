@@ -16,6 +16,7 @@
 
 	import { formItemKey } from "@/ui/formItem";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
+	import { optionKeys } from "@/ui/optionKeys";
 	import type { PSelectOption } from "@/ui/ui.types";
 	import PInput from "./PInput.vue";
 	import PSelectElement from "./PSelectElement.vue";
@@ -97,6 +98,8 @@
 	const selectableOptions: ComputedRef<PSelectOption[]> = computed(() =>
 		filteredOptions.value.flatMap((o) => o.children ?? [o])
 	);
+	// unique v-for keys, also for a missing or repeated value
+	const keys = computed(() => optionKeys(filteredOptions.value));
 	// index in selectableOptions of each filtered option's first entry
 	const selectableOffsets: ComputedRef<number[]> = computed(() => {
 		let offset = 0;
@@ -319,7 +322,7 @@
 					class="w-full flex flex-col bg-gray-900 child:py-1 child:px-2 child:hover:bg-gray-800 rounded-b-sm">
 					<PSelectElement
 						v-for="(option, idx) in filteredOptions"
-						:key="option.value"
+						:key="keys[idx]"
 						:option="option"
 						:selected-value="value"
 						:highlighted-index="highlightOf(option, idx)"

@@ -21,7 +21,7 @@
 	}>();
 
 	defineEmits<{
-		(e: "click"): void;
+		(e: "click", event: MouseEvent): void;
 	}>();
 
 	// icon-only buttons need a name for screen readers
@@ -50,7 +50,7 @@
 		:class="buttonBase"
 		:disabled="disabled"
 		:aria-busy="loading ? 'true' : 'false'"
-		@click="$emit('click')">
+		@click="(e) => $emit('click', e)">
 		<PSpin v-if="loading" color="white" />
 
 		<span
@@ -65,35 +65,3 @@
 		</span>
 	</button>
 </template>
-
-<style scoped>
-	.spinner {
-		animation: rotate 1s linear infinite;
-	}
-	.path {
-		stroke: currentColor;
-		stroke-linecap: round;
-		animation: dash 1.4s ease-in-out infinite;
-	}
-
-	/* spinner keyframes */
-	@keyframes rotate {
-		100% {
-			transform: rotate(360deg);
-		}
-	}
-	@keyframes dash {
-		0% {
-			stroke-dasharray: 1, 150;
-			stroke-dashoffset: 0;
-		}
-		50% {
-			stroke-dasharray: 90, 150;
-			stroke-dashoffset: -35;
-		}
-		100% {
-			stroke-dasharray: 90, 150;
-			stroke-dashoffset: -124;
-		}
-	}
-</style>

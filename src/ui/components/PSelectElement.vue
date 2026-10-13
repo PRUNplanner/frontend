@@ -1,4 +1,7 @@
 <script setup lang="ts">
+	import { computed } from "vue";
+
+	import { optionKeys } from "@/ui/optionKeys";
 	import type { PSelectOption } from "../ui.types";
 
 	const {
@@ -25,6 +28,9 @@
 		if (Array.isArray(selectedValue)) return selectedValue.includes(v);
 		else return selectedValue === v;
 	}
+
+	// unique v-for keys, also for a missing or repeated value
+	const childKeys = computed(() => optionKeys(option.children ?? []));
 </script>
 
 <template>
@@ -35,7 +41,7 @@
 		</div>
 		<template
 			v-for="(child, childIndex) in option.children"
-			:key="`${option.value}#${child.value}`">
+			:key="childKeys[childIndex]">
 			<div
 				class="flex flex-row items-center"
 				:class="[
