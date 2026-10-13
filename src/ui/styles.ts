@@ -136,25 +136,27 @@ export const toastConfig: PToastConfig = {
 
 export const formConfig: PFormConfig = {
 	container:
-		"grid grid-cols-[auto_1fr] max-w-full w-full overflow-hidden pointer-coarse:overflow-x-clip pointer-coarse:overflow-y-visible child:mb-1",
+		"grid grid-cols-[auto_1fr] max-w-full w-full overflow-x-clip overflow-y-visible child:mb-1",
 };
 
 export const formItemConfig: PFormItemConfig = {
 	label: "flex-none flex items-center h-full overflow-hidden whitespace-nowrap text-ellipsis pr-4",
-	// touch screens: the controls' 44px hit areas reach past the row
+	// clips sideways only (for the ellipsis), so the controls' hit areas
+	// reach past the row; on touch screens not at all
 	content:
-		"flex-none flex items-center h-full min-w-0 overflow-hidden pointer-coarse:overflow-visible whitespace-nowrap text-ellipsis",
+		"flex-none flex items-center h-full min-w-0 overflow-x-clip overflow-y-visible pointer-coarse:overflow-visible whitespace-nowrap text-ellipsis",
 };
 
 export const inputNumberConfig: PInputNumberConfig = {
 	container:
 		"inline-flex w-full items-center leading-none rounded-control text-nowrap bg-white/5 text-ink pointer-coarse:min-h-11",
 	input: "w-full h-full focus-visible:-outline-offset-2",
-	buttonContainer: "flex flex-row pr-1",
+	// the steppers are for the mouse; touch screens type with the numeric keypad
+	buttonContainer: "flex flex-row pr-1 pointer-coarse:hidden",
 	buttonChangeAllowed:
-		"flex items-center justify-center w-6 h-6 pointer-coarse:size-11 rounded-control text-white/70 cursor-pointer hover:bg-white/10",
+		"flex items-center justify-center w-6 h-6 rounded-control text-white/70 cursor-pointer hover:bg-white/10",
 	buttonChangeUnallowed:
-		"flex items-center justify-center w-6 h-6 pointer-coarse:size-11 rounded-control text-white/20 cursor-auto",
+		"flex items-center justify-center w-6 h-6 rounded-control text-white/20 cursor-auto",
 	sizes: {
 		sm: {
 			container: "gap-1 h-6 text-xs",

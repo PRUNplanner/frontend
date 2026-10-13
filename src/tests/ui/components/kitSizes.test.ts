@@ -61,6 +61,18 @@ describe("kit control heights", () => {
 		}
 	);
 
+	it("hides the number steppers on touch screens (the keypad types)", () => {
+		const steppers = mount(PInputNumber, {
+			props: { value: 1, ariaLabel: "x", showButtons: true },
+			global: { plugins: [i18n] },
+		})
+			.findAll("button")
+			.map((b) => b.element.parentElement!.className);
+
+		expect(steppers).toHaveLength(2);
+		expect(steppers[0]).toContain("pointer-coarse:hidden");
+	});
+
 	it("gives buttons an invisible 44 px hit area on touch", () => {
 		const button = mount(PButton, { slots: { default: "Save" } });
 		expect(button.find("button").classes()).toContain("touch-target");

@@ -34,11 +34,12 @@ are internal to `PDataTable` and the selects.
   area from the `touch-target` utility (`style.css`, a centred `::after`);
   put it on any raw `<button>` smaller than that too, and don't clip it
   with `overflow-hidden` around the control (`PForm` rows let it through
-  on touch screens). Controls that sit right next to each other (the
-  `PInputNumber` steppers, a tag's remove button) can't share an
-  overlapping hit area, so they are visibly 44 px on touch screens
-  instead. Known limit: in a table row a target is as tall as the row,
-  because the next row's control owns the space below it. Text fields and select triggers
+  on touch screens). A tag's remove button sits inside the tag, so it is
+  visibly 44 px on touch screens instead; `PInputNumber`'s steppers are
+  mouse-only and hidden there (the field opens the numeric keypad).
+  Known limits: in a table row a target is as tall as the row, and
+  buttons closer than about 20 px to each other share the space between
+  them, because a hit area never covers a neighbouring control. Text fields and select triggers
   can't take a tap through a pseudo element, so they are 44 px tall there
   (`pointer-coarse:min-h-11`). Desktop sizes don't change. The UI audit
   counts what's left as `smallTargetsTouch`.
@@ -80,7 +81,8 @@ are internal to `PDataTable` and the selects.
   - Icon-only `PButton`s need `aria-label`; the dev build warns without it.
   - Auth fields set `autocomplete` (`username`, `current-password`,
     `new-password`); the kit default is `off`.
-  - Keyboard: `PInputNumber` steps with ↑/↓ (its +/- are mouse-only);
+  - Keyboard: `PInputNumber` steps with ↑/↓ (its +/- are mouse-only and
+    hidden on touch screens);
     `PSelect` opens with Enter, Space or ↓ and closes with Esc. The select
     is a `combobox` controlling a `listbox` of `option`s (groups are
     `group`s), with `aria-activedescendant` on whatever has focus; opening a
