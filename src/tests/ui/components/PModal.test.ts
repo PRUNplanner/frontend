@@ -9,7 +9,7 @@ import { defineComponent, h, ref, type Ref } from "vue";
 import { createI18n } from "vue-i18n";
 
 import PModal from "@/ui/components/PModal.vue";
-import { currentlyOpenId } from "@/ui/stateCurrentOpen";
+import PSelect from "@/ui/components/PSelect.vue";
 
 enableAutoUnmount(afterEach);
 
@@ -138,6 +138,25 @@ describe("PModal", () => {
 	});
 
 	// e.g. the save conflict dialog, an async component rendered already open
+	it("takes a width in px or CSS and keeps 16 px of the mask on each side", async () => {
+		mount(PModal, {
+			props: { show: true, title: "px", width: 446 },
+			attachTo: app,
+			global: { plugins: [i18n] },
+		});
+		mount(PModal, {
+			props: { show: true, title: "css", width: "40rem" },
+			attachTo: app,
+			global: { plugins: [i18n] },
+		});
+		await flushPromises();
+		const [px, css] = [...document.querySelectorAll<HTMLElement>("[role=dialog]")];
+
+		expect(px.style.width).toBe("446px");
+		expect(css.style.width).toBe("40rem");
+		expect(px.classList).toContain("max-w-[calc(100vw-32px)]");
+	});
+
 	it("focuses the content when mounted open", async () => {
 		mount(PModal, {
 			props: { show: true, title: "Open" },
@@ -179,16 +198,38 @@ describe("PModal", () => {
 	});
 
 	it("closes an open PSelect list first on Esc", async () => {
-		const { shows } = await mountModals(1);
-		await open();
+		const show = ref(true);
+		mount(PModal, {
+			props: {
+				show: true,
+				"onUpdate:show": (v: boolean) => (show.value = v),
+				title: "Select",
+			},
+			slots: {
+				default: () =>
+					h(PSelect, {
+						value: null,
+						options: [{ label: "A", value: "a" }],
+						ariaLabel: "Pick",
+					}),
+			},
+			attachTo: app,
+			global: { plugins: [i18n] },
+		});
+		await flushPromises();
+		const combobox = body().find<HTMLElement>("[role=combobox]");
+		combobox.element.focus();
+		await combobox.trigger("keydown", { key: "ArrowDown" });
+		await flushPromises();
+		expect(body().find("[role=listbox]").exists()).toBe(true);
 
-		currentlyOpenId.value = "select-abc";
 		await key("Escape");
-		expect(currentlyOpenId.value).toBeNull();
-		expect(shows[0].value).toBe(true);
+		expect(body().find("[role=listbox]").exists()).toBe(false);
+		expect(show.value).toBe(true);
+		expect(document.activeElement).toBe(combobox.element);
 
 		await key("Escape");
-		expect(shows[0].value).toBe(false);
+		expect(show.value).toBe(false);
 	});
 
 	it("stacks: Esc closes the top one, lock and inert last until both close", async () => {

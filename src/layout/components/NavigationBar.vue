@@ -568,7 +568,7 @@
 				<div>
 					<PTooltip v-if="!fioTag">
 						<template #trigger>
-							<PTag size="sm" type="success" :bordered="false">
+							<PTag size="sm" type="success">
 								{{
 									isFull
 										? t("common.navigation.fio.fio_active")
@@ -605,7 +605,7 @@
 						v-else
 						to="/profile"
 						class="inline-flex items-center min-h-6">
-						<PTag size="sm" :type="fioTag.type" :bordered="false">
+						<PTag size="sm" :type="fioTag.type">
 							{{
 								isFull
 									? t(`common.navigation.fio.${fioTag.label}`)

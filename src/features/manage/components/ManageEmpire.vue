@@ -297,7 +297,7 @@
 			</PButton>
 		</div>
 	</div>
-	<div class="py-3 text-white/60">
+	<div class="py-3 text-muted">
 		{{ $t("management.empire.description") }}
 	</div>
 	<div

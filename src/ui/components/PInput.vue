@@ -4,9 +4,9 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	import type { SizeKey } from "@/ui/ui.types";
+	import type { FieldStatus, SizeKey } from "@/ui/ui.types";
 	import { formItemKey } from "@/ui/formItem";
-	import { inputConfig } from "@/ui/styles";
+	import { fieldStatusConfig, inputConfig } from "@/ui/styles";
 
 	const value = defineModel<string | null | undefined>("value", {
 		required: true,
@@ -20,6 +20,7 @@
 		type = "input",
 		ariaLabel = undefined,
 		autocomplete = "off",
+		status = undefined,
 	} = defineProps<{
 		disabled?: boolean;
 		size?: SizeKey;
@@ -30,11 +31,14 @@
 		ariaLabel?: string;
 		/** e.g. "username", "current-password", "new-password" */
 		autocomplete?: string;
+		/** a PFormItem with an error sets "error" */
+		status?: FieldStatus;
 	}>();
 
 	// labelled by the surrounding PFormItem unless it has its own name
 	const formItem = inject(formItemKey, null);
 	const inputId = computed(() => (ariaLabel ? undefined : formItem?.inputId));
+	const fieldStatus = computed(() => status ?? formItem?.status.value);
 
 	const inputEl = ref<HTMLInputElement | null>(null);
 
@@ -48,6 +52,10 @@
 
 	defineExpose({ focus, inputEl });
 
+	defineEmits<{
+		(e: "keydown", event: KeyboardEvent): void;
+	}>();
+
 	function onInput(e: Event) {
 		const target = e.target as HTMLInputElement;
 		value.value = target.value;
@@ -57,7 +65,17 @@
 <template>
 	<div>
 		<div
-			:class="`${inputConfig.container} ${inputConfig.sizes[size].container}`">
+			:class="[
+				inputConfig.container,
+				inputConfig.sizes[size].container,
+				type === 'textarea' ? '' : inputConfig.sizes[size].field,
+				fieldStatus ? fieldStatusConfig[fieldStatus] : '',
+			]">
+			<span
+				v-if="$slots.prefix"
+				class="flex items-center shrink-0 text-muted">
+				<slot name="prefix" />
+			</span>
 			<textarea
 				v-if="type === 'textarea'"
 				:id="inputId"
@@ -68,9 +86,12 @@
 				:rows="rows"
 				:placeholder="placeholderText"
 				:aria-label="ariaLabel"
-				:class="`${inputConfig.sizes[size].input}`"
+				:aria-invalid="fieldStatus === 'error' || undefined"
+				:aria-describedby="formItem?.describedBy.value"
+				:class="`${inputConfig.sizes[size].input} py-1`"
 				:autocomplete="autocomplete"
-				@input="onInput" />
+				@input="onInput"
+				@keydown="$emit('keydown', $event)" />
 			<input
 				v-else
 				:id="inputId"
@@ -81,9 +102,12 @@
 				:value="value"
 				:placeholder="placeholderText"
 				:aria-label="ariaLabel"
+				:aria-invalid="fieldStatus === 'error' || undefined"
+				:aria-describedby="formItem?.describedBy.value"
 				:class="`${inputConfig.sizes[size].input}`"
 				:autocomplete="autocomplete"
-				@input="onInput" />
+				@input="onInput"
+				@keydown="$emit('keydown', $event)" />
 		</div>
 	</div>
 </template>

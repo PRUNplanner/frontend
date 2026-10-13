@@ -28,11 +28,11 @@
 			class="flex items-baseline gap-1.5 whitespace-nowrap min-w-0">
 			<span class="truncate">{{ name(side.top.planetId) }}</span>
 			<strong>{{ formatNumber(side.top.amount) }}</strong>
-			<span v-if="side.more > 0" class="text-white/55">
+			<span v-if="side.more > 0" class="text-muted">
 				+{{ side.more }}
 			</span>
 		</div>
-		<span v-else class="text-white/55">—</span>
+		<span v-else class="text-muted">—</span>
 		<div
 			v-if="side.top"
 			class="h-1.5 rounded-[2px] overflow-hidden bg-white/7"

@@ -10,16 +10,64 @@ import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui
 ```
 
 The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDataTable`,
-`PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeperator` (the
-misspelling is the real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`,
-`PPagination`, `PPopover`, `PProgressBar`, `PSelect`, `PSelectElement`,
+`PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeparator`, `PIcon`,
+`PInput`, `PInputNumber`, `PModal`, `PPopover`, `PProgressBar`, `PSelect`,
 `PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast` (through
 `useToast()`, see "Toasts" below), `PTooltip` and `PValue`, plus
-`useConfirm()` (see "Overlays" below).
+`useConfirm()` (see "Overlays" below). `PPagination` and `PSelectElement`
+are internal to `PDataTable` and the selects.
 
-- **Shared props:** `size` (`"sm" | "md"`) and `color` (`primary`,
-  `success`, `error`, `warning`, `secondary`). Both types are in
-  `ui/ui.types.ts`.
+- **Kit page:** `/dev/kit` (`views/dev/KitView.vue`) shows every component
+  in every size, type and state. It exists in `pnpm dev` and in builds with
+  `VITE_KIT_PAGE=true` (the e2e stack), not in production. Add new
+  components and states there.
+- **Shared props:** `size` (`"sm" | "md"`) and `type` for the colour
+  (`primary`, `success`, `error`, `warning`, `secondary`; buttons also
+  `ghost`). Both types are in `ui/ui.types.ts`.
+- **Sizes:** every control (`PButton`, `PInput`, `PInputNumber`,
+  `PSelect`, `PSelectMultiple`, `PCheckbox`) takes `size`: `md` is 28 px
+  tall, `sm` 24 px (checkbox boxes 16 / 14 px), side by side on the kit
+  page. `PCheckbox` also takes `indeterminate` (a dash, for "select all"
+  over some rows).
+- **Touch:** every kit target is at least 24 × 24 px, and 44 × 44 px on a
+  touch screen (`pointer: coarse`). Small controls get an invisible hit
+  area from the `touch-target` utility (`style.css`, a centred `::after`);
+  put it on any raw `<button>` smaller than that too, and don't clip it
+  with `overflow-hidden` around the control (`PForm` rows only clip
+  sideways, and not at all on touch screens). A tag's remove button sits inside the tag, so it is
+  visibly 44 px on touch screens instead; `PInputNumber`'s steppers are
+  mouse-only and hidden there (the field opens the numeric keypad).
+  Known limits: in a table row a target is as tall as the row, and
+  buttons closer than about 20 px to each other share the space between
+  them, because a hit area never covers a neighbouring control. Text fields and select triggers
+  can't take a tap through a pseudo element, so they are 44 px tall there
+  (`pointer-coarse:min-h-11`). Desktop sizes don't change. The UI audit
+  counts what's left as `smallTargetsTouch`.
+- **Unknown props fail `pnpm tsc`** (`checkUnknownProps` and
+  `checkUnknownEvents` in `tsconfig.typecheck.json`). `class`, `style`,
+  `id`, `title`, `role`, `aria-*` and `data-*` fall through to a
+  component's root (allowlisted in `ui/ui.types.ts`); anything else needs a
+  declared prop or emit.
+- **Field states:** `status` (`"error"` or `"warning"`) on `PInput`,
+  `PInputNumber`, `PSelect` and `PSelectMultiple` draws an inset ring in
+  `negative` / `warning`; `error` also sets `aria-invalid`. In a form, give
+  the `PFormItem` an `error` instead: it shows the message under the field,
+  puts the control in the error state and links the message (and the
+  `#info` slot) with `aria-describedby`.
+- **Notices:** a message in the page is a `<PNotice type="error">`
+  (`info`, `warning` or `error`, default `info`), with an optional
+  `#action` slot for one button. Errors are `role="alert"`, the others
+  `role="status"`. Don't hand-style red or amber boxes.
+- **Toggles:** a button that shows a selection or an on/off state takes
+  `:pressed="…"` instead of switching `type`: it sets `aria-pressed` and is
+  `primary` while pressed, its `type` (default `secondary`) when not. Keep
+  `type` only where the colour means something else (a failed save).
+- **Tags:** `<PTag closable @close="…">` adds a remove button named
+  "Remove {value}", so tags (and `PSelectMultiple` chips) can be removed
+  by keyboard.
+- **Inputs:** `PInput` has a `#prefix` slot (e.g. a search icon).
+  `PSelectMultiple` takes a `placeholder`; both selects only show the
+  clear button with `clearable`.
 - **Select options** use `PSelectOption` (`{ label, value, badge?, children? }`). `badge` is shown on the right and not searched; arrow keys and Enter move through group children, not group headers.
 - **Forms:** `<PForm as-form @submit="…">` renders a real `<form>`, so Enter
   in an input submits. Give its button `html-type="submit"` and no `@click`.
@@ -33,8 +81,13 @@ misspelling is the real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`,
   - Icon-only `PButton`s need `aria-label`; the dev build warns without it.
   - Auth fields set `autocomplete` (`username`, `current-password`,
     `new-password`); the kit default is `off`.
-  - Keyboard: `PInputNumber` steps with ↑/↓ (its +/- are mouse-only);
-    `PSelect` opens with Enter, Space or ↓ and closes with Esc.
+  - Keyboard: `PInputNumber` steps with ↑/↓ (its +/- are mouse-only and
+    hidden on touch screens);
+    `PSelect` opens with Enter, Space or ↓ and closes with Esc. The select
+    is a `combobox` controlling a `listbox` of `option`s (groups are
+    `group`s), with `aria-activedescendant` on whatever has focus; opening a
+    searchable one moves focus into its search, and Esc (and Enter on a
+    single select) returns it to the combobox.
   - One focus ring for all controls (`:focus-visible`, `--color-focus` in
     `style.css`); don't add `outline-none`. Clickable things are `<button>`
     or `<a>`, never a `div` with `@click`.
@@ -55,8 +108,9 @@ misspelling is the real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`,
 - **Overlays and the rest:**
   - **Overlays:** modals, drawers, confirms, popovers and menus come from
     the kit.
-    - `<PModal v-model:show="x" :title="…">` with an `#action` slot for the
-      footer; widths go in `class` (e.g. `class="w-120! max-w-[90vw]!"`).
+    - `<PModal v-model:show="x" :title="…" :width="480">` with an `#action`
+      slot for the footer; `width` is px or any CSS width (default the full
+      width), and 16 px of the mask stay visible on each side.
     - `<PDrawer v-model:show="x" :title="…" :width="600">`, with
       `placement`, `bodyClass` and a `#header` slot.
     - Confirms: `if (await useConfirm()({ title, content, positiveText,
@@ -64,19 +118,32 @@ misspelling is the real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`,
     - Both layers teleport to `body`, set `inert` on `#app` and lock the page
       scroll. Focus moves in and returns to the opener, Tab stays inside, and
       Esc closes the top layer (an open `PSelect` list first). `PSelect` lists
-      and `PTooltip`s stack above them.
+      and `PTooltip`s stack above them; every z-index comes from
+      `ui/zIndex.ts`.
     - `<PPopover>` with a `#trigger` slot: `trigger` `click` (toggles) or
-      `manual` (`v-model:show`), `placement`, `panelClass` (default
-      `popoverConfig.panel`), `anchor` (an element to position at instead of
-      the trigger) and `arrow`. Emits `clickoutside`.
+      `manual` (`v-model:show`), `placement`, `panelClass` (added to the
+      panel look, replaces the default `p-3` padding), `anchor` (an element
+      to position at instead of the trigger) and `arrow`. Emits
+      `clickoutside`.
     - `<PDropdown :options @select>`: `{ key, label, icon?, hint?, danger? }`
       or `{ type: "divider" }`, `trigger` `click`, `hover` or `manual`, and
       `anchor`. A `role="menu"`: ↓ on the trigger opens it, ↑/↓/Home/End
       move, Enter or Space picks, Esc closes and returns focus.
+    - `<PTooltip>` with a `#trigger` slot shows its default slot on hover,
+      on keyboard focus inside the trigger and on a tap; Esc, focus leaving
+      and a tap elsewhere close it. A tap on a button, link or checkbox
+      inside the trigger runs that control and shows no tooltip, so give
+      such a control its own name. The panel is `role="tooltip"` and, while
+      it's open, the trigger's first focusable element gets
+      `aria-describedby` (closed tooltips add nothing to the page); a trigger
+      with nothing focusable becomes a tab stop itself (`disabled` turns
+      all of it off). Charts with their own SVG tooltips use the same rules
+      through `useTooltipTrigger` (`ui/useTooltipTrigger.ts`).
     - Popovers and menus are non-modal layers on the same stack: Esc closes
       the topmost, no inert, scroll lock or focus trap. A click outside
-      closes them, except on the trigger, inside, in a `PSelect` list or in
-      a layer opened from inside.
+      closes them, except on the trigger, inside or in a layer opened from
+      inside. `PSelect` lists are layers too (`useSelectList`), so picking
+      in a select inside a popover keeps the popover open.
   - **Toasts:** `const toast = useToast()` from `@/ui`, then
     `toast(text, { type: "error" })`,
     `toast(text, { action: { label, onClick } })` or
@@ -185,12 +252,29 @@ Examples: `features/planning/components/PlanMaterialIO.vue`,
   `text-white/40`–`/50`) and `muted-strong`. All pass 4.5:1 on every app
   surface. The colour-blind preference sets `data-palette="colorblind"` on
   `<html>`, which swaps `positive`/`negative` to blue/orange, so use the
-  tokens, never raw green/red. Text is at least `text-xs` (12 px).
+  tokens, never raw green/red/orange (`kitTokens.test.ts` fails on
+  them). Text is at least `text-xs` (12 px).
+- **Kit tokens** (same file), one value per meaning; the kit has no hex or
+  rgb literals (same test):
+  - `surface` (every floating panel, modal and drawer), `surface-sunken`
+    (table header);
+  - `line` / `line-strong` (borders), `hover` (row, option and menu item
+    under the pointer), `selected` (keyboard highlight, sorted column);
+  - `ink` / `ink-strong` (body and heading text), `primary` (primary
+    button), `link` (links, active sort and page);
+  - `rounded-control` (4 px: buttons, inputs, selects, tags, checkboxes),
+    `rounded-panel` (6 px: popovers, menus, lists, tooltips, toasts, modals,
+    tables) and `shadow-panel`.
+  - Floating panels share `panelConfig.panel` (`ui/styles.ts`).
+  - Buttons: `error` is filled `negative` with dark text, `warning` amber;
+    both follow the colour-blind palette.
 - **Fonts:** Roboto and Roboto Mono are self-hosted via `@fontsource`
   (`main.ts`). Use `font-mono` only for tickers, ids and code.
-- **Other custom colours:** `pp-primary`, `pp-secondary`, `pp-border`,
-  `pp-card-header`, `prunplanner` (brand lime),
-  `row`, `row-alternate` and `table-border`.
+- **Other custom colours:** `pp-primary`, `pp-secondary`,
+  `pp-card-header`, `prunplanner` (brand lime), `row`, `row-alternate` and
+  `table-border`. The older `gray-dark`, `pp-border` and `link-primary`
+  are aliases of `surface`, `line` and `link`; use the token names in new
+  code.
 - **Custom variants:** `child:`, `child-hover:` and `not-first:`.
 - **The app is dark-only.**
 - Prefer utility classes in templates. `<style>` blocks are rare.

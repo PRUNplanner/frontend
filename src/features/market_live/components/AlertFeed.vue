@@ -54,9 +54,9 @@
 						class="grid grid-cols-[minmax(0,1fr)_5rem_5rem] @sm:grid-cols-[minmax(0,1fr)_5rem_minmax(0,1fr)_5rem] @2xl:grid-cols-[minmax(0,2fr)_5rem_minmax(0,5fr)_minmax(0,2fr)_5rem] gap-2 @2xl:gap-4 px-2 py-1 items-center hover:bg-white/5 transition-colors border-l-4 border-b-dark-gray"
 						:class="{
 							'border-transparent': event.severity === 'LOW',
-							'border-orange-400': event.severity === 'MEDIUM',
-							'border-red-600': event.severity === 'HIGH',
-							'bg-red-500/20': event.severity === 'HIGH',
+							'border-warning': event.severity === 'MEDIUM',
+							'border-negative': event.severity === 'HIGH',
+							'bg-negative/20': event.severity === 'HIGH',
 						}">
 						<div class="min-w-0">
 							<p
@@ -74,9 +74,9 @@
 								:class="{
 									'bg-gray-dark text-muted':
 										event.severity === 'LOW',
-									'bg-orange-500/10 text-orange-500 border border-orange-500/20':
+									'bg-warning/10 text-warning border border-warning/20':
 										event.severity === 'MEDIUM',
-									'bg-red-600 text-white':
+									'bg-negative text-black':
 										event.severity === 'HIGH',
 								}">
 								{{
@@ -203,9 +203,9 @@
 						class="hidden group-hover:block animate-in fade-in slide-in-from-top-1 duration-200 bg-white/5 px-2 py-1 border-l-4"
 						:class="{
 							'border-transparent': event.severity === 'LOW',
-							'border-orange-400': event.severity === 'MEDIUM',
-							'border-red-600': event.severity === 'HIGH',
-							'bg-red-500/20': event.severity === 'HIGH',
+							'border-warning': event.severity === 'MEDIUM',
+							'border-negative': event.severity === 'HIGH',
+							'bg-negative/20': event.severity === 'HIGH',
 						}">
 						<div class="col-span-12">
 							<AlertFeedDetail

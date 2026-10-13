@@ -1372,7 +1372,7 @@
 												)
 											"
 											size="sm"
-											secondary
+											type="secondary"
 											@click="
 												refMaterialIOShowBasked =
 													!refMaterialIOShowBasked
@@ -1402,7 +1402,7 @@
 												)
 											"
 											size="sm"
-											secondary
+											type="secondary"
 											@click="
 												refMaterialIOSplitted =
 													!refMaterialIOSplitted
@@ -1464,7 +1464,7 @@
 	<SaveConflictDialog v-if="conflict.show.value" :conflict="conflict" />
 	<PModal
 		v-model:show="refShowSaveAsModal"
-		class="w-120! max-w-[90vw]!"
+		:width="480"
 		:title="
 			shared
 				? t('sharing.banner.save')

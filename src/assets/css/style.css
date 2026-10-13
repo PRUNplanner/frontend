@@ -16,6 +16,29 @@
 	--app-bg: #030707;
 	/* focus ring, >= 3:1 on every app surface */
 	--color-focus: #60a5fa;
+
+	/* the UI kit's look (src/ui), one value per meaning */
+	/* panels: popover, menu, select list, tooltip, toast, modal, drawer */
+	--color-surface: #151515;
+	/* table header */
+	--color-surface-sunken: #000000;
+	--color-line: #2d2d30;
+	--color-line-strong: rgb(255 255 255 / 0.15);
+	/* row, option and menu item under the pointer */
+	--color-hover: rgb(255 255 255 / 0.08);
+	/* keyboard-highlighted option, sorted column */
+	--color-selected: #333337;
+	--color-ink: rgb(255 255 255 / 0.8);
+	--color-ink-strong: rgb(255 255 255 / 0.9);
+	/* primary button fill */
+	--color-primary: var(--color-blue-800);
+	/* links, active sort and page */
+	--color-link: #6ea8fe;
+	/* buttons, inputs, selects, tags, checkboxes */
+	--radius-control: 4px;
+	/* popovers, menus, lists, tooltips, toasts, modals, tables */
+	--radius-panel: 6px;
+	--shadow-panel: 0 10px 15px -3px rgb(0 0 0 / 0.6);
 }
 
 /* chart colours, read by useChartTheme (src/ui/charts/chartTheme.ts);
@@ -150,4 +173,25 @@ body:has(#menu-toggle:focus-visible) label[for="menu-toggle"] {
 		rgb(96 113 12 / 0.75) 0 7px,
 		transparent 7px 14px
 	);
+}
+
+/* an invisible hit area around a smaller control: at least 24 x 24 px
+   (WCAG 2.5.8), 44 x 44 px on touch screens (2.5.5); nothing is drawn */
+@utility touch-target {
+	position: relative;
+	&::after {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: max(100%, 24px);
+		height: max(100%, 24px);
+		transform: translate(-50%, -50%);
+	}
+	@media (pointer: coarse) {
+		&::after {
+			width: max(100%, 44px);
+			height: max(100%, 44px);
+		}
+	}
 }

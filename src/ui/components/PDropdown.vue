@@ -131,7 +131,7 @@
 		:trigger="trigger === 'click' ? 'click' : 'manual'"
 		:placement="placement"
 		:anchor="anchor"
-		panel-class="rounded-[3px] bg-gray-dark text-[14px] shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_10px_15px_-3px_rgba(0,0,0,0.6)]"
+		panel-class="text-sm"
 		@clickoutside="show = false">
 		<template v-if="$slots.default" #trigger>
 			<span
@@ -164,16 +164,16 @@
 				<div
 					v-if="'type' in o"
 					role="separator"
-					class="h-px my-1 bg-white/10" />
+					class="h-px my-1 bg-line-strong" />
 				<div
 					v-else
 					:id="`${id}-${items.indexOf(o)}`"
 					role="menuitem"
-					class="relative flex cursor-pointer leading-[34px] before:absolute before:inset-y-0 before:inset-x-1 before:rounded-[3px]"
+					class="touch-target flex cursor-pointer leading-[34px] before:absolute before:inset-y-0 before:inset-x-1 before:rounded-control"
 					:class="[
 						o.hint ? '' : 'h-[34px]',
-						o.danger ? 'text-negative' : 'text-white/82',
-						active === items.indexOf(o) ? 'before:bg-white/8' : '',
+						o.danger ? 'text-negative' : 'text-ink',
+						active === items.indexOf(o) ? 'before:bg-hover' : '',
 					]"
 					@mouseenter="active = items.indexOf(o)"
 					@click="select(o.key)">

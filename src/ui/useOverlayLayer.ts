@@ -1,12 +1,9 @@
 import { onBeforeUnmount, onMounted, ref, type Ref, watch } from "vue";
 
-import { currentlyOpenId } from "@/ui/stateCurrentOpen";
+import { Z_LAYER } from "@/ui/zIndex";
 
 const FOCUSABLE =
 	'a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-// above page content, below PSelect lists (5000) and PTooltip (9999)
-const BASE_Z_INDEX = 2000;
 
 // open layers, the last one is on top
 const stack: { id: symbol; modal: boolean; panel: Ref<HTMLElement | null> }[] =
@@ -41,11 +38,11 @@ function focusables(panel: HTMLElement): HTMLElement[] {
  * Shared behaviour of PModal and PDrawer: stacking, page scroll lock and
  * inert app root, focus moved in, trapped and returned, Esc and mask close.
  *
- * Esc closes only the topmost layer, and first closes an open PSelect list.
+ * Esc closes only the topmost layer, so an open PSelect list first.
  *
- * Non-modal layers (PPopover, PDropdown) only stack and close on Esc: no
- * scroll lock, inert, focus move or trap. They return focus to the opener
- * only when it was inside them.
+ * Non-modal layers (PPopover, PDropdown, PSelect lists) only stack and
+ * close on Esc: no scroll lock, inert, focus move or trap. They return focus
+ * to the opener only when it was inside them.
  *
  * @author jplacht
  *
@@ -62,7 +59,7 @@ export function useOverlayLayer(
 ) {
 	const modal = options.modal ?? true;
 	const id = Symbol();
-	const zIndex: Ref<number> = ref(BASE_Z_INDEX);
+	const zIndex: Ref<number> = ref(Z_LAYER);
 	let opener: HTMLElement | null = null;
 	let maskPressed = false;
 
@@ -72,8 +69,7 @@ export function useOverlayLayer(
 
 		if (e.key === "Escape") {
 			e.preventDefault();
-			if (currentlyOpenId.value) currentlyOpenId.value = null;
-			else options.close();
+			options.close();
 		} else if (e.key === "Tab" && modal) {
 			const items = focusables(el);
 			const first = items[0] ?? el;
@@ -101,7 +97,7 @@ export function useOverlayLayer(
 				: null;
 		if (modal && !anyModal()) lockPage();
 		stack.push({ id, modal, panel });
-		zIndex.value = BASE_Z_INDEX + stack.length;
+		zIndex.value = Z_LAYER + stack.length;
 		document.addEventListener("keydown", onKeydown);
 
 		const el = panel.value;

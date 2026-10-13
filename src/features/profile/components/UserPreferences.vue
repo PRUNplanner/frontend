@@ -25,7 +25,7 @@
 	import {
 		PForm,
 		PFormItem,
-		PFormSeperator,
+		PFormSeparator,
 		PSelect,
 		PInputNumber,
 		PCheckbox,
@@ -95,27 +95,27 @@
 	<h2 class="text-white/80 font-bold text-lg my-auto">
 		{{ $t("profile.preferences.title") }}
 	</h2>
-	<div class="py-3 text-white/60">
+	<div class="py-3 text-muted">
 		{{ $t("profile.preferences.description") }}
 	</div>
 
 	<PForm>
-		<PFormSeperator>
+		<PFormSeparator>
 			<h3 class="font-bold pb-3">
 				{{ $t("profile.preferences.form.tool_preferences") }}
 			</h3>
-		</PFormSeperator>
+		</PFormSeparator>
 		<PFormItem :label="t('profile.preferences.form.language')">
 			<PSelect
 				v-model:value="locale"
 				:options="SupportedLanguages"
 				class="w-full" />
 		</PFormItem>
-		<PFormSeperator>
+		<PFormSeparator>
 			<i18n-t
 				keypath="profile.preferences.form.language_note"
 				tag="p"
-				class="text-xs text-white/60 pt-1 pb-2">
+				class="text-xs text-muted pt-1 pb-2">
 				<template #link>
 					<a
 						href="https://crowdin.com/project/prunplanner"
@@ -125,7 +125,7 @@
 					>
 				</template>
 			</i18n-t>
-		</PFormSeperator>
+		</PFormSeparator>
 		<PFormItem :label="t('profile.preferences.form.color_palette')">
 			<PSelect
 				v-model:value="colorPalette"
@@ -152,11 +152,11 @@
 				class="w-full" />
 		</PFormItem>
 
-		<PFormSeperator>
+		<PFormSeparator>
 			<h4 class="font-bold py-1">
 				{{ $t("profile.preferences.form.fio_burn") }}
 			</h4>
-		</PFormSeperator>
+		</PFormSeparator>
 
 		<PFormItem :label="t('profile.preferences.form.red_threshold')">
 			<PInputNumber
@@ -191,40 +191,40 @@
 		<PFormItem :label="t('profile.preferences.form.plan_suggestions')">
 			<PCheckbox v-model:checked="planSuggestions" />
 		</PFormItem>
-		<PFormSeperator>
-			<p class="text-xs text-white/60 pt-1 pb-2">
+		<PFormSeparator>
+			<p class="text-xs text-muted pt-1 pb-2">
 				{{ $t("profile.preferences.form.plan_suggestions_help") }}
 			</p>
-		</PFormSeperator>
+		</PFormSeparator>
 
 		<template v-if="analyticsAvailable">
-			<PFormSeperator>
+			<PFormSeparator>
 				<h4 class="font-bold py-1">
 					{{ $t("profile.preferences.form.privacy") }}
 				</h4>
-			</PFormSeperator>
+			</PFormSeparator>
 			<PFormItem :label="t('profile.preferences.form.analytics')">
 				<PCheckbox
 					:checked="consent === 'granted'"
 					:disabled="isDNT"
 					@update:checked="(value) => (value ? grant() : deny())" />
 			</PFormItem>
-			<PFormSeperator>
-				<p class="text-xs text-white/60 pt-1 pb-2">
+			<PFormSeparator>
+				<p class="text-xs text-muted pt-1 pb-2">
 					{{
 						isDNT
 							? $t("profile.preferences.form.analytics_dnt")
 							: $t("profile.preferences.form.analytics_note")
 					}}
 				</p>
-			</PFormSeperator>
+			</PFormSeparator>
 		</template>
 	</PForm>
 
 	<h3 class="font-bold py-3">
 		{{ $t("profile.preferences.form.plan_specific") }}
 	</h3>
-	<div class="pb-3 text-white/60">
+	<div class="pb-3 text-muted">
 		{{ $t("profile.preferences.form.plan_specific_description") }}
 	</div>
 	<PTable striped>

@@ -1,19 +1,26 @@
 <script setup lang="ts">
+	import { useI18n } from "vue-i18n";
+	const { t } = useI18n();
+
 	import type { ColorKey, SizeKey } from "@/ui/ui.types";
 	import { tagConfig } from "@/ui/styles";
+	import { ClearSharp } from "@vicons/material";
 
 	const {
 		value = undefined,
 		type = "primary",
 		size = "md",
+		closable = false,
 	} = defineProps<{
 		value?: string;
 		type?: ColorKey;
 		size?: SizeKey;
+		/** a remove button ("Remove {value}") that emits close */
+		closable?: boolean;
 	}>();
 
 	defineEmits<{
-		(e: "click", value: MouseEvent): void;
+		(e: "close"): void;
 	}>();
 </script>
 
@@ -24,11 +31,13 @@
 			{{ value }}
 		</div>
 		<slot v-else />
-		<div
-			v-if="$slots.icon"
+		<button
+			v-if="closable"
+			type="button"
 			:class="tagConfig.sizes[size].icon"
-			@click.stop="$emit('click', $event)">
-			<slot name="icon" />
-		</div>
+			:aria-label="t('common.ui.tag.remove', { label: value ?? '' })"
+			@click.stop="$emit('close')">
+			<ClearSharp class="size-full pointer-coarse:size-4" />
+		</button>
 	</div>
 </template>

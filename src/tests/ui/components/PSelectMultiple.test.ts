@@ -3,7 +3,6 @@ import { defineComponent, h, ref } from "vue";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
-import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 import { mountComponent } from "@/tests/mountComponent";
 
 const OPTIONS = [
@@ -14,10 +13,21 @@ const OPTIONS = [
 ];
 
 const body = () => new DOMWrapper(document.body);
+
+// an Esc on the page: claimed (prevented) only while a layer, e.g. the list, is open
+function escClaimed(): boolean {
+	const event = new KeyboardEvent("keydown", {
+		key: "Escape",
+		bubbles: true,
+		cancelable: true,
+	});
+	document.body.dispatchEvent(event);
+	return event.defaultPrevented;
+}
 // option rows in the teleported dropdown
 const shown = () =>
 	body()
-		.findAll(".z-5000 .grow")
+		.findAll(".pselect-list .grow")
 		.map((e) => e.text());
 const isOpen = (wrapper: VueWrapper) =>
 	wrapper.find('[role="combobox"]').attributes("aria-expanded") === "true";
@@ -58,7 +68,7 @@ async function openByClick(wrapper: VueWrapper) {
 
 async function clickOption(label: string) {
 	const row = body()
-		.findAll(".z-5000 .grow")
+		.findAll(".pselect-list .grow")
 		.find((e) => e.text() === label);
 	expect(row, `option ${label}`).toBeDefined();
 	await row!.trigger("click");
@@ -118,7 +128,7 @@ describe("PSelectMultiple", () => {
 	it("filters options case-insensitively while typing", async () => {
 		const { wrapper } = await mountSelect();
 		await openByClick(wrapper);
-		const input = body().find(".z-5000 input");
+		const input = body().find(".pselect-list input");
 
 		await input.setValue("ALPHA");
 		await flushPromises();
@@ -168,7 +178,7 @@ describe("PSelectMultiple", () => {
 	it("picks the highlighted entry of the filtered list from the search input", async () => {
 		const { wrapper, picked } = await mountSelect();
 		await key(wrapper, "Enter");
-		const input = body().find(".z-5000 input");
+		const input = body().find(".pselect-list input");
 		await input.setValue("alpha");
 		await flushPromises();
 
@@ -192,30 +202,19 @@ describe("PSelectMultiple", () => {
 		expect(document.activeElement).toBe(combobox.element);
 	});
 
-	it("claims Esc while open and frees the open id however it closes", async () => {
+	it("takes Esc as the top layer while open and releases it however it closes", async () => {
 		const { wrapper } = await mountSelect([], { searchable: false });
-		const esc = () => {
-			const event = new KeyboardEvent("keydown", {
-				key: "Escape",
-				bubbles: true,
-				cancelable: true,
-			});
-			wrapper.find('[role="combobox"]').element.dispatchEvent(event);
-			return event;
-		};
 
 		// an open list keeps Esc from the modal or drawer around it
 		await key(wrapper, "Enter");
-		expect(currentlyOpenId.value).not.toBeNull();
-		expect(esc().defaultPrevented).toBe(true);
+		expect(escClaimed()).toBe(true);
 		await flushPromises();
-		expect(currentlyOpenId.value).toBeNull();
-		expect(esc().defaultPrevented).toBe(false);
+		expect(escClaimed()).toBe(false);
 
 		await openByClick(wrapper);
 		document.body.click();
 		await flushPromises();
-		expect(currentlyOpenId.value).toBeNull();
+		expect(escClaimed()).toBe(false);
 	});
 
 	it("focuses the search input when a searchable select opens", async () => {
@@ -223,30 +222,32 @@ describe("PSelectMultiple", () => {
 		document.body.appendChild(wrapper.element);
 		await key(wrapper, "Enter");
 		expect(document.activeElement).toBe(
-			body().find(".z-5000 input").element
+			body().find(".pselect-list input").element
 		);
 	});
 
 	it("clears all values and the search", async () => {
-		const { wrapper, picked } = await mountSelect(["a", "b"]);
+		const { wrapper, picked } = await mountSelect(["a", "b"], {
+			clearable: true,
+		});
 		await openByClick(wrapper);
-		const input = body().find(".z-5000 input");
+		const input = body().find(".pselect-list input");
 		await input.setValue("gam");
 		await flushPromises();
 		expect(shown()).toEqual(["Gamma"]);
 
-		await wrapper.find(".text-white\\/60").trigger("click");
+		await wrapper.find(".text-muted.w-4").trigger("click");
 		await flushPromises();
 		expect(picked).toEqual([[]]);
 		expect(shown()).toEqual(["Alpha", "Beta", "Gamma", "alphabet"]);
 		expect(wrapper.text()).toContain("common.ui.select.select_options");
 		// nothing left to clear
-		expect(wrapper.find(".text-white\\/60").exists()).toBe(false);
+		expect(wrapper.find(".text-muted.w-4").exists()).toBe(false);
 	});
 
 	it("hides the clear button when not clearable", async () => {
 		const { wrapper } = await mountSelect(["a"], { clearable: false });
-		expect(wrapper.find(".text-white\\/60").exists()).toBe(false);
+		expect(wrapper.find(".text-muted.w-4").exists()).toBe(false);
 	});
 
 	it("removes a single value through its tag without opening", async () => {
@@ -259,6 +260,40 @@ describe("PSelectMultiple", () => {
 
 		expect(picked).toEqual([["a", "b"]]);
 		expect(isOpen(wrapper)).toBe(false);
+	});
+
+	it("shows its chips in its size and keeps focus after a keyboard removal", async () => {
+		const { wrapper } = await mountSelect(["a", "b"], { size: "sm" });
+		document.body.appendChild(wrapper.element);
+		const tags = wrapper.findAll(".flex-wrap > div");
+		expect(tags[0].classes()).toContain("text-xs");
+		expect(tags[0].classes()).toContain("py-0.25");
+
+		const remove = wrapper.find<HTMLButtonElement>(".flex-wrap button");
+		remove.element.focus();
+		await remove.trigger("click");
+		await flushPromises();
+		expect(document.activeElement).toBe(
+			wrapper.find('[role="combobox"]').element
+		);
+	});
+
+	it("leaves Enter and Space on a tag's remove button to the button", async () => {
+		const { wrapper } = await mountSelect(["a", "b"]);
+		const remove = wrapper.find<HTMLButtonElement>(".flex-wrap button");
+
+		for (const key of ["Enter", " "]) {
+			const event = new KeyboardEvent("keydown", {
+				key,
+				bubbles: true,
+				cancelable: true,
+			});
+			remove.element.dispatchEvent(event);
+			await flushPromises();
+			// not prevented: the browser turns it into the button's click
+			expect(event.defaultPrevented).toBe(false);
+			expect(isOpen(wrapper)).toBe(false);
+		}
 	});
 
 	it("ignores clicks, keys and tag removal when disabled", async () => {
@@ -277,7 +312,7 @@ describe("PSelectMultiple", () => {
 	it("closes and resets the search on a click outside, not inside", async () => {
 		const { wrapper } = await mountSelect();
 		await openByClick(wrapper);
-		const input = body().find(".z-5000 input");
+		const input = body().find(".pselect-list input");
 		await input.setValue("beta");
 		await flushPromises();
 
@@ -300,7 +335,7 @@ describe("PSelectMultiple", () => {
 		expect(isOpen(wrapper)).toBe(true);
 		await openByClick(wrapper);
 		expect(isOpen(wrapper)).toBe(false);
-		expect(currentlyOpenId.value).toBeNull();
+		expect(escClaimed()).toBe(false);
 	});
 
 	it("keeps only one select open at a time", async () => {
@@ -325,7 +360,8 @@ describe("PSelectMultiple", () => {
 					]);
 			},
 		});
-		const { wrapper } = await mountComponent(Two);
+		// a click on the other select reaches the document
+		const { wrapper } = await mountComponent(Two, {}, { attach: true });
 		const first = wrapper.find(".first");
 		const second = wrapper.find(".second");
 		const expanded = (w: typeof first) => w.attributes("aria-expanded");
@@ -338,12 +374,12 @@ describe("PSelectMultiple", () => {
 		await flushPromises();
 		expect(expanded(first)).toBe("false");
 		expect(expanded(second)).toBe("true");
-		expect(body().findAll(".z-5000")).toHaveLength(1);
+		expect(body().findAll(".pselect-list")).toHaveLength(1);
 
-		// unmounting the open select frees the slot
+		// unmounting the open select releases its layer
 		await wrapper.find("button").trigger("click");
 		await flushPromises();
-		expect(currentlyOpenId.value).toBeNull();
+		expect(escClaimed()).toBe(false);
 	});
 
 	it("removes a value at maxItems", async () => {
@@ -358,7 +394,7 @@ describe("PSelectMultiple", () => {
 
 	it("hides the clear button when disabled", async () => {
 		const { wrapper } = await mountSelect(["a"], { disabled: true });
-		expect(wrapper.find(".text-white\\/60").exists()).toBe(false);
+		expect(wrapper.find(".text-muted.w-4").exists()).toBe(false);
 	});
 
 	it("never changes the parent's array in place", async () => {
@@ -379,7 +415,7 @@ describe("PSelectMultiple", () => {
 
 	it("highlights the keyboard position and resets it on search", async () => {
 		const { wrapper } = await mountSelect();
-		const highlighted = () => body().find(".z-5000 .bg-gray-700");
+		const highlighted = () => body().find(".pselect-list .bg-selected");
 		await key(wrapper, "Enter");
 		expect(highlighted().text()).toBe("Alpha");
 
@@ -387,7 +423,7 @@ describe("PSelectMultiple", () => {
 		await key(wrapper, "ArrowDown");
 		expect(highlighted().text()).toBe("Gamma");
 
-		await body().find(".z-5000 input").setValue("alpha");
+		await body().find(".pselect-list input").setValue("alpha");
 		await flushPromises();
 		expect(highlighted().text()).toBe("Alpha");
 	});
@@ -406,7 +442,7 @@ describe("PSelectMultiple", () => {
 			],
 		});
 		await key(wrapper, "Enter");
-		const input = body().find(".z-5000 input");
+		const input = body().find(".pselect-list input");
 
 		await input.setValue("zzz");
 		await flushPromises();

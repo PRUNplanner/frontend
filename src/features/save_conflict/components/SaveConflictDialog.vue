@@ -114,7 +114,7 @@
 <template>
 	<PModal
 		:show="show"
-		class="w-160! max-w-[90vw]!"
+		:width="640"
 		:title="
 			conflict.deleted.value
 				? t('save_conflict.deleted_title')
@@ -128,7 +128,7 @@
 					: t("save_conflict.text")
 			}}
 		</p>
-		<p v-if="conflict.loading.value" class="text-white/60">
+		<p v-if="conflict.loading.value" class="text-muted">
 			{{ t("save_conflict.loading") }}
 		</p>
 		<div
@@ -137,7 +137,7 @@
 			<div v-for="side in sides" :key="side.title">
 				<h3 class="font-bold pb-2">{{ side.title }}</h3>
 				<ul class="flex flex-col gap-1 text-sm">
-					<li v-if="side.lines.length === 0" class="text-white/60">
+					<li v-if="side.lines.length === 0" class="text-muted">
 						{{ t("save_conflict.none") }}
 					</li>
 					<li
@@ -149,7 +149,7 @@
 							({{ t("save_conflict.both") }})
 						</span>
 					</li>
-					<li v-if="side.more > 0" class="text-white/60">
+					<li v-if="side.more > 0" class="text-muted">
 						{{ t("save_conflict.more", { n: side.more }) }}
 					</li>
 				</ul>
@@ -159,10 +159,10 @@
 			v-else-if="
 				!conflict.deleted.value && conflict.changes.value === null
 			"
-			class="text-white/60">
+			class="text-muted">
 			{{ t("save_conflict.load_failed") }}
 		</p>
-		<ul class="pt-4 flex flex-col gap-1 text-xs text-white/60">
+		<ul class="pt-4 flex flex-col gap-1 text-xs text-muted">
 			<li v-for="option in options" :key="option">
 				<strong>{{ t(`save_conflict.option.${option}`) }}:</strong>
 				{{

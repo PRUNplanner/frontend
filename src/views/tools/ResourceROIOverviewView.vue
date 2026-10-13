@@ -111,7 +111,7 @@
 						<div class="text-center">
 							<div v-if="progressSearchingPlanets">
 								<PSpin size="xl" />
-								<div class="pt-3 text-xs text-white/60">
+								<div class="pt-3 text-xs text-muted">
 									{{
 										$t("resource_roi.searching", {
 											resource: refSearchMaterial,
@@ -123,7 +123,7 @@
 								<PProgressBar
 									:step="progressCurrent"
 									:total="progressTotal" />
-								<div class="pt-3 text-xs text-white/60">
+								<div class="pt-3 text-xs text-muted">
 									{{ $t("resource_roi.calculating") }}
 								</div>
 							</div>

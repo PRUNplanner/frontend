@@ -175,7 +175,7 @@ describe("HelpDrawer", () => {
 		await toggle(wrapper);
 
 		expect(drawer().find("#markdown").exists()).toBe(false);
-		expect(drawer().find(".text-red-500").text()).toBe("help.load_error");
+		expect(drawer().find("[role=alert]").text()).toBe("help.load_error");
 		expect(error).toHaveBeenCalledWith(
 			new Error(
 				'Markdown file "no_such_page" not found in en_US or en_US.'

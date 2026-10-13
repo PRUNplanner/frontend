@@ -22,7 +22,7 @@
 				class="bg-black p-8 rounded shadow-lg text-center"
 				:class="elementWidth">
 				<PProgressBar :step="step" :total="total" />
-				<div v-if="message" class="pt-3 text-xs text-white/60">
+				<div v-if="message" class="pt-3 text-xs text-muted">
 					{{ message }}
 				</div>
 			</div>

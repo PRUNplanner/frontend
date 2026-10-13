@@ -1,6 +1,9 @@
 import type { Component } from "vue";
 
 export type SizeKey = "sm" | "md";
+/** a field's state: an inset ring, and aria-invalid for an error */
+export type FieldStatus = "error" | "warning";
+export type NoticeType = "info" | "warning" | "error";
 export type ColorKey =
 	| "primary"
 	| "success"
@@ -17,14 +20,13 @@ export interface PButtonConfig {
 		ButtonColorKey,
 		{ base: string; hover?: string; text?: string; disabled?: string }
 	>;
-	defaultSize: SizeKey;
-	defaultColor: ColorKey;
 }
 
 export interface PCheckboxConfig {
 	container: string;
 	label: string;
 	input: string;
+	sizes: Record<SizeKey, { input: string; icon: string }>;
 	colors: Record<"base" | "disabled", string>;
 	checkIcon: string;
 	checkIconSVG: string;
@@ -35,8 +37,13 @@ export interface PButtonGroupConfig {
 	vertical: string;
 }
 
-/** default panel look of PPopover */
-export interface PPopoverConfig {
+export interface PNoticeConfig {
+	container: string;
+	types: Record<NoticeType, { box: string; icon: string }>;
+}
+
+/** look of every floating panel */
+export interface PPanelConfig {
 	panel: string;
 }
 
@@ -80,7 +87,7 @@ export interface PInputNumberConfig {
 
 export interface PInputConfig {
 	container: string;
-	sizes: Record<SizeKey, { container: string; input: string }>;
+	sizes: Record<SizeKey, { container: string; field: string; input: string }>;
 }
 
 export interface PSelectOption {
@@ -148,4 +155,23 @@ export interface PDataTableColumn<T> {
 	/** the header spans this many columns, covering the next ones' */
 	titleColSpan?: number;
 	children?: PDataTableColumn<T>[];
+}
+
+/**
+ * vue-tsc checks unknown props (tsconfig.typecheck.json). These fall through
+ * to a component's root element and stay allowed on every component.
+ */
+declare module "vue" {
+	interface AllowedComponentProps {
+		role?: string;
+		title?: string;
+		id?: string;
+		[attr: `aria-${string}`]: unknown;
+		[attr: `data-${string}`]: unknown;
+		// a valueless data-x on a component reaches the check camelized
+		[attr: `data${Capitalize<string>}`]: unknown;
+	}
+	interface HTMLAttributes {
+		[attr: `data-${string}`]: unknown;
+	}
 }

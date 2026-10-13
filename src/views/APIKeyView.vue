@@ -21,7 +21,8 @@
 	import PTable from "@/ui/components/PTable.vue";
 	import PForm from "@/ui/components/PForm.vue";
 	import PFormItem from "@/ui/components/PFormItem.vue";
-	import PFormSeperator from "@/ui/components/PFormSeperator.vue";
+	import PFormSeparator from "@/ui/components/PFormSeparator.vue";
+	import PNotice from "@/ui/components/PNotice.vue";
 	import PInput from "@/ui/components/PInput.vue";
 	import PModal from "@/ui/components/PModal.vue";
 	import { CheckSharp, RestartAltSharp } from "@vicons/material";
@@ -75,18 +76,18 @@
 	<!-- 446 px, the dialog's width -->
 	<PModal
 		v-model:show="showCreateModal"
-		class="w-111.5! max-w-[calc(100vw-32px)]"
+		:width="446"
 		:title="t('api_keys.create.title')">
 		<div v-if="creationStep === 'start'">
 			<PForm>
 				<PFormItem :label="t('api_keys.create.form.key_name')">
 					<PInput v-model:value="creationAPIKeyName" class="w-full" />
 				</PFormItem>
-				<PFormSeperator>
+				<PFormSeparator>
 					<span class="py-1 text-muted text-xs">
 						{{ $t("api_keys.create.form.key_description") }}
 					</span>
-				</PFormSeperator>
+				</PFormSeparator>
 			</PForm>
 		</div>
 		<div
@@ -109,14 +110,14 @@
 					{{ lastCreatedKey }}
 				</span>
 			</div>
-			<div class="text-red-500">
+			<PNotice type="warning">
 				{{ $t("api_keys.create.form.success_note") }}
-			</div>
+			</PNotice>
 		</div>
 		<div v-else-if="creationStep === 'error'">
-			<div class="text-center text-red-500">
+			<PNotice type="error">
 				{{ $t("api_keys.create.form.error") }}
-			</div>
+			</PNotice>
 		</div>
 		<template #action>
 			<div

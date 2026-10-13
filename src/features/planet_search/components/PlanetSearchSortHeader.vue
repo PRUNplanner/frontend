@@ -43,7 +43,7 @@
 <template>
 	<button
 		type="button"
-		class="cursor-pointer font-bold hover:underline"
+		class="touch-target cursor-pointer font-bold hover:underline"
 		:class="truncate ? 'block w-full text-right' : 'text-left'"
 		:aria-label="t('planet_search.results.sort', { column: label })"
 		:aria-pressed="active !== undefined"

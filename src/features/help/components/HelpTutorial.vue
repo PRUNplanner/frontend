@@ -94,7 +94,7 @@
 							src="/images/help/management-screenshot.png"
 							alt="Management Screenshot"
 							class="rounded shadow-lg border border-white/10" />
-						<span class="text-xs text-white/60">
+						<span class="text-xs text-muted">
 							{{ $t("help.getting_started.image_label") }}
 						</span>
 					</div>

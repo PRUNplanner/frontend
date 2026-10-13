@@ -11,7 +11,7 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// UI
-	import { PForm, PFormItem, PInput, PButton } from "@/ui";
+	import { PForm, PFormItem, PInput, PButton, PNotice } from "@/ui";
 
 	const refCurrentPassword: Ref<string> = ref("");
 	const refNewPassword: Ref<string> = ref("");
@@ -65,7 +65,7 @@
 				{{ $t("profile.change_password.button") }}
 			</PButton>
 		</div>
-		<div class="py-3 text-white/60">
+		<div class="py-3 text-muted">
 			{{ $t("profile.change_password.form.password_info") }}
 		</div>
 		<template v-if="changeStatus !== null">
@@ -74,9 +74,9 @@
 				class="mb-3 py-1 px-2 bg-prunplanner text-black">
 				{{ $t("profile.change_password.form.change_success") }}
 			</div>
-			<div v-else class="mb-3 py-1 px-2 bg-red-600 text-white">
+			<PNotice v-else type="error" class="mb-3">
 				{{ $t("profile.change_password.form.change_error") }}
-			</div>
+			</PNotice>
 		</template>
 		<PForm>
 			<PFormItem

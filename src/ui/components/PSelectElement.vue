@@ -2,12 +2,14 @@
 	import { computed } from "vue";
 
 	import { optionKeys } from "@/ui/optionKeys";
-	import type { PSelectOption } from "../ui.types";
+	import type { PSelectOption } from "@/ui/ui.types";
 
 	const {
 		option,
 		selectedValue,
 		highlightedIndex = -1,
+		listId,
+		firstIndex,
 	} = defineProps<{
 		option: PSelectOption;
 		selectedValue:
@@ -18,6 +20,10 @@
 			| undefined;
 		/** highlighted child of a group, 0 for an option without children */
 		highlightedIndex?: number;
+		/** the listbox's id; options are `${listId}-${index}` */
+		listId: string;
+		/** index of this option (or the group's first child) among all options */
+		firstIndex: number;
 	}>();
 
 	const emit = defineEmits<{
@@ -31,81 +37,79 @@
 
 	// unique v-for keys, also for a missing or repeated value
 	const childKeys = computed(() => optionKeys(option.children ?? []));
+
+	const row =
+		"flex flex-row items-center py-1 px-2 rounded-control cursor-pointer hover:bg-hover";
 </script>
 
 <template>
-	<template v-if="option.children">
+	<div
+		v-if="option.children"
+		role="group"
+		:aria-labelledby="`${listId}-g${firstIndex}`">
 		<div
-			class="border-t border-b border-white/20 bg-white/5 hover:bg-white/5! font-bold">
+			:id="`${listId}-g${firstIndex}`"
+			class="py-1 px-2 border-t border-b border-line-strong bg-white/5 font-bold">
 			{{ option.label }}
 		</div>
-		<template
-			v-for="(child, childIndex) in option.children"
-			:key="childKeys[childIndex]">
-			<div
-				class="flex flex-row items-center"
-				:class="[
-					childIndex === highlightedIndex ? 'bg-gray-700' : '',
-					isSelected(child.value)
-						? 'text-link-primary font-bold'
-						: '',
-				]"
-				@click="emit('click', child.value)">
-				<div class="pl-3 grow hover:cursor-pointer">
-					{{ child.label }}
-				</div>
-				<span
-					v-if="child.badge"
-					class="pl-3 text-xs font-mono text-white/60 text-nowrap">
-					{{ child.badge }}
-				</span>
-				<div
-					v-if="isSelected(child.value)"
-					class="text-white fill-white h-4 w-4">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-						<g fill="none">
-							<path
-								d="M14.046 3.486a.75.75 0
-												0 1-.032 1.06l-7.93 7.474a.85.85
-												0 0
-												1-1.188-.022l-2.68-2.72a.75.75 0
-												1 1 1.068-1.053l2.234
-												2.267l7.468-7.038a.75.75 0 0 1
-												1.06.032z"
-								fill="currentColor" />
-						</g>
-					</svg>
-				</div>
-			</div>
-		</template>
-	</template>
-	<template v-else>
 		<div
-			class="flex flex-row items-center"
+			v-for="(child, childIndex) in option.children"
+			:id="`${listId}-${firstIndex + childIndex}`"
+			:key="childKeys[childIndex]"
+			role="option"
+			:aria-selected="isSelected(child.value)"
 			:class="[
-				highlightedIndex === 0 ? 'bg-gray-700' : '',
-				isSelected(option.value) ? 'text-link-primary font-bold' : '',
+				row,
+				childIndex === highlightedIndex ? 'bg-selected' : '',
+				isSelected(child.value) ? 'text-link font-bold' : '',
 			]"
-			@click="emit('click', option.value)">
-			<div class="grow hover:cursor-pointer">
-				{{ option.label }}
+			@click="emit('click', child.value)">
+			<div class="pl-3 grow">
+				{{ child.label }}
 			</div>
 			<span
-				v-if="option.badge"
-				class="pl-3 text-xs font-mono text-white/60 text-nowrap">
-				{{ option.badge }}
+				v-if="child.badge"
+				class="pl-3 text-xs font-mono text-muted text-nowrap">
+				{{ child.badge }}
 			</span>
 			<div
-				v-if="isSelected(option.value)"
+				v-if="isSelected(child.value)"
 				class="text-white fill-white h-4 w-4">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-					<g fill="none">
-						<path
-							d="M14.046 3.486a.75.75 0 0 1-.032 1.06l-7.93 7.474a.85.85 0 0 1-1.188-.022l-2.68-2.72a.75.75 0 1 1 1.068-1.053l2.234 2.267l7.468-7.038a.75.75 0 0 1 1.06.032z"
-							fill="currentColor" />
-					</g>
+					<path
+						d="M14.046 3.486a.75.75 0 0 1-.032 1.06l-7.93 7.474a.85.85 0 0 1-1.188-.022l-2.68-2.72a.75.75 0 1 1 1.068-1.053l2.234 2.267l7.468-7.038a.75.75 0 0 1 1.06.032z"
+						fill="currentColor" />
 				</svg>
 			</div>
 		</div>
-	</template>
+	</div>
+	<div
+		v-else
+		:id="`${listId}-${firstIndex}`"
+		role="option"
+		:aria-selected="isSelected(option.value)"
+		:class="[
+			row,
+			highlightedIndex === 0 ? 'bg-selected' : '',
+			isSelected(option.value) ? 'text-link font-bold' : '',
+		]"
+		@click="emit('click', option.value)">
+		<div class="grow">
+			{{ option.label }}
+		</div>
+		<span
+			v-if="option.badge"
+			class="pl-3 text-xs font-mono text-muted text-nowrap">
+			{{ option.badge }}
+		</span>
+		<div
+			v-if="isSelected(option.value)"
+			class="text-white fill-white h-4 w-4">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+				<path
+					d="M14.046 3.486a.75.75 0 0 1-.032 1.06l-7.93 7.474a.85.85 0 0 1-1.188-.022l-2.68-2.72a.75.75 0 1 1 1.068-1.053l2.234 2.267l7.468-7.038a.75.75 0 0 1 1.06.032z"
+					fill="currentColor" />
+			</svg>
+		</div>
+	</div>
 </template>

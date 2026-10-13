@@ -91,7 +91,7 @@
 			:type="type"
 			:loading="saving"
 			:disabled="!saveable"
-			class="min-w-30"
+			class="lg:min-w-30"
 			@click="emit('save')">
 			<template #icon>
 				<CheckSharp v-if="state === 'saved'" />

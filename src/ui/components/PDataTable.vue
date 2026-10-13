@@ -423,7 +423,9 @@
 						<th
 							v-if="hasExpand && r === 0"
 							:rowspan="headerRows.length"
-							class="p-data-table-expand-cell" />
+							class="p-data-table-expand-cell">
+							<span class="sr-only">{{ t("common.ui.table.expand_row") }}</span>
+						</th>
 						<th
 							v-for="cell in headerRow"
 							:key="cell.col.key"
@@ -580,31 +582,31 @@
 </template>
 
 <style>
-	@reference "tailwindcss";
+	@reference "../../assets/css/style.css";
 
 	/* the app's table look */
 	.p-data-table {
-		@apply relative text-sm/[1.6] text-[rgba(255,255,255,0.8)] tabular-nums;
+		@apply relative text-sm/[1.6] text-ink tabular-nums;
 	}
 
 	.p-data-table-box {
-		@apply overflow-auto border border-[#2d2d30] rounded-[3px];
+		@apply overflow-auto border border-line rounded-panel;
 	}
 
 	.p-data-table-table {
-		@apply w-full border-separate border-spacing-0 bg-[rgba(255,255,255,0.02)] [word-break:break-word];
+		@apply w-full border-separate border-spacing-0 bg-white/2 [word-break:break-word];
 	}
 
 	.p-data-table thead {
-		@apply sticky top-0 z-[2] bg-black;
+		@apply sticky top-0 z-[2] bg-surface-sunken;
 	}
 
 	.p-data-table th {
-		@apply relative px-2.5 py-1.25 text-left align-middle font-bold text-[rgba(255,255,255,0.9)] bg-black border-b border-[#2d2d30];
+		@apply relative px-2.5 py-1.25 text-left align-middle font-bold text-ink-strong bg-surface-sunken border-b border-line;
 	}
 
 	.p-data-table td {
-		@apply px-2.5 py-1.25 text-left align-middle border-b border-[#2d2d30] bg-[rgba(255,255,255,0.02)];
+		@apply px-2.5 py-1.25 text-left align-middle border-b border-line bg-white/2;
 	}
 
 	/* windowed rows under a max height are separated by stripes only, as before */
@@ -633,16 +635,16 @@
 	}
 
 	.p-data-table-sortable {
-		@apply hover:bg-[#333337];
+		@apply hover:bg-selected;
 	}
 
 	/* the whole cell is the button */
 	.p-data-table-sortable > .p-data-table-title {
-		@apply -mx-2.5 -my-1.25 px-2.5 py-1.25 w-[calc(100%+20px)] cursor-pointer;
+		@apply touch-target -mx-2.5 -my-1.25 px-2.5 py-1.25 w-[calc(100%+20px)] cursor-pointer;
 	}
 
 	.p-data-table th.p-data-table-sorting {
-		@apply bg-[#333337];
+		@apply bg-selected;
 	}
 
 	.p-data-table td.p-data-table-sorting {
@@ -650,7 +652,7 @@
 	}
 
 	.p-data-table-sorter {
-		@apply relative inline-flex items-center justify-center size-[15px] ml-1 text-[rgba(255,255,255,0.38)] align-[-0.2em];
+		@apply relative inline-flex items-center justify-center size-[15px] ml-1 text-white/38 align-[-0.2em];
 	}
 
 	.p-data-table-sorter svg {
@@ -659,7 +661,7 @@
 
 	.p-data-table-sorter-asc,
 	.p-data-table-sorter-desc {
-		@apply text-[#6ea8fe];
+		@apply text-link;
 	}
 
 	.p-data-table-sorter-asc svg {
@@ -668,13 +670,13 @@
 
 	.p-data-table tr.p-data-table-striped,
 	.p-data-table tr.p-data-table-striped > td {
-		@apply bg-[rgb(3,5,10)];
+		@apply bg-(--app-bg);
 	}
 
 	.p-data-table-popover tr.p-data-table-striped,
 	.p-data-table-popover tr.p-data-table-striped > td,
 	.p-data-table-popover td.p-data-table-sorting {
-		@apply bg-[#151515];
+		@apply bg-surface;
 	}
 
 	.p-data-table-popover .p-data-table-box {
@@ -683,12 +685,12 @@
 
 	.p-data-table-popover th,
 	.p-data-table-popover td {
-		@apply border-[rgb(88,88,94)];
+		@apply border-line-strong;
 	}
 
 	.p-data-table tbody > tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover,
 	.p-data-table tbody > tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover > td {
-		@apply bg-[rgba(255,255,255,0.03)];
+		@apply bg-hover;
 	}
 
 	.p-data-table tr.p-data-table-spacer > td {
@@ -708,7 +710,7 @@
 	}
 
 	.p-data-table-expand-button {
-		@apply inline-flex items-center justify-center size-6 rounded-sm cursor-pointer align-middle;
+		@apply touch-target inline-flex items-center justify-center size-6 rounded-control cursor-pointer align-middle;
 	}
 
 	/* the expand and empty boxes are the box's width themselves: their cell
@@ -724,7 +726,7 @@
 
 	/* the summary row continues the body: a border above, the row colour */
 	.p-data-table tfoot td {
-		@apply border-t border-[#2d2d30];
+		@apply border-t border-line;
 	}
 
 	/* the empty state has no row colour */
@@ -741,10 +743,10 @@
 	}
 
 	.p-data-table-empty-default {
-		@apply flex flex-col items-center text-[rgba(255,255,255,0.55)];
+		@apply flex flex-col items-center text-muted;
 	}
 
 	.p-data-table-empty-default svg {
-		@apply size-10 mb-2 text-[rgba(255,255,255,0.38)];
+		@apply size-10 mb-2 text-white/38;
 	}
 </style>

@@ -337,7 +337,7 @@ describe("PlanProduction", () => {
 	it("creates the extractor of a planet resource with its recipe", async () => {
 		const { wrapper, component } = await mountProduction();
 
-		const tiles = wrapper.findAll(".hover\\:cursor-pointer");
+		const tiles = wrapper.findAll(".ptooltip > button");
 		expect(tiles).toHaveLength(3);
 		for (const tile of tiles) await tile.trigger("click");
 

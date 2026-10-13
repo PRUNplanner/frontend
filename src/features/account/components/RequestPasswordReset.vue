@@ -60,7 +60,7 @@
 	<h2 class="text-white/80 font-bold text-lg font-mono">
 		{{ $t("account.components.request_password_reset.title") }}
 	</h2>
-	<div class="py-3 text-xs font-mono text-white/60">
+	<div class="py-3 text-xs font-mono text-muted">
 		{{ $t("account.components.request_password_reset.info") }}
 	</div>
 	<div v-if="requestResponse" class="pb-3 text-xs font-mono text-prunplanner">

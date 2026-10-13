@@ -137,7 +137,7 @@
 	<div v-if="isCalculating" class="w-full flex justify-center">
 		<div class="text-center w-100 py-3">
 			<PProgressBar :step="1" :total="2" />
-			<div class="pt-3 text-xs text-white/60">
+			<div class="pt-3 text-xs text-muted">
 				{{ $t("upkeep_price_calculator.calculator.calculating") }}
 			</div>
 		</div>
@@ -149,9 +149,7 @@
 				<PButton
 					v-for="needType in needTypes"
 					:key="needType"
-					:type="
-						selectedNeedType === needType ? 'primary' : 'secondary'
-					"
+					:pressed="selectedNeedType === needType"
 					@click="selectedNeedType = needType">
 					{{
 						$t(

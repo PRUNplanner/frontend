@@ -75,7 +75,7 @@
 				planet_id: planetNaturalId,
 			})
 		"
-		class="max-w-150">
+		:width="600">
 		<PlanetPOPRTable
 			v-if="poprData"
 			:planet-natural-id="planetNaturalId"

@@ -192,7 +192,7 @@ describe("PDropdown", () => {
 		await flushPromises();
 
 		await items()[3].trigger("mouseenter");
-		expect(items()[3].classes()).toContain("before:bg-white/8");
+		expect(items()[3].classes()).toContain("before:bg-hover");
 		await items()[3].trigger("click");
 		expect(onSelect).toHaveBeenCalledWith("delete");
 		expect(show.value).toBe(false);

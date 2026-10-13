@@ -12,6 +12,7 @@
 	// UI
 	import PButton from "@/ui/components/PButton.vue";
 	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
+	import PNotice from "@/ui/components/PNotice.vue";
 	import { PlusSharp, ClearSharp } from "@vicons/material";
 
 	const props = defineProps<{
@@ -77,7 +78,7 @@
 				<PButton
 					v-for="op in ['AND', 'OR'] as const"
 					:key="op"
-					:type="group.operator === op ? 'primary' : 'secondary'"
+					:pressed="group.operator === op"
 					@click="emit('update:group', { ...group, operator: op })">
 					{{ op }}
 				</PButton>
@@ -124,15 +125,13 @@
 					@update:model-value="(val) => updateChild(index, val)"
 					@remove="removeChild(index)" />
 
-				<div
-					v-else
-					class="p-2 border border-red-200 bg-red-50 text-red-500 text-xs">
+				<PNotice v-else type="error" class="text-xs">
 					{{
 						$t("market_live.components.rule_builder.error", {
 							value: JSON.stringify(item),
 						})
 					}}
-				</div>
+				</PNotice>
 			</div>
 
 			<div

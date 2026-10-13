@@ -175,19 +175,19 @@ describe("UpkeepPriceCalculator", () => {
 		const { wrapper } = await mountCalculator(CX_CHEAP);
 
 		expect(
-			wrapper.findAllComponents(PButton).map((b) => b.props("type"))
+			wrapper.findAllComponents(PButton).map((b) => b.props("pressed"))
 		).toEqual([
-			"primary",
-			"secondary",
-			"secondary",
-			"secondary",
-			"secondary",
+			true,
+			false,
+			false,
+			false,
+			false,
 		]);
 
 		await needButton(wrapper, "health").trigger("click");
 
-		expect(needButton(wrapper, "health").props("type")).toBe("primary");
-		expect(needButton(wrapper, "safety").props("type")).toBe("secondary");
+		expect(needButton(wrapper, "health").props("pressed")).toBe(true);
+		expect(needButton(wrapper, "safety").props("pressed")).toBe(false);
 		// the priced health materials
 		expect(rows(wrapper).slice(0, 5)).toEqual([
 			// HOS: 5 * 2 / 833.33
@@ -250,7 +250,7 @@ describe("UpkeepPriceCalculator", () => {
 		await setProps({ cxUuid: CX_PRICEY });
 		await waitCalculated(wrapper);
 
-		expect(needButton(wrapper, "health").props("type")).toBe("primary");
+		expect(needButton(wrapper, "health").props("pressed")).toBe(true);
 		// WCE: 1000 * 6 / (2 * 166.67)
 		expect(rows(wrapper).at(0)!.slice(0, 3)).toEqual([
 			"DW",

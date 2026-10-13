@@ -277,7 +277,6 @@
 									)
 								"
 								:min="0"
-								clearable
 								show-buttons
 								placeholder=""
 								class="max-w-37.5"

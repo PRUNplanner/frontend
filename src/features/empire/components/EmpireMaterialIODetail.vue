@@ -93,15 +93,13 @@
 		<PButtonGroup class="self-start">
 			<PButton
 				size="sm"
-				:type="view === 'sides' ? 'primary' : 'secondary'"
-				:aria-pressed="view === 'sides'"
+				:pressed="view === 'sides'"
 				@click="view = 'sides'">
 				{{ t("empire.material_io.view_sides") }}
 			</PButton>
 			<PButton
 				size="sm"
-				:type="view === 'net' ? 'primary' : 'secondary'"
-				:aria-pressed="view === 'net'"
+				:pressed="view === 'net'"
 				@click="view = 'net'">
 				{{ t("empire.material_io.view_net") }}
 			</PButton>
@@ -116,7 +114,7 @@
 					<h4
 						class="whitespace-nowrap text-xs font-bold uppercase tracking-wide mb-2">
 						{{ half.title }}
-						<span class="ml-1 font-normal text-white/55">
+						<span class="ml-1 font-normal text-muted">
 							{{
 								t(
 									"empire.material_io.plan_count",
@@ -131,7 +129,7 @@
 							}}
 						</span>
 					</h4>
-					<p v-if="!half.side.entries.length" class="text-white/55">
+					<p v-if="!half.side.entries.length" class="text-muted">
 						{{ half.empty }}
 					</p>
 					<ul
@@ -150,7 +148,7 @@
 									{{ formatNumber(e.amount) }}
 								</strong>
 								<span
-									class="w-10 shrink-0 whitespace-nowrap text-right text-white/55">
+									class="w-10 shrink-0 whitespace-nowrap text-right text-muted">
 									{{ formatNumber(e.share * 100, 0) }}%
 								</span>
 							</div>
@@ -171,7 +169,7 @@
 					<h4
 						class="whitespace-nowrap text-xs font-bold uppercase tracking-wide mb-2">
 						{{ half.title }}
-						<span class="ml-1 font-normal text-white/55">
+						<span class="ml-1 font-normal text-muted">
 							{{
 								t(
 									"empire.material_io.planet_count",
@@ -182,7 +180,7 @@
 						</span>
 						<PValue class="font-bold" :value="half.total" />
 					</h4>
-					<p v-if="!half.entries.length" class="text-white/55">
+					<p v-if="!half.entries.length" class="text-muted">
 						{{ half.empty }}
 					</p>
 					<ul
@@ -206,7 +204,7 @@
 							</div>
 							<div
 								v-if="e.produces > 0 && e.consumes > 0"
-								class="text-xs text-white/55">
+								class="text-xs text-muted">
 								{{
 									t("empire.material_io.makes_uses", {
 										makes: formatNumber(e.produces),

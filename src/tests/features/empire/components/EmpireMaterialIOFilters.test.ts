@@ -38,7 +38,7 @@ const button = (wrapper: VueWrapper, label: string) => {
 
 /** button type per label, the active option is the primary one */
 const types = (wrapper: VueWrapper, ...labels: string[]) =>
-	labels.map((label) => button(wrapper, label).props("type"));
+	labels.map((label) => button(wrapper, label).props("pressed"));
 
 async function click(wrapper: VueWrapper, label: string) {
 	await button(wrapper, label).trigger("click");
@@ -61,24 +61,24 @@ describe("EmpireMaterialIOFilters", () => {
 		const { wrapper, setProps } = await mountFilters();
 
 		expect(types(wrapper, ALL, LOADBALANCE)).toEqual([
-			"primary",
-			"secondary",
+			true,
+			false,
 		]);
 
 		await setProps({ loadBalance: true });
 		expect(types(wrapper, ALL, LOADBALANCE)).toEqual([
-			"secondary",
-			"primary",
+			false,
+			true,
 		]);
 	});
 
 	it("marks the active consumables option", async () => {
 		const { wrapper, setProps } = await mountFilters();
 
-		expect(types(wrapper, SHOW, HIDE)).toEqual(["primary", "secondary"]);
+		expect(types(wrapper, SHOW, HIDE)).toEqual([true, false]);
 
 		await setProps({ hideConsumables: true });
-		expect(types(wrapper, SHOW, HIDE)).toEqual(["secondary", "primary"]);
+		expect(types(wrapper, SHOW, HIDE)).toEqual([false, true]);
 	});
 
 	it("emits the display option and re-applies the filter", async () => {
@@ -95,8 +95,8 @@ describe("EmpireMaterialIOFilters", () => {
 		expect(component.emitted("update:hideConsumables")).toBeUndefined();
 		// controlled: the prop, not the click, decides the active option
 		expect(types(wrapper, ALL, LOADBALANCE)).toEqual([
-			"primary",
-			"secondary",
+			true,
+			false,
 		]);
 	});
 
@@ -130,14 +130,14 @@ describe("EmpireMaterialIOFilters", () => {
 
 		expect(wrapper.text()).toContain("empire.material_io.planets");
 		expect(types(wrapper, SUMMARY, EXPAND_ALL)).toEqual([
-			"primary",
-			"secondary",
+			true,
+			false,
 		]);
 
 		await setProps({ expandAll: true });
 		expect(types(wrapper, SUMMARY, EXPAND_ALL)).toEqual([
-			"secondary",
-			"primary",
+			false,
+			true,
 		]);
 	});
 

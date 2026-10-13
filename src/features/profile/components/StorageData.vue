@@ -46,7 +46,7 @@
 	<h2 class="text-white/80 font-bold text-lg my-auto">
 		{{ $t("profile.storage_data.title") }}
 	</h2>
-	<div class="py-3 text-white/60">
+	<div class="py-3 text-muted">
 		{{ $t("profile.storage_data.description") }}
 	</div>
 	<div>

@@ -10,15 +10,27 @@
 		loading = false,
 		disabled = false,
 		size = "md",
-		type = "primary",
+		type = undefined,
 		htmlType = "button",
+		pressed = undefined,
 	} = defineProps<{
 		loading?: boolean;
 		disabled?: boolean;
 		size?: SizeKey;
+		/** colour, default primary; for a toggle the colour when not pressed (default secondary) */
 		type?: ButtonColorKey;
 		htmlType?: "button" | "submit";
+		/** a toggle: sets aria-pressed and shows primary while pressed */
+		pressed?: boolean;
 	}>();
+
+	const color = computed<ButtonColorKey>(() =>
+		pressed === undefined
+			? (type ?? "primary")
+			: pressed
+				? "primary"
+				: (type ?? "secondary")
+	);
 
 	defineEmits<{
 		(e: "click", event: MouseEvent): void;
@@ -36,9 +48,9 @@
 		[
 			buttonConfig.base,
 			buttonConfig.sizes[size].base,
-			buttonConfig.colors[type].base,
-			buttonConfig.colors[type].hover,
-			buttonConfig.colors[type].disabled,
+			buttonConfig.colors[color.value].base,
+			buttonConfig.colors[color.value].hover,
+			buttonConfig.colors[color.value].disabled,
 		].join(" ")
 	);
 </script>
@@ -50,6 +62,7 @@
 		:class="buttonBase"
 		:disabled="disabled"
 		:aria-busy="loading ? 'true' : 'false'"
+		:aria-pressed="pressed"
 		@click="(e) => $emit('click', e)">
 		<PSpin v-if="loading" color="white" />
 

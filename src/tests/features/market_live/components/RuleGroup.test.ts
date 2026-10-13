@@ -72,10 +72,10 @@ describe("RuleGroup", () => {
 			group
 				.findAllComponents(PButton)
 				.filter((b) => ["AND", "OR"].includes(b.text()))
-				.map((b) => [b.text(), b.props("type")]);
+				.map((b) => [b.text(), b.props("pressed")]);
 		expect(types(wrapper.findAllComponents(RuleGroup).at(1)!)).toEqual([
-			["AND", "secondary"],
-			["OR", "primary"],
+			["AND", false],
+			["OR", true],
 		]);
 
 		await click(wrapper, "OR");
