@@ -12,15 +12,29 @@
 		"components": {
 			"overview": {
 				"title": "Plan-Verbrauch-Übersicht",
+				"axis": "0 – {max} d",
 				"table": {
 					"plan": "@:terms.plan",
-					"planet": "@:terms.planets",
+					"strip": "Days left per material",
 					"burn": "Verbrauch"
-				}
+				},
+				"summary": {
+					"red": "{n} red",
+					"yellow": "{n} yellow",
+					"materials": "no materials | {n} material | {n} materials"
+				},
+				"strip_label": "Days left per material of {plan_name}",
+				"caption": "One dot per consumed material; hover or tap a dot to see which. The axis ends at 3 × the yellow threshold; materials beyond it are counted as \"+n\"."
 			},
 			"plans": {
 				"xit_title": "XIT Nachschub: {plan_name}",
 				"expand_row": "Show materials of {plan_name}",
+				"runs_out_first": "runs out first, in {days} days",
+				"more_under": "{n} more under {days} d",
+				"produced": "{n} produced here",
+				"produced_here": "produced here",
+				"days_left": "{days} days left",
+				"runway_label": "{ticker}: {days} days left",
 				"table": {
 					"ticker": "@:terms.material_ticker",
 					"consumption": "@:terms.consumption",
@@ -29,7 +43,8 @@
 					"stock": "@:terms.stock",
 					"plan": "@:terms.plan",
 					"burn": "Verbrauch",
-					"exhaustion": "Erschöpft"
+					"exhaustion": "Erschöpft",
+					"runway": "Runway"
 				}
 			}
 		}
