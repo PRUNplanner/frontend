@@ -257,8 +257,7 @@
 			"label": "Рабочая сила",
 			"table": {
 				"type": "Тип",
-				"need": "Необходимо",
-				"supply": "Снабжение",
+				"need_housed": "Need / Housed",
 				"open": "Открыто",
 				"luxuries": "Предметы роскоши",
 				"pct_eff": "Эффективность"
