@@ -12,10 +12,7 @@ afterEach(() => (document.body.innerHTML = ""));
 const i18n = createI18n({ legacy: false, locale: "en_US", messages: {} });
 
 const panel = () => document.body.querySelector<HTMLElement>("[role=tooltip]");
-const shown = () => {
-	const el = panel();
-	return !!el && el.style.display !== "none" && el.textContent === "Help";
-};
+const shown = () => panel()?.textContent === "Help";
 
 function mountTooltip(trigger: () => ReturnType<typeof h>, disabled = false) {
 	return mount(
@@ -53,14 +50,16 @@ describe("PTooltip", () => {
 	it("opens on keyboard focus, closes on blur and is announced", async () => {
 		const wrapper = mountTooltip(() => h("button", "Save"));
 		const button = wrapper.find("button");
-
-		expect(button.attributes("aria-describedby")).toBe(panel()!.id);
 		expect(wrapper.find(".ptooltip").attributes("tabindex")).toBeUndefined();
+		// closed tooltips add nothing to the page
+		expect(panel()).toBeNull();
 
 		await button.trigger("focusin");
 		expect(shown()).toBe(true);
+		expect(button.attributes("aria-describedby")).toBe(panel()!.id);
 		await button.trigger("focusout", { relatedTarget: document.body });
 		expect(shown()).toBe(false);
+		expect(button.attributes("aria-describedby")).toBeUndefined();
 	});
 
 	it("makes a trigger without a focusable element focusable", async () => {
@@ -69,6 +68,7 @@ describe("PTooltip", () => {
 		const trigger = wrapper.find(".ptooltip");
 
 		expect(trigger.attributes("tabindex")).toBe("0");
+		await trigger.trigger("focusin");
 		expect(trigger.attributes("aria-describedby")).toBe(panel()!.id);
 	});
 

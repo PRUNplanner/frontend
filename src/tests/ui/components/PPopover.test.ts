@@ -5,10 +5,11 @@ import {
 	flushPromises,
 	mount,
 } from "@vue/test-utils";
-import { defineComponent, h, ref } from "vue";
+import { type Component, defineComponent, h, ref } from "vue";
 import { createI18n } from "vue-i18n";
 
 import PPopover from "@/ui/components/PPopover.vue";
+import PSelect from "@/ui/components/PSelect.vue";
 import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
 
 enableAutoUnmount(afterEach);
@@ -93,19 +94,13 @@ describe("PPopover", () => {
 		expect(show.value).toBe(false);
 	});
 
-	it("closes on a click outside, not on the trigger, panel or a PSelect list", async () => {
+	it("closes on a click outside, not on the trigger or panel", async () => {
 		const { wrapper, show, onClickoutside } = mountPopover();
 		show.value = true;
 		await flushPromises();
 
 		down(wrapper.find("#trigger").element);
 		down(panels()[0].find("#inside").element);
-		const list = document.createElement("div");
-		list.setAttribute("data-pselect-dropdown", "");
-		list.appendChild(document.createElement("span"));
-		document.body.appendChild(list);
-		down(list.firstElementChild!);
-		list.remove();
 		expect(show.value).toBe(true);
 		expect(onClickoutside).not.toHaveBeenCalled();
 
@@ -128,35 +123,56 @@ describe("PPopover", () => {
 		expect(show.value).toBe(true);
 	});
 
-	it("stays open while an option of a PSelectMultiple inside is picked", async () => {
-		const picked = ref<(string | number | null | undefined)[]>([]);
-		const { show, onClickoutside } = mountPopover({}, () =>
-			h(PSelectMultiple, {
-				value: picked.value,
-				options: [
-					{ label: "A", value: "a" },
-					{ label: "B", value: "b" },
-				],
-				"onUpdate:value": (v: typeof picked.value) => (picked.value = v),
-			})
-		);
-		show.value = true;
-		await flushPromises();
+	it.each([
+		["PSelect", PSelect, null],
+		["PSelectMultiple", PSelectMultiple, []],
+	] as const)(
+		"stays open while an option of a %s inside is picked; Esc closes only the list",
+		async (_, Select, empty) => {
+			const picked = ref<unknown>(empty);
+			const { show, onClickoutside } = mountPopover({}, () =>
+				h(Select as Component, {
+					value: picked.value,
+					options: [
+						{ label: "A", value: "a" },
+						{ label: "B", value: "b" },
+					],
+					ariaLabel: "Pick",
+					"onUpdate:value": (v: unknown) => (picked.value = v),
+				})
+			);
+			show.value = true;
+			await flushPromises();
 
-		// the panel is teleported, so the select is found in the body
-		await body().find('[role="combobox"]').trigger("keydown", { key: "ArrowDown" });
-		await flushPromises();
-		const option = body()
-			.findAll<HTMLElement>("[data-pselect-dropdown] .grow")
-			.find((o) => o.text() === "B")!;
-		down(option.element);
-		await option.trigger("click");
-		await flushPromises();
+			// the panel is teleported, so the select is found in the body
+			const open = async () => {
+				await body()
+					.find('[role="combobox"]')
+					.trigger("keydown", { key: "ArrowDown" });
+				await flushPromises();
+			};
+			await open();
+			const option = body()
+				.findAll<HTMLElement>("[role=option]")
+				.find((o) => o.text() === "B")!;
+			down(option.element);
+			await option.trigger("click");
+			await flushPromises();
 
-		expect(picked.value).toEqual(["b"]);
-		expect(show.value).toBe(true);
-		expect(onClickoutside).not.toHaveBeenCalled();
-	});
+			expect(picked.value).toEqual(Array.isArray(empty) ? ["b"] : "b");
+			expect(show.value).toBe(true);
+			expect(onClickoutside).not.toHaveBeenCalled();
+
+			if (!body().find("[role=listbox]").exists()) await open();
+			esc();
+			await flushPromises();
+			expect(body().find("[role=listbox]").exists()).toBe(false);
+			expect(show.value).toBe(true);
+			esc();
+			await flushPromises();
+			expect(show.value).toBe(false);
+		}
+	);
 
 	it("closes on Esc and returns focus only from inside", async () => {
 		const { wrapper, show } = mountPopover();
@@ -183,7 +199,7 @@ describe("PPopover", () => {
 		expect(document.activeElement).toBe(outside);
 	});
 
-	it("leaves Esc to a PSelect list that handled it", async () => {
+	it("leaves an Esc that was handled already", async () => {
 		const { show } = mountPopover();
 		show.value = true;
 		await flushPromises();

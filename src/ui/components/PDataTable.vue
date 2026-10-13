@@ -423,7 +423,9 @@
 						<th
 							v-if="hasExpand && r === 0"
 							:rowspan="headerRows.length"
-							class="p-data-table-expand-cell" />
+							class="p-data-table-expand-cell">
+							<span class="sr-only">{{ t("common.ui.table.expand_row") }}</span>
+						</th>
 						<th
 							v-for="cell in headerRow"
 							:key="cell.col.key"

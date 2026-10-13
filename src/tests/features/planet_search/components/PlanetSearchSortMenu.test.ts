@@ -76,7 +76,7 @@ describe("PlanetSearchSortMenu", () => {
 		const select = body<HTMLElement>(".pselect")[0];
 		select.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
 		await flushPromises();
-		const option = body<HTMLElement>("[data-pselect-dropdown] .grow")
+		const option = body<HTMLElement>(".pselect-list .grow")
 			.find((o) => o.textContent?.trim() === "CI1")!;
 		option.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
 		option.click();
@@ -120,10 +120,10 @@ describe("PlanetSearchSortMenu", () => {
 		// list open: Escape only closes the list
 		key("Enter");
 		await flushPromises();
-		expect(body("[data-pselect-dropdown]")).toHaveLength(1);
+		expect(body(".pselect-list")).toHaveLength(1);
 		key("Escape");
 		await flushPromises();
-		expect(body("[data-pselect-dropdown]")).toHaveLength(0);
+		expect(body(".pselect-list")).toHaveLength(0);
 		expect(open()).toBe(true);
 
 		// no list: Escape closes the menu

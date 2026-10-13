@@ -15,6 +15,7 @@
 
 	// UI
 	import { tooltipConfig } from "@/ui/styles";
+	import { Z_TOOLTIP } from "@/ui/zIndex";
 
 	/**
 	 * Hover, focus or tap shows the default slot next to the #trigger slot.
@@ -47,7 +48,8 @@
 	// a trigger with nothing focusable inside takes focus itself
 	const ownFocus = ref(false);
 
-	// the trigger's first focusable element is described by the panel
+	// while open, the trigger's first focusable element is described by the
+	// panel; closed tooltips add nothing to the page
 	let described: Element | null = null;
 	function link(): void {
 		const wrap = triggerRef.value;
@@ -56,7 +58,7 @@
 			(el) => el !== wrap
 		);
 		ownFocus.value = !inner && !disabled;
-		const target = disabled ? null : (inner ?? wrap);
+		const target = disabled || !open.value ? null : (inner ?? wrap);
 		if (described && described !== target)
 			described.removeAttribute("aria-describedby");
 		target?.setAttribute("aria-describedby", id);
@@ -96,17 +98,15 @@
 		<slot name="trigger"></slot>
 	</div>
 
-	<!-- always there, so aria-describedby points at it; the content only while open -->
-	<Teleport v-if="!disabled" to="body">
+	<Teleport v-if="open" to="body">
 		<div
-			v-show="open"
 			:id="id"
 			ref="tooltipRef"
 			role="tooltip"
-			class="z-9999"
 			:class="tooltipConfig.tooltip"
+			:style="{ zIndex: Z_TOOLTIP }"
 			v-on="panelEvents">
-			<slot v-if="open" />
+			<slot />
 		</div>
 	</Teleport>
 </template>

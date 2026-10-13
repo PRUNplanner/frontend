@@ -57,15 +57,14 @@
 		if (trigger === "click") show.value = !show.value;
 	}
 
-	// mousedown, before a picked PSelect option is removed from the page
+	// mousedown, before a picked option is removed from the page; a select
+	// list opened from inside is a layer above this one
 	function onDocumentDown(e: MouseEvent): void {
 		const target = e.target as Node;
 		if (
 			wrap.value?.contains(target) ||
 			anchor?.contains(target) ||
 			panel.value?.contains(target) ||
-			(target instanceof Element &&
-				target.closest("[data-pselect-dropdown]")) ||
 			inLayerAbove(target)
 		)
 			return;

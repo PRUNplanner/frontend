@@ -2,27 +2,27 @@
 	import {
 		computed,
 		type ComputedRef,
-		nextTick,
-		onBeforeUnmount,
-		provide,
 		inject,
+		provide,
 		type Ref,
 		ref,
-		watch,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Composables
+	import { useSelectList } from "@/ui/useSelectList";
+
+	// Types & Interfaces
+	import type { FieldStatus, PSelectOption, SizeKey } from "@/ui/ui.types";
+
+	// UI
 	import { formItemKey } from "@/ui/formItem";
 	import { fieldStatusConfig, panelConfig } from "@/ui/styles";
-	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
-	import { optionKeys } from "@/ui/optionKeys";
-	import type { FieldStatus, PSelectOption, SizeKey } from "@/ui/ui.types";
-	import PInput from "./PInput.vue";
+	import { Z_LIST } from "@/ui/zIndex";
 	import PSelectElement from "./PSelectElement.vue";
 	import PTag from "./PTag.vue";
-	import { createPopper, type Instance } from "@popperjs/core";
 	import { ClearSharp } from "@vicons/material";
 
 	const value = defineModel<Array<null | string | number | undefined>>(
@@ -56,27 +56,34 @@
 		status?: FieldStatus;
 	}>();
 
-	const open = ref(false);
-	const searchString: Ref<string | null> = ref(null);
-	const highlightedIndex = ref(0);
+	const triggerRef: Ref<HTMLElement | null> = ref(null);
+	const searchInput: Ref<HTMLInputElement | null> = ref(null);
 
-	let popperInstance: Instance | null = null;
-	const triggerRef = ref<HTMLElement | null>(null);
-	const dropdownRef = ref<HTMLElement | null>(null);
-	const searchInputRef = ref<{ focus: () => void } | null>(null);
-	const componentId = `select-${Math.random().toString(36).substring(2, 9)}`;
+	const {
+		listId,
+		open,
+		panel,
+		searchString,
+		filteredOptions,
+		selectableOffsets,
+		keys,
+		highlightOf,
+		activeId,
+		toggle,
+		onKeydown,
+		onFocusout,
+	} = useSelectList(() => options, triggerRef, {
+		disabled: () => disabled,
+		searchable: () => searchable,
+		searchInput,
+		pick: change,
+	});
 
 	/** Selected items as { value, label } for correct remove by value */
 	const selectedEntries: ComputedRef<
 		{ value: string | number | undefined; label: string }[]
 	> = computed(() => {
-		const allOptions: PSelectOption[] = [];
-		options.forEach((e) => {
-			if (!e.children) allOptions.push(e);
-			else {
-				e.children.forEach((c) => allOptions.push(c));
-			}
-		});
+		const allOptions = options.flatMap((o) => o.children ?? [o]);
 		return value.value
 			.map((val) => {
 				const opt = allOptions.find((a) => a.value === val);
@@ -90,51 +97,6 @@
 			);
 	});
 
-	const filteredOptions: ComputedRef<PSelectOption[]> = computed(() => {
-		if (searchString.value === null || searchString.value === "")
-			return options;
-		const search = searchString.value.toLowerCase();
-		return options
-			.map((f: PSelectOption) => {
-				if (f.children) {
-					const matchingChildren = f.children.filter(
-						(c: PSelectOption) =>
-							c.label.toLowerCase().includes(search)
-					);
-					if (matchingChildren.length === 0) return null;
-					return { ...f, children: matchingChildren };
-				}
-				if (f.label.toLowerCase().includes(search)) return f;
-				return null;
-			})
-			.filter((x: PSelectOption | null): x is PSelectOption => x != null);
-	});
-
-	// what arrow keys and Enter move through: group children, not headers
-	const selectableOptions: ComputedRef<PSelectOption[]> = computed(() =>
-		filteredOptions.value.flatMap((o) => o.children ?? [o])
-	);
-	// unique v-for keys, also for a missing or repeated value
-	const keys = computed(() => optionKeys(filteredOptions.value));
-	// index in selectableOptions of each filtered option's first entry
-	const selectableOffsets: ComputedRef<number[]> = computed(() => {
-		let offset = 0;
-		return filteredOptions.value.map((o) => {
-			const start = offset;
-			offset += o.children?.length ?? 1;
-			return start;
-		});
-	});
-
-	watch(searchString, () => (highlightedIndex.value = 0));
-
-	// -1 for every option but the one holding the highlight, so an arrow key
-	// re-renders two options instead of the whole list
-	function highlightOf(option: PSelectOption, idx: number): number {
-		const local = highlightedIndex.value - selectableOffsets.value[idx];
-		return local >= 0 && local < (option.children?.length ?? 1) ? local : -1;
-	}
-
 	// new arrays only, the parent's array is never changed in place
 	function change(e: string | number | undefined) {
 		if (disabled) return;
@@ -145,45 +107,6 @@
 		else if (value.value.length < maxItems)
 			value.value = [...value.value, e];
 	}
-
-	const toggleOpen = async () => {
-		if (disabled) return;
-
-		if (currentlyOpenId.value && currentlyOpenId.value !== componentId) {
-			currentlyOpenId.value = componentId;
-			open.value = true;
-		} else {
-			open.value = !open.value;
-			currentlyOpenId.value = open.value ? componentId : null;
-		}
-
-		await nextTick();
-
-		if (open.value && triggerRef.value && dropdownRef.value) {
-			// Set min-width based on trigger
-			const width = triggerRef.value.offsetWidth;
-			dropdownRef.value.style.minWidth = `${width}px`;
-
-			// Create Popper instance
-			popperInstance = createPopper(triggerRef.value, dropdownRef.value, {
-				placement: "bottom-start",
-				modifiers: [
-					{
-						name: "offset",
-						options: {
-							offset: [0, 4],
-						},
-					},
-					{
-						name: "preventOverflow",
-						options: {
-							boundary: "viewport",
-						},
-					},
-				],
-			});
-		}
-	};
 
 	function clear(): void {
 		if (disabled) return;
@@ -196,94 +119,10 @@
 			value.value = value.value.filter((x) => x !== v);
 	}
 
-	// labelled by the surrounding PFormItem; the inner search PInput is not
+	// labelled by the surrounding PFormItem
 	const formItem = inject(formItemKey, null);
 	provide(formItemKey, null);
 	const fieldStatus = computed(() => status ?? formItem?.status.value);
-
-	function onKeyDown(e: KeyboardEvent) {
-		if (!open.value) {
-			if (["Enter", " ", "ArrowDown"].includes(e.key)) {
-				e.preventDefault();
-				toggleOpen();
-			}
-			return;
-		}
-
-		if (e.key === "Escape") {
-			// handled: a modal or drawer around it stays open
-			e.preventDefault();
-			open.value = false;
-			// the search input may have had focus; keep it on the select
-			triggerRef.value?.focus();
-			return;
-		}
-
-		if (e.key === "ArrowDown") {
-			e.preventDefault();
-			highlightedIndex.value = Math.min(
-				highlightedIndex.value + 1,
-				selectableOptions.value.length - 1
-			);
-		} else if (e.key === "ArrowUp") {
-			e.preventDefault();
-			highlightedIndex.value = Math.max(highlightedIndex.value - 1, 0);
-		} else if (e.key === "Enter") {
-			e.preventDefault();
-			const option = selectableOptions.value[highlightedIndex.value];
-			if (option) change(option.value);
-		}
-	}
-
-	function handleClickOutside(e: MouseEvent) {
-		if (
-			!triggerRef.value?.contains(e.target as Node) &&
-			!dropdownRef.value?.contains(e.target as Node)
-		) {
-			open.value = false;
-			searchString.value = null;
-		}
-	}
-
-	watch(open, async (val) => {
-		if (val) {
-			await nextTick();
-			if (searchable && searchInputRef.value) {
-				searchInputRef.value.focus();
-			}
-		}
-	});
-
-	watch(open, (val) => {
-		if (!val && popperInstance) {
-			popperInstance.destroy();
-			popperInstance = null;
-		}
-
-		if (val) {
-			document.addEventListener("click", handleClickOutside);
-		} else {
-			document.removeEventListener("click", handleClickOutside);
-			// a closed list must not keep the layers' Esc for itself
-			if (currentlyOpenId.value === componentId)
-				currentlyOpenId.value = null;
-		}
-	});
-
-	watch(currentlyOpenId, (newId) => {
-		if (newId !== componentId && open.value) open.value = false;
-	});
-
-	onBeforeUnmount(() => {
-		if (popperInstance) {
-			popperInstance.destroy();
-			popperInstance = null;
-		}
-
-		if (currentlyOpenId.value === componentId) currentlyOpenId.value = null;
-
-		document.removeEventListener("click", handleClickOutside);
-	});
 </script>
 
 <template>
@@ -294,83 +133,95 @@
 		role="combobox"
 		aria-haspopup="listbox"
 		:aria-expanded="open"
+		:aria-controls="open ? listId : undefined"
+		:aria-activedescendant="activeId"
 		:aria-disabled="disabled"
 		:aria-label="ariaLabel"
 		:aria-labelledby="ariaLabel ? undefined : formItem?.labelId"
 		:aria-describedby="formItem?.describedBy.value"
 		:aria-invalid="fieldStatus === 'error' || undefined"
-		@keydown="onKeyDown">
-		<div>
-			<div
-				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-ink rounded-control px-2 pointer-coarse:min-h-11"
-				:class="[
-					size === 'sm' ? 'min-h-6 text-xs' : 'min-h-7',
-					fieldStatus ? fieldStatusConfig[fieldStatus] : '',
-				]"
-				@click="toggleOpen">
-				<div class="w-full max-w-full grow">
-					<template v-if="selectedEntries.length > 0">
-						<div class="flex w-full max-w-full flex-wrap gap-y-1">
-							<PTag
-								v-for="entry in selectedEntries"
-								:key="String(entry.value)"
-								:value="entry.label"
-								type="secondary"
-								closable
-								@close="removeElement(entry.value)" />
-						</div>
-					</template>
-					<template v-else>
-						{{ placeholder ?? $t("common.ui.select.select_options") }}
-					</template>
-				</div>
+		@keydown="onKeydown"
+		@focusout="onFocusout">
+		<div
+			class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-ink rounded-control px-2 pointer-coarse:min-h-11"
+			:class="[
+				size === 'sm' ? 'min-h-6 text-xs' : 'min-h-7',
+				fieldStatus ? fieldStatusConfig[fieldStatus] : '',
+			]"
+			@click="toggle">
+			<div class="w-full max-w-full grow">
+				<template v-if="selectedEntries.length > 0">
+					<div class="flex w-full max-w-full flex-wrap gap-y-1">
+						<PTag
+							v-for="entry in selectedEntries"
+							:key="String(entry.value)"
+							:value="entry.label"
+							type="secondary"
+							closable
+							@close="removeElement(entry.value)" />
+					</div>
+				</template>
+				<template v-else>
+					{{ placeholder ?? $t("common.ui.select.select_options") }}
+				</template>
+			</div>
 
-				<div
-					v-if="clearable && !disabled && value.length !== 0"
-					class="text-muted w-4"
-					@click.stop="clear">
-					<ClearSharp />
-				</div>
-				<div class="text-white w-4" @click.stop="toggleOpen">
-					<svg
-						viewBox="0 0 16 16"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg">
-						<path
-							d="M3.14645 5.64645C3.34171 5.45118 3.65829 5.45118 3.85355 5.64645L8 9.79289L12.1464 5.64645C12.3417 5.45118 12.6583 5.45118 12.8536 5.64645C13.0488 5.84171 13.0488 6.15829 12.8536 6.35355L8.35355 10.8536C8.15829 11.0488 7.84171 11.0488 7.64645 10.8536L3.14645 6.35355C2.95118 6.15829 2.95118 5.84171 3.14645 5.64645Z"
-							fill="currentColor" />
-					</svg>
-				</div>
+			<div
+				v-if="clearable && !disabled && value.length !== 0"
+				class="text-muted w-4"
+				@click.stop="clear">
+				<ClearSharp />
+			</div>
+			<div class="text-white w-4" @click.stop="toggle">
+				<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M3.14645 5.64645C3.34171 5.45118 3.65829 5.45118 3.85355 5.64645L8 9.79289L12.1464 5.64645C12.3417 5.45118 12.6583 5.45118 12.8536 5.64645C13.0488 5.84171 13.0488 6.15829 12.8536 6.35355L8.35355 10.8536C8.15829 11.0488 7.84171 11.0488 7.64645 10.8536L3.14645 6.35355C2.95118 6.15829 2.95118 5.84171 3.14645 5.64645Z"
+						fill="currentColor" />
+				</svg>
 			</div>
 		</div>
 
 		<Teleport v-if="open" to="body">
 			<div
-				ref="dropdownRef"
-				data-pselect-dropdown
+				ref="panel"
 				:class="panelConfig.panel"
-				class="z-5000 p-1 max-h-75 overflow-auto">
+				class="pselect-list p-1 max-h-75 overflow-auto text-white"
+				:style="{ zIndex: Z_LIST }"
+				@focusout="onFocusout">
+				<input
+					v-if="searchable"
+					ref="searchInput"
+					v-model="searchString"
+					type="text"
+					autocomplete="off"
+					class="w-full h-7 mb-1 px-2 rounded-control bg-white/5 focus-visible:-outline-offset-2"
+					aria-autocomplete="list"
+					:aria-controls="listId"
+					:aria-activedescendant="activeId"
+					:aria-label="t('common.ui.placeholder.search')"
+					:placeholder="t('common.ui.placeholder.search')"
+					@keydown="onKeydown" />
+				<!-- mousedown keeps focus in the select, so a click picks before focus leaves -->
 				<div
-					class="w-full flex flex-col child:py-1 child:px-2 child:rounded-control child:hover:bg-hover">
-					<PInput
-						v-if="searchable"
-						ref="searchInputRef"
-						v-model:value="searchString"
-						:placeholder="t('common.ui.placeholder.search')"
-						@keydown="onKeyDown" />
+					:id="listId"
+					role="listbox"
+					aria-multiselectable="true"
+					class="w-full flex flex-col"
+					@mousedown.prevent>
 					<PSelectElement
 						v-for="(option, idx) in filteredOptions"
 						:key="keys[idx]"
 						:option="option"
 						:selected-value="value"
 						:highlighted-index="highlightOf(option, idx)"
+						:list-id="listId"
+						:first-index="selectableOffsets[idx]"
 						@click="(v) => change(v)" />
-
-					<template v-if="filteredOptions.length === 0">
-						<div class="text-center text-xs">
-							{{ $t("common.ui.select.no_results") }}
-						</div>
-					</template>
+				</div>
+				<div
+					v-if="filteredOptions.length === 0"
+					class="py-1 px-2 text-center text-xs">
+					{{ $t("common.ui.select.no_results") }}
 				</div>
 			</div>
 		</Teleport>

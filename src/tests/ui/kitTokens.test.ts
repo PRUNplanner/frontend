@@ -44,3 +44,16 @@ describe("kit colours come from the tokens in style.css", () => {
 		expect(tagConfig.colors.warning).toContain("bg-warning");
 	});
 });
+
+describe("one overlay system", () => {
+	it("leaves no select-only hatch in the code", () => {
+		const sources = import.meta.glob(["/src/**/*.{ts,vue}", "!/src/tests/**"], {
+			query: "?raw",
+			import: "default",
+			eager: true,
+		}) as Record<string, string>;
+
+		for (const [file, source] of Object.entries(sources))
+			expect(source.match(/data-pselect-dropdown|currentlyOpenId/g), file).toBeNull();
+	});
+});

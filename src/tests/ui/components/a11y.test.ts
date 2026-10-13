@@ -235,4 +235,40 @@ describe("UI kit accessibility", () => {
 		);
 		expect(await violations(wrapper.element)).toEqual([]);
 	});
+
+	it("the kit page passes in its open states", async () => {
+		const { default: KitView } = await import("@/views/dev/KitView.vue");
+		const { createHead } = await import("@unhead/vue/client");
+		const wrapper = mount(KitView, {
+			attachTo: document.body,
+			global: { plugins: [i18n, createHead()] },
+		});
+		await flushPromises();
+
+		// a searchable select with its list open, and a tooltip on a button
+		await wrapper
+			.find('[aria-label="Material, searchable"]')
+			.trigger("keydown", { key: "ArrowDown" });
+		wrapper
+			.find(".ptooltip button")
+			.element.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+		await flushPromises();
+		expect(document.body.querySelector("[role=listbox]")).not.toBeNull();
+		expect(
+			document.body.querySelector<HTMLElement>("[role=tooltip]:not([style*='display: none'])")
+		).not.toBeNull();
+
+		// landmarks come from the app layout; layers teleport outside them
+		const result = await axe.run(document.body, {
+			rules: {
+				"color-contrast": { enabled: false },
+				region: { enabled: false },
+			},
+		});
+		expect(
+			result.violations.map(
+				(v) => `${v.id}: ${v.nodes.map((n) => n.html).join(" | ")}`
+			)
+		).toEqual([]);
+	});
 });

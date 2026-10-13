@@ -9,6 +9,7 @@
 
 	// UI
 	import PToast from "@/ui/components/PToast.vue";
+	import { Z_TOAST } from "@/ui/zIndex";
 </script>
 
 <template>
@@ -17,7 +18,8 @@
 	<Teleport to="body">
 		<TransitionGroup
 			tag="div"
-			class="fixed left-0 right-4 bottom-20 h-0 z-6000 flex flex-col items-end justify-end"
+			class="ptoast-host fixed left-0 right-4 bottom-20 h-0 flex flex-col items-end justify-end"
+			:style="{ zIndex: Z_TOAST }"
 			enter-active-class="transition-[opacity,transform] duration-300"
 			leave-active-class="transition-[opacity,transform] duration-300"
 			enter-from-class="opacity-0 scale-85"

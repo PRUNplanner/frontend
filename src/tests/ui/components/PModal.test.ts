@@ -9,7 +9,7 @@ import { defineComponent, h, ref, type Ref } from "vue";
 import { createI18n } from "vue-i18n";
 
 import PModal from "@/ui/components/PModal.vue";
-import { currentlyOpenId } from "@/ui/stateCurrentOpen";
+import PSelect from "@/ui/components/PSelect.vue";
 
 enableAutoUnmount(afterEach);
 
@@ -198,16 +198,38 @@ describe("PModal", () => {
 	});
 
 	it("closes an open PSelect list first on Esc", async () => {
-		const { shows } = await mountModals(1);
-		await open();
+		const show = ref(true);
+		mount(PModal, {
+			props: {
+				show: true,
+				"onUpdate:show": (v: boolean) => (show.value = v),
+				title: "Select",
+			},
+			slots: {
+				default: () =>
+					h(PSelect, {
+						value: null,
+						options: [{ label: "A", value: "a" }],
+						ariaLabel: "Pick",
+					}),
+			},
+			attachTo: app,
+			global: { plugins: [i18n] },
+		});
+		await flushPromises();
+		const combobox = body().find<HTMLElement>("[role=combobox]");
+		combobox.element.focus();
+		await combobox.trigger("keydown", { key: "ArrowDown" });
+		await flushPromises();
+		expect(body().find("[role=listbox]").exists()).toBe(true);
 
-		currentlyOpenId.value = "select-abc";
 		await key("Escape");
-		expect(currentlyOpenId.value).toBeNull();
-		expect(shows[0].value).toBe(true);
+		expect(body().find("[role=listbox]").exists()).toBe(false);
+		expect(show.value).toBe(true);
+		expect(document.activeElement).toBe(combobox.element);
 
 		await key("Escape");
-		expect(shows[0].value).toBe(false);
+		expect(show.value).toBe(false);
 	});
 
 	it("stacks: Esc closes the top one, lock and inert last until both close", async () => {

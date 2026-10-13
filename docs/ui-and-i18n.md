@@ -75,7 +75,11 @@ are internal to `PDataTable` and the selects.
   - Auth fields set `autocomplete` (`username`, `current-password`,
     `new-password`); the kit default is `off`.
   - Keyboard: `PInputNumber` steps with ↑/↓ (its +/- are mouse-only);
-    `PSelect` opens with Enter, Space or ↓ and closes with Esc.
+    `PSelect` opens with Enter, Space or ↓ and closes with Esc. The select
+    is a `combobox` controlling a `listbox` of `option`s (groups are
+    `group`s), with `aria-activedescendant` on whatever has focus; opening a
+    searchable one moves focus into its search, and Esc (and Enter on a
+    single select) returns it to the combobox.
   - One focus ring for all controls (`:focus-visible`, `--color-focus` in
     `style.css`); don't add `outline-none`. Clickable things are `<button>`
     or `<a>`, never a `div` with `@click`.
@@ -106,7 +110,8 @@ are internal to `PDataTable` and the selects.
     - Both layers teleport to `body`, set `inert` on `#app` and lock the page
       scroll. Focus moves in and returns to the opener, Tab stays inside, and
       Esc closes the top layer (an open `PSelect` list first). `PSelect` lists
-      and `PTooltip`s stack above them.
+      and `PTooltip`s stack above them; every z-index comes from
+      `ui/zIndex.ts`.
     - `<PPopover>` with a `#trigger` slot: `trigger` `click` (toggles) or
       `manual` (`v-model:show`), `placement`, `panelClass` (added to the
       panel look, replaces the default `p-3` padding), `anchor` (an element
@@ -120,15 +125,17 @@ are internal to `PDataTable` and the selects.
       on keyboard focus inside the trigger and on a tap; Esc, focus leaving
       and a tap elsewhere close it. A tap on a button, link or checkbox
       inside the trigger runs that control and shows no tooltip, so give
-      such a control its own name. The panel is `role="tooltip"` and the
-      trigger's first focusable element gets `aria-describedby`; a trigger
+      such a control its own name. The panel is `role="tooltip"` and, while
+      it's open, the trigger's first focusable element gets
+      `aria-describedby` (closed tooltips add nothing to the page); a trigger
       with nothing focusable becomes a tab stop itself (`disabled` turns
       all of it off). Charts with their own SVG tooltips use the same rules
       through `useTooltipTrigger` (`ui/useTooltipTrigger.ts`).
     - Popovers and menus are non-modal layers on the same stack: Esc closes
       the topmost, no inert, scroll lock or focus trap. A click outside
-      closes them, except on the trigger, inside, in a `PSelect` list or in
-      a layer opened from inside.
+      closes them, except on the trigger, inside or in a layer opened from
+      inside. `PSelect` lists are layers too (`useSelectList`), so picking
+      in a select inside a popover keeps the popover open.
   - **Toasts:** `const toast = useToast()` from `@/ui`, then
     `toast(text, { type: "error" })`,
     `toast(text, { action: { label, onClick } })` or
