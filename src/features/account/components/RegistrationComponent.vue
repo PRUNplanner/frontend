@@ -1,5 +1,14 @@
 <script setup lang="ts">
-	import { onMounted, ref, type Ref, computed, type ComputedRef } from "vue";
+	import {
+		onMounted,
+		ref,
+		type Ref,
+		computed,
+		type ComputedRef,
+		watch,
+		nextTick,
+		useTemplateRef,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n({ useScope: "global" });
@@ -9,8 +18,6 @@
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	const isLoading = ref(false);
-	const hasError = ref(false);
-	const hasErrorMessage: Ref<string | null> = ref(null);
 	const registrationSuccess = ref(false);
 	const registrationUsername: Ref<string | null> = ref(null);
 
@@ -19,6 +26,36 @@
 	const inputEmail: Ref<string | null> = ref(null);
 	const inputPlanetName: Ref<string | null> = ref(null);
 	const activeSecurityOption: Ref<string | null> = ref(null);
+
+	// backend messages per form field, in form order
+	const FIELDS = ["username", "password", "email", "planet_input"] as const;
+	type Field = (typeof FIELDS)[number];
+	const fieldErrors: Ref<Partial<Record<Field, string[]>>> = ref({});
+	// top alert: what went wrong, plus messages that belong to no field
+	const alertKind: Ref<"fix_fields" | "throttled" | "unknown" | null> =
+		ref(null);
+	const alertMessages: Ref<string[]> = ref([]);
+	// "fix the fields" only while a field still shows an error
+	const alertText = computed(() =>
+		alertKind.value === "fix_fields" &&
+		!Object.keys(fieldErrors.value).length
+			? null
+			: alertKind.value
+	);
+
+	type InputRef = InstanceType<typeof PInput>;
+	const fieldInputs = {
+		username: useTemplateRef<InputRef>("username"),
+		password: useTemplateRef<InputRef>("password"),
+		email: useTemplateRef<InputRef>("email"),
+		planet_input: useTemplateRef<InputRef>("planet_input"),
+	};
+
+	// editing a field clears only that field's error
+	watch(inputUsername, () => delete fieldErrors.value.username);
+	watch(inputPassword, () => delete fieldErrors.value.password);
+	watch(inputEmail, () => delete fieldErrors.value.email);
+	watch(inputPlanetName, () => delete fieldErrors.value.planet_input);
 
 	const securityOptionList = [
 		"OT-580b",
@@ -33,11 +70,24 @@
 	];
 
 	function randomSecurityOption() {
+		const options = securityOptionList.filter(
+			(o) => o !== activeSecurityOption.value
+		);
 		activeSecurityOption.value =
-			securityOptionList[
-				Math.floor(Math.random() * securityOptionList.length)
-			];
+			options[Math.floor(Math.random() * options.length)];
 	}
+
+	function anotherPlanet() {
+		randomSecurityOption();
+		inputPlanetName.value = null;
+	}
+
+	// optional, but when filled: one @ and a dot in the domain part
+	const emailValid = computed(
+		() =>
+			!inputEmail.value ||
+			/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(inputEmail.value)
+	);
 
 	const canRegister = computed(() => {
 		// username at least 3 characters, no spaces
@@ -51,6 +101,8 @@
 		// password at least 8 characters
 		if (inputPassword.value === null || inputPassword.value.length < 8)
 			return false;
+
+		if (!emailValid.value) return false;
 
 		// planetname must be filled
 		if (inputPlanetName.value === null || inputPlanetName.value === "")
@@ -69,11 +121,16 @@
 		})
 	);
 
+	function isField(key: string): key is Field {
+		return (FIELDS as readonly string[]).includes(key);
+	}
+
 	async function registerUser(): Promise<void> {
 		isLoading.value = true;
-		hasError.value = false;
 		registrationSuccess.value = false;
-		hasErrorMessage.value = null;
+		fieldErrors.value = {};
+		alertKind.value = null;
+		alertMessages.value = [];
 
 		try {
 			const data = await useQuery(
@@ -84,14 +141,28 @@
 			registrationSuccess.value = true;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
-			if (err.validationFields) {
-				hasErrorMessage.value = err.validationFields;
+			// the security planet stays: the typed answer belongs to it
+			if (err.status === 429) {
+				alertKind.value = "throttled";
+			} else if (err.fieldErrors) {
+				for (const [key, messages] of Object.entries(
+					err.fieldErrors as Record<string, string[]>
+				)) {
+					if (isField(key)) fieldErrors.value[key] = messages;
+					else alertMessages.value.push(...messages);
+				}
+				alertKind.value = Object.keys(fieldErrors.value).length
+					? "fix_fields"
+					: null;
 			} else {
-				hasErrorMessage.value =
-					"Unknown error. Please try again later.";
+				alertKind.value = "unknown";
 			}
-			hasError.value = true;
-			randomSecurityOption();
+
+			const firstError = FIELDS.find((f) => fieldErrors.value[f]);
+			if (firstError) {
+				await nextTick();
+				fieldInputs[firstError].value?.focus();
+			}
 		} finally {
 			isLoading.value = false;
 		}
@@ -133,30 +204,51 @@
 					</template>
 				</i18n-t>
 			</div>
-			<div v-if="hasError" class="pb-3 text-red-600">
+			<div
+				v-if="alertText || alertMessages.length"
+				class="pb-3 text-negative"
+				role="alert">
 				{{ $t("account.components.registration.result.error") }}
-				<br />
-				{{ hasErrorMessage }}
+				<template v-if="alertText">
+					<br />
+					{{
+						$t(`account.components.registration.result.${alertText}`)
+					}}
+				</template>
+				<template v-for="(message, i) in alertMessages" :key="i">
+					<br />
+					{{ message }}
+				</template>
 			</div>
 			<PForm>
 				<PFormItem
 					:label="t('account.components.registration.form.username')">
 					<PInput
+						ref="username"
 						v-model:value="inputUsername"
 						autocomplete="username"
 						:placeholder="t('account.components.hints.username')"
 						class="w-full" />
 					<template #info>
-						{{
-							$t(
-								"account.components.registration.form.username_info"
-							)
-						}}
+						<span
+							v-if="fieldErrors.username"
+							class="text-negative"
+							role="alert">
+							{{ fieldErrors.username.join(" ") }}
+						</span>
+						<template v-else>
+							{{
+								$t(
+									"account.components.registration.form.username_info"
+								)
+							}}
+						</template>
 					</template>
 				</PFormItem>
 				<PFormItem
 					:label="t('account.components.registration.form.password')">
 					<PInput
+						ref="password"
 						v-model:value="inputPassword"
 						autocomplete="new-password"
 						:placeholder="
@@ -165,16 +257,25 @@
 						type="password"
 						class="w-full" />
 					<template #info>
-						{{
-							$t(
-								"account.components.registration.form.password_info"
-							)
-						}}
+						<span
+							v-if="fieldErrors.password"
+							class="text-negative"
+							role="alert">
+							{{ fieldErrors.password.join(" ") }}
+						</span>
+						<template v-else>
+							{{
+								$t(
+									"account.components.registration.form.password_info"
+								)
+							}}
+						</template>
 					</template>
 				</PFormItem>
 				<PFormItem
 					:label="t('account.components.registration.form.email')">
 					<PInput
+						ref="email"
 						v-model:value="inputEmail"
 						autocomplete="email"
 						:placeholder="
@@ -184,11 +285,26 @@
 						"
 						class="w-full" />
 					<template #info>
-						{{
-							$t(
-								"account.components.registration.form.email_info"
-							)
-						}}
+						<span
+							v-if="fieldErrors.email"
+							class="text-negative"
+							role="alert">
+							{{ fieldErrors.email.join(" ") }}
+						</span>
+						<span v-else-if="!emailValid" class="text-negative">
+							{{
+								$t(
+									"account.components.registration.form.email_invalid"
+								)
+							}}
+						</span>
+						<template v-else>
+							{{
+								$t(
+									"account.components.registration.form.email_info"
+								)
+							}}
+						</template>
 					</template>
 				</PFormItem>
 				<PFormSeperator>
@@ -217,13 +333,31 @@
 								>
 							</template>
 						</i18n-t>
+						<button
+							type="button"
+							class="min-h-11 lg:min-h-6 underline hover:text-white cursor-pointer"
+							@click="anotherPlanet">
+							{{
+								$t(
+									"account.components.registration.form.another_planet"
+								)
+							}}
+						</button>
 					</div>
 				</PFormSeperator>
 				<PFormItem
 					:label="
 						t('account.components.registration.form.planet_name')
 					">
-					<PInput v-model:value="inputPlanetName" class="w-full" />
+					<PInput
+						ref="planet_input"
+						v-model:value="inputPlanetName"
+						class="w-full" />
+					<template v-if="fieldErrors.planet_input" #info>
+						<span class="text-negative" role="alert">
+							{{ fieldErrors.planet_input.join(" ") }}
+						</span>
+					</template>
 				</PFormItem>
 				<PFormItem label="">
 					<PButton

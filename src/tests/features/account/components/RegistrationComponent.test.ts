@@ -17,6 +17,7 @@ import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	trackEvent: vi.fn(),
+	trackException: vi.fn(),
 	trackUser: vi.fn(),
 	identifyUser: vi.fn(),
 	resetUser: vi.fn(),
@@ -27,10 +28,25 @@ const SIGNUP_URL = /user\/signup\/$/;
 
 // Math.random picks index floor(r * 9) of the 9 security planets
 const FIRST_PLANET = "OT-580b"; // r = 0 → index 0
-const FIFTH_PLANET = "FK-794b"; // r = 0.5 → floor(4.5) = 4
 
 const inputs = (wrapper: VueWrapper) => wrapper.findAll("input");
-const registerButton = (wrapper: VueWrapper) => wrapper.find("button");
+const registerButton = (wrapper: VueWrapper) =>
+	wrapper
+		.findAll("button")
+		.find((b) => b.text().includes("buttons.register"))!;
+const anotherPlanetButton = (wrapper: VueWrapper) =>
+	wrapper
+		.findAll("button")
+		.find((b) => b.text().includes("form.another_planet"))!;
+// the info line under the nth form field (username, password, email, planet)
+const fieldInfo = (wrapper: VueWrapper, index: number) => {
+	const id = inputs(wrapper)[index].attributes("id");
+	const content = wrapper.find(`label[for="${id}"]`).element.nextElementSibling;
+	const info = content?.nextElementSibling;
+	return info?.classList.contains("col-2") ? (info.textContent ?? "") : "";
+};
+const alert = (wrapper: VueWrapper) =>
+	wrapper.find(".pb-3.text-negative[role=alert]").text();
 const disabled = (wrapper: VueWrapper) =>
 	registerButton(wrapper).element.disabled;
 
@@ -244,24 +260,24 @@ describe("RegistrationComponent", () => {
 		);
 	});
 
-	it("shows the first backend validation message and keeps the inputs", async () => {
-		mock.onPost(SIGNUP_URL).reply(400, {
-			username: ["A user with that username already exists.", "other"],
-			password: ["Too common."],
+	it("keeps the planet and the answer after a 400, so fixing the username succeeds", async () => {
+		mock.onPost(SIGNUP_URL).replyOnce(400, {
+			username: ["A user with that username already exists."],
 		});
+		mock.onPost(SIGNUP_URL).replyOnce(200, { username: "other-user" });
 		const { wrapper } = await mountComponent(RegistrationComponent);
+		// a re-roll would now pick another planet
+		vi.mocked(Math.random).mockReturnValue(0.5);
 		await fill(wrapper, { ...VALID });
 
 		await register(wrapper);
 
-		expect(wrapper.text()).toContain(
-			"account.components.registration.result.error"
-		);
-		expect(wrapper.text()).toContain(
+		expect(fieldInfo(wrapper, 0)).toContain(
 			"A user with that username already exists."
 		);
-		expect(wrapper.text()).not.toContain("other");
-		expect(wrapper.text()).not.toContain("Too common.");
+		expect(alert(wrapper)).toContain(
+			"account.components.registration.result.fix_fields"
+		);
 		expect(inputs(wrapper).map((i) => i.element.value)).toEqual([
 			"test-user",
 			"correct-horse-battery",
@@ -270,50 +286,209 @@ describe("RegistrationComponent", () => {
 		]);
 		expect(registerButton(wrapper).attributes("aria-busy")).toBe("false");
 		expect(disabled(wrapper)).toBe(false);
-	});
 
-	it("shows a plain string validation message as is", async () => {
-		mock.onPost(SIGNUP_URL).reply(400, { detail: "Planet answer wrong." });
-		const { wrapper } = await mountComponent(RegistrationComponent);
-		await fill(wrapper, { ...VALID });
-
+		await fill(wrapper, { username: "other-user" });
 		await register(wrapper);
 
-		expect(wrapper.text()).toContain("Planet answer wrong.");
-	});
-
-	it("falls back to an unknown error without a backend message", async () => {
-		mock.onPost(SIGNUP_URL).networkError();
-		const { wrapper } = await mountComponent(RegistrationComponent);
-		await fill(wrapper, { ...VALID });
-
-		await register(wrapper);
-
+		expect(sentBody(0)).toMatchObject({ planet_id: FIRST_PLANET });
+		expect(sentBody(1)).toEqual({
+			...(sentBody(0) as object),
+			username: "other-user",
+		});
 		expect(wrapper.text()).toContain(
+			"account.components.registration.result.ok_message"
+		);
+	});
+
+	it("shows every message of a combined 400 under its own field", async () => {
+		mock.onPost(SIGNUP_URL).reply(400, {
+			username: ["Taken."],
+			password: ["Too common.", "Entirely numeric."],
+			email: ["Enter a valid email address."],
+			planet_input: ["Wrong planet."],
+		});
+		const { wrapper } = await mountComponent(RegistrationComponent);
+		await fill(wrapper, { ...VALID });
+
+		await register(wrapper);
+
+		expect(fieldInfo(wrapper, 0)).toContain("Taken.");
+		expect(fieldInfo(wrapper, 1)).toContain("Too common.");
+		expect(fieldInfo(wrapper, 1)).toContain("Entirely numeric.");
+		expect(fieldInfo(wrapper, 2)).toContain("Enter a valid email address.");
+		expect(fieldInfo(wrapper, 3)).toContain("Wrong planet.");
+		expect(wrapper.findAll(".col-2 .text-negative[role=alert]")).toHaveLength(4);
+		// the top alert only points at the fields
+		expect(alert(wrapper)).not.toContain("Taken.");
+	});
+
+	it("puts messages that belong to no field into the top alert", async () => {
+		mock.onPost(SIGNUP_URL).reply(400, {
+			non_field_errors: ["Something else."],
+			planet_id: ["Unknown planet."],
+		});
+		const { wrapper } = await mountComponent(RegistrationComponent);
+		await fill(wrapper, { ...VALID });
+
+		await register(wrapper);
+
+		expect(alert(wrapper)).toContain(
 			"account.components.registration.result.error"
 		);
-		expect(wrapper.text()).toContain(
-			"Unknown error. Please try again later."
+		expect(alert(wrapper)).toContain("Something else.");
+		expect(alert(wrapper)).toContain("Unknown planet.");
+		expect(alert(wrapper)).not.toContain("result.fix_fields");
+	});
+
+	it("shows a wrong planet answer under the planet name, and another planet clears it", async () => {
+		mock.onPost(SIGNUP_URL).replyOnce(400, {
+			planet_input: ["Wrong planet."],
+		});
+		mock.onPost(SIGNUP_URL).replyOnce(200, { username: "test-user" });
+		const { wrapper } = await mountComponent(RegistrationComponent);
+		await fill(wrapper, { ...VALID });
+		await register(wrapper);
+		expect(fieldInfo(wrapper, 3)).toContain("Wrong planet.");
+
+		await anotherPlanetButton(wrapper).trigger("click");
+		await flushPromises();
+
+		expect(inputs(wrapper)[3].element.value).toBe("");
+		expect(wrapper.text()).not.toContain("Wrong planet.");
+		await fill(wrapper, { planet: "Katoa" });
+		await register(wrapper);
+		// r = 0 among the 8 others: the second planet of the list
+		expect(sentBody(0)).toMatchObject({ planet_id: FIRST_PLANET });
+		expect(sentBody(1)).toMatchObject({
+			planet_id: "KW-688c",
+			planet_input: "Katoa",
+		});
+	});
+
+	it("never draws the current planet again", async () => {
+		mock.onPost(SIGNUP_URL).reply(200, { username: "test-user" });
+		const { wrapper } = await mountComponent(RegistrationComponent);
+		for (const r of [0, 0.5, 0.999]) {
+			vi.mocked(Math.random).mockReturnValue(r);
+			await anotherPlanetButton(wrapper).trigger("click");
+		}
+		await fill(wrapper, { ...VALID });
+		await register(wrapper);
+
+		// mounted on OT-580b, then each draw skips the planet shown before it
+		expect(sentBody()).not.toMatchObject({ planet_id: FIRST_PLANET });
+	});
+
+	it("clears only the error of the field being edited", async () => {
+		mock.onPost(SIGNUP_URL).reply(400, {
+			username: ["Taken."],
+			planet_input: ["Wrong planet."],
+		});
+		const { wrapper } = await mountComponent(RegistrationComponent);
+		await fill(wrapper, { ...VALID });
+		await register(wrapper);
+
+		await fill(wrapper, { username: "other-user" });
+
+		expect(wrapper.text()).not.toContain("Taken.");
+		expect(fieldInfo(wrapper, 0)).toContain(
+			"account.components.registration.form.username_info"
+		);
+		expect(fieldInfo(wrapper, 3)).toContain("Wrong planet.");
+	});
+
+	it("drops the top alert once the last field error is edited away", async () => {
+		mock.onPost(SIGNUP_URL).reply(400, { username: ["Taken."] });
+		const { wrapper } = await mountComponent(RegistrationComponent);
+		await fill(wrapper, { ...VALID });
+		await register(wrapper);
+		expect(alert(wrapper)).toContain("result.fix_fields");
+
+		await fill(wrapper, { username: "other-user" });
+
+		expect(wrapper.find(".pb-3.text-negative[role=alert]").exists()).toBe(
+			false
+		);
+	});
+
+	it("explains the password rules before submitting", async () => {
+		const { wrapper } = await mountComponent(RegistrationComponent);
+
+		expect(fieldInfo(wrapper, 1)).toContain(
+			"account.components.registration.form.password_info"
+		);
+	});
+
+	it("shows the throttle message on a 429", async () => {
+		mock.onPost(SIGNUP_URL).reply(429, {
+			detail: "Request was throttled. Expected available in 42 seconds.",
+		});
+		const { wrapper } = await mountComponent(RegistrationComponent);
+		await fill(wrapper, { ...VALID });
+
+		await register(wrapper);
+
+		expect(alert(wrapper)).toContain(
+			"account.components.registration.result.throttled"
+		);
+		expect(alert(wrapper)).not.toContain("result.unknown");
+		expect(alert(wrapper)).not.toContain("throttled. Expected");
+	});
+
+	it.each([
+		["a network error", () => mock.onPost(SIGNUP_URL).networkError()],
+		["a server error", () => mock.onPost(SIGNUP_URL).reply(500)],
+	])("falls back to an unknown error on %s", async (_, answer) => {
+		answer();
+		const { wrapper } = await mountComponent(RegistrationComponent);
+		await fill(wrapper, { ...VALID });
+
+		await register(wrapper);
+
+		expect(alert(wrapper)).toContain(
+			"account.components.registration.result.error"
+		);
+		expect(alert(wrapper)).toContain(
+			"account.components.registration.result.unknown"
 		);
 		expect(registerButton(wrapper).attributes("aria-busy")).toBe("false");
 	});
 
-	it("asks for a new security planet after a failure", async () => {
-		mock.onPost(SIGNUP_URL).replyOnce(400, { planet_input: ["Wrong."] });
-		mock.onPost(SIGNUP_URL).replyOnce(200, { username: "test-user" });
-		// mounted with r = 0, the re-roll after the failure gets r = 0.5
+	it("needs a filled email to look like one, with the reason at the field", async () => {
 		const { wrapper } = await mountComponent(RegistrationComponent);
-		vi.mocked(Math.random).mockReturnValue(0.5);
+		await fill(wrapper, { ...VALID });
+
+		for (const email of ["foo", "foo@bar", "foo@@bar.com", "a b@c.de"]) {
+			await fill(wrapper, { email });
+			expect(disabled(wrapper)).toBe(true);
+			expect(fieldInfo(wrapper, 2)).toContain(
+				"account.components.registration.form.email_invalid"
+			);
+		}
+		await fill(wrapper, { email: "foo@bar.com" });
+		expect(disabled(wrapper)).toBe(false);
+		await fill(wrapper, { email: "" });
+		expect(disabled(wrapper)).toBe(false);
+		expect(fieldInfo(wrapper, 2)).toContain(
+			"account.components.registration.form.email_info"
+		);
+	});
+
+	it("focuses the first field with an error after a failed submit", async () => {
+		mock.onPost(SIGNUP_URL).reply(400, {
+			planet_input: ["Wrong planet."],
+			password: ["Too common."],
+		});
+		const { wrapper } = await mountComponent(
+			RegistrationComponent,
+			{},
+			{ attach: true }
+		);
 		await fill(wrapper, { ...VALID });
 
 		await register(wrapper);
-		await register(wrapper);
 
-		expect(sentBody(0)).toMatchObject({ planet_id: FIRST_PLANET });
-		expect(sentBody(1)).toMatchObject({ planet_id: FIFTH_PLANET });
-		expect(wrapper.text()).toContain(
-			"account.components.registration.result.ok_message"
-		);
+		expect(document.activeElement).toBe(inputs(wrapper)[1].element);
 	});
 
 	it("hides the previous error while retrying", async () => {
