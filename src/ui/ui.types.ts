@@ -23,6 +23,7 @@ export interface PCheckboxConfig {
 	container: string;
 	label: string;
 	input: string;
+	sizes: Record<SizeKey, { input: string; icon: string }>;
 	colors: Record<"base" | "disabled", string>;
 	checkIcon: string;
 	checkIconSVG: string;
@@ -78,7 +79,7 @@ export interface PInputNumberConfig {
 
 export interface PInputConfig {
 	container: string;
-	sizes: Record<SizeKey, { container: string; input: string }>;
+	sizes: Record<SizeKey, { container: string; field: string; input: string }>;
 }
 
 export interface PSelectOption {

@@ -638,7 +638,7 @@
 
 	/* the whole cell is the button */
 	.p-data-table-sortable > .p-data-table-title {
-		@apply -mx-2.5 -my-1.25 px-2.5 py-1.25 w-[calc(100%+20px)] cursor-pointer;
+		@apply touch-target -mx-2.5 -my-1.25 px-2.5 py-1.25 w-[calc(100%+20px)] cursor-pointer;
 	}
 
 	.p-data-table th.p-data-table-sorting {
@@ -708,7 +708,7 @@
 	}
 
 	.p-data-table-expand-button {
-		@apply inline-flex items-center justify-center size-6 rounded-control cursor-pointer align-middle;
+		@apply touch-target inline-flex items-center justify-center size-6 rounded-control cursor-pointer align-middle;
 	}
 
 	.p-data-table-expand {

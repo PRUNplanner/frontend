@@ -12,7 +12,7 @@
 	<button
 		type="button"
 		:aria-label="t('common.ui.close')"
-		class="flex items-center justify-center shrink-0 size-6 -mr-0.75 rounded-control cursor-pointer text-muted hover:bg-white/12 active:bg-white/8"
+		class="touch-target flex items-center justify-center shrink-0 size-6 -mr-0.75 rounded-control cursor-pointer text-muted hover:bg-white/12 active:bg-white/8"
 		@click="$emit('click', $event)">
 		<svg viewBox="0 0 12 12" class="size-4.5" aria-hidden="true">
 			<path

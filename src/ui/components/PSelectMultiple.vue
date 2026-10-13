@@ -18,7 +18,7 @@
 	import { panelConfig } from "@/ui/styles";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 	import { optionKeys } from "@/ui/optionKeys";
-	import type { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption, SizeKey } from "@/ui/ui.types";
 	import PInput from "./PInput.vue";
 	import PSelectElement from "./PSelectElement.vue";
 	import PTag from "./PTag.vue";
@@ -39,6 +39,7 @@
 		clearable = true,
 		maxItems = Infinity,
 		ariaLabel = undefined,
+		size = "md",
 	} = defineProps<{
 		options: PSelectOption[];
 		searchable?: boolean;
@@ -47,6 +48,7 @@
 		maxItems?: number;
 		/** accessible name when not inside a PFormItem */
 		ariaLabel?: string;
+		size?: SizeKey;
 	}>();
 
 	const open = ref(false);
@@ -292,7 +294,8 @@
 		@keydown="onKeyDown">
 		<label>
 			<div
-				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-ink rounded-control px-2 min-h-7"
+				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-ink rounded-control px-2 pointer-coarse:min-h-11"
+				:class="size === 'sm' ? 'min-h-6 text-xs' : 'min-h-7'"
 				@click="toggleOpen">
 				<div class="w-full max-w-full grow">
 					<template v-if="selectedEntries.length > 0">

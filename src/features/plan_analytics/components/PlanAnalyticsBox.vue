@@ -104,7 +104,7 @@
 					{{ $t("plan.tools.plan_analytics.title") }}
 				</h3>
 				<button
-					class="text-sm text-muted hover:text-white"
+					class="touch-target text-sm text-muted hover:text-white"
 					@click="isOpen = false">
 					<PIcon><CloseSharp /></PIcon>
 				</button>
@@ -207,7 +207,7 @@
 							:key="building"
 							class="overflow-hidden rounded border border-white/10 bg-white/5">
 							<button
-								class="flex w-full items-center justify-between px-2 py-1 text-xs hover:bg-white/10 font-mono transition-colors"
+								class="touch-target flex w-full items-center justify-between px-2 py-1 text-xs hover:bg-white/10 font-mono transition-colors"
 								@click="toggleBuilding(building as string)">
 								<span class="font-bold text-prunplanner">
 									{{ building }}
@@ -266,7 +266,7 @@
 		</div>
 
 		<button
-			class="bg-prunplanner flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110 active:scale-80"
+			class="touch-target bg-prunplanner flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110 active:scale-80"
 			type="button"
 			:aria-label="$t('plan.tools.plan_analytics.toggle')"
 			@click="toggleOpen">

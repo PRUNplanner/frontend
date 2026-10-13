@@ -169,7 +169,7 @@
 					v-else
 					:id="`${id}-${items.indexOf(o)}`"
 					role="menuitem"
-					class="relative flex cursor-pointer leading-[34px] before:absolute before:inset-y-0 before:inset-x-1 before:rounded-control"
+					class="touch-target flex cursor-pointer leading-[34px] before:absolute before:inset-y-0 before:inset-x-1 before:rounded-control"
 					:class="[
 						o.hint ? '' : 'h-[34px]',
 						o.danger ? 'text-negative' : 'text-ink',

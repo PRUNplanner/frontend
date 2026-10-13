@@ -18,7 +18,7 @@
 	import { panelConfig } from "@/ui/styles";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 	import { optionKeys } from "@/ui/optionKeys";
-	import type { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption, SizeKey } from "@/ui/ui.types";
 	import PInput from "./PInput.vue";
 	import PSelectElement from "./PSelectElement.vue";
 	import { createPopper, type Instance } from "@popperjs/core";
@@ -35,6 +35,7 @@
 		clearable = false,
 		placeholder = undefined,
 		ariaLabel = undefined,
+		size = "md",
 	} = defineProps<{
 		options: PSelectOption[];
 		searchable?: boolean;
@@ -43,6 +44,7 @@
 		placeholder?: string;
 		/** accessible name when not inside a PFormItem */
 		ariaLabel?: string;
+		size?: SizeKey;
 	}>();
 
 	const placeholderText = computed(
@@ -278,8 +280,11 @@
 		@keydown="onKeyDown">
 		<label>
 			<div
-				class="flex flex-row items-center cursor-pointer bg-white/5 text-ink rounded-control pr-2 min-h-7"
-				:class="!useSearch ? 'py-1 ' : ''"
+				class="flex flex-row items-center cursor-pointer bg-white/5 text-ink rounded-control pr-2 pointer-coarse:min-h-11"
+				:class="[
+					!useSearch ? 'py-1' : '',
+					size === 'sm' ? 'min-h-6 text-xs' : 'min-h-7',
+				]"
 				@click="toggleOpen">
 				<div
 					v-if="!useSearch"

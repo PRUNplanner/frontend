@@ -24,6 +24,18 @@ are internal to `PDataTable` and the selects.
 - **Shared props:** `size` (`"sm" | "md"`) and `type` for the colour
   (`primary`, `success`, `error`, `warning`, `secondary`; buttons also
   `ghost`). Both types are in `ui/ui.types.ts`.
+- **Sizes:** every control (`PButton`, `PInput`, `PInputNumber`,
+  `PSelect`, `PSelectMultiple`, `PCheckbox`) takes `size`: `md` is 28 px
+  tall, `sm` 24 px (checkbox boxes 16 / 14 px), side by side on the kit
+  page. `PCheckbox` also takes `indeterminate` (a dash, for "select all"
+  over some rows).
+- **Touch:** on a touch screen (`pointer: coarse`) every kit target is at
+  least 44 × 44 px. Small controls get an invisible hit area from the
+  `touch-target` utility (`style.css`, a centred `::after`); put it on any
+  raw `<button>` smaller than that too. Text fields and select triggers
+  can't take a tap through a pseudo element, so they are 44 px tall there
+  (`pointer-coarse:min-h-11`). Desktop sizes don't change. The UI audit
+  counts what's left as `smallTargetsTouch`.
 - **Unknown props fail `pnpm tsc`** (`checkUnknownProps` and
   `checkUnknownEvents` in `tsconfig.typecheck.json`). `class`, `style`,
   `id`, `title`, `role`, `aria-*` and `data-*` fall through to a

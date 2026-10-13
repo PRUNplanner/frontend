@@ -89,7 +89,7 @@
 	}
 
 	.ppagination-item {
-		@apply flex items-center justify-center min-w-7 h-7 px-1.5 rounded-control border border-transparent text-ink cursor-pointer hover:text-link disabled:text-white/38 disabled:cursor-not-allowed;
+		@apply touch-target flex items-center justify-center min-w-7 h-7 px-1.5 rounded-control border border-transparent text-ink cursor-pointer hover:text-link disabled:text-white/38 disabled:cursor-not-allowed;
 	}
 
 	.ppagination-item.ppagination-active {

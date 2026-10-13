@@ -48,6 +48,7 @@
 	// UI
 	import {
 		PButton,
+		PCheckbox,
 		PDropdown,
 		PIcon,
 		PInput,
@@ -535,9 +536,7 @@
 									)
 								}}
 							</div>
-							<input
-								type="checkbox"
-								class="size-4.5 accent-blue-700 cursor-pointer"
+							<PCheckbox
 								:checked="headerStates.get(e.empireUuid) === 'all'"
 								:indeterminate="
 									headerStates.get(e.empireUuid) === 'some'
@@ -553,7 +552,7 @@
 												{ empire: e.empireName }
 											)
 								"
-								@change="toggleAllShown(e.empireUuid)" />
+								@update:checked="toggleAllShown(e.empireUuid)" />
 						</div>
 					</th>
 				</tr>

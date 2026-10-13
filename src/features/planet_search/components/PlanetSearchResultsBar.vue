@@ -121,7 +121,7 @@
 				{{ c.label }}
 				<button
 					type="button"
-					class="min-w-11 min-h-11 lg:min-w-7 lg:min-h-7 rounded-full cursor-pointer hover:bg-white/10"
+					class="touch-target min-w-11 min-h-11 lg:min-w-7 lg:min-h-7 rounded-full cursor-pointer hover:bg-white/10"
 					:aria-label="t('planet_search.chips.remove', { label: c.label })"
 					@click="emit('update:filter', c.chip.remove)">
 					×

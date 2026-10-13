@@ -61,7 +61,11 @@
 <template>
 	<div>
 		<div
-			:class="`${inputConfig.container} ${inputConfig.sizes[size].container}`">
+			:class="[
+				inputConfig.container,
+				inputConfig.sizes[size].container,
+				type === 'textarea' ? '' : inputConfig.sizes[size].field,
+			]">
 			<textarea
 				v-if="type === 'textarea'"
 				:id="inputId"
@@ -72,7 +76,7 @@
 				:rows="rows"
 				:placeholder="placeholderText"
 				:aria-label="ariaLabel"
-				:class="`${inputConfig.sizes[size].input}`"
+				:class="`${inputConfig.sizes[size].input} py-1`"
 				:autocomplete="autocomplete"
 				@input="onInput"
 				@keydown="$emit('keydown', $event)" />

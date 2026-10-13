@@ -206,10 +206,25 @@
 					<PSelect
 						v-model:value="single"
 						:options="options"
+						:size="size"
 						:aria-label="`Exchange ${size}`"
 						class="w-40" />
-					<PCheckbox v-model:checked="checked">Checked</PCheckbox>
-					<PCheckbox v-model:checked="unchecked">Unchecked</PCheckbox>
+					<PSelectMultiple
+						v-model:value="multiple"
+						:options="options"
+						:size="size"
+						:aria-label="`Exchanges ${size}`"
+						class="w-56" />
+					<PButton :size="size" type="secondary">Button</PButton>
+					<PCheckbox v-model:checked="checked" :size="size">
+						Checked
+					</PCheckbox>
+					<PCheckbox v-model:checked="unchecked" :size="size">
+						Unchecked
+					</PCheckbox>
+					<PCheckbox v-model:checked="unchecked" :size="size" indeterminate>
+						Some
+					</PCheckbox>
 				</div>
 				<div class="flex flex-wrap items-center gap-3 pb-3">
 					<PInput
