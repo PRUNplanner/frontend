@@ -70,6 +70,50 @@ describe("userQueries analytics", () => {
 		]);
 	});
 
+	it("hands every field and every message of a 400 to the form", async () => {
+		vi.mocked(callRegisterUser).mockRejectedValue(
+			Object.assign(new Error("400"), {
+				status: 400,
+				responseData: {
+					username: ["Taken."],
+					password: ["Too common.", "Entirely numeric."],
+					non_field_errors: "Plain string.",
+				},
+			})
+		);
+
+		const error = await userQueries.PostUserRegistration.fetchFn(
+			REGISTRATION
+		).catch((e) => e);
+
+		expect(error.status).toBe(400);
+		expect(error.fieldErrors).toEqual({
+			username: ["Taken."],
+			password: ["Too common.", "Entirely numeric."],
+			non_field_errors: ["Plain string."],
+		});
+		expect(error).not.toHaveProperty("validationFields");
+		expect(trackEvent).toHaveBeenCalledWith("account:signup_fail", {
+			fields: ["username", "password", "non_field_errors"],
+		});
+	});
+
+	it("hands no field errors to the form on a throttled signup", async () => {
+		vi.mocked(callRegisterUser).mockRejectedValue(
+			Object.assign(new Error("429"), {
+				status: 429,
+				responseData: { detail: "Request was throttled." },
+			})
+		);
+
+		const error = await userQueries.PostUserRegistration.fetchFn(
+			REGISTRATION
+		).catch((e) => e);
+
+		expect(error.status).toBe(429);
+		expect(error).not.toHaveProperty("fieldErrors");
+	});
+
 	it("reports a failed signup without an API error body", async () => {
 		vi.mocked(callRegisterUser).mockRejectedValue(new Error("Network"));
 

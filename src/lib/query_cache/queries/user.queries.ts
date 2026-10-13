@@ -83,15 +83,20 @@ export const userQueries = {
 							: [],
 				});
 
-				if (apiErrors && typeof apiErrors === "object") {
-					const firstKey = Object.keys(apiErrors)[0];
-					const messages = apiErrors[firstKey];
-					const userFriendlyMessage = Array.isArray(messages)
-						? messages[0]
-						: messages;
-
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(error as any).validationFields = userFriendlyMessage;
+				// every field and every message, shown at their fields
+				if (
+					error.status === 400 &&
+					apiErrors &&
+					typeof apiErrors === "object"
+				) {
+					error.fieldErrors = Object.fromEntries(
+						Object.entries(apiErrors).map(([key, messages]) => [
+							key,
+							Array.isArray(messages)
+								? messages.map(String)
+								: [String(messages)],
+						])
+					);
 				}
 
 				throw error;

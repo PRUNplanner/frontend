@@ -58,6 +58,10 @@ the tables here list the same events; a test
 | `account:fio_link_failed` | `reason` | saving FIO credentials was refused: `fio_required`, `fio_invalid_key` or `fio_username_mismatch` |
 | `account:api_key_create` | | |
 
+The signup events only reach PostHog from browsers that consented to analytics
+in an earlier session, so they undercount signups. Signup counts and rejection
+reasons come from the backend events and their Axiom panels (signup-01).
+
 ### Plan
 
 | Event | Properties | When |
