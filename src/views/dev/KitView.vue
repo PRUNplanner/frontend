@@ -269,6 +269,7 @@
 					<PInput
 						v-model:value="text"
 						type="password"
+						autocomplete="current-password"
 						aria-label="Password"
 						class="w-40" />
 				</div>
@@ -406,7 +407,9 @@
 				<div class="flex flex-wrap items-center gap-3">
 					<PTooltip>
 						<template #trigger>
-							<PIcon :size="20"><InfoOutlined /></PIcon>
+							<PIcon :size="20" role="img" aria-label="Info">
+								<InfoOutlined />
+							</PIcon>
 						</template>
 						Tooltip on an icon
 					</PTooltip>
