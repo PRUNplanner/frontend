@@ -16,6 +16,7 @@
 	import { createFloating } from "@/ui/popper";
 	import { formatNumber } from "@/util/numbers";
 	import { tooltipConfig } from "@/ui/styles";
+	import { Z_TOOLTIP } from "@/ui/zIndex";
 	import { chartZone, stripLayout } from "@/ui/charts/charts.util";
 
 	// Types & Interfaces
@@ -204,7 +205,8 @@
 			:id="tipId"
 			ref="tooltipRef"
 			role="tooltip"
-			class="z-9999 pointer-events-none"
+			class="pointer-events-none"
+			:style="{ zIndex: Z_TOOLTIP }"
 			:class="tooltipConfig.tooltip">
 			<slot name="tooltip" :items="activeItems" />
 		</div>
