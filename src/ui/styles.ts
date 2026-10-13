@@ -120,7 +120,8 @@ export const panelConfig: PPanelConfig = {
 };
 
 export const tooltipConfig: PTooltipConfig = {
-	trigger: "ptooltip",
+	// hover and taps on a disabled control reach the trigger (it explains why)
+	trigger: "ptooltip [&_:disabled]:pointer-events-none",
 	tooltip: `${panelConfig.panel} py-1 px-2 text-sm text-ink-strong`,
 };
 
@@ -142,7 +143,7 @@ export const formItemConfig: PFormItemConfig = {
 	label: "flex-none flex items-center h-full overflow-hidden whitespace-nowrap text-ellipsis pr-4",
 	// touch screens: the controls' 44px hit areas reach past the row
 	content:
-		"flex-none flex items-center h-full overflow-hidden pointer-coarse:overflow-visible whitespace-nowrap text-ellipsis",
+		"flex-none flex items-center h-full min-w-0 overflow-hidden pointer-coarse:overflow-visible whitespace-nowrap text-ellipsis",
 };
 
 export const inputNumberConfig: PInputNumberConfig = {
@@ -151,9 +152,9 @@ export const inputNumberConfig: PInputNumberConfig = {
 	input: "w-full h-full focus-visible:-outline-offset-2",
 	buttonContainer: "flex flex-row pr-1",
 	buttonChangeAllowed:
-		"touch-target flex items-center justify-center w-6 h-6 rounded-control text-white/70 cursor-pointer hover:bg-white/10",
+		"flex items-center justify-center w-6 h-6 pointer-coarse:size-11 rounded-control text-white/70 cursor-pointer hover:bg-white/10",
 	buttonChangeUnallowed:
-		"touch-target flex items-center justify-center w-6 h-6 rounded-control text-white/20 cursor-auto",
+		"flex items-center justify-center w-6 h-6 pointer-coarse:size-11 rounded-control text-white/20 cursor-auto",
 	sizes: {
 		sm: {
 			container: "gap-1 h-6 text-xs",
@@ -198,12 +199,12 @@ export const tagConfig: PTagConfig = {
 		sm: {
 			container:
 				"inline-flex text-xs items-center rounded-control gap-x-0.5 py-0.25 px-1 mr-0.5",
-			icon: "touch-target w-[14px] rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
+			icon: "flex items-center justify-center w-[14px] pointer-coarse:size-11 rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
 		},
 		md: {
 			container:
 				"inline-flex items-center text-xs rounded-control gap-x-1 py-0.5 px-1 mr-1",
-			icon: "touch-target w-[16px] rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
+			icon: "flex items-center justify-center w-[16px] pointer-coarse:size-11 rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
 		},
 	},
 };

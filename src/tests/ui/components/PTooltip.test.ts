@@ -76,6 +76,19 @@ describe("PTooltip", () => {
 		expect(input.attributes("aria-describedby")).toBe("field-error");
 	});
 
+	it("explains a disabled control: the trigger takes focus and taps", async () => {
+		const wrapper = mountTooltip(() => h("button", { disabled: true }, "COGM"));
+		await flushPromises();
+		const trigger = wrapper.find(".ptooltip");
+
+		expect(trigger.attributes("tabindex")).toBe("0");
+		expect(trigger.classes()).toContain("[&_:disabled]:pointer-events-none");
+
+		await trigger.trigger("touchstart");
+		await trigger.trigger("click");
+		expect(shown()).toBe(true);
+	});
+
 	it("makes a trigger without a focusable element focusable", async () => {
 		const wrapper = mountTooltip(() => h("span", "i"));
 		await flushPromises();

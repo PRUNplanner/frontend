@@ -2,7 +2,7 @@ import { onBeforeUnmount, type Ref, ref, useId, watch } from "vue";
 
 /** controls that act on a tap themselves; a tap on them shows no tooltip */
 const INTERACTIVE =
-	'button, a[href], input, select, textarea, [role="button"], [role="checkbox"], [role="combobox"], [role="link"], [role="switch"], [tabindex]:not([tabindex="-1"])';
+	'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [role="button"], [role="checkbox"], [role="combobox"], [role="link"], [role="switch"], [tabindex]:not([tabindex="-1"])';
 
 // compatibility mouse events and focus follow a tap within this time
 const TAP_WINDOW_MS = 800;

@@ -37,7 +37,7 @@
 			:class="tagConfig.sizes[size].icon"
 			:aria-label="t('common.ui.tag.remove', { label: value ?? '' })"
 			@click.stop="$emit('close')">
-			<ClearSharp />
+			<ClearSharp class="size-full pointer-coarse:size-4" />
 		</button>
 	</div>
 </template>

@@ -262,6 +262,22 @@ describe("PSelectMultiple", () => {
 		expect(isOpen(wrapper)).toBe(false);
 	});
 
+	it("shows its chips in its size and keeps focus after a keyboard removal", async () => {
+		const { wrapper } = await mountSelect(["a", "b"], { size: "sm" });
+		document.body.appendChild(wrapper.element);
+		const tags = wrapper.findAll(".flex-wrap > div");
+		expect(tags[0].classes()).toContain("text-xs");
+		expect(tags[0].classes()).toContain("py-0.25");
+
+		const remove = wrapper.find<HTMLButtonElement>(".flex-wrap button");
+		remove.element.focus();
+		await remove.trigger("click");
+		await flushPromises();
+		expect(document.activeElement).toBe(
+			wrapper.find('[role="combobox"]').element
+		);
+	});
+
 	it("leaves Enter and Space on a tag's remove button to the button", async () => {
 		const { wrapper } = await mountSelect(["a", "b"]);
 		const remove = wrapper.find<HTMLButtonElement>(".flex-wrap button");

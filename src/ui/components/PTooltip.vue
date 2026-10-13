@@ -33,8 +33,9 @@
 		disabled?: boolean;
 	}>();
 
+	// a disabled control can't take focus: the wrapper does, for its tooltip
 	const FOCUSABLE =
-		'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+		'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
 
 	const triggerRef = ref<HTMLElement | null>(null);
 	const tooltipRef = ref<HTMLElement | null>(null);

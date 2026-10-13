@@ -115,8 +115,11 @@
 	}
 
 	function removeElement(v: string | number | undefined): void {
-		if (!disabled && v !== undefined && value.value.includes(v))
-			value.value = value.value.filter((x) => x !== v);
+		if (disabled || v === undefined || !value.value.includes(v)) return;
+		// removed by keyboard: focus stays in the select, not on the page
+		if (triggerRef.value?.contains(document.activeElement))
+			triggerRef.value.focus();
+		value.value = value.value.filter((x) => x !== v);
 	}
 
 	// labelled by the surrounding PFormItem
@@ -156,6 +159,7 @@
 							v-for="entry in selectedEntries"
 							:key="String(entry.value)"
 							:value="entry.label"
+							:size="size"
 							type="secondary"
 							closable
 							@close="removeElement(entry.value)" />

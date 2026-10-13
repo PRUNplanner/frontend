@@ -34,7 +34,11 @@ are internal to `PDataTable` and the selects.
   area from the `touch-target` utility (`style.css`, a centred `::after`);
   put it on any raw `<button>` smaller than that too, and don't clip it
   with `overflow-hidden` around the control (`PForm` rows let it through
-  on touch screens). Text fields and select triggers
+  on touch screens). Controls that sit right next to each other (the
+  `PInputNumber` steppers, a tag's remove button) can't share an
+  overlapping hit area, so they are visibly 44 px on touch screens
+  instead. Known limit: in a table row a target is as tall as the row,
+  because the next row's control owns the space below it. Text fields and select triggers
   can't take a tap through a pseudo element, so they are 44 px tall there
   (`pointer-coarse:min-h-11`). Desktop sizes don't change. The UI audit
   counts what's left as `smallTargetsTouch`.
