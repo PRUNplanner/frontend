@@ -66,7 +66,9 @@
 </script>
 
 <template>
+	<!-- numbers never break mid-digit in the narrow side column -->
 	<PDataTable
+		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal]"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"

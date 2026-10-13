@@ -140,13 +140,16 @@
 
 <template>
 	<div
-		class="grid grid-cols-12 px-3 py-1.5 items-center bg-white/10 border-b border-t border-white/5 border-l-2"
+		class="flex flex-wrap items-center gap-x-3 gap-y-1 @5xl:gap-x-6 px-3 py-1.5 bg-white/10 border-b border-t border-white/5 border-l-2"
 		:class="
 			localBuildingData.amount > 0
 				? 'border-l-prunplanner'
 				: 'border-l-negative'
 		">
-		<div class="col-span-6 xl:col-span-2 text-lg font-mono">
+		<!-- one line on a wide panel; on a narrow one name, qty and delete
+			stay on top and the stats move below -->
+		<div
+			class="flex-1 min-w-0 @5xl:flex-none @5xl:min-w-32 text-lg font-mono">
 			{{ localBuildingData.amount }}x
 			<strong>{{ localBuildingData.name }}</strong>
 			<span
@@ -158,7 +161,7 @@
 			</span>
 		</div>
 		<div
-			class="col-span-6 justify-end xl:justify-normal xl:col-span-4 flex items-center gap-x-1">
+			class="shrink-0 flex items-center gap-x-1">
 			<span class="text-xs text-muted pr-1">
 				{{ $t("plan.components.production_building.qty") }}
 			</span>
@@ -198,7 +201,7 @@
 		<!-- each stat has a fixed width (min-w-max lets a long value grow), so the
 			stats line up in columns from one building to the next -->
 		<div
-			class="col-span-12 xl:col-span-6 flex flex-wrap justify-end items-center gap-x-6 gap-y-2 text-white/80">
+			class="order-last basis-full @5xl:order-none @5xl:basis-auto @5xl:flex-1 flex flex-wrap justify-end items-center gap-x-6 gap-y-2 text-white/80">
 			<div class="flex flex-col items-end sm:w-[7.5rem] min-w-max text-right">
 				<span class="text-xs text-muted uppercase tracking-wider">
 					{{
@@ -322,17 +325,15 @@
 					</PTooltip>
 				</span>
 			</div>
-			<div class="flex justify-end">
-				<PButton
-					v-if="!disabled"
-					:aria-label="$t('common.buttons.delete')"
-					size="sm"
-					type="error"
-					@click="emit('delete:building', buildingIndex)">
-					<template #icon><ClearSharp /></template>
-				</PButton>
-			</div>
 		</div>
+		<PButton
+			v-if="!disabled"
+			:aria-label="$t('common.buttons.delete')"
+			size="sm"
+			type="error"
+			@click="emit('delete:building', buildingIndex)">
+			<template #icon><ClearSharp /></template>
+		</PButton>
 	</div>
 	<div class="col-span-12">
 		<div v-if="localBuildingData.activeRecipes.length > 0">

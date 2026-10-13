@@ -74,6 +74,14 @@ const cells = (wrapper: VueWrapper, index: number) =>
 	row(wrapper, index).findAll("td");
 const texts = (wrapper: VueWrapper, index: number) =>
 	cells(wrapper, index).map((td) => td.text());
+/** need and housed numbers of a row */
+const needHoused = (wrapper: VueWrapper, index: number) =>
+	cells(wrapper, index)
+		.at(1)!
+		.findAll("span")
+		.map((s) => s.text());
+const meter = (wrapper: VueWrapper, index: number) =>
+	cells(wrapper, index).at(1)!.find("[role=img]");
 /** lux1 / lux2 buttons of a row */
 const luxButtons = (wrapper: VueWrapper, index: number) =>
 	row(wrapper, index).findAllComponents(PButton) as VueWrapper[];
@@ -83,7 +91,7 @@ describe("PlanWorkforce", () => {
 		vi.mocked(trackPlanEdit).mockClear();
 	});
 
-	it("lists every workforce with need, supply, open and efficiency", async () => {
+	it("lists every workforce with need / housed, open and efficiency", async () => {
 		const { wrapper } = await mountWorkforce();
 
 		expect(wrapper.findAll("tbody tr")).toHaveLength(5);
@@ -92,23 +100,59 @@ describe("PlanWorkforce", () => {
 		// 0.9634 * 100 = 96.34
 		expect(texts(wrapper, 0)).toEqual([
 			"Game.workforce Type.pioneer",
-			"1,200",
-			"1,500",
+			"1,2001,500",
 			"300",
 			"PWO",
 			"COF",
 			"96.34",
 		]);
+		expect(needHoused(wrapper, 0)).toEqual(["1,200", "1,500"]);
 		// 0.5 * 100 = 50.00
-		expect(texts(wrapper, 1)).toEqual([
-			"Game.workforce Type.settler",
-			"250",
-			"200",
+		expect(texts(wrapper, 1).slice(2)).toEqual([
 			"-50",
 			"REP",
 			"KOM",
 			"50.00",
 		]);
+		expect(needHoused(wrapper, 1)).toEqual(["250", "200"]);
+	});
+
+	it("shows a meter for every tier with housing or need", async () => {
+		const { wrapper } = await mountWorkforce();
+
+		// pioneer, settler and engineer have housing
+		expect([0, 1, 2, 3, 4].map((i) => meter(wrapper, i).exists())).toEqual(
+			[true, true, false, true, false]
+		);
+		// 1,200 / 1,500 = 80 %
+		expect(meter(wrapper, 0).find("div").attributes("style")).toContain(
+			"width: 80%"
+		);
+		// settler needs 250 with 200 housed: full and negative
+		expect(meter(wrapper, 1).find("div").classes()).toContain(
+			"bg-negative"
+		);
+	});
+
+	it("shows a dash for an empty tier", async () => {
+		const { wrapper } = await mountWorkforce();
+
+		expect(cells(wrapper, 2).at(1)!.text()).toBe("–");
+		expect(cells(wrapper, 4).at(1)!.text()).toBe("–");
+	});
+
+	it("keeps a need without housing visible, with a full meter", async () => {
+		const { wrapper } = await mountWorkforce({
+			workforceData: {
+				...WORKFORCE,
+				technician: wf("technician", { required: 5, left: -5 }),
+			},
+		});
+
+		expect(needHoused(wrapper, 2)).toEqual(["5", "0"]);
+		expect(meter(wrapper, 2).find("div").classes()).toContain(
+			"bg-negative"
+		);
 	});
 
 	it("shows each workforce's luxury tickers", async () => {
@@ -164,16 +208,16 @@ describe("PlanWorkforce", () => {
 	it("right-aligns the numeric columns", async () => {
 		const { wrapper } = await mountWorkforce();
 
-		// type, need, supply, open, lux (colspan 2), eff
+		// type, need / housed (two-sided), open, lux (colspan 2), eff
 		expect(
 			wrapper.findAll("th").map((th) => th.classes("numeric"))
-		).toEqual([false, true, true, true, false, true]);
+		).toEqual([false, false, true, false, true]);
 		expect(
 			wrapper
 				.find("tbody tr")
 				.findAll("td")
 				.map((td) => td.classes("numeric"))
-		).toEqual([false, true, true, true, false, false, true]);
+		).toEqual([false, false, true, false, false, true]);
 	});
 
 	it("grays out zero values", async () => {
@@ -184,19 +228,11 @@ describe("PlanWorkforce", () => {
 				td.classes().includes("text-muted!")
 			);
 
-		// name, need, supply, open, lux1, lux2, efficiency
-		expect(gray(2)).toEqual([false, true, true, true, false, false, true]);
-		expect(gray(0)).toEqual([
-			false,
-			false,
-			false,
-			false,
-			false,
-			false,
-			false,
-		]);
+		// name, need / housed, open, lux1, lux2, efficiency
+		expect(gray(2)).toEqual([false, false, true, false, false, true]);
+		expect(gray(0)).toEqual([false, false, false, false, false, false]);
 		// settler lacks 50 workers, a negative open value stays visible
-		expect(gray(1)[3]).toBe(false);
+		expect(gray(1)[2]).toBe(false);
 	});
 
 	it("grays out each zero value on its own", async () => {
@@ -213,16 +249,13 @@ describe("PlanWorkforce", () => {
 				td.classes().includes("text-muted!")
 			);
 
-		expect(gray(2)).toEqual([false, false, true, true, false, false, true]);
-		expect(gray(4)).toEqual([
-			false,
-			true,
-			false,
-			true,
-			false,
-			false,
-			false,
-		]);
+		expect(gray(2)).toEqual([false, false, true, false, false, true]);
+		expect(gray(4)).toEqual([false, false, true, false, false, false]);
+		// a zero need next to housing is muted, the need itself is not
+		const needClass = (index: number) =>
+			cells(wrapper, index).at(1)!.find("span").classes();
+		expect(needClass(4)).toContain("text-muted");
+		expect(needClass(2)).not.toContain("text-muted");
 	});
 
 	it("toggles lux1 on and tracks it", async () => {
@@ -283,7 +316,8 @@ describe("PlanWorkforce", () => {
 			},
 		});
 
-		expect(texts(wrapper, 0).slice(1, 4)).toEqual(["5,000", "0", "0"]);
+		expect(needHoused(wrapper, 0)).toEqual(["5,000", "0"]);
+		expect(texts(wrapper, 0)[2]).toBe("0");
 		expect(
 			luxButtons(wrapper, 0).map(
 				(b) => (b.props() as { type: string }).type

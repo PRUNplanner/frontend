@@ -13,6 +13,7 @@
 
 	// UI
 	import { PButton, PTable } from "@/ui";
+	import PMeter from "@/ui/charts/PMeter.vue";
 	import { CheckSharp, BlockOutlined } from "@vicons/material";
 
 	const props = defineProps({
@@ -76,11 +77,8 @@
 		<thead>
 			<tr>
 				<th>{{ $t("plan.components.workforce.table.type") }}</th>
-				<th class="numeric">
-					{{ $t("plan.components.workforce.table.need") }}
-				</th>
-				<th class="numeric">
-					{{ $t("plan.components.workforce.table.supply") }}
+				<th>
+					{{ $t("plan.components.workforce.table.need_housed") }}
 				</th>
 				<th class="numeric">
 					{{ $t("plan.components.workforce.table.open") }}
@@ -102,15 +100,30 @@
 						)
 					}}
 				</td>
-				<td
-					class="numeric"
-					:class="workforce.required === 0 ? 'text-muted!' : ''">
-					{{ formatAmount(workforce.required) }}
-				</td>
-				<td
-					class="numeric"
-					:class="workforce.capacity === 0 ? 'text-muted!' : ''">
-					{{ formatAmount(workforce.capacity) }}
+				<td class="min-w-30 tabular-nums">
+					<template
+						v-if="workforce.required > 0 || workforce.capacity > 0">
+						<div class="flex justify-between gap-2">
+							<span
+								:class="
+									workforce.required === 0 ? 'text-muted' : ''
+								">
+								{{ formatAmount(workforce.required) }}
+							</span>
+							<span class="text-muted">
+								{{ formatAmount(workforce.capacity) }}
+							</span>
+						</div>
+						<PMeter
+							:value="workforce.required"
+							:max="workforce.capacity"
+							:label="
+								capitalizeString(
+									$t(`game.workforce_type.${workforce.name}`)
+								)
+							" />
+					</template>
+					<span v-else class="text-muted">–</span>
 				</td>
 				<td
 					class="numeric"

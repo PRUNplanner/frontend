@@ -80,7 +80,10 @@
 		},
 		"close": "Close",
 		"language": "Language",
-		"page_load_failed": "This page couldn't load. Reload to get the latest version."
+		"page_load_failed": "This page couldn't load. Reload to get the latest version.",
+		"meter": {
+			"used": "{label} {pct} % used"
+		}
 	},
 	"values": {
 		"never": "never"
