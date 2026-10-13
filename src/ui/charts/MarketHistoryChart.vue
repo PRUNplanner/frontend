@@ -13,6 +13,10 @@
 	import { Bar } from "vue-chartjs";
 	import { computed } from "vue";
 
+	// Util
+	import { chartScale, chartTooltip } from "@/ui/charts/charts.util";
+	import { useChartTheme } from "@/ui/charts/chartTheme";
+
 	ChartJS.register(
 		Title,
 		Tooltip,
@@ -34,83 +38,49 @@
 		data: DataPoint[];
 	}>();
 
-	const PALETTE = {
-		AI1: "#60a5fa",
-		CI1: "#4ade80",
-		NC1: "#fbbf24",
-		IC1: "#f87171",
-	};
+	const EXCHANGES = ["AI1", "CI1", "IC1", "NC1"] as const;
+
+	const theme = useChartTheme();
 
 	const chartData = computed<ChartData<"bar">>(() => ({
 		labels: props.data.map((d) => d.date),
-		datasets: [
-			{
-				label: "AI1",
-				data: props.data.map((d) => d.AI1),
-				backgroundColor: PALETTE.AI1 + "B3",
-				borderColor: PALETTE.AI1,
-				borderWidth: 1,
-				borderRadius: 2,
-			},
-			{
-				label: "CI1",
-				data: props.data.map((d) => d.CI1),
-				backgroundColor: PALETTE.CI1 + "B3",
-				borderColor: PALETTE.CI1,
-				borderWidth: 1,
-				borderRadius: 2,
-			},
-			{
-				label: "NC1",
-				data: props.data.map((d) => d.NC1),
-				backgroundColor: PALETTE.NC1 + "B3",
-				borderColor: PALETTE.NC1,
-				borderWidth: 1,
-				borderRadius: 2,
-			},
-			{
-				label: "IC1",
-				data: props.data.map((d) => d.IC1),
-				backgroundColor: PALETTE.IC1 + "B3",
-				borderColor: PALETTE.IC1,
-				borderWidth: 1,
-				borderRadius: 2,
-			},
-		],
+		datasets: EXCHANGES.map((code) => ({
+			label: code,
+			data: props.data.map((d) => d[code]),
+			backgroundColor: theme.value.exchange(code),
+			borderRadius: 2,
+		})),
 	}));
 
-	const chartOptions: ChartOptions<"bar"> = {
+	const chartOptions = computed<ChartOptions<"bar">>(() => ({
 		responsive: true,
 		maintainAspectRatio: false,
 		plugins: {
 			legend: {
 				position: "bottom",
 				labels: {
-					color: "#999999",
+					color: theme.value.muted,
+					font: { size: 12 },
 				},
 			},
 			tooltip: {
+				...chartTooltip(theme.value),
 				mode: "index",
 				intersect: false,
-				backgroundColor: "rgba(15, 23, 42, 0.9)",
-				titleFont: { size: 14, weight: "bold" },
-				padding: 12,
-				borderColor: "rgba(255, 255, 255, 0.1)",
-				borderWidth: 1,
 			},
 			datalabels: { display: false },
 		},
 		scales: {
 			x: {
+				...chartScale(theme.value),
 				stacked: false,
 				grid: { display: false },
-				ticks: { color: "#999999", font: { size: 11 } },
 			},
 			y: {
+				...chartScale(theme.value),
 				beginAtZero: false,
-				grid: { color: "rgba(255, 255, 255, 0.05)" },
 				ticks: {
-					color: "#999999",
+					...chartScale(theme.value).ticks,
 					callback: function (value) {
 						const numericValue = value as number;
 						if (Math.abs(numericValue) >= 1000000) {
@@ -124,7 +94,7 @@
 				},
 			},
 		},
-	};
+	}));
 </script>
 
 <template>

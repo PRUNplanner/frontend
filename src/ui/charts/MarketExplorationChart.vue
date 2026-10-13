@@ -11,6 +11,9 @@
 		type Time,
 	} from "lightweight-charts";
 
+	// Util
+	import { useChartTheme } from "@/ui/charts/chartTheme";
+
 	type OhlcArray = [number, number, number, number, number, number];
 
 	const props = defineProps<{
@@ -22,20 +25,41 @@
 	let resizeObserver: ResizeObserver | null = null;
 	let candleSeries: ISeriesApi<"Candlestick"> | null = null;
 	let volumeSeries: ISeriesApi<"Histogram"> | null = null;
-	let paletteObserver: MutationObserver | null = null;
 
-	// candle colours follow the semantic tokens in style.css
-	function paletteColors() {
-		const css = getComputedStyle(document.documentElement);
-		const up = css.getPropertyValue("--color-positive").trim();
-		const down = css.getPropertyValue("--color-negative").trim();
+	const theme = useChartTheme();
+
+	// candle colours follow the colour-blind preference
+	function candleColors() {
+		const { positive, negative } = theme.value;
 		return {
-			upColor: up,
-			downColor: down,
-			wickUpColor: up,
-			wickDownColor: down,
+			upColor: positive,
+			downColor: negative,
+			wickUpColor: positive,
+			wickDownColor: negative,
 		};
 	}
+
+	function layoutColors() {
+		const { muted, grid, axis } = theme.value;
+		return {
+			layout: {
+				background: { type: ColorType.Solid, color: "transparent" },
+				textColor: muted,
+			},
+			grid: {
+				vertLines: { color: grid },
+				horzLines: { color: grid },
+			},
+			rightPriceScale: { borderColor: axis },
+			timeScale: { borderColor: axis },
+		};
+	}
+
+	watch(theme, () => {
+		chart?.applyOptions(layoutColors());
+		candleSeries?.applyOptions(candleColors());
+		volumeSeries?.applyOptions({ color: theme.value.muted });
+	});
 
 	const hoverData = ref({
 		open: "0",
@@ -43,7 +67,7 @@
 		low: "0",
 		close: "0",
 		volume: 0,
-		color: "#fff",
+		color: "",
 		price: false,
 	});
 
@@ -81,39 +105,25 @@
 		const initialWidth = chartContainerRef.value.clientWidth || 800;
 		const initialHeight = chartContainerRef.value.clientHeight || 600;
 
+		const colors = layoutColors();
 		chart = createChart(chartContainerRef.value, {
-			layout: {
-				background: { type: ColorType.Solid, color: "transparent" },
-				textColor: "#94a3b8",
-			},
-			grid: {
-				vertLines: { color: "rgba(148, 163, 184, 0.05)" },
-				horzLines: { color: "rgba(148, 163, 184, 0.05)" },
-			},
+			...colors,
 			width: initialWidth,
 			height: initialHeight,
 			timeScale: {
-				borderColor: "rgba(148, 163, 184, 0.2)",
+				...colors.timeScale,
 				timeVisible: true,
 				rightOffset: 12,
 			},
 		});
 
 		candleSeries = chart.addSeries(CandlestickSeries, {
-			...paletteColors(),
+			...candleColors(),
 			borderVisible: false,
-		});
-		// the colour-blind preference flips data-palette on <html>
-		paletteObserver = new MutationObserver(() =>
-			candleSeries?.applyOptions(paletteColors())
-		);
-		paletteObserver.observe(document.documentElement, {
-			attributes: true,
-			attributeFilter: ["data-palette"],
 		});
 
 		volumeSeries = chart.addSeries(HistogramSeries, {
-			color: "#3b82f6",
+			color: theme.value.muted,
 			priceFormat: { type: "volume" },
 			priceScaleId: "volume",
 			visible: true,
@@ -211,8 +221,6 @@
 	);
 
 	onUnmounted(() => {
-		paletteObserver?.disconnect();
-		paletteObserver = null;
 		if (resizeObserver) {
 			resizeObserver.disconnect();
 			resizeObserver = null;
@@ -251,7 +259,7 @@
 				v-if="hoverData.volume"
 				class="flex gap-2 border-l border-slate-700 pl-4">
 				<span class="text-slate-500">Volume:</span>
-				<span class="text-blue-400">
+				<span class="text-muted">
 					{{ hoverData.volume.toLocaleString() }}
 				</span>
 			</div>
