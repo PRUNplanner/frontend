@@ -268,6 +268,26 @@ describe("PDataTable", () => {
 		expect(tableRows(w).length).toBe(rendered().length);
 	});
 
+	it("doesn't re-render on a scroll inside the window when virtual", async () => {
+		const data = Array.from({ length: 1000 }, (_, i) => ({ id: `r${i}`, name: `n${i}`, amount: i }));
+		let renders = 0;
+		const w = mountTable({ data, virtual: true, maxHeight: 400 }, { "cell-name": ({ row }: { row: Row }) => (renders++, row.name) });
+		const box = w.find(".p-data-table-box");
+		const scrollTo = async (top: number) => {
+			(box.element as HTMLElement).scrollTop = top;
+			await box.trigger("scroll");
+		};
+
+		const before = renders;
+		await scrollTo(5);
+		expect(renders).toBe(before);
+		expect(ids(w)[0]).toBe("r0");
+
+		// a scroll to other rows still renders them
+		await scrollTo(34 * 500);
+		expect(renders).toBeGreaterThan(before);
+	});
+
 	it("renders every row without a height limit, even when virtual", () => {
 		const data = Array.from({ length: 200 }, (_, i) => ({ id: `r${i}`, name: `n${i}`, amount: i }));
 		expect(mountTable({ data, virtual: true }).findAll("tbody tr[data-row-key]")).toHaveLength(200);

@@ -184,6 +184,11 @@
 			},
 		];
 	});
+
+	// stable, an inline function re-renders the whole table
+	function pickRecipe(recipe: IRecipeBuildingOption): void {
+		emit("update:building:recipe", localRecipeIndex.value, recipe.recipe_id);
+	}
 </script>
 
 <template>
@@ -294,7 +299,7 @@
 					striped
 					popover
 					:row-class="disabled ? 'child:whitespace-nowrap' : 'child:whitespace-nowrap hover:cursor-pointer'"
-					:row-click="disabled ? undefined : (recipe) => emit('update:building:recipe', localRecipeIndex, recipe.recipe_id)">
+					:row-click="disabled ? undefined : pickRecipe">
 					<template #cell-plansHere="{ row }">
 						<span
 							v-if="plansHere(row.recipe_id) !== undefined"
