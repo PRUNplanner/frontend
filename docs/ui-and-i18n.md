@@ -95,6 +95,15 @@ are internal to `PDataTable` and the selects.
       or `{ type: "divider" }`, `trigger` `click`, `hover` or `manual`, and
       `anchor`. A `role="menu"`: ↓ on the trigger opens it, ↑/↓/Home/End
       move, Enter or Space picks, Esc closes and returns focus.
+    - `<PTooltip>` with a `#trigger` slot shows its default slot on hover,
+      on keyboard focus inside the trigger and on a tap; Esc, focus leaving
+      and a tap elsewhere close it. A tap on a button, link or checkbox
+      inside the trigger runs that control and shows no tooltip, so give
+      such a control its own name. The panel is `role="tooltip"` and the
+      trigger's first focusable element gets `aria-describedby`; a trigger
+      with nothing focusable becomes a tab stop itself (`disabled` turns
+      all of it off). Charts with their own SVG tooltips use the same rules
+      through `useTooltipTrigger` (`ui/useTooltipTrigger.ts`).
     - Popovers and menus are non-modal layers on the same stack: Esc closes
       the topmost, no inert, scroll lock or focus trap. A click outside
       closes them, except on the trigger, inside, in a `PSelect` list or in
