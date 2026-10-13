@@ -23,7 +23,10 @@
 			"result": {
 				"ok_header": "Bienvenue {username} !",
 				"ok_message": "Inscription réussit. Vous pouvez maintenant vous connecter à PRUNplanner.",
-				"error": "Erreur lors de l'inscription."
+				"error": "Erreur lors de l'inscription.",
+				"fix_fields": "Please fix the fields marked below.",
+				"throttled": "Too many registration attempts. Please wait a minute and try again.",
+				"unknown": "Unknown error. Please try again later."
 			},
 			"buttons": {
 				"register": "Créer un compte"
@@ -32,13 +35,15 @@
 				"username": "Nom d'utilisateur",
 				"username_info": "Doit comporter au moins 3 caractères. Ne doit pas contenir d'espaces.",
 				"password": "Mot de passe",
-				"password_info": "Doit comporter au moins 8 caractères.",
+				"password_info": "At least 8 characters, not only numbers, and not a common password.",
 				"email": "E-mail",
 				"email_placeholder": "Pas obligatoire, mais recommandé.",
 				"email_info": "Pas obligatoire. Améliore la sécurité de votre compte.",
+				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
 				"security_question": "Questions de sécurité",
 				"question": "Entrez le nom de la planète {planet}. Pour le trouver, ouvrez un nouvel onglet Prosperous Universe avec la commande {command}. Vous verrez le nom des planètes listées sous 'Nom' dans les informations de la planète",
-				"planet_name": "Nom"
+				"planet_name": "Nom",
+				"another_planet": "Use a different planet"
 			}
 		},
 		"password_reset": {
