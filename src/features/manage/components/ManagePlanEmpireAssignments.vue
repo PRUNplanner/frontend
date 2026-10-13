@@ -466,8 +466,7 @@
 				:aria-label="$t('management.assignments.filter_empire')" />
 		</div>
 		<PButton
-			:type="unassignedOnly ? 'primary' : 'secondary'"
-			:aria-pressed="unassignedOnly"
+			:pressed="unassignedOnly"
 			@click="unassignedOnly = !unassignedOnly">
 			{{
 				$t("management.assignments.unassigned_only", {

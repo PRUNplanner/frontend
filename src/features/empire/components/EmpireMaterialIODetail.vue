@@ -93,15 +93,13 @@
 		<PButtonGroup class="self-start">
 			<PButton
 				size="sm"
-				:type="view === 'sides' ? 'primary' : 'secondary'"
-				:aria-pressed="view === 'sides'"
+				:pressed="view === 'sides'"
 				@click="view = 'sides'">
 				{{ t("empire.material_io.view_sides") }}
 			</PButton>
 			<PButton
 				size="sm"
-				:type="view === 'net' ? 'primary' : 'secondary'"
-				:aria-pressed="view === 'net'"
+				:pressed="view === 'net'"
 				@click="view = 'net'">
 				{{ t("empire.material_io.view_net") }}
 			</PButton>

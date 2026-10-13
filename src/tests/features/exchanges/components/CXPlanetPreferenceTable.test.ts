@@ -228,17 +228,17 @@ describe("CXPlanetPreferenceTable", () => {
 
 	it("opens and closes the editors of a planet", async () => {
 		const { wrapper } = await mountTable();
-		const types = () => editButtons(wrapper).map((b) => b.props("type"));
+		const types = () => editButtons(wrapper).map((b) => b.props("pressed"));
 
 		expect(heading(wrapper)).toBe(TITLE);
 		expect(wrapper.findComponent(CXExchangePreference).exists()).toBe(
 			false
 		);
-		expect(types()).toEqual(["primary", "primary", "primary"]);
+		expect(types()).toEqual([false, false, false]);
 
 		await edit(wrapper, 0);
 		expect(heading(wrapper)).toBe(`${TITLE}: ${MILLIWAYS}`);
-		expect(types()).toEqual(["success", "primary", "primary"]);
+		expect(types()).toEqual([true, false, false]);
 		expect(
 			wrapper.findComponent(CXExchangePreference).props("cxOptions")
 		).toEqual(planetMap()["KW-020c"].exchanges);
@@ -249,7 +249,7 @@ describe("CXPlanetPreferenceTable", () => {
 		await edit(wrapper, 0);
 		expect(heading(wrapper)).toBe(TITLE);
 		expect(wrapper.findComponent(CXTickerPreference).exists()).toBe(false);
-		expect(types()).toEqual(["primary", "primary", "primary"]);
+		expect(types()).toEqual([false, false, false]);
 	});
 
 	it("switches to another planet with fresh editors", async () => {
@@ -264,10 +264,10 @@ describe("CXPlanetPreferenceTable", () => {
 		expect(
 			wrapper.findComponent(CXTickerPreference).props("cxOptions")
 		).toEqual([{ type: "SELL", ticker: "H2O", value: 30 }]);
-		expect(editButtons(wrapper).map((b) => b.props("type"))).toEqual([
-			"primary",
-			"primary",
-			"success",
+		expect(editButtons(wrapper).map((b) => b.props("pressed"))).toEqual([
+			false,
+			false,
+			true,
 		]);
 		// keyed by planet, the editors remount
 		expect(mounts).toEqual({ exchange: 2, ticker: 2 });

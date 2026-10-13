@@ -178,14 +178,14 @@ describe("PlanWorkforce", () => {
 		expect(
 			[0, 1, 2, 3].map((i) =>
 				luxButtons(wrapper, i).map(
-					(b) => (b.props() as { type: string }).type
+					(b) => (b.props() as { pressed: boolean }).pressed
 				)
 			)
 		).toEqual([
-			["success", "secondary"],
-			["secondary", "success"],
-			["secondary", "secondary"],
-			["success", "success"],
+			[true, false],
+			[false, true],
+			[false, false],
+			[true, true],
 		]);
 	});
 
@@ -320,9 +320,9 @@ describe("PlanWorkforce", () => {
 		expect(texts(wrapper, 0)[2]).toBe("0");
 		expect(
 			luxButtons(wrapper, 0).map(
-				(b) => (b.props() as { type: string }).type
+				(b) => (b.props() as { pressed: boolean }).pressed
 			)
-		).toEqual(["secondary", "success"]);
+		).toEqual([false, true]);
 	});
 
 	it("disables the luxury buttons", async () => {

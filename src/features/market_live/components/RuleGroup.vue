@@ -78,7 +78,7 @@
 				<PButton
 					v-for="op in ['AND', 'OR'] as const"
 					:key="op"
-					:type="group.operator === op ? 'primary' : 'secondary'"
+					:pressed="group.operator === op"
 					@click="emit('update:group', { ...group, operator: op })">
 					{{ op }}
 				</PButton>

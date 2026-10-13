@@ -197,12 +197,12 @@ export const tagConfig: PTagConfig = {
 		sm: {
 			container:
 				"inline-flex text-xs items-center rounded-control gap-x-0.5 py-0.25 px-1 mr-0.5",
-			icon: "touch-target w-[14px] hover:text-white text-muted hover:bg-gray-800",
+			icon: "touch-target w-[14px] rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
 		},
 		md: {
 			container:
 				"inline-flex items-center text-xs rounded-control gap-x-1 py-0.5 px-1 mr-1",
-			icon: "touch-target w-[16px] hover:text-white text-muted hover:bg-gray-800",
+			icon: "touch-target w-[16px] rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
 		},
 	},
 };

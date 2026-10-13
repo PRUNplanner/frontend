@@ -86,8 +86,7 @@
 					<PButton
 						v-for="v in ['list', 'matrix'] as const"
 						:key="v"
-						:type="view === v ? 'primary' : 'secondary'"
-						:aria-pressed="view === v"
+						:pressed="view === v"
 						@click="view = v">
 						{{ t(`planet_search.results.${v}`) }}
 					</PButton>

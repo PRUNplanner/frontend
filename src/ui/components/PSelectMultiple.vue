@@ -300,7 +300,7 @@
 		:aria-describedby="formItem?.describedBy.value"
 		:aria-invalid="fieldStatus === 'error' || undefined"
 		@keydown="onKeyDown">
-		<label>
+		<div>
 			<div
 				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-ink rounded-control px-2 pointer-coarse:min-h-11"
 				:class="[
@@ -316,9 +316,8 @@
 								:key="String(entry.value)"
 								:value="entry.label"
 								type="secondary"
-								@click.stop="removeElement(entry.value)">
-								<template #icon><ClearSharp /></template>
-							</PTag>
+								closable
+								@close="removeElement(entry.value)" />
 						</div>
 					</template>
 					<template v-else>
@@ -343,7 +342,7 @@
 					</svg>
 				</div>
 			</div>
-		</label>
+		</div>
 
 		<Teleport v-if="open" to="body">
 			<div

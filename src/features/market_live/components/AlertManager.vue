@@ -182,11 +182,7 @@
 										)
 									">
 									<PButton
-										:type="
-											activeDraft!.enabled
-												? 'success'
-												: 'secondary'
-										"
+										:pressed="activeDraft!.enabled"
 										@click="
 											() =>
 												(activeDraft!.enabled =

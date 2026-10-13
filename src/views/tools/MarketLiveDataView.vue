@@ -122,9 +122,7 @@
 							</h2>
 							<div class="flex flex-row flex-wrap gap-3">
 								<PButton
-									:type="
-										showAlertManager ? 'error' : 'secondary'
-									"
+									:pressed="showAlertManager"
 									@click="
 										() =>
 											(showAlertManager =
@@ -160,15 +158,12 @@
 									}}
 								</PButton>
 								<PButton
-									:type="
-										detectorsActive ? 'success' : 'error'
-									"
+									:pressed="detectorsActive"
 									:aria-label="
 										$t(
 											'market_live.components.feed.buttons.alerts'
 										)
 									"
-									:aria-pressed="detectorsActive"
 									:loading="isProcessing"
 									@click="
 										() => {

@@ -51,6 +51,13 @@ are internal to `PDataTable` and the selects.
   (`info`, `warning` or `error`, default `info`), with an optional
   `#action` slot for one button. Errors are `role="alert"`, the others
   `role="status"`. Don't hand-style red or amber boxes.
+- **Toggles:** a button that shows a selection or an on/off state takes
+  `:pressed="…"` instead of switching `type`: it sets `aria-pressed` and is
+  `primary` while pressed, its `type` (default `secondary`) when not. Keep
+  `type` only where the colour means something else (a failed save).
+- **Tags:** `<PTag closable @close="…">` adds a remove button named
+  "Remove {value}", so tags (and `PSelectMultiple` chips) can be removed
+  by keyboard.
 - **Inputs:** `PInput` has a `#prefix` slot (e.g. a search icon).
   `PSelectMultiple` takes a `placeholder`; both selects only show the
   clear button with `clearable`.

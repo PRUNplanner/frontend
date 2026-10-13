@@ -117,6 +117,9 @@
 		{ key: "delete", label: "Delete", danger: true },
 	];
 
+	const view = ref("List");
+	const on = ref(true);
+	const tags = ref(["AI1", "CI1", "IC1"]);
 	const showPopover = ref(false);
 	const showModal = ref(false);
 	const showDrawer = ref(false);
@@ -171,6 +174,18 @@
 						</PButton>
 					</div>
 					<div class="flex flex-wrap items-center gap-3">
+						<PButtonGroup>
+							<PButton
+								v-for="v in ['List', 'Matrix', 'Chart']"
+								:key="v"
+								:pressed="view === v"
+								@click="view = v">
+								{{ v }}
+							</PButton>
+						</PButtonGroup>
+						<PButton :pressed="on" size="sm" @click="on = !on">
+							Show consumables
+						</PButton>
 						<PButtonGroup>
 							<PButton type="secondary">Left</PButton>
 							<PButton type="secondary">Middle</PButton>
@@ -375,6 +390,14 @@
 						:type="type"
 						:size="size"
 						:value="`${type} ${size}`" />
+					<PTag
+						v-for="tag in tags"
+						:key="tag"
+						:value="tag"
+						:size="size"
+						type="secondary"
+						closable
+						@close="tags = tags.filter((t) => t !== tag)" />
 				</div>
 			</section>
 

@@ -284,7 +284,7 @@
 		:aria-describedby="formItem?.describedBy.value"
 		:aria-invalid="fieldStatus === 'error' || undefined"
 		@keydown="onKeyDown">
-		<label>
+		<div>
 			<div
 				class="flex flex-row items-center cursor-pointer bg-white/5 text-ink rounded-control pr-2 pointer-coarse:min-h-11"
 				:class="[
@@ -324,7 +324,7 @@
 					</svg>
 				</div>
 			</div>
-		</label>
+		</div>
 
 		<Teleport v-if="open" to="body">
 			<div

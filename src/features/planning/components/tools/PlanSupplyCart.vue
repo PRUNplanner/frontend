@@ -223,21 +223,17 @@
 		<div>
 			<PButtonGroup>
 				<PButton
-					:type="refTypeFilter === 'all' ? 'primary' : 'secondary'"
+					:pressed="refTypeFilter === 'all'"
 					@click="refTypeFilter = 'all'">
 					{{ $t("plan.tools.supply_cart.buttons.all") }}
 				</PButton>
 				<PButton
-					:type="
-						refTypeFilter === 'workforce' ? 'primary' : 'secondary'
-					"
+					:pressed="refTypeFilter === 'workforce'"
 					@click="refTypeFilter = 'workforce'">
 					{{ $t("plan.tools.supply_cart.buttons.workforce") }}
 				</PButton>
 				<PButton
-					:type="
-						refTypeFilter === 'production' ? 'primary' : 'secondary'
-					"
+					:pressed="refTypeFilter === 'production'"
 					@click="refTypeFilter = 'production'">
 					{{ $t("plan.tools.supply_cart.buttons.production") }}
 				</PButton>

@@ -149,9 +149,7 @@
 				<PButton
 					v-for="needType in needTypes"
 					:key="needType"
-					:type="
-						selectedNeedType === needType ? 'primary' : 'secondary'
-					"
+					:pressed="selectedNeedType === needType"
 					@click="selectedNeedType = needType">
 					{{
 						$t(

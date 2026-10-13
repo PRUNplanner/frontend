@@ -115,12 +115,12 @@
 				<PFormItem :label="t('empire.filters.display')">
 					<PButtonGroup>
 						<PButton
-							:type="localLoadBalance ? 'secondary' : 'primary'"
+							:pressed="!localLoadBalance"
 							@click="localLoadBalance = false">
 							{{ $t("empire.filters.all") }}
 						</PButton>
 						<PButton
-							:type="!localLoadBalance ? 'secondary' : 'primary'"
+							:pressed="localLoadBalance"
 							@click="localLoadBalance = true">
 							{{ $t("empire.filters.loadbalance") }}
 						</PButton>
@@ -129,16 +129,12 @@
 				<PFormItem :label="t('empire.filters.consumables')">
 					<PButtonGroup>
 						<PButton
-							:type="
-								localHideConsumables ? 'secondary' : 'primary'
-							"
+							:pressed="!localHideConsumables"
 							@click="localHideConsumables = false">
 							{{ $t("common.buttons.show") }}
 						</PButton>
 						<PButton
-							:type="
-								!localHideConsumables ? 'secondary' : 'primary'
-							"
+							:pressed="localHideConsumables"
 							@click="localHideConsumables = true">
 							{{ $t("common.buttons.hide") }}
 						</PButton>
@@ -149,12 +145,12 @@
 					:label="t('empire.material_io.planets')">
 					<PButtonGroup>
 						<PButton
-							:type="localExpandAll ? 'secondary' : 'primary'"
+							:pressed="!localExpandAll"
 							@click="summary">
 							{{ $t("empire.material_io.summary") }}
 						</PButton>
 						<PButton
-							:type="!localExpandAll ? 'secondary' : 'primary'"
+							:pressed="localExpandAll"
 							@click="localExpandAll = true">
 							{{ $t("empire.material_io.expand_all") }}
 						</PButton>
