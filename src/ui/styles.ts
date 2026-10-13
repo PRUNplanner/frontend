@@ -201,12 +201,12 @@ export const tagConfig: PTagConfig = {
 		sm: {
 			container:
 				"inline-flex text-xs items-center rounded-control gap-x-0.5 py-0.25 px-1 mr-0.5",
-			icon: "flex items-center justify-center w-[14px] pointer-coarse:size-11 rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
+			icon: "touch-target flex items-center justify-center w-[14px] pointer-coarse:size-11 rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
 		},
 		md: {
 			container:
 				"inline-flex items-center text-xs rounded-control gap-x-1 py-0.5 px-1 mr-1",
-			icon: "flex items-center justify-center w-[16px] pointer-coarse:size-11 rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
+			icon: "touch-target flex items-center justify-center w-[16px] pointer-coarse:size-11 rounded-control cursor-pointer hover:text-white text-muted hover:bg-gray-800",
 		},
 	},
 };

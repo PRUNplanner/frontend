@@ -30,6 +30,10 @@ describe("PTag", () => {
 		const button = wrapper.find("button");
 
 		expect(button.attributes("type")).toBe("button");
+		// 24 px hit area on a mouse, visibly 44 px on touch screens
+		expect(button.classes()).toEqual(
+			expect.arrayContaining(["touch-target", "pointer-coarse:size-11"])
+		);
 		expect(button.attributes("aria-label")).toBe("Remove AI1");
 		// Enter and Space on a focused <button> fire click
 		await button.trigger("click");

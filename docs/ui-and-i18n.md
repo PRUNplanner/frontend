@@ -33,8 +33,8 @@ are internal to `PDataTable` and the selects.
   touch screen (`pointer: coarse`). Small controls get an invisible hit
   area from the `touch-target` utility (`style.css`, a centred `::after`);
   put it on any raw `<button>` smaller than that too, and don't clip it
-  with `overflow-hidden` around the control (`PForm` rows let it through
-  on touch screens). A tag's remove button sits inside the tag, so it is
+  with `overflow-hidden` around the control (`PForm` rows only clip
+  sideways, and not at all on touch screens). A tag's remove button sits inside the tag, so it is
   visibly 44 px on touch screens instead; `PInputNumber`'s steppers are
   mouse-only and hidden there (the field opens the numeric keypad).
   Known limits: in a table row a target is as tall as the row, and
