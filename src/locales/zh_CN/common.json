@@ -79,8 +79,21 @@
 			"expand_row": "Show details"
 		},
 		"close": "Close",
+		"tag": {
+			"remove": "Remove {label}"
+		},
 		"language": "语言",
-		"page_load_failed": "此页面无法加载。重新加载以获取最新版本。"
+		"page_load_failed": "此页面无法加载。重新加载以获取最新版本。",
+		"meter": {
+			"used": "{label} {pct} % used"
+		},
+		"strip": {
+			"dot": "{label}: {value}",
+			"over": "{n} more beyond the axis"
+		},
+		"runway": {
+			"beyond": "beyond the axis"
+		}
 	},
 	"values": {
 		"never": "从不"
