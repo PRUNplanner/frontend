@@ -164,7 +164,7 @@
 		</div>
 		<PForm v-if="localProfile">
 			<PFormSeparator>
-				<div class="py-3 text-white/60">
+				<div class="py-3 text-muted">
 					{{ $t("profile.change_profile.fio_info") }}
 				</div>
 			</PFormSeparator>
@@ -207,7 +207,7 @@
 				</div>
 			</PFormItem>
 			<PFormSeparator>
-				<div class="py-3 text-white/60">
+				<div class="py-3 text-muted">
 					{{ $t("profile.change_profile.form.email_info") }}
 				</div>
 			</PFormSeparator>

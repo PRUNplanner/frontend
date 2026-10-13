@@ -122,7 +122,7 @@
 			<div class="text-xl text-white font-bold font-mono pb-1">
 				{{ $t("account.components.registration.title") }}
 			</div>
-			<div class="pb-3 text-white/60 text-xs font-mono">
+			<div class="pb-3 text-muted text-xs font-mono">
 				<i18n-t keypath="account.components.registration.tos" tag="p">
 					<template #tos_link>
 						<router-link
@@ -133,7 +133,7 @@
 					</template>
 				</i18n-t>
 			</div>
-			<div v-if="hasError" class="pb-3 text-red-600">
+			<div v-if="hasError" class="pb-3 text-negative">
 				{{ $t("account.components.registration.result.error") }}
 				<br />
 				{{ hasErrorMessage }}
@@ -200,7 +200,7 @@
 							)
 						}}
 					</div>
-					<div class="font-mono text-xs text-white/60 pb-3">
+					<div class="font-mono text-xs text-muted pb-3">
 						<i18n-t
 							keypath="account.components.registration.form.question"
 							tag="p">

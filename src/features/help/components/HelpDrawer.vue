@@ -114,7 +114,7 @@
 				flavor="github"
 				:options="{ tables: true, emoji: true }" />
 		</div>
-		<div v-else-if="loadFailed" class="text-center text-red-500">
+		<div v-else-if="loadFailed" class="text-center text-negative">
 			{{ t("help.load_error", { file_name: fileName }) }}
 		</div>
 	</PDrawer>

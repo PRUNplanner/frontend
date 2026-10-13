@@ -22,7 +22,7 @@ const GROUPED = [
 ];
 
 const body = () => new DOMWrapper(document.body);
-const highlighted = () => body().find("[data-pselect-dropdown] .bg-gray-700");
+const highlighted = () => body().find("[data-pselect-dropdown] .bg-selected");
 
 async function mountSelect(options: unknown[]) {
 	const picked: unknown[] = [];

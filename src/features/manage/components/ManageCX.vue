@@ -131,7 +131,7 @@
 			{{ $t("management.cx.buttons.new_cx") }}
 		</PButton>
 	</div>
-	<div class="py-3 text-white/60">
+	<div class="py-3 text-muted">
 		{{ $t("management.cx.description") }}
 	</div>
 	<div

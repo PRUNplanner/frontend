@@ -15,6 +15,7 @@
 	const { t } = useI18n();
 
 	import { formItemKey } from "@/ui/formItem";
+	import { panelConfig } from "@/ui/styles";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 	import { optionKeys } from "@/ui/optionKeys";
 	import type { PSelectOption } from "@/ui/ui.types";
@@ -291,7 +292,7 @@
 		@keydown="onKeyDown">
 		<label>
 			<div
-				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-white/80 rounded-sm px-2 min-h-7"
+				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-ink rounded-control px-2 min-h-7"
 				@click="toggleOpen">
 				<div class="w-full max-w-full grow">
 					<template v-if="selectedEntries.length > 0">
@@ -313,7 +314,7 @@
 
 				<div
 					v-if="clearable && !disabled && value.length !== 0"
-					class="text-white/60 w-4"
+					class="text-muted w-4"
 					@click.stop="clear">
 					<ClearSharp />
 				</div>
@@ -334,9 +335,10 @@
 			<div
 				ref="dropdownRef"
 				data-pselect-dropdown
-				class="z-5000 p-1 bg-gray-900 text-white rounded-sm shadow-lg max-h-75 overflow-auto">
+				:class="panelConfig.panel"
+				class="z-5000 p-1 max-h-75 overflow-auto">
 				<div
-					class="w-full flex flex-col bg-gray-900 child:py-1 child:px-2 child:hover:bg-gray-800 rounded-b-sm">
+					class="w-full flex flex-col child:py-1 child:px-2 child:rounded-control child:hover:bg-hover">
 					<PInput
 						v-if="searchable"
 						ref="searchInputRef"

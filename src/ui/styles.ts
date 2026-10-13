@@ -8,12 +8,12 @@ import type {
 	PInputNumberConfig,
 	PTagConfig,
 	PToastConfig,
-	PPopoverConfig,
+	PPanelConfig,
 	PTooltipConfig,
 } from "@/ui/ui.types";
 
 export const buttonConfig: PButtonConfig = {
-	base: "flex flex-row items-center justify-center leading-none rounded-sm cursor-pointer disabled:cursor-auto text-nowrap",
+	base: "flex flex-row items-center justify-center leading-none rounded-control cursor-pointer disabled:cursor-auto text-nowrap",
 	sizes: {
 		sm: {
 			base: "py-0.5 px-1 gap-0.5 text-xs min-w-6 h-6",
@@ -28,9 +28,9 @@ export const buttonConfig: PButtonConfig = {
 	},
 	colors: {
 		primary: {
-			base: "bg-blue-800 text-white active:bg-blue-600",
+			base: "bg-primary text-white active:bg-blue-600",
 			hover: "hover:bg-blue-700",
-			disabled: "disabled:bg-blue-800/50 disabled:text-white/80",
+			disabled: "disabled:bg-primary/50 disabled:text-white/80",
 		},
 		success: {
 			base: "bg-positive text-black active:bg-positive/70",
@@ -42,15 +42,16 @@ export const buttonConfig: PButtonConfig = {
 			hover: "hover:bg-gray-700",
 			disabled: "disabled:bg-gray-800/50 disabled:text-white/80",
 		},
+		// destructive: the negative token, so it follows the colour-blind palette
 		error: {
-			base: "bg-red-600 text-white active:bg-red-500",
-			hover: "hover:bg-red-700",
-			disabled: "disabled:bg-red-600/50 disabled:text-white/80",
+			base: "bg-negative text-black active:bg-negative/70",
+			hover: "hover:bg-negative/85",
+			disabled: "disabled:bg-negative/50 disabled:text-black/60",
 		},
 		warning: {
-			base: "bg-gray-100 text-gray-900 active:bg-gray-300",
-			hover: "hover:bg-gray-200",
-			disabled: "disabled:bg-gray-100/50 disabled:text-gray-900",
+			base: "bg-warning text-black active:bg-warning/70",
+			hover: "hover:bg-warning/85",
+			disabled: "disabled:bg-warning/50 disabled:text-black/60",
 		},
 		ghost: {
 			base: "bg-transparent text-white active:bg-white/15",
@@ -63,9 +64,9 @@ export const buttonConfig: PButtonConfig = {
 export const checkboxConfig: PCheckboxConfig = {
 	container: "inline-flex items-center",
 	label: "flex items-center relative ",
-	input: "peer h-4 w-4 transition-all cursor-pointer disabled:cursor-auto appearance-none rounded shadow hover:shadow-md border border-table-border",
+	input: "peer h-4 w-4 transition-all cursor-pointer disabled:cursor-auto appearance-none rounded-control shadow hover:shadow-md border border-table-border",
 	colors: {
-		base: "checked:bg-blue-800 checked:border-blue-800",
+		base: "checked:bg-primary checked:border-primary",
 		disabled: "disabled:bg-white/10 disabled:border-white/10",
 	},
 	checkIcon:
@@ -75,24 +76,23 @@ export const checkboxConfig: PCheckboxConfig = {
 
 export const buttonGroupConfig: PButtonGroupConfig = {
 	horizontal:
-		"inline-flex child:rounded-none [&_button]:first:rounded-l-sm [&_button]:last:rounded-r-sm",
+		"inline-flex child:rounded-none [&_button]:first:rounded-l-control [&_button]:last:rounded-r-control",
 	vertical:
-		"inline-flex flex-col child:rounded-none [&_button]:first:rounded-t-sm [&_button]:last:rounded-b-sm",
+		"inline-flex flex-col child:rounded-none [&_button]:first:rounded-t-control [&_button]:last:rounded-b-control",
 };
 
-export const popoverConfig: PPopoverConfig = {
-	panel: "rounded-md border border-white/15 bg-gray-dark p-3 shadow-lg",
+/** one look for every floating panel: popover, menu, select list, tooltip, toast */
+export const panelConfig: PPanelConfig = {
+	panel: "bg-surface text-ink border border-line-strong rounded-panel shadow-panel",
 };
 
 export const tooltipConfig: PTooltipConfig = {
 	trigger: "ptooltip",
-	tooltip:
-		"z-50 py-1 px-2 text-sm text-white bg-black/90 border border-white/20 rounded shadow-lg",
+	tooltip: `${panelConfig.panel} py-1 px-2 text-sm text-ink-strong`,
 };
 
 export const toastConfig: PToastConfig = {
-	container:
-		"flex items-center gap-3 min-w-64 max-w-[calc(100vw-2rem)] py-2 pl-3 pr-2 text-sm text-white/80 bg-gray-dark border border-white/10 border-l-4 rounded shadow-lg",
+	container: `${panelConfig.panel} flex items-center gap-3 min-w-64 max-w-[calc(100vw-2rem)] py-2 pl-3 pr-2 text-sm border-l-4`,
 	// accent bar: brand for info, the semantic negative for errors
 	types: {
 		info: "border-l-prunplanner",
@@ -113,13 +113,13 @@ export const formItemConfig: PFormItemConfig = {
 
 export const inputNumberConfig: PInputNumberConfig = {
 	container:
-		"inline-flex w-full items-center leading-none rounded-sm text-nowrap bg-white/5 text-white/80",
+		"inline-flex w-full items-center leading-none rounded-control text-nowrap bg-white/5 text-ink",
 	input: "w-full h-full focus-visible:-outline-offset-2",
 	buttonContainer: "flex flex-row pr-1",
 	buttonChangeAllowed:
-		"flex items-center justify-center w-6 h-6 rounded-sm text-white/70 cursor-pointer hover:bg-white/10",
+		"flex items-center justify-center w-6 h-6 rounded-control text-white/70 cursor-pointer hover:bg-white/10",
 	buttonChangeUnallowed:
-		"flex items-center justify-center w-6 h-6 rounded-sm text-white/20 cursor-auto",
+		"flex items-center justify-center w-6 h-6 rounded-control text-white/20 cursor-auto",
 	sizes: {
 		sm: {
 			container: "gap-1 h-6 text-[12px]",
@@ -136,7 +136,7 @@ export const inputNumberConfig: PInputNumberConfig = {
 
 export const inputConfig: PInputConfig = {
 	container:
-		"rounded-sm leading-none bg-white/5 text-white/80 overflow-hidden",
+		"rounded-control leading-none bg-white/5 text-ink overflow-hidden",
 	sizes: {
 		sm: {
 			container: "child:py-1 child:px-2",
@@ -155,17 +155,17 @@ export const tagConfig: PTagConfig = {
 		success: "bg-positive border border-white/20 text-black/90",
 		secondary: "bg-black/50 border border-white/20 text-white",
 		error: "bg-negative border border-white/20 text-black/90",
-		warning: "bg-gray-100 border border-white/20 text-gray-900",
+		warning: "bg-warning border border-white/20 text-black/90",
 	},
 	sizes: {
 		sm: {
 			container:
-				"inline-flex text-xs items-center rounded-xs gap-x-0.5 py-0.25 px-1 mr-0.5",
+				"inline-flex text-xs items-center rounded-control gap-x-0.5 py-0.25 px-1 mr-0.5",
 			icon: "w-[14px] hover:text-white text-muted hover:bg-gray-800",
 		},
 		md: {
 			container:
-				"inline-flex items-center text-xs rounded-xs gap-x-1 py-0.5 px-1 mr-1",
+				"inline-flex items-center text-xs rounded-control gap-x-1 py-0.5 px-1 mr-1",
 			icon: "w-[16px] hover:text-white text-muted hover:bg-gray-800",
 		},
 	},

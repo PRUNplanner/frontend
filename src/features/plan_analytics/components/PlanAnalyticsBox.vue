@@ -104,7 +104,7 @@
 					{{ $t("plan.tools.plan_analytics.title") }}
 				</h3>
 				<button
-					class="text-sm text-white/60 hover:text-white"
+					class="text-sm text-muted hover:text-white"
 					@click="isOpen = false">
 					<PIcon><CloseSharp /></PIcon>
 				</button>
@@ -142,7 +142,7 @@
 										'h-2 w-2 rounded-full',
 										segmentColor(index),
 									]"></span>
-								<span class="text-white/60"
+								<span class="text-muted"
 									>{{
 										$t(
 											`game.expertise.${item.type
@@ -152,7 +152,7 @@
 									}}
 								</span>
 							</div>
-							<span class="font-mono text-white/60">
+							<span class="font-mono text-muted">
 								{{ formatNumber(item.percentage, 2, false) }}%
 							</span>
 						</li>
@@ -177,7 +177,7 @@
 									class="font-mono font-bold text-prunplanner">
 									{{ item.ticker }}
 								</span>
-								<span class="text-white/60 font-mono">
+								<span class="text-muted font-mono">
 									{{ item.percentage }}%
 								</span>
 							</div>
@@ -213,7 +213,7 @@
 									{{ building }}
 								</span>
 								<div class="flex items-center gap-2 text-xs">
-									<span class="text-white/60">
+									<span class="text-muted">
 										{{ recipes.length }}
 									</span>
 									<span
@@ -236,7 +236,7 @@
 									:key="recipe.recipe_id"
 									class="mb-3 last:mb-0">
 									<div
-										class="mb-1 flex flex-row items-end gap-x-6 justify-between text-xs font-mono text-white/60">
+										class="mb-1 flex flex-row items-end gap-x-6 justify-between text-xs font-mono text-muted">
 										<span>
 											{{ formatRecipe(recipe.recipe_id) }}
 										</span>

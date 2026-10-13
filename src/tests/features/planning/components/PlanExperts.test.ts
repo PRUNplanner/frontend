@@ -59,7 +59,7 @@ const input = (wrapper: VueWrapper, index: number) =>
 	wrapper.findAll("input").at(index)!;
 const bonus = (wrapper: VueWrapper, index: number) =>
 	grid(wrapper).findAll(":scope > div.text-end").at(index)!;
-const warning = (wrapper: VueWrapper) => wrapper.find(".bg-red-500\\/50");
+const warning = (wrapper: VueWrapper) => wrapper.find(".bg-negative\\/50");
 
 describe("PlanExperts", () => {
 	beforeEach(() => {

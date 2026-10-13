@@ -235,18 +235,18 @@ describe("PSelectMultiple", () => {
 		await flushPromises();
 		expect(shown()).toEqual(["Gamma"]);
 
-		await wrapper.find(".text-white\\/60").trigger("click");
+		await wrapper.find(".text-muted.w-4").trigger("click");
 		await flushPromises();
 		expect(picked).toEqual([[]]);
 		expect(shown()).toEqual(["Alpha", "Beta", "Gamma", "alphabet"]);
 		expect(wrapper.text()).toContain("common.ui.select.select_options");
 		// nothing left to clear
-		expect(wrapper.find(".text-white\\/60").exists()).toBe(false);
+		expect(wrapper.find(".text-muted.w-4").exists()).toBe(false);
 	});
 
 	it("hides the clear button when not clearable", async () => {
 		const { wrapper } = await mountSelect(["a"], { clearable: false });
-		expect(wrapper.find(".text-white\\/60").exists()).toBe(false);
+		expect(wrapper.find(".text-muted.w-4").exists()).toBe(false);
 	});
 
 	it("removes a single value through its tag without opening", async () => {
@@ -358,7 +358,7 @@ describe("PSelectMultiple", () => {
 
 	it("hides the clear button when disabled", async () => {
 		const { wrapper } = await mountSelect(["a"], { disabled: true });
-		expect(wrapper.find(".text-white\\/60").exists()).toBe(false);
+		expect(wrapper.find(".text-muted.w-4").exists()).toBe(false);
 	});
 
 	it("never changes the parent's array in place", async () => {
@@ -379,7 +379,7 @@ describe("PSelectMultiple", () => {
 
 	it("highlights the keyboard position and resets it on search", async () => {
 		const { wrapper } = await mountSelect();
-		const highlighted = () => body().find(".z-5000 .bg-gray-700");
+		const highlighted = () => body().find(".z-5000 .bg-selected");
 		await key(wrapper, "Enter");
 		expect(highlighted().text()).toBe("Alpha");
 

@@ -48,7 +48,7 @@
 </script>
 
 <template>
-	<div v-if="totalExperts > 6" class="bg-red-500/50 p-2 mb-3">
+	<div v-if="totalExperts > 6" class="bg-negative/50 p-2 mb-3">
 		{{
 			$t("plan.components.experts.warning", {
 				expert_number: totalExperts,

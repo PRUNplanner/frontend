@@ -126,7 +126,7 @@
 					:style="{ width: demandWidth + '%' }"></div>
 
 				<div
-					class="bg-orange-500 h-full flex-shrink-0 transition-all duration-500"
+					class="bg-warning h-full flex-shrink-0 transition-all duration-500"
 					:style="{ width: 100 - demandWidth + '%' }"></div>
 			</div>
 		</div>

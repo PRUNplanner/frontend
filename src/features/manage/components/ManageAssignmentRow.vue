@@ -64,7 +64,7 @@
 					</span>
 				</div>
 				<div
-					class="text-xs text-white/55 truncate"
+					class="text-xs text-muted truncate"
 					:title="
 						row.planetName
 							? `${row.planetName} · ${row.planetId}`

@@ -95,7 +95,7 @@
 	<h2 class="text-white/80 font-bold text-lg my-auto">
 		{{ $t("profile.preferences.title") }}
 	</h2>
-	<div class="py-3 text-white/60">
+	<div class="py-3 text-muted">
 		{{ $t("profile.preferences.description") }}
 	</div>
 
@@ -115,7 +115,7 @@
 			<i18n-t
 				keypath="profile.preferences.form.language_note"
 				tag="p"
-				class="text-xs text-white/60 pt-1 pb-2">
+				class="text-xs text-muted pt-1 pb-2">
 				<template #link>
 					<a
 						href="https://crowdin.com/project/prunplanner"
@@ -192,7 +192,7 @@
 			<PCheckbox v-model:checked="planSuggestions" />
 		</PFormItem>
 		<PFormSeparator>
-			<p class="text-xs text-white/60 pt-1 pb-2">
+			<p class="text-xs text-muted pt-1 pb-2">
 				{{ $t("profile.preferences.form.plan_suggestions_help") }}
 			</p>
 		</PFormSeparator>
@@ -210,7 +210,7 @@
 					@update:checked="(value) => (value ? grant() : deny())" />
 			</PFormItem>
 			<PFormSeparator>
-				<p class="text-xs text-white/60 pt-1 pb-2">
+				<p class="text-xs text-muted pt-1 pb-2">
 					{{
 						isDNT
 							? $t("profile.preferences.form.analytics_dnt")
@@ -224,7 +224,7 @@
 	<h3 class="font-bold py-3">
 		{{ $t("profile.preferences.form.plan_specific") }}
 	</h3>
-	<div class="pb-3 text-white/60">
+	<div class="pb-3 text-muted">
 		{{ $t("profile.preferences.form.plan_specific_description") }}
 	</div>
 	<PTable striped>

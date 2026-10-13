@@ -1,10 +1,17 @@
 <script setup lang="ts">
 	import { computed } from "vue";
 
-	const { size = "md", color = "prunplanner" } = defineProps<{
+	const { size = "md", color = "brand" } = defineProps<{
 		size?: "xs" | "md" | "lg" | "xl";
-		color?: string;
+		color?: "brand" | "white" | "muted";
 	}>();
+
+	// whole class names, so Tailwind sees them
+	const colorClass = {
+		brand: "text-prunplanner",
+		white: "text-white",
+		muted: "text-muted",
+	};
 
 	const sizeInPx = computed(() => {
 		switch (size) {
@@ -26,7 +33,7 @@
 	<div class="pspin inline-flex items-center">
 		<svg
 			class="animate-spin"
-			:class="`text-${color}`"
+			:class="colorClass[color]"
 			:style="{ width: `${sizeInPx}px`, height: `${sizeInPx}px` }"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"

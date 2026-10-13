@@ -33,8 +33,8 @@ export interface PButtonGroupConfig {
 	vertical: string;
 }
 
-/** default panel look of PPopover */
-export interface PPopoverConfig {
+/** look of every floating panel */
+export interface PPanelConfig {
 	panel: string;
 }
 

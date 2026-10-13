@@ -47,7 +47,7 @@
 					class="block text-link-primary font-bold hover:underline truncate">
 					{{ row.planName }}
 				</router-link>
-				<div class="text-xs text-white/55 truncate">
+				<div class="text-xs text-muted truncate">
 					<template v-if="row.planetName">
 						{{ row.planetName }} ·
 					</template>

@@ -82,17 +82,17 @@
 </template>
 
 <style>
-	@reference "tailwindcss";
+	@reference "../../assets/css/style.css";
 
 	.ppagination {
 		@apply flex justify-end gap-2 mt-3 text-sm;
 	}
 
 	.ppagination-item {
-		@apply flex items-center justify-center min-w-7 h-7 px-1.5 rounded-[3px] border border-transparent text-white/82 cursor-pointer hover:text-[#7fe7c4] disabled:text-white/38 disabled:cursor-not-allowed;
+		@apply flex items-center justify-center min-w-7 h-7 px-1.5 rounded-control border border-transparent text-ink cursor-pointer hover:text-link disabled:text-white/38 disabled:cursor-not-allowed;
 	}
 
 	.ppagination-item.ppagination-active {
-		@apply text-[#6ea8fe] border-[rgba(110,168,254,0.52)];
+		@apply text-link border-link/50;
 	}
 </style>

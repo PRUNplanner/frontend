@@ -85,7 +85,7 @@
 	<div v-if="!chartData" class="w-full h-75 flex items-center justify-center">
 		<div class="text-white text-center">
 			<PSpin size="lg" />
-			<div class="text-white/60">Loading Data...</div>
+			<div class="text-muted">Loading Data...</div>
 		</div>
 	</div>
 	<div v-else>

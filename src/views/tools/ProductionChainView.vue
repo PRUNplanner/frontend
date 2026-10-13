@@ -152,7 +152,7 @@
 								@update:value="generate()" />
 						</PFormItem>
 						<PFormSeparator>
-							<div class="text-xs text-white/60 pt-1">
+							<div class="text-xs text-muted pt-1">
 								{{
 									$t(
 										"production_chains.configuration.terminals_info"

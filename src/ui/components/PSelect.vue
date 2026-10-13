@@ -15,6 +15,7 @@
 	const { t } = useI18n();
 
 	import { formItemKey } from "@/ui/formItem";
+	import { panelConfig } from "@/ui/styles";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 	import { optionKeys } from "@/ui/optionKeys";
 	import type { PSelectOption } from "@/ui/ui.types";
@@ -277,7 +278,7 @@
 		@keydown="onKeyDown">
 		<label>
 			<div
-				class="flex flex-row items-center cursor-pointer bg-white/5 text-white/80 rounded-sm pr-2 min-h-7"
+				class="flex flex-row items-center cursor-pointer bg-white/5 text-ink rounded-control pr-2 min-h-7"
 				:class="!useSearch ? 'py-1 ' : ''"
 				@click="toggleOpen">
 				<div
@@ -296,7 +297,7 @@
 				</div>
 				<div
 					v-if="value && value !== null && clearable"
-					class="text-white/60 w-4"
+					class="text-muted w-4"
 					@click.stop="clear">
 					<ClearSharp />
 				</div>
@@ -317,9 +318,10 @@
 			<div
 				ref="dropdownRef"
 				data-pselect-dropdown
-				class="z-5000 p-1 bg-gray-900 text-white rounded-sm shadow-lg max-h-75 overflow-auto">
+				:class="panelConfig.panel"
+				class="z-5000 p-1 max-h-75 overflow-auto">
 				<div
-					class="w-full flex flex-col bg-gray-900 child:py-1 child:px-2 child:hover:bg-gray-800 rounded-b-sm">
+					class="w-full flex flex-col child:py-1 child:px-2 child:rounded-control child:hover:bg-hover">
 					<PSelectElement
 						v-for="(option, idx) in filteredOptions"
 						:key="keys[idx]"

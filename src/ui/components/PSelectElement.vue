@@ -36,7 +36,7 @@
 <template>
 	<template v-if="option.children">
 		<div
-			class="border-t border-b border-white/20 bg-white/5 hover:bg-white/5! font-bold">
+			class="border-t border-b border-line-strong bg-white/5 hover:bg-white/5! rounded-none! font-bold">
 			{{ option.label }}
 		</div>
 		<template
@@ -45,9 +45,9 @@
 			<div
 				class="flex flex-row items-center"
 				:class="[
-					childIndex === highlightedIndex ? 'bg-gray-700' : '',
+					childIndex === highlightedIndex ? 'bg-selected' : '',
 					isSelected(child.value)
-						? 'text-link-primary font-bold'
+						? 'text-link font-bold'
 						: '',
 				]"
 				@click="emit('click', child.value)">
@@ -56,7 +56,7 @@
 				</div>
 				<span
 					v-if="child.badge"
-					class="pl-3 text-xs font-mono text-white/60 text-nowrap">
+					class="pl-3 text-xs font-mono text-muted text-nowrap">
 					{{ child.badge }}
 				</span>
 				<div
@@ -83,8 +83,8 @@
 		<div
 			class="flex flex-row items-center"
 			:class="[
-				highlightedIndex === 0 ? 'bg-gray-700' : '',
-				isSelected(option.value) ? 'text-link-primary font-bold' : '',
+				highlightedIndex === 0 ? 'bg-selected' : '',
+				isSelected(option.value) ? 'text-link font-bold' : '',
 			]"
 			@click="emit('click', option.value)">
 			<div class="grow hover:cursor-pointer">
@@ -92,7 +92,7 @@
 			</div>
 			<span
 				v-if="option.badge"
-				class="pl-3 text-xs font-mono text-white/60 text-nowrap">
+				class="pl-3 text-xs font-mono text-muted text-nowrap">
 				{{ option.badge }}
 			</span>
 			<div

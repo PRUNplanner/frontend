@@ -46,7 +46,7 @@
 			<i18n-t
 				keypath="analytics.consent.optional"
 				tag="p"
-				class="text-white/60">
+				class="text-muted">
 				<template #link>
 					<router-link
 						to="/imprint-tos#analytics"

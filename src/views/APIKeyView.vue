@@ -109,12 +109,12 @@
 					{{ lastCreatedKey }}
 				</span>
 			</div>
-			<div class="text-red-500">
+			<div class="text-negative">
 				{{ $t("api_keys.create.form.success_note") }}
 			</div>
 		</div>
 		<div v-else-if="creationStep === 'error'">
-			<div class="text-center text-red-500">
+			<div class="text-center text-negative">
 				{{ $t("api_keys.create.form.error") }}
 			</div>
 		</div>

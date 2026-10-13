@@ -86,7 +86,7 @@ describe("PPopover", () => {
 		expect(panels()).toHaveLength(1);
 		expect(panels()[0].element.parentElement).toBe(document.body);
 		expect(panels()[0].classes()).toEqual(
-			expect.arrayContaining(["bg-gray-dark", "p-3", "rounded-md"])
+			expect.arrayContaining(["bg-surface", "p-3", "rounded-panel"])
 		);
 
 		await trigger.trigger("click");

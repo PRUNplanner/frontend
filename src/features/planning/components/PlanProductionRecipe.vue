@@ -235,7 +235,7 @@
 		v-model:show="refShowRecipeOptions"
 		:placement="recipePlacement()"
 		arrow
-		panel-class="bg-black max-w-[calc(100vw-48px)] shadow-[0_3px_6px_-4px_rgba(0,0,0,0.24),0_6px_12px_0_rgba(0,0,0,0.16),0_9px_18px_8px_rgba(0,0,0,0.1)]">
+		panel-class="max-w-[calc(100vw-48px)]">
 		<template #trigger>
 			<div
 				class="col-span-full row-1 xl:col-2 xl:pl-3 min-w-0 flex items-center gap-1 group justify-between hover:cursor-pointer">
@@ -375,7 +375,7 @@
 					</template>
 				</PDataTable>
 
-				<div class="text-xs p-2! text-white/60!">
+				<div class="text-xs p-2! text-muted!">
 					<strong>{{
 						$t("plan.components.production_recipe.info.p1_strong")
 					}}</strong>

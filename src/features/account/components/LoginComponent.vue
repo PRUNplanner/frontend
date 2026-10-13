@@ -59,7 +59,7 @@
 		<div class="text-xl text-white font-bold font-mono pb-3">
 			{{ $t("account.components.login.title") }}
 		</div>
-		<div v-if="loginError" class="pb-3 text-red-600" role="alert">
+		<div v-if="loginError" class="pb-3 text-negative" role="alert">
 			{{
 				loginError === "throttled"
 					? $t("account.components.login.throttled")
@@ -68,7 +68,7 @@
 		</div>
 		<PForm as-form @submit="handleLogin">
 			<PFormSeparator>
-				<div class="font-mono text-xs text-white/60 pb-3">
+				<div class="font-mono text-xs text-muted pb-3">
 					<i18n-t keypath="account.components.login.tos" tag="p">
 						<template #tos_link>
 							<router-link
@@ -96,7 +96,7 @@
 					class="w-full" />
 			</PFormItem>
 			<PFormSeparator>
-				<div class="font-mono text-xs text-white/60 py-3">
+				<div class="font-mono text-xs text-muted py-3">
 					<i18n-t keypath="account.components.login.forgot" tag="p">
 						<template #forgot_link>
 							<router-link

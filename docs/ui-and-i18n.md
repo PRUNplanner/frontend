@@ -75,9 +75,10 @@ are internal to `PDataTable` and the selects.
       Esc closes the top layer (an open `PSelect` list first). `PSelect` lists
       and `PTooltip`s stack above them.
     - `<PPopover>` with a `#trigger` slot: `trigger` `click` (toggles) or
-      `manual` (`v-model:show`), `placement`, `panelClass` (default
-      `popoverConfig.panel`), `anchor` (an element to position at instead of
-      the trigger) and `arrow`. Emits `clickoutside`.
+      `manual` (`v-model:show`), `placement`, `panelClass` (added to the
+      panel look, replaces the default `p-3` padding), `anchor` (an element
+      to position at instead of the trigger) and `arrow`. Emits
+      `clickoutside`.
     - `<PDropdown :options @select>`: `{ key, label, icon?, hint?, danger? }`
       or `{ type: "divider" }`, `trigger` `click`, `hover` or `manual`, and
       `anchor`. A `role="menu"`: ↓ on the trigger opens it, ↑/↓/Home/End
@@ -194,12 +195,29 @@ Examples: `features/planning/components/PlanMaterialIO.vue`,
   `text-white/40`–`/50`) and `muted-strong`. All pass 4.5:1 on every app
   surface. The colour-blind preference sets `data-palette="colorblind"` on
   `<html>`, which swaps `positive`/`negative` to blue/orange, so use the
-  tokens, never raw green/red. Text is at least `text-xs` (12 px).
+  tokens, never raw green/red/orange (`kitTokens.test.ts` fails on
+  them). Text is at least `text-xs` (12 px).
+- **Kit tokens** (same file), one value per meaning; the kit has no hex or
+  rgb literals (same test):
+  - `surface` (every floating panel, modal and drawer), `surface-sunken`
+    (table header);
+  - `line` / `line-strong` (borders), `hover` (row, option and menu item
+    under the pointer), `selected` (keyboard highlight, sorted column);
+  - `ink` / `ink-strong` (body and heading text), `primary` (primary
+    button), `link` (links, active sort and page);
+  - `rounded-control` (4 px: buttons, inputs, selects, tags, checkboxes),
+    `rounded-panel` (6 px: popovers, menus, lists, tooltips, toasts, modals,
+    tables) and `shadow-panel`.
+  - Floating panels share `panelConfig.panel` (`ui/styles.ts`).
+  - Buttons: `error` is filled `negative` with dark text, `warning` amber;
+    both follow the colour-blind palette.
 - **Fonts:** Roboto and Roboto Mono are self-hosted via `@fontsource`
   (`main.ts`). Use `font-mono` only for tickers, ids and code.
-- **Other custom colours:** `pp-primary`, `pp-secondary`, `pp-border`,
-  `pp-card-header`, `prunplanner` (brand lime),
-  `row`, `row-alternate` and `table-border`.
+- **Other custom colours:** `pp-primary`, `pp-secondary`,
+  `pp-card-header`, `prunplanner` (brand lime), `row`, `row-alternate` and
+  `table-border`. The older `gray-dark`, `pp-border` and `link-primary`
+  are aliases of `surface`, `line` and `link`; use the token names in new
+  code.
 - **Custom variants:** `child:`, `child-hover:` and `not-first:`.
 - **The app is dark-only.**
 - Prefer utility classes in templates. `<style>` blocks are rare.

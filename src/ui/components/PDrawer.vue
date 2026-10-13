@@ -61,11 +61,11 @@
 					aria-modal="true"
 					:aria-labelledby="hasHeader ? titleId : undefined"
 					tabindex="-1"
-					class="pdrawer-panel absolute inset-y-0 flex flex-col max-w-[calc(100vw-48px)] bg-gray-dark text-white/82 text-sm leading-[1.6] outline-none shadow-[0_6px_16px_-9px_rgba(0,0,0,.08),0_9px_28px_0_rgba(0,0,0,.05),0_12px_48px_16px_rgba(0,0,0,.03)]"
+					class="pdrawer-panel absolute inset-y-0 flex flex-col max-w-[calc(100vw-48px)] bg-surface text-ink text-sm leading-[1.6] outline-none shadow-panel"
 					:class="
 						placement === 'right'
-							? 'right-0 rounded-l-[3px]'
-							: 'left-0 rounded-r-[3px]'
+							? 'right-0 rounded-l-panel'
+							: 'left-0 rounded-r-panel'
 					"
 					:data-placement="placement"
 					:style="{
@@ -74,7 +74,7 @@
 					<div
 						v-if="hasHeader || closable"
 						data-layer-header
-						class="flex items-center justify-between px-6 py-4 border-b border-white/9 text-[18px]/4.5 font-medium text-white/90">
+						class="flex items-center justify-between px-6 py-4 border-b border-line text-[18px]/4.5 font-medium text-ink-strong">
 						<div :id="titleId" class="flex-1 min-w-0">
 							<slot name="header">{{ title }}</slot>
 						</div>

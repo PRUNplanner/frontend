@@ -126,7 +126,7 @@
 
 				<div
 					v-else
-					class="p-2 border border-red-200 bg-red-50 text-red-500 text-xs">
+					class="p-2 border border-negative bg-negative/10 text-negative text-xs">
 					{{
 						$t("market_live.components.rule_builder.error", {
 							value: JSON.stringify(item),
