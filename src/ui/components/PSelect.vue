@@ -275,7 +275,7 @@
 		:aria-label="ariaLabel"
 		:aria-labelledby="ariaLabel ? undefined : formItem?.labelId"
 		@keydown="onKeyDown">
-		<label name="pselect-label">
+		<label>
 			<div
 				class="flex flex-row items-center cursor-pointer bg-white/5 text-white/80 rounded-sm pr-2 min-h-7"
 				:class="!useSearch ? 'py-1 ' : ''"

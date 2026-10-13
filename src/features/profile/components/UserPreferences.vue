@@ -25,7 +25,7 @@
 	import {
 		PForm,
 		PFormItem,
-		PFormSeperator,
+		PFormSeparator,
 		PSelect,
 		PInputNumber,
 		PCheckbox,
@@ -100,18 +100,18 @@
 	</div>
 
 	<PForm>
-		<PFormSeperator>
+		<PFormSeparator>
 			<h3 class="font-bold pb-3">
 				{{ $t("profile.preferences.form.tool_preferences") }}
 			</h3>
-		</PFormSeperator>
+		</PFormSeparator>
 		<PFormItem :label="t('profile.preferences.form.language')">
 			<PSelect
 				v-model:value="locale"
 				:options="SupportedLanguages"
 				class="w-full" />
 		</PFormItem>
-		<PFormSeperator>
+		<PFormSeparator>
 			<i18n-t
 				keypath="profile.preferences.form.language_note"
 				tag="p"
@@ -125,7 +125,7 @@
 					>
 				</template>
 			</i18n-t>
-		</PFormSeperator>
+		</PFormSeparator>
 		<PFormItem :label="t('profile.preferences.form.color_palette')">
 			<PSelect
 				v-model:value="colorPalette"
@@ -152,11 +152,11 @@
 				class="w-full" />
 		</PFormItem>
 
-		<PFormSeperator>
+		<PFormSeparator>
 			<h4 class="font-bold py-1">
 				{{ $t("profile.preferences.form.fio_burn") }}
 			</h4>
-		</PFormSeperator>
+		</PFormSeparator>
 
 		<PFormItem :label="t('profile.preferences.form.red_threshold')">
 			<PInputNumber
@@ -191,25 +191,25 @@
 		<PFormItem :label="t('profile.preferences.form.plan_suggestions')">
 			<PCheckbox v-model:checked="planSuggestions" />
 		</PFormItem>
-		<PFormSeperator>
+		<PFormSeparator>
 			<p class="text-xs text-white/60 pt-1 pb-2">
 				{{ $t("profile.preferences.form.plan_suggestions_help") }}
 			</p>
-		</PFormSeperator>
+		</PFormSeparator>
 
 		<template v-if="analyticsAvailable">
-			<PFormSeperator>
+			<PFormSeparator>
 				<h4 class="font-bold py-1">
 					{{ $t("profile.preferences.form.privacy") }}
 				</h4>
-			</PFormSeperator>
+			</PFormSeparator>
 			<PFormItem :label="t('profile.preferences.form.analytics')">
 				<PCheckbox
 					:checked="consent === 'granted'"
 					:disabled="isDNT"
 					@update:checked="(value) => (value ? grant() : deny())" />
 			</PFormItem>
-			<PFormSeperator>
+			<PFormSeparator>
 				<p class="text-xs text-white/60 pt-1 pb-2">
 					{{
 						isDNT
@@ -217,7 +217,7 @@
 							: $t("profile.preferences.form.analytics_note")
 					}}
 				</p>
-			</PFormSeperator>
+			</PFormSeparator>
 		</template>
 	</PForm>
 

@@ -4,7 +4,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n({ useScope: "global" });
 
-	import { PForm, PFormItem, PFormSeperator, PButton, PInput } from "@/ui";
+	import { PForm, PFormItem, PFormSeparator, PButton, PInput } from "@/ui";
 	import type { UserRegistrationPayload } from "@/features/api/schemas/user.schemas";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
@@ -191,7 +191,7 @@
 						}}
 					</template>
 				</PFormItem>
-				<PFormSeperator>
+				<PFormSeparator>
 					<div
 						class="text-xl text-white font-bold font-mono pt-3 pb-1">
 						{{
@@ -218,7 +218,7 @@
 							</template>
 						</i18n-t>
 					</div>
-				</PFormSeperator>
+				</PFormSeparator>
 				<PFormItem
 					:label="
 						t('account.components.registration.form.planet_name')

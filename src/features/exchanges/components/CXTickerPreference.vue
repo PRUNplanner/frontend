@@ -76,7 +76,6 @@
 				:aria-label="$t('exchanges.configuration.form.ticker')"
 				:options="materialOptions"
 				searchable
-				size="small"
 				:placeholder="
 					t('exchanges.components.ticker.material_placeholder')
 				"

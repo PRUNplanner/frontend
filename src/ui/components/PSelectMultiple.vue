@@ -289,7 +289,7 @@
 		:aria-label="ariaLabel"
 		:aria-labelledby="ariaLabel ? undefined : formItem?.labelId"
 		@keydown="onKeyDown">
-		<label name="pselect-multiple-label">
+		<label>
 			<div
 				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-white/80 rounded-sm px-2 min-h-7"
 				@click="toggleOpen">

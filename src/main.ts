@@ -65,12 +65,8 @@ const head = createHead();
 
 app.use(head);
 
-// directives
-import clickOutsideDirective from "@/layout/directives/clickOutsideDirective";
 import { useUserStore } from "./stores/userStore";
 import type { Composer } from "vue-i18n";
-
-app.directive("click-outside", clickOutsideDirective);
 
 // mount
 app.mount("#app");

@@ -192,6 +192,16 @@ const router = createRouter({
 			meta: { requiresAuth: true },
 			component: () => import("@/views/APIKeyView.vue"),
 		},
+		// every kit component in every state; dev server and e2e builds only
+		...(import.meta.env.DEV || import.meta.env.VITE_KIT_PAGE === "true"
+			? [
+					{
+						name: "dev-kit",
+						path: "/dev/kit",
+						component: () => import("@/views/dev/KitView.vue"),
+					},
+				]
+			: []),
 	],
 });
 

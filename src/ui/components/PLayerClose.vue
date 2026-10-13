@@ -1,6 +1,10 @@
 <script setup lang="ts">
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
+
+	defineEmits<{
+		(e: "click", event: MouseEvent): void;
+	}>();
 </script>
 
 <template>
@@ -8,7 +12,8 @@
 	<button
 		type="button"
 		:aria-label="t('common.ui.close')"
-		class="flex items-center justify-center shrink-0 size-6 -mr-0.75 rounded-[3px] cursor-pointer text-white/52 hover:bg-white/12 active:bg-white/8">
+		class="flex items-center justify-center shrink-0 size-6 -mr-0.75 rounded-[3px] cursor-pointer text-white/52 hover:bg-white/12 active:bg-white/8"
+		@click="$emit('click', $event)">
 		<svg viewBox="0 0 12 12" class="size-4.5" aria-hidden="true">
 			<path
 				fill="currentColor"

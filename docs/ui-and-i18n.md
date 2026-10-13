@@ -10,16 +10,25 @@ import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui
 ```
 
 The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDataTable`,
-`PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeperator` (the
-misspelling is the real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`,
-`PPagination`, `PPopover`, `PProgressBar`, `PSelect`, `PSelectElement`,
+`PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeparator`, `PIcon`,
+`PInput`, `PInputNumber`, `PModal`, `PPopover`, `PProgressBar`, `PSelect`,
 `PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast` (through
 `useToast()`, see "Toasts" below), `PTooltip` and `PValue`, plus
-`useConfirm()` (see "Overlays" below).
+`useConfirm()` (see "Overlays" below). `PPagination` and `PSelectElement`
+are internal to `PDataTable` and the selects.
 
-- **Shared props:** `size` (`"sm" | "md"`) and `color` (`primary`,
-  `success`, `error`, `warning`, `secondary`). Both types are in
-  `ui/ui.types.ts`.
+- **Kit page:** `/dev/kit` (`views/dev/KitView.vue`) shows every component
+  in every size, type and state. It exists in `pnpm dev` and in builds with
+  `VITE_KIT_PAGE=true` (the e2e stack), not in production. Add new
+  components and states there.
+- **Shared props:** `size` (`"sm" | "md"`) and `type` for the colour
+  (`primary`, `success`, `error`, `warning`, `secondary`; buttons also
+  `ghost`). Both types are in `ui/ui.types.ts`.
+- **Unknown props fail `pnpm tsc`** (`checkUnknownProps` and
+  `checkUnknownEvents` in `tsconfig.typecheck.json`). `class`, `style`,
+  `id`, `title`, `role`, `aria-*` and `data-*` fall through to a
+  component's root (allowlisted in `ui/ui.types.ts`); anything else needs a
+  declared prop or emit.
 - **Select options** use `PSelectOption` (`{ label, value, badge?, children? }`). `badge` is shown on the right and not searched; arrow keys and Enter move through group children, not group headers.
 - **Forms:** `<PForm as-form @submit="…">` renders a real `<form>`, so Enter
   in an input submits. Give its button `html-type="submit"` and no `@click`.

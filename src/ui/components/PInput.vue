@@ -48,6 +48,10 @@
 
 	defineExpose({ focus, inputEl });
 
+	defineEmits<{
+		(e: "keydown", event: KeyboardEvent): void;
+	}>();
+
 	function onInput(e: Event) {
 		const target = e.target as HTMLInputElement;
 		value.value = target.value;
@@ -70,7 +74,8 @@
 				:aria-label="ariaLabel"
 				:class="`${inputConfig.sizes[size].input}`"
 				:autocomplete="autocomplete"
-				@input="onInput" />
+				@input="onInput"
+				@keydown="$emit('keydown', $event)" />
 			<input
 				v-else
 				:id="inputId"
@@ -83,7 +88,8 @@
 				:aria-label="ariaLabel"
 				:class="`${inputConfig.sizes[size].input}`"
 				:autocomplete="autocomplete"
-				@input="onInput" />
+				@input="onInput"
+				@keydown="$emit('keydown', $event)" />
 		</div>
 	</div>
 </template>

@@ -538,7 +538,6 @@
 								</div>
 							</div>
 							<div
-								if="!loading && !error && dataChart.length > 0"
 								class="flex-grow min-h-0">
 								<MarketExplorationChart
 									:data="dataCandlestick" />

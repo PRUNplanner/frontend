@@ -10,7 +10,7 @@
 	import router from "@/router";
 
 	// UI
-	import { PForm, PFormItem, PFormSeperator, PInput, PButton } from "@/ui";
+	import { PForm, PFormItem, PFormSeparator, PInput, PButton } from "@/ui";
 
 	const inputUsername: Ref<string | null> = ref(null);
 	const inputPassword: Ref<string | null> = ref(null);
@@ -67,7 +67,7 @@
 			}}
 		</div>
 		<PForm as-form @submit="handleLogin">
-			<PFormSeperator>
+			<PFormSeparator>
 				<div class="font-mono text-xs text-white/60 pb-3">
 					<i18n-t keypath="account.components.login.tos" tag="p">
 						<template #tos_link>
@@ -79,7 +79,7 @@
 						</template>
 					</i18n-t>
 				</div>
-			</PFormSeperator>
+			</PFormSeparator>
 			<PFormItem :label="t('account.components.login.form.username')">
 				<PInput
 					v-model:value="inputUsername"
@@ -95,7 +95,7 @@
 					type="password"
 					class="w-full" />
 			</PFormItem>
-			<PFormSeperator>
+			<PFormSeparator>
 				<div class="font-mono text-xs text-white/60 py-3">
 					<i18n-t keypath="account.components.login.forgot" tag="p">
 						<template #forgot_link>
@@ -107,7 +107,7 @@
 						</template>
 					</i18n-t>
 				</div>
-			</PFormSeperator>
+			</PFormSeparator>
 			<PFormItem label="">
 				<PButton
 					:loading="isLoggingIn"

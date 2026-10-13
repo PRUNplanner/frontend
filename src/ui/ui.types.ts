@@ -17,8 +17,6 @@ export interface PButtonConfig {
 		ButtonColorKey,
 		{ base: string; hover?: string; text?: string; disabled?: string }
 	>;
-	defaultSize: SizeKey;
-	defaultColor: ColorKey;
 }
 
 export interface PCheckboxConfig {
@@ -148,4 +146,23 @@ export interface PDataTableColumn<T> {
 	/** the header spans this many columns, covering the next ones' */
 	titleColSpan?: number;
 	children?: PDataTableColumn<T>[];
+}
+
+/**
+ * vue-tsc checks unknown props (tsconfig.typecheck.json). These fall through
+ * to a component's root element and stay allowed on every component.
+ */
+declare module "vue" {
+	interface AllowedComponentProps {
+		role?: string;
+		title?: string;
+		id?: string;
+		[attr: `aria-${string}`]: unknown;
+		[attr: `data-${string}`]: unknown;
+		// a valueless data-x on a component reaches the check camelized
+		[attr: `data${Capitalize<string>}`]: unknown;
+	}
+	interface HTMLAttributes {
+		[attr: `data-${string}`]: unknown;
+	}
 }

@@ -1372,7 +1372,7 @@
 												)
 											"
 											size="sm"
-											secondary
+											type="secondary"
 											@click="
 												refMaterialIOShowBasked =
 													!refMaterialIOShowBasked
@@ -1402,7 +1402,7 @@
 												)
 											"
 											size="sm"
-											secondary
+											type="secondary"
 											@click="
 												refMaterialIOSplitted =
 													!refMaterialIOSplitted

@@ -39,7 +39,7 @@
 	import {
 		PForm,
 		PFormItem,
-		PFormSeperator,
+		PFormSeparator,
 		PInput,
 		PSelect,
 		PInputNumber,
@@ -151,7 +151,7 @@
 								class="w-full"
 								@update:value="generate()" />
 						</PFormItem>
-						<PFormSeperator>
+						<PFormSeparator>
 							<div class="text-xs text-white/60 pt-1">
 								{{
 									$t(
@@ -159,7 +159,7 @@
 									)
 								}}
 							</div>
-						</PFormSeperator>
+						</PFormSeparator>
 					</PForm>
 					<template v-if="graphData">
 						<h3 class="font-bold py-3">

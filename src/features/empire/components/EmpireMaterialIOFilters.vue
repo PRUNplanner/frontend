@@ -167,7 +167,6 @@
 				<PFormItem :label="t('terms.materials', 2)">
 					<PSelectMultiple
 						v-model:value="localFilterMaterials"
-						multiple
 						searchable
 						clearable
 						class="w-full"
@@ -176,7 +175,6 @@
 				<PFormItem :label="t('terms.planets', 2)">
 					<PSelectMultiple
 						v-model:value="localFilterPlanets"
-						multiple
 						searchable
 						clearable
 						class="w-full"

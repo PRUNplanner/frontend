@@ -368,7 +368,6 @@
 				"
 				:disabled="disabled"
 				:options="refMaterialExclusionOption"
-				multiple
 				searchable
 				@update:value="
 					(value) => {

@@ -29,7 +29,7 @@
 	</PModal>
 	<PButton
 		size="sm"
-		secondary
+		type="secondary"
 		:disabled="cogmData === undefined"
 		@click="() => (refShowCOGM = true)">
 		<template #icon><AnalyticsOutlined /> </template>COGM

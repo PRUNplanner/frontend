@@ -308,7 +308,6 @@
 					v-model:value="refChartValue"
 					:aria-label="$t('material_tile.chart.value_label')"
 					class="w-50!"
-					size="sm"
 					:options="refChartValueOptions" />
 			</div>
 		</div>

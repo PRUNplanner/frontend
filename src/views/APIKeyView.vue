@@ -21,7 +21,7 @@
 	import PTable from "@/ui/components/PTable.vue";
 	import PForm from "@/ui/components/PForm.vue";
 	import PFormItem from "@/ui/components/PFormItem.vue";
-	import PFormSeperator from "@/ui/components/PFormSeperator.vue";
+	import PFormSeparator from "@/ui/components/PFormSeparator.vue";
 	import PInput from "@/ui/components/PInput.vue";
 	import PModal from "@/ui/components/PModal.vue";
 	import { CheckSharp, RestartAltSharp } from "@vicons/material";
@@ -82,11 +82,11 @@
 				<PFormItem :label="t('api_keys.create.form.key_name')">
 					<PInput v-model:value="creationAPIKeyName" class="w-full" />
 				</PFormItem>
-				<PFormSeperator>
+				<PFormSeparator>
 					<span class="py-1 text-muted text-xs">
 						{{ $t("api_keys.create.form.key_description") }}
 					</span>
-				</PFormSeperator>
+				</PFormSeparator>
 			</PForm>
 		</div>
 		<div
