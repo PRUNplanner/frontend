@@ -1,9 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, afterEach, beforeEach, vi } from "vitest";
 import { h } from "vue";
 import type { ChartData } from "chart.js";
 
 import EmpireBarChart from "@/ui/charts/EmpireBarChart.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { switchPalette } from "@/tests/switchPalette";
 
 // chart.js has no canvas in jsdom, the stub only keeps the data
 vi.mock("vue-chartjs", () => ({
@@ -36,6 +37,8 @@ describe("EmpireBarChart", () => {
 		style.setProperty("--color-negative", NEGATIVE);
 		style.setProperty("--color-muted", MUTED);
 	});
+
+	afterEach(() => switchPalette("default", { "--color-positive": POSITIVE }));
 
 	it("renders the top 10 plus Other", async () => {
 		const items = Array.from({ length: 15 }, (_, i) => ({
@@ -72,6 +75,16 @@ describe("EmpireBarChart", () => {
 
 		expect(data!.labels).toEqual(["B", "A"]);
 		expect(data!.datasets[0].backgroundColor).toEqual([NEGATIVE, POSITIVE]);
+	});
+
+	it("recolours with the colour-blind palette", async () => {
+		const { wrapper } = await chartData({
+			items: [{ name: "A", value: 10 }],
+		});
+
+		await switchPalette("colorblind", { "--color-positive": "#0000ff" });
+		const data = wrapper.findComponent({ name: "Bar" }).props("data");
+		expect(data.datasets[0].backgroundColor).toEqual(["#0000ff"]);
 	});
 
 	it("keeps value labels short", async () => {

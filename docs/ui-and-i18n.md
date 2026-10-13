@@ -91,6 +91,15 @@ misspelling is the real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`,
     datalabels) and `lightweight-charts` (candlesticks). Reuse or extend
     these rather than wiring chart.js in a feature. Ranked values (top N
     plus "Other") use `EmpireBarChart.vue`.
+    Colours come only from `useChartTheme()` (`chartTheme.ts`): polarity,
+    warning, muted, ink, grid, axis, tooltip surface, the fixed exchange colours
+    (`exchange("AI1")`, tokens `--color-cx-*` in `style.css`) and the four
+    cost parts. It follows the colour-blind preference without a reload, so
+    keep chart options in a `computed`. chart.js tooltips and axes spread
+    `chartTooltip(theme)` and `chartScale(theme)` from `charts.util.ts`. No
+    hex literals in `src/ui/charts/*.vue` (a test checks). The chart series
+    (building blocks, visual rules) is indexed in the workspace spec
+    `specs/2026-10-13-charts.md`.
   - **Material chips:** `features/material_tile/components/MaterialTile.vue`
     is the standard way to show a material ticker. It is colour-coded by
     category and has a popover and a market drawer.

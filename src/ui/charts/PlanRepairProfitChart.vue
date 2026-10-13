@@ -13,6 +13,10 @@
 	} from "chart.js";
 	import ChartDataLabels, { type Context } from "chartjs-plugin-datalabels";
 
+	// Util
+	import { chartScale, chartTooltip } from "@/ui/charts/charts.util";
+	import { useChartTheme } from "@/ui/charts/chartTheme";
+
 	ChartJS.register(
 		LineElement,
 		PointElement,
@@ -31,6 +35,8 @@
 		optimalPoint: { x: number; y: number };
 	}>();
 
+	const theme = useChartTheme();
+
 	const chartData = computed<ChartData<"line" | "scatter">>(() => ({
 		labels: props.profitData.map((_, i) => i),
 		datasets: [
@@ -38,7 +44,7 @@
 				type: "line",
 				label: "Repair Analysis",
 				data: props.profitData,
-				borderColor: "#3b82f6",
+				borderColor: theme.value.positive,
 				borderWidth: 2,
 				pointRadius: 0,
 				tension: 0,
@@ -51,8 +57,8 @@
 				pointStyle: "star",
 				pointRadius: 5,
 				pointHoverRadius: 6,
-				backgroundColor: "#f59e0b",
-				borderColor: "#fff",
+				backgroundColor: theme.value.ink,
+				borderColor: theme.value.positive,
 				borderWidth: 2,
 				datalabels: {
 					display: true,
@@ -69,7 +75,7 @@
 					},
 					anchor: "end",
 					offset: 10,
-					color: "#fff",
+					color: theme.value.ink,
 					font: { family: "monospace", weight: "bold", size: 12 },
 					formatter: (value: { x: number; y: number }) => {
 						return [
@@ -79,47 +85,31 @@
 					},
 					textAlign: "center",
 					padding: 6,
-					backgroundColor: "rgba(0, 0, 0, 0.7)",
+					backgroundColor: theme.value.surface,
 					borderRadius: 4,
 				},
 			},
 		],
 	}));
 
-	const chartOptions = {
+	const chartOptions = computed(() => ({
 		responsive: true,
 		maintainAspectRatio: false,
 		scales: {
 			x: {
+				...chartScale(theme.value),
 				offset: false,
-				border: {
-					display: true,
-					color: "#333",
-					width: 1,
-				},
-				grid: {
-					display: true,
-					color: "#333",
-				},
 			},
 			y: {
+				...chartScale(theme.value),
 				beginAtZero: true,
-				border: {
-					display: true,
-					color: "#333",
-					width: 1,
-				},
-				grid: {
-					display: true,
-					color: "#333",
-				},
 			},
 		},
 		plugins: {
 			legend: { display: false },
-			tooltip: { enabled: true },
+			tooltip: chartTooltip(theme.value),
 		},
-	};
+	}));
 </script>
 
 <template>

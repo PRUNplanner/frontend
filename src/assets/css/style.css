@@ -18,6 +18,19 @@
 	--color-focus: #60a5fa;
 }
 
+/* chart colours, read by useChartTheme (src/ui/charts/chartTheme.ts);
+   plain :root so Tailwind keeps them although no utility uses them */
+:root {
+	--color-cx-ai1: #3d8ce6;
+	--color-cx-ci1: #d96a22;
+	--color-cx-ic1: #1fa67a;
+	--color-cx-nc1: #c85fd0;
+	--chart-ink: #ffffff;
+	--chart-grid: rgb(255 255 255 / 0.06);
+	--chart-axis: rgb(255 255 255 / 0.28);
+	--chart-surface: rgb(15 23 42 / 0.92);
+}
+
 /* colour-blind palette (user preference), unlayered so it beats @theme */
 [data-palette="colorblind"] {
 	--color-positive: #60a5fa;

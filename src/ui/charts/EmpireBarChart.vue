@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+	import { computed } from "vue";
 	import { useI18n } from "vue-i18n";
 	import {
 		Chart as ChartJS,
@@ -14,7 +14,12 @@
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
-	import { topWithOther } from "@/ui/charts/charts.util";
+	import {
+		chartScale,
+		chartTooltip,
+		topWithOther,
+	} from "@/ui/charts/charts.util";
+	import { useChartTheme } from "@/ui/charts/chartTheme";
 
 	// Types & Interfaces
 	import type { IChartBarItem } from "@/ui/charts/charts.types";
@@ -37,29 +42,8 @@
 		)
 	);
 
-	// sign and "Other" colours follow the semantic tokens in style.css
-	function readTokens() {
-		const css = getComputedStyle(document.documentElement);
-		return {
-			positive: css.getPropertyValue("--color-positive").trim(),
-			negative: css.getPropertyValue("--color-negative").trim(),
-			muted: css.getPropertyValue("--color-muted").trim(),
-		};
-	}
-	const tokens = ref(readTokens());
-
-	// the colour-blind preference flips data-palette on <html>
-	let paletteObserver: MutationObserver | null = null;
-	onMounted(() => {
-		paletteObserver = new MutationObserver(
-			() => (tokens.value = readTokens())
-		);
-		paletteObserver.observe(document.documentElement, {
-			attributes: true,
-			attributeFilter: ["data-palette"],
-		});
-	});
-	onBeforeUnmount(() => paletteObserver?.disconnect());
+	// sign and "Other" colours follow the colour-blind preference
+	const theme = useChartTheme();
 
 	const LABEL_SIZE = 12;
 
@@ -78,11 +62,11 @@
 					data: bars.value.map((b) => b.value),
 					backgroundColor: bars.value.map((b, i) =>
 						hasOther && i === props.top
-							? tokens.value.muted
+							? theme.value.muted
 							: (b.color ??
 								(b.value < 0
-									? tokens.value.negative
-									: tokens.value.positive))
+									? theme.value.negative
+									: theme.value.positive))
 					),
 					borderRadius: 2,
 				},
@@ -100,10 +84,7 @@
 		plugins: {
 			legend: { display: false },
 			tooltip: {
-				backgroundColor: "rgba(15, 23, 42, 0.9)",
-				padding: 12,
-				borderColor: "rgba(255, 255, 255, 0.1)",
-				borderWidth: 1,
+				...chartTooltip(theme.value),
 				callbacks: {
 					label: (ctx) => ` ${formatNumber(ctx.raw as number)}`,
 				},
@@ -112,9 +93,9 @@
 		},
 		scales: {
 			x: {
-				grid: { color: "rgba(255, 255, 255, 0.05)" },
+				...chartScale(theme.value),
 				ticks: {
-					color: "#999999",
+					...chartScale(theme.value).ticks,
 					callback: (value) => {
 						const n = value as number;
 						if (Math.abs(n) >= 1000000)
@@ -126,8 +107,9 @@
 			},
 			y: {
 				grid: { display: false },
+				border: chartScale(theme.value).border,
 				ticks: {
-					color: "#999999",
+					color: theme.value.muted,
 					font: { family: "monospace", size: LABEL_SIZE },
 				},
 				// chart.js caps a side axis at ~1/4 of the chart width and
@@ -160,8 +142,8 @@
 				grid: { display: false },
 				border: { display: false },
 				ticks: {
-					color: "#ffffff",
-					font: { family: "monospace", size: 11 },
+					color: theme.value.ink,
+					font: { family: "monospace", size: LABEL_SIZE },
 				},
 			},
 		},
