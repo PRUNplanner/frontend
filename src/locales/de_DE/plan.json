@@ -257,8 +257,7 @@
 			"label": "Belegschaft",
 			"table": {
 				"type": "Typ",
-				"need": "Bedarf",
-				"supply": "Vorrat",
+				"need_housed": "Need / Housed",
 				"open": "Offen",
 				"luxuries": "Luxusgüter",
 				"pct_eff": "Eff. %"
