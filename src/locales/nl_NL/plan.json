@@ -257,8 +257,7 @@
 			"label": "Workforce",
 			"table": {
 				"type": "Type",
-				"need": "Need",
-				"supply": "Supply",
+				"need_housed": "Need / Housed",
 				"open": "Open",
 				"luxuries": "Luxuries",
 				"pct_eff": "Eff. %"
