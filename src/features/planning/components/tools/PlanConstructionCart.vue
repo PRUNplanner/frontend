@@ -532,7 +532,7 @@
 								:status="
 									getBuilt(building) >
 									(plannedBuildings[building] ?? 0)
-										? 'error'
+										? 'warning'
 										: undefined
 								"
 								:min="0"

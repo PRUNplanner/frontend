@@ -5,7 +5,6 @@ import { Z_LAYER } from "@/ui/zIndex";
 const FOCUSABLE =
 	'a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-
 // open layers, the last one is on top
 const stack: { id: symbol; modal: boolean; panel: Ref<HTMLElement | null> }[] =
 	[];

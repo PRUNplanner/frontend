@@ -17,8 +17,18 @@ const i18n = createI18n({ legacy: false, locale: "en_US", messages: {} });
 const controls: [string, Component, Record<string, unknown>, string][] = [
 	["PButton", PButton, { ariaLabel: "x" }, "button"],
 	["PInput", PInput, { value: "", ariaLabel: "x" }, ".rounded-control"],
-	["PInputNumber", PInputNumber, { value: 1, ariaLabel: "x" }, ".rounded-control"],
-	["PSelect", PSelect, { value: null, options: [], ariaLabel: "x" }, ".rounded-control.cursor-pointer"],
+	[
+		"PInputNumber",
+		PInputNumber,
+		{ value: 1, ariaLabel: "x" },
+		".rounded-control",
+	],
+	[
+		"PSelect",
+		PSelect,
+		{ value: null, options: [], ariaLabel: "x" },
+		".rounded-control.cursor-pointer",
+	],
 	[
 		"PSelectMultiple",
 		PSelectMultiple,

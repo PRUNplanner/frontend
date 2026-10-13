@@ -262,6 +262,24 @@ describe("PSelectMultiple", () => {
 		expect(isOpen(wrapper)).toBe(false);
 	});
 
+	it("leaves Enter and Space on a tag's remove button to the button", async () => {
+		const { wrapper } = await mountSelect(["a", "b"]);
+		const remove = wrapper.find<HTMLButtonElement>(".flex-wrap button");
+
+		for (const key of ["Enter", " "]) {
+			const event = new KeyboardEvent("keydown", {
+				key,
+				bubbles: true,
+				cancelable: true,
+			});
+			remove.element.dispatchEvent(event);
+			await flushPromises();
+			// not prevented: the browser turns it into the button's click
+			expect(event.defaultPrevented).toBe(false);
+			expect(isOpen(wrapper)).toBe(false);
+		}
+	});
+
 	it("ignores clicks, keys and tag removal when disabled", async () => {
 		const { wrapper, picked } = await mountSelect(["a"], {
 			disabled: true,

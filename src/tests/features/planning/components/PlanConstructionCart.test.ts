@@ -361,10 +361,10 @@ describe("PlanConstructionCart", () => {
 				.findAll("tbody tr")
 				.slice(0, 3)
 				.map((tr) =>
-					tr.find(".min-w-20 input").attributes("aria-invalid")
+					tr.find(".min-w-20 .inset-ring-warning").exists()
 				);
-			expect(built[0]).toBeUndefined();
-			expect(built[2]).toBe("true");
+			expect(built[0]).toBe(false);
+			expect(built[2]).toBe(true);
 			// FIO counts aren't manual values
 			expect(manualMarker(wrapper, "HB1").exists()).toBe(false);
 

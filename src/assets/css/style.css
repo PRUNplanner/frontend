@@ -175,19 +175,23 @@ body:has(#menu-toggle:focus-visible) label[for="menu-toggle"] {
 	);
 }
 
-/* touch screens: an invisible hit area of at least 44 x 44 px around a
-   smaller control (WCAG 2.5.5); nothing changes for a mouse */
+/* an invisible hit area around a smaller control: at least 24 x 24 px
+   (WCAG 2.5.8), 44 x 44 px on touch screens (2.5.5); nothing is drawn */
 @utility touch-target {
 	position: relative;
+	&::after {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: max(100%, 24px);
+		height: max(100%, 24px);
+		transform: translate(-50%, -50%);
+	}
 	@media (pointer: coarse) {
 		&::after {
-			content: "";
-			position: absolute;
-			top: 50%;
-			left: 50%;
 			width: max(100%, 44px);
 			height: max(100%, 44px);
-			transform: translate(-50%, -50%);
 		}
 	}
 }

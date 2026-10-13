@@ -143,7 +143,7 @@
 		@keydown="onKeydown"
 		@focusout="onFocusout">
 		<div
-			class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-ink rounded-control px-2 pointer-coarse:min-h-11"
+			class="flex flex-row items-center cursor-pointer bg-white/5 py-0.5 text-ink rounded-control px-2 pointer-coarse:min-h-11"
 			:class="[
 				size === 'sm' ? 'min-h-6 text-xs' : 'min-h-7',
 				fieldStatus ? fieldStatusConfig[fieldStatus] : '',

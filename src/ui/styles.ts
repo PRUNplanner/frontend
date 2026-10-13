@@ -135,13 +135,14 @@ export const toastConfig: PToastConfig = {
 
 export const formConfig: PFormConfig = {
 	container:
-		"grid grid-cols-[auto_1fr] max-w-full w-full overflow-hidden child:mb-1",
+		"grid grid-cols-[auto_1fr] max-w-full w-full overflow-hidden pointer-coarse:overflow-x-clip pointer-coarse:overflow-y-visible child:mb-1",
 };
 
 export const formItemConfig: PFormItemConfig = {
 	label: "flex-none flex items-center h-full overflow-hidden whitespace-nowrap text-ellipsis pr-4",
+	// touch screens: the controls' 44px hit areas reach past the row
 	content:
-		"flex-none flex items-center h-full overflow-hidden whitespace-nowrap text-ellipsis",
+		"flex-none flex items-center h-full overflow-hidden pointer-coarse:overflow-visible whitespace-nowrap text-ellipsis",
 };
 
 export const inputNumberConfig: PInputNumberConfig = {

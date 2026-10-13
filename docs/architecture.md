@@ -14,7 +14,7 @@
 | `lib/` | Infrastructure: `apiService.ts`, `config.ts`, `query_cache/`, `i18n/`, `analytics/`, `useVersionCheck.ts` |
 | `database/` | IndexedDB game-data cache (`idb`): `schema.ts`, `stores.ts`, `composables/`, `services/` |
 | `ui/` | In-house component kit (`P*` components, barrel `ui/index.ts`) and `ui/charts/` |
-| `layout/` | Navigation, header, footer, progress indicators, the `v-click-outside` directive |
+| `layout/` | Navigation, header, footer, progress indicators |
 | `locales/<locale>/*.json` | i18n messages, one file per namespace |
 | `assets/help/<locale>/*.md` | Help drawer pages. `assets/help/changelog.md` is the changelog |
 | `assets/static/` | Large static data, e.g. `fio_systemstars.json` for pathfinding |
@@ -35,8 +35,7 @@
 7. `axiosSetup()`, which adds the auth interceptors.
 8. Install unhead.
 9. Install vue-showdown, which renders markdown.
-10. Register the `v-click-outside` directive.
-11. Mount the app.
+10. Mount the app.
 
 ## Routing (`src/router/index.ts`)
 

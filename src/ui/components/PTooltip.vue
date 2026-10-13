@@ -59,11 +59,20 @@
 		);
 		ownFocus.value = !inner && !disabled;
 		const target = disabled || !open.value ? null : (inner ?? wrap);
-		if (described && described !== target)
-			described.removeAttribute("aria-describedby");
-		target?.setAttribute("aria-describedby", id);
+		if (described && described !== target) describe(described, false);
+		if (target) describe(target, true);
 		described = target;
 	}
+	// adds or removes only this panel's id, a field keeps its own description
+	function describe(el: Element, on: boolean): void {
+		const ids = (el.getAttribute("aria-describedby") ?? "")
+			.split(" ")
+			.filter((i) => i && i !== id);
+		if (on) ids.push(id);
+		if (ids.length) el.setAttribute("aria-describedby", ids.join(" "));
+		else el.removeAttribute("aria-describedby");
+	}
+
 	onMounted(link);
 	onUpdated(link);
 
@@ -92,7 +101,7 @@
 <template>
 	<div
 		ref="triggerRef"
-		:class="tooltipConfig.trigger"
+		:class="[tooltipConfig.trigger, ownFocus ? 'touch-target' : '']"
 		:tabindex="ownFocus ? 0 : undefined"
 		v-on="triggerEvents">
 		<slot name="trigger"></slot>

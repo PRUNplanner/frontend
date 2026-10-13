@@ -62,6 +62,20 @@ describe("PTooltip", () => {
 		expect(button.attributes("aria-describedby")).toBeUndefined();
 	});
 
+	it("adds its id to a field's own description and takes only that back", async () => {
+		const wrapper = mountTooltip(() =>
+			h("input", { "aria-describedby": "field-error" })
+		);
+		const input = wrapper.find("input");
+
+		await input.trigger("focusin");
+		expect(input.attributes("aria-describedby")).toBe(
+			`field-error ${panel()!.id}`
+		);
+		await input.trigger("focusout", { relatedTarget: document.body });
+		expect(input.attributes("aria-describedby")).toBe("field-error");
+	});
+
 	it("makes a trigger without a focusable element focusable", async () => {
 		const wrapper = mountTooltip(() => h("span", "i"));
 		await flushPromises();

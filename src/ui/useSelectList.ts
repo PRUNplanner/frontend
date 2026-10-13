@@ -146,7 +146,14 @@ export function useSelectList(
 	}
 
 	function onKeydown(e: KeyboardEvent): void {
-		if (config.disabled()) return;
+		// a button inside the combobox (a chip's remove) handles its own keys
+		if (
+			config.disabled() ||
+			(e.target !== e.currentTarget &&
+				e.target instanceof Element &&
+				e.target.closest("button"))
+		)
+			return;
 		if (!open.value) {
 			if (["Enter", " ", "ArrowDown"].includes(e.key)) {
 				e.preventDefault();
