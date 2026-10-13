@@ -16,6 +16,7 @@ import {
 	PSelect,
 } from "@/ui";
 import PToast from "@/ui/components/PToast.vue";
+import PMeter from "@/ui/charts/PMeter.vue";
 
 enableAutoUnmount(afterEach);
 
@@ -64,6 +65,16 @@ describe("UI kit accessibility", () => {
 			h("div", [
 				h(PToast, { text: "Building removed", actionLabel: "Undo" }),
 				h(PToast, { type: "error", text: "Save failed" }),
+			])
+		);
+		expect(await violations(wrapper.element)).toEqual([]);
+	});
+
+	it("PMeter: a named image, also when over", async () => {
+		const wrapper = mountA11y(() =>
+			h("div", [
+				h(PMeter, { value: 404, max: 750, label: "Area" }),
+				h(PMeter, { value: 760, max: 750, label: "Area" }),
 			])
 		);
 		expect(await violations(wrapper.element)).toEqual([]);

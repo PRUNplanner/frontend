@@ -90,7 +90,8 @@ misspelling is the real name), `PIcon`, `PInput`, `PInputNumber`, `PModal`,
   - **Charts:** `src/ui/charts/*.vue` wrap chart.js (`vue-chartjs`,
     datalabels) and `lightweight-charts` (candlesticks). Reuse or extend
     these rather than wiring chart.js in a feature. Ranked values (top N
-    plus "Other") use `EmpireBarChart.vue`.
+    plus "Other") use `EmpireBarChart.vue`; a small used-of-total bar
+    beside a number (area, housing) is `PMeter.vue` (plain CSS, no chart.js).
     Colours come only from `useChartTheme()` (`chartTheme.ts`): polarity,
     warning, muted, ink, grid, axis, tooltip surface, the fixed exchange colours
     (`exchange("AI1")`, tokens `--color-cx-*` in `style.css`) and the four

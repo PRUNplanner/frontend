@@ -292,7 +292,9 @@
 		</div>
 	</div>
 
-	<div class="border border-white/10 rounded overflow-hidden">
+	<!-- @container: building rows lay out by the panel width (it shares the row
+		with Material I/O on wide screens) -->
+	<div class="@container border border-white/10 rounded overflow-hidden">
 		<div
 			class="grid grid-cols-12 text-xs uppercase p-3 bg-white/5 font-bold">
 			<div class="col-span-6">

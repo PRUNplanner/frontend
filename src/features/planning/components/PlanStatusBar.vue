@@ -19,6 +19,7 @@
 
 	// UI
 	import { PValue } from "@/ui";
+	import PMeter from "@/ui/charts/PMeter.vue";
 
 	const props = defineProps({
 		areaData: {
@@ -92,6 +93,11 @@
 			<span class="font-bold">
 				{{ areaData.areaUsed }} / {{ areaData.areaTotal }}
 			</span>
+			<PMeter
+				class="inline-block w-22 ml-2 align-middle"
+				:value="areaData.areaUsed"
+				:max="areaData.areaTotal"
+				:label="$t('plan.components.status.area')" />
 			<span
 				class="pl-1"
 				:class="areaData.areaLeft < 0 ? 'text-negative' : 'text-muted'">

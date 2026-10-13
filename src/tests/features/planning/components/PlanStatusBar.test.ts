@@ -35,6 +35,15 @@ describe("PlanStatusBar", () => {
 		expect(text).toContain("plan.components.status.per_day");
 	});
 
+	it("fills the area meter with used / total", async () => {
+		const { wrapper } = await mountBar();
+
+		// 694 / 750 = 92.53 %
+		const fill = wrapper.find("[role=img] > div");
+		expect(fill.attributes("style")).toContain("width: 92.5333");
+		expect(fill.classes()).not.toContain("bg-negative");
+	});
+
 	it("flags area over the limit", async () => {
 		const { wrapper } = await mountBar({
 			areaData: { permits: 1, areaUsed: 760, areaTotal: 750, areaLeft: -10 },
@@ -42,6 +51,10 @@ describe("PlanStatusBar", () => {
 
 		const over = wrapper.find(".text-negative.pl-1");
 		expect(over.text()).toBe("plan.components.status.area_over");
+		// the meter is full and negative
+		const fill = wrapper.find("[role=img] > div");
+		expect(fill.attributes("style")).toContain("width: 100%");
+		expect(fill.classes()).toContain("bg-negative");
 	});
 
 	it("spells experts out on wide screens, abbreviated below", async () => {
