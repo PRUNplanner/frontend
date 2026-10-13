@@ -257,8 +257,7 @@
 			"label": "Lavoratori",
 			"table": {
 				"type": "Categoria",
-				"need": "Necessità",
-				"supply": "Quantità",
+				"need_housed": "Need / Housed",
 				"open": "Liberi",
 				"luxuries": "Beni di Lusso",
 				"pct_eff": "% Eff."
