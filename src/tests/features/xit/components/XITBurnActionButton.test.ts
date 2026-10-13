@@ -169,7 +169,7 @@ describe("XITBurnActionButton", () => {
 
 		// red up to 5 days, yellow up to 10
 		expect(burnClass).toEqual([
-			["text-black", "bg-positive", "px-2", "py-0.75"],
+			["text-black", "bg-warning", "px-2", "py-0.75"],
 			["text-white", "bg-negative", "px-2", "py-0.75"],
 			[],
 			[],

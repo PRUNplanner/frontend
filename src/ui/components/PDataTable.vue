@@ -713,8 +713,15 @@
 		@apply touch-target inline-flex items-center justify-center size-6 rounded-control cursor-pointer align-middle;
 	}
 
+	/* the expand and empty boxes are the box's width themselves: their cell
+	   adds no padding, or the row would be wider than the box */
+	.p-data-table-expanded > td,
+	.p-data-table-empty-row > td {
+		@apply p-0;
+	}
+
 	.p-data-table-expand {
-		@apply sticky left-0 overflow-hidden px-2.5 py-1.25 box-border;
+		@apply sticky left-0 overflow-hidden px-5 py-2.5 box-border;
 	}
 
 	/* the summary row continues the body: a border above, the row colour */

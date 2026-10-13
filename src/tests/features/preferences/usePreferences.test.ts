@@ -216,7 +216,7 @@ describe("usePreferences", async () => {
 				getBurnDisplayClass(4).value.includes("bg-negative")
 			).toBeTruthy();
 			expect(
-				getBurnDisplayClass(4).value.includes("bg-positive")
+				getBurnDisplayClass(4).value.includes("bg-warning")
 			).toBeFalsy();
 		});
 
@@ -225,7 +225,7 @@ describe("usePreferences", async () => {
 
 			const result = getBurnDisplayClass(6).value;
 
-			expect(result.includes("bg-positive")).toBeTruthy();
+			expect(result.includes("bg-warning")).toBeTruthy();
 			expect(result.includes("bg-negative")).toBeFalsy();
 		});
 

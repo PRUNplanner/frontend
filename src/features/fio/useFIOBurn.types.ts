@@ -22,4 +22,5 @@ export interface IFIOBurnPlanetTableElement {
 	planName: string;
 	planetId: string;
 	minDays: number;
+	burnMaterials: IFIOBurnTableElementMaterial[];
 }

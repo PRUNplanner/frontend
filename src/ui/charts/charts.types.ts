@@ -21,3 +21,18 @@ export interface IChartTheme {
 	/** 1 inputs, 2 workforce, 3 degradation, 4 shipping */
 	costPart: (slot: 1 | 2 | 3 | 4) => string;
 }
+
+export interface IStripItem {
+	/** unique per strip, e.g. a material ticker */
+	key: string;
+	value: number;
+}
+
+export interface IStripDot extends IStripItem {
+	/** position on the axis, 0..100 */
+	pct: number;
+	/** close neighbours split up and down so they never overlap */
+	lane: "mid" | "up" | "down";
+}
+
+export type IChartZone = "red" | "yellow" | "none";
