@@ -23,7 +23,10 @@
 			"result": {
 				"ok_header": "Добро пожаловать, {username}!",
 				"ok_message": "Регистрация прошла успешно. Теперь вы можете войти в PRUNplanner.",
-				"error": "Ошибка при регистрации."
+				"error": "Ошибка при регистрации.",
+				"fix_fields": "Please fix the fields marked below.",
+				"throttled": "Too many registration attempts. Please wait a minute and try again.",
+				"unknown": "Unknown error. Please try again later."
 			},
 			"buttons": {
 				"register": "Создать учетную запись"
@@ -32,13 +35,15 @@
 				"username": "Логин",
 				"username_info": "Должно быть как минимум 3 символа. Не может содержать пробелы.",
 				"password": "Пароль",
-				"password_info": "Должно быть не менее 8 символов.",
+				"password_info": "At least 8 characters, not only numbers, and not a common password.",
 				"email": "Электронная почта",
 				"email_placeholder": "Не обязательно, но рекомендуется.",
 				"email_info": "Не обязательно. Повышает безопасность вашего аккаунта.",
+				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
 				"security_question": "Секретный вопрос",
 				"question": "Введите название планеты {planet}. Чтобы найти его, откройте новый буфер в игре командой {command}. Название планеты будет указано в поле «Название» в информации о планете",
-				"planet_name": "Имя"
+				"planet_name": "Имя",
+				"another_planet": "Use a different planet"
 			}
 		},
 		"password_reset": {
