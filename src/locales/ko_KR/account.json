@@ -23,7 +23,10 @@
 			"result": {
 				"ok_header": "{username}님, 환영합니다!",
 				"ok_message": "가입에 성공하였습니다. 이제 PRUNplanner에 로그인할 수 있습니다.",
-				"error": "회원가입 오류."
+				"error": "회원가입 오류.",
+				"fix_fields": "Please fix the fields marked below.",
+				"throttled": "Too many registration attempts. Please wait a minute and try again.",
+				"unknown": "Unknown error. Please try again later."
 			},
 			"buttons": {
 				"register": "계정 만들기"
@@ -32,13 +35,15 @@
 				"username": "사용자명",
 				"username_info": "최소 3글자 이상이어야 합니다. 공백은 사용할 수 없습니다.",
 				"password": "비밀번호",
-				"password_info": "최소 8글자 이상이어야 합니다.",
+				"password_info": "At least 8 characters, not only numbers, and not a common password.",
 				"email": "이메일",
 				"email_placeholder": "필수는 아니지만 권장됩니다.",
 				"email_info": "필수가 아닙니다. 계정 보안을 높이기 위함입니다.",
+				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
 				"security_question": "보안 질문",
 				"question": "{planet} 행성의 이름을 입력하세요. 이름을 확인하려면 {command} 명령어로 Prosperous Universe에서 새 버퍼를 여세요. 행성 정보의 '이름' 항목에서 행성 이름을 확인할 수 있습니다",
-				"planet_name": "이름"
+				"planet_name": "이름",
+				"another_planet": "Use a different planet"
 			}
 		},
 		"password_reset": {
