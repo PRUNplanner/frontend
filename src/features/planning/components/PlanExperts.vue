@@ -10,7 +10,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// UI
-	import { PInputNumber } from "@/ui";
+	import { PInputNumber, PNotice } from "@/ui";
 
 	const props = defineProps({
 		disabled: {
@@ -48,13 +48,13 @@
 </script>
 
 <template>
-	<div v-if="totalExperts > 6" class="bg-negative/50 p-2 mb-3">
+	<PNotice v-if="totalExperts > 6" type="warning" class="mb-3">
 		{{
 			$t("plan.components.experts.warning", {
 				expert_number: totalExperts,
 			})
 		}}
-	</div>
+	</PNotice>
 	<div
 		class="grid grid-cols-[repeat(3,auto)] sm:grid-cols-[repeat(6,auto)] gap-3 child:my-auto">
 		<template v-for="expert in expertData" :key="expert.name">

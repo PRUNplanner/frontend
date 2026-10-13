@@ -15,10 +15,10 @@
 	const { t } = useI18n();
 
 	import { formItemKey } from "@/ui/formItem";
-	import { panelConfig } from "@/ui/styles";
+	import { fieldStatusConfig, panelConfig } from "@/ui/styles";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 	import { optionKeys } from "@/ui/optionKeys";
-	import type { PSelectOption, SizeKey } from "@/ui/ui.types";
+	import type { FieldStatus, PSelectOption, SizeKey } from "@/ui/ui.types";
 	import PInput from "./PInput.vue";
 	import PSelectElement from "./PSelectElement.vue";
 	import PTag from "./PTag.vue";
@@ -36,19 +36,24 @@
 		options,
 		searchable = false,
 		disabled = false,
-		clearable = true,
+		clearable = false,
+		placeholder = undefined,
 		maxItems = Infinity,
 		ariaLabel = undefined,
 		size = "md",
+		status = undefined,
 	} = defineProps<{
 		options: PSelectOption[];
 		searchable?: boolean;
 		disabled?: boolean;
 		clearable?: boolean;
+		placeholder?: string;
 		maxItems?: number;
 		/** accessible name when not inside a PFormItem */
 		ariaLabel?: string;
 		size?: SizeKey;
+		/** a PFormItem with an error sets "error" */
+		status?: FieldStatus;
 	}>();
 
 	const open = ref(false);
@@ -194,6 +199,7 @@
 	// labelled by the surrounding PFormItem; the inner search PInput is not
 	const formItem = inject(formItemKey, null);
 	provide(formItemKey, null);
+	const fieldStatus = computed(() => status ?? formItem?.status.value);
 
 	function onKeyDown(e: KeyboardEvent) {
 		if (!open.value) {
@@ -291,11 +297,16 @@
 		:aria-disabled="disabled"
 		:aria-label="ariaLabel"
 		:aria-labelledby="ariaLabel ? undefined : formItem?.labelId"
+		:aria-describedby="formItem?.describedBy.value"
+		:aria-invalid="fieldStatus === 'error' || undefined"
 		@keydown="onKeyDown">
 		<label>
 			<div
 				class="flex flex-row items-center cursor-pointer bg-white/5 py-1 text-ink rounded-control px-2 pointer-coarse:min-h-11"
-				:class="size === 'sm' ? 'min-h-6 text-xs' : 'min-h-7'"
+				:class="[
+					size === 'sm' ? 'min-h-6 text-xs' : 'min-h-7',
+					fieldStatus ? fieldStatusConfig[fieldStatus] : '',
+				]"
 				@click="toggleOpen">
 				<div class="w-full max-w-full grow">
 					<template v-if="selectedEntries.length > 0">
@@ -311,7 +322,7 @@
 						</div>
 					</template>
 					<template v-else>
-						{{ $t("common.ui.select.select_options") }}
+						{{ placeholder ?? $t("common.ui.select.select_options") }}
 					</template>
 				</div>
 

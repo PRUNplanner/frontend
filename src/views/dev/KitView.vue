@@ -29,6 +29,7 @@
 		PInput,
 		PInputNumber,
 		PModal,
+		PNotice,
 		PPopover,
 		PProgressBar,
 		PSelect,
@@ -41,7 +42,7 @@
 		useConfirm,
 		useToast,
 	} from "@/ui";
-	import { InfoOutlined, SaveSharp } from "@vicons/material";
+	import { InfoOutlined, SaveSharp, SearchSharp } from "@vicons/material";
 
 	/**
 	 * Every kit component in every size, type and state, to check the kit by
@@ -105,6 +106,9 @@
 		"AI1",
 		"IC1",
 	]);
+	const multipleEmpty: Ref<(string | number | null | undefined)[]> = ref(
+		[]
+	);
 
 	const dropdownOptions: PDropdownOption[] = [
 		{ key: "save", label: "Save", icon: SaveSharp },
@@ -253,6 +257,43 @@
 						aria-label="Password"
 						class="w-40" />
 				</div>
+				<div class="flex flex-wrap items-center gap-3 pb-3">
+					<PInput
+						v-model:value="text"
+						status="error"
+						aria-label="Text with an error"
+						class="w-40" />
+					<PInput
+						v-model:value="empty"
+						status="warning"
+						aria-label="Text with a warning"
+						class="w-40" />
+					<PInputNumber
+						v-model:value="amount"
+						status="error"
+						show-buttons
+						aria-label="Amount with an error"
+						class="w-32" />
+					<PSelect
+						v-model:value="single"
+						:options="options"
+						status="error"
+						aria-label="Exchange with an error"
+						class="w-40" />
+					<PSelectMultiple
+						v-model:value="multiple"
+						:options="options"
+						status="warning"
+						aria-label="Exchanges with a warning"
+						class="w-56" />
+					<PInput
+						v-model:value="empty"
+						aria-label="Search"
+						placeholder="Search"
+						class="w-48">
+						<template #prefix><SearchSharp class="w-4 h-4" /></template>
+					</PInput>
+				</div>
 				<div class="flex flex-wrap items-start gap-3">
 					<PSelect
 						v-model:value="singleEmpty"
@@ -268,6 +309,12 @@
 						clearable
 						aria-label="Exchanges"
 						class="w-72" />
+					<PSelectMultiple
+						v-model:value="multipleEmpty"
+						:options="options"
+						placeholder="Pick exchanges"
+						aria-label="Exchanges, empty"
+						class="w-48" />
 					<PInput
 						v-model:value="text"
 						type="textarea"
@@ -293,10 +340,27 @@
 					<PFormItem label="Exchange">
 						<PSelect v-model:value="single" :options="options" />
 					</PFormItem>
+					<PFormItem label="Ticker" error="No material with this ticker">
+						<PInput v-model:value="text" />
+					</PFormItem>
 					<PFormItem label="Active">
 						<PCheckbox v-model:checked="checked" />
 					</PFormItem>
 				</PForm>
+			</section>
+
+			<section class="max-w-xl">
+				<h2 class="text-lg font-bold pb-3">PNotice</h2>
+				<div class="flex flex-col gap-3">
+					<PNotice>Prices are from the last hour.</PNotice>
+					<PNotice type="warning">
+						This plan was saved in another tab.
+						<template #action>
+							<PButton size="sm" type="secondary">Reload</PButton>
+						</template>
+					</PNotice>
+					<PNotice type="error">Login failed, check your password.</PNotice>
+				</div>
 			</section>
 
 			<section>
@@ -381,7 +445,7 @@
 						Toast with action
 					</PButton>
 				</div>
-				<PModal v-model:show="showModal" title="Modal">
+				<PModal v-model:show="showModal" title="Modal" :width="480">
 					<div class="flex flex-col gap-3">
 						<p>A select inside a modal:</p>
 						<PSelect

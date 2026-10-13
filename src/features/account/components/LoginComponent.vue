@@ -10,7 +10,14 @@
 	import router from "@/router";
 
 	// UI
-	import { PForm, PFormItem, PFormSeparator, PInput, PButton } from "@/ui";
+	import {
+		PForm,
+		PFormItem,
+		PFormSeparator,
+		PInput,
+		PButton,
+		PNotice,
+	} from "@/ui";
 
 	const inputUsername: Ref<string | null> = ref(null);
 	const inputPassword: Ref<string | null> = ref(null);
@@ -59,13 +66,13 @@
 		<div class="text-xl text-white font-bold font-mono pb-3">
 			{{ $t("account.components.login.title") }}
 		</div>
-		<div v-if="loginError" class="pb-3 text-negative" role="alert">
+		<PNotice v-if="loginError" type="error" class="mb-3">
 			{{
 				loginError === "throttled"
 					? $t("account.components.login.throttled")
 					: $t("account.components.login.error")
 			}}
-		</div>
+		</PNotice>
 		<PForm as-form @submit="handleLogin">
 			<PFormSeparator>
 				<div class="font-mono text-xs text-muted pb-3">

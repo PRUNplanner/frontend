@@ -528,11 +528,12 @@
 								"
 								show-buttons
 								size="sm"
-								:class="
+								class="min-w-20"
+								:status="
 									getBuilt(building) >
 									(plannedBuildings[building] ?? 0)
-										? 'min-w-20 [&>div>input]:text-negative'
-										: 'min-w-20'
+										? 'error'
+										: undefined
 								"
 								:min="0"
 								@update:value="(v) => setBuilt(building, v)" />
@@ -582,10 +583,11 @@
 							"
 							show-buttons
 							size="sm"
-							:class="
+							class="min-w-20"
+							:status="
 								isDeficitHabitationBuilding(building)
-									? 'min-w-20 [&>div>input]:text-negative'
-									: 'min-w-20'
+									? 'error'
+									: undefined
 							"
 							:min="0" />
 					</th>

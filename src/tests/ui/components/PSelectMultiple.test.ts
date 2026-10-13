@@ -228,7 +228,9 @@ describe("PSelectMultiple", () => {
 	});
 
 	it("clears all values and the search", async () => {
-		const { wrapper, picked } = await mountSelect(["a", "b"]);
+		const { wrapper, picked } = await mountSelect(["a", "b"], {
+			clearable: true,
+		});
 		await openByClick(wrapper);
 		const input = body().find(".z-5000 input");
 		await input.setValue("gam");

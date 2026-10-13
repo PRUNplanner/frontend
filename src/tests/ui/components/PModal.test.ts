@@ -138,6 +138,25 @@ describe("PModal", () => {
 	});
 
 	// e.g. the save conflict dialog, an async component rendered already open
+	it("takes a width in px or CSS and keeps 16 px of the mask on each side", async () => {
+		mount(PModal, {
+			props: { show: true, title: "px", width: 446 },
+			attachTo: app,
+			global: { plugins: [i18n] },
+		});
+		mount(PModal, {
+			props: { show: true, title: "css", width: "40rem" },
+			attachTo: app,
+			global: { plugins: [i18n] },
+		});
+		await flushPromises();
+		const [px, css] = [...document.querySelectorAll<HTMLElement>("[role=dialog]")];
+
+		expect(px.style.width).toBe("446px");
+		expect(css.style.width).toBe("40rem");
+		expect(px.classList).toContain("max-w-[calc(100vw-32px)]");
+	});
+
 	it("focuses the content when mounted open", async () => {
 		mount(PModal, {
 			props: { show: true, title: "Open" },

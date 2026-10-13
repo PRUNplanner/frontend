@@ -15,10 +15,10 @@
 	const { t } = useI18n();
 
 	import { formItemKey } from "@/ui/formItem";
-	import { panelConfig } from "@/ui/styles";
+	import { fieldStatusConfig, panelConfig } from "@/ui/styles";
 	import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 	import { optionKeys } from "@/ui/optionKeys";
-	import type { PSelectOption, SizeKey } from "@/ui/ui.types";
+	import type { FieldStatus, PSelectOption, SizeKey } from "@/ui/ui.types";
 	import PInput from "./PInput.vue";
 	import PSelectElement from "./PSelectElement.vue";
 	import { createPopper, type Instance } from "@popperjs/core";
@@ -36,6 +36,7 @@
 		placeholder = undefined,
 		ariaLabel = undefined,
 		size = "md",
+		status = undefined,
 	} = defineProps<{
 		options: PSelectOption[];
 		searchable?: boolean;
@@ -45,6 +46,8 @@
 		/** accessible name when not inside a PFormItem */
 		ariaLabel?: string;
 		size?: SizeKey;
+		/** a PFormItem with an error sets "error" */
+		status?: FieldStatus;
 	}>();
 
 	const placeholderText = computed(
@@ -183,6 +186,7 @@
 	// labelled by the surrounding PFormItem; the inner search PInput is not
 	const formItem = inject(formItemKey, null);
 	provide(formItemKey, null);
+	const fieldStatus = computed(() => status ?? formItem?.status.value);
 
 	function onKeyDown(e: KeyboardEvent) {
 		if (!open.value) {
@@ -277,6 +281,8 @@
 		:aria-disabled="disabled"
 		:aria-label="ariaLabel"
 		:aria-labelledby="ariaLabel ? undefined : formItem?.labelId"
+		:aria-describedby="formItem?.describedBy.value"
+		:aria-invalid="fieldStatus === 'error' || undefined"
 		@keydown="onKeyDown">
 		<label>
 			<div
@@ -284,6 +290,7 @@
 				:class="[
 					!useSearch ? 'py-1' : '',
 					size === 'sm' ? 'min-h-6 text-xs' : 'min-h-7',
+					fieldStatus ? fieldStatusConfig[fieldStatus] : '',
 				]"
 				@click="toggleOpen">
 				<div

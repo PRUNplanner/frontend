@@ -11,7 +11,7 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// UI
-	import { PInput, PButton } from "@/ui";
+	import { PInput, PButton, PNotice } from "@/ui";
 
 	const props = defineProps({
 		verifyCode: {
@@ -66,9 +66,9 @@
 				class="mb-3 py-1 px-2 bg-prunplanner text-black">
 				{{ $t("account.components.verify_email.result.ok") }}
 			</div>
-			<div v-else class="mb-3 py-1 px-2 bg-negative text-black">
+			<PNotice v-else type="error" class="mb-3">
 				{{ $t("account.components.verify_email.result.error") }}
-			</div>
+			</PNotice>
 		</template>
 		<div>
 			<PInput

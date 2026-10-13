@@ -74,15 +74,15 @@
 <template>
 	<div
 		class="px-3 lg:px-6 py-3 border-b border-white/10 flex flex-row flex-wrap items-center gap-2">
-		<label class="relative flex-1 min-w-[240px] max-w-[560px]">
+		<label class="flex-1 min-w-[240px] max-w-[560px]">
 			<span class="sr-only">{{ t("planet_search.header.search_label") }}</span>
-			<SearchSharp
-				class="w-4 h-4 absolute left-2 top-1/2 -translate-y-1/2 text-muted pointer-events-none z-10" />
 			<PInput
 				v-model:value="text"
-				class="w-full [&_input]:pl-7!"
+				class="w-full"
 				:aria-label="t('planet_search.header.search_label')"
-				:placeholder="t('planet_search.header.search_placeholder')" />
+				:placeholder="t('planet_search.header.search_placeholder')">
+				<template #prefix><SearchSharp class="w-4 h-4" /></template>
+			</PInput>
 		</label>
 
 		<div class="ml-auto flex flex-row flex-wrap items-center gap-2">

@@ -29,7 +29,7 @@
 <template>
 	<PModal
 		v-model:show="show"
-		class="w-111.5! max-w-[calc(100vw-32px)]"
+		:width="446"
 		:title="options?.title">
 		<div class="flex gap-3 items-start">
 			<WarningSharp class="size-6 shrink-0 text-warning" />

@@ -6,11 +6,39 @@ import type {
 	PFormItemConfig,
 	PInputConfig,
 	PInputNumberConfig,
+	PNoticeConfig,
 	PTagConfig,
 	PToastConfig,
 	PPanelConfig,
 	PTooltipConfig,
+	FieldStatus,
 } from "@/ui/ui.types";
+
+/** a field's error or warning state */
+export const fieldStatusConfig: Record<FieldStatus, string> = {
+	error: "inset-ring inset-ring-negative",
+	warning: "inset-ring inset-ring-warning",
+};
+
+/** surface with a tint of its colour, a 4px bar and an icon, like the toasts */
+export const noticeConfig: PNoticeConfig = {
+	container:
+		"flex items-start gap-2 p-2 text-ink bg-surface rounded-panel border-l-4",
+	types: {
+		info: {
+			box: "border-l-link bg-linear-to-r from-link/10 to-link/10",
+			icon: "text-link",
+		},
+		warning: {
+			box: "border-l-warning bg-linear-to-r from-warning/10 to-warning/10",
+			icon: "text-warning",
+		},
+		error: {
+			box: "border-l-negative bg-linear-to-r from-negative/10 to-negative/10",
+			icon: "text-negative",
+		},
+	},
+};
 
 export const buttonConfig: PButtonConfig = {
 	base: "touch-target flex flex-row items-center justify-center leading-none rounded-control cursor-pointer disabled:cursor-auto text-nowrap",
@@ -141,7 +169,7 @@ export const inputNumberConfig: PInputNumberConfig = {
 
 export const inputConfig: PInputConfig = {
 	container:
-		"rounded-control leading-none bg-white/5 text-ink overflow-hidden",
+		"flex items-center rounded-control leading-none bg-white/5 text-ink overflow-hidden",
 	// field: one-line inputs only (a textarea grows with its rows)
 	sizes: {
 		sm: {

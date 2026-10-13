@@ -369,6 +369,7 @@
 				:disabled="disabled"
 				:options="refMaterialExclusionOption"
 				searchable
+				clearable
 				@update:value="
 					(value) => {
 						// only keep string values

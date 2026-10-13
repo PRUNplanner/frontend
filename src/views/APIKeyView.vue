@@ -22,6 +22,7 @@
 	import PForm from "@/ui/components/PForm.vue";
 	import PFormItem from "@/ui/components/PFormItem.vue";
 	import PFormSeparator from "@/ui/components/PFormSeparator.vue";
+	import PNotice from "@/ui/components/PNotice.vue";
 	import PInput from "@/ui/components/PInput.vue";
 	import PModal from "@/ui/components/PModal.vue";
 	import { CheckSharp, RestartAltSharp } from "@vicons/material";
@@ -75,7 +76,7 @@
 	<!-- 446 px, the dialog's width -->
 	<PModal
 		v-model:show="showCreateModal"
-		class="w-111.5! max-w-[calc(100vw-32px)]"
+		:width="446"
 		:title="t('api_keys.create.title')">
 		<div v-if="creationStep === 'start'">
 			<PForm>
@@ -109,14 +110,14 @@
 					{{ lastCreatedKey }}
 				</span>
 			</div>
-			<div class="text-negative">
+			<PNotice type="warning">
 				{{ $t("api_keys.create.form.success_note") }}
-			</div>
+			</PNotice>
 		</div>
 		<div v-else-if="creationStep === 'error'">
-			<div class="text-center text-negative">
+			<PNotice type="error">
 				{{ $t("api_keys.create.form.error") }}
-			</div>
+			</PNotice>
 		</div>
 		<template #action>
 			<div

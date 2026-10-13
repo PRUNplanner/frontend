@@ -7,7 +7,7 @@
 	// UI
 	import PLayerClose from "@/ui/components/PLayerClose.vue";
 
-	// class (widths) and aria attributes go on the panel
+	// aria attributes go on the panel
 	defineOptions({ inheritAttrs: false });
 
 	const show = defineModel<boolean>("show", { required: true });
@@ -17,11 +17,14 @@
 		closable = true,
 		maskClosable = true,
 		autoFocus = true,
+		width = "100%",
 	} = defineProps<{
 		title?: string;
 		closable?: boolean;
 		maskClosable?: boolean;
 		autoFocus?: boolean;
+		/** px, or any CSS width; 16 px of the mask stay visible on each side */
+		width?: number | string;
 	}>();
 
 	const panel: Ref<HTMLElement | null> = ref(null);
@@ -62,7 +65,10 @@
 						aria-modal="true"
 						:aria-labelledby="title ? titleId : undefined"
 						tabindex="-1"
-						class="relative m-auto w-full flex flex-col bg-surface rounded-panel text-ink text-sm leading-[1.6] [word-break:break-word] outline-none shadow-panel">
+						:style="{
+							width: typeof width === 'number' ? `${width}px` : width,
+						}"
+						class="relative m-auto max-w-[calc(100vw-32px)] flex flex-col bg-surface rounded-panel text-ink text-sm leading-[1.6] [word-break:break-word] outline-none shadow-panel">
 						<div
 							v-if="title || closable"
 							data-layer-header

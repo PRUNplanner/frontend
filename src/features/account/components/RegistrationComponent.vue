@@ -4,7 +4,14 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n({ useScope: "global" });
 
-	import { PForm, PFormItem, PFormSeparator, PButton, PInput } from "@/ui";
+	import {
+		PForm,
+		PFormItem,
+		PFormSeparator,
+		PButton,
+		PInput,
+		PNotice,
+	} from "@/ui";
 	import type { UserRegistrationPayload } from "@/features/api/schemas/user.schemas";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
@@ -133,11 +140,11 @@
 					</template>
 				</i18n-t>
 			</div>
-			<div v-if="hasError" class="pb-3 text-negative">
+			<PNotice v-if="hasError" type="error" class="mb-3">
 				{{ $t("account.components.registration.result.error") }}
 				<br />
 				{{ hasErrorMessage }}
-			</div>
+			</PNotice>
 			<PForm>
 				<PFormItem
 					:label="t('account.components.registration.form.username')">

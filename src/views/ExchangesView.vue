@@ -372,7 +372,8 @@
 								$t(
 									'exchanges.configuration.form.preference_name'
 								)
-							" />
+							"
+							:status="selectedName ? undefined : 'warning'" />
 
 						<h2 class="text-xl font-bold py-3 pt-6 my-auto">
 							{{

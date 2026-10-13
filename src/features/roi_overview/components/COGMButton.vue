@@ -24,7 +24,7 @@
 		key="COGM"
 		v-model:show="refShowCOGM"
 		title="Cost Of Goods Manufactured"
-		class="max-w-150">
+		:width="600">
 		<PlanCOGM v-if="cogmData" :cogm-data="cogmData" />
 	</PModal>
 	<PButton

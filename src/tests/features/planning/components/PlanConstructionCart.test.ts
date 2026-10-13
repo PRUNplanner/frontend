@@ -301,7 +301,7 @@ describe("PlanConstructionCart", () => {
 		const hb1Input = tables(wrapper)[0]
 			.findAll("tbody tr")[2]
 			.findAll(".min-w-20")[1];
-		expect(hb1Input.classes()).toContain("[&>div>input]:text-negative");
+		expect(hb1Input.find("input").attributes("aria-invalid")).toBe("true");
 
 		// 2 FRM need exactly 100
 		await setBuildingAmount(wrapper, "FRM", 2);
@@ -360,9 +360,11 @@ describe("PlanConstructionCart", () => {
 			const built = tables(wrapper)[0]
 				.findAll("tbody tr")
 				.slice(0, 3)
-				.map((tr) => tr.find(".min-w-20").classes());
-			expect(built[0]).not.toContain("[&>div>input]:text-negative");
-			expect(built[2]).toContain("[&>div>input]:text-negative");
+				.map((tr) =>
+					tr.find(".min-w-20 input").attributes("aria-invalid")
+				);
+			expect(built[0]).toBeUndefined();
+			expect(built[2]).toBe("true");
 			// FIO counts aren't manual values
 			expect(manualMarker(wrapper, "HB1").exists()).toBe(false);
 

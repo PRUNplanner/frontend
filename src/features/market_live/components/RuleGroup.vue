@@ -12,6 +12,7 @@
 	// UI
 	import PButton from "@/ui/components/PButton.vue";
 	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
+	import PNotice from "@/ui/components/PNotice.vue";
 	import { PlusSharp, ClearSharp } from "@vicons/material";
 
 	const props = defineProps<{
@@ -124,15 +125,13 @@
 					@update:model-value="(val) => updateChild(index, val)"
 					@remove="removeChild(index)" />
 
-				<div
-					v-else
-					class="p-2 border border-negative bg-negative/10 text-negative text-xs">
+				<PNotice v-else type="error" class="text-xs">
 					{{
 						$t("market_live.components.rule_builder.error", {
 							value: JSON.stringify(item),
 						})
 					}}
-				</div>
+				</PNotice>
 			</div>
 
 			<div

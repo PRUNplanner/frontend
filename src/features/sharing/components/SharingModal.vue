@@ -60,7 +60,7 @@
 <template>
 	<PModal
 		v-model:show="show"
-		class="w-fit! max-w-175!"
+		:width="700"
 		:title="$t('sharing.title')">
 		<template v-if="!isShared">
 			<div>

@@ -114,7 +114,7 @@
 <template>
 	<PModal
 		:show="show"
-		class="w-160! max-w-[90vw]!"
+		:width="640"
 		:title="
 			conflict.deleted.value
 				? t('save_conflict.deleted_title')

@@ -10,7 +10,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t, locale } = useI18n({ useScope: "global" });
 
-	import { PButton, PDrawer } from "@/ui";
+	import { PButton, PDrawer, PNotice } from "@/ui";
 	import { VueShowdown } from "vue-showdown";
 
 	const showDrawer: Ref<boolean> = ref(false);
@@ -114,8 +114,8 @@
 				flavor="github"
 				:options="{ tables: true, emoji: true }" />
 		</div>
-		<div v-else-if="loadFailed" class="text-center text-negative">
+		<PNotice v-else-if="loadFailed" type="error">
 			{{ t("help.load_error", { file_name: fileName }) }}
-		</div>
+		</PNotice>
 	</PDrawer>
 </template>

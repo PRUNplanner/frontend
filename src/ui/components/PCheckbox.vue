@@ -44,6 +44,7 @@
 					:disabled="disabled"
 					:indeterminate="indeterminate"
 					:aria-label="ariaLabel"
+					:aria-describedby="formItem?.describedBy.value"
 					type="checkbox"
 					:class="inputBase" />
 				<span :class="checkboxConfig.checkIcon">

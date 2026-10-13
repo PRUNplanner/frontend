@@ -12,6 +12,7 @@ export { default as PIcon } from "@/ui/components/PIcon.vue";
 export { default as PInput } from "@/ui/components/PInput.vue";
 export { default as PInputNumber } from "@/ui/components/PInputNumber.vue";
 export { default as PModal } from "@/ui/components/PModal.vue";
+export { default as PNotice } from "@/ui/components/PNotice.vue";
 export { default as PPopover } from "@/ui/components/PPopover.vue";
 export { default as PProgressBar } from "@/ui/components/PProgressBar.vue";
 export { default as PSelect } from "@/ui/components/PSelect.vue";

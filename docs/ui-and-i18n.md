@@ -41,6 +41,19 @@ are internal to `PDataTable` and the selects.
   `id`, `title`, `role`, `aria-*` and `data-*` fall through to a
   component's root (allowlisted in `ui/ui.types.ts`); anything else needs a
   declared prop or emit.
+- **Field states:** `status` (`"error"` or `"warning"`) on `PInput`,
+  `PInputNumber`, `PSelect` and `PSelectMultiple` draws an inset ring in
+  `negative` / `warning`; `error` also sets `aria-invalid`. In a form, give
+  the `PFormItem` an `error` instead: it shows the message under the field,
+  puts the control in the error state and links the message (and the
+  `#info` slot) with `aria-describedby`.
+- **Notices:** a message in the page is a `<PNotice type="error">`
+  (`info`, `warning` or `error`, default `info`), with an optional
+  `#action` slot for one button. Errors are `role="alert"`, the others
+  `role="status"`. Don't hand-style red or amber boxes.
+- **Inputs:** `PInput` has a `#prefix` slot (e.g. a search icon).
+  `PSelectMultiple` takes a `placeholder`; both selects only show the
+  clear button with `clearable`.
 - **Select options** use `PSelectOption` (`{ label, value, badge?, children? }`). `badge` is shown on the right and not searched; arrow keys and Enter move through group children, not group headers.
 - **Forms:** `<PForm as-form @submit="…">` renders a real `<form>`, so Enter
   in an input submits. Give its button `html-type="submit"` and no `@click`.
@@ -76,8 +89,9 @@ are internal to `PDataTable` and the selects.
 - **Overlays and the rest:**
   - **Overlays:** modals, drawers, confirms, popovers and menus come from
     the kit.
-    - `<PModal v-model:show="x" :title="…">` with an `#action` slot for the
-      footer; widths go in `class` (e.g. `class="w-120! max-w-[90vw]!"`).
+    - `<PModal v-model:show="x" :title="…" :width="480">` with an `#action`
+      slot for the footer; `width` is px or any CSS width (default the full
+      width), and 16 px of the mask stay visible on each side.
     - `<PDrawer v-model:show="x" :title="…" :width="600">`, with
       `placement`, `bodyClass` and a `#header` slot.
     - Confirms: `if (await useConfirm()({ title, content, positiveText,

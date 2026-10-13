@@ -1,6 +1,9 @@
 import type { Component } from "vue";
 
 export type SizeKey = "sm" | "md";
+/** a field's state: an inset ring, and aria-invalid for an error */
+export type FieldStatus = "error" | "warning";
+export type NoticeType = "info" | "warning" | "error";
 export type ColorKey =
 	| "primary"
 	| "success"
@@ -32,6 +35,11 @@ export interface PCheckboxConfig {
 export interface PButtonGroupConfig {
 	horizontal: string;
 	vertical: string;
+}
+
+export interface PNoticeConfig {
+	container: string;
+	types: Record<NoticeType, { box: string; icon: string }>;
 }
 
 /** look of every floating panel */
