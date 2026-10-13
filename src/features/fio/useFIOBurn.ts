@@ -47,6 +47,7 @@ export function useFIOBurn(
 						planName: p.planName,
 						planetId: p.planetId,
 						minDays: p.minDays,
+						burnMaterials: p.burnMaterials,
 					};
 				}
 			);

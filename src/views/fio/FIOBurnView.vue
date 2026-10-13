@@ -216,7 +216,7 @@
 					</div>
 
 					<div
-						class="grow grid grid-cols-1 xl:grid-cols-[40%_auto] gap-3 divide-x divide-white/10 child:px-6 child:py-3">
+						class="grow grid grid-cols-1 content-start xl:content-stretch xl:grid-cols-[40%_minmax(0,1fr)] gap-3 divide-x divide-white/10 child:min-w-0 child:px-6 child:py-3">
 						<div>
 							<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
 								<div>

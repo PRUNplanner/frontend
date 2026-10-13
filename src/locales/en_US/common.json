@@ -83,6 +83,13 @@
 		"page_load_failed": "This page couldn't load. Reload to get the latest version.",
 		"meter": {
 			"used": "{label} {pct} % used"
+		},
+		"strip": {
+			"dot": "{label}: {value}",
+			"over": "{n} more beyond the axis"
+		},
+		"runway": {
+			"beyond": "beyond the axis"
 		}
 	},
 	"values": {

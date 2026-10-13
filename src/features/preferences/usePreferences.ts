@@ -247,7 +247,7 @@ export function usePreferences() {
 			if (value <= burnDaysRed.value) {
 				return "text-white bg-negative";
 			} else if (value <= burnDaysYellow.value)
-				return "text-black bg-positive";
+				return "text-black bg-warning";
 			else return "";
 		});
 	}
