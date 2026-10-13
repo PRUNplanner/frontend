@@ -382,7 +382,7 @@
 		</div>
 		<div
 			v-else
-			class="h-full w-full flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 py-2 text-white/60 text-xs">
+			class="h-full w-full flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 py-2 text-muted text-xs">
 			<span>
 				{{ $t("plan.components.production_building.no_recipe") }}
 			</span>

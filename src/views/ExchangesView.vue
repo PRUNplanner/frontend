@@ -357,7 +357,6 @@
 					:notice="cxSave.remoteNotice.value"
 					@reload="initialize(localCXUuid)" />
 				<div
-					:kex="`EXCHANGE#${localCXUuid}`"
 					class="grow grid grid-cols-1 lg:grid-cols-[350px_auto] divide-x divide-white/10">
 					<div class="px-6 pb-3 pt-4 border-b border-white/10">
 						<h3 class="text-lg font-bold pb-3">
@@ -374,11 +373,7 @@
 									'exchanges.configuration.form.preference_name'
 								)
 							"
-							:status="
-								!selectedName || selectedName === ''
-									? 'warning'
-									: 'success'
-							" />
+							:status="selectedName ? undefined : 'warning'" />
 
 						<h2 class="text-xl font-bold py-3 pt-6 my-auto">
 							{{

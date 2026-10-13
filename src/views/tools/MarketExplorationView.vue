@@ -467,12 +467,7 @@
 											v-for="option in exchangeOptions"
 											:key="option.value">
 											<PButton
-												:type="
-													option.value ==
-													selectedExchange
-														? 'primary'
-														: 'secondary'
-												"
+												:pressed="option.value == selectedExchange"
 												@click="
 													() => {
 														if (
@@ -495,12 +490,7 @@
 											v-for="option in intervalOptions"
 											:key="option.value">
 											<PButton
-												:type="
-													option.value ==
-													selectedInterval
-														? 'primary'
-														: 'secondary'
-												"
+												:pressed="option.value == selectedInterval"
 												@click="
 													() => {
 														if (
@@ -538,7 +528,6 @@
 								</div>
 							</div>
 							<div
-								if="!loading && !error && dataChart.length > 0"
 								class="flex-grow min-h-0">
 								<MarketExplorationChart
 									:data="dataCandlestick" />

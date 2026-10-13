@@ -90,12 +90,16 @@ function assigned(wrapper: VueWrapper, column: number) {
 /** stripe per row of one empire column */
 function striped(wrapper: VueWrapper, column: number) {
 	return bodyRows(wrapper).map((tr) =>
-		tr.findAll("td label").at(column)!.classes("bg-unsaved-stripes")
+		tr
+			.findAll(".pcheckbox")
+			.at(column)!
+			.element.parentElement!.classList.contains("bg-unsaved-stripes")
 	);
 }
 
 async function toggleCell(wrapper: VueWrapper, row: number, column: number) {
-	await bodyRows(wrapper)[row].findAll("td input").at(column)!.trigger("change");
+	const input = bodyRows(wrapper)[row].findAll("td input").at(column)!;
+	await input.setValue(!(input.element as HTMLInputElement).checked);
 	await flushPromises();
 }
 
@@ -111,7 +115,8 @@ function headerState(wrapper: VueWrapper) {
 }
 
 async function clickHeader(wrapper: VueWrapper, column: number) {
-	await wrapper.findAll("thead input").at(column)!.trigger("change");
+	const input = wrapper.findAll("thead input").at(column)!;
+	await input.setValue(!(input.element as HTMLInputElement).checked);
 	await flushPromises();
 }
 

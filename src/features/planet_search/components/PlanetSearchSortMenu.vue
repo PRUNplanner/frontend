@@ -156,8 +156,7 @@
 							v-for="d in ['asc', 'desc'] as const"
 							:key="d"
 							size="sm"
-							:type="s.dir === d ? 'primary' : 'secondary'"
-							:aria-pressed="s.dir === d"
+							:pressed="s.dir === d"
 							:title="t(`planet_search.sort.${d}`)"
 							:aria-label="t(`planet_search.sort.${d}`)"
 							@click="setDir(i, d)">

@@ -47,7 +47,7 @@
 					class="block text-link-primary font-bold hover:underline truncate">
 					{{ row.planName }}
 				</router-link>
-				<div class="text-xs text-white/55 truncate">
+				<div class="text-xs text-muted truncate">
 					<template v-if="row.planetName">
 						{{ row.planetName }} ·
 					</template>
@@ -57,7 +57,7 @@
 			<!-- native and static: cheap in every row -->
 			<button
 				type="button"
-				class="inline-flex size-9 items-center justify-center rounded text-white/80 hover:bg-white/10 cursor-pointer"
+				class="touch-target inline-flex size-9 items-center justify-center rounded text-white/80 hover:bg-white/10 cursor-pointer"
 				:aria-label="
 					$t('management.assignments.row_actions', {
 						plan: row.planName,
@@ -89,7 +89,7 @@
 				v-for="(e, i) in empires"
 				:key="e.empireUuid"
 				type="button"
-				class="h-9.5 px-3.5 rounded-full border cursor-pointer"
+				class="touch-target h-9.5 px-3.5 rounded-full border cursor-pointer"
 				:class="[
 					cells[i] === '1' || cells[i] === '+'
 						? 'bg-blue-800 border-blue-800 text-white'

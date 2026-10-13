@@ -12,7 +12,7 @@
 				<PIcon :size="40" class="text-white/38">
 					<HourglassEmptySharp />
 				</PIcon>
-				<div class="mt-2 text-white/55">Feature Not Yet Implemented</div>
+				<div class="mt-2 text-muted">Feature Not Yet Implemented</div>
 				<div class="mt-3 text-center text-white/82">
 					<div>
 						PRUNplanner v2 is Open Source. Check out the

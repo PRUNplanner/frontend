@@ -80,7 +80,7 @@
 		<h1 class="text-lg font-bold">
 			{{ $t("empire.opportunities.headline") }}
 		</h1>
-		<div class="text-white/60 py-3 flex flex-col gap-1.5">
+		<div class="text-muted py-3 flex flex-col gap-1.5">
 			<p>
 				{{ $t("empire.opportunities.intro") }}
 			</p>
@@ -155,7 +155,7 @@
 				<div
 					class="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
 					<div
-						class="bg-orange-400 h-full"
+						class="bg-warning h-full"
 						:style="{
 							width: `${
 								(opportunityStats.deltaRequired /
@@ -241,7 +241,7 @@
 								:class="
 									stat.currentDelta >= stat.requiredAmount
 										? 'text-muted'
-										: 'text-orange-400'
+										: 'text-warning'
 								"
 								class="text-xs mt-1 font-mono">
 								{{
@@ -254,7 +254,7 @@
 							</div>
 							<div
 								v-else
-								class="text-xs mt-1 font-mono text-red-500 opacity-60">
+								class="text-xs mt-1 font-mono text-negative opacity-60">
 								MISSING
 							</div>
 						</div>
@@ -296,7 +296,7 @@
 								!row.isFullMatch &&
 								row.sustainedRuns > 0
 							"
-							class="text-xs text-orange-400">
+							class="text-xs text-warning">
 							{{
 								$t(
 									"empire.opportunities.table.delta_required"

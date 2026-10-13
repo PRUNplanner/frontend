@@ -483,7 +483,7 @@
 					</h2>
 					<button
 						type="button"
-						class="cursor-pointer hover:bg-white/20 hover:rounded-sm p-2"
+						class="touch-target cursor-pointer hover:bg-white/20 hover:rounded-sm p-2"
 						:class="{ '-order-1': prefs.filtersCollapsed }"
 						:aria-label="
 							prefs.filtersCollapsed
@@ -601,7 +601,7 @@
 					</h2>
 					<button
 						type="button"
-						class="min-w-11 min-h-11 text-xl hover:bg-white/20 rounded-sm"
+						class="touch-target min-w-11 min-h-11 text-xl hover:bg-white/20 rounded-sm"
 						:aria-label="t('planet_search.filters.close')"
 						@click="drawerOpen = false">
 						×

@@ -48,6 +48,7 @@
 	// UI
 	import {
 		PButton,
+		PCheckbox,
 		PDropdown,
 		PIcon,
 		PInput,
@@ -419,11 +420,11 @@
 			<h2 class="text-xl font-bold">
 				{{ $t("management.assignments.title") }}
 			</h2>
-			<div class="pt-1 text-white/60">
+			<div class="pt-1 text-muted">
 				{{ $t("management.assignments.description") }}
 			</div>
 		</div>
-		<div class="flex items-end gap-4 text-white/60">
+		<div class="flex items-end gap-4 text-muted">
 			<span
 				v-if="saved"
 				class="flex items-center gap-1.5 text-positive"
@@ -465,8 +466,7 @@
 				:aria-label="$t('management.assignments.filter_empire')" />
 		</div>
 		<PButton
-			:type="unassignedOnly ? 'primary' : 'secondary'"
-			:aria-pressed="unassignedOnly"
+			:pressed="unassignedOnly"
 			@click="unassignedOnly = !unassignedOnly">
 			{{
 				$t("management.assignments.unassigned_only", {
@@ -478,7 +478,7 @@
 
 	<div
 		v-if="rowsReady && rows.length === 0"
-		class="p-10 text-center text-white/60 flex flex-col gap-y-3">
+		class="p-10 text-center text-muted flex flex-col gap-y-3">
 		<div>{{ $t("management.assignments.table.nodata_title") }}</div>
 		<div>{{ $t("management.assignments.table.nodata_label") }}</div>
 	</div>
@@ -504,7 +504,7 @@
 							class="flex items-center gap-1.5 font-bold cursor-pointer"
 							@click="sortAsc = !sortAsc">
 							{{ $t("management.assignments.table.plan") }}
-							<PIcon :size="14" class="text-white/60">
+							<PIcon :size="14" class="text-muted">
 								<ArrowUpwardSharp v-if="sortAsc" />
 								<ArrowDownwardSharp v-else />
 							</PIcon>
@@ -525,7 +525,7 @@
 								:title="e.empireName">
 								{{ e.empireName }}
 							</div>
-							<div class="text-xs font-normal text-white/55">
+							<div class="text-xs font-normal text-muted">
 								{{
 									$t(
 										"management.assignments.empire_plans",
@@ -535,9 +535,7 @@
 									)
 								}}
 							</div>
-							<input
-								type="checkbox"
-								class="size-4.5 accent-blue-700 cursor-pointer"
+							<PCheckbox
 								:checked="headerStates.get(e.empireUuid) === 'all'"
 								:indeterminate="
 									headerStates.get(e.empireUuid) === 'some'
@@ -553,7 +551,7 @@
 												{ empire: e.empireName }
 											)
 								"
-								@change="toggleAllShown(e.empireUuid)" />
+								@update:checked="toggleAllShown(e.empireUuid)" />
 						</div>
 					</th>
 				</tr>
@@ -572,7 +570,7 @@
 				<tr v-if="shownRows.length === 0">
 					<td
 						:colspan="2 + empires.length"
-						class="p-10 text-center text-white/60">
+						class="p-10 text-center text-muted">
 						{{ $t("management.assignments.no_match") }}
 					</td>
 				</tr>
@@ -593,7 +591,7 @@
 			@menu="openMenu" />
 		<div
 			v-if="shownRows.length === 0"
-			class="p-10 text-center text-white/60">
+			class="p-10 text-center text-muted">
 			{{ $t("management.assignments.no_match") }}
 		</div>
 	</div>

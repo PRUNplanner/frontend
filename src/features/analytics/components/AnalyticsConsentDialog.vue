@@ -32,7 +32,7 @@
 <template>
 	<PModal
 		v-model:show="show"
-		class="w-fit! max-w-175!"
+		:width="700"
 		:auto-focus="false"
 		:title="$t('analytics.consent.title')">
 		<div class="flex flex-col gap-3">
@@ -46,7 +46,7 @@
 			<i18n-t
 				keypath="analytics.consent.optional"
 				tag="p"
-				class="text-white/60">
+				class="text-muted">
 				<template #link>
 					<router-link
 						to="/imprint-tos#analytics"

@@ -50,5 +50,13 @@ describe("useExchangeData", () => {
 			expect(result.calendar_date).toBeDefined();
 			expect(result.exchange_status).toBeDefined();
 		});
+
+		it("rejects instead of returning a half-filled overview", async () => {
+			const { getMaterialExchangeOverview } = useExchangeData();
+
+			await expect(getMaterialExchangeOverview("foo")).rejects.toThrow(
+				"not found"
+			);
+		});
 	});
 });

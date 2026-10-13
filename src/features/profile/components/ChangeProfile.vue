@@ -20,7 +20,7 @@
 	import {
 		PForm,
 		PFormItem,
-		PFormSeperator,
+		PFormSeparator,
 		PInput,
 		PButton,
 		PCheckbox,
@@ -163,11 +163,11 @@
 			{{ $t("profile.change_profile.throttled") }}
 		</div>
 		<PForm v-if="localProfile">
-			<PFormSeperator>
-				<div class="py-3 text-white/60">
+			<PFormSeparator>
+				<div class="py-3 text-muted">
 					{{ $t("profile.change_profile.fio_info") }}
 				</div>
-			</PFormSeperator>
+			</PFormSeparator>
 			<PFormItem :label="t('profile.change_profile.form.fio_apikey')">
 				<PInput
 					v-model:value="localProfile.fio_apikey"
@@ -206,11 +206,11 @@
 					}}
 				</div>
 			</PFormItem>
-			<PFormSeperator>
-				<div class="py-3 text-white/60">
+			<PFormSeparator>
+				<div class="py-3 text-muted">
 					{{ $t("profile.change_profile.form.email_info") }}
 				</div>
-			</PFormSeperator>
+			</PFormSeparator>
 			<PFormItem :label="t('profile.change_profile.form.email_address')">
 				<PInput
 					v-model:value="localProfile.email"

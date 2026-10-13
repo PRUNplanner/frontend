@@ -55,7 +55,7 @@
 					{{ $t("management.save_bar.unsaved", count) }}
 				</template>
 			</span>
-			<span v-if="detail && state !== 'error'" class="text-white/55">
+			<span v-if="detail && state !== 'error'" class="text-muted">
 				{{ detail }}
 			</span>
 		</div>

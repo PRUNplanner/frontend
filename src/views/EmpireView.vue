@@ -457,29 +457,17 @@
 						<div class="gap-3 flex flex-row flex-wrap">
 							<PButtonGroup>
 								<PButton
-									:type="
-										mainContent === 'materialio'
-											? 'primary'
-											: 'secondary'
-									"
+									:pressed="mainContent === 'materialio'"
 									@click="() => (mainContent = 'materialio')">
 									{{ $t("empire.views.material_io") }}
 								</PButton>
 								<PButton
-									:type="
-										mainContent === 'analysis'
-											? 'primary'
-											: 'secondary'
-									"
+									:pressed="mainContent === 'analysis'"
 									@click="() => (mainContent = 'analysis')">
 									{{ $t("empire.views.analysis") }}
 								</PButton>
 								<PButton
-									:type="
-										mainContent === 'opportunities'
-											? 'primary'
-											: 'secondary'
-									"
+									:pressed="mainContent === 'opportunities'"
 									@click="
 										() => (mainContent = 'opportunities')
 									">

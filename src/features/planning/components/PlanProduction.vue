@@ -233,8 +233,9 @@
 					v-for="resource in planetResources"
 					:key="`PLANET#RESOURCE#${resource.material_ticker}`">
 					<template #trigger>
-						<div
-							class="hover:cursor-pointer"
+						<button
+							type="button"
+							class="cursor-pointer"
 							@click="
 								emitCreateBuildingWithRecipe(
 									resource.resource_type,
@@ -251,7 +252,7 @@
 								"
 								disable-drawer
 								:enable-popover="false" />
-						</div>
+						</button>
 					</template>
 					{{ resource.resource_type }} ({{
 						resource.resource_type === "MINERAL"

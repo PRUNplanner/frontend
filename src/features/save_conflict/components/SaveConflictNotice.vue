@@ -2,7 +2,7 @@
 	import type { PropType } from "vue";
 
 	// UI
-	import { PButton } from "@/ui";
+	import { PButton, PNotice } from "@/ui";
 
 	defineProps({
 		notice: {
@@ -15,23 +15,16 @@
 </script>
 
 <template>
-	<div
-		v-if="notice"
-		role="status"
-		class="text-xs bg-warning/20 text-white p-2 flex flex-row flex-wrap gap-2 items-center">
-		<span class="grow">
-			{{
-				notice === "saved"
-					? $t("save_conflict.notice.saved_elsewhere")
-					: $t("save_conflict.notice.deleted_elsewhere")
-			}}
-		</span>
-		<PButton
-			v-if="notice === 'saved'"
-			size="sm"
-			type="secondary"
-			@click="emit('reload')">
-			{{ $t("save_conflict.notice.reload") }}
-		</PButton>
-	</div>
+	<PNotice v-if="notice" type="warning" class="text-xs">
+		{{
+			notice === "saved"
+				? $t("save_conflict.notice.saved_elsewhere")
+				: $t("save_conflict.notice.deleted_elsewhere")
+		}}
+		<template v-if="notice === 'saved'" #action>
+			<PButton size="sm" type="secondary" @click="emit('reload')">
+				{{ $t("save_conflict.notice.reload") }}
+			</PButton>
+		</template>
+	</PNotice>
 </template>

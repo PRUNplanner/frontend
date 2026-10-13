@@ -7,7 +7,7 @@
 	// UI
 	import PLayerClose from "@/ui/components/PLayerClose.vue";
 
-	// class (widths) and aria attributes go on the panel
+	// aria attributes go on the panel
 	defineOptions({ inheritAttrs: false });
 
 	const show = defineModel<boolean>("show", { required: true });
@@ -17,11 +17,14 @@
 		closable = true,
 		maskClosable = true,
 		autoFocus = true,
+		width = "100%",
 	} = defineProps<{
 		title?: string;
 		closable?: boolean;
 		maskClosable?: boolean;
 		autoFocus?: boolean;
+		/** px, or any CSS width; 16 px of the mask stay visible on each side */
+		width?: number | string;
 	}>();
 
 	const panel: Ref<HTMLElement | null> = ref(null);
@@ -47,7 +50,7 @@
 			leave-to-class="opacity-0">
 			<div
 				v-if="show"
-				class="fixed inset-0 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]"
+				class="fixed inset-0 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:var(--color-line-strong)_transparent]"
 				:style="{ zIndex }">
 				<div class="fixed inset-0 bg-black/40" />
 				<div
@@ -62,14 +65,17 @@
 						aria-modal="true"
 						:aria-labelledby="title ? titleId : undefined"
 						tabindex="-1"
-						class="relative m-auto w-full flex flex-col bg-gray-dark rounded-md text-white/80 text-sm leading-[1.6] [word-break:break-word] outline-none shadow-[0_10px_15px_-3px_rgba(0,0,0,.1),0_4px_6px_-4px_rgba(0,0,0,.1)]">
+						:style="{
+							width: typeof width === 'number' ? `${width}px` : width,
+						}"
+						class="relative m-auto max-w-[calc(100vw-32px)] flex flex-col bg-surface rounded-panel text-ink text-sm leading-[1.6] [word-break:break-word] outline-none shadow-panel">
 						<div
 							v-if="title || closable"
 							data-layer-header
 							class="flex items-center px-2.5 py-1.25 text-base/[1.6]">
 							<h2
 								:id="titleId"
-								class="flex-1 min-w-0 font-bold text-white/90">
+								class="flex-1 min-w-0 font-bold text-ink-strong">
 								{{ title }}
 							</h2>
 							<PLayerClose
@@ -82,7 +88,7 @@
 						</div>
 						<div
 							v-if="$slots.action"
-							class="px-2.5 py-1.25 bg-gray-dark rounded-b-md">
+							class="px-2.5 py-1.25 bg-surface rounded-b-panel">
 							<slot name="action" />
 						</div>
 					</div>

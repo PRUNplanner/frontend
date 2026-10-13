@@ -7,7 +7,7 @@
 	import { useOverlayLayer } from "@/ui/useOverlayLayer";
 
 	// UI
-	import { popoverConfig } from "@/ui/styles";
+	import { panelConfig } from "@/ui/styles";
 
 	// class and aria attributes go on the panel
 	defineOptions({ inheritAttrs: false });
@@ -17,17 +17,18 @@
 	const {
 		trigger = "click",
 		placement = "bottom",
-		panelClass = popoverConfig.panel,
+		panelClass = "p-3",
 		anchor = undefined,
 		arrow = false,
 	} = defineProps<{
 		/** click toggles on the trigger; manual leaves it to v-model:show */
 		trigger?: "click" | "manual";
 		placement?: Placement;
+		/** added to the kit's panel look; replaces the default padding */
 		panelClass?: string;
 		/** positions at this element instead of the trigger slot */
 		anchor?: HTMLElement;
-		/** an arrow, on a black panel */
+		/** an arrow pointing at the trigger */
 		arrow?: boolean;
 	}>();
 
@@ -56,15 +57,14 @@
 		if (trigger === "click") show.value = !show.value;
 	}
 
-	// mousedown, before a picked PSelect option is removed from the page
+	// mousedown, before a picked option is removed from the page; a select
+	// list opened from inside is a layer above this one
 	function onDocumentDown(e: MouseEvent): void {
 		const target = e.target as Node;
 		if (
 			wrap.value?.contains(target) ||
 			anchor?.contains(target) ||
 			panel.value?.contains(target) ||
-			(target instanceof Element &&
-				target.closest("[data-pselect-dropdown]")) ||
 			inLayerAbove(target)
 		)
 			return;
@@ -112,8 +112,7 @@
 		<div
 			ref="panel"
 			v-bind="$attrs"
-			class="text-white/82"
-			:class="panelClass"
+			:class="[panelConfig.panel, panelClass]"
 			:style="{ zIndex }">
 			<div v-if="arrow" class="parrow-wrap">
 				<div class="parrow" />
@@ -145,14 +144,19 @@
 		width: 8.4766px;
 		height: 8.4766px;
 		transform: rotate(45deg);
-		background-color: #000;
-		box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
+		background-color: var(--color-surface);
+		border: 1px solid var(--color-line-strong);
 	}
+	/* only the two outer edges carry the panel's border */
 	[data-popper-placement^="top"] .parrow {
 		top: -4.2383px;
+		border-top-color: transparent;
+		border-left-color: transparent;
 	}
 	[data-popper-placement^="bottom"] .parrow {
 		bottom: -4.2383px;
+		border-bottom-color: transparent;
+		border-right-color: transparent;
 	}
 	[data-popper-placement$="-start"] .parrow {
 		left: 10px;

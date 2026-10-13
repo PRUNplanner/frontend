@@ -13,7 +13,14 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n({ useScope: "global" });
 
-	import { PForm, PFormItem, PFormSeperator, PButton, PInput } from "@/ui";
+	import {
+		PForm,
+		PFormItem,
+		PFormSeparator,
+		PButton,
+		PInput,
+		PNotice,
+	} from "@/ui";
 	import type { UserRegistrationPayload } from "@/features/api/schemas/user.schemas";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
@@ -193,7 +200,7 @@
 			<div class="text-xl text-white font-bold font-mono pb-1">
 				{{ $t("account.components.registration.title") }}
 			</div>
-			<div class="pb-3 text-white/60 text-xs font-mono">
+			<div class="pb-3 text-muted text-xs font-mono">
 				<i18n-t keypath="account.components.registration.tos" tag="p">
 					<template #tos_link>
 						<router-link
@@ -204,10 +211,10 @@
 					</template>
 				</i18n-t>
 			</div>
-			<div
+			<PNotice
 				v-if="alertText || alertMessages.length"
-				class="pb-3 text-negative"
-				role="alert">
+				type="error"
+				class="mb-3">
 				{{ $t("account.components.registration.result.error") }}
 				<template v-if="alertText">
 					<br />
@@ -219,7 +226,7 @@
 					<br />
 					{{ message }}
 				</template>
-			</div>
+			</PNotice>
 			<PForm>
 				<PFormItem
 					:label="t('account.components.registration.form.username')">
@@ -307,7 +314,7 @@
 						</template>
 					</template>
 				</PFormItem>
-				<PFormSeperator>
+				<PFormSeparator>
 					<div
 						class="text-xl text-white font-bold font-mono pt-3 pb-1">
 						{{
@@ -316,7 +323,7 @@
 							)
 						}}
 					</div>
-					<div class="font-mono text-xs text-white/60 pb-3">
+					<div class="font-mono text-xs text-muted pb-3">
 						<i18n-t
 							keypath="account.components.registration.form.question"
 							tag="p">
@@ -344,7 +351,7 @@
 							}}
 						</button>
 					</div>
-				</PFormSeperator>
+				</PFormSeparator>
 				<PFormItem
 					:label="
 						t('account.components.registration.form.planet_name')

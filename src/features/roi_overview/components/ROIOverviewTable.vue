@@ -194,7 +194,7 @@
 	<div v-if="isCalculating" class="w-full flex justify-center">
 		<div class="text-center w-100 py-3">
 			<PProgressBar :step="progressCurrent" :total="progressTotal" />
-			<div class="pt-3 text-xs text-white/60">
+			<div class="pt-3 text-xs text-muted">
 				{{ $t("recipe_roi.calculating") }}
 			</div>
 		</div>

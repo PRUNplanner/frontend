@@ -24,7 +24,7 @@
 	);
 	// 26 px square buttons in both views
 	const square =
-		"inline-flex items-center justify-center w-[26px] h-[26px] rounded-sm";
+		"touch-target inline-flex items-center justify-center w-[26px] h-[26px] rounded-sm";
 </script>
 
 <template>

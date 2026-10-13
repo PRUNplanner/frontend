@@ -39,7 +39,7 @@
 	import {
 		PForm,
 		PFormItem,
-		PFormSeperator,
+		PFormSeparator,
 		PInput,
 		PSelect,
 		PInputNumber,
@@ -151,15 +151,15 @@
 								class="w-full"
 								@update:value="generate()" />
 						</PFormItem>
-						<PFormSeperator>
-							<div class="text-xs text-white/60 pt-1">
+						<PFormSeparator>
+							<div class="text-xs text-muted pt-1">
 								{{
 									$t(
 										"production_chains.configuration.terminals_info"
 									)
 								}}
 							</div>
-						</PFormSeperator>
+						</PFormSeparator>
 					</PForm>
 					<template v-if="graphData">
 						<h3 class="font-bold py-3">

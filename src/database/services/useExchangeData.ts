@@ -228,6 +228,8 @@ export function useExchangeData() {
 			}
 		} catch (error) {
 			console.error("Error in getMaterialExchangeOverview:", error);
+			// a half-filled overview breaks every reader of it
+			throw error;
 		}
 
 		return overview;

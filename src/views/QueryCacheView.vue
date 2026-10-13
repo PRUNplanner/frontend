@@ -72,11 +72,10 @@
 					<td>
 						<PTag
 							v-if="entry.state.loading"
-							:bordered="false"
 							type="success">
 							yes
 						</PTag>
-						<PTag v-else :bordered="false">no</PTag>
+						<PTag v-else>no</PTag>
 					</td>
 					<td>
 						<span v-if="entry.state.error">{{
@@ -105,11 +104,10 @@
 					<td>
 						<PTag
 							v-if="entry.state.autoRefetch"
-							:bordered="false"
 							type="success">
 							yes
 						</PTag>
-						<PTag v-else :bordered="false" type="error"> no </PTag>
+						<PTag v-else type="error"> no </PTag>
 					</td>
 					<td>
 						<pre>{{ entry.jsonData?.length }}</pre>

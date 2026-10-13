@@ -11,10 +11,10 @@
 </template>
 
 <style>
-	@reference "tailwindcss";
+	@reference "../../assets/css/style.css";
 
 	.ptable-container {
-		@apply border border-[#2d2d30] rounded  bg-clip-border;
+		@apply border border-line rounded-panel bg-clip-border;
 	}
 
 	.ptable {
@@ -22,7 +22,7 @@
 	}
 
 	.ptable th {
-		@apply bg-black text-left font-bold;
+		@apply bg-surface-sunken text-left font-bold;
 	}
 
 	.ptable th,
@@ -31,10 +31,10 @@
 	}
 
 	.ptable th {
-		@apply border-b border-[#2d2d30];
+		@apply border-b border-line;
 	}
 	.ptable td {
-		@apply border-b border-[#2d2d30];
+		@apply border-b border-line;
 	}
 
 	.ptable-striped tr {

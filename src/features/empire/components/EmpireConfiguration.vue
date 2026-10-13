@@ -18,11 +18,10 @@
 	import type { IEmpirePlanListData } from "@/features/empire/empire.types";
 
 	// UI
-	import { PButton, PIcon } from "@/ui";
+	import { PButton, PNotice } from "@/ui";
 	import {
 		SaveSharp,
 		ChangeCircleOutlined,
-		WarningSharp,
 	} from "@vicons/material";
 
 	const props = defineProps({
@@ -110,12 +109,10 @@
 
 		<EmpireConfigurationForm v-model="localData" />
 
-		<div
+		<PNotice
 			v-if="localData.empire_permits_used !== plannedPermits"
-			class="text-xs bg-warning/20 text-white p-2 flex flex-row gap-x-2 items-start">
-			<PIcon :size="16" class="shrink-0 text-warning">
-				<WarningSharp />
-			</PIcon>
+			type="warning"
+			class="text-xs">
 			<i18n-t keypath="empire.configuration.sync_warning.body" tag="div">
 				<template #title>
 					<strong>
@@ -136,7 +133,7 @@
 					{{ $t("terms.buffer") }}
 				</template>
 			</i18n-t>
-		</div>
+		</PNotice>
 		<SaveConflictDialog v-if="conflict.show.value" :conflict="conflict" />
 	</div>
 </template>

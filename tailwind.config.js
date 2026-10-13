@@ -35,11 +35,12 @@ module.exports = {
 		extend: {
 			colors: {
 				background: "#212529",
-				"gray-dark": "#151515",
-				"link-primary": "#6ea8fe",
+				// the kit's tokens in style.css
+				"gray-dark": "var(--color-surface)",
+				"link-primary": "var(--color-link)",
 				"pp-primary": "#1e1e1e", // Primary content color
 				"pp-secondary": "#212d40", // Secondary content color7
-				"pp-border": "#2d2d30",
+				"pp-border": "var(--color-line)",
 				"pp-card-header": "#d66853",
 				row: "#1e1e1e",
 				"row-alternate": "#222222",

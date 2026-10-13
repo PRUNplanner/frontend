@@ -8,7 +8,7 @@
 	} from "@/features/manage/useAssignmentMatrix.types";
 
 	// UI
-	import { PIcon, PSpin } from "@/ui";
+	import { PCheckbox, PIcon, PSpin } from "@/ui";
 	import { RemoveRedEyeSharp } from "@vicons/material";
 
 	// props are primitives or stable objects: a toggle re-renders one row only
@@ -64,7 +64,7 @@
 					</span>
 				</div>
 				<div
-					class="text-xs text-white/55 truncate"
+					class="text-xs text-muted truncate"
 					:title="
 						row.planetName
 							? `${row.planetName} · ${row.planetId}`
@@ -81,7 +81,7 @@
 			<!-- native and static: cheap in every row -->
 			<button
 				type="button"
-				class="inline-flex size-9 items-center justify-center rounded text-white/80 hover:bg-white/10 cursor-pointer"
+				class="touch-target inline-flex size-9 items-center justify-center rounded text-white/80 hover:bg-white/10 cursor-pointer"
 				:aria-label="
 					$t('management.assignments.row_actions', {
 						plan: row.planName,
@@ -112,8 +112,8 @@
 			v-for="(e, i) in empires"
 			:key="e.empireUuid"
 			class="p-0 border-l border-white/5">
-			<label
-				class="relative flex h-13 items-center justify-center cursor-pointer"
+			<div
+				class="relative flex h-13 items-center justify-center"
 				:class="{
 					'bg-unsaved-stripes': cells[i] === '+' || cells[i] === '-',
 				}"
@@ -131,9 +131,8 @@
 				<span
 					v-if="cells[i] === '+' || cells[i] === '-'"
 					class="absolute size-6.5 rounded bg-black" />
-				<input
-					type="checkbox"
-					class="relative size-4.5 accent-blue-700 cursor-pointer"
+				<PCheckbox
+					class="h-full w-full justify-center"
 					:checked="cells[i] === '1' || cells[i] === '+'"
 					:aria-label="
 						$t('management.assignments.table.assign_label', {
@@ -141,8 +140,8 @@
 							empire: e.empireName,
 						})
 					"
-					@change="$emit('toggle', row.planUuid, e.empireUuid)" />
-			</label>
+					@update:checked="$emit('toggle', row.planUuid, e.empireUuid)" />
+			</div>
 		</td>
 	</tr>
 </template>

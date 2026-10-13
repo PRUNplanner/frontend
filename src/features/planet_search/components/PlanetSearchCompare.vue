@@ -162,7 +162,7 @@
 		<div class="flex flex-row flex-wrap items-center gap-2">
 			<button
 				type="button"
-				class="px-3 py-1 rounded bg-blue-800 font-bold cursor-pointer"
+				class="touch-target px-3 py-1 rounded bg-blue-800 font-bold cursor-pointer"
 				:aria-expanded="open"
 				:aria-label="t('planet_search.compare.toggle')"
 				@click="open = !open">
@@ -176,7 +176,7 @@
 				{{ name(p) }}
 				<button
 					type="button"
-					class="w-7 h-7 rounded-full cursor-pointer hover:bg-white/10"
+					class="touch-target w-7 h-7 rounded-full cursor-pointer hover:bg-white/10"
 					:aria-label="t('planet_search.compare.remove', { planet: name(p) })"
 					@click="emit('unpin', p.planet_natural_id)">
 					×

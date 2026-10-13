@@ -104,7 +104,7 @@
 					{{ $t("plan.tools.plan_analytics.title") }}
 				</h3>
 				<button
-					class="text-sm text-white/60 hover:text-white"
+					class="touch-target text-sm text-muted hover:text-white"
 					@click="isOpen = false">
 					<PIcon><CloseSharp /></PIcon>
 				</button>
@@ -142,7 +142,7 @@
 										'h-2 w-2 rounded-full',
 										segmentColor(index),
 									]"></span>
-								<span class="text-white/60"
+								<span class="text-muted"
 									>{{
 										$t(
 											`game.expertise.${item.type
@@ -152,7 +152,7 @@
 									}}
 								</span>
 							</div>
-							<span class="font-mono text-white/60">
+							<span class="font-mono text-muted">
 								{{ formatNumber(item.percentage, 2, false) }}%
 							</span>
 						</li>
@@ -177,7 +177,7 @@
 									class="font-mono font-bold text-prunplanner">
 									{{ item.ticker }}
 								</span>
-								<span class="text-white/60 font-mono">
+								<span class="text-muted font-mono">
 									{{ item.percentage }}%
 								</span>
 							</div>
@@ -207,13 +207,13 @@
 							:key="building"
 							class="overflow-hidden rounded border border-white/10 bg-white/5">
 							<button
-								class="flex w-full items-center justify-between px-2 py-1 text-xs hover:bg-white/10 font-mono transition-colors"
+								class="touch-target flex w-full items-center justify-between px-2 py-1 text-xs hover:bg-white/10 font-mono transition-colors"
 								@click="toggleBuilding(building as string)">
 								<span class="font-bold text-prunplanner">
 									{{ building }}
 								</span>
 								<div class="flex items-center gap-2 text-xs">
-									<span class="text-white/60">
+									<span class="text-muted">
 										{{ recipes.length }}
 									</span>
 									<span
@@ -236,7 +236,7 @@
 									:key="recipe.recipe_id"
 									class="mb-3 last:mb-0">
 									<div
-										class="mb-1 flex flex-row items-end gap-x-6 justify-between text-xs font-mono text-white/60">
+										class="mb-1 flex flex-row items-end gap-x-6 justify-between text-xs font-mono text-muted">
 										<span>
 											{{ formatRecipe(recipe.recipe_id) }}
 										</span>
@@ -266,7 +266,7 @@
 		</div>
 
 		<button
-			class="bg-prunplanner flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110 active:scale-80"
+			class="touch-target bg-prunplanner flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110 active:scale-80"
 			type="button"
 			:aria-label="$t('plan.tools.plan_analytics.toggle')"
 			@click="toggleOpen">

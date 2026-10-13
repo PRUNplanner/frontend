@@ -135,11 +135,7 @@
 				<PButton
 					:aria-label="$t('common.buttons.edit')"
 					size="sm"
-					:type="
-						selectedPlanet === row.planet
-							? 'success'
-							: 'primary'
-					"
+					:pressed="selectedPlanet === row.planet"
 					@click="
 						selectedPlanet === row.planet
 							? (selectedPlanet = null)

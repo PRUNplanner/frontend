@@ -9,6 +9,7 @@ import { defineComponent, h, ref } from "vue";
 import { createI18n } from "vue-i18n";
 
 import PDrawer from "@/ui/components/PDrawer.vue";
+import PSelect from "@/ui/components/PSelect.vue";
 
 enableAutoUnmount(afterEach);
 
@@ -94,5 +95,42 @@ describe("PDrawer", () => {
 		expect(panel().find("[data-layer-header]").exists()).toBe(false);
 		expect(panel().attributes("aria-labelledby")).toBeUndefined();
 		expect(panel().attributes("aria-label")).toBe("Filters");
+	});
+
+	it("closes only the list of a PSelect inside on Esc", async () => {
+		const show = mountDrawer(
+			{ title: "Drawer" },
+			{
+				default: () =>
+					h(PSelect, {
+						value: null,
+						options: [{ label: "A", value: "a" }],
+						searchable: true,
+						ariaLabel: "Pick",
+					}),
+			}
+		);
+		await flushPromises();
+		const combobox = body().find<HTMLElement>("[role=combobox]");
+		combobox.element.focus();
+		await combobox.trigger("keydown", { key: "Enter" });
+		await flushPromises();
+		// keyboard-opened and searchable: focus moves into its search input
+		const search = body().find<HTMLInputElement>(".pselect input");
+		expect(document.activeElement).toBe(search.element);
+		expect(search.attributes("aria-controls")).toBe(
+			body().find("[role=listbox]").attributes("id")
+		);
+
+		const event = new KeyboardEvent("keydown", {
+			key: "Escape",
+			bubbles: true,
+			cancelable: true,
+		});
+		search.element.dispatchEvent(event);
+		await flushPromises();
+		expect(body().find("[role=listbox]").exists()).toBe(false);
+		expect(show.value).toBe(true);
+		expect(document.activeElement).toBe(combobox.element);
 	});
 });

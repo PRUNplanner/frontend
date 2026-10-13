@@ -10,7 +10,14 @@
 	import router from "@/router";
 
 	// UI
-	import { PForm, PFormItem, PFormSeperator, PInput, PButton } from "@/ui";
+	import {
+		PForm,
+		PFormItem,
+		PFormSeparator,
+		PInput,
+		PButton,
+		PNotice,
+	} from "@/ui";
 
 	const inputUsername: Ref<string | null> = ref(null);
 	const inputPassword: Ref<string | null> = ref(null);
@@ -59,16 +66,16 @@
 		<div class="text-xl text-white font-bold font-mono pb-3">
 			{{ $t("account.components.login.title") }}
 		</div>
-		<div v-if="loginError" class="pb-3 text-red-600" role="alert">
+		<PNotice v-if="loginError" type="error" class="mb-3">
 			{{
 				loginError === "throttled"
 					? $t("account.components.login.throttled")
 					: $t("account.components.login.error")
 			}}
-		</div>
+		</PNotice>
 		<PForm as-form @submit="handleLogin">
-			<PFormSeperator>
-				<div class="font-mono text-xs text-white/60 pb-3">
+			<PFormSeparator>
+				<div class="font-mono text-xs text-muted pb-3">
 					<i18n-t keypath="account.components.login.tos" tag="p">
 						<template #tos_link>
 							<router-link
@@ -79,7 +86,7 @@
 						</template>
 					</i18n-t>
 				</div>
-			</PFormSeperator>
+			</PFormSeparator>
 			<PFormItem :label="t('account.components.login.form.username')">
 				<PInput
 					v-model:value="inputUsername"
@@ -95,8 +102,8 @@
 					type="password"
 					class="w-full" />
 			</PFormItem>
-			<PFormSeperator>
-				<div class="font-mono text-xs text-white/60 py-3">
+			<PFormSeparator>
+				<div class="font-mono text-xs text-muted py-3">
 					<i18n-t keypath="account.components.login.forgot" tag="p">
 						<template #forgot_link>
 							<router-link
@@ -107,7 +114,7 @@
 						</template>
 					</i18n-t>
 				</div>
-			</PFormSeperator>
+			</PFormSeparator>
 			<PFormItem label="">
 				<PButton
 					:loading="isLoggingIn"

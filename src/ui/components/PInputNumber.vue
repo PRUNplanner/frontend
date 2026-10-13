@@ -4,9 +4,9 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	import type { SizeKey } from "@/ui/ui.types";
+	import type { FieldStatus, SizeKey } from "@/ui/ui.types";
 	import { formItemKey } from "@/ui/formItem";
-	import { inputNumberConfig } from "@/ui/styles";
+	import { fieldStatusConfig, inputNumberConfig } from "@/ui/styles";
 
 	const value = defineModel<number | null>("value", {
 		required: false,
@@ -22,6 +22,7 @@
 		max = Infinity,
 		placeholder = undefined,
 		ariaLabel = undefined,
+		status = undefined,
 	} = defineProps<{
 		disabled?: boolean;
 		size?: SizeKey;
@@ -32,11 +33,14 @@
 		placeholder?: string;
 		/** accessible name when no <label> is linked to the field */
 		ariaLabel?: string;
+		/** a PFormItem with an error sets "error" */
+		status?: FieldStatus;
 	}>();
 
 	// labelled by the surrounding PFormItem unless it has its own name
 	const formItem = inject(formItemKey, null);
 	const inputId = computed(() => (ariaLabel ? undefined : formItem?.inputId));
+	const fieldStatus = computed(() => status ?? formItem?.status.value);
 
 	const placeholderText = computed(
 		() => placeholder ?? t("common.ui.placeholder.please_input")
@@ -100,7 +104,11 @@
 <template>
 	<div>
 		<div
-			:class="`${inputNumberConfig.container} ${inputNumberConfig.sizes[size].container}`">
+			:class="[
+				inputNumberConfig.container,
+				inputNumberConfig.sizes[size].container,
+				fieldStatus ? fieldStatusConfig[fieldStatus] : '',
+			]">
 			<input
 				:id="inputId"
 				:disabled="disabled"
@@ -110,6 +118,8 @@
 				:value="value"
 				:placeholder="placeholderText"
 				:aria-label="ariaLabel"
+				:aria-invalid="fieldStatus === 'error' || undefined"
+				:aria-describedby="formItem?.describedBy.value"
 				:class="`${inputNumberConfig.input} ${inputNumberConfig.sizes[size].input}`"
 				@input="onInput"
 				@keydown="onKeyDown" />
@@ -131,7 +141,7 @@
 					@click="change(-1)">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						xmlns:xlink="http://www.w3.org/1999/xlink"
+						class="size-full"
 						viewBox="0 0 24 24">
 						<path
 							d="M19 12.998H5v-2h14z"
@@ -152,7 +162,7 @@
 					@click="change(1)">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						xmlns:xlink="http://www.w3.org/1999/xlink"
+						class="size-full"
 						viewBox="0 0 24 24">
 						<path
 							d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"

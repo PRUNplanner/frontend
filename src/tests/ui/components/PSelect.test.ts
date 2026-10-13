@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from "vitest";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import PSelect from "@/ui/components/PSelect.vue";
-import { currentlyOpenId } from "@/ui/stateCurrentOpen";
 import { mountComponent } from "@/tests/mountComponent";
 
 const GROUPED = [
@@ -22,7 +21,19 @@ const GROUPED = [
 ];
 
 const body = () => new DOMWrapper(document.body);
-const highlighted = () => body().find("[data-pselect-dropdown] .bg-gray-700");
+const listOpen = () => body().find(".pselect-list").exists();
+// an Esc on the page: claimed (prevented) only while a layer, e.g. the list, is open
+function escClaimed(): boolean {
+	const event = new KeyboardEvent("keydown", {
+		key: "Escape",
+		bubbles: true,
+		cancelable: true,
+	});
+	document.body.dispatchEvent(event);
+	return event.defaultPrevented;
+}
+
+const highlighted = () => body().find(".pselect-list .bg-selected");
 
 async function mountSelect(options: unknown[]) {
 	const picked: unknown[] = [];
@@ -67,7 +78,7 @@ describe("PSelect", () => {
 		await wrapper.find("input").setValue("chp");
 		await flushPromises();
 		const entries = body()
-			.findAll("[data-pselect-dropdown] .pl-3.grow")
+			.findAll(".pselect-list .pl-3.grow")
 			.map((e) => e.text());
 		expect(entries).toEqual(["CHP (Chemical plant)", "CHP (Chemical plant)"]);
 
@@ -95,37 +106,68 @@ describe("PSelect", () => {
 		expect(picked).toEqual(["b"]);
 	});
 
-	it("claims Esc while open and frees the open id however it closes", async () => {
+	it("takes Esc as the top layer while open and releases it however it closes", async () => {
 		const { wrapper } = await mountSelect([
 			{ label: "A", value: "a" },
 			{ label: "B", value: "b" },
 		]);
-		const esc = () => {
-			const event = new KeyboardEvent("keydown", {
-				key: "Escape",
-				bubbles: true,
-				cancelable: true,
-			});
-			wrapper.find('[role="combobox"]').element.dispatchEvent(event);
-			return event;
-		};
+		// focus only lands on elements in the document
+		document.body.appendChild(wrapper.element);
 
 		// an open list keeps Esc from the modal or drawer around it
 		await key(wrapper, "ArrowDown");
-		expect(currentlyOpenId.value).not.toBeNull();
-		expect(esc().defaultPrevented).toBe(true);
+		expect(listOpen()).toBe(true);
+		expect(escClaimed()).toBe(true);
 		await flushPromises();
-		expect(currentlyOpenId.value).toBeNull();
-		expect(esc().defaultPrevented).toBe(false);
+		expect(listOpen()).toBe(false);
+		expect(document.activeElement).toBe(
+			wrapper.find('[role="combobox"]').element
+		);
+		expect(escClaimed()).toBe(false);
 
 		await key(wrapper, "ArrowDown");
 		await key(wrapper, "Enter");
-		expect(currentlyOpenId.value).toBeNull();
+		expect(listOpen()).toBe(false);
+		expect(escClaimed()).toBe(false);
 
 		await key(wrapper, "ArrowDown");
 		document.body.click();
 		await flushPromises();
-		expect(currentlyOpenId.value).toBeNull();
+		expect(listOpen()).toBe(false);
+		expect(escClaimed()).toBe(false);
+	});
+
+	it("is a combobox controlling a listbox of options", async () => {
+		const { wrapper } = await mountSelect(GROUPED);
+		const combobox = wrapper.find('[role="combobox"]');
+		expect(combobox.attributes("aria-controls")).toBeUndefined();
+
+		await key(wrapper, "ArrowDown");
+		const listbox = body().find("[role=listbox]");
+		const options = listbox.findAll("[role=option]");
+
+		expect(combobox.attributes("aria-expanded")).toBe("true");
+		expect(combobox.attributes("aria-controls")).toBe(listbox.attributes("id"));
+		expect(options.map((o) => o.text().replace(/\s+/g, " "))).toEqual([
+			"CHP (Chemical plant)58 %",
+			"AML (Alloy smelter)",
+			"CHP (Chemical plant)",
+		]);
+		// groups are labelled by their header, not options themselves
+		expect(listbox.findAll("[role=group]")).toHaveLength(2);
+		expect(combobox.attributes("aria-activedescendant")).toBe(
+			options[0].attributes("id")
+		);
+
+		await key(wrapper, "ArrowDown");
+		expect(combobox.attributes("aria-activedescendant")).toBe(
+			options[1].attributes("id")
+		);
+		expect(options.map((o) => o.attributes("aria-selected"))).toEqual([
+			"false",
+			"false",
+			"false",
+		]);
 	});
 
 	it("opens the list at least as wide as the select", async () => {
@@ -135,7 +177,7 @@ describe("PSelect", () => {
 		const { wrapper } = await mountSelect([{ label: "A", value: "a" }]);
 
 		await key(wrapper, "ArrowDown");
-		const list = body().find("[data-pselect-dropdown]");
+		const list = body().find(".pselect-list");
 		expect((list.element as HTMLElement).style.minWidth).toBe("240px");
 		width.mockRestore();
 	});
@@ -160,7 +202,7 @@ describe("PSelect", () => {
 
 		// an update of the open list patches by key
 		await setProps({ options: [...options].reverse() });
-		expect(body().findAll("[data-pselect-dropdown] .grow").map((o) => o.text())).toEqual(["E", "F", "D", "C", "B", "A"]);
+		expect(body().findAll(".pselect-list .grow").map((o) => o.text())).toEqual(["E", "F", "D", "C", "B", "A"]);
 		expect(warn.mock.calls.flat().join(" ")).not.toContain("Duplicate keys");
 		warn.mockRestore();
 	});

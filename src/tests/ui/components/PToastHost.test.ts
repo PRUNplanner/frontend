@@ -31,7 +31,7 @@ describe("PToastHost", () => {
 		toast("two", { type: "error" });
 		await flushPromises();
 
-		const host = body().find(".z-6000");
+		const host = body().find(".ptoast-host");
 		expect(host.element.parentElement).toBe(document.body);
 		expect(host.classes()).toEqual(
 			expect.arrayContaining(["fixed", "bottom-20", "right-4", "items-end"])
@@ -47,12 +47,12 @@ describe("PToastHost", () => {
 		toast("Failed", { type: "error", duration: 0, closable: true });
 		await flushPromises();
 
-		const buttons = body().findAll(".z-6000 button");
+		const buttons = body().findAll(".ptoast-host button");
 		await buttons.find((b) => b.text() === "Undo")!.trigger("click");
 		expect(onClick).toHaveBeenCalledTimes(1);
 
 		await body()
-			.find('.z-6000 button[aria-label="common.ui.close"]')
+			.find('.ptoast-host button[aria-label="common.ui.close"]')
 			.trigger("click");
 		expect(toasts.value.map((t) => t.text)).toEqual(["Removed"]);
 	});
@@ -63,7 +63,7 @@ describe("PToastHost", () => {
 		toast("Saved");
 		await flushPromises();
 
-		const item = body().find(".z-6000 > div");
+		const item = body().find(".ptoast-host > div");
 		await item.trigger("mouseenter");
 		vi.advanceTimersByTime(10_000);
 		expect(toasts.value).toHaveLength(1);

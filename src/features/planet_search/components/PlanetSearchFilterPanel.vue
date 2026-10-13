@@ -151,11 +151,11 @@
 	}
 
 	const pill =
-		"inline-flex items-center gap-2 px-2 min-h-11 lg:min-h-8 rounded border text-sm whitespace-nowrap cursor-pointer";
+		"touch-target inline-flex items-center gap-2 px-2 min-h-11 lg:min-h-8 rounded border text-sm whitespace-nowrap cursor-pointer";
 	const pillOn = "border-blue-300/60 bg-blue-950";
 	const pillOff = "border-white/20 hover:bg-white/10";
 	const segment =
-		"px-2 min-h-11 lg:min-h-7 text-xs cursor-pointer whitespace-nowrap";
+		"touch-target px-2 min-h-11 lg:min-h-7 text-xs cursor-pointer whitespace-nowrap";
 
 	/** "Any" button of a section: sets it to its widest state */
 	function anyButton(section: IPlanetSearchSection, title: string) {
@@ -252,7 +252,7 @@
 						</div>
 						<button
 							type="button"
-							class="ml-auto px-1 text-muted hover:text-white cursor-pointer min-h-11 lg:min-h-6"
+							class="touch-target ml-auto px-1 text-muted hover:text-white cursor-pointer min-h-11 lg:min-h-6"
 							:aria-label="
 								t('planet_search.materials.remove_group_label', {
 									n: gi + 1,
@@ -303,7 +303,7 @@
 							</span>
 							<button
 								type="button"
-								class="ml-auto min-w-11 min-h-11 lg:min-w-7 lg:min-h-7 border border-white/20 rounded hover:bg-white/10 cursor-pointer"
+								class="touch-target ml-auto min-w-11 min-h-11 lg:min-w-7 lg:min-h-7 border border-white/20 rounded hover:bg-white/10 cursor-pointer"
 								:aria-label="
 									t('planet_search.materials.remove_material', {
 										material: m,
@@ -338,7 +338,7 @@
 
 			<button
 				type="button"
-				class="border border-dashed border-blue-300/60 rounded min-h-11 lg:min-h-9 hover:bg-white/5 cursor-pointer"
+				class="touch-target border border-dashed border-blue-300/60 rounded min-h-11 lg:min-h-9 hover:bg-white/5 cursor-pointer"
 				@click="
 					set({
 						materialGroups: [
@@ -524,7 +524,7 @@
 							{{ p.plan_name }}
 							<button
 								type="button"
-								class="min-w-11 min-h-11 lg:min-w-6 lg:min-h-6 cursor-pointer hover:bg-white/10"
+								class="touch-target min-w-11 min-h-11 lg:min-w-6 lg:min-h-6 cursor-pointer hover:bg-white/10"
 								:aria-label="
 									t('planet_search.distance.remove_plan', {
 										plan: p.plan_name,
