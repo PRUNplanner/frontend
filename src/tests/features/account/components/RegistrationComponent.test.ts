@@ -13,6 +13,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
 import RegistrationComponent from "@/features/account/components/RegistrationComponent.vue";
+import PNotice from "@/ui/components/PNotice.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
@@ -46,7 +47,7 @@ const fieldInfo = (wrapper: VueWrapper, index: number) => {
 	return info?.classList.contains("col-2") ? (info.textContent ?? "") : "";
 };
 const alert = (wrapper: VueWrapper) =>
-	wrapper.find(".pb-3.text-negative[role=alert]").text();
+	wrapper.findComponent(PNotice).text();
 const disabled = (wrapper: VueWrapper) =>
 	registerButton(wrapper).element.disabled;
 
@@ -406,9 +407,7 @@ describe("RegistrationComponent", () => {
 
 		await fill(wrapper, { username: "other-user" });
 
-		expect(wrapper.find(".pb-3.text-negative[role=alert]").exists()).toBe(
-			false
-		);
+		expect(wrapper.findComponent(PNotice).exists()).toBe(false);
 	});
 
 	it("explains the password rules before submitting", async () => {
