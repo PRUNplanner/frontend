@@ -257,8 +257,7 @@
 			"label": "劳动力",
 			"table": {
 				"type": "类型",
-				"need": "需求",
-				"supply": "供应",
+				"need_housed": "Need / Housed",
 				"open": "开放",
 				"luxuries": "奢侈品",
 				"pct_eff": "效率 %"
