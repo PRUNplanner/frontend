@@ -79,8 +79,21 @@
 			"expand_row": "Show details"
 		},
 		"close": "Close",
+		"tag": {
+			"remove": "Remove {label}"
+		},
 		"language": "Sprache",
-		"page_load_failed": "Diese Seite konnte nicht geladen werden. Lade sie neu, um die neueste Version zu erhalten."
+		"page_load_failed": "Diese Seite konnte nicht geladen werden. Lade sie neu, um die neueste Version zu erhalten.",
+		"meter": {
+			"used": "{label} {pct} % used"
+		},
+		"strip": {
+			"dot": "{label}: {value}",
+			"over": "{n} more beyond the axis"
+		},
+		"runway": {
+			"beyond": "beyond the axis"
+		}
 	},
 	"values": {
 		"never": "nie"
