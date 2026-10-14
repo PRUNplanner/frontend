@@ -4,6 +4,7 @@ import { apiService } from "@/lib/apiService";
 // schemas
 import {
 	BuildingPayloadSchema,
+	CXSparklinesSchema,
 	ExchangePayloadSchema,
 	FIOStorageSchema,
 	MaterialPayloadSchema,
@@ -22,6 +23,7 @@ import type {
 	Exchange,
 	Recipe,
 	Building,
+	CXSparklines,
 	Planet,
 	FIOStorage,
 	PlanetSearchAdvancedPayload,
@@ -209,6 +211,27 @@ export async function callExplorationData(
 	return apiService.get(
 		`/data/cxpc/${ticker}/${exchange}/`,
 		ExplorationPayloadSchema
+	);
+}
+
+/**
+ * Calls the CXPC sparkline endpoint: daily VWAP of every ticker on one
+ * exchange, oldest first
+ * @author jplacht
+ *
+ * @export
+ * @async
+ * @param {string} exchange Exchange Code, e.g. "UNIVERSE"
+ * @param {number} days number of days, 30 by default
+ * @returns {Promise<CXSparklines>} Sparkline series per ticker
+ */
+export async function callCXSparklines(
+	exchange: string,
+	days: number = 30
+): Promise<CXSparklines> {
+	return apiService.get(
+		`/data/cxpc/spark/${exchange}/?days=${days}`,
+		CXSparklinesSchema
 	);
 }
 

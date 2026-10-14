@@ -3,7 +3,10 @@ import { describe, it, expect } from "vitest";
 import {
 	chartZone,
 	compactNumber,
+	lineLabelLayout,
+	sparklineLayout,
 	stripLayout,
+	tooltipRows,
 	topWithOther,
 	waterfallLayout,
 } from "@/ui/charts/charts.util";
@@ -336,5 +339,117 @@ describe("waterfallLayout", () => {
 		expect(columns[2].top).toBeCloseTo(zeroY);
 		expect(columns[2].height).toBeCloseTo((50 / 180) * 300);
 		expect(ticks.map((t) => t.value)).toEqual([-50, 0, 50, 100]);
+	});
+});
+
+describe("sparklineLayout", () => {
+	it("scales each row to its own min and max", () => {
+		const { lines, end } = sparklineLayout([10, 20, 15], 100, 24, 2);
+
+		// x from 2 to 98, y from 22 (min) to 2 (max)
+		expect(lines).toEqual(["2,22 50,2 98,12"]);
+		expect(end).toEqual({ x: 98, y: 12 });
+	});
+
+	it("breaks the line at gaps and ends on the last value", () => {
+		const { lines, end } = sparklineLayout(
+			[1, 2, null, 3, 4, null],
+			100,
+			24,
+			0
+		);
+
+		expect(lines).toEqual(["0,24 20,16", "60,8 80,0"]);
+		expect(end).toEqual({ x: 80, y: 0 });
+	});
+
+	it("draws a flat line in the middle and nothing without values", () => {
+		expect(sparklineLayout([5, 5], 100, 24, 0).lines).toEqual([
+			"0,12 100,12",
+		]);
+		expect(sparklineLayout([null, null], 100, 24)).toEqual({
+			lines: [],
+			end: null,
+		});
+	});
+});
+
+describe("lineLabelLayout", () => {
+	it("keeps labels at their line when they don't collide", () => {
+		expect(
+			lineLabelLayout(
+				[
+					{ key: "b", y: 100 },
+					{ key: "a", y: 20 },
+				],
+				16,
+				0,
+				200
+			)
+		).toEqual([
+			{ key: "a", y: 20 },
+			{ key: "b", y: 100 },
+		]);
+	});
+
+	it("pushes close labels apart, top to bottom", () => {
+		const placed = lineLabelLayout(
+			[
+				{ key: "NC1", y: 50 },
+				{ key: "CI1", y: 52 },
+				{ key: "IC1", y: 55 },
+			],
+			16,
+			0,
+			200
+		);
+
+		expect(placed.map((l) => [l.key, l.y])).toEqual([
+			["NC1", 50],
+			["CI1", 66],
+			["IC1", 82],
+		]);
+	});
+
+	it("moves labels back up from the bottom edge and down from the top", () => {
+		const bottom = lineLabelLayout(
+			[
+				{ key: "a", y: 195 },
+				{ key: "b", y: 198 },
+			],
+			16,
+			6,
+			200
+		);
+		expect(bottom.map((l) => l.y)).toEqual([184, 200]);
+
+		const top = lineLabelLayout([{ key: "a", y: -10 }], 16, 6, 200);
+		expect(top[0].y).toBe(6);
+	});
+});
+
+describe("tooltipRows", () => {
+	const series = [
+		{ key: "AI1", label: "AI1", color: "#1", values: [1, 245.67] },
+		{ key: "CI1", label: "CI1", color: "#2", values: [3, 259.11] },
+		{ key: "IC1", label: "IC1", color: "#3", values: [2, null] },
+		{ key: "NC1", label: "NC1", color: "#4", values: [4, 269.42] },
+	];
+
+	it("lists the series highest first, as the lines run", () => {
+		expect(tooltipRows(series, 0).map((r) => r.key)).toEqual([
+			"NC1",
+			"CI1",
+			"IC1",
+			"AI1",
+		]);
+	});
+
+	it("leaves out series without a value that day", () => {
+		expect(tooltipRows(series, 1)).toEqual([
+			{ key: "NC1", label: "NC1", color: "#4", value: 269.42 },
+			{ key: "CI1", label: "CI1", color: "#2", value: 259.11 },
+			{ key: "AI1", label: "AI1", color: "#1", value: 245.67 },
+		]);
 	});
 });

@@ -4,16 +4,25 @@ import { flushPromises } from "@vue/test-utils";
 
 import MarketExplorationView from "@/views/tools/MarketExplorationView.vue";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
-import { PSelect } from "@/ui";
+import { PButton, PSelect } from "@/ui";
+import PSparkline from "@/ui/charts/PSparkline.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 // vi.mock factories are hoisted, so are their helpers
-const { stub, chart } = vi.hoisted(() => ({
+const { stub, chart, query, data } = vi.hoisted(() => ({
 	stub: (name: string) => ({ default: { name, render: () => null } }),
 	chart: {} as { fetchData: () => Promise<void>; failed: boolean },
+	query: { execute: (() => {}) as (name: string, params: unknown) => unknown },
+	data: { materials: [] as { ticker: string }[] },
+}));
+
+vi.mock("@/lib/query_cache/useQuery", () => ({
+	useQuery: (name: string, params: unknown) => ({
+		execute: () => query.execute(name, params),
+	}),
 }));
 
 vi.mock("@/database/services/useMaterialData", () => ({
@@ -21,11 +30,27 @@ vi.mock("@/database/services/useMaterialData", () => ({
 		materialSelectOptions: ref([]),
 		getMaterialClass: () => "",
 		preload: async () => {},
-		materials: ref([]),
+		get materials() {
+			return ref(data.materials);
+		},
 	}),
 }));
+// the overview fields the view reads, per exchange
+const universe = (value: number) => ({ UNIVERSE: value });
 vi.mock("@/database/services/useExchangeData", () => ({
-	useExchangeData: () => ({ getMaterialExchangeOverview: vi.fn() }),
+	useExchangeData: () => ({
+		getMaterialExchangeOverview: async () => ({
+			vwap_7d: universe(236),
+			vwap_30d: universe(231),
+			vwap_analysis: { UNIVERSE: { percentChange: 0.044 } },
+			sum_traded_7d: universe(52076),
+			sum_traded_30d: universe(200000),
+			supply: universe(10),
+			demand: universe(20),
+			delta_supply_demand: universe(-10),
+			systemic_health: { weightedTrend: 0.044, priceCohesion: 3 },
+		}),
+	}),
 }));
 vi.mock("@/features/market_exploration/useMarketExplorationChart", () => ({
 	useMarketExplorationChart: () => ({
@@ -58,6 +83,10 @@ vi.mock("@/features/material_tile/components/MaterialTile.vue", () =>
 vi.mock("@/features/cx/components/MaterialCXOverviewTable.vue", () =>
 	stub("MaterialCXOverviewTable")
 );
+vi.mock(
+	"@/features/market_exploration/components/MarketExplorationExchanges.vue",
+	() => stub("MarketExplorationExchanges")
+);
 
 async function mountView() {
 	const { wrapper } = await mountComponent(MarketExplorationView);
@@ -80,6 +109,13 @@ describe("MarketExplorationView", () => {
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		chart.fetchData = vi.fn(async () => {});
 		chart.failed = false;
+		query.execute = vi.fn(async () => ({
+			exchange: "UNIVERSE",
+			days: 30,
+			series: { DW: [1, 2, 3] },
+		}));
+		data.materials = [];
+		sessionStorage.clear();
 	});
 
 	it("loads the default material on open without reporting a use", async () => {
@@ -109,5 +145,101 @@ describe("MarketExplorationView", () => {
 		await choose(wrapper, "RAT");
 
 		expect(trackEvent).not.toHaveBeenCalled();
+	});
+
+	describe("with the overview loaded", () => {
+		beforeEach(() => {
+			data.materials = [{ ticker: "DW" }];
+		});
+
+		const viewButton = (
+			wrapper: Awaited<ReturnType<typeof mountView>>,
+			view: string
+		) =>
+			wrapper
+				.findAllComponents(PButton)
+				.find(
+					(b) =>
+						b.text() === `market_exploration.chart.view.${view}`
+				)!;
+
+		it("loads the sparklines of the overview's exchange once", async () => {
+			await mountView();
+
+			expect(query.execute).toHaveBeenCalledTimes(1);
+			expect(query.execute).toHaveBeenCalledWith("GetCXSparklines", {
+				exchange: "UNIVERSE",
+			});
+		});
+
+		it("gives each sparkline the row's Trend value", async () => {
+			const wrapper = await mountView();
+
+			const spark = wrapper.findComponent(PSparkline);
+			expect(spark.props("points")).toEqual([1, 2, 3]);
+			// the Trend column shows weighted_trend × 100 = 4.4 %
+			expect(spark.props("trend")).toBeCloseTo(4.4);
+		});
+
+		it("switches to all exchanges and remembers it for the session", async () => {
+			const wrapper = await mountView();
+			expect(
+				wrapper.findComponent({ name: "MarketExplorationChart" }).exists()
+			).toBe(true);
+
+			await viewButton(wrapper, "exchanges").trigger("click");
+
+			const exchanges = wrapper.findComponent({
+				name: "MarketExplorationExchanges",
+			});
+			expect(exchanges.exists()).toBe(true);
+			expect(exchanges.props()).toBeDefined();
+			expect(
+				wrapper.findComponent({ name: "MarketExplorationChart" }).exists()
+			).toBe(false);
+			expect(sessionStorage.getItem("market_exploration.chart_view")).toBe(
+				"exchanges"
+			);
+			expect(wrapper.text()).toContain("market_exploration.chart.metric.vwap");
+			expect(wrapper.text()).toContain("market_exploration.chart.range.90");
+
+			const reopened = await mountView();
+			expect(
+				reopened
+					.findComponent({ name: "MarketExplorationExchanges" })
+					.exists()
+			).toBe(true);
+		});
+
+		it("still opens when the session storage is blocked", async () => {
+			vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+				throw new Error("blocked");
+			});
+			vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+				throw new Error("blocked");
+			});
+			const wrapper = await mountView();
+
+			await viewButton(wrapper, "exchanges").trigger("click");
+
+			expect(
+				wrapper
+					.findComponent({ name: "MarketExplorationExchanges" })
+					.exists()
+			).toBe(true);
+			vi.mocked(Storage.prototype.getItem).mockRestore();
+			vi.mocked(Storage.prototype.setItem).mockRestore();
+		});
+
+		it("keeps the overview when the sparklines fail", async () => {
+			query.execute = vi.fn(async () => {
+				throw new Error("offline");
+			});
+			const wrapper = await mountView();
+
+			expect(wrapper.text()).toContain(
+				"market_exploration.overview.title"
+			);
+		});
 	});
 });
