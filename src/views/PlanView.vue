@@ -420,6 +420,7 @@
 						}),
 						cxUuid: refCXUuid.value,
 						planetNaturalId: planetData.planet_natural_id,
+						shared: props.shared,
 					},
 					listeners: {},
 				};

@@ -110,6 +110,14 @@ describe("ChangeProfile", () => {
 		expect(mock.history.get).toHaveLength(1);
 	});
 
+	it("anchors the FIO section for /profile#fio", async () => {
+		const { wrapper } = await mountProfile(profile());
+
+		expect(wrapper.find("#fio").text()).toContain(
+			"profile.change_profile.fio_info"
+		);
+	});
+
 	it("takes over the profile the backend returns on mount", async () => {
 		mock.resetHandlers();
 		mock.onGet(PROFILE_URL).reply(

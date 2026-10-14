@@ -104,6 +104,7 @@ export function usePrice(
 
 	return {
 		getPrice,
+		getPriceBook,
 		getMaterialIOTotalPrice,
 		getExchangeCodeKey,
 		enhanceMaterialIOMaterial,
