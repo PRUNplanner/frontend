@@ -62,7 +62,49 @@
 		"net_production": "Net Production",
 		"net_consumption": "Net Consumption",
 		"exclusive_production": "Exclusive Production",
-		"exclusive_consumption": "Exclusive Consumption"
+		"exclusive_consumption": "Exclusive Consumption",
+		"parts": {
+			"inputs": "Production inputs",
+			"workforce": "Workforce",
+			"degradation": "Degradation",
+			"profit": "Profit",
+			"uncovered": "Cost not covered"
+		},
+		"kpi_split": {
+			"label": "Revenue split: {parts}",
+			"inputs": "Inputs {pct}",
+			"workforce": "Workforce {pct}",
+			"degradation": "Degradation {pct}",
+			"profit": "Profit {pct}",
+			"uncovered": "Not covered {pct}",
+			"of_cost": "Share of cost: revenue doesn't cover it"
+		},
+		"revenue_split": {
+			"title": "Where each plan's revenue goes",
+			"caption": "Top {top} by profit · loss-making plans always shown",
+			"split": "Revenue split",
+			"margin": "Margin",
+			"revenue_day": "Revenue / day",
+			"other": "Other · {n} plan | Other · {n} plans",
+			"row_label": "{name}: margin {margin}, revenue {revenue} ȼ per day",
+			"empty": "No plans to split yet."
+		},
+		"butterfly": {
+			"title": "Materials moving the most ȼ",
+			"price": "ȼ / day",
+			"amount": "Units / day",
+			"buy": "← you buy (net consumed)",
+			"sell": "you sell (net produced) →",
+			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
+			"row_label": "{ticker}: {direction} {value}, open in Material I/O",
+			"bought": "bought",
+			"sold": "sold",
+			"empty": "No materials bought or sold."
+		},
+		"more_charts": {
+			"title": "More charts",
+			"caption": "Plan profit · material profit & cost · net and exclusive production & consumption"
+		}
 	},
 	"opportunities": {
 		"headline": "Production Opportunities",
