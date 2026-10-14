@@ -159,6 +159,9 @@ are internal to `PDataTable` and the selects.
     these rather than wiring chart.js in a feature. Ranked values (top N
     plus "Other") use `EmpireBarChart.vue`; a small used-of-total bar
     beside a number (area, housing) is `PMeter.vue` (plain CSS, no chart.js).
+    An x/y scatter with a best trade-off line, placed labels and a tooltip
+    slot is `PScatter.vue` (plain SVG; `paretoFrontier`, `placeLabels` and
+    `niceTicks` in `scatter.util.ts`).
     Colours come only from `useChartTheme()` (`chartTheme.ts`): polarity,
     warning, muted, ink, grid, axis, tooltip surface, the fixed exchange colours
     (`exchange("AI1")`, tokens `--color-cx-*` in `style.css`) and the four

@@ -63,6 +63,10 @@
 		() =>
 			import("@/features/planet_search/components/PlanetSearchMatrix.vue")
 	);
+	const PlanetSearchChart = defineAsyncComponent(
+		() =>
+			import("@/features/planet_search/components/PlanetSearchChart.vue")
+	);
 	const PlanetSearchCompare = defineAsyncComponent(
 		() =>
 			import(
@@ -148,7 +152,7 @@
 		() => {
 			const gone = (key: string) =>
 				key.startsWith("mat:")
-					? view.value === "list" &&
+					? view.value !== "matrix" &&
 						!filteredMaterials(filter.value).includes(key.slice(4))
 					: key.startsWith("ref:plan:") &&
 						!filter.value.references.some(
@@ -546,7 +550,7 @@
 						@sort="(s) => (sort = s)"
 						@pin="togglePin" />
 					<PlanetSearchMatrix
-						v-else
+						v-else-if="view === 'matrix'"
 						:planets="results"
 						:filter="filter"
 						:ctx="ctx"
@@ -558,6 +562,15 @@
 						:hidden-materials="prefs.hiddenMaterials"
 						:ref-name="refName"
 						@sort="(s) => (sort = s)"
+						@pin="togglePin" />
+					<PlanetSearchChart
+						v-else
+						:planets="results"
+						:filter="filter"
+						:ctx="ctx"
+						:pins="pins"
+						:show-pins="isDesktop"
+						:ref-name="refName"
 						@pin="togglePin" />
 				</div>
 

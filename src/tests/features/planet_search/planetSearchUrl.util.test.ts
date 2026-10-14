@@ -56,7 +56,7 @@ function randomState(): IPlanetSearchState {
 		filter,
 		// a random chain of up to 4 distinct keys
 		sort: pick(sorts, 0.35).slice(0, 4),
-		view: rnd() < 0.5 ? "list" : "matrix",
+		view: (["list", "matrix", "chart"] as const)[Math.floor(rnd() * 3)],
 		pins: pick(["OT-580b", "KW-688c", "UV-351a", "ZV-759d"], 0.4),
 	};
 }
@@ -116,6 +116,12 @@ describe("planet search url", () => {
 			view: "matrix",
 			pin: "OT-580b",
 		});
+	});
+
+	it("keeps the chart view in the url", () => {
+		const state = decodeSearch({ view: "chart" });
+		expect(state.view).toBe("chart");
+		expect(encodeSearch(state)).toEqual({ view: "chart" });
 	});
 
 	it("drops invalid values without throwing", () => {

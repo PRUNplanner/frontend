@@ -84,7 +84,7 @@
 					role="group"
 					:aria-label="t('planet_search.results.view_label')">
 					<PButton
-						v-for="v in ['list', 'matrix'] as const"
+						v-for="v in ['list', 'matrix', 'chart'] as const"
 						:key="v"
 						:pressed="view === v"
 						@click="view = v">
@@ -103,6 +103,7 @@
 						:ref-name="refName"
 						@sort="(s) => emit('sort', s)" />
 					<PlanetSearchColumnsMenu
+						v-if="view !== 'chart'"
 						v-model:hidden-columns="hiddenColumns"
 						v-model:hidden-materials="hiddenMaterials"
 						:view="view"
