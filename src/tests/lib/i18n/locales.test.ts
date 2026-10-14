@@ -49,7 +49,7 @@ describe("en_US volume terms", () => {
 		expect(t("market_exploration.kpis.universe_traded_7d")).toBe(
 			"Universe Traded Volume 7D"
 		);
-		expect(t("material_tile.chart.labels.traded")).toBe("Traded Volume");
+		expect(t("material_tile.chart.metric.traded")).toBe("Traded Volume");
 		expect(t("cx_info_table.traded_volume")).toBe("Traded Volume");
 	});
 

@@ -59,12 +59,14 @@
 	});
 
 	const CHAR_PX = 7;
-	const LABEL_GAP = 16;
+	const LABEL_GAP = 18;
 	const SWATCH = 10;
 	const hasVolume = computed(() => volume.some((v) => v > 0));
 
-	// prices from 100 up read as whole numbers, cheaper ones keep the cents
-	const endValue = (v: number) => formatNumber(v, Math.abs(v) >= 100 ? 0 : 2);
+	// prices from 100 up and counts read as whole numbers, cheaper prices
+	// keep the cents
+	const endValue = (v: number) =>
+		formatNumber(v, Math.abs(v) >= 100 || Number.isInteger(v) ? 0 : 2);
 
 	/** the last value of every series, for its end label */
 	const ends = computed(() =>
@@ -161,6 +163,25 @@
 			});
 			return { key: s.key, color: s.color, d: d.trim() };
 		})
+	);
+
+	// a day with a value but none on either side draws no line, so a dot
+	// (rarely traded materials)
+	const dots = computed(() =>
+		series.flatMap((s) =>
+			s.values.flatMap((v, i) =>
+				v != null && s.values[i - 1] == null && s.values[i + 1] == null
+					? [
+							{
+								key: `${s.key}${i}`,
+								color: s.color,
+								x: sx.value(i),
+								y: sy.value(v),
+							},
+						]
+					: []
+			)
+		)
 	);
 
 	const labels = computed(() => {
@@ -345,6 +366,14 @@
 				:stroke="p.color"
 				stroke-width="2"
 				stroke-linejoin="round" />
+			<circle
+				v-for="p in dots"
+				:key="p.key"
+				class="line-dot"
+				:cx="p.x"
+				:cy="p.y"
+				r="2.5"
+				:fill="p.color" />
 
 			<!-- direct end labels in the right margin -->
 			<g class="text-xs pointer-events-none">

@@ -87,7 +87,24 @@ describe("PLineChart", () => {
 		expect(wrapper.find("svg").attributes("aria-label")).toBe("VWAP of RAT");
 	});
 
-	it("labels every line end inside the svg, never closer than 16 px", async () => {
+	it("draws a dot for a day without values on either side", async () => {
+		const wrapper = await mountChart({
+			series: [
+				{ key: "AI1", label: "AI1", color: "#3d8ce6", values: [null, 371, null, null, 360] },
+				{ key: "CI1", label: "CI1", color: "#d96a22", values: [320, 324, null, null, null] },
+			],
+		});
+
+		// AI1 days 1 and 4 stand alone, CI1 days 0 and 1 form a line
+		const dots = wrapper.findAll(".line-dot");
+		expect(dots).toHaveLength(2);
+		expect(dots.map((d) => d.attributes("fill"))).toEqual([
+			"#3d8ce6",
+			"#3d8ce6",
+		]);
+	});
+
+	it("labels every line end inside the svg, never closer than 18 px", async () => {
 		const wrapper = await mountChart();
 
 		const labels = wrapper.findAll(".line-label");
@@ -98,7 +115,7 @@ describe("PLineChart", () => {
 			"AI1 236",
 		]);
 		const ys = labels.map((l) => Number(l.find("text").attributes("y")));
-		ys.slice(1).forEach((y, i) => expect(y - ys[i]).toBeGreaterThanOrEqual(16));
+		ys.slice(1).forEach((y, i) => expect(y - ys[i]).toBeGreaterThanOrEqual(18));
 		// the widest label ends inside the 800 px box
 		labels.forEach((l) => {
 			const text = l.find("text");
@@ -222,6 +239,20 @@ describe("PLineChart", () => {
 		]);
 		expect(thousands.text()).toContain("1,240");
 		expect(thousands.text()).not.toContain("1.2k");
+	});
+
+	it("shows whole counts without decimals, as traded units", async () => {
+		const counts = await mountChart({
+			series: [
+				{ key: "AI1", label: "AI1", color: "#1", values: [3, 5, 4, 6, 7] },
+				{ key: "CI1", label: "CI1", color: "#2", values: [12, 30, 20, 10, 40] },
+			],
+		});
+
+		expect(counts.findAll(".line-label").map((l) => l.text())).toEqual([
+			"CI1 40",
+			"AI1 7",
+		]);
 	});
 
 	it("drops the volume unit where it doesn't fit beside the title", async () => {

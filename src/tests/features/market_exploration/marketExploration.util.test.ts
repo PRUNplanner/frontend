@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 
-import { exchangeLines } from "@/features/market_exploration/marketExploration.util";
+import {
+	cheapestExchange,
+	exchangeLines,
+} from "@/features/market_exploration/marketExploration.util";
 
 // Types & Interfaces
 import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
@@ -58,6 +61,15 @@ describe("exchangeLines", () => {
 		]);
 	});
 
+	it("reads traded units, null where nothing traded", () => {
+		expect(exchangeLines(DATA, "traded", null).values.CI1).toEqual([
+			null,
+			5,
+			null,
+			null,
+		]);
+	});
+
 	it("keeps the last n days", () => {
 		const lines = exchangeLines(DATA, "vwap", 2);
 
@@ -71,5 +83,35 @@ describe("exchangeLines", () => {
 			values: {},
 			volume: [],
 		});
+	});
+});
+
+describe("cheapestExchange", () => {
+	it("names the exchange with the lowest latest value", () => {
+		expect(
+			cheapestExchange({
+				AI1: [240, 236],
+				CI1: [250, 258],
+				IC1: [230, 247],
+				NC1: [262, 270],
+			})
+		).toEqual({ code: "AI1", value: 236 });
+	});
+
+	it("uses an exchange's last earlier value when the last day has none", () => {
+		expect(
+			cheapestExchange({
+				AI1: [240, 236],
+				CI1: [200, null],
+			})
+		).toEqual({ code: "CI1", value: 200 });
+	});
+
+	it("leaves out exchanges without values and is null without any", () => {
+		expect(cheapestExchange({ AI1: [null, null], CI1: [300] })).toEqual({
+			code: "CI1",
+			value: 300,
+		});
+		expect(cheapestExchange({ AI1: [null], CI1: [] })).toBeNull();
 	});
 });

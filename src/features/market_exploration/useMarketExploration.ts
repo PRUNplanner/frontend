@@ -6,13 +6,13 @@ import type { Exploration } from "@/features/market_exploration/marketExploratio
 
 export function useMarketExploration() {
 	/**
-	 * Requests last 7 days of exploration data for
+	 * Requests the daily exploration history of
 	 * AI1, CI1, IC1, NC1 for single material ticker
 	 * @author jplacht
 	 *
 	 * @async
 	 * @param {string} ticker Material Ticker, e.g. "DW"
-	 * @returns {Promise<Record<string, Exploration[]>>} Exploration Data of last 7 days
+	 * @returns {Promise<Record<string, Exploration[]>>} daily exploration data per exchange
 	 */
 	async function getMaterialExplorationData(
 		ticker: string

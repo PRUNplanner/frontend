@@ -426,6 +426,17 @@ describe("lineLabelLayout", () => {
 		const top = lineLabelLayout([{ key: "a", y: -10 }], 16, 6, 200);
 		expect(top[0].y).toBe(6);
 	});
+
+	it("spreads four labels at the same end 18 px apart inside the box", () => {
+		const placed = lineLabelLayout(
+			["AI1", "CI1", "IC1", "NC1"].map((key) => ({ key, y: 300 })),
+			18,
+			6,
+			294
+		);
+
+		expect(placed.map((l) => l.y)).toEqual([240, 258, 276, 294]);
+	});
 });
 
 describe("tooltipRows", () => {
