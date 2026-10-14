@@ -14,11 +14,18 @@
 	},
 	"chart": {
 		"title": "Historique du marché",
-		"labels": {
+		"range": "30 days",
+		"metric": {
+			"vwap": "@:terms.vwap",
+			"low": "Low",
+			"high": "High",
 			"traded": "@:terms.traded_volume",
-			"low_p": "Prix minimum journalier",
-			"high_p": "Prix maximum journalier"
+			"label": "Chart value"
 		},
-		"value_label": "Chart value"
+		"label": "{metric} of {ticker} on every exchange, last 30 days",
+		"empty": "No trades in the last 30 days",
+		"error": "Market history could not be loaded",
+		"cheapest": "Cheapest now:",
+		"open_exploration": "Open in Market Exploration →"
 	}
 }
