@@ -120,8 +120,16 @@ export interface IAnalyticsEventProperties {
 	"plan:share_create": undefined;
 	"plan:share_delete": undefined;
 	"plan:tool_toggle": { tool_name: string | null };
-	"plan:whatif_change": { view: string; pct: number };
-	"plan:whatif_compare": { same_planet: boolean };
+	"plan:plancheck_change": {
+		view: "market" | "sensitivity" | "compare";
+		pct?: number;
+	};
+	"plan:plancheck_target": { has_target: boolean };
+	"plan:market_flag_open": {
+		where: "plan" | "empire";
+		level: "red" | "amber" | "muted";
+	};
+	"plan:plancheck_compare": { same_planet: boolean };
 	"plan:profit_breakdown_mode": { mode: "cost_type" | "building" };
 	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
 	"plan:insights_open": { planet_natural_id: string };
@@ -153,6 +161,7 @@ export interface IAnalyticsEventProperties {
 	"empire:update": { is_success: boolean };
 	"empire:reload": undefined;
 	"empire:material_io_expand": undefined;
+	"empire:market_filter": { level: "red" | "amber" | "muted" | null };
 	"empire:view_change": { view: "materialio" | "analysis" | "opportunities" };
 	"empire:analysis_more_charts": undefined;
 	"empire:save_conflict": { choice: SaveConflictChoice };

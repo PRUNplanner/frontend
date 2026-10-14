@@ -4,9 +4,18 @@ import { h } from "vue";
 import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import planMessages from "@/locales/en_US/plan.json";
+import cxMessages from "@/locales/en_US/cx.json";
+import { flushPromises } from "@vue/test-utils";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { createPriceBook } from "@/features/cx/priceBook";
+import { marketCheck } from "@/features/cx/marketCheck.util";
 
 // Types & Interfaces
 import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
 	default: {
@@ -88,5 +97,102 @@ describe("PlanMaterialIO", () => {
 				.find(box)
 				.attributes("style")
 		).toContain("max-height: calc(302px)");
+	});
+});
+
+describe("PlanMaterialIO market flags", () => {
+	// an ASK preference on an exchange without offers prices RAT at 0
+	const cx: CXData = {
+		cx_empire: [{ type: "BOTH", exchange: "AI1_ASK" }],
+		cx_planets: [],
+		ticker_empire: [],
+		ticker_planets: [],
+	};
+	const exchange = {
+		ask: 0,
+		bid: 90,
+		sum_traded_30d: 3000,
+		sum_traded_7d: 700,
+		exchange_status: "ACTIVE",
+	} as Exchange;
+	const checks = () =>
+		new Map(
+			marketCheck(
+				ROWS,
+				createPriceBook(() => cx, undefined, () => exchange),
+				() => exchange
+			).map((c) => [c.ticker, c])
+		);
+
+	async function mountFlagged() {
+		const onOpen = vi.fn();
+		const { wrapper } = await mountComponent(
+			PlanMaterialIO,
+			{
+				materialIOData: ROWS,
+				showBasked: false,
+				checks: checks(),
+				"onOpen:planCheck": onOpen,
+			},
+			{ messages: { cx: cxMessages }, attach: true }
+		);
+		return { wrapper, onOpen };
+	}
+
+	it("shows no price for a material without offers, as a title on hover", async () => {
+		const { wrapper } = await mountFlagged();
+		const flag = wrapper.find("[data-market-flag]");
+
+		expect(flag.attributes("title")).toBe("RAT: No price");
+		await flag.trigger("mouseenter");
+		expect(document.body.querySelector("[role=dialog]")).toBeNull();
+		expect(wrapper.find("[data-market-summary]").text()).toContain(
+			"1 material can't trade as planned."
+		);
+	});
+
+	it("opens the details on click, closes on Esc and returns focus", async () => {
+		const { wrapper, onOpen } = await mountFlagged();
+		const flag = wrapper.find("[data-market-flag]");
+		(flag.element as HTMLElement).focus();
+
+		await flag.trigger("click");
+		await flushPromises();
+		const panel = document.body.querySelector("[role=dialog]")!;
+		expect(panel.textContent).toContain("No price");
+		expect(panel.textContent).toContain("You buy");
+		expect(trackEvent).toHaveBeenCalledWith("plan:market_flag_open", {
+			where: "plan",
+			level: "red",
+		});
+
+		document.dispatchEvent(
+			new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
+		);
+		await flushPromises();
+		expect(document.body.querySelector("[role=dialog]")).toBeNull();
+		expect(document.activeElement).toBe(flag.element);
+
+		// an outside click closes it as well; "Open Plan check" asks the view
+		await flag.trigger("click");
+		await flushPromises();
+		document.body.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+		await flushPromises();
+		expect(document.body.querySelector("[role=dialog]")).toBeNull();
+
+		await flag.trigger("click");
+		await flushPromises();
+		(
+			[...document.body.querySelectorAll("[role=dialog] button")].find(
+				(b) => b.textContent?.includes("Open Plan check")
+			) as HTMLElement
+		).click();
+		expect(onOpen).toHaveBeenCalled();
+	});
+
+	it("shows no flag and no summary without checks", async () => {
+		const { wrapper } = await mountTable();
+		expect(wrapper.find("[data-market-flag]").exists()).toBe(false);
+		expect(wrapper.find("[data-market-summary]").exists()).toBe(false);
 	});
 });

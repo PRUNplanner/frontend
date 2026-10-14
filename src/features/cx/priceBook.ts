@@ -4,6 +4,7 @@ import type {
 	CXData,
 	CXExchangeOptionType,
 } from "@/features/api/schemas/cxData.schemas";
+import type { EXCHANGES_TYPE } from "@/database/services/useExchangeData.types";
 import type {
 	IMaterialIO,
 	IMaterialIOMaterial,
@@ -44,8 +45,30 @@ import type {
 
 export type PriceType = "BUY" | "SELL";
 
+/** where a price came from, in the order of the preference hierarchy */
+export type PriceSourceLevel =
+	| "planet_ticker"
+	| "empire_ticker"
+	| "planet_exchange"
+	| "empire_exchange"
+	| "fallback"
+	| "unresolved";
+
+export interface IPriceSource {
+	level: PriceSourceLevel;
+	// null for fixed ticker values and unresolved prices
+	exchange: EXCHANGES_TYPE | null;
+	key: ExchangePriceKey | null;
+	// the price is 0, e.g. an ASK preference without offers
+	zero: boolean;
+	// whose traded volume the price is checked against: the source's
+	// exchange, else the planet or empire exchange preference, else UNIVERSE
+	volume: EXCHANGES_TYPE;
+}
+
 export interface IPriceBook {
 	getPrice(materialTicker: string, type: PriceType): number;
+	getPriceSource(materialTicker: string, type: PriceType): IPriceSource;
 }
 
 type SplitOption<T> = T extends `${infer Prefix}_${infer Suffix}`
@@ -130,104 +153,126 @@ export function createPriceBook(
 	planetNaturalId: string | undefined,
 	getExchange: (tickerId: string) => Exchange
 ): IPriceBook {
-	const prices = new Map<string, number>();
+	const resolved = new Map<string, { price: number; source: IPriceSource }>();
 	let cxData: CXData | undefined;
 
-	function exchangePrice(
-		materialTicker: string,
-		preference: CXExchangeOptionType
-	): number {
-		const { exchangeCode, key } = getExchangeCodeKey(preference);
-		const tickerData = getExchange(`${materialTicker}.${exchangeCode}`);
+	const matches = (t: { type: string }, type: PriceType) =>
+		t.type === type || t.type === "BOTH";
 
-		return tickerData[key] ?? 0;
+	// a fixed ticker value: planet first, then empire
+	function tickerPreference(
+		cx: CXData,
+		materialTicker: string,
+		type: PriceType
+	): { level: PriceSourceLevel; value: number } | undefined {
+		const isTicker = (t: { ticker: string; type: string }) =>
+			t.ticker === materialTicker && matches(t, type);
+		const planet = planetNaturalId
+			? cx.ticker_planets
+					.find((tp) => tp.planet === planetNaturalId)
+					?.preferences.find(isTicker)
+			: undefined;
+		if (planet) return { level: "planet_ticker", value: planet.value };
+		const empire = cx.ticker_empire.find(isTicker);
+		if (empire) return { level: "empire_ticker", value: empire.value };
+		return undefined;
 	}
 
-	function resolvePrice(materialTicker: string, type: PriceType): number {
-		try {
-			// no cx information, default to UNIVERSE
-			if (!getCXData)
-				return getExchange(`${materialTicker}.UNIVERSE`).vwap_30d;
-
-			cxData ??= getCXData();
-
-			// Planet Ticker Path
-			if (planetNaturalId) {
-				// find potential planet ticker setting
-				const planetTickerPreference = cxData.ticker_planets
-					.find((tp) => tp.planet === planetNaturalId)
-					?.preferences.find(
-						(t) =>
-							t.ticker === materialTicker &&
-							(t.type === type || t.type === "BOTH")
-					);
-
-				if (planetTickerPreference) {
-					return planetTickerPreference.value;
-				}
-			}
-
-			// Empire Ticker Path
-			const empireTickerPreference = cxData.ticker_empire.find(
-				(te) =>
-					te.ticker === materialTicker &&
-					(te.type === type || te.type === "BOTH")
-			);
-
-			if (empireTickerPreference) {
-				return empireTickerPreference.value;
-			}
-
-			// Planet Exchange Path
-			if (planetNaturalId) {
-				// find potential planet exchange setting
-				const planetExchangePreference = cxData.cx_planets
+	// an exchange preference: planet first, then empire
+	function exchangePreference(
+		cx: CXData,
+		type: PriceType
+	): { level: PriceSourceLevel; option: CXExchangeOptionType } | undefined {
+		const planet = planetNaturalId
+			? cx.cx_planets
 					.find((cp) => cp.planet === planetNaturalId)
-					?.preferences.find(
-						(cpp) => cpp.type === type || cpp.type === "BOTH"
-					);
+					?.preferences.find((p) => matches(p, type))
+			: undefined;
+		if (planet) return { level: "planet_exchange", option: planet.exchange };
+		const empire = cx.cx_empire.find((p) => matches(p, type));
+		if (empire) return { level: "empire_exchange", option: empire.exchange };
+		return undefined;
+	}
 
-				if (planetExchangePreference) {
-					return exchangePrice(
-						materialTicker,
-						planetExchangePreference.exchange
-					);
-				}
-			}
+	function resolve(
+		materialTicker: string,
+		type: PriceType
+	): { price: number; source: IPriceSource } {
+		const result = (
+			price: number,
+			source: Omit<IPriceSource, "zero">
+		) => ({ price, source: { ...source, zero: price === 0 } });
 
-			// Empire Exchange Path
-			const empireExchangePreference = cxData.cx_empire.find(
-				(ee) => ee.type === type || ee.type === "BOTH"
-			);
+		try {
+			if (getCXData) cxData ??= getCXData();
 
-			if (empireExchangePreference) {
-				return exchangePrice(
-					materialTicker,
-					empireExchangePreference.exchange
+			const ticker = cxData
+				? tickerPreference(cxData, materialTicker, type)
+				: undefined;
+			const preference = cxData
+				? exchangePreference(cxData, type)
+				: undefined;
+			const preferred = preference
+				? getExchangeCodeKey(preference.option)
+				: undefined;
+			const volume = (preferred?.exchangeCode ??
+				"UNIVERSE") as EXCHANGES_TYPE;
+
+			if (ticker)
+				return result(ticker.value, {
+					level: ticker.level,
+					exchange: null,
+					key: null,
+					volume,
+				});
+
+			if (preference && preferred) {
+				const tickerData = getExchange(
+					`${materialTicker}.${preferred.exchangeCode}`
 				);
+				return result(tickerData[preferred.key] ?? 0, {
+					level: preference.level,
+					exchange: volume,
+					key: preferred.key,
+					volume,
+				});
 			}
 
-			// None of the path specifics yielded a result, return PP30D_Average fallback
-			return getExchange(`${materialTicker}.UNIVERSE`).vwap_30d;
+			// no preference for this type: Universe VWAP 30d
+			return result(getExchange(`${materialTicker}.UNIVERSE`).vwap_30d, {
+				level: "fallback",
+				exchange: "UNIVERSE",
+				key: "vwap_30d",
+				volume,
+			});
 		} catch (error) {
 			if (error instanceof Error) {
 				const exchangeError: Error = error;
 				console.error(exchangeError);
 			}
-			return 0;
+			return result(0, {
+				level: "unresolved",
+				exchange: null,
+				key: null,
+				volume: "UNIVERSE",
+			});
 		}
 	}
 
+	function lookup(materialTicker: string, type: PriceType) {
+		const key = `${materialTicker}#${type}`;
+		let entry = resolved.get(key);
+		if (entry === undefined) {
+			entry = resolve(materialTicker, type);
+			resolved.set(key, entry);
+		}
+		return entry;
+	}
+
 	return {
-		getPrice(materialTicker: string, type: PriceType): number {
-			const key = `${materialTicker}#${type}`;
-			let price = prices.get(key);
-			if (price === undefined) {
-				price = resolvePrice(materialTicker, type);
-				prices.set(key, price);
-			}
-			return price;
-		},
+		getPrice: (materialTicker, type) => lookup(materialTicker, type).price,
+		getPriceSource: (materialTicker, type) =>
+			lookup(materialTicker, type).source,
 	};
 }
 
@@ -302,5 +347,6 @@ export function scaledPriceBook(
 			const price = book.getPrice(materialTicker, type);
 			return materialTicker === ticker ? price * factor : price;
 		},
+		getPriceSource: book.getPriceSource,
 	};
 }

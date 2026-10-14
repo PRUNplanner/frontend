@@ -2,6 +2,8 @@ import { describe, it, expect, beforeAll, vi } from "vitest";
 
 // Engine
 import { usePlanContext } from "@/features/planning/usePlanContext";
+import { useExchangeData } from "@/database/services/useExchangeData";
+import { createPriceBook } from "@/features/cx/priceBook";
 
 // Util
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
@@ -11,11 +13,15 @@ import {
 	compareRows,
 	compareVerdict,
 	materialChanges,
+	paybackOfDifference,
 	priceSensitivity,
+	realisticPlan,
 	sensitivityRows,
+	targetFactor,
 } from "@/features/planning/util/whatIf.util";
 
 // Types & Interfaces
+import type { CXData } from "@/features/api/schemas/cxData.schemas";
 import type {
 	IPlanCalculation,
 	IPlanContext,
@@ -217,6 +223,82 @@ describe("whatIf on the real engine", () => {
 			).toBeLessThan(0.01);
 		}
 	});
+
+	it("solves the price for a target profit", () => {
+		const input = {
+			plan: etherwindPlan(),
+			empire: undefined,
+			cxUuid: undefined,
+		};
+		const { result, rows } = priceSensitivity(input, ctx);
+		const row = rows[0];
+
+		expect(targetFactor(result.profit, row.slope, result.profit)).toBe(1);
+		const target = Math.ceil(result.profit / 10_000) * 10_000 + 10_000;
+		const factor = targetFactor(result.profit, row.slope, target)!;
+		const profit = calculateScaled(input, ctx, row.ticker, factor).result
+			.profit;
+		expect(Math.abs(profit - target)).toBeLessThan(1);
+	});
+
+	it("pays back one more building in Δ plan cost ÷ Δ profit days", () => {
+		const plan = etherwindPlan();
+		plan.plan_data.buildings[0].amount += 1;
+		const a = run();
+		const b = run(plan);
+		const payback = paybackOfDifference(a, b);
+
+		expect(payback.cost).toBeGreaterThan(0);
+		expect(payback.days).toBe(
+			payback.profit > 0 ? payback.cost / payback.profit : "never"
+		);
+		expect(paybackOfDifference(a, run()).days).toBeNull();
+	});
+
+	it("profit at ask/bid equals a plan priced with ask/bid preferences", () => {
+		const { getExchangeTickerLoaded } = useExchangeData();
+		const vwap: CXData = {
+			cx_empire: [{ type: "BOTH", exchange: "AI1_30D" }],
+			cx_planets: [],
+			ticker_empire: [],
+			ticker_planets: [],
+		};
+		const askBid: CXData = {
+			...vwap,
+			cx_empire: [
+				{ type: "BUY", exchange: "AI1_ASK" },
+				{ type: "SELL", exchange: "AI1_BID" },
+			],
+		};
+		const priced = (cx: CXData) => ({
+			...ctx,
+			prices: createPriceBook(
+				() => cx,
+				"KW-688c",
+				getExchangeTickerLoaded
+			),
+		});
+		const input = {
+			plan: etherwindPlan(),
+			empire: undefined,
+			cxUuid: undefined,
+		};
+		const { calculation, kept } = realisticPlan(
+			input,
+			priced(vwap),
+			getExchangeTickerLoaded
+		);
+		// a material without ask or bid keeps its plan price in both
+		const full = calculatePlan(
+			{ ...input, recipeOptions: false },
+			priced(askBid)
+		);
+		expect([...kept.zero]).toEqual([]);
+			expect(
+				Math.abs(calculation.result.profit - full.result.profit)
+			).toBeLessThan(0.01);
+		expect(kept.fallback.size).toBe(0);
+	});
 });
 
 /** a calculation with just the figures the comparison reads */
@@ -416,6 +498,37 @@ describe("compareVerdict", () => {
 		);
 		expect(text).toBe(
 			'earns_same gain{"name":"B","gain":"50","ticker":"FE"}'
+		);
+	});
+});
+
+describe("paybackOfDifference", () => {
+	const plan = (profit: number, totalConstructionCost: number) =>
+		calc({ profit, totalConstructionCost }, 0);
+
+	it("is the extra cost over the extra profit", () => {
+		expect(paybackOfDifference(plan(100, 1000), plan(150, 2000))).toEqual({
+			cost: 1000,
+			profit: 50,
+			days: 20,
+		});
+	});
+
+	it("never pays back when the other plan costs more and earns less", () => {
+		expect(paybackOfDifference(plan(100, 1000), plan(80, 2000)).days).toBe(
+			"never"
+		);
+		expect(paybackOfDifference(plan(100, 1000), plan(100, 2000)).days).toBe(
+			"never"
+		);
+	});
+
+	it("has none when the other plan costs the same or less", () => {
+		expect(paybackOfDifference(plan(100, 1000), plan(50, 1000)).days).toBe(
+			null
+		);
+		expect(paybackOfDifference(plan(100, 1000), plan(200, 500)).days).toBe(
+			null
 		);
 	});
 });

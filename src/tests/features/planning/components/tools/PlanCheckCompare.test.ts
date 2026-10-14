@@ -2,9 +2,10 @@ import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
-import PlanWhatIf from "@/features/planning/components/tools/PlanWhatIf.vue";
-import PlanWhatIfCompare from "@/features/planning/components/tools/PlanWhatIfCompare.vue";
+import PlanCheck from "@/features/planning/components/tools/PlanCheck.vue";
+import PlanCheckCompare from "@/features/planning/components/tools/PlanCheckCompare.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 import { PSelect } from "@/ui";
 
 // Types & Interfaces
@@ -67,7 +68,7 @@ const FAR = variant("00000000-0000-4000-8000-000000000003", "Far", (p) => {
 
 async function mountCompare(planUuid: string | undefined = OPEN.uuid) {
 	const { wrapper } = await mountComponent(
-		PlanWhatIfCompare,
+		PlanCheckCompare,
 		{
 			plan: OPEN,
 			planUuid,
@@ -89,7 +90,7 @@ async function pick(w: Wrapper, uuid: string) {
 }
 const verdict = (w: Wrapper) => w.find("[data-verdict]").text();
 
-describe("PlanWhatIfCompare", () => {
+describe("PlanCheckCompare", () => {
 	beforeAll(async () => {
 		await setupPlanningTestData();
 	});
@@ -120,14 +121,14 @@ describe("PlanWhatIfCompare", () => {
 		const wrapper = await mountCompare();
 
 		expect(select(wrapper).props("value")).toBe(BIGGER.uuid);
-		expect(wrapper.findAll("tbody tr")).toHaveLength(8);
+		expect(wrapper.findAll("tbody tr")).toHaveLength(9);
 		expect(wrapper.find("tbody .text-positive").exists()).toBe(true);
 		expect(verdict(wrapper)).not.toContain("verdict.same");
 		expect(wrapper.findAll("li").length).toBeGreaterThan(0);
 		expect(wrapper.text()).toContain(
-			"plan.tools.whatif.compare.source_universe"
+			"plan.tools.plan_check.compare.source_universe"
 		);
-		expect(trackEvent).toHaveBeenCalledWith("plan:whatif_compare", {
+		expect(trackEvent).toHaveBeenCalledWith("plan:plancheck_compare", {
 			same_planet: true,
 		});
 	});
@@ -136,9 +137,9 @@ describe("PlanWhatIfCompare", () => {
 		const wrapper = await mountCompare();
 		await pick(wrapper, COPY.uuid);
 
-		expect(verdict(wrapper)).toBe("plan.tools.whatif.compare.verdict.same");
+		expect(verdict(wrapper)).toBe("plan.tools.plan_check.compare.verdict.same");
 		expect(wrapper.text()).toContain(
-			"plan.tools.whatif.compare.changes.none"
+			"plan.tools.plan_check.compare.changes.none"
 		);
 		const differences = wrapper
 			.findAll("tbody tr")
@@ -150,6 +151,8 @@ describe("PlanWhatIfCompare", () => {
 			"0 ȼ",
 			"0 ȼ",
 			"0.00 d",
+			// payback of the difference: nothing more to build
+			"–",
 			"0.00 ȼ",
 			"0",
 		]);
@@ -163,7 +166,7 @@ describe("PlanWhatIfCompare", () => {
 
 		expect(planetQuery).toHaveBeenLastCalledWith("ZV-307c");
 
-		expect(trackEvent).toHaveBeenLastCalledWith("plan:whatif_compare", {
+		expect(trackEvent).toHaveBeenLastCalledWith("plan:plancheck_compare", {
 			same_planet: false,
 		});
 	});
@@ -194,21 +197,21 @@ describe("PlanWhatIfCompare", () => {
 		await pick(wrapper, FAR.uuid);
 
 		expect(wrapper.text()).toContain(
-			"plan.tools.whatif.compare.calc_error"
+			"plan.tools.plan_check.compare.calc_error"
 		);
 		expect(wrapper.find("table").exists()).toBe(false);
 		expect(select(wrapper).exists()).toBe(true);
 
 		await pick(wrapper, COPY.uuid);
 		expect(wrapper.text()).not.toContain("compare.calc_error");
-		expect(verdict(wrapper)).toBe("plan.tools.whatif.compare.verdict.same");
+		expect(verdict(wrapper)).toBe("plan.tools.plan_check.compare.verdict.same");
 	});
 
 	it("tells a user without other plans", async () => {
 		plansQuery.mockResolvedValue([OPEN]);
 		const wrapper = await mountCompare();
 
-		expect(wrapper.text()).toContain("plan.tools.whatif.compare.no_plans");
+		expect(wrapper.text()).toContain("plan.tools.plan_check.compare.no_plans");
 		expect(wrapper.find("table").exists()).toBe(false);
 	});
 
@@ -216,11 +219,29 @@ describe("PlanWhatIfCompare", () => {
 		plansQuery.mockRejectedValue(new Error("down"));
 		const wrapper = await mountCompare();
 
-		expect(wrapper.text()).toContain("plan.tools.whatif.compare.error");
+		expect(wrapper.text()).toContain("plan.tools.plan_check.compare.error");
 	});
 
-	it("is the What-if tool's second view", async () => {
-		const { wrapper } = await mountComponent(PlanWhatIf, {
+	it("pays one more building back in Δ plan cost ÷ Δ profit days", async () => {
+		const wrapper = await mountCompare();
+		await pick(wrapper, BIGGER.uuid);
+
+		const payback = wrapper.find("[data-payback]").text();
+		const row = wrapper
+			.findAll("tbody tr")
+			.find((r) => r.find("[data-payback]").exists())!;
+		expect(row.text()).toContain(
+			payback === "plan.tools.plan_check.compare.payback.never"
+				? "plan.tools.plan_check.compare.payback.never_formula"
+				: "plan.tools.plan_check.compare.payback.formula"
+		);
+		expect(payback).toMatch(/ d$|payback\.never$/);
+		expect(verdict(wrapper)).toMatch(/verdict\.payback/);
+	});
+
+	it("is the Plan check tool's third view", async () => {
+		usePlanCheckView().view.value = "market";
+		const { wrapper } = await mountComponent(PlanCheck, {
 			plan: OPEN,
 			planUuid: OPEN.uuid,
 			empire: undefined,
@@ -228,21 +249,23 @@ describe("PlanWhatIfCompare", () => {
 			planet: planet_etherwind,
 		});
 		const buttons = wrapper.findAll(
-			"[aria-label='plan.tools.whatif.view_label'] > button"
+			"[aria-label='plan.tools.plan_check.view_label'] > button"
 		);
 		expect(buttons.map((b) => b.text())).toEqual([
-			"plan.tools.whatif.views.sensitivity",
-			"plan.tools.whatif.views.compare",
+			"plan.tools.plan_check.views.market",
+			"plan.tools.plan_check.views.sensitivity",
+			"plan.tools.plan_check.views.compare",
 		]);
 
-		await buttons[1].trigger("click");
+		await buttons[2].trigger("click");
 		await flushPromises();
 		await flushPromises();
 
-		expect(buttons[1].attributes("aria-pressed")).toBe("true");
+		expect(buttons[2].attributes("aria-pressed")).toBe("true");
 		// the price change belongs to the sensitivity view only
-		expect(wrapper.find("#whatif-pct-label").exists()).toBe(false);
-		expect(wrapper.findComponent(PlanWhatIfCompare).exists()).toBe(true);
-		expect(wrapper.findAll("tbody tr")).toHaveLength(8);
+		expect(wrapper.find("#plancheck-pct-label").exists()).toBe(false);
+		expect(wrapper.findComponent(PlanCheckCompare).exists()).toBe(true);
+		// 8 key figures and the payback of the difference
+		expect(wrapper.findAll("tbody tr")).toHaveLength(9);
 	});
 });

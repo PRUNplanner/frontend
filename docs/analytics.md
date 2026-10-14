@@ -79,8 +79,10 @@ reasons come from the backend events and their Axiom panels (signup-01).
 | `plan:share_delete` | | |
 | `plan:tool_toggle` | `tool_name` | a plan tool panel was opened |
 | `plan:profit_breakdown_mode` | `mode` (`cost_type`, `building`) | the Profit Breakdown tool switched between "By cost type" and "By building" |
-| `plan:whatif_change` | `view` (`sensitivity`), `pct` (10, 20, 30, 50) | the What-if tool's price change was switched |
-| `plan:whatif_compare` | `same_planet` | the What-if tool compared the open plan with another plan (each pick, also the preselected one) |
+| `plan:plancheck_change` | `view` (`market`, `sensitivity`, `compare`), `pct` (10, 20, 30, 50; only on a price change) | the Plan check tool's view or price change was switched. Before 2026-10-14 (the What-if tool) it was `plan:whatif_change`, sent only on a price change |
+| `plan:plancheck_compare` | `same_planet` | Plan check compared the open plan with another plan (each pick, also the preselected one). Before 2026-10-14: `plan:whatif_compare` |
+| `plan:plancheck_target` | `has_target` | the target price solver was first used (material or target profit changed), once per open view |
+| `plan:market_flag_open` | `where` (`plan`, `empire`), `level` (`red`, `amber`, `muted`) | a market flag's details were opened in a Material I/O |
 | `plan:cogm_open` | `planet_natural_id`, `recipe_id` | |
 | `plan:insights_open` | `planet_natural_id` | the planet insights box was opened |
 | `plan:starter_show` | `planet_natural_id`, `candidate_count` | the "Start from a typical setup" card was shown on an empty plan, once per plan view |
@@ -120,6 +122,7 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `empire:update` | `is_success` | the empire configuration was saved |
 | `empire:reload` | | |
 | `empire:material_io_expand` | | a Material I/O row was opened |
+| `empire:market_filter` | `level` (`red`, `amber`, `muted`, `null` when cleared) | a market flag chip above the empire's Material I/O was toggled |
 | `empire:view_change` | `view` (`materialio`, `analysis`, `opportunities`) | the empire page switched between Material I/O, Analysis and Production Opportunities, once per switch |
 | `empire:analysis_more_charts` | | the "More charts" section of Empire Analysis was opened |
 | `empire:save_conflict` | `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of the empire configuration was answered |

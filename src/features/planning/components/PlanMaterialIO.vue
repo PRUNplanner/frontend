@@ -6,22 +6,33 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import MarketFlagButton from "@/features/cx/components/MarketFlagButton.vue";
 
 	// Types & Interfaces
 	import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+	import type { IMarketCheck } from "@/features/cx/marketCheck.types";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
+	import { countLevels, flaggedCheck } from "@/features/cx/marketCheck.util";
 
 	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	// UI
 	import { PDataTable, PValue } from "@/ui";
 
+	const emit = defineEmits<{ (e: "open:planCheck"): void }>();
+
 	const props = defineProps({
 		materialIOData: {
 			type: Array as PropType<IMaterialIO[]>,
 			required: true,
+		},
+		// market flags per ticker, shown after the tile
+		checks: {
+			type: Object as PropType<Map<string, IMarketCheck>>,
+			required: false,
+			default: undefined,
 		},
 		// body height; the header stays fixed above it
 		maxHeight: {
@@ -63,6 +74,22 @@
 				: [numeric("price", "cost_day")]),
 		];
 	});
+
+	const flagged = (ticker: string) => flaggedCheck(props.checks, ticker);
+
+	const summary = computed(() => {
+		if (!props.checks) return undefined;
+		const { red, amber } = countLevels([...props.checks.values()]);
+		const parts = [
+			...(red
+				? [t("cx.market_flags.summary.red", { n: red }, red)]
+				: []),
+			...(amber
+				? [t("cx.market_flags.summary.amber", { n: amber }, amber)]
+				: []),
+		];
+		return parts.length ? `${parts.join(", ")}.` : undefined;
+	});
 </script>
 
 <template>
@@ -78,11 +105,18 @@
 			<span class="sr-only">{{ t("terms.material_ticker") }}</span>
 		</template>
 		<template #cell-ticker="{ row }">
-			<MaterialTile
-				:key="`MATERIALIO#MATERIALTILE#${row.ticker}`"
-				:ticker="row.ticker"
-				:daily="row.delta"
-				:disable-drawer="false" />
+			<div class="flex flex-wrap items-center gap-1">
+				<MaterialTile
+					:key="`MATERIALIO#MATERIALTILE#${row.ticker}`"
+					:ticker="row.ticker"
+					:daily="row.delta"
+					:disable-drawer="false" />
+				<MarketFlagButton
+					v-if="flagged(row.ticker)"
+					:check="flagged(row.ticker)!"
+					open-link
+					@open="emit('open:planCheck')" />
+			</div>
 		</template>
 		<template #cell-input="{ row }">
 			<span :class="row.input === 0 ? 'text-muted' : ''">
@@ -113,4 +147,13 @@
 			<PValue :value="row.totalVolume" />
 		</template>
 	</PDataTable>
+	<p v-if="summary" class="pt-2 text-sm text-muted-strong" data-market-summary>
+		{{ summary }}
+		<button
+			type="button"
+			class="inline-flex items-center min-h-11 sm:min-h-6 text-link hover:underline cursor-pointer"
+			@click="emit('open:planCheck')">
+			{{ t("cx.market_flags.summary.link") }}
+		</button>
+	</p>
 </template>

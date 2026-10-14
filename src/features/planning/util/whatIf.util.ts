@@ -1,6 +1,7 @@
 // Engine
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { scaledPriceBook } from "@/features/cx/priceBook";
+import { askBidPriceBook } from "@/features/cx/marketCheck.util";
 
 // Util
 import { paybackDays } from "@/features/sharing/sharedPlan.util";
@@ -8,6 +9,7 @@ import { compactNumber } from "@/ui/charts/charts.util";
 import { formatNumber } from "@/util/numbers";
 
 // Types & Interfaces
+import type { Exchange } from "@/features/api/schemas/gameData.schemas";
 import type {
 	IPlanCalculation,
 	IPlanContext,
@@ -19,6 +21,7 @@ import type {
 	CompareFigure,
 	ICompareRow,
 	IMaterialChange,
+	IPaybackOfDifference,
 	IPriceSensitivity,
 	ISensitivityRow,
 } from "@/features/planning/util/whatIf.types";
@@ -236,7 +239,7 @@ export function compareVerdict(
 	otherName: string,
 	t: (key: string, params?: Record<string, string | number>) => string
 ): string {
-	const key = (k: string) => `plan.tools.whatif.compare.verdict.${k}`;
+	const key = (k: string) => `plan.tools.plan_check.compare.verdict.${k}`;
 	if (!changes.length && rows.every((r) => r.delta === 0))
 		return t(key("same"));
 
@@ -279,4 +282,72 @@ export function compareVerdict(
 		parts.push(t(key("cost"), { name: otherName, cost, tickers }));
 
 	return parts.join(" ");
+}
+
+/**
+ * Price multiplier of one material that moves profit to a target. Profit
+ * is linear in one price, so it is 1 + (target − profit) / slope. Null
+ * when the price can't do it: no slope, or a price of 0 or less.
+ * @author jplacht
+ *
+ * @param {number} profit Daily profit
+ * @param {number} slope Profit change per +100 % price
+ * @param {number} target Daily profit wanted
+ * @returns {number | null} Price multiplier
+ */
+export function targetFactor(
+	profit: number,
+	slope: number,
+	target: number
+): number | null {
+	if (slope === 0) return null;
+	const factor = 1 + (target - profit) / slope;
+	return factor > 0 ? factor : null;
+}
+
+/**
+ * Payback of the difference: the other plan's extra build cost divided by
+ * its extra daily profit
+ * @author jplacht
+ *
+ * @param {IPlanCalculation} a This plan
+ * @param {IPlanCalculation} b Other plan
+ * @returns {IPaybackOfDifference} Payback
+ */
+export function paybackOfDifference(
+	a: IPlanCalculation,
+	b: IPlanCalculation
+): IPaybackOfDifference {
+	const cost =
+		b.overview.totalConstructionCost - a.overview.totalConstructionCost;
+	const profit = b.overview.profit - a.overview.profit;
+	let days: IPaybackOfDifference["days"] = null;
+	if (cost >= EPSILON) days = profit >= EPSILON ? cost / profit : "never";
+	return { cost, profit, days };
+}
+
+/**
+ * The plan buying at ask and selling at bid on each material's volume
+ * exchange (see askBidPriceBook), and the materials that kept their plan
+ * price
+ * @author jplacht
+ *
+ * @param {IPlanInput} input Plan input
+ * @param {IPlanContext} ctx Plan context
+ * @param {(tickerId: string) => Exchange} getExchange Exchange data by id
+ * @returns Calculation and kept materials
+ */
+export function realisticPlan(
+	input: IPlanInput,
+	ctx: IPlanContext,
+	getExchange: (tickerId: string) => Exchange
+) {
+	const { book, kept } = askBidPriceBook(ctx.prices, getExchange);
+	return {
+		calculation: calculatePlan(
+			{ ...input, recipeOptions: false },
+			{ ...ctx, prices: book }
+		),
+		kept,
+	};
 }

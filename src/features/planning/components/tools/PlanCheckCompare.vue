@@ -11,6 +11,7 @@
 	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Composables
+	import { useExchangeData } from "@/database/services/useExchangeData";
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { useCXData } from "@/features/cx/useCXData";
 	import {
@@ -28,13 +29,16 @@
 		compareRows,
 		compareVerdict,
 		materialChanges,
+		paybackOfDifference,
 	} from "@/features/planning/util/whatIf.util";
+	import { formatShare, marketCheck } from "@/features/cx/marketCheck.util";
 	import { paybackDays } from "@/features/sharing/sharedPlan.util";
 	import { compactNumber } from "@/ui/charts/charts.util";
 	import { formatNumber, formatPayback } from "@/util/numbers";
 
 	// Components
 	import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
+	import MarketFlagIcon from "@/features/cx/components/MarketFlagIcon.vue";
 
 	// Types & Interfaces
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
@@ -50,6 +54,11 @@
 		CompareFigure,
 		ICompareRow,
 	} from "@/features/planning/util/whatIf.types";
+	import type {
+		IFlaggedCheck,
+		IMarketCheck,
+		MarketFlagLevel,
+	} from "@/features/cx/marketCheck.types";
 	import type { PDataTableColumn, PSelectOption } from "@/ui/ui.types";
 
 	// UI
@@ -68,6 +77,7 @@
 	const planningStore = usePlanningStore();
 	const { getGameData, createPrices, loadGameData } = usePlanContext();
 	const { findEmpireCXUuid } = useCXData();
+	const { getExchangeTickerLoaded } = useExchangeData();
 	const { materialsMap, getMaterialClass } = useMaterialData();
 
 	/*
@@ -110,7 +120,7 @@
 			...(same.length
 				? [
 						{
-							label: `${t("plan.tools.whatif.compare.same_planet")} · ${props.planet.planet_name}`,
+							label: `${t("plan.tools.plan_check.compare.same_planet")} · ${props.planet.planet_name}`,
 							value: "same",
 							children: same.map((p) => ({
 								label: p.plan_name,
@@ -122,7 +132,7 @@
 			...(rest.length
 				? [
 						{
-							label: t("plan.tools.whatif.compare.other_planets"),
+							label: t("plan.tools.plan_check.compare.other_planets"),
 							value: "other",
 							children: rest.map((p) => ({
 								label: p.plan_name,
@@ -228,7 +238,7 @@
 				const result = await calculateOther(plan);
 				if (run !== latest) return;
 				other.value = result;
-				trackEvent("plan:whatif_compare", {
+				trackEvent("plan:plancheck_compare", {
 					same_planet: samePlanet(plan),
 				});
 			} catch (err) {
@@ -248,16 +258,35 @@
 		other.value ? materialChanges(mine.value, other.value.calculation) : []
 	);
 	const otherName = computed(() => other.value?.plan.plan_name ?? "");
-	const verdict = computed(() =>
-		compareVerdict(rows.value, changes.value, otherName.value, t)
+	const payback = computed(() =>
+		other.value
+			? paybackOfDifference(mine.value, other.value.calculation)
+			: undefined
 	);
+	const verdict = computed(() => {
+		const text = compareVerdict(
+			rows.value,
+			changes.value,
+			otherName.value,
+			t
+		);
+		const p = payback.value;
+		if (!p || p.days === null) return text;
+		const key = "plan.tools.plan_check.compare.verdict";
+		const cost = compactNumber(p.cost);
+		return `${text} ${
+			p.days === "never"
+				? t(`${key}.payback_never`, { cost })
+				: t(`${key}.payback`, { cost, days: formatNumber(p.days, 1) })
+		}`;
+	});
 	const priceSource = computed(() =>
 		other.value?.cxUuid
-			? t("plan.tools.whatif.compare.source_cx", {
+			? t("plan.tools.plan_check.compare.source_cx", {
 					name: otherName.value,
 					cx: planningStore.getCX(other.value.cxUuid).cx_name,
 				})
-			: t("plan.tools.whatif.compare.source_universe", {
+			: t("plan.tools.plan_check.compare.source_universe", {
 					name: otherName.value,
 				})
 	);
@@ -304,26 +333,114 @@
 		};
 	}
 
-	const columns = computed<PDataTableColumn<ICompareRow>[]>(() => [
-		{ key: "figure", title: t("plan.tools.whatif.compare.columns.figure") },
+	const columns = computed<PDataTableColumn<Row>[]>(() => [
+		{ key: "figure", title: t("plan.tools.plan_check.compare.columns.figure") },
 		{ key: "a", align: "right", titleAlign: "right" },
 		{ key: "b", align: "right", titleAlign: "right" },
 		{
 			key: "delta",
-			title: t("plan.tools.whatif.compare.columns.difference"),
+			title: t("plan.tools.plan_check.compare.columns.difference"),
 			align: "right",
 			titleAlign: "right",
 		},
 		{
 			key: "bars",
-			title: t("plan.tools.whatif.compare.columns.side_by_side"),
+			title: t("plan.tools.plan_check.compare.columns.side_by_side"),
 			minWidth: 120,
 		},
 	]);
-	const rowKey = (row: ICompareRow) => row.key;
+	const rowKey = (row: Row) => row.key;
 	// daily profit and ROI decide most comparisons
 	const strong = (row: ICompareRow) =>
 		row.key === "profit" || row.key === "roi";
+
+	// the key figures with the payback of the difference after ROI
+	type Row = ICompareRow | { key: "payback" };
+	const rowClass = (row: Row) =>
+		row.key === "payback" ? "bg-white/5" : "";
+	const tableRows = computed<Row[]>(() => {
+		const i = rows.value.findIndex((r) => r.key === "roi") + 1;
+		return [
+			...rows.value.slice(0, i),
+			{ key: "payback" },
+			...rows.value.slice(i),
+		];
+	});
+	function paybackValue(): string {
+		const days = payback.value?.days;
+		if (days === undefined || days === null) return "–";
+		if (days === "never")
+			return t("plan.tools.plan_check.compare.payback.never");
+		return `${formatNumber(days, 1)} d`;
+	}
+	function paybackFormula(): string {
+		const p = payback.value;
+		if (!p || p.days === null) return "";
+		if (p.days === "never")
+			return t("plan.tools.plan_check.compare.payback.never_formula", {
+				name: otherName.value,
+			});
+		return t("plan.tools.plan_check.compare.payback.formula", {
+			cost: formatNumber(p.cost, 0),
+			profit: formatNumber(p.profit, 0),
+		});
+	}
+
+	/*
+	 * Materials the other plan pushes into a worse market flag
+	 */
+
+	const RANK: Record<MarketFlagLevel, number> = { red: 2, amber: 1, muted: 0 };
+	const rank = (c?: IMarketCheck) => (c?.level ? RANK[c.level] : 0);
+	const checksOf = (
+		c: IPlanCalculation,
+		planetNaturalId: string,
+		cxUuid: string | undefined
+	) =>
+		new Map(
+			marketCheck(
+				c.result.materialio,
+				createPrices(planetNaturalId, cxUuid),
+				getExchangeTickerLoaded
+			).map((m) => [m.ticker, m])
+		);
+	const pushed = computed(() => {
+		const result = new Map<
+			string,
+			IFlaggedCheck
+		>();
+		if (!other.value) return result;
+		const a = checksOf(
+			mine.value,
+			props.planet.planet_natural_id,
+			props.cxUuid
+		);
+		const b = checksOf(
+			other.value.calculation,
+			other.value.plan.planet_natural_id,
+			other.value.cxUuid
+		);
+		for (const [ticker, check] of b)
+			if (rank(check) > rank(a.get(ticker)) && check.level !== "muted")
+				result.set(
+					ticker,
+					check as IFlaggedCheck
+				);
+		return result;
+	});
+	function pushedNote(c: IMarketCheck): string {
+		return t("plan.tools.plan_check.compare.changes.flag", {
+			ticker: c.ticker,
+			name: otherName.value,
+			side: t(`plan.tools.plan_check.side.${c.delta > 0 ? "sell" : "buy"}`),
+			value: formatNumber(Math.abs(c.delta)),
+			share: formatShare(c.sharePct),
+			exchange:
+				c.exchange === "UNIVERSE"
+					? t("cx.market_flags.all_exchanges")
+					: c.exchange,
+		});
+	}
 
 	/*
 	 * What changes
@@ -351,15 +468,15 @@
 <template>
 	<div class="flex flex-col gap-3">
 		<p v-if="failed" class="text-negative py-6">
-			{{ t("plan.tools.whatif.compare.error") }}
+			{{ t("plan.tools.plan_check.compare.error") }}
 		</p>
 		<div v-else-if="!plans" class="py-6 text-center text-muted">
 			<PSpin size="lg" />
 			<br />
-			{{ t("plan.tools.whatif.compare.loading") }}
+			{{ t("plan.tools.plan_check.compare.loading") }}
 		</div>
 		<p v-else-if="!others.length" class="text-muted py-6">
-			{{ t("plan.tools.whatif.compare.no_plans") }}
+			{{ t("plan.tools.plan_check.compare.no_plans") }}
 		</p>
 		<template v-else>
 			<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -369,19 +486,19 @@
 				<div
 					class="flex flex-wrap items-center gap-x-3 gap-y-1 w-full sm:w-auto sm:ml-auto">
 					<span class="text-sm text-muted">
-						{{ t("plan.tools.whatif.compare.picker") }}
+						{{ t("plan.tools.plan_check.compare.picker") }}
 					</span>
 					<PSelect
 						v-model:value="picked"
 						class="w-full sm:w-72"
 						searchable
 						:options="options"
-						:aria-label="t('plan.tools.whatif.compare.picker')" />
+						:aria-label="t('plan.tools.plan_check.compare.picker')" />
 				</div>
 			</div>
 
 			<p v-if="calcFailed" class="text-negative py-6">
-				{{ t("plan.tools.whatif.compare.calc_error") }}
+				{{ t("plan.tools.plan_check.compare.calc_error") }}
 			</p>
 
 			<div
@@ -390,15 +507,16 @@
 				<div class="flex flex-col gap-2 min-w-0">
 					<PDataTable
 						:columns="columns"
-						:data="rows"
+						:data="tableRows"
 						:row-key="rowKey"
+						:row-class="rowClass"
 						:min-width="560">
 						<template #header-a>
 							<span class="inline-flex items-center gap-1.5">
 								<span
 									aria-hidden="true"
 									class="size-2.5 rounded-xs bg-(--chart-ink)/72" />
-								{{ t("plan.tools.whatif.compare.this_plan") }}
+								{{ t("plan.tools.plan_check.compare.this_plan") }}
 							</span>
 						</template>
 						<template #header-b>
@@ -416,38 +534,65 @@
 							<span
 								class="whitespace-nowrap"
 								:class="{
-									'font-bold text-white': strong(row),
+									'font-bold text-white':
+										row.key === 'payback' || strong(row),
 								}">
 								{{
 									t(
-										`plan.tools.whatif.compare.figures.${row.key}`
+										`plan.tools.plan_check.compare.figures.${row.key}`
 									)
 								}}
 							</span>
 						</template>
 						<template #cell-a="{ row }">
-							<span class="tabular-nums whitespace-nowrap">
+							<span v-if="row.key === 'payback'" class="text-muted">
+								–
+							</span>
+							<span v-else class="tabular-nums whitespace-nowrap">
 								{{ value(row.key, row.a) }}
 							</span>
 						</template>
 						<template #cell-b="{ row }">
-							<span class="tabular-nums whitespace-nowrap">
+							<span v-if="row.key === 'payback'" class="text-muted">
+								–
+							</span>
+							<span v-else class="tabular-nums whitespace-nowrap">
 								{{ value(row.key, row.b) }}
 							</span>
 						</template>
 						<template #cell-delta="{ row }">
 							<span
+								v-if="row.key === 'payback'"
+								class="tabular-nums whitespace-nowrap font-bold"
+								:class="
+									payback?.days === 'never'
+										? 'text-negative'
+										: typeof payback?.days === 'number'
+											? 'text-positive'
+											: 'text-muted'
+								"
+								data-payback>
+								{{ paybackValue() }}
+							</span>
+							<span
+								v-else
 								class="tabular-nums whitespace-nowrap font-bold"
 								:class="differenceClass(row)">
 								{{ difference(row) }}
 							</span>
 						</template>
 						<template #cell-bars="{ row }">
+							<span
+								v-if="row.key === 'payback'"
+								class="text-xs text-muted-strong">
+								{{ paybackFormula() }}
+							</span>
 							<div
+								v-else
 								role="img"
 								class="flex flex-col gap-1"
 								:aria-label="
-									t('plan.tools.whatif.compare.bars_label', {
+									t('plan.tools.plan_check.compare.bars_label', {
 										a: value(row.key, row.a),
 										b: value(row.key, row.b),
 										name: otherName,
@@ -463,7 +608,7 @@
 						</template>
 					</PDataTable>
 					<p class="text-xs text-muted">
-						{{ t("plan.tools.whatif.compare.footnote") }}
+						{{ t("plan.tools.plan_check.compare.footnote") }}
 					</p>
 				</div>
 
@@ -471,7 +616,7 @@
 					<div
 						class="flex flex-col gap-2 border border-white/10 rounded p-3 text-sm">
 						<h3 class="font-bold text-white">
-							{{ t("plan.tools.whatif.compare.verdict.title") }}
+							{{ t("plan.tools.plan_check.compare.verdict.title") }}
 						</h3>
 						<p data-verdict>{{ verdict }}</p>
 					</div>
@@ -482,13 +627,13 @@
 							class="flex flex-wrap items-baseline justify-between gap-x-3">
 							<h3 class="font-bold text-white">
 								{{
-									t("plan.tools.whatif.compare.changes.title")
+									t("plan.tools.plan_check.compare.changes.title")
 								}}
 							</h3>
 							<span class="text-xs text-muted">
 								{{
 									t(
-										"plan.tools.whatif.compare.changes.subtitle",
+										"plan.tools.plan_check.compare.changes.subtitle",
 										{
 											name: otherName,
 										}
@@ -497,7 +642,7 @@
 							</span>
 						</div>
 						<p v-if="!changes.length" class="text-muted">
-							{{ t("plan.tools.whatif.compare.changes.none") }}
+							{{ t("plan.tools.plan_check.compare.changes.none") }}
 						</p>
 						<ul v-else class="flex flex-col gap-1">
 							<li v-for="c in shown" :key="c.ticker">
@@ -516,7 +661,7 @@
 												:max-abs="maxAbs"
 												:label="
 													t(
-														'plan.tools.whatif.compare.changes.bar_label',
+														'plan.tools.plan_check.compare.changes.bar_label',
 														{
 															ticker: c.ticker,
 															value: signed(
@@ -529,6 +674,14 @@
 												class="shrink-0 w-16 text-right text-xs font-bold tabular-nums"
 												:class="valueClass(c.delta)">
 												{{ signed(c.delta) }}
+											</span>
+											<span class="shrink-0 w-4">
+												<MarketFlagIcon
+													v-if="pushed.get(c.ticker)"
+													:level="
+														pushed.get(c.ticker)!
+															.level
+													" />
 											</span>
 										</div>
 									</template>
@@ -548,7 +701,7 @@
 											<span class="text-muted">
 												{{
 													t(
-														"plan.tools.whatif.compare.this_plan"
+														"plan.tools.plan_check.compare.this_plan"
 													)
 												}}
 											</span>
@@ -576,14 +729,14 @@
 												class="shrink-0 w-12 px-1 rounded-sm text-xs text-center font-bold bg-white/10 text-muted-strong"
 												:aria-label="
 													t(
-														'plan.tools.whatif.compare.changes.more_label',
+														'plan.tools.plan_check.compare.changes.more_label',
 														{ n: rest.length },
 														rest.length
 													)
 												">
 												{{
 													t(
-														"plan.tools.whatif.compare.changes.more",
+														"plan.tools.plan_check.compare.changes.more",
 														{ n: rest.length }
 													)
 												}}
@@ -594,7 +747,7 @@
 												:max-abs="maxAbs"
 												:label="
 													t(
-														'plan.tools.whatif.compare.changes.bar_label',
+														'plan.tools.plan_check.compare.changes.bar_label',
 														{
 															ticker: rest
 																.map(
@@ -613,6 +766,7 @@
 												:class="valueClass(restSum)">
 												{{ signed(restSum) }}
 											</span>
+											<span class="shrink-0 w-4" />
 										</div>
 									</template>
 									<div
@@ -632,6 +786,14 @@
 								</PTooltip>
 							</li>
 						</ul>
+						<p
+							v-for="c in shown.filter((s) => pushed.has(s.ticker))"
+							:key="`flag-${c.ticker}`"
+							class="flex gap-1.5 text-xs text-muted-strong"
+							data-pushed-flag>
+							<MarketFlagIcon :level="pushed.get(c.ticker)!.level" />
+							{{ pushedNote(pushed.get(c.ticker)!) }}
+						</p>
 					</div>
 				</div>
 			</div>

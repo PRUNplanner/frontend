@@ -8,6 +8,7 @@
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import EmpireMaterialIOSummaryCell from "@/features/empire/components/EmpireMaterialIOSummaryCell.vue";
 	import EmpireMaterialIODetail from "@/features/empire/components/EmpireMaterialIODetail.vue";
+	import MarketFlagButton from "@/features/cx/components/MarketFlagButton.vue";
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
@@ -17,6 +18,7 @@
 	// Util
 	import { formatNumber } from "@/util/numbers";
 	import { summarizeSide } from "@/features/empire/util/empireMaterialIO.util";
+	import { flaggedCheck } from "@/features/cx/marketCheck.util";
 
 	// UI
 	import { PDataTable, PValue } from "@/ui";
@@ -26,6 +28,7 @@
 		IEmpireMaterialIO,
 		IEmpireMaterialIOSide,
 	} from "@/features/empire/empire.types";
+	import type { IMarketCheck } from "@/features/cx/marketCheck.types";
 
 	import type { PDataTableColumn } from "@/ui/ui.types";
 
@@ -34,7 +37,23 @@
 			type: Array as PropType<IEmpireMaterialIO[]>,
 			required: true,
 		},
+		// market flags of the empire's net flow per ticker
+		checks: {
+			type: Object as PropType<Map<string, IMarketCheck>>,
+			required: false,
+			default: undefined,
+		},
+		// each plan's own share per flagged ticker
+		planShares: {
+			type: Object as PropType<
+				Map<string, { name: string; sharePct: number | null }[]>
+			>,
+			required: false,
+			default: undefined,
+		},
 	});
+
+	const flagged = (ticker: string) => flaggedCheck(props.checks, ticker);
 
 	const expandAll = defineModel<boolean>("expandAll", { default: false });
 
@@ -162,10 +181,17 @@
 			:min-width="960"
 			@update:expanded-row-keys="updateExpanded">
 			<template #cell-ticker="{ row }">
-				<MaterialTile
-					:key="row.ticker"
-					:ticker="row.ticker"
-					:daily="row.delta" />
+				<div class="flex flex-wrap items-center gap-1">
+					<MaterialTile
+						:key="row.ticker"
+						:ticker="row.ticker"
+						:daily="row.delta" />
+					<MarketFlagButton
+						v-if="flagged(row.ticker)"
+						:check="flagged(row.ticker)!"
+						where="empire"
+						:plan-shares="planShares?.get(row.ticker)" />
+				</div>
 			</template>
 			<template #cell-delta="{ row }">
 				<PValue class="text-nowrap" :value="row.delta" />

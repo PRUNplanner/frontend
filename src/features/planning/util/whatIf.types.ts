@@ -4,7 +4,7 @@ import type {
 	IPlanResult,
 } from "@/features/planning/usePlanCalculation.types";
 
-export type WhatIfView = "sensitivity" | "compare";
+export type PlanCheckView = "market" | "sensitivity" | "compare";
 
 /** price change in % at which profit is 0, or out of reach */
 export type BreakEven = number | "never" | "over";
@@ -53,4 +53,13 @@ export interface IMaterialChange {
 	b: number;
 	// b − a
 	delta: number;
+}
+
+/** days the other plan's extra profit takes to pay its extra build cost */
+export interface IPaybackOfDifference {
+	// other minus this
+	cost: number;
+	profit: number;
+	// "never": costs more, earns no more; null: costs no more
+	days: number | "never" | null;
 }
