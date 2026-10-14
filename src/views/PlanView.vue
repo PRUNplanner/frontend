@@ -313,6 +313,7 @@
 		| "popr"
 		| "supply-cart"
 		| "construction-cart"
+		| "profit-breakdown"
 		| null;
 	const refShowTool: Ref<toolOptions> = ref(null);
 	if (!refPlanData.value.uuid && !props.shared) {
@@ -346,6 +347,7 @@
 				["construction-cart", "plan.tools.labels.construction_cart"],
 				["supply-cart", "plan.tools.labels.supply_cart"],
 				["repair-analysis", "plan.tools.labels.repair_analysis"],
+				["profit-breakdown", "plan.tools.labels.profit_breakdown"],
 			] as [NonNullable<toolOptions>, string][]
 		).map(([key, label]) => ({ key, label: t(label) }))
 	);
@@ -387,6 +389,11 @@
 				return defineAsyncComponent(
 					() =>
 						import("@/features/planning/components/tools/PlanConstructionCart.vue")
+				);
+			case "profit-breakdown":
+				return defineAsyncComponent(
+					() =>
+						import("@/features/planning/components/tools/PlanProfitBreakdown.vue")
 				);
 			default:
 				return null;
@@ -452,6 +459,16 @@
 						productionBuildingData:
 							result.value.production.buildings,
 						infrastructureData: result.value.infrastructure,
+					},
+					listeners: {},
+				};
+			case "profit-breakdown":
+				return {
+					props: {
+						materialIO: result.value.materialio,
+						workforceMaterialIO: result.value.workforceMaterialIO,
+						buildings: result.value.production.buildings,
+						overview: overviewData.value,
 					},
 					listeners: {},
 				};

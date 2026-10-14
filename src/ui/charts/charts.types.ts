@@ -36,3 +36,55 @@ export interface IStripDot extends IStripItem {
 }
 
 export type IChartZone = "red" | "yellow" | "none";
+
+export interface IWaterfallSegment {
+	/** unique per column, e.g. a material ticker */
+	key: string;
+	/** chip text, e.g. the ticker */
+	label: string;
+	/** size, positive */
+	value: number;
+	/** chip colour class, e.g. the material category */
+	chipClass?: string;
+}
+
+/** neutral grey, negative, negative hatched, positive */
+export type WaterfallTone = "neutral" | "negative" | "hatched" | "positive";
+
+export interface IWaterfallColumn {
+	key: string;
+	label: string;
+	/** a total stands on 0, a step floats from the running total */
+	kind: "total" | "step";
+	/** the total, or the signed change of a step */
+	value: number;
+	tone: WaterfallTone;
+	/** stacked from the column's start, largest first; empty: one bar */
+	segments: IWaterfallSegment[];
+}
+
+export interface IWaterfallSegmentBox extends IWaterfallSegment {
+	/** px from the plot top */
+	top: number;
+	height: number;
+	/** inside the bar, beside it (right) or only in the tooltip */
+	labelAt: "inside" | "beside" | "hidden";
+	/** px from the plot top, for a label beside the bar */
+	labelTop: number;
+}
+
+export interface IWaterfallColumnBox {
+	column: IWaterfallColumn;
+	/** px from the plot top */
+	top: number;
+	height: number;
+	/** px of the running total after this column, where its connector runs */
+	endY: number;
+	segments: IWaterfallSegmentBox[];
+}
+
+export interface IWaterfallLayout {
+	ticks: { value: number; y: number }[];
+	zeroY: number;
+	columns: IWaterfallColumnBox[];
+}

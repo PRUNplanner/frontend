@@ -38,7 +38,45 @@
 			"visitation_frequency": "Visitation Frequency",
 			"construction_cart": "Construction Cart",
 			"supply_cart": "Supply Cart",
-			"repair_analysis": "Repair Analysis"
+			"repair_analysis": "Repair Analysis",
+			"profit_breakdown": "Profit Breakdown"
+		},
+		"profit_breakdown": {
+			"title": "Profit Breakdown",
+			"subtitle": "Where each day's output value goes · ȼ per day at this plan's CX preference",
+			"mode_label": "Break down",
+			"mode": {
+				"cost_type": "By cost type",
+				"building": "By building"
+			},
+			"steps": {
+				"output": "Output value",
+				"inputs": "Production inputs",
+				"workforce": "Workforce",
+				"degradation": "Degradation",
+				"unattributed": "Not attributed",
+				"profit": "Daily profit"
+			},
+			"more": "+{n} more",
+			"more_buildings": "{n} more buildings",
+			"empty": "Add production to see where the profit comes from.",
+			"tooltip": {
+				"produced": "Produced / day",
+				"consumed": "Consumed / day",
+				"price": "Price",
+				"per_day": "ȼ / day",
+				"share": "Share of output",
+				"unattributed": "Buildings are priced on their own: the workforce of the whole plan and materials traded between buildings leave this rest."
+			},
+			"key_figures": {
+				"title": "Key figures",
+				"output": "Output value",
+				"costs": "Costs incl. degradation",
+				"margin": "Margin",
+				"earner": "brings in {share} of the output value. Its price decides this plan.",
+				"cost": "is the largest cost at {share} of the output value.",
+				"workforce": "Workforce consumables take {share} of the output value, most of it {tickers}."
+			}
 		},
 		"popr": {
 			"title": "Latest Population Report",

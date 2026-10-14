@@ -34,6 +34,8 @@ editor UI. The engine is documented in depth in
   - `PlanConstructionCart` and `PlanSupplyCart`: shopping lists, with
     XIT/FIO integration;
   - `PlanPOPR`: population report;
+  - `PlanProfitBreakdown`: waterfall from output value to daily profit
+    (`util/profitBreakdown.util.ts`, drawn by `ui/charts/PWaterfall`);
   - `PlanRepairAnalysis`: uses `repair_analysis`;
   - `PlanVisitationFrequency`.
 
