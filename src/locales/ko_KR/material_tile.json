@@ -14,11 +14,18 @@
 	},
 	"chart": {
 		"title": "시세 기록",
-		"labels": {
+		"range": "30 days",
+		"metric": {
+			"vwap": "@:terms.vwap",
+			"low": "Low",
+			"high": "High",
 			"traded": "@:terms.traded_volume",
-			"low_p": "일일 최저가",
-			"high_p": "일일 최고가"
+			"label": "Chart value"
 		},
-		"value_label": "차트 값"
+		"label": "{metric} of {ticker} on every exchange, last 30 days",
+		"empty": "No trades in the last 30 days",
+		"error": "Market history could not be loaded",
+		"cheapest": "Cheapest now:",
+		"open_exploration": "Open in Market Exploration →"
 	}
 }
