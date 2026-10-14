@@ -38,7 +38,45 @@
 			"visitation_frequency": "Frequenza Di Visitazione",
 			"construction_cart": "Carrello per la Costruzione",
 			"supply_cart": "Carrello per il Rifornimento",
-			"repair_analysis": "Analisi Riparazione"
+			"repair_analysis": "Analisi Riparazione",
+			"profit_breakdown": "Profit Breakdown"
+		},
+		"profit_breakdown": {
+			"title": "Profit Breakdown",
+			"subtitle": "Where each day's output value goes · ȼ per day at this plan's CX preference",
+			"mode_label": "Break down",
+			"mode": {
+				"cost_type": "By cost type",
+				"building": "By building"
+			},
+			"steps": {
+				"output": "Output value",
+				"inputs": "Production inputs",
+				"workforce": "Workforce",
+				"degradation": "Degradation",
+				"unattributed": "Not attributed",
+				"profit": "Daily profit"
+			},
+			"more": "+{n} more",
+			"more_buildings": "{n} more buildings",
+			"empty": "Add production to see where the profit comes from.",
+			"tooltip": {
+				"produced": "Produced / day",
+				"consumed": "Consumed / day",
+				"price": "Price",
+				"per_day": "ȼ / day",
+				"share": "Share of output",
+				"unattributed": "Buildings are priced on their own: the workforce of the whole plan and materials traded between buildings leave this rest."
+			},
+			"key_figures": {
+				"title": "Key figures",
+				"output": "Output value",
+				"costs": "Costs incl. degradation",
+				"margin": "Margin",
+				"earner": "brings in {share} of the output value. Its price decides this plan.",
+				"cost": "is the largest cost at {share} of the output value.",
+				"workforce": "Workforce consumables take {share} of the output value, most of it {tickers}."
+			}
 		},
 		"popr": {
 			"title": "Ultima Rapporto Sulla Popolazione",
@@ -134,20 +172,95 @@
 		},
 		"repair_analysis": {
 			"title": "Analisi Riparazione",
-			"plan": "@:terms.plan",
-			"table": {
-				"select_day": "Seleziona Giorno",
-				"material": "Materiali",
-				"amount": "Quantità",
-				"cost": "Costo",
-				"total_cost": "Costo Totale",
-				"total_weight": "@:terms.total_weight",
-				"total_volume": "@:terms.total_volume"
+			"empty": "This plan has no production buildings to repair.",
+			"footnote": "\"Profit with these repairs\" counts the real repair cost at each interval, instead of the plan header's 1/180 construction share. Intervals are not saved.",
+			"per_day": "ȼ/day",
+			"n_d": "{n} d",
+			"stats": {
+				"profit": "Profit with these repairs",
+				"all_best": "all at best",
+				"vs_best": "{delta} vs. all at best",
+				"next_due": "Next repair due",
+				"repair_cost": "Repair cost",
+				"per_day": "ȼ/day at these intervals",
+				"one_repair": "One repair of every building"
 			},
-			"graph": {
-				"select_building": "Seleziona @:terms.buildings",
-				"individual_building": "@:terms.buildings Individuale",
-				"repair_cost_breakdown": "Ripartizione Costi Di Riparazione"
+			"list": {
+				"title": "Buildings",
+				"hint": "Most expensive repair first · intervals are not saved",
+				"hint_cards": "Tap one for its charts · not saved",
+				"reset": "Reset all to best",
+				"building": "Building",
+				"best": "Best (good)",
+				"interval": "Interval (d)",
+				"interval_label": "Repair interval for {ticker} in days",
+				"next_due": "Next due",
+				"good_range": "Good range",
+				"card_interval": "Every {day} d · best {best} ({from}–{to})"
+			},
+			"detail": {
+				"label": "Building detail",
+				"back": "Back to buildings",
+				"subtitle": "{name} · values for all {n}",
+				"profit_every": "Profit every {day} d",
+				"is_best": "best for this building",
+				"in_range": "in good range, {delta}",
+				"vs_best": "{delta} vs. {best} d",
+				"bill": "Repair bill",
+				"condition": "Condition at repair",
+				"avg_output": "avg output {pct} %",
+				"repair_every": "Repair every",
+				"interval_label": "Repair interval in days",
+				"days": "days",
+				"n_days": "{n} days",
+				"presets": "Presets",
+				"preset_best": "Best · {n} d",
+				"materials_title": "One repair of all {n} at {day} d"
+			},
+			"all": {
+				"title": "All buildings, one repair each",
+				"subtitle": "each at its own interval"
+			},
+			"materials": {
+				"total": "Total {cost} ȼ",
+				"show_all": "Show all {n} materials",
+				"show_less": "Show fewer materials"
+			},
+			"charts": {
+				"profit_title": "Profit per day, by repair interval",
+				"profit_label": "Profit per day by repair interval. Best every {best} days, good from {from} to {to} days.",
+				"fio_legend": "your buildings today (FIO)",
+				"good": "good {from}–{to} d",
+				"tip_every": "Every {day} d: {profit} ȼ/day",
+				"tip_best": "best interval",
+				"tip_delta": "{delta} ȼ/day vs. best ({best} d)",
+				"tradeoff_title": "Why {best} days: repair cost vs. lost output",
+				"tradeoff_hint": "ȼ/day · lowest total = best interval",
+				"repair_cost": "repair cost",
+				"lost_output": "lost output",
+				"total": "total",
+				"condition_title": "Building condition",
+				"x_axis": "days between repairs",
+				"good_one": "good {from} d"
+			},
+			"due": {
+				"overdue": "Overdue {n} d",
+				"today": "Due today",
+				"soon": "Due in {n} d",
+				"later": "In {n} d"
+			},
+			"fio": {
+				"last_update": "FIO last update: {when}",
+				"stale": "This is the last data fetched from FIO. It is more than a day old.",
+				"connect": "Connect FIO to see each building's condition and when its next repair is due.",
+				"connect_link": "Set up FIO in your Profile",
+				"no_site": "No FIO site on {planet} yet. Your buildings and their due dates show here once the base exists and FIO has synced it.",
+				"title": "Your {ticker} on {planet} (FIO)",
+				"count": "FIO: {built} built · plan: {planned}. Amounts and profit follow the plan.",
+				"never_repaired": "never repaired",
+				"since_repair": "{n} d since repair",
+				"xit_due": "XIT for due ones",
+				"stale_amounts": "FIO data is more than a day old, the repair amounts may be higher by now."
 			}
 		},
 		"cogm": {
