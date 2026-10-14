@@ -314,6 +314,7 @@
 		| "supply-cart"
 		| "construction-cart"
 		| "profit-breakdown"
+		| "what-if"
 		| null;
 	const refShowTool: Ref<toolOptions> = ref(null);
 	if (!refPlanData.value.uuid && !props.shared) {
@@ -348,6 +349,7 @@
 				["supply-cart", "plan.tools.labels.supply_cart"],
 				["repair-analysis", "plan.tools.labels.repair_analysis"],
 				["profit-breakdown", "plan.tools.labels.profit_breakdown"],
+				["what-if", "plan.tools.labels.whatif"],
 			] as [NonNullable<toolOptions>, string][]
 		).map(([key, label]) => ({ key, label: t(label) }))
 	);
@@ -394,6 +396,11 @@
 				return defineAsyncComponent(
 					() =>
 						import("@/features/planning/components/tools/PlanProfitBreakdown.vue")
+				);
+			case "what-if":
+				return defineAsyncComponent(
+					() =>
+						import("@/features/planning/components/tools/PlanWhatIf.vue")
 				);
 			default:
 				return null;
@@ -470,6 +477,16 @@
 						workforceMaterialIO: result.value.workforceMaterialIO,
 						buildings: result.value.production.buildings,
 						overview: overviewData.value,
+					},
+					listeners: {},
+				};
+			case "what-if":
+				return {
+					props: {
+						plan: refPlanData.value,
+						empire: computedActiveEmpire.value,
+						cxUuid: refCXUuid.value,
+						planet: planetData,
 					},
 					listeners: {},
 				};

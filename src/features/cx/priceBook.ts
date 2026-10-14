@@ -281,3 +281,26 @@ export function enhanceMaterialIOMaterial(
 
 	return enhancedArray;
 }
+
+/**
+ * A price book with one material's BUY and SELL price multiplied, every
+ * other price read from the given book. For what-if calculations.
+ * @author jplacht
+ *
+ * @param {IPriceBook} book Price Book
+ * @param {string} ticker Material to scale
+ * @param {number} factor Multiplier, e.g. 1.2 for +20 %
+ * @returns {IPriceBook} Scaled Price Book
+ */
+export function scaledPriceBook(
+	book: IPriceBook,
+	ticker: string,
+	factor: number
+): IPriceBook {
+	return {
+		getPrice(materialTicker: string, type: PriceType): number {
+			const price = book.getPrice(materialTicker, type);
+			return materialTicker === ticker ? price * factor : price;
+		},
+	};
+}

@@ -39,7 +39,8 @@
 			"construction_cart": "Construction Cart",
 			"supply_cart": "Supply Cart",
 			"repair_analysis": "Repair Analysis",
-			"profit_breakdown": "Profit Breakdown"
+			"profit_breakdown": "Profit Breakdown",
+			"whatif": "What-if"
 		},
 		"profit_breakdown": {
 			"title": "Profit Breakdown",
@@ -322,6 +323,53 @@
 			"applied": "Typical setup added: {n} building | Typical setup added: {n} buildings",
 			"empty": "No buildings yet. Add one above, or {link}",
 			"show": "start from a typical setup"
+		},
+		"whatif": {
+			"title": "What-if",
+			"view_label": "View",
+			"views": {
+				"sensitivity": "Price sensitivity"
+			},
+			"pct_label": "Change each price by",
+			"pct": "±{pct} %",
+			"columns": {
+				"material": "Material",
+				"side": "Side",
+				"change": "Profit falls ← · → Profit rises",
+				"range": "Profit range ȼ/day",
+				"break_even": "Break-even"
+			},
+			"side": {
+				"buy": "buy",
+				"sell": "sell"
+			},
+			"never": "never",
+			"over": "> +500 %",
+			"more": "+ {n} more material ({tickers}) moves profit by less than ±{value} ȼ/day | + {n} more materials ({tickers}) move profit by less than ±{value} ȼ/day",
+			"footnote": {
+				"centre": "Centre line = today's profit, {profit} ȼ/day. Each bar changes one price, everything else stays.",
+				"break_even": "Break-even = price change at which this plan stops making money."
+			},
+			"empty": "Add production to see which prices this plan depends on.",
+			"tooltip": {
+				"value": "Value / day at today's price",
+				"profit": "Profit at {change}"
+			},
+			"means": {
+				"title": "What this means",
+				"lower": "A {pct} % lower {ticker} price cuts profit to {profit} ȼ/day.",
+				"higher": "A {pct} % higher {ticker} price cuts profit to {profit} ȼ/day.",
+				"break_even": "At {change} the plan breaks even.",
+				"never": "It stays profitable even if this price drops to 0.",
+				"never_loss": "No change to this price alone brings the plan to break-even.",
+				"over": "Its price would have to change by more than +500 % to break even.",
+				"profit_if": "Profit if {ticker} {change}",
+				"roi_if": "ROI if {ticker} {change}",
+				"all_costs": "All costs +{pct} %",
+				"most_sensitive": "Most sensitive",
+				"source_cx": "Prices: {name}, from the plan's CX preference",
+				"source_universe": "Prices: Universe 30-day average, the plan has no CX preference"
+			}
 		}
 	},
 	"components": {
