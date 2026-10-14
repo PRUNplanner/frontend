@@ -9,6 +9,7 @@
 		type PropType,
 		ref,
 		type Ref,
+		useTemplateRef,
 		watch,
 	} from "vue";
 
@@ -53,6 +54,13 @@
 	const { getPlanet } = usePlanetData();
 	import { useCXData } from "@/features/cx/useCXData";
 	const { findEmpireCXUuid } = useCXData();
+	import { useExchangeData } from "@/database/services/useExchangeData";
+	const { getExchangeTickerLoaded } = useExchangeData();
+	import { usePlanContext } from "@/features/planning/usePlanContext";
+	const { createPrices } = usePlanContext();
+	import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
+	const { view: planCheckView } = usePlanCheckView();
+	import { marketCheck } from "@/features/cx/marketCheck.util";
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { usePlan } from "@/features/planning_data/usePlan";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
@@ -314,7 +322,7 @@
 		| "supply-cart"
 		| "construction-cart"
 		| "profit-breakdown"
-		| "what-if"
+		| "plan-check"
 		| null;
 	const refShowTool: Ref<toolOptions> = ref(null);
 	if (!refPlanData.value.uuid && !props.shared) {
@@ -334,6 +342,29 @@
 		});
 	}
 
+	// market flags of the plan's net material flow, priced like the plan
+	const marketChecks = computed(
+		() =>
+			new Map(
+				marketCheck(
+					result.value.materialio,
+					createPrices(planetData.planet_natural_id, refCXUuid.value),
+					getExchangeTickerLoaded
+				).map((c) => [c.ticker, c])
+			)
+	);
+
+	const refTools = useTemplateRef<HTMLElement>("tools");
+
+	// from the Material I/O: Plan check on its Market check, in view
+	function openPlanCheck(): void {
+		planCheckView.value = "market";
+		if (refShowTool.value !== "plan-check") toggleTool("plan-check");
+		setTimeout(() =>
+			refTools.value?.scrollIntoView({ behavior: "smooth", block: "start" })
+		);
+	}
+
 	const toolTabs = computed(() =>
 		(
 			[
@@ -349,7 +380,7 @@
 				["supply-cart", "plan.tools.labels.supply_cart"],
 				["repair-analysis", "plan.tools.labels.repair_analysis"],
 				["profit-breakdown", "plan.tools.labels.profit_breakdown"],
-				["what-if", "plan.tools.labels.whatif"],
+				["plan-check", "plan.tools.labels.plan_check"],
 			] as [NonNullable<toolOptions>, string][]
 		).map(([key, label]) => ({ key, label: t(label) }))
 	);
@@ -397,10 +428,10 @@
 					() =>
 						import("@/features/planning/components/tools/PlanProfitBreakdown.vue")
 				);
-			case "what-if":
+			case "plan-check":
 				return defineAsyncComponent(
 					() =>
-						import("@/features/planning/components/tools/PlanWhatIf.vue")
+						import("@/features/planning/components/tools/PlanCheck.vue")
 				);
 			default:
 				return null;
@@ -480,7 +511,7 @@
 					},
 					listeners: {},
 				};
-			case "what-if":
+			case "plan-check":
 				return {
 					props: {
 						plan: refPlanData.value,
@@ -1212,7 +1243,7 @@
 				<HelpDrawer file-name="plan" />
 			</div>
 			<!-- Tools Container -->
-			<div class="row-4 col-span-full">
+			<div ref="tools" class="row-4 col-span-full scroll-mt-2">
 				<div class="border-y border-white/10 px-3">
 					<PlanToolTabs
 						:tabs="toolTabs"
@@ -1464,7 +1495,9 @@
 							<PlanMaterialIO
 								:material-i-o-data="result.materialio"
 								max-height="calc(100dvh - 10rem)"
-								:show-basked="refMaterialIOShowBasked" />
+								:show-basked="refMaterialIOShowBasked"
+								:checks="marketChecks"
+								@open:plan-check="openPlanCheck" />
 						</template>
 						<template v-else>
 							<h3 class="font-bold pb-3">

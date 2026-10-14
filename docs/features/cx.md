@@ -21,6 +21,23 @@ and small CX helpers. Every price in the app is resolved by a `PriceBook`
   header comment documents the resolution order: planet ticker → empire
   ticker → planet exchange → empire exchange → UNIVERSE 30D VWAP. A price
   that can't be resolved is 0 and logged.
+  `getPriceSource(ticker, type)` tells where a price came from, resolved
+  and cached with it: `level` (`planet_ticker`, `empire_ticker`,
+  `planet_exchange`, `empire_exchange`, `fallback`, `unresolved`),
+  `exchange` and `key` (null for fixed ticker values), `zero`, and
+  `volume`, the exchange whose traded volume the price is checked against
+  (the source's exchange, else the planet or empire exchange preference,
+  else UNIVERSE). `scaledPriceBook` passes it through.
+- **`marketCheck.util.ts`**: market flags.
+  - `marketCheck(flows, book, getExchange)` checks each material's daily
+    flow against its volume exchange: share of the 30-day daily volume
+    (amber ≥ 10 %, red ≥ 50 %, constants calibrated on real plans), no
+    trades in 7 days, no offers or buyers, no price, all exchanges
+    (fallback) and stale data. Spreads are shown, never flagged.
+  - `askBidPriceBook(book, getExchange)` buys at ask and sells at bid, for
+    the plan at real prices (`planning/util/whatIf.util.realisticPlan`).
+  - Used by the plan's and the empire's Material I/O
+    (`components/MarketFlagButton`, `MarketFlagIcon`) and Plan check.
 - **`usePrice.ts`**: `usePrice(cxUuidRef, planetNaturalIdRef)`, the async
   API for components:
   - `getPrice(ticker, "BUY" | "SELL")`;
@@ -64,5 +81,6 @@ and small CX helpers. Every price in the app is resolved by a `PriceBook`
 
 ## Tests
 
-`src/tests/features/cx/priceBook.test.ts`, `usePrice.test.ts`,
-`useCXData.test.ts`, `useCXSave.test.ts` and `cxDiff.test.ts`.
+`src/tests/features/cx/priceBook.test.ts`, `marketCheck.util.test.ts`,
+`usePrice.test.ts`, `useCXData.test.ts`, `useCXSave.test.ts`,
+`cxDiff.test.ts`; the flag button is tested through `planning/components/PlanMaterialIO.test.ts`.

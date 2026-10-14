@@ -2,10 +2,18 @@ import { bench, describe, vi } from "vitest";
 
 // Engine
 import { usePlanContext } from "@/features/planning/usePlanContext";
-import { priceSensitivity } from "@/features/planning/util/whatIf.util";
+import {
+	priceSensitivity,
+	realisticPlan,
+} from "@/features/planning/util/whatIf.util";
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { createPriceBook } from "@/features/cx/priceBook";
+import { marketCheck } from "@/features/cx/marketCheck.util";
+import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Types & Interfaces
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { CXData } from "@/features/api/schemas/cxData.schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
@@ -30,7 +38,7 @@ vi.mock("@/database/services/usePlanetData", async () => {
 });
 
 /**
- * Opening the What-if price sensitivity view: the base plan plus one
+ * Opening the Plan check price sensitivity view: the base plan plus one
  * recalculation per material. Budget 100 ms for a 20-building plan, run
  * with `pnpm vitest bench --run`. Node + jsdom numbers.
  */
@@ -50,11 +58,47 @@ const plans: [string, () => Plan][] = [
 	["20 buildings", twentyBuildings],
 ];
 
-describe("what-if price sensitivity", () => {
+describe("plan check price sensitivity", () => {
 	for (const [name, factory] of plans) {
 		const input = { plan: factory(), empire: undefined, cxUuid: undefined };
 		bench(name, () => {
 			priceSensitivity(input, ctx);
+		});
+	}
+});
+
+/**
+ * Opening the Market check view: the plan, a check per material and the
+ * plan at ask/bid prices, with an exchange preference. Budget 100 ms for a
+ * 20-building plan.
+ */
+
+const { getExchangeTickerLoaded } = useExchangeData();
+const cx: CXData = {
+	cx_empire: [{ type: "BOTH", exchange: "AI1_30D" }],
+	cx_planets: [],
+	ticker_empire: [],
+	ticker_planets: [],
+};
+
+describe("plan check market check", () => {
+	for (const [name, factory] of plans) {
+		const input = { plan: factory(), empire: undefined, cxUuid: "cx" };
+		bench(name, () => {
+			const priced = {
+				...ctx,
+				prices: createPriceBook(
+					() => cx,
+					"KW-688c",
+					getExchangeTickerLoaded
+				),
+			};
+			const { result } = calculatePlan(
+				{ ...input, recipeOptions: false },
+				priced
+			);
+			marketCheck(result.materialio, priced.prices, getExchangeTickerLoaded);
+			realisticPlan(input, priced, getExchangeTickerLoaded);
 		});
 	}
 });

@@ -1,12 +1,3 @@
-<script lang="ts">
-	import { ref } from "vue";
-	import type { WhatIfView } from "@/features/planning/util/whatIf.types";
-
-	// module scope: view and price change survive closing and reopening
-	const view = ref<WhatIfView>("sensitivity");
-	const pct = ref<number>(20);
-</script>
-
 <script setup lang="ts">
 	import { computed, defineAsyncComponent } from "vue";
 	import { useI18n } from "vue-i18n";
@@ -18,6 +9,7 @@
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { usePlanContext } from "@/features/planning/usePlanContext";
+	import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
@@ -30,6 +22,9 @@
 
 	// Components
 	import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
+	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import PlanCheckMarket from "@/features/planning/components/tools/PlanCheckMarket.vue";
+	import PlanCheckTarget from "@/features/planning/components/tools/PlanCheckTarget.vue";
 
 	// Types & Interfaces
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
@@ -38,6 +33,7 @@
 	import type {
 		BreakEven,
 		ISensitivityRow,
+		PlanCheckView,
 	} from "@/features/planning/util/whatIf.types";
 	import type { IChartZone } from "@/ui/charts/charts.types";
 	import type { PDataTableColumn } from "@/ui/ui.types";
@@ -47,9 +43,9 @@
 
 	const { t } = useI18n();
 
-	const PlanWhatIfCompare = defineAsyncComponent(
+	const PlanCheckCompare = defineAsyncComponent(
 		() =>
-			import("@/features/planning/components/tools/PlanWhatIfCompare.vue")
+			import("@/features/planning/components/tools/PlanCheckCompare.vue")
 	);
 
 	const props = defineProps<{
@@ -64,6 +60,7 @@
 	const userStore = useUserStore();
 	const { getGameData, createPrices } = usePlanContext();
 	const { materialsMap, getMaterialClass } = useMaterialData();
+	const { view, pct } = usePlanCheckView();
 
 	// runs only while the tool is open; a new price book per run picks up
 	// CX preference changes
@@ -82,18 +79,26 @@
 	});
 
 	// comparing needs the user's own plans
-	const views = computed<WhatIfView[]>(() =>
-		userStore.isLoggedIn ? ["sensitivity", "compare"] : ["sensitivity"]
+	const views = computed<PlanCheckView[]>(() =>
+		userStore.isLoggedIn
+			? ["market", "sensitivity", "compare"]
+			: ["market", "sensitivity"]
 	);
-	const shownView = computed<WhatIfView>(() =>
-		views.value.includes(view.value) ? view.value : "sensitivity"
+	const shownView = computed<PlanCheckView>(() =>
+		views.value.includes(view.value) ? view.value : "market"
 	);
 	const PCTS = [10, 20, 30, 50];
+
+	function setView(value: PlanCheckView): void {
+		if (view.value === value) return;
+		view.value = value;
+		trackEvent("plan:plancheck_change", { view: value });
+	}
 
 	function setPct(value: number): void {
 		if (pct.value === value) return;
 		pct.value = value;
-		trackEvent("plan:whatif_change", { view: view.value, pct: value });
+		trackEvent("plan:plancheck_change", { view: view.value, pct: value });
 	}
 
 	/*
@@ -120,8 +125,8 @@
 		`${hurtsLower(row) ? "−" : "+"}${pct.value} %`;
 
 	function breakEvenLabel(value: BreakEven): string {
-		if (value === "never") return t("plan.tools.whatif.never");
-		if (value === "over") return t("plan.tools.whatif.over");
+		if (value === "never") return t("plan.tools.plan_check.never");
+		if (value === "over") return t("plan.tools.plan_check.over");
 		return signedPct(value);
 	}
 
@@ -141,22 +146,22 @@
 		materialsMap.value[ticker] ? getMaterialClass(ticker) : "bg-black/40";
 
 	const columns = computed<PDataTableColumn<ISensitivityRow>[]>(() => [
-		{ key: "ticker", title: t("plan.tools.whatif.columns.material") },
-		{ key: "side", title: t("plan.tools.whatif.columns.side") },
+		{ key: "ticker", title: t("plan.tools.plan_check.columns.material") },
+		{ key: "side", title: t("plan.tools.plan_check.columns.side") },
 		{
 			key: "bar",
-			title: t("plan.tools.whatif.columns.change"),
+			title: t("plan.tools.plan_check.columns.change"),
 			titleAlign: "center",
 			minWidth: 280,
 		},
 		{
 			key: "range",
-			title: t("plan.tools.whatif.columns.range"),
+			title: t("plan.tools.plan_check.columns.range"),
 			align: "right",
 		},
 		{
 			key: "breakEven",
-			title: t("plan.tools.whatif.columns.break_even"),
+			title: t("plan.tools.plan_check.columns.break_even"),
 			align: "right",
 		},
 	]);
@@ -184,10 +189,10 @@
 	);
 	const priceSource = computed(() =>
 		props.cxUuid
-			? t("plan.tools.whatif.means.source_cx", {
+			? t("plan.tools.plan_check.means.source_cx", {
 					name: planningStore.getCX(props.cxUuid).cx_name,
 				})
-			: t("plan.tools.whatif.means.source_universe")
+			: t("plan.tools.plan_check.means.source_universe")
 	);
 </script>
 
@@ -195,52 +200,58 @@
 	<div class="@container flex flex-col gap-3">
 		<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
 			<h2 class="text-white/80 font-bold text-lg">
-				{{ t("plan.tools.whatif.title") }}
+				{{ t("plan.tools.plan_check.title") }}
 			</h2>
 			<PButtonGroup
 				v-if="views.length > 1"
 				role="group"
-				:aria-label="t('plan.tools.whatif.view_label')">
+				:aria-label="t('plan.tools.plan_check.view_label')">
 				<PButton
 					v-for="v in views"
 					:key="v"
 					class="min-h-11 @[640px]:min-h-0"
 					:pressed="shownView === v"
-					@click="view = v">
-					{{ t(`plan.tools.whatif.views.${v}`) }}
+					@click="setView(v)">
+					{{ t(`plan.tools.plan_check.views.${v}`) }}
 				</PButton>
 			</PButtonGroup>
-			<span v-else class="text-sm text-muted">
-				{{ t(`plan.tools.whatif.views.${shownView}`) }}
-			</span>
+			<HelpDrawer
+				file-name="plan_check"
+				:drawer-title="t('plan.tools.plan_check.title')" />
 			<div
 				v-if="shownView === 'sensitivity'"
 				class="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1">
-				<span id="whatif-pct-label" class="text-sm text-muted">
-					{{ t("plan.tools.whatif.pct_label") }}
+				<span id="plancheck-pct-label" class="text-sm text-muted">
+					{{ t("plan.tools.plan_check.pct_label") }}
 				</span>
-				<PButtonGroup role="group" aria-labelledby="whatif-pct-label">
+				<PButtonGroup role="group" aria-labelledby="plancheck-pct-label">
 					<PButton
 						v-for="p in PCTS"
 						:key="p"
 						class="min-h-11 @[640px]:min-h-0"
 						:pressed="pct === p"
 						@click="setPct(p)">
-						{{ t("plan.tools.whatif.pct", { pct: p }) }}
+						{{ t("plan.tools.plan_check.pct", { pct: p }) }}
 					</PButton>
 				</PButtonGroup>
 			</div>
 		</div>
 
-		<PlanWhatIfCompare
-			v-if="shownView === 'compare'"
+		<PlanCheckMarket
+			v-if="shownView === 'market'"
+			:plan="plan"
+			:empire="empire"
+			:cx-uuid="cxUuid"
+			:planet="planet" />
+		<PlanCheckCompare
+			v-else-if="shownView === 'compare'"
 			:plan="plan"
 			:plan-uuid="planUuid"
 			:empire="empire"
 			:cx-uuid="cxUuid"
 			:planet="planet" />
 		<p v-else-if="!sensitivity.rows.length" class="text-muted py-6">
-			{{ t("plan.tools.whatif.empty") }}
+			{{ t("plan.tools.plan_check.empty") }}
 		</p>
 		<div
 			v-else
@@ -261,7 +272,7 @@
 					<template #cell-side="{ row }">
 						<span
 							class="px-1.5 border border-white/20 rounded-sm text-xs text-muted-strong">
-							{{ t(`plan.tools.whatif.side.${row.side}`) }}
+							{{ t(`plan.tools.plan_check.side.${row.side}`) }}
 						</span>
 					</template>
 					<template #cell-bar="{ row }">
@@ -274,7 +285,7 @@
 									:text="`+${money(impact(row))}`"
 									:neg-text="`−${money(impact(row))}`"
 									:label="
-										t('plan.tools.whatif.bar_label', {
+										t('plan.tools.plan_check.bar_label', {
 											ticker: row.ticker,
 											value: money(impact(row)),
 										})
@@ -291,7 +302,7 @@
 								</div>
 								<div class="flex justify-between gap-4">
 									<span class="text-muted">
-										{{ t("plan.tools.whatif.tooltip.value") }}
+										{{ t("plan.tools.plan_check.tooltip.value") }}
 									</span>
 									<span class="tabular-nums">
 										{{ money(Math.abs(row.slope)) }} ȼ
@@ -303,7 +314,7 @@
 									class="flex justify-between gap-4">
 									<span class="text-muted">
 										{{
-											t("plan.tools.whatif.tooltip.profit", {
+											t("plan.tools.plan_check.tooltip.profit", {
 												change: `${sign < 0 ? "−" : "+"}${pct} %`,
 											})
 										}}
@@ -338,7 +349,7 @@
 				<p v-if="rest.length" class="text-xs text-muted">
 					{{
 						t(
-							"plan.tools.whatif.more",
+							"plan.tools.plan_check.more",
 							{
 								n: rest.length,
 								tickers: rest.map((r) => r.ticker).join(", "),
@@ -351,100 +362,106 @@
 				<p class="text-xs text-muted flex flex-wrap gap-x-6">
 					<span>
 						{{
-							t("plan.tools.whatif.footnote.centre", {
+							t("plan.tools.plan_check.footnote.centre", {
 								profit: money(profit),
 							})
 						}}
 					</span>
-					<span>{{ t("plan.tools.whatif.footnote.break_even") }}</span>
+					<span>{{ t("plan.tools.plan_check.footnote.break_even") }}</span>
 				</p>
 			</div>
 
-			<div
-				v-if="top && adverse"
-				class="flex flex-col gap-3 border border-white/10 rounded p-3 text-sm">
-				<h3 class="font-bold text-white">
-					{{ t("plan.tools.whatif.means.title") }}
-				</h3>
-				<p class="flex gap-2">
-					<span
-						class="shrink-0 h-fit min-w-10 px-1 rounded-sm text-xs text-center font-bold"
-						:class="chipClass(top.ticker)">
-						{{ top.ticker }}
-					</span>
-					<span>
-						{{
-							t(
-								hurtsLower(top)
-									? "plan.tools.whatif.means.lower"
-									: "plan.tools.whatif.means.higher",
-								{
-									pct,
-									ticker: top.ticker,
-									profit: money(adverse.profit),
-								}
-							)
-						}}
-						{{
-							typeof top.breakEven === "number"
-								? t("plan.tools.whatif.means.break_even", {
-										change: signedPct(top.breakEven),
+			<div class="flex flex-col gap-3">
+				<PlanCheckTarget
+					:ctx="sensitivity.ctx"
+					:profit="profit"
+					:rows="sensitivity.rows" />
+				<div
+					v-if="top && adverse"
+					class="flex flex-col gap-3 border border-white/10 rounded p-3 text-sm">
+					<h3 class="font-bold text-white">
+						{{ t("plan.tools.plan_check.means.title") }}
+					</h3>
+					<p class="flex gap-2">
+						<span
+							class="shrink-0 h-fit min-w-10 px-1 rounded-sm text-xs text-center font-bold"
+							:class="chipClass(top.ticker)">
+							{{ top.ticker }}
+						</span>
+						<span>
+							{{
+								t(
+									hurtsLower(top)
+										? "plan.tools.plan_check.means.lower"
+										: "plan.tools.plan_check.means.higher",
+									{
+										pct,
+										ticker: top.ticker,
+										profit: money(adverse.profit),
+									}
+								)
+							}}
+							{{
+								typeof top.breakEven === "number"
+									? t("plan.tools.plan_check.means.break_even", {
+											change: signedPct(top.breakEven),
+										})
+									: top.breakEven === "never" && profit < 0
+										? t("plan.tools.plan_check.means.never_loss")
+										: t(`plan.tools.plan_check.means.${top.breakEven}`)
+							}}
+						</span>
+					</p>
+					<dl class="flex flex-col divide-y divide-white/10">
+						<div class="flex justify-between gap-3 py-1.5">
+							<dt>
+								{{
+									t("plan.tools.plan_check.means.profit_if", {
+										ticker: top.ticker,
+										change: adverseChange(top),
 									})
-								: top.breakEven === "never" && profit < 0
-									? t("plan.tools.whatif.means.never_loss")
-									: t(`plan.tools.whatif.means.${top.breakEven}`)
-						}}
-					</span>
-				</p>
-				<dl class="flex flex-col divide-y divide-white/10">
-					<div class="flex justify-between gap-3 py-1.5">
-						<dt>
-							{{
-								t("plan.tools.whatif.means.profit_if", {
-									ticker: top.ticker,
-									change: adverseChange(top),
-								})
-							}}
-						</dt>
-						<dd class="font-bold tabular-nums">
-							{{ money(adverse.profit) }} ȼ
-						</dd>
-					</div>
-					<div class="flex justify-between gap-3 py-1.5">
-						<dt>
-							{{
-								t("plan.tools.whatif.means.roi_if", {
-									ticker: top.ticker,
-									change: adverseChange(top),
-								})
-							}}
-						</dt>
-						<dd class="font-bold tabular-nums">
-							{{ formatPayback(adverse.roi) }}
-						</dd>
-					</div>
-					<div class="flex justify-between gap-3 py-1.5">
-						<dt>
-							{{ t("plan.tools.whatif.means.all_costs", { pct }) }}
-						</dt>
-						<dd class="font-bold tabular-nums">
-							{{ money(allCosts) }} ȼ
-						</dd>
-					</div>
-					<div class="flex justify-between items-center gap-3 py-1.5">
-						<dt>{{ t("plan.tools.whatif.means.most_sensitive") }}</dt>
-						<dd class="flex gap-1">
-							<span
-								v-for="r in sensitivity.rows.slice(0, 3)"
-								:key="r.ticker"
-								class="min-w-10 px-1 rounded-sm text-xs text-center font-bold"
-								:class="chipClass(r.ticker)">
-								{{ r.ticker }}
-							</span>
-						</dd>
-					</div>
-				</dl>
-				<p class="text-xs text-muted">{{ priceSource }}</p>
+								}}
+							</dt>
+							<dd class="font-bold tabular-nums">
+								{{ money(adverse.profit) }} ȼ
+							</dd>
+						</div>
+						<div class="flex justify-between gap-3 py-1.5">
+							<dt>
+								{{
+									t("plan.tools.plan_check.means.roi_if", {
+										ticker: top.ticker,
+										change: adverseChange(top),
+									})
+								}}
+							</dt>
+							<dd class="font-bold tabular-nums">
+								{{ formatPayback(adverse.roi) }}
+							</dd>
+						</div>
+						<div class="flex justify-between gap-3 py-1.5">
+							<dt>
+								{{ t("plan.tools.plan_check.means.all_costs", { pct }) }}
+							</dt>
+							<dd class="font-bold tabular-nums">
+								{{ money(allCosts) }} ȼ
+							</dd>
+						</div>
+						<div class="flex justify-between items-center gap-3 py-1.5">
+							<dt>{{ t("plan.tools.plan_check.means.most_sensitive") }}</dt>
+							<dd class="flex gap-1">
+								<span
+									v-for="r in sensitivity.rows.slice(0, 3)"
+									:key="r.ticker"
+									class="min-w-10 px-1 rounded-sm text-xs text-center font-bold"
+									:class="chipClass(r.ticker)">
+									{{ r.ticker }}
+								</span>
+							</dd>
+						</div>
+					</dl>
+					<p class="text-xs text-muted">{{ priceSource }}</p>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -247,6 +247,7 @@ describe("planning engine", () => {
 						technicianOnly.includes(ticker)
 							? 1e6
 							: ctx.prices.getPrice(ticker, type),
+					getPriceSource: ctx.prices.getPriceSource,
 				},
 			});
 			expect(expensive.activeRecipes[0].cogm).toStrictEqual(

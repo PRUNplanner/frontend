@@ -38,15 +38,28 @@ editor UI. The engine is documented in depth in
     (`util/profitBreakdown.util.ts`, drawn by `ui/charts/PWaterfall`);
   - `PlanRepairAnalysis`: uses `repair_analysis`;
   - `PlanVisitationFrequency`;
-  - `PlanWhatIf`: price sensitivity, how far profit moves per material
-    price and each break-even price change (`util/whatIf.util.ts`, one
-    recalculation per material with `cx/priceBook.scaledPriceBook`, drawn
-    by `ui/charts/PDivergingBar`). Logged in, its second view
-    `PlanWhatIfCompare` compares the open plan with another of the user's
-    plans (`GetAllPlans`): key figures, material changes and a verdict
-    (`compareRows`, `materialChanges`, `compareVerdict`). The other plan is
-    calculated as its own plan view does: its first empire and that
-    empire's CX preference.
+  - `PlanCheck` (tool key `plan-check`, called What-if before 2026-10-14):
+    three views, kept per tab in `usePlanCheckView`. The plan's Material
+    I/O opens it on Market check.
+    - `PlanCheckMarket` (default): market flags per material
+      (`cx/marketCheck.util.ts`, see [cx.md](cx.md)), the plan at real
+      ask/bid prices (`whatIf.util.realisticPlan`) and a summary.
+    - Price sensitivity: how far profit moves per material price and each
+      break-even price change (`util/whatIf.util.ts`, one recalculation per
+      material with `cx/priceBook.scaledPriceBook`, drawn by
+      `ui/charts/PDivergingBar`). `PlanCheckTarget` solves the price for a
+      target profit (`targetFactor`) and fetches the exchange's 30-day
+      range (`GetExplorationData`) once it is used.
+    - Logged in, `PlanCheckCompare` compares the open plan with another of
+      the user's plans (`GetAllPlans`): key figures, the payback of the
+      difference (`paybackOfDifference`), material changes with the flags
+      the other plan pushes them into, and a verdict (`compareRows`,
+      `materialChanges`, `compareVerdict`). The other plan is calculated as
+      its own plan view does: its first empire and that empire's CX
+      preference.
+- `PlanMaterialIO` shows a market flag button after a flagged material
+  (`cx/components/MarketFlagButton`) and a one-line count under the table;
+  `PlanView` computes the checks with the plan's price book.
 
 ## Data
 

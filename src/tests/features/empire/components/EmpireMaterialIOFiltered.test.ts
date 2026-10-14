@@ -3,6 +3,8 @@ import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
+import { useDB } from "@/database/composables/useDB";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import EmpireMaterialIOFiltered from "@/features/empire/components/EmpireMaterialIOFiltered.vue";
 import EmpireMaterialIODetail from "@/features/empire/components/EmpireMaterialIODetail.vue";
 import EmpireAnalysis from "@/features/empire/components/EmpireAnalysis.vue";
@@ -11,6 +13,8 @@ import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
+
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
@@ -88,6 +92,7 @@ describe("EmpireMaterialIOFiltered", () => {
 		await exchangesStore.setMany(exchanges);
 		await materialsStore.setMany(materials);
 		await useMaterialData().preload();
+		await useDB(exchangesStore).preload();
 	});
 
 	it("shows all materials unfiltered", async () => {
@@ -215,7 +220,7 @@ describe("EmpireMaterialIOFiltered", () => {
 		const open = () =>
 			wrapper.findAllComponents(EmpireMaterialIODetail).length;
 		const toggle = (i: number) =>
-			wrapper.findAll("button[aria-expanded]")[i].trigger("click");
+			wrapper.findAll("button[aria-expanded]:not([data-market-flag])")[i].trigger("click");
 
 		// rows opened by hand
 		await toggle(0);
@@ -262,5 +267,69 @@ describe("EmpireMaterialIOFiltered", () => {
 		await flushPromises();
 		expect(tickers(wrapper)).toEqual(["FE"]);
 		expect(selects(wrapper)[0].props("value")).toEqual(["FE"]);
+	});
+});
+
+describe("EmpireMaterialIOFiltered market check", () => {
+	// a plan's share of one material
+	const part = (planId: string, delta: number) => ({
+		...planet(planId),
+		delta,
+		input: Math.max(-delta, 0),
+		output: Math.max(delta, 0),
+	});
+	// FE trades ~1,700 a day on all exchanges together (test data)
+	function fe(a: number, b: number): IEmpireMaterialIO {
+		const parts = [part("KW-688c", a), part("ZV-307c", b)];
+		return {
+			ticker: "FE",
+			input: parts.reduce((s, p) => s + p.input, 0),
+			output: parts.reduce((s, p) => s + p.output, 0),
+			delta: a + b,
+			deltaPrice: 0,
+			// @ts-expect-error mock data
+			inputPlanets: parts.filter((p) => p.input > 0),
+			// @ts-expect-error mock data
+			outputPlanets: parts.filter((p) => p.output > 0),
+		};
+	}
+	it("flags the empire's net flow: netted out not, sold twice yes", async () => {
+		const netted = (await mountFiltered([fe(1000, -1000)])).wrapper;
+		expect(netted.find("[data-market-flag]").exists()).toBe(false);
+
+		const twice = (await mountFiltered([fe(1000, 1000)])).wrapper;
+		expect(twice.find("tbody [data-market-flag]").exists()).toBe(true);
+		// 2,000 a day is bigger than the market
+		expect(
+			twice.find("[data-market-chips] [data-level=red]").exists()
+		).toBe(true);
+	});
+
+	it("filters the table by a flag chip and shows it pressed", async () => {
+		const { wrapper } = await mountFiltered([
+			fe(1000, 1000),
+			io("RAT", 10, 0, ["ZV-307c"], []),
+		]);
+		const chip = (l: string) =>
+			wrapper.find(`[data-market-chips] [data-level=${l}]`);
+
+		expect(tickers(wrapper)).toEqual(["FE", "RAT"]);
+		await chip("red").trigger("click");
+		await flushPromises();
+		expect(chip("red").attributes("aria-pressed")).toBe("true");
+		expect(tickers(wrapper)).toEqual(["FE"]);
+		expect(trackEvent).toHaveBeenLastCalledWith("empire:market_filter", {
+			level: "red",
+		});
+
+		// RAT: no CX preference, checked against all exchanges
+		await chip("muted").trigger("click");
+		await flushPromises();
+		expect(chip("red").attributes("aria-pressed")).toBe("false");
+		expect(tickers(wrapper)).toEqual(["RAT"]);
+
+		await chip("muted").trigger("click");
+		await flushPromises();
+		expect(tickers(wrapper)).toEqual(["FE", "RAT"]);
 	});
 });

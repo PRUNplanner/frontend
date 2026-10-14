@@ -130,3 +130,85 @@ describe("scaledPriceBook", () => {
 		expect(book.getPrice("RAT", "BUY")).toBe(120);
 	});
 });
+
+describe("getPriceSource", () => {
+	const ci1 = { ask: 0, bid: 90, vwap_30d: 100 } as Exchange;
+	const lookup = (id: string) => (id === "RAT.CI1" ? ci1 : getExchange(id));
+	const prefs: CXData = {
+		cx_empire: [{ type: "BOTH", exchange: "NC1_7D" }],
+		cx_planets: [
+			{
+				planet: "KW-688c",
+				preferences: [{ type: "BUY", exchange: "CI1_ASK" }],
+			},
+		],
+		ticker_empire: [{ type: "BUY", ticker: "DW", value: 42 }],
+		ticker_planets: [
+			{
+				planet: "KW-688c",
+				preferences: [{ type: "SELL", ticker: "DW", value: 7 }],
+			},
+		],
+	};
+	const book = createPriceBook(() => prefs, "KW-688c", lookup);
+
+	it("names the level, exchange and key of each resolution path", () => {
+		expect(book.getPriceSource("DW", "SELL")).toEqual({
+			level: "planet_ticker",
+			exchange: null,
+			key: null,
+			zero: false,
+			volume: "NC1",
+		});
+		expect(book.getPriceSource("DW", "BUY")).toEqual({
+			level: "empire_ticker",
+			exchange: null,
+			key: null,
+			zero: false,
+			volume: "CI1",
+		});
+		expect(book.getPriceSource("RAT", "BUY")).toEqual({
+			level: "planet_exchange",
+			exchange: "CI1",
+			key: "ask",
+			zero: true,
+			volume: "CI1",
+		});
+		expect(book.getPriceSource("RAT", "SELL")).toEqual({
+			level: "empire_exchange",
+			exchange: "NC1",
+			key: "vwap_7d",
+			zero: false,
+			volume: "NC1",
+		});
+		expect(
+			createPriceBook(undefined, undefined, lookup).getPriceSource(
+				"RAT",
+				"BUY"
+			)
+		).toEqual({
+			level: "fallback",
+			exchange: "UNIVERSE",
+			key: "vwap_30d",
+			zero: false,
+			volume: "UNIVERSE",
+		});
+	});
+
+	it("is unresolved and zero when the lookup throws", () => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const source = createPriceBook(
+			undefined,
+			undefined,
+			getExchange
+		).getPriceSource("FOO", "BUY");
+		expect(source).toMatchObject({ level: "unresolved", zero: true });
+		error.mockRestore();
+	});
+
+	it("passes through a scaled book", () => {
+		expect(scaledPriceBook(book, "RAT", 2).getPriceSource("RAT", "BUY")).toBe(
+			book.getPriceSource("RAT", "BUY")
+		);
+	});
+});

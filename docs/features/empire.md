@@ -19,8 +19,8 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 | `EmpireConfigurationForm` | The name, faction and permit fields, shared by the two above and below |
 | `EmpireOnboarding` | Welcome card shown instead of the dashboard while the selected empire has 0 plans |
 | `EmpireEmpty` | "No empires" state: creates one with the signup defaults and the first CX |
-| `EmpireMaterialIOFiltered` | Material I/O with filters. Hosts the sub-views below |
-| `EmpireMaterialIO` | Material I/O table: one line per material, a row expands to its planets. Owns the detail view choice and the open rows ("Expand all" opens every visible row, closing one switches back to "Summary") |
+| `EmpireMaterialIOFiltered` | Material I/O with filters. Hosts the sub-views below. Runs the market check on the empire's net flow (`cx/marketCheck.util`, one price book for the empire's CX without a planet) and filters by its flag chips |
+| `EmpireMaterialIO` | Material I/O table: one line per material, a row expands to its planets. Owns the detail view choice and the open rows ("Expand all" opens every visible row, closing one switches back to "Summary"). Shows a market flag button after a flagged material, with each plan's own share |
 | `EmpireMaterialIOSummaryCell` | "Produced by" / "Consumed by" cell: largest plan, `+N` and a bar with one segment per plan, filled against the row's larger side |
 | `EmpireMaterialIODetail` | Expanded row: "Producers · Consumers" (every plan) or "Net per planet" (surplus, balanced, needs), linking to the plans |
 | `EmpireMaterialIOFilters` | The filter controls, plus "Planets: Summary \| Expand all" on the Material I/O table (session only) |
