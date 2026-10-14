@@ -127,6 +127,7 @@ describe("useFIOBurn", async () => {
 
 		expect(result[0]).toStrictEqual({
 			minDays: 0,
+			burnMaterials: [],
 			planName: "Unnamed",
 			planUuid: "B",
 			planetId: "B",
