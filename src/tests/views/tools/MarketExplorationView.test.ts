@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { ref, type Slots } from "vue";
+import { computed, ref, type SetupContext } from "vue";
 import { flushPromises } from "@vue/test-utils";
 
 import MarketExplorationView from "@/views/tools/MarketExplorationView.vue";
@@ -12,12 +12,16 @@ vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 // vi.mock factories are hoisted, so are their helpers
-const { stub, chart, query, data } = vi.hoisted(() => ({
+const { stub, chart, query, loader } = vi.hoisted(() => ({
 	stub: (name: string) => ({ default: { name, render: () => null } }),
 	chart: {} as { fetchData: () => Promise<void>; failed: boolean },
-	query: { execute: (() => {}) as (name: string, params: unknown) => unknown },
-	data: { materials: [] as { ticker: string }[] },
+	query: {
+		execute: (() => {}) as (name: string, params: unknown) => unknown,
+	},
+	loader: { deferred: false, complete: () => {} },
 }));
+
+const materials = ref<{ ticker: string }[]>([]);
 
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string, params: unknown) => ({
@@ -27,11 +31,18 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 
 vi.mock("@/database/services/useMaterialData", () => ({
 	useMaterialData: () => ({
-		materialSelectOptions: ref([]),
+		get materialSelectOptions() {
+			return computed(() =>
+				materials.value.map((m) => ({
+					label: m.ticker,
+					value: m.ticker,
+				}))
+			);
+		},
 		getMaterialClass: () => "",
 		preload: async () => {},
 		get materials() {
-			return ref(data.materials);
+			return materials;
 		},
 	}),
 }));
@@ -67,10 +78,13 @@ vi.mock("@/features/market_exploration/useMarketExplorationChart", () => ({
 vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () => ({
 	default: {
 		name: "WrapperGameDataLoader",
-		setup:
-			(_: unknown, { slots }: { slots: Slots }) =>
-			() =>
-				slots.default?.(),
+		emits: ["complete"],
+		setup(_: unknown, { slots, emit }: SetupContext<["complete"]>) {
+			loader.complete = () => emit("complete");
+			// a cached load completes during setup, as the real loader does
+			if (!loader.deferred) emit("complete");
+			return () => slots.default?.();
+		},
 	},
 }));
 vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
@@ -114,7 +128,8 @@ describe("MarketExplorationView", () => {
 			days: 30,
 			series: { DW: [1, 2, 3] },
 		}));
-		data.materials = [];
+		materials.value = [];
+		loader.deferred = false;
 		sessionStorage.clear();
 	});
 
@@ -147,9 +162,27 @@ describe("MarketExplorationView", () => {
 		expect(trackEvent).not.toHaveBeenCalled();
 	});
 
+	it("builds the overview once the game data arrives after mount", async () => {
+		// first visit: IndexedDB is empty until the loader has fetched
+		loader.deferred = true;
+		const wrapper = await mountView();
+		expect(chart.fetchData).not.toHaveBeenCalled();
+
+		materials.value = [{ ticker: "DW" }];
+		loader.complete();
+		await flushPromises();
+
+		expect(wrapper.text()).toContain("market_exploration.overview.title");
+		expect(wrapper.findComponent(PSelect).props("options")).toEqual([
+			{ label: "DW", value: "DW" },
+		]);
+		expect(chart.fetchData).toHaveBeenCalledTimes(1);
+		expect(query.execute).toHaveBeenCalledTimes(1);
+	});
+
 	describe("with the overview loaded", () => {
 		beforeEach(() => {
-			data.materials = [{ ticker: "DW" }];
+			materials.value = [{ ticker: "DW" }];
 		});
 
 		const viewButton = (
@@ -159,8 +192,7 @@ describe("MarketExplorationView", () => {
 			wrapper
 				.findAllComponents(PButton)
 				.find(
-					(b) =>
-						b.text() === `market_exploration.chart.view.${view}`
+					(b) => b.text() === `market_exploration.chart.view.${view}`
 				)!;
 
 		it("loads the sparklines of the overview's exchange once", async () => {
@@ -184,7 +216,9 @@ describe("MarketExplorationView", () => {
 		it("switches to all exchanges and remembers it for the session", async () => {
 			const wrapper = await mountView();
 			expect(
-				wrapper.findComponent({ name: "MarketExplorationChart" }).exists()
+				wrapper
+					.findComponent({ name: "MarketExplorationChart" })
+					.exists()
 			).toBe(true);
 
 			await viewButton(wrapper, "exchanges").trigger("click");
@@ -195,13 +229,19 @@ describe("MarketExplorationView", () => {
 			expect(exchanges.exists()).toBe(true);
 			expect(exchanges.props()).toBeDefined();
 			expect(
-				wrapper.findComponent({ name: "MarketExplorationChart" }).exists()
+				wrapper
+					.findComponent({ name: "MarketExplorationChart" })
+					.exists()
 			).toBe(false);
-			expect(sessionStorage.getItem("market_exploration.chart_view")).toBe(
-				"exchanges"
+			expect(
+				sessionStorage.getItem("market_exploration.chart_view")
+			).toBe("exchanges");
+			expect(wrapper.text()).toContain(
+				"market_exploration.chart.metric.vwap"
 			);
-			expect(wrapper.text()).toContain("market_exploration.chart.metric.vwap");
-			expect(wrapper.text()).toContain("market_exploration.chart.range.90");
+			expect(wrapper.text()).toContain(
+				"market_exploration.chart.range.90"
+			);
 
 			const reopened = await mountView();
 			expect(
