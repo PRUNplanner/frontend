@@ -188,15 +188,18 @@
 		dataOverview.value = result;
 	}
 
-	onMounted(async () => {
-		loadSparklines();
+	onMounted(loadSparklines);
+
+	// runs once the loader has the game data, which on a first visit (empty
+	// IndexedDB) is only after mount
+	async function onGameDataLoaded(): Promise<void> {
 		await preloadMaterials();
 		await generateDataOverview();
 		materialOptions.value = materialSelectOptions.value;
 
 		// the default material on page open is not a use of the tool
 		fetch(false);
-	});
+	}
 
 	function materialOverviewData(): IExchangeOverview {
 		const data = dataOverviewMap.value.get(selectedMaterial.value);
@@ -264,7 +267,8 @@
 	<WrapperGameDataLoader
 		:key="`GAMEDATAWRAPPER#MarketExploration`"
 		load-materials
-		load-exchanges>
+		load-exchanges
+		@complete="onGameDataLoaded">
 		<div class="min-h-screen flex flex-col">
 			<div
 				class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">
