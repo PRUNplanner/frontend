@@ -28,6 +28,15 @@ vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
 	},
 }));
 
+// jsdom has no CSS tokens: a fixed colour per exchange
+vi.mock("@/ui/charts/chartTheme", async () => {
+	const { computed } = await import("vue");
+	return {
+		useChartTheme: () =>
+			computed(() => ({ exchange: () => "rgb(31, 166, 122)" })),
+	};
+});
+
 function result(
 	planetName: string,
 	building: string,
@@ -184,6 +193,72 @@ describe("ResourceROITable", () => {
 			true,
 		]);
 		expect(positive("planROI")).toEqual([true, false, false, true]);
+	});
+
+	it("draws bars beside % max, daily profit and ROI", async () => {
+		const { wrapper } = await mountTable();
+		const widths = (key: string) =>
+			wrapper
+				.findAll(`td[data-col-key="${key}"]`)
+				.map((td) => td.find("[aria-hidden] > div").attributes("style"));
+
+		expect(widths("percentMaxDailyYield")[0]).toContain("width: 50%");
+		// profit 400, -50, 0, 120 against the column max 400
+		expect(widths("dailyProfit")).toEqual([
+			"width: 100%;",
+			"width: 0%;",
+			"width: 0%;",
+			"width: 30%;",
+		]);
+		// ROI on 0..20 d: 40 is past the end, 12 is 60 %
+		expect(widths("planROI")).toEqual([
+			"width: 100%;",
+			"width: 0%;",
+			"width: 0%;",
+			"width: 60%;",
+		]);
+	});
+
+	it("bolds the nearest exchange in its colour, mutes the others", async () => {
+		const { wrapper } = await mountTable();
+		// Promitor: 7, —, 3, 12, so IC1 is nearest
+		const cell = (key: string) =>
+			wrapper.find(`td[data-col-key="${key}"] span`);
+
+		expect(cell("distanceIC1").classes()).toContain("font-bold");
+		expect(cell("distanceIC1").attributes("style")).toBe(
+			"color: rgb(31, 166, 122);"
+		);
+		expect(cell("distanceAI1").classes()).toContain("text-muted");
+		expect(cell("distanceNC1").classes()).toContain("text-muted");
+		expect(cell("distanceCI1").classes()).not.toContain("text-muted");
+	});
+
+	it("highlights the planet active in the chart", async () => {
+		const { wrapper, setProps } = await mountTable();
+		const active = () =>
+			wrapper
+				.findAll("tbody tr")
+				.map((tr) => tr.classes("!bg-white/10"));
+
+		expect(active()).toEqual([false, false, false, false]);
+		await setProps({ active: "Katoa-id#EXT" });
+		expect(active()).toEqual([false, true, false, false]);
+		expect(
+			wrapper.find("tbody tr:nth-child(2)").attributes("data-row-key")
+		).toBe("Katoa-id#EXT");
+	});
+
+	it("hands its filtered rows to the chart", async () => {
+		const { wrapper } = await mountTable();
+		expect(wrapper.findComponent(ResourceROITable).emitted("filtered")!.at(-1)![0]).toHaveLength(4);
+
+		await select(wrapper, 1, "EXT");
+		expect(
+			(
+				wrapper.findComponent(ResourceROITable).emitted("filtered")!.at(-1)![0] as IResourceROIResult[]
+			).map((r) => r.planetName)
+		).toEqual(["Katoa", "Promitor"]);
 	});
 
 	it("builds sorted, distinct filter options", async () => {

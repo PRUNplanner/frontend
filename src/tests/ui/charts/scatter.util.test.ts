@@ -70,7 +70,7 @@ describe("placeLabels", () => {
 		).toEqual({ a: "right" });
 	});
 
-	it("tries left, then below, then hides it", () => {
+	it("tries left, then below, then above, then hides it", () => {
 		// a dot right of a: left
 		expect(
 			placeLabels(
@@ -89,7 +89,7 @@ describe("placeLabels", () => {
 				box
 			)
 		).toEqual({ a: "below" });
-		// and one below too: hidden
+		// and one below too: above
 		expect(
 			placeLabels(
 				[
@@ -97,6 +97,21 @@ describe("placeLabels", () => {
 					dot("b", 125, 100),
 					dot("c", 75, 100),
 					dot("d", 100, 118),
+				],
+				[{ key: "a", width: 40 }],
+				[],
+				box
+			)
+		).toEqual({ a: "above" });
+		// and one above too: hidden
+		expect(
+			placeLabels(
+				[
+					dot("a", 100, 100),
+					dot("b", 125, 100),
+					dot("c", 75, 100),
+					dot("d", 100, 118),
+					dot("e", 100, 82),
 				],
 				[{ key: "a", width: 40 }],
 				[],
@@ -140,5 +155,24 @@ describe("placeLabels", () => {
 				box
 			)
 		).toEqual({ a: "right", b: "left" });
+	});
+
+	it("lets a crossLines label sit on a line rather than hide", () => {
+		// lines through the dot both ways, dots below and above
+		const dots = [dot("a", 100, 100), dot("d", 100, 118), dot("e", 100, 82)];
+		const lines: [number, number, number, number][] = [
+			[0, 100, 400, 100],
+		];
+		expect(
+			placeLabels(dots, [{ key: "a", width: 40 }], lines, box)
+		).toEqual({ a: null });
+		expect(
+			placeLabels(
+				dots,
+				[{ key: "a", width: 40, crossLines: true }],
+				lines,
+				box
+			)
+		).toEqual({ a: "right" });
 	});
 });

@@ -158,10 +158,12 @@ are internal to `PDataTable` and the selects.
     datalabels) and `lightweight-charts` (candlesticks). Reuse or extend
     these rather than wiring chart.js in a feature. Ranked values (top N
     plus "Other") use `EmpireBarChart.vue`; a small used-of-total bar
-    beside a number (area, housing) is `PMeter.vue` (plain CSS, no chart.js).
+    beside a number (area, housing) is `PMeter.vue` (plain CSS, no chart.js),
+    a decorative value-of-max bar in a table cell `PInlineBar.vue`.
     An x/y scatter with a best trade-off line, placed labels and a tooltip
     slot is `PScatter.vue` (plain SVG; `paretoFrontier`, `placeLabels` and
-    `niceTicks` in `scatter.util.ts`). Lines over days (one per series,
+    `niceTicks` in `scatter.util.ts`; `yBetter="low"` for e.g. jumps,
+    `xZero=false` to fit X to the data). Lines over days (one per series,
     direct end labels, a crosshair tooltip sorted by value, an optional
     volume panel) are `PLineChart.vue`; a 100 × 24 px trend line in a
     table cell is `PSparkline.vue` (both plain SVG; `lineLabelLayout`,

@@ -5,6 +5,7 @@
 		type Ref,
 		computed,
 		ref,
+		watch,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -13,12 +14,20 @@
 	// Util
 	import { formatNumber } from "@/util/numbers";
 	import { capitalizeString } from "@/util/text";
+	import {
+		ROI_EXCHANGES,
+		jumpsTo,
+		nearestExchange,
+		roiRowKey,
+	} from "@/features/resource_roi_overview/resourceROIChart.util";
+	import { useChartTheme } from "@/ui/charts/chartTheme";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import COGMButton from "@/features/roi_overview/components/COGMButton.vue";
 	import PlanetPOPRButton from "@/features/government/components/PlanetPOPRButton.vue";
 	import ResourceROITableFilters from "@/features/resource_roi_overview/components/ResourceROITableFilters.vue";
+	import PInlineBar from "@/ui/charts/PInlineBar.vue";
 
 	// Types & Interfaces
 	import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
@@ -36,7 +45,16 @@
 			type: Array as PropType<IResourceROIResult[]>,
 			required: true,
 		},
+		/** row key (roiRowKey) hovered in the chart, highlighted */
+		active: {
+			type: String as PropType<string | null>,
+			default: null,
+		},
 	});
+
+	const emit = defineEmits<{
+		(e: "filtered", rows: IResourceROIResult[]): void;
+	}>();
 
 	const filterBuilding: Ref<string | null> = ref(null);
 	const filterPostiveROI: Ref<boolean> = ref(false);
@@ -72,6 +90,19 @@
 
 		return filtered;
 	});
+
+	// the chart shows what the table shows
+	watch(localResult, (rows) => emit("filtered", rows), { immediate: true });
+
+	const theme = useChartTheme();
+	// ROI bar scale in days, lower is better
+	const ROI_BAR_DAYS = 20;
+	const maxProfit = computed(() =>
+		Math.max(0, ...localResult.value.map((r) => r.dailyProfit))
+	);
+
+	const rowClass = (row: IResourceROIResult) =>
+		roiRowKey(row) === props.active ? "!bg-white/10" : "";
 
 	function distanceSorter(key: string) {
 		return (row1: IResourceROIResult, row2: IResourceROIResult): number => {
@@ -166,7 +197,9 @@
 		:data="localResult"
 		striped
 		:page-size="50"
-		:min-width="1700">
+		:min-width="1700"
+		:row-key="roiRowKey"
+		:row-class="rowClass">
 		<template #cell-planetName="{ row }">
 			<router-link
 				:to="`/plan/${row.planetNaturalId}`"
@@ -181,7 +214,13 @@
 			{{ formatNumber(row.dailyYield) }}
 		</template>
 		<template #cell-percentMaxDailyYield="{ row }">
-			{{ formatNumber(row.percentMaxDailyYield * 100) }}
+			<div class="flex items-center justify-end gap-2">
+				<PInlineBar
+					class="w-12 shrink-0"
+					:value="row.percentMaxDailyYield"
+					:max="1" />
+				{{ formatNumber(row.percentMaxDailyYield * 100) }}
+			</div>
 		</template>
 		<template #cell-popr="{ row }">
 			<PlanetPOPRButton
@@ -229,34 +268,44 @@
 			</span>
 		</template>
 		<template #cell-dailyProfit="{ row }">
-			<PValue class="text-nowrap" :value="row.dailyProfit" />
+			<div class="flex items-center justify-end gap-2">
+				<PInlineBar
+					class="w-12 shrink-0"
+					tone="positive"
+					:value="row.dailyProfit"
+					:max="maxProfit" />
+				<PValue class="text-nowrap" :value="row.dailyProfit" />
+			</div>
 		</template>
 		<template #cell-planROI="{ row }">
+			<div class="flex items-center justify-end gap-2">
+				<PInlineBar
+					class="w-10 shrink-0"
+					tone="positive"
+					:value="row.planROI > 0 ? row.planROI : 0"
+					:max="ROI_BAR_DAYS" />
+				<span
+					class="text-nowrap"
+					:class="
+						row.planROI > 0 ? 'text-positive' : 'text-negative'
+					">
+					{{ formatNumber(row.planROI) }}
+				</span>
+			</div>
+		</template>
+		<template
+			v-for="code in ROI_EXCHANGES"
+			:key="code"
+			#[`cell-distance${code}`]="{ row }">
+			<span v-if="jumpsTo(row, code) === -1">&mdash;</span>
+			<!-- the nearest exchange (all of them on a tie) -->
 			<span
-				class="text-nowrap"
-				:class="
-					row.planROI > 0
-						? 'text-positive'
-						: 'text-negative'
-				">
-				{{ formatNumber(row.planROI) }}
+				v-else-if="jumpsTo(row, code) === nearestExchange(row)?.jumps"
+				class="font-bold"
+				:style="{ color: theme.exchange(code) }">
+				{{ jumpsTo(row, code) }}
 			</span>
-		</template>
-		<template #cell-distanceAI1="{ row }">
-			<span v-if="row.distanceAI1 === -1">&mdash;</span>
-			<span v-else>{{ row.distanceAI1 }}</span>
-		</template>
-		<template #cell-distanceCI1="{ row }">
-			<span v-if="row.distanceCI1 === -1">&mdash;</span>
-			<span v-else>{{ row.distanceCI1 }}</span>
-		</template>
-		<template #cell-distanceIC1="{ row }">
-			<span v-if="row.distanceIC1 === -1">&mdash;</span>
-			<span v-else>{{ row.distanceIC1 }}</span>
-		</template>
-		<template #cell-distanceNC1="{ row }">
-			<span v-if="row.distanceNC1 === -1">&mdash;</span>
-			<span v-else>{{ row.distanceNC1 }}</span>
+			<span v-else class="text-muted">{{ jumpsTo(row, code) }}</span>
 		</template>
 	</PDataTable>
 </template>

@@ -85,6 +85,28 @@ describe("PScatter", () => {
 		);
 	});
 
+	it("starts the frontier at the top when lower Y is better", async () => {
+		const wrapper = await mountScatter({ yBetter: "low", frontier: ["N", "H"] });
+		const paths = wrapper.findAll(".scatter-frontier path");
+		// plot top is 24 px; the shade closes along the top edge
+		expect(paths[1].attributes("d")).toMatch(/^M[\d.]+,24 L/);
+		expect(paths[0].attributes("d")).toMatch(/L584,24 Z$/);
+	});
+
+	it("fits the x axis to the data without xZero", async () => {
+		const points = [
+			{ key: "A", label: "A", x: 11.88, y: 2 },
+			{ key: "B", label: "B", x: 14.25, y: 1 },
+		];
+		// x tick labels are the first centred texts
+		const xFirst = async (props: Record<string, unknown>) =>
+			(await mountScatter({ points, frontier: [], ...props }))
+				.findAll("text[text-anchor=middle]")[0]
+				.text();
+		expect(await xFirst({})).toBe("0");
+		expect(await xFirst({ xZero: false })).toBe("11.5");
+	});
+
 	it("sizes dots by size, and labels only emphasised ones above maxLabels", async () => {
 		const wrapper = await mountScatter({ maxLabels: 2, frontier: [] });
 		const r = (label: string) =>

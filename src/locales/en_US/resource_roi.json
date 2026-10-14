@@ -22,5 +22,31 @@
 		"daily_profit": "Daily @:terms.profit (ȼ)",
 		"plan_roi": "@:terms.plan ROI (d)",
 		"distances": "Distances"
+	},
+	"chart": {
+		"button": "Chart",
+		"title": "Payback vs. distance",
+		"caption_nearest": "dot size = daily profit · colour = nearest exchange",
+		"caption_cx": "dot size = daily profit · jumps to {cx}",
+		"distance_to": "Distance to",
+		"nearest": "Nearest CX",
+		"x": "plan ROI (d)",
+		"y_nearest": "jumps to nearest CX",
+		"y_cx": "jumps to {cx}",
+		"label": "Plan ROI against {y}",
+		"legend": "Exchanges",
+		"resize": "Resize chart",
+		"jumps": "{n} jump | {n} jumps",
+		"jumps_range": "{min}–{max} jumps",
+		"an_exchange": "an exchange",
+		"insight_fastest": "{names} pays back fastest and sits {jumps} from {cx}. | {names} pay back fastest and sit {jumps} from {cx}.",
+		"insight_top_profit": "{name} earns the most per day but is {jumps} out.",
+		"no_payback": "{n} planet never pays back and is not shown. | {n} planets never pay back and are not shown.",
+		"no_route": "{n} planet has no route to {cx} and is not shown. | {n} planets have no route to {cx} and are not shown.",
+		"slow": "{n} planet pays back in more than {days} d (twice the fastest) and is not shown. | {n} planets pay back in more than {days} d (twice the fastest) and are not shown.",
+		"empty": "No planet pays back with these filters.",
+		"tooltip_roi": "Plan ROI (d)",
+		"tooltip_profit": "Daily profit (ȼ)",
+		"tooltip_jumps": "Jumps to {cx}"
 	}
 }
