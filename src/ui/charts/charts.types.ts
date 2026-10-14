@@ -117,3 +117,11 @@ export interface ILineTooltipRow {
 	color: string;
 	value: number;
 }
+
+export interface IStackedBarSegment {
+	key: string;
+	/** share of the bar, e.g. % (segments are drawn in proportion) */
+	value: number;
+	/** CSS colour */
+	color: string;
+}

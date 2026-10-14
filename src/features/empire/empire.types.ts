@@ -4,14 +4,52 @@ import type {
 	IVisitationData,
 } from "@/features/planning/usePlanCalculation.types";
 
-export interface IEmpirePlanListData {
+/** ¢ per day: costs positive, revenue − inputs − workforce − degradation = profit */
+export interface IEmpireSplitParts {
+	revenue: number;
+	inputs: number;
+	workforce: number;
+	degradation: number;
+	profit: number;
+}
+
+export interface IEmpirePlanListData extends IEmpireSplitParts {
 	uuid: string;
 	name: string | undefined;
 	planet: string;
 	permits: number;
 	cogc: PlanCOGCProgram;
-	profit: number;
 }
+
+/** % of revenue, or of cost for a loss (then profit is 0 and uncovered > 0) */
+export interface IEmpireSplitShares {
+	inputs: number;
+	workforce: number;
+	degradation: number;
+	profit: number;
+	/** share of the cost revenue does not cover */
+	uncovered: number;
+	/** profit / revenue, NaN without revenue */
+	margin: number;
+}
+
+export interface IEmpireRevenueSplitRows {
+	/** the most profitable plans */
+	top: IEmpirePlanListData[];
+	/** every loss-making plan */
+	losses: IEmpirePlanListData[];
+	/** the other profitable plans, summed in other */
+	rest: IEmpirePlanListData[];
+	other: IEmpireSplitParts | undefined;
+}
+
+export interface IEmpireButterflyRow {
+	ticker: string;
+	/** signed: bought (net consumed) < 0, sold (net produced) > 0 */
+	value: number;
+}
+
+export type EmpireButterflyMetric = "price" | "amount";
 
 export interface IEmpireMaterialIOPlanet {
 	planetId: string;

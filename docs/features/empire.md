@@ -13,8 +13,8 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 
 | Component | Shows |
 | --- | --- |
-| `EmpireCostOverview` | Totals across the empire, including daily shipping demand (t, m³) |
-| `EmpirePlanList` | Plan list with per-plan results |
+| `EmpireCostOverview` | Totals across the empire, a revenue split bar (inputs, workforce, degradation, profit) and daily shipping demand (t, m³) |
+| `EmpirePlanList` | Plan list with per-plan results and profit bars on a shared zero line |
 | `EmpireConfiguration` | Faction and permits of an empire, with the permit mismatch hint |
 | `EmpireConfigurationForm` | The name, faction and permit fields, shared by the two above and below |
 | `EmpireOnboarding` | Welcome card shown instead of the dashboard while the selected empire has 0 plans |
@@ -24,7 +24,9 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 | `EmpireMaterialIOSummaryCell` | "Produced by" / "Consumed by" cell: largest plan, `+N` and a bar with one segment per plan, filled against the row's larger side |
 | `EmpireMaterialIODetail` | Expanded row: "Producers · Consumers" (every plan) or "Net per planet" (surplus, balanced, needs), linking to the plans |
 | `EmpireMaterialIOFilters` | The filter controls, plus "Planets: Summary \| Expand all" on the Material I/O table (session only) |
-| `EmpireAnalysis` | Sorted bar charts (top 10 plus "Other"), using `ui/charts/EmpireBarChart.vue` |
+| `EmpireAnalysis` | `EmpireRevenueSplit` and `EmpireMaterialButterfly` on top; the older sorted bar charts (`ui/charts/EmpireBarChart.vue`) in a collapsed "More charts" section, its open state kept in localStorage |
+| `EmpireRevenueSplit` | Where each plan's revenue goes: top 10 plans by profit, every loss-making plan, the rest as an inline-expandable "Other" |
+| `EmpireMaterialButterfly` | Top 10 materials by ¢ per day, bought left and sold right (or units per day); a row opens Material I/O filtered to it |
 | `EmpireOpportunities` | Production opportunities |
 
 **Composables and types:**
@@ -43,8 +45,15 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 - `util/empireShippingDemand.util.ts`: `calculateEmpireShippingDemand` sums
   each plan's `calculateVisitation` (its max(import, export) per plan, plus
   the import and export totals) for the overview's shipping tiles.
+- `empireAnalysis.util.ts`: `revenueSplitRows` (top, losses, rest summed
+  into Other), `splitShares` (parts as % of revenue, or of cost for a loss),
+  `empireSplitParts` (the KPI split on the netted empire totals) and
+  `materialButterfly`. The per-plan parts come from `profitBreakdown` on
+  each plan's engine result in `EmpireView`.
 - `empire.types.ts` holds the frontend-only `IEmpireCostOverview`,
-  `IEmpireShippingDemand`, `IEmpireMaterialIO` and `IEmpirePlanListData`.
+  `IEmpireShippingDemand`, `IEmpireMaterialIO`, `IEmpirePlanListData` (with
+  its revenue split, `IEmpireSplitParts`) and the analysis shapes
+  (`IEmpireSplitShares`, `IEmpireRevenueSplitRows`, `IEmpireButterflyRow`).
   The wire shapes (`PlanEmpireElement`, `EmpirePayload` for create/patch,
   `EmpireMaterialIOState`) are schema-derived in
   `src/features/api/schemas/empireData.schemas.ts`.

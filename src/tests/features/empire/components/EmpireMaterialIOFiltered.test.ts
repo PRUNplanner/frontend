@@ -5,6 +5,7 @@ import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import EmpireMaterialIOFiltered from "@/features/empire/components/EmpireMaterialIOFiltered.vue";
 import EmpireMaterialIODetail from "@/features/empire/components/EmpireMaterialIODetail.vue";
+import EmpireAnalysis from "@/features/empire/components/EmpireAnalysis.vue";
 import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
@@ -241,5 +242,25 @@ describe("EmpireMaterialIOFiltered", () => {
 		});
 
 		expect(wrapper.text()).not.toContain("empire.material_io.expand_all");
+	});
+
+	it("opens Material I/O filtered to a material picked in Analysis", async () => {
+		const { wrapper, component, setProps } = await mountComponent(
+			EmpireMaterialIOFiltered,
+			{
+				content: "analysis",
+				empireMaterialIO: MATERIAL_IO,
+				planListData: [],
+			}
+		);
+
+		wrapper.findComponent(EmpireAnalysis).vm.$emit("open:material", "FE");
+		await flushPromises();
+		expect(component.emitted("update:content")).toEqual([["materialio"]]);
+
+		await setProps({ content: "materialio" });
+		await flushPromises();
+		expect(tickers(wrapper)).toEqual(["FE"]);
+		expect(selects(wrapper)[0].props("value")).toEqual(["FE"]);
 	});
 });
