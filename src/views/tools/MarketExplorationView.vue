@@ -3,6 +3,8 @@
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
+	import { useRoute } from "vue-router";
+	const route = useRoute();
 
 	// Unhead
 	import { useHead } from "@unhead/vue";
@@ -194,6 +196,10 @@
 	// IndexedDB) is only after mount
 	async function onGameDataLoaded(): Promise<void> {
 		await preloadMaterials();
+		// ?material=RAT, e.g. from a material tile, if it is a known ticker
+		const wanted = route.query.material;
+		if (materials.value?.some((m) => m.ticker === wanted))
+			selectedMaterial.value = wanted as string;
 		await generateDataOverview();
 		materialOptions.value = materialSelectOptions.value;
 

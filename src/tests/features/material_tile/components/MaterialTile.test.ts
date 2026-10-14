@@ -6,20 +6,20 @@ import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 import MaterialDataChart from "@/features/market_exploration/components/MaterialDataChart.vue";
-import PSelect from "@/ui/components/PSelect.vue";
+import { PButton } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 
-// chart.js has no canvas in jsdom
+// the chart loads market data, tested on its own
 vi.mock(
 	"@/features/market_exploration/components/MaterialDataChart.vue",
 	() => ({
 		default: {
 			name: "MaterialDataChart",
-			props: { materialTicker: String, displayValue: String },
+			props: { materialTicker: String, metric: String },
 			render: () => h("div"),
 		},
 	})
@@ -171,7 +171,7 @@ describe("MaterialTile", () => {
 		expect(text).toContain("1.0000 m³");
 		expect(wrapper.findComponent(MaterialDataChart).props()).toEqual({
 			materialTicker: "FE",
-			displayValue: "traded",
+			metric: "vwap",
 		});
 
 		await tile(wrapper).trigger("click");
@@ -184,17 +184,23 @@ describe("MaterialTile", () => {
 		await tile(wrapper).trigger("click");
 		await flushPromises();
 
-		const select = wrapper.findComponent(PSelect);
-		expect(
-			(select.props("options") as { value: string }[]).map((o) => o.value)
-		).toEqual(["traded", "low_p", "high_p"]);
+		const buttons = wrapper.findAllComponents(PButton);
+		expect(buttons.map((b) => b.text())).toEqual([
+			"material_tile.chart.metric.vwap",
+			"material_tile.chart.metric.low",
+			"material_tile.chart.metric.high",
+			"material_tile.chart.metric.traded",
+		]);
+		expect(buttons[0].props("pressed")).toBe(true);
 
-		select.vm.$emit("update:value", "high_p");
-		await flushPromises();
+		await buttons[3].trigger("click");
 
-		expect(
-			wrapper.findComponent(MaterialDataChart).props("displayValue")
-		).toBe("high_p");
+		expect(wrapper.findComponent(MaterialDataChart).props("metric")).toBe(
+			"traded"
+		);
+		expect(wrapper.findAllComponents(PButton)[3].props("pressed")).toBe(
+			true
+		);
 	});
 
 	it("still shows the ticker of an unknown material", async () => {

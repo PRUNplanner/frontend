@@ -32,10 +32,16 @@
 	// Interfaces & Types
 	import type { Material } from "@/features/api/schemas/gameData.schemas";
 	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
-	import type { PSelectOption } from "@/ui/ui.types";
+	import type { ExchangeMetric } from "@/features/market_exploration/marketExploration.types";
 
 	// UI
-	import { PDrawer, PTooltip, PSelect, PTable } from "@/ui";
+	import {
+		PButton,
+		PButtonGroup,
+		PDrawer,
+		PTooltip,
+		PTable,
+	} from "@/ui";
 
 	// Props
 	const props = defineProps({
@@ -82,21 +88,8 @@
 	const refExchangeOverview: Ref<IMaterialExchangeOverview | undefined> =
 		ref(undefined);
 
-	const refChartValue: Ref<string> = ref("traded");
-	const refChartValueOptions: ComputedRef<PSelectOption[]> = computed(() => [
-		{
-			label: t("material_tile.chart.labels.traded"),
-			value: "traded",
-		},
-		{
-			label: t("material_tile.chart.labels.low_p"),
-			value: "low_p",
-		},
-		{
-			label: t("material_tile.chart.labels.high_p"),
-			value: "high_p",
-		},
-	]);
+	const refChartMetric: Ref<ExchangeMetric> = ref("vwap");
+	const chartMetrics: ExchangeMetric[] = ["vwap", "low", "high", "traded"];
 
 	const material = ref<Material | null>(null);
 	const categoryCssClass = ref<string>("");
@@ -297,24 +290,27 @@
 			:ticker="ticker"
 			:overview-data="refExchangeOverview" />
 
-		<div class="flex py-5">
-			<div class="my-auto grow">
-				<h3 class="font-bold text-lg">
-					{{ $t("material_tile.chart.title") }}
-				</h3>
-			</div>
-			<div>
-				<PSelect
-					v-model:value="refChartValue"
-					:aria-label="$t('material_tile.chart.value_label')"
-					class="w-50!"
+		<div class="flex flex-wrap gap-x-4 gap-y-2 items-center py-5">
+			<h3 class="grow font-bold text-lg">
+				{{ $t("material_tile.chart.title") }}
+				<span class="pl-2 text-sm font-normal text-muted">
+					{{ $t("material_tile.chart.range") }}
+				</span>
+			</h3>
+			<PButtonGroup
+				role="group"
+				:aria-label="$t('material_tile.chart.metric.label')">
+				<PButton
+					v-for="metric in chartMetrics"
+					:key="metric"
 					size="sm"
-					:options="refChartValueOptions" />
-			</div>
+					:pressed="refChartMetric === metric"
+					@click="refChartMetric = metric">
+					{{ $t(`material_tile.chart.metric.${metric}`) }}
+				</PButton>
+			</PButtonGroup>
 		</div>
 
-		<MaterialDataChart
-			:material-ticker="ticker"
-			:display-value="refChartValue" />
+		<MaterialDataChart :material-ticker="ticker" :metric="refChartMetric" />
 	</PDrawer>
 </template>

@@ -9,6 +9,10 @@ import PSparkline from "@/ui/charts/PSparkline.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
+
+// the route's query, e.g. ?material=RAT from a material tile
+const route = { query: {} as Record<string, string> };
+vi.mock("vue-router", () => ({ useRoute: () => route }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 // vi.mock factories are hoisted, so are their helpers
@@ -130,6 +134,7 @@ describe("MarketExplorationView", () => {
 		}));
 		materials.value = [];
 		loader.deferred = false;
+		route.query = {};
 		sessionStorage.clear();
 	});
 
@@ -160,6 +165,17 @@ describe("MarketExplorationView", () => {
 		await choose(wrapper, "RAT");
 
 		expect(trackEvent).not.toHaveBeenCalled();
+	});
+
+	it("preselects a known material from the link, else keeps DW", async () => {
+		materials.value = [{ ticker: "DW" }, { ticker: "RAT" }];
+		route.query = { material: "RAT" };
+		const wrapper = await mountView();
+		expect(wrapper.findComponent(PSelect).props("value")).toBe("RAT");
+
+		route.query = { material: "NOPE" };
+		const other = await mountView();
+		expect(other.findComponent(PSelect).props("value")).toBe("DW");
 	});
 
 	it("builds the overview once the game data arrives after mount", async () => {

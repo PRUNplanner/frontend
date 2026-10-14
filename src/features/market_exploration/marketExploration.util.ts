@@ -9,9 +9,9 @@ const MS_PER_DAY = 86400000;
 
 /**
  * One value per exchange and day from the exchanges' CXPC rows: daily VWAP
- * (volume / traded), low or high. Days run continuously from the first to
- * the last row (UTC midnight); a day without trades is null. The volume is
- * the traded units of all exchanges.
+ * (volume / traded), low, high or traded units. Days run continuously from
+ * the first to the last row (UTC midnight); a day without trades is null.
+ * The volume is the traded units of all exchanges.
  * @author jplacht
  *
  * @param {Record<string, Exploration[]>} data CXPC rows per exchange code
@@ -53,7 +53,9 @@ export function exchangeLines(
 			? r.volume / r.traded
 			: metric === "low"
 				? r.low_p
-				: r.high_p;
+				: metric === "high"
+					? r.high_p
+					: r.traded;
 
 	return {
 		days,
@@ -73,4 +75,25 @@ export function exchangeLines(
 			)
 		),
 	};
+}
+
+/**
+ * The exchange whose latest value is the lowest, e.g. the cheapest by its
+ * last traded VWAP. An exchange without a value on the last day counts with
+ * its last earlier one; one without any value is left out.
+ * @author jplacht
+ *
+ * @param {Record<string, (number | null)[]>} values per exchange code, one per day
+ * @returns {{ code: string; value: number } | null} cheapest, null without values
+ */
+export function cheapestExchange(
+	values: Record<string, (number | null)[]>
+): { code: string; value: number } | null {
+	let cheapest: { code: string; value: number } | null = null;
+	for (const [code, days] of Object.entries(values)) {
+		const value = days.findLast((v) => v != null);
+		if (value != null && (!cheapest || value < cheapest.value))
+			cheapest = { code, value };
+	}
+	return cheapest;
 }
