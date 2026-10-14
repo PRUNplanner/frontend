@@ -4,6 +4,9 @@ import type {
 	IChartZone,
 	IStripDot,
 	IStripItem,
+	IWaterfallColumn,
+	IWaterfallLayout,
+	IWaterfallSegmentBox,
 } from "@/ui/charts/charts.types";
 
 /**
@@ -145,4 +148,125 @@ export function chartZone(
 	if (value <= red) return "red";
 	if (value <= yellow) return "yellow";
 	return "none";
+}
+
+/**
+ * Short number for chart labels: 950, 13.4k, 1.2M.
+ * @author jplacht
+ *
+ * @param {number} value number
+ * @returns {string} e.g. "−13.4k"
+ */
+export function compactNumber(value: number): string {
+	const abs = Math.abs(value);
+	const sign = value < 0 ? "−" : "";
+	const short = (n: number) => String(Math.round(n * 10) / 10);
+	if (abs >= 1e6) return `${sign}${short(abs / 1e6)}M`;
+	if (abs >= 1e3) return `${sign}${short(abs / 1e3)}k`;
+	return `${sign}${Math.round(abs)}`;
+}
+
+/** a segment label inside its bar needs this height (px) */
+const WATERFALL_INSIDE_PX = 22;
+/** height of a label beside a bar (px) */
+const WATERFALL_LABEL_PX = 14;
+
+/**
+ * Lays out a waterfall: totals stand on 0, steps float from the running
+ * total, segments stack from a column's start. The y domain always holds 0
+ * and leaves 10 % room above (value labels) and below a negative minimum.
+ * A segment label sits inside its bar when the segment is at least 22 px
+ * tall, else beside it, moved down off the column's connector and the
+ * labels above it, or hidden when there is no room left (or `beside` is
+ * false, on narrow charts).
+ * @author jplacht
+ *
+ * @param {IWaterfallColumn[]} columns columns, left to right
+ * @param {number} height plot height in px
+ * @param {boolean} beside labels may sit beside a bar
+ * @returns {IWaterfallLayout} ticks and boxes in px
+ */
+export function waterfallLayout(
+	columns: IWaterfallColumn[],
+	height: number,
+	beside = true
+): IWaterfallLayout {
+	// running total: [from, to] per column
+	let level = 0;
+	const spans = columns.map((c) => {
+		const from = c.kind === "total" ? 0 : level;
+		level = c.kind === "total" ? c.value : level + c.value;
+		return [from, level] as const;
+	});
+
+	let min = Math.min(0, ...spans.flat());
+	let max = Math.max(0, ...spans.flat());
+	const range = max - min || 1;
+	max += range * 0.1;
+	if (min < 0) min -= range * 0.1;
+	const y = (v: number) => ((max - v) / (max - min)) * height;
+
+	// 1, 2 or 5 × 10^n, about 4 ticks
+	const rough = (max - min) / 4;
+	const pow = 10 ** Math.floor(Math.log10(rough));
+	const step = ([1, 2, 5, 10].find((m) => m * pow >= rough) ?? 10) * pow;
+	const ticks: IWaterfallLayout["ticks"] = [];
+	for (let v = Math.ceil(min / step) * step; v <= max; v += step)
+		ticks.push({ value: v, y: y(v) });
+
+	const boxes = columns.map((column, i) => {
+		const [from, to] = spans[i];
+		const dir = to >= from ? 1 : -1;
+		const endY = y(to);
+		const segments = column.segments.length
+			? column.segments
+			: [{ key: column.key, label: "", value: Math.abs(column.value) }];
+
+		let cursor = from;
+		const boxes: IWaterfallSegmentBox[] = segments.map((s) => {
+			const next = cursor + dir * s.value;
+			const top = y(Math.max(cursor, next));
+			const segHeight = Math.abs(y(cursor) - y(next));
+			cursor = next;
+			// a bar without segments has no label, only its value above
+			const labelAt: IWaterfallSegmentBox["labelAt"] =
+				s.label && segHeight >= WATERFALL_INSIDE_PX
+					? "inside"
+					: "hidden";
+			const labelTop = top + segHeight / 2 - WATERFALL_LABEL_PX / 2;
+			return { ...s, top, height: segHeight, labelAt, labelTop };
+		});
+
+		// labels beside the bar, from the top: off the connector and each other
+		const taken: [number, number][] = [[endY - 2, endY + 2]];
+		const H = WATERFALL_LABEL_PX;
+		const hits = (at: number) =>
+			taken.filter(([a, b]) => at < b && at + H > a);
+		for (const box of [...boxes].sort((p, q) => p.top - q.top)) {
+			if (!beside || !box.label || box.labelAt === "inside") continue;
+			// down past what it covers; at the plot bottom, up instead
+			let at = box.labelTop;
+			for (let hit = hits(at); hit.length; hit = hits(at))
+				at = Math.max(...hit.map(([, b]) => b)) + 1;
+			if (at + H > height) {
+				at = Math.min(box.labelTop, height - H);
+				for (let hit = hits(at); hit.length; hit = hits(at))
+					at = Math.min(...hit.map(([a]) => a)) - H - 1;
+			}
+			if (at < 0) continue;
+			box.labelAt = "beside";
+			box.labelTop = at;
+			taken.push([at, at + H]);
+		}
+
+		return {
+			column,
+			top: y(Math.max(from, to)),
+			height: Math.abs(y(from) - y(to)),
+			endY,
+			segments: boxes,
+		};
+	});
+
+	return { ticks, zeroY: y(0), columns: boxes };
 }
