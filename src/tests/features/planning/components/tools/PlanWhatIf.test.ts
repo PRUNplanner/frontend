@@ -50,7 +50,7 @@ describe("PlanWhatIf", () => {
 		expect(rows[0].find(".bg-positive").exists()).toBe(true);
 		// the largest impact fills its side
 		expect(rows[0].find(".bg-positive").attributes("style")).toContain(
-			"width: 50%"
+			"width: 100%"
 		);
 		expect(rows[0].text()).toMatch(/plan\.tools\.whatif\.side\.(buy|sell)/);
 		expect(rows[0].text()).toMatch(/–/);

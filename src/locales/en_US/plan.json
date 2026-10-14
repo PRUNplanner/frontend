@@ -343,6 +343,7 @@
 				"buy": "buy",
 				"sell": "sell"
 			},
+			"bar_label": "{ticker}: profit −{value} to +{value} ȼ/day",
 			"never": "never",
 			"over": "> +500 %",
 			"more": "+ {n} more material ({tickers}) moves profit by less than ±{value} ȼ/day | + {n} more materials ({tickers}) move profit by less than ±{value} ȼ/day",

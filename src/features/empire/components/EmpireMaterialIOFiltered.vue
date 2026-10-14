@@ -51,6 +51,10 @@
 		},
 	});
 
+	const emit = defineEmits<{
+		"update:content": ["materialio" | "analysis" | "opportunities"];
+	}>();
+
 	const workforceMaterial: string[] = [
 		...new Set(
 			Object.values(WORKFORCE_CONSUMPTION_MAP)
@@ -124,6 +128,18 @@
 				};
 			})
 		);
+	}
+
+	/**
+	 * Opens Material I/O filtered to one material, e.g. from Analysis
+	 * @author jplacht
+	 *
+	 * @param {string} ticker Material ticker
+	 */
+	function openMaterial(ticker: string): void {
+		refFilterMaterials.value = [ticker];
+		applyFilter();
+		emit("update:content", "materialio");
 	}
 
 	/**
@@ -204,7 +220,8 @@
 		<EmpireAnalysis
 			v-else-if="content === 'analysis'"
 			:empire-material-i-o="filteredMaterialIO"
-			:plan-list-data="localPlanListData" />
+			:plan-list-data="localPlanListData"
+			@open:material="openMaterial" />
 		<EmpireOpportunities
 			v-else-if="content === 'opportunities'"
 			:empire-material-i-o="empireMaterialIO"

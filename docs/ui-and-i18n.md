@@ -161,7 +161,15 @@ are internal to `PDataTable` and the selects.
     beside a number (area, housing) is `PMeter.vue` (plain CSS, no chart.js).
     An x/y scatter with a best trade-off line, placed labels and a tooltip
     slot is `PScatter.vue` (plain SVG; `paretoFrontier`, `placeLabels` and
-    `niceTicks` in `scatter.util.ts`).
+    `niceTicks` in `scatter.util.ts`). Lines over days (one per series,
+    direct end labels, a crosshair tooltip sorted by value, an optional
+    volume panel) are `PLineChart.vue`; a 100 × 24 px trend line in a
+    table cell is `PSparkline.vue` (both plain SVG; `lineLabelLayout`,
+    `tooltipRows` and `sparklineLayout` in `charts.util.ts`).
+    A 100 % bar of parts (optionally hatched where e.g. revenue doesn't
+    cover cost) with a tooltip slot is `PStackedBar.vue`; a signed bar from a
+    shared zero line (own extents left and right, optional value text and a
+    `#center` slot) is `PDivergingBar.vue`. Both are plain CSS.
     Colours come only from `useChartTheme()` (`chartTheme.ts`): polarity,
     warning, muted, ink, grid, axis, tooltip surface, the fixed exchange colours
     (`exchange("AI1")`, tokens `--color-cx-*` in `style.css`) and the four

@@ -119,6 +119,8 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `empire:update` | `is_success` | the empire configuration was saved |
 | `empire:reload` | | |
 | `empire:material_io_expand` | | a Material I/O row was opened |
+| `empire:view_change` | `view` (`materialio`, `analysis`, `opportunities`) | the empire page switched between Material I/O, Analysis and Production Opportunities, once per switch |
+| `empire:analysis_more_charts` | | the "More charts" section of Empire Analysis was opened |
 | `empire:save_conflict` | `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of the empire configuration was answered |
 | `manage:cx_create` | | |
 | `manage:cx_delete` | `cx_uuid` | |

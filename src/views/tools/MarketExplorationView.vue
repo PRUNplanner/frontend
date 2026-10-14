@@ -27,22 +27,37 @@
 	import MarketExplorationChart from "@/ui/charts/MarketExplorationChart.vue";
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import MaterialCXOverviewTable from "@/features/cx/components/MaterialCXOverviewTable.vue";
+	import MarketExplorationExchanges from "@/features/market_exploration/components/MarketExplorationExchanges.vue";
+	import PSparkline from "@/ui/charts/PSparkline.vue";
 
 	// Composables
 	import { useMarketExplorationChart } from "@/features/market_exploration/useMarketExplorationChart";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Types & Interfaces
 	import type { PDataTableColumn, PSelectOption } from "@/ui/ui.types";
 	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 
 	// UI
-	import { PDataTable, PSelect, PButton, PValue } from "@/ui";
+	import {
+		PDataTable,
+		PSelect,
+		PButton,
+		PButtonGroup,
+		PTooltip,
+		PValue,
+	} from "@/ui";
 	import { CloseFullscreenSharp, OpenInFullSharp } from "@vicons/material";
 
 	// Util
 	import { formatAmount, formatNumber } from "@/util/numbers";
-	import type { CandleInterval } from "@/features/market_exploration/marketExploration.types";
+	import type {
+		CandleInterval,
+		ChartView,
+		ExchangeMetric,
+		ExchangeRange,
+	} from "@/features/market_exploration/marketExploration.types";
 
 	const exchangeOptions: Ref<PSelectOption[]> = ref(
 		["AI1", "CI1", "IC1", "NC1"].map((e) => {
@@ -65,6 +80,47 @@
 
 	const { fetchData, hasError, dataCandlestick, selectedInterval } =
 		useMarketExplorationChart(selectedExchange, selectedMaterial);
+
+	// the chart view is remembered for the session
+	const CHART_VIEW_KEY = "market_exploration.chart_view";
+	function storedChartView(): ChartView {
+		try {
+			return sessionStorage.getItem(CHART_VIEW_KEY) === "exchanges"
+				? "exchanges"
+				: "candles";
+		} catch {
+			return "candles";
+		}
+	}
+	const chartView = ref<ChartView>(storedChartView());
+	function setChartView(view: ChartView): void {
+		chartView.value = view;
+		try {
+			sessionStorage.setItem(CHART_VIEW_KEY, view);
+		} catch {
+			// storage blocked: the view just isn't remembered
+		}
+	}
+	const chartViews: ChartView[] = ["candles", "exchanges"];
+	const exchangeMetrics: ExchangeMetric[] = ["vwap", "low", "high"];
+	const exchangeRanges: ExchangeRange[] = [30, 90, 365, null];
+	const exchangeMetric = ref<ExchangeMetric>("vwap");
+	const exchangeRange = ref<ExchangeRange>(90);
+
+	// 30 daily VWAPs per material of the overview's exchange (UNIVERSE, as
+	// every overview column), one request
+	const SPARKLINE_EXCHANGE = "UNIVERSE";
+	const sparklines = ref<Record<string, (number | null)[]>>({});
+	async function loadSparklines(): Promise<void> {
+		try {
+			const result = await useQuery("GetCXSparklines", {
+				exchange: SPARKLINE_EXCHANGE,
+			}).execute();
+			sparklines.value = result.series;
+		} catch {
+			// the column stays empty, the numbers still show
+		}
+	}
 
 	async function fetch(track = true): Promise<void> {
 		const exchange = selectedExchange.value;
@@ -133,6 +189,7 @@
 	}
 
 	onMounted(async () => {
+		loadSparklines();
 		await preloadMaterials();
 		await generateDataOverview();
 		materialOptions.value = materialSelectOptions.value;
@@ -186,6 +243,11 @@
 				sortable("material_ticker", "material"),
 				sortable("vwap_universe_7d", "vwap_7d"),
 				sortable("vwap_universe_30d", "vwap_30d"),
+				{
+					key: "sparkline",
+					title: t("market_exploration.overview.table.sparkline"),
+					width: 116,
+				},
 				sortable("weighted_trend", "trend"),
 				sortable("volume_7d", "volume_7d"),
 				sortable("volume_30d", "volume_30d"),
@@ -457,12 +519,70 @@
 						<div
 							class="rounded border border-white/10 p-3 flex flex-col h-full min-h-[500px]">
 							<div
-								class="flex flex-row pb-3 child:my-auto flex-none">
+								class="flex flex-row flex-wrap gap-2 pb-3 child:my-auto flex-none">
 								<h3 class="font-bold text-lg grow">
 									{{ $t("market_exploration.chart.title") }}
 								</h3>
-								<div class="flex flex-row">
-									<div class="flex flex-row gap-1 pr-3">
+								<div class="flex flex-row flex-wrap gap-2">
+									<PButtonGroup
+										role="group"
+										:aria-label="
+											$t('market_exploration.chart.view.label')
+										">
+										<PButton
+											v-for="view in chartViews"
+											:key="view"
+											:pressed="chartView === view"
+											@click="setChartView(view)">
+											{{
+												$t(
+													`market_exploration.chart.view.${view}`
+												)
+											}}
+										</PButton>
+									</PButtonGroup>
+									<template v-if="chartView === 'exchanges'">
+										<PButtonGroup
+											role="group"
+											:aria-label="
+												$t(
+													'market_exploration.chart.metric.label'
+												)
+											">
+											<PButton
+												v-for="metric in exchangeMetrics"
+												:key="metric"
+												:pressed="exchangeMetric === metric"
+												@click="exchangeMetric = metric">
+												{{
+													$t(
+														`market_exploration.chart.metric.${metric}`
+													)
+												}}
+											</PButton>
+										</PButtonGroup>
+										<PButtonGroup
+											role="group"
+											:aria-label="
+												$t(
+													'market_exploration.chart.range.label'
+												)
+											">
+											<PButton
+												v-for="range in exchangeRanges"
+												:key="range ?? 'all'"
+												:pressed="exchangeRange === range"
+												@click="exchangeRange = range">
+												{{
+													$t(
+														`market_exploration.chart.range.${range ?? "all"}`
+													)
+												}}
+											</PButton>
+										</PButtonGroup>
+									</template>
+									<template v-else>
+									<div class="flex flex-row flex-wrap gap-1">
 										<template
 											v-for="option in exchangeOptions"
 											:key="option.value">
@@ -485,7 +605,7 @@
 											</PButton>
 										</template>
 									</div>
-									<div class="flex flex-row gap-1 pr-1">
+									<div class="flex flex-row flex-wrap gap-1">
 										<template
 											v-for="option in intervalOptions"
 											:key="option.value">
@@ -512,6 +632,7 @@
 											</PButton>
 										</template>
 									</div>
+									</template>
 									<PButton
 										:aria-label="
 											$t('common.buttons.fullscreen')
@@ -529,7 +650,14 @@
 							</div>
 							<div
 								class="flex-grow min-h-0">
+								<MarketExplorationExchanges
+									v-if="chartView === 'exchanges'"
+									class="h-[420px] md:h-[560px]"
+									:material-ticker="selectedMaterial"
+									:metric="exchangeMetric"
+									:range="exchangeRange" />
 								<MarketExplorationChart
+									v-else
 									:data="dataCandlestick" />
 							</div>
 						</div>
@@ -568,6 +696,36 @@
 					<template #cell-vwap_universe_30d="{ row }">
 						{{ formatNumber(row.vwap_universe_30d) }}
 						<span class="pl-1 font-light text-muted"> ȼ </span>
+					</template>
+					<template #header-sparkline>
+						<PTooltip>
+							<template #trigger>
+								<span class="hover:cursor-help">
+									{{
+										t(
+											"market_exploration.overview.table.sparkline"
+										)
+									}}
+								</span>
+							</template>
+							{{
+								t(
+									"market_exploration.overview.table.sparkline_hint"
+								)
+							}}
+						</PTooltip>
+					</template>
+					<template #cell-sparkline="{ row }">
+						<PSparkline
+							v-if="sparklines[row.material_ticker]"
+							:points="sparklines[row.material_ticker]"
+							:trend="row.weighted_trend * 100"
+							:label="
+								t(
+									'market_exploration.overview.table.sparkline_label',
+									{ ticker: row.material_ticker }
+								)
+							" />
 					</template>
 					<template #cell-weighted_trend="{ row }">
 						<span

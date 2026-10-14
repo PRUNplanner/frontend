@@ -246,7 +246,15 @@
 								<PDivergingBar
 									:value="impact(row)"
 									:max-abs="maxAbs"
-									mirror />
+									mirror
+									:text="`+${money(impact(row))}`"
+									:neg-text="`−${money(impact(row))}`"
+									:label="
+										t('plan.tools.whatif.bar_label', {
+											ticker: row.ticker,
+											value: money(impact(row)),
+										})
+									" />
 							</template>
 							<div class="flex flex-col gap-1 min-w-48 text-sm">
 								<div class="font-bold">

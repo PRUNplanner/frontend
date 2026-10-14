@@ -6,6 +6,7 @@
 		onUnmounted,
 		ref,
 		type Ref,
+		watch,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -31,6 +32,8 @@
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { planResultCacheKey } from "@/features/empire/empire.util";
 	import { calculateEmpireShippingDemand } from "@/features/empire/util/empireShippingDemand.util";
+	import { profitBreakdown } from "@/features/planning/util/profitBreakdown.util";
+	import { empireSplitParts } from "@/features/empire/empireAnalysis.util";
 	const {
 		calculateEmpireCostOverview,
 		combineEmpireMaterialIO,
@@ -67,6 +70,7 @@
 	// Types & Interfaces
 	import type { Plan } from "@/features/api/schemas/planningData.schemas";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
 	import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 	import type {
 		IEmpireCostOverview,
@@ -74,6 +78,7 @@
 		IEmpirePlanListData,
 		IEmpirePlanMaterialIO,
 		IEmpireShippingDemand,
+		IEmpireSplitParts,
 	} from "@/features/empire/empire.types";
 
 	// UI
@@ -110,7 +115,7 @@
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
 	const refEmpireList: Ref<PlanEmpireElement[]> = ref([]);
 
-	const calculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
+	const calculatedPlans: Ref<Record<string, IPlanCalculation>> = ref({});
 	const planData: Ref<Plan[]> = ref([]);
 
 	const isCalculating: Ref<boolean> = ref(true);
@@ -128,7 +133,7 @@
 	 * @returns {Promise<void>}
 	 */
 
-	const cacheCalculatedPlans = new Map<string, IPlanResult>();
+	const cacheCalculatedPlans = new Map<string, IPlanCalculation>();
 	const { loadGameData, createContext } = usePlanContext();
 
 	async function calculateEmpire(
@@ -139,7 +144,7 @@
 			isCalculating.value = true;
 			calculatedPlans.value = {};
 		}
-		const results: Record<string, IPlanResult> = {};
+		const results: Record<string, IPlanCalculation> = {};
 		progressTotal.value = planData.value.length;
 		progressCurrent.value = 0;
 
@@ -165,7 +170,7 @@
 				} else {
 					await Promise.resolve();
 
-					const { result } = calculatePlan(
+					const calculation = calculatePlan(
 						{
 							plan,
 							empire: getActiveEmpire(
@@ -182,11 +187,11 @@
 							selectedCXUuid.value
 						)
 					);
-					results[plan.uuid] = result;
+					results[plan.uuid] = calculation;
 					progressCurrent.value++;
 
 					// cache
-					cacheCalculatedPlans.set(cacheKey, result);
+					cacheCalculatedPlans.set(cacheKey, calculation);
 					// yield back to vue and update DOM
 					await new Promise((r) => setTimeout(r, 0));
 				}
@@ -307,10 +312,16 @@
 	 */
 	const planListData: ComputedRef<IEmpirePlanListData[]> = computed(() => {
 		return Object.entries(calculatedPlans.value).map(
-			([planUuid, planResult]) => {
+			([planUuid, { result, overview }]) => {
 				const plan: Plan = planData.value.find(
 					(p) => p.uuid == planUuid
 				)!;
+				const split = profitBreakdown(
+					result.materialio,
+					result.workforceMaterialIO,
+					result.production.buildings,
+					overview
+				);
 
 				return {
 					uuid: planUuid,
@@ -318,7 +329,11 @@
 					planet: plan.planet_natural_id,
 					permits: plan.plan_permits_used,
 					cogc: plan.plan_cogc,
-					profit: planResult.profit,
+					profit: result.profit,
+					revenue: split.output,
+					inputs: split.inputs,
+					workforce: split.workforce,
+					degradation: split.degradation,
 				};
 			}
 		);
@@ -333,7 +348,7 @@
 	const empireMaterialIO: ComputedRef<IEmpirePlanMaterialIO[]> = computed(
 		() => {
 			return Object.entries(calculatedPlans.value).map(
-				([planUuid, planResult]) => {
+				([planUuid, { result }]) => {
 					const plan: Plan = planData.value.find(
 						(p) => p.uuid == planUuid
 					)!;
@@ -342,7 +357,7 @@
 						planUuid: planUuid,
 						planName: plan.plan_name ?? "Unknown Plan Name",
 						planCOGC: plan.plan_cogc,
-						materialIO: planResult.materialio,
+						materialIO: result.materialio,
 					};
 				}
 			);
@@ -353,18 +368,22 @@
 		() => combineEmpireMaterialIO(empireMaterialIO.value)
 	);
 
+	const planResults: ComputedRef<IPlanResult[]> = computed(() =>
+		Object.values(calculatedPlans.value).map((c) => c.result)
+	);
+
 	const shippingDemand: ComputedRef<IEmpireShippingDemand> = computed(() =>
-		calculateEmpireShippingDemand(Object.values(calculatedPlans.value))
+		calculateEmpireShippingDemand(planResults.value)
 	);
 
 	const costOverview: ComputedRef<IEmpireCostOverview> = computed(() =>
 		calculateEmpireCostOverview(
 			combinedEmpireMaterialIO.value,
-			Object.values(calculatedPlans.value).reduce(
+			planResults.value.reduce(
 				(sum, element) => sum + element.area.areaUsed,
 				0
 			),
-			Object.values(calculatedPlans.value).reduce(
+			planResults.value.reduce(
 				(sum, planResult) =>
 					sum +
 					planResult.cost -
@@ -377,6 +396,10 @@
 				0
 			)
 		)
+	);
+
+	const empireSplit: ComputedRef<IEmpireSplitParts> = computed(() =>
+		empireSplitParts(costOverview.value, planListData.value)
 	);
 
 	/**
@@ -396,6 +419,7 @@
 	const mainContent = ref<"materialio" | "analysis" | "opportunities">(
 		"materialio"
 	);
+	watch(mainContent, (view) => trackEvent("empire:view_change", { view }));
 </script>
 
 <template>
@@ -500,7 +524,8 @@
 							<div>
 								<AsyncEmpireCostOverview
 									:cost-overview="costOverview"
-									:shipping-demand="shippingDemand" />
+									:shipping-demand="shippingDemand"
+									:split="empireSplit" />
 							</div>
 							<div class="flex flex-col gap-6">
 								<div class="overflow-x-auto">
@@ -529,7 +554,7 @@
 							class="xl:sticky xl:top-1 h-[calc(100vh-theme(spacing.12))] flex flex-col">
 							<div class="flex flex-col flex-1 overflow-auto">
 								<EmpireMaterialIOFiltered
-									:content="mainContent"
+									v-model:content="mainContent"
 									:empire-material-i-o="
 										combinedEmpireMaterialIO
 									"

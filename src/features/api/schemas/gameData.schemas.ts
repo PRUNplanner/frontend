@@ -346,3 +346,11 @@ export const FIOStorageSchema = z.object({
 	last_modified: z.coerce.date(),
 });
 export type FIOStorage = z.infer<typeof FIOStorageSchema>;
+
+export const CXSparklinesSchema = z.object({
+	exchange: z.string(),
+	days: z.number(),
+	/** daily VWAP per ticker, oldest first, null for days without trades */
+	series: z.record(z.string(), z.array(z.number().nullable())),
+});
+export type CXSparklines = z.infer<typeof CXSparklinesSchema>;

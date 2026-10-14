@@ -24,6 +24,10 @@ const plan = (
 	permits: 1,
 	cogc: "---",
 	profit,
+	revenue: 0,
+	inputs: 0,
+	workforce: 0,
+	degradation: 0,
 });
 
 // KW-020d is Kakrafoon Kappa: first by name, last by id
