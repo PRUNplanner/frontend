@@ -8,6 +8,9 @@
 	import { usePlanetData } from "@/database/services/usePlanetData";
 	const { planetNames, loadPlanetNames } = usePlanetData();
 
+	// Util
+	import { formatNumber } from "@/util/numbers";
+
 	// Types & Interfaces
 	import type { IEmpirePlanListData } from "@/features/empire/empire.types";
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
@@ -17,6 +20,7 @@
 
 	// UI
 	import { PDataTable, PValue } from "@/ui";
+	import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
 
 	const props = defineProps({
 		planListData: {
@@ -30,6 +34,12 @@
 		() => loadPlanetNames(props.planListData.map((p) => p.planet)),
 		{ immediate: true }
 	);
+
+	// one zero line for all rows: gains right, losses left
+	const profitExtent = computed(() => ({
+		maxAbs: Math.max(0, ...props.planListData.map((p) => p.profit)),
+		negAbs: Math.max(0, ...props.planListData.map((p) => -p.profit)),
+	}));
 
 	const planetLabel = (id: string) => planetNames.value.get(id) || "Loading...";
 
@@ -88,7 +98,17 @@
 			<div class="text-nowrap">#</div>
 		</template>
 		<template #cell-profit="{ row }">
-			<PValue class="text-nowrap" :value="row.profit" />
+			<div class="flex items-center gap-x-2">
+				<PDivergingBar
+					class="grow min-w-20"
+					:value="row.profit"
+					:max-abs="profitExtent.maxAbs"
+					:neg-abs="profitExtent.negAbs"
+					:label="`${row.name || row.planet}: ${formatNumber(row.profit)}`" />
+				<PValue
+					class="text-nowrap w-28 shrink-0 text-right tabular-nums"
+					:value="row.profit" />
+			</div>
 		</template>
 		<template #empty>
 			<div class="flex flex-col gap-y-3">

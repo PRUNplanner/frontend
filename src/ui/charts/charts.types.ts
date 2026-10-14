@@ -88,3 +88,11 @@ export interface IWaterfallLayout {
 	zeroY: number;
 	columns: IWaterfallColumnBox[];
 }
+
+export interface IStackedBarSegment {
+	key: string;
+	/** share of the bar, e.g. % (segments are drawn in proportion) */
+	value: number;
+	/** CSS colour */
+	color: string;
+}

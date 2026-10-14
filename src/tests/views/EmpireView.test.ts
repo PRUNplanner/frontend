@@ -20,6 +20,7 @@ const {
 	queries,
 	toast,
 	replace,
+	trackEvent,
 } = vi.hoisted(() => ({
 	stub: (name: string) => ({
 		__esModule: true,
@@ -42,13 +43,17 @@ const {
 			cost: 0,
 			area: { areaUsed: 0 },
 			materialio: [],
+			workforceMaterialIO: [],
+			production: { buildings: [] },
 			storage: {},
 		},
+		overview: { dailyDegradationCost: 0, profit: 0 },
 	})),
 	createContext: vi.fn(async () => ({})),
 	queries: [] as string[],
 	toast: vi.fn(),
 	replace: vi.fn(),
+	trackEvent: vi.fn(),
 }));
 
 // the loaders fetch data, here they only hand through their slot
@@ -96,6 +101,7 @@ vi.mock("@/features/empire/components/EmpireConfiguration.vue", () =>
 	stub("EmpireConfiguration")
 );
 vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
 vi.mock("@/ui/useToast", () => ({ useToast: () => toast }));
 vi.mock("vue-router", async (importOriginal) => ({
 	...(await importOriginal<typeof import("vue-router")>()),
@@ -137,8 +143,31 @@ describe("EmpireView", () => {
 		queries.length = 0;
 		toast.mockClear();
 		replace.mockClear();
+		trackEvent.mockClear();
 		calculatePlan.mockClear();
 		createContext.mockReset().mockResolvedValue({});
+	});
+
+	it("tracks each switch between the views once", async () => {
+		const wrapper = await mountView();
+		const button = (key: string) =>
+			wrapper.findAll("button").find((b) => b.text() === key)!;
+		const views = () =>
+			trackEvent.mock.calls
+				.filter(([e]) => e === "empire:view_change")
+				.map(([, p]) => p);
+
+		await button("empire.views.analysis").trigger("click");
+		await button("empire.views.analysis").trigger("click");
+		await nextTick();
+		expect(views()).toEqual([{ view: "analysis" }]);
+
+		// e.g. a material picked in Analysis opens Material I/O
+		wrapper
+			.findComponent({ name: "EmpireMaterialIOFiltered" })
+			.vm.$emit("update:content", "materialio");
+		await nextTick();
+		expect(views()).toEqual([{ view: "analysis" }, { view: "materialio" }]);
 	});
 
 	it("calculates the empire and stores its state", async () => {

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-	import { type ComputedRef, type PropType, computed } from "vue";
+	import { type ComputedRef, type PropType, computed, ref } from "vue";
+
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
@@ -7,6 +9,8 @@
 
 	// Components
 	import EmpireBarChart from "@/ui/charts/EmpireBarChart.vue";
+	import EmpireRevenueSplit from "@/features/empire/components/EmpireRevenueSplit.vue";
+	import EmpireMaterialButterfly from "@/features/empire/components/EmpireMaterialButterfly.vue";
 
 	// Types & Interfaces
 	import type {
@@ -25,6 +29,31 @@
 			required: true,
 		},
 	});
+
+	const emit = defineEmits<{ "open:material": [ticker: string] }>();
+
+	// "More charts": open state kept in this browser
+	const MORE_CHARTS_KEY = "prunplanner_empire_more_charts";
+	function readMoreCharts(): boolean {
+		try {
+			return localStorage.getItem(MORE_CHARTS_KEY) === "1";
+		} catch {
+			return false;
+		}
+	}
+	const moreChartsOpen = ref(readMoreCharts());
+
+	function toggleMoreCharts(event: Event): void {
+		const open = (event.target as HTMLDetailsElement).open;
+		if (open === moreChartsOpen.value) return;
+		moreChartsOpen.value = open;
+		try {
+			localStorage.setItem(MORE_CHARTS_KEY, open ? "1" : "0");
+		} catch {
+			// storage blocked: open for this page only
+		}
+		if (open) trackEvent("empire:analysis_more_charts");
+	}
 
 	// Local State
 	const localEmpireMaterialIO = computed(() => props.empireMaterialIO);
@@ -169,52 +198,74 @@
 </script>
 
 <template>
-	<div class="@container border rounded-[3px] border-white/15 p-3">
-		<!-- columns follow the panel, not the viewport: beside the empire
-			table it is only ~400px wide at 1440 -->
-		<div class="grid grid-cols-1 @3xl:grid-cols-2 gap-3">
-			<div v-if="chartDataPlanProfit.length" class="@3xl:col-span-2 min-w-0">
-				<h2 class="text-lg font-bold pb-3">
-					{{ $t("empire.analysis.plan_profit") }}
-				</h2>
-				<EmpireBarChart :items="chartDataPlanProfit" />
+	<div class="flex flex-col gap-3">
+		<EmpireRevenueSplit :plans="localPlanListData" />
+		<EmpireMaterialButterfly
+			:material-i-o="localEmpireMaterialIO"
+			@open:material="(ticker: string) => emit('open:material', ticker)" />
+		<details
+			:open="moreChartsOpen"
+			class="@container border rounded-[3px] border-white/15"
+			@toggle="toggleMoreCharts">
+			<summary
+				class="p-3 cursor-pointer flex flex-wrap items-baseline gap-x-3 list-none [&::-webkit-details-marker]:hidden">
+				<span class="text-base font-bold">
+					{{ moreChartsOpen ? "▾" : "▸" }}
+					{{ $t("empire.analysis.more_charts.title") }}
+				</span>
+				<span class="text-xs text-muted">
+					{{ $t("empire.analysis.more_charts.caption") }}
+				</span>
+			</summary>
+			<!-- the charts mount once open: chart.js needs a visible box -->
+			<div v-if="moreChartsOpen" class="px-3 pb-3">
+				<!-- columns follow the panel, not the viewport: beside the empire
+					table it is only ~400px wide at 1440 -->
+				<div class="grid grid-cols-1 @3xl:grid-cols-2 gap-3">
+					<div v-if="chartDataPlanProfit.length" class="@3xl:col-span-2 min-w-0">
+						<h2 class="text-lg font-bold pb-3">
+							{{ $t("empire.analysis.plan_profit") }}
+						</h2>
+						<EmpireBarChart :items="chartDataPlanProfit" />
+					</div>
+					<div class="min-w-0">
+						<h2 class="text-lg font-bold pb-3">
+							{{ $t("empire.analysis.material_profits") }}
+						</h2>
+						<EmpireBarChart :items="chartDataMaterialProfit" />
+					</div>
+					<div class="min-w-0">
+						<h2 class="text-lg font-bold pb-3">
+							{{ $t("empire.analysis.material_costs") }}
+						</h2>
+						<EmpireBarChart :items="chartDataMaterialCost" />
+					</div>
+					<div class="min-w-0">
+						<h2 class="text-lg font-bold pb-3">
+							{{ $t("empire.analysis.net_production") }}
+						</h2>
+						<EmpireBarChart :items="chartDataNetProduction" />
+					</div>
+					<div class="min-w-0">
+						<h2 class="text-lg font-bold pb-3">
+							{{ $t("empire.analysis.net_consumption") }}
+						</h2>
+						<EmpireBarChart :items="chartDataNetConsumption" />
+					</div>
+					<div class="min-w-0">
+						<h2 class="text-lg font-bold pb-3">
+							{{ $t("empire.analysis.exclusive_production") }}
+						</h2>
+						<EmpireBarChart :items="chartDataExclusiveProduction" />
+					</div>
+					<div class="min-w-0">
+						<h2 class="text-lg font-bold pb-3">
+							{{ $t("empire.analysis.exclusive_consumption") }}
+						</h2>
+						<EmpireBarChart :items="chartDataExclusiveConsumption" />
+					</div>
+				</div>
 			</div>
-			<div class="min-w-0">
-				<h2 class="text-lg font-bold pb-3">
-					{{ $t("empire.analysis.material_profits") }}
-				</h2>
-				<EmpireBarChart :items="chartDataMaterialProfit" />
-			</div>
-			<div class="min-w-0">
-				<h2 class="text-lg font-bold pb-3">
-					{{ $t("empire.analysis.material_costs") }}
-				</h2>
-				<EmpireBarChart :items="chartDataMaterialCost" />
-			</div>
-			<div class="min-w-0">
-				<h2 class="text-lg font-bold pb-3">
-					{{ $t("empire.analysis.net_production") }}
-				</h2>
-				<EmpireBarChart :items="chartDataNetProduction" />
-			</div>
-			<div class="min-w-0">
-				<h2 class="text-lg font-bold pb-3">
-					{{ $t("empire.analysis.net_consumption") }}
-				</h2>
-				<EmpireBarChart :items="chartDataNetConsumption" />
-			</div>
-			<div class="min-w-0">
-				<h2 class="text-lg font-bold pb-3">
-					{{ $t("empire.analysis.exclusive_production") }}
-				</h2>
-				<EmpireBarChart :items="chartDataExclusiveProduction" />
-			</div>
-			<div class="min-w-0">
-				<h2 class="text-lg font-bold pb-3">
-					{{ $t("empire.analysis.exclusive_consumption") }}
-				</h2>
-				<EmpireBarChart :items="chartDataExclusiveConsumption" />
-			</div>
-		</div>
+		</details>
 	</div>
 </template>

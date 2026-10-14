@@ -151,6 +151,8 @@ export interface IAnalyticsEventProperties {
 	"empire:update": { is_success: boolean };
 	"empire:reload": undefined;
 	"empire:material_io_expand": undefined;
+	"empire:view_change": { view: "materialio" | "analysis" | "opportunities" };
+	"empire:analysis_more_charts": undefined;
 	"empire:save_conflict": { choice: SaveConflictChoice };
 
 	"manage:cx_create": undefined;
