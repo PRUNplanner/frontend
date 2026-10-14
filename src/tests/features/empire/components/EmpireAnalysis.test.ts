@@ -1,12 +1,16 @@
-import { describe, it, expect, beforeAll, vi } from "vitest";
-import { h } from "vue";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { h, nextTick } from "vue";
 import type { VueWrapper } from "@vue/test-utils";
 
 import { materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import EmpireAnalysis from "@/features/empire/components/EmpireAnalysis.vue";
 import EmpireBarChart from "@/ui/charts/EmpireBarChart.vue";
+import EmpireRevenueSplit from "@/features/empire/components/EmpireRevenueSplit.vue";
+import EmpireMaterialButterfly from "@/features/empire/components/EmpireMaterialButterfly.vue";
+import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { memoryStorage } from "@/tests/memoryStorage";
 
 // Types & Interfaces
 import type {
@@ -16,6 +20,9 @@ import type {
 
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";
+
+const { trackEvent } = vi.hoisted(() => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
 
 // chart.js has no canvas in jsdom, stubs only keep the data
 vi.mock("@/ui/charts/EmpireBarChart.vue", () => ({
@@ -74,6 +81,10 @@ function plan(
 		permits: 1,
 		cogc: cogc as IEmpirePlanListData["cogc"],
 		profit,
+		revenue: 100 + profit,
+		inputs: 60,
+		workforce: 30,
+		degradation: 10,
 	};
 }
 
@@ -87,8 +98,13 @@ const PLANS = [
 
 async function mountAnalysis(
 	empireMaterialIO = MATERIAL_IO,
-	planListData = PLANS
+	planListData = PLANS,
+	moreChartsOpen = true
 ) {
+	localStorage.setItem(
+		"prunplanner_empire_more_charts",
+		moreChartsOpen ? "1" : "0"
+	);
 	return mountComponent(EmpireAnalysis, { empireMaterialIO, planListData });
 }
 
@@ -106,6 +122,11 @@ describe("EmpireAnalysis", () => {
 	beforeAll(async () => {
 		await materialsStore.setMany(materials);
 		await useMaterialData().preload();
+	});
+
+	beforeEach(() => {
+		vi.stubGlobal("localStorage", memoryStorage());
+		trackEvent.mockClear();
 	});
 
 	it("splits material value into profits and costs", async () => {
@@ -170,5 +191,144 @@ describe("EmpireAnalysis", () => {
 		const { plans, ...materialCharts } = charts(wrapper, false);
 		expect(plans).toBeUndefined();
 		expect(Object.values(materialCharts)).toEqual([[], [], [], [], [], []]);
+	});
+
+	describe("More charts", () => {
+		const details = (wrapper: VueWrapper) =>
+			wrapper.find("details").element as HTMLDetailsElement;
+
+		async function toggle(wrapper: VueWrapper, open: boolean) {
+			details(wrapper).open = open;
+			await wrapper.find("details").trigger("toggle");
+			await nextTick();
+		}
+
+		it("is closed by default and mounts no chart", async () => {
+			const { wrapper } = await mountComponent(EmpireAnalysis, {
+				empireMaterialIO: MATERIAL_IO,
+				planListData: PLANS,
+			});
+
+			expect(details(wrapper).open).toBe(false);
+			expect(wrapper.findAllComponents(EmpireBarChart)).toHaveLength(0);
+		});
+
+		it("mounts the charts when opened, remembers it and tracks it", async () => {
+			const { wrapper } = await mountAnalysis(MATERIAL_IO, PLANS, false);
+
+			await toggle(wrapper, true);
+			expect(wrapper.findAllComponents(EmpireBarChart)).toHaveLength(7);
+			expect(localStorage.getItem("prunplanner_empire_more_charts")).toBe(
+				"1"
+			);
+			expect(trackEvent).toHaveBeenCalledExactlyOnceWith(
+				"empire:analysis_more_charts"
+			);
+
+			// closing is remembered and not tracked
+			await toggle(wrapper, false);
+			expect(localStorage.getItem("prunplanner_empire_more_charts")).toBe(
+				"0"
+			);
+			expect(trackEvent).toHaveBeenCalledTimes(1);
+		});
+
+		it("opens with the remembered state, without tracking", async () => {
+			const { wrapper } = await mountAnalysis();
+
+			expect(details(wrapper).open).toBe(true);
+			expect(trackEvent).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("revenue split", () => {
+		// 12 profitable plans, two losses
+		const MANY = [
+			...Array.from({ length: 12 }, (_, i) => plan(`G${i}`, 10 + i)),
+			plan("L1", -5),
+			plan("L2", -40),
+		];
+		const links = (wrapper: VueWrapper) =>
+			wrapper
+				.findComponent(EmpireRevenueSplit)
+				.findAll("a")
+				.map((a) => a.text());
+
+		it("lists the top 10, every loss and Other, which expands inline", async () => {
+			const { wrapper } = await mountAnalysis(MATERIAL_IO, MANY, false);
+
+			expect(links(wrapper)).toEqual([
+				...Array.from({ length: 10 }, (_, i) => `G${11 - i}`),
+				"L1",
+				"L2",
+			]);
+			const other = wrapper
+				.findComponent(EmpireRevenueSplit)
+				.find("button[aria-expanded]");
+			expect(other.text()).toContain(
+				"empire.analysis.revenue_split.other"
+			);
+
+			await other.trigger("click");
+			expect(links(wrapper).slice(-2)).toEqual(["G1", "G0"]);
+			expect(other.attributes("aria-expanded")).toBe("true");
+		});
+
+		it("hatches the cost a loss-making plan doesn't cover", async () => {
+			const { wrapper } = await mountAnalysis(
+				MATERIAL_IO,
+				[plan("A", 20), plan("B", -40)],
+				false
+			);
+			const hatches = wrapper
+				.findComponent(EmpireRevenueSplit)
+				.findAll("[data-key=hatch]");
+
+			// B: 60 revenue of 100 cost, 40 % not covered
+			expect(hatches).toHaveLength(1);
+			expect(hatches[0].attributes("style")).toContain("left: 60%");
+			expect(wrapper.text()).toContain("-66.7 %");
+		});
+	});
+
+	describe("materials butterfly", () => {
+		const butterfly = (wrapper: VueWrapper) =>
+			wrapper.findComponent(EmpireMaterialButterfly);
+
+		it("ranks materials by ¢ per day, bought left and sold right", async () => {
+			const { wrapper } = await mountAnalysis(MATERIAL_IO, PLANS, false);
+			const bars = butterfly(wrapper).findAllComponents(PDivergingBar);
+
+			// H2O moves no ¢
+			expect(bars.map((b) => b.props("value"))).toEqual([
+				-3000.004, 1234.567, -20,
+			]);
+			expect(bars[0].props("maxAbs")).toBe(3000.004);
+		});
+
+		it("switches to units per day", async () => {
+			const { wrapper } = await mountAnalysis(MATERIAL_IO, PLANS, false);
+			await butterfly(wrapper)
+				.findAll("button")
+				.find((b) => b.text() === "empire.analysis.butterfly.amount")!
+				.trigger("click");
+
+			expect(
+				butterfly(wrapper)
+					.findAllComponents(PDivergingBar)
+					.map((b) => b.props("value"))
+			).toEqual([-30, 10, 0]);
+		});
+
+		it("opens a clicked material in Material I/O", async () => {
+			const { wrapper, component } = await mountAnalysis(
+				MATERIAL_IO,
+				PLANS,
+				false
+			);
+			await butterfly(wrapper).findAll("li button")[1].trigger("click");
+
+			expect(component.emitted("open:material")).toEqual([["FE"]]);
+		});
 	});
 });

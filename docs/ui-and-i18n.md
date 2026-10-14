@@ -162,6 +162,10 @@ are internal to `PDataTable` and the selects.
     An x/y scatter with a best trade-off line, placed labels and a tooltip
     slot is `PScatter.vue` (plain SVG; `paretoFrontier`, `placeLabels` and
     `niceTicks` in `scatter.util.ts`).
+    A 100 % bar of parts (optionally hatched where e.g. revenue doesn't
+    cover cost) with a tooltip slot is `PStackedBar.vue`; a signed bar from a
+    shared zero line (own extents left and right, optional value text and a
+    `#center` slot) is `PDivergingBar.vue`. Both are plain CSS.
     Colours come only from `useChartTheme()` (`chartTheme.ts`): polarity,
     warning, muted, ink, grid, axis, tooltip surface, the fixed exchange colours
     (`exchange("AI1")`, tokens `--color-cx-*` in `style.css`) and the four
