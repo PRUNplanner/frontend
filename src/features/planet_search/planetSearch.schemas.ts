@@ -65,7 +65,7 @@ export const PlanetSearchFilterSchema = z.object({
 });
 export type PlanetSearchFilter = z.infer<typeof PlanetSearchFilterSchema>;
 
-export const PlanetSearchViewSchema = z.enum(["list", "matrix"]);
+export const PlanetSearchViewSchema = z.enum(["list", "matrix", "chart"]);
 export type PlanetSearchView = z.infer<typeof PlanetSearchViewSchema>;
 
 export const PlanetSearchColumnSchema = z.enum([

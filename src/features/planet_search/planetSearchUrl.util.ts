@@ -12,6 +12,7 @@ import { PlanetCOGCProgramTypeSchema } from "@/features/api/schemas/gameData.sch
 import {
 	PlanetSearchExtraSchema,
 	PlanetSearchInfrastructureSchema,
+	PlanetSearchViewSchema,
 	type PlanetSearchFilter,
 	type PlanetSearchMaterialGroup,
 	type PlanetSearchReference,
@@ -80,7 +81,7 @@ export function encodeSearch(state: IPlanetSearchState): Record<string, string> 
 	if (f.maxJumps !== def.maxJumps) q.j = String(f.maxJumps);
 	if (state.sort.length)
 		q.sort = state.sort.map((s) => `${s.key}:${s.dir}`).join(",");
-	if (state.view === "matrix") q.view = "matrix";
+	if (state.view !== "list") q.view = state.view;
 	if (state.pins.length) q.pin = state.pins.join(",");
 
 	return q;
@@ -173,7 +174,9 @@ export function decodeSearch(query: IPlanetSearchQuery): IPlanetSearchState {
 			maxJumps: jumpsValid ? j : def.maxJumps,
 		},
 		sort: decodeSorts(query.sort),
-		view: first(query.view) === "matrix" ? "matrix" : "list",
+		view:
+			oneOf([first(query.view)], PlanetSearchViewSchema.options)[0] ??
+			"list",
 		pins: list(query.pin)
 			.filter((p) => /^[A-Za-z0-9-]{1,16}$/.test(p))
 			.slice(0, MAX_PINS),
