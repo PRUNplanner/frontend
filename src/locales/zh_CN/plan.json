@@ -39,7 +39,8 @@
 			"construction_cart": "建造清单",
 			"supply_cart": "补给清单",
 			"repair_analysis": "维修分析",
-			"profit_breakdown": "Profit Breakdown"
+			"profit_breakdown": "Profit Breakdown",
+			"whatif": "What-if"
 		},
 		"profit_breakdown": {
 			"title": "Profit Breakdown",
@@ -143,18 +144,20 @@
 		"supply_cart": {
 			"title": "补给清单",
 			"info": {
-				"p": "补给清单会结合 FIO 提供的现有库存，更新你的规划需求。你可以灵活选择其他仓储位置来为基地补给。根据你是想补充劳动力与生产所需物资，还是专注于特定类别，自定义补给范围，并指定补给库存需要维持的天数。若需要更高级的补给清单选项，请使用 {link} 工具。",
+				"p": "The Supply Cart provides updates on your plans needs combined with existing inventory sourced from FIO. You have the flexibility to opt for alternative storage locations to replenish your base. Tailor your selection based on whether you wish to restock workforce and production supplies or focus on a specific category, and specify the duration for which the supplied stock should sustain. XIT ships what the running base still needs once its own production covers part of it. For the first supply, use XIT Initial: it also ships the inputs this plan produces itself, because nothing is produced yet. Use the {link} tool for more advanced supply cart options.",
 				"link": "FIO 消耗"
 			},
 			"buttons": {
 				"all": "全部",
 				"workforce": "劳动力",
-				"production": "生产"
+				"production": "生产",
+				"xit_initial": "XIT Initial"
 			},
 			"table": {
 				"stock_duration": "库存维持天数",
 				"storage": "仓储",
 				"xit_name": "补给清单",
+				"xit_initial_name": "Supply Cart (Initial)",
 				"ticker": "信息签",
 				"daily_need": "每日需求",
 				"daily_cost": "每日成本",
@@ -322,6 +325,105 @@
 			"applied": "已添加常规配置：{n}座建筑",
 			"empty": "暂无建筑。通过上方添加建筑，或者{link}",
 			"show": "以常规的配置开始"
+		},
+		"whatif": {
+			"title": "What-if",
+			"view_label": "View",
+			"views": {
+				"sensitivity": "Price sensitivity",
+				"compare": "Compare plans"
+			},
+			"pct_label": "Change each price by",
+			"pct": "±{pct} %",
+			"columns": {
+				"material": "Material",
+				"side": "Side",
+				"change": "Profit falls ← · → Profit rises",
+				"range": "Profit range ȼ/day",
+				"break_even": "Break-even"
+			},
+			"side": {
+				"buy": "buy",
+				"sell": "sell"
+			},
+			"bar_label": "{ticker}: profit −{value} to +{value} ȼ/day",
+			"never": "never",
+			"over": "> +500 %",
+			"more": "+ {n} more material ({tickers}) moves profit by less than ±{value} ȼ/day | + {n} more materials ({tickers}) move profit by less than ±{value} ȼ/day",
+			"footnote": {
+				"centre": "Centre line = today's profit, {profit} ȼ/day. Each bar changes one price, everything else stays.",
+				"break_even": "Break-even = price change at which this plan stops making money."
+			},
+			"empty": "Add production to see which prices this plan depends on.",
+			"tooltip": {
+				"value": "Value / day at today's price",
+				"profit": "Profit at {change}"
+			},
+			"means": {
+				"title": "What this means",
+				"lower": "A {pct} % lower {ticker} price cuts profit to {profit} ȼ/day.",
+				"higher": "A {pct} % higher {ticker} price cuts profit to {profit} ȼ/day.",
+				"break_even": "At {change} the plan breaks even.",
+				"never": "It stays profitable even if this price drops to 0.",
+				"never_loss": "No change to this price alone brings the plan to break-even.",
+				"over": "Its price would have to change by more than +500 % to break even.",
+				"profit_if": "Profit if {ticker} {change}",
+				"roi_if": "ROI if {ticker} {change}",
+				"all_costs": "All costs +{pct} %",
+				"most_sensitive": "Most sensitive",
+				"source_cx": "Prices: {name}, from the plan's CX preference",
+				"source_universe": "Prices: Universe 30-day average, the plan has no CX preference"
+			},
+			"compare": {
+				"picker": "Compare with",
+				"same_planet": "This planet",
+				"other_planets": "Other planets",
+				"loading": "Loading your plans",
+				"error": "Your plans could not be loaded.",
+				"no_plans": "You have no other plan to compare with yet.",
+				"calc_error": "This plan could not be calculated. Pick another plan or reload the page.",
+				"this_plan": "This plan",
+				"columns": {
+					"figure": "Key figure",
+					"difference": "Difference",
+					"side_by_side": "Side by side"
+				},
+				"figures": {
+					"profit": "Daily profit",
+					"output": "Output value",
+					"cost": "Daily cost",
+					"degradation": "Degradation",
+					"planCost": "Plan cost",
+					"roi": "ROI",
+					"profitArea": "Profit / Area",
+					"area": "Area used"
+				},
+				"bars_label": "This plan {a}, {name} {b}",
+				"footnote": "Difference = other plan minus this plan, coloured by what is better for you: lower cost and a shorter ROI count as good, area is neutral.",
+				"verdict": {
+					"title": "Verdict",
+					"same": "Both plans are the same.",
+					"earns_more": "This plan earns {value} ȼ/day more.",
+					"earns_less": "This plan earns {value} ȼ/day less.",
+					"earns_same": "Both plans earn the same per day.",
+					"sooner": "It pays back {days} days sooner.",
+					"later": "It pays back {days} days later.",
+					"trade": "{name} gains {gain} ȼ/day on {ticker} but loses {cost} ȼ/day on {tickers}.",
+					"gain": "{name} gains {gain} ȼ/day on {ticker}.",
+					"cost": "{name} loses {cost} ȼ/day on {tickers}.",
+					"and": "{a} and {b}"
+				},
+				"changes": {
+					"title": "What changes",
+					"subtitle": "{name} minus this plan, ȼ/day",
+					"none": "No material changes.",
+					"more": "+{n}",
+					"more_label": "{n} more material | {n} more materials",
+					"bar_label": "{ticker}: {value} ȼ/day"
+				},
+				"source_cx": "{name} is priced with its own CX preference, {cx}.",
+				"source_universe": "{name} is priced at the Universe 30-day average, it has no CX preference."
+			}
 		}
 	},
 	"components": {
