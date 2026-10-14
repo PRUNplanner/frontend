@@ -170,6 +170,12 @@ export interface IAnalyticsEventProperties {
 
 	"tool:use": ToolUseProperties;
 
+	"repair_analysis:interval_set": {
+		source: "input" | "slider" | "preset" | "reset";
+		ticker: string;
+		in_range: boolean;
+	};
+
 	"xit:burn_open": undefined;
 	"xit:burn_copy": undefined;
 	"xit:burn_ship_fit": { weight: number; volume: number };

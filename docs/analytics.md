@@ -137,6 +137,7 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | Event | Properties | When |
 | --- | --- | --- |
 | `tool:use` | `tool_name`, plus the tool's own | the tool produced a result |
+| `repair_analysis:interval_set` | `source` (`input`, `slider`, `preset`, `reset`), `ticker` (`all` for a reset), `in_range` (within the good range) | a repair interval was changed in the plan's Repair Analysis, debounced 1 s |
 
 `tool:use` means a result, not an opened page (pageviews carry
 `route_name` for that). Tools with an input count only a result for an

@@ -115,24 +115,89 @@ export function findOptimalRepairDay(curve: IPlanRepairAnalysisElement[]): {
 }
 
 /**
- * Repair cost per material and day, for the cost breakdown chart
+ * Consecutive days around the best one whose profit is within the
+ * tolerance of the best profit, also for a building that loses money
  * @author jplacht
  *
  * @param {IPlanRepairAnalysisElement[]} curve Repair curve
- * @param {Record<string, number>} prices Unit price per material ticker
- * @returns {{ name: string; data: number[] }[]} One series per material
+ * @param {number} bestDay Optimal day, see findOptimalRepairDay
+ * @param {number} tolerance Share of the best profit, default 1 %
+ * @returns {[number, number]} First and last day of the range
  */
-export function repairCostSeries(
+export function goodRange(
 	curve: IPlanRepairAnalysisElement[],
-	prices: Record<string, number>
-): { name: string; data: number[] }[] {
-	if (!curve.length) return [];
+	bestDay: number,
+	tolerance: number = 0.01
+): [number, number] {
+	const best = curve[bestDay].profit;
+	const limit = best - Math.abs(best) * tolerance;
+	let from = bestDay;
+	let to = bestDay;
+	while (from > 1 && curve[from - 1].profit >= limit) from--;
+	while (to < REPAIR_DAY_MAX && curve[to + 1].profit >= limit) to++;
+	return [from, to];
+}
 
-	return curve[0].materials.map((m) => ({
-		name: m.ticker,
-		data: curve.map((r) => {
-			const material = r.materials.find((e) => e.ticker === m.ticker)!;
-			return material.amount * prices[material.ticker];
-		}),
+/**
+ * Splits the daily cost of an interval into output lost to wear and the
+ * averaged repair cost: profit = production − workforce − both
+ * @author jplacht
+ *
+ * @param {IPlanRepairAnalysisElement[]} curve Repair curve
+ * @param {number} productionValue Daily production value at full efficiency
+ * @returns {{ lostOutput: number; repairPerDay: number }[]} One per day
+ */
+export function repairCostSplit(
+	curve: IPlanRepairAnalysisElement[],
+	productionValue: number
+): { lostOutput: number; repairPerDay: number }[] {
+	return curve.map((e) => ({
+		lostOutput: productionValue - e.dailyRevenue_norm,
+		repairPerDay: e.repair,
 	}));
+}
+
+/**
+ * Repair materials of all buildings of a type, repaired every n days
+ * @author jplacht
+ *
+ * @param {IMaterialIOMinimal[]} constructionMaterials One building's materials
+ * @param {number} day Repair interval in days
+ * @param {number} amount Buildings of the type
+ * @returns {IMaterialIOMinimal[]} Materials to buy, as input
+ */
+export function repairMaterialsAt(
+	constructionMaterials: IMaterialIOMinimal[],
+	day: number,
+	amount: number
+): IMaterialIOMinimal[] {
+	return constructionMaterials.map((m) => ({
+		ticker: m.ticker,
+		input: calculateAmountAtDay(day, m.input) * amount,
+		output: 0,
+	}));
+}
+
+/**
+ * Days until a building is due at the given interval, negative is overdue
+ * @author jplacht
+ *
+ * @param {number} interval Repair interval in days
+ * @param {number} ageDays Days since the last repair
+ * @returns {number} Days left
+ */
+export function dueInDays(interval: number, ageDays: number): number {
+	return interval - ageDays;
+}
+
+/**
+ * Tag colour of a due date: overdue, due within a week, or later
+ * @author jplacht
+ *
+ * @param {number} days Days left, see dueInDays
+ * @returns {"error" | "warning" | "secondary"} PTag type
+ */
+export function dueTagType(days: number): "error" | "warning" | "secondary" {
+	if (days < 0) return "error";
+	return days <= 7 ? "warning" : "secondary";
 }

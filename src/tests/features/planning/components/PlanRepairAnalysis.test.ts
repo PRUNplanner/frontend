@@ -1,62 +1,31 @@
-import { describe, it, expect, beforeAll, vi } from "vitest";
-import { h } from "vue";
-import { flushPromises, type VueWrapper } from "@vue/test-utils";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { type VueWrapper, RouterLinkStub } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { usePlanningStore } from "@/stores/planningStore";
+import { useUserStore } from "@/stores/userStore";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanRepairAnalysis from "@/features/planning/components/tools/PlanRepairAnalysis.vue";
-import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
-import PlanRepairProfitChart from "@/ui/charts/PlanRepairProfitChart.vue";
-import PlanRepairCostChart from "@/ui/charts/PlanRepairCostChart.vue";
-import PSelect from "@/ui/components/PSelect.vue";
-import { calculateRepairCurve } from "@/features/repair_analysis/repairAnalysis.util";
+import RepairBuildingDetail from "@/features/repair_analysis/components/RepairBuildingDetail.vue";
+import RepairBuildingList from "@/features/repair_analysis/components/RepairBuildingList.vue";
+import PButton from "@/ui/components/PButton.vue";
+import PInputNumber from "@/ui/components/PInputNumber.vue";
+import PNotice from "@/ui/components/PNotice.vue";
+import PTag from "@/ui/components/PTag.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import materials from "@/tests/test_data/api_data_materials.json";
+import plan from "@/locales/en_US/plan.json";
 
-// chart.js has no canvas in jsdom, stubs only keep the props
-vi.mock("@/ui/charts/PlanRepairProfitChart.vue", () => ({
-	default: {
-		name: "PlanRepairProfitChart",
-		props: { profitData: Array, optimalPoint: Object },
-		render: () => h("div"),
-	},
-}));
-vi.mock("@/ui/charts/PlanRepairCostChart.vue", () => ({
-	default: {
-		name: "PlanRepairCostChart",
-		props: { series: Array },
-		render: () => h("div"),
-	},
-}));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
-// lets a test fail the next price lookup
-const priceGate = vi.hoisted(() => ({ failNext: false }));
-vi.mock("@/features/cx/usePrice", async (importOriginal) => {
-	const actual =
-		await importOriginal<typeof import("@/features/cx/usePrice")>();
-	return {
-		...actual,
-		usePrice: (...args: Parameters<typeof actual.usePrice>) => {
-			const price = actual.usePrice(...args);
-			return {
-				...price,
-				getPrice: async (...a: Parameters<typeof price.getPrice>) => {
-					if (priceGate.failNext) {
-						priceGate.failNext = false;
-						throw new Error("prices unavailable");
-					}
-					return price.getPrice(...a);
-				},
-			};
-		},
-	};
-});
 const CX_UUID = "cx-uuid";
+const PLANET = "ZV-307c";
+const DAY_MS = 86_400_000;
 // BUY prices of the CX
 const PRICES = { BBH: 100, BSE: 50, MCG: 10 };
 
@@ -77,10 +46,48 @@ const EXT = {
 	constructionCost: 0,
 	constructionMaterials: [mat("BSE", 16), mat("MCG", 100)],
 };
+// single FRM, no revenue: 1 BBH + 1 BSE = 150 up to day 45
+const FRM_BEST = 45;
 
-async function mountAnalysis(data = [FRM, EXT], waitForTable = true) {
+const site = (repairedDaysAgo: (number | undefined)[]) => ({
+	PlanetIdentifier: PLANET,
+	PlanetName: "Montem",
+	InvestedPermits: 1,
+	MaximumPermits: 3,
+	Buildings: [
+		...repairedDaysAgo.map((days) => ({
+			BuildingTicker: "FRM",
+			BuildingLastRepair:
+				days === undefined ? undefined : new Date(Date.now() - days * DAY_MS),
+			Condition: 0.9,
+			ReclaimableMaterials: [],
+			RepairMaterials: [{ MaterialTicker: "BBH", MaterialAmount: 2 }],
+		})),
+		// infrastructure has no repair interval
+		{
+			BuildingTicker: "HB1",
+			Condition: 0.5,
+			ReclaimableMaterials: [],
+			RepairMaterials: [],
+			BuildingLastRepair: new Date(Date.now() - 170 * DAY_MS),
+		},
+	],
+});
+
+interface IMountOptions {
+	data?: (typeof FRM)[];
+	shared?: boolean;
+	fio?: "none" | "no_site" | "site";
+	repairedDaysAgo?: (number | undefined)[];
+	fioAgeDays?: number;
+	// as restored from localStorage: dates are ISO strings
+	restored?: boolean;
+}
+
+async function mountAnalysis(options: IMountOptions = {}) {
 	const pinia = createPinia();
-	usePlanningStore(pinia).setCXs([
+	const planningStore = usePlanningStore(pinia);
+	planningStore.setCXs([
 		// @ts-expect-error mock data
 		{
 			uuid: CX_UUID,
@@ -96,36 +103,89 @@ async function mountAnalysis(data = [FRM, EXT], waitForTable = true) {
 		},
 	]);
 
+	const fio = options.fio ?? "none";
+	if (fio !== "none") {
+		// @ts-expect-error partial profile
+		useUserStore(pinia).profile = {
+			fio_apikey: "key",
+			prun_username: "user",
+		};
+		planningStore.setFIOStorageData({
+			storage_data: { planets: {}, warehouses: {}, ships: {} },
+			sites_data:
+				fio === "site"
+					? { "site-1": site(options.repairedDaysAgo ?? [50, 10]) }
+					: {},
+			last_modified: new Date(
+				Date.now() - (options.fioAgeDays ?? 0.2) * DAY_MS
+			),
+		});
+		if (options.restored) {
+			planningStore.fio_sites_planets = JSON.parse(
+				JSON.stringify(planningStore.fio_sites_planets)
+			);
+			planningStore.fio_storage_timestamp = JSON.parse(
+				JSON.stringify(planningStore.fio_storage_timestamp)
+			);
+		}
+	}
+
 	const mounted = await mountComponent(
 		PlanRepairAnalysis,
-		{ data, cxUuid: CX_UUID, planetNaturalId: "ZV-307c" },
-		{ pinia }
+		{
+			data: options.data ?? [FRM, EXT],
+			cxUuid: CX_UUID,
+			planetNaturalId: PLANET,
+			shared: options.shared ?? false,
+		},
+		{ pinia, messages: { plan } }
 	);
-	if (!waitForTable) return mounted;
-	// 181 days of materials are priced through IndexedDB
-	await vi.waitFor(() =>
-		expect(mounted.wrapper.find("tfoot").exists()).toBe(true)
-	);
+	if (options.data?.length !== 0)
+		await vi.waitFor(() =>
+			expect(
+				mounted.wrapper.findAll("[data-testid=repair-building-row]")
+					.length +
+					mounted.wrapper.findAll("[data-testid=repair-building-card]")
+						.length
+			).toBeGreaterThan(0)
+		);
 	return mounted;
 }
 
-/** day material table rows: ticker, amount, cost */
-function dayRows(wrapper: VueWrapper) {
-	return wrapper
-		.findAll("tbody tr")
-		.map((tr) => tr.findAll("td").map((td) => td.text().split(" ")[0]));
+const rows = (wrapper: VueWrapper) =>
+	wrapper.findAll("[data-testid=repair-building-row]");
+const rowField = (wrapper: VueWrapper, ticker: string) =>
+	rows(wrapper)
+		.find((r) => r.text().includes(`× ${ticker}`))!
+		.findComponent(PInputNumber);
+const detail = (wrapper: VueWrapper) =>
+	wrapper.findComponent(RepairBuildingDetail);
+const detailField = (wrapper: VueWrapper) =>
+	detail(wrapper).findComponent(PInputNumber);
+const slider = (wrapper: VueWrapper) =>
+	detail(wrapper).find("input[type=range]")
+		.element as HTMLInputElement;
+const pressedPreset = (wrapper: VueWrapper) =>
+	detail(wrapper)
+		.find("[role=group]")
+		.findAllComponents(PButton)
+		.filter((b: VueWrapper) => b.attributes("aria-pressed") === "true")
+		.map((b: VueWrapper) => b.text());
+
+async function selectRow(wrapper: VueWrapper, ticker: string) {
+	await rows(wrapper)
+		.find((r) => r.text().includes(`× ${ticker}`))!
+		.find("button[aria-pressed]")
+		.trigger("click");
 }
 
-async function select(wrapper: VueWrapper, index: 0 | 1, value: number) {
-	wrapper
-		.findAllComponents(PSelect)
-		.at(index)!
-		.vm.$emit("update:value", value);
-	await flushPromises();
+function stubPhone(phone: boolean) {
+	vi.stubGlobal("matchMedia", () => ({
+		matches: phone,
+		addEventListener: vi.fn(),
+		removeEventListener: vi.fn(),
+	}));
 }
-
-const xitElements = (wrapper: VueWrapper) =>
-	wrapper.findComponent(XITTransferActionButton).props("elements");
 
 describe("PlanRepairAnalysis", () => {
 	beforeAll(async () => {
@@ -135,224 +195,310 @@ describe("PlanRepairAnalysis", () => {
 		await useMaterialData().preload();
 	});
 
-	it("lists all buildings' repair materials of day 90", async () => {
+	beforeEach(() => {
+		vi.mocked(trackEvent).mockClear();
+	});
+
+	it("lists every type, most expensive repair first, at its best day", async () => {
 		const { wrapper } = await mountAnalysis();
 
-		// day 90 halves the construction materials, times building amount
-		// FRM x2: BBH 2 * 2 = 4, BSE 2 * 2 = 4; EXT: BSE 8, MCG 50
-		expect(dayRows(wrapper)).toEqual([
-			["BBH", "4", "400.00"],
-			["BSE", "12", "600.00"],
-			["MCG", "50", "500.00"],
-		]);
-		expect(wrapper.find("tfoot").text()).toContain("1,500.00");
-
-		expect(xitElements(wrapper)).toEqual([
-			{ ticker: "BBH", value: 4 },
-			{ ticker: "BSE", value: 12 },
-			{ ticker: "MCG", value: 50 },
-		]);
-	});
-
-	it("switches repair materials and XIT transfer to the chosen day", async () => {
-		const { wrapper } = await mountAnalysis();
-
-		await select(wrapper, 0, 1);
-
-		// day 1: n - floor(n * 179 / 180) -> BBH 4 - 3, BSE 4 - 3, 16 - 15,
-		// MCG 100 - 99; FRM counts twice: BBH 2, BSE 2 + 1, MCG 1
-		expect(dayRows(wrapper)).toEqual([
-			["BBH", "2", "200.00"],
-			["BSE", "3", "150.00"],
-			["MCG", "1", "10.00"],
-		]);
-		expect(xitElements(wrapper)).toEqual([
-			{ ticker: "BBH", value: 2 },
-			{ ticker: "BSE", value: 3 },
-			{ ticker: "MCG", value: 1 },
-		]);
-	});
-
-	it("offers days 1 to 180 and all buildings", async () => {
-		const { wrapper } = await mountAnalysis();
-		const [days, buildings] = wrapper.findAllComponents(PSelect);
-
-		const dayOptions = days.props("options") as { value: number }[];
-		expect(dayOptions).toHaveLength(180);
-		expect(dayOptions.at(0)!.value).toBe(1);
-		expect(dayOptions.at(-1)!.value).toBe(180);
-
-		expect(buildings.props("options")).toEqual([
-			{ label: "FRM", value: 0 },
-			{ label: "EXT", value: 1 },
-		]);
-		expect(buildings.text()).toContain("FRM");
-	});
-
-	it("marks the most profitable repair day of the first building", async () => {
-		const { wrapper } = await mountAnalysis();
-		const chart = wrapper.findComponent(PlanRepairProfitChart);
-
-		// single FRM, no revenue: 1 BBH + 1 BSE = 150 up to day 45,
-		// 2 each up to day 90; -150 / 46 beats -300 / 91 and later days
-		expect(chart.props("optimalPoint")).toEqual({
-			x: 45,
-			y: -150 / 46,
-		});
-		const profit = chart.props("profitData") as number[];
-		expect(profit).toHaveLength(181);
-		// day 0 copies day 1: -150 / 2
-		expect(profit.slice(0, 2)).toEqual([-75, -75]);
-	});
-
-	it("draws the profit curve per building, whatever the amount (#520)", async () => {
-		// dailyRevenue covers all buildings of the type
-		const curve = async (amount: number) => {
-			const { wrapper } = await mountAnalysis([
-				{ ...FRM, amount, dailyRevenue: 300 * amount },
-			]);
-			const chart = wrapper.findComponent(PlanRepairProfitChart);
-			return [chart.props("profitData"), chart.props("optimalPoint")];
-		};
-
-		expect(await curve(36)).toEqual(await curve(1));
-	});
-
-	it("charges wear once, as repair cost, and workforce in full", async () => {
-		// FRM x2 as the engine reports it: production 500, workforce 100,
-		// construction 4 BBH + 4 BSE = 600, 1/180 of it per day as wear
-		const perBuilding = 500 - 100 - 600 / 180;
-		const { wrapper } = await mountAnalysis([
-			{
-				...FRM,
-				dailyRevenue: 2 * perBuilding,
-				workforceDailyCost: -100,
-				constructionCost: -600,
-			},
-		]);
-
-		const expected = calculateRepairCurve(
-			500,
-			100,
-			FRM.constructionMaterials,
-			PRICES
+		expect(rows(wrapper).map((r) => r.find("button[aria-pressed] span").text())).toEqual(
+			["1× EXT", "2× FRM"]
 		);
-		const profit = wrapper
-			.findComponent(PlanRepairProfitChart)
-			.props("profitData") as number[];
-		profit.forEach((p, day) =>
-			expect(p).toBeCloseTo(expected[day].profit, 8)
+		expect(rowField(wrapper, "FRM").props("value")).toBe(FRM_BEST);
+		// the first type is selected
+		expect(detail(wrapper).props("building").ticker).toBe("EXT");
+		expect(wrapper.text()).toContain("all at best");
+	});
+
+	it("keeps the row, the field, the slider and the presets in sync", async () => {
+		const { wrapper } = await mountAnalysis();
+		await selectRow(wrapper, "FRM");
+		expect(detailField(wrapper).props("value")).toBe(FRM_BEST);
+		expect(pressedPreset(wrapper)).toEqual([`Best · ${FRM_BEST} d`]);
+
+		// row field
+		rowField(wrapper, "FRM").vm.$emit("update:value", 60);
+		await wrapper.vm.$nextTick();
+		expect(detailField(wrapper).props("value")).toBe(60);
+		expect(slider(wrapper).value).toBe("60");
+		expect(pressedPreset(wrapper)).toEqual(["60 d"]);
+		expect(
+			wrapper.find("[data-testid=repair-stats-delta]").text()
+		).toContain("vs. all at best");
+
+		// slider
+		await detail(wrapper).find("input[type=range]").setValue("90");
+		expect(rowField(wrapper, "FRM").props("value")).toBe(90);
+		expect(detailField(wrapper).props("value")).toBe(90);
+
+		// preset
+		await detail(wrapper)
+			.find("[role=group]")
+			.findAllComponents(PButton)[1]
+			.trigger("click");
+		expect(rowField(wrapper, "FRM").props("value")).toBe(30);
+		expect(slider(wrapper).value).toBe("30");
+
+		// detail field
+		detailField(wrapper).vm.$emit("update:value", 120);
+		await wrapper.vm.$nextTick();
+		expect(rowField(wrapper, "FRM").props("value")).toBe(120);
+		expect(slider(wrapper).value).toBe("120");
+
+		// the other type keeps its best day
+		expect(rowField(wrapper, "EXT").props("value")).toBe(
+			wrapper.findComponent(RepairBuildingList).props("buildings")[0].best
 		);
 	});
 
-	it("breaks the repair cost down per material", async () => {
+	it("updates the plan's repair bill with the interval", async () => {
 		const { wrapper } = await mountAnalysis();
-		const series = wrapper
-			.findComponent(PlanRepairCostChart)
-			.props("series") as { name: string; data: number[] }[];
+		const bill = () => wrapper.find("[data-testid=repair-stats]").text();
+		const before = bill();
 
-		expect(series.map((s) => s.name)).toEqual(["Total Cost", "BBH", "BSE"]);
-		// day 45: 1 BBH (100) + 1 BSE (50)
-		expect(series.map((s) => s.data[45])).toEqual([150, 100, 50]);
+		rowField(wrapper, "FRM").vm.$emit("update:value", 180);
+		await wrapper.vm.$nextTick();
+
+		expect(bill()).not.toBe(before);
 	});
 
-	it("recalculates the curves for another building", async () => {
+	it("warns on both fields outside the good range", async () => {
 		const { wrapper } = await mountAnalysis();
+		await selectRow(wrapper, "FRM");
 
-		await select(wrapper, 1, 1);
+		rowField(wrapper, "FRM").vm.$emit("update:value", 180);
+		await wrapper.vm.$nextTick();
 
-		const series = wrapper
-			.findComponent(PlanRepairCostChart)
-			.props("series") as { name: string; data: number[] }[];
-		expect(series.map((s) => s.name)).toEqual(["Total Cost", "BSE", "MCG"]);
-		// day 180: full EXT construction 16 * 50 + 100 * 10
-		expect(series.map((s) => s.data[180])).toEqual([1800, 800, 1000]);
-
-		// the day table still covers all buildings
-		expect(dayRows(wrapper)).toHaveLength(3);
+		expect(rowField(wrapper, "FRM").props("status")).toBe("warning");
+		expect(detailField(wrapper).props("status")).toBe("warning");
+		expect(
+			wrapper.find("[data-testid=repair-detail-delta]").classes()
+		).toContain("text-warning");
 	});
 
-	it("recalculates when the plan's buildings change", async () => {
+	it("resets all intervals to their best day", async () => {
+		const { wrapper } = await mountAnalysis();
+		rowField(wrapper, "FRM").vm.$emit("update:value", 120);
+		rowField(wrapper, "EXT").vm.$emit("update:value", 10);
+		await wrapper.vm.$nextTick();
+
+		await wrapper
+			.findAll("button")
+			.find((b) => b.text() === "Reset all to best")!
+			.trigger("click");
+
+		expect(rowField(wrapper, "FRM").props("value")).toBe(FRM_BEST);
+		expect(wrapper.text()).toContain("all at best");
+	});
+
+	it("does not keep intervals: a new visit starts at the best days", async () => {
+		const first = await mountAnalysis();
+		rowField(first.wrapper, "FRM").vm.$emit("update:value", 120);
+		first.wrapper.unmount();
+
+		const { wrapper } = await mountAnalysis();
+		expect(rowField(wrapper, "FRM").props("value")).toBe(FRM_BEST);
+	});
+
+	it("drops intervals of removed types and starts new ones at their best", async () => {
 		const { wrapper, setProps } = await mountAnalysis();
-
-		await setProps({ data: [{ ...FRM, amount: 5 }, EXT] });
-
-		// day 90: FRM x5: BBH 2 * 5
-		await vi.waitFor(() =>
-			expect(dayRows(wrapper).at(0)).toEqual(["BBH", "10", "1,000.00"])
-		);
-	});
-
-	it("falls back to the first building when the selected one is removed", async () => {
-		const { wrapper, setProps } = await mountAnalysis();
-		await select(wrapper, 1, 1);
-
-		await setProps({ data: [FRM] });
-
-		expect(wrapper.findAllComponents(PSelect).at(1)!.text()).toContain(
-			"FRM"
-		);
-		const series = wrapper
-			.findComponent(PlanRepairCostChart)
-			.props("series") as { name: string }[];
-		expect(series.map((s) => s.name)).toEqual(["Total Cost", "BBH", "BSE"]);
-	});
-
-	it("clears the selection when the last building is removed", async () => {
-		const { wrapper, setProps } = await mountAnalysis();
-
-		await setProps({ data: [] });
-
-		expect(wrapper.findAllComponents(PSelect).at(1)!.text()).toBe(
-			"common.ui.placeholder.please_select"
-		);
-		expect(wrapper.findComponent(PlanRepairProfitChart).exists()).toBe(
-			false
-		);
-		await vi.waitFor(() => expect(dayRows(wrapper)).toEqual([]));
-	});
-
-	it("selects the first building once the plan gets one", async () => {
-		const { wrapper, setProps } = await mountAnalysis([]);
+		rowField(wrapper, "FRM").vm.$emit("update:value", 120);
 
 		await setProps({ data: [EXT] });
+		await vi.waitFor(() => expect(rows(wrapper)).toHaveLength(1));
+		await setProps({ data: [FRM, EXT] });
+		await vi.waitFor(() => expect(rows(wrapper)).toHaveLength(2));
 
-		expect(wrapper.findAllComponents(PSelect).at(1)!.text()).toContain(
-			"EXT"
+		expect(rowField(wrapper, "FRM").props("value")).toBe(FRM_BEST);
+	});
+
+	it("sends one debounced event per burst of changes", async () => {
+		const { wrapper } = await mountAnalysis();
+		await selectRow(wrapper, "FRM");
+		const range = detail(wrapper).find("input[type=range]");
+
+		await range.setValue("100");
+		await range.setValue(String(FRM_BEST));
+		wrapper.unmount();
+
+		expect(trackEvent).toHaveBeenCalledTimes(1);
+		expect(trackEvent).toHaveBeenCalledWith(
+			"repair_analysis:interval_set",
+			{ source: "slider", ticker: "FRM", in_range: true }
 		);
+	});
+
+	it("keeps one event per type in a burst over several types", async () => {
+		const { wrapper } = await mountAnalysis();
+
+		rowField(wrapper, "FRM").vm.$emit("update:value", 120);
+		rowField(wrapper, "EXT").vm.$emit("update:value", 30);
+		wrapper.unmount();
+
 		expect(
-			wrapper.findComponent(PlanRepairProfitChart).props("profitData")
-		).toHaveLength(181);
+			vi.mocked(trackEvent).mock.calls.map(
+				(c) => (c[1] as { ticker: string }).ticker
+			)
+		).toEqual(["FRM", "EXT"]);
 	});
 
-	it("logs a failed price lookup and recovers on the next calculation", async () => {
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
-		priceGate.failNext = true;
+	it("sends a reset for all types", async () => {
+		const { wrapper } = await mountAnalysis();
 
-		const { wrapper } = await mountAnalysis([FRM, EXT], false);
+		await wrapper
+			.findAll("button")
+			.find((b) => b.text() === "Reset all to best")!
+			.trigger("click");
+		wrapper.unmount();
 
-		await vi.waitFor(() =>
-			expect(error).toHaveBeenCalledWith(new Error("prices unavailable"))
+		expect(trackEvent).toHaveBeenCalledWith("repair_analysis:interval_set", {
+			source: "reset",
+			ticker: "all",
+			in_range: true,
+		});
+	});
+
+	it("without FIO: a notice linking to the profile, no FIO parts", async () => {
+		const { wrapper } = await mountAnalysis({ fio: "none" });
+
+		const notice = wrapper.findComponent(PNotice);
+		expect(notice.text()).toContain("Connect FIO");
+		expect(notice.findComponent(RouterLinkStub).props("to")).toBe(
+			"/profile#fio"
 		);
-		expect(dayRows(wrapper)).toEqual([]);
-		error.mockRestore();
-
-		// picking a building calculates again
-		await select(wrapper, 1, 1);
-		await vi.waitFor(() => expect(dayRows(wrapper)).toHaveLength(3));
-	});
-
-	it("hides the charts without buildings", async () => {
-		const { wrapper } = await mountAnalysis([]);
-
-		expect(wrapper.findComponent(PlanRepairProfitChart).exists()).toBe(
+		expect(wrapper.find("[data-testid=repair-fio-note]").exists()).toBe(
 			false
 		);
-		expect(wrapper.findComponent(PlanRepairCostChart).exists()).toBe(false);
+		expect(wrapper.text()).toContain("Good range");
+		expect(wrapper.text()).not.toContain("Next due");
+		expect(wrapper.find("[data-testid=repair-stats-cost]").exists()).toBe(
+			true
+		);
+		expect(wrapper.findAll(".repair-fio-marker")).toHaveLength(0);
+	});
+
+	it("with FIO but no site on the planet: the no-site notice", async () => {
+		const { wrapper } = await mountAnalysis({ fio: "no_site" });
+
+		const notice = wrapper.findComponent(PNotice);
+		expect(notice.text()).toContain(`No FIO site on ${PLANET} yet`);
+		expect(notice.findComponent(RouterLinkStub).exists()).toBe(false);
+		expect(wrapper.find("[data-testid=repair-fio-note]").text()).toContain(
+			"FIO last update"
+		);
+		expect(wrapper.text()).toContain("Good range");
+	});
+
+	it("with a FIO site: due tags, the next due building and markers", async () => {
+		// FRM repaired 50 and 10 days ago, due at day 45
+		const { wrapper } = await mountAnalysis({ fio: "site" });
+
+		expect(wrapper.findComponent(PNotice).exists()).toBe(false);
+		expect(wrapper.text()).toContain("Next due");
+		const frmRow = rows(wrapper).find((r) => r.text().includes("× FRM"))!;
+		expect(frmRow.findComponent(PTag).text()).toBe("Overdue 5 d");
+		expect(frmRow.findComponent(PTag).props("type")).toBe("error");
+
+		const next = wrapper.find("[data-testid=repair-stats-next]");
+		expect(next.text()).toContain("FRM #1");
+		expect(next.text()).toContain("Overdue 5 d");
+
+		await selectRow(wrapper, "FRM");
+		expect(wrapper.text()).toContain("Your FRM on Montem (FIO)");
+		expect(wrapper.findAll("[data-testid=repair-fio-building]")).toHaveLength(
+			2
+		);
+		// FIO has 2 FRM, like the plan
+		expect(wrapper.find("[data-testid=repair-fio-count]").exists()).toBe(
+			false
+		);
+		expect(wrapper.findAll(".repair-fio-marker")).toHaveLength(2);
+	});
+
+	it("shows a never repaired building without a due date", async () => {
+		const { wrapper } = await mountAnalysis({
+			fio: "site",
+			repairedDaysAgo: [undefined],
+		});
+		await selectRow(wrapper, "FRM");
+
+		expect(wrapper.text()).toContain("never repaired");
+		expect(wrapper.find("[data-testid=repair-fio-count]").text()).toContain(
+			"FIO: 1 built · plan: 2"
+		);
+		// no repair date: no due date, no marker, cost instead of next due
+		expect(wrapper.find("[data-testid=repair-stats-cost]").exists()).toBe(
+			true
+		);
+		expect(wrapper.findAll(".repair-fio-marker")).toHaveLength(0);
+	});
+
+	it("reads FIO dates restored from storage as strings", async () => {
+		const { wrapper } = await mountAnalysis({
+			fio: "site",
+			restored: true,
+			fioAgeDays: 2,
+		});
+
+		const frmRow = rows(wrapper).find((r) => r.text().includes("× FRM"))!;
+		expect(frmRow.findComponent(PTag).text()).toBe("Overdue 5 d");
 		expect(
-			wrapper.findAllComponents(PSelect).at(1)!.props("options")
-		).toEqual([]);
-		expect(dayRows(wrapper)).toEqual([]);
-		expect(xitElements(wrapper)).toEqual([]);
+			wrapper.find("[data-testid=repair-fio-note] .ptooltip").exists()
+		).toBe(true);
+	});
+
+	it("explains FIO data older than a day", async () => {
+		const fresh = await mountAnalysis({ fio: "site" });
+		expect(
+			fresh.wrapper.find("[data-testid=repair-fio-note] .ptooltip").exists()
+		).toBe(false);
+
+		const { wrapper } = await mountAnalysis({ fio: "site", fioAgeDays: 2 });
+		expect(
+			wrapper.find("[data-testid=repair-fio-note] .ptooltip").exists()
+		).toBe(true);
+	});
+
+	it("on a shared plan: no FIO parts and no notice, whatever the store holds", async () => {
+		const { wrapper } = await mountAnalysis({ fio: "site", shared: true });
+
+		expect(wrapper.findComponent(PNotice).exists()).toBe(false);
+		expect(wrapper.find("[data-testid=repair-fio-note]").exists()).toBe(
+			false
+		);
+		expect(wrapper.find("[data-testid=repair-fio-buildings]").exists()).toBe(
+			false
+		);
+		expect(wrapper.text()).not.toContain("Next due");
+		expect(wrapper.findAll(".repair-fio-marker")).toHaveLength(0);
+	});
+
+	it("says so for a plan without production buildings", async () => {
+		const { wrapper } = await mountAnalysis({ data: [] });
+
+		expect(wrapper.text()).toContain("no production buildings");
+		expect(wrapper.findComponent(RepairBuildingList).exists()).toBe(false);
+	});
+
+	it("on phones: cards open the detail, back returns to the list", async () => {
+		stubPhone(true);
+		const { wrapper } = await mountAnalysis();
+
+		const cards = wrapper.findAll("[data-testid=repair-building-card]");
+		expect(cards).toHaveLength(2);
+		expect(detail(wrapper).exists()).toBe(false);
+
+		await cards[1].trigger("click");
+		expect(detail(wrapper).props("building").ticker).toBe("FRM");
+		expect(detail(wrapper).props("back")).toBe(true);
+		expect(wrapper.findComponent(RepairBuildingList).exists()).toBe(false);
+		expect(wrapper.find("[data-testid=repair-stats]").exists()).toBe(false);
+
+		await wrapper.find("[aria-label='Back to buildings']").trigger("click");
+		expect(wrapper.findAll("[data-testid=repair-building-card]")).toHaveLength(
+			2
+		);
+		expect(detail(wrapper).exists()).toBe(false);
 	});
 });

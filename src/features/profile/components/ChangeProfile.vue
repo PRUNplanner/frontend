@@ -163,7 +163,7 @@
 			{{ $t("profile.change_profile.throttled") }}
 		</div>
 		<PForm v-if="localProfile">
-			<PFormSeparator>
+			<PFormSeparator id="fio" class="scroll-mt-4">
 				<div class="py-3 text-muted">
 					{{ $t("profile.change_profile.fio_info") }}
 				</div>

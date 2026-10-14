@@ -1,206 +1,316 @@
-import { ref } from "vue";
-import { describe, it, expect, beforeAll } from "vitest";
+import { nextTick, ref } from "vue";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 // Stores
-import { materialsStore, exchangesStore } from "@/database/stores";
+import {
+	buildingsStore,
+	exchangesStore,
+	materialsStore,
+} from "@/database/stores";
+import { useBuildingData } from "@/database/services/useBuildingData";
 import { useMaterialData } from "@/database/services/useMaterialData";
+import { usePlanningStore } from "@/stores/planningStore";
 
 // test data
-import materials from "@/tests/test_data/api_data_materials.json";
+import buildingsData from "@/tests/test_data/api_data_buildings.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
+import materials from "@/tests/test_data/api_data_materials.json";
 
 // Composables
 import { useRepairAnalysis } from "@/features/repair_analysis/useRepairAnalysis";
+import {
+	calculateRepairCurve,
+	findOptimalRepairDay,
+	goodRange,
+} from "@/features/repair_analysis/repairAnalysis.util";
 
-describe("useRepairAnalysis", async () => {
-	const cxUuid = ref(undefined);
-	const planetNaturalId = ref(undefined);
+// Types & Interfaces
+import type { IPlanRepairAnalysisDataProp } from "@/features/planning/components/tools/planRepairAnalysis.types";
 
+// counts the material calculations
+const spies = vi.hoisted(() => ({ materialsAt: vi.fn() }));
+vi.mock(
+	"@/features/repair_analysis/repairAnalysis.util",
+	async (importOriginal) => {
+		const actual =
+			await importOriginal<
+				typeof import("@/features/repair_analysis/repairAnalysis.util")
+			>();
+		spies.materialsAt.mockImplementation(actual.repairMaterialsAt);
+		return { ...actual, repairMaterialsAt: spies.materialsAt };
+	}
+);
+
+// lets a test fail the next price book
+const priceGate = vi.hoisted(() => ({ failNext: false }));
+vi.mock("@/features/cx/usePrice", async (importOriginal) => {
+	const actual =
+		await importOriginal<typeof import("@/features/cx/usePrice")>();
+	return {
+		...actual,
+		usePrice: (...args: Parameters<typeof actual.usePrice>) => {
+			const price = actual.usePrice(...args);
+			return {
+				...price,
+				getPriceBook: async () => {
+					if (priceGate.failNext) {
+						priceGate.failNext = false;
+						throw new Error("prices unavailable");
+					}
+					return price.getPriceBook();
+				},
+			};
+		},
+	};
+});
+
+const CX_UUID = "cx-uuid";
+// BUY prices of the CX
+const PRICES = { BBH: 100, BSE: 50, MCG: 10 };
+
+const mat = (ticker: string, input: number) => ({ ticker, input, output: 0 });
+const FRM: IPlanRepairAnalysisDataProp = {
+	name: "FRM",
+	amount: 2,
+	dailyRevenue: 0,
+	workforceDailyCost: 0,
+	constructionCost: 0,
+	constructionMaterials: [mat("BBH", 4), mat("BSE", 4)],
+};
+const EXT: IPlanRepairAnalysisDataProp = {
+	name: "EXT",
+	amount: 1,
+	dailyRevenue: 0,
+	workforceDailyCost: 0,
+	constructionCost: 0,
+	constructionMaterials: [mat("BSE", 16), mat("MCG", 100)],
+};
+
+async function setup(data: IPlanRepairAnalysisDataProp[] = [FRM, EXT]) {
+	const dataRef = ref(data);
+	const cxUuid = ref<string | undefined>(CX_UUID);
+	const analysis = useRepairAnalysis(dataRef, cxUuid, ref("ZV-307c"));
+	await vi.waitFor(() =>
+		expect(analysis.buildings.value.length).toBeGreaterThan(0)
+	);
+	return { ...analysis, dataRef, cxUuid };
+}
+
+describe("useRepairAnalysis", () => {
 	beforeAll(async () => {
-		setActivePinia(createPinia());
 		await materialsStore.setMany(materials);
 		// @ts-expect-error mock data date as string
 		await exchangesStore.setMany(exchanges);
-
-		const { preload } = useMaterialData();
-		await preload();
+		// @ts-expect-error mock data
+		await buildingsStore.setMany(buildingsData);
+		await useMaterialData().preload();
+		await useBuildingData().preloadBuildings();
 	});
 
-	it("daySelectOptions", async () => {
-		const { daySelectOptions } = useRepairAnalysis(
-			cxUuid,
-			planetNaturalId
-		);
-
-		expect(daySelectOptions.value.length).toBe(180);
-	});
-
-	it("calculateAmountAtDay", async () => {
-		const { calculateAmountAtDay } = useRepairAnalysis(
-			cxUuid,
-			planetNaturalId
-		);
-
-		expect(calculateAmountAtDay(100, 100)).toBe(56);
-		expect(calculateAmountAtDay(1, 100)).toBe(1);
-		expect(calculateAmountAtDay(180, 100)).toBe(100);
-		expect(calculateAmountAtDay(200, 100)).toBe(100);
-	});
-
-	it("calculateDailyRepairMaterials", async () => {
-		const testData = [
+	beforeEach(() => {
+		const pinia = createPinia();
+		setActivePinia(pinia);
+		usePlanningStore(pinia).setCXs([
+			// @ts-expect-error mock data
 			{
-				name: "EXT",
-				amount: 2,
-				dailyRevenue: -1565.000993316393,
-				workforceDailyCost: 0,
-				constructionCost: 0,
-				constructionMaterials: [
-					{ ticker: "BSE", input: 16, output: 0 },
-					{ ticker: "MCG", input: 100, output: 0 },
-				],
-			},
-			{
-				name: "FP",
-				amount: 17,
-				dailyRevenue: 84794.95120639441,
-				workforceDailyCost: 0,
-				constructionCost: 0,
-				constructionMaterials: [
-					{ ticker: "BBH", input: 3, output: 0 },
-					{ ticker: "BSE", input: 3, output: 0 },
-					{ ticker: "BDE", input: 3, output: 0 },
-					{ ticker: "MCG", input: 48, output: 0 },
-				],
-			},
-			{
-				name: "IVP",
-				amount: 3,
-				dailyRevenue: 29106.960063711726,
-				workforceDailyCost: 0,
-				constructionCost: 0,
-				constructionMaterials: [
-					{ ticker: "RSE", input: 4, output: 0 },
-					{ ticker: "RBH", input: 6, output: 0 },
-					{ ticker: "RTA", input: 2, output: 0 },
-					{ ticker: "RDE", input: 4, output: 0 },
-					{ ticker: "TRU", input: 6, output: 0 },
-					{ ticker: "MCG", input: 128, output: 0 },
-				],
-			},
-		];
-
-		const { calculateDailyRepairMaterials } = useRepairAnalysis(
-			cxUuid,
-			planetNaturalId
-		);
-
-		const result = await calculateDailyRepairMaterials(testData);
-
-		// 180 days, starting from 0
-		expect(Object.keys(result).length).toBe(181);
-
-		expect(result[90]).toStrictEqual([
-			{
-				delta: -34,
-				individualVolume: 0.800000011920929,
-				individualWeight: 0.5,
-				input: 34,
-				output: 0,
-				price: -85071.95805573885,
-				ticker: "BBH",
-				totalVolume: -27.200000405311584,
-				totalWeight: -17,
-			},
-			{
-				delta: -34,
-				individualVolume: 1.5,
-				individualWeight: 0.10000000149011612,
-				input: 34,
-				output: 0,
-				price: -82084.45324532453,
-				ticker: "BDE",
-				totalVolume: -51,
-				totalWeight: -3.400000050663948,
-			},
-			{
-				delta: -50,
-				individualVolume: 0.5,
-				individualWeight: 0.30000001192092896,
-				input: 50,
-				output: 0,
-				price: -90738.86608101026,
-				ticker: "BSE",
-				totalVolume: -25,
-				totalWeight: -15.000000596046448,
-			},
-			{
-				delta: -700,
-				individualVolume: 0.10000000149011612,
-				individualWeight: 0.23999999463558197,
-				input: 700,
-				output: 0,
-				price: -24599.303161227428,
-				ticker: "MCG",
-				totalVolume: -70.00000104308128,
-				totalWeight: -167.99999624490738,
-			},
-			{
-				delta: -9,
-				individualVolume: 0.8999999761581421,
-				individualWeight: 2.4000000953674316,
-				input: 9,
-				output: 0,
-				price: -180519.97382198952,
-				ticker: "RBH",
-				totalVolume: -8.099999785423279,
-				totalWeight: -21.600000858306885,
-			},
-			{
-				delta: -6,
-				individualVolume: 1.5,
-				individualWeight: 1.399999976158142,
-				input: 6,
-				output: 0,
-				price: -182814.6075085324,
-				ticker: "RDE",
-				totalVolume: -9,
-				totalWeight: -8.399999856948853,
-			},
-			{
-				delta: -6,
-				individualVolume: 0.699999988079071,
-				individualWeight: 1.899999976158142,
-				input: 6,
-				output: 0,
-				price: -181311.9549095224,
-				ticker: "RSE",
-				totalVolume: -4.199999928474426,
-				totalWeight: -11.399999856948853,
-			},
-			{
-				delta: -3,
-				individualVolume: 0.5,
-				individualWeight: 1.5,
-				input: 3,
-				output: 0,
-				price: -52935.07504168982,
-				ticker: "RTA",
-				totalVolume: -1.5,
-				totalWeight: -4.5,
-			},
-			{
-				delta: -9,
-				individualVolume: 1.5,
-				individualWeight: 0.10000000149011612,
-				input: 9,
-				output: 0,
-				price: -4774.027034742642,
-				ticker: "TRU",
-				totalVolume: -13.5,
-				totalWeight: -0.9000000134110451,
+				uuid: CX_UUID,
+				cx_name: "CX",
+				cx_data: {
+					cx_empire: [],
+					cx_planets: [],
+					ticker_empire: Object.entries(PRICES).map(
+						([ticker, value]) => ({ ticker, type: "BUY", value })
+					),
+					ticker_planets: [],
+				},
 			},
 		]);
+		spies.materialsAt.mockClear();
+	});
+
+	it("starts each type at the best day of its curve", async () => {
+		const { buildings } = await setup();
+
+		for (const b of buildings.value) {
+			expect(b.best).toBe(Math.max(1, findOptimalRepairDay(b.curve).day));
+			expect(b.range).toEqual(goodRange(b.curve, b.best));
+			expect(b.split).toHaveLength(181);
+		}
+		// single FRM, no revenue: 1 BBH + 1 BSE = 150 up to day 45
+		const frm = buildings.value.find((b) => b.ticker === "FRM")!;
+		expect(frm.best).toBe(45);
+		expect(frm.curve[45].profit).toBe(-150 / 46);
+	});
+
+	it("starts at day 1, not 0, when repairing daily is best", async () => {
+		// no repair cost: output only falls, day 0 copies day 1's profit and
+		// findOptimalRepairDay picks day 0
+		const { buildings } = await setup([
+			{ ...FRM, amount: 1, dailyRevenue: 1000, constructionMaterials: [] },
+		]);
+
+		expect(findOptimalRepairDay(buildings.value[0].curve).day).toBe(0);
+		expect(buildings.value[0].best).toBe(1);
+	});
+
+	it("names the types and lists the most expensive repair first", async () => {
+		const { buildings } = await setup();
+
+		// at their best day: FRM 2 * 150 = 300, EXT larger
+		expect(buildings.value.map((b) => [b.ticker, b.name])).toEqual([
+			["EXT", "Extractor"],
+			["FRM", "Farm"],
+		]);
+	});
+
+	it("charges wear once, as repair cost, and workforce in full", async () => {
+		// FRM x2 as the engine reports it: production 500, workforce 100,
+		// construction 4 BBH + 4 BSE = 600, 1/180 of it per day as wear
+		const perBuilding = 500 - 100 - 600 / 180;
+		const { buildings } = await setup([
+			{
+				...FRM,
+				dailyRevenue: 2 * perBuilding,
+				workforceDailyCost: -100,
+				constructionCost: -600,
+			},
+		]);
+
+		const expected = calculateRepairCurve(
+			500,
+			100,
+			FRM.constructionMaterials,
+			PRICES
+		);
+		const [frm] = buildings.value;
+		expect(frm.productionValue).toBeCloseTo(500, 8);
+		expect(frm.workforceCost).toBe(100);
+		frm.curve.forEach((e, day) =>
+			expect(e.profit).toBeCloseTo(expected[day].profit, 8)
+		);
+	});
+
+	it("leaves out types without buildings", async () => {
+		const { buildings } = await setup([{ ...EXT, amount: 0 }, FRM]);
+
+		expect(buildings.value.map((b) => b.ticker)).toEqual(["FRM"]);
+	});
+
+	it("computes no materials until asked", async () => {
+		await setup();
+
+		expect(spies.materialsAt).not.toHaveBeenCalled();
+	});
+
+	it("prices one repair of all buildings of a type at its interval", async () => {
+		const { buildings, materialsFor } = await setup();
+		const frm = buildings.value.find((b) => b.ticker === "FRM")!;
+
+		// day 90 halves the construction materials, times 2 buildings
+		const list = materialsFor(frm, 90);
+		expect(list.materials.map((m) => [m.ticker, m.amount, m.cost])).toEqual([
+			["BBH", 4, 400],
+			["BSE", 4, 200],
+		]);
+		expect(list.cost).toBe(600);
+		expect(list.weight).toBeGreaterThan(0);
+		expect(list.volume).toBeGreaterThan(0);
+		// day 1 needs nothing of a 4-unit material: 4 - floor(4 * 179 / 180)
+		expect(materialsFor(frm, 1).materials.map((m) => m.amount)).toEqual([
+			2, 2,
+		]);
+	});
+
+	it("recomputes only the type whose interval changed", async () => {
+		const { buildings, materialsFor, materialsForAll } = await setup();
+		const intervals: Record<string, number> = { FRM: 90, EXT: 90 };
+		const all = () => materialsForAll((t) => intervals[t]);
+
+		all();
+		expect(spies.materialsAt).toHaveBeenCalledTimes(2);
+
+		// the same intervals come from the memo
+		all();
+		materialsFor(buildings.value.find((b) => b.ticker === "FRM")!, 90);
+		expect(spies.materialsAt).toHaveBeenCalledTimes(2);
+
+		intervals.FRM = 30;
+		all();
+		expect(spies.materialsAt).toHaveBeenCalledTimes(3);
+		expect(spies.materialsAt.mock.calls[2][1]).toBe(30);
+	});
+
+	it("sums every type at its own interval", async () => {
+		const { materialsForAll } = await setup();
+
+		// FRM every 90 d: BBH 4, BSE 4; EXT every 180 d: BSE 16, MCG 100;
+		// most expensive first: BSE 1,000, MCG 1,000, BBH 400
+		const list = materialsForAll((t) => (t === "FRM" ? 90 : 180));
+		expect(list.materials.map((m) => [m.ticker, m.amount])).toEqual(
+			expect.arrayContaining([
+				["BSE", 20],
+				["MCG", 100],
+				["BBH", 4],
+			])
+		);
+		expect(list.materials.at(-1)!.ticker).toBe("BBH");
+		expect(list.cost).toBe(20 * 50 + 100 * 10 + 4 * 100);
+
+		// FRM every 180 d: BSE 16 + 8 = 24 now leads, BBH 8
+		expect(
+			materialsForAll(() => 180).materials.map((m) => [m.ticker, m.amount])
+		).toEqual([
+			["BSE", 24],
+			["MCG", 100],
+			["BBH", 8],
+		]);
+	});
+
+	it("recalculates when the plan's buildings change", async () => {
+		const { buildings, dataRef } = await setup();
+		const before = buildings.value;
+
+		dataRef.value = [{ ...FRM, amount: 5 }];
+		await vi.waitFor(() => expect(buildings.value).not.toBe(before));
+
+		expect(buildings.value.map((b) => [b.ticker, b.amount])).toEqual([
+			["FRM", 5],
+		]);
+	});
+
+	it("keeps the newest prices when an older load finishes last", async () => {
+		const { buildings, cxUuid } = await setup();
+
+		// two changes in a row: only the last one's book is used
+		cxUuid.value = undefined;
+		cxUuid.value = CX_UUID;
+		await nextTick();
+		await vi.waitFor(() =>
+			expect(
+				buildings.value.find((b) => b.ticker === "FRM")!.curve[45]
+					.dailyRepair
+			).toBe(150)
+		);
+	});
+
+	it("logs a failed price load and recovers on the next change", async () => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		priceGate.failNext = true;
+
+		const dataRef = ref([FRM]);
+		const { buildings } = useRepairAnalysis(
+			dataRef,
+			ref(CX_UUID),
+			ref("ZV-307c")
+		);
+		await vi.waitFor(() =>
+			expect(error).toHaveBeenCalledWith(new Error("prices unavailable"))
+		);
+		expect(buildings.value).toEqual([]);
+		error.mockRestore();
+
+		dataRef.value = [EXT];
+		await vi.waitFor(() => expect(buildings.value).toHaveLength(1));
 	});
 });

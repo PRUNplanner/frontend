@@ -3,7 +3,12 @@ import { describe, it, expect } from "vitest";
 import {
 	calculateRepairCurve,
 	findOptimalRepairDay,
-	repairCostSeries,
+	calculateAmountAtDay,
+	dueInDays,
+	dueTagType,
+	goodRange,
+	repairCostSplit,
+	repairMaterialsAt,
 	repairEfficiency,
 } from "@/features/repair_analysis/repairAnalysis.util";
 
@@ -119,24 +124,92 @@ describe("repairAnalysis.util", () => {
 		});
 	});
 
-	it("repairCostSeries splits the daily repair cost per material", () => {
-		const curve = calculateRepairCurve(0, 0, MATERIALS, PRICES);
-		const series = repairCostSeries(curve, PRICES);
+	it("goodRange spans the consecutive days within 1 % of the best", () => {
+		const profits = Array.from({ length: 181 }, () => 0);
+		for (let d = 45; d <= 55; d++) profits[d] = 99.5;
+		profits[50] = 100;
+		// 98 and 98.9 are below 100 - 1; day 60 is within but not connected
+		profits[44] = 98;
+		profits[56] = 98.9;
+		profits[60] = 99.9;
 
-		expect(series.map((s) => s.name)).toEqual(["A", "B"]);
-		expect(series[0].data).toHaveLength(181);
-		// day 90: A 90 * 2, B 45 * 10
-		expect(series[0].data[90]).toBe(180);
-		expect(series[1].data[90]).toBe(450);
-		// the series add up to the total cost of every day
-		curve.forEach((c, day) =>
-			expect(series[0].data[day] + series[1].data[day]).toBe(
-				c.dailyRepair
-			)
+		expect(goodRange(curveOf(profits), 50)).toEqual([45, 55]);
+	});
+
+	it("goodRange works for a building that loses money", () => {
+		const profits = Array.from({ length: 181 }, () => -200);
+		for (let d = 28; d <= 33; d++) profits[d] = -100.5;
+		profits[30] = -100;
+		// limit is -100 - |-100| * 1 % = -101
+		profits[27] = -102;
+		profits[34] = -101.5;
+
+		expect(goodRange(curveOf(profits), 30)).toEqual([28, 33]);
+	});
+
+	it("goodRange stops at day 1 and day 180, and takes a tolerance", () => {
+		const flat = curveOf(Array.from({ length: 181 }, () => 50));
+		expect(goodRange(flat, 90)).toEqual([1, 180]);
+
+		const profits = Array.from({ length: 181 }, (_, d) => 100 - Math.abs(d - 90));
+		// 5 % of 100: 95 and up, days 85 to 95
+		expect(goodRange(curveOf(profits), 90, 0.05)).toEqual([85, 95]);
+	});
+
+	it("repairCostSplit: profit = production - workforce - lost output - repair", () => {
+		const production = 1000;
+		const workforce = 300;
+		const curve = calculateRepairCurve(
+			production,
+			workforce,
+			MATERIALS,
+			PRICES
+		);
+		const split = repairCostSplit(curve, production);
+
+		expect(split).toHaveLength(181);
+		for (let day = 1; day <= 180; day++)
+			expect(
+				production -
+					workforce -
+					split[day].lostOutput -
+					split[day].repairPerDay
+			).toBeCloseTo(curve[day].profit, 8);
+		// output lost to wear grows, the averaged repair cost shrinks
+		expect(split[180].lostOutput).toBeGreaterThan(split[30].lostOutput);
+		expect(split[1].repairPerDay).toBe(6);
+	});
+
+	it("repairMaterialsAt scales one building's materials to the interval and amount", () => {
+		expect(repairMaterialsAt(MATERIALS, 90, 3)).toEqual([
+			{ ticker: "A", input: calculateAmountAtDay(90, 180) * 3, output: 0 },
+			{ ticker: "B", input: calculateAmountAtDay(90, 90) * 3, output: 0 },
+		]);
+		// A 90 * 3, B 45 * 3
+		expect(repairMaterialsAt(MATERIALS, 90, 3).map((m) => m.input)).toEqual(
+			[270, 135]
 		);
 	});
 
-	it("repairCostSeries is empty without a curve", () => {
-		expect(repairCostSeries([], PRICES)).toEqual([]);
+	it("dueInDays is negative when overdue", () => {
+		expect(dueInDays(60, 52)).toBe(8);
+		expect(dueInDays(30, 30)).toBe(0);
+		expect(dueInDays(30, 40)).toBe(-10);
+	});
+
+	it("dueTagType: error below 0, warning for 0-7, secondary above 7", () => {
+		expect([-10, -1, 0, 1, 7, 8, 90].map(dueTagType)).toEqual([
+			"error",
+			"error",
+			"warning",
+			"warning",
+			"warning",
+			"secondary",
+			"secondary",
+		]);
 	});
 });
+
+function curveOf(profits: number[]): IPlanRepairAnalysisElement[] {
+	return profits.map((profit) => ({ profit }) as IPlanRepairAnalysisElement);
+}
