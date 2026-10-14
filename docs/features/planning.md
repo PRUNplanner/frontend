@@ -37,7 +37,11 @@ editor UI. The engine is documented in depth in
   - `PlanProfitBreakdown`: waterfall from output value to daily profit
     (`util/profitBreakdown.util.ts`, drawn by `ui/charts/PWaterfall`);
   - `PlanRepairAnalysis`: uses `repair_analysis`;
-  - `PlanVisitationFrequency`.
+  - `PlanVisitationFrequency`;
+  - `PlanWhatIf`: price sensitivity, how far profit moves per material
+    price and each break-even price change (`util/whatIf.util.ts`, one
+    recalculation per material with `cx/priceBook.scaledPriceBook`, drawn
+    by `ui/charts/PDivergingBar`).
 
 ## Data
 

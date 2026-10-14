@@ -79,6 +79,7 @@ reasons come from the backend events and their Axiom panels (signup-01).
 | `plan:share_delete` | | |
 | `plan:tool_toggle` | `tool_name` | a plan tool panel was opened |
 | `plan:profit_breakdown_mode` | `mode` (`cost_type`, `building`) | the Profit Breakdown tool switched between "By cost type" and "By building" |
+| `plan:whatif_change` | `view` (`sensitivity`), `pct` (10, 20, 30, 50) | the What-if tool's price change was switched |
 | `plan:cogm_open` | `planet_natural_id`, `recipe_id` | |
 | `plan:insights_open` | `planet_natural_id` | the planet insights box was opened |
 | `plan:starter_show` | `planet_natural_id`, `candidate_count` | the "Start from a typical setup" card was shown on an empty plan, once per plan view |

@@ -5,7 +5,14 @@ import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 async function mountBar(
-	props: { value: number; maxAbs: number; negAbs?: number; text?: string },
+	props: {
+		value: number;
+		maxAbs: number;
+		negAbs?: number;
+		text?: string;
+		mirror?: boolean;
+		negText?: string;
+	},
 	center = false
 ) {
 	const { wrapper } = await mountComponent({
@@ -50,6 +57,27 @@ describe("PDivergingBar", () => {
 		const wrapper = await mountBar({ value: -5, maxAbs: 10 }, true);
 		expect(wrapper.find("b").text()).toBe("FE");
 		expect(wrapper.html()).not.toContain("border-l");
+	});
+
+	it("mirrors a value to both sides, each with its own text", async () => {
+		const wrapper = await mountBar({
+			value: 9483,
+			maxAbs: 9483,
+			mirror: true,
+			text: "+9,483",
+			negText: "−9,483",
+		});
+		const bars = wrapper.findAll("[data-bar]");
+		expect(bars).toHaveLength(2);
+		expect(bars[0].classes()).toContain("bg-negative");
+		expect(bars[0].text()).toBe("−9,483");
+		expect(bars[1].classes()).toContain("bg-positive");
+		expect(bars[1].text()).toBe("+9,483");
+		expect(
+			(await mountBar({ value: 0, maxAbs: 1, mirror: true }))
+				.find("[data-bar]")
+				.exists()
+		).toBe(false);
 	});
 
 	it("draws nothing for zero or without an extent", async () => {

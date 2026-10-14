@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 
-import { createPriceBook } from "@/features/cx/priceBook";
+import { createPriceBook, scaledPriceBook } from "@/features/cx/priceBook";
 
 // Types & Interfaces
 import type { Exchange } from "@/features/api/schemas/gameData.schemas";
@@ -115,5 +115,18 @@ describe("createPriceBook", () => {
 
 		expect(book.getPrice("RAT", "BUY")).toBe(130);
 		expect(book.getPrice("RAT", "SELL")).toBe(90);
+	});
+});
+
+describe("scaledPriceBook", () => {
+	it("multiplies one ticker's BUY and SELL price and keeps the rest", () => {
+		const book = scaledPriceBook(
+			createPriceBook(() => cx, "KW-688c", getExchange),
+			"DW",
+			1.5
+		);
+		expect(book.getPrice("DW", "SELL")).toBe(10.5);
+		expect(book.getPrice("DW", "BUY")).toBe(63);
+		expect(book.getPrice("RAT", "BUY")).toBe(120);
 	});
 });
