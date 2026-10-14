@@ -21,6 +21,7 @@ import {
 
 // API Calls
 import {
+	callCXSparklines,
 	callDataBuildings,
 	callDataExchanges,
 	callDataFIOStorage,
@@ -38,6 +39,7 @@ import { callAnalyticsPlanetInsights } from "@/features/api/analyticsData.api";
 
 // Types & Interfaces
 import type {
+	CXSparklines,
 	FIOStorage,
 	Planet,
 	PlanetSearchAdvancedPayload,
@@ -191,6 +193,12 @@ export const gameDataQueries = {
 			materialTicker: string;
 		}): Promise<Exploration[]> =>
 			callExplorationData(params.exchangeTicker, params.materialTicker),
+		expireTime: staleMinutes(15),
+	}),
+	GetCXSparklines: defineQuery({
+		key: (params) => ["gamedata", "cxsparklines", params.exchange],
+		fetchFn: (params: { exchange: string }): Promise<CXSparklines> =>
+			callCXSparklines(params.exchange),
 		expireTime: staleMinutes(15),
 	}),
 	GetFIOStorage: defineQuery({

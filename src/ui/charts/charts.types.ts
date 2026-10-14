@@ -88,3 +88,32 @@ export interface IWaterfallLayout {
 	zeroY: number;
 	columns: IWaterfallColumnBox[];
 }
+
+export interface ISparklineLayout {
+	/** svg polyline points, one per run of values between gaps */
+	lines: string[];
+	/** the last value's point, null without any value */
+	end: { x: number; y: number } | null;
+}
+
+export interface ILineSeries {
+	key: string;
+	/** direct label and tooltip name, e.g. the exchange code */
+	label: string;
+	color: string;
+	/** one value per day of the chart, null where there is none */
+	values: (number | null)[];
+}
+
+export interface ILineLabel {
+	key: string;
+	/** px of the label's middle */
+	y: number;
+}
+
+export interface ILineTooltipRow {
+	key: string;
+	label: string;
+	color: string;
+	value: number;
+}

@@ -15,6 +15,7 @@ import {
 	callDataPlanetSearch,
 	callDataPlanetSearchSingle,
 	callDataPlanetSearchIndex,
+	callCXSparklines,
 	callExplorationData,
 	callPlanetLastPOPR,
 } from "@/features/api/gameData.api";
@@ -216,6 +217,29 @@ describe("GameData API Calls", async () => {
 			const result = await callExplorationData("AI1", "DW");
 
 			expect(result).toStrictEqual(exploration_7d_dw);
+		});
+	});
+
+	describe("callCXSparklines", async () => {
+		it("validates series with gaps", async () => {
+			const payload = {
+				exchange: "UNIVERSE",
+				days: 3,
+				series: { RAT: [236.1, null, 235] },
+			};
+			mock.onGet("/data/cxpc/spark/UNIVERSE/?days=3").reply(200, payload);
+
+			expect(await callCXSparklines("UNIVERSE", 3)).toStrictEqual(payload);
+		});
+
+		it("rejects a non-numeric value", async () => {
+			mock.onGet("/data/cxpc/spark/AI1/?days=30").reply(200, {
+				exchange: "AI1",
+				days: 30,
+				series: { RAT: ["236"] },
+			});
+
+			await expect(callCXSparklines("AI1")).rejects.toThrow();
 		});
 	});
 

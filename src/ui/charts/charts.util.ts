@@ -2,6 +2,10 @@ import type {
 	IChartBarItem,
 	IChartTheme,
 	IChartZone,
+	ILineLabel,
+	ILineSeries,
+	ILineTooltipRow,
+	ISparklineLayout,
 	IStripDot,
 	IStripItem,
 	IWaterfallColumn,
@@ -269,4 +273,107 @@ export function waterfallLayout(
 	});
 
 	return { ticks, zeroY: y(0), columns: boxes };
+}
+
+/**
+ * Lays out a sparkline in a width × height box, with its own y-scale
+ * (direction only). Gaps (null) break the line; a flat line sits in the
+ * middle.
+ * @author jplacht
+ *
+ * @param {(number | null)[]} points values, oldest first
+ * @param {number} width box width in px
+ * @param {number} height box height in px
+ * @param {number} pad room kept free at every edge, e.g. for the end dot
+ * @returns {ISparklineLayout} polylines and the end point
+ */
+export function sparklineLayout(
+	points: (number | null)[],
+	width: number,
+	height: number,
+	pad = 3
+): ISparklineLayout {
+	const values = points.filter((p): p is number => p !== null);
+	if (!values.length) return { lines: [], end: null };
+
+	const min = Math.min(...values);
+	const span = Math.max(...values) - min;
+	const step = points.length > 1 ? (width - 2 * pad) / (points.length - 1) : 0;
+	const at = (v: number, i: number) => ({
+		x: Math.round((pad + i * step) * 10) / 10,
+		y:
+			Math.round(
+				(span ? pad + (1 - (v - min) / span) * (height - 2 * pad) : height / 2) *
+					10
+			) / 10,
+	});
+
+	const lines: string[] = [];
+	let run: string[] = [];
+	let end: ISparklineLayout["end"] = null;
+	points.forEach((v, i) => {
+		if (v === null) {
+			if (run.length) lines.push(run.join(" "));
+			run = [];
+			return;
+		}
+		end = at(v, i);
+		run.push(`${end.x},${end.y}`);
+	});
+	if (run.length) lines.push(run.join(" "));
+	return { lines, end };
+}
+
+/**
+ * Places direct line labels at their line's y, pushed apart to at least
+ * `gap` px and kept between `top` and `bottom` (label middles).
+ * @author jplacht
+ *
+ * @param {ILineLabel[]} labels wanted positions, any order
+ * @param {number} gap minimum distance between label middles
+ * @param {number} top highest allowed middle
+ * @param {number} bottom lowest allowed middle
+ * @returns {ILineLabel[]} placed labels, top to bottom
+ */
+export function lineLabelLayout(
+	labels: ILineLabel[],
+	gap: number,
+	top: number,
+	bottom: number
+): ILineLabel[] {
+	const placed = [...labels]
+		.sort((a, b) => a.y - b.y)
+		.map((l) => ({ ...l, y: Math.min(Math.max(l.y, top), bottom) }));
+	// down from the top, then back up from the bottom
+	for (let i = 1; i < placed.length; i++)
+		placed[i].y = Math.max(placed[i].y, placed[i - 1].y + gap);
+	const last = placed.length - 1;
+	if (last >= 0) placed[last].y = Math.min(placed[last].y, bottom);
+	for (let i = last - 1; i >= 0; i--)
+		placed[i].y = Math.min(placed[i].y, placed[i + 1].y - gap);
+	return placed;
+}
+
+/**
+ * Tooltip rows of a line chart at one day: the series with a value, highest
+ * first, so the list reads in the order of the lines.
+ * @author jplacht
+ *
+ * @param {ILineSeries[]} series chart series
+ * @param {number} index day index
+ * @returns {ILineTooltipRow[]} rows, highest value first
+ */
+export function tooltipRows(
+	series: ILineSeries[],
+	index: number
+): ILineTooltipRow[] {
+	return series
+		.filter((s) => s.values[index] != null)
+		.map((s) => ({
+			key: s.key,
+			label: s.label,
+			color: s.color,
+			value: s.values[index]!,
+		}))
+		.sort((a, b) => b.value - a.value);
 }
