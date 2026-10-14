@@ -8,11 +8,12 @@
 </script>
 
 <script setup lang="ts">
-	import { computed } from "vue";
+	import { computed, defineAsyncComponent } from "vue";
 	import { useI18n } from "vue-i18n";
 
 	// Stores
 	import { usePlanningStore } from "@/stores/planningStore";
+	import { useUserStore } from "@/stores/userStore";
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
@@ -46,14 +47,21 @@
 
 	const { t } = useI18n();
 
+	const PlanWhatIfCompare = defineAsyncComponent(
+		() =>
+			import("@/features/planning/components/tools/PlanWhatIfCompare.vue")
+	);
+
 	const props = defineProps<{
 		plan: IPlanInput["plan"];
+		planUuid: string | undefined;
 		empire: PlanEmpire | undefined;
 		cxUuid: string | undefined;
 		planet: Planet;
 	}>();
 
 	const planningStore = usePlanningStore();
+	const userStore = useUserStore();
 	const { getGameData, createPrices } = usePlanContext();
 	const { materialsMap, getMaterialClass } = useMaterialData();
 
@@ -73,7 +81,13 @@
 		return { input, ctx, ...priceSensitivity(input, ctx) };
 	});
 
-	const VIEWS: WhatIfView[] = ["sensitivity"];
+	// comparing needs the user's own plans
+	const views = computed<WhatIfView[]>(() =>
+		userStore.isLoggedIn ? ["sensitivity", "compare"] : ["sensitivity"]
+	);
+	const shownView = computed<WhatIfView>(() =>
+		views.value.includes(view.value) ? view.value : "sensitivity"
+	);
 	const PCTS = [10, 20, 30, 50];
 
 	function setPct(value: number): void {
@@ -184,21 +198,24 @@
 				{{ t("plan.tools.whatif.title") }}
 			</h2>
 			<PButtonGroup
-				v-if="VIEWS.length > 1"
+				v-if="views.length > 1"
 				role="group"
 				:aria-label="t('plan.tools.whatif.view_label')">
 				<PButton
-					v-for="v in VIEWS"
+					v-for="v in views"
 					:key="v"
-					:pressed="view === v"
+					class="min-h-11 @[640px]:min-h-0"
+					:pressed="shownView === v"
 					@click="view = v">
 					{{ t(`plan.tools.whatif.views.${v}`) }}
 				</PButton>
 			</PButtonGroup>
 			<span v-else class="text-sm text-muted">
-				{{ t(`plan.tools.whatif.views.${view}`) }}
+				{{ t(`plan.tools.whatif.views.${shownView}`) }}
 			</span>
-			<div class="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1">
+			<div
+				v-if="shownView === 'sensitivity'"
+				class="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1">
 				<span id="whatif-pct-label" class="text-sm text-muted">
 					{{ t("plan.tools.whatif.pct_label") }}
 				</span>
@@ -215,7 +232,14 @@
 			</div>
 		</div>
 
-		<p v-if="!sensitivity.rows.length" class="text-muted py-6">
+		<PlanWhatIfCompare
+			v-if="shownView === 'compare'"
+			:plan="plan"
+			:plan-uuid="planUuid"
+			:empire="empire"
+			:cx-uuid="cxUuid"
+			:planet="planet" />
+		<p v-else-if="!sensitivity.rows.length" class="text-muted py-6">
 			{{ t("plan.tools.whatif.empty") }}
 		</p>
 		<div

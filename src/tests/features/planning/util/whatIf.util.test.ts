@@ -4,16 +4,26 @@ import { describe, it, expect, beforeAll, vi } from "vitest";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 
 // Util
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import {
 	breakEven,
 	calculateScaled,
+	compareRows,
+	compareVerdict,
+	materialChanges,
 	priceSensitivity,
 	sensitivityRows,
 } from "@/features/planning/util/whatIf.util";
 
 // Types & Interfaces
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
-import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+import type {
+	IPlanCalculation,
+	IPlanContext,
+} from "@/features/planning/engine/engine.types";
+import type {
+	IMaterialIO,
+	IOverviewData,
+} from "@/features/planning/usePlanCalculation.types";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
@@ -126,13 +136,45 @@ describe("sensitivityRows", () => {
 	});
 });
 
-describe("priceSensitivity on the real engine", () => {
+describe("whatIf on the real engine", () => {
 	let ctx: IPlanContext;
 
 	beforeAll(async () => {
 		await setupPlanningTestData();
 		const { loadGameData, createContext } = usePlanContext();
 		ctx = await createContext(await loadGameData(), "KW-688c", undefined);
+	});
+
+	const run = (plan = etherwindPlan()) =>
+		calculatePlan(
+			{
+				plan,
+				empire: undefined,
+				cxUuid: undefined,
+				recipeOptions: false,
+			},
+			ctx
+		);
+
+	it("an unchanged copy differs nowhere and reads the same", () => {
+		const a = run();
+		const b = run();
+		const rows = compareRows(a, b);
+
+		expect(rows.every((r) => r.delta === 0)).toBe(true);
+		expect(materialChanges(a, b)).toEqual([]);
+		expect(compareVerdict(rows, [], "copy", t)).toBe("same");
+	});
+
+	it("one more building shows up in the figures and the materials", () => {
+		const plan = etherwindPlan();
+		plan.plan_data.buildings[0].amount += 1;
+		const a = run();
+		const b = run(plan);
+
+		const area = compareRows(a, b).find((r) => r.key === "area")!;
+		expect(area.delta).toBeGreaterThan(0);
+		expect(materialChanges(a, b).length).toBeGreaterThan(0);
 	});
 
 	it("a scaled recalculation equals the linear figure for every material", () => {
@@ -169,9 +211,211 @@ describe("priceSensitivity on the real engine", () => {
 			const factor = 1 + (row.breakEven as number) / 100;
 			expect(
 				Math.abs(
-					calculateScaled(input, ctx, row.ticker, factor).result.profit
+					calculateScaled(input, ctx, row.ticker, factor).result
+						.profit
 				)
 			).toBeLessThan(0.01);
 		}
+	});
+});
+
+/** a calculation with just the figures the comparison reads */
+function calc(
+	overview: Partial<IOverviewData>,
+	area: number,
+	materialio: IMaterialIO[] = []
+): IPlanCalculation {
+	return {
+		overview: {
+			dailyCost: 0,
+			dailyProfit: 0,
+			totalConstructionCost: 0,
+			dailyDegradationCost: 0,
+			profit: 0,
+			roi: 0,
+			...overview,
+		},
+		result: { area: { areaUsed: area }, materialio },
+	} as unknown as IPlanCalculation;
+}
+
+// the spec's mockup: Montem iron and Montem iron · 7 SME
+const MONTEM = calc(
+	{
+		profit: 19313,
+		dailyProfit: 51717,
+		dailyCost: 28821,
+		dailyDegradationCost: 3583,
+		totalConstructionCost: 1231984,
+		roi: 63.79,
+	},
+	404
+);
+const SME7 = calc(
+	{
+		profit: 18650,
+		dailyProfit: 59623,
+		dailyCost: 36878,
+		dailyDegradationCost: 4095,
+		totalConstructionCost: 1283238,
+		roi: 68.81,
+	},
+	421
+);
+
+// i18n stand-in: the key's last part and its params
+const t = (key: string, params?: Record<string, string | number>) =>
+	`${key.split(".").pop()}${params ? JSON.stringify(params) : ""}`;
+
+describe("compareRows", () => {
+	const byKey = (a: IPlanCalculation, b: IPlanCalculation) =>
+		Object.fromEntries(compareRows(a, b).map((r) => [r.key, r]));
+
+	it("gives other minus this, coloured by what is better for you", () => {
+		const rows = byKey(MONTEM, SME7);
+
+		expect(rows.profit).toMatchObject({ delta: -663, better: false });
+		expect(rows.output).toMatchObject({ delta: 7906, better: true });
+		expect(rows.cost).toMatchObject({ delta: 8057, better: false });
+		expect(rows.degradation).toMatchObject({ delta: 512, better: false });
+		expect(rows.planCost).toMatchObject({ delta: 51254, better: false });
+		expect(rows.roi.delta).toBeCloseTo(5.02);
+		expect(rows.roi.better).toBe(false);
+		expect(rows.profitArea.delta).toBeCloseTo(44.3 - 47.8, 1);
+		expect(rows.profitArea.better).toBe(false);
+		// area is neutral either way
+		expect(rows.area).toMatchObject({ delta: 17, better: undefined });
+	});
+
+	it("flips every colour the other way round, area stays neutral", () => {
+		const rows = byKey(SME7, MONTEM);
+
+		expect(rows.profit.better).toBe(true);
+		expect(rows.output.better).toBe(false);
+		expect(rows.cost.better).toBe(true);
+		expect(rows.degradation.better).toBe(true);
+		expect(rows.planCost.better).toBe(true);
+		expect(rows.roi.better).toBe(true);
+		expect(rows.profitArea.better).toBe(true);
+		expect(rows.area.better).toBeUndefined();
+	});
+
+	it("counts a payback that never happens as the worst", () => {
+		const never = calc({ profit: -10, roi: -500 }, 10);
+		const rows = byKey(MONTEM, never);
+		expect(rows.roi.better).toBe(false);
+		expect(rows.roi.delta).toBe(Infinity);
+		expect(byKey(never, MONTEM).roi.better).toBe(true);
+		// both never: equal
+		expect(byKey(never, never).roi).toMatchObject({
+			delta: 0,
+			better: undefined,
+		});
+	});
+
+	it("reads tiny differences and no area as 0", () => {
+		const rows = byKey(
+			calc({ profit: 100.001 }, 0),
+			calc({ profit: 100.003 }, 0)
+		);
+		expect(rows.profit).toMatchObject({ delta: 0, better: undefined });
+		expect(rows.profitArea).toMatchObject({ a: 0, b: 0, delta: 0 });
+	});
+});
+
+describe("materialChanges", () => {
+	it("gives ȼ/day other minus this per material, by size", () => {
+		const changes = materialChanges(
+			calc({}, 0, [mio("FE", 1, 100), mio("C", -1, 50), mio("O", -1, 5)]),
+			calc({}, 0, [mio("FE", 2, 100), mio("C", -3, 50), mio("O", -1, 5)])
+		);
+		expect(changes).toEqual([
+			{ ticker: "FE", a: 100, b: 200, delta: 100 },
+			{ ticker: "C", a: -50, b: -150, delta: -100 },
+		]);
+	});
+
+	it("includes materials only one plan has", () => {
+		const changes = materialChanges(
+			calc({}, 0, [mio("FE", 1, 100)]),
+			calc({}, 0, [mio("FEO", -2, 10)])
+		);
+		expect(changes.map((c) => [c.ticker, c.delta])).toEqual([
+			["FE", -100],
+			["FEO", -20],
+		]);
+	});
+});
+
+describe("compareVerdict", () => {
+	it("says both plans are the same when nothing differs", () => {
+		expect(compareVerdict(compareRows(MONTEM, MONTEM), [], "B", t)).toBe(
+			"same"
+		);
+	});
+
+	it("names profit, payback, the top gain and the top two costs", () => {
+		const changes = [
+			{ ticker: "FE", a: 0, b: 7906, delta: 7906 },
+			{ ticker: "FEO", a: 0, b: -3320, delta: -3320 },
+			{ ticker: "C", a: 0, b: -2233, delta: -2233 },
+			{ ticker: "RAT", a: 0, b: -1165, delta: -1165 },
+		];
+		const text = compareVerdict(
+			compareRows(MONTEM, SME7),
+			changes,
+			"7 SME",
+			t
+		);
+		expect(text).toBe(
+			[
+				'earns_more{"value":"663"}',
+				'sooner{"days":"5.0"}',
+				'trade{"name":"7 SME","gain":"7.9k","ticker":"FE","cost":"5.6k","tickers":"and{\\"a\\":\\"FEO\\",\\"b\\":\\"C\\"}"}',
+			].join(" ")
+		);
+	});
+
+	it("speaks from this plan's side when the other one is better", () => {
+		const text = compareVerdict(
+			compareRows(SME7, MONTEM),
+			[{ ticker: "C", a: 0, b: -100, delta: -100 }],
+			"Montem iron",
+			t
+		);
+		expect(text).toContain('earns_less{"value":"663"}');
+		expect(text).toContain('later{"days":"5.0"}');
+		expect(text).toContain(
+			'cost{"name":"Montem iron","cost":"100","tickers":"C"}'
+		);
+	});
+
+	it("holds when the other plan is the smaller one", () => {
+		const changes = [
+			{ ticker: "FE", a: 7906, b: 0, delta: -7906 },
+			{ ticker: "FEO", a: -3320, b: 0, delta: 3320 },
+			{ ticker: "C", a: -2233, b: 0, delta: 2233 },
+		];
+		const text = compareVerdict(
+			compareRows(SME7, MONTEM),
+			changes,
+			"Montem iron",
+			t
+		);
+		expect(text).toContain(
+			'trade{"name":"Montem iron","gain":"3.3k","ticker":"FEO","cost":"7.9k","tickers":"FE"}'
+		);
+	});
+
+	it("names a gain alone, and equal profit without a payback change", () => {
+		const text = compareVerdict(
+			compareRows(MONTEM, MONTEM),
+			[{ ticker: "FE", a: 0, b: 50, delta: 50 }],
+			"B",
+			t
+		);
+		expect(text).toBe(
+			'earns_same gain{"name":"B","gain":"50","ticker":"FE"}'
+		);
 	});
 });

@@ -48,6 +48,16 @@ export function isOwnPlan(plans: { uuid: string }[], uuid: string): boolean {
 }
 
 /**
+ * Payback in days for comparing, a payback that never happens is the worst
+ *
+ * @param {number} roi Payback in days
+ * @returns {number} Days, Infinity when never
+ */
+export function paybackDays(roi: number): number {
+	return Number.isFinite(roi) && roi >= 0 ? roi : Infinity;
+}
+
+/**
  * The figures a shared plan and its copy are compared by
  *
  * @param {IPlanResult} result Plan result

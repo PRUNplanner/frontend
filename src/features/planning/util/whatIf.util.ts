@@ -2,6 +2,11 @@
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { scaledPriceBook } from "@/features/cx/priceBook";
 
+// Util
+import { paybackDays } from "@/features/sharing/sharedPlan.util";
+import { compactNumber } from "@/ui/charts/charts.util";
+import { formatNumber } from "@/util/numbers";
+
 // Types & Interfaces
 import type {
 	IPlanCalculation,
@@ -11,6 +16,9 @@ import type {
 import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 import type {
 	BreakEven,
+	CompareFigure,
+	ICompareRow,
+	IMaterialChange,
 	IPriceSensitivity,
 	ISensitivityRow,
 } from "@/features/planning/util/whatIf.types";
@@ -118,4 +126,157 @@ export function priceSensitivity(
 		overview,
 		rows: sensitivityRows(result.materialio, slopes, result.profit),
 	};
+}
+
+// below this a difference reads 0
+const EPSILON = 0.005;
+
+// whether more is better for you; undefined: neutral
+const MORE_IS_BETTER: Record<CompareFigure, boolean | undefined> = {
+	profit: true,
+	output: true,
+	cost: false,
+	degradation: false,
+	planCost: false,
+	roi: false,
+	profitArea: true,
+	area: undefined,
+};
+
+function figures(c: IPlanCalculation): Record<CompareFigure, number> {
+	const area = c.result.area.areaUsed;
+	return {
+		profit: c.overview.profit,
+		output: c.overview.dailyProfit,
+		cost: c.overview.dailyCost,
+		degradation: c.overview.dailyDegradationCost,
+		planCost: c.overview.totalConstructionCost,
+		roi: c.overview.roi,
+		profitArea: area ? c.overview.profit / area : 0,
+		area,
+	};
+}
+
+/**
+ * Key figures of this plan (a) and another (b): the difference is b − a,
+ * better tells whether b is better for you. ROI compares payback days, a
+ * payback that never happens is the worst.
+ * @author jplacht
+ *
+ * @param {IPlanCalculation} a This plan
+ * @param {IPlanCalculation} b Other plan
+ * @returns {ICompareRow[]} One row per key figure
+ */
+export function compareRows(
+	a: IPlanCalculation,
+	b: IPlanCalculation
+): ICompareRow[] {
+	const fa = figures(a);
+	const fb = figures(b);
+	return (Object.keys(MORE_IS_BETTER) as CompareFigure[]).map((key) => {
+		const va = key === "roi" ? paybackDays(fa.roi) : fa[key];
+		const vb = key === "roi" ? paybackDays(fb.roi) : fb[key];
+		let delta = va === vb ? 0 : vb - va;
+		if (Math.abs(delta) < EPSILON) delta = 0;
+		const more = MORE_IS_BETTER[key];
+		return {
+			key,
+			a: fa[key],
+			b: fb[key],
+			delta,
+			better:
+				delta === 0 || more === undefined
+					? undefined
+					: delta > 0 === more,
+		};
+	});
+}
+
+/**
+ * ȼ/day per material of the other plan minus this one's, sorted by size
+ * @author jplacht
+ *
+ * @param {IPlanCalculation} a This plan
+ * @param {IPlanCalculation} b Other plan
+ * @returns {IMaterialChange[]} Changed materials
+ */
+export function materialChanges(
+	a: IPlanCalculation,
+	b: IPlanCalculation
+): IMaterialChange[] {
+	const values = new Map<string, IMaterialChange>();
+	const get = (ticker: string) => {
+		if (!values.has(ticker))
+			values.set(ticker, { ticker, a: 0, b: 0, delta: 0 });
+		return values.get(ticker)!;
+	};
+	for (const m of a.result.materialio) get(m.ticker).a += m.price;
+	for (const m of b.result.materialio) get(m.ticker).b += m.price;
+
+	return [...values.values()]
+		.map((c) => ({ ...c, delta: c.b - c.a }))
+		.filter((c) => Math.abs(c.delta) >= EPSILON)
+		.sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta));
+}
+
+/**
+ * One paragraph on the comparison: profit and payback from this plan's
+ * side, then the other plan's top material gain and its two top costs
+ * @author jplacht
+ *
+ * @param {ICompareRow[]} rows Key figures
+ * @param {IMaterialChange[]} changes Material changes
+ * @param {string} otherName Other plan's name
+ * @param t i18n translate
+ * @returns {string} Verdict
+ */
+export function compareVerdict(
+	rows: ICompareRow[],
+	changes: IMaterialChange[],
+	otherName: string,
+	t: (key: string, params?: Record<string, string | number>) => string
+): string {
+	const key = (k: string) => `plan.tools.whatif.compare.verdict.${k}`;
+	if (!changes.length && rows.every((r) => r.delta === 0))
+		return t(key("same"));
+
+	const row = (k: CompareFigure) => rows.find((r) => r.key === k)!;
+	const parts: string[] = [];
+
+	const profit = row("profit").delta;
+	parts.push(
+		profit === 0
+			? t(key("earns_same"))
+			: t(key(profit < 0 ? "earns_more" : "earns_less"), {
+					value: formatNumber(Math.abs(profit), 0),
+				})
+	);
+
+	const roi = row("roi").delta;
+	if (roi !== 0 && Number.isFinite(roi))
+		parts.push(
+			t(key(roi > 0 ? "sooner" : "later"), {
+				days: formatNumber(Math.abs(roi), 1),
+			})
+		);
+
+	const gain = changes.find((c) => c.delta > 0);
+	const costs = changes.filter((c) => c.delta < 0).slice(0, 2);
+	const cost = compactNumber(-costs.reduce((sum, c) => sum + c.delta, 0));
+	const tickers =
+		costs.length === 2
+			? t(key("and"), { a: costs[0].ticker, b: costs[1].ticker })
+			: costs[0]?.ticker;
+	const gained = gain && {
+		name: otherName,
+		gain: compactNumber(gain.delta),
+		ticker: gain.ticker,
+	};
+	if (gained && costs.length)
+		parts.push(t(key("trade"), { ...gained, cost, tickers }));
+	else if (gained) parts.push(t(key("gain"), gained));
+	else if (costs.length)
+		parts.push(t(key("cost"), { name: otherName, cost, tickers }));
+
+	return parts.join(" ");
 }

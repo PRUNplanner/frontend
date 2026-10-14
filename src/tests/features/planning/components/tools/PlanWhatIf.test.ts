@@ -21,6 +21,7 @@ async function mountTool(plan = etherwindPlan()) {
 		PlanWhatIf,
 		{
 			plan,
+			planUuid: undefined,
 			empire: undefined,
 			cxUuid: undefined,
 			planet: planet_etherwind,

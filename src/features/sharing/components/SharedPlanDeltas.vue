@@ -6,6 +6,7 @@
 
 	// Util
 	import { formatNumber, formatPayback } from "@/util/numbers";
+	import { paybackDays } from "@/features/sharing/sharedPlan.util";
 
 	// Types & Interfaces
 	import type { IPlanCompare } from "@/features/sharing/sharedPlan.types";
@@ -16,10 +17,6 @@
 			required: true,
 		},
 	});
-
-	// a payback that never happens is the worst
-	const paybackDays = (roi: number): number =>
-		Number.isFinite(roi) && roi >= 0 ? roi : Infinity;
 
 	/**
 	 * The figures that differ from the shared plan, each with its text and

@@ -121,6 +121,7 @@ export interface IAnalyticsEventProperties {
 	"plan:share_delete": undefined;
 	"plan:tool_toggle": { tool_name: string | null };
 	"plan:whatif_change": { view: string; pct: number };
+	"plan:whatif_compare": { same_planet: boolean };
 	"plan:profit_breakdown_mode": { mode: "cost_type" | "building" };
 	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
 	"plan:insights_open": { planet_natural_id: string };
