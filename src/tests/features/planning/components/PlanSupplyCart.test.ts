@@ -7,6 +7,7 @@ import { useMaterialData } from "@/database/services/useMaterialData";
 import { usePlanningStore } from "@/stores/planningStore";
 import PlanSupplyCart from "@/features/planning/components/tools/PlanSupplyCart.vue";
 import PSelect from "@/ui/components/PSelect.vue";
+import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -245,6 +246,78 @@ describe("PlanSupplyCart", () => {
 		expect(wrapper.findComponent(PSelect).text()).toContain(
 			"No FIO Storage"
 		);
+	});
+
+	describe("XIT Initial", () => {
+		// PE made and used by the plan: input 3, output 8, net +5
+		const PE_SELF: IMaterialIO = { ...PE, input: 3, output: 8 };
+
+		async function mountInitial(planetNaturalId = "XX-000a", withFIO = false) {
+			const pinia = createPinia();
+			if (withFIO)
+				// @ts-expect-error mock data
+				usePlanningStore(pinia).setFIOStorageData(fio_storage);
+
+			return mountComponent(
+				PlanSupplyCart,
+				{
+					planetNaturalId,
+					materialIO: [RAT, PE_SELF, DW, H2O],
+					workforceMaterialIO: [RAT, DW],
+					productionMaterialIO: [H2O, PE_SELF],
+				},
+				{ pinia }
+			);
+		}
+
+		const xit = (wrapper: VueWrapper, idx: number) =>
+			wrapper.findAllComponents(XITTransferActionButton)[idx].props(
+				"elements"
+			);
+
+		it("ships the gross input, including self-produced materials", async () => {
+			const { wrapper } = await mountInitial();
+
+			// the running cart stays net, without PE
+			expect(xit(wrapper, 0).map((e: { ticker: string }) => e.ticker)).toEqual([
+				"RAT",
+				"DW",
+				"H2O",
+			]);
+			// 20 days of gross input
+			expect(xit(wrapper, 1)).toEqual([
+				{ ticker: "RAT", value: 2000 },
+				{ ticker: "PE", value: 60 },
+				{ ticker: "DW", value: 80 },
+				{ ticker: "H2O", value: 48 },
+			]);
+		});
+
+		it("follows the workforce and production filter", async () => {
+			const { wrapper } = await mountInitial();
+
+			await clickFilter(wrapper, "workforce");
+			expect(xit(wrapper, 1)).toEqual([
+				{ ticker: "RAT", value: 2000 },
+				{ ticker: "DW", value: 80 },
+			]);
+
+			await clickFilter(wrapper, "production");
+			expect(xit(wrapper, 1)).toEqual([
+				{ ticker: "H2O", value: 48 },
+				{ ticker: "PE", value: 60 },
+			]);
+		});
+
+		it("subtracts stock and leaves out what is covered", async () => {
+			const { wrapper } = await mountInitial("ZV-307c", true);
+
+			// stored: RAT 1451, DW 1417, PE 84000, no H2O
+			expect(xit(wrapper, 1)).toEqual([
+				{ ticker: "RAT", value: 549 },
+				{ ticker: "H2O", value: 48 },
+			]);
+		});
 	});
 
 	it("renders an empty cart", async () => {

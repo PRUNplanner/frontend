@@ -170,6 +170,35 @@
 			}))
 	);
 
+	// first supply: nothing is produced yet, so ship the gross input,
+	// including materials the plan makes itself (net delta >= 0)
+	const xitInitialElements: ComputedRef<IXITTransferMaterial[]> = computed(
+		() => {
+			const source: IMaterialIO[] =
+				refTypeFilter.value === "workforce"
+					? props.workforceMaterialIO
+					: refTypeFilter.value === "production"
+						? props.productionMaterialIO
+						: props.materialIO;
+
+			return source
+				.filter((m) => m.input > 0)
+				.map((m) => ({
+					ticker: m.ticker,
+					value: clamp(
+						Math.ceil(m.input * refStockRequirement.value) -
+							findStorageValueFromOptions(
+								refSelectedStorage.value,
+								m.ticker
+							),
+						0,
+						Infinity
+					),
+				}))
+				.filter((e) => e.value > 0);
+		}
+	);
+
 	const columns = computed<
 		PDataTableColumn<(typeof filteredMaterialIO.value)[number]>[]
 	>(() => {
@@ -264,6 +293,12 @@
 			<XITTransferActionButton
 				:elements="xitTransferElements"
 				:transfer-name="t('plan.tools.supply_cart.table.xit_name')" />
+			<XITTransferActionButton
+				:elements="xitInitialElements"
+				:transfer-name="t('plan.tools.supply_cart.table.xit_initial_name')"
+				:button-text="t('plan.tools.supply_cart.buttons.xit_initial')"
+				:drawer-title="t('plan.tools.supply_cart.table.xit_initial_name')"
+				button-secondary />
 		</div>
 	</div>
 

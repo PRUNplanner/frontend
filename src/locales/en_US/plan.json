@@ -144,18 +144,20 @@
 		"supply_cart": {
 			"title": "Supply Cart",
 			"info": {
-				"p": "The Supply Cart provides updates on your plans needs combined with existing inventory sourced from FIO. You have the flexibility to opt for alternative storage locations to replenish your base. Tailor your selection based on whether you wish to restock workforce and production supplies or focus on a specific category, and specify the duration for which the supplied stock should sustain. Use the {link} tool for more advanced supply cart options.",
+				"p": "The Supply Cart provides updates on your plans needs combined with existing inventory sourced from FIO. You have the flexibility to opt for alternative storage locations to replenish your base. Tailor your selection based on whether you wish to restock workforce and production supplies or focus on a specific category, and specify the duration for which the supplied stock should sustain. XIT ships what the running base still needs once its own production covers part of it. For the first supply, use XIT Initial: it also ships the inputs this plan produces itself, because nothing is produced yet. Use the {link} tool for more advanced supply cart options.",
 				"link": "FIO Burn"
 			},
 			"buttons": {
 				"all": "All",
 				"workforce": "Workforce",
-				"production": "Production"
+				"production": "Production",
+				"xit_initial": "XIT Initial"
 			},
 			"table": {
 				"stock_duration": "Stock Duration (days)",
 				"storage": "Storage",
 				"xit_name": "Supply Cart",
+				"xit_initial_name": "Supply Cart (Initial)",
 				"ticker": "Ticker",
 				"daily_need": "Daily Need",
 				"daily_cost": "Daily Cost",
