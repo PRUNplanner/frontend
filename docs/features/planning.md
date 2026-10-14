@@ -41,7 +41,12 @@ editor UI. The engine is documented in depth in
   - `PlanWhatIf`: price sensitivity, how far profit moves per material
     price and each break-even price change (`util/whatIf.util.ts`, one
     recalculation per material with `cx/priceBook.scaledPriceBook`, drawn
-    by `ui/charts/PDivergingBar`).
+    by `ui/charts/PDivergingBar`). Logged in, its second view
+    `PlanWhatIfCompare` compares the open plan with another of the user's
+    plans (`GetAllPlans`): key figures, material changes and a verdict
+    (`compareRows`, `materialChanges`, `compareVerdict`). The other plan is
+    calculated as its own plan view does: its first empire and that
+    empire's CX preference.
 
 ## Data
 

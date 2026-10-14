@@ -484,6 +484,7 @@
 				return {
 					props: {
 						plan: refPlanData.value,
+						planUuid: refPlanData.value.uuid,
 						empire: computedActiveEmpire.value,
 						cxUuid: refCXUuid.value,
 						planet: planetData,

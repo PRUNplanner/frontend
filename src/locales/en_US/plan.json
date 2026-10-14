@@ -330,7 +330,8 @@
 			"title": "What-if",
 			"view_label": "View",
 			"views": {
-				"sensitivity": "Price sensitivity"
+				"sensitivity": "Price sensitivity",
+				"compare": "Compare plans"
 			},
 			"pct_label": "Change each price by",
 			"pct": "±{pct} %",
@@ -372,6 +373,56 @@
 				"most_sensitive": "Most sensitive",
 				"source_cx": "Prices: {name}, from the plan's CX preference",
 				"source_universe": "Prices: Universe 30-day average, the plan has no CX preference"
+			},
+			"compare": {
+				"picker": "Compare with",
+				"same_planet": "This planet",
+				"other_planets": "Other planets",
+				"loading": "Loading your plans",
+				"error": "Your plans could not be loaded.",
+				"no_plans": "You have no other plan to compare with yet.",
+				"calc_error": "This plan could not be calculated. Pick another plan or reload the page.",
+				"this_plan": "This plan",
+				"columns": {
+					"figure": "Key figure",
+					"difference": "Difference",
+					"side_by_side": "Side by side"
+				},
+				"figures": {
+					"profit": "Daily profit",
+					"output": "Output value",
+					"cost": "Daily cost",
+					"degradation": "Degradation",
+					"planCost": "Plan cost",
+					"roi": "ROI",
+					"profitArea": "Profit / Area",
+					"area": "Area used"
+				},
+				"bars_label": "This plan {a}, {name} {b}",
+				"footnote": "Difference = other plan minus this plan, coloured by what is better for you: lower cost and a shorter ROI count as good, area is neutral.",
+				"verdict": {
+					"title": "Verdict",
+					"same": "Both plans are the same.",
+					"earns_more": "This plan earns {value} ȼ/day more.",
+					"earns_less": "This plan earns {value} ȼ/day less.",
+					"earns_same": "Both plans earn the same per day.",
+					"sooner": "It pays back {days} days sooner.",
+					"later": "It pays back {days} days later.",
+					"trade": "{name} gains {gain} ȼ/day on {ticker} but loses {cost} ȼ/day on {tickers}.",
+					"gain": "{name} gains {gain} ȼ/day on {ticker}.",
+					"cost": "{name} loses {cost} ȼ/day on {tickers}.",
+					"and": "{a} and {b}"
+				},
+				"changes": {
+					"title": "What changes",
+					"subtitle": "{name} minus this plan, ȼ/day",
+					"none": "No material changes.",
+					"more": "+{n}",
+					"more_label": "{n} more material | {n} more materials",
+					"bar_label": "{ticker}: {value} ȼ/day"
+				},
+				"source_cx": "{name} is priced with its own CX preference, {cx}.",
+				"source_universe": "{name} is priced at the Universe 30-day average, it has no CX preference."
 			}
 		}
 	},
