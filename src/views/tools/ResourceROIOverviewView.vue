@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, type Ref } from "vue";
+	import { computed, ref, type Ref, watch } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -21,6 +21,11 @@
 	import { PProgressBar } from "@/ui";
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";
 	import ResourceROITable from "@/features/resource_roi_overview/components/ResourceROITable.vue";
+	import ResourceROIChartDrawer from "@/features/resource_roi_overview/components/ResourceROIChartDrawer.vue";
+	import { InsightsSharp } from "@vicons/material";
+
+	// Types & Interfaces
+	import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
 
 	// Statics
 	import { RESOURCE_MATERIAL_OPTIONS } from "@/features/resource_roi_overview/resourceROIOverview.constants";
@@ -40,6 +45,47 @@
 		progressTotal,
 		progressSearchingPlanets,
 	} = useResourceROIOverview(refSelectedCXUuid);
+
+	/*
+	 * Chart drawer: open state kept in this browser
+	 */
+	const CHART_KEY = "prunplanner_resource_roi_chart";
+	function readChartOpen(): boolean {
+		try {
+			return localStorage.getItem(CHART_KEY) === "1";
+		} catch {
+			return false;
+		}
+	}
+	const refChartOpen: Ref<boolean> = ref(readChartOpen());
+	watch(refChartOpen, (open) => {
+		try {
+			localStorage.setItem(CHART_KEY, open ? "1" : "0");
+		} catch {
+			// storage blocked: open for this page only
+		}
+	});
+	const hasResults = computed(
+		() => !refIsLoading.value && resultData.value.length > 0
+	);
+	const refFilteredRows: Ref<IResourceROIResult[]> = ref([]);
+	const refActive: Ref<string | null> = ref(null);
+
+	// a dot hovered in the chart brings its row into view above the drawer
+	const refTableBox: Ref<HTMLElement | null> = ref(null);
+	watch(refActive, (key) => {
+		const row = key
+			? refTableBox.value?.querySelector(
+					`tr[data-row-key="${CSS.escape(key)}"]`
+				)
+			: null;
+		if (!row) return;
+		const drawer = document.querySelector("[data-roi-chart]");
+		const bottom = drawer?.getBoundingClientRect().top ?? window.innerHeight;
+		const rect = row.getBoundingClientRect();
+		if (rect.top >= 0 && rect.bottom <= bottom) return;
+		window.scrollBy({ top: rect.top + rect.height / 2 - bottom / 2 });
+	});
 
 	async function performSearchAndCalculation(): Promise<void> {
 		const materialTicker = refSearchMaterial.value;
@@ -97,11 +143,18 @@
 							@click="performSearchAndCalculation">
 							{{ $t("resource_roi.button_calculate") }}
 						</PButton>
+						<PButton
+							:pressed="refChartOpen && hasResults"
+							:disabled="!hasResults"
+							@click="refChartOpen = !refChartOpen">
+							<template #icon><InsightsSharp /></template>
+							{{ $t("resource_roi.chart.button") }}
+						</PButton>
 						<HelpDrawer file-name="tools_resource_roi_overview" />
 					</div>
 				</div>
 
-				<div class="px-6 py-3">
+				<div ref="refTableBox" class="grow px-6 py-3">
 					<div v-if="!refInitialized" class="text-center py-3">
 						{{ $t("resource_roi.info") }}
 					</div>
@@ -133,9 +186,17 @@
 						<ResourceROITable
 							v-if="refSearchMaterial"
 							:searched-material="refSearchMaterial"
-							:result-data="resultData" />
+							:result-data="resultData"
+							:active="refActive"
+							@filtered="(rows) => (refFilteredRows = rows)" />
 					</div>
 				</div>
+				<ResourceROIChartDrawer
+					v-if="refChartOpen && hasResults"
+					v-model:show="refChartOpen"
+					v-model:active="refActive"
+					data-roi-chart
+					:rows="refFilteredRows" />
 			</div>
 		</WrapperPlanningDataLoader>
 	</WrapperGameDataLoader>

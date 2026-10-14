@@ -15,7 +15,7 @@ export interface IScatterPoint {
 	emphasis?: boolean;
 }
 
-export type IScatterLabelSide = "right" | "left" | "below";
+export type IScatterLabelSide = "right" | "left" | "below" | "above";
 
 /** a dot in px, as laid out on the plot */
 export interface IScatterDot {

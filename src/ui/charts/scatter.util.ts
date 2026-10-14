@@ -58,6 +58,7 @@ export function niceTicks(min: number, max: number): number[] {
 
 const LABEL_GAP = 4;
 const LABEL_HEIGHT = 14;
+const LABEL_SIDES: IScatterLabelSide[] = ["right", "left", "below", "above"];
 
 function overlaps(a: IScatterRect, b: IScatterRect): boolean {
 	return (
@@ -106,6 +107,13 @@ function labelRect(
 			w: width,
 			h: LABEL_HEIGHT,
 		};
+	if (side === "above")
+		return {
+			x: belowLabelX(d.cx, width, box),
+			y: d.cy - d.r - 2 - LABEL_HEIGHT,
+			w: width,
+			h: LABEL_HEIGHT,
+		};
 	return {
 		x: belowLabelX(d.cx, width, box),
 		y: d.cy + d.r + 2,
@@ -115,20 +123,21 @@ function labelRect(
 }
 
 /**
- * Picks a side for each label: right, then left, then below; a label that
+ * Picks a side for each label: right, then left, below, above; a label that
  * would cover a dot, an earlier label or a line, or leave the box, is
- * hidden (null) and left to the tooltip. Earlier labels win.
+ * hidden (null) and left to the tooltip. Earlier labels win. A label with
+ * crossLines may sit on a line when no side is clear of them.
  * @author jplacht
  *
  * @param {IScatterDot[]} dots every dot on the plot, in px
- * @param {{ key: string; width: number }[]} labels labels to place, by priority
+ * @param {{ key: string; width: number; crossLines?: boolean }[]} labels labels to place, by priority
  * @param {IScatterSegment[]} segments axis-aligned lines labels must not cross
  * @param {IScatterRect} box area labels must stay inside
  * @returns {Record<string, IScatterLabelSide | null>} side per label key
  */
 export function placeLabels(
 	dots: IScatterDot[],
-	labels: { key: string; width: number }[],
+	labels: { key: string; width: number; crossLines?: boolean }[],
 	segments: IScatterSegment[],
 	box: IScatterRect
 ): Record<string, IScatterLabelSide | null> {
@@ -142,26 +151,29 @@ export function placeLabels(
 	const placed: IScatterRect[] = [];
 	const sides: Record<string, IScatterLabelSide | null> = {};
 
-	for (const { key, width } of labels) {
+	const fits = (key: string, rect: IScatterRect, avoidLines: boolean) =>
+		rect.x >= box.x &&
+		rect.y >= box.y &&
+		rect.x + rect.w <= box.x + box.w &&
+		rect.y + rect.h <= box.y + box.h &&
+		!dots.some((d) => d.key !== key && hitsDot(rect, d)) &&
+		!placed.some((p) => overlaps(rect, p)) &&
+		!(avoidLines && lines.some((l) => overlaps(rect, l)));
+
+	for (const { key, width, crossLines } of labels) {
 		const dot = byKey.get(key);
 		if (!dot) continue;
-		sides[key] = null;
-		for (const side of ["right", "left", "below"] as const) {
-			const rect = labelRect(dot, side, width, box);
-			const free =
-				rect.x >= box.x &&
-				rect.y >= box.y &&
-				rect.x + rect.w <= box.x + box.w &&
-				rect.y + rect.h <= box.y + box.h &&
-				!dots.some((d) => d.key !== key && hitsDot(rect, d)) &&
-				!placed.some((p) => overlaps(rect, p)) &&
-				!lines.some((l) => overlaps(rect, l));
-			if (free) {
-				sides[key] = side;
-				placed.push(rect);
-				break;
-			}
-		}
+		const pick = (crossLines ? [true, false] : [true])
+			.flatMap((avoidLines) =>
+				LABEL_SIDES.map((side) => ({
+					side,
+					avoidLines,
+					rect: labelRect(dot, side, width, box),
+				}))
+			)
+			.find((o) => fits(key, o.rect, o.avoidLines));
+		sides[key] = pick?.side ?? null;
+		if (pick) placed.push(pick.rect);
 	}
 	return sides;
 }

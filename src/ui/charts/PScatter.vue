@@ -38,6 +38,8 @@
 		label,
 		frontier = [],
 		maxLabels = 40,
+		yBetter = "high",
+		xZero = true,
 	} = defineProps<{
 		points: IScatterPoint[];
 		xTitle: string;
@@ -48,6 +50,10 @@
 		frontier?: string[];
 		/** above this many points only emphasised and ringed dots get labels */
 		maxLabels?: number;
+		/** which way Y is better, e.g. "low" for jumps; sets the frontier's side */
+		yBetter?: "high" | "low";
+		/** x axis from 0 (default), else fitted to the data, e.g. ROI days */
+		xZero?: boolean;
 	}>();
 
 	/** hovered or focused point, shared with e.g. a list beside the chart */
@@ -87,9 +93,12 @@
 		typeof window.matchMedia === "function" &&
 		window.matchMedia("(pointer: coarse)").matches;
 
-	const xTicks = computed(() =>
-		niceTicks(0, Math.max(...points.map((p) => p.x), 1))
-	);
+	const xTicks = computed(() => {
+		const xs = points.map((p) => p.x);
+		return !xZero && xs.length
+			? niceTicks(Math.min(...xs), Math.max(...xs))
+			: niceTicks(0, Math.max(...xs, 1));
+	});
 	const yTicks = computed(() => {
 		const ys = points.map((p) => p.y);
 		return ys.length ? niceTicks(Math.min(...ys), Math.max(...ys)) : [0, 1];
@@ -143,12 +152,16 @@
 			.filter((d) => d !== undefined)
 			.sort((a, b) => a.cx - b.cx);
 	});
-	// down from the first frontier dot to the floor, then step right and up
-	// through the others, then on to the right edge
+	// the beaten side's edge: the floor, or the top when lower Y is better
+	const edge = computed(() =>
+		yBetter === "low" ? plot.value.y : plot.value.y + plot.value.h
+	);
+	// from the first frontier dot to the floor (the top when lower Y is
+	// better), then step right and on through the others to the right edge
 	const steps = computed((): IScatterSegment[] => {
 		const f = frontierPx.value;
 		if (!f.length) return [];
-		const floor = plot.value.y + plot.value.h;
+		const floor = edge.value;
 		const right = plot.value.x + plot.value.w;
 		const segs: IScatterSegment[] = [[f[0].cx, floor, f[0].cx, f[0].cy]];
 		f.forEach((d, i) => {
@@ -171,7 +184,7 @@
 	);
 	const shadePath = computed(() =>
 		steps.value.length
-			? `${stepPath.value} L${plot.value.x + plot.value.w},${plot.value.y + plot.value.h} Z`
+			? `${stepPath.value} L${plot.value.x + plot.value.w},${edge.value} Z`
 			: ""
 	);
 
@@ -206,7 +219,12 @@
 			d.point.label.length * CHAR_PX;
 		const sides = placeLabels(
 			px,
-			wanted.map((d) => ({ key: d.point.key, width: textWidth(d) })),
+			wanted.map((d) => ({
+				key: d.point.key,
+				width: textWidth(d),
+				// a frontier label may sit on the step line rather than hide
+				crossLines: !!d.point.emphasis,
+			})),
 			steps.value,
 			area
 		);
@@ -226,7 +244,12 @@
 								? d.cx - gap
 								: belowLabelX(d.cx, textWidth(d), area) +
 									textWidth(d) / 2,
-					y: side === "below" ? d.cy + d.r + 13 : d.cy + 4,
+					y:
+						side === "below"
+							? d.cy + d.r + 13
+							: side === "above"
+								? d.cy - d.r - 5
+								: d.cy + 4,
 					anchor:
 						side === "right"
 							? "start"
@@ -311,7 +334,7 @@
 			:height="height"
 			role="group"
 			:aria-label="label"
-			class="block select-none">
+			class="block select-none overflow-visible">
 			<!-- grid and ticks -->
 			<g class="text-xs" :fill="theme.muted">
 				<g v-for="v in yTicks" :key="`y${v}`">
@@ -389,11 +412,11 @@
 				@keydown.enter.prevent="emit('select', d.point.key)"
 				@keydown.space.prevent="emit('select', d.point.key)"
 				@keydown.esc="hide">
-				<!-- a finger needs 44 px -->
+				<!-- a finger needs 44 px, a mouse 24; half a px over, as the svg may scale -->
 				<circle
 					:cx="d.cx"
 					:cy="d.cy"
-					:r="coarse ? 22 : d.r + 3"
+					:r="coarse ? 22.5 : Math.max(d.r + 3, 12.5)"
 					fill="transparent" />
 				<circle
 					:cx="d.cx"

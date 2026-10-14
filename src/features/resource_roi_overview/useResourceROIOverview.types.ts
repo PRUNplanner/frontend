@@ -25,3 +25,41 @@ export interface IResourceROIResult {
 	distanceIC1: number;
 	distanceNC1: number;
 }
+
+export type IResourceROIExchange = "AI1" | "CI1" | "IC1" | "NC1";
+
+/** what the chart's jumps are measured to */
+export type IResourceROIDistanceTarget = "nearest" | IResourceROIExchange;
+
+export interface IResourceROIChartPoint {
+	row: IResourceROIResult;
+	/** plan ROI in days */
+	x: number;
+	/** jumps to the target exchange */
+	y: number;
+	/** the exchange y is measured to */
+	exchange: IResourceROIExchange;
+}
+
+export interface IResourceROIChartData {
+	points: IResourceROIChartPoint[];
+	/** rows left out: no payback (ROI ≤ 0) */
+	noPayback: number;
+	/** rows left out: no route to the target exchange */
+	noRoute: number;
+	/** rows left out: payback slower than maxDays */
+	slow: number;
+	/** the zoom: ROI_ZOOM times the fastest payback, 0 without points */
+	maxDays: number;
+}
+
+export interface IResourceROIInsight {
+	/** best trade-off points, fastest payback first */
+	frontier: IResourceROIChartPoint[];
+	minJumps: number;
+	maxJumps: number;
+	/** the exchange all frontier points measure to, else null */
+	exchange: IResourceROIExchange | null;
+	/** highest daily profit, when it is not on the frontier */
+	topProfit: IResourceROIChartPoint | null;
+}
