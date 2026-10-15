@@ -23,6 +23,8 @@
 		marketCheck,
 	} from "@/features/cx/marketCheck.util";
 	import { realisticPlan } from "@/features/planning/util/whatIf.util";
+	import { priceSourceLabel } from "@/features/exchanges/exchangeLabel.util";
+	import { ALL_PLANETS } from "@/features/exchanges/cxEdit.util";
 	import { formatNumber, formatPayback } from "@/util/numbers";
 
 	// Components
@@ -76,6 +78,7 @@
 		);
 		return {
 			overview,
+			prices: ctx.prices,
 			checks: marketCheck(
 				result.materialio,
 				ctx.prices,
@@ -153,6 +156,25 @@
 			`cx.market_flags.means.${shareFlag ? `${flag}_${c.delta > 0 ? "sell" : "buy"}` : flag}`,
 			{ ticker: c.ticker, exchange, share: formatShare(c.sharePct) }
 		);
+	}
+
+	// a flagged material's price rule in Exchanges, with a CX
+	function ruleLink(c: IMarketCheck) {
+		if (!props.cxUuid || !c.level) return undefined;
+		const source = data.value.prices.getPriceSource(
+			c.ticker,
+			c.delta > 0 ? "SELL" : "BUY"
+		);
+		const planetLevel =
+			source.level === "planet_ticker" ||
+			source.level === "planet_exchange";
+		const scope = planetLevel
+			? props.planet.planet_natural_id
+			: ALL_PLANETS;
+		return {
+			to: `/exchanges/${props.cxUuid}?scope=${scope}`,
+			label: priceSourceLabel(source, t),
+		};
 	}
 
 	/*
@@ -335,7 +357,20 @@
 								<MarketFlagIcon :level="row.level" />
 								{{ t(`cx.market_flags.flags.${row.flags[0]}`) }}
 							</span>
-							<span v-else class="text-muted">
+							<RouterLink
+								v-if="ruleLink(row)"
+								:to="ruleLink(row)!.to"
+								class="block text-xs text-link hover:underline whitespace-nowrap"
+								:aria-label="
+									t('plan.tools.plan_check.market.rule_link', {
+										ticker: row.ticker,
+										source: ruleLink(row)!.label,
+									})
+								"
+								data-rule-link>
+								{{ ruleLink(row)!.label }}
+							</RouterLink>
+							<span v-if="!row.level" class="text-muted">
 								{{ t("plan.tools.plan_check.market.ok") }}
 							</span>
 						</template>
@@ -387,6 +422,19 @@
 								{{ formatShare(c.sharePct) }}
 							</span>
 						</div>
+						<RouterLink
+							v-if="ruleLink(c)"
+							:to="ruleLink(c)!.to"
+							class="self-start text-xs text-link hover:underline"
+							:aria-label="
+								t('plan.tools.plan_check.market.rule_link', {
+									ticker: c.ticker,
+									source: ruleLink(c)!.label,
+								})
+							"
+							data-rule-link>
+							{{ ruleLink(c)!.label }}
+						</RouterLink>
 						<span class="text-xs text-muted-strong">
 							{{
 								t("plan.tools.plan_check.market.card_traded", {

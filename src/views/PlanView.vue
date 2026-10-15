@@ -1278,6 +1278,8 @@
 									:empire-options="refEmpireList"
 									:active-empire="computedActiveEmpire"
 									:plan-empires="planEmpires"
+									:cx-uuid="refCXUuid"
+									:planet-id="planetData.planet_natural_id"
 									@update:active-empire="
 										(empireUuid: string) => {
 											refEmpireUuid = empireUuid;

@@ -3,7 +3,7 @@ import { nextTick } from "vue";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanCheck from "@/features/planning/components/tools/PlanCheck.vue";
-import { flushPromises } from "@vue/test-utils";
+import { flushPromises, RouterLinkStub } from "@vue/test-utils";
 import { createPinia } from "pinia";
 import { usePlanningStore } from "@/stores/planningStore";
 import { mountComponent } from "@/tests/mountComponent";
@@ -119,6 +119,65 @@ describe("PlanCheck", () => {
 		const real = wrapper.find("[data-real-prices]");
 		expect(real.find("[data-kept-universe]").exists()).toBe(true);
 		expect(real.text()).not.toContain("real.kept_fallback");
+	});
+
+	it("links flagged materials to their price rule in Exchanges", async () => {
+		usePlanCheckView().view.value = "market";
+		const pinia = createPinia();
+		const planet = planet_etherwind.planet_natural_id;
+		usePlanningStore(pinia).setCXs([
+			// @ts-expect-error mock data
+			{
+				uuid: "cx-fixed",
+				cx_name: "Fixed",
+				empires: [],
+				cx_data: {
+					cx_empire: [],
+					cx_planets: [],
+					ticker_empire: [],
+					// RAT fixed at 0 here: no price; the rest from Universe
+					ticker_planets: [
+						{
+							planet,
+							preferences: [
+								{ type: "BOTH", ticker: "RAT", value: 0 },
+							],
+						},
+					],
+				},
+			},
+		]);
+		const { wrapper } = await mountComponent(
+			PlanCheck,
+			{
+				plan: etherwindPlan(),
+				planUuid: undefined,
+				empire: undefined,
+				cxUuid: "cx-fixed",
+				planet: planet_etherwind,
+			},
+			{ pinia }
+		);
+		await flushPromises();
+
+		const ruleLinks = () =>
+			wrapper
+				.findAllComponents(RouterLinkStub)
+				.filter((l) => l.attributes("data-rule-link") !== undefined);
+		const links = ruleLinks().map((l) => l.props("to"));
+		expect(new Set(links)).toEqual(
+			new Set([
+				`/exchanges/cx-fixed?scope=${planet}`,
+				"/exchanges/cx-fixed?scope=all",
+			])
+		);
+		// only RAT is fixed on the planet
+		const rat = wrapper
+			.findAll("tbody tr")
+			.find((r) => r.text().startsWith("RAT"))!;
+		expect(rat.findComponent(RouterLinkStub).props("to")).toBe(
+			`/exchanges/cx-fixed?scope=${planet}`
+		);
 	});
 
 	it("solves a target price and fetches the 30-day range only once used", async () => {

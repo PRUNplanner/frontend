@@ -1,8 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
-import type { VueWrapper } from "@vue/test-utils";
+import { RouterLinkStub, type VueWrapper } from "@vue/test-utils";
+import { createPinia } from "pinia";
 
 import PlanConfiguration from "@/features/planning/components/PlanConfiguration.vue";
 import PSelect from "@/ui/components/PSelect.vue";
+import { usePlanningStore } from "@/stores/planningStore";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -130,5 +132,37 @@ describe("PlanConfiguration", () => {
 		expect(focus.mock.contexts).toEqual([nameInput(wrapper)]);
 
 		focus.mockRestore();
+	});
+
+	it("links the active empire's preference in Exchanges", async () => {
+		const pinia = createPinia();
+		usePlanningStore(pinia).setCXs([
+			// @ts-expect-error partial CX
+			{ uuid: "cx-1", cx_name: "Home NC1" },
+		]);
+		const { wrapper } = await mountComponent(
+			PlanConfiguration,
+			{
+				disabled: false,
+				activeEmpire: BETA,
+				planEmpires: [BETA],
+				cxUuid: "cx-1",
+				planetId: "ZV-307c",
+			},
+			{ pinia }
+		);
+
+		const link = wrapper.findComponent(RouterLinkStub);
+		expect(link.text()).toBe("Home NC1");
+		expect(link.props("to")).toBe("/exchanges/cx-1?scope=ZV-307c");
+	});
+
+	it("says prices are Universe without a preference", async () => {
+		const { wrapper } = await mountConfiguration({ planetId: "ZV-307c" });
+
+		expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);
+		expect(wrapper.text()).toContain(
+			"plan.components.configuration.no_preference"
+		);
 	});
 });

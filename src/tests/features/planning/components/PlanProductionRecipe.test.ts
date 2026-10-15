@@ -107,6 +107,7 @@ async function mountRecipe(props: Record<string, unknown> = {}) {
 		{
 			uuid: CX_UUID,
 			cx_name: "CX",
+			empires: [],
 			cx_data: {
 				cx_empire: [],
 				cx_planets: [],
@@ -416,17 +417,18 @@ describe("PlanProductionRecipe", () => {
 			cxUuid: CX_UUID,
 			planetId: "ZV-307c",
 		});
-		expect(body().text()).toContain("plan.tools.cogm.cx_preferences");
+		expect(body().text()).toContain("plan.tools.cogm.prices.title");
 	});
 
-	it("opens the COGM without a CX, without preferences", async () => {
+	it("opens the COGM without a CX, with the Universe note", async () => {
 		const { wrapper } = await mountRecipe();
 
 		await cogmButton(wrapper).trigger("click");
 		await flushPromises();
 
 		expect(body().text()).toContain("plan.tools.cogm.info");
-		expect(body().text()).not.toContain("plan.tools.cogm.cx_preferences");
+		expect(body().text()).toContain("plan.tools.cogm.no_preference");
+		expect(body().text()).not.toContain("plan.tools.cogm.prices.title");
 	});
 
 	it("emits deleting the recipe", async () => {

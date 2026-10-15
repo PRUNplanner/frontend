@@ -10,7 +10,11 @@
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
+	import { RouterLink } from "vue-router";
 	const { t } = useI18n();
+
+	// Stores
+	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Types & Interfaces
 	import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
@@ -49,7 +53,23 @@
 			required: false,
 			default: false,
 		},
+		// the active empire's exchange preference
+		cxUuid: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
+		planetId: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
 	});
+
+	const planningStore = usePlanningStore();
+	const cxName = computed(() =>
+		props.cxUuid ? planningStore.cxs[props.cxUuid]?.cx_name : undefined
+	);
 
 	const refNameInput: Ref<{ focus: () => void } | null> = ref(null);
 	onMounted(() => {
@@ -127,6 +147,19 @@
 				v-model:value="localActiveEmpireUuid"
 				class="w-full"
 				:options="empireSelectOptions" />
+		</PFormItem>
+		<PFormItem
+			v-if="!disabled"
+			:label="t('plan.components.configuration.prices')">
+			<RouterLink
+				v-if="cxName"
+				:to="`/exchanges/${cxUuid}?scope=${planetId ?? 'all'}`"
+				class="text-link hover:underline">
+				{{ cxName }}
+			</RouterLink>
+			<span v-else class="text-muted">
+				{{ t("plan.components.configuration.no_preference") }}
+			</span>
 		</PFormItem>
 	</PForm>
 </template>

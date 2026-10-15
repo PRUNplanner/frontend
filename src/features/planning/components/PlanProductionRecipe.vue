@@ -193,7 +193,7 @@
 		:key="`COGM#RECIPE#${recipeData.recipe.building_ticker}#${localRecipeIndex}`"
 		v-model:show="refShowCOGM"
 		:title="t('plan.components.production_recipe.cogm_title')"
-		:width="cogmWithCX ? 1000 : 600">
+		:width="cogmWithCX ? 1200 : 600">
 		<PlanCOGM
 			v-if="localRecipeData.cogm"
 			:cogm-data="localRecipeData.cogm"
