@@ -190,7 +190,7 @@
 			</PFormItem>
 			<PFormItem :label="t('profile.change_profile.form.fio_status')">
 				<div
-					class="text-sm"
+					class="text-sm whitespace-normal py-1"
 					:class="{
 						'text-positive': showConnected,
 						'text-negative':
