@@ -7,13 +7,17 @@
 		planetsStore,
 		exchangesStore,
 	} from "@/database/stores";
-	import { onMounted, ref, type Ref } from "vue";
+	import { computed, onMounted, ref, type Ref } from "vue";
 
 	interface IStatistic extends IStoreStatistic {
 		name: string;
 	}
 
 	const stat: Ref<IStatistic[]> = ref([]);
+	const total = computed(() => ({
+		records: stat.value.reduce((sum, s) => sum + s.records, 0),
+		sizeMB: stat.value.reduce((sum, s) => sum + s.sizeMB, 0),
+	}));
 
 	import { formatAmount, formatNumber } from "@/util/numbers";
 	import { usePlanningStore } from "@/stores/planningStore";
@@ -43,13 +47,29 @@
 </script>
 
 <template>
-	<h2 class="text-white/80 font-bold text-lg my-auto">
-		{{ $t("profile.storage_data.title") }}
-	</h2>
-	<div class="py-3 text-muted">
-		{{ $t("profile.storage_data.description") }}
-	</div>
-	<div>
+	<details class="group">
+		<summary
+			class="cursor-pointer flex flex-wrap items-baseline gap-x-3 list-none [&::-webkit-details-marker]:hidden">
+			<h2 class="text-white/80 font-bold text-lg">
+				<span
+					class="inline-block transition-transform group-open:rotate-90"
+					aria-hidden="true">
+					▸
+				</span>
+				{{ $t("profile.storage_data.title") }}
+			</h2>
+			<span v-if="stat.length" class="text-sm text-muted">
+				{{
+					$t("profile.storage_data.total", {
+						size: formatNumber(total.sizeMB),
+						records: formatAmount(total.records),
+					})
+				}}
+			</span>
+		</summary>
+		<div class="py-3 text-muted">
+			{{ $t("profile.storage_data.description") }}
+		</div>
 		<PTable striped>
 			<thead>
 				<tr>
@@ -70,5 +90,5 @@
 				</tr>
 			</tbody>
 		</PTable>
-	</div>
+	</details>
 </template>
