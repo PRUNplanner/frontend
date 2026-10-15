@@ -52,7 +52,9 @@
 		"copy": "Kopieren",
 		"add": "Hinzufügen",
 		"fullscreen": "Vollbildmodus an/aus",
-		"edit": "Bearbeiten"
+		"edit": "Bearbeiten",
+		"show_all": "Show all ({n})",
+		"show_fewer": "Show fewer"
 	},
 	"ui": {
 		"placeholder": {
