@@ -30,7 +30,11 @@ editor UI. The engine is documented in depth in
   `PlanProductionBuilding` → `PlanProductionRecipe`), `PlanMaterialIO`,
   `PlanOverview` and `PlanStatusBar`.
 - **Tools** (`components/tools/`) are extra panels on the plan page:
-  - `PlanCOGM` / `PlanCOGMTable`: cost of goods manufactured;
+  - `PlanCOGM` / `PlanCOGMTable`: cost of goods manufactured, also
+    without a CX (Universe prices); input price sources link to the rule
+    in Exchanges, and the prices panel sets the all-planets buy price to
+    the COGM ("Use as buy price", "Update to <COGM>") with the shared
+    `CXFixedPriceTable` and save bar;
   - `PlanConstructionCart` and `PlanSupplyCart`: shopping lists, with
     XIT/FIO integration;
   - `PlanPOPR`: population report;

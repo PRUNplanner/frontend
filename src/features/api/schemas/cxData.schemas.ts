@@ -25,7 +25,6 @@ const CXExchangeOptionTypeSchema = z.enum([
 export type CXExchangeOptionType = z.infer<typeof CXExchangeOptionTypeSchema>;
 
 const CXPreferenceTypeSchema = z.enum(["BUY", "SELL", "BOTH"]);
-export type CXPreferenceType = z.infer<typeof CXPreferenceTypeSchema>;
 
 export const CXDataExchangeOptionSchema = z.object({
 	type: CXPreferenceTypeSchema,

@@ -5,55 +5,6 @@
 		"title": "No Preferences",
 		"message": "You don't have exchange preferences. Head to Management and create your first."
 	},
-	"buttons": {
-		"csv_import_export": "@:exchanges.components.csv_import_export.title",
-		"save": "@:common.buttons.save",
-		"reload": "@:common.buttons.reload"
-	},
-	"configuration": {
-		"form": {
-			"preference_name": "Preference Name",
-			"empire_preferences": "Empire Preferences",
-			"exchange": "Exchange",
-			"ticker": "@:terms.material_ticker"
-		}
-	},
-	"preference_type": {
-		"BUY": "BUY",
-		"SELL": "SELL",
-		"BOTH": "BOTH"
-	},
-	"components": {
-		"ticker": {
-			"no_data": "No @:terms.material_ticker Preferences Configured",
-			"material_placeholder": "@:terms.materials"
-		},
-		"exchanges": {
-			"no_data": "No @:terms.exchanges Preference Configured"
-		},
-		"planet_preferences": {
-			"title": "Planet Preferences",
-			"form": {
-				"exchange": "@:terms.exchanges",
-				"ticker": "@:terms.material_ticker"
-			},
-			"table": {
-				"planet": "@:terms.planets",
-				"exchange_preference": "@:terms.exchanges Preferences",
-				"ticker_preference": "@:terms.material_ticker Preferences"
-			}
-		},
-		"csv_import_export": {
-			"title": "Import / Export CSV",
-			"warning": "Warning: Importing deletes all existing properties and imports the new ones. You need to save your imported preferences after uploading the CSV file or use the reload button to discard them.",
-			"buttons": {
-				"import": "Import Settings",
-				"export": "Export Settings"
-			}
-		},
-		"type_label": "Preference type",
-		"value_label": "Price"
-	},
 	"labels": {
 		"universe": "Universe",
 		"exchange_basis": "{exchange} · {basis}",
