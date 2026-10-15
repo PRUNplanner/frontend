@@ -71,7 +71,6 @@ const ALC = option("R_ALC", [m("C", 1), m("AL", 2)], 6, -100, -3);
 const BSE = option("R_BSE", [m("BSE", 1)], 4, 0, 0);
 
 const COGM = {
-	visible: true,
 	runtime: 12 * HOUR,
 	runtimeShare: 0.5,
 	efficiency: 1,
@@ -394,18 +393,13 @@ describe("PlanProductionRecipe", () => {
 		expect(wrapper.text()).not.toContain("100.00 %");
 	});
 
-	it("enables COGM only for visible COGM data", async () => {
+	it("enables COGM whenever there is COGM data", async () => {
 		const { wrapper, setProps } = await mountRecipe();
 		expect(cogmButton(wrapper).element.disabled).toBe(false);
 		// icon-only on phones: the label stays its accessible name
 		expect(cogmButton(wrapper).attributes("aria-label")).toBe(
 			"plan.components.production_recipe.buttons.cogm"
 		);
-
-		await setProps({
-			recipeData: recipe({ cogm: { ...COGM, visible: false } }),
-		});
-		expect(cogmButton(wrapper).element.disabled).toBe(true);
 
 		await setProps({ recipeData: recipe({ cogm: undefined }) });
 		expect(cogmButton(wrapper).element.disabled).toBe(true);

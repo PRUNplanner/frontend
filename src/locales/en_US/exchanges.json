@@ -53,5 +53,20 @@
 		},
 		"type_label": "Preference type",
 		"value_label": "Price"
+	},
+	"labels": {
+		"universe": "Universe",
+		"exchange_basis": "{exchange} · {basis}",
+		"basis": {
+			"vwap_7d": "VWAP 7D",
+			"vwap_30d": "VWAP 30D",
+			"ask": "Ask",
+			"bid": "Bid"
+		},
+		"planet_rule": "{label} · planet",
+		"no_price": "{label} · no price",
+		"fixed_all": "Fixed · all planets",
+		"fixed_planet": "Fixed · this planet",
+		"unresolved": "No price data"
 	}
 }

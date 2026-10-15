@@ -53,7 +53,6 @@ function cxData(): CXData {
 }
 
 const COGM = {
-	visible: true,
 	runtime: 43200000,
 	runtimeShare: 0.5,
 	efficiency: 1.25,

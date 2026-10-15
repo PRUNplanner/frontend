@@ -33,7 +33,6 @@ import type {
  * @param {number} totalEfficiency Building efficiency
  * @param {number} constructionCost Construction cost (positive)
  * @param {number} workforceCost Daily workforce cost (positive)
- * @param {boolean} visible Show COGM (a CX is selected)
  * @param {IPriceBook} prices Price Book
  * @returns {IProductionBuildingRecipeCOGM} COGM
  */
@@ -42,7 +41,6 @@ export function calculateCOGM(
 	totalEfficiency: number,
 	constructionCost: number,
 	workforceCost: number,
-	visible: boolean,
 	prices: IPriceBook
 ): IProductionBuildingRecipeCOGM {
 	const runtimeShare: number =
@@ -99,7 +97,6 @@ export function calculateCOGM(
 		.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 
 	return {
-		visible,
 		runtime: ar.recipe.time_ms / totalEfficiency,
 		runtimeShare,
 		efficiency: totalEfficiency,

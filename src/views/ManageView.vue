@@ -22,7 +22,7 @@
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
-	import ManageSaveBar from "@/features/manage/components/ManageSaveBar.vue";
+	import SaveBar from "@/features/save_bar/components/SaveBar.vue";
 	const AsyncManagePlanEmpireAssignments = defineAsyncComponent(
 		() =>
 			import("@/features/manage/components/ManagePlanEmpireAssignments.vue")
@@ -156,7 +156,7 @@
 				@update:empire-list="(empireData) => (empireList = empireData)"
 				@update:plan-list="(planData) => (planList = planData)" />
 		</div>
-		<ManageSaveBar
+		<SaveBar
 			v-if="totalChanged > 0"
 			:count="totalChanged"
 			:detail="saveDetail"

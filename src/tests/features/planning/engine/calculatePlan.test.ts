@@ -167,15 +167,13 @@ describe("planning engine", () => {
 			expectFinite(run());
 		});
 
-		it("shows COGM when a CX is given", () => {
-			const cogm = (cxUuid: string | undefined) =>
-				calculatePlan(
-					{ plan: etherwindPlan(), empire: undefined, cxUuid },
-					ctx
-				).result.production.buildings[0].activeRecipes[0].cogm!.visible;
+		it("calculates COGM without a CX", () => {
+			const cogm = calculatePlan(
+				{ plan: etherwindPlan(), empire: undefined, cxUuid: undefined },
+				ctx
+			).result.production.buildings[0].activeRecipes[0].cogm;
 
-			expect(cogm(undefined)).toBe(false);
-			expect(cogm("some-cx")).toBe(true);
+			expect(cogm?.outputCOGM.length).toBeGreaterThan(0);
 		});
 	});
 

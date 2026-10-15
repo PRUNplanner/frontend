@@ -243,7 +243,7 @@
 	);
 
 	function reloadCXData(): void {
-		trackEvent("exchange:reload", { location: "exchanges_view" });
+		trackEvent("exchange:discard", { location: "exchanges_view" });
 		selectedCX.value = inertClone(rawSelectedCX.value);
 		selectedName.value = selectedCX.value!.cx_name;
 	}

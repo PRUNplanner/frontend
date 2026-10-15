@@ -633,7 +633,6 @@
 		},
 		"production_recipe": {
 			"cogm_title": "Cost Of Goods Manufactured",
-			"cogm_error": "COGM Calculation not possible. Check your Management View if your Empire has a CX assigned.",
 			"buttons": {
 				"cogm": "@:terms.cogm"
 			},

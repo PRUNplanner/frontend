@@ -70,7 +70,6 @@ export interface ICOGMMaterialReturn {
 }
 
 export interface IProductionBuildingRecipeCOGM {
-	visible: boolean;
 	runtime: number;
 	runtimeShare: number;
 	efficiency: number;

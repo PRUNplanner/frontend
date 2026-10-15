@@ -91,7 +91,7 @@
 	}
 
 	function reload(): void {
-		trackEvent("exchange:reload", { location: "cogm" });
+		trackEvent("exchange:discard", { location: "cogm" });
 		getCXData();
 	}
 
