@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, defineAsyncComponent } from "vue";
+	import { computed, defineAsyncComponent, ref } from "vue";
 	import { useI18n } from "vue-i18n";
 
 	// Stores
@@ -110,8 +110,15 @@
 	const profit = computed(() => sensitivity.value.result.profit);
 	const impact = (row: ISensitivityRow) =>
 		(Math.abs(row.slope) * pct.value) / 100;
-	const shown = computed(() => sensitivity.value.rows.slice(0, TOP));
-	const rest = computed(() => sensitivity.value.rows.slice(TOP));
+	const showAll = ref(false);
+	const shown = computed(() =>
+		showAll.value
+			? sensitivity.value.rows
+			: sensitivity.value.rows.slice(0, TOP)
+	);
+	const rest = computed(() =>
+		showAll.value ? [] : sensitivity.value.rows.slice(TOP)
+	);
 	const maxAbs = computed(() =>
 		shown.value.length ? impact(shown.value[0]) : 0
 	);
@@ -357,6 +364,20 @@
 						)
 					}}
 				</p>
+				<button
+					v-if="sensitivity.rows.length > TOP"
+					type="button"
+					class="self-start min-h-7 pointer-coarse:min-h-11 text-xs text-link hover:underline cursor-pointer"
+					:aria-expanded="showAll"
+					@click="showAll = !showAll">
+					{{
+						showAll
+							? t("common.buttons.show_fewer")
+							: t("common.buttons.show_all", {
+									n: sensitivity.rows.length,
+								})
+					}}
+				</button>
 				<p class="text-xs text-muted flex flex-wrap gap-x-6">
 					<span>
 						{{

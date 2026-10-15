@@ -27,9 +27,14 @@
 	const emit = defineEmits<{ "open:material": [ticker: string] }>();
 
 	const metric = ref<EmpireButterflyMetric>("price");
+	const showAll = ref(false);
 
 	const rows = computed(() =>
-		materialButterfly(materialIO, metric.value, TOP)
+		materialButterfly(
+			materialIO,
+			metric.value,
+			showAll.value ? Infinity : TOP
+		)
 	);
 	const maxAbs = computed(() =>
 		Math.max(0, ...rows.value.map((r) => Math.abs(r.value)))
@@ -113,10 +118,22 @@
 					</PTooltip>
 				</li>
 			</ul>
+			<button
+				v-if="moving > TOP"
+				type="button"
+				class="min-h-7 pointer-coarse:min-h-11 pt-2 text-xs text-link hover:underline cursor-pointer"
+				:aria-expanded="showAll"
+				@click="showAll = !showAll">
+				{{
+					showAll
+						? $t("common.buttons.show_fewer")
+						: $t("common.buttons.show_all", { n: moving })
+				}}
+			</button>
 			<div class="pt-3 text-xs text-muted">
 				{{
 					$t("empire.analysis.butterfly.caption", {
-						top: Math.min(TOP, moving),
+						top: rows.length,
 						n: moving,
 					})
 				}}
