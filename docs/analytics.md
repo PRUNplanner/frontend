@@ -135,6 +135,7 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `manage:plan_assign_all` | `is_assigned` | |
 | `manage:plan_clone` | `plan_uuid` | |
 | `manage:plan_delete` | `plan_uuid` | |
+| `manage:plan_delete_bulk` | `count` | |
 | `exchange:update` | `location`, `cx_uuid` | |
 | `exchange:reload` | `location` | |
 | `exchange:save_conflict` | `location` (`exchanges_view`, `cogm`), `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of a CX was answered |

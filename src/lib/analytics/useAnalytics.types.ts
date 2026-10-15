@@ -175,6 +175,7 @@ export interface IAnalyticsEventProperties {
 	"manage:plan_assign_all": { is_assigned: boolean };
 	"manage:plan_clone": { plan_uuid: string };
 	"manage:plan_delete": { plan_uuid: string };
+	"manage:plan_delete_bulk": { count: number };
 
 	"exchange:update": { location: string; cx_uuid: string };
 	"exchange:reload": { location: string };
