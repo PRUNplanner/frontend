@@ -83,57 +83,59 @@
 
 <template>
 	<div
-		class="w-full p-3 flex flex-row gap-3 flex-wrap items-center justify-between border border-b-0 rounded-[3px] border-white/15">
-		<div class="flex flex-row flex-wrap items-center gap-3">
-			<div class="font-bold pr-3">
-				{{ $t("recipe_roi.filters.title") }}
-			</div>
-			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
-				<div>{{ $t("recipe_roi.filters.building") }}</div>
-				<PSelectMultiple
-					v-model:value="localFilterBuilding"
-					:aria-label="$t('recipe_roi.filters.building')"
-					:options="buildingOptions"
-					searchable
-					clearable
-					class="w-40" />
-			</div>
-			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
-				<div>{{ $t("recipe_roi.filters.cogc") }}</div>
-				<PSelectMultiple
-					v-model:value="localFilterCogc"
-					:aria-label="$t('recipe_roi.filters.cogc')"
-					:options="cogcOptions"
-					searchable
-					clearable
-					class="w-50" />
-			</div>
-			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
-				<div>{{ $t("recipe_roi.filters.output") }}</div>
-				<PSelectMultiple
-					v-model:value="localFilterOutputMaterial"
-					:aria-label="$t('recipe_roi.filters.output')"
-					:options="outputMaterialOptions"
-					searchable
-					clearable
-					class="w-75" />
-			</div>
-			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
-				<div>{{ $t("recipe_roi.filters.input") }}</div>
-				<PSelectMultiple
-					v-model:value="localFilterInputMaterial"
-					:aria-label="$t('recipe_roi.filters.input')"
-					:options="inputMaterialOptions"
-					searchable
-					clearable
-					class="w-75" />
-			</div>
+		class="w-full p-3 grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-[repeat(4,minmax(0,1fr))_auto] items-end border border-b-0 rounded-[3px] border-white/15">
+		<div class="flex flex-col gap-1 min-w-0">
+			<span class="text-xs text-muted">
+				{{ $t("recipe_roi.filters.building") }}
+			</span>
+			<PSelectMultiple
+				v-model:value="localFilterBuilding"
+				:aria-label="$t('recipe_roi.filters.building')"
+				:options="buildingOptions"
+				searchable
+				clearable
+				class="w-full" />
 		</div>
-		<div class="flex flex-row flex-wrap gap-3 items-center">
-			<div>{{ $t("recipe_roi.filters.positive_roi") }}</div>
-			<PCheckbox
-				v-model:checked="localFilterPositiveROI"
-				:aria-label="$t('recipe_roi.filters.positive_roi')" />
+		<div class="flex flex-col gap-1 min-w-0">
+			<span class="text-xs text-muted">
+				{{ $t("recipe_roi.filters.cogc") }}
+			</span>
+			<PSelectMultiple
+				v-model:value="localFilterCogc"
+				:aria-label="$t('recipe_roi.filters.cogc')"
+				:options="cogcOptions"
+				searchable
+				clearable
+				class="w-full" />
 		</div>
+		<div class="flex flex-col gap-1 min-w-0">
+			<span class="text-xs text-muted">
+				{{ $t("recipe_roi.filters.output") }}
+			</span>
+			<PSelectMultiple
+				v-model:value="localFilterOutputMaterial"
+				:aria-label="$t('recipe_roi.filters.output')"
+				:options="outputMaterialOptions"
+				searchable
+				clearable
+				class="w-full" />
+		</div>
+		<div class="flex flex-col gap-1 min-w-0">
+			<span class="text-xs text-muted">
+				{{ $t("recipe_roi.filters.input") }}
+			</span>
+			<PSelectMultiple
+				v-model:value="localFilterInputMaterial"
+				:aria-label="$t('recipe_roi.filters.input')"
+				:options="inputMaterialOptions"
+				searchable
+				clearable
+				class="w-full" />
+		</div>
+		<PCheckbox
+			v-model:checked="localFilterPositiveROI"
+			class="min-h-8 pointer-coarse:min-h-11 flex items-center">
+			{{ $t("recipe_roi.filters.positive_roi") }}
+		</PCheckbox>
 	</div>
 </template>

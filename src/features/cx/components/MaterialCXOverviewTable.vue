@@ -154,6 +154,7 @@
 								" />
 						</PIcon>
 						<div
+							class="text-nowrap"
 							:class="
 								overviewData.vwap_analysis[cx].significance ===
 								'STABLE'

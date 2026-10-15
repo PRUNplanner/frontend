@@ -85,6 +85,12 @@ html {
 		outline: 2px solid var(--color-focus);
 		outline-offset: 2px;
 	}
+
+	/* Tailwind v4 gives buttons the default cursor */
+	button:not(:disabled),
+	[role="button"]:not([aria-disabled="true"]) {
+		cursor: pointer;
+	}
 }
 
 ::-webkit-scrollbar {

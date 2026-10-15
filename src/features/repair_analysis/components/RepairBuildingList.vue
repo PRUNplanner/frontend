@@ -81,7 +81,7 @@
 				v-for="b in buildings"
 				:key="b.ticker"
 				type="button"
-				class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-2 gap-y-0.5 w-full min-h-11 py-2 px-3 text-start bg-surface border border-line rounded-panel hover:bg-hover"
+				class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-2 gap-y-0.5 w-full min-h-11 py-2 px-3 text-start bg-surface border border-line rounded-panel hover:bg-hover cursor-pointer"
 				data-testid="repair-building-card"
 				@click="emit('select', b.ticker)">
 				<span>
@@ -144,7 +144,7 @@
 						<td class="py-1 pl-4 pr-1.5">
 							<button
 								type="button"
-								class="touch-target flex flex-col items-start -my-0.5 -mx-1 py-0.5 px-1 rounded-control text-start leading-tight"
+								class="touch-target flex flex-col items-start cursor-pointer -my-0.5 -mx-1 py-0.5 px-1 rounded-control text-start leading-tight"
 								:aria-pressed="b.ticker === selected"
 								@click="emit('select', b.ticker)">
 								<span class="font-bold text-ink-strong">

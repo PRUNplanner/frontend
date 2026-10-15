@@ -165,11 +165,19 @@ describe("PlanCheck", () => {
 		expect(text).toContain("plan.tools.plan_check.footnote.centre");
 	});
 
-	it("caps the list at 10 and sums up the rest", async () => {
+	it("caps the list at 10, sums up the rest and shows all on request", async () => {
 		const wrapper = await mountTool(largePlan());
 
 		expect(wrapper.findAll("tbody tr")).toHaveLength(10);
 		expect(wrapper.text()).toContain("plan.tools.plan_check.more");
+
+		const toggle = wrapper.find("button[aria-expanded]");
+		expect(toggle.text()).toBe("common.buttons.show_all");
+		await toggle.trigger("click");
+
+		expect(wrapper.findAll("tbody tr").length).toBeGreaterThan(10);
+		expect(wrapper.text()).not.toContain("plan.tools.plan_check.more");
+		expect(toggle.text()).toBe("common.buttons.show_fewer");
 	});
 
 	it("shows profit at both price changes in the bar's tooltip", async () => {

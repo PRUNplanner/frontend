@@ -5,7 +5,7 @@
 	import ChainNode from "@/features/production_chain/components/ChainNode.vue";
 
 	// Vue Flow
-	import { VueFlow } from "@vue-flow/core";
+	import { VueFlow, useVueFlow } from "@vue-flow/core";
 	import { MiniMap } from "@vue-flow/minimap";
 
 	// Types & Interfaces
@@ -29,13 +29,20 @@
 			required: true,
 		},
 	});
+
+	// a new chain opens fully in view
+	const { fitView } = useVueFlow();
 </script>
 
 <template>
 	<div
 		style="width: 100%; height: 85vh"
 		class="bg-white/3 border border-white/10">
-		<VueFlow :nodes="nodes" :edges="edges" :nodes-connectable="false">
+		<VueFlow
+			:nodes="nodes"
+			:edges="edges"
+			:nodes-connectable="false"
+			@nodes-initialized="fitView({ padding: 0.1 })">
 			<MiniMap
 				pannable
 				zoomable

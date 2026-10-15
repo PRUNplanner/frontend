@@ -74,7 +74,7 @@
 					<div
 						v-if="hasHeader || closable"
 						data-layer-header
-						class="flex items-center justify-between px-6 py-4 border-b border-line text-[18px]/4.5 font-medium text-ink-strong">
+						class="flex items-center justify-between px-6 py-4 border-b border-line text-lg/4.5 font-medium text-ink-strong">
 						<div :id="titleId" class="flex-1 min-w-0">
 							<slot name="header">{{ title }}</slot>
 						</div>

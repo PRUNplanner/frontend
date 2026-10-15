@@ -8,7 +8,7 @@
 	} from "@/features/manage/useAssignmentMatrix.types";
 
 	// UI
-	import { PSpin } from "@/ui";
+	import { PCheckbox, PSpin } from "@/ui";
 
 	// narrow screens: same props and events as ManageAssignmentRow
 	defineProps({
@@ -29,11 +29,17 @@
 			required: false,
 			default: false,
 		},
+		selected: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	});
 
 	defineEmits<{
 		(e: "toggle", planUuid: string, empireUuid: string): void;
 		(e: "menu", planUuid: string, target: HTMLElement): void;
+		(e: "select", planUuid: string): void;
 	}>();
 </script>
 
@@ -41,7 +47,16 @@
 	<div
 		class="border border-white/10 rounded bg-gray-dark p-3 [content-visibility:auto] [contain-intrinsic-size:auto_140px]">
 		<div class="flex items-start justify-between gap-3">
-			<div class="min-w-0">
+			<PCheckbox
+				class="shrink-0 size-9 -m-1.5 justify-center"
+				:checked="selected"
+				:aria-label="
+					$t('management.assignments.selection.select_label', {
+						plan: row.planName,
+					})
+				"
+				@update:checked="$emit('select', row.planUuid)" />
+			<div class="min-w-0 grow">
 				<router-link
 					:to="`/plan/${row.planetId}/${row.planUuid}`"
 					class="block text-link-primary font-bold hover:underline truncate">

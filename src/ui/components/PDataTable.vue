@@ -574,7 +574,7 @@
 			</table>
 		</div>
 		<PPagination
-			v-if="pageSize"
+			v-if="pageSize && pageCount > 1"
 			:page="currentPage"
 			:page-count="pageCount"
 			@update:page="(p: number) => (page = p)" />
@@ -594,7 +594,7 @@
 	}
 
 	.p-data-table-table {
-		@apply w-full border-separate border-spacing-0 bg-white/2 [word-break:break-word];
+		@apply w-full border-separate border-spacing-0 bg-white/2 [overflow-wrap:break-word];
 	}
 
 	.p-data-table thead {

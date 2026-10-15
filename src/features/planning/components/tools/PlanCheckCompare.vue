@@ -447,8 +447,13 @@
 	 */
 
 	const TOP = 6;
-	const shown = computed(() => changes.value.slice(0, TOP));
-	const rest = computed(() => changes.value.slice(TOP));
+	const showAll = ref(false);
+	const shown = computed(() =>
+		showAll.value ? changes.value : changes.value.slice(0, TOP)
+	);
+	const rest = computed(() =>
+		showAll.value ? [] : changes.value.slice(TOP)
+	);
 	const restSum = computed(() =>
 		rest.value.reduce((sum, c) => sum + c.delta, 0)
 	);
@@ -786,6 +791,20 @@
 								</PTooltip>
 							</li>
 						</ul>
+						<button
+							v-if="changes.length > TOP"
+							type="button"
+							class="self-start min-h-7 pointer-coarse:min-h-11 text-xs text-link hover:underline cursor-pointer"
+							:aria-expanded="showAll"
+							@click="showAll = !showAll">
+							{{
+								showAll
+									? t("common.buttons.show_fewer")
+									: t("common.buttons.show_all", {
+											n: changes.length,
+										})
+							}}
+						</button>
 						<p
 							v-for="c in shown.filter((s) => pushed.has(s.ticker))"
 							:key="`flag-${c.ticker}`"

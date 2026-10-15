@@ -82,7 +82,7 @@ const planNames = (wrapper: VueWrapper) =>
 function assigned(wrapper: VueWrapper, column: number) {
 	return bodyRows(wrapper).map(
 		(tr) =>
-			(tr.findAll("td input").at(column)!.element as HTMLInputElement)
+			(tr.findAll("td:not(:first-child) input").at(column)!.element as HTMLInputElement)
 				.checked
 	);
 }
@@ -91,21 +91,23 @@ function assigned(wrapper: VueWrapper, column: number) {
 function striped(wrapper: VueWrapper, column: number) {
 	return bodyRows(wrapper).map((tr) =>
 		tr
-			.findAll(".pcheckbox")
+			.findAll("td:not(:first-child) .pcheckbox")
 			.at(column)!
 			.element.parentElement!.classList.contains("bg-unsaved-stripes")
 	);
 }
 
 async function toggleCell(wrapper: VueWrapper, row: number, column: number) {
-	const input = bodyRows(wrapper)[row].findAll("td input").at(column)!;
+	const input = bodyRows(wrapper)[row]
+		.findAll("td:not(:first-child) input")
+		.at(column)!;
 	await input.setValue(!(input.element as HTMLInputElement).checked);
 	await flushPromises();
 }
 
 const headerBoxes = (wrapper: VueWrapper) =>
 	wrapper
-		.findAll("thead input")
+		.findAll("thead th:not(:first-child) input")
 		.map((i) => i.element as HTMLInputElement);
 
 function headerState(wrapper: VueWrapper) {
@@ -115,7 +117,7 @@ function headerState(wrapper: VueWrapper) {
 }
 
 async function clickHeader(wrapper: VueWrapper, column: number) {
-	const input = wrapper.findAll("thead input").at(column)!;
+	const input = wrapper.findAll("thead th:not(:first-child) input").at(column)!;
 	await input.setValue(!(input.element as HTMLInputElement).checked);
 	await flushPromises();
 }
@@ -395,6 +397,45 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(
 			bodyRows(wrapper)[2].find("button").attributes("aria-busy")
 		).toBe("false");
+		expect(error).toHaveBeenCalled();
+		error.mockRestore();
+	});
+
+	it("selects all shown plans and deletes them after one confirmation", async () => {
+		mock.onDelete(new RegExp(`planning/plan/${P1}/$`)).reply(204);
+		mock.onDelete(new RegExp(`planning/plan/${P2}/$`)).reply(500);
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper, component } = await mountAssignments();
+		const selectedBoxes = () =>
+			bodyRows(wrapper).map(
+				(tr) =>
+					(tr.find("td:first-child input").element as HTMLInputElement)
+						.checked
+			);
+
+		// only Plan A and B are shown, the header box takes both
+		wrapper.findComponent(PInput).vm.$emit("update:value", "zv-307");
+		await flushPromises();
+		await wrapper.find("thead th:first-child input").setValue(true);
+		await flushPromises();
+		expect(selectedBoxes()).toEqual([true, true]);
+
+		await wrapper
+			.findAll("button")
+			.find(
+				(b) => b.text() === "management.assignments.selection.delete"
+			)!
+			.trigger("click");
+		await flushPromises();
+		expect(mock.history.delete).toHaveLength(0);
+
+		confirmDialog();
+		await flushPromises();
+
+		expect(mock.history.delete).toHaveLength(2);
+		expect(component.emitted("update:planList")).toHaveLength(1);
+		// the one that failed stays selected
+		expect(selectedBoxes()).toEqual([false, true]);
 		expect(error).toHaveBeenCalled();
 		error.mockRestore();
 	});

@@ -227,7 +227,7 @@
 							<template
 								v-if="seg.labelAt === 'inside' && insideChip">
 								<span
-									class="px-1 rounded-sm text-[10px] font-bold"
+									class="px-1 rounded-sm text-xs font-bold"
 									:class="
 										seg.chipClass ??
 										'bg-black/70 text-white'
@@ -248,7 +248,7 @@
 								(s) => s.labelAt === 'beside'
 							)"
 							:key="`beside-${seg.key}`"
-							class="absolute text-[11px] leading-3.5 text-white/70 whitespace-nowrap overflow-hidden"
+							class="absolute text-xs leading-3.5 text-white/70 whitespace-nowrap overflow-hidden"
 							:style="{
 								top: `${seg.labelTop}px`,
 								left: `${barLeft(i) + barWidth + 4}px`,

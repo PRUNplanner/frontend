@@ -36,44 +36,61 @@
 			required: false,
 			default: false,
 		},
+		selected: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	});
 
 	defineEmits<{
 		(e: "toggle", planUuid: string, empireUuid: string): void;
 		(e: "menu", planUuid: string, target: HTMLElement): void;
+		(e: "select", planUuid: string): void;
 	}>();
 </script>
 
 <template>
 	<tr class="h-13 bg-black even:bg-gray-dark border-b border-white/5">
-		<td class="sticky left-0 z-1 bg-inherit px-4 py-1.75">
-			<div class="flex flex-col gap-0.5 min-w-0">
-				<div class="flex items-center gap-2 min-w-0">
-					<router-link
-						:to="`/plan/${row.planetId}/${row.planUuid}`"
-						:title="row.planName"
-						class="text-link-primary font-bold hover:underline truncate">
-						{{ row.planName }}
-					</router-link>
-					<span
-						v-if="viewCount !== undefined"
-						class="shrink-0 flex items-center gap-1 px-1.75 rounded-full bg-positive/15 text-positive text-xs"
-						:title="$t('sharing.buttons.views', { count: viewCount })">
-						<PIcon :size="12"><RemoveRedEyeSharp /></PIcon>
-						{{ viewCount }}
-					</span>
-				</div>
-				<div
-					class="text-xs text-muted truncate"
-					:title="
-						row.planetName
-							? `${row.planetName} · ${row.planetId}`
-							: row.planetId
-					">
-					<template v-if="row.planetName">
-						{{ row.planetName }} ·
-					</template>
-					<span class="font-mono">{{ row.planetId }}</span>
+		<td class="sticky left-0 z-1 bg-inherit pl-2 pr-4 py-1.75">
+			<div class="flex items-center gap-1 min-w-0">
+				<PCheckbox
+					class="shrink-0 size-9 justify-center"
+					:checked="selected"
+					:aria-label="
+						$t('management.assignments.selection.select_label', {
+							plan: row.planName,
+						})
+					"
+					@update:checked="$emit('select', row.planUuid)" />
+				<div class="flex flex-col gap-0.5 min-w-0">
+					<div class="flex items-center gap-2 min-w-0">
+						<router-link
+							:to="`/plan/${row.planetId}/${row.planUuid}`"
+							:title="row.planName"
+							class="text-link-primary font-bold leading-6 hover:underline truncate">
+							{{ row.planName }}
+						</router-link>
+						<span
+							v-if="viewCount !== undefined"
+							class="shrink-0 flex items-center gap-1 px-1.75 rounded-full bg-positive/15 text-positive text-xs"
+							:title="$t('sharing.buttons.views', { count: viewCount })">
+							<PIcon :size="12"><RemoveRedEyeSharp /></PIcon>
+							{{ viewCount }}
+						</span>
+					</div>
+					<div
+						class="text-xs text-muted truncate"
+						:title="
+							row.planetName
+								? `${row.planetName} · ${row.planetId}`
+								: row.planetId
+						">
+						<template v-if="row.planetName">
+							{{ row.planetName }} ·
+						</template>
+						<span class="font-mono">{{ row.planetId }}</span>
+					</div>
 				</div>
 			</div>
 		</td>

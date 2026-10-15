@@ -423,7 +423,7 @@
 				<ul class="flex flex-col gap-2">
 					<li v-if="breakdown.outputItems[0]" class="flex gap-2">
 						<span
-							class="shrink-0 h-fit px-1 rounded-sm text-[10px] font-bold"
+							class="shrink-0 h-fit px-1 rounded-sm text-xs font-bold"
 							:class="
 								chipClass(breakdown.outputItems[0].key) ??
 								'bg-black/40'
@@ -445,7 +445,7 @@
 					</li>
 					<li v-if="largestCost" class="flex gap-2">
 						<span
-							class="shrink-0 h-fit px-1 rounded-sm text-[10px] font-bold"
+							class="shrink-0 h-fit px-1 rounded-sm text-xs font-bold"
 							:class="
 								chipClass(largestCost.key) ?? 'bg-black/40'
 							">

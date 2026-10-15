@@ -54,9 +54,11 @@
 		PInput,
 		PSelect,
 		useConfirm,
+		useToast,
 	} from "@/ui";
 
 	const confirm = useConfirm();
+	const toast = useToast();
 	import {
 		ArrowDownwardSharp,
 		ArrowUpwardSharp,
@@ -254,6 +256,103 @@
 			shownRows.value.map((r) => cellKey(r.planUuid, empireUuid)),
 			value
 		);
+	}
+
+	// Selection for deleting several plans: the header box takes every
+	// shown row, also those not rendered yet
+	const selected: Ref<ReadonlySet<string>> = shallowRef(new Set());
+	const deleting: Ref<number | undefined> = ref(undefined);
+
+	function select(planUuids: string[], value: boolean): void {
+		const next = new Set(selected.value);
+		for (const uuid of planUuids)
+			if (value) next.add(uuid);
+			else next.delete(uuid);
+		selected.value = next;
+	}
+
+	const selectState: ComputedRef<"none" | "some" | "all"> = computed(() => {
+		const n = shownRows.value.filter((r) =>
+			selected.value.has(r.planUuid)
+		).length;
+		if (n === 0) return "none";
+		return n === shownRows.value.length ? "all" : "some";
+	});
+
+	function selectAllShown(): void {
+		select(
+			shownRows.value.map((r) => r.planUuid),
+			selectState.value !== "all"
+		);
+	}
+
+	// deleted elsewhere (another tab, the row menu): out of the selection
+	watch(
+		() => props.plans,
+		(plans) => {
+			const uuids = new Set(plans.map((p) => p.uuid));
+			if ([...selected.value].some((u) => !uuids.has(u)))
+				selected.value = new Set(
+					[...selected.value].filter((u) => uuids.has(u))
+				);
+		}
+	);
+
+	async function deleteSelected(): Promise<void> {
+		const uuids = [...selected.value];
+		const names = rows.value
+			.filter((r) => selected.value.has(r.planUuid))
+			.map((r) => r.planName);
+		const NAMES = 5;
+		const confirmed = await confirm({
+			title: t(
+				"management.assignments.selection.confirm_title",
+				{ count: uuids.length },
+				uuids.length
+			),
+			content: t("management.assignments.selection.confirm_content", {
+				names:
+					names.length > NAMES
+						? t("management.assignments.selection.more", {
+								names: names.slice(0, NAMES).join(", "),
+								count: names.length - NAMES,
+							})
+						: names.join(", "),
+			}),
+			positiveText: t("common.buttons.delete"),
+			negativeText: t("common.buttons.cancel"),
+		});
+		if (!confirmed) return;
+
+		trackEvent("manage:plan_delete_bulk", { count: uuids.length });
+		deleting.value = 0;
+		const failed: string[] = [];
+		// ponytail: one request per plan, a bulk endpoint if hundreds get slow
+		for (const planUuid of uuids) {
+			try {
+				await useQuery("DeletePlan", { planUuid }).execute();
+			} catch (err) {
+				console.error(err);
+				failed.push(planUuid);
+			}
+			deleting.value++;
+		}
+		try {
+			await refetch();
+		} catch (err) {
+			console.error(err);
+		}
+		selected.value = new Set(failed);
+		deleting.value = undefined;
+		if (failed.length)
+			toast(
+				t(
+					"management.assignments.selection.failed",
+					{ count: failed.length },
+					failed.length
+				),
+				{ type: "error" }
+			);
 	}
 
 	// Long lists render in chunks, one per frame, so the page never blocks
@@ -476,6 +575,53 @@
 		</PButton>
 	</div>
 
+	<!-- selection: the table header has its own box, the cards don't -->
+	<div
+		v-if="rows.length > 0 && (selected.size > 0 || !isWide)"
+		class="flex flex-wrap items-center gap-3 pb-4">
+		<span v-if="selected.size > 0" class="font-bold" role="status">
+			{{
+				$t(
+					"management.assignments.selection.count",
+					{ count: selected.size },
+					selected.size
+				)
+			}}
+		</span>
+		<PButton
+			v-if="!isWide && shownRows.length > 0"
+			type="secondary"
+			@click="selectAllShown">
+			{{
+				selectState === "all"
+					? $t("management.assignments.selection.clear_all_shown")
+					: $t("management.assignments.selection.select_all_shown")
+			}}
+		</PButton>
+		<template v-if="selected.size > 0">
+			<PButton
+				type="ghost"
+				:disabled="deleting !== undefined"
+				@click="selected = new Set()">
+				{{ $t("management.assignments.selection.clear") }}
+			</PButton>
+			<PButton
+				type="error"
+				:loading="deleting !== undefined"
+				:disabled="deleting !== undefined"
+				@click="deleteSelected">
+				{{
+					deleting !== undefined
+						? $t("management.assignments.selection.deleting", {
+								done: deleting,
+								total: selected.size,
+							})
+						: $t("management.assignments.selection.delete")
+				}}
+			</PButton>
+		</template>
+	</div>
+
 	<div
 		v-if="rowsReady && rows.length === 0"
 		class="p-10 text-center text-muted flex flex-col gap-y-3">
@@ -497,18 +643,35 @@
 			<thead class="sticky top-0 z-2 bg-gray-dark">
 				<tr>
 					<th
-						class="sticky left-0 z-3 bg-gray-dark text-left px-4 py-2.5 align-bottom border-b border-white/10"
+						class="sticky left-0 z-3 bg-gray-dark text-left pl-2 pr-4 py-2.5 align-bottom border-b border-white/10"
 						:aria-sort="sortAsc ? 'ascending' : 'descending'">
-						<button
-							type="button"
-							class="flex items-center gap-1.5 font-bold cursor-pointer"
-							@click="sortAsc = !sortAsc">
-							{{ $t("management.assignments.table.plan") }}
-							<PIcon :size="14" class="text-muted">
-								<ArrowUpwardSharp v-if="sortAsc" />
-								<ArrowDownwardSharp v-else />
-							</PIcon>
-						</button>
+						<div class="flex items-center gap-1">
+							<PCheckbox
+								class="shrink-0 size-9 justify-center"
+								:checked="selectState === 'all'"
+								:indeterminate="selectState === 'some'"
+								:disabled="shownRows.length === 0"
+								:aria-label="
+									selectState === 'all'
+										? $t(
+												'management.assignments.selection.clear_all_shown'
+											)
+										: $t(
+												'management.assignments.selection.select_all_shown'
+											)
+								"
+								@update:checked="selectAllShown" />
+							<button
+								type="button"
+								class="flex items-center gap-1.5 min-h-6 font-bold cursor-pointer"
+								@click="sortAsc = !sortAsc">
+								{{ $t("management.assignments.table.plan") }}
+								<PIcon :size="14" class="text-muted">
+									<ArrowUpwardSharp v-if="sortAsc" />
+									<ArrowDownwardSharp v-else />
+								</PIcon>
+							</button>
+						</div>
 					</th>
 					<th class="border-b border-white/10">
 						<span class="sr-only">
@@ -521,7 +684,7 @@
 						class="px-1.5 pt-2.5 pb-2 align-bottom border-b border-l border-b-white/10 border-l-white/5">
 						<div class="flex flex-col items-center gap-1">
 							<div
-								class="max-w-full truncate text-[13px] font-bold"
+								class="max-w-full truncate text-sm font-bold"
 								:title="e.empireName">
 								{{ e.empireName }}
 							</div>
@@ -565,6 +728,8 @@
 					:cells="cells(r.planUuid)"
 					:view-count="planningStore.shared[r.planUuid]?.view_count"
 					:busy="busyPlan === r.planUuid"
+					:selected="selected.has(r.planUuid)"
+					@select="(uuid: string) => select([uuid], !selected.has(uuid))"
 					@toggle="toggle"
 					@menu="openMenu" />
 				<tr v-if="shownRows.length === 0">
@@ -587,6 +752,8 @@
 			:empires="empires"
 			:cells="cells(r.planUuid)"
 			:busy="busyPlan === r.planUuid"
+			:selected="selected.has(r.planUuid)"
+			@select="(uuid: string) => select([uuid], !selected.has(uuid))"
 			@toggle="toggle"
 			@menu="openMenu" />
 		<div

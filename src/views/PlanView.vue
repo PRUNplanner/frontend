@@ -1153,8 +1153,9 @@
 		@reset="resetShared"
 		@copy="copySharedChanges"
 		@save="openSaveAsModal" />
-	<!-- keep focused controls clear of the sticky status bar -->
-	<div class="@container [&_*]:scroll-mt-28">
+	<!-- keep focused controls clear of the sticky status bar; the bottom
+		padding scrolls the last rows clear of the insights button -->
+	<div class="@container pb-16 [&_*]:scroll-mt-28">
 		<div
 			class="grid grid-cols-[minmax(0,1fr)] grid-rows-[repeat(5,auto)] md:grid-cols-[minmax(0,1fr)_auto] gap-x-3">
 			<!-- Plan Name & Selector -->
