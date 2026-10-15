@@ -51,7 +51,7 @@
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
-	const { getPlanet } = usePlanetData();
+	const { getPlanet, planetName } = usePlanetData();
 	import { useCXData } from "@/features/cx/useCXData";
 	const { findEmpireCXUuid } = useCXData();
 	import { useExchangeData } from "@/database/services/useExchangeData";
@@ -907,7 +907,8 @@
 				priceSource: sharedPriceSource.value,
 				url: `${config.SHARE_BASE_URL}/${props.sharedPlanUuid}`,
 			},
-			t
+			t,
+			(id) => planetName(id, id)
 		);
 
 		try {
