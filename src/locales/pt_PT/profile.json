@@ -49,6 +49,7 @@
 	"storage_data": {
 		"title": "Browser Storage",
 		"description": "PRUNplanner minimizes API calls by storing data locally in your browser. Data refreshes automatically at set intervals.",
+		"total": "{size} MB in {records} records",
 		"table": {
 			"storage": "Storage",
 			"records": "Records",
