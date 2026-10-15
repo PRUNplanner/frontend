@@ -52,7 +52,9 @@
 		"copy": "복사",
 		"add": "추가",
 		"fullscreen": "전체 화면 전환",
-		"edit": "편집"
+		"edit": "편집",
+		"show_all": "Show all ({n})",
+		"show_fewer": "Show fewer"
 	},
 	"ui": {
 		"placeholder": {
