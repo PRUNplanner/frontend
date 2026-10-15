@@ -40,7 +40,7 @@
 			"supply_cart": "Carrello per il Rifornimento",
 			"repair_analysis": "Analisi Riparazione",
 			"profit_breakdown": "Profit Breakdown",
-			"whatif": "What-if"
+			"plan_check": "Plan check"
 		},
 		"profit_breakdown": {
 			"title": "Profit Breakdown",
@@ -326,12 +326,70 @@
 			"empty": "No buildings yet. Add one above, or {link}",
 			"show": "start from a typical setup"
 		},
-		"whatif": {
-			"title": "What-if",
+		"plan_check": {
+			"title": "Plan check",
 			"view_label": "View",
 			"views": {
+				"market": "Market check",
 				"sensitivity": "Price sensitivity",
 				"compare": "Compare plans"
+			},
+			"market": {
+				"columns": {
+					"material": "Material",
+					"side": "Side",
+					"per_day": "Per day",
+					"share": "Share of daily volume, 30 days",
+					"traded": "Traded 30d",
+					"bid_ask": "Bid · ask ȼ",
+					"spread": "Spread",
+					"check": "Check"
+				},
+				"ok": "ok",
+				"share_label": "{ticker}: {share} of the daily volume",
+				"card_traded": "Traded 30d {traded} · bid {bid} · ask {ask}",
+				"card_side": "{side} {value}/d",
+				"more": "+ {n} more material, all ok | + {n} more materials, all ok",
+				"footnote": "Share = what the plan buys or sells per day ÷ average daily volume traded on {exchange} in the last 30 days. No trades in the last 7 days is flagged on its own.",
+				"marks": "10 % large share · 50 % bigger than the market",
+				"empty": "This plan doesn't buy or sell anything yet.",
+				"real": {
+					"title": "At real prices",
+					"subtitle": "Plan prices: {source}",
+					"plan_profit": "Plan profit",
+					"ask_bid": "Buying at ask, selling at bid",
+					"difference": "Difference",
+					"roi": "ROI at ask / bid",
+					"kept_zero": "{tickers} keeps its plan price: nobody offers or bids on it right now. | {tickers} keep their plan prices: nobody offers or bids on them right now.",
+					"kept_fallback": "{tickers} keeps its plan price: no exchange is set for it. | {tickers} keep their plan prices: no exchange is set for them.",
+					"kept_universe": "{tickers} keeps its plan price: the Universe average has no ask or bid. | {tickers} keep their plan prices: the Universe average has no ask or bid.",
+					"no_cx": "Set a CX preference to see the plan at real ask and bid prices."
+				},
+				"means": {
+					"title": "What this means",
+					"fine": "Every material fits its market.",
+					"red": "Can't trade as planned",
+					"amber": "Large share of the market",
+					"ok": "Fine",
+					"caveat": "CX volume only. Local markets, contracts and trades inside a corporation aren't counted.",
+					"help": "What do these checks mean?"
+				}
+			},
+			"target": {
+				"title": "Target price",
+				"subtitle": "Which price gives the profit you want? Other prices stay as they are.",
+				"material": "Material",
+				"target": "Target profit, ȼ/day",
+				"result_sell": "{ticker} has to sell at",
+				"result_buy": "{ticker} has to be bought at",
+				"unreachable": "This profit can't be reached by changing the {ticker} price.",
+				"today": "Plan price today",
+				"bid_ask": "{exchange} bid · ask now",
+				"range": "{exchange} range, last 30 days",
+				"range_error": "The 30-day range could not be loaded.",
+				"above": "{price} ȼ is above anything {exchange} paid in the last 30 days.",
+				"below": "{price} ȼ is below anything {exchange} paid in the last 30 days.",
+				"all_exchanges": "All exchanges"
 			},
 			"pct_label": "Change each price by",
 			"pct": "±{pct} %",
@@ -396,10 +454,11 @@
 					"planCost": "Plan cost",
 					"roi": "ROI",
 					"profitArea": "Profit / Area",
-					"area": "Area used"
+					"area": "Area used",
+					"payback": "Payback of the difference"
 				},
 				"bars_label": "This plan {a}, {name} {b}",
-				"footnote": "Difference = other plan minus this plan, coloured by what is better for you: lower cost and a shorter ROI count as good, area is neutral.",
+				"footnote": "Difference = other plan minus this plan, coloured by what is better for you: lower cost and a shorter ROI count as good, area is neutral. Payback of the difference = how many days the other plan's extra profit takes to pay for its extra build cost.",
 				"verdict": {
 					"title": "Verdict",
 					"same": "Both plans are the same.",
@@ -411,7 +470,9 @@
 					"trade": "{name} gains {gain} ȼ/day on {ticker} but loses {cost} ȼ/day on {tickers}.",
 					"gain": "{name} gains {gain} ȼ/day on {ticker}.",
 					"cost": "{name} loses {cost} ȼ/day on {tickers}.",
-					"and": "{a} and {b}"
+					"and": "{a} and {b}",
+					"payback": "Its extra {cost} ȼ build cost pays for itself in {days} days.",
+					"payback_never": "Its extra {cost} ȼ build cost never pays back."
 				},
 				"changes": {
 					"title": "What changes",
@@ -419,10 +480,16 @@
 					"none": "No material changes.",
 					"more": "+{n}",
 					"more_label": "{n} more material | {n} more materials",
-					"bar_label": "{ticker}: {value} ȼ/day"
+					"bar_label": "{ticker}: {value} ȼ/day",
+					"flag": "{ticker}: {name} would {side} {value} / day, {share} of what {exchange} trades."
 				},
 				"source_cx": "{name} is priced with its own CX preference, {cx}.",
-				"source_universe": "{name} is priced at the Universe 30-day average, it has no CX preference."
+				"source_universe": "{name} is priced at the Universe 30-day average, it has no CX preference.",
+				"payback": {
+					"formula": "{cost} ȼ more to build ÷ {profit} ȼ/day more profit",
+					"never": "never",
+					"never_formula": "{name} costs more to build and earns no more"
+				}
 			}
 		}
 	},
