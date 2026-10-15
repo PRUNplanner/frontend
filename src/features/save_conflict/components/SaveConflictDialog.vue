@@ -10,15 +10,10 @@
 
 	// Util
 	import { collapse } from "@/features/save_conflict/saveConflict.util";
-	import { cogcTextMapping } from "@/features/planning_data/usePlan";
-	import { factionOptions } from "@/features/empire/empire.constants";
+	import { changeLineText } from "@/features/save_conflict/changeLineText";
 
 	// Types & Interfaces
-	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
-	import type {
-		IChangeLine,
-		SaveConflictOption,
-	} from "@/features/save_conflict/saveConflict.types";
+	import type { SaveConflictOption } from "@/features/save_conflict/saveConflict.types";
 
 	// UI
 	import { PButton, PModal } from "@/ui";
@@ -39,56 +34,6 @@
 		() => props.conflict.options.value
 	);
 
-	// as the exchange selects name them, e.g. "UNIVERSE VWAP 30D"
-	function exchange(value: string | number): string {
-		return String(value)
-			.replace(/_(7D|30D)$/, " VWAP $1")
-			.replace("_", " ");
-	}
-
-	function faction(value: string | number): string {
-		return (
-			factionOptions.find((f) => f.value === value)?.label ??
-			String(value)
-		);
-	}
-
-	/**
-	 * A line in words: tickers stay, planets, programs, factions, experts
-	 * and workforces as the app names them elsewhere
-	 *
-	 * @param {IChangeLine} line Line
-	 * @returns {string} Text
-	 */
-	function text(line: IChangeLine): string {
-		const params: Record<string, string | number> = { ...line.params };
-
-		if (line.key === "cogc") {
-			params.from = t(cogcTextMapping[params.from as PlanCOGCProgram]);
-			params.to = t(cogcTextMapping[params.to as PlanCOGCProgram]);
-		} else if (line.key === "faction") {
-			params.from = faction(params.from);
-			params.to = faction(params.to);
-		} else if (line.key === "experts") {
-			params.label = t(
-				`game.expertise.${String(params.label).toUpperCase()}`
-			);
-		} else if (line.key.startsWith("lux_")) {
-			params.label = t(`game.workforce_type.${params.label}`);
-		} else if (line.key.startsWith("exchange")) {
-			params.from = exchange(params.from);
-			params.to = exchange(params.to);
-		}
-		if (params.planet)
-			params.planet = planetName(
-				String(params.planet),
-				String(params.planet)
-			);
-		if (params.type) params.type = t(`save_conflict.type.${params.type}`);
-
-		return t(`save_conflict.change.${line.key}`, params);
-	}
-
 	const sides = computed(() => {
 		const changes = props.conflict.changes.value;
 		if (!changes) return [];
@@ -103,7 +48,7 @@
 				title,
 				more,
 				lines: shown.map((line) => ({
-					text: text(line),
+					text: changeLineText(line, t, (id) => planetName(id, id)),
 					both: both.has(line.area),
 				})),
 			};

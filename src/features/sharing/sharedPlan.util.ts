@@ -2,6 +2,7 @@
 import { deepClone } from "@/util/data";
 import { formatNumber, formatPayback } from "@/util/numbers";
 import { diffPlan, type IPlanDiffable } from "@/features/planning_data/planDiff";
+import { changeLineText } from "@/features/save_conflict/changeLineText";
 
 // Types & Interfaces
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
@@ -130,18 +131,20 @@ export function buildingChanges(
  *
  * @param {ISharedSummaryInput} input Summary parts
  * @param t i18n translate
+ * @param {(id: string) => string} planetName Planet name of a natural id
  * @param {number} limit Maximum length
  * @returns {string} Summary
  */
 export function buildChangeSummary(
 	input: ISharedSummaryInput,
 	t: (key: string, params?: Record<string, string | number>) => string,
+	planetName: (id: string) => string = (id) => id,
 	limit: number = SUMMARY_LIMIT
 ): string {
 	const lineText = (line: IChangeLine): string =>
 		line.key === "recipe"
 			? t("sharing.changes.recipe", line.params)
-			: t(`save_conflict.change.${line.key}`, line.params);
+			: changeLineText(line, t, planetName);
 
 	const header: string = `**${input.name}** (${input.planet})`;
 	const lines: string[] = input.changes.map((l) => `- ${lineText(l)}`);

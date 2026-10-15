@@ -179,6 +179,43 @@ describe("buildChangeSummary", () => {
 		expect(text.endsWith("https://prunplanner.org/shared/abc")).toBe(true);
 	});
 
+	it("names programs, experts, workforces, exchanges and planets", () => {
+		const to = copy();
+		to.plan_cogc = "PIONEERS";
+		to.plan_data.experts[0].amount = 4;
+		to.plan_data.workforce[0].lux1 = false;
+		const changes = [
+			...diffPlan(copy(), to),
+			{
+				area: "exchange:SELL:KW-020c",
+				key: "exchange_planet",
+				params: {
+					type: "SELL",
+					planet: "KW-020c",
+					from: "NC1_ASK",
+					to: "CI1_30D",
+				},
+			},
+		];
+
+		const text = buildChangeSummary(input(changes), t, (id) =>
+			id === "KW-020c" ? "Milliways" : id
+		);
+
+		expect(text).toContain(
+			'save_conflict.change.cogc{"from":"game.cogc_program_short.ADVERTISING_RESOURCE_EXTRACTION{}","to":"game.cogc_program_short.WORKFORCE_PIONEERS{}"}'
+		);
+		expect(text).toContain(
+			'save_conflict.change.experts{"label":"game.expertise.AGRICULTURE{}","from":3,"to":4}'
+		);
+		expect(text).toContain(
+			'save_conflict.change.lux_off{"label":"game.workforce_type.pioneer{}","n":1}'
+		);
+		expect(text).toContain(
+			'save_conflict.change.exchange_planet{"type":"save_conflict.type.SELL{}","planet":"Milliways","from":"NC1 ASK","to":"CI1 VWAP 30D"}'
+		);
+	});
+
 	it("leaves a short summary whole", () => {
 		const text = buildChangeSummary(input(), t);
 		expect(text).not.toContain("sharing.changes.more");
