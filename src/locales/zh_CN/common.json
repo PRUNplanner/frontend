@@ -52,7 +52,9 @@
 		"copy": "复制",
 		"add": "添加",
 		"fullscreen": "切换全屏",
-		"edit": "编辑"
+		"edit": "编辑",
+		"show_all": "Show all ({n})",
+		"show_fewer": "Show fewer"
 	},
 	"ui": {
 		"placeholder": {
