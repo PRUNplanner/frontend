@@ -684,7 +684,7 @@
 						class="px-1.5 pt-2.5 pb-2 align-bottom border-b border-l border-b-white/10 border-l-white/5">
 						<div class="flex flex-col items-center gap-1">
 							<div
-								class="max-w-full truncate text-[13px] font-bold"
+								class="max-w-full truncate text-sm font-bold"
 								:title="e.empireName">
 								{{ e.empireName }}
 							</div>

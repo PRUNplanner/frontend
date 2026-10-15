@@ -44,7 +44,7 @@
 			v-else
 			class="size-5.5 rounded-sm border border-positive/50 bg-unsaved-stripes" />
 		<div class="grow flex flex-wrap items-baseline gap-x-4" role="status">
-			<span class="font-medium text-[15px]">
+			<span class="font-medium text-base">
 				<template v-if="state === 'error'">
 					{{ $t("management.save_bar.error") }}
 				</template>
