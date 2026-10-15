@@ -49,6 +49,7 @@
 	"storage_data": {
 		"title": "浏览器存储",
 		"description": "PRUNplanner 会将数据本地存储在浏览器中，以减少 API 调用。数据会按设定间隔自动刷新。",
+		"total": "{size} MB in {records} records",
 		"table": {
 			"storage": "存储",
 			"records": "记录",
