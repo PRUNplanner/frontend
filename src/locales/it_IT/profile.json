@@ -49,6 +49,7 @@
 	"storage_data": {
 		"title": "Memoria Del Browser",
 		"description": "PRUNplanner minimizza le chiamate API memorizzando i dati localmente nel tuo browser. I dati si aggiornano automaticamente a intervalli impostati.",
+		"total": "{size} MB in {records} records",
 		"table": {
 			"storage": "Memoria",
 			"records": "Record",
