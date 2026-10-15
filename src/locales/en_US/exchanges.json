@@ -68,5 +68,56 @@
 		"fixed_all": "Fixed · all planets",
 		"fixed_planet": "Fixed · this planet",
 		"unresolved": "No price data"
+	},
+	"rule": {
+		"title": "Exchange price",
+		"presets_on": "Presets on {exchange}:",
+		"preset_average": "Average · VWAP 30D",
+		"preset_trade_now": "Trade now · buy Ask, sell Bid",
+		"preset_trade_now_universe": "Universe has no order book, so no Ask or Bid. Pick an exchange first.",
+		"mode_label": "How buy and sell prices are set",
+		"mode": {
+			"inherit": "Use all-planets rule",
+			"same": "Same for buy and sell",
+			"separate": "Separate buy and sell"
+		},
+		"side": {
+			"both": "Both",
+			"buy": "Buy",
+			"sell": "Sell"
+		},
+		"exchange_label": "Exchange for {side}",
+		"basis_label": "Price basis for {side}",
+		"not_set": "Not set",
+		"inherited": "Uses the all-planets rule:",
+		"inherited_part": "{type} {rule}",
+		"inherited_none": "none set, Universe · VWAP 30D",
+		"help": "Ask and Bid are today's order book; VWAP is the traded average. A material the chosen exchange has no price for counts as 0 ȼ; the notes list them."
+	},
+	"fixed": {
+		"title": "Fixed prices",
+		"hint": "Leave a side empty to use the exchange price.",
+		"material": "Material",
+		"buy": "Buy ȼ",
+		"sell": "Sell ȼ",
+		"market": "Market",
+		"cogm": "COGM in your plans",
+		"actions": "Actions",
+		"exchange_placeholder": "exchange",
+		"buy_label": "Fixed buy price for {ticker}",
+		"sell_label": "Fixed sell price for {ticker}",
+		"made_in": "made in {n} plan | made in {n} plans",
+		"in_use": "in use",
+		"use": "Use",
+		"remove": "Remove {ticker}",
+		"inherited": "All-planets price",
+		"override": "Override",
+		"empty": "No fixed prices. Plans use the exchange price.",
+		"search": "Search material",
+		"sort": "Sort by",
+		"sort_material": "Material",
+		"sort_diff": "% vs market",
+		"add_select": "Material",
+		"add": "Add material"
 	}
 }
