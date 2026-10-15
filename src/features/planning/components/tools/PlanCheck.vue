@@ -215,9 +215,7 @@
 					{{ t(`plan.tools.plan_check.views.${v}`) }}
 				</PButton>
 			</PButtonGroup>
-			<HelpDrawer
-				file-name="plan_check"
-				:drawer-title="t('plan.tools.plan_check.title')" />
+			<HelpDrawer file-name="plan" />
 			<div
 				v-if="shownView === 'sensitivity'"
 				class="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1">

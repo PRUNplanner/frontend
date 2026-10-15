@@ -595,10 +595,9 @@
 						{{ t("plan.tools.plan_check.market.means.caveat") }}
 					</p>
 					<HelpDrawer
-						file-name="plan_check"
+						file-name="plan"
 						button-size="sm"
 						button-class="self-start"
-						:drawer-title="t('plan.tools.plan_check.title')"
 						:button-title="
 							t('plan.tools.plan_check.market.means.help')
 						" />
