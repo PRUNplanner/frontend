@@ -490,6 +490,7 @@
 				</PButtonGroup>
 			</div>
 			<CXFixedPriceTable
+				:key="scope"
 				v-model:prices="scopePrices"
 				:inherited="scope === ALL_PLANETS ? [] : edit.ticker_empire"
 				:cogms="scope === ALL_PLANETS ? cogms : undefined"

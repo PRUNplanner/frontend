@@ -9,6 +9,7 @@ import {
 import { debounce } from "lodash-es";
 
 // Composables
+import { useQuery } from "@/lib/query_cache/useQuery";
 import {
 	getActiveEmpire,
 	usePlanContext,
@@ -102,6 +103,17 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 			const gameData = await loadGameData();
 			const result: IExchangePlanBase[] = [];
 
+			// planets of plans no other page loaded yet, like the Empire page
+			const planets = [
+				...new Set(todo.map((i) => plans.get(i.uuid)!.planet_natural_id)),
+			].sort();
+			if (planets.length)
+				await useQuery("GetMultiplePlanets", {
+					planetNaturalIds: planets,
+				})
+					.execute()
+					.catch(console.error);
+
 			for (const item of todo) {
 				if (current !== run) return;
 				const plan = plans.get(item.uuid)!;
@@ -115,34 +127,39 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 
 				let base = cache.get(key);
 				if (!base) {
-					const calculation = calculatePlan(
-						{
-							plan,
-							empire,
-							cxUuid: undefined,
-							recipeOptions: false,
-						},
-						await createContext(
-							gameData,
-							plan.planet_natural_id,
-							undefined
-						)
-					);
-					base = toPlanBase(
-						{
-							planUuid: plan.uuid,
-							planName: plan.plan_name ?? "",
-							planet: plan.planet_natural_id,
-							empireUuid: item.empireUuid,
-							linked: item.linked,
-						},
-						calculation
-					);
-					cache.set(key, base);
-					// yield back to Vue so the page stays usable
-					await new Promise((r) => setTimeout(r, 0));
+					try {
+						const calculation = calculatePlan(
+							{
+								plan,
+								empire,
+								cxUuid: undefined,
+								recipeOptions: false,
+							},
+							await createContext(
+								gameData,
+								plan.planet_natural_id,
+								undefined
+							)
+						);
+						base = toPlanBase(
+							{
+								planUuid: plan.uuid,
+								planName: plan.plan_name ?? "",
+								planet: plan.planet_natural_id,
+								empireUuid: item.empireUuid,
+								linked: item.linked,
+							},
+							calculation
+						);
+						cache.set(key, base);
+						// yield back to Vue so the page stays usable
+						await new Promise((r) => setTimeout(r, 0));
+					} catch (err) {
+						// e.g. its planet failed to load: skip this plan only
+						console.error(err);
+					}
 				}
-				result.push({ ...base, linked: item.linked });
+				if (base) result.push({ ...base, linked: item.linked });
 				progressCurrent.value++;
 			}
 

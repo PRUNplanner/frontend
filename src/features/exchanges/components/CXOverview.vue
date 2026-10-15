@@ -162,7 +162,7 @@
 		if (!isWide.value)
 			return [
 				material,
-				{ key: "source", title: t("exchanges.overview.columns.source") },
+				// the source sits under the price, a third column won't fit
 				{
 					key: "price",
 					title: t(
@@ -303,6 +303,7 @@
 						<PButton
 							v-for="f in FILTERS"
 							:key="f"
+							class="min-w-11"
 							:pressed="filter === f"
 							@click="filter = f">
 							{{ $t(`exchanges.overview.filter.${f}`) }}
@@ -327,6 +328,7 @@
 						v-for="s in ['BUY', 'SELL'] as const"
 						:key="s"
 						size="sm"
+						class="min-w-11"
 						:pressed="phoneSide === s"
 						@click="phoneSide = s">
 						{{ $t(`exchanges.overview.side.${s}`) }}
@@ -352,9 +354,19 @@
 						</span>
 					</template>
 					<template #cell-price="{ row }">
-						<span class="tabular-nums text-nowrap">
-							{{ priceText(sideOf(row, phoneSide)) }}
-						</span>
+						<div class="flex flex-col items-end gap-1">
+							<span class="tabular-nums text-nowrap">
+								{{ priceText(sideOf(row, phoneSide)) }}
+							</span>
+							<PTag
+								v-if="sideOf(row, phoneSide)?.varies"
+								size="sm"
+								type="secondary"
+								:value="$t('exchanges.overview.varies')" />
+							<CXSourceTag
+								v-else-if="sideOf(row, phoneSide)"
+								:source="sideOf(row, phoneSide)!.planets[0].source" />
+						</div>
 					</template>
 					<template #cell-buy_source="{ row }">
 						<PTag
@@ -375,16 +387,6 @@
 						<CXSourceTag
 							v-else-if="row.sell"
 							:source="row.sell.planets[0].source" />
-					</template>
-					<template #cell-source="{ row }">
-						<PTag
-							v-if="sideOf(row, phoneSide)?.varies"
-							size="sm"
-							type="secondary"
-							:value="$t('exchanges.overview.varies')" />
-						<CXSourceTag
-							v-else-if="sideOf(row, phoneSide)"
-							:source="sideOf(row, phoneSide)!.planets[0].source" />
 					</template>
 					<template #cell-planets="{ row }">
 						{{ names(row.planets) }}

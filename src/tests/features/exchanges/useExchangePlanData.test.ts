@@ -4,6 +4,7 @@ import { flushPromises } from "@vue/test-utils";
 
 import { useExchangePlanData } from "@/features/exchanges/useExchangePlanData";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Types & Interfaces
 import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
@@ -22,12 +23,24 @@ vi.mock("@/database/services/usePlanetData", async () => {
 	);
 	return {
 		usePlanetData: vi.fn(() => ({
-			getPlanet: vi.fn().mockResolvedValue(planet_etherwind),
+			// XX-000x never loads
+			getPlanet: vi.fn((id: string) =>
+				id === "XX-000x"
+					? Promise.reject(new Error(`Planet ${id} not available.`))
+					: Promise.resolve(planet_etherwind)
+			),
 			getPlanetSpecialMaterials:
 				actual.usePlanetData().getPlanetSpecialMaterials,
 		})),
 	};
 });
+
+const { execute } = vi.hoisted(() => ({
+	execute: vi.fn(async () => []),
+}));
+vi.mock("@/lib/query_cache/useQuery", () => ({
+	useQuery: vi.fn(() => ({ execute })),
+}));
 
 vi.mock("@/features/planning/engine/calculatePlan", async () => {
 	const actual: any = await vi.importActual(
@@ -124,6 +137,46 @@ describe("useExchangePlanData", () => {
 		for (const c of data.materialCOGMs.value.values())
 			expect(c.entries.every((e) => e.planUuid === linked.uuid)).toBe(true);
 
+		scope.stop();
+	});
+
+	it("loads the plans' planets and skips only a plan that fails", async () => {
+		vi.mocked(useQuery).mockClear();
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const broken = {
+			...etherwindPlan(),
+			uuid: "8b0e6b1c-0000-4000-8000-000000000003",
+			planet_natural_id: "XX-000x",
+		};
+		const both = {
+			...cx,
+			empires: [
+				{
+					...empires[0],
+					plans: [{ uuid: linked.uuid }, { uuid: broken.uuid }],
+				},
+			],
+		} as unknown as CX;
+
+		const scope = effectScope();
+		const data = scope.run(() =>
+			useExchangePlanData({
+				plans: () => [linked, broken],
+				empires: () => empires,
+				cx: () => both,
+				cxData: () => universe,
+				includeOthers: () => false,
+			})
+		)!;
+		await settle();
+
+		expect(useQuery).toHaveBeenCalledWith("GetMultiplePlanets", {
+			planetNaturalIds: [linked.planet_natural_id, "XX-000x"].sort(),
+		});
+		expect(data.bases.value.map((b) => b.planUuid)).toEqual([linked.uuid]);
+		expect(data.isCalculating.value).toBe(false);
+
+		error.mockRestore();
 		scope.stop();
 	});
 });

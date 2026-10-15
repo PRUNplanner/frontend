@@ -220,7 +220,7 @@
 						:key="row.ticker"
 						class="child:py-1.5 child:pr-3 border-b border-white/5">
 						<td><MaterialTile :ticker="row.ticker" /></td>
-						<td class="w-28" :data-buy="row.ticker">
+						<td class="w-28 min-w-24" :data-buy="row.ticker">
 							<PInputNumber
 								decimals
 								size="sm"
@@ -234,7 +234,7 @@
 								"
 								@update:value="(v) => setSide(row, 'buy', v ?? null)" />
 						</td>
-						<td class="w-28">
+						<td class="w-28 min-w-24">
 							<PInputNumber
 								decimals
 								size="sm"
