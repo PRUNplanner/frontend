@@ -52,7 +52,7 @@
 					<router-link
 						:to="`/plan/${row.planetId}/${row.planUuid}`"
 						:title="row.planName"
-						class="text-link-primary font-bold hover:underline truncate">
+						class="text-link-primary font-bold leading-6 hover:underline truncate">
 						{{ row.planName }}
 					</router-link>
 					<span

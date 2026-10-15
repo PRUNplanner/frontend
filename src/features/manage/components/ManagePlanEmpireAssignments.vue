@@ -501,7 +501,7 @@
 						:aria-sort="sortAsc ? 'ascending' : 'descending'">
 						<button
 							type="button"
-							class="flex items-center gap-1.5 font-bold cursor-pointer"
+							class="flex items-center gap-1.5 min-h-6 font-bold cursor-pointer"
 							@click="sortAsc = !sortAsc">
 							{{ $t("management.assignments.table.plan") }}
 							<PIcon :size="14" class="text-muted">
