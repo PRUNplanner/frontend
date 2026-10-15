@@ -75,7 +75,7 @@
 <template>
 	<div class="h-dvh flex flex-col overflow-hidden">
 		<div
-			class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3 shrink-0">
+			class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-x-3 gap-y-2 shrink-0">
 			<h1 class="text-2xl font-bold">{{ $t("market_live.title") }}</h1>
 			<div>
 				<div class="flex flex-row gap-x-3 child:my-auto">

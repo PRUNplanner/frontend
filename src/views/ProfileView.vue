@@ -23,7 +23,7 @@
 		<template #default>
 			<div class="min-h-screen flex flex-col">
 				<div
-					class="px-6 py-3 border-b border-white/10 flex flex-row justify-between">
+					class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap gap-x-6 gap-y-2 justify-between">
 					<h1 class="text-2xl font-bold">
 						{{ $t("profile.title") }}
 					</h1>
