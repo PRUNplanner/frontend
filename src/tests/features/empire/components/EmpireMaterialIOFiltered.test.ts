@@ -303,6 +303,17 @@ describe("EmpireMaterialIOFiltered market check", () => {
 		expect(
 			twice.find("[data-market-chips] [data-level=red]").exists()
 		).toBe(true);
+
+		// all exchanges together: volume, but no order book to quote
+		await twice.find("tbody [data-market-flag]").trigger("click");
+		await flushPromises();
+		const popover = document.body.querySelector("[role=dialog]");
+		expect(popover?.textContent).toContain(
+			"cx.market_flags.popover.empire_share"
+		);
+		expect(popover?.textContent).not.toContain(
+			"cx.market_flags.popover.bid_ask"
+		);
 	});
 
 	it("filters the table by a flag chip and shows it pressed", async () => {

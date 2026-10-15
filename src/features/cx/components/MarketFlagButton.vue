@@ -112,7 +112,7 @@
 			<dl class="flex flex-col divide-y divide-white/10">
 				<div class="flex justify-between gap-3 py-1">
 					<dt class="text-muted-strong">{{ side }}</dt>
-					<dd class="font-bold tabular-nums">
+					<dd class="font-bold tabular-nums whitespace-nowrap">
 						{{
 							t("cx.market_flags.popover.per_day", {
 								value: formatNumber(Math.abs(check.delta)),
@@ -124,7 +124,7 @@
 					<dt class="text-muted-strong">
 						{{ t("cx.market_flags.popover.traded", { exchange }) }}
 					</dt>
-					<dd class="font-bold tabular-nums text-right">
+					<dd class="font-bold tabular-nums text-right whitespace-nowrap">
 						{{
 							t("cx.market_flags.popover.traded_value", {
 								total: formatNumber(check.traded30d, 0),
@@ -144,7 +144,7 @@
 						}}
 					</dt>
 					<dd
-						class="font-bold tabular-nums"
+						class="font-bold tabular-nums whitespace-nowrap"
 						:class="
 							check.flags.some(
 								(f) => f === 'bigger' || f === 'large_share'
@@ -166,23 +166,28 @@
 						v-for="p in planShares"
 						:key="p.name"
 						class="flex justify-between gap-3">
-						<span class="truncate">{{ p.name }}</span>
-						<span class="tabular-nums">
+						<span class="truncate min-w-0" :title="p.name">
+							{{ p.name }}
+						</span>
+						<span class="shrink-0 tabular-nums whitespace-nowrap">
 							{{ formatShare(p.sharePct) }}
 						</span>
 					</div>
 				</div>
-				<div class="flex justify-between gap-3 py-1">
+				<!-- all exchanges together have volume but no order book -->
+				<div
+					v-if="check.exchange !== 'UNIVERSE'"
+					class="flex justify-between gap-3 py-1">
 					<dt class="text-muted-strong">
 						{{ t("cx.market_flags.popover.bid_ask") }}
 					</dt>
 					<dd class="tabular-nums text-right">
-						<span class="font-bold">
+						<span class="font-bold whitespace-nowrap">
 							{{ price(check.bid) }} · {{ price(check.ask) }}
 						</span>
 						<span
 							v-if="check.spreadPct !== null"
-							class="text-muted-strong">
+							class="text-muted-strong whitespace-nowrap">
 							({{
 								t("cx.market_flags.popover.spread", {
 									spread: formatNumber(check.spreadPct, 0),
