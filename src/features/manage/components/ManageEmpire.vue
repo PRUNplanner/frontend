@@ -307,7 +307,7 @@
 				: 'opacity-100'
 		"
 		class="transition-all duration-500 border-t border-b border-white/10">
-		<div class="flex gap-x-3 pt-3 w-1/2 min-w-100">
+		<div class="flex gap-x-3 pt-3 w-full sm:w-1/2 sm:min-w-100">
 			<div class="grow">
 				<PForm>
 					<PFormItem :label="t('management.empire.form.empire_name')">
