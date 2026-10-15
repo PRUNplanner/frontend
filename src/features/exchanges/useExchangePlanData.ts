@@ -100,25 +100,29 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 		progressCurrent.value = 0;
 
 		try {
-			// buildings and recipes may not be cached yet on a direct visit;
-			// cached queries, so a no-op once another page loaded them
-			await Promise.all([
-				useQuery("GetBuildings").execute(),
-				useQuery("GetRecipes").execute(),
-			]).catch(console.error);
-			const gameData = await loadGameData();
-			const result: IExchangePlanBase[] = [];
-
-			// planets of plans no other page loaded yet, like the Empire page
+			// a direct visit may have no game data cached yet, and the page's
+			// own loaders may still be fetching: wait for everything the
+			// engine reads. Cached queries, a no-op once loaded.
 			const planets = [
 				...new Set(todo.map((i) => plans.get(i.uuid)!.planet_natural_id)),
 			].sort();
+			const loads: Promise<unknown>[] = [
+				useQuery("GetMaterials").execute(),
+				useQuery("GetExchanges").execute(),
+				useQuery("GetBuildings").execute(),
+				useQuery("GetRecipes").execute(),
+			];
 			if (planets.length)
-				await useQuery("GetMultiplePlanets", {
-					planetNaturalIds: planets,
-				})
-					.execute()
-					.catch(console.error);
+				loads.push(
+					useQuery("GetMultiplePlanets", {
+						planetNaturalIds: planets,
+					}).execute()
+				);
+			// one failed load only costs the plans that need it
+			await Promise.all(loads.map((l) => l.catch(console.error)));
+
+			const gameData = await loadGameData();
+			const result: IExchangePlanBase[] = [];
 
 			for (const item of todo) {
 				if (current !== run) return;

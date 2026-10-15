@@ -170,6 +170,8 @@ describe("useExchangePlanData", () => {
 		)!;
 		await settle();
 
+		expect(useQuery).toHaveBeenCalledWith("GetMaterials");
+		expect(useQuery).toHaveBeenCalledWith("GetExchanges");
 		expect(useQuery).toHaveBeenCalledWith("GetBuildings");
 		expect(useQuery).toHaveBeenCalledWith("GetRecipes");
 		expect(useQuery).toHaveBeenCalledWith("GetMultiplePlanets", {
@@ -179,6 +181,40 @@ describe("useExchangePlanData", () => {
 		expect(data.isCalculating.value).toBe(false);
 
 		error.mockRestore();
+		scope.stop();
+	});
+
+	it("waits for game data still loading before calculating", async () => {
+		vi.mocked(calculatePlan).mockClear();
+		let release!: () => void;
+		const slow = new Promise<never[]>((r) => (release = () => r([])));
+		// materials arrive late, e.g. after a token refresh
+		vi.mocked(useQuery).mockImplementation(((name: string) => ({
+			execute: name === "GetMaterials" ? () => slow : execute,
+		})) as never);
+
+		const scope = effectScope();
+		const data = scope.run(() =>
+			useExchangePlanData({
+				plans: () => [linked],
+				empires: () => empires,
+				cx: () => cx,
+				cxData: () => universe,
+				includeOthers: () => false,
+			})
+		)!;
+		await settle();
+		expect(calculatePlan).not.toHaveBeenCalled();
+		expect(data.isCalculating.value).toBe(true);
+
+		release();
+		await settle();
+		expect(calculatePlan).toHaveBeenCalledTimes(1);
+		expect(data.bases.value.map((b) => b.planUuid)).toEqual([linked.uuid]);
+
+		vi.mocked(useQuery).mockImplementation(
+			(() => ({ execute })) as never
+		);
 		scope.stop();
 	});
 });

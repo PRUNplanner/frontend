@@ -57,10 +57,11 @@ folder never changes a price result.
 - A matching exchange rule whose exchange has no value prices the
   material at 0 ȼ (no fall-through). The page shows it as a warning note,
   in the price tables and in the cascade.
-- `useExchangePlanData` fetches buildings, recipes and the plans'
-  planets itself (cached queries) instead of a `WrapperGameDataLoader`
-  gate, so a direct visit with an empty cache works and only the price
-  table waits.
+- `useExchangePlanData` waits for materials, exchanges, buildings,
+  recipes and the plans' planets itself (cached queries, joining a
+  loader's request in flight) instead of a `WrapperGameDataLoader` gate,
+  so a direct visit with an empty cache works and only the price table
+  waits.
 - Saving keeps every stored planet entry the player didn't remove, also
   planets no plan uses any more (listed under "Not in any plan").
 - Saving a CX changes `planningStore.cxs`, which makes every mounted
