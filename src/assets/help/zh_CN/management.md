@@ -6,6 +6,8 @@ PRUNplanner 由三个主要组件组成，帮助你规划并管理 Prosperous Un
 
 规划是 PRUNplanner 中一切内容的核心。它们包含你可以在 Prosperous Universe 中建立的一个基地的所有建筑、生产和加成。你可以通过搜索想要建立基地的行星来创建新规划。此外，规划还应分配一个商品交易所偏好设置，并归属于一个帝国。请注意，每份规划都可以分配给多个帝国，因此可以重复使用。
 
+To delete several Plans at once, tick them in the Plan ↔ Empire Assignments table and press "Delete selected…". The box in the table header ticks every Plan the search and filters show, for example all unassigned ones.
+
 ## 帝国
 
 帝国是一组规划的集合（例如你当前已在 Prosperous Universe 中建立的所有基地，或你未来想建立并相互连接的基地)。每个帝国都像一个容器，包含多份规划。此外，每个帝国都可以分配一个 CX 交易所偏好设置。
