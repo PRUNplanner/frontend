@@ -574,7 +574,7 @@
 			</table>
 		</div>
 		<PPagination
-			v-if="pageSize"
+			v-if="pageSize && pageCount > 1"
 			:page="currentPage"
 			:page-count="pageCount"
 			@update:page="(p: number) => (page = p)" />
