@@ -49,6 +49,7 @@
 	"storage_data": {
 		"title": "Browser-Speicher",
 		"description": "PRUNplanner minimiert API-Aufrufe, indem Daten lokal in deinem Browser gespeichert werden.",
+		"total": "{size} MB in {records} records",
 		"table": {
 			"storage": "Speicher",
 			"records": "Datensätze",
