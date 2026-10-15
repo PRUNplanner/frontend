@@ -1,0 +1,67 @@
+{
+	"market_flags": {
+		"flags": {
+			"no_price": "No price",
+			"no_trades": "No trades in 7 days",
+			"no_offers": "No offers",
+			"no_buyers": "No buyers",
+			"bigger": "Bigger than the market",
+			"large_share": "Large share of the market",
+			"all_exchanges": "All exchanges, no exchange set",
+			"stale": "Data older than 2 days"
+		},
+		"title": "{ticker}: {flag}",
+		"popover": {
+			"you_sell": "You sell",
+			"you_buy": "You buy",
+			"empire_sells": "The empire sells",
+			"empire_buys": "The empire buys",
+			"per_day": "{value} / day",
+			"traded": "Traded on {exchange}, last 30 days",
+			"traded_value": "{total} ({daily} / day)",
+			"share": "Your share of that",
+			"empire_share": "Empire share",
+			"bid_ask": "Bid · ask",
+			"spread": "{spread} % spread",
+			"none": "—",
+			"caveat": "CX volume only. Sales on local markets or by contract aren't counted.",
+			"open": "Open Plan check →"
+		},
+		"all_exchanges": "all exchanges",
+		"summary": {
+			"red": "{n} material can't trade as planned | {n} materials can't trade as planned",
+			"amber": "{n} is a large share of its market | {n} are a large share of their market",
+			"link": "Plan check →"
+		},
+		"exchange": {
+			"one": "Exchange {exchange}",
+			"many": "Exchanges {exchange}",
+			"all": "All exchanges",
+			"from_plan": "from the plan's CX preference",
+			"from_empire": "from the empire's CX preference",
+			"no_cx": "no CX preference set",
+			"set_cx": "Set one"
+		},
+		"means": {
+			"no_price": "The plan has no price for {ticker}, so it counts it at 0 ȼ.",
+			"no_trades": "Nobody traded {ticker} on {exchange} in the last 7 days.",
+			"no_offers": "Nobody offers {ticker} on {exchange} right now.",
+			"no_buyers": "Nobody bids for {ticker} on {exchange} right now.",
+			"bigger_sell": "You'd sell {share} of what {exchange} trades in {ticker}. Expect to wait for buyers or sell below the bid.",
+			"bigger_buy": "You'd buy {share} of what {exchange} trades in {ticker}. Expect to wait for sellers or pay above the ask.",
+			"large_share_sell": "You'd sell {share} of what {exchange} trades in {ticker}, enough to move its price.",
+			"large_share_buy": "You'd buy {share} of what {exchange} trades in {ticker}, enough to move its price."
+		},
+		"empire": {
+			"title": "Market check on the empire's net flow",
+			"chip": {
+				"red": "{n} can't trade as planned",
+				"amber": "{n} large share of the market",
+				"muted": "{n} other note | {n} other notes"
+			},
+			"filter_label": "Show only flagged materials",
+			"net_note": "Materials made and used inside the empire net out, so they are only flagged on what reaches the market. Each plan's own Material I/O still flags them.",
+			"plan_shares": "Each plan's share"
+		}
+	}
+}
