@@ -61,7 +61,7 @@
 				</div>
 			</template>
 			<template #cell-bid="{ row }">
-				<div class="font-mono text-sky-500">
+				<div class="font-mono text-sky-500 text-nowrap">
 					<span v-if="row.bid">
 						{{ formatNumber(row.bid) }}
 					</span>
@@ -69,7 +69,7 @@
 				</div>
 			</template>
 			<template #cell-ask="{ row }">
-				<div class="font-mono text-negative">
+				<div class="font-mono text-negative text-nowrap">
 					<span v-if="row.ask">
 						{{ formatNumber(row.ask) }}
 					</span>
@@ -77,7 +77,7 @@
 				</div>
 			</template>
 			<template #cell-spread_pct="{ row }">
-				<div class="font-mono">
+				<div class="font-mono text-nowrap">
 					<span v-if="row.spread_pct">
 						{{ formatNumber(row.spread_pct, 2) }}
 					</span>
