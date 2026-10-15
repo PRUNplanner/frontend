@@ -145,7 +145,7 @@
 				</PButton>
 		</template>
 		<template #cell-planet="{ row }">
-				{{ planetName(row.planet) }}
+				<span class="text-nowrap">{{ planetName(row.planet) }}</span>
 		</template>
 		<template #cell-exchanges="{ row }">
 				<div class="flex flex-col gap-y-1">
