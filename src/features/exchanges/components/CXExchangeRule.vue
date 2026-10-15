@@ -62,6 +62,11 @@
 			}
 	);
 	const presetCX = computed(() => presetExchange(rules.value, inherited));
+	const presetLabel = computed(() =>
+		presetCX.value === "UNIVERSE"
+			? t("exchanges.labels.universe")
+			: presetCX.value
+	);
 
 	const modes = computed<ExchangeRuleMode[]>(() =>
 		isPlanet ? ["inherit", "same", "separate"] : ["same", "separate"]
@@ -149,7 +154,7 @@
 			</h3>
 			<div class="flex flex-wrap items-center gap-2">
 				<span class="text-muted text-sm">
-					{{ $t("exchanges.rule.presets_on", { exchange: presetCX }) }}
+					{{ $t("exchanges.rule.presets_on", { exchange: presetLabel }) }}
 				</span>
 				<PButton type="secondary" size="sm" @click="applyPreset('average')">
 					{{ $t("exchanges.rule.preset_average") }}

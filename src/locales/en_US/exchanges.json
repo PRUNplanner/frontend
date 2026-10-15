@@ -119,5 +119,148 @@
 		"sort_diff": "% vs market",
 		"add_select": "Material",
 		"add": "Add material"
+	},
+	"header": {
+		"import": "Import CSV",
+		"export": "Export CSV",
+		"more": "More actions",
+		"rename": "Rename…",
+		"manage": "Manage preferences",
+		"rename_title": "Rename preference",
+		"name": "Name",
+		"apply": "Apply"
+	},
+	"csv": {
+		"confirm_title": "Replace all rules?",
+		"confirm": "Replace all rules in {preference} with {exchanges} and {fixed} from {file}? Nothing is saved until you save.",
+		"exchange_rules": "no exchange rules | 1 exchange rule | {n} exchange rules",
+		"fixed_prices": "no fixed prices | 1 fixed price | {n} fixed prices",
+		"replace": "Replace",
+		"error": "Couldn't import {file}: {reason}"
+	},
+	"switch": {
+		"label": "Switch Preference",
+		"used_by": "Used by {empires} · assign in {management}",
+		"unused": "Not used by any empire · assign in {management}",
+		"management": "Management",
+		"confirm_title": "Discard unsaved changes?",
+		"confirm": "{preference} has unsaved changes. Switching discards them.",
+		"discard": "Discard and switch",
+		"keep": "Keep editing"
+	},
+	"scopes": {
+		"label": "Rules for",
+		"overview": "Overview",
+		"overview_hint": "Prices your plans use",
+		"all": "All planets",
+		"all_hint": "Home exchange and fixed prices",
+		"own": "Planets with their own rules",
+		"inherit": "Using all-planets rules",
+		"others": "Planets of other empires",
+		"show_others": "Show planets from other empires ({n})",
+		"hide_others": "Hide planets from other empires",
+		"unplanned": "Not in any plan",
+		"delete": "Delete the rules of {planet}"
+	},
+	"overview": {
+		"title": "Overview",
+		"description": "Every material your plans buy or sell, the price it gets, and the rule behind it. Includes unsaved changes.",
+		"summary": {
+			"all": "All planets",
+			"own": "Planets with own rules",
+			"own_value": "{n} of {m}",
+			"fixed": "Fixed prices",
+			"notes": "Notes"
+		},
+		"prices_title": "Prices your plans use",
+		"search": "Search material",
+		"filter_label": "Show materials",
+		"filter": {
+			"all": "All",
+			"fixed": "Fixed",
+			"no_price": "No price (0 ȼ)",
+			"varies": "Varies by planet"
+		},
+		"side_label": "Price side",
+		"side": {
+			"BUY": "Buy",
+			"SELL": "Sell"
+		},
+		"columns": {
+			"material": "Material",
+			"buy": "Buy ȼ",
+			"sell": "Sell ȼ",
+			"price": "Price ȼ",
+			"source": "Source",
+			"used_on": "Used on"
+		},
+		"varies": "varies by planet",
+		"calculating": "Calculating your plans…",
+		"empty": "No plan of an empire using this preference buys or sells anything yet.",
+		"no_match": "No material matches.",
+		"expand": "Show how the price of {ticker} is set",
+		"side_planet": "{side} · {planet}"
+	},
+	"ladder": {
+		"planet_ticker": "Planet fixed price",
+		"empire_ticker": "All-planets fixed price",
+		"planet_exchange": "Planet exchange",
+		"empire_exchange": "All-planets exchange",
+		"fallback": "Universe · VWAP 30D",
+		"no_price": "no price · {value}",
+		"unresolved": "No exchange has data for this material.",
+		"open": "Open the rule"
+	},
+	"rules": {
+		"all_title": "All planets",
+		"all_description": "Your home exchange and fixed prices. They apply to every planet of every empire that uses this preference.",
+		"planet_description": "An exception for this planet. Its rules win over all-planets rules here, except all-planets fixed prices, which still win over this planet's exchange.",
+		"unplanned": "No plan uses this planet. Its rules stay saved until you delete them.",
+		"delete": "Delete rules",
+		"side": "Side",
+		"prices_on": "Prices on {planet}",
+		"prices_on_hint": "From this planet's plans",
+		"prices_empty": "No plan on this planet buys or sells anything."
+	},
+	"notes": {
+		"open": "Open",
+		"use_cogm": "Use COGM",
+		"side": {
+			"BUY": "buy",
+			"SELL": "sell"
+		},
+		"exchange_gap": {
+			"title": "{rule} has no {side} price for {tickers}",
+			"detail": "{planets} counts it as 0 ȼ. Set a fixed price or pick another exchange or basis. | {planets} count it as 0 ȼ. Set a fixed price or pick another exchange or basis."
+		},
+		"no_price": {
+			"title": "{tickers} has no price on any exchange",
+			"detail": "{planets} counts it as 0 ȼ. Set a fixed price if you know one. | {planets} count it as 0 ȼ. Set a fixed price if you know one."
+		},
+		"fixed_zero": {
+			"title_all": "{tickers} is fixed at 0 ȼ on all planets",
+			"title_planet": "{tickers} is fixed at 0 ȼ on {planet}",
+			"detail": "Fine if it's your own supply and free to you. Otherwise set a price."
+		},
+		"cogm_drift": {
+			"title": "{ticker} buy price {value} differs from its COGM {cogm}",
+			"detail": "Made on {planets}. Use the COGM value if this is your at-cost price."
+		},
+		"planet_redundant": {
+			"title": "{planet}'s exchange rule is the same as all planets'",
+			"detail": "It can be removed."
+		},
+		"unused_preference": {
+			"title": "No empire uses this preference",
+			"detail": "Plans use it once an empire does. Assign it in Management."
+		},
+		"unplanned_planets": {
+			"title": "Rules for planets in no plan: {planets}",
+			"detail": "They stay saved. Delete them under Not in any plan if you don't need them."
+		}
+	},
+	"save_bar": {
+		"detail": "Plans keep the saved prices until you save",
+		"leave_unsaved": "This preference has unsaved changes. Leave without saving?"
 	}
 }
