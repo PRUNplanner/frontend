@@ -100,6 +100,12 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 		progressCurrent.value = 0;
 
 		try {
+			// buildings and recipes may not be cached yet on a direct visit;
+			// cached queries, so a no-op once another page loaded them
+			await Promise.all([
+				useQuery("GetBuildings").execute(),
+				useQuery("GetRecipes").execute(),
+			]).catch(console.error);
 			const gameData = await loadGameData();
 			const result: IExchangePlanBase[] = [];
 

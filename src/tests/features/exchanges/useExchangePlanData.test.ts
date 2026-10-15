@@ -170,6 +170,8 @@ describe("useExchangePlanData", () => {
 		)!;
 		await settle();
 
+		expect(useQuery).toHaveBeenCalledWith("GetBuildings");
+		expect(useQuery).toHaveBeenCalledWith("GetRecipes");
 		expect(useQuery).toHaveBeenCalledWith("GetMultiplePlanets", {
 			planetNaturalIds: [linked.planet_natural_id, "XX-000x"].sort(),
 		});
