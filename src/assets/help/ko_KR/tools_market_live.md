@@ -1,51 +1,51 @@
-This system provides near-real-time monitoring of Commodity Exchanges (CX) via FIO API Webhooks that PRUNplanner processes and streams to your browser. It is designed to allow you to monitor market movements and create alerts for automated reaction to changes.
+이 시스템은 FIO API 웹훅을 통해 상품 거래소(CX)를 거의 실시간으로 모니터링합니다. PRUNplanner가 이 데이터를 처리해 브라우저로 바로 전송합니다. 시장 움직임을 지켜보고, 변화가 생기면 자동으로 대응할 수 있도록 알림을 설정할 수 있게 설계되었습니다.
 
-# Data Stream Mechanics
+# 데이터 전송 작동 방식
 
-FIO API receives data from Prosperous Universe once a user sees a change happening and sends data to PRUNplanner bundled every 30 seconds. PRUNplanner itself will persist the last 500 datapoints so you don't start from scratch when opening this view.
+FIO API는 사용자가 게임에서 변화를 확인하는 순간 Prosperous Universe에서 데이터를 받고, 이를 30초마다 묶어서 PRUNplanner로 전송합니다. PRUNplanner는 최근 500개의 데이터를 자체적으로 보관하므로, 이 화면을 열 때 처음부터 다시 시작하지 않아도 됩니다.
 
-Please note: there won't be datapoints for all available materials and exchanges, only those where a change happened and a user accessed it ingame. The live overview will continuously build up the more data was received.
+참고: 모든 물자와 거래소의 데이터가 있는 것은 아닙니다. 변화가 생겼고 게임에서 누군가 해당 정보를 확인한 후에만 데이터가 기록됩니다. 실시간 개요는 받은 데이터가 많아질수록 점점 채워집니다.
 
-# Live View
+# 실시간 화면
 
-The right hand side of this view display the received datapoints based on their material ticker and exchange combination, showing you the current traded price, bid and ask prices, the spread between them and the currently active buy and sell volumes.
+이 화면의 오른쪽에는 받은 데이트가 물차 약칭과 거래소 조합별로 표시됩니다. 현재 거래 가격, 매수 호가와 매도 호가, 두 호가 사이의 스프레드, 현재 걸려 있는 매도와 매수 물량을 확인할 수 있습니다.
 
-Prices have another indicator showing the latest change in percent.
+가격 옆에는 최근 변동률을 퍼센트로 보여 주는 표시도 함께 나옵니다.
 
-# Alert Engine
+# 알림 엔진
 
-This system uses a recursive logic engine to evaluate incoming data against previously received data and your custom alert configuration.
+이 시스템은 재귀 논리 엔진을 사용해 새로 들어온 데이터를 이전에 받은 데이터와 사용자가 설정한 알림 조건과 비교해 판단합니다.
 
-## Setup
+## 설정
 
-### Logical Operators
+### 논리 연산자
 
-You can chain conditions to reduce noise:
+조건을 여러 개 연결해 불필요한 알림을 줄일 수 있습니다:
 
-- **AND**: All conditions must be met (e.g. Price > 100 **AND** Volume != Previous Volume)
-- **OR**: Any single condition triggers the alert
+- **AND**: 모든 조건을 충족해야 합니다(예: 가격>100 **AND** 거래량 !=이전 거래량)
+- **OR**: 조건 중 하나만 충족해도 알림이 발생합니다
 
-### Comparisons:
+### 비교 연산자:
 
-- **GT**: Greater Than
-- **LT**: Less Than
-- **EQ**: Equal
-- **NEQ**: Not Equal
+- **GT**: 초과
+- **LT**: 미만
+- **EQ**: 일치
+- **NEQ**: 일치하지 않음
 
-## Comparison Targets:
+## 비교 대상:
 
-- **VALUE**: Compares a field to a fixed number / text.
-  - Hard price floors or ceiling breaks, filter on specific materials or exchanges.
-- **Previous**: Compares current data to the immediate last data.
-  - Detecting "Flash" changes or sudden spikes.
-- **Offset %**: Compares to the last tick with a percentage offset.
-  - Monitoring volatility (e.g. "Alert if prices rise > 2%"). You can setup a OR condition with GT / LT combining positive and negative changes.
+- **VALUE**: 항목을 고정된 숫자/텍스트와 비교합니다.
+  - 가격 하한선이나 상한선 돌파 감지, 특정 물자나 거래소만 필터링하기 등에 활용할 수 있습니다.
+- **Previous**: 현재 데이터를 바로 직전 데이터와 비교합니다.
+  - "순간적인" 변동이나 급등 감지에 활용할 수 있습니다.
+- **Offset %**: 직전 틱과 비교하되, 퍼센트 기준의 차이를 적용합니다.
+  - 변동성 모니터링(예: "가격이 2% 초과 상승 시 알림")에 활용할 수 있습니다. GT와 LT를 OR 조건으로 묶으면 상승과 하락을 한꺼번에 감지할 수 있습니다.
 
-## Setting up Alerts
+## 알림 설정
 
-- Define the scope: Choose a field
-- Select severity: Low, Medium, High
-- Configure logic: Use operators, comparisons and comparison targets
-- Change the Alerts name
-- Enable the detector
-- Save
+- 범위 정하기: 항목 선택
+- 민감도 선택하기: 낮음, 중간, 높음
+- 조건 설정: 연산자, 비교 방식, 비교 대상 활용
+- 알림 이름 변경
+- 감지기 활성화
+- 저장
