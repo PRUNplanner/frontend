@@ -10,6 +10,10 @@ import type {
 } from "@/features/api/schemas/planningData.schemas";
 import type { PlanetSearchView } from "@/features/planet_search/planetSearch.schemas";
 import type { ChartView } from "@/features/market_exploration/marketExploration.types";
+import type {
+	APIEndpointFormat,
+	APISnippetKind,
+} from "@/features/api_keys/apiEndpoints.types";
 
 export type PlanEditField =
 	| "building_add"
@@ -127,6 +131,19 @@ export interface IAnalyticsEventProperties {
 	"account:fio_link": undefined;
 	"account:fio_link_failed": { reason: string };
 	"account:api_key_create": undefined;
+	"account:api_key_revoke": undefined;
+	"apikey:key_copy": undefined;
+	"apikey:builder_change": {
+		endpoint: string;
+		format: APIEndpointFormat;
+	};
+	"apikey:snippet_copy": {
+		endpoint: string;
+		format: APIEndpointFormat;
+		kind: APISnippetKind;
+		has_key: boolean;
+	};
+	"apikey:use_in_builder": undefined;
 
 	"plan:view": { planet_natural_id: string | undefined; is_shared: boolean };
 	"plan:create": { planet_natural_id: string; is_first_plan: boolean };

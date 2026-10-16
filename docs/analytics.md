@@ -60,10 +60,22 @@ the tables here list the same events; a test
 | `account:fio_link` | | FIO became active for a profile that had none |
 | `account:fio_link_failed` | `reason` | saving FIO credentials was refused: `fio_required`, `fio_invalid_key` or `fio_username_mismatch` |
 | `account:api_key_create` | | |
+| `account:api_key_revoke` | | a key was revoked, after the confirm |
 
 The signup events only reach PostHog from browsers that consented to analytics
 in an earlier session, so they undercount signups. Signup counts and rejection
 reasons come from the backend events and their Axiom panels (signup-01).
+
+### API keys
+
+| Event | Properties | When |
+| --- | --- | --- |
+| `apikey:key_copy` | | the new key was copied from the create dialog |
+| `apikey:use_in_builder` | | "Use in URL builder" in the create dialog |
+| `apikey:builder_change` | `endpoint` (entry id of `apiEndpoints.ts`), `format` (`csv` or `json`) | the URL builder's endpoint or format changed, debounced |
+| `apikey:snippet_copy` | `endpoint`, `format`, `kind` (`url`, `sheets`, `curl`, `python`), `has_key` (a real key, not the placeholder) | a builder snippet was copied |
+
+No key, URL or UUID goes into these events.
 
 ### Plan
 

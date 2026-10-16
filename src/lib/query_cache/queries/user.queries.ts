@@ -253,8 +253,11 @@ export const userQueries = {
 	}),
 	DeleteAPIKey: defineQuery({
 		key: (params) => ["user", "api", "keys", "delete", params.id],
-		fetchFn: (params: { id: string }): Promise<boolean> =>
-			callDeleteAPIKey(params.id),
+		fetchFn: async (params: { id: string }): Promise<boolean> => {
+			const deleted = await callDeleteAPIKey(params.id);
+			trackEvent("account:api_key_revoke");
+			return deleted;
+		},
 		persist: false,
 	}),
 };
