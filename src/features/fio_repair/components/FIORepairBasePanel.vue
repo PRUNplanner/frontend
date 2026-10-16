@@ -384,12 +384,7 @@
 					:drawer-title="
 						$t('fio.repair.xit.title', { base: base.name })
 					"
-					:transfer-name="
-						$t('fio.repair.xit.name', {
-							base: base.name,
-							planet: base.planet,
-						})
-					"
+					transfer-name="Repair"
 					:note="$t('fio.repair.xit.note', cargo)" />
 			</div>
 			<p v-if="!flight.load.materials.length" class="text-muted-strong">

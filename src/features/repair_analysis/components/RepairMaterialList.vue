@@ -55,7 +55,7 @@
 			<XITTransferActionButton
 				source="repair_materials"
 				:elements="xitElements"
-				:transfer-name="title" />
+				transfer-name="Repair" />
 		</div>
 		<div
 			v-for="m in shown"

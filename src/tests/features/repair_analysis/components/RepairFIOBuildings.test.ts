@@ -90,6 +90,9 @@ describe("RepairFIOBuildings", () => {
 			{ ticker: "BBH", value: 5 },
 			{ ticker: "BSE", value: 1 },
 		]);
+		expect(
+			wrapper.findComponent(XITTransferActionButton).props("transferName")
+		).toBe("Repair");
 	});
 
 	it("has no XIT when nothing is due", async () => {
