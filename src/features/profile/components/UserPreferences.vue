@@ -92,19 +92,15 @@
 			else defaultEmpireUuid.value = undefined;
 		}
 	});
+
+	const groupHeading = "font-bold text-ink-strong pt-6 pb-2";
+	const note = "text-xs text-muted pt-1 pb-2";
 </script>
 
 <template>
-	<h2 class="text-white/80 font-bold text-lg my-auto">
-		{{ $t("profile.preferences.title") }}
-	</h2>
-	<div class="py-3 text-muted">
-		{{ $t("profile.preferences.description") }}
-	</div>
-
-	<PForm>
+	<PForm class="!grid-cols-[10rem_minmax(0,1fr)]">
 		<PFormSeparator>
-			<h3 class="font-bold pb-3">
+			<h3 :class="groupHeading" class="!pt-0">
 				{{ $t("profile.preferences.form.tool_preferences") }}
 			</h3>
 		</PFormSeparator>
@@ -118,12 +114,12 @@
 			<i18n-t
 				keypath="profile.preferences.form.language_note"
 				tag="p"
-				class="text-xs text-muted pt-1 pb-2">
+				:class="note">
 				<template #link>
 					<a
 						href="https://crowdin.com/project/prunplanner"
 						target="_blank"
-						class="hover:underline text-prunplanner">
+						class="hover:underline text-link">
 						Crowdin</a
 					>
 				</template>
@@ -156,11 +152,10 @@
 		</PFormItem>
 
 		<PFormSeparator>
-			<h4 class="font-bold py-1">
+			<h3 :class="groupHeading">
 				{{ $t("profile.preferences.form.fio_burn") }}
-			</h4>
+			</h3>
 		</PFormSeparator>
-
 		<PFormItem :label="t('profile.preferences.form.red_threshold')">
 			<PInputNumber
 				v-model:value="burnDaysRed"
@@ -193,11 +188,10 @@
 		</PFormItem>
 
 		<PFormSeparator>
-			<h4 class="font-bold py-1">
+			<h3 :class="groupHeading">
 				{{ $t("profile.preferences.form.fio_repair") }}
-			</h4>
+			</h3>
 		</PFormSeparator>
-
 		<PFormItem :label="t('profile.preferences.form.fio_repair_interval')">
 			<PInputNumber
 				v-model:value="fioRepairIntervalDays"
@@ -223,25 +217,65 @@
 				class="w-full" />
 		</PFormItem>
 		<PFormSeparator>
-			<p class="text-xs text-muted pt-1 pb-2">
+			<p :class="note">
 				{{ $t("profile.preferences.form.fio_repair_note") }}
 			</p>
 		</PFormSeparator>
 
+		<PFormSeparator>
+			<h3 :class="groupHeading">
+				{{ $t("profile.preferences.form.planning") }}
+			</h3>
+		</PFormSeparator>
 		<PFormItem :label="t('profile.preferences.form.plan_suggestions')">
 			<PCheckbox v-model:checked="planSuggestions" />
 		</PFormItem>
 		<PFormSeparator>
-			<p class="text-xs text-muted pt-1 pb-2">
+			<p :class="note">
 				{{ $t("profile.preferences.form.plan_suggestions_help") }}
+			</p>
+		</PFormSeparator>
+		<PFormSeparator>
+			<h4 class="font-bold pt-3">
+				{{ $t("profile.preferences.form.plan_specific") }}
+			</h4>
+			<p :class="note">
+				{{ $t("profile.preferences.form.plan_specific_description") }}
+			</p>
+			<PTable v-if="planSettingsOverview.length" striped>
+				<thead>
+					<tr>
+						<th>{{ $t("profile.preferences.form.plan") }}</th>
+						<th>{{ $t("profile.preferences.form.preferences") }}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr
+						v-for="plan in planSettingsOverview"
+						:key="plan.planUuid">
+						<td>
+							<router-link
+								:to="`/plan/${plan.planetId}/${plan.planUuid}`"
+								class="text-link font-bold hover:underline">
+								{{ plan.planName }}
+							</router-link>
+						</td>
+						<td class="w-[50%] max-w-[75%]">
+							{{ plan.preferences.join(", ") }}
+						</td>
+					</tr>
+				</tbody>
+			</PTable>
+			<p v-else class="text-sm text-muted">
+				{{ $t("profile.preferences.form.plan_specific_empty") }}
 			</p>
 		</PFormSeparator>
 
 		<template v-if="analyticsAvailable">
 			<PFormSeparator>
-				<h4 class="font-bold py-1">
+				<h3 :class="groupHeading">
 					{{ $t("profile.preferences.form.privacy") }}
-				</h4>
+				</h3>
 			</PFormSeparator>
 			<PFormItem :label="t('profile.preferences.form.analytics')">
 				<PCheckbox
@@ -250,7 +284,7 @@
 					@update:checked="(value) => (value ? grant() : deny())" />
 			</PFormItem>
 			<PFormSeparator>
-				<p class="text-xs text-muted pt-1 pb-2">
+				<p :class="note">
 					{{
 						isDNT
 							? $t("profile.preferences.form.analytics_dnt")
@@ -260,33 +294,4 @@
 			</PFormSeparator>
 		</template>
 	</PForm>
-
-	<h3 class="font-bold py-3">
-		{{ $t("profile.preferences.form.plan_specific") }}
-	</h3>
-	<div class="pb-3 text-muted">
-		{{ $t("profile.preferences.form.plan_specific_description") }}
-	</div>
-	<PTable striped>
-		<thead>
-			<tr>
-				<th>{{ $t("profile.preferences.form.plan") }}</th>
-				<th>{{ $t("profile.preferences.form.preferences") }}</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr v-for="plan in planSettingsOverview" :key="plan.planUuid">
-				<td>
-					<router-link
-						:to="`/plan/${plan.planetId}/${plan.planUuid}`"
-						class="text-link-primary font-bold hover:underline">
-						{{ plan.planName }}
-					</router-link>
-				</td>
-				<td class="w-[50%] max-w-[75%]">
-					{{ plan.preferences.join(", ") }}
-				</td>
-			</tr>
-		</tbody>
-	</PTable>
 </template>

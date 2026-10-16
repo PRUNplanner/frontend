@@ -7,11 +7,7 @@ import {
 	afterEach,
 	vi,
 } from "vitest";
-import {
-	flushPromises,
-	RouterLinkStub,
-	type VueWrapper,
-} from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -19,7 +15,7 @@ import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { useUserStore } from "@/stores/userStore";
-import ChangeProfile from "@/features/profile/components/ChangeProfile.vue";
+import FIOConnection from "@/features/profile/components/FIOConnection.vue";
 import PButton from "@/ui/components/PButton.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
@@ -36,10 +32,6 @@ vi.mock("@/lib/analytics/useAnalytics", () => ({
 
 const mock = new AxiosMockAdapter(apiService.client);
 const PROFILE_URL = /user\/profile\/$/;
-const RESEND_URL = /user\/request_email_verification\/$/;
-
-const RESEND = "profile.change_profile.buttons.resend_code";
-const REQUESTED = "profile.change_profile.buttons.code_requested";
 
 function profile(patch: Partial<UserProfile> = {}): UserProfile {
 	return {
@@ -64,11 +56,14 @@ async function mountProfile(stored: UserProfile | undefined, loggedIn = true) {
 		userStore.refreshToken = "test-refresh-token";
 	}
 	userStore.profile = stored;
-	return mountComponent(ChangeProfile, {}, { pinia });
+	return mountComponent(FIOConnection, {}, { pinia });
 }
 
-/** fio key, prun username, email */
-const inputs = (wrapper: VueWrapper) => wrapper.findAll("input[type=text]");
+/** fio key, prun username */
+const inputs = (wrapper: VueWrapper) => [
+	wrapper.find("input[type=password]"),
+	wrapper.find("input[type=text]"),
+];
 const values = (wrapper: VueWrapper) =>
 	inputs(wrapper).map((i) => (i.element as HTMLInputElement).value);
 const saveButton = (wrapper: VueWrapper) => wrapper.findComponent(PButton);
@@ -81,7 +76,7 @@ async function save(wrapper: VueWrapper) {
 
 const patchBody = (index = 0) => JSON.parse(mock.history.patch.at(index)!.data);
 
-describe("ChangeProfile", () => {
+describe("FIOConnection", () => {
 	beforeAll(() => {
 		axiosSetup();
 	});
@@ -104,18 +99,9 @@ describe("ChangeProfile", () => {
 		expect(values(wrapper)).toEqual([
 			"test-fio-key",
 			"test-prun-user",
-			"test@example.com",
 		]);
-		expect(saveType(wrapper)).toBe("primary");
+		expect(saveType(wrapper)).toBe("secondary");
 		expect(mock.history.get).toHaveLength(1);
-	});
-
-	it("anchors the FIO section for /profile#fio", async () => {
-		const { wrapper } = await mountProfile(profile());
-
-		expect(wrapper.find("#fio").text()).toContain(
-			"profile.change_profile.fio_info"
-		);
 	});
 
 	it("takes over the profile the backend returns on mount", async () => {
@@ -129,36 +115,35 @@ describe("ChangeProfile", () => {
 		expect(values(wrapper)).toEqual([
 			"test-fio-key",
 			"renamed-user",
-			"test@example.com",
 		]);
 		// the refresh isn't a user edit
-		expect(saveType(wrapper)).toBe("primary");
+		expect(saveType(wrapper)).toBe("secondary");
 	});
 
 	it("follows later changes of the stored profile", async () => {
 		const { wrapper } = await mountProfile(profile());
 
-		useUserStore().profile = profile({ email: "new@example.com" });
+		useUserStore().profile = profile({ prun_username: "new-user" });
 		await flushPromises();
 
-		expect(values(wrapper).at(2)).toBe("new@example.com");
+		expect(values(wrapper).at(1)).toBe("new-user");
 	});
 
 	it("starts empty and skips the reload when logged out", async () => {
 		const { wrapper } = await mountProfile(undefined, false);
 
-		expect(values(wrapper)).toEqual(["", "", ""]);
+		expect(values(wrapper)).toEqual(["", ""]);
 		expect(mock.history.get).toHaveLength(0);
-		expect(saveType(wrapper)).toBe("primary");
+		expect(saveType(wrapper)).toBe("secondary");
 	});
 
-	it("marks the button once a field is edited", async () => {
+	it("makes the button primary once a field is edited", async () => {
 		const { wrapper } = await mountProfile(profile());
 
 		await inputs(wrapper).at(1)!.setValue("other-user");
 		await flushPromises();
 
-		expect(saveType(wrapper)).toBe("error");
+		expect(saveType(wrapper)).toBe("primary");
 	});
 
 	it("patches the profile without spaces in the FIO key", async () => {
@@ -221,14 +206,14 @@ describe("ChangeProfile", () => {
 		expect(mock.history.get).toHaveLength(2);
 		expect(useUserStore().profile?.prun_username).toBe("other-user");
 		expect(values(wrapper).at(1)).toBe("other-user");
-		expect(saveType(wrapper)).toBe("primary");
+		expect(saveType(wrapper)).toBe("secondary");
 		expect(saveButton(wrapper).attributes("aria-busy")).toBe("false");
 	});
 
-	it("sends cleared fields as null and reports FIO as inactive", async () => {
+	it("sends cleared fields as null and keeps the stored email", async () => {
 		mock.onPatch(PROFILE_URL).reply(
 			200,
-			profile({ fio_apikey: null, prun_username: null, email: null })
+			profile({ fio_apikey: null, prun_username: null })
 		);
 		const { wrapper } = await mountProfile(profile());
 		for (const input of inputs(wrapper)) await input.setValue("");
@@ -239,7 +224,7 @@ describe("ChangeProfile", () => {
 		expect(patchBody()).toEqual({
 			fio_apikey: null,
 			prun_username: null,
-			email: null,
+			email: "test@example.com",
 		});
 		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
 			is_active: false,
@@ -341,12 +326,10 @@ describe("ChangeProfile", () => {
 	});
 
 	it("keeps the edit unsaved when the patch fails", async () => {
-		mock.onPatch(PROFILE_URL).reply(400, {
-			email: ["Enter a valid email."],
-		});
+		mock.onPatch(PROFILE_URL).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountProfile(profile());
-		await inputs(wrapper).at(2)!.setValue("not-an-email");
+		await inputs(wrapper).at(1)!.setValue("other-user");
 		await flushPromises();
 
 		await save(wrapper);
@@ -355,9 +338,9 @@ describe("ChangeProfile", () => {
 			"Error patching user profile",
 			expect.any(Error)
 		);
-		expect(saveType(wrapper)).toBe("error");
+		expect(saveType(wrapper)).toBe("primary");
 		expect(saveButton(wrapper).attributes("aria-busy")).toBe("false");
-		expect(values(wrapper).at(2)).toBe("not-an-email");
+		expect(values(wrapper).at(1)).toBe("other-user");
 	});
 
 	it("sends no second patch while one is in flight", async () => {
@@ -402,88 +385,6 @@ describe("ChangeProfile", () => {
 		expect(wrapper.findAll("[role=alert]")).toHaveLength(0);
 	});
 
-	it("shows a verified email as a checked, disabled checkbox", async () => {
-		const { wrapper } = await mountProfile(profile());
-		const checkbox = wrapper.find<HTMLInputElement>("input[type=checkbox]");
-
-		expect(checkbox.element.checked).toBe(true);
-		expect(checkbox.element.disabled).toBe(true);
-		expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);
-		expect(wrapper.text()).not.toContain(RESEND);
-	});
-
-	it("offers verification links for an unverified email", async () => {
-		mock.resetHandlers();
-		mock.onGet(PROFILE_URL).reply(
-			200,
-			profile({ is_email_verified: false })
-		);
-		const { wrapper } = await mountProfile(
-			profile({ is_email_verified: false })
-		);
-
-		expect(
-			wrapper.find<HTMLInputElement>("input[type=checkbox]").element
-				.checked
-		).toBe(false);
-		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe(
-			"/verify-email"
-		);
-		expect(wrapper.text()).toContain(RESEND);
-		expect(wrapper.text()).not.toContain(REQUESTED);
-	});
-
-	it("requests a new verification code once", async () => {
-		mock.resetHandlers();
-		mock.onGet(PROFILE_URL).reply(
-			200,
-			profile({ is_email_verified: false })
-		);
-		mock.onPost(RESEND_URL).reply(200, { detail: "Code sent." });
-		const { wrapper } = await mountProfile(
-			profile({ is_email_verified: false })
-		);
-
-		await wrapper
-			.findAll("span")
-			.find((s) => s.text() === RESEND)!
-			.trigger("click");
-		await flushPromises();
-
-		expect(mock.history.post).toHaveLength(1);
-		expect(trackEvent).toHaveBeenCalledWith(
-			"account:email_verify_request"
-		);
-		expect(wrapper.text()).toContain(REQUESTED);
-		expect(wrapper.text()).not.toContain(RESEND);
-	});
-
-	it("logs a failed code request", async () => {
-		mock.resetHandlers();
-		mock.onGet(PROFILE_URL).reply(
-			200,
-			profile({ is_email_verified: false })
-		);
-		mock.onPost(RESEND_URL).reply(500);
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper } = await mountProfile(
-			profile({ is_email_verified: false })
-		);
-
-		await wrapper
-			.findAll("span")
-			.find((s) => s.text() === RESEND)!
-			.trigger("click");
-		await flushPromises();
-
-		expect(error).toHaveBeenCalledWith(
-			"Error resending verification code",
-			expect.any(Error)
-		);
-		// the link stays, so the user can ask again
-		expect(wrapper.text()).toContain(RESEND);
-		expect(wrapper.text()).not.toContain(REQUESTED);
-	});
 
 	describe("FIO credential check", () => {
 		const ERRORS = "profile.change_profile.fio_errors";
@@ -527,7 +428,7 @@ describe("ChangeProfile", () => {
 				alerts[0].element.closest("div")!.previousElementSibling!
 					.previousElementSibling!.id
 			).toBe(labelId);
-			expect(saveType(wrapper)).toBe("error");
+			expect(saveType(wrapper)).toBe("primary");
 			expect(trackEvent).toHaveBeenCalledWith("account:fio_link_failed", {
 				reason: code,
 			});

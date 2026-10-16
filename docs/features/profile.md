@@ -3,19 +3,26 @@
 **Purpose.** This folder holds the sections of the profile page
 (`/profile`).
 
-**Used by.** `views/ProfileView.vue`.
+**Used by.** `views/ProfileView.vue`, which stacks the sections in this
+order: FIO connection (`#fio`, linked from the repair tools), Account,
+Preferences, Browser storage.
 
 ## Key files
 
 | Component | Does |
 | --- | --- |
-| `ChangeProfile.vue` | Edit profile fields (e.g. FIO username/key): `PatchUserProfile`, then `userStore.performGetProfile()`. The backend checks changed FIO credentials and answers 400 with a code per field (`fio_required`, `fio_invalid_key`, `fio_username_mismatch`), shown under the field; the FIO status line reads `userStore.fioStatus` (the same state drives the nav FIO tag) |
-| `ChangePassword.vue` | `PatchUserChangePassword` |
-| `FIOInformation.vue` | Explains how to link FIO (static, i18n `profile.fio_information.*`) |
-| `UserPreferences.vue` | Edits global preferences through `usePreferences`: default empire and CX (`CXPreferenceSelector`), burn thresholds, XIT defaults, and so on |
-| `StorageData.vue` | Diagnostics: IndexedDB store statistics and the size of `planningStore` |
+| `ProfileSection.vue` | Layout of one section: title and description on the left, content on the right (stacked on small screens) |
+| `FIOConnection.vue` | FIO status, PrUn username and API key (masked): `PatchUserProfile` with the stored email, then `userStore.performGetProfile()`. The backend checks changed FIO credentials and answers 400 with a code per field (`fio_required`, `fio_invalid_key`, `fio_username_mismatch`), shown under the field; the status line reads `userStore.fioStatus` (the same state drives the nav FIO tag). The setup guide is collapsed unless FIO isn't linked yet |
+| `FIOInformation.vue` | The FIO setup guide inside `FIOConnection` (static, i18n `profile.fio_information.*`) |
+| `ProfileEmail.vue` | Email with a verified tag and the verify / resend links: `PatchUserProfile` with the stored FIO fields |
+| `ChangePassword.vue` | Collapsed form, `PatchUserChangePassword` |
+| `UserPreferences.vue` | Edits global preferences through `usePreferences` (saved as they change), grouped into tool, FIO Burn, FIO Repair, planning and privacy; lists the plans with their own settings |
+| `StorageData.vue` | Diagnostics, collapsed: IndexedDB store statistics and the size of `planningStore` |
+
+Save buttons are `secondary` until their form has an unsaved change, then
+`primary`, so the page shows at most the primary actions the user started.
 
 ## Tests
 
-None for the components. Preferences are covered in
-`src/tests/features/preferences/`.
+`src/tests/features/profile/components/` (component tests). Preferences
+logic is covered in `src/tests/features/preferences/`.
