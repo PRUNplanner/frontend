@@ -375,6 +375,8 @@ describe("Backend contract", () => {
 			"fioRepairDueSoonDays",
 			"fioRepairArrivalDays",
 			"fioRepairPlanLinks",
+			"emailNudgeDismissal",
+			"emailNudgeDismissedAt",
 		];
 
 		// backend GET response for a user without stored preferences
@@ -396,6 +398,8 @@ describe("Backend contract", () => {
 			fioRepairDueSoonDays: 7,
 			fioRepairArrivalDays: 2,
 			fioRepairPlanLinks: {},
+			emailNudgeDismissal: null,
+			emailNudgeDismissedAt: null,
 		};
 
 		it("parses the backend default response", () => {

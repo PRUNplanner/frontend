@@ -163,7 +163,7 @@ const router = createRouter({
 		{
 			name: "verify-email",
 			path: "/verify-email/:verifyCode?",
-			meta: { showHeader: false },
+			meta: { showHeader: false, requiresAuth: true },
 			props: true,
 			component: () => import("@/views/VerifyEmailView.vue"),
 		},

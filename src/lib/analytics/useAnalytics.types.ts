@@ -1,4 +1,8 @@
 import type {
+	EmailNudgeAction,
+	EmailNudgeState,
+} from "@/features/account/useEmailNudge.types";
+import type {
 	ExpertType,
 	InfrastructureType,
 	PlanCOGCProgram,
@@ -103,7 +107,17 @@ export interface IAnalyticsEventProperties {
 	"account:signup_fail": { fields: string[] };
 	"account:login": undefined;
 	"account:logout": undefined;
-	"account:email_verify": { is_success: boolean };
+	"account:email_verify": {
+		is_success: boolean;
+		source: "banner" | "profile" | "link";
+		reason?: string;
+	};
+	"account:email_nudge_shown": { state: EmailNudgeState };
+	"account:email_nudge_action": {
+		action: EmailNudgeAction;
+		state: EmailNudgeState;
+	};
+	"account:email_add": { is_success: boolean; reason?: string };
 	"account:email_verify_request": undefined;
 	"account:password_reset_request": undefined;
 	"account:password_reset": undefined;

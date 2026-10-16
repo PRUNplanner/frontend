@@ -106,13 +106,32 @@ export const userQueries = {
 	}),
 	PostUserVerifyEmail: defineQuery({
 		key: () => ["user", "verification", "check"],
-		fetchFn: async (params: UserVerifyEmailPayload): Promise<boolean> => {
+		// the result code: "verified", the backend's error code (invalid,
+		// expired, no_code, already_verified), "throttled" or "error". A
+		// confirmed account refreshes the profile.
+		fetchFn: async (params: UserVerifyEmailPayload): Promise<string> => {
+			let result = "verified";
 			try {
 				await callVerifyEmail(params);
-				return true;
-			} catch {
-				return false;
+			} catch (err) {
+				const { status, responseData } = err as {
+					status?: number;
+					responseData?: { code?: unknown };
+				};
+				const code = responseData?.code;
+				result =
+					status === 429
+						? "throttled"
+						: typeof code === "string"
+							? code
+							: // DRF field error: the code isn't 8 characters
+								Array.isArray(code)
+								? "invalid"
+								: "error";
 			}
+			if (result === "verified" || result === "already_verified")
+				await useUserStore().performGetProfile();
+			return result;
 		},
 		persist: false,
 	}),
@@ -184,6 +203,7 @@ export const userQueries = {
 			const prefs = await callGetUserPreferences();
 			Object.assign(userStore.preferences, prefs);
 			setSyncedPreferences(prefs);
+			userStore.preferencesLoaded = true;
 			trackPreferences(userStore.preferences);
 
 			// handle locale

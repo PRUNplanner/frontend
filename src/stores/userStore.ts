@@ -64,6 +64,8 @@ export const useUserStore = defineStore(
 
 		const initialProfileCalled: Ref<boolean> = ref(false);
 		const intialPreferencesCalled: Ref<boolean> = ref(false);
+		// the GET answered: dismissals and the like are known
+		const preferencesLoaded: Ref<boolean> = ref(false);
 		const preferences: Reactive<UserPreference> = reactive<UserPreference>(
 			deepClone(preferenceDefaults)
 		);
@@ -80,6 +82,7 @@ export const useUserStore = defineStore(
 			// the next login must load its own profile and preferences
 			initialProfileCalled.value = false;
 			intialPreferencesCalled.value = false;
+			preferencesLoaded.value = false;
 		}
 
 		// user preference handling
@@ -407,6 +410,7 @@ export const useUserStore = defineStore(
 			fioStatus,
 			// preferences
 			intialPreferencesCalled,
+			preferencesLoaded,
 			preferences,
 			setPreference,
 			setPlanPreference,

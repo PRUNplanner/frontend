@@ -23,6 +23,7 @@
 	} from "@/ui";
 	import type { UserRegistrationPayload } from "@/features/api/schemas/user.schemas";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { isEmailAddress } from "@/features/account/account.util";
 
 	const isLoading = ref(false);
 	const registrationSuccess = ref(false);
@@ -91,9 +92,7 @@
 
 	// optional, but when filled: one @ and a dot in the domain part
 	const emailValid = computed(
-		() =>
-			!inputEmail.value ||
-			/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(inputEmail.value)
+		() => !inputEmail.value || isEmailAddress(inputEmail.value)
 	);
 
 	const canRegister = computed(() => {
@@ -284,6 +283,7 @@
 					<PInput
 						ref="email"
 						v-model:value="inputEmail"
+						type="email"
 						autocomplete="email"
 						:placeholder="
 							t(

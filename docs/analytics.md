@@ -47,7 +47,10 @@ the tables here list the same events; a test
 | `account:signup_fail` | `fields` (field names of the API error, no values) | the registration call failed |
 | `account:login` | | login succeeded |
 | `account:logout` | | |
-| `account:email_verify` | `is_success` | the verification code was checked |
+| `account:email_verify` | `is_success`, `source` (`banner`, `profile` or `link`), `reason` (on failure: `invalid`, `expired`, `no_code`, `throttled`, `error`) | the verification code was checked |
+| `account:email_nudge_shown` | `state` (`none` or `unconfirmed`) | the Empire email banner showed, once per visit and state |
+| `account:email_nudge_action` | `action` (`add`, `enter_code`, `resend`, `later`, `never`, `undo`), `state` | a button of the Empire email banner |
+| `account:email_add` | `is_success`, `reason` (on failure: `email_taken`, `invalid_email`, `throttled`, `unknown`) | the email dialog saved an address |
 | `account:email_verify_request` | | a new verification email was requested |
 | `account:password_reset_request` | | |
 | `account:password_reset` | | |

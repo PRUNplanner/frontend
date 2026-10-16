@@ -52,6 +52,9 @@ const patchPrefs = async (session: string | undefined, retry = true) => {
 	}
 };
 const syncToBackend = debounce(patchPrefs, 5000);
+// a change made right before leaving (e.g. a dismissed banner) is not lost
+if (typeof window !== "undefined")
+	window.addEventListener("pagehide", () => syncToBackend.flush());
 
 export function usePreferences() {
 	const userStore = useUserStore();

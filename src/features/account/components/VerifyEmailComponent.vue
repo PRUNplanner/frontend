@@ -23,7 +23,8 @@
 
 	const refVerificationCode: Ref<string> = ref(props.verifyCode);
 	const isVerifying: Ref<boolean> = ref(false);
-	const verifyStatus: Ref<boolean | null> = ref(null);
+	// "verified", "already_verified", or the reason it failed
+	const verifyResult: Ref<string | null> = ref(null);
 
 	const canVerify: ComputedRef<boolean> = computed(
 		() =>
@@ -34,16 +35,35 @@
 			)
 	);
 
+	const isSuccess: ComputedRef<boolean> = computed(
+		() =>
+			verifyResult.value === "verified" ||
+			verifyResult.value === "already_verified"
+	);
+
+	const errorKey: ComputedRef<string> = computed(() =>
+		["invalid", "expired", "no_code", "throttled"].includes(
+			verifyResult.value ?? ""
+		)
+			? verifyResult.value!
+			: "unknown"
+	);
+
 	async function verifyEmail(): Promise<void> {
 		isVerifying.value = true;
 
+		// the query refreshes the profile once the account is confirmed
 		await useQuery("PostUserVerifyEmail", {
-			code: refVerificationCode.value,
+			code: refVerificationCode.value.trim().toUpperCase(),
 		})
 			.execute()
-			.then((result: boolean) => {
-				verifyStatus.value = result;
-				trackEvent("account:email_verify", { is_success: result });
+			.then((result: string) => {
+				verifyResult.value = result;
+				trackEvent("account:email_verify", {
+					is_success: isSuccess.value,
+					source: "link",
+					...(isSuccess.value ? {} : { reason: result }),
+				});
 			})
 			.finally(() => {
 				isVerifying.value = false;
@@ -60,14 +80,22 @@
 		{{ $t("account.components.verify_email.info") }}
 	</div>
 	<div class="flex flex-col">
-		<template v-if="verifyStatus !== null">
+		<template v-if="verifyResult !== null">
 			<div
-				v-if="verifyStatus"
-				class="mb-3 py-1 px-2 bg-prunplanner text-black">
-				{{ $t("account.components.verify_email.result.ok") }}
+				v-if="isSuccess"
+				class="mb-3 py-1 px-2 bg-prunplanner text-black"
+				data-testid="verify-ok">
+				{{
+					verifyResult === "already_verified"
+						? $t("account.components.verify_email.result.already_verified")
+						: $t("account.components.verify_email.result.ok")
+				}}
+				<router-link to="/empire" class="underline">
+					{{ $t("account.components.verify_email.result.back") }}
+				</router-link>
 			</div>
 			<PNotice v-else type="error" class="mb-3">
-				{{ $t("account.components.verify_email.result.error") }}
+				{{ $t(`account.email_dialog.errors.${errorKey}`) }}
 			</PNotice>
 		</template>
 		<div>
@@ -79,6 +107,7 @@
 				:placeholder="
 					t('account.components.verify_email.form.code_placeholder')
 				"
+				autocomplete="one-time-code"
 				class="w-full" />
 		</div>
 		<div class="pt-3">
