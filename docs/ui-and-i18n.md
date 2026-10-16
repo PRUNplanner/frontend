@@ -56,7 +56,8 @@ are internal to `PDataTable` and the selects.
   `#info` slot) with `aria-describedby`.
 - **Notices:** a message in the page is a `<PNotice type="error">`
   (`info`, `warning` or `error`, default `info`), with an optional
-  `#action` slot for one button. Errors are `role="alert"`, the others
+  `#action` slot for one button and an optional `icon` (a component) in
+  place of the type's. Errors are `role="alert"`, the others
   `role="status"`. Don't hand-style red or amber boxes.
 - **Toggles:** a button that shows a selection or an on/off state takes
   `:pressed="…"` instead of switching `type`: it sets `aria-pressed` and is

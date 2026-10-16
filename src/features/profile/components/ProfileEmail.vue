@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, watch, type Ref } from "vue";
+	import { computed, ref, watch, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -9,24 +9,41 @@
 
 	// Composables
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useEmailNudge } from "@/features/account/useEmailNudge";
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
 
+	// Components
+	import EmailAddDialog from "@/features/account/components/EmailAddDialog.vue";
+
 	// UI
-	import { PForm, PFormItem, PInput, PButton, PTag } from "@/ui";
+	import { PForm, PFormItem, PInput, PButton, PNotice, PTag } from "@/ui";
 
 	const userStore = useUserStore();
+	const { state, resend } = useEmailNudge(0);
 
 	const email: Ref<string | null> = ref(userStore.profile?.email ?? null);
 	const isUpdating: Ref<boolean> = ref(false);
 	const isThrottled: Ref<boolean> = ref(false);
 	const hasFailed: Ref<boolean> = ref(false);
-	const codeResendRequested: Ref<boolean> = ref(false);
+	const emailError: Ref<string | null> = ref(null);
+	const codeSent: Ref<boolean> = ref(false);
+	const showDialog: Ref<boolean> = ref(false);
 
 	watch(
 		() => userStore.profile?.email,
 		(stored) => (email.value = stored ?? null)
+	);
+	watch(email, () => (emailError.value = null));
+
+	const recovery = computed(
+		() =>
+			({
+				none: { type: "secondary", key: "not_set_up" },
+				unconfirmed: { type: "warning", key: "waiting" },
+				ready: { type: "success", key: "ready" },
+			} as const)[state.value]
 	);
 
 	async function patchEmail(): Promise<void> {
@@ -34,87 +51,90 @@
 
 		trackEvent("account:profile_update");
 
+		const changed = (email.value ?? "") !== (userStore.profile?.email ?? "");
 		isUpdating.value = true;
 		isThrottled.value = false;
 		hasFailed.value = false;
+		codeSent.value = false;
 
 		try {
-			// the endpoint takes the whole profile, so FIO goes as stored
-			await useQuery("PatchUserProfile", {
-				fio_apikey: userStore.profile?.fio_apikey ?? null,
-				prun_username: userStore.profile?.prun_username ?? null,
-				email: email.value,
-			}).execute();
+			await useQuery("PatchUserProfile", { email: email.value }).execute();
+			codeSent.value = changed && !!email.value;
 		} catch (err) {
 			console.error("Error patching user profile", err);
-			isThrottled.value = (err as { status?: number }).status === 429;
-			hasFailed.value = !isThrottled.value;
+			const { status, responseData } = err as {
+				status?: number;
+				responseData?: { email?: unknown };
+			};
+			isThrottled.value = status === 429;
+			// DRF field errors: { email: [code or message] }
+			const field = Array.isArray(responseData?.email)
+				? responseData.email[0]
+				: undefined;
+			if (field === "email_taken")
+				emailError.value = t("profile.change_profile.email_taken");
+			else if (typeof field === "string")
+				emailError.value = t("account.email_dialog.errors.invalid_email");
+			else hasFailed.value = !isThrottled.value;
 		} finally {
 			isUpdating.value = false;
 		}
 	}
 
-	async function requestVerification(): Promise<void> {
-		trackEvent("account:email_verify_request");
-
-		try {
-			await useQuery("PostUserResendEmailVerification").execute();
-			codeResendRequested.value = true;
-		} catch (err) {
-			console.error("Error resending verification code", err);
-		}
+	async function sendNewCode(): Promise<void> {
+		if (await resend()) showDialog.value = true;
 	}
 </script>
 
 <template>
 	<PForm class="!grid-cols-[10rem_minmax(0,1fr)]">
-		<PFormItem :label="t('profile.change_profile.form.email_address')">
-			<div class="w-full flex flex-row flex-wrap items-center gap-3">
-				<PInput
-					v-model:value="email"
-					autocomplete="email"
-					class="w-full max-w-sm" />
+		<PFormItem
+			:label="t('profile.change_profile.form.email_address')"
+			:error="emailError ?? undefined">
+			<PInput
+				v-model:value="email"
+				type="email"
+				autocomplete="email"
+				class="w-full max-w-sm" />
+		</PFormItem>
+		<PFormItem :label="t('profile.change_profile.recovery.label')">
+			<div class="w-full flex flex-row flex-wrap items-center gap-x-3 gap-y-4 py-1 whitespace-normal">
 				<PTag
-					v-if="userStore.profile?.email"
-					:type="
-						userStore.profile.is_email_verified ? 'success' : 'warning'
-					"
-					:value="
-						userStore.profile.is_email_verified
-							? t('profile.account.verified')
-							: t('profile.account.not_verified')
-					"
-					data-testid="email-verified" />
+					:type="recovery.type"
+					:value="t(`profile.change_profile.recovery.${recovery.key}`)"
+					data-testid="email-recovery" />
+				<template v-if="state === 'unconfirmed'">
+					<PButton
+						data-testid="email-enter-code"
+						@click="showDialog = true">
+						{{ t("profile.change_profile.buttons.enter_code") }}
+					</PButton>
+					<PButton
+						type="secondary"
+						data-testid="email-resend"
+						@click="sendNewCode">
+						{{ t("profile.change_profile.buttons.resend_code") }}
+					</PButton>
+				</template>
+				<span v-else class="text-sm text-muted">
+					{{ t(`profile.change_profile.recovery.${recovery.key}_info`) }}
+				</span>
 			</div>
 		</PFormItem>
 	</PForm>
-	<div
-		v-if="userStore.profile?.email && !userStore.profile.is_email_verified"
-		class="flex flex-row flex-wrap gap-3 text-sm">
-		<router-link to="/verify-email" class="text-link hover:underline">
-			{{ $t("profile.change_profile.buttons.verify_email") }}
-		</router-link>
-		<button
-			v-if="!codeResendRequested"
-			type="button"
-			class="text-link hover:underline"
-			@click="requestVerification">
-			{{ $t("profile.change_profile.buttons.resend_code") }}
-		</button>
-		<span v-else class="text-positive">
-			{{ $t("profile.change_profile.buttons.code_requested") }}
-		</span>
-	</div>
 	<div
 		v-if="isThrottled || hasFailed"
 		class="text-sm text-negative"
 		role="alert">
 		{{
 			isThrottled
-				? $t("profile.change_profile.throttled")
-				: $t("profile.change_profile.fio_errors.unknown")
+				? t("profile.change_profile.throttled")
+				: t("profile.change_profile.fio_errors.unknown")
 		}}
 	</div>
+	<PNotice v-if="codeSent" data-testid="email-code-sent">
+		{{ t("profile.change_profile.code_sent_notice") }}
+	</PNotice>
 	<PButton
 		class="self-start"
 		:loading="isUpdating"
@@ -125,6 +145,10 @@
 				: 'secondary'
 		"
 		@click="patchEmail">
-		{{ $t("profile.buttons.save") }}
+		{{ t("profile.buttons.save") }}
 	</PButton>
+	<EmailAddDialog
+		v-model:show="showDialog"
+		initial-step="code"
+		source="profile" />
 </template>

@@ -51,24 +51,29 @@ export const UserProfileSchema = z.object({
 });
 export type UserProfile = z.infer<typeof UserProfileSchema>;
 
-export const UserProfilePatchSchema = z.object({
-	fio_apikey: z
-		.string()
-		.transform((val) => (val === "" || !val ? null : val))
-		.nullable(),
-	prun_username: z
-		.string()
-		.transform((val) => (val === "" || !val ? null : val))
-		.nullable(),
-	email: z
-		.string()
-		.transform((val) => (val === "" || !val ? null : val))
-		.nullable(),
-});
+export const UserProfilePatchSchema = z
+	.object({
+		fio_apikey: z
+			.string()
+			.transform((val) => (val === "" || !val ? null : val))
+			.nullable(),
+		prun_username: z
+			.string()
+			.transform((val) => (val === "" || !val ? null : val))
+			.nullable(),
+		email: z
+			.string()
+			.transform((val) => (val === "" || !val ? null : val))
+			.nullable(),
+	})
+	// the email dialog sends the email alone
+	.partial();
 export type UserProfilePatch = z.input<typeof UserProfilePatchSchema>;
 
 export const UserResponseDetailSchema = z.object({
 	detail: z.string(),
+	// result code of the verification and reset endpoints
+	code: z.string().optional(),
 });
 export type UserResponseDetail = z.infer<typeof UserResponseDetailSchema>;
 
@@ -168,6 +173,9 @@ export const UserPreferenceSchema = z.object({
 		.nullable()
 		.transform((v) => v ?? {})
 		.catch({}),
+	// email nudge on the Empire page: "later" hides it for 30 days
+	emailNudgeDismissal: z.enum(["later", "never"]).nullable().catch(null),
+	emailNudgeDismissedAt: z.string().nullable().catch(null),
 });
 export type UserPreference = z.infer<typeof UserPreferenceSchema>;
 

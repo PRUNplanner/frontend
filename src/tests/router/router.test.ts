@@ -78,6 +78,18 @@ describe("Router NavigationGuard", () => {
 		}
 	);
 
+	it("sends a logged-out email link to the login, keeping the code", async () => {
+		useUserStore().logout();
+
+		await router.push("/verify-email/ABCD1234");
+		await router.isReady();
+
+		expect(router.currentRoute.value.name).toBe("homepage");
+		expect(router.currentRoute.value.query.redirectTo).toBe(
+			"/verify-email/ABCD1234"
+		);
+	});
+
 	it("allows access to shared-plan without auth", async () => {
 		const userStore = useUserStore();
 		userStore.logout();

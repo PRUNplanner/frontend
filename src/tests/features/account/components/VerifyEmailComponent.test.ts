@@ -7,7 +7,11 @@ import {
 	afterEach,
 	vi,
 } from "vitest";
-import { flushPromises, type VueWrapper } from "@vue/test-utils";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
@@ -18,6 +22,7 @@ import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	trackEvent: vi.fn(),
+	trackException: vi.fn(),
 	trackUser: vi.fn(),
 	identifyUser: vi.fn(),
 	resetUser: vi.fn(),
@@ -27,7 +32,7 @@ const mock = new AxiosMockAdapter(apiService.client);
 const VERIFY_URL = /user\/verify_email\/$/;
 
 const OK = "account.components.verify_email.result.ok";
-const ERROR = "account.components.verify_email.result.error";
+const ERROR = "account.email_dialog.errors.invalid";
 
 const input = (wrapper: VueWrapper) => wrapper.find("input");
 const sendButton = (wrapper: VueWrapper) => wrapper.find("button");
@@ -87,7 +92,7 @@ describe("VerifyEmailComponent", () => {
 
 		expect(mock.history.post).toHaveLength(1);
 		expect(JSON.parse(mock.history.post.at(0)!.data)).toEqual({
-			code: "test-code-123",
+			code: "TEST-CODE-123",
 		});
 		expect(wrapper.text()).toContain(OK);
 		expect(wrapper.text()).not.toContain(ERROR);
@@ -95,11 +100,12 @@ describe("VerifyEmailComponent", () => {
 		expect(sendButton(wrapper).element.disabled).toBe(true);
 		expect(trackEvent).toHaveBeenCalledWith("account:email_verify", {
 			is_success: true,
+			source: "link",
 		});
 	});
 
 	it("shows the error for a rejected code and clears the input", async () => {
-		mock.onPost(VERIFY_URL).reply(400, { detail: "Invalid code." });
+		mock.onPost(VERIFY_URL).reply(400, { detail: "Invalid code.", code: "invalid" });
 		const { wrapper } = await mountComponent(VerifyEmailComponent, {
 			verifyCode: "wrong-code",
 		});
@@ -111,11 +117,13 @@ describe("VerifyEmailComponent", () => {
 		expect(input(wrapper).element.value).toBe("");
 		expect(trackEvent).toHaveBeenCalledWith("account:email_verify", {
 			is_success: false,
+			source: "link",
+			reason: "invalid",
 		});
 	});
 
 	it("replaces an earlier error with the success of a retry", async () => {
-		mock.onPost(VERIFY_URL).replyOnce(400, { detail: "Invalid code." });
+		mock.onPost(VERIFY_URL).replyOnce(400, { detail: "Invalid code.", code: "invalid" });
 		mock.onPost(VERIFY_URL).replyOnce(200, { detail: "Email verified." });
 		const { wrapper } = await mountComponent(VerifyEmailComponent, {
 			verifyCode: "wrong-code",
@@ -151,5 +159,42 @@ describe("VerifyEmailComponent", () => {
 		await flushPromises();
 		expect(sendButton(wrapper).attributes("aria-busy")).toBe("false");
 		expect(wrapper.text()).toContain(OK);
+	});
+
+	it("takes an already confirmed account as success, with a way back", async () => {
+		mock
+			.onPost(VERIFY_URL)
+			.reply(400, { detail: "Already verified.", code: "already_verified" });
+		const { wrapper } = await mountComponent(VerifyEmailComponent, {
+			verifyCode: "ABCD1234",
+		});
+
+		await send(wrapper);
+
+		expect(wrapper.text()).toContain(
+			"account.components.verify_email.result.already_verified"
+		);
+		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe("/empire");
+		expect(trackEvent).toHaveBeenCalledWith("account:email_verify", {
+			is_success: true,
+			source: "link",
+		});
+	});
+
+	it.each([
+		[400, { code: "expired" }, "expired"],
+		[400, { code: "no_code" }, "no_code"],
+		[429, {}, "throttled"],
+		[500, {}, "unknown"],
+	])("shows the text for a %i %o", async (status, body, key) => {
+		mock.onPost(VERIFY_URL).reply(status, { detail: "x", ...body });
+		const { wrapper } = await mountComponent(VerifyEmailComponent, {
+			verifyCode: "ABCD1234",
+		});
+
+		await send(wrapper);
+
+		expect(wrapper.text()).toContain(`account.email_dialog.errors.${key}`);
+		expect(wrapper.text()).not.toContain(OK);
 	});
 });

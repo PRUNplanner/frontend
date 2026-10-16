@@ -27,6 +27,9 @@ export const preferenceDefaults: IPreferenceDefault = {
 	fioRepairArrivalDays: 2,
 	fioRepairPlanLinks: {},
 
+	emailNudgeDismissal: null,
+	emailNudgeDismissedAt: null,
+
 	planOverrides: {},
 	planDefaults: {
 		includeCM: false,

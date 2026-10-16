@@ -1,13 +1,17 @@
 # account
 
 **Purpose.** This folder holds the authentication UI: login, registration,
-email verification, and requesting and performing a password reset.
+email verification, and requesting and performing a password reset. It
+also holds the email nudge: the Empire banner that asks for an email and the
+dialog that adds and confirms one.
 
 **Used by.**
 - `layout/components/HomepageHeader.vue`, which shows `LoginComponent` and
   `RegistrationComponent`.
 - `views/VerifyEmailView.vue`, `RequestPasswordResetView.vue` and
   `PasswordResetView.vue`.
+- `views/EmpireView.vue` (`EmailNudgeBanner`) and
+  `profile/components/ProfileEmail.vue` (`EmailAddDialog`).
 
 ## Key files
 
@@ -15,9 +19,18 @@ email verification, and requesting and performing a password reset.
 | --- | --- |
 | `LoginComponent.vue` | `userStore.performLogin(username, password)`, which returns `"ok"`, `"throttled"` (429) or `"failed"`. On `"ok"` it has stored the tokens and loaded the profile, then navigates: to `?redirectTo=`, else to `/empire`, but a shared plan (`shared-plan` route) stays open. A 429 shows "too many login attempts" instead of the credentials error |
 | `RegistrationComponent.vue` | `PostUserRegistration` |
-| `VerifyEmailComponent.vue` | `PostUserVerifyEmail` / `PostUserResendEmailVerification` |
+| `VerifyEmailComponent.vue` | `PostUserVerifyEmail`, which returns the result code (`verified`, `already_verified`, `invalid`, `expired`, `no_code`, `throttled`, `error`) and refreshes the profile once confirmed. The route needs a login; the guard sends a logged-out visitor to the login with `redirectTo`, so the emailed link works on any device |
+| `EmailNudgeBanner.vue` | The Empire banner (full view only): `none` (Add email, Not now, Don't remind me) or `unconfirmed` (Enter code, Send new code, Not now). Counts all plans with `GetAllPlans` once it shows |
+| `EmailAddDialog.vue` | Email, then code, then done: `PatchUserProfile` with `{email}` only, then `PostUserVerifyEmail`. Opens at `email` or `code`; used by the banner and Profile |
 | `RequestPasswordReset.vue` | `PostUserRequestPasswordReset`, enabled once the email passes the request schema and ignored while a request runs. A 429 shows the throttled message, any other error a generic one |
 | `PasswordReset.vue` | `PostUserPasswordReset`. It turns every error into a message, except a 429, which it rethrows so the component shows the throttled message |
+
+`useEmailNudge.ts` decides whether the banner shows: logged in, preferences
+loaded (`userStore.preferencesLoaded`), an email missing or unconfirmed, at
+least one plan, and not dismissed (`emailNudgeDismissal` `"never"`, or
+`"later"` under 30 days ago). Its `later` / `never` / `undo` write the two
+preferences, synced like any other. `account.util.ts` has `isEmailAddress`
+(the rule of every email field) and `maskEmail`.
 
 `useAuthPanel.ts` holds which header panel (login or registration) is open,
 as module state: `HomepageHeader` renders and toggles the panels,

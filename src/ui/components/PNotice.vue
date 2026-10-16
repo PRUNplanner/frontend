@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed } from "vue";
+	import { type Component, computed } from "vue";
 
 	// Types & Interfaces
 	import type { NoticeType } from "@/ui/ui.types";
@@ -15,15 +15,20 @@
 
 	/**
 	 * A message in the page: an error, a warning or information, with an
-	 * optional #action (e.g. a "Reload" button). Errors are announced at once
-	 * (role="alert"), the others politely (role="status").
+	 * optional #action (e.g. a "Reload" button) and icon (the type's by
+	 * default). Errors are announced at once (role="alert"), the others
+	 * politely (role="status").
 	 *
 	 * @author jplacht
 	 */
-	const { type = "info" } = defineProps<{ type?: NoticeType }>();
+	const { type = "info", icon: customIcon = undefined } = defineProps<{
+		type?: NoticeType;
+		icon?: Component;
+	}>();
 
 	const icon = computed(
 		() =>
+			customIcon ??
 			({
 				info: InfoOutlined,
 				warning: WarningSharp,

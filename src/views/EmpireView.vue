@@ -48,6 +48,7 @@
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import EmpireMaterialIOFiltered from "@/features/empire/components/EmpireMaterialIOFiltered.vue";
+	import EmailNudgeBanner from "@/features/account/components/EmailNudgeBanner.vue";
 
 	const AsyncEmpireCostOverview = defineAsyncComponent(
 		() => import("@/features/empire/components/EmpireCostOverview.vue")
@@ -505,6 +506,8 @@
 							<HelpDrawer file-name="empire" />
 						</div>
 					</div>
+
+					<EmailNudgeBanner :known-plans="planData.length" />
 
 					<div
 						class="grid grid-cols-1 xl:grid-cols-[minmax(0,600px)_minmax(0,1fr)] gap-6 m-3 sm:m-6 items-start">

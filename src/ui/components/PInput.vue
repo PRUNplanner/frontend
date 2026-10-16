@@ -26,7 +26,7 @@
 		size?: SizeKey;
 		placeholder?: string;
 		rows?: number;
-		type?: "input" | "textarea" | "password";
+		type?: "input" | "textarea" | "password" | "email";
 		/** accessible name when no <label> is linked to the field */
 		ariaLabel?: string;
 		/** e.g. "username", "current-password", "new-password" */
@@ -98,7 +98,7 @@
 				ref="inputEl"
 				name="pinput-input"
 				:disabled="disabled"
-				:type="type === 'password' ? 'password' : 'text'"
+				:type="type === 'input' ? 'text' : type"
 				:value="value"
 				:placeholder="placeholderText"
 				:aria-label="ariaLabel"
