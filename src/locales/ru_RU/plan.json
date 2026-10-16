@@ -269,11 +269,32 @@
 		"cogm": {
 			"title": "Себестоимость произведённой продукции",
 			"cogm": "@:terms.cogm",
-			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
+			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, input prices and workforce, by quantity or full cost allocation.",
 			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
-			"cx_preferences": "Настройки @:terms.cx_plural",
-			"empire_ticker": "@:terms.empire Тикер",
-			"planet_ticker": "@:terms.planets Ticker",
+			"prices_from": "Prices come from {preference}.",
+			"prices_from_empire": "Prices come from {preference}, the preference of the active empire {empire}.",
+			"no_preference": "This empire has no exchange preference. Prices are Universe · VWAP 30D.",
+			"manage_link": "Set one in Management",
+			"tags_hint": "Tags show where each input price comes from and open that rule in Exchanges.",
+			"prices": {
+				"title": "Prices in {name}",
+				"open_exchanges": "Open in Exchanges",
+				"cogm_here": "COGM here ({planet})",
+				"market": "Market · {source}",
+				"buy_all": "Buy price, all planets",
+				"not_fixed": "not fixed",
+				"use": "Use as buy price on all planets",
+				"drift": "The fixed buy price is {diff} % off the current COGM",
+				"drift_hint": "Inputs or efficiency changed since it was set.",
+				"update": "Update to {value}",
+				"matches": "Buy price matches COGM",
+				"changes": "Changes the {ticker} price in every plan using {preference}.",
+				"buyers": "{plans} buy {ticker}.",
+				"fixed_title": "Fixed prices",
+				"scope": "Fixed prices of",
+				"all_planets": "All planets",
+				"this_plan": "This plan"
+			},
 			"table": {
 				"parameters": "Параметры",
 				"recipe_runtime": "Время выполнения @:terms.recipes",
@@ -290,7 +311,8 @@
 				"workforce": "Рабочая сила",
 				"total_cost": "Общая стоимость",
 				"recipe_profit": "Прибыль @:terms.recipes",
-				"cost_split": "Разница в цене"
+				"cost_split": "Разница в цене",
+				"market": "market {price} · {diff} %"
 			}
 		},
 		"plan_analytics": {
@@ -335,6 +357,7 @@
 				"compare": "Compare plans"
 			},
 			"market": {
+				"rule_link": "{ticker} price: {source}, open the rule in Exchanges",
 				"columns": {
 					"material": "Material",
 					"side": "Side",
@@ -508,7 +531,9 @@
 		"configuration": {
 			"label": "Конфигурация",
 			"name": "Имя",
-			"empire": "@:terms.empire"
+			"empire": "@:terms.empire",
+			"prices": "Prices",
+			"no_preference": "Universe · VWAP 30D (no preference)"
 		},
 		"area": {
 			"permits": "@:terms.permits_plural",
@@ -633,7 +658,6 @@
 		},
 		"production_recipe": {
 			"cogm_title": "Затраты на изготовленные товары",
-			"cogm_error": "Вычисление COGM невозможно. Проверьте ваше представление управления, если вашей империи присваивается CX.",
 			"buttons": {
 				"cogm": "@:terms.cogm"
 			},
