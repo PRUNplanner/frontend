@@ -269,11 +269,32 @@
 		"cogm": {
 			"title": "成品成本",
 			"cogm": "@:terms.cogm",
-			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
+			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, input prices and workforce, by quantity or full cost allocation.",
 			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
-			"cx_preferences": "@:{'terms.cx_plural'}偏好设置",
-			"empire_ticker": "@:{'terms.empire'}代码",
-			"planet_ticker": "@:{‘terms.planets’}识别码",
+			"prices_from": "Prices come from {preference}.",
+			"prices_from_empire": "Prices come from {preference}, the preference of the active empire {empire}.",
+			"no_preference": "This empire has no exchange preference. Prices are Universe · VWAP 30D.",
+			"manage_link": "Set one in Management",
+			"tags_hint": "Tags show where each input price comes from and open that rule in Exchanges.",
+			"prices": {
+				"title": "Prices in {name}",
+				"open_exchanges": "Open in Exchanges",
+				"cogm_here": "COGM here ({planet})",
+				"market": "Market · {source}",
+				"buy_all": "Buy price, all planets",
+				"not_fixed": "not fixed",
+				"use": "Use as buy price on all planets",
+				"drift": "The fixed buy price is {diff} % off the current COGM",
+				"drift_hint": "Inputs or efficiency changed since it was set.",
+				"update": "Update to {value}",
+				"matches": "Buy price matches COGM",
+				"changes": "Changes the {ticker} price in every plan using {preference}.",
+				"buyers": "{plans} buy {ticker}.",
+				"fixed_title": "Fixed prices",
+				"scope": "Fixed prices of",
+				"all_planets": "All planets",
+				"this_plan": "This plan"
+			},
 			"table": {
 				"parameters": "参数",
 				"recipe_runtime": "@:{'terms.recipes'}运行时间",
@@ -290,7 +311,8 @@
 				"workforce": "劳动力",
 				"total_cost": "总成本",
 				"recipe_profit": "@:{'terms.recipes'}利润",
-				"cost_split": "成本拆分"
+				"cost_split": "成本拆分",
+				"market": "market {price} · {diff} %"
 			}
 		},
 		"plan_analytics": {
@@ -335,6 +357,7 @@
 				"compare": "Compare plans"
 			},
 			"market": {
+				"rule_link": "{ticker} price: {source}, open the rule in Exchanges",
 				"columns": {
 					"material": "Material",
 					"side": "Side",
@@ -508,7 +531,9 @@
 		"configuration": {
 			"label": "配置",
 			"name": "名称",
-			"empire": "@:terms.empire"
+			"empire": "@:terms.empire",
+			"prices": "Prices",
+			"no_preference": "Universe · VWAP 30D (no preference)"
 		},
 		"area": {
 			"permits": "@:terms.permits_plural",
@@ -633,7 +658,6 @@
 		},
 		"production_recipe": {
 			"cogm_title": "成品成本",
-			"cogm_error": "无法计算 COGM。请在“管理”页面检查你的帝国是否已分配交易所偏好。",
 			"buttons": {
 				"cogm": "@:terms.cogm"
 			},
