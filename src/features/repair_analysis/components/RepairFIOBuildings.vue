@@ -72,7 +72,7 @@
 				source="repair_due"
 				:elements="dueElements"
 				:button-text="$t('plan.tools.repair_analysis.fio.xit_due')"
-				:transfer-name="$t('plan.tools.repair_analysis.fio.xit_due')" />
+				transfer-name="Repair" />
 		</div>
 		<p
 			v-if="buildings.length !== planned"

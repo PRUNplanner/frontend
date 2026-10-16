@@ -49,6 +49,9 @@ describe("RepairMaterialList", () => {
 		expect(
 			wrapper.findComponent(XITTransferActionButton).props("elements")
 		).toHaveLength(8);
+		expect(
+			wrapper.findComponent(XITTransferActionButton).props("transferName")
+		).toBe("Repair");
 	});
 
 	it("shows the top ones first and all of them on request", async () => {

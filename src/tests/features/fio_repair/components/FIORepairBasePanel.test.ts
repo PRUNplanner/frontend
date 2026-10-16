@@ -288,7 +288,7 @@ describe("FIORepairBasePanel", () => {
 		);
 	});
 
-	it("XIT Repair: the load, named after the base, shared origin and CX buy", async () => {
+	it("XIT Repair: the load, a generic name, shared origin and CX buy", async () => {
 		const userStore = useUserStore();
 		userStore.preferences.burnOrigin = "Antares Station Warehouse";
 		userStore.preferences.defaultBuyItemsFromCX = true;
@@ -312,12 +312,13 @@ describe("FIORepairBasePanel", () => {
 					{ ticker: "LDE", value: 35 },
 				],
 				{
-					name: "Repair Bober (ZV-307b)",
+					name: "Repair",
 					origin: "Antares Station Warehouse",
 					buy: true,
 				}
 			).value
 		);
+		expect(JSON.parse(json).global.name).toBe("PRUNplanner Repair");
 		expect(JSON.parse(json).actions[0].type).toBe("CX Buy");
 		expect(JSON.parse(json).actions[1].dest).toBe("Configure on Execution");
 		expect(dialog.find("[data-testid=xit-transfer-note]").text()).toBe(

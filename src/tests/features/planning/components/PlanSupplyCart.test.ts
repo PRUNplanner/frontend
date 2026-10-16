@@ -293,6 +293,16 @@ describe("PlanSupplyCart", () => {
 			]);
 		});
 
+		it("names both XIT actions in English, whatever the locale", async () => {
+			const { wrapper } = await mountInitial();
+
+			expect(
+				wrapper
+					.findAllComponents(XITTransferActionButton)
+					.map((b) => b.props("transferName"))
+			).toEqual(["Supply Cart", "Supply Cart (Initial)"]);
+		});
+
 		it("follows the workforce and production filter", async () => {
 			const { wrapper } = await mountInitial();
 
