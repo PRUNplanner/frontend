@@ -238,6 +238,10 @@ describe("MarketExplorationView", () => {
 			).toBe(true);
 
 			await viewButton(wrapper, "exchanges").trigger("click");
+			expect(trackEvent).toHaveBeenCalledWith(
+				"market_exploration:view_change",
+				{ view: "exchanges" }
+			);
 
 			const exchanges = wrapper.findComponent({
 				name: "MarketExplorationExchanges",

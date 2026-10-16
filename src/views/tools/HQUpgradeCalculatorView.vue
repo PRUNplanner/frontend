@@ -238,6 +238,7 @@
 						</div>
 						<div class="text-end">
 							<XITTransferActionButton
+								source="hq_upgrade"
 								:elements="
 									materialData
 										.map((e) => ({

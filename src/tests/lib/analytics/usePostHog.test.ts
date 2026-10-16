@@ -114,6 +114,7 @@ describe("usePostHog", () => {
 				respect_dnt: true,
 				person_profiles: "identified_only",
 				capture_performance: { web_vitals_attribution: true },
+				session_recording: { maskAllInputs: true },
 			})
 		);
 		expect(posthog.register).toHaveBeenCalledWith({

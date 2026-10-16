@@ -3,6 +3,7 @@ import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { h, reactive, ref } from "vue";
 
 import PlanetSearchPage from "@/features/planet_search/components/PlanetSearchPage.vue";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -96,6 +97,21 @@ describe("PlanetSearchPage", () => {
 		).toEqual([{ kind: "cx", code: "NC1" }]);
 		expect(replace).toHaveBeenLastCalledWith({
 			query: { ref: "cx:NC1", j: "30" },
+		});
+	});
+
+	it("reports a switch to another view", async () => {
+		stubMedia(true);
+		const { wrapper } = await mountComponent(PlanetSearchPage);
+		await flushPromises();
+		vi.mocked(trackEvent).mockClear();
+
+		wrapper
+			.findComponent({ name: "PlanetSearchResultsBar" })
+			.vm.$emit("update:view", "chart");
+		await flushPromises();
+		expect(trackEvent).toHaveBeenCalledWith("planet_search:view_change", {
+			view: "chart",
 		});
 	});
 

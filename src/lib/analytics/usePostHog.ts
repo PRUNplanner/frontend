@@ -39,7 +39,7 @@ function maskObject<T>(value: T): T {
  * nested ones included ($current_url, $referrer, $set_once.$initial_*,
  * $exception_list, the session replay's $snapshot_data). Replay sends DOM
  * snapshots gzipped, so page text there is not scanned; the replay masks
- * inputs, the only place the code shows up.
+ * inputs (session_recording in init), the only place the code shows up.
  */
 export const maskUrlCodes: BeforeSendFn = (event) => {
 	if (!event) return event;
@@ -173,7 +173,12 @@ async function startAnalytics(): Promise<void> {
 			defaults: "2026-08-30",
 			person_profiles: "identified_only",
 			name: POSTHOG_NAME,
+			// the project setting turns it off, events come from the
+			// tracking plan
 			autocapture: true,
+			// set here, the project setting would win otherwise: inputs
+			// hold the FIO API key, email and the one-time codes
+			session_recording: { maskAllInputs: true },
 			// the router sends $pageview with route_name
 			capture_pageview: false,
 			// would follow capture_pageview otherwise

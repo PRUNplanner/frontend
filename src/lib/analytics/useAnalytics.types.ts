@@ -4,6 +4,8 @@ import type {
 	PlanCOGCProgram,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
+import type { PlanetSearchView } from "@/features/planet_search/planetSearch.schemas";
+import type { ChartView } from "@/features/market_exploration/marketExploration.types";
 
 export type PlanEditField =
 	| "building_add"
@@ -68,6 +70,17 @@ export type ToolUseProperties =
 			recipes: string[];
 			terminals: string;
 	  };
+
+// which XIT transfer button: the tool, and which of its buttons
+export type XITTransferSource =
+	| "supply_cart"
+	| "supply_cart_initial"
+	| "construction_cart"
+	| "construction_cart_need"
+	| "repair_due"
+	| "repair_materials"
+	| "fio_repair"
+	| "hq_upgrade";
 
 type Trigger = "button" | "shortcut";
 
@@ -194,6 +207,10 @@ export interface IAnalyticsEventProperties {
 
 	"material:market_drawer_open": { material_ticker: string };
 
+	"planet_search:view_change": { view: PlanetSearchView };
+	"market_exploration:view_change": { view: ChartView };
+	"resource_roi:chart_open": undefined;
+
 	"tool:use": ToolUseProperties;
 
 	"repair_analysis:interval_set": {
@@ -214,8 +231,8 @@ export interface IAnalyticsEventProperties {
 	"xit:burn_open": undefined;
 	"xit:burn_copy": undefined;
 	"xit:burn_ship_fit": { weight: number; volume: number };
-	"xit:transfer_open": undefined;
-	"xit:transfer_copy": undefined;
+	"xit:transfer_open": { source?: XITTransferSource };
+	"xit:transfer_copy": { source?: XITTransferSource };
 
 	"app:navigation_toggle": { navigation_style: "full" | "collapsed" };
 	"app:version_reload": undefined;

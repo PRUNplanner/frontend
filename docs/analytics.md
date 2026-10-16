@@ -154,6 +154,9 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `fio_repair:base_open` | `status` (`overdue`, `soon`, `later`, `unknown`), `confidence` (`match`, `likely`, `picked`, `nopick`, `none`) | a base was opened in FIO Repair (not the first one selected on load) |
 | `fio_repair:plan_link_set` | `to` (`plan`, `none`, `auto`) | a plan, "no plan" or "back to automatic" was picked for a FIO Repair base |
 | `fio_repair:setting_change` | `setting` (`interval`, `due_soon`, `arrival`, `exchange`, `use_plans`) | a FIO Repair setting was changed on the page, debounced 1 s per setting |
+| `planet_search:view_change` | `view` (`list`, `matrix`, `chart`) | Planet Search switched views (also when a link opens another view on the page) |
+| `market_exploration:view_change` | `view` (`candles`, `exchanges`) | Market Exploration switched between the candle chart and the "All exchanges" chart |
+| `resource_roi:chart_open` | | the Resource ROI chart drawer was opened |
 
 `tool:use` means a result, not an opened page (pageviews carry
 `route_name` for that). Tools with an input count only a result for an
@@ -182,14 +185,19 @@ so for them `tool:use` is close to a pageview that got a result:
 | `xit:burn_open` | | |
 | `xit:burn_copy` | | |
 | `xit:burn_ship_fit` | `weight`, `volume` | |
-| `xit:transfer_open` | | |
-| `xit:transfer_copy` | | |
+| `xit:transfer_open` | `source` | |
+| `xit:transfer_copy` | `source` | |
 | `app:navigation_toggle` | `navigation_style` | |
 | `app:version_reload` | | |
 | `app:remote_change` | `object_type` (`plan`, `empire`, `cx`), `has_unsaved_edits`, `is_deleted` | another tab saved or deleted what an open editor shows: it reloaded, or (with unsaved edits, or deleted) showed a notice. A deleted empire is sent by the empire page, always with `has_unsaved_edits: false` |
 | `app:session_change` | `reason` (`logout`, `login`, `other_user`) | another tab logged out, logged in, or logged in as another user; sent before this tab resets or reloads |
 | `app:db_blocked` | | the local game data database waits on an older PRUNplanner tab after a deploy |
 | `onboarding:step_click` | `step` (`empire_save`, `planet_search`, `exchanges`) | a step of the first-run card on the Empire page |
+
+`source` on the XIT transfer events names the button: `supply_cart`,
+`supply_cart_initial` ("XIT Initial"), `construction_cart`,
+`construction_cart_need` (one building's row), `repair_due`, `repair_materials`,
+`fio_repair`, `hq_upgrade`. Before 2026-10-16 the events had no properties.
 
 ## Pageviews
 

@@ -462,6 +462,7 @@
 				{{ $t("plan.tools.construction_cart.built_reset_all") }}
 			</PButton>
 			<XITTransferActionButton
+				source="construction_cart"
 				:elements="xitTransferElementsOverview"
 				transfer-name="Construct"
 				:drawer-width="400" />
@@ -708,6 +709,7 @@
 							class="w-62.5!" />
 					</template>
 					<XITTransferActionButton
+						source="construction_cart_need"
 						:elements="xitTransferElementsNeed"
 						transfer-name="Construct"
 						:drawer-width="400" />
