@@ -25,7 +25,10 @@ as module state: `HomepageHeader` renders and toggles the panels,
 
 ## Data
 
-- Tokens and the profile live in `useUserStore` and are persisted.
+- Tokens and the profile live in `useUserStore` and are persisted. The
+  profile is loaded once per page load (`userStore.loadProfile()`): at login,
+  and in `App.vue` for a session restored from storage, so an email confirmed
+  or FIO linked elsewhere shows after a reload.
 - Refreshing the tokens and logging out are handled globally by
   `src/util/axiosSetup.ts` and `userStore.logout()`. See
   [../data-layer.md](../data-layer.md).
