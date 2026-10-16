@@ -13,15 +13,12 @@
 		}
 	},
 	"change_profile": {
-		"title": "Profil",
 		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
-			"update_profile": "Profil aktualisieren",
 			"verify_email": "E-Mail verifizieren",
 			"resend_code": "Code erneut senden",
 			"code_requested": "Code angefordert."
 		},
-		"fio_info": "FIO Updates werden automatisch von PRUNplanner verwaltet.",
 		"form": {
 			"fio_apikey": "FIO API Key",
 			"prun_username": "PrUn Benutzername",
@@ -57,27 +54,20 @@
 		}
 	},
 	"fio_information": {
-		"title": "Was ist FIO & Warum solltest du es benutzen?",
+		"guide": "How to get a FIO API key",
 		"help": {
-			"title": "5 einfache Schritte zur Integration von FIO und PRUNplanner",
 			"p1": "FIO ist eine von der Community entwickelte {link}, die Spieldaten sammelt und sie außerhalb von Prosperous Universe verfügbar macht. FIO ist kostenlos benutzbar.",
-			"p2": "Einfach die Chrome- oder Firefox-Erweiterung installiere. Aktualisiere dein Browser-Fenster mit APEX und klicke auf die Erweiterungsschaltfläche oben rechts in deinem Browser, um ein Konto zu erstellen. FIO sammelt automatisch (nur) deine Spieldaten, während du weiterspielst.",
-			"p3": "Du kannst dich jetzt in den {link} einloggen, um deine Daten zu sehen und einen API-Schlüssel für PRUNplanner zu erstellen, der deine Lagerbestände und Standorte (Planeten, Schiffe, Lager) importiert.",
-			"p4": "Das Erstellen des API-Schlüssels ist einfach, wenn du auf {link} Seite gehst und \"Create API Key\" klickst. Gib einen Namen für deinen Key (z.B. \"PRUNplanner\") und dein FIO Passwort ein. Du musst \"Allow Writes\" (\"Schreiben erlauben\") nicht auswählen, da PRUNplanner deine Daten manipulieren, sondern nur lesen möchte.",
-			"p5": "Warte einige Minuten, damit PRUNplanner deine Daten von FIO synchronisieren kann und freue dich auf noch mehr Planungsmöglichkeiten. Deine Daten werden regelmäßig, automatisch im Hintergrund aktualisiert.",
 			"steps": {
 				"1": "Lade und installiere die {link}",
 				"2": "Öffne dein Spiel, klicke den Button der Browser-Erweiterung und erstelle deinen FIO Account",
 				"3": "Gehe zur FIO Webseite, öffne deine {link} und erstelle einen API-Schlüssel für PRUNplanner",
-				"4": "Kopiere den API-Schlüssel und füge ihn auf dieser Seite ein. Fülle außerdem das Feld mit deinem Prosperous Universe Benutzernamen aus und drücke den \"Profil aktualisieren\" Button",
+				"4": "Enter your API key and your Prosperous Universe username above and press \"Save\".",
 				"5": "Warte einige Minuten, damit PRUNplanner deine Daten von FIO synchronisieren kann und freue dich auf noch mehr Planungsmöglichkeiten. Deine Daten werden regelmäßig, automatisch im Hintergrund aktualisiert."
 			},
 			"refined_prun": "Während du gerade sowieso dein Spielerlebnis verbessert, schaue dir auch {link} an: Eine weitere Browser-Erweiterung, die die Benutzeroberfläche im Spiel verbessert und viele weitere Möglichkeiten mitbringt."
 		},
 		"links": {
 			"browser_extension": "Browser Erweiterung",
-			"fio_website": "FIO Website",
-			"fio_settings": "FIO Settings",
 			"fio_extension": "FIO Browser-Erweiterung",
 			"settings_short": "Einstellungen",
 			"refined_prun": "Refined PrUn"
@@ -85,7 +75,7 @@
 	},
 	"preferences": {
 		"title": "Einstellungen",
-		"description": "Use this panel to review and customize your PRUNplanner settings.",
+		"description": "Saved to your account as soon as you change them.",
 		"form": {
 			"tool_preferences": "PRUNplanner Einstellungen",
 			"language": "Sprache",
@@ -101,6 +91,11 @@
 			"resupply_days": "Nachschub-Tage",
 			"xit_origin": "XIT Origin",
 			"buy_from_cx": "XIT Buy from CX",
+			"fio_repair": "FIO Repair",
+			"fio_repair_interval": "Repair every (no plan)",
+			"fio_repair_due_soon": "Due soon",
+			"fio_repair_arrival": "Arrival days",
+			"fio_repair_note": "The XIT origin and \"Buy from CX\" are shared with FIO Burn.",
 			"plan_suggestions": "Plan-Vorschläge",
 			"plan_suggestions_help": "Beliebte Gebäude und Rezepte auf dem Planeten, Analytics und ein typisches Setup für leere Pläne",
 			"privacy": "Privatsphäre",
@@ -110,7 +105,25 @@
 			"plan_specific": "Planspezifische Einstellungen",
 			"plan_specific_description": "Diese Einstellungen werden in einzelnen Plänen verwaltet. Dieser Abschnitt bietet eine Übersicht über die Einstellungen, die du bisher angepasst hast - um sie zu ändern, wähle den entsprechenden Plan.",
 			"plan": "Plan",
-			"preferences": "Einstellungen"
+			"preferences": "Einstellungen",
+			"planning": "Planning",
+			"plan_specific_empty": "No plan has its own settings yet."
 		}
+	},
+	"buttons": {
+		"save": "Save"
+	},
+	"sections": {
+		"fio": {
+			"title": "FIO connection",
+			"description": "Imports your storage, sites and ships from FIO. PRUNplanner refreshes it in the background."
+		},
+		"account": {
+			"title": "Account"
+		}
+	},
+	"account": {
+		"verified": "Verified",
+		"not_verified": "Not verified"
 	}
 }
