@@ -1,33 +1,58 @@
-# Price Calculation: VWAP
+# Exchange Preferences
 
-PRUNplanner utilizes a Volume-Weighted Average Price (VWAP) to estimate a material's fair market value. Unlike a simple average, VWAP gives more "weight" to trades with higher volumes, providing a stable and realistic benchmark by focusing on where the bulk of the market liquidity actually sits.
+An exchange preference sets the prices your plans use: which exchange and price basis, and fixed prices for materials you get at your own cost or from a partner. Assign a preference to an empire in Management; every plan of that empire then uses it.
 
-Relying on current Ask (Sell) or Bid (Buy) prices can be misleading because they often represent a single outlier or a tiny fraction of the volume you actually need. These prices change by the day and rarely reflect the true cost. By using VWAP, you filter out market noise and "lowball" orders, ensuring your profit projections are based on actual trades rather than temporary listings.
+The page opens on the **Overview**: every material your plans buy or sell, the price it gets and where that price comes from. Expand a row to see the full cascade for each planet. Notes above the table point to rules that need a look.
 
-# Price Priorities
+# How a Price Is Found
 
-When PRUNplanner calculates prices, it follows this order of preference:
+For every material, PRUNplanner looks for a buy price (for what a plan consumes) and a sell price (for what it produces). It checks these levels in order and takes the first rule that matches:
 
-- Planet Material-based
-- Empire Material-based
-- Planet CX-based
-- Empire CX-based
-- Fallback: 30 Day Universe VWAP
+1. **Planet fixed price**: a fixed price set on that planet
+2. **All-planets fixed price**
+3. **Planet exchange**: the exchange rule set on that planet
+4. **All-planets exchange**
+5. **Universe · VWAP 30D**, when no rule above matches
 
-# Preference Types
+An all-planets fixed price wins over a planet's exchange rule.
 
-You can set preferences as BUY, SELL, or BOTH:
+## Buy, Sell or Both
 
-- **BUY** is used when the material is consumed.
-- **SELL** is used when the material is produced.
-- **BOTH** applies to both cases.
+A rule can apply to buying, selling or both. If a level has no rule for the side a plan needs (for example only a buy rule, and the plan sells the material), that level is skipped and the next one is checked, down to Universe · VWAP 30D.
 
-If only one type is set, and the calculation requires the other, PRUNplanner will check for a higher-level preference. If none exists, the value defaults to 0.
+## Exchanges Without a Price
 
-# Examples
+When an exchange rule matches but its exchange has no price for a material (no trades, no asks or no bids), the price is **0 ȼ**. It does not fall through to the next level. The page shows these prices in amber and lists them in the notes, so you can set a fixed price or pick another exchange or basis.
 
-1: The price for LST should be used. You haven’t defined a Material-based preference for Limestone. The system checks your CX preferences: first at the Planet level, then at the Empire level. Since you’ve defined both, the Planet CX preference takes priority.
+# Price Basis: VWAP, Ask and Bid
 
-2: The price for NS should be used. You’ve defined Material-based preferences for NS at both the Empire and Planet levels. The Planet Material-based preference overrides the Empire one. Because a Material-based preference exists, no CX preference is applied.
+PRUNplanner can use a Volume-Weighted Average Price (VWAP) over 7 or 30 days. VWAP gives more weight to trades with higher volumes, so it reflects where most of the trading happened instead of single outlier orders.
 
-3: The price for BBH should be used. You have not set any Material-based or CX-based preferences. The price for BBH therefore is calculated with the VWAP 30D Universe metric.
+Ask and Bid are today's order book: the cheapest offer and the highest bid. They change daily and can be missing for materials with little trading. Universe only has VWAP prices.
+
+# Presets
+
+- **Average · VWAP 30D** uses the VWAP 30D of the exchange for buying and selling.
+- **Trade now · buy Ask, sell Bid** buys at the exchange's Ask and sells at its Bid. Not available for Universe.
+
+Presets work on the scope's exchange, else the all-planets exchange, else NC1.
+
+# Fixed Prices and COGM
+
+Fixed prices suit materials you make yourself and use at cost, or prices agreed with a corporation or partner. Leave a side empty to use the exchange price for it.
+
+On **All planets**, the fixed price table shows the market price without the fixed one and, for materials your plans make, the lowest COGM (cost of goods manufactured) among the plans that use the preference. **Use** sets the buy price to that COGM. In a plan's COGM tool, **Use as buy price** does the same. A note tells you when a fixed buy price is more than 2 % off the COGM.
+
+# Planet Exceptions
+
+Most players use one home exchange for all planets. When one planet needs something else, open it in the list and set its own exchange rule or fixed prices. Its rules win over the all-planets rules on that planet, except all-planets fixed prices, which still win over the planet's exchange.
+
+Planets with stored rules that no plan uses any more are listed under **Not in any plan**. Their rules stay saved until you delete them.
+
+# Saving
+
+Changes are not used by your plans until you save them. The save bar counts the changed scopes; Discard goes back to the saved rules. The page asks before you leave or switch preference with unsaved changes.
+
+# CSV Import and Export
+
+**Export CSV** downloads every rule of the preference, including unsaved changes. **Import CSV** reads such a file and asks before it replaces all rules of the preference. An import is unsaved until you save it.
