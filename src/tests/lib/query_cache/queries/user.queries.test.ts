@@ -3,7 +3,10 @@ import { createPinia, setActivePinia } from "pinia";
 
 import { userQueries } from "@/lib/query_cache/queries/user.queries";
 import { callRegisterUser } from "@/features/api/userData.api";
-import { callPostCreateAPIKey } from "@/features/api/apiKeysData.api";
+import {
+	callDeleteAPIKey,
+	callPostCreateAPIKey,
+} from "@/features/api/apiKeysData.api";
 import { trackEvent, trackUser } from "@/lib/analytics/useAnalytics";
 import { useUserStore } from "@/stores/userStore";
 
@@ -20,8 +23,8 @@ vi.mock("@/features/api/userData.api", async (importOriginal) => ({
 
 vi.mock("@/features/api/apiKeysData.api", () => ({
 	callPostCreateAPIKey: vi.fn(),
-	callGetAPIKeys: vi.fn(),
 	callDeleteAPIKey: vi.fn(),
+	callGetAPIKeys: vi.fn(),
 }));
 
 const REGISTRATION = {
@@ -132,6 +135,18 @@ describe("userQueries analytics", () => {
 		await userQueries.PostCreateAPIKey.fetchFn({ name: "key" });
 
 		expect(trackEvent).toHaveBeenCalledWith("account:api_key_create");
+	});
+
+	it("reports a revoked API key only after the call succeeded", async () => {
+		vi.mocked(callDeleteAPIKey).mockRejectedValueOnce(new Error("500"));
+		await expect(
+			userQueries.DeleteAPIKey.fetchFn({ id: "1" })
+		).rejects.toThrow();
+		expect(trackEvent).not.toHaveBeenCalledWith("account:api_key_revoke");
+
+		vi.mocked(callDeleteAPIKey).mockResolvedValue(true);
+		await userQueries.DeleteAPIKey.fetchFn({ id: "1" });
+		expect(trackEvent).toHaveBeenCalledWith("account:api_key_revoke");
 	});
 
 	it("sets the preference person properties when they are saved", async () => {
