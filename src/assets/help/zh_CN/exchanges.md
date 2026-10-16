@@ -1,33 +1,58 @@
-# 价格计算：VWAP
+# Exchange Preferences
 
-PRUNplanner 使用成交量加权平均价（VWAP）来估算物资的合理市场价值。 与简单平均价不同，VWAP 会给予成交量更大的交易更高“权重”，通过关注市场主要流动性实际集中在哪里，提供更稳定、更贴近现实的价格基准。与简单平均价不同，VWAP 会给予成交量更大的交易更高“权重”，通过关注市场主要流动性实际集中在哪里，提供更稳定、更贴近现实的价格基准。
+An exchange preference sets the prices your plans use: which exchange and price basis, and fixed prices for materials you get at your own cost or from a partner. Assign a preference to an empire in Management; every plan of that empire then uses it.
 
-仅依赖当前 Ask（卖价）或 Bid（买价）可能会产生误导，因为它们往往只是单个异常报价，或只代表你实际所需成交量中的很小一部分。这些价格每天都会变化，而且很少能反映真实成本。使用 VWAP 可以过滤市场噪音和“低价钓鱼”订单，确保你的利润预测基于实际成交，而不是临时挂单。
+The page opens on the **Overview**: every material your plans buy or sell, the price it gets and where that price comes from. Expand a row to see the full cascade for each planet. Notes above the table point to rules that need a look.
 
-# 价格优先级
+# How a Price Is Found
 
-PRUNplanner 计算价格时，会按照以下优先顺序：
+For every material, PRUNplanner looks for a buy price (for what a plan consumes) and a sell price (for what it produces). It checks these levels in order and takes the first rule that matches:
 
-- 行星的物资价格
-- 帝国物资价格
-- 行星的交易所偏好价格
-- 帝国 CX 价格
-- 备用：30 天全宇宙 VWAP
+1. **Planet fixed price**: a fixed price set on that planet
+2. **All-planets fixed price**
+3. **Planet exchange**: the exchange rule set on that planet
+4. **All-planets exchange**
+5. **Universe · VWAP 30D**, when no rule above matches
 
-# 偏好类型
+An all-planets fixed price wins over a planet's exchange rule.
 
-你可以将偏好设置为 BUY、SELL 或 BOTH：
+## Buy, Sell or Both
 
-- BUY 用于该物资被消耗时。
-- SELL 用于该物资被生产时。
-- BOTH 适用于以上两种情况。
+A rule can apply to buying, selling or both. If a level has no rule for the side a plan needs (for example only a buy rule, and the plan sells the material), that level is skipped and the next one is checked, down to Universe · VWAP 30D.
 
-如果只设置了一种类型，而计算需要另一种类型，PRUNplanner 会检查更高层级的偏好设置。 如果不存在，则该值默认为 0。如果不存在，则该值默认为 0。
+## Exchanges Without a Price
 
-# 示例
+When an exchange rule matches but its exchange has no price for a material (no trades, no asks or no bids), the price is **0 ȼ**. It does not fall through to the next level. The page shows these prices in amber and lists them in the notes, so you can set a fixed price or pick another exchange or basis.
 
-1：应使用 LST 的价格。你尚未为 Limestone 定义基于物资的偏好设置。系统会检查你的交易所偏好设置：先检查行星层级，再检查帝国层级。由于两者都已定义，因此行星交易所偏好设置优先。
+# Price Basis: VWAP, Ask and Bid
 
-2：应使用 NS 的价格。你已在帝国和行星层级都为营养液定义了基于物资的偏好设置。行星层级的基于物资的偏好设置会覆盖帝国层级的设置。由于已存在基于物资的偏好设置，因此不会应用 CX 偏好设置。
+PRUNplanner can use a Volume-Weighted Average Price (VWAP) over 7 or 30 days. VWAP gives more weight to trades with higher volumes, so it reflects where most of the trading happened instead of single outlier orders.
 
-3：应使用 BBH 的价格。你尚未设置任何基于物资或基于 CX 的偏好设置。因此，BBH 的价格会使用 30 天全宇宙 VWAP 指标计算。
+Ask and Bid are today's order book: the cheapest offer and the highest bid. They change daily and can be missing for materials with little trading. Universe only has VWAP prices.
+
+# Presets
+
+- **Average · VWAP 30D** uses the VWAP 30D of the exchange for buying and selling.
+- **Trade now · buy Ask, sell Bid** buys at the exchange's Ask and sells at its Bid. Not available for Universe.
+
+Presets work on the scope's exchange, else the all-planets exchange, else NC1.
+
+# Fixed Prices and COGM
+
+Fixed prices suit materials you make yourself and use at cost, or prices agreed with a corporation or partner. Leave a side empty to use the exchange price for it.
+
+On **All planets**, the fixed price table shows the market price without the fixed one and, for materials your plans make, the lowest COGM (cost of goods manufactured) among the plans that use the preference. **Use** sets the buy price to that COGM. In a plan's COGM tool, **Use as buy price** does the same. A note tells you when a fixed buy price is more than 2 % off the COGM.
+
+# Planet Exceptions
+
+Most players use one home exchange for all planets. When one planet needs something else, open it in the list and set its own exchange rule or fixed prices. Its rules win over the all-planets rules on that planet, except all-planets fixed prices, which still win over the planet's exchange.
+
+Planets with stored rules that no plan uses any more are listed under **Not in any plan**. Their rules stay saved until you delete them.
+
+# Saving
+
+Changes are not used by your plans until you save them. The save bar counts the changed scopes; Discard goes back to the saved rules. The page asks before you leave or switch preference with unsaved changes.
+
+# CSV Import and Export
+
+**Export CSV** downloads every rule of the preference, including unsaved changes. **Import CSV** reads such a file and asks before it replaces all rules of the preference. An import is unsaved until you save it.
