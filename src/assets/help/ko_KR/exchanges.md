@@ -1,33 +1,58 @@
-# 가격 계산: 거래량 가중 평균 가격
+# Exchange Preferences
 
-PRUNplanner는 자재의 공정 시장 가치를 추정하기 위해 거래량 가중 평균 가격(VWAP, Volume-Weighted Average Price)을 사용합니다. 단순 평균과 달리 거래량 가중 평균은 거래량이 큰 거래에 더 높은 “가중치”를 부여합니다. 이를 통해 시장 유동성이 실제로 많이 형성되어 있는 가격대를 중심으로, 더 안정적이고 현실적인 기준 가격을 제공합니다.
+An exchange preference sets the prices your plans use: which exchange and price basis, and fixed prices for materials you get at your own cost or from a partner. Assign a preference to an empire in Management; every plan of that empire then uses it.
 
-현재 매도 호가나 매수 호가에만 의존하면 가격에 대한 오해가 생길 수 있습니다. 이런 가격은 거래량 전체를 대표하기보다는, 단일 이상치이거나 실제로 필요한 물량의 아주 작은 일부만을 반영하는 경우가 많기 때문입니다. 또한 이러한 가격은 날마다 변하며 실제 비용을 제대로 반영하지 않는 경우가 많습니다. 거래량 가중 평균 가격을 사용하면 시장의 잡음과 지나치게 낮은 매수 주문을 걸러낼 수 있습니다. 그 결과 수익 예측이 일시적인 호가가 아니라 실제 거래를 기반으로 계산됩니다.
+The page opens on the **Overview**: every material your plans buy or sell, the price it gets and where that price comes from. Expand a row to see the full cascade for each planet. Notes above the table point to rules that need a look.
 
-# 가격 우선순위
+# How a Price Is Found
 
-PRUNplanner가 가격을 계산할 때는 다음과 같은 우선순위를 따릅니다:
+For every material, PRUNplanner looks for a buy price (for what a plan consumes) and a sell price (for what it produces). It checks these levels in order and takes the first rule that matches:
 
-- 행성 자재 기준
-- 제국 자재 기준
-- 행성 거래소 기준
-- 제국 거래소 기준
-- 대체값: 30일 우주 거래량 가중 평균 가격
+1. **Planet fixed price**: a fixed price set on that planet
+2. **All-planets fixed price**
+3. **Planet exchange**: the exchange rule set on that planet
+4. **All-planets exchange**
+5. **Universe · VWAP 30D**, when no rule above matches
 
-# 선호 설정
+An all-planets fixed price wins over a planet's exchange rule.
 
-선호 설정은 구매, 판매, 또는 모두로 지정할 수 있습니다:
+## Buy, Sell or Both
 
-- **구매**는 해당 자재가 소비될 때 사용됩니다.
-- **판매**는 해당 자재가 생산될 때 사용됩니다.
-- **모두**는 양쪽에 모두 사용됩니다.
+A rule can apply to buying, selling or both. If a level has no rule for the side a plan needs (for example only a buy rule, and the plan sells the material), that level is skipped and the next one is checked, down to Universe · VWAP 30D.
 
-하나의 유형만 설정되어 있는데 계산에 반대 유형이 필요한 경우, PRUNplanner는 더 상위 단계의 선호 설정을 확인합니다. 해당하는 설정이 없으면 값은 기본적으로 0이 됩니다.
+## Exchanges Without a Price
 
-# 예시
+When an exchange rule matches but its exchange has no price for a material (no trades, no asks or no bids), the price is **0 ȼ**. It does not fall through to the next level. The page shows these prices in amber and lists them in the notes, so you can set a fixed price or pick another exchange or basis.
 
-1: LST의 가격을 사용해야 하는 경우입니다. Limestone에 대한 자재 기준 선호 설정을 정의하지 않았습니다. 시스템은 CX 선호 설정을 확인하며, 먼저 행성 수준을 확인한 뒤 제국 수준을 확인합니다. 두 설정이 모두 정의되어 있으므로 행성 CX 선호 설정이 우선 적용됩니다.
+# Price Basis: VWAP, Ask and Bid
 
-2: NS의 가격을 사용해야 하는 경우입니다. NS에 대해 제국과 행성 수준 모두에서 자재 기준 선호 설정을 정의했습니다. 이 경우 행성 자재 기준 선호 설정이 제국 설정보다 우선합니다. 자재 기준 선호 설정이 존재하므로 CX 선호 설정은 적용되지 않습니다.
+PRUNplanner can use a Volume-Weighted Average Price (VWAP) over 7 or 30 days. VWAP gives more weight to trades with higher volumes, so it reflects where most of the trading happened instead of single outlier orders.
 
-3: BBH의 가격을 사용해야 하는 경우입니다. 자재 기준 선호 설정이나 CX 기준 선호 설정을 아무것도 지정하지 않았습니다. 따라서 BBH의 가격은 30일 우주 거래량 가중 평균 가격을 사용해 계산됩니다.
+Ask and Bid are today's order book: the cheapest offer and the highest bid. They change daily and can be missing for materials with little trading. Universe only has VWAP prices.
+
+# Presets
+
+- **Average · VWAP 30D** uses the VWAP 30D of the exchange for buying and selling.
+- **Trade now · buy Ask, sell Bid** buys at the exchange's Ask and sells at its Bid. Not available for Universe.
+
+Presets work on the scope's exchange, else the all-planets exchange, else NC1.
+
+# Fixed Prices and COGM
+
+Fixed prices suit materials you make yourself and use at cost, or prices agreed with a corporation or partner. Leave a side empty to use the exchange price for it.
+
+On **All planets**, the fixed price table shows the market price without the fixed one and, for materials your plans make, the lowest COGM (cost of goods manufactured) among the plans that use the preference. **Use** sets the buy price to that COGM. In a plan's COGM tool, **Use as buy price** does the same. A note tells you when a fixed buy price is more than 2 % off the COGM.
+
+# Planet Exceptions
+
+Most players use one home exchange for all planets. When one planet needs something else, open it in the list and set its own exchange rule or fixed prices. Its rules win over the all-planets rules on that planet, except all-planets fixed prices, which still win over the planet's exchange.
+
+Planets with stored rules that no plan uses any more are listed under **Not in any plan**. Their rules stay saved until you delete them.
+
+# Saving
+
+Changes are not used by your plans until you save them. The save bar counts the changed scopes; Discard goes back to the saved rules. The page asks before you leave or switch preference with unsaved changes.
+
+# CSV Import and Export
+
+**Export CSV** downloads every rule of the preference, including unsaved changes. **Import CSV** reads such a file and asks before it replaces all rules of the preference. An import is unsaved until you save it.
