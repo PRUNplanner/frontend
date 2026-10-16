@@ -13,15 +13,12 @@
 		}
 	},
 	"change_profile": {
-		"title": "个人资料",
 		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
-			"update_profile": "更新个人资料",
 			"verify_email": "验证电子邮件",
 			"resend_code": "重新发送验证码",
 			"code_requested": "验证码已发送。"
 		},
-		"fio_info": "FIO 数据更新由 PRUNplanner 后端自动处理。",
 		"form": {
 			"fio_apikey": "FIO API 密钥",
 			"prun_username": "PrUn 用户名",
@@ -57,27 +54,20 @@
 		}
 	},
 	"fio_information": {
-		"title": "什么是 FIO？为什么要使用它？",
+		"guide": "How to get a FIO API key",
 		"help": {
-			"title": "五步实现 PRUNplanner 集成 FIO",
 			"p1": "FIO 是由社区开发的{link}，用于收集你的游戏数据，并让这些数据可在 Prosperous Universe 外部使用，而且完全免费。",
-			"p2": "安装 Chrome 或 Firefox 扩展，在打开 APEX 的情况下重新加载浏览器，然后点击浏览器右上角的扩展按钮创建账户。之后你继续游戏时，FIO 会自动收集（仅限）你的游戏数据。",
-			"p3": "现在你可以登录{link}查看你的数据，并创建一个 API 密钥。PRUNplanner 将使用它导入你的仓储数据（你在各处拥有的物资）以及站点数据（行星、飞船、仓库）。",
-			"p4": "创建密钥很简单：前往{link}页面并点击“Create API Key”（创建API密钥）按钮。为你的密钥输入一个名称（例如“PRUNplanner”）以及你的 FIO 密码。你不需要启用“Allow Writes”（允许写入），因为 PRUNplanner 不会修改你的任何数据，只会读取并使用它。",
-			"p5": "等待 PRUNplanner 几分钟后，你的游戏数据就会显示出来。之后你就可以查看何时维修飞船、在创建或修改规划时查看已建建筑，以及判断何时为基地补给。",
 			"steps": {
 				"1": "下载并安装{link}",
 				"2": "打开游戏，点击扩展按钮并注册你的 FIO 账户",
 				"3": "前往 FIO 网站，打开你的{link}，并为 PRUNplanner 创建一份 API 密钥",
-				"4": "复制并在上方个人资料中输入你的 API 密钥和 Prosperous Universe 用户名，然后点击“更新资料”按钮",
+				"4": "Enter your API key and your Prosperous Universe username above and press \"Save\".",
 				"5": "等待几分钟，让 PRUNplanner 获取你的数据，然后就可以使用更多规划功能。你的数据会在后台自动更新，无需额外操作。"
 			},
 			"refined_prun": "在增强游戏体验的同时，也可以看看{link}：这是另一个浏览器扩展，可以大幅简化用户界面并添加大量功能。"
 		},
 		"links": {
 			"browser_extension": "浏览器扩展",
-			"fio_website": "FIO 网站",
-			"fio_settings": "FIO 设置",
 			"fio_extension": "FIO 浏览器扩展",
 			"settings_short": "设置",
 			"refined_prun": "Refined PrUn"
@@ -85,7 +75,7 @@
 	},
 	"preferences": {
 		"title": "偏好设置",
-		"description": "使用此面板查看并修改您的 PRUNplanner 设置。",
+		"description": "Saved to your account as soon as you change them.",
 		"form": {
 			"tool_preferences": "工具偏好设置",
 			"language": "语言",
@@ -101,6 +91,11 @@
 			"resupply_days": "补给天数",
 			"xit_origin": "XIT 来源",
 			"buy_from_cx": "XIT 从交易所购买",
+			"fio_repair": "FIO Repair",
+			"fio_repair_interval": "Repair every (no plan)",
+			"fio_repair_due_soon": "Due soon",
+			"fio_repair_arrival": "Arrival days",
+			"fio_repair_note": "The XIT origin and \"Buy from CX\" are shared with FIO Burn.",
 			"plan_suggestions": "规划建议",
 			"plan_suggestions_help": "行星上受欢迎的建筑物和生产模板、 星球洞察和新规划的典型设置",
 			"privacy": "隐私",
@@ -110,7 +105,25 @@
 			"plan_specific": "规划专属设置",
 			"plan_specific_description": "这些设置在各个规划中单独管理。本部分展示你目前已自定义的偏好设置概览；如需修改，请前往对应的规划。",
 			"plan": "规划",
-			"preferences": "偏好设置"
+			"preferences": "偏好设置",
+			"planning": "Planning",
+			"plan_specific_empty": "No plan has its own settings yet."
 		}
+	},
+	"buttons": {
+		"save": "Save"
+	},
+	"sections": {
+		"fio": {
+			"title": "FIO connection",
+			"description": "Imports your storage, sites and ships from FIO. PRUNplanner refreshes it in the background."
+		},
+		"account": {
+			"title": "Account"
+		}
+	},
+	"account": {
+		"verified": "Verified",
+		"not_verified": "Not verified"
 	}
 }
