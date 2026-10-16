@@ -218,11 +218,18 @@ export const useUserStore = defineStore(
 			refreshToken.value = refresh;
 
 			// trigger profile refresh non-blocking
+			loadProfile();
+		}
+
+		/**
+		 * Loads the profile once per page load: after a login, or for a
+		 * session restored from storage, whose stored profile may be stale
+		 * (e.g. the email was confirmed on another device)
+		 */
+		function loadProfile(): void {
 			if (initialProfileCalled.value) return;
 
 			initialProfileCalled.value = true;
-
-			// make get profile call
 			performGetProfile();
 		}
 
@@ -413,6 +420,7 @@ export const useUserStore = defineStore(
 			performLogin,
 			performTokenRefresh,
 			performGetProfile,
+			loadProfile,
 		};
 	},
 	{

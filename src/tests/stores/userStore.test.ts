@@ -71,6 +71,24 @@ describe("User Store", () => {
 		expect(getProfile).toHaveBeenCalledTimes(2);
 	});
 
+	it("loadProfile: a restored session loads its profile once per page load", () => {
+		const userStore = useUserStore();
+		const getProfile = vi
+			.mocked(callGetProfile)
+			.mockResolvedValue({} as UserProfile);
+		getProfile.mockClear();
+		// tokens restored from storage, no setToken
+		userStore.accessToken = "access";
+		userStore.refreshToken = "refresh";
+
+		userStore.loadProfile();
+		userStore.loadProfile();
+		// a token refresh later in the same page load
+		userStore.setToken("access-2", "refresh-2");
+
+		expect(getProfile).toHaveBeenCalledTimes(1);
+	});
+
 	it("Perform Login and set token: ok", async () => {
 		const userStore = useUserStore();
 

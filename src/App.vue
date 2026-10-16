@@ -74,15 +74,17 @@
 	onMounted(() => {
 		startWatch();
 
-		// a session restored from storage loads no profile, analytics still
-		// needs to know the user once they consent
+		// a session restored from storage: analytics knows the user from the
+		// stored profile until the fresh one (loaded below) arrives
 		if (userStore.profile) identifyUser(userStore.profile);
 
 		if (userStore.isLoggedIn) {
 			// start user activity monitor if logged in
 			const _activity = userActivity;
 			// changed in another browser or device since this one stored them
+			// (preferences, and the profile: email confirmed, FIO linked)
 			useQuery("GetPreferences").execute().catch(console.error);
+			userStore.loadProfile();
 		}
 	});
 </script>
