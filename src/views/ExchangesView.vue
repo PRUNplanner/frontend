@@ -191,8 +191,11 @@
 			router.replace({ query: { ...route.query, scope: s } });
 		},
 	});
+	// COGM drifts stay on the Overview: the fixed price table has its COGMs
 	const scopeNotes = computed(() =>
-		notes.value.filter((n) => n.scope === scope.value)
+		notes.value.filter(
+			(n) => n.scope === scope.value && n.code !== "cogm_drift"
+		)
 	);
 	const isUnplanned = computed(
 		() =>

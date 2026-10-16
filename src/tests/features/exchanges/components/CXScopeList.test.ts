@@ -102,12 +102,33 @@ describe("CXScopeList", () => {
 			.map((t) => [t.props("value"), t.props("type")]);
 
 		expect(tags).toEqual([
-			// notes
-			["2", "warning"],
 			// one exchange rule, one fixed price row (a BUY + SELL pair)
 			["2", "secondary"],
 			["2", "warning"],
 			["1", "secondary"],
+		]);
+		expect(wrapper.findComponent(PTag).attributes("title")).toBe(
+			"exchanges.scopes.rules_count"
+		);
+	});
+
+	it("filters the planets once there are many", async () => {
+		const many = "BCDEFGHIJK".split("");
+		const big = {
+			...cx,
+			empires: [{ uuid: "E1", empire_name: "Sky", plans: many.map(plan) }],
+		} as unknown as CX;
+		const small = await mountList();
+		expect(small.find("input").exists()).toBe(false);
+
+		const wrapper = await mountList({ cx: big, plans: many.map(plan) });
+		await wrapper.find("input").setValue("planet c");
+
+		expect(lines(wrapper)).toEqual([
+			expect.stringContaining("exchanges.scopes.overview"),
+			expect.stringContaining("exchanges.scopes.all"),
+			"exchanges.scopes.inherit",
+			"Planet C",
 		]);
 	});
 

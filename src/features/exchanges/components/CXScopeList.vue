@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed } from "vue";
+	import { computed, ref } from "vue";
 	import { useI18n } from "vue-i18n";
 
 	// Composables
@@ -20,14 +20,15 @@
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { PButton, PSelect, PTag } from "@/ui";
+	import { PButton, PInput, PSelect, PTag } from "@/ui";
 	import { ClearSharp } from "@vicons/material";
 
 	/*
 	 * The scopes of a preference: Overview, All planets, planets with their
 	 * own rules, planets using the all-planets rules (grouped by empire when
 	 * several use it), other empires' planets on request and planets with
-	 * rules but no plan. A "Rules for" select below 1024 px.
+	 * rules but no plan, with a filter once there are many. A "Rules for"
+	 * select below 1024 px.
 	 */
 	const scope = defineModel<string | undefined>("scope", { required: true });
 	const includeOthers = defineModel<boolean>("includeOthers", {
@@ -118,6 +119,28 @@
 
 	const name = (planet: string) => planetName(planet, planet);
 
+	// the planet filter shows from this many planets
+	const FILTER_FROM = 10;
+	const filter = ref("");
+	const showFilter = computed(
+		() =>
+			own.value.length +
+				linked.value.reduce((n, g) => n + g.planets.length, 0) +
+				(includeOthers.value ? others.value.length : 0) +
+				unplanned.value.length >=
+			FILTER_FROM
+	);
+	const shown = (planets: string[]) => {
+		const q = filter.value.trim().toLowerCase();
+		return q
+			? planets.filter(
+					(p) =>
+						p.toLowerCase().includes(q) || name(p).toLowerCase().includes(q)
+				)
+			: planets;
+	};
+	const countTitle = (n: number) => t("exchanges.scopes.rules_count", { n }, n);
+
 	// "Rules for" below 1024 px
 	const selectValue = computed({
 		get: () => scope.value ?? OVERVIEW,
@@ -177,11 +200,6 @@
 						{{ $t("exchanges.scopes.overview_hint") }}
 					</span>
 				</span>
-				<PTag
-					v-if="notes.length"
-					size="sm"
-					:type="warned.size ? 'warning' : 'secondary'"
-					:value="String(notes.length)" />
 			</button>
 			<button
 				type="button"
@@ -197,15 +215,24 @@
 				<PTag
 					size="sm"
 					:type="tagType(ALL_PLANETS)"
+					:title="countTitle(allCount)"
 					:value="String(allCount)" />
 			</button>
 
-			<template v-if="own.length">
+			<PInput
+				v-if="showFilter"
+				v-model:value="filter"
+				class="mt-3"
+				size="sm"
+				:aria-label="$t('exchanges.scopes.filter')"
+				:placeholder="$t('exchanges.scopes.filter')" />
+
+			<template v-if="shown(own).length">
 				<h3 class="px-3 pt-4 pb-1 text-xs text-muted">
 					{{ $t("exchanges.scopes.own") }}
 				</h3>
 				<button
-					v-for="planet in own"
+					v-for="planet in shown(own)"
 					:key="planet"
 					type="button"
 					:class="itemClass(planet)"
@@ -215,22 +242,23 @@
 					<PTag
 						size="sm"
 						:type="tagType(planet)"
+						:title="countTitle(planetCount(planet))"
 						:value="String(planetCount(planet))" />
 				</button>
 			</template>
 
-			<template v-if="linked.length">
+			<template v-if="linked.some((g) => shown(g.planets).length)">
 				<h3 class="px-3 pt-4 pb-1 text-xs text-muted">
 					{{ $t("exchanges.scopes.inherit") }}
 				</h3>
 				<template v-for="group in linked" :key="group.name">
 					<h4
-						v-if="cx.empires.length > 1"
+						v-if="cx.empires.length > 1 && shown(group.planets).length"
 						class="px-3 pt-1 text-xs text-muted">
 						{{ group.name }}
 					</h4>
 					<button
-						v-for="planet in group.planets"
+						v-for="planet in shown(group.planets)"
 						:key="planet"
 						type="button"
 						:class="itemClass(planet)"
@@ -241,12 +269,12 @@
 				</template>
 			</template>
 
-			<template v-if="includeOthers && others.length">
+			<template v-if="includeOthers && shown(others).length">
 				<h3 class="px-3 pt-4 pb-1 text-xs text-muted">
 					{{ $t("exchanges.scopes.others") }}
 				</h3>
 				<button
-					v-for="planet in others"
+					v-for="planet in shown(others)"
 					:key="planet"
 					type="button"
 					:class="itemClass(planet)"
@@ -256,12 +284,12 @@
 				</button>
 			</template>
 
-			<template v-if="unplanned.length">
+			<template v-if="shown(unplanned).length">
 				<h3 class="px-3 pt-4 pb-1 text-xs text-muted">
 					{{ $t("exchanges.scopes.unplanned") }}
 				</h3>
 				<div
-					v-for="planet in unplanned"
+					v-for="planet in shown(unplanned)"
 					:key="planet"
 					class="flex items-center gap-1">
 					<button
@@ -273,6 +301,7 @@
 						<PTag
 							size="sm"
 							:type="tagType(planet)"
+							:title="countTitle(planetCount(planet))"
 							:value="String(planetCount(planet))" />
 					</button>
 					<PButton

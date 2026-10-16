@@ -142,14 +142,12 @@ describe("CXOverview", () => {
 		const wrapper = await mountOverview();
 		const values = wrapper.findAll("dd").map((d) => d.text());
 
-		// rule label, own planets, fixed price rows, notes
+		// rule label, own planets, fixed price rows
 		expect(values).toEqual([
 			"exchanges.labels.exchange_basis",
 			"exchanges.overview.summary.own_value",
 			"2",
-			"1",
 		]);
-		expect(wrapper.findAll("dd")[3].classes()).toContain("text-warning");
 	});
 
 	it("shows one row per material, a range when planets differ", async () => {
@@ -216,11 +214,58 @@ describe("CXOverview", () => {
 		const onOpen = vi.fn();
 		const wrapper = await mountOverview({ onOpen });
 
+		// notes start collapsed behind their count
+		const toggle = wrapper.find("button[aria-expanded]");
+		expect(toggle.attributes("aria-expanded")).toBe("false");
+		expect(wrapper.text()).not.toContain("exchanges.notes.exchange_gap.title");
+		await toggle.trigger("click");
+
 		await wrapper
 			.findAll("button")
 			.find((b) => b.text() === "exchanges.notes.open")!
 			.trigger("click");
 
 		expect(onOpen).toHaveBeenCalledWith("all");
+	});
+
+	it("groups COGM drifts into one table with Use COGM", async () => {
+		const drift = {
+			code: "cogm_drift",
+			kind: "info",
+			scope: "all",
+			tickers: ["RAT"],
+			planets: ["A"],
+			value: 75,
+			cogm: 90,
+		} as IExchangeNote;
+		// a smaller gap, listed after RAT's
+		const small = { ...drift, tickers: ["DW"], value: 95, cogm: 100 };
+		const onUseCogm = vi.fn();
+		const wrapper = await mountOverview({
+			notes: [...notes, small, drift],
+			onUseCogm,
+		});
+		await wrapper.find("button[aria-expanded]").trigger("click");
+
+		const table = wrapper.findAll("table").at(0)!;
+		const [rat, dw] = table.findAll("tbody tr");
+		expect(rat.text()).toContain("RAT");
+		expect(rat.text()).toContain(formatNumber(90));
+		// fixed minus COGM, and in % of the COGM
+		expect(rat.text()).toContain(formatNumber(-15));
+		expect(rat.text()).toContain(formatNumber(-17, 0));
+		expect(dw.text()).toContain("DW");
+		await table.find("button").trigger("click");
+
+		expect(onUseCogm).toHaveBeenCalledWith(drift);
+	});
+
+	it("shortens Used on to three planets", async () => {
+		const many = { ...rows[2], planets: ["A", "B", "C", "D", "E"] };
+		const wrapper = await mountOverview({ rows: [many] });
+
+		expect(tableRows(wrapper)[0].planets).toBe(
+			"A, B, C exchanges.overview.used_on_more"
+		);
 	});
 });

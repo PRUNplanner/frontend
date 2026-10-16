@@ -39,7 +39,7 @@ folder never changes a price result.
 | `components/CXExchangeRule.vue` | Presets, mode, exchange and basis of a scope |
 | `components/CXFixedPriceTable.vue` | Fixed prices with market, COGM and Override; shared with COGM |
 | `components/CXPriceLadder.vue` | One price's cascade from `explainPrice` |
-| `components/CXNotes.vue`, `CXSourceTag.vue`, `CXPlanetPrices.vue` | Notes, source tag, "Prices on <planet>" |
+| `components/CXNotes.vue`, `CXSourceTag.vue`, `CXPlanetPrices.vue` | Notes (collapsed behind a count button beside the heading; COGM drifts as one table with the gap), source tag, "Prices on <planet>" |
 | `components/CXPreferenceSelector.vue` | Reusable CX dropdown, built on `useCXData().getPreferenceOptions` |
 
 ## Data

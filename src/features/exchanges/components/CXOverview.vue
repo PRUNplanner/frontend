@@ -39,6 +39,7 @@
 		PInput,
 		PProgressBar,
 		PTag,
+		PTooltip,
 	} from "@/ui";
 
 	/*
@@ -99,7 +100,6 @@
 				0
 			)
 	);
-	const hasWarning = computed(() => notes.some((n) => n.kind === "warning"));
 
 	// Filters
 	type Filter = "all" | "fixed" | "no_price" | "varies";
@@ -204,6 +204,8 @@
 
 	const names = (planets: string[]) =>
 		planets.map((p) => planetName(p, p)).join(", ");
+	// "Used on" shows this many, the rest in a tooltip
+	const USED_ON_SHOWN = 3;
 
 	// one ladder per side and planet
 	function ladders(r: IMaterialPriceRow) {
@@ -233,12 +235,16 @@
 
 <template>
 	<div class="flex flex-col gap-6">
-		<div>
+		<CXNotes
+			:notes="notes"
+			show-open
+			@open="(s) => emit('open', s)"
+			@use-cogm="(n) => emit('use-cogm', n)">
 			<h2 class="text-xl font-bold">
 				{{ $t("exchanges.overview.title") }}
 			</h2>
 			<p class="text-muted">{{ $t("exchanges.overview.description") }}</p>
-		</div>
+		</CXNotes>
 
 		<dl
 			class="flex flex-wrap gap-x-8 gap-y-3 px-4 py-3 rounded-md border border-white/10 bg-white/5">
@@ -267,23 +273,7 @@
 				</dt>
 				<dd class="font-bold tabular-nums">{{ fixedCount }}</dd>
 			</div>
-			<div>
-				<dt class="text-muted text-xs">
-					{{ $t("exchanges.overview.summary.notes") }}
-				</dt>
-				<dd
-					class="font-bold tabular-nums"
-					:class="hasWarning ? 'text-warning' : ''">
-					{{ notes.length }}
-				</dd>
-			</div>
 		</dl>
-
-		<CXNotes
-			:notes="notes"
-			show-open
-			@open="(s) => emit('open', s)"
-			@use-cogm="(n) => emit('use-cogm', n)" />
 
 		<section class="flex flex-col gap-3">
 			<div class="flex flex-wrap items-center justify-between gap-3">
@@ -389,7 +379,24 @@
 							:source="row.sell.planets[0].source" />
 					</template>
 					<template #cell-planets="{ row }">
-						{{ names(row.planets) }}
+						<template v-if="row.planets.length <= USED_ON_SHOWN">
+							{{ names(row.planets) }}
+						</template>
+						<PTooltip v-else>
+							<template #trigger>
+								<span tabindex="0">
+									{{ names(row.planets.slice(0, USED_ON_SHOWN)) }}
+									<span class="text-muted">
+										{{
+											$t("exchanges.overview.used_on_more", {
+												n: row.planets.length - USED_ON_SHOWN,
+											})
+										}}
+									</span>
+								</span>
+							</template>
+							{{ names(row.planets) }}
+						</PTooltip>
 					</template>
 					<template #expand="{ row }">
 						<div class="flex flex-col gap-4 py-2">

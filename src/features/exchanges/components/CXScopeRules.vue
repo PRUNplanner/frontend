@@ -108,7 +108,10 @@
 
 <template>
 	<div class="flex flex-col gap-6">
-		<div>
+		<CXNotes
+			:notes="notes"
+			@open="(s) => emit('open', s)"
+			@use-cogm="(n) => emit('use-cogm', n)">
 			<h2 class="text-xl font-bold">
 				{{ isPlanet ? planetLabel : $t("exchanges.rules.all_title") }}
 			</h2>
@@ -119,7 +122,7 @@
 						: $t("exchanges.rules.all_description")
 				}}
 			</p>
-		</div>
+		</CXNotes>
 
 		<PNotice v-if="unplanned" type="info">
 			{{ $t("exchanges.rules.unplanned") }}
@@ -129,11 +132,6 @@
 				</PButton>
 			</template>
 		</PNotice>
-
-		<CXNotes
-			:notes="notes"
-			@open="(s) => emit('open', s)"
-			@use-cogm="(n) => emit('use-cogm', n)" />
 
 		<CXExchangeRule
 			:key="scope"
