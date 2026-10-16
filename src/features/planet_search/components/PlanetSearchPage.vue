@@ -5,9 +5,12 @@
 		onBeforeUnmount,
 		onMounted,
 		ref,
+		shallowRef,
+		toRaw,
 		watch,
 		type ComputedRef,
 		type Ref,
+		type ShallowRef,
 	} from "vue";
 	import { useRoute, useRouter } from "vue-router";
 
@@ -170,7 +173,7 @@
 	/*
 	 * Data
 	 */
-	const index: Ref<PlanetSearchIndexEntry[]> = ref([]);
+	const index: ShallowRef<PlanetSearchIndexEntry[]> = shallowRef([]);
 	const loading: Ref<boolean> = ref(true);
 	const loadError: Ref<boolean> = ref(false);
 	const empires: Ref<PlanEmpireElement[]> = ref([]);
@@ -226,7 +229,8 @@
 					? useQuery("GetAllEmpires").execute()
 					: Promise.resolve([]),
 			]);
-			index.value = data;
+			// a cache hit returns the query store's reactive copy
+			index.value = toRaw(data);
 			empires.value = empireList;
 			resolveEmpire();
 		} catch {

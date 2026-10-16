@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { computed, isReactive } from "vue";
 import { useDB } from "@/database/composables/useDB";
 
 // Define a fake type for testing
@@ -134,5 +135,28 @@ describe("useDB composable", () => {
 		expect(getLoaded("1")).toBeUndefined();
 		expect(allData.value).toEqual([{ id: "3", name: "Gamma" }]);
 		expect(fakeStore.getAll).not.toHaveBeenCalled();
+	});
+
+	it("keeps rows raw and still triggers on replace", async () => {
+		fakeStore.getAll.mockResolvedValue([{ id: "1", name: "Alpha" }]);
+		const { preload, fill, allData } = useDB<TestItem, "id">(
+			fakeStore as any
+		);
+		const count = computed(() => allData.value.length);
+
+		await preload();
+		expect(isReactive(allData.value)).toBe(false);
+		expect(isReactive(allData.value[0])).toBe(false);
+		expect(count.value).toBe(1);
+
+		fill(
+			[
+				{ id: "2", name: "Beta" },
+				{ id: "3", name: "Gamma" },
+			],
+			true
+		);
+		expect(isReactive(allData.value[0])).toBe(false);
+		expect(count.value).toBe(2);
 	});
 });

@@ -17,7 +17,6 @@ export const setAxiosHeader = (
 
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
-		config.headers.withCredentials = true;
 	}
 
 	return config;

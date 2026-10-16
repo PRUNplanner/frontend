@@ -24,7 +24,7 @@ import router from "@/router";
 import { trackVueError } from "@/lib/analytics/useAnalytics";
 
 const app = createApp(AppProvider);
-app.config.performance = true;
+app.config.performance = import.meta.env.DEV;
 app.config.errorHandler = trackVueError;
 
 app.use(router);

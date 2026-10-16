@@ -177,6 +177,8 @@ component / composable
   never preloaded; the planning engine and `PriceBook` rely on it. After
   writing to IndexedDB, call `preload(true)` or synchronous readers won't see
   the new rows (the `Get*` queries do this through `storeAndPreload`).
+  `allData` is a `shallowRef` of raw rows: assign a new array, never mutate
+  it in place, or computeds over it won't update.
   `fill(rows, replace)` loads rows into memory without the DB; `storeAndPreload`
   falls back to it when IndexedDB fails (connection closed, quota), so a
   broken cache never fails a query. `getDB` reopens after the browser closes

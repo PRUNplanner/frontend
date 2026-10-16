@@ -24,7 +24,7 @@ describe("Axios Header", () => {
 		const result = setAxiosHeader(config);
 
 		expect(result.headers.Authorization).toBe("Bearer mock-token");
-		expect(result.headers.withCredentials).toBe(true);
+		expect(result.headers.withCredentials).toBeUndefined();
 	});
 
 	it("No Authorization Header if accessToken missing", () => {

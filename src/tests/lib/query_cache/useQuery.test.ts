@@ -16,13 +16,11 @@ describe("useQuery", () => {
 		setActivePinia(createPinia());
 	});
 
-	it("reports no error, loading or data before any state exists", () => {
+	it("returns the reactive state and execute only", () => {
 		// @ts-expect-error mock repository
 		const query = useQuery("testQuery");
 
+		expect(Object.keys(query).sort()).toEqual(["execute", "state"]);
 		expect(query.state.value).toBeUndefined();
-		expect(query.error).toBe(false);
-		expect(query.loading).toBe(false);
-		expect(query.data).toBeUndefined();
 	});
 });
