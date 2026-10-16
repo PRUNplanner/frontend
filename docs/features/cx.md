@@ -28,6 +28,12 @@ and small CX helpers. Every price in the app is resolved by a `PriceBook`
   `volume`, the exchange whose traded volume the price is checked against
   (the source's exchange, else the planet or empire exchange preference,
   else UNIVERSE). `scaledPriceBook` passes it through.
+  A matching exchange rule whose exchange has no value for the material
+  gives 0 (`zero: true`); it does not fall through to Universe.
+  `findTickerRule` / `findExchangeRule` are the book's rule lookups;
+  `explainPrice(cxData, planet, ticker, type, getExchange)` uses them to
+  list every level of the cascade with its value and the winner, for the
+  Exchanges page (a test asserts it agrees with the book).
 - **`marketCheck.util.ts`**: market flags.
   - `marketCheck(flows, book, getExchange)` checks each material's daily
     flow against its volume exchange: share of the 30-day daily volume

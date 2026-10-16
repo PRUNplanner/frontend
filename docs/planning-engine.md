@@ -46,7 +46,7 @@ const { result, overview } = calculatePlan(input, ctx);
 | `efficiency.ts` | Building efficiency factors, expert bonus, `expertNames` |
 | `production.ts` | Buildings: efficiency, active recipes, daily contribution |
 | `recipeOptions.ts` | Every recipe option of a building with revenue, ROI, profit per area |
-| `cogm.ts` | Cost of goods manufactured per active recipe |
+| `cogm.ts` | Cost of goods manufactured per active recipe, also without a CX (Universe prices). The Exchanges page re-prices it with `calculateCOGM` from unsaved rules (`exchanges/exchangePlanData.util.ts`) |
 | `materialIO.ts` | Combining and enriching material I/O, production I/O, `TOTALMSDAY` |
 | `construction.ts` | Construction materials, total construction cost, infrastructure costs |
 | `finance.ts` | Revenue, cost, profit and the overview in one pass |

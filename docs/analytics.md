@@ -137,7 +137,11 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `manage:plan_delete` | `plan_uuid` | |
 | `manage:plan_delete_bulk` | `count` | |
 | `exchange:update` | `location`, `cx_uuid` | |
-| `exchange:reload` | `location` | |
+| `exchange:discard` | `location` (`exchanges_view`, `cogm`) | unsaved rules were discarded (was `exchange:reload`) |
+| `exchange:price_detail` | `location`, `material_ticker` | a material's price cascade was expanded |
+| `exchange:preset` | `preset` (`average`, `trade_now`), `scope` (`all`, `planet`) | an exchange preset was applied |
+| `exchange:use_cogm` | `location` (`exchanges_view`, `cogm`), `material_ticker` | a COGM was used as fixed buy price |
+| `exchange:leave_unsaved` | `location` | leaving with unsaved rules asked to confirm |
 | `exchange:save_conflict` | `location` (`exchanges_view`, `cogm`), `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of a CX was answered |
 | `material:market_drawer_open` | `material_ticker` | |
 

@@ -178,7 +178,18 @@ export interface IAnalyticsEventProperties {
 	"manage:plan_delete_bulk": { count: number };
 
 	"exchange:update": { location: string; cx_uuid: string };
-	"exchange:reload": { location: string };
+	"exchange:discard": { location: string };
+	// a material row expanded to its price cascade
+	"exchange:price_detail": { location: string; material_ticker: string };
+	"exchange:preset": {
+		preset: "average" | "trade_now";
+		scope: "all" | "planet";
+	};
+	"exchange:use_cogm": {
+		location: "exchanges_view" | "cogm";
+		material_ticker: string;
+	};
+	"exchange:leave_unsaved": { location: string };
 	"exchange:save_conflict": { location: string; choice: SaveConflictChoice };
 
 	"material:market_drawer_open": { material_ticker: string };

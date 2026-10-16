@@ -193,7 +193,6 @@ export function calculateProduction(
 				totalEfficiency,
 				constructionCostPositive,
 				workforceCostPositive,
-				input.cxUuid !== undefined,
 				prices
 			);
 

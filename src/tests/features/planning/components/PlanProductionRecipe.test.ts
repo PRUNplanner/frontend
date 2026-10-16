@@ -71,7 +71,6 @@ const ALC = option("R_ALC", [m("C", 1), m("AL", 2)], 6, -100, -3);
 const BSE = option("R_BSE", [m("BSE", 1)], 4, 0, 0);
 
 const COGM = {
-	visible: true,
 	runtime: 12 * HOUR,
 	runtimeShare: 0.5,
 	efficiency: 1,
@@ -108,6 +107,7 @@ async function mountRecipe(props: Record<string, unknown> = {}) {
 		{
 			uuid: CX_UUID,
 			cx_name: "CX",
+			empires: [],
 			cx_data: {
 				cx_empire: [],
 				cx_planets: [],
@@ -394,18 +394,13 @@ describe("PlanProductionRecipe", () => {
 		expect(wrapper.text()).not.toContain("100.00 %");
 	});
 
-	it("enables COGM only for visible COGM data", async () => {
+	it("enables COGM whenever there is COGM data", async () => {
 		const { wrapper, setProps } = await mountRecipe();
 		expect(cogmButton(wrapper).element.disabled).toBe(false);
 		// icon-only on phones: the label stays its accessible name
 		expect(cogmButton(wrapper).attributes("aria-label")).toBe(
 			"plan.components.production_recipe.buttons.cogm"
 		);
-
-		await setProps({
-			recipeData: recipe({ cogm: { ...COGM, visible: false } }),
-		});
-		expect(cogmButton(wrapper).element.disabled).toBe(true);
 
 		await setProps({ recipeData: recipe({ cogm: undefined }) });
 		expect(cogmButton(wrapper).element.disabled).toBe(true);
@@ -422,17 +417,18 @@ describe("PlanProductionRecipe", () => {
 			cxUuid: CX_UUID,
 			planetId: "ZV-307c",
 		});
-		expect(body().text()).toContain("plan.tools.cogm.cx_preferences");
+		expect(body().text()).toContain("plan.tools.cogm.prices.title");
 	});
 
-	it("opens the COGM without a CX, without preferences", async () => {
+	it("opens the COGM without a CX, with the Universe note", async () => {
 		const { wrapper } = await mountRecipe();
 
 		await cogmButton(wrapper).trigger("click");
 		await flushPromises();
 
 		expect(body().text()).toContain("plan.tools.cogm.info");
-		expect(body().text()).not.toContain("plan.tools.cogm.cx_preferences");
+		expect(body().text()).toContain("plan.tools.cogm.no_preference");
+		expect(body().text()).not.toContain("plan.tools.cogm.prices.title");
 	});
 
 	it("emits deleting the recipe", async () => {

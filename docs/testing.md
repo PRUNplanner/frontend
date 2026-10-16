@@ -161,7 +161,7 @@ Write them for logic-heavy components, see
   `PlanProduction.test.ts`.
 - **File inputs**: define `files` on the hidden `<input type="file">` and
   `trigger("change")`, then `vi.waitFor` the parse; see
-  `CXPreferenceImportExport.test.ts`.
+  `ExchangesView.test.ts`.
 - **Overlays**: `PModal`, `PDrawer`, `PPopover`, `PDropdown` and toasts
   render into `document.body` once shown. Query them through
   `new DOMWrapper(document.body)`: modals, drawers and confirms by

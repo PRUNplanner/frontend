@@ -77,7 +77,7 @@ type SplitOption<T> = T extends `${infer Prefix}_${infer Suffix}`
 type PrefixPart = SplitOption<CXExchangeOptionType>[0];
 type SuffixPart = SplitOption<CXExchangeOptionType>[1];
 
-type ExchangePriceKey = "vwap_7d" | "vwap_30d" | "ask" | "bid";
+export type ExchangePriceKey = "vwap_7d" | "vwap_30d" | "ask" | "bid";
 
 function splitExchangeOption(option: CXExchangeOptionType) {
 	const [prefix, suffix] = option.split("_") as [PrefixPart, SuffixPart];
@@ -137,6 +137,63 @@ export function getExchangeCodeKey(preference: CXExchangeOptionType): {
 	return { exchangeCode, key };
 }
 
+const matches = (t: { type: string }, type: PriceType) =>
+	t.type === type || t.type === "BOTH";
+
+/**
+ * The fixed ticker value for a material: planet first, then all planets
+ * @author jplacht
+ *
+ * @param {CXData} cx CX preference data
+ * @param {string | undefined} planetNaturalId Planet
+ * @param {string} materialTicker Material
+ * @param {PriceType} type Buying or Selling
+ * @returns Level and value, undefined without a matching rule
+ */
+export function findTickerRule(
+	cx: CXData,
+	planetNaturalId: string | undefined,
+	materialTicker: string,
+	type: PriceType
+): { level: PriceSourceLevel; value: number } | undefined {
+	const isTicker = (t: { ticker: string; type: string }) =>
+		t.ticker === materialTicker && matches(t, type);
+	const planet = planetNaturalId
+		? cx.ticker_planets
+				.find((tp) => tp.planet === planetNaturalId)
+				?.preferences.find(isTicker)
+		: undefined;
+	if (planet) return { level: "planet_ticker", value: planet.value };
+	const empire = cx.ticker_empire.find(isTicker);
+	if (empire) return { level: "empire_ticker", value: empire.value };
+	return undefined;
+}
+
+/**
+ * The exchange rule for a type: planet first, then all planets
+ * @author jplacht
+ *
+ * @param {CXData} cx CX preference data
+ * @param {string | undefined} planetNaturalId Planet
+ * @param {PriceType} type Buying or Selling
+ * @returns Level and exchange option, undefined without a matching rule
+ */
+export function findExchangeRule(
+	cx: CXData,
+	planetNaturalId: string | undefined,
+	type: PriceType
+): { level: PriceSourceLevel; option: CXExchangeOptionType } | undefined {
+	const planet = planetNaturalId
+		? cx.cx_planets
+				.find((cp) => cp.planet === planetNaturalId)
+				?.preferences.find((p) => matches(p, type))
+		: undefined;
+	if (planet) return { level: "planet_exchange", option: planet.exchange };
+	const empire = cx.cx_empire.find((p) => matches(p, type));
+	if (empire) return { level: "empire_exchange", option: empire.exchange };
+	return undefined;
+}
+
 /**
  * Creates a price book
  * @author jplacht
@@ -156,44 +213,6 @@ export function createPriceBook(
 	const resolved = new Map<string, { price: number; source: IPriceSource }>();
 	let cxData: CXData | undefined;
 
-	const matches = (t: { type: string }, type: PriceType) =>
-		t.type === type || t.type === "BOTH";
-
-	// a fixed ticker value: planet first, then empire
-	function tickerPreference(
-		cx: CXData,
-		materialTicker: string,
-		type: PriceType
-	): { level: PriceSourceLevel; value: number } | undefined {
-		const isTicker = (t: { ticker: string; type: string }) =>
-			t.ticker === materialTicker && matches(t, type);
-		const planet = planetNaturalId
-			? cx.ticker_planets
-					.find((tp) => tp.planet === planetNaturalId)
-					?.preferences.find(isTicker)
-			: undefined;
-		if (planet) return { level: "planet_ticker", value: planet.value };
-		const empire = cx.ticker_empire.find(isTicker);
-		if (empire) return { level: "empire_ticker", value: empire.value };
-		return undefined;
-	}
-
-	// an exchange preference: planet first, then empire
-	function exchangePreference(
-		cx: CXData,
-		type: PriceType
-	): { level: PriceSourceLevel; option: CXExchangeOptionType } | undefined {
-		const planet = planetNaturalId
-			? cx.cx_planets
-					.find((cp) => cp.planet === planetNaturalId)
-					?.preferences.find((p) => matches(p, type))
-			: undefined;
-		if (planet) return { level: "planet_exchange", option: planet.exchange };
-		const empire = cx.cx_empire.find((p) => matches(p, type));
-		if (empire) return { level: "empire_exchange", option: empire.exchange };
-		return undefined;
-	}
-
 	function resolve(
 		materialTicker: string,
 		type: PriceType
@@ -207,10 +226,10 @@ export function createPriceBook(
 			if (getCXData) cxData ??= getCXData();
 
 			const ticker = cxData
-				? tickerPreference(cxData, materialTicker, type)
+				? findTickerRule(cxData, planetNaturalId, materialTicker, type)
 				: undefined;
 			const preference = cxData
-				? exchangePreference(cxData, type)
+				? findExchangeRule(cxData, planetNaturalId, type)
 				: undefined;
 			const preferred = preference
 				? getExchangeCodeKey(preference.option)
@@ -274,6 +293,111 @@ export function createPriceBook(
 		getPriceSource: (materialTicker, type) =>
 			lookup(materialTicker, type).source,
 	};
+}
+
+/** one level of the price cascade, for explaining a price */
+export interface IPriceStep {
+	level: Exclude<PriceSourceLevel, "unresolved">;
+	// a rule of this level matches the material and type
+	matched: boolean;
+	// the level's price, null without a rule or exchange data
+	value: number | null;
+	exchange: EXCHANGES_TYPE | null;
+	key: ExchangePriceKey | null;
+}
+
+export interface IPriceExplanation {
+	steps: IPriceStep[];
+	// index of the step that sets the price, -1 when unresolved
+	winner: number;
+}
+
+/**
+ * Explains a price: every level of the cascade with its value and the one
+ * that wins. Uses the price book's own rule lookups, so its winner is the
+ * price book's source.
+ * @author jplacht
+ *
+ * @param {CXData | undefined} cx CX preference data, undefined for Universe
+ * @param {string | undefined} planetNaturalId Planet
+ * @param {string} materialTicker Material
+ * @param {PriceType} type Buying or Selling
+ * @param {(tickerId: string) => Exchange} getExchange Exchange data by id
+ * @returns {IPriceExplanation} Steps and winner
+ */
+export function explainPrice(
+	cx: CXData | undefined,
+	planetNaturalId: string | undefined,
+	materialTicker: string,
+	type: PriceType,
+	getExchange: (tickerId: string) => Exchange
+): IPriceExplanation {
+	const exchangeValue = (
+		option: CXExchangeOptionType
+	): Omit<IPriceStep, "level" | "matched"> => {
+		const { exchangeCode, key } = getExchangeCodeKey(option);
+		const exchange = exchangeCode as EXCHANGES_TYPE;
+		try {
+			const data = getExchange(`${materialTicker}.${exchangeCode}`);
+			return { value: data[key] ?? 0, exchange, key };
+		} catch {
+			return { value: null, exchange, key };
+		}
+	};
+	const none = { matched: false, value: null, exchange: null, key: null };
+
+	const tickerStep = (
+		level: "planet_ticker" | "empire_ticker",
+		planet: string | undefined
+	): IPriceStep => {
+		const rule = cx
+			? findTickerRule(
+					// the level alone: the other level's rule doesn't count
+					level === "planet_ticker"
+						? { ...cx, ticker_empire: [] }
+						: { ...cx, ticker_planets: [] },
+					planet,
+					materialTicker,
+					type
+				)
+			: undefined;
+		return rule
+			? { level, matched: true, value: rule.value, exchange: null, key: null }
+			: { level, ...none };
+	};
+
+	const exchangeStep = (
+		level: "planet_exchange" | "empire_exchange",
+		planet: string | undefined
+	): IPriceStep => {
+		const rule = cx
+			? findExchangeRule(
+					level === "planet_exchange"
+						? { ...cx, cx_empire: [] }
+						: { ...cx, cx_planets: [] },
+					planet,
+					type
+				)
+			: undefined;
+		return rule
+			? { level, matched: true, ...exchangeValue(rule.option) }
+			: { level, ...none };
+	};
+
+	const steps: IPriceStep[] = [
+		tickerStep("planet_ticker", planetNaturalId),
+		tickerStep("empire_ticker", undefined),
+		exchangeStep("planet_exchange", planetNaturalId),
+		exchangeStep("empire_exchange", undefined),
+		{ level: "fallback", matched: true, ...exchangeValue("UNIVERSE_30D") },
+	];
+
+	// the first matching level wins; an exchange level only if no ticker
+	// level matched, the fallback only if no exchange level matched
+	let winner = steps.findIndex((s) => s.matched);
+	if (steps[winner].value === null) winner = -1;
+
+	return { steps, winner };
 }
 
 /**

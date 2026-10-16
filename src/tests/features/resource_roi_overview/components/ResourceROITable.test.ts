@@ -76,7 +76,7 @@ const RESULTS = [
 	result("Promitor", "RIG", 40, [7, -1, 3, 12], {
 		planetCOGC: "ADVERTISING_FOOD_INDUSTRIES",
 		planetInfrastructures: ["LM", "COGC"],
-		cogm: { visible: true } as IProductionBuildingRecipeCOGM,
+		cogm: {} as IProductionBuildingRecipeCOGM,
 	}),
 	result("Katoa", "EXT", -5, [-1, 4, 9, 2]),
 	result("Montem", "RIG", 0, [2, 8, -1, 5], {

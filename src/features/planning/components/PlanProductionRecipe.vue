@@ -36,7 +36,6 @@
 	import PInputNumber from "@/ui/components/PInputNumber.vue";
 	import PModal from "@/ui/components/PModal.vue";
 	import PPopover from "@/ui/components/PPopover.vue";
-	import PTooltip from "@/ui/components/PTooltip.vue";
 	import PValue from "@/ui/components/PValue.vue";
 	import { ClearSharp, AnalyticsOutlined } from "@vicons/material";
 	import PDataTable from "@/ui/components/PDataTable.vue";
@@ -123,9 +122,7 @@
 			? "bottom-end"
 			: "bottom-start";
 
-	const cogmEnabled = computed(
-		() => localRecipeData.value.cogm && localRecipeData.value.cogm.visible
-	);
+	const cogmEnabled = computed(() => !!localRecipeData.value.cogm);
 
 	const cogmWithCX = computed(() => !!props.cxUuid);
 
@@ -196,7 +193,7 @@
 		:key="`COGM#RECIPE#${recipeData.recipe.building_ticker}#${localRecipeIndex}`"
 		v-model:show="refShowCOGM"
 		:title="t('plan.components.production_recipe.cogm_title')"
-		:width="cogmWithCX ? 1000 : 600">
+		:width="cogmWithCX ? 1200 : 600">
 		<PlanCOGM
 			v-if="localRecipeData.cogm"
 			:cogm-data="localRecipeData.cogm"
@@ -424,33 +421,28 @@
 	</div>
 	<div
 		class="col-4 row-2 xl:col-5 xl:row-1 flex justify-end items-center gap-3">
-		<PTooltip :disabled="cogmEnabled">
-			<template #trigger>
-				<PButton
-					size="sm"
-					:aria-label="
-						$t('plan.components.production_recipe.buttons.cogm')
-					"
-					:disabled="!cogmEnabled"
-					@click="
-						() => {
-							refShowCOGM = true;
-							trackEvent('plan:cogm_open', {
-								planet_natural_id: props.planetId,
-								recipe_id: localRecipeData.recipeId,
-							});
-						}
-					">
-					<template #icon><AnalyticsOutlined /> </template>
-					<span class="hidden sm:inline">
-						{{
-							$t("plan.components.production_recipe.buttons.cogm")
-						}}
-					</span>
-				</PButton>
-			</template>
-			{{ $t("plan.components.production_recipe.cogm_error") }}
-		</PTooltip>
+		<PButton
+			size="sm"
+			:aria-label="
+				$t('plan.components.production_recipe.buttons.cogm')
+			"
+			:disabled="!cogmEnabled"
+			@click="
+				() => {
+					refShowCOGM = true;
+					trackEvent('plan:cogm_open', {
+						planet_natural_id: props.planetId,
+						recipe_id: localRecipeData.recipeId,
+					});
+				}
+			">
+			<template #icon><AnalyticsOutlined /> </template>
+			<span class="hidden sm:inline">
+				{{
+					$t("plan.components.production_recipe.buttons.cogm")
+				}}
+			</span>
+		</PButton>
 		<PButton
 			v-if="!disabled"
 			:aria-label="$t('common.buttons.delete')"

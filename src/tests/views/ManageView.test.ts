@@ -3,7 +3,7 @@ import type { Slots } from "vue";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import ManageView from "@/views/ManageView.vue";
-import ManageSaveBar from "@/features/manage/components/ManageSaveBar.vue";
+import SaveBar from "@/features/save_bar/components/SaveBar.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
@@ -99,7 +99,7 @@ function setChanges(cx: number, matrix: number) {
 	state.matrix.changes.empireCount = matrix > 0 ? 1 : 0;
 }
 
-const bar = (wrapper: VueWrapper) => wrapper.findComponent(ManageSaveBar);
+const bar = (wrapper: VueWrapper) => wrapper.findComponent(SaveBar);
 const barButton = (wrapper: VueWrapper, label: string) =>
 	bar(wrapper)
 		.findAll("button")

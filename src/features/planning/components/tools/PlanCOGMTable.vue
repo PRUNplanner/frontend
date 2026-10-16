@@ -1,5 +1,7 @@
 <script setup lang="ts">
-	import type { PropType } from "vue";
+	import { computed } from "vue";
+	import { useI18n } from "vue-i18n";
+	import { RouterLink } from "vue-router";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -7,18 +9,69 @@
 	// Util
 	import { humanizeTimeMs } from "@/util/date";
 	import { formatNumber } from "@/util/numbers";
+	import {
+		CX_DOT_COLOR,
+		isNoPrice,
+		priceSourceLabel,
+	} from "@/features/exchanges/exchangeLabel.util";
+	import { ALL_PLANETS } from "@/features/exchanges/cxEdit.util";
 
-	import type { IProductionBuildingRecipeCOGM } from "../../usePlanCalculation.types";
+	// Types & Interfaces
+	import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
+	import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
 
 	// UI
-	import { PTable } from "@/ui";
+	import { PTable, PTag } from "@/ui";
 
-	defineProps({
-		data: {
-			type: Object as PropType<IProductionBuildingRecipeCOGM>,
-			required: true,
-		},
-	});
+	const {
+		data,
+		prices = undefined,
+		market = undefined,
+		cxUuid = undefined,
+		planetId = undefined,
+	} = defineProps<{
+		data: IProductionBuildingRecipeCOGM;
+		// the plan's prices: each input shows where its price comes from
+		prices?: IPriceBook;
+		// an output's market price, without fixed prices
+		market?: (ticker: string) => number;
+		cxUuid?: string;
+		planetId?: string;
+	}>();
+
+	const { t } = useI18n();
+
+
+	// the Exchanges scope whose rule sets the price; none without a CX
+	function exchangesLink(s: IPriceSource): string | undefined {
+		if (!cxUuid) return undefined;
+		const planetLevel =
+			s.level === "planet_ticker" || s.level === "planet_exchange";
+		const scope = planetLevel && planetId ? planetId : ALL_PLANETS;
+		return `/exchanges/${cxUuid}?scope=${scope}`;
+	}
+
+	// inputs with their price source, linked to its rule
+	const inputs = computed(() =>
+		data.inputCost.map((input) => {
+			const source = prices?.getPriceSource(input.ticker, "BUY");
+			return {
+				...input,
+				source,
+				noPrice: source ? isNoPrice(source) : false,
+				link: source ? exchangesLink(source) : undefined,
+			};
+		})
+	);
+
+	function marketLine(ticker: string, cogm: number): string | undefined {
+		const price = market?.(ticker);
+		if (!price) return undefined;
+		return t("plan.tools.cogm.table.market", {
+			price: formatNumber(price),
+			diff: formatNumber(((cogm - price) / price) * 100, 0, false, true),
+		});
+	}
 </script>
 
 <template>
@@ -81,13 +134,38 @@
 					</td>
 				</tr>
 				<tr
-					v-for="input in data.inputCost"
+					v-for="input in inputs"
 					:key="`INPUT#${input.ticker}`">
 					<td>
-						<MaterialTile
-							:key="input.ticker"
-							:ticker="input.ticker"
-							:amount="input.amount" />
+						<div class="flex flex-wrap items-center gap-2">
+							<MaterialTile
+								:key="input.ticker"
+								:ticker="input.ticker"
+								:amount="input.amount" />
+							<component
+								:is="input.link ? RouterLink : 'span'"
+								v-if="input.source"
+								:to="input.link"
+								:data-source="input.ticker">
+								<PTag
+									size="sm"
+									:type="input.noPrice ? 'warning' : 'secondary'">
+									<span
+										v-if="
+											input.source.exchange &&
+											!input.noPrice
+										"
+										class="size-2 rounded-full"
+										:style="{
+											background:
+												CX_DOT_COLOR[
+													input.source.exchange
+												],
+										}" />
+									{{ priceSourceLabel(input.source, t) }}
+								</PTag>
+							</component>
+						</div>
 					</td>
 					<td>
 						{{ formatNumber(input.costUnit) }}
@@ -160,8 +238,16 @@
 					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 				<td class="text-end">
-					{{ formatNumber(output.costTotal) }}
+					<span class="font-bold">
+						{{ formatNumber(output.costTotal) }}
+					</span>
 					<span class="pl-1 font-light text-muted"> ȼ </span>
+					<div
+						v-if="marketLine(output.ticker, output.costTotal)"
+						class="text-xs text-muted tabular-nums"
+						:data-market="output.ticker">
+						{{ marketLine(output.ticker, output.costTotal) }}
+					</div>
 				</td>
 			</tr>
 		</tbody>
