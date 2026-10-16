@@ -61,7 +61,14 @@ export function usePreferences() {
 	// a cleared or half-typed number field gives null or NaN, which the
 	// PATCH schema rejects: keep the last valid value
 	const setNumber = (
-		key: "burnDaysRed" | "burnDaysYellow" | "burnResupplyDays" | "supplyCartDays",
+		key:
+			| "burnDaysRed"
+			| "burnDaysYellow"
+			| "burnResupplyDays"
+			| "supplyCartDays"
+			| "fioRepairIntervalDays"
+			| "fioRepairDueSoonDays"
+			| "fioRepairArrivalDays",
 		v: number
 	) => {
 		if (Number.isFinite(v)) userStore.setPreference(key, v);
@@ -124,6 +131,46 @@ export function usePreferences() {
 		get: () => userStore.preferences.supplyCartDays ?? 20,
 		set: (v) => setNumber("supplyCartDays", v),
 	});
+
+	const fioRepairIntervalDays: WritableComputedRef<number, number> = computed(
+		{
+			get: () => userStore.preferences.fioRepairIntervalDays,
+			set: (v) => setNumber("fioRepairIntervalDays", v),
+		}
+	);
+
+	const fioRepairDueSoonDays: WritableComputedRef<number, number> = computed({
+		get: () => userStore.preferences.fioRepairDueSoonDays,
+		set: (v) => setNumber("fioRepairDueSoonDays", v),
+	});
+
+	const fioRepairArrivalDays: WritableComputedRef<number, number> = computed({
+		get: () => userStore.preferences.fioRepairArrivalDays,
+		set: (v) => setNumber("fioRepairArrivalDays", v),
+	});
+
+	const fioRepairPlanLinks: ComputedRef<
+		UserPreference["fioRepairPlanLinks"]
+	> = computed(() => userStore.preferences.fioRepairPlanLinks);
+
+	/**
+	 * Saves the plan picked for a FIO base: a plan uuid, null for "no
+	 * plan", undefined to go back to automatic matching. The sync sends
+	 * only this SiteId.
+	 *
+	 * @author jplacht
+	 *
+	 * @param {string} siteId FIO SiteId
+	 * @param {string | null | undefined} planUuid Plan, null or undefined
+	 */
+	function setFioRepairPlanLink(
+		siteId: string,
+		planUuid: string | null | undefined
+	): void {
+		const links = (userStore.preferences.fioRepairPlanLinks ??= {});
+		if (planUuid === undefined) delete links[siteId];
+		else links[siteId] = { planUuid };
+	}
 
 	const planSettings: ComputedRef<
 		Record<string, Partial<PreferencePerPlan>>
@@ -262,6 +309,10 @@ export function usePreferences() {
 		burnResupplyDays,
 		burnOrigin,
 		supplyCartDays,
+		fioRepairIntervalDays,
+		fioRepairDueSoonDays,
+		fioRepairArrivalDays,
+		fioRepairPlanLinks,
 		planSettings,
 		planSettingsOverview,
 		layoutNavigationStyle,
@@ -270,5 +321,6 @@ export function usePreferences() {
 		locale,
 		// functions
 		getBurnDisplayClass,
+		setFioRepairPlanLink,
 	};
 }

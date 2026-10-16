@@ -2,6 +2,7 @@
 	import {
 		computed,
 		type ComputedRef,
+		type PropType,
 		watch,
 		type WritableComputedRef,
 	} from "vue";
@@ -11,7 +12,7 @@
 	import { usePreferences } from "@/features/preferences/usePreferences";
 
 	// Types & Interfaces
-	import type { PSelectOption } from "@/ui/ui.types";
+	import type { PSelectOption, SizeKey } from "@/ui/ui.types";
 
 	// UI
 	import { PSelect } from "@/ui";
@@ -31,6 +32,11 @@
 			type: Boolean,
 			required: false,
 			default: true,
+		},
+		size: {
+			type: String as PropType<SizeKey>,
+			required: false,
+			default: "md",
 		},
 	});
 
@@ -76,5 +82,6 @@
 		:options="preferenceOptions"
 		clearable
 		searchable
+		:size="size"
 		:class="selectClass" />
 </template>

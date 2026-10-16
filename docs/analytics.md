@@ -147,6 +147,9 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | --- | --- | --- |
 | `tool:use` | `tool_name`, plus the tool's own | the tool produced a result |
 | `repair_analysis:interval_set` | `source` (`input`, `slider`, `preset`, `reset`), `ticker` (`all` for a reset), `in_range` (within the good range) | a repair interval was changed in the plan's Repair Analysis, debounced 1 s |
+| `fio_repair:base_open` | `status` (`overdue`, `soon`, `later`, `unknown`), `confidence` (`match`, `likely`, `picked`, `nopick`, `none`) | a base was opened in FIO Repair (not the first one selected on load) |
+| `fio_repair:plan_link_set` | `to` (`plan`, `none`, `auto`) | a plan, "no plan" or "back to automatic" was picked for a FIO Repair base |
+| `fio_repair:setting_change` | `setting` (`interval`, `due_soon`, `arrival`, `exchange`, `use_plans`) | a FIO Repair setting was changed on the page, debounced 1 s per setting |
 
 `tool:use` means a result, not an opened page (pageviews carry
 `route_name` for that). Tools with an input count only a result for an
@@ -164,7 +167,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | `hq_upgrade` | | levels or overrides changed and settled (1 s) |
 | `upkeep_price` | | the price calculation finished |
 | `market_live` | | live data arrived, once per visit |
-| `fio_repair` | | the page opened with a repair table |
+| `fio_repair` | | the page showed at least one base |
 | `fio_burn` | | the burn calculation finished for at least one plan |
 | `construction_cart` | `built_edited` (Built was changed in this visit) | the cart closed |
 

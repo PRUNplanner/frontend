@@ -20,7 +20,8 @@ One page per `src/features/*` folder. Each page follows the same outline:
 
 | Feature | One-liner |
 | --- | --- |
-| [fio](fio.md) | FIO-powered burn, repair and storage views |
+| [fio](fio.md) | FIO-powered burn and storage views |
+| [fio_repair](fio_repair.md) | FIO bases' repair due dates, bills and XIT Repair |
 | [xit](xit.md) | Generate XIT action JSON (buy/transfer) |
 | [roi_overview](roi_overview.md) | ROI of every production recipe |
 | [resource_roi_overview](resource_roi_overview.md) | ROI of extracting a resource per planet |

@@ -5,8 +5,8 @@ real in-game storage and base sites, mirrored by the community FIO service.
 The backend proxies the data, and the user links FIO in their profile.
 
 **Used by.**
-- `views/fio/FIOBurnView.vue` (`/fio/burn`) and `FIORepairView.vue`
-  (`/fio/repair`).
+- `views/fio/FIOBurnView.vue` (`/fio/burn`). FIO Repair (`/fio/repair`)
+  has its own folder, see [fio_repair](fio_repair.md).
 - `PlanSupplyCart` and `PlanConstructionCart`, which subtract stock the user
   already has.
 - `useHQUpgradeCalculator`.
@@ -16,10 +16,8 @@ The backend proxies the data, and the user links FIO in their profile.
 | File | Role |
 | --- | --- |
 | `useFIOBurn.ts` | `useFIOBurn(plans, planResults)` computes days of supply per planet from the plan's daily consumption and FIO stock. Its outputs are `planTable` and the burn table |
-| `useFIORepair.ts` | `useFIORepair(planetsRef)` builds a repair table from FIO sites: average and min condition, and days since last repair. Infrastructure buildings (`HB*`, `ST*`, `CM`) are counted separately |
 | `useFIOStorage.ts` | `storageOptions` (planets / warehouses / ships as grouped select options), `planetStorageId(planet)` (the `PLANET#id` option, only if FIO has storage there) and `findMaterial(ticker)` across all storages |
 | `components/FIOBurnTable.vue`, `FIOBurnPlanTable.vue` | Burn UI, with XIT resupply buttons |
-| `components/FIORepairPlanet.vue` | Repair UI per planet |
 
 ## Data
 
@@ -38,5 +36,4 @@ The backend proxies the data, and the user links FIO in their profile.
 
 ## Tests
 
-`src/tests/features/fio/useFIOBurn.test.ts`, `useFIORepair.test.ts` and
-`useFIOStorage.test.ts`.
+`src/tests/features/fio/useFIOBurn.test.ts` and `useFIOStorage.test.ts`.

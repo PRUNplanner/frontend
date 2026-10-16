@@ -6,17 +6,15 @@ import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Util
-import {
-	enhanceMaterialIOMaterial,
-	type IPriceBook,
-} from "@/features/cx/priceBook";
+import type { IPriceBook } from "@/features/cx/priceBook";
 import { capitalizeString } from "@/util/text";
 import {
-	calculateRepairCurve,
-	findOptimalRepairDay,
 	goodRange,
+	priceRepairMaterials,
 	repairCostSplit,
+	repairCurveOf,
 	repairMaterialsAt,
+	repairMaterialTotals,
 } from "@/features/repair_analysis/repairAnalysis.util";
 
 // Types & Interfaces
@@ -79,28 +77,8 @@ export function useRepairAnalysis(
 		return data.value
 			.filter((d) => d.amount > 0)
 			.map((d) => {
-				const buy: Record<string, number> = {};
-				for (const m of d.constructionMaterials)
-					buy[m.ticker] = prices.getPrice(m.ticker, "BUY");
-
-				// dailyRevenue covers all buildings and already subtracts
-				// workforce and construction / 180 (engine/production.ts),
-				// take those back out, the curve charges workforce and real
-				// repair cost
-				const workforceCost = -d.workforceDailyCost;
-				const productionValue =
-					d.dailyRevenue / d.amount +
-					workforceCost -
-					d.constructionCost / 180;
-
-				const curve = calculateRepairCurve(
-					productionValue,
-					workforceCost,
-					d.constructionMaterials,
-					buy
-				);
-				// day 0 copies day 1's profit, repairing daily is day 1
-				const best = Math.max(1, findOptimalRepairDay(curve).day);
+				const { productionValue, workforceCost, curve, best } =
+					repairCurveOf(d, prices);
 
 				return {
 					ticker: d.name,
@@ -126,33 +104,7 @@ export function useRepairAnalysis(
 		minimal: IMaterialIOMinimal[],
 		prices: IPriceBook
 	): IRepairMaterialList {
-		const materials = enhanceMaterialIOMaterial(
-			prices,
-			enhanceMaterialIOMinimal(minimal.filter((m) => m.input > 0))
-		)
-			.map((m) => ({
-				ticker: m.ticker,
-				amount: m.input,
-				cost: -m.price,
-				weight: -m.totalWeight,
-				volume: -m.totalVolume,
-			}))
-			.sort((a, b) => b.cost - a.cost);
-		return withTotals(materials);
-	}
-
-	function withTotals(
-		materials: IRepairMaterialList["materials"]
-	): IRepairMaterialList {
-		return materials.reduce(
-			(list, m) => {
-				list.cost += m.cost;
-				list.weight += m.weight;
-				list.volume += m.volume;
-				return list;
-			},
-			{ materials, cost: 0, weight: 0, volume: 0 }
-		);
+		return priceRepairMaterials(enhanceMaterialIOMinimal(minimal), prices);
 	}
 
 	// last result per type, an interval change recomputes only its type
@@ -211,7 +163,9 @@ export function useRepairAnalysis(
 					s.volume += m.volume;
 				}
 			}
-		return withTotals([...sum.values()].sort((a, b) => b.cost - a.cost));
+		return repairMaterialTotals(
+			[...sum.values()].sort((a, b) => b.cost - a.cost)
+		);
 	}
 
 	return { buildings, materialsFor, materialsForAll };

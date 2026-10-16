@@ -21,6 +21,10 @@ buildings on the planet and their due dates.
   the days within 1 % of it, `repairCostSplit` splits the cost into lost
   output and repair cost per day, `repairMaterialsAt` the materials of one
   repair, `dueInDays` / `dueTagType` the due date of a real building.
+  `repairCurveOf(data, prices)` runs the curve and best day for one
+  building type of a plan result, `priceRepairMaterials` /
+  `repairMaterialTotals` price a material list; FIO Repair uses both for
+  its plan-based targets and bills.
 - **`useRepairAnalysis.ts`**: `useRepairAnalysis(dataRef, cxUuidRef,
   planetNaturalIdRef)`. Loads a price book once per change, then
   `buildings` (curve, best, range per type, most expensive repair first),

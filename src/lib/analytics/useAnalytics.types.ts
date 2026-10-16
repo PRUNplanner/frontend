@@ -191,6 +191,15 @@ export interface IAnalyticsEventProperties {
 		in_range: boolean;
 	};
 
+	"fio_repair:base_open": {
+		status: "overdue" | "soon" | "later" | "unknown";
+		confidence: "match" | "likely" | "picked" | "nopick" | "none";
+	};
+	"fio_repair:plan_link_set": { to: "plan" | "none" | "auto" };
+	"fio_repair:setting_change": {
+		setting: "interval" | "due_soon" | "arrival" | "exchange" | "use_plans";
+	};
+
 	"xit:burn_open": undefined;
 	"xit:burn_copy": undefined;
 	"xit:burn_ship_fit": { weight: number; volume: number };

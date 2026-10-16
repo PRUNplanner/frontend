@@ -33,7 +33,7 @@ in-game resources.
 | **Profit** | Daily revenue − material cost − 1/180 of construction cost | [planning-engine.md](planning-engine.md) |
 | **COGM** | Cost of goods manufactured: the per-unit production cost of a recipe | `components/tools/PlanCOGM*.vue`, `roi_overview/components/COGMButton.vue` |
 | **ROI** | Return on investment: payback time of building a production setup | `src/features/roi_overview`, `src/features/resource_roi_overview` |
-| **Repair / condition** | Buildings degrade over time, and repairing them costs construction materials | `src/features/repair_analysis`, `fio/useFIORepair.ts` |
+| **Repair / condition** | Buildings degrade over time, and repairing them costs construction materials | `src/features/repair_analysis`, `src/features/fio_repair` |
 | **Burn** | How many days the stored materials last at the current consumption | `fio/useFIOBurn.ts`, `burnDays*` preferences |
 | **Supply cart / construction cart** | Shopping lists: resupply for N days, or materials to build the plan | `components/tools/PlanSupplyCart.vue`, `PlanConstructionCart.vue` |
 | **Visitation frequency** | How often a ship must visit a base, given storage capacity and material flow | `visitationData`, `PlanVisitationFrequency.vue` |
