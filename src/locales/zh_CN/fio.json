@@ -52,14 +52,148 @@
 	"repair": {
 		"view_title": "FIO 维修",
 		"title": "FIO 维修",
-		"fio_last_update": "FIO 数据更新：{last_updated}",
-		"table": {
-			"title": "@:terms.planet_plural",
-			"planet": "@:terms.planets",
-			"buildings": "@:terms.buildings_plural",
-			"avg_condition": "平均状况",
-			"min_condition": "最低状况",
-			"repair_age": "距上次维修"
-		}
+		"fio_last_update": "FIO data update: {last_updated}",
+		"states": {
+			"no_fio_title": "Connect FIO to see your bases' repair status",
+			"no_fio": "FIO Repair reads your buildings' condition and last repair from FIO. Set up FIO in your {link}, then come back here.",
+			"profile": "Profile",
+			"no_sites": "FIO has no bases for you yet. Once FIO has your sites, they show up here.",
+			"stale": "FIO data was updated {when}. Buildings have aged since then, so conditions are lower and repair amounts higher than shown. Ages are counted to today."
+		},
+		"settings": {
+			"title": "Settings",
+			"target": "Repair target",
+			"use_plans": "Use matched plans",
+			"match_summary": "{matched} matched · {likely} likely · {none} without",
+			"interval_plans": "Without a plan, every",
+			"interval": "Repair every",
+			"interval_note_plans": "for bases without a matched plan",
+			"interval_note": "for every base",
+			"days": "days",
+			"due_soon": "Due soon",
+			"due_soon_note": "days before the target day",
+			"exchange": "Exchange Preference",
+			"exchange_note": "empire exchange and tickers only",
+			"footer": "Saved as your preferences, also in {link}. The Exchange Preference is your default one, the same setting as in Profile."
+		},
+		"stats": {
+			"overdue": "Overdue",
+			"soon": "Due within {n} d",
+			"later": "Later",
+			"bases": "bases | base | bases",
+			"due_cost": "Repair what's due, today",
+			"due_cargo": "{weight} t · {volume} m³ · no bases | {weight} t · {volume} m³ · {n} base | {weight} t · {volume} m³ · {n} bases",
+			"waiting": "Waiting costs",
+			"waiting_value": "+{cost} ȼ / day",
+			"waiting_note": "more repair material per day, for what's due"
+		},
+		"timeline": {
+			"title": "When bases come due",
+			"hint": "next repair by base, from the most overdue to the last one due · click a base to open it",
+			"today": "today",
+			"tick": "{n} d",
+			"unknown": "{n} without repair date",
+			"more": "{n} more: {names}"
+		},
+		"list": {
+			"title": "Bases",
+			"hint": "click a base for its buildings and repair flight",
+			"filter": "Filter",
+			"filters": {
+				"all": "All",
+				"overdue": "Overdue",
+				"soon": "Due soon",
+				"later": "Later"
+			},
+			"columns": {
+				"base": "Base",
+				"buildings": "Buildings",
+				"condition": "Condition",
+				"since": "Since repair",
+				"next": "Next repair",
+				"cost": "Repair now"
+			},
+			"plan": {
+				"match": "plan {name}",
+				"likely": "likely plan {name}",
+				"picked": "plan {name} (your choice)",
+				"none": "no plan · every {n} d"
+			},
+			"since": "{n} d",
+			"built": "built {n} d",
+			"no_date": "No repair date",
+			"empty": "No base in this filter.",
+			"footer": "Production buildings only. Habitations, storage and the core module age too, but need no repair materials. \"Repair now\" is the repair bill for every production building; it grows each day until day 180, when it equals a new building."
+		},
+		"due": {
+			"overdue": "Overdue {n} d",
+			"today": "Due today",
+			"soon": "Due in {n} d",
+			"later": "In {n} d",
+			"unknown": "No repair date"
+		},
+		"panel": {
+			"close": "Close base details",
+			"back": "Bases",
+			"buildings": "no production buildings | {n} production building | {n} production buildings",
+			"target": "Repair target",
+			"option_plan": "{plan} · {score} % match · {empire}",
+			"option_plan_loose": "{plan} · {score} % match",
+			"option_none": "No plan · every {n} days",
+			"needs_refresh": "Needs a FIO refresh",
+			"confidence": {
+				"match": "Matched",
+				"likely": "Likely",
+				"picked": "Your choice",
+				"nopick": "No plan",
+				"none": "No plan"
+			},
+			"reason": {
+				"match": "Same planet, all production buildings match FIO. Best day per building type from Repair Analysis.",
+				"likely": "{score} % of the buildings match FIO. Check that this is the plan you run.",
+				"picked": "Saved for this base in your preferences, on every device.",
+				"nopick": "You chose no plan for this base. Repairs every {n} days.",
+				"none_candidates": "No plan here matches FIO well enough. Pick one, or keep every {n} days.",
+				"none": "No plan on this planet. Repairs every {n} days.",
+				"off": "Matched plans are off. Repairs every {n} days."
+			},
+			"auto": "Back to automatic match",
+			"create": "Create a plan for {planet}",
+			"types": {
+				"building": "Building",
+				"target": "Target",
+				"since": "Since",
+				"condition": "Cond.",
+				"due": "Due",
+				"days": "{n} d"
+			},
+			"flight": {
+				"title": "Repair flight",
+				"arrives": "Arrives in",
+				"days": "days",
+				"extra": "+{cost} ȼ vs. repairing today",
+				"today": "amounts as of today",
+				"hint": "Add a day or two for long flights: the bill grows until the ship unloads.",
+				"weight": "Cargo weight",
+				"volume": "Cargo volume",
+				"store": "Use what's already in the base store",
+				"from_store": "From the base store: {materials}"
+			},
+			"load": {
+				"title": "Load · all {n} buildings",
+				"summary": "{n} materials · {weight} t · {volume} m³",
+				"nothing": "Nothing to load: the base store covers the whole repair.",
+				"total": "Total · Exchange Preference {name}",
+				"no_preference": "none",
+				"footer": "Pick the ship when you run the XIT, fly to {base}, unload and run BRA."
+			}
+		},
+		"xit": {
+			"button": "XIT Repair",
+			"title": "XIT Repair · {base}",
+			"name": "Repair {base} ({planet})",
+			"note": "The ship is picked when the XIT runs. It needs {weight} t and {volume} m³ of free cargo."
+		},
+		"computing": "Calculating the best repair days of your matched plans."
 	}
 }
