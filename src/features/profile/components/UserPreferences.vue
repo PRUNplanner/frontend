@@ -43,6 +43,9 @@
 		burnDaysYellow,
 		burnResupplyDays,
 		burnOrigin,
+		fioRepairIntervalDays,
+		fioRepairDueSoonDays,
+		fioRepairArrivalDays,
 		locale,
 		colorPalette,
 		planSuggestions,
@@ -188,6 +191,43 @@
 		<PFormItem :label="t('profile.preferences.form.buy_from_cx')">
 			<PCheckbox v-model:checked="defaultBuyItemsFromCX" />
 		</PFormItem>
+
+		<PFormSeparator>
+			<h4 class="font-bold py-1">
+				{{ $t("profile.preferences.form.fio_repair") }}
+			</h4>
+		</PFormSeparator>
+
+		<PFormItem :label="t('profile.preferences.form.fio_repair_interval')">
+			<PInputNumber
+				v-model:value="fioRepairIntervalDays"
+				show-buttons
+				:min="1"
+				:max="180"
+				class="w-full" />
+		</PFormItem>
+		<PFormItem :label="t('profile.preferences.form.fio_repair_due_soon')">
+			<PInputNumber
+				v-model:value="fioRepairDueSoonDays"
+				show-buttons
+				:min="0"
+				:max="60"
+				class="w-full" />
+		</PFormItem>
+		<PFormItem :label="t('profile.preferences.form.fio_repair_arrival')">
+			<PInputNumber
+				v-model:value="fioRepairArrivalDays"
+				show-buttons
+				:min="0"
+				:max="30"
+				class="w-full" />
+		</PFormItem>
+		<PFormSeparator>
+			<p class="text-xs text-muted pt-1 pb-2">
+				{{ $t("profile.preferences.form.fio_repair_note") }}
+			</p>
+		</PFormSeparator>
+
 		<PFormItem :label="t('profile.preferences.form.plan_suggestions')">
 			<PCheckbox v-model:checked="planSuggestions" />
 		</PFormItem>

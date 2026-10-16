@@ -1,6 +1,19 @@
+// Util
+import {
+	enhanceMaterialIOMaterial,
+	type IPriceBook,
+} from "@/features/cx/priceBook";
+
 // Types & Interfaces
-import type { IPlanRepairAnalysisElement } from "@/features/planning/components/tools/planRepairAnalysis.types";
-import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type {
+	IPlanRepairAnalysisDataProp,
+	IPlanRepairAnalysisElement,
+} from "@/features/planning/components/tools/planRepairAnalysis.types";
+import type {
+	IMaterialIOMaterial,
+	IMaterialIOMinimal,
+} from "@/features/planning/usePlanCalculation.types";
+import type { IRepairMaterialList } from "@/features/repair_analysis/useRepairAnalysis.types";
 
 export const REPAIR_DAY_MAX: number = 180;
 
@@ -77,8 +90,7 @@ export function calculateRepairCurve(
 		);
 
 		const repSum = rep / (i + 1);
-		const profit =
-			i === 0 ? 0 : dailyRevenue_norm - workforceCost - repSum;
+		const profit = i === 0 ? 0 : dailyRevenue_norm - workforceCost - repSum;
 
 		r.push({
 			day: i,
@@ -112,6 +124,97 @@ export function findOptimalRepairDay(curve: IPlanRepairAnalysisElement[]): {
 } {
 	const profit = Math.max(...curve.map((o) => o.profit));
 	return { day: curve.findIndex((e) => e.profit === profit), profit };
+}
+
+/**
+ * Repair curve and best interval of one building type of a plan result,
+ * priced at the book's buy prices. The plan's dailyRevenue covers all
+ * buildings and already subtracts workforce and construction / 180
+ * (engine/production.ts); the curve charges workforce and the real repair
+ * cost instead. Day 0 copies day 1's profit, so the best day is at least 1.
+ * @author jplacht
+ *
+ * @param {IPlanRepairAnalysisDataProp} data Building type of the plan
+ * @param {IPriceBook} prices Price book of the plan's CX and planet
+ * @returns {{ productionValue: number; workforceCost: number; curve: IPlanRepairAnalysisElement[]; best: number }}
+ * Per single building
+ */
+export function repairCurveOf(
+	data: IPlanRepairAnalysisDataProp,
+	prices: IPriceBook
+): {
+	productionValue: number;
+	workforceCost: number;
+	curve: IPlanRepairAnalysisElement[];
+	best: number;
+} {
+	const buy: Record<string, number> = {};
+	for (const m of data.constructionMaterials)
+		buy[m.ticker] = prices.getPrice(m.ticker, "BUY");
+
+	const workforceCost = -data.workforceDailyCost;
+	const productionValue =
+		data.dailyRevenue / data.amount +
+		workforceCost -
+		data.constructionCost / REPAIR_DAY_MAX;
+
+	const curve = calculateRepairCurve(
+		productionValue,
+		workforceCost,
+		data.constructionMaterials,
+		buy
+	);
+	const best = Math.max(1, findOptimalRepairDay(curve).day);
+	return { productionValue, workforceCost, curve, best };
+}
+
+/**
+ * Totals of a material list
+ * @author jplacht
+ *
+ * @param {IRepairMaterialList["materials"]} materials Materials
+ * @returns {IRepairMaterialList} Materials with summed cost, weight, volume
+ */
+export function repairMaterialTotals(
+	materials: IRepairMaterialList["materials"]
+): IRepairMaterialList {
+	return materials.reduce(
+		(list, m) => {
+			list.cost += m.cost;
+			list.weight += m.weight;
+			list.volume += m.volume;
+			return list;
+		},
+		{ materials, cost: 0, weight: 0, volume: 0 }
+	);
+}
+
+/**
+ * Prices materials to buy, most expensive first, with totals
+ * @author jplacht
+ *
+ * @param {IMaterialIOMaterial[]} materials Materials with weight and volume, as input
+ * @param {IPriceBook} prices Price book
+ * @returns {IRepairMaterialList} Priced materials
+ */
+export function priceRepairMaterials(
+	materials: IMaterialIOMaterial[],
+	prices: IPriceBook
+): IRepairMaterialList {
+	return repairMaterialTotals(
+		enhanceMaterialIOMaterial(
+			prices,
+			materials.filter((m) => m.input > 0)
+		)
+			.map((m) => ({
+				ticker: m.ticker,
+				amount: m.input,
+				cost: -m.price,
+				weight: -m.totalWeight,
+				volume: -m.totalVolume,
+			}))
+			.sort((a, b) => b.cost - a.cost)
+	);
 }
 
 /**

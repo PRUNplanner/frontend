@@ -102,7 +102,7 @@ const mountPreferences = () => mountComponent(UserPreferences, {}, { pinia });
 
 /** locale, default empire, XIT origin */
 const selects = (wrapper: VueWrapper) => wrapper.findAllComponents(PSelect);
-/** red, yellow, resupply */
+/** red, yellow, resupply, FIO Repair interval, due soon, arrival */
 const numberInputs = (wrapper: VueWrapper) =>
 	wrapper.findAllComponents(PInputNumber);
 const checkbox = (wrapper: VueWrapper) =>
@@ -140,7 +140,7 @@ describe("UserPreferences", () => {
 			"Configure on Execution",
 		]);
 		expect(numberInputs(wrapper).map((n) => n.props("value"))).toEqual([
-			5, 10, 20,
+			5, 10, 20, 60, 7, 2,
 		]);
 		expect(checkbox(wrapper).element.checked).toBe(true);
 		expect(
@@ -168,7 +168,7 @@ describe("UserPreferences", () => {
 			"Moria Station Warehouse",
 		]);
 		expect(numberInputs(wrapper).map((n) => n.props("value"))).toEqual([
-			3, 7, 30,
+			3, 7, 30, 60, 7, 2,
 		]);
 		expect(checkbox(wrapper).element.checked).toBe(false);
 		expect(
@@ -354,6 +354,32 @@ describe("UserPreferences", () => {
 		expect(userStore.preferences.burnResupplyDays).toBe(25);
 	});
 
+	it("sets the FIO Repair preferences, defaults first", async () => {
+		const userStore = seed();
+		const { wrapper } = await mountPreferences();
+		const inputs = wrapper.findAll<HTMLInputElement>(
+			"input[inputmode=numeric]"
+		);
+		expect(inputs.slice(3).map((i) => i.element.value)).toStrictEqual([
+			"60",
+			"7",
+			"2",
+		]);
+
+		await inputs.at(3)!.setValue("45");
+		await inputs.at(4)!.setValue("3");
+		await inputs.at(5)!.setValue("500");
+		await flushPromises();
+
+		expect(userStore.preferences.fioRepairIntervalDays).toBe(45);
+		expect(userStore.preferences.fioRepairDueSoonDays).toBe(3);
+		// arrival days stop at 30
+		expect(userStore.preferences.fioRepairArrivalDays).toBe(30);
+		expect(wrapper.text()).toContain(
+			"profile.preferences.form.fio_repair_note"
+		);
+	});
+
 	it("keeps every burn threshold at 1 day or more", async () => {
 		const userStore = seed();
 		const { wrapper } = await mountPreferences();
@@ -372,9 +398,9 @@ describe("UserPreferences", () => {
 		const userStore = seed();
 		userStore.preferences.burnDaysYellow = 1;
 		const { wrapper } = await mountPreferences();
-		// minus, plus for each of the 3 inputs
+		// minus, plus for each of the 3 burn and 3 FIO Repair inputs
 		const steppers = wrapper.findAll(".ph-no-capture");
-		expect(steppers).toHaveLength(6);
+		expect(steppers).toHaveLength(12);
 
 		await steppers.at(0)!.trigger("click");
 		await steppers.at(2)!.trigger("click");

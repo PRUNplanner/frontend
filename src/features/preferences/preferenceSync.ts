@@ -15,12 +15,17 @@ const KEYS = Object.keys(
 	UserPreferenceSchema.shape
 ) as (keyof UserPreference)[];
 
+// maps the backend merges per key, a key sent as null is deleted
+const KEYED = ["planOverrides", "fioRepairPlanLinks"] as const;
+type KeyedPatch = Record<string, unknown>;
+
 // last preferences known to match the backend, a PATCH sends the difference
 let synced: UserPreference | undefined;
 
 /**
  * Changes from one preference state to another: changed top-level keys
- * and changed plan overrides per uuid, removed ones as null
+ * and, for plan overrides and FIO Repair plan links, changed entries per
+ * key, removed ones as null
  *
  * @author jplacht
  *
@@ -35,22 +40,25 @@ export function diffPreferences(
 	const patch: Record<string, unknown> = {};
 
 	for (const key of KEYS) {
-		if (key === "planOverrides" || isEqual(from[key], to[key])) continue;
+		if ((KEYED as readonly string[]).includes(key)) continue;
+		if (isEqual(from[key], to[key])) continue;
 		// an unset uuid must be sent as null, undefined is dropped
 		patch[key] = cloneDeep(to[key]) ?? null;
 	}
 
-	const fromOverrides = from.planOverrides ?? {};
-	const toOverrides = to.planOverrides ?? {};
-	const overrides: NonNullable<UserPreferencePatch["planOverrides"]> = {};
-	for (const uuid of new Set([
-		...Object.keys(fromOverrides),
-		...Object.keys(toOverrides),
-	]))
-		if (!isEqual(fromOverrides[uuid], toOverrides[uuid]))
-			overrides[uuid] = cloneDeep(toOverrides[uuid]) ?? null;
+	for (const key of KEYED) {
+		const fromMap: KeyedPatch = from[key] ?? {};
+		const toMap: KeyedPatch = to[key] ?? {};
+		const changes: KeyedPatch = {};
+		for (const id of new Set([
+			...Object.keys(fromMap),
+			...Object.keys(toMap),
+		]))
+			if (!isEqual(fromMap[id], toMap[id]))
+				changes[id] = cloneDeep(toMap[id]) ?? null;
 
-	if (Object.keys(overrides).length > 0) patch.planOverrides = overrides;
+		if (Object.keys(changes).length > 0) patch[key] = changes;
+	}
 
 	return patch as UserPreferencePatch;
 }
@@ -68,18 +76,22 @@ export function applyPreferencePatch(
 	target: UserPreference,
 	patch: UserPreferencePatch
 ): void {
-	const { planOverrides, ...rest } = patch;
 	const record = target as Record<string, unknown>;
 
-	for (const [key, value] of Object.entries(rest)) {
+	for (const [key, value] of Object.entries(patch)) {
+		if ((KEYED as readonly string[]).includes(key)) continue;
 		const next = value ?? undefined;
 		if (!isEqual(record[key], next)) record[key] = cloneDeep(next);
 	}
 
-	for (const [uuid, value] of Object.entries(planOverrides ?? {})) {
-		if (value === null) delete target.planOverrides[uuid];
-		else if (!isEqual(target.planOverrides[uuid], value))
-			target.planOverrides[uuid] = cloneDeep(value);
+	for (const key of KEYED) {
+		const map = (record[key] ??= {}) as KeyedPatch;
+		for (const [id, value] of Object.entries(
+			(patch[key] ?? {}) as KeyedPatch
+		)) {
+			if (value === null) delete map[id];
+			else if (!isEqual(map[id], value)) map[id] = cloneDeep(value);
+		}
 	}
 }
 

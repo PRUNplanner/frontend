@@ -15,7 +15,6 @@
 	import { useUserStore } from "@/stores/userStore";
 
 	// Composables
-	import { useFIORepair } from "@/features/fio/useFIORepair";
 	import { useRepairAnalysis } from "@/features/repair_analysis/useRepairAnalysis";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
@@ -31,6 +30,7 @@
 		dueInDays,
 		REPAIR_DAY_MAX,
 	} from "@/features/repair_analysis/repairAnalysis.util";
+	import { isInfrastructureBuilding } from "@/features/fio_repair/fioRepair.util";
 	import { relativeFromDate } from "@/util/date";
 	import { clamp, formatNumber } from "@/util/numbers";
 
@@ -195,9 +195,6 @@
 	 */
 	const userStore = useUserStore();
 	const planningStore = usePlanningStore();
-	const { isInfrastructureBuilding } = useFIORepair(
-		toRef(planningStore, "fio_sites_planets")
-	);
 
 	const site = computed(() =>
 		Object.values(planningStore.fio_sites_planets).find(
@@ -223,7 +220,10 @@
 			list.push({
 				index: list.length + 1,
 				ageDays: b.BuildingLastRepair
-					? Math.floor((now - new Date(b.BuildingLastRepair).getTime()) / DAY_MS)
+					? Math.floor(
+							(now - new Date(b.BuildingLastRepair).getTime()) /
+								DAY_MS
+						)
 					: undefined,
 				condition: b.Condition,
 				repairMaterials: b.RepairMaterials.map((m) => ({
@@ -323,10 +323,15 @@
 							data-testid="repair-stats-delta">
 							{{
 								Math.abs(stats.delta) < 0.5
-									? $t("plan.tools.repair_analysis.stats.all_best")
-									: $t("plan.tools.repair_analysis.stats.vs_best", {
-											delta: signed(stats.delta),
-										})
+									? $t(
+											"plan.tools.repair_analysis.stats.all_best"
+										)
+									: $t(
+											"plan.tools.repair_analysis.stats.vs_best",
+											{
+												delta: signed(stats.delta),
+											}
+										)
 							}}
 						</span>
 					</span>
@@ -345,7 +350,10 @@
 						<RepairDueTag :days="nextDue.days" />
 					</span>
 				</div>
-				<div v-else class="flex flex-col" data-testid="repair-stats-cost">
+				<div
+					v-else
+					class="flex flex-col"
+					data-testid="repair-stats-cost">
 					<span class="text-xs text-muted uppercase tracking-wide">
 						{{ $t("plan.tools.repair_analysis.stats.repair_cost") }}
 					</span>
@@ -387,7 +395,9 @@
 						<PIcon
 							:size="16"
 							class="text-link"
-							:aria-label="$t('plan.tools.repair_analysis.fio.stale')">
+							:aria-label="
+								$t('plan.tools.repair_analysis.fio.stale')
+							">
 							<InfoOutlined />
 						</PIcon>
 					</template>
@@ -424,7 +434,8 @@
 				:materials="selectedMaterials!"
 				:ages="ages(selectedBuilding.ticker)"
 				@update:interval="
-					(v, source) => setInterval(selectedBuilding!.ticker, v, source)
+					(v, source) =>
+						setInterval(selectedBuilding!.ticker, v, source)
 				"
 				@back="phoneDetail = false">
 				<template #fio>
@@ -441,7 +452,11 @@
 						<RouterLink
 							to="/profile#fio"
 							class="block mt-1 font-medium text-link">
-							{{ $t("plan.tools.repair_analysis.fio.connect_link") }}
+							{{
+								$t(
+									"plan.tools.repair_analysis.fio.connect_link"
+								)
+							}}
 						</RouterLink>
 					</PNotice>
 					<PNotice v-else-if="fioState === 'no_site'">

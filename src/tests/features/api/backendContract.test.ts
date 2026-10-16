@@ -371,6 +371,10 @@ describe("Backend contract", () => {
 			"colorPalette",
 			"planSuggestions",
 			"planOverrides",
+			"fioRepairIntervalDays",
+			"fioRepairDueSoonDays",
+			"fioRepairArrivalDays",
+			"fioRepairPlanLinks",
 		];
 
 		// backend GET response for a user without stored preferences
@@ -388,6 +392,10 @@ describe("Backend contract", () => {
 			colorPalette: "default",
 			planSuggestions: true,
 			planOverrides: {},
+			fioRepairIntervalDays: 60,
+			fioRepairDueSoonDays: 7,
+			fioRepairArrivalDays: 2,
+			fioRepairPlanLinks: {},
 		};
 
 		it("parses the backend default response", () => {
@@ -492,6 +500,38 @@ describe("Backend contract", () => {
 			expect(UserPreferenceSchema.parse(oldBackend).colorPalette).toBe(
 				"default"
 			);
+		});
+
+		it("FIO Repair: defaults from a backend without them, links kept", () => {
+			const {
+				fioRepairIntervalDays: _i,
+				fioRepairDueSoonDays: _s,
+				fioRepairArrivalDays: _a,
+				fioRepairPlanLinks: _l,
+				...oldBackend
+			} = backendDefaults;
+			const parsed = UserPreferenceSchema.parse(oldBackend);
+			expect(parsed.fioRepairIntervalDays).toBe(60);
+			expect(parsed.fioRepairDueSoonDays).toBe(7);
+			expect(parsed.fioRepairArrivalDays).toBe(2);
+			expect(parsed.fioRepairPlanLinks).toStrictEqual({});
+
+			const links = {
+				a: { planUuid: "6f1c2b9a-6a43-4a0e-9a4f-0c4d1b2e3f40" },
+				b: { planUuid: null },
+			};
+			expect(
+				UserPreferenceSchema.parse({
+					...backendDefaults,
+					fioRepairPlanLinks: links,
+				}).fioRepairPlanLinks
+			).toStrictEqual(links);
+			expect(
+				UserPreferenceSchema.parse({
+					...backendDefaults,
+					fioRepairPlanLinks: null,
+				}).fioRepairPlanLinks
+			).toStrictEqual({});
 		});
 
 		it("turns plan suggestions on when missing or invalid", () => {

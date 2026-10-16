@@ -22,6 +22,11 @@ export const preferenceDefaults: IPreferenceDefault = {
 	colorPalette: "default",
 	planSuggestions: true,
 
+	fioRepairIntervalDays: 60,
+	fioRepairDueSoonDays: 7,
+	fioRepairArrivalDays: 2,
+	fioRepairPlanLinks: {},
+
 	planOverrides: {},
 	planDefaults: {
 		includeCM: false,

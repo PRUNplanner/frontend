@@ -80,6 +80,12 @@
 			required: false,
 			default: 650,
 		},
+		// one line under the JSON, e.g. the cargo the ship needs
+		note: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
 	});
 
 	// local elements
@@ -146,6 +152,12 @@
 							"
 							type="textarea"
 							class="w-full" />
+						<p
+							v-if="note"
+							class="pt-1.5 text-xs text-muted"
+							data-testid="xit-transfer-note">
+							{{ note }}
+						</p>
 					</div>
 					<div>
 						<PButton

@@ -319,6 +319,7 @@ const FIOSitePlanetBuildingMaterialSchema = z.object({
 const FIOSitePlanetBuildingSchema = z.object({
 	BuildingTicker: z.string(),
 	BuildingLastRepair: z.coerce.date().optional(),
+	BuildingCreated: z.coerce.date().optional(),
 	Condition: z.number(),
 	ReclaimableMaterials: z
 		.array(FIOSitePlanetBuildingMaterialSchema)
@@ -328,6 +329,7 @@ const FIOSitePlanetBuildingSchema = z.object({
 });
 
 const FIOSitePlanetSchema = z.object({
+	SiteId: z.string().optional(),
 	PlanetIdentifier: z.string(),
 	PlanetName: z.string().optional(),
 	InvestedPermits: z.number(),

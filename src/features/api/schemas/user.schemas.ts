@@ -130,6 +130,8 @@ const PreferencePerPlanSchema = z.object({
 });
 export type PreferencePerPlan = z.infer<typeof PreferencePerPlanSchema>;
 
+const FIORepairPlanLinkSchema = z.object({ planUuid: z.uuid().nullable() });
+
 export const UserPreferenceSchema = z.object({
 	locale: z
 		.preprocess((val) => val ?? "en_US", z.enum(SUPPORTED_LOCALES))
@@ -156,6 +158,16 @@ export const UserPreferenceSchema = z.object({
 		.record(z.string(), PreferencePerPlanSchema)
 		.nullable()
 		.transform((v) => v ?? {}),
+	// FIO Repair; missing until the backend serves them
+	fioRepairIntervalDays: z.number().int().catch(60),
+	fioRepairDueSoonDays: z.number().int().catch(7),
+	fioRepairArrivalDays: z.number().int().catch(2),
+	// FIO SiteId → the plan picked for the base, null for "no plan"
+	fioRepairPlanLinks: z
+		.record(z.string(), FIORepairPlanLinkSchema)
+		.nullable()
+		.transform((v) => v ?? {})
+		.catch({}),
 });
 export type UserPreference = z.infer<typeof UserPreferenceSchema>;
 
@@ -172,12 +184,15 @@ export const UserPreferencePayloadSchema = UserPreferenceSchema.extend({
 		.transform((v) => v ?? null),
 });
 
-// PATCH sends only the changed keys; the backend merges planOverrides per
-// uuid and deletes the ones sent as null
+// PATCH sends only the changed keys; the backend merges planOverrides (per
+// uuid) and fioRepairPlanLinks (per SiteId) and deletes the ones sent as null
 export const UserPreferencePatchSchema =
 	UserPreferencePayloadSchema.partial().extend({
 		planOverrides: z
 			.record(z.string(), PreferencePerPlanSchema.nullable())
+			.optional(),
+		fioRepairPlanLinks: z
+			.record(z.string(), FIORepairPlanLinkSchema.nullable())
 			.optional(),
 	});
 export type UserPreferencePatch = z.input<typeof UserPreferencePatchSchema>;

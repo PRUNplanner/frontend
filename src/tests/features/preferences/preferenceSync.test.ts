@@ -42,6 +42,24 @@ describe("preferenceSync", () => {
 		});
 	});
 
+	it("FIO Repair plan links per SiteId, removed ones as null", () => {
+		const from = prefs();
+		from.fioRepairPlanLinks = { s1: { planUuid: null } };
+		const to = cloneDeep(from);
+		delete to.fioRepairPlanLinks.s1;
+		to.fioRepairPlanLinks.s2 = { planUuid: "p" };
+
+		const patch = diffPreferences(from, to);
+		expect(patch).toStrictEqual({
+			fioRepairPlanLinks: { s1: null, s2: { planUuid: "p" } },
+		});
+
+		applyPreferencePatch(from, patch);
+		expect(from.fioRepairPlanLinks).toStrictEqual({
+			s2: { planUuid: "p" },
+		});
+	});
+
 	it("plan overrides per uuid, removed ones as null", () => {
 		const to = prefs();
 		to.planOverrides.a.includeCM = true;

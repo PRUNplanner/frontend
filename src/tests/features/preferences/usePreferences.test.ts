@@ -48,6 +48,43 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	describe("FIO Repair", () => {
+		it("numbers: defaults, set, invalid input kept out", () => {
+			const {
+				fioRepairIntervalDays,
+				fioRepairDueSoonDays,
+				fioRepairArrivalDays,
+			} = usePreferences();
+			expect(fioRepairIntervalDays.value).toBe(60);
+			expect(fioRepairDueSoonDays.value).toBe(7);
+			expect(fioRepairArrivalDays.value).toBe(2);
+
+			fioRepairIntervalDays.value = 45;
+			fioRepairDueSoonDays.value = 3;
+			fioRepairArrivalDays.value = 5;
+			fioRepairArrivalDays.value = NaN;
+			expect(fioRepairIntervalDays.value).toBe(45);
+			expect(fioRepairDueSoonDays.value).toBe(3);
+			expect(fioRepairArrivalDays.value).toBe(5);
+		});
+
+		it("plan links: pick, no plan, back to automatic", () => {
+			const { fioRepairPlanLinks, setFioRepairPlanLink } =
+				usePreferences();
+			setFioRepairPlanLink("s1", "p1");
+			setFioRepairPlanLink("s2", null);
+			expect(fioRepairPlanLinks.value).toStrictEqual({
+				s1: { planUuid: "p1" },
+				s2: { planUuid: null },
+			});
+
+			setFioRepairPlanLink("s1", undefined);
+			expect(fioRepairPlanLinks.value).toStrictEqual({
+				s2: { planUuid: null },
+			});
+		});
+	});
+
 	describe("burnOrigin", async () => {
 		it("get", async () => {
 			const { burnOrigin } = usePreferences();
