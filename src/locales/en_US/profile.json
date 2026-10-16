@@ -13,15 +13,12 @@
 		}
 	},
 	"change_profile": {
-		"title": "Profile",
 		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
-			"update_profile": "Update Profile",
 			"verify_email": "Verify Email",
 			"resend_code": "Resend Code",
 			"code_requested": "Code requested."
 		},
-		"fio_info": "FIO Data Updates are handled by PRUNplanner's backend automatically.",
 		"form": {
 			"fio_apikey": "FIO API Key",
 			"prun_username": "PrUn Username",
@@ -57,27 +54,20 @@
 		}
 	},
 	"fio_information": {
-		"title": "What is FIO & Why should you use it?",
+		"guide": "How to get a FIO API key",
 		"help": {
-			"title": "5 Easy Steps to Integrate FIO and PRUNplanner",
 			"p1": "FIO is a community developed {link} that collects your game data, makes it available outside of Prosperous Universe and is completely free to use.",
-			"p2": "Just go ahead and install the Chrome or Firefox extension, reload your browser with APEX open and click the extension button in the upper-right in your browser to create an account. FIO will automatically collect (only) your game data while you keep playing.",
-			"p3": "You can now login to the {link} to see your data and create an API-Key PRUNplanner will use to import your storage (materials you have somewhere) and sites (planets, ships, warehouses) data.",
-			"p4": "Creating the key is easy, if you head to the {link} page and click the \"Create API Key\" button. Enter a name for your key (e.g., \"PRUNplanner\") and your FIO password. You don't need to \"Allow Writes\" as PRUNplanner will not manipulate any of your data, the tool just reads and uses it.",
-			"p5": "Give PRUNplanner a couple of minutes and your game data will appear, allowing you to see when to repair ships, what buildings you have already constructed when creating or modifying plans or when to resupply your bases.",
 			"steps": {
 				"1": "Download and install the {link}",
 				"2": "Open your game, click the extensions button and register your FIO account",
 				"3": "Head to the FIO website, open your {link} and create an API-Key for PRUNplanner",
-				"4": "Copy and enter your API Key as well as your Prosperous Universe username to your profile above and press the \"Update Profile\" button",
+				"4": "Enter your API key and your Prosperous Universe username above and press \"Save\".",
 				"5": "Wait a few minutes for PRUNplanner to get your data and enjoy additional planning capabilities. Your data will be updated automatically in the background, no need to do anything."
 			},
 			"refined_prun": "While you're enhancing your gameplay, also check out {link}: Another browser extension greatly simplifying the user interface and adding tons of features."
 		},
 		"links": {
 			"browser_extension": "Browser Extension",
-			"fio_website": "FIO Website",
-			"fio_settings": "FIO Settings",
 			"fio_extension": "FIO Browser Extension",
 			"settings_short": "Settings",
 			"refined_prun": "Refined PrUn"
@@ -85,7 +75,7 @@
 	},
 	"preferences": {
 		"title": "Preferences",
-		"description": "Use this panel to review and customize your PRUNplanner settings.",
+		"description": "Saved to your account as soon as you change them.",
 		"form": {
 			"tool_preferences": "Tool Preferences",
 			"language": "Language",
@@ -115,7 +105,25 @@
 			"plan_specific": "Plan-Specific Settings",
 			"plan_specific_description": "These settings are managed within individual plans. This section provides an overview of the preferences you've customized so far - to modify them, navigate to the corresponding plan.",
 			"plan": "Plan",
-			"preferences": "Preferences"
+			"preferences": "Preferences",
+			"planning": "Planning",
+			"plan_specific_empty": "No plan has its own settings yet."
 		}
+	},
+	"buttons": {
+		"save": "Save"
+	},
+	"sections": {
+		"fio": {
+			"title": "FIO connection",
+			"description": "Imports your storage, sites and ships from FIO. PRUNplanner refreshes it in the background."
+		},
+		"account": {
+			"title": "Account"
+		}
+	},
+	"account": {
+		"verified": "Verified",
+		"not_verified": "Not verified"
 	}
 }

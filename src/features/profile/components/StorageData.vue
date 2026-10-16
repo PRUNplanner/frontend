@@ -47,30 +47,18 @@
 </script>
 
 <template>
-	<details class="group">
-		<summary
-			class="cursor-pointer flex flex-wrap items-baseline gap-x-3 list-none [&::-webkit-details-marker]:hidden">
-			<h2 class="text-white/80 font-bold text-lg">
-				<span
-					class="inline-block transition-transform group-open:rotate-90"
-					aria-hidden="true">
-					▸
-				</span>
-				{{ $t("profile.storage_data.title") }}
-			</h2>
-			<span v-if="stat.length" class="text-sm text-muted">
-				{{
-					$t("profile.storage_data.total", {
-						size: formatNumber(total.sizeMB),
-						records: formatAmount(total.records),
-					})
-				}}
-			</span>
+	<details>
+		<summary class="cursor-pointer text-link hover:underline w-fit">
+			{{
+				stat.length
+					? $t("profile.storage_data.total", {
+							size: formatNumber(total.sizeMB),
+							records: formatAmount(total.records),
+						})
+					: $t("profile.storage_data.title")
+			}}
 		</summary>
-		<div class="py-3 text-muted">
-			{{ $t("profile.storage_data.description") }}
-		</div>
-		<PTable striped>
+		<PTable striped class="mt-3">
 			<thead>
 				<tr>
 					<th>{{ $t("profile.storage_data.table.storage") }}</th>
