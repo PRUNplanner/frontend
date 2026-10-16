@@ -30,6 +30,7 @@
 
 	// Types & Interfaces
 	import type { IXITTransferMaterial } from "@/features/xit/xitAction.types";
+	import type { XITTransferSource } from "@/lib/analytics/useAnalytics.types";
 
 	// UI
 	import {
@@ -86,6 +87,12 @@
 			required: false,
 			default: undefined,
 		},
+		// which button this is, sent with the xit:transfer_* events
+		source: {
+			type: String as PropType<XITTransferSource>,
+			required: false,
+			default: undefined,
+		},
 	});
 
 	// local elements
@@ -99,7 +106,7 @@
 
 	function show(): void {
 		if (!showDrawer.value) {
-			trackEvent("xit:transfer_open");
+			trackEvent("xit:transfer_open", { source: props.source });
 			loadDrawer.value = true;
 			nextTick().then(() => (showDrawer.value = true));
 		}
@@ -163,7 +170,7 @@
 						<PButton
 							@click="
 								() => {
-									trackEvent('xit:transfer_copy');
+									trackEvent('xit:transfer_copy', { source });
 									copyToClipboard(
 										transferJSON(localElements, {
 											name: transferName,

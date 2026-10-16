@@ -378,6 +378,7 @@
 					</span>
 				</span>
 				<XITTransferActionButton
+					source="fio_repair"
 					:elements="elements"
 					:button-text="$t('fio.repair.xit.button')"
 					:drawer-title="

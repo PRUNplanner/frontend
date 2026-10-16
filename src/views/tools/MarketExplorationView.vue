@@ -96,6 +96,8 @@
 	}
 	const chartView = ref<ChartView>(storedChartView());
 	function setChartView(view: ChartView): void {
+		if (view !== chartView.value)
+			trackEvent("market_exploration:view_change", { view });
 		chartView.value = view;
 		try {
 			sessionStorage.setItem(CHART_VIEW_KEY, view);

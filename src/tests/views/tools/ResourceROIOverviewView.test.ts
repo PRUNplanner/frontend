@@ -130,6 +130,7 @@ describe("ResourceROIOverviewView chart", () => {
 		expect(chartButton(wrapper).props("pressed")).toBe(true);
 		expect(drawer(wrapper).exists()).toBe(true);
 		expect(localStorage.getItem(CHART_KEY)).toBe("1");
+		expect(trackEvent).toHaveBeenCalledWith("resource_roi:chart_open");
 
 		// the drawer gets what the table shows
 		const rows = [{ planetNaturalId: "A" }];
@@ -145,6 +146,12 @@ describe("ResourceROIOverviewView chart", () => {
 		await flushPromises();
 		expect(drawer(wrapper).exists()).toBe(false);
 		expect(localStorage.getItem(CHART_KEY)).toBe("0");
+		// closing is not reported
+		expect(
+			vi
+				.mocked(trackEvent)
+				.mock.calls.filter(([e]) => e === "resource_roi:chart_open")
+		).toHaveLength(1);
 	});
 
 	it("reopens a drawer left open", async () => {

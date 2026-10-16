@@ -120,7 +120,10 @@
 			pins: pins.value,
 		});
 
-	watch(view, (v) => (prefs.value.view = v));
+	watch(view, (v) => {
+		prefs.value.view = v;
+		trackEvent("planet_search:view_change", { view: v });
+	});
 
 	watch(
 		[filter, sort, view, pins],

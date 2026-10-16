@@ -59,6 +59,7 @@
 	}
 	const refChartOpen: Ref<boolean> = ref(readChartOpen());
 	watch(refChartOpen, (open) => {
+		if (open) trackEvent("resource_roi:chart_open");
 		try {
 			localStorage.setItem(CHART_KEY, open ? "1" : "0");
 		} catch {

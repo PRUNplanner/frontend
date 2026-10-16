@@ -53,6 +53,7 @@
 				</span>
 			</div>
 			<XITTransferActionButton
+				source="repair_materials"
 				:elements="xitElements"
 				:transfer-name="title" />
 		</div>

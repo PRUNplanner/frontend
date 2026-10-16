@@ -291,9 +291,11 @@
 					class="w-62.5!" />
 			</template>
 			<XITTransferActionButton
+				source="supply_cart"
 				:elements="xitTransferElements"
 				:transfer-name="t('plan.tools.supply_cart.table.xit_name')" />
 			<XITTransferActionButton
+				source="supply_cart_initial"
 				:elements="xitInitialElements"
 				:transfer-name="t('plan.tools.supply_cart.table.xit_initial_name')"
 				:button-text="t('plan.tools.supply_cart.buttons.xit_initial')"

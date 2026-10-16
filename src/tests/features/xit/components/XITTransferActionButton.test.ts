@@ -115,7 +115,17 @@ describe("XITTransferActionButton", () => {
 		// a second click while open does not show it again
 		await open(wrapper);
 		expect(trackEvent).toHaveBeenCalledTimes(1);
-		expect(trackEvent).toHaveBeenCalledWith("xit:transfer_open");
+		expect(trackEvent).toHaveBeenCalledWith("xit:transfer_open", {
+			source: undefined,
+		});
+	});
+
+	it("sends which button it is with its events", async () => {
+		const { wrapper } = await mountButton({ source: "supply_cart_initial" });
+		await open(wrapper);
+		expect(trackEvent).toHaveBeenCalledWith("xit:transfer_open", {
+			source: "supply_cart_initial",
+		});
 	});
 
 	it("takes a drawer title and width", async () => {
@@ -250,7 +260,9 @@ describe("XITTransferActionButton", () => {
 
 		expect(writeText).toHaveBeenCalledTimes(1);
 		expect(JSON.parse(writeText.mock.calls[0][0])).toEqual(xitJSON());
-		expect(trackEvent).toHaveBeenCalledWith("xit:transfer_copy");
+		expect(trackEvent).toHaveBeenCalledWith("xit:transfer_copy", {
+			source: undefined,
+		});
 		// @ts-expect-error jsdom has no clipboard, remove the stub again
 		delete navigator.clipboard;
 	});
