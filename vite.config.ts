@@ -69,13 +69,15 @@ export default defineConfig({
 		compression({
 			algorithms: ["gzip", "brotliCompress"],
 		}),
-		visualizer({
-			filename: "dist/bundle-stats.html",
-			template: "treemap",
-			gzipSize: true,
-			brotliSize: true,
-			open: process.env.ANALYZE === "true",
-		}),
+		// ANALYZE=true pnpm build: bundle treemap, kept out of dist/
+		process.env.ANALYZE === "true" &&
+			visualizer({
+				filename: ".scratch/bundle-stats.html",
+				template: "treemap",
+				gzipSize: true,
+				brotliSize: true,
+				open: true,
+			}),
 	],
 	resolve: {
 		alias: {

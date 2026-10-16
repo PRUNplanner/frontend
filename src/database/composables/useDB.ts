@@ -1,9 +1,9 @@
-import { type Ref, ref } from "vue";
+import { type ShallowRef, shallowRef } from "vue";
 
 import type { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
 
 interface SharedState<T extends object> {
-	allData: ReturnType<typeof ref<T[]>>;
+	allData: ShallowRef<T[]>;
 	cache: Map<string, T>;
 	loaded: boolean;
 }
@@ -22,7 +22,7 @@ function ensureState<T extends object, K extends keyof T & string>(
 	let state = storeStateMap.get(store) as SharedState<T> | undefined;
 	if (!state) {
 		state = {
-			allData: ref<T[]>([]) as Ref<T[]>,
+			allData: shallowRef<T[]>([]),
 			cache: new Map<string, T>(),
 			loaded: false,
 		};

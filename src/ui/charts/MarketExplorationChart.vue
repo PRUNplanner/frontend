@@ -141,6 +141,9 @@
 		if (candleSeries) candleSeries.setData(candles);
 		if (volumeSeries) volumeSeries.setData(volumes);
 
+		// every candle on load; a resize keeps the user's zoom
+		chart.timeScale().fitContent();
+
 		resizeObserver = new ResizeObserver((entries) => {
 			if (entries.length === 0 || !chart) return;
 			const { width, height } = entries[0].contentRect;
@@ -149,16 +152,6 @@
 			}
 		});
 		resizeObserver.observe(chartContainerRef.value);
-
-		setTimeout(() => {
-			if (chart && props.data.length > 0) {
-				const totalBars = props.data.length;
-				chart.timeScale().setVisibleLogicalRange({
-					from: totalBars - 180,
-					to: totalBars,
-				});
-			}
-		}, 50);
 
 		chart.subscribeCrosshairMove((param) => {
 			if (!param.time || !candleSeries || !volumeSeries) {
@@ -183,32 +176,9 @@
 				hoverData.value.volume = volData.value;
 			}
 		});
-
-		resizeObserver = new ResizeObserver((entries) => {
-			if (entries.length === 0 || !chart || !chartContainerRef.value)
-				return;
-
-			const { width, height } = entries[0].contentRect;
-
-			if (height > 0) {
-				chart.applyOptions({ width, height });
-			}
-
-			chart.timeScale().fitContent();
-		});
-
-		resizeObserver.observe(chartContainerRef.value);
-
-		requestAnimationFrame(() => {
-			if (chart && props.data.length > 0) {
-				chart.timeScale().setVisibleLogicalRange({
-					from: props.data.length - 365,
-					to: props.data.length,
-				});
-			}
-		});
 	});
 
+	// the prop is replaced on change, never mutated
 	watch(
 		() => props.data,
 		(newData) => {
@@ -216,8 +186,7 @@
 
 			if (candleSeries) candleSeries.setData(candles);
 			if (volumeSeries) volumeSeries.setData(volumes);
-		},
-		{ deep: true }
+		}
 	);
 
 	onUnmounted(() => {

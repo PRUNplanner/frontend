@@ -32,11 +32,5 @@ export function useQuery<K extends QueryName>(
 		return queryStore.execute(definitionName, params, options);
 	}
 
-	return {
-		state: state,
-		loading: state.value?.loading ?? false,
-		error: (state.value?.error ?? null) !== null,
-		data: state.value?.data as QueryData<K> | null,
-		execute,
-	};
+	return { state, execute };
 }

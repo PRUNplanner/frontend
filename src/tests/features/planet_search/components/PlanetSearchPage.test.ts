@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
-import { h, reactive, ref } from "vue";
+import { h, isReactive, reactive, ref } from "vue";
 
 import PlanetSearchPage from "@/features/planet_search/components/PlanetSearchPage.vue";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -42,7 +42,8 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string) => ({
 		execute: async () => {
 			if (failIndex.value && name === "GetPlanetSearchIndex") throw new Error("down");
-			return name === "GetPlanetSearchIndex" ? fixture : empires;
+			// reactive, like a query cache hit
+			return name === "GetPlanetSearchIndex" ? reactive(fixture) : empires;
 		},
 	}),
 }));
@@ -242,5 +243,25 @@ describe("PlanetSearchPage", () => {
 			{ kind: "plan", planUuid: "p3" },
 			{ kind: "plan", planUuid: "p2" },
 		]);
+	});
+
+	it("keeps index entries raw and updates results on a filter change", async () => {
+		stubMedia(true);
+		const { wrapper } = await mountComponent(PlanetSearchPage);
+		await flushPromises();
+		const bar = wrapper.findComponent({ name: "PlanetSearchResultsBar" });
+
+		expect(bar.props("total")).toBe(fixture.length);
+		const before = bar.props("count") as number;
+		const first = (bar.props("results") as unknown[])[0];
+		expect(isReactive(first)).toBe(false);
+		expect(fixture).toContain(first);
+
+		panel(wrapper).vm.$emit("update:filter", {
+			...(panel(wrapper).props("filter") as PlanetSearchFilter),
+			text: "KI-",
+		});
+		await flushPromises();
+		expect(bar.props("count")).toBeLessThan(before);
 	});
 });

@@ -31,3 +31,5 @@ env.js
 *.sw?
 
 .codegraph
+
+.scratch
