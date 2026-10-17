@@ -156,7 +156,6 @@
 			"table": {
 				"stock_duration": "库存维持天数",
 				"storage": "仓储",
-				"xit_name": "补给清单",
 				"xit_initial_name": "Supply Cart (Initial)",
 				"ticker": "信息签",
 				"daily_need": "每日需求",
