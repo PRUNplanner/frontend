@@ -1,6 +1,8 @@
 {
 	"view_title": "제국",
 	"switch_empire": "제국 전환",
+	"overview_hide": "Hide plan list",
+	"overview_show": "Show plan list",
 	"views": {
 		"material_io": "물자 입출력",
 		"analysis": "분석",
