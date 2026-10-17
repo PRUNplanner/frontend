@@ -156,7 +156,6 @@
 			"table": {
 				"stock_duration": "Durata Magazzino (giorni)",
 				"storage": "Magazzino",
-				"xit_name": "Carrello per il Rifornimento",
 				"xit_initial_name": "Supply Cart (Initial)",
 				"ticker": "Ticker",
 				"daily_need": "Necessità Giornaliera",
