@@ -1,6 +1,8 @@
 {
 	"view_title": "帝国",
 	"switch_empire": "切换帝国",
+	"overview_hide": "Hide plan list",
+	"overview_show": "Show plan list",
 	"views": {
 		"material_io": "物料输入/输出",
 		"analysis": "分析",
