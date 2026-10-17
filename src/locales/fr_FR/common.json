@@ -1,13 +1,11 @@
 {
 	"navigation": {
 		"planning": "Planification",
-		"planning_short": "Plan",
 		"empire": "Empire",
 		"planet_search": "Recherche de planètes",
 		"management": "Gestion",
 		"exchanges": "Bourses",
 		"tools": "Outils",
-		"tools_short": "Outil",
 		"market_exploration": "Exploration du marché",
 		"market_live": "Marché en direct",
 		"recipe_roi": "RSI recette",
@@ -18,13 +16,13 @@
 		"fio_burn": "Consommation FIO",
 		"fio_repair": "Réparer FIO",
 		"account": "Compte",
-		"account_short": "Compte",
 		"profile": "Profil",
 		"api": "API",
 		"help": "Aide",
 		"logout": "Se déconnecter",
 		"fio": {
-			"backend": "Front-end",
+			"fio_updated": "FIO updated",
+			"fetched": "PRUNplanner fetched",
 			"fio": "FIO",
 			"fio_active": "FIO Actif",
 			"fio_inactive": "FIO Inactif",
@@ -34,7 +32,20 @@
 		},
 		"collapse": "Collapse navigation",
 		"expand": "Expand navigation",
-		"menu": "Menu"
+		"empire_switch": "Switch",
+		"plans": "Plans",
+		"plans_count": "{name} · {count} plans",
+		"new_plan": "New plan from Planet Search",
+		"create_empire": "Create an empire",
+		"no_plans": "No plans yet",
+		"not_in_empire": "not in this empire",
+		"plans_filter": "Filter plans",
+		"plans_filter_clear": "Clear filter",
+		"plans_filter_empty": "No plan matches",
+		"market": "Market",
+		"calculators": "Calculators",
+		"more": "More",
+		"account_menu": "Account menu"
 	},
 	"buttons": {
 		"create": "Créer",
@@ -105,7 +116,15 @@
 		"empty": "Nothing to show"
 	},
 	"version_update": {
-		"title": "{app} has been updated!",
-		"action": "Click to load the newest version."
+		"ready_title": "A new version of PRUNplanner is ready",
+		"ready_body": "Reload to get it. Your saved work stays as it is.",
+		"unsaved_body": "Save your changes first, then reload.",
+		"outdated_title": "This tab is out of date",
+		"outdated_body": "A newer PRUNplanner opened in another tab. Reload to keep working.",
+		"reload": "Reload",
+		"later": "Later",
+		"chip": "Update ready",
+		"whats_new_title": "PRUNplanner {version} is here",
+		"whats_new_action": "What's new"
 	}
 }
