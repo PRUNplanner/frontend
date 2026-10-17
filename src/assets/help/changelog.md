@@ -1,3 +1,18 @@
+# 2026-10-17 - v. 0.32.0
+
+The headline of this release is a new **app navigation** built around your empire and its plans, together with a set of new **plan analysis tools** and charts across the app.
+
+- **New navigation**: the sidebar shows your current empire with its plans (filterable), Planning, and folded Tools, and collapses to a compact rail. On phones a bottom bar with Plans and More replaces the menu, and plans show a breadcrumb (empire › planet) [[PR-621]](https://github.com/PRUNplanner/frontend/pull/621)
+- **Plan analysis**: a Plan check that flags thin markets and unrealistic prices with a realistic profit, target price and payback; a What-if tool with price sensitivity, break-even prices and a comparison against another plan; a profit breakdown waterfall; repair analysis per building with the best interval and FIO due dates; and inline meters for area and workforce [[PR-605]](https://github.com/PRUNplanner/frontend/pull/605), [[PR-604]](https://github.com/PRUNplanner/frontend/pull/604), [[PR-595]](https://github.com/PRUNplanner/frontend/pull/595), [[PR-594]](https://github.com/PRUNplanner/frontend/pull/594)
+- **Charts**: one consistent chart style with fixed exchange colours, a new empire analysis (revenue per plan, materials butterfly), FIO burn runway per plan and material, a Planet Search chart view, Resource ROI payback vs distance, and sparklines in Market Exploration [[PR-597]](https://github.com/PRUNplanner/frontend/pull/597), [[PR-593]](https://github.com/PRUNplanner/frontend/pull/593)
+- **Exchanges** redesigned: plan prices, rules and fixed prices, notes and labels, warnings, a save bar, and COGM as a price source [[PR-609]](https://github.com/PRUNplanner/frontend/pull/609)
+- **FIO repair** redesigned with due dates per base and plan-based targets, and repair XITs use fixed English action names [[PR-610]](https://github.com/PRUNplanner/frontend/pull/610)
+- **Planning in several tabs** is now safe: save conflicts are detected and changes sync across tabs. **Shared plans** became a sandbox: see the recipes, try changes, compare and copy them back as feedback [[PR-569]](https://github.com/PRUNplanner/frontend/pull/569), [[PR-575]](https://github.com/PRUNplanner/frontend/pull/575)
+- **Account**: a restructured profile page, an API keys page with a URL builder (Sheets, curl and Python snippets), and adding a recovery email from the empire or profile [[PR-612]](https://github.com/PRUNplanner/frontend/pull/612), [[PR-616]](https://github.com/PRUNplanner/frontend/pull/616), [[PR-614]](https://github.com/PRUNplanner/frontend/pull/614)
+- **Smaller additions**: empire shipping demand (t/day, m³/day), deleting several plans at once in Management, and a supply cart "XIT Initial" button
+- **Look and feel**: PRUNplanner now uses its own UI components throughout, with consistent sizes, 44px touch targets, tooltips that open on keyboard focus and tap, and many layout fixes on narrow screens
+- **Fixes and under the hood**: faster loading and a more reliable data layer (request timeouts, cache and preference sync fixes), an update notice when a new version is deployed, workforce cost that follows plan staffing and luxuries, clearer errors on login, registration and password reset, and fewer false error reports
+
 # 2026-10-02 - v. 0.31.1
 
 - **Plan suggestions**: the building and recipe pickers show what is most often planned on the planet, and a new plan can start from the planet's typical setup (one Undo takes it back). Turn it off with the "Plan suggestions" setting [[PR-545]](https://github.com/PRUNplanner/frontend/pull/545), [[PR-546]](https://github.com/PRUNplanner/frontend/pull/546)
