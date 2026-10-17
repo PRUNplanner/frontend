@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { createApp } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 
 // stores
@@ -191,5 +192,24 @@ describe("FIO Data", async () => {
 
 			expect(results.length).toBe(8);
 		});
+	});
+});
+
+describe("Persistence", () => {
+	it("persists only keys the store has", () => {
+		const pinia = createPinia();
+		let pick: string[] = [];
+		pinia.use(({ options }) => {
+			pick = (options.persist as { pick: string[] }).pick;
+		});
+		// pinia runs plugins once installed in an app
+		createApp({}).use(pinia);
+		setActivePinia(pinia);
+		const store = usePlanningStore();
+
+		expect(pick.length).toBeGreaterThan(0);
+		expect(pick.filter((key) => !(key in store.$state))).toStrictEqual(
+			[]
+		);
 	});
 });

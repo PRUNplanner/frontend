@@ -299,8 +299,6 @@ export const usePlanningStore = defineStore(
 				"fio_storage_warehouses",
 				"fio_storage_ships",
 				"fio_sites_planets",
-				"fio_sites_ships",
-				"fio_sites_timestamp",
 				"fio_storage_timestamp",
 			],
 		},
