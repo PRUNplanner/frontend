@@ -32,6 +32,7 @@
 	"name": {
 		"untitled": "未命名的规划"
 	},
+	"breadcrumb": "Plan location",
 	"tools": {
 		"labels": {
 			"popr": "人口报告",
