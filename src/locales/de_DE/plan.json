@@ -156,7 +156,6 @@
 			"table": {
 				"stock_duration": "Bestandsverfügbarkeit (Tage)",
 				"storage": "Lager",
-				"xit_name": "Versorgung",
 				"xit_initial_name": "Supply Cart (Initial)",
 				"ticker": "Ticker",
 				"daily_need": "Täglicher Bedarf",
