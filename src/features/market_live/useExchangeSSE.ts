@@ -2,6 +2,9 @@ import { ref, reactive, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { z } from "zod";
 
+import config from "@/lib/config";
+import { i18n } from "@/lib/i18n";
+
 // Stores
 import { useAlertsStore } from "@/stores/userAlertsStore";
 
@@ -27,18 +30,24 @@ const eventLog = reactive<MarketEvent[]>([]);
 const messageHistory = ref<MessageHistory[]>([]);
 
 const isProcessing = ref(false);
-let activeMessages = 0;
 let processingTimeout: number | null = null;
 
 const EVENT_LOG_MAX = 500;
 const MESSAGE_HISTORY_MAX = 25;
 
 export function useExchangeSSE() {
-	const urlCXSSE = "https://api.prunplanner.org/data/stream/?channels=cx";
+	const urlCXSSE = `${config.API_BASE_URL}/data/stream/?channels=cx`;
 	const alertsStore = useAlertsStore();
 	const { userAlerts } = storeToRefs(alertsStore);
 
 	let eventSource: EventSource | null = null;
+
+	// messages of one frame (16 ms), processed together in arrival order so
+	// the table data recomputes once per frame instead of once per message.
+	// A timer, not requestAnimationFrame: that pauses in a hidden tab, while
+	// the stream and the alerts must go on
+	let queue: MessageEvent[] = [];
+	let frame: number | null = null;
 
 	const detectorsActive = ref<boolean>(true);
 
@@ -247,42 +256,50 @@ export function useExchangeSSE() {
 
 		eventSource.onerror = (err) => {
 			console.error("CX SSE Error", err);
-			connectionError.value = "Connection lost. Reconnecting...";
+			connectionError.value = i18n.global.t("market_live.connection_lost");
 			isConnected.value = false;
 		};
 
 		eventSource.onmessage = (event) => {
 			isProcessing.value = true;
-			activeMessages++;
-
 			if (processingTimeout) {
 				clearTimeout(processingTimeout);
 				processingTimeout = null;
 			}
 
-			setTimeout(() => {
-				try {
-					processData(event);
-				} finally {
-					// decrease active messages and only start cooldown timer
-					// if there are no messages left
-					activeMessages--;
-
-					if (activeMessages === 0) {
-						processingTimeout = window.setTimeout(() => {
-							isProcessing.value = false;
-						}, 300);
-					}
-				}
-			}, 0);
+			queue.push(event);
+			frame ??= window.setTimeout(processQueue, 16);
 		};
 	};
+
+	function processQueue() {
+		frame = null;
+		const messages = queue;
+		queue = [];
+
+		for (const message of messages) {
+			// one broken message never drops the rest of the frame
+			try {
+				processData(message);
+			} catch (err) {
+				console.error("CX SSE processing failed", err);
+			}
+		}
+
+		// cooldown after the last processed message
+		processingTimeout = window.setTimeout(() => {
+			isProcessing.value = false;
+		}, 300);
+	}
 
 	const disconnect = () => {
 		if (eventSource) {
 			eventSource.close();
 			eventSource = null;
 		}
+		if (frame !== null) clearTimeout(frame);
+		frame = null;
+		queue = [];
 		isConnected.value = false;
 	};
 
