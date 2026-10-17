@@ -244,7 +244,8 @@ aggregated material I/O is pushed back to the backend with
   `usePlanCalculation.bench.ts` (single plan: `calculate()` and
   edit -> result for amount, recipe, luxury and CX edits) and
   `usePlanCalculation.batch.bench.ts` (empire-like 30 plans, ROI overview,
-  resource ROI, with counters for calculations and recipe options). They
+  resource ROI, with counters for calculations and recipe options, and
+  Empire results held in a `ref` vs a `shallowRef`). They
   are Node + jsdom numbers; compare runs on the same machine.
 
 ## Design decisions
