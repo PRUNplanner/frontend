@@ -157,8 +157,10 @@ describe("AppSidebar", () => {
 	it("offers to create an empire without one, and Planet Search without plans", async () => {
 		let w = await mountSidebar([]);
 		expect(w.find("[data-nav-plans]").exists()).toBe(false);
-		const create = links(w).find((l) => l.props("to") === "/manage")!;
-		expect(create.text()).toBe(`${NAV}.create_empire`);
+		const create = links(w).find(
+			(l) => l.text() === `${NAV}.create_empire`
+		)!;
+		expect(create.props("to")).toBe("/manage");
 
 		w.unmount();
 		w = await mountSidebar([empire("a", 0)]);
@@ -198,20 +200,19 @@ describe("AppSidebar", () => {
 		expect(w.findAll("[data-nav-plans] li")).toHaveLength(2);
 	});
 
-	it("folds Tools by default, with a dot while a tool is open", async () => {
+	it("shows Tools by default, and a dot while folded on a tool", async () => {
 		const w = await mountSidebar();
 		const toggle = w.find("button[aria-controls]");
-		expect(toggle.attributes("aria-expanded")).toBe("false");
-		expect(w.find("[data-tools-dot]").exists()).toBe(false);
+		expect(toggle.attributes("aria-expanded")).toBe("true");
 
 		await goTo("market-live");
-		expect(w.find("[data-tools-dot]").exists()).toBe(true);
-
-		await toggle.trigger("click");
-		expect(toggle.attributes("aria-expanded")).toBe("true");
 		expect(w.find("[data-tools-dot]").exists()).toBe(false);
 		expect(w.find("[aria-current=page]").text()).toBe(`${NAV}.market_live`);
-		// fold it again for the other tests
+
+		await toggle.trigger("click");
+		expect(toggle.attributes("aria-expanded")).toBe("false");
+		expect(w.find("[data-tools-dot]").exists()).toBe(true);
+		// unfold it again for the other tests
 		await toggle.trigger("click");
 	});
 

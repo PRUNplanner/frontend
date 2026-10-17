@@ -377,7 +377,9 @@
 				:key="o.ticker"
 				class="flex flex-col gap-3 border border-white/10 rounded p-3"
 				:data-output="o.ticker">
-				<MaterialTile :ticker="o.ticker" />
+				<div class="self-start">
+					<MaterialTile :ticker="o.ticker" />
+				</div>
 				<dl class="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 text-sm">
 					<dt class="text-muted">
 						{{

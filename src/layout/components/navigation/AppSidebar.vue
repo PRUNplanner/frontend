@@ -143,6 +143,24 @@
 				<VersionUpdateChip />
 			</div>
 
+			<nav
+				class="shrink-0 px-3 pb-3"
+				:aria-label="t('common.navigation.planning')">
+				<div :class="sectionLabel" class="h-6 flex items-center">
+					{{ t("common.navigation.planning") }}
+				</div>
+				<RouterLink
+					v-for="item in planning"
+					:key="item.name"
+					:to="item.to"
+					:class="itemClass(isActive(item.name))"
+					:aria-current="isActive(item.name) ? 'page' : undefined"
+					@click="trackNav(item.name, 'sidebar', 'planning')">
+					<PIcon :size="18"><component :is="item.icon" /></PIcon>
+					{{ t(`common.navigation.${item.label}`) }}
+				</RouterLink>
+			</nav>
+
 			<!-- Empire and its plans: the list scrolls on its own -->
 			<nav
 				class="flex flex-col flex-1 min-h-68 px-3"
@@ -182,7 +200,7 @@
 							class="flex items-center justify-center size-6 shrink-0 rounded-md bg-prunplanner text-black text-xs font-bold">
 							{{ initials(currentEmpire.empire_name) }}
 						</span>
-						<span class="truncate text-[15px]">
+						<span class="truncate text-[15px]" :title="currentEmpire.empire_name">
 							{{ currentEmpire.empire_name }}
 						</span>
 					</RouterLink>
@@ -229,27 +247,13 @@
 				</RouterLink>
 			</nav>
 
-			<!-- Planning and the folded tools -->
+			<!-- The folded tools -->
 			<nav
 				class="shrink-0 px-3 pt-3 pb-2"
-				:aria-label="t('common.navigation.planning')">
-				<div :class="sectionLabel" class="h-6 flex items-center">
-					{{ t("common.navigation.planning") }}
-				</div>
-				<RouterLink
-					v-for="item in planning"
-					:key="item.name"
-					:to="item.to"
-					:class="itemClass(isActive(item.name))"
-					:aria-current="isActive(item.name) ? 'page' : undefined"
-					@click="trackNav(item.name, 'sidebar', 'planning')">
-					<PIcon :size="18"><component :is="item.icon" /></PIcon>
-					{{ t(`common.navigation.${item.label}`) }}
-				</RouterLink>
-
+				:aria-label="t('common.navigation.tools')">
 				<button
 					type="button"
-					class="flex items-center justify-between w-full h-8 pointer-coarse:h-11 mt-2 rounded-md hover:bg-hover cursor-pointer"
+					class="flex items-center justify-between w-full h-8 pointer-coarse:h-11 rounded-md hover:bg-hover cursor-pointer"
 					:aria-expanded="toolsOpen"
 					:aria-controls="toolsId"
 					@click="toggleTools">
@@ -276,7 +280,7 @@
 					<template v-for="group in toolGroups" :key="group.label">
 						<template v-if="group.items.some((i) => i.display)">
 							<div
-								class="flex items-center justify-between pl-10 pr-2 pt-1.5 pb-0.5 text-xs text-muted">
+								class="flex items-center justify-between px-2.5 pt-1.5 pb-0.5 text-xs text-muted">
 								{{ t(`common.navigation.${group.label}`) }}
 								<span
 									v-if="

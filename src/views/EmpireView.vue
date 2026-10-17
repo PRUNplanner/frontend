@@ -92,6 +92,10 @@
 	import PButton from "@/ui/components/PButton.vue";
 	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
 	import { useToast } from "@/ui";
+	import {
+		KeyboardDoubleArrowLeftSharp,
+		KeyboardDoubleArrowRightSharp,
+	} from "@vicons/material";
 	const toast = useToast();
 	import { useRouter } from "vue-router";
 	const router = useRouter();
@@ -458,6 +462,9 @@
 		"materialio"
 	);
 	watch(mainContent, (view) => trackEvent("empire:view_change", { view }));
+
+	// xl only: hides the left column so the main content takes the full width
+	const overviewHidden = ref(false);
 </script>
 
 <template>
@@ -512,6 +519,27 @@
 					<div
 						class="px-3 sm:px-6 py-3 border-b border-white/10 flex flex-row flex-wrap justify-between gap-3">
 						<div class="flex flex-row gap-3">
+							<PButton
+								class="hidden! xl:inline-flex!"
+								type="ghost"
+								:aria-label="
+									overviewHidden
+										? t('empire.overview_show')
+										: t('empire.overview_hide')
+								"
+								:title="
+									overviewHidden
+										? t('empire.overview_show')
+										: t('empire.overview_hide')
+								"
+								:aria-expanded="!overviewHidden"
+								@click="overviewHidden = !overviewHidden">
+								<template #icon>
+									<KeyboardDoubleArrowRightSharp
+										v-if="overviewHidden" />
+									<KeyboardDoubleArrowLeftSharp v-else />
+								</template>
+							</PButton>
 							<h1 class="text-2xl font-bold my-auto">
 								{{ empireName }}
 							</h1>
@@ -547,9 +575,15 @@
 					<EmailNudgeBanner :known-plans="planData.length" />
 
 					<div
-						class="grid grid-cols-1 xl:grid-cols-[minmax(0,600px)_minmax(0,1fr)] gap-6 m-3 sm:m-6 items-start">
+						class="grid grid-cols-1 gap-6 m-3 sm:m-6 items-start"
+						:class="
+							overviewHidden
+								? ''
+								: 'xl:grid-cols-[minmax(0,600px)_minmax(0,1fr)]'
+						">
 						<div
-							class="min-h-screen w-full max-w-[600px] min-w-0 flex flex-col gap-6 justify-items-start">
+							class="min-h-screen w-full max-w-[600px] min-w-0 flex flex-col gap-6 justify-items-start"
+							:class="{ 'xl:hidden': overviewHidden }">
 							<div>
 								<PForm>
 									<PFormItem

@@ -101,22 +101,22 @@
 			</button>
 		</div>
 		<ul class="overflow-y-auto min-h-0" data-nav-plans>
-			<li v-if="stray">
+			<li v-if="stray" class="pb-1 mb-1 border-b border-line">
 				<RouterLink
 					:to="planLink(stray)"
 					aria-current="page"
-					class="flex flex-col justify-center bg-prunplanner/10 text-prunplanner"
-					:class="rowClass"
+					class="flex flex-col justify-center gap-0.5 bg-prunplanner/10 text-prunplanner"
+					:class="large ? rowClass : 'min-h-[29px] px-2.5 py-1.5 rounded-control'"
 					@click="trackNav('plan', area, 'plans')">
 					<span class="flex items-baseline gap-2 min-w-0">
-						<span class="truncate flex-1">
+						<span class="truncate flex-1" :title="stray.plan_name || stray.planet_natural_id">
 							{{ stray.plan_name || stray.planet_natural_id }}
 						</span>
 						<span class="font-mono text-xs opacity-70">
 							{{ stray.planet_natural_id }}
 						</span>
 					</span>
-					<span class="text-xs text-muted">
+					<span class="text-xs leading-none text-muted">
 						{{ t("common.navigation.not_in_empire") }}
 					</span>
 				</RouterLink>
@@ -135,7 +135,7 @@
 					@click="trackNav('plan', area, 'plans')">
 					<template v-if="large">
 						<span class="flex flex-col flex-1 min-w-0">
-							<span class="truncate">{{ p.plan_name }}</span>
+							<span class="truncate" :title="p.plan_name">{{ p.plan_name }}</span>
 							<span class="font-mono text-xs text-muted">
 								{{ p.planet_natural_id }}
 							</span>
@@ -153,7 +153,7 @@
 						</span>
 					</template>
 					<template v-else>
-						<span class="truncate flex-1">{{ p.plan_name }}</span>
+						<span class="truncate flex-1" :title="p.plan_name">{{ p.plan_name }}</span>
 						<span
 							class="font-mono text-xs"
 							:class="

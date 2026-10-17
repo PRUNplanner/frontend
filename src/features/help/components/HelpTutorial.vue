@@ -1,188 +1,112 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+	/**
+	 * Help page intro: getting started steps, core concepts and key features
+	 *
+	 * @author jplacht
+	 */
+	const steps: { key: string; to?: string }[] = [
+		{ key: "l1", to: "/manage" },
+		{ key: "l2", to: "/manage" },
+		{ key: "l3", to: "/search" },
+		{ key: "l4" },
+		{ key: "l5" },
+	];
+	const concepts = ["p1", "p2", "p3"];
+	const features = ["p1", "p2", "p3", "p4", "p5"];
+</script>
 
 <template>
-	<div class="flex flex-col gap-y-6">
-		<section class="bg-white/10 p-3 rounded">
+	<div class="flex flex-col gap-12 max-w-5xl">
+		<p class="text-lg leading-relaxed text-ink-strong max-w-3xl">
 			{{ $t("help.tutorial.intro") }}
+		</p>
+
+		<section>
+			<h2 class="text-lg font-bold mb-4">
+				{{ $t("help.getting_started.title") }}
+			</h2>
+			<div
+				class="grid grid-cols-1 2xl:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] gap-8 items-start">
+				<ol class="flex flex-col gap-5">
+					<li
+						v-for="(step, i) in steps"
+						:key="step.key"
+						class="flex gap-3">
+						<span
+							class="flex items-center justify-center size-7 shrink-0 rounded-full bg-prunplanner/10 text-prunplanner text-sm font-bold tabular-nums"
+							aria-hidden="true">
+							{{ i + 1 }}
+						</span>
+						<div class="pt-0.5">
+							<i18n-t
+								v-if="step.to"
+								:keypath="`help.getting_started.${step.key}.title`"
+								tag="div"
+								class="font-bold text-ink-strong">
+								<template #link>
+									<RouterLink
+										:to="step.to"
+										class="text-link-primary hover:underline">
+										{{
+											$t(
+												`help.getting_started.${step.key}.link`
+											)
+										}}
+									</RouterLink>
+								</template>
+							</i18n-t>
+							<div v-else class="font-bold text-ink-strong">
+								{{ $t(`help.getting_started.${step.key}.title`) }}
+							</div>
+							<p class="mt-1 leading-relaxed text-muted-strong">
+								{{ $t(`help.getting_started.${step.key}.p`) }}
+							</p>
+						</div>
+					</li>
+				</ol>
+				<figure class="max-w-xl">
+					<img
+						src="/images/help/management-screenshot.png"
+						alt="Management Screenshot"
+						class="w-full rounded-md border border-line shadow-lg" />
+					<figcaption class="mt-2 text-xs text-muted">
+						{{ $t("help.getting_started.image_label") }}
+					</figcaption>
+				</figure>
+			</div>
 		</section>
 
 		<section>
-			<div
-				class="grid grid-cols-1 xl:grid-cols-[60%_auto] gap-3 gap-x-10">
-				<div>
-					<h2 class="text-lg font-bold mb-3">
-						{{ $t("help.getting_started.title") }}
-					</h2>
-					<ol class="list-decimal space-y-2 pl-4">
-						<li>
-							<strong>
-								<i18n-t
-									keypath="help.getting_started.l1.title"
-									tag="span">
-									<template #link>
-										<router-link
-											to="/manage"
-											class="text-link-primary">
-											{{
-												$t(
-													"help.getting_started.l1.link"
-												)
-											}}</router-link
-										>
-									</template>
-								</i18n-t>
-							</strong>
-							{{ $t("help.getting_started.l1.p") }}
-						</li>
-						<li>
-							<strong>
-								<i18n-t
-									keypath="help.getting_started.l2.title"
-									tag="span">
-									<template #link>
-										<router-link
-											to="/manage"
-											class="text-link-primary">
-											{{
-												$t(
-													"help.getting_started.l2.link"
-												)
-											}}</router-link
-										>
-									</template>
-								</i18n-t>
-							</strong>
-							{{ $t("help.getting_started.l2.p") }}
-						</li>
-						<li>
-							<strong>
-								<i18n-t
-									keypath="help.getting_started.l3.title"
-									tag="span">
-									<template #link>
-										<router-link
-											to="/search"
-											class="text-link-primary">
-											{{
-												$t(
-													"help.getting_started.l3.link"
-												)
-											}}</router-link
-										>
-									</template>
-								</i18n-t>
-							</strong>
-							{{ $t("help.getting_started.l3.p") }}
-						</li>
-						<li>
-							<strong>
-								{{ $t("help.getting_started.l4.title") }}
-							</strong>
-							{{ $t("help.getting_started.l4.p") }}
-						</li>
-						<li>
-							<strong>
-								{{ $t("help.getting_started.l5.title") }}
-							</strong>
-							{{ $t("help.getting_started.l5.p") }}
-						</li>
-					</ol>
-				</div>
-				<div class="flex flex-col justify-center gap-y-3">
-					<div class="text-end">
-						<img
-							src="/images/help/management-screenshot.png"
-							alt="Management Screenshot"
-							class="rounded shadow-lg border border-white/10" />
-						<span class="text-xs text-muted">
-							{{ $t("help.getting_started.image_label") }}
-						</span>
-					</div>
+			<h2 class="text-lg font-bold mb-4">
+				{{ $t("help.core_concepts.title") }}
+			</h2>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+				<div
+					v-for="c in concepts"
+					:key="c"
+					class="flex flex-col gap-1.5 p-4 rounded-md border border-line bg-surface">
+					<h3 class="font-bold text-ink-strong">
+						{{ $t(`help.core_concepts.${c}.title`) }}
+					</h3>
+					<p class="text-sm leading-relaxed text-muted-strong">
+						{{ $t(`help.core_concepts.${c}.p`) }}
+					</p>
 				</div>
 			</div>
 		</section>
 
 		<section>
-			<div class="grid grid-cols-1 xl:grid-cols-[30%_auto] gap-3 gap-x-6">
-				<div>
-					<div class="bg-white/10 rounded p-3">
-						<h2 class="text-lg font-bold mb-3">
-							{{ $t("help.core_concepts.title") }}
-						</h2>
-						<div class="space-y-6">
-							<div>
-								<h3 class="text-lg mb-1">
-									{{ $t("help.core_concepts.p1.title") }}
-								</h3>
-								<p class="text-white/80">
-									{{ $t("help.core_concepts.p1.p") }}
-								</p>
-							</div>
-							<div>
-								<h3 class="text-lg mb-1">
-									{{ $t("help.core_concepts.p2.title") }}
-								</h3>
-								<p class="text-white/80">
-									{{ $t("help.core_concepts.p2.p") }}
-								</p>
-							</div>
-							<div>
-								<h3 class="text-lg mb-1">
-									{{ $t("help.core_concepts.p3.title") }}
-								</h3>
-								<p class="text-white/80">
-									{{ $t("help.core_concepts.p3.p") }}
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="p-3">
-					<h2 class="text-lg font-bold mb-3">
-						{{ $t("help.key_features.title") }}
-					</h2>
-					<div class="space-y-6">
-						<div>
-							<h3 class="text-lg">
-								{{ $t("help.key_features.p1.title") }}
-							</h3>
-							<p class="text-white/80">
-								{{ $t("help.key_features.p1.p") }}
-							</p>
-						</div>
-						<div>
-							<h3 class="text-lg">
-								{{ $t("help.key_features.p2.title") }}
-							</h3>
-							<p class="text-white/80">
-								{{ $t("help.key_features.p2.p") }}
-							</p>
-						</div>
-						<div>
-							<h3 class="text-lg">
-								{{ $t("help.key_features.p3.title") }}
-							</h3>
-							<p class="text-white/80">
-								{{ $t("help.key_features.p3.p") }}
-							</p>
-						</div>
-						<div>
-							<h3 class="text-lg">
-								{{ $t("help.key_features.p4.title") }}
-							</h3>
-							<p class="text-white/80">
-								{{ $t("help.key_features.p4.p") }}
-							</p>
-						</div>
-						<div>
-							<h3 class="text-lg">
-								{{ $t("help.key_features.p5.title") }}
-							</h3>
-							<p class="text-white/80">
-								{{ $t("help.key_features.p5.p") }}
-							</p>
-						</div>
-					</div>
+			<h2 class="text-lg font-bold mb-4">
+				{{ $t("help.key_features.title") }}
+			</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+				<div v-for="f in features" :key="f">
+					<h3 class="font-bold text-ink-strong mb-1">
+						{{ $t(`help.key_features.${f}.title`) }}
+					</h3>
+					<p class="text-sm leading-relaxed text-muted-strong">
+						{{ $t(`help.key_features.${f}.p`) }}
+					</p>
 				</div>
 			</div>
 		</section>

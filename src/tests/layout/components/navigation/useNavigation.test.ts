@@ -163,17 +163,17 @@ describe("useNavigation", { timeout: 60_000 }, () => {
 		expect(nav.openPlanUuid.value).toBeUndefined();
 	});
 
-	it("keeps Tools folded by default and remembers it per device", async () => {
+	it("shows Tools by default and remembers the fold per device", async () => {
 		const storage = memoryStorage();
 		vi.stubGlobal("localStorage", storage);
 		let nav = await setup(true);
-		expect(nav.toolsOpen.value).toBe(false);
+		expect(nav.toolsOpen.value).toBe(true);
 		nav.toggleTools();
-		expect(storage.getItem("prunplanner_nav_tools")).toBe("1");
+		expect(storage.getItem("prunplanner_nav_tools")).toBe("0");
 
 		// a reload reads it back
 		nav = await setup(true);
-		expect(nav.toolsOpen.value).toBe(true);
+		expect(nav.toolsOpen.value).toBe(false);
 	});
 
 	it("folds and unfolds without storage", async () => {
@@ -186,9 +186,9 @@ describe("useNavigation", { timeout: 60_000 }, () => {
 			},
 		});
 		const nav = await setup(true);
-		expect(nav.toolsOpen.value).toBe(false);
-		nav.toggleTools();
 		expect(nav.toolsOpen.value).toBe(true);
+		nav.toggleTools();
+		expect(nav.toolsOpen.value).toBe(false);
 	});
 
 	it("knows when the open page is a tool, and hides FIO tools without FIO", async () => {
