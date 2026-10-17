@@ -17,6 +17,9 @@ component / composable
   `apiService.client` is public so tests can attach `axios-mock-adapter`.
   `baseURL` comes from `config.API_BASE_URL`, and GET requests send no-cache
   headers.
+- **Timeout:** every API call (other origins excepted) fails after 30 s
+  (`API_TIMEOUT_MS`). A timeout is a network error (`status` undefined), so
+  the query cache retries it like any transient failure.
 - **Request methods and validation:**
   - `get(path, responseSchema)` validates the response.
   - `post`, `put` and `patch` take `(path, payload, requestSchema,
@@ -37,7 +40,9 @@ component / composable
 - **Auth** is handled in `src/util/axiosSetup.ts`, which runs from `main.ts`:
   - A request interceptor adds `Authorization: Bearer <userStore.accessToken>`.
   - On a 401 response, it calls `userStore.performTokenRefresh()` and retries
-    once.
+    once. A replay that gets a 401 again is not refreshed again: it is
+    rejected (or, on a public page after a logout, asked once more without
+    the token).
   - If the refresh fails, or the 401 comes from `/user/refresh/` itself, it
     calls `logout()`. A route with `meta.requiresAuth` then goes to `/`; a
     public route (a shared plan) stays, and the failed request is sent once
@@ -118,6 +123,11 @@ component / composable
     A request that was replaced (forced refetch) or dropped
     (`invalidateKey`, `$reset` on logout) no longer writes to the cache
     when it settles.
+  - `cacheState` and its entries are `shallowReactive`: an entry's fields
+    (`loading`, `data`, `timestamp`, …) are tracked, but `data` is the raw
+    fetch result. A cache hit returns the same object the fetch returned,
+    so change cached data only by replacing it (refetch, `invalidateKey`),
+    never in place.
   - `invalidateKey(key, { exact, forceRefetch, skipRefetch })` deletes
     either the exact key or every key that the given key is a subset of. It
     refetches when `autoRefetch` is set or `forceRefetch` is passed.

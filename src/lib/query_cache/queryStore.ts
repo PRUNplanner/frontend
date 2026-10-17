@@ -1,4 +1,4 @@
-import { reactive, computed, type ComputedRef, type Reactive } from "vue";
+import { shallowReactive, computed, type ComputedRef } from "vue";
 import { defineStore } from "pinia";
 
 import { userActivity } from "@/features/user_activity/userActivityStore";
@@ -33,9 +33,12 @@ export const useQueryStore = defineStore(
 	() => {
 		const inFlight = new Map<string, Promise<unknown>>();
 
-		const cacheState: Reactive<
+		// shallow, and so is each entry (updateState): their fields are
+		// tracked, but a cache hit returns the raw data a fresh fetch
+		// returned, not a deep proxy of it
+		const cacheState = shallowReactive<
 			Record<string, IQueryState<unknown, unknown>>
-		> = reactive({});
+		>({});
 
 		function deleteState(key: string) {
 			delete cacheState[key];
@@ -53,10 +56,14 @@ export const useQueryStore = defineStore(
 			const existing = cacheState[cacheKey] as
 				IQueryState<TParams, TData> | undefined;
 			// update existing
-			if (existing) cacheState[cacheKey] = { ...existing, ...updateData };
+			if (existing)
+				cacheState[cacheKey] = shallowReactive({
+					...existing,
+					...updateData,
+				});
 			// set new with data
 			else
-				cacheState[cacheKey] = {
+				cacheState[cacheKey] = shallowReactive({
 					definitionName: "",
 					params: null,
 					data: null,
@@ -65,7 +72,7 @@ export const useQueryStore = defineStore(
 					timestamp: 0,
 					autoRefetch: false,
 					...updateData,
-				};
+				});
 		}
 
 		function getCachedData<K extends QueryName>(

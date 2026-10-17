@@ -1,5 +1,6 @@
 import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
+import { computed, isReactive } from "vue";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { useUserActivity } from "@/features/user_activity/useUserActivity";
@@ -529,6 +530,104 @@ describe("checkEntryStatusAndRefresh: failed refreshes", () => {
 			data: { fresh: true },
 			error: null,
 			timestamp: 4500,
+		});
+	});
+});
+
+describe("useQueryStore: raw cache data", () => {
+	let store: ReturnType<typeof useQueryStore>;
+	// @ts-expect-error mock query repository
+	const testFetch = getQueryDefinition("testQuery").fetchFn as Mock;
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		store = useQueryStore();
+		vi.useFakeTimers();
+		vi.setSystemTime(0);
+		vi.clearAllMocks();
+		vi.spyOn(console, "error").mockImplementation(() => {});
+	});
+
+	it("a cache hit returns the object the fetch returned, not a proxy", async () => {
+		const result = { nested: { list: [{ value: 1 }] } };
+		testFetch.mockResolvedValueOnce(result);
+
+		// @ts-expect-error mock query repository
+		const first = (await store.execute("testQuery", "raw")) as typeof result;
+		// @ts-expect-error mock query repository
+		const hit = (await store.execute("testQuery", "raw")) as typeof result;
+
+		expect(testFetch).toHaveBeenCalledOnce();
+		expect(hit).toBe(first);
+		expect(hit).toBe(result);
+		expect(isReactive(hit)).toBe(false);
+		expect(isReactive(hit.nested)).toBe(false);
+		expect(isReactive(hit.nested.list[0])).toBe(false);
+		expect(store.peekQueryState(["testQuery", "raw"])?.data).toBe(result);
+	});
+
+	it("a computed on peekQueryState re-runs on refetch, invalidate and $reset", async () => {
+		const key = ["testQuery", "peek"];
+		const data = computed(() => store.peekQueryState(key)?.data);
+
+		// @ts-expect-error mock query repository
+		await store.execute("testQuery", "peek");
+		expect(data.value).toEqual({ result: "data-peek" });
+
+		testFetch.mockResolvedValueOnce({ result: "again" });
+		// @ts-expect-error mock query repository
+		await store.execute("testQuery", "peek", { forceRefetch: true });
+		expect(data.value).toEqual({ result: "again" });
+
+		await store.invalidateKey(key);
+		expect(data.value).toBeUndefined();
+
+		// @ts-expect-error mock query repository
+		await store.execute("testQuery", "peek");
+		expect(data.value).toEqual({ result: "data-peek" });
+		store.$reset();
+		expect(data.value).toBeUndefined();
+	});
+
+	it("isAnythingLoading flips with loading entries", async () => {
+		testFetch.mockImplementationOnce(
+			() => new Promise((resolve) => setTimeout(() => resolve(1), 100))
+		);
+
+		// @ts-expect-error mock query repository
+		const pending = store.execute("testQuery", "loading");
+		expect(store.isAnythingLoading).toBe(true);
+
+		await vi.advanceTimersByTimeAsync(100);
+		await pending;
+		expect(store.isAnythingLoading).toBe(false);
+	});
+
+	it("a timed-out request fails every caller of its key and leaves loading", async () => {
+		// what apiService's normalizeError makes of an axios timeout
+		const timeout = Object.assign(new Error("timeout of 30000ms exceeded"), {
+			status: undefined,
+		});
+		testFetch.mockImplementationOnce(
+			() =>
+				new Promise((_, reject) => setTimeout(() => reject(timeout), 30_000))
+		);
+
+		// @ts-expect-error mock query repository
+		const first = store.execute("testQuery", "hung");
+		// @ts-expect-error mock query repository
+		const second = store.execute("testQuery", "hung");
+		const settled = Promise.allSettled([first, second]);
+		await vi.advanceTimersByTimeAsync(30_000);
+
+		expect(await settled).toEqual([
+			{ status: "rejected", reason: timeout },
+			{ status: "rejected", reason: timeout },
+		]);
+		expect(testFetch).toHaveBeenCalledOnce();
+		expect(store.cacheState[toCacheKey(["testQuery", "hung"])]).toMatchObject({
+			loading: false,
+			error: timeout,
 		});
 	});
 });
