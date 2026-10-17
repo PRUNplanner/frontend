@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
-import { h, isReactive, reactive, ref } from "vue";
+import { h, isReactive, nextTick, reactive, ref } from "vue";
 
 import PlanetSearchPage from "@/features/planet_search/components/PlanetSearchPage.vue";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -14,9 +14,12 @@ import fixture from "@/tests/test_data/api_data_planet_search_index.json";
 
 const route = reactive({ query: {} as Record<string, string> });
 const replace = vi.fn();
+// the page's leave guard, run it to leave
+const leave = vi.hoisted(() => ({ guard: () => {} }));
 vi.mock("vue-router", () => ({
 	useRoute: () => route,
 	useRouter: () => ({ replace }),
+	onBeforeRouteLeave: (guard: () => void) => (leave.guard = guard),
 }));
 
 const empires = [
@@ -71,6 +74,13 @@ function stubMedia(desktop: boolean) {
 const panel = (wrapper: VueWrapper) =>
 	wrapper.findComponent({ name: "PlanetSearchFilterPanel" });
 
+// the url follows 300 ms after the last change; the margin covers a timer
+// firing a little early, which lodash reschedules
+async function urlSettled() {
+	await new Promise((r) => setTimeout(r, 350));
+	await flushPromises();
+}
+
 describe("PlanetSearchPage", () => {
 	beforeEach(() => {
 		route.query = {};
@@ -96,6 +106,7 @@ describe("PlanetSearchPage", () => {
 		expect(
 			(panel(wrapper).props("filter") as PlanetSearchFilter).references
 		).toEqual([{ kind: "cx", code: "NC1" }]);
+		await urlSettled();
 		expect(replace).toHaveBeenLastCalledWith({
 			query: { ref: "cx:NC1", j: "30" },
 		});
@@ -184,12 +195,14 @@ describe("PlanetSearchPage", () => {
 		await flushPromises();
 		expect(current()).not.toEqual(before);
 		expect(current().text).toBe("KI-");
+		await urlSettled();
 		expect(Object.keys(replace.mock.lastCall![0].query).length).toBeGreaterThan(1);
 		expect(replace.mock.lastCall![0].query.q).toBe("KI-");
 
 		// show all: everything but the name at its widest
 		await note().findAll("button").at(-1)!.trigger("click");
 		await flushPromises();
+		await urlSettled();
 		expect(replace).toHaveBeenLastCalledWith({
 			query: { q: "KI-", surf: "rg", x: "MGC,BL,SEA,HSE,INS,TSH" },
 		});
@@ -263,5 +276,63 @@ describe("PlanetSearchPage", () => {
 		});
 		await flushPromises();
 		expect(bar.props("count")).toBeLessThan(before);
+	});
+
+	describe("url", () => {
+		afterEach(() => vi.useRealTimers());
+
+		async function mountSearch() {
+			stubMedia(true);
+			const mounted = await mountComponent(PlanetSearchPage);
+			await flushPromises();
+			replace.mockClear();
+			vi.useFakeTimers();
+			return mounted;
+		}
+
+		function type(wrapper: VueWrapper, text: string) {
+			const current = panel(wrapper).props("filter") as PlanetSearchFilter;
+			panel(wrapper).vm.$emit("update:filter", { ...current, text });
+		}
+
+		it("typing 20 characters replaces the url once, with the final query", async () => {
+			const { wrapper } = await mountSearch();
+			const name = "KI-448b Montem Prime";
+
+			for (let i = 1; i <= name.length; i++) {
+				type(wrapper, name.slice(0, i));
+				await nextTick();
+				await vi.advanceTimersByTimeAsync(100);
+			}
+			expect(replace).not.toHaveBeenCalled();
+
+			await vi.advanceTimersByTimeAsync(300);
+			expect(replace).toHaveBeenCalledOnce();
+			expect(replace.mock.lastCall![0].query.q).toBe(name);
+		});
+
+		it("leaving the page writes a pending url change", async () => {
+			const { wrapper } = await mountSearch();
+
+			type(wrapper, "KI-");
+			await nextTick();
+			wrapper.unmount();
+
+			expect(replace).toHaveBeenCalledOnce();
+			expect(replace.mock.lastCall![0].query.q).toBe("KI-");
+		});
+
+		it("a pending url change never lands on the next page", async () => {
+			const { wrapper } = await mountSearch();
+
+			type(wrapper, "KI-");
+			await nextTick();
+			// a link to another page
+			leave.guard();
+			wrapper.unmount();
+			await vi.advanceTimersByTimeAsync(300);
+
+			expect(replace).not.toHaveBeenCalled();
+		});
 	});
 });
