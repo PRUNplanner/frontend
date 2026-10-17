@@ -32,6 +32,10 @@ const NETWORK_REPEAT_MS = 10 * 60_000;
 const NETWORK_BURST_MS = 5_000;
 const lastNetworkFailure = new Map<string, number>();
 
+// a request that does not answer by then fails like a network error
+// (status undefined), so the query cache retries it as transient
+const API_TIMEOUT_MS = 30_000;
+
 // path templates of reads sent as POST for their body
 const READ_POSTS = new Set(["/data/planets/multiple/"]);
 
@@ -51,8 +55,9 @@ function isRepeatedNetworkFailure(pathTemplate: string): boolean {
 }
 
 /**
- * Sets the request and session id on calls to the API. The client is
- * the global axios instance, so other origins must not get them.
+ * Sets the request and session id and the timeout on calls to the API.
+ * The client is the global axios instance, so other origins must not get
+ * them.
  *
  * @param {InternalAxiosRequestConfig} config Request config
  * @returns {InternalAxiosRequestConfig} Request config
@@ -65,6 +70,7 @@ function setRequestIds(
 
 	config.headers.set("X-Request-ID", crypto.randomUUID());
 	config.headers.set("X-Correlation-ID", correlationId());
+	config.timeout ||= API_TIMEOUT_MS;
 	sentAt.set(config, performance.now());
 	return config;
 }

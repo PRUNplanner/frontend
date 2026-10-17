@@ -28,6 +28,14 @@ export const setAxiosHeader = (
 */
 const requestSession = new WeakMap<object, string | undefined>();
 
+// a request asked again after a token refresh. axios copies the config on
+// every call, so the mark travels on it, not in a WeakSet of configs
+declare module "axios" {
+	interface AxiosRequestConfig {
+		replayed?: boolean;
+	}
+}
+
 /**
  * True, if the request was sent logged in, in a session that has since
  * ended. Its response must be dropped, else it lands in the next user's
@@ -143,7 +151,10 @@ export default function axiosSetup() {
 				)
 					return Promise.reject(error);
 
-				if (await refreshOrEndSession()) return axios(originalRequest);
+				// asked again once per refresh: a replay that gets a 401 too
+				// is not refreshed again, as if the refresh had failed
+				if (!originalRequest.replayed && (await refreshOrEndSession()))
+					return axios({ ...originalRequest, replayed: true });
 
 				return retryLoggedOut(originalRequest) ?? Promise.reject(error);
 			}

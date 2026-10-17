@@ -65,7 +65,7 @@ describe("ApiService", () => {
 					responseSchema,
 					true
 				)
-			).rejects.toThrowError(/^timeout of 0ms exceeded$/);
+			).rejects.toThrowError(/^timeout of 30000ms exceeded$/);
 		});
 
 		it("axios error", async () => {
@@ -78,7 +78,7 @@ describe("ApiService", () => {
 
 			await expect(
 				apiService.get("/test", responseSchema)
-			).rejects.toThrowError(/^timeout of 0ms exceeded$/);
+			).rejects.toThrowError(/^timeout of 30000ms exceeded$/);
 		});
 	});
 
@@ -110,6 +110,67 @@ describe("ApiService", () => {
 			expect(api.data["X-Request-ID"]).toMatch(UUID);
 			expect(other.data).not.toHaveProperty("X-Request-ID");
 			expect(other.data).not.toHaveProperty("X-Correlation-ID");
+		});
+	});
+
+	describe("timeout", () => {
+		const schema = z.unknown();
+		const timeoutOf = (method: "get" | "put" | "patch" | "delete") =>
+			mock.history[method].at(-1)?.timeout;
+
+		beforeEach(() => {
+			mock.reset();
+			vi.mocked(trackException).mockClear();
+			vi.mocked(reportClientError).mockClear();
+		});
+
+		it("is 30 s on every API call, form posts included", async () => {
+			mock.onAny().reply(200, {});
+
+			await apiService.get("/t/", schema);
+			await apiService.post("/t/", {}, schema, schema);
+			await apiService.post("/user/login/", {}, schema, schema, true);
+			await apiService.put("/t/", {}, schema, schema);
+			await apiService.patch("/t/", {}, schema, schema);
+			await apiService.delete("/t/");
+
+			expect(timeoutOf("get")).toBe(30_000);
+			expect(mock.history.post.map((r) => r.timeout)).toEqual([
+				30_000, 30_000,
+			]);
+			expect(timeoutOf("put")).toBe(30_000);
+			expect(timeoutOf("patch")).toBe(30_000);
+			expect(timeoutOf("delete")).toBe(30_000);
+		});
+
+		it("is not set for other origins", async () => {
+			mock.onGet("https://other.example/x").reply(200);
+
+			await apiService.client.get("https://other.example/x");
+
+			expect(timeoutOf("get")).toBe(0);
+		});
+
+		it("fails like a network error, reported with its path template", async () => {
+			const PLAN = "/planning/plan/0b1e2c3d-1111-4222-8333-444455556666/";
+			mock.onPost(PLAN).timeoutOnce();
+
+			const error = (await apiService
+				.post(PLAN, {}, schema, schema)
+				.catch((e: unknown) => e)) as Error;
+
+			expect(error.message).toBe("timeout of 30000ms exceeded");
+			expect(error).toHaveProperty("status", undefined);
+			expect(reportClientError).toHaveBeenCalledWith(
+				expect.objectContaining({
+					kind: "network",
+					method: "POST",
+					path_template: "/planning/plan/:uuid/",
+				})
+			);
+			expect(vi.mocked(trackException).mock.calls[0][1]).toMatchObject({
+				code: "ECONNABORTED",
+			});
 		});
 	});
 
@@ -490,7 +551,7 @@ describe("ApiService", () => {
 					payloadSchema,
 					responseSchema
 				)
-			).rejects.toThrowError(/^timeout of 0ms exceeded$/);
+			).rejects.toThrowError(/^timeout of 30000ms exceeded$/);
 		});
 	});
 
@@ -528,7 +589,7 @@ describe("ApiService", () => {
 					payloadSchema,
 					responseSchema
 				)
-			).rejects.toThrowError(/^timeout of 0ms exceeded$/);
+			).rejects.toThrowError(/^timeout of 30000ms exceeded$/);
 		});
 	});
 
@@ -545,7 +606,7 @@ describe("ApiService", () => {
 			mock.onDelete("/test").timeout();
 
 			await expect(apiService.delete("/test")).rejects.toThrowError(
-				/^timeout of 0ms exceeded$/
+				/^timeout of 30000ms exceeded$/
 			);
 		});
 	});

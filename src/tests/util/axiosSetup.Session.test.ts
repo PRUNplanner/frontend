@@ -245,3 +245,54 @@ describe("axiosSetup: parallel 401s", () => {
 		expect(refreshes()).toHaveLength(2);
 	});
 });
+
+describe("axiosSetup: a 401 on a replay", () => {
+	const token = (name: string) => name.padEnd(120, "x");
+	let userStore: ReturnType<typeof useUserStore>;
+
+	const refreshes = () =>
+		mock.history.post.filter((r) => r.url === "/user/refresh/");
+	const asked = () => mock.history.get.filter((r) => r.url === "/always");
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		userStore = useUserStore();
+		mock.reset();
+		vi.mocked(router.push).mockClear();
+		userStore.setToken(token("access-old"), token("refresh"));
+		// the backend rejects even a freshly refreshed token on this path
+		mock.onGet("/always").reply(401);
+		mock.onPost("/user/refresh/").reply(200, { access: token("access-new") });
+	});
+
+	it.each([
+		["needs a login", { requiresAuth: true }],
+		["is public", {}],
+	])("refreshes and replays once, then rejects, on a page that %s", async (_, meta) => {
+		route.value = { meta };
+
+		const error = await axios.get("/always").catch((e) => e);
+
+		expect(error.response.status).toBe(401);
+		expect(refreshes()).toHaveLength(1);
+		expect(asked()).toHaveLength(2);
+		expect(asked()[1].headers?.Authorization).toBe(
+			`Bearer ${token("access-new")}`
+		);
+		// the refresh worked: the session stays
+		expect(userStore.isLoggedIn).toBe(true);
+		expect(router.push).not.toHaveBeenCalled();
+	});
+
+	it("parallel ones share one refresh and are each replayed once", async () => {
+		route.value = { meta: { requiresAuth: true } };
+
+		const answers = await Promise.allSettled(
+			Array.from({ length: 3 }, () => axios.get("/always"))
+		);
+
+		expect(answers.map((a) => a.status)).toEqual(Array(3).fill("rejected"));
+		expect(refreshes()).toHaveLength(1);
+		expect(asked()).toHaveLength(6);
+	});
+});
