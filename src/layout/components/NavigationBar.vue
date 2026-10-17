@@ -11,6 +11,8 @@
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	const { layoutNavigationStyle } = usePreferences();
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useVersionCheck } from "@/lib/useVersionCheck";
+	import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -320,6 +322,7 @@
 	]);
 
 	const appVersion = __APP_VERSION__;
+	const { showChip } = useVersionCheck();
 
 	function toggleNavigationSize(): void {
 		layoutNavigationStyle.value === "full"
@@ -356,7 +359,7 @@
 		class="hidden peer-checked:flex md:h-screen md:sticky md:top-0 md:flex border-r border-white/5 flex-col bg-gray-dark transition-all duration-300 ease-in-out"
 		:class="containerClass"
 		style="scrollbar-width: none">
-		<div class="items-center justify-between sm:hidden md:flex">
+		<div class="flex-col items-center justify-between sm:hidden md:flex">
 			<div class="w-full flex flex-row items-baseline pt-4">
 				<div
 					class="grow text-prunplanner text-xl font-light text-center">
@@ -367,13 +370,19 @@
 						<span v-else class="font-bold">PP</span>
 					</router-link>
 				</div>
-				<div v-if="isFull" class="text-end text-xs text-muted">
+				<div
+					v-if="isFull && !showChip"
+					class="text-end text-xs text-muted">
 					<RouterLink
 						to="/debug"
 						class="inline-flex items-center min-h-6">
 						{{ appVersion }}
 					</RouterLink>
 				</div>
+			</div>
+			<!-- its own row: next to the logo it would widen the sidebar -->
+			<div v-if="isFull && showChip" class="w-full flex justify-end">
+				<VersionUpdateChip />
 			</div>
 		</div>
 

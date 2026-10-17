@@ -2,8 +2,9 @@
 	import { defineAsyncComponent, onMounted, computed, watch } from "vue";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
-	import { useRoute } from "vue-router";
+	import { useRoute, useRouter } from "vue-router";
 	const routeData = useRoute();
+	const router = useRouter();
 
 	// Components
 	import AppFooter from "@/layout/components/AppFooter.vue";
@@ -17,10 +18,6 @@
 		() => import("@/layout/components/MobileToggle.vue")
 	);
 
-	const VersionUpdateNotification = defineAsyncComponent(
-		() => import("@/layout/components/VersionUpdateNotification.vue")
-	);
-
 	const AnalyticsConsentDialog = defineAsyncComponent(
 		() =>
 			import("@/features/analytics/components/AnalyticsConsentDialog.vue")
@@ -28,7 +25,8 @@
 
 	// Composables
 	import { useVersionCheck } from "@/lib/useVersionCheck";
-	const { updateAvailable, startWatch } = useVersionCheck();
+	import { announceRelease } from "@/lib/whatsNew";
+	const { startWatch } = useVersionCheck();
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
@@ -68,9 +66,7 @@
 	);
 
 	const isLoggedIn = computed(() => userStore.isLoggedIn);
-	const showUpdateNotification = computed(
-		() => isLoggedIn.value && updateAvailable.value
-	);
+
 	onMounted(() => {
 		startWatch();
 
@@ -79,6 +75,7 @@
 		if (userStore.profile) identifyUser(userStore.profile);
 
 		if (userStore.isLoggedIn) {
+			announceRelease(() => router.push("/help#changelog"));
 			// start user activity monitor if logged in
 			const _activity = userActivity;
 			// changed in another browser or device since this one stored them
@@ -90,7 +87,6 @@
 </script>
 
 <template>
-	<VersionUpdateNotification v-if="showUpdateNotification" />
 	<!-- not over the terms the dialog links to -->
 	<AnalyticsConsentDialog
 		v-if="isLoggedIn && routeData.name !== 'imprint-tos'" />

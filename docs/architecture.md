@@ -102,5 +102,6 @@ saved over the shared plan.
 - **Deploy.**
   - Netlify builds previews and is configured as an SPA.
   - The Docker image (`Dockerfile`) serves `dist/` with `spa-to-http`.
-  - `scripts/write-version.js` writes `dist/version.json`, which
-    `lib/useVersionCheck.ts` polls so it can prompt for a reload.
+  - The `buildVersion` plugin in `vite.config.ts` writes `dist/version.json`
+    with the build ID (`BUILD_REVISION`, the commit) that is also baked into
+    the bundle as `__BUILD_ID__`; `lib/useVersionCheck.ts` compares the two.

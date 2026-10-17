@@ -17,7 +17,12 @@
 		<div class="grow text-prunplanner text-xl pl-3">
 			<span class="font-bold">PRUN</span>planner
 		</div>
+		<VersionUpdateChip v-if="showChip" />
 	</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+	import { useVersionCheck } from "@/lib/useVersionCheck";
+	import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
+	const { showChip } = useVersionCheck();
+</script>

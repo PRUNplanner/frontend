@@ -1,81 +1,93 @@
 /**
- * Composable to set the version from version.json
- * as the current version and then continuously watch for a new
- * version being pushed to the server.
+ * Watches for a newer build: compares the deployed version.json with the
+ * build this tab runs (__BUILD_ID__), so every tab knows on its own. Polls
+ * only while the tab is visible, and not while the notice waits for the
+ * user.
  *
- * Will be skipped in vue dev mode.
+ * Skipped in vue dev mode.
  *
  * @author jplacht
  */
 
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
-const currentVersion = ref<string | null>(null);
+const POLL_MS = 5 * 60_000;
+const MIN_GAP_MS = 60_000;
+
 const updateAvailable = ref(false);
-const LOCAL_KEY = "prunplanner_version";
+const latestVersion = ref<string | null>(null);
+// dismissed with "Later" for this build, in this tab only
+const dismissedVersion = ref<string | null>(null);
+// a newer version took over the IndexedDB in another tab
+const outdated = ref(false);
 
-export function useVersionCheck(interval = 60_000) {
-	function startWatch(): void {
-		// skip on dev mode
-		if (import.meta.env.DEV) return;
-		checkVersion();
-		setInterval(checkVersion, interval);
-	}
+const showNotice = computed(
+	() =>
+		outdated.value ||
+		(updateAvailable.value &&
+			latestVersion.value !== dismissedVersion.value)
+);
+const showChip = computed(() => updateAvailable.value && !showNotice.value);
 
-	const checkVersion = async () => {
-		// skip on dev mode
-		if (import.meta.env.DEV) return;
+let lastCheck = 0;
+let watching = false;
 
-		try {
-			const res = await fetch("/version.json", { cache: "no-cache" });
-			const data = await res.json();
+async function checkVersion(): Promise<void> {
+	if (import.meta.env.DEV) return;
+	lastCheck = Date.now();
 
-			const latestVersion = data.version;
-			const storedVersion = localStorage.getItem(LOCAL_KEY);
-
-			// no stored version
-			if (!storedVersion) {
-				currentVersion.value = latestVersion;
-				updateAvailable.value = true;
-				return;
-			}
-
-			currentVersion.value = storedVersion;
-
-			if (storedVersion != latestVersion) {
-				updateAvailable.value = true;
-			}
-		} catch (err) {
-			console.warn("Version check failed", err);
-		}
-	};
-
-	async function markUpdated(): Promise<void> {
-		// skip on dev mode
-		if (import.meta.env.DEV) return;
-
+	try {
 		const res = await fetch("/version.json", { cache: "no-cache" });
+		// the SPA fallback answers with index.html during a deploy
 		const data = await res.json();
-		const latestVersion = data.version;
+		if (typeof data?.version !== "string") return;
 
-		localStorage.setItem(LOCAL_KEY, latestVersion);
-		updateAvailable.value = false;
+		latestVersion.value = data.version;
+		updateAvailable.value = data.version !== __BUILD_ID__;
+	} catch (err) {
+		console.warn("Version check failed", err);
 	}
+}
 
-	/**
-	 * Shows the update notification without a version check, e.g. when a
-	 * newer version took over the IndexedDB in another tab
-	 */
-	function markOutdated(): void {
-		updateAvailable.value = true;
-	}
+function checkIfDue(): void {
+	if (document.visibilityState !== "visible") return;
+	// the notice is waiting for the user, nothing new to learn
+	if (showNotice.value) return;
+	if (Date.now() - lastCheck < MIN_GAP_MS) return;
+	checkVersion();
+}
 
+function startWatch(): void {
+	if (import.meta.env.DEV || watching) return;
+	watching = true;
+
+	// left by older builds, which compared against it
+	localStorage.removeItem("prunplanner_version");
+
+	checkIfDue();
+	setInterval(checkIfDue, POLL_MS);
+	document.addEventListener("visibilitychange", checkIfDue);
+	window.addEventListener("online", checkIfDue);
+}
+
+function later(): void {
+	dismissedVersion.value = latestVersion.value;
+}
+
+function markOutdated(): void {
+	outdated.value = true;
+}
+
+export function useVersionCheck() {
 	return {
-		currentVersion,
 		updateAvailable,
-		markOutdated,
-		markUpdated,
+		latestVersion,
+		outdated,
+		showNotice,
+		showChip,
 		checkVersion,
 		startWatch,
+		later,
+		markOutdated,
 	};
 }

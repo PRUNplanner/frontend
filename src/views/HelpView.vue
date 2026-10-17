@@ -45,7 +45,7 @@
 				<HelpTutorial />
 			</div>
 			<div>
-				<h2 class="text-xl font-bold pb-3">
+				<h2 id="changelog" class="text-xl font-bold pb-3">
 					{{ $t("help.changelog.title") }}
 				</h2>
 				<div

@@ -266,7 +266,9 @@ export interface IAnalyticsEventProperties {
 	"xit:transfer_copy": { source?: XITTransferSource };
 
 	"app:navigation_toggle": { navigation_style: "full" | "collapsed" };
-	"app:version_reload": undefined;
+	"app:version_reload": { source: "notice" | "chip" | "navigation" };
+	"app:version_later": undefined;
+	"app:whats_new_click": undefined;
 	"app:remote_change": IRemoteChangeProperties;
 	"app:session_change": { reason: "logout" | "login" | "other_user" };
 	"app:db_blocked": undefined;

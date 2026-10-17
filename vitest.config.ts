@@ -12,6 +12,7 @@ export default defineConfig({
 	define: {
 		__INDEXEDDB_VERSION__: Date.now(), // force db upgrade each test run
 		__APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+		__BUILD_ID__: JSON.stringify("dev"),
 	},
 	test: {
 		setupFiles: "./src/tests/vitest.setup.ts",

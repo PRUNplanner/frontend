@@ -24,7 +24,6 @@ import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Composables
 import { useQuery } from "@/lib/query_cache/useQuery";
-import { useVersionCheck } from "@/lib/useVersionCheck";
 import {
 	trackEvent,
 	resetUser,
@@ -295,10 +294,6 @@ export const useUserStore = defineStore(
 				setToken(tokenData.access, tokenData.refresh);
 
 				trackEvent("account:login");
-
-				// sets the current version to the available version
-				const { markUpdated } = useVersionCheck();
-				await markUpdated();
 
 				await queryPreferences();
 
