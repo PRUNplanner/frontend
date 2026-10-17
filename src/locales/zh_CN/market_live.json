@@ -1,6 +1,7 @@
 {
 	"view_title": "实时市场",
 	"title": "实时市场",
+	"connection_lost": "Connection lost. Reconnecting...",
 	"status": {
 		"connected": "已连接",
 		"disconnected": "已断开"
