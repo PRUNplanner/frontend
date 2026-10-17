@@ -103,5 +103,9 @@
 	"charts": {
 		"other": "Other ({n})",
 		"empty": "Nothing to show"
+	},
+	"version_update": {
+		"title": "{app} has been updated!",
+		"action": "Click to load the newest version."
 	}
 }
