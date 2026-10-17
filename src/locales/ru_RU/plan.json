@@ -156,7 +156,6 @@
 			"table": {
 				"stock_duration": "Срок запасов (дней)",
 				"storage": "Хранилище",
-				"xit_name": "Корзина поставок",
 				"xit_initial_name": "Supply Cart (Initial)",
 				"ticker": "Тикер",
 				"daily_need": "Ежедневная потребность",
