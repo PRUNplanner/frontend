@@ -15,16 +15,14 @@
 	"change_profile": {
 		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
-			"verify_email": "Verifica email",
-			"resend_code": "Re invia codice",
-			"code_requested": "Codice richiesto."
+			"enter_code": "Enter code",
+			"resend_code": "Send new code"
 		},
 		"form": {
 			"fio_apikey": "API Key FIO",
 			"prun_username": "Nome Utente PrUn",
-			"email_info": "Non è necessario fornire un'email ma altamente raccomandato per una maggiore sicurezza dell'account e il ripristino della password.",
+			"email_info": "Optional. Only used to reset your password: no newsletters, never shared.",
 			"email_address": "Indirizzo email",
-			"email_verified": "Email verificata",
 			"fio_status": "FIO Status"
 		},
 		"fio_connected": "Connected. Your data will appear in a few minutes.",
@@ -41,6 +39,16 @@
 			"fio_invalid_key": "FIO doesn't accept this API key.",
 			"fio_username_mismatch": "This API key belongs to a different PrUn username.",
 			"unknown": "Saving failed. Please try again."
+		},
+		"email_taken": "This address is already used by another account.",
+		"code_sent_notice": "Saved. We sent a code to the new address; resets go there once it's confirmed.",
+		"recovery": {
+			"label": "Account recovery",
+			"not_set_up": "Not set up",
+			"not_set_up_info": "Without an email, a forgotten password can't be reset.",
+			"waiting": "Waiting for confirmation",
+			"ready": "Ready",
+			"ready_info": "Password resets go to this address."
 		}
 	},
 	"storage_data": {
@@ -121,9 +129,5 @@
 		"account": {
 			"title": "Account"
 		}
-	},
-	"account": {
-		"verified": "Verified",
-		"not_verified": "Not verified"
 	}
 }
