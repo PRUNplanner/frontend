@@ -17,7 +17,7 @@ export function useUserActivity(
 	const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
 
 	events.forEach((event) =>
-		window.addEventListener(event, updateLastActivity)
+		window.addEventListener(event, updateLastActivity, { passive: true })
 	);
 
 	// throttle updates
