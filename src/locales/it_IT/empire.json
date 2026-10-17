@@ -1,6 +1,8 @@
 {
 	"view_title": "Impero",
 	"switch_empire": "Cambia Impero",
+	"overview_hide": "Hide plan list",
+	"overview_show": "Show plan list",
 	"views": {
 		"material_io": "I/O Materiali",
 		"analysis": "Statistiche",
