@@ -12,6 +12,13 @@ import hqChinese from "@/assets/help/zh_CN/tools_hq_upgrade_calculator.md?raw";
 
 const PAGE = "tools_hq_upgrade_calculator";
 
+// counts the loads of the markdown renderer, rendering stays real
+const showdown = vi.hoisted(() => ({ loads: 0 }));
+vi.mock("vue-showdown", async (importOriginal) => {
+	showdown.loads++;
+	return await importOriginal();
+});
+
 const body = () => new DOMWrapper(document.body);
 const drawer = () => body().find("[role=dialog]");
 // the page is a lazy import, wait for it
@@ -34,6 +41,18 @@ function setLocale(wrapper: VueWrapper, locale: string) {
 }
 
 describe("HelpDrawer", () => {
+	// first: the module stays loaded for the later tests
+	it("loads the markdown renderer only once opened", async () => {
+		const { wrapper } = await mountComponent(HelpDrawer, {
+			fileName: PAGE,
+		});
+		expect(showdown.loads).toBe(0);
+
+		await toggle(wrapper);
+		await expectPage("p", hqEnglish.trim());
+		expect(showdown.loads).toBe(1);
+	});
+
 	it("renders only the help button until opened", async () => {
 		const { wrapper } = await mountComponent(HelpDrawer, {
 			fileName: PAGE,

@@ -1,5 +1,12 @@
 <script setup lang="ts">
-	import { computed, type PropType, ref, type Ref, watch } from "vue";
+	import {
+		computed,
+		defineAsyncComponent,
+		type PropType,
+		ref,
+		type Ref,
+		watch,
+	} from "vue";
 
 	// pre-parsing glob
 	const HELP_FILES = import.meta.glob("@/assets/help/**/*.md", {
@@ -11,7 +18,10 @@
 	const { t, locale } = useI18n({ useScope: "global" });
 
 	import { PButton, PDrawer, PNotice } from "@/ui";
-	import { VueShowdown } from "vue-showdown";
+	// showdown loads with the first opened drawer, not with every page
+	const VueShowdown = defineAsyncComponent(() =>
+		import("vue-showdown").then((m) => m.VueShowdown)
+	);
 
 	const showDrawer: Ref<boolean> = ref(false);
 
