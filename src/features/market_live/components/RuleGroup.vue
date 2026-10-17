@@ -1,4 +1,6 @@
 <script setup lang="ts">
+	import { toRaw } from "vue";
+
 	// Components
 	import RuleGroup from "@/features/market_live/components/RuleGroup.vue";
 	import DetectorRow from "@/features/market_live/components/DetectorRow.vue";
@@ -20,6 +22,17 @@
 	}>();
 
 	const emit = defineEmits(["remove", "update:group"]);
+
+	// a key per condition object, not its index: deleting a row must not hand
+	// its component (and its inputs) to the next one. Raw objects: the draft
+	// is a deep ref, so a stored condition comes back as a new proxy
+	const ids = new WeakMap<Detector | RuleGroupType, number>();
+	let nextId = 0;
+	const keyOf = (item: Detector | RuleGroupType): number => {
+		let id = ids.get(toRaw(item));
+		if (id === undefined) ids.set(toRaw(item), (id = nextId++));
+		return id;
+	};
 
 	const isRuleGroup = (
 		item: Detector | RuleGroupType
@@ -66,6 +79,8 @@
 		updatedItem: Detector | RuleGroupType
 	) => {
 		const newConditions = [...props.group.conditions];
+		// an edited condition keeps its row
+		ids.set(toRaw(updatedItem), keyOf(newConditions[index]));
 		newConditions[index] = updatedItem;
 		emitUpdate(newConditions);
 	};
@@ -112,7 +127,9 @@
 		</div>
 
 		<div class="space-y-1">
-			<div v-for="(item, index) in group.conditions" :key="index">
+			<div
+				v-for="(item, index) in group.conditions"
+				:key="keyOf(item)">
 				<RuleGroup
 					v-if="isRuleGroup(item)"
 					:group="item"
