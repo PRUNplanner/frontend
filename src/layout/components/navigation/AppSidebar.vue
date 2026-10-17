@@ -11,6 +11,7 @@
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useVersionCheck } from "@/lib/useVersionCheck";
 	import { useNavigation } from "@/layout/components/navigation/useNavigation";
 
 	// Util
@@ -24,6 +25,7 @@
 	import NavFioStatus from "@/layout/components/navigation/NavFioStatus.vue";
 	import NavAccountMenu from "@/layout/components/navigation/NavAccountMenu.vue";
 	import SidebarRail from "@/layout/components/navigation/SidebarRail.vue";
+	import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
 
 	// UI
 	import { PDropdown, PIcon, PTooltip } from "@/ui";
@@ -44,6 +46,7 @@
 	const userStore = useUserStore();
 	const queryStore = useQueryStore();
 	const { layoutNavigationStyle } = usePreferences();
+	const { showChip } = useVersionCheck();
 	const {
 		empires,
 		currentEmpire,
@@ -134,6 +137,10 @@
 					@click="toggleNavigationSize">
 					<PIcon :size="18"><KeyboardDoubleArrowLeftSharp /></PIcon>
 				</button>
+			</div>
+			<!-- the update notice was put off: its own row, under the logo -->
+			<div v-if="showChip" class="flex justify-end px-3 pb-1">
+				<VersionUpdateChip />
 			</div>
 
 			<!-- Empire and its plans: the list scrolls on its own -->

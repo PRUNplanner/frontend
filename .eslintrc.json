@@ -6,7 +6,8 @@
 		"es2024": true
 	},
 	"globals": {
-		"__APP_VERSION__": "readonly"
+		"__APP_VERSION__": "readonly",
+		"__BUILD_ID__": "readonly"
 	},
 	"parser": "vue-eslint-parser",
 	"parserOptions": {

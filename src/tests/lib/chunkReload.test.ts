@@ -1,8 +1,18 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { Router } from "vue-router";
 
-const { toast } = vi.hoisted(() => ({ toast: vi.fn() }));
+const { toast, trackEvent, unsaved } = vi.hoisted(() => ({
+	toast: vi.fn(),
+	trackEvent: vi.fn(),
+	unsaved: { value: false },
+}));
 vi.mock("@/ui/useToast", () => ({ toast }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/useUnsavedGuard", () => ({
+	hasUnsavedChanges: () => unsaved.value,
+}));
+
+import { useVersionCheck } from "@/lib/useVersionCheck";
 
 import {
 	isChunkLoadError,
@@ -72,15 +82,24 @@ describe("chunkReload", () => {
 	function mockRouter() {
 		const hooks = {
 			before: vi.fn(),
+			resolve: vi.fn(),
 			after: vi.fn(),
 			error: vi.fn(),
 		};
 		registerChunkReload({
 			beforeEach: hooks.before,
+			beforeResolve: hooks.resolve,
 			afterEach: hooks.after,
 			onError: hooks.error,
 		} as unknown as Router);
 		return {
+			resolve: (to: string, from: string) => {
+				const route = (p: string) => ({
+					path: p.split("?")[0],
+					fullPath: p,
+				});
+				return hooks.resolve.mock.calls[0][0](route(to), route(from));
+			},
 			navigate: () => hooks.before.mock.calls[0][0](),
 			arrive: () => hooks.after.mock.calls[0][0](),
 			fail: (error: unknown, fullPath: string) =>
@@ -149,5 +168,63 @@ describe("chunkReload", () => {
 		router.arrive();
 
 		expect(preloadError(missing).defaultPrevented).toBe(true);
+	});
+	describe("silent update on navigation", () => {
+		const { updateAvailable, outdated } = useVersionCheck();
+
+		beforeEach(() => {
+			updateAvailable.value = true;
+			outdated.value = false;
+			unsaved.value = false;
+			trackEvent.mockReset();
+		});
+
+		it("loads the new build on a navigation to another page", () => {
+			const router = mockRouter();
+
+			expect(router.resolve("/help", "/empire")).toBe(false);
+			expect(assign).toHaveBeenCalledWith("/help");
+			expect(trackEvent).toHaveBeenCalledWith("app:version_reload", {
+				source: "navigation",
+			});
+		});
+
+		it("also when the tab is outdated", () => {
+			updateAvailable.value = false;
+			outdated.value = true;
+
+			expect(mockRouter().resolve("/help", "/empire")).toBe(false);
+			expect(assign).toHaveBeenCalledWith("/help");
+		});
+
+		it("keeps the SPA navigation without an update", () => {
+			updateAvailable.value = false;
+
+			expect(mockRouter().resolve("/help", "/empire")).toBeUndefined();
+			expect(assign).not.toHaveBeenCalled();
+		});
+
+		it("keeps query-only changes", () => {
+			expect(
+				mockRouter().resolve("/search?cogc=x", "/search")
+			).toBeUndefined();
+			expect(assign).not.toHaveBeenCalled();
+		});
+
+		it("keeps the SPA navigation with unsaved changes", () => {
+			unsaved.value = true;
+
+			expect(mockRouter().resolve("/help", "/plan/X")).toBeUndefined();
+			expect(assign).not.toHaveBeenCalled();
+		});
+
+		it("shares the guard with the chunk reload", () => {
+			const router = mockRouter();
+			expect(reloadOnce()).toBe(true);
+
+			expect(router.resolve("/help", "/empire")).toBeUndefined();
+			expect(assign).not.toHaveBeenCalled();
+			expect(trackEvent).not.toHaveBeenCalled();
+		});
 	});
 });

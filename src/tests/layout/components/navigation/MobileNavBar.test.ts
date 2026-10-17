@@ -10,6 +10,8 @@ import { useUserStore } from "@/stores/userStore";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { useVersionCheck } from "@/lib/useVersionCheck";
+import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
 
 // Types & Interfaces
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
@@ -146,6 +148,22 @@ describe("MobileNavBar", () => {
 		expect(sheet().text()).toContain("+1,234.50");
 		expect(sheet().text()).toContain("-10");
 		expect(execute).not.toHaveBeenCalledWith("GetEmpirePlans");
+	});
+
+	it("marks More and puts the update chip in its sheet after Later", async () => {
+		const { updateAvailable, latestVersion, later } = useVersionCheck();
+		const w = await mountBar();
+		expect(w.find("[data-update-dot]").exists()).toBe(false);
+
+		updateAvailable.value = true;
+		latestVersion.value = "new-build";
+		later();
+		await flushPromises();
+		expect(w.find("[data-update-dot]").exists()).toBe(true);
+
+		await open(w, `${NAV}.more`);
+		expect(w.findComponent(VersionUpdateChip).exists()).toBe(true);
+		updateAvailable.value = false;
 	});
 
 	it("reaches every sidebar destination through More", async () => {

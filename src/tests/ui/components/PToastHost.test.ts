@@ -15,8 +15,11 @@ enableAutoUnmount(afterEach);
 const i18n = createI18n({ legacy: false, locale: "en_US", messages: {} });
 const body = () => new DOMWrapper(document.body);
 
-function mountHost() {
-	mount(PToastHost, { global: { plugins: [i18n] } });
+function mountHost(slot?: string) {
+	mount(PToastHost, {
+		global: { plugins: [i18n] },
+		slots: slot ? { default: slot } : {},
+	});
 }
 
 describe("PToastHost", () => {
@@ -63,7 +66,7 @@ describe("PToastHost", () => {
 		toast("Saved");
 		await flushPromises();
 
-		const item = body().find(".ptoast-host > div");
+		const item = body().find(".ptoast-host .origin-top");
 		await item.trigger("mouseenter");
 		vi.advanceTimersByTime(10_000);
 		expect(toasts.value).toHaveLength(1);
@@ -71,5 +74,15 @@ describe("PToastHost", () => {
 		await item.trigger("mouseleave");
 		vi.advanceTimersByTime(6000);
 		expect(toasts.value).toHaveLength(0);
+	});
+
+	it("renders its slot below the toasts", async () => {
+		mountHost('<p class="notice">update</p>');
+		toast("one");
+		await flushPromises();
+
+		const host = body().find(".ptoast-host");
+		expect(host.element.lastElementChild?.className).toBe("notice");
+		expect(host.text()).toBe("oneupdate");
 	});
 });

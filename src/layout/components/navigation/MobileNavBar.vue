@@ -10,6 +10,7 @@
 	// Composables
 	import { useNavigation } from "@/layout/components/navigation/useNavigation";
 	import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
+	import { useVersionCheck } from "@/lib/useVersionCheck";
 
 	// Util
 	import {
@@ -19,6 +20,7 @@
 
 	// Components
 	import NavPlanList from "@/layout/components/navigation/NavPlanList.vue";
+	import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
 
 	// Types & Interfaces
 	import type { NavSection } from "@/layout/components/navigation/navigation.types";
@@ -47,6 +49,7 @@
 	const router = useRouter();
 	const userStore = useUserStore();
 	const { cachedProfits } = useEmpireProfits();
+	const { showChip } = useVersionCheck();
 	const {
 		empires,
 		currentEmpire,
@@ -164,8 +167,13 @@
 			:class="barItem"
 			:aria-expanded="moreOpen"
 			@click="moreOpen = true">
-			<span :class="barIcon(moreOpen)">
+			<span class="relative" :class="barIcon(moreOpen)">
 				<PIcon :size="20"><GridViewSharp /></PIcon>
+				<!-- an update waits: the chip is in the sheet -->
+				<span
+					v-if="showChip"
+					class="absolute top-0.5 right-3 size-2 rounded-full bg-prunplanner"
+					data-update-dot />
 			</span>
 			<span :class="moreOpen ? 'text-prunplanner' : 'text-muted'">
 				{{ t("common.navigation.more") }}
@@ -251,6 +259,9 @@
 		:auto-focus="false"
 		body-class="!px-4 !pt-0"
 		:aria-label="t('common.navigation.more')">
+		<div v-if="showChip" class="flex justify-end pt-3">
+			<VersionUpdateChip />
+		</div>
 		<div :class="sheetLabel">{{ t("common.navigation.planning") }}</div>
 		<div class="grid grid-cols-3 gap-2">
 			<RouterLink

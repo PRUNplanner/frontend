@@ -1,110 +1,206 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { useVersionCheck } from "@/lib/useVersionCheck";
+import { memoryStorage } from "@/tests/memoryStorage";
+
+// __BUILD_ID__ is "dev" in vitest
+const THIS_BUILD = "dev";
+
+// module-level state: a fresh module per test, like a new tab
+async function freshTab() {
+	vi.resetModules();
+	const { useVersionCheck } = await import("@/lib/useVersionCheck");
+	return useVersionCheck();
+}
 
 describe("useVersionCheck", () => {
-	const LOCAL_KEY = "prunplanner_version";
-	const { currentVersion, updateAvailable } = useVersionCheck(10_000);
+	let deployed: unknown = { version: THIS_BUILD };
+	const fetchMock = vi.fn(async () => ({ json: async () => deployed }));
+	let visibility: DocumentVisibilityState = "visible";
+	const listeners: [EventTarget, string, EventListener][] = [];
 
-	// mock localstorage
+	function setVisibility(value: DocumentVisibilityState): void {
+		visibility = value;
+		document.dispatchEvent(new Event("visibilitychange"));
+	}
+
 	beforeEach(() => {
-		vi.stubGlobal("localStorage", {
-			getItem: vi.fn(),
-			setItem: vi.fn(),
-			removeItem: vi.fn(),
-		});
-
-		// mock fetch
-		vi.stubGlobal("fetch", vi.fn());
-
-		vi.stubEnv("DEV", false);
 		vi.useFakeTimers();
-
-		currentVersion.value = null;
-		updateAvailable.value = false;
+		vi.stubEnv("DEV", false);
+		vi.stubGlobal("fetch", fetchMock);
+		fetchMock.mockClear();
+		deployed = { version: THIS_BUILD };
+		visibility = "visible";
+		// one storage for all tabs, like the browser
+		vi.stubGlobal("localStorage", memoryStorage());
+		Object.defineProperty(document, "visibilityState", {
+			configurable: true,
+			get: () => visibility,
+		});
+		// startWatch adds listeners per module instance
+		for (const target of [document, window]) {
+			const add = target.addEventListener.bind(target);
+			vi.spyOn(target, "addEventListener").mockImplementation(
+				(type: string, listener: EventListenerOrEventListenerObject) => {
+					listeners.push([target, type, listener as EventListener]);
+					add(type, listener);
+				}
+			);
+		}
 	});
 
 	afterEach(() => {
+		listeners
+			.splice(0)
+			.forEach(([target, type, l]) =>
+				target.removeEventListener(type, l)
+			);
+		vi.clearAllTimers();
 		vi.useRealTimers();
 		vi.restoreAllMocks();
 	});
 
-	it("sets updateAvailable true if no version in localStorage", async () => {
-		// localStorage.getItem returns null (first visit)
-		(localStorage.getItem as any).mockReturnValue(null);
+	it("shows nothing while the server runs this build, whatever is stored", async () => {
+		localStorage.setItem("prunplanner_version", "something-else");
+		const { updateAvailable, showNotice, startWatch } = await freshTab();
 
-		// Mock fetch returning a version
-		(fetch as any).mockResolvedValue({
-			json: async () => ({ version: "1.0.0" }),
+		startWatch();
+		await vi.advanceTimersByTimeAsync(0);
+
+		expect(fetchMock).toHaveBeenCalledWith("/version.json", {
+			cache: "no-cache",
 		});
-
-		const { currentVersion, updateAvailable, checkVersion } =
-			useVersionCheck(10_000);
-
-		await checkVersion();
-
-		expect(currentVersion.value).toBe("1.0.0");
-		expect(updateAvailable.value).toBe(true);
-		expect(localStorage.getItem).toHaveBeenCalledWith(LOCAL_KEY);
-	});
-
-	it("does not set updateAvailable if localStorage matches latest", async () => {
-		(localStorage.getItem as any).mockReturnValue("1.0.0");
-		(fetch as any).mockResolvedValue({
-			json: async () => ({ version: "1.0.0" }),
-		});
-
-		const { updateAvailable, checkVersion } = useVersionCheck(1_000);
-		await checkVersion();
-
 		expect(updateAvailable.value).toBe(false);
+		expect(showNotice.value).toBe(false);
+		// the old shared key is gone
+		expect(localStorage.getItem("prunplanner_version")).toBeNull();
 	});
 
-	it("logs warning if fetch fails", async () => {
-		(fetch as any).mockRejectedValue(new Error("Network error"));
-		// Spy on console.warn
-		const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+	it("tells every tab on its own, one reloading doesn't hide it in the other", async () => {
+		const tabA = await freshTab();
+		const tabB = await freshTab();
+		deployed = { version: "new-build" };
 
-		const { checkVersion } = useVersionCheck();
+		await tabA.checkVersion();
+		await tabB.checkVersion();
+		expect(tabA.showNotice.value).toBe(true);
+		expect(tabB.showNotice.value).toBe(true);
+
+		// tab A reloads onto the new build: nothing it does reaches tab B
+		const reloadedA = await freshTab();
+		await reloadedA.checkVersion();
+		await tabB.checkVersion();
+		expect(tabB.showNotice.value).toBe(true);
+		expect(localStorage.length).toBe(0);
+	});
+
+	it("ignores failed checks and non-JSON answers", async () => {
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+		const { updateAvailable, checkVersion } = await freshTab();
+
+		fetchMock.mockRejectedValueOnce(new Error("offline"));
 		await checkVersion();
-
-		expect(warnSpy).toHaveBeenCalledWith(
+		expect(warn).toHaveBeenCalledWith(
 			"Version check failed",
 			expect.any(Error)
 		);
 
-		warnSpy.mockRestore();
-	});
-
-	it("sets updateAvailable true if version differs", async () => {
-		(localStorage.getItem as any).mockReturnValue("1.0.0");
-		(fetch as any).mockResolvedValue({
-			json: async () => ({ version: "1.1.0" }),
+		// the SPA fallback during a deploy
+		fetchMock.mockResolvedValueOnce({
+			json: async () => {
+				throw new SyntaxError("Unexpected token <");
+			},
 		});
-
-		const { updateAvailable, checkVersion } = useVersionCheck(1_000);
+		await checkVersion();
+		deployed = { other: 1 };
 		await checkVersion();
 
-		expect(updateAvailable.value).toBe(true);
-	});
-
-	it("markUpdated updates localStorage and clears updateAvailable", async () => {
-		(fetch as any).mockResolvedValue({
-			json: async () => ({ version: "2.0.0" }),
-		});
-
-		const { updateAvailable, markUpdated } = useVersionCheck(10_000);
-		updateAvailable.value = true;
-
-		await markUpdated();
-
-		expect(localStorage.setItem).toHaveBeenCalledWith(LOCAL_KEY, "2.0.0");
 		expect(updateAvailable.value).toBe(false);
 	});
 
-	it("startWatch", async () => {
-		const { startWatch, updateAvailable } = useVersionCheck(1_000);
-		startWatch();
+	it("is off in dev mode", async () => {
+		vi.stubEnv("DEV", true);
+		const { startWatch, checkVersion } = await freshTab();
 
-		expect(updateAvailable.value).toBeFalsy();
+		startWatch();
+		await checkVersion();
+		expect(fetchMock).not.toHaveBeenCalled();
+	});
+
+	it("polls every 5 minutes, only while visible", async () => {
+		const { startWatch } = await freshTab();
+		startWatch();
+		startWatch(); // once per tab
+		await vi.advanceTimersByTimeAsync(0);
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+
+		await vi.advanceTimersByTimeAsync(5 * 60_000);
+		expect(fetchMock).toHaveBeenCalledTimes(2);
+
+		setVisibility("hidden");
+		await vi.advanceTimersByTimeAsync(30 * 60_000);
+		expect(fetchMock).toHaveBeenCalledTimes(2);
+
+		// back in view: one check right away
+		setVisibility("visible");
+		await vi.advanceTimersByTimeAsync(0);
+		expect(fetchMock).toHaveBeenCalledTimes(3);
+	});
+
+	it("checks on focus and online at most once a minute", async () => {
+		const { startWatch } = await freshTab();
+		startWatch();
+		await vi.advanceTimersByTimeAsync(0);
+
+		setVisibility("hidden");
+		setVisibility("visible");
+		window.dispatchEvent(new Event("online"));
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+
+		await vi.advanceTimersByTimeAsync(60_000);
+		window.dispatchEvent(new Event("online"));
+		expect(fetchMock).toHaveBeenCalledTimes(2);
+	});
+
+	it("doesn't check at start in a hidden tab", async () => {
+		visibility = "hidden";
+		const { startWatch } = await freshTab();
+
+		startWatch();
+		expect(fetchMock).not.toHaveBeenCalled();
+	});
+
+	it("stops polling once an update was found, until Later", async () => {
+		deployed = { version: "new-build" };
+		const { startWatch, showNotice, showChip, later } = await freshTab();
+		startWatch();
+		await vi.advanceTimersByTimeAsync(0);
+		expect(showNotice.value).toBe(true);
+
+		await vi.advanceTimersByTimeAsync(30 * 60_000);
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+
+		later();
+		expect(showNotice.value).toBe(false);
+		expect(showChip.value).toBe(true);
+
+		// still the same build: stays dismissed
+		await vi.advanceTimersByTimeAsync(5 * 60_000);
+		expect(fetchMock).toHaveBeenCalledTimes(2);
+		expect(showNotice.value).toBe(false);
+
+		// an even newer build shows the notice again
+		deployed = { version: "newer-build" };
+		await vi.advanceTimersByTimeAsync(5 * 60_000);
+		expect(showNotice.value).toBe(true);
+		expect(showChip.value).toBe(false);
+	});
+
+	it("markOutdated shows the notice, Later doesn't hide it", async () => {
+		const { markOutdated, later, outdated, showNotice } = await freshTab();
+
+		markOutdated();
+		later();
+
+		expect(outdated.value).toBe(true);
+		expect(showNotice.value).toBe(true);
 	});
 });

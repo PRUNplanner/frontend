@@ -3,7 +3,7 @@ import { defineComponent, h, ref } from "vue";
 import { flushPromises, mount, type VueWrapper } from "@vue/test-utils";
 import { createMemoryHistory, createRouter, RouterView } from "vue-router";
 
-import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
+import { hasUnsavedChanges, useUnsavedGuard } from "@/lib/useUnsavedGuard";
 
 const unsaved = ref(false);
 const onAsk = vi.fn();
@@ -81,6 +81,16 @@ describe("useUnsavedGuard", () => {
 
 		expect(confirm).toHaveBeenCalledTimes(2);
 		expect(router.currentRoute.value.path).toBe("/plan");
+	});
+
+	it("reports unsaved changes of mounted guards only", async () => {
+		expect(hasUnsavedChanges()).toBe(false);
+		await mountAt("/plan");
+		expect(hasUnsavedChanges()).toBe(false);
+		unsaved.value = true;
+		expect(hasUnsavedChanges()).toBe(true);
+		wrapper.unmount();
+		expect(hasUnsavedChanges()).toBe(false);
 	});
 
 	it("prompts on tab close only while unsaved", async () => {

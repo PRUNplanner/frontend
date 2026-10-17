@@ -13,6 +13,8 @@ import { mountComponent } from "@/tests/mountComponent";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { useVersionCheck } from "@/lib/useVersionCheck";
+import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
 
 // Types & Interfaces
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
@@ -279,6 +281,34 @@ describe("AppSidebar", () => {
 		await menu.find("button").trigger("click");
 		expect(logout).toHaveBeenCalledOnce();
 		expect(push).toHaveBeenCalledWith("/");
+	});
+});
+
+describe("AppSidebar version chip", () => {
+	beforeEach(() => {
+		pinia = createPinia();
+		setActivePinia(pinia);
+		execute.mockReset().mockResolvedValue(undefined);
+		Object.assign(route, {
+			name: "empire",
+			params: {},
+			fullPath: "/empire",
+		});
+		useUserStore().profile = profile("ok");
+	});
+
+	it("shows the update chip under the logo after Later", async () => {
+		const { updateAvailable, latestVersion, later } = useVersionCheck();
+		const w = await mountSidebar();
+		expect(w.findComponent(VersionUpdateChip).exists()).toBe(false);
+
+		updateAvailable.value = true;
+		latestVersion.value = "new-build";
+		later();
+		await flushPromises();
+
+		expect(w.findComponent(VersionUpdateChip).exists()).toBe(true);
+		updateAvailable.value = false;
 	});
 });
 

@@ -2,12 +2,16 @@
  * Recovers from chunks a deploy removed: an open tab still references the
  * old build's hashed files, so the next lazy route fails to load. Reloads
  * once to get the new build; if that already happened in the last 30 s the
- * chunk is really broken, so the error is shown instead of looping.
+ * chunk is really broken, so the error is shown instead of looping. The
+ * same guard covers the silent update to a newer build on navigation.
  */
 
 import type { Router } from "vue-router";
 import { i18n } from "@/lib/i18n";
 import { toast } from "@/ui/useToast";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { useVersionCheck } from "@/lib/useVersionCheck";
+import { hasUnsavedChanges } from "@/lib/useUnsavedGuard";
 
 const KEY = "prunplanner_chunk_reload";
 const GUARD_MS = 30_000;
@@ -63,6 +67,19 @@ export function registerChunkReload(router: Router): void {
 		if (navigating || !isChunkLoadError(error)) return;
 		if (String(error).includes("vendor_posthog")) return;
 		if (reloadOnce()) event.preventDefault();
+	});
+
+	// a newer build is out: a navigation to another page loads it instead,
+	// after the leave guards ran. Not for query changes (search filters) and
+	// not while a view has unsaved changes: the leave was confirmed already,
+	// the browser's prompt would ask a second time.
+	const { updateAvailable, outdated } = useVersionCheck();
+	router.beforeResolve((to, from) => {
+		if (!updateAvailable.value && !outdated.value) return;
+		if (to.path === from.path || hasUnsavedChanges()) return;
+		if (!reloadOnce(to.fullPath)) return;
+		trackEvent("app:version_reload", { source: "navigation" });
+		return false;
 	});
 
 	router.onError((error, to) => {
