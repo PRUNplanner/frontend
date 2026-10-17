@@ -1,6 +1,8 @@
 {
 	"view_title": "Империя",
 	"switch_empire": "Сменить империю",
+	"overview_hide": "Hide plan list",
+	"overview_show": "Show plan list",
 	"views": {
 		"material_io": "I/O материалов",
 		"analysis": "Анализ",
