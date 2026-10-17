@@ -2,9 +2,10 @@ import {
 	computed,
 	type ComputedRef,
 	watch,
+	type WatchHandle,
 	type WritableComputedRef,
 } from "vue";
-import { debounce, isEqual, cloneDeep } from "lodash-es";
+import { debounce } from "lodash-es";
 import {
 	markPreferencesSynced,
 	unsyncedPreferences,
@@ -56,6 +57,23 @@ const syncToBackend = debounce(patchPrefs, 5000);
 if (typeof window !== "undefined")
 	window.addEventListener("pagehide", () => syncToBackend.flush());
 
+/**
+ * Syncs every preference change to the backend, once for the whole app
+ * (main.ts), whether or not a component using the preferences is mounted
+ *
+ * @author jplacht
+ *
+ * @returns {WatchHandle} Stops the sync
+ */
+export function startPreferenceSync(): WatchHandle {
+	const userStore = useUserStore();
+	return watch(
+		() => userStore.preferences,
+		() => syncToBackend(userStore.refreshToken),
+		{ deep: true }
+	);
+}
+
 export function usePreferences() {
 	const userStore = useUserStore();
 
@@ -76,15 +94,6 @@ export function usePreferences() {
 	) => {
 		if (Number.isFinite(v)) userStore.setPreference(key, v);
 	};
-
-	watch(
-		() => cloneDeep(userStore.preferences),
-		(newVal, oldVal) => {
-			if (isEqual(newVal, oldVal)) return;
-			syncToBackend(userStore.refreshToken);
-		},
-		{ deep: true }
-	);
 
 	const defaultEmpireUuid: WritableComputedRef<
 		string | undefined,

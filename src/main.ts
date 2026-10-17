@@ -39,6 +39,10 @@ registerCrossTab(router);
 
 app.use(pinia);
 
+// one watcher syncs preference changes to the backend
+import { startPreferenceSync } from "@/features/preferences/usePreferences";
+startPreferenceSync();
+
 // locale
 import { i18n } from "@/lib/i18n";
 const userStore = useUserStore();
