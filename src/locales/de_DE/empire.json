@@ -1,6 +1,8 @@
 {
 	"view_title": "Empire",
 	"switch_empire": "Imperium wechseln",
+	"overview_hide": "Hide plan list",
+	"overview_show": "Show plan list",
 	"views": {
 		"material_io": "Material I/O",
 		"analysis": "Analyse",
