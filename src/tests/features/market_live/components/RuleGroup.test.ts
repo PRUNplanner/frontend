@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
+import { defineComponent, h, ref } from "vue";
 
 import RuleGroup from "@/features/market_live/components/RuleGroup.vue";
 import DetectorRow from "@/features/market_live/components/DetectorRow.vue";
@@ -220,5 +221,51 @@ describe("RuleGroup", () => {
 		expect(broken.text()).not.toContain(
 			"market_live.components.rule_builder.empty"
 		);
+	});
+
+	it("deleting the middle condition keeps the other two rows", async () => {
+		const group: RuleGroupType = {
+			operator: "AND",
+			conditions: [PRICE, DEMAND, SUPPLY],
+		};
+		const { wrapper, lastGroup, setProps } = await mountGroup(group);
+		const rows = () => wrapper.findAllComponents(DetectorRow);
+		const uids = () => rows().map((r) => r.vm.$.uid);
+		const [price, , supply] = uids();
+
+		await rows()[1]
+			.findAllComponents(PButton)
+			.at(-1)!
+			.trigger("click");
+		await setProps({ group: lastGroup() });
+
+		expect(rows().map((r) => r.props("modelValue"))).toEqual([
+			PRICE,
+			SUPPLY,
+		]);
+		// the same components, with their own inputs
+		expect(uids()).toStrictEqual([price, supply]);
+	});
+
+	it("an edited condition keeps its row", async () => {
+		// like AlertManager: the draft is a deep ref, its conditions proxies
+		const draft = ref(tree());
+		const { wrapper } = await mountComponent(
+			defineComponent({
+				render: () =>
+					h(RuleGroup, {
+						group: draft.value,
+						"onUpdate:group": (g: RuleGroupType) => (draft.value = g),
+					}),
+			})
+		);
+		const row = () => wrapper.findAllComponents(DetectorRow)[0];
+		const uid = row().vm.$.uid;
+
+		row().vm.$emit("update:modelValue", detector("price", 120));
+		await flushPromises();
+
+		expect(row().props("modelValue")).toEqual(detector("price", 120));
+		expect(row().vm.$.uid).toBe(uid);
 	});
 });

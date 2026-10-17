@@ -6,6 +6,8 @@
 		onUnmounted,
 		ref,
 		type Ref,
+		shallowRef,
+		type ShallowRef,
 		watch,
 	} from "vue";
 
@@ -116,12 +118,23 @@
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
 	const refEmpireList: Ref<PlanEmpireElement[]> = ref([]);
 
-	const calculatedPlans: Ref<Record<string, IPlanCalculation>> = ref({});
+	const calculatedPlans: ShallowRef<Record<string, IPlanCalculation>> =
+		shallowRef({});
+	// the plans calculatedPlans was calculated from
+	const calculatedPlanData: ShallowRef<Plan[]> = shallowRef([]);
 	const planData: Ref<Plan[]> = ref([]);
 
 	const isCalculating: Ref<boolean> = ref(true);
 	const progressCurrent = ref(0);
 	const progressTotal = ref(0);
+
+	const cacheCalculatedPlans = new Map<string, IPlanCalculation>();
+	const { loadGameData, createContext } = usePlanContext();
+
+	// only the latest run writes its results, an older one stops at its
+	// next yield (e.g. the empire changed while calculating)
+	let run = 0;
+	onUnmounted(() => run++);
 
 	/**
 	 * Calculates all given plans
@@ -133,20 +146,23 @@
 	 * edits) instead of the progress screen, show the results when done
 	 * @returns {Promise<void>}
 	 */
-
-	const cacheCalculatedPlans = new Map<string, IPlanCalculation>();
-	const { loadGameData, createContext } = usePlanContext();
-
 	async function calculateEmpire(
 		clearCache = false,
 		quiet = false
 	): Promise<void> {
+		const current = ++run;
+		// a run calculates the empire, cx and plans it started with
+		const plans = planData.value;
+		const empireUuid = selectedEmpireUuid.value;
+		const cxUuid = selectedCXUuid.value;
+		const empires = refEmpireList.value;
+
 		if (!quiet) {
 			isCalculating.value = true;
 			calculatedPlans.value = {};
 		}
 		const results: Record<string, IPlanCalculation> = {};
-		progressTotal.value = planData.value.length;
+		progressTotal.value = plans.length;
 		progressCurrent.value = 0;
 
 		if (clearCache) cacheCalculatedPlans.clear();
@@ -154,15 +170,16 @@
 		try {
 			// game data once for all plans
 			const gameData = await loadGameData();
+			if (current !== run) return;
 
-			for (const plan of planData.value) {
+			for (const plan of plans) {
 				// note, calculation depends on empire + cx, so a plan is only
 				// calculated properly within this context
 
 				const cacheKey: string = planResultCacheKey(
 					plan.uuid,
-					selectedEmpireUuid.value,
-					selectedCXUuid.value
+					empireUuid,
+					cxUuid
 				);
 
 				if (cacheCalculatedPlans.has(cacheKey)) {
@@ -170,23 +187,22 @@
 					progressCurrent.value++;
 				} else {
 					await Promise.resolve();
+					const context = await createContext(
+						gameData,
+						plan.planet_natural_id,
+						cxUuid
+					);
+					if (current !== run) return;
 
 					const calculation = calculatePlan(
 						{
 							plan,
-							empire: getActiveEmpire(
-								selectedEmpireUuid.value,
-								refEmpireList.value
-							),
-							cxUuid: selectedCXUuid.value,
+							empire: getActiveEmpire(empireUuid, empires),
+							cxUuid,
 							// never read by this view
 							recipeOptions: false,
 						},
-						await createContext(
-							gameData,
-							plan.planet_natural_id,
-							selectedCXUuid.value
-						)
+						context
 					);
 					results[plan.uuid] = calculation;
 					progressCurrent.value++;
@@ -195,29 +211,31 @@
 					cacheCalculatedPlans.set(cacheKey, calculation);
 					// yield back to vue and update DOM
 					await new Promise((r) => setTimeout(r, 0));
+					if (current !== run) return;
 				}
 			}
+			calculatedPlanData.value = plans;
 			calculatedPlans.value = results;
 		} catch (err) {
 			// e.g. game data missing, never persist a partial empire state
-			console.error(err);
+			if (current === run) console.error(err);
 			return;
 		} finally {
-			isCalculating.value = false;
+			if (current === run) isCalculating.value = false;
 		}
 
-		empireMaterialIOState(
-			selectedEmpire.value,
-			combinedEmpireMaterialIO.value
-		).then((data) => {
-			if (data && selectedEmpire.value)
-				useQuery("PatchEmpireState", {
-					empireUuid: selectedEmpire.value.uuid,
-					empireState: data,
-				})
-					.execute()
-					.catch(console.error);
-		});
+		const empire = empires.find((e) => e.uuid === empireUuid);
+		empireMaterialIOState(empire, combinedEmpireMaterialIO.value).then(
+			(data) => {
+				if (data && empire && current === run)
+					useQuery("PatchEmpireState", {
+						empireUuid: empire.uuid,
+						empireState: data,
+					})
+						.execute()
+						.catch(console.error);
+			}
+		);
 	}
 
 	/**
@@ -314,7 +332,7 @@
 	const planListData: ComputedRef<IEmpirePlanListData[]> = computed(() => {
 		return Object.entries(calculatedPlans.value).map(
 			([planUuid, { result, overview }]) => {
-				const plan: Plan = planData.value.find(
+				const plan: Plan = calculatedPlanData.value.find(
 					(p) => p.uuid == planUuid
 				)!;
 				const split = profitBreakdown(
@@ -350,7 +368,7 @@
 		() => {
 			return Object.entries(calculatedPlans.value).map(
 				([planUuid, { result }]) => {
-					const plan: Plan = planData.value.find(
+					const plan: Plan = calculatedPlanData.value.find(
 						(p) => p.uuid == planUuid
 					)!;
 					return {

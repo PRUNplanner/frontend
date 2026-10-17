@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
+import { nextTick, watch } from "vue";
+import config from "@/lib/config";
 
 const processUserDetectors = vi.fn(() => [] as unknown[]);
 vi.mock("@/features/market_live/cxDetectors", () => ({
@@ -79,10 +81,11 @@ async function setup() {
 	return { sse, source: FakeEventSource.last };
 }
 
-/** Deliver a message, processing is deferred by a 0ms timeout */
+/** Deliver a message, it is processed with its frame, 16 ms later */
 async function deliver(source: FakeEventSource, data: unknown) {
 	source.emit(data);
-	await vi.advanceTimersByTimeAsync(0);
+	vi.advanceTimersByTime(16);
+	await nextTick();
 }
 
 describe("useExchangeSSE", () => {
@@ -96,7 +99,9 @@ describe("useExchangeSSE", () => {
 		it("connects once and tracks the connection state", async () => {
 			const { sse, source } = await setup();
 
-			expect(source.url).toContain("/data/stream/?channels=cx");
+			expect(source.url).toBe(
+				`${config.API_BASE_URL}/data/stream/?channels=cx`
+			);
 
 			sse.connect();
 			expect(FakeEventSource.last).toBe(source);
@@ -108,7 +113,7 @@ describe("useExchangeSSE", () => {
 			vi.spyOn(console, "error").mockImplementation(() => {});
 			source.onerror?.(new Error("lost"));
 			expect(sse.isConnected.value).toBe(false);
-			expect(sse.connectionError.value).not.toBeNull();
+			expect(sse.connectionError.value).toBe("Connection lost. Reconnecting...");
 		});
 
 		it("closes the stream on disconnect", async () => {
@@ -228,6 +233,8 @@ describe("useExchangeSSE", () => {
 			source.emit(message());
 			expect(sse.isProcessing.value).toBe(true);
 
+			// processed in the next frame, the cooldown starts there
+			vi.advanceTimersByTime(16);
 			await vi.advanceTimersByTimeAsync(299);
 			expect(sse.isProcessing.value).toBe(true);
 
@@ -287,6 +294,94 @@ describe("useExchangeSSE", () => {
 			await deliver(source, message());
 
 			expect(sse.eventLog).toHaveLength(500);
+		});
+	});
+
+	describe("frames", () => {
+		const burst = [
+			message(),
+			message({ material_ticker: "RAT", price: 50 }),
+			message({ price: 110 }),
+			message({ exchange_code: "CI2", price: 90 }),
+			message({ material_ticker: "RAT", price: 55, bid: undefined }),
+			message({ price: 120 }),
+		];
+
+		// what the page shows, last_updated is the processing time
+		function shown(sse: Awaited<ReturnType<typeof setup>>["sse"]) {
+			return {
+				points: Object.values(sse.cxPointMap).map(
+					({ last_updated: _, ...point }) => point
+				),
+				history: sse.messageHistory.value,
+				events: [...sse.eventLog],
+			};
+		}
+
+		beforeEach(() => {
+			vi.setSystemTime(new Date("2026-09-26T10:00:00Z"));
+			processUserDetectors.mockImplementation(((
+				_: unknown,
+				__: unknown,
+				next: { ticker: string; price: number }
+			) => [{ id: `${next.ticker}@${next.price}` }]) as never);
+		});
+
+		it("a burst in one frame ends like the messages one by one", async () => {
+			const one = await setup();
+			for (const m of burst) await deliver(one.source, m);
+			const oneByOne = shown(one.sse);
+
+			const all = await setup();
+			burst.forEach((m) => all.source.emit(m));
+			vi.advanceTimersByTime(16);
+
+			expect(shown(all.sse)).toStrictEqual(oneByOne);
+			expect(oneByOne.events.map((e) => e.id)).toStrictEqual([
+				"DW.NC1@120",
+				"RAT.NC1@55",
+				"DW.CI2@90",
+				"DW.NC1@110",
+				"RAT.NC1@50",
+				"DW.NC1@100",
+			]);
+		});
+
+		it("recomputes the table data once per frame", async () => {
+			const { sse, source } = await setup();
+			let runs = 0;
+			watch(sse.cxPointTableData, () => runs++);
+
+			burst.forEach((m) => source.emit(m));
+			// async: the page renders between timers
+			await vi.advanceTimersByTimeAsync(32);
+
+			expect(runs).toBe(1);
+			expect(sse.cxPointTableData.value).toHaveLength(2);
+		});
+
+		it("drops a pending frame on disconnect", async () => {
+			const { sse, source } = await setup();
+
+			source.emit(message());
+			sse.disconnect();
+			vi.advanceTimersByTime(16);
+
+			expect(sse.cxPointMap).toStrictEqual({});
+		});
+
+		it("a broken message never drops the rest of its frame", async () => {
+			const { sse, source } = await setup();
+			const error = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			source.onmessage?.({ data: "{not json" });
+			source.emit(message());
+			vi.advanceTimersByTime(16);
+
+			expect(error).toHaveBeenCalled();
+			expect(Object.keys(sse.cxPointMap)).toStrictEqual(["DW.NC1"]);
 		});
 	});
 });

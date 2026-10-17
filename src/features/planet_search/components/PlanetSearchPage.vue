@@ -12,7 +12,8 @@
 		type Ref,
 		type ShallowRef,
 	} from "vue";
-	import { useRoute, useRouter } from "vue-router";
+	import { debounce } from "lodash-es";
+	import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -128,11 +129,16 @@
 		trackEvent("planet_search:view_change", { view: v });
 	});
 
-	watch(
-		[filter, sort, view, pins],
+	// typing in the name field replaces the url once it settles
+	const replaceQuery = debounce(
 		() => router.replace({ query: currentQuery() }),
-		{ deep: true }
+		300
 	);
+	watch([filter, sort, view, pins], replaceQuery, { deep: true });
+	// a pending replace fired while leaving would cancel the navigation or
+	// put the search query on the next page
+	onBeforeRouteLeave(() => replaceQuery.cancel());
+	onBeforeUnmount(() => replaceQuery.flush());
 
 	// links to /search while already on it (our own replace is a no-op here)
 	watch(

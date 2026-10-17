@@ -1,4 +1,4 @@
-import { effectScope, ref } from "vue";
+import { effectScope, ref, type Ref, shallowRef } from "vue";
 import { bench, describe, vi } from "vitest";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -14,6 +14,9 @@ import { useDB } from "@/database/composables/useDB";
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 import { useROIOverview } from "@/features/roi_overview/useROIOverview";
 import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
+import { usePlanContext } from "@/features/planning/usePlanContext";
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 
 // Static
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
@@ -21,6 +24,7 @@ import { optimalProduction } from "@/features/roi_overview/assets/optimalProduct
 // Types & Interfaces
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
@@ -201,4 +205,40 @@ describe("batch", () => {
 				warmupTime: 0,
 			}
 		);
+});
+
+// B9: Empire holds its 30 results in a ref (deep proxies) or a shallowRef,
+// then aggregates the material I/O once, like its computeds do
+const { combineEmpireMaterialIO } = useMaterialIOUtil();
+const empireResults: Record<string, IPlanCalculation> = {};
+{
+	const { loadGameData, createContext } = usePlanContext();
+	const gameData = await loadGameData();
+	for (let i = 0; i < 30; i++) {
+		const plan = largePlan();
+		empireResults[`plan-${i}`] = calculatePlan(
+			{ plan, empire: undefined, cxUuid: undefined, recipeOptions: false },
+			await createContext(gameData, plan.planet_natural_id, undefined)
+		);
+	}
+}
+function aggregate(held: Ref<Record<string, IPlanCalculation>>): number {
+	return combineEmpireMaterialIO(
+		Object.entries(held.value).map(([planUuid, { result }]) => ({
+			planetId: "OT-580b",
+			planUuid,
+			planName: planUuid,
+			planCOGC: "---",
+			materialIO: result.materialio,
+		}))
+	).length;
+}
+
+describe("B9 empire results, 30 large plans", () => {
+	bench("ref", () => {
+		aggregate(ref(empireResults));
+	});
+	bench("shallowRef", () => {
+		aggregate(shallowRef(empireResults));
+	});
 });

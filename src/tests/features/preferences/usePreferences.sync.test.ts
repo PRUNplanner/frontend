@@ -1,13 +1,36 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { nextTick } from "vue";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { effectScope, nextTick, type WatchHandle } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 
 import { useUserStore } from "@/stores/userStore";
-import { usePreferences } from "@/features/preferences/usePreferences";
+import {
+	startPreferenceSync,
+	usePreferences,
+} from "@/features/preferences/usePreferences";
 
 const patched = vi.hoisted(() => [] as unknown[]);
 // number of upcoming PatchPreferences calls that fail
 const failures = vi.hoisted(() => ({ left: 0 }));
+// calls of the debounced sync, one per watcher callback
+const scheduled = vi.hoisted(() => ({ count: 0 }));
+
+vi.mock("lodash-es", async (importOriginal) => {
+	const lodash = await importOriginal<typeof import("lodash-es")>();
+	return {
+		...lodash,
+		debounce: ((fn: (...args: unknown[]) => unknown, ms: number) => {
+			const debounced = lodash.debounce(fn, ms);
+			if (ms !== 5000) return debounced;
+			return Object.assign(
+				(...args: unknown[]) => {
+					scheduled.count++;
+					return debounced(...args);
+				},
+				{ flush: debounced.flush, cancel: debounced.cancel }
+			);
+		}) as typeof lodash.debounce,
+	};
+});
 
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string, params: unknown) => ({
@@ -26,15 +49,20 @@ vi.mock("@/features/api/userData.api", async (importOriginal) => ({
 
 describe("usePreferences: backend sync", () => {
 	let userStore: ReturnType<typeof useUserStore>;
+	let stopSync: WatchHandle;
 
 	beforeEach(() => {
 		vi.useFakeTimers();
 		setActivePinia(createPinia());
 		userStore = useUserStore();
+		stopSync = startPreferenceSync();
+		scheduled.count = 0;
 		patched.length = 0;
 		failures.left = 0;
 		vi.spyOn(console, "error").mockImplementation(() => {});
 	});
+
+	afterEach(() => stopSync());
 
 	it("sends a change after the debounce", async () => {
 		userStore.setToken("access-a", "refresh-a");
@@ -115,5 +143,30 @@ describe("usePreferences: backend sync", () => {
 		// a second failure is not retried again
 		await vi.advanceTimersByTimeAsync(20000);
 		expect(patched).toHaveLength(2);
+	});
+
+	it("one change runs one sync and one PATCH, however many callers", async () => {
+		userStore.setToken("access-a", "refresh-a");
+		const scopes = Array.from({ length: 40 }, () => effectScope());
+		const callers = scopes.map((s) => s.run(() => usePreferences())!);
+		scheduled.count = 0;
+
+		callers[0].burnDaysRed.value = 3;
+		await nextTick();
+		await vi.advanceTimersByTimeAsync(5000);
+
+		expect(scheduled.count).toBe(1);
+		expect(patched).toStrictEqual([{ burnDaysRed: 3 }]);
+		scopes.forEach((s) => s.stop());
+	});
+
+	it("syncs a store change without any caller", async () => {
+		userStore.setToken("access-a", "refresh-a");
+
+		userStore.setPreference("burnDaysRed", 4);
+		await nextTick();
+		await vi.advanceTimersByTimeAsync(5000);
+
+		expect(patched).toStrictEqual([{ burnDaysRed: 4 }]);
 	});
 });

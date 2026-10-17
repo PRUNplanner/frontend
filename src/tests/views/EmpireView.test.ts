@@ -18,6 +18,7 @@ const {
 	calculatePlan,
 	createContext,
 	queries,
+	patches,
 	toast,
 	replace,
 	trackEvent,
@@ -51,6 +52,7 @@ const {
 	})),
 	createContext: vi.fn(async () => ({})),
 	queries: [] as string[],
+	patches: [] as unknown[],
 	toast: vi.fn(),
 	replace: vi.fn(),
 	trackEvent: vi.fn(),
@@ -82,9 +84,10 @@ vi.mock("@/features/planning/util/materialIO.util", () => ({
 	}),
 }));
 vi.mock("@/lib/query_cache/useQuery", () => ({
-	useQuery: (name: string) => ({
+	useQuery: (name: string, params: unknown) => ({
 		execute: async () => {
 			queries.push(name);
+			if (name === "PatchEmpireState") patches.push(params);
 		},
 	}),
 }));
@@ -141,6 +144,7 @@ async function mountView(
 describe("EmpireView", () => {
 	beforeEach(() => {
 		queries.length = 0;
+		patches.length = 0;
 		toast.mockClear();
 		replace.mockClear();
 		trackEvent.mockClear();
@@ -250,6 +254,86 @@ describe("EmpireView", () => {
 			expect(wrapper.findComponent(ComputingProgress).exists()).toBe(
 				false
 			);
+		});
+	});
+
+	describe("overlapping calculations", () => {
+		const loader = (wrapper: VueWrapper) =>
+			wrapper.findComponent(WrapperPlanningDataLoader);
+		const planUuids = (wrapper: VueWrapper) =>
+			(
+				wrapper.findComponent({ name: "EmpirePlanList" }).vm.$attrs[
+					"plan-list-data"
+				] as { uuid: string }[]
+			).map((p) => p.uuid);
+
+		/** Loads an empire's plans and lets the game data loader complete */
+		async function load(wrapper: VueWrapper, empire: string, plan: string) {
+			loader(wrapper).vm.$emit("update:empire-uuid", empire);
+			loader(wrapper).vm.$emit("data:empire:plans", [
+				{ uuid: plan, planet_natural_id: "OT-580b" },
+			]);
+			await nextTick();
+			wrapper.findComponent(WrapperGameDataLoader).vm.$emit("complete");
+		}
+
+		it("switching empire mid-run ends with the selected one only", async () => {
+			const wrapper = await mountView();
+			loader(wrapper).vm.$emit("data:empire:list", [
+				{ uuid: "E1", empire_name: "one", plans: [] },
+				{ uuid: "E2", empire_name: "two", plans: [] },
+			]);
+			patches.length = 0;
+			let finish!: (value: object) => void;
+			createContext.mockImplementationOnce(
+				() => new Promise((resolve) => (finish = resolve))
+			);
+
+			// E2 is still calculating when E1, cached, is picked again
+			await load(wrapper, "E2", "P2");
+			await vi.waitFor(() =>
+				expect(createContext).toHaveBeenCalledTimes(2)
+			);
+			await load(wrapper, "E1", "P1");
+			await vi.waitFor(() => expect(patches).toHaveLength(1));
+
+			finish({});
+			await new Promise((r) => setTimeout(r, 10));
+
+			expect(patches).toEqual([
+				expect.objectContaining({ empireUuid: "E1" }),
+			]);
+			expect(wrapper.findComponent(ComputingProgress).exists()).toBe(
+				false
+			);
+			expect(planUuids(wrapper)).toEqual(["P1"]);
+			// the stale run never calculated
+			expect(calculatePlan).toHaveBeenCalledTimes(1);
+		});
+
+		it("a refresh during a run leaves only the refresh's results", async () => {
+			const wrapper = await mountView();
+			patches.length = 0;
+			let finish!: (value: object) => void;
+			createContext.mockImplementationOnce(
+				() => new Promise((resolve) => (finish = resolve))
+			);
+
+			loader(wrapper).vm.$emit("refreshed");
+			await vi.waitFor(() =>
+				expect(createContext).toHaveBeenCalledTimes(2)
+			);
+			// the plan changed again while the first refresh calculates
+			loader(wrapper).vm.$emit("data:empire:plans", [
+				{ uuid: "P3", planet_natural_id: "OT-580b" },
+			]);
+			loader(wrapper).vm.$emit("refreshed");
+			await vi.waitFor(() => expect(patches).toHaveLength(1));
+			finish({});
+			await new Promise((r) => setTimeout(r, 10));
+
+			expect(planUuids(wrapper)).toEqual(["P3"]);
+			expect(patches).toHaveLength(1);
 		});
 	});
 });

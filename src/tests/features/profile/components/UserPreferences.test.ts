@@ -449,6 +449,10 @@ describe("UserPreferences", () => {
 		vi.resetModules();
 		const { default: FreshPreferences } =
 			await import("@/features/profile/components/UserPreferences.vue");
+		// the app starts the sync once, in main.ts
+		const { startPreferenceSync } =
+			await import("@/features/preferences/usePreferences");
+		const stopSync = startPreferenceSync();
 		const { wrapper } = await mountComponent(
 			FreshPreferences,
 			{},
@@ -472,6 +476,7 @@ describe("UserPreferences", () => {
 			burnDaysYellow: 8,
 			defaultEmpireUuid: FIRST_EMPIRE.uuid,
 		});
+		stopSync();
 	});
 
 	describe("usage analytics", () => {

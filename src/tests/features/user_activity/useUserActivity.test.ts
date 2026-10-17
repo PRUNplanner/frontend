@@ -72,4 +72,15 @@ describe("useUserActivity", () => {
 		expect(Date.now() - lastActivity.value).toBeLessThan(300_000);
 		expect(shouldDelay()).toBe(false);
 	});
+
+	it("listens passively, never blocking scroll or touch", () => {
+		const add = vi.spyOn(window, "addEventListener");
+		useUserActivity();
+
+		const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
+		expect(add.mock.calls.map(([event]) => event)).toStrictEqual(events);
+		for (const [, , options] of add.mock.calls)
+			expect(options).toStrictEqual({ passive: true });
+		add.mockRestore();
+	});
 });
