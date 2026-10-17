@@ -6,13 +6,129 @@
 			"p1": "{link}에서는 모든 플래닝 데이터, 게임 내 메타데이터(건물, 레시피, 물자), VWAP 같은 시장 지표 계산값에 프로그래밍 방식으로 접근할 수 있습니다. 공개 엔드포인트는 커뮤니티가 자유롭게 사용할 수 있지만, 플랜 구성을 포함한 개인 플래닝 데이터에 접근하려면 보안 인증이 필요합니다.",
 			"p2": "이 엔드포인트를 활용하면 플래닝 작업을 외부 스프레드시트, 맞춤 대시보드, 또는 최적화 알고리즘과도 동기화할 수 있습니다.",
 			"link": "PRUNplanner REST API",
-			"warning": "API 키는 계정 데이터에 대한 전체 접근 권한을 가지며 기한 없이 유효합니다. 이 인증 정보를 비밀번호만큼 민감사헤 다루세요. 키를 공재 저장소에 커밋하거나 검증되지 않은 외부 서비스와 공유하지 마세요. 키가 유출되었다면 즉시 폐기하고 새 키를 발급하세요."
+			"warning": "API 키는 계정 데이터에 대한 전체 접근 권한을 가지며 기한 없이 유효합니다. 이 인증 정보를 비밀번호만큼 민감사헤 다루세요. 키를 공재 저장소에 커밋하거나 검증되지 않은 외부 서비스와 공유하지 마세요. 키가 유출되었다면 즉시 폐기하고 새 키를 발급하세요.",
+			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet. Use a separate key per sheet so you can revoke it alone."
+		}
+	},
+	"get_started": {
+		"title": "Get started",
+		"step_create": "Create a key below and save it somewhere safe.",
+		"step_pick": "Pick what you want in the URL builder, for example your empire's material I/O.",
+		"step_paste": "Copy the Google Sheets formula, the URL or a curl or Python snippet and paste it into your sheet or script."
+	},
+	"builder": {
+		"title": "URL builder",
+		"endpoint": "Data",
+		"format": "Format",
+		"groups": {
+			"new": "Sheets-ready (CSV and JSON)",
+			"planning": "Your planning data (JSON)",
+			"public": "Public game data (JSON, no key)"
+		},
+		"params": {
+			"empire": "Empire",
+			"plan": "Plan",
+			"cx": "CX preference",
+			"planet": "Planet",
+			"ticker": "Material",
+			"exchange": "Exchange"
+		},
+		"planet_placeholder": "Natural ID, e.g. OT-580b",
+		"empty": {
+			"empire": "You have no empires yet.",
+			"plan": "You have no plans yet.",
+			"cx": "You have no CX preferences yet."
+		},
+		"empty_link": "Create one in Manage",
+		"incomplete": "Fill in every input above to build the URL.",
+		"placeholder_note": "{placeholder} stands for your key. Create a key and choose \"Use in URL builder\" to fill it in.",
+		"outputs": {
+			"sheets": "Google Sheets",
+			"url": "URL",
+			"curl": "curl",
+			"python": "Python"
+		},
+		"copy": "Copy {what}",
+		"copied": "Copied",
+		"freshness": "From the last time PRUNplanner calculated this empire. The updated_at column shows when.",
+		"key_warning": "Anyone who can open this sheet can use this key, with full access to your account. Use a separate key per sheet so you can revoke it alone.",
+		"endpoints": {
+			"empire_material_io": {
+				"label": "Empire material I/O",
+				"description": "Production, consumption and delta per material and day for one empire."
+			},
+			"empire_plans_material_io": {
+				"label": "Plan material I/O (empire)",
+				"description": "Production, consumption and delta per plan and material for one empire."
+			},
+			"empire_plans": {
+				"label": "Empire plan list",
+				"description": "The plans of one empire with planet, COGC, permits and CorpHQ."
+			},
+			"fio_storage": {
+				"label": "FIO storage",
+				"description": "Every material in your FIO storages, warehouses and ships."
+			},
+			"exchanges": {
+				"label": "Exchange prices",
+				"description": "Prices and calculated metrics of every material on every exchange."
+			},
+			"plans": {
+				"label": "All plans",
+				"description": "Every plan of your account with its full configuration."
+			},
+			"plan": {
+				"label": "One plan",
+				"description": "One plan with its full configuration."
+			},
+			"empires": {
+				"label": "All empires",
+				"description": "Every empire of your account with its plans."
+			},
+			"empire": {
+				"label": "One empire",
+				"description": "One empire with its configuration."
+			},
+			"cxs": {
+				"label": "CX preferences",
+				"description": "Every CX preference of your account."
+			},
+			"cx": {
+				"label": "One CX preference",
+				"description": "One CX preference with its rules."
+			},
+			"materials": {
+				"label": "Materials",
+				"description": "Every material in the game."
+			},
+			"recipes": {
+				"label": "Recipes",
+				"description": "Every recipe in the game."
+			},
+			"buildings": {
+				"label": "Buildings",
+				"description": "Every building in the game."
+			},
+			"planet": {
+				"label": "One planet",
+				"description": "Resources, environment and infrastructure of one planet."
+			},
+			"planet_popr": {
+				"label": "Planet population report",
+				"description": "The latest population report of one planet."
+			},
+			"market_history": {
+				"label": "Market history",
+				"description": "Daily price history of one material on one exchange."
+			}
 		}
 	},
 	"manage": {
 		"title": "PRUNplanner API 키",
 		"loading": "API 키를 불러오는 중입니다.",
 		"empty": "아직 API 키가 없습니다. 먼저 API 키를 생성해 주세요.",
+		"never": "Never",
+		"last_used_hint": "Requests with this key update this within a few minutes.",
 		"buttons": {
 			"new_apikey": "새로운 키 생성",
 			"revoke_apikey": "폐기"
@@ -24,9 +140,16 @@
 			"apikey_lastused": "마지막 사용"
 		}
 	},
+	"confirm_revoke": {
+		"title": "Revoke {name}?",
+		"content": "Scripts and sheets using it stop working at once.",
+		"positive": "@:api_keys.manage.buttons.revoke_apikey",
+		"negative": "@:common.buttons.cancel"
+	},
 	"implementation": {
 		"title": "인증 구현 방법",
-		"link": "REST API 레퍼런스 보기 →"
+		"link": "REST API 레퍼런스 보기 →",
+		"authorize": "The REST API reference has an Authorize button: paste a key there to try calls in the browser."
 	},
 	"create": {
 		"title": "API 키 생성",
@@ -41,7 +164,10 @@
 		"buttons": {
 			"create": "@:common.buttons.create",
 			"cancel": "@:common.buttons.cancel",
-			"saved": "키를 저장했습니다"
-		}
+			"saved": "키를 저장했습니다",
+			"copy": "Copy key",
+			"use_in_builder": "Use in URL builder"
+		},
+		"copied": "Key copied"
 	}
 }
