@@ -1,13 +1,11 @@
 {
 	"navigation": {
 		"planning": "플래닝",
-		"planning_short": "플랜",
 		"empire": "제국",
 		"planet_search": "행성 탐색",
 		"management": "관리",
 		"exchanges": "거래소",
 		"tools": "도구",
-		"tools_short": "도구",
 		"market_exploration": "시장 탐색",
 		"market_live": "실시간 시세",
 		"recipe_roi": "레시피 수익률",
@@ -18,13 +16,13 @@
 		"fio_burn": "FIO 소모량",
 		"fio_repair": "FIO 수리",
 		"account": "계정",
-		"account_short": "계정",
 		"profile": "프로필",
 		"api": "API",
 		"help": "도움말",
 		"logout": "로그아웃",
 		"fio": {
-			"backend": "백엔드",
+			"fio_updated": "FIO updated",
+			"fetched": "PRUNplanner fetched",
 			"fio": "FIO",
 			"fio_active": "FIO 활성화",
 			"fio_inactive": "FIO 비활성화",
@@ -34,7 +32,20 @@
 		},
 		"collapse": "메뉴 접기",
 		"expand": "메뉴 확장",
-		"menu": "메뉴"
+		"empire_switch": "Switch",
+		"plans": "Plans",
+		"plans_count": "{name} · {count} plans",
+		"new_plan": "New plan from Planet Search",
+		"create_empire": "Create an empire",
+		"no_plans": "No plans yet",
+		"not_in_empire": "not in this empire",
+		"plans_filter": "Filter plans",
+		"plans_filter_clear": "Clear filter",
+		"plans_filter_empty": "No plan matches",
+		"market": "Market",
+		"calculators": "Calculators",
+		"more": "More",
+		"account_menu": "Account menu"
 	},
 	"buttons": {
 		"create": "생성",
@@ -105,7 +116,15 @@
 		"empty": "표시할 내용 없음"
 	},
 	"version_update": {
-		"title": "{app} has been updated!",
-		"action": "Click to load the newest version."
+		"ready_title": "A new version of PRUNplanner is ready",
+		"ready_body": "Reload to get it. Your saved work stays as it is.",
+		"unsaved_body": "Save your changes first, then reload.",
+		"outdated_title": "This tab is out of date",
+		"outdated_body": "A newer PRUNplanner opened in another tab. Reload to keep working.",
+		"reload": "Reload",
+		"later": "Later",
+		"chip": "Update ready",
+		"whats_new_title": "PRUNplanner {version} is here",
+		"whats_new_action": "What's new"
 	}
 }
