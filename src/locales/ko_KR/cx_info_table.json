@@ -1,15 +1,15 @@
 {
-	"universe": "UNIVERSE",
+	"universe": "전체",
 	"vwap": "@:terms.vwap",
 	"traded_volume": "@:terms.traded_volume",
-	"market_live_data": "Market Live Data",
+	"market_live_data": "실시간 시세 데이터",
 	"supply_vs_demand": "S / D",
-	"insights": "Insights",
-	"market_breadth": "Market Breadth",
-	"liquidity_ratio": "Liquidity Ratio",
-	"demand_vs_supply": "Demand / Supply",
-	"weighted_trend": "Weighted Trend",
-	"volume_adjusted_delta": "Volume-Adjusted Delta",
-	"price_cohesion": "Price Cohesion",
-	"variance_index": "Variance Index"
+	"insights": "인사이트",
+	"market_breadth": "시장 폭",
+	"liquidity_ratio": "유동성 비율",
+	"demand_vs_supply": "공급/수요",
+	"weighted_trend": "가중 추세",
+	"volume_adjusted_delta": "거래량 보정 변화량",
+	"price_cohesion": "가격 응집도",
+	"variance_index": "변동성 지수"
 }

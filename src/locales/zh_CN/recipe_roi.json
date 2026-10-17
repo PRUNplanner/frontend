@@ -1,26 +1,26 @@
 {
 	"view_title": "生产模板 ROI",
 	"title": "生产模板 ROI",
-	"calculating": "正在计算建筑配方 ROI",
-	"cx_select": "@:terms.cx 偏好",
+	"calculating": "正在计算建筑生产模板 ROI",
+	"cx_select": "@:{'terms.cx'}偏好",
 	"filters": {
 		"title": "@:terms.filter",
 		"building": "@:terms.buildings",
 		"cogc": "@:terms.cogc",
 		"output": "输出",
 		"input": "输入",
-		"positive_roi": "正 ROI"
+		"positive_roi": "ROI 为正"
 	},
 	"table": {
 		"building": "@:terms.buildings",
 		"optimal_setup": "最优配置",
-		"recipe_output": "@:terms.recipes 输出",
-		"recipe_input": "@:terms.recipes 输入",
+		"recipe_output": "@:{'terms.recipes'}输出",
+		"recipe_input": "@:{'terms.recipes'}输入",
 		"cogc": "@:terms.cogc",
 		"cogm": "@:terms.cogm",
-		"plan_cost": "@:terms.plan成本 (ȼ)",
+		"plan_cost": "@:{'terms.plan'}成本 (ȼ)",
 		"daily_profit": "每日利润 (ȼ)",
 		"profit_area": "单位面积利润 (ȼ)",
-		"plan_roi": "@:terms.plan ROI (天)"
+		"plan_roi": "@:{'terms.plan'} ROI (天)"
 	}
 }

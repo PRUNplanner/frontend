@@ -6,6 +6,8 @@ PRUNplanner는 Prosperous Universe 제국을 계획하고 관리할 수 있도�
 
 계획은 PRUNplanner에서 수행하는 작업의 핵심 근간입니다. 계획은 Prosperous Universe에서 설치할 수 있는 하나의 기지에 포함되는 모든 건축물, 생산 공정, 보너스로 구성됩니다. 새로운 계획은 기지를 세우고 싶은 행성을 검색해서 생성할 수 있습니다. 또한 각 계획에는 거래소 선호 설정과 제국이 지정되어야 합니다. 각 계획은 여러 제국에 할당하여 재사용할 수 있습니다.
 
+To delete several Plans at once, tick them in the Plan ↔ Empire Assignments table and press "Delete selected…". The box in the table header ticks every Plan the search and filters show, for example all unassigned ones.
+
 ## 제국들
 
 제국은 여러 계획의 집합입니다. (즉, Prosperous Universe에서 현재 정착해 운영 중인 모든 기지나, 앞으로 정착하고 싶은 기지들을 하나로 연결해 관리하는 단위라고 볼 수 있습니다.) 각 제국은 여러 계획을 담는 컨테이너와 같습니다. 또한 각 제국에는 하나의 거래소 선호 설정을 지정할 수 있습니다.

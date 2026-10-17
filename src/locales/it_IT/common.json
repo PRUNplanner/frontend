@@ -1,13 +1,11 @@
 {
 	"navigation": {
 		"planning": "Pianificazione",
-		"planning_short": "Pianificazione",
 		"empire": "Impero",
 		"planet_search": "Ricerca Pianeta",
 		"management": "Gestione",
 		"exchanges": "Borse",
 		"tools": "Strumenti",
-		"tools_short": "Strumenti",
 		"market_exploration": "Esplorazione Dei Mercati",
 		"market_live": "Mercato Live",
 		"recipe_roi": "ROI ricette",
@@ -18,13 +16,13 @@
 		"fio_burn": "FIO Burn",
 		"fio_repair": "FIO Riparazione",
 		"account": "Account",
-		"account_short": "Acc",
 		"profile": "Profilo",
 		"api": "API",
 		"help": "Guida",
 		"logout": "Logout",
 		"fio": {
-			"backend": "Backend",
+			"fio_updated": "FIO updated",
+			"fetched": "PRUNplanner fetched",
 			"fio": "FIO",
 			"fio_active": "FIO Attivo",
 			"fio_inactive": "FIO Inattivo",
@@ -34,7 +32,20 @@
 		},
 		"collapse": "Collapse navigation",
 		"expand": "Expand navigation",
-		"menu": "Menu"
+		"empire_switch": "Switch",
+		"plans": "Plans",
+		"plans_count": "{name} · {count} plans",
+		"new_plan": "New plan from Planet Search",
+		"create_empire": "Create an empire",
+		"no_plans": "No plans yet",
+		"not_in_empire": "not in this empire",
+		"plans_filter": "Filter plans",
+		"plans_filter_clear": "Clear filter",
+		"plans_filter_empty": "No plan matches",
+		"market": "Market",
+		"calculators": "Calculators",
+		"more": "More",
+		"account_menu": "Account menu"
 	},
 	"buttons": {
 		"create": "Crea",
@@ -49,12 +60,12 @@
 		"no": "No",
 		"delete": "Elimina",
 		"cancel": "Annulla",
-		"clone_plan": "Duplica Piano",
-		"clone_complete": "Duplicazione completata",
 		"copy": "Copia",
 		"add": "Add",
 		"fullscreen": "Toggle fullscreen",
-		"edit": "Edit"
+		"edit": "Edit",
+		"show_all": "Show all ({n})",
+		"show_fewer": "Show fewer"
 	},
 	"ui": {
 		"placeholder": {
@@ -76,8 +87,26 @@
 			"page": "Page {page}",
 			"more": "More pages"
 		},
+		"table": {
+			"no_data": "No Data",
+			"expand_row": "Show details"
+		},
+		"close": "Close",
+		"tag": {
+			"remove": "Remove {label}"
+		},
 		"language": "Language",
-		"page_load_failed": "This page couldn't load. Reload to get the latest version."
+		"page_load_failed": "This page couldn't load. Reload to get the latest version.",
+		"meter": {
+			"used": "{label} {pct} % used"
+		},
+		"strip": {
+			"dot": "{label}: {value}",
+			"over": "{n} more beyond the axis"
+		},
+		"runway": {
+			"beyond": "beyond the axis"
+		}
 	},
 	"values": {
 		"never": "never"
@@ -85,5 +114,17 @@
 	"charts": {
 		"other": "Other ({n})",
 		"empty": "Nothing to show"
+	},
+	"version_update": {
+		"ready_title": "A new version of PRUNplanner is ready",
+		"ready_body": "Reload to get it. Your saved work stays as it is.",
+		"unsaved_body": "Save your changes first, then reload.",
+		"outdated_title": "This tab is out of date",
+		"outdated_body": "A newer PRUNplanner opened in another tab. Reload to keep working.",
+		"reload": "Reload",
+		"later": "Later",
+		"chip": "Update ready",
+		"whats_new_title": "PRUNplanner {version} is here",
+		"whats_new_action": "What's new"
 	}
 }

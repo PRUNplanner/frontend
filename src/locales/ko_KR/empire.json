@@ -1,72 +1,116 @@
 {
-	"view_title": "Empire",
-	"switch_empire": "Switch Empire",
+	"view_title": "제국",
+	"switch_empire": "제국 전환",
+	"overview_hide": "Hide plan list",
+	"overview_show": "Show plan list",
 	"views": {
-		"material_io": "Material I/O",
-		"analysis": "Analysis",
-		"production_opportunities": "Production Opportunities"
+		"material_io": "물자 입출력",
+		"analysis": "분석",
+		"production_opportunities": "생산 기회"
 	},
 	"configuration": {
-		"title": "Configuration",
+		"title": "구성",
 		"form": {
-			"name": "Name",
-			"faction": "Faction",
-			"permits_total": "@:terms.permits_plural Total",
-			"permits_used": "@:terms.permits_plural Used"
+			"name": "이름",
+			"faction": "세력",
+			"permits_total": "@:terms.permits_plural 합계",
+			"permits_used": "@:terms.permits_plural 사용량"
 		},
 		"sync_warning": {
-			"title": "Mismatch Detected:",
-			"body": "@:empire.configuration.sync_warning.title {configured} configured vs. {planned} planned permits. Please synchronize these values using your in-game {hq_buffer} to ensure accurate faction bonus calculations."
+			"title": "불일치 감지:",
+			"body": "@:empire.configuration.sync_warning.title 설정된 허가증 {configured}개, 계획된 허가증 {planned}개. 세력 보너스를 정확히 계산하려면 게임 내 {hq_buffer}에서 이 값을 맞춰 주세요."
 		}
 	},
 	"plan_list": {
-		"no_plans": "No Plans in @:terms.empire",
+		"no_plans": "@:terms.empire에 플랜이 없습니다",
 		"profit": "@:terms.profit (ȼ)",
-		"setup_prompt": "Assign existing plans in {management} or use {search} to create one.",
+		"setup_prompt": "{management}에서 기존 플랜을 할당하거나 {search}에서 새 플랜을 만드세요.",
 		"links": {
 			"management": "@:common.navigation.management",
 			"planet_search": "@:common.navigation.planet_search"
 		},
-		"permits_planned": "Total @:terms.permits planned: {permits}"
+		"permits_planned": "계획된 @:terms.permits 합계: {permits}"
 	},
 	"material_io": {
-		"produced_by": "Produced by",
-		"consumed_by": "Consumed by",
-		"planets": "Planets",
-		"summary": "Summary",
-		"expand_all": "Expand all",
-		"expand_row": "Show planets for {ticker}",
-		"view_sides": "Producers · Consumers",
-		"view_net": "Net per planet",
-		"surplus": "Surplus",
-		"needs": "Needs",
-		"plan_count": "{count} plan | {count} plans",
-		"planet_count": "{count} planet | {count} planets",
-		"per_day": "{value} / day",
-		"makes_uses": "makes {makes} · uses {uses}",
-		"not_produced": "Not produced in this empire.",
-		"not_consumed": "Not consumed in this empire.",
-		"no_surplus": "No planet has a surplus.",
-		"no_needs": "No planet needs it."
+		"produced_by": "생산 건물",
+		"consumed_by": "소비 건물",
+		"planets": "행성",
+		"summary": "요약",
+		"expand_all": "모두 펼치기",
+		"expand_row": "{ticker} 산출 행성 보기",
+		"view_sides": "생산 건물 · 소비 건물",
+		"view_net": "행성별 순수량",
+		"surplus": "잉여",
+		"needs": "필요량",
+		"plan_count": "플랜 {count}개 | 플랜 {count}개",
+		"planet_count": "행성 {count}개 | 행성 {count}개",
+		"per_day": "{value}/일",
+		"makes_uses": "생산 {makes} · 소비 {uses}",
+		"not_produced": "이 제국에서는 생산되지 않습니다.",
+		"not_consumed": "이 제국에서는 소비되지 않습니다.",
+		"no_surplus": "잉여가 있는 행성이 없습니다.",
+		"no_needs": "필요로 하는 행성이 없습니다."
 	},
 	"filters": {
-		"display": "Display",
-		"consumables": "Consumables",
-		"all": "All",
-		"loadbalance": "Loadbalance"
+		"display": "표시",
+		"consumables": "소비재",
+		"all": "전체",
+		"loadbalance": "수급 조정"
 	},
 	"analysis": {
-		"plan_profit": "Plan Profit (ȼ)",
-		"material_profits": "Material Profits",
-		"material_costs": "Material Costs",
-		"net_production": "Net Production",
-		"net_consumption": "Net Consumption",
-		"exclusive_production": "Exclusive Production",
-		"exclusive_consumption": "Exclusive Consumption"
+		"plan_profit": "플랜 수익(ȼ)",
+		"material_profits": "자재 수익(ȼ)",
+		"material_costs": "자재 비용(ȼ)",
+		"net_production": "순 생산량",
+		"net_consumption": "순 소비량",
+		"exclusive_production": "생산 전용",
+		"exclusive_consumption": "소비 전용",
+		"parts": {
+			"inputs": "Production inputs",
+			"workforce": "Workforce",
+			"degradation": "Degradation",
+			"profit": "Profit",
+			"uncovered": "Cost not covered"
+		},
+		"kpi_split": {
+			"label": "Revenue split: {parts}",
+			"inputs": "Inputs {pct}",
+			"workforce": "Workforce {pct}",
+			"degradation": "Degradation {pct}",
+			"profit": "Profit {pct}",
+			"uncovered": "Not covered {pct}",
+			"of_cost": "Share of cost: revenue doesn't cover it"
+		},
+		"revenue_split": {
+			"title": "Where each plan's revenue goes",
+			"caption": "Top {top} by profit · loss-making plans always shown",
+			"split": "Revenue split",
+			"margin": "Margin",
+			"revenue_day": "Revenue / day",
+			"other": "Other · {n} plan | Other · {n} plans",
+			"row_label": "{name}: margin {margin}, revenue {revenue} ȼ per day",
+			"empty": "No plans to split yet."
+		},
+		"butterfly": {
+			"title": "Materials moving the most ȼ",
+			"price": "ȼ / day",
+			"amount": "Units / day",
+			"buy": "← you buy (net consumed)",
+			"sell": "you sell (net produced) →",
+			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
+			"row_label": "{ticker}: {direction} {value}, open in Material I/O",
+			"bought": "bought",
+			"sold": "sold",
+			"empty": "No materials bought or sold."
+		},
+		"more_charts": {
+			"title": "More charts",
+			"caption": "Plan profit · material profit & cost · net and exclusive production & consumption"
+		}
 	},
 	"opportunities": {
-		"headline": "Production Opportunities",
-		"intro": "Find recipe opportunities to convert excess materials into other products. This view identifies production opportunities where your Material I/O shows a positive delta, prioritized by input availability",
+		"headline": "생산 기회",
+		"intro": "남는 물자를 다른 제품으로 바꿀 수 있는 레시피를 찾아보세요. 이 화면은 물자 입출력에서 델타가 양수인 물자를 기준으로 생산 기회를 찾아 주며, 원료를 얼마나 확보할 수 있는지에 따라 우선순위를 매깁니다",
 		"please_note": "Please Note:",
 		"note": "Do not rely on the available opportunity alone. Cross-reference trade volumes and exchange overviews (via hover on the material) to assess market liquidity and potential ROI. Use indicators to identify which specific material is bottlenecking your scaling potential or if selling your available delta is more profitable than moving to another production.",
 		"tiles": {
@@ -103,6 +147,9 @@
 			"help": "Prices use the universe 30-day average. Change which exchange each material is bought and sold on in {exchanges}.",
 			"exchanges": "Exchanges"
 		}
+	},
+	"cost_overview": {
+		"shipping": "Shipping"
 	},
 	"empty": {
 		"title": "No empires yet",

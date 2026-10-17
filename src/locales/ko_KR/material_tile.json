@@ -1,24 +1,31 @@
 {
 	"information": {
-		"title": "Material Information",
+		"title": "재료 정보",
 		"table": {
-			"category": "Category",
-			"weight": "Weight",
-			"volume": "Volume"
+			"category": "분류",
+			"weight": "무게",
+			"volume": "부피"
 		}
 	},
 	"indicator": {
-		"value": "Value",
-		"max": "Maximum",
-		"pct_max": "% / Max"
+		"value": "값",
+		"max": "최대",
+		"pct_max": "%/최대"
 	},
 	"chart": {
-		"title": "Market History",
-		"labels": {
+		"title": "시세 기록",
+		"range": "30 days",
+		"metric": {
+			"vwap": "@:terms.vwap",
+			"low": "Low",
+			"high": "High",
 			"traded": "@:terms.traded_volume",
-			"low_p": "Daily Minimum Price",
-			"high_p": "Daily Maximum Price"
+			"label": "Chart value"
 		},
-		"value_label": "Chart value"
+		"label": "{metric} of {ticker} on every exchange, last 30 days",
+		"empty": "No trades in the last 30 days",
+		"error": "Market history could not be loaded",
+		"cheapest": "Cheapest now:",
+		"open_exploration": "Open in Market Exploration →"
 	}
 }

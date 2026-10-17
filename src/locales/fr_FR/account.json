@@ -3,6 +3,7 @@
 		"login": {
 			"title": "Se connecter",
 			"error": "Erreur de connexion. Veuillez vérifier votre nom d'utilisateur et mot de passe.",
+			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
 				"login": "Connexion"
 			},
@@ -22,7 +23,10 @@
 			"result": {
 				"ok_header": "Bienvenue {username} !",
 				"ok_message": "Inscription réussit. Vous pouvez maintenant vous connecter à PRUNplanner.",
-				"error": "Erreur lors de l'inscription."
+				"error": "Erreur lors de l'inscription.",
+				"fix_fields": "Please fix the fields marked below.",
+				"throttled": "Too many registration attempts. Please wait a minute and try again.",
+				"unknown": "Unknown error. Please try again later."
 			},
 			"buttons": {
 				"register": "Créer un compte"
@@ -31,18 +35,21 @@
 				"username": "Nom d'utilisateur",
 				"username_info": "Doit comporter au moins 3 caractères. Ne doit pas contenir d'espaces.",
 				"password": "Mot de passe",
-				"password_info": "Doit comporter au moins 8 caractères.",
-				"email": "E-mail",
+				"password_info": "At least 8 characters, not only numbers, and not a common password.",
+				"email": "Email (optional)",
 				"email_placeholder": "Pas obligatoire, mais recommandé.",
-				"email_info": "Pas obligatoire. Améliore la sécurité de votre compte.",
+				"email_info": "Only used to reset your password if you forget it. No newsletters, never shared. You can add it later in Profile.",
+				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
 				"security_question": "Questions de sécurité",
 				"question": "Entrez le nom de la planète {planet}. Pour le trouver, ouvrez un nouvel onglet Prosperous Universe avec la commande {command}. Vous verrez le nom des planètes listées sous 'Nom' dans les informations de la planète",
-				"planet_name": "Nom"
+				"planet_name": "Nom",
+				"another_planet": "Use a different planet"
 			}
 		},
 		"password_reset": {
 			"title": "Réinitialisez votre mot de passe",
 			"info": "Veuillez entrer le code reçu par e-mail ainsi que votre nouveau mot de passe.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
 			"buttons": {
 				"send": "Réinitialisation du mot de passe"
 			},
@@ -56,6 +63,8 @@
 		"request_password_reset": {
 			"title": "Demande de réinitialisation de mot de passe",
 			"info": "Entrez l'adresse e-mail vérifiée associée à votre compte PRUNplanner. Si nous la reconnaissons, nous vous enverrons un code pour réinitialiser votre mot de passe.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"error": "The request failed. Please try again later.",
 			"form": {
 				"email_placeholder": "Adresse e-mail"
 			},
@@ -73,8 +82,9 @@
 				"code_placeholder": "Code de vérification"
 			},
 			"result": {
-				"ok": "Adresse e-mail vérifiée.",
-				"error": "Code invalide ou adresse déjà vérifiée."
+				"ok": "Email address confirmed.",
+				"already_verified": "Your email address is already confirmed.",
+				"back": "Back to your empire"
 			}
 		},
 		"hints": {
@@ -83,6 +93,63 @@
 			"new_password": "At least 8 characters",
 			"email": "e.g. name{'@'}example.com",
 			"code": "Code from the email"
+		}
+	},
+	"email_nudge": {
+		"none": {
+			"title": "Add an email so you can't get locked out",
+			"body": "If you ever forget your password, an email is the only way back to your plan. It is only used for password resets: no newsletters, never shared. | If you ever forget your password, an email is the only way back to your {count} plans. It is only used for password resets: no newsletters, never shared.",
+			"body_plain": "If you ever forget your password, an email is the only way back to your plans. It is only used for password resets: no newsletters, never shared."
+		},
+		"unconfirmed": {
+			"title": "Confirm your email",
+			"body": "Password resets only go to a confirmed address. Enter the code we sent to {email}, or ask for a new one."
+		},
+		"buttons": {
+			"add": "Add email",
+			"later": "Not now",
+			"never": "Don't remind me",
+			"enter_code": "Enter code",
+			"resend": "Send new code",
+			"undo": "Undo"
+		},
+		"never_toast": "No more reminders. You can add an email any time in Profile.",
+		"code_sent": "Code sent. Check your inbox, and your spam folder."
+	},
+	"email_dialog": {
+		"title": {
+			"email": "Add an email",
+			"code": "Confirm your email",
+			"done": "Email confirmed"
+		},
+		"email_label": "Email address",
+		"email_placeholder": "you{'@'}example.com",
+		"email_info": "Only used to reset your password. No newsletters, never shared. You can change or remove it any time in Profile.",
+		"email_code_info": "We'll send an 8-character code to confirm it's yours.",
+		"code_info": "We sent a code to {email}. It's valid for 24 hours. You can also click the link in the email, on any device.",
+		"code_label": "Code",
+		"code_placeholder": "8 characters",
+		"no_code": "Nothing arrived? Check spam, or",
+		"done_title": "You're covered",
+		"done_info": "If you forget your password, use “Forgot password” on the login screen and we'll send the reset to {email}.",
+		"confirmed_toast": "Email confirmed. Password resets now go to {email}.",
+		"buttons": {
+			"cancel": "Cancel",
+			"save": "Save and send code",
+			"change_email": "Change email",
+			"later": "Later",
+			"confirm": "Confirm",
+			"resend": "send a new code",
+			"done": "Done"
+		},
+		"errors": {
+			"email_taken": "This address is already used by another account.",
+			"invalid_email": "This doesn't look like an email address.",
+			"invalid": "That code didn't work. Check it, or send a new one.",
+			"expired": "That code has expired. Send a new one.",
+			"no_code": "There is no code waiting for this account. Send a new one.",
+			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"unknown": "Something went wrong. Please try again."
 		}
 	}
 }

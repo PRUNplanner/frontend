@@ -1,5 +1,5 @@
 {
-	"info": "Dies wird einen einzigartigen Link erstellen, der mit anderen geteilt werden kann. Sie können deinen Plan sehen, aber ihn nicht ändern. Der Link ist nicht mehr verfügbar, sobald du dich entscheidest den Plan nicht mehr zu teilen oder ihn löscht.",
+	"info": "This will create a unique link that can be shared with others. They can look at your plan and try changes on their own copy, but they never change your plan. The link becomes unavailable once you choose to stop sharing or delete the plan.",
 	"share_count": "Du teilst derzeit diesen Plan. Er wurde {count} mal angesehen",
 	"buttons": {
 		"create_link": "Freigabelink erstellen",
@@ -10,8 +10,38 @@
 	"title": "Plan teilen",
 	"banner": {
 		"title": "Geteilter Plan",
-		"info": "Nur Lesen. Preise verwenden den 30-tägigen Durchschnitt.",
-		"signup_hint": "Erstelle ein kostenloses Konto, um den Plan zu klonen und bearbeiten."
+		"info": "Try changes on your own copy. The shared plan never changes.",
+		"changed": "Changed from the shared version",
+		"prices": "Prices: {source}.",
+		"prices_hint": "The person who shared it may see different numbers.",
+		"price_universe": "universe 30-day average",
+		"price_cx": "your exchange settings: {name}",
+		"reset": "Reset to shared version",
+		"copy": "Copy changes",
+		"copied": "Changes copied, paste them into Discord",
+		"copy_failed": "Couldn't copy the changes",
+		"save": "Save to my plans",
+		"signup": "Sign up to save this"
+	},
+	"compare": {
+		"label": "vs. shared:",
+		"profit": "{delta} ȼ/day",
+		"roi": "ROI {from} → {to}",
+		"area": "Area {delta}",
+		"workforce": "Workforce {delta}",
+		"buildings": "Buildings {delta}",
+		"added": "new",
+		"new": "new",
+		"amount": "amount changed",
+		"recipe": "recipe changed",
+		"removed": "removed"
+	},
+	"changes": {
+		"recipe": "{label} recipes {from} → {to}",
+		"profit": "Profit: {from} → {to} ȼ/day",
+		"roi": "ROI: {from} → {to}",
+		"prices": "Prices: {source}",
+		"more": "…and {n} more"
 	},
 	"unavailable": {
 		"title": "Dieser geteilte Plan ist nicht mehr verfügbar",

@@ -3,9 +3,9 @@
 	"title": "市场探索",
 	"switch_material": "切换物料",
 	"kpis": {
-		"universe_vwap_7d": "宇宙VWAP @:terms.7d",
-		"universe_traded_7d": "宇宙@:terms.traded_volume @:terms.7d",
-		"universe_market_delta": "宇宙市场差值",
+		"universe_vwap_7d": "全宇宙@:{’terms.7d‘}VWAP",
+		"universe_traded_7d": "全宇宙@:{'terms.7d'}@:{'terms.traded_volume'}",
+		"universe_market_delta": "全宇宙市场差值",
 		"shortage": "欠缺",
 		"surplus": "盈余",
 		"percent_trend": "% 趋势",
@@ -23,6 +23,32 @@
 			"daily": "每日",
 			"weekly": "每周",
 			"monthly": "每月"
+		},
+		"view": {
+			"candles": "Candles",
+			"exchanges": "All exchanges",
+			"label": "Chart view"
+		},
+		"metric": {
+			"vwap": "@:terms.vwap",
+			"low": "Low",
+			"high": "High",
+			"label": "Value"
+		},
+		"range": {
+			"30": "30 d",
+			"90": "90 d",
+			"365": "1 y",
+			"all": "All",
+			"label": "Range"
+		},
+		"exchanges": {
+			"label": "{metric} of {ticker} on every exchange",
+			"volume_title": "Traded volume, all exchanges",
+			"volume_unit": "units / day",
+			"volume": "@:terms.volume",
+			"empty": "No trades in this range",
+			"error": "Market data could not be loaded"
 		}
 	},
 	"market_data": {
@@ -32,13 +58,16 @@
 		"title": "材料市场概览",
 		"table": {
 			"material": "@:terms.materials",
-			"vwap_7d": "@:terms.vwap @:terms.7d",
-			"vwap_30d": "@:terms.vwap @:terms.30d",
+			"vwap_7d": "@:{'terms.7d'}@:{'terms.vwap'}",
+			"vwap_30d": "@:{'terms.30d'}@:{'terms.vwap'}",
 			"trend": "趋势",
-			"volume_7d": "@:terms.traded_volume @:terms.7d",
-			"volume_30d": "@:terms.traded_volume @:terms.30d",
+			"volume_7d": "@:{'terms.7d'}@:{'terms.traded_volume'}",
+			"volume_30d": "@:{'terms.30d'}@:{'terms.traded_volume'}",
 			"details": "详情",
-			"explore": "Explore"
+			"explore": "探索",
+			"sparkline": "30 days",
+			"sparkline_hint": "Daily VWAP of the last 30 days. Direction only: every row has its own scale.",
+			"sparkline_label": "{ticker}, daily VWAP of the last 30 days"
 		}
 	}
 }

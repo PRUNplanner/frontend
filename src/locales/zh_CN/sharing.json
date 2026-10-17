@@ -1,21 +1,51 @@
 {
-	"info": "这将创建一个可分享给他人的专属链接。其他人可以查看你的计划，但不能修改。链接将在你停止分享或删除该计划后失效。",
-	"share_count": "你正在分享此计划。该计划已被查看{count}次",
+	"info": "这将创建一个可分享给他人的专属链接。其他人可以查看你的规划，或复制后进行修改，但不会修改原始规划。链接将在你停止分享或删除该规划后失效。",
+	"share_count": "你正在分享此规划。该规划已被查看{count}次",
 	"buttons": {
 		"create_link": "创建分享链接",
 		"copy_url": "复制链接",
 		"stop_sharing": "停止分享",
 		"views": "{count}次查看"
 	},
-	"title": "分享计划",
+	"title": "分享规划",
 	"banner": {
-		"title": "Shared plan",
-		"info": "Read-only. Prices use the universe 30-day average.",
-		"signup_hint": "Create a free account to clone and edit it."
+		"title": "已分享的规划",
+		"info": "试试自己复制一份进行修改。共享的规划不会变更。",
+		"changed": "源于共享版本的修改",
+		"prices": "价格：{source}。",
+		"prices_hint": "分享者可能看见不同的数值。",
+		"price_universe": "全宇宙30天均值",
+		"price_cx": "您的交易所设置：{name}",
+		"reset": "重置到共享版本",
+		"copy": "复制更改",
+		"copied": "已复制更改，可粘贴到Discord",
+		"copy_failed": "无法复制更改",
+		"save": "保存至我的规划",
+		"signup": "注册并保存"
+	},
+	"compare": {
+		"label": "相比于共享版本：",
+		"profit": "{delta} ȼ/天",
+		"roi": "ROI {from} → {to}",
+		"area": "面积 {delta}",
+		"workforce": "生产力 {delta}",
+		"buildings": "建筑 {delta}",
+		"added": "新",
+		"new": "新",
+		"amount": "数量更改",
+		"recipe": "生产模板更改",
+		"removed": "移除"
+	},
+	"changes": {
+		"recipe": "{label}的生产订单：{from} → {to}",
+		"profit": "利润：{from} → {to} ȼ/天",
+		"roi": "ROI: {from} → {to}",
+		"prices": "价格：{source}",
+		"more": "…以及另外{n}项"
 	},
 	"unavailable": {
-		"title": "This shared plan is no longer available",
-		"text": "Its owner stopped sharing it or deleted the plan, or the link is incomplete.",
-		"home": "Go to PRUNplanner"
+		"title": "此分享的规划已不再可用",
+		"text": "其所有者已停止分享或将其删除，或者分享链接不完整。",
+		"home": "前往PRUNplanner"
 	}
 }

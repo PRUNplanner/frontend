@@ -1,6 +1,7 @@
 {
 	"view_title": "Live Markt",
 	"title": "Live Markt",
+	"connection_lost": "Connection lost. Reconnecting...",
 	"status": {
 		"connected": "Verbunden",
 		"disconnected": "Getrennt"

@@ -2,7 +2,7 @@
 	"view_title": "维护价格计算器",
 	"title": "维护价格计算器",
 	"form": {
-		"cx_preference": "CX 偏好设置"
+		"cx_preference": "交易所偏好设置"
 	},
 	"calculator": {
 		"calculating": "正在计算维护物资价格",
@@ -18,9 +18,9 @@
 			"table": {
 				"material": "@:terms.materials",
 				"building": "@:terms.buildings",
-				"price_need": "ȼ/需求",
+				"price_need": "单位需求成本",
 				"cx_price": "@:terms.cx价格 (ȼ)",
-				"qty_day": "数量/天"
+				"qty_day": "日消耗量"
 			}
 		}
 	}

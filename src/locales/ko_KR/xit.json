@@ -1,17 +1,17 @@
 {
 	"form": {
-		"origin": "Origin",
-		"target_days": "Target Days",
-		"buy_from_cx": "Buy From CX",
-		"buy_from_cx_warning": "Only warehouse origin allows purchasing.",
-		"fit_ship": "Fit Ship",
-		"hide_infinite": "Hide Infinite",
+		"origin": "출발지",
+		"target_days": "목표 일수",
+		"buy_from_cx": "CX에서 구매",
+		"buy_from_cx_warning": "출발지가 창고인 경우에만 구매할 수 있습니다.",
+		"fit_ship": "적재량 맞추기",
+		"hide_infinite": "무한 항목 숨기기",
 		"json": "JSON",
-		"include_label": "Include {ticker}",
-		"override_label": "Override for {ticker}"
+		"include_label": "{ticker} 포함",
+		"override_label": "{ticker} 값 직접 지정"
 	},
 	"buttons": {
-		"copy_json": "Copy XIT JSON",
+		"copy_json": "XIT JSON 복사",
 		"copy": "@:common.buttons.copy"
 	},
 	"table": {

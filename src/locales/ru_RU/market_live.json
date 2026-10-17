@@ -1,6 +1,7 @@
 {
 	"view_title": "Мониторинг рынка",
 	"title": "Мониторинг рынка",
+	"connection_lost": "Connection lost. Reconnecting...",
 	"status": {
 		"connected": "Онлайн",
 		"disconnected": "Офлайн"

@@ -23,6 +23,32 @@
 			"daily": "Daily",
 			"weekly": "Weekly",
 			"monthly": "Monthly"
+		},
+		"view": {
+			"candles": "Candles",
+			"exchanges": "All exchanges",
+			"label": "Chart view"
+		},
+		"metric": {
+			"vwap": "@:terms.vwap",
+			"low": "Low",
+			"high": "High",
+			"label": "Value"
+		},
+		"range": {
+			"30": "30 d",
+			"90": "90 d",
+			"365": "1 y",
+			"all": "All",
+			"label": "Range"
+		},
+		"exchanges": {
+			"label": "{metric} of {ticker} on every exchange",
+			"volume_title": "Traded volume, all exchanges",
+			"volume_unit": "units / day",
+			"volume": "@:terms.volume",
+			"empty": "No trades in this range",
+			"error": "Market data could not be loaded"
 		}
 	},
 	"market_data": {
@@ -38,7 +64,10 @@
 			"volume_7d": "@:terms.traded_volume @:terms.7d",
 			"volume_30d": "@:terms.traded_volume @:terms.30d",
 			"details": "Details",
-			"explore": "Explore"
+			"explore": "Explore",
+			"sparkline": "30 days",
+			"sparkline_hint": "Daily VWAP of the last 30 days. Direction only: every row has its own scale.",
+			"sparkline_label": "{ticker}, daily VWAP of the last 30 days"
 		}
 	}
 }

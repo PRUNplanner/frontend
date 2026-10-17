@@ -1,12 +1,11 @@
-APEX only displays up to 365 days of price history, after which it is deleted and erased from history. This tool displays all recorded price data since June 27th, 2022. Because collection of data is aggregated from FIO imports, there may be gaps in the data or missing information. Despite this caveat, because of the resilience of FIO, one can consider this information to be highly reliable.
+APEX에는 최대 365일까지의 가격 기록만 표시되며, 그 이후의 기록은 삭제되어 남지 않습니다. This tool displays all recorded price data since June 27th, 2022. 데이터는 FIO에서 가져온 정보를 모아 수집하기 때문에 일부 기간이 비어 있거나 정보가 누락되어 있을 수 있습니다. 이런 한계가 있긴 하지만, FIO의 회복탄력성 덕분에 이 정보는 신뢰도가 높다고 볼 수 있습니다.
 
-Certain assumptions are made due to technical constraints. Data received by PRUNplanner can become stale, repeating the same value as the previous day until new data is received. This causes potentially dozens of consecutive days on the chart to report incorrect data when in fact no trades actually occurred. To alleviate the issue this causes with the charts, data is automatically pruned when the trading volume received is equal to trading volume on the preceding day. Zero trading volume is assumed if this figure repeats, until a new different figure is traded.
+기술적인 제약으로 인해 몇 가지 가정을 전제로 합니다. PRUNplanner가 받은 데이터는 갱신되지 않을 수 있으며, 이 경우 새 데이터가 들어올 때까지 전날과 같은 값이 반복해서 표시됩니다. 이 때문에 실제로는 거래가 전혀 없었는데도 차트에서 수십 일 연속으로 잘못된 데이터가 표시될 수 있습니다. 이로 인한 차트 문제를 줄이기 위해 받은 거래량이 전날 거래량과 같으면 해당 데이터는 자동으로 제외됩니다. Zero trading volume is assumed if this figure repeats, until a new different figure is traded.
 
-Another assumption which is made is to prune absurd numbers from the charts. Manipulation sometimes happens and causes a market which normally trades at ȼ100 to print a trade at ȼ10,000,000. Some people like to have fun here. This enormously distorts the chart, breaking its readability. Because of this, candlesticks are edited whenever they are greater than 3x the difference of the previous candlestick. This preserves the spirit of the chart, informing you something did actually happen - but without breaking the visual graph. The editing is applied to all 4 points of the candlestick independently, open high low and close. Each run their own 3x "reality check" code and modify that value accordingly.
+또 다른 가정으로, 터무니없는 수치는 차트에서 제외합니다. 가끔 시세 조작이 일어나 평소 ȼ100에 거래되던 시장에서 ȼ10,000,000짜리 거래가 체결되기도 합니다. 이런 데서 장난치는 사람들도 있거든요. 이런 거래는 차트를 크게 왜곡해서 알아보기 어렵게 만듭니다. 이 때문에 캔들이 이전 캔들 변동폭의 3배를 넘으면 값이 보정됩니다. 이렇게 하면 차트의 본래 의미는 유지하면서 실제로 무언가 일이 있었다는 것도 알려 줍니다. 다만 그래프의 시각적 형태는 깨지지 않습니다. 보정은 캔들의 4가지 값인 시가, 고가, 저가, 종가에 각각 따로 적용됩니다. 네 값마다 각가 3배 기준의 "현실성 검사"를 따로 거쳐, 그 결과에 맞게 값이 조정됩니다.
 
-Here is a good resource on how to read and interpret candlestick charts:
-https://www.investopedia.com/trading/candlestick-charting-what-is-it/
+캔들 차트를 읽고 해석하는 방법을 잘 설명한 자료입니다. https://www.investopedia.com/trading/candlestick-charting-what-is-it/
 
-Furthermore, an excellent "real world" way to just see how they actually work on your own is to go to this website, set the time interval to 1 minute and watch how they evolve in realtime:
+또한 캔들이 실제로 어떻게 움직이는지 직접 확인해 보고 싶다면, 아래 사이트에서 시간 가격을 1분으로 설정하고 실시간으로 변하는 모습을 지켜보는 것도 좋은 "실전" 방법입니다.
 https://bitcoinwisdom.io/markets/deribit/ethperpetual
 

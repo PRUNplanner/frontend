@@ -7,6 +7,10 @@
 		"buttons": {
 			"new_empire": "New Empire"
 		},
+		"deletion": {
+			"title": "Confirm Empire Deletion",
+			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+		},
 		"form": {
 			"empire_name": "@:terms.empire Name",
 			"faction": "@:terms.faction",
@@ -28,6 +32,10 @@
 		"description": "Removing a CX preference will delete all its exchange and material settings. Assigned empires will remain unaffected, but they will no longer use the removed preferences. Make sure to assign a new CX preference.",
 		"buttons": {
 			"new_cx": "New @:terms.cx"
+		},
+		"deletion": {
+			"title": "Confirm CX Deletion",
+			"content": "Are you sure? Deleting the CX will delete all preferences."
 		},
 		"form": {
 			"cx_name": "@:terms.cx Name",
@@ -68,6 +76,19 @@
 		"add_all_shown": "Add all shown plans to {empire}",
 		"remove_all_shown": "Remove all shown plans from {empire}",
 		"no_match": "No plans match the search and filters.",
+		"selection": {
+			"select_all_shown": "Select all shown plans",
+			"clear_all_shown": "Deselect all shown plans",
+			"select_label": "Select {plan}",
+			"count": "{count} plan selected | {count} plans selected",
+			"delete": "Delete selected…",
+			"clear": "Clear selection",
+			"deleting": "Deleting {done} of {total}…",
+			"confirm_title": "Delete {count} plan? | Delete {count} plans?",
+			"confirm_content": "{names} will be deleted. This can't be reversed.",
+			"more": "{names} and {count} more",
+			"failed": "{count} plan couldn't be deleted and stays selected. | {count} plans couldn't be deleted and stay selected."
+		},
 		"menu": {
 			"clone": "Clone",
 			"share": "Share…",

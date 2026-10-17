@@ -5,53 +5,221 @@
 		"title": "Keine Präferenzen",
 		"message": "Du hast keine Marktplatz-Präferenzen. Gehe zur Verwaltungsseite und erstelle deine erste."
 	},
-	"buttons": {
-		"csv_import_export": "@:exchanges.components.csv_import_export.title",
-		"save": "@:common.buttons.save",
-		"reload": "@:common.buttons.reload"
+	"labels": {
+		"universe": "Universe",
+		"exchange_basis": "{exchange} · {basis}",
+		"basis": {
+			"vwap_7d": "VWAP 7D",
+			"vwap_30d": "VWAP 30D",
+			"ask": "Ask",
+			"bid": "Bid"
+		},
+		"planet_rule": "{label} · planet",
+		"no_price": "{label} · no price",
+		"fixed_all": "Fixed · all planets",
+		"fixed_planet": "Fixed · this planet",
+		"unresolved": "No price data"
 	},
-	"configuration": {
-		"form": {
-			"preference_name": "Präferenzname",
-			"empire_preferences": "Imperium-Präferenz",
-			"exchange": "Marktplatz",
-			"ticker": "@:terms.material_ticker"
+	"rule": {
+		"title": "Exchange price",
+		"presets_on": "Presets on {exchange}:",
+		"preset_average": "Average · VWAP 30D",
+		"preset_trade_now": "Trade now · buy Ask, sell Bid",
+		"preset_trade_now_universe": "Universe has no order book, so no Ask or Bid. Pick an exchange first.",
+		"mode_label": "How buy and sell prices are set",
+		"mode": {
+			"inherit": "Use all-planets rule",
+			"same": "Same for buy and sell",
+			"separate": "Separate buy and sell"
+		},
+		"side": {
+			"both": "Both",
+			"buy": "Buy",
+			"sell": "Sell"
+		},
+		"exchange_label": "Exchange for {side}",
+		"basis_label": "Price basis for {side}",
+		"not_set": "Not set",
+		"inherited": "Uses the all-planets rule:",
+		"inherited_part": "{type} {rule}",
+		"inherited_none": "none set, Universe · VWAP 30D",
+		"help": "Ask and Bid are today's order book; VWAP is the traded average. A material the chosen exchange has no price for counts as 0 ȼ; the notes list them."
+	},
+	"fixed": {
+		"title": "Fixed prices",
+		"hint": "Leave a side empty to use the exchange price.",
+		"material": "Material",
+		"buy": "Buy ȼ",
+		"sell": "Sell ȼ",
+		"market": "Market",
+		"cogm": "COGM in your plans",
+		"actions": "Actions",
+		"exchange_placeholder": "exchange",
+		"buy_label": "Fixed buy price for {ticker}",
+		"sell_label": "Fixed sell price for {ticker}",
+		"made_in": "made in {n} plan | made in {n} plans",
+		"in_use": "in use",
+		"use": "Use",
+		"remove": "Remove {ticker}",
+		"inherited": "All-planets price",
+		"override": "Override",
+		"empty": "No fixed prices. Plans use the exchange price.",
+		"search": "Search material",
+		"sort": "Sort by",
+		"sort_material": "Material",
+		"sort_diff": "% vs market",
+		"add_select": "Material",
+		"add": "Add material"
+	},
+	"header": {
+		"import": "Import CSV",
+		"export": "Export CSV",
+		"more": "More actions",
+		"rename": "Rename…",
+		"manage": "Manage preferences",
+		"rename_title": "Rename preference",
+		"name": "Name",
+		"apply": "Apply"
+	},
+	"csv": {
+		"confirm_title": "Replace all rules?",
+		"confirm": "Replace all rules in {preference} with {exchanges} and {fixed} from {file}? Nothing is saved until you save.",
+		"exchange_rules": "no exchange rules | 1 exchange rule | {n} exchange rules",
+		"fixed_prices": "no fixed prices | 1 fixed price | {n} fixed prices",
+		"replace": "Replace",
+		"error": "Couldn't import {file}: {reason}"
+	},
+	"switch": {
+		"label": "Switch Preference",
+		"used_by": "Used by {empires} · assign in {management}",
+		"unused": "Not used by any empire · assign in {management}",
+		"management": "Management",
+		"confirm_title": "Discard unsaved changes?",
+		"confirm": "{preference} has unsaved changes. Switching discards them.",
+		"discard": "Discard and switch",
+		"keep": "Keep editing"
+	},
+	"scopes": {
+		"label": "Rules for",
+		"overview": "Overview",
+		"overview_hint": "Prices your plans use",
+		"all": "All planets",
+		"all_hint": "Home exchange and fixed prices",
+		"own": "Planets with their own rules",
+		"inherit": "Using all-planets rules",
+		"others": "Planets of other empires",
+		"show_others": "Show planets from other empires ({n})",
+		"hide_others": "Hide planets from other empires",
+		"unplanned": "Not in any plan",
+		"delete": "Delete the rules of {planet}",
+		"filter": "Filter planets",
+		"rules_count": "{n} rule | {n} rules"
+	},
+	"overview": {
+		"title": "Overview",
+		"description": "Every material your plans buy or sell, the price it gets, and the rule behind it. Includes unsaved changes.",
+		"summary": {
+			"all": "All planets",
+			"own": "Planets with own rules",
+			"own_value": "{n} of {m}",
+			"fixed": "Fixed prices"
+		},
+		"prices_title": "Prices your plans use",
+		"search": "Search material",
+		"filter_label": "Show materials",
+		"filter": {
+			"all": "All",
+			"fixed": "Fixed",
+			"no_price": "No price (0 ȼ)",
+			"varies": "Varies by planet"
+		},
+		"side_label": "Price side",
+		"side": {
+			"BUY": "Buy",
+			"SELL": "Sell"
+		},
+		"columns": {
+			"material": "Material",
+			"buy": "Buy ȼ",
+			"sell": "Sell ȼ",
+			"price": "Price ȼ",
+			"source": "Source",
+			"used_on": "Used on"
+		},
+		"varies": "varies by planet",
+		"used_on_more": "+{n}",
+		"calculating": "Calculating your plans…",
+		"empty": "No plan of an empire using this preference buys or sells anything yet.",
+		"no_match": "No material matches.",
+		"expand": "Show how the price of {ticker} is set",
+		"side_planet": "{side} · {planet}"
+	},
+	"ladder": {
+		"planet_ticker": "Planet fixed price",
+		"empire_ticker": "All-planets fixed price",
+		"planet_exchange": "Planet exchange",
+		"empire_exchange": "All-planets exchange",
+		"fallback": "Universe · VWAP 30D",
+		"no_price": "no price · {value}",
+		"unresolved": "No exchange has data for this material.",
+		"open": "Open the rule"
+	},
+	"rules": {
+		"all_title": "All planets",
+		"all_description": "Your home exchange and fixed prices. They apply to every planet of every empire that uses this preference.",
+		"planet_description": "An exception for this planet. Its rules win over all-planets rules here, except all-planets fixed prices, which still win over this planet's exchange.",
+		"unplanned": "No plan uses this planet. Its rules stay saved until you delete them.",
+		"delete": "Delete rules",
+		"side": "Side",
+		"prices_on": "Prices on {planet}",
+		"prices_on_hint": "From this planet's plans",
+		"prices_empty": "No plan on this planet buys or sells anything."
+	},
+	"notes": {
+		"open": "Open",
+		"toggle": "{n} note | {n} notes",
+		"use_cogm": "Use COGM",
+		"side": {
+			"BUY": "buy",
+			"SELL": "sell"
+		},
+		"exchange_gap": {
+			"title": "{rule} has no {side} price for {tickers}",
+			"detail": "{planets} counts it as 0 ȼ. Set a fixed price or pick another exchange or basis. | {planets} count it as 0 ȼ. Set a fixed price or pick another exchange or basis."
+		},
+		"no_price": {
+			"title": "{tickers} has no price on any exchange",
+			"detail": "{planets} counts it as 0 ȼ. Set a fixed price if you know one. | {planets} count it as 0 ȼ. Set a fixed price if you know one."
+		},
+		"fixed_zero": {
+			"title_all": "{tickers} is fixed at 0 ȼ on all planets",
+			"title_planet": "{tickers} is fixed at 0 ȼ on {planet}",
+			"detail": "Fine if it's your own supply and free to you. Otherwise set a price."
+		},
+		"cogm_drift": {
+			"title": "{n} fixed buy price differs from its COGM | {n} fixed buy prices differ from their COGM",
+			"detail": "Use the COGM if it is your at-cost price.",
+			"material": "Material",
+			"fixed": "Fixed buy ȼ",
+			"cogm": "COGM ȼ",
+			"difference": "Difference",
+			"made_on": "Made on"
+		},
+		"planet_redundant": {
+			"title": "{planet}'s exchange rule is the same as all planets'",
+			"detail": "It can be removed."
+		},
+		"unused_preference": {
+			"title": "No empire uses this preference",
+			"detail": "Plans use it once an empire does. Assign it in Management."
+		},
+		"unplanned_planets": {
+			"title": "Rules for planets in no plan: {planets}",
+			"detail": "They stay saved. Delete them under Not in any plan if you don't need them."
 		}
 	},
-	"preference_type": {
-		"BUY": "KAUF",
-		"SELL": "VERKAUF",
-		"BOTH": "BEIDES"
-	},
-	"components": {
-		"ticker": {
-			"no_data": "Keine @:terms.material_ticker Präferenzen konfiguriert",
-			"material_placeholder": "@:terms.materials"
-		},
-		"exchanges": {
-			"no_data": "Keine @:terms.exchanges Präferenzen konfiguriert"
-		},
-		"planet_preferences": {
-			"title": "Planeten-Präferenzen",
-			"form": {
-				"exchange": "@:terms.exchanges",
-				"ticker": "@:terms.material_ticker"
-			},
-			"table": {
-				"planet": "@:terms.planets",
-				"exchange_preference": "@:terms.exchanges Präferenzen",
-				"ticker_preference": "@:terms.material_ticker Präferenzen"
-			}
-		},
-		"csv_import_export": {
-			"title": "CSV-Import / Export",
-			"warning": "Warnung: Der Import löscht alle bestehenden Präferenzen und importiert die neuen. Du musst die importierten Präferenzen nach dem CSV-Upload speichern oder den Neuladen-Button verwenden, um sie zu verwerfen.",
-			"buttons": {
-				"import": "Präferenzen Importieren",
-				"export": "Präferenzen Exportieren"
-			}
-		},
-		"type_label": "Präferenztyp",
-		"value_label": "Preis"
+	"save_bar": {
+		"detail": "Plans keep the saved prices until you save",
+		"leave_unsaved": "This preference has unsaved changes. Leave without saving?"
 	}
 }

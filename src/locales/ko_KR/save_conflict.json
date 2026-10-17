@@ -1,0 +1,61 @@
+{
+	"title": "다른 탭에서 저장됨",
+	"text": "이 플랜을 연 이후 다른 탭이나 기기에서 저장되었습니다. 선택하기 전까지는 아무것도 덮어쓰지 않습니다.",
+	"deleted_title": "다른 탭에서 삭제됨",
+	"deleted_text": "이 플랜은 다른 탭이나 기기에서 삭제되었습니다. 수정한 내용은 그대로 남아 있습니다.",
+	"theirs": "다른 탭에서 변경됨",
+	"mine": "변경 사항",
+	"none": "변경 사항 없음",
+	"both": "모든 탭에서 변경됨",
+	"more": "그리고 {n}개 더",
+	"loading": "저장된 버전을 불러오는 중...",
+	"load_failed": "저장된 버전을 불러올 수 없습니다.",
+	"copy_name": "{name}(사본)",
+	"option": {
+		"save_as_new": "새로운 플랜으로 저장",
+		"overwrite": "덮어쓰기",
+		"reload": "다시 불러오기",
+		"close": "계속 수정하기"
+	},
+	"option_help": {
+		"save_as_new": "수정한 내용을 사본으로 만들고, 원본에는 다른 버전이 그대로 유지됩니다.",
+		"overwrite": "다른 버전을 내 수정본으로 덮어씁니다.",
+		"reload": "내 수정 내용을 버리고 저장된 버전을 불러옵니다."
+	},
+	"deleted_option_help": {
+		"save_as_new": "내 수정 내용으로 새로운 플랜을 생성합니다."
+	},
+	"type": {
+		"BUY": "매수",
+		"SELL": "매도",
+		"BOTH": "매수 및 매도"
+	},
+	"change": {
+		"name": "이름 {from} → {to}",
+		"permits": "허가증 {from} → {to}",
+		"cogc": "COGC {from} → {to}",
+		"corphq_on": "기업 본사 켜짐",
+		"corphq_off": "기업 본사 꺼짐",
+		"added": "{label} 추가됨 ({amount})",
+		"removed": "{label} 제거됨",
+		"amount": "{label} {from} → {to}",
+		"recipe": "{label}: 레시피 변경됨",
+		"experts": "{label} 전문가 {from} → {to}",
+		"lux_on": "{label} 사치품 {n} 켜짐",
+		"lux_off": "{label} 사치품 {n} 꺼짐",
+		"faction": "세력 {from} → {to}",
+		"permits_used": "사용된 허가증 {from} → {to}",
+		"permits_total": "총 허가증 {from} → {to}",
+		"exchange": "{type} 거래소 {from} → {to}",
+		"exchange_planet": "{planet}의 {type} 거래소 {from} → {to}",
+		"ticker": "{ticker} {type} 가격 {from} → {to}",
+		"ticker_planet": "{planet}의 {ticker} {type} 가격 {from} → {to}"
+	},
+	"notice": {
+		"saved_elsewhere": "다른 탭에서 저장되었습니다. 수정 내용은 유지됩니다.",
+		"deleted_elsewhere": "다른 탭에서 삭제되었습니다.",
+		"reload": "다시 불러오기",
+		"session_replaced": "다른 탭에서 로그인하였습니다. 계속 하려면 이 탭을 새로고침하세요. 더 이상 아무것도 저장하지 않습니다.",
+		"db_blocked": "다른 탭에서 이전 버전의 PRUNplanner가 열려 있습니다. 계속하려면 다른 탭을 닫거나 새로고침하세요."
+	}
+}

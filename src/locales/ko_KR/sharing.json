@@ -1,21 +1,51 @@
 {
-	"info": "This will create an unique link that can be shared with others. They will be able to see your plan, but don't modify it. The link becomes unavailable once you choose to stop sharing or delete the plan.",
-	"share_count": "You're currently sharing this plan. It has been viewed {count} times",
+	"info": "다른 사람과 공유할 수 있는 고유 링크가 생성됩니다. 링크를 받은 사람은 플랜을 볼 수 있고 자신의 사본에서 수정해 볼 수 있지만, 원래 플랜은 절대 변경되지 않습니다. 공유를 중단하거나 플랜을 삭제하면 링크를 더 이상 사용할 수 없습니다.",
+	"share_count": "현재 이 플랜을 공유하고 있습니다. {count}회 조회되었습니다",
 	"buttons": {
-		"create_link": "Create Sharing Link",
-		"copy_url": "Copy URL",
-		"stop_sharing": "Stop Sharing",
-		"views": "{count} Views"
+		"create_link": "공유 링크 생성",
+		"copy_url": "URL 복사",
+		"stop_sharing": "공유 중단",
+		"views": "조회 {count}회"
 	},
-	"title": "Share Plan",
+	"title": "플랜 공유",
 	"banner": {
-		"title": "Shared plan",
-		"info": "Read-only. Prices use the universe 30-day average.",
-		"signup_hint": "Create a free account to clone and edit it."
+		"title": "공유된 플랜",
+		"info": "내 사본에서 수정해 보세요. 공유된 플랜은 절대 변경되지 않습니다.",
+		"changed": "공유된 버전에서 변경됨",
+		"prices": "가격: {source}.",
+		"prices_hint": "공유한 사람에게는 다른 수치가 표시될 수 있습니다.",
+		"price_universe": "전체 30일 평균",
+		"price_cx": "내 거래소 설정: {name}",
+		"reset": "공유된 버전으로 되돌리기",
+		"copy": "변경 내용 복사",
+		"copied": "변경 사항이 복사되었습니다. 디스코드에 붙여 넣으세요",
+		"copy_failed": "변경 사항을 복사할 수 없습니다",
+		"save": "내 플랜에 저장",
+		"signup": "가입하고 저장하기"
+	},
+	"compare": {
+		"label": "공유본 대비:",
+		"profit": "{delta} ȼ/일",
+		"roi": "ROI {from} → {to}",
+		"area": "면적 {delta}",
+		"workforce": "인력 {delta}",
+		"buildings": "건물 {delta}",
+		"added": "추가됨",
+		"new": "신규",
+		"amount": "수량 변경됨",
+		"recipe": "레시피 변경됨",
+		"removed": "제거됨"
+	},
+	"changes": {
+		"recipe": "{label} 레시피 {from} → {to}",
+		"profit": "수익: {from} → {to} ȼ/일",
+		"roi": "ROI: {from} → {to}",
+		"prices": "가격: {source}",
+		"more": "… 외 {n}건의 변경 사항"
 	},
 	"unavailable": {
-		"title": "This shared plan is no longer available",
-		"text": "Its owner stopped sharing it or deleted the plan, or the link is incomplete.",
-		"home": "Go to PRUNplanner"
+		"title": "공유된 플랜을 더는 이용할 수 없습니다",
+		"text": "플랜 소유자가 공유를 중단했거나 플랜을 삭제했습니다. 또는 링크가 잘못되었을 수 있습니다.",
+		"home": "PRUNplanner로 이동"
 	}
 }

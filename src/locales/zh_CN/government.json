@@ -9,8 +9,8 @@
 			"free_population": "空闲人口",
 			"free_population_pct": "空闲人口 %",
 			"unfilled_jobs": "空缺职位",
-			"plan_need": "@:terms.plan需求",
-			"plan_check": "@:terms.plan检查"
+			"plan_need": "@:{'terms.plan'}需求",
+			"plan_check": "@:{'terms.plan'}检查"
 		},
 		"modal_title": "最新人口报告：{planet_id}"
 	}

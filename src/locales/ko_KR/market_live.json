@@ -1,6 +1,7 @@
 {
 	"view_title": "Market Live",
 	"title": "Market Live",
+	"connection_lost": "Connection lost. Reconnecting...",
 	"status": {
 		"connected": "Connected",
 		"disconnected": "Disconnected"

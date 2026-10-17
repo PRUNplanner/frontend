@@ -1,13 +1,11 @@
 {
 	"navigation": {
 		"planning": "规划",
-		"planning_short": "规划",
 		"empire": "帝国",
 		"planet_search": "行星搜索",
 		"management": "管理",
 		"exchanges": "交易所",
 		"tools": "工具",
-		"tools_short": "工具",
 		"market_exploration": "市场探索",
 		"market_live": "实时市场",
 		"recipe_roi": "生产模板 ROI",
@@ -18,23 +16,36 @@
 		"fio_burn": "FIO 消耗",
 		"fio_repair": "FIO 维修",
 		"account": "账户",
-		"account_short": "账户",
 		"profile": "个人资料",
 		"api": "API",
 		"help": "帮助",
 		"logout": "登出",
 		"fio": {
-			"backend": "后端",
+			"fio_updated": "FIO updated",
+			"fetched": "PRUNplanner fetched",
 			"fio": "FIO",
 			"fio_active": "FIO 已启用",
 			"fio_inactive": "FIO 未启用",
-			"fio_syncing": "FIO Syncing",
-			"fio_no_data": "FIO Waiting for Data",
-			"fio_rejected": "FIO Key Rejected"
+			"fio_syncing": "FIO 同步中",
+			"fio_no_data": "FIO 等待数据",
+			"fio_rejected": "FIO 密钥被拒"
 		},
 		"collapse": "折叠导航栏",
 		"expand": "展开导航栏",
-		"menu": "菜单"
+		"empire_switch": "Switch",
+		"plans": "Plans",
+		"plans_count": "{name} · {count} plans",
+		"new_plan": "New plan from Planet Search",
+		"create_empire": "Create an empire",
+		"no_plans": "No plans yet",
+		"not_in_empire": "not in this empire",
+		"plans_filter": "Filter plans",
+		"plans_filter_clear": "Clear filter",
+		"plans_filter_empty": "No plan matches",
+		"market": "Market",
+		"calculators": "Calculators",
+		"more": "More",
+		"account_menu": "Account menu"
 	},
 	"buttons": {
 		"create": "创建",
@@ -49,12 +60,12 @@
 		"no": "否",
 		"delete": "删除",
 		"cancel": "取消",
-		"clone_plan": "复制计划",
-		"clone_complete": "复制完成",
 		"copy": "复制",
 		"add": "添加",
 		"fullscreen": "切换全屏",
-		"edit": "编辑"
+		"edit": "编辑",
+		"show_all": "Show all ({n})",
+		"show_fewer": "Show fewer"
 	},
 	"ui": {
 		"placeholder": {
@@ -76,14 +87,44 @@
 			"page": "第{page}页",
 			"more": "更多页面"
 		},
+		"table": {
+			"no_data": "No Data",
+			"expand_row": "Show details"
+		},
+		"close": "Close",
+		"tag": {
+			"remove": "Remove {label}"
+		},
 		"language": "语言",
-		"page_load_failed": "This page couldn't load. Reload to get the latest version."
+		"page_load_failed": "此页面无法加载。重新加载以获取最新版本。",
+		"meter": {
+			"used": "{label} {pct} % used"
+		},
+		"strip": {
+			"dot": "{label}: {value}",
+			"over": "{n} more beyond the axis"
+		},
+		"runway": {
+			"beyond": "beyond the axis"
+		}
 	},
 	"values": {
 		"never": "从不"
 	},
 	"charts": {
-		"other": "其它（{n}）",
+		"other": "其它 ({n})",
 		"empty": "无待显示内容"
+	},
+	"version_update": {
+		"ready_title": "A new version of PRUNplanner is ready",
+		"ready_body": "Reload to get it. Your saved work stays as it is.",
+		"unsaved_body": "Save your changes first, then reload.",
+		"outdated_title": "This tab is out of date",
+		"outdated_body": "A newer PRUNplanner opened in another tab. Reload to keep working.",
+		"reload": "Reload",
+		"later": "Later",
+		"chip": "Update ready",
+		"whats_new_title": "PRUNplanner {version} is here",
+		"whats_new_action": "What's new"
 	}
 }
