@@ -15,16 +15,14 @@
 	"change_profile": {
 		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
-			"verify_email": "验证电子邮件",
-			"resend_code": "重新发送验证码",
-			"code_requested": "验证码已发送。"
+			"enter_code": "Enter code",
+			"resend_code": "Send new code"
 		},
 		"form": {
 			"fio_apikey": "FIO API 密钥",
 			"prun_username": "PrUn 用户名",
-			"email_info": "邮箱不是必填项，但强烈建议填写，以提高账户安全性并用于密码找回。",
+			"email_info": "Optional. Only used to reset your password: no newsletters, never shared.",
 			"email_address": "邮箱地址",
-			"email_verified": "邮箱已验证",
 			"fio_status": "FIO 状态"
 		},
 		"fio_connected": "已连接。您的数据将稍后显示。",
@@ -41,6 +39,16 @@
 			"fio_invalid_key": "FIO 不接受此 API 密钥。",
 			"fio_username_mismatch": "此 API 密钥属于另一 PrUn 用户。",
 			"unknown": "保存失败，请稍后重试。"
+		},
+		"email_taken": "This address is already used by another account.",
+		"code_sent_notice": "Saved. We sent a code to the new address; resets go there once it's confirmed.",
+		"recovery": {
+			"label": "Account recovery",
+			"not_set_up": "Not set up",
+			"not_set_up_info": "Without an email, a forgotten password can't be reset.",
+			"waiting": "Waiting for confirmation",
+			"ready": "Ready",
+			"ready_info": "Password resets go to this address."
 		}
 	},
 	"storage_data": {
@@ -121,9 +129,5 @@
 		"account": {
 			"title": "Account"
 		}
-	},
-	"account": {
-		"verified": "Verified",
-		"not_verified": "Not verified"
 	}
 }
