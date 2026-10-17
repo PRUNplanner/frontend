@@ -65,6 +65,19 @@ describe("PDrawer", () => {
 		expect(panel().find("[data-layer-header]").text()).toBe("Filters");
 	});
 
+	it("opens from the bottom as a full-width sheet with a grab handle", async () => {
+		mountDrawer({ placement: "bottom", width: 400, closable: false });
+		await flushPromises();
+
+		expect(panel().attributes("data-placement")).toBe("bottom");
+		expect(panel().classes()).toEqual(
+			expect.arrayContaining(["inset-x-0", "bottom-0", "max-h-[85vh]"])
+		);
+		// the width is for the side drawers only
+		expect(panel().element.style.width).toBe("");
+		expect(panel().find("[aria-hidden=true]").exists()).toBe(true);
+	});
+
 	it("closes with the X, Esc and the mask", async () => {
 		const show = mountDrawer({ title: "Market" });
 		await flushPromises();

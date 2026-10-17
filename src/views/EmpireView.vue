@@ -33,6 +33,7 @@
 	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { planResultCacheKey } from "@/features/empire/empire.util";
+	import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
 	import { calculateEmpireShippingDemand } from "@/features/empire/util/empireShippingDemand.util";
 	import { profitBreakdown } from "@/features/planning/util/profitBreakdown.util";
 	import { empireSplitParts } from "@/features/empire/empireAnalysis.util";
@@ -103,6 +104,8 @@
 		},
 	});
 
+	const { setProfits } = useEmpireProfits();
+
 	const internalEmpireUuid = ref(props.empireUuid || defaultEmpireUuid.value);
 
 	const selectedEmpireUuid = computed({
@@ -113,6 +116,12 @@
 				defaultEmpireUuid.value = val;
 			}
 		},
+	});
+
+	// the navigation's empire switch, while this page is open; a route
+	// empire still wins until the switch leaves it
+	watch(defaultEmpireUuid, (uuid) => {
+		if (uuid) internalEmpireUuid.value = uuid;
 	});
 
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
@@ -216,6 +225,16 @@
 			}
 			calculatedPlanData.value = plans;
 			calculatedPlans.value = results;
+			if (empireUuid)
+				setProfits(
+					empireUuid,
+					Object.fromEntries(
+						Object.entries(results).map(([uuid, c]) => [
+							uuid,
+							c.result.profit,
+						])
+					)
+				);
 		} catch (err) {
 			// e.g. game data missing, never persist a partial empire state
 			if (current === run) console.error(err);

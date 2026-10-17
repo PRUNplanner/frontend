@@ -87,6 +87,10 @@
 
 	// Util
 	import { inertClone } from "@/util/data";
+	import {
+		breadcrumbEmpire,
+		pickEmpire,
+	} from "@/layout/components/navigation/navigation.util";
 
 	// Components
 	import PlanBonuses from "@/features/planning/components/PlanBonuses.vue";
@@ -885,6 +889,16 @@
 		);
 	}
 
+	// breadcrumb: the current empire if it holds the plan, else the first
+	const crumbEmpire = computed(() => {
+		const empires = Object.values(planningStore.empires);
+		return breadcrumbEmpire(
+			refPlanData.value.uuid,
+			empires,
+			pickEmpire(empires, userStore.preferences.defaultEmpireUuid)
+		);
+	});
+
 	function resetShared(): void {
 		applySavedPlan(sharedBaseline);
 		trackEvent("plan:shared_reset", {
@@ -1157,25 +1171,35 @@
 		padding scrolls the last rows clear of the insights button -->
 	<div class="@container pb-16 [&_*]:scroll-mt-28">
 		<div
-			class="grid grid-cols-[minmax(0,1fr)] grid-rows-[repeat(5,auto)] md:grid-cols-[minmax(0,1fr)_auto] gap-x-3">
+			class="grid grid-cols-[minmax(0,1fr)] grid-rows-[repeat(5,auto)] @3xl:grid-cols-[minmax(0,1fr)_auto] gap-x-3">
 			<!-- Plan Name & Selector -->
-			<div
-				class="p-3 row-1 col-1 flex flex-row flex-wrap gap-x-3 items-baseline">
+			<div class="p-3 row-1 col-1 min-w-0">
+				<nav
+					:aria-label="t('plan.breadcrumb')"
+					class="flex items-center gap-1.5 text-sm text-muted-strong">
+					<template v-if="crumbEmpire">
+						<RouterLink
+							to="/empire"
+							class="inline-flex items-center min-h-6 min-w-0 truncate hover:text-ink hover:underline">
+							{{ crumbEmpire.empire_name }}
+						</RouterLink>
+						<span aria-hidden="true">›</span>
+					</template>
+					<span class="truncate">
+						{{
+							planetData.planet_name != planetData.planet_natural_id
+								? `${planetData.planet_name} (${planetData.planet_natural_id})`
+								: planetData.planet_natural_id
+						}}
+					</span>
+				</nav>
 				<h1 class="text-2xl font-bold text-white">
 					{{ planName || t("plan.name.untitled") }}
 				</h1>
-				<span class="text-muted-strong">
-					{{
-						planetData.planet_name != planetData.planet_natural_id
-							? planetData.planet_name + " - "
-							: ""
-					}}
-					{{ planetData.planet_natural_id }}
-				</span>
 			</div>
 			<!-- Status Bar (sticky) -->
 			<div
-				class="row-3 md:row-2 col-span-full justify-self-start w-full px-3 py-2 sticky top-0 z-1000 bg-(--app-bg)">
+				class="row-3 @3xl:row-2 col-span-full justify-self-start w-full px-3 py-2 sticky top-0 z-1000 bg-(--app-bg)">
 				<PlanStatusBar
 					:area-data="result.area"
 					:corphq="result.corphq"
@@ -1186,7 +1210,7 @@
 			</div>
 			<!-- Plan Actions: Save is the one primary, the rest under More -->
 			<div
-				class="p-3 row-2 md:row-1 md:col-2 flex flex-row flex-wrap items-center gap-x-3 gap-y-2 md:justify-end">
+				class="p-3 row-2 @3xl:row-1 @3xl:col-2 flex flex-row flex-wrap items-center gap-x-3 gap-y-2 @3xl:justify-end">
 				<template v-if="!disabled">
 					<div class="flex gap-x-1">
 						<PTooltip placement="bottom">

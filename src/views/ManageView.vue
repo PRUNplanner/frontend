@@ -130,7 +130,7 @@
 			<HelpDrawer file-name="management" />
 		</div>
 		<div
-			class="border-b border-white/10 grid grid-cols-1 lg:grid-cols-[60%_auto] divide-x divide-white/10 child:px-6 child:py-3">
+			class="border-b border-white/10 grid grid-cols-1 xl:grid-cols-[60%_auto] divide-x divide-white/10 child:px-6 child:py-3">
 			<div>
 				<AsyncManageEmpire
 					ref="empireRef"

@@ -11,11 +11,11 @@
 	const HomepageHeader = defineAsyncComponent(
 		() => import("@/layout/components/HomepageHeader.vue")
 	);
-	const NavigationBar = defineAsyncComponent(
-		() => import("@/layout/components/NavigationBar.vue")
+	const AppSidebar = defineAsyncComponent(
+		() => import("@/layout/components/navigation/AppSidebar.vue")
 	);
-	const MobileToggle = defineAsyncComponent(
-		() => import("@/layout/components/MobileToggle.vue")
+	const MobileNavBar = defineAsyncComponent(
+		() => import("@/layout/components/navigation/MobileNavBar.vue")
 	);
 
 	const AnalyticsConsentDialog = defineAsyncComponent(
@@ -92,14 +92,16 @@
 		v-if="isLoggedIn && routeData.name !== 'imprint-tos'" />
 
 	<main class="flex w-full text-white/80">
-		<NavigationBar v-if="isLoggedIn" />
+		<AppSidebar v-if="isLoggedIn" class="hidden md:flex" />
 
 		<div class="flex-1 min-w-0 flex flex-col">
-			<div class="h-full min-h-screen">
+			<!-- logged in, phones keep the page clear of the bottom bar -->
+			<div
+				class="h-full min-h-screen"
+				:class="isLoggedIn ? 'pb-16 md:pb-0' : ''">
 				<HomepageHeader
 					v-if="!isLoggedIn"
 					:show-header="routeData.meta.showHeader" />
-				<MobileToggle v-if="isLoggedIn" />
 
 				<Suspense>
 					<RouterView />
@@ -110,4 +112,5 @@
 			</div>
 		</div>
 	</main>
+	<MobileNavBar v-if="isLoggedIn" />
 </template>

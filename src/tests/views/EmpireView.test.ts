@@ -7,6 +7,7 @@ import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlan
 import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 import ComputingProgress from "@/layout/components/ComputingProgress.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { usePreferences } from "@/features/preferences/usePreferences";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
@@ -72,9 +73,10 @@ vi.mock("@/features/planning/usePlanContext", async (importOriginal) => ({
 	>()),
 	usePlanContext: () => ({ loadGameData: async () => ({}), createContext }),
 }));
-vi.mock("@/features/preferences/usePreferences", () => ({
-	usePreferences: () => ({ defaultEmpireUuid: ref("E1") }),
-}));
+vi.mock("@/features/preferences/usePreferences", () => {
+	const defaultEmpireUuid = ref("E1");
+	return { usePreferences: () => ({ defaultEmpireUuid }) };
+});
 vi.mock("@/features/planning/util/materialIO.util", () => ({
 	useMaterialIOUtil: () => ({
 		// its result only feeds the stubbed EmpireCostOverview
@@ -143,6 +145,8 @@ async function mountView(
 
 describe("EmpireView", () => {
 	beforeEach(() => {
+		// one preference for the module, as the store keeps it
+		usePreferences().defaultEmpireUuid.value = "E1";
 		queries.length = 0;
 		patches.length = 0;
 		toast.mockClear();
@@ -197,6 +201,24 @@ describe("EmpireView", () => {
 			new Error("Planet OT-580b not available.")
 		);
 		error.mockRestore();
+	});
+
+	it("follows the navigation's empire switch, also from a route empire", async () => {
+		const { defaultEmpireUuid } = usePreferences();
+		const { wrapper, setProps } = await mountComponent(EmpireView, {
+			empireUuid: "E1",
+		});
+		const loader = () => wrapper.findComponent(WrapperPlanningDataLoader);
+		await vi.waitFor(() => expect(loader().exists()).toBe(true));
+		const selected = () => loader().vm.$attrs["empire-uuid"];
+		expect(selected()).toBe("E1");
+
+		// the switch sets the preference, then leaves /empire/E1
+		defaultEmpireUuid.value = "E2";
+		await nextTick();
+		expect(selected()).toBe("E1");
+		await setProps({ empireUuid: undefined });
+		expect(selected()).toBe("E2");
 	});
 
 	describe("changes from another tab", () => {
