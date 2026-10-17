@@ -92,7 +92,7 @@ export const buttonConfig: PButtonConfig = {
 export const checkboxConfig: PCheckboxConfig = {
 	container: "inline-flex items-center",
 	// fills the root when the app sizes it (a whole table cell as the target)
-	label: "touch-target flex grow self-stretch items-center justify-[inherit] cursor-pointer has-disabled:cursor-auto",
+	label: "touch-target flex grow self-stretch items-center [justify-content:inherit] cursor-pointer has-disabled:cursor-auto",
 	input: "peer transition-all cursor-pointer disabled:cursor-auto appearance-none rounded-control shadow hover:shadow-md border border-table-border",
 	sizes: {
 		md: { input: "size-4", icon: "size-3.5" },
