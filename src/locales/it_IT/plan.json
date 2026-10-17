@@ -32,6 +32,7 @@
 	"name": {
 		"untitled": "Unnamed plan"
 	},
+	"breadcrumb": "Plan location",
 	"tools": {
 		"labels": {
 			"popr": "POPR",
