@@ -56,7 +56,7 @@
 		}}
 	</PNotice>
 	<div
-		class="grid grid-cols-[repeat(3,auto)] sm:grid-cols-[repeat(6,auto)] gap-3 child:my-auto">
+		class="grid grid-cols-[repeat(3,auto)] @xl:grid-cols-[repeat(6,auto)] gap-3 child:my-auto">
 		<template v-for="expert in expertData" :key="expert.name">
 			<div>
 				{{ $t(`game.expertise.${expert.name.toUpperCase()}`) }}

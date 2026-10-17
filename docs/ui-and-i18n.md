@@ -113,7 +113,8 @@ are internal to `PDataTable` and the selects.
       slot for the footer; `width` is px or any CSS width (default the full
       width), and 16 px of the mask stay visible on each side.
     - `<PDrawer v-model:show="x" :title="…" :width="600">`, with
-      `placement`, `bodyClass` and a `#header` slot.
+      `placement` (`left`, `right`, or `bottom` for a full-width sheet
+      with a grab handle, at most 85vh), `bodyClass` and a `#header` slot.
     - Confirms: `if (await useConfirm()({ title, content, positiveText,
       negativeText })) …`; the one `PConfirmHost` sits in `AppProvider.vue`.
     - Both layers teleport to `body`, set `inert` on `#app` and lock the page

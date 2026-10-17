@@ -6,7 +6,7 @@
 | --- | --- |
 | `main.ts` | Bootstrap (see below) |
 | `AppProvider.vue` | `App` plus the kit's `PConfirmHost` and `PToastHost` |
-| `App.vue` | Shell. Shows `NavigationBar` when logged in and `HomepageHeader` otherwise, then `<Suspense><RouterView/></Suspense>` and `AppFooter` (not on the homepage, which has its own footer) |
+| `App.vue` | Shell. Shows the navigation when logged in (`layout/components/navigation/`: `AppSidebar` from `md`, collapsing to `SidebarRail`, and `MobileNavBar` with its sheets below) and `HomepageHeader` otherwise, then `<Suspense><RouterView/></Suspense>` and `AppFooter` (not on the homepage, which has its own footer) |
 | `router/` | Flat route table (`index.ts`); typed meta in `router.d.ts` |
 | `views/` | Route pages (`*View.vue`), plus `views/fio/` and `views/tools/` |
 | `features/<name>/` | Feature code: composables, components and types. See [features/](features/README.md) |
@@ -49,7 +49,8 @@
 - **Adding a page:**
   1. Create `views/XView.vue`.
   2. Add the route in `router/index.ts`.
-  3. Add the navigation entry in `layout/components/NavigationBar.vue`.
+  3. Add the navigation entry in `layout/components/navigation/useNavigation.ts`
+     (sidebar, rail and phone sheets all read it).
   4. Add a locale namespace if the page needs new strings.
 
 ## The view pattern

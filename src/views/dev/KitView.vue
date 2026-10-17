@@ -123,6 +123,7 @@
 	const showPopover = ref(false);
 	const showModal = ref(false);
 	const showDrawer = ref(false);
+	const showSheet = ref(false);
 
 	const confirm = useConfirm();
 	const toast = useToast();
@@ -440,6 +441,9 @@
 					<PButton type="secondary" @click="showDrawer = true">
 						Drawer
 					</PButton>
+					<PButton type="secondary" @click="showSheet = true">
+						Bottom sheet
+					</PButton>
 					<PButton
 						type="secondary"
 						@click="
@@ -497,6 +501,13 @@
 							searchable
 							aria-label="Material in drawer" />
 					</div>
+				</PDrawer>
+				<PDrawer
+					v-model:show="showSheet"
+					placement="bottom"
+					:closable="false"
+					aria-label="Bottom sheet">
+					<p>A sheet from the bottom, as the phone navigation uses.</p>
 				</PDrawer>
 			</section>
 

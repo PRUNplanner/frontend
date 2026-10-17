@@ -21,13 +21,20 @@
 		bodyClass = undefined,
 	} = defineProps<{
 		title?: string;
-		/** px, or any CSS width; on small screens 48 px of the mask stay visible */
+		/** px, or any CSS width; on small screens 48 px of the mask stay visible; not for bottom */
 		width?: number | string;
-		placement?: "left" | "right";
+		/** bottom: a sheet over the full width, at most 85vh, with a grab handle */
+		placement?: "left" | "right" | "bottom";
 		closable?: boolean;
 		autoFocus?: boolean;
 		bodyClass?: string;
 	}>();
+
+	const PLACEMENT_CLASS = {
+		right: "inset-y-0 right-0 max-w-[calc(100vw-48px)] rounded-l-panel",
+		left: "inset-y-0 left-0 max-w-[calc(100vw-48px)] rounded-r-panel",
+		bottom: "inset-x-0 bottom-0 max-h-[85vh] rounded-t-2xl",
+	};
 
 	const slots = useSlots();
 	const hasHeader = computed(() => !!title || !!slots.header);
@@ -61,16 +68,23 @@
 					aria-modal="true"
 					:aria-labelledby="hasHeader ? titleId : undefined"
 					tabindex="-1"
-					class="pdrawer-panel absolute inset-y-0 flex flex-col max-w-[calc(100vw-48px)] bg-surface text-ink text-sm leading-[1.6] outline-none shadow-panel"
-					:class="
-						placement === 'right'
-							? 'right-0 rounded-l-panel'
-							: 'left-0 rounded-r-panel'
-					"
+					class="pdrawer-panel absolute flex flex-col bg-surface text-ink text-sm leading-[1.6] outline-none shadow-panel"
+					:class="PLACEMENT_CLASS[placement]"
 					:data-placement="placement"
-					:style="{
-						width: typeof width === 'number' ? `${width}px` : width,
-					}">
+					:style="
+						placement === 'bottom'
+							? undefined
+							: {
+									width:
+										typeof width === 'number'
+											? `${width}px`
+											: width,
+								}
+					">
+					<div
+						v-if="placement === 'bottom'"
+						aria-hidden="true"
+						class="shrink-0 mx-auto mt-2 h-1 w-9 rounded-full bg-line-strong" />
 					<div
 						v-if="hasHeader || closable"
 						data-layer-header
@@ -117,5 +131,9 @@
 	.pdrawer-enter-from .pdrawer-panel[data-placement="left"],
 	.pdrawer-leave-to .pdrawer-panel[data-placement="left"] {
 		transform: translateX(-100%);
+	}
+	.pdrawer-enter-from .pdrawer-panel[data-placement="bottom"],
+	.pdrawer-leave-to .pdrawer-panel[data-placement="bottom"] {
+		transform: translateY(100%);
 	}
 </style>

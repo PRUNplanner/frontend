@@ -203,6 +203,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | `xit:transfer_open` | `source` | |
 | `xit:transfer_copy` | `source` | |
 | `app:navigation_toggle` | `navigation_style` | |
+| `app:nav_click` | `target` (route name, or `logout`), `area` (`sidebar`, `rail`, `mobile_bar`, `mobile_sheet`), `section` (`empire`, `plans`, `planning`, `tools`, `footer`) | one click on a navigation entry; opening a menu, popover or sheet and the plan breadcrumb are not counted |
 | `app:version_reload` | | |
 | `app:remote_change` | `object_type` (`plan`, `empire`, `cx`), `has_unsaved_edits`, `is_deleted` | another tab saved or deleted what an open editor shows: it reloaded, or (with unsaved edits, or deleted) showed a notice. A deleted empire is sent by the empire page, always with `has_unsaved_edits: false` |
 | `app:session_change` | `reason` (`logout`, `login`, `other_user`) | another tab logged out, logged in, or logged in as another user; sent before this tab resets or reloads |

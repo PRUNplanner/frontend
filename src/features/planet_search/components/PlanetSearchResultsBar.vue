@@ -79,7 +79,7 @@
 			</PButton>
 
 			<!-- one row, one height: view switch, then sort and columns -->
-			<div class="ml-auto flex flex-row items-center gap-6">
+			<div class="ml-auto flex flex-row flex-wrap items-center gap-x-6 gap-y-2">
 				<PButtonGroup
 					role="group"
 					:aria-label="t('planet_search.results.view_label')">
