@@ -78,6 +78,22 @@
 			PP
 		</RouterLink>
 
+		<PTooltip v-for="item in planning" :key="item.name" placement="right">
+			<template #trigger>
+				<RouterLink
+					:to="item.to"
+					:class="iconClass(isActive(item.name))"
+					:aria-label="t(`common.navigation.${item.label}`)"
+					:aria-current="isActive(item.name) ? 'page' : undefined"
+					@click="trackNav(item.name, 'rail', 'planning')">
+					<PIcon :size="20"><component :is="item.icon" /></PIcon>
+				</RouterLink>
+			</template>
+			{{ t(`common.navigation.${item.label}`) }}
+		</PTooltip>
+
+		<div class="w-8 h-px my-1.5 bg-line" />
+
 		<PTooltip v-if="currentEmpire" placement="right">
 			<template #trigger>
 				<RouterLink
@@ -149,22 +165,6 @@
 				:stray="strayPlan"
 				area="rail" />
 		</PPopover>
-
-		<div class="w-8 h-px my-1.5 bg-line" />
-
-		<PTooltip v-for="item in planning" :key="item.name" placement="right">
-			<template #trigger>
-				<RouterLink
-					:to="item.to"
-					:class="iconClass(isActive(item.name))"
-					:aria-label="t(`common.navigation.${item.label}`)"
-					:aria-current="isActive(item.name) ? 'page' : undefined"
-					@click="trackNav(item.name, 'rail', 'planning')">
-					<PIcon :size="20"><component :is="item.icon" /></PIcon>
-				</RouterLink>
-			</template>
-			{{ t(`common.navigation.${item.label}`) }}
-		</PTooltip>
 
 		<div class="w-8 h-px my-1.5 bg-line" />
 

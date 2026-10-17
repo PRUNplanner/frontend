@@ -19,7 +19,7 @@
 	import type { NavArea } from "@/layout/components/navigation/navigation.types";
 
 	// UI
-	import { PIcon, PTable, PTooltip } from "@/ui";
+	import { PIcon, PTooltip } from "@/ui";
 	import { SensorsSharp } from "@vicons/material";
 
 	/**
@@ -103,22 +103,22 @@
 					:class="DOT[tag.type]" />
 			</RouterLink>
 		</template>
-		<div>{{ label }}</div>
-		<PTable v-if="userStore.fioStatus === 'ok'" striped>
-			<thead>
-				<tr>
-					<th>{{ t("common.navigation.fio.backend") }}</th>
-					<th>{{ t("common.navigation.fio.fio") }}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						{{ relativeFromDate(storageTimestamp || undefined) }}
-					</td>
-					<td>{{ relativeFromDate(storageAge || undefined) }}</td>
-				</tr>
-			</tbody>
-		</PTable>
+		<div class="flex items-center gap-2 font-bold">
+			<span class="size-1.5 rounded-full" :class="DOT[tag.type]" />
+			{{ label }}
+		</div>
+		<!-- in the order the data travels: game → FIO → PRUNplanner -->
+		<dl
+			v-if="userStore.fioStatus === 'ok'"
+			class="grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 mt-1.5 text-xs">
+			<dt class="text-muted">{{ t("common.navigation.fio.fio_updated") }}</dt>
+			<dd class="text-right">
+				{{ relativeFromDate(storageAge || undefined) }}
+			</dd>
+			<dt class="text-muted">{{ t("common.navigation.fio.fetched") }}</dt>
+			<dd class="text-right">
+				{{ relativeFromDate(storageTimestamp || undefined) }}
+			</dd>
+		</dl>
 	</PTooltip>
 </template>

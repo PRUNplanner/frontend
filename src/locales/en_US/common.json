@@ -21,7 +21,8 @@
 		"help": "Help",
 		"logout": "Logout",
 		"fio": {
-			"backend": "Backend",
+			"fio_updated": "FIO updated",
+			"fetched": "PRUNplanner fetched",
 			"fio": "FIO",
 			"fio_active": "FIO Active",
 			"fio_inactive": "FIO Inactive",

@@ -44,9 +44,9 @@ const TOOLS_KEY = "prunplanner_nav_tools";
 
 function readToolsOpen(): boolean {
 	try {
-		return localStorage.getItem(TOOLS_KEY) === "1";
+		return localStorage.getItem(TOOLS_KEY) !== "0";
 	} catch {
-		return false;
+		return true;
 	}
 }
 

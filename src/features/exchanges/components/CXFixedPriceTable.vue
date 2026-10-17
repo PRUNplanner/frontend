@@ -195,7 +195,7 @@
 		<div ref="table" class="overflow-x-auto">
 			<table class="w-full text-sm">
 				<thead class="text-muted text-left">
-					<tr class="child:py-2 child:pr-3 border-b border-white/10">
+					<tr class="child:py-2 child:pr-3 child:whitespace-nowrap border-b border-white/10">
 						<th scope="col">{{ $t("exchanges.fixed.material") }}</th>
 						<th scope="col" class="text-right">
 							{{ $t("exchanges.fixed.buy") }}
@@ -249,26 +249,31 @@
 								@update:value="(v) => setSide(row, 'sell', v ?? null)" />
 						</td>
 						<td class="text-muted whitespace-nowrap">
-							<span class="tabular-nums text-white">
-								{{ formatNumber(m.price) }}
-							</span>
-							· {{ priceSourceLabel(m.source, t) }}
-							<template v-if="m.diff !== null">
-								·
-								<span class="tabular-nums">
-									{{ m.diff > 0 ? "+" : "" }}{{ formatNumber(m.diff, 0) }} %
+							<div>
+								<span class="tabular-nums text-white">
+									{{ formatNumber(m.price) }}
 								</span>
-							</template>
+								<template v-if="m.diff !== null">
+									·
+									<span class="tabular-nums">
+										{{ m.diff > 0 ? "+" : "" }}{{ formatNumber(m.diff, 0) }} %
+									</span>
+								</template>
+							</div>
+							<div class="text-xs">
+								{{ priceSourceLabel(m.source, t) }}
+							</div>
 						</td>
 						<td v-if="showCOGM" class="whitespace-nowrap">
 							<span v-if="!c" class="text-muted">—</span>
 							<div v-else class="flex items-center gap-2">
 								<PTooltip>
 									<template #trigger>
-										<span class="tabular-nums" tabindex="0">
+										<span
+											class="inline-block tabular-nums"
+											tabindex="0">
 											{{ formatNumber(c.value) }}
-											<span class="text-muted">
-												·
+											<span class="block text-xs text-muted">
 												{{
 													c.plans > 1
 														? $t("exchanges.fixed.made_in", c.plans)

@@ -105,11 +105,11 @@
 				<td class="border-r">
 					{{ $t("plan.tools.cogm.table.degradation") }}
 				</td>
-				<td class="font-bold">
+				<td class="whitespace-nowrap font-bold">
 					{{ formatNumber(data.degradationShare) }}
 					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
-				<td colspan="2" class="text-end">
+				<td colspan="2" class="whitespace-nowrap text-end">
 					{{ formatNumber(data.runtimeShare * 100) }} % /
 					{{ formatNumber(data.degradation) }}
 					<span class="pl-1 font-light text-muted"> ȼ </span>
@@ -121,7 +121,7 @@
 						{{ $t("plan.tools.cogm.table.materials") }}
 					</td>
 					<td>{{ $t("plan.tools.cogm.table.input_total") }}</td>
-					<td colspan="2" class="text-end font-bold">
+					<td colspan="2" class="whitespace-nowrap text-end font-bold">
 						{{ formatNumber(data.inputTotal) }}
 						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</td>
@@ -167,11 +167,11 @@
 							</component>
 						</div>
 					</td>
-					<td>
+					<td class="whitespace-nowrap">
 						{{ formatNumber(input.costUnit) }}
 						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</td>
-					<td class="text-end">
+					<td class="whitespace-nowrap text-end">
 						{{ formatNumber(input.costTotal) }}
 						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</td>
@@ -181,11 +181,11 @@
 				<td class="border-r">
 					{{ $t("plan.tools.cogm.table.workforce") }}
 				</td>
-				<td class="font-bold">
+				<td class="whitespace-nowrap font-bold">
 					{{ formatNumber(data.workforceCost) }}
 					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
-				<td colspan="2" class="text-end">
+				<td colspan="2" class="whitespace-nowrap text-end">
 					{{ formatNumber(data.runtimeShare * 100) }} % /
 					{{ formatNumber(data.workforceCostTotal) }}
 					<span class="pl-1 font-light text-muted"> ȼ </span>
@@ -195,7 +195,7 @@
 				<td class="border-r">
 					{{ $t("plan.tools.cogm.table.total_cost") }}
 				</td>
-				<td colspan="3" class="font-bold">
+				<td colspan="3" class="whitespace-nowrap font-bold">
 					{{ formatNumber(data.totalCost) }}
 					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
@@ -204,7 +204,7 @@
 				<td class="border-r">
 					{{ $t("plan.tools.cogm.table.recipe_profit") }}
 				</td>
-				<td colspan="3" class="font-bold">
+				<td colspan="3" class="whitespace-nowrap font-bold">
 					{{ formatNumber(data.totalProfit) }}
 					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
@@ -233,11 +233,11 @@
 						:ticker="output.ticker"
 						:amount="output.amount" />
 				</td>
-				<td>
+				<td class="whitespace-nowrap">
 					{{ formatNumber(output.costSplit) }}
 					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
-				<td class="text-end">
+				<td class="whitespace-nowrap text-end">
 					<span class="font-bold">
 						{{ formatNumber(output.costTotal) }}
 					</span>
