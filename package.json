@@ -7,7 +7,7 @@
 	"packageManager": "pnpm@10.30.3",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build && node scripts/write-version.js",
+		"build": "vite build",
 		"tsc": "vue-tsc --project tsconfig.typecheck.json",
 		"tsc:watch": "vue-tsc --project tsconfig.typecheck.json --watch",
 		"preview": "vite preview",

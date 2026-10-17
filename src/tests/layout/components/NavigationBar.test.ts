@@ -5,6 +5,8 @@ import { createPinia, type Pinia, setActivePinia } from "pinia";
 import { useUserStore } from "@/stores/userStore";
 import NavigationBar from "@/layout/components/NavigationBar.vue";
 import PTag from "@/ui/components/PTag.vue";
+import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
+import { useVersionCheck } from "@/lib/useVersionCheck";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -101,5 +103,34 @@ describe("NavigationBar FIO tag", () => {
 			type: "success",
 			link: undefined,
 		});
+	});
+});
+
+describe("NavigationBar version label", () => {
+	beforeEach(() => {
+		pinia = createPinia();
+		setActivePinia(pinia);
+		execute.mockReset().mockResolvedValue(undefined);
+	});
+
+	it("turns into the update chip after Later", async () => {
+		useUserStore().profile = profile("ok");
+		const { updateAvailable, latestVersion, later } = useVersionCheck();
+		const { wrapper } = await mountComponent(NavigationBar, {}, { pinia });
+		const debugLink = () =>
+			wrapper
+				.findAllComponents(RouterLinkStub)
+				.some((l) => l.props("to") === "/debug");
+
+		expect(debugLink()).toBe(true);
+		expect(wrapper.findComponent(VersionUpdateChip).exists()).toBe(false);
+
+		updateAvailable.value = true;
+		latestVersion.value = "new-build";
+		later();
+		await flushPromises();
+
+		expect(debugLink()).toBe(false);
+		expect(wrapper.findComponent(VersionUpdateChip).exists()).toBe(true);
 	});
 });

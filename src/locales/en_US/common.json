@@ -105,7 +105,15 @@
 		"empty": "Nothing to show"
 	},
 	"version_update": {
-		"title": "{app} has been updated!",
-		"action": "Click to load the newest version."
+		"ready_title": "A new version of PRUNplanner is ready",
+		"ready_body": "Reload to get it. Your saved work stays as it is.",
+		"unsaved_body": "Save your changes first, then reload.",
+		"outdated_title": "This tab is out of date",
+		"outdated_body": "A newer PRUNplanner opened in another tab. Reload to keep working.",
+		"reload": "Reload",
+		"later": "Later",
+		"chip": "Update ready",
+		"whats_new_title": "PRUNplanner {version} is here",
+		"whats_new_action": "What's new"
 	}
 }

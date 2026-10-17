@@ -203,7 +203,9 @@ so for them `tool:use` is close to a pageview that got a result:
 | `xit:transfer_open` | `source` | |
 | `xit:transfer_copy` | `source` | |
 | `app:navigation_toggle` | `navigation_style` | |
-| `app:version_reload` | | |
+| `app:version_reload` | `source` (`notice`, `chip`, `navigation`) | reload onto a newer build: the update notice's Reload, the nav chip, or a navigation to another page that loaded the new build |
+| `app:version_later` | | the update notice was put off with Later |
+| `app:whats_new_click` | | "What's new" on the toast after a release bump, opens the changelog |
 | `app:remote_change` | `object_type` (`plan`, `empire`, `cx`), `has_unsaved_edits`, `is_deleted` | another tab saved or deleted what an open editor shows: it reloaded, or (with unsaved edits, or deleted) showed a notice. A deleted empire is sent by the empire page, always with `has_unsaved_edits: false` |
 | `app:session_change` | `reason` (`logout`, `login`, `other_user`) | another tab logged out, logged in, or logged in as another user; sent before this tab resets or reloads |
 | `app:db_blocked` | | the local game data database waits on an older PRUNplanner tab after a deploy |

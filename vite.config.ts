@@ -43,6 +43,33 @@ export function skipEmptyChunks(): Plugin {
 	};
 }
 
+// the commit in CI and Docker, else the build time; the tab compares it with
+// the deployed version.json to know when a newer build is out
+const buildId =
+	process.env.BUILD_REVISION ||
+	process.env.COMMIT_REF ||
+	new Date().toISOString();
+
+export function buildVersion(): Plugin {
+	return {
+		name: "build-version",
+		config: (_config, { command }) => ({
+			define: {
+				__BUILD_ID__: JSON.stringify(
+					command === "build" ? buildId : "dev"
+				),
+			},
+		}),
+		generateBundle() {
+			this.emitFile({
+				type: "asset",
+				fileName: "version.json",
+				source: JSON.stringify({ version: buildId }),
+			});
+		},
+	};
+}
+
 // https://vite.dev/config/
 export default defineConfig({
 	base: "/",
@@ -66,6 +93,7 @@ export default defineConfig({
 		tsconfigPaths(),
 		AutoImport({ imports: ["vue", "vue-router", "pinia"] }),
 		skipEmptyChunks(),
+		buildVersion(),
 		compression({
 			algorithms: ["gzip", "brotliCompress"],
 		}),

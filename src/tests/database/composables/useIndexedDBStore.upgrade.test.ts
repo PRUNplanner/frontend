@@ -38,14 +38,14 @@ describe("getDB: version upgrades from another tab", () => {
 
 	it("closes for a newer version and marks the app outdated", async () => {
 		await getDB();
-		const { updateAvailable } = useVersionCheck();
-		updateAvailable.value = false;
+		const { outdated } = useVersionCheck();
+		outdated.value = false;
 
 		// the newer tab's open succeeds instead of hanging on this one
 		const newer = await open(VERSION + 1);
 		await nextTick();
 
-		expect(updateAvailable.value).toBe(true);
+		expect(outdated.value).toBe(true);
 		// never reopens at its old version
 		await expect(getDB()).rejects.toThrow(/newer PRUNplanner version/);
 		newer.close();

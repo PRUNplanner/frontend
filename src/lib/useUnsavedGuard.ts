@@ -3,8 +3,16 @@
  * through a confirm, tab close or reload through the browser's own prompt.
  */
 
-import { onUnmounted, watch } from "vue";
+import { onUnmounted, shallowReactive, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
+
+// the mounted guards' checks, for hasUnsavedChanges()
+const guards = shallowReactive(new Set<() => boolean>());
+
+/** True while any mounted view has unsaved changes (reactive). */
+export function hasUnsavedChanges(): boolean {
+	return [...guards].some((unsaved) => unsaved());
+}
 
 export function useUnsavedGuard(
 	unsaved: () => boolean,
@@ -14,6 +22,8 @@ export function useUnsavedGuard(
 	// A redirect from a global guard ("/" to "/empire" when logged in) runs
 	// the leave guards again for the same navigation: ask only once.
 	let confirmedPath: string | undefined;
+
+	guards.add(unsaved);
 
 	onBeforeRouteLeave((to) => {
 		if (!unsaved()) return;
@@ -39,7 +49,8 @@ export function useUnsavedGuard(
 		{ immediate: true }
 	);
 
-	onUnmounted(() =>
-		window.removeEventListener("beforeunload", onBeforeUnload)
-	);
+	onUnmounted(() => {
+		guards.delete(unsaved);
+		window.removeEventListener("beforeunload", onBeforeUnload);
+	});
 }

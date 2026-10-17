@@ -112,6 +112,24 @@ describe("User Store", () => {
 		expect(result).toBe("ok");
 	});
 
+	it("Perform Login: ok when version.json fails", async () => {
+		const userStore = useUserStore();
+		vi.stubEnv("DEV", false);
+		const fetchMock = vi.fn().mockRejectedValue(new Error("offline"));
+		vi.stubGlobal("fetch", fetchMock);
+		(
+			callUserLogin as unknown as ReturnType<typeof vi.fn>
+		).mockResolvedValue({ access: "a", refresh: "r" });
+
+		expect(await userStore.performLogin("testuser", "testpassword")).toBe(
+			"ok"
+		);
+		expect(fetchMock).not.toHaveBeenCalledWith(
+			"/version.json",
+			expect.anything()
+		);
+	});
+
 	it("Perform Login: throttled", async () => {
 		const userStore = useUserStore();
 
