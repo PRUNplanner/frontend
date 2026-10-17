@@ -103,5 +103,9 @@
 	"charts": {
 		"other": "기타({n})",
 		"empty": "표시할 내용 없음"
+	},
+	"version_update": {
+		"title": "{app} has been updated!",
+		"action": "Click to load the newest version."
 	}
 }
