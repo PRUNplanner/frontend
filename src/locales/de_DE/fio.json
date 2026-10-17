@@ -191,7 +191,6 @@
 		"xit": {
 			"button": "XIT Repair",
 			"title": "XIT Repair · {base}",
-			"name": "Repair {base} ({planet})",
 			"note": "The ship is picked when the XIT runs. It needs {weight} t and {volume} m³ of free cargo."
 		},
 		"computing": "Calculating the best repair days of your matched plans."
