@@ -29,6 +29,7 @@ interface IXITJSONActionMTRA {
 	group: string;
 	origin: string | "Configure on Execution";
 	dest: string | "Configure on Execution";
+	noSfc: boolean;
 }
 
 interface IXITJSONGlobal {

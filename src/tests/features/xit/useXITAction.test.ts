@@ -17,7 +17,7 @@ describe("useXITAction", async () => {
 		]);
 
 		expect(result.value).toBe(
-			'{"actions":[{"type":"MTRA","name":"TransferAction","group":"A1","origin":"Configure on Execution","dest":"Configure on Execution"}],"global":{"name":"PRUNplanner"},"groups":[{"type":"Manual","name":"A1","materials":{"ALO":1}}]}'
+			'{"actions":[{"type":"MTRA","name":"TransferAction","group":"A1","origin":"Configure on Execution","dest":"Configure on Execution","noSfc":true}],"global":{"name":"PRUNplanner"},"groups":[{"type":"Manual","name":"A1","materials":{"ALO":1}}]}'
 		);
 	});
 
@@ -39,6 +39,30 @@ describe("useXITAction", async () => {
 		expect(result.value).toContain("foo");
 		expect(result.value).toContain("moo origin");
 		expect(result.value).toContain("meow destination");
+	});
+
+	it.each(["Supply Cart (Initial)", "  Repair / Base #1!  "])(
+		"transferJSON, sanitizes name %s for refined-prun",
+		async (name) => {
+			const parsed = JSON.parse(
+				transferJSON([{ ticker: "ALO", value: 1 }], { name }).value
+			);
+
+			expect(parsed.global.name).toMatch(/^[ 0-9a-zA-Z.-]*$/);
+			expect(parsed.global.name).not.toMatch(/ {2}/);
+			expect(parsed.global.name).toBe(parsed.global.name.trim());
+			expect(parsed.actions[0].noSfc).toBe(true);
+		}
+	);
+
+	it("transferJSON, sanitized name keeps valid characters", async () => {
+		const result = transferJSON([{ ticker: "ALO", value: 1 }], {
+			name: "Supply Cart (Initial)",
+		});
+
+		expect(JSON.parse(result.value).global.name).toBe(
+			"PRUNplanner Supply Cart Initial"
+		);
 	});
 
 	it("transferJSON, with options and buy", async () => {

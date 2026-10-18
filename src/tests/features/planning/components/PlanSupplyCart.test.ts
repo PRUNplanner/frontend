@@ -300,7 +300,7 @@ describe("PlanSupplyCart", () => {
 				wrapper
 					.findAllComponents(XITTransferActionButton)
 					.map((b) => b.props("transferName"))
-			).toEqual(["Supply Cart", "Supply Cart (Initial)"]);
+			).toEqual(["Supply Cart", "Supply Cart Initial"]);
 		});
 
 		it("follows the workforce and production filter", async () => {

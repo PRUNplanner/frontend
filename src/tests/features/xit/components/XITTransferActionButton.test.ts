@@ -34,6 +34,7 @@ const MTRA = (origin: string) => ({
 	group: "A1",
 	origin,
 	dest: CONFIGURE,
+	noSfc: true,
 });
 
 async function mountButton(props: Record<string, unknown> = {}) {
