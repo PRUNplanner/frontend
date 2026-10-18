@@ -35,10 +35,10 @@
 				"username": "用户名",
 				"username_info": "至少3个字符，不能包含空格。",
 				"password": "密码",
-				"password_info": "At least 8 characters, not only numbers, and not a common password.",
-				"email": "Email (optional)",
+				"password_info": "至少8个字符。",
+				"email": "邮箱",
 				"email_placeholder": "可选，但建议填写。",
-				"email_info": "Only used to reset your password if you forget it. No newsletters, never shared. You can add it later in Profile.",
+				"email_info": "可选，可提升账户安全性。",
 				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
 				"security_question": "安全问题",
 				"question": "输入行星 {planet} 的名称。可在 Prosperous Universe 中新建缓存窗口并使用指令 {command} 查找，你将在行星信息中“名称”栏找到它的名称",
@@ -82,7 +82,7 @@
 				"code_placeholder": "验证码"
 			},
 			"result": {
-				"ok": "Email address confirmed.",
+				"ok": "邮箱验证成功。",
 				"already_verified": "Your email address is already confirmed.",
 				"back": "Back to your empire"
 			}
