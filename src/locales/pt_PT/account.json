@@ -35,10 +35,10 @@
 				"username": "Username",
 				"username_info": "Must be at least 3 characters long. Can't contain spaces.",
 				"password": "Password",
-				"password_info": "At least 8 characters, not only numbers, and not a common password.",
-				"email": "Email (optional)",
+				"password_info": "Must be at least 8 characters long.",
+				"email": "Email",
 				"email_placeholder": "Not mandatory, but recommended.",
-				"email_info": "Only used to reset your password if you forget it. No newsletters, never shared. You can add it later in Profile.",
+				"email_info": "Not mandatory. Increases your account security.",
 				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
 				"security_question": "Security Question",
 				"question": "Enter the name of planet {planet}. To find it, open a new Prosperous Universe buffer with the command {command}. You'll see the planets name listed under 'Name' in the planet information",
@@ -82,7 +82,7 @@
 				"code_placeholder": "Verification Code"
 			},
 			"result": {
-				"ok": "Email address confirmed.",
+				"ok": "Email address verified.",
 				"already_verified": "Your email address is already confirmed.",
 				"back": "Back to your empire"
 			}
