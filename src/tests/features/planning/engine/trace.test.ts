@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, vi } from "vitest";
 
 // Engine
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculateVisitation } from "@/features/planning/engine/visitation";
 import {
 	createPlanTracer,
 	tracePriceBook,
@@ -269,6 +270,53 @@ describe("plan tracer", () => {
 			(86_400_000 * frm.amount) / frm.totalBatchTime
 		);
 		expect(value("daily revenue")).toBe(frm.dailyRevenue);
+	});
+
+	it("explains housing, area per building and visitation", () => {
+		const { tracer, entries } = createPlanTracer();
+		const { result } = calculatePlan(
+			{ plan: etherwindPlan(), empire: undefined, cxUuid: undefined },
+			{ ...ctx, trace: tracer }
+		);
+		const visitation = calculateVisitation(result, tracer);
+		const of = (phase: string) =>
+			entries().filter((e) => e.phase === phase);
+		const sum = (list: ITraceEntry[]) =>
+			list.reduce((s, e) => s + (e.value as number), 0);
+
+		const housing = of("infrastructure");
+		expect(housing.length).toBeGreaterThan(0);
+		expect(sum(housing)).toBe(
+			Object.values(result.workforce).reduce((s, w) => s + w.capacity, 0)
+		);
+		expect(housing[0].label).toMatch(/^[A-Z0-9]{2,3} × \d+$/);
+
+		const area = of("area").filter((e) => e.label.endsWith(" area"));
+		expect(25 + sum(area)).toBe(result.area.areaUsed);
+
+		const storage = of("visitation");
+		expect(storage.find((e) => e.label === "storage lasts")?.value).toBe(
+			visitation.storageFilled
+		);
+		expect(storage.find((e) => e.label === "weight in")?.value).toBe(
+			visitation.dailyWeightImport
+		);
+		// tracing changes nothing
+		expect(calculateVisitation(result)).toStrictEqual(visitation);
+	});
+
+	it("starts each building with its game data and names recipe materials", () => {
+		const { tracer, entries } = createPlanTracer();
+		calculatePlan(farmPlan(), { ...ctx, trace: tracer });
+
+		expect(entries().find((e) => e.label === "building")).toMatchObject({
+			value: 2,
+			scope: { building: "FRM" },
+			inputs: { type: "PRODUCTION", expertise: "AGRICULTURE" },
+		});
+		expect(
+			entries().find((e) => e.label === "FRM#1xH2O=>12xNUT time")?.note
+		).toMatch(/: 1×H2O → 12×NUT$/);
 	});
 
 	it("matches material I/O deltas and values", () => {

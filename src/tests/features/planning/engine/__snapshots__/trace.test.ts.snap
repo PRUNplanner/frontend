@@ -2,6 +2,7 @@
 
 exports[`plan tracer > lists efficiency factors, recipe times and runs per day (FRM) 1`] = `
 [
+  "building",
   "efficiency FERTILITY",
   "efficiency HQ",
   "efficiency COGC",

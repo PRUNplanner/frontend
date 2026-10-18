@@ -43,6 +43,7 @@
 	} from "@/features/planning/usePlanCalculation.types";
 	import type {
 		ICalcDebugMeta,
+		ICalcDebugPlan,
 		ICalcDebugReport,
 		ITraceNode,
 	} from "@/features/planning/calcDebug.types";
@@ -59,13 +60,18 @@
 	 * the page) when tall. Mounted only while open, so nothing is traced
 	 * when it's closed.
 	 */
-	const { traceCalculation, result, overview, meta } = defineProps<{
-		traceCalculation: () => IPlanTraceRun | undefined;
-		/** the plan view's live result, reruns the trace when it changes */
-		result: IPlanResult;
-		overview: IOverviewData;
-		meta: Pick<ICalcDebugMeta, "plan" | "planet" | "cx" | "empire">;
-	}>();
+	const { traceCalculation, result, overview, meta, plan, modified } =
+		defineProps<{
+			traceCalculation: () => IPlanTraceRun | undefined;
+			/** the plan view's live result, reruns the trace when it changes */
+			result: IPlanResult;
+			overview: IOverviewData;
+			meta: Pick<ICalcDebugMeta, "plan" | "planet" | "cx" | "empire">;
+			/** the plan as save sends it, with its edits */
+			plan: ICalcDebugPlan;
+			/** differs from the last save */
+			modified: boolean;
+		}>();
 
 	const show = defineModel<boolean>("show", { required: true });
 
@@ -135,7 +141,13 @@
 	const phases: Ref<TracePhase[]> = ref([...TRACE_PHASES]);
 	const filter: Ref<string> = ref("");
 	const issuesOnly: Ref<boolean> = ref(false);
-	const collapsedPhases: Ref<Set<TracePhase>> = ref(new Set());
+	// sections start collapsed, a search opens them
+	const collapsedPhases: Ref<Set<TracePhase>> = ref(new Set(TRACE_PHASES));
+	const searching = computed(
+		() => issuesOnly.value || filter.value.trim() !== ""
+	);
+	const sectionOpen = (phase: TracePhase) =>
+		searching.value || !collapsedPhases.value.has(phase);
 	// groups by phase and label, so they stay collapsed across reruns
 	const collapsedGroups: Ref<Set<string>> = ref(new Set());
 	const groupKey = (e: ITraceEntry) => `${e.phase}|${e.label}`;
@@ -212,6 +224,20 @@
 			.filter((s) => s.lines.length);
 	});
 
+	/*
+	 * The plan as stored, read only while its section is open
+	 */
+	const planOpen: Ref<boolean> = ref(false);
+	const planStatus = computed(() =>
+		[
+			plan.uuid
+				? `saved ${plan.modified_at ?? "(no version)"}`
+				: "never saved",
+			...(modified ? ["unsaved edits"] : []),
+		].join(" · ")
+	);
+	const planJSON = computed(() => JSON.stringify(plan, null, 2));
+
 	const shownChecks = computed(() =>
 		issuesOnly.value
 			? report.value.checks.filter((c) => !c.pass)
@@ -235,7 +261,8 @@
 		const text = (format === "text" ? traceText : traceJSON)(
 			fullMeta(),
 			report.value,
-			run.value.entries
+			run.value.entries,
+			plan
 		);
 		try {
 			await navigator.clipboard.writeText(text);
@@ -378,20 +405,34 @@
 					</div>
 				</div>
 
+				<div v-if="!issuesOnly" data-plan>
+					<button
+						type="button"
+						class="touch-target min-h-6 pointer-coarse:min-h-11 text-left text-muted hover:text-white cursor-pointer"
+						:aria-expanded="planOpen"
+						@click="planOpen = !planOpen">
+						{{ planOpen ? "▾" : "▸" }} plan · {{ planStatus }}
+					</button>
+					<pre v-if="planOpen" class="pl-4 pb-1 whitespace-pre">{{
+						planJSON
+					}}</pre>
+				</div>
+
 				<div
 					v-for="section in sections"
 					:key="section.phase"
 					:data-phase="section.phase">
 					<button
 						type="button"
-						class="touch-target min-h-6 pointer-coarse:min-h-11 text-left text-muted hover:text-white cursor-pointer"
-						:aria-expanded="!collapsedPhases.has(section.phase)"
+						class="touch-target min-h-6 pointer-coarse:min-h-11 text-left text-muted hover:text-white cursor-pointer disabled:cursor-default disabled:hover:text-muted"
+						:aria-expanded="sectionOpen(section.phase)"
+						:disabled="searching"
 						@click="toggleSection(section.phase)">
-						{{ collapsedPhases.has(section.phase) ? "▸" : "▾" }}
+						{{ sectionOpen(section.phase) ? "▾" : "▸" }}
 						{{ section.phase }}
 						({{ section.lines.length }})
 					</button>
-					<template v-if="!collapsedPhases.has(section.phase)">
+					<template v-if="sectionOpen(section.phase)">
 						<div
 							v-for="line in section.lines"
 							:key="line.entry.id"

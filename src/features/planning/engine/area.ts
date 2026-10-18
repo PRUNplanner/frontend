@@ -44,17 +44,37 @@ export function calculateArea(
 	// calculate area used based on production and infrastructure buildings
 	for (const infrastructure of data.infrastructure) {
 		if (infrastructure.amount > 0) {
-			areaUsed +=
-				getBuilding(buildings, infrastructure.building).area_cost *
-				infrastructure.amount;
+			const cost: number = getBuilding(
+				buildings,
+				infrastructure.building
+			).area_cost;
+			areaUsed += cost * infrastructure.amount;
+			trace?.step({
+				phase: "area",
+				label: `${infrastructure.building} area`,
+				formula: "area_cost × amount",
+				inputs: { area_cost: cost, amount: infrastructure.amount },
+				value: cost * infrastructure.amount,
+				scope: { building: infrastructure.building },
+			});
 		}
 	}
 
 	for (const building of data.buildings) {
 		if (building.amount > 0) {
-			areaUsed +=
-				getBuilding(buildings, building.name).area_cost *
-				building.amount;
+			const cost: number = getBuilding(
+				buildings,
+				building.name
+			).area_cost;
+			areaUsed += cost * building.amount;
+			trace?.step({
+				phase: "area",
+				label: `${building.name} area`,
+				formula: "area_cost × amount",
+				inputs: { area_cost: cost, amount: building.amount },
+				value: cost * building.amount,
+				scope: { building: building.name },
+			});
 		}
 	}
 

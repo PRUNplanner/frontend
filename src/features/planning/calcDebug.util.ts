@@ -13,6 +13,7 @@ import type {
 import type { IPlanTraceRun } from "@/features/planning/usePlanCalculation.types";
 import type {
 	ICalcDebugCheck,
+	ICalcDebugPlan,
 	ICalcDebugMeta,
 	ICalcDebugReport,
 	ITraceNode,
@@ -317,12 +318,14 @@ export function checkLine(check: ICalcDebugCheck): string {
  * @param {ICalcDebugMeta} meta Header
  * @param {ICalcDebugReport} report Checks and warnings
  * @param {ITraceEntry[]} entries Trace
+ * @param {ICalcDebugPlan} [plan] The plan as save sends it
  * @returns {string} Text
  */
 export function traceText(
 	meta: ICalcDebugMeta,
 	report: ICalcDebugReport,
-	entries: ITraceEntry[]
+	entries: ITraceEntry[],
+	plan?: ICalcDebugPlan
 ): string {
 	const lines: string[] = [
 		"PRUNplanner calculation debug",
@@ -332,6 +335,14 @@ export function traceText(
 		...report.checks.map((c) => `  ${checkLine(c)}`),
 		...report.warnings.map((w) => `  ⚠ ${w}`),
 	];
+	if (plan !== undefined)
+		lines.push(
+			"",
+			"plan",
+			...JSON.stringify(plan, null, 2)
+				.split("\n")
+				.map((l) => `  ${l}`)
+		);
 	const tree = traceTree(entries);
 	for (const phase of TRACE_PHASES) {
 		if (!tree[phase].length) continue;
@@ -345,7 +356,8 @@ export function traceText(
 export function traceJSON(
 	meta: ICalcDebugMeta,
 	report: ICalcDebugReport,
-	entries: ITraceEntry[]
+	entries: ITraceEntry[],
+	plan?: ICalcDebugPlan
 ): string {
-	return JSON.stringify({ meta, ...report, entries }, null, 2);
+	return JSON.stringify({ meta, ...report, plan, entries }, null, 2);
 }

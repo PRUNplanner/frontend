@@ -222,7 +222,8 @@ describe("calcDebug.util", () => {
 	it("copies as text with header, checks and phases, and as JSON", () => {
 		const { live, run } = runs();
 		const report = calcDebugChecks(live, run);
-		const text = traceText(meta, report, run.entries);
+		const plan = etherwindPlan();
+		const text = traceText(meta, report, run.entries, plan);
 
 		expect(text).toContain("plan: Test");
 		expect(text).toContain("build: dev");
@@ -232,7 +233,13 @@ describe("calcDebug.util", () => {
 		expect(text).toContain("min(1, capacity ÷ required) =");
 		expect(text).toContain("    Σ habitations × amount\n");
 
-		const json = JSON.parse(traceJSON(meta, report, run.entries));
+		expect(text).toMatch(/\nplan\n {2}\{\n/);
+		expect(text).toContain(
+			`  "planet_natural_id": "${plan.planet_natural_id}"`
+		);
+
+		const json = JSON.parse(traceJSON(meta, report, run.entries, plan));
+		expect(json.plan).toEqual(plan);
 		expect(json.meta).toEqual(meta);
 		expect(json.checks).toHaveLength(6);
 		expect(json.warnings).toEqual(report.warnings);

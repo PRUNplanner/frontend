@@ -230,6 +230,8 @@ export function usePlanCalculation(
 			...context(planet.value),
 			trace: tracer,
 		});
+		// visitation is computed next to the result, trace it as well
+		calculateVisitation(traced.result, tracer);
 		return {
 			calculation: traced,
 			entries: entries(),

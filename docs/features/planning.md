@@ -65,9 +65,12 @@ editor UI. The engine is documented in depth in
 - **Calculation debug** (`components/debug/PlanCalcDebug.vue`, English
   only): with `?debug=calc` a Debug button at the end of the tool tabs (or
   Ctrl/⌘ + \`) docks a terminal-style log of every engine step under the
-  plan, like `ResourceROIChartDrawer` (shared `ui/useDockHeight`). It
-  reruns the trace on every result change while open, and copies as text
-  or JSON.
+  plan, like `ResourceROIChartDrawer` (shared `ui/useDockHeight`). Phase
+  sections start collapsed (a filter or Issues only opens them); a `plan`
+  section shows the plan as save sends it (`backendData`: name, empire,
+  planet, permits, COGC, HQ, plan data) with its id, empires and save
+  version, as JSON. It reruns the trace on every result change while open, and copies
+  as text or JSON (both with the plan).
 - `PlanMaterialIO` shows a market flag button after a flagged material
   (`cx/components/MarketFlagButton`) and a one-line count under the table;
   `PlanView` computes the checks with the plan's price book.

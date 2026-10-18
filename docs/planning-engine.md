@@ -110,7 +110,10 @@ trailing parameter and call `trace?.step({ phase, label, formula, inputs,
 value, … })` where a value is computed, with the value actually used, so
 labels and formulas sit next to the math. `trace.group` nests the steps of
 one building row or one recipe's COGM. Phases, in engine order:
-`TRACE_PHASES`. `calculatePlan` wraps the price book in `tracePriceBook`,
+`TRACE_PHASES` (input, infrastructure, workforce, area, experts,
+production, cogm, materialio, prices, construction, finance, visitation).
+Each production group starts with the building's game data; infrastructure
+lists each habitation's housing, area each building's share. `calculatePlan` wraps the price book in `tracePriceBook`,
 which records the first lookup per ticker and type with its source.
 
 - Without a tracer nothing changes: `trace?.step(…)` never builds its
@@ -118,8 +121,9 @@ which records the first lookup per ticker and type with its source.
   (`engine/trace.test.ts` over every fixture).
 - `createPlanTracer({ limit })` stops at 10,000 entries and marks the trace
   truncated.
-- Only `usePlanCalculation().traceCalculation()` traces, for the panel.
-  Recipe options and batch callers pass no tracer.
+- Only `usePlanCalculation().traceCalculation()` traces, for the panel; it
+  also traces `calculateVisitation` (storage and daily weight and volume) on
+  the traced result. Recipe options and batch callers pass no tracer.
 - `calcDebug.util.ts` self-checks a traced run (totals add up, profits
   agree, deltas and efficiencies). Those checks are a deliberate second
   calculation, an oracle, and the one exception to hard rule 6.

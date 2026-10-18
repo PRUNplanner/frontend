@@ -3,6 +3,17 @@ import type {
 	ITraceEntry,
 	TracePhase,
 } from "@/features/planning/engine/engine.types";
+import type {
+	PlanCreateData,
+	PlanEmpire,
+} from "@/features/api/schemas/planningData.schemas";
+
+/** the plan as save sends it, with its id, empires and save version */
+export interface ICalcDebugPlan extends PlanCreateData {
+	uuid: string | undefined;
+	empires?: PlanEmpire[];
+	modified_at?: string;
+}
 
 /** one self-check of a traced calculation */
 export interface ICalcDebugCheck {

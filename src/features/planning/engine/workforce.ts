@@ -329,6 +329,13 @@ export function calculateWorkforce(
 					infBuildingData.habitations.scientists *
 					infrastructure.amount;
 			}
+
+			if (trace)
+				traceInfrastructure(
+					trace,
+					infBuildingData,
+					infrastructure.amount
+				);
 		}
 	}
 
@@ -407,4 +414,33 @@ export function calculateWorkforce(
 	});
 
 	return result;
+}
+
+/** an infrastructure building's housing, for the trace */
+function traceInfrastructure(
+	trace: IPlanTracer,
+	building: Building,
+	amount: number
+): void {
+	const habitations = building.habitations;
+	const inputs: Record<string, number> = { amount };
+	let housed: number = 0;
+	if (habitations)
+		for (const [name, count] of Object.entries(habitations))
+			if (count > 0) {
+				inputs[name] = count * amount;
+				housed += count * amount;
+			}
+	trace.step({
+		phase: "infrastructure",
+		label: `${building.building_ticker} × ${amount}`,
+		formula: habitations ? "habitations × amount" : undefined,
+		inputs,
+		value: housed,
+		unit: "workers",
+		scope: { building: building.building_ticker },
+		note: habitations
+			? building.building_name
+			: `${building.building_name}, no housing`,
+	});
 }

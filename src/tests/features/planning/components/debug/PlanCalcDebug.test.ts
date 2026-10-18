@@ -79,7 +79,23 @@ function traceRun(): IPlanTraceRun {
 
 const traceCalculation = vi.fn(traceRun);
 
-async function mountPanel() {
+const PLAN = {
+	uuid: "00000000-0000-4000-8000-000000000001",
+	plan_name: "Farm",
+	planet_natural_id: "KW-688c",
+	plan_permits_used: 1,
+	plan_corphq: false,
+	plan_cogc: "---",
+	plan_data: {
+		experts: [],
+		buildings: [],
+		workforce: [],
+		infrastructure: [],
+	},
+	modified_at: "2026-10-18T12:00:00Z",
+};
+
+async function mountPanel(props: Record<string, unknown> = {}) {
 	const mounted = await mountComponent(
 		PlanCalcDebug,
 		{
@@ -93,6 +109,9 @@ async function mountPanel() {
 				cx: "Universe",
 				empire: "none",
 			},
+			plan: PLAN,
+			modified: false,
+			...props,
 		},
 		{ attach: true }
 	);
@@ -103,6 +122,10 @@ async function mountPanel() {
 const lines = (w: VueWrapper) => w.findAll("[data-line]").map((l) => l.text());
 const button = (w: VueWrapper, text: string) =>
 	w.findAll("button").find((b) => b.text().trim() === text)!;
+const sectionButtons = (w: VueWrapper) => w.findAll("[data-phase] > button");
+async function expandAll(w: VueWrapper) {
+	for (const b of sectionButtons(w)) await b.trigger("click");
+}
 
 describe("PlanCalcDebug", () => {
 	beforeEach(() => {
@@ -137,6 +160,14 @@ describe("PlanCalcDebug", () => {
 		expect(w.find("[data-checks]").text()).toContain(
 			"✗ broken check: expected 1, actual 2, difference 1"
 		);
+		// sections start collapsed
+		expect(lines(w)).toEqual([]);
+		expect(
+			sectionButtons(w).map((b) => b.attributes("aria-expanded"))
+		).toEqual(["false", "false", "false"]);
+		expect(sectionButtons(w)[1].text()).toBe("▸ production (3)");
+
+		await expandAll(w);
 		expect(lines(w).join("\n")).toContain("FRM#1 time");
 		expect(lines(w).join("\n")).toContain("= 1,000 × 2");
 		expect(lines(w).join("\n")).toContain("⚠ RAT BUY");
@@ -146,6 +177,8 @@ describe("PlanCalcDebug", () => {
 	it("collapses phases and groups", async () => {
 		const { wrapper: w } = await mountPanel();
 		const section = w.find('[data-phase="production"] > button');
+		expect(section.attributes("aria-expanded")).toBe("false");
+		await section.trigger("click");
 		expect(section.attributes("aria-expanded")).toBe("true");
 
 		const group = w
@@ -164,6 +197,12 @@ describe("PlanCalcDebug", () => {
 		const { wrapper: w } = await mountPanel();
 
 		await w.find("input").setValue("frm");
+		// open while searching, the toggles wait until the search is cleared
+		expect(
+			sectionButtons(w).every(
+				(b) => b.attributes("disabled") !== undefined
+			)
+		).toBe(true);
 		expect(lines(w)).toHaveLength(2);
 		expect(lines(w)[0]).toContain("FRM × 2");
 		expect(lines(w)[1]).toContain("FRM#1 time");
@@ -204,6 +243,7 @@ describe("PlanCalcDebug", () => {
 		expect(text).toContain("planet: KW-688c");
 		expect(text).toContain("build: dev");
 		expect(text).toContain("FRM#1 time = 2,000 ms");
+		expect(text).toContain('    "plan_name": "Farm",');
 		expect(trackEvent).toHaveBeenLastCalledWith("debug:calc_copy", {
 			format: "text",
 		});
@@ -212,6 +252,7 @@ describe("PlanCalcDebug", () => {
 		await flushPromises();
 		const json = JSON.parse(writeText.mock.calls[1][0]);
 		expect(json.meta.plan).toBe("Farm");
+		expect(json.plan).toEqual(PLAN);
 		expect(json.entries).toHaveLength(5);
 		expect(json.checks).toHaveLength(2);
 	});
@@ -255,7 +296,30 @@ describe("PlanCalcDebug", () => {
 				"calculation failed: Material XYZ not available."
 			)
 		);
+		await expandAll(w);
 		expect(lines(w).join("\n")).toContain("FRM#1 time");
+	});
+
+	it("shows the plan as stored, collapsed, with its save state", async () => {
+		const { wrapper: w, setProps } = await mountPanel();
+		const header = () => w.find("[data-plan] > button");
+
+		expect(header().text()).toBe("▸ plan · saved 2026-10-18T12:00:00Z");
+		expect(header().attributes("aria-expanded")).toBe("false");
+		expect(w.find("[data-plan] pre").exists()).toBe(false);
+
+		await header().trigger("click");
+		expect(JSON.parse(w.find("[data-plan] pre").text())).toEqual(PLAN);
+
+		await setProps({ modified: true });
+		expect(header().text()).toBe(
+			"▾ plan · saved 2026-10-18T12:00:00Z · unsaved edits"
+		);
+		await setProps({ plan: { ...PLAN, uuid: undefined } });
+		expect(header().text()).toBe("▾ plan · never saved · unsaved edits");
+
+		await button(w, "Issues only").trigger("click");
+		expect(w.find("[data-plan]").exists()).toBe(false);
 	});
 
 	it("turns debug off and closes", async () => {

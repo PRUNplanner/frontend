@@ -36,6 +36,7 @@
 	} from "@/features/api/schemas/planningData.schemas";
 	import type { IPlanDiffable } from "@/features/planning_data/planDiff";
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
+	import type { ICalcDebugPlan } from "@/features/planning/calcDebug.types";
 	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
@@ -250,6 +251,15 @@
 		refShowCalcDebug.value = !refShowCalcDebug.value;
 		if (refShowCalcDebug.value) trackEvent("debug:calc_open", { source });
 	}
+	// what save sends, with the plan's id, empires and version
+	const calcDebugPlan = computed(
+		(): ICalcDebugPlan => ({
+			uuid: refPlanData.value.uuid,
+			...backendData.value,
+			empires: refPlanData.value.empires,
+			modified_at: refPlanData.value.modified_at,
+		})
+	);
 	const calcDebugMeta = computed(() => ({
 		plan: planName.value || t("plan.name.untitled"),
 		planet: planetData.planet_natural_id,
@@ -1604,7 +1614,9 @@
 			:trace-calculation="traceCalculation"
 			:result="result"
 			:overview="overviewData"
-			:meta="calcDebugMeta" />
+			:meta="calcDebugMeta"
+			:plan="calcDebugPlan"
+			:modified="modified" />
 	</div>
 
 	<!-- Save As Modal -->

@@ -16,7 +16,8 @@ export function useDockHeight() {
 		Math.round(
 			Math.min(
 				Math.max(px, window.innerHeight * 0.25, MIN_PX),
-				window.innerHeight * 0.8
+				// a pane not sized yet (0 high) still gets the minimum
+				Math.max(window.innerHeight * 0.8, MIN_PX)
 			)
 		);
 	const height: Ref<number> = ref(

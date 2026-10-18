@@ -42,7 +42,13 @@ vi.mock("@/features/planning/components/debug/PlanCalcDebug.vue", async () => {
 	const { h } = await import("vue");
 	return {
 		__esModule: true,
-		default: { name: "PlanCalcDebug", render: () => h("p", "debug panel") },
+		default: {
+			name: "PlanCalcDebug",
+			props: ["plan"],
+			render(this: { plan?: { plan_name?: string } }) {
+				return h("p", `debug panel ${this.plan?.plan_name}`);
+			},
+		},
 	};
 });
 const constructionCart = vi.hoisted(() => gate());
@@ -147,6 +153,18 @@ describe("PlanView", () => {
 		);
 		await flushPromises();
 		expect(wrapper.text()).toContain("debug panel");
+
+		// the panel shows what save sends, a rename included
+		await wrapper
+			.findAll("nav button")
+			.find((b) => b.text() === "plan.components.configuration.label")!
+			.trigger("click");
+		await flushPromises();
+		wrapper
+			.findComponent({ name: "PlanConfiguration" })
+			.vm.$emit("update:plan-name", "Renamed plan");
+		await flushPromises();
+		expect(wrapper.text()).toContain("debug panel Renamed plan");
 		calcDebug.value = false;
 	});
 });

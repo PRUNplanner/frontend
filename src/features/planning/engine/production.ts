@@ -124,6 +124,8 @@ export function calculateProduction(
 			workforceMaterials,
 		} = informationFor(b.name);
 
+		if (trace) traceBuildingData(trace, buildingData, b.amount);
+
 		// efficiency calculation
 		const { totalEfficiency, elements } = calculateBuildingEfficiency(
 			buildingData,
@@ -320,6 +322,7 @@ function traceRecipes(
 			value: ar.time,
 			unit: "ms",
 			scope: { building: name, recipeId: ar.recipeId },
+			note: `${ar.recipe.recipe_name}: ${recipeIO(ar.recipe)}`,
 		});
 	trace.step({
 		phase: "production",
@@ -384,5 +387,42 @@ function traceBuilding(
 		value: building.dailyRevenue,
 		unit: "/day",
 		scope,
+	});
+}
+
+/** a recipe's materials per run, e.g. "1×H2O → 12×NUT" */
+function recipeIO(recipe: Recipe): string {
+	const list = (m: Recipe["inputs"]) =>
+		m.map((x) => `${x.material_amount}×${x.material_ticker}`).join(" + ");
+	return `${list(recipe.inputs) || "—"} → ${list(recipe.outputs) || "—"}`;
+}
+
+/** a building's game data, first in its trace group */
+function traceBuildingData(
+	trace: IPlanTracer,
+	building: Building,
+	amount: number
+): void {
+	const inputs: Record<string, number | string> = {
+		type: building.building_type,
+		expertise: building.expertise ?? "none",
+		area_cost: building.area_cost,
+	};
+	for (const [name, count] of [
+		["pioneers", building.pioneers],
+		["settlers", building.settlers],
+		["technicians", building.technicians],
+		["engineers", building.engineers],
+		["scientists", building.scientists],
+	] as const)
+		if (count > 0) inputs[name] = count;
+	trace.step({
+		phase: "production",
+		label: "building",
+		inputs,
+		value: amount,
+		unit: "buildings",
+		scope: { building: building.building_ticker },
+		note: building.building_name,
 	});
 }

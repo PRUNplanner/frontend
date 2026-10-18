@@ -9,6 +9,7 @@ import type {
 /** the engine's phases, in calculation order */
 export const TRACE_PHASES = [
 	"input",
+	"infrastructure",
 	"workforce",
 	"area",
 	"experts",
@@ -18,6 +19,7 @@ export const TRACE_PHASES = [
 	"prices",
 	"construction",
 	"finance",
+	"visitation",
 ] as const;
 
 /**
