@@ -16,12 +16,12 @@
 		"throttled": "Too many updates. Please wait a minute and try again.",
 		"buttons": {
 			"enter_code": "Enter code",
-			"resend_code": "Send new code"
+			"resend_code": "Отправить код повторно"
 		},
 		"form": {
 			"fio_apikey": "FIO API Key",
 			"prun_username": "Имя пользователя PrUn",
-			"email_info": "Optional. Only used to reset your password: no newsletters, never shared.",
+			"email_info": "Указывать email необязательно, но настоятельно рекомендуется для повышения безопасности аккаунта и восстановления пароля.",
 			"email_address": "Адрес электронной почты",
 			"fio_status": "FIO Status"
 		},
@@ -69,7 +69,7 @@
 				"1": "Скачать и установить {link}",
 				"2": "Откройте игру, нажмите кнопку расширений и зарегистрируйте свой аккаунт FIO",
 				"3": "Перейдите на сайт FIO, откройте {link} и создайте API-ключ для PRUNplanner",
-				"4": "Enter your API key and your Prosperous Universe username above and press \"Save\".",
+				"4": "Скопируйте и введите ваш API-ключ, а также имя пользователя в Prosperous Universe в профиль выше и нажмите кнопку «Обновить профиль»",
 				"5": "Подождите несколько минут пока PRUNplanner загрузит ваши данные и наслаждайтесь расширенными возможностями планирования. Ваши данные будут обновляться автоматически в фоновом режиме — никаких дополнительных действий не требуется."
 			},
 			"refined_prun": "Пока вы улучшаете игровой процесс, также обратите внимание на {link}: ещё одно расширение для браузера, которое значительно упрощает интерфейс и добавляет множество функций."
@@ -83,7 +83,7 @@
 	},
 	"preferences": {
 		"title": "Параметры",
-		"description": "Saved to your account as soon as you change them.",
+		"description": "Use this panel to review and customize your PRUNplanner settings.",
 		"form": {
 			"tool_preferences": "Настройки инструментов",
 			"language": "Язык",
