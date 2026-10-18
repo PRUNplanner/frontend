@@ -4,6 +4,7 @@ import { useUserStore } from "@/stores/userStore";
 
 import router from "@/router";
 import { trackPageview } from "@/lib/analytics/useAnalytics";
+import { calcDebug } from "@/lib/debugMode";
 
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
@@ -126,6 +127,28 @@ describe("Router NavigationGuard", () => {
 
 		expect(trackPageview).not.toHaveBeenCalled();
 	});
+
+	it.each([
+		["calc", true, true],
+		["off", true, false],
+		["x", true, true],
+		["calc", false, true],
+	])(
+		"?debug=%s switches calculation debug and drops the key",
+		async (value, before, after) => {
+			useUserStore().setToken("foo", "moo");
+			calcDebug.value = before;
+
+			await router.push(
+				`/plan/KW-688c/00000000-0000-4000-8000-000000000000?debug=${value}&tab=x#y`
+			);
+
+			expect(calcDebug.value).toBe(after);
+			expect(router.currentRoute.value.name).toBe("plan");
+			expect(router.currentRoute.value.query).toEqual({ tab: "x" });
+			expect(router.currentRoute.value.hash).toBe("#y");
+		}
+	);
 
 	it("counts a refused navigation as no pageview", async () => {
 		useUserStore().setToken("foo", "moo");

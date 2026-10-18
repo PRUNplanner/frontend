@@ -5,6 +5,7 @@ import type {
 	IMaterialIOMinimal,
 	IProductionBuilding,
 } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanTracer } from "@/features/planning/engine/engine.types";
 
 export const TOTALMSDAY: number = 24 * 60 * 60 * 1000;
 
@@ -82,10 +83,12 @@ export function enhanceMaterialIOMinimal(
  * @author jplacht
  *
  * @param {IProductionBuilding[]} data Production Buildings
+ * @param {IPlanTracer} [trace] Tracer
  * @returns {IMaterialIOMinimal[]} Material IO
  */
 export function calculateMaterialIO(
-	data: IProductionBuilding[]
+	data: IProductionBuilding[],
+	trace?: IPlanTracer
 ): IMaterialIOMinimal[] {
 	const total = new Map<string, IMaterialIOMinimal>();
 
@@ -124,6 +127,8 @@ export function calculateMaterialIO(
 				);
 		}
 
+		if (trace) traceBuildingIO(trace, building, batchRuns, inputs, outputs);
+
 		// building order: its inputs, then outputs it doesn't consume
 		for (const [ticker, input] of inputs)
 			add(ticker, input, outputs.get(ticker) ?? 0);
@@ -132,4 +137,43 @@ export function calculateMaterialIO(
 	}
 
 	return [...total.values()];
+}
+
+/** a building's runs per day and daily material flow, for the trace */
+function traceBuildingIO(
+	trace: IPlanTracer,
+	building: IProductionBuilding,
+	batchRuns: number,
+	inputs: Map<string, number>,
+	outputs: Map<string, number>
+): void {
+	const scope = { building: building.name };
+	trace.step({
+		phase: "production",
+		label: "runs per day",
+		formula: "86,400,000 × amount ÷ total_batch_time",
+		inputs: {
+			amount: building.amount,
+			total_batch_time: building.totalBatchTime,
+		},
+		value: batchRuns,
+		unit: "runs/day",
+		scope,
+	});
+	for (const [ticker, input] of inputs)
+		trace.step({
+			phase: "production",
+			label: `${ticker} in`,
+			value: input,
+			unit: "/day",
+			scope: { ...scope, ticker },
+		});
+	for (const [ticker, output] of outputs)
+		trace.step({
+			phase: "production",
+			label: `${ticker} out`,
+			value: output,
+			unit: "/day",
+			scope: { ...scope, ticker },
+		});
 }

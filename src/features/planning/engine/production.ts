@@ -11,7 +11,10 @@ import {
 	getBuildingRecipes,
 } from "@/features/planning/engine/buildings";
 import { getBuildingWorkforceMaterials } from "@/features/planning/engine/workforce";
-import { calculateBuildingEfficiency } from "@/features/planning/engine/efficiency";
+import {
+	calculateBuildingEfficiency,
+	zeroEfficiencyReason,
+} from "@/features/planning/engine/efficiency";
 import { calculateRecipeOptions } from "@/features/planning/engine/recipeOptions";
 import { calculateCOGM } from "@/features/planning/engine/cogm";
 import {
@@ -20,6 +23,7 @@ import {
 } from "@/features/planning/engine/materialIO";
 
 // Types & Interfaces
+import type { IPriceBook } from "@/features/cx/priceBook";
 import type { Building, Recipe } from "@/features/api/schemas/gameData.schemas";
 import type {
 	IExpertRecord,
@@ -32,7 +36,9 @@ import type {
 import type {
 	IPlanContext,
 	IPlanInput,
+	IPlanTracer,
 } from "@/features/planning/engine/engine.types";
+import type { IBuildingEfficiency } from "@/features/planning/calculations/bonusCalculations.types";
 
 interface IBuildingInformation {
 	buildingData: Building;
@@ -58,16 +64,19 @@ interface IBuildingInformation {
  * @param {IPlanContext} ctx Plan context
  * @param {IWorkforceRecord} workforce Workforce result
  * @param {IExpertRecord} experts Plans experts
+ * @param {IPriceBook} [optionPrices] Price book for recipe options, the
+ * untraced one when tracing (options are not traced)
  * @returns {IProductionResult} Production Result
  */
 export function calculateProduction(
 	input: IPlanInput,
 	ctx: IPlanContext,
 	workforce: IWorkforceRecord,
-	experts: IExpertRecord
+	experts: IExpertRecord,
+	optionPrices: IPriceBook = ctx.prices
 ): IProductionResult {
 	const { plan, empire } = input;
-	const { planet, prices } = ctx;
+	const { planet, prices, trace } = ctx;
 	const withRecipeOptions: boolean = input.recipeOptions ?? true;
 
 	// building information, built once per building ticker; it lives for
@@ -105,8 +114,8 @@ export function calculateProduction(
 
 	const buildings: IProductionBuilding[] = [];
 
-	// add buildings from data
-	for (const b of plan.plan_data.buildings) {
+	// one building row, a trace group per row when tracing
+	const row = (b: (typeof plan.plan_data.buildings)[number]): void => {
 		const {
 			buildingData,
 			buildingRecipes,
@@ -123,7 +132,8 @@ export function calculateProduction(
 			plan.plan_cogc,
 			workforce,
 			experts,
-			empire
+			empire,
+			trace
 		);
 
 		const activeRecipes: IProductionBuildingRecipe[] = [];
@@ -177,6 +187,16 @@ export function calculateProduction(
 					: 0)
 		);
 
+		if (trace)
+			traceRecipes(
+				trace,
+				b.name,
+				elements,
+				totalEfficiency,
+				activeRecipes,
+				totalBatchTime
+			);
+
 		const workforceDailyCost: number = getMaterialIOTotalPrice(
 			prices,
 			workforceMaterials,
@@ -193,7 +213,8 @@ export function calculateProduction(
 				totalEfficiency,
 				constructionCostPositive,
 				workforceCostPositive,
-				prices
+				prices,
+				trace
 			);
 
 		const building: IProductionBuilding = {
@@ -209,7 +230,7 @@ export function calculateProduction(
 						totalEfficiency,
 						constructionCostPositive,
 						workforceCostPositive,
-						prices
+						optionPrices
 					)
 				: [],
 			totalEfficiency: totalEfficiency,
@@ -228,7 +249,7 @@ export function calculateProduction(
 			prices,
 			enhanceMaterialIOMinimal(
 				ctx.materials,
-				calculateMaterialIO([building])
+				calculateMaterialIO([building], trace)
 			)
 		).reduce((sum, element) => sum + element.price, 0);
 
@@ -238,11 +259,130 @@ export function calculateProduction(
 			workforceCostPositive * building.amount -
 			(1 / 180) * constructionCostPositive * building.amount;
 
+		if (trace)
+			traceBuilding(
+				trace,
+				building,
+				productionRevenue,
+				workforceCostPositive,
+				constructionCostPositive
+			);
+
 		buildings.push(building);
+	};
+
+	// add buildings from data
+	for (const b of plan.plan_data.buildings) {
+		if (trace)
+			trace.group(
+				"production",
+				`${b.name} × ${b.amount}`,
+				{ building: b.name },
+				() => row(b)
+			);
+		else row(b);
 	}
 
 	return {
 		buildings: buildings,
 		materialio: calculateMaterialIO(buildings),
 	};
+}
+
+/** a building's recipe times and daily shares, for the trace */
+function traceRecipes(
+	trace: IPlanTracer,
+	name: string,
+	elements: IBuildingEfficiency[],
+	totalEfficiency: number,
+	activeRecipes: IProductionBuildingRecipe[],
+	totalBatchTime: number
+): void {
+	if (totalEfficiency === 0)
+		trace.step({
+			phase: "production",
+			label: "building does not run",
+			value: 0,
+			scope: { building: name },
+			level: "warn",
+			note: `0 % efficiency: ${zeroEfficiencyReason(elements)}`,
+		});
+	for (const ar of activeRecipes)
+		trace.step({
+			phase: "production",
+			label: `${ar.recipeId} time`,
+			formula: "time_ms × amount ÷ efficiency",
+			inputs: {
+				time_ms: ar.recipe.time_ms,
+				amount: ar.amount,
+				efficiency: totalEfficiency,
+			},
+			value: ar.time,
+			unit: "ms",
+			scope: { building: name, recipeId: ar.recipeId },
+		});
+	trace.step({
+		phase: "production",
+		label: "total batch time",
+		formula: "Σ recipe time",
+		value: totalBatchTime,
+		unit: "ms",
+		scope: { building: name },
+	});
+	for (const ar of activeRecipes)
+		trace.step({
+			phase: "production",
+			label: `${ar.recipeId} daily share`,
+			formula: "time ÷ total_batch_time",
+			inputs: { time: ar.time, total_batch_time: totalBatchTime },
+			value: ar.dailyShare,
+			scope: { building: name, recipeId: ar.recipeId },
+		});
+}
+
+/** a building's workforce and construction cost and daily revenue */
+function traceBuilding(
+	trace: IPlanTracer,
+	building: IProductionBuilding,
+	productionRevenue: number,
+	workforceCost: number,
+	constructionCost: number
+): void {
+	const scope = { building: building.name };
+	trace.step({
+		phase: "production",
+		label: "workforce cost per building",
+		formula: "Σ consumption × BUY price",
+		inputs: Object.fromEntries(
+			building.workforceMaterials.map((m) => [m.ticker, m.input])
+		),
+		value: building.workforceDailyCost,
+		unit: "/day",
+		scope,
+	});
+	trace.step({
+		phase: "production",
+		label: "construction cost per building",
+		formula: "Σ material × BUY price",
+		inputs: Object.fromEntries(
+			building.constructionMaterials.map((m) => [m.ticker, m.input])
+		),
+		value: building.constructionCost,
+		scope,
+	});
+	trace.step({
+		phase: "production",
+		label: "daily revenue",
+		formula:
+			"production_value − workforce_cost × amount − construction_cost ÷ 180 × amount",
+		inputs: {
+			production_value: productionRevenue,
+			workforce_cost: workforceCost,
+			construction_cost: constructionCost,
+			amount: building.amount,
+		},
+		value: building.dailyRevenue,
+		unit: "/day",
+		scope,
+	});
 }

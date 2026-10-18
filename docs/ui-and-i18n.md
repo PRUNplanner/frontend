@@ -379,6 +379,10 @@ Example: the plan editor header (`views/PlanView.vue`, `PlanMoreMenu`,
 - **Outside components** (composables, the query repository), use
   `i18n.global` from `@/lib/i18n`.
 
+Debug tooling is English only by decision: the `/debug` page,
+`features/planning/components/debug/` and `lib/debugMode.ts` hard-code
+their text and toasts.
+
 ### Adding or changing text
 
 1. Add the key to `src/locales/en_US/<namespace>.json`. Only edit `en_US`.

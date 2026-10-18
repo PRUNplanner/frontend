@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`plan tracer > lists efficiency factors, recipe times and runs per day (FRM) 1`] = `
+[
+  "efficiency FERTILITY",
+  "efficiency HQ",
+  "efficiency COGC",
+  "efficiency EXPERT",
+  "efficiency WORKFORCE",
+  "efficiency FACTION",
+  "total efficiency",
+  "FRM#1xH2O=>12xNUT time",
+  "FRM#1xH2O=>4xGRN time",
+  "total batch time",
+  "FRM#1xH2O=>12xNUT daily share",
+  "FRM#1xH2O=>4xGRN daily share",
+  "runs per day",
+  "H2O in",
+  "NUT out",
+  "GRN out",
+  "workforce cost per building",
+  "construction cost per building",
+  "daily revenue",
+]
+`;

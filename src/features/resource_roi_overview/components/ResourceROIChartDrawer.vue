@@ -1,11 +1,12 @@
 <script setup lang="ts">
-	import { computed, onBeforeUnmount, ref, type Ref } from "vue";
+	import { computed, ref, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t, locale } = useI18n();
 
 	// Composables
 	import { useOverlayLayer } from "@/ui/useOverlayLayer";
+	import { useDockHeight } from "@/ui/useDockHeight";
 	import { useChartTheme } from "@/ui/charts/chartTheme";
 
 	// Util
@@ -52,37 +53,9 @@
 		close: () => (show.value = false),
 	});
 
-	/*
-	 * Height: about 40 % of the viewport (60 % on a phone), dragged or
-	 * stepped with the arrow keys on the grip
-	 */
-	const MIN_PX = 240;
-	const clampHeight = (px: number) =>
-		Math.round(
-			Math.min(
-				Math.max(px, window.innerHeight * 0.25, MIN_PX),
-				window.innerHeight * 0.8
-			)
-		);
-	const height = ref(
-		clampHeight(window.innerHeight * (window.innerWidth < 640 ? 0.6 : 0.4))
-	);
-
-	let drag: { y: number; height: number } | null = null;
-	function dragStart(e: PointerEvent): void {
-		drag = { y: e.clientY, height: height.value };
-		(e.currentTarget as Element).setPointerCapture?.(e.pointerId);
-	}
-	function dragMove(e: PointerEvent): void {
-		if (drag) height.value = clampHeight(drag.height + drag.y - e.clientY);
-	}
-	function dragEnd(): void {
-		drag = null;
-	}
-	function resizeKey(step: number): void {
-		height.value = clampHeight(height.value + step);
-	}
-	onBeforeUnmount(dragEnd);
+	// height: dragged or stepped with the arrow keys on the grip
+	const { height, dragStart, dragMove, dragEnd, resizeKey } =
+		useDockHeight();
 
 	/*
 	 * Data

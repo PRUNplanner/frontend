@@ -32,6 +32,7 @@ import {
 } from "@/features/planning/engine/construction";
 import { calculateFinance } from "@/features/planning/engine/finance";
 import { calculateVisitation } from "@/features/planning/engine/visitation";
+import { createPlanTracer } from "@/features/planning/engine/trace";
 
 // Types & Interfaces
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
@@ -51,6 +52,7 @@ import {
 	type IMaterialIO,
 	type IOverviewData,
 	type IPlanResult,
+	type IPlanTraceRun,
 	type IProductionResult,
 	type IVisitationData,
 	planEmptyResult,
@@ -214,6 +216,30 @@ export function usePlanCalculation(
 	}
 
 	/**
+	 * Calculates the plan once with a tracer, for the calculation debug
+	 * panel. The live result never traces.
+	 *
+	 * @returns {IPlanTraceRun | undefined} Traced run, undefined until the
+	 * plan's planet is loaded
+	 */
+	function traceCalculation(): IPlanTraceRun | undefined {
+		if (!planet.value) return undefined;
+		const { tracer, entries, truncated } = createPlanTracer();
+		const start: number = performance.now();
+		const traced: IPlanCalculation = calculatePlan(input(), {
+			...context(planet.value),
+			trace: tracer,
+		});
+		return {
+			calculation: traced,
+			entries: entries(),
+			truncated: truncated(),
+			ms: performance.now() - start,
+			at: Date.now(),
+		};
+	}
+
+	/**
 	 * Calculates the overview (costs, profit, ROI) for a result's parts
 	 *
 	 * @param {IMaterialIO[]} materialIO Material IO
@@ -297,5 +323,6 @@ export function usePlanCalculation(
 		refreshKey,
 		calculate,
 		calculateOverview,
+		traceCalculation,
 	};
 }

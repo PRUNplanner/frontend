@@ -23,6 +23,10 @@ import type {
 	IExpertRecord,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
+import type {
+	IPlanTracer,
+	ITraceStepInput,
+} from "@/features/planning/engine/engine.types";
 
 export const expertNames = ExpertTypeSchema.options;
 
@@ -188,6 +192,7 @@ export function calculateBuildingFactionBonus(
  * @param {IWorkforceRecord} workforce Workforce Efficiencies
  * @param {IExpertRecord} experts Expert Setup
  * @param {(PlanEmpire | undefined)} empire Plan Empire
+ * @param {IPlanTracer} [trace] Tracer
  * @returns {{
  * 		totalEfficiency: number;
  * 		elements: IBuildingEfficiency[];
@@ -200,7 +205,8 @@ export function calculateBuildingEfficiency(
 	cogc: PlanCOGCProgram,
 	workforce: IWorkforceRecord,
 	experts: IExpertRecord,
-	empire: PlanEmpire | undefined
+	empire: PlanEmpire | undefined,
+	trace?: IPlanTracer
 ): {
 	totalEfficiency: number;
 	elements: IBuildingEfficiency[];
@@ -300,7 +306,116 @@ export function calculateBuildingEfficiency(
 		1
 	);
 
+	if (trace)
+		traceEfficiency(
+			trace,
+			elements,
+			totalEfficiency,
+			building,
+			planet,
+			cogc,
+			workforce,
+			empire
+		);
+
 	return { totalEfficiency, elements };
+}
+
+/** a building's efficiency factors and their product, for the trace */
+function traceEfficiency(
+	trace: IPlanTracer,
+	elements: IBuildingEfficiency[],
+	totalEfficiency: number,
+	building: Building,
+	planet: Planet,
+	cogc: PlanCOGCProgram,
+	workforce: IWorkforceRecord,
+	empire: PlanEmpire | undefined
+): void {
+	const scope = { building: building.building_ticker };
+	const product: Record<string, number> = {};
+	for (const e of elements) {
+		const name = e.efficiencyType.toLowerCase();
+		product[name in product ? `${name}_2` : name] = e.value;
+		trace.step({
+			phase: "production",
+			label: `efficiency ${e.efficiencyType}`,
+			...efficiencyFormula(e, building, planet, cogc, workforce, empire),
+			value: e.value,
+			scope,
+		});
+	}
+	trace.step({
+		phase: "production",
+		label: "total efficiency",
+		formula: Object.keys(product).join(" × "),
+		inputs: product,
+		value: totalEfficiency,
+		scope,
+	});
+}
+
+/**
+ * Formula and inputs of one efficiency factor, for the trace
+ */
+function efficiencyFormula(
+	e: IBuildingEfficiency,
+	building: Building,
+	planet: Planet,
+	cogc: PlanCOGCProgram,
+	workforce: IWorkforceRecord,
+	empire: PlanEmpire | undefined
+): Pick<ITraceStepInput, "formula" | "inputs" | "note"> {
+	switch (e.efficiencyType) {
+		case "FERTILITY":
+			return planet.fertility != -1.0
+				? {
+						formula: "1 + fertility × 10 ÷ 33",
+						inputs: { fertility: planet.fertility },
+					}
+				: { note: "planet is not fertile" };
+		case "HQ":
+			return { note: "corporation HQ on the planet" };
+		case "COGC":
+			return { note: `COGC program ${cogc}` };
+		case "EXPERT":
+			return {
+				formula: "1 + expert_bonus",
+				inputs: { expert_bonus: e.value - 1 },
+			};
+		case "WORKFORCE": {
+			const total = getTotalWorkforce(building);
+			const inputs: Record<string, number> = {};
+			const terms: string[] = [];
+			for (const [name, count] of [
+				["pioneer", building.pioneers],
+				["settler", building.settlers],
+				["technician", building.technicians],
+				["engineer", building.engineers],
+				["scientist", building.scientists],
+			] as const) {
+				if (count === 0) continue;
+				inputs[`${name}_share`] = count / total;
+				inputs[name] = workforce[name].efficiency;
+				terms.push(`${name}_share × ${name}`);
+			}
+			return { formula: terms.join(" + "), inputs };
+		}
+		case "FACTION":
+			return empire
+				? {
+						formula:
+							"1 + bonus × 2 × (3 − 2 × permits_used ÷ permits_total)",
+						inputs: {
+							faction: empire.empire_faction,
+							permits_used: empire.empire_permits_used,
+							permits_total: empire.empire_permits_total,
+						},
+					}
+				: {};
+		default:
+			return {};
+	}
 }
 
 /**
@@ -309,9 +424,13 @@ export function calculateBuildingEfficiency(
  * efficiency provided by it
  *
  * @param {PlanDataExpert[]} planExperts Plan experts
+ * @param {IPlanTracer} [trace] Tracer
  * @returns {IExpertRecord} Expert Result Record
  */
-export function calculateExperts(planExperts: PlanDataExpert[]): IExpertRecord {
+export function calculateExperts(
+	planExperts: PlanDataExpert[],
+	trace?: IPlanTracer
+): IExpertRecord {
 	return Object.fromEntries(
 		expertNames.map((key) => {
 			const currentExpert: PlanDataExpert | undefined = planExperts.find(
@@ -324,6 +443,13 @@ export function calculateExperts(planExperts: PlanDataExpert[]): IExpertRecord {
 			if (currentExpert) {
 				amount = currentExpert.amount;
 				bonus = calculateExpertBonus(amount);
+				trace?.step({
+					phase: "experts",
+					label: `${key} experts`,
+					formula: "bonus for amount (0 to 5)",
+					inputs: { amount },
+					value: bonus,
+				});
 			}
 
 			return [key, { name: key, amount: amount, bonus: bonus }];
