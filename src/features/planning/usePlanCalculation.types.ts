@@ -13,6 +13,10 @@ import {
 	type WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
 import type { IInfrastructureCosts } from "../cx/usePrice.types";
+import type {
+	IPlanCalculation,
+	ITraceEntry,
+} from "@/features/planning/engine/engine.types";
 
 export interface IWorkforceElement {
 	name: WorkforceType;
@@ -253,4 +257,15 @@ export interface IOverviewData {
 	dailyDegradationCost: number;
 	profit: number;
 	roi: number;
+}
+
+/** one traced calculation for the calculation debug panel */
+export interface IPlanTraceRun {
+	calculation: IPlanCalculation;
+	entries: ITraceEntry[];
+	truncated: boolean;
+	// run time of the traced calculation
+	ms: number;
+	// when it ran, epoch ms
+	at: number;
 }

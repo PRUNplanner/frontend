@@ -10,7 +10,9 @@
 		locale.value = locale.value === "keymode" ? "en_US" : "keymode";
 	};
 
-	import { PButton, PTag, PTable } from "@/ui";
+	import { calcDebug, setCalcDebug } from "@/lib/debugMode";
+
+	import { PButton, PCheckbox, PTag, PTable } from "@/ui";
 
 	// Grab the Pinia store
 	const queryStore = useQueryStore();
@@ -43,6 +45,15 @@
 					page.
 				</div>
 			</div>
+		</div>
+		<div>
+			<h2 class="text-2xl pb-3">Calculation debug</h2>
+			<PCheckbox
+				:checked="calcDebug"
+				@update:checked="(v) => setCalcDebug(!!v, 'debug_page')">
+				Adds a Debug panel to the plan page that lists every
+				calculation step with its formula.
+			</PCheckbox>
 		</div>
 		<div>
 			<h2 class="text-2xl">Query Cache</h2>

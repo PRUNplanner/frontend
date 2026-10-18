@@ -36,6 +36,7 @@
 	} from "@/features/api/schemas/planningData.schemas";
 	import type { IPlanDiffable } from "@/features/planning_data/planDiff";
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
+	import type { ICalcDebugPlan } from "@/features/planning/calcDebug.types";
 	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
@@ -117,6 +118,11 @@
 	const SharingModal = defineAsyncComponent(
 		() => import("@/features/sharing/components/SharingModal.vue")
 	);
+	// only loaded with calculation debug on
+	const PlanCalcDebug = defineAsyncComponent(
+		() =>
+			import("@/features/planning/components/debug/PlanCalcDebug.vue")
+	);
 
 	// UI
 	import {
@@ -138,8 +144,10 @@
 		DataObjectRound,
 		UndoSharp,
 		RedoSharp,
+		TerminalOutlined,
 	} from "@vicons/material";
 	import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
+	import { calcDebug } from "@/lib/debugMode";
 
 	const props = defineProps({
 		disabled: {
@@ -231,7 +239,35 @@
 		handleApplyStarterSetup,
 		handleChangeBuildingRecipe,
 		handleChangePlanName,
+		traceCalculation,
 	} = calculation;
+
+	/*
+	 * Calculation debug (English only by decision): the panel is mounted
+	 * only while open, so nothing is traced when it's closed
+	 */
+	const refShowCalcDebug: Ref<boolean> = ref(false);
+	function toggleCalcDebug(source: "button" | "shortcut"): void {
+		refShowCalcDebug.value = !refShowCalcDebug.value;
+		if (refShowCalcDebug.value) trackEvent("debug:calc_open", { source });
+	}
+	// what save sends, with the plan's id, empires and version
+	const calcDebugPlan = computed(
+		(): ICalcDebugPlan => ({
+			uuid: refPlanData.value.uuid,
+			...backendData.value,
+			empires: refPlanData.value.empires,
+			modified_at: refPlanData.value.modified_at,
+		})
+	);
+	const calcDebugMeta = computed(() => ({
+		plan: planName.value || t("plan.name.untitled"),
+		planet: planetData.planet_natural_id,
+		cx: refCXUuid.value
+			? (planningStore.cxs[refCXUuid.value]?.cx_name ?? refCXUuid.value)
+			: "Universe",
+		empire: computedActiveEmpire.value?.empire_name ?? "none",
+	}));
 
 	/*
 	 * Shared plan: the working copy is compared against the shared version,
@@ -988,7 +1024,10 @@
 		if (!(e.ctrlKey || e.metaKey)) return;
 		const key: string = e.key.toLowerCase();
 
-		if (key === "s") {
+		if (e.code === "Backquote" && calcDebug.value && !isTextField(e.target)) {
+			e.preventDefault();
+			toggleCalcDebug("shortcut");
+		} else if (key === "s") {
 			// never open the browser's save dialog on the plan page
 			e.preventDefault();
 			if (props.shared) {
@@ -1270,12 +1309,26 @@
 			</div>
 			<!-- Tools Container -->
 			<div ref="tools" class="row-4 col-span-full scroll-mt-2">
-				<div class="border-y border-white/10 px-3">
+				<div
+					class="border-y border-white/10 px-3 flex flex-row items-center gap-x-1">
 					<PlanToolTabs
 						:tabs="toolTabs"
 						:active="refShowTool"
 						:label="t('plan.actions.tools')"
 						@toggle="toggleTool" />
+					<PButton
+						v-if="calcDebug"
+						type="ghost"
+						size="sm"
+						class="ml-auto shrink-0 pointer-coarse:min-h-11"
+						:pressed="refShowCalcDebug"
+						data-calc-debug-button
+						@click="toggleCalcDebug('button')">
+						<template #icon>
+							<TerminalOutlined />
+						</template>
+						Debug
+					</PButton>
 				</div>
 				<!-- Tool View -->
 				<div
@@ -1555,6 +1608,15 @@
 				</div>
 			</div>
 		</div>
+		<PlanCalcDebug
+			v-if="calcDebug && refShowCalcDebug"
+			v-model:show="refShowCalcDebug"
+			:trace-calculation="traceCalculation"
+			:result="result"
+			:overview="overviewData"
+			:meta="calcDebugMeta"
+			:plan="calcDebugPlan"
+			:modified="modified" />
 	</div>
 
 	<!-- Save As Modal -->

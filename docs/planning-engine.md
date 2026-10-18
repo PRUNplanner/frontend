@@ -102,6 +102,37 @@ keeps its original signs. The plan result and the overview report the same
 money with different signs and degradation formulas (`x * (1 / 180)` vs
 `x / 180`); `finance.ts` keeps both exactly, down to the sign of zero.
 
+### Tracing
+
+`ctx.trace` (an `IPlanTracer`, `engine/trace.ts`) records every step for
+the calculation debug panel. Engine functions take it as an optional
+trailing parameter and call `trace?.step({ phase, label, formula, inputs,
+value, … })` where a value is computed, with the value actually used, so
+labels and formulas sit next to the math. `trace.group` nests the steps of
+one building row or one recipe's COGM. Phases, in engine order:
+`TRACE_PHASES` (input, infrastructure, workforce, area, experts,
+production, cogm, materialio, prices, construction, finance, visitation).
+Each production group starts with the building's game data; infrastructure
+lists each habitation's housing, area each building's share. `calculatePlan` wraps the price book in `tracePriceBook`,
+which records the first lookup per ticker and type with its source.
+
+- Without a tracer nothing changes: `trace?.step(…)` never builds its
+  argument, and traced and untraced results are deep-equal
+  (`engine/trace.test.ts` over every fixture).
+- `createPlanTracer({ limit })` stops at 10,000 entries and marks the trace
+  truncated.
+- Only `usePlanCalculation().traceCalculation()` traces, for the panel; it
+  also traces `calculateVisitation` (storage and daily weight and volume) on
+  the traced result. Recipe options and batch callers pass no tracer.
+- `calcDebug.util.ts` self-checks a traced run (totals add up, profits
+  agree, deltas and efficiencies). Those checks are a deliberate second
+  calculation, an oracle, and the one exception to hard rule 6.
+
+The switch is `lib/debugMode.ts` (`?debug=calc` / `?debug=off` on any
+page, or the `/debug` page; stored in `localStorage.prunplanner_debug`).
+With it on, the plan page shows a Debug button (and Ctrl/⌘ + \`) that
+opens `components/debug/PlanCalcDebug.vue`, loaded lazily.
+
 ## `usePlanCalculation` (`src/features/planning/usePlanCalculation.ts`)
 
 The Vue adapter for the plan editor.

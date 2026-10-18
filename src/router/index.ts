@@ -6,6 +6,7 @@ import { useUserStore } from "@/stores/userStore";
 // Composables
 import { trackPageview } from "@/lib/analytics/useAnalytics";
 import { setClientErrorRoute } from "@/lib/clientErrors";
+import { setCalcDebug } from "@/lib/debugMode";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -203,6 +204,19 @@ const router = createRouter({
 				]
 			: []),
 	],
+});
+
+// ?debug=calc turns calculation debug on, ?debug=off off, on any page;
+// the key is dropped so a shared or bookmarked URL never carries it
+router.beforeEach((to) => {
+	const debug = to.query.debug;
+	if (debug === undefined) return;
+
+	if (debug === "calc") setCalcDebug(true, "url");
+	else if (debug === "off") setCalcDebug(false, "url");
+
+	const { debug: _debug, ...query } = to.query;
+	return { path: to.path, query, hash: to.hash, replace: true };
 });
 
 router.beforeEach((to, _) => {

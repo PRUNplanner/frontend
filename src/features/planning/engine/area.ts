@@ -16,6 +16,7 @@ import type {
 	PlanData,
 	PlanDataInfrastructure,
 } from "@/features/api/schemas/planningData.schemas";
+import type { IPlanTracer } from "@/features/planning/engine/engine.types";
 
 /**
  * Calculates the plans area result by determining the total amount of
@@ -27,12 +28,14 @@ import type {
  * @param {PlanData} data Plan Data
  * @param {number} permits Permits used
  * @param {ReadonlyMap<string, Building>} buildings Building data
+ * @param {IPlanTracer} [trace] Tracer
  * @returns {IAreaResult} Area
  */
 export function calculateArea(
 	data: PlanData,
 	permits: number,
-	buildings: ReadonlyMap<string, Building>
+	buildings: ReadonlyMap<string, Building>,
+	trace?: IPlanTracer
 ): IAreaResult {
 	// Core Module holds 25 area
 	let areaUsed: number = 25;
@@ -41,25 +44,70 @@ export function calculateArea(
 	// calculate area used based on production and infrastructure buildings
 	for (const infrastructure of data.infrastructure) {
 		if (infrastructure.amount > 0) {
-			areaUsed +=
-				getBuilding(buildings, infrastructure.building).area_cost *
-				infrastructure.amount;
+			const cost: number = getBuilding(
+				buildings,
+				infrastructure.building
+			).area_cost;
+			areaUsed += cost * infrastructure.amount;
+			trace?.step({
+				phase: "area",
+				label: `${infrastructure.building} area`,
+				formula: "area_cost × amount",
+				inputs: { area_cost: cost, amount: infrastructure.amount },
+				value: cost * infrastructure.amount,
+				scope: { building: infrastructure.building },
+			});
 		}
 	}
 
 	for (const building of data.buildings) {
 		if (building.amount > 0) {
-			areaUsed +=
-				getBuilding(buildings, building.name).area_cost *
-				building.amount;
+			const cost: number = getBuilding(
+				buildings,
+				building.name
+			).area_cost;
+			areaUsed += cost * building.amount;
+			trace?.step({
+				phase: "area",
+				label: `${building.name} area`,
+				formula: "area_cost × amount",
+				inputs: { area_cost: cost, amount: building.amount },
+				value: cost * building.amount,
+				scope: { building: building.name },
+			});
 		}
 	}
+
+	const areaLeft: number = areaTotal - areaUsed;
+
+	trace?.step({
+		phase: "area",
+		label: "area used",
+		formula: "25 core module + Σ area cost × amount",
+		value: areaUsed,
+	});
+	trace?.step({
+		phase: "area",
+		label: "area total",
+		formula: "250 + permits × 250",
+		inputs: { permits },
+		value: areaTotal,
+	});
+	trace?.step({
+		phase: "area",
+		label: "area left",
+		formula: "total − used",
+		inputs: { total: areaTotal, used: areaUsed },
+		value: areaLeft,
+		level: areaLeft < 0 ? "warn" : "info",
+		note: areaLeft < 0 ? "more area than the permits allow" : undefined,
+	});
 
 	return {
 		permits: permits,
 		areaUsed: areaUsed,
 		areaTotal: areaTotal,
-		areaLeft: areaTotal - areaUsed,
+		areaLeft: areaLeft,
 	};
 }
 

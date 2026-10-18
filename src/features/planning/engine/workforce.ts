@@ -19,6 +19,7 @@ import type {
 	WorkforceConsumptionElement,
 	WorkforceConsumptionMap,
 } from "@/features/planning/calculations/workforceCalculations.types";
+import type { IPlanTracer } from "@/features/planning/engine/engine.types";
 
 export const WORKFORCE_CONSUMPTION_MAP: WorkforceConsumptionMap = {
 	pioneer: [
@@ -77,13 +78,17 @@ export const workforceTypeNames = WorkforceTypeSchema.options;
  * @param {number} required Required Workforce
  * @param {boolean} lux1 If Lux1 are provided
  * @param {boolean} lux2 If Lux2 are provided
+ * @param {IPlanTracer} [trace] Tracer
+ * @param {string} [workforce] Workforce type, for the trace
  * @returns {number} Satisfaction
  */
 export function calculateSatisfaction(
 	capacity: number,
 	required: number,
 	lux1: boolean,
-	lux2: boolean
+	lux2: boolean,
+	trace?: IPlanTracer,
+	workforce?: string
 ): number {
 	let satisfaction: number = 0;
 
@@ -111,7 +116,31 @@ export function calculateSatisfaction(
 		}
 	}
 
-	return satisfaction * efficiency;
+	const result: number = satisfaction * efficiency;
+
+	trace?.step({
+		phase: "workforce",
+		label: `${workforce} satisfaction`,
+		formula: "min(1, capacity ÷ required)",
+		inputs: { capacity, required },
+		value: satisfaction,
+		scope: { workforce },
+	});
+	trace?.step({
+		phase: "workforce",
+		label: `${workforce} efficiency`,
+		formula: "satisfaction × base × lux1 × lux2",
+		inputs: {
+			satisfaction,
+			base: required > 0 ? baseEfficiency : 0,
+			lux1: required > 0 && lux1 ? lux1Efficiency : 1,
+			lux2: required > 0 && lux2 ? lux2Efficiency : 1,
+		},
+		value: result,
+		scope: { workforce },
+	});
+
+	return result;
 }
 
 /**
@@ -245,11 +274,13 @@ export function getBuildingWorkforceMaterials(
  *
  * @param {PlanData} data Plan Data
  * @param {ReadonlyMap<string, Building>} buildings Building data
+ * @param {IPlanTracer} [trace] Tracer
  * @returns {Required<Record<WorkforceType, IWorkforceElement>>} Workforce
  */
 export function calculateWorkforce(
 	data: PlanData,
-	buildings: ReadonlyMap<string, Building>
+	buildings: ReadonlyMap<string, Building>,
+	trace?: IPlanTracer
 ): Required<Record<WorkforceType, IWorkforceElement>> {
 	const result: Record<WorkforceType, IWorkforceElement> = Object.fromEntries(
 		workforceTypeNames.map((key) => {
@@ -298,6 +329,13 @@ export function calculateWorkforce(
 					infBuildingData.habitations.scientists *
 					infrastructure.amount;
 			}
+
+			if (trace)
+				traceInfrastructure(
+					trace,
+					infBuildingData,
+					infrastructure.amount
+				);
 		}
 	}
 
@@ -324,15 +362,85 @@ export function calculateWorkforce(
 
 	// calculate satifsfaction and left
 	Object.values(result).forEach((workforce) => {
+		// types nobody needs or houses would only add noise
+		const traced: IPlanTracer | undefined =
+			workforce.capacity > 0 || workforce.required > 0
+				? trace
+				: undefined;
+		const scope = { workforce: workforce.name };
+
+		traced?.step({
+			phase: "workforce",
+			label: `${workforce.name} capacity`,
+			formula: "Σ habitations × amount",
+			value: workforce.capacity,
+			unit: "workers",
+			scope,
+		});
+		traced?.step({
+			phase: "workforce",
+			label: `${workforce.name} required`,
+			formula: "Σ building workers × amount",
+			value: workforce.required,
+			unit: "workers",
+			scope,
+		});
+
 		workforce.efficiency = calculateSatisfaction(
 			workforce.capacity,
 			workforce.required,
 			workforce.lux1,
-			workforce.lux2
+			workforce.lux2,
+			traced,
+			workforce.name
 		);
 
 		workforce.left = workforce.capacity - workforce.required;
+
+		traced?.step({
+			phase: "workforce",
+			label: `${workforce.name} left`,
+			formula: "capacity − required",
+			inputs: {
+				capacity: workforce.capacity,
+				required: workforce.required,
+			},
+			value: workforce.left,
+			unit: "workers",
+			scope,
+			level: workforce.left < 0 ? "warn" : "info",
+			note: workforce.left < 0 ? "under-housed" : undefined,
+		});
 	});
 
 	return result;
+}
+
+/** an infrastructure building's housing, for the trace */
+function traceInfrastructure(
+	trace: IPlanTracer,
+	building: Building,
+	amount: number
+): void {
+	const habitations = building.habitations;
+	const inputs: Record<string, number> = { amount };
+	let housed: number = 0;
+	if (habitations)
+		for (const [name, count] of Object.entries(habitations))
+			if (count > 0) {
+				inputs[name] = count * amount;
+				housed += count * amount;
+			}
+	trace.step({
+		phase: "infrastructure",
+		label: `${building.building_ticker} × ${amount}`,
+		formula: habitations ? "habitations × amount" : undefined,
+		inputs,
+		value: housed,
+		unit: "workers",
+		scope: { building: building.building_ticker },
+		note: habitations
+			? building.building_name
+			: `${building.building_name}, no housing`,
+	});
 }

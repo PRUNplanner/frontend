@@ -193,7 +193,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | `fio_burn` | | the burn calculation finished for at least one plan |
 | `construction_cart` | `built_edited` (Built was changed in this visit) | the cart closed |
 
-### XIT, app, onboarding
+### XIT, app, debug, onboarding
 
 | Event | Properties | When |
 | --- | --- | --- |
@@ -210,6 +210,9 @@ so for them `tool:use` is close to a pageview that got a result:
 | `app:remote_change` | `object_type` (`plan`, `empire`, `cx`), `has_unsaved_edits`, `is_deleted` | another tab saved or deleted what an open editor shows: it reloaded, or (with unsaved edits, or deleted) showed a notice. A deleted empire is sent by the empire page, always with `has_unsaved_edits: false` |
 | `app:session_change` | `reason` (`logout`, `login`, `other_user`) | another tab logged out, logged in, or logged in as another user; sent before this tab resets or reloads |
 | `app:db_blocked` | | the local game data database waits on an older PRUNplanner tab after a deploy |
+| `debug:calc_toggle` | `on`, `source` (`url`, `debug_page`, `panel`) | calculation debug was turned on or off (`?debug=calc` / `?debug=off`, the `/debug` page, the panel's Turn off) |
+| `debug:calc_open` | `source` (`button`, `shortcut`) | the calculation debug panel was opened on a plan |
+| `debug:calc_copy` | `format` (`text`, `json`) | the calculation trace was copied |
 | `onboarding:step_click` | `step` (`empire_save`, `planet_search`, `exchanges`) | a step of the first-run card on the Empire page |
 
 `source` on the XIT transfer events names the button: `supply_cart`,

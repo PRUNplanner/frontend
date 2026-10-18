@@ -3,6 +3,7 @@ import { config, flushPromises } from "@vue/test-utils";
 
 import PlanView from "@/views/PlanView.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { calcDebug } from "@/lib/debugMode";
 import {
 	etherwindPlan,
 	setupPlanningTestData,
@@ -35,6 +36,21 @@ const { gate, tool, stub } = vi.hoisted(() => ({
 		default: { name, render: () => null },
 	}),
 }));
+const debugPanel = vi.hoisted(() => ({ loads: 0 }));
+vi.mock("@/features/planning/components/debug/PlanCalcDebug.vue", async () => {
+	debugPanel.loads++;
+	const { h } = await import("vue");
+	return {
+		__esModule: true,
+		default: {
+			name: "PlanCalcDebug",
+			props: ["plan"],
+			render(this: { plan?: { plan_name?: string } }) {
+				return h("p", `debug panel ${this.plan?.plan_name}`);
+			},
+		},
+	};
+});
 const constructionCart = vi.hoisted(() => gate());
 const supplyCart = vi.hoisted(() => gate());
 
@@ -97,5 +113,58 @@ describe("PlanView", () => {
 		expect(errors).toEqual([]);
 		expect(wrapper.text()).toContain("PlanSupplyCart");
 		expect(wrapper.text()).not.toContain("PlanConstructionCart");
+	});
+
+	it("has no Debug button and loads no panel with debug off", async () => {
+		calcDebug.value = false;
+		const { wrapper } = await mountComponent(PlanView, {
+			planData: etherwindPlan(),
+		});
+
+		expect(wrapper.find("[data-calc-debug-button]").exists()).toBe(false);
+		window.dispatchEvent(
+			new KeyboardEvent("keydown", { code: "Backquote", ctrlKey: true })
+		);
+		await flushPromises();
+		expect(debugPanel.loads).toBe(0);
+	});
+
+	it("opens the debug panel with the button and Ctrl+`", async () => {
+		calcDebug.value = true;
+		const { wrapper } = await mountComponent(PlanView, {
+			planData: etherwindPlan(),
+		});
+		const button = wrapper.find("[data-calc-debug-button]");
+		expect(button.exists()).toBe(true);
+
+		await button.trigger("click");
+		await flushPromises();
+		expect(wrapper.text()).toContain("debug panel");
+		expect(button.attributes("aria-pressed")).toBe("true");
+
+		window.dispatchEvent(
+			new KeyboardEvent("keydown", { code: "Backquote", metaKey: true })
+		);
+		await flushPromises();
+		expect(wrapper.text()).not.toContain("debug panel");
+
+		window.dispatchEvent(
+			new KeyboardEvent("keydown", { code: "Backquote", ctrlKey: true })
+		);
+		await flushPromises();
+		expect(wrapper.text()).toContain("debug panel");
+
+		// the panel shows what save sends, a rename included
+		await wrapper
+			.findAll("nav button")
+			.find((b) => b.text() === "plan.components.configuration.label")!
+			.trigger("click");
+		await flushPromises();
+		wrapper
+			.findComponent({ name: "PlanConfiguration" })
+			.vm.$emit("update:plan-name", "Renamed plan");
+		await flushPromises();
+		expect(wrapper.text()).toContain("debug panel Renamed plan");
+		calcDebug.value = false;
 	});
 });

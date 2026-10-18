@@ -277,6 +277,12 @@ export interface IAnalyticsEventProperties {
 	"app:remote_change": IRemoteChangeProperties;
 	"app:session_change": { reason: "logout" | "login" | "other_user" };
 	"app:db_blocked": undefined;
+	"debug:calc_toggle": {
+		on: boolean;
+		source: "url" | "debug_page" | "panel";
+	};
+	"debug:calc_open": { source: Trigger };
+	"debug:calc_copy": { format: "text" | "json" };
 
 	"onboarding:step_click": {
 		step: "empire_save" | "planet_search" | "exchanges";

@@ -11,6 +11,7 @@ import type {
 	IProductionBuildingRecipe,
 	IProductionBuildingRecipeCOGM,
 } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanTracer } from "@/features/planning/engine/engine.types";
 
 /**
  * COGM
@@ -34,6 +35,7 @@ import type {
  * @param {number} constructionCost Construction cost (positive)
  * @param {number} workforceCost Daily workforce cost (positive)
  * @param {IPriceBook} prices Price Book
+ * @param {IPlanTracer} [trace] Tracer
  * @returns {IProductionBuildingRecipeCOGM} COGM
  */
 export function calculateCOGM(
@@ -41,7 +43,34 @@ export function calculateCOGM(
 	totalEfficiency: number,
 	constructionCost: number,
 	workforceCost: number,
-	prices: IPriceBook
+	prices: IPriceBook,
+	trace?: IPlanTracer
+): IProductionBuildingRecipeCOGM {
+	if (trace)
+		return trace.group(
+			"cogm",
+			`COGM ${ar.recipeId}`,
+			{ building: ar.recipe.building_ticker, recipeId: ar.recipeId },
+			() =>
+				cogm(
+					ar,
+					totalEfficiency,
+					constructionCost,
+					workforceCost,
+					prices,
+					trace
+				)
+		);
+	return cogm(ar, totalEfficiency, constructionCost, workforceCost, prices);
+}
+
+function cogm(
+	ar: IProductionBuildingRecipe,
+	totalEfficiency: number,
+	constructionCost: number,
+	workforceCost: number,
+	prices: IPriceBook,
+	trace?: IPlanTracer
 ): IProductionBuildingRecipeCOGM {
 	const runtimeShare: number =
 		ar.recipe.time_ms / totalEfficiency / TOTALMSDAY;
@@ -96,7 +125,7 @@ export function calculateCOGM(
 		}))
 		.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 
-	return {
+	const result = {
 		runtime: ar.recipe.time_ms / totalEfficiency,
 		runtimeShare,
 		efficiency: totalEfficiency,
@@ -111,4 +140,60 @@ export function calculateCOGM(
 		outputRevenue,
 		totalProfit,
 	} as IProductionBuildingRecipeCOGM;
+
+	if (trace) traceCOGM(trace, ar, result, constructionCost);
+	return result;
+}
+
+/** a recipe's COGM steps, for the trace */
+function traceCOGM(
+	trace: IPlanTracer,
+	ar: IProductionBuildingRecipe,
+	c: IProductionBuildingRecipeCOGM,
+	constructionCost: number
+): void {
+	const scope = {
+		building: ar.recipe.building_ticker,
+		recipeId: ar.recipeId,
+	};
+	const step = (
+		label: string,
+		value: number,
+		formula?: string,
+		inputs?: Record<string, number>
+	) => trace.step({ phase: "cogm", label, formula, inputs, value, scope });
+
+	step("runtime share", c.runtimeShare, "time_ms ÷ efficiency ÷ 86,400,000", {
+		time_ms: ar.recipe.time_ms,
+		efficiency: c.efficiency,
+	});
+	step(
+		"degradation share",
+		c.degradationShare,
+		"construction ÷ 180 × runtime_share",
+		{
+			construction: constructionCost,
+			runtime_share: c.runtimeShare,
+		}
+	);
+	step("workforce share", c.workforceCost, "workforce_cost × runtime_share", {
+		workforce_cost: c.workforceCostTotal,
+		runtime_share: c.runtimeShare,
+	});
+	for (const i of c.inputCost)
+		step(`${i.ticker} input cost`, i.costTotal, "amount × BUY price", {
+			amount: i.amount,
+			price: i.costUnit,
+		});
+	step("total cost", c.totalCost, "degradation + workforce + inputs", {
+		degradation: c.degradationShare,
+		workforce: c.workforceCost,
+		inputs: c.inputTotal,
+	});
+	step("output revenue", c.outputRevenue, "Σ amount × SELL price");
+	for (const o of c.outputCOGM)
+		step(`${o.ticker} cost per unit`, o.costTotal, "total_cost ÷ amount", {
+			total_cost: c.totalCost,
+			amount: o.amount,
+		});
 }

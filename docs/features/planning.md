@@ -21,6 +21,7 @@ editor UI. The engine is documented in depth in
 | `usePlanHistory.ts` | Undo/redo for the editor: wraps the handlers so each edit is one step, and owns `modified` (differs from the last save) and `savedAt` |
 | `calculations/*.ts` | Wrappers around the engine (bonus, workforce, building), infrastructure lists, extraction, hab LP optimisation |
 | `util/materialIO.util.ts` | Combine and enrich material I/O. Also combines empire I/O (`combineEmpireMaterialIO`, `empireMaterialIOState`) |
+| `calcDebug.util.ts` / `.types.ts` | Calculation debug: self-checks of a traced run, trace tree, copy as text and JSON. See [Tracing](../planning-engine.md#tracing) |
 
 ## Components
 
@@ -61,6 +62,15 @@ editor UI. The engine is documented in depth in
       `materialChanges`, `compareVerdict`). The other plan is calculated as
       its own plan view does: its first empire and that empire's CX
       preference.
+- **Calculation debug** (`components/debug/PlanCalcDebug.vue`, English
+  only): with `?debug=calc` a Debug button at the end of the tool tabs (or
+  Ctrl/⌘ + \`) docks a terminal-style log of every engine step under the
+  plan, like `ResourceROIChartDrawer` (shared `ui/useDockHeight`). Phase
+  sections start collapsed (a filter or Issues only opens them); a `plan`
+  section shows the plan as save sends it (`backendData`: name, empire,
+  planet, permits, COGC, HQ, plan data) with its id, empires and save
+  version, as JSON. It reruns the trace on every result change while open, and copies
+  as text or JSON (both with the plan).
 - `PlanMaterialIO` shows a market flag button after a flagged material
   (`cx/components/MarketFlagButton`) and a one-line count under the table;
   `PlanView` computes the checks with the plan's price book.

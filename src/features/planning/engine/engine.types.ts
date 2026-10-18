@@ -6,6 +6,7 @@ import type {
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
 import type { IPriceBook } from "@/features/cx/priceBook";
+import type { TRACE_PHASES } from "@/features/planning/engine/trace";
 import type {
 	Plan,
 	PlanEmpire,
@@ -32,6 +33,8 @@ export interface IGameData {
 export interface IPlanContext extends IGameData {
 	planet: Planet;
 	prices: IPriceBook;
+	// records every step for the calculation debug panel, off when unset
+	trace?: IPlanTracer;
 }
 
 /**
@@ -54,4 +57,48 @@ export interface IPlanInput {
 export interface IPlanCalculation {
 	result: IPlanResult;
 	overview: IOverviewData;
+}
+
+/** the engine's steps, in calculation order */
+export type TracePhase = (typeof TRACE_PHASES)[number];
+
+export interface ITraceScope {
+	building?: string;
+	ticker?: string;
+	workforce?: string;
+	recipeId?: string;
+}
+
+export interface ITraceStepInput {
+	phase: TracePhase;
+	label: string;
+	// English, with the names of `inputs` as placeholders
+	formula?: string;
+	inputs?: Record<string, number | string | boolean>;
+	value?: number | string;
+	unit?: string;
+	scope?: ITraceScope;
+	level?: "info" | "warn";
+	note?: string;
+}
+
+export interface ITraceEntry extends ITraceStepInput {
+	id: number;
+	// the group this step is in, null at the top
+	parent: number | null;
+	level: "info" | "warn";
+}
+
+/**
+ * Write-only sink for the engine's steps. Engine functions take it as an
+ * optional parameter and call `trace?.step(…)` where a value is computed.
+ */
+export interface IPlanTracer {
+	step(entry: ITraceStepInput): void;
+	group<T>(
+		phase: TracePhase,
+		label: string,
+		scope: ITraceScope | undefined,
+		fn: () => T
+	): T;
 }

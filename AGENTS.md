@@ -61,7 +61,9 @@ time.
 3. **Never hard-code user-facing strings.** Add keys to
    `src/locales/en_US/<namespace>.json` only. Crowdin owns every other locale
    folder, so don't edit those. Help pages follow the same rule and live in
-   `src/assets/help/en_US/`.
+   `src/assets/help/en_US/`. Debug tooling (the `/debug` page,
+   `features/planning/components/debug/`, `lib/debugMode.ts`) is English
+   only by decision.
 4. **Backend calls follow a fixed chain:** a `call*()` function in
    `src/features/api/*.api.ts`, a Zod schema in `src/features/api/schemas/`,
    then a named `defineQuery()` in `src/lib/query_cache/queries/*.queries.ts`

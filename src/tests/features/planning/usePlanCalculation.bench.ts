@@ -136,5 +136,10 @@ for (const [name, planFactory] of plans) {
 				live.calc.refreshKey.value++;
 			});
 		});
+
+		// the calculation debug panel's run: calculation plus tracer
+		bench("B6 traceCalculation() (debug panel)", () => {
+			live.calc.traceCalculation();
+		});
 	});
 }
