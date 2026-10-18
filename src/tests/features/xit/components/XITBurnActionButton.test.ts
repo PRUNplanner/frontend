@@ -188,6 +188,7 @@ describe("XITBurnActionButton", () => {
 					group: "A1",
 					origin: CONFIGURE,
 					dest: CONFIGURE,
+					noSfc: true,
 				},
 			],
 			global: { name: "PRUNplanner Burn Supply" },
@@ -305,6 +306,7 @@ describe("XITBurnActionButton", () => {
 				group: "A1",
 				origin: "Antares Station Warehouse",
 				dest: CONFIGURE,
+				noSfc: true,
 			},
 		]);
 

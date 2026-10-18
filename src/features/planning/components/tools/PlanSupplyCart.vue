@@ -297,7 +297,7 @@
 			<XITTransferActionButton
 				source="supply_cart_initial"
 				:elements="xitInitialElements"
-				transfer-name="Supply Cart (Initial)"
+				transfer-name="Supply Cart Initial"
 				:button-text="t('plan.tools.supply_cart.buttons.xit_initial')"
 				:drawer-title="t('plan.tools.supply_cart.table.xit_initial_name')"
 				button-secondary />

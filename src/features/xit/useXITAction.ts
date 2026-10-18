@@ -63,15 +63,19 @@ export function useXITAction() {
 				options && options.destination
 					? options.destination
 					: "Configure on Execution",
+			// refined-prun opens an SFC step for packages it does not know
+			noSfc: true,
 		});
+		// refined-prun XIT ACT only accepts names matching /^[ 0-9a-zA-Z.-]*$/
+		const name = `PRUNplanner ${options?.name ?? ""}`
+			.replace(/[^ 0-9a-zA-Z.-]/g, "")
+			.replace(/ +/g, " ")
+			.trim();
 		return computed(() => {
 			const actionFormat: IXITJSON = {
 				actions,
 				global: {
-					name:
-						options && options.name
-							? `PRUNplanner ${options.name}`
-							: "PRUNplanner",
+					name,
 				},
 				groups: [
 					{
