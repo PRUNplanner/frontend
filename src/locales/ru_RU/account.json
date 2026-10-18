@@ -35,10 +35,10 @@
 				"username": "Логин",
 				"username_info": "Должно быть как минимум 3 символа. Не может содержать пробелы.",
 				"password": "Пароль",
-				"password_info": "At least 8 characters, not only numbers, and not a common password.",
-				"email": "Email (optional)",
+				"password_info": "Должно быть не менее 8 символов.",
+				"email": "Электронная почта",
 				"email_placeholder": "Не обязательно, но рекомендуется.",
-				"email_info": "Only used to reset your password if you forget it. No newsletters, never shared. You can add it later in Profile.",
+				"email_info": "Не обязательно. Повышает безопасность вашего аккаунта.",
 				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
 				"security_question": "Секретный вопрос",
 				"question": "Введите название планеты {planet}. Чтобы найти его, откройте новый буфер в игре командой {command}. Название планеты будет указано в поле «Название» в информации о планете",
@@ -82,7 +82,7 @@
 				"code_placeholder": "Код верификации"
 			},
 			"result": {
-				"ok": "Email address confirmed.",
+				"ok": "Адрес электронной почты подтвержден.",
 				"already_verified": "Your email address is already confirmed.",
 				"back": "Back to your empire"
 			}
