@@ -35,10 +35,10 @@
 				"username": "Benutzername",
 				"username_info": "Muss mindestens 3 Zeichen lang sein. Kann keine Leerzeichen enthalten.",
 				"password": "Passwort",
-				"password_info": "At least 8 characters, not only numbers, and not a common password.",
-				"email": "Email (optional)",
+				"password_info": "Muss mindestens 8 Zeichen lang sein.",
+				"email": "E-Mail",
 				"email_placeholder": "Nicht verpflichtend, aber empfohlen.",
-				"email_info": "Only used to reset your password if you forget it. No newsletters, never shared. You can add it later in Profile.",
+				"email_info": "Nicht verpflichtend. Erhöht die Sicherheit deines Kontos.",
 				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
 				"security_question": "Sicherheitsfrage",
 				"question": "Gib den Namen des Planeten {planet} ein. Um ihn zu finden, öffne ein neues Fenster in Prosperous Universe mit dem Befehl {command}. Du siehst den Planetennamen unter 'Name' in den Planeten-Informationen",
@@ -82,7 +82,7 @@
 				"code_placeholder": "Verifizierungscode"
 			},
 			"result": {
-				"ok": "Email address confirmed.",
+				"ok": "E-Mail-Adresse bestätigt.",
 				"already_verified": "Your email address is already confirmed.",
 				"back": "Back to your empire"
 			}
