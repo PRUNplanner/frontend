@@ -169,6 +169,55 @@ describe("calcDebug.util", () => {
 		});
 	});
 
+	it("checks a ticker the buildings do not produce or consume", () => {
+		const { live, run } = runs();
+		const extra = {
+			...run.calculation.result.materialio[0],
+			ticker: "XXX",
+			delta: 3,
+		};
+		run.calculation.result.materialio.push(extra);
+
+		// expected 0 (no building or workforce touches it), actual 3
+		expect(calcDebugChecks(live, run).checks[4]).toMatchObject({
+			pass: false,
+			detail: "XXX",
+			expected: 0,
+			actual: 3,
+		});
+	});
+
+	it("checks a ticker the result left out", () => {
+		const { live, run } = runs();
+		const { ticker } = run.calculation.result.materialio[0];
+		run.calculation.result.materialio.splice(0, 1);
+
+		const check = calcDebugChecks(live, run).checks[4];
+
+		expect(check.pass).toBe(false);
+		expect(check.detail).toBe(ticker);
+		expect(check.actual).toBe(0);
+	});
+
+	it("skips the share sum of a building that runs nothing", () => {
+		const { live, run } = runs();
+		for (const b of run.calculation.result.production.buildings)
+			for (const ar of b.activeRecipes) ar.dailyShare = 0;
+
+		expect(calcDebugChecks(live, run).checks[5].pass).toBe(true);
+	});
+
+	it("writes a failed check with only the parts it has", () => {
+		expect(checkLine({ name: "sum", pass: false })).toBe("✗ sum: ");
+		expect(checkLine({ name: "sum", pass: false, detail: "FE" })).toBe(
+			"✗ sum: FE"
+		);
+		expect(
+			checkLine({ name: "sum", pass: false, expected: 1, actual: 2 })
+		).toBe("✗ sum: expected 1, actual 2");
+		expect(checkLine({ name: "sum", pass: true })).toBe("✓ sum");
+	});
+
 	it("lists warn entries and a truncated trace as warnings", () => {
 		const { live, run } = runs(emptyPlan());
 		run.entries = [

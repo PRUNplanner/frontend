@@ -571,7 +571,107 @@ describe("usePlanCalculation", async () => {
 		undo();
 		expect(plan.value.plan_data.buildings).toStrictEqual([]);
 		expect(plan.value.plan_data.experts).toStrictEqual(experts);
-		expect(plan.value.plan_data.infrastructure).toStrictEqual(infrastructure);
+		expect(plan.value.plan_data.infrastructure).toStrictEqual(
+			infrastructure
+		);
 		expect(canUndo.value).toBe(false);
+	});
+
+	describe("before and without data", () => {
+		const make = (plan: object) =>
+			usePlanCalculation(
+				// @ts-expect-error mock data
+				ref(plan),
+				ref(undefined),
+				ref(undefined),
+				ref(undefined)
+			);
+
+		it("shows an empty overview and no trace until the planet is loaded", async () => {
+			const { overviewData, traceCalculation, result } = make(
+				structuredClone(plan_etherwind)
+			);
+
+			expect(overviewData.value).toStrictEqual({
+				dailyCost: 0,
+				dailyProfit: 0,
+				totalConstructionCost: 0,
+				dailyDegradationCost: 0,
+				profit: 0,
+				roi: 0,
+			});
+			expect(traceCalculation()).toBeUndefined();
+
+			await vi.waitFor(() => expect(result.value.done).toBe(true));
+			expect(overviewData.value.roi).toBeGreaterThan(0);
+		});
+
+		it("traces one calculation with the same figures as the live one", async () => {
+			const { result, overviewData, traceCalculation } = make(
+				structuredClone(plan_etherwind)
+			);
+			await vi.waitFor(() => expect(result.value.done).toBe(true));
+
+			const run = traceCalculation()!;
+
+			expect(run.entries.length).toBeGreaterThan(0);
+			expect(run.truncated).toBe(false);
+			expect(run.ms).toBeGreaterThanOrEqual(0);
+			expect(run.at).toBeGreaterThan(0);
+			expect(run.calculation.result.profit).toBe(result.value.profit);
+			expect(run.calculation.overview.profit).toBe(
+				overviewData.value.profit
+			);
+		});
+
+		it("saves an unnamed plan as 'missing name'", () => {
+			const plan = structuredClone(plan_etherwind) as Record<
+				string,
+				unknown
+			>;
+			delete plan.plan_name;
+
+			const { backendData, saveable } = make(plan);
+
+			expect(backendData.value.plan_name).toBe("missing name");
+			expect(saveable.value).toBe(false);
+		});
+
+		it("lists the plan's own empires, none when it has no list", () => {
+			const plan = structuredClone(plan_etherwind) as Record<
+				string,
+				unknown
+			>;
+			const own = [{ uuid: "E1", name: "Own" }];
+
+			expect(make({ ...plan, empires: own }).planEmpires.value).toEqual(
+				own
+			);
+			delete plan.empires;
+			expect(make(plan).planEmpires.value).toEqual([]);
+		});
+
+		it("logs a planet that fails to load and keeps the empty result", async () => {
+			const failure = new Error("Planet KW-688c not available.");
+			vi.mocked(usePlanetData).mockImplementationOnce(
+				() =>
+					({
+						getPlanet: vi.fn().mockRejectedValue(failure),
+					}) as unknown as ReturnType<typeof usePlanetData>
+			);
+			const error = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			const { result, overviewData } = make(
+				structuredClone(plan_etherwind)
+			);
+			await flushPromises();
+
+			expect(error).toHaveBeenCalledWith(failure);
+			expect(result.value.done).toBe(false);
+			expect(overviewData.value.profit).toBe(0);
+			error.mockRestore();
+		});
 	});
 });

@@ -41,6 +41,7 @@ vi.mock("@/features/planning/components/PlanProductionRecipe.vue", () => ({
 			recipeIndex: Number,
 			recipeData: Object,
 			recipeOptions: Array,
+			isNew: Boolean,
 			cxUuid: String,
 			planetId: String,
 		},
@@ -122,10 +123,13 @@ describe("PlanProductionBuilding", () => {
 
 	it("shows the single building construction cost in a tooltip", async () => {
 		// PTooltip observes its size, the test DOM has no ResizeObserver
-		vi.stubGlobal("ResizeObserver", class {
-			observe() {}
-			disconnect() {}
-		});
+		vi.stubGlobal(
+			"ResizeObserver",
+			class {
+				observe() {}
+				disconnect() {}
+			}
+		);
 		// efficiency comes first, construction last
 		const hover = (wrapper: VueWrapper) =>
 			wrapper
@@ -394,6 +398,120 @@ describe("PlanProductionBuilding", () => {
 			expect(none.wrapper.text()).toContain(
 				"plan.components.production_building.no_recipe"
 			);
+		});
+	});
+
+	it("lists the efficiency factors in a tooltip", async () => {
+		vi.stubGlobal(
+			"ResizeObserver",
+			class {
+				observe() {}
+				disconnect() {}
+			}
+		);
+		const { wrapper } = await mountBuilding();
+
+		await wrapper
+			.findAllComponents(PTooltip)
+			.at(0)!
+			.find("div")
+			.trigger("mouseenter");
+
+		const tip = document.body.querySelector("[role=tooltip]")!.textContent;
+		expect(tip).toContain("game.efficiency_type.COGC");
+		expect(tip).toContain("125.00 %");
+		expect(tip).toContain("game.efficiency_type.EXPERT");
+		expect(tip).toContain("107.00 %");
+	});
+
+	describe("zero efficiency", () => {
+		const REASON = "plan.components.production_building.zero_reason";
+		const zero = (type: "FERTILITY" | "WORKFORCE" | "EXPERT") =>
+			building({
+				totalEfficiency: 0,
+				efficiencyElements: [
+					{ efficiencyType: "COGC", value: 1.25 },
+					{ efficiencyType: type, value: 0 },
+				],
+			});
+
+		it("names fertility and workforce with a hint of their own", async () => {
+			const { wrapper, setProps } = await mountBuilding({
+				buildingData: zero("FERTILITY"),
+			});
+			expect(wrapper.text()).toContain(`${REASON}.FERTILITY`);
+
+			await setProps({ buildingData: zero("WORKFORCE") });
+			expect(wrapper.text()).toContain(`${REASON}.WORKFORCE`);
+		});
+
+		it("names any other factor by its game efficiency type", async () => {
+			const { wrapper } = await mountBuilding({
+				buildingData: zero("EXPERT"),
+			});
+
+			expect(wrapper.text()).toContain("game.efficiency_type.EXPERT");
+			expect(wrapper.text()).not.toContain(REASON);
+		});
+
+		it("names no reason without a zero factor or with an efficiency", async () => {
+			const { wrapper, setProps } = await mountBuilding({
+				buildingData: building({ totalEfficiency: 0 }),
+			});
+			expect(wrapper.find(".text-negative.text-xs").exists()).toBe(false);
+			expect(wrapper.text()).not.toContain(REASON);
+
+			await setProps({
+				buildingData: { ...zero("FERTILITY"), totalEfficiency: 1 },
+			});
+			expect(wrapper.text()).not.toContain(REASON);
+		});
+	});
+
+	describe("against the shared plan", () => {
+		const badges = (wrapper: VueWrapper) =>
+			wrapper
+				.findAll("span.ml-2.uppercase")
+				.map((s) => [s.text(), s.classes()]);
+
+		it("badges what changed", async () => {
+			const { wrapper } = await mountBuilding({
+				change: { kinds: ["added", "amount"], newRecipes: [] },
+			});
+
+			const found = badges(wrapper);
+			expect(found.map(([text]) => text)).toEqual([
+				"sharing.compare.added",
+				"sharing.compare.amount",
+			]);
+			expect(found[0][1]).toContain("text-positive");
+			expect(found[1][1]).toContain("text-warning");
+		});
+
+		it("marks the recipes the shared plan didn't have as new", async () => {
+			const { wrapper } = await mountBuilding({
+				change: { kinds: ["recipe"], newRecipes: ["SME#AL"] },
+			});
+
+			expect(
+				wrapper
+					.findAllComponents(PlanProductionRecipe)
+					.map((r) => r.props("isNew"))
+			).toEqual([false, true]);
+			expect(badges(wrapper).map(([text]) => text)).toEqual([
+				"sharing.compare.recipe",
+			]);
+		});
+
+		it("shows no badge without a change", async () => {
+			const { wrapper } = await mountBuilding();
+
+			expect(badges(wrapper)).toEqual([]);
+			expect(
+				wrapper
+					.findAllComponents(PlanProductionRecipe)
+					.some((r) => r.props("isNew"))
+			).toBe(false);
 		});
 	});
 });

@@ -331,4 +331,151 @@ describe("PlanCalcDebug", () => {
 		await w.find('[aria-label="common.ui.close"]').trigger("click");
 		expect(component.emitted("update:show")?.[0]).toEqual([false]);
 	});
+
+	it("resizes by dragging the grip and with the arrow keys", async () => {
+		const { wrapper: w } = await mountPanel();
+		const grip = w.find("[role=separator]");
+		// jsdom has no PointerEvent: a mouse event under the pointer name
+		const pointer = async (type: string, clientY = 0) => {
+			grip.element.dispatchEvent(
+				new MouseEvent(type, { clientY, bubbles: true })
+			);
+			await flushPromises();
+		};
+		const height = () => Number(grip.attributes("aria-valuenow"));
+		const start = height();
+
+		await pointer("pointerdown", 500);
+		await pointer("pointermove", 450);
+		expect(height()).toBe(start + 50);
+
+		await pointer("pointerup");
+		await pointer("pointermove", 300);
+		expect(height()).toBe(start + 50);
+
+		// a cancelled drag ends like a released one
+		await pointer("pointerdown", 500);
+		await pointer("pointercancel");
+		await pointer("pointermove", 300);
+		expect(height()).toBe(start + 50);
+
+		await grip.trigger("keydown", { key: "ArrowUp" });
+		expect(height()).toBe(start + 50 + 24);
+		await grip.trigger("keydown", { key: "ArrowDown" });
+		await grip.trigger("keydown", { key: "ArrowDown" });
+		expect(height()).toBe(start + 50 - 24);
+	});
+
+	it("closes on Escape", async () => {
+		const { component } = await mountPanel();
+
+		document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+		await flushPromises();
+
+		expect(component.emitted("update:show")?.[0]).toEqual([false]);
+	});
+
+	it("waits for the plan and can't copy before there is a trace", async () => {
+		traceCalculation.mockReturnValueOnce(undefined as never);
+		const { wrapper: w } = await mountPanel();
+
+		expect(w.find("[data-status]").text()).toBe("waiting for the plan…");
+		expect(button(w, "Copy text").attributes("disabled")).toBeDefined();
+		expect(button(w, "Copy JSON").attributes("disabled")).toBeDefined();
+		expect(w.find("[data-phase]").exists()).toBe(false);
+		expect(w.text()).not.toContain("No steps match.");
+	});
+
+	it("marks a truncated trace and all checks passing", async () => {
+		checks.report = {
+			checks: [{ name: "ok check", pass: true }],
+			warnings: [],
+		};
+		traceCalculation.mockReturnValueOnce({
+			...traceRun(),
+			truncated: true,
+		});
+		const { wrapper: w } = await mountPanel();
+
+		expect(w.find("[data-status]").text()).toMatch(
+			/5 steps \(truncated\) · 1\/1 checks ✓$/
+		);
+		expect(w.find("[data-status]").classes()).toContain("text-muted");
+		expect(w.find("[data-status]").classes()).not.toContain(
+			"text-negative"
+		);
+	});
+
+	it("shows a failing check in red and a thrown non-error as text", async () => {
+		const { wrapper: w, setProps } = await mountPanel();
+		expect(w.find("[data-status]").classes()).toContain("text-negative");
+
+		traceCalculation.mockImplementationOnce(() => {
+			throw "out of memory";
+		});
+		await setProps({ result: { done: true, profit: 9 } });
+		await vi.waitFor(() =>
+			expect(w.find("[data-status]").text()).toBe(
+				"calculation failed: out of memory"
+			)
+		);
+	});
+
+	it("reruns once for changes within a frame and drops a pending one on close", async () => {
+		const frames: FrameRequestCallback[] = [];
+		const cancel = vi.fn();
+		vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) => {
+			frames.push(cb);
+			return frames.length;
+		});
+		vi.stubGlobal("cancelAnimationFrame", cancel);
+		const { wrapper: w, setProps } = await mountPanel();
+
+		await setProps({ result: { done: true, profit: 2 } });
+		await setProps({ overview: { profit: 5 } });
+		expect(frames).toHaveLength(1);
+		expect(traceCalculation).toHaveBeenCalledTimes(1);
+
+		frames[0](0);
+		expect(traceCalculation).toHaveBeenCalledTimes(2);
+
+		// a change right before closing leaves nothing running
+		await setProps({ overview: { profit: 6 } });
+		expect(frames).toHaveLength(2);
+		w.unmount();
+		expect(cancel).toHaveBeenCalledWith(2);
+	});
+
+	it("explains a step's formula, remaining inputs and note", async () => {
+		const run = traceRun();
+		run.entries.push(
+			entry({
+				phase: "input",
+				label: "full step",
+				formula: "a × b",
+				inputs: { a: 2, b: 3, c: 4 },
+				note: "rounded",
+			}),
+			entry({ phase: "input", label: "bare note", note: "only a note" })
+		);
+		traceCalculation.mockReturnValueOnce(run);
+		const { wrapper: w } = await mountPanel();
+		await sectionButtons(w)[0].trigger("click");
+
+		const line = (label: string) =>
+			w.findAll("[data-line]").find((l) => l.text().includes(label))!;
+		expect(line("full step").text()).toContain("= 2 × 3 · c 4 · rounded");
+		expect(line("bare note").text()).toContain("only a note");
+		expect(line("bare note").text()).not.toContain("·");
+	});
+
+	it("shows a plan without a save version", async () => {
+		const { wrapper: w } = await mountPanel({
+			plan: { ...PLAN, modified_at: undefined },
+		});
+
+		expect(w.find("[data-plan] > button").text()).toBe(
+			"▸ plan · saved (no version)"
+		);
+	});
 });

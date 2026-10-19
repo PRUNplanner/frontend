@@ -10,6 +10,8 @@ import { mountComponent } from "@/tests/mountComponent";
 import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 import { PInputNumber } from "@/ui";
 
+import type { ISensitivityRow } from "@/features/planning/util/whatIf.types";
+
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
 import {
@@ -20,6 +22,27 @@ import {
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+// the rows can be swapped for crafted ones, the plan is still calculated
+const crafted = vi.hoisted(() => ({
+	rows: undefined as ISensitivityRow[] | undefined,
+}));
+vi.mock("@/features/planning/util/whatIf.util", async (importActual) => {
+	const actual =
+		await importActual<
+			typeof import("@/features/planning/util/whatIf.util")
+		>();
+	return {
+		...actual,
+		priceSensitivity: (
+			...args: Parameters<typeof actual.priceSensitivity>
+		) => {
+			const sensitivity = actual.priceSensitivity(...args);
+			return crafted.rows
+				? { ...sensitivity, rows: crafted.rows }
+				: sensitivity;
+		},
+	};
+});
 const explorationQuery = vi.fn();
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (_name: string, params: unknown) => ({
@@ -53,6 +76,7 @@ describe("PlanCheck", () => {
 		vi.mocked(trackEvent).mockClear();
 		explorationQuery.mockReset().mockResolvedValue([]);
 		usePlanCheckView().view.value = "sensitivity";
+		crafted.rows = undefined;
 	});
 
 	it("opens on Market check, before the price sensitivity", async () => {
@@ -70,8 +94,12 @@ describe("PlanCheck", () => {
 		expect(buttons[0].attributes("aria-pressed")).toBe("true");
 		// no CX preference: no real prices, a hint to set one
 		const real = wrapper.find("[data-real-prices]");
-		expect(real.find("[data-ask-bid]").text()).toBe("cx.market_flags.popover.none");
-		expect(real.text()).toContain("plan.tools.plan_check.market.real.no_cx");
+		expect(real.find("[data-ask-bid]").text()).toBe(
+			"cx.market_flags.popover.none"
+		);
+		expect(real.text()).toContain(
+			"plan.tools.plan_check.market.real.no_cx"
+		);
 		expect(wrapper.text()).toContain("cx.market_flags.exchange.no_cx");
 
 		await buttons[1].trigger("click");
@@ -215,7 +243,9 @@ describe("PlanCheck", () => {
 		expect(rows[0].find(".bg-positive").attributes("style")).toContain(
 			"width: 100%"
 		);
-		expect(rows[0].text()).toMatch(/plan\.tools\.plan_check\.side\.(buy|sell)/);
+		expect(rows[0].text()).toMatch(
+			/plan\.tools\.plan_check\.side\.(buy|sell)/
+		);
 		expect(rows[0].text()).toMatch(/–/);
 
 		const text = wrapper.text();
@@ -241,9 +271,7 @@ describe("PlanCheck", () => {
 
 	it("shows profit at both price changes in the bar's tooltip", async () => {
 		const wrapper = await mountTool();
-		await wrapper
-			.find("tbody tr .ptooltip")
-			.trigger("mouseenter");
+		await wrapper.find("tbody tr .ptooltip").trigger("mouseenter");
 		await nextTick();
 
 		const tip = document.body.querySelector("[role=tooltip]")!.textContent;
@@ -277,5 +305,106 @@ describe("PlanCheck", () => {
 
 		expect(wrapper.text()).toContain("plan.tools.plan_check.empty");
 		expect(wrapper.find("table").exists()).toBe(false);
+	});
+
+	it("falls back to Market check when a logged-out user's view is Compare", async () => {
+		usePlanCheckView().view.value = "compare";
+		const wrapper = await mountTool();
+		const buttons = wrapper.findAll(
+			"[aria-label='plan.tools.plan_check.view_label'] > button"
+		);
+
+		expect(buttons).toHaveLength(2);
+		expect(buttons[0].attributes("aria-pressed")).toBe("true");
+		expect(wrapper.find("[data-real-prices]").exists()).toBe(true);
+
+		// choosing it stores the view, once
+		await buttons[0].trigger("click");
+		await buttons[0].trigger("click");
+		expect(trackEvent).toHaveBeenCalledTimes(1);
+		expect(trackEvent).toHaveBeenCalledWith("plan:plancheck_change", {
+			view: "market",
+		});
+	});
+
+	describe("with crafted rows", () => {
+		const ROWS: ISensitivityRow[] = [
+			// a bought material hurts when its price rises
+			{ ticker: "ZZZ", side: "buy", slope: -4000, breakEven: 35 },
+			{ ticker: "FE", side: "sell", slope: 1000, breakEven: "never" },
+		];
+
+		it("reads a bought top material as a price rise, with its break-even", async () => {
+			crafted.rows = ROWS;
+			const wrapper = await mountTool();
+			const means = wrapper.text();
+
+			expect(means).toContain("plan.tools.plan_check.means.higher");
+			expect(means).not.toContain("plan.tools.plan_check.means.lower");
+			expect(means).toContain("plan.tools.plan_check.means.break_even");
+		});
+
+		it("shows an unknown ticker with a neutral chip and no material name", async () => {
+			crafted.rows = ROWS;
+			const wrapper = await mountTool();
+			const [zzz, fe] = wrapper.findAll("tbody tr");
+
+			expect(zzz.find("span").classes()).toContain("bg-black/40");
+			expect(fe.find("span").classes()).toContain(
+				"material-category-metals"
+			);
+			await zzz.find(".ptooltip").trigger("mouseenter");
+			await nextTick();
+			const tip = document.body.querySelector("[role=tooltip]")!;
+			expect(tip.textContent).toContain("ZZZ");
+			expect(tip.textContent).not.toContain("iron");
+		});
+
+		it("has no show all button and no summary for 10 materials or fewer", async () => {
+			crafted.rows = ROWS;
+			const wrapper = await mountTool();
+
+			expect(wrapper.findAll("tbody tr")).toHaveLength(2);
+			expect(wrapper.find("button[aria-expanded]").exists()).toBe(false);
+			expect(wrapper.text()).not.toContain("plan.tools.plan_check.more");
+		});
+
+		it("names the plan's CX as the price source", async () => {
+			crafted.rows = ROWS;
+			const pinia = createPinia();
+			usePlanningStore(pinia).setCXs([
+				// @ts-expect-error mock data
+				{
+					uuid: "cx-1",
+					cx_name: "My CX",
+					empires: [],
+					cx_data: {
+						cx_empire: [],
+						cx_planets: [],
+						ticker_empire: [],
+						ticker_planets: [],
+					},
+				},
+			]);
+			const { wrapper } = await mountComponent(
+				PlanCheck,
+				{
+					plan: etherwindPlan(),
+					planUuid: undefined,
+					empire: undefined,
+					cxUuid: "cx-1",
+					planet: planet_etherwind,
+				},
+				{ pinia }
+			);
+			await flushPromises();
+
+			expect(wrapper.text()).toContain(
+				"plan.tools.plan_check.means.source_cx"
+			);
+			expect(wrapper.text()).not.toContain(
+				"plan.tools.plan_check.means.source_universe"
+			);
+		});
 	});
 });
