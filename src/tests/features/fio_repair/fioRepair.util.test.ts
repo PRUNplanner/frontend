@@ -280,6 +280,28 @@ describe("fioRepair.util", () => {
 			expect(s.types[0].ticker).toBe("POL");
 		});
 
+		it("types sort by due, undated first, then by ticker", () => {
+			const order = (list: IFIORepairBuilding[]) =>
+				summarizeBuildings(list, () => 60, 7).types.map(
+					(t) => t.ticker
+				);
+
+			expect(
+				order([
+					building("POL", 30),
+					building("LAB", 30),
+					building("FP", 10),
+				])
+			).toStrictEqual(["LAB", "POL", "FP"]);
+			expect(
+				order([
+					building("POL", null),
+					building("FP", 5),
+					building("LAB", null),
+				])
+			).toStrictEqual(["LAB", "POL", "FP"]);
+		});
+
 		it("oldestBuilding puts undated first", () => {
 			expect(
 				oldestBuilding([building("A", 10), building("B", 30)]).ticker
@@ -287,6 +309,13 @@ describe("fioRepair.util", () => {
 			expect(
 				oldestBuilding([building("A", 10), building("B", null)]).ticker
 			).toBe("B");
+			expect(
+				oldestBuilding([building("A", 30), building("B", 10)]).ticker
+			).toBe("A");
+			expect(
+				oldestBuilding([building("A", null), building("B", null)])
+					.ticker
+			).toBe("A");
 		});
 	});
 
@@ -346,6 +375,47 @@ describe("fioRepair.util", () => {
 			expect(result["ZV-307b"].candidate?.empire?.uuid).toBe("sky");
 		});
 
+		it("a tie outside any empire goes to the first by name", () => {
+			const a = plan("b", "A first", "ZV-307b", counts);
+			const b = plan("a", "B second", "ZV-307b", counts);
+
+			const result = matchPlans([site()], [b, a], [], {})["ZV-307b"];
+
+			expect(result.candidate?.plan).toBe(a);
+			expect(result.candidate?.empire).toBeUndefined();
+		});
+
+		it("a plan in several empires shows the one covering most bases", () => {
+			const shared = plan("x", "Shared", "ZV-307b", counts);
+			const other = plan("y", "Other", "KW-688c", { FP: 1 });
+			const sites = [
+				site(),
+				{ planet: "KW-688c", siteId: undefined, counts: { FP: 1 } },
+			];
+			const small = empire("small", ["x"]);
+			const big = empire("big", ["x", "y"]);
+			const empireOf = (empires: PlanEmpireElement[]) =>
+				matchPlans(sites, [shared, other], empires, {})["ZV-307b"]
+					.candidate?.empire?.uuid;
+
+			expect(empireOf([small, big])).toBe("big");
+			expect(empireOf([big, small])).toBe("big");
+		});
+
+		it("a weak candidate in empires without matches keeps the first", () => {
+			const far = plan("f", "Far", "ZV-307b", { POL: 2 });
+
+			const result = matchPlans(
+				[site()],
+				[far],
+				[empire("e1", ["f"]), empire("e2", ["f"])],
+				{}
+			)["ZV-307b"];
+
+			expect(result.confidence).toBe("none");
+			expect(result.candidates[0].empire?.uuid).toBe("e1");
+		});
+
 		it("a user link wins, a stale one falls back", () => {
 			const exact = plan("p1", "Bober", "ZV-307b", counts);
 			const weak = plan("p2", "Weak", "ZV-307b", { POL: 1 });
@@ -373,6 +443,26 @@ describe("fioRepair.util", () => {
 				].confidence
 			).toBe("match");
 		});
+	});
+
+	it("subtractStore leaves out what the store lacks or can't cover", () => {
+		const bill = [
+			{ ticker: "BSE", input: 10, output: 0 },
+			{ ticker: "LBH", input: 4, output: 0 },
+			{ ticker: "MCG", input: 6, output: 0 },
+		];
+
+		expect(subtractStore(bill, { BSE: 25, MCG: -3 })).toStrictEqual({
+			// BSE is covered fully, nothing of LBH or a negative stock
+			load: [
+				{ ticker: "LBH", input: 4, output: 0 },
+				{ ticker: "MCG", input: 6, output: 0 },
+			],
+			fromStore: [{ ticker: "BSE", input: 10, output: 0 }],
+		});
+		expect(subtractStore(bill, { LBH: 1 }).fromStore).toStrictEqual([
+			{ ticker: "LBH", input: 1, output: 0 },
+		]);
 	});
 
 	it("bestDays equals findOptimalRepairDay as in Repair Analysis", () => {

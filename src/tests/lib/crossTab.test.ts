@@ -17,6 +17,7 @@ import { useUserStore } from "@/stores/userStore";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { unsyncedPreferences } from "@/features/preferences/preferenceSync";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
+import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
@@ -36,6 +37,17 @@ function jwt(userId: number, jti: string = "a"): string {
 		.replace(/=+$/, "");
 	return `header.${payload}.signature`;
 }
+
+const profile: UserProfile = {
+	id: 7,
+	username: "tester",
+	email: null,
+	is_email_verified: false,
+	fio_apikey: null,
+	prun_username: null,
+	fio_status: "none",
+	fio_last_refreshed_at: null,
+};
 
 function storageEvent(
 	oldValue: object | null,
@@ -72,6 +84,9 @@ describe("crossTab", () => {
 		expect(tokenUserId(jwt(7))).toBe("7");
 		expect(tokenUserId(undefined)).toBeUndefined();
 		expect(tokenUserId("not-a-jwt")).toBeUndefined();
+		// a readable token without the claim
+		const noClaim = btoa(JSON.stringify({ jti: "a" }));
+		expect(tokenUserId(`header.${noClaim}.signature`)).toBeUndefined();
 	});
 
 	describe("planning changes", () => {
@@ -235,6 +250,75 @@ describe("crossTab", () => {
 			expect(unsyncedPreferences(userStore.preferences)).toStrictEqual({
 				burnDaysYellow: 15,
 			});
+		});
+
+		it("logout on a page that needs no login stays on it", () => {
+			const publicRouter = {
+				currentRoute: { value: { meta: {} } },
+				push: vi.fn(),
+			} as unknown as Router;
+			userStore.setToken("access", jwt(7));
+
+			onUserStorage(
+				storageEvent({ refreshToken: jwt(7) }, { refreshToken: null }),
+				publicRouter
+			);
+
+			expect(userStore.isLoggedIn).toBe(false);
+			expect(publicRouter.push).not.toHaveBeenCalled();
+		});
+
+		it("same user: adopts a new profile, keeps an equal one", () => {
+			userStore.setToken("access", jwt(7));
+			userStore.profile = profile;
+
+			onUserStorage(
+				storageEvent(null, {
+					accessToken: userStore.accessToken,
+					refreshToken: jwt(7),
+					profile: { ...profile, username: "renamed" },
+				}),
+				router
+			);
+			expect(userStore.profile?.username).toBe("renamed");
+
+			const adopted = userStore.profile;
+			onUserStorage(
+				storageEvent(null, {
+					accessToken: userStore.accessToken,
+					refreshToken: jwt(7),
+					profile: { ...profile, username: "renamed" },
+				}),
+				router
+			);
+			expect(userStore.profile).toBe(adopted);
+		});
+
+		it("same user: new refresh token is adopted", () => {
+			userStore.setToken("access", jwt(7, "a"));
+
+			onUserStorage(
+				storageEvent(null, {
+					accessToken: "access",
+					refreshToken: jwt(7, "b"),
+				}),
+				router
+			);
+
+			expect(userStore.refreshToken).toBe(jwt(7, "b"));
+			expect(userStore.accessToken).toBe("access");
+		});
+
+		it("registerCrossTab applies storage events of the window", () => {
+			userStore.setToken("access", jwt(7));
+			registerCrossTab(router);
+
+			window.dispatchEvent(
+				storageEvent({ refreshToken: jwt(7) }, { refreshToken: null })
+			);
+
+			expect(userStore.isLoggedIn).toBe(false);
+			expect(router.push).toHaveBeenCalledWith("/");
 		});
 
 		it("ignores other keys", () => {

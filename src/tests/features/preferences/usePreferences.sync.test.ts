@@ -110,6 +110,33 @@ describe("usePreferences: backend sync", () => {
 		expect(patched).toHaveLength(1);
 	});
 
+	it("sends nothing when a change was undone before the sync", async () => {
+		userStore.setToken("access-a", "refresh-a");
+		const { burnDaysRed } = usePreferences();
+		const original = burnDaysRed.value;
+
+		burnDaysRed.value = original + 1;
+		await nextTick();
+		burnDaysRed.value = original;
+		await nextTick();
+		await vi.advanceTimersByTimeAsync(5000);
+
+		expect(scheduled.count).toBeGreaterThan(0);
+		expect(patched).toHaveLength(0);
+	});
+
+	it("sends a pending change at once when the page is left", async () => {
+		userStore.setToken("access-a", "refresh-a");
+		const { burnDaysRed } = usePreferences();
+
+		burnDaysRed.value = 3;
+		await nextTick();
+		window.dispatchEvent(new Event("pagehide"));
+		await vi.advanceTimersByTimeAsync(0);
+
+		expect(patched).toStrictEqual([{ burnDaysRed: 3 }]);
+	});
+
 	it("never sends a pending sync as the next logged in user", async () => {
 		userStore.setToken("access-a", "refresh-a");
 		const { defaultEmpireUuid } = usePreferences();

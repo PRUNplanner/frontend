@@ -301,4 +301,150 @@ describe("useFIORepair", () => {
 			expect(priced.cx).toStrictEqual([undefined, "CX1", undefined])
 		);
 	});
+
+	describe("edge cases", () => {
+		const siteOf = (planet: string) =>
+			planningStore.fio_sites_planets[planet];
+		const undated = {
+			BuildingTicker: "POL",
+			BuildingLastRepair: null,
+			BuildingCreated: null,
+			Condition: 1,
+			ReclaimableMaterials: [],
+			RepairMaterials: [{ MaterialTicker: "BSE", MaterialAmount: 1 }],
+			AgeDays: 0,
+		};
+
+		it("skips a site without production buildings", async () => {
+			siteOf("QJ-149c").Buildings = [];
+
+			const { bases } = await setup();
+
+			expect(bases.value).toHaveLength(17);
+			expect(bases.value.some((b) => b.planet === "QJ-149c")).toBe(false);
+		});
+
+		it("a building unknown to the game data has no construction cost", async () => {
+			siteOf("QJ-149c").Buildings = [
+				{ ...structuredClone(undated), BuildingTicker: "ZZZ" },
+			] as never;
+
+			const { bases } = await setup();
+
+			const base = bases.value.find((b) => b.planet === "QJ-149c")!;
+			expect(base.types.map((t) => t.ticker)).toStrictEqual(["ZZZ"]);
+			expect(base.bill.cost).toBe(0);
+			expect(base.waiting).toBe(0);
+		});
+
+		it("names a base after its site, else its planet, else its id", async () => {
+			getPlanet.mockImplementation(async (id: string) => {
+				if (id === "ZV-307c")
+					return { planet_natural_id: id, planet_name: id };
+				if (id === "ZV-307b")
+					return { planet_natural_id: id, planet_name: "Bober" };
+				throw new Error("not loaded");
+			});
+			siteOf("ZV-307b").PlanetName = "";
+			siteOf("ZV-307c").PlanetName = "";
+			siteOf("ZV-307d").PlanetName = "";
+			siteOf("ZV-759c").PlanetName = "Home";
+
+			const { bases } = await setup();
+
+			const name = (planet: string) =>
+				bases.value.find((b) => b.planet === planet)!.name;
+			expect(name("ZV-307b")).toBe("Bober");
+			expect(name("ZV-307c")).toBe("ZV-307c");
+			expect(name("ZV-307d")).toBe("ZV-307d");
+			expect(name("ZV-759c")).toBe("Home");
+		});
+
+		it("lists bases without a date first, by name", async () => {
+			for (const [planet, name] of [
+				["QJ-149c", "Zeta"],
+				["ZV-759c", "Alpha"],
+			]) {
+				siteOf(planet).PlanetName = name;
+				siteOf(planet).Buildings = [structuredClone(undated)] as never;
+			}
+
+			const { bases } = await setup();
+
+			const names = bases.value
+				.filter((b) => b.due === null)
+				.map((b) => b.name);
+			expect(names).toContain("Alpha");
+			expect(names).toContain("Zeta");
+			expect(names).toStrictEqual(
+				[...names].sort((a, b) => a.localeCompare(b))
+			);
+			// undated bases lead the list
+			expect(
+				bases.value.slice(0, names.length).map((b) => b.name)
+			).toStrictEqual(names);
+		});
+
+		it("flight finds no store for a base without storage data", async () => {
+			delete planningStore.fio_storage_planets["KW-688c"];
+			const { bases, flight } = await setup();
+			const base = bases.value.find((b) => b.planet === "KW-688c")!;
+
+			expect(flight(base, 30, true).fromStore).toStrictEqual([]);
+		});
+
+		it("ignores new picks and Exchange Preferences until loaded", async () => {
+			planningStore.cxs = {
+				CX1: { uuid: "CX1", cx_name: "Home" },
+			} as unknown as typeof planningStore.cxs;
+			getPriceBook.mockClear();
+			const scope = effectScope();
+			scope.run(() =>
+				useFIORepair(
+					ref([plan("p2", "ZV-307b", { POL: 2 })]),
+					ref([]),
+					ref(true)
+				)
+			);
+
+			userStore.preferences.defaultCXUuid = "CX1";
+			userStore.preferences.fioRepairPlanLinks = {
+				[BOBER_SITE]: { planUuid: "p2" },
+			};
+			await nextTick();
+			await flushPromises();
+
+			expect(getPriceBook).not.toHaveBeenCalled();
+			expect(loadGameData).not.toHaveBeenCalled();
+			expect(calculatePlan).not.toHaveBeenCalled();
+		});
+
+		it("a slow price book doesn't replace a newer one", async () => {
+			planningStore.cxs = {
+				CX1: { uuid: "CX1", cx_name: "One" },
+				CX2: { uuid: "CX2", cx_name: "Two" },
+			} as unknown as typeof planningStore.cxs;
+			const { bases } = await setup();
+			const cost = () =>
+				bases.value.find((b) => b.planet === "ZV-307b")!.bill.cost;
+			const before = cost();
+			expect(before).toBeGreaterThan(0);
+
+			let late!: (book: unknown) => void;
+			getPriceBook.mockReturnValueOnce(
+				new Promise((resolve) => (late = resolve))
+			);
+			userStore.preferences.defaultCXUuid = "CX1";
+			await nextTick();
+			getPriceBook.mockResolvedValueOnce({ getPrice: () => 200 });
+			userStore.preferences.defaultCXUuid = "CX2";
+			await vi.waitFor(() => expect(cost()).toBeGreaterThan(before));
+			const fresh = cost();
+
+			late({ getPrice: () => 1 });
+			await flushPromises();
+
+			expect(cost()).toBe(fresh);
+		});
+	});
 });

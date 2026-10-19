@@ -149,4 +149,87 @@ describe("useFIOBurn", async () => {
 
 		expect(burnTable.value[0].hasStorage).toBe(true);
 	});
+
+	describe("with several plans", () => {
+		const mat = (ticker: string, delta: number) => ({
+			ticker,
+			input: delta < 0 ? -delta : 0,
+			output: delta > 0 ? delta : 0,
+			delta,
+		});
+		const plans = [
+			{ uuid: "Z", plan_name: "Zeta", planet_natural_id: "A" },
+			{ uuid: "M", plan_name: "Mid", planet_natural_id: "A" },
+			{ uuid: "F", plan_name: "Alpha", planet_natural_id: "A" },
+			{ uuid: "N", plan_name: "Nomad", planet_natural_id: "NoStorage" },
+		];
+		const data = {
+			F: { materialio: [] },
+			Z: { materialio: [mat("Foo", -4), mat("Moo", -1)] },
+			M: { materialio: [mat("Foo", 3), mat("Unstocked", -2)] },
+			N: { materialio: [mat("Foo", -2)] },
+		};
+
+		it("sorts plans and tables by plan name", () => {
+			// @ts-expect-error mock data
+			const { burnTable, planTable } = useFIOBurn(ref(plans), ref(data));
+
+			expect(burnTable.value.map((p) => p.planName)).toStrictEqual([
+				"Alpha",
+				"Mid",
+				"Nomad",
+				"Zeta",
+			]);
+			expect(planTable.value.map((p) => p.planUuid)).toStrictEqual([
+				"F",
+				"M",
+				"N",
+				"Z",
+			]);
+		});
+
+		it("takes the shortest exhaustion as the plan's minimum", () => {
+			// @ts-expect-error mock data
+			const { burnTable } = useFIOBurn(ref(plans), ref(data));
+
+			const zeta = burnTable.value.find((p) => p.planUuid === "Z")!;
+
+			// Foo: 2 in stock / 4 per day, Moo: 100 / 1 per day
+			expect(zeta.burnMaterials.map((m) => m.exhaustion)).toStrictEqual([
+				0.5, 100,
+			]);
+			expect(zeta.minDays).toBe(0.5);
+		});
+
+		it("treats a planet without FIO storage as empty", () => {
+			// @ts-expect-error mock data
+			const { burnTable } = useFIOBurn(ref(plans), ref(data));
+
+			const nomad = burnTable.value.find((p) => p.planUuid === "N")!;
+
+			expect(nomad.hasStorage).toBe(false);
+			expect(nomad.burnMaterials[0]).toMatchObject({
+				stock: 0,
+				exhaustion: 0,
+			});
+		});
+
+		it("never exhausts a producing material or one missing in storage", () => {
+			// @ts-expect-error mock data
+			const { burnTable } = useFIOBurn(ref(plans), ref(data));
+
+			const mid = burnTable.value.find((p) => p.planUuid === "M")!;
+
+			expect(mid.burnMaterials[0]).toMatchObject({
+				stock: 2,
+				exhaustion: Infinity,
+			});
+			// no stock of it in the planet's storage: empty on day 0
+			expect(mid.burnMaterials[1]).toMatchObject({
+				stock: 0,
+				exhaustion: 0,
+			});
+			expect(mid.minDays).toBe(0);
+		});
+	});
 });
