@@ -12,26 +12,26 @@
 		"components": {
 			"overview": {
 				"title": "Plan-Verbrauch-Übersicht",
-				"axis": "0 – {max} d",
+				"axis": "0 – {max} T",
 				"table": {
 					"plan": "@:terms.plan",
-					"strip": "Days left per material",
+					"strip": "Verbleibende Tage pro Material",
 					"burn": "Verbrauch"
 				},
 				"summary": {
-					"red": "{n} red",
-					"yellow": "{n} yellow",
-					"materials": "no materials | {n} material | {n} materials"
+					"red": "{n} rot",
+					"yellow": "{n} gelb",
+					"materials": "keine Materialien | {n} Material | {n} Materialien"
 				},
-				"strip_label": "Days left per material of {plan_name}",
+				"strip_label": "Verbleibende Tage pro Material von {plan_name}",
 				"caption": "One dot per consumed material; hover or tap a dot to see which. The axis ends at 3 × the yellow threshold; materials beyond it are counted as \"+n\"."
 			},
 			"plans": {
 				"xit_title": "XIT Nachschub: {plan_name}",
-				"expand_row": "Show materials of {plan_name}",
-				"runs_out_first": "runs out first, in {days} days",
-				"more_under": "{n} more under {days} d",
-				"produced": "{n} produced here",
+				"expand_row": "Materialien von {plan_name} anzeigen",
+				"runs_out_first": "läuft zuerst aus, in {days} Tagen",
+				"more_under": "{n} mehr unter {days} T",
+				"produced": "{n} hier produziert",
 				"produced_here": "produced here",
 				"days_left": "{days} days left",
 				"runway_label": "{ticker}: {days} days left",
