@@ -45,8 +45,9 @@ two parallel jobs, merges their vitest blob reports into one
 this repo). `pnpm test:coverage` builds the same report locally. Every file in
 `src/` counts, tested or not; only `src/tests/`, `main.ts`, `*.d.ts` and
 static data (`json`, `css`, `md`) are excluded. Don't exclude a file to raise
-the number; if one really can't be measured, say why in the PR. The thresholds in `vitest.config.ts` are checked on the merged
-report: raise them when coverage grows.
+the number; if one really can't be measured, say why in the PR. The
+thresholds in `vitest.config.ts` are checked on the merged report: raise them
+when coverage grows.
 
 `build.yml` runs `pnpm build` on `main`. Run it yourself when you touch Vite
 config, imports of static assets, or anything else that only fails at build
