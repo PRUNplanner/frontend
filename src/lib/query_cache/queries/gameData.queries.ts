@@ -16,8 +16,14 @@ import {
 import {
 	defineQuery,
 	staleMinutes,
+	measured,
+	persistGameData,
+	readGameData,
 	storeAndPreload,
+	whenIdle,
 } from "@/lib/query_cache/queries/queries.util";
+import { useDB } from "@/database/composables/useDB";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // API Calls
 import {
@@ -48,26 +54,99 @@ import type {
 } from "@/features/api/schemas/gameData.schemas";
 import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
 import type { AnalyticsPlanetInsightsPayload } from "@/features/api/schemas/analyticsData.schemas";
+import type { IGameDataLoadProperties } from "@/lib/analytics/useAnalytics.types";
 
 /**
- * A full game data list: replaces its IndexedDB store on every fetch and
- * refetches once stale.
+ * A full game data list. A tab's first read renders from the IndexedDB copy
+ * when it is at most `maxAgeMinutes` old (the query store refetches it in
+ * the background once stale), else it waits for the API. A fetch fills the
+ * in-memory layer and returns; the IndexedDB write runs in the background.
+ * The tab's first load is reported once as `perf:gamedata_load`.
  */
 function gameDataQuery<T extends object, K extends keyof T & string>(
-	name: string,
+	name: IGameDataLoadProperties["store"],
 	call: () => Promise<T[]>,
 	store: ReturnType<typeof useIndexedDBStore<T, K>>,
-	minutes: number
+	minutes: number,
+	maxAgeMinutes: number
 ) {
+	const expireTime = staleMinutes(minutes);
+	// the tab's first load, filled in by its phases; null once sent
+	let report: (Partial<IGameDataLoadProperties> & { start?: number }) | null =
+		{};
+
+	function send() {
+		if (!report) return;
+		const { start: _start, ...props } = report;
+		report = null;
+		trackEvent("perf:gamedata_load", {
+			store: name,
+			source: "network",
+			is_stale: false,
+			age_min: null,
+			ms_total: 0,
+			...props,
+		});
+	}
+
 	return defineQuery({
 		key: () => ["gamedata", name],
+		initialData: async () => {
+			if (report) report.start ??= performance.now();
+			const [cached, ms] = await measured(`gamedata:${name}:idb-read`, () =>
+				readGameData(store, staleMinutes(maxAgeMinutes))
+			);
+			const age =
+				cached.fetchedAt === null ? null : Date.now() - cached.fetchedAt;
+			const stale = age !== null && age > expireTime;
+			if (report)
+				Object.assign(report, {
+					ms_idb_read: ms,
+					age_min: age === null ? null : Math.round(age / 60_000),
+					is_stale: stale,
+				});
+			if (!cached.data) return null;
+
+			if (report) {
+				report.source = "cache";
+				report.ms_total = Math.round(performance.now() - report.start!);
+				// a stale copy: sent after its background refresh
+				if (!stale) send();
+			}
+			return { data: cached.data, fetchedAt: cached.fetchedAt! };
+		},
 		fetchFn: async (): Promise<T[]> => {
-			const data = await call();
-			await storeAndPreload(store, data, true);
+			if (report) report.start ??= performance.now();
+			const [data, msFetch] = await measured(
+				`gamedata:${name}:fetch`,
+				call
+			);
+			const fetchedAt = Date.now();
+			await measured(`gamedata:${name}:fill`, async () =>
+				useDB(store).fill(data, true)
+			);
+
+			if (report) {
+				report.ms_fetch = msFetch;
+				report.ms_total ??= Math.round(performance.now() - report.start!);
+			}
+			// cloning thousands of rows into IndexedDB costs main thread
+			// time: start it once the page has rendered
+			whenIdle(
+				() =>
+					measured(`gamedata:${name}:idb-write`, () =>
+						persistGameData(store, data, fetchedAt)
+					).then(([, ms]) => {
+						if (report) report.ms_idb_write = ms;
+						send();
+					}),
+				config.GAME_DATA_WRITE_DELAY_MS
+			);
+
 			return data;
 		},
 		autoRefetch: true,
-		expireTime: staleMinutes(minutes),
+		expireTime,
 	});
 }
 
@@ -78,25 +157,29 @@ export const gameDataQueries = {
 		"materials",
 		callDataMaterials,
 		materialsStore,
-		config.GAME_DATA_STALE_MINUTES_MATERIALS
+		config.GAME_DATA_STALE_MINUTES_MATERIALS,
+		config.GAME_DATA_MAX_AGE_MINUTES_MATERIALS
 	),
 	GetExchanges: gameDataQuery(
 		"exchanges",
 		callDataExchanges,
 		exchangesStore,
-		config.GAME_DATA_STALE_MINUTES_EXCHANGES
+		config.GAME_DATA_STALE_MINUTES_EXCHANGES,
+		config.GAME_DATA_MAX_AGE_MINUTES_EXCHANGES
 	),
 	GetRecipes: gameDataQuery(
 		"recipes",
 		callDataRecipes,
 		recipesStore,
-		config.GAME_DATA_STALE_MINUTES_RECIPES
+		config.GAME_DATA_STALE_MINUTES_RECIPES,
+		config.GAME_DATA_MAX_AGE_MINUTES_RECIPES
 	),
 	GetBuildings: gameDataQuery(
 		"buildings",
 		callDataBuildings,
 		buildingsStore,
-		config.GAME_DATA_STALE_MINUTES_BUILDINGS
+		config.GAME_DATA_STALE_MINUTES_BUILDINGS,
+		config.GAME_DATA_MAX_AGE_MINUTES_BUILDINGS
 	),
 	GetPlanet: defineQuery({
 		key: (params) => ["gamedata", "planet", params.planetNaturalId],

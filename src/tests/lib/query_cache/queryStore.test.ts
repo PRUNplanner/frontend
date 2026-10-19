@@ -13,6 +13,12 @@ const slow = vi.hoisted(() => ({
 	resolvers: [] as ((value: unknown) => void)[],
 }));
 
+// the persisted copy persistedQuery reads first
+const persisted = vi.hoisted(() => ({
+	initialData: (): Promise<{ data: unknown; fetchedAt: number } | null> =>
+		Promise.resolve(null),
+}));
+
 // mock repository
 vi.mock("@/lib/query_cache/queryRepository", () => {
 	const repository: Record<string, unknown> = {
@@ -72,6 +78,14 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 					.filter((id: string) => id !== "XX-000x")
 					.map((id: string) => ({ planet_natural_id: id, fresh: true }))
 			),
+		},
+		// a read with a persisted copy, see `persisted`
+		persistedQuery: {
+			key: () => ["persistedQuery"],
+			expireTime: 1000,
+			autoRefetch: true,
+			initialData: vi.fn(() => persisted.initialData()),
+			fetchFn: vi.fn(async () => "fetched"),
 		},
 		autoRefetchQuery: {
 			key: (params: any) => ["autoRefetchQuery", params],
@@ -711,4 +725,77 @@ describe("isFresh", () => {
 it("queryStore.ts names no query", () => {
 	const source = readFileSync("src/lib/query_cache/queryStore.ts", "utf8");
 	expect(source).not.toMatch(/"(Get|Post|Patch|Delete|Create|Clone)[A-Z]/);
+});
+
+describe("useQueryStore: initialData", () => {
+	let store: ReturnType<typeof useQueryStore>;
+	const definition = () => getQueryDefinition("persistedQuery" as any) as any;
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		store = useQueryStore();
+		vi.useFakeTimers();
+		vi.setSystemTime(10_000);
+		definition().initialData.mockClear();
+		definition().fetchFn.mockClear();
+	});
+
+	const run = (options?: { forceRefetch?: boolean }) =>
+		// @ts-expect-error mock query repository
+		store.execute("persistedQuery", undefined, options);
+
+	it("returns a fresh persisted copy without fetching", async () => {
+		persisted.initialData = async () => ({
+			data: "cached",
+			fetchedAt: 9_500,
+		});
+
+		expect(await run()).toBe("cached");
+		expect(definition().fetchFn).not.toHaveBeenCalled();
+		const state = store.peekQueryState(["persistedQuery"]);
+		expect(state?.data).toBe("cached");
+		// fresh from when it was fetched, not from now
+		expect(state?.timestamp).toBe(9_500);
+	});
+
+	it("fetches when there is no persisted copy", async () => {
+		persisted.initialData = async () => null;
+
+		expect(await run()).toBe("fetched");
+		expect(definition().fetchFn).toHaveBeenCalledOnce();
+	});
+
+	it("returns an expired copy and refetches it once in the background", async () => {
+		persisted.initialData = async () => ({ data: "old", fetchedAt: 0 });
+
+		const [a, b] = await Promise.all([run(), run()]);
+		expect([a, b]).toEqual(["old", "old"]);
+		// both callers shared one read
+		expect(definition().initialData).toHaveBeenCalledOnce();
+
+		await vi.waitFor(() =>
+			expect(store.peekQueryState(["persistedQuery"])?.data).toBe(
+				"fetched"
+			)
+		);
+		expect(definition().fetchFn).toHaveBeenCalledOnce();
+		// the refresh is fresh: the next call neither reads nor fetches
+		expect(await run()).toBe("fetched");
+		expect(definition().initialData).toHaveBeenCalledOnce();
+		expect(definition().fetchFn).toHaveBeenCalledOnce();
+	});
+
+	it("is skipped by a forced refetch and once the entry has data", async () => {
+		persisted.initialData = async () => ({
+			data: "cached",
+			fetchedAt: 9_500,
+		});
+
+		expect(await run({ forceRefetch: true })).toBe("fetched");
+		vi.advanceTimersByTime(5_000);
+		// expired entry with data: fetched again, never read from the copy
+		expect(await run()).toBe("fetched");
+		expect(definition().initialData).not.toHaveBeenCalled();
+		expect(definition().fetchFn).toHaveBeenCalledTimes(2);
+	});
 });

@@ -185,7 +185,11 @@ describe("PlanCOGM", () => {
 				.find("[data-open-exchanges]")
 				.exists()
 		).toBe(true);
-		expect(find(wrapper, "[data-market=RAT]").exists()).toBe(true);
+		// the market price waits on the game data queries, which read
+		// IndexedDB first (flushPromises doesn't wait for it)
+		await vi.waitFor(() =>
+			expect(find(wrapper, "[data-market=RAT]").exists()).toBe(true)
+		);
 		expect(find(wrapper, "[data-buy-all]").text()).toBe(
 			"plan.tools.cogm.prices.not_fixed"
 		);
