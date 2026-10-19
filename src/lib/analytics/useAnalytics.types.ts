@@ -287,6 +287,23 @@ export interface IAnalyticsEventProperties {
 	"onboarding:step_click": {
 		step: "empire_save" | "planet_search" | "exchanges";
 	};
+
+	"perf:gamedata_load": IGameDataLoadProperties;
+}
+
+/** How one game data list loaded, once per store per tab */
+export interface IGameDataLoadProperties {
+	store: "materials" | "exchanges" | "buildings" | "recipes";
+	source: "cache" | "network";
+	// IndexedDB held the list, older than its stale time
+	is_stale: boolean;
+	// age of the IndexedDB copy, null without one
+	age_min: number | null;
+	// what the caller waited
+	ms_total: number;
+	ms_idb_read?: number;
+	ms_fetch?: number;
+	ms_idb_write?: number;
 }
 
 export type ANALYTICS_EVENT_TYPE = keyof IAnalyticsEventProperties;

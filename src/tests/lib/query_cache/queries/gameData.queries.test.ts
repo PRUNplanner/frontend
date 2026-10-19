@@ -1,283 +1,238 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createPinia, setActivePinia } from "pinia";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-import { gameDataQueries } from "@/lib/query_cache/queries/gameData.queries";
-import { useQueryStore } from "@/lib/query_cache/queryStore";
-import { usePlanningStore } from "@/stores/planningStore";
-import { storeAndPreload } from "@/lib/query_cache/queries/queries.util";
-import {
-	buildingsStore,
-	exchangesStore,
-	materialsStore,
-	planetsStore,
-	recipesStore,
-} from "@/database/stores";
-import {
-	callCXSparklines,
-	callDataBuildings,
-	callDataExchanges,
-	callDataFIOStorage,
-	callDataMaterials,
-	callDataMultiplePlanets,
-	callDataPlanet,
-	callDataPlanetSearch,
-	callDataPlanetSearchIndex,
-	callDataPlanetSearchSingle,
-	callDataRecipes,
-	callExplorationData,
-	callPlanetLastPOPR,
-} from "@/features/api/gameData.api";
-import { callAnalyticsPlanetInsights } from "@/features/api/analyticsData.api";
-import type {
-	FIOStorage,
-	Planet,
-	PlanetSearchAdvancedPayload,
-} from "@/features/api/schemas/gameData.schemas";
+import type { Exchange, Material } from "@/features/api/schemas/gameData.schemas";
 
-import fioStorageData from "@/tests/test_data/api_data_fio_storage.json";
-
-vi.mock("@/features/api/gameData.api", () => ({
-	callCXSparklines: vi.fn(),
-	callDataBuildings: vi.fn(),
-	callDataExchanges: vi.fn(),
-	callDataFIOStorage: vi.fn(),
+vi.mock("@/features/api/gameData.api", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@/features/api/gameData.api")>()),
 	callDataMaterials: vi.fn(),
-	callDataMultiplePlanets: vi.fn(),
-	callDataPlanet: vi.fn(),
-	callDataPlanetSearch: vi.fn(),
-	callDataPlanetSearchIndex: vi.fn(),
-	callDataPlanetSearchSingle: vi.fn(),
-	callDataRecipes: vi.fn(),
-	callExplorationData: vi.fn(),
-	callPlanetLastPOPR: vi.fn(),
+	callDataExchanges: vi.fn(),
 }));
-vi.mock("@/features/api/analyticsData.api", () => ({
-	callAnalyticsPlanetInsights: vi.fn(),
-}));
-vi.mock("@/lib/query_cache/queries/queries.util", async (importOriginal) => ({
-	...(await importOriginal<
-		typeof import("@/lib/query_cache/queries/queries.util")
-	>()),
-	storeAndPreload: vi.fn(async () => {}),
+vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
+	trackEvent: vi.fn(),
 }));
 
-const planet = (id: string) => ({ planet_natural_id: id }) as Planet;
+const MINUTE = 60_000;
 
-describe("gameDataQueries", () => {
-	beforeEach(() => {
-		setActivePinia(createPinia());
+function material(ticker: string): Material {
+	return {
+		material_id: ticker,
+		category_name: "c",
+		category_id: "c",
+		name: ticker,
+		ticker,
+		weight: 1,
+		volume: 1,
+	};
+}
+
+function exchange(ticker_id: string): Exchange {
+	return { ticker_id, ticker: "A", exchange_code: "AI1" } as Exchange;
+}
+
+// fresh modules per test: each query reports its first load once per tab
+async function load() {
+	// the background write waits 5 s, then for an idle main thread
+	vi.stubEnv("VITE_GAME_DATA_WRITE_DELAY_MS", "0");
+	vi.stubGlobal("requestIdleCallback", (fn: () => void) => setTimeout(fn, 0));
+	const pinia = await import("pinia");
+	pinia.setActivePinia(pinia.createPinia());
+	const api = await import("@/features/api/gameData.api");
+	return {
+		api,
+		trackEvent: (await import("@/lib/analytics/useAnalytics")).trackEvent,
+		db: await import("@/database/composables/useIndexedDBStore"),
+		useDB: (await import("@/database/composables/useDB")).useDB,
+		stores: await import("@/database/stores"),
+		util: await import("@/lib/query_cache/queries/queries.util"),
+		queryStore: (await import("@/lib/query_cache/queryStore")).useQueryStore(),
+	};
+}
+
+describe("game data queries: IndexedDB first", () => {
+	let m: Awaited<ReturnType<typeof load>>;
+
+	beforeEach(async () => {
+		vi.resetModules();
 		vi.clearAllMocks();
+		m = await load();
+		vi.mocked(m.api.callDataMaterials).mockResolvedValue([material("NEW")]);
+		vi.mocked(m.api.callDataExchanges).mockResolvedValue([
+			exchange("NEW.AI1"),
+		]);
+		vi.spyOn(console, "warn").mockImplementation(() => {});
 	});
 
-	describe("game data lists", () => {
-		it.each([
-			["GetMaterials", "materials", callDataMaterials, materialsStore],
-			["GetExchanges", "exchanges", callDataExchanges, exchangesStore],
-			["GetRecipes", "recipes", callDataRecipes, recipesStore],
-			["GetBuildings", "buildings", callDataBuildings, buildingsStore],
-		] as const)(
-			"%s replaces its store with the fetched rows",
-			async (name, key, call, store) => {
-				const rows = [{ id: 1 }, { id: 2 }];
-				vi.mocked(call as () => Promise<unknown[]>).mockResolvedValue(
-					rows
-				);
-				const query = gameDataQueries[name];
+	afterEach(async () => {
+		// close this module's connection, so the next test's database resets
+		await m.db.resetDB();
+	});
 
-				expect(query.key()).toStrictEqual(["gamedata", key]);
-				expect(query.autoRefetch).toBe(true);
-				expect(await query.fetchFn()).toBe(rows);
-				expect(storeAndPreload).toHaveBeenCalledWith(store, rows, true);
-			}
+	async function seedMaterials(ageMinutes: number) {
+		await m.util.persistGameData(
+			m.stores.materialsStore,
+			[material("OLD")],
+			Date.now() - ageMinutes * MINUTE
 		);
+	}
+
+	const lastEvent = () => vi.mocked(m.trackEvent).mock.lastCall;
+
+	it("fetches into an empty database, then writes rows and meta", async () => {
+		const data = await m.queryStore.execute("GetMaterials", undefined);
+
+		expect(data).toEqual([material("NEW")]);
+		await vi.waitFor(() => expect(m.trackEvent).toHaveBeenCalledOnce());
+		expect(lastEvent()).toEqual([
+			"perf:gamedata_load",
+			expect.objectContaining({
+				store: "materials",
+				source: "network",
+				is_stale: false,
+				age_min: null,
+				ms_total: expect.any(Number),
+				ms_fetch: expect.any(Number),
+				ms_idb_read: expect.any(Number),
+				ms_idb_write: expect.any(Number),
+			}),
+		]);
+		expect(await m.stores.materialsStore.getAll()).toEqual([
+			material("NEW"),
+		]);
+		expect(
+			await m.stores.gamedataMetaStore.get("gamedata_materials")
+		).toEqual({
+			store: "gamedata_materials",
+			fetchedAt: expect.any(Number),
+			rows: 1,
+		});
+
+		// once per tab
+		await m.queryStore.execute("GetMaterials", undefined, {
+			forceRefetch: true,
+		});
+		await new Promise((r) => setTimeout(r, 20));
+		expect(m.trackEvent).toHaveBeenCalledOnce();
 	});
 
-	describe("planets", () => {
-		it("GetPlanet stores the planet and keeps it for its natural id", async () => {
-			const data = planet("OT-580b");
-			vi.mocked(callDataPlanet).mockResolvedValue(data);
-			const params = { planetNaturalId: "OT-580b" };
+	it("renders a fresh copy without any request", async () => {
+		await seedMaterials(60);
 
-			expect(gameDataQueries.GetPlanet.key(params)).toStrictEqual([
-				"gamedata",
-				"planet",
-				"OT-580b",
-			]);
-			expect(await gameDataQueries.GetPlanet.fetchFn(params)).toBe(data);
-			expect(callDataPlanet).toHaveBeenCalledWith("OT-580b");
-			expect(storeAndPreload).toHaveBeenCalledWith(planetsStore, [data]);
-		});
+		const data = await m.queryStore.execute("GetMaterials", undefined);
 
-		it("GetMultiplePlanets seeds the cache entry of each planet", async () => {
-			const data = [planet("A"), planet("B")];
-			vi.mocked(callDataMultiplePlanets).mockResolvedValue(data);
-			const addCacheState = vi
-				.spyOn(useQueryStore(), "addCacheState")
-				.mockImplementation(() => {});
-			const params = { planetNaturalIds: ["A", "B"] };
-
-			expect(
-				gameDataQueries.GetMultiplePlanets.key(params)
-			).toStrictEqual(["gamedata", "planet", "multiple", ["A", "B"]]);
-			expect(
-				await gameDataQueries.GetMultiplePlanets.fetchFn(params)
-			).toBe(data);
-
-			expect(storeAndPreload).toHaveBeenCalledWith(planetsStore, data);
-			expect(addCacheState.mock.calls).toStrictEqual([
-				["GetPlanet", { planetNaturalId: "A" }, data[0]],
-				["GetPlanet", { planetNaturalId: "B" }, data[1]],
-			]);
-		});
-
-		it("GetMultiplePlanets lets a failed request fail", async () => {
-			vi.mocked(callDataMultiplePlanets).mockRejectedValue(
-				new Error("500")
-			);
-
-			await expect(
-				gameDataQueries.GetMultiplePlanets.fetchFn({
-					planetNaturalIds: ["A"],
-				})
-			).rejects.toThrow("500");
-			expect(storeAndPreload).not.toHaveBeenCalled();
-		});
-
-		it("GetPlanetSearchSingle stores the found planets", async () => {
-			const data = [planet("A")];
-			vi.mocked(callDataPlanetSearchSingle).mockResolvedValue(data);
-			const params = { searchId: "saved-search" };
-
-			expect(
-				gameDataQueries.GetPlanetSearchSingle.key(params)
-			).toStrictEqual(["gamedata", "planet", "search", "saved-search"]);
-			expect(
-				await gameDataQueries.GetPlanetSearchSingle.fetchFn(params)
-			).toBe(data);
-			expect(callDataPlanetSearchSingle).toHaveBeenCalledWith(
-				"saved-search"
-			);
-			expect(storeAndPreload).toHaveBeenCalledWith(planetsStore, data);
-		});
-
-		it("PostPlanetSearch stores the found planets", async () => {
-			const data = [planet("A")];
-			vi.mocked(callDataPlanetSearch).mockResolvedValue(data);
-			const searchData = {
-				materials: ["H2O"],
-			} as unknown as PlanetSearchAdvancedPayload;
-
-			expect(
-				gameDataQueries.PostPlanetSearch.key({ searchData })
-			).toStrictEqual(["gamedata", "planet", "search", searchData]);
-			expect(
-				await gameDataQueries.PostPlanetSearch.fetchFn({ searchData })
-			).toBe(data);
-			expect(callDataPlanetSearch).toHaveBeenCalledWith(searchData);
-			expect(storeAndPreload).toHaveBeenCalledWith(planetsStore, data);
-		});
-
-		it("GetPlanetSearchIndex does not touch the planets store", async () => {
-			const index = [{ id: "A" }];
-			vi.mocked(callDataPlanetSearchIndex).mockResolvedValue(
-				index as never
-			);
-
-			expect(gameDataQueries.GetPlanetSearchIndex.key()).toStrictEqual([
-				"gamedata",
-				"planet",
-				"search-index",
-			]);
-			expect(await gameDataQueries.GetPlanetSearchIndex.fetchFn()).toBe(
-				index
-			);
-			expect(storeAndPreload).not.toHaveBeenCalled();
+		expect(data).toEqual([material("OLD")]);
+		expect(m.useDB(m.stores.materialsStore).getLoaded("OLD")).toEqual(
+			material("OLD")
+		);
+		expect(m.api.callDataMaterials).not.toHaveBeenCalled();
+		expect(lastEvent()?.[1]).toMatchObject({
+			source: "cache",
+			is_stale: false,
+			age_min: 60,
 		});
 	});
 
-	describe("reports and market data", () => {
-		it("GetPlanetLastPOPR keys the report by planet", async () => {
-			const report = { id: 1 };
-			vi.mocked(callPlanetLastPOPR).mockResolvedValue(report as never);
-			const params = { planetNaturalId: "OT-580b" };
+	it("renders materials 2 days old and refreshes them in the background", async () => {
+		await seedMaterials(2 * 24 * 60);
 
-			expect(gameDataQueries.GetPlanetLastPOPR.key(params)).toStrictEqual(
-				["gamedata", "planet", "popr", "last", "OT-580b"]
-			);
-			expect(
-				await gameDataQueries.GetPlanetLastPOPR.fetchFn(params)
-			).toBe(report);
-			expect(callPlanetLastPOPR).toHaveBeenCalledWith("OT-580b");
+		const data = await m.queryStore.execute("GetMaterials", undefined);
+
+		expect(data).toEqual([material("OLD")]);
+		await vi.waitFor(() => expect(m.trackEvent).toHaveBeenCalledOnce());
+		expect(m.api.callDataMaterials).toHaveBeenCalledOnce();
+		expect(lastEvent()?.[1]).toMatchObject({
+			source: "cache",
+			is_stale: true,
+			age_min: 2 * 24 * 60,
+			ms_fetch: expect.any(Number),
+			ms_idb_write: expect.any(Number),
 		});
+		expect(await m.stores.materialsStore.getAll()).toEqual([
+			material("NEW"),
+		]);
+	});
 
-		it("GetExplorationData keys by exchange and material", async () => {
-			const data = [{ day: 1 }];
-			vi.mocked(callExplorationData).mockResolvedValue(data as never);
-			const params = { exchangeTicker: "NC1", materialTicker: "RAT" };
+	it("waits for the fetch when materials are older than 7 days", async () => {
+		await seedMaterials(8 * 24 * 60);
 
-			expect(
-				gameDataQueries.GetExplorationData.key(params)
-			).toStrictEqual(["gamedata", "marketexploration", "NC1", "RAT"]);
-			expect(
-				await gameDataQueries.GetExplorationData.fetchFn(params)
-			).toBe(data);
-			expect(callExplorationData).toHaveBeenCalledWith("NC1", "RAT");
-		});
+		const data = await m.queryStore.execute("GetMaterials", undefined);
 
-		it("GetCXSparklines keys the sparklines by exchange", async () => {
-			const data = { RAT: [1, 2] };
-			vi.mocked(callCXSparklines).mockResolvedValue(data as never);
-			const params = { exchange: "NC1" };
-
-			expect(gameDataQueries.GetCXSparklines.key(params)).toStrictEqual([
-				"gamedata",
-				"cxsparklines",
-				"NC1",
-			]);
-			expect(await gameDataQueries.GetCXSparklines.fetchFn(params)).toBe(
-				data
-			);
-			expect(callCXSparklines).toHaveBeenCalledWith("NC1");
-		});
-
-		it("GetAnalyticsPlanetInsights keys the insights by planet", async () => {
-			const data = { planet: "OT-580b" };
-			vi.mocked(callAnalyticsPlanetInsights).mockResolvedValue(
-				data as never
-			);
-			const params = { planetNaturalId: "OT-580b" };
-
-			expect(
-				gameDataQueries.GetAnalyticsPlanetInsights.key(params)
-			).toStrictEqual(["analytics", "planet_insights", "OT-580b"]);
-			expect(
-				await gameDataQueries.GetAnalyticsPlanetInsights.fetchFn(params)
-			).toBe(data);
-			expect(callAnalyticsPlanetInsights).toHaveBeenCalledWith("OT-580b");
+		expect(data).toEqual([material("NEW")]);
+		await vi.waitFor(() => expect(m.trackEvent).toHaveBeenCalledOnce());
+		expect(lastEvent()?.[1]).toMatchObject({
+			source: "network",
+			is_stale: true,
+			age_min: 8 * 24 * 60,
 		});
 	});
 
-	describe("GetFIOStorage", () => {
-		it("hands the storage to the planning store", async () => {
-			const data = structuredClone(
-				fioStorageData
-			) as unknown as FIOStorage;
-			vi.mocked(callDataFIOStorage).mockResolvedValue(data);
-			const planningStore = usePlanningStore();
+	it("never returns exchange prices older than 30 minutes", async () => {
+		await m.util.persistGameData(
+			m.stores.exchangesStore,
+			[exchange("OLD.AI1")],
+			Date.now() - 31 * MINUTE
+		);
 
-			expect(gameDataQueries.GetFIOStorage.key()).toStrictEqual([
-				"gamedata",
-				"fio",
-				"storage",
-			]);
-			expect(await gameDataQueries.GetFIOStorage.fetchFn()).toBe(data);
+		const data = await m.queryStore.execute("GetExchanges", undefined);
 
-			expect(planningStore.fio_storage_timestamp).toBe(
-				data.last_modified
-			);
-			expect(planningStore.fio_storage_planets).toStrictEqual(
-				data.storage_data.planets
-			);
-		});
+		expect(data).toEqual([exchange("NEW.AI1")]);
+		expect(m.api.callDataExchanges).toHaveBeenCalledOnce();
+		// its background write ends before the next test
+		await vi.waitFor(() => expect(m.trackEvent).toHaveBeenCalledOnce());
+	});
+
+	it("treats rows without a meta row as empty (a cut-off write)", async () => {
+		await m.stores.materialsStore.setMany([material("HALF")], true);
+
+		const data = await m.queryStore.execute("GetMaterials", undefined);
+
+		expect(data).toEqual([material("NEW")]);
+		expect(m.api.callDataMaterials).toHaveBeenCalledOnce();
+		await vi.waitFor(() => expect(m.trackEvent).toHaveBeenCalledOnce());
+	});
+});
+
+describe("game data queries: background write", () => {
+	it("returns and fills memory before the IndexedDB write ends", async () => {
+		vi.resetModules();
+		vi.clearAllMocks();
+		vi.spyOn(console, "warn").mockImplementation(() => {});
+		const m = await load();
+		vi.mocked(m.api.callDataMaterials).mockResolvedValue([material("NEW")]);
+		// every write hangs, reads go through
+		const db = await m.db.getDB();
+		const transaction = db.transaction.bind(db);
+		const hanging = new Promise(() => {});
+		const write = vi.spyOn(db, "transaction").mockImplementation(((
+			stores: string[],
+			mode?: IDBTransactionMode
+		) =>
+			mode === "readwrite"
+				? {
+						objectStore: () => ({
+							delete: () => hanging,
+							clear: () => hanging,
+							put: () => hanging,
+						}),
+						done: hanging,
+					}
+				: transaction(stores, mode)) as never);
+
+		const data = await m.queryStore.execute("GetMaterials", undefined);
+
+		expect(data).toEqual([material("NEW")]);
+		expect(m.useDB(m.stores.materialsStore).getLoaded("NEW")).toEqual(
+			material("NEW")
+		);
+		await vi.waitFor(() =>
+			expect(write).toHaveBeenCalledWith(
+				["gamedata_materials", "gamedata_meta"],
+				"readwrite"
+			)
+		);
+		// its phases are reported when the write ends
+		expect(m.trackEvent).not.toHaveBeenCalled();
+		write.mockRestore();
+		await m.db.resetDB();
 	});
 });

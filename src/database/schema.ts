@@ -50,4 +50,9 @@ export const DB_SCHEMA: Record<string, StoreSchema> = {
 	gamedata_buildings: {
 		keyPath: "building_ticker",
 	},
+	// one row per game data store, written last with its rows: a store
+	// without one is never read as complete
+	gamedata_meta: {
+		keyPath: "store",
+	},
 };

@@ -132,6 +132,11 @@ export const useQueryStore = defineStore(
 			const keyHash = toCacheKey(definition.key(params));
 			const shouldCache = definition.cache !== false;
 			const state = cacheState[keyHash];
+			// an entry's first read may come from its persisted copy
+			const initialData =
+				!options?.forceRefetch && !state?.data
+					? definition.initialData
+					: undefined;
 
 			// a hit returns without writing, so it triggers nothing
 			if (
@@ -169,9 +174,25 @@ export const useQueryStore = defineStore(
 			// eslint-disable-next-line prefer-const
 			let promise: Promise<QueryData<K>>;
 			const isCurrent = () => inFlight.get(keyHash) === promise;
+			// the persisted copy was already expired: refetch once settled
+			let refresh = false;
 
 			promise = (async (): Promise<QueryData<K>> => {
 				try {
+					const cached = initialData ? await initialData() : null;
+					if (cached) {
+						if (shouldCache && isCurrent())
+							updateState(keyHash, {
+								data: cached.data,
+								timestamp: cached.fetchedAt,
+							});
+						refresh = !isFresh({
+							timestamp: cached.fetchedAt,
+							expireTime: definition.expireTime,
+						});
+						return cached.data;
+					}
+
 					const result = await definition.fetchFn(params);
 
 					if (shouldCache && isCurrent()) {
@@ -198,6 +219,11 @@ export const useQueryStore = defineStore(
 						updateState(keyHash, { loading: false });
 						inFlight.delete(keyHash);
 						if (!shouldCache) deleteState(keyHash);
+						// logged and reported in execute already
+						if (refresh)
+							execute(definitionName, params, {
+								forceRefetch: true,
+							}).catch(() => {});
 					}
 				}
 			})();
