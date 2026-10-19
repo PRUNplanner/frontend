@@ -62,7 +62,7 @@ export default defineConfig({
 			// fail CI when the combined coverage drops, raise these as it grows.
 			// Only checked on the merged report, each suite alone is below them
 			thresholds: process.argv.includes("--merge-reports")
-				? { statements: 91, branches: 84, functions: 87, lines: 92 }
+				? { statements: 97, branches: 95, functions: 96, lines: 98 }
 				: undefined,
 		},
 	},
