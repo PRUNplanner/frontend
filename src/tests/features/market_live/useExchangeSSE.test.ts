@@ -113,7 +113,9 @@ describe("useExchangeSSE", () => {
 			vi.spyOn(console, "error").mockImplementation(() => {});
 			source.onerror?.(new Error("lost"));
 			expect(sse.isConnected.value).toBe(false);
-			expect(sse.connectionError.value).toBe("Connection lost. Reconnecting...");
+			expect(sse.connectionError.value).toBe(
+				"Connection lost. Reconnecting..."
+			);
 		});
 
 		it("closes the stream on disconnect", async () => {
@@ -383,5 +385,125 @@ describe("useExchangeSSE", () => {
 			expect(error).toHaveBeenCalled();
 			expect(Object.keys(sse.cxPointMap)).toStrictEqual(["DW.NC1"]);
 		});
+	});
+
+	describe("order book edge cases", () => {
+		const order = (item_cost: number, item_count?: number | null) => ({
+			company_name: "X",
+			company_code: "X",
+			item_cost,
+			item_count,
+		});
+
+		it("has no stats and no spread without orders, bid or ask", async () => {
+			const { sse, source } = await setup();
+
+			await deliver(
+				source,
+				message({
+					bid: undefined,
+					ask: undefined,
+					buy_orders: [],
+					sell_orders: [],
+				})
+			);
+
+			const point = sse.cxPointMap["DW.NC1"];
+			expect(point).toMatchObject({
+				buy_volume_total: 0,
+				sell_volume_total: 0,
+				volume: 0,
+			});
+			expect(point.buy_vwap).toBeUndefined();
+			expect(point.highest_buy_cost).toBeUndefined();
+			expect(point.lowest_sell_cost).toBeUndefined();
+			expect(point.spread).toBeUndefined();
+			expect(point.spread_pct).toBeUndefined();
+		});
+
+		it("orders without a count add no volume and no stats", async () => {
+			const { sse, source } = await setup();
+
+			await deliver(
+				source,
+				message({
+					bid: undefined,
+					ask: undefined,
+					buy_orders: [order(100, null), order(110)],
+					sell_orders: [order(120, null)],
+				})
+			);
+
+			const point = sse.cxPointMap["DW.NC1"];
+			expect(point.buy_volume_total).toBe(0);
+			expect(point.buy_vwap).toBeUndefined();
+			expect(point.highest_buy_cost).toBeUndefined();
+			expect(point.sell_vwap).toBeUndefined();
+			expect(point.spread).toBeUndefined();
+		});
+
+		it("picks the best price whatever the order of the book", async () => {
+			const { sse, source } = await setup();
+
+			await deliver(
+				source,
+				message({
+					bid: undefined,
+					ask: undefined,
+					buy_orders: [order(120, 1), order(100, 1)],
+					sell_orders: [order(140, 1), order(130, 1)],
+				})
+			);
+
+			const point = sse.cxPointMap["DW.NC1"];
+			expect(point.highest_buy_cost).toBe(120);
+			expect(point.lowest_sell_cost).toBe(130);
+			expect(point.spread).toBe(10);
+		});
+
+		it("derives no price change without a price on either side", async () => {
+			const { sse, source } = await setup();
+
+			await deliver(source, message({ price: undefined }));
+			await deliver(source, message({ price: 100 }));
+			expect(sse.cxPointMap["DW.NC1"].price_change).toBeUndefined();
+
+			const zero = await setup();
+			await deliver(zero.source, message({ price: 0 }));
+			await deliver(zero.source, message({ price: 10 }));
+			const point = zero.sse.cxPointMap["DW.NC1"];
+			// from 0: a change, but no percentage of nothing
+			expect(point.price_change).toBe(10);
+			expect(point.price_change_pct).toBeUndefined();
+		});
+	});
+
+	describe("message history", () => {
+		it("keeps the latest 25 minutes", async () => {
+			const { sse, source } = await setup();
+			vi.setSystemTime(new Date("2026-09-26T10:00:10Z"));
+
+			for (let minute = 0; minute < 27; minute++) {
+				await deliver(source, message());
+				vi.setSystemTime(Date.now() + 60_000);
+			}
+
+			expect(sse.messageHistory.value).toHaveLength(25);
+			// newest first
+			expect(sse.messageHistory.value[0].timestamp).toBeGreaterThan(
+				sse.messageHistory.value[24].timestamp
+			);
+		});
+	});
+
+	it("disconnects safely without a stream", async () => {
+		vi.resetModules();
+		setActivePinia(createPinia());
+		const { useExchangeSSE } =
+			await import("@/features/market_live/useExchangeSSE");
+		const sse = useExchangeSSE();
+
+		expect(() => sse.disconnect()).not.toThrow();
+		expect(sse.isConnected.value).toBe(false);
 	});
 });

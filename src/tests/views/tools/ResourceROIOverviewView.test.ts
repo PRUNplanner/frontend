@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { ref, type Slots } from "vue";
+import { h, ref, type Slots } from "vue";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import ResourceROIOverviewView from "@/views/tools/ResourceROIOverviewView.vue";
@@ -13,7 +13,9 @@ vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 // vi.mock factories are hoisted, so are their helpers
 const { stub, passThrough, calculate, state } = vi.hoisted(() => ({
-	stub: (name: string) => ({ default: { name, render: () => null } }),
+	stub: (name: string, props: string[] = []) => ({
+		default: { name, props, render: () => null },
+	}),
 	passThrough: (name: string) => ({
 		default: {
 			name,
@@ -25,7 +27,7 @@ const { stub, passThrough, calculate, state } = vi.hoisted(() => ({
 	}),
 	calculate: vi.fn(),
 	// the composable's results for the next mount
-	state: { results: [] as unknown[] },
+	state: { results: [] as unknown[], searching: false },
 }));
 
 vi.mock("@/features/resource_roi_overview/useResourceROIOverview", () => ({
@@ -34,7 +36,7 @@ vi.mock("@/features/resource_roi_overview/useResourceROIOverview", () => ({
 		calculate,
 		progressCurrent: ref(0),
 		progressTotal: ref(0),
-		progressSearchingPlanets: ref(false),
+		progressSearchingPlanets: ref(state.searching),
 	}),
 }));
 vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () =>
@@ -45,15 +47,29 @@ vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
 );
 vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
 vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () =>
-	stub("CXPreferenceSelector")
+	stub("CXPreferenceSelector", ["cxUuid"])
 );
 vi.mock(
 	"@/features/resource_roi_overview/components/ResourceROITable.vue",
-	() => stub("ResourceROITable")
+	() => ({
+		default: {
+			name: "ResourceROITable",
+			props: ["searchedMaterial", "resultData", "active"],
+			emits: ["filtered"],
+			// the real table marks its rows by key, the view scrolls to them
+			render: () =>
+				h("table", [
+					h("tr", { "data-row-key": "A" }),
+					h("tr", { "data-row-key": "B" }),
+				]),
+		},
+	})
 );
 vi.mock(
 	"@/features/resource_roi_overview/components/ResourceROIChartDrawer.vue",
-	() => stub("ResourceROIChartDrawer")
+	() => ({
+		default: { name: "ResourceROIChartDrawer", render: () => h("div") },
+	})
 );
 
 async function search(material: string) {
@@ -69,6 +85,7 @@ const CHART_KEY = "prunplanner_resource_roi_chart";
 describe("ResourceROIOverviewView", () => {
 	beforeEach(() => {
 		state.results = [];
+		state.searching = false;
 		vi.stubGlobal("localStorage", memoryStorage());
 		vi.mocked(trackEvent).mockClear();
 		calculate.mockReset();
@@ -160,5 +177,211 @@ describe("ResourceROIOverviewView chart", () => {
 		const { wrapper } = await mountComponent(ResourceROIOverviewView);
 
 		expect(drawer(wrapper).exists()).toBe(true);
+	});
+});
+
+describe("ResourceROIOverviewView search", () => {
+	beforeEach(() => {
+		state.results = [];
+		state.searching = false;
+		vi.stubGlobal("localStorage", memoryStorage());
+		calculate.mockReset();
+	});
+
+	it("asks to pick a resource before the first search", async () => {
+		const { wrapper } = await mountComponent(ResourceROIOverviewView);
+
+		expect(wrapper.text()).toContain("resource_roi.info");
+		// nothing to calculate without a resource
+		expect(wrapper.findAllComponents(PButton)[0].props("disabled")).toBe(
+			true
+		);
+	});
+
+	it("searches planets, then calculates, while loading", async () => {
+		calculate.mockReturnValue(new Promise(() => {}));
+		state.searching = true;
+		const searching = await search("FEO");
+		expect(searching.text()).toContain("resource_roi.searching");
+		expect(searching.text()).not.toContain("resource_roi.calculating");
+		expect(searching.find(".text-center").exists()).toBe(true);
+
+		state.searching = false;
+		const calculating = await search("FEO");
+		expect(calculating.text()).toContain("resource_roi.calculating");
+		expect(calculating.text()).not.toContain("resource_roi.searching");
+	});
+
+	it("drops the table when the resource is cleared afterwards", async () => {
+		state.results = [{ planetNaturalId: "A" }];
+		calculate.mockResolvedValue(undefined);
+		const wrapper = await search("ALO");
+		await flushPromises();
+		const table = () => wrapper.findComponent({ name: "ResourceROITable" });
+		expect(table().exists()).toBe(true);
+
+		wrapper.findComponent(PSelect).vm.$emit("update:value", undefined);
+		await flushPromises();
+
+		expect(table().exists()).toBe(false);
+	});
+
+	it("shows the table with the searched resource after loading", async () => {
+		state.results = [{ planetNaturalId: "A" }];
+		calculate.mockResolvedValue(undefined);
+		const wrapper = await search("ALO");
+		await flushPromises();
+
+		const table = wrapper.findComponent({ name: "ResourceROITable" });
+		expect(table.props()).toMatchObject({
+			searchedMaterial: "ALO",
+			resultData: [{ planetNaturalId: "A" }],
+			active: null,
+		});
+	});
+
+	it("hands the CX chosen by the data loader to the selector", async () => {
+		const { wrapper } = await mountComponent(ResourceROIOverviewView);
+		const selector = () =>
+			wrapper.findComponent({ name: "CXPreferenceSelector" });
+		expect(selector().props("cxUuid")).toBeUndefined();
+
+		wrapper
+			.findComponent({ name: "WrapperPlanningDataLoader" })
+			.vm.$emit("update:cx-uuid", "cx-1");
+		await flushPromises();
+		expect(selector().props("cxUuid")).toBe("cx-1");
+
+		selector().vm.$emit("update:cxuuid", "cx-2");
+		await flushPromises();
+		expect(selector().props("cxUuid")).toBe("cx-2");
+	});
+
+	it("closed when the stored value cannot be read, and still toggles", async () => {
+		vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+			throw new Error("blocked");
+		});
+		vi.stubGlobal("localStorage", {
+			getItem: () => {
+				throw new Error("blocked");
+			},
+			setItem: () => {
+				throw new Error("blocked");
+			},
+		});
+		state.results = [{ planetNaturalId: "A" }];
+		calculate.mockResolvedValue(undefined);
+		const wrapper = await search("ALO");
+		await flushPromises();
+		expect(
+			wrapper.findComponent({ name: "ResourceROIChartDrawer" }).exists()
+		).toBe(false);
+
+		await wrapper.findAllComponents(PButton)[1].trigger("click");
+
+		expect(
+			wrapper.findComponent({ name: "ResourceROIChartDrawer" }).exists()
+		).toBe(true);
+		vi.restoreAllMocks();
+	});
+});
+
+describe("ResourceROIOverviewView active row", () => {
+	const rowRect = (top: number, height = 20) => ({
+		top,
+		bottom: top + height,
+		height,
+	});
+
+	/** opens the drawer and hovers a chart dot of row `key` */
+	async function activate(
+		key: string | null,
+		rows: Record<string, ReturnType<typeof rowRect>>,
+		drawerTop?: number | null
+	) {
+		vi.stubGlobal("CSS", { escape: (v: string) => v });
+		state.results = [{ planetNaturalId: "A" }];
+		localStorage.setItem(CHART_KEY, "1");
+		calculate.mockResolvedValue(undefined);
+		const { wrapper } = await mountComponent(
+			ResourceROIOverviewView,
+			{},
+			{ attach: true }
+		);
+		wrapper.findComponent(PSelect).vm.$emit("update:value", "ALO");
+		await flushPromises();
+		await wrapper.findComponent(PButton).trigger("click");
+		await flushPromises();
+
+		for (const tr of wrapper.findAll("tr[data-row-key]")) {
+			const rect = rows[tr.attributes("data-row-key")!];
+			if (rect)
+				vi.spyOn(tr.element, "getBoundingClientRect").mockReturnValue(
+					rect as DOMRect
+				);
+		}
+		const drawerEl = document.querySelector("[data-roi-chart]")!;
+		// null: the drawer is gone from the page
+		if (drawerTop === null) drawerEl.removeAttribute("data-roi-chart");
+		else if (drawerTop !== undefined)
+			vi.spyOn(drawerEl, "getBoundingClientRect").mockReturnValue(
+				rowRect(drawerTop) as DOMRect
+			);
+		wrapper
+			.findComponent({ name: "ResourceROIChartDrawer" })
+			.vm.$emit("update:active", key);
+		await flushPromises();
+		return wrapper;
+	}
+
+	beforeEach(() => {
+		state.results = [];
+		state.searching = false;
+		vi.stubGlobal("localStorage", memoryStorage());
+		calculate.mockReset();
+		window.scrollBy = vi.fn();
+	});
+
+	it("leaves the page alone when the row is already visible", async () => {
+		await activate("A", { A: rowRect(100) }, 500);
+
+		expect(window.scrollBy).not.toHaveBeenCalled();
+	});
+
+	it("centres a row hidden behind the drawer in the space above it", async () => {
+		await activate("B", { B: rowRect(480, 40) }, 500);
+
+		// row middle 500 against the middle 250 of the visible area
+		expect(window.scrollBy).toHaveBeenCalledWith({ top: 250 });
+	});
+
+	it("scrolls up to a row above the viewport", async () => {
+		await activate("A", { A: rowRect(-300) }, 400);
+
+		expect(window.scrollBy).toHaveBeenCalledWith({ top: -490 });
+	});
+
+	it("measures against the window when there is no drawer", async () => {
+		await activate("A", { A: rowRect(100) }, null);
+		expect(window.scrollBy).not.toHaveBeenCalled();
+
+		await activate("B", { B: rowRect(1000) }, null);
+		// row middle 1010 against the middle 384 of the window
+		expect(window.scrollBy).toHaveBeenCalledWith({ top: 626 });
+	});
+
+	it("ignores a hover that ends or names an unknown row", async () => {
+		const wrapper = await activate("A", { A: rowRect(-300) }, 400);
+		vi.mocked(window.scrollBy).mockClear();
+		const drawer = wrapper.findComponent({
+			name: "ResourceROIChartDrawer",
+		});
+
+		drawer.vm.$emit("update:active", null);
+		await flushPromises();
+		drawer.vm.$emit("update:active", "GONE");
+		await flushPromises();
+
+		expect(window.scrollBy).not.toHaveBeenCalled();
 	});
 });

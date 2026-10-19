@@ -61,7 +61,10 @@ describe("exchange rule controls", () => {
 			{ type: "BUY", exchange: "CI1_ASK" },
 			{ type: "SELL", exchange: "CI1_ASK" },
 		]);
-		const separate = readRule([{ type: "SELL", exchange: "IC1_BID" }], true);
+		const separate = readRule(
+			[{ type: "SELL", exchange: "IC1_BID" }],
+			true
+		);
 		expect(writeRule(switchMode(separate, "same"))).toEqual([
 			{ type: "BOTH", exchange: "IC1_BID" },
 		]);
@@ -72,6 +75,38 @@ describe("exchange rule controls", () => {
 				switchMode(inherit, "same", { exchange: "NC1", basis: "30D" })
 			)
 		).toEqual([{ type: "BOTH", exchange: "NC1_30D" }]);
+	});
+
+	it("returns the same state when the mode does not change", () => {
+		const state = readRule([{ type: "BOTH", exchange: "CI1_ASK" }], false);
+
+		expect(switchMode(state, "same")).toBe(state);
+	});
+
+	it("splits into separate rules from the inherited or kept choices", () => {
+		const inherit = readRule([], true);
+		expect(
+			writeRule(
+				switchMode(inherit, "separate", {
+					exchange: "AI1",
+					basis: "7D",
+				})
+			)
+		).toEqual([
+			{ type: "BUY", exchange: "AI1_7D" },
+			{ type: "SELL", exchange: "AI1_7D" },
+		]);
+
+		const kept: IExchangeRuleState = {
+			mode: "inherit",
+			both: null,
+			buy: { exchange: "NC1", basis: "ASK" },
+			sell: { exchange: "IC1", basis: "BID" },
+		};
+		expect(writeRule(switchMode(kept, "separate"))).toEqual([
+			{ type: "BUY", exchange: "NC1_ASK" },
+			{ type: "SELL", exchange: "IC1_BID" },
+		]);
 	});
 
 	it("offers Universe only VWAPs, switching from Ask / Bid to VWAP 30D", () => {
@@ -102,9 +137,9 @@ describe("exchange rule controls", () => {
 		const all: CXDataExchangeOption[] = [
 			{ type: "BOTH", exchange: "AI1_7D" },
 		];
-		expect(presetExchange([{ type: "SELL", exchange: "CI1_BID" }], all)).toBe(
-			"CI1"
-		);
+		expect(
+			presetExchange([{ type: "SELL", exchange: "CI1_BID" }], all)
+		).toBe("CI1");
 		expect(presetExchange([], all)).toBe("AI1");
 		expect(presetExchange([], [])).toBe("NC1");
 	});

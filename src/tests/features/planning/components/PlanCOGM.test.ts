@@ -12,17 +12,48 @@ import { usePlanningStore } from "@/stores/planningStore";
 import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
 import CXFixedPriceTable from "@/features/exchanges/components/CXFixedPriceTable.vue";
 import SaveBar from "@/features/save_bar/components/SaveBar.vue";
+import SaveConflictDialog from "@/features/save_conflict/components/SaveConflictDialog.vue";
+import SaveConflictNotice from "@/features/save_conflict/components/SaveConflictNotice.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type { VueWrapper } from "@vue/test-utils";
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
+import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.types";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+
+// the linked plans and their COGMs, crafted; without them the real ones
+const planData = vi.hoisted(() => ({
+	bases: undefined as unknown,
+	cogms: undefined as unknown,
+}));
+vi.mock("@/features/exchanges/useExchangePlanData", async (importActual) => {
+	const actual =
+		await importActual<
+			typeof import("@/features/exchanges/useExchangePlanData")
+		>();
+	const { computed } = await import("vue");
+	return {
+		...actual,
+		useExchangePlanData: (
+			...args: Parameters<typeof actual.useExchangePlanData>
+		) => {
+			const real = actual.useExchangePlanData(...args);
+			return {
+				...real,
+				bases: computed(() => planData.bases ?? real.bases.value),
+				materialCOGMs: computed(
+					() => planData.cogms ?? real.materialCOGMs.value
+				),
+			};
+		},
+	};
+});
 
 const mock = new AxiosMockAdapter(apiService.client);
 
@@ -70,19 +101,28 @@ const COGM = {
 	totalProfit: 1055.68,
 };
 
-function seedCX(pinia: Pinia, data: CXData) {
+const empire = (
+	uuid: string,
+	name: string,
+	planets: string[] = []
+): CX["empires"][number] => ({
+	uuid,
+	empire_name: name,
+	plans: planets.map((planet, i) => ({
+		uuid: `00000003-0000-4000-8000-00000000000${i}`,
+		plan_name: `Plan ${planet}`,
+		planet_natural_id: planet,
+	})),
+});
+const SKY = empire("00000002-0000-4000-8000-000000000000", "Sky Productions");
+
+function seedCX(pinia: Pinia, data: CXData, empires = [SKY]) {
 	usePlanningStore(pinia).setCXs([
 		{
 			uuid: CX_UUID,
 			cx_name: "Home NC1",
 			cx_data: data,
-			empires: [
-				{
-					uuid: "00000002-0000-4000-8000-000000000000",
-					empire_name: "Sky Productions",
-					plans: [],
-				},
-			],
+			empires,
 			modified_at: "v1",
 		},
 	]);
@@ -90,20 +130,23 @@ function seedCX(pinia: Pinia, data: CXData) {
 
 async function mountCOGM(
 	props: Record<string, unknown> = { cxUuid: CX_UUID, planetId: PLANET },
-	data = cxData()
+	data = cxData(),
+	options: {
+		empires?: CX["empires"];
+		messages?: Record<string, unknown>;
+	} = {}
 ) {
 	const pinia = createPinia();
-	seedCX(pinia, data);
+	seedCX(pinia, data, options.empires);
 	const mounted = await mountComponent(
 		PlanCOGM,
 		{ cogmData: COGM, ...props },
-		{ pinia }
+		{ pinia, messages: options.messages }
 	);
 	return { ...mounted, pinia };
 }
 
-const find = (wrapper: VueWrapper, selector: string) =>
-	wrapper.find(selector);
+const find = (wrapper: VueWrapper, selector: string) => wrapper.find(selector);
 
 async function click(wrapper: VueWrapper, selector: string) {
 	await find(wrapper, selector).trigger("click");
@@ -130,6 +173,7 @@ describe("PlanCOGM", () => {
 
 	beforeEach(() => {
 		vi.mocked(trackEvent).mockClear();
+		planData.bases = planData.cogms = undefined;
 		mock.reset();
 		// the backend answers with the saved CX
 		mock.onPut(PUT_URL).reply((config) => [
@@ -180,11 +224,7 @@ describe("PlanCOGM", () => {
 		// GRN from the all-planets exchange rule, H2O fixed on the planet
 		expect(links).toContain(`/exchanges/${CX_UUID}?scope=all`);
 		expect(links).toContain(`/exchanges/${CX_UUID}?scope=${PLANET}`);
-		expect(
-			wrapper
-				.find("[data-open-exchanges]")
-				.exists()
-		).toBe(true);
+		expect(wrapper.find("[data-open-exchanges]").exists()).toBe(true);
 		// the market price waits on the game data queries, which read
 		// IndexedDB first (flushPromises doesn't wait for it)
 		await vi.waitFor(() =>
@@ -344,5 +384,347 @@ describe("PlanCOGM", () => {
 		expect(find(wrapper, "[data-buy-all]").text()).toBe("64.43 ȼ");
 		await clickText(wrapper, "plan.tools.cogm.prices.all_planets");
 		expect(wrapper.findComponent(SaveBar).exists()).toBe(false);
+	});
+
+	describe("empire, linked plans and COGMs", () => {
+		it("names the CX's empire with a plan on this planet", async () => {
+			const { wrapper } = await mountCOGM(undefined, undefined, {
+				empires: [
+					empire(
+						"00000002-0000-4000-8000-000000000001",
+						"Elsewhere",
+						["OT-580b"]
+					),
+					empire("00000002-0000-4000-8000-000000000002", "Here Inc", [
+						"OT-580b",
+						PLANET,
+					]),
+				],
+				messages: {
+					plan: {
+						tools: {
+							cogm: {
+								prices_from_empire: "{preference} of {empire}",
+								prices_from: "{preference} only",
+							},
+						},
+					},
+				},
+			});
+
+			expect(wrapper.text()).toContain("Home NC1 of Here Inc");
+		});
+
+		it("names no empire when several of the CX have no plan here", async () => {
+			const { wrapper } = await mountCOGM(undefined, undefined, {
+				empires: [
+					empire("00000002-0000-4000-8000-000000000001", "One", [
+						"OT-580b",
+					]),
+					empire("00000002-0000-4000-8000-000000000002", "Two"),
+				],
+				messages: {
+					plan: {
+						tools: {
+							cogm: {
+								prices_from_empire: "{preference} of {empire}",
+								prices_from: "{preference} only",
+							},
+						},
+					},
+				},
+			});
+
+			expect(wrapper.text()).toContain("Home NC1 only");
+			expect(wrapper.text()).not.toContain("of One");
+		});
+
+		it("names the linked plans that buy an output, once each", async () => {
+			const base = (
+				planName: string,
+				...materials: [string, number][]
+			) => ({
+				planName,
+				materials: materials.map(([ticker, delta]) => ({
+					ticker,
+					delta,
+				})),
+			});
+			planData.bases = [
+				base("Alpha", ["RAT", -4]),
+				base("Alpha", ["RAT", -1]),
+				base("Beta", ["RAT", -2], ["FE", 5]),
+				// sells RAT, buys something else
+				base("Gamma", ["RAT", 3], ["FE", -1]),
+			];
+			const { wrapper } = await mountCOGM(undefined, undefined, {
+				messages: {
+					plan: {
+						tools: {
+							cogm: {
+								prices: { buyers: "{plans} buy {ticker}" },
+							},
+						},
+					},
+				},
+			});
+
+			expect(find(wrapper, "[data-output=RAT]").text()).toContain(
+				"Alpha, Beta buy RAT"
+			);
+		});
+
+		it("says nothing about buyers without linked plans", async () => {
+			const { wrapper } = await mountCOGM(undefined, undefined, {
+				messages: {
+					plan: {
+						tools: {
+							cogm: { prices: { buyers: "{plans} bought" } },
+						},
+					},
+				},
+			});
+
+			expect(find(wrapper, "[data-output=RAT]").text()).not.toContain(
+				"bought"
+			);
+		});
+
+		it("keeps the linked plans' COGM of an output", async () => {
+			const linked: IMaterialCOGM = {
+				ticker: "RAT",
+				value: 70,
+				entries: [
+					{
+						planUuid: "p1",
+						planName: "Alpha",
+						planet: "OT-580b",
+						value: 70,
+					},
+				],
+			};
+			planData.cogms = new Map([["RAT", linked]]);
+			const { wrapper } = await mountCOGM();
+
+			const cogms = wrapper
+				.findComponent(CXFixedPriceTable)
+				.props("cogms") as Map<string, IMaterialCOGM>;
+			expect(cogms.get("RAT")).toEqual(linked);
+			expect(cogms.size).toBe(1);
+		});
+
+		it("falls back to this recipe's COGM for an output no plan has", async () => {
+			planData.cogms = new Map();
+			const { wrapper } = await mountCOGM();
+
+			const cogms = wrapper
+				.findComponent(CXFixedPriceTable)
+				.props("cogms") as Map<string, IMaterialCOGM>;
+			expect(cogms.get("RAT")).toEqual({
+				ticker: "RAT",
+				value: 64.432,
+				entries: [
+					{
+						planUuid: "",
+						planName: "plan.tools.cogm.prices.this_plan",
+						planet: PLANET,
+						value: 64.432,
+					},
+				],
+			});
+		});
+	});
+
+	describe("fixed prices", () => {
+		it("edits the all-planets prices", async () => {
+			const { wrapper } = await mountCOGM();
+
+			wrapper
+				.findComponent(CXFixedPriceTable)
+				.vm.$emit("update:prices", [pref("GRN", "BUY", 400)]);
+			await flushPromises();
+
+			expect(wrapper.findComponent(SaveBar).props("count")).toBe(1);
+			wrapper.findComponent(SaveBar).vm.$emit("save");
+			await flushPromises();
+			expect(putPayload().cx_data.ticker_empire).toEqual([
+				pref("GRN", "BUY", 400),
+			]);
+		});
+
+		it("starts an empty list for a planet without fixed prices", async () => {
+			const data = cxData();
+			data.ticker_planets = [];
+			const { wrapper } = await mountCOGM(undefined, data);
+
+			await click(wrapper, "[data-scope-planet]");
+			const table = () => wrapper.findComponent(CXFixedPriceTable);
+			expect(table().props("prices")).toEqual([]);
+
+			table().vm.$emit("update:prices", [pref("H2O", "BUY", 25)]);
+			await flushPromises();
+			wrapper.findComponent(SaveBar).vm.$emit("save");
+			await flushPromises();
+
+			expect(putPayload().cx_data.ticker_planets).toEqual([
+				{ planet: PLANET, preferences: [pref("H2O", "BUY", 25)] },
+			]);
+		});
+	});
+
+	describe("saving", () => {
+		const edited = async () => {
+			const mounted = await mountCOGM();
+			await click(mounted.wrapper, "[data-use-cogm]");
+			return mounted;
+		};
+		const notice = (w: VueWrapper) =>
+			w.findComponent(SaveConflictNotice).props("notice");
+
+		it("keeps the edits and says so when the CX was deleted meanwhile", async () => {
+			mock.resetHandlers();
+			mock.onPut(PUT_URL).reply(404);
+			const { wrapper } = await edited();
+
+			wrapper.findComponent(SaveBar).vm.$emit("save");
+			await flushPromises();
+
+			expect(notice(wrapper)).toBe("deleted");
+			expect(wrapper.findComponent(SaveBar).props("state")).toBe("idle");
+			expect(wrapper.findComponent(SaveBar).props("count")).toBe(1);
+		});
+
+		describe("when it was saved in another tab meanwhile", () => {
+			beforeEach(() => {
+				mock.resetHandlers();
+				mock.onPut(PUT_URL).replyOnce(409, { code: "conflict" });
+				mock.onPut(PUT_URL).reply((config) => [
+					200,
+					{
+						uuid: CX_UUID,
+						empires: [],
+						...JSON.parse(config.data),
+						modified_at: "v3",
+					},
+				]);
+				// the dialog's look at the saved version
+				mock.onGet().reply(500);
+				vi.spyOn(console, "error").mockImplementation(() => {});
+			});
+
+			const dialog = async (wrapper: VueWrapper) => {
+				await vi.waitFor(() =>
+					expect(
+						wrapper.findComponent(SaveConflictDialog).exists()
+					).toBe(true)
+				);
+				return wrapper.findComponent(SaveConflictDialog);
+			};
+
+			it("keeps the edits when the dialog is closed", async () => {
+				const { wrapper } = await edited();
+				wrapper.findComponent(SaveBar).vm.$emit("save");
+
+				const conflict = (await dialog(wrapper)).props("conflict");
+				conflict.choose(null);
+				await flushPromises();
+
+				expect(trackEvent).toHaveBeenCalledWith(
+					"exchange:save_conflict",
+					{
+						location: "cogm",
+						choice: "close",
+					}
+				);
+				expect(mock.history.put).toHaveLength(1);
+				expect(wrapper.findComponent(SaveBar).props("count")).toBe(1);
+				expect(find(wrapper, "[data-buy-all]").text()).toBe("64.43 ȼ");
+			});
+
+			it("saves over the other version on overwrite", async () => {
+				const { wrapper } = await edited();
+				wrapper.findComponent(SaveBar).vm.$emit("save");
+
+				const conflict = (await dialog(wrapper)).props("conflict");
+				conflict.choose("overwrite");
+				await flushPromises();
+
+				expect(mock.history.put).toHaveLength(2);
+				expect(
+					JSON.parse(mock.history.put[1].data).base_modified_at
+				).toBe(undefined);
+				expect(wrapper.findComponent(SaveBar).exists()).toBe(false);
+			});
+		});
+	});
+
+	describe("when the CX changes in another tab", () => {
+		const stored = (pinia: Pinia, over: Partial<CX> | null) =>
+			usePlanningStore(pinia).setCXs(
+				over === null
+					? []
+					: [
+							{
+								uuid: CX_UUID,
+								cx_name: "Home NC1",
+								cx_data: cxData(),
+								empires: [],
+								modified_at: "v2",
+								...over,
+							},
+						]
+			);
+		const notice = (w: VueWrapper) =>
+			w.findComponent(SaveConflictNotice).props("notice");
+
+		it("offers to reload when there are unsaved edits", async () => {
+			const { wrapper, pinia } = await mountCOGM();
+			await click(wrapper, "[data-use-cogm]");
+
+			const data = cxData();
+			data.ticker_empire = [pref("RAT", "BUY", 99)];
+			stored(pinia, { cx_data: data });
+			await flushPromises();
+
+			expect(notice(wrapper)).toBe("saved");
+			// the edits stay
+			expect(find(wrapper, "[data-buy-all]").text()).toBe("64.43 ȼ");
+
+			wrapper.findComponent(SaveConflictNotice).vm.$emit("reload");
+			await flushPromises();
+
+			expect(notice(wrapper)).toBe(null);
+			expect(find(wrapper, "[data-buy-all]").text()).toBe("99.00 ȼ");
+			expect(wrapper.findComponent(SaveBar).exists()).toBe(false);
+		});
+
+		it("ignores the CX stored again as the same version", async () => {
+			const { wrapper, pinia } = await mountCOGM();
+			await click(wrapper, "[data-use-cogm]");
+
+			stored(pinia, { modified_at: "v1" });
+			await flushPromises();
+
+			expect(notice(wrapper)).toBe(null);
+			expect(trackEvent).not.toHaveBeenCalledWith(
+				"app:remote_change",
+				expect.anything()
+			);
+			expect(find(wrapper, "[data-buy-all]").text()).toBe("64.43 ȼ");
+		});
+
+		it("says so when it was deleted", async () => {
+			const { wrapper, pinia } = await mountCOGM();
+
+			stored(pinia, null);
+			await flushPromises();
+
+			expect(notice(wrapper)).toBe("deleted");
+			expect(trackEvent).toHaveBeenCalledWith("app:remote_change", {
+				object_type: "cx",
+				has_unsaved_edits: false,
+				is_deleted: true,
+			});
+		});
 	});
 });

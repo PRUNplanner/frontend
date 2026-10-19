@@ -12,6 +12,10 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import FIORepairOverview from "@/features/fio_repair/components/FIORepairOverview.vue";
 import ComputingProgress from "@/layout/components/ComputingProgress.vue";
 import FIORepairSettings from "@/features/fio_repair/components/FIORepairSettings.vue";
+import FIORepairBasePanel from "@/features/fio_repair/components/FIORepairBasePanel.vue";
+import FIORepairBaseList from "@/features/fio_repair/components/FIORepairBaseList.vue";
+import { useUserStore } from "@/stores/userStore";
+import { usePlanningStore } from "@/stores/planningStore";
 import { mountComponent } from "@/tests/mountComponent";
 import {
 	bober,
@@ -52,17 +56,33 @@ vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
 const messages = { fio };
 let pinia: Pinia;
 
+type MediaListener = (e: { matches: boolean }) => void;
+const media = {
+	listeners: new Map<string, MediaListener>(),
+	removed: [] as string[],
+};
+
 /** width in px for the layout media queries */
 function screen(width: number) {
 	vi.stubGlobal("matchMedia", (query: string) => {
 		const px = Number(query.match(/(\d+)px/)![1]);
 		return {
 			matches: query.includes("min-width") ? width >= px : width <= px,
-			addEventListener: () => {},
-			removeEventListener: () => {},
+			addEventListener: (_: string, cb: MediaListener) =>
+				media.listeners.set(query, cb),
+			removeEventListener: (_: string, cb: MediaListener) => {
+				if (media.listeners.get(query) === cb)
+					media.removed.push(query);
+			},
 		};
 	});
 }
+
+/** fires the change event of the wide or phone media query */
+const WIDE = "(min-width: 1200px)";
+const PHONE = "(max-width: 767px)";
+const change = (query: string, matches: boolean) =>
+	media.listeners.get(query)!({ matches });
 
 async function mountOverview() {
 	const mounted = await mountComponent(
@@ -87,7 +107,10 @@ describe("FIORepairOverview", () => {
 	beforeEach(() => {
 		pinia = createPinia();
 		setActivePinia(pinia);
+		media.listeners.clear();
+		media.removed = [];
 		vi.mocked(trackEvent).mockClear();
+		repair.flight.mockClear();
 		repair.flight.mockReturnValue({
 			load: { materials: [], cost: 0, weight: 0, volume: 0 },
 			fromStore: [],
@@ -218,5 +241,218 @@ describe("FIORepairOverview", () => {
 			["fio_repair:setting_change", { setting: "interval" }],
 			["fio_repair:setting_change", { setting: "due_soon" }],
 		]);
+	});
+
+	it("without matchMedia it lays out as a wide screen", async () => {
+		vi.stubGlobal("matchMedia", undefined);
+		const { wrapper } = await mountOverview();
+
+		expect(
+			wrapper.find("[data-testid=fio-repair-panel]").classes()
+		).toContain("sticky");
+	});
+
+	it("selects nothing and offers no panel without bases", async () => {
+		screen(1440);
+		const { wrapper } = await mountComponent(
+			FIORepairOverview,
+			{ plans: [], empires: [] },
+			{ pinia, messages }
+		);
+		repair.resolve();
+		await flushPromises();
+
+		expect(wrapper.find("[data-testid=fio-repair-panel]").exists()).toBe(
+			false
+		);
+		expect(repair.flight).not.toHaveBeenCalled();
+		expect(trackEvent).not.toHaveBeenCalled();
+	});
+
+	it("counts bases by plan match confidence for the settings", async () => {
+		screen(1440);
+		const { wrapper } = await mountOverview();
+		const likely = (c: "likely" | "picked") =>
+			bober({
+				match: { candidate: undefined, confidence: c, candidates: [] },
+			});
+
+		repair.bases.value = [
+			bober(),
+			likely("picked"),
+			likely("likely"),
+			likely("likely"),
+			shiptronia(),
+		];
+		await flushPromises();
+
+		expect(
+			wrapper.findComponent(FIORepairSettings).props("counts")
+		).toEqual({
+			matched: 2,
+			likely: 2,
+			none: 1,
+		});
+	});
+
+	it("without plans a base opens with confidence none", async () => {
+		screen(1440);
+		const { wrapper } = await mountOverview();
+
+		wrapper
+			.findComponent(FIORepairSettings)
+			.vm.$emit("update:usePlans", false);
+		await flushPromises();
+		vi.mocked(trackEvent).mockClear();
+		wrapper.findComponent(FIORepairBaseList).vm.$emit("select", "ZV-307b");
+		await flushPromises();
+
+		expect(trackEvent).toHaveBeenCalledWith("fio_repair:base_open", {
+			status: "overdue",
+			confidence: "none",
+		});
+	});
+
+	it("names the default exchange in the panel and passes the store toggle on", async () => {
+		screen(1440);
+		const uuid = "11111111-1111-4111-8111-111111111111";
+		usePlanningStore().cxs[uuid] = { uuid, cx_name: "My CX" } as never;
+		useUserStore().setPreference("defaultCXUuid", uuid);
+		const { wrapper } = await mountOverview();
+		const panel = () => wrapper.findComponent(FIORepairBasePanel);
+
+		expect(panel().props("cxName")).toBe("My CX");
+		expect(panel().props("useStore")).toBe(true);
+
+		panel().vm.$emit("update:useStore", false);
+		await flushPromises();
+		expect(panel().props("useStore")).toBe(false);
+		expect(repair.flight).toHaveBeenLastCalledWith(
+			expect.objectContaining({ planet: "ZV-307b" }),
+			2,
+			false
+		);
+	});
+
+	it("has no exchange name for a default exchange that is gone", async () => {
+		screen(1440);
+		useUserStore().setPreference(
+			"defaultCXUuid",
+			"22222222-2222-4222-8222-222222222222"
+		);
+		const { wrapper } = await mountOverview();
+
+		expect(
+			wrapper.findComponent(FIORepairBasePanel).props("cxName")
+		).toBeUndefined();
+	});
+
+	it("growing to a wide screen closes the drawer for the side panel", async () => {
+		screen(1024);
+		const { wrapper } = await mountOverview();
+		await rows(wrapper)[0].trigger("click");
+		await flushPromises();
+		expect(body().find("[role=dialog]").exists()).toBe(true);
+
+		change(WIDE, true);
+		await flushPromises();
+
+		expect(body().find("[role=dialog]").exists()).toBe(false);
+		expect(
+			wrapper.find("[data-testid=fio-repair-panel]").classes()
+		).toContain("sticky");
+	});
+
+	it("shrinking from wide keeps the panel out until a base is opened", async () => {
+		screen(1440);
+		const { wrapper } = await mountOverview();
+
+		change(WIDE, false);
+		await flushPromises();
+
+		expect(wrapper.find("[data-testid=fio-repair-panel]").exists()).toBe(
+			false
+		);
+		expect(body().find("[role=dialog]").exists()).toBe(false);
+	});
+
+	it("turning into a phone closes the drawer, leaving it closes the detail", async () => {
+		screen(1024);
+		const { wrapper } = await mountOverview();
+		await rows(wrapper)[0].trigger("click");
+		await flushPromises();
+		expect(body().find("[role=dialog]").exists()).toBe(true);
+
+		change(PHONE, true);
+		await flushPromises();
+		expect(body().find("[role=dialog]").exists()).toBe(false);
+
+		await rows(wrapper)[0].trigger("click");
+		expect(wrapper.find("[data-testid=fio-repair-list]").exists()).toBe(
+			false
+		);
+
+		change(PHONE, false);
+		await flushPromises();
+		expect(wrapper.find("[data-testid=fio-repair-list]").exists()).toBe(
+			true
+		);
+	});
+
+	it("stops listening to the layout queries and flushes pending events", async () => {
+		screen(1440);
+		vi.useFakeTimers();
+		const { wrapper } = await mountOverview();
+
+		wrapper.findComponent(FIORepairSettings).vm.$emit("change", "arrival");
+		vi.mocked(trackEvent).mockClear();
+		wrapper.unmount();
+
+		expect(media.removed.sort()).toEqual([PHONE, WIDE]);
+		expect(trackEvent).toHaveBeenCalledWith("fio_repair:setting_change", {
+			setting: "arrival",
+		});
+	});
+
+	it("the drawer shares the store toggle and closes itself", async () => {
+		screen(1024);
+		const { wrapper } = await mountOverview();
+		wrapper
+			.findComponent(FIORepairBaseList)
+			.vm.$emit("update:filter", "overdue");
+		wrapper.findComponent(FIORepairBaseList).vm.$emit("select", "nowhere");
+		await flushPromises();
+
+		// an unknown planet selects no base: no event, an empty drawer
+		expect(trackEvent).not.toHaveBeenCalledWith(
+			"fio_repair:base_open",
+			expect.anything()
+		);
+		expect(wrapper.findComponent(FIORepairBaseList).props("filter")).toBe(
+			"overdue"
+		);
+		expect(body().find("[role=dialog]").exists()).toBe(true);
+		expect(body().find("[data-testid=fio-repair-panel]").exists()).toBe(
+			false
+		);
+
+		wrapper.findComponent(FIORepairBaseList).vm.$emit("select", "ZV-307b");
+		await flushPromises();
+		const panel = wrapper.findAllComponents(FIORepairBasePanel)[0];
+		panel.vm.$emit("update:useStore", false);
+		await flushPromises();
+		expect(repair.flight).toHaveBeenLastCalledWith(
+			expect.objectContaining({ planet: "ZV-307b" }),
+			2,
+			false
+		);
+
+		body()
+			.find("[role=dialog]")
+			.element.dispatchEvent(
+				new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
+			);
+		await flushPromises();
+		expect(body().find("[role=dialog]").exists()).toBe(false);
 	});
 });

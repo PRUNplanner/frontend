@@ -1,4 +1,5 @@
-import { createApp, nextTick } from "vue";
+import { createApp, nextTick, ref } from "vue";
+import type { Composer } from "vue-i18n";
 import { setActivePinia, createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { beforeEach, describe, it, expect, onTestFinished, vi } from "vitest";
@@ -7,10 +8,12 @@ import {
 	callUserLogin,
 	callRefreshToken,
 	callGetProfile,
+	callGetUserPreferences,
 } from "@/features/api/userData.api";
 
 import { useUserStore } from "@/stores/userStore";
 import { memoryStorage } from "@/tests/memoryStorage";
+import { localeLazyLoaders, type SupportedLocale } from "@/lib/i18n";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import {
 	UserPreferencePayloadSchema,
@@ -604,6 +607,197 @@ describe("User Store", () => {
 
 			expect(userStore.preferences.burnDaysRed).toBe(defaultBurnDaysRed);
 			expect(userStore.preferences.planOverrides).toStrictEqual({});
+		});
+
+		it("restores a session stored with empty plan overrides", () => {
+			onTestFinished(() => {
+				vi.unstubAllGlobals();
+			});
+			const stored = { ...preferenceDefaults, planOverrides: null };
+			vi.stubGlobal(
+				"localStorage",
+				memoryStorage({
+					prunplanner_user: JSON.stringify({ preferences: stored }),
+				})
+			);
+			const pinia = createPinia().use(piniaPluginPersistedstate);
+			createApp({}).use(pinia);
+			setActivePinia(pinia);
+
+			const userStore = useUserStore();
+
+			expect(userStore.preferences.planOverrides).toStrictEqual({});
+		});
+
+		it("resets a cleared number preference to its default on restore", () => {
+			onTestFinished(() => {
+				vi.unstubAllGlobals();
+			});
+			vi.stubGlobal(
+				"localStorage",
+				memoryStorage({
+					prunplanner_user: JSON.stringify({
+						preferences: {
+							...preferenceDefaults,
+							// NaN is persisted as null
+							burnDaysRed: null,
+							burnDaysYellow: 12,
+						},
+					}),
+				})
+			);
+			const pinia = createPinia().use(piniaPluginPersistedstate);
+			createApp({}).use(pinia);
+			setActivePinia(pinia);
+
+			const userStore = useUserStore();
+
+			expect(userStore.preferences.burnDaysRed).toBe(
+				preferenceDefaults.burnDaysRed
+			);
+			expect(userStore.preferences.burnDaysYellow).toBe(12);
+		});
+
+		it("loads the preferences once per login", async () => {
+			const userStore = useUserStore();
+			vi.mocked(callUserLogin).mockResolvedValue({
+				access: "access",
+				refresh: "refresh",
+			});
+			vi.mocked(callGetProfile).mockResolvedValue({} as UserProfile);
+			vi.mocked(callGetUserPreferences).mockResolvedValue(
+				preferenceDefaults
+			);
+			vi.mocked(callGetUserPreferences).mockClear();
+
+			await userStore.performLogin("user", "pw");
+			expect(userStore.intialPreferencesCalled).toBe(true);
+			expect(callGetUserPreferences).toHaveBeenCalledTimes(1);
+
+			// a second login in the same session does not ask again
+			expect(await userStore.performLogin("user", "pw")).toBe("ok");
+			expect(callGetUserPreferences).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe("locale", () => {
+		const localeKey = "/src/locales/xx_XX/test.json";
+		const xx = "xx_XX" as SupportedLocale;
+
+		function fakeComposer(available: string[] = []) {
+			const composer = {
+				availableLocales: available,
+				locale: ref("en_US"),
+				setLocaleMessage: vi.fn(),
+			};
+			return { composer, typed: composer as unknown as Composer };
+		}
+
+		function addLoader(loader: () => Promise<{ default: unknown }>) {
+			localeLazyLoaders[localeKey] = loader;
+			onTestFinished(() => {
+				delete localeLazyLoaders[localeKey];
+			});
+		}
+
+		it("switches to a locale that is already loaded", async () => {
+			const userStore = useUserStore();
+			const { composer, typed } = fakeComposer(["de_DE"]);
+
+			await userStore.setLocale("de_DE", typed);
+
+			expect(composer.locale.value).toBe("de_DE");
+			expect(composer.setLocaleMessage).not.toHaveBeenCalled();
+		});
+
+		it("initLocale applies the stored preference", async () => {
+			const userStore = useUserStore();
+			userStore.setPreference("locale", "de_DE");
+			const { composer, typed } = fakeComposer(["de_DE"]);
+
+			await userStore.initLocale(typed);
+
+			expect(composer.locale.value).toBe("de_DE");
+		});
+
+		it("logs an error for a locale without message files", async () => {
+			const userStore = useUserStore();
+			const error = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+			const { composer, typed } = fakeComposer();
+
+			await userStore.setLocale(xx, typed);
+
+			expect(error).toHaveBeenCalledWith(
+				"No files found for locale: xx_XX"
+			);
+			expect(composer.locale.value).toBe("en_US");
+		});
+
+		it("skips message files without a name", async () => {
+			const userStore = useUserStore();
+			const unnamed = "/src/locales/xx_XX/.json";
+			localeLazyLoaders[unnamed] = async () => ({ default: { a: "b" } });
+			onTestFinished(() => {
+				delete localeLazyLoaders[unnamed];
+			});
+			const { composer, typed } = fakeComposer();
+
+			await userStore.setLocale(xx, typed);
+
+			expect(composer.setLocaleMessage).toHaveBeenCalledWith("xx_XX", {});
+		});
+
+		it("registers the loaded messages and sets the html lang", async () => {
+			const userStore = useUserStore();
+			addLoader(async () => ({ default: { hello: "Hallo" } }));
+			const { composer, typed } = fakeComposer();
+
+			await userStore.setLocale(xx, typed);
+			await nextTick();
+
+			expect(composer.setLocaleMessage).toHaveBeenCalledWith("xx_XX", {
+				test: { hello: "Hallo" },
+			});
+			expect(composer.locale.value).toBe("xx_XX");
+			expect(document.documentElement.getAttribute("lang")).toBe("xx_XX");
+		});
+
+		it("warns about, and drops, messages that do not compile", async () => {
+			const userStore = useUserStore();
+			const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+			addLoader(async () => ({
+				default: { broken: "@:{terms.materials}", ok: "fine" },
+			}));
+			const { composer, typed } = fakeComposer();
+
+			await userStore.setLocale(xx, typed);
+
+			expect(warn).toHaveBeenCalledWith(
+				"Invalid xx_XX messages, using en_US:",
+				["test.broken"]
+			);
+			expect(composer.setLocaleMessage).toHaveBeenCalledWith("xx_XX", {
+				test: { ok: "fine" },
+			});
+		});
+
+		it("keeps the locale when loading its files fails", async () => {
+			const userStore = useUserStore();
+			const error = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+			addLoader(() => Promise.reject(new Error("offline")));
+			const { composer, typed } = fakeComposer();
+
+			await userStore.setLocale(xx, typed);
+
+			expect(error).toHaveBeenCalledWith(
+				"Failed to load locale xx_XX:",
+				expect.any(Error)
+			);
+			expect(composer.locale.value).toBe("en_US");
 		});
 	});
 });

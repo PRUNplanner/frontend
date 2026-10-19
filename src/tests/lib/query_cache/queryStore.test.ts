@@ -11,6 +11,7 @@ import { getQueryDefinition } from "@/lib/query_cache/queryRepository";
 // a request that stays in flight until the test resolves it
 const slow = vi.hoisted(() => ({
 	resolvers: [] as ((value: unknown) => void)[],
+	rejecters: [] as ((reason: unknown) => void)[],
 }));
 
 // the persisted copy persistedQuery reads first
@@ -35,6 +36,16 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 					slow.resolvers.push(() => resolve(params))
 				),
 		},
+		slowFailingQuery: {
+			key: () => ["slowFailingQuery"],
+			fetchFn: () =>
+				new Promise((_, reject) => slow.rejecters.push(reject)),
+		},
+		// rejects with text, like a throw of a non-Error
+		textRejectQuery: {
+			key: () => ["textRejectQuery"],
+			fetchFn: () => Promise.reject("boom"),
+		},
 		failingMutation: {
 			mutation: true,
 			fetchFn: () => Promise.reject(new Error("409")),
@@ -56,7 +67,11 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 			}),
 		},
 		GetPlanet: {
-			key: (params: any) => ["gamedata", "planet", params.planetNaturalId],
+			key: (params: any) => [
+				"gamedata",
+				"planet",
+				params.planetNaturalId,
+			],
 			expireTime: 1000,
 			autoRefetch: true,
 			fetchFn: vi.fn(async (params) => ({
@@ -76,7 +91,10 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 			fetchFn: vi.fn(async (params) =>
 				params.planetNaturalIds
 					.filter((id: string) => id !== "XX-000x")
-					.map((id: string) => ({ planet_natural_id: id, fresh: true }))
+					.map((id: string) => ({
+						planet_natural_id: id,
+						fresh: true,
+					}))
 			),
 		},
 		// a read with a persisted copy, see `persisted`
@@ -261,59 +279,59 @@ describe("useQueryStore: stale in-flight requests", () => {
 		slow.resolvers.length = 0;
 	});
 
-		const cachedSlow = () => store.cacheState[toCacheKey(["slowQuery"])];
+	const cachedSlow = () => store.cacheState[toCacheKey(["slowQuery"])];
 
-		it("do not write into the cache after $reset (logout)", async () => {
-			// @ts-expect-error mock query repository
-			const pending = store.execute("slowQuery", undefined);
-			store.$reset();
+	it("do not write into the cache after $reset (logout)", async () => {
+		// @ts-expect-error mock query repository
+		const pending = store.execute("slowQuery", undefined);
+		store.$reset();
 
-			slow.resolvers[0]("old user data");
-			// the caller still gets its result
-			await expect(pending).resolves.toBe("old user data");
-			expect(cachedSlow()).toBeUndefined();
+		slow.resolvers[0]("old user data");
+		// the caller still gets its result
+		await expect(pending).resolves.toBe("old user data");
+		expect(cachedSlow()).toBeUndefined();
+	});
+
+	it("do not overwrite a newer forced refetch", async () => {
+		// @ts-expect-error mock query repository
+		const first = store.execute("slowQuery", undefined);
+		// @ts-expect-error mock query repository
+		const second = store.execute("slowQuery", undefined, {
+			forceRefetch: true,
 		});
 
-		it("do not overwrite a newer forced refetch", async () => {
-			// @ts-expect-error mock query repository
-			const first = store.execute("slowQuery", undefined);
-			// @ts-expect-error mock query repository
-			const second = store.execute("slowQuery", undefined, {
-				forceRefetch: true,
-			});
+		slow.resolvers[1]("new");
+		await second;
+		slow.resolvers[0]("old");
+		await first;
 
-			slow.resolvers[1]("new");
-			await second;
-			slow.resolvers[0]("old");
-			await first;
+		expect(cachedSlow()?.data).toBe("new");
+		expect(cachedSlow()?.loading).toBe(false);
+	});
 
-			expect(cachedSlow()?.data).toBe("new");
-			expect(cachedSlow()?.loading).toBe(false);
-		});
+	it("never dedupe mutations sharing a key", async () => {
+		// @ts-expect-error mock query repository
+		const first = store.execute("slowMutation", "a");
+		// @ts-expect-error mock query repository
+		const second = store.execute("slowMutation", "b");
 
-		it("never dedupe mutations sharing a key", async () => {
-			// @ts-expect-error mock query repository
-			const first = store.execute("slowMutation", "a");
-			// @ts-expect-error mock query repository
-			const second = store.execute("slowMutation", "b");
+		slow.resolvers.forEach((resolve) => resolve(undefined));
 
-			slow.resolvers.forEach((resolve) => resolve(undefined));
+		expect(slow.resolvers).toHaveLength(2);
+		await expect(first).resolves.toBe("a");
+		await expect(second).resolves.toBe("b");
+	});
 
-			expect(slow.resolvers).toHaveLength(2);
-			await expect(first).resolves.toBe("a");
-			await expect(second).resolves.toBe("b");
-		});
+	it("do not write back after invalidateKey", async () => {
+		// @ts-expect-error mock query repository
+		const pending = store.execute("slowQuery", undefined);
+		await store.invalidateKey(["slowQuery"], { skipRefetch: true });
 
-		it("do not write back after invalidateKey", async () => {
-			// @ts-expect-error mock query repository
-			const pending = store.execute("slowQuery", undefined);
-			await store.invalidateKey(["slowQuery"], { skipRefetch: true });
+		slow.resolvers[0]("stale");
+		await pending;
 
-			slow.resolvers[0]("stale");
-			await pending;
-
-			expect(cachedSlow()).toBeUndefined();
-		});
+		expect(cachedSlow()).toBeUndefined();
+	});
 });
 
 describe("checkEntryStatusAndRefresh: expired planets", () => {
@@ -553,10 +571,13 @@ describe("useQueryStore: raw cache data", () => {
 		const result = { nested: { list: [{ value: 1 }] } };
 		testFetch.mockResolvedValueOnce(result);
 
-		// @ts-expect-error mock query repository
-		const first = (await store.execute("testQuery", "raw")) as typeof result;
-		// @ts-expect-error mock query repository
-		const hit = (await store.execute("testQuery", "raw")) as typeof result;
+		// the mock repository has no real query key
+		const execute = store.execute as unknown as (
+			key: string,
+			params: string
+		) => Promise<typeof result>;
+		const first = await execute("testQuery", "raw");
+		const hit = await execute("testQuery", "raw");
 
 		expect(testFetch).toHaveBeenCalledOnce();
 		expect(hit).toBe(first);
@@ -617,12 +638,17 @@ describe("useQueryStore: raw cache data", () => {
 
 	it("a timed-out request fails every caller of its key and leaves loading", async () => {
 		// what apiService's normalizeError makes of an axios timeout
-		const timeout = Object.assign(new Error("timeout of 30000ms exceeded"), {
-			status: undefined,
-		});
+		const timeout = Object.assign(
+			new Error("timeout of 30000ms exceeded"),
+			{
+				status: undefined,
+			}
+		);
 		testFetch.mockImplementationOnce(
 			() =>
-				new Promise((_, reject) => setTimeout(() => reject(timeout), 30_000))
+				new Promise((_, reject) =>
+					setTimeout(() => reject(timeout), 30_000)
+				)
 		);
 
 		// @ts-expect-error mock query repository
@@ -637,7 +663,9 @@ describe("useQueryStore: raw cache data", () => {
 			{ status: "rejected", reason: timeout },
 		]);
 		expect(testFetch).toHaveBeenCalledOnce();
-		expect(store.cacheState[toCacheKey(["testQuery", "hung"])]).toMatchObject({
+		expect(
+			store.cacheState[toCacheKey(["testQuery", "hung"])]
+		).toMatchObject({
 			loading: false,
 			error: timeout,
 		});
@@ -725,6 +753,238 @@ describe("isFresh", () => {
 it("queryStore.ts names no query", () => {
 	const source = readFileSync("src/lib/query_cache/queryStore.ts", "utf8");
 	expect(source).not.toMatch(/"(Get|Post|Patch|Delete|Create|Clone)[A-Z]/);
+});
+
+describe("useQueryStore: edge cases", () => {
+	let store: ReturnType<typeof useQueryStore>;
+	// @ts-expect-error mock query repository
+	const autoFetch = getQueryDefinition("autoRefetchQuery").fetchFn as Mock;
+	// @ts-expect-error mock query repository
+	const testFetch = getQueryDefinition("testQuery").fetchFn as Mock;
+	const getMultiple = getQueryDefinition("GetMultiplePlanets")
+		.fetchFn as Mock;
+	const state = (key: string[]) => store.cacheState[toCacheKey(key)];
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		vi.useFakeTimers();
+		vi.setSystemTime(1000);
+		store = useQueryStore();
+		vi.clearAllMocks();
+		slow.rejecters.length = 0;
+		vi.spyOn(userActivity, "shouldDelay").mockReturnValue(false);
+		vi.spyOn(console, "error").mockImplementation(() => {});
+	});
+
+	describe("failed requests", () => {
+		it("keep a rejection that is no Error as an Error", async () => {
+			await expect(
+				// @ts-expect-error mock query repository
+				store.execute("textRejectQuery", undefined)
+			).rejects.toBe("boom");
+
+			expect(state(["textRejectQuery"]).error).toEqual(new Error("boom"));
+		});
+
+		it("do not write an error after $reset", async () => {
+			// @ts-expect-error mock query repository
+			const pending = store.execute("slowFailingQuery", undefined);
+			store.$reset();
+
+			slow.rejecters[0](new Error("late"));
+
+			await expect(pending).rejects.toThrow("late");
+			expect(store.cacheState).toStrictEqual({});
+		});
+	});
+
+	describe("invalidateKey", () => {
+		it("does nothing for an exact key nobody cached", async () => {
+			// @ts-expect-error mock query repository
+			await store.execute("testQuery", "a");
+
+			await store.invalidateKey(["testQuery", "other"]);
+
+			expect(state(["testQuery", "a"])).toBeDefined();
+			expect(testFetch).toHaveBeenCalledOnce();
+		});
+
+		it("leaves entries outside the prefix when not exact", async () => {
+			// @ts-expect-error mock query repository
+			await store.execute("testQuery", "a");
+			// @ts-expect-error mock query repository
+			await store.execute("autoRefetchQuery", "a");
+
+			await store.invalidateKey(["testQuery"], {
+				exact: false,
+				skipRefetch: true,
+			});
+
+			expect(state(["testQuery", "a"])).toBeUndefined();
+			expect(state(["autoRefetchQuery", "a"])).toBeDefined();
+		});
+
+		it("refetches an auto refetch entry unless told not to", async () => {
+			// @ts-expect-error mock query repository
+			await store.execute("autoRefetchQuery", "a");
+			autoFetch.mockClear();
+
+			await store.invalidateKey(["autoRefetchQuery", "a"], {
+				skipRefetch: true,
+			});
+			expect(autoFetch).not.toHaveBeenCalled();
+
+			// @ts-expect-error mock query repository
+			await store.execute("autoRefetchQuery", "a");
+			autoFetch.mockClear();
+			await store.invalidateKey(["autoRefetchQuery", "a"]);
+			expect(autoFetch).toHaveBeenCalledOnce();
+			expect(autoFetch).toHaveBeenCalledWith("a");
+		});
+
+		it("refetches any entry when forced", async () => {
+			// @ts-expect-error mock query repository
+			await store.execute("testQuery", "a");
+			testFetch.mockClear();
+
+			await store.invalidateKey(["testQuery", "a"], {
+				forceRefetch: true,
+			});
+
+			expect(testFetch).toHaveBeenCalledWith("a");
+		});
+	});
+
+	it("addCacheState does not seed a write", () => {
+		// @ts-expect-error mock query repository
+		store.addCacheState("slowMutation", "a", "data");
+
+		expect(store.cacheState).toStrictEqual({});
+	});
+
+	describe("status watcher", () => {
+		it("leaves expired entries alone while the user is away", async () => {
+			// @ts-expect-error mock query repository
+			await store.execute("autoRefetchQuery", "a");
+			autoFetch.mockClear();
+			vi.spyOn(userActivity, "shouldDelay").mockReturnValue(true);
+			vi.setSystemTime(5000);
+
+			store.checkEntryStatusAndRefresh();
+			await vi.advanceTimersByTimeAsync(0);
+
+			expect(autoFetch).not.toHaveBeenCalled();
+		});
+
+		it("deletes an expired entry that is not refetched", async () => {
+			// @ts-expect-error mock query repository
+			await store.execute("testQuery", "a");
+			vi.setSystemTime(5000);
+
+			store.checkEntryStatusAndRefresh();
+			await vi.advanceTimersByTimeAsync(0);
+
+			expect(state(["testQuery", "a"])).toBeUndefined();
+			expect(testFetch).toHaveBeenCalledOnce();
+		});
+
+		it("checks every 10 seconds, started once", async () => {
+			// @ts-expect-error mock query repository
+			await store.execute("autoRefetchQuery", "a");
+			autoFetch.mockClear();
+			store.startStatusWatcher();
+			expect(vi.getTimerCount()).toBe(1);
+
+			await vi.advanceTimersByTimeAsync(10_000);
+
+			expect(autoFetch).toHaveBeenCalledOnce();
+		});
+
+		describe("planet batches", () => {
+			const planet = (id: string) => ({ planet_natural_id: id }) as never;
+			const planetKey = (id: string) => ["gamedata", "planet", id];
+
+			it("ignores an expiring multiple query without expired planets", async () => {
+				await store.execute("GetMultiplePlanets", {
+					planetNaturalIds: ["AB-001c"],
+				});
+				getMultiple.mockClear();
+				vi.setSystemTime(5000);
+
+				store.checkEntryStatusAndRefresh();
+				await vi.advanceTimersByTimeAsync(0);
+
+				expect(getMultiple).toHaveBeenCalledOnce();
+				expect(getMultiple).toHaveBeenCalledWith({
+					planetNaturalIds: ["AB-001c"],
+				});
+			});
+
+			it("refreshes planets the expiring multiple query does not cover", async () => {
+				await store.execute("GetMultiplePlanets", {
+					planetNaturalIds: ["AB-001c"],
+				});
+				store.addCacheState(
+					"GetPlanet",
+					{ planetNaturalId: "CD-002c" },
+					planet("CD-002c")
+				);
+				getMultiple.mockClear();
+				vi.setSystemTime(5000);
+
+				store.checkEntryStatusAndRefresh();
+				await vi.advanceTimersByTimeAsync(0);
+
+				expect(getMultiple.mock.calls).toStrictEqual([
+					[{ planetNaturalIds: ["AB-001c"] }],
+					[{ planetNaturalIds: ["CD-002c"] }],
+				]);
+				expect(state(planetKey("CD-002c"))).toMatchObject({
+					data: { fresh: true },
+					loading: false,
+					error: null,
+				});
+			});
+
+			it("drops results that arrive after the cache was reset", async () => {
+				store.addCacheState(
+					"GetPlanet",
+					{ planetNaturalId: "AB-001c" },
+					planet("AB-001c")
+				);
+				let resolve!: (rows: unknown[]) => void;
+				getMultiple.mockReturnValueOnce(
+					new Promise((r) => (resolve = r))
+				);
+				vi.setSystemTime(5000);
+				store.checkEntryStatusAndRefresh();
+				expect(state(planetKey("AB-001c")).loading).toBe(true);
+
+				store.$reset();
+				resolve([{ planet_natural_id: "AB-001c", fresh: true }]);
+				await vi.advanceTimersByTimeAsync(0);
+
+				expect(store.cacheState).toStrictEqual({});
+			});
+
+			it("keeps a rejection that is no Error as an Error", async () => {
+				store.addCacheState(
+					"GetPlanet",
+					{ planetNaturalId: "AB-001c" },
+					planet("AB-001c")
+				);
+				getMultiple.mockRejectedValueOnce("offline");
+				vi.setSystemTime(5000);
+
+				store.checkEntryStatusAndRefresh();
+				await vi.advanceTimersByTimeAsync(0);
+
+				expect(state(planetKey("AB-001c")).error).toEqual(
+					new Error("offline")
+				);
+			});
+		});
+	});
 });
 
 describe("useQueryStore: initialData", () => {

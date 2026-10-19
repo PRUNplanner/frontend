@@ -12,7 +12,10 @@ vi.mock("@/lib/query_cache/queryStore", () => ({
 	useQueryStore: () => ({ execute }),
 }));
 vi.mock("vue-i18n", () => ({
-	useI18n: () => ({ t: (key: string) => key }),
+	useI18n: () => ({
+		t: (key: string, params?: Record<string, string>) =>
+			params ? `${key} ${Object.values(params).join("|")}` : key,
+	}),
 }));
 
 let scope: EffectScope;
@@ -111,5 +114,45 @@ describe("useGameDataLoader", () => {
 		expect(execute).not.toHaveBeenCalled();
 		expect(emitted(emits, "complete")).toHaveLength(1);
 		expect(done.value).toBe(true);
+	});
+
+	it("names the planets in the steps", async () => {
+		execute.mockResolvedValue({});
+		const { loadingSteps } = load({
+			loadPlanet: "OT-580b",
+			loadPlanetMultiple: ["OT-580b", "KW-688c"],
+		});
+
+		expect(loadingSteps.value.map((s) => s.name)).toStrictEqual([
+			"wrapper.gamedata.planet_data OT-580b",
+			"wrapper.gamedata.planet_multiple_data OT-580b, KW-688c",
+		]);
+		await flushPromises();
+	});
+
+	it("keeps the error a step failed with", async () => {
+		const failure = new Error("server down");
+		execute.mockRejectedValue(failure);
+		const { loadingSteps, hasError, done } = load({ loadExchanges: true });
+		await flushPromises();
+
+		expect(loadingSteps.value[0].error).toBe(failure);
+		expect(hasError.value).toBe(true);
+		expect(done.value).toBe(false);
+		expect(console.error).toHaveBeenCalledWith(failure);
+	});
+
+	it("loads buildings and emits them", async () => {
+		execute.mockResolvedValue([{ building_ticker: "FP" }]);
+		const { emits, results } = load({ loadBuildings: true });
+		await flushPromises();
+
+		expect(emitted(emits, "data:buildings")).toStrictEqual([
+			[{ building_ticker: "FP" }],
+		]);
+		expect(emitted(emits, "data:exchanges")).toStrictEqual([]);
+		expect(results.value.buildingData).toStrictEqual([
+			{ building_ticker: "FP" },
+		]);
 	});
 });

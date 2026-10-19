@@ -191,4 +191,60 @@ describe("diffPlan", () => {
 			},
 		]);
 	});
+
+	it("a cleared name is no name, a new one is a change", () => {
+		const unnamed = plan();
+		unnamed.plan_name = undefined as unknown as string;
+		const empty = plan();
+		empty.plan_name = "";
+
+		expect(diffPlan(unnamed, empty)).toStrictEqual([]);
+		expect(diffPlan(plan(), unnamed)).toStrictEqual([
+			{
+				area: "name",
+				key: "name",
+				params: { from: "Base", to: "" },
+			},
+		]);
+		expect(diffPlan(unnamed, plan())).toStrictEqual([
+			{
+				area: "name",
+				key: "name",
+				params: { from: "", to: "Base" },
+			},
+		]);
+	});
+
+	it("lists corporation HQ switched off", () => {
+		const from = plan();
+		from.plan_corphq = true;
+
+		expect(diffPlan(from, plan())).toStrictEqual([
+			{ area: "corphq", key: "corphq_off", params: {} },
+		]);
+	});
+
+	it("luxuries are on by default, for a new or a restored workforce type", () => {
+		const from = plan();
+		from.plan_data.workforce[0].lux1 = false;
+		const to = plan();
+		to.plan_data.workforce.push({
+			type: "technician",
+			lux1: true,
+			lux2: false,
+		});
+
+		expect(diffPlan(from, to)).toStrictEqual([
+			{
+				area: "workforce:pioneer",
+				key: "lux_on",
+				params: { label: "pioneer", n: 1 },
+			},
+			{
+				area: "workforce:technician",
+				key: "lux_off",
+				params: { label: "technician", n: 2 },
+			},
+		]);
+	});
 });

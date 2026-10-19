@@ -7,7 +7,8 @@ Vitest runs in `jsdom`. Config is in `vitest.config.ts` and setup in
 pnpm test                                   # all, single run, silent
 pnpm vitest run src/tests/features/cx       # one folder
 pnpm vitest run -t "getPrice"               # by test name
-pnpm test:watch / pnpm test:ui / pnpm test:coverage
+pnpm test:watch / pnpm test:ui
+pnpm test:coverage                          # unit + component tests, one merged report
 ```
 
 ## Layout
@@ -24,10 +25,12 @@ pnpm test:watch / pnpm test:ui / pnpm test:coverage
   `api_data_cx_*`, `api_data_fio_storage.json`, and others. Import them
   directly. **Never mutate a fixture.** Module imports are shared across
   tests, so clone it first (`structuredClone` / `deepClone`).
-- **Coverage.** It is always on (v8, lcov + html). Views, `components/`
-  folders, `ui/`, `layout/`, `usePlanningDataLoader.ts`, `queryRepository.ts` and `queries/*.queries.ts`, the
-  router and analytics are **excluded**, so tests target composables, stores,
-  utils and the API layer.
+- **Coverage.** Off for `pnpm test`. `pnpm test:coverage` runs the unit
+  suite and the component/view suite (v8) and merges both blob reports into
+  one `coverage/lcov.info` plus an html report in `coverage/`. That is the
+  report CI uploads to Codacy. Every file in `src/` counts, also the ones
+  without a test; only `src/tests/`, `main.ts`, `*.d.ts` and static data
+  (`json`, `css`, `md`) are excluded. Thresholds apply to the merged report.
 
 ## Environment details
 
@@ -119,13 +122,14 @@ Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
 Component tests are a **separate suite**. Every test under
 `src/tests/**/components/**`, and view tests under `src/tests/views/`, is
 excluded from `pnpm test` and runs with `pnpm test:components` instead, in
-its own CI job on pull requests (`components.yml`, no coverage). A view
+its own sharded CI jobs (`coverage.yml`, which also merges its coverage with the unit
+suite's). A view
 test stubs the `features/wrapper` loaders with a pass-through and seeds the
 stores instead; see `ExchangesView.test.ts`. Run them before a PR that
 touches a tested component:
 
 ```bash
-pnpm test:components                        # vitest.components.config.ts, no coverage
+pnpm test:components                        # vitest.components.config.ts
 pnpm vitest run --config vitest.components.config.ts src/tests/features/manage
 ```
 

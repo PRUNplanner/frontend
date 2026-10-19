@@ -13,7 +13,9 @@ import { mountComponent } from "@/tests/mountComponent";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { useVersionCheck } from "@/lib/useVersionCheck";
+import { relativeFromDate } from "@/util/date";
 import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
 
 // Types & Interfaces
@@ -370,5 +372,279 @@ describe("SidebarRail", () => {
 		expect(trackEvent).toHaveBeenCalledWith("app:navigation_toggle", {
 			navigation_style: "full",
 		});
+	});
+});
+
+describe("AppSidebar behaviour", () => {
+	beforeEach(() => {
+		pinia = createPinia();
+		setActivePinia(pinia);
+		execute.mockReset().mockResolvedValue(undefined);
+		vi.mocked(trackEvent).mockClear();
+		Object.assign(route, {
+			name: "empire",
+			params: {},
+			fullPath: "/empire",
+		});
+		useUserStore().profile = profile("ok");
+	});
+
+	it("tracks a click on every destination with its section", async () => {
+		const w = await mountSidebar();
+		const tracked: Record<string, unknown[]> = {};
+		for (const link of links(w)) {
+			vi.mocked(trackEvent).mockClear();
+			await link.trigger("click");
+			tracked[`${link.props("to")}#${link.text() || "icon"}`] = vi
+				.mocked(trackEvent)
+				.mock.calls.map((c) => c[1]);
+		}
+
+		const section = (target: string, area: string, sec: string) => [
+			{ target, area, section: sec },
+		];
+		// the logo does not count as a menu click
+		expect(tracked["/#PRUNplanner"]).toEqual([]);
+		expect(tracked[`/search#${NAV}.planet_search`]).toEqual(
+			section("search", "sidebar", "planning")
+		);
+		expect(tracked[`/manage#${NAV}.management`]).toEqual(
+			section("manage", "sidebar", "planning")
+		);
+		expect(tracked[`/exchanges#${NAV}.exchanges`]).toEqual(
+			section("exchanges", "sidebar", "planning")
+		);
+		expect(tracked["/empire#EAEmpire a"]).toEqual(
+			section("empire", "sidebar", "empire")
+		);
+		expect(tracked["/search#icon"]).toEqual(
+			section("search", "sidebar", "plans")
+		);
+		expect(tracked[`/fio/burn#${NAV}.fio_burn`]).toEqual(
+			section("fio-burn", "sidebar", "tools")
+		);
+		expect(tracked[`/market-live#${NAV}.market_live`]).toEqual(
+			section("market-live", "sidebar", "tools")
+		);
+		expect(tracked["/help#icon"]).toEqual(
+			section("help", "sidebar", "footer")
+		);
+	});
+
+	it("tracks the create-empire link when there is no empire", async () => {
+		const w = await mountSidebar([]);
+		await links(w)
+			.find((l) => l.text() === `${NAV}.create_empire`)!
+			.trigger("click");
+		expect(trackEvent).toHaveBeenCalledWith("app:nav_click", {
+			target: "manage",
+			area: "sidebar",
+			section: "empire",
+		});
+	});
+
+	it("collapses to the rail and remembers the choice", async () => {
+		const w = await mountSidebar();
+		expect(w.find("aside").classes()).toContain("w-62");
+
+		await w.find(`button[aria-label="${NAV}.collapse"]`).trigger("click");
+
+		expect(useUserStore().preferences.layoutNavigationStyle).toBe(
+			"collapsed"
+		);
+		expect(trackEvent).toHaveBeenCalledWith("app:navigation_toggle", {
+			navigation_style: "collapsed",
+		});
+		expect(w.find("aside").classes()).toContain("w-16");
+		expect(w.find(`button[aria-label="${NAV}.expand"]`).exists()).toBe(
+			true
+		);
+	});
+
+	it("marks the open page in the planning, tools and help rows", async () => {
+		const w = await mountSidebar();
+		await goTo("manage");
+		let current = w.findAll("[aria-current=page]");
+		expect(current.map((c) => c.text())).toEqual([`${NAV}.management`]);
+		expect(current[0].classes()).toContain("text-prunplanner");
+
+		await goTo("help");
+		current = w.findAll("[aria-current=page]");
+		expect(current).toHaveLength(1);
+		expect(current[0].attributes("aria-label")).toBe(`${NAV}.help`);
+		expect(current[0].classes()).toContain("text-prunplanner");
+	});
+
+	it("shows the FIO data age next to the FIO tools once it is known", async () => {
+		const w = await mountSidebar();
+		const fioHeader = () =>
+			w.findAll(
+				"#" +
+					w.find("button[aria-controls]").attributes("aria-controls")
+			)[0];
+		expect(fioHeader().text()).not.toMatch(/\d+\s*(minute|hour)|ago/i);
+
+		const synced = new Date(Date.now() - 2 * 3600 * 1000);
+		usePlanningStore().fio_storage_timestamp = synced;
+		await flushPromises();
+
+		expect(fioHeader().text()).toContain(relativeFromDate(synced));
+	});
+
+	it("loads the FIO storage for a user with FIO and drops it without", async () => {
+		const invalidate = vi.spyOn(useQueryStore(), "invalidateKey");
+		const w = await mountSidebar();
+		expect(execute).toHaveBeenCalled();
+		expect(invalidate).not.toHaveBeenCalled();
+
+		useUserStore().profile = profile("none");
+		await flushPromises();
+
+		expect(invalidate).toHaveBeenCalledWith(["gamedata", "fio"], {
+			exact: false,
+			skipRefetch: true,
+		});
+		w.unmount();
+	});
+
+	it("rethrows a storage error that is not a 404", async () => {
+		const failure = Object.assign(new Error("boom"), { status: 500 });
+		let thrown: unknown;
+		// the rethrow happens inside the catch handler: run it here
+		execute.mockReturnValue({
+			catch: (handler: (err: unknown) => void) => {
+				try {
+					handler(failure);
+				} catch (err) {
+					thrown = err;
+				}
+			},
+		});
+
+		await mountSidebar();
+
+		expect(thrown).toBe(failure);
+	});
+});
+
+describe("SidebarRail behaviour", () => {
+	beforeEach(() => {
+		pinia = createPinia();
+		setActivePinia(pinia);
+		execute.mockReset().mockResolvedValue(undefined);
+		vi.mocked(trackEvent).mockClear();
+		Object.assign(route, {
+			name: "empire",
+			params: {},
+			fullPath: "/empire",
+		});
+		useUserStore().profile = profile("ok");
+		useUserStore().setPreference("layoutNavigationStyle", "collapsed");
+	});
+
+	const rail = (target: string, section: string) => [
+		"app:nav_click",
+		{ target, area: "rail", section },
+	];
+
+	it("tracks a click on each icon with its section", async () => {
+		const w = await mountSidebar();
+		const tracked: Record<string, unknown[]> = {};
+		for (const link of links(w)) {
+			vi.mocked(trackEvent).mockClear();
+			await link.trigger("click");
+			tracked[link.props("to") as string] = vi
+				.mocked(trackEvent)
+				.mock.calls.slice(0, 1);
+		}
+
+		expect(tracked["/"]).toEqual([]);
+		expect(tracked["/search"]).toEqual([rail("search", "planning")]);
+		expect(tracked["/manage"]).toEqual([rail("manage", "planning")]);
+		expect(tracked["/exchanges"]).toEqual([rail("exchanges", "planning")]);
+		expect(tracked["/empire"]).toEqual([rail("empire", "empire")]);
+		expect(tracked["/help"]).toEqual([rail("help", "footer")]);
+	});
+
+	it("tracks the tools in the popover", async () => {
+		const w = await mountSidebar();
+		await w.find(`button[aria-label="${NAV}.tools"]`).trigger("click");
+		await flushPromises();
+		vi.mocked(trackEvent).mockClear();
+
+		const burn = links(w).find((l) => l.props("to") === "/fio/burn")!;
+		await burn.trigger("click");
+
+		expect(trackEvent).toHaveBeenCalledWith(...rail("fio-burn", "tools"));
+	});
+
+	it("offers to create an empire without one, and has no plans button", async () => {
+		const w = await mountSidebar([]);
+		expect(w.find(`button[aria-label="${NAV}.plans"]`).exists()).toBe(
+			false
+		);
+
+		const empireLink = links(w).filter(
+			(l) => l.attributes("aria-label") === `${NAV}.create_empire`
+		);
+		expect(empireLink).toHaveLength(1);
+		await empireLink[0].trigger("click");
+
+		expect(trackEvent).toHaveBeenCalledWith(...rail("manage", "empire"));
+	});
+
+	it("marks the open page on the icons", async () => {
+		const w = await mountSidebar();
+		const current = () =>
+			w
+				.findAll("[aria-current=page]")
+				.map((c) => c.attributes("aria-label"));
+		expect(current()).toEqual(["Empire a"]);
+		expect(w.find("span.outline-prunplanner").exists()).toBe(true);
+
+		await goTo("manage");
+		expect(current()).toEqual([`${NAV}.management`]);
+		expect(w.find("span.outline-prunplanner").exists()).toBe(false);
+
+		await goTo("help");
+		expect(current()).toEqual([`${NAV}.help`]);
+	});
+
+	it("highlights the tools button and the open tool in its popover", async () => {
+		await goTo("market-live");
+		const w = await mountSidebar();
+		const tools = w.find(`button[aria-label="${NAV}.tools"]`);
+		expect(tools.classes()).toContain("text-prunplanner");
+
+		await tools.trigger("click");
+		await flushPromises();
+
+		const current = body().findAll("[aria-current=page]");
+		expect(current.map((c) => c.text())).toEqual([`${NAV}.market_live`]);
+		expect(current[0].classes()).toContain("bg-prunplanner/10");
+	});
+
+	it("shows the FIO data age on the FIO group of the popover", async () => {
+		const synced = new Date(Date.now() - 2 * 3600 * 1000);
+		usePlanningStore().fio_storage_timestamp = synced;
+		const w = await mountSidebar();
+		await w.find(`button[aria-label="${NAV}.tools"]`).trigger("click");
+		await flushPromises();
+
+		const group = body()
+			.findAll("div.uppercase")
+			.find((d) => d.text().startsWith(`${NAV}.fio.fio`))!;
+		expect(group.find(".bg-positive").exists()).toBe(true);
+		expect(group.text()).toContain(relativeFromDate(synced));
+	});
+
+	it("leaves the FIO group out of the popover without FIO", async () => {
+		useUserStore().profile = profile("none");
+		const w = await mountSidebar();
+		await w.find(`button[aria-label="${NAV}.tools"]`).trigger("click");
+		await flushPromises();
+
+		expect(body().text()).toContain(`${NAV}.market`);
+		expect(body().text()).not.toContain(`${NAV}.fio.fio`);
 	});
 });

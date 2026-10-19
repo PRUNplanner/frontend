@@ -15,7 +15,10 @@
 		"test:components": "vitest --run --config vitest.components.config.ts",
 		"test:watch": "vitest watch",
 		"test:ui": "vitest --ui",
-		"test:coverage": "vitest run --coverage",
+		"test:coverage": "rm -rf .vitest-reports coverage && pnpm test:coverage:unit && pnpm test:coverage:components && pnpm test:coverage:report",
+		"test:coverage:unit": "vitest run --silent --coverage --reporter=dot --reporter=blob --outputFile.blob=.vitest-reports/unit$BLOB_SUFFIX.json",
+		"test:coverage:components": "vitest run --silent --coverage --config vitest.components.config.ts --reporter=dot --reporter=blob --outputFile.blob=.vitest-reports/components$BLOB_SUFFIX.json",
+		"test:coverage:report": "vitest --merge-reports --silent --coverage",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"knip": "knip"

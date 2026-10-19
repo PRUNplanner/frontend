@@ -1,5 +1,5 @@
 import { flushPromises } from "@vue/test-utils";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it } from "vitest";
 
 import {
 	ProductionNode,
@@ -20,6 +20,8 @@ import recipes from "@/tests/test_data/api_data_recipes.json";
 import planets from "@/tests/test_data/api_data_planets.json";
 
 describe("productionNode", async () => {
+	let registered: Record<string, string> = {};
+
 	beforeAll(async () => {
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
@@ -53,6 +55,7 @@ describe("productionNode", async () => {
 				});
 			});
 		}
+		registered = extractableMaterialsMap;
 		setExtractableMaterials(extractableMaterialsMap);
 
 		await flushPromises();
@@ -179,5 +182,76 @@ describe("productionNode", async () => {
 		node.recipes = [];
 		const building = await node.getBuildingData(["foo"]);
 		expect(building).toBeUndefined();
+	});
+
+	describe("recipe selection", () => {
+		const fp = () => recipes.filter((f) => f.building_ticker === "FP");
+
+		afterEach(() => setExtractableMaterials(registered));
+
+		it("a node without recipes has no output and no input", () => {
+			const node = new ProductionNode("RAT");
+
+			expect(node.getOutput("RAT", ["FP#x"])).toBeUndefined();
+			expect(node.getInput(["FP#x"])).toStrictEqual([]);
+			expect(node.getRecipe([])).toBeUndefined();
+		});
+
+		it("a selected extraction recipe wins over production", () => {
+			setExtractableMaterials({ RAT: "RIG" });
+			const node = new ProductionNode("RAT");
+			fp().forEach((r) => node.addRecipe(r));
+
+			const recipe = node.getRecipe(["RIG#=>RAT"]);
+
+			expect(recipe).toMatchObject({
+				recipe_id: "RIG#=>RAT",
+				building_ticker: "RIG",
+				inputs: [],
+				outputs: [{ material_ticker: "RAT", material_amount: 1 }],
+			});
+			expect(node.getOutput("RAT", ["RIG#=>RAT"])).toStrictEqual({
+				materialTicker: "RAT",
+				quantity: 1,
+			});
+			expect(node.getInput(["RIG#=>RAT"])).toStrictEqual([]);
+		});
+
+		it("a selected production recipe wins over extraction", () => {
+			setExtractableMaterials({ RAT: "RIG" });
+			const node = new ProductionNode("RAT");
+			fp().forEach((r) => node.addRecipe(r));
+			const [first, second] = node.recipes;
+
+			expect(node.getRecipe([second.recipe_id])).toBe(second);
+			expect(node.getRecipe([first.recipe_id, "RIG#=>XYZ"])).toBe(first);
+		});
+
+		it("extraction stays the default when the selection matches nothing", () => {
+			setExtractableMaterials({ RAT: "RIG" });
+			const node = new ProductionNode("RAT");
+			fp().forEach((r) => node.addRecipe(r));
+
+			expect(node.getRecipe(["unrelated"])?.recipe_id).toBe("RIG#=>RAT");
+		});
+
+		it("the first recipe stays the default when the selection matches nothing", () => {
+			const node = new ProductionNode("RAT");
+			fp().forEach((r) => node.addRecipe(r));
+
+			expect(node.getRecipe(["unrelated"])).toBe(node.recipes[0]);
+		});
+
+		it("extracts in an EXT without a registered building", () => {
+			setExtractableMaterials({
+				RAT: undefined as unknown as string,
+			});
+			const node = new ProductionNode("RAT");
+
+			expect(node.getRecipe([])).toMatchObject({
+				recipe_id: "EXT#=>RAT",
+				building_ticker: "EXT",
+			});
+		});
 	});
 });

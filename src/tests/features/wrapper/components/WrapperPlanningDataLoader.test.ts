@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { createPinia, setActivePinia } from "pinia";
+import { flushPromises } from "@vue/test-utils";
 import { defineComponent, h } from "vue";
 
 import { apiService } from "@/lib/apiService";
@@ -12,6 +13,7 @@ import { useUserStore } from "@/stores/userStore";
 import { trackUser } from "@/lib/analytics/useAnalytics";
 import { remoteChange } from "@/lib/crossTab";
 import { invalidate } from "@/lib/query_cache/queries/queries.util";
+import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
@@ -307,5 +309,255 @@ describe("WrapperPlanningDataLoader with an empire list", () => {
 		);
 
 		expect(component.emitted("update:cxUuid")).toEqual([[E1]]);
+	});
+});
+
+describe("WrapperPlanningDataLoader plan data", () => {
+	beforeAll(() => {
+		axiosSetup();
+	});
+
+	beforeEach(() => {
+		mock.reset();
+		vi.mocked(trackUser).mockClear();
+	});
+
+	/** Mounts the loader in a host whose slot props are captured */
+	async function mountWithSlot(
+		props: Record<string, unknown>,
+		pinia = createPinia()
+	) {
+		const slot: { current: Record<string, unknown> } = { current: {} };
+		const Host = defineComponent({
+			// attrs follow setProps
+			setup:
+				(_, { attrs }) =>
+				() =>
+					h(
+						WrapperPlanningDataLoader,
+						{ ...attrs },
+						{
+							default: (slotProps: Record<string, unknown>) => {
+								slot.current = slotProps;
+								return null;
+							},
+						}
+					),
+		});
+		const mounted = await mountComponent(Host, props, { pinia });
+		const loader = mounted.wrapper.findComponent(WrapperPlanningDataLoader);
+		return { ...mounted, loader, slot };
+	}
+
+	it("refuses to load a shared plan together with other plan data", async () => {
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+		try {
+			await expect(
+				mountComponent(WrapperPlanningDataLoader, {
+					sharedPlanUuid: DELETED,
+					planUuid: plan.uuid,
+				})
+			).rejects.toThrow("must not load any other plan data");
+			await expect(
+				mountComponent(WrapperPlanningDataLoader, {
+					sharedPlanUuid: DELETED,
+					planetNaturalId: "KW-688c",
+				})
+			).rejects.toThrow("must not load any other plan data");
+		} finally {
+			error.mockRestore();
+			warn.mockRestore();
+		}
+	});
+
+	it("uses the loaded plan as definition and reloads on another plan", async () => {
+		const other = { ...plan, uuid: uuid(7), plan_name: "Other plan" };
+		mock.onGet(`/planning/plan/${plan.uuid}/`).reply(200, plan);
+		mock.onGet(`/planning/plan/${other.uuid}/`).reply(200, other);
+
+		const { loader, slot, setProps } = await mountWithSlot({
+			planUuid: plan.uuid,
+		});
+		await vi.waitFor(() =>
+			expect(slot.current.planDefinition).toBeTruthy()
+		);
+
+		expect(slot.current.shared).toBe(false);
+		expect((slot.current.planDefinition as typeof plan).uuid).toBe(
+			plan.uuid
+		);
+		expect(loader.emitted("data:plan")).toHaveLength(1);
+
+		await setProps({ planUuid: other.uuid });
+		await vi.waitFor(() =>
+			expect(loader.emitted("data:plan")).toHaveLength(2)
+		);
+
+		expect(loader.emitted("data:plan")![1][0]).toMatchObject({
+			uuid: other.uuid,
+		});
+		expect(
+			mock.history.get
+				.map((r) => r.url!)
+				.filter((url) => url.includes("planning/plan/"))
+		).toEqual([
+			`/planning/plan/${plan.uuid}/`,
+			`/planning/plan/${other.uuid}/`,
+		]);
+	});
+
+	it("creates a blank plan for a planet without a plan", async () => {
+		mock.onGet(/data\/planet\//).reply(200, planet);
+
+		const { slot } = await mountWithSlot({
+			planetNaturalId: planet.planet_natural_id,
+		});
+		await vi.waitFor(() =>
+			expect(slot.current.planDefinition).toBeTruthy()
+		);
+
+		expect(slot.current.planetData).toMatchObject({
+			planet_natural_id: planet.planet_natural_id,
+		});
+		expect(slot.current.planDefinition).toMatchObject({
+			planet_natural_id: planet.planet_natural_id,
+		});
+		expect(
+			(slot.current.planDefinition as Record<string, unknown>).uuid
+		).toBeUndefined();
+	});
+
+	it("loads plan and shared lists and reports the planets", async () => {
+		mock.onGet(/planning\/plan\/$/).reply(200, [plan]);
+		mock.onGet(/planning\/shared\/$/).reply(200, []);
+
+		const { loader, slot } = await mountWithSlot({
+			planList: true,
+			loadShared: true,
+		});
+		await vi.waitFor(() =>
+			expect(loader.emitted("complete")).toHaveLength(1)
+		);
+
+		expect(loader.emitted("data:plan:list")).toHaveLength(1);
+		expect(slot.current.planList).toHaveLength(1);
+		expect(loader.emitted("data:plan:list:planets")).toEqual([
+			[[plan.planet_natural_id]],
+		]);
+		expect(loader.emitted("data:shared")).toEqual([[[]]]);
+		expect(slot.current.sharedData).toEqual([]);
+		expect(trackUser).toHaveBeenCalledWith({ plan_count: 1 });
+	});
+
+	it("loads the plans of an empire without an empire list", async () => {
+		mock.onGet(/planning\/empire\/[^/]+\/plans\/$/).reply(200, [plan]);
+
+		const { loader, slot } = await mountWithSlot({ empireUuid: E1 });
+		await vi.waitFor(() =>
+			expect(loader.emitted("complete")).toHaveLength(1)
+		);
+
+		// no CX known for the empire
+		expect(loader.emitted("update:cxUuid")).toEqual([[undefined]]);
+		expect(loader.emitted("data:empire:plans")).toHaveLength(1);
+		expect(slot.current.empirePlanetList).toEqual([plan.planet_natural_id]);
+	});
+
+	it("keeps a given CX while loading empire plans", async () => {
+		mock.onGet(/planning\/empire\/[^/]+\/plans\/$/).reply(200, []);
+
+		const { loader } = await mountWithSlot({
+			empireUuid: E1,
+			cxUuid: uuid(5),
+		});
+		await vi.waitFor(() =>
+			expect(loader.emitted("complete")).toHaveLength(1)
+		);
+
+		expect(loader.emitted("update:cxUuid")).toBeUndefined();
+	});
+
+	it("lists the planets of the empires when only the list loads", async () => {
+		mock.onGet(/planning\/empire\/$/).reply(200, [
+			{
+				...empire(E1),
+				plans: [
+					{ uuid: uuid(3), plan_name: "A", planet_natural_id: "AAA" },
+					{ uuid: uuid(4), plan_name: "B", planet_natural_id: "BBB" },
+					{ uuid: uuid(6), plan_name: "A", planet_natural_id: "AAA" },
+				],
+			},
+		]);
+
+		const { slot } = await mountWithSlot({ empireList: true });
+		await vi.waitFor(() =>
+			expect(slot.current.empirePlanetList).toEqual(["AAA", "BBB"])
+		);
+	});
+
+	describe("reload after a change in another tab", () => {
+		function change(...keys: string[][]) {
+			remoteChange.value = {
+				keys,
+				uuid: E2,
+				seq: (remoteChange.value?.seq ?? 0) + 1,
+			};
+		}
+
+		it("ignores a cleared change", async () => {
+			mock.onGet(/planning\/shared\/$/).reply(200, []);
+			const { loader } = await mountWithSlot({ loadShared: true });
+			await vi.waitFor(() =>
+				expect(loader.emitted("complete")).toHaveLength(1)
+			);
+
+			remoteChange.value = null;
+			await flushPromises();
+
+			expect(loader.emitted("refreshed")).toBeUndefined();
+		});
+
+		it("keeps the old data when the reload fails", async () => {
+			const pinia = createPinia();
+			setActivePinia(pinia);
+			mock.onGet(/planning\/shared\/$/).reply(200, []);
+			const { loader } = await mountWithSlot({ loadShared: true }, pinia);
+			await vi.waitFor(() =>
+				expect(loader.emitted("complete")).toHaveLength(1)
+			);
+			const log = vi.spyOn(console, "error").mockImplementation(() => {});
+			vi.spyOn(useQueryStore(), "execute").mockRejectedValue(
+				new Error("offline")
+			);
+
+			try {
+				change(["planningdata", "shared"]);
+				await vi.waitFor(() => expect(log).toHaveBeenCalled());
+
+				expect(loader.emitted("refreshed")).toBeUndefined();
+				expect(loader.emitted("data:shared")).toHaveLength(1);
+			} finally {
+				log.mockRestore();
+			}
+		});
+	});
+
+	it("shows an error of a step that rejects with a plain value", async () => {
+		const pinia = createPinia();
+		setActivePinia(pinia);
+		const store = useQueryStore();
+		const execute = vi.spyOn(store, "execute");
+		execute.mockRejectedValue("plain failure");
+
+		const { wrapper } = await mountComponent(
+			WrapperPlanningDataLoader,
+			{ loadShared: true },
+			{ pinia }
+		);
+
+		expect(wrapper.text()).toContain("wrapper.loading");
+		expect(wrapper.text()).toContain("wrapper.planning_data.shared_list");
 	});
 });

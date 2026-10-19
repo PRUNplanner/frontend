@@ -33,3 +33,4 @@ env.js
 .codegraph
 
 .scratch
+.vitest-reports

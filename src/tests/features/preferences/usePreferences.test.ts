@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 // Stores
@@ -8,6 +8,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Composables
 import { usePreferences } from "@/features/preferences/usePreferences";
 
+import { i18n } from "@/lib/i18n";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 describe("usePreferences", async () => {
@@ -184,6 +185,72 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	describe("colorPalette", () => {
+		it("get and set", () => {
+			const { colorPalette } = usePreferences();
+			expect(colorPalette.value).toBe(preferenceDefaults.colorPalette);
+
+			colorPalette.value = "colorblind";
+
+			expect(userStore.preferences.colorPalette).toBe("colorblind");
+			expect(colorPalette.value).toBe("colorblind");
+		});
+	});
+
+	describe("planSuggestions", () => {
+		it("is on until turned off", () => {
+			const { planSuggestions } = usePreferences();
+			userStore.preferences.planSuggestions = undefined;
+			expect(planSuggestions.value).toBe(true);
+
+			planSuggestions.value = false;
+
+			expect(userStore.preferences.planSuggestions).toBe(false);
+			expect(planSuggestions.value).toBe(false);
+		});
+	});
+
+	describe("fallbacks for preferences a profile does not have", () => {
+		it("buys from CX and carts 20 days", () => {
+			const { defaultBuyItemsFromCX, supplyCartDays } = usePreferences();
+			userStore.preferences.defaultBuyItemsFromCX = undefined;
+			userStore.preferences.supplyCartDays = undefined;
+
+			expect(defaultBuyItemsFromCX.value).toBe(true);
+			expect(supplyCartDays.value).toBe(20);
+		});
+	});
+
+	describe("locale", () => {
+		it("stores the locale and loads it into the app i18n", () => {
+			const setLocale = vi
+				.spyOn(userStore, "setLocale")
+				.mockResolvedValue(undefined);
+			const { locale } = usePreferences();
+
+			locale.value = "de_DE";
+
+			expect(userStore.preferences.locale).toBe("de_DE");
+			expect(locale.value).toBe("de_DE");
+			expect(setLocale).toHaveBeenCalledWith("de_DE", i18n.global);
+		});
+
+		it("logs a locale that fails to load instead of throwing", async () => {
+			const failure = new Error("chunk missing");
+			vi.spyOn(userStore, "setLocale").mockRejectedValue(failure);
+			const error = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+			const { locale } = usePreferences();
+
+			locale.value = "de_DE";
+			await Promise.resolve();
+
+			expect(error).toHaveBeenCalledWith(failure);
+			error.mockRestore();
+		});
+	});
+
 	it("planSettings", async () => {
 		const { planSettings } = usePreferences();
 
@@ -223,6 +290,21 @@ describe("usePreferences", async () => {
 
 			expect(Object.keys(planSettings.value).length).toBe(2);
 			expect(planSettingsOverview.value.length).toBe(2);
+		});
+	});
+
+	it("lists an auto-optimize setting that differs from the default", () => {
+		userStore.setPlanPreference("foo", { autoOptimizeHabs: true });
+		userStore.setPlanPreference("moo", { autoOptimizeHabs: false });
+		planningStore.plans["foo"] = { planet_id: "1", name: "2" };
+		planningStore.plans["moo"] = { planet_id: "3", name: "4" };
+
+		const { planSettingsOverview } = usePreferences();
+
+		expect(planSettingsOverview.value).toHaveLength(1);
+		expect(planSettingsOverview.value[0]).toMatchObject({
+			planUuid: "foo",
+			preferences: ["Auto-Optimize Inactive"],
 		});
 	});
 

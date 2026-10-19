@@ -50,7 +50,10 @@ vi.mock("@/features/planning/engine/calculatePlan", async () => {
 });
 
 const linked = etherwindPlan();
-const other = { ...etherwindPlan(), uuid: "8b0e6b1c-0000-4000-8000-000000000002" };
+const other = {
+	...etherwindPlan(),
+	uuid: "8b0e6b1c-0000-4000-8000-000000000002",
+};
 
 const empires = [
 	{ uuid: "E1", empire_name: "Linked", plans: [{ uuid: linked.uuid }] },
@@ -135,7 +138,9 @@ describe("useExchangePlanData", () => {
 
 		// COGM from linked plans only
 		for (const c of data.materialCOGMs.value.values())
-			expect(c.entries.every((e) => e.planUuid === linked.uuid)).toBe(true);
+			expect(c.entries.every((e) => e.planUuid === linked.uuid)).toBe(
+				true
+			);
 
 		scope.stop();
 	});
@@ -212,9 +217,148 @@ describe("useExchangePlanData", () => {
 		expect(calculatePlan).toHaveBeenCalledTimes(1);
 		expect(data.bases.value.map((b) => b.planUuid)).toEqual([linked.uuid]);
 
-		vi.mocked(useQuery).mockImplementation(
-			(() => ({ execute })) as never
-		);
+		vi.mocked(useQuery).mockImplementation((() => ({ execute })) as never);
 		scope.stop();
+	});
+
+	describe("edge cases", () => {
+		const source = (
+			over: Partial<Parameters<typeof useExchangePlanData>[0]> = {}
+		) => ({
+			plans: () => [linked],
+			empires: () => empires,
+			cx: () => cx,
+			cxData: () => universe,
+			includeOthers: () => false,
+			...over,
+		});
+
+		function start(src: Parameters<typeof useExchangePlanData>[0]) {
+			const scope = effectScope();
+			const data = scope.run(() => useExchangePlanData(src))!;
+			return { scope, data };
+		}
+
+		it("prices a plan listed in several empires once", async () => {
+			vi.mocked(calculatePlan).mockClear();
+			const twice = {
+				...cx,
+				empires: [empires[0], { ...empires[0], uuid: "E3" }],
+			} as unknown as CX;
+			const { scope, data } = start(source({ cx: () => twice }));
+			await settle();
+
+			expect(data.bases.value.map((b) => b.planUuid)).toEqual([
+				linked.uuid,
+			]);
+			expect(calculatePlan).toHaveBeenCalledTimes(1);
+			scope.stop();
+		});
+
+		it("lists an unnamed plan with an empty name", async () => {
+			const unnamed = { ...etherwindPlan(), plan_name: undefined };
+			const { scope, data } = start(
+				source({ plans: () => [unnamed as never] })
+			);
+			await settle();
+
+			expect(data.bases.value.map((b) => b.planName)).toEqual([""]);
+			scope.stop();
+		});
+
+		it("asks for no planets when nothing is to be priced", async () => {
+			vi.mocked(useQuery).mockClear();
+			const { scope, data } = start(
+				source({ plans: () => [], cx: () => undefined })
+			);
+			await settle();
+
+			expect(useQuery).toHaveBeenCalledWith("GetMaterials");
+			expect(useQuery).not.toHaveBeenCalledWith(
+				"GetMultiplePlanets",
+				expect.anything()
+			);
+			expect(data.bases.value).toEqual([]);
+			expect(data.isCalculating.value).toBe(false);
+			scope.stop();
+		});
+
+		it("prices at Universe without CX data", async () => {
+			const { scope, data } = start(source({ cxData: () => undefined }));
+			await settle();
+
+			expect(data.pricedData.value).toBeUndefined();
+			const row = data.materialRows.value.find((r) => r.buy)!;
+			expect(row.buy!.planets[0].source.level).toBe("fallback");
+			expect(
+				data.priceBookFor(linked.planet_natural_id, undefined)
+			).toBeDefined();
+			scope.stop();
+		});
+
+		it("lists the materials of one planet's plans", async () => {
+			const { scope, data } = start(source());
+			await settle();
+
+			const rows = data.planetMaterialRows(linked.planet_natural_id);
+
+			expect(rows.length).toBeGreaterThan(0);
+			expect(rows.map((r) => r.ticker)).toEqual(
+				data.materialRows.value.map((r) => r.ticker)
+			);
+			expect(data.planetMaterialRows("XX-nothing")).toEqual([]);
+			scope.stop();
+		});
+
+		it("lets a newer calculation replace one still running", async () => {
+			vi.mocked(calculatePlan).mockClear();
+			let release!: () => void;
+			const slow = new Promise<never[]>((r) => (release = () => r([])));
+			vi.mocked(useQuery).mockImplementation(((name: string) => ({
+				execute: name === "GetMaterials" ? () => slow : execute,
+			})) as never);
+			const includeOthers = ref(false);
+			const { scope, data } = start(
+				source({
+					plans: () => [linked, other],
+					includeOthers: () => includeOthers.value,
+				})
+			);
+			await settle();
+
+			// the list changes while the first run waits for its game data
+			includeOthers.value = true;
+			await settle();
+			release();
+			await settle();
+
+			expect(data.bases.value.map((b) => b.planUuid)).toEqual([
+				linked.uuid,
+				other.uuid,
+			]);
+			expect(data.progressTotal.value).toBe(2);
+			expect(data.progressCurrent.value).toBe(2);
+			expect(data.isCalculating.value).toBe(false);
+
+			vi.mocked(useQuery).mockImplementation((() => ({
+				execute,
+			})) as never);
+			scope.stop();
+		});
+
+		it("drops the result of a run stopped before it finished", async () => {
+			const actual = await vi.importActual<
+				typeof import("@/features/planning/engine/calculatePlan")
+			>("@/features/planning/engine/calculatePlan");
+			const { scope, data } = start(source());
+			vi.mocked(calculatePlan).mockImplementationOnce((...args) => {
+				// the page is left while the last plan is calculated
+				scope.stop();
+				return actual.calculatePlan(...args);
+			});
+			await settle();
+
+			expect(data.bases.value).toEqual([]);
+		});
 	});
 });
