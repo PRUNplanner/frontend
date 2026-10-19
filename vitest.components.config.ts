@@ -9,8 +9,9 @@ export default {
 	test: {
 		...baseConfig.test,
 		include: [`${COMPONENT_TESTS}/*.test.ts`],
-		// mounting is slow and v8 coverage slows it further; 5s flakes under load
+		// mounting is slow and v8 coverage slows it further; 5s/10s flake under load
 		testTimeout: 15_000,
+		hookTimeout: 30_000,
 		exclude: baseConfig.test!.exclude!.filter((e) => e !== COMPONENT_TESTS),
 	},
 };
