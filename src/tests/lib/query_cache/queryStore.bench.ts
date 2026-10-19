@@ -1,4 +1,5 @@
 import { bench, describe, vi } from "vitest";
+import { computed } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 
 import { useQueryStore } from "@/lib/query_cache/queryStore";
@@ -16,17 +17,21 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 	const repository: Record<string, unknown> = {
 		index: {
 			key: () => ["index"],
-			persist: true,
 			fetchFn: async () => planet_search_index,
 		},
 		plans: {
 			key: () => ["plans"],
-			persist: true,
 			fetchFn: async () => plans,
+		},
+		// a write; main marks it with persist: false and a static key
+		mutation: {
+			mutation: true,
+			key: () => ["mutation"],
+			persist: false,
+			fetchFn: async (params: unknown) => params,
 		},
 		GetPlan: {
 			key: (params: { planUuid: string }) => ["plan", params.planUuid],
-			persist: true,
 			fetchFn: async () => null,
 		},
 	};
@@ -72,11 +77,32 @@ describe("queryStore: read and traverse", () => {
 });
 
 describe("queryStore: seeding", () => {
-	bench("200 addCacheState plans, then isAnythingLoading", () => {
+	bench("200 addCacheState plans", () => {
 		store.$reset();
 		plans.forEach((plan) =>
 			store.addCacheState("GetPlan", { planUuid: plan.uuid }, plan)
 		);
-		void store.isAnythingLoading;
+	});
+});
+
+describe("queryStore: hits and mutations", () => {
+	bench(
+		"1,000 cache hits with a peekQueryState computed watching",
+		async () => {
+			// @ts-expect-error mock query repository
+			await store.execute("index");
+			const watched = computed(() => store.peekQueryState(["index"]));
+			for (let i = 0; i < 1000; i++) {
+				// @ts-expect-error mock query repository
+				await store.execute("index");
+				void watched.value;
+			}
+		}
+	);
+
+	bench("200 mutation calls", async () => {
+		for (let i = 0; i < 200; i++)
+			// @ts-expect-error mock query repository
+			await store.execute("mutation", i);
 	});
 });

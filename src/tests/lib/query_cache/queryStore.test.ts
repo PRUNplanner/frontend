@@ -1,7 +1,8 @@
 import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
+import { readFileSync } from "node:fs";
 import { computed, isReactive } from "vue";
-import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { isFresh, useQueryStore } from "@/lib/query_cache/queryStore";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { useUserActivity } from "@/features/user_activity/useUserActivity";
 import { userActivity } from "@/features/user_activity/userActivityStore";
@@ -17,24 +18,32 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 	const repository: Record<string, unknown> = {
 		slowQuery: {
 			key: () => ["slowQuery"],
-			persist: true,
 			autoRefetch: false,
 			fetchFn: () =>
 				new Promise((resolve) => slow.resolvers.push(resolve)),
 		},
-		// static key, like most mutations
 		slowMutation: {
-			key: () => ["slowMutation"],
-			persist: false,
+			mutation: true,
 			fetchFn: (params: unknown) =>
 				new Promise((resolve) =>
 					slow.resolvers.push(() => resolve(params))
 				),
 		},
+		failingMutation: {
+			mutation: true,
+			fetchFn: () => Promise.reject(new Error("409")),
+		},
+		// a read whose result is dropped after the call
+		uncachedQuery: {
+			key: () => ["uncachedQuery"],
+			cache: false,
+			fetchFn: vi.fn(
+				() => new Promise((resolve) => slow.resolvers.push(resolve))
+			),
+		},
 		testQuery: {
 			key: (params: any) => ["testQuery", params],
 			expireTime: 1000,
-			persist: true,
 			autoRefetch: false,
 			fetchFn: vi.fn(async (params) => {
 				return { result: `data-${params}` };
@@ -67,7 +76,6 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 		autoRefetchQuery: {
 			key: (params: any) => ["autoRefetchQuery", params],
 			expireTime: 1000,
-			persist: true,
 			autoRefetch: true,
 			fetchFn: vi.fn(async (params) => {
 				return { result: `auto-${params}` };
@@ -168,27 +176,6 @@ describe("useQueryStore", () => {
 		const stateAfter = store.peekQueryState(key);
 		expect(stateAfter?.data).toEqual(data);
 	});
-	it("should correctly compute isAnythingLoading", async () => {
-		const key = ["testQuery", {}];
-
-		// add a cache entry
-		// @ts-expect-error mock query repository
-		store.addCacheState("testQuery", {}, { result: null });
-
-		const keyHash = toCacheKey(key);
-
-		// initially false
-		expect(store.isAnythingLoading).toBe(false);
-
-		// mark entry as loading
-		store.cacheState[keyHash].loading = true;
-		expect(store.isAnythingLoading).toBe(true);
-
-		// mark entry as not loading
-		store.cacheState[keyHash].loading = false;
-		expect(store.isAnythingLoading).toBe(false);
-	});
-
 	it("should $reset correctly", async () => {
 		// @ts-expect-error mock query repository
 		await store.execute("testQuery", "reset");
@@ -589,18 +576,29 @@ describe("useQueryStore: raw cache data", () => {
 		expect(data.value).toBeUndefined();
 	});
 
-	it("isAnythingLoading flips with loading entries", async () => {
-		testFetch.mockImplementationOnce(
-			() => new Promise((resolve) => setTimeout(() => resolve(1), 100))
-		);
-
+	it("a cache hit writes nothing: same entry, no computed re-run", async () => {
+		const key = ["testQuery", "hit"];
 		// @ts-expect-error mock query repository
-		const pending = store.execute("testQuery", "loading");
-		expect(store.isAnythingLoading).toBe(true);
+		await store.execute("testQuery", "hit");
+		const entry = store.cacheState[toCacheKey(key)];
 
-		await vi.advanceTimersByTimeAsync(100);
-		await pending;
-		expect(store.isAnythingLoading).toBe(false);
+		let runs = 0;
+		const data = computed(() => {
+			runs++;
+			return store.peekQueryState(key)?.data;
+		});
+		void data.value;
+		runs = 0;
+
+		for (let i = 0; i < 3; i++) {
+			// @ts-expect-error mock query repository
+			await store.execute("testQuery", "hit");
+			void data.value;
+		}
+
+		expect(testFetch).toHaveBeenCalledOnce();
+		expect(store.cacheState[toCacheKey(key)]).toBe(entry);
+		expect(runs).toBe(0);
 	});
 
 	it("a timed-out request fails every caller of its key and leaves loading", async () => {
@@ -630,4 +628,87 @@ describe("useQueryStore: raw cache data", () => {
 			error: timeout,
 		});
 	});
+});
+
+describe("useQueryStore: mutations and uncached reads", () => {
+	let store: ReturnType<typeof useQueryStore>;
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		store = useQueryStore();
+		slow.resolvers.length = 0;
+		vi.clearAllMocks();
+		vi.spyOn(console, "error").mockImplementation(() => {});
+	});
+
+	it("a mutation leaves no cache entry, during or after the call", async () => {
+		// @ts-expect-error mock query repository
+		const pending = store.execute("slowMutation", "a");
+		expect(Object.keys(store.cacheState)).toHaveLength(0);
+
+		slow.resolvers[0](undefined);
+		await expect(pending).resolves.toBe("a");
+		expect(Object.keys(store.cacheState)).toHaveLength(0);
+	});
+
+	it("a failing mutation logs, rethrows and leaves no entry", async () => {
+		await expect(
+			// @ts-expect-error mock query repository
+			store.execute("failingMutation", undefined)
+		).rejects.toThrow("409");
+		expect(console.error).toHaveBeenCalledOnce();
+		expect(Object.keys(store.cacheState)).toHaveLength(0);
+	});
+
+	it("a forced prefix refetch while a mutation runs doesn't re-run it", async () => {
+		// @ts-expect-error mock query repository
+		const pending = store.execute("slowMutation", "a");
+		await store.invalidateKey([], { exact: false, forceRefetch: true });
+
+		slow.resolvers.forEach((resolve) => resolve(undefined));
+		await pending;
+		expect(slow.resolvers).toHaveLength(1);
+	});
+
+	it("an uncached read is deduped in flight and dropped afterwards", async () => {
+		// @ts-expect-error mock query repository
+		const fetchFn = getQueryDefinition("uncachedQuery").fetchFn as Mock;
+		// @ts-expect-error mock query repository
+		const first = store.execute("uncachedQuery", undefined);
+		// @ts-expect-error mock query repository
+		const second = store.execute("uncachedQuery", undefined);
+
+		slow.resolvers.forEach((resolve) => resolve("prefs"));
+		await expect(first).resolves.toBe("prefs");
+		await expect(second).resolves.toBe("prefs");
+		expect(fetchFn).toHaveBeenCalledOnce();
+		expect(store.cacheState[toCacheKey(["uncachedQuery"])]).toBeUndefined();
+	});
+});
+
+describe("isFresh", () => {
+	it("an entry without expireTime is always fresh", () => {
+		expect(isFresh({ timestamp: 0 }, 1e12)).toBe(true);
+	});
+
+	it("is fresh up to expireTime after the last success", () => {
+		expect(isFresh({ timestamp: 1000, expireTime: 500 }, 1500)).toBe(true);
+		expect(isFresh({ timestamp: 1000, expireTime: 500 }, 1501)).toBe(false);
+	});
+
+	it("an error doesn't change it: timestamp stays the last success", () => {
+		const entry = {
+			timestamp: 1000,
+			expireTime: 500,
+			error: new Error("x"),
+			errorAt: 1400,
+		};
+		expect(isFresh(entry, 1450)).toBe(true);
+		expect(isFresh(entry, 1600)).toBe(false);
+	});
+});
+
+it("queryStore.ts names no query", () => {
+	const source = readFileSync("src/lib/query_cache/queryStore.ts", "utf8");
+	expect(source).not.toMatch(/"(Get|Post|Patch|Delete|Create|Clone)[A-Z]/);
 });

@@ -26,5 +26,15 @@ export interface IQueryDefinition<A extends [] | [unknown], D> {
 	fetchFn: (...args: A) => Promise<D>;
 	autoRefetch?: boolean;
 	expireTime?: number;
-	persist?: boolean;
+	// false: the result is dropped after the call (still deduped in flight)
+	cache?: false;
+}
+
+/**
+ * A write. It runs its `fetchFn` outside the cache: no key, no entry, no
+ * dedupe, nothing to invalidate or refetch. Build one with `defineMutation`.
+ */
+export interface IMutationDefinition<A extends [] | [unknown], D> {
+	fetchFn: (...args: A) => Promise<D>;
+	mutation: true;
 }

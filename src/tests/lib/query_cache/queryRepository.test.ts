@@ -2,6 +2,8 @@ import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { queryRepository } from "@/lib/query_cache/queryRepository";
+import { batchRefresh } from "@/lib/query_cache/queryBatches";
 import { planetsStore } from "@/database/stores";
 
 import { callDataMultiplePlanets } from "@/features/api/gameData.api";
@@ -10,6 +12,7 @@ import {
 	callClonePlan,
 	callDeletePlan,
 	callGetPlanlist,
+	callSavePlan,
 } from "@/features/api/planData.api";
 import { callCreateSharing } from "@/features/api/sharingData.api";
 
@@ -26,6 +29,7 @@ vi.mock("@/features/api/planData.api", async (importOriginal) => ({
 	callGetPlanlist: vi.fn(),
 	callClonePlan: vi.fn(),
 	callDeletePlan: vi.fn(),
+	callSavePlan: vi.fn(),
 }));
 vi.mock("@/features/api/sharingData.api", async (importOriginal) => ({
 	...(await importOriginal<
@@ -46,6 +50,51 @@ describe("queryRepository", () => {
 		vi.mocked(callClonePlan).mockReset();
 		vi.mocked(callDeletePlan).mockReset();
 		vi.mocked(callCreateSharing).mockReset();
+		vi.mocked(callSavePlan).mockReset();
+	});
+
+	it("mutations have no key, batch links name existing definitions", () => {
+		const definitions = Object.values(queryRepository) as object[];
+		for (const definition of definitions) {
+			expect(definition).not.toHaveProperty("persist");
+			if ("mutation" in definition)
+				expect(Object.keys(definition).sort()).toEqual([
+					"fetchFn",
+					"mutation",
+				]);
+		}
+		expect(
+			definitions.filter((d) => "mutation" in d).length
+		).toBeGreaterThan(0);
+
+		for (const link of batchRefresh) {
+			expect(queryRepository).toHaveProperty(link.single);
+			expect(queryRepository).toHaveProperty(link.multiple);
+			expect(queryRepository[link.single]).toHaveProperty("autoRefetch", true);
+		}
+	});
+
+	it("PatchPlan in flight: a forced planningdata refetch sends no second PATCH", async () => {
+		const queryStore = useQueryStore();
+		let resolveSave: (value: unknown) => void = () => {};
+		vi.mocked(callSavePlan).mockImplementation(
+			// @ts-expect-error mock data
+			() => new Promise((resolve) => (resolveSave = resolve))
+		);
+
+		const pending = queryStore.execute("PatchPlan", {
+			planUuid: "plan-1",
+			// @ts-expect-error mock data
+			data: {},
+		});
+		await queryStore.invalidateKey(["planningdata"], {
+			exact: false,
+			forceRefetch: true,
+		});
+		resolveSave({ uuid: "plan-1" });
+		await pending;
+
+		expect(callSavePlan).toHaveBeenCalledOnce();
 	});
 
 	it("GetMultiplePlanets: stores planets in IndexedDB", async () => {

@@ -3,22 +3,35 @@ import { planningQueries } from "@/lib/query_cache/queries/planning.queries";
 import { userQueries } from "@/lib/query_cache/queries/user.queries";
 
 // Types & Interfaces
-import type { IQueryDefinition } from "@/lib/query_cache/queryCache.types";
 import type {
+	IMutationDefinition,
+	IQueryDefinition,
+} from "@/lib/query_cache/queryCache.types";
+import type {
+	IQueryRepository,
 	QueryData,
 	QueryName,
 	QueryParams,
 } from "@/lib/query_cache/queryRepository.types";
 
 /**
- * Every backend interaction by name, see `queries/*.queries.ts`. Its type
- * is the source for `IQueryRepository`, `QueryParams` and `QueryData`.
+ * Every backend interaction by name, see `queries/*.queries.ts`: reads
+ * (`defineQuery`) and writes (`defineMutation`). Its type is the source for
+ * `IQueryRepository`, `QueryParams` and `QueryData`.
  */
 export const queryRepository = {
 	...gameDataQueries,
 	...planningQueries,
 	...userQueries,
 };
+
+/**
+ * A name's definition: a mutation for a `defineMutation` write, else a query
+ */
+export type QueryDefinitionOf<K extends QueryName> =
+	IQueryRepository[K] extends { mutation: true }
+		? IMutationDefinition<[QueryParams<K>], QueryData<K>>
+		: IQueryDefinition<[QueryParams<K>], QueryData<K>>;
 
 /**
  * Looks up a definition for a generic query name. TS can't call a union of
@@ -29,9 +42,6 @@ export const queryRepository = {
  */
 export function getQueryDefinition<K extends QueryName>(
 	name: K
-): IQueryDefinition<[QueryParams<K>], QueryData<K>> {
-	return queryRepository[name] as unknown as IQueryDefinition<
-		[QueryParams<K>],
-		QueryData<K>
-	>;
+): QueryDefinitionOf<K> {
+	return queryRepository[name] as unknown as QueryDefinitionOf<K>;
 }

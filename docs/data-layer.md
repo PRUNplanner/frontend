@@ -5,7 +5,7 @@ Data moves through four layers:
 ```
 component / composable
   └─ useQuery("Name", params).execute()          src/lib/query_cache/useQuery.ts
-       └─ queryStore.execute  (TTL, dedup, cache)  src/lib/query_cache/queryStore.ts
+       └─ queryStore.execute  (TTL, dedup, cache; mutations bypass it)  src/lib/query_cache/queryStore.ts
             └─ definition.fetchFn                 src/lib/query_cache/queries/*.queries.ts
                  ├─ call*()  → apiService (axios + Zod)   src/features/api/*.api.ts
                  └─ side effects: write IndexedDB / planningStore / invalidate keys
@@ -92,11 +92,25 @@ component / composable
 
 ## 3. Query cache (`src/lib/query_cache/`)
 
+**Who holds the data.**
+- The **query cache** tracks freshness and dedupes requests. For planning
+  data its entry is in practice a "loaded and fresh" marker.
+- **`planningStore`** is the read model for plans, empires, CX, shared plans
+  and FIO storage: persisted, and hydrated before the cache knows anything.
+  The planning `fetchFn`s write it; components read it.
+- **`useDB` / IndexedDB** is the read model for game data (§4).
+- A cache hit doesn't re-run `fetchFn`, so its side effects (store writes,
+  IndexedDB writes, seeding) happen once per fetch.
+- Objects in `planningStore` and in cache entries are **read-only**. Editors
+  work on `getPlan` / `getCX` clones. `setPlan` stores the object the
+  `GetPlan` entry holds (shared reference, no extra clone); empires, CX and
+  shared plans are stored as `inertClone`s.
+
 - **`queryRepository.ts`** is the single catalogue of every backend
   interaction: `GetMaterials`, `GetPlan`, `PatchEmpire`, `CreateCX` and so
   on. It merges the definitions in `queries/`, which are split by domain
-  (`gameData`, `planning`, `user`). Each definition is wrapped in
-  `defineQuery()` and has:
+  (`gameData`, `planning`, `user`). A read is wrapped in `defineQuery()`,
+  a write in `defineMutation()` (below). A read has:
   - `key(params)`: a JSON array such as `["planningdata", "plan", uuid]`.
     Object keys are sorted by `toCacheKey`.
   - `fetchFn(params)`: calls `call*()`, then performs side effects. It
@@ -107,8 +121,16 @@ component / composable
     failure, that value is cached as fresh data, so loaders report success
     and later calculations fail (for example "Planet … not available").
   - `expireTime` (ms, optional), `autoRefetch` (default `false`) and
-    `persist` (default `true`). `persist: false` drops the result after
-    the call, which is what mutations use.
+    `cache`. `cache: false` drops the result after the call (still deduped
+    while in flight), for reads that must not be cached
+    (`GetPreferences`, `GetAPIKeys`).
+- **Mutations** (`defineMutation({ fetchFn })`) have only a `fetchFn`: no
+  key, `expireTime`, `autoRefetch` or `cache`. `execute` runs them outside
+  the cache: no entry, no in-flight slot, no dedupe (two calls send two
+  requests), so no invalidation or refetch can see or re-run one. Errors
+  are logged and rethrown. They keep their name in the catalogue, so callers
+  use `useQuery("PatchPlan", params).execute()` like any read; `state` is
+  always `undefined`.
 - **Types come from the definitions.** Annotate `fetchFn`'s params and
   return type; `key`'s params are inferred from it. Annotate the return
   type even when it looks inferable: a body that touches the query store
@@ -118,8 +140,13 @@ component / composable
   There is nothing to register by hand.
 - **`queryStore.ts`** is a Pinia store and is **not** persisted.
   - `execute(name, params, { forceRefetch })` returns cached data while it is
-    fresh, and dedupes concurrent calls through an in-flight map. Mutations
-    (`persist: false`) are never deduped, since most share a static key.
+    fresh, and dedupes concurrent calls through an in-flight map. A cache
+    hit writes nothing, so it triggers no `computed` or watcher; an entry's
+    `definitionName` and `expireTime` are set once, when it is created.
+  - **Freshness** has one rule, `isFresh(entry)`: an entry without
+    `expireTime` never expires, else it is fresh for `expireTime` after its
+    last successful fetch (`timestamp`). `execute` and `peekQueryState`
+    both use it.
     A request that was replaced (forced refetch) or dropped
     (`invalidateKey`, `$reset` on logout) no longer writes to the cache
     when it settles.
@@ -136,16 +163,17 @@ component / composable
   - A 10s interval refetches expired `autoRefetch` entries and evicts the
     other expired ones. It pauses while the user is idle (`userActivity`, see
     [features/user_activity.md](features/user_activity.md)).
-    Expired `GetPlanet` entries are refetched together in one
-    `GetMultiplePlanets` request (or taken from an expiring multiple query
-    that covers them); a planet missing from the result gets an `error`.
+    Batched families are declared as data in `queryBatches.ts`
+    (`batchRefresh`): expired `GetPlanet` entries are refetched together in
+    one `GetMultiplePlanets` request (or taken from an expiring multiple
+    query that covers them); a planet missing from the result gets an
+    `error`. A new family is a new entry there, not a store change.
 - **`useQuery(name, params)`** is the caller API. Use `.execute()`.
   `params` is required exactly when the query takes them, so
   `useQuery("GetMaterials")` has none and `useQuery("GetPlan")` without
-  params is a type error. The `loading`, `error` and `data` fields it
-  returns are **non-reactive snapshots** taken at call time, so don't bind
-  templates to them. Before the query has any cached state, `error` is
-  `false` and `data` is `undefined`.
+  params is a type error. It returns `execute` and `state`, a `computed`
+  of the fresh cache entry (`peekQueryState`), `undefined` while there is
+  none or it is stale, and always for a mutation.
 - The `/debug` route (`views/QueryCacheView.vue`) shows the live cache.
 
 ### Adding a backend call
@@ -157,11 +185,11 @@ component / composable
 2. Add a `call*()` function to `src/features/api/<domain>.api.ts` that uses
    `apiService` without explicit type arguments, returning
    `Promise<Thing>` (or `Promise<Thing[]>`).
-3. Add a `defineQuery({...})` to the matching `queries/<domain>.queries.ts`.
-   Choose a key under an existing prefix, annotate `fetchFn`'s params and
-   return type with the derived types (`import type`), set
-   `persist: false` for mutations, and invalidate the affected key
-   families.
+3. Add a `defineQuery({...})` for a read, or a `defineMutation({ fetchFn })`
+   for a write, to the matching `queries/<domain>.queries.ts`. For a read,
+   choose a key under an existing prefix. Annotate `fetchFn`'s params and
+   return type with the derived types (`import type`); a mutation's
+   `fetchFn` invalidates the affected key families.
 4. Call it with `useQuery("YourName", params).execute()`.
 5. Add a test with `axios-mock-adapter`. For a pattern, see
    `src/tests/features/api/*.api.test.ts` and

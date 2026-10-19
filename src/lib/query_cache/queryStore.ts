@@ -1,11 +1,17 @@
-import { shallowReactive, computed, type ComputedRef } from "vue";
+import { shallowReactive } from "vue";
 import { defineStore } from "pinia";
 
 import { userActivity } from "@/features/user_activity/userActivityStore";
 import { getQueryDefinition } from "@/lib/query_cache/queryRepository";
+import {
+	batchRefresh,
+	type IBatchRefresh,
+} from "@/lib/query_cache/queryBatches";
 import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
 
 import type {
+	IMutationDefinition,
+	IQueryDefinition,
 	IQueryState,
 	JSONValue,
 } from "@/lib/query_cache/queryCache.types";
@@ -26,6 +32,33 @@ function isTransientError(err: Error): boolean {
 	if (!("status" in err)) return false;
 	const status = (err as { status?: number }).status;
 	return status === undefined || status >= 500;
+}
+
+/**
+ * The one freshness rule: an entry without expireTime never expires, else
+ * it is fresh for expireTime after its last successful fetch
+ *
+ * @param {Pick<IQueryState<unknown, unknown>, "timestamp" | "expireTime">} entry Cache entry
+ * @param {number} [now=Date.now()] Current time
+ * @returns {boolean} Fresh
+ */
+export function isFresh(
+	entry: Pick<IQueryState<unknown, unknown>, "timestamp" | "expireTime">,
+	now: number = Date.now()
+): boolean {
+	return !entry.expireTime || now - entry.timestamp <= entry.expireTime;
+}
+
+/**
+ * Untyped fetch of any definition, for the batch refresh
+ *
+ * @param {QueryName} name Query name
+ * @returns {(params: unknown) => Promise<unknown>} Its fetchFn
+ */
+function fetchOf(name: QueryName): (params: unknown) => Promise<unknown> {
+	return getQueryDefinition(name).fetchFn as (
+		params: unknown
+	) => Promise<unknown>;
 }
 
 export const useQueryStore = defineStore(
@@ -75,49 +108,49 @@ export const useQueryStore = defineStore(
 				});
 		}
 
-		function getCachedData<K extends QueryName>(
-			keyHash: string
-		): QueryData<K> | null {
-			const state = cacheState[keyHash];
-			return state?.data as QueryData<K> | null;
-		}
-
 		async function execute<K extends QueryName>(
 			definitionName: K,
 			params: QueryParams<K>,
 			options?: { forceRefetch?: boolean }
 		): Promise<QueryData<K>> {
-			const definition = getQueryDefinition(definitionName);
+			const definition:
+				| IQueryDefinition<[QueryParams<K>], QueryData<K>>
+				| IMutationDefinition<[QueryParams<K>], QueryData<K>> =
+				getQueryDefinition(definitionName);
+
+			// writes run outside the cache: no entry, no dedupe, nothing an
+			// invalidation could see or re-run
+			if ("mutation" in definition) {
+				try {
+					return await definition.fetchFn(params);
+				} catch (err) {
+					console.error(err);
+					throw err;
+				}
+			}
 
 			const keyHash = toCacheKey(definition.key(params));
+			const shouldCache = definition.cache !== false;
+			const state = cacheState[keyHash];
 
-			// initialize entry if missing
-			if (!cacheState[keyHash]) {
-				updateState(keyHash, { definitionName });
-			}
-
-			const state = cacheState[keyHash]!;
-
-			const now = Date.now();
-			const ttl = definition.expireTime;
-			const expired = ttl !== undefined && now - state.timestamp > ttl;
-			const shouldCache = definition.persist !== false;
-
-			updateState(keyHash, { expireTime: definition.expireTime });
-
-			// return cached data if valid
-			const cachedData = getCachedData<K>(keyHash);
-			if (cachedData !== null && !options?.forceRefetch && !expired) {
-				return cachedData;
-			}
-
-			// return in-flight promise if exists; mutations share static
-			// keys, deduping them would drop a call with other params
+			// a hit returns without writing, so it triggers nothing
 			if (
-				shouldCache &&
-				inFlight.has(keyHash) &&
-				!options?.forceRefetch
+				state !== undefined &&
+				state.data !== null &&
+				!options?.forceRefetch &&
+				isFresh(state)
 			) {
+				return state.data as QueryData<K>;
+			}
+
+			if (!state)
+				updateState(keyHash, {
+					definitionName,
+					expireTime: definition.expireTime,
+				});
+
+			// return in-flight promise if exists
+			if (inFlight.has(keyHash) && !options?.forceRefetch) {
 				return inFlight.get(keyHash)! as Promise<QueryData<K>>;
 			}
 
@@ -175,9 +208,8 @@ export const useQueryStore = defineStore(
 		}
 
 		/**
-		 * Peaks a queries state readonly without ever creating it on call.
-		 * Will take into account existance as well as "fresh" state, will
-		 * return undefined if the state is not existing or stale.
+		 * Peeks a query's state without creating it: the entry if it exists
+		 * and is fresh (isFresh), else undefined. Reactive to the entry.
 		 *
 		 * @author jplacht
 		 *
@@ -190,46 +222,10 @@ export const useQueryStore = defineStore(
 		function peekQueryState<TParams, TData>(
 			key: JSONValue
 		): IQueryState<TParams, TData> | undefined {
-			return isKnownAndFresh(key).value
-				? (cacheState[toCacheKey(key)] as IQueryState<TParams, TData>)
+			const entry = cacheState[toCacheKey(key)];
+			return entry && isFresh(entry)
+				? (entry as IQueryState<TParams, TData>)
 				: undefined;
-		}
-
-		/**
-		 * Checks a given query key for existance and if still fresh.
-		 * Freshness is given if:
-		 * - Key must exist
-		 * - Key does not have an expiry time, it is always fresh
-		 * - Or key has an expiry time that is still valid now
-		 *
-		 * @author jplacht
-		 *
-		 * @param {JSONValue} key Query Key
-		 * @returns {ComputedRef<boolean>} Existing and fresh state
-		 */
-		function isKnownAndFresh(key: JSONValue): ComputedRef<boolean> {
-			return computed(() => {
-				const keyHash: string = toCacheKey(key);
-				const state = cacheState[keyHash];
-
-				// state is undefined => false
-				if (!state) return false;
-
-				// state is known
-				// if no expireTime, its fresh => true
-				if (!state.expireTime) return true;
-
-				// check the expire time
-
-				const now = Date.now();
-				const expired = now - state.timestamp > state.expireTime;
-
-				if (expired) {
-					return false;
-				} else {
-					return true;
-				}
-			});
 		}
 
 		/**
@@ -316,7 +312,11 @@ export const useQueryStore = defineStore(
 			params: QueryParams<K>,
 			data: QueryData<K>
 		): void {
-			const definition = getQueryDefinition(definitionName);
+			const definition:
+				| IQueryDefinition<[QueryParams<K>], QueryData<K>>
+				| IMutationDefinition<[QueryParams<K>], QueryData<K>> =
+				getQueryDefinition(definitionName);
+			if ("mutation" in definition) return;
 			const keyHash: string = toCacheKey(definition.key(params));
 
 			// do not overwrite existing state for key
@@ -333,16 +333,6 @@ export const useQueryStore = defineStore(
 			}
 		}
 
-		/**
-		 * True, if any cache state is currently loading
-		 * @author jplacht
-		 *
-		 * @type {ComputedRef<boolean>}
-		 */
-		const isAnythingLoading: ComputedRef<boolean> = computed(() =>
-			Object.values(cacheState).some((s) => s.loading)
-		);
-
 		// Regular status watcher
 		let intervalId: ReturnType<typeof setInterval> | null = null;
 
@@ -358,18 +348,18 @@ export const useQueryStore = defineStore(
 
 			const now = Date.now();
 
-			// planet natural id => cache key, refetched in one batch below
-			const expiredPlanets = new Map<string, string>();
+			// per batch link: expired single entries, id => cache key,
+			// refetched in one multiple request below
+			const expiredSingles = new Map<IBatchRefresh, Map<string, string>>();
 			const multipleRefetches: {
+				link: IBatchRefresh;
 				ids: string[];
-				request: Promise<QueryData<"GetMultiplePlanets">>;
+				request: Promise<unknown>;
 			}[] = [];
 
 			for (const [key, entry] of Object.entries(cacheState)) {
 				const name = entry.definitionName as QueryName;
-				const refreshed =
-					name === "GetPlanet" ||
-					!!getQueryDefinition(name)?.autoRefetch;
+				const refreshed = !!getQueryDefinition(name)?.autoRefetch;
 				// a transient failure of a refreshed entry is retried one
 				// expireTime after it, any other error stops the refresh
 				const since =
@@ -385,9 +375,13 @@ export const useQueryStore = defineStore(
 					since &&
 					now - since > entry.expireTime
 				) {
-					if (name === "GetPlanet") {
-						const params = entry.params as QueryParams<"GetPlanet">;
-						expiredPlanets.set(params.planetNaturalId, key);
+					const single = batchRefresh.find((b) => b.single === name);
+					if (single) {
+						if (!expiredSingles.has(single))
+							expiredSingles.set(single, new Map());
+						expiredSingles
+							.get(single)!
+							.set(single.idOf(entry.params), key);
 					} else if (refreshed) {
 						const request = execute(
 							name,
@@ -395,14 +389,14 @@ export const useQueryStore = defineStore(
 						);
 						// logged and reported in execute already
 						request.catch(() => {});
-						if (name === "GetMultiplePlanets")
+						const multiple = batchRefresh.find(
+							(b) => b.multiple === name
+						);
+						if (multiple)
 							multipleRefetches.push({
-								ids: (
-									entry.params as QueryParams<"GetMultiplePlanets">
-								).planetNaturalIds,
-								request: request as Promise<
-									QueryData<"GetMultiplePlanets">
-								>,
+								link: multiple,
+								ids: multiple.idsOf(entry.params),
+								request,
 							});
 					} else {
 						// delete as stale and should not refetch
@@ -411,40 +405,45 @@ export const useQueryStore = defineStore(
 				}
 			}
 
-			// planets an expiring multiple query refetches anyway take its result
-			for (const { ids, request } of multipleRefetches) {
+			// singles an expiring multiple query refetches anyway take its result
+			for (const { link, ids, request } of multipleRefetches) {
+				const expired = expiredSingles.get(link);
+				if (!expired) continue;
 				const covered = new Map<string, string>();
 				ids.forEach((id) => {
-					const key = expiredPlanets.get(id);
+					const key = expired.get(id);
 					if (key === undefined) return;
 					covered.set(id, key);
-					expiredPlanets.delete(id);
+					expired.delete(id);
 				});
-				if (covered.size) refreshPlanets(covered, request);
+				if (covered.size) refreshBatch(link, covered, request);
 			}
 
-			if (expiredPlanets.size)
-				refreshPlanets(
-					expiredPlanets,
-					getQueryDefinition("GetMultiplePlanets").fetchFn({
-						planetNaturalIds: [...expiredPlanets.keys()],
-					})
-				);
+			expiredSingles.forEach((expired, link) => {
+				if (expired.size)
+					refreshBatch(
+						link,
+						expired,
+						fetchOf(link.multiple)(link.request([...expired.keys()]))
+					);
+			});
 		}
 
 		/**
-		 * Refreshes GetPlanet entries from one multiple planets request
-		 * instead of one request per planet. Planets missing from the
-		 * result get an error, so the watcher stops refetching them.
+		 * Refreshes a batch link's single entries from one multiple request
+		 * instead of one request per entry. Ids missing from the result get
+		 * an error, so the watcher stops refetching them.
 		 *
 		 * @author jplacht
 		 *
-		 * @param {Map<string, string>} keys Planet natural id => cache key
-		 * @param {Promise<QueryData<"GetMultiplePlanets">>} request Planets
+		 * @param {IBatchRefresh} link Batch link
+		 * @param {Map<string, string>} keys Id => cache key
+		 * @param {Promise<unknown>} request Multiple request, resolves to rows
 		 */
-		function refreshPlanets(
+		function refreshBatch(
+			link: IBatchRefresh,
 			keys: Map<string, string>,
-			request: Promise<QueryData<"GetMultiplePlanets">>
+			request: Promise<unknown>
 		): void {
 			keys.forEach((key) => updateState(key, { loading: true }));
 
@@ -458,9 +457,9 @@ export const useQueryStore = defineStore(
 				});
 
 			request.then(
-				(planets) => {
+				(rows) => {
 					const byId = new Map(
-						planets.map((p) => [p.planet_natural_id, p])
+						(rows as unknown[]).map((row) => [link.rowId(row), row])
 					);
 					settle((id) =>
 						byId.has(id)
@@ -470,7 +469,7 @@ export const useQueryStore = defineStore(
 									timestamp: Date.now(),
 								}
 							: {
-									error: new Error(`Planet ${id} not found`),
+									error: new Error(link.missing(id)),
 									errorAt: Date.now(),
 								}
 					);
@@ -509,19 +508,9 @@ export const useQueryStore = defineStore(
 			execute,
 			invalidateKey,
 			addCacheState,
-			isAnythingLoading,
 			// only exposed for testing
 			checkEntryStatusAndRefresh,
 			startStatusWatcher,
 		};
 	}
-	// {
-	// 	broadcast: {
-	// 		enable: true,
-	// 		persisted: false,
-	// 		pick: ["cacheState"],
-	// 		debounce: 1_000,
-	// 		channel: "prunplanner_query_data",
-	// 	},
-	// }
 );
