@@ -3,12 +3,14 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 vi.mock("@/lib/query_cache/queryRepository", () => ({
-	getQueryDefinition: () => ({
-		key: () => ["testQuery"],
-		expireTime: 1000,
-		persist: false,
-		fetchFn: vi.fn(),
-	}),
+	getQueryDefinition: (name: string) =>
+		name === "testMutation"
+			? { mutation: true, fetchFn: vi.fn(async () => "saved") }
+			: {
+					key: () => ["testQuery"],
+					expireTime: 1000,
+					fetchFn: vi.fn(async () => "data"),
+				},
 }));
 
 describe("useQuery", () => {
@@ -23,4 +25,13 @@ describe("useQuery", () => {
 		expect(Object.keys(query).sort()).toEqual(["execute", "state"]);
 		expect(query.state.value).toBeUndefined();
 	});
+});
+
+it("a mutation's state stays undefined", async () => {
+	setActivePinia(createPinia());
+	// @ts-expect-error mock repository
+	const query = useQuery("testMutation");
+
+	await expect(query.execute()).resolves.toBe("saved");
+	expect(query.state.value).toBeUndefined();
 });

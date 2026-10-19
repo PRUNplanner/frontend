@@ -8,7 +8,10 @@ import { useUserStore } from "@/stores/userStore";
 
 // Util
 import { setSyncedPreferences } from "@/features/preferences/preferenceSync";
-import { defineQuery } from "@/lib/query_cache/queries/queries.util";
+import {
+	defineMutation,
+	defineQuery,
+} from "@/lib/query_cache/queries/queries.util";
 
 // API Calls
 import {
@@ -62,8 +65,7 @@ function trackPreferences(prefs: UserPreference): void {
 
 export const userQueries = {
 	// Account
-	PostUserRegistration: defineQuery({
-		key: () => ["user", "account", "registration"],
+	PostUserRegistration: defineMutation({
 		fetchFn: async (
 			params: UserRegistrationPayload
 		): Promise<UserRegistrationResponse> => {
@@ -102,10 +104,8 @@ export const userQueries = {
 				throw error;
 			}
 		},
-		persist: false,
 	}),
-	PostUserVerifyEmail: defineQuery({
-		key: () => ["user", "verification", "check"],
+	PostUserVerifyEmail: defineMutation({
 		// the result code: "verified", the backend's error code (invalid,
 		// expired, no_code, already_verified), "throttled" or "error". A
 		// confirmed account refreshes the profile.
@@ -133,24 +133,18 @@ export const userQueries = {
 				await useUserStore().performGetProfile();
 			return result;
 		},
-		persist: false,
 	}),
-	PostUserResendEmailVerification: defineQuery({
-		key: () => ["user", "verification", "resend"],
+	PostUserResendEmailVerification: defineMutation({
 		fetchFn: (): Promise<UserResponseDetail> =>
 			callResendEmailVerification(),
-		persist: false,
 	}),
-	PostUserRequestPasswordReset: defineQuery({
-		key: () => ["user", "account", "request_password_reset"],
+	PostUserRequestPasswordReset: defineMutation({
 		fetchFn: (
 			params: UserRequestPasswordResetPayload
 		): Promise<UserResponseDetail> =>
 			callRequestPasswordReset(params.email),
-		persist: false,
 	}),
-	PostUserPasswordReset: defineQuery({
-		key: () => ["user", "account", "password_reset"],
+	PostUserPasswordReset: defineMutation({
 		fetchFn: async (
 			params: UserPasswordResetPayload
 		): Promise<UserResponseDetail> => {
@@ -168,10 +162,8 @@ export const userQueries = {
 				};
 			}
 		},
-		persist: false,
 	}),
-	PatchUserChangePassword: defineQuery({
-		key: () => ["user", "password", "patch"],
+	PatchUserChangePassword: defineMutation({
 		// we skip the actual message just to have a boolean
 		fetchFn: async (
 			params: UserChangePasswordPayload
@@ -183,18 +175,15 @@ export const userQueries = {
 				return false;
 			}
 		},
-		persist: false,
 	}),
 
 	// Profile & preferences
-	PatchUserProfile: defineQuery({
-		key: () => ["user", "profile", "patch"],
+	PatchUserProfile: defineMutation({
 		fetchFn: async (params: UserProfilePatch): Promise<UserProfile> => {
 			const data = await callPatchProfile(params);
 			await useUserStore().performGetProfile();
 			return data;
 		},
-		persist: false,
 	}),
 	GetPreferences: defineQuery({
 		key: () => ["user", "profile"],
@@ -214,10 +203,9 @@ export const userQueries = {
 
 			return prefs;
 		},
-		persist: false,
+		cache: false,
 	}),
-	PatchPreferences: defineQuery({
-		key: () => ["user", "preferences", "patch"],
+	PatchPreferences: defineMutation({
 		fetchFn: async (
 			patch: UserPreferencePatch
 		): Promise<UserPreference | undefined> => {
@@ -231,17 +219,15 @@ export const userQueries = {
 			} as UserPreference);
 			return callPatchUserPreferences(patch);
 		},
-		persist: false,
 	}),
 
 	// API keys
 	GetAPIKeys: defineQuery({
 		key: () => ["user", "api", "keys"],
 		fetchFn: (): Promise<APIKey[]> => callGetAPIKeys(),
-		persist: false,
+		cache: false,
 	}),
-	PostCreateAPIKey: defineQuery({
-		key: () => ["user", "api", "keys", "create"],
+	PostCreateAPIKey: defineMutation({
 		fetchFn: async (
 			params: APIKeyCreatePayload
 		): Promise<APIKeyCreateResponse> => {
@@ -249,15 +235,12 @@ export const userQueries = {
 			trackEvent("account:api_key_create");
 			return key;
 		},
-		persist: false,
 	}),
-	DeleteAPIKey: defineQuery({
-		key: (params) => ["user", "api", "keys", "delete", params.id],
+	DeleteAPIKey: defineMutation({
 		fetchFn: async (params: { id: string }): Promise<boolean> => {
 			const deleted = await callDeleteAPIKey(params.id);
 			trackEvent("account:api_key_revoke");
 			return deleted;
 		},
-		persist: false,
 	}),
 };

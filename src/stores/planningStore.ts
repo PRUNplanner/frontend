@@ -16,6 +16,12 @@ import type {
 	FIOStorageElement,
 } from "@/features/api/schemas/gameData.schemas";
 
+/**
+ * Read model for plans, empires, CX, shared plans and FIO storage. Written
+ * only by the planning query fetchFns; the query cache tracks freshness.
+ * Its objects (and the cache entries') are read-only: editors work on
+ * getPlan / getCX clones and save through a query.
+ */
 export const usePlanningStore = defineStore(
 	"prunplanner_planning",
 	() => {
@@ -82,6 +88,7 @@ export const usePlanningStore = defineStore(
 			if (!data.uuid)
 				throw new Error("Can't set plan data for undefined uuid.");
 
+			// the GetPlan entry's object, not a clone: both are read-only
 			plans.value[data.uuid] = data;
 		}
 
@@ -302,12 +309,5 @@ export const usePlanningStore = defineStore(
 				"fio_storage_timestamp",
 			],
 		},
-		// broadcast: {
-		// 	enable: true,
-		// 	persisted: true,
-		// 	pick: ["plans", "empires", "cxs", "shared"],
-		// 	debounce: 2_000,
-		// 	channel: "prunplanner_planning_data",
-		// },
 	}
 );

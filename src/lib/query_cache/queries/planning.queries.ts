@@ -5,6 +5,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Util
 import { broadcastChange } from "@/lib/crossTab";
 import {
+	defineMutation,
 	defineQuery,
 	invalidate,
 	staleMinutes,
@@ -123,22 +124,14 @@ export const planningQueries = {
 		autoRefetch: true,
 		expireTime: staleMinutes(60),
 	}),
-	DeleteSharedPlan: defineQuery({
-		key: (params) => [
-			"planningdata",
-			"shared",
-			"delete",
-			params.sharedUuid,
-		],
+	DeleteSharedPlan: defineMutation({
 		fetchFn: async (params: { sharedUuid: string }): Promise<boolean> => {
 			const data = await callDeleteSharing(params.sharedUuid);
 			await dropShared();
 			return data;
 		},
-		persist: false,
 	}),
-	CreateSharedPlan: defineQuery({
-		key: (params) => ["planningdata", "shared", "create", params.planUuid],
+	CreateSharedPlan: defineMutation({
 		fetchFn: async (params: {
 			planUuid: string;
 		}): Promise<SharedCreateResponse> => {
@@ -146,10 +139,8 @@ export const planningQueries = {
 			await dropShared();
 			return data;
 		},
-		persist: false,
 	}),
-	PostCloneSharedPlan: defineQuery({
-		key: (params) => ["planningdata", "shared", "clone", params.sharedUuid],
+	PostCloneSharedPlan: defineMutation({
 		fetchFn: async (params: {
 			sharedUuid: string;
 		}): Promise<SharedCloneResponse> => {
@@ -158,7 +149,6 @@ export const planningQueries = {
 			await changed([PLANS, EMPIRES], data.uuid);
 			return data;
 		},
-		persist: false,
 	}),
 
 	// Empires
@@ -179,8 +169,7 @@ export const planningQueries = {
 			return data;
 		},
 	}),
-	CreateEmpire: defineQuery({
-		key: () => ["planningdata", "empire", "create"],
+	CreateEmpire: defineMutation({
 		fetchFn: async (params: {
 			data: EmpirePayload;
 		}): Promise<PlanEmpire> => {
@@ -188,24 +177,15 @@ export const planningQueries = {
 			await changed([EMPIRES], data.uuid);
 			return data;
 		},
-		persist: false,
 	}),
-	DeleteEmpire: defineQuery({
-		key: (params) => [
-			"planningdata",
-			"empire",
-			"delete",
-			params.empireUuid,
-		],
+	DeleteEmpire: defineMutation({
 		fetchFn: async (params: { empireUuid: string }): Promise<boolean> => {
 			const data = await callDeleteEmpire(params.empireUuid);
 			await changed([EMPIRES], params.empireUuid);
 			return data;
 		},
-		persist: false,
 	}),
-	PatchEmpire: defineQuery({
-		key: (params) => ["planningdata", "empire", "patch", params.empireUuid],
+	PatchEmpire: defineMutation({
 		fetchFn: async (params: {
 			empireUuid: string;
 			data: EmpirePayload;
@@ -214,19 +194,15 @@ export const planningQueries = {
 			await changed([EMPIRES], params.empireUuid);
 			return data;
 		},
-		persist: false,
 	}),
-	PatchEmpireState: defineQuery({
-		key: (params) => ["planningdata", "empire", "state", params.empireUuid],
+	PatchEmpireState: defineMutation({
 		fetchFn: (params: {
 			empireUuid: string;
 			empireState: EmpireMaterialIOState;
 		}): Promise<PlanEmpire> =>
 			callPatchEmpireState(params.empireUuid, params.empireState),
-		persist: false,
 	}),
-	PatchEmpirePlanJunctions: defineQuery({
-		key: () => ["planningdata", "empire", "plan", "junctions"],
+	PatchEmpirePlanJunctions: defineMutation({
 		fetchFn: async (params: {
 			junctions: PlanEmpireJunction[];
 		}): Promise<PlanEmpireElement[]> => {
@@ -235,10 +211,8 @@ export const planningQueries = {
 			await changed([EMPIRES, PLANS]);
 			return data;
 		},
-		persist: false,
 	}),
-	PatchEmpireCXJunctions: defineQuery({
-		key: () => ["planningdata", "empire", "cx", "junctions"],
+	PatchEmpireCXJunctions: defineMutation({
 		fetchFn: async (params: {
 			junctions: CXEmpireJunction[];
 		}): Promise<CX[]> => {
@@ -246,7 +220,6 @@ export const planningQueries = {
 			await changed([EMPIRES, CXS]);
 			return data;
 		},
-		persist: false,
 	}),
 
 	// CX
@@ -258,17 +231,14 @@ export const planningQueries = {
 			return data;
 		},
 	}),
-	CreateCX: defineQuery({
-		key: () => ["planningdata", "cx", "create"],
+	CreateCX: defineMutation({
 		fetchFn: async (params: { cxName: string }): Promise<CX> => {
 			const data = await callCreateCX(params.cxName);
 			await changed([CXS], data.uuid);
 			return data;
 		},
-		persist: false,
 	}),
-	PatchCX: defineQuery({
-		key: (params) => ["planningdata", "cx", "patch", params.cxUuid],
+	PatchCX: defineMutation({
 		fetchFn: async (params: {
 			cxName: string;
 			cxUuid: string;
@@ -285,16 +255,13 @@ export const planningQueries = {
 			usePlanningStore().setCX(data);
 			return data;
 		},
-		persist: false,
 	}),
-	DeleteCX: defineQuery({
-		key: (params) => ["planningdata", "cx", "delete", params.cxUuid],
+	DeleteCX: defineMutation({
 		fetchFn: async (params: { cxUuid: string }): Promise<boolean> => {
 			const data = await callDeleteCX(params.cxUuid);
 			await changed([CXS], params.cxUuid);
 			return data;
 		},
-		persist: false,
 	}),
 
 	// Plans
@@ -315,8 +282,7 @@ export const planningQueries = {
 			return data;
 		},
 	}),
-	CreatePlan: defineQuery({
-		key: () => ["planningdata", "plan", "create"],
+	CreatePlan: defineMutation({
 		fetchFn: async (params: {
 			data: PlanCreateData;
 		}): Promise<PlanSaveCreateResponse> => {
@@ -324,10 +290,8 @@ export const planningQueries = {
 			await changed([PLANS, EMPIRES], data.uuid);
 			return data;
 		},
-		persist: false,
 	}),
-	PatchPlan: defineQuery({
-		key: (params) => ["planningdata", "plan", "patch", params.planUuid],
+	PatchPlan: defineMutation({
 		fetchFn: async (params: {
 			planUuid: string;
 			data: PlanSaveData;
@@ -336,10 +300,8 @@ export const planningQueries = {
 			await changed([PLANS, EMPIRES], params.planUuid);
 			return data;
 		},
-		persist: false,
 	}),
-	ClonePlan: defineQuery({
-		key: (params) => ["planningdata", "plan", "clone", params.planUuid],
+	ClonePlan: defineMutation({
 		fetchFn: async (params: {
 			planUuid: string;
 			cloneName: string;
@@ -350,10 +312,8 @@ export const planningQueries = {
 			broadcastChange([EMPIRES, [...PLANS, "list"]], data.uuid);
 			return data;
 		},
-		persist: false,
 	}),
-	DeletePlan: defineQuery({
-		key: (params) => ["planningdata", "plan", "delete", params.planUuid],
+	DeletePlan: defineMutation({
 		fetchFn: async (params: { planUuid: string }): Promise<boolean> => {
 			const data = await callDeletePlan(params.planUuid);
 			const queryStore = useQueryStore();
@@ -367,6 +327,5 @@ export const planningQueries = {
 			);
 			return data;
 		},
-		persist: false,
 	}),
 };

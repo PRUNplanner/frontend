@@ -7,6 +7,7 @@ import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Types & Interfaces
 import type {
+	IMutationDefinition,
 	IQueryDefinition,
 	JSONValue,
 } from "@/lib/query_cache/queryCache.types";
@@ -25,6 +26,19 @@ export function defineQuery<A extends [] | [unknown], D>(
 	definition: IQueryDefinition<A, D>
 ): IQueryDefinition<A, D> {
 	return definition;
+}
+
+/**
+ * Marks a write, see `IMutationDefinition`. Params and data are inferred
+ * from `fetchFn` as with `defineQuery`.
+ *
+ * @param {{ fetchFn: (...args: A) => Promise<D> }} definition Mutation
+ * @returns {IMutationDefinition<A, D>} The mutation definition
+ */
+export function defineMutation<A extends [] | [unknown], D>(definition: {
+	fetchFn: (...args: A) => Promise<D>;
+}): IMutationDefinition<A, D> {
+	return { fetchFn: definition.fetchFn, mutation: true };
 }
 
 /**
