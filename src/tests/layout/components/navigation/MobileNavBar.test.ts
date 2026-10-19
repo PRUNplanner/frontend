@@ -11,6 +11,7 @@ import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { useVersionCheck } from "@/lib/useVersionCheck";
+import { relativeFromDate } from "@/util/date";
 import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
 
 // Types & Interfaces
@@ -21,9 +22,10 @@ const route = reactive({
 	params: {} as Record<string, string>,
 	fullPath: "/empire",
 });
+const push = vi.fn();
 vi.mock("vue-router", () => ({
 	useRoute: () => route,
-	useRouter: () => ({ push: vi.fn() }),
+	useRouter: () => ({ push }),
 }));
 
 const execute = vi.fn();
@@ -54,8 +56,8 @@ const EMPIRE: PlanEmpireElement = {
 
 let pinia: Pinia;
 
-async function mountBar() {
-	usePlanningStore().setEmpires([EMPIRE]);
+async function mountBar(empires: PlanEmpireElement[] = [EMPIRE]) {
+	usePlanningStore().setEmpires(empires);
 	const { wrapper } = await mountComponent(
 		MobileNavBar,
 		{},
@@ -118,15 +120,18 @@ describe("MobileNavBar", () => {
 		expect(body().find("[role=dialog]").exists()).toBe(false);
 	});
 
-	it("closes a sheet on a backdrop tap", async () => {
-		const w = await mountBar();
-		await open(w, `${NAV}.more`);
-		const mask = body().find(".pdrawer-mask");
-		await mask.trigger("mousedown");
-		await mask.trigger("click");
-		await flushPromises();
-		expect(body().find("[role=dialog]").exists()).toBe(false);
-	});
+	it.each(["more", "plans"])(
+		"closes the %s sheet on a backdrop tap",
+		async (key) => {
+			const w = await mountBar();
+			await open(w, `${NAV}.${key}`);
+			const mask = body().find(".pdrawer-mask");
+			await mask.trigger("mousedown");
+			await mask.trigger("click");
+			await flushPromises();
+			expect(body().find("[role=dialog]").exists()).toBe(false);
+		}
+	);
 
 	it("shows profit only when the empire's plans are cached, and loads nothing for it", async () => {
 		const { setProfits } = useEmpireProfits();
@@ -204,5 +209,222 @@ describe("MobileNavBar", () => {
 			])
 		);
 		expect(sheet().text()).toContain(`${NAV}.logout`);
+	});
+});
+
+describe("MobileNavBar behaviour", () => {
+	beforeEach(() => {
+		pinia = createPinia();
+		setActivePinia(pinia);
+		execute.mockReset().mockResolvedValue(undefined);
+		push.mockReset();
+		vi.mocked(trackEvent).mockClear();
+		Object.assign(route, {
+			name: "empire",
+			params: {},
+			fullPath: "/empire",
+		});
+		useUserStore().profile = undefined;
+	});
+
+	const nav = (target: string, area: string, section: string) => [
+		"app:nav_click",
+		{ target, area, section },
+	];
+
+	it("tracks the bar links and marks the open page", async () => {
+		const w = await mountBar();
+		const [empire, , search] = w.findAll("nav > *");
+		expect(empire.attributes("aria-current")).toBe("page");
+		expect(search.attributes("aria-current")).toBeUndefined();
+
+		await empire.trigger("click");
+		await search.trigger("click");
+		expect(vi.mocked(trackEvent).mock.calls).toEqual([
+			nav("empire", "mobile_bar", "empire"),
+			nav("search", "mobile_bar", "planning"),
+		]);
+
+		Object.assign(route, { name: "search", fullPath: "/search" });
+		await nextTick();
+		expect(search.attributes("aria-current")).toBe("page");
+		expect(empire.attributes("aria-current")).toBeUndefined();
+	});
+
+	it("marks Plans while a saved plan is open", async () => {
+		Object.assign(route, {
+			name: "plan",
+			params: { planetNaturalId: "ZV-307b", planUuid: "p1" },
+			fullPath: "/plan/ZV-307b/p1",
+		});
+		const w = await mountBar();
+		const plans = w
+			.findAll("nav button")
+			.find((b) => b.text() === `${NAV}.plans`)!;
+
+		expect(plans.attributes("aria-current")).toBe("page");
+		expect(plans.find("span:last-child").classes()).toContain(
+			"text-prunplanner"
+		);
+	});
+
+	it("tracks the plans sheet actions and closes it", async () => {
+		const w = await mountBar();
+		const sheetLinks = () =>
+			w
+				.findAllComponents(RouterLinkStub)
+				.filter((l) => sheet().element.contains(l.element));
+
+		await open(w, `${NAV}.plans`);
+		await sheetLinks()
+			.find((l) => l.props("to") === "/empire")!
+			.trigger("click");
+		expect(trackEvent).toHaveBeenLastCalledWith(
+			...nav("empire", "mobile_sheet", "empire")
+		);
+		expect(body().find("[role=dialog]").exists()).toBe(false);
+
+		await open(w, `${NAV}.plans`);
+		await sheetLinks()
+			.find((l) => l.props("to") === "/search")!
+			.trigger("click");
+		expect(trackEvent).toHaveBeenLastCalledWith(
+			...nav("search", "mobile_sheet", "plans")
+		);
+		expect(body().find("[role=dialog]").exists()).toBe(false);
+	});
+
+	it("switches the empire from the plans sheet", async () => {
+		const other = {
+			...EMPIRE,
+			uuid: "22222222-2222-4222-8222-222222222222",
+			empire_name: "Other Empire",
+			plans: [],
+		} as PlanEmpireElement;
+		const w = await mountBar([EMPIRE, other]);
+		await open(w, `${NAV}.plans`);
+		await sheet()
+			.find(`button[aria-label="${NAV}.empire_switch"]`)
+			.trigger("click");
+		await flushPromises();
+
+		const options = body().findAll("[role=menuitem]");
+		expect(options.map((o) => o.text())).toEqual([
+			"Sky Productions",
+			"Other Empire",
+		]);
+		await options[1].trigger("click");
+
+		expect(useUserStore().preferences.defaultEmpireUuid).toBe(other.uuid);
+		expect(sheet().text()).toContain("OE");
+	});
+
+	it("offers to create an empire in the plans sheet without one", async () => {
+		const w = await mountBar([]);
+		await open(w, `${NAV}.plans`);
+		expect(sheet().find("[data-nav-plans]").exists()).toBe(false);
+
+		const create = w
+			.findAllComponents(RouterLinkStub)
+			.find((l) => l.props("to") === "/manage")!;
+		expect(create.text()).toBe(`${NAV}.create_empire`);
+		await create.trigger("click");
+
+		expect(trackEvent).toHaveBeenLastCalledWith(
+			...nav("manage", "mobile_sheet", "empire")
+		);
+		expect(body().find("[role=dialog]").exists()).toBe(false);
+	});
+
+	it("tracks the More destinations, marks the open one and closes", async () => {
+		useUserStore().profile = {
+			id: 1,
+			username: "u",
+			email: null,
+			is_email_verified: true,
+			fio_apikey: "key",
+			prun_username: "PRUN",
+			fio_status: "ok",
+			fio_last_refreshed_at: null,
+		};
+		Object.assign(route, { name: "manage", fullPath: "/manage" });
+		const w = await mountBar();
+		const expected: Record<string, string[]> = {
+			"/manage": ["manage", "planning"],
+			"/exchanges": ["exchanges", "planning"],
+			"/market-live": ["market-live", "tools"],
+			"/fio/burn": ["fio-burn", "tools"],
+			"/profile": ["profile", "footer"],
+			"/apikey": ["apikey", "footer"],
+			"/help": ["help", "footer"],
+			"/debug": ["debug", "footer"],
+		};
+
+		for (const [to, [target, section]] of Object.entries(expected)) {
+			await open(w, `${NAV}.more`);
+			vi.mocked(trackEvent).mockClear();
+			const link = w
+				.findAllComponents(RouterLinkStub)
+				.find((l) => l.props("to") === to)!;
+			expect(link.attributes("aria-current")).toBe(
+				to === "/manage" ? "page" : undefined
+			);
+			await link.trigger("click");
+			expect(vi.mocked(trackEvent).mock.calls, to).toEqual([
+				nav(target, "mobile_sheet", section),
+			]);
+			expect(body().find("[role=dialog]").exists(), to).toBe(false);
+		}
+	});
+
+	it("logs out from the More sheet and returns to the start page", async () => {
+		const logout = vi
+			.spyOn(useUserStore(), "logout")
+			.mockImplementation(() => {});
+		const w = await mountBar();
+		await open(w, `${NAV}.more`);
+
+		await sheet()
+			.findAll("button")
+			.find((b) => b.text() === `${NAV}.logout`)!
+			.trigger("click");
+
+		expect(trackEvent).toHaveBeenCalledWith(
+			...nav("logout", "mobile_sheet", "footer")
+		);
+		expect(logout).toHaveBeenCalledOnce();
+		expect(push).toHaveBeenCalledWith("/");
+		expect(body().find("[role=dialog]").exists()).toBe(false);
+	});
+
+	it("shows the FIO data age on the FIO group in the More sheet", async () => {
+		useUserStore().profile = {
+			id: 1,
+			username: "u",
+			email: null,
+			is_email_verified: true,
+			fio_apikey: "key",
+			prun_username: "PRUN",
+			fio_status: "ok",
+			fio_last_refreshed_at: null,
+		};
+		const synced = new Date(Date.now() - 2 * 3600 * 1000);
+		usePlanningStore().fio_storage_timestamp = synced;
+		const w = await mountBar();
+		await open(w, `${NAV}.more`);
+
+		const group = sheet()
+			.findAll("div")
+			.find((d) => d.text().startsWith(`${NAV}.fio.fio`))!;
+		expect(group.find(".bg-positive").exists()).toBe(true);
+		expect(group.text()).toContain(relativeFromDate(synced));
+	});
+
+	it("hides the FIO group in the More sheet without FIO", async () => {
+		const w = await mountBar();
+		await open(w, `${NAV}.more`);
+
+		expect(sheet().text()).not.toContain(`${NAV}.fio.fio`);
+		expect(sheet().text()).toContain(`${NAV}.market`);
 	});
 });
