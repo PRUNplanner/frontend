@@ -1,30 +1,77 @@
 name: Coverage
 
+# Unit and component/view tests run once each, in parallel. Each uploads a
+# vitest blob report (with its coverage); the report job merges them into the
+# one coverage/lcov.info that goes to Codacy. Same as `pnpm test:coverage`.
 on:
   push:
     branches: [main]
   pull_request:
+
 jobs:
-  test:
+  unit:
     if: github.repository == 'PRUNplanner/frontend'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node-version: [22.x]
     steps:
       - uses: actions/checkout@v4
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-      - name: Use Node.js ${{matrix.node-version}}
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{matrix.node-version}}
+          node-version: 22.x
           cache: "pnpm"
       - name: "Install dependencies"
         run: pnpm install
-      - name: "Run Tests"
-        run: pnpm run test
+      - name: "Run unit tests"
+        run: pnpm run test:coverage:unit
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blob-unit
+          path: .vitest-reports/
+          retention-days: 1
+
+  components:
+    if: github.repository == 'PRUNplanner/frontend'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: "pnpm"
+      - name: "Install dependencies"
+        run: pnpm install
+      - name: "Run component and view tests"
+        run: pnpm run test:coverage:components
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blob-components
+          path: .vitest-reports/
+          retention-days: 1
+
+  report:
+    needs: [unit, components]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: "pnpm"
+      - name: "Install dependencies"
+        run: pnpm install
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: blob-*
+          path: .vitest-reports
+          merge-multiple: true
+      - name: "Merge reports and check thresholds"
+        run: pnpm run test:coverage:report
+      # PRs from forks have no access to the secret
       - name: Upload Codacy
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         env:

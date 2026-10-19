@@ -20,6 +20,7 @@ Node `22.19` (see `.nvmrc`) and pnpm 10.
 | Tests (single run) | `pnpm test` |
 | One test file | `pnpm vitest run src/tests/features/cx/usePrice.test.ts` |
 | Component tests (own CI job on PRs) | `pnpm test:components` |
+| Combined coverage (what Codacy gets) | `pnpm test:coverage` (about 7 minutes, writes `coverage/lcov.info`) |
 | Benchmarks (planning engine) | `pnpm vitest bench --run` |
 | Type check | `pnpm tsc` (vue-tsc, app and tests) |
 | Lint | `pnpm lint` / `pnpm lint:fix` |
@@ -37,6 +38,15 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
 
 CI runs `pnpm test:components` (about 3 minutes) on PRs as well. Run it
 too when you touch a component, a view or their tests.
+
+**Coverage.** `coverage.yml` runs the unit and the component/view suites as
+two parallel jobs, merges their vitest blob reports into one
+`coverage/lcov.info` and uploads that to Codacy (pushes to `main` and PRs from
+this repo). `pnpm test:coverage` builds the same report locally. Every file in
+`src/` counts, tested or not; only `src/tests/`, `main.ts`, `*.d.ts` and
+static data (`json`, `css`, `md`) are excluded. Never exclude a file to raise
+the number. The thresholds in `vitest.config.ts` are checked on the merged
+report: raise them when coverage grows.
 
 `build.yml` runs `pnpm build` on `main`. Run it yourself when you touch Vite
 config, imports of static assets, or anything else that only fails at build

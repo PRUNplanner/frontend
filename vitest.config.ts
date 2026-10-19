@@ -39,40 +39,32 @@ export default defineConfig({
 		// undo vi.stubGlobal / vi.stubEnv after each test
 		unstubGlobals: true,
 		unstubEnvs: true,
+		// Off for `pnpm test`. `pnpm test:coverage` runs the unit and the component
+		// suites (vitest.components.config.ts) as blob reports and merges them
+		// into the one coverage/lcov.info that CI uploads to Codacy
+		// (.github/workflows/coverage.yml). Both configs share these options, as
+		// the include/exclude filter is applied while each suite runs.
 		coverage: {
-			enabled: true,
+			enabled: false,
 			provider: "v8",
-			reporter: [["lcov", { projectRoot: "./src" }], ["html"]],
+			// lcov paths relative to src/, which is how Codacy maps them
+			reporter: [["lcov", { projectRoot: "./src" }], ["html"], "text-summary"],
+			// every file counts, also those without a test (they show as 0%)
 			include: ["src/**"],
+			// only tests, types, the entry point and static data
 			exclude: [
-				"src/layout/*",
-				"src/AppProvider.vue",
-				"src/App.vue",
-				"src/ui/**",
-				"src/main.ts",
-				"src/views/*",
-				"**/components/**",
-				"**/dist/**",
 				"src/tests/**",
-				"**/queryRepository.ts",
-				"src/lib/query_cache/queries/*.queries.ts",
-				"**/QueryCacheView.vue",
-				// tested through its component test (pnpm test:components)
-				"src/features/wrapper/usePlanningDataLoader.ts",
-				"src/util/axiosSetup.ts",
+				"src/main.ts",
 				"**/*.d.ts",
-				"src/router/**",
-				"src/lib/analytics/**",
-				"**/*.md",
-				"**/.DS_Store",
+				"**/*.{json,css,md}",
 			],
 			reportOnFailure: true,
-			// fail CI when coverage drops, raise these as coverage grows
+			// fail CI when the combined coverage drops, raise these as it grows
 			thresholds: {
-				statements: 94,
-				branches: 82,
-				functions: 95,
-				lines: 95,
+				statements: 91,
+				branches: 84,
+				functions: 87,
+				lines: 92,
 			},
 		},
 	},
