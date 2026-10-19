@@ -47,7 +47,11 @@ const state = vi.hoisted(() => ({
 		discard: ReturnType<typeof vi.fn>;
 	},
 	matrix: {} as {
-		changes: { changedCount: number; planCount: number; empireCount: number };
+		changes: {
+			changedCount: number;
+			planCount: number;
+			empireCount: number;
+		};
 		save: ReturnType<typeof vi.fn>;
 		discard: ReturnType<typeof vi.fn>;
 	},
@@ -88,8 +92,7 @@ vi.mock("vue-router", async (original) => ({
 	...(await original<typeof import("vue-router")>()),
 	onBeforeRouteLeave: (
 		guard: (to: { fullPath: string }) => boolean | undefined
-	) =>
-		guards.push(guard),
+	) => guards.push(guard),
 }));
 
 function setChanges(cx: number, matrix: number) {
@@ -163,7 +166,9 @@ describe("ManageView", () => {
 		// saving: spinner on save, discard disabled
 		expect(bar(wrapper).props("state")).toBe("saving");
 		expect(
-			barButton(wrapper, "management.save_bar.save").attributes("aria-busy")
+			barButton(wrapper, "management.save_bar.save").attributes(
+				"aria-busy"
+			)
 		).toBe("true");
 		expect(
 			barButton(wrapper, "management.save_bar.discard").attributes(
@@ -246,5 +251,97 @@ describe("ManageView", () => {
 
 		confirm.mockRestore();
 		add.mockRestore();
+	});
+
+	it("saves only the editor that has changes", async () => {
+		const { wrapper } = await mountView();
+		state.empire.save.mockImplementation(async () => {
+			state.empire.changedCount = 0;
+		});
+		setChanges(2, 0);
+		await flushPromises();
+
+		// no plan assignment change: no detail line
+		expect(bar(wrapper).props("count")).toBe(2);
+		expect(bar(wrapper).props("detail")).toBeUndefined();
+
+		await barButton(wrapper, "management.save_bar.save").trigger("click");
+		await flushPromises();
+
+		expect(state.empire.save).toHaveBeenCalledTimes(1);
+		expect(state.matrix.save).not.toHaveBeenCalled();
+		expect(bar(wrapper).exists()).toBe(false);
+	});
+
+	it("shows saved for 4 seconds, a second save restarts that", async () => {
+		const { wrapper } = await mountView();
+		const saved = () =>
+			wrapper
+				.findComponent({ name: "ManagePlanEmpireAssignments" })
+				.props("saved");
+		state.empire.save.mockImplementation(async () => {
+			state.empire.changedCount = 0;
+		});
+		vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+
+		try {
+			for (const wait of [3000, 3000]) {
+				setChanges(1, 0);
+				await flushPromises();
+				await barButton(wrapper, "management.save_bar.save").trigger(
+					"click"
+				);
+				await flushPromises();
+				expect(saved()).toBe(true);
+				// the first timer would have run out by now
+				vi.advanceTimersByTime(wait);
+				await flushPromises();
+				expect(saved()).toBe(true);
+			}
+
+			vi.advanceTimersByTime(1000);
+			await flushPromises();
+			expect(saved()).toBe(false);
+		} finally {
+			vi.useRealTimers();
+		}
+	});
+
+	it("feeds the loaded lists to the editors and takes their updates", async () => {
+		const { wrapper } = await mountView();
+		const loader = wrapper.findComponent({
+			name: "WrapperPlanningDataLoader",
+		});
+		const empire = () => wrapper.findComponent({ name: "ManageEmpire" });
+		const cx = () => wrapper.findComponent({ name: "ManageCX" });
+		const matrix = () =>
+			wrapper.findComponent({ name: "ManagePlanEmpireAssignments" });
+
+		expect(empire().props("empires")).toEqual([]);
+		expect(matrix().props("plans")).toEqual([]);
+
+		loader.vm.$emit("data:cx", [{ uuid: "cx-1" }]);
+		loader.vm.$emit("data:empire:list", [{ uuid: "e-1" }]);
+		loader.vm.$emit("data:plan:list", [{ uuid: "p-1" }]);
+		await flushPromises();
+
+		expect(empire().props("cx")).toEqual([{ uuid: "cx-1" }]);
+		expect(cx().props("cx")).toEqual([{ uuid: "cx-1" }]);
+		expect(empire().props("empires")).toEqual([{ uuid: "e-1" }]);
+		expect(matrix().props("empires")).toEqual([{ uuid: "e-1" }]);
+		expect(matrix().props("plans")).toEqual([{ uuid: "p-1" }]);
+
+		// edits in the children replace the lists
+		empire().vm.$emit("update:cx-list", [{ uuid: "cx-2" }]);
+		cx().vm.$emit("update:cx-list", [{ uuid: "cx-3" }]);
+		empire().vm.$emit("update:empire-list", [{ uuid: "e-2" }]);
+		matrix().vm.$emit("update:empire-list", [{ uuid: "e-3" }]);
+		matrix().vm.$emit("update:plan-list", [{ uuid: "p-2" }]);
+		await flushPromises();
+
+		expect(cx().props("cx")).toEqual([{ uuid: "cx-3" }]);
+		expect(empire().props("cx")).toEqual([{ uuid: "cx-3" }]);
+		expect(empire().props("empires")).toEqual([{ uuid: "e-3" }]);
+		expect(matrix().props("plans")).toEqual([{ uuid: "p-2" }]);
 	});
 });

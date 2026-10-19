@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeAll,
+	beforeEach,
+	afterEach,
+	vi,
+} from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -8,6 +16,8 @@ import ManagePlanEmpireAssignments from "@/features/manage/components/ManagePlan
 import PInput from "@/ui/components/PInput.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import PDropdown from "@/ui/components/PDropdown.vue";
+import ManageAssignmentCard from "@/features/manage/components/ManageAssignmentCard.vue";
+import { toasts } from "@/ui/useToast";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
@@ -82,8 +92,10 @@ const planNames = (wrapper: VueWrapper) =>
 function assigned(wrapper: VueWrapper, column: number) {
 	return bodyRows(wrapper).map(
 		(tr) =>
-			(tr.findAll("td:not(:first-child) input").at(column)!.element as HTMLInputElement)
-				.checked
+			(
+				tr.findAll("td:not(:first-child) input").at(column)!
+					.element as HTMLInputElement
+			).checked
 	);
 }
 
@@ -98,7 +110,8 @@ function striped(wrapper: VueWrapper, column: number) {
 }
 
 async function toggleCell(wrapper: VueWrapper, row: number, column: number) {
-	const input = bodyRows(wrapper)[row]
+	const input = bodyRows(wrapper)
+		.at(row)!
 		.findAll("td:not(:first-child) input")
 		.at(column)!;
 	await input.setValue(!(input.element as HTMLInputElement).checked);
@@ -117,13 +130,14 @@ function headerState(wrapper: VueWrapper) {
 }
 
 async function clickHeader(wrapper: VueWrapper, column: number) {
-	const input = wrapper.findAll("thead th:not(:first-child) input").at(column)!;
+	const input = wrapper
+		.findAll("thead th:not(:first-child) input")
+		.at(column)!;
 	await input.setValue(!(input.element as HTMLInputElement).checked);
 	await flushPromises();
 }
 
-const exposed = (component: VueWrapper) =>
-	component.vm as unknown as IExposed;
+const exposed = (component: VueWrapper) => component.vm as unknown as IExposed;
 
 async function openMenu(wrapper: VueWrapper, row: number) {
 	await bodyRows(wrapper)[row].find("button[aria-busy]").trigger("click");
@@ -138,7 +152,9 @@ function menuOption(label: string) {
 
 function confirmDialog() {
 	Array.from(
-		document.body.querySelectorAll<HTMLButtonElement>("[role=dialog] button")
+		document.body.querySelectorAll<HTMLButtonElement>(
+			"[role=dialog] button"
+		)
 	)
 		.find((b) => b.textContent?.trim() === "common.buttons.delete")!
 		.click();
@@ -308,7 +324,10 @@ describe("ManagePlanEmpireAssignments", () => {
 		const plans = [...PLANS.slice(0, 2), planRef(P4, "Plan D", "ZV-896b")];
 		await setProps({
 			plans,
-			empires: [empire(E2, "Beta", []), empire(E1, "Alpha", plans.slice(0, 2))],
+			empires: [
+				empire(E2, "Beta", []),
+				empire(E1, "Alpha", plans.slice(0, 2)),
+			],
 		});
 
 		expect(planNames(wrapper)).toEqual(["Plan A", "Plan B", "Plan D"]);
@@ -325,9 +344,9 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(menu().props("anchor")).toBe(
 			bodyRows(wrapper)[0].find("button[aria-busy]").element
 		);
-		expect(menuOption("management.assignments.menu.delete")!.className).toContain(
-			"text-negative"
-		);
+		expect(
+			menuOption("management.assignments.menu.delete")!.className
+		).toContain("text-negative");
 
 		// the dropdown listens on the whole page, the key press has to bubble
 		document.body.dispatchEvent(
@@ -340,7 +359,9 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(menu().props("anchor")).toBe(
 			bodyRows(wrapper)[1].find("button[aria-busy]").element
 		);
-		document.body.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+		document.body.dispatchEvent(
+			new MouseEvent("mousedown", { bubbles: true })
+		);
 		await flushPromises();
 		expect(menu().props("show")).toBe(false);
 	});
@@ -351,9 +372,11 @@ describe("ManagePlanEmpireAssignments", () => {
 
 		await openMenu(wrapper, 1);
 		expect(
-			["management.assignments.menu.clone", "management.assignments.menu.share", "management.assignments.menu.delete"].map(
-				(l) => menuOption(l) !== undefined
-			)
+			[
+				"management.assignments.menu.clone",
+				"management.assignments.menu.share",
+				"management.assignments.menu.delete",
+			].map((l) => menuOption(l) !== undefined)
 		).toEqual([true, true, true]);
 
 		menuOption("management.assignments.menu.clone")!.click();
@@ -409,8 +432,10 @@ describe("ManagePlanEmpireAssignments", () => {
 		const selectedBoxes = () =>
 			bodyRows(wrapper).map(
 				(tr) =>
-					(tr.find("td:first-child input").element as HTMLInputElement)
-						.checked
+					(
+						tr.find("td:first-child input")
+							.element as HTMLInputElement
+					).checked
 			);
 
 		// only Plan A and B are shown, the header box takes both
@@ -442,7 +467,11 @@ describe("ManagePlanEmpireAssignments", () => {
 
 	it("renders long lists in chunks, a filter starts over", async () => {
 		const plans = Array.from({ length: 50 }, (_, i) =>
-			planRef(uuid(i + 10), `Plan ${String(i).padStart(2, "0")}`, "ZV-307c")
+			planRef(
+				uuid(i + 10),
+				`Plan ${String(i).padStart(2, "0")}`,
+				"ZV-307c"
+			)
 		);
 		const { wrapper } = await mountAssignments([], plans);
 
@@ -463,5 +492,462 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(wrapper.text()).toContain(
 			"management.assignments.table.nodata_title"
 		);
+	});
+
+	describe("table", () => {
+		const SEL = "management.assignments.selection";
+		const rowBox = (wrapper: VueWrapper, row: number) =>
+			bodyRows(wrapper)[row].find("td:first-child input");
+		const button = (wrapper: VueWrapper, text: string) =>
+			wrapper.findAll("button").find((b) => b.text() === text);
+		const manyPlans = (n: number) =>
+			Array.from({ length: n }, (_, i) =>
+				planRef(uuid(i + 10), `Plan ${i}`, "ZV-307c")
+			);
+		const dialogText = () =>
+			document.body.querySelector("[role=dialog]")?.textContent ?? "";
+
+		beforeEach(() => {
+			toasts.value = [];
+		});
+
+		it("shows All changes saved only when told so", async () => {
+			const off = await mountAssignments();
+			expect(off.wrapper.find("[role=status]").exists()).toBe(false);
+
+			const on = await mountComponent(
+				ManagePlanEmpireAssignments,
+				{ empires: EMPIRES, plans: PLANS, saved: true },
+				{ withDialog: true }
+			);
+			expect(on.wrapper.find("[role=status]").text()).toContain(
+				"management.save_bar.all_saved"
+			);
+		});
+
+		it("shows just the id when the planet lookup fails", async () => {
+			planetData.getPlanet.mockRejectedValueOnce(new Error("no planet"));
+			const { wrapper } = await mountAssignments(EMPIRES, [PLANS[1]]);
+
+			expect(bodyRows(wrapper)[0].text()).toContain("ZV-307c");
+			expect(bodyRows(wrapper)[0].text()).not.toContain("·");
+		});
+
+		it("treats a cleared search as no filter and reports no match", async () => {
+			const { wrapper } = await mountAssignments();
+			const input = () => wrapper.findComponent(PInput);
+
+			input().vm.$emit("update:value", "zzz");
+			await flushPromises();
+			expect(bodyRows(wrapper)).toHaveLength(0);
+			expect(wrapper.find("tbody").text()).toContain(
+				"management.assignments.no_match"
+			);
+
+			input().vm.$emit("update:value", null);
+			await flushPromises();
+			expect(planNames(wrapper)).toEqual(["Plan A", "Plan B", "Plan C"]);
+		});
+
+		it("selects single rows, counts them and clears the selection", async () => {
+			const { wrapper } = await mountAssignments();
+			expect(button(wrapper, `${SEL}.clear`)).toBeUndefined();
+
+			await rowBox(wrapper, 0).setValue(true);
+			await rowBox(wrapper, 2).setValue(true);
+			expect(wrapper.find("[role=status]").text()).toBe(`${SEL}.count`);
+			expect(
+				wrapper.find<HTMLInputElement>("thead th:first-child input")
+					.element.indeterminate
+			).toBe(true);
+
+			// unselecting one keeps the other
+			await rowBox(wrapper, 0).setValue(false);
+			expect(
+				(rowBox(wrapper, 2).element as HTMLInputElement).checked
+			).toBe(true);
+			expect(
+				(rowBox(wrapper, 0).element as HTMLInputElement).checked
+			).toBe(false);
+
+			await button(wrapper, `${SEL}.clear`)!.trigger("click");
+			expect(
+				(rowBox(wrapper, 2).element as HTMLInputElement).checked
+			).toBe(false);
+			expect(button(wrapper, `${SEL}.delete`)).toBeUndefined();
+		});
+
+		it("the header box clears the selection again when all are selected", async () => {
+			const { wrapper } = await mountAssignments();
+			const header = () =>
+				wrapper.find<HTMLInputElement>("thead th:first-child input");
+
+			await header().setValue(true);
+			expect(header().element.checked).toBe(true);
+			expect(header().attributes("aria-label")).toBe(
+				`${SEL}.clear_all_shown`
+			);
+
+			await header().setValue(false);
+			expect(header().element.checked).toBe(false);
+			expect(header().attributes("aria-label")).toBe(
+				`${SEL}.select_all_shown`
+			);
+			expect(wrapper.find("[role=status]").exists()).toBe(false);
+		});
+
+		it("drops plans that vanished from the selection", async () => {
+			const { wrapper, setProps } = await mountAssignments();
+			await rowBox(wrapper, 0).setValue(true);
+			await rowBox(wrapper, 1).setValue(true);
+
+			// a reload that keeps both changes nothing
+			await setProps({ plans: [...PLANS] });
+			expect(
+				bodyRows(wrapper).map(
+					(tr) =>
+						(
+							tr.find("td:first-child input")
+								.element as HTMLInputElement
+						).checked
+				)
+			).toEqual([true, true, false]);
+
+			// Plan B is gone: only Plan A stays selected
+			await setProps({ plans: [PLANS[1], PLANS[2]] });
+			expect(
+				bodyRows(wrapper).map(
+					(tr) =>
+						(
+							tr.find("td:first-child input")
+								.element as HTMLInputElement
+						).checked
+				)
+			).toEqual([true, false]);
+		});
+
+		it("keeps the selection when the confirmation is cancelled", async () => {
+			const { wrapper } = await mountAssignments();
+			await rowBox(wrapper, 0).setValue(true);
+
+			await button(wrapper, `${SEL}.delete`)!.trigger("click");
+			await flushPromises();
+			Array.from(
+				document.body.querySelectorAll<HTMLButtonElement>(
+					"[role=dialog] button"
+				)
+			)
+				.find((b) => b.textContent?.trim() === "common.buttons.cancel")!
+				.click();
+			await flushPromises();
+
+			expect(mock.history.delete).toHaveLength(0);
+			expect(
+				(rowBox(wrapper, 0).element as HTMLInputElement).checked
+			).toBe(true);
+		});
+
+		it("lists only the first names of a large selection and shows progress", async () => {
+			const plans = manyPlans(6);
+			let release: () => void = () => {};
+			const gate = new Promise<void>((r) => (release = r));
+			mock.onDelete(/planning\/plan\/.*\/$/).reply(async () => {
+				await gate;
+				return [204];
+			});
+			const { wrapper, component } = await mountComponent(
+				ManagePlanEmpireAssignments,
+				{ empires: [], plans },
+				{
+					withDialog: true,
+					messages: {
+						management: {
+							assignments: {
+								selection: {
+									confirm_content: "Delete {names}",
+									more: "{names} and {count} more",
+								},
+							},
+						},
+					},
+				}
+			);
+
+			await wrapper.find("thead th:first-child input").setValue(true);
+			await button(wrapper, `${SEL}.delete`)!.trigger("click");
+			await flushPromises();
+			expect(dialogText()).toContain(
+				"Delete Plan 0, Plan 1, Plan 2, Plan 3, Plan 4 and 1 more"
+			);
+
+			confirmDialog();
+			await flushPromises();
+			// the first request waits: progress label, buttons locked
+			const deleting = button(wrapper, `${SEL}.deleting`)!;
+			expect(deleting.attributes("disabled")).toBeDefined();
+			expect(
+				button(wrapper, `${SEL}.clear`)!.attributes("disabled")
+			).toBeDefined();
+
+			release();
+			await vi.waitFor(() => {
+				expect(component.emitted("update:planList")).toHaveLength(1);
+			});
+			await flushPromises();
+
+			expect(mock.history.delete).toHaveLength(6);
+			expect(toasts.value).toEqual([]);
+			expect(wrapper.find("[role=status]").exists()).toBe(false);
+			expect(button(wrapper, `${SEL}.delete`)).toBeUndefined();
+		});
+
+		it("toasts how many plans could not be deleted", async () => {
+			mock.onDelete(new RegExp(`planning/plan/${P1}/$`)).reply(204);
+			mock.onDelete(new RegExp(`planning/plan/${P2}/$`)).reply(500);
+			mock.onDelete(new RegExp(`planning/plan/${P3}/$`)).reply(500);
+			const error = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+			const { wrapper } = await mountAssignments();
+
+			await wrapper.find("thead th:first-child input").setValue(true);
+			await button(wrapper, `${SEL}.delete`)!.trigger("click");
+			await flushPromises();
+			confirmDialog();
+			await flushPromises();
+
+			expect(toasts.value).toMatchObject([
+				{ text: `${SEL}.failed`, type: "error" },
+			]);
+			error.mockRestore();
+		});
+
+		it("still ends the deletion when reloading the lists fails", async () => {
+			mock.onDelete(/planning\/plan\/.*\/$/).reply(204);
+			mock.onGet(/planning\/empire\/$/).reply(500);
+			const error = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+			const { wrapper, component } = await mountAssignments();
+
+			await rowBox(wrapper, 0).setValue(true);
+			await button(wrapper, `${SEL}.delete`)!.trigger("click");
+			await flushPromises();
+			confirmDialog();
+			await flushPromises();
+
+			expect(mock.history.delete).toHaveLength(1);
+			expect(error).toHaveBeenCalled();
+			expect(component.emitted("update:planList")).toBeUndefined();
+			expect(wrapper.find("[role=status]").exists()).toBe(false);
+			expect(toasts.value).toEqual([]);
+			error.mockRestore();
+		});
+
+		it("saving without changes sends nothing", async () => {
+			const { component } = await mountAssignments();
+
+			await exposed(component).save();
+
+			expect(mock.history.post).toHaveLength(0);
+			expect(component.emitted("update:planList")).toBeUndefined();
+		});
+	});
+
+	describe("row menu", () => {
+		it("opens the sharing modal of the plan", async () => {
+			const { wrapper } = await mountAssignments();
+
+			await openMenu(wrapper, 0);
+			menuOption("management.assignments.menu.share")!.click();
+			await flushPromises();
+
+			const dialog = document.body.querySelector("[role=dialog]");
+			expect(dialog?.textContent).toContain("sharing.title");
+			expect(dialog?.textContent).toContain(
+				"sharing.buttons.create_link"
+			);
+			expect(
+				menuOption("management.assignments.menu.share")
+			).toBeUndefined();
+
+			document.body
+				.querySelector<HTMLButtonElement>(
+					'[role=dialog] button[aria-label="common.ui.close"]'
+				)!
+				.click();
+			await flushPromises();
+			expect(document.body.querySelector("[role=dialog]")).toBeNull();
+		});
+
+		it("stops the spinner when cloning fails", async () => {
+			mock.onPost(new RegExp(`planning/plan/${P1}/clone/$`)).reply(500);
+			const error = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+			const { wrapper, component } = await mountAssignments();
+
+			await openMenu(wrapper, 0);
+			menuOption("management.assignments.menu.clone")!.click();
+			await flushPromises();
+
+			expect(mock.history.post).toHaveLength(1);
+			expect(component.emitted("update:planList")).toBeUndefined();
+			expect(
+				bodyRows(wrapper)[0]
+					.find("button[aria-busy]")
+					.attributes("aria-busy")
+			).toBe("false");
+			expect(error).toHaveBeenCalled();
+			error.mockRestore();
+		});
+
+		it("does not delete when the confirmation is declined", async () => {
+			const { wrapper, component } = await mountAssignments();
+
+			await openMenu(wrapper, 0);
+			menuOption("management.assignments.menu.delete")!.click();
+			await flushPromises();
+			Array.from(
+				document.body.querySelectorAll<HTMLButtonElement>(
+					"[role=dialog] button"
+				)
+			)
+				.find((b) => b.textContent?.trim() === "common.buttons.cancel")!
+				.click();
+			await flushPromises();
+
+			expect(mock.history.delete).toHaveLength(0);
+			expect(component.emitted("update:empireList")).toBeUndefined();
+		});
+
+		it("ignores a choice for a plan that is gone", async () => {
+			const { wrapper, setProps } = await mountAssignments();
+
+			await openMenu(wrapper, 0);
+			await setProps({ plans: [PLANS[0], PLANS[2]] });
+			menuOption("management.assignments.menu.clone")!.click();
+			await flushPromises();
+
+			expect(mock.history.post).toHaveLength(0);
+			expect(planNames(wrapper)).toEqual(["Plan B", "Plan C"]);
+		});
+	});
+
+	describe("narrow screens", () => {
+		const SEL = "management.assignments.selection";
+		let onChange: (e: { matches: boolean }) => void;
+		let removed: number;
+
+		function narrow() {
+			removed = 0;
+			vi.stubGlobal("matchMedia", () => ({
+				matches: false,
+				addEventListener: (_: string, cb: typeof onChange) =>
+					(onChange = cb),
+				removeEventListener: () => removed++,
+			}));
+		}
+
+		afterEach(() => {
+			vi.unstubAllGlobals();
+		});
+
+		const cards = (wrapper: VueWrapper) =>
+			wrapper.findAllComponents(ManageAssignmentCard);
+		const button = (wrapper: VueWrapper, text: string) =>
+			wrapper.findAll("button").find((b) => b.text() === text);
+
+		it("lists the plans as cards and toggles assignments", async () => {
+			narrow();
+			const { wrapper } = await mountAssignments();
+
+			expect(wrapper.find("table").exists()).toBe(false);
+			expect(cards(wrapper).map((c) => c.props("row").planName)).toEqual([
+				"Plan A",
+				"Plan B",
+				"Plan C",
+			]);
+			// Alpha has A and B, Beta has C
+			expect(cards(wrapper).map((c) => c.props("cells"))).toEqual([
+				"10",
+				"10",
+				"01",
+			]);
+
+			await cards(wrapper)[2]
+				.findAll("button[aria-pressed]")[0]
+				.trigger("click");
+			expect(cards(wrapper)[2].props("cells")).toBe("+1");
+		});
+
+		it("selects all shown cards and clears them again", async () => {
+			narrow();
+			const { wrapper } = await mountAssignments();
+
+			await button(wrapper, `${SEL}.select_all_shown`)!.trigger("click");
+			expect(cards(wrapper).map((c) => c.props("selected"))).toEqual([
+				true,
+				true,
+				true,
+			]);
+			expect(wrapper.find("[role=status]").exists()).toBe(true);
+
+			await button(wrapper, `${SEL}.clear_all_shown`)!.trigger("click");
+			expect(cards(wrapper).map((c) => c.props("selected"))).toEqual([
+				false,
+				false,
+				false,
+			]);
+
+			// a single card
+			await cards(wrapper)[1].find("input[type=checkbox]").setValue(true);
+			expect(cards(wrapper).map((c) => c.props("selected"))).toEqual([
+				false,
+				true,
+				false,
+			]);
+			await cards(wrapper)[1]
+				.find("input[type=checkbox]")
+				.setValue(false);
+			expect(cards(wrapper)[1].props("selected")).toBe(false);
+		});
+
+		it("opens the row menu from a card", async () => {
+			narrow();
+			const { wrapper } = await mountAssignments();
+
+			await cards(wrapper)[1].find("button[aria-busy]").trigger("click");
+			await flushPromises();
+
+			expect(
+				menuOption("management.assignments.menu.share")
+			).toBeDefined();
+		});
+
+		it("reports no match, offers no select-all and follows the screen size", async () => {
+			narrow();
+			const { wrapper } = await mountAssignments();
+
+			wrapper.findComponent(PInput).vm.$emit("update:value", "zzz");
+			await flushPromises();
+			expect(cards(wrapper)).toHaveLength(0);
+			expect(wrapper.text()).toContain("management.assignments.no_match");
+			expect(button(wrapper, `${SEL}.select_all_shown`)).toBeUndefined();
+
+			onChange({ matches: true });
+			await flushPromises();
+			expect(wrapper.find("table").exists()).toBe(true);
+			expect(cards(wrapper)).toHaveLength(0);
+		});
+
+		it("stops listening to the screen size when unmounted", async () => {
+			narrow();
+			const { wrapper } = await mountAssignments();
+
+			wrapper.unmount();
+
+			expect(removed).toBe(1);
+		});
 	});
 });
