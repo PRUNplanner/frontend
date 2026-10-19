@@ -237,9 +237,9 @@ describe("MarketExplorationChart", () => {
 		).toHaveLength(2);
 	});
 
-	// onMounted awaits a tick and then reads the container ref, which is null
-	// once the component was unmounted in between (TypeError, no cleanup)
-	it.fails("unmounting right after mounting does not throw", async () => {
+	// onMounted awaits a tick before reading the container ref, which is null
+	// once the component was unmounted in between
+	it("unmounting right after mounting does not throw", async () => {
 		const errorHandler = vi.fn();
 		const wrapper = mount(MarketExplorationChart, {
 			props: { data: bars(1) },
@@ -249,6 +249,7 @@ describe("MarketExplorationChart", () => {
 		await flushPromises();
 
 		expect(errorHandler).not.toHaveBeenCalled();
+		expect(mock.createOptions).toHaveLength(0);
 	});
 
 	describe("crosshair legend", () => {
