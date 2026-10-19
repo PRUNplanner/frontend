@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 
 import {
+	chartScale,
+	chartTooltip,
 	chartZone,
 	compactNumber,
 	lineLabelLayout,
@@ -12,7 +14,7 @@ import {
 } from "@/ui/charts/charts.util";
 
 // Types & Interfaces
-import type { IWaterfallColumn } from "@/ui/charts/charts.types";
+import type { IChartTheme, IWaterfallColumn } from "@/ui/charts/charts.types";
 
 const label = (n: number) => `Other (${n})`;
 const item = (name: string, value: number) => ({ name, value });
@@ -98,6 +100,40 @@ describe("stripLayout", () => {
 	});
 });
 
+describe("chart theme styles", () => {
+	const theme: IChartTheme = {
+		positive: "#pos",
+		negative: "#neg",
+		warning: "#warn",
+		muted: "#muted",
+		ink: "#ink",
+		grid: "#grid",
+		axis: "#axis",
+		surface: "#surface",
+		exchange: () => "#cx",
+		costPart: () => "#cost",
+	};
+
+	it("styles the tooltip with the theme surface, axis and ink", () => {
+		expect(chartTooltip(theme)).toMatchObject({
+			backgroundColor: "#surface",
+			borderColor: "#axis",
+			titleColor: "#ink",
+			bodyColor: "#ink",
+			titleFont: { family: "monospace", weight: "bold" },
+			bodyFont: { family: "monospace", size: 12 },
+		});
+	});
+
+	it("colours grid, border and ticks of a scale from the theme", () => {
+		expect(chartScale(theme)).toStrictEqual({
+			grid: { color: "#grid" },
+			border: { color: "#axis" },
+			ticks: { color: "#muted", font: { size: 12 } },
+		});
+	});
+});
+
 describe("chartZone", () => {
 	it("is red up to red, yellow up to yellow, inclusive", () => {
 		expect([5, 5.1, 10, 10.1].map((v) => chartZone(v, 5, 10))).toEqual([
@@ -106,6 +142,21 @@ describe("chartZone", () => {
 			"yellow",
 			"none",
 		]);
+	});
+});
+
+describe("stripLayout without axis", () => {
+	it("puts the dots at 0 % on an empty axis", () => {
+		const { dots, over } = stripLayout(
+			[
+				{ key: "A", value: 0 },
+				{ key: "B", value: 0 },
+			],
+			0
+		);
+
+		expect(dots.map((d) => d.pct)).toStrictEqual([0, 0]);
+		expect(over).toStrictEqual([]);
 	});
 });
 
@@ -342,6 +393,27 @@ describe("waterfallLayout", () => {
 	});
 });
 
+describe("waterfallLayout without values", () => {
+	it("keeps a drawable domain when every column is 0", () => {
+		const layout = waterfallLayout(
+			[
+				{
+					key: "z",
+					label: "Zero",
+					kind: "total",
+					value: 0,
+					tone: "neutral",
+					segments: [],
+				},
+			],
+			100
+		);
+
+		expect(layout.ticks.length).toBeGreaterThan(1);
+		expect(layout.ticks.every((t) => Number.isFinite(t.y))).toBe(true);
+	});
+});
+
 describe("sparklineLayout", () => {
 	it("scales each row to its own min and max", () => {
 		const { lines, end } = sparklineLayout([10, 20, 15], 100, 24, 2);
@@ -371,6 +443,21 @@ describe("sparklineLayout", () => {
 			lines: [],
 			end: null,
 		});
+	});
+});
+
+describe("sparklineLayout edges", () => {
+	it("draws a single point at the left edge", () => {
+		const { lines, end } = sparklineLayout([4], 100, 24, 2);
+
+		expect(lines).toEqual(["2,12"]);
+		expect(end).toEqual({ x: 2, y: 12 });
+	});
+
+	it("skips leading and repeated gaps without empty lines", () => {
+		const { lines } = sparklineLayout([null, null, 1, 2], 90, 20, 0);
+
+		expect(lines).toEqual(["60,20 90,0"]);
 	});
 });
 
@@ -425,6 +512,10 @@ describe("lineLabelLayout", () => {
 
 		const top = lineLabelLayout([{ key: "a", y: -10 }], 16, 6, 200);
 		expect(top[0].y).toBe(6);
+	});
+
+	it("places nothing without labels", () => {
+		expect(lineLabelLayout([], 16, 0, 200)).toEqual([]);
 	});
 
 	it("spreads four labels at the same end 18 px apart inside the box", () => {

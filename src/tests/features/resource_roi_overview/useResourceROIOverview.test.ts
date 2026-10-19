@@ -12,11 +12,13 @@ import { apiService } from "@/lib/apiService";
 import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
 
 // stores
+import { useQueryStore } from "@/lib/query_cache/queryStore";
 import {
 	materialsStore,
 	recipesStore,
 	buildingsStore,
 	exchangesStore,
+	planetsStore,
 } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -129,6 +131,47 @@ describe("useResourceROIOverview", async () => {
 	});
 
 	// RIG, EXT and COL: the etherwind resources H2O, SIO and O
+	it("ranks the planets by daily yield, best first, with their share", async () => {
+		const withFactor = (id: string, factor: number) => {
+			const planet = structuredClone(planet_etherwind);
+			planet.planet_natural_id = id;
+			planet.resources = planet.resources.map((r) => ({
+				...r,
+				factor: r.factor * factor,
+				daily_extraction: r.daily_extraction * factor,
+				max_daily_extraction: r.max_daily_extraction * factor,
+			}));
+			return planet;
+		};
+		const low = withFactor("LOW-1a", 0.5);
+		const high = withFactor("HIGH-1b", 1);
+		const mid = withFactor("MID-1c", 0.75);
+		// @ts-expect-error mock data
+		await planetsStore.setMany([low, high, mid]);
+		mock.resetHandlers();
+		mock.onPost("/data/planets/search/").reply(200, [low, high, mid]);
+		// earlier tests cached the search for H2O
+		useQueryStore().$reset();
+		try {
+			const { calculate } = useResourceROIOverview(ref(undefined));
+
+			const result = await calculate("H2O");
+
+			expect(result.map((r) => r.planetNaturalId)).toStrictEqual([
+				"HIGH-1b",
+				"MID-1c",
+				"LOW-1a",
+			]);
+			expect(result[0].percentMaxDailyYield).toBe(1);
+			expect(result[1].percentMaxDailyYield).toBeCloseTo(0.75, 5);
+			expect(result[2].percentMaxDailyYield).toBeCloseTo(0.5, 5);
+		} finally {
+			// the other tests mock the search themselves
+			mock.resetHandlers();
+			useQueryStore().$reset();
+		}
+	});
+
 	it("calculates with full housing and both luxuries", async () => {
 		mock.onPost("/data/planets/search/").reply(200, [planet_etherwind]);
 		const { calculate } = useResourceROIOverview(ref(undefined));
