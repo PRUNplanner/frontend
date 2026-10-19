@@ -1,5 +1,5 @@
 {
-	"info": "This will create a unique link that can be shared with others. They can look at your plan and try changes on their own copy, but they never change your plan. The link becomes unavailable once you choose to stop sharing or delete the plan.",
+	"info": "Dies wird einen einzigartigen Link erzeugen, den du mit Anderen teilen kannst. Sie können deinen Plan anschauen und Änderungen in einer eigenen Kopie machen, aber niemals deinen Plan verändern. Der Link ist nicht mehr verfügbar, sobald du das Teilen beendest oder den Plan löscht.",
 	"share_count": "Du teilst derzeit diesen Plan. Er wurde {count} mal angesehen",
 	"buttons": {
 		"create_link": "Freigabelink erstellen",
@@ -10,38 +10,38 @@
 	"title": "Plan teilen",
 	"banner": {
 		"title": "Geteilter Plan",
-		"info": "Try changes on your own copy. The shared plan never changes.",
-		"changed": "Changed from the shared version",
-		"prices": "Prices: {source}.",
-		"prices_hint": "The person who shared it may see different numbers.",
-		"price_universe": "universe 30-day average",
-		"price_cx": "your exchange settings: {name}",
-		"reset": "Reset to shared version",
-		"copy": "Copy changes",
-		"copied": "Changes copied, paste them into Discord",
-		"copy_failed": "Couldn't copy the changes",
-		"save": "Save to my plans",
-		"signup": "Sign up to save this"
+		"info": "Versuche Änderungen an deiner Kopie dieses Plans. Der geteilte Plan verändert sich dadurch nie.",
+		"changed": "Geändert von der geteilten Version",
+		"prices": "Preise: {source}.",
+		"prices_hint": "Die Person, die ihn geteilt hat, kann unterschiedliche Zahlen sehen.",
+		"price_universe": "30-Tägiger Universum-Preis",
+		"price_cx": "Deine Handelspräferenz: {name}",
+		"reset": "Auf geteilte Version zurücksetzen",
+		"copy": "Änderungen kopieren",
+		"copied": "Änderungen kopiert. Teile sie in Discord",
+		"copy_failed": "Konnte die Änderungen nicht kopieren",
+		"save": "In meinen Plänen speichern",
+		"signup": "Melde dich an, um zu Speichern"
 	},
 	"compare": {
-		"label": "vs. shared:",
-		"profit": "{delta} ȼ/day",
+		"label": "vs. geteilt:",
+		"profit": "{delta} ȼ/Tag",
 		"roi": "ROI {from} → {to}",
-		"area": "Area {delta}",
-		"workforce": "Workforce {delta}",
-		"buildings": "Buildings {delta}",
-		"added": "new",
-		"new": "new",
-		"amount": "amount changed",
-		"recipe": "recipe changed",
-		"removed": "removed"
+		"area": "Fläche {delta}",
+		"workforce": "Belegschaft {delta}",
+		"buildings": "Gebäude {delta}",
+		"added": "neu",
+		"new": "neu",
+		"amount": "Anzahl geändert",
+		"recipe": "Rezept geändert",
+		"removed": "entfernt"
 	},
 	"changes": {
-		"recipe": "{label} recipes {from} → {to}",
-		"profit": "Profit: {from} → {to} ȼ/day",
-		"roi": "ROI: {from} → {to}",
-		"prices": "Prices: {source}",
-		"more": "…and {n} more"
+		"recipe": "{label} Rezepte {from} → {to}",
+		"profit": "Gewinn: {from} → {to} ȼ/Tag",
+		"roi": "ROI {from} → {to}",
+		"prices": "Preise: {source}",
+		"more": "...und {n} weitere"
 	},
 	"unavailable": {
 		"title": "Dieser geteilte Plan ist nicht mehr verfügbar",
