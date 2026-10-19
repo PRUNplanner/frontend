@@ -28,6 +28,9 @@ export interface IQueryDefinition<A extends [] | [unknown], D> {
 	expireTime?: number;
 	// false: the result is dropped after the call (still deduped in flight)
 	cache?: false;
+	// a persisted copy for the entry's first read, fetched at `fetchedAt`;
+	// null: fetch. Refetched in the background when already expired.
+	initialData?: () => Promise<{ data: D; fetchedAt: number } | null>;
 }
 
 /**

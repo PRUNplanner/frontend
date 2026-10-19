@@ -124,6 +124,10 @@ component / composable
     `cache`. `cache: false` drops the result after the call (still deduped
     while in flight), for reads that must not be cached
     (`GetPreferences`, `GetAPIKeys`).
+  - `initialData` (optional): a persisted copy for an entry's first read,
+    `{ data, fetchedAt } | null`. Skipped by `forceRefetch` and once the
+    entry has data; a copy already past `expireTime` is returned and
+    refetched in the background (§4, the game data lists).
 - **Mutations** (`defineMutation({ fetchFn })`) have only a `fetchFn`: no
   key, `expireTime`, `autoRefetch` or `cache`. `execute` runs them outside
   the cache: no entry, no in-flight slot, no dedupe (two calls send two
@@ -201,7 +205,9 @@ component / composable
   - `schema.ts` defines the object stores `gamedata_materials` (keyed by
     `ticker`), `gamedata_buildings` (`building_ticker`), `gamedata_recipes`
     (`recipe_id`), `gamedata_exchanges` (`ticker_id`) and
-    `gamedata_planets` (`planet_natural_id`).
+    `gamedata_planets` (`planet_natural_id`), plus `gamedata_meta` (`store`):
+    one `{ store, fetchedAt, rows }` row per full game data list, see
+    Freshness.
   - When the DB version (`__INDEXEDDB_VERSION__`) changes, the upgrade
     handler **deletes and recreates every store**. Schema changes therefore
     only need a version bump.
@@ -214,7 +220,8 @@ component / composable
   `getLoaded(key)` reads the map synchronously and throws if the store was
   never preloaded; the planning engine and `PriceBook` rely on it. After
   writing to IndexedDB, call `preload(true)` or synchronous readers won't see
-  the new rows (the `Get*` queries do this through `storeAndPreload`).
+  the new rows (the planet queries do this through `storeAndPreload`; the
+  game data lists `fill` memory themselves, see Freshness).
   `allData` is a `shallowRef` of raw rows: assign a new array, never mutate
   it in place, or computeds over it won't update.
   `fill(rows, replace)` loads rows into memory without the DB; `storeAndPreload`
@@ -240,11 +247,37 @@ component / composable
   | `usePlanetData()` | `getPlanet`, planet names (`loadPlanetNames`, sync `planetName(id)` for templates, cached in the `planetNames` Map), special materials |
 
 - **Freshness.**
-  - The `Get*` game-data queries write into IndexedDB and then call
-    `useDB(store).preload(true)`.
   - Their TTL comes from `config.GAME_DATA_STALE_MINUTES_*`: materials,
     buildings and recipes default to 1440 min, planets to 180 min and
     exchanges to 30 min.
+  - **IndexedDB first** (`GetMaterials`, `GetExchanges`, `GetBuildings`,
+    `GetRecipes`, `gameDataQuery`): a tab's first read is the definition's
+    `initialData` hook. `readGameData` reads the store's `gamedata_meta`
+    row; if it exists and is at most `config.GAME_DATA_MAX_AGE_MINUTES_*`
+    old (exchanges 30 min, the rest 7 days) the rows are preloaded and
+    returned with the entry's timestamp set to `fetchedAt`. Already past
+    the TTL (materials 1–7 days old), the query store refetches it in the
+    background at once. No meta row, too old or an IndexedDB error: the
+    query waits for the API as before. Exchange prices older than 30
+    minutes are therefore never shown. Invalidating such an entry (e.g. the
+    query cache debug view) reads the IndexedDB copy again; `forceRefetch`
+    always fetches.
+  - **Writing:** a fetch fills the in-memory layer (`useDB(store).fill`)
+    and returns; `persistGameData` writes IndexedDB in the background
+    (`whenIdle`: `config.GAME_DATA_WRITE_DELAY_MS`, 5 s, after the fetch
+    and then on an idle main thread, as cloning the rows would compete with
+    the page loading; a tab closed before that just fetches next time), in
+    one transaction over the store and `gamedata_meta` (meta deleted, rows
+    replaced, meta written last). A write cut off halfway leaves no meta
+    row, and a store without one is never read. Failures only log (and
+    `dropDB` on a dead connection).
+  - Planets (`GetPlanet`, `GetMultiplePlanets`, searches) still write and
+    preload through `storeAndPreload`, and always fetch.
+  - Timing: each phase is a `performance.measure`
+    (`gamedata:<store>:idb-read|fetch|fill|idb-write`), and the first load
+    per store and tab is sent as `perf:gamedata_load`
+    ([analytics.md](analytics.md)). The loaders add `loader:game` and
+    `loader:planning` (mount to all loaded).
   - `WrapperGameDataLoader` triggers these queries. See
     [features/wrapper.md](features/wrapper.md).
 
@@ -252,11 +285,13 @@ component / composable
 
 1. `WrapperGameDataLoader load-materials` runs
    `queryStore.execute("GetMaterials")`.
-2. That calls `callDataMaterials()`, which does
+2. The entry has no data: `initialData` reads IndexedDB. A fresh copy is
+   returned and the steps below are skipped.
+3. Otherwise `callDataMaterials()` does
    `apiService.get("/data/materials/", MaterialPayloadSchema)`.
-3. The result goes to `materialsStore.setMany(data, true)`, then
-   `useDB(materialsStore).preload(true)`.
-4. Components read it through `useMaterialData().getMaterial("DW")`.
+4. The result goes to `useDB(materialsStore).fill(data, true)` and is
+   returned; `persistGameData` writes it to IndexedDB afterwards.
+5. Components read it through `useMaterialData().getMaterial("DW")`.
 
 ## 5. Pinia stores (`src/stores/`)
 
@@ -316,5 +351,6 @@ the tabs of one browser are kept in step explicitly (registered in
 
 `config.ts` reads the `VITE_*` env vars (see the README table) and applies
 defaults: the API and share base URLs, the stale minutes for each game-data
-type, and the IndexedDB name. The values are frozen when the module is
+type, the maximum age of an IndexedDB copy a tab renders from
+(`GAME_DATA_MAX_AGE_MINUTES_*`), and the IndexedDB name. The values are frozen when the module is
 imported.

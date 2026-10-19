@@ -8,6 +8,7 @@ import type {
 	Planet,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
+import type { IGameDataMeta } from "@/database/stores.types";
 
 export const materialsStore = useIndexedDBStore<Material, "ticker">(
 	"gamedata_materials",
@@ -32,4 +33,9 @@ export const recipesStore = useIndexedDBStore<Recipe, "recipe_id">(
 export const buildingsStore = useIndexedDBStore<Building, "building_ticker">(
 	"gamedata_buildings",
 	"building_ticker" as const
+);
+
+export const gamedataMetaStore = useIndexedDBStore<IGameDataMeta, "store">(
+	"gamedata_meta",
+	"store" as const
 );

@@ -31,6 +31,8 @@ export function useGameDataLoader(
 
 	const queryStore = useQueryStore();
 	const done: Ref<boolean> = ref(false);
+	// mount to all data loaded, a performance measure for the lab runs
+	const loadStart = performance.now();
 
 	const stepConfigs: GameDataStepConfigsType = [
 		{
@@ -177,6 +179,8 @@ export function useGameDataLoader(
 		allLoaded,
 		(ok) => {
 			if (ok) {
+				if (!done.value)
+					performance.measure("loader:game", { start: loadStart });
 				emits("complete");
 				done.value = true;
 			}

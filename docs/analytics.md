@@ -220,6 +220,12 @@ so for them `tool:use` is close to a pageview that got a result:
 `construction_cart_need` (one building's row), `repair_due`, `repair_materials`,
 `fio_repair`, `hq_upgrade`. Before 2026-10-16 the events had no properties.
 
+### Performance
+
+| Event | Properties | When |
+| --- | --- | --- |
+| `perf:gamedata_load` | `store` (`materials`, `exchanges`, `buildings`, `recipes`), `source` (`cache`, `network`), `is_stale`, `age_min`, `ms_total`, `ms_idb_read`, `ms_fetch`, `ms_idb_write` | a game data list's first load in a tab, once per store: from IndexedDB (`cache`) or the API (`network`). `is_stale`: the IndexedDB copy was older than its stale time (`cache`: refreshed in the background; `network`: older than its maximum age). `age_min` is that copy's age, null without one. `ms_total` is what the page waited; background phases (`ms_fetch` of a refresh, `ms_idb_write`) are in, as the event is sent once they end |
+
 ## Pageviews
 
 PostHog's own pageview capture is off (`capture_pageview: false`,

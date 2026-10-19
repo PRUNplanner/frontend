@@ -59,6 +59,8 @@ export function usePlanningDataLoader(
 		list.some((e) => e.uuid === empireUuid);
 	const queryStore = useQueryStore();
 	const done: Ref<boolean> = ref(false);
+	// mount to all data loaded, a performance measure for the lab runs
+	const loadStart = performance.now();
 
 	const { createBlankDefinition } = usePlan();
 
@@ -351,6 +353,8 @@ export function usePlanningDataLoader(
 		allLoaded,
 		(ok) => {
 			if (ok) {
+				if (!done.value)
+					performance.measure("loader:planning", { start: loadStart });
 				emits("complete");
 				done.value = true;
 			}
