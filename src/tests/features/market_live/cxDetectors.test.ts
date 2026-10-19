@@ -196,4 +196,179 @@ describe("Market Detector Engine", () => {
 			processUserDetectors([config], mockOldData, mockNewData)
 		).toHaveLength(fires ? 1 : 0);
 	});
+
+	describe("rule groups", () => {
+		const rule = (logic: DetectorConfig["logic"]): DetectorConfig => ({
+			id: "group",
+			name: "Group",
+			enabled: true,
+			severity: "HIGH",
+			logic,
+		});
+		const priceGt = (value: number) =>
+			({
+				field: "price",
+				operator: "gt",
+				target: { type: "static", value },
+			}) as const;
+		const volumeLt = (value: number) =>
+			({
+				field: "volume",
+				operator: "lt",
+				target: { type: "static", value },
+			}) as const;
+		const messages = (config: DetectorConfig) =>
+			processUserDetectors([config], mockOldData, mockNewData).map(
+				(e) => e.message
+			);
+
+		it("OR fires with the first condition that holds", () => {
+			expect(
+				messages(
+					rule({
+						operator: "OR",
+						conditions: [volumeLt(100), priceGt(10), priceGt(20)],
+					})
+				)
+			).toStrictEqual(["price gt 10"]);
+		});
+
+		it("OR stays silent when no condition holds", () => {
+			expect(
+				messages(
+					rule({
+						operator: "OR",
+						conditions: [volumeLt(100), priceGt(1000)],
+					})
+				)
+			).toStrictEqual([]);
+		});
+
+		it("OR reports every trigger of a nested group that holds", () => {
+			expect(
+				messages(
+					rule({
+						operator: "OR",
+						conditions: [
+							priceGt(1000),
+							{
+								operator: "AND",
+								conditions: [priceGt(10), volumeLt(1000)],
+							},
+						],
+					})
+				)
+			).toStrictEqual(["price gt 10 AND volume lt 1000"]);
+		});
+
+		it("OR skips a nested group that fails", () => {
+			expect(
+				messages(
+					rule({
+						operator: "OR",
+						conditions: [
+							{
+								operator: "AND",
+								conditions: [priceGt(10), volumeLt(100)],
+							},
+							priceGt(20),
+						],
+					})
+				)
+			).toStrictEqual(["price gt 20"]);
+		});
+
+		it("AND collects the triggers of a nested group", () => {
+			expect(
+				messages(
+					rule({
+						operator: "AND",
+						conditions: [
+							priceGt(10),
+							{
+								operator: "OR",
+								conditions: [volumeLt(100), volumeLt(1000)],
+							},
+						],
+					})
+				)
+			).toStrictEqual(["price gt 10 AND volume lt 1000"]);
+		});
+
+		it("AND fails when a nested group fails", () => {
+			expect(
+				messages(
+					rule({
+						operator: "AND",
+						conditions: [
+							priceGt(10),
+							{
+								operator: "OR",
+								conditions: [volumeLt(100)],
+							},
+						],
+					})
+				)
+			).toStrictEqual([]);
+		});
+	});
+
+	describe("conditions", () => {
+		const check = (
+			field: string,
+			operator: string,
+			target: unknown,
+			oldData: Partial<CXDataPoint> | undefined = mockOldData
+		) =>
+			processUserDetectors(
+				[
+					{
+						id: "c",
+						name: "C",
+						enabled: true,
+						severity: "HIGH",
+						logic: {
+							operator: "AND",
+							conditions: [{ field, operator, target }],
+						},
+					} as DetectorConfig,
+				],
+				oldData as CXDataPoint | undefined,
+				mockNewData
+			);
+
+		it("ignores a field the new data lacks", () => {
+			expect(
+				check("ask", "gt", { type: "static", value: 1 })
+			).toHaveLength(0);
+		});
+
+		it("a percentage of a previous text value can't be compared", () => {
+			expect(
+				check("category", "gt", { type: "previous_pct", offset: 10 })
+			).toHaveLength(0);
+		});
+
+		it("an operator that doesn't fit numbers never fires", () => {
+			expect(
+				check("price", "matches", { type: "static", value: 150 })
+			).toHaveLength(0);
+		});
+
+		it("an unknown comparison target never fires", () => {
+			expect(check("price", "gt", { type: "average" })).toHaveLength(0);
+		});
+
+		it("reports the previous value as the target of a previous comparison", () => {
+			const [event] = check("price", "gt", { type: "previous" });
+
+			expect(event.metadata.triggers[0]).toMatchObject({
+				targetValue: 100,
+				thresholdReached: 100,
+				comparisonType: "previous",
+			});
+			expect(event.metadata.prevData).toBe(mockOldData);
+			expect(event.metadata.data).toBe(mockNewData);
+		});
+	});
 });

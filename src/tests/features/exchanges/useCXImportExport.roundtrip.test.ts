@@ -12,8 +12,14 @@ const cx: CXData = {
 		{ type: "SELL", exchange: "NC1_BID" },
 	],
 	cx_planets: [
-		{ planet: "LS-231b", preferences: [{ type: "BOTH", exchange: "AI1_7D" }] },
-		{ planet: "ZZ-999z", preferences: [{ type: "BUY", exchange: "IC1_ASK" }] },
+		{
+			planet: "LS-231b",
+			preferences: [{ type: "BOTH", exchange: "AI1_7D" }],
+		},
+		{
+			planet: "ZZ-999z",
+			preferences: [{ type: "BUY", exchange: "IC1_ASK" }],
+		},
 	],
 	ticker_empire: [
 		{ type: "BOTH", ticker: "H2O", value: 9 },
@@ -21,7 +27,10 @@ const cx: CXData = {
 		{ type: "SELL", ticker: "GRN", value: 0 },
 	],
 	ticker_planets: [
-		{ planet: "LS-231b", preferences: [{ type: "BUY", ticker: "RAT", value: 75 }] },
+		{
+			planet: "LS-231b",
+			preferences: [{ type: "BUY", ticker: "RAT", value: 75 }],
+		},
 	],
 };
 
@@ -59,5 +68,72 @@ describe("CSV round trip", () => {
 				preferences: p.ticker,
 			})),
 		}).toEqual(cx);
+	});
+
+	it("keeps several rules of one planet together", async () => {
+		const { generateSettingsCSV, parseSettingsCSV } = useCXImportExport();
+		const csv = generateSettingsCSV(
+			[],
+			[],
+			[
+				{
+					planet: "LS-231b",
+					exchanges: [
+						{ type: "BUY", exchange: "AI1_ASK" },
+						{ type: "SELL", exchange: "IC1_BID" },
+					],
+					ticker: [],
+				},
+			],
+			[
+				{
+					planet: "LS-231b",
+					exchanges: [],
+					ticker: [
+						{ type: "BUY", ticker: "RAT", value: 75 },
+						{ type: "SELL", ticker: "DW", value: 12 },
+					],
+				},
+			]
+		);
+
+		const parsed = await parseSettingsCSV(new File([csv], "x.csv"));
+
+		expect(parsed.planetsCX).toStrictEqual([
+			{
+				planet: "LS-231b",
+				exchanges: [
+					{ type: "BUY", exchange: "AI1_ASK" },
+					{ type: "SELL", exchange: "IC1_BID" },
+				],
+				ticker: [],
+			},
+		]);
+		expect(parsed.plantesTickerOptions).toStrictEqual([
+			{
+				planet: "LS-231b",
+				exchanges: [],
+				ticker: [
+					{ type: "BUY", ticker: "RAT", value: 75 },
+					{ type: "SELL", ticker: "DW", value: 12 },
+				],
+			},
+		]);
+	});
+
+	it("exports only the header without rules, even for missing lists", () => {
+		const { generateSettingsCSV } = useCXImportExport();
+		const header = "Location;Type;CX;Ticker;Price";
+
+		expect(generateSettingsCSV([], [], [], [])).toBe(header);
+		// a store that hasn't loaded yet hands over undefined
+		expect(
+			generateSettingsCSV(
+				undefined as never,
+				undefined as never,
+				undefined as never,
+				undefined as never
+			)
+		).toBe(header);
 	});
 });
