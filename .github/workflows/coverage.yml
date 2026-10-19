@@ -28,6 +28,7 @@ jobs:
         with:
           name: blob-unit
           path: .vitest-reports/
+          include-hidden-files: true
           retention-days: 1
 
   components:
@@ -49,6 +50,7 @@ jobs:
         with:
           name: blob-components
           path: .vitest-reports/
+          include-hidden-files: true
           retention-days: 1
 
   report:
