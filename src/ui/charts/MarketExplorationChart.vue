@@ -98,15 +98,17 @@
 	};
 
 	onMounted(async () => {
-		if (!chartContainerRef.value) return;
-
 		await nextTick();
 
-		const initialWidth = chartContainerRef.value.clientWidth || 800;
-		const initialHeight = chartContainerRef.value.clientHeight || 600;
+		// the component may have unmounted while awaiting the tick
+		const container = chartContainerRef.value;
+		if (!container) return;
+
+		const initialWidth = container.clientWidth || 800;
+		const initialHeight = container.clientHeight || 600;
 
 		const colors = layoutColors();
-		chart = createChart(chartContainerRef.value, {
+		chart = createChart(container, {
 			...colors,
 			width: initialWidth,
 			height: initialHeight,
@@ -151,7 +153,7 @@
 				chart.applyOptions({ width, height });
 			}
 		});
-		resizeObserver.observe(chartContainerRef.value);
+		resizeObserver.observe(container);
 
 		chart.subscribeCrosshairMove((param) => {
 			if (!param.time || !candleSeries || !volumeSeries) {
