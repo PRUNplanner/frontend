@@ -122,7 +122,7 @@ Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
 Component tests are a **separate suite**. Every test under
 `src/tests/**/components/**`, and view tests under `src/tests/views/`, is
 excluded from `pnpm test` and runs with `pnpm test:components` instead, in
-its own CI job (`coverage.yml`, which also merges its coverage with the unit
+its own sharded CI jobs (`coverage.yml`, which also merges its coverage with the unit
 suite's). A view
 test stubs the `features/wrapper` loaders with a pass-through and seeds the
 stores instead; see `ExchangesView.test.ts`. Run them before a PR that

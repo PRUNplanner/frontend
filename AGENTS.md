@@ -39,8 +39,8 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
 CI runs `pnpm test:components` (about 3 minutes) on PRs as well. Run it
 too when you touch a component, a view or their tests.
 
-**Coverage.** `coverage.yml` runs the unit and the component/view suites as
-two parallel jobs, merges their vitest blob reports into one
+**Coverage.** `coverage.yml` runs the unit and the component/view suites, each in
+parallel shards, merges their vitest blob reports into one
 `coverage/lcov.info` and uploads that to Codacy (pushes to `main` and PRs from
 this repo). `pnpm test:coverage` builds the same report locally. Every file in
 `src/` counts, tested or not; only `src/tests/`, `main.ts`, `*.d.ts` and
