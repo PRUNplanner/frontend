@@ -14,7 +14,7 @@ const fakeStorage = {
 	},
 };
 
-// the once-per-tab report is module state: a fresh copy per test
+// the once-per-key report is module state: a fresh copy per test
 async function load() {
 	vi.resetModules();
 	return (await import("@/lib/persistStorage")).persistStorage;
@@ -48,6 +48,21 @@ describe("persistStorage", () => {
 			expect.objectContaining({ name: "QuotaExceededError" }),
 			{ key: "k", size_kb: 4 }
 		);
+	});
+
+	it("reports a failure of another key again", async () => {
+		const storage = await load();
+		full = true;
+
+		storage.setItem("prunplanner_planning", "a");
+		storage.setItem("prunplanner_planning", "b");
+		storage.setItem("prunplanner_user", "c");
+
+		expect(trackException).toHaveBeenCalledTimes(2);
+		expect(trackException).toHaveBeenLastCalledWith(expect.anything(), {
+			key: "prunplanner_user",
+			size_kb: 0,
+		});
 	});
 
 	it("writes nothing once stopped", async () => {

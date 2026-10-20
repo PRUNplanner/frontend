@@ -73,8 +73,8 @@ export function usePlanningDataLoader(
 			props.sharedPlanUuid,
 		],
 		(
-			[newEmpire, newPlan, _newPlanet, _newShared],
-			[oldEmpire, oldPlan, _oldPlanet, _oldShared]
+			[newEmpire, newPlan, newPlanet, newShared],
+			[oldEmpire, oldPlan, oldPlanet, oldShared]
 		) => {
 			done.value = false;
 
@@ -110,6 +110,22 @@ export function usePlanningDataLoader(
 					stepPlan.triggered = false;
 					stepPlan.data = null;
 					done.value = false;
+				}
+			}
+
+			// another share: its plan, and the planet it brings, load again
+			const stepShared = steps.find((s) => s.cfg.key === "sharedPlan");
+			if (newShared && newShared !== oldShared && stepShared) {
+				stepShared.triggered = false;
+				stepShared.data = null;
+			}
+
+			// another planet (or share): don't keep the old planet's data
+			if (newPlanet !== oldPlanet || newShared !== oldShared) {
+				const stepPlanet = steps.find((s) => s.cfg.key === "planet");
+				if (stepPlanet) {
+					stepPlanet.triggered = false;
+					stepPlanet.data = null;
 				}
 			}
 		}

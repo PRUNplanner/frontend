@@ -102,9 +102,6 @@
 		planetStorageId,
 	} = useFIOStorage();
 	const planningStore = usePlanningStore();
-	const fioUpdated = relativeFromDate(
-		planningStore.fio_storage_timestamp ?? undefined
-	);
 
 	// Get already constructed buildings, cart must still render if FIO fails
 	let constructedMap: Map<string, number> | null = null;
@@ -121,6 +118,10 @@
 			// queryStore already logs the error, constructedMap stays null
 		}
 	}
+	// after the fetch: FIO storage isn't persisted, so null until it loaded
+	const fioUpdated = relativeFromDate(
+		planningStore.fio_storage_timestamp ?? undefined
+	);
 
 	// manually entered built counts, saved per plan; unsaved and shared plans
 	// keep them for this visit only

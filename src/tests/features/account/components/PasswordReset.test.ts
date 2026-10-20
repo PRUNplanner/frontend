@@ -55,6 +55,30 @@ describe("PasswordReset", () => {
 		vi.restoreAllMocks();
 	});
 
+	it("keeps the button disabled for an invalid email", async () => {
+		const { wrapper } = await mountComponent(PasswordReset, {
+			resetCode: "test-code",
+		});
+		const [email, , password] = wrapper.findAll("input");
+		const button = () => wrapper.find("button");
+		await password.setValue("correct-horse-battery");
+
+		for (const invalid of ["", "test.example.com", "test@"]) {
+			await email.setValue(invalid);
+			expect(button().attributes("disabled")).toBeDefined();
+		}
+		await email.setValue("test@example.com");
+		expect(button().attributes("disabled")).toBeUndefined();
+		await password.setValue("short");
+		expect(button().attributes("disabled")).toBeDefined();
+
+		await email.setValue("test.example.com");
+		await password.setValue("correct-horse-battery");
+		await button().trigger("click");
+		await flushPromises();
+		expect(mock.history.post).toHaveLength(0);
+	});
+
 	it("shows the throttled message on a 429", async () => {
 		mock.onPost(RESET_URL).reply(429, {
 			detail: "Request was throttled.",

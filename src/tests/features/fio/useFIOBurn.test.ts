@@ -150,6 +150,18 @@ describe("useFIOBurn", async () => {
 		expect(burnTable.value[0].hasStorage).toBe(true);
 	});
 
+	it("leaves out a result whose plan is gone", () => {
+		// deleted or moved in another tab, not recalculated yet
+		const { burnTable, planTable } = useFIOBurn(
+			// @ts-expect-error mock data
+			ref([plan_A]),
+			ref({ ...fakeData, GONE: result_A })
+		);
+
+		expect(burnTable.value.map((p) => p.planUuid)).toStrictEqual(["A"]);
+		expect(planTable.value.map((p) => p.planUuid)).toStrictEqual(["A"]);
+	});
+
 	describe("with several plans", () => {
 		const mat = (ticker: string, delta: number) => ({
 			ticker,

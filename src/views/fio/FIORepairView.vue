@@ -53,7 +53,7 @@
 				DAY_MS
 	);
 	const lastUpdate = computed(() =>
-		relativeFromDate(planningStore.fio_storage_timestamp ?? 0, true)
+		relativeFromDate(planningStore.fio_storage_timestamp ?? undefined, true)
 	);
 
 	const plans: Ref<Plan[]> = ref([]);

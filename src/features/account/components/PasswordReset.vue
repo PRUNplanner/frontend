@@ -12,7 +12,10 @@
 
 	// UI
 	import { PForm, PFormItem, PInput, PButton } from "@/ui";
-	import type { UserResponseDetail } from "@/features/api/schemas/user.schemas";
+	import {
+		UserPasswordResetPayloadSchema,
+		type UserResponseDetail,
+	} from "@/features/api/schemas/user.schemas";
 
 	const props = defineProps({
 		resetCode: {
@@ -30,16 +33,16 @@
 
 	const requestResponse: Ref<UserResponseDetail | null> = ref(null);
 
+	// the request's own schema, so the button never sends an invalid email
 	const canSend = computed(
 		() =>
-			!!(
-				inputEmail.value &&
-				inputEmail.value != "" &&
-				inputCode.value &&
-				inputCode.value !== "" &&
-				inputPassword.value &&
-				inputPassword.value.length >= 8
-			)
+			!!inputCode.value &&
+			(inputPassword.value?.length ?? 0) >= 8 &&
+			UserPasswordResetPayloadSchema.safeParse({
+				email: inputEmail.value,
+				code: inputCode.value,
+				new_password: inputPassword.value,
+			}).success
 	);
 
 	async function requestReset() {
