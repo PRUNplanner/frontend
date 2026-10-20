@@ -233,7 +233,7 @@
 									$t("fio.burn.fio_last_update", {
 										last_updated: relativeFromDate(
 											planningStore.fio_storage_timestamp ??
-												0,
+												undefined,
 											true
 										),
 									})

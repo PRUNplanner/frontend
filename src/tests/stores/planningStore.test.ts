@@ -1,9 +1,18 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeEach,
+	onTestFinished,
+	vi,
+} from "vitest";
 import { createApp } from "vue";
 import { createPinia, setActivePinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 // stores
 import { usePlanningStore } from "@/stores/planningStore";
+import { memoryStorage } from "@/tests/memoryStorage";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 // test data
@@ -211,5 +220,28 @@ describe("Persistence", () => {
 		expect(pick.filter((key) => !(key in store.$state))).toStrictEqual(
 			[]
 		);
+	});
+
+	it("drops FIO storage of a value stored before it was left out", () => {
+		onTestFinished(() => {
+			vi.unstubAllGlobals();
+		});
+		vi.stubGlobal(
+			"localStorage",
+			memoryStorage({
+				prunplanner_planning: JSON.stringify({
+					cxs: {},
+					fio_storage_planets: { KW688c: {} },
+					fio_storage_timestamp: "2026-10-01T00:00:00Z",
+				}),
+			})
+		);
+		const pinia = createPinia().use(piniaPluginPersistedstate);
+		createApp({}).use(pinia);
+		setActivePinia(pinia);
+		const store = usePlanningStore();
+
+		expect(store.fio_storage_planets).toStrictEqual({});
+		expect(store.fio_storage_timestamp).toBeNull();
 	});
 });
