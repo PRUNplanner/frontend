@@ -17,7 +17,9 @@ disagree, trust the code and fix the doc.
 6. [testing.md](testing.md): Vitest setup, mocking and test isolation.
 7. [analytics.md](analytics.md): the tracking plan: events, properties and
    naming rules.
-8. [features/](features/README.md): one page per `src/features/*` folder.
+8. [seo.md](seo.md): the static head, `useHead` per route, the prerendered
+   landing page and how it is served.
+9. [features/](features/README.md): one page per `src/features/*` folder.
 
 The rules and the command cheat-sheet are in the root [AGENTS.md](../AGENTS.md).
 

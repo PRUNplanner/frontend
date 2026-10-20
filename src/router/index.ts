@@ -37,7 +37,7 @@ const router = createRouter({
 		{
 			name: "homepage",
 			path: "/",
-			meta: { showHeader: false },
+			meta: { indexable: true },
 			component: () => import("@/views/HomepageView.vue"),
 			props: true,
 		},
@@ -89,7 +89,6 @@ const router = createRouter({
 		{
 			name: "shared-plan",
 			path: "/shared/:sharedPlanUuid",
-			meta: { showHeader: false },
 			component: () => import("@/views/PlanLoadView.vue"),
 			props: true,
 		},
@@ -119,10 +118,9 @@ const router = createRouter({
 		},
 		{
 			// public: the app layout logged in, the homepage header logged out
-			// (showHeader would add a second logo to it)
 			name: "market",
 			path: "/market",
-			meta: { showHeader: false },
+			meta: { indexable: true },
 			component: () => import("@/views/tools/MarketReportView.vue"),
 		},
 		{
@@ -135,7 +133,7 @@ const router = createRouter({
 		{
 			name: "imprint-tos",
 			path: "/imprint-tos",
-			meta: { showHeader: false },
+			meta: { indexable: true },
 			component: () => import("@/views/ImprintToSView.vue"),
 		},
 		{
@@ -173,20 +171,18 @@ const router = createRouter({
 		{
 			name: "verify-email",
 			path: "/verify-email/:verifyCode?",
-			meta: { showHeader: false, requiresAuth: true },
+			meta: { requiresAuth: true },
 			props: true,
 			component: () => import("@/views/VerifyEmailView.vue"),
 		},
 		{
 			name: "request-password-reset",
 			path: "/request-password-reset",
-			meta: { showHeader: false },
 			component: () => import("@/views/RequestPasswordResetView.vue"),
 		},
 		{
 			name: "password-reset",
 			path: "/password-reset/:resetCode?",
-			meta: { showHeader: false },
 			props: true,
 			component: () => import("@/views/PasswordResetView.vue"),
 		},
@@ -201,6 +197,12 @@ const router = createRouter({
 			path: "/apikey",
 			meta: { requiresAuth: true },
 			component: () => import("@/views/APIKeyView.vue"),
+		},
+		{
+			// an unknown address: noindex, not a soft 404 with the landing page
+			name: "not-found",
+			path: "/:pathMatch(.*)*",
+			component: () => import("@/views/NotFoundView.vue"),
 		},
 		// every kit component in every state; dev server and e2e builds only
 		...(import.meta.env.DEV || import.meta.env.VITE_KIT_PAGE === "true"

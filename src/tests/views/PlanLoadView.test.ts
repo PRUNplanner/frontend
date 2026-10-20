@@ -25,6 +25,8 @@ const { loaded, trackEvent, replace } = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+const head = vi.hoisted(() => ({ useHead: vi.fn() }));
+vi.mock("@unhead/vue", () => head);
 vi.mock("@/router", () => ({ default: { replace } }));
 vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () => ({
 	__esModule: true,
@@ -268,5 +270,14 @@ describe("PlanLoadView", () => {
 
 			expect(replace).not.toHaveBeenCalled();
 		});
+	});
+
+	it.each([
+		[{ sharedPlanUuid: "abc" }, "sharing.banner.title"],
+		[{ planetNaturalId: "OT-580b" }, "common.navigation.planning"],
+	])("titles the page until the plan names it (%o)", async (props, title) => {
+		await mountComponent(PlanLoadView, props);
+
+		expect(head.useHead.mock.lastCall![0].title()).toBe(title);
 	});
 });

@@ -39,6 +39,16 @@
 	/* popovers, menus, lists, tooltips, toasts, modals, tables */
 	--radius-panel: 6px;
 	--shadow-panel: 0 10px 15px -3px rgb(0 0 0 / 0.6);
+	/* the landing tours' step progress, its duration set inline */
+	--animate-tour-progress: tour-progress 5s linear forwards;
+	@keyframes tour-progress {
+		from {
+			width: 0;
+		}
+		to {
+			width: 100%;
+		}
+	}
 }
 
 /* chart colours, read by useChartTheme (src/ui/charts/chartTheme.ts);

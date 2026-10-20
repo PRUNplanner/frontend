@@ -6,8 +6,11 @@ also holds the email nudge: the Empire banner that asks for an email and the
 dialog that adds and confirms one.
 
 **Used by.**
-- `layout/components/HomepageHeader.vue`, which shows `LoginComponent` and
-  `RegistrationComponent`.
+- `layout/components/HomepageHeader.vue`, which shows `LoginComponent` or
+  `RegistrationComponent` in its slide-in panel (`PDrawer`). Both forms are
+  styled for that panel only (the landing classes in
+  `features/homepage/homepage.constants.ts`); their requests, validation
+  and redirects are their own.
 - `views/VerifyEmailView.vue`, `RequestPasswordResetView.vue` and
   `PasswordResetView.vue`.
 - `views/EmpireView.vue` (`EmailNudgeBanner`) and
@@ -32,9 +35,15 @@ least one plan, and not dismissed (`emailNudgeDismissal` `"never"`, or
 preferences, synced like any other. `account.util.ts` has `isEmailAddress`
 (the rule of every email field) and `maskEmail`.
 
-`useAuthPanel.ts` holds which header panel (login or registration) is open,
-as module state: `HomepageHeader` renders and toggles the panels,
-`SharedPlanBanner` opens them with `open("login" | "registration")`.
+`useAuthPanel.ts` holds which form the header panel shows (login,
+registration or none), as module state: `HomepageHeader` renders the panel
+and toggles it from its buttons, `switchTo()` is the switch inside it, and
+the landing page and `SharedPlanBanner` open it with
+`open(panel, source)`. Opening never scrolls: the panel slides in where the
+page is. `open` and `switchTo` send `landing:auth_open` / `landing:auth_switch`.
+After a registration the welcome state's "Log in" emits `login`, and
+`showLoginForm()` switches the panel to the login form (no event: it is
+not the switch).
 
 ## Data
 

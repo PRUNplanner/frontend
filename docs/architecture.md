@@ -6,7 +6,7 @@
 | --- | --- |
 | `main.ts` | Bootstrap (see below) |
 | `AppProvider.vue` | `App` plus the kit's `PConfirmHost` and `PToastHost` |
-| `App.vue` | Shell. Shows the navigation when logged in (`layout/components/navigation/`: `AppSidebar` from `md`, collapsing to `SidebarRail`, and `MobileNavBar` with its sheets below) and `HomepageHeader` otherwise, then `<Suspense><RouterView/></Suspense>` and `AppFooter` (not on the homepage, which has its own footer) |
+| `App.vue` | Shell. Shows the navigation when logged in (`layout/components/navigation/`: `AppSidebar` from `md`, collapsing to `SidebarRail`, and `MobileNavBar` with its sheets below) and `HomepageHeader` otherwise (with the login / registration panel), then `<main>` with `<Suspense><RouterView/></Suspense>` and `AppFooter` (not on the homepage, which has its own footer) |
 | `router/` | Flat route table (`index.ts`); typed meta in `router.d.ts` |
 | `views/` | Route pages (`*View.vue`), plus `views/fio/` and `views/tools/` |
 | `features/<name>/` | Feature code: composables, components and types. See [features/](features/README.md) |
@@ -27,7 +27,8 @@
 `main.ts` runs these steps in order:
 
 1. Import the CSS.
-2. `createApp(AppProvider)`.
+2. `createApp(AppProvider)`, or `createSSRApp` over the prerendered landing
+   page, which it then hydrates ([seo.md](seo.md)).
 3. Install the router.
 4. Install Pinia with `pinia-plugin-persistedstate`.
 5. `await userStore.initLocale(...)`. This uses top-level await.
@@ -35,7 +36,9 @@
 7. `axiosSetup()`, which adds the auth interceptors.
 8. Install unhead.
 9. Install vue-showdown, which renders markdown.
-10. Mount the app.
+10. Mount the app (`prepareMount` / `mountApp` in `lib/seo/prerenderMount.ts`,
+    not awaited: lazy chunks import from `main.ts`, which has to finish
+    evaluating first).
 
 ## Routing (`src/router/index.ts`)
 
@@ -44,8 +47,12 @@
 - `meta.requiresAuth` sends logged-out users to `/` with
   `?redirectTo=<path>`.
 - A logged-in user who hits `/` is redirected to `/empire`.
-- `meta.showHeader: false` hides the public header (homepage, shared plans,
-  auth flows).
+- `meta.indexable` marks the pages search engines may index (`/`,
+  `/imprint-tos`, `/market`): they get a canonical URL and are in the
+  sitemap; every other route gets `noindex` (`AppProvider`, see
+  [seo.md](seo.md)). An unknown path renders `NotFoundView`.
+- Views set their title with `useHead({ title })`; `AppProvider`'s
+  `titleTemplate` adds "· PRUNplanner".
 - **Adding a page:**
   1. Create `views/XView.vue`.
   2. Add the route in `router/index.ts`.
@@ -102,6 +109,8 @@ saved over the shared plan.
     time through `env.js` (see `netlify.toml` and `docker-compose.yaml`).
 - **Deploy.**
   - Netlify builds previews and is configured as an SPA.
+  - `pnpm build` also prerenders `/` into `dist/index.html`
+    ([seo.md](seo.md)).
   - The Docker image (`Dockerfile`) serves `dist/` with `spa-to-http`.
   - The `buildVersion` plugin in `vite.config.ts` writes `dist/version.json`
     with the build ID (`BUILD_REVISION`, the commit) that is also baked into

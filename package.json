@@ -7,7 +7,7 @@
 	"packageManager": "pnpm@10.30.3",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build",
+		"build": "vite build && vite build --ssr src/prerender.ts --outDir .prerender && node scripts/prerender.mjs",
 		"tsc": "vue-tsc --project tsconfig.typecheck.json",
 		"tsc:watch": "vue-tsc --project tsconfig.typecheck.json --watch",
 		"preview": "vite preview",

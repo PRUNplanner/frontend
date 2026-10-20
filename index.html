@@ -1,18 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>PRUNplanner</title>
+		<title>PRUNplanner: Base and Empire Planner for Prosperous Universe</title>
 		<meta
 			name="description"
-			content="Prosperous Universe Empire and Base Planning tool. Plan your empire and projects, dominate the markets." />
+			content="Free planning tool for Prosperous Universe (PrUn): plan bases and empires, find planets, compare ROI and track burn with FIO. Used by over 6,000 players." />
+		<link rel="canonical" href="https://prunplanner.org/" />
+		<meta name="theme-color" content="#030707" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="PRUNplanner" />
 		<meta
-			name="keywords"
-			content="prosperous universe, tool, game, base planner, prunner, pmmg, planet, plan" />
-		<meta name="robots" content="index, follow" />
-		<meta name="language" content="English" />
-		<meta name="author" content="Scorpio" />
+			property="og:title"
+			content="PRUNplanner: Base and Empire Planner for Prosperous Universe" />
+		<meta
+			property="og:description"
+			content="Free planning tool for Prosperous Universe (PrUn): plan bases and empires, find planets, compare ROI and track burn with FIO. Used by over 6,000 players." />
+		<meta property="og:url" content="https://prunplanner.org/" />
+		<meta
+			property="og:image"
+			content="https://prunplanner.org/images/og/prunplanner.jpg" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta
+			property="og:image:alt"
+			content="The PRUNplanner plan editor with the claim: Plan a base before you build it." />
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				"name": "PRUNplanner",
+				"alternateName": ["PRUN planner", "PrUn Planner"],
+				"url": "https://prunplanner.org/"
+			}
+		</script>
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebApplication",
+				"name": "PRUNplanner",
+				"url": "https://prunplanner.org/",
+				"description": "Free planning tool for Prosperous Universe (PrUn): plan bases and empires, find planets, compare ROI and track burn with FIO. Used by over 6,000 players.",
+				"applicationCategory": "GameApplication",
+				"operatingSystem": "Web",
+				"isAccessibleForFree": true,
+				"offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+				"inLanguage": ["en-US", "de-DE", "ru-RU", "zh-CN"],
+				"image": "https://prunplanner.org/images/og/prunplanner.jpg",
+				"sameAs": ["https://github.com/PRUNplanner"]
+			}
+		</script>
+
+		<!-- The server answers every path with this file. The prerendered
+		     landing page shows only on "/", logged out and in English; else
+		     it stays hidden until the app has mounted fresh over it (a
+		     stored session goes on to /empire, a stored locale re-renders). -->
+		<script>
+			(function () {
+				let skip = location.pathname !== "/";
+				try {
+					const user = JSON.parse(
+						localStorage.getItem("prunplanner_user") || "{}"
+					);
+					const locale = user.preferences && user.preferences.locale;
+					skip ||=
+						!!(user.accessToken && user.refreshToken) ||
+						(!!locale && locale !== "en_US");
+				} catch {}
+				if (skip) document.documentElement.classList.add("skip-prerender");
+			})();
+		</script>
+		<style>
+			.skip-prerender #app[data-prerendered] {
+				visibility: hidden;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="app"></div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { defineAsyncComponent, onMounted, computed, watch } from "vue";
+	import { defineAsyncComponent, onMounted, computed, ref, watch } from "vue";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 	import { useRoute, useRouter } from "vue-router";
@@ -73,16 +73,20 @@
 
 	const isLoggedIn = computed(() => userStore.isLoggedIn);
 
-	// the banner's chunk loads only for a visitor who still has to choose
+	// the banner's chunk loads only for a visitor who still has to choose;
+	// not before mount, so the prerendered landing page hydrates as rendered
+	const mounted = ref(false);
 	const { consent, reopened } = useAnalyticsConsent();
 	const askVisitor = computed(
 		() =>
+			mounted.value &&
 			!isLoggedIn.value &&
 			getPostHogKey() !== undefined &&
 			(consent.value === null || reopened.value)
 	);
 
 	onMounted(() => {
+		mounted.value = true;
 		startWatch();
 
 		// a session restored from storage: analytics knows the user from the
@@ -107,7 +111,7 @@
 		v-if="isLoggedIn && routeData.name !== 'imprint-tos'" />
 	<AnalyticsConsentBanner v-if="askVisitor" />
 
-	<main class="flex w-full text-white/80">
+	<div class="flex w-full text-white/80">
 		<AppSidebar v-if="isLoggedIn" class="hidden md:flex" />
 
 		<div class="flex-1 min-w-0 flex flex-col">
@@ -115,18 +119,19 @@
 			<div
 				class="h-full min-h-screen"
 				:class="isLoggedIn ? 'pb-16 md:pb-0' : ''">
-				<HomepageHeader
-					v-if="!isLoggedIn"
-					:show-header="routeData.meta.showHeader" />
+				<HomepageHeader v-if="!isLoggedIn" />
 
-				<Suspense>
-					<RouterView />
-				</Suspense>
+				<!-- the page alone is the main landmark, not header and footer -->
+				<main class="contents">
+					<Suspense>
+						<RouterView />
+					</Suspense>
+				</main>
 
 				<!-- the landing page has its own footer -->
 				<AppFooter v-if="routeData.name !== 'homepage'" />
 			</div>
 		</div>
-	</main>
+	</div>
 	<MobileNavBar v-if="isLoggedIn" />
 </template>

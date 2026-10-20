@@ -7,7 +7,7 @@
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: `${t("recipe_roi.view_title")} | PRUNplanner`,
+		title: t("recipe_roi.view_title"),
 	});
 
 	// Components

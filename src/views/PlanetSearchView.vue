@@ -5,7 +5,7 @@
 	const { t } = useI18n();
 
 	useHead({
-		title: `${t("planet_search.view_title")} | PRUNplanner`,
+		title: t("planet_search.view_title"),
 	});
 
 	// Components

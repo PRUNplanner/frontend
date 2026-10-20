@@ -14,7 +14,7 @@
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: `${t("hq_upgrade_calculator.view_title")} | PRUNplanner`,
+		title: t("hq_upgrade_calculator.view_title"),
 	});
 
 	// Composables

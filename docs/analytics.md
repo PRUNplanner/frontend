@@ -70,6 +70,22 @@ The signup events only reach PostHog from browsers that consented to analytics
 in an earlier session, so they undercount signups. Signup counts and rejection
 reasons come from the backend events and their Axiom panels (signup-01).
 
+### Landing page
+
+The logged-out landing page (`HomepageView`, `HomepageHeader`, `HomepageTour`).
+The PostHog funnel for registrations from it: `landing:auth_open` with
+`panel = registration`, then `account:signup_complete`.
+
+| Event | Properties | When |
+| --- | --- | --- |
+| `landing:auth_open` | `panel` (`login`, `registration`), `source` (`header`, `hero`, `closing`, `shared_plan`) | the login / registration panel was opened |
+| `landing:auth_switch` | `panel` (the form switched to) | the switch inside the panel was used |
+| `landing:example_open` | `source` (`hero`, `shared_plans`) | "Open an example plan" was clicked |
+| `landing:tour_step` | `tour` (`plan`, `planet_search`, `empire`), `step` (the step key) | a visitor clicked a tour step; automatic advances are not sent |
+| `landing:tour_toggle` | `tour`, `is_playing` | Pause or Play was clicked |
+
+Like the signup events, these reach PostHog only from visitors who consented.
+
 ### API keys
 
 | Event | Properties | When |

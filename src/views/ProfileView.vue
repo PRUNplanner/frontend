@@ -5,7 +5,7 @@
 	const { t } = useI18n();
 
 	useHead({
-		title: `${t("profile.view_title")} | PRUNplanner`,
+		title: t("profile.view_title"),
 	});
 
 	// Components

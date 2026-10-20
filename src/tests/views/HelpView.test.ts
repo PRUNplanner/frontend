@@ -13,7 +13,7 @@ describe("HelpView", () => {
 		await mountComponent(HelpView);
 
 		expect(head.useHead).toHaveBeenCalledWith({
-			title: "help.view_title | PRUNplanner",
+			title: "help.view_title",
 		});
 	});
 

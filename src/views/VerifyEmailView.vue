@@ -2,7 +2,7 @@
 	import { useHead } from "@unhead/vue";
 
 	useHead({
-		title: "Email Verification | PRUNplanner",
+		title: "Email Verification",
 	});
 
 	defineProps({

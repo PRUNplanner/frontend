@@ -7,7 +7,7 @@
 
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: `${t("exchanges.view_title")} | PRUNplanner`,
+		title: t("exchanges.view_title"),
 	});
 
 	// Stores

@@ -10,14 +10,13 @@
 	import router from "@/router";
 
 	// UI
+	import { PFormItem, PInput, PNotice, PSpin } from "@/ui";
 	import {
-		PForm,
-		PFormItem,
-		PFormSeparator,
-		PInput,
-		PButton,
-		PNotice,
-	} from "@/ui";
+		landingField,
+		landingHeading,
+		landingInput,
+		landingPrimaryButton,
+	} from "@/features/homepage/homepage.constants";
 
 	const inputUsername: Ref<string | null> = ref(null);
 	const inputPassword: Ref<string | null> = ref(null);
@@ -62,67 +61,58 @@
 </script>
 
 <template>
-	<div class="mx-auto max-w-100">
-		<div class="text-xl text-white font-bold font-mono pb-3">
+	<form class="flex flex-col gap-5" @submit.prevent="handleLogin">
+		<h2 :class="landingHeading">
 			{{ $t("account.components.login.title") }}
-		</div>
-		<PNotice v-if="loginError" type="error" class="mb-3">
+		</h2>
+		<PNotice v-if="loginError" type="error">
 			{{
 				loginError === "throttled"
 					? $t("account.components.login.throttled")
 					: $t("account.components.login.error")
 			}}
 		</PNotice>
-		<PForm as-form @submit="handleLogin">
-			<PFormSeparator>
-				<div class="font-mono text-xs text-muted pb-3">
-					<i18n-t keypath="account.components.login.tos" tag="p">
-						<template #tos_link>
-							<router-link
-								to="/imprint-tos"
-								class="hover:cursor-pointer underline">
-								{{ $t("account.components.login.tos_link") }}
-							</router-link>
-						</template>
-					</i18n-t>
-				</div>
-			</PFormSeparator>
+		<div :class="landingField">
 			<PFormItem :label="t('account.components.login.form.username')">
 				<PInput
 					v-model:value="inputUsername"
 					autocomplete="username"
 					:placeholder="t('account.components.hints.username')"
-					class="w-full" />
+					:class="landingInput" />
 			</PFormItem>
+		</div>
+		<div :class="landingField">
 			<PFormItem :label="t('account.components.login.form.password')">
 				<PInput
 					v-model:value="inputPassword"
 					autocomplete="current-password"
 					:placeholder="t('account.components.hints.password')"
 					type="password"
-					class="w-full" />
+					:class="landingInput" />
 			</PFormItem>
-			<PFormSeparator>
-				<div class="font-mono text-xs text-muted py-3">
-					<i18n-t keypath="account.components.login.forgot" tag="p">
-						<template #forgot_link>
-							<router-link
-								to="/request-password-reset"
-								class="hover:cursor-pointer underline">
-								{{ $t("account.components.login.forgot_link") }}
-							</router-link>
-						</template>
-					</i18n-t>
-				</div>
-			</PFormSeparator>
-			<PFormItem label="">
-				<PButton
-					:loading="isLoggingIn"
-					:disabled="!canLogin"
-					html-type="submit">
-					{{ $t("account.components.login.buttons.login") }}
-				</PButton>
-			</PFormItem>
-		</PForm>
-	</div>
+			<router-link
+				to="/request-password-reset"
+				class="self-end min-h-11 lg:min-h-6 inline-flex items-center text-sm text-white/78 underline hover:text-white">
+				{{ $t("account.components.login.forgot_link") }}
+			</router-link>
+		</div>
+		<button
+			type="submit"
+			:disabled="!canLogin || isLoggingIn"
+			:aria-busy="isLoggingIn"
+			:class="[landingPrimaryButton, 'w-full']">
+			<PSpin v-if="isLoggingIn" color="muted" />
+			{{ $t("account.components.login.buttons.login") }}
+		</button>
+		<i18n-t
+			keypath="account.components.login.tos"
+			tag="p"
+			class="m-0 font-mono text-xs text-white/62">
+			<template #tos_link>
+				<router-link to="/imprint-tos" class="underline">
+					{{ $t("account.components.login.tos_link") }}
+				</router-link>
+			</template>
+		</i18n-t>
+	</form>
 </template>

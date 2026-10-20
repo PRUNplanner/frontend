@@ -1,4 +1,18 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+	import { useI18n } from "vue-i18n";
+	import { useHead } from "@unhead/vue";
+
+	const { t } = useI18n();
+	useHead({
+		title: t("homepage.seo.imprint_title"),
+		meta: [
+			{
+				name: "description",
+				content: t("homepage.seo.imprint_description"),
+			},
+		],
+	});
+</script>
 
 <template>
 	<div class="px-6 py-3">

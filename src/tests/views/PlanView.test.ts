@@ -138,7 +138,7 @@ describe("PlanView", () => {
 			"/empire"
 		);
 		expect(wrapper.find("h1").text()).toBe("EW COF RAT DW C");
-		expect(lastTitle()).toBe("EW COF RAT DW C | PRUNplanner");
+		expect(lastTitle()).toBe("EW COF RAT DW C");
 	});
 
 	it("names an unnamed planet after its system, an untitled plan by id", async () => {
@@ -155,7 +155,7 @@ describe("PlanView", () => {
 		);
 		expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);
 		expect(wrapper.find("h1").text()).toBe("plan.name.untitled");
-		expect(lastTitle()).toBe("KW-688c | PRUNplanner");
+		expect(lastTitle()).toBe("KW-688c");
 	});
 
 	it("opens the configuration of a new plan and renames it", async () => {
@@ -169,7 +169,7 @@ describe("PlanView", () => {
 		await flushPromises();
 
 		expect(wrapper.find("h1").text()).toBe("Fresh start");
-		expect(lastTitle()).toBe("Fresh start | PRUNplanner");
+		expect(lastTitle()).toBe("Fresh start");
 	});
 
 	it("does not open the configuration of a shared plan", async () => {

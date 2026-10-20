@@ -1,39 +1,66 @@
 import { ref, type Ref } from "vue";
 
-// Module state: the homepage header renders the panels, other components
-// (the shared plan banner) open them.
+// Composables
+import { trackEvent } from "@/lib/analytics/useAnalytics";
+
+// Types & Interfaces
+import type { IAnalyticsEventProperties } from "@/lib/analytics/useAnalytics.types";
+
+type AuthPanel = "login" | "registration";
+type AuthPanelSource = IAnalyticsEventProperties["landing:auth_open"]["source"];
+
+// Module state: the homepage header renders the panel, other components
+// (the landing page, the shared plan banner) open it.
 const showLogin: Ref<boolean> = ref(false);
 const showRegistration: Ref<boolean> = ref(false);
 
 /**
- * Login and registration panels of the homepage header, at most one open.
+ * Login and registration panel of the homepage header, one form at a time.
  * @author jplacht
  */
 export function useAuthPanel() {
-	function toggleLogin(): void {
-		showRegistration.value = false;
-		showLogin.value = !showLogin.value;
+	function show(panel: AuthPanel | null): void {
+		showLogin.value = panel === "login";
+		showRegistration.value = panel === "registration";
 	}
 
-	function toggleRegistration(): void {
-		showLogin.value = false;
-		showRegistration.value = !showRegistration.value;
+	function toggle(panel: AuthPanel, isOpen: boolean): void {
+		if (isOpen) show(null);
+		else open(panel, "header");
 	}
+
+	const toggleLogin = (): void => toggle("login", showLogin.value);
+	const toggleRegistration = (): void =>
+		toggle("registration", showRegistration.value);
 
 	function close(): void {
-		showLogin.value = false;
-		showRegistration.value = false;
+		show(null);
+	}
+
+	/** The welcome state after a registration: on to the login form */
+	function showLoginForm(): void {
+		show("login");
 	}
 
 	/**
-	 * Opens a panel from further down the page and scrolls up to it.
+	 * Opens the panel on a form, where the page is: it slides in over it.
 	 *
-	 * @param {"login" | "registration"} panel Panel to open
+	 * @param {AuthPanel} panel Form to show
+	 * @param {AuthPanelSource} source Where the visitor opened it
 	 */
-	function open(panel: "login" | "registration"): void {
-		showLogin.value = panel === "login";
-		showRegistration.value = panel === "registration";
-		window.scrollTo({ top: 0, behavior: "smooth" });
+	function open(panel: AuthPanel, source: AuthPanelSource): void {
+		show(panel);
+		trackEvent("landing:auth_open", { panel, source });
+	}
+
+	/**
+	 * The switch inside the open panel
+	 *
+	 * @param {AuthPanel} panel Form switched to
+	 */
+	function switchTo(panel: AuthPanel): void {
+		show(panel);
+		trackEvent("landing:auth_switch", { panel });
 	}
 
 	return {
@@ -42,6 +69,8 @@ export function useAuthPanel() {
 		toggleLogin,
 		toggleRegistration,
 		open,
+		switchTo,
+		showLoginForm,
 		close,
 	};
 }

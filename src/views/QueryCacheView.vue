@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { computed } from "vue";
+	import { useHead } from "@unhead/vue";
 	import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 	// i18n
@@ -13,6 +14,9 @@
 	import { calcDebug, setCalcDebug } from "@/lib/debugMode";
 
 	import { PButton, PCheckbox, PTag, PTable } from "@/ui";
+
+	// debug tooling is English only
+	useHead({ title: "Query cache" });
 
 	// Grab the Pinia store
 	const queryStore = useQueryStore();

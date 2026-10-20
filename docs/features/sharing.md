@@ -23,7 +23,7 @@ The owner's plan is never touched.
   plan. It says whether the copy changed and names the price source. Once
   changed it emits `reset` and `copy`; logged in it emits `save` ("Save to
   my plans"); visitors get "Sign up to save this" and Login, which open the
-  header panels through `features/account/useAuthPanel`.
+  header's login / registration panel through `features/account/useAuthPanel`.
 - **`components/SharedPlanDeltas.vue`**: the copy's profit, ROI, area,
   workforce and building count against the shared version, shown by
   `PlanStatusBar` and `PlanOverview`.

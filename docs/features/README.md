@@ -45,6 +45,7 @@ One page per `src/features/*` folder. Each page follows the same outline:
 | [material_tile](material_tile.md) | The standard material ticker chip |
 | [plan_analytics](plan_analytics.md) | Planet insights box on the plan page |
 | [help](help.md) | Markdown help drawer and tutorial |
+| [homepage](homepage.md) | The logged-out landing page's guided tours, counts and landing styles |
 | [account](account.md) | Login, registration, email verification, password reset |
 | [profile](profile.md) | Profile page sections |
 | [api_keys](api_keys.md) | Personal API key management |

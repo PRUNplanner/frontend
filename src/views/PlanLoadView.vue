@@ -1,5 +1,7 @@
 <script setup lang="ts">
 	import { computed, defineAsyncComponent, onMounted } from "vue";
+	import { useI18n } from "vue-i18n";
+	import { useHead } from "@unhead/vue";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Router
@@ -47,6 +49,15 @@
 	});
 
 	const userStore = useUserStore();
+	const { t } = useI18n();
+
+	// until PlanView names the plan, or when it can't load
+	useHead({
+		title: () =>
+			props.sharedPlanUuid
+				? t("sharing.banner.title")
+				: t("common.navigation.planning"),
+	});
 
 	// the owner redirect keeps this page, only its props change
 	const notShared = computed(() => props.sharedPlanUuid === undefined);

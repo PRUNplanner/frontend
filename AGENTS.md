@@ -194,6 +194,7 @@ Start at [docs/README.md](docs/README.md).
 | [ui-and-i18n.md](docs/ui-and-i18n.md) | build UI or add text |
 | [testing.md](docs/testing.md) | write or fix tests |
 | [analytics.md](docs/analytics.md) | add or change a tracked event or person property |
+| [seo.md](docs/seo.md) | touch a page title, `index.html`, the landing page's prerender or the server config |
 | [features/](docs/features/README.md) | work inside a specific `src/features/*` folder |
 
 **Keep the docs true.** When your change moves a file, renames a symbol or
