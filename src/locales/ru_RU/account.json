@@ -1,11 +1,11 @@
 {
 	"components": {
 		"login": {
-			"title": "Вход",
+			"title": "Back to your empire.",
 			"error": "Ошибка входа. Пожалуйста, проверьте имя пользователя и пароль.",
 			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
-				"login": "Вход"
+				"login": "Log in"
 			},
 			"form": {
 				"username": "Логин",
@@ -13,36 +13,34 @@
 			},
 			"tos": "Используя PRUNplanner вы соглашаетесь с {tos_link}.",
 			"tos_link": "Пользовательское Соглашение",
-			"forgot": "Забыли пароль? Сбросить {forgot_link}.",
-			"forgot_link": "Восстановление пароля"
+			"forgot_link": "Forgot your password?"
 		},
 		"registration": {
-			"title": "Данные учётной записи",
+			"title": "Start planning, it's free.",
 			"tos": "PRUNplanner бесплатен в использовании. Создавая аккаунт, вы принимаете и соглашаетесь с {tos_link}.",
 			"tos_link": "Пользовательское Соглашение",
 			"result": {
 				"ok_header": "Добро пожаловать, {username}!",
-				"ok_message": "Регистрация прошла успешно. Теперь вы можете войти в PRUNplanner.",
+				"ok_message": "Registration successful. You can now log in to PRUNplanner.",
 				"error": "Ошибка при регистрации.",
 				"fix_fields": "Please fix the fields marked below.",
 				"throttled": "Too many registration attempts. Please wait a minute and try again.",
 				"unknown": "Unknown error. Please try again later."
 			},
 			"buttons": {
-				"register": "Создать учетную запись"
+				"register": "Create account"
 			},
 			"form": {
 				"username": "Логин",
-				"username_info": "Должно быть как минимум 3 символа. Не может содержать пробелы.",
+				"username_info": "At least 3 characters, no spaces.",
 				"password": "Пароль",
 				"password_info": "Должно быть не менее 8 символов.",
 				"email": "Электронная почта",
-				"email_placeholder": "Не обязательно, но рекомендуется.",
-				"email_info": "Не обязательно. Повышает безопасность вашего аккаунта.",
+				"email_info": "Not mandatory, but recommended. Increases your account security.",
 				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
-				"security_question": "Секретный вопрос",
-				"question": "Введите название планеты {planet}. Чтобы найти его, откройте новый буфер в игре командой {command}. Название планеты будет указано в поле «Название» в информации о планете",
-				"planet_name": "Имя",
+				"security_question": "Security question",
+				"question": "Enter the name of planet {planet}. To find it, open a new Prosperous Universe buffer with this command and read the planet's name under \"Name\".",
+				"planet_name": "Planet name",
 				"another_planet": "Use a different planet"
 			}
 		},
