@@ -14,7 +14,7 @@ vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
 // vi.mock factories are hoisted, so are their helpers. __esModule lets
 // defineAsyncComponent pick the default export of a mocked module
-const { stub, passThrough, calculatePlan, createContext } = vi.hoisted(() => ({
+const { stub, passThrough, calculatePlan, createContext, burn } = vi.hoisted(() => ({
 	stub: (name: string) => ({
 		__esModule: true,
 		default: { name, render: () => null },
@@ -31,6 +31,8 @@ const { stub, passThrough, calculatePlan, createContext } = vi.hoisted(() => ({
 	}),
 	calculatePlan: vi.fn(() => ({ result: {} })),
 	createContext: vi.fn(async () => ({})),
+	// the results the view hands to the burn tables
+	burn: { data: undefined as undefined | { value: object } },
 }));
 
 // the loaders fetch data, here they only hand through their slot
@@ -55,7 +57,10 @@ vi.mock("@/features/preferences/usePreferences", () => ({
 	}),
 }));
 vi.mock("@/features/fio/useFIOBurn", () => ({
-	useFIOBurn: () => ({ burnTable: ref([]), planTable: ref([]) }),
+	useFIOBurn: (_: unknown, data: { value: object }) => {
+		burn.data = data;
+		return { burnTable: ref([]), planTable: ref([]) };
+	},
 }));
 vi.mock("@/features/fio/components/FIOBurnPlanTable.vue", () =>
 	stub("FIOBurnPlanTable")
@@ -150,5 +155,59 @@ describe("FIOBurnView", () => {
 		expect(trackEvent).not.toHaveBeenCalled();
 		expect(error).toHaveBeenCalledWith(new Error("no context"));
 		error.mockRestore();
+	});
+
+	describe("another tab changed the plans", () => {
+		const loader = (wrapper: VueWrapper) =>
+			wrapper.findComponent(WrapperPlanningDataLoader);
+
+		it("a refresh from another tab recalculates quietly", async () => {
+			const wrapper = await mountView();
+			await complete(wrapper);
+			expect(calculatePlan).toHaveBeenCalledTimes(1);
+
+			loader(wrapper).vm.$emit("data:empire:plans", [
+				{ uuid: "P2", planet_natural_id: "OT-580b" },
+			]);
+			loader(wrapper).vm.$emit("refreshed");
+
+			await vi.waitFor(() =>
+				expect(Object.keys(burn.data!.value)).toEqual(["P2"])
+			);
+			expect(calculatePlan).toHaveBeenCalledTimes(2);
+			// the page stays
+			expect(wrapper.findComponent(ComputingProgress).exists()).toBe(
+				false
+			);
+		});
+
+		it("an older run finishing last keeps the newer results", async () => {
+			const wrapper = await mountView();
+			await complete(wrapper);
+			let finish!: (value: object) => void;
+			createContext.mockImplementationOnce(
+				() => new Promise((resolve) => (finish = resolve))
+			);
+
+			loader(wrapper).vm.$emit("refreshed");
+			await vi.waitFor(() =>
+				expect(createContext).toHaveBeenCalledTimes(2)
+			);
+			// the plans changed again while the first refresh calculates
+			loader(wrapper).vm.$emit("data:empire:plans", [
+				{ uuid: "P3", planet_natural_id: "OT-580b" },
+			]);
+			loader(wrapper).vm.$emit("refreshed");
+			await vi.waitFor(() =>
+				expect(Object.keys(burn.data!.value)).toEqual(["P3"])
+			);
+
+			finish({});
+			await new Promise((r) => setTimeout(r, 10));
+
+			expect(Object.keys(burn.data!.value)).toEqual(["P3"]);
+			// the stale run never calculated
+			expect(calculatePlan).toHaveBeenCalledTimes(2);
+		});
 	});
 });
