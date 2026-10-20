@@ -194,8 +194,8 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(planetData.planetName).not.toHaveBeenCalled();
 		expect(planetData.getPlanet).toHaveBeenCalledTimes(3);
 		expect(bodyRows(wrapper)[0].text()).toContain("Vallis · ZV-307c");
-		// name equals the id: only the id
-		expect(bodyRows(wrapper)[1].text()).not.toContain("·");
+		// name equals the id: named after its system
+		expect(bodyRows(wrapper)[1].text()).toContain("Antares I d · ZV-307d");
 	});
 
 	it("stripes and counts unsaved cells, discard reverts them", async () => {

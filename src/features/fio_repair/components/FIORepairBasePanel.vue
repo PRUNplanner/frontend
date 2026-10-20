@@ -253,7 +253,7 @@
 				v-if="!base.match.candidates.length"
 				:to="`/plan/${base.planet}`"
 				class="text-xs text-link hover:underline justify-self-start">
-				{{ $t("fio.repair.panel.create", { planet: base.planet }) }}
+				{{ $t("fio.repair.panel.create", { planet: base.name }) }}
 			</router-link>
 		</div>
 

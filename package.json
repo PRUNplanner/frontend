@@ -21,7 +21,8 @@
 		"test:coverage:report": "vitest --merge-reports --silent --coverage",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"knip": "knip"
+		"knip": "knip",
+		"refresh:systems": "node scripts/refresh-systems.mjs"
 	},
 	"dependencies": {
 		"@dagrejs/dagre": "^2.0.4",

@@ -307,6 +307,21 @@ describe("planet search engine", () => {
 				ids(filterPlanets(planets, filter({ text: "002" }), ctx))
 			).toEqual(["AB-002b"]);
 		});
+
+		it("text and name sort use the display name", () => {
+			const planets = [
+				planet("ZV-759b", { planet_name: "Vulcan" }),
+				planet("KW-602a", { planet_name: "KW-602a" }),
+				// unnamed, in the system Antares II
+				planet("ZV-759e", { planet_name: "ZV-759e" }),
+			];
+			expect(
+				ids(filterPlanets(planets, filter({ text: "antares ii" }), ctx))
+			).toEqual(["ZV-759e"]);
+			expect(
+				ids(sortPlanets(planets, [{ key: "name", dir: "asc" }], ctx))
+			).toEqual(["ZV-759e", "KW-602a", "ZV-759b"]);
+		});
 	});
 
 	describe("references (AC7)", () => {

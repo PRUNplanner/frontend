@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { nextTick, reactive, ref } from "vue";
+import { nextTick, reactive, ref, type Ref } from "vue";
 import { DOMWrapper, flushPromises, RouterLinkStub } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 
@@ -36,6 +36,26 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 	}),
 }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+// ZV-759c read as unnamed (named after its system), ZV-307b only once the
+// game data has loaded
+const planetMock = vi.hoisted(() => ({
+	loaded: false,
+	planets: undefined as unknown as Ref<unknown[]>,
+}));
+vi.mock("@/database/services/usePlanetData", async () => {
+	const { shallowRef } = await import("vue");
+	planetMock.planets = shallowRef([]);
+	return {
+		usePlanetData: () => ({
+			planets: planetMock.planets,
+			getPlanet: async (id: string) => {
+				if (id === "ZV-759c" || (planetMock.loaded && id === "ZV-307b"))
+					return { planet_natural_id: id, planet_name: id };
+				throw new Error("not loaded");
+			},
+		}),
+	};
+});
 
 const NAV = "common.navigation";
 const body = () => new DOMWrapper(document.body);
@@ -106,7 +126,7 @@ describe("MobileNavBar", () => {
 			sheet()
 				.findAll("[data-nav-plans] .truncate")
 				.map((e) => e.text())
-		).toEqual(["Bober", "DEIMALO"]);
+		).toEqual(["Bober", "ZV-307b", "DEIMALO", "Antares II c"]);
 
 		await sheet().find("[data-nav-plans] a").trigger("click");
 		expect(trackEvent).toHaveBeenCalledWith("app:nav_click", {
@@ -118,6 +138,29 @@ describe("MobileNavBar", () => {
 		await nextTick();
 		await flushPromises();
 		expect(body().find("[role=dialog]").exists()).toBe(false);
+	});
+
+	it("names a planet once the game data has loaded", async () => {
+		const w = await mountBar();
+		await open(w, `${NAV}.plans`);
+		const texts = () =>
+			sheet()
+				.findAll("[data-nav-plans] .truncate")
+				.map((e) => e.text());
+		expect(texts()).toContain("ZV-307b");
+
+		planetMock.loaded = true;
+		planetMock.planets.value = [{}];
+		await flushPromises();
+		expect(texts()).toEqual([
+			"Bober",
+			"Antares I b",
+			"DEIMALO",
+			"Antares II c",
+		]);
+
+		planetMock.loaded = false;
+		planetMock.planets.value = [];
 	});
 
 	it.each(["more", "plans"])(

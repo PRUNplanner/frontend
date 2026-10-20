@@ -3,6 +3,9 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Composables
+	import { usePlanetData } from "@/database/services/usePlanetData";
+
 	// Util
 	import {
 		FILTER_FROM,
@@ -10,6 +13,7 @@
 		trackNav,
 	} from "@/layout/components/navigation/navigation.util";
 	import { formatNumber } from "@/util/numbers";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Types & Interfaces
 	import type {
@@ -67,6 +71,35 @@
 		filter.value = "";
 	}
 
+	// planet display names, the id until the record is read; the game data
+	// loading (planets) retries the ones that failed
+	const { getPlanet, planets } = usePlanetData();
+	const planetNames = ref(new Map<string, string>());
+	watch(
+		[
+			() =>
+				[...plans, ...(stray ? [stray] : [])].map(
+					(p) => p.planet_natural_id
+				),
+			planets,
+		],
+		([ids]) =>
+			new Set(ids).forEach(async (id) => {
+				if (planetNames.value.has(id)) return;
+				try {
+					const planet = await getPlanet(id);
+					planetNames.value.set(
+						id,
+						planetDisplayName(id, planet.planet_name)
+					);
+				} catch {
+					// not loaded yet: keep the id
+				}
+			}),
+		{ immediate: true }
+	);
+	const planetOf = (id: string): string => planetNames.value.get(id) ?? id;
+
 	function planLink(p: INavPlan): string {
 		return `/plan/${p.planet_natural_id}/${p.uuid}`;
 	}
@@ -106,14 +139,22 @@
 					:to="planLink(stray)"
 					aria-current="page"
 					class="flex flex-col justify-center gap-0.5 bg-prunplanner/10 text-prunplanner"
-					:class="large ? rowClass : 'min-h-[29px] px-2.5 py-1.5 rounded-control'"
+					:class="
+						large
+							? rowClass
+							: 'min-h-[29px] px-2.5 py-1.5 rounded-control'
+					"
 					@click="trackNav('plan', area, 'plans')">
 					<span class="flex items-baseline gap-2 min-w-0">
-						<span class="truncate flex-1" :title="stray.plan_name || stray.planet_natural_id">
+						<span
+							class="truncate flex-1"
+							:title="stray.plan_name || stray.planet_natural_id">
 							{{ stray.plan_name || stray.planet_natural_id }}
 						</span>
-						<span class="font-mono text-xs opacity-70">
-							{{ stray.planet_natural_id }}
+						<span
+							class="text-xs opacity-70 truncate max-w-1/2"
+							:title="stray.planet_natural_id">
+							{{ planetOf(stray.planet_natural_id) }}
 						</span>
 					</span>
 					<span class="text-xs leading-none text-muted">
@@ -135,9 +176,13 @@
 					@click="trackNav('plan', area, 'plans')">
 					<template v-if="large">
 						<span class="flex flex-col flex-1 min-w-0">
-							<span class="truncate" :title="p.plan_name">{{ p.plan_name }}</span>
-							<span class="font-mono text-xs text-muted">
-								{{ p.planet_natural_id }}
+							<span class="truncate" :title="p.plan_name">{{
+								p.plan_name
+							}}</span>
+							<span
+								class="text-xs text-muted truncate"
+								:title="p.planet_natural_id">
+								{{ planetOf(p.planet_natural_id) }}
 							</span>
 						</span>
 						<span
@@ -153,15 +198,18 @@
 						</span>
 					</template>
 					<template v-else>
-						<span class="truncate flex-1" :title="p.plan_name">{{ p.plan_name }}</span>
+						<span class="truncate flex-1" :title="p.plan_name">{{
+							p.plan_name
+						}}</span>
 						<span
-							class="font-mono text-xs"
+							class="text-xs truncate max-w-1/2"
 							:class="
 								p.uuid === openPlanUuid
 									? 'opacity-70'
 									: 'text-muted'
-							">
-							{{ p.planet_natural_id }}
+							"
+							:title="p.planet_natural_id">
+							{{ planetOf(p.planet_natural_id) }}
 						</span>
 					</template>
 				</RouterLink>

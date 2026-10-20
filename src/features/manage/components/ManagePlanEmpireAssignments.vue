@@ -26,6 +26,9 @@
 		useAssignmentMatrix,
 	} from "@/features/manage/useAssignmentMatrix";
 
+	// Util
+	import { planetDisplayName } from "@/util/planetName";
+
 	// Stores
 	import { usePlanningStore } from "@/stores/planningStore";
 	const planningStore = usePlanningStore();
@@ -109,10 +112,8 @@
 			ids.map(async (id) => {
 				try {
 					const planet = await getPlanet(id);
-					planetNames.set(
-						id,
-						planet.planet_name !== id ? planet.planet_name : undefined
-					);
+					const name = planetDisplayName(id, planet.planet_name);
+					planetNames.set(id, name !== id ? name : undefined);
 				} catch {
 					planetNames.set(id, undefined);
 				}

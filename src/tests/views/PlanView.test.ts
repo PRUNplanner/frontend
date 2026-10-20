@@ -141,7 +141,7 @@ describe("PlanView", () => {
 		expect(lastTitle()).toBe("EW COF RAT DW C | PRUNplanner");
 	});
 
-	it("shows only the planet id and an untitled plan without names", async () => {
+	it("names an unnamed planet after its system, an untitled plan by id", async () => {
 		mocks.getPlanet.mockResolvedValueOnce({
 			...planet_etherwind,
 			planet_name: planet_etherwind.planet_natural_id,
@@ -151,7 +151,7 @@ describe("PlanView", () => {
 		});
 
 		expect(wrapper.find("nav[aria-label='plan.breadcrumb']").text()).toBe(
-			"KW-688c"
+			"New Antares c (KW-688c)"
 		);
 		expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);
 		expect(wrapper.find("h1").text()).toBe("plan.name.untitled");

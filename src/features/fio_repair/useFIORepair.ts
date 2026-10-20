@@ -32,6 +32,8 @@ import {
 	waitingCostPerDay,
 } from "@/features/fio_repair/fioRepair.util";
 
+import { planetDisplayName } from "@/util/planetName";
+
 // Types & Interfaces
 import type { IPriceBook } from "@/features/cx/priceBook";
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
@@ -267,13 +269,13 @@ export function useFIORepair(
 					fioRepairDueSoonDays.value
 				);
 				const oldest = oldestBuilding(buildings);
-				const name = planets.value.get(planet)?.planet_name;
-
 				return {
 					planet,
-					name:
-						site.PlanetName ||
-						(name && name !== planet ? name : planet),
+					// FIO's name equals the id for an unnamed planet
+					name: planetDisplayName(
+						planet,
+						site.PlanetName || planets.value.get(planet)?.planet_name
+					),
 					siteId: site.SiteId,
 					match,
 					buildings,

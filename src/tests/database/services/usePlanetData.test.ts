@@ -52,6 +52,8 @@ describe("usePlanetData", () => {
 			if (id === mockPlanet1.planet_natural_id) return mockPlanet1;
 			if (id === mockPlanet2.planet_natural_id) return mockPlanet2;
 			if (id === mockPlanet3.planet_natural_id) return mockPlanet3;
+			if (id === "ZV-759e")
+				return { ...mockPlanet3, planet_natural_id: id, planet_name: id };
 			return undefined;
 		});
 
@@ -79,6 +81,9 @@ describe("usePlanetData", () => {
 
 		const name_same = await getPlanetName("P3");
 		expect(name_same).toBe("P3");
+
+		// unnamed planet in a named system
+		expect(await getPlanetName("ZV-759e")).toBe("Antares II e (ZV-759e)");
 	});
 
 	it("loadPlanetName caches the name", async () => {

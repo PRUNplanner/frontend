@@ -244,7 +244,7 @@ component / composable
   | `useMaterialData()` | `getMaterial`, `materialsMap`, `materialSelectOptions`, `getMaterialClass` (CSS category) |
   | `useBuildingData()` | `getBuilding`, `buildingsMap`, recipes per building, production building options, construction/workforce materials |
   | `useExchangeData()` | `getExchangeTicker`, `getExchangeTickerLoaded` (sync), VWAP analysis, `getMaterialExchangeOverview` |
-  | `usePlanetData()` | `getPlanet`, planet names (`loadPlanetNames`, sync `planetName(id)` for templates, cached in the `planetNames` Map), special materials |
+  | `usePlanetData()` | `getPlanet`, planet names (`loadPlanetNames`, sync `planetName(id)` for templates, cached in the `planetNames` Map; formatted by `planetLabel` from `util/planetName.ts`), special materials |
 
 - **Freshness.**
   - Their TTL comes from `config.GAME_DATA_STALE_MINUTES_*`: materials,

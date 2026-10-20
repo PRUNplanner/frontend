@@ -50,6 +50,8 @@
 		type HabSolverGoal,
 	} from "@/features/planning/calculations/habOptimization";
 
+	import { planetLabel } from "@/util/planetName";
+
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
 	const { getPlanet, planetName } = usePlanetData();
@@ -1226,9 +1228,10 @@
 					</template>
 					<span class="truncate">
 						{{
-							planetData.planet_name != planetData.planet_natural_id
-								? `${planetData.planet_name} (${planetData.planet_natural_id})`
-								: planetData.planet_natural_id
+							planetLabel(
+								planetData.planet_natural_id,
+								planetData.planet_name
+							)
 						}}
 					</span>
 				</nav>
