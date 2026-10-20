@@ -23,3 +23,16 @@ export function capitalizeString(text: string): string {
 
 	return transformedText;
 }
+
+/**
+ * CSS class of a material category's tile colours (materials.css)
+ *
+ * @param {string} category Category name, e.g. "consumables (basic)"
+ * @returns {string} e.g. "material-category-consumables-basic"
+ */
+export function materialCategoryClass(category: string): string {
+	return `material-category-${category
+		.replaceAll(" ", "-")
+		.replaceAll("(", "")
+		.replaceAll(")", "")}`;
+}

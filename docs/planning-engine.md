@@ -41,7 +41,8 @@ const { result, overview } = calculatePlan(input, ctx);
 | File | Concern |
 | --- | --- |
 | `calculatePlan.ts` | Orchestration |
-| `workforce.ts` | Need vs capacity, satisfaction, luxury consumption, `WORKFORCE_CONSUMPTION_MAP` |
+| `workforce.ts` | Need vs capacity, satisfaction, luxury consumption |
+| `workforce.constants.ts` | `WORKFORCE_CONSUMPTION_MAP` (re-exported by `workforce.ts`; the market report reads it without the engine) |
 | `area.ts` | Area and permits, infrastructure and storage records |
 | `efficiency.ts` | Building efficiency factors, expert bonus, `expertNames` |
 | `production.ts` | Buildings: efficiency, active recipes, daily contribution |

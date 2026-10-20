@@ -17,6 +17,7 @@ import {
 	callDataPlanetSearchIndex,
 	callCXSparklines,
 	callExplorationData,
+	callMarketSummary,
 	callPlanetLastPOPR,
 } from "@/features/api/gameData.api";
 import type { PlanetSearchAdvancedPayload } from "@/features/api/schemas/gameData.schemas";
@@ -33,6 +34,7 @@ import planet_search_results from "@/tests/test_data/api_data_planet_search.json
 import planet_search_index from "@/tests/test_data/api_data_planet_search_index.json";
 import exploration_7d_dw from "@/tests/test_data/api_data_exploration_7d_dw.json";
 import latest_popr from "@/tests/test_data/api_data_popr_latest.json";
+import market_summary from "@/tests/test_data/api_data_market_summary.json";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -240,6 +242,36 @@ describe("GameData API Calls", async () => {
 			});
 
 			await expect(callCXSparklines("AI1")).rejects.toThrow();
+		});
+
+		it("asks for VWAP 7D of chosen tickers", async () => {
+			const payload = {
+				exchange: "AI1",
+				days: 90,
+				series: { DW: [141] },
+			};
+			mock.onGet(
+				"/data/cxpc/spark/AI1/?days=90&metric=vwap_7d&tickers=DW,RAT"
+			).reply(200, payload);
+
+			expect(
+				await callCXSparklines("AI1", 90, "vwap_7d", ["DW", "RAT"])
+			).toStrictEqual(payload);
+		});
+	});
+
+	describe("callMarketSummary", () => {
+		it("validates the real response", async () => {
+			mock.onGet("/data/market/summary/").reply(200, market_summary);
+			expect(await callMarketSummary()).toStrictEqual(market_summary);
+		});
+
+		it("rejects a broken summary", async () => {
+			mock.onGet("/data/market/summary/").reply(200, {
+				...market_summary,
+				materials: "none",
+			});
+			await expect(callMarketSummary()).rejects.toThrow();
 		});
 	});
 

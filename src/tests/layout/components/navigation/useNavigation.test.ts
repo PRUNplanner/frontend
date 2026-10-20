@@ -197,6 +197,13 @@ describe("useNavigation", { timeout: 60_000 }, () => {
 		route.name = "market-live";
 		expect(nav.toolActive.value).toBe(true);
 		expect(nav.tools.value.map((i) => i.name)).not.toContain("fio-burn");
-		expect(nav.tools.value).toHaveLength(7);
+		expect(nav.tools.value).toHaveLength(8);
+	});
+
+	it("lists the market report first among the market tools, with a prefetch", async () => {
+		const nav = await setup();
+		const [first] = nav.toolGroups.value[0].items;
+		expect(first).toMatchObject({ name: "market", to: "/market" });
+		expect(first.prefetch).toBeTypeOf("function");
 	});
 });

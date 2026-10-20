@@ -15,6 +15,10 @@ import type {
 import type { PlanetSearchView } from "@/features/planet_search/planetSearch.schemas";
 import type { ChartView } from "@/features/market_exploration/marketExploration.types";
 import type {
+	MarketIndexView,
+	MarketMoversDirection,
+} from "@/features/market_report/marketReport.types";
+import type {
 	APIEndpointFormat,
 	APISnippetKind,
 } from "@/features/api_keys/apiEndpoints.types";
@@ -245,6 +249,10 @@ export interface IAnalyticsEventProperties {
 	"planet_search:view_change": { view: PlanetSearchView };
 	"market_exploration:view_change": { view: ChartView };
 	"resource_roi:chart_open": undefined;
+	"market:view_change":
+		| { chart: "index"; view: MarketIndexView }
+		| { chart: "workforce"; view: WorkforceType }
+		| { chart: "movers"; view: MarketMoversDirection };
 
 	"tool:use": ToolUseProperties;
 
@@ -289,6 +297,12 @@ export interface IAnalyticsEventProperties {
 	};
 
 	"perf:gamedata_load": IGameDataLoadProperties;
+	"perf:content_ready": {
+		// from the navigation start to the content's first frame
+		ms: number;
+		nav: "hard" | "spa";
+		loader_shown: boolean;
+	};
 }
 
 /** How one game data list loaded, once per store per tab */

@@ -15,6 +15,8 @@ export interface INavItem {
 	to: string;
 	icon: Component;
 	display: boolean;
+	/** loads the page's data ahead, on hover or focus */
+	prefetch?: () => void;
 }
 
 export interface INavGroup {

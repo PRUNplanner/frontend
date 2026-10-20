@@ -1,11 +1,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 import type { Exchange, Material } from "@/features/api/schemas/gameData.schemas";
+import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
+import { memoryStorage } from "@/tests/memoryStorage";
+import market_summary from "@/tests/test_data/api_data_market_summary.json";
 
 vi.mock("@/features/api/gameData.api", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/features/api/gameData.api")>()),
 	callDataMaterials: vi.fn(),
 	callDataExchanges: vi.fn(),
+	callMarketSummary: vi.fn(),
+	callCXSparklines: vi.fn(),
 }));
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
@@ -234,5 +239,77 @@ describe("game data queries: background write", () => {
 		expect(m.trackEvent).not.toHaveBeenCalled();
 		write.mockRestore();
 		await m.db.resetDB();
+	});
+});
+
+describe("market report queries", () => {
+	const KEY = "prunplanner_market_summary";
+	let m: Awaited<ReturnType<typeof load>>;
+	const summary = market_summary as MarketSummary;
+
+	beforeEach(async () => {
+		vi.resetModules();
+		vi.clearAllMocks();
+		vi.stubGlobal("localStorage", memoryStorage());
+		m = await load();
+		vi.mocked(m.api.callMarketSummary).mockResolvedValue(summary);
+	});
+
+	afterEach(() => vi.unstubAllGlobals());
+
+	it("stores the fetched summary for the next visit", async () => {
+		expect(await m.queryStore.execute("GetMarketSummary", undefined)).toBe(
+			summary
+		);
+		expect(JSON.parse(localStorage.getItem(KEY)!)).toEqual(summary);
+	});
+
+	it("serves a stored summary at once, then always refreshes it", async () => {
+		localStorage.setItem(KEY, JSON.stringify({ ...summary, as_of: 1 }));
+
+		expect(
+			(await m.queryStore.execute("GetMarketSummary", undefined)).as_of
+		).toBe(1);
+		await vi.waitFor(() =>
+			expect(m.api.callMarketSummary).toHaveBeenCalledOnce()
+		);
+		await vi.waitFor(() =>
+			expect(JSON.parse(localStorage.getItem(KEY)!).as_of).toBe(
+				summary.as_of
+			)
+		);
+	});
+
+	it("ignores a stored copy that fails validation", async () => {
+		localStorage.setItem(KEY, JSON.stringify({ as_of: "yesterday" }));
+		expect(await m.queryStore.execute("GetMarketSummary", undefined)).toBe(
+			summary
+		);
+	});
+
+	it("sparklines keep their old key without the new params", async () => {
+		const payload = { exchange: "AI1", days: 30, series: {} };
+		vi.mocked(m.api.callCXSparklines).mockResolvedValue(payload);
+
+		await m.queryStore.execute("GetCXSparklines", { exchange: "AI1" });
+		await m.queryStore.execute("GetCXSparklines", {
+			exchange: "AI1",
+			days: 91,
+			metric: "vwap_7d",
+			tickers: ["DW"],
+		});
+
+		expect(Object.keys(m.queryStore.cacheState)).toEqual(
+			expect.arrayContaining([
+				'["gamedata","cxsparklines","AI1"]',
+				'["gamedata","cxsparklines","AI1",91,"vwap_7d",["DW"]]',
+			])
+		);
+		expect(m.api.callCXSparklines).toHaveBeenLastCalledWith(
+			"AI1",
+			91,
+			"vwap_7d",
+			["DW"]
+		);
 	});
 });

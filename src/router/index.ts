@@ -7,6 +7,7 @@ import { useUserStore } from "@/stores/userStore";
 import { trackPageview } from "@/lib/analytics/useAnalytics";
 import { setClientErrorRoute } from "@/lib/clientErrors";
 import { setCalcDebug } from "@/lib/debugMode";
+import { markNavigationStart } from "@/lib/perf/navigationStart";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -117,6 +118,14 @@ const router = createRouter({
 			component: () => import("@/views/tools/MarketLiveDataView.vue"),
 		},
 		{
+			// public: the app layout logged in, the homepage header logged out
+			// (showHeader would add a second logo to it)
+			name: "market",
+			path: "/market",
+			meta: { showHeader: false },
+			component: () => import("@/views/tools/MarketReportView.vue"),
+		},
+		{
 			name: "hq-upgrade-calculator",
 			path: "/hq-upgrade-calculator",
 			meta: { requiresAuth: true },
@@ -205,6 +214,8 @@ const router = createRouter({
 			: []),
 	],
 });
+
+router.beforeEach(() => markNavigationStart());
 
 // ?debug=calc turns calculation debug on, ?debug=off off, on any page;
 // the key is dropped so a shared or bookmarked URL never carries it

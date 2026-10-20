@@ -356,3 +356,6 @@ export const CXSparklinesSchema = z.object({
 	series: z.record(z.string(), z.array(z.number().nullable())),
 });
 export type CXSparklines = z.infer<typeof CXSparklinesSchema>;
+
+/** the spark endpoint's `metric` query param: daily or rolling 7-day VWAP */
+export type CXSparklineMetric = "vwap_daily" | "vwap_7d";
