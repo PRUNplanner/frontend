@@ -6,6 +6,7 @@
 		"management": "Beheren",
 		"exchanges": "Beurs",
 		"tools": "Hulpmiddelen",
+		"market_report": "Market report",
 		"market_exploration": "Markt Verkennen",
 		"market_live": "Markt Huidig",
 		"recipe_roi": "Recept ROI",
@@ -126,5 +127,10 @@
 		"chip": "Update ready",
 		"whats_new_title": "PRUNplanner {version} is here",
 		"whats_new_action": "What's new"
+	},
+	"not_found": {
+		"title": "Page not found",
+		"text": "There is no page at this address.",
+		"home": "Go to the start page"
 	}
 }
