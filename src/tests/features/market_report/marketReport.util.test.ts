@@ -255,3 +255,61 @@ describe("formatting", () => {
 		expect(changeColor(null)).toContain(" 0%");
 	});
 });
+
+describe("an empty or thin summary", () => {
+	const empty = {
+		...summary,
+		turnover_daily: { AI1: [null, null] },
+		index: { ...summary.index, combined: [null], per_sector: {} },
+		materials: [],
+	};
+
+	it("KPIs have no change, index or share", () => {
+		expect(marketKpis(empty)).toMatchObject({
+			turnover7d: 0,
+			turnover7dChange: null,
+			index: null,
+			indexChange: null,
+			flatShare: 0,
+			traded30d: 0,
+		});
+	});
+
+	it("In short leaves out what it can't say", () => {
+		expect(marketBrief(empty)).toEqual({
+			index: null,
+			indexChange: null,
+			sector: null,
+			sectorChange: null,
+			pioneerCost: null,
+			pioneerChange: null,
+		});
+	});
+
+	it("exchange cards without turnover share nothing", () => {
+		const cards = exchangeCards(empty);
+		expect(cards.map((c) => c.share)).toEqual([0, 0, 0, 0]);
+		expect(cards[1].daily).toEqual([]);
+	});
+
+	it("an odd number of books takes the middle spread", () => {
+		const book = (bid: number, ask: number) =>
+			({ bid, ask, exchange_code: "AI1" }) as Exchange;
+		expect(
+			bookStats([book(90, 110), book(95, 105), book(99, 101)], "AI1")
+				.spreadMedian
+		).toBeCloseTo(10);
+	});
+
+	it("squarify puts equal values in one row", () => {
+		const rects = squarify(
+			[1, 1, 1, 1].map((value, item) => ({ value, item })),
+			0,
+			0,
+			100,
+			100
+		);
+		expect(rects).toHaveLength(4);
+		rects.forEach((r) => expect(r.w * r.h).toBeCloseTo(2500, 6));
+	});
+});
