@@ -252,25 +252,54 @@ describe("ApiService", () => {
 			]);
 		});
 
-		it("validation error of a request payload", async () => {
-			await expect(
-				// @ts-expect-error invalid payload on purpose
-				apiService.post(PLAN, { id: "nope" }, schema, schema)
-			).rejects.toThrowError(/^Validation error/);
+		it.each(["post", "put", "patch"] as const)(
+			"%s: an invalid request payload is a frontend bug, not a contract break",
+			async (method) => {
+				mock.resetHistory();
+				await expect(
+					// @ts-expect-error invalid payload on purpose
+					apiService[method](PLAN, { id: "nope" }, schema, schema)
+				).rejects.toThrowError(/^Validation error/);
 
-			const { error, props } = tracked();
-			expect(error.name).toBe("ApiValidationError");
-			expect(props).toMatchObject({
-				method: "POST",
-				issues: ["id: invalid_type"],
-			});
-			// no call was made
-			expect(reported()).toMatchObject({
-				kind: "validation",
-				failed_request_id: undefined,
-				client_ms: undefined,
-			});
-		});
+				// no call was made
+				expect(mock.history[method]).toHaveLength(0);
+				expect(trackException).toHaveBeenCalledTimes(1);
+				const { error, props } = tracked();
+				expect(error.name).toBe("ApiRequestValidationError");
+				expect(props).toStrictEqual({
+					path_template: "/planning/plan/:uuid/",
+					method: method.toUpperCase(),
+					issues: ["id: invalid_type"],
+					request_id: undefined,
+				});
+				expect(reportClientError).not.toHaveBeenCalled();
+			}
+		);
+
+		it.each(["post", "put", "patch"] as const)(
+			"%s: an invalid response is still a contract break",
+			async (method) => {
+				const reply = {
+					post: mock.onPost,
+					put: mock.onPut,
+					patch: mock.onPatch,
+				}[method].bind(mock);
+				reply(PLAN).reply(200, { id: "nope" });
+
+				await expect(
+					apiService[method](PLAN, { id: 1 }, schema, schema)
+				).rejects.toThrowError(/^Validation error/);
+
+				expect(tracked().error.name).toBe("ApiValidationError");
+				expect(reportClientError).toHaveBeenCalledTimes(1);
+				expect(reported()).toMatchObject({
+					kind: "validation",
+					method: method.toUpperCase(),
+					issues: ["id: invalid_type"],
+					failed_request_id: expect.stringMatching(UUID),
+				});
+			}
+		);
 
 		it("server error", async () => {
 			mock.onPut(PLAN).reply(500, { detail: "down" });
