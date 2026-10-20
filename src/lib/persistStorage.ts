@@ -4,7 +4,7 @@ import { trackException } from "@/lib/analytics/useAnalytics";
 // no imports from the stores: they read this while their module loads
 
 let stopped: boolean = false;
-let reported: boolean = false;
+const reported = new Set<string>();
 
 /**
  * localStorage for the persisted user and planning stores. Once another
@@ -13,7 +13,8 @@ let reported: boolean = false;
  * even if it stays open on the leave-page prompt.
  *
  * A failed write (e.g. the quota is full) keeps the previously stored
- * value, the app goes on with its state in memory. Reported once per tab.
+ * value, the app goes on with its state in memory. Reported once per key
+ * and tab, so a later failure of another store is reported too.
  */
 export const persistStorage: StorageLike = {
 	getItem: (key) => localStorage.getItem(key),
@@ -22,8 +23,8 @@ export const persistStorage: StorageLike = {
 		try {
 			localStorage.setItem(key, value);
 		} catch (err) {
-			if (reported) return;
-			reported = true;
+			if (reported.has(key)) return;
+			reported.add(key);
 			trackException(err, {
 				key,
 				size_kb: Math.round(value.length / 1024),

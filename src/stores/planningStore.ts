@@ -297,17 +297,9 @@ export const usePlanningStore = defineStore(
 	{
 		persist: {
 			storage: persistStorage,
-			pick: [
-				"plans",
-				"empires",
-				"cxs",
-				"shared",
-				"fio_storage_planets",
-				"fio_storage_warehouses",
-				"fio_storage_ships",
-				"fio_sites_planets",
-				"fio_storage_timestamp",
-			],
+			// not FIO storage: too big for the quota, and GetFIOStorage
+			// refetches it on every app load
+			pick: ["plans", "empires", "cxs", "shared"],
 		},
 	}
 );
