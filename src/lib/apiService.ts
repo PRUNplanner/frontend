@@ -246,6 +246,8 @@ class ApiService {
 	 * logout), and never a response discarded for a previous session.
 	 * Contract breaks, server and network errors also go to the backend
 	 * (Axiom), from every user: 429 the backend already logs itself.
+	 * A request payload that fails its schema (no call was made) is a
+	 * frontend bug, not a contract break: error tracking only.
 	 *
 	 * @private
 	 * @param {unknown} err Error
@@ -289,14 +291,18 @@ class ApiService {
 				),
 			];
 
-			error.name = "ApiValidationError";
+			// no request yet: the payload failed its own schema
+			error.name = request
+				? "ApiValidationError"
+				: "ApiRequestValidationError";
 			trackException(error, {
 				path_template,
 				method,
 				issues,
 				request_id,
 			});
-			reportClientError({ ...report, kind: "validation", issues });
+			if (request)
+				reportClientError({ ...report, kind: "validation", issues });
 		} else if (isAxiosError(err)) {
 			const status = err.response?.status;
 
