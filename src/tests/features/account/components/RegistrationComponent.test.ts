@@ -222,7 +222,7 @@ describe("RegistrationComponent", () => {
 		expect(sentBody()).toMatchObject({ username: "test-user" });
 	});
 
-	it("replaces the form with the success message", async () => {
+	it("replaces the form with the welcome state and its log in button", async () => {
 		mock.onPost(SIGNUP_URL).reply(200, { username: "test-user" });
 		const { wrapper } = await mountComponent(RegistrationComponent);
 		await fill(wrapper, { ...VALID });
@@ -236,7 +236,16 @@ describe("RegistrationComponent", () => {
 			"account.components.registration.result.ok_message"
 		);
 		expect(inputs(wrapper)).toHaveLength(0);
-		expect(wrapper.find("button").exists()).toBe(false);
+		expect(wrapper.find("[role=status]").exists()).toBe(true);
+
+		// the panel switches to the login form
+		const buttons = wrapper.findAll("button");
+		expect(buttons).toHaveLength(1);
+		expect(buttons[0].text()).toBe("account.components.login.buttons.login");
+		await buttons[0].trigger("click");
+		expect(
+			wrapper.findComponent(RegistrationComponent).emitted("login")
+		).toHaveLength(1);
 	});
 
 	it("spins the button while the request runs", async () => {

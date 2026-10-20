@@ -1,4 +1,9 @@
 <script setup lang="ts">
+	import { useHead } from "@unhead/vue";
+
+	// the page itself is English only
+	useHead({ title: "Feature Not Yet Implemented" });
+
 	// UI
 	import { PIcon } from "@/ui";
 	import { HourglassEmptySharp } from "@vicons/material";

@@ -6,7 +6,7 @@
 	const { t } = useI18n();
 
 	useHead({
-		title: `${t("market_report.view_title")} | PRUNplanner`,
+		title: t("market_report.view_title"),
 		meta: [
 			{
 				name: "description",

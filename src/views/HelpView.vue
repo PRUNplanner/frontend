@@ -7,7 +7,7 @@
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: `${t("help.view_title")} | PRUNplanner`,
+		title: t("help.view_title"),
 	});
 
 	import HelpTutorial from "@/features/help/components/HelpTutorial.vue";

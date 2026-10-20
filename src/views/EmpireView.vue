@@ -17,7 +17,7 @@
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: `${t("empire.view_title")} | PRUNplanner`,
+		title: t("empire.view_title"),
 	});
 
 	import { debounce } from "lodash-es";

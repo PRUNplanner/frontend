@@ -73,4 +73,29 @@ describe("LoginComponent", () => {
 		expect(wrapper.text()).toContain("account.components.login.throttled");
 		expect(wrapper.text()).not.toContain("account.components.login.error");
 	});
+
+	it("disables and spins the button while the login runs", async () => {
+		const pinia = createPinia();
+		setActivePinia(pinia);
+		let answer!: (r: "ok") => void;
+		vi.spyOn(useUserStore(), "performLogin").mockReturnValue(
+			new Promise((r) => (answer = r))
+		);
+		const { wrapper } = await mountComponent(LoginComponent, {}, { pinia });
+		const button = () => wrapper.find("button[type=submit]");
+		expect(button().attributes("disabled")).toBeDefined();
+
+		const [username, password] = wrapper.findAll("input");
+		await username.setValue("test-user");
+		await password.setValue("correct-horse-battery");
+		expect(button().attributes("disabled")).toBeUndefined();
+
+		await wrapper.find("form").trigger("submit");
+		expect(button().attributes("aria-busy")).toBe("true");
+		expect(button().attributes("disabled")).toBeDefined();
+
+		answer("ok");
+		await flushPromises();
+		expect(button().attributes("aria-busy")).toBe("false");
+	});
 });

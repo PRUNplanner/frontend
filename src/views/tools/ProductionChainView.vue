@@ -7,7 +7,7 @@
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: `${t("production_chains.view_title")} | PRUNplanner`,
+		title: t("production_chains.view_title"),
 	});
 
 	// Components

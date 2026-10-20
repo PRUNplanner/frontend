@@ -47,7 +47,7 @@ describe("KitView", () => {
 		await mountKit();
 
 		expect(head.useHead).toHaveBeenCalledWith({
-			title: "UI kit | PRUNplanner",
+			title: "UI kit",
 		});
 	});
 

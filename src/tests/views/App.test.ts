@@ -45,7 +45,7 @@ vi.mock("vue-router", () => ({
 }));
 vi.mock("@/layout/components/AppFooter.vue", () => mocks.stub("AppFooter"));
 vi.mock("@/layout/components/HomepageHeader.vue", () =>
-	mocks.stub("HomepageHeader", ["showHeader"])
+	mocks.stub("HomepageHeader")
 );
 vi.mock("@/layout/components/navigation/AppSidebar.vue", () =>
 	mocks.stub("AppSidebar")
@@ -118,20 +118,17 @@ afterEach(() => {
 describe("App", () => {
 	describe("logged out", () => {
 		it("shows the homepage header and the footer, no navigation", async () => {
-			mocks.route.meta = { showHeader: false };
 			const w = await mountApp();
 
 			expect(has(w, "HomepageHeader")).toBe(true);
-			expect(w.findComponent({ name: "HomepageHeader" }).props()).toEqual(
-				{
-					showHeader: false,
-				}
-			);
+			// the page alone is the main landmark
+			expect(w.findAll("main")).toHaveLength(1);
+			expect(w.find("main").html()).toContain("router-view-stub");
 			expect(has(w, "AppFooter")).toBe(true);
 			expect(has(w, "AppSidebar")).toBe(false);
 			expect(has(w, "MobileNavBar")).toBe(false);
 			expect(has(w, "AnalyticsConsentDialog")).toBe(false);
-			expect(w.find("main > div > div").classes()).not.toContain("pb-16");
+			expect(w.find(".min-h-screen").classes()).not.toContain("pb-16");
 		});
 
 		it("leaves the footer to the landing page", async () => {
@@ -162,7 +159,7 @@ describe("App", () => {
 			expect(has(w, "HomepageHeader")).toBe(false);
 			expect(has(w, "AppFooter")).toBe(true);
 			// phones keep the page clear of the bottom bar
-			expect(w.find("main > div > div").classes()).toContain("pb-16");
+			expect(w.find(".min-h-screen").classes()).toContain("pb-16");
 		});
 
 		it("keeps the consent dialog off the terms it links to", async () => {

@@ -127,5 +127,10 @@
 		"chip": "Update ready",
 		"whats_new_title": "PRUNplanner {version} is here",
 		"whats_new_action": "What's new"
+	},
+	"not_found": {
+		"title": "Page not found",
+		"text": "There is no page at this address.",
+		"home": "Go to the start page"
 	}
 }

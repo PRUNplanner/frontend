@@ -6,7 +6,7 @@
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: `${t("upkeep_price_calculator.view_title")} | PRUNplanner`,
+		title: t("upkeep_price_calculator.view_title"),
 	});
 
 	// Components

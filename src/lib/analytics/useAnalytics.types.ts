@@ -1,3 +1,4 @@
+import type { HomepageTourName } from "@/features/homepage/homepageTour.types";
 import type {
 	NavArea,
 	NavSection,
@@ -100,6 +101,9 @@ export type XITTransferSource =
 
 type Trigger = "button" | "shortcut";
 
+// the landing page's login / registration panel
+type AuthPanel = "login" | "registration";
+
 // the save conflict dialog's options, "close" keeps the edits unsaved
 type SaveConflictChoice = "save_as_new" | "overwrite" | "reload" | "close";
 
@@ -140,6 +144,15 @@ export interface IAnalyticsEventProperties {
 	"account:fio_link_failed": { reason: string };
 	"account:api_key_create": undefined;
 	"account:api_key_revoke": undefined;
+	"landing:auth_open": {
+		panel: AuthPanel;
+		source: "header" | "hero" | "closing" | "shared_plan";
+	};
+	"landing:auth_switch": { panel: AuthPanel };
+	"landing:example_open": { source: "hero" | "shared_plans" };
+	// clicks only, an automatic advance sends nothing
+	"landing:tour_step": { tour: HomepageTourName; step: string };
+	"landing:tour_toggle": { tour: HomepageTourName; is_playing: boolean };
 	"apikey:key_copy": undefined;
 	"apikey:builder_change": {
 		endpoint: string;

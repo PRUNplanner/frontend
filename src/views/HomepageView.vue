@@ -1,321 +1,614 @@
 <script setup lang="ts">
-	import { computed } from "vue";
+	import { computed, onMounted, ref, type Component } from "vue";
+	import { useI18n } from "vue-i18n";
+	import { useHead } from "@unhead/vue";
 
 	// Composables
 	import { useAuthPanel } from "@/features/account/useAuthPanel";
 	import { usePreferences } from "@/features/preferences/usePreferences";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { SupportedLanguages } from "@/lib/i18n";
+	import { htmlLang } from "@/lib/seo/site";
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
 
 	// Components
 	import HomepageLanguage from "@/layout/components/HomepageLanguage.vue";
+	import HomepageTour from "@/features/homepage/components/HomepageTour.vue";
 	import AnalyticsFooterLink from "@/features/analytics/components/AnalyticsFooterLink.vue";
 
 	// UI
-	import { PSelect } from "@/ui";
-	import { buttonConfig } from "@/ui/styles";
+	import { PIcon, PSelect } from "@/ui";
+	import {
+		AccountTreeSharp,
+		ArrowForwardSharp,
+		BarChartSharp,
+		BuildSharp,
+		CalculateSharp,
+		CodeSharp,
+		HomeWorkSharp,
+		LanguageSharp,
+		NorthEastSharp,
+		ShoppingCartSharp,
+		ShowChartSharp,
+		TrendingUpSharp,
+	} from "@vicons/material";
+	import {
+		CROWDIN_URL,
+		EXAMPLE_PLAN_PATH,
+		GITHUB_URL,
+		EMPIRE_TOUR,
+		PLAN_COUNT,
+		PLAN_TOUR,
+		PLANET_SEARCH_TOUR,
+		PLAYER_COUNT,
+		landingOutlineButton,
+		landingPrimaryButton,
+	} from "@/features/homepage/homepage.constants";
 
+	const { t } = useI18n();
 	const { open } = useAuthPanel();
 	const { locale } = usePreferences();
 	const userStore = useUserStore();
 
+	// the full title, without the "· PRUNplanner" of every other page
+	useHead({
+		title: () => t("homepage.seo.title"),
+		titleTemplate: "%s",
+	});
+
 	// the translation banner, only when the browser language is not the
-	// active locale's (English by default); the footer select is always there
+	// active locale's (English by default); the footer select is always
+	// there. Not before mount: the prerender doesn't know the browser.
+	const mounted = ref(false);
+	onMounted(() => (mounted.value = true));
 	const showLanguageSelector = computed<boolean>(() => {
-		if (typeof navigator === "undefined") return false;
+		if (!mounted.value) return false;
 		const browser = navigator.language.toLowerCase().split("-")[0];
 		return browser !== locale.value.toLowerCase().split("_")[0];
 	});
 
-	// landing buttons are larger than PButton's sizes, colors come from the kit
-	const buttonBase =
-		"inline-flex items-center justify-center gap-2 h-12 px-5 rounded-sm text-base font-medium cursor-pointer";
-	const primaryButton = [
-		buttonBase,
-		buttonConfig.colors.primary.base,
-		buttonConfig.colors.primary.hover,
-	].join(" ");
-	const outlineButton = `${buttonBase} border border-white/25 text-white hover:bg-white/10`;
+	const number = (value: number) =>
+		new Intl.NumberFormat(htmlLang(locale.value)).format(value);
+	const languageCount = SupportedLanguages.length;
+
+	const exampleOpened = (source: "hero" | "shared_plans") =>
+		trackEvent("landing:example_open", { source });
 
 	// shots are 1440×900 captures at 2x
-	const IMG_W = 2880;
-	const IMG_H = 1800;
 	const image = (name: string) => `/images/homepage/${name}.webp`;
 
-	// set-up cards show a 2.2x zoomed part of the shot, x/y like background-position
-	const ZOOM = 2.2;
-	const CARD_H = 200;
-	const crop = (x: number, y: number) => ({
-		width: `${ZOOM * 100}%`,
-		transform: `translate(${-(1 - 1 / ZOOM) * x}%, calc(${-y}% + ${(y / 100) * CARD_H}px))`,
-	});
-
+	// one large shot at 150 % width, offset to its focal area
 	const setup = [
-		{ key: "plan", image: "plan", crop: crop(45, 30) },
-		{ key: "empire", image: "empire", crop: crop(80, 15) },
-		{ key: "exchange", image: "exchanges", crop: crop(5, 10) },
+		{ key: "plan", image: "plan", offset: "-ml-[22%] -mt-[9%]" },
+		{ key: "empire", image: "empire", offset: "-ml-[40%] -mt-[4%]" },
+		{ key: "exchange", image: "exchanges", offset: "-ml-[3%] -mt-[3%]" },
+	];
+	const setupStep = ref(setup[0]);
+
+	const tools: { key: string; icon: Component; fio?: boolean }[] = [
+		{ key: "market_live", icon: ShowChartSharp },
+		{ key: "market_exploration", icon: BarChartSharp },
+		{ key: "recipe_roi", icon: TrendingUpSharp },
+		{ key: "production_chains", icon: AccountTreeSharp },
+		{ key: "hq_calculator", icon: HomeWorkSharp },
+		{ key: "repair", icon: BuildSharp, fio: true },
+		{ key: "carts", icon: ShoppingCartSharp },
+		{ key: "upkeep", icon: CalculateSharp },
 	];
 
-	const mostUsed = [
-		{ key: "planet_search", image: "planet-search", points: 4, fio: false },
-		{ key: "resource_roi", image: "resource-roi", points: 3, fio: false },
-		{ key: "fio_burn", image: "fio-burn", points: 3, fio: true },
-	];
+	const faq = ["what", "free", "fio", "try", "official", "languages"];
 
-	const tools = [
-		{ key: "market_live", fio: false },
-		{ key: "market_exploration", fio: false },
-		{ key: "recipe_roi", fio: false },
-		{ key: "production_chains", fio: false },
-		{ key: "hq_calculator", fio: false },
-		{ key: "repair", fio: true },
-		{ key: "carts", fio: false },
-		{ key: "upkeep", fio: false },
-	];
+	// shared looks
+	const container = "mx-auto w-full max-w-[1240px] px-6";
+	const section = `${container} pt-30 scroll-mt-16 flex flex-col gap-11`;
+	const eyebrow =
+		"font-mono text-[13px] tracking-[0.08em] uppercase text-prunplanner";
+	const sectionTitle =
+		"m-0 text-[clamp(32px,4vw,54px)] leading-[1.05] font-black tracking-[-0.025em] text-white";
+	const card = "border border-white/10 rounded-2xl bg-[#0a1010]";
+	const cardTitle =
+		"m-0 text-[28px] leading-[1.12] font-bold tracking-[-0.015em] text-white";
+	const pill =
+		"normal-case tracking-normal font-mono text-xs text-white/78 border border-white/28 rounded-full px-2.5 py-0.5";
+	// 4 / 2 / 1 columns, never a row with one leftover cell
+	const grid4 =
+		"grid grid-cols-1 min-[541px]:grid-cols-2 min-[981px]:grid-cols-4 gap-px bg-white/10 border border-white/10 overflow-hidden";
 </script>
 
 <template>
-	<div class="mx-auto w-full max-w-7xl px-4 md:px-10 lg:px-0">
+	<div class="text-[17px] leading-[1.55] text-white overflow-x-clip">
 		<!-- Hero -->
-		<section
-			class="py-18 grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-14 items-center">
-			<div class="flex flex-col gap-6">
-				<div
-					class="text-sm uppercase tracking-wide text-prunplanner font-medium">
-					{{ $t("homepage.hero.eyebrow") }}
-				</div>
+		<section id="top" class="relative px-6 pt-22">
+			<div
+				aria-hidden="true"
+				class="absolute inset-0 pointer-events-none bg-[radial-gradient(rgba(255,255,255,0.13)_1px,transparent_1.5px)] bg-size-[28px_28px] mask-b-from-0% mask-b-to-62%" />
+			<div
+				class="relative mx-auto max-w-[1240px] flex flex-col items-center text-center gap-7">
 				<h1
-					class="text-4xl md:text-6xl font-black leading-tight tracking-tight text-white">
-					{{ $t("homepage.hero.title") }}
+					class="m-0 max-w-[1100px] flex flex-col items-center gap-7 text-balance text-[clamp(44px,6.6vw,92px)] leading-[0.98] font-black tracking-[-0.035em] text-white">
+					<span
+						class="inline-flex items-center gap-2.5 px-3.5 py-1.75 border border-white/10 rounded-full bg-[#0a1010] font-mono text-[12.5px] leading-normal font-normal tracking-[0.06em] uppercase text-white/78">
+						<span
+							aria-hidden="true"
+							class="size-1.75 rounded-full bg-prunplanner" />
+						{{ $t("homepage.hero.eyebrow") }}
+					</span>
+					<i18n-t keypath="homepage.hero.title" tag="span">
+						<template #accent>
+							<span class="text-prunplanner">{{
+								$t("homepage.hero.title_accent")
+							}}</span>
+						</template>
+					</i18n-t>
 				</h1>
-				<p class="text-lg text-muted-strong">
+				<p
+					class="m-0 max-w-[760px] text-balance text-[clamp(19px,1.9vw,24px)] leading-[1.35] font-medium text-white">
+					{{ $t("homepage.hero.positioning") }}
+				</p>
+				<p
+					class="m-0 max-w-[680px] text-[clamp(17px,1.5vw,20px)] text-white/78">
 					{{ $t("homepage.hero.lead") }}
 				</p>
-				<div class="flex flex-col sm:flex-row gap-3 pt-2">
+				<div class="flex flex-wrap justify-center gap-3 pt-1">
 					<router-link
 						v-if="userStore.isLoggedIn"
 						to="/empire"
 						data-cta
-						:class="primaryButton">
+						:class="landingPrimaryButton">
 						{{ $t("homepage.hero.cta_logged_in") }}
+						<PIcon :size="18"><ArrowForwardSharp /></PIcon>
 					</router-link>
 					<button
 						v-else
 						type="button"
 						data-cta
-						:class="primaryButton"
-						@click="open('registration')">
+						:class="landingPrimaryButton"
+						@click="open('registration', 'hero')">
 						{{ $t("homepage.hero.cta") }}
+						<PIcon :size="18"><ArrowForwardSharp /></PIcon>
 					</button>
-					<a href="#how" :class="outlineButton">
-						{{ $t("homepage.hero.how") }}
-						<span aria-hidden="true">↓</span>
-					</a>
+					<router-link
+						:to="EXAMPLE_PLAN_PATH"
+						data-example
+						:class="landingOutlineButton"
+						@click="exampleOpened('hero')">
+						{{ $t("homepage.hero.example") }}
+					</router-link>
 				</div>
-				<div class="text-sm text-muted">
-					{{ $t("homepage.hero.facts") }}
+				<p
+					v-if="!userStore.isLoggedIn"
+					class="m-0 font-mono text-[13px] text-white/62">
+					{{ $t("homepage.hero.example_note") }}
+				</p>
+
+				<div class="mt-9 w-full max-w-[1180px]">
+					<HomepageTour
+						name="plan"
+						image="plan"
+						:alt="$t('homepage.hero.image_alt')"
+						:steps="PLAN_TOUR"
+						layout="strip"
+						eager>
+						<template #header>
+							<div
+								class="flex items-center gap-2 px-4 py-3 border-b border-white/10">
+								<span
+									v-for="dot in 3"
+									:key="dot"
+									aria-hidden="true"
+									class="size-2.5 rounded-full bg-white/18" />
+								<span class="ml-3 font-mono text-[12.5px] text-white/62">
+									{{ $t("homepage.hero.image_title") }}
+								</span>
+							</div>
+						</template>
+					</HomepageTour>
 				</div>
 			</div>
-			<figure class="flex flex-col gap-2.5">
-				<img
-					:src="image('plan')"
-					:width="IMG_W"
-					:height="IMG_H"
-					:alt="$t('homepage.hero.image_alt')"
-					class="w-full rounded-md border border-white/15" />
-				<figcaption class="text-sm text-muted">
-					{{ $t("homepage.hero.image_caption") }}
-				</figcaption>
-			</figure>
 		</section>
 
-		<!-- Three things to set up -->
-		<section id="how" class="py-18 border-t border-white/8 flex flex-col gap-10">
-			<div class="flex flex-col gap-2.5 max-w-3xl">
-				<h2 class="text-3xl font-bold text-white">
-					{{ $t("homepage.setup.title") }}
-				</h2>
-				<p class="text-base text-muted-strong">
-					{{ $t("homepage.setup.lead") }}
-				</p>
-			</div>
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+		<!-- Numbers strip -->
+		<section
+			:aria-label="$t('homepage.numbers.label')"
+			:class="container"
+			class="pt-6">
+			<div :class="grid4" class="max-w-[1180px] mx-auto rounded-[14px]">
 				<div
-					v-for="(item, index) in setup"
-					:key="item.key"
-					class="flex flex-col gap-3.5">
-					<div class="font-mono text-sm text-prunplanner">
-						0{{ index + 1 }}
-					</div>
-					<h3 class="text-xl font-bold text-white">
-						{{ $t(`homepage.setup.${item.key}.label`) }}
-					</h3>
-					<p class="text-base text-muted-strong">
-						{{ $t(`homepage.setup.${item.key}.text`) }}
-					</p>
+					v-for="cell in [
+						{
+							value: `${number(PLAYER_COUNT)}+`,
+							text: $t('homepage.numbers.players'),
+							accent: true,
+						},
+						{
+							value: `${number(PLAN_COUNT)}+`,
+							text: $t('homepage.numbers.plans'),
+							accent: true,
+						},
+						{
+							value: $t('homepage.numbers.free_value'),
+							text: $t('homepage.numbers.free'),
+						},
+						{
+							value: $t('homepage.numbers.languages_value', {
+								count: languageCount,
+							}),
+							text: $t('homepage.numbers.languages'),
+						},
+					]"
+					:key="cell.value"
+					data-number
+					class="bg-[#0a1010] px-6 py-6.5 flex flex-col gap-1">
 					<div
-						class="h-50 overflow-hidden rounded-md border border-white/15">
-						<img
-							:src="image(item.image)"
-							:width="IMG_W"
-							:height="IMG_H"
-							:alt="$t(`homepage.setup.${item.key}.alt`)"
-							loading="lazy"
-							class="max-w-none h-auto"
-							:style="item.crop" />
+						class="text-[34px] leading-[1.05] font-black tracking-[-0.02em]"
+						:class="cell.accent ? 'text-prunplanner' : 'text-white'">
+						{{ cell.value }}
 					</div>
+					<div class="text-[15px] text-white/78">{{ cell.text }}</div>
 				</div>
 			</div>
 		</section>
 
 		<!-- What players use most -->
-		<section class="py-18 border-t border-white/8 flex flex-col gap-18">
-			<div class="flex flex-col gap-2.5 max-w-3xl">
-				<h2 class="text-3xl font-bold text-white">
-					{{ $t("homepage.most_used.title") }}
-				</h2>
-				<p class="text-base text-muted-strong">
-					{{ $t("homepage.most_used.lead") }}
-				</p>
+		<section id="features" :class="section">
+			<div class="flex flex-col gap-3.5 max-w-[760px]">
+				<div :class="eyebrow">{{ $t("homepage.most_used.eyebrow") }}</div>
+				<h2 :class="sectionTitle">{{ $t("homepage.most_used.title") }}</h2>
 			</div>
-			<div
-				v-for="(tool, index) in mostUsed"
-				:key="tool.key"
-				class="grid grid-cols-1 gap-14 items-center"
-				:class="
-					index % 2 === 1
-						? 'lg:grid-cols-[minmax(0,8fr)_minmax(0,5fr)]'
-						: 'lg:grid-cols-[minmax(0,5fr)_minmax(0,8fr)]'
-				">
-				<div
-					class="flex flex-col gap-3.5"
-					:class="{ 'lg:order-2': index % 2 === 1 }">
-					<div
-						class="text-sm uppercase tracking-wide text-prunplanner font-medium flex items-center gap-2">
-						{{ $t(`homepage.most_used.${tool.key}.label`) }}
-						<span
-							v-if="tool.fio"
-							class="normal-case tracking-normal text-xs text-muted-strong border border-white/25 rounded-sm px-2 py-0.5">
-							{{ $t("homepage.most_used.needs_fio") }}
-						</span>
+			<div class="flex flex-col gap-6">
+				<HomepageTour
+					name="planet_search"
+					image="planet-search"
+					:alt="$t('homepage.most_used.planet_search.alt')"
+					:steps="PLANET_SEARCH_TOUR"
+					layout="list">
+					<div :class="eyebrow">
+						{{ $t("homepage.most_used.planet_search.label") }}
 					</div>
-					<h3 class="text-2xl font-bold text-white">
-						{{ $t(`homepage.most_used.${tool.key}.title`) }}
+					<h3 :class="cardTitle" class="text-[32px]!">
+						{{ $t("homepage.most_used.planet_search.title") }}
 					</h3>
-					<p class="text-base text-muted-strong">
-						{{ $t(`homepage.most_used.${tool.key}.lead`) }}
+					<p class="m-0 text-white/78">
+						{{ $t("homepage.most_used.planet_search.lead") }}
 					</p>
-					<ul class="flex flex-col gap-2 text-base text-white/85">
-						<li
-							v-for="point in tool.points"
-							:key="point"
-							class="flex gap-2.5 items-baseline">
-							<span
-								aria-hidden="true"
-								class="size-1.5 shrink-0 -translate-y-0.5 rounded-full bg-prunplanner" />
-							{{ $t(`homepage.most_used.${tool.key}.point_${point}`) }}
-						</li>
-					</ul>
+				</HomepageTour>
+				<HomepageTour
+					name="empire"
+					image="empire"
+					:alt="$t('homepage.most_used.empire.alt')"
+					:steps="EMPIRE_TOUR"
+					layout="list"
+					reverse>
+					<div :class="eyebrow">
+						{{ $t("homepage.most_used.empire.label") }}
+					</div>
+					<h3 :class="cardTitle" class="text-[32px]!">
+						{{ $t("homepage.most_used.empire.title") }}
+					</h3>
+					<p class="m-0 text-white/78">
+						{{ $t("homepage.most_used.empire.lead") }}
+					</p>
+				</HomepageTour>
+
+				<div class="flex flex-wrap gap-6">
+					<article
+						v-for="tool in [
+							{ key: 'resource_roi', image: 'resource-roi' },
+							{ key: 'fio_burn', image: 'fio-burn', fio: true },
+						]"
+						:key="tool.key"
+						:class="card"
+						class="flex-[1_1_380px] min-w-0 flex flex-col overflow-hidden">
+						<div class="p-8 sm:px-10 sm:pt-10 flex flex-col gap-4">
+							<div :class="eyebrow" class="flex flex-wrap items-center gap-2.5">
+								{{ $t(`homepage.most_used.${tool.key}.label`) }}
+								<span v-if="tool.fio" :class="pill">
+									{{ $t("homepage.most_used.needs_fio") }}
+								</span>
+							</div>
+							<h3 :class="cardTitle">
+								{{ $t(`homepage.most_used.${tool.key}.title`) }}
+							</h3>
+							<p class="m-0 text-white/78">
+								{{ $t(`homepage.most_used.${tool.key}.lead`) }}
+							</p>
+						</div>
+						<div
+							class="mt-auto ml-8 sm:ml-10 h-75 overflow-hidden border-t border-l border-white/16 rounded-tl-[10px]">
+							<img
+								:src="image(tool.image)"
+								width="2880"
+								height="1800"
+								:alt="$t(`homepage.most_used.${tool.key}.alt`)"
+								loading="lazy"
+								class="block w-245 max-w-none h-auto" />
+						</div>
+					</article>
 				</div>
-				<img
-					:src="image(tool.image)"
-					:width="IMG_W"
-					:height="IMG_H"
-					:alt="$t(`homepage.most_used.${tool.key}.alt`)"
-					loading="lazy"
-					class="w-full rounded-md border border-white/15"
-					:class="{ 'lg:order-1': index % 2 === 1 }" />
+
+				<div class="flex flex-wrap gap-6">
+					<article
+						:class="card"
+						class="flex-[1_1_380px] min-w-0 p-8 sm:p-10 flex flex-col gap-4">
+						<div :class="eyebrow">
+							{{ $t("homepage.most_used.starter.label") }}
+						</div>
+						<h3 :class="cardTitle">
+							{{ $t("homepage.most_used.starter.title") }}
+						</h3>
+						<p class="m-0 text-white/78">
+							{{ $t("homepage.most_used.starter.text") }}
+						</p>
+					</article>
+					<article
+						:class="card"
+						class="flex-[1_1_380px] min-w-0 p-8 sm:p-10 flex flex-col gap-4">
+						<div :class="eyebrow">
+							{{ $t("homepage.most_used.shared.label") }}
+						</div>
+						<h3 :class="cardTitle">
+							{{ $t("homepage.most_used.shared.title") }}
+						</h3>
+						<p class="m-0 text-white/78">
+							{{ $t("homepage.most_used.shared.text") }}
+						</p>
+						<router-link
+							:to="EXAMPLE_PLAN_PATH"
+							data-example
+							class="mt-auto self-start min-h-11 inline-flex items-center gap-2 font-bold text-prunplanner hover:underline"
+							@click="exampleOpened('shared_plans')">
+							{{ $t("homepage.hero.example") }}
+							<PIcon :size="18"><ArrowForwardSharp /></PIcon>
+						</router-link>
+					</article>
+				</div>
 			</div>
 		</section>
 
-		<!-- And the tools around it -->
-		<section
-			class="py-18 border-t border-white/8 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-14">
-			<div class="flex flex-col gap-2.5">
-				<h2 class="text-3xl font-bold text-white">
-					{{ $t("homepage.tools.title") }}
-				</h2>
-				<p class="text-base text-muted-strong">
+		<!-- From first base to empire -->
+		<section id="how" :class="section">
+			<div class="flex flex-col gap-3.5 max-w-[760px]">
+				<div :class="eyebrow">{{ $t("homepage.setup.eyebrow") }}</div>
+				<h2 :class="sectionTitle">{{ $t("homepage.setup.title") }}</h2>
+				<p class="m-0 text-[18px] text-white/78">
+					{{ $t("homepage.setup.lead") }}
+				</p>
+			</div>
+			<div class="flex flex-wrap gap-7 items-stretch">
+				<div
+					role="group"
+					:aria-label="$t('homepage.setup.label')"
+					class="flex-[1_1_340px] flex flex-col gap-3">
+					<button
+						v-for="(item, index) in setup"
+						:key="item.key"
+						type="button"
+						:aria-pressed="setupStep.key === item.key"
+						class="flex gap-4.5 p-5.5 rounded-xl border text-left cursor-pointer transition-colors"
+						:class="
+							setupStep.key === item.key
+								? 'border-prunplanner/55 bg-prunplanner/8'
+								: 'border-white/10 hover:border-white/28'
+						"
+						@click="setupStep = item">
+						<span
+							class="pt-1 font-mono text-sm font-bold text-prunplanner">
+							0{{ index + 1 }}
+						</span>
+						<span class="flex flex-col gap-1.5">
+							<span class="text-[22px] font-bold text-white">
+								{{ $t(`homepage.setup.${item.key}.label`) }}
+							</span>
+							<span class="text-base text-white/78">
+								{{ $t(`homepage.setup.${item.key}.text`) }}
+							</span>
+						</span>
+					</button>
+				</div>
+				<div
+					:class="card"
+					class="flex-[2_1_560px] min-w-0 aspect-[16/10] overflow-hidden border-white/16! rounded-[14px]!">
+					<img
+						:key="setupStep.key"
+						:src="image(setupStep.image)"
+						width="2880"
+						height="1800"
+						:alt="$t(`homepage.setup.${setupStep.key}.alt`)"
+						loading="lazy"
+						class="block w-[150%] max-w-none h-auto"
+						:class="setupStep.offset" />
+				</div>
+			</div>
+		</section>
+
+		<!-- Tools -->
+		<section id="tools" :class="section">
+			<div class="flex flex-col gap-3.5 max-w-[760px]">
+				<div :class="eyebrow">{{ $t("homepage.tools.eyebrow") }}</div>
+				<h2 :class="sectionTitle">{{ $t("homepage.tools.title") }}</h2>
+				<p class="m-0 text-[18px] text-white/78">
 					{{ $t("homepage.tools.lead") }}
 				</p>
 			</div>
-			<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
+			<div :class="grid4" class="rounded-2xl">
 				<div
 					v-for="tool in tools"
 					:key="tool.key"
-					class="py-4 border-b border-white/8 flex flex-col gap-1">
-					<div class="font-bold text-white">
+					data-tool
+					class="bg-[#030707] p-7 flex flex-col gap-2.5">
+					<PIcon :size="26" class="text-prunplanner">
+						<component :is="tool.icon" />
+					</PIcon>
+					<h3
+						class="m-0 flex flex-wrap items-center gap-2.5 text-[18px] font-bold text-white">
 						{{ $t(`homepage.tools.${tool.key}.label`) }}
-						<span
-							v-if="tool.fio"
-							class="font-normal text-xs text-muted">
+						<span v-if="tool.fio" :class="pill">
 							{{ $t("homepage.tools.with_fio") }}
 						</span>
-					</div>
-					<div class="text-sm text-muted-strong">
+					</h3>
+					<p class="m-0 text-[15px] text-white/62">
 						{{ $t(`homepage.tools.${tool.key}.text`) }}
-					</div>
+					</p>
 				</div>
 			</div>
 		</section>
 
-		<!-- Closing band -->
+		<!-- FAQ -->
 		<section
-			class="p-10 border border-white/12 rounded-md flex flex-col md:flex-row md:items-center gap-6">
-			<div class="grow flex flex-col gap-1.5">
-				<div class="text-2xl font-bold text-white">
-					{{ $t("homepage.closing.title") }}
-				</div>
-				<div class="text-base text-muted-strong">
-					{{ $t("homepage.closing.text") }}
-				</div>
+			id="faq"
+			:class="container"
+			class="pt-30 scroll-mt-16 flex flex-wrap gap-x-14 gap-y-7">
+			<div class="flex-[1_1_300px] flex flex-col gap-3.5">
+				<div :class="eyebrow">{{ $t("homepage.faq.eyebrow") }}</div>
+				<h2 :class="sectionTitle">{{ $t("homepage.faq.title") }}</h2>
 			</div>
-			<a
-				href="https://github.com/PRUNplanner/frontend"
-				target="_blank"
-				rel="noopener"
-				:class="outlineButton">
-				{{ $t("homepage.closing.github") }}
-			</a>
-			<button
-				v-if="!userStore.isLoggedIn"
-				type="button"
-				:class="[buttonBase, buttonConfig.colors.secondary.base, buttonConfig.colors.secondary.hover]"
-				@click="open('registration')">
-				{{ $t("homepage.closing.cta") }}
-			</button>
+			<div class="flex-[2_1_520px] min-w-0 border-t border-white/10">
+				<details
+					v-for="item in faq"
+					:key="item"
+					class="group border-b border-white/10">
+					<summary
+						class="list-none [&::-webkit-details-marker]:hidden min-h-11 py-4.5 flex items-center justify-between gap-4 cursor-pointer">
+						<h3 class="m-0 text-[19px] font-bold text-white">
+							{{ $t(`homepage.faq.${item}.question`) }}
+						</h3>
+						<svg
+							aria-hidden="true"
+							width="18"
+							height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2.4"
+							stroke-linecap="round"
+							class="shrink-0 text-prunplanner transition-transform group-open:rotate-45">
+							<path d="M12 5v14M5 12h14" />
+						</svg>
+					</summary>
+					<p class="m-0 pb-5 max-w-[760px] text-white/78">
+						{{
+							$t(`homepage.faq.${item}.answer`, {
+								count: languageCount - 1,
+							})
+						}}
+					</p>
+				</details>
+			</div>
 		</section>
 
-		<div v-if="showLanguageSelector" class="pt-18">
+		<!-- Closing panel -->
+		<section :class="container" class="pt-30">
+			<div
+				class="relative flex flex-wrap overflow-hidden rounded-[20px] bg-[#0a1010] border border-prunplanner/35 shadow-[0_40px_120px_-50px_rgba(192,226,24,0.3)]">
+				<div
+					aria-hidden="true"
+					class="absolute inset-0 pointer-events-none bg-[radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1.5px)] bg-size-[28px_28px] mask-r-from-0% mask-r-to-75%" />
+				<div
+					class="relative flex-[3_1_480px] px-[clamp(24px,4vw,64px)] py-[clamp(36px,5vw,72px)] flex flex-col items-start gap-5.5">
+					<i18n-t
+						keypath="homepage.closing.title"
+						tag="h2"
+						class="m-0 max-w-[640px] text-balance text-[clamp(32px,4.2vw,58px)] leading-[1.02] font-black tracking-[-0.03em] text-white">
+						<template #accent>
+							<span class="text-prunplanner">{{
+								$t("homepage.closing.title_accent")
+							}}</span>
+						</template>
+					</i18n-t>
+					<p class="m-0 text-[18px] text-white/78">
+						{{
+							$t("homepage.closing.text", {
+								players: number(PLAYER_COUNT),
+							})
+						}}
+					</p>
+					<button
+						v-if="!userStore.isLoggedIn"
+						type="button"
+						data-closing-cta
+						:class="landingPrimaryButton"
+						class="mt-1.5"
+						@click="open('registration', 'closing')">
+						{{ $t("homepage.closing.cta") }}
+						<PIcon :size="18"><ArrowForwardSharp /></PIcon>
+					</button>
+				</div>
+				<div
+					class="relative flex-[2_1_320px] bg-[#030707] border-l border-white/10 flex flex-col justify-center">
+					<a
+						v-for="link in [
+							{
+								href: GITHUB_URL,
+								icon: CodeSharp,
+								title: $t('homepage.closing.github'),
+								text: $t('homepage.closing.github_text'),
+							},
+							{
+								href: CROWDIN_URL,
+								icon: LanguageSharp,
+								title: $t('homepage.closing.translate'),
+								text: $t('homepage.closing.translate_text', {
+									count: languageCount,
+								}),
+							},
+						]"
+						:key="link.href"
+						:href="link.href"
+						target="_blank"
+						rel="noopener"
+						class="flex items-center gap-4 px-8 py-7 not-last:border-b border-white/10 hover:bg-white/3">
+						<span
+							aria-hidden="true"
+							class="shrink-0 size-11 rounded-[10px] bg-prunplanner/10 inline-flex items-center justify-center text-prunplanner">
+							<PIcon :size="22"><component :is="link.icon" /></PIcon>
+						</span>
+						<span class="grow flex flex-col">
+							<span class="text-[18px] font-bold text-white">
+								{{ link.title }}
+							</span>
+							<span class="text-[14.5px] text-white/62">
+								{{ link.text }}
+							</span>
+						</span>
+						<PIcon :size="18" class="shrink-0 text-white/62">
+							<NorthEastSharp />
+						</PIcon>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<div v-if="showLanguageSelector" :class="container" class="pt-18">
 			<HomepageLanguage />
 		</div>
-	</div>
 
-	<footer
-		class="mt-18 border-t border-white/8 text-sm text-muted">
-		<div
-			class="mx-auto w-full max-w-7xl px-4 md:px-10 lg:px-0 py-8 flex flex-col md:flex-row md:items-center gap-6">
-			<span class="grow">{{ $t("homepage.footer.made_in") }}</span>
-			<router-link to="/imprint-tos" class="inline-flex items-center min-h-6 text-muted-strong hover:underline">
-				{{ $t("homepage.footer.imprint") }}
-			</router-link>
-			<AnalyticsFooterLink class="text-muted-strong" />
-			<a
-				href="https://crowdin.com/project/prunplanner"
-				target="_blank"
-				rel="noopener"
-				class="inline-flex items-center min-h-6 text-muted-strong hover:underline">
-				{{ $t("homepage.footer.translate") }}
-			</a>
-			<label class="flex items-center gap-2">
-				{{ $t("homepage.footer.language") }}
-				<PSelect
-					v-model:value="locale"
-					:options="SupportedLanguages"
-					:aria-label="$t('homepage.footer.language')" />
-			</label>
-		</div>
-	</footer>
+		<footer :class="container" class="pt-18 pb-10 text-[14.5px] text-muted">
+			<div
+				class="pt-7 border-t border-white/10 flex flex-col md:flex-row md:items-center gap-6">
+				<span class="grow">{{ $t("homepage.footer.made_in") }}</span>
+				<router-link
+					to="/imprint-tos"
+					class="inline-flex items-center min-h-11 text-muted-strong hover:underline">
+					{{ $t("homepage.footer.imprint") }}
+				</router-link>
+				<AnalyticsFooterLink class="text-muted-strong" />
+				<a
+					:href="CROWDIN_URL"
+					target="_blank"
+					rel="noopener"
+					class="inline-flex items-center min-h-11 text-muted-strong hover:underline">
+					{{ $t("homepage.footer.translate") }}
+				</a>
+				<label class="flex items-center gap-2">
+					{{ $t("homepage.footer.language") }}
+					<PSelect
+						v-model:value="locale"
+						:options="SupportedLanguages"
+						:aria-label="$t('homepage.footer.language')" />
+				</label>
+			</div>
+		</footer>
+	</div>
 </template>

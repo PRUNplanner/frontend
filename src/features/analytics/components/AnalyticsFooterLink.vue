@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed } from "vue";
+	import { computed, onMounted, ref } from "vue";
 
 	// Composables
 	import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
@@ -9,11 +9,18 @@
 	import { useUserStore } from "@/stores/userStore";
 
 	// logged out, reopens the consent banner; logged in, the Profile toggle
-	// changes the choice
+	// changes the choice. Not before mount: the prerendered landing page is
+	// built without a PostHog key and hydrates as rendered.
 	const userStore = useUserStore();
 	const { isDNT, reopen } = useAnalyticsConsent();
+	const mounted = ref(false);
+	onMounted(() => (mounted.value = true));
 	const show = computed<boolean>(
-		() => !userStore.isLoggedIn && !isDNT && getPostHogKey() !== undefined
+		() =>
+			mounted.value &&
+			!userStore.isLoggedIn &&
+			!isDNT &&
+			getPostHogKey() !== undefined
 	);
 </script>
 

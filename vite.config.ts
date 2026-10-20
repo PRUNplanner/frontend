@@ -108,10 +108,11 @@ export default defineConfig({
 			}),
 	],
 	resolve: {
-		alias: {
-			"@": path.resolve(__dirname, "./src"),
-			vue: "vue/dist/vue.runtime.esm-bundler.js",
-		},
+		alias: [
+			{ find: "@", replacement: path.resolve(__dirname, "./src") },
+			// exact match: vue/server-renderer (the prerender) is the package's
+			{ find: /^vue$/, replacement: "vue/dist/vue.runtime.esm-bundler.js" },
+		],
 		dedupe: ["vue"],
 	},
 	optimizeDeps: {
@@ -166,5 +167,7 @@ export default defineConfig({
 			},
 		},
 	},
+	// the prerender bundles everything, so vue resolves through the alias once
+	ssr: { noExternal: true },
 	envPrefix: "VITE_",
 });

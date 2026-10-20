@@ -12,6 +12,9 @@ import { mountComponent } from "@/tests/mountComponent";
 // Types & Interfaces
 import type { IQueryState } from "@/lib/query_cache/queryCache.types";
 
+const head = vi.hoisted(() => ({ useHead: vi.fn() }));
+vi.mock("@unhead/vue", () => head);
+
 vi.mock("@/lib/debugMode", async () => {
 	const { ref } = await import("vue");
 	return { calcDebug: ref(false), setCalcDebug: vi.fn() };
@@ -216,5 +219,11 @@ describe("QueryCacheView", () => {
 				);
 			}
 		);
+	});
+
+	it("sets its title", async () => {
+		await mountComponent(QueryCacheView);
+
+		expect(head.useHead).toHaveBeenCalledWith({ title: "Query cache" });
 	});
 });

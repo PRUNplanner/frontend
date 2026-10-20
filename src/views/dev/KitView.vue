@@ -51,7 +51,7 @@
 	 *
 	 * @author jplacht
 	 */
-	useHead({ title: "UI kit | PRUNplanner" });
+	useHead({ title: "UI kit" });
 
 	const sizes: SizeKey[] = ["md", "sm"];
 	const buttonTypes: ButtonColorKey[] = [

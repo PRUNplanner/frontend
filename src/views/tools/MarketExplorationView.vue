@@ -9,7 +9,7 @@
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: `${t("market_exploration.view_title")} | PRUNplanner`,
+		title: t("market_exploration.view_title"),
 	});
 
 	// Stores

@@ -1,12 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { nextTick } from "vue";
 import { RouterLinkStub } from "@vue/test-utils";
 
 import HomepageHeader from "@/layout/components/HomepageHeader.vue";
 import LoginComponent from "@/features/account/components/LoginComponent.vue";
 import RegistrationComponent from "@/features/account/components/RegistrationComponent.vue";
-import { PButton } from "@/ui";
+import { PDrawer } from "@/ui";
 import { useAuthPanel } from "@/features/account/useAuthPanel";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { mountComponent } from "@/tests/mountComponent";
+
+const route = vi.hoisted(() => ({ name: "homepage" as string }));
+vi.mock("vue-router", async (original) => ({
+	...(await original<typeof import("vue-router")>()),
+	useRoute: () => route,
+}));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 // the forms have their own tests: only their presence matters here
 vi.mock("@/features/account/components/LoginComponent.vue", () => ({
@@ -15,6 +24,7 @@ vi.mock("@/features/account/components/LoginComponent.vue", () => ({
 vi.mock("@/features/account/components/RegistrationComponent.vue", () => ({
 	default: {
 		name: "RegistrationComponent",
+		emits: ["login"],
 		template: "<p>registration form</p>",
 	},
 }));
@@ -24,49 +34,72 @@ describe("HomepageHeader", () => {
 
 	beforeEach(() => {
 		panel.close();
-		// jsdom has no scrolling, open() asks for it
-		vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+		route.name = "homepage";
+		vi.mocked(trackEvent).mockClear();
 	});
 
-	it("opens one panel at a time from the login and register buttons", async () => {
+	const forms = (wrapper: Awaited<ReturnType<typeof mountComponent>>["wrapper"]) => [
+		wrapper.findComponent(LoginComponent).exists(),
+		wrapper.findComponent(RegistrationComponent).exists(),
+	];
+
+	it("opens the panel on the form of the header button, the same button closes it", async () => {
 		const { wrapper } = await mountComponent(HomepageHeader);
-		const login = wrapper.find("button[type=button]");
-		const register = wrapper.findComponent(PButton);
-		expect(login.text()).toBe("homepage.navigation.login");
-		expect(register.text()).toBe("homepage.navigation.registration");
-		expect(wrapper.findComponent(LoginComponent).exists()).toBe(false);
-		expect(wrapper.findComponent(RegistrationComponent).exists()).toBe(
-			false
-		);
+		const drawer = wrapper.findComponent(PDrawer);
+		expect(drawer.props("show")).toBe(false);
 
-		await login.trigger("click");
-		expect(wrapper.findComponent(LoginComponent).exists()).toBe(true);
-		expect(wrapper.findComponent(RegistrationComponent).exists()).toBe(
-			false
-		);
+		await wrapper.find("[data-login]").trigger("click");
+		expect(drawer.props("show")).toBe(true);
+		expect(forms(wrapper)).toEqual([true, false]);
 
-		await register.trigger("click");
-		expect(wrapper.findComponent(LoginComponent).exists()).toBe(false);
-		expect(wrapper.findComponent(RegistrationComponent).exists()).toBe(
-			true
-		);
+		await wrapper.find("[data-registration]").trigger("click");
+		expect(forms(wrapper)).toEqual([false, true]);
 
-		// the same button again folds its panel
-		await register.trigger("click");
-		expect(wrapper.findComponent(RegistrationComponent).exists()).toBe(
-			false
-		);
+		await wrapper.find("[data-registration]").trigger("click");
+		expect(drawer.props("show")).toBe(false);
+		expect(trackEvent).toHaveBeenCalledWith("landing:auth_open", {
+			panel: "login",
+			source: "header",
+		});
 	});
 
-	it("shows a panel that was opened from elsewhere", async () => {
-		panel.open("login");
+	it("switches the form inside the open panel", async () => {
+		panel.open("login", "hero");
+		const { wrapper } = await mountComponent(HomepageHeader);
+		// the drawer is teleported to the body
+		const [login, registration] = document.querySelectorAll<HTMLElement>(
+			"[role=dialog] [role=group] button"
+		);
+		expect(login.getAttribute("aria-pressed")).toBe("true");
+
+		registration.click();
+		await nextTick();
+		expect(forms(wrapper)).toEqual([false, true]);
+		expect(trackEvent).toHaveBeenLastCalledWith("landing:auth_switch", {
+			panel: "registration",
+		});
+
+		// the welcome state's button after a registration: not a switch
+		vi.mocked(trackEvent).mockClear();
+		await wrapper.findComponent(RegistrationComponent).vm.$emit("login");
+		expect(forms(wrapper)).toEqual([true, false]);
+		expect(trackEvent).not.toHaveBeenCalled();
+	});
+
+	it("closes the panel from the drawer (X, Esc, backdrop)", async () => {
+		panel.open("registration", "closing");
 		const { wrapper } = await mountComponent(HomepageHeader);
 
-		expect(wrapper.findComponent(LoginComponent).exists()).toBe(true);
+		wrapper.findComponent(PDrawer).vm.$emit("update:show", false);
+		expect(panel.showRegistration.value).toBe(false);
+
+		// opening is the header's buttons' job, the drawer only closes
+		wrapper.findComponent(PDrawer).vm.$emit("update:show", true);
+		expect(panel.showLogin.value || panel.showRegistration.value).toBe(false);
 	});
 
-	it("closes both panels when the header leaves", async () => {
-		panel.open("registration");
+	it("closes the panel when the header leaves", async () => {
+		panel.open("registration", "hero");
 		const { wrapper } = await mountComponent(HomepageHeader);
 
 		wrapper.unmount();
@@ -76,26 +109,13 @@ describe("HomepageHeader", () => {
 	});
 
 	it.each([
-		[true, 1],
-		[false, 0],
-	])(
-		"with showHeader=%s links the name back to the start: %s heading(s) in the link",
-		async (showHeader, headings) => {
-			const { wrapper } = await mountComponent(HomepageHeader, {
-				showHeader,
-			});
-
-			const link = wrapper.findComponent(RouterLinkStub);
-			expect(link.props("to")).toBe("/");
-			expect(link.findAll("h2")).toHaveLength(headings);
-		}
-	);
-
-	it("shows the link heading by default", async () => {
+		["homepage", 4],
+		["shared-plan", 0],
+	])("on %s shows %i section links", async (name, links) => {
+		route.name = name;
 		const { wrapper } = await mountComponent(HomepageHeader);
 
-		expect(wrapper.findComponent(RouterLinkStub).find("h2").text()).toBe(
-			"PRUNplanner"
-		);
+		expect(wrapper.findAll("nav a")).toHaveLength(links);
+		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe("/");
 	});
 });

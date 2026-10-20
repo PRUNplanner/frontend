@@ -7,7 +7,7 @@
 	import { useHead } from "@unhead/vue";
 
 	useHead({
-		title: `${t("market_live.view_title")} | PRUNplanner`,
+		title: t("market_live.view_title"),
 	});
 
 	// Composables

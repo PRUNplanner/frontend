@@ -7,7 +7,7 @@
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: `${t("api_keys.view_title")} | PRUNplanner`,
+		title: t("api_keys.view_title"),
 	});
 
 	// Composables

@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, createSSRApp } from "vue";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -23,7 +23,9 @@ import router from "@/router";
 // app + uses
 import { trackVueError } from "@/lib/analytics/useAnalytics";
 
-const app = createApp(AppProvider);
+// the prerendered landing page is hydrated, any other page rendered
+import { isPrerendered, mountApp, prepareMount } from "@/lib/seo/prerenderMount";
+const app = (isPrerendered() ? createSSRApp : createApp)(AppProvider);
 app.config.performance = import.meta.env.DEV;
 app.config.errorHandler = trackVueError;
 
@@ -72,5 +74,8 @@ app.use(head);
 import { useUserStore } from "./stores/userStore";
 import type { Composer } from "vue-i18n";
 
-// mount
-app.mount("#app");
+// mount, over the prerendered landing page without a flash. Not awaited:
+// lazy chunks import from this module, which has to finish evaluating first
+prepareMount(router, i18n.global.locale.value)
+	.catch(console.error)
+	.then(() => mountApp(app));

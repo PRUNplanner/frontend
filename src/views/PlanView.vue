@@ -976,10 +976,8 @@
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
-		title: computed(() =>
-			planName.value
-				? `${planName.value} | PRUNplanner`
-				: `${props.planData.planet_natural_id} | PRUNplanner`
+		title: computed(
+			() => planName.value || props.planData.planet_natural_id
 		),
 	});
 

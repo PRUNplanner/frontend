@@ -14,7 +14,7 @@
 	import { useHead } from "@unhead/vue";
 
 	useHead({
-		title: `${t("fio.burn.view_title")} | PRUNplanner`,
+		title: t("fio.burn.view_title"),
 	});
 
 	// Stores

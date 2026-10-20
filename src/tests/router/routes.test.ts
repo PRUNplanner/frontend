@@ -13,6 +13,7 @@ vi.mock("@/views/HelpView.vue", () => stub);
 vi.mock("@/views/HomepageView.vue", () => stub);
 vi.mock("@/views/ImprintToSView.vue", () => stub);
 vi.mock("@/views/ManageView.vue", () => stub);
+vi.mock("@/views/NotFoundView.vue", () => stub);
 vi.mock("@/views/NotImplementedView.vue", () => stub);
 vi.mock("@/views/PasswordResetView.vue", () => stub);
 vi.mock("@/views/PlanLoadView.vue", () => stub);
