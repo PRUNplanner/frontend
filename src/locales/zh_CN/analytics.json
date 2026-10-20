@@ -10,5 +10,11 @@
 		"tos_link": "服务条款",
 		"allow": "允许",
 		"deny": "算了吧"
+	},
+	"banner": {
+		"label": "Analytics consent",
+		"text": "Can we use PostHog to see how prunplanner.org is used? Optional, and only with your OK. {link}",
+		"details": "Details",
+		"footer_link": "Analytics"
 	}
 }
