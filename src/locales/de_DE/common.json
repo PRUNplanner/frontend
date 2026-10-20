@@ -6,6 +6,7 @@
 		"management": "Verwaltung",
 		"exchanges": "Marktplätze",
 		"tools": "Werkzeuge",
+		"market_report": "Market report",
 		"market_exploration": "Marktübersicht",
 		"market_live": "Live Markt",
 		"recipe_roi": "Rezept ROI",
@@ -126,5 +127,10 @@
 		"chip": "Aktualisierung bereit",
 		"whats_new_title": "PRUNplanner {version} ist da",
 		"whats_new_action": "Neues entdecken"
+	},
+	"not_found": {
+		"title": "Page not found",
+		"text": "There is no page at this address.",
+		"home": "Go to the start page"
 	}
 }
