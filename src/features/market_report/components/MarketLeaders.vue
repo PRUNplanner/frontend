@@ -10,6 +10,7 @@
 		MARKET_EXCHANGES,
 	} from "@/features/market_report/marketReport.util";
 	import { formatNumber } from "@/util/numbers";
+	import { formatMaterialName } from "@/util/text";
 
 	// Components
 	import MarketTickerChip from "@/features/market_report/components/MarketTickerChip.vue";
@@ -53,7 +54,9 @@
 					:ticker="r.m.ticker"
 					:category="r.m.category" />
 				<div class="min-w-0 flex flex-col gap-1">
-					<div class="truncate">{{ r.m.name }}</div>
+					<div class="truncate">
+						{{ formatMaterialName(r.m.name, r.m.ticker) }}
+					</div>
 					<div :style="{ width: `${r.width}%` }">
 						<PStackedBar
 							:segments="r.segments"

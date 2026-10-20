@@ -32,6 +32,15 @@ describe("prerender", () => {
 			"Plan a base before you build it."
 		);
 		expect(doc.querySelectorAll("#faq details")).toHaveLength(6);
+		// "Market today": title, placeholder and CTA, no market numbers
+		const market = doc.querySelector("#market")!;
+		expect(market.querySelector("h2")!.textContent).toContain(
+			"What the commodity exchanges did this week"
+		);
+		expect(market.querySelector("[data-skeleton]")).not.toBeNull();
+		expect(market.querySelector("[data-market-today]")).toBeNull();
+		expect(market.querySelector("[data-market-cta]")).not.toBeNull();
+		expect(market.textContent).not.toMatch(/%|ȼ/);
 		// the auth panel is closed, the tours on their first step
 		expect(doc.querySelector("[role=dialog]")).toBeNull();
 		expect(

@@ -83,6 +83,8 @@ The PostHog funnel for registrations from it: `landing:auth_open` with
 | `landing:example_open` | `source` (`hero`, `shared_plans`) | "Open an example plan" was clicked |
 | `landing:tour_step` | `tour` (`plan`, `planet_search`, `empire`), `step` (the step key) | a visitor clicked a tour step; automatic advances are not sent |
 | `landing:tour_toggle` | `tour`, `is_playing` | Pause or Play was clicked |
+| `landing:market_click` | `target` (`header`, `cta`, `sector`, `mover`) | a link of the "Market today" section or the header's "Market" link to `/market` was clicked |
+| `landing:market_view_change` | `view` (`rising`, `falling`) | the movers of the "Market today" section were switched |
 
 Like the signup events, these reach PostHog only from visitors who consented.
 

@@ -26,6 +26,7 @@
 		volumeTitle = "",
 		volumeUnit = "",
 		volumeLabel = "",
+		area = false,
 	} = defineProps<{
 		/** UTC midnight epochs (ms), one per value */
 		days: number[];
@@ -38,6 +39,8 @@
 		volumeUnit?: string;
 		/** tooltip name of the volume */
 		volumeLabel?: string;
+		/** fill below each line, down to the plot's bottom */
+		area?: boolean;
 	}>();
 
 	const theme = useChartTheme();
@@ -164,6 +167,32 @@
 			return { key: s.key, color: s.color, d: d.trim() };
 		})
 	);
+
+	// each unbroken run of a line closed down to the plot's bottom
+	const areas = computed(() => {
+		if (!area) return [];
+		const bottom = (layout.value.y + layout.value.h).toFixed(1);
+		return series.map((s) => {
+			let d = "";
+			let run: number[] = [];
+			const close = () => {
+				if (run.length > 1) {
+					const x = (i: number) => sx.value(i).toFixed(1);
+					const line = run
+						.map(
+							(i) =>
+								`L${x(i)},${sy.value(s.values[i]!).toFixed(1)}`
+						)
+						.join(" ");
+					d += `M${x(run[0])},${bottom} ${line} L${x(run.at(-1)!)},${bottom} Z `;
+				}
+				run = [];
+			};
+			s.values.forEach((v, i) => (v == null ? close() : run.push(i)));
+			close();
+			return { key: s.key, color: s.color, d: d.trim() };
+		});
+	});
 
 	// a day with a value but none on either side draws no line, so a dot
 	// (rarely traded materials)
@@ -356,6 +385,13 @@
 				</text>
 			</g>
 
+			<path
+				v-for="p in areas"
+				:key="`area${p.key}`"
+				class="line-area"
+				:d="p.d"
+				:fill="p.color"
+				fill-opacity="0.12" />
 			<!-- lines, broken at missing days -->
 			<path
 				v-for="p in paths"

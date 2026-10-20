@@ -6,16 +6,20 @@ import {
 	exchangeCards,
 	formatChange,
 	formatMoney,
+	indexChanges,
 	marketBrief,
 	marketKpis,
+	marketLead,
 	marketMovers,
 	MOVER_MIN_TURNOVER,
 	MOVER_MIN_UNITS,
+	sectorCards,
 	seriesChange,
 	squarify,
 	workforceCost,
 	workforceDrivers,
 	workforceSeries,
+	WORKFORCE_TICKERS,
 } from "@/features/market_report/marketReport.util";
 import {
 	MarketSummarySchema,
@@ -311,5 +315,66 @@ describe("an empty or thin summary", () => {
 		);
 		expect(rects).toHaveLength(4);
 		rects.forEach((r) => expect(r.w * r.h).toBeCloseTo(2500, 6));
+	});
+});
+
+describe("landing section", () => {
+	it("index changes over 7, 30 and 90 days", () => {
+		const values = Array.from({ length: 90 }, (_, i) => 100 + i);
+		const c = indexChanges(values);
+		expect(c.d90).toBeCloseTo((189 / 100 - 1) * 100);
+		expect(c.d30).toBeCloseTo((189 / 159 - 1) * 100);
+		expect(c.d7).toBeCloseTo((189 / 182 - 1) * 100);
+		expect(indexChanges([null])).toEqual({
+			d7: null,
+			d30: null,
+			d90: null,
+		});
+	});
+
+	it("sector cards: one per sector, largest change first, shares add up", () => {
+		const cards = sectorCards(summary);
+		expect(cards.map((c) => c.key).sort()).toEqual(
+			summary.sectors.map((s) => s.key).sort()
+		);
+		const changes = cards.map((c) => c.change!);
+		expect(changes).toEqual([...changes].sort((a, b) => b - a));
+		expect(cards[0].key).toBe(marketBrief(summary).sector);
+		expect(cards.reduce((t, c) => t + c.share, 0)).toBeCloseTo(100, 6);
+		expect(cards[0].values).toBe(summary.index.per_sector[cards[0].key]);
+	});
+
+	it("lead: index since its base, leading sector, pioneer cost from the series", () => {
+		const prices = Object.fromEntries(
+			WORKFORCE_TICKERS.map((t) => [
+				t,
+				Array.from({ length: summary.days }, (_, i) =>
+					i < 2 ? null : 10 + (t === "RAT" ? i : 0)
+				),
+			])
+		);
+		const lead = marketLead(summary, prices);
+		const brief = marketBrief(summary);
+		expect(lead).toMatchObject({
+			change: brief.indexChange,
+			change30: indexChanges(summary.index.combined).d30,
+			start: summary.index.base,
+			sector: brief.sector,
+			sectorChange: brief.sectorChange,
+		});
+		const costs = workforceSeries(prices, "pioneer", summary.days);
+		expect(lead.pioneerCost).toBe(costs.at(-1));
+		expect(lead.pioneerChange).toBeCloseTo(seriesChange(costs)!);
+		expect(lead.pioneerStart).toBe(
+			summary.as_of - (summary.days - 3) * 86_400_000
+		);
+	});
+
+	it("lead without prices leaves out the pioneer cost", () => {
+		expect(marketLead(summary, null)).toMatchObject({
+			pioneerCost: null,
+			pioneerChange: null,
+			pioneerStart: null,
+		});
 	});
 });

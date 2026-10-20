@@ -10,6 +10,7 @@
 		squarify,
 	} from "@/features/market_report/marketReport.util";
 	import { formatNumber } from "@/util/numbers";
+	import { formatMaterialName } from "@/util/text";
 
 	// Types & Interfaces
 	import type {
@@ -113,7 +114,7 @@
 	}
 
 	const tileLabel = (m: MarketMaterial) =>
-		`${m.ticker}, ${m.name}: ${formatMoney(m.turnover_30d)}, ${
+		`${m.ticker}, ${formatMaterialName(m.name, m.ticker)}: ${formatMoney(m.turnover_30d)}, ${
 			m.is_flat
 				? t("market_report.treemap.flat")
 				: formatChange(m.change_pct)
@@ -192,7 +193,8 @@
 			class="absolute z-10 p-2 rounded-panel bg-[var(--chart-surface)] text-xs flex flex-col gap-1 pointer-events-none shadow-panel"
 			:style="tipStyle">
 			<div class="font-bold text-sm">
-				{{ active.m.name }} · {{ active.m.ticker }}
+				{{ formatMaterialName(active.m.name, active.m.ticker) }} ·
+				{{ active.m.ticker }}
 			</div>
 			<div class="flex justify-between gap-3">
 				<span class="text-muted">{{

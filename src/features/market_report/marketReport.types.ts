@@ -70,3 +70,36 @@ export interface ITreemapRect<T> {
 	w: number;
 	h: number;
 }
+
+/** index change over the last 7, 30 and 90 days, in % */
+export interface IMarketIndexChanges {
+	d7: number | null;
+	d30: number | null;
+	d90: number | null;
+}
+
+export interface IMarketSectorCard {
+	key: string;
+	/** sector index, oldest first */
+	values: (number | null)[];
+	/** over the whole series and the last 30 days, in % */
+	change: number | null;
+	change30: number | null;
+	/** of the 30-day turnover of all materials, in % */
+	share: number;
+}
+
+/** the numbers of the landing page's lead sentence */
+export interface IMarketLead {
+	change: number | null;
+	change30: number | null;
+	/** epoch ms the index is 100 */
+	start: number;
+	sector: string | null;
+	sectorChange: number | null;
+	/** ȼ per 100 pioneers a day at the last VWAP 7D, null without prices */
+	pioneerCost: number | null;
+	pioneerChange: number | null;
+	/** epoch ms of the first day with a full pioneer basket */
+	pioneerStart: number | null;
+}

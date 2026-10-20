@@ -11,6 +11,9 @@ import type { WorkforceType } from "@/features/api/schemas/planningData.schemas"
 import type {
 	IMarketBookStats,
 	IMarketBrief,
+	IMarketIndexChanges,
+	IMarketLead,
+	IMarketSectorCard,
 	IMarketExchangeCard,
 	IMarketKpis,
 	IPriceSeries,
@@ -469,3 +472,82 @@ export const WORKFORCE_TICKERS: string[] = [
 		)
 	),
 ].sort();
+
+/**
+ * Change of a daily series over the last 7, 30 and 90 days (the whole
+ * series)
+ *
+ * @param {(number | null)[]} values Series, oldest first
+ * @returns {IMarketIndexChanges} Changes in %
+ */
+export function indexChanges(values: (number | null)[]): IMarketIndexChanges {
+	return {
+		d7: seriesChange(values.slice(-8)),
+		d30: seriesChange(values.slice(-31)),
+		d90: seriesChange(values),
+	};
+}
+
+/**
+ * One card per sector: its index, the change over the series and the last
+ * 30 days, and its share of the 30-day turnover. Largest change first.
+ *
+ * @param {MarketSummary} summary Market summary
+ * @returns {IMarketSectorCard[]} Cards
+ */
+export function sectorCards(summary: MarketSummary): IMarketSectorCard[] {
+	const total = sum(summary.materials.map((m) => m.turnover_30d));
+	return summary.sectors
+		.map(({ key }) => {
+			const values = summary.index.per_sector[key] ?? [];
+			const turnover = sum(
+				summary.materials
+					.filter((m) => m.sector === key)
+					.map((m) => m.turnover_30d)
+			);
+			return {
+				key,
+				values,
+				change: seriesChange(values),
+				change30: seriesChange(values.slice(-31)),
+				share: total ? (turnover / total) * 100 : 0,
+			};
+		})
+		.sort((a, b) => (b.change ?? -Infinity) - (a.change ?? -Infinity));
+}
+
+/**
+ * The landing page's lead: the index, the leading sector and the pioneer
+ * cost over the same days as the market report's workforce chart
+ *
+ * @param {MarketSummary} summary Market summary
+ * @param {IPriceSeries | null} prices All-exchange VWAP 7D of the
+ * workforce tickers over the summary's days, ending on its as_of; null
+ * leaves out the pioneer cost
+ * @returns {IMarketLead} Lead
+ */
+export function marketLead(
+	summary: MarketSummary,
+	prices: IPriceSeries | null
+): IMarketLead {
+	const brief = marketBrief(summary);
+	// the sparks are requested for 90 days, the summary's length; both end
+	// on the last complete day
+	const costs = prices
+		? workforceSeries(prices, "pioneer", summary.days)
+		: [];
+	const first = costs.findIndex((c) => c != null);
+	return {
+		change: seriesChange(summary.index.combined),
+		change30: seriesChange(summary.index.combined.slice(-31)),
+		start: summary.index.base,
+		sector: brief.sector,
+		sectorChange: brief.sectorChange,
+		pioneerCost: costs.findLast((c) => c != null) ?? null,
+		pioneerChange: seriesChange(costs),
+		pioneerStart:
+			first < 0
+				? null
+				: summary.as_of - (summary.days - 1 - first) * 86_400_000,
+	};
+}
