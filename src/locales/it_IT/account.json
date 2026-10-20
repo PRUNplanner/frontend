@@ -1,11 +1,11 @@
 {
 	"components": {
 		"login": {
-			"title": "Accedi",
+			"title": "Back to your empire.",
 			"error": "Errore durante l'accesso. Controlla il tuo nome utente e password.",
 			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
-				"login": "Accedi"
+				"login": "Log in"
 			},
 			"form": {
 				"username": "Nome utente",
@@ -13,36 +13,34 @@
 			},
 			"tos": "Utilizzando PRUNplanner accetti i {tos_link}.",
 			"tos_link": "Termini di servizio",
-			"forgot": "Hai dimenticato la password? {forgot_link}.",
-			"forgot_link": "Reimposta la password"
+			"forgot_link": "Forgot your password?"
 		},
 		"registration": {
-			"title": "Informazioni sull'account",
+			"title": "Start planning, it's free.",
 			"tos": "PRUNplanner è gratuito. Creando un account, riconosci e accetti i {tos_link}.",
 			"tos_link": "Termini di servizio",
 			"result": {
 				"ok_header": "Benvenuto {username}!",
-				"ok_message": "Registrazione riuscita. Ora puoi accedere a PRUNplanner.",
+				"ok_message": "Registration successful. You can now log in to PRUNplanner.",
 				"error": "Errore durante la registrazione.",
 				"fix_fields": "Please fix the fields marked below.",
 				"throttled": "Too many registration attempts. Please wait a minute and try again.",
 				"unknown": "Unknown error. Please try again later."
 			},
 			"buttons": {
-				"register": "Crea Account"
+				"register": "Create account"
 			},
 			"form": {
 				"username": "Nome utente",
-				"username_info": "Deve essere di almeno 3 caratteri. Non deve contenere spazi.",
+				"username_info": "At least 3 characters, no spaces.",
 				"password": "Password",
 				"password_info": "La password deve contenere almeno 8 caratteri.",
 				"email": "Email",
-				"email_placeholder": "Non obbligatorio, ma consigliato.",
-				"email_info": "Non obbligatorio. Aumenta la sicurezza del tuo account.",
+				"email_info": "Not mandatory, but recommended. Increases your account security.",
 				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
-				"security_question": "Domanda di sicurezza",
-				"question": "Inserisci il nome del pianeta {planet}. Per trovarlo, apri un nuovo buffer di Prosperous Universe con il comando {command}. Vedrai il nome del pianeta elencato sotto 'Nome' nelle informazioni dei pianeti",
-				"planet_name": "Nome",
+				"security_question": "Security question",
+				"question": "Enter the name of planet {planet}. To find it, open a new Prosperous Universe buffer with this command and read the planet's name under \"Name\".",
+				"planet_name": "Planet name",
 				"another_planet": "Use a different planet"
 			}
 		},
