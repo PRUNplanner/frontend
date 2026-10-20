@@ -36,3 +36,20 @@ export function materialCategoryClass(category: string): string {
 		.replaceAll("(", "")
 		.replaceAll(")", "")}`;
 }
+
+/**
+ * A material name as people read it: FIO's camelCase split into
+ * capitalised words ("workstationBlank" → "Workstation Blank"). Names that
+ * already have spaces stay as they are; other letters keep their case.
+ *
+ * @param {string} name Material name
+ * @param {string} ticker Shown when the name is empty
+ * @returns {string} Readable name
+ */
+export function formatMaterialName(name: string, ticker: string): string {
+	if (!name) return ticker;
+	if (name.includes(" ")) return name;
+	return name
+		.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+		.replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+}

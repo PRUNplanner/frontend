@@ -8,6 +8,7 @@ import RegistrationComponent from "@/features/account/components/RegistrationCom
 import { PDrawer } from "@/ui";
 import { useAuthPanel } from "@/features/account/useAuthPanel";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { prefetchMarketReport } from "@/features/market_report/useMarketReport";
 import { mountComponent } from "@/tests/mountComponent";
 
 const route = vi.hoisted(() => ({ name: "homepage" as string }));
@@ -16,6 +17,9 @@ vi.mock("vue-router", async (original) => ({
 	useRoute: () => route,
 }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/features/market_report/useMarketReport", () => ({
+	prefetchMarketReport: vi.fn(),
+}));
 
 // the forms have their own tests: only their presence matters here
 vi.mock("@/features/account/components/LoginComponent.vue", () => ({
@@ -109,7 +113,7 @@ describe("HomepageHeader", () => {
 	});
 
 	it.each([
-		["homepage", 4],
+		["homepage", 5],
 		["shared-plan", 0],
 	])("on %s shows %i section links", async (name, links) => {
 		route.name = name;
@@ -117,5 +121,24 @@ describe("HomepageHeader", () => {
 
 		expect(wrapper.findAll("nav a")).toHaveLength(links);
 		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe("/");
+	});
+
+	it("links the market report right after How it works, prefetching it", async () => {
+		const { wrapper } = await mountComponent(HomepageHeader);
+		const nav = wrapper.find("nav");
+		const items = nav.findAll("a").map((a) => a.text());
+		expect(items.indexOf("homepage.navigation.market")).toBe(
+			items.indexOf("homepage.navigation.how") + 1
+		);
+		const link = nav.find("[data-market-link]");
+		expect(link.text()).toBe("homepage.navigation.market");
+
+		await link.trigger("mouseenter");
+		await link.trigger("focus");
+		expect(prefetchMarketReport).toHaveBeenCalledTimes(2);
+		await link.trigger("click");
+		expect(trackEvent).toHaveBeenCalledWith("landing:market_click", {
+			target: "header",
+		});
 	});
 });

@@ -20,6 +20,16 @@ and the landing-only button and form styles.
   starts paused. Clicks send `landing:tour_step` / `landing:tour_toggle`, an
   automatic advance sends nothing. Tailwind only, no scoped CSS: the
   prerendered page has no chunk CSS before the app loads.
+- `components/HomepageMarketToday.vue`: the "Market today" section (lead
+  sentence, CX index with 7 / 30 / 90 d chips, top 5 movers, eight sector
+  cards) from `GetMarketSummary` and the UNIVERSE pioneer `GetCXSparklines`
+  call of `/market`'s workforce chart, so `/market` loads neither again.
+  It is an async chunk: `HomepageView` mounts it through `useInView` once the
+  section comes near after a scroll; until then, in the prerender and while
+  it loads, `HomepageMarketSkeleton.vue` holds its final size (the shared
+  `market*` size classes in `homepage.constants.ts`). The title and the CTA
+  are in the view, so a failed summary leaves just those. Events:
+  `landing:market_click`, `landing:market_view_change`.
 - `homepageTour.util.ts`: `tourTransform` (translate and scale, clamped so
   no empty edge shows) and `tourHighlight` (the outline's box, its width
   divided by the zoom).

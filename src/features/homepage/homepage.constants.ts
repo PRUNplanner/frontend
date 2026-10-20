@@ -18,6 +18,14 @@ const buttonBase =
 export const landingPrimaryButton = `${buttonBase} bg-prunplanner text-black font-bold disabled:cursor-auto disabled:opacity-50 disabled:hover:brightness-100 disabled:hover:translate-y-0`;
 export const landingOutlineButton = `${buttonBase} border border-white/28 text-white font-medium`;
 
+// shared looks of the landing sections
+export const landingEyebrow =
+	"font-mono text-[13px] tracking-[0.08em] uppercase text-prunplanner";
+export const landingCard = "border border-white/10 rounded-2xl bg-[#0a1010]";
+// 4 / 2 / 1 columns, never a row with one leftover cell
+export const landingGrid4 =
+	"grid grid-cols-1 min-[541px]:grid-cols-2 min-[981px]:grid-cols-4 gap-px bg-white/10 border border-white/10 overflow-hidden";
+
 // the login and registration forms in the landing panel: label above,
 // 50 px inputs, hint below (PFormItem's label, field and info, stacked)
 export const landingField =
@@ -50,3 +58,12 @@ export const EMPIRE_TOUR: IHomepageTourStep[] = [
 	{ key: "material_io", box: [0.493, 0.226, 0.983, 1.0], zoom: 1.29 },
 	{ key: "tabs", box: [0.715, 0.014, 0.944, 0.045], zoom: 2.2 },
 ];
+
+// "Market today": the skeleton and the section share these sizes, so the
+// section replaces its placeholder without a layout shift
+export const marketLead =
+	"m-0 max-w-[820px] text-[18px] leading-[1.55] min-h-[9lh] sm:min-h-[5lh] lg:min-h-[4lh]";
+export const marketGrid =
+	"grid grid-cols-1 min-[981px]:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-5";
+export const marketCard = "h-[480px] min-[981px]:h-[440px]";
+export const marketSector = "h-[132px]";

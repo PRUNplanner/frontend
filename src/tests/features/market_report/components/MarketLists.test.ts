@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { flushPromises } from "@vue/test-utils";
+import { flushPromises, RouterLinkStub } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 
 import { callDataExchanges } from "@/features/api/gameData.api";
@@ -111,6 +111,41 @@ describe("market report lists and cards", () => {
 
 		await setProps({ direction: "falling" });
 		expect(wrapper.text()).toContain("market_report.movers.empty");
+	});
+
+	it("movers on the landing page: fewer rows, each a link, readable names", async () => {
+		const movers = thin.materials.map((m, i) => ({
+			...m,
+			ticker: `M${i}`,
+			name: i ? "reinforcedDeckElements" : "workstationBlank",
+			turnover_7d: 1e7,
+			units_7d: 100,
+		}));
+		const { wrapper } = await mountComponent(MarketMovers, {
+			summary: { ...thin, materials: movers },
+			direction: "rising",
+			count: 1,
+			link: true,
+		});
+		expect(wrapper.find("ol").attributes("style")).toContain(
+			"height: 3rem"
+		);
+		const links = wrapper.findAllComponents(RouterLinkStub);
+		expect(links).toHaveLength(1);
+		expect(links[0].props("to")).toBe("/market");
+		expect(wrapper.text()).toContain("Workstation Blank");
+
+		await wrapper.find("ol a").trigger("click");
+		expect(wrapper.findComponent(MarketMovers).emitted("open")).toEqual([
+			["M0"],
+		]);
+
+		const all = await mountComponent(MarketMovers, {
+			summary: { ...thin, materials: movers },
+			direction: "rising",
+		});
+		expect(all.wrapper.findAllComponents(RouterLinkStub)).toHaveLength(0);
+		expect(all.wrapper.text()).toContain("Reinforced Deck Elements");
 	});
 
 	it("leaders and KPIs on a thin summary", async () => {

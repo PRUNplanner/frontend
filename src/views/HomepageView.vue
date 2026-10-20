@@ -1,10 +1,18 @@
 <script setup lang="ts">
-	import { computed, onMounted, ref, type Component } from "vue";
+	import {
+		computed,
+		defineAsyncComponent,
+		onMounted,
+		ref,
+		type Component,
+	} from "vue";
 	import { useI18n } from "vue-i18n";
 	import { useHead } from "@unhead/vue";
 
 	// Composables
 	import { useAuthPanel } from "@/features/account/useAuthPanel";
+	import { prefetchMarketReport } from "@/features/market_report/useMarketReport";
+	import { useInView } from "@/features/market_report/useInView";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { SupportedLanguages } from "@/lib/i18n";
@@ -16,6 +24,11 @@
 	// Components
 	import HomepageLanguage from "@/layout/components/HomepageLanguage.vue";
 	import HomepageTour from "@/features/homepage/components/HomepageTour.vue";
+	import HomepageMarketSkeleton from "@/features/homepage/components/HomepageMarketSkeleton.vue";
+	// its chunk loads with the section's data, never with the page
+	const HomepageMarketToday = defineAsyncComponent(
+		() => import("@/features/homepage/components/HomepageMarketToday.vue")
+	);
 	import AnalyticsFooterLink from "@/features/analytics/components/AnalyticsFooterLink.vue";
 
 	// UI
@@ -43,6 +56,9 @@
 		PLAN_TOUR,
 		PLANET_SEARCH_TOUR,
 		PLAYER_COUNT,
+		landingCard,
+		landingEyebrow,
+		landingGrid4,
 		landingOutlineButton,
 		landingPrimaryButton,
 	} from "@/features/homepage/homepage.constants";
@@ -98,23 +114,24 @@
 		{ key: "upkeep", icon: CalculateSharp },
 	];
 
+	// "Market today" mounts about a screen ahead, never before a scroll
+	const marketEl = ref<HTMLElement | null>(null);
+	const marketSeen = useInView(marketEl);
+
 	const faq = ["what", "free", "fio", "try", "official", "languages"];
 
 	// shared looks
 	const container = "mx-auto w-full max-w-[1240px] px-6";
 	const section = `${container} pt-30 scroll-mt-16 flex flex-col gap-11`;
-	const eyebrow =
-		"font-mono text-[13px] tracking-[0.08em] uppercase text-prunplanner";
+	const eyebrow = landingEyebrow;
 	const sectionTitle =
 		"m-0 text-[clamp(32px,4vw,54px)] leading-[1.05] font-black tracking-[-0.025em] text-white";
-	const card = "border border-white/10 rounded-2xl bg-[#0a1010]";
+	const card = landingCard;
 	const cardTitle =
 		"m-0 text-[28px] leading-[1.12] font-bold tracking-[-0.015em] text-white";
 	const pill =
 		"normal-case tracking-normal font-mono text-xs text-white/78 border border-white/28 rounded-full px-2.5 py-0.5";
-	// 4 / 2 / 1 columns, never a row with one leftover cell
-	const grid4 =
-		"grid grid-cols-1 min-[541px]:grid-cols-2 min-[981px]:grid-cols-4 gap-px bg-white/10 border border-white/10 overflow-hidden";
+	const grid4 = landingGrid4;
 </script>
 
 <template>
@@ -364,6 +381,43 @@
 						</router-link>
 					</article>
 				</div>
+			</div>
+		</section>
+
+		<!-- Market today: the frame is prerendered, the numbers load once the
+		section comes near -->
+		<section id="market" :class="section" aria-labelledby="market-title">
+			<div class="flex flex-col gap-3.5 max-w-[820px]">
+				<div :class="eyebrow" class="flex items-center gap-2.5">
+					<span
+						aria-hidden="true"
+						class="size-1.75 rounded-full bg-prunplanner motion-safe:animate-pulse" />
+					{{ $t("homepage.market.eyebrow") }}
+				</div>
+				<h2 id="market-title" :class="sectionTitle">
+					{{ $t("homepage.market.title") }}
+				</h2>
+			</div>
+			<div ref="marketEl">
+				<Suspense v-if="marketSeen">
+					<HomepageMarketToday />
+					<template #fallback><HomepageMarketSkeleton /></template>
+				</Suspense>
+				<HomepageMarketSkeleton v-else />
+			</div>
+			<div>
+				<router-link
+					to="/market"
+					data-market-cta
+					:class="landingPrimaryButton"
+					@mouseenter="prefetchMarketReport()"
+					@focus="prefetchMarketReport()"
+					@click="
+						trackEvent('landing:market_click', { target: 'cta' })
+					">
+					{{ $t("homepage.market.cta") }}
+					<PIcon :size="18"><ArrowForwardSharp /></PIcon>
+				</router-link>
 			</div>
 		</section>
 

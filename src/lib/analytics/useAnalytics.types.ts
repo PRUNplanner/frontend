@@ -153,6 +153,8 @@ export interface IAnalyticsEventProperties {
 	// clicks only, an automatic advance sends nothing
 	"landing:tour_step": { tour: HomepageTourName; step: string };
 	"landing:tour_toggle": { tour: HomepageTourName; is_playing: boolean };
+	"landing:market_click": { target: "header" | "cta" | "sector" | "mover" };
+	"landing:market_view_change": { view: MarketMoversDirection };
 	"apikey:key_copy": undefined;
 	"apikey:builder_change": {
 		endpoint: string;

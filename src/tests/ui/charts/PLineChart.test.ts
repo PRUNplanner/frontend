@@ -116,6 +116,18 @@ describe("PLineChart", () => {
 		);
 	});
 
+	it("fills below each unbroken run with area, nothing without", async () => {
+		expect((await mountChart()).findAll(".line-area")).toHaveLength(0);
+
+		const wrapper = await mountChart({ area: true });
+		const areas = wrapper.findAll(".line-area");
+		expect(areas).toHaveLength(4);
+		expect(areas[0].attributes("fill")).toBe("#3d8ce6");
+		expect(areas[0].attributes("fill-opacity")).toBe("0.12");
+		// CI1 misses day 2: two closed runs
+		expect(areas[1].attributes("d")!.match(/Z/g)).toHaveLength(2);
+	});
+
 	it("draws a dot for a day without values on either side", async () => {
 		const wrapper = await mountChart({
 			series: [

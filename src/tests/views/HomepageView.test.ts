@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { createPinia, setActivePinia, type Pinia } from "pinia";
-import { RouterLinkStub } from "@vue/test-utils";
+import { flushPromises, RouterLinkStub } from "@vue/test-utils";
 
 import HomepageView from "@/views/HomepageView.vue";
 import HomepageLanguage from "@/layout/components/HomepageLanguage.vue";
@@ -13,10 +13,26 @@ import { EXAMPLE_PLAN_PATH } from "@/features/homepage/homepage.constants";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import homepage from "@/locales/en_US/homepage.json";
 import { mountComponent } from "@/tests/mountComponent";
+import { prefetchMarketReport } from "@/features/market_report/useMarketReport";
+import { callMarketSummary } from "@/features/api/gameData.api";
 
 const head = vi.hoisted(() => ({ useHead: vi.fn() }));
 vi.mock("@unhead/vue", () => head);
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/features/market_report/useMarketReport", async (original) => ({
+	...(await original<object>()),
+	prefetchMarketReport: vi.fn(),
+}));
+vi.mock("@/features/api/gameData.api", async (original) => ({
+	...(await original<object>()),
+	callMarketSummary: vi.fn(),
+}));
+
+// an observer that never reports: "Market today" stays out of view
+class IdleObserver {
+	observe() {}
+	disconnect() {}
+}
 
 describe("HomepageView", () => {
 	let pinia: Pinia;
@@ -29,10 +45,16 @@ describe("HomepageView", () => {
 		setActivePinia(pinia);
 		panel.close();
 		vi.mocked(trackEvent).mockClear();
+		vi.mocked(callMarketSummary).mockClear();
+		vi.mocked(prefetchMarketReport).mockClear();
+		vi.stubGlobal("IntersectionObserver", IdleObserver);
 		window.scrollTo = vi.fn();
 	});
 
-	afterEach(() => vi.restoreAllMocks());
+	afterEach(() => {
+		vi.restoreAllMocks();
+		vi.unstubAllGlobals();
+	});
 
 	it("keeps its full title, without the title template", async () => {
 		await mount();
@@ -165,5 +187,43 @@ describe("HomepageView", () => {
 		const { wrapper } = await mount();
 
 		expect(wrapper.findComponent(HomepageLanguage).exists()).toBe(false);
+	});
+
+	describe("Market today", () => {
+		it("sits between the features and How it works", async () => {
+			const { wrapper } = await mount({ homepage });
+			const ids = wrapper
+				.findAll("section[id]")
+				.map((s) => s.attributes("id"));
+			expect(ids.indexOf("market")).toBe(ids.indexOf("features") + 1);
+			expect(ids.indexOf("how")).toBe(ids.indexOf("market") + 1);
+			expect(wrapper.find("#market h2").text()).toBe(
+				"What the commodity exchanges did this week"
+			);
+		});
+
+		it("shows its placeholder and loads nothing before it comes near", async () => {
+			const { wrapper } = await mount();
+			await flushPromises();
+			expect(wrapper.find("#market [data-skeleton]").exists()).toBe(true);
+			expect(callMarketSummary).not.toHaveBeenCalled();
+			expect(prefetchMarketReport).not.toHaveBeenCalled();
+		});
+
+		it("the CTA opens /market, prefetches it on hover or focus and is tracked", async () => {
+			const { wrapper } = await mount();
+			const cta = wrapper
+				.findAllComponents(RouterLinkStub)
+				.find((l) => l.attributes("data-market-cta") !== undefined)!;
+			expect(cta.props("to")).toBe("/market");
+
+			await cta.trigger("mouseenter");
+			await cta.trigger("focus");
+			expect(prefetchMarketReport).toHaveBeenCalledTimes(2);
+			await cta.trigger("click");
+			expect(trackEvent).toHaveBeenCalledWith("landing:market_click", {
+				target: "cta",
+			});
+		});
 	});
 });

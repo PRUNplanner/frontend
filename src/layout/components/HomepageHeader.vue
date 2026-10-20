@@ -4,6 +4,8 @@
 
 	// Composables
 	import { useAuthPanel } from "@/features/account/useAuthPanel";
+	import { prefetchMarketReport } from "@/features/market_report/useMarketReport";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import LoginComponent from "@/features/account/components/LoginComponent.vue";
@@ -59,13 +61,27 @@
 				v-if="isLanding"
 				:aria-label="$t('homepage.navigation.sections')"
 				class="hidden lg:flex flex-wrap items-center gap-x-7 gap-y-1 text-[15px] text-white/78">
-				<a
-					v-for="section in sections"
-					:key="section"
-					:href="`#${section}`"
-					class="min-h-11 inline-flex items-center hover:text-white">
-					{{ $t(`homepage.navigation.${section}`) }}
-				</a>
+				<template v-for="section in sections" :key="section">
+					<a
+						:href="`#${section}`"
+						class="min-h-11 inline-flex items-center hover:text-white">
+						{{ $t(`homepage.navigation.${section}`) }}
+					</a>
+					<RouterLink
+						v-if="section === 'how'"
+						to="/market"
+						data-market-link
+						class="min-h-11 inline-flex items-center hover:text-white"
+						@mouseenter="prefetchMarketReport()"
+						@focus="prefetchMarketReport()"
+						@click="
+							trackEvent('landing:market_click', {
+								target: 'header',
+							})
+						">
+						{{ $t("homepage.navigation.market") }}
+					</RouterLink>
+				</template>
 				<a
 					:href="GITHUB_URL"
 					target="_blank"
