@@ -544,6 +544,169 @@ describe("WrapperPlanningDataLoader plan data", () => {
 		});
 	});
 
+
+	describe("on another planet", () => {
+		const otherPlanet = {
+			...planet,
+			planet_natural_id: "OT-001a",
+			planet_name: "Other",
+		};
+		const otherPlan = {
+			...plan,
+			uuid: uuid(7),
+			planet_natural_id: otherPlanet.planet_natural_id,
+		};
+		const planetRequests = () =>
+			mock.history.get
+				.map((r) => r.url!)
+				.filter((url) => url.includes("data/planet/"));
+
+		beforeEach(() => {
+			mock.onGet(`/planning/plan/${plan.uuid}/`).reply(200, plan);
+			mock.onGet(`/planning/plan/${otherPlan.uuid}/`).reply(200, otherPlan);
+			mock.onGet(`/data/planet/${planet.planet_natural_id}/`).reply(
+				200,
+				planet
+			);
+			mock.onGet(`/data/planet/${otherPlanet.planet_natural_id}/`).reply(
+				200,
+				otherPlanet
+			);
+		});
+
+		async function mountOnPlan() {
+			const mounted = await mountWithSlot({
+				planetNaturalId: planet.planet_natural_id,
+				planUuid: plan.uuid,
+			});
+			await vi.waitFor(() =>
+				expect(mounted.loader.emitted("complete")).toHaveLength(1)
+			);
+			return mounted;
+		}
+
+		it("loads the new planet with the new plan", async () => {
+			const { loader, slot, setProps } = await mountOnPlan();
+
+			await setProps({
+				planetNaturalId: otherPlanet.planet_natural_id,
+				planUuid: otherPlan.uuid,
+			});
+			await vi.waitFor(() =>
+				expect(loader.emitted("data:planet")).toHaveLength(2)
+			);
+
+			expect(planetRequests()).toEqual([
+				`/data/planet/${planet.planet_natural_id}/`,
+				`/data/planet/${otherPlanet.planet_natural_id}/`,
+			]);
+			expect(slot.current.planetData).toMatchObject({
+				planet_natural_id: otherPlanet.planet_natural_id,
+			});
+		});
+
+		it("creates a blank plan for the new planet, not the old", async () => {
+			const { slot, setProps } = await mountOnPlan();
+
+			await setProps({
+				planetNaturalId: otherPlanet.planet_natural_id,
+				planUuid: undefined,
+			});
+			await vi.waitFor(() =>
+				expect(slot.current.planDefinition).toMatchObject({
+					planet_natural_id: otherPlanet.planet_natural_id,
+				})
+			);
+
+			expect(
+				(slot.current.planDefinition as Record<string, unknown>).uuid
+			).toBeUndefined();
+		});
+
+		it("keeps the planet for another plan on it", async () => {
+			const samePlanet = { ...plan, uuid: uuid(8) };
+			mock.onGet(`/planning/plan/${samePlanet.uuid}/`).reply(
+				200,
+				samePlanet
+			);
+			const { loader, setProps } = await mountOnPlan();
+
+			await setProps({
+				planetNaturalId: planet.planet_natural_id,
+				planUuid: samePlanet.uuid,
+			});
+			await vi.waitFor(() =>
+				expect(loader.emitted("complete")).toHaveLength(2)
+			);
+
+			expect(planetRequests()).toHaveLength(1);
+			expect(loader.emitted("data:planet")).toHaveLength(1);
+		});
+
+		it("loads another share with the planet it brings", async () => {
+			const share = (id: string, details: typeof plan) => ({
+				uuid: id,
+				created_at: "2026-02-09T12:07:21.068265Z",
+				view_count: 1,
+				plan_details: details,
+			});
+			mock.onGet(`/planning/shared/${E1}/`).reply(200, share(E1, plan));
+			mock.onGet(`/planning/shared/${E2}/`).reply(
+				200,
+				share(E2, otherPlan)
+			);
+
+			const { loader, slot, setProps } = await mountWithSlot({
+				sharedPlanUuid: E1,
+			});
+			await vi.waitFor(() =>
+				expect(loader.emitted("complete")).toHaveLength(1)
+			);
+
+			await setProps({ sharedPlanUuid: E2 });
+			await vi.waitFor(() =>
+				expect(loader.emitted("data:planet")).toHaveLength(2)
+			);
+
+			expect(slot.current.planetData).toMatchObject({
+				planet_natural_id: otherPlanet.planet_natural_id,
+			});
+			expect(slot.current.planDefinition).toMatchObject({
+				planet_natural_id: otherPlanet.planet_natural_id,
+			});
+		});
+
+		it("loads the plan the owner of a share is sent to", async () => {
+			mock.onGet(`/planning/shared/${E1}/`).reply(200, {
+				uuid: E1,
+				created_at: "2026-02-09T12:07:21.068265Z",
+				view_count: 1,
+				plan_details: plan,
+			});
+			const { loader, slot, setProps } = await mountWithSlot({
+				sharedPlanUuid: E1,
+			});
+			await vi.waitFor(() =>
+				expect(loader.emitted("complete")).toHaveLength(1)
+			);
+
+			// as PlanLoadView's owner redirect does
+			await setProps({
+				sharedPlanUuid: undefined,
+				planetNaturalId: planet.planet_natural_id,
+				planUuid: plan.uuid,
+			});
+			await vi.waitFor(() =>
+				expect(loader.emitted("complete")).toHaveLength(2)
+			);
+
+			expect(slot.current.shared).toBe(false);
+			expect(slot.current.planDefinition).toMatchObject({
+				uuid: plan.uuid,
+			});
+		});
+	});
+
 	it("shows an error of a step that rejects with a plain value", async () => {
 		const pinia = createPinia();
 		setActivePinia(pinia);
