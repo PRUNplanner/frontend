@@ -77,7 +77,9 @@ export function useFIOBurn(
 			string,
 			IPlanResult,
 		][]) {
-			const planData: Plan = planRecord.value[planUuid];
+			const planData: Plan | undefined = planRecord.value[planUuid];
+			// deleted or moved in another tab, not recalculated yet
+			if (!planData) continue;
 			const hasStorage: boolean = burnData[planData.planet_natural_id]
 				? true
 				: false;
