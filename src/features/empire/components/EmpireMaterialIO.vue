@@ -185,7 +185,8 @@
 					<MaterialTile
 						:key="row.ticker"
 						:ticker="row.ticker"
-						:daily="row.delta" />
+						:daily="row.delta"
+						popover-placement="right" />
 					<MarketFlagButton
 						v-if="flagged(row.ticker)"
 						:check="flagged(row.ticker)!"
