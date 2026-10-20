@@ -23,6 +23,7 @@ import type {
 	Exchange,
 	Recipe,
 	Building,
+	CXSparklineMetric,
 	CXSparklines,
 	Planet,
 	FIOStorage,
@@ -34,6 +35,10 @@ import {
 	ExplorationPayloadSchema,
 	type Exploration,
 } from "@/features/market_exploration/marketExploration.schemas";
+import {
+	MarketSummarySchema,
+	type MarketSummary,
+} from "@/features/api/schemas/marketSummary.schemas";
 
 /**
  * Calls the /data/materials API endpoint
@@ -215,7 +220,7 @@ export async function callExplorationData(
 }
 
 /**
- * Calls the CXPC sparkline endpoint: daily VWAP of every ticker on one
+ * Calls the CXPC sparkline endpoint: VWAP of every ticker on one
  * exchange, oldest first
  * @author jplacht
  *
@@ -223,16 +228,35 @@ export async function callExplorationData(
  * @async
  * @param {string} exchange Exchange Code, e.g. "UNIVERSE"
  * @param {number} days number of days, 30 by default
+ * @param {CXSparklineMetric} [metric] daily VWAP (default) or rolling VWAP 7D
+ * @param {string[]} [tickers] only these tickers (at most 50)
  * @returns {Promise<CXSparklines>} Sparkline series per ticker
  */
 export async function callCXSparklines(
 	exchange: string,
-	days: number = 30
+	days: number = 30,
+	metric?: CXSparklineMetric,
+	tickers?: string[]
 ): Promise<CXSparklines> {
+	const query = new URLSearchParams({ days: String(days) });
+	if (metric) query.set("metric", metric);
+	if (tickers) query.set("tickers", tickers.join(","));
 	return apiService.get(
-		`/data/cxpc/spark/${exchange}/?days=${days}`,
+		`/data/cxpc/spark/${exchange}/?${query.toString().replaceAll("%2C", ",")}`,
 		CXSparklinesSchema
 	);
+}
+
+/**
+ * Calls the public market report summary
+ * @author jplacht
+ *
+ * @export
+ * @async
+ * @returns {Promise<MarketSummary>} Market summary
+ */
+export async function callMarketSummary(): Promise<MarketSummary> {
+	return apiService.get("/data/market/summary/", MarketSummarySchema);
 }
 
 /**

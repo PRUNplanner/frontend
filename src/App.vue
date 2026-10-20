@@ -22,6 +22,10 @@
 		() =>
 			import("@/features/analytics/components/AnalyticsConsentDialog.vue")
 	);
+	const AnalyticsConsentBanner = defineAsyncComponent(
+		() =>
+			import("@/features/analytics/components/AnalyticsConsentBanner.vue")
+	);
 
 	// Composables
 	import { useVersionCheck } from "@/lib/useVersionCheck";
@@ -34,6 +38,8 @@
 	import { userActivity } from "@/features/user_activity/userActivityStore";
 	import { identifyUser, trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
+	import { getPostHogKey } from "@/lib/analytics/usePostHog";
 	import { dbBlocked } from "@/database/composables/useIndexedDBStore";
 	import { sessionReplaced } from "@/lib/crossTab";
 	import { useToast } from "@/ui";
@@ -67,6 +73,15 @@
 
 	const isLoggedIn = computed(() => userStore.isLoggedIn);
 
+	// the banner's chunk loads only for a visitor who still has to choose
+	const { consent, reopened } = useAnalyticsConsent();
+	const askVisitor = computed(
+		() =>
+			!isLoggedIn.value &&
+			getPostHogKey() !== undefined &&
+			(consent.value === null || reopened.value)
+	);
+
 	onMounted(() => {
 		startWatch();
 
@@ -90,6 +105,7 @@
 	<!-- not over the terms the dialog links to -->
 	<AnalyticsConsentDialog
 		v-if="isLoggedIn && routeData.name !== 'imprint-tos'" />
+	<AnalyticsConsentBanner v-if="askVisitor" />
 
 	<main class="flex w-full text-white/80">
 		<AppSidebar v-if="isLoggedIn" class="hidden md:flex" />

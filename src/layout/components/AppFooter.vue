@@ -3,6 +3,9 @@
 	const { locale } = usePreferences();
 	import { SupportedLanguages } from "@/lib/i18n";
 
+	// Components
+	import AnalyticsFooterLink from "@/features/analytics/components/AnalyticsFooterLink.vue";
+
 	// UI
 	import PSelect from "@/ui/components/PSelect.vue";
 </script>
@@ -15,6 +18,7 @@
 			class="inline-flex items-center min-h-6 hover:cursor-pointer">
 			Imprint & Terms of Service
 		</router-link>
+		<AnalyticsFooterLink />
 		<div>
 			<a
 				href="https://crowdin.com/project/prunplanner"

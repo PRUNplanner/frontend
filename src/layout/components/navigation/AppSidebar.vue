@@ -302,6 +302,8 @@
 									:aria-current="
 										isActive(item.name) ? 'page' : undefined
 									"
+									@mouseenter="item.prefetch?.()"
+									@focus="item.prefetch?.()"
 									@click="
 										trackNav(item.name, 'sidebar', 'tools')
 									">

@@ -112,18 +112,23 @@
 					PRUNplanner uses PostHog, a EU-hosted analytics tool, to
 					better understand how users interact with our Service.
 					PostHog is only loaded after you have given your consent
-					(Art. 6 (1) a GDPR, § 25 (1) TDDDG), which you are asked for
-					once after logging in. With your
+					(Art. 6 (1) a GDPR, § 25 (1) TDDDG). Visitors without an
+					account are asked in a small notice on their first visit;
+					logged-in users are asked once after logging in, unless
+					they already chose in this browser. With your
 					consent we collect usage events (pages visited, clicks,
 					navigation flows and actions in the tool), error reports
 					and performance metrics, session recordings of a sample of
 					visits (everything you type is masked) and your answers to
-					optional in-app surveys. This data is linked to your
-					account id and is used to improve usability, fix bugs and
-					analyze feature adoption. Consent is voluntary. You can
-					withdraw it at any time in your Profile under Usage
-					analytics, which stops the collection and removes the
-					PostHog data stored in your browser. If your browser sends
+					optional in-app surveys. Before you log in, this data is
+					not linked to any person; only after logging in is it
+					linked to your account id. It is used to improve
+					usability, fix bugs and analyze feature adoption. Consent
+					is voluntary. You can withdraw it at any time, in your
+					Profile under Usage analytics or, while logged out, with
+					the Analytics link in the page footer. Either stops the
+					collection and removes the PostHog data stored in your
+					browser. If your browser sends
 					a Do-Not-Track or Global Privacy Control signal, PostHog is
 					never loaded and you are not asked.
 					With your consent, the session id PostHog assigns is also

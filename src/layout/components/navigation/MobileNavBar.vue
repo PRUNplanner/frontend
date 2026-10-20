@@ -299,6 +299,8 @@
 							:aria-current="
 								isActive(item.name) ? 'page' : undefined
 							"
+							@mouseenter="item.prefetch?.()"
+							@focus="item.prefetch?.()"
 							@click="go(item.name, 'tools')">
 							<PIcon :size="20" class="text-prunplanner">
 								<component :is="item.icon" />

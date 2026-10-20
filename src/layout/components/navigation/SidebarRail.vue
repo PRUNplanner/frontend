@@ -212,6 +212,8 @@
 							:aria-current="
 								isActive(item.name) ? 'page' : undefined
 							"
+							@mouseenter="item.prefetch?.()"
+							@focus="item.prefetch?.()"
 							@click="trackNav(item.name, 'rail', 'tools')">
 							<PIcon :size="16">
 								<component :is="item.icon" />

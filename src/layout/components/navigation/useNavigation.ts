@@ -30,6 +30,7 @@ import {
 	BuildOutlined,
 	ExploreOutlined,
 	HomeWorkOutlined,
+	InsightsOutlined,
 	LocalFireDepartmentOutlined,
 	PercentSharp,
 	ReceiptLongOutlined,
@@ -157,6 +158,18 @@ export function useNavigation() {
 		{
 			label: "market",
 			items: [
+				{
+					label: "market_report",
+					name: "market",
+					to: "/market",
+					icon: InsightsOutlined,
+					display: true,
+					// hover or focus starts the summary, the page then has it
+					prefetch: () =>
+						void useQuery("GetMarketSummary")
+							.execute()
+							.catch(() => {}),
+				},
 				{
 					label: "market_exploration",
 					name: "market-exploration",

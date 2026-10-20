@@ -29,6 +29,7 @@ One page per `src/features/*` folder. Each page follows the same outline:
 | [hq_upgrade_calculator](hq_upgrade_calculator.md) | Materials and cost for HQ level upgrades |
 | [government](government.md) | POPR reports and the upkeep price calculator |
 | [production_chain](production_chain.md) | Production dependency graph (vue-flow + dagre) |
+| [market_report](market_report.md) | Public market report at `/market`: index, workforce cost, treemap, movers |
 | [market_exploration](market_exploration.md) | Historical CX charts |
 | [market_live](market_live.md) | Live CX feed over SSE with user alert rules |
 | [planet_search](planet_search.md) | Live planet search over a cached index: filters, list/matrix, compare |

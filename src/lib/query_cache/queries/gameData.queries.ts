@@ -39,13 +39,20 @@ import {
 	callDataPlanetSearchSingle,
 	callDataRecipes,
 	callExplorationData,
+	callMarketSummary,
 	callPlanetLastPOPR,
 } from "@/features/api/gameData.api";
 import { callAnalyticsPlanetInsights } from "@/features/api/analyticsData.api";
+import {
+	MarketSummarySchema,
+	type MarketSummary,
+} from "@/features/api/schemas/marketSummary.schemas";
 
 // Types & Interfaces
 import type {
+	CXSparklineMetric,
 	CXSparklines,
+	Exchange,
 	FIOStorage,
 	Planet,
 	PlanetSearchAdvancedPayload,
@@ -148,6 +155,32 @@ function gameDataQuery<T extends object, K extends keyof T & string>(
 		autoRefetch: true,
 		expireTime,
 	});
+}
+
+const MARKET_SUMMARY_KEY = "prunplanner_market_summary";
+
+/**
+ * The market summary this browser stored last, null without a valid one
+ *
+ * @returns {MarketSummary | null} Stored copy
+ */
+function readMarketSummary(): MarketSummary | null {
+	try {
+		const parsed = MarketSummarySchema.safeParse(
+			JSON.parse(localStorage.getItem(MARKET_SUMMARY_KEY) ?? "null")
+		);
+		return parsed.success ? parsed.data : null;
+	} catch {
+		return null;
+	}
+}
+
+function writeMarketSummary(data: MarketSummary): void {
+	try {
+		localStorage.setItem(MARKET_SUMMARY_KEY, JSON.stringify(data));
+	} catch {
+		// storage full or blocked: the next visit fetches it
+	}
 }
 
 const planetsExpireTime = staleMinutes(config.GAME_DATA_STALE_MINUTES_PLANETS);
@@ -279,9 +312,47 @@ export const gameDataQueries = {
 		expireTime: staleMinutes(15),
 	}),
 	GetCXSparklines: defineQuery({
-		key: (params) => ["gamedata", "cxsparklines", params.exchange],
-		fetchFn: (params: { exchange: string }): Promise<CXSparklines> =>
-			callCXSparklines(params.exchange),
+		key: (params) => [
+			"gamedata",
+			"cxsparklines",
+			params.exchange,
+			...(params.metric
+				? [params.days ?? 30, params.metric, params.tickers ?? []]
+				: []),
+		],
+		fetchFn: (params: {
+			exchange: string;
+			days?: number;
+			metric?: CXSparklineMetric;
+			tickers?: string[];
+		}): Promise<CXSparklines> =>
+			callCXSparklines(
+				params.exchange,
+				params.days,
+				params.metric,
+				params.tickers
+			),
+		expireTime: staleMinutes(15),
+	}),
+	GetMarketSummary: defineQuery({
+		key: () => ["gamedata", "market", "summary"],
+		// the last summary seen in this browser paints at once; counted as
+		// expired, so every visit refreshes it in the background
+		initialData: async () => {
+			const data = readMarketSummary();
+			return data && { data, fetchedAt: 0 };
+		},
+		fetchFn: async (): Promise<MarketSummary> => {
+			const data = await callMarketSummary();
+			writeMarketSummary(data);
+			return data;
+		},
+		expireTime: staleMinutes(30),
+	}),
+	// order books for the market report, without the game data store
+	GetMarketExchanges: defineQuery({
+		key: () => ["gamedata", "market", "exchanges"],
+		fetchFn: (): Promise<Exchange[]> => callDataExchanges(),
 		expireTime: staleMinutes(15),
 	}),
 	GetFIOStorage: defineQuery({

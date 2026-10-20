@@ -1,0 +1,41 @@
+import { computed, type ComputedRef } from "vue";
+
+// Composables
+import { useQuery } from "@/lib/query_cache/useQuery";
+import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { getQueryDefinition } from "@/lib/query_cache/queryRepository";
+import { toCacheKey } from "@/lib/query_cache/cacheKeys";
+
+// Types & Interfaces
+import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
+
+/**
+ * The market report's summary. Starts the request in setup; a summary
+ * stored by an earlier visit shows at once while it refreshes (the cache
+ * entry is read whether fresh or not).
+ *
+ * @author jplacht
+ */
+export function useMarketReport() {
+	const queryStore = useQueryStore();
+	const { execute } = useQuery("GetMarketSummary");
+	const key = toCacheKey(
+		getQueryDefinition("GetMarketSummary").key(undefined)
+	);
+
+	const summary: ComputedRef<MarketSummary | null> = computed(
+		() => (queryStore.cacheState[key]?.data as MarketSummary) ?? null
+	);
+	// failed without anything to show
+	const failed: ComputedRef<boolean> = computed(
+		() => !summary.value && !!queryStore.cacheState[key]?.error
+	);
+
+	function load(forceRefetch: boolean = false): void {
+		// the store logs it, `failed` shows it
+		execute({ forceRefetch }).catch(() => {});
+	}
+	load();
+
+	return { summary, failed, retry: () => load(true) };
+}

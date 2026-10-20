@@ -1,7 +1,11 @@
 # Analytics
 
 Product analytics go to PostHog, only with the user's consent
-(`useAnalyticsConsent`, see `src/lib/analytics/`). Code never talks to
+(`useAnalyticsConsent`, see `src/lib/analytics/`). Logged-in users are asked
+once in `AnalyticsConsentDialog`; logged-out visitors in the small
+`AnalyticsConsentBanner` (bottom left, on every page), which the footer's
+"Analytics" link opens again. Both store the same choice in this browser, so
+a visitor who chose is not asked again after logging in. DNT/GPC means no. Code never talks to
 `posthog-js` directly, it uses the typed wrapper in
 `src/lib/analytics/useAnalytics.ts`:
 
@@ -172,6 +176,7 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `planet_search:view_change` | `view` (`list`, `matrix`, `chart`) | Planet Search switched views (also when a link opens another view on the page) |
 | `market_exploration:view_change` | `view` (`candles`, `exchanges`) | Market Exploration switched between the candle chart and the "All exchanges" chart |
 | `resource_roi:chart_open` | | the Resource ROI chart drawer was opened |
+| `market:view_change` | `chart` (`index`, `workforce`, `movers`), `view` (index: `combined`, `exchange`, `sector`; workforce: the tier, e.g. `engineer`; movers: `rising`, `falling`) | a view was switched on the public market report (`/market`) |
 
 `tool:use` means a result, not an opened page (pageviews carry
 `route_name` for that). Tools with an input count only a result for an
@@ -225,6 +230,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | Event | Properties | When |
 | --- | --- | --- |
 | `perf:gamedata_load` | `store` (`materials`, `exchanges`, `buildings`, `recipes`), `source` (`cache`, `network`), `is_stale`, `age_min`, `ms_total`, `ms_idb_read`, `ms_fetch`, `ms_idb_write` | a game data list's first load in a tab, once per store: from IndexedDB (`cache`) or the API (`network`). `is_stale`: the IndexedDB copy was older than its stale time (`cache`: refreshed in the background; `network`: older than its maximum age). `age_min` is that copy's age, null without one. `ms_total` is what the page waited; background phases (`ms_fetch` of a refresh, `ms_idb_write`) are in, as the event is sent once they end |
+| `perf:content_ready` | `ms`, `nav` (`hard`, `spa`), `loader_shown` | a page's main content had its first frame, once per mount (today: the market report's index chart with data). `ms` counts from the navigation start (0 for a hard load). Not sent if the tab was hidden during the load |
 
 ## Pageviews
 

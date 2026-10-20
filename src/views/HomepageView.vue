@@ -11,6 +11,7 @@
 
 	// Components
 	import HomepageLanguage from "@/layout/components/HomepageLanguage.vue";
+	import AnalyticsFooterLink from "@/features/analytics/components/AnalyticsFooterLink.vue";
 
 	// UI
 	import { PSelect } from "@/ui";
@@ -300,6 +301,7 @@
 			<router-link to="/imprint-tos" class="inline-flex items-center min-h-6 text-muted-strong hover:underline">
 				{{ $t("homepage.footer.imprint") }}
 			</router-link>
+			<AnalyticsFooterLink class="text-muted-strong" />
 			<a
 				href="https://crowdin.com/project/prunplanner"
 				target="_blank"

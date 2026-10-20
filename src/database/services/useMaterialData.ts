@@ -2,6 +2,7 @@ import { computed, type ComputedRef } from "vue";
 
 import { materialsStore } from "@/database/stores";
 import { useDB } from "@/database/composables/useDB";
+import { materialCategoryClass } from "@/util/text";
 
 import type { Material } from "@/features/api/schemas/gameData.schemas";
 import type { PSelectOption } from "@/ui/ui.types";
@@ -53,10 +54,7 @@ export function useMaterialData() {
 		if (!material)
 			throw new Error(`Material ${ticker} not available. Preload.`);
 
-		const classString = `material-category-${material.category_name
-			.replaceAll(" ", "-")
-			.replaceAll("(", "")
-			.replaceAll(")", "")}`;
+		const classString = materialCategoryClass(material.category_name);
 
 		materialClassCache.set(ticker, classString);
 		return classString;

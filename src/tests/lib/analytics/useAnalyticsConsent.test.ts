@@ -49,6 +49,19 @@ describe("useAnalyticsConsent", () => {
 		expect(localStorage.getItem(STORAGE_KEY)).toBe("denied");
 	});
 
+	it("reopen asks again until a new choice replaces the old", async () => {
+		localStorage.setItem(STORAGE_KEY, "denied");
+		const { consent, reopened, reopen, grant } = await load();
+
+		reopen();
+		expect(reopened.value).toBe(true);
+
+		grant();
+		expect(reopened.value).toBe(false);
+		expect(consent.value).toBe("granted");
+		expect(localStorage.getItem(STORAGE_KEY)).toBe("granted");
+	});
+
 	it.each([
 		["Do-Not-Track", { doNotTrack: "1" }],
 		["Global Privacy Control", { globalPrivacyControl: true }],

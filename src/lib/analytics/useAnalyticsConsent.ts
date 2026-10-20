@@ -28,8 +28,12 @@ const consent = computed<AnalyticsConsent | null>(() =>
 	isDNT ? "denied" : stored.value
 );
 
+// the footer link asks a visitor again, until they choose
+const reopened: Ref<boolean> = ref(false);
+
 function store(value: AnalyticsConsent): void {
 	stored.value = value;
+	reopened.value = false;
 	try {
 		localStorage.setItem(STORAGE_KEY, value);
 	} catch {
@@ -39,7 +43,8 @@ function store(value: AnalyticsConsent): void {
 
 /**
  * Analytics consent of this browser. Shared module state, so the dialog,
- * the profile toggle and the PostHog wrapper see the same value.
+ * the visitors' banner, the profile toggle and the PostHog wrapper see the
+ * same value.
  */
 export function useAnalyticsConsent() {
 	return {
@@ -47,5 +52,7 @@ export function useAnalyticsConsent() {
 		isDNT,
 		grant: () => store("granted"),
 		deny: () => store("denied"),
+		reopened,
+		reopen: () => (reopened.value = true),
 	};
 }

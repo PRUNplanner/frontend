@@ -27,6 +27,7 @@ vi.mock("@/views/fio/FIORepairView.vue", () => stub);
 vi.mock("@/views/tools/HQUpgradeCalculatorView.vue", () => stub);
 vi.mock("@/views/tools/MarketExplorationView.vue", () => stub);
 vi.mock("@/views/tools/MarketLiveDataView.vue", () => stub);
+vi.mock("@/views/tools/MarketReportView.vue", () => stub);
 vi.mock("@/views/tools/ProductionChainView.vue", () => stub);
 vi.mock("@/views/tools/ROIOverviewView.vue", () => stub);
 vi.mock("@/views/tools/ResourceROIOverviewView.vue", () => stub);
