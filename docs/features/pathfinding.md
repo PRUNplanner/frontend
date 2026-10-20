@@ -15,14 +15,19 @@ exchanges and plans via `getJumpsFrom`) and `resource_roi_overview`.
   `systemidNC1`).
 - **`usePathfinder.types.ts`**: the system JSON and adjacency types.
 - **Data:** `src/assets/static/fio_systemstars.json`, a static FIO export of
-  every system and its connections (about 470 KB).
+  every system and its connections (about 470 KB). Only `usePathfinder`
+  imports it. `system_names.json` next to it maps the named systems'
+  natural ids to their names (~2 KB) for `util/planetName.ts`.
 
 ## Gotchas
 
 - **State is module-level and built once per session.** This covers the
   adjacency list, the id↔index maps, and a BFS parent cache per source.
   Treat it as read-only.
-- **The system data is static.** Refresh the JSON if the game map changes.
+- **The system data is static.** Refresh the JSON if the game map changes:
+  `pnpm refresh:systems` (`scripts/refresh-systems.mjs`) fetches FIO
+  `/systemstars`, checks its shape and regenerates `system_names.json`
+  (`--offline` only regenerates the names). Commit both files.
 
 ## Tests
 

@@ -18,7 +18,7 @@
 | `locales/<locale>/*.json` | i18n messages, one file per namespace |
 | `assets/help/<locale>/*.md` | Help drawer pages. `assets/help/changelog.md` is the changelog |
 | `assets/static/` | Large static data, e.g. `fio_systemstars.json` for pathfinding |
-| `util/` | Small pure helpers: `data.ts` (clone/redact), `numbers.ts`, `date.ts`, `text.ts`, `axiosSetup.ts` |
+| `util/` | Small pure helpers: `data.ts` (clone/redact), `numbers.ts`, `date.ts`, `text.ts`, `planetName.ts`, `axiosSetup.ts` |
 | `tests/` | Vitest suites mirroring `src/`, plus `test_data/` fixtures |
 | `globals.d.ts`, `vite-env.d.ts` | Build-time globals (`__APP_VERSION__`, `__INDEXEDDB_VERSION__`, `window.__APP_CONFIG__`) and `VITE_*` env types |
 

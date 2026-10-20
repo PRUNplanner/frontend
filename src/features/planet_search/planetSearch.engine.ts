@@ -9,6 +9,7 @@
 
 // Util
 import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
+import { planetDisplayName } from "@/util/planetName";
 import { PlanetCOGCProgramTypeSchema } from "@/features/api/schemas/gameData.schemas";
 
 // Types & Interfaces
@@ -252,7 +253,7 @@ function prepare(index: PlanetSearchIndexEntry[]): IPrepared[] {
 		rocky: entry.surface,
 		fertile: entry.fertility > -1,
 		haystack:
-			`${entry.planet_natural_id} ${entry.planet_name}`.toLowerCase(),
+			`${entry.planet_natural_id} ${entry.planet_name} ${planetDisplayName(entry.planet_natural_id, entry.planet_name)}`.toLowerCase(),
 	}));
 	preparedCache.set(index, prepared);
 	return prepared;
@@ -722,7 +723,8 @@ function sortValue(
 	key: string,
 	ctx: IPlanetSearchContext
 ): (p: PlanetSearchIndexEntry) => ISortValue {
-	if (key === "name") return (p) => p.planet_name || p.planet_natural_id;
+	if (key === "name")
+		return (p) => planetDisplayName(p.planet_natural_id, p.planet_name);
 	if (key === "fert")
 		return (p) => (p.fertility > -1 ? p.fertility : undefined);
 	if (key.startsWith("mat:")) {

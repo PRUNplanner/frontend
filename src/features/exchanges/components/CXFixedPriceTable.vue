@@ -5,6 +5,7 @@
 	// Composables
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useMaterialData } from "@/database/services/useMaterialData";
+	import { usePlanetData } from "@/database/services/usePlanetData";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -57,6 +58,7 @@
 
 	const { t } = useI18n();
 	const { materialSelectOptions } = useMaterialData();
+	const { planetName } = usePlanetData();
 
 	// local rows keep an empty new row and each row's stored shape
 	const rows = ref<IFixedPriceRow[]>([]);
@@ -285,7 +287,8 @@
 									<div
 										v-for="e in c.entries"
 										:key="`${e.planUuid}#${e.value}`">
-										{{ e.planName }} · {{ e.planet }} ·
+										{{ e.planName }} ·
+										{{ planetName(e.planet, e.planet) }} ·
 										{{ formatNumber(e.value) }}
 									</div>
 								</PTooltip>

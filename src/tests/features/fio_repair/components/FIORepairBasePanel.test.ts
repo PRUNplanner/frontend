@@ -198,7 +198,7 @@ describe("FIORepairBasePanel", () => {
 		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe(
 			"/plan/VH-331e"
 		);
-		expect(wrapper.text()).toContain("Create a plan for VH-331e");
+		expect(wrapper.text()).toContain("Create a plan for Shiptronia");
 		expect(wrapper.text()).toContain(
 			"No plan on this planet. Repairs every 60 days."
 		);

@@ -18,6 +18,7 @@
 	} from "@/features/planet_search/planetSearch.engine";
 	import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
 	import { formatNumber } from "@/util/numbers";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -110,6 +111,9 @@
 	);
 	// one width for every jumps column, so they read as a block
 	const jumpWidth = "w-11 ml-auto";
+
+	const displayName = (p: PlanetSearchIndexEntry) =>
+		planetDisplayName(p.planet_natural_id, p.planet_name);
 </script>
 
 <template>
@@ -190,10 +194,10 @@
 				</td>
 				<td class="sticky z-10 whitespace-nowrap" :class="planetLeft">
 					<div class="font-bold">
-						{{ row.planet.planet_name || row.planet.planet_natural_id }}
+						{{ displayName(row.planet) }}
 					</div>
 					<div
-						v-if="row.planet.planet_name && row.planet.planet_name !== row.planet.planet_natural_id"
+						v-if="displayName(row.planet) !== row.planet.planet_natural_id"
 						class="text-xs text-muted font-mono">
 						{{ row.planet.planet_natural_id }}
 					</div>

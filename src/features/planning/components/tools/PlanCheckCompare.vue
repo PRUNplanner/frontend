@@ -35,6 +35,7 @@
 	import { paybackDays } from "@/features/sharing/sharedPlan.util";
 	import { compactNumber } from "@/ui/charts/charts.util";
 	import { formatNumber, formatPayback } from "@/util/numbers";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Components
 	import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
@@ -120,7 +121,7 @@
 			...(same.length
 				? [
 						{
-							label: `${t("plan.tools.plan_check.compare.same_planet")} · ${props.planet.planet_name}`,
+							label: `${t("plan.tools.plan_check.compare.same_planet")} · ${planetDisplayName(props.planet.planet_natural_id, props.planet.planet_name)}`,
 							value: "same",
 							children: same.map((p) => ({
 								label: p.plan_name,

@@ -2,6 +2,7 @@ import { ref } from "vue";
 
 import { useDB } from "@/database/composables/useDB";
 import { planetsStore } from "@/database/stores";
+import { planetLabel } from "@/util/planetName";
 
 // Engine
 import { getPlanetSpecialMaterials } from "@/features/planning/engine/buildings";
@@ -38,10 +39,7 @@ export function usePlanetData() {
 	async function getPlanetName(planetNaturalId: string): Promise<string> {
 		try {
 			const planet = await getPlanet(planetNaturalId);
-
-			if (planet.planet_name != planet.planet_natural_id) {
-				return `${planet.planet_name} (${planet.planet_natural_id})`;
-			} else return planet.planet_name;
+			return planetLabel(planet.planet_natural_id, planet.planet_name);
 		} catch {
 			return planetNaturalId;
 		}

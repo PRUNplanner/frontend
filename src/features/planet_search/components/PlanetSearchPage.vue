@@ -53,6 +53,7 @@
 		hintText,
 	} from "@/features/planet_search/planetSearchLabels.util";
 	import { deepClone } from "@/util/data";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Components
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
@@ -264,7 +265,10 @@
 	const materials = computed(() => indexMaterials(index.value));
 	const planetNames = computed(() =>
 		Object.fromEntries(
-			index.value.map((p) => [p.planet_natural_id, p.planet_name])
+			index.value.map((p) => [
+				p.planet_natural_id,
+				planetDisplayName(p.planet_natural_id, p.planet_name),
+			])
 		)
 	);
 	const maxDaily = computed(() => materialMax(index.value));

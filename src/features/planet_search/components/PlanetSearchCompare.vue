@@ -17,6 +17,7 @@
 	import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
 	import { MAX_PINS } from "@/features/planet_search/planetSearchUrl.util";
 	import { formatNumber } from "@/util/numbers";
+	import { planetLabel } from "@/util/planetName";
 
 	// Types & Interfaces
 	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
@@ -49,9 +50,7 @@
 	}
 
 	const name = (p: PlanetSearchIndexEntry) =>
-		p.planet_name && p.planet_name !== p.planet_natural_id
-			? `${p.planet_name} (${p.planet_natural_id})`
-			: p.planet_natural_id;
+		planetLabel(p.planet_natural_id, p.planet_name);
 
 	function textRow(
 		label: string,

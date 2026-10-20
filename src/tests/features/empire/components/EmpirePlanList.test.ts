@@ -38,6 +38,8 @@ const PLANS = [
 ];
 const KAKRAFOON = "Kakrafoon Kappa (KW-020d)";
 const MILLIWAYS = "Milliways (KW-020c)";
+// unnamed, named after its system Bastablon
+const BASTABLON = "Bastablon a (KW-020a)";
 
 const column = (wrapper: VueWrapper, key: string) =>
 	tableRows(wrapper).map((r) => r[key]);
@@ -73,13 +75,13 @@ describe("EmpirePlanList", () => {
 		await sort(wrapper, "planet");
 		expect(column(wrapper, "planet")).toEqual([
 			MILLIWAYS,
-			"KW-020a",
 			KAKRAFOON,
+			BASTABLON,
 		]);
 		await sort(wrapper, "planet");
 		expect(column(wrapper, "planet")).toEqual([
+			BASTABLON,
 			KAKRAFOON,
-			"KW-020a",
 			MILLIWAYS,
 		]);
 	});

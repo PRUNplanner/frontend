@@ -20,6 +20,7 @@
 	import { paretoFrontier } from "@/ui/charts/scatter.util";
 	import { useChartTheme } from "@/ui/charts/chartTheme";
 	import { formatNumber } from "@/util/numbers";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Components
 	import PlanetSearchRowActions from "@/features/planet_search/components/PlanetSearchRowActions.vue";
@@ -84,7 +85,7 @@
 	);
 
 	const name = (p: PlanetSearchIndexEntry) =>
-		p.planet_name || p.planet_natural_id;
+		planetDisplayName(p.planet_natural_id, p.planet_name);
 
 	const frontier = computed(
 		() =>

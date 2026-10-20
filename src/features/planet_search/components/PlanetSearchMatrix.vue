@@ -20,6 +20,7 @@
 	} from "@/features/planet_search/planetSearch.engine";
 	import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
 	import { formatNumber } from "@/util/numbers";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -135,6 +136,9 @@
 	function heat(share: number): string {
 		return `background: color-mix(in srgb, var(--color-positive) ${Math.round(10 + 80 * share)}%, transparent)`;
 	}
+
+	const displayName = (p: PlanetSearchIndexEntry) =>
+		planetDisplayName(p.planet_natural_id, p.planet_name);
 </script>
 
 <template>
@@ -214,9 +218,9 @@
 						@pin="emit('pin', row.planet.planet_natural_id)" />
 				</td>
 				<td class="sticky z-10 whitespace-nowrap font-bold" :class="planetLeft">
-					{{ row.planet.planet_name || row.planet.planet_natural_id }}
+					{{ displayName(row.planet) }}
 					<span
-						v-if="row.planet.planet_name && row.planet.planet_name !== row.planet.planet_natural_id"
+						v-if="displayName(row.planet) !== row.planet.planet_natural_id"
 						class="text-xs text-muted font-normal font-mono">
 						{{ row.planet.planet_natural_id }}
 					</span>

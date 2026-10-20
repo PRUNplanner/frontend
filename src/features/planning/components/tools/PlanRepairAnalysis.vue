@@ -33,6 +33,7 @@
 	import { isInfrastructureBuilding } from "@/features/fio_repair/fioRepair.util";
 	import { relativeFromDate } from "@/util/date";
 	import { clamp, formatNumber } from "@/util/numbers";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Types & Interfaces
 	import type { IPlanRepairAnalysisDataProp } from "@/features/planning/components/tools/planRepairAnalysis.types";
@@ -207,7 +208,8 @@
 		return site.value ? "site" : "no_site";
 	});
 	const planetLabel = computed(
-		() => site.value?.PlanetName || props.planetNaturalId || ""
+		() =>
+			planetDisplayName(props.planetNaturalId ?? "", site.value?.PlanetName)
 	);
 
 	const fioBuildings = computed<Record<string, IRepairFIOBuilding[]>>(() => {

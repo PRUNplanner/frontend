@@ -337,7 +337,7 @@ describe("useFIORepair", () => {
 			expect(base.waiting).toBe(0);
 		});
 
-		it("names a base after its site, else its planet, else its id", async () => {
+		it("names a base after its site, else its planet or system, else its id", async () => {
 			getPlanet.mockImplementation(async (id: string) => {
 				if (id === "ZV-307c")
 					return { planet_natural_id: id, planet_name: id };
@@ -346,7 +346,8 @@ describe("useFIORepair", () => {
 				throw new Error("not loaded");
 			});
 			siteOf("ZV-307b").PlanetName = "";
-			siteOf("ZV-307c").PlanetName = "";
+			// FIO names an unnamed planet by its id
+			siteOf("ZV-307c").PlanetName = "ZV-307c";
 			siteOf("ZV-307d").PlanetName = "";
 			siteOf("ZV-759c").PlanetName = "Home";
 
@@ -355,7 +356,7 @@ describe("useFIORepair", () => {
 			const name = (planet: string) =>
 				bases.value.find((b) => b.planet === planet)!.name;
 			expect(name("ZV-307b")).toBe("Bober");
-			expect(name("ZV-307c")).toBe("ZV-307c");
+			expect(name("ZV-307c")).toBe("Antares I c");
 			expect(name("ZV-307d")).toBe("ZV-307d");
 			expect(name("ZV-759c")).toBe("Home");
 		});

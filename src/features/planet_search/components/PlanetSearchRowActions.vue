@@ -4,6 +4,9 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Util
+	import { planetDisplayName } from "@/util/planetName";
+
 	// Types & Interfaces
 	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
 
@@ -20,7 +23,11 @@
 	const emit = defineEmits<{ (e: "pin"): void }>();
 
 	const name = computed(
-		() => props.planet.planet_name || props.planet.planet_natural_id
+		() =>
+			planetDisplayName(
+				props.planet.planet_natural_id,
+				props.planet.planet_name
+			)
 	);
 	// 26 px square buttons in both views
 	const square =
