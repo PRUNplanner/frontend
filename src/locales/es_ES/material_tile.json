@@ -1,31 +1,31 @@
 {
 	"information": {
-		"title": "Material Information",
+		"title": "Información del material",
 		"table": {
-			"category": "Category",
-			"weight": "Weight",
-			"volume": "Volume"
+			"category": "Categoría",
+			"weight": "Peso",
+			"volume": "Volumen"
 		}
 	},
 	"indicator": {
-		"value": "Value",
-		"max": "Maximum",
-		"pct_max": "% / Max"
+		"value": "Valor",
+		"max": "Máximo",
+		"pct_max": "% / Máx."
 	},
 	"chart": {
-		"title": "Market History",
-		"range": "30 days",
+		"title": "Historial de mercado",
+		"range": "30 días",
 		"metric": {
 			"vwap": "@:terms.vwap",
-			"low": "Low",
-			"high": "High",
+			"low": "Mín.",
+			"high": "Máximo",
 			"traded": "@:terms.traded_volume",
-			"label": "Chart value"
+			"label": "Valor del gráfico"
 		},
-		"label": "{metric} of {ticker} on every exchange, last 30 days",
-		"empty": "No trades in the last 30 days",
-		"error": "Market history could not be loaded",
-		"cheapest": "Cheapest now:",
-		"open_exploration": "Open in Market Exploration →"
+		"label": "{metric} de {ticker} en todas las bolsas, últimos 30 días",
+		"empty": "No hay operaciones en los últimos 30 días",
+		"error": "No se ha podido cargar el historial de mercado",
+		"cheapest": "Más barato ahora:",
+		"open_exploration": "Abrir en Exploración del mercado →"
 	}
 }
