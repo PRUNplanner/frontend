@@ -4,6 +4,7 @@
 		"login": "登录",
 		"sections": "Sections",
 		"how": "How it works",
+		"market": "Market",
 		"features": "Features",
 		"tools": "Tools",
 		"github": "GitHub"
@@ -146,6 +147,36 @@
 			"title": "Send a plan as a link.",
 			"text": "Anyone with the link can see the recipes and try changes, without an account. Good for asking your corporation for feedback."
 		}
+	},
+	"market": {
+		"eyebrow": "Market today",
+		"title": "What the commodity exchanges did this week",
+		"lead": {
+			"index": "Prices on the four exchanges moved {change} since {start} and {change30} over the last 30 days.",
+			"sector": "{sector} lead ({change}).",
+			"pioneer": "Feeding 100 pioneers costs {cost} a day, {change} since {start}.",
+			"source": "Straight from FIO, no account needed."
+		},
+		"index": {
+			"label": "PrUn CX Index · all exchanges",
+			"chip": "{days} d",
+			"caption": "VWAP 7D of a basket of {members} materials, weighted by what they trade. {start} = 100.",
+			"chart_label": "CX Index over 90 days"
+		},
+		"movers": {
+			"title": "This week’s movers",
+			"caption": "VWAP 7D against VWAP 30D. Only materials with at least 5 M ȼ and 50 units traded in 7 days."
+		},
+		"sectors": {
+			"title": "By sector, last 90 days",
+			"caption": "Bar: share of 30-day turnover",
+			"change30": "30 d {change}",
+			"share": "{share} % of turnover",
+			"label": "{sector}: {change} in 90 days",
+			"spark_label": "{sector}, index over 90 days"
+		},
+		"cta": "Open the market report",
+		"source": "Daily data to {date} · FIO"
 	},
 	"setup": {
 		"eyebrow": "How it works",
