@@ -9,7 +9,7 @@
 	import { useUserStore } from "@/stores/userStore";
 
 	// UI
-	import { PButton } from "@/ui";
+	import PButton from "@/ui/components/PButton.vue";
 
 	const userStore = useUserStore();
 	const { consent, isDNT, reopened, grant, deny } = useAnalyticsConsent();

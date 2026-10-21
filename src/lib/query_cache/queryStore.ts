@@ -8,6 +8,7 @@ import {
 	type IBatchRefresh,
 } from "@/lib/query_cache/queryBatches";
 import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
+import { onSessionReset } from "@/lib/sessionReset";
 
 import type {
 	IMutationDefinition,
@@ -540,3 +541,6 @@ export const useQueryStore = defineStore(
 		};
 	}
 );
+
+// a logout (userStore.resetSession) clears the cache
+onSessionReset(() => useQueryStore().$reset());

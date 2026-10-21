@@ -58,7 +58,7 @@ describe("User Store", () => {
 		expect(userStore.isLoggedIn).toBeFalsy();
 	});
 
-	it("Logout: the next login loads its own profile and preferences", () => {
+	it("Logout: the next login loads its own profile and preferences", async () => {
 		const userStore = useUserStore();
 		const getProfile = vi
 			.mocked(callGetProfile)
@@ -71,10 +71,26 @@ describe("User Store", () => {
 
 		expect(userStore.intialPreferencesCalled).toBe(false);
 		userStore.setToken("access-b", "refresh-b");
-		expect(getProfile).toHaveBeenCalledTimes(2);
+		// the API module loads on first use
+		await vi.waitFor(() => expect(getProfile).toHaveBeenCalledTimes(2));
 	});
 
-	it("loadProfile: a restored session loads its profile once per page load", () => {
+	it("Logout: clears the query cache", async () => {
+		const { useQueryStore } = await import("@/lib/query_cache/queryStore");
+		const queryStore = useQueryStore();
+		queryStore.addCacheState(
+			"GetMarketSummary",
+			undefined,
+			{} as never
+		);
+		expect(Object.keys(queryStore.cacheState)).toHaveLength(1);
+
+		useUserStore().logout();
+
+		expect(queryStore.cacheState).toEqual({});
+	});
+
+	it("loadProfile: a restored session loads its profile once per page load", async () => {
 		const userStore = useUserStore();
 		const getProfile = vi
 			.mocked(callGetProfile)
@@ -89,6 +105,8 @@ describe("User Store", () => {
 		// a token refresh later in the same page load
 		userStore.setToken("access-2", "refresh-2");
 
+		await vi.waitFor(() => expect(getProfile).toHaveBeenCalled());
+		await vi.dynamicImportSettled();
 		expect(getProfile).toHaveBeenCalledTimes(1);
 	});
 

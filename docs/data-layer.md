@@ -37,7 +37,8 @@ component / composable
     `ApiClientError` (429). Other 4xx (including the 401 of an expired
     refresh token) and discarded responses are not reported. Paths are sent as templates
     (`src/util/pathTemplate.ts`: `/planning/plan/:uuid/`).
-- **Auth** is handled in `src/util/axiosSetup.ts`, which runs from `main.ts`:
+- **Auth** is handled in `src/util/axiosSetup.ts`, which `ApiService`
+  registers once when it is created (before the first request):
   - A request interceptor adds `Authorization: Bearer <userStore.accessToken>`.
   - On a 401 response, it calls `userStore.performTokenRefresh()` and retries
     once. A replay that gets a 401 again is not refreshed again: it is
@@ -311,6 +312,15 @@ The stores are setup-style. Persistence uses `pinia-plugin-persistedstate`
   them doesn't touch the store.
 - `userAlertsStore` is not synced to the backend. Alert rules stay
   per-browser.
+
+- **Loaded on first use.** The app shell (`main.ts`, `App.vue`, `userStore`,
+  `crossTab`, `usePreferences`, `preferenceSync`) imports none of the query
+  layer, `features/api`, zod, axios or idb statically, so a visitor's first
+  page doesn't load them: they come with the first page or action that
+  needs them (`import()` in the user store's API calls, the preference
+  PATCH, the cross-tab invalidation). A logout clears the query cache
+  through `lib/sessionReset.ts`, where `queryStore` registers its reset
+  once it has loaded. Keep new shell code to `import type` from these.
 
 ## 6. Several tabs (`src/lib/crossTab.ts`)
 

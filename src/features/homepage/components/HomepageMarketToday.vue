@@ -46,7 +46,8 @@
 	import type { ILineSeries } from "@/ui/charts/charts.types";
 
 	// UI
-	import { PButton, PButtonGroup } from "@/ui";
+	import PButton from "@/ui/components/PButton.vue";
+	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
 
 	// "Market today" on the landing page: mounted once the section comes
 	// near, from the same queries as /market, which then loads nothing again

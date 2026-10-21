@@ -42,7 +42,12 @@ and the landing-only button and form styles.
 - The tour boxes are measured on the screenshots in
   `public/images/homepage/`. Retaking a shot means re-measuring its boxes;
   `homepageTour.util.test.ts` checks that every box fits its viewport.
-- The hero image has a 1440 px variant (`plan-1440.webp`) for `srcset`.
+- The hero image has 640 and 1280 px variants (`plan-640.webp`,
+  `plan-1280.webp`) for `srcset`; `index.html` preloads it with the same
+  `srcset` and `sizes` (a test checks). Every image is lazy, the hero too, so
+  the prerendered page fetches nothing where `index.html` hides it; the
+  tours below the hero render their image once within 400 px of the
+  viewport.
 - The language count on the page is `SupportedLanguages.length`.
 
 ## Tests

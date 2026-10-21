@@ -33,12 +33,15 @@
 4. Install Pinia with `pinia-plugin-persistedstate`.
 5. `await userStore.initLocale(...)`. This uses top-level await.
 6. Install i18n.
-7. `axiosSetup()`, which adds the auth interceptors.
-8. Install unhead.
-9. Install vue-showdown, which renders markdown.
-10. Mount the app (`prepareMount` / `mountApp` in `lib/seo/prerenderMount.ts`,
+7. Install unhead.
+8. Install vue-showdown, which renders markdown.
+9. Mount the app (`prepareMount` / `mountApp` in `lib/seo/prerenderMount.ts`,
     not awaited: lazy chunks import from `main.ts`, which has to finish
     evaluating first).
+
+The auth interceptors (`axiosSetup()`) register with the API service when
+it is created, so a visitor's first page doesn't load axios
+([data-layer.md](data-layer.md)).
 
 ## Routing (`src/router/index.ts`)
 

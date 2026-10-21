@@ -15,14 +15,22 @@ const STEPS: IHomepageTourStep[] = [
 	{ key: "three", box: [0.5, 0.5, 1, 1], zoom: 2 },
 ];
 
-// the IntersectionObserver the tour creates, to report it on or off screen
-let observer: { cb: IntersectionObserverCallback; disconnect: () => void };
+// the IntersectionObservers the tour creates: `near` (a tour below the
+// hero, to load its image) first, then `observer` (on or off screen)
+interface IStubObserver {
+	cb: IntersectionObserverCallback;
+	disconnect: () => void;
+}
+let observer: IStubObserver;
+let observers: IStubObserver[] = [];
 function stubObserver() {
+	observers = [];
 	vi.stubGlobal(
 		"IntersectionObserver",
 		class {
 			constructor(cb: IntersectionObserverCallback) {
 				observer = { cb, disconnect: this.disconnect };
+				observers.push(observer);
 			}
 			observe = vi.fn();
 			disconnect = vi.fn();
@@ -191,16 +199,28 @@ describe("HomepageTour", () => {
 		expect(() => vi.advanceTimersByTime(5000)).not.toThrow();
 	});
 
-	it("loads the hero image first, in two sizes; the others lazily", async () => {
+	it("loads the hero image first, in three sizes; the others lazily", async () => {
 		const hero = await mountTour({ eager: true });
 		const img = hero.wrapper.find("img");
 		expect(img.attributes("fetchpriority")).toBe("high");
-		expect(img.attributes("loading")).toBe("eager");
+		// index.html preloads it on "/", lazy keeps the hidden page from it
+		expect(img.attributes("loading")).toBe("lazy");
 		expect(img.attributes("srcset")).toBe(
-			"/images/homepage/plan-1440.webp 1440w, /images/homepage/plan.webp 2880w"
+			"/images/homepage/plan-640.webp 640w, /images/homepage/plan-1280.webp 1280w, /images/homepage/plan.webp 2880w"
 		);
 
 		const other = await mountTour({ image: "empire" });
+		// not with the page: once the tour comes near
+		expect(other.wrapper.find("img").exists()).toBe(false);
+		// its `near` observer, created before its on-screen one
+		observers.at(-2)!.cb(
+			[{ isIntersecting: true } as IntersectionObserverEntry],
+			{} as IntersectionObserver
+		);
+		await nextTick();
+		expect(other.wrapper.find("img").attributes("src")).toBe(
+			"/images/homepage/empire.webp"
+		);
 		expect(other.wrapper.find("img").attributes("loading")).toBe("lazy");
 		expect(other.wrapper.find("img").attributes("srcset")).toBeUndefined();
 	});

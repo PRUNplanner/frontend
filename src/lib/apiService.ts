@@ -10,6 +10,7 @@ import { trackException } from "@/lib/analytics/useAnalytics";
 import { correlationId } from "@/lib/requestIds";
 import { type IClientErrorReport, reportClientError } from "@/lib/clientErrors";
 import { issuePathTemplate, pathTemplate } from "@/util/pathTemplate";
+import axiosSetup from "@/util/axiosSetup";
 
 /**
  * Service making calls to PRUNplanner backend
@@ -83,6 +84,8 @@ class ApiService {
 		this.client = axios;
 		this.client.defaults.baseURL = apiConfig.API_BASE_URL;
 		this.client.interceptors.request.use(setRequestIds);
+		// session interceptors: token, refresh after a 401, logout
+		axiosSetup();
 	}
 
 	/**

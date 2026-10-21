@@ -60,10 +60,6 @@ try {
 
 app.use(i18n);
 
-// axios
-import axiosSetup from "@/util/axiosSetup";
-axiosSetup();
-
 // unhead
 import { createHead } from "@unhead/vue/client";
 

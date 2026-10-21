@@ -13,7 +13,11 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n({ useScope: "global" });
 
-	import { PFormItem, PIcon, PInput, PNotice, PSpin } from "@/ui";
+	import PFormItem from "@/ui/components/PFormItem.vue";
+	import PIcon from "@/ui/components/PIcon.vue";
+	import PInput from "@/ui/components/PInput.vue";
+	import PNotice from "@/ui/components/PNotice.vue";
+	import PSpin from "@/ui/components/PSpin.vue";
 	import { CheckSharp } from "@vicons/material";
 	import {
 		landingField,

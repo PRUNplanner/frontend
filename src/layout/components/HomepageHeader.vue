@@ -1,18 +1,23 @@
 <script setup lang="ts">
-	import { computed, onUnmounted } from "vue";
+	import {
+		type Component,
+		computed,
+		onMounted,
+		onUnmounted,
+		shallowRef,
+		watch,
+	} from "vue";
 	import { useRoute } from "vue-router";
 
 	// Composables
 	import { useAuthPanel } from "@/features/account/useAuthPanel";
-	import { prefetchMarketReport } from "@/features/market_report/useMarketReport";
+	import { prefetchMarketReport } from "@/features/market_report/marketReportPrefetch.util";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { afterLoad } from "@/util/afterLoad";
 
-	// Components
-	import LoginComponent from "@/features/account/components/LoginComponent.vue";
-	import RegistrationComponent from "@/features/account/components/RegistrationComponent.vue";
 
 	// UI
-	import { PDrawer } from "@/ui";
+	import PDrawer from "@/ui/components/PDrawer.vue";
 	import {
 		GITHUB_URL,
 		landingPrimaryButton,
@@ -29,8 +34,38 @@
 		close,
 	} = useAuthPanel();
 
+	// The forms bring the API layer, which a visitor reading the page doesn't
+	// need (this header loads before the mount): loaded once the page has,
+	// or when the panel is asked for first. The panel opens with them, so
+	// it focuses the form's first field.
+	const forms = shallowRef<{ login: Component; registration: Component }>();
+	let loading: Promise<void> | undefined;
+	function loadForms(): Promise<void> {
+		loading ??= Promise.all([
+			import("@/features/account/components/LoginComponent.vue"),
+			import("@/features/account/components/RegistrationComponent.vue"),
+		])
+			.then(([login, registration]) => {
+				forms.value = {
+					login: login.default,
+					registration: registration.default,
+				};
+			})
+			.catch((error) => {
+				// closed, so the next request tries again
+				loading = undefined;
+				close();
+				console.error(error);
+			});
+		return loading;
+	}
+	onMounted(() => afterLoad().then(loadForms));
+
+	const asked = computed(() => showLogin.value || showRegistration.value);
+	watch(asked, (open) => open && loadForms(), { immediate: true });
+
 	const show = computed({
-		get: () => showLogin.value || showRegistration.value,
+		get: () => asked.value && forms.value !== undefined,
 		set: (value: boolean) => {
 			if (!value) close();
 		},
@@ -142,7 +177,12 @@
 				</button>
 			</div>
 		</template>
-		<LoginComponent v-if="showLogin" />
-		<RegistrationComponent v-else @login="showLoginForm" />
+		<template v-if="forms">
+			<component :is="forms.login" v-if="showLogin" />
+			<component
+				:is="forms.registration"
+				v-else
+				@login="showLoginForm" />
+		</template>
 	</PDrawer>
 </template>

@@ -3,7 +3,7 @@ import { config, flushPromises } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 
 import App from "@/App.vue";
-import { dbBlocked } from "@/database/composables/useIndexedDBStore";
+import { dbBlocked } from "@/database/dbBlocked";
 import { sessionReplaced } from "@/lib/crossTab";
 import { toasts } from "@/ui/useToast";
 import { useUserStore } from "@/stores/userStore";
@@ -175,6 +175,7 @@ describe("App", () => {
 				.spyOn(useUserStore(), "loadProfile")
 				.mockImplementation(() => {});
 			await mountApp(true);
+			await vi.dynamicImportSettled();
 
 			expect(mocks.useQuery).toHaveBeenCalledWith("GetPreferences");
 			expect(mocks.execute).toHaveBeenCalledOnce();

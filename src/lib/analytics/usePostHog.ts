@@ -6,6 +6,7 @@ import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
 // Util
 import { redact } from "@/util/data";
 import { isChunkLoadError } from "@/lib/chunkReload";
+import { afterLoad } from "@/util/afterLoad";
 
 // Types & Interfaces
 import type { BeforeSendFn, PostHog, Properties } from "posthog-js";
@@ -91,6 +92,9 @@ let pendingUserProps: Properties = {};
 let missedPageview = false;
 // super properties, so a later grant can register them again
 let superProps: Properties = {};
+// counts starts and stops: a start that waited for a later one to win
+// (denied and granted again meanwhile) gives up
+let runs = 0;
 
 /**
  * Key can be public, as its web sdk + has configured authorized urls
@@ -141,9 +145,14 @@ function sendMissedPageview(): void {
 	missedPageview = false;
 }
 
-async function startAnalytics(): Promise<void> {
+/**
+ * @param {boolean} [deferred] A stored grant on app start: loads after the
+ * page, events until then are queued
+ */
+async function startAnalytics(deferred: boolean = false): Promise<void> {
 	const key = getPostHogKey();
 	if (started || queue || !key) return;
+	const run = ++runs;
 
 	if (posthog) {
 		// granted again after a deny, reopens the send path first
@@ -161,11 +170,12 @@ async function startAnalytics(): Promise<void> {
 
 	queue = [];
 	try {
+		if (deferred) await afterLoad();
 		// own chunk (vendor_posthog), only fetched with consent
 		const loaded = (await import("posthog-js")).default;
 
-		// denied while loading
-		if (consent.value !== "granted" || started) return;
+		// denied (or denied and granted again) while loading
+		if (consent.value !== "granted" || started || run !== runs) return;
 
 		loaded.init(key, {
 			api_host: "https://squirrel.prunplanner.org/relay-DWJJ",
@@ -206,11 +216,12 @@ async function startAnalytics(): Promise<void> {
 	} catch (error) {
 		console.warn("Analytics failed to load", error);
 	} finally {
-		queue = null;
+		if (run === runs) queue = null;
 	}
 }
 
 function stopAnalytics(): void {
+	runs++;
 	queue = null;
 
 	if (posthog && started) {
@@ -231,11 +242,12 @@ function stopAnalytics(): void {
 	removePostHogStorage();
 }
 
-// PostHog follows the consent: runs once on app start, then on each choice
+// PostHog follows the consent: runs once on app start (a stored grant
+// loads after the page), then on each choice
 watch(
 	consent,
-	(value) => {
-		if (value === "granted") void startAnalytics();
+	(value, previous) => {
+		if (value === "granted") void startAnalytics(previous === undefined);
 		else stopAnalytics();
 	},
 	{ immediate: true }

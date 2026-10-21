@@ -16,7 +16,12 @@ URLs stay out of the index.
   `<html>`) everywhere it doesn't belong: any path other than `/` (the
   server answers every path with this file), a stored session (sent on to
   `/empire`) and a stored locale other than English. The landing page never
-  flashes there.
+  flashes there. It hides with `display: none`, so the hidden page fetches
+  none of its fonts and images (every image of the page is lazy, the hero
+  too); where the page shows, the script preloads the hero image (same
+  `srcset` and `sizes` as its `img` in `HomepageTour.vue`, a test checks).
+  The tours below the hero render their image only once they come within
+  400 px of the viewport, so they don't compete with the first paint.
 - `public/robots.txt` allows every crawler and names the sitemap.
 
 ## What `useHead` sets (`AppProvider.vue`)
@@ -69,7 +74,9 @@ On load (`lib/seo/prerenderMount.ts`, used by `main.ts`):
   chunk, and hydrates: the same elements stay, nothing repaints. The body
   teleports hydrate from `<body>`'s first child on, in render order;
   `HomepageHeader` must stay a `defineAsyncComponent` in `App.vue` for that
-  order to match (a test checks the prerender's order).
+  order to match (a test checks the prerender's order). For a fresh mount
+  (below) `App.vue` gets the header `prepareMount` loaded instead, so it is
+  in the first frame and doesn't push the page down.
 - Any route other than the landing page (another path, or a stored session
   redirected to `/empire`), or a stored locale that isn't English: the
   landing markup and its teleports are removed and the app mounts fresh

@@ -9,7 +9,8 @@
 
 	defineProps<{
 		step: IHomepageTourStep;
-		src: string;
+		/** none until the tour comes near (HomepageTour) */
+		src?: string;
 		alt: string;
 		imageAttrs: Record<string, string>;
 	}>();
@@ -22,6 +23,7 @@
 			class="absolute inset-0 origin-top-left transition-transform duration-1100 ease-[cubic-bezier(.65,0,.25,1)]"
 			:style="{ transform: tourTransform(step) }">
 			<img
+				v-if="src"
 				:src="src"
 				v-bind="imageAttrs"
 				width="2880"

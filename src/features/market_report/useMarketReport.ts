@@ -5,7 +5,6 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { getQueryDefinition } from "@/lib/query_cache/queryRepository";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
-import router from "@/router";
 
 // Types & Interfaces
 import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
@@ -39,18 +38,4 @@ export function useMarketReport() {
 	load();
 
 	return { summary, failed, retry: () => load(true) };
-}
-
-/**
- * Hover or focus on a link to the market report: its route chunk and the
- * summary start loading, so the page opens with its data
- */
-export function prefetchMarketReport(): void {
-	const component = router.resolve("/market").matched[0]?.components?.default;
-	if (typeof component === "function")
-		void (component as () => Promise<unknown>)().catch(() => {});
-	// the store logs a failure, the page retries
-	void useQuery("GetMarketSummary")
-		.execute()
-		.catch(() => {});
 }

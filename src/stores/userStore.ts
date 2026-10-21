@@ -11,19 +11,11 @@ import {
 } from "vue";
 import { merge } from "lodash-es";
 
-// API
-import {
-	callGetProfile,
-	callRefreshToken,
-	callUserLogin,
-} from "@/features/api/userData.api";
-
 // Stores
 import { usePlanningStore } from "@/stores/planningStore";
-import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { resetLoadedModules } from "@/lib/sessionReset";
 
 // Composables
-import { useQuery } from "@/lib/query_cache/useQuery";
 import {
 	trackEvent,
 	resetUser,
@@ -49,6 +41,16 @@ import {
 	localeLazyLoaders,
 	type SupportedLocale,
 } from "@/lib/i18n";
+
+// the user API (and with it axios and zod) loads on the first call, a
+// visitor's app shell doesn't carry it. One import for concurrent callers;
+// a failed one is tried again on the next call
+let userApi: Promise<typeof import("@/features/api/userData.api")> | undefined;
+const loadUserApi = () =>
+	(userApi ??= import("@/features/api/userData.api").catch((error) => {
+		userApi = undefined;
+		throw error;
+	}));
 
 const FIO_POLL_MS = 15_000;
 const FIO_POLL_TRIES = 20;
@@ -259,8 +261,8 @@ export const useUserStore = defineStore(
 			const planningStore = usePlanningStore();
 			planningStore.$reset();
 
-			const queryStore = useQueryStore();
-			queryStore.$reset();
+			// the query cache, if loaded
+			resetLoadedModules();
 		}
 
 		async function queryPreferences(): Promise<void> {
@@ -268,7 +270,8 @@ export const useUserStore = defineStore(
 
 			intialPreferencesCalled.value = true;
 
-			// update preferences
+			// update preferences; the query layer loads on first use too
+			const { useQuery } = await import("@/lib/query_cache/useQuery");
 			await useQuery("GetPreferences").execute();
 		}
 
@@ -286,6 +289,7 @@ export const useUserStore = defineStore(
 			password: string
 		): Promise<"ok" | "throttled" | "failed"> {
 			try {
+				const { callUserLogin } = await loadUserApi();
 				const tokenData: TokenResponse = await callUserLogin(
 					username,
 					password
@@ -309,6 +313,7 @@ export const useUserStore = defineStore(
 		async function refreshAccessToken(): Promise<boolean> {
 			if (refreshToken.value) {
 				try {
+					const { callRefreshToken } = await loadUserApi();
 					const tokenData: RefreshTokenResponse =
 						await callRefreshToken(refreshToken.value);
 
@@ -353,6 +358,7 @@ export const useUserStore = defineStore(
 			// only perform if the user is logged in
 			if (isLoggedIn.value) {
 				try {
+					const { callGetProfile } = await loadUserApi();
 					const result: UserProfile = await callGetProfile();
 
 					// identify users for posthog

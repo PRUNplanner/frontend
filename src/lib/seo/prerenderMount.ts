@@ -1,7 +1,16 @@
-import type { App } from "vue";
+import type { App, Component } from "vue";
 import type { Router } from "vue-router";
 
 const root = () => document.getElementById("app")!;
+
+/**
+ * HomepageHeader, loaded by prepareMount, for a fresh mount: App renders it
+ * in its first frame. Its async component would only show a task later,
+ * after the page painted, and push the page down (a layout shift on
+ * /market). Hydrating the landing page keeps the async component, so the
+ * body teleports hydrate in the prerender's order.
+ */
+export let homepageHeader: Component | undefined;
 
 /** dist/index.html: #app holds the prerendered landing page */
 export const isPrerendered = (): boolean =>
@@ -30,7 +39,7 @@ export async function prepareMount(
 
 	if (!isPrerendered()) return;
 
-	await Promise.all([
+	const [, header] = await Promise.all([
 		router.isReady(),
 		import("@/layout/components/HomepageHeader.vue"),
 	]);
@@ -42,6 +51,7 @@ export async function prepareMount(
 	if (router.currentRoute.value.name !== "homepage" || locale !== "en_US") {
 		while (root().previousSibling) root().previousSibling!.remove();
 		root().replaceChildren();
+		homepageHeader = header.default;
 	}
 }
 

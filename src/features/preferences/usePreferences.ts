@@ -15,12 +15,7 @@ import type { Composer } from "vue-i18n";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
-
-// Composables
-import { usePlan } from "@/features/planning_data/usePlan";
-
-// API
-import { useQuery } from "@/lib/query_cache/useQuery";
+import { usePlanningStore } from "@/stores/planningStore";
 
 // Default values
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
@@ -45,6 +40,8 @@ const patchPrefs = async (session: string | undefined, retry = true) => {
 	if (Object.keys(patch).length === 0) return;
 
 	try {
+		// loaded here, so the landing page and footer (locale) stay light
+		const { useQuery } = await import("@/lib/query_cache/useQuery");
 		await useQuery("PatchPreferences", patch).execute();
 		markPreferencesSynced(patch);
 	} catch (err) {
@@ -77,7 +74,7 @@ export function startPreferenceSync(): WatchHandle {
 export function usePreferences() {
 	const userStore = useUserStore();
 
-	const { getPlanNamePlanet } = usePlan();
+	const { getPlanNamePlanet } = usePlanningStore();
 
 	// a cleared or half-typed number field gives null or NaN, which the
 	// PATCH schema rejects: keep the last valid value

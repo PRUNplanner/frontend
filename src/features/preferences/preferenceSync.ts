@@ -1,7 +1,5 @@
 import { cloneDeep, isEqual } from "lodash-es";
 
-// Schemas
-import { UserPreferenceSchema } from "@/features/api/schemas/user.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 // Types & Interfaces
@@ -10,9 +8,11 @@ import type {
 	UserPreferencePatch,
 } from "@/features/api/schemas/user.schemas";
 
-// the keys the backend stores, never frontend-only ones like planDefaults
-const KEYS = Object.keys(
-	UserPreferenceSchema.shape
+// the keys the backend stores (UserPreferenceSchema's, a test keeps them in
+// step), never frontend-only ones like planDefaults. Not read from the
+// schema: the app shell loads this module, zod comes with the API layer
+const KEYS = Object.keys(preferenceDefaults).filter(
+	(key) => key !== "planDefaults"
 ) as (keyof UserPreference)[];
 
 // maps the backend merges per key, a key sent as null is deleted

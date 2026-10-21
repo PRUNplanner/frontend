@@ -72,11 +72,26 @@
 						(!!locale && locale !== "en_US");
 				} catch {}
 				if (skip) document.documentElement.classList.add("skip-prerender");
+				else {
+					// the hero image, fetched with the HTML; its img is lazy, so
+					// the hidden page fetches nothing (HomepageTour.vue)
+					const hero = document.createElement("link");
+					hero.rel = "preload";
+					hero.setAttribute("as", "image");
+					hero.setAttribute("fetchpriority", "high");
+					hero.setAttribute(
+						"imagesrcset",
+						"/images/homepage/plan-640.webp 640w, /images/homepage/plan-1280.webp 1280w, /images/homepage/plan.webp 2880w"
+					);
+					hero.setAttribute("imagesizes", "(min-width: 1240px) 1180px, 100vw");
+					document.head.appendChild(hero);
+				}
 			})();
 		</script>
+		<!-- not laid out: its fonts and lazy images aren't fetched -->
 		<style>
 			.skip-prerender #app[data-prerendered] {
-				visibility: hidden;
+				display: none;
 			}
 		</style>
 	</head>

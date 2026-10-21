@@ -60,9 +60,13 @@ describe("index.html's prerender check", () => {
 		return document.documentElement.classList.contains("skip-prerender");
 	};
 
+	const preload = () =>
+		document.head.querySelector('link[rel="preload"][as="image"]');
+
 	afterEach(() => {
 		window.history.replaceState({}, "", "/");
 		document.documentElement.className = "";
+		preload()?.remove();
 	});
 
 	it.each([
@@ -74,6 +78,24 @@ describe("index.html's prerender check", () => {
 		["/", { preferences: { locale: "de_DE" } }, true],
 	])("on %s with %o hides it: %s", (path, user, hide) => {
 		expect(hidden(path, user)).toBe(hide);
+	});
+
+	it("preloads the hero image only where the landing page shows", async () => {
+		hidden("/market");
+		expect(preload()).toBeNull();
+		hidden("/", { accessToken: "a", refreshToken: "r" });
+		expect(preload()).toBeNull();
+
+		hidden("/");
+		const link = preload()!;
+		expect(link.getAttribute("fetchpriority")).toBe("high");
+		// the same candidates as the hero's img, so the preload is used
+		const { html } = await renderLanding();
+		const img = new DOMParser()
+			.parseFromString(html, "text/html")
+			.querySelector('img[fetchpriority="high"]')!;
+		expect(link.getAttribute("imagesrcset")).toBe(img.getAttribute("srcset"));
+		expect(link.getAttribute("imagesizes")).toBe(img.getAttribute("sizes"));
 	});
 
 	it("still hides it off / when storage is unreadable", () => {

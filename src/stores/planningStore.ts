@@ -193,6 +193,34 @@ export const usePlanningStore = defineStore(
 		}
 
 		/**
+		 * Gets a plans name and planet natural id by given Plan UUID
+		 * from already loaded plan information
+		 * @author jplacht
+		 *
+		 * @param {string} planUuid Plan Uuid
+		 * @returns {{
+		 * 			planetId: string;
+		 * 			planName: string;
+		 * 		}} Planet Natural ID and Plan Name
+		 */
+		function getPlanNamePlanet(planUuid: string): {
+			planetId: string;
+			planName: string;
+		} {
+			const findPlan = plans.value[planUuid];
+
+			if (findPlan)
+				return {
+					planetId: findPlan.planet_natural_id,
+					planName: findPlan.plan_name ?? "Unnamed",
+				};
+
+			throw new Error(
+				`No data: Plan '${planUuid}'. Ensure Plan uuid is valid and planning data has been loaded.`
+			);
+		}
+
+		/**
 		 * Gets a plan by its Uuid
 		 *
 		 * @author jplacht
@@ -288,6 +316,7 @@ export const usePlanningStore = defineStore(
 			// getters
 			getCX,
 			getPlan,
+			getPlanNamePlanet,
 			getAllCX,
 			getSharedList,
 			// util
