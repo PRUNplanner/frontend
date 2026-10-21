@@ -1,76 +1,76 @@
 {
 	"view_title": "Ayuda",
-	"title": "Help & Changelog",
+	"title": "Ayuda y novedades",
 	"changelog": {
-		"title": "Changelog"
+		"title": "Registro de cambios"
 	},
 	"tutorial": {
-		"intro": "PRUNplanner helps you design bases, organize empires, and calculate profits — without wasting in-game resources. It mirrors nearly every aspect of Prosperous Universe so you can plan smarter and play more confidently."
+		"intro": "PRUNplanner te ayuda a diseñar bases, organizar imperios y calcular beneficios, sin malgastar recursos del juego. Reproduce casi todos los aspectos de Prosperous Universe para que planifiques mejor y juegues con más confianza."
 	},
 	"getting_started": {
-		"title": "Getting Started",
-		"image_label": "Management",
+		"title": "Primeros pasos",
+		"image_label": "Gestión",
 		"l1": {
-			"title": "Create an Empire in {link}:",
-			"link": "Management",
-			"p": "By default, you'll already have one. But you can add more for different factions or regions. Assign a name and faction, and save."
+			"title": "Crea un imperio en {link}:",
+			"link": "Gestión",
+			"p": "Por defecto ya tendrás uno, pero puedes añadir más para distintas facciones o regiones. Asígnale un nombre y una facción, y guarda."
 		},
 		"l2": {
-			"title": "Setup an {link}:",
-			"link": "Exchange",
-			"p": "Go into Management and create your exchange. Switch to the Exchanges view to modify it. For most players, set it to Both (buying and selling) and choose the exchange your bases will use (e.g., CI1 for Benten). Save it."
+			"title": "Configura una {link}:",
+			"link": "Bolsa",
+			"p": "Ve a Gestión y crea tu bolsa. Cambia a la vista Bolsas para modificarla. Para la mayoría de jugadores, ponla en Ambos (compra y venta) y elige la bolsa que usarán tus bases (por ejemplo, CI1 para Benten). Guarda."
 		},
 		"l3": {
-			"title": "Search for a {link}:",
-			"link": "Planet",
-			"p": "Use the planet search to filter by resources, programs, or proximity to a CX. Select your target planet and view its modifiers, extraction rates, and infrastructure."
+			"title": "Busca un {link}:",
+			"link": "Planeta",
+			"p": "Usa la búsqueda de planetas para filtrar por recursos, programas o cercanía a una CX. Selecciona tu planeta objetivo y consulta sus modificadores, tasas de extracción e infraestructura."
 		},
 		"l4": {
-			"title": "Create a Plan:",
-			"p": "Choose your Empire, give it a name, then add buildings. For example: add a Refinery, set a production order, and save the plan. You can modify all aspects like COGC, expert bonuses and dive into optimizations."
+			"title": "Crea un plan:",
+			"p": "Elige tu imperio, ponle un nombre y añade edificios. Por ejemplo: añade una Refinería, configura una orden de producción y guarda el plan. Puedes modificar todos los aspectos, como COGC o bonificaciones de expertos, y profundizar en las optimizaciones."
 		},
 		"l5": {
-			"title": "Check ROI:",
-			"p": "Once set up, you'll see daily profits, inputs and outputs, and return on investment for each production line. Adjust, experiment, and optimize."
+			"title": "Comprueba el ROI:",
+			"p": "Una vez configurado, verás los beneficios diarios, las entradas y salidas y el retorno de la inversión de cada línea de producción. Ajusta, experimenta y optimiza."
 		}
 	},
 	"core_concepts": {
-		"title": "Core Concepts",
+		"title": "Conceptos básicos",
 		"p1": {
-			"title": "Plans",
-			"p": "A plan represents a single base: its buildings, productions, and bonuses. Create a plan by choosing a planet, placing buildings, and assigning it to an Empire with a CX preference."
+			"title": "Planes",
+			"p": "Un plan representa una sola base: sus edificios, producciones y bonificaciones. Crea un plan eligiendo un planeta, colocando edificios y asignándolo a un imperio con una preferencia de CX."
 		},
 		"p2": {
-			"title": "Empires",
-			"p": "An Empire is a container of multiple plans - essentially your entire network of bases. Empires keep your supply chains organized and allow you to manage multiple bases together."
+			"title": "Imperios",
+			"p": "Un imperio es un contenedor de varios planes: básicamente toda tu red de bases. Los imperios mantienen organizadas tus cadenas de suministro y te permiten gestionar varias bases a la vez."
 		},
 		"p3": {
-			"title": "Exchanges",
-			"p": "Exchange settings define how prices are calculated. Each Empire uses one Exchange for consistency. You can reuse the same Exchange setup across empires if needed."
+			"title": "Bolsas",
+			"p": "La configuración de bolsa define cómo se calculan los precios. Cada imperio usa una bolsa para mantener la coherencia. Si lo necesitas, puedes reutilizar la misma configuración de bolsa en varios imperios."
 		}
 	},
 	"key_features": {
-		"title": "Key Features",
+		"title": "Funciones principales",
 		"p1": {
-			"title": "Base Simulation",
-			"p": "Design and test bases without spending resources. From habitation to production to planet-specific modifiers and bonuses — PRUNplanner simulates it all."
+			"title": "Simulación de bases",
+			"p": "Diseña y prueba bases sin gastar recursos. Desde la habitación hasta la producción y los modificadores y bonificaciones de cada planeta, PRUNplanner lo simula todo."
 		},
 		"p2": {
-			"title": "Empire Planning",
-			"p": "Manage your empire across multiple bases and supply chains. Keep your materials flowing, prevent bottlenecks, and run smoothly at scale. Always see what is going on and where the next best expansion starts."
+			"title": "Planificación del imperio",
+			"p": "Gestiona tu imperio con varias bases y cadenas de suministro. Mantén fluyendo tus materiales, evita cuellos de botella y funciona sin problemas a gran escala. Ve siempre lo que ocurre y dónde empieza la próxima mejor expansión."
 		},
 		"p3": {
-			"title": "Game Data",
-			"p": "Market information is integrated directly from FIO, the community API. Plan expansions, check ROI, and make informed trade decisions. Explore historic market data or let PRUNplanner calculate production or resource extraction ROIs."
+			"title": "Datos del juego",
+			"p": "La información de mercado se integra directamente desde FIO, la API de la comunidad. Planifica expansiones, comprueba el ROI y toma decisiones de comercio informadas. Explora datos históricos del mercado o deja que PRUNplanner calcule el ROI de producción o de extracción de recursos."
 		},
 		"p4": {
-			"title": "Burn & Repair",
-			"p": "Track consumables and building wear. Avoid shortages and downtime by seeing exactly what your colony needs and when it needs it."
+			"title": "Consumo y reparación",
+			"p": "Sigue los consumibles y el desgaste de los edificios. Evita faltas de suministro y paradas viendo exactamente qué necesita tu colonia y cuándo lo necesita."
 		},
 		"p5": {
-			"title": "A Wealth of Additional Tools",
-			"p": "Dive into historical prices, optimize habitation layouts, estimate visitation frequencies, and fine-tune production efficiency. PRUNplanner is packed with utilities to give you the edge."
+			"title": "Una gran variedad de herramientas adicionales",
+			"p": "Consulta precios históricos, optimiza la disposición de habitación, estima la frecuencia de visitas y afina la eficiencia de producción. PRUNplanner está repleto de utilidades para darte ventaja."
 		}
 	},
-	"load_error": "Unable to load '{file_name}'"
+	"load_error": "No se ha podido cargar '{file_name}'"
 }
