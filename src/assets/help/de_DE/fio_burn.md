@@ -1,12 +1,12 @@
-# Calculations
+# Berechnungen
 
-Plan calculations are based on the production and storage data of your plans. To get accurate results, you’ll need to have your data synced via FIO. Please note that degradation is not included in these calculations.
+Die Plan-Berechnungen basieren auf den Produktions- und Lagerdaten deiner Pläne. Für genaue Ergebnisse müssen deine Daten über FIO synchronisiert sein. Please note that degradation is not included in these calculations.
 
-# Thresholds
+# Grenzwerte
 
-PRUNplanner uses color thresholds to highlight important values:
+PRUNplanner verwendet farbige Grenzwerte, um wichtige Werte hervorzuheben:
 
-- Yellow indicates that a value is approaching a limit or may need attention soon.
-- Red means the threshold has been exceeded and requires immediate attention.
+- Gelb zeigt an, dass sich ein Wert einer Grenze nähert oder bald Aufmerksamkeit brauchen könnte.
+- Rot bedeutet, dass der Grenzwert überschritten wurde und sofortige Aufmerksamkeit erfordert.
 
-These thresholds help you quickly spot potential issues in your production or storage before they become critical.
+Diese Grenzwerte helfen dir, mögliche Probleme in deiner Produktion oder deinem Lager schnell zu erkennen, bevor sie kritisch werden.
