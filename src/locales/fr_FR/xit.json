@@ -1,14 +1,14 @@
 {
 	"form": {
 		"origin": "Origine",
-		"target_days": "Target Days",
-		"buy_from_cx": "Buy From CX",
-		"buy_from_cx_warning": "Only warehouse origin allows purchasing.",
-		"fit_ship": "Fit Ship",
+		"target_days": "Jours cibles",
+		"buy_from_cx": "Acheter sur le CX",
+		"buy_from_cx_warning": "Seule l'origine entrepôt permet l'achat.",
+		"fit_ship": "Adapter au vaisseau",
 		"hide_infinite": "Masquer les infinis",
 		"json": "JSON",
-		"include_label": "Include {ticker}",
-		"override_label": "Override for {ticker}"
+		"include_label": "Inclure {ticker}",
+		"override_label": "Remplacer pour {ticker}"
 	},
 	"buttons": {
 		"copy_json": "Copier XIT JSON",
