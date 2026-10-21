@@ -1,61 +1,61 @@
 {
-	"title": "Saved in another tab",
-	"text": "This was saved in another tab or device after you opened it. Nothing is overwritten until you choose.",
-	"deleted_title": "Deleted in another tab",
-	"deleted_text": "This was deleted in another tab or device. Your edits are still here.",
-	"theirs": "Changed in the other tab",
-	"mine": "Your changes",
-	"none": "No changes",
-	"both": "changed in both tabs",
-	"more": "and {n} more",
-	"loading": "Loading the saved version…",
-	"load_failed": "The saved version couldn't be loaded.",
-	"copy_name": "{name} (copy)",
+	"title": "Guardado en otra pestaña",
+	"text": "Esto se guardó en otra pestaña o dispositivo después de que lo abrieras. No se sobrescribe nada hasta que elijas.",
+	"deleted_title": "Eliminado en otra pestaña",
+	"deleted_text": "Esto se eliminó en otra pestaña o dispositivo. Tus cambios siguen aquí.",
+	"theirs": "Cambiado en la otra pestaña",
+	"mine": "Tus cambios",
+	"none": "Sin cambios",
+	"both": "cambiado en ambas pestañas",
+	"more": "y {n} más",
+	"loading": "Cargando la versión guardada…",
+	"load_failed": "No se ha podido cargar la versión guardada.",
+	"copy_name": "{name} (copia)",
 	"option": {
-		"save_as_new": "Save as new plan",
-		"overwrite": "Overwrite",
-		"reload": "Reload",
-		"close": "Keep editing"
+		"save_as_new": "Guardar como plan nuevo",
+		"overwrite": "Sobrescribir",
+		"reload": "Recargar",
+		"close": "Seguir editando"
 	},
 	"option_help": {
-		"save_as_new": "Creates a copy with your edits, the original keeps the other version.",
-		"overwrite": "Replaces the other version with yours.",
-		"reload": "Drops your edits and loads the saved version."
+		"save_as_new": "Crea una copia con tus cambios; el original conserva la otra versión.",
+		"overwrite": "Sustituye la otra versión por la tuya.",
+		"reload": "Descarta tus cambios y carga la versión guardada."
 	},
 	"deleted_option_help": {
-		"save_as_new": "Creates a new plan with your edits."
+		"save_as_new": "Crea un plan nuevo con tus cambios."
 	},
 	"type": {
-		"BUY": "buy",
-		"SELL": "sell",
-		"BOTH": "buy and sell"
+		"BUY": "compra",
+		"SELL": "venta",
+		"BOTH": "compra y venta"
 	},
 	"change": {
-		"name": "Name {from} → {to}",
-		"permits": "Permits {from} → {to}",
+		"name": "Nombre {from} → {to}",
+		"permits": "Permisos {from} → {to}",
 		"cogc": "COGC {from} → {to}",
-		"corphq_on": "Corp HQ on",
-		"corphq_off": "Corp HQ off",
-		"added": "{label} added ({amount})",
-		"removed": "{label} removed",
+		"corphq_on": "Sede de la corporación activada",
+		"corphq_off": "Sede de la corporación desactivada",
+		"added": "{label} añadido ({amount})",
+		"removed": "{label} eliminado",
 		"amount": "{label} {from} → {to}",
-		"recipe": "{label}: recipe changed",
-		"experts": "{label} experts {from} → {to}",
-		"lux_on": "{label} luxury {n} on",
-		"lux_off": "{label} luxury {n} off",
-		"faction": "Faction {from} → {to}",
-		"permits_used": "Permits used {from} → {to}",
-		"permits_total": "Permits total {from} → {to}",
-		"exchange": "{type} exchange {from} → {to}",
-		"exchange_planet": "{type} exchange {from} → {to} on {planet}",
-		"ticker": "{ticker} {type} price {from} → {to}",
-		"ticker_planet": "{ticker} {type} price {from} → {to} on {planet}"
+		"recipe": "{label}: receta cambiada",
+		"experts": "Expertos de {label} {from} → {to}",
+		"lux_on": "Lujo {n} de {label} activado",
+		"lux_off": "Lujo {n} de {label} desactivado",
+		"faction": "Facción {from} → {to}",
+		"permits_used": "Permisos usados {from} → {to}",
+		"permits_total": "Permisos totales {from} → {to}",
+		"exchange": "Bolsa de {type} {from} → {to}",
+		"exchange_planet": "Bolsa de {type} {from} → {to} en {planet}",
+		"ticker": "Precio de {type} de {ticker} {from} → {to}",
+		"ticker_planet": "Precio de {type} de {ticker} {from} → {to} en {planet}"
 	},
 	"notice": {
-		"saved_elsewhere": "Saved in another tab. Your edits are kept.",
-		"deleted_elsewhere": "Deleted in another tab.",
-		"reload": "Reload",
-		"session_replaced": "You logged in in another tab. Reload this tab to continue; it no longer saves anything.",
-		"db_blocked": "PRUNplanner is open in another tab with an older version. Close the other tabs or reload them to continue."
+		"saved_elsewhere": "Guardado en otra pestaña. Se conservan tus cambios.",
+		"deleted_elsewhere": "Eliminado en otra pestaña.",
+		"reload": "Recargar",
+		"session_replaced": "Has iniciado sesión en otra pestaña. Recarga esta pestaña para continuar; ya no guarda nada.",
+		"db_blocked": "PRUNplanner está abierto en otra pestaña con una versión anterior. Cierra las otras pestañas o recárgalas para continuar."
 	}
 }
