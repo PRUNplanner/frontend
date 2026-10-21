@@ -136,7 +136,7 @@
 </script>
 
 <template>
-	<div class="w-full max-w-7xl mx-auto px-6 py-6 flex flex-col gap-6">
+	<div class="w-full max-w-[1240px] mx-auto px-6 py-6 flex flex-col gap-6">
 		<header class="flex flex-col gap-2">
 			<h1 class="text-2xl font-bold">{{ t("market_report.title") }}</h1>
 			<p
@@ -174,7 +174,7 @@
 			<MarketBlock
 				:ready="!!summary"
 				:failed="failed"
-				size="h-59 lg:h-28"
+				size="h-79 sm:h-59 lg:h-28"
 				@retry="retry">
 				<MarketKpis :summary="summary!" />
 			</MarketBlock>
@@ -322,9 +322,12 @@
 				<MarketBlock
 					:ready="!!summary && listsSeen"
 					:failed="failed"
-					size="h-96"
+					size="h-120"
 					@retry="retry">
-					<MarketMovers :summary="summary!" :direction="direction" />
+					<MarketMovers
+						:summary="summary!"
+						:direction="direction"
+						:count="10" />
 				</MarketBlock>
 				<p class="text-xs text-muted">
 					{{ t("market_report.movers.caption") }}
@@ -364,7 +367,7 @@
 			<MarketBlock
 				:ready="!!summary && exchangesSeen"
 				:failed="failed"
-				size="h-393 sm:h-195 xl:h-96"
+				size="h-337 sm:h-167 xl:h-82"
 				@retry="retry">
 				<MarketExchangeCards :summary="summary!" />
 			</MarketBlock>

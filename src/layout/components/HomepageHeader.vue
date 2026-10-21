@@ -71,8 +71,11 @@
 		},
 	});
 
-	// the section links point into the landing page
+	// the section links point into the landing page, also from the report
 	const isLanding = computed(() => route.name === "homepage");
+	const showSections = computed(
+		() => isLanding.value || route.name === "market"
+	);
 	const sections = ["how", "features", "tools"] as const;
 
 	// the header leaves on login, the next visitor starts with a closed panel
@@ -93,20 +96,27 @@
 				<span class="font-black">PRUN</span>planner
 			</RouterLink>
 			<nav
-				v-if="isLanding"
+				v-if="showSections"
 				:aria-label="$t('homepage.navigation.sections')"
 				class="hidden lg:flex flex-wrap items-center gap-x-7 gap-y-1 text-[15px] text-white/78">
 				<template v-for="section in sections" :key="section">
 					<a
+						v-if="isLanding"
 						:href="`#${section}`"
 						class="min-h-11 inline-flex items-center hover:text-white">
 						{{ $t(`homepage.navigation.${section}`) }}
 					</a>
 					<RouterLink
+						v-else
+						:to="`/#${section}`"
+						class="min-h-11 inline-flex items-center hover:text-white">
+						{{ $t(`homepage.navigation.${section}`) }}
+					</RouterLink>
+					<RouterLink
 						v-if="section === 'how'"
 						to="/market"
 						data-market-link
-						class="min-h-11 inline-flex items-center hover:text-white"
+						class="min-h-11 inline-flex items-center hover:text-white aria-[current=page]:text-white"
 						@mouseenter="prefetchMarketReport()"
 						@focus="prefetchMarketReport()"
 						@click="

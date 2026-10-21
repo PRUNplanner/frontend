@@ -32,6 +32,7 @@
 		landingCard,
 		landingGrid4,
 		marketCard,
+		marketMoversCard,
 		marketGrid,
 		marketLead as marketLeadBox,
 		marketSector,
@@ -213,7 +214,7 @@
 			</article>
 
 			<article
-				:class="[landingCard, marketCard]"
+				:class="[landingCard, marketMoversCard]"
 				class="p-6 sm:p-7 flex flex-col gap-3 min-w-0 overflow-hidden">
 				<div class="flex flex-wrap items-center justify-between gap-3">
 					<h3 class="m-0 text-[20px] font-bold text-white">

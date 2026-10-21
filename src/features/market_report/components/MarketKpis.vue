@@ -83,6 +83,7 @@
 	@reference "../../../assets/css/style.css";
 
 	.kpi {
-		@apply flex flex-col gap-1 p-3 h-28 rounded-panel border border-line;
+		@apply flex flex-col gap-1 p-3 min-h-38 sm:min-h-0 sm:h-28;
+		@apply rounded-panel border border-line;
 	}
 </style>

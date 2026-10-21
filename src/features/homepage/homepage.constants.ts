@@ -62,8 +62,10 @@ export const EMPIRE_TOUR: IHomepageTourStep[] = [
 // "Market today": the skeleton and the section share these sizes, so the
 // section replaces its placeholder without a layout shift
 export const marketLead =
-	"m-0 max-w-[820px] text-[18px] leading-[1.55] min-h-[9lh] sm:min-h-[5lh] lg:min-h-[4lh]";
+	"m-0 max-w-[820px] text-[18px] leading-[1.55] min-h-[7lh] sm:min-h-[5lh] lg:min-h-[4lh]";
 export const marketGrid =
 	"grid grid-cols-1 min-[981px]:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-5";
 export const marketCard = "h-[480px] min-[981px]:h-[440px]";
+// the movers list is shorter than the chart until both share a row
+export const marketMoversCard = "min-h-[400px] min-[981px]:h-[440px]";
 export const marketSector = "h-[132px]";

@@ -59,7 +59,7 @@
 		<article
 			v-for="c in cards"
 			:key="c.code"
-			class="flex flex-col gap-3 p-4 h-96 rounded-panel border border-line">
+			class="flex flex-col gap-3 p-4 h-82 rounded-panel border border-line">
 			<header class="flex items-center gap-2">
 				<span
 					class="size-2.5 rounded-full"
