@@ -33,7 +33,8 @@ today" section (`features/homepage`) reuses its queries, maths,
 | --- | --- |
 | `marketReport.util.ts` | Pure maths: `marketKpis`, `marketBrief` (In short), `workforceCost` / `workforceSeries` / `workforceDrivers` (`WORKFORCE_CONSUMPTION_MAP` × price, per 100 workers a day), `marketMovers` (5 M ȼ / 50 units floor, no flat), `indexChanges` / `sectorCards` / `marketLead` (the landing section), `exchangeCards`, `bookStats`, `squarify`, `changeColor` (±12 % on the polarity tokens), formatters with sign and arrow |
 | `marketReport.types.ts` | Frontend shapes |
-| `useMarketReport.ts` | Starts the summary; reads its cache entry even when stale; `failed`, `retry`. `prefetchMarketReport()` for links into the page |
+| `useMarketReport.ts` | Starts the summary; reads its cache entry even when stale; `failed`, `retry` |
+| `marketReportPrefetch.util.ts` | `prefetchMarketReport()` for links into the page (the landing header), loads the query layer only when called |
 | `useInView.ts` | `IntersectionObserver` with a 600 px margin, once |
 | `components/MarketBlock.vue` | A module's data area: skeleton at its final size (also while its async chunk loads), error with retry, or the content |
 | `components/MarketInShort.vue`, `MarketKpis.vue`, `MarketIndexChart.vue` | In the route chunk; the index uses `PLineChart` (1, 4 or 8 lines) |

@@ -2,11 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 
 import config from "@/lib/config";
-import {
-	dbBlocked,
-	dropDB,
-	getDB,
-} from "@/database/composables/useIndexedDBStore";
+import { dropDB, getDB } from "@/database/composables/useIndexedDBStore";
+import { dbBlocked } from "@/database/dbBlocked";
 import { useVersionCheck } from "@/lib/useVersionCheck";
 
 // own file: an outdated connection stays outdated for the module's life

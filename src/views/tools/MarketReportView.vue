@@ -64,7 +64,8 @@
 	} from "@/features/market_report/marketReport.types";
 
 	// UI
-	import { PButton, PButtonGroup } from "@/ui";
+	import PButton from "@/ui/components/PButton.vue";
+	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
 
 	const { summary, failed, retry } = useMarketReport();
 

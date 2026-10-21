@@ -23,7 +23,9 @@ const route = reactive({
 	fullPath: "/empire",
 });
 const push = vi.fn();
-vi.mock("vue-router", () => ({
+// the API service's interceptors import the app's router
+vi.mock("vue-router", async (original) => ({
+	...(await original<typeof import("vue-router")>()),
 	useRoute: () => route,
 	useRouter: () => ({ push }),
 }));

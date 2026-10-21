@@ -13,14 +13,13 @@ import { EXAMPLE_PLAN_PATH } from "@/features/homepage/homepage.constants";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import homepage from "@/locales/en_US/homepage.json";
 import { mountComponent } from "@/tests/mountComponent";
-import { prefetchMarketReport } from "@/features/market_report/useMarketReport";
+import { prefetchMarketReport } from "@/features/market_report/marketReportPrefetch.util";
 import { callMarketSummary } from "@/features/api/gameData.api";
 
 const head = vi.hoisted(() => ({ useHead: vi.fn() }));
 vi.mock("@unhead/vue", () => head);
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
-vi.mock("@/features/market_report/useMarketReport", async (original) => ({
-	...(await original<object>()),
+vi.mock("@/features/market_report/marketReportPrefetch.util", () => ({
 	prefetchMarketReport: vi.fn(),
 }));
 vi.mock("@/features/api/gameData.api", async (original) => ({

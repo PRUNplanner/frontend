@@ -13,7 +13,6 @@ import { isEqual } from "lodash-es";
 import { useUserStore } from "@/stores/userStore";
 
 // Util
-import { invalidate } from "@/lib/query_cache/queries/queries.util";
 import { stopPersisting } from "@/lib/persistStorage";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import {
@@ -81,6 +80,10 @@ async function onMessage(event: MessageEvent<IChangeMessage>): Promise<void> {
 	const { userId, keys, uuid } = event.data;
 	if (userId !== tokenUserId(useUserStore().refreshToken)) return;
 
+	// the query layer loads with the first logged-in page, not the shell
+	const { invalidate } = await import(
+		"@/lib/query_cache/queries/queries.util"
+	);
 	await invalidate(...keys);
 	remoteChange.value = {
 		keys,

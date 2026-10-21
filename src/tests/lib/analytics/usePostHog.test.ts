@@ -1,4 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import {
+	afterEach,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	vi,
+	type MockInstance,
+} from "vitest";
 
 import { memoryStorage } from "@/tests/memoryStorage";
 
@@ -129,6 +137,58 @@ describe("usePostHog", () => {
 		expect(posthog.capture).toHaveBeenCalledWith("account:signup_fail", {
 			fields: ["email"],
 			password: "***",
+		});
+	});
+
+	describe("a stored grant on a page still loading", () => {
+		const loadEvent = () => window.dispatchEvent(new Event("load"));
+		let readyState: MockInstance;
+		beforeEach(() => {
+			readyState = vi
+				.spyOn(document, "readyState", "get")
+				.mockReturnValue("loading");
+		});
+		afterEach(() => readyState.mockRestore());
+
+		it("loads posthog-js after the page, keeping what was sent meanwhile", async () => {
+			const { capture } = await load({ consent: "granted" });
+			capture("$pageview");
+			capture("app:db_blocked");
+			await settle();
+			expect(posthog.init).not.toHaveBeenCalled();
+
+			loadEvent();
+			await settle();
+
+			expect(posthog.init).toHaveBeenCalledTimes(1);
+			expect(posthog.capture.mock.calls.map(([event]) => event)).toEqual([
+				"$pageview",
+				"app:db_blocked",
+			]);
+		});
+
+		it("never loads it when denied meanwhile", async () => {
+			const { capture, deny } = await load({ consent: "granted" });
+			capture("$pageview");
+			deny();
+
+			loadEvent();
+			await settle();
+
+			expect(posthog.init).not.toHaveBeenCalled();
+			expect(posthog.capture).not.toHaveBeenCalled();
+		});
+
+		it("starts once when denied and granted again meanwhile", async () => {
+			const { deny, grant } = await load({ consent: "granted" });
+			deny();
+			grant();
+			await settle();
+
+			loadEvent();
+			await settle();
+
+			expect(posthog.init).toHaveBeenCalledTimes(1);
 		});
 	});
 

@@ -86,6 +86,12 @@
 		});
 	}
 
+	// the image of a tour below the hero loads once the tour comes near:
+	// native lazy loading starts it with the page (within 1250 px or more),
+	// where it competes with the landing page's first paint
+	const near = ref(eager);
+	let nearObserver: IntersectionObserver | undefined;
+
 	let observer: IntersectionObserver | undefined;
 	const onVisibility = () => (tabVisible.value = !document.hidden);
 
@@ -96,8 +102,21 @@
 		document.addEventListener("visibilitychange", onVisibility);
 		onVisibility();
 
-		if (typeof IntersectionObserver === "undefined") onScreen.value = true;
-		else {
+		if (typeof IntersectionObserver === "undefined") {
+			near.value = true;
+			onScreen.value = true;
+		} else {
+			if (!near.value) {
+				nearObserver = new IntersectionObserver(
+					([entry]) => {
+						if (!entry.isIntersecting) return;
+						near.value = true;
+						nearObserver?.disconnect();
+					},
+					{ rootMargin: "400px 0px" }
+				);
+				nearObserver.observe(root.value!);
+			}
 			observer = new IntersectionObserver(([entry]) => {
 				onScreen.value = entry.isIntersecting;
 			});
@@ -108,15 +127,18 @@
 	onBeforeUnmount(() => {
 		clearTimeout(timer);
 		observer?.disconnect();
+		nearObserver?.disconnect();
 		document.removeEventListener("visibilitychange", onVisibility);
 	});
 
 	const src = `/images/homepage/${image}.webp`;
+	// the hero: lazy too, so the prerendered page fetches nothing where
+	// index.html hides it; on "/" index.html preloads it (same srcset, sizes)
 	const imageAttrs: Record<string, string> = eager
 		? {
-				loading: "eager",
+				loading: "lazy",
 				fetchpriority: "high",
-				srcset: `/images/homepage/${image}-1440.webp 1440w, ${src} 2880w`,
+				srcset: `/images/homepage/${image}-640.webp 640w, /images/homepage/${image}-1280.webp 1280w, ${src} 2880w`,
 				sizes: "(min-width: 1240px) 1180px, 100vw",
 			}
 		: { loading: "lazy" };
@@ -134,7 +156,7 @@
 		<slot name="header" />
 		<HomepageTourViewport
 			:step="active"
-			:src="src"
+			:src="near ? src : undefined"
 			:image-attrs="imageAttrs"
 			:alt="alt" />
 		<figcaption class="border-t border-white/10">
@@ -250,7 +272,7 @@
 			class="flex-[2_1_520px] min-w-0 p-4 sm:p-7 flex flex-col justify-center gap-3">
 			<HomepageTourViewport
 				:step="active"
-				:src="src"
+				:src="near ? src : undefined"
 				:image-attrs="imageAttrs"
 				:alt="alt"
 				class="border border-white/16 rounded-[10px]" />

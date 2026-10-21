@@ -240,40 +240,13 @@ export function usePlan() {
 		return await planningStore.getPlan(planUuid);
 	}
 
-	/**
-	 * Gets a plans name and planet natural id by given Plan UUID
-	 * from already loaded plan information
-	 * @author jplacht
-	 *
-	 * @param {string} planUuid Plan Uuid
-	 * @returns {{
-	 * 			planetId: string;
-	 * 			planName: string;
-	 * 		}} Planet Natural ID and Plan Name
-	 */
-	function getPlanNamePlanet(planUuid: string): {
-		planetId: string;
-		planName: string;
-	} {
-		const findPlan = planningStore.plans[planUuid];
-
-		if (findPlan)
-			return {
-				planetId: findPlan.planet_natural_id,
-				planName: findPlan.plan_name ?? "Unnamed",
-			};
-
-		throw new Error(
-			`No data: Plan '${planUuid}'. Ensure Plan uuid is valid and planning data has been loaded.`
-		);
-	}
-
 	return {
 		mapPlanetToPlanType,
 		createBlankDefinition,
 		createNewPlan,
 		saveExistingPlan,
 		reloadExistingPlan,
-		getPlanNamePlanet,
+		// in the store, so usePreferences doesn't load this module
+		getPlanNamePlanet: planningStore.getPlanNamePlanet,
 	};
 }

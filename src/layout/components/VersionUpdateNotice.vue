@@ -8,7 +8,8 @@
 	const { outdated, later } = useVersionCheck();
 
 	// UI
-	import { PButton, PIcon } from "@/ui";
+	import PButton from "@/ui/components/PButton.vue";
+	import PIcon from "@/ui/components/PIcon.vue";
 	import { panelConfig } from "@/ui/styles";
 	import { RefreshSharp, WarningAmberSharp } from "@vicons/material";
 

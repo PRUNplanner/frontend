@@ -112,7 +112,17 @@ function retryLoggedOut(
 	return axios(config);
 }
 
+let registered = false;
+
+/**
+ * Registers the session interceptors on the global axios instance, once.
+ * The API service calls it when it's created, so they are in place before
+ * the first request; a visitor's app shell loads neither.
+ */
 export default function axiosSetup() {
+	if (registered) return;
+	registered = true;
+
 	// Interceptors
 
 	// Request Authorization Header

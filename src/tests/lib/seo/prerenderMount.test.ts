@@ -2,9 +2,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { App } from "vue";
 import type { Router } from "vue-router";
 
+import * as prerenderMount from "@/lib/seo/prerenderMount";
 import { mountApp, prepareMount } from "@/lib/seo/prerenderMount";
 
-vi.mock("@/layout/components/HomepageHeader.vue", () => ({ default: {} }));
+const header = vi.hoisted(() => ({ name: "HomepageHeader" }));
+vi.mock("@/layout/components/HomepageHeader.vue", () => ({ default: header }));
 
 function setup(prerendered: boolean, route = "homepage") {
 	document.head.innerHTML =
@@ -47,6 +49,15 @@ describe("prepareMount", () => {
 		await prepareMount(router, "en_US");
 
 		expect(isReady).toHaveBeenCalled();
+	});
+
+	it("hands App the header for a fresh mount only, so it renders in the first frame", async () => {
+		// hydration keeps the async component (teleport order)
+		await prepareMount(setup(true).router, "en_US");
+		expect(prerenderMount.homepageHeader).toBeUndefined();
+
+		await prepareMount(setup(true, "market").router, "en_US");
+		expect(prerenderMount.homepageHeader).toBe(header);
 	});
 
 	it("mounts on #app and shows a hidden #app again", () => {

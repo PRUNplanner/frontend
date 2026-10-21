@@ -8,9 +8,14 @@
 
 	// Components
 	import AppFooter from "@/layout/components/AppFooter.vue";
-	const HomepageHeader = defineAsyncComponent(
-		() => import("@/layout/components/HomepageHeader.vue")
-	);
+	import { homepageHeader } from "@/lib/seo/prerenderMount";
+	// loaded before a fresh mount over the prerendered page, else async
+	// (hydrating the landing page: see docs/seo.md)
+	const HomepageHeader =
+		homepageHeader ??
+		defineAsyncComponent(
+			() => import("@/layout/components/HomepageHeader.vue")
+		);
 	const AppSidebar = defineAsyncComponent(
 		() => import("@/layout/components/navigation/AppSidebar.vue")
 	);
@@ -37,12 +42,11 @@
 	const userStore = useUserStore();
 	import { userActivity } from "@/features/user_activity/userActivityStore";
 	import { identifyUser, trackEvent } from "@/lib/analytics/useAnalytics";
-	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
 	import { getPostHogKey } from "@/lib/analytics/usePostHog";
-	import { dbBlocked } from "@/database/composables/useIndexedDBStore";
+	import { dbBlocked } from "@/database/dbBlocked";
 	import { sessionReplaced } from "@/lib/crossTab";
-	import { useToast } from "@/ui";
+	import { useToast } from "@/ui/useToast";
 	import type { PToastHandle } from "@/ui/ui.types";
 	const toast = useToast();
 
@@ -98,8 +102,11 @@
 			// start user activity monitor if logged in
 			const _activity = userActivity;
 			// changed in another browser or device since this one stored them
-			// (preferences, and the profile: email confirmed, FIO linked)
-			useQuery("GetPreferences").execute().catch(console.error);
+			// (preferences, and the profile: email confirmed, FIO linked).
+			// The query layer isn't in a visitor's shell
+			import("@/lib/query_cache/useQuery")
+				.then(({ useQuery }) => useQuery("GetPreferences").execute())
+				.catch(console.error);
 			userStore.loadProfile();
 		}
 	});

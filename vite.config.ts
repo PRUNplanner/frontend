@@ -70,6 +70,56 @@ export function buildVersion(): Plugin {
 	};
 }
 
+// the API's connection opens with the HTML, so the first request (the
+// market report's summary) doesn't wait for DNS, TCP and TLS after the JS
+export function apiPreconnect(): Plugin {
+	let origin = "";
+	return {
+		name: "api-preconnect",
+		configResolved(config) {
+			// same fallback as lib/config.ts
+			origin = new URL(
+				config.env.VITE_API_BASE_URL || "https://api.prunplanner.org"
+			).origin;
+		},
+		transformIndexHtml: () => [
+			{
+				tag: "link",
+				// CORS requests without credentials use the anonymous pool
+				attrs: { rel: "preconnect", href: origin, crossorigin: "" },
+				injectTo: "head",
+			},
+		],
+	};
+}
+
+// the body text's font starts with the HTML, not after the CSS
+export function preloadBodyFont(): Plugin {
+	return {
+		name: "preload-body-font",
+		transformIndexHtml: (_html, ctx) => {
+			const font = Object.keys(ctx.bundle ?? {}).find((f) =>
+				/roboto-latin-400-normal\.[^/]+\.woff2$/.test(f)
+			);
+			return font
+				? [
+						{
+							tag: "link",
+							attrs: {
+								rel: "preload",
+								as: "font",
+								type: "font/woff2",
+								href: `/${font}`,
+								crossorigin: "",
+							},
+							injectTo: "head",
+						},
+					]
+				: [];
+		},
+	};
+}
+
 // https://vite.dev/config/
 export default defineConfig({
 	base: "/",
@@ -94,6 +144,8 @@ export default defineConfig({
 		AutoImport({ imports: ["vue", "vue-router", "pinia"] }),
 		skipEmptyChunks(),
 		buildVersion(),
+		apiPreconnect(),
+		preloadBodyFont(),
 		compression({
 			algorithms: ["gzip", "brotliCompress"],
 		}),

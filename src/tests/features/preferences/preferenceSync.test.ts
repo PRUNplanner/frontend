@@ -10,8 +10,10 @@ import {
 } from "@/features/preferences/preferenceSync";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
-// Types & Interfaces
-import type { UserPreference } from "@/features/api/schemas/user.schemas";
+import {
+	UserPreferenceSchema,
+	type UserPreference,
+} from "@/features/api/schemas/user.schemas";
 
 const OVERRIDE = { autoOptimizeHabs: true, includeCM: false };
 
@@ -29,6 +31,17 @@ describe("preferenceSync", () => {
 		// @ts-expect-error not a stored preference
 		other.planDefaults = { includeCM: true };
 		expect(diffPreferences(prefs(), other)).toStrictEqual({});
+	});
+
+	it("diffs exactly the keys the backend stores, as its schema lists them", () => {
+		// every key changed, frontend-only ones (planDefaults) too
+		const to: Record<string, unknown> = prefs();
+		for (const key of Object.keys(preferenceDefaults))
+			to[key] = { changed: key };
+
+		expect(
+			Object.keys(diffPreferences(prefs(), to as UserPreference)).sort()
+		).toEqual(Object.keys(UserPreferenceSchema.shape).sort());
 	});
 
 	it("changed top-level keys, unset ones as null", () => {

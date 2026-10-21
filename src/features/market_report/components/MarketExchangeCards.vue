@@ -15,7 +15,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// UI
-	import { PButton } from "@/ui";
+	import PButton from "@/ui/components/PButton.vue";
 
 	// Types & Interfaces
 	import type { Exchange } from "@/features/api/schemas/gameData.schemas";

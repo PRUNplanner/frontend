@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	// UI
-	import { PButton } from "@/ui";
+	import PButton from "@/ui/components/PButton.vue";
 
 	// one module's data area: a skeleton at its final size while loading
 	// (also while its async component loads), the error with retry, or the

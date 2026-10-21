@@ -11,7 +11,7 @@
 
 	// Composables
 	import { useAuthPanel } from "@/features/account/useAuthPanel";
-	import { prefetchMarketReport } from "@/features/market_report/useMarketReport";
+	import { prefetchMarketReport } from "@/features/market_report/marketReportPrefetch.util";
 	import { useInView } from "@/features/market_report/useInView";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -32,7 +32,8 @@
 	import AnalyticsFooterLink from "@/features/analytics/components/AnalyticsFooterLink.vue";
 
 	// UI
-	import { PIcon, PSelect } from "@/ui";
+	import PIcon from "@/ui/components/PIcon.vue";
+	import PSelect from "@/ui/components/PSelect.vue";
 	import {
 		AccountTreeSharp,
 		ArrowForwardSharp,

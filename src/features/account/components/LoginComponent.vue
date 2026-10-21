@@ -10,7 +10,10 @@
 	import router from "@/router";
 
 	// UI
-	import { PFormItem, PInput, PNotice, PSpin } from "@/ui";
+	import PFormItem from "@/ui/components/PFormItem.vue";
+	import PInput from "@/ui/components/PInput.vue";
+	import PNotice from "@/ui/components/PNotice.vue";
+	import PSpin from "@/ui/components/PSpin.vue";
 	import {
 		landingField,
 		landingHeading,

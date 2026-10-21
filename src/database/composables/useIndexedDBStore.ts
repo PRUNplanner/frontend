@@ -1,8 +1,8 @@
 import { type IDBPDatabase, openDB } from "idb";
-import { ref, type Ref } from "vue";
 
 import config from "@/lib/config";
 import { DB_SCHEMA } from "@/database/schema";
+import { dbBlocked } from "@/database/dbBlocked";
 import { useVersionCheck } from "@/lib/useVersionCheck";
 
 type KeyOfStore<T, K extends keyof T> = T[K] extends IDBValidKey ? T[K] : never;
@@ -16,8 +16,6 @@ let dbPromise: Promise<IDBPDatabase> | null = null;
 // works from the data it has in memory and never reopens the old version
 let outdated: boolean = false;
 
-/** Opening waits on other tabs that still have an older version open */
-export const dbBlocked: Ref<boolean> = ref(false);
 
 export async function requestPersistence() {
 	if (navigator && navigator.storage && navigator.storage.persist) {

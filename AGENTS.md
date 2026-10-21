@@ -65,7 +65,11 @@ time.
 2. **Reuse the UI kit.** Use `import { PButton, PSelect, … } from "@/ui"`
    (`src/ui/`), and `PDataTable` for data tables. All overlays come from the
    kit: `PModal`, `PDrawer`, `useConfirm`, `PPopover`, `PDropdown` and
-   `useToast`. Don't add a component library.
+   `useToast`. Don't add a component library. The app shell and the public
+   pages (`App.vue`, `AppProvider.vue`, the landing page, `/market`, the
+   header and its forms) import kit files by path instead
+   (`@/ui/components/PButton.vue`): the barrel would load the whole kit
+   (popper, numbro) with a visitor's first page.
    See [docs/ui-and-i18n.md](docs/ui-and-i18n.md), and its
    [Layout & hierarchy](docs/ui-and-i18n.md#layout--hierarchy) rules for
    every new or changed view.

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
-import { RouterLinkStub } from "@vue/test-utils";
+import { flushPromises, RouterLinkStub } from "@vue/test-utils";
 
 import HomepageHeader from "@/layout/components/HomepageHeader.vue";
 import LoginComponent from "@/features/account/components/LoginComponent.vue";
@@ -8,7 +8,7 @@ import RegistrationComponent from "@/features/account/components/RegistrationCom
 import { PDrawer } from "@/ui";
 import { useAuthPanel } from "@/features/account/useAuthPanel";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
-import { prefetchMarketReport } from "@/features/market_report/useMarketReport";
+import { prefetchMarketReport } from "@/features/market_report/marketReportPrefetch.util";
 import { mountComponent } from "@/tests/mountComponent";
 
 const route = vi.hoisted(() => ({ name: "homepage" as string }));
@@ -17,13 +17,16 @@ vi.mock("vue-router", async (original) => ({
 	useRoute: () => route,
 }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
-vi.mock("@/features/market_report/useMarketReport", () => ({
+vi.mock("@/features/market_report/marketReportPrefetch.util", () => ({
 	prefetchMarketReport: vi.fn(),
 }));
 
 // the forms have their own tests: only their presence matters here
 vi.mock("@/features/account/components/LoginComponent.vue", () => ({
-	default: { name: "LoginComponent", template: "<p>login form</p>" },
+	default: {
+		name: "LoginComponent",
+		template: "<p>login form <input aria-label='username' /></p>",
+	},
 }));
 vi.mock("@/features/account/components/RegistrationComponent.vue", () => ({
 	default: {
@@ -42,10 +45,17 @@ describe("HomepageHeader", () => {
 		vi.mocked(trackEvent).mockClear();
 	});
 
-	const forms = (wrapper: Awaited<ReturnType<typeof mountComponent>>["wrapper"]) => [
-		wrapper.findComponent(LoginComponent).exists(),
-		wrapper.findComponent(RegistrationComponent).exists(),
-	];
+	// the forms load with the panel
+	const forms = async (
+		wrapper: Awaited<ReturnType<typeof mountComponent>>["wrapper"]
+	) => {
+		await vi.dynamicImportSettled();
+		await flushPromises();
+		return [
+			wrapper.findComponent(LoginComponent).exists(),
+			wrapper.findComponent(RegistrationComponent).exists(),
+		];
+	};
 
 	it("opens the panel on the form of the header button, the same button closes it", async () => {
 		const { wrapper } = await mountComponent(HomepageHeader);
@@ -53,11 +63,12 @@ describe("HomepageHeader", () => {
 		expect(drawer.props("show")).toBe(false);
 
 		await wrapper.find("[data-login]").trigger("click");
+		// opens once its forms have loaded
+		expect(await forms(wrapper)).toEqual([true, false]);
 		expect(drawer.props("show")).toBe(true);
-		expect(forms(wrapper)).toEqual([true, false]);
 
 		await wrapper.find("[data-registration]").trigger("click");
-		expect(forms(wrapper)).toEqual([false, true]);
+		expect(await forms(wrapper)).toEqual([false, true]);
 
 		await wrapper.find("[data-registration]").trigger("click");
 		expect(drawer.props("show")).toBe(false);
@@ -65,6 +76,19 @@ describe("HomepageHeader", () => {
 			panel: "login",
 			source: "header",
 		});
+	});
+
+	it("opens the panel with its form loaded, on the form's first field", async () => {
+		const { wrapper } = await mountComponent(HomepageHeader);
+
+		await wrapper.find("[data-login]").trigger("click");
+		await vi.dynamicImportSettled();
+		await flushPromises();
+
+		expect(wrapper.findComponent(PDrawer).props("show")).toBe(true);
+		expect(document.activeElement?.getAttribute("aria-label")).toBe(
+			"username"
+		);
 	});
 
 	it("switches the form inside the open panel", async () => {
@@ -78,15 +102,15 @@ describe("HomepageHeader", () => {
 
 		registration.click();
 		await nextTick();
-		expect(forms(wrapper)).toEqual([false, true]);
+		expect(await forms(wrapper)).toEqual([false, true]);
 		expect(trackEvent).toHaveBeenLastCalledWith("landing:auth_switch", {
 			panel: "registration",
 		});
 
 		// the welcome state's button after a registration: not a switch
 		vi.mocked(trackEvent).mockClear();
-		await wrapper.findComponent(RegistrationComponent).vm.$emit("login");
-		expect(forms(wrapper)).toEqual([true, false]);
+		wrapper.findComponent(RegistrationComponent).vm.$emit("login");
+		expect(await forms(wrapper)).toEqual([true, false]);
 		expect(trackEvent).not.toHaveBeenCalled();
 	});
 

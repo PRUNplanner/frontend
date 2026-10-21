@@ -2,7 +2,8 @@
 	// Components
 
 	import App from "@/App.vue";
-	import { PConfirmHost, PToastHost } from "@/ui";
+	import PConfirmHost from "@/ui/components/PConfirmHost.vue";
+	import PToastHost from "@/ui/components/PToastHost.vue";
 	// not lazy: after a deploy the old build's chunks are gone, the notice
 	// has to be in the bundle already
 	import VersionUpdateNotice from "@/layout/components/VersionUpdateNotice.vue";
