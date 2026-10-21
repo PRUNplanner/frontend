@@ -6,8 +6,8 @@
 		"management": "Verwaltung",
 		"exchanges": "Marktplätze",
 		"tools": "Werkzeuge",
-		"market_report": "Market report",
-		"market_exploration": "Marktübersicht",
+		"market_report": "Marktbericht",
+		"market_exploration": "Marktforschung",
 		"market_live": "Live Markt",
 		"recipe_roi": "Rezept ROI",
 		"resource_roi": "Ressourcen ROI",
@@ -129,8 +129,8 @@
 		"whats_new_action": "Neues entdecken"
 	},
 	"not_found": {
-		"title": "Page not found",
-		"text": "There is no page at this address.",
-		"home": "Go to the start page"
+		"title": "Seite nicht gefunden",
+		"text": "Unter dieser Adresse gibt es keine Seite.",
+		"home": "Zur Startseite"
 	}
 }
