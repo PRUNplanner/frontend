@@ -1,35 +1,35 @@
 {
-	"view_title": "Production Chains",
-	"title": "Production Chains",
+	"view_title": "Cadenas de producción",
+	"title": "Cadenas de producción",
 	"configuration": {
-		"title": "Configuration",
+		"title": "Configuración",
 		"material": "@:terms.materials",
-		"recipe_runs": "Recipe Runs",
-		"node_color": "Node Color",
-		"terminals": "Terminals",
-		"terminals_placeholder": "Comma-separated material tickers",
-		"terminals_info": "Terminals are materials whose inputs are excluded from the graph, useful if you buy them on the CX or locally and don't need to produce them.",
-		"recipe_selection": "Recipe Selection"
+		"recipe_runs": "Ejecuciones de receta",
+		"node_color": "Color de nodo",
+		"terminals": "Terminales",
+		"terminals_placeholder": "Tickers de materiales separados por comas",
+		"terminals_info": "Los terminales son materiales cuyas entradas se excluyen del grafo; es útil si los compras en la CX o en local y no necesitas producirlos.",
+		"recipe_selection": "Selección de receta"
 	},
 	"analysis_materials": {
-		"title": "Materials",
+		"title": "Materiales",
 		"table": {
 			"material": "@:terms.materials",
 			"amount": "@:terms.amount"
 		}
 	},
 	"analysis_expertise": {
-		"title": "Building Expertises",
+		"title": "Especialidades de edificios",
 		"table": {
-			"expertise": "Expertise",
+			"expertise": "Especialidad",
 			"materials": "@:terms.materials_plural"
 		}
 	},
 	"analysis_workforce": {
-		"title": "Workforce",
+		"title": "Mano de obra",
 		"table": {
-			"workforce": "Workforce",
-			"required": "Required"
+			"workforce": "Mano de obra",
+			"required": "Necesario"
 		}
 	}
 }
