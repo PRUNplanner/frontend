@@ -8,8 +8,8 @@
 			"new_empire": "Neues Imperium"
 		},
 		"deletion": {
-			"title": "Confirm Empire Deletion",
-			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+			"title": "Löschen des Imperiums bestätigen",
+			"content": "Bist du sicher? Beim Löschen des Imperiums werden die ihm zugewiesenen Pläne nicht gelöscht."
 		},
 		"form": {
 			"empire_name": "@:terms.empire Name",
@@ -34,8 +34,8 @@
 			"new_cx": "Neue @:terms.cx"
 		},
 		"deletion": {
-			"title": "Confirm CX Deletion",
-			"content": "Are you sure? Deleting the CX will delete all preferences."
+			"title": "Löschen der Handelskammer bestätigen",
+			"content": "Bist du sicher? Beim Löschen der Handelskammer werden alle Präferenzen gelöscht."
 		},
 		"form": {
 			"cx_name": "@:terms.cx Name",
@@ -58,7 +58,7 @@
 		"table": {
 			"plan": "@:terms.plan",
 			"nodata_title": "Keine @:terms.plans_plural verfügbar",
-			"nodata_label": "Verwende die Planetensuche, um deine ersten @:{terms.plans} zu erstellen.",
+			"nodata_label": "Verwende die Planetensuche, um deinen ersten @:{'terms.plan'} zu erstellen.",
 			"assign_label": "{plan} in {empire}"
 		},
 		"search": "Plan oder Planet suchen",
@@ -77,17 +77,17 @@
 		"remove_all_shown": "Entferne alle angezeigten Pläne von {empire}",
 		"no_match": "Keine Pläne stimmen mit der Suche und den Filtern überein.",
 		"selection": {
-			"select_all_shown": "Select all shown plans",
-			"clear_all_shown": "Deselect all shown plans",
-			"select_label": "Select {plan}",
-			"count": "{count} plan selected | {count} plans selected",
-			"delete": "Delete selected…",
-			"clear": "Clear selection",
-			"deleting": "Deleting {done} of {total}…",
-			"confirm_title": "Delete {count} plan? | Delete {count} plans?",
-			"confirm_content": "{names} will be deleted. This can't be reversed.",
-			"more": "{names} and {count} more",
-			"failed": "{count} plan couldn't be deleted and stays selected. | {count} plans couldn't be deleted and stay selected."
+			"select_all_shown": "Alle angezeigten Pläne auswählen",
+			"clear_all_shown": "Auswahl aller angezeigten Pläne aufheben",
+			"select_label": "{plan} auswählen",
+			"count": "{count} Plan ausgewählt | {count} Pläne ausgewählt",
+			"delete": "Auswahl löschen…",
+			"clear": "Auswahl aufheben",
+			"deleting": "Lösche {done} von {total}…",
+			"confirm_title": "{count} Plan löschen? | {count} Pläne löschen?",
+			"confirm_content": "Folgendes wird gelöscht: {names}. Das kann nicht rückgängig gemacht werden.",
+			"more": "{names} und {count} weitere",
+			"failed": "{count} Plan konnte nicht gelöscht werden und bleibt ausgewählt. | {count} Pläne konnten nicht gelöscht werden und bleiben ausgewählt."
 		},
 		"menu": {
 			"clone": "Duplizieren",
@@ -103,7 +103,7 @@
 		"save": "Änderungen speichern",
 		"retry": "Wiederholen",
 		"discard": "Verwerfen",
-		"all_saved": "Alle Änderungen gepeichert",
-		"leave_unsaved": "Sie haben nicht gespeicherte Verwaltungsänderungen. Ohne Speichern verlassen?"
+		"all_saved": "Alle Änderungen gespeichert",
+		"leave_unsaved": "Du hast nicht gespeicherte Änderungen in der Verwaltung. Ohne Speichern verlassen?"
 	}
 }
