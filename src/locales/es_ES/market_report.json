@@ -1,95 +1,95 @@
 {
-	"view_title": "Market report",
-	"title": "Prosperous Universe market report",
-	"description": "How prices and turnover moved on the four commodity exchanges of Prosperous Universe, from FIO data, updated daily.",
+	"view_title": "Informe de mercado",
+	"title": "Informe de mercado de Prosperous Universe",
+	"description": "Cómo se han movido los precios y el volumen de negocio en las cuatro bolsas de comercio de Prosperous Universe, con datos de FIO actualizados a diario.",
 	"as_of": {
-		"prices": "Daily prices to {date}",
-		"books": "Order books: current",
-		"source": "Source: FIO via PRUNplanner"
+		"prices": "Precios diarios hasta {date}",
+		"books": "Libros de órdenes: actuales",
+		"source": "Fuente: FIO a través de PRUNplanner"
 	},
-	"error": "The market data couldn't be loaded.",
+	"error": "No se han podido cargar los datos del mercado.",
 	"in_short": {
-		"title": "In short",
-		"index": "The CX index stands at {level}: {change} since {date}.",
-		"sector": "{sector} moved most, {change} since {date}.",
-		"pioneer": "Feeding 100 pioneers costs {cost} a day, {change} in the last two weeks."
+		"title": "En resumen",
+		"index": "El índice CX está en {level}: {change} desde {date}.",
+		"sector": "{sector} fue el que más se movió, {change} desde {date}.",
+		"pioneer": "Alimentar a 100 pioneros cuesta {cost} al día, {change} en las últimas dos semanas."
 	},
 	"kpi": {
-		"turnover_7d": "Traded, last 7 days",
-		"turnover_7d_hint": "against the 7 days before",
-		"traded_7d": "Materials traded, 7 days",
-		"traded_7d_hint": "of {total} traded in 30 days",
-		"index": "CX index",
-		"index_hint": "since {date}",
-		"flat": "Turnover in flat materials",
-		"flat_hint": "{count} materials held at one price, 30 days"
+		"turnover_7d": "Negociado, últimos 7 días",
+		"turnover_7d_hint": "frente a los 7 días anteriores",
+		"traded_7d": "Materiales negociados, 7 días",
+		"traded_7d_hint": "de {total} negociados en 30 días",
+		"index": "Índice CX",
+		"index_hint": "desde {date}",
+		"flat": "Volumen de negocio en materiales planos",
+		"flat_hint": "{count} materiales mantenidos a un solo precio, 30 días"
 	},
 	"index": {
-		"title": "Price index",
-		"caption": "How the price of what players trade has moved, as VWAP 7D per day. Each material counts by its share of turnover, capped at 5 %, so one busy material can't carry the index.",
+		"title": "Índice de precios",
+		"caption": "Cómo se ha movido el precio de lo que comercian los jugadores, como VWAP 7D por día. Cada material cuenta según su cuota del volumen de negocio, con un tope del 5 %, para que un solo material muy activo no arrastre el índice.",
 		"view": {
-			"label": "Index view",
-			"combined": "Combined",
-			"exchange": "Per exchange",
-			"sector": "Per sector"
+			"label": "Vista del índice",
+			"combined": "Combinado",
+			"exchange": "Por bolsa",
+			"sector": "Por sector"
 		},
-		"all": "All exchanges",
-		"base_combined": "{date} = 100 · {members} materials, {coverage} of 30-day turnover",
-		"base_exchange": "{date} = 100 · each exchange in its own currency · materials: {members}",
-		"base_sector": "{date} = 100 · capped at 20 % per material · materials: {members}",
-		"chart_label": "Price index, {view}"
+		"all": "Todas las bolsas",
+		"base_combined": "{date} = 100 · {members} materiales, {coverage} del volumen de negocio de 30 días",
+		"base_exchange": "{date} = 100 · cada bolsa en su propia moneda · materiales: {members}",
+		"base_sector": "{date} = 100 · tope del 20 % por material · materiales: {members}",
+		"chart_label": "Índice de precios, {view}"
 	},
 	"workforce": {
-		"title": "What it costs to keep a workforce",
-		"caption": "Consumables for 100 workers for one day, all needs including both luxuries, priced at each day's VWAP 7D. Every base pays this, whatever it produces.",
-		"tier_label": "Workforce tier",
-		"cost": "per 100 workers a day, all exchanges",
-		"since": "since {date}",
-		"cheapest": "Cheapest today: {exchange} at {cost}",
-		"drivers": "Moved most",
+		"title": "Lo que cuesta mantener una mano de obra",
+		"caption": "Consumibles para 100 trabajadores durante un día, con todas las necesidades, incluidos los dos lujos, a precio VWAP 7D de cada día. Cada base paga esto, produzca lo que produzca.",
+		"tier_label": "Nivel de mano de obra",
+		"cost": "por 100 trabajadores al día, todas las bolsas",
+		"since": "desde {date}",
+		"cheapest": "Más barata hoy: {exchange} a {cost}",
+		"drivers": "Más movimiento",
 		"driver": "{ticker} {delta} ({change})",
-		"chart_label": "{tier} cost per exchange"
+		"chart_label": "Coste de {tier} por bolsa"
 	},
 	"treemap": {
-		"title": "Where the money moves",
-		"caption": "Each box is a material, sized by 30-day turnover on all four exchanges and coloured by VWAP 7D against VWAP 30D. Grouped by sector.",
-		"label": "Materials by 30-day turnover, coloured by price change",
-		"flat": "flat",
+		"title": "Dónde se mueve el dinero",
+		"caption": "Cada recuadro es un material, con tamaño según el volumen de negocio de 30 días en las cuatro bolsas y color según VWAP 7D frente a VWAP 30D. Agrupados por sector.",
+		"label": "Materiales por volumen de negocio de 30 días, coloreados por variación de precio",
+		"flat": "plano",
 		"sector": "Sector",
-		"turnover_30d": "Turnover, 30 days",
+		"turnover_30d": "Volumen de negocio, 30 días",
 		"vwap_7d": "VWAP 7D",
 		"vwap_30d": "VWAP 30D",
-		"change": "7D against 30D",
-		"few_trades": "too few trades",
-		"flat_note": "Held at one price, likely a market maker"
+		"change": "7D frente a 30D",
+		"few_trades": "muy pocas operaciones",
+		"flat_note": "Mantenido a un solo precio, probablemente por un creador de mercado"
 	},
 	"movers": {
-		"title": "Movers this week",
-		"direction_label": "Direction",
-		"rising": "Rising",
-		"falling": "Falling",
-		"caption": "VWAP 7D against VWAP 30D, all exchanges. At least 5 M ȼ and 50 units traded in 7 days; flat materials left out.",
-		"row": "{price} · {turnover} in 7 days",
-		"spark_label": "{ticker}, VWAP 7D over 15 days",
-		"empty": "No material moved this way with enough volume."
+		"title": "Mayores variaciones de la semana",
+		"direction_label": "Dirección",
+		"rising": "Al alza",
+		"falling": "A la baja",
+		"caption": "VWAP 7D frente a VWAP 30D, todas las bolsas. Al menos 5 M ȼ y 50 unidades negociadas en 7 días; sin materiales planos.",
+		"row": "{price} · {turnover} en 7 días",
+		"spark_label": "{ticker}, VWAP 7D durante 15 días",
+		"empty": "Ningún material se movió en este sentido con volumen suficiente."
 	},
 	"leaders": {
-		"title": "What the economy runs on",
-		"caption": "The 10 materials with the most turnover in 30 days. Bar: the last 7 days by exchange.",
-		"share": "{share} of turnover",
-		"split_label": "{ticker}, 7-day turnover by exchange"
+		"title": "De qué vive la economía",
+		"caption": "Los 10 materiales con más volumen de negocio en 30 días. Barra: los últimos 7 días por bolsa.",
+		"share": "{share} del volumen de negocio",
+		"split_label": "{ticker}, volumen de negocio de 7 días por bolsa"
 	},
 	"exchanges": {
-		"title": "The four exchanges",
-		"caption": "Each exchange has its own order book and currency. Bars: daily turnover over 90 days.",
-		"turnover_30d": "Turnover, 30 days",
-		"turnover_7d": "Turnover, 7 days",
-		"share": "{share} of all four",
-		"traded_7d": "Materials traded, 7 days",
-		"spread": "Median bid–ask spread",
-		"no_bid": "Books without a buyer",
-		"no_ask": "Books without a seller",
-		"bars_label": "{exchange}, daily turnover over 90 days",
+		"title": "Las cuatro bolsas",
+		"caption": "Cada bolsa tiene su propio libro de órdenes y su moneda. Barras: volumen de negocio diario durante 90 días.",
+		"turnover_30d": "Volumen de negocio, 30 días",
+		"turnover_7d": "Volumen de negocio, 7 días",
+		"share": "{share} del total de las cuatro",
+		"traded_7d": "Materiales negociados, 7 días",
+		"spread": "Diferencial mediano entre Bid y Ask",
+		"no_bid": "Libros sin comprador",
+		"no_ask": "Libros sin vendedor",
+		"bars_label": "{exchange}, volumen de negocio diario durante 90 días",
 		"name": {
 			"AI1": "Antares Station · AIC",
 			"CI1": "Benten Station · CIS",
@@ -98,24 +98,24 @@
 		}
 	},
 	"method": {
-		"title": "How these numbers are made",
-		"source": "Source. FIO, the community service fed by players' game clients, through PRUNplanner's public game data. Daily prices cover full UTC days; order books are current.",
-		"turnover": "Turnover is traded quantity × price, summed over AI1, CI1, IC1 and NC1. Each exchange has its own currency (AIC, CIS, ICA, NCC). The same material trades at close to the same price everywhere, so sums treat the currencies at par.",
-		"prices": "Prices are VWAP 7D and VWAP 30D only: turnover ÷ units over the window, so thin days barely count. A chart point is the VWAP 7D on that day.",
-		"index": "Index. Every material with a VWAP 7D on each day of the 90. Weight = 30-day turnover share, capped at 5 % (20 % within a sector), the rest spread over the others.",
-		"movers": "Movers compare VWAP 7D with VWAP 30D, like the Trend in Market Exploration. The 30 days include the last 7, so changes look smaller than week on week.",
-		"heavy_day": "One heavy day shows for a week. A single large trade at an unusual price pulls the VWAP 7D for as long as it sits in the 7-day window, then the price snaps back.",
-		"not_included": "Not in here: local markets, contracts and trades inside corporations. They never touch the exchanges, so this is the CX, not the whole economy.",
-		"flat": "Flat marks materials whose daily VWAP stays within ±0.3 % of its 30-day median on at least 80 % of trading days, usually because market makers buy or sell them at fixed prices. They count in turnover but are left out of the movers."
+		"title": "Cómo se calculan estas cifras",
+		"source": "Fuente. FIO, el servicio de la comunidad alimentado por los clientes de juego de los jugadores, a través de los datos públicos del juego de PRUNplanner. Los precios diarios cubren días UTC completos; los libros de órdenes son actuales.",
+		"turnover": "El volumen de negocio es cantidad negociada × precio, sumado en AI1, CI1, IC1 y NC1. Cada bolsa tiene su propia moneda (AIC, CIS, ICA, NCC). El mismo material cotiza a un precio muy parecido en todas partes, así que las sumas tratan las monedas a la par.",
+		"prices": "Los precios son solo VWAP 7D y VWAP 30D: volumen de negocio ÷ unidades en la ventana, así que los días con pocas operaciones apenas cuentan. Un punto del gráfico es el VWAP 7D de ese día.",
+		"index": "Índice. Todos los materiales con un VWAP 7D en cada uno de los 90 días. Peso = cuota del volumen de negocio de 30 días, con tope del 5 % (20 % dentro de un sector); el resto se reparte entre los demás.",
+		"movers": "Las mayores variaciones comparan VWAP 7D con VWAP 30D, como la Tendencia en Market Exploration. Los 30 días incluyen los últimos 7, por lo que los cambios parecen menores que de una semana a otra.",
+		"heavy_day": "Un día fuerte se nota durante una semana. Una sola operación grande a un precio inusual arrastra el VWAP 7D mientras permanezca en la ventana de 7 días, y luego el precio vuelve a su nivel.",
+		"not_included": "No incluido: mercados locales, contratos ni operaciones dentro de corporaciones. Nunca pasan por las bolsas, así que esto es la CX, no toda la economía.",
+		"flat": "Plano marca los materiales cuyo VWAP diario se mantiene dentro de ±0,3 % de su mediana de 30 días en al menos el 80 % de los días de negociación, normalmente porque creadores de mercado los compran o venden a precios fijos. Cuentan en el volumen de negocio pero se excluyen de las mayores variaciones."
 	},
 	"sector": {
-		"consumables": "Consumables",
-		"construction": "Construction",
-		"raw_resources": "Raw resources",
-		"metals_alloys": "Metals & alloys",
-		"agri_chemicals": "Agri & chemicals",
-		"electronics_software": "Electronics & software",
-		"ships_fuel": "Ships & fuel",
-		"drones_other": "Drones & other"
+		"consumables": "Consumibles",
+		"construction": "Construcción",
+		"raw_resources": "Recursos en bruto",
+		"metals_alloys": "Metales y aleaciones",
+		"agri_chemicals": "Agro y química",
+		"electronics_software": "Electrónica y software",
+		"ships_fuel": "Naves y combustible",
+		"drones_other": "Drones y otros"
 	}
 }
