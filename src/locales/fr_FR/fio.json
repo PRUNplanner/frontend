@@ -1,40 +1,40 @@
 {
 	"burn": {
 		"view_title": "FIO Burn",
-		"title": "FIO Burn:",
-		"fio_last_update": "FIO Data Update: {last_updated}",
+		"title": "FIO Burn :",
+		"fio_last_update": "Mise à jour des données FIO : {last_updated}",
 		"form": {
 			"empire": "@:terms.empire",
-			"burn_thresholds": "Burn Thresholds",
-			"red": "Red",
-			"yellow": "Yellow"
+			"burn_thresholds": "Seuils de consommation",
+			"red": "Rouge",
+			"yellow": "Jaune"
 		},
 		"components": {
 			"overview": {
-				"title": "Plan Burn Overview",
-				"axis": "0 – {max} d",
+				"title": "Aperçu de la consommation des plans",
+				"axis": "0 – {max} j",
 				"table": {
 					"plan": "@:terms.plan",
-					"strip": "Days left per material",
-					"burn": "Burn"
+					"strip": "Jours restants par matériau",
+					"burn": "Consommation"
 				},
 				"summary": {
-					"red": "{n} red",
-					"yellow": "{n} yellow",
-					"materials": "no materials | {n} material | {n} materials"
+					"red": "{n} rouge",
+					"yellow": "{n} jaune",
+					"materials": "aucun matériau | {n} matériau | {n} matériaux"
 				},
-				"strip_label": "Days left per material of {plan_name}",
-				"caption": "One dot per consumed material; hover or tap a dot to see which. The axis ends at 3 × the yellow threshold; materials beyond it are counted as \"+n\"."
+				"strip_label": "Jours restants par matériau de {plan_name}",
+				"caption": "Un point par matériau consommé ; survole ou touche un point pour voir lequel. L'axe s'arrête à 3 × le seuil jaune ; les matériaux au-delà sont comptés comme « +n »."
 			},
 			"plans": {
-				"xit_title": "XIT Resupply: {plan_name}",
-				"expand_row": "Show materials of {plan_name}",
-				"runs_out_first": "runs out first, in {days} days",
-				"more_under": "{n} more under {days} d",
-				"produced": "{n} produced here",
-				"produced_here": "produced here",
-				"days_left": "{days} days left",
-				"runway_label": "{ticker}: {days} days left",
+				"xit_title": "Réapprovisionnement XIT : {plan_name}",
+				"expand_row": "Afficher les matériaux de {plan_name}",
+				"runs_out_first": "s'épuise en premier, dans {days} jours",
+				"more_under": "{n} de plus sous {days} j",
+				"produced": "{n} produits ici",
+				"produced_here": "produit ici",
+				"days_left": "{days} jours restants",
+				"runway_label": "{ticker} : {days} jours restants",
 				"table": {
 					"ticker": "@:terms.material_ticker",
 					"consumption": "@:terms.consumption",
@@ -42,157 +42,157 @@
 					"delta": "@:terms.delta",
 					"stock": "@:terms.stock",
 					"plan": "@:terms.plan",
-					"burn": "Burn",
-					"exhaustion": "Exhaustion",
-					"runway": "Runway"
+					"burn": "Consommation",
+					"exhaustion": "Épuisement",
+					"runway": "Autonomie"
 				}
 			}
 		}
 	},
 	"repair": {
-		"view_title": "FIO Repair",
-		"title": "FIO Repair",
+		"view_title": "FIO Réparation",
+		"title": "FIO Réparation",
 		"fio_last_update": "FIO Data Update: {last_updated}",
 		"states": {
-			"no_fio_title": "Connect FIO to see your bases' repair status",
-			"no_fio": "FIO Repair reads your buildings' condition and last repair from FIO. Set up FIO in your {link}, then come back here.",
-			"profile": "Profile",
-			"no_sites": "FIO has no bases for you yet. Once FIO has your sites, they show up here.",
-			"stale": "FIO data was updated {when}. Buildings have aged since then, so conditions are lower and repair amounts higher than shown. Ages are counted to today."
+			"no_fio_title": "Connecte FIO pour voir l'état de réparation de tes bases",
+			"no_fio": "FIO Réparation lit la condition de tes bâtiments et leur dernière réparation depuis FIO. Configure FIO dans ton {link}, puis reviens ici.",
+			"profile": "Profil",
+			"no_sites": "FIO n'a pas encore de bases pour toi. Dès que FIO aura tes sites, ils apparaîtront ici.",
+			"stale": "Les données FIO ont été mises à jour {when}. Les bâtiments ont vieilli depuis, donc les conditions sont plus basses et les montants de réparation plus élevés que ceux affichés. Les âges sont comptés jusqu'à aujourd'hui."
 		},
 		"settings": {
-			"title": "Settings",
-			"target": "Repair target",
-			"use_plans": "Use matched plans",
-			"match_summary": "{matched} matched · {likely} likely · {none} without",
-			"interval_plans": "Without a plan, every",
-			"interval": "Repair every",
-			"interval_note_plans": "for bases without a matched plan",
-			"interval_note": "for every base",
-			"days": "days",
-			"due_soon": "Due soon",
-			"due_soon_note": "days before the target day",
-			"exchange": "Exchange Preference",
-			"exchange_note": "empire exchange and tickers only",
-			"footer": "Saved as your preferences, also in {link}. The Exchange Preference is your default one, the same setting as in Profile."
+			"title": "Paramètres",
+			"target": "Objectif de réparation",
+			"use_plans": "Utiliser les plans associés",
+			"match_summary": "{matched} associés · {likely} probables · {none} sans",
+			"interval_plans": "Sans plan, tous les",
+			"interval": "Réparer tous les",
+			"interval_note_plans": "pour les bases sans plan associé",
+			"interval_note": "pour chaque base",
+			"days": "jours",
+			"due_soon": "Bientôt dû",
+			"due_soon_note": "jours avant le jour cible",
+			"exchange": "Préférence d'échange",
+			"exchange_note": "échange de l'empire et tickers uniquement",
+			"footer": "Enregistré dans tes préférences, aussi dans {link}. La préférence d'échange est ta préférence par défaut, le même réglage que dans Profil."
 		},
 		"stats": {
-			"overdue": "Overdue",
-			"soon": "Due within {n} d",
-			"later": "Later",
+			"overdue": "En retard",
+			"soon": "Dû d'ici {n} j",
+			"later": "Plus tard",
 			"bases": "bases | base | bases",
-			"due_cost": "Repair what's due, today",
-			"due_cargo": "{weight} t · {volume} m³ · no bases | {weight} t · {volume} m³ · {n} base | {weight} t · {volume} m³ · {n} bases",
-			"waiting": "Waiting costs",
-			"waiting_value": "+{cost} ȼ / day",
-			"waiting_note": "more repair material per day, for what's due"
+			"due_cost": "Réparer ce qui est dû, aujourd'hui",
+			"due_cargo": "{weight} t · {volume} m³ · aucune base | {weight} t · {volume} m³ · {n} base | {weight} t · {volume} m³ · {n} bases",
+			"waiting": "Coût de l'attente",
+			"waiting_value": "+{cost} ȼ / jour",
+			"waiting_note": "de matériaux de réparation en plus par jour, pour ce qui est dû"
 		},
 		"timeline": {
-			"title": "When bases come due",
-			"hint": "next repair by base, from the most overdue to the last one due · click a base to open it",
-			"today": "today",
-			"tick": "{n} d",
-			"unknown": "{n} without repair date",
-			"more": "{n} more: {names}"
+			"title": "Quand les bases arrivent à échéance",
+			"hint": "prochaine réparation par base, de la plus en retard à la dernière échéance · clique sur une base pour l'ouvrir",
+			"today": "aujourd'hui",
+			"tick": "{n} j",
+			"unknown": "{n} sans date de réparation",
+			"more": "{n} de plus : {names}"
 		},
 		"list": {
 			"title": "Bases",
-			"hint": "click a base for its buildings and repair flight",
-			"filter": "Filter",
+			"hint": "clique sur une base pour voir ses bâtiments et le vol de réparation",
+			"filter": "Filtre",
 			"filters": {
-				"all": "All",
-				"overdue": "Overdue",
-				"soon": "Due soon",
-				"later": "Later"
+				"all": "Tous",
+				"overdue": "En retard",
+				"soon": "Bientôt dû",
+				"later": "Plus tard"
 			},
 			"columns": {
 				"base": "Base",
-				"buildings": "Buildings",
+				"buildings": "Bâtiments",
 				"condition": "Condition",
-				"since": "Since repair",
-				"next": "Next repair",
-				"cost": "Repair now"
+				"since": "Depuis la réparation",
+				"next": "Prochaine réparation",
+				"cost": "Réparer maintenant"
 			},
 			"plan": {
 				"match": "plan {name}",
-				"likely": "likely plan {name}",
-				"picked": "plan {name} (your choice)",
-				"none": "no plan · every {n} d"
+				"likely": "plan probable {name}",
+				"picked": "plan {name} (ton choix)",
+				"none": "aucun plan · tous les {n} j"
 			},
-			"since": "{n} d",
-			"built": "built {n} d",
-			"no_date": "No repair date",
-			"empty": "No base in this filter.",
-			"footer": "Production buildings only. Habitations, storage and the core module age too, but need no repair materials. \"Repair now\" is the repair bill for every production building; it grows each day until day 180, when it equals a new building."
+			"since": "{n} j",
+			"built": "construit il y a {n} j",
+			"no_date": "Aucune date de réparation",
+			"empty": "Aucune base dans ce filtre.",
+			"footer": "Bâtiments de production uniquement. Les habitations, le stockage et le module central vieillissent aussi, mais n'ont pas besoin de matériaux de réparation. « Réparer maintenant » est la facture de réparation de tous les bâtiments de production ; elle augmente chaque jour jusqu'au jour 180, où elle équivaut à un bâtiment neuf."
 		},
 		"due": {
-			"overdue": "Overdue {n} d",
-			"today": "Due today",
-			"soon": "Due in {n} d",
-			"later": "In {n} d",
-			"unknown": "No repair date"
+			"overdue": "En retard de {n} j",
+			"today": "Dû aujourd'hui",
+			"soon": "Dû dans {n} j",
+			"later": "Dans {n} j",
+			"unknown": "Aucune date de réparation"
 		},
 		"panel": {
-			"close": "Close base details",
+			"close": "Fermer les détails de la base",
 			"back": "Bases",
-			"buildings": "no production buildings | {n} production building | {n} production buildings",
-			"target": "Repair target",
-			"option_plan": "{plan} · {score} % match · {empire}",
-			"option_plan_loose": "{plan} · {score} % match",
-			"option_none": "No plan · every {n} days",
-			"needs_refresh": "Needs a FIO refresh",
+			"buildings": "aucun bâtiment de production | {n} bâtiment de production | {n} bâtiments de production",
+			"target": "Objectif de réparation",
+			"option_plan": "{plan} · {score} % de correspondance · {empire}",
+			"option_plan_loose": "{plan} · {score} % de correspondance",
+			"option_none": "Aucun plan · tous les {n} jours",
+			"needs_refresh": "Nécessite une actualisation FIO",
 			"confidence": {
-				"match": "Matched",
-				"likely": "Likely",
-				"picked": "Your choice",
-				"nopick": "No plan",
-				"none": "No plan"
+				"match": "Associé",
+				"likely": "Probable",
+				"picked": "Ton choix",
+				"nopick": "Aucun plan",
+				"none": "Aucun plan"
 			},
 			"reason": {
-				"match": "Same planet, all production buildings match FIO. Best day per building type from Repair Analysis.",
-				"likely": "{score} % of the buildings match FIO. Check that this is the plan you run.",
-				"picked": "Saved for this base in your preferences, on every device.",
-				"nopick": "You chose no plan for this base. Repairs every {n} days.",
-				"none_candidates": "No plan here matches FIO well enough. Pick one, or keep every {n} days.",
-				"none": "No plan on this planet. Repairs every {n} days.",
-				"off": "Matched plans are off. Repairs every {n} days."
+				"match": "Même planète, tous les bâtiments de production correspondent à FIO. Meilleur jour par type de bâtiment d'après l'Analyse de réparation.",
+				"likely": "{score} % des bâtiments correspondent à FIO. Vérifie que c'est bien le plan que tu utilises.",
+				"picked": "Enregistré pour cette base dans tes préférences, sur tous tes appareils.",
+				"nopick": "Tu n'as choisi aucun plan pour cette base. Réparations tous les {n} jours.",
+				"none_candidates": "Aucun plan ici ne correspond assez bien à FIO. Choisis-en un, ou garde un intervalle de {n} jours.",
+				"none": "Aucun plan sur cette planète. Réparations tous les {n} jours.",
+				"off": "Les plans associés sont désactivés. Réparations tous les {n} jours."
 			},
-			"auto": "Back to automatic match",
-			"create": "Create a plan for {planet}",
+			"auto": "Retour à l'association automatique",
+			"create": "Créer un plan pour {planet}",
 			"types": {
-				"building": "Building",
-				"target": "Target",
-				"since": "Since",
+				"building": "Bâtiment",
+				"target": "Objectif",
+				"since": "Depuis",
 				"condition": "Cond.",
-				"due": "Due",
-				"days": "{n} d"
+				"due": "À échéance",
+				"days": "{n} j"
 			},
 			"flight": {
-				"title": "Repair flight",
-				"arrives": "Arrives in",
-				"days": "days",
-				"extra": "+{cost} ȼ vs. repairing today",
-				"today": "amounts as of today",
-				"hint": "Add a day or two for long flights: the bill grows until the ship unloads.",
-				"weight": "Cargo weight",
-				"volume": "Cargo volume",
-				"store": "Use what's already in the base store",
-				"from_store": "From the base store: {materials}"
+				"title": "Vol de réparation",
+				"arrives": "Arrive dans",
+				"days": "jours",
+				"extra": "+{cost} ȼ par rapport à une réparation aujourd'hui",
+				"today": "montants à ce jour",
+				"hint": "Ajoute un jour ou deux pour les longs vols : la facture augmente jusqu'au déchargement du vaisseau.",
+				"weight": "Poids de la cargaison",
+				"volume": "Volume de la cargaison",
+				"store": "Utiliser ce qui est déjà dans le stock de la base",
+				"from_store": "Depuis le stock de la base : {materials}"
 			},
 			"load": {
-				"title": "Load · all {n} buildings",
-				"summary": "{n} materials · {weight} t · {volume} m³",
-				"nothing": "Nothing to load: the base store covers the whole repair.",
-				"total": "Total · Exchange Preference {name}",
-				"no_preference": "none",
-				"footer": "Pick the ship when you run the XIT, fly to {base}, unload and run BRA."
+				"title": "Chargement · les {n} bâtiments",
+				"summary": "{n} matériaux · {weight} t · {volume} m³",
+				"nothing": "Rien à charger : le stock de la base couvre toute la réparation.",
+				"total": "Total · Préférence d'échange {name}",
+				"no_preference": "aucune",
+				"footer": "Choisis le vaisseau au lancement du XIT, vole vers {base}, décharge et lance BRA."
 			}
 		},
 		"xit": {
-			"button": "XIT Repair",
-			"title": "XIT Repair · {base}",
-			"note": "The ship is picked when the XIT runs. It needs {weight} t and {volume} m³ of free cargo."
+			"button": "XIT Réparation",
+			"title": "XIT Réparation · {base}",
+			"note": "Le vaisseau est choisi au lancement du XIT. Il lui faut {weight} t et {volume} m³ de cargaison libre."
 		},
-		"computing": "Calculating the best repair days of your matched plans."
+		"computing": "Calcul des meilleurs jours de réparation de tes plans associés."
 	}
 }
