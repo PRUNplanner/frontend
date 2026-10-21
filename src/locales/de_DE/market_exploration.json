@@ -5,7 +5,7 @@
 	"kpis": {
 		"universe_vwap_7d": "Universum VWAP @:terms.7d",
 		"universe_traded_7d": "Universum @:terms.traded_volume @:terms.7d",
-		"universe_market_delta": "Universum Markt Delta",
+		"universe_market_delta": "Universe-Markt-Delta",
 		"shortage": "Mangel",
 		"surplus": "Überschuss",
 		"percent_trend": "% Trend",
@@ -25,30 +25,30 @@
 			"monthly": "Monatlich"
 		},
 		"view": {
-			"candles": "Candles",
-			"exchanges": "All exchanges",
-			"label": "Chart view"
+			"candles": "Kerzen",
+			"exchanges": "Alle Marktplätze",
+			"label": "Chart-Ansicht"
 		},
 		"metric": {
 			"vwap": "@:terms.vwap",
-			"low": "Low",
-			"high": "High",
-			"label": "Value"
+			"low": "Tief",
+			"high": "Hoch",
+			"label": "Wert"
 		},
 		"range": {
-			"30": "30 d",
-			"90": "90 d",
-			"365": "1 y",
-			"all": "All",
-			"label": "Range"
+			"30": "30 T",
+			"90": "90 T",
+			"365": "1 J",
+			"all": "Alle",
+			"label": "Zeitraum"
 		},
 		"exchanges": {
-			"label": "{metric} of {ticker} on every exchange",
-			"volume_title": "Traded volume, all exchanges",
-			"volume_unit": "units / day",
+			"label": "{metric} von {ticker} auf jedem Marktplatz",
+			"volume_title": "Gehandeltes Volumen, alle Marktplätze",
+			"volume_unit": "Einheiten / Tag",
 			"volume": "@:terms.volume",
-			"empty": "No trades in this range",
-			"error": "Market data could not be loaded"
+			"empty": "Kein Handel in diesem Zeitraum",
+			"error": "Marktdaten konnten nicht geladen werden"
 		}
 	},
 	"market_data": {
@@ -65,9 +65,9 @@
 			"volume_30d": "@:terms.traded_volume @:terms.30d",
 			"details": "Details",
 			"explore": "Entdecken",
-			"sparkline": "30 days",
-			"sparkline_hint": "Daily VWAP of the last 30 days. Direction only: every row has its own scale.",
-			"sparkline_label": "{ticker}, daily VWAP of the last 30 days"
+			"sparkline": "30 Tage",
+			"sparkline_hint": "Täglicher VWAP der letzten 30 Tage. Zeigt nur die Richtung: Jede Zeile hat ihre eigene Skala.",
+			"sparkline_label": "{ticker}, täglicher VWAP der letzten 30 Tage"
 		}
 	}
 }
