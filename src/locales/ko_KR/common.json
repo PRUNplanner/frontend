@@ -6,6 +6,7 @@
 		"management": "관리",
 		"exchanges": "거래소",
 		"tools": "도구",
+		"market_report": "Market report",
 		"market_exploration": "시장 탐색",
 		"market_live": "실시간 시세",
 		"recipe_roi": "레시피 수익률",
@@ -126,5 +127,10 @@
 		"chip": "Update ready",
 		"whats_new_title": "PRUNplanner {version} is here",
 		"whats_new_action": "What's new"
+	},
+	"not_found": {
+		"title": "Page not found",
+		"text": "There is no page at this address.",
+		"home": "Go to the start page"
 	}
 }

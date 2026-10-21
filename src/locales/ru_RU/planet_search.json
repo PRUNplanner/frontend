@@ -4,8 +4,8 @@
 	"loading": "Загрузка планет…",
 	"load_error": "Планеты не могут быть загружены. Перезагрузите страницу, чтобы попробовать снова.",
 	"header": {
-		"search_label": "Имя или ID планеты",
-		"search_placeholder": "Имя или ID планеты, например KI-446 или Harmonia",
+		"search_label": "Planet or system name, or ID",
+		"search_placeholder": "Planet or system, e.g. KI-446, Harmonia or Antares II",
 		"saved": "Сохранено",
 		"load_saved": "Загрузить сохранённый поиск…",
 		"manage": "Управление",

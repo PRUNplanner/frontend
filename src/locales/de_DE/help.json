@@ -27,7 +27,7 @@
 		},
 		"l4": {
 			"title": "Erstelle einen Plan:",
-			"p": "Wähle dein Imperium, gib ihm einen Namen und füge dann Gebäude hinzu. Zum Beispiel: Füge eine Refinery hinzu, lege einen Produktionsauftrag fest und speichere den Plan. Sie können alle Aspekte wie COGC, Expertenboni ändern und in Optimierungen eintauchen."
+			"p": "Wähle dein Imperium, gib ihm einen Namen und füge dann Gebäude hinzu. Zum Beispiel: Füge eine Refinery hinzu, lege einen Produktionsauftrag fest und speichere den Plan. Du kannst alle Aspekte wie COGC und Expertenboni ändern und in Optimierungen eintauchen."
 		},
 		"l5": {
 			"title": "ROI prüfen:",

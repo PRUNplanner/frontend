@@ -1,160 +1,160 @@
 {
-	"view_title": "Empire",
-	"switch_empire": "Switch Empire",
-	"overview_hide": "Hide plan list",
-	"overview_show": "Show plan list",
+	"view_title": "Imperio",
+	"switch_empire": "Cambiar de imperio",
+	"overview_hide": "Ocultar lista de planes",
+	"overview_show": "Mostrar lista de planes",
 	"views": {
-		"material_io": "Material I/O",
-		"analysis": "Analysis",
-		"production_opportunities": "Production Opportunities"
+		"material_io": "E/S de materiales",
+		"analysis": "Análisis",
+		"production_opportunities": "Oportunidades de producción"
 	},
 	"configuration": {
-		"title": "Configuration",
+		"title": "Configuración",
 		"form": {
-			"name": "Name",
-			"faction": "Faction",
-			"permits_total": "@:terms.permits_plural Total",
-			"permits_used": "@:terms.permits_plural Used"
+			"name": "Nombre",
+			"faction": "Facción",
+			"permits_total": "@:terms.permits_plural totales",
+			"permits_used": "@:terms.permits_plural usados"
 		},
 		"sync_warning": {
-			"title": "Mismatch Detected:",
-			"body": "@:empire.configuration.sync_warning.title {configured} configured vs. {planned} planned permits. Please synchronize these values using your in-game {hq_buffer} to ensure accurate faction bonus calculations."
+			"title": "Discrepancia detectada:",
+			"body": "@:empire.configuration.sync_warning.title {configured} permisos configurados frente a {planned} planificados. Sincroniza estos valores con tu {hq_buffer} del juego para que el cálculo de la bonificación de facción sea correcto."
 		}
 	},
 	"plan_list": {
-		"no_plans": "No Plans in @:terms.empire",
+		"no_plans": "No hay planes en @:terms.empire",
 		"profit": "@:terms.profit (ȼ)",
-		"setup_prompt": "Assign existing plans in {management} or use {search} to create one.",
+		"setup_prompt": "Asigna planes existentes en {management} o usa {search} para crear uno.",
 		"links": {
 			"management": "@:common.navigation.management",
 			"planet_search": "@:common.navigation.planet_search"
 		},
-		"permits_planned": "Total @:terms.permits planned: {permits}"
+		"permits_planned": "Total de @:terms.permits planificados: {permits}"
 	},
 	"material_io": {
-		"produced_by": "Produced by",
-		"consumed_by": "Consumed by",
-		"planets": "Planets",
-		"summary": "Summary",
-		"expand_all": "Expand all",
-		"expand_row": "Show planets for {ticker}",
-		"view_sides": "Producers · Consumers",
-		"view_net": "Net per planet",
-		"surplus": "Surplus",
-		"needs": "Needs",
-		"plan_count": "{count} plan | {count} plans",
-		"planet_count": "{count} planet | {count} planets",
-		"per_day": "{value} / day",
-		"makes_uses": "makes {makes} · uses {uses}",
-		"not_produced": "Not produced in this empire.",
-		"not_consumed": "Not consumed in this empire.",
-		"no_surplus": "No planet has a surplus.",
-		"no_needs": "No planet needs it."
+		"produced_by": "Producido por",
+		"consumed_by": "Consumido por",
+		"planets": "Planetas",
+		"summary": "Resumen",
+		"expand_all": "Expandir todo",
+		"expand_row": "Mostrar planetas de {ticker}",
+		"view_sides": "Productores · Consumidores",
+		"view_net": "Neto por planeta",
+		"surplus": "Excedente",
+		"needs": "Necesidades",
+		"plan_count": "{count} plan | {count} planes",
+		"planet_count": "{count} planeta | {count} planetas",
+		"per_day": "{value} / día",
+		"makes_uses": "produce {makes} · usa {uses}",
+		"not_produced": "No se produce en este imperio.",
+		"not_consumed": "No se consume en este imperio.",
+		"no_surplus": "Ningún planeta tiene excedente.",
+		"no_needs": "Ningún planeta lo necesita."
 	},
 	"filters": {
-		"display": "Display",
-		"consumables": "Consumables",
-		"all": "All",
-		"loadbalance": "Loadbalance"
+		"display": "Mostrar",
+		"consumables": "Consumibles",
+		"all": "Todos",
+		"loadbalance": "Equilibrado de carga"
 	},
 	"analysis": {
-		"plan_profit": "Plan Profit (ȼ)",
+		"plan_profit": "Beneficio del plan (ȼ)",
 		"material_profits": "Material Profits",
 		"material_costs": "Material Costs",
-		"net_production": "Net Production",
-		"net_consumption": "Net Consumption",
-		"exclusive_production": "Exclusive Production",
-		"exclusive_consumption": "Exclusive Consumption",
+		"net_production": "Producción neta",
+		"net_consumption": "Consumo neto",
+		"exclusive_production": "Producción exclusiva",
+		"exclusive_consumption": "Consumo exclusivo",
 		"parts": {
-			"inputs": "Production inputs",
-			"workforce": "Workforce",
-			"degradation": "Degradation",
-			"profit": "Profit",
-			"uncovered": "Cost not covered"
+			"inputs": "Insumos de producción",
+			"workforce": "Mano de obra",
+			"degradation": "Degradación",
+			"profit": "Beneficio",
+			"uncovered": "Coste no cubierto"
 		},
 		"kpi_split": {
-			"label": "Revenue split: {parts}",
-			"inputs": "Inputs {pct}",
-			"workforce": "Workforce {pct}",
-			"degradation": "Degradation {pct}",
-			"profit": "Profit {pct}",
-			"uncovered": "Not covered {pct}",
-			"of_cost": "Share of cost: revenue doesn't cover it"
+			"label": "Reparto de ingresos: {parts}",
+			"inputs": "Insumos {pct}",
+			"workforce": "Mano de obra {pct}",
+			"degradation": "Degradación {pct}",
+			"profit": "Beneficio {pct}",
+			"uncovered": "No cubierto {pct}",
+			"of_cost": "Parte del coste: los ingresos no lo cubren"
 		},
 		"revenue_split": {
-			"title": "Where each plan's revenue goes",
-			"caption": "Top {top} by profit · loss-making plans always shown",
-			"split": "Revenue split",
-			"margin": "Margin",
-			"revenue_day": "Revenue / day",
-			"other": "Other · {n} plan | Other · {n} plans",
-			"row_label": "{name}: margin {margin}, revenue {revenue} ȼ per day",
-			"empty": "No plans to split yet."
+			"title": "A dónde van los ingresos de cada plan",
+			"caption": "Los {top} con más beneficio · los planes con pérdidas se muestran siempre",
+			"split": "Reparto de ingresos",
+			"margin": "Margen",
+			"revenue_day": "Ingresos / día",
+			"other": "Otros · {n} plan | Otros · {n} planes",
+			"row_label": "{name}: margen {margin}, ingresos {revenue} ȼ al día",
+			"empty": "Aún no hay planes que repartir."
 		},
 		"butterfly": {
-			"title": "Materials moving the most ȼ",
-			"price": "ȼ / day",
-			"amount": "Units / day",
-			"buy": "← you buy (net consumed)",
-			"sell": "you sell (net produced) →",
-			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
-			"row_label": "{ticker}: {direction} {value}, open in Material I/O",
-			"bought": "bought",
-			"sold": "sold",
-			"empty": "No materials bought or sold."
+			"title": "Materiales que más ȼ mueven",
+			"price": "ȼ / día",
+			"amount": "Unidades / día",
+			"buy": "← compras (consumo neto)",
+			"sell": "vendes (producción neta) →",
+			"caption": "Los {top} de {n} materiales · haz clic en una fila para abrirla en E/S de materiales",
+			"row_label": "{ticker}: {direction} {value}, abrir en E/S de materiales",
+			"bought": "comprado",
+			"sold": "vendido",
+			"empty": "No hay materiales comprados ni vendidos."
 		},
 		"more_charts": {
-			"title": "More charts",
-			"caption": "Plan profit · material profit & cost · net and exclusive production & consumption"
+			"title": "Más gráficos",
+			"caption": "Beneficio del plan · beneficio y coste de materiales · producción y consumo netos y exclusivos"
 		}
 	},
 	"opportunities": {
-		"headline": "Production Opportunities",
-		"intro": "Find recipe opportunities to convert excess materials into other products. This view identifies production opportunities where your Material I/O shows a positive delta, prioritized by input availability",
-		"please_note": "Please Note:",
-		"note": "Do not rely on the available opportunity alone. Cross-reference trade volumes and exchange overviews (via hover on the material) to assess market liquidity and potential ROI. Use indicators to identify which specific material is bottlenecking your scaling potential or if selling your available delta is more profitable than moving to another production.",
+		"headline": "Oportunidades de producción",
+		"intro": "Encuentra oportunidades de recetas para convertir el exceso de materiales en otros productos. Esta vista identifica oportunidades de producción en las que tu E/S de materiales muestra un delta positivo, priorizadas por disponibilidad de insumos",
+		"please_note": "Ten en cuenta:",
+		"note": "No te fíes solo de la oportunidad disponible. Contrasta los volúmenes de comercio y los resúmenes de las bolsas (al pasar el ratón por el material) para valorar la liquidez del mercado y el posible ROI. Usa los indicadores para ver qué material concreto limita tu potencial de escalado, o si te compensa más vender tu delta disponible que pasar a otra producción.",
 		"tiles": {
-			"opportunities": "Opportunities",
-			"delta_required": "Delta Required",
-			"material_missing": "Material Missing"
+			"opportunities": "Oportunidades",
+			"delta_required": "Delta necesario",
+			"material_missing": "Material que falta"
 		},
 		"table": {
-			"building": "Building",
-			"flow_inputs": "Production (Inputs → Outputs)",
-			"analysis": "Analysis",
-			"sell_inputs": "Sell Inputs",
-			"sell_outputs": "Sell Outputs",
-			"potential_batches": "Potential Batches",
-			"delta_required": "Delta Required",
-			"missing_material": "Missing Material"
+			"building": "Edificio",
+			"flow_inputs": "Producción (insumos → productos)",
+			"analysis": "Análisis",
+			"sell_inputs": "Vender insumos",
+			"sell_outputs": "Vender productos",
+			"potential_batches": "Lotes potenciales",
+			"delta_required": "Delta necesario",
+			"missing_material": "Material que falta"
 		}
 	},
 	"onboarding": {
-		"title": "Welcome to PRUNplanner",
-		"intro": "Three steps to your first base plan.",
+		"title": "Te damos la bienvenida a PRUNplanner",
+		"intro": "Tres pasos hasta tu primer plan de base.",
 		"empire": {
-			"title": "Your empire",
-			"help": "Faction and permits affect your plans' faction bonus and available area.",
-			"saved": "Saved"
+			"title": "Tu imperio",
+			"help": "La facción y los permisos afectan a la bonificación de facción de tus planes y al área disponible.",
+			"saved": "Guardado"
 		},
 		"plan": {
-			"title": "Plan your first base",
-			"help": "Find a planet and create a plan there. It's added to this empire automatically.",
+			"title": "Planifica tu primera base",
+			"help": "Busca un planeta y crea un plan en él. Se añade a este imperio automáticamente.",
 			"action": "@:common.navigation.planet_search"
 		},
 		"prices": {
-			"title": "Prices",
-			"help": "Prices use the universe 30-day average. Change which exchange each material is bought and sold on in {exchanges}.",
-			"exchanges": "Exchanges"
+			"title": "Precios",
+			"help": "Los precios usan la media de 30 días del universo. Cambia en qué bolsa se compra y se vende cada material en {exchanges}.",
+			"exchanges": "Bolsas"
 		}
 	},
 	"cost_overview": {
-		"shipping": "Shipping"
+		"shipping": "Envío"
 	},
 	"empty": {
-		"title": "No empires yet",
-		"text": "An empire groups your base plans and holds your faction and permits.",
-		"create": "Create empire",
-		"manage": "Manage empires"
+		"title": "Aún no hay imperios",
+		"text": "Un imperio agrupa tus planes de base y guarda tu facción y tus permisos.",
+		"create": "Crear imperio",
+		"manage": "Gestionar imperios"
 	}
 }

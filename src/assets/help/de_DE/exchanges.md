@@ -1,58 +1,58 @@
 # Exchange Preferences
 
-An exchange preference sets the prices your plans use: which exchange and price basis, and fixed prices for materials you get at your own cost or from a partner. Assign a preference to an empire in Management; every plan of that empire then uses it.
+An exchange preference sets the prices your plans use: which exchange and price basis, and fixed prices for materials you get at your own cost or from a partner. Weise eine Präferenz in der Verwaltung einem Imperium zu; jeder Plan dieses Imperiums verwendet sie dann.
 
-The page opens on the **Overview**: every material your plans buy or sell, the price it gets and where that price comes from. Expand a row to see the full cascade for each planet. Notes above the table point to rules that need a look.
+Die Seite öffnet sich mit der **Übersicht**: jedes Material, das deine Pläne kaufen oder verkaufen, der Preis, den es bekommt, und woher dieser Preis stammt. Klappe eine Zeile auf, um die vollständige Kaskade für jeden Planeten zu sehen. Notes above the table point to rules that need a look.
 
-# How a Price Is Found
+# Wie ein Preis ermittelt wird
 
-For every material, PRUNplanner looks for a buy price (for what a plan consumes) and a sell price (for what it produces). It checks these levels in order and takes the first rule that matches:
+Für jedes Material sucht PRUNplanner einen Kaufpreis (für das, was ein Plan verbraucht) und einen Verkaufspreis (für das, was er produziert). Dabei werden diese Ebenen der Reihe nach geprüft und die erste passende Regel wird genommen:
 
-1. **Planet fixed price**: a fixed price set on that planet
-2. **All-planets fixed price**
-3. **Planet exchange**: the exchange rule set on that planet
-4. **All-planets exchange**
-5. **Universe · VWAP 30D**, when no rule above matches
+1. **Festpreis des Planeten**: ein Festpreis, der auf diesem Planeten festgelegt ist
+2. **Festpreis für alle Planeten**
+3. **Marktplatz des Planeten**: die Marktplatz-Regel, die auf diesem Planeten festgelegt ist
+4. **Marktplatz für alle Planeten**
+5. **Universe · VWAP 30D**, wenn keine der obigen Regeln passt
 
-An all-planets fixed price wins over a planet's exchange rule.
+Ein Festpreis für alle Planeten hat Vorrang vor der Marktplatz-Regel eines Planeten.
 
-## Buy, Sell or Both
+## Kaufen, Verkaufen oder beides
 
-A rule can apply to buying, selling or both. If a level has no rule for the side a plan needs (for example only a buy rule, and the plan sells the material), that level is skipped and the next one is checked, down to Universe · VWAP 30D.
+Eine Regel kann für den Kauf, den Verkauf oder beides gelten. Hat eine Ebene keine Regel für die Seite, die ein Plan braucht (zum Beispiel nur eine Kaufregel, während der Plan das Material verkauft), wird diese Ebene übersprungen und die nächste geprüft, bis hinunter zu Universe · VWAP 30D.
 
-## Exchanges Without a Price
+## Marktplätze ohne Preis
 
-When an exchange rule matches but its exchange has no price for a material (no trades, no asks or no bids), the price is **0 ȼ**. It does not fall through to the next level. The page shows these prices in amber and lists them in the notes, so you can set a fixed price or pick another exchange or basis.
+When an exchange rule matches but its exchange has no price for a material (no trades, no asks or no bids), the price is **0 ȼ**. It does not fall through to the next level. Die Seite zeigt diese Preise orange an und listet sie in den Hinweisen auf, damit du einen Festpreis setzen oder einen anderen Marktplatz oder eine andere Preisbasis wählen kannst.
 
-# Price Basis: VWAP, Ask and Bid
+# Preisbasis: VWAP, Ask und Bid
 
-PRUNplanner can use a Volume-Weighted Average Price (VWAP) over 7 or 30 days. VWAP gives more weight to trades with higher volumes, so it reflects where most of the trading happened instead of single outlier orders.
+PRUNplanner kann einen volumengewichteten Durchschnittspreis (Volume-Weighted Average Price, VWAP) über 7 oder 30 Tage verwenden. Der VWAP gewichtet Abschlüsse mit höherem Volumen stärker und spiegelt daher wider, wo der Großteil des Handels stattfand, statt einzelner Ausreißer-Orders.
 
-Ask and Bid are today's order book: the cheapest offer and the highest bid. They change daily and can be missing for materials with little trading. Universe only has VWAP prices.
+Ask und Bid stammen aus dem heutigen Orderbuch: das günstigste Angebot und das höchste Gebot. Sie ändern sich täglich und können bei wenig gehandelten Materialien fehlen. Universe hat nur VWAP-Preise.
 
-# Presets
+# Voreinstellungen
 
-- **Average · VWAP 30D** uses the VWAP 30D of the exchange for buying and selling.
-- **Trade now · buy Ask, sell Bid** buys at the exchange's Ask and sells at its Bid. Not available for Universe.
+- **Durchschnitt · VWAP 30D** verwendet den VWAP 30D des Marktplatzes für Kauf und Verkauf.
+- **Sofort handeln · Kauf zum Ask, Verkauf zum Bid** kauft zum Ask des Marktplatzes und verkauft zu seinem Bid. Nicht verfügbar für Universe.
 
 Presets work on the scope's exchange, else the all-planets exchange, else NC1.
 
-# Fixed Prices and COGM
+# Festpreise und COGM
 
-Fixed prices suit materials you make yourself and use at cost, or prices agreed with a corporation or partner. Leave a side empty to use the exchange price for it.
+Festpreise eignen sich für Materialien, die du selbst herstellst und zum Selbstkostenpreis verwendest, oder für Preise, die du mit einer Corporation oder einem Partner vereinbart hast. Lass eine Seite leer, um dafür den Marktplatz-Preis zu verwenden.
 
-On **All planets**, the fixed price table shows the market price without the fixed one and, for materials your plans make, the lowest COGM (cost of goods manufactured) among the plans that use the preference. **Use** sets the buy price to that COGM. In a plan's COGM tool, **Use as buy price** does the same. A note tells you when a fixed buy price is more than 2 % off the COGM.
+Unter **Alle Planeten** zeigt die Festpreis-Tabelle den Marktpreis ohne den Festpreis und, für Materialien, die deine Pläne herstellen, die niedrigsten COGM (Herstellungskosten, cost of goods manufactured) unter den Plänen, die die Präferenz verwenden. **Nutzen** setzt den Kaufpreis auf diese COGM. Im COGM-Werkzeug eines Plans macht **Als Kaufpreis verwenden** dasselbe. Ein Hinweis sagt dir, wenn ein fester Kaufpreis mehr als 2 % von den COGM abweicht.
 
-# Planet Exceptions
+# Ausnahmen für Planeten
 
-Most players use one home exchange for all planets. When one planet needs something else, open it in the list and set its own exchange rule or fixed prices. Its rules win over the all-planets rules on that planet, except all-planets fixed prices, which still win over the planet's exchange.
+Die meisten Spieler verwenden einen Heimat-Marktplatz für alle Planeten. Wenn ein Planet etwas anderes braucht, öffne ihn in der Liste und lege eine eigene Marktplatz-Regel oder eigene Festpreise fest. Seine Regeln haben auf diesem Planeten Vorrang vor den Regeln für alle Planeten, außer vor Festpreisen für alle Planeten, die weiterhin Vorrang vor dem Marktplatz des Planeten haben.
 
-Planets with stored rules that no plan uses any more are listed under **Not in any plan**. Their rules stay saved until you delete them.
+Planeten mit gespeicherten Regeln, die kein Plan mehr verwendet, werden unter **In keinem Plan** aufgeführt. Ihre Regeln bleiben gespeichert, bis du sie löschst.
 
-# Saving
+# Speichern
 
-Changes are not used by your plans until you save them. The save bar counts the changed scopes; Discard goes back to the saved rules. The page asks before you leave or switch preference with unsaved changes.
+Deine Pläne verwenden Änderungen erst, wenn du sie speicherst. Die Speicherleiste zählt die geänderten Bereiche; Verwerfen kehrt zu den gespeicherten Regeln zurück. Die Seite fragt nach, bevor du sie mit ungespeicherten Änderungen verlässt oder die Präferenz wechselst.
 
-# CSV Import and Export
+# CSV-Import und -Export
 
-**Export CSV** downloads every rule of the preference, including unsaved changes. **Import CSV** reads such a file and asks before it replaces all rules of the preference. An import is unsaved until you save it.
+**CSV exportieren** lädt alle Regeln der Präferenz herunter, einschließlich ungespeicherter Änderungen. **CSV importieren** liest eine solche Datei ein und fragt nach, bevor alle Regeln der Präferenz ersetzt werden. Ein Import bleibt ungespeichert, bis du ihn speicherst.

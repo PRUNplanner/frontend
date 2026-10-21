@@ -1,11 +1,11 @@
 {
 	"components": {
 		"login": {
-			"title": "로그인",
+			"title": "Back to your empire.",
 			"error": "로그인에 실패하였습니다. 사용자명과 비밀번호를 확인해 주세요.",
 			"throttled": "로그인 시도가 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요.",
 			"buttons": {
-				"login": "로그인"
+				"login": "Log in"
 			},
 			"form": {
 				"username": "사용자명",
@@ -13,36 +13,34 @@
 			},
 			"tos": "PRUNplanner를 사용하면 {tos_link}에 동의하는 것으로 간주됩니다.",
 			"tos_link": "서비스 이용 약관",
-			"forgot": "비밀번호를 잊으셨나요? {forgot_link}에서 요청하세요.",
-			"forgot_link": "비밀번호 재설정"
+			"forgot_link": "Forgot your password?"
 		},
 		"registration": {
-			"title": "계정 정보",
+			"title": "Start planning, it's free.",
 			"tos": "PRUNplanner는 무료입니다. 계정을 만들면 {tos_link}을 이해하고 동의한 것으로 간주됩니다.",
 			"tos_link": "서비스 이용 약관",
 			"result": {
 				"ok_header": "{username}님, 환영합니다!",
-				"ok_message": "가입에 성공하였습니다. 이제 PRUNplanner에 로그인할 수 있습니다.",
+				"ok_message": "Registration successful. You can now log in to PRUNplanner.",
 				"error": "회원가입 오류.",
 				"fix_fields": "Please fix the fields marked below.",
 				"throttled": "Too many registration attempts. Please wait a minute and try again.",
 				"unknown": "Unknown error. Please try again later."
 			},
 			"buttons": {
-				"register": "계정 만들기"
+				"register": "Create account"
 			},
 			"form": {
 				"username": "사용자명",
-				"username_info": "최소 3글자 이상이어야 합니다. 공백은 사용할 수 없습니다.",
+				"username_info": "At least 3 characters, no spaces.",
 				"password": "비밀번호",
-				"password_info": "At least 8 characters, not only numbers, and not a common password.",
-				"email": "Email (optional)",
-				"email_placeholder": "필수는 아니지만 권장됩니다.",
-				"email_info": "Only used to reset your password if you forget it. No newsletters, never shared. You can add it later in Profile.",
+				"password_info": "최소 8글자 이상이어야 합니다.",
+				"email": "이메일",
+				"email_info": "Not mandatory, but recommended. Increases your account security.",
 				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
-				"security_question": "보안 질문",
-				"question": "{planet} 행성의 이름을 입력하세요. 이름을 확인하려면 {command} 명령어로 Prosperous Universe에서 새 버퍼를 여세요. 행성 정보의 '이름' 항목에서 행성 이름을 확인할 수 있습니다",
-				"planet_name": "이름",
+				"security_question": "Security question",
+				"question": "Enter the name of planet {planet}. To find it, open a new Prosperous Universe buffer with this command and read the planet's name under \"Name\".",
+				"planet_name": "Planet name",
 				"another_planet": "Use a different planet"
 			}
 		},
@@ -82,7 +80,7 @@
 				"code_placeholder": "인증 코드"
 			},
 			"result": {
-				"ok": "Email address confirmed.",
+				"ok": "이메일 주소가 인증되었습니다.",
 				"already_verified": "Your email address is already confirmed.",
 				"back": "Back to your empire"
 			}

@@ -52,7 +52,7 @@
 	"repair": {
 		"view_title": "FIO 维修",
 		"title": "FIO 维修",
-		"fio_last_update": "FIO data update: {last_updated}",
+		"fio_last_update": "FIO 数据更新：{last_updated}",
 		"states": {
 			"no_fio_title": "Connect FIO to see your bases' repair status",
 			"no_fio": "FIO Repair reads your buildings' condition and last repair from FIO. Set up FIO in your {link}, then come back here.",

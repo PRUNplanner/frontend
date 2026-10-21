@@ -145,7 +145,7 @@
 		"supply_cart": {
 			"title": "Carrello per il Rifornimento",
 			"info": {
-				"p": "The Supply Cart provides updates on your plans needs combined with existing inventory sourced from FIO. You have the flexibility to opt for alternative storage locations to replenish your base. Tailor your selection based on whether you wish to restock workforce and production supplies or focus on a specific category, and specify the duration for which the supplied stock should sustain. XIT ships what the running base still needs once its own production covers part of it. For the first supply, use XIT Initial: it also ships the inputs this plan produces itself, because nothing is produced yet. Use the {link} tool for more advanced supply cart options.",
+				"p": "Il carrello per il rifornimento fornisce aggiornamenti su ciò che serve al tuo piano contando l'inventario presente con FIO. Puoi optare per magazzini alternativi per rifornire la tua base. Personalizza la tua scelta decidendo se desideri rifornire la manodopera e la produzione, o concentrarti su una categoria specifica, e seleziona la durata per la quale l'inventario dovrebbe sostenere la base. Usa lo strumento {link} per le opzioni avanzate.",
 				"link": "FIO Burn"
 			},
 			"buttons": {
@@ -269,7 +269,7 @@
 		"cogm": {
 			"title": "Costo di produzione dei beni",
 			"cogm": "@:terms.cogm",
-			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, input prices and workforce, by quantity or full cost allocation.",
+			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
 			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
 			"prices_from": "Prices come from {preference}.",
 			"prices_from_empire": "Prices come from {preference}, the preference of the active empire {empire}.",

@@ -1,687 +1,687 @@
 {
 	"notifications": {
-		"leave_unsaved": "Do you really want to leave? Unsaved changes will be lost."
+		"leave_unsaved": "¿Seguro que quieres salir? Los cambios sin guardar se perderán."
 	},
 	"save_status": {
-		"unsaved": "Unsaved changes",
-		"saving": "Saving…",
-		"saved_at": "Saved at {time}",
-		"failed": "Save failed",
-		"saved": "Saved",
-		"retry": "Retry save",
-		"failed_message": "Saving the plan failed. Your changes are kept, try again.",
-		"name_to_create": "Name your plan to create it",
-		"name_to_save": "Name your plan to save it"
+		"unsaved": "Cambios sin guardar",
+		"saving": "Guardando…",
+		"saved_at": "Guardado a las {time}",
+		"failed": "Error al guardar",
+		"saved": "Guardado",
+		"retry": "Reintentar guardado",
+		"failed_message": "No se pudo guardar el plan. Tus cambios se conservan, inténtalo de nuevo.",
+		"name_to_create": "Ponle nombre al plan para crearlo",
+		"name_to_save": "Ponle nombre al plan para guardarlo"
 	},
 	"history": {
-		"undo": "Undo",
-		"redo": "Redo",
-		"building_removed": "Building removed",
-		"recipe_removed": "Recipe removed",
-		"recipe_changed": "{building} recipe changed"
+		"undo": "Deshacer",
+		"redo": "Rehacer",
+		"building_removed": "Edificio eliminado",
+		"recipe_removed": "Receta eliminada",
+		"recipe_changed": "Receta de {building} cambiada"
 	},
 	"actions": {
-		"more": "More",
-		"save_as_copy": "Save as copy…",
-		"share_link": "Share link",
-		"reload": "Reload saved version",
-		"reload_hint": "Discards unsaved changes",
-		"reload_confirm": "Reload the saved version? Your unsaved changes will be lost.",
-		"tools": "Plan tools"
+		"more": "Más",
+		"save_as_copy": "Guardar como copia…",
+		"share_link": "Compartir enlace",
+		"reload": "Recargar versión guardada",
+		"reload_hint": "Descarta los cambios sin guardar",
+		"reload_confirm": "¿Recargar la versión guardada? Tus cambios sin guardar se perderán.",
+		"tools": "Herramientas del plan"
 	},
 	"name": {
-		"untitled": "Unnamed plan"
+		"untitled": "Plan sin nombre"
 	},
-	"breadcrumb": "Plan location",
+	"breadcrumb": "Ubicación del plan",
 	"tools": {
 		"labels": {
 			"popr": "POPR",
-			"visitation_frequency": "Visitation Frequency",
-			"construction_cart": "Construction Cart",
-			"supply_cart": "Supply Cart",
-			"repair_analysis": "Repair Analysis",
-			"profit_breakdown": "Profit Breakdown",
-			"plan_check": "Plan check"
+			"visitation_frequency": "Frecuencia de visitas",
+			"construction_cart": "Carrito de construcción",
+			"supply_cart": "Carrito de suministro",
+			"repair_analysis": "Análisis de reparaciones",
+			"profit_breakdown": "Desglose del beneficio",
+			"plan_check": "Revisión del plan"
 		},
 		"profit_breakdown": {
-			"title": "Profit Breakdown",
-			"subtitle": "Where each day's output value goes · ȼ per day at this plan's CX preference",
-			"mode_label": "Break down",
+			"title": "Desglose del beneficio",
+			"subtitle": "A dónde va el valor de producción de cada día · ȼ por día con la preferencia de CX de este plan",
+			"mode_label": "Desglosar",
 			"mode": {
-				"cost_type": "By cost type",
-				"building": "By building"
+				"cost_type": "Por tipo de coste",
+				"building": "Por edificio"
 			},
 			"steps": {
-				"output": "Output value",
-				"inputs": "Production inputs",
-				"workforce": "Workforce",
-				"degradation": "Degradation",
-				"unattributed": "Not attributed",
-				"profit": "Daily profit"
+				"output": "Valor de producción",
+				"inputs": "Insumos de producción",
+				"workforce": "Mano de obra",
+				"degradation": "Degradación",
+				"unattributed": "Sin atribuir",
+				"profit": "Beneficio diario"
 			},
-			"more": "+{n} more",
-			"more_buildings": "{n} more buildings",
-			"empty": "Add production to see where the profit comes from.",
+			"more": "+{n} más",
+			"more_buildings": "{n} edificios más",
+			"empty": "Añade producción para ver de dónde sale el beneficio.",
 			"tooltip": {
-				"produced": "Produced / day",
-				"consumed": "Consumed / day",
-				"price": "Price",
-				"per_day": "ȼ / day",
-				"share": "Share of output",
-				"unattributed": "Buildings are priced on their own: the workforce of the whole plan and materials traded between buildings leave this rest."
+				"produced": "Producido / día",
+				"consumed": "Consumido / día",
+				"price": "Precio",
+				"per_day": "ȼ / día",
+				"share": "Parte de la producción",
+				"unattributed": "Los edificios se valoran por separado: la mano de obra de todo el plan y los materiales intercambiados entre edificios quedan en este resto."
 			},
 			"key_figures": {
-				"title": "Key figures",
-				"output": "Output value",
-				"costs": "Costs incl. degradation",
-				"margin": "Margin",
-				"earner": "brings in {share} of the output value. Its price decides this plan.",
-				"cost": "is the largest cost at {share} of the output value.",
-				"workforce": "Workforce consumables take {share} of the output value, most of it {tickers}."
+				"title": "Cifras clave",
+				"output": "Valor de producción",
+				"costs": "Costes incl. degradación",
+				"margin": "Margen",
+				"earner": "aporta {share} del valor de producción. Su precio decide este plan.",
+				"cost": "es el mayor coste, con {share} del valor de producción.",
+				"workforce": "Los consumibles de la mano de obra se llevan {share} del valor de producción, sobre todo {tickers}."
 			}
 		},
 		"popr": {
-			"title": "Latest Population Report",
-			"error": "Error loading latest population report. The planet might not have population.",
-			"loading": "Loading Population Report"
+			"title": "Último informe de población",
+			"error": "Error al cargar el último informe de población. Puede que el planeta no tenga población.",
+			"loading": "Cargando informe de población"
 		},
 		"visitation_frequency": {
-			"title": "Visitation Frequency",
+			"title": "Frecuencia de visitas",
 			"storage": {
-				"label": "Storage",
-				"info": "Your plan involves adding {storages} giving you a total storage capacity of {total_weight} t and {total_volume} m³.",
-				"info_no_storage": "Your plan has a total storage capacity of {total_weight} t and {total_volume} m³.",
+				"label": "Almacenamiento",
+				"info": "Tu plan implica añadir {storages}, lo que te da una capacidad total de almacenamiento de {total_weight} t y {total_volume} m³.",
+				"info_no_storage": "Tu plan tiene una capacidad total de almacenamiento de {total_weight} t y {total_volume} m³.",
 				"table": {
 					"weight": "t",
 					"volume": "m³",
 					"import": "@:terms.import",
 					"export": "@:terms.export",
 					"sum": "@:terms.sum",
-					"storage_filled": "Storage Filled",
-					"filled_unit": "days"
+					"storage_filled": "Almacenamiento lleno",
+					"filled_unit": "días"
 				},
-				"exclusion_info": "Exclude local materials from visitation frequency calculation for items handled exclusively planet-side, like local market sales, purchases or contracts.",
-				"exclusion_label": "Excluded materials"
+				"exclusion_info": "Excluye los materiales locales del cálculo de la frecuencia de visitas para lo que se gestiona solo en el planeta, como ventas, compras o contratos en el mercado local.",
+				"exclusion_label": "Materiales excluidos"
 			},
 			"shipping": {
-				"label": "Shipping",
+				"label": "Envío",
 				"table": {
-					"ship_weight": "Ship t",
-					"ship_volume": "Ship m³",
-					"visitation_days": "Visitation (days)",
-					"limit": "Limit",
-					"export_frequency": "@:terms.export Frequency",
-					"import_frequency": "@:terms.import Frequency"
+					"ship_weight": "Nave t",
+					"ship_volume": "Nave m³",
+					"visitation_days": "Visita (días)",
+					"limit": "Límite",
+					"export_frequency": "Frecuencia de @:terms.export",
+					"import_frequency": "Frecuencia de @:terms.import"
 				}
 			}
 		},
 		"construction_cart": {
-			"title": "Construction Cart",
-			"unplanned_info": "Base has unplanned {buildings} (FIO: {fio_updated}). Demolish to ensure area, habitation and materials are accurate.",
+			"title": "Carrito de construcción",
+			"unplanned_info": "La base tiene {buildings} sin planificar (FIO: {fio_updated}). Demuélelos para que el área, la habitación y los materiales sean correctos.",
 			"table": {
 				"building": "@:terms.buildings",
-				"built": "Built",
-				"amount": "Amount",
-				"habitation_info": "Insufficient habitation will reduce production efficiency.",
-				"planned": "Planned",
-				"materials_sum": "Materials Sum",
-				"total_cost": "Total Cost",
+				"built": "Construidos",
+				"amount": "Cantidad",
+				"habitation_info": "Una habitación insuficiente reducirá la eficiencia de producción.",
+				"planned": "Planificados",
+				"materials_sum": "Total de materiales",
+				"total_cost": "Coste total",
 				"total_weight": "@:terms.total_weight",
 				"total_volume": "@:terms.total_volume",
 				"material": "Material",
-				"storage": "Storage",
+				"storage": "Almacenamiento",
 				"stock": "Stock",
-				"stock_override": "Stock Override",
-				"need": "Need"
+				"stock_override": "Stock manual",
+				"need": "Necesidad"
 			},
-			"amount_label": "Amount of {building}",
-			"override_label": "Stock override for {ticker}",
-			"built_label": "Built {building}",
-			"built_manual": "Entered by you, not from FIO",
-			"built_reset": "Reset built {building}",
-			"built_reset_all": "Reset built",
-			"built_not_saved": "Built counts aren't saved for this plan."
+			"amount_label": "Cantidad de {building}",
+			"override_label": "Stock manual de {ticker}",
+			"built_label": "{building} construidos",
+			"built_manual": "Introducido por ti, no proviene de FIO",
+			"built_reset": "Restablecer {building} construidos",
+			"built_reset_all": "Restablecer construidos",
+			"built_not_saved": "Los recuentos de construidos no se guardan en este plan."
 		},
 		"supply_cart": {
-			"title": "Supply Cart",
+			"title": "Carrito de suministro",
 			"info": {
-				"p": "The Supply Cart provides updates on your plans needs combined with existing inventory sourced from FIO. You have the flexibility to opt for alternative storage locations to replenish your base. Tailor your selection based on whether you wish to restock workforce and production supplies or focus on a specific category, and specify the duration for which the supplied stock should sustain. XIT ships what the running base still needs once its own production covers part of it. For the first supply, use XIT Initial: it also ships the inputs this plan produces itself, because nothing is produced yet. Use the {link} tool for more advanced supply cart options.",
+				"p": "El carrito de suministro te informa de las necesidades de tus planes combinadas con el inventario existente obtenido de FIO. Puedes elegir otros almacenes para reabastecer tu base. Ajusta la selección según quieras reponer suministros de mano de obra y producción o centrarte en una categoría concreta, e indica durante cuánto tiempo debe bastar el stock suministrado. XIT envía lo que la base en marcha aún necesita una vez que su propia producción cubre una parte. Para el primer suministro usa XIT Initial: también envía los insumos que este plan produce por sí mismo, porque todavía no se produce nada. Usa la herramienta {link} para opciones de carrito de suministro más avanzadas.",
 				"link": "FIO Burn"
 			},
 			"buttons": {
-				"all": "All",
-				"workforce": "Workforce",
-				"production": "Production",
+				"all": "Todos",
+				"workforce": "Mano de obra",
+				"production": "Producción",
 				"xit_initial": "XIT Initial"
 			},
 			"table": {
-				"stock_duration": "Stock Duration (days)",
-				"storage": "Storage",
-				"xit_initial_name": "Supply Cart (Initial)",
+				"stock_duration": "Duración del stock (días)",
+				"storage": "Almacenamiento",
+				"xit_initial_name": "Carrito de suministro (inicial)",
 				"ticker": "Ticker",
-				"daily_need": "Daily Need",
-				"daily_cost": "Daily Cost",
+				"daily_need": "Necesidad diaria",
+				"daily_cost": "Coste diario",
 				"stock": "Stock",
-				"full_need": "Full Need",
-				"final_need": "Final Need",
+				"full_need": "Necesidad total",
+				"final_need": "Necesidad final",
 				"weight": "t",
 				"volume": "m³",
-				"workforce": "Workforce",
-				"production": "Production",
-				"total_cost": "Total Cost",
+				"workforce": "Mano de obra",
+				"production": "Producción",
+				"total_cost": "Coste total",
 				"total_weight": "@:terms.total_weight",
 				"total_volume": "@:terms.total_volume"
 			}
 		},
 		"repair_analysis": {
-			"title": "Repair Analysis",
-			"empty": "This plan has no production buildings to repair.",
-			"footnote": "\"Profit with these repairs\" counts the real repair cost at each interval, instead of the plan header's 1/180 construction share. Intervals are not saved.",
-			"per_day": "ȼ/day",
+			"title": "Análisis de reparaciones",
+			"empty": "Este plan no tiene edificios de producción que reparar.",
+			"footnote": "«Beneficio con estas reparaciones» cuenta el coste real de reparación en cada intervalo, en lugar de la parte de 1/180 de la construcción que usa la cabecera del plan. Los intervalos no se guardan.",
+			"per_day": "ȼ/día",
 			"n_d": "{n} d",
 			"stats": {
-				"profit": "Profit with these repairs",
-				"all_best": "all at best",
-				"vs_best": "{delta} vs. all at best",
-				"next_due": "Next repair due",
-				"repair_cost": "Repair cost",
-				"per_day": "ȼ/day at these intervals",
-				"one_repair": "One repair of every building"
+				"profit": "Beneficio con estas reparaciones",
+				"all_best": "todo en el óptimo",
+				"vs_best": "{delta} frente a todo en el óptimo",
+				"next_due": "Próxima reparación",
+				"repair_cost": "Coste de reparación",
+				"per_day": "ȼ/día con estos intervalos",
+				"one_repair": "Una reparación de cada edificio"
 			},
 			"list": {
-				"title": "Buildings",
-				"hint": "Most expensive repair first · intervals are not saved",
-				"hint_cards": "Tap one for its charts · not saved",
-				"reset": "Reset all to best",
-				"building": "Building",
-				"best": "Best (good)",
-				"interval": "Interval (d)",
-				"interval_label": "Repair interval for {ticker} in days",
-				"next_due": "Next due",
-				"good_range": "Good range",
-				"card_interval": "Every {day} d · best {best} ({from}–{to})"
+				"title": "Edificios",
+				"hint": "Primero la reparación más cara · los intervalos no se guardan",
+				"hint_cards": "Toca uno para ver sus gráficos · no se guarda",
+				"reset": "Restablecer todo al óptimo",
+				"building": "Edificio",
+				"best": "Óptimo (bueno)",
+				"interval": "Intervalo (d)",
+				"interval_label": "Intervalo de reparación de {ticker} en días",
+				"next_due": "Próxima",
+				"good_range": "Rango bueno",
+				"card_interval": "Cada {day} d · óptimo {best} ({from}–{to})"
 			},
 			"detail": {
-				"label": "Building detail",
-				"back": "Back to buildings",
-				"subtitle": "{name} · values for all {n}",
-				"profit_every": "Profit every {day} d",
-				"is_best": "best for this building",
-				"in_range": "in good range, {delta}",
-				"vs_best": "{delta} vs. {best} d",
-				"bill": "Repair bill",
-				"condition": "Condition at repair",
-				"avg_output": "avg output {pct} %",
-				"repair_every": "Repair every",
-				"interval_label": "Repair interval in days",
-				"days": "days",
-				"n_days": "{n} days",
-				"presets": "Presets",
-				"preset_best": "Best · {n} d",
-				"materials_title": "One repair of all {n} at {day} d"
+				"label": "Detalle del edificio",
+				"back": "Volver a edificios",
+				"subtitle": "{name} · valores para los {n}",
+				"profit_every": "Beneficio cada {day} d",
+				"is_best": "óptimo para este edificio",
+				"in_range": "en rango bueno, {delta}",
+				"vs_best": "{delta} frente a {best} d",
+				"bill": "Factura de reparación",
+				"condition": "Condición al reparar",
+				"avg_output": "producción media {pct} %",
+				"repair_every": "Reparar cada",
+				"interval_label": "Intervalo de reparación en días",
+				"days": "días",
+				"n_days": "{n} días",
+				"presets": "Preajustes",
+				"preset_best": "Óptimo · {n} d",
+				"materials_title": "Una reparación de los {n} a {day} d"
 			},
 			"all": {
-				"title": "All buildings, one repair each",
-				"subtitle": "each at its own interval"
+				"title": "Todos los edificios, una reparación cada uno",
+				"subtitle": "cada uno con su propio intervalo"
 			},
 			"materials": {
 				"total": "Total {cost} ȼ",
-				"show_all": "Show all {n} materials",
-				"show_less": "Show fewer materials"
+				"show_all": "Mostrar los {n} materiales",
+				"show_less": "Mostrar menos materiales"
 			},
 			"charts": {
-				"profit_title": "Profit per day, by repair interval",
-				"profit_label": "Profit per day by repair interval. Best every {best} days, good from {from} to {to} days.",
-				"fio_legend": "your buildings today (FIO)",
-				"good": "good {from}–{to} d",
-				"tip_every": "Every {day} d: {profit} ȼ/day",
-				"tip_best": "best interval",
-				"tip_delta": "{delta} ȼ/day vs. best ({best} d)",
-				"tradeoff_title": "Why {best} days: repair cost vs. lost output",
-				"tradeoff_hint": "ȼ/day · lowest total = best interval",
-				"repair_cost": "repair cost",
-				"lost_output": "lost output",
+				"profit_title": "Beneficio por día, según el intervalo de reparación",
+				"profit_label": "Beneficio por día según el intervalo de reparación. Óptimo cada {best} días, bueno de {from} a {to} días.",
+				"fio_legend": "tus edificios hoy (FIO)",
+				"good": "bueno {from}–{to} d",
+				"tip_every": "Cada {day} d: {profit} ȼ/día",
+				"tip_best": "intervalo óptimo",
+				"tip_delta": "{delta} ȼ/día frente al óptimo ({best} d)",
+				"tradeoff_title": "Por qué {best} días: coste de reparación frente a producción perdida",
+				"tradeoff_hint": "ȼ/día · el total más bajo = intervalo óptimo",
+				"repair_cost": "coste de reparación",
+				"lost_output": "producción perdida",
 				"total": "total",
-				"condition_title": "Building condition",
-				"x_axis": "days between repairs",
-				"good_one": "good {from} d"
+				"condition_title": "Condición del edificio",
+				"x_axis": "días entre reparaciones",
+				"good_one": "bueno {from} d"
 			},
 			"due": {
-				"overdue": "Overdue {n} d",
-				"today": "Due today",
-				"soon": "Due in {n} d",
-				"later": "In {n} d"
+				"overdue": "Retraso de {n} d",
+				"today": "Toca hoy",
+				"soon": "Toca en {n} d",
+				"later": "En {n} d"
 			},
 			"fio": {
-				"last_update": "FIO last update: {when}",
-				"stale": "This is the last data fetched from FIO. It is more than a day old.",
-				"connect": "Connect FIO to see each building's condition and when its next repair is due.",
-				"connect_link": "Set up FIO in your Profile",
-				"no_site": "No FIO site on {planet} yet. Your buildings and their due dates show here once the base exists and FIO has synced it.",
-				"title": "Your {ticker} on {planet} (FIO)",
-				"count": "FIO: {built} built · plan: {planned}. Amounts and profit follow the plan.",
-				"never_repaired": "never repaired",
-				"since_repair": "{n} d since repair",
-				"xit_due": "XIT for due ones",
-				"stale_amounts": "FIO data is more than a day old, the repair amounts may be higher by now."
+				"last_update": "Última actualización de FIO: {when}",
+				"stale": "Estos son los últimos datos obtenidos de FIO. Tienen más de un día.",
+				"connect": "Conecta FIO para ver la condición de cada edificio y cuándo toca su próxima reparación.",
+				"connect_link": "Configura FIO en tu perfil",
+				"no_site": "Aún no hay ningún emplazamiento FIO en {planet}. Tus edificios y sus fechas de reparación aparecerán aquí cuando exista la base y FIO la haya sincronizado.",
+				"title": "Tu {ticker} en {planet} (FIO)",
+				"count": "FIO: {built} construidos · plan: {planned}. Las cantidades y el beneficio siguen el plan.",
+				"never_repaired": "nunca reparado",
+				"since_repair": "{n} d desde la reparación",
+				"xit_due": "XIT para los pendientes",
+				"stale_amounts": "Los datos de FIO tienen más de un día, las cantidades de reparación pueden ser mayores ahora."
 			}
 		},
 		"cogm": {
-			"title": "Cost of Goods Manufactured",
+			"title": "Coste de bienes fabricados",
 			"cogm": "@:terms.cogm",
-			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, input prices and workforce, by quantity or full cost allocation.",
-			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
-			"prices_from": "Prices come from {preference}.",
-			"prices_from_empire": "Prices come from {preference}, the preference of the active empire {empire}.",
-			"no_preference": "This empire has no exchange preference. Prices are Universe · VWAP 30D.",
-			"manage_link": "Set one in Management",
-			"tags_hint": "Tags show where each input price comes from and open that rule in Exchanges.",
+			"info": "Por unidad de producción, a partir de la eficiencia, el tiempo de ejecución, la degradación, los precios de los insumos y la mano de obra de este plan, por cantidad o con asignación del coste completo.",
+			"workforce_note": "Los costes de mano de obra siguen los hábitats y lujos de este plan: los trabajadores sin vivienda y los lujos desactivados no cuestan nada.",
+			"prices_from": "Los precios proceden de {preference}.",
+			"prices_from_empire": "Los precios proceden de {preference}, la preferencia del imperio activo {empire}.",
+			"no_preference": "Este imperio no tiene preferencia de bolsa. Los precios son Universe · VWAP 30D.",
+			"manage_link": "Defínela en Gestión",
+			"tags_hint": "Las etiquetas muestran de dónde viene el precio de cada insumo y abren esa regla en Bolsas.",
 			"prices": {
-				"title": "Prices in {name}",
-				"open_exchanges": "Open in Exchanges",
-				"cogm_here": "COGM here ({planet})",
-				"market": "Market · {source}",
-				"buy_all": "Buy price, all planets",
-				"not_fixed": "not fixed",
-				"use": "Use as buy price on all planets",
-				"drift": "The fixed buy price is {diff} % off the current COGM",
-				"drift_hint": "Inputs or efficiency changed since it was set.",
-				"update": "Update to {value}",
-				"matches": "Buy price matches COGM",
-				"changes": "Changes the {ticker} price in every plan using {preference}.",
-				"buyers": "{plans} buy {ticker}.",
-				"fixed_title": "Fixed prices",
-				"scope": "Fixed prices of",
-				"all_planets": "All planets",
-				"this_plan": "This plan"
+				"title": "Precios en {name}",
+				"open_exchanges": "Abrir en Bolsas",
+				"cogm_here": "COGM aquí ({planet})",
+				"market": "Mercado · {source}",
+				"buy_all": "Precio de compra, todos los planetas",
+				"not_fixed": "no fijado",
+				"use": "Usar como precio de compra en todos los planetas",
+				"drift": "El precio de compra fijado difiere un {diff} % del COGM actual",
+				"drift_hint": "Los insumos o la eficiencia han cambiado desde que se fijó.",
+				"update": "Actualizar a {value}",
+				"matches": "El precio de compra coincide con el COGM",
+				"changes": "Cambia el precio de {ticker} en todos los planes que usan {preference}.",
+				"buyers": "{plans} compran {ticker}.",
+				"fixed_title": "Precios fijados",
+				"scope": "Precios fijados de",
+				"all_planets": "Todos los planetas",
+				"this_plan": "Este plan"
 			},
 			"table": {
-				"parameters": "Parameters",
-				"recipe_runtime": "@:terms.recipes Runtime",
-				"percent_day": "% / day",
-				"efficiency": "Efficiency",
-				"degradation": "Degradation",
+				"parameters": "Parámetros",
+				"recipe_runtime": "Tiempo de ejecución de @:terms.recipes",
+				"percent_day": "% / día",
+				"efficiency": "Eficiencia",
+				"degradation": "Degradación",
 				"cost": "@:terms.cost",
 				"materials": "@:terms.materials_plural",
-				"input_total": "Input Total",
+				"input_total": "Total de insumos",
 				"material": "@:terms.materials",
-				"cost_unit": "ȼ / Unit",
-				"cost_total": "Cost Total",
-				"cost_total_unit": "ȼ Total",
-				"workforce": "Workforce",
-				"total_cost": "Total Cost",
-				"recipe_profit": "@:terms.recipes Profit",
-				"cost_split": "Cost Split",
-				"market": "market {price} · {diff} %"
+				"cost_unit": "ȼ / unidad",
+				"cost_total": "Coste total",
+				"cost_total_unit": "ȼ total",
+				"workforce": "Mano de obra",
+				"total_cost": "Coste total",
+				"recipe_profit": "Beneficio de @:terms.recipes",
+				"cost_split": "Reparto del coste",
+				"market": "mercado {price} · {diff} %"
 			}
 		},
 		"plan_analytics": {
-			"title": "Planning Insights",
-			"info": "Insights are aggregated from active player plans on {planet}. PRUNplanner enforces minimum sample thresholds to ensure both anonymity and statistical accuracy.",
+			"title": "Información de planificación",
+			"info": "La información se agrega a partir de los planes de jugadores activos en {planet}. PRUNplanner aplica umbrales mínimos de muestra para garantizar tanto el anonimato como la precisión estadística.",
 			"labels": {
-				"experts": "Experts",
-				"production_buildings": "Production @:terms.buildings_plural",
+				"experts": "Expertos",
+				"production_buildings": "@:terms.buildings_plural de producción",
 				"recipes": "@:terms.recipes_plural"
 			},
-			"toggle": "Toggle insights"
+			"toggle": "Alternar información"
 		},
 		"plan_starter": {
-			"title": "Start from a typical setup on {planet}",
-			"description": "What the {plans} active plans on this planet build most (up to {max}; those in at least {percent} of plans are pre-selected). Adds the checked ones to this plan as a starting point; nothing is saved until you save.",
+			"title": "Empieza con una configuración típica en {planet}",
+			"description": "Lo que más construyen los {plans} planes activos de este planeta (hasta {max}; los que aparecen en al menos {percent} de los planes vienen preseleccionados). Añade los marcados a este plan como punto de partida; no se guarda nada hasta que guardes.",
 			"columns": {
-				"building": "Building",
-				"in_plans": "In plans here",
-				"amount": "Amount",
-				"recipes": "Typical recipes"
+				"building": "Edificio",
+				"in_plans": "En planes de aquí",
+				"amount": "Cantidad",
+				"recipes": "Recetas típicas"
 			},
-			"typical_amount": "typ. {amount}x",
-			"no_recipe": "no typical recipe",
-			"experts": "Experts in plans here",
-			"expert_share": "{expert} in {percent} of plans",
-			"expert_added": "adds {amount}",
-			"based_on": "Based on plans of players active in the last 90 days · updated daily",
-			"turn_off": "You can turn off plan suggestions in {link}",
-			"turn_off_link": "Profile › Preferences",
-			"start_empty": "Start empty",
-			"apply": "Use typical setup ({count})",
-			"applied": "Typical setup added: {n} building | Typical setup added: {n} buildings",
-			"empty": "No buildings yet. Add one above, or {link}",
-			"show": "start from a typical setup"
+			"typical_amount": "típ. {amount}x",
+			"no_recipe": "sin receta típica",
+			"experts": "Expertos en los planes de aquí",
+			"expert_share": "{expert} en {percent} de los planes",
+			"expert_added": "añade {amount}",
+			"based_on": "Basado en planes de jugadores activos en los últimos 90 días · actualizado a diario",
+			"turn_off": "Puedes desactivar las sugerencias de plan en {link}",
+			"turn_off_link": "Perfil › Preferencias",
+			"start_empty": "Empezar vacío",
+			"apply": "Usar configuración típica ({count})",
+			"applied": "Configuración típica añadida: {n} edificio | Configuración típica añadida: {n} edificios",
+			"empty": "Aún no hay edificios. Añade uno arriba o {link}",
+			"show": "empieza con una configuración típica"
 		},
 		"plan_check": {
-			"title": "Plan check",
-			"view_label": "View",
+			"title": "Revisión del plan",
+			"view_label": "Vista",
 			"views": {
-				"market": "Market check",
-				"sensitivity": "Price sensitivity",
-				"compare": "Compare plans"
+				"market": "Revisión de mercado",
+				"sensitivity": "Sensibilidad de precios",
+				"compare": "Comparar planes"
 			},
 			"market": {
-				"rule_link": "{ticker} price: {source}, open the rule in Exchanges",
+				"rule_link": "Precio de {ticker}: {source}, abre la regla en Bolsas",
 				"columns": {
 					"material": "Material",
-					"side": "Side",
-					"per_day": "Per day",
-					"share": "Share of daily volume, 30 days",
-					"traded": "Traded 30d",
-					"bid_ask": "Bid · ask ȼ",
-					"spread": "Spread",
-					"check": "Check"
+					"side": "Lado",
+					"per_day": "Por día",
+					"share": "Parte del volumen diario, 30 días",
+					"traded": "Negociado 30d",
+					"bid_ask": "Bid · Ask ȼ",
+					"spread": "Diferencial",
+					"check": "Revisión"
 				},
 				"ok": "ok",
-				"share_label": "{ticker}: {share} of the daily volume",
-				"card_traded": "Traded 30d {traded} · bid {bid} · ask {ask}",
+				"share_label": "{ticker}: {share} del volumen diario",
+				"card_traded": "Negociado 30d {traded} · bid {bid} · ask {ask}",
 				"card_side": "{side} {value}/d",
-				"more": "+ {n} more material, all ok | + {n} more materials, all ok",
-				"footnote": "Share = what the plan buys or sells per day ÷ average daily volume traded on {exchange} in the last 30 days. No trades in the last 7 days is flagged on its own.",
-				"marks": "10 % large share · 50 % bigger than the market",
-				"empty": "This plan doesn't buy or sell anything yet.",
+				"more": "+ {n} material más, todo correcto | + {n} materiales más, todo correcto",
+				"footnote": "Parte = lo que el plan compra o vende por día ÷ volumen diario medio negociado en {exchange} en los últimos 30 días. Si no hay operaciones en los últimos 7 días, se marca por separado.",
+				"marks": "10 % parte grande · 50 % mayor que el mercado",
+				"empty": "Este plan aún no compra ni vende nada.",
 				"real": {
-					"title": "At real prices",
-					"subtitle": "Plan prices: {source}",
-					"plan_profit": "Plan profit",
-					"ask_bid": "Buying at ask, selling at bid",
-					"difference": "Difference",
-					"roi": "ROI at ask / bid",
-					"kept_zero": "{tickers} keeps its plan price: nobody offers or bids on it right now. | {tickers} keep their plan prices: nobody offers or bids on them right now.",
-					"kept_fallback": "{tickers} keeps its plan price: no exchange is set for it. | {tickers} keep their plan prices: no exchange is set for them.",
-					"kept_universe": "{tickers} keeps its plan price: the Universe average has no ask or bid. | {tickers} keep their plan prices: the Universe average has no ask or bid.",
-					"no_cx": "Set a CX preference to see the plan at real ask and bid prices."
+					"title": "A precios reales",
+					"subtitle": "Precios del plan: {source}",
+					"plan_profit": "Beneficio del plan",
+					"ask_bid": "Comprando al Ask, vendiendo al Bid",
+					"difference": "Diferencia",
+					"roi": "ROI al Ask / Bid",
+					"kept_zero": "{tickers} mantiene su precio del plan: ahora mismo nadie ofrece ni pide por él. | {tickers} mantienen sus precios del plan: ahora mismo nadie ofrece ni pide por ellos.",
+					"kept_fallback": "{tickers} mantiene su precio del plan: no tiene ninguna bolsa asignada. | {tickers} mantienen sus precios del plan: no tienen ninguna bolsa asignada.",
+					"kept_universe": "{tickers} mantiene su precio del plan: la media de Universe no tiene Ask ni Bid. | {tickers} mantienen sus precios del plan: la media de Universe no tiene Ask ni Bid.",
+					"no_cx": "Define una preferencia de CX para ver el plan a precios reales de Ask y Bid."
 				},
 				"means": {
-					"title": "What this means",
-					"fine": "Every material fits its market.",
-					"red": "Can't trade as planned",
-					"amber": "Large share of the market",
-					"ok": "Fine",
-					"caveat": "CX volume only. Local markets, contracts and trades inside a corporation aren't counted.",
-					"help": "What do these checks mean?"
+					"title": "Qué significa",
+					"fine": "Todos los materiales encajan con su mercado.",
+					"red": "No se puede comerciar como se planeó",
+					"amber": "Gran parte del mercado",
+					"ok": "Bien",
+					"caveat": "Solo volumen de CX. No se cuentan los mercados locales, los contratos ni las operaciones dentro de una corporación.",
+					"help": "¿Qué significan estas revisiones?"
 				}
 			},
 			"target": {
-				"title": "Target price",
-				"subtitle": "Which price gives the profit you want? Other prices stay as they are.",
+				"title": "Precio objetivo",
+				"subtitle": "¿Qué precio da el beneficio que quieres? Los demás precios no cambian.",
 				"material": "Material",
-				"target": "Target profit, ȼ/day",
-				"result_sell": "{ticker} has to sell at",
-				"result_buy": "{ticker} has to be bought at",
-				"unreachable": "This profit can't be reached by changing the {ticker} price.",
-				"today": "Plan price today",
-				"bid_ask": "{exchange} bid · ask now",
-				"range": "{exchange} range, last 30 days",
-				"range_error": "The 30-day range could not be loaded.",
-				"above": "{price} ȼ is above anything {exchange} paid in the last 30 days.",
-				"below": "{price} ȼ is below anything {exchange} paid in the last 30 days.",
-				"all_exchanges": "All exchanges"
+				"target": "Beneficio objetivo, ȼ/día",
+				"result_sell": "{ticker} tiene que venderse a",
+				"result_buy": "{ticker} tiene que comprarse a",
+				"unreachable": "Este beneficio no se puede alcanzar cambiando el precio de {ticker}.",
+				"today": "Precio del plan hoy",
+				"bid_ask": "{exchange} bid · ask ahora",
+				"range": "Rango de {exchange}, últimos 30 días",
+				"range_error": "No se pudo cargar el rango de 30 días.",
+				"above": "{price} ȼ está por encima de todo lo que pagó {exchange} en los últimos 30 días.",
+				"below": "{price} ȼ está por debajo de todo lo que pagó {exchange} en los últimos 30 días.",
+				"all_exchanges": "Todas las bolsas"
 			},
-			"pct_label": "Change each price by",
+			"pct_label": "Cambiar cada precio en",
 			"pct": "±{pct} %",
 			"columns": {
 				"material": "Material",
-				"side": "Side",
-				"change": "Profit falls ← · → Profit rises",
-				"range": "Profit range ȼ/day",
-				"break_even": "Break-even"
+				"side": "Lado",
+				"change": "El beneficio baja ← · → El beneficio sube",
+				"range": "Rango de beneficio ȼ/día",
+				"break_even": "Punto de equilibrio"
 			},
 			"side": {
-				"buy": "buy",
-				"sell": "sell"
+				"buy": "comprar",
+				"sell": "venta"
 			},
-			"bar_label": "{ticker}: profit −{value} to +{value} ȼ/day",
-			"never": "never",
+			"bar_label": "{ticker}: beneficio de −{value} a +{value} ȼ/día",
+			"never": "nunca",
 			"over": "> +500 %",
-			"more": "+ {n} more material ({tickers}) moves profit by less than ±{value} ȼ/day | + {n} more materials ({tickers}) move profit by less than ±{value} ȼ/day",
+			"more": "+ {n} material más ({tickers}) mueve el beneficio menos de ±{value} ȼ/día | + {n} materiales más ({tickers}) mueven el beneficio menos de ±{value} ȼ/día",
 			"footnote": {
-				"centre": "Centre line = today's profit, {profit} ȼ/day. Each bar changes one price, everything else stays.",
-				"break_even": "Break-even = price change at which this plan stops making money."
+				"centre": "Línea central = beneficio de hoy, {profit} ȼ/día. Cada barra cambia un precio, todo lo demás se mantiene.",
+				"break_even": "Punto de equilibrio = cambio de precio con el que este plan deja de dar dinero."
 			},
-			"empty": "Add production to see which prices this plan depends on.",
+			"empty": "Añade producción para ver de qué precios depende este plan.",
 			"tooltip": {
-				"value": "Value / day at today's price",
-				"profit": "Profit at {change}"
+				"value": "Valor / día al precio de hoy",
+				"profit": "Beneficio con {change}"
 			},
 			"means": {
-				"title": "What this means",
-				"lower": "A {pct} % lower {ticker} price cuts profit to {profit} ȼ/day.",
-				"higher": "A {pct} % higher {ticker} price cuts profit to {profit} ȼ/day.",
-				"break_even": "At {change} the plan breaks even.",
-				"never": "It stays profitable even if this price drops to 0.",
-				"never_loss": "No change to this price alone brings the plan to break-even.",
-				"over": "Its price would have to change by more than +500 % to break even.",
-				"profit_if": "Profit if {ticker} {change}",
-				"roi_if": "ROI if {ticker} {change}",
-				"all_costs": "All costs +{pct} %",
-				"most_sensitive": "Most sensitive",
-				"source_cx": "Prices: {name}, from the plan's CX preference",
-				"source_universe": "Prices: Universe 30-day average, the plan has no CX preference"
+				"title": "Qué significa",
+				"lower": "Un precio de {ticker} un {pct} % más bajo reduce el beneficio a {profit} ȼ/día.",
+				"higher": "Un precio de {ticker} un {pct} % más alto reduce el beneficio a {profit} ȼ/día.",
+				"break_even": "Con {change} el plan alcanza el punto de equilibrio.",
+				"never": "Sigue siendo rentable aunque este precio baje a 0.",
+				"never_loss": "Ningún cambio en este precio por sí solo lleva el plan al punto de equilibrio.",
+				"over": "Su precio tendría que cambiar más de +500 % para llegar al punto de equilibrio.",
+				"profit_if": "Beneficio si {ticker} {change}",
+				"roi_if": "ROI si {ticker} {change}",
+				"all_costs": "Todos los costes +{pct} %",
+				"most_sensitive": "Más sensible",
+				"source_cx": "Precios: {name}, de la preferencia de CX del plan",
+				"source_universe": "Precios: media de Universe a 30 días, el plan no tiene preferencia de CX"
 			},
 			"compare": {
-				"picker": "Compare with",
-				"same_planet": "This planet",
-				"other_planets": "Other planets",
-				"loading": "Loading your plans",
-				"error": "Your plans could not be loaded.",
-				"no_plans": "You have no other plan to compare with yet.",
-				"calc_error": "This plan could not be calculated. Pick another plan or reload the page.",
-				"this_plan": "This plan",
+				"picker": "Comparar con",
+				"same_planet": "Este planeta",
+				"other_planets": "Otros planetas",
+				"loading": "Cargando tus planes",
+				"error": "No se pudieron cargar tus planes.",
+				"no_plans": "Aún no tienes otro plan con el que comparar.",
+				"calc_error": "No se pudo calcular este plan. Elige otro plan o recarga la página.",
+				"this_plan": "Este plan",
 				"columns": {
-					"figure": "Key figure",
-					"difference": "Difference",
-					"side_by_side": "Side by side"
+					"figure": "Cifra clave",
+					"difference": "Diferencia",
+					"side_by_side": "Lado a lado"
 				},
 				"figures": {
-					"profit": "Daily profit",
-					"output": "Output value",
-					"cost": "Daily cost",
-					"degradation": "Degradation",
-					"planCost": "Plan cost",
+					"profit": "Beneficio diario",
+					"output": "Valor de producción",
+					"cost": "Coste diario",
+					"degradation": "Degradación",
+					"planCost": "Coste del plan",
 					"roi": "ROI",
-					"profitArea": "Profit / Area",
-					"area": "Area used",
-					"payback": "Payback of the difference"
+					"profitArea": "Beneficio / Área",
+					"area": "Área usada",
+					"payback": "Amortización de la diferencia"
 				},
-				"bars_label": "This plan {a}, {name} {b}",
-				"footnote": "Difference = other plan minus this plan, coloured by what is better for you: lower cost and a shorter ROI count as good, area is neutral. Payback of the difference = how many days the other plan's extra profit takes to pay for its extra build cost.",
+				"bars_label": "Este plan {a}, {name} {b}",
+				"footnote": "Diferencia = el otro plan menos este plan, coloreada según lo que te conviene: un coste menor y un ROI más corto cuentan como buenos, el área es neutra. Amortización de la diferencia = cuántos días tarda el beneficio extra del otro plan en pagar su coste extra de construcción.",
 				"verdict": {
-					"title": "Verdict",
-					"same": "Both plans are the same.",
-					"earns_more": "This plan earns {value} ȼ/day more.",
-					"earns_less": "This plan earns {value} ȼ/day less.",
-					"earns_same": "Both plans earn the same per day.",
-					"sooner": "It pays back {days} days sooner.",
-					"later": "It pays back {days} days later.",
-					"trade": "{name} gains {gain} ȼ/day on {ticker} but loses {cost} ȼ/day on {tickers}.",
-					"gain": "{name} gains {gain} ȼ/day on {ticker}.",
-					"cost": "{name} loses {cost} ȼ/day on {tickers}.",
-					"and": "{a} and {b}",
-					"payback": "Its extra {cost} ȼ build cost pays for itself in {days} days.",
-					"payback_never": "Its extra {cost} ȼ build cost never pays back."
+					"title": "Veredicto",
+					"same": "Ambos planes son iguales.",
+					"earns_more": "Este plan gana {value} ȼ/día más.",
+					"earns_less": "Este plan gana {value} ȼ/día menos.",
+					"earns_same": "Ambos planes ganan lo mismo por día.",
+					"sooner": "Se amortiza {days} días antes.",
+					"later": "Se amortiza {days} días después.",
+					"trade": "{name} gana {gain} ȼ/día con {ticker} pero pierde {cost} ȼ/día con {tickers}.",
+					"gain": "{name} gana {gain} ȼ/día con {ticker}.",
+					"cost": "{name} pierde {cost} ȼ/día con {tickers}.",
+					"and": "{a} y {b}",
+					"payback": "Su coste extra de construcción de {cost} ȼ se amortiza en {days} días.",
+					"payback_never": "Su coste extra de construcción de {cost} ȼ nunca se amortiza."
 				},
 				"changes": {
-					"title": "What changes",
-					"subtitle": "{name} minus this plan, ȼ/day",
-					"none": "No material changes.",
+					"title": "Qué cambia",
+					"subtitle": "{name} menos este plan, ȼ/día",
+					"none": "Sin cambios relevantes en los materiales.",
 					"more": "+{n}",
-					"more_label": "{n} more material | {n} more materials",
-					"bar_label": "{ticker}: {value} ȼ/day",
-					"flag": "{ticker}: {name} would {side} {value} / day, {share} of what {exchange} trades."
+					"more_label": "{n} material más | {n} materiales más",
+					"bar_label": "{ticker}: {value} ȼ/día",
+					"flag": "{ticker}: {name} {side} {value} / día, {share} de lo que negocia {exchange}."
 				},
-				"source_cx": "{name} is priced with its own CX preference, {cx}.",
-				"source_universe": "{name} is priced at the Universe 30-day average, it has no CX preference.",
+				"source_cx": "{name} se valora con su propia preferencia de CX, {cx}.",
+				"source_universe": "{name} se valora a la media de Universe a 30 días, no tiene preferencia de CX.",
 				"payback": {
-					"formula": "{cost} ȼ more to build ÷ {profit} ȼ/day more profit",
-					"never": "never",
-					"never_formula": "{name} costs more to build and earns no more"
+					"formula": "{cost} ȼ más de construcción ÷ {profit} ȼ/día más de beneficio",
+					"never": "nunca",
+					"never_formula": "{name} cuesta más de construir y no gana más"
 				}
 			}
 		}
 	},
 	"components": {
 		"status": {
-			"hq": "HQ",
+			"hq": "Sede",
 			"cogc": "@:{'terms.cogc'}",
 			"area": "@:{'terms.area'}",
 			"profit": "@:{'terms.profit'}",
 			"experts": "@:{'terms.experts_plural'}",
-			"experts_none": "None",
-			"area_free": "{count} free",
-			"area_over": "{count} over",
-			"per_day": "ȼ/day"
+			"experts_none": "Ninguno",
+			"area_free": "{count} libres",
+			"area_over": "{count} de más",
+			"per_day": "ȼ/día"
 		},
 		"configuration": {
-			"label": "Configuration",
-			"name": "Name",
+			"label": "Configuración",
+			"name": "Nombre",
 			"empire": "@:terms.empire",
-			"prices": "Prices",
-			"no_preference": "Universe · VWAP 30D (no preference)"
+			"prices": "Precios",
+			"no_preference": "Universe · VWAP 30D (sin preferencia)"
 		},
 		"area": {
 			"permits": "@:terms.permits_plural",
 			"area": "@:terms.area",
-			"free": "Free"
+			"free": "Libre"
 		},
 		"bonuses": {
-			"corp_hq": "Corp. HQ",
-			"corp_hq_tooltip": "The corporation you belong to has its headquarters on this planet (not your individual company).",
+			"corp_hq": "Sede corp.",
+			"corp_hq_tooltip": "La corporación a la que perteneces tiene su sede en este planeta (no tu empresa individual).",
 			"cogc": "@:terms.cogc"
 		},
 		"infrastructure": {
-			"label": "Infrastructure",
-			"auto_optimize": "Auto-Optimize Habs",
-			"auto_optimize_tooltip": "Automatically optimize habitations to meet workforce needs as buildings are added.",
+			"label": "Infraestructura",
+			"auto_optimize": "Autooptimizar hábitats",
+			"auto_optimize_tooltip": "Optimiza automáticamente los hábitats para cubrir las necesidades de mano de obra al añadir edificios.",
 			"buttons": {
-				"optimize_cost": "Optimize Cost",
-				"optimize_area": "Optimize Area"
+				"optimize_cost": "Optimizar coste",
+				"optimize_area": "Optimizar área"
 			},
-			"amount_label": "Amount of {infrastructure}"
+			"amount_label": "Cantidad de {infrastructure}"
 		},
 		"experts": {
-			"label": "Experts",
-			"warning": "Maximum number of experts on a base is 6. You currently have {expert_number} experts assigned.",
-			"amount_label": "{expert} experts"
+			"label": "Expertos",
+			"warning": "El máximo de expertos en una base es 6. Ahora mismo tienes asignados {expert_number} expertos.",
+			"amount_label": "Expertos de {expert}"
 		},
 		"workforce": {
-			"label": "Workforce",
+			"label": "Mano de obra",
 			"table": {
-				"type": "Type",
-				"need_housed": "Need / Housed",
-				"open": "Open",
-				"luxuries": "Luxuries",
-				"pct_eff": "Eff. %"
+				"type": "Tipo",
+				"need_housed": "Necesidad / Alojados",
+				"open": "Libres",
+				"luxuries": "Lujos",
+				"pct_eff": "Efic. %"
 			}
 		},
 		"overview": {
-			"label": "Overview",
+			"label": "Resumen",
 			"table": {
-				"daily_cost": "Daily Cost",
-				"degradation": "Degradation",
-				"plan_cost": "Plan Cost",
-				"daily_profit": "Daily Profit",
+				"daily_cost": "Coste diario",
+				"degradation": "Degradación",
+				"plan_cost": "Coste del plan",
+				"daily_profit": "Beneficio diario",
 				"roi": "ROI",
 				"profit_area": "@:terms.profit_per_area"
 			}
 		},
 		"storage": {
-			"label": "Storage",
+			"label": "Almacenamiento",
 			"table": {
 				"weight": "t",
 				"volume": "m³",
 				"import": "@:terms.import",
 				"export": "@:terms.export",
 				"sum": "@:terms.sum",
-				"filled": "Filled"
+				"filled": "Lleno"
 			}
 		},
 		"materialio": {
-			"label": "Material I/O",
-			"label_production": "Production",
-			"label_workforce": "Workforce",
+			"label": "E/S de materiales",
+			"label_production": "Producción",
+			"label_workforce": "Mano de obra",
 			"buttons": {
-				"toggle_weight_volume": "Toggle Weight & Volume",
-				"toggle_production_workforce": "Toggle Production & Workforce Split"
+				"toggle_weight_volume": "Alternar peso y volumen",
+				"toggle_production_workforce": "Alternar separación entre producción y mano de obra"
 			},
 			"table": {
-				"input": "In",
-				"output": "Out",
+				"input": "Entrada",
+				"output": "Salida",
 				"delta": "Δ",
-				"cost_day": "ȼ / day",
+				"cost_day": "ȼ / día",
 				"total_weight": "Δ t",
 				"total_volume": "Δ m³"
 			}
 		},
 		"save_as": {
-			"title": "Save As",
+			"title": "Guardar como",
 			"form": {
-				"plan_name": "Name",
-				"plan_name_placeholder": "New @:terms.plan Name",
+				"plan_name": "Nombre",
+				"plan_name_placeholder": "Nombre del nuevo @:terms.plan",
 				"empire": "@:terms.empire"
 			}
 		},
 		"production": {
-			"label": "Production",
+			"label": "Producción",
 			"planet_resources": "@:terms.planets @:terms.resources_plural",
 			"form": {
-				"match_cogc": "Match @:terms.cogc",
-				"select_placeholder": "Select @:terms.buildings & Add to @:terms.plan",
-				"popular_on": "Popular on {planet} · {plans} plans",
-				"all_buildings": "All buildings"
+				"match_cogc": "Igualar @:terms.cogc",
+				"select_placeholder": "Selecciona @:terms.buildings y añádelos al @:terms.plan",
+				"popular_on": "Popular en {planet} · {plans} planes",
+				"all_buildings": "Todos los edificios"
 			},
 			"table": {
 				"building_recipe": "@:terms.buildings / @:terms.recipes",
-				"runtime": "Runtime",
-				"share": "Share",
-				"tools": "Tools"
+				"runtime": "Tiempo de ejecución",
+				"share": "Parte",
+				"tools": "Herramientas"
 			}
 		},
 		"production_building": {
-			"no_recipe": "No Active @:terms.recipes_plural",
-			"qty": "Qty",
+			"no_recipe": "Sin @:terms.recipes_plural activas",
+			"qty": "Cant.",
 			"buttons": {
 				"add_recipe": "@:terms.recipes"
 			},
 			"table": {
-				"expertise": "Expertise",
-				"efficiency": "Efficiency",
+				"expertise": "Campo",
+				"efficiency": "Eficiencia",
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
-				"construction": "Construction",
-				"construction_per_building": "Per building"
+				"construction": "Construcción",
+				"construction_per_building": "Por edificio"
 			},
 			"zero_reason": {
-				"FERTILITY": "Planet not fertile",
-				"WORKFORCE": "No workforce housed"
+				"FERTILITY": "Planeta no fértil",
+				"WORKFORCE": "Sin mano de obra alojada"
 			},
-			"qty_label": "Amount of {building}",
-			"mix_hint": "Most planned here:",
-			"mix_add": "Add",
-			"mix_add_label": "Add the most planned @:terms.recipes_plural of {building}"
+			"qty_label": "Cantidad de {building}",
+			"mix_hint": "Más planificado aquí:",
+			"mix_add": "Añadir",
+			"mix_add_label": "Añadir las @:terms.recipes_plural más planificadas de {building}"
 		},
 		"production_recipe": {
-			"cogm_title": "Cost Of Goods Manufactured",
+			"cogm_title": "Coste de bienes fabricados",
 			"buttons": {
 				"cogm": "@:terms.cogm"
 			},
 			"table": {
-				"input": "Input",
-				"time": "Time",
-				"output": "Output",
-				"daily_revenue": "ȼ / Day",
-				"profit_area": "ȼ / Area",
+				"input": "Insumo",
+				"time": "Tiempo",
+				"output": "Producción",
+				"daily_revenue": "ȼ / día",
+				"profit_area": "ȼ / Área",
 				"roi": "ROI",
-				"plans_here": "Plans here",
+				"plans_here": "Planes de aquí",
 				"below_threshold": "< 5 %"
 			},
 			"info": {
-				"p1_strong": "Revenue / Day",
-				"p1": "is calculated by taking the daily income generated from a recipe and subtracting both the daily workforce cost (for the workers this plan houses and the luxuries it provides) and the daily building degradation cost (1/180th of the construction cost). The income from the recipe is based on the difference between the input material costs and the output material values.",
-				"p2_strong": "ȼ / Area",
-				"p2": "is the daily revenue divided by the area for one production building and its proportionate share of the area for a CM and habs required for an optimal base of such buildings in Recipe ROI.",
+				"p1_strong": "Ingresos / día",
+				"p1": "se calculan tomando el ingreso diario que genera una receta y restando tanto el coste diario de mano de obra (por los trabajadores que aloja este plan y los lujos que ofrece) como el coste diario de degradación del edificio (1/180 del coste de construcción). El ingreso de la receta se basa en la diferencia entre el coste de los materiales de insumo y el valor de los materiales de producción.",
+				"p2_strong": "ȼ / Área",
+				"p2": "es el ingreso diario dividido por el área de un edificio de producción más su parte proporcional del área de un CM y de los hábitats necesarios para una base óptima de esos edificios en ROI de recetas.",
 				"p3_strong": "ROI",
-				"p3": "is the time required for a continuously operating recipe to generate enough revenue to offset the building's construction cost. This considers daily degradation and workforce costs as well.",
-				"p4_strong": "Plans here",
-				"p4": "is the share of plans on {planet} with a {building} that run this recipe, from active players, updated daily."
+				"p3": "es el tiempo que necesita una receta en funcionamiento continuo para generar ingresos suficientes que compensen el coste de construcción del edificio. También tiene en cuenta la degradación diaria y los costes de mano de obra.",
+				"p4_strong": "Planes de aquí",
+				"p4": "es la proporción de planes en {planet} con un {building} que ejecutan esta receta, de jugadores activos, actualizada a diario."
 			},
-			"amount_label": "Amount of recipe {recipe}"
+			"amount_label": "Cantidad de la receta {recipe}"
 		}
 	}
 }

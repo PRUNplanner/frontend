@@ -1,8 +1,8 @@
 {
-	"view_title": "Infrastruktur-Rechner",
-	"title": "Infrakstrukture-Beitrag-Rechner",
+	"view_title": "Instandhaltungskosten-Rechner",
+	"title": "Instandhaltungskosten-Rechner",
 	"form": {
-		"cx_preference": "@:terms.cx Präferenz"
+		"cx_preference": "CX-Präferenz"
 	},
 	"calculator": {
 		"calculating": "Berechne Preise der Infrastruktur Materialien",

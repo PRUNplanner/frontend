@@ -1,51 +1,51 @@
-This system provides near-real-time monitoring of Commodity Exchanges (CX) via FIO API Webhooks that PRUNplanner processes and streams to your browser. It is designed to allow you to monitor market movements and create alerts for automated reaction to changes.
+Dieses System bietet eine Überwachung der Handelskammern (CX) nahezu in Echtzeit über FIO-API-Webhooks, die PRUNplanner verarbeitet und an deinen Browser streamt. Es ist dafür gedacht, dass du Marktbewegungen beobachten und Alarme erstellen kannst, um automatisiert auf Änderungen zu reagieren.
 
-# Data Stream Mechanics
+# Funktionsweise des Datenstroms
 
-FIO API receives data from Prosperous Universe once a user sees a change happening and sends data to PRUNplanner bundled every 30 seconds. PRUNplanner itself will persist the last 500 datapoints so you don't start from scratch when opening this view.
+Die FIO-API erhält Daten aus Prosperous Universe, sobald ein Nutzer eine Änderung sieht, und sendet sie alle 30 Sekunden gebündelt an PRUNplanner. PRUNplanner selbst speichert die letzten 500 Datenpunkte, damit du beim Öffnen dieser Ansicht nicht bei null anfängst.
 
-Please note: there won't be datapoints for all available materials and exchanges, only those where a change happened and a user accessed it ingame. The live overview will continuously build up the more data was received.
+Bitte beachte: Es gibt nicht für alle verfügbaren Materialien und Marktplätze Datenpunkte, sondern nur für die, bei denen sich etwas geändert hat und ein Nutzer sie im Spiel aufgerufen hat. Die Live-Übersicht baut sich laufend weiter auf, je mehr Daten empfangen werden.
 
-# Live View
+# Live-Ansicht
 
-The right hand side of this view display the received datapoints based on their material ticker and exchange combination, showing you the current traded price, bid and ask prices, the spread between them and the currently active buy and sell volumes.
+Die rechte Seite dieser Ansicht zeigt die empfangenen Datenpunkte nach Kombination aus Material-Ticker und Marktplatz und zeigt dir den aktuellen Handelspreis, Bid- und Ask-Preise, den Spread zwischen ihnen sowie die aktuell aktiven Kauf- und Verkaufsvolumen.
 
-Prices have another indicator showing the latest change in percent.
+Preise haben einen zusätzlichen Indikator, der die letzte Änderung in Prozent zeigt.
 
-# Alert Engine
+# Alarm-Engine
 
-This system uses a recursive logic engine to evaluate incoming data against previously received data and your custom alert configuration.
+Dieses System nutzt eine rekursive Logik-Engine, um eingehende Daten mit zuvor empfangenen Daten und deiner eigenen Alarmkonfiguration abzugleichen.
 
-## Setup
+## Einrichtung
 
-### Logical Operators
+### Logische Operatoren
 
-You can chain conditions to reduce noise:
+Du kannst Bedingungen verketten, um Rauschen zu reduzieren:
 
-- **AND**: All conditions must be met (e.g. Price > 100 **AND** Volume != Previous Volume)
-- **OR**: Any single condition triggers the alert
+- **AND**: Alle Bedingungen müssen erfüllt sein (etwa Preis > 100 **AND** Volumen != vorheriges Volumen)
+- **OR**: Eine einzige erfüllte Bedingung löst den Alarm aus
 
-### Comparisons:
+### Vergleiche:
 
-- **GT**: Greater Than
-- **LT**: Less Than
-- **EQ**: Equal
-- **NEQ**: Not Equal
+- **GT**: Größer als
+- **LT**: Kleiner als
+- **EQ**: Gleich
+- **NEQ**: Ungleich
 
-## Comparison Targets:
+## Vergleichsziele:
 
-- **VALUE**: Compares a field to a fixed number / text.
-  - Hard price floors or ceiling breaks, filter on specific materials or exchanges.
-- **Previous**: Compares current data to the immediate last data.
-  - Detecting "Flash" changes or sudden spikes.
-- **Offset %**: Compares to the last tick with a percentage offset.
-  - Monitoring volatility (e.g. "Alert if prices rise > 2%"). You can setup a OR condition with GT / LT combining positive and negative changes.
+- **Wert**: Vergleicht ein Feld mit einer festen Zahl / einem festen Text.
+  - Harte Preisuntergrenzen oder das Durchbrechen von Obergrenzen, Filtern nach bestimmten Materialien oder Marktplätzen.
+- **Vorheriger Wert**: Vergleicht die aktuellen Daten mit den unmittelbar vorherigen Daten.
+  - Erkennen von „Flash“-Änderungen oder plötzlichen Spitzen.
+- **Unterschied %**: Vergleicht mit dem letzten Tick mit einer prozentualen Abweichung.
+  - Überwachen der Volatilität (etwa „Alarm, wenn die Preise um > 2% steigen“). Du kannst eine OR-Bedingung mit GT / LT einrichten, die positive und negative Änderungen kombiniert.
 
-## Setting up Alerts
+## Alarme einrichten
 
-- Define the scope: Choose a field
-- Select severity: Low, Medium, High
-- Configure logic: Use operators, comparisons and comparison targets
-- Change the Alerts name
-- Enable the detector
-- Save
+- Bereich festlegen: Wähle ein Feld
+- Schweregrad wählen: Niedrig, Mittel, Hoch
+- Logik konfigurieren: Nutze Operatoren, Vergleiche und Vergleichsziele
+- Ändere den Namen des Alarms
+- Aktiviere den Detektor
+- Speichere

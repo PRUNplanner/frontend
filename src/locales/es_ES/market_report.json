@@ -1,0 +1,121 @@
+{
+	"view_title": "Informe de mercado",
+	"title": "Informe de mercado de Prosperous Universe",
+	"description": "Cómo se han movido los precios y el volumen de negocio en las cuatro bolsas de comercio de Prosperous Universe, con datos de FIO actualizados a diario.",
+	"as_of": {
+		"prices": "Precios diarios hasta {date}",
+		"books": "Libros de órdenes: actuales",
+		"source": "Fuente: FIO a través de PRUNplanner"
+	},
+	"error": "No se han podido cargar los datos del mercado.",
+	"in_short": {
+		"title": "En resumen",
+		"index": "El índice CX está en {level}: {change} desde {date}.",
+		"sector": "{sector} fue el que más se movió, {change} desde {date}.",
+		"pioneer": "Alimentar a 100 pioneros cuesta {cost} al día, {change} en las últimas dos semanas."
+	},
+	"kpi": {
+		"turnover_7d": "Negociado, últimos 7 días",
+		"turnover_7d_hint": "frente a los 7 días anteriores",
+		"traded_7d": "Materiales negociados, 7 días",
+		"traded_7d_hint": "de {total} negociados en 30 días",
+		"index": "Índice CX",
+		"index_hint": "desde {date}",
+		"flat": "Volumen de negocio en materiales planos",
+		"flat_hint": "{count} materiales mantenidos a un solo precio, 30 días"
+	},
+	"index": {
+		"title": "Índice de precios",
+		"caption": "Cómo se ha movido el precio de lo que comercian los jugadores, como VWAP 7D por día. Cada material cuenta según su cuota del volumen de negocio, con un tope del 5 %, para que un solo material muy activo no arrastre el índice.",
+		"view": {
+			"label": "Vista del índice",
+			"combined": "Combinado",
+			"exchange": "Por bolsa",
+			"sector": "Por sector"
+		},
+		"all": "Todas las bolsas",
+		"base_combined": "{date} = 100 · {members} materiales, {coverage} del volumen de negocio de 30 días",
+		"base_exchange": "{date} = 100 · cada bolsa en su propia moneda · materiales: {members}",
+		"base_sector": "{date} = 100 · tope del 20 % por material · materiales: {members}",
+		"chart_label": "Índice de precios, {view}"
+	},
+	"workforce": {
+		"title": "Lo que cuesta mantener una mano de obra",
+		"caption": "Consumibles para 100 trabajadores durante un día, con todas las necesidades, incluidos los dos lujos, a precio VWAP 7D de cada día. Cada base paga esto, produzca lo que produzca.",
+		"tier_label": "Nivel de mano de obra",
+		"cost": "por 100 trabajadores al día, todas las bolsas",
+		"since": "desde {date}",
+		"cheapest": "Más barata hoy: {exchange} a {cost}",
+		"drivers": "Más movimiento",
+		"driver": "{ticker} {delta} ({change})",
+		"chart_label": "Coste de {tier} por bolsa"
+	},
+	"treemap": {
+		"title": "Dónde se mueve el dinero",
+		"caption": "Cada recuadro es un material, con tamaño según el volumen de negocio de 30 días en las cuatro bolsas y color según VWAP 7D frente a VWAP 30D. Agrupados por sector.",
+		"label": "Materiales por volumen de negocio de 30 días, coloreados por variación de precio",
+		"flat": "plano",
+		"sector": "Sector",
+		"turnover_30d": "Volumen de negocio, 30 días",
+		"vwap_7d": "VWAP 7D",
+		"vwap_30d": "VWAP 30D",
+		"change": "7D frente a 30D",
+		"few_trades": "muy pocas operaciones",
+		"flat_note": "Mantenido a un solo precio, probablemente por un creador de mercado"
+	},
+	"movers": {
+		"title": "Mayores variaciones de la semana",
+		"direction_label": "Dirección",
+		"rising": "Al alza",
+		"falling": "A la baja",
+		"caption": "VWAP 7D frente a VWAP 30D, todas las bolsas. Al menos 5 M ȼ y 50 unidades negociadas en 7 días; sin materiales planos.",
+		"row": "{price} · {turnover} en 7 días",
+		"spark_label": "{ticker}, VWAP 7D durante 15 días",
+		"empty": "Ningún material se movió en este sentido con volumen suficiente."
+	},
+	"leaders": {
+		"title": "De qué vive la economía",
+		"caption": "Los 10 materiales con más volumen de negocio en 30 días. Barra: los últimos 7 días por bolsa.",
+		"share": "{share} del volumen de negocio",
+		"split_label": "{ticker}, volumen de negocio de 7 días por bolsa"
+	},
+	"exchanges": {
+		"title": "Las cuatro bolsas",
+		"caption": "Cada bolsa tiene su propio libro de órdenes y su moneda. Barras: volumen de negocio diario durante 90 días.",
+		"turnover_30d": "Volumen de negocio, 30 días",
+		"turnover_7d": "Volumen de negocio, 7 días",
+		"share": "{share} del total de las cuatro",
+		"traded_7d": "Materiales negociados, 7 días",
+		"spread": "Diferencial mediano entre Bid y Ask",
+		"no_bid": "Libros sin comprador",
+		"no_ask": "Libros sin vendedor",
+		"bars_label": "{exchange}, volumen de negocio diario durante 90 días",
+		"name": {
+			"AI1": "Antares Station · AIC",
+			"CI1": "Benten Station · CIS",
+			"IC1": "Hortus Station · ICA",
+			"NC1": "Moria Station · NCC"
+		}
+	},
+	"method": {
+		"title": "Cómo se calculan estas cifras",
+		"source": "Fuente. FIO, el servicio de la comunidad alimentado por los clientes de juego de los jugadores, a través de los datos públicos del juego de PRUNplanner. Los precios diarios cubren días UTC completos; los libros de órdenes son actuales.",
+		"turnover": "El volumen de negocio es cantidad negociada × precio, sumado en AI1, CI1, IC1 y NC1. Cada bolsa tiene su propia moneda (AIC, CIS, ICA, NCC). El mismo material cotiza a un precio muy parecido en todas partes, así que las sumas tratan las monedas a la par.",
+		"prices": "Los precios son solo VWAP 7D y VWAP 30D: volumen de negocio ÷ unidades en la ventana, así que los días con pocas operaciones apenas cuentan. Un punto del gráfico es el VWAP 7D de ese día.",
+		"index": "Índice. Todos los materiales con un VWAP 7D en cada uno de los 90 días. Peso = cuota del volumen de negocio de 30 días, con tope del 5 % (20 % dentro de un sector); el resto se reparte entre los demás.",
+		"movers": "Las mayores variaciones comparan VWAP 7D con VWAP 30D, como la Tendencia en Market Exploration. Los 30 días incluyen los últimos 7, por lo que los cambios parecen menores que de una semana a otra.",
+		"heavy_day": "Un día fuerte se nota durante una semana. Una sola operación grande a un precio inusual arrastra el VWAP 7D mientras permanezca en la ventana de 7 días, y luego el precio vuelve a su nivel.",
+		"not_included": "No incluido: mercados locales, contratos ni operaciones dentro de corporaciones. Nunca pasan por las bolsas, así que esto es la CX, no toda la economía.",
+		"flat": "Plano marca los materiales cuyo VWAP diario se mantiene dentro de ±0,3 % de su mediana de 30 días en al menos el 80 % de los días de negociación, normalmente porque creadores de mercado los compran o venden a precios fijos. Cuentan en el volumen de negocio pero se excluyen de las mayores variaciones."
+	},
+	"sector": {
+		"consumables": "Consumibles",
+		"construction": "Construcción",
+		"raw_resources": "Recursos en bruto",
+		"metals_alloys": "Metales y aleaciones",
+		"agri_chemicals": "Agro y química",
+		"electronics_software": "Electrónica y software",
+		"ships_fuel": "Naves y combustible",
+		"drones_other": "Drones y otros"
+	}
+}

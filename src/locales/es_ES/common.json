@@ -1,130 +1,136 @@
 {
 	"navigation": {
-		"planning": "Planning",
-		"empire": "Empire",
-		"planet_search": "Planet Search",
-		"management": "Management",
-		"exchanges": "Exchanges",
-		"tools": "Tools",
-		"market_exploration": "Market Exploration",
-		"market_live": "Market Live",
-		"recipe_roi": "Recipe ROI",
-		"resource_roi": "Resource ROI",
-		"hq_calculator": "HQ Calculator",
-		"production_chains": "Production Chains",
-		"upkeep_price_calculator": "Upkeep Prices",
-		"fio_burn": "FIO Burn",
-		"fio_repair": "FIO Repair",
-		"account": "Account",
-		"profile": "Profile",
+		"planning": "Planificación",
+		"empire": "Imperio",
+		"planet_search": "Búsqueda de planetas",
+		"management": "Gestión",
+		"exchanges": "Bolsas",
+		"tools": "Herramientas",
+		"market_report": "Informe de mercado",
+		"market_exploration": "Exploración de mercado",
+		"market_live": "Mercado en vivo",
+		"recipe_roi": "ROI de recetas",
+		"resource_roi": "ROI de recursos",
+		"hq_calculator": "Calculadora de HQ",
+		"production_chains": "Cadenas de producción",
+		"upkeep_price_calculator": "Precios de mantenimiento",
+		"fio_burn": "FIO Consumo",
+		"fio_repair": "FIO Reparación",
+		"account": "Cuenta",
+		"profile": "Perfil",
 		"api": "API",
-		"help": "Help",
-		"logout": "Logout",
+		"help": "Ayuda",
+		"logout": "Cerrar sesión",
 		"fio": {
-			"fio_updated": "FIO updated",
-			"fetched": "PRUNplanner fetched",
+			"fio_updated": "FIO actualizado",
+			"fetched": "PRUNplanner obtuvo",
 			"fio": "FIO",
-			"fio_active": "FIO Active",
-			"fio_inactive": "FIO Inactive",
-			"fio_syncing": "FIO Syncing",
-			"fio_no_data": "FIO Waiting for Data",
-			"fio_rejected": "FIO Key Rejected"
+			"fio_active": "FIO activo",
+			"fio_inactive": "FIO inactivo",
+			"fio_syncing": "FIO sincronizando",
+			"fio_no_data": "FIO a la espera de datos",
+			"fio_rejected": "Clave de FIO rechazada"
 		},
-		"collapse": "Collapse navigation",
-		"expand": "Expand navigation",
-		"empire_switch": "Switch",
-		"plans": "Plans",
-		"plans_count": "{name} · {count} plans",
-		"new_plan": "New plan from Planet Search",
-		"create_empire": "Create an empire",
-		"no_plans": "No plans yet",
-		"not_in_empire": "not in this empire",
-		"plans_filter": "Filter plans",
-		"plans_filter_clear": "Clear filter",
-		"plans_filter_empty": "No plan matches",
-		"market": "Market",
-		"calculators": "Calculators",
-		"more": "More",
-		"account_menu": "Account menu"
+		"collapse": "Contraer navegación",
+		"expand": "Expandir navegación",
+		"empire_switch": "Cambiar",
+		"plans": "Planes",
+		"plans_count": "{name} · {count} planes",
+		"new_plan": "Nuevo plan desde Búsqueda de planetas",
+		"create_empire": "Crear un imperio",
+		"no_plans": "Aún no hay planes",
+		"not_in_empire": "no está en este imperio",
+		"plans_filter": "Filtrar planes",
+		"plans_filter_clear": "Quitar filtro",
+		"plans_filter_empty": "Ningún plan coincide",
+		"market": "Mercado",
+		"calculators": "Calculadoras",
+		"more": "Más",
+		"account_menu": "Menú de la cuenta"
 	},
 	"buttons": {
-		"create": "Create",
-		"save": "Save",
-		"reload": "Reload",
-		"show": "Show",
-		"hide": "Hide",
-		"help": "Help",
-		"search": "Search",
-		"discard": "Discard",
-		"yes": "Yes",
+		"create": "Crear",
+		"save": "Guardar",
+		"reload": "Recargar",
+		"show": "Mostrar",
+		"hide": "Ocultar",
+		"help": "Ayuda",
+		"search": "Buscar",
+		"discard": "Descartar",
+		"yes": "Sí",
 		"no": "No",
-		"delete": "Delete",
-		"cancel": "Cancel",
-		"copy": "Copy",
-		"add": "Add",
-		"fullscreen": "Toggle fullscreen",
-		"edit": "Edit",
-		"show_all": "Show all ({n})",
-		"show_fewer": "Show fewer"
+		"delete": "Eliminar",
+		"cancel": "Cancelar",
+		"copy": "Copiar",
+		"add": "Añadir",
+		"fullscreen": "Pantalla completa",
+		"edit": "Editar",
+		"show_all": "Mostrar todo ({n})",
+		"show_fewer": "Mostrar menos"
 	},
 	"ui": {
 		"placeholder": {
-			"please_input": "Please Input",
-			"please_select": "Please Select",
-			"search": "Search"
+			"please_input": "Introduce un valor",
+			"please_select": "Selecciona una opción",
+			"search": "Buscar"
 		},
 		"select": {
-			"no_results": "No Results",
-			"select_options": "Select Options"
+			"no_results": "Sin resultados",
+			"select_options": "Selecciona opciones"
 		},
 		"input_number": {
-			"decrease": "Decrease",
-			"increase": "Increase"
+			"decrease": "Reducir",
+			"increase": "Aumentar"
 		},
 		"pagination": {
-			"previous": "Previous page",
-			"next": "Next page",
-			"page": "Page {page}",
-			"more": "More pages"
+			"previous": "Página anterior",
+			"next": "Página siguiente",
+			"page": "Página {page}",
+			"more": "Más páginas"
 		},
 		"table": {
-			"no_data": "No Data",
-			"expand_row": "Show details"
+			"no_data": "Sin datos",
+			"expand_row": "Mostrar detalles"
 		},
-		"close": "Close",
+		"close": "Cerrar",
 		"tag": {
-			"remove": "Remove {label}"
+			"remove": "Quitar {label}"
 		},
-		"language": "Language",
-		"page_load_failed": "This page couldn't load. Reload to get the latest version.",
+		"language": "Idioma",
+		"page_load_failed": "No se pudo cargar esta página. Recarga para obtener la última versión.",
 		"meter": {
-			"used": "{label} {pct} % used"
+			"used": "{label} {pct} % usado"
 		},
 		"strip": {
 			"dot": "{label}: {value}",
-			"over": "{n} more beyond the axis"
+			"over": "{n} más fuera del eje"
 		},
 		"runway": {
-			"beyond": "beyond the axis"
+			"beyond": "fuera del eje"
 		}
 	},
 	"values": {
-		"never": "never"
+		"never": "nunca"
 	},
 	"charts": {
-		"other": "Other ({n})",
-		"empty": "Nothing to show"
+		"other": "Otros ({n})",
+		"empty": "Nada que mostrar"
 	},
 	"version_update": {
-		"ready_title": "A new version of PRUNplanner is ready",
-		"ready_body": "Reload to get it. Your saved work stays as it is.",
-		"unsaved_body": "Save your changes first, then reload.",
-		"outdated_title": "This tab is out of date",
-		"outdated_body": "A newer PRUNplanner opened in another tab. Reload to keep working.",
-		"reload": "Reload",
-		"later": "Later",
-		"chip": "Update ready",
-		"whats_new_title": "PRUNplanner {version} is here",
-		"whats_new_action": "What's new"
+		"ready_title": "Hay una nueva versión de PRUNplanner",
+		"ready_body": "Recarga para obtenerla. Tu trabajo guardado se queda como está.",
+		"unsaved_body": "Guarda primero tus cambios y luego recarga.",
+		"outdated_title": "Esta pestaña está desactualizada",
+		"outdated_body": "Se ha abierto una versión más reciente de PRUNplanner en otra pestaña. Recarga para seguir trabajando.",
+		"reload": "Recargar",
+		"later": "Más tarde",
+		"chip": "Actualización lista",
+		"whats_new_title": "Ya está aquí PRUNplanner {version}",
+		"whats_new_action": "Novedades"
+	},
+	"not_found": {
+		"title": "Página no encontrada",
+		"text": "No hay ninguna página en esta dirección.",
+		"home": "Ir a la página de inicio"
 	}
 }

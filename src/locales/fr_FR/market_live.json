@@ -1,59 +1,59 @@
 {
-	"view_title": "Market Live",
-	"title": "Market Live",
-	"connection_lost": "Connection lost. Reconnecting...",
+	"view_title": "Marché en direct",
+	"title": "Marché en direct",
+	"connection_lost": "Connexion perdue. Reconnexion...",
 	"status": {
-		"connected": "Connected",
-		"disconnected": "Disconnected"
+		"connected": "Connecté",
+		"disconnected": "Déconnecté"
 	},
 	"severity_type": {
-		"LOW": "LOW",
-		"MEDIUM": "MEDIUM",
-		"HIGH": "HIGH"
+		"LOW": "BAS",
+		"MEDIUM": "MOYENNE",
+		"HIGH": "HAUTE"
 	},
 	"status_type": {
 		"active": "Active",
-		"paused": "Paused"
+		"paused": "En pause"
 	},
 	"rule_type": {
-		"static": "Value",
-		"previous": "Previous",
-		"previous_pct": "Offset %",
-		"text": "Text"
+		"static": "Valeur",
+		"previous": "Précédent",
+		"previous_pct": "Décalage %",
+		"text": "Texte"
 	},
 	"components": {
 		"feed": {
-			"title": "Alert Feed",
+			"title": "Flux d'alertes",
 			"buttons": {
-				"open_manager": "Open Alert Manager",
-				"close_manager": "Close Alert Manager",
-				"clear_feed": "Clear Feed",
-				"show_overview": "Show Overview",
-				"hide_overview": "Hide Overview",
-				"alerts": "Alert notifications"
+				"open_manager": "Ouvrir le gestionnaire d'alertes",
+				"close_manager": "Fermer le gestionnaire d'alertes",
+				"clear_feed": "Vider le flux",
+				"show_overview": "Afficher l'aperçu",
+				"hide_overview": "Masquer l'aperçu",
+				"alerts": "Notifications d'alertes"
 			}
 		},
 		"alert_feed": {
-			"waiting": "Waiting for market events triggering alerts...",
+			"waiting": "En attente d'événements de marché déclenchant des alertes...",
 			"table": {
-				"ticker_alert": "Ticker / Alert",
-				"severity": "Severity",
-				"logic": "Trigger Logic",
-				"event": "Event",
-				"time": "Time"
+				"ticker_alert": "Ticker / Alerte",
+				"severity": "Gravité",
+				"logic": "Logique de déclenchement",
+				"event": "Événement",
+				"time": "Heure"
 			}
 		},
 		"details": {
-			"price": "Price",
+			"price": "Prix",
 			"ask": "@:{'terms.ask'}: {value}",
 			"bid": "@:{'terms.bid'}: {value}",
 			"spread": "@:{'terms.spread'}",
-			"buy_volume": "Buy Volume",
+			"buy_volume": "Volume d'achat",
 			"vwap": "@:{'terms.vwap'}: {value}",
-			"change": "Change: {value}",
-			"sell_volume": "Sell Volume",
-			"buy_volume_value": "Buy Volume: {value}",
-			"sell_volume_value": "Sell Volume: {value}"
+			"change": "Variation : {value}",
+			"sell_volume": "Volume de vente",
+			"buy_volume_value": "Volume d'achat : {value}",
+			"sell_volume_value": "Volume de vente : {value}"
 		},
 		"point_table": {
 			"table": {
@@ -61,72 +61,72 @@
 				"price": "@:terms.price (ȼ)",
 				"bid": "@:terms.bid (ȼ)",
 				"ask": "@:terms.ask (ȼ)",
-				"spread_pct": "Spread %",
-				"buy_volume": "Buy Vol.",
-				"sell_volume": "Sell Vol."
+				"spread_pct": "Écart %",
+				"buy_volume": "Vol. achat",
+				"sell_volume": "Vol. vente"
 			}
 		},
 		"history": {
-			"title": "Data History",
-			"received": "{value} @:terms.material_ticker received"
+			"title": "Historique des données",
+			"received": "{value} @:terms.material_ticker reçus"
 		},
 		"rule_builder": {
 			"buttons": {
 				"add_condition": "Condition",
-				"add_group": "Group",
-				"remove": "Remove"
+				"add_group": "Groupe",
+				"remove": "Retirer"
 			},
-			"error": "Error: {value}",
-			"empty": "Empty Group"
+			"error": "Erreur : {value}",
+			"empty": "Groupe vide"
 		},
 		"alert_manager": {
-			"title": "Alert Manager",
-			"title_editing": "Edit Alert",
-			"info": "Alerts are currently stored on this device only and are not synced to your account.",
-			"no_alerts": "No alerts found. Start by creating your first detector signal",
+			"title": "Gestionnaire d'alertes",
+			"title_editing": "Modifier l'alerte",
+			"info": "Les alertes sont actuellement stockées uniquement sur cet appareil et ne sont pas synchronisées avec ton compte.",
+			"no_alerts": "Aucune alerte trouvée. Commence par créer ton premier signal de détection",
 			"buttons": {
-				"create_alert": "Create New Alert",
+				"create_alert": "Créer une alerte",
 				"discard": "@:common.buttons.discard",
 				"save": "@:common.buttons.save",
 				"delete": "@:common.buttons.delete",
 				"edit": "@:common.buttons.edit"
 			},
 			"form": {
-				"alert_name": "Alert Name",
-				"severity": "Severity",
-				"status": "Status",
-				"logic_configuration": "Logic Configuration",
-				"previous_datapoint": "Previous Datapoint"
+				"alert_name": "Nom de l'alerte",
+				"severity": "Gravité",
+				"status": "Statut",
+				"logic_configuration": "Configuration de la logique",
+				"previous_datapoint": "Point de données précédent"
 			}
 		},
 		"detector": {
-			"field": "Field",
-			"operator": "Operator",
-			"target_type": "Target type",
+			"field": "Champ",
+			"operator": "Opérateur",
+			"target_type": "Type de cible",
 			"fields": {
 				"material_ticker": "Ticker",
-				"exchange_code": "Exchange Code",
-				"price": "Price",
+				"exchange_code": "Code d'échange",
+				"price": "Prix",
 				"bid": "Bid",
 				"ask": "Ask",
-				"price_change": "Price Change",
-				"price_change_pct": "Price Change (Percent)",
-				"bid_change": "Bid Change",
-				"ask_change": "Ask Change",
-				"demand": "Demand",
-				"supply": "Supply",
-				"traded": "Traded",
+				"price_change": "Variation du prix",
+				"price_change_pct": "Variation du prix (pourcentage)",
+				"bid_change": "Variation du bid",
+				"ask_change": "Variation de l'ask",
+				"demand": "Demande",
+				"supply": "Réserve",
+				"traded": "Échangé",
 				"volume": "Volume",
-				"buy_volume_total": "Buy Volume",
-				"sell_volume_total": "Sell Volume",
-				"buy_volume_change": "Buy Volume Change (Abs.)",
-				"sell_volume_change": "Sell Volume Change (Abs.)",
-				"buy_vwap": "Buy VWAP",
-				"sell_vwap": "Sell VWAP",
-				"lowest_sell_cost": "Best Ask Price",
-				"highest_buy_cost": "Best Bid Price",
-				"spread": "Spread",
-				"spread_pct": "Spread (Percent)"
+				"buy_volume_total": "Volume d'achat",
+				"sell_volume_total": "Volume de vente",
+				"buy_volume_change": "Variation du volume d'achat (abs.)",
+				"sell_volume_change": "Variation du volume de vente (abs.)",
+				"buy_vwap": "VWAP d'achat",
+				"sell_vwap": "VWAP de vente",
+				"lowest_sell_cost": "Meilleur prix ask",
+				"highest_buy_cost": "Meilleur prix bid",
+				"spread": "Écart",
+				"spread_pct": "Écart (pourcentage)"
 			}
 		}
 	}

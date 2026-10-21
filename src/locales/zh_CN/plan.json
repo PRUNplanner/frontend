@@ -145,7 +145,7 @@
 		"supply_cart": {
 			"title": "补给清单",
 			"info": {
-				"p": "The Supply Cart provides updates on your plans needs combined with existing inventory sourced from FIO. You have the flexibility to opt for alternative storage locations to replenish your base. Tailor your selection based on whether you wish to restock workforce and production supplies or focus on a specific category, and specify the duration for which the supplied stock should sustain. XIT ships what the running base still needs once its own production covers part of it. For the first supply, use XIT Initial: it also ships the inputs this plan produces itself, because nothing is produced yet. Use the {link} tool for more advanced supply cart options.",
+				"p": "补给清单会结合 FIO 提供的现有库存，更新你的规划需求。你可以灵活选择其他仓储位置来为基地补给。根据你是想补充劳动力与生产所需物资，还是专注于特定类别，自定义补给范围，并指定补给库存需要维持的天数。若需要更高级的补给清单选项，请使用 {link} 工具。",
 				"link": "FIO 消耗"
 			},
 			"buttons": {
@@ -269,7 +269,7 @@
 		"cogm": {
 			"title": "成品成本",
 			"cogm": "@:terms.cogm",
-			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, input prices and workforce, by quantity or full cost allocation.",
+			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
 			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
 			"prices_from": "Prices come from {preference}.",
 			"prices_from_empire": "Prices come from {preference}, the preference of the active empire {empire}.",
@@ -673,7 +673,7 @@
 			},
 			"info": {
 				"p1_strong": "收入/天",
-				"p1": "is calculated by taking the daily income generated from a recipe and subtracting both the daily workforce cost (for the workers this plan houses and the luxuries it provides) and the daily building degradation cost (1/180th of the construction cost). The income from the recipe is based on the difference between the input material costs and the output material values.",
+				"p1": "是根据配方产生的每日收入，减去每日劳动力成本（包含所有奢侈品供给）以及每日建筑损耗成本（建造成本的 1/180）后计算得出。配方收入基于输入物资成本与输出物资价值之间的差额。",
 				"p2_strong": "ȼ / 面积",
 				"p2": "表示每日收入除以一个生产建筑所占面积，以及在生产模板 ROI 中为该类建筑的最优基地分摊的核心模块与住房建筑所占面积。",
 				"p3_strong": "ROI",

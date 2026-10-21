@@ -1,22 +1,188 @@
 {
 	"navigation": {
 		"registration": "Konto erstellen",
-		"login": "Anmelden"
+		"login": "Anmelden",
+		"sections": "Abschnitte",
+		"how": "So funktioniert’s",
+		"market": "Markt",
+		"features": "Funktionen",
+		"tools": "Werkzeuge",
+		"github": "GitHub"
+	},
+	"auth_panel": {
+		"label": "Anmelden oder Konto erstellen",
+		"switch": "Konto"
 	},
 	"hero": {
 		"eyebrow": "Plan- und Imperiumplaner für Prosperous Universe",
-		"title": "Plane eine Basis, bevor du sie baust.",
-		"lead": "Wähle einen Planeten, füge Gebäude und Rezepte hinzu und beobachte den täglichen Gewinn, deine Arbeitskräfte, die genutzte Fläche und den ROI. Dann gruppiere deine Pläne in ein Imperium und sehe was produziert wird, den Verbrauch und deinen Transportbedarf.",
+		"title": "Plane deine Basis, {accent} du sie baust.",
+		"title_accent": "bevor",
+		"positioning": "Der ultimative Begleiter für Prosperous Universe – für alle, die gern Strategien schmieden und optimieren.",
+		"lead": "Erfahre, was eine Basis einbringt, was sie braucht und wann sie sich auszahlt, bevor du etwas dafür ausgibst. Fasse deine Basen dann zu einem Imperium zusammen und sieh, was es produziert, verbraucht und verschiffen muss.",
 		"cta": "Fange an zu planen - kostenlos",
 		"cta_logged_in": "Imperium öffnen",
-		"how": "Wie es funktioniert",
-		"facts": "Kostenlos · Open Source · Preise von FIO",
-		"image_alt": "Der Plan-Editor für eine Eisenbasis auf Montem: Arbeitskräfte, Produktionsgebäude und Material I/O",
-		"image_caption": "Eine Eisenbasis auf Montem (OT-580b): 19,313 ȼ Profit pro Tag, ROI 64 Tage."
+		"example": "Beispielplan öffnen",
+		"example_note": "Für das Beispiel brauchst du kein Konto. Mit geöffnetem Spiel ist die Registrierung in einer Minute erledigt.",
+		"image_alt": "Der Plan-Editor für eine Eisenbasis auf Montem: Belegschaft, Übersicht, Produktionsgebäude und Material I/O",
+		"image_title": "prunplanner.org / plan / Montem iron"
+	},
+	"numbers": {
+		"label": "PRUNplanner in Zahlen",
+		"players": "Spieler planen damit",
+		"plans": "erstellte Pläne",
+		"free_value": "Kostenlos",
+		"free": "Keine Werbung, keine Bezahlversion.",
+		"languages_value": "{count} Sprachen",
+		"languages": "Open Source, von Spielern übersetzt."
+	},
+	"tour": {
+		"pause": "Pause",
+		"play": "Abspielen",
+		"step_of": "Geführte Tour · Schritt {step} von {total}",
+		"plan": {
+			"label": "Schritte der Plan-Tour",
+			"whole": {
+				"title": "Der ganze Plan",
+				"text": "Eine Basis auf einem Bildschirm: Belegschaft, Kosten, Lager, Produktion und Materialfluss, aktualisiert bei jeder Änderung."
+			},
+			"buildings": {
+				"title": "Gebäude hinzufügen",
+				"text": "Wähle Gebäude und Aufträge aus dem, was der Planet bietet. Jedes zeigt Effizienz, Umsatz, Fläche und Baukosten."
+			},
+			"workforce": {
+				"title": "Belegschaft einplanen",
+				"text": "Benötigte Belegschaft gegenüber verfügbaren Unterkünften, je Stufe, mit den Luxusgütern, die du bereitstellen willst."
+			},
+			"money": {
+				"title": "Das Geld im Blick",
+				"text": "Diese Eisenbasis auf Montem bringt 19.312,82 pro Tag ein und zahlt sich in 63,79 Tagen aus."
+			},
+			"flow": {
+				"title": "Materialfluss prüfen",
+				"text": "Material I/O zeigt, was die Basis pro Tag verbraucht und produziert und was jede Zeile wert ist."
+			},
+			"tabs": {
+				"title": "Tiefer einsteigen",
+				"text": "POPR, Besuchsfrequenz, Konstruktion, Versorgung und Reparatur-Analyse sind nur einen Tab entfernt."
+			}
+		},
+		"planet_search": {
+			"label": "Schritte der Planetensuche-Tour",
+			"materials": {
+				"title": "Wähle deine Materialien",
+				"text": "H2O, mindestens 21 pro Tag. Füge weitere Materialien hinzu, in Gruppen mit „eines von“ oder „alle von“."
+			},
+			"conditions": {
+				"title": "Bedingungen festlegen",
+				"text": "Oberfläche, Fruchtbarkeit, Schwerkraft, Druck, Temperatur und das aktive COGC-Programm."
+			},
+			"matches": {
+				"title": "Treffer ansehen",
+				"text": "9 von 4576 Planeten, mit ihren weiteren Ressourcen, COGC und Infrastruktur."
+			},
+			"create_plan": {
+				"title": "Plan starten",
+				"text": "Mit dem +-Button erstellst du einen Plan auf diesem Planeten."
+			},
+			"compare": {
+				"title": "Bis zu vier vergleichen",
+				"text": "Markiere Planeten mit dem Stern und sieh sie dir nebeneinander an."
+			}
+		},
+		"empire": {
+			"label": "Schritte der Imperium-Tour",
+			"totals": {
+				"title": "Unterm Strich",
+				"text": "Umsatz, Kosten und Profit aller Basen zusammen: Dieses Imperium erwirtschaftet 186.973,33 pro Tag."
+			},
+			"plans": {
+				"title": "Alle Pläne nebeneinander",
+				"text": "Jede Basis mit Planet, COGC und täglichem Profit, dazu wie viel Fläche das Imperium nutzt."
+			},
+			"material_io": {
+				"title": "Knapp oder übrig",
+				"text": "Material I/O über alle Basen zeigt, was das Imperium kaufen oder anliefern muss und was es verkaufen kann."
+			},
+			"tabs": {
+				"title": "Mehr entdecken",
+				"text": "Analyse und Produktionschancen sind nur einen Tab entfernt."
+			}
+		}
+	},
+	"most_used": {
+		"eyebrow": "Was Spieler am meisten nutzen",
+		"title": "Wo du dich niederlässt, was sich auszahlt und wann einer Basis die Vorräte ausgehen.",
+		"needs_fio": "Benötigt FIO Konto",
+		"planet_search": {
+			"label": "Planetensuche",
+			"title": "Finde den Planeten für deine nächste Basis.",
+			"lead": "Filtere jeden Planeten im Universum und starte deinen nächsten Plan.",
+			"alt": "Planetensuche: Filter auf der linken Seite, übereinstimmende Planeten mit ihren Ressourcen, COGC und Infrastruktur daneben"
+		},
+		"empire": {
+			"label": "Imperium",
+			"title": "Führe alle Basen als ein Imperium.",
+			"lead": "Fasse deine Pläne zusammen und sieh, was der gesamte Betrieb verdient und bei welchen Materialien es knapp wird oder Überschuss gibt.",
+			"alt": "Imperium-Ansicht: Umsatz, Kosten und Profit, die Liste der Pläne und Material I/O über alle Basen"
+		},
+		"resource_roi": {
+			"label": "Ressourcen ROI",
+			"title": "Sehe, welcher Planet sich am schnellsten auszahlt.",
+			"lead": "Wähle eine Ressource und deine Marktplatz-Präferenz. Jeder Planet, der sie hat, bekommt einen durchgerechneten Plan: Plankosten, täglicher Profit und ROI in Tagen, neben POPR, COGC, Umgebung und Infrastruktur.",
+			"alt": "Ressourcen-ROI für ALO: Planeten mit täglicher Produktion, Plankosten, täglicher Gewinn und ROI in Tagen"
+		},
+		"fio_burn": {
+			"label": "FIO Verbrauch",
+			"title": "Erfahre, wann deine Basis keine Materialien mehr hat.",
+			"lead": "Verknüpfe dein FIO-Konto, und FIO Verbrauch vergleicht deinen echten Bestand mit dem, was jeder Plan benötigt: verbleibende Tage pro Material, eigene Grenzwerte und eine Nachschubliste pro Basis, exportiert als XIT-Aktionen.",
+			"alt": "FIO Verbrauch: Verbrauch pro Plan, mit einer erweiterten Basis, um deinen Verbrauch, Lagerbestand und die übrigen Tage pro Material anzuzeigen"
+		},
+		"starter": {
+			"label": "Neu im Spiel",
+			"title": "Starte mit einem typischen Setup und mach es zu deinem.",
+			"text": "Ein leerer Plan schlägt vor, was andere Spieler auf diesem Planeten typischerweise planen. Das ist eine Orientierung, keine Regel: Ändere jedes Gebäude und jeden Auftrag, bis du dein eigenes bestes Setup gefunden hast."
+		},
+		"shared": {
+			"label": "Geteilte Pläne",
+			"title": "Teile einen Plan als Link.",
+			"text": "Jeder mit dem Link sieht die Aufträge und kann Änderungen ausprobieren, ganz ohne Konto. Ideal, um deine Corporation um Feedback zu bitten."
+		}
+	},
+	"market": {
+		"eyebrow": "Markt heute",
+		"title": "Was an den Marktplätzen diese Woche los war",
+		"lead": {
+			"index": "Die Preise auf den vier Marktplätzen haben sich seit {start} um {change} und in den letzten 30 Tagen um {change30} bewegt.",
+			"sector": "An der Spitze: {sector} ({change}).",
+			"pioneer": "100 Pioneers zu versorgen kostet {cost} pro Tag, {change} seit {start}.",
+			"source": "Direkt von FIO, ganz ohne Konto."
+		},
+		"index": {
+			"label": "PrUn-CX-Index · alle Marktplätze",
+			"chip": "{days} T",
+			"caption": "VWAP 7D eines Korbs aus {members} Materialien, gewichtet nach Handelsumsatz. {start} = 100.",
+			"chart_label": "CX-Index über 90 Tage"
+		},
+		"movers": {
+			"title": "Größte Bewegungen der Woche",
+			"caption": "VWAP 7D gegenüber VWAP 30D. Nur Materialien mit mindestens 5 M ȼ und 50 gehandelten Einheiten in 7 Tagen."
+		},
+		"sectors": {
+			"title": "Nach Sektor, letzte 90 Tage",
+			"caption": "Balken: Anteil am 30-Tage-Umsatz",
+			"change30": "30 T {change}",
+			"share": "{share} % des Umsatzes",
+			"label": "{sector}: {change} in 90 Tagen",
+			"spark_label": "{sector}, Index über 90 Tage"
+		},
+		"cta": "Marktbericht öffnen",
+		"source": "Tagesdaten bis {date} · FIO"
 	},
 	"setup": {
-		"title": "Drei Dinge zum Einrichten",
-		"lead": "Alles im PRUNplanner hängt von Plänen, Imperien und Preispräferenzen ab.",
+		"eyebrow": "So funktioniert’s",
+		"title": "Von der ersten Basis zum Imperium.",
+		"lead": "Drei Dinge tragen alles: Pläne, Imperien und Marktplatz-Präferenzen.",
+		"label": "Schritte zur Einrichtung",
 		"plan": {
 			"label": "Plan",
 			"text": "Jeder Plan gehört zu einem Planeten: Gebäude, Produktionsrezepte, Unterkünfte, Experten und COGC. Los geht es von der Planetensuche.",
@@ -24,51 +190,19 @@
 		},
 		"empire": {
 			"label": "Imperium",
-			"text": "Deine Pläne an einer Stelle. Siehe deinen Gesamtgewinn und welche Material knapp werden oder einen Überschuss haben.",
+			"text": "Deine Pläne an einem Ort. Sieh deinen Gesamtprofit und welche Materialien über alle Basen knapp sind oder übrig bleiben.",
 			"alt": "Imperium Material I/O mit Überschuss und Defizit pro Material"
 		},
 		"exchange": {
-			"label": "Exchange-Präferenz",
-			"text": "Welche Marktplatz-Preise zu verwenden sind, mit Ihren eigenen Preisen pro Material oder pro Planeten. Jeder Plan im Imperium wird damit berechnet.",
+			"label": "Marktplatz-Präferenz",
+			"text": "Welche Marktplatz-Preise zu verwenden sind, mit deinen eigenen Preisen pro Material oder pro Planeten. Jeder Plan im Imperium wird damit berechnet.",
 			"alt": "Eine Marktplatz-Präferenz mit Material-Überschreibungen."
 		}
 	},
-	"most_used": {
-		"title": "Was Spieler am meisten nutzen",
-		"lead": "Wo man sich ansiedelt, wann es sich auszahlt und wann eine Basis trocken läuft.",
-		"needs_fio": "Benötigt FIO Konto",
-		"planet_search": {
-			"label": "Planetensuche",
-			"title": "Finde den Planeten für deine nächste Basis.",
-			"lead": "Filtere jeden Planeten im Universum und starte deinen nächsten Plan.",
-			"point_1": "Materialien, die du extrahieren möchtest mit einem Minimum-Filter pro Tag",
-			"point_2": "Oberfläche, Schwerkraft, Druck, Temperatur und Fruchtbarkeit",
-			"point_3": "COGC-Programm und planetare Infrastruktur",
-			"point_4": "Vergleiche bis zu vier Planeten nebeneinander",
-			"alt": "Planetensuche: Filter auf der linken Seite, übereinstimmende Planeten mit ihren Ressourcen, COGC und Infrastruktur daneben"
-		},
-		"resource_roi": {
-			"label": "Ressourcen ROI",
-			"title": "Sehe, welcher Planet sich am schnellsten auszahlt.",
-			"lead": "Wähle eine Ressource und deine Tauschpräferenz. Jeder Planeten, der es hat, erhält einen Plan.",
-			"point_1": "Plankosten, täglicher Gewinn und ROI in Tagen",
-			"point_2": "Tägliche Produktion und % des besten Planeten",
-			"point_3": "POPR, COGC, Umgebung und Infrastruktur daneben",
-			"alt": "Ressourcen-ROI für ALO: Planeten mit täglicher Produktion, Plankosten, täglicher Gewinn und ROI in Tagen"
-		},
-		"fio_burn": {
-			"label": "FIO Verbrauch",
-			"title": "Erfahre, wann deine Basis keine Materialien mehr hat.",
-			"lead": "Verbinde dein FIO-Konto und Verbrauch vergleicht deinen realen Bestand mit dem, was jeder Plan verwendet.",
-			"point_1": "Verbleibende Tage pro Material und Basis",
-			"point_2": "Rote und gelbe Schwellenwerte",
-			"point_3": "Eine Liste für deinen nächsten Transport, exportiert als XIT Aktion",
-			"alt": "FIO Verbrauch: Verbrauch pro Plan, mit einer erweiterten Basis, um deinen Verbrauch, Lagerbestand und die übrigen Tage pro Material anzuzeigen"
-		}
-	},
 	"tools": {
-		"title": "Die Werkzeuge drumherum",
-		"lead": "Marktdaten und Rechner mit Preisen von FIO. Verbinde deinen FIO Account und die Reparatur-Übersicht nutzt deine realen Basen im Spiel.",
+		"eyebrow": "Und die Werkzeuge drumherum",
+		"title": "Marktdaten und Rechner, mit Preisen von FIO.",
+		"lead": "FIO ist der Community-Dienst, der deine Spieldaten ausliest. Verknüpfe dein Konto, dann nutzt auch Reparatur deine echten Basen.",
 		"with_fio": "mit FIO",
 		"market_live": {
 			"label": "Live Markt",
@@ -95,24 +229,62 @@
 			"text": "Wenn jedes deiner Gebäude repariert werden muss."
 		},
 		"carts": {
-			"label": "Liefer- und Konstruktionswarenkorb",
+			"label": "Versorgung und Konstruktion",
 			"text": "Einkaufslisten pro Plan, exportierbar als XIT-Aktionen."
 		},
 		"upkeep": {
-			"label": "Infrakstrukture-Beitrag-Rechner",
+			"label": "Instandhaltungskosten-Rechner",
 			"text": "ȼ pro Bedarf an Sicherheit, Gesundheit, Komfort, Kultur und Bildung."
 		}
 	},
+	"faq": {
+		"eyebrow": "Fragen",
+		"title": "Bevor du dich registrierst.",
+		"what": {
+			"question": "Was ist PRUNplanner?",
+			"answer": "PRUNplanner ist ein kostenloses Open-Source-Planungstool für das Browserspiel Prosperous Universe (PrUn). Damit planst du Basen und ganze Imperien, findest Planeten, vergleichst, was sich auszahlt, und siehst, wann einer Basis die Materialien ausgehen."
+		},
+		"free": {
+			"question": "Ist PRUNplanner kostenlos?",
+			"answer": "Ja. Es gibt keine Werbung und keine Bezahlversion. Der Code liegt auf GitHub."
+		},
+		"fio": {
+			"question": "Brauche ich FIO dafür?",
+			"answer": "Nein. Pläne, Imperien, Planetensuche, Ressourcen-ROI und die Rechner funktionieren ohne. FIO Verbrauch und Reparatur lesen deinen echten Lagerbestand und deine Gebäude aus dem Spiel, deshalb brauchen diese beiden ein verknüpftes FIO-Konto."
+		},
+		"try": {
+			"question": "Kann ich es ohne Konto ausprobieren?",
+			"answer": "Ja. Öffne den Beispielplan: Du kannst Gebäude und Aufträge ändern und siehst, wie sich die Zahlen aktualisieren. Ein Konto brauchst du nur, um eigene Pläne zu speichern."
+		},
+		"official": {
+			"question": "Ist es ein offizielles Tool von Prosperous Universe?",
+			"answer": "Nein. Es ist ein Community-Projekt, entwickelt von einem Spieler, und stammt nicht vom Entwickler des Spiels."
+		},
+		"languages": {
+			"question": "Welche Sprachen werden unterstützt?",
+			"answer": "Englisch und {count} weitere, übersetzt von Spielern auf Crowdin."
+		}
+	},
 	"closing": {
-		"title": "Kostenlos, Open Source und von anderen Spielern übersetzt.",
-		"text": "Keine Werbung, keine Abos. Code auf Github, Übersetzungen auf Crowdin.",
+		"title": "Plane deine nächste Basis, {accent}",
+		"title_accent": "bevor du dafür bezahlst.",
+		"text": "Über {players} Spieler tun das bereits. Kostenlos, Open Source und von Spielern übersetzt. Mit geöffnetem Spiel ist die Registrierung in einer Minute erledigt.",
+		"cta": "Planung beginnen",
 		"github": "Auf Github anschauen",
-		"cta": "Planung beginnen"
+		"github_text": "Lies den Code oder mach mit.",
+		"translate": "Auf Crowdin übersetzen",
+		"translate_text": "Bisher {count} Sprachen."
 	},
 	"footer": {
 		"made_in": "Mit ♥️ aus München und Beteiligten aus aller Welt.",
 		"imprint": "Impressum und Nutzungsbedingungen",
 		"translate": "Auf Crowdin übersetzen",
 		"language": "Sprache"
+	},
+	"seo": {
+		"title": "PRUNplanner: Basis- und Imperiumsplaner für Prosperous Universe",
+		"description": "Kostenloses Planungstool für Prosperous Universe (PrUn): Plane Basen und Imperien, finde Planeten, vergleiche den ROI und behalte deinen Verbrauch mit FIO im Blick. Genutzt von über 6.000 Spielern.",
+		"imprint_title": "Impressum und Nutzungsbedingungen",
+		"imprint_description": "Impressum, Nutzungsbedingungen und Datenschutzerklärung von PRUNplanner, dem kostenlosen Planungstool für Prosperous Universe."
 	}
 }

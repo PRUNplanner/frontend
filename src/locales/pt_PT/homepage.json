@@ -1,22 +1,188 @@
 {
 	"navigation": {
 		"registration": "Create account",
-		"login": "Log in"
+		"login": "Log in",
+		"sections": "Sections",
+		"how": "How it works",
+		"market": "Market",
+		"features": "Features",
+		"tools": "Tools",
+		"github": "GitHub"
+	},
+	"auth_panel": {
+		"label": "Log in or create an account",
+		"switch": "Account"
 	},
 	"hero": {
 		"eyebrow": "Base and empire planner for Prosperous Universe",
-		"title": "Plan a base before you build it.",
-		"lead": "Pick a planet, add buildings and recipes, and watch daily profit, workforce, area and payback update as you go. Then group your bases into an empire and see what it makes, burns and has to ship.",
+		"title": "Plan a base {accent} you build it.",
+		"title_accent": "before",
+		"positioning": "The definitive Prosperous Universe companion for all who love to strategize and optimise.",
+		"lead": "Know what a base earns, what it needs and when it pays back, before you spend anything on it. Then group your bases into an empire and see what it makes, burns and has to ship.",
 		"cta": "Start planning, it's free",
 		"cta_logged_in": "Open your empire",
-		"how": "How it works",
-		"facts": "Free · Open source · Prices from FIO",
+		"example": "Open an example plan",
+		"example_note": "The example needs no account. Registering takes a minute with the game open.",
 		"image_alt": "The plan editor for an iron base on Montem: workforce, overview, production buildings and material I/O",
-		"image_caption": "An iron base on Montem (OT-580b): 19,313 ȼ profit a day, pays back in 64 days."
+		"image_title": "prunplanner.org / plan / Montem iron"
+	},
+	"numbers": {
+		"label": "PRUNplanner in numbers",
+		"players": "players plan with it",
+		"plans": "plans created",
+		"free_value": "Free",
+		"free": "No ads, no paid tier.",
+		"languages_value": "{count} languages",
+		"languages": "Open source, translated by players."
+	},
+	"tour": {
+		"pause": "Pause",
+		"play": "Play",
+		"step_of": "Guided tour · step {step} of {total}",
+		"plan": {
+			"label": "Plan tour steps",
+			"whole": {
+				"title": "The whole plan",
+				"text": "One base on one screen: workforce, costs, storage, production and material flow, updating as you change it."
+			},
+			"buildings": {
+				"title": "Add buildings",
+				"text": "Pick buildings and recipes from what the planet offers. Each one shows efficiency, revenue, area and construction cost."
+			},
+			"workforce": {
+				"title": "Staff it",
+				"text": "Workforce needed against housing supplied, per tier, with the luxuries you choose to provide."
+			},
+			"money": {
+				"title": "See the money",
+				"text": "This iron base on Montem makes 19,312.82 a day and pays back in 63.79 days."
+			},
+			"flow": {
+				"title": "Check the flow",
+				"text": "Material I/O lists what the base consumes and produces per day, and what each line is worth."
+			},
+			"tabs": {
+				"title": "Go deeper",
+				"text": "POPR, visitation frequency, construction cart, supply cart and repair analysis are one tab away."
+			}
+		},
+		"planet_search": {
+			"label": "Planet Search tour steps",
+			"materials": {
+				"title": "Pick your materials",
+				"text": "H2O, at least 21 a day. Add more materials, in any-of or all-of groups."
+			},
+			"conditions": {
+				"title": "Set the conditions",
+				"text": "Surface, fertility, gravity, pressure, temperature and the active COGC program."
+			},
+			"matches": {
+				"title": "Read the matches",
+				"text": "9 of 4576 planets, with their other resources, COGC and infrastructure."
+			},
+			"create_plan": {
+				"title": "Start a plan",
+				"text": "The + button creates a plan on that planet."
+			},
+			"compare": {
+				"title": "Compare up to four",
+				"text": "Pin planets with the star and see them side by side."
+			}
+		},
+		"empire": {
+			"label": "Empire tour steps",
+			"totals": {
+				"title": "One bottom line",
+				"text": "Revenue, cost and profit of all bases together: this empire makes 186,973.33 a day."
+			},
+			"plans": {
+				"title": "Every plan side by side",
+				"text": "Each base with its planet, COGC and daily profit, and how many permits the empire uses."
+			},
+			"material_io": {
+				"title": "Short or spare",
+				"text": "Material I/O across all bases shows what the empire has to buy or ship in, and what it can sell."
+			},
+			"tabs": {
+				"title": "Look further",
+				"text": "Analysis and Production Opportunities are one tab away."
+			}
+		}
+	},
+	"most_used": {
+		"eyebrow": "What players use most",
+		"title": "Where to settle, what pays back, and when a base runs dry.",
+		"needs_fio": "Needs FIO",
+		"planet_search": {
+			"label": "Planet Search",
+			"title": "Find the planet for your next base.",
+			"lead": "Filter every planet in the universe and start a plan from the result.",
+			"alt": "Planet Search: filters on the left, matching planets with their resources, COGC and infrastructure"
+		},
+		"empire": {
+			"label": "Empire",
+			"title": "Run every base as one empire.",
+			"lead": "Put your plans together and see what the whole operation earns, and which materials it is short of or has spare.",
+			"alt": "Empire view: revenue, cost and profit, the list of plans, and material I/O across all bases"
+		},
+		"resource_roi": {
+			"label": "Resource ROI",
+			"title": "See which planet pays back fastest.",
+			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan: plan cost, daily profit and ROI in days, next to POPR, COGC, environment and infrastructure.",
+			"alt": "Resource ROI for ALO: planets ranked with daily output, plan cost, daily profit and ROI in days"
+		},
+		"fio_burn": {
+			"label": "FIO Burn",
+			"title": "Know when a base runs out.",
+			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses: days left per material, thresholds you set, and a resupply list per base exported as XIT actions.",
+			"alt": "FIO Burn: burn per plan, with one base expanded to show consumption, stock and days left per material"
+		},
+		"starter": {
+			"label": "New to the game",
+			"title": "Start from a typical setup, then make it yours.",
+			"text": "An empty plan offers what other players typically plan on that planet. It is a guideline, not a rule: change every building and recipe until you have found your own best setup."
+		},
+		"shared": {
+			"label": "Shared plans",
+			"title": "Send a plan as a link.",
+			"text": "Anyone with the link can see the recipes and try changes, without an account. Good for asking your corporation for feedback."
+		}
+	},
+	"market": {
+		"eyebrow": "Market today",
+		"title": "What the commodity exchanges did this week",
+		"lead": {
+			"index": "Prices on the four exchanges moved {change} since {start} and {change30} over the last 30 days.",
+			"sector": "{sector} lead ({change}).",
+			"pioneer": "Feeding 100 pioneers costs {cost} a day, {change} since {start}.",
+			"source": "Straight from FIO, no account needed."
+		},
+		"index": {
+			"label": "PrUn CX Index · all exchanges",
+			"chip": "{days} d",
+			"caption": "VWAP 7D of a basket of {members} materials, weighted by what they trade. {start} = 100.",
+			"chart_label": "CX Index over 90 days"
+		},
+		"movers": {
+			"title": "This week’s movers",
+			"caption": "VWAP 7D against VWAP 30D. Only materials with at least 5 M ȼ and 50 units traded in 7 days."
+		},
+		"sectors": {
+			"title": "By sector, last 90 days",
+			"caption": "Bar: share of 30-day turnover",
+			"change30": "30 d {change}",
+			"share": "{share} % of turnover",
+			"label": "{sector}: {change} in 90 days",
+			"spark_label": "{sector}, index over 90 days"
+		},
+		"cta": "Open the market report",
+		"source": "Daily data to {date} · FIO"
 	},
 	"setup": {
-		"title": "Three things to set up",
-		"lead": "Everything in PRUNplanner hangs off plans, empires and exchange preferences.",
+		"eyebrow": "How it works",
+		"title": "From first base to empire.",
+		"lead": "Three things carry everything: plans, empires and exchange preferences.",
+		"label": "Set-up steps",
 		"plan": {
 			"label": "Plan",
 			"text": "One base on one planet: buildings, recipes, habitation, experts and COGC. Start from Planet Search.",
@@ -33,42 +199,10 @@
 			"alt": "An exchange preference with ticker overrides"
 		}
 	},
-	"most_used": {
-		"title": "What players use most",
-		"lead": "Where to settle, what pays back, and when a base runs dry.",
-		"needs_fio": "Needs FIO",
-		"planet_search": {
-			"label": "Planet Search",
-			"title": "Find the planet for your next base.",
-			"lead": "Filter every planet in the universe and start a plan from the result.",
-			"point_1": "Materials you want to extract, with a minimum per day",
-			"point_2": "Surface, gravity, pressure, temperature and fertility",
-			"point_3": "COGC program and infrastructure",
-			"point_4": "Compare up to four planets side by side",
-			"alt": "Planet Search: filters on the left, matching planets with their resources, COGC and infrastructure"
-		},
-		"resource_roi": {
-			"label": "Resource ROI",
-			"title": "See which planet pays back fastest.",
-			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan.",
-			"point_1": "Plan cost, daily profit and ROI in days",
-			"point_2": "Daily output and % of the best planet",
-			"point_3": "POPR, COGC, environment and infrastructure next to it",
-			"alt": "Resource ROI for ALO: planets ranked with daily output, plan cost, daily profit and ROI in days"
-		},
-		"fio_burn": {
-			"label": "FIO Burn",
-			"title": "Know when a base runs out.",
-			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses.",
-			"point_1": "Days left per material and base",
-			"point_2": "Red and yellow thresholds you set",
-			"point_3": "A resupply list per base, exported as XIT actions",
-			"alt": "FIO Burn: burn per plan, with one base expanded to show consumption, stock and days left per material"
-		}
-	},
 	"tools": {
-		"title": "And the tools around it",
-		"lead": "Market data and calculators, priced from FIO. Link your FIO account and Repair uses your real bases too.",
+		"eyebrow": "And the tools around it",
+		"title": "Market data and calculators, priced from FIO.",
+		"lead": "FIO is the community service that reads your in-game data. Link your account and Repair uses your real bases too.",
 		"with_fio": "with FIO",
 		"market_live": {
 			"label": "Market Live",
@@ -103,16 +237,54 @@
 			"text": "ȼ per need point for safety, health, comfort, culture and education."
 		}
 	},
+	"faq": {
+		"eyebrow": "Questions",
+		"title": "Before you sign up.",
+		"what": {
+			"question": "What is PRUNplanner?",
+			"answer": "PRUNplanner is a free, open source planning tool for the browser game Prosperous Universe (PrUn). You plan bases and whole empires in it, find planets, compare what pays back and see when a base runs out of materials."
+		},
+		"free": {
+			"question": "Is PRUNplanner free?",
+			"answer": "Yes. There are no ads and no paid tier. The code is on GitHub."
+		},
+		"fio": {
+			"question": "Do I need FIO to use it?",
+			"answer": "No. Plans, empires, Planet Search, Resource ROI and the calculators work without it. FIO Burn and Repair read your real in-game stock and buildings, so those two need a linked FIO account."
+		},
+		"try": {
+			"question": "Can I try it without an account?",
+			"answer": "Yes. Open the example plan: you can change buildings and recipes and see the numbers update. You need an account to save plans of your own."
+		},
+		"official": {
+			"question": "Is it an official Prosperous Universe tool?",
+			"answer": "No. It is a community project made by a player and is not made by the game's developer."
+		},
+		"languages": {
+			"question": "Which languages does it support?",
+			"answer": "English and {count} more, translated by players on Crowdin."
+		}
+	},
 	"closing": {
-		"title": "Free, open source and translated by players.",
-		"text": "No ads, no paid tier. Code on GitHub, translations on Crowdin.",
+		"title": "Plan your next base {accent}",
+		"title_accent": "before you pay for it.",
+		"text": "Over {players} players already do. Free, open source and translated by players. Registering takes a minute with the game open.",
+		"cta": "Start planning",
 		"github": "View on GitHub",
-		"cta": "Start planning"
+		"github_text": "Read the code or contribute.",
+		"translate": "Translate on Crowdin",
+		"translate_text": "{count} languages so far."
 	},
 	"footer": {
 		"made_in": "Made in Munich, with contributions from around the world.",
 		"imprint": "Imprint and terms",
 		"translate": "Translate on Crowdin",
 		"language": "Language"
+	},
+	"seo": {
+		"title": "PRUNplanner: Base and Empire Planner for Prosperous Universe",
+		"description": "Free planning tool for Prosperous Universe (PrUn): plan bases and empires, find planets, compare ROI and track burn with FIO. Used by over 6,000 players.",
+		"imprint_title": "Imprint and Terms of Service",
+		"imprint_description": "Imprint, terms of service and privacy policy of PRUNplanner, the free planning tool for Prosperous Universe."
 	}
 }

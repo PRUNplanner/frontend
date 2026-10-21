@@ -1,0 +1,121 @@
+{
+	"view_title": "Rapport de marché",
+	"title": "Rapport de marché de Prosperous Universe",
+	"description": "Comment les prix et le chiffre d'affaires ont évolué sur les quatre échanges de marchandises de Prosperous Universe, d'après les données FIO, mis à jour chaque jour.",
+	"as_of": {
+		"prices": "Prix quotidiens au {date}",
+		"books": "Carnets d'ordres : actuels",
+		"source": "Source : FIO via PRUNplanner"
+	},
+	"error": "Impossible de charger les données du marché.",
+	"in_short": {
+		"title": "En bref",
+		"index": "L'indice CX est à {level} : {change} depuis {date}.",
+		"sector": "{sector} a le plus bougé, {change} depuis {date}.",
+		"pioneer": "Nourrir 100 Pionniers coûte {cost} par jour, {change} sur les deux dernières semaines."
+	},
+	"kpi": {
+		"turnover_7d": "Échangé, 7 derniers jours",
+		"turnover_7d_hint": "par rapport aux 7 jours précédents",
+		"traded_7d": "Matériaux échangés, 7 jours",
+		"traded_7d_hint": "sur {total} échangés en 30 jours",
+		"index": "Indice CX",
+		"index_hint": "depuis {date}",
+		"flat": "Volume des matériaux à prix fixe",
+		"flat_hint": "{count} matériaux maintenus à un seul prix, 30 jours"
+	},
+	"index": {
+		"title": "Indice des prix",
+		"caption": "Comment le prix de ce que les joueurs échangent a évolué, en VWAP 7J par jour. Chaque matériau compte selon sa part du volume échangé, plafonnée à 5 %, pour qu'un seul matériau très actif ne porte pas l'indice.",
+		"view": {
+			"label": "Vue de l'indice",
+			"combined": "Combiné",
+			"exchange": "Par échange",
+			"sector": "Par secteur"
+		},
+		"all": "Tous les échanges",
+		"base_combined": "{date} = 100 · {members} matériaux, {coverage} du volume sur 30 jours",
+		"base_exchange": "{date} = 100 · chaque échange dans sa propre monnaie · matériaux : {members}",
+		"base_sector": "{date} = 100 · plafonné à 20 % par matériau · matériaux : {members}",
+		"chart_label": "Indice des prix, {view}"
+	},
+	"workforce": {
+		"title": "Ce que coûte l'entretien d'une main-d'œuvre",
+		"caption": "Consommables pour 100 travailleurs pendant un jour, tous besoins confondus y compris les deux produits de luxe, valorisés au VWAP 7J de chaque jour. Chaque base paie ce coût, quelle que soit sa production.",
+		"tier_label": "Niveau de main-d'œuvre",
+		"cost": "pour 100 travailleurs par jour, tous échanges",
+		"since": "depuis {date}",
+		"cheapest": "Le moins cher aujourd'hui : {exchange} à {cost}",
+		"drivers": "Plus fortes variations",
+		"driver": "{ticker} {delta} ({change})",
+		"chart_label": "Coût {tier} par échange"
+	},
+	"treemap": {
+		"title": "Où circule l'argent",
+		"caption": "Chaque case est un matériau, dimensionnée selon le volume échangé sur 30 jours sur les quatre échanges et colorée selon le VWAP 7J contre le VWAP 30J. Regroupés par secteur.",
+		"label": "Matériaux par volume échangé sur 30 jours, colorés selon la variation de prix",
+		"flat": "stable",
+		"sector": "Secteur",
+		"turnover_30d": "Volume, 30 jours",
+		"vwap_7d": "VWAP 7J",
+		"vwap_30d": "VWAP 30J",
+		"change": "7J contre 30J",
+		"few_trades": "trop peu d'échanges",
+		"flat_note": "Maintenu à un seul prix, probablement un teneur de marché"
+	},
+	"movers": {
+		"title": "Mouvements de la semaine",
+		"direction_label": "Sens",
+		"rising": "En hausse",
+		"falling": "En baisse",
+		"caption": "VWAP 7J contre VWAP 30J, tous échanges. Au moins 5 M ȼ et 50 unités échangées en 7 jours ; matériaux à prix fixe exclus.",
+		"row": "{price} · {turnover} en 7 jours",
+		"spark_label": "{ticker}, VWAP 7J sur 15 jours",
+		"empty": "Aucun matériau n'a évolué ainsi avec un volume suffisant."
+	},
+	"leaders": {
+		"title": "Ce qui fait tourner l'économie",
+		"caption": "Les 10 matériaux au plus gros volume échangé sur 30 jours. Barre : les 7 derniers jours par échange.",
+		"share": "{share} du volume",
+		"split_label": "{ticker}, volume sur 7 jours par échange"
+	},
+	"exchanges": {
+		"title": "Les quatre échanges",
+		"caption": "Chaque échange a son propre carnet d'ordres et sa propre monnaie. Barres : volume quotidien sur 90 jours.",
+		"turnover_30d": "Volume, 30 jours",
+		"turnover_7d": "Volume, 7 jours",
+		"share": "{share} des quatre réunis",
+		"traded_7d": "Matériaux échangés, 7 jours",
+		"spread": "Écart Bid–Ask médian",
+		"no_bid": "Carnets sans acheteur",
+		"no_ask": "Carnets sans vendeur",
+		"bars_label": "{exchange}, volume quotidien sur 90 jours",
+		"name": {
+			"AI1": "Antares Station · AIC",
+			"CI1": "Benten Station · CIS",
+			"IC1": "Hortus Station · ICA",
+			"NC1": "Moria Station · NCC"
+		}
+	},
+	"method": {
+		"title": "Comment ces chiffres sont établis",
+		"source": "Source. FIO, le service communautaire alimenté par les clients de jeu des joueurs, via les données de jeu publiques de PRUNplanner. Les prix quotidiens couvrent des journées UTC complètes ; les carnets d'ordres sont actuels.",
+		"turnover": "Le volume est la quantité échangée × le prix, additionné sur AI1, CI1, IC1 et NC1. Chaque échange a sa propre monnaie (AIC, CIS, ICA, NCC). Un même matériau se négocie à peu près au même prix partout, donc les sommes traitent les monnaies à parité.",
+		"prices": "Les prix sont uniquement le VWAP 7J et le VWAP 30J : volume ÷ unités sur la période, si bien que les jours calmes comptent à peine. Un point du graphique est le VWAP 7J de ce jour.",
+		"index": "Indice. Tous les matériaux ayant un VWAP 7J sur chacun des 90 jours. Poids = part du volume sur 30 jours, plafonnée à 5 % (20 % au sein d'un secteur), le reste étant réparti sur les autres.",
+		"movers": "Les mouvements comparent le VWAP 7J au VWAP 30J, comme la tendance dans Market Exploration. Les 30 jours incluent les 7 derniers, donc les variations paraissent plus faibles que d'une semaine à l'autre.",
+		"heavy_day": "Une grosse journée se voit pendant une semaine. Un seul gros échange à un prix inhabituel tire le VWAP 7J tant qu'il reste dans la fenêtre de 7 jours, puis le prix revient à la normale.",
+		"not_included": "Absents ici : marchés locaux, contrats et échanges au sein des corporations. Ils ne passent jamais par les échanges, donc ceci reflète le CX, pas toute l'économie.",
+		"flat": "« Stable » désigne les matériaux dont le VWAP quotidien reste à ±0,3 % de sa médiane sur 30 jours pendant au moins 80 % des jours d'échange, généralement parce que des teneurs de marché les achètent ou les vendent à prix fixes. Ils comptent dans le volume mais sont exclus des mouvements."
+	},
+	"sector": {
+		"consumables": "Consommables",
+		"construction": "Construction",
+		"raw_resources": "Ressources brutes",
+		"metals_alloys": "Métaux et alliages",
+		"agri_chemicals": "Agri et chimie",
+		"electronics_software": "Électronique et logiciels",
+		"ships_fuel": "Vaisseaux et carburant",
+		"drones_other": "Drones et autres"
+	}
+}

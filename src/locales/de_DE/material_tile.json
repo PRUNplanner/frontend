@@ -1,6 +1,6 @@
 {
 	"information": {
-		"title": "Material Information",
+		"title": "Materialinformationen",
 		"table": {
 			"category": "Kategorie",
 			"weight": "Gewicht",
@@ -14,18 +14,18 @@
 	},
 	"chart": {
 		"title": "Markthistorie",
-		"range": "30 days",
+		"range": "30 Tage",
 		"metric": {
 			"vwap": "@:terms.vwap",
-			"low": "Low",
-			"high": "High",
+			"low": "Niedrig",
+			"high": "Hoch",
 			"traded": "@:terms.traded_volume",
-			"label": "Chart value"
+			"label": "Diagramm-Wert"
 		},
-		"label": "{metric} of {ticker} on every exchange, last 30 days",
-		"empty": "No trades in the last 30 days",
-		"error": "Market history could not be loaded",
-		"cheapest": "Cheapest now:",
-		"open_exploration": "Open in Market Exploration →"
+		"label": "{metric} von {ticker} auf jeder Warenbörse, die letzten 30 Tage",
+		"empty": "Kein Handel in den letzten 30 Tagen",
+		"error": "Markthistorie konnte nicht geladen werden",
+		"cheapest": "Günstigste jetzt:",
+		"open_exploration": "In Marktforschung öffnen →"
 	}
 }

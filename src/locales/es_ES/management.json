@@ -1,21 +1,21 @@
 {
-	"view_title": "Management",
-	"title": "Management",
+	"view_title": "Gestión",
+	"title": "Gestión",
 	"empire": {
-		"title": "Empire Configuration",
-		"description": "Removing empires will not delete any associated plans — they will simply become unassigned. You can create edit existing empires in the Empire View. To ensure correct plan efficiency calculations, make sure each empire has your Faction and the appropriate Permits.",
+		"title": "Configuración de imperios",
+		"description": "Eliminar imperios no borra los planes asociados: simplemente quedarán sin asignar. Puedes crear y editar los imperios existentes en la vista Imperio. Para que los cálculos de eficiencia de los planes sean correctos, asegúrate de que cada imperio tenga tu facción y los permisos adecuados.",
 		"buttons": {
-			"new_empire": "New Empire"
+			"new_empire": "Nuevo imperio"
 		},
 		"deletion": {
-			"title": "Confirm Empire Deletion",
-			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+			"title": "Confirmar eliminación del imperio",
+			"content": "¿Seguro? Eliminar el imperio no elimina los planes asignados a él."
 		},
 		"form": {
-			"empire_name": "@:terms.empire Name",
+			"empire_name": "Nombre del @:terms.empire",
 			"faction": "@:terms.faction",
-			"permits_total": "@:terms.permits_plural Total",
-			"permits_used": "@:terms.permits_plural Used"
+			"permits_total": "@:terms.permits_plural totales",
+			"permits_used": "@:terms.permits_plural usados"
 		},
 		"table": {
 			"empire_name": "@:terms.empire",
@@ -23,87 +23,87 @@
 			"permits": "@:terms.permits",
 			"plans": "@:terms.plans_plural",
 			"cx": "CX",
-			"nodata_title": "No Empires available",
-			"nodata_label": "Create your first Empire"
+			"nodata_title": "No hay imperios disponibles",
+			"nodata_label": "Crea tu primer imperio"
 		}
 	},
 	"cx": {
-		"title": "CX Configuration",
-		"description": "Removing a CX preference will delete all its exchange and material settings. Assigned empires will remain unaffected, but they will no longer use the removed preferences. Make sure to assign a new CX preference.",
+		"title": "Configuración de CX",
+		"description": "Eliminar una preferencia de CX borrará todos sus ajustes de bolsas y materiales. Los imperios asignados no se verán afectados, pero dejarán de usar las preferencias eliminadas. Asegúrate de asignar una nueva preferencia de CX.",
 		"buttons": {
-			"new_cx": "New @:terms.cx"
+			"new_cx": "Nueva @:terms.cx"
 		},
 		"deletion": {
-			"title": "Confirm CX Deletion",
-			"content": "Are you sure? Deleting the CX will delete all preferences."
+			"title": "Confirmar eliminación de CX",
+			"content": "¿Seguro? Eliminar la CX borrará todas las preferencias."
 		},
 		"form": {
-			"cx_name": "@:terms.cx Name",
-			"cx_placeholder": "CX Name (max. 100 characters)"
+			"cx_name": "Nombre de la @:terms.cx",
+			"cx_placeholder": "Nombre de la CX (máx. 100 caracteres)"
 		},
 		"table": {
-			"cx_name": "@:terms.cx Name",
-			"assigned_to_empire": "Assigned to Empire?",
-			"nodata_title": "No @:terms.cx available.",
-			"nodata_label": "Create your first Exchange Preference."
+			"cx_name": "Nombre de la @:terms.cx",
+			"assigned_to_empire": "¿Asignada a un imperio?",
+			"nodata_title": "No hay @:terms.cx disponibles.",
+			"nodata_label": "Crea tu primera preferencia de bolsa."
 		}
 	},
 	"assignments": {
-		"title": "Plan ↔ Empire Assignments",
+		"title": "Asignaciones plan ↔ imperio",
 		"description": "Every planned base can be assigned to multiple empires. This allows you to simultaneously keep track of your existing Prosperous Universe empire, corporation production chains or future expansion plans.",
 		"deletion": {
-			"title": "Confirm Plan Deletion",
-			"content": "Are you sure? Deleting the Plan can't be reversed."
+			"title": "Confirmar eliminación del plan",
+			"content": "¿Seguro? Eliminar el plan no se puede deshacer."
 		},
 		"table": {
 			"plan": "@:terms.plan",
-			"nodata_title": "No @:terms.plans_plural available",
-			"nodata_label": "Use Planet Search to create your first @:{'terms.plan'}.",
-			"assign_label": "{plan} in {empire}"
+			"nodata_title": "No hay @:terms.plans_plural disponibles",
+			"nodata_label": "Usa Búsqueda de planetas para crear tu primer @:{'terms.plan'}.",
+			"assign_label": "{plan} en {empire}"
 		},
-		"search": "Search plan or planet",
-		"filter_empire": "In empire",
-		"all_empires": "All empires",
-		"unassigned_only": "Unassigned only · {count}",
+		"search": "Buscar plan o planeta",
+		"filter_empire": "En el imperio",
+		"all_empires": "Todos los imperios",
+		"unassigned_only": "Solo sin asignar · {count}",
 		"plan_count": "{plans} · {empires}",
-		"plans": "{count} plan | {count} plans",
-		"empires": "{count} empire | {count} empires",
-		"empire_plans": "{count} plan | {count} plans",
-		"row_actions": "Actions for {plan}",
-		"row_actions_header": "Actions",
-		"will_add": "Will be added to {empire}",
-		"will_remove": "Will be removed from {empire}",
-		"add_all_shown": "Add all shown plans to {empire}",
-		"remove_all_shown": "Remove all shown plans from {empire}",
-		"no_match": "No plans match the search and filters.",
+		"plans": "{count} plan | {count} planes",
+		"empires": "{count} imperio | {count} imperios",
+		"empire_plans": "{count} plan | {count} planes",
+		"row_actions": "Acciones para {plan}",
+		"row_actions_header": "Acciones",
+		"will_add": "Se añadirá a {empire}",
+		"will_remove": "Se quitará de {empire}",
+		"add_all_shown": "Añadir a {empire} todos los planes mostrados",
+		"remove_all_shown": "Quitar de {empire} todos los planes mostrados",
+		"no_match": "Ningún plan coincide con la búsqueda y los filtros.",
 		"selection": {
-			"select_all_shown": "Select all shown plans",
-			"clear_all_shown": "Deselect all shown plans",
-			"select_label": "Select {plan}",
-			"count": "{count} plan selected | {count} plans selected",
-			"delete": "Delete selected…",
-			"clear": "Clear selection",
-			"deleting": "Deleting {done} of {total}…",
-			"confirm_title": "Delete {count} plan? | Delete {count} plans?",
-			"confirm_content": "{names} will be deleted. This can't be reversed.",
-			"more": "{names} and {count} more",
-			"failed": "{count} plan couldn't be deleted and stays selected. | {count} plans couldn't be deleted and stay selected."
+			"select_all_shown": "Seleccionar todos los planes mostrados",
+			"clear_all_shown": "Deseleccionar todos los planes mostrados",
+			"select_label": "Seleccionar {plan}",
+			"count": "{count} plan seleccionado | {count} planes seleccionados",
+			"delete": "Eliminar seleccionados…",
+			"clear": "Borrar selección",
+			"deleting": "Eliminando {done} de {total}…",
+			"confirm_title": "¿Eliminar {count} plan? | ¿Eliminar {count} planes?",
+			"confirm_content": "Se eliminará lo siguiente: {names}. Esto no se puede deshacer.",
+			"more": "{names} y {count} más",
+			"failed": "No se pudo eliminar {count} plan y sigue seleccionado. | No se pudieron eliminar {count} planes y siguen seleccionados."
 		},
 		"menu": {
-			"clone": "Clone",
-			"share": "Share…",
-			"delete": "Delete…"
+			"clone": "Clonar",
+			"share": "Compartir…",
+			"delete": "Eliminar…"
 		}
 	},
 	"save_bar": {
-		"label": "Unsaved changes",
-		"unsaved": "{count} unsaved change | {count} unsaved changes",
-		"saving": "Saving {count} change… | Saving {count} changes…",
-		"error": "Couldn't save. Changes kept.",
-		"save": "Save changes",
-		"retry": "Retry",
-		"discard": "Discard",
-		"all_saved": "All changes saved",
-		"leave_unsaved": "You have unsaved Management changes. Leave without saving?"
+		"label": "Cambios sin guardar",
+		"unsaved": "{count} cambio sin guardar | {count} cambios sin guardar",
+		"saving": "Guardando {count} cambio… | Guardando {count} cambios…",
+		"error": "No se pudo guardar. Se conservan los cambios.",
+		"save": "Guardar cambios",
+		"retry": "Reintentar",
+		"discard": "Descartar",
+		"all_saved": "Todos los cambios guardados",
+		"leave_unsaved": "Tienes cambios de Gestión sin guardar. ¿Salir sin guardar?"
 	}
 }

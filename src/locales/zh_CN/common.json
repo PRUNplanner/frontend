@@ -6,6 +6,7 @@
 		"management": "管理",
 		"exchanges": "交易所",
 		"tools": "工具",
+		"market_report": "Market report",
 		"market_exploration": "市场探索",
 		"market_live": "实时市场",
 		"recipe_roi": "生产模板 ROI",
@@ -126,5 +127,10 @@
 		"chip": "Update ready",
 		"whats_new_title": "PRUNplanner {version} is here",
 		"whats_new_action": "What's new"
+	},
+	"not_found": {
+		"title": "Page not found",
+		"text": "There is no page at this address.",
+		"home": "Go to the start page"
 	}
 }

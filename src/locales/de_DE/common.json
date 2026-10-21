@@ -6,7 +6,8 @@
 		"management": "Verwaltung",
 		"exchanges": "Marktplätze",
 		"tools": "Werkzeuge",
-		"market_exploration": "Marktübersicht",
+		"market_report": "Marktbericht",
+		"market_exploration": "Marktforschung",
 		"market_live": "Live Markt",
 		"recipe_roi": "Rezept ROI",
 		"resource_roi": "Ressourcen ROI",
@@ -21,8 +22,8 @@
 		"help": "Hilfe",
 		"logout": "Abmelden",
 		"fio": {
-			"fio_updated": "FIO updated",
-			"fetched": "PRUNplanner fetched",
+			"fio_updated": "FIO aktualisiert",
+			"fetched": "PRUNplanner aktualisiert",
 			"fio": "FIO",
 			"fio_active": "FIO Aktiv",
 			"fio_inactive": "FIO Inaktiv",
@@ -32,20 +33,20 @@
 		},
 		"collapse": "Navigation minimieren",
 		"expand": "Navigation erweitern",
-		"empire_switch": "Switch",
-		"plans": "Plans",
-		"plans_count": "{name} · {count} plans",
-		"new_plan": "New plan from Planet Search",
-		"create_empire": "Create an empire",
-		"no_plans": "No plans yet",
-		"not_in_empire": "not in this empire",
-		"plans_filter": "Filter plans",
-		"plans_filter_clear": "Clear filter",
-		"plans_filter_empty": "No plan matches",
-		"market": "Market",
-		"calculators": "Calculators",
-		"more": "More",
-		"account_menu": "Account menu"
+		"empire_switch": "Wechseln",
+		"plans": "Pläne",
+		"plans_count": "{name} · {count} Pläne",
+		"new_plan": "Neuer Plan von der Planetensuche",
+		"create_empire": "Imperium erstellen",
+		"no_plans": "Noch keine Pläne",
+		"not_in_empire": "nicht in diesem Imperium",
+		"plans_filter": "Pläne filtern",
+		"plans_filter_clear": "Filter löschen",
+		"plans_filter_empty": "Keine Plan-Treffer",
+		"market": "Märkte",
+		"calculators": "Rechner",
+		"more": "Mehr",
+		"account_menu": "Account-Menü"
 	},
 	"buttons": {
 		"create": "Erstellen",
@@ -64,8 +65,8 @@
 		"add": "Hinzufügen",
 		"fullscreen": "Vollbildmodus an/aus",
 		"edit": "Bearbeiten",
-		"show_all": "Show all ({n})",
-		"show_fewer": "Show fewer"
+		"show_all": "Zeige alle ({n})",
+		"show_fewer": "Weniger zeigen"
 	},
 	"ui": {
 		"placeholder": {
@@ -88,24 +89,24 @@
 			"more": "Weitere Seiten"
 		},
 		"table": {
-			"no_data": "No Data",
-			"expand_row": "Show details"
+			"no_data": "Keine Daten",
+			"expand_row": "Details anzeigen"
 		},
-		"close": "Close",
+		"close": "Schließen",
 		"tag": {
-			"remove": "Remove {label}"
+			"remove": "{label} entfernen"
 		},
 		"language": "Sprache",
 		"page_load_failed": "Diese Seite konnte nicht geladen werden. Lade sie neu, um die neueste Version zu erhalten.",
 		"meter": {
-			"used": "{label} {pct} % used"
+			"used": "{label} {pct} % verwendet"
 		},
 		"strip": {
 			"dot": "{label}: {value}",
-			"over": "{n} more beyond the axis"
+			"over": "{n} mehr über die Achse hinaus"
 		},
 		"runway": {
-			"beyond": "beyond the axis"
+			"beyond": "über die Achse"
 		}
 	},
 	"values": {
@@ -116,15 +117,20 @@
 		"empty": "Nichts zum Anzeigen"
 	},
 	"version_update": {
-		"ready_title": "A new version of PRUNplanner is ready",
-		"ready_body": "Reload to get it. Your saved work stays as it is.",
-		"unsaved_body": "Save your changes first, then reload.",
-		"outdated_title": "This tab is out of date",
-		"outdated_body": "A newer PRUNplanner opened in another tab. Reload to keep working.",
-		"reload": "Reload",
-		"later": "Later",
-		"chip": "Update ready",
-		"whats_new_title": "PRUNplanner {version} is here",
-		"whats_new_action": "What's new"
+		"ready_title": "Eine neue Version von PRUNplanner ist bereit",
+		"ready_body": "Neu laden, um sie zu bekommen. Gespeicherte Änderungen bleiben bestehen.",
+		"unsaved_body": "Speichere deine Änderungen zuerst und lade danach neu.",
+		"outdated_title": "Dieser Tab ist veraltet",
+		"outdated_body": "Eine neuere Version von PRUNplanner wurde in einem anderen Tab geöffnet. Lade die Seite neu, um weiterzuarbeiten.",
+		"reload": "Aktualisieren",
+		"later": "Später",
+		"chip": "Aktualisierung bereit",
+		"whats_new_title": "PRUNplanner {version} ist da",
+		"whats_new_action": "Neues entdecken"
+	},
+	"not_found": {
+		"title": "Seite nicht gefunden",
+		"text": "Unter dieser Adresse gibt es keine Seite.",
+		"home": "Zur Startseite"
 	}
 }

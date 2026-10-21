@@ -1,11 +1,11 @@
 {
 	"components": {
 		"login": {
-			"title": "登录",
+			"title": "Back to your empire.",
 			"error": "登录时出错。请检查您的用户名和密码。",
 			"throttled": "Too many login attempts. Please wait and try again later.",
 			"buttons": {
-				"login": "登录"
+				"login": "Log in"
 			},
 			"form": {
 				"username": "用户名",
@@ -13,36 +13,34 @@
 			},
 			"tos": "使用 PRUNplanner 即表示您同意{tos_link}。",
 			"tos_link": "服务条款",
-			"forgot": "忘记密码？申请{forgot_link}。",
-			"forgot_link": "重置密码"
+			"forgot_link": "Forgot your password?"
 		},
 		"registration": {
-			"title": "账户信息",
+			"title": "Start planning, it's free.",
 			"tos": "PRUNplanner 可免费使用。创建账户即表示您已阅读并同意{tos_link}。",
 			"tos_link": "服务条款",
 			"result": {
 				"ok_header": "欢迎，{username}！",
-				"ok_message": "注册成功，现在可以登录 PRUNplanner。",
+				"ok_message": "Registration successful. You can now log in to PRUNplanner.",
 				"error": "注册出错。",
 				"fix_fields": "Please fix the fields marked below.",
 				"throttled": "Too many registration attempts. Please wait a minute and try again.",
 				"unknown": "Unknown error. Please try again later."
 			},
 			"buttons": {
-				"register": "创建账户"
+				"register": "Create account"
 			},
 			"form": {
 				"username": "用户名",
-				"username_info": "至少3个字符，不能包含空格。",
+				"username_info": "At least 3 characters, no spaces.",
 				"password": "密码",
-				"password_info": "At least 8 characters, not only numbers, and not a common password.",
-				"email": "Email (optional)",
-				"email_placeholder": "可选，但建议填写。",
-				"email_info": "Only used to reset your password if you forget it. No newsletters, never shared. You can add it later in Profile.",
+				"password_info": "至少8个字符。",
+				"email": "邮箱",
+				"email_info": "Not mandatory, but recommended. Increases your account security.",
 				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
-				"security_question": "安全问题",
-				"question": "输入行星 {planet} 的名称。可在 Prosperous Universe 中新建缓存窗口并使用指令 {command} 查找，你将在行星信息中“名称”栏找到它的名称",
-				"planet_name": "名称",
+				"security_question": "Security question",
+				"question": "Enter the name of planet {planet}. To find it, open a new Prosperous Universe buffer with this command and read the planet's name under \"Name\".",
+				"planet_name": "Planet name",
 				"another_planet": "Use a different planet"
 			}
 		},
@@ -82,7 +80,7 @@
 				"code_placeholder": "验证码"
 			},
 			"result": {
-				"ok": "Email address confirmed.",
+				"ok": "邮箱验证成功。",
 				"already_verified": "Your email address is already confirmed.",
 				"back": "Back to your empire"
 			}

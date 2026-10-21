@@ -7,119 +7,119 @@
 			"p2": "Mithilfe dieser Endpunkte kannst du deine Planungsdaten mit externen Tabellen, eigenen Dashboards oder sogar Optimierungsalgorithmen synchronisieren.",
 			"link": "PRUNplanner REST API",
 			"warning": "API-Schlüssel gewähren vollen Zugriff auf deine Daten und bleiben unbegrenzt gültig. Diese Zugangsdaten sollten so sensibel wie dein Passwort behandelt werden. Übertrage niemals Schlüssel in öffentliche Repositories oder teile sie mit nicht überprüften Drittanbieterdiensten. Wenn ein Schlüssel kompromittiert ist, widerrufe ihn sofort und erzeuge einen Ersatz.",
-			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet. Use a separate key per sheet so you can revoke it alone."
+			"warning_sheets": "Ein Schlüssel in einer Google-Sheets-URL ist für alle sichtbar, die die Tabelle öffnen können. Nutze pro Tabelle einen eigenen Schlüssel, damit du ihn einzeln widerrufen kannst."
 		}
 	},
 	"get_started": {
-		"title": "Get started",
-		"step_create": "Create a key below and save it somewhere safe.",
-		"step_pick": "Pick what you want in the URL builder, for example your empire's material I/O.",
-		"step_paste": "Copy the Google Sheets formula, the URL or a curl or Python snippet and paste it into your sheet or script."
+		"title": "Erste Schritte",
+		"step_create": "Erstelle unten einen Schlüssel und bewahre ihn sicher auf.",
+		"step_pick": "Wähle im URL-Builder aus, was du brauchst, zum Beispiel das Material-I/O deines Imperiums.",
+		"step_paste": "Kopiere die Google-Sheets-Formel, die URL oder ein curl- oder Python-Snippet und füge es in deine Tabelle oder dein Skript ein."
 	},
 	"builder": {
-		"title": "URL builder",
-		"endpoint": "Data",
+		"title": "URL-Builder",
+		"endpoint": "Daten",
 		"format": "Format",
 		"groups": {
-			"new": "Sheets-ready (CSV and JSON)",
-			"planning": "Your planning data (JSON)",
-			"public": "Public game data (JSON, no key)"
+			"new": "Bereit für Sheets (CSV und JSON)",
+			"planning": "Deine Planungsdaten (JSON)",
+			"public": "Öffentliche Spieldaten (JSON, ohne Schlüssel)"
 		},
 		"params": {
-			"empire": "Empire",
+			"empire": "Imperium",
 			"plan": "Plan",
-			"cx": "CX preference",
+			"cx": "CX-Präferenz",
 			"planet": "Planet",
 			"ticker": "Material",
-			"exchange": "Exchange"
+			"exchange": "Marktplatz"
 		},
-		"planet_placeholder": "Natural ID, e.g. OT-580b",
+		"planet_placeholder": "Natürliche ID, z. B. OT-580b",
 		"empty": {
-			"empire": "You have no empires yet.",
-			"plan": "You have no plans yet.",
-			"cx": "You have no CX preferences yet."
+			"empire": "Du hast noch keine Imperien.",
+			"plan": "Du hast noch keine Pläne.",
+			"cx": "Du hast noch keine CX-Präferenzen."
 		},
-		"empty_link": "Create one in Manage",
-		"incomplete": "Fill in every input above to build the URL.",
-		"placeholder_note": "{placeholder} stands for your key. Create a key and choose \"Use in URL builder\" to fill it in.",
+		"empty_link": "In der Verwaltung erstellen",
+		"incomplete": "Fülle alle Felder oben aus, um die URL zu erstellen.",
+		"placeholder_note": "{placeholder} steht für deinen Schlüssel. Erstelle einen Schlüssel und wähle „Im URL-Builder nutzen“, um ihn einzusetzen.",
 		"outputs": {
 			"sheets": "Google Sheets",
 			"url": "URL",
 			"curl": "curl",
 			"python": "Python"
 		},
-		"copy": "Copy {what}",
-		"copied": "Copied",
-		"freshness": "From the last time PRUNplanner calculated this empire. The updated_at column shows when.",
-		"key_warning": "Anyone who can open this sheet can use this key, with full access to your account. Use a separate key per sheet so you can revoke it alone.",
+		"copy": "{what} kopieren",
+		"copied": "Kopiert",
+		"freshness": "Stand der letzten Berechnung dieses Imperiums durch PRUNplanner. Die Spalte updated_at zeigt, wann das war.",
+		"key_warning": "Alle, die diese Tabelle öffnen können, können diesen Schlüssel nutzen, mit vollem Zugriff auf dein Konto. Nutze pro Tabelle einen eigenen Schlüssel, damit du ihn einzeln widerrufen kannst.",
 		"endpoints": {
 			"empire_material_io": {
-				"label": "Empire material I/O",
-				"description": "Production, consumption and delta per material and day for one empire."
+				"label": "Material-I/O des Imperiums",
+				"description": "Produktion, Verbrauch und Delta pro Material und Tag für ein Imperium."
 			},
 			"empire_plans_material_io": {
-				"label": "Plan material I/O (empire)",
-				"description": "Production, consumption and delta per plan and material for one empire."
+				"label": "Material-I/O der Pläne (Imperium)",
+				"description": "Produktion, Verbrauch und Delta pro Plan und Material für ein Imperium."
 			},
 			"empire_plans": {
-				"label": "Empire plan list",
-				"description": "The plans of one empire with planet, COGC, permits and CorpHQ."
+				"label": "Planliste des Imperiums",
+				"description": "Die Pläne eines Imperiums mit Planet, COGC, Fläche und CorpHQ."
 			},
 			"fio_storage": {
-				"label": "FIO storage",
-				"description": "Every material in your FIO storages, warehouses and ships."
+				"label": "FIO-Lager",
+				"description": "Alle Materialien in deinen FIO-Lagern, Lagerhäusern und Schiffen."
 			},
 			"exchanges": {
-				"label": "Exchange prices",
-				"description": "Prices and calculated metrics of every material on every exchange."
+				"label": "Marktplatzpreise",
+				"description": "Preise und berechnete Kennzahlen aller Materialien auf allen Marktplätzen."
 			},
 			"plans": {
-				"label": "All plans",
-				"description": "Every plan of your account with its full configuration."
+				"label": "Alle Pläne",
+				"description": "Alle Pläne deines Kontos mit ihrer vollständigen Konfiguration."
 			},
 			"plan": {
-				"label": "One plan",
-				"description": "One plan with its full configuration."
+				"label": "Ein Plan",
+				"description": "Ein Plan mit seiner vollständigen Konfiguration."
 			},
 			"empires": {
-				"label": "All empires",
-				"description": "Every empire of your account with its plans."
+				"label": "Alle Imperien",
+				"description": "Alle Imperien deines Kontos mit ihren Plänen."
 			},
 			"empire": {
-				"label": "One empire",
-				"description": "One empire with its configuration."
+				"label": "Ein Imperium",
+				"description": "Ein Imperium mit seiner Konfiguration."
 			},
 			"cxs": {
-				"label": "CX preferences",
-				"description": "Every CX preference of your account."
+				"label": "CX-Präferenzen",
+				"description": "Alle CX-Präferenzen deines Kontos."
 			},
 			"cx": {
-				"label": "One CX preference",
-				"description": "One CX preference with its rules."
+				"label": "Eine CX-Präferenz",
+				"description": "Eine CX-Präferenz mit ihren Regeln."
 			},
 			"materials": {
-				"label": "Materials",
-				"description": "Every material in the game."
+				"label": "Materialien",
+				"description": "Alle Materialien im Spiel."
 			},
 			"recipes": {
-				"label": "Recipes",
-				"description": "Every recipe in the game."
+				"label": "Aufträge",
+				"description": "Alle Aufträge im Spiel."
 			},
 			"buildings": {
-				"label": "Buildings",
-				"description": "Every building in the game."
+				"label": "Gebäude",
+				"description": "Alle Gebäude im Spiel."
 			},
 			"planet": {
-				"label": "One planet",
-				"description": "Resources, environment and infrastructure of one planet."
+				"label": "Ein Planet",
+				"description": "Ressourcen, Umgebung und Infrastruktur eines Planeten."
 			},
 			"planet_popr": {
-				"label": "Planet population report",
-				"description": "The latest population report of one planet."
+				"label": "Bevölkerungsbericht des Planeten",
+				"description": "Der aktuellste Bevölkerungsbericht eines Planeten."
 			},
 			"market_history": {
-				"label": "Market history",
-				"description": "Daily price history of one material on one exchange."
+				"label": "Marktverlauf",
+				"description": "Täglicher Preisverlauf eines Materials auf einem Marktplatz."
 			}
 		}
 	},
@@ -127,8 +127,8 @@
 		"title": "PRUNplanner API Schlüssel",
 		"loading": "API-Schlüssel werden geladen.",
 		"empty": "Noch keine API-Schlüssel. Erstelle deinen ersten API-Schlüssel.",
-		"never": "Never",
-		"last_used_hint": "Requests with this key update this within a few minutes.",
+		"never": "Nie",
+		"last_used_hint": "Anfragen mit diesem Schlüssel aktualisieren diesen Wert innerhalb weniger Minuten.",
 		"buttons": {
 			"new_apikey": "Neuen Schlüssel erstellen",
 			"revoke_apikey": "Widerrufen"
@@ -141,21 +141,21 @@
 		}
 	},
 	"confirm_revoke": {
-		"title": "Revoke {name}?",
-		"content": "Scripts and sheets using it stop working at once.",
+		"title": "{name} widerrufen?",
+		"content": "Skripte und Tabellen, die ihn nutzen, funktionieren sofort nicht mehr.",
 		"positive": "@:api_keys.manage.buttons.revoke_apikey",
 		"negative": "@:common.buttons.cancel"
 	},
 	"implementation": {
 		"title": "Autorisierung-Implementierung",
 		"link": "REST API Referenz anzeigen →",
-		"authorize": "The REST API reference has an Authorize button: paste a key there to try calls in the browser."
+		"authorize": "Die REST-API-Referenz hat einen „Authorize“-Button: Füge dort einen Schlüssel ein, um Aufrufe im Browser auszuprobieren."
 	},
 	"create": {
 		"title": "API-Schlüssel erstellen",
 		"form": {
 			"key_name": "Schlüssel-Name",
-			"key_description": "Gib deinem Schlüssel einen beschreibenden Namen, um in später zu identifizieren.",
+			"key_description": "Gib deinem Schlüssel einen beschreibenden Namen, um ihn später wiederzuerkennen.",
 			"success_title": "Schlüssel erfolgreich generiert",
 			"success_key": "Dein geheimer Schlüssel (Jetzt speichern!)",
 			"success_note": "Aus Sicherheitsgründen können wir diesen Schlüssel nicht erneut anzeigen. Wenn du ihn verlierst, musst du ihn widerrufen und dir einen neuen erstellen.",
@@ -165,9 +165,9 @@
 			"create": "@:common.buttons.create",
 			"cancel": "@:common.buttons.cancel",
 			"saved": "Ich habe meinen Schlüssel gespeichert",
-			"copy": "Copy key",
-			"use_in_builder": "Use in URL builder"
+			"copy": "Schlüssel kopieren",
+			"use_in_builder": "Im URL-Builder nutzen"
 		},
-		"copied": "Key copied"
+		"copied": "Schlüssel kopiert"
 	}
 }

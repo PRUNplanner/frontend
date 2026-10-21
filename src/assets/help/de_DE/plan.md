@@ -1,62 +1,62 @@
-**Overview**
+**Übersicht**
 
-The overview is the heart of the plan analysis.  It provides the daily cost of inputs and workforce consumables, as well as the daily production building degradation.  Initial building cost of the plan (including CM) is included and later used to calculate ROI (payback period) on the base.  Daily profit is calculated by subtracting daily costs from the value of each day's output.  Finally, profit per area is the daily profit of the base divided by the area used in the base; importantly, it uses the actual base as a denominator while profit per area of building recipes (more info below) uses a standardized denominator for comparison purposes.
+Die Übersicht ist das Herzstück der Plananalyse.  It provides the daily cost of inputs and workforce consumables, as well as the daily production building degradation.  Die anfänglichen Baukosten des Plans (einschließlich CM) sind enthalten und werden später zur Berechnung des ROI (Amortisationszeit) der Basis verwendet.  Der tägliche Profit ergibt sich, indem die täglichen Kosten vom Wert des täglichen Outputs abgezogen werden.  Schließlich ist der Profit pro Fläche der tägliche Profit der Basis geteilt durch die genutzte Fläche der Basis; wichtig ist, dass dabei die tatsächliche Basis als Nenner dient, während der Profit pro Fläche der Gebäude-Aufträge (mehr dazu unten) zu Vergleichszwecken einen standardisierten Nenner verwendet.
 
-- Overview Calculations include the cost for constructing the core module
+- Die Berechnungen der Übersicht enthalten die Kosten für den Bau des Kernmoduls
 
-**Production Buildings**
+**Produktionsgebäude**
 
-Each building added to the plan appears in this section.  Users should add a recipe using the +RECIPE button on the top right.  Once selected, that recipe will propagate through the plan and contribute to the Overview at the top and Material I/O on the right.
+Jedes Gebäude, das du zum Plan hinzufügst, erscheint in diesem Abschnitt.  Users should add a recipe using the +RECIPE button on the top right.  Sobald er ausgewählt ist, wirkt sich der Auftrag auf den gesamten Plan aus und fließt oben in die Übersicht und rechts in das Material I/O ein.
 
-When selecting a recipe, a dropdown of that buildings recipes appears.  For each recipe, the inputs, duration, and output are given.  The profit per day (ȼ / Day), profit per area (ȼ / Area), and ROI (payback period) for the building's construction cost are also automatically calculated and displayed.
+Wenn du einen Auftrag auswählst, erscheint eine Dropdown-Liste mit den Aufträgen dieses Gebäudes.  For each recipe, the inputs, duration, and output are given.  Der Profit pro Tag (ȼ / Tag), der Profit pro Fläche (ȼ / Fläche) und der ROI (Amortisationszeit) für die Baukosten des Gebäudes werden ebenfalls automatisch berechnet und angezeigt.
 
-- Profit per day is the net profit from selling the output at the plan's CX setting minus input, workforce, and depreciation costs. Workforce costs follow the plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.
-- Profit per area is that profit per day divided by the area of the production building and a proportionate share of the necessary HABs and STOs from the buildings "optimal" layout (used in the Recipe ROI tool).  This is provided to allow a consistent measure of comparative recipe profitability across buildings.
-- ROI is the building cost for this production building divided by the profit per day of the building.
+- Der Profit pro Tag ist der Nettoprofit aus dem Verkauf des Outputs zur CX-Einstellung des Plans abzüglich der Kosten für Inputs, Belegschaft und Abschreibung. Die Belegschaftskosten richten sich nach den Wohngebäuden und Luxusgütern des Plans: Arbeiter ohne Unterkunft und ausgeschaltete Luxusgüter kosten nichts.
+- Der Profit pro Fläche ist dieser Profit pro Tag geteilt durch die Fläche des Produktionsgebäudes plus einen anteiligen Teil der benötigten HABs und STOs aus dem „optimalen“ Layout des Gebäudes (wird im Werkzeug Rezept-ROI verwendet).  So lässt sich die Profitabilität von Aufträgen über verschiedene Gebäude hinweg einheitlich vergleichen.
+- Der ROI sind die Baukosten dieses Produktionsgebäudes geteilt durch den Profit pro Tag des Gebäudes.
 
-**Saving and Undo**
+**Speichern und Widerrufen**
 
-Name your plan in Configuration and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). The Save button shows the plan's state: "Saved" when there is nothing to save (hover it to see when it was last saved), a dot when there are unsaved changes, "Saving…" while it saves, and "Retry save" if a save fails. Your changes are kept until it succeeds.
+Gib deinem Plan in der Konfiguration einen Namen und speichere ihn mit Speichern / Erstellen oder Strg+S (Cmd+S auf dem Mac). Der Speichern-Button zeigt den Status des Plans: „Gespeichert“, wenn es nichts zu speichern gibt (fahre mit der Maus darüber, um zu sehen, wann zuletzt gespeichert wurde), ein Punkt bei nicht gespeicherten Änderungen, „Speichern…“ während des Speicherns und „Speichern wiederholen“, wenn das Speichern fehlschlägt. Your changes are kept until it succeeds.
 
-Every change can be undone with the Undo and Redo buttons next to Save, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). Removing a building or recipe, or changing a recipe, also shows a message with an Undo button for a few seconds. The history covers the last 50 changes and starts fresh after saving or reloading the plan.
+Jede Änderung kannst du mit den Buttons Widerrufen und Wiederherstellen neben Speichern rückgängig machen, oder mit Strg+Z und Strg+Umschalt+Z (Cmd auf dem Mac). Wenn du ein Gebäude oder einen Auftrag entfernst oder einen Auftrag änderst, erscheint außerdem für ein paar Sekunden eine Meldung mit einem Widerrufen-Button. Der Verlauf umfasst die letzten 50 Änderungen und beginnt nach dem Speichern oder Neuladen des Plans von vorn.
 
-**Plan check**
+**Plan-Check**
 
-Plan check tests a plan against the market. It has three views: Market check (the default), Price sensitivity and Compare plans.
+Der Plan-Check prüft einen Plan gegen den Markt. Er hat drei Ansichten: Markt-Check (Standard), Preissensitivität und Pläne vergleichen.
 
-**Market check**
+**Markt-Check**
 
-A plan's profit assumes every material can be bought and sold at its price, in any amount. The Market check shows where that isn't true.
+Der Profit eines Plans setzt voraus, dass jedes Material in beliebiger Menge zu seinem Preis gekauft und verkauft werden kann. Der Markt-Check zeigt, wo das nicht zutrifft.
 
-- **Share of daily volume**: what the plan buys or sells per day, divided by the average daily volume traded on the exchange in the last 30 days. Selling 50 units a day into a market that trades 100 a day is a 50 % share.
-- **Bid, ask and spread**: the bid is the best price a buyer offers right now, the ask the best price a seller asks. Buying at once means paying the ask, selling at once means taking the bid. The spread is the gap between them, as a % of the ask.
-- **At real prices**: the plan's profit when every material is bought at the ask and sold at the bid on its exchange. A material without an ask or bid, or without an exchange in your CX preference, keeps its plan price.
-- **Exchange**: the exchange of your CX preference. Without one, the check uses the volume of all exchanges together.
+- **Anteil am Tagesvolumen**: was der Plan pro Tag kauft oder verkauft, geteilt durch das durchschnittliche Tagesvolumen, das in den letzten 30 Tagen auf dem Marktplatz gehandelt wurde. Verkaufst du 50 Einheiten pro Tag in einen Markt, der 100 pro Tag handelt, ist das ein Anteil von 50 %.
+- **Bid, Ask und Spread**: Das Bid ist der beste Preis, den ein Käufer gerade bietet, das Ask der beste Preis, den ein Verkäufer verlangt. Sofort kaufen heißt, das Ask zu zahlen, sofort verkaufen heißt, das Bid anzunehmen. Der Spread ist der Abstand zwischen beiden, in % des Ask.
+- **Zu echten Preisen**: der Profit des Plans, wenn jedes Material auf seinem Marktplatz zum Ask gekauft und zum Bid verkauft wird. Ein Material ohne Ask oder Bid oder ohne Marktplatz in deiner CX-Präferenz behält seinen Planpreis.
+- **Exchange**: the exchange of your CX preference. Ohne Präferenz nutzt der Check das Volumen aller Marktplätze zusammen.
 
-**What the flags mean**
+**Was die Markierungen bedeuten**
 
-- Red, a filled circle: the plan can't trade this material as planned.
-  - _No price_: the plan has no price for it and counts it at 0.
-  - _No trades in 7 days_: nobody traded it on the exchange in the last 7 days.
-  - _No offers_ / _No buyers_: nobody sells (when you buy) or bids for it (when you sell) on the exchange right now.
-  - _Bigger than the market_: the plan trades 50 % or more of the daily volume.
-- Amber, a triangle: _Large share of the market_, 10 % or more of the daily volume. Your orders will likely move the price.
-- Grey, a ring: a note. _All exchanges, no exchange set_ (no CX preference, so all exchanges are counted) or _Data older than 2 days_.
+- Rot, ein gefüllter Kreis: Der Plan kann dieses Material nicht wie geplant handeln.
+  - _Kein Preis_: Der Plan hat keinen Preis dafür und rechnet es mit 0.
+  - _Keine Transaktionen in 7 Tagen_: Niemand hat es in den letzten 7 Tagen auf dem Marktplatz gehandelt.
+  - _Keine Angebote_ / _Keine Käufer_: Gerade verkauft es niemand auf dem Marktplatz (wenn du kaufst) bzw. bietet niemand darauf (wenn du verkaufst).
+  - _Größer als der Markt_: Der Plan handelt 50 % oder mehr des Tagesvolumens.
+- Orange, ein Dreieck: _Großer Marktanteil_, 10 % oder mehr des Tagesvolumens. Deine Orders werden den Preis wahrscheinlich bewegen.
+- Grau, ein Ring: ein Hinweis. _Alle Marktplätze, keiner gewählt_ (keine CX-Präferenz, daher werden alle Marktplätze gezählt) oder _Daten älter als 2 Tage_.
 
-Spreads are shown but never flagged.
+Spreads werden angezeigt, aber nie markiert.
 
-**What CX volume misses**
+**Was das CX-Volumen nicht erfasst**
 
-The volume comes from the commodity exchanges only. Sales on local markets, contracts between players and trades inside a corporation aren't counted, so a material can be easier to sell than its CX volume says.
+Das Volumen stammt nur von den Handelskammern (CX). Verkäufe auf lokalen Märkten, Verträge zwischen Spielern und Handel innerhalb einer Corporation werden nicht gezählt, daher kann sich ein Material leichter verkaufen lassen, als sein CX-Volumen vermuten lässt.
 
-**Empire**
+**Imperium**
 
-The empire's Material I/O checks the empire's net flow: what one plan makes and another uses nets out, and only the rest reaches the market. Click a flag chip above the table to show only those materials.
+Das Material I/O des Imperiums prüft den Nettofluss des Imperiums: Was ein Plan herstellt und ein anderer verbraucht, gleicht sich aus, und nur der Rest erreicht den Markt. Klicke auf einen Markierungs-Chip über der Tabelle, um nur diese Materialien anzuzeigen.
 
-**Target price**
+**Zielpreis**
 
-In Price sensitivity, Target price finds the price of one material that gives the profit you want, with every other price unchanged. It also shows the exchange's lowest and highest price of the last 30 days.
+In der Preissensitivität findet der Zielpreis den Preis eines Materials, der deinen gewünschten Profit ergibt, während alle anderen Preise unverändert bleiben. Außerdem zeigt er den niedrigsten und höchsten Preis des Marktplatzes in den letzten 30 Tagen.
 
-**Payback of the difference**
+**Amortisation der Differenz**
 
-In Compare plans: the other plan's extra build cost divided by its extra profit per day, in days. "never" means it costs more and earns no more.
+In Pläne vergleichen: die zusätzlichen Baukosten des anderen Plans geteilt durch seinen zusätzlichen Profit pro Tag, in Tagen. „nie“ bedeutet, dass er mehr kostet und nicht mehr einbringt.

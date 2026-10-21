@@ -8,10 +8,10 @@
 			"total_population": "Population totale",
 			"free_population": "Population disponible",
 			"free_population_pct": "% Population disponible",
-			"unfilled_jobs": "Unfilled Jobs",
-			"plan_need": "@:terms.plan Need",
-			"plan_check": "@:terms.plan Check"
+			"unfilled_jobs": "Emplois non pourvus",
+			"plan_need": "Besoin du plan",
+			"plan_check": "Contrôle du plan"
 		},
-		"modal_title": "Latest Population Report: {planet_id}"
+		"modal_title": "Dernier rapport de population : {planet_id}"
 	}
 }

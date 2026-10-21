@@ -1,6 +1,6 @@
 {
 	"loading": "Chargement des données...",
-	"retry": "Retry",
+	"retry": "Réessayer",
 	"gamedata": {
 		"material_data": "Données @:terms.materials",
 		"exchange_data": "Données @:terms.exchanges",

@@ -6,6 +6,5 @@ APEX에는 최대 365일까지의 가격 기록만 표시되며, 그 이후의 �
 
 캔들 차트를 읽고 해석하는 방법을 잘 설명한 자료입니다. https://www.investopedia.com/trading/candlestick-charting-what-is-it/
 
-또한 캔들이 실제로 어떻게 움직이는지 직접 확인해 보고 싶다면, 아래 사이트에서 시간 가격을 1분으로 설정하고 실시간으로 변하는 모습을 지켜보는 것도 좋은 "실전" 방법입니다.
-https://bitcoinwisdom.io/markets/deribit/ethperpetual
+또한 캔들이 실제로 어떻게 움직이는지 직접 확인해 보고 싶다면, 아래 사이트에서 시간 가격을 1분으로 설정하고 실시간으로 변하는 모습을 지켜보는 것도 좋은 "실전" 방법입니다. https://bitcoinwisdom.io/markets/deribit/ethperpetual
 

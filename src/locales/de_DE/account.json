@@ -1,9 +1,9 @@
 {
 	"components": {
 		"login": {
-			"title": "Anmelden",
+			"title": "Zurück zu deinem Imperium.",
 			"error": "Fehler beim Anmelden. Bitte überprüfe deinen Benutzernamen und dein Passwort.",
-			"throttled": "Too many login attempts. Please wait and try again later.",
+			"throttled": "Zu viele Anmeldeversuche. Bitte warte und versuche es später erneut.",
 			"buttons": {
 				"login": "Anmelden"
 			},
@@ -13,43 +13,41 @@
 			},
 			"tos": "Durch die Verwendung von PRUNplanner erklärst du dich mit den {tos_link} einverstanden.",
 			"tos_link": "Nutzungsbedingungen",
-			"forgot": "Passwort vergessen? {forgot_link} anfordern.",
-			"forgot_link": "Passwort-Zurücksetzen"
+			"forgot_link": "Passwort vergessen?"
 		},
 		"registration": {
-			"title": "Kontoinformationen",
+			"title": "Leg los – es ist kostenlos.",
 			"tos": "PRUNplanner kann kostenlos verwendet werden. Mit der Erstellung eines Kontos bestätigst und stimmst du den {tos_link} zu.",
 			"tos_link": "Nutzungsbedingungen",
 			"result": {
 				"ok_header": "Willkommen {username}!",
 				"ok_message": "Registrierung erfolgreich. Du kannst dich jetzt bei PRUNplanner anmelden.",
 				"error": "Fehler während der Registrierung.",
-				"fix_fields": "Please fix the fields marked below.",
-				"throttled": "Too many registration attempts. Please wait a minute and try again.",
-				"unknown": "Unknown error. Please try again later."
+				"fix_fields": "Bitte fülle die markierten Felder aus.",
+				"throttled": "Zu viele Anmeldeversuche. Bitte warte eine Minute und versuche es erneut.",
+				"unknown": "Unbekannter Fehler. Bitte probiere es später noch einmal."
 			},
 			"buttons": {
 				"register": "Konto erstellen"
 			},
 			"form": {
 				"username": "Benutzername",
-				"username_info": "Muss mindestens 3 Zeichen lang sein. Kann keine Leerzeichen enthalten.",
+				"username_info": "Mindestens 3 Zeichen, keine Leerzeichen.",
 				"password": "Passwort",
-				"password_info": "At least 8 characters, not only numbers, and not a common password.",
-				"email": "Email (optional)",
-				"email_placeholder": "Nicht verpflichtend, aber empfohlen.",
-				"email_info": "Only used to reset your password if you forget it. No newsletters, never shared. You can add it later in Profile.",
-				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
+				"password_info": "Muss mindestens 8 Zeichen lang sein, keine gewöhnliche Zeichenkette.",
+				"email": "E-Mail (optional)",
+				"email_info": "Nicht verpflichtend, aber empfohlen. Erhöht die Sicherheit deines Kontos.",
+				"email_invalid": "Das sieht nicht wie eine E-Mail-Adresse aus. Lasse das Feld leer oder füge eine valide Adresse hinzu, um deinen Account zu erstellen.",
 				"security_question": "Sicherheitsfrage",
-				"question": "Gib den Namen des Planeten {planet} ein. Um ihn zu finden, öffne ein neues Fenster in Prosperous Universe mit dem Befehl {command}. Du siehst den Planetennamen unter 'Name' in den Planeten-Informationen",
-				"planet_name": "Name",
-				"another_planet": "Use a different planet"
+				"question": "Gib den Namen des Planeten {planet} ein. Öffne dazu mit diesem Befehl ein neues Fenster (Buffer) in Prosperous Universe und lies den Namen des Planeten unter „Name“ ab.",
+				"planet_name": "Planetenname",
+				"another_planet": "Verwende einen anderen Planeten"
 			}
 		},
 		"password_reset": {
 			"title": "Passwort zurücksetzen",
 			"info": "Bitte gib den an deine E-Mail gesendeten Code zusammen mit deinem neuen Passwort sein.",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"throttled": "Zu viele Versuche. Bitte warte einige Minuten und probiere es erneut.",
 			"buttons": {
 				"send": "Passwort zurücksetzen"
 			},
@@ -63,8 +61,8 @@
 		"request_password_reset": {
 			"title": "Anfrage zum Zurücksetzen des Passworts",
 			"info": "Gib deine E-Mail-Adresse ein, die du zuvor mit deinem PRUNplanner Konto verifiziert hast. Wenn wir sie erkennen, senden wir dir einen Code zum Zurücksetzen des Passworts zu.",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
-			"error": "The request failed. Please try again later.",
+			"throttled": "Zu viele Versuche. Bitte warte einige Minuten und probiere es erneut.",
+			"error": "Die Anfrage ist fehlgeschlagen. Bitte versuche es später erneut.",
 			"form": {
 				"email_placeholder": "E-Mail-Adresse"
 			},
@@ -82,9 +80,9 @@
 				"code_placeholder": "Verifizierungscode"
 			},
 			"result": {
-				"ok": "Email address confirmed.",
-				"already_verified": "Your email address is already confirmed.",
-				"back": "Back to your empire"
+				"ok": "E-Mail-Adresse bestätigt.",
+				"already_verified": "Deine E-Mail-Adresse ist bereits bestätigt.",
+				"back": "Zurück zu deinem Imperium"
 			}
 		},
 		"hints": {
@@ -97,59 +95,59 @@
 	},
 	"email_nudge": {
 		"none": {
-			"title": "Add an email so you can't get locked out",
-			"body": "If you ever forget your password, an email is the only way back to your plan. It is only used for password resets: no newsletters, never shared. | If you ever forget your password, an email is the only way back to your {count} plans. It is only used for password resets: no newsletters, never shared.",
-			"body_plain": "If you ever forget your password, an email is the only way back to your plans. It is only used for password resets: no newsletters, never shared."
+			"title": "Füge eine E-Mail-Adresse hinzu, damit du dich nicht aussperren kannst",
+			"body": "Wenn du dein Passwort vergisst, ist eine E-Mail-Adresse der einzige Weg zurück zu deinem Plan. Die Adresse wird ausschließlich zum Zurücksetzen von Passwörtern verwendet - nicht für Newsletter, nie geteilt. | Wenn du dein Passwort vergisst, ist eine E-Mail-Adresse der einzige Weg zurück zu deinen {count} Plänen. Die Adresse wird ausschließlich zum Zurücksetzen von Passwörtern verwendet - nicht für Newsletter, nie geteilt.",
+			"body_plain": "Wenn du dein Passwort vergisst, ist eine E-Mail-Adresse der einzige Weg zurück zu deinen Plänen. Die Adresse wird ausschließlich zum Zurücksetzen von Passwörtern verwendet - nicht für Newsletter, nie geteilt."
 		},
 		"unconfirmed": {
-			"title": "Confirm your email",
-			"body": "Password resets only go to a confirmed address. Enter the code we sent to {email}, or ask for a new one."
+			"title": "Bestätige deine E-Mail-Adresse",
+			"body": "Passwort Zurücksetzen funktioniert nur mit einer bestätigten E-Mail-Adresse. Gib den Code ein, den wir an {email} gesendet haben oder fordere einen neuen an."
 		},
 		"buttons": {
-			"add": "Add email",
-			"later": "Not now",
-			"never": "Don't remind me",
-			"enter_code": "Enter code",
-			"resend": "Send new code",
-			"undo": "Undo"
+			"add": "E-Mail hinzufügen",
+			"later": "Jetzt nicht",
+			"never": "Nicht mehr nachfragen",
+			"enter_code": "Code eingeben",
+			"resend": "Code erneut senden",
+			"undo": "Rückgängig"
 		},
-		"never_toast": "No more reminders. You can add an email any time in Profile.",
-		"code_sent": "Code sent. Check your inbox, and your spam folder."
+		"never_toast": "Keine Erinnerungen mehr. Du kannst jederzeit eine E-Mail-Adresse im Profil hinzufügen.",
+		"code_sent": "Code gesendet. Prüfe deinen Posteingang und Spam-Ordner."
 	},
 	"email_dialog": {
 		"title": {
-			"email": "Add an email",
-			"code": "Confirm your email",
-			"done": "Email confirmed"
+			"email": "E-Mail hinzufügen",
+			"code": "Bestätige deine E-Mail-Adresse",
+			"done": "E-Mail bestätigt"
 		},
-		"email_label": "Email address",
-		"email_placeholder": "you{'@'}example.com",
-		"email_info": "Only used to reset your password. No newsletters, never shared. You can change or remove it any time in Profile.",
-		"email_code_info": "We'll send an 8-character code to confirm it's yours.",
-		"code_info": "We sent a code to {email}. It's valid for 24 hours. You can also click the link in the email, on any device.",
+		"email_label": "E-Mail Adresse",
+		"email_placeholder": "du{'@'}beispiel.com",
+		"email_info": "Nur verwendet, um dein Passwort zurückzusetzen. Keine Newsletter, nie geteilt. Du kannst sie jederzeit im Profil ändern oder entfernen.",
+		"email_code_info": "Wir werden einen 8-Zeichen-Code schicken, um zu bestätigen, dass er dir gehört.",
+		"code_info": "Wir haben einen Code an {email} gesendet. Er ist 24 Stunden gültig. Du kannst auch auf den Link in der E-Mail auf deinem Gerät klicken.",
 		"code_label": "Code",
-		"code_placeholder": "8 characters",
-		"no_code": "Nothing arrived? Check spam, or",
-		"done_title": "You're covered",
-		"done_info": "If you forget your password, use “Forgot password” on the login screen and we'll send the reset to {email}.",
-		"confirmed_toast": "Email confirmed. Password resets now go to {email}.",
+		"code_placeholder": "8 Zeichen",
+		"no_code": "Nichts angekommen? Prüfe Spam oder",
+		"done_title": "Alles erledigt",
+		"done_info": "Wenn du dein Passwort vergessen hast, verwende \"Passwort vergessen\" auf dem Anmeldebildschirm und wir senden den Code zum Zurücksetzen an {email}.",
+		"confirmed_toast": "E-Mail bestätigt. Codes zum Zurücksetzen des Passworts gehen jetzt an {email}.",
 		"buttons": {
-			"cancel": "Cancel",
-			"save": "Save and send code",
-			"change_email": "Change email",
-			"later": "Later",
-			"confirm": "Confirm",
-			"resend": "send a new code",
-			"done": "Done"
+			"cancel": "Abbrechen",
+			"save": "Speichern und Code senden",
+			"change_email": "E-Mail ändern",
+			"later": "Später",
+			"confirm": "Bestätigen",
+			"resend": "neuen Code senden",
+			"done": "Fertig"
 		},
 		"errors": {
-			"email_taken": "This address is already used by another account.",
-			"invalid_email": "This doesn't look like an email address.",
-			"invalid": "That code didn't work. Check it, or send a new one.",
-			"expired": "That code has expired. Send a new one.",
-			"no_code": "There is no code waiting for this account. Send a new one.",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
-			"unknown": "Something went wrong. Please try again."
+			"email_taken": "Diese Adresse wird bereits von einem anderen Konto verwendet.",
+			"invalid_email": "Das sieht nicht wie eine E-Mail-Adresse aus.",
+			"invalid": "Dieser Code hat nicht funktioniert. Überprüfe ihn oder sende einen neuen.",
+			"expired": "Dieser Code ist abgelaufen. Sende einen neuen.",
+			"no_code": "Es gibt keinen Code für diesen Account. Sende einen neuen.",
+			"throttled": "Zu viele Versuche. Bitte warte einige Minuten und probiere es erneut.",
+			"unknown": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
 		}
 	}
 }

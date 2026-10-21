@@ -1,7 +1,7 @@
 {
 	"view_title": "Live Markt",
 	"title": "Live Markt",
-	"connection_lost": "Connection lost. Reconnecting...",
+	"connection_lost": "Verbindung verloren. Verbinde neu...",
 	"status": {
 		"connected": "Verbunden",
 		"disconnected": "Getrennt"
@@ -105,14 +105,14 @@
 			"target_type": "Zieltyp",
 			"fields": {
 				"material_ticker": "Ticker",
-				"exchange_code": "Warenbörsen-Code",
+				"exchange_code": "Marktplatz-Code",
 				"price": "Preis",
 				"bid": "Verkauf",
 				"ask": "Ankauf",
 				"price_change": "Preisänderung",
 				"price_change_pct": "Preisänderung (Prozent)",
-				"bid_change": "Gebotsänderung",
-				"ask_change": "Ankaufsänderung",
+				"bid_change": "Bid-Änderung",
+				"ask_change": "Ask-Änderung",
 				"demand": "Nachfrage",
 				"supply": "Angebot",
 				"traded": "Gehandelt",
@@ -123,8 +123,8 @@
 				"sell_volume_change": "Volumenänderung verkaufen (Abs.)",
 				"buy_vwap": "VWAP-Kauf",
 				"sell_vwap": "VWAP-Verkauf",
-				"lowest_sell_cost": "Bester Ankaufspreis",
-				"highest_buy_cost": "Bester Gebotspreis",
+				"lowest_sell_cost": "Bester Ask-Preis",
+				"highest_buy_cost": "Bester Bid-Preis",
 				"spread": "Spread",
 				"spread_pct": "Spread (Prozent)"
 			}
