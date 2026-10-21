@@ -4,8 +4,8 @@
 	"loading": "Loading planets…",
 	"load_error": "The planets couldn't be loaded. Reload the page to try again.",
 	"header": {
-		"search_label": "Planet name or ID",
-		"search_placeholder": "Planet name or ID, e.g. KI-446 or Harmonia",
+		"search_label": "Planet or system name, or ID",
+		"search_placeholder": "Planet or system, e.g. KI-446, Harmonia or Antares II",
 		"saved": "Saved",
 		"load_saved": "Load saved search…",
 		"manage": "Manage",
