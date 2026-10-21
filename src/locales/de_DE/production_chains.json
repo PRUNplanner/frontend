@@ -8,7 +8,7 @@
 		"node_color": "Knotenfarbe",
 		"terminals": "Enden",
 		"terminals_placeholder": "Durch Kommas getrennte Materialien-Ticker",
-		"terminals_info": "Terminals sind Materialien, deren Eingänge vom Diagramm ausgeschlossen sind. Nützlich, wenn Sie sie auf dem Marktplatz oder vor Ort gekauft und nicht produziert werden.",
+		"terminals_info": "Enden sind Materialien, deren Eingänge vom Diagramm ausgeschlossen sind. Nützlich, wenn du sie auf dem Marktplatz oder vor Ort kaufst und nicht produzieren musst.",
 		"recipe_selection": "Auftrags-Auswahl"
 	},
 	"analysis_materials": {
