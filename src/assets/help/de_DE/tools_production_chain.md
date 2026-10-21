@@ -1,5 +1,5 @@
-The Production Chains view lets you explore all the buildings and materials involved in producing a specific good. You can follow the entire chain step by step to see exactly how your chosen product is created.
+In der Ansicht Produktionsketten kannst du alle Gebäude und Materialien erkunden, die an der Herstellung eines bestimmten Guts beteiligt sind. Du kannst der gesamten Kette Schritt für Schritt folgen, um genau zu sehen, wie dein gewähltes Produkt entsteht.
 
-To make analysis easier, you can color nodes by material category, workforce type, or required building expertise. If a chain offers multiple recipe options, you can fine-tune your selection until you’ve built the chain that best fits your needs.
+Um die Analyse zu erleichtern, kannst du Knoten nach Materialkategorie, Belegschaftstyp oder benötigter Gebäude-Expertise einfärben. Bietet eine Kette mehrere mögliche Aufträge, kannst du deine Auswahl feinjustieren, bis du die Kette gebaut hast, die am besten zu deinen Bedürfnissen passt.
 
-The tool also provides an overview of all building expertises and workforce types required across the entire chain, giving you a clear picture of what it takes to complete production.
+Das Werkzeug bietet außerdem eine Übersicht über alle Gebäude-Expertisen und Belegschaftstypen, die in der gesamten Kette benötigt werden, und gibt dir so ein klares Bild davon, was es braucht, um die Produktion abzuschließen.
