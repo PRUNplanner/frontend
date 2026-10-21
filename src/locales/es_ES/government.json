@@ -1,17 +1,17 @@
 {
 	"popr_button": {
-		"no_data": "Planet {planet_id} has no population data",
+		"no_data": "El planeta {planet_id} no tiene datos de población",
 		"buttons": {
-			"no_popr": "No POPR"
+			"no_popr": "Sin POPR"
 		},
 		"table": {
-			"total_population": "Total Population",
-			"free_population": "Free Population",
-			"free_population_pct": "Free Population %",
-			"unfilled_jobs": "Unfilled Jobs",
-			"plan_need": "@:terms.plan Need",
-			"plan_check": "@:terms.plan Check"
+			"total_population": "Población total",
+			"free_population": "Población libre",
+			"free_population_pct": "Población libre %",
+			"unfilled_jobs": "Empleos sin cubrir",
+			"plan_need": "Necesidad del @:terms.plan",
+			"plan_check": "Revisión del @:terms.plan"
 		},
-		"modal_title": "Latest Population Report: {planet_id}"
+		"modal_title": "Último informe de población: {planet_id}"
 	}
 }
