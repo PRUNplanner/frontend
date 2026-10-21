@@ -4,8 +4,8 @@
 	"loading": "加载行星中……",
 	"load_error": "加载行星失败，刷新页面重试。",
 	"header": {
-		"search_label": "行星名称或编号",
-		"search_placeholder": "行星名称或编号，例如 KI-446 或 Harmonia",
+		"search_label": "Planet or system name, or ID",
+		"search_placeholder": "Planet or system, e.g. KI-446, Harmonia or Antares II",
 		"saved": "保存",
 		"load_saved": "加载保存的搜索……",
 		"manage": "管理",
