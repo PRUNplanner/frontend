@@ -1,3 +1,13 @@
+# 2026-10-21 - v. 0.33.0
+
+The headline of this release is PRUNplanner's new **front door**: a redesigned landing page, and a daily **market report** that anyone can read without an account.
+
+- **Market report**: a new public page at /market with the state of the market at a glance: key numbers, a price index (combined, per exchange or per sector), workforce cost, a turnover treemap, the biggest movers and the turnover leaders. You'll find it first in the Market tools [[PR-642]](https://github.com/PRUNplanner/frontend/pull/642)
+- **New landing page**: guided tours of a plan, Planet Search and an empire, a "Market today" section with the latest exchange data, a FAQ, and a login and registration panel that slides in from the right. Search engines and link previews now see a proper page [[PR-644]](https://github.com/PRUNplanner/frontend/pull/644), [[PR-645]](https://github.com/PRUNplanner/frontend/pull/645), [[PR-648]](https://github.com/PRUNplanner/frontend/pull/648)
+- **Planet names as in game**: unnamed planets in a named system now show their in-game name everywhere (ZV-759e reads "Antares II e"), and the sidebar plan list shows planet names instead of IDs. Planet Search also finds every planet in a system by the system's name [[PR-643]](https://github.com/PRUNplanner/frontend/pull/643), [[PR-649]](https://github.com/PRUNplanner/frontend/pull/649)
+- **Calculation debug**: add `?debug=calc` to the URL to see every step of a plan's calculation with its formula and inputs, plus self-checks and a copy button for bug reports [[PR-627]](https://github.com/PRUNplanner/frontend/pull/627)
+- **Fixes and under the hood**: faster start for returning users from game data stored in the browser, a much lighter app for logged-out visitors on mobile, Supply Cart and Repair XIT packages that refined-prun can open, the plan page reloading the planet when you open a plan on another planet, the FIO burn page that keeps working when plans change in another tab, less browser storage used, an analytics consent banner for visitors, and fewer false error reports [[PR-630]](https://github.com/PRUNplanner/frontend/pull/630), [[PR-646]](https://github.com/PRUNplanner/frontend/pull/646), [[PR-626]](https://github.com/PRUNplanner/frontend/pull/626), [[PR-640]](https://github.com/PRUNplanner/frontend/pull/640), [[PR-639]](https://github.com/PRUNplanner/frontend/pull/639), [[PR-641]](https://github.com/PRUNplanner/frontend/pull/641), [[PR-638]](https://github.com/PRUNplanner/frontend/pull/638)
+
 # 2026-10-17 - v. 0.32.0
 
 The headline of this release is a new **app navigation** built around your empire and its plans, together with a set of new **plan analysis tools** and charts across the app.
