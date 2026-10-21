@@ -1,26 +1,26 @@
 {
-	"view_title": "HQ",
-	"title": "HQ Upgrade Calculator",
+	"view_title": "Sede",
+	"title": "Calculadora de mejora de la sede",
 	"form": {
-		"from_level": "From HQ Level",
-		"to_level": "To HQ Level",
-		"cx_preference": "@:terms.cx Preference",
-		"show_locations": "Show Locations"
+		"from_level": "Del nivel de sede",
+		"to_level": "Al nivel de sede",
+		"cx_preference": "Preferencia de @:terms.cx",
+		"show_locations": "Mostrar ubicaciones"
 	},
 	"cost": {
-		"total_cost": "Total @:terms.cost",
-		"total_weight": "Total @:terms.weight",
-		"total_volume": "Total @:terms.volume"
+		"total_cost": "@:terms.cost total",
+		"total_weight": "@:terms.weight total",
+		"total_volume": "@:terms.volume total"
 	},
 	"table": {
 		"material": "@:terms.materials",
 		"amount": "@:terms.amount",
 		"storage": "@:terms.storage",
-		"override_stock": "Override Stock",
-		"required": "Required",
-		"cost_unit": "Cost / Unit (ȼ)",
-		"cost_total": "Total Cost (ȼ)",
-		"storage_locations": "@:terms.storage Locations",
-		"override_label": "Override stock for {ticker}"
+		"override_stock": "Forzar stock",
+		"required": "Necesario",
+		"cost_unit": "Coste / unidad (ȼ)",
+		"cost_total": "Coste total (ȼ)",
+		"storage_locations": "Ubicaciones de @:terms.storage",
+		"override_label": "Forzar stock de {ticker}"
 	}
 }
