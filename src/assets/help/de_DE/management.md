@@ -1,17 +1,17 @@
-# Core Concepts
+# Grundkonzepte
 
-PRUNplanner consists of three main components that allow you to plan and manage your Prosperous Universe empire:
+PRUNplanner besteht aus drei Hauptkomponenten, mit denen du dein Imperium in Prosperous Universe planen und verwalten kannst:
 
-## Plans
+## Pläne
 
-Plans are the backbone of what you do in PRUNplanner. They consist of all buildings, productions and bonuses of a base you can put down in Prosperous Universe. You can create new Plans by searching for the planet you would like to create a base for. Also, a Plan should be assigned a CX Exchange preference, as well as to an Empire. Please note, each Plan can be assigned to multiple empires and therefore reused.
+Pläne sind das Rückgrat von allem, was du in PRUNplanner tust. Sie umfassen alle Gebäude, Produktionen und Boni einer Basis, die du in Prosperous Universe errichten kannst. Neue Pläne erstellst du, indem du nach dem Planeten suchst, für den du eine Basis anlegen möchtest. Außerdem sollte ein Plan einer Marktplatz-Präferenz sowie einem Imperium zugewiesen werden. Beachte, dass jeder Plan mehreren Imperien zugewiesen und so wiederverwendet werden kann.
 
-To delete several Plans at once, tick them in the Plan ↔ Empire Assignments table and press "Delete selected…". The box in the table header ticks every Plan the search and filters show, for example all unassigned ones.
+Um mehrere Pläne auf einmal zu löschen, hake sie in der Tabelle „Plan ↔ Imperium Zuweisung“ an und klicke auf „Auswahl löschen…“. Das Kästchen im Tabellenkopf hakt jeden Plan an, den Suche und Filter anzeigen, zum Beispiel alle nicht zugewiesenen.
 
-## Empires
+## Imperien
 
-An Empire is a collection of Plans (e.g. all the bases you currently have settled in Prosperous Universe, or that you would like to settle, all interconnected together). Each empire is like a container that consists of multiple plans. Additionally, a single CX Exchange preference can be assigned to each Empire.
+Ein Imperium ist eine Sammlung von Plänen (zum Beispiel alle Basen, die du in Prosperous Universe derzeit besiedelt hast oder besiedeln möchtest, alle miteinander verbunden). Jedes Imperium ist wie ein Container, der mehrere Pläne enthält. Zusätzlich kann jedem Imperium eine einzelne Marktplatz-Präferenz zugewiesen werden.
 
 ## CX
 
-The CX Settings allow you to define market preferences for the pricing of materials. Each CX Exchange can be used in multiple Empires. However, each Empire can only have a single CX Exchange preference assigned to it. This ensures that prices are properly calculated for individual plans that are part of the Empire.
+In den Handelskammer-Einstellungen legst du Marktpräferenzen für die Bepreisung von Materialien fest. Jede Marktplatz-Präferenz kann in mehreren Imperien verwendet werden. However, each Empire can only have a single CX Exchange preference assigned to it. So wird sichergestellt, dass die Preise für die einzelnen Pläne des Imperiums richtig berechnet werden.
