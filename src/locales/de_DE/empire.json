@@ -1,8 +1,8 @@
 {
-	"view_title": "Empire",
+	"view_title": "Imperium",
 	"switch_empire": "Imperium wechseln",
-	"overview_hide": "Hide plan list",
-	"overview_show": "Show plan list",
+	"overview_hide": "Planliste ausblenden",
+	"overview_show": "Planliste einblenden",
 	"views": {
 		"material_io": "Material I/O",
 		"analysis": "Analyse",
@@ -66,46 +66,46 @@
 		"exclusive_production": "Exklusive Produktion",
 		"exclusive_consumption": "Exklusiver Verbrauch",
 		"parts": {
-			"inputs": "Production inputs",
-			"workforce": "Workforce",
-			"degradation": "Degradation",
+			"inputs": "Produktions-Inputs",
+			"workforce": "Belegschaft",
+			"degradation": "Abnutzung",
 			"profit": "Profit",
-			"uncovered": "Cost not covered"
+			"uncovered": "Nicht gedeckte Kosten"
 		},
 		"kpi_split": {
-			"label": "Revenue split: {parts}",
+			"label": "Umsatzaufteilung: {parts}",
 			"inputs": "Inputs {pct}",
-			"workforce": "Workforce {pct}",
-			"degradation": "Degradation {pct}",
+			"workforce": "Belegschaft {pct}",
+			"degradation": "Abnutzung {pct}",
 			"profit": "Profit {pct}",
-			"uncovered": "Not covered {pct}",
-			"of_cost": "Share of cost: revenue doesn't cover it"
+			"uncovered": "Nicht gedeckt {pct}",
+			"of_cost": "Anteil der Kosten, den der Umsatz nicht deckt"
 		},
 		"revenue_split": {
-			"title": "Where each plan's revenue goes",
-			"caption": "Top {top} by profit · loss-making plans always shown",
-			"split": "Revenue split",
-			"margin": "Margin",
-			"revenue_day": "Revenue / day",
-			"other": "Other · {n} plan | Other · {n} plans",
-			"row_label": "{name}: margin {margin}, revenue {revenue} ȼ per day",
-			"empty": "No plans to split yet."
+			"title": "Wohin der Umsatz jedes Plans fließt",
+			"caption": "Top {top} nach Profit · Pläne mit Verlust werden immer angezeigt",
+			"split": "Umsatzaufteilung",
+			"margin": "Marge",
+			"revenue_day": "Umsatz / Tag",
+			"other": "Andere · {n} Plan | Andere · {n} Pläne",
+			"row_label": "{name}: Marge {margin}, Umsatz {revenue} ȼ pro Tag",
+			"empty": "Noch keine Pläne zum Aufteilen."
 		},
 		"butterfly": {
-			"title": "Materials moving the most ȼ",
-			"price": "ȼ / day",
-			"amount": "Units / day",
-			"buy": "← you buy (net consumed)",
-			"sell": "you sell (net produced) →",
-			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
-			"row_label": "{ticker}: {direction} {value}, open in Material I/O",
-			"bought": "bought",
-			"sold": "sold",
-			"empty": "No materials bought or sold."
+			"title": "Materialien mit den größten ȼ-Flüssen",
+			"price": "ȼ / Tag",
+			"amount": "Einheiten / Tag",
+			"buy": "← du kaufst (netto verbraucht)",
+			"sell": "du verkaufst (netto produziert) →",
+			"caption": "Top {top} von {n} Materialien · klicke auf eine Zeile, um sie in Material I/O zu öffnen",
+			"row_label": "{ticker}: {direction} {value}, in Material I/O öffnen",
+			"bought": "gekauft",
+			"sold": "verkauft",
+			"empty": "Keine Materialien gekauft oder verkauft."
 		},
 		"more_charts": {
-			"title": "More charts",
-			"caption": "Plan profit · material profit & cost · net and exclusive production & consumption"
+			"title": "Weitere Charts",
+			"caption": "Plan-Profit · Material-Profit & -Kosten · Netto- und exklusive Produktion & Verbrauch"
 		}
 	},
 	"opportunities": {
@@ -144,12 +144,12 @@
 		},
 		"prices": {
 			"title": "Preise",
-			"help": "Preise verwenden den Universums-Durchschnittswert von 30 Tagen. Ändere, welche Materialien in {exchanges} gekauft und verkauft werden.",
+			"help": "Preise nutzen den Universe-Durchschnitt der letzten 30 Tage. Unter {exchanges} legst du fest, auf welchem Marktplatz jedes Material gekauft und verkauft wird.",
 			"exchanges": "Marktplätze"
 		}
 	},
 	"cost_overview": {
-		"shipping": "Shipping"
+		"shipping": "Versand"
 	},
 	"empty": {
 		"title": "Noch keine Imperien",
