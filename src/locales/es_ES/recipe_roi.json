@@ -1,26 +1,26 @@
 {
-	"view_title": "Recipe ROI",
-	"title": "Recipe ROI",
-	"calculating": "Calculating Building Recipe ROI",
-	"cx_select": "@:terms.cx Preference",
+	"view_title": "ROI de recetas",
+	"title": "ROI de recetas",
+	"calculating": "Calculando el ROI de recetas de edificios",
+	"cx_select": "Preferencia de @:terms.cx",
 	"filters": {
 		"title": "@:terms.filter",
 		"building": "@:terms.buildings",
 		"cogc": "@:terms.cogc",
-		"output": "Output",
-		"input": "Input",
-		"positive_roi": "Positive ROI"
+		"output": "Salida",
+		"input": "Entrada",
+		"positive_roi": "ROI positivo"
 	},
 	"table": {
 		"building": "@:terms.buildings",
-		"optimal_setup": "Optimal Setup",
-		"recipe_output": "@:terms.recipes Output",
-		"recipe_input": "@:terms.recipes Input",
+		"optimal_setup": "Configuración óptima",
+		"recipe_output": "Salida de @:terms.recipes",
+		"recipe_input": "Entrada de @:terms.recipes",
 		"cogc": "@:terms.cogc",
 		"cogm": "@:terms.cogm",
-		"plan_cost": "@:terms.plan Cost (ȼ)",
-		"daily_profit": "Daily Profit (ȼ)",
-		"profit_area": "Profit/Area (ȼ)",
-		"plan_roi": "@:terms.plan ROI (d)"
+		"plan_cost": "Coste del @:terms.plan (ȼ)",
+		"daily_profit": "Beneficio diario (ȼ)",
+		"profit_area": "Beneficio/Área (ȼ)",
+		"plan_roi": "ROI del @:terms.plan (d)"
 	}
 }
