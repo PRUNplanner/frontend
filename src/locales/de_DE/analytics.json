@@ -12,9 +12,9 @@
 		"deny": "Nein, danke"
 	},
 	"banner": {
-		"label": "Analytics consent",
-		"text": "Can we use PostHog to see how prunplanner.org is used? Optional, and only with your OK. {link}",
+		"label": "Einwilligung zur Nutzungsanalyse",
+		"text": "Dürfen wir PostHog verwenden, um zu sehen, wie prunplanner.org genutzt wird? Optional und nur mit deinem OK. {link}",
 		"details": "Details",
-		"footer_link": "Analytics"
+		"footer_link": "Nutzungsanalyse"
 	}
 }
