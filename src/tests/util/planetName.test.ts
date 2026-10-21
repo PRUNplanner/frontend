@@ -2,7 +2,24 @@ import { describe, expect, it } from "vitest";
 
 import systems from "@/assets/static/fio_systemstars.json";
 import systemNames from "@/assets/static/system_names.json";
-import { planetDisplayName, planetLabel } from "@/util/planetName";
+import {
+	planetDisplayName,
+	planetLabel,
+	systemName,
+} from "@/util/planetName";
+
+describe("systemName", () => {
+	it("names a planet's named system, whatever the planet's name", () => {
+		expect(systemName("ZV-759b")).toBe("Antares II");
+		expect(systemName("ZV-759e")).toBe("Antares II");
+	});
+
+	it("is undefined for an unnamed system or a malformed id", () => {
+		expect(systemName("KW-602a")).toBeUndefined();
+		expect(systemName("ZV-759")).toBeUndefined();
+		expect(systemName("zv-759e")).toBeUndefined();
+	});
+});
 
 describe("planetDisplayName", () => {
 	it("names an unnamed planet after its named system", () => {

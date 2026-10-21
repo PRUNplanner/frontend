@@ -9,7 +9,7 @@
 
 // Util
 import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
-import { planetDisplayName } from "@/util/planetName";
+import { planetDisplayName, systemName } from "@/util/planetName";
 import { PlanetCOGCProgramTypeSchema } from "@/features/api/schemas/gameData.schemas";
 
 // Types & Interfaces
@@ -253,7 +253,7 @@ function prepare(index: PlanetSearchIndexEntry[]): IPrepared[] {
 		rocky: entry.surface,
 		fertile: entry.fertility > -1,
 		haystack:
-			`${entry.planet_natural_id} ${entry.planet_name} ${planetDisplayName(entry.planet_natural_id, entry.planet_name)}`.toLowerCase(),
+			`${entry.planet_natural_id} ${entry.planet_name} ${planetDisplayName(entry.planet_natural_id, entry.planet_name)} ${systemName(entry.planet_natural_id) ?? ""}`.toLowerCase(),
 	}));
 	preparedCache.set(index, prepared);
 	return prepared;
