@@ -4,10 +4,10 @@
 			"no_price": "Kein Preis",
 			"no_trades": "Keine Transaktionen in 7 Tagen",
 			"no_offers": "Keine Angebote",
-			"no_buyers": "Keine Verkäufer",
+			"no_buyers": "Keine Käufer",
 			"bigger": "Größer als der Markt",
 			"large_share": "Großer Marktanteil",
-			"all_exchanges": "All Marktplätze, keiner gewählt",
+			"all_exchanges": "Alle Marktplätze, keiner gewählt",
 			"stale": "Daten älter als 2 Tage"
 		},
 		"title": "{ticker}: {flag}",
@@ -21,47 +21,47 @@
 			"traded_value": "{total} ({daily} / Tag)",
 			"share": "Dein Anteil daran",
 			"empire_share": "Anteil Imperium",
-			"bid_ask": "Angebot · Nachfrage",
+			"bid_ask": "Bid · Ask",
 			"spread": "{spread} % Spread",
 			"none": "—",
-			"caveat": "Nur CX-Volumen. Handel auf lokalen Warenbörsen oder mit Verträgen werden nicht gezählt.",
-			"open": "Plan öffnen →"
+			"caveat": "Nur CX-Volumen. Verkäufe auf lokalen Märkten oder per Vertrag werden nicht gezählt.",
+			"open": "Plan-Check öffnen →"
 		},
-		"all_exchanges": "alle Warenbörsen",
+		"all_exchanges": "alle Marktplätze",
 		"summary": {
 			"red": "{n} Material kann nicht wie geplant gehandelt werden | {n} Materialien können nicht wie geplant gehandelt werden",
 			"amber": "{n} ist ein großer Marktanteil | {n} sind ein großer Marktanteil",
-			"link": "Plan prüfen →"
+			"link": "Plan-Check →"
 		},
 		"exchange": {
 			"one": "Marktplatz {exchange}",
 			"many": "Marktplätze {exchange}",
 			"all": "Alle Marktplätze",
-			"from_plan": "Von der CX-Einstellung des Plans",
-			"from_empire": "Von der CX-Präferenz des Imperiums",
-			"no_cx": "keine CX-Einstellungen gesetzt",
-			"set_cx": "Setze eine"
+			"from_plan": "aus der CX-Präferenz des Plans",
+			"from_empire": "aus der CX-Präferenz des Imperiums",
+			"no_cx": "keine CX-Präferenz festgelegt",
+			"set_cx": "Lege eine fest"
 		},
 		"means": {
-			"no_price": "Der Plan hat keinen Preis für {ticker}, also zählt er mit 0 ȼ.",
-			"no_trades": "Niemand hat {ticker} in {exchange} in den letzten 7 Tagen gehandelt.",
-			"no_offers": "Niemand bietet {ticker} auf {exchange} gerade an.",
-			"no_buyers": "Niemand bietet jetzt {ticker} auf {exchange} an.",
-			"bigger_sell": "Du verkaufst {share} von dem, was {exchange} in {ticker} handelt. Erwarte, dass du auf Käufer warten oder unter dem Angebot verkaufen musst.",
-			"bigger_buy": "Du kaufst {share} von dem, was {exchange} in {ticker} handelt. Erwarte, dass du auf Verkäufer warten oder über dem Verkaufspreis kaufen musst.",
-			"large_share_sell": "Du würdest {share} von dem, was {exchange} an {ticker} Handel hat verkaufen. Genug, um den Preis zu beeinflussen.",
-			"large_share_buy": "Du würdest {share} von dem, was {exchange} an {ticker} Handel hat kaufen. Genug, um den Preis zu beeinflussen."
+			"no_price": "Der Plan hat keinen Preis für {ticker} und rechnet es daher mit 0 ȼ.",
+			"no_trades": "Niemand hat {ticker} in den letzten 7 Tagen auf {exchange} gehandelt.",
+			"no_offers": "Niemand bietet {ticker} gerade auf {exchange} an.",
+			"no_buyers": "Für {ticker} gibt es auf {exchange} gerade keine Bids.",
+			"bigger_sell": "Du würdest {share} von dem verkaufen, was {exchange} bei {ticker} handelt. Rechne damit, auf Käufer zu warten oder unter dem Bid verkaufen zu müssen.",
+			"bigger_buy": "Du würdest {share} von dem kaufen, was {exchange} bei {ticker} handelt. Rechne damit, auf Verkäufer zu warten oder über dem Ask kaufen zu müssen.",
+			"large_share_sell": "Du würdest {share} von dem verkaufen, was {exchange} bei {ticker} handelt, genug, um den Preis zu bewegen.",
+			"large_share_buy": "Du würdest {share} von dem kaufen, was {exchange} bei {ticker} handelt, genug, um den Preis zu bewegen."
 		},
 		"empire": {
-			"title": "Marktüberprüfung im Nettofluss des Imperiums",
+			"title": "Markt-Check für den Nettofluss des Imperiums",
 			"chip": {
 				"red": "{n} kann nicht wie geplant gehandelt werden",
 				"amber": "{n} großer Marktanteil",
 				"muted": "{n} andere Notiz | {n} andere Notizen"
 			},
 			"filter_label": "Nur markierte Materialien anzeigen",
-			"net_note": "Materialien, die innerhalb des Imperiums hergestellt und verwendet werden, so dass sie nur auf dem Markt markiert werden. Die I/O jedes Plans kennzeichnen diese noch immer.",
-			"plan_shares": "Teil jedes Plans"
+			"net_note": "Was innerhalb des Imperiums hergestellt und verbraucht wird, gleicht sich aus, daher wird nur markiert, was den Markt erreicht. Das Material I/O jedes Plans markiert diese Materialien weiterhin.",
+			"plan_shares": "Anteil jedes Plans"
 		}
 	}
 }
