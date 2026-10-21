@@ -159,7 +159,7 @@
 		"construction_prefabs": "Einheitsbausätze",
 		"consumable_bundles": "Konsumgüterpakete",
 		"consumables_(basic)": "Konsumgüter (Basis)",
-		"consumables_(luxury)": "Komsumgüter (Luxus)",
+		"consumables_(luxury)": "Konsumgüter (Luxus)",
 		"drones": "Drohnen",
 		"electronic_devices": "Elektronische Geräte",
 		"electronic_parts": "Elektronische Teile",
@@ -184,7 +184,7 @@
 		"software_tools": "Software-Tools",
 		"textiles": "Textilien",
 		"unit_prefabs": "Bauteile",
-		"utility": "Utility"
+		"utility": "Hilfsmittel"
 	},
 	"upkeep": {
 		"safety": "Sicherheit",
