@@ -1,11 +1,11 @@
 {
 	"components": {
 		"login": {
-			"title": "Back to your empire.",
+			"title": "Zurück zu deinem Imperium.",
 			"error": "Fehler beim Anmelden. Bitte überprüfe deinen Benutzernamen und dein Passwort.",
 			"throttled": "Zu viele Anmeldeversuche. Bitte warte und versuche es später erneut.",
 			"buttons": {
-				"login": "Log in"
+				"login": "Anmelden"
 			},
 			"form": {
 				"username": "Benutzername",
@@ -13,34 +13,34 @@
 			},
 			"tos": "Durch die Verwendung von PRUNplanner erklärst du dich mit den {tos_link} einverstanden.",
 			"tos_link": "Nutzungsbedingungen",
-			"forgot_link": "Forgot your password?"
+			"forgot_link": "Passwort vergessen?"
 		},
 		"registration": {
-			"title": "Start planning, it's free.",
+			"title": "Leg los – es ist kostenlos.",
 			"tos": "PRUNplanner kann kostenlos verwendet werden. Mit der Erstellung eines Kontos bestätigst und stimmst du den {tos_link} zu.",
 			"tos_link": "Nutzungsbedingungen",
 			"result": {
 				"ok_header": "Willkommen {username}!",
-				"ok_message": "Registration successful. You can now log in to PRUNplanner.",
+				"ok_message": "Registrierung erfolgreich. Du kannst dich jetzt bei PRUNplanner anmelden.",
 				"error": "Fehler während der Registrierung.",
 				"fix_fields": "Bitte fülle die markierten Felder aus.",
 				"throttled": "Zu viele Anmeldeversuche. Bitte warte eine Minute und versuche es erneut.",
 				"unknown": "Unbekannter Fehler. Bitte probiere es später noch einmal."
 			},
 			"buttons": {
-				"register": "Create account"
+				"register": "Konto erstellen"
 			},
 			"form": {
 				"username": "Benutzername",
-				"username_info": "At least 3 characters, no spaces.",
+				"username_info": "Mindestens 3 Zeichen, keine Leerzeichen.",
 				"password": "Passwort",
 				"password_info": "Muss mindestens 8 Zeichen lang sein, keine gewöhnliche Zeichenkette.",
 				"email": "E-Mail (optional)",
-				"email_info": "Not mandatory, but recommended. Increases your account security.",
+				"email_info": "Nicht verpflichtend, aber empfohlen. Erhöht die Sicherheit deines Kontos.",
 				"email_invalid": "Das sieht nicht wie eine E-Mail-Adresse aus. Lasse das Feld leer oder füge eine valide Adresse hinzu, um deinen Account zu erstellen.",
-				"security_question": "Security question",
-				"question": "Enter the name of planet {planet}. To find it, open a new Prosperous Universe buffer with this command and read the planet's name under \"Name\".",
-				"planet_name": "Planet name",
+				"security_question": "Sicherheitsfrage",
+				"question": "Gib den Namen des Planeten {planet} ein. Öffne dazu mit diesem Befehl ein neues Fenster (Buffer) in Prosperous Universe und lies den Namen des Planeten unter „Name“ ab.",
+				"planet_name": "Planetenname",
 				"another_planet": "Verwende einen anderen Planeten"
 			}
 		},
@@ -96,8 +96,8 @@
 	"email_nudge": {
 		"none": {
 			"title": "Füge eine E-Mail-Adresse hinzu, damit du dich nicht aussperren kannst",
-			"body": "Wenn du dein Passwort vergisst, ist eine E-Mail-Adresse der einzige Weg zurück zu deinem Plan. Sie wird ausschließlich zum Zurücksetzen von Passwörtern verwendet - nicht für Newsletter, nie geteilt. | Wenn du dein Passwort vergisst, ist eine E-Mail-Adresse der einzige Weg zurück zu deinen {count} Plänen. Sie wird ausschließlich zum Zurücksetzen von Passwörtern verwendet - nicht für Newsletter, nie geteilt.",
-			"body_plain": "Wenn du dein Passwort vergisst, ist eine E-Mail-Adresse der einzige Weg zurück zu deinem Plan. Sie wird ausschließlich zum Zurücksetzen von Passwörtern verwendet - nicht für Newsletter, nie geteilt."
+			"body": "Wenn du dein Passwort vergisst, ist eine E-Mail-Adresse der einzige Weg zurück zu deinem Plan. Die Adresse wird ausschließlich zum Zurücksetzen von Passwörtern verwendet - nicht für Newsletter, nie geteilt. | Wenn du dein Passwort vergisst, ist eine E-Mail-Adresse der einzige Weg zurück zu deinen {count} Plänen. Die Adresse wird ausschließlich zum Zurücksetzen von Passwörtern verwendet - nicht für Newsletter, nie geteilt.",
+			"body_plain": "Wenn du dein Passwort vergisst, ist eine E-Mail-Adresse der einzige Weg zurück zu deinen Plänen. Die Adresse wird ausschließlich zum Zurücksetzen von Passwörtern verwendet - nicht für Newsletter, nie geteilt."
 		},
 		"unconfirmed": {
 			"title": "Bestätige deine E-Mail-Adresse",
@@ -130,7 +130,7 @@
 		"no_code": "Nichts angekommen? Prüfe Spam oder",
 		"done_title": "Alles erledigt",
 		"done_info": "Wenn du dein Passwort vergessen hast, verwende \"Passwort vergessen\" auf dem Anmeldebildschirm und wir senden den Code zum Zurücksetzen an {email}.",
-		"confirmed_toast": "E-Mail bestätigt. Codes zum Passwort zurücksetzen gehen Sie jetzt an {email}.",
+		"confirmed_toast": "E-Mail bestätigt. Codes zum Zurücksetzen des Passworts gehen jetzt an {email}.",
 		"buttons": {
 			"cancel": "Abbrechen",
 			"save": "Speichern und Code senden",
