@@ -308,7 +308,7 @@ describe("planet search engine", () => {
 			).toEqual(["AB-002b"]);
 		});
 
-		it("text and name sort use the display name", () => {
+		it("text and name sort use the display name, text the system name", () => {
 			const planets = [
 				planet("ZV-759b", { planet_name: "Vulcan" }),
 				planet("KW-602a", { planet_name: "KW-602a" }),
@@ -317,6 +317,9 @@ describe("planet search engine", () => {
 			];
 			expect(
 				ids(filterPlanets(planets, filter({ text: "antares ii" }), ctx))
+			).toEqual(["ZV-759b", "ZV-759e"]);
+			expect(
+				ids(filterPlanets(planets, filter({ text: "antares ii e" }), ctx))
 			).toEqual(["ZV-759e"]);
 			expect(
 				ids(sortPlanets(planets, [{ key: "name", dir: "asc" }], ctx))

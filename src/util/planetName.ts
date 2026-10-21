@@ -4,6 +4,19 @@ const NAMES: Record<string, string> = systemNames;
 const PLANET_ID = /^([A-Z]{2}-\d{3})([a-z]+)$/;
 
 /**
+ * Name of a planet's system (ZV-759b: Antares II), undefined when the
+ * system has none
+ * @author jplacht
+ *
+ * @param {string} naturalId Planet natural id
+ * @returns {string | undefined} System name
+ */
+export function systemName(naturalId: string): string | undefined {
+	const match = PLANET_ID.exec(naturalId);
+	return match ? NAMES[match[1]] : undefined;
+}
+
+/**
  * The name the game shows for a planet: its own name, or for an unnamed
  * planet in a named system "<system name> <letter>" (ZV-759e: Antares II e)
  * @author jplacht
@@ -21,9 +34,8 @@ export function planetDisplayName(
 	if (planetName === undefined || planetName === null) return naturalId;
 	if (planetName !== "" && planetName !== naturalId) return planetName;
 
-	const match = PLANET_ID.exec(naturalId);
-	const system = match ? NAMES[match[1]] : undefined;
-	return system ? `${system} ${match![2]}` : naturalId;
+	const system = systemName(naturalId);
+	return system ? `${system} ${PLANET_ID.exec(naturalId)![2]}` : naturalId;
 }
 
 /**
