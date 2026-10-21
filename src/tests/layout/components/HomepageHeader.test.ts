@@ -138,6 +138,7 @@ describe("HomepageHeader", () => {
 
 	it.each([
 		["homepage", 5],
+		["market", 5],
 		["shared-plan", 0],
 	])("on %s shows %i section links", async (name, links) => {
 		route.name = name;

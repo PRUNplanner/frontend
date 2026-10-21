@@ -77,7 +77,7 @@
 						})
 					" />
 				<div
-					class="w-20 text-right font-bold tabular-nums"
+					class="min-w-20 text-right font-bold tabular-nums"
 					:class="changeClass(m.change_pct)">
 					{{ formatChange(m.change_pct) }}
 				</div>

@@ -147,7 +147,7 @@
 				<h1
 					class="m-0 max-w-[1100px] flex flex-col items-center gap-7 text-balance text-[clamp(44px,6.6vw,92px)] leading-[0.98] font-black tracking-[-0.035em] text-white">
 					<span
-						class="inline-flex items-center gap-2.5 px-3.5 py-1.75 border border-white/10 rounded-full bg-[#0a1010] font-mono text-[12.5px] leading-normal font-normal tracking-[0.06em] uppercase text-white/78">
+						class="inline-flex items-center gap-2.5 px-3.5 py-1.75 border border-white/10 rounded-full max-sm:rounded-2xl max-sm:text-left bg-[#0a1010] font-mono text-[12.5px] leading-normal font-normal tracking-[0.06em] uppercase text-white/78">
 						<span
 							aria-hidden="true"
 							class="size-1.75 rounded-full bg-prunplanner" />
@@ -641,8 +641,10 @@
 
 		<footer :class="container" class="pt-18 pb-10 text-[14.5px] text-muted">
 			<div
-				class="pt-7 border-t border-white/10 flex flex-col md:flex-row md:items-center gap-6">
-				<span class="grow">{{ $t("homepage.footer.made_in") }}</span>
+				class="pt-7 border-t border-white/10 flex flex-wrap items-center gap-x-6 gap-y-2">
+				<span class="grow basis-full md:basis-0">
+					{{ $t("homepage.footer.made_in") }}
+				</span>
 				<router-link
 					to="/imprint-tos"
 					class="inline-flex items-center min-h-11 text-muted-strong hover:underline">

@@ -175,7 +175,7 @@
 					{{ r.item.ticker }}
 				</b>
 				<span
-					v-if="r.w > 56 && r.h > 40"
+					v-if="r.w > 68 && r.h > 40"
 					class="mt-0.5 text-xs leading-none px-1 py-0.5 rounded-sm bg-black/60 text-white tabular-nums"
 					aria-hidden="true">
 					{{

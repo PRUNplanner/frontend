@@ -390,7 +390,8 @@ export function changeSign(
 }
 
 /**
- * A change with arrow and sign, so it never relies on colour: "▲ +7.9 %"
+ * A change with arrow and sign, so it never relies on colour: "▲ +7.9 %",
+ * joined by no-break spaces so it never wraps inside
  *
  * @param {number | null} pct Change in %
  * @param {number} [decimals=1] Decimals
@@ -401,7 +402,7 @@ export function formatChange(pct: number | null, decimals: number = 1): string {
 	const sign = changeSign(pct, decimals);
 	const arrow = sign > 0 ? "▲" : sign < 0 ? "▼" : "■";
 	const text = formatNumber(Math.abs(pct), decimals);
-	return `${arrow} ${sign > 0 ? "+" : sign < 0 ? "−" : ""}${text} %`;
+	return `${arrow}\u00a0${sign > 0 ? "+" : sign < 0 ? "−" : ""}${text}\u00a0%`;
 }
 
 /**

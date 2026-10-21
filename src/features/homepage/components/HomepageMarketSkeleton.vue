@@ -7,6 +7,7 @@
 		landingCard,
 		landingGrid4,
 		marketCard,
+		marketMoversCard,
 		marketGrid,
 		marketLead,
 		marketSector,
@@ -25,7 +26,11 @@
 			<div
 				v-for="i in 2"
 				:key="i"
-				:class="[landingCard, marketCard, pulse]" />
+				:class="[
+					landingCard,
+					i === 1 ? marketCard : marketMoversCard,
+					pulse,
+				]" />
 		</div>
 		<div class="flex flex-col gap-3">
 			<HomepageMarketSectorsHeader />

@@ -240,9 +240,9 @@ describe("squarify", () => {
 
 describe("formatting", () => {
 	it("changes carry arrow and sign", () => {
-		expect(formatChange(7.94)).toBe("▲ +7.9 %");
-		expect(formatChange(-2.5)).toBe("▼ −2.5 %");
-		expect(formatChange(0.01)).toBe("■ 0.0 %");
+		expect(formatChange(7.94)).toBe("▲\u00a0+7.9\u00a0%");
+		expect(formatChange(-2.5)).toBe("▼\u00a0−2.5\u00a0%");
+		expect(formatChange(0.01)).toBe("■\u00a00.0\u00a0%");
 		expect(formatChange(null)).toBe("–");
 	});
 
