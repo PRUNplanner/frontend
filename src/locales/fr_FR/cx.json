@@ -1,67 +1,67 @@
 {
 	"market_flags": {
 		"flags": {
-			"no_price": "No price",
-			"no_trades": "No trades in 7 days",
-			"no_offers": "No offers",
-			"no_buyers": "No buyers",
-			"bigger": "Bigger than the market",
-			"large_share": "Large share of the market",
-			"all_exchanges": "All exchanges, no exchange set",
-			"stale": "Data older than 2 days"
+			"no_price": "Pas de prix",
+			"no_trades": "Aucun échange en 7 jours",
+			"no_offers": "Aucune offre",
+			"no_buyers": "Aucun acheteur",
+			"bigger": "Plus grand que le marché",
+			"large_share": "Grande part du marché",
+			"all_exchanges": "Tous les échanges, aucun échange défini",
+			"stale": "Données de plus de 2 jours"
 		},
-		"title": "{ticker}: {flag}",
+		"title": "{ticker} : {flag}",
 		"popover": {
-			"you_sell": "You sell",
-			"you_buy": "You buy",
-			"empire_sells": "The empire sells",
-			"empire_buys": "The empire buys",
-			"per_day": "{value} / day",
-			"traded": "Traded on {exchange}, last 30 days",
-			"traded_value": "{total} ({daily} / day)",
-			"share": "Your share of that",
-			"empire_share": "Empire share",
+			"you_sell": "Tu vends",
+			"you_buy": "Tu achètes",
+			"empire_sells": "L'empire vend",
+			"empire_buys": "L'empire achète",
+			"per_day": "{value} / jour",
+			"traded": "Échangé sur {exchange}, 30 derniers jours",
+			"traded_value": "{total} ({daily} / jour)",
+			"share": "Ta part",
+			"empire_share": "Part de l'empire",
 			"bid_ask": "Bid · ask",
-			"spread": "{spread} % spread",
+			"spread": "{spread} % d'écart",
 			"none": "—",
-			"caveat": "CX volume only. Sales on local markets or by contract aren't counted.",
-			"open": "Open Plan check →"
+			"caveat": "Volume CX uniquement. Les ventes sur les marchés locaux ou par contrat ne sont pas comptées.",
+			"open": "Ouvrir le contrôle du plan →"
 		},
-		"all_exchanges": "all exchanges",
+		"all_exchanges": "tous les échanges",
 		"summary": {
-			"red": "{n} material can't trade as planned | {n} materials can't trade as planned",
-			"amber": "{n} is a large share of its market | {n} are a large share of their market",
-			"link": "Plan check →"
+			"red": "{n} matériau ne peut pas être échangé comme prévu | {n} matériaux ne peuvent pas être échangés comme prévu",
+			"amber": "{n} représente une grande part de son marché | {n} représentent une grande part de leur marché",
+			"link": "Contrôle du plan →"
 		},
 		"exchange": {
-			"one": "Exchange {exchange}",
-			"many": "Exchanges {exchange}",
-			"all": "All exchanges",
-			"from_plan": "from the plan's CX preference",
-			"from_empire": "from the empire's CX preference",
-			"no_cx": "no CX preference set",
-			"set_cx": "Set one"
+			"one": "Échange {exchange}",
+			"many": "Échanges {exchange}",
+			"all": "Tous les échanges",
+			"from_plan": "d'après la préférence CX du plan",
+			"from_empire": "d'après la préférence CX de l'empire",
+			"no_cx": "aucune préférence CX définie",
+			"set_cx": "En définir une"
 		},
 		"means": {
-			"no_price": "The plan has no price for {ticker}, so it counts it at 0 ȼ.",
-			"no_trades": "Nobody traded {ticker} on {exchange} in the last 7 days.",
-			"no_offers": "Nobody offers {ticker} on {exchange} right now.",
-			"no_buyers": "Nobody bids for {ticker} on {exchange} right now.",
-			"bigger_sell": "You'd sell {share} of what {exchange} trades in {ticker}. Expect to wait for buyers or sell below the bid.",
-			"bigger_buy": "You'd buy {share} of what {exchange} trades in {ticker}. Expect to wait for sellers or pay above the ask.",
-			"large_share_sell": "You'd sell {share} of what {exchange} trades in {ticker}, enough to move its price.",
-			"large_share_buy": "You'd buy {share} of what {exchange} trades in {ticker}, enough to move its price."
+			"no_price": "Le plan n'a pas de prix pour {ticker}, il le compte donc à 0 ȼ.",
+			"no_trades": "Personne n'a échangé {ticker} sur {exchange} ces 7 derniers jours.",
+			"no_offers": "Personne ne propose {ticker} sur {exchange} actuellement.",
+			"no_buyers": "Personne ne place de bid pour {ticker} sur {exchange} actuellement.",
+			"bigger_sell": "Tu vendrais {share} de ce qu'{exchange} échange en {ticker}. Prévois d'attendre des acheteurs ou de vendre sous le bid.",
+			"bigger_buy": "Tu achèterais {share} de ce qu'{exchange} échange en {ticker}. Prévois d'attendre des vendeurs ou de payer au-dessus de l'ask.",
+			"large_share_sell": "Tu vendrais {share} de ce qu'{exchange} échange en {ticker}, de quoi faire bouger son prix.",
+			"large_share_buy": "Tu achèterais {share} de ce qu'{exchange} échange en {ticker}, de quoi faire bouger son prix."
 		},
 		"empire": {
-			"title": "Market check on the empire's net flow",
+			"title": "Contrôle du marché sur le flux net de l'empire",
 			"chip": {
-				"red": "{n} can't trade as planned",
-				"amber": "{n} large share of the market",
-				"muted": "{n} other note | {n} other notes"
+				"red": "{n} ne peut pas être échangé comme prévu",
+				"amber": "{n} grande part du marché",
+				"muted": "{n} autre remarque | {n} autres remarques"
 			},
-			"filter_label": "Show only flagged materials",
-			"net_note": "Materials made and used inside the empire net out, so they are only flagged on what reaches the market. Each plan's own Material I/O still flags them.",
-			"plan_shares": "Each plan's share"
+			"filter_label": "Afficher uniquement les matériaux signalés",
+			"net_note": "Les matériaux produits et utilisés dans l'empire se compensent : ils ne sont donc signalés que sur ce qui atteint le marché. E/S matières de chaque plan les signale toujours.",
+			"plan_shares": "Part de chaque plan"
 		}
 	}
 }
