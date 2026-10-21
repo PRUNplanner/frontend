@@ -1,8 +1,8 @@
 {
 	"view_title": "Empire",
 	"switch_empire": "Changer d'empire",
-	"overview_hide": "Hide plan list",
-	"overview_show": "Show plan list",
+	"overview_hide": "Masquer la liste des plans",
+	"overview_show": "Afficher la liste des plans",
 	"views": {
 		"material_io": "E/S matières",
 		"analysis": "Analyse",
@@ -17,14 +17,14 @@
 			"permits_used": "@:terms.permits_plural utilisés"
 		},
 		"sync_warning": {
-			"title": "Mismatch Detected:",
+			"title": "Écart détecté :",
 			"body": "@:empire.configuration.sync_warning.title {configured} configured vs. {planned} planned permits. Please synchronize these values using your in-game {hq_buffer} to ensure accurate faction bonus calculations."
 		}
 	},
 	"plan_list": {
 		"no_plans": "Il n'y a pas de plans dans @:terms.empire",
 		"profit": "@:terms.profit (ȼ)",
-		"setup_prompt": "Assign existing plans in {management} or use {search} to create one.",
+		"setup_prompt": "Assigne des plans existants dans {management} ou utilise {search} pour en créer un.",
 		"links": {
 			"management": "@:common.navigation.management",
 			"planet_search": "@:common.navigation.planet_search"
@@ -32,33 +32,33 @@
 		"permits_planned": "@:terms.permits planned total : {permits}"
 	},
 	"material_io": {
-		"produced_by": "Produced by",
-		"consumed_by": "Consumed by",
-		"planets": "Planets",
-		"summary": "Summary",
-		"expand_all": "Expand all",
-		"expand_row": "Show planets for {ticker}",
-		"view_sides": "Producers · Consumers",
-		"view_net": "Net per planet",
-		"surplus": "Surplus",
-		"needs": "Needs",
+		"produced_by": "Produit par",
+		"consumed_by": "Consommé par",
+		"planets": "Planètes",
+		"summary": "Résumé",
+		"expand_all": "Tout développer",
+		"expand_row": "Afficher les planètes pour {ticker}",
+		"view_sides": "Producteurs · Consommateurs",
+		"view_net": "Net par planète",
+		"surplus": "Excédent",
+		"needs": "Besoins",
 		"plan_count": "{count} plan | {count} plans",
-		"planet_count": "{count} planet | {count} planets",
-		"per_day": "{value} / day",
-		"makes_uses": "makes {makes} · uses {uses}",
-		"not_produced": "Not produced in this empire.",
-		"not_consumed": "Not consumed in this empire.",
-		"no_surplus": "No planet has a surplus.",
-		"no_needs": "No planet needs it."
+		"planet_count": "{count} planète | {count} planètes",
+		"per_day": "{value} / jour",
+		"makes_uses": "produit {makes} · utilise {uses}",
+		"not_produced": "Non produit dans cet empire.",
+		"not_consumed": "Non consommé dans cet empire.",
+		"no_surplus": "Aucune planète n'a d'excédent.",
+		"no_needs": "Aucune planète n'en a besoin."
 	},
 	"filters": {
 		"display": "Affichage",
 		"consumables": "Consommables",
 		"all": "Tout",
-		"loadbalance": "Loadbalance"
+		"loadbalance": "Répartition de charge"
 	},
 	"analysis": {
-		"plan_profit": "Plan Profit (ȼ)",
+		"plan_profit": "Bénéfice du plan (ȼ)",
 		"material_profits": "Bénéfices matériels",
 		"material_costs": "Coûts des matériaux",
 		"net_production": "Production nette",
@@ -66,46 +66,46 @@
 		"exclusive_production": "Production exclusive",
 		"exclusive_consumption": "Consommation exclusive",
 		"parts": {
-			"inputs": "Production inputs",
-			"workforce": "Workforce",
-			"degradation": "Degradation",
-			"profit": "Profit",
-			"uncovered": "Cost not covered"
+			"inputs": "Intrants de production",
+			"workforce": "Main-d'œuvre",
+			"degradation": "Dégradation",
+			"profit": "Bénéfice",
+			"uncovered": "Coût non couvert"
 		},
 		"kpi_split": {
-			"label": "Revenue split: {parts}",
-			"inputs": "Inputs {pct}",
-			"workforce": "Workforce {pct}",
-			"degradation": "Degradation {pct}",
-			"profit": "Profit {pct}",
-			"uncovered": "Not covered {pct}",
-			"of_cost": "Share of cost: revenue doesn't cover it"
+			"label": "Répartition des recettes : {parts}",
+			"inputs": "Intrants {pct}",
+			"workforce": "Main-d'œuvre {pct}",
+			"degradation": "Dégradation {pct}",
+			"profit": "Bénéfice {pct}",
+			"uncovered": "Non couvert {pct}",
+			"of_cost": "Part du coût : les recettes ne le couvrent pas"
 		},
 		"revenue_split": {
-			"title": "Where each plan's revenue goes",
-			"caption": "Top {top} by profit · loss-making plans always shown",
-			"split": "Revenue split",
-			"margin": "Margin",
-			"revenue_day": "Revenue / day",
-			"other": "Other · {n} plan | Other · {n} plans",
-			"row_label": "{name}: margin {margin}, revenue {revenue} ȼ per day",
-			"empty": "No plans to split yet."
+			"title": "Où vont les recettes de chaque plan",
+			"caption": "Top {top} par bénéfice · les plans déficitaires sont toujours affichés",
+			"split": "Répartition des recettes",
+			"margin": "Marge",
+			"revenue_day": "Recettes / jour",
+			"other": "Autre · {n} plan | Autres · {n} plans",
+			"row_label": "{name} : marge {margin}, recettes {revenue} ȼ par jour",
+			"empty": "Aucun plan à répartir pour l'instant."
 		},
 		"butterfly": {
-			"title": "Materials moving the most ȼ",
-			"price": "ȼ / day",
-			"amount": "Units / day",
-			"buy": "← you buy (net consumed)",
-			"sell": "you sell (net produced) →",
-			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
-			"row_label": "{ticker}: {direction} {value}, open in Material I/O",
-			"bought": "bought",
-			"sold": "sold",
-			"empty": "No materials bought or sold."
+			"title": "Matériaux qui déplacent le plus de ȼ",
+			"price": "ȼ / jour",
+			"amount": "Unités / jour",
+			"buy": "← tu achètes (consommation nette)",
+			"sell": "tu vends (production nette) →",
+			"caption": "Top {top} sur {n} matériaux · clique sur une ligne pour l'ouvrir dans E/S matières",
+			"row_label": "{ticker} : {direction} {value}, ouvrir dans E/S matières",
+			"bought": "acheté",
+			"sold": "vendu",
+			"empty": "Aucun matériau acheté ou vendu."
 		},
 		"more_charts": {
-			"title": "More charts",
-			"caption": "Plan profit · material profit & cost · net and exclusive production & consumption"
+			"title": "Plus de graphiques",
+			"caption": "Bénéfice du plan · bénéfices et coûts des matériaux · production et consommation nettes et exclusives"
 		}
 	},
 	"opportunities": {
@@ -120,41 +120,41 @@
 		},
 		"table": {
 			"building": "Bâtiment",
-			"flow_inputs": "Production (Inputs → Outputs)",
-			"analysis": "Analysis",
-			"sell_inputs": "Sell Inputs",
-			"sell_outputs": "Sell Outputs",
-			"potential_batches": "Potential Batches",
-			"delta_required": "Delta Required",
-			"missing_material": "Missing Material"
+			"flow_inputs": "Production (entrées → sorties)",
+			"analysis": "Analyse",
+			"sell_inputs": "Vente des entrées",
+			"sell_outputs": "Vente des sorties",
+			"potential_batches": "Lots possibles",
+			"delta_required": "Delta requis",
+			"missing_material": "Matériau manquant"
 		}
 	},
 	"onboarding": {
-		"title": "Welcome to PRUNplanner",
-		"intro": "Three steps to your first base plan.",
+		"title": "Bienvenue sur PRUNplanner",
+		"intro": "Trois étapes pour ton premier plan de base.",
 		"empire": {
-			"title": "Your empire",
-			"help": "Faction and permits affect your plans' faction bonus and available area.",
-			"saved": "Saved"
+			"title": "Ton empire",
+			"help": "La faction et les permis influencent le bonus de faction de tes plans et la surface disponible.",
+			"saved": "Enregistré"
 		},
 		"plan": {
-			"title": "Plan your first base",
-			"help": "Find a planet and create a plan there. It's added to this empire automatically.",
+			"title": "Planifie ta première base",
+			"help": "Trouve une planète et crées-y un plan. Il est ajouté automatiquement à cet empire.",
 			"action": "@:common.navigation.planet_search"
 		},
 		"prices": {
-			"title": "Prices",
-			"help": "Prices use the universe 30-day average. Change which exchange each material is bought and sold on in {exchanges}.",
-			"exchanges": "Exchanges"
+			"title": "Prix",
+			"help": "Les prix utilisent la moyenne sur 30 jours de l'univers. Modifie l'échange où chaque matériau est acheté et vendu dans {exchanges}.",
+			"exchanges": "Échanges"
 		}
 	},
 	"cost_overview": {
-		"shipping": "Shipping"
+		"shipping": "Transport"
 	},
 	"empty": {
-		"title": "No empires yet",
-		"text": "An empire groups your base plans and holds your faction and permits.",
-		"create": "Create empire",
-		"manage": "Manage empires"
+		"title": "Aucun empire pour l'instant",
+		"text": "Un empire regroupe tes plans de base et contient ta faction et tes permis.",
+		"create": "Créer un empire",
+		"manage": "Gérer les empires"
 	}
 }
