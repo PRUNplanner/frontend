@@ -140,6 +140,25 @@ describe("market report ranked lists", () => {
 		);
 	});
 
+	it("movers without any mover or price", async () => {
+		const thin: MarketSummary = {
+			...summary,
+			materials: [
+				{
+					...summary.materials[0],
+					vwap_7d: null,
+					change_pct: null,
+				},
+			],
+		};
+		const { wrapper } = await mountComponent(MarketMoversTable, {
+			summary: thin,
+			direction: "rising",
+		});
+		expect(wrapper.text()).toContain("market_report.movers.empty");
+		expect(showAll(wrapper).exists()).toBe(false);
+	});
+
 	it("leaders: ranked, top 10 in two columns, Show all", async () => {
 		const { wrapper } = await mountComponent(MarketLeaders, { summary });
 		const ranks = () =>
@@ -248,6 +267,76 @@ describe("price gaps", () => {
 			"market_report.gaps.col.low_books"
 		);
 		expect(showAll(wrapper).exists()).toBe(false);
+	});
+
+	it("books basis, missing sides, prices and the phone's Sort by", async () => {
+		const [a, b, c] = tickers;
+		vi.mocked(callDataExchanges).mockResolvedValue([
+			// open in the books: ask 50.5 on AI1, bid 60 on IC1
+			book(a, "AI1", 50.25, 50.5, 40),
+			book(a, "IC1", 70, 80, 60),
+			// no ask on the cheap side, no bid on the dear one
+			book(b, "AI1", 500, 0, 450),
+			book(b, "IC1", 900.5, 950, 0),
+			book(c, "AI1", 2000, 2100, 1900),
+			book(c, "IC1", 3000, 3100, 2000),
+		]);
+		const { wrapper, setProps } = await mountComponent(MarketGaps, {
+			summary,
+			basis: "vwap",
+		});
+		await flushPromises();
+		const text = wrapper.find("tbody").text();
+		expect(text).toContain("market_report.gaps.no_ask");
+		expect(text).toContain("market_report.gaps.no_bid");
+		expect(text).toContain("market_report.gaps.ask_on");
+		// whole prices without decimals, small ones with two
+		expect(text).toContain("2,000");
+		expect(text).toContain("50.25");
+		expect(text).toContain("900.5");
+
+		const select = wrapper.findComponent(PSelect);
+		expect(
+			select.props("options").map((o: { value: unknown }) => o.value)
+		).toEqual(["gap", "label", "now"]);
+		select.vm.$emit("update:value", "now");
+		await flushPromises();
+		expect(
+			wrapper.find('th[data-col-key="now"]').attributes("aria-sort")
+		).toBe("descending");
+		expect(tableKeys(wrapper)[0]).toBe(a);
+		select.vm.$emit("update:value", "label");
+		await flushPromises();
+		expect(
+			wrapper.find('th[data-col-key="label"]').attributes("aria-sort")
+		).toBe("ascending");
+		select.vm.$emit("update:value", "gap");
+		await flushPromises();
+		expect(
+			wrapper.find('th[data-col-key="label"]').attributes("aria-sort")
+		).toBe("none");
+
+		await setProps({ basis: "books" });
+		expect(tableKeys(wrapper)).toEqual([a]);
+		expect(wrapper.find("tbody").text()).toContain(
+			"market_report.gaps.ask"
+		);
+		expect(wrapper.findComponent(PSelect).props("options")).toHaveLength(2);
+	});
+
+	it("collapsing sends the basis", async () => {
+		vi.mocked(callDataExchanges).mockResolvedValue(books);
+		const { wrapper } = await mountComponent(MarketGaps, {
+			summary,
+			basis: "vwap",
+		});
+		await flushPromises();
+		await showAll(wrapper).trigger("click");
+		await showAll(wrapper).trigger("click");
+		expect(trackEvent).toHaveBeenLastCalledWith("market:view_change", {
+			chart: "gaps",
+			view: "vwap",
+		});
 	});
 
 	it("a skeleton while the books load, the error with retry", async () => {

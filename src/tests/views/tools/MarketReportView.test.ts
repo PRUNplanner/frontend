@@ -114,6 +114,17 @@ describe("MarketReportView", () => {
 		expect(wrapper.findComponent(MarketIndexChart).exists()).toBe(true);
 	});
 
+	it("the books start in an idle callback, once", async () => {
+		const idle = vi.fn((cb: () => void) => cb());
+		vi.stubGlobal("requestIdleCallback", idle);
+		vi.mocked(callMarketSummary).mockResolvedValue(summary);
+		await mountView();
+		await flushPromises();
+		expect(idle).toHaveBeenCalledOnce();
+		expect(callDataExchanges).toHaveBeenCalledOnce();
+		vi.unstubAllGlobals();
+	});
+
 	it("the index toggle switches 1, 4 and 8 lines and is tracked", async () => {
 		vi.mocked(callMarketSummary).mockResolvedValue(summary);
 		const { wrapper } = await mountView();

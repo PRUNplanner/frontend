@@ -77,4 +77,42 @@ describe("MarketInShort", () => {
 		await setProps({ books: null, booksFailed: true });
 		expect(tile().text()).toContain("market_report.error");
 	});
+
+	it("a thin summary: dashes, a neutral change, no gap in empty books", async () => {
+		const thin: MarketSummary = {
+			...summary,
+			index: {
+				...summary.index,
+				combined: [100, 100],
+				per_sector: {},
+			},
+			materials: [],
+		};
+		const { wrapper } = await mountComponent(
+			MarketInShort,
+			{ summary: thin, books: [], showGap: true },
+			{ messages }
+		);
+		const tiles = wrapper.findAll("article");
+		// index flat at 100: a neutral pill
+		expect(tiles[0].find(".pill").classes()).toContain("text-muted");
+		expect(tiles[1].text()).toContain("–");
+		expect(tiles[2].text()).toContain("–");
+		expect(wrapper.find("[data-gap-tile]").text()).toContain("No open gap");
+	});
+
+	it("a falling index gets the negative tone", async () => {
+		const falling: MarketSummary = {
+			...summary,
+			index: { ...summary.index, combined: [100, 90] },
+		};
+		const { wrapper } = await mountComponent(
+			MarketInShort,
+			{ summary: falling, books: null },
+			{ messages }
+		);
+		expect(wrapper.find("article .pill").classes()).toContain(
+			"text-negative"
+		);
+	});
 });
