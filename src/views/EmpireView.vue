@@ -237,7 +237,12 @@
 							uuid,
 							c.result.profit,
 						])
-					)
+					),
+					// as the cost overview shows it, for the plan page
+					costOverview.value.totalAreaUsed > 0
+						? costOverview.value.totalProfit /
+								costOverview.value.totalAreaUsed
+						: undefined
 				);
 		} catch (err) {
 			// e.g. game data missing, never persist a partial empire state

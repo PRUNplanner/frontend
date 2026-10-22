@@ -185,6 +185,27 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	describe("layoutNavigationStylePlan", () => {
+		it("defaults to the rail", () => {
+			const { layoutNavigationStylePlan } = usePreferences();
+			expect(layoutNavigationStylePlan.value).toBe("collapsed");
+		});
+
+		it("sets the plan pages' style without the app's", () => {
+			const { layoutNavigationStyle, layoutNavigationStylePlan } =
+				usePreferences();
+			layoutNavigationStylePlan.value = "full";
+
+			expect(userStore.preferences.layoutNavigationStylePlan).toBe(
+				"full"
+			);
+			expect(layoutNavigationStylePlan.value).toBe("full");
+			expect(layoutNavigationStyle.value).toBe(
+				preferenceDefaults.layoutNavigationStyle
+			);
+		});
+	});
+
 	describe("colorPalette", () => {
 		it("get and set", () => {
 			const { colorPalette } = usePreferences();

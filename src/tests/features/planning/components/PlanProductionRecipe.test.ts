@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { h } from "vue";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
@@ -8,8 +9,8 @@ import { usePlanningStore } from "@/stores/planningStore";
 import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
 import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
 import PInputNumber from "@/ui/components/PInputNumber.vue";
-import PPopover from "@/ui/components/PPopover.vue";
-import { mountComponent, tableRows } from "@/tests/mountComponent";
+import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type {
@@ -21,20 +22,18 @@ import type {
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 
-const insights = vi.hoisted(() => ({
-	available: false,
-	popularity: {} as Record<string, number>,
+const trackEvent = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
+	trackEvent,
 }));
-vi.mock("@/features/plan_analytics/usePlanetInsights", async () => {
-	const { computed } = await import("vue");
-	return {
-		usePlanetInsights: () => ({
-			isAvailable: computed(() => insights.available),
-			recipePopularity: (_ticker: string, id: string) =>
-				insights.popularity[id],
-		}),
-	};
-});
+vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
+	default: {
+		name: "MaterialTile",
+		props: { ticker: String, amount: Number },
+		render: () => h("span"),
+	},
+}));
 
 const HOUR = 60 * 60 * 1000;
 const CX_UUID = "cx-uuid";
@@ -44,31 +43,17 @@ const m = (ticker: string, amount: number) => ({
 	material_amount: amount,
 });
 
-function option(
-	id: string,
-	outputs: ReturnType<typeof m>[],
-	hours: number,
-	dailyRevenue: number,
-	roi: number
-): IRecipeBuildingOption {
-	return {
-		recipe_id: id,
-		building_ticker: "SME",
-		recipe_name: id,
-		time_ms: hours * HOUR,
-		inputs: [m("FEO", 2)],
-		outputs,
-		dailyRevenue,
-		roi,
-		profitPerArea: dailyRevenue / 100,
-	};
-}
-
-// sort keys: FE, AL#N and AL#C (outputs sorted before joining), BSE
-const FE = option("R_FE", [m("FE", 1)], 12, 500, 20);
-const ALN = option("R_ALN", [m("N", 1), m("AL", 1)], 8, 50, 10);
-const ALC = option("R_ALC", [m("C", 1), m("AL", 2)], 6, -100, -3);
-const BSE = option("R_BSE", [m("BSE", 1)], 4, 0, 0);
+const FE: IRecipeBuildingOption = {
+	recipe_id: "R_FE",
+	building_ticker: "SME",
+	recipe_name: "R_FE",
+	time_ms: 12 * HOUR,
+	inputs: [m("FEO", 2), m("C", 1)],
+	outputs: [m("FE", 1)],
+	dailyRevenue: 500,
+	roi: 20,
+	profitPerArea: 5,
+};
 
 const COGM = {
 	runtime: 12 * HOUR,
@@ -122,7 +107,6 @@ async function mountRecipe(props: Record<string, unknown> = {}) {
 			disabled: false,
 			recipeData: recipe(),
 			recipeIndex: 3,
-			recipeOptions: [FE, ALN, ALC, BSE],
 			planetId: "ZV-307c",
 			...props,
 		},
@@ -131,22 +115,12 @@ async function mountRecipe(props: Record<string, unknown> = {}) {
 }
 
 const body = () => new DOMWrapper(document.body);
-
-/** opens the recipe popover, rendered into document.body */
-async function openOptions(wrapper: VueWrapper) {
-	await wrapper.find(".group").trigger("click");
-	await flushPromises();
-	return tableRows(body());
-}
-
-function button(wrapper: VueWrapper, text: string) {
-	const b = wrapper.findAll("button").find((b) => b.text() === text);
-	expect(b).toBeDefined();
-	return b!;
-}
-
+const recipeButton = (wrapper: VueWrapper) =>
+	wrapper.find("[data-recipe-button]");
 const cogmButton = (wrapper: VueWrapper) =>
-	button(wrapper, "plan.components.production_recipe.buttons.cogm");
+	wrapper.find('button[aria-label="plan.production.cogm_label"]');
+const deleteButton = (wrapper: VueWrapper) =>
+	wrapper.find('button[aria-label="plan.production.delete_recipe"]');
 
 describe("PlanProductionRecipe", () => {
 	beforeAll(async () => {
@@ -157,183 +131,56 @@ describe("PlanProductionRecipe", () => {
 	});
 
 	beforeEach(() => {
-		insights.available = false;
-		insights.popularity = {};
+		trackEvent.mockReset();
 	});
 
-	describe("Plans here", () => {
-		const PLANS_HERE = "plan.components.production_recipe.table.plans_here";
-		const header = () =>
-			body()
-				.findAll("th")
-				.find((th) => th.text().includes(PLANS_HERE));
-
-		it("sorts by plans here, recipes without data show < 5 %", async () => {
-			insights.available = true;
-			insights.popularity = { R_BSE: 60, R_FE: 25.4 };
-			const { wrapper } = await mountRecipe();
-
-			const rows = await openOptions(wrapper);
-			expect(rows.map((r) => r.plansHere)).toEqual([
-				"60 %",
-				"25 %",
-				"plan.components.production_recipe.table.below_threshold",
-				"plan.components.production_recipe.table.below_threshold",
-			]);
-			expect(rows.at(0)!.TimeMs).toBe("4h 0m");
-			expect(body().text()).toContain(
-				"plan.components.production_recipe.info.p4_strong"
-			);
-
-			// a click on the header toggles the order
-			await header()!.find("button").trigger("click");
-			expect(tableRows(body()).at(-1)!.plansHere).toBe("60 %");
-		});
-
-		it("sorts by recipe time", async () => {
-			const { wrapper } = await mountRecipe();
-			await openOptions(wrapper);
-			await body()
-				.find('th[data-col-key="TimeMs"] button')
-				.trigger("click");
-
-			expect(tableRows(body()).map((r) => r.TimeMs)).toEqual([
-				"12h 0m",
-				"8h 0m",
-				"6h 0m",
-				"4h 0m",
-			]);
-		});
-
-		it("keeps the ticker order without data for the building", async () => {
-			insights.available = true;
-			const { wrapper } = await mountRecipe();
-
-			const rows = await openOptions(wrapper);
-			expect(rows.map((r) => r.TimeMs)).toEqual([
-				"6h 0m",
-				"8h 0m",
-				"4h 0m",
-				"12h 0m",
-			]);
-		});
-
-		it("has no column without insights or with suggestions off", async () => {
-			const { wrapper } = await mountRecipe();
-
-			const rows = await openOptions(wrapper);
-			expect(rows.at(0)).not.toHaveProperty("plansHere");
-			expect(header()).toBeUndefined();
-			expect(body().text()).not.toContain(
-				"plan.components.production_recipe.info.p4_strong"
-			);
-		});
-	});
-
-	it("shows inputs only when another recipe has the same outputs", async () => {
-		const FE2 = { ...option("R_FE2", [m("FE", 2)], 6, 0, 0), inputs: [m("MAG", 1)] };
-		const { wrapper, setProps } = await mountRecipe();
-		expect(wrapper.find(".group").text()).not.toContain("FEO");
-		expect(wrapper.find(".group").text()).not.toContain("→");
-
-		await setProps({ recipeOptions: [FE, FE2, ALN] });
-		// FEO 2 per run, 2 buildings
-		expect(wrapper.find(".group").text()).toContain("FEO");
-		expect(wrapper.find(".group").text()).toContain("4x");
-		expect(wrapper.find(".group").text()).toContain("→");
-	});
-
-	it("shows the outputs of all buildings and the runtime", async () => {
+	it("shows inputs → outputs for all buildings and the runtime", async () => {
 		const { wrapper } = await mountRecipe();
 
-		// FE 1 per run, 2 buildings
-		expect(wrapper.find(".group").text()).toContain("2x");
-		expect(wrapper.find(".group").text()).toContain("FE");
+		expect(wrapper.find("[data-recipe-row]").exists()).toBe(true);
+		// per run times the 2 buildings
+		expect(
+			wrapper
+				.findAllComponents(MaterialTile)
+				.map((t) => [t.props("ticker"), t.props("amount")])
+		).toEqual([
+			["FEO", 4],
+			["C", 2],
+			["FE", 2],
+		]);
+		expect(recipeButton(wrapper).text()).toContain("→");
 		expect(wrapper.text()).toContain("1d 0h 0m");
 	});
 
-	it("lists recipe options sorted by output ticker", async () => {
-		const { wrapper } = await mountRecipe();
-
-		const rows = await openOptions(wrapper);
-
-		// multiple outputs sort as "AL#C"
-		expect(rows.map((r) => r.TimeMs)).toEqual([
-			"6h 0m",
-			"8h 0m",
-			"4h 0m",
-			"12h 0m",
-		]);
-		expect(rows.at(0)).toMatchObject({
-			dailyRevenue: "-100.00ȼ",
-			// -100 / 100
-			profitPerArea: "-1.00ȼ",
-			// negative ROI never pays back
-			roi: "never",
+	it("leaves out the arrow for a recipe without inputs", async () => {
+		const { wrapper } = await mountRecipe({
+			recipeData: recipe({ recipe: { ...FE, inputs: [] } }),
 		});
-		expect(rows.at(3)!.roi).toBe("20.00 d");
+
+		expect(recipeButton(wrapper).text()).not.toContain("→");
 	});
 
-	it("signs and colours option figures, 0 is neutral", async () => {
-		const { wrapper } = await mountRecipe();
-		await openOptions(wrapper);
+	it("opens the picker for its order, expanded while open", async () => {
+		const { wrapper, component, setProps } = await mountRecipe();
 
-		const signs = (key: string) =>
-			body()
-				.findAll(`td[data-col-key="${key}"] .text-nowrap > span`)
-				.filter((_, i) => i % 2 === 0)
-				.map((s) => s.classes().join(" "));
-		const positive = (key: string) =>
-			body()
-				.findAll(`td[data-col-key="${key}"] > span`)
-				.map((s) => s.classes("text-positive!"));
+		expect(recipeButton(wrapper).attributes("aria-expanded")).toBe("false");
+		await recipeButton(wrapper).trigger("click");
+		expect(component.emitted("open:picker")).toEqual([[3]]);
 
-		// ALC -100, ALN 50, BSE 0, FE 500
-		const bySign = ["text-negative", "text-positive", "", "text-positive"];
-		expect(signs("dailyRevenue")).toEqual(bySign);
-		expect(signs("profitPerArea")).toEqual(bySign);
-		expect(
-			body().findAll('td[data-col-key="dailyRevenue"]').at(1)!.text()
-		).toBe("+50.00ȼ");
-		expect(positive("roi")).toEqual([false, true, true, true]);
-		expect(body().findAll('td[data-col-key="roi"]').at(2)!.text()).toBe(
-			"0.00 d"
-		);
+		await setProps({ pickerOpen: true });
+		expect(recipeButton(wrapper).attributes("aria-expanded")).toBe("true");
 	});
 
-	it("marks the active recipe and emits the picked one", async () => {
-		const { wrapper, component } = await mountRecipe();
-		await openOptions(wrapper);
+	it("shows the daily share as a bar and percent", async () => {
+		const { wrapper, setProps } = await mountRecipe();
+		const bar = () => wrapper.find("span.block.h-full");
 
-		const marked = body()
-			.findAll('td[data-col-key="input"]')
-			.map((td) => td.find(".animate-pulse").exists());
-		expect(marked).toEqual([false, false, false, true]);
+		expect(bar().attributes("style")).toBe("width: 50%;");
+		expect(wrapper.text()).toContain("50.0 %");
 
-		await body().findAll("tbody tr").at(2)!.trigger("click");
-
-		expect(component.emitted("update:building:recipe")).toEqual([
-			[3, "R_BSE"],
-		]);
-	});
-
-	it("hangs the picker left below 1280 px, with an arrow", async () => {
-		for (const [wide, placement] of [
-			[true, "bottom-start"],
-			[false, "bottom-end"],
-		] as const) {
-			vi.stubGlobal("matchMedia", (query: string) => ({
-				matches: query === "(min-width: 1280px)" && wide,
-			}));
-			const { wrapper } = await mountRecipe();
-			await openOptions(wrapper);
-
-			const popover = wrapper.findComponent(PPopover);
-			expect(popover.props("placement")).toBe(placement);
-			expect(popover.props("arrow")).toBe(true);
-			wrapper.unmount();
-		}
-		vi.unstubAllGlobals();
+		await setProps({ recipeData: recipe({ dailyShare: 0.25 }) });
+		expect(bar().attributes("style")).toBe("width: 25%;");
+		expect(wrapper.text()).toContain("25.0 %");
 	});
 
 	it("emits the new amount, but not an empty one", async () => {
@@ -355,69 +202,70 @@ describe("PlanProductionRecipe", () => {
 		]);
 	});
 
-	it("disables the amount input", async () => {
-		const { wrapper } = await mountRecipe({ disabled: true });
+	it("emits deleting the recipe", async () => {
+		const { wrapper, component } = await mountRecipe();
+
+		await deleteButton(wrapper).trigger("click");
+
+		expect(component.emitted("delete:building:recipe")).toEqual([[3]]);
+	});
+
+	it("read-only: the recipe shows, but can't be changed or deleted", async () => {
+		const { wrapper, component } = await mountRecipe({ disabled: true });
 
 		expect(
 			wrapper.findComponent(PInputNumber).find("input").element.disabled
 		).toBe(true);
-	});
-
-	it("read-only: the recipes show, but can't be changed or deleted", async () => {
-		const { wrapper, component } = await mountRecipe({ disabled: true });
-
-		// the options open and mark the active recipe
-		expect(await openOptions(wrapper)).toHaveLength(4);
 		expect(
-			body()
-				.findAll('td[data-col-key="input"]')
-				.map((td) => td.find(".animate-pulse").exists())
-		).toEqual([false, false, false, true]);
-		await body().findAll("tbody tr").at(2)!.trigger("click");
-
-		expect(wrapper.find("svg[aria-hidden='true']").exists()).toBe(false);
-		expect(
-			wrapper.find('button[aria-label="common.buttons.delete"]').exists()
-		).toBe(false);
+			(recipeButton(wrapper).element as HTMLButtonElement).disabled
+		).toBe(true);
+		await recipeButton(wrapper).trigger("click");
+		expect(deleteButton(wrapper).exists()).toBe(false);
 		expect(component.emitted()).toEqual({});
+		// COGM stays open to everyone
+		expect(
+			(cogmButton(wrapper).element as HTMLButtonElement).disabled
+		).toBe(false);
 	});
 
-	it("shows the daily share unless the recipe runs all day", async () => {
+	it("marks a recipe the shared plan didn't have as new", async () => {
 		const { wrapper, setProps } = await mountRecipe();
+		expect(wrapper.text()).not.toContain("sharing.compare.new");
 
-		const bar = wrapper.find(".bg-prunplanner");
-		expect(bar.attributes("style")).toBe("width: 50%;");
-		expect(wrapper.text()).toContain("50.00 %");
-
-		await setProps({ recipeData: recipe({ dailyShare: 1 }) });
-		expect(wrapper.find(".bg-prunplanner").exists()).toBe(false);
-		expect(wrapper.text()).not.toContain("100.00 %");
+		await setProps({ isNew: true });
+		expect(recipeButton(wrapper).text()).toContain("sharing.compare.new");
 	});
 
 	it("enables COGM whenever there is COGM data", async () => {
 		const { wrapper, setProps } = await mountRecipe();
-		expect(cogmButton(wrapper).element.disabled).toBe(false);
-		// icon-only on phones: the label stays its accessible name
-		expect(cogmButton(wrapper).attributes("aria-label")).toBe(
+		const disabled = () =>
+			(cogmButton(wrapper).element as HTMLButtonElement).disabled;
+		expect(disabled()).toBe(false);
+		// icon-only, the label names it and the title shows "COGM"
+		expect(cogmButton(wrapper).text()).toBe("");
+		expect(cogmButton(wrapper).attributes("title")).toBe(
 			"plan.components.production_recipe.buttons.cogm"
 		);
 
 		await setProps({ recipeData: recipe({ cogm: undefined }) });
-		expect(cogmButton(wrapper).element.disabled).toBe(true);
+		expect(disabled()).toBe(true);
 	});
 
-	it("opens the COGM with the plan's CX preferences", async () => {
+	it("opens and tracks the COGM with the plan's CX preferences", async () => {
 		const { wrapper } = await mountRecipe({ cxUuid: CX_UUID });
 
 		await cogmButton(wrapper).trigger("click");
 		await flushPromises();
 
-		const cogm = wrapper.findComponent(PlanCOGM);
-		expect(cogm.props()).toMatchObject({
+		expect(wrapper.findComponent(PlanCOGM).props()).toMatchObject({
 			cxUuid: CX_UUID,
 			planetId: "ZV-307c",
 		});
 		expect(body().text()).toContain("plan.tools.cogm.prices.title");
+		expect(trackEvent).toHaveBeenCalledWith("plan:cogm_open", {
+			planet_natural_id: "ZV-307c",
+			recipe_id: "R_FE",
+		});
 	});
 
 	it("opens the COGM without a CX, with the Universe note", async () => {
@@ -429,20 +277,5 @@ describe("PlanProductionRecipe", () => {
 		expect(body().text()).toContain("plan.tools.cogm.info");
 		expect(body().text()).toContain("plan.tools.cogm.no_preference");
 		expect(body().text()).not.toContain("plan.tools.cogm.prices.title");
-	});
-
-	it("emits deleting the recipe", async () => {
-		const { wrapper, component } = await mountRecipe();
-
-		// the icon-only delete button comes last
-		await wrapper.findAll("button").at(-1)!.trigger("click");
-
-		expect(component.emitted("delete:building:recipe")).toEqual([[3]]);
-	});
-
-	it("renders an empty options table without recipe options", async () => {
-		const { wrapper } = await mountRecipe({ recipeOptions: [] });
-
-		expect(await openOptions(wrapper)).toEqual([]);
 	});
 });

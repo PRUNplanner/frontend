@@ -121,7 +121,10 @@ No key, URL or UUID goes into these events.
 | `plan:plancheck_target` | `has_target` | the target price solver was first used (material or target profit changed), once per open view |
 | `plan:market_flag_open` | `where` (`plan`, `empire`), `level` (`red`, `amber`, `muted`) | a market flag's details were opened in a Material I/O |
 | `plan:cogm_open` | `planet_natural_id`, `recipe_id` | |
-| `plan:insights_open` | `planet_natural_id` | the planet insights box was opened |
+| `plan:insights_open` | `planet_natural_id`, `source` (`button`, `planet`) | the planet insights box was opened, by its button or the planet link in Base (`source` since 2026-10-22) |
+| `plan:recipe_picker_open` | `mode` (`change`, `add`) | the inline recipe picker opened under a recipe row or under "+ Recipe"; the pick itself is a `plan:edit` |
+| `plan:recipe_picker_undo` | | Undo in the status line after a picked recipe |
+| `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a folded side pane was pinned open from its strip (`folded: false`) or folded again (`true`) |
 | `plan:starter_show` | `planet_natural_id`, `candidate_count` | the "Start from a typical setup" card was shown on an empty plan, once per plan view |
 | `plan:starter_apply` | `planet_natural_id`, `building_count`, `expert_count`, `is_selection_changed` | the typical setup was added to the plan (`is_selection_changed`: the user changed the preselected buildings) |
 | `plan:starter_dismiss` | `planet_natural_id` | "Start empty" on the card |
@@ -225,7 +228,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | `xit:burn_ship_fit` | `weight`, `volume` | |
 | `xit:transfer_open` | `source` | |
 | `xit:transfer_copy` | `source` | |
-| `app:navigation_toggle` | `navigation_style` | |
+| `app:navigation_toggle` | `navigation_style`, `scope` (`plan`, `app`) | plan pages keep their own choice (`layoutNavigationStylePlan`); `scope` since 2026-10-22 |
 | `app:nav_click` | `target` (route name, or `logout`), `area` (`sidebar`, `rail`, `mobile_bar`, `mobile_sheet`), `section` (`empire`, `plans`, `planning`, `tools`, `footer`) | one click on a navigation entry; opening a menu, popover or sheet and the plan breadcrumb are not counted |
 | `app:version_reload` | `source` (`notice`, `chip`, `navigation`) | reload onto a newer build: the update notice's Reload, the nav chip, or a navigation to another page that loaded the new build |
 | `app:version_later` | | the update notice was put off with Later |

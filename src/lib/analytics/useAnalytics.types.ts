@@ -199,7 +199,13 @@ export interface IAnalyticsEventProperties {
 	"plan:plancheck_compare": { same_planet: boolean };
 	"plan:profit_breakdown_mode": { mode: "cost_type" | "building" };
 	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
-	"plan:insights_open": { planet_natural_id: string };
+	"plan:insights_open": {
+		planet_natural_id: string;
+		source: "button" | "planet";
+	};
+	"plan:recipe_picker_open": { mode: "change" | "add" };
+	"plan:recipe_picker_undo": undefined;
+	"plan:panel_fold": { panel: "base" | "io"; folded: boolean };
 	"plan:starter_show": {
 		planet_natural_id: string;
 		candidate_count: number;
@@ -292,7 +298,11 @@ export interface IAnalyticsEventProperties {
 	"xit:transfer_open": { source?: XITTransferSource };
 	"xit:transfer_copy": { source?: XITTransferSource };
 
-	"app:navigation_toggle": { navigation_style: "full" | "collapsed" };
+	"app:navigation_toggle": {
+		navigation_style: "full" | "collapsed";
+		// plan pages keep their own choice
+		scope: "plan" | "app";
+	};
 	"app:nav_click": { target: string; area: NavArea; section: NavSection };
 	"app:version_reload": { source: "notice" | "chip" | "navigation" };
 	"app:version_later": undefined;

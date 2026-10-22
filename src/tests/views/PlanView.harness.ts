@@ -75,7 +75,11 @@ const { gate, tool, stub, attrsTool, mocks } = vi.hoisted(() => ({
 		push: vi.fn(),
 		toast: vi.fn(),
 		useHead: vi.fn(),
-	} as Record<"query" | "getPlanet" | "push" | "toast" | "useHead", Mock>,
+		openInsights: vi.fn(),
+	} as Record<
+		"query" | "getPlanet" | "push" | "toast" | "useHead" | "openInsights",
+		Mock
+	>,
 }));
 const debugPanel = vi.hoisted(() => ({ loads: 0 }));
 vi.mock("@/features/planning/components/debug/PlanCalcDebug.vue", async () => {
@@ -145,9 +149,17 @@ vi.mock("@/lib/useUnsavedGuard", async (orig) => {
 	const actual = await orig<typeof import("@/lib/useUnsavedGuard")>();
 	return { ...actual, useUnsavedGuard: vi.fn(actual.useUnsavedGuard) };
 });
-vi.mock("@/features/plan_analytics/components/PlanAnalyticsBox.vue", () =>
-	stub("PlanAnalyticsBox")
-);
+// the Base panel's planet link opens the box through its exposed open()
+vi.mock("@/features/plan_analytics/components/PlanAnalyticsBox.vue", () => ({
+	__esModule: true,
+	default: {
+		name: "PlanAnalyticsBox",
+		setup(_: unknown, { expose }: { expose: (e: object) => void }) {
+			expose({ open: mocks.openInsights });
+			return () => null;
+		},
+	},
+}));
 vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
 vi.mock("@/ui/useToast", () => ({
 	useToast: () => mocks.toast,
@@ -259,6 +271,23 @@ export async function openTool(wrapper: VueWrapper, label: string) {
 
 export const dialog = () => new DOMWrapper(document.body).find("[role=dialog]");
 
+/** Renames the plan in the header: pencil, type, Enter */
+export async function rename(wrapper: VueWrapper, name: string) {
+	const pencil = wrapper.find("button[aria-label='plan.header.rename']");
+	if (pencil.exists()) await pencil.trigger("click");
+	await flushPromises();
+	const input = wrapper.find("input[aria-label='plan.header.name']");
+	await input.setValue(name);
+	await input.trigger("keydown", { key: "Enter" });
+	await flushPromises();
+}
+
+/** Calculation debug from the ⋯ menu */
+export async function openDebug(wrapper: VueWrapper) {
+	wrapper.findComponent({ name: "PlanMoreMenu" }).vm.$emit("debug");
+	await flushPromises();
+}
+
 export function buildingAmounts(wrapper: VueWrapper): Record<string, number> {
 	const production = wrapper
 		.findComponent(PlanProduction)
@@ -293,6 +322,7 @@ export function setupPlanViewSuite(): void {
 		mocks.query.mockReset().mockResolvedValue(undefined);
 		mocks.push.mockReset();
 		mocks.useHead.mockReset();
+		mocks.openInsights.mockReset();
 		mocks.getPlanet.mockReset().mockResolvedValue(planet_etherwind);
 		mocks.toast
 			.mockReset()

@@ -40,38 +40,56 @@
 			required: false,
 			default: undefined,
 		},
-		showBasked: {
+		// value column: ȼ, t or m³ per day
+		value: {
+			type: String as PropType<"price" | "weight" | "volume">,
+			required: false,
+			default: "price",
+		},
+		// a narrow pane drops In and Out
+		compact: {
 			type: Boolean,
-			required: true,
+			required: false,
+			default: false,
+		},
+		// all rows, or only exported (delta > 0) or imported ones
+		filter: {
+			type: String as PropType<"all" | "exports" | "imports">,
+			required: false,
+			default: "all",
 		},
 	});
 
 	// Local State
-	const localMaterialIOData: ComputedRef<IMaterialIO[]> = computed(
-		() => props.materialIOData
-	);
-	const localShowBasked: ComputedRef<boolean> = computed(
-		() => props.showBasked
+	const localMaterialIOData: ComputedRef<IMaterialIO[]> = computed(() =>
+		props.filter === "all"
+			? props.materialIOData
+			: props.materialIOData.filter((r) =>
+					props.filter === "exports" ? r.delta > 0 : r.delta < 0
+				)
 	);
 
 	const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => {
-		const numeric = (key: string, title: string) => ({
+		const numeric = (key: string, title: string, width?: number) => ({
 			key,
 			title: t(`plan.components.materialio.table.${title}`),
 			align: "right" as const,
 			sorter: true as const,
+			width,
 		});
+		// the fixed table shares the width equally: the tile (and its flag)
+		// needs less, the value per day (+2,480,862.73) more
 		return [
-			{ key: "ticker", title: "", sorter: true },
-			numeric("input", "input"),
-			numeric("output", "output"),
+			{ key: "ticker", title: "", sorter: true, width: 84 },
+			...(props.compact
+				? []
+				: [numeric("input", "input"), numeric("output", "output")]),
 			numeric("delta", "delta"),
-			...(localShowBasked.value
-				? [
-						numeric("totalWeight", "total_weight"),
-						numeric("totalVolume", "total_volume"),
-					]
-				: [numeric("price", "cost_day")]),
+			props.value === "weight"
+				? numeric("totalWeight", "total_weight", 100)
+				: props.value === "volume"
+					? numeric("totalVolume", "total_volume", 100)
+					: numeric("price", "cost_day", 100),
 		];
 	});
 

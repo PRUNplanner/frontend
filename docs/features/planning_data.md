@@ -3,7 +3,7 @@
 **Purpose.** This folder handles the plan lifecycle outside the calculation:
 blank plan creation, save, reload, and the COGC mapping.
 
-**Used by.** `PlanView.vue`, `PlanStatusBar`, `EmpirePlanList`,
+**Used by.** `PlanView.vue`, `PlanBase`, `EmpirePlanList`,
 `usePreferences` (plan names for preference cleanup),
 `usePlanningDataLoader` and `useResourceROIOverview`.
 

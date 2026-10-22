@@ -131,6 +131,16 @@ describe("PlanBonuses", () => {
 		expect(select(wrapper).props("value")).toBe("CHEMISTRY");
 	});
 
+	it("shows the COGC hint only when given", async () => {
+		const { wrapper, setProps } = await mountBonuses();
+
+		expect(wrapper.text()).not.toContain("boosts 2 buildings");
+
+		await setProps({ cogcHint: "boosts 2 buildings" });
+
+		expect(wrapper.text()).toContain("boosts 2 buildings");
+	});
+
 	it("disables corp HQ and COGC", async () => {
 		const { wrapper } = await mountBonuses({ disabled: true });
 

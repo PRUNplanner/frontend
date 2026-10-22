@@ -407,6 +407,8 @@ describe("Backend contract", () => {
 				...backendDefaults,
 				defaultEmpireUuid: undefined,
 				defaultCXUuid: undefined,
+				// not stored by the backend yet, falls back to the rail
+				layoutNavigationStylePlan: "collapsed",
 			});
 		});
 
@@ -455,9 +457,14 @@ describe("Backend contract", () => {
 
 			const { url, body } = lastRequest("patch");
 			expect(url).toBe("/user/preferences/");
-			expect(Object.keys(body).sort()).toStrictEqual(
-				[...BACKEND_PREFERENCE_FIELDS].sort()
-			);
+			// layoutNavigationStylePlan: the backend drops it until
+			// specs/2026-10-22-plan-nav-style-preference.md ships, then it
+			// joins BACKEND_PREFERENCE_FIELDS
+			expect(
+				Object.keys(body)
+					.filter((k) => k !== "layoutNavigationStylePlan")
+					.sort()
+			).toStrictEqual([...BACKEND_PREFERENCE_FIELDS].sort());
 			expect(body.defaultEmpireUuid).toBe(UUID);
 		});
 

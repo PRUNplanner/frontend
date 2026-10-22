@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	import { computed, useId, watch } from "vue";
 	import { useI18n } from "vue-i18n";
+	import { useRoute } from "vue-router";
 	const { t } = useI18n();
 
 	// Stores
@@ -45,7 +46,9 @@
 	 */
 	const userStore = useUserStore();
 	const queryStore = useQueryStore();
-	const { layoutNavigationStyle } = usePreferences();
+	const { layoutNavigationStyle, layoutNavigationStylePlan } =
+		usePreferences();
+	const route = useRoute();
 	const { showChip } = useVersionCheck();
 	const {
 		empires,
@@ -90,12 +93,20 @@
 		{ immediate: true }
 	);
 
-	const isFull = computed(() => layoutNavigationStyle.value === "full");
+	// plan pages keep their own choice, the rail by default, for room
+	const isPlanRoute = computed(
+		() => route.name === "plan" || route.name === "shared-plan"
+	);
+	const navigationStyle = computed(() =>
+		isPlanRoute.value ? layoutNavigationStylePlan : layoutNavigationStyle
+	);
+	const isFull = computed(() => navigationStyle.value.value === "full");
 
 	function toggleNavigationSize(): void {
-		layoutNavigationStyle.value = isFull.value ? "collapsed" : "full";
+		navigationStyle.value.value = isFull.value ? "collapsed" : "full";
 		trackEvent("app:navigation_toggle", {
-			navigation_style: layoutNavigationStyle.value,
+			navigation_style: navigationStyle.value.value,
+			scope: isPlanRoute.value ? "plan" : "app",
 		});
 	}
 

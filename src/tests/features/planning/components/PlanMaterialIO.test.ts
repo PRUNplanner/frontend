@@ -44,12 +44,46 @@ const NUMERIC = ["input", "output", "delta", "price"];
 async function mountTable(props: Record<string, unknown> = {}) {
 	return mountComponent(PlanMaterialIO, {
 		materialIOData: ROWS,
-		showBasked: false,
 		...props,
 	});
 }
 
 describe("PlanMaterialIO", () => {
+	it("filters exports and imports by the delta's sign", async () => {
+		const rows: IMaterialIO[] = [
+			...ROWS,
+			{ ...ROWS[0], ticker: "DW", input: 0, output: 5, delta: 5, price: 80 },
+		];
+		const tickers = async (filter?: string) =>
+			(await mountTable({ materialIOData: rows, ...(filter ? { filter } : {}) }))
+				.wrapper.findAllComponents({ name: "MaterialTile" })
+				.map((c) => c.props("ticker"))
+				.sort();
+
+		expect(await tickers()).toEqual(["DW", "RAT"]);
+		expect(await tickers("exports")).toEqual(["DW"]);
+		expect(await tickers("imports")).toEqual(["RAT"]);
+	});
+
+	it("shows ȼ, t or m³ per day in the value column", async () => {
+		const cols = async (props: Record<string, unknown> = {}) =>
+			(await mountTable(props)).wrapper
+				.findAll("th[data-col-key]")
+				.map((th) => th.attributes("data-col-key"));
+
+		expect(await cols()).toEqual([
+			"ticker",
+			"input",
+			"output",
+			"delta",
+			"price",
+		]);
+		expect((await cols({ value: "weight" })).at(-1)).toBe("totalWeight");
+		expect((await cols({ value: "volume" })).at(-1)).toBe("totalVolume");
+		// a narrow pane drops In and Out
+		expect(await cols({ compact: true })).toEqual(["ticker", "delta", "price"]);
+	});
+
 	it("right-aligns every numeric column, header and cells", async () => {
 		const { wrapper } = await mountTable();
 
@@ -130,7 +164,6 @@ describe("PlanMaterialIO market flags", () => {
 			PlanMaterialIO,
 			{
 				materialIOData: ROWS,
-				showBasked: false,
 				checks: checks(),
 				"onOpen:planCheck": onOpen,
 			},

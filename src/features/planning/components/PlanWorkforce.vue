@@ -1,5 +1,8 @@
 <script setup lang="ts">
 	import { computed, type ComputedRef, type PropType } from "vue";
+	import { useI18n } from "vue-i18n";
+	const { t } = useI18n();
+
 	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 
 	// Utils
@@ -9,12 +12,16 @@
 
 	// Types & Interfaces
 	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
-	import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+	import type {
+		IWorkforceElement,
+		IWorkforceRecord,
+	} from "@/features/planning/usePlanCalculation.types";
+
+	// Components
+	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// UI
-	import { PButton, PTable } from "@/ui";
 	import PMeter from "@/ui/charts/PMeter.vue";
-	import { CheckSharp, BlockOutlined } from "@vicons/material";
 
 	const props = defineProps({
 		disabled: {
@@ -40,9 +47,17 @@
 		): void;
 	}>();
 
-	// Local State
-	const localWorkforceData: ComputedRef<IWorkforceRecord> = computed(
-		() => props.workforceData
+	// tiers the plan needs or houses get a row, the rest one muted line
+	const used: ComputedRef<IWorkforceElement[]> = computed(() =>
+		Object.values(props.workforceData).filter(
+			(w) => w.required > 0 || w.capacity > 0
+		)
+	);
+	const unused: ComputedRef<string> = computed(() =>
+		Object.values(props.workforceData)
+			.filter((w) => w.required === 0 && w.capacity === 0)
+			.map((w) => capitalizeString(t(`game.workforce_type.${w.name}`)))
+			.join(", ")
 	);
 
 	// Click Handlers
@@ -73,107 +88,76 @@
 </script>
 
 <template>
-	<PTable striped>
-		<thead>
-			<tr>
-				<th>{{ $t("plan.components.workforce.table.type") }}</th>
-				<th>
-					{{ $t("plan.components.workforce.table.need_housed") }}
-				</th>
-				<th class="numeric">
-					{{ $t("plan.components.workforce.table.open") }}
-				</th>
-				<th colspan="2" class="text-center!">
-					{{ $t("plan.components.workforce.table.luxuries") }}
-				</th>
-				<th class="numeric">
-					{{ $t("plan.components.workforce.table.pct_eff") }}
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr v-for="workforce in localWorkforceData" :key="workforce.name">
-				<td class="font-bold">
+	<div class="flex flex-col gap-3 tabular-nums">
+		<div v-for="workforce in used" :key="workforce.name">
+			<div class="flex items-baseline justify-between gap-2 text-sm">
+				<span class="text-ink-strong">
+					{{ capitalizeString(t(`game.workforce_type.${workforce.name}`)) }}
+				</span>
+				<span class="text-xs text-muted">
 					{{
-						capitalizeString(
-							$t(`game.workforce_type.${workforce.name}`)
-						)
+						t("plan.base.workforce.need_housed", {
+							need: formatAmount(workforce.required),
+							housed: formatAmount(workforce.capacity),
+						})
 					}}
-				</td>
-				<td class="min-w-30 tabular-nums">
-					<template
-						v-if="workforce.required > 0 || workforce.capacity > 0">
-						<div class="flex justify-between gap-2">
-							<span
-								:class="
-									workforce.required === 0 ? 'text-muted' : ''
-								">
-								{{ formatAmount(workforce.required) }}
-							</span>
-							<span class="text-muted">
-								{{ formatAmount(workforce.capacity) }}
-							</span>
-						</div>
-						<PMeter
-							:value="workforce.required"
-							:max="workforce.capacity"
-							:label="
-								capitalizeString(
-									$t(`game.workforce_type.${workforce.name}`)
-								)
-							" />
-					</template>
-					<span v-else class="text-muted">–</span>
-				</td>
-				<td
-					class="numeric"
-					:class="workforce.left === 0 ? 'text-muted!' : ''">
-					{{ formatAmount(workforce.left) }}
-				</td>
-				<td class="text-center">
-					<PButton
-						:disabled="disabled"
-						size="sm"
-						:pressed="workforce.lux1"
-						@click="
-							updateLux(workforce.name, 'lux1', !workforce.lux1)
-						">
-						<template #icon>
-							<CheckSharp v-if="workforce.lux1" />
-							<BlockOutlined v-else />
-						</template>
-						<template #default>
-							<div class="w-[4ch]">
-								{{ getLuxuryTicker(workforce.name, "lux1") }}
-							</div>
-						</template>
-					</PButton>
-				</td>
-				<td class="text-center">
-					<PButton
-						:disabled="disabled"
-						size="sm"
-						:pressed="workforce.lux2"
-						@click="
-							updateLux(workforce.name, 'lux2', !workforce.lux2)
-						">
-						<template #icon>
-							<CheckSharp v-if="workforce.lux2" />
-							<BlockOutlined v-else />
-						</template>
-						<template #default>
-							<div class="w-[4ch]">
-								{{ getLuxuryTicker(workforce.name, "lux2") }}
-							</div>
-						</template>
-					</PButton>
-				</td>
-				<td
-					class="numeric"
-					:class="workforce.efficiency === 0 ? 'text-muted!' : ''">
-					{{ formatNumber(workforce.efficiency * 100) }}
-				</td>
-			</tr>
-		</tbody>
-	</PTable>
+					·
+					<span
+						class="text-ink-strong"
+						:title="t('plan.base.workforce.efficiency')">
+						{{ formatNumber(workforce.efficiency * 100) }} %
+					</span>
+				</span>
+			</div>
+			<PMeter
+				class="mt-1 mb-1.5"
+				:value="workforce.required"
+				:max="workforce.capacity"
+				:label="
+					capitalizeString(t(`game.workforce_type.${workforce.name}`))
+				" />
+			<div class="flex items-center gap-1">
+				<span class="text-xs text-muted pr-1">
+					{{ t("plan.base.workforce.luxuries") }}
+				</span>
+				<button
+					v-for="lux in ['lux1', 'lux2'] as const"
+					:key="lux"
+					type="button"
+					:disabled="disabled"
+					:aria-pressed="workforce[lux] ? 'true' : 'false'"
+					:aria-label="
+						t('plan.base.workforce.supply', {
+							ticker: getLuxuryTicker(workforce.name, lux),
+						})
+					"
+					class="inline-flex min-h-6 pointer-coarse:min-h-11 items-center rounded-control border border-dashed cursor-pointer disabled:cursor-default"
+					:class="
+						workforce[lux]
+							? 'border-transparent'
+							: 'opacity-40 line-through border-line-strong'
+					"
+					@click="updateLux(workforce.name, lux, !workforce[lux])">
+					<MaterialTile
+						:key="getLuxuryTicker(workforce.name, lux)"
+						:ticker="getLuxuryTicker(workforce.name, lux)"
+						disable-drawer
+						:enable-popover="false" />
+				</button>
+				<span class="grow" />
+				<span
+					class="text-xs"
+					:class="workforce.left < 0 ? 'text-negative' : 'text-muted'">
+					{{
+						t("plan.base.workforce.beds_free", {
+							n: formatAmount(workforce.left),
+						})
+					}}
+				</span>
+			</div>
+		</div>
+		<div v-if="unused" class="text-xs text-muted">
+			{{ t("plan.base.workforce.not_needed", { tiers: unused }) }}
+		</div>
+	</div>
 </template>
