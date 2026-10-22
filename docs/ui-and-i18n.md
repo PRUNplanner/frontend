@@ -11,7 +11,7 @@ import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui
 
 The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDataTable`,
 `PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeparator`, `PIcon`,
-`PInput`, `PInputNumber`, `PModal`, `PPopover`, `PProgressBar`, `PSelect`,
+`PInput`, `PInputNumber`, `PModal`, `PPopover`, `PProgressBar`, `PSegmented`, `PSelect`,
 `PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast` (through
 `useToast()`, see "Toasts" below), `PTooltip` and `PValue`, plus
 `useConfirm()` (see "Overlays" below). `PPagination` and `PSelectElement`
@@ -63,6 +63,12 @@ are internal to `PDataTable` and the selects.
   `:pressed="…"` instead of switching `type`: it sets `aria-pressed` and is
   `primary` while pressed, its `type` (default `secondary`) when not. Keep
   `type` only where the colour means something else (a failed save).
+- **Segmented control:** `<PSegmented v-model:value="view" :options label>`
+  switches between a few views of one thing: a `role="group"` named by
+  `label`, one `aria-pressed` button per option in a sunken track, `size`
+  24 / 28 px, `block` fills the width (`block="phone"` below `sm` only).
+  Used on `/market`; other pages' `PButton pressed` groups move to it page
+  by page. A single on/off toggle stays `PButton pressed`.
 - **Tags:** `<PTag closable @close="…">` adds a remove button named
   "Remove {value}", so tags (and `PSelectMultiple` chips) can be removed
   by keyboard.
@@ -213,7 +219,10 @@ const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => [
   values first when ascending); pass a function to compare otherwise, e.g.
   by the name shown instead of an id. A header click cycles descend →
   ascend → none; the header is a button with `aria-sort`, so it sorts by
-  keyboard. `defaultSortOrder` sorts on mount.
+  keyboard. `defaultSortOrder` sorts on mount. A parent that cuts or pages
+  the rows before the table owns the sort with `v-model:sort`
+  (`{ key, order }`) and sorts the whole list with `sortRows`
+  (`ui/dataTableSort.ts`), the table's own comparison.
 - **Columns:** `width`, `minWidth` (keeps a column from being squeezed; the
   table scrolls sideways instead), `children` for grouped headers,
   `titleColSpan` to let one title span the next columns.

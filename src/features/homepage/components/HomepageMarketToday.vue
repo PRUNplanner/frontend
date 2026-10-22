@@ -20,7 +20,7 @@
 	import {
 		changeClass,
 		formatChange,
-		formatDay,
+		formatDate,
 		formatMoney,
 		indexChanges,
 		marketLead,
@@ -91,7 +91,7 @@
 				t("homepage.market.lead.index", {
 					change: formatChange(l.change),
 					change30: formatChange(l.change30),
-					start: formatDay(l.start),
+					start: formatDate(l.start),
 				}),
 			l.sector &&
 				t("homepage.market.lead.sector", {
@@ -103,7 +103,7 @@
 				t("homepage.market.lead.pioneer", {
 					cost: formatMoney(l.pioneerCost),
 					change: formatChange(l.pioneerChange),
-					start: formatDay(l.pioneerStart),
+					start: formatDate(l.pioneerStart),
 				}),
 			t("homepage.market.lead.source"),
 		]
@@ -191,14 +191,14 @@
 						{{
 							t("homepage.market.index.caption", {
 								members: summary.index.members.ALL ?? 0,
-								start: formatDay(summary.index.base),
+								start: formatDate(summary.index.base),
 							})
 						}}
 						<br />
 						<span class="font-mono">
 							{{
 								t("homepage.market.source", {
-									date: formatDay(summary.as_of),
+									date: formatDate(summary.as_of),
 								})
 							}}
 						</span>

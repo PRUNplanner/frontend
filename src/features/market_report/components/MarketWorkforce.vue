@@ -10,7 +10,7 @@
 	import {
 		changeClass,
 		formatChange,
-		formatDay,
+		formatDate,
 		formatMoney,
 		MARKET_EXCHANGES,
 		seriesChange,
@@ -22,13 +22,18 @@
 	// Components
 	import MarketBlock from "@/features/market_report/components/MarketBlock.vue";
 	import PLineChart from "@/ui/charts/PLineChart.vue";
+	import PSparkline from "@/ui/charts/PSparkline.vue";
 
 	// Types & Interfaces
-	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+	import {
+		WorkforceTypeSchema,
+		type WorkforceType,
+	} from "@/features/api/schemas/planningData.schemas";
 	import type { IPriceSeries } from "@/features/market_report/marketReport.types";
 	import type { ILineSeries } from "@/ui/charts/charts.types";
 
-	const { tier } = defineProps<{ tier: WorkforceType }>();
+	// the selected tier's card and big chart
+	const tier = defineModel<WorkforceType>("tier", { required: true });
 
 	const { t } = useI18n();
 	const theme = useChartTheme();
@@ -81,10 +86,25 @@
 			? Object.fromEntries(
 					SCOPES.map((s) => [
 						s,
-						workforceSeries(prices.value![s], tier, DAYS),
+						workforceSeries(prices.value![s], tier.value, DAYS),
 					])
 				)
 			: null
+	);
+
+	// one card per tier: all exchanges, the last cost and 90 days' change
+	const cards = computed(() =>
+		WorkforceTypeSchema.options.map((key) => {
+			const values = prices.value
+				? workforceSeries(prices.value.UNIVERSE, key, DAYS)
+				: [];
+			return {
+				key,
+				values,
+				cost: values.findLast((v) => v != null) ?? null,
+				change: seriesChange(values),
+			};
+		})
 	);
 
 	const series = computed<ILineSeries[]>(() =>
@@ -113,13 +133,64 @@
 	});
 
 	const drivers = computed(() =>
-		prices.value ? workforceDrivers(prices.value.UNIVERSE, tier, DAYS) : []
+		prices.value
+			? workforceDrivers(prices.value.UNIVERSE, tier.value, DAYS)
+			: []
 	);
 </script>
 
 <template>
-	<MarketBlock :ready="!!prices" :failed="failed" size="h-112" @retry="load">
-		<div class="h-112 flex flex-col gap-3">
+	<MarketBlock
+		:ready="!!prices"
+		:failed="failed"
+		size="h-[768px] lg:h-[462px]"
+		@retry="load">
+		<div class="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-4">
+			<div
+				role="group"
+				:aria-label="t('market_report.workforce.tier_label')"
+				class="flex flex-col gap-1.5 lg:gap-2">
+				<button
+					v-for="c in cards"
+					:key="c.key"
+					type="button"
+					class="tier"
+					:aria-pressed="tier === c.key"
+					@click="tier = c.key">
+					<span class="flex flex-col min-w-0 leading-tight">
+						<span class="text-xs lg:text-[13px] text-muted-strong">
+							{{ t(`game.workforce_type.${c.key}`) }}
+						</span>
+						<span
+							class="text-base lg:text-xl font-bold text-ink-strong tabular-nums">
+							{{ c.cost == null ? "–" : formatMoney(c.cost) }}
+						</span>
+						<span class="hidden lg:block text-xs">
+							<b :class="changeClass(c.change)">
+								{{ formatChange(c.change) }}
+							</b>
+							<span class="text-muted">
+								{{ " " + t("market_report.workforce.in_90_days") }}
+							</span>
+						</span>
+					</span>
+					<b
+						class="lg:hidden text-xs tabular-nums"
+						:class="changeClass(c.change)">
+						{{ formatChange(c.change) }}
+					</b>
+					<PSparkline
+						:points="c.values"
+						:trend="c.change ?? 0"
+						:label="
+							t('market_report.workforce.spark_label', {
+								tier: t(`game.workforce_type.${c.key}`),
+							})
+						" />
+				</button>
+			</div>
+		<div
+			class="h-112 lg:h-full flex flex-col gap-3 p-4 pb-2 rounded-panel border border-line min-w-0">
 			<div
 				class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
 				<div>
@@ -140,7 +211,7 @@
 							{{
 								" " +
 								t("market_report.workforce.since", {
-									date: formatDay(headline.since),
+									date: formatDate(headline.since),
 								})
 							}}
 						</template>
@@ -185,5 +256,18 @@
 					" />
 			</div>
 		</div>
+		</div>
 	</MarketBlock>
 </template>
+
+<style scoped>
+	@reference "../../../assets/css/style.css";
+
+	/* a tier's card: a row above the chart, a card beside it on wide screens */
+	.tier {
+		@apply grid grid-cols-[minmax(0,1fr)_auto_auto] lg:grid-cols-[minmax(0,1fr)_auto] items-center gap-3 h-14 lg:h-21.5 px-3.5 rounded-panel border border-line text-left cursor-pointer hover:bg-white/4 hover:border-white/20;
+	}
+	.tier[aria-pressed="true"] {
+		@apply bg-surface border-white/45 shadow-[inset_3px_0_0_#c0e219];
+	}
+</style>

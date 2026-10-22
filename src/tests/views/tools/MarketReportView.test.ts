@@ -12,6 +12,7 @@ import MarketReportView from "@/views/tools/MarketReportView.vue";
 import MarketIndexChart from "@/features/market_report/components/MarketIndexChart.vue";
 import PLineChart from "@/ui/charts/PLineChart.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { marketGapsDebug } from "@/lib/debugMode";
 import { memoryStorage } from "@/tests/memoryStorage";
 
 import market_summary from "@/tests/test_data/api_data_market_summary.json";
@@ -51,6 +52,7 @@ describe("MarketReportView", () => {
 			series: {},
 		});
 		vi.mocked(callDataExchanges).mockResolvedValue([]);
+		marketGapsDebug.value = false;
 	});
 
 	it("paints the frame with skeletons before any data", async () => {
@@ -73,8 +75,24 @@ describe("MarketReportView", () => {
 			wrapper.findAll("[data-skeleton]").length
 		).toBeGreaterThanOrEqual(7);
 		expect(wrapper.findComponent(MarketIndexChart).exists()).toBe(false);
-		// one request up front
+		// one request up front, the books wait for the content
 		expect(callMarketSummary).toHaveBeenCalledOnce();
+		expect(callDataExchanges).not.toHaveBeenCalled();
+		// the price gaps are hidden until ?debug=gaps
+		expect(wrapper.find("#mr-gaps").exists()).toBe(false);
+	});
+
+	it("the books load once after the content, for In short, gaps and cards", async () => {
+		marketGapsDebug.value = true;
+		vi.mocked(callMarketSummary).mockResolvedValue(summary);
+		const { wrapper } = await mountView();
+		await new Promise((r) => setTimeout(r, 5));
+		await flushPromises();
+
+		expect(callDataExchanges).toHaveBeenCalledOnce();
+		expect(wrapper.find("#mr-gaps").exists()).toBe(true);
+		expect(wrapper.find("[data-gap-tile]").exists()).toBe(true);
+		expect(wrapper.text()).toContain("market_report.method.gaps");
 	});
 
 	it("a summary that fails validation shows the error with retry", async () => {
@@ -107,10 +125,20 @@ describe("MarketReportView", () => {
 				.findAll("button")
 				.find((b) => b.text() === `market_report.index.view.${view}`)!;
 
-		expect(chart().props("series")).toHaveLength(1);
-
-		await toggle("exchange").trigger("click");
+		// per exchange first, and the default
+		const group = wrapper.find(
+			"[role=group][aria-label='market_report.index.view.label']"
+		);
+		expect(group.findAll("button").map((b) => b.text())).toEqual([
+			"market_report.index.view.exchange",
+			"market_report.index.view.combined",
+			"market_report.index.view.sector",
+		]);
+		expect(toggle("exchange").attributes("aria-pressed")).toBe("true");
 		expect(chart().props("series")).toHaveLength(4);
+
+		await toggle("combined").trigger("click");
+		expect(chart().props("series")).toHaveLength(1);
 
 		await toggle("sector").trigger("click");
 		expect(chart().props("series")).toHaveLength(8);
@@ -120,7 +148,8 @@ describe("MarketReportView", () => {
 		});
 	});
 
-	it("workforce tabs and movers direction are tracked", async () => {
+	it("workforce cards, movers and gaps switches are tracked", async () => {
+		marketGapsDebug.value = true;
 		vi.mocked(callMarketSummary).mockResolvedValue(summary);
 		const { wrapper } = await mountView();
 		const button = (label: string) =>
@@ -133,7 +162,11 @@ describe("MarketReportView", () => {
 			expect(metric).toBe("vwap_7d");
 		});
 
-		await button("game.workforce_type.engineer").trigger("click");
+		await flushPromises();
+		await wrapper
+			.findAll("[aria-pressed]")
+			.find((b) => b.text().includes("game.workforce_type.engineer"))!
+			.trigger("click");
 		expect(trackEvent).toHaveBeenLastCalledWith("market:view_change", {
 			chart: "workforce",
 			view: "engineer",
@@ -143,5 +176,11 @@ describe("MarketReportView", () => {
 			chart: "movers",
 			view: "falling",
 		});
+		await button("market_report.gaps.basis.books").trigger("click");
+		expect(trackEvent).toHaveBeenLastCalledWith("market:view_change", {
+			chart: "gaps",
+			view: "books",
+		});
+		expect(wrapper.text()).toContain("market_report.gaps.caption_books");
 	});
 });

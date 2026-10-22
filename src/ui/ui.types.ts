@@ -141,6 +141,12 @@ export interface PConfirmOptions {
 export type PDataTableAlign = "left" | "right" | "center";
 export type PDataTableSortOrder = "ascend" | "descend" | false;
 
+/** a data table's sort: one column, descending, ascending or none */
+export interface PDataTableSort {
+	key: string | null;
+	order: PDataTableSortOrder;
+}
+
 /** one column of PDataTable; `children` group columns under one header */
 export interface PDataTableColumn<T> {
 	key: string;
