@@ -13,6 +13,7 @@ import {
 	PInput,
 	PInputNumber,
 	PModal,
+	PSegmented,
 	PSelect,
 } from "@/ui";
 import PToast from "@/ui/components/PToast.vue";
@@ -76,6 +77,20 @@ describe("UI kit accessibility", () => {
 				h(PMeter, { value: 404, max: 750, label: "Area" }),
 				h(PMeter, { value: 760, max: 750, label: "Area" }),
 			])
+		);
+		expect(await violations(wrapper.element)).toEqual([]);
+	});
+
+	it("PSegmented: a named group of pressed buttons", async () => {
+		const wrapper = mountA11y(() =>
+			h(PSegmented, {
+				value: "a",
+				label: "View",
+				options: [
+					{ value: "a", label: "A" },
+					{ value: "b", label: "B" },
+				],
+			})
 		);
 		expect(await violations(wrapper.element)).toEqual([]);
 	});

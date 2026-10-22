@@ -17,6 +17,7 @@ export { default as PPopover } from "@/ui/components/PPopover.vue";
 export { default as PProgressBar } from "@/ui/components/PProgressBar.vue";
 export { default as PSelect } from "@/ui/components/PSelect.vue";
 export { default as PSelectMultiple } from "@/ui/components/PSelectMultiple.vue";
+export { default as PSegmented } from "@/ui/components/PSegmented.vue";
 export { default as PSpin } from "@/ui/components/PSpin.vue";
 export { default as PTable } from "@/ui/components/PTable.vue";
 export { default as PTag } from "@/ui/components/PTag.vue";

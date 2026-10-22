@@ -5,7 +5,7 @@
 	import {
 		changeClass,
 		formatChange,
-		formatDay,
+		formatDate,
 		formatMoney,
 		marketKpis,
 	} from "@/features/market_report/marketReport.util";
@@ -58,7 +58,7 @@
 				</span>
 				{{
 					$t("market_report.kpi.index_hint", {
-						date: formatDay(summary.index.base),
+						date: formatDate(summary.index.base),
 					})
 				}}
 			</dd>

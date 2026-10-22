@@ -16,6 +16,7 @@ import type {
 import type { PlanetSearchView } from "@/features/planet_search/planetSearch.schemas";
 import type { ChartView } from "@/features/market_exploration/marketExploration.types";
 import type {
+	MarketGapBasis,
 	MarketIndexView,
 	MarketMoversDirection,
 } from "@/features/market_report/marketReport.types";
@@ -267,7 +268,9 @@ export interface IAnalyticsEventProperties {
 	"market:view_change":
 		| { chart: "index"; view: MarketIndexView }
 		| { chart: "workforce"; view: WorkforceType }
-		| { chart: "movers"; view: MarketMoversDirection };
+		| { chart: "movers"; view: MarketMoversDirection | "all" }
+		| { chart: "leaders"; view: "all" | "top" }
+		| { chart: "gaps"; view: MarketGapBasis | "all" };
 
 	"tool:use": ToolUseProperties;
 

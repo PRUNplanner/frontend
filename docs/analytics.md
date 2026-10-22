@@ -194,7 +194,7 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `planet_search:view_change` | `view` (`list`, `matrix`, `chart`) | Planet Search switched views (also when a link opens another view on the page) |
 | `market_exploration:view_change` | `view` (`candles`, `exchanges`) | Market Exploration switched between the candle chart and the "All exchanges" chart |
 | `resource_roi:chart_open` | | the Resource ROI chart drawer was opened |
-| `market:view_change` | `chart` (`index`, `workforce`, `movers`), `view` (index: `combined`, `exchange`, `sector`; workforce: the tier, e.g. `engineer`; movers: `rising`, `falling`) | a view was switched on the public market report (`/market`) |
+| `market:view_change` | `chart` (`index`, `workforce`, `movers`, `leaders`, `gaps`), `view` (index: `exchange`, `combined`, `sector`; workforce: the tier, e.g. `engineer`; movers: `rising`, `falling`; gaps: `vwap`, `books`; movers, leaders and gaps: `all` when "Show all" expands the list, and on collapse the list's own view, `top` for leaders) | a view was switched or a list expanded or collapsed on the public market report (`/market`) |
 
 `tool:use` means a result, not an opened page (pageviews carry
 `route_name` for that). Tools with an input count only a result for an

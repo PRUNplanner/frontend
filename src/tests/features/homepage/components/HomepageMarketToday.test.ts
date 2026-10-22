@@ -72,7 +72,7 @@ describe("HomepageMarketToday", () => {
 
 		const lead = wrapper.find("[data-market-lead]").text();
 		expect(lead).toMatch(/^Prices on the four exchanges moved [▲▼]/);
-		expect(lead).toContain("since Jul 22");
+		expect(lead).toContain("since Jul 22, 2026");
 		expect(lead).toContain("Feeding 100 pioneers costs 920 ȼ a day");
 		expect(lead).toMatch(/Straight from FIO, no account needed\.$/);
 		expect(lead).not.toMatch(/\{|homepage\./);
@@ -80,7 +80,7 @@ describe("HomepageMarketToday", () => {
 		expect(wrapper.find("[data-market-index]").text()).toMatch(/^\d+\.\d$/);
 		expect(wrapper.findComponent(PLineChart).props("area")).toBe(true);
 		expect(wrapper.text()).toContain("255 materials");
-		expect(wrapper.text()).toContain("Daily data to Oct 19");
+		expect(wrapper.text()).toContain("Daily data to Oct 19, 2026");
 
 		const movers = wrapper.findComponent(MarketMovers);
 		expect(movers.props()).toMatchObject({ count: 5, link: true });

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-	import { computed, ref, shallowRef } from "vue";
+	import { computed } from "vue";
 
 	// Composables
-	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { useChartTheme } from "@/ui/charts/chartTheme";
+	import { useMarketBooks } from "@/features/market_report/useMarketBooks";
 
 	// Util
 	import {
@@ -18,7 +18,6 @@
 	import PButton from "@/ui/components/PButton.vue";
 
 	// Types & Interfaces
-	import type { Exchange } from "@/features/api/schemas/gameData.schemas";
 	import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
 
 	const { summary } = defineProps<{ summary: MarketSummary }>();
@@ -30,16 +29,9 @@
 		Math.max(1, ...cards.value.flatMap((c) => c.daily))
 	);
 
-	// order books load on their own; the turnover above doesn't wait
-	const books = shallowRef<Exchange[] | null>(null);
-	const booksFailed = ref(false);
-	function loadBooks(forceRefetch: boolean = false): void {
-		booksFailed.value = false;
-		useQuery("GetMarketExchanges")
-			.execute({ forceRefetch })
-			.then((data) => (books.value = data))
-			.catch(() => (booksFailed.value = true));
-	}
+	// order books load on their own (the page starts them after its first
+	// content); the turnover above doesn't wait
+	const { books, failed: booksFailed, load: loadBooks } = useMarketBooks();
 	loadBooks();
 
 	const stats = computed(() =>
