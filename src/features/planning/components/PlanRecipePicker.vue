@@ -38,10 +38,9 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
-	import PlanSegmented from "@/features/planning/components/PlanSegmented.vue";
 
 	// UI
-	import { PIcon, PValue } from "@/ui";
+	import { PIcon, PSegmented, PValue } from "@/ui";
 	import { CloseSharp, WarningAmberSharp } from "@vicons/material";
 
 	/**
@@ -261,9 +260,10 @@
 			<span class="text-sm font-medium text-ink-strong">{{ title }}</span>
 			<span v-if="subtitle" class="text-xs text-muted">{{ subtitle }}</span>
 			<span class="grow" />
-			<PlanSegmented
+			<PSegmented
 				v-if="hasInsights"
-				v-model="sort"
+				v-model:value="sort"
+				size="sm"
 				:options="sortOptions"
 				:label="t('plan.picker.sort.label')" />
 			<button

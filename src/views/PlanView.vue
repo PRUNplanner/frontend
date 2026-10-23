@@ -108,7 +108,6 @@
 	import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 	import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
 	import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
-	import PlanSegmented from "@/features/planning/components/PlanSegmented.vue";
 	import PlanSaveButton from "@/features/planning/components/PlanSaveButton.vue";
 	import PlanMoreMenu from "@/features/planning/components/PlanMoreMenu.vue";
 	import PlanToolTabs from "@/features/planning/components/PlanToolTabs.vue";
@@ -139,6 +138,7 @@
 		PFormItem,
 		PInput,
 		PModal,
+		PSegmented,
 		PSelect,
 		PValue,
 		useToast,
@@ -1866,12 +1866,14 @@
 					</PButton>
 				</div>
 				<div class="flex items-center justify-between gap-3 px-3 pb-2">
-					<PlanSegmented
-						v-model="refIOFilter"
+					<PSegmented
+						v-model:value="refIOFilter"
+						size="sm"
 						:options="ioFilterOptions"
 						:label="t('plan.io.filter.label')" />
-					<PlanSegmented
-						v-model="refIOValue"
+					<PSegmented
+						v-model:value="refIOValue"
+						size="sm"
 						:options="ioValueOptions"
 						:label="t('plan.io.value.label')" />
 				</div>
