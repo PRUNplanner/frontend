@@ -477,14 +477,19 @@
 
 	/*
 	 * Folding: a tool folds Base, wide tools Material I/O too, into a
-	 * strip; a strip pins its pane open until the next tool
+	 * strip; a strip pins its pane open, over tool switches, until the
+	 * user folds it again
 	 */
 	const refBasePinned: Ref<boolean> = ref(false);
 	const refIOPinned: Ref<boolean> = ref(false);
-	watch(refShowTool, () => {
-		refBasePinned.value = false;
-		refIOPinned.value = false;
-	});
+	// a strip: the pane's title read top-down, a detail below it
+	const strip =
+		"sticky top-28 shrink-0 w-10 flex-col items-center gap-3 py-2 rounded border border-line bg-surface text-muted-strong hover:border-line-strong hover:text-white cursor-pointer transition-colors";
+	const stripIcon =
+		"flex items-center justify-center size-6 rounded-control bg-hover";
+	const stripTitle =
+		"[writing-mode:vertical-rl] text-sm font-medium text-ink-strong";
+	const stripDetail = "[writing-mode:vertical-rl] text-xs text-muted";
 	const folded = computed(() => foldedPanes(refShowTool.value));
 	const baseFolded = computed(
 		() => folded.value.base && !refBasePinned.value
@@ -497,7 +502,8 @@
 		trackEvent("plan:panel_fold", { panel, folded: !pinned });
 	}
 
-	// below 1360 px Base opens as an overlay from the tab row
+	// below 1296 px of page width (a 1360 px window with the rail, 1544 px
+	// with the full sidebar) Base opens as an overlay from the tab row
 	const refBaseOverlay: Ref<boolean> = ref(false);
 
 	// Esc closes it, the focus goes back to the "Base" button
@@ -1527,12 +1533,16 @@
 			<button
 				v-if="baseFolded"
 				type="button"
-				class="hidden @min-[81rem]:flex sticky top-28 shrink-0 w-8.5 max-h-96 items-center gap-2 py-3 rounded border border-line text-sm text-muted-strong hover:bg-hover hover:text-white cursor-pointer [writing-mode:vertical-rl]"
+				:class="strip"
+				class="hidden @min-[81rem]:flex"
 				:aria-label="`${t('plan.layout.show_base')}: ${baseStrip}`"
 				data-base-strip
 				@click="pinPane('base', true)">
-				<PIcon :size="14"><ChevronRightSharp /></PIcon>
-				{{ baseStrip }}
+				<span :class="stripIcon">
+					<PIcon :size="16"><ChevronRightSharp /></PIcon>
+				</span>
+				<span :class="stripTitle">{{ t("plan.base.label") }}</span>
+				<span :class="stripDetail">{{ baseStrip }}</span>
 			</button>
 			<aside
 				:aria-label="t('plan.base.label')"
@@ -1673,20 +1683,22 @@
 			<button
 				v-if="ioFolded"
 				type="button"
-				class="hidden md:flex sticky top-28 shrink-0 w-8.5 max-h-96 items-center gap-2 py-3 rounded border border-line text-sm text-muted-strong hover:bg-hover hover:text-white cursor-pointer [writing-mode:vertical-rl]"
+				:class="strip"
+				class="hidden md:flex"
 				:title="t('plan.layout.show_io')"
 				data-io-strip
 				@click="pinPane('io', true)">
-				<PIcon :size="14"><ChevronLeftSharp /></PIcon>
-				{{
-					flagCount > 0
-						? t(
-								"plan.layout.io_strip_flags",
-								{ n: flagCount },
-								flagCount
-							)
-						: t("plan.components.materialio.label")
-				}}
+				<span :class="stripIcon">
+					<PIcon :size="16"><ChevronLeftSharp /></PIcon>
+				</span>
+				<span :class="stripTitle">
+					{{ t("plan.components.materialio.label") }}
+				</span>
+				<span
+					v-if="flagCount > 0"
+					class="[writing-mode:vertical-rl] px-0.5 py-1.5 rounded-full bg-warning/15 text-xs font-medium text-warning">
+					{{ t("plan.layout.flags", { n: flagCount }, flagCount) }}
+				</span>
 			</button>
 			<aside
 				:aria-label="t('plan.components.materialio.label')"

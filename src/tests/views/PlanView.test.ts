@@ -410,11 +410,12 @@ describe("PlanView", () => {
 			.trigger("click");
 		expect(strip("base").exists()).toBe(true);
 
-		// the next tool folds again
+		// a pinned pane stays open over tool switches
 		await strip("io").trigger("click");
 		expect(strip("io").exists()).toBe(false);
 		await openTool(wrapper, "plan.tools.labels.repair_analysis");
-		expect(strip("io").exists()).toBe(true);
+		expect(strip("io").exists()).toBe(false);
+		expect(strip("base").exists()).toBe(true);
 
 		await openTool(wrapper, "plan.tools.labels.production");
 		expect(productionShown(wrapper)).toBe(true);

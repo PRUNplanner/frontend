@@ -15,13 +15,13 @@
 </script>
 
 <template>
-	<nav :aria-label="label" class="flex min-w-0 overflow-x-auto gap-x-1">
+	<nav :aria-label="label" class="flex min-w-0 overflow-x-auto [scrollbar-width:thin] gap-x-1">
 		<button
 			v-for="tab in tabs"
 			:key="tab.key"
 			type="button"
 			:aria-pressed="active === tab.key ? 'true' : 'false'"
-			class="flex items-center gap-1.5 h-10 pointer-coarse:h-11 px-2.5 -mb-px border-b-2 cursor-pointer text-nowrap hover:text-white"
+			class="flex items-center gap-1.5 h-10 pointer-coarse:h-11 px-2.5 border-b-2 cursor-pointer text-nowrap hover:text-white"
 			:class="
 				active === tab.key
 					? 'border-prunplanner text-white font-medium'

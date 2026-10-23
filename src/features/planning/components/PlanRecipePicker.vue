@@ -3,6 +3,7 @@
 		computed,
 		nextTick,
 		onMounted,
+		onUnmounted,
 		ref,
 		type Ref,
 		useId,
@@ -84,14 +85,11 @@
 	);
 
 	const sort: Ref<PickerSort> = ref("daily");
-	const sortOptions = computed(() => [
+	// shown with insights only: without them there is one order
+	const sortOptions = [
 		{ value: "daily" as const, label: t("plan.picker.sort.daily") },
-		{ value: "area" as const, label: t("plan.picker.sort.area") },
-		{ value: "payback" as const, label: t("plan.picker.sort.payback") },
-		...(hasInsights.value
-			? [{ value: "popular" as const, label: t("plan.picker.sort.popular") }]
-			: []),
-	]);
+		{ value: "popular" as const, label: t("plan.picker.sort.popular") },
+	];
 
 	const rows = computed(() =>
 		pickerOptions(
@@ -196,15 +194,37 @@
 		e.stopPropagation();
 	}
 
+	// a click outside closes it; the openers toggle it themselves
+	const rootRef = useTemplateRef<HTMLElement>("root");
+	function onOutside(e: PointerEvent): void {
+		const target = e.target as Element | null;
+		if (
+			rootRef.value?.contains(target) ||
+			target?.closest("[data-recipe-button], [data-add-recipe]")
+		)
+			return;
+		emit("close");
+	}
+
 	onMounted(() => {
 		trackEvent("plan:recipe_picker_open", { mode });
 		listRef.value?.focus({ preventScroll: true });
+		document.addEventListener("pointerdown", onOutside);
 	});
+	onUnmounted(() => document.removeEventListener("pointerdown", onOutside));
 
-	const feeds = (i: number): string =>
-		recipeConsumers(rows.value[i].recipe, buildings)
-			.map((c) => c.building)
-			.join(", ");
+	// per row: inputs the plan makes itself, and plan buildings it feeds
+	const links = computed(() =>
+		rows.value.map(({ recipe }) => ({
+			made: recipe.inputs
+				.map((m) => m.material_ticker)
+				.filter((ticker) => inputSource(ticker, materialIO) === "made")
+				.join(", "),
+			feeds: recipeConsumers(recipe, buildings)
+				.map((c) => c.building)
+				.join(", "),
+		}))
+	);
 
 	const grid =
 		"grid grid-cols-[5rem_minmax(0,1fr)_6rem_4.5rem_4.5rem_3.5rem] gap-x-2 items-center";
@@ -212,6 +232,7 @@
 
 <template>
 	<section
+		ref="root"
 		:aria-label="title"
 		class="my-1 border border-line-strong rounded bg-surface tabular-nums"
 		@keydown.esc.stop="emit('close')">
@@ -221,6 +242,7 @@
 			<span v-if="subtitle" class="text-xs text-muted">{{ subtitle }}</span>
 			<span class="grow" />
 			<PlanSegmented
+				v-if="hasInsights"
 				v-model="sort"
 				:options="sortOptions"
 				:label="t('plan.picker.sort.label')" />
@@ -296,35 +318,22 @@
 				</span>
 				<span class="min-w-0">
 					<span class="flex flex-wrap items-center gap-1">
-						<span
+						<MaterialTile
 							v-for="m in row.recipe.inputs"
 							:key="`IN#${m.material_ticker}`"
-							class="inline-flex items-center gap-0.5">
-							<MaterialTile
-								:ticker="m.material_ticker"
-								:amount="m.material_amount"
-								disable-drawer
-								:enable-popover="false" />
-							<span
-								role="img"
-								:aria-label="
-									t(
-										`plan.picker.source.${inputSource(m.material_ticker, materialIO)}`
-									)
-								"
-								class="size-1.5 rounded-full"
-								:class="
-									inputSource(m.material_ticker, materialIO) ===
-									'made'
-										? 'bg-positive'
-										: 'bg-warning'
-								" />
-						</span>
+							:ticker="m.material_ticker"
+							:amount="m.material_amount"
+							disable-drawer
+							:enable-popover="false" />
 					</span>
 					<span class="block text-xs text-muted truncate">
 						{{ humanizeTimeMs(row.recipe.time_ms) }}
-						<template v-if="feeds(i)">
-							· {{ t("plan.picker.feeds", { buildings: feeds(i) }) }}
+						<template v-if="links[i].made">
+							· {{ t("plan.picker.uses_made", { tickers: links[i].made }) }}
+						</template>
+						<template v-if="links[i].feeds">
+							·
+							{{ t("plan.picker.feeds", { buildings: links[i].feeds }) }}
 						</template>
 						<template v-if="row.current">
 							· {{ t("plan.picker.current") }}
@@ -370,14 +379,6 @@
 		</div>
 		<footer
 			class="flex flex-wrap items-center gap-3 px-3 py-1.5 border-t border-line text-xs text-muted">
-			<span class="inline-flex items-center gap-1">
-				<span class="size-1.5 rounded-full bg-positive" />
-				{{ t("plan.picker.source.made") }}
-			</span>
-			<span class="inline-flex items-center gap-1">
-				<span class="size-1.5 rounded-full bg-warning" />
-				{{ t("plan.picker.source.bought") }}
-			</span>
 			<span>{{ t("plan.picker.per_building") }}</span>
 			<span class="grow" />
 			<span>

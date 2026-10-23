@@ -65,13 +65,7 @@ describe("pickerOptions", () => {
 		expect(rows[2]).toMatchObject({ current: false, inPlan: true });
 	});
 
-	it("sorts by area, payback (never last) and popularity", () => {
-		const area = pickerOptions("change", OPTIONS, [], "CAF", "area", none);
-		expect(ids(area)).toStrictEqual(["CAF", "MUS", "ALG", "VEG"]);
-
-		const payback = pickerOptions("change", OPTIONS, [], "CAF", "payback", none);
-		expect(ids(payback)).toStrictEqual(["CAF", "MUS", "ALG", "VEG"]);
-
+	it("sorts by popularity, unknown last", () => {
 		const plans: Record<string, number> = { VEG: 60, ALG: 20 };
 		const popular = pickerOptions("add", OPTIONS, [], undefined, "popular", (id) => plans[id]);
 		expect(ids(popular)).toStrictEqual(["VEG", "ALG", "CAF", "MUS"]);

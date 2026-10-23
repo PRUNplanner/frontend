@@ -298,11 +298,7 @@ export interface IAnalyticsEventProperties {
 	"xit:transfer_open": { source?: XITTransferSource };
 	"xit:transfer_copy": { source?: XITTransferSource };
 
-	"app:navigation_toggle": {
-		navigation_style: "full" | "collapsed";
-		// plan pages keep their own choice
-		scope: "plan" | "app";
-	};
+	"app:navigation_toggle": { navigation_style: "full" | "collapsed" };
 	"app:nav_click": { target: string; area: NavArea; section: NavSection };
 	"app:version_reload": { source: "notice" | "chip" | "navigation" };
 	"app:version_later": undefined;

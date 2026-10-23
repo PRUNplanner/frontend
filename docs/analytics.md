@@ -228,7 +228,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | `xit:burn_ship_fit` | `weight`, `volume` | |
 | `xit:transfer_open` | `source` | |
 | `xit:transfer_copy` | `source` | |
-| `app:navigation_toggle` | `navigation_style`, `scope` (`plan`, `app`) | plan pages keep their own choice (`layoutNavigationStylePlan`); `scope` since 2026-10-22 |
+| `app:navigation_toggle` | `navigation_style` | |
 | `app:nav_click` | `target` (route name, or `logout`), `area` (`sidebar`, `rail`, `mobile_bar`, `mobile_sheet`), `section` (`empire`, `plans`, `planning`, `tools`, `footer`) | one click on a navigation entry; opening a menu, popover or sheet and the plan breadcrumb are not counted |
 | `app:version_reload` | `source` (`notice`, `chip`, `navigation`) | reload onto a newer build: the update notice's Reload, the nav chip, or a navigation to another page that loaded the new build |
 | `app:version_later` | | the update notice was put off with Later |

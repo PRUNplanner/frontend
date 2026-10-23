@@ -1,29 +1,12 @@
 import { describe, it, expect } from "vitest";
 
 import {
-	cogcShare,
 	foldedPanes,
 	materialIOCsv,
 	materialIOTotals,
 	type PlanTool,
 } from "@/features/planning/planView.util";
-import type {
-	IMaterialIO,
-	IProductionBuilding,
-} from "@/features/planning/usePlanCalculation.types";
-
-const building = (
-	name: string,
-	dailyRevenue: number,
-	cogc: boolean
-): IProductionBuilding =>
-	({
-		name,
-		dailyRevenue,
-		efficiencyElements: cogc
-			? [{ efficiencyType: "COGC", value: 1.25 }]
-			: [{ efficiencyType: "WORKFORCE", value: 1 }],
-	}) as IProductionBuilding;
+import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 const io = (ticker: string, delta: number, price: number): IMaterialIO => ({
 	ticker,
@@ -52,25 +35,6 @@ describe("foldedPanes", () => {
 		["plan-check", true],
 	])("%s folds Base, Material I/O: %s", (tool, io) => {
 		expect(foldedPanes(tool)).toStrictEqual({ base: true, io });
-	});
-});
-
-describe("cogcShare", () => {
-	it("sums the boosted buildings' revenue share", () => {
-		expect(
-			cogcShare([
-				building("EXT", 300, true),
-				building("RIG", 100, true),
-				building("FP", 600, false),
-			])
-		).toStrictEqual({ tickers: ["EXT", "RIG"], share: 0.4 });
-	});
-
-	it("ignores losses and has no share without revenue", () => {
-		expect(cogcShare([building("EXT", -50, true)])).toStrictEqual({
-			tickers: ["EXT"],
-			share: 0,
-		});
 	});
 });
 

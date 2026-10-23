@@ -109,8 +109,6 @@ describe("AppSidebar", () => {
 	});
 
 	it("marks the open plan and the empire row as its parent", async () => {
-		// the full sidebar on plan pages too
-		useUserStore().setPreference("layoutNavigationStylePlan", "full");
 		const w = await mountSidebar();
 		const empireRow = links(w).find((l) => l.props("to") === "/empire")!;
 		expect(empireRow.attributes("aria-current")).toBe("page");
@@ -142,8 +140,6 @@ describe("AppSidebar", () => {
 	});
 
 	it("marks nothing for a new plan or a shared plan", async () => {
-		// the full sidebar on plan pages too
-		useUserStore().setPreference("layoutNavigationStylePlan", "full");
 		const w = await mountSidebar();
 		await goTo("plan", { planetNaturalId: "ZV-101a" });
 		expect(w.findAll("[aria-current=page]")).toHaveLength(0);
@@ -152,8 +148,6 @@ describe("AppSidebar", () => {
 	});
 
 	it("shows a plan of another empire as one extra row", async () => {
-		// the full sidebar on plan pages too
-		useUserStore().setPreference("layoutNavigationStylePlan", "full");
 		const w = await mountSidebar([empire("a", 2), empire("b", 1)]);
 		await goTo("plan", { planetNaturalId: "ZV-100a", planUuid: "b-p0" });
 		const current = w.findAll("[aria-current=page]");
@@ -377,7 +371,6 @@ describe("SidebarRail", () => {
 		expect(useUserStore().preferences.layoutNavigationStyle).toBe("full");
 		expect(trackEvent).toHaveBeenCalledWith("app:navigation_toggle", {
 			navigation_style: "full",
-			scope: "app",
 		});
 	});
 });
@@ -461,7 +454,6 @@ describe("AppSidebar behaviour", () => {
 		);
 		expect(trackEvent).toHaveBeenCalledWith("app:navigation_toggle", {
 			navigation_style: "collapsed",
-			scope: "app",
 		});
 		expect(w.find("aside").classes()).toContain("w-16");
 		expect(w.find(`button[aria-label="${NAV}.expand"]`).exists()).toBe(
@@ -654,86 +646,5 @@ describe("SidebarRail behaviour", () => {
 
 		expect(body().text()).toContain(`${NAV}.market`);
 		expect(body().text()).not.toContain(`${NAV}.fio.fio`);
-	});
-});
-
-describe("AppSidebar on plan pages", () => {
-	beforeEach(() => {
-		pinia = createPinia();
-		setActivePinia(pinia);
-		execute.mockReset().mockResolvedValue(undefined);
-		vi.mocked(trackEvent).mockClear();
-		Object.assign(route, {
-			name: "empire",
-			params: {},
-			fullPath: "/empire",
-		});
-		useUserStore().profile = profile("ok");
-	});
-
-	const aside = (w: VueWrapper) => w.find("aside").classes();
-
-	it("shows a new user the rail on plan pages and the full sidebar elsewhere", async () => {
-		const w = await mountSidebar();
-		expect(aside(w)).toContain("w-62");
-
-		await goTo("plan", { planetNaturalId: "ZV-100a", planUuid: "a-p0" });
-		expect(aside(w)).toContain("w-16");
-
-		await goTo("shared-plan", { sharedPlanUuid: "s1" });
-		expect(aside(w)).toContain("w-16");
-
-		await goTo("manage");
-		expect(aside(w)).toContain("w-62");
-	});
-
-	it("expands on a plan page for plan pages only", async () => {
-		await goTo("plan", { planetNaturalId: "ZV-100a", planUuid: "a-p0" });
-		const w = await mountSidebar();
-
-		await w.find(`button[aria-label="${NAV}.expand"]`).trigger("click");
-
-		expect(useUserStore().preferences.layoutNavigationStylePlan).toBe(
-			"full"
-		);
-		expect(useUserStore().preferences.layoutNavigationStyle).toBe("full");
-		expect(trackEvent).toHaveBeenCalledWith("app:navigation_toggle", {
-			navigation_style: "full",
-			scope: "plan",
-		});
-		expect(aside(w)).toContain("w-62");
-	});
-
-	it("keeps the app's rail when expanding on a plan page", async () => {
-		useUserStore().setPreference("layoutNavigationStyle", "collapsed");
-		await goTo("plan", { planetNaturalId: "ZV-100a", planUuid: "a-p0" });
-		const w = await mountSidebar();
-
-		await w.find(`button[aria-label="${NAV}.expand"]`).trigger("click");
-
-		expect(useUserStore().preferences.layoutNavigationStyle).toBe(
-			"collapsed"
-		);
-		await goTo("manage");
-		expect(aside(w)).toContain("w-16");
-	});
-
-	it("brings the rail back when collapsing on a plan page", async () => {
-		useUserStore().setPreference("layoutNavigationStylePlan", "full");
-		await goTo("plan", { planetNaturalId: "ZV-100a", planUuid: "a-p0" });
-		const w = await mountSidebar();
-		expect(aside(w)).toContain("w-62");
-
-		await w.find(`button[aria-label="${NAV}.collapse"]`).trigger("click");
-
-		expect(useUserStore().preferences.layoutNavigationStylePlan).toBe(
-			"collapsed"
-		);
-		expect(useUserStore().preferences.layoutNavigationStyle).toBe("full");
-		expect(trackEvent).toHaveBeenCalledWith("app:navigation_toggle", {
-			navigation_style: "collapsed",
-			scope: "plan",
-		});
-		expect(aside(w)).toContain("w-16");
 	});
 });

@@ -622,15 +622,12 @@
 			"label": "Planet",
 			"summary": "COGC {cogc} · {n} permit | COGC {cogc} · {n} permits",
 			"area": "area {n}",
-			"cogc_boosts": "Boosts {buildings}: {share} of revenue",
-			"cogc_none": "Boosts none of the plan's buildings",
 			"resources": "Resources",
 			"add_extractor": "Add {building} for {ticker}",
 			"insights": "{n} plans on {planet} · what others build here"
 		},
 		"workforce": {
 			"label": "Workforce",
-			"summary": "lowest efficiency {eff} %",
 			"need_housed": "{need} / {housed}",
 			"efficiency": "Efficiency",
 			"luxuries": "Luxuries",
@@ -679,8 +676,6 @@
 		"sort": {
 			"label": "Sort by",
 			"daily": "ȼ / day",
-			"area": "ȼ / area",
-			"payback": "Payback",
 			"popular": "Popular"
 		},
 		"columns": {
@@ -693,10 +688,7 @@
 		},
 		"dependency": "Your {buildings} turn this {ticker} into {outputs}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
 		"dependency_workforce": "Your workforce uses this {ticker}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
-		"source": {
-			"made": "made here",
-			"bought": "bought"
-		},
+		"uses_made": "uses {tickers} from the plan",
 		"feeds": "feeds {buildings}",
 		"current": "current recipe",
 		"in_plan": "in plan",
@@ -732,10 +724,9 @@
 	},
 	"layout": {
 		"flags": "{n} market flag | {n} market flags",
-		"base_strip": "Base · COGC {cogc} · {n} expert | Base · COGC {cogc} · {n} experts",
+		"base_strip": "COGC {cogc} · {n} expert | COGC {cogc} · {n} experts",
 		"show_base": "Show base setup",
 		"show_io": "Show Material I/O",
-		"io_strip_flags": "Material I/O · {n} flag | Material I/O · {n} flags",
 		"close": "Close",
 		"fold": "Fold"
 	}

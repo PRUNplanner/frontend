@@ -43,7 +43,6 @@ vi.mock("@/features/planning/components/PlanBonuses.vue", () =>
 		"disabled",
 		"corphq",
 		"cogc",
-		"cogcHint",
 		"planetNaturalId",
 	])
 );
@@ -177,11 +176,11 @@ describe("PlanBase", () => {
 	it("renders the five sections with their summaries", async () => {
 		const { wrapper } = await mountBase();
 
-		// lowest efficiency 0.85 * 100 = 85.0, 2 + 1 experts
+		// 2 + 1 experts
 		expect(summaries(wrapper)).toEqual([
 			"Empire & prices | Alpha · Universe average",
 			"Planet | COGC game.cogc_program_short.ADVERTISING_RESOURCE_EXTRACTION · 2 permits",
-			"Workforce | lowest efficiency 85.0 %",
+			"Workforce",
 			"Housing | 4 HB1 · 2 STO · Auto",
 			"Experts | 3 placed",
 		]);
@@ -208,7 +207,7 @@ describe("PlanBase", () => {
 		expect(summaries(wrapper)).toEqual([
 			"Empire & prices | ",
 			"Planet | COGC game.cogc_program_short.NONE · 1 permit",
-			"Workforce | ",
+			"Workforce",
 			"Housing | ",
 			"Experts | 0 placed",
 		]);
@@ -243,38 +242,6 @@ describe("PlanBase", () => {
 			{ name: "EXT", expertise: "RESOURCE_EXTRACTION" },
 			{ name: "FP", expertise: "FOOD_INDUSTRIES" },
 		]);
-	});
-
-	it("names the boosted buildings and their revenue share under the COGC", async () => {
-		const { wrapper } = await mountBase();
-
-		// EXT earns 300 of 300 + 600: 33 %
-		expect(wrapper.findComponent(PlanBonuses).props("cogcHint")).toBe(
-			"Boosts EXT: 33 % of revenue"
-		);
-	});
-
-	it("says when the COGC boosts none of the buildings", async () => {
-		const result = planResult();
-		result.cogc = "METALLURGY";
-		result.production.buildings = [
-			building("FP", 600, false, "FOOD_INDUSTRIES"),
-		];
-		const { wrapper } = await mountBase({ result });
-
-		expect(wrapper.findComponent(PlanBonuses).props("cogcHint")).toBe(
-			"Boosts none of the plan's buildings"
-		);
-	});
-
-	it("has no COGC hint without a program", async () => {
-		const result = planResult();
-		result.cogc = "---";
-		const { wrapper } = await mountBase({ result });
-
-		expect(
-			wrapper.findComponent(PlanBonuses).props("cogcHint")
-		).toBeUndefined();
 	});
 
 	it("forwards the sections' edits", async () => {

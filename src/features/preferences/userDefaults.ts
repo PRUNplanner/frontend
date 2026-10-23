@@ -19,7 +19,6 @@ export const preferenceDefaults: IPreferenceDefault = {
 	burnOrigin: "Configure on Execution",
 	supplyCartDays: 20,
 	layoutNavigationStyle: "full",
-	layoutNavigationStylePlan: "collapsed",
 	colorPalette: "default",
 	planSuggestions: true,
 

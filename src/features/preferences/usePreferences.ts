@@ -194,13 +194,6 @@ export function usePreferences() {
 		set: (v) => userStore.setPreference("layoutNavigationStyle", v),
 	});
 
-	const layoutNavigationStylePlan: WritableComputedRef<
-		UserPreference["layoutNavigationStylePlan"]
-	> = computed({
-		get: () => userStore.preferences.layoutNavigationStylePlan,
-		set: (v) => userStore.setPreference("layoutNavigationStylePlan", v),
-	});
-
 	const colorPalette: WritableComputedRef<UserPreference["colorPalette"]> =
 		computed({
 			get: () => userStore.preferences.colorPalette,
@@ -332,7 +325,6 @@ export function usePreferences() {
 		planSettings,
 		planSettingsOverview,
 		layoutNavigationStyle,
-		layoutNavigationStylePlan,
 		colorPalette,
 		planSuggestions,
 		locale,

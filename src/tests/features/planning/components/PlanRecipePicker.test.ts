@@ -241,6 +241,27 @@ describe("PlanRecipePicker", () => {
 		expect(component.emitted("pick")).toBeUndefined();
 	});
 
+	it("closes on a click outside, not inside or on an opener", async () => {
+		const { wrapper, component } = await mountPicker();
+		const opener = document.createElement("button");
+		opener.setAttribute("data-recipe-button", "");
+		document.body.append(opener);
+		const down = (el: Element) =>
+			el.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+
+		down(wrapper.find("[role=listbox]").element);
+		down(opener);
+		expect(component.emitted("close")).toBeUndefined();
+
+		down(document.body);
+		expect(component.emitted("close")).toHaveLength(1);
+
+		wrapper.unmount();
+		down(document.body);
+		expect(component.emitted("close")).toHaveLength(1);
+		opener.remove();
+	});
+
 	it("picks a clicked row, but not a disabled one", async () => {
 		const { wrapper, component } = await mountPicker();
 
@@ -301,49 +322,41 @@ describe("PlanRecipePicker", () => {
 		});
 	});
 
-	it("marks each input made here or bought", async () => {
+	it("names the inputs the plan makes itself, not the bought ones", async () => {
 		const { wrapper } = await mountPicker({
 			materialIO: [io("FE", 0, 20), io("FEO", 10, 0)],
 		});
 
-		const dots = (row: number) =>
-			options(wrapper)
-				.at(row)!
-				.findAll("[role=img]")
-				.map((d) => d.attributes("aria-label"));
 		// FE: FEO is bought; BSE: FE is made
-		expect(dots(0)).toEqual(["plan.picker.source.bought"]);
-		expect(dots(3)).toEqual(["plan.picker.source.made"]);
+		expect(options(wrapper).at(0)!.text()).not.toContain(
+			"plan.picker.uses_made"
+		);
+		expect(options(wrapper).at(3)!.text()).toContain(
+			"plan.picker.uses_made"
+		);
+		expect(wrapper.find("[role=img]").exists()).toBe(false);
 	});
 
 	describe("sort", () => {
 		const sortButtons = (wrapper: VueWrapper) =>
 			wrapper.find("[role=group]").findAll("button");
 
-		it("sorts by ȼ/area and payback, the current recipe stays first", async () => {
+		it("has no sort without insights: ȼ/day is the only order", async () => {
 			const { wrapper } = await mountPicker();
 
-			expect(sortButtons(wrapper).map((b) => b.text())).toEqual([
-				"plan.picker.sort.daily",
-				"plan.picker.sort.area",
-				"plan.picker.sort.payback",
-			]);
-
-			await sortButtons(wrapper).at(1)!.trigger("click");
-			expect(ids(wrapper)).toEqual(["FE", "BSE", "CU", "AL"]);
-
-			await sortButtons(wrapper).at(2)!.trigger("click");
-			expect(ids(wrapper)).toEqual(["FE", "CU", "AL", "BSE"]);
+			expect(wrapper.find("[role=group]").exists()).toBe(false);
 		});
 
-		it("offers Popular only with insights", async () => {
+		it("sorts by popularity with insights, the current recipe stays first", async () => {
 			insights.available = true;
 			insights.popularity = { R_AL: 10, R_BSE: 60 };
 			const { wrapper } = await mountPicker();
 
-			const popular = sortButtons(wrapper).at(3)!;
-			expect(popular.text()).toBe("plan.picker.sort.popular");
-			await popular.trigger("click");
+			expect(sortButtons(wrapper).map((b) => b.text())).toEqual([
+				"plan.picker.sort.daily",
+				"plan.picker.sort.popular",
+			]);
+			await sortButtons(wrapper).at(1)!.trigger("click");
 
 			expect(ids(wrapper)).toEqual(["FE", "BSE", "AL", "CU"]);
 			expect(options(wrapper).at(1)!.text()).toContain("60 %");

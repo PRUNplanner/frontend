@@ -12,8 +12,7 @@
 
 	// Util
 	import { cogcTextMapping } from "@/features/planning_data/usePlan";
-	import { cogcShare } from "@/features/planning/planView.util";
-	import { formatNumber, formatPercent } from "@/util/numbers";
+	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
 	import type {
@@ -40,7 +39,8 @@
 	import PlanExperts from "@/features/planning/components/PlanExperts.vue";
 
 	// UI
-	import { PTooltip } from "@/ui";
+	import { PIcon, PTooltip } from "@/ui";
+	import { ExpandMoreSharp } from "@vicons/material";
 
 	/**
 	 * Base setup in one pane: empire and prices, planet, workforce,
@@ -99,24 +99,11 @@
 		Object.values(props.result.experts).reduce((s, e) => s + e.amount, 0)
 	);
 
-	const cogcHint = computed(() => {
-		if (props.result.cogc === "---") return undefined;
-		const { tickers, share } = cogcShare(props.result.production.buildings);
-		if (tickers.length === 0) return t("plan.base.planet.cogc_none");
-		return t("plan.base.planet.cogc_boosts", {
-			buildings: tickers.join(", "),
-			share: formatPercent(share * 100, 0),
-		});
-	});
-
 	const summary = computed(() => {
 		const r = props.result;
 		const cxName = props.cxUuid
 			? planningStore.cxs[props.cxUuid]?.cx_name
 			: undefined;
-		const used = Object.values(r.workforce).filter(
-			(w) => w.required > 0 || w.capacity > 0
-		);
 		const housing = (
 			Object.entries(r.infrastructure) as [InfrastructureType, number][]
 		)
@@ -131,14 +118,6 @@
 				{ cogc: cogcLabel.value, n: r.area.permits },
 				r.area.permits
 			),
-			workforce: used.length
-				? t("plan.base.workforce.summary", {
-						eff: formatNumber(
-							Math.min(...used.map((w) => w.efficiency)) * 100,
-							1
-						),
-					})
-				: "",
 			housing: [
 				...housing,
 				...(props.autoOptimizeHabs ? [t("plan.base.housing.auto")] : []),
@@ -157,7 +136,7 @@
 		}))
 	);
 
-	const section = "border-t border-line first:border-t-0";
+	const section = "group border-t border-line first:border-t-0";
 	const head =
 		"flex items-center gap-2 h-10 pointer-coarse:h-11 px-3 cursor-pointer list-none hover:bg-hover [&::-webkit-details-marker]:hidden";
 	const body = "px-3 pb-3";
@@ -173,7 +152,8 @@
 				<span class="text-xs text-muted truncate">
 					{{ summary.empire }}
 				</span>
-			</summary>
+				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
+</summary>
 			<div :class="body">
 				<PlanConfiguration
 					:disabled="disabled"
@@ -197,13 +177,13 @@
 				<span class="text-xs text-muted truncate tabular-nums">
 					{{ summary.planet }}
 				</span>
-			</summary>
+				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
+</summary>
 			<div :class="body" class="flex flex-col gap-3">
 				<PlanBonuses
 					:disabled="disabled"
 					:corphq="result.corphq"
 					:cogc="result.cogc"
-					:cogc-hint="cogcHint"
 					:planet-natural-id="planet.planet_natural_id"
 					@update:corphq="(v: boolean) => emit('update:corphq', v)"
 					@update:cogc="(v: PlanCOGCProgram) => emit('update:cogc', v)" />
@@ -279,10 +259,8 @@
 				<span class="flex-1 font-medium text-ink-strong">
 					{{ t("plan.base.workforce.label") }}
 				</span>
-				<span class="text-xs text-muted truncate tabular-nums">
-					{{ summary.workforce }}
-				</span>
-			</summary>
+				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
+</summary>
 			<div :class="body">
 				<PlanWorkforce
 					:disabled="disabled"
@@ -303,7 +281,8 @@
 				<span class="text-xs text-muted truncate tabular-nums">
 					{{ summary.housing }}
 				</span>
-			</summary>
+				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
+</summary>
 			<div :class="body">
 				<PlanInfrastructure
 					:disabled="disabled"
@@ -330,7 +309,8 @@
 				<span class="text-xs text-muted truncate tabular-nums">
 					{{ summary.experts }}
 				</span>
-			</summary>
+				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
+</summary>
 			<div :class="body">
 				<PlanExperts
 					:disabled="disabled"

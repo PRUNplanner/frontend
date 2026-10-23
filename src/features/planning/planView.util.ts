@@ -1,7 +1,4 @@
-import type {
-	IMaterialIO,
-	IProductionBuilding,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 export type PlanTool =
 	| "visitation-frequency"
@@ -34,36 +31,6 @@ export function foldedPanes(tool: PlanTool | null): {
 	return {
 		base: tool !== null,
 		io: tool !== null && WIDE_TOOLS.includes(tool),
-	};
-}
-
-/**
- * Buildings the planet's COGC program boosts and their share of the
- * plan's building revenue
- *
- * @author jplacht
- *
- * @param {IProductionBuilding[]} buildings Production buildings
- * @returns {{ tickers: string[]; share: number }} Boosted tickers, share 0–1
- */
-export function cogcShare(buildings: IProductionBuilding[]): {
-	tickers: string[];
-	share: number;
-} {
-	const boosted = buildings.filter((b) =>
-		b.efficiencyElements.some((e) => e.efficiencyType === "COGC")
-	);
-	const total: number = buildings.reduce(
-		(sum, b) => sum + Math.max(b.dailyRevenue, 0),
-		0
-	);
-	const part: number = boosted.reduce(
-		(sum, b) => sum + Math.max(b.dailyRevenue, 0),
-		0
-	);
-	return {
-		tickers: boosted.map((b) => b.name),
-		share: total > 0 ? part / total : 0,
 	};
 }
 

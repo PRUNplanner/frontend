@@ -29,12 +29,6 @@
 			type: String,
 			required: true,
 		},
-		// what the program boosts in this plan, under the select
-		cogcHint: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
 	});
 
 	const emit = defineEmits<{
@@ -134,9 +128,6 @@
 				:disabled="disabled"
 				:options="cogcOptions" />
 		</label>
-		<div v-if="cogcHint" class="-mt-2 text-xs text-muted tabular-nums">
-			{{ cogcHint }}
-		</div>
 		<div class="flex items-center justify-between gap-3">
 			<PTooltip>
 				<template #trigger>

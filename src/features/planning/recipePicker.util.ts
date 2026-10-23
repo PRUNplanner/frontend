@@ -5,7 +5,9 @@ import type {
 } from "@/features/planning/usePlanCalculation.types";
 
 export type PickerMode = "change" | "add";
-export type PickerSort = "daily" | "area" | "payback" | "popular";
+// within one building ȼ/area and payback order the recipes like ȼ/day:
+// same area and construction cost
+export type PickerSort = "daily" | "popular";
 
 export interface IPickerOption {
 	recipe: IRecipeBuildingOption;
@@ -24,10 +26,6 @@ export interface IDependencyNote {
 	// plan buildings that use it, with what they make of it
 	consumers: { building: string; outputs: string[] }[];
 }
-
-// a payback of 0 or less never pays back, it sorts last
-const payback = (r: IRecipeBuildingOption): number =>
-	r.roi > 0 ? r.roi : Infinity;
 
 /**
  * The recipe picker's rows: in change mode the current recipe first; in
@@ -53,8 +51,6 @@ export function pickerOptions(
 ): IPickerOption[] {
 	const key: Record<PickerSort, (r: IRecipeBuildingOption) => number> = {
 		daily: (r) => -r.dailyRevenue,
-		area: (r) => -r.profitPerArea,
-		payback,
 		popular: (r) => -(popularity(r.recipe_id) ?? -1),
 	};
 	const sorted = [...options].sort((a, b) => key[sort](a) - key[sort](b));

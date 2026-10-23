@@ -320,6 +320,15 @@
 				:aria-label="t('plan.components.production.form.match_cogc')" />
 			{{ t("plan.components.production.form.match_cogc") }}
 		</label>
+		<PSelect
+			v-if="!disabled"
+			v-model:value="localSelectedBuilding"
+			class="w-full sm:w-64"
+			:aria-label="t('plan.components.production.form.select_placeholder')"
+			searchable
+			:placeholder="t('plan.components.production.form.select_placeholder')"
+			:options="buildingOptions"
+			@update:value="(value) => selectBuilding(value as string)" />
 	</div>
 
 	<!-- a narrow centre scrolls the list, the columns never squeeze -->
@@ -497,14 +506,4 @@
 	</div>
 	</div>
 	</div>
-
-	<PSelect
-		v-if="!disabled"
-		v-model:value="localSelectedBuilding"
-		class="mt-3 w-full"
-		:aria-label="t('plan.components.production.form.select_placeholder')"
-		searchable
-		:placeholder="t('plan.components.production.form.select_placeholder')"
-		:options="buildingOptions"
-		@update:value="(value) => selectBuilding(value as string)" />
 </template>

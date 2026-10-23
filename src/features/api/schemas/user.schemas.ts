@@ -156,10 +156,6 @@ export const UserPreferenceSchema = z.object({
 	burnOrigin: z.string(),
 	supplyCartDays: z.number(),
 	layoutNavigationStyle: z.enum(["full", "collapsed"]).catch("full"),
-	// plan pages keep their own choice: the rail until the user expands it
-	layoutNavigationStylePlan: z
-		.enum(["full", "collapsed"])
-		.catch("collapsed"),
 	colorPalette: z.enum(["default", "colorblind"]).catch("default"),
 	// popularity in the pickers, mix hint and planet insights box
 	planSuggestions: z.boolean().catch(true),
