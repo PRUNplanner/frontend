@@ -84,6 +84,9 @@
 	);
 
 	const sort: Ref<PickerSort> = ref("daily");
+	watch(sort, (value) =>
+		trackEvent("plan:recipe_picker_sort", { sort: value })
+	);
 	// shown with insights only: without them there is one order
 	const sortOptions = [
 		{ value: "daily" as const, label: t("plan.picker.sort.daily") },

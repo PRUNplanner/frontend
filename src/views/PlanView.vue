@@ -323,6 +323,10 @@
 	const refIOSource: Ref<"all" | "production" | "workforce"> = ref("all");
 	const refIOFilter: Ref<"all" | "exports" | "imports"> = ref("all");
 	const refIOValue: Ref<"price" | "weight" | "volume" | "share"> = ref("price");
+	// only the user changes these three
+	watch([refIOSource, refIOFilter, refIOValue], ([source, filter, value]) =>
+		trackEvent("plan:io_view", { source, filter, value })
+	);
 
 	const ioRows = computed(() =>
 		refIOSource.value === "production"
@@ -508,6 +512,12 @@
 	// with the full sidebar) Base opens as an overlay from the tab row
 	const refBaseOverlay: Ref<boolean> = ref(false);
 
+	function toggleOverlay(panel: "base" | "io"): void {
+		const open = panel === "base" ? refBaseOverlay : refIOOverlay;
+		open.value = !open.value;
+		if (open.value) trackEvent("plan:overlay_open", { panel });
+	}
+
 	// below 71rem of page width (a tablet) Material I/O does too
 	const refIOOverlay: Ref<boolean> = ref(false);
 
@@ -539,6 +549,11 @@
 
 	type PhoneSection = "production" | "base" | "io" | "tools";
 	const refPhoneSection: Ref<PhoneSection> = ref("production");
+	function showSection(section: PhoneSection): void {
+		if (section === refPhoneSection.value) return;
+		refPhoneSection.value = section;
+		trackEvent("plan:section_view", { section });
+	}
 	const phoneSections = computed(() => [
 		{
 			key: "production" as const,
@@ -1582,7 +1597,7 @@
 				:tabs="phoneSections"
 				:active="refPhoneSection"
 				:label="t('plan.layout.sections')"
-				@toggle="(key: PhoneSection) => (refPhoneSection = key)" />
+				@toggle="showSection" />
 		</div>
 
 		<!-- Set up → build → result, side by side; below 81rem of page width
@@ -1694,7 +1709,7 @@
 						class="hidden md:@max-[81rem]:flex shrink-0"
 						data-base-toggle
 						:aria-expanded="refBaseOverlay ? 'true' : 'false'"
-						@click="refBaseOverlay = !refBaseOverlay">
+						@click="toggleOverlay('base')">
 						<template #icon><MenuOpenSharp /></template>
 						{{ t("plan.base.label") }}
 					</PButton>
@@ -1709,7 +1724,7 @@
 						class="hidden md:@max-[71rem]:flex shrink-0 ml-auto"
 						data-io-toggle
 						:aria-expanded="refIOOverlay ? 'true' : 'false'"
-						@click="refIOOverlay = !refIOOverlay">
+						@click="toggleOverlay('io')">
 						<!-- a narrow row says I/O, a screen reader still hears the name -->
 						<span class="@max-[64rem]:sr-only">
 							{{ t("plan.components.materialio.label") }}

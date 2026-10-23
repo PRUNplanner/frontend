@@ -361,6 +361,9 @@ describe("PlanRecipePicker", () => {
 				"plan.picker.sort.popular",
 			]);
 			await sortButtons(wrapper).at(1)!.trigger("click");
+			expect(trackEvent).toHaveBeenCalledWith("plan:recipe_picker_sort", {
+				sort: "popular",
+			});
 
 			expect(ids(wrapper)).toEqual(["FE", "BSE", "AL", "CU"]);
 			expect(options(wrapper).at(1)!.text()).toContain("60 %");

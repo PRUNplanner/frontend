@@ -125,6 +125,11 @@ No key, URL or UUID goes into these events.
 | `plan:recipe_picker_open` | `mode` (`change`, `add`) | the inline recipe picker opened under a recipe row or under "+ Recipe"; the pick itself is a `plan:edit` |
 | `plan:recipe_picker_undo` | | Undo in the status line after a picked recipe |
 | `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a folded side pane was pinned open from its strip (`folded: false`) or folded again (`true`) |
+| `plan:overlay_open` | `panel` (`base`, `io`) | Base or Material I/O was opened as an overlay from the tab row (below 81rem, 71rem of page width) |
+| `plan:section_view` | `section` (`production`, `base`, `io`, `tools`) | a phone switched the plan section |
+| `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | the plan's Material I/O source, filter or unit was switched; the event carries all three |
+| `plan:recipe_picker_sort` | `sort` (`daily`, `popular`) | the recipe picker's sort was switched |
+| `plan:cogc_match_toggle` | `is_active` | "Match COGC" on the building select was switched |
 | `plan:starter_show` | `planet_natural_id`, `candidate_count` | the "Start from a typical setup" card was shown on an empty plan, once per plan view |
 | `plan:starter_apply` | `planet_natural_id`, `building_count`, `expert_count`, `is_selection_changed` | the typical setup was added to the plan (`is_selection_changed`: the user changed the preselected buildings) |
 | `plan:starter_dismiss` | `planet_natural_id` | "Start empty" on the card |

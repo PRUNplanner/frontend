@@ -535,6 +535,19 @@ describe("PlanView", () => {
 		await toggle().trigger("click");
 		expect(toggle().attributes("aria-expanded")).toBe("true");
 		expect(io().classes()).toContain("md:@max-[71rem]:absolute");
+		expect(trackEvent).toHaveBeenCalledWith("plan:overlay_open", {
+			panel: "io",
+		});
+		// switching what it shows tracks the whole view
+		await io()
+			.findAll("button")
+			.find((b) => b.text() === "%")!
+			.trigger("click");
+		expect(trackEvent).toHaveBeenCalledWith("plan:io_view", {
+			source: "all",
+			filter: "all",
+			value: "share",
+		});
 
 		await io()
 			.findAll("button")
@@ -1287,6 +1300,14 @@ describe("PlanView", () => {
 			);
 			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
 			expect(hidden(wrapper, "[data-io-pane]")).toBe(false);
+			expect(
+				vi
+					.mocked(trackEvent)
+					.mock.calls.filter(([name]) => name === "plan:section_view")
+			).toEqual([
+				["plan:section_view", { section: "base" }],
+				["plan:section_view", { section: "io" }],
+			]);
 		});
 
 		it("lists the tools, opens one with a way back to the list", async () => {

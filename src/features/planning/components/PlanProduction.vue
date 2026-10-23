@@ -147,6 +147,9 @@
 	const localSelectedBuilding: Ref<string | undefined> = ref(undefined);
 	const localCOGC: ComputedRef<PlanCOGCProgram> = computed(() => props.cogc);
 	const localMatchCOGC: Ref<boolean> = ref(false);
+	watch(localMatchCOGC, (isActive) =>
+		trackEvent("plan:cogc_match_toggle", { is_active: isActive })
+	);
 
 	const { getProductionBuildingOptions } = useBuildingData();
 	const { isAvailable, totalPlans, popularBuildings, mostPlannedRecipe } =

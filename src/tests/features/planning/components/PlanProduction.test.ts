@@ -8,6 +8,7 @@ import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 import PlanStarterSetup from "@/features/plan_analytics/components/PlanStarterSetup.vue";
 import PSelect from "@/ui/components/PSelect.vue";
+import PCheckbox from "@/ui/components/PCheckbox.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -158,6 +159,16 @@ describe("PlanProduction", () => {
 			expect.objectContaining({ value: "POPULAR#PP1", badge: "58 %" }),
 		]);
 		expect(groups[1].children.map((c) => c.value)).toContain("PP1");
+	});
+
+	it("tracks Match COGC on the building select", async () => {
+		const { wrapper } = await mountProduction();
+
+		wrapper.findComponent(PCheckbox).vm.$emit("update:checked", true);
+		await flushPromises();
+		expect(trackEvent).toHaveBeenCalledWith("plan:cogc_match_toggle", {
+			is_active: true,
+		});
 	});
 
 	it("tracks a building picked from the popular group", async () => {
