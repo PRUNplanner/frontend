@@ -164,9 +164,9 @@ describe("PlanWorkforce", () => {
 	it("shows the free beds, negative when short", async () => {
 		const { wrapper } = await mountWorkforce();
 
-		expect(bedsFree(wrapper, 0).text()).toBe("300 beds free");
+		expect(bedsFree(wrapper, 0).text()).toBe("300 free");
 		expect(bedsFree(wrapper, 0).classes()).toContain("text-muted");
-		expect(bedsFree(wrapper, 1).text()).toBe("-50 beds free");
+		expect(bedsFree(wrapper, 1).text()).toBe("-50 free");
 		expect(bedsFree(wrapper, 1).classes()).toContain("text-negative");
 	});
 
@@ -266,7 +266,7 @@ describe("PlanWorkforce", () => {
 		});
 
 		expect(row(wrapper, 0).text()).toContain("5,000 / 0");
-		expect(bedsFree(wrapper, 0).text()).toBe("0 beds free");
+		expect(bedsFree(wrapper, 0).text()).toBe("0 free");
 		expect(
 			luxButtons(wrapper, 0).map((b) => b.attributes("aria-pressed"))
 		).toEqual(["false", "true"]);

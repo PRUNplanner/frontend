@@ -53,7 +53,8 @@
 	);
 
 	const label = "text-xs font-medium uppercase tracking-wider text-muted";
-	const sub = "text-xs text-muted lg:text-nowrap";
+	// wraps only where a narrow tile would overflow, evenly
+	const sub = "text-xs text-muted text-balance";
 	const value = "text-lg font-medium text-ink-strong";
 </script>
 

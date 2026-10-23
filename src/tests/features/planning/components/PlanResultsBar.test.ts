@@ -167,7 +167,7 @@ describe("PlanResultsBar", () => {
 		// 12.345 -> 12.3 days, 4.56 t -> 4.6, 7.04 m³ -> 7.0
 		expect(cell(wrapper, 4).text()).toContain("12.3");
 		expect(cell(wrapper, 4).text()).toContain("days to full");
-		expect(cell(wrapper, 4).text()).toContain("4.6 t · 7.0 m³ out / day");
+		expect(cell(wrapper, 4).text()).toContain("4.6\u00a0t · 7.0\u00a0m³ out\u00a0/\u00a0day");
 	});
 
 	it("shows the shared plan's deltas only with a comparison", async () => {

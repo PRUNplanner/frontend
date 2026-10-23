@@ -1400,7 +1400,7 @@
 	<div ref="layout" class="@container pb-16 [&_*]:scroll-mt-32">
 		<!-- Header: name, history, save state and the plan's actions -->
 		<header class="flex flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
-			<div class="flex-1 min-w-0">
+			<div class="flex-1 min-w-0 basis-60">
 				<nav
 					:aria-label="t('plan.breadcrumb')"
 					class="flex items-center gap-1.5 text-xs text-muted-strong">
@@ -1525,9 +1525,11 @@
 				:compare="sharedCompare" />
 		</div>
 
-		<!-- Set up → build → result -->
+		<!-- Set up → build → result: side by side from 60rem of page width,
+			where Production keeps its 35rem next to Material I/O; stacked
+			below -->
 		<div
-			class="relative flex flex-col md:flex-row md:items-start gap-6 px-6 pt-4"
+			class="relative flex flex-col @min-[60rem]:flex-row @min-[60rem]:items-start gap-6 px-6 pt-4"
 			@keydown.esc="closeBaseOverlay">
 			<!-- Base -->
 			<button
@@ -1546,12 +1548,12 @@
 			</button>
 			<aside
 				:aria-label="t('plan.base.label')"
-				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-28 md:max-h-[calc(100dvh-8rem)] md:overflow-y-auto bg-(--app-bg) [scrollbar-width:thin]"
+				class="shrink-0 w-full @min-[60rem]:w-74 rounded border border-line @min-[60rem]:sticky @min-[60rem]:top-28 @min-[60rem]:max-h-[calc(100dvh-8rem)] @min-[60rem]:overflow-y-auto bg-(--app-bg) [scrollbar-width:thin]"
 				:class="[
 					baseFolded ? '@min-[81rem]:hidden' : '',
 					refBaseOverlay
-						? 'md:@max-[81rem]:absolute md:@max-[81rem]:left-6 md:@max-[81rem]:top-4 md:@max-[81rem]:z-50 md:@max-[81rem]:shadow-xl md:@max-[81rem]:bg-surface'
-						: 'md:@max-[81rem]:hidden',
+						? '@min-[60rem]:@max-[81rem]:absolute @min-[60rem]:@max-[81rem]:left-6 @min-[60rem]:@max-[81rem]:top-4 @min-[60rem]:@max-[81rem]:z-50 @min-[60rem]:@max-[81rem]:shadow-xl @min-[60rem]:@max-[81rem]:bg-surface'
+						: '@min-[60rem]:@max-[81rem]:hidden',
 				]"
 				data-base-pane>
 				<div class="flex items-center gap-2 px-3 pt-3 pb-1">
@@ -1562,7 +1564,7 @@
 						v-if="refBaseOverlay"
 						type="ghost"
 						size="sm"
-						class="hidden md:@max-[81rem]:flex"
+						class="hidden @min-[60rem]:@max-[81rem]:flex"
 						@click="closeBaseOverlay">
 						<template #icon><CloseSharp /></template>
 						{{ t("plan.layout.close") }}
@@ -1624,7 +1626,7 @@
 					<PButton
 						type="secondary"
 						size="sm"
-						class="hidden md:@max-[81rem]:flex shrink-0"
+						class="hidden @min-[60rem]:@max-[81rem]:flex shrink-0"
 						data-base-toggle
 						:aria-expanded="refBaseOverlay ? 'true' : 'false'"
 						@click="refBaseOverlay = !refBaseOverlay">
@@ -1684,7 +1686,7 @@
 				v-if="ioFolded"
 				type="button"
 				:class="strip"
-				class="hidden md:flex"
+				class="hidden @min-[60rem]:flex"
 				:title="t('plan.layout.show_io')"
 				data-io-strip
 				@click="pinPane('io', true)">
@@ -1702,8 +1704,8 @@
 			</button>
 			<aside
 				:aria-label="t('plan.components.materialio.label')"
-				class="shrink-0 w-full md:w-75 @min-[81rem]:w-85 @min-[100rem]:w-96 rounded border border-line md:sticky md:top-28"
-				:class="ioFolded ? 'md:hidden' : ''"
+				class="shrink-0 w-full @min-[60rem]:w-75 @min-[81rem]:w-85 @min-[100rem]:w-96 rounded border border-line @min-[60rem]:sticky @min-[60rem]:top-28"
+				:class="ioFolded ? '@min-[60rem]:hidden' : ''"
 				data-io-pane>
 				<div class="flex items-center gap-2 px-3 pt-3 pb-2">
 					<h2 class="flex-1 font-bold text-white">

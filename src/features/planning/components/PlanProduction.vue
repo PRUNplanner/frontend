@@ -284,7 +284,7 @@
 </script>
 
 <template>
-	<div class="flex flex-wrap items-center gap-3 py-2">
+	<div class="flex flex-wrap items-center gap-3 pointer-coarse:gap-y-3 py-2">
 		<span class="text-sm text-muted tabular-nums">
 			{{
 				t("plan.production.counts", {
@@ -323,7 +323,7 @@
 		<PSelect
 			v-if="!disabled"
 			v-model:value="localSelectedBuilding"
-			class="w-full sm:w-64"
+			class="w-full sm:w-64 ml-auto"
 			:aria-label="t('plan.components.production.form.select_placeholder')"
 			searchable
 			:placeholder="t('plan.components.production.form.select_placeholder')"
@@ -333,7 +333,7 @@
 
 	<!-- a narrow centre scrolls the list, the columns never squeeze -->
 	<div class="overflow-x-auto [scrollbar-width:thin]">
-	<div class="min-w-128">
+	<div class="min-w-140">
 	<div
 		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted"
 		data-column-heads>

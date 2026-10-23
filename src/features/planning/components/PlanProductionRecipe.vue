@@ -122,7 +122,7 @@
 	</PModal>
 
 	<div
-		class="grid grid-cols-[5rem_minmax(0,1fr)_4rem_4rem_1.75rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4rem_4rem_2.75rem_2.75rem] gap-x-2 items-center min-h-9 py-0.5 tabular-nums"
+		class="grid grid-cols-[5rem_minmax(0,1fr)_4rem_1.75rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4rem_2.75rem_2.75rem] gap-x-2 items-center min-h-9 py-0.5 tabular-nums"
 		data-recipe-row>
 		<PInputNumber
 			:value="localRecipeData.amount"
@@ -187,18 +187,18 @@
 				<ExpandMoreSharp />
 			</PIcon>
 		</button>
-		<span class="text-xs text-muted-strong text-right text-nowrap">
-			{{ humanizeTimeMs(localRecipeData.time) }}
-		</span>
-		<span class="flex items-center justify-end gap-1.5">
-			<span
-				class="h-1 w-4 shrink-0 overflow-hidden rounded-full bg-white/5"
-				aria-hidden="true">
+		<!-- runtime over share, one column: the tiles get the room -->
+		<span
+			class="flex flex-col items-end text-xs leading-4 text-muted-strong text-nowrap">
+			<span>{{ humanizeTimeMs(localRecipeData.time) }}</span>
+			<span class="flex items-center gap-1.5">
 				<span
-					class="block h-full bg-(--chart-ink)/55"
-					:style="{ width: `${localRecipeData.dailyShare * 100}%` }" />
-			</span>
-			<span class="text-xs text-muted-strong text-nowrap min-w-10 text-right">
+					class="h-1 w-4 shrink-0 overflow-hidden rounded-full bg-white/5"
+					aria-hidden="true">
+					<span
+						class="block h-full bg-(--chart-ink)/55"
+						:style="{ width: `${localRecipeData.dailyShare * 100}%` }" />
+				</span>
 				{{ formatPercent(localRecipeData.dailyShare * 100, 1) }}
 			</span>
 		</span>

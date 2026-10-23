@@ -94,7 +94,7 @@
 		<template #trigger>
 			<button
 				type="button"
-				class="inline-flex shrink-0 items-center justify-center size-11 sm:size-6 rounded cursor-pointer hover:bg-white/10"
+				class="touch-target inline-flex shrink-0 items-center justify-center size-6 rounded opacity-70 hover:opacity-100 hover:bg-white/10 cursor-pointer [&_svg]:size-3.5"
 				:title="title"
 				:aria-label="title"
 				aria-haspopup="dialog"

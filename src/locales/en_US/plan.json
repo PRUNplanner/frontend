@@ -609,7 +609,7 @@
 		"area": "Area",
 		"storage": "Storage",
 		"days_to_full": "days to full",
-		"out_per_day": "{weight} t · {volume} m³ out / day"
+		"out_per_day": "{weight}\u00a0t · {volume}\u00a0m³ out\u00a0/\u00a0day"
 	},
 	"base": {
 		"label": "Base",
@@ -632,7 +632,7 @@
 			"efficiency": "Efficiency",
 			"luxuries": "Luxuries",
 			"supply": "Supply {ticker}",
-			"beds_free": "{n} beds free",
+			"beds_free": "{n} free",
 			"not_needed": "{tiers}: not needed"
 		},
 		"housing": {

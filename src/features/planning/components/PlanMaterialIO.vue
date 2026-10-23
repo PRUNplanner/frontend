@@ -113,7 +113,7 @@
 <template>
 	<!-- numbers never break mid-digit in the narrow side column -->
 	<PDataTable
-		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal]"
+		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11 [&_.material-tile]:touch-target"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"
@@ -123,7 +123,7 @@
 			<span class="sr-only">{{ t("terms.material_ticker") }}</span>
 		</template>
 		<template #cell-ticker="{ row }">
-			<div class="flex flex-wrap items-center gap-1">
+			<div class="flex items-center gap-0.5 [&_[data-market-flag]]:-mr-2">
 				<MaterialTile
 					:key="`MATERIALIO#MATERIALTILE#${row.ticker}`"
 					:ticker="row.ticker"
@@ -165,7 +165,7 @@
 			<PValue :value="row.totalVolume" />
 		</template>
 	</PDataTable>
-	<p v-if="summary" class="pt-2 text-sm text-muted-strong" data-market-summary>
+	<p v-if="summary" class="px-3 pt-2 text-sm text-muted-strong" data-market-summary>
 		{{ summary }}
 		<button
 			type="button"

@@ -509,17 +509,17 @@ describe("PlanView", () => {
 						b.text() === "plan.base.label" &&
 						b.attributes("aria-expanded") !== undefined
 				)!;
-		expect(base().classes()).toContain("md:@max-[81rem]:hidden");
+		expect(base().classes()).toContain("@min-[60rem]:@max-[81rem]:hidden");
 
 		await toggle().trigger("click");
 		expect(toggle().attributes("aria-expanded")).toBe("true");
-		expect(base().classes()).toContain("md:@max-[81rem]:absolute");
+		expect(base().classes()).toContain("@min-[60rem]:@max-[81rem]:absolute");
 
 		await base()
 			.findAll("button")
 			.find((b) => b.text() === "plan.layout.close")!
 			.trigger("click");
-		expect(base().classes()).toContain("md:@max-[81rem]:hidden");
+		expect(base().classes()).toContain("@min-[60rem]:@max-[81rem]:hidden");
 
 		await toggle().trigger("click");
 		await base().trigger("keydown", { key: "Escape" });

@@ -280,7 +280,7 @@
 				<span
 					class="flex items-center gap-1 font-medium text-ink-strong">
 					<span
-						class="line-clamp-2 break-words"
+						class="truncate"
 						:title="t(`game.building.${localBuildingData.name}`)">
 						{{ t(`game.building.${localBuildingData.name}`) }}
 					</span>
