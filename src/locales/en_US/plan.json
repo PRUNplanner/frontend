@@ -758,6 +758,7 @@
 		"fold": "Fold",
 		"sections": "Plan sections",
 		"tools": "Tools",
+			"io_short": "I/O",
 		"all_tools": "All tools"
 	}
 }

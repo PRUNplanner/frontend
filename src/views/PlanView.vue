@@ -1710,7 +1710,13 @@
 						data-io-toggle
 						:aria-expanded="refIOOverlay ? 'true' : 'false'"
 						@click="refIOOverlay = !refIOOverlay">
-						{{ t("plan.components.materialio.label") }}
+						<!-- a narrow row says I/O, a screen reader still hears the name -->
+						<span class="@max-[64rem]:sr-only">
+							{{ t("plan.components.materialio.label") }}
+						</span>
+						<span class="hidden @max-[64rem]:inline" aria-hidden="true">
+							{{ t("plan.layout.io_short") }}
+						</span>
 						<span
 							v-if="flagCount > 0"
 							role="img"
