@@ -1,8 +1,8 @@
-# Exchange Preferences
+# 거래소 설정
 
-An exchange preference sets the prices your plans use: which exchange and price basis, and fixed prices for materials you get at your own cost or from a partner. Assign a preference to an empire in Management; every plan of that empire then uses it.
+거래소 설정은 계획에 적용할 가격을 정합니다. 어느 거래소의 어떤 가격 기준을 쓸지, 그리고 직접 조달하거나 파트너에게서 받는 자재의 고정 가격을 지정할 수 있습니다. 관리 메뉴에서 제국에 설정을 지정하면, 해당 제국의 모든 계획에 적용됩니다.
 
-The page opens on the **Overview**: every material your plans buy or sell, the price it gets and where that price comes from. Expand a row to see the full cascade for each planet. Notes above the table point to rules that need a look.
+이 페이지는 **개요**에서 시작합니다. 계획에서 구매하거나 판매하는 모든 자재와, 각 자재에 적용되는 가격 및 그 가격의 출처를 확인할 수 있습니다. Expand a row to see the full cascade for each planet. Notes above the table point to rules that need a look.
 
 # How a Price Is Found
 
