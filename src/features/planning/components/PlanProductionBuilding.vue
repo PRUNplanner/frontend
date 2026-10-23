@@ -285,7 +285,7 @@
 						:title="t(`game.building.${localBuildingData.name}`)">
 						{{ t(`game.building.${localBuildingData.name}`) }}
 					</span>
-					<PIcon :size="14" class="shrink-0 text-muted">
+					<PIcon :size="18" class="shrink-0 text-muted-strong">
 						<ExpandMoreSharp v-if="folded" />
 						<ExpandLessSharp v-else />
 					</PIcon>

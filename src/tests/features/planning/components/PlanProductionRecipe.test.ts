@@ -173,7 +173,7 @@ describe("PlanProductionRecipe", () => {
 
 	it("shows the daily share as a bar and percent", async () => {
 		const { wrapper, setProps } = await mountRecipe();
-		const bar = () => wrapper.find("span.block.h-full");
+		const bar = () => wrapper.find("[data-share-bar]");
 
 		expect(bar().attributes("style")).toBe("width: 50%;");
 		expect(wrapper.text()).toContain("50.0 %");

@@ -217,16 +217,27 @@
 	onUnmounted(() => document.removeEventListener("pointerdown", onOutside));
 
 	// per row: inputs the plan makes itself, and plan buildings it feeds
-	const links = computed(() =>
-		rows.value.map(({ recipe }) => ({
-			made: recipe.inputs
+	// per row, under its inputs: inputs the plan makes itself, plan
+	// buildings it feeds, and whether it's the current or an ordered recipe
+	const notes = computed(() =>
+		rows.value.map((row) => {
+			const made = row.recipe.inputs
 				.map((m) => m.material_ticker)
 				.filter((ticker) => inputSource(ticker, materialIO) === "made")
-				.join(", "),
-			feeds: recipeConsumers(recipe, buildings)
+				.join(", ");
+			const feeds = recipeConsumers(row.recipe, buildings)
 				.map((c) => c.building)
-				.join(", "),
-		}))
+				.join(", ");
+			return [
+				...(made ? [t("plan.picker.uses_made", { tickers: made })] : []),
+				...(feeds ? [t("plan.picker.feeds", { buildings: feeds })] : []),
+				...(row.current
+					? [t("plan.picker.current")]
+					: row.inPlan
+						? [t("plan.picker.in_plan")]
+						: []),
+			].join(" · ");
+		})
 	);
 
 	// a phone keeps makes, from and ȼ/day
@@ -304,25 +315,33 @@
 				:aria-disabled="row.disabled ? 'true' : undefined"
 				:class="[
 					grid,
-					row.disabled
-						? row.current
-							? 'bg-hover'
-							: 'opacity-50 cursor-not-allowed'
-						: 'cursor-pointer hover:bg-hover',
-					i === active
-						? 'bg-hover border-l-prunplanner'
+					// the current recipe carries the accent bar, the
+					// keyboard/mouse highlight only the background
+					row.current
+						? 'border-l-prunplanner bg-prunplanner/5'
 						: 'border-l-transparent',
+					row.disabled && !row.current
+						? 'opacity-50 cursor-not-allowed'
+						: '',
+					!row.disabled ? 'cursor-pointer hover:bg-hover' : '',
+					i === active ? 'bg-hover' : '',
 				]"
 				class="pl-2.5 pr-3 py-1.5 pointer-coarse:min-h-11 border-t border-t-line border-l-2"
 				@mousemove="!row.disabled && (active = i)"
 				@click="choose(i)">
-				<span class="flex flex-wrap items-center gap-1">
-					<MaterialTile
-						v-for="m in row.recipe.outputs"
-						:key="`OUT#${m.material_ticker}`"
-						:ticker="m.material_ticker"
-						:amount="m.material_amount"
-						disable-drawer />
+				<!-- what it makes, and how long one run takes -->
+				<span class="flex flex-col items-start gap-0.5">
+					<span class="flex flex-wrap items-center gap-1">
+						<MaterialTile
+							v-for="m in row.recipe.outputs"
+							:key="`OUT#${m.material_ticker}`"
+							:ticker="m.material_ticker"
+							:amount="m.material_amount"
+							disable-drawer />
+					</span>
+					<span class="text-xs text-muted text-nowrap">
+						{{ humanizeTimeMs(row.recipe.time_ms) }}
+					</span>
 				</span>
 				<span class="min-w-0">
 					<span class="flex flex-wrap items-center gap-1">
@@ -333,21 +352,11 @@
 							:amount="m.material_amount"
 							disable-drawer />
 					</span>
-					<span class="block text-xs text-muted truncate">
-						{{ humanizeTimeMs(row.recipe.time_ms) }}
-						<template v-if="links[i].made">
-							· {{ t("plan.picker.uses_made", { tickers: links[i].made }) }}
-						</template>
-						<template v-if="links[i].feeds">
-							·
-							{{ t("plan.picker.feeds", { buildings: links[i].feeds }) }}
-						</template>
-						<template v-if="row.current">
-							· {{ t("plan.picker.current") }}
-						</template>
-						<template v-else-if="row.inPlan">
-							· {{ t("plan.picker.in_plan") }}
-						</template>
+					<span
+						v-if="notes[i]"
+						class="block mt-0.5 text-xs text-muted truncate"
+						:title="notes[i]">
+						{{ notes[i] }}
 					</span>
 				</span>
 				<span class="text-right text-sm leading-tight">
