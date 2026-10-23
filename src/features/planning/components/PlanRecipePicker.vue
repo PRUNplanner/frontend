@@ -194,13 +194,16 @@
 		e.stopPropagation();
 	}
 
-	// a click outside closes it; the openers toggle it themselves
+	// a click outside closes it; the openers toggle it themselves, and a
+	// tile's price overlay (a teleported tooltip) belongs to it
 	const rootRef = useTemplateRef<HTMLElement>("root");
 	function onOutside(e: PointerEvent): void {
 		const target = e.target as Element | null;
 		if (
 			rootRef.value?.contains(target) ||
-			target?.closest("[data-recipe-button], [data-add-recipe]")
+			target?.closest(
+				"[data-recipe-button], [data-add-recipe], [role=tooltip]"
+			)
 		)
 			return;
 		emit("close");
@@ -313,8 +316,7 @@
 						:key="`OUT#${m.material_ticker}`"
 						:ticker="m.material_ticker"
 						:amount="m.material_amount"
-						disable-drawer
-						:enable-popover="false" />
+						disable-drawer />
 				</span>
 				<span class="min-w-0">
 					<span class="flex flex-wrap items-center gap-1">
@@ -323,8 +325,7 @@
 							:key="`IN#${m.material_ticker}`"
 							:ticker="m.material_ticker"
 							:amount="m.material_amount"
-							disable-drawer
-							:enable-popover="false" />
+							disable-drawer />
 					</span>
 					<span class="block text-xs text-muted truncate">
 						{{ humanizeTimeMs(row.recipe.time_ms) }}

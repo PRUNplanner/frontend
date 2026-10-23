@@ -113,7 +113,7 @@
 <template>
 	<!-- numbers never break mid-digit in the narrow side column -->
 	<PDataTable
-		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11 [&_.material-tile]:touch-target"
+		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"

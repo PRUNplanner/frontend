@@ -241,16 +241,19 @@ describe("PlanRecipePicker", () => {
 		expect(component.emitted("pick")).toBeUndefined();
 	});
 
-	it("closes on a click outside, not inside or on an opener", async () => {
+	it("closes on a click outside, not inside, on an opener or a price overlay", async () => {
 		const { wrapper, component } = await mountPicker();
 		const opener = document.createElement("button");
 		opener.setAttribute("data-recipe-button", "");
-		document.body.append(opener);
+		const overlay = document.createElement("div");
+		overlay.setAttribute("role", "tooltip");
+		document.body.append(opener, overlay);
 		const down = (el: Element) =>
 			el.dispatchEvent(new Event("pointerdown", { bubbles: true }));
 
 		down(wrapper.find("[role=listbox]").element);
 		down(opener);
+		down(overlay);
 		expect(component.emitted("close")).toBeUndefined();
 
 		down(document.body);
@@ -260,6 +263,7 @@ describe("PlanRecipePicker", () => {
 		down(document.body);
 		expect(component.emitted("close")).toHaveLength(1);
 		opener.remove();
+		overlay.remove();
 	});
 
 	it("picks a clicked row, but not a disabled one", async () => {
