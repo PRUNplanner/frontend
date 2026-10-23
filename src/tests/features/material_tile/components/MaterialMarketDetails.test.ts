@@ -160,6 +160,60 @@ describe("MaterialMarketDetails", () => {
 		);
 	});
 
+	it("reads a thin, rising, scattered market", async () => {
+		const wrapper = await mountDetails({
+			material: null,
+			daily: -5,
+			overview: makeOverview({
+				bid: { AI1: 0, CI1: 98, IC1: 98, NC1: 98, UNIVERSE: 0 },
+				sum_traded_30d: { AI1: 0, CI1: 3000, IC1: 3000, NC1: 3000, UNIVERSE: 9000 },
+				supply: { AI1: 0, CI1: 0, IC1: 0, NC1: 0, UNIVERSE: 0 },
+				systemic_health: {
+					diffusionIndex: 100,
+					liquidityRatio: 0,
+					weightedTrend: 0.03,
+					priceCohesion: 6,
+				},
+			}),
+		});
+
+		// no material data: the ticker stands in for the name
+		expect(wrapper.text()).toContain("FE");
+		expect(wrapper.find('tr[data-cx="AI1"]').text()).toContain(
+			"material_tile.card.no_bids"
+		);
+		const health = (key: string) => wrapper.find(`[data-health="${key}"]`);
+		expect(health("trend").text()).toContain("+3.0 %");
+		expect(health("trend").find(".text-positive").exists()).toBe(true);
+		expect(health("balance").text()).toContain("—");
+		expect(health("cohesion").find(".text-warning").exists()).toBe(true);
+		expect(health("cohesion").text()).toContain(
+			"material_tile.health.cohesion.apart"
+		);
+
+		await pick(wrapper, "volume");
+		expect(wrapper.find('tr[data-cx="AI1"]').text()).toContain(
+			"material_tile.card.no_trades"
+		);
+	});
+
+	it("shows no trend without trades in 7 days", async () => {
+		const wrapper = await mountDetails({
+			overview: makeOverview({
+				systemic_health: {
+					diffusionIndex: 0,
+					liquidityRatio: 1,
+					weightedTrend: NaN,
+					priceCohesion: 1,
+				},
+			}),
+		});
+
+		const trend = wrapper.find('[data-health="trend"]');
+		expect(trend.text()).toContain("—");
+		expect(trend.find(".text-muted").exists()).toBe(true);
+	});
+
 	it("switches the chart value", async () => {
 		const wrapper = await mountDetails();
 		const buttons = wrapper
