@@ -252,7 +252,7 @@
 					v-if="storageAmountsForDisplay.length > 0"
 					keypath="plan.tools.visitation_frequency.storage.info"
 					tag="p"
-					class="text-sm text-muted">
+					class="text-sm text-muted text-pretty">
 					<template #storages>
 						<template
 							v-for="(item, index) in storageAmountsForDisplay"
@@ -280,7 +280,7 @@
 					v-else
 					keypath="plan.tools.visitation_frequency.storage.info_no_storage"
 					tag="p"
-					class="text-sm text-muted">
+					class="text-sm text-muted text-pretty">
 					<template #total_weight>
 						{{ formatAmount(totalWeight) }}
 					</template>

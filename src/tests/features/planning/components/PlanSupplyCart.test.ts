@@ -64,7 +64,7 @@ async function mountCart(planetNaturalId = "XX-000a", withFIO = false) {
 
 /** summary figures: daily cost, total cost, weight, volume */
 function summary(wrapper: VueWrapper) {
-	const items = wrapper.findAll("tfoot dl > div");
+	const items = wrapper.findAll("[data-supply-totals] > div");
 	const value = (key: string) => {
 		const item = items.find(
 			(d) => d.find("dt").text() === `plan.tools.supply_cart.table.${key}`

@@ -1866,7 +1866,7 @@
 					</PButton>
 				</div>
 				<div
-					class="flex flex-wrap items-center justify-between gap-x-2 gap-y-2 px-3 pb-2 [&_button]:px-2">
+					class="flex flex-wrap items-center justify-between gap-x-2 gap-y-2 px-3 pb-2 [&_button]:px-2 [&_button]:min-w-6">
 					<PSegmented
 						v-model:value="refIOFilter"
 						size="sm"

@@ -52,13 +52,15 @@
 		area.areaUsed > 0 ? overview.profit / area.areaUsed : 0
 	);
 
-	// label and figure share a line, a narrow tile puts them on two
-	const head = "flex flex-wrap items-baseline gap-x-2";
+	// label and figure share a line; under 64rem of page width every tile
+	// puts them on two, so the figures line up
+	const head =
+		"flex flex-wrap items-baseline gap-x-2 @max-[64rem]:flex-col @max-[64rem]:items-start";
 	const label = "text-xs font-medium uppercase tracking-wider text-muted";
 	// wraps only where a narrow tile would overflow, evenly; below 60rem of
 	// page width (tablets, phones) only the figures show
 	const sub = "text-xs text-muted text-balance @max-[60rem]:hidden";
-	const value = "text-lg font-medium text-ink-strong";
+	const value = "text-lg font-medium text-ink-strong text-nowrap";
 </script>
 
 <template>
@@ -66,8 +68,8 @@
 		:aria-label="t('plan.results.label')"
 		class="tabular-nums">
 		<div
-			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 md:gap-x-0 md:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))] md:divide-x divide-line">
-			<div class="py-1.5 md:pr-3">
+			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
+			<div class="py-1.5 @min-[48rem]:pr-3">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
 					<span class="text-xl font-medium leading-tight">
@@ -84,7 +86,7 @@
 					}}
 				</div>
 			</div>
-			<div class="py-1.5 md:px-3">
+			<div class="py-1.5 @min-[48rem]:px-3">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.payback") }}</span>
 					<span :class="value">{{ formatPayback(overview.roi) }}</span>
@@ -97,7 +99,7 @@
 					}}
 				</div>
 			</div>
-			<div class="py-1.5 md:px-3 max-md:hidden">
+			<div class="py-1.5 @min-[48rem]:px-3 @max-[48rem]:hidden">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit_area") }}</span>
 					<span :class="value"><PValue :value="profitPerArea" /></span>
@@ -110,7 +112,7 @@
 					}}
 				</div>
 			</div>
-			<div class="py-1.5 md:px-3">
+			<div class="py-1.5 @min-[48rem]:px-3">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.area") }}</span>
 					<span :class="value">
@@ -128,7 +130,7 @@
 					:max="area.areaTotal"
 					:label="t('plan.results.area')" />
 			</div>
-			<div class="py-1.5 md:pl-3 max-md:hidden">
+			<div class="py-1.5 @min-[48rem]:pl-3 @max-[48rem]:hidden">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.storage") }}</span>
 					<span :class="value">

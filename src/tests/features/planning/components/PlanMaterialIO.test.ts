@@ -98,11 +98,11 @@ describe("PlanMaterialIO", () => {
 		);
 	});
 
-	it("names the ticker sort button, though its title is empty", async () => {
+	it("labels the ticker column", async () => {
 		const { wrapper } = await mountTable();
 
 		expect(
-			wrapper.find('th[data-col-key="ticker"] button .sr-only').text()
+			wrapper.find('th[data-col-key="ticker"] button').text()
 		).toBe("terms.material_ticker");
 	});
 

@@ -650,7 +650,7 @@
 						{{ formatNumber(totalInformation.price) }} ȼ
 					</dd>
 				</div>
-				<div class="ml-auto">
+				<div class="@min-[40rem]:ml-auto">
 					<dt>{{ $t("plan.tools.construction_cart.table.total_weight") }}</dt>
 					<dd>{{ formatNumber(totalInformation.weight) }} t</dd>
 				</div>
@@ -764,7 +764,7 @@
 						{{ formatNumber(overviewTotalInformation.price) }} ȼ
 					</dd>
 				</div>
-				<div class="ml-auto">
+				<div class="@min-[40rem]:ml-auto">
 					<dt>{{ $t("plan.tools.construction_cart.table.total_weight") }}</dt>
 					<dd>{{ formatNumber(overviewTotalInformation.weight) }} t</dd>
 				</div>

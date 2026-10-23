@@ -123,7 +123,7 @@
 	</PModal>
 
 	<div
-		class="grid grid-cols-[5rem_minmax(0,1fr)_4rem_1.75rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4rem_2.75rem_2.75rem] max-md:grid-cols-[5rem_minmax(0,1fr)_auto_auto]! gap-x-2 max-md:gap-y-1 items-center min-h-9 py-1 max-md:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
+		class="grid grid-cols-[5rem_minmax(0,1fr)_4rem_1.75rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4rem_2.75rem_2.75rem] @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto]! gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
 		data-recipe-row>
 		<PInputNumber
 			:value="localRecipeData.amount"
@@ -145,7 +145,7 @@
 			" />
 		<button
 			type="button"
-			class="group justify-self-start max-md:col-span-3 min-w-0 max-w-full flex flex-wrap items-center gap-1 min-h-7 pointer-coarse:min-h-11 pl-1.5 rounded-control border text-left"
+			class="group justify-self-start @max-[40rem]/prod:col-span-3 min-w-0 max-w-full flex items-stretch gap-1 min-h-7 pointer-coarse:min-h-11 pl-1.5 rounded-control border text-left"
 			:class="[
 				pickerOpen
 					? 'border-line-strong bg-hover'
@@ -163,6 +163,8 @@
 			"
 			data-recipe-button
 			@click="emit('open:picker', recipeIndex)">
+			<!-- the tiles wrap among themselves, the opener stays at the end -->
+			<span class="flex flex-wrap items-center gap-1 min-w-0 py-0.5">
 			<span
 				v-if="isNew"
 				class="text-xs font-bold uppercase text-positive pr-1">
@@ -188,6 +190,7 @@
 				:amount="material.material_amount * localRecipeData.amount"
 				disable-drawer
 				:enable-popover="false" />
+			</span>
 			<!-- the opener, set off from the tiles -->
 			<span
 				v-if="!disabled"
@@ -201,7 +204,7 @@
 		<!-- runtime over share, one column: the tiles get the room; a phone
 			puts them side by side on a second line with COGM and delete -->
 		<span
-			class="flex flex-col items-end max-md:flex-row max-md:items-center max-md:gap-2 max-md:col-span-2 max-md:justify-self-start text-xs leading-4 text-muted-strong text-nowrap">
+			class="flex flex-col items-end @max-[40rem]/prod:flex-row @max-[40rem]/prod:items-center @max-[40rem]/prod:gap-2 @max-[40rem]/prod:col-span-2 @max-[40rem]/prod:justify-self-start text-xs leading-4 text-muted-strong text-nowrap">
 			<span>{{ humanizeTimeMs(localRecipeData.time) }}</span>
 			<span class="text-ink">
 				{{ formatPercent(localRecipeData.dailyShare * 100, 1) }}
@@ -210,7 +213,7 @@
 		<PButton
 			size="sm"
 			type="ghost"
-			class="justify-self-end size-6 pointer-coarse:size-11 border border-link/40 text-link! disabled:text-link/40!"
+			class="justify-self-end size-6 pointer-coarse:size-11 border border-link/40 pointer-coarse:border-transparent text-link! disabled:text-link/40!"
 			:disabled="!cogmEnabled"
 			:aria-label="
 				t('plan.production.cogm_label', { recipe: outputs })

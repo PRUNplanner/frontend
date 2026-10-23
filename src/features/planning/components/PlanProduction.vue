@@ -331,12 +331,11 @@
 			@update:value="(value) => selectBuilding(value as string)" />
 	</div>
 
-	<!-- a narrow centre scrolls the list, the columns never squeeze; a phone
-		shows each building as a card instead -->
-	<div class="overflow-x-auto [scrollbar-width:thin]">
-	<div class="md:min-w-140">
+	<!-- under 40rem (a phone, a tablet next to the sidebar) each building
+		becomes a card instead of squeezing the columns -->
+	<div class="@container/prod">
 	<div
-		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted max-md:hidden"
+		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted @max-[40rem]/prod:hidden"
 		data-column-heads>
 		<span />
 		<span>{{ t("plan.production.columns.building") }}</span>
@@ -504,7 +503,6 @@
 				{{ $t("sharing.compare.removed") }}
 			</span>
 		</div>
-	</div>
 	</div>
 	</div>
 </template>

@@ -102,8 +102,8 @@
 			"title": "Visitation Frequency",
 			"storage": {
 				"label": "Storage",
-				"info": "Your plan involves adding {storages} giving you a total storage capacity of {total_weight} t and {total_volume} m³.",
-				"info_no_storage": "Your plan has a total storage capacity of {total_weight} t and {total_volume} m³.",
+				"info": "Your plan involves adding {storages} giving you a total storage capacity of {total_weight} t and {total_volume} m³.",
+				"info_no_storage": "Your plan has a total storage capacity of {total_weight} t and {total_volume} m³.",
 				"table": {
 					"weight": "t",
 					"volume": "m³",

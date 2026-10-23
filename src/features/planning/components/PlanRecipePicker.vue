@@ -264,6 +264,8 @@
 				v-if="hasInsights"
 				v-model:value="sort"
 				size="sm"
+				block="phone"
+				class="max-sm:order-last"
 				:options="sortOptions"
 				:label="t('plan.picker.sort.label')" />
 			<button

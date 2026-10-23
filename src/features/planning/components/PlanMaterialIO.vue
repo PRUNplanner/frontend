@@ -169,9 +169,8 @@
 		:data="localMaterialIOData"
 		:max-height="maxHeight"
 		striped>
-		<!-- the ticker title is visually empty, as before, but names the sort button -->
 		<template #header-ticker>
-			<span class="sr-only">{{ t("terms.material_ticker") }}</span>
+			{{ t("terms.material_ticker") }}
 		</template>
 		<template #cell-ticker="{ row }">
 			<div class="flex items-center gap-0.5 [&_[data-market-flag]]:-mr-2">

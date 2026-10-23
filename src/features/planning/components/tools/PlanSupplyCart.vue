@@ -230,10 +230,12 @@
 			// yes before no; the default compare leaves booleans unsorted
 			{
 				...sortable("workforce", "workforce"),
+				align: "center" as const,
 				sorter: (a, b) => Number(a.workforce) - Number(b.workforce),
 			},
 			{
 				...sortable("production", "production"),
+				align: "center" as const,
 				sorter: (a, b) => Number(a.production) - Number(b.production),
 			},
 		];
@@ -312,7 +314,7 @@
 			</label>
 			<RouterLink
 				to="/fio/burn"
-				class="ml-auto text-link hover:underline">
+				class="touch-target ml-auto text-link hover:underline">
 				{{
 					t("plan.tools.supply_cart.more_in", {
 						link: t("plan.tools.supply_cart.info.link"),
@@ -377,29 +379,29 @@
 				</PIcon>
 			</div>
 		</template>
-		<template #summary>
-			<dl
-				class="flex flex-wrap gap-x-6 gap-y-1 text-sm tabular-nums [&_dt]:text-muted-strong [&>div]:flex [&>div]:gap-2">
-				<div>
-					<dt>{{ t("plan.tools.supply_cart.table.daily_cost") }}</dt>
-					<dd>{{ formatNumber(dailyCost) }} ȼ</dd>
-				</div>
-				<div>
-					<dt>{{ t("plan.tools.supply_cart.table.total_cost") }}</dt>
-					<dd class="font-medium text-ink-strong">
-						{{ formatNumber(totalCost) }} ȼ
-					</dd>
-				</div>
-				<div class="ml-auto">
-					<dt>{{ t("plan.tools.supply_cart.table.total_weight") }}</dt>
-					<dd>{{ formatNumber(totalWeight) }} t</dd>
-				</div>
-				<div>
-					<dt>{{ t("plan.tools.supply_cart.table.total_volume") }}</dt>
-					<dd>{{ formatNumber(totalVolume) }} m³</dd>
-				</div>
-			</dl>
-		</template>
 	</PDataTable>
+		<!-- outside the table: a wide table scrolls, the totals stay in view -->
+		<dl
+			class="flex flex-wrap gap-x-6 gap-y-1 px-1 text-sm tabular-nums [&_dt]:text-muted-strong [&>div]:flex [&>div]:gap-2"
+			data-supply-totals>
+			<div>
+				<dt>{{ t("plan.tools.supply_cart.table.daily_cost") }}</dt>
+				<dd>{{ formatNumber(dailyCost) }} ȼ</dd>
+			</div>
+			<div>
+				<dt>{{ t("plan.tools.supply_cart.table.total_cost") }}</dt>
+				<dd class="font-medium text-ink-strong">
+					{{ formatNumber(totalCost) }} ȼ
+				</dd>
+			</div>
+			<div class="@min-[40rem]:ml-auto">
+				<dt>{{ t("plan.tools.supply_cart.table.total_weight") }}</dt>
+				<dd>{{ formatNumber(totalWeight) }} t</dd>
+			</div>
+			<div>
+				<dt>{{ t("plan.tools.supply_cart.table.total_volume") }}</dt>
+				<dd>{{ formatNumber(totalVolume) }} m³</dd>
+			</div>
+		</dl>
 	</div>
 </template>
