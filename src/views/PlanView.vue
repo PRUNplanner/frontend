@@ -1865,7 +1865,8 @@
 						{{ t("plan.layout.fold") }}
 					</PButton>
 				</div>
-				<div class="flex items-center justify-between gap-3 px-3 pb-2">
+				<div
+					class="flex flex-wrap items-center justify-between gap-x-2 gap-y-2 px-3 pb-2 [&_button]:px-2">
 					<PSegmented
 						v-model:value="refIOFilter"
 						size="sm"
