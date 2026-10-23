@@ -260,7 +260,11 @@ export interface IAnalyticsEventProperties {
 	"exchange:leave_unsaved": { location: string };
 	"exchange:save_conflict": { location: string; choice: SaveConflictChoice };
 
-	"material:market_drawer_open": { material_ticker: string };
+	"material:market_drawer_open": {
+		material_ticker: string;
+		source: "tile" | "card";
+	};
+	"material:market_card_pin": { material_ticker: string };
 
 	"planet_search:view_change": { view: PlanetSearchView };
 	"market_exploration:view_change": { view: ChartView };

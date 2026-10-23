@@ -5,6 +5,7 @@ export { default as PDataTable } from "@/ui/components/PDataTable.vue";
 export { default as PConfirmHost } from "@/ui/components/PConfirmHost.vue";
 export { default as PDrawer } from "@/ui/components/PDrawer.vue";
 export { default as PDropdown } from "@/ui/components/PDropdown.vue";
+export { default as PHoverCard } from "@/ui/components/PHoverCard.vue";
 export { default as PForm } from "@/ui/components/PForm.vue";
 export { default as PFormItem } from "@/ui/components/PFormItem.vue";
 export { default as PFormSeparator } from "@/ui/components/PFormSeparator.vue";

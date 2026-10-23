@@ -110,6 +110,7 @@
 					:key="`MATERIALIO#MATERIALTILE#${row.ticker}`"
 					:ticker="row.ticker"
 					:daily="row.delta"
+					:market-check="checks?.get(row.ticker)"
 					:disable-drawer="false" />
 				<MarketFlagButton
 					v-if="flagged(row.ticker)"

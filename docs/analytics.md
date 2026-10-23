@@ -180,7 +180,8 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `exchange:use_cogm` | `location` (`exchanges_view`, `cogm`), `material_ticker` | a COGM was used as fixed buy price |
 | `exchange:leave_unsaved` | `location` | leaving with unsaved rules asked to confirm |
 | `exchange:save_conflict` | `location` (`exchanges_view`, `cogm`), `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of a CX was answered |
-| `material:market_drawer_open` | `material_ticker` | |
+| `material:market_drawer_open` | `material_ticker`, `source` (`tile`, `card`) | the Market details drawer opened, from a click on the tile (Material I/O, HQ) or the card's "Market details" button |
+| `material:market_card_pin` | `material_ticker` | a click on a ticker pinned its market card open (no event per hover) |
 
 ### Tools
 

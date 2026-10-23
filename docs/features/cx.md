@@ -67,8 +67,9 @@ and small CX helpers. Every price in the app is resolved by a `PriceBook`
   compares through `cxDiff`.
 - **`cxDiff.ts`**: `diffCX(from, to)`, what changed in a CX's name,
   exchanges and ticker prices, for the empire and per planet.
-- **`components/MaterialCXOverviewTable.vue`**: per-exchange price and
-  volume table for one material, including market share.
+- **Market Check** limits (`MARKET_SHARE_AMBER`, `MARKET_SHARE_RED`,
+  `formatShare`) are also used by the material market card
+  (`material_tile/materialMarket.util.ts`), so both give the same verdict.
 
 ## Data
 

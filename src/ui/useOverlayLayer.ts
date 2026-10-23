@@ -9,6 +9,13 @@ const FOCUSABLE =
 const stack: { id: symbol; modal: boolean; panel: Ref<HTMLElement | null> }[] =
 	[];
 const anyModal = () => stack.some((l) => l.modal);
+
+/** a modal, drawer, popover or menu is open that doesn't hold this element */
+export const layerOver = (el: Element | null) =>
+	stack.some((l) => !el || !l.panel.value?.contains(el));
+
+/** a z-index above every open layer */
+export const aboveLayers = () => Z_LAYER + stack.length + 1;
 let pageOverflow = "";
 let pageMarginRight = "";
 
@@ -71,10 +78,12 @@ export function useOverlayLayer(
 			e.preventDefault();
 			options.close();
 		} else if (e.key === "Tab" && modal) {
+			// a hover card opened from inside (PHoverCard) belongs to the layer
+			const active = document.activeElement;
+			if (active?.closest("[data-hover-card]")) return;
 			const items = focusables(el);
 			const first = items[0] ?? el;
 			const last = items.at(-1) ?? el;
-			const active = document.activeElement;
 
 			let target: HTMLElement | null = null;
 			if (!el.contains(active)) target = e.shiftKey ? last : first;

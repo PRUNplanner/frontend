@@ -92,6 +92,8 @@ export interface IWaterfallLayout {
 export interface ISparklineLayout {
 	/** svg polyline points, one per run of values between gaps */
 	lines: string[];
+	/** values between two gaps, drawn as dots */
+	dots: { x: number; y: number }[];
 	/** the last value's point, null without any value */
 	end: { x: number; y: number } | null;
 }
