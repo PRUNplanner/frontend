@@ -1,20 +1,159 @@
 {
-	"information": {
-		"title": "Информация о материале",
-		"table": {
-			"category": "Категория",
-			"weight": "Вес",
-			"volume": "Объем"
-		}
-	},
 	"indicator": {
 		"value": "Значение",
 		"max": "Максимум",
 		"pct_max": "% / Макс"
 	},
+	"card": {
+		"label": "{ticker} market",
+		"universe_vwap": "Universe VWAP 7D",
+		"vs_30d": "{trend} vs 30D",
+		"pinned": "Pinned",
+		"close": "Close the market card",
+		"facts": "{weight} t · {volume} m³",
+		"plan": {
+			"plan_buys": "This plan buys",
+			"plan_sells": "This plan sells",
+			"empire_buys": "The empire buys",
+			"empire_sells": "The empire sells",
+			"setup_buys": "This setup buys",
+			"setup_sells": "This setup sells",
+			"per_day": "{amount} / day",
+			"periods": "{d7} in 7 days · {d30} in 30 days",
+			"check": "Market check on your CX",
+			"check_universe": "No CX preference: checked against Universe",
+			"across": "Against each exchange’s daily volume"
+		},
+		"chip": {
+			"fine": "Fine: {share} of {cx}’s daily volume",
+			"watch": "Watch: {share} of {cx}’s daily volume",
+			"too_big": "Too big: {share} of {cx}’s daily volume",
+			"flag_share": "{flag}: {share} of {cx}’s daily volume"
+		},
+		"others": {
+			"fine": "Fine on the other exchanges too",
+			"watch": "Elsewhere: watch on {list}",
+			"too_big": "Elsewhere: too big on {list}",
+			"mixed": "Elsewhere: too big on {red}, watch on {amber}"
+		},
+		"cross": {
+			"fine": "Fine on all four exchanges",
+			"watch": "Watch on {list}",
+			"too_big": "Too big on {list}",
+			"largest": "Largest share: {share} of {cx}’s daily volume",
+			"largest_none": "Largest share: no trades on {cx} in 30 days"
+		},
+		"verdict": {
+			"fine": "Fine",
+			"watch": "Watch",
+			"too_big": "Too big"
+		},
+		"columns": {
+			"cx": "CX",
+			"ask": "@:terms.ask",
+			"bid": "@:terms.bid",
+			"spread": "@:terms.spread",
+			"vwap_7d": "VWAP 7D",
+			"vwap_30d": "VWAP 30D",
+			"vwap": "VWAP 7D · 30D",
+			"trend": "7D vs 30D",
+			"history": "30 days",
+			"per_day": "Per day",
+			"plan": "Plan"
+		},
+		"your_cx": "your CX",
+		"status": {
+			"INACTIVE": "inactive",
+			"STALE": "stale"
+		},
+		"no_bids": "no bids",
+		"no_asks": "no asks",
+		"no_trades": "no trades",
+		"shared_scale": "shared scale",
+		"spark_label": "{cx} VWAP over 30 days",
+		"rare": "Rarely traded: {units} units in 30 days on all four exchanges. Prices come from a few single trades.",
+		"summary": {
+			"trend": "Rising on {rising} of 4 exchanges · {trend} weighted by volume",
+			"trend_none": "Rising on {rising} of 4 exchanges · no trades in the last 7 days",
+			"book": "Order books: {offered} offered · {wanted} wanted",
+			"book_label": "Offered {offered} against wanted {wanted}",
+			"cohesion": {
+				"together": "Exchange prices move together ({pct} variation) · cheapest {cheapest}, dearest {dearest}",
+				"little": "Exchange prices differ a little ({pct} variation) · cheapest {cheapest}, dearest {dearest}",
+				"apart": "Exchange prices differ a lot ({pct} variation) · cheapest {cheapest}, dearest {dearest}"
+			}
+		},
+		"hint": "Click the ticker to pin · Esc closes",
+		"hint_details": "Click the ticker for Market details · Esc closes",
+		"hint_pinned": "Pinned · Esc or × closes",
+		"exploration": "Market Exploration ↗",
+		"details": "Market details →"
+	},
+	"details": {
+		"title": "Market details",
+		"weight": "Weight",
+		"volume": "Volume",
+		"data_of": "Data of {date}",
+		"active": "Active {n} of 4",
+		"same_limits": "Same limits as Plan check: 10 % watch, 50 % too big.",
+		"exchanges": "Exchanges",
+		"views": {
+			"label": "Exchange view",
+			"prices": "Prices",
+			"book": "Order books",
+			"volume": "Volume"
+		},
+		"columns": {
+			"spread_pct": "Spread %",
+			"vs_universe": "vs Universe 7D",
+			"offered": "Offered (supply)",
+			"wanted": "Wanted (demand)",
+			"delta": "Δ offered − wanted",
+			"ratio": "Wanted per offered",
+			"split": "Offered · wanted",
+			"traded_7d": "Traded 7D",
+			"traded_30d": "Traded 30D",
+			"share_7d": "Plan of 7D",
+			"share_30d": "Plan of 30D",
+			"verdict": "Verdict"
+		},
+		"split_label": "{cx}: offered {offered}, wanted {wanted}",
+		"notes": {
+			"prices": "Spread % is the gap between ask and bid, relative to the ask. “vs Universe 7D” compares each exchange with the Universe VWAP of all four.",
+			"book": "Units waiting in each order book right now. Offered = sell orders (what a buyer can take), wanted = buy orders (what a seller can fill).",
+			"volume": "Units traded. Opened from a plan, two more columns show the plan’s share.",
+			"volume_plan": "Plan share = what is bought or sold in the period, against what the exchange traded in it."
+		},
+		"history": "Last 30 days"
+	},
+	"health": {
+		"title": "Market health",
+		"breadth": {
+			"label": "Breadth",
+			"value": "rising on {rising} of 4 exchanges",
+			"text": "Exchanges whose 7D VWAP is above their 30D VWAP. All of them moving together is a real trend; one alone is often a blip on that exchange."
+		},
+		"trend": {
+			"label": "Volume-weighted trend",
+			"value": "7D against 30D VWAP",
+			"text": "Each exchange’s change counted by how much it traded in 7 days, so a big exchange matters more than a quiet one."
+		},
+		"balance": {
+			"label": "Order book balance",
+			"value": "wanted per unit offered",
+			"buyers": "More is offered than wanted: good for buyers, sellers compete for few bids.",
+			"sellers": "More is wanted than offered: good for sellers, buyers compete for few offers.",
+			"even": "Offers and bids are about even."
+		},
+		"cohesion": {
+			"label": "Price cohesion",
+			"together": "prices move together",
+			"little": "prices differ a little",
+			"apart": "prices differ a lot",
+			"text": "How far the four 7D VWAPs spread around their mean. Under 1.5 % they move in lock-step; over 5 % the gaps can pay for shipping between exchanges."
+		}
+	},
 	"chart": {
-		"title": "История рынка",
-		"range": "30 days",
 		"metric": {
 			"vwap": "@:terms.vwap",
 			"low": "Low",
