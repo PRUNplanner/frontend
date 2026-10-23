@@ -54,4 +54,25 @@ describe("PSparkline", () => {
 		expect(wrapper.find("circle").exists()).toBe(false);
 		expect(wrapper.findAll("polyline")).toHaveLength(0);
 	});
+
+	it("draws in one colour on a shared scale, with lone points", async () => {
+		const { wrapper } = await mountComponent(PSparkline, {
+			points: [1, null, 2, 3],
+			trend: -5,
+			label: "AI1",
+			domain: [0, 10],
+			color: "#3d8ce6",
+			width: 72,
+		});
+
+		expect(wrapper.find("svg").attributes("width")).toBe("72");
+		expect(wrapper.find("polyline").attributes("stroke")).toBe("#3d8ce6");
+		const circles = wrapper.findAll("circle");
+		// the lone first value and the end
+		expect(circles).toHaveLength(2);
+		expect(circles.map((c) => c.attributes("fill"))).toEqual([
+			"#3d8ce6",
+			"#3d8ce6",
+		]);
+	});
 });

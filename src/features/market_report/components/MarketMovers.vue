@@ -37,7 +37,7 @@
 	defineEmits<{ (e: "open", ticker: string): void }>();
 
 	const rows = computed(() =>
-		marketMovers(summary.materials, direction, count)
+		marketMovers(summary.materials, direction).slice(0, count)
 	);
 </script>
 

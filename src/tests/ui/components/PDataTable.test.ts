@@ -5,6 +5,7 @@ import { defineComponent, h, ref, type Component, type Slots } from "vue";
 import { createI18n } from "vue-i18n";
 
 import PDataTable from "@/ui/components/PDataTable.vue";
+import { sortRows } from "@/ui/dataTableSort";
 // also unmounts after each test
 import { tableRows } from "@/tests/mountComponent";
 import type { PDataTableColumn } from "@/ui/ui.types";
@@ -96,6 +97,35 @@ describe("PDataTable", () => {
 		await button.trigger("click");
 		expect(ids(w)).toEqual(["a", "b", "c", "d"]);
 		expect(header(w, "amount").attributes("aria-sort")).toBe("none");
+	});
+
+	it("v-model:sort lets a parent own the sort", async () => {
+		const sort = ref({ key: "amount", order: "ascend" as const });
+		const wrapper = mountTable({
+			sort: sort.value,
+			"onUpdate:sort": (v: typeof sort.value) => (sort.value = v),
+		});
+		expect(ids(wrapper)).toEqual(["b", "d", "a", "c"]);
+		expect(header(wrapper, "amount").attributes("aria-sort")).toBe(
+			"ascending"
+		);
+
+		await header(wrapper, "name").find("button").trigger("click");
+		expect(sort.value).toEqual({ key: "name", order: "descend" });
+	});
+
+	it("sortRows sorts like the table, a copy, or the rows as they are", () => {
+		const sorted = sortRows(DATA, COLUMNS, {
+			key: "amount",
+			order: "descend",
+		});
+		expect(sorted.map((r) => r.id)).toEqual(["c", "a", "d", "b"]);
+		expect(sorted).not.toBe(DATA);
+		expect(sortRows(DATA, COLUMNS, { key: null, order: false })).toBe(DATA);
+		// a column without a sorter doesn't sort
+		expect(sortRows(DATA, COLUMNS, { key: "id", order: "ascend" })).toBe(
+			DATA
+		);
 	});
 
 	it("starts another column at descend", async () => {

@@ -28,7 +28,7 @@
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import MarketExplorationChart from "@/ui/charts/MarketExplorationChart.vue";
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
-	import MaterialCXOverviewTable from "@/features/cx/components/MaterialCXOverviewTable.vue";
+	import MaterialExchangeTable from "@/features/material_tile/components/MaterialExchangeTable.vue";
 	import MarketExplorationExchanges from "@/features/market_exploration/components/MarketExplorationExchanges.vue";
 	import PSparkline from "@/ui/charts/PSparkline.vue";
 
@@ -678,9 +678,9 @@
 								{{ $t("market_exploration.market_data.title") }}
 							</h3>
 
-							<MaterialCXOverviewTable
-								:overview-data="materialOverviewData().overview"
-								:ticker="selectedMaterial" />
+							<MaterialExchangeTable
+								v-if="materialOverviewData().overview"
+								:overview="materialOverviewData().overview" />
 						</div>
 					</div>
 				</div>

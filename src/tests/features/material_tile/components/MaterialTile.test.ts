@@ -1,18 +1,45 @@
-import { describe, it, expect, beforeAll, vi } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { h } from "vue";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
-import MaterialDataChart from "@/features/market_exploration/components/MaterialDataChart.vue";
-import { PButton } from "@/ui";
+import MaterialMarketCard from "@/features/material_tile/components/MaterialMarketCard.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 
+// counts the overview builds, which happen on the first open only
+const overviewCalls = vi.hoisted(() => vi.fn());
+vi.mock("@/database/services/useExchangeData", async (importOriginal) => {
+	const actual =
+		await importOriginal<
+			typeof import("@/database/services/useExchangeData")
+		>();
+	return {
+		useExchangeData: () => {
+			const api = actual.useExchangeData();
+			return {
+				...api,
+				getMaterialExchangeOverview: (ticker: string) => {
+					overviewCalls(ticker);
+					return api.getMaterialExchangeOverview(ticker);
+				},
+			};
+		},
+	};
+});
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+// the card's sparklines
+vi.mock("@/lib/query_cache/useQuery", () => ({
+	useQuery: () => ({
+		execute: async () => ({ exchange: "AI1", days: 30, series: {} }),
+	}),
+}));
 // the chart loads market data, tested on its own
 vi.mock(
 	"@/features/market_exploration/components/MaterialDataChart.vue",
@@ -24,6 +51,7 @@ vi.mock(
 		},
 	})
 );
+vi.mock("vue-router", () => ({ useRouter: () => ({ push: vi.fn() }) }));
 
 const RED = "rgb(255, 0, 0)";
 const ORANGE = "rgb(255, 165, 0)";
@@ -39,26 +67,29 @@ async function mountTile(props: Record<string, unknown> = {}) {
 		ticker: "FE",
 		...props,
 	});
-	// material and exchange overview (the popover) load in onMounted
-	await vi.waitFor(() => {
+	// the material loads in onMounted
+	await vi.waitFor(() =>
 		expect(mounted.wrapper.find(".material-category-metals").exists()).toBe(
 			true
-		);
-		if (props.enablePopover !== false)
-			expect(inPopover(mounted.wrapper)).toBe(true);
-	});
+		)
+	);
 	return mounted;
 }
 
-/** ticker rendered as the exchange popover trigger */
-const inPopover = (wrapper: VueWrapper) =>
-	!!wrapper.find(".font-bold").element.closest(".ptooltip");
-
+/** the hover card's trigger around the ticker */
+const trigger = (wrapper: VueWrapper) => wrapper.find("[role=button]");
 const tile = (wrapper: VueWrapper) => wrapper.find(".material-tile");
 const indicator = (wrapper: VueWrapper) =>
 	wrapper.find(".material-tile div[style]");
 const body = () => new DOMWrapper(document.body);
 const drawer = () => body().find("[role=dialog]");
+const card = () => body().find("[data-material-market-card]");
+
+/** keyboard focus opens the card at once */
+async function openCard(wrapper: VueWrapper) {
+	await trigger(wrapper).trigger("focusin");
+	await vi.waitFor(() => expect(card().exists()).toBe(true));
+}
 
 describe("MaterialTile", () => {
 	beforeAll(async () => {
@@ -66,6 +97,11 @@ describe("MaterialTile", () => {
 		await exchangesStore.setMany(exchanges);
 		await materialsStore.setMany(materials);
 		await useMaterialData().preload();
+	});
+
+	beforeEach(() => {
+		overviewCalls.mockClear();
+		vi.mocked(trackEvent).mockClear();
 	});
 
 	it("shows the ticker in its category colour", async () => {
@@ -133,45 +169,112 @@ describe("MaterialTile", () => {
 		expect(indicator(wrapper).exists()).toBe(false);
 	});
 
-	it("keeps the drawer closed by default", async () => {
-		const { wrapper } = await mountTile();
-
-		expect(tile(wrapper).classes()).toContain("hover:cursor-help");
-		await tile(wrapper).trigger("click");
+	it("builds no market overview before a card opens", async () => {
+		const { wrapper } = await mountComponent({
+			render: () =>
+				h(
+					"div",
+					Array.from({ length: 50 }, (_, i) =>
+						h(MaterialTile, { key: i, ticker: "FE", daily: -5 })
+					)
+				),
+		});
+		await vi.waitFor(() =>
+			expect(wrapper.findAll(".material-category-metals")).toHaveLength(50)
+		);
 		await flushPromises();
 
-		expect(drawer().exists()).toBe(false);
+		expect(overviewCalls).not.toHaveBeenCalled();
 	});
 
-	it("shows ticker and amount without popover", async () => {
+	it("opens the market card with the row's data, built once", async () => {
+		const check = {
+			ticker: "FE",
+			delta: -5,
+			exchange: "IC1",
+			sharePct: 0.2,
+			traded30d: 1,
+			traded7d: 1,
+			bid: 1,
+			ask: 1,
+			spreadPct: null,
+			flags: [],
+			level: null,
+		};
+		const { wrapper } = await mountTile({
+			daily: -5,
+			marketCheck: check,
+			dailyContext: "empire",
+		});
+		expect(trigger(wrapper).attributes("aria-expanded")).toBe("false");
+
+		await openCard(wrapper);
+		const props = wrapper.findComponent(MaterialMarketCard).props();
+		expect(props).toMatchObject({
+			ticker: "FE",
+			daily: -5,
+			dailyContext: "empire",
+			marketCheck: check,
+			pinned: false,
+			sheet: false,
+		});
+		expect(trigger(wrapper).attributes("aria-expanded")).toBe("true");
+		expect(trigger(wrapper).attributes("aria-controls")).toBe(
+			body().find("[role=region]").attributes("id")
+		);
+		expect(trigger(wrapper).attributes("aria-describedby")).toBeUndefined();
+
+		await trigger(wrapper).trigger("focusout");
+		await openCard(wrapper);
+		expect(overviewCalls).toHaveBeenCalledTimes(1);
+	});
+
+	it("pins the card on a click without a drawer", async () => {
+		const { wrapper } = await mountTile();
+		expect(tile(wrapper).classes()).toContain("hover:cursor-help");
+
+		await tile(wrapper).trigger("click");
+		await vi.waitFor(() => expect(card().exists()).toBe(true));
+		expect(wrapper.findComponent(MaterialMarketCard).props("pinned")).toBe(
+			true
+		);
+		expect(drawer().exists()).toBe(false);
+		expect(trackEvent).toHaveBeenCalledWith("material:market_card_pin", {
+			material_ticker: "FE",
+		});
+
+		// a second click unpins and closes it
+		await tile(wrapper).trigger("click");
+		await flushPromises();
+		expect(card().exists()).toBe(false);
+	});
+
+	it("shows ticker and amount without a card", async () => {
 		const { wrapper } = await mountTile({
 			enablePopover: false,
 			amount: 10,
 		});
-		await flushPromises();
 
-		expect(inPopover(wrapper)).toBe(false);
+		expect(trigger(wrapper).exists()).toBe(false);
 		expect(tile(wrapper).text()).toBe("10x FE");
 		expect(tile(wrapper).classes()).not.toContain("hover:cursor-help");
 		expect(tile(wrapper).classes()).not.toContain("hover:cursor-pointer");
 	});
 
-	it("toggles the material drawer when enabled", async () => {
+	it("toggles the Market details drawer when enabled", async () => {
 		const { wrapper } = await mountTile({ disableDrawer: false });
 		expect(tile(wrapper).classes()).toContain("hover:cursor-pointer");
 
 		await tile(wrapper).trigger("click");
-		await flushPromises();
-
-		const text = drawer().text();
-		expect(text).toContain("material_tile.information.title");
-		expect(text).toContain("game.material_category.metals");
-		// FE weighs 7.874 t and takes 1 m³
-		expect(text).toContain("7.8740 t");
-		expect(text).toContain("1.0000 m³");
-		expect(wrapper.findComponent(MaterialDataChart).props()).toEqual({
-			materialTicker: "FE",
-			metric: "vwap",
+		await vi.waitFor(() =>
+			expect(body().find("[data-material-market-details]").exists()).toBe(
+				true
+			)
+		);
+		expect(drawer().text()).toContain("material_tile.details.title");
+		expect(trackEvent).toHaveBeenCalledWith("material:market_drawer_open", {
+			material_ticker: "FE",
+			source: "tile",
 		});
 
 		await tile(wrapper).trigger("click");
@@ -179,28 +282,35 @@ describe("MaterialTile", () => {
 		expect(drawer().exists()).toBe(false);
 	});
 
-	it("switches the drawer chart value", async () => {
-		const { wrapper } = await mountTile({ disableDrawer: false });
-		await tile(wrapper).trigger("click");
-		await flushPromises();
+	it("opens the drawer from the card's Market details button", async () => {
+		const { wrapper } = await mountTile();
+		await openCard(wrapper);
 
-		const buttons = wrapper.findAllComponents(PButton);
-		expect(buttons.map((b) => b.text())).toEqual([
-			"material_tile.chart.metric.vwap",
-			"material_tile.chart.metric.low",
-			"material_tile.chart.metric.high",
-			"material_tile.chart.metric.traded",
-		]);
-		expect(buttons[0].props("pressed")).toBe(true);
-
-		await buttons[3].trigger("click");
-
-		expect(wrapper.findComponent(MaterialDataChart).props("metric")).toBe(
-			"traded"
+		await body().find("[data-details]").trigger("click");
+		await vi.waitFor(() =>
+			expect(body().find("[data-material-market-details]").exists()).toBe(
+				true
+			)
 		);
-		expect(wrapper.findAllComponents(PButton)[3].props("pressed")).toBe(
+		expect(card().exists()).toBe(false);
+		expect(trackEvent).toHaveBeenCalledWith("material:market_drawer_open", {
+			material_ticker: "FE",
+			source: "card",
+		});
+	});
+
+	it("opens a bottom sheet on touch", async () => {
+		const { wrapper } = await mountTile({ disableDrawer: false });
+
+		await trigger(wrapper).trigger("pointerdown", { pointerType: "touch" });
+		await tile(wrapper).trigger("click");
+		await vi.waitFor(() =>
+			expect(wrapper.findComponent(MaterialMarketCard).exists()).toBe(true)
+		);
+		expect(wrapper.findComponent(MaterialMarketCard).props("sheet")).toBe(
 			true
 		);
+		expect(drawer().attributes("aria-labelledby")).toBeDefined();
 	});
 
 	it("still shows the ticker of an unknown material", async () => {

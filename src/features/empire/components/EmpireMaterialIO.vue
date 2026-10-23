@@ -186,6 +186,8 @@
 						:key="row.ticker"
 						:ticker="row.ticker"
 						:daily="row.delta"
+						daily-context="empire"
+						:market-check="checks?.get(row.ticker)"
 						popover-placement="right" />
 					<MarketFlagButton
 						v-if="flagged(row.ticker)"

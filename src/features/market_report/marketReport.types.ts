@@ -1,6 +1,8 @@
 export type MarketExchangeCode = "AI1" | "CI1" | "IC1" | "NC1";
 export type MarketIndexView = "combined" | "exchange" | "sector";
 export type MarketMoversDirection = "rising" | "falling";
+/** price gaps by traded price (VWAP 7D) or by the order books now */
+export type MarketGapBasis = "vwap" | "books";
 
 /** daily series per ticker, oldest first, null without trades */
 export type IPriceSeries = Record<string, (number | null)[]>;
@@ -30,6 +32,30 @@ export interface IMarketBrief {
 	pioneerCost: number | null;
 	/** against the first day of the 15-day spark, in % */
 	pioneerChange: number | null;
+	/** epoch ms of the first of those 15 days */
+	pioneerStart: number;
+	/** ȼ per 100 pioneers on each of the 15 days, oldest first */
+	pioneerSeries: (number | null)[];
+}
+
+/** one material priced notably apart on two exchanges */
+export interface IMarketGap {
+	ticker: string;
+	name: string;
+	category: string;
+	/** the cheaper and the dearer exchange */
+	low: MarketExchangeCode;
+	high: MarketExchangeCode;
+	/** VWAP 7D on both, or the ask on low and the bid on high */
+	lowPrice: number;
+	highPrice: number;
+	/** high ÷ low − 1, in % */
+	gap: number;
+	/** the books now: best ask on low, best bid on high, 0 without */
+	ask: number;
+	bid: number;
+	/** bid ÷ ask − 1 in % while the bid is above the ask, else null */
+	open: number | null;
 }
 
 export interface IMarketExchangeCard {

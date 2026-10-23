@@ -15,12 +15,14 @@ import type {
 	IMarketLead,
 	IMarketSectorCard,
 	IMarketExchangeCard,
+	IMarketGap,
 	IMarketKpis,
 	IPriceSeries,
 	ITreemapNode,
 	ITreemapRect,
 	IWorkforceDriver,
 	MarketExchangeCode,
+	MarketGapBasis,
 	MarketMoversDirection,
 } from "@/features/market_report/marketReport.types";
 
@@ -34,6 +36,14 @@ export const MARKET_EXCHANGES: MarketExchangeCode[] = [
 /** movers need real volume: ȼ and units over the last 7 days */
 export const MOVER_MIN_TURNOVER = 5_000_000;
 export const MOVER_MIN_UNITS = 50;
+/**
+ * price gaps: each exchange needs units and ȼ traded in 7 days, the gap
+ * this many % at least
+ * ponytail: first guesses, set from the tuning week (spec 2026-10-22)
+ */
+export const GAP_MIN_UNITS = 20;
+export const GAP_MIN_TURNOVER = 250_000;
+export const GAP_MIN_PCT = 10;
 /** the treemap's colour scale ends at ± this change, in % */
 export const CHANGE_SCALE_PCT = 12;
 
@@ -159,13 +169,11 @@ export function workforceDrivers(
  *
  * @param {MarketMaterial[]} materials Summary materials
  * @param {MarketMoversDirection} direction Rising or falling
- * @param {number} [count=8] Rows
- * @returns {MarketMaterial[]} Largest change first
+ * @returns {MarketMaterial[]} All of them, largest change first
  */
 export function marketMovers(
 	materials: MarketMaterial[],
-	direction: MarketMoversDirection,
-	count: number = 8
+	direction: MarketMoversDirection
 ): MarketMaterial[] {
 	const sign = direction === "rising" ? 1 : -1;
 	return materials
@@ -177,8 +185,7 @@ export function marketMovers(
 				m.turnover_7d >= MOVER_MIN_TURNOVER &&
 				m.units_7d >= MOVER_MIN_UNITS
 		)
-		.sort((a, b) => (b.change_pct! - a.change_pct!) * sign)
-		.slice(0, count);
+		.sort((a, b) => (b.change_pct! - a.change_pct!) * sign);
 }
 
 /**
@@ -202,6 +209,8 @@ export function marketBrief(summary: MarketSummary): IMarketBrief {
 		(t) => byTicker.get(t)?.spark.find((v) => v != null),
 		"pioneer"
 	);
+	// the sparks' days, the last one is as_of
+	const sparkDays = Math.max(0, ...summary.materials.map((m) => m.spark.length));
 
 	return {
 		index: summary.index.combined.findLast((v) => v != null) ?? null,
@@ -213,7 +222,72 @@ export function marketBrief(summary: MarketSummary): IMarketBrief {
 			pioneerCost != null && pioneerThen
 				? (pioneerCost / pioneerThen - 1) * 100
 				: null,
+		pioneerStart: summary.as_of - Math.max(0, sparkDays - 1) * 86_400_000,
+		pioneerSeries: Array.from({ length: sparkDays }, (_, i) =>
+			workforceCost((t) => byTicker.get(t)?.spark[i], "pioneer")
+		),
 	};
+}
+
+/**
+ * Where a material trades notably apart on two exchanges, each with enough
+ * volume. "vwap" compares VWAP 7D (with the books now on each row),
+ * "books" the best ask on one exchange with the best bid on another.
+ *
+ * @param {Exchange[]} books Every book of /data/exchanges/
+ * @param {MarketSummary} summary Market summary: names, categories, flat
+ * @param {MarketGapBasis} basis Traded prices or the books now
+ * @returns {IMarketGap[]} Every gap of GAP_MIN_PCT or more, largest first
+ */
+export function exchangeGaps(
+	books: Exchange[],
+	summary: MarketSummary,
+	basis: MarketGapBasis
+): IMarketGap[] {
+	const materials = new Map(summary.materials.map((m) => [m.ticker, m]));
+	const byTicker = new Map<string, Exchange[]>();
+	for (const b of books) {
+		if (
+			!MARKET_EXCHANGES.includes(b.exchange_code as MarketExchangeCode) ||
+			b.sum_traded_7d < GAP_MIN_UNITS ||
+			b.vwap_7d * b.sum_traded_7d < GAP_MIN_TURNOVER
+		)
+			continue;
+		byTicker.set(b.ticker, [...(byTicker.get(b.ticker) ?? []), b]);
+	}
+
+	const gaps: IMarketGap[] = [];
+	for (const [ticker, rows] of byTicker) {
+		const m = materials.get(ticker);
+		if (!m || m.is_flat) continue;
+		// the dearest pair of a low and a high on two exchanges
+		let best: [Exchange, Exchange, number] | null = null;
+		for (const lo of rows)
+			for (const hi of rows) {
+				if (lo === hi) continue;
+				const [a, b] =
+					basis === "vwap" ? [lo.vwap_7d, hi.vwap_7d] : [lo.ask, hi.bid];
+				if (a <= 0 || b <= 0) continue;
+				const gap = (b / a - 1) * 100;
+				if (!best || gap > best[2]) best = [lo, hi, gap];
+			}
+		if (!best || best[2] < GAP_MIN_PCT) continue;
+		const [lo, hi, gap] = best;
+		gaps.push({
+			ticker,
+			name: m.name,
+			category: m.category,
+			low: lo.exchange_code as MarketExchangeCode,
+			high: hi.exchange_code as MarketExchangeCode,
+			lowPrice: basis === "vwap" ? lo.vwap_7d : lo.ask,
+			highPrice: basis === "vwap" ? hi.vwap_7d : hi.bid,
+			gap,
+			ask: lo.ask,
+			bid: hi.bid,
+			open: lo.ask > 0 && hi.bid > lo.ask ? (hi.bid / lo.ask - 1) * 100 : null,
+		});
+	}
+	return gaps.sort((a, b) => b.gap - a.gap);
 }
 
 /**
@@ -421,20 +495,22 @@ export function changeClass(pct: number | null, decimals: number = 1): string {
 			: "text-muted";
 }
 
-const dayFormat = new Intl.DateTimeFormat("en-US", {
+const dateFormat = new Intl.DateTimeFormat("en-US", {
 	timeZone: "UTC",
 	month: "short",
 	day: "numeric",
+	year: "numeric",
 });
 
 /**
- * A UTC day as "Jul 22", like the chart axes
+ * A UTC day with its year, "Jul 24, 2026", for running text: without the
+ * year "Jul 24" reads as July 2024
  *
  * @param {number} epoch Epoch ms
- * @returns {string} Day
+ * @returns {string} Date
  */
-export function formatDay(epoch: number): string {
-	return dayFormat.format(epoch);
+export function formatDate(epoch: number): string {
+	return dateFormat.format(epoch);
 }
 
 /**

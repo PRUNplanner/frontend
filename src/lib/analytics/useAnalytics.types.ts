@@ -16,6 +16,7 @@ import type {
 import type { PlanetSearchView } from "@/features/planet_search/planetSearch.schemas";
 import type { ChartView } from "@/features/market_exploration/marketExploration.types";
 import type {
+	MarketGapBasis,
 	MarketIndexView,
 	MarketMoversDirection,
 } from "@/features/market_report/marketReport.types";
@@ -265,7 +266,11 @@ export interface IAnalyticsEventProperties {
 	"exchange:leave_unsaved": { location: string };
 	"exchange:save_conflict": { location: string; choice: SaveConflictChoice };
 
-	"material:market_drawer_open": { material_ticker: string };
+	"material:market_drawer_open": {
+		material_ticker: string;
+		source: "tile" | "card";
+	};
+	"material:market_card_pin": { material_ticker: string };
 
 	"planet_search:view_change": { view: PlanetSearchView };
 	"market_exploration:view_change": { view: ChartView };
@@ -273,7 +278,9 @@ export interface IAnalyticsEventProperties {
 	"market:view_change":
 		| { chart: "index"; view: MarketIndexView }
 		| { chart: "workforce"; view: WorkforceType }
-		| { chart: "movers"; view: MarketMoversDirection };
+		| { chart: "movers"; view: MarketMoversDirection | "all" }
+		| { chart: "leaders"; view: "all" | "top" }
+		| { chart: "gaps"; view: MarketGapBasis | "all" };
 
 	"tool:use": ToolUseProperties;
 
