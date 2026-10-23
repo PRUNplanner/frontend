@@ -52,6 +52,8 @@
 		area.areaUsed > 0 ? overview.profit / area.areaUsed : 0
 	);
 
+	// label and figure share a line, a narrow tile puts them on two
+	const head = "flex flex-wrap items-baseline gap-x-2";
 	const label = "text-xs font-medium uppercase tracking-wider text-muted";
 	// wraps only where a narrow tile would overflow, evenly
 	const sub = "text-xs text-muted text-balance";
@@ -64,11 +66,13 @@
 		class="tabular-nums">
 		<div
 			class="grid grid-cols-2 gap-x-3 lg:gap-x-0 lg:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))] lg:divide-x divide-line">
-			<div class="py-2 lg:pr-3">
-				<div :class="label">{{ t("plan.results.profit") }}</div>
-				<div class="text-2xl font-medium leading-tight">
-					<PValue :value="overview.profit" />
-					<span class="pl-1 text-sm text-muted">ȼ</span>
+			<div class="py-1.5 lg:pr-3">
+				<div :class="head">
+					<span :class="label">{{ t("plan.results.profit") }}</span>
+					<span class="text-xl font-medium leading-tight">
+						<PValue :value="overview.profit" />
+						<span class="pl-1 text-sm text-muted">ȼ</span>
+					</span>
 				</div>
 				<div :class="sub">
 					{{
@@ -79,9 +83,11 @@
 					}}
 				</div>
 			</div>
-			<div class="py-2 lg:px-3">
-				<div :class="label">{{ t("plan.results.payback") }}</div>
-				<div :class="value">{{ formatPayback(overview.roi) }}</div>
+			<div class="py-1.5 lg:px-3">
+				<div :class="head">
+					<span :class="label">{{ t("plan.results.payback") }}</span>
+					<span :class="value">{{ formatPayback(overview.roi) }}</span>
+				</div>
 				<div :class="sub">
 					{{
 						t("plan.results.build", {
@@ -90,9 +96,11 @@
 					}}
 				</div>
 			</div>
-			<div class="py-2 lg:px-3">
-				<div :class="label">{{ t("plan.results.profit_area") }}</div>
-				<div :class="value"><PValue :value="profitPerArea" /></div>
+			<div class="py-1.5 lg:px-3">
+				<div :class="head">
+					<span :class="label">{{ t("plan.results.profit_area") }}</span>
+					<span :class="value"><PValue :value="profitPerArea" /></span>
+				</div>
 				<div v-if="empireProfitPerArea !== undefined" :class="sub">
 					{{
 						t("plan.results.empire_average", {
@@ -101,28 +109,32 @@
 					}}
 				</div>
 			</div>
-			<div class="py-2 lg:px-3">
-				<div :class="label">{{ t("plan.results.area") }}</div>
-				<div :class="value">
-					<span :class="area.areaLeft < 0 ? 'text-negative' : ''">
-						{{ area.areaUsed }}
-					</span>
-					<span class="text-sm text-muted">
-						/ {{ area.areaTotal }}
+			<div class="py-1.5 lg:px-3">
+				<div :class="head">
+					<span :class="label">{{ t("plan.results.area") }}</span>
+					<span :class="value">
+						<span :class="area.areaLeft < 0 ? 'text-negative' : ''">
+							{{ area.areaUsed }}
+						</span>
+						<span class="text-sm text-muted">
+							/ {{ area.areaTotal }}
+						</span>
 					</span>
 				</div>
 				<PMeter
-					class="mt-1"
+					class="mt-1.5"
 					:value="area.areaUsed"
 					:max="area.areaTotal"
 					:label="t('plan.results.area')" />
 			</div>
-			<div class="py-2 lg:pl-3">
-				<div :class="label">{{ t("plan.results.storage") }}</div>
-				<div :class="value">
-					{{ formatNumber(visitation.storageFilled, 1) }}
-					<span class="text-sm text-muted">
-						{{ t("plan.results.days_to_full") }}
+			<div class="py-1.5 lg:pl-3">
+				<div :class="head">
+					<span :class="label">{{ t("plan.results.storage") }}</span>
+					<span :class="value">
+						{{ formatNumber(visitation.storageFilled, 1) }}
+						<span class="text-sm text-muted">
+							{{ t("plan.results.days_to_full") }}
+						</span>
 					</span>
 				</div>
 				<div :class="sub">

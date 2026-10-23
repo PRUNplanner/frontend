@@ -322,7 +322,7 @@
 	 */
 	const refIOSource: Ref<"all" | "production" | "workforce"> = ref("all");
 	const refIOFilter: Ref<"all" | "exports" | "imports"> = ref("all");
-	const refIOValue: Ref<"price" | "weight" | "volume"> = ref("price");
+	const refIOValue: Ref<"price" | "weight" | "volume" | "share"> = ref("price");
 
 	const ioRows = computed(() =>
 		refIOSource.value === "production"
@@ -347,6 +347,7 @@
 		{ value: "price" as const, label: "ȼ" },
 		{ value: "weight" as const, label: "t" },
 		{ value: "volume" as const, label: "m³" },
+		{ value: "share" as const, label: "%" },
 	];
 
 	function downloadMaterialIO(): void {
@@ -484,7 +485,7 @@
 	const refIOPinned: Ref<boolean> = ref(false);
 	// a strip: the pane's title read top-down, a detail below it
 	const strip =
-		"sticky top-28 shrink-0 w-10 flex-col items-center gap-3 py-2 rounded border border-line bg-surface text-muted-strong hover:border-line-strong hover:text-white cursor-pointer transition-colors";
+		"sticky top-20 shrink-0 w-10 flex-col items-center gap-3 py-2 rounded border border-line bg-surface text-muted-strong hover:border-line-strong hover:text-white cursor-pointer transition-colors";
 	const stripIcon =
 		"flex items-center justify-center size-6 rounded-control bg-hover";
 	const stripTitle =
@@ -1397,7 +1398,7 @@
 		padding scrolls the last rows clear of the insights button -->
 	<!-- @container: the panes lay out by the width next to the app
 		navigation, so an expanded sidebar makes Base an overlay -->
-	<div ref="layout" class="@container pb-16 [&_*]:scroll-mt-32">
+	<div ref="layout" class="@container pb-16 [&_*]:scroll-mt-24">
 		<!-- Header: name, history, save state and the plan's actions -->
 		<header class="flex flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
 			<div class="flex-1 min-w-0 basis-60">
@@ -1548,7 +1549,7 @@
 			</button>
 			<aside
 				:aria-label="t('plan.base.label')"
-				class="shrink-0 w-full @min-[60rem]:w-74 rounded border border-line @min-[60rem]:sticky @min-[60rem]:top-28 @min-[60rem]:max-h-[calc(100dvh-8rem)] @min-[60rem]:overflow-y-auto bg-(--app-bg) [scrollbar-width:thin]"
+				class="shrink-0 w-full @min-[60rem]:w-74 rounded border border-line @min-[60rem]:sticky @min-[60rem]:top-20 @min-[60rem]:max-h-[calc(100dvh-6rem)] @min-[60rem]:overflow-y-auto bg-(--app-bg) [scrollbar-width:thin]"
 				:class="[
 					baseFolded ? '@min-[81rem]:hidden' : '',
 					refBaseOverlay
@@ -1704,7 +1705,7 @@
 			</button>
 			<aside
 				:aria-label="t('plan.components.materialio.label')"
-				class="shrink-0 w-full @min-[60rem]:w-75 @min-[81rem]:w-85 @min-[100rem]:w-96 rounded border border-line @min-[60rem]:sticky @min-[60rem]:top-28"
+				class="shrink-0 w-full @min-[60rem]:w-75 @min-[81rem]:w-85 @min-[100rem]:w-96 rounded border border-line @min-[60rem]:sticky @min-[60rem]:top-20"
 				:class="ioFolded ? '@min-[60rem]:hidden' : ''"
 				data-io-pane>
 				<div class="flex items-center gap-2 px-3 pt-3 pb-2">
@@ -1738,10 +1739,11 @@
 				<PlanMaterialIO
 					:material-i-o-data="ioRows"
 					:compact="refIOCompact"
-					max-height="calc(100dvh - 22rem)"
+					max-height="calc(100dvh - 20rem)"
 					:value="refIOValue"
 					:filter="refIOFilter"
 					:checks="refIOSource === 'all' ? marketChecks : undefined"
+					:market="marketChecks"
 					@open:plan-check="openPlanCheck" />
 				<dl
 					class="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-3 py-2 border-t border-line text-sm tabular-nums">

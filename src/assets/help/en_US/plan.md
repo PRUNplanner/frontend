@@ -59,6 +59,8 @@ A plan's profit assumes every material can be bought and sold at its price, in a
 
 Spreads are shown but never flagged.
 
+To watch the shares while you change counts and recipes, switch Material I/O to **%**: each material's Δ as a share of the average daily volume of the last 7 and 30 days, amber from 10 %, red from 50 %.
+
 **What CX volume misses**
 
 The volume comes from the commodity exchanges only. Sales on local markets, contracts between players and trades inside a corporation aren't counted, so a material can be easier to sell than its CX volume says.
