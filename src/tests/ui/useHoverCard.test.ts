@@ -275,4 +275,39 @@ describe("useHoverCard", () => {
 		cards[0].triggerEvents.focusin();
 		expect(cards[0].open.value).toBe(false);
 	});
+
+	it("ignores other keys, presses inside and focus moving within", async () => {
+		cards[0].triggerEvents.focusin();
+		await nextTick();
+
+		// only Enter or Space on the trigger itself clicks it
+		const click = vi.fn();
+		triggers[0].addEventListener("click", click);
+		const key = (k: string, target: Element) => {
+			const e = new KeyboardEvent("keydown", { key: k, cancelable: true });
+			Object.defineProperty(e, "target", { value: target });
+			cards[0].triggerEvents.keydown(e);
+			return e;
+		};
+		expect(key("a", triggers[0]).defaultPrevented).toBe(false);
+		expect(key("Enter", panels[0]).defaultPrevented).toBe(false);
+		expect(key(" ", triggers[0]).defaultPrevented).toBe(true);
+		expect(click).toHaveBeenCalledTimes(1);
+
+		// other keys and presses on the card keep it open
+		expect(press("a").defaultPrevented).toBe(false);
+		panels[0].dispatchEvent(new Event("pointerdown", { bubbles: true }));
+		cards[0].panelEvents.focusout({
+			relatedTarget: triggers[0],
+		} as unknown as FocusEvent);
+		expect(cards[0].open.value).toBe(true);
+
+		// focus leaving the card closes it
+		cards[0].panelEvents.focusout({
+			relatedTarget: document.body,
+		} as unknown as FocusEvent);
+		expect(cards[0].open.value).toBe(false);
+		// Esc with nothing open does nothing
+		expect(press("Escape").defaultPrevented).toBe(false);
+	});
 });
