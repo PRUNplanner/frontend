@@ -310,6 +310,20 @@ describe("useOverlayLayer", () => {
 				expect(activeId()).toBe("last");
 			});
 
+			it("leaves Tab in a hover card opened from the layer alone", async () => {
+				await mountLayer(layer(content));
+				const card = document.body.appendChild(document.createElement("div"));
+				card.setAttribute("data-hover-card", "");
+				const inCard = card.appendChild(document.createElement("button"));
+
+				inCard.focus();
+				const event = press("Tab");
+
+				expect(event.defaultPrevented).toBe(false);
+				expect(document.activeElement).toBe(inCard);
+				card.remove();
+			});
+
 			it("keeps focus on a panel without focusable content", async () => {
 				await mountLayer(layer());
 				const panel = document.getElementById("panel")!;

@@ -234,6 +234,7 @@
 							row.dailyRuns *
 							1.25
 						"
+						daily-context="setup"
 						popover-placement="right" />
 				</div>
 			</template>
@@ -245,11 +246,12 @@
 						:ticker="input.material_ticker"
 						:amount="input.material_amount"
 						:daily="
-							input.material_amount *
+							-input.material_amount *
 							row.optimalSetup.amount *
 							row.dailyRuns *
 							1.25
 						"
+						daily-context="setup"
 						popover-placement="right" />
 				</div>
 			</template>

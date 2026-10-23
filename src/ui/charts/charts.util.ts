@@ -277,27 +277,29 @@ export function waterfallLayout(
 
 /**
  * Lays out a sparkline in a width × height box, with its own y-scale
- * (direction only). Gaps (null) break the line; a flat line sits in the
- * middle.
+ * (direction only), or a shared one. Gaps (null) break the line, a value
+ * between two gaps is a lone point; a flat line sits in the middle.
  * @author jplacht
  *
  * @param {(number | null)[]} points values, oldest first
  * @param {number} width box width in px
  * @param {number} height box height in px
  * @param {number} pad room kept free at every edge, e.g. for the end dot
- * @returns {ISparklineLayout} polylines and the end point
+ * @param {[number, number]} [domain] a y-range shared with other sparklines
+ * @returns {ISparklineLayout} polylines, lone points and the end point
  */
 export function sparklineLayout(
 	points: (number | null)[],
 	width: number,
 	height: number,
-	pad = 3
+	pad = 3,
+	domain?: [number, number]
 ): ISparklineLayout {
 	const values = points.filter((p): p is number => p !== null);
-	if (!values.length) return { lines: [], end: null };
+	if (!values.length) return { lines: [], dots: [], end: null };
 
-	const min = Math.min(...values);
-	const span = Math.max(...values) - min;
+	const min = domain?.[0] ?? Math.min(...values);
+	const span = (domain?.[1] ?? Math.max(...values)) - min;
 	const step = points.length > 1 ? (width - 2 * pad) / (points.length - 1) : 0;
 	const at = (v: number, i: number) => ({
 		x: Math.round((pad + i * step) * 10) / 10,
@@ -309,19 +311,21 @@ export function sparklineLayout(
 	});
 
 	const lines: string[] = [];
-	let run: string[] = [];
+	const dots: ISparklineLayout["dots"] = [];
+	let run: { x: number; y: number }[] = [];
+	const close = () => {
+		if (run.length === 1) dots.push(run[0]);
+		if (run.length) lines.push(run.map((p) => `${p.x},${p.y}`).join(" "));
+		run = [];
+	};
 	let end: ISparklineLayout["end"] = null;
 	points.forEach((v, i) => {
-		if (v === null) {
-			if (run.length) lines.push(run.join(" "));
-			run = [];
-			return;
-		}
+		if (v === null) return close();
 		end = at(v, i);
-		run.push(`${end.x},${end.y}`);
+		run.push(end);
 	});
-	if (run.length) lines.push(run.join(" "));
-	return { lines, end };
+	close();
+	return { lines, dots, end };
 }
 
 /**
