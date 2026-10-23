@@ -171,15 +171,12 @@ describe("PlanProductionRecipe", () => {
 		expect(recipeButton(wrapper).attributes("aria-expanded")).toBe("true");
 	});
 
-	it("shows the daily share as a bar and percent", async () => {
+	it("shows the daily share as a percent", async () => {
 		const { wrapper, setProps } = await mountRecipe();
-		const bar = () => wrapper.find("[data-share-bar]");
 
-		expect(bar().attributes("style")).toBe("width: 50%;");
 		expect(wrapper.text()).toContain("50.0 %");
 
 		await setProps({ recipeData: recipe({ dailyShare: 0.25 }) });
-		expect(bar().attributes("style")).toBe("width: 25%;");
 		expect(wrapper.text()).toContain("25.0 %");
 	});
 

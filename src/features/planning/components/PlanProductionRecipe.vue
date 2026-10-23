@@ -123,7 +123,7 @@
 	</PModal>
 
 	<div
-		class="relative grid grid-cols-[5rem_minmax(0,1fr)_4rem_1.75rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4rem_2.75rem_2.75rem] max-md:grid-cols-[5rem_minmax(0,1fr)_auto_auto]! gap-x-2 max-md:gap-y-1 items-center min-h-9 py-1 max-md:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
+		class="grid grid-cols-[5rem_minmax(0,1fr)_4rem_1.75rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4rem_2.75rem_2.75rem] max-md:grid-cols-[5rem_minmax(0,1fr)_auto_auto]! gap-x-2 max-md:gap-y-1 items-center min-h-9 py-1 max-md:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
 		data-recipe-row>
 		<PInputNumber
 			:value="localRecipeData.amount"
@@ -207,13 +207,6 @@
 				{{ formatPercent(localRecipeData.dailyShare * 100, 1) }}
 			</span>
 		</span>
-		<!-- the share as a bar along the row's bottom edge, the divider to
-			the next row its track -->
-		<span
-			class="absolute left-0 bottom-0 h-0.5 rounded-full bg-(--chart-ink)/50"
-			:style="{ width: `${localRecipeData.dailyShare * 100}%` }"
-			aria-hidden="true"
-			data-share-bar />
 		<PButton
 			size="sm"
 			type="ghost"
