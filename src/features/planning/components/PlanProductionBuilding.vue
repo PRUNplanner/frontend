@@ -188,6 +188,11 @@
 	});
 
 	// "Agriculture · COGC · 3 experts": what lifts the efficiency
+	// a recipe's ȼ per building and day, as the picker shows it
+	const optionDaily = (recipeId: string): number =>
+		localBuildingData.value.recipeOptions.find((o) => o.recipe_id === recipeId)
+			?.dailyRevenue ?? 0;
+
 	const subParts: ComputedRef<string[]> = computed(() => {
 		const b = localBuildingData.value;
 		const parts: string[] = [];
@@ -395,6 +400,8 @@
 				<PlanProductionRecipe
 					:disabled="disabled"
 					:recipe-index="index"
+					:building-amount="localBuildingData.amount"
+					:option-daily="optionDaily(recipe.recipeId)"
 					:recipe-data="recipe"
 					:cx-uuid="cxUuid"
 					:planet-id="planetId"

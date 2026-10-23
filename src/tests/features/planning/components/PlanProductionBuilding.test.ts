@@ -48,6 +48,8 @@ vi.mock("@/features/planning/components/PlanProductionRecipe.vue", () => ({
 			pickerOpen: Boolean,
 			cxUuid: String,
 			planetId: String,
+			buildingAmount: Number,
+			optionDaily: Number,
 		},
 		emits: [
 			"update:building:recipe:amount",
@@ -257,6 +259,27 @@ describe("PlanProductionBuilding", () => {
 		expect(recipes(wrapper).map((r) => r.props("disabled"))).toEqual([
 			true,
 			true,
+		]);
+	});
+
+	it("hands each recipe row its ȼ per building and day and the building count", async () => {
+		const { wrapper } = await mountBuilding({
+			buildingData: building({
+				recipeOptions: [
+					{ recipe_id: "SME#FE", dailyRevenue: 400 } as IRecipeBuildingOption,
+				],
+			}),
+		});
+
+		// SME#AL has no option, so no figure
+		expect(
+			recipes(wrapper).map((r) => [
+				r.props("optionDaily"),
+				r.props("buildingAmount"),
+			])
+		).toEqual([
+			[400, 3],
+			[0, 3],
 		]);
 	});
 

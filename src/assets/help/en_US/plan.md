@@ -15,7 +15,7 @@ The plan view reads from left to right: **Base** (set up), **Production** (build
 
 **Production**
 
-Each building has one row: count, efficiency, ȼ per day and area. Click the name to fold its orders. Its orders are listed below it: the amount, the recipe, its runtime, its share of the building's time, COGM and delete. Deleting asks nothing; Ctrl+Z or the Undo message takes it back.
+Each building has one row: count, efficiency, ȼ per day and area. Click the name to fold its orders. Its orders are listed below it: the amount, the recipe, its runtime, its share of the building's time, its part of the building's ȼ per day (the orders add up to the building), COGM and delete. Deleting asks nothing; Ctrl+Z or the Undo message takes it back.
 
 **Changing a recipe**
 

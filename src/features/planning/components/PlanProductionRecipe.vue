@@ -27,6 +27,7 @@
 	import PIcon from "@/ui/components/PIcon.vue";
 	import PInputNumber from "@/ui/components/PInputNumber.vue";
 	import PModal from "@/ui/components/PModal.vue";
+	import PValue from "@/ui/components/PValue.vue";
 	import {
 		AnalyticsOutlined,
 		DeleteOutlineSharp,
@@ -36,7 +37,7 @@
 
 	/**
 	 * One order of a building: amount, recipe (opens the picker), runtime,
-	 * share of the building's time, COGM and delete
+	 * share of the building's time, its part of the ȼ/day, COGM and delete
 	 *
 	 * @author jplacht
 	 */
@@ -52,6 +53,19 @@
 		recipeIndex: {
 			type: Number,
 			required: true,
+		},
+		// buildings of this type in the plan
+		buildingAmount: {
+			type: Number,
+			required: false,
+			default: 1,
+		},
+		// the recipe's ȼ per building and day, from the building's options
+		// (active recipes carry none of their own)
+		optionDaily: {
+			type: Number,
+			required: false,
+			default: 0,
 		},
 		cxUuid: {
 			type: String,
@@ -89,6 +103,15 @@
 	const localRecipeData: ComputedRef<IProductionBuildingRecipe> = computed(
 		() => props.recipeData
 	);
+	// this order's part of the building's ȼ/day: the recipe's ȼ per building
+	// and day (fixed costs included), by its share of the time; the rows
+	// add up to the building
+	const dailyProfit: ComputedRef<number> = computed(
+		() =>
+			props.optionDaily *
+			localRecipeData.value.dailyShare *
+			props.buildingAmount
+	);
 	const refShowCOGM: Ref<boolean> = ref(false);
 
 	const cogmEnabled = computed(() => !!localRecipeData.value.cogm);
@@ -123,7 +146,7 @@
 	</PModal>
 
 	<div
-		class="grid grid-cols-[5rem_minmax(0,1fr)_4rem_1.75rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4rem_2.75rem_2.75rem] @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto]! gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
+		class="grid grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_3rem_2.75rem] @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto]! gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
 		data-recipe-row>
 		<PInputNumber
 			:value="localRecipeData.amount"
@@ -145,7 +168,7 @@
 			" />
 		<button
 			type="button"
-			class="group justify-self-start @max-[40rem]/prod:col-span-3 min-w-0 max-w-full flex items-stretch gap-1 min-h-7 pointer-coarse:min-h-11 pl-1.5 rounded-control border text-left"
+			class="group justify-self-start @max-[40rem]/prod:col-span-4 min-w-0 max-w-full flex items-stretch gap-1 min-h-7 pointer-coarse:min-h-11 pl-1.5 rounded-control border text-left"
 			:class="[
 				pickerOpen
 					? 'border-line-strong bg-hover'
@@ -209,6 +232,13 @@
 			<span class="text-ink">
 				{{ formatPercent(localRecipeData.dailyShare * 100, 1) }}
 			</span>
+		</span>
+		<!-- under the building's ȼ/day column -->
+		<span
+			class="text-right text-xs"
+			:title="t('plan.production.recipe_daily')"
+			data-recipe-daily>
+			<PValue :value="dailyProfit" />
 		</span>
 		<PButton
 			size="sm"

@@ -693,7 +693,8 @@
 		"cogm_label": "Cost of goods manufactured for {recipe}",
 		"delete_recipe": "Delete recipe {recipe}, undo with Ctrl+Z",
 		"add_recipe": "+ Recipe",
-		"card_meta": "ȼ/day · {efficiency} · area {area}"
+		"card_meta": "ȼ/day · {efficiency} · area {area}",
+		"recipe_daily": "This order's part of the building's ȼ/day"
 	},
 	"picker": {
 		"change_title": "Change recipe",

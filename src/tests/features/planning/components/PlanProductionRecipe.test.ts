@@ -180,6 +180,20 @@ describe("PlanProductionRecipe", () => {
 		expect(wrapper.text()).toContain("25.0 %");
 	});
 
+	it("shows its part of the building's ȼ/day, scaled by share and buildings", async () => {
+		const { wrapper, setProps } = await mountRecipe({
+			buildingAmount: 3,
+			optionDaily: 500,
+		});
+		const daily = () => wrapper.find("[data-recipe-daily]").text();
+
+		// 500 per building and day, half the time, 3 buildings
+		expect(daily()).toContain("750.00");
+
+		await setProps({ recipeData: recipe({ dailyShare: 0.25 }) });
+		expect(daily()).toContain("375.00");
+	});
+
 	it("emits the new amount, but not an empty one", async () => {
 		const { wrapper, component } = await mountRecipe();
 		const input = wrapper.findComponent(PInputNumber);
