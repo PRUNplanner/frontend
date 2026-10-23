@@ -238,7 +238,9 @@
 			class="text-right text-xs"
 			:title="t('plan.production.recipe_daily')"
 			data-recipe-daily>
-			<PValue :value="dailyProfit" />
+			<!-- an order that never runs (0 % of the time) earns nothing itself -->
+			<PValue v-if="localRecipeData.dailyShare > 0" :value="dailyProfit" />
+			<span v-else class="text-muted">—</span>
 		</span>
 		<PButton
 			size="sm"

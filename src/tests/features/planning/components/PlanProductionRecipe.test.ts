@@ -192,6 +192,10 @@ describe("PlanProductionRecipe", () => {
 
 		await setProps({ recipeData: recipe({ dailyShare: 0.25 }) });
 		expect(daily()).toContain("375.00");
+
+		// never runs, e.g. on an infertile planet
+		await setProps({ recipeData: recipe({ dailyShare: 0 }) });
+		expect(daily()).toBe("—");
 	});
 
 	it("emits the new amount, but not an empty one", async () => {
