@@ -10,14 +10,14 @@
 	"error": "Die Marktdaten konnten nicht geladen werden.",
 	"in_short": {
 		"title": "Auf einen Blick",
-		"index": "CX index",
-		"sector": "Moved most",
-		"pioneer": "Feeding 100 pioneers",
-		"pioneer_value": "{cost} a day",
-		"gap": "Biggest open gap right now",
-		"since": "since {date}",
-		"gap_note": "buy on {low}, sell on {high}",
-		"no_gap": "No open gap of {min} or more right now"
+		"index": "CX-Index",
+		"sector": "Am stärksten bewegt",
+		"pioneer": "100 Pioniere ernähren",
+		"pioneer_value": "{cost} pro Tag",
+		"gap": "Größte offene Lücke momentan",
+		"since": "seit {date}",
+		"gap_note": "kaufe bei {low}, verkaufe bei {high}",
+		"no_gap": "Keine offene Lücke von {min} oder mehr im Moment"
 	},
 	"kpi": {
 		"turnover_7d": "Gehandelt, letzte 7 Tage",
@@ -54,8 +54,8 @@
 		"drivers": "Am stärksten bewegt",
 		"driver": "{ticker} {delta} ({change})",
 		"chart_label": "Kosten für {tier} je Marktplatz",
-		"in_90_days": "in 90 days",
-		"spark_label": "{tier}, cost over 90 days"
+		"in_90_days": "In 90 Tagen",
+		"spark_label": "{tier}, Kosten für 90 Tage"
 	},
 	"treemap": {
 		"title": "Wohin das Geld fließt",
@@ -79,60 +79,60 @@
 		"row": "{price} · {turnover} in 7 Tagen",
 		"spark_label": "{ticker}, VWAP 7D über 15 Tage",
 		"empty": "Kein Material hat sich mit genug Volumen in diese Richtung bewegt.",
-		"pages_label": "Movers pages",
+		"pages_label": "Bewegungsseite",
 		"col": {
 			"material": "Material",
 			"vwap_7d": "VWAP 7D",
-			"traded_7d": "Traded, 7 days",
-			"spark": "15 days",
-			"change": "vs 30 days"
+			"traded_7d": "Gehandelt, 7 Tage",
+			"spark": "15 Tage",
+			"change": "vs. 30 Tage"
 		},
 		"sort": {
-			"change_pct": "Change vs 30 days",
+			"change_pct": "Änderung vs. 30 Tage",
 			"label": "Material",
 			"vwap_7d": "VWAP 7D",
-			"turnover_7d": "Traded, 7 days"
+			"turnover_7d": "Gehandelt, 7 Tage"
 		}
 	},
 	"leaders": {
 		"title": "Worauf die Wirtschaft läuft",
-		"caption": "The materials with the most turnover in 30 days. Bar: the last 7 days by exchange.",
+		"caption": "Die 10 Materialien mit dem meisten Umsatz in 30 Tagen. Balken: die letzten 7 Tage nach Warenbörse.",
 		"share": "{share} des Umsatzes",
 		"split_label": "{ticker}, 7-Tage-Umsatz nach Marktplatz",
-		"pages_label": "Leaders pages"
+		"pages_label": "Leader-Seiten"
 	},
 	"gaps": {
-		"title": "Price gaps between exchanges",
+		"title": "Preisunterschiede zwischen den Börsen",
 		"basis": {
-			"label": "Gap basis",
-			"vwap": "Last 7 days",
-			"books": "Order books now"
+			"label": "Lückengrundlagen",
+			"vwap": "Letzte 7 Tage",
+			"books": "Auftragsbücher jetzt"
 		},
-		"caption_vwap": "The same material at a different VWAP 7D on two exchanges, with real volume on both. Traded prices lag: Books now says whether you could still buy on one and sell on the other.",
-		"caption_books": "Buy at the best ask on one exchange, sell at the best bid on another, right now. Only the top price, not how much is on offer.",
+		"caption_vwap": "Das gleiche Material bei einem anderen VWAP 7D auf zwei Warenbörsen, mit echtem Volumen auf beides. Die gehandelten Preise hinken: Auftragsbücher sagen jetzt, ob man auf dem einen kaufen und auf der anderen verkaufen kann.",
+		"caption_books": "Kaufe bei der besten Nachfrage an einer Börse, verkaufe am besten auf einem anderen, gerade jetzt. Nur der Toppreis, nicht wie viel angeboten wird.",
 		"col": {
 			"material": "Material",
-			"low_vwap": "Cheaper · VWAP 7D",
-			"high_vwap": "Dearer · VWAP 7D",
-			"low_books": "Cheaper · best ask",
-			"high_books": "Dearer · best bid",
-			"gap": "Gap",
-			"now": "Books now"
+			"low_vwap": "Günstiger · VWAP 7D",
+			"high_vwap": "Teuer · VWAP 7D",
+			"low_books": "Günstiger · Bester Ask",
+			"high_books": "Teuer · Bester Bid",
+			"gap": "Lücke",
+			"now": "Auftragsbücher jetzt"
 		},
 		"sort": {
-			"gap": "Gap",
+			"gap": "Lücke",
 			"label": "Material",
-			"now": "Books now (open first)"
+			"now": "Auftragsbücher jetzt (Offen zuerst)"
 		},
-		"ask": "ask {price}",
-		"bid": "bid {price}",
-		"open": "Open {change}",
-		"closed": "Closed",
-		"ask_on": "ask {price} on {exchange}",
-		"no_ask": "no ask on {exchange}",
-		"bid_on": "bid {price} on {exchange}",
-		"no_bid": "no bid on {exchange}",
-		"pages_label": "Price gap pages",
+		"ask": "Ask {price}",
+		"bid": "Bid {price}",
+		"open": "Offen {change}",
+		"closed": "Geschlossen",
+		"ask_on": "Ask {price} auf {exchange}",
+		"no_ask": "Kein Ask auf {exchange}",
+		"bid_on": "Bid {price} auf {exchange}",
+		"no_bid": "Kein Bid auf {exchange}",
+		"pages_label": "Preislücken-Seite",
 		"empty": "No material has a gap of {min} or more with enough volume.",
 		"footnote": "Currencies at par · no shipping, fuel or flight time · each exchange needs {units} units and {turnover} traded in 7 days · gaps under {min} and flat materials left out."
 	},
