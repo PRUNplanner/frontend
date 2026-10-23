@@ -96,7 +96,13 @@
 			"title": "Latest Population Report",
 			"subtitle": "The planet's workforce from the game's last report, next to what this plan needs",
 			"error": "Error loading latest population report. The planet might not have population.",
-			"loading": "Loading Population Report"
+			"loading": "Loading Population Report",
+			"chart": {
+				"label": "Free workers next to what this plan needs",
+				"legend": "Bar: free workers less the open jobs of other bases · line: what this plan needs",
+				"row": "{tier}: {available} free, plan needs {need}",
+				"value": "{available} free · needs {need}"
+			}
 		},
 		"visitation_frequency": {
 			"title": "Visitation Frequency",

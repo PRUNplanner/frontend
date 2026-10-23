@@ -3,6 +3,7 @@
 
 	// Util
 	import { formatAmount, formatNumber } from "@/util/numbers";
+	import { poprCovers } from "@/features/government/popr.util";
 
 	// Types & Interfaces
 	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
@@ -29,21 +30,7 @@
 		},
 	});
 
-	function assessPlanWorkforce(
-		free: number,
-		unfilled: number,
-		plan: number
-	): boolean {
-		if (plan == 0) {
-			return true;
-		}
-
-		if (free - unfilled >= plan) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+	const assessPlanWorkforce = poprCovers;
 </script>
 
 <template>
