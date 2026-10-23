@@ -229,15 +229,21 @@
 		}))
 	);
 
+	// a phone keeps makes, from and ȼ/day
 	const grid =
-		"grid grid-cols-[5rem_minmax(0,1fr)_6rem_4.5rem_4.5rem_3.5rem] gap-x-2 items-center";
+		"grid grid-cols-[5rem_minmax(0,1fr)_6rem_4.5rem_4.5rem_3.5rem] max-md:grid-cols-[auto_minmax(0,1fr)_auto]! max-md:[&>*:nth-child(n+4)]:hidden gap-x-2 items-center";
 </script>
 
 <template>
+	<!-- a phone: a bottom sheet over a backdrop, a tap outside closes it -->
+	<div
+		class="md:hidden fixed inset-0 z-1100 bg-black/60"
+		aria-hidden="true"
+		data-picker-backdrop />
 	<section
 		ref="root"
 		:aria-label="title"
-		class="my-1 border border-line-strong rounded bg-surface tabular-nums"
+		class="my-1 border border-line-strong rounded bg-surface tabular-nums max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-1101 max-md:my-0 max-md:flex max-md:flex-col max-md:max-h-[80dvh] max-md:rounded-none max-md:rounded-t-2xl max-md:pb-[env(safe-area-inset-bottom)]"
 		@keydown.esc.stop="emit('close')">
 		<header
 			class="flex flex-wrap items-center gap-2 px-3 py-2 border-b border-line">
@@ -287,7 +293,7 @@
 			tabindex="0"
 			:aria-label="title"
 			:aria-activedescendant="active >= 0 ? optionId(active) : undefined"
-			class="max-h-[min(24rem,50vh)] overflow-y-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
+			class="max-h-[min(24rem,50vh)] max-md:max-h-none max-md:flex-1 max-md:min-h-0 overflow-y-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
 			@keydown="onKeydown">
 			<div
 				v-for="(row, i) in rows"

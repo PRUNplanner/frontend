@@ -255,8 +255,9 @@
 		ref="root"
 		class="border-b border-line"
 		:data-building="localBuildingData.name">
+		<!-- a phone: tile, name and delete; under them the count and ȼ/day -->
 		<div
-			class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] gap-x-2 items-center py-2 pl-2 border-l-2 tabular-nums"
+			class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] max-md:grid-cols-[2.75rem_minmax(0,1fr)_auto]! gap-x-2 max-md:gap-y-2 items-center py-2 pl-2 border-l-2 tabular-nums"
 			:class="
 				localBuildingData.amount > 0
 					? 'border-l-transparent'
@@ -322,14 +323,14 @@
 				:disabled="disabled"
 				:show-buttons="!disabled"
 				:min="0"
-				class="w-full"
+				class="w-full max-md:w-36 max-md:row-start-2 max-md:col-span-2"
 				@update:value="
 					(value) => {
 						if (value !== null && value !== undefined)
 							emit('update:building:amount', buildingIndex, value);
 					}
 				" />
-			<span class="text-right text-sm whitespace-nowrap">
+			<span class="text-right text-sm whitespace-nowrap max-md:hidden">
 				<PTooltip>
 					<template #trigger>
 						<span class="text-ink-strong hover:cursor-help">
@@ -347,16 +348,28 @@
 					</div>
 				</PTooltip>
 			</span>
-			<span class="text-right text-sm">
+			<span
+				class="text-right text-sm max-md:row-start-2 max-md:col-start-3 max-md:leading-tight">
 				<PValue :value="localBuildingData.dailyRevenue" />
+				<span class="md:hidden block text-xs text-muted">
+					{{
+						t("plan.production.card_meta", {
+							efficiency: formatPercent(
+								localBuildingData.totalEfficiency * 100,
+								1
+							),
+							area: localBuildingData.areaUsed,
+						})
+					}}
+				</span>
 			</span>
-			<span class="text-right text-sm text-ink">
+			<span class="text-right text-sm text-ink max-md:hidden">
 				{{ localBuildingData.areaUsed }}
 			</span>
 			<button
 				v-if="!disabled"
 				type="button"
-				class="touch-target flex items-center justify-center size-6 pointer-coarse:size-11 rounded-control text-muted hover:text-negative hover:bg-negative/10 cursor-pointer"
+				class="touch-target flex items-center justify-center size-6 pointer-coarse:size-11 rounded-control text-muted hover:text-negative hover:bg-negative/10 cursor-pointer max-md:row-start-1 max-md:col-start-3 max-md:justify-self-end"
 				:aria-label="
 					t('plan.production.delete_building', {
 						building: localBuildingData.name,

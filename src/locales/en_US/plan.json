@@ -46,6 +46,15 @@
 			"plan_check": "Plan check",
 			"popr": "POPR"
 		},
+		"descriptions": {
+			"construction-cart": "What is left to buy for the buildings",
+			"supply-cart": "Consumables for n days, as a list or XIT action",
+			"visitation-frequency": "When storage fills",
+			"repair-analysis": "Best repair interval per building",
+			"profit-breakdown": "Where the daily profit comes from",
+			"plan-check": "Thin markets and profit at real ask and bid",
+			"popr": "Population report"
+		},
 		"profit_breakdown": {
 			"title": "Profit Breakdown",
 			"subtitle": "Where each day's output value goes · ȼ per day at this plan's CX preference",
@@ -669,7 +678,8 @@
 		"change_recipe": "Change recipe {recipe}",
 		"cogm_label": "Cost of goods manufactured for {recipe}",
 		"delete_recipe": "Delete recipe {recipe}, undo with Ctrl+Z",
-		"add_recipe": "+ Recipe"
+		"add_recipe": "+ Recipe",
+		"card_meta": "ȼ/day · {efficiency} · area {area}"
 	},
 	"picker": {
 		"change_title": "Change recipe",
@@ -731,6 +741,9 @@
 		"show_base": "Show base setup",
 		"show_io": "Show Material I/O",
 		"close": "Close",
-		"fold": "Fold"
+		"fold": "Fold",
+		"sections": "Plan sections",
+		"tools": "Tools",
+		"all_tools": "All tools"
 	}
 }

@@ -509,20 +509,41 @@ describe("PlanView", () => {
 						b.text() === "plan.base.label" &&
 						b.attributes("aria-expanded") !== undefined
 				)!;
-		expect(base().classes()).toContain("@min-[60rem]:@max-[81rem]:hidden");
+		expect(base().classes()).toContain("md:@max-[81rem]:hidden");
 
 		await toggle().trigger("click");
 		expect(toggle().attributes("aria-expanded")).toBe("true");
-		expect(base().classes()).toContain("@min-[60rem]:@max-[81rem]:absolute");
+		expect(base().classes()).toContain("md:@max-[81rem]:absolute");
 
 		await base()
 			.findAll("button")
 			.find((b) => b.text() === "plan.layout.close")!
 			.trigger("click");
-		expect(base().classes()).toContain("@min-[60rem]:@max-[81rem]:hidden");
+		expect(base().classes()).toContain("md:@max-[81rem]:hidden");
 
 		await toggle().trigger("click");
 		await base().trigger("keydown", { key: "Escape" });
+		expect(toggle().attributes("aria-expanded")).toBe("false");
+	});
+
+	it("opens Material I/O as an overlay on a tablet-wide page, Close and Esc shut it", async () => {
+		const { wrapper } = await mountView();
+		const io = () => wrapper.find("[data-io-pane]");
+		const toggle = () => wrapper.find("[data-io-toggle]");
+		expect(io().classes()).toContain("md:@max-[71rem]:hidden");
+
+		await toggle().trigger("click");
+		expect(toggle().attributes("aria-expanded")).toBe("true");
+		expect(io().classes()).toContain("md:@max-[71rem]:absolute");
+
+		await io()
+			.findAll("button")
+			.find((b) => b.text() === "plan.layout.close")!
+			.trigger("click");
+		expect(io().classes()).toContain("md:@max-[71rem]:hidden");
+
+		await toggle().trigger("click");
+		await io().trigger("keydown", { key: "Escape" });
 		expect(toggle().attributes("aria-expanded")).toBe("false");
 	});
 
@@ -1229,5 +1250,88 @@ describe("PlanView", () => {
 
 		expect(dialog().exists()).toBe(false);
 		expect(queryCalls("CreatePlan")).toEqual([]);
+	});
+
+	describe("on a phone", () => {
+		const phone = () =>
+			vi.stubGlobal("matchMedia", (query: string) => ({
+				matches: query === "(max-width: 767.98px)",
+				addEventListener: vi.fn(),
+				removeEventListener: vi.fn(),
+			}));
+		const section = (wrapper: Mounted["wrapper"], label: string) =>
+			wrapper
+				.findAll("nav[aria-label='plan.layout.sections'] button")
+				.find((b) => b.text().startsWith(label))!;
+		const hidden = (wrapper: Mounted["wrapper"], selector: string) =>
+			wrapper.find(selector).classes().includes("hidden");
+
+		it("shows one section at a time, picked in the section tabs", async () => {
+			phone();
+			const { wrapper } = await mountView();
+
+			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
+			expect(hidden(wrapper, "[data-io-pane]")).toBe(true);
+			expect(wrapper.find("[data-production]").attributes("style")).toBeUndefined();
+			// the desktop tab row and the Material I/O button are gone
+			expect(wrapper.find("[data-io-toggle]").exists()).toBe(false);
+
+			await section(wrapper, "plan.base.label").trigger("click");
+			expect(hidden(wrapper, "[data-base-pane]")).toBe(false);
+			expect(wrapper.find("[data-production]").attributes("style")).toContain(
+				"display: none"
+			);
+
+			await section(wrapper, "plan.components.materialio.label").trigger(
+				"click"
+			);
+			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
+			expect(hidden(wrapper, "[data-io-pane]")).toBe(false);
+		});
+
+		it("lists the tools, opens one with a way back to the list", async () => {
+			phone();
+			const { wrapper } = await mountView();
+
+			await section(wrapper, "plan.layout.tools").trigger("click");
+			const tools = wrapper.find("[data-phone-tools]");
+			const plancheck = tools
+				.findAll("button")
+				.find((b) => b.text().startsWith("plan.tools.labels.plan_check"))!;
+			expect(plancheck.text()).toContain(
+				"plan.tools.descriptions.plan-check"
+			);
+
+			await tools
+				.findAll("button")
+				.find((b) => b.text().startsWith("plan.tools.labels.construction_cart"))!
+				.trigger("click");
+			await flushPromises();
+			expect(wrapper.find("[data-phone-tools]").exists()).toBe(false);
+			expect(wrapper.find("[data-tool]").exists()).toBe(true);
+
+			await wrapper
+				.find("[data-tool]")
+				.findAllComponents(PButton)
+				.find((b: VueWrapper) => b.text() === "plan.layout.all_tools")!
+				.trigger("click");
+			expect(wrapper.find("[data-phone-tools]").exists()).toBe(true);
+		});
+
+		it("saves from a bar above the app's bottom bar while unsaved", async () => {
+			phone();
+			const { wrapper } = await mountView({}, { login: true });
+			expect(wrapper.find("[data-phone-save]").exists()).toBe(false);
+			// the header has no Save button on a phone
+			expect(wrapper.findAllComponents(PlanSaveButton)).toHaveLength(0);
+
+			await emitFrom(wrapper, PlanProduction, "update:building:amount", 0, 5);
+
+			const bar = wrapper.find("[data-phone-save]");
+			expect(bar.exists()).toBe(true);
+			expect(
+				bar.findComponent(PlanSaveButton).props("modified")
+			).toBe(true);
+		});
 	});
 });

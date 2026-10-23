@@ -433,6 +433,7 @@
 	// from the Material I/O: Plan check on its Market check, in place
 	function openPlanCheck(): void {
 		planCheckView.value = "market";
+		refPhoneSection.value = "tools";
 		if (refShowTool.value !== "plan-check") toggleTool("plan-check");
 	}
 
@@ -507,12 +508,56 @@
 	// with the full sidebar) Base opens as an overlay from the tab row
 	const refBaseOverlay: Ref<boolean> = ref(false);
 
-	// Esc closes it, the focus goes back to the "Base" button
-	function closeBaseOverlay(): void {
-		if (!refBaseOverlay.value) return;
+	// below 71rem of page width (a tablet) Material I/O does too
+	const refIOOverlay: Ref<boolean> = ref(false);
+
+	// Esc closes them, the focus goes back to their button
+	function closeOverlays(): void {
+		const open = refBaseOverlay.value
+			? "[data-base-toggle]"
+			: refIOOverlay.value
+				? "[data-io-toggle]"
+				: undefined;
 		refBaseOverlay.value = false;
-		document.querySelector<HTMLElement>("[data-base-toggle]")?.focus();
+		refIOOverlay.value = false;
+		if (open) document.querySelector<HTMLElement>(open)?.focus();
 	}
+
+	/*
+	 * A phone (below md, where the app shows its bottom bar): one section
+	 * at a time, picked in a tab row under the results
+	 */
+	const phoneQuery =
+		typeof window.matchMedia === "function"
+			? window.matchMedia("(max-width: 767.98px)")
+			: null;
+	const refIsPhone: Ref<boolean> = ref(phoneQuery?.matches ?? false);
+	const onPhoneMedia = (e: MediaQueryListEvent) =>
+		(refIsPhone.value = e.matches);
+	phoneQuery?.addEventListener("change", onPhoneMedia);
+	onUnmounted(() => phoneQuery?.removeEventListener("change", onPhoneMedia));
+
+	type PhoneSection = "production" | "base" | "io" | "tools";
+	const refPhoneSection: Ref<PhoneSection> = ref("production");
+	const phoneSections = computed(() => [
+		{
+			key: "production" as const,
+			label: t("plan.tools.labels.production"),
+		},
+		{ key: "base" as const, label: t("plan.base.label") },
+		{
+			key: "io" as const,
+			label: t("plan.components.materialio.label"),
+			dot:
+				flagCount.value > 0
+					? t("plan.layout.flags", { n: flagCount.value }, flagCount.value)
+					: undefined,
+		},
+		{ key: "tools" as const, label: t("plan.layout.tools") },
+	]);
+	// on a phone only the picked section shows, elsewhere every pane
+	const onPhone = (section: PhoneSection): boolean =>
+		!refIsPhone.value || refPhoneSection.value === section;
 
 	// the panes' width (the page next to the app navigation): In and Out
 	// of Material I/O fit only from 1600 px on, where its pane is 384 px;
@@ -1398,9 +1443,14 @@
 		padding scrolls the last rows clear of the insights button -->
 	<!-- @container: the panes lay out by the width next to the app
 		navigation, so an expanded sidebar makes Base an overlay -->
-	<div ref="layout" class="@container pb-16 [&_*]:scroll-mt-24">
+	<!-- a phone keeps the last rows clear of the Save bar and the app's
+		bottom bar as well -->
+	<div
+		ref="layout"
+		class="@container pb-16 max-md:pb-36 [&_*]:scroll-mt-24">
 		<!-- Header: name, history, save state and the plan's actions -->
-		<header class="flex flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
+		<header
+			class="flex flex-wrap items-center gap-x-6 gap-y-2 px-6 max-md:px-4 py-3">
 			<div class="flex-1 min-w-0 basis-60">
 				<nav
 					:aria-label="t('plan.breadcrumb')"
@@ -1482,8 +1532,9 @@
 						{{ t("plan.history.redo_key") }}
 					</PTooltip>
 				</PButtonGroup>
+				<!-- a phone saves from the bar above the app's bottom bar -->
 				<PlanSaveButton
-					v-if="isOwnPlan"
+					v-if="isOwnPlan && !refIsPhone"
 					:existing="existing"
 					:saveable="saveable"
 					:saving="refIsSaving"
@@ -1513,7 +1564,7 @@
 
 		<!-- Results (sticky) -->
 		<div
-			class="sticky top-0 z-1000 px-6 bg-(--app-bg) border-y border-line">
+			class="sticky top-0 z-1000 px-6 max-md:px-4 bg-(--app-bg) border-y border-line">
 			<PlanResultsBar
 				:overview="overviewData"
 				:area="result.area"
@@ -1524,14 +1575,22 @@
 					refEmpireUuid ? cachedProfitPerArea(refEmpireUuid) : undefined
 				"
 				:compare="sharedCompare" />
+			<!-- a phone: one section at a time -->
+			<PlanToolTabs
+				v-if="refIsPhone"
+				class="-mx-4 px-2 border-t border-line [&>button]:flex-1 [&>button]:justify-center"
+				:tabs="phoneSections"
+				:active="refPhoneSection"
+				:label="t('plan.layout.sections')"
+				@toggle="(key: PhoneSection) => (refPhoneSection = key)" />
 		</div>
 
-		<!-- Set up → build → result: side by side from 60rem of page width,
-			where Production keeps its 35rem next to Material I/O; stacked
-			below -->
+		<!-- Set up → build → result, side by side; below 81rem of page width
+			Base, below 71rem Material I/O too open as overlays from the tab
+			row, so Production keeps the width; a phone shows one section -->
 		<div
-			class="relative flex flex-col @min-[60rem]:flex-row @min-[60rem]:items-start gap-6 px-6 pt-4"
-			@keydown.esc="closeBaseOverlay">
+			class="relative flex flex-col md:flex-row md:items-start gap-6 px-6 max-md:px-4 pt-4"
+			@keydown.esc="closeOverlays">
 			<!-- Base -->
 			<button
 				v-if="baseFolded"
@@ -1549,12 +1608,13 @@
 			</button>
 			<aside
 				:aria-label="t('plan.base.label')"
-				class="shrink-0 w-full @min-[60rem]:w-74 rounded border border-line @min-[60rem]:sticky @min-[60rem]:top-20 @min-[60rem]:max-h-[calc(100dvh-6rem)] @min-[60rem]:overflow-y-auto bg-(--app-bg) [scrollbar-width:thin]"
+				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-20 md:max-h-[calc(100dvh-6rem)] md:overflow-y-auto bg-(--app-bg) [scrollbar-width:thin]"
 				:class="[
 					baseFolded ? '@min-[81rem]:hidden' : '',
 					refBaseOverlay
-						? '@min-[60rem]:@max-[81rem]:absolute @min-[60rem]:@max-[81rem]:left-6 @min-[60rem]:@max-[81rem]:top-4 @min-[60rem]:@max-[81rem]:z-50 @min-[60rem]:@max-[81rem]:shadow-xl @min-[60rem]:@max-[81rem]:bg-surface'
-						: '@min-[60rem]:@max-[81rem]:hidden',
+						? 'md:@max-[81rem]:absolute md:@max-[81rem]:left-6 md:@max-[81rem]:top-4 md:@max-[81rem]:z-50 md:@max-[81rem]:shadow-xl md:@max-[81rem]:bg-surface'
+						: 'md:@max-[81rem]:hidden',
+					onPhone('base') ? '' : 'hidden',
 				]"
 				data-base-pane>
 				<div class="flex items-center gap-2 px-3 pt-3 pb-1">
@@ -1565,8 +1625,8 @@
 						v-if="refBaseOverlay"
 						type="ghost"
 						size="sm"
-						class="hidden @min-[60rem]:@max-[81rem]:flex"
-						@click="closeBaseOverlay">
+						class="hidden md:@max-[81rem]:flex"
+						@click="closeOverlays">
 						<template #icon><CloseSharp /></template>
 						{{ t("plan.layout.close") }}
 					</PButton>
@@ -1622,12 +1682,16 @@
 			</aside>
 
 			<!-- Production, or a tool in its place -->
-			<main class="flex-1 min-w-0 w-full">
-				<div class="flex items-center gap-2 border-b border-line">
+			<main
+				v-show="onPhone('production') || onPhone('tools')"
+				class="flex-1 min-w-0 w-full">
+				<div
+					v-if="!refIsPhone"
+					class="flex items-center gap-2 border-b border-line">
 					<PButton
 						type="secondary"
 						size="sm"
-						class="hidden @min-[60rem]:@max-[81rem]:flex shrink-0"
+						class="hidden md:@max-[81rem]:flex shrink-0"
 						data-base-toggle
 						:aria-expanded="refBaseOverlay ? 'true' : 'false'"
 						@click="refBaseOverlay = !refBaseOverlay">
@@ -1639,10 +1703,58 @@
 						:active="refShowTool ?? 'production'"
 						:label="t('plan.actions.tools')"
 						@toggle="selectTab" />
+					<PButton
+						type="secondary"
+						size="sm"
+						class="hidden md:@max-[71rem]:flex shrink-0 ml-auto"
+						data-io-toggle
+						:aria-expanded="refIOOverlay ? 'true' : 'false'"
+						@click="refIOOverlay = !refIOOverlay">
+						{{ t("plan.components.materialio.label") }}
+						<span
+							v-if="flagCount > 0"
+							role="img"
+							:aria-label="
+								t('plan.layout.flags', { n: flagCount }, flagCount)
+							"
+							class="size-1.5 ml-1.5 rounded-full bg-warning" />
+					</PButton>
 				</div>
+				<!-- a phone's Tools section: the tools as a list -->
+				<nav
+					v-if="refIsPhone && refPhoneSection === 'tools' && !refShowTool"
+					:aria-label="t('plan.actions.tools')"
+					class="rounded border border-line divide-y divide-line"
+					data-phone-tools>
+					<button
+						v-for="tool in toolTabs.filter((x) => x.key !== 'production')"
+						:key="tool.key"
+						type="button"
+						class="flex items-center gap-3 w-full min-h-14 px-3.5 text-left cursor-pointer hover:bg-hover"
+						@click="selectTab(tool.key)">
+						<span class="flex-1 min-w-0">
+							<span class="flex items-center gap-1.5 font-medium text-ink-strong">
+								{{ tool.label }}
+								<span
+									v-if="tool.dot"
+									role="img"
+									:aria-label="tool.dot"
+									class="size-1.5 rounded-full bg-warning" />
+							</span>
+							<span class="block text-xs text-muted">
+								{{ t(`plan.tools.descriptions.${tool.key}`) }}
+							</span>
+						</span>
+						<PIcon :size="16" class="text-muted">
+							<ChevronRightSharp />
+						</PIcon>
+					</button>
+				</nav>
 				<!-- kept mounted under a tool: its folds, filters and the
 					starter card's state survive -->
-				<div v-show="!refShowTool" data-production>
+				<div
+					v-show="refIsPhone ? refPhoneSection === 'production' : !refShowTool"
+					data-production>
 				<PlanProduction
 					:disabled="disabled"
 					:production-data="result.production"
@@ -1667,7 +1779,19 @@
 					@pick:building:recipe="addPickedRecipe"
 					@undo="undoPickedRecipe" />
 				</div>
-				<div v-if="refShowTool" class="py-3">
+				<div
+					v-if="refShowTool && onPhone('tools')"
+					class="py-3"
+					data-tool>
+					<PButton
+						v-if="refIsPhone"
+						type="ghost"
+						size="sm"
+						class="mb-2"
+						@click="selectTab('production')">
+						<template #icon><ChevronLeftSharp /></template>
+						{{ t("plan.layout.all_tools") }}
+					</PButton>
 					<Suspense :timeout="200">
 						<template #default>
 							<component
@@ -1687,7 +1811,7 @@
 				v-if="ioFolded"
 				type="button"
 				:class="strip"
-				class="hidden @min-[60rem]:flex"
+				class="hidden @min-[71rem]:flex"
 				:title="t('plan.layout.show_io')"
 				data-io-strip
 				@click="pinPane('io', true)">
@@ -1705,8 +1829,14 @@
 			</button>
 			<aside
 				:aria-label="t('plan.components.materialio.label')"
-				class="shrink-0 w-full @min-[60rem]:w-75 @min-[81rem]:w-85 @min-[100rem]:w-96 rounded border border-line @min-[60rem]:sticky @min-[60rem]:top-20"
-				:class="ioFolded ? '@min-[60rem]:hidden' : ''"
+				class="shrink-0 w-full md:w-75 @min-[81rem]:w-85 @min-[100rem]:w-96 rounded border border-line md:sticky md:top-20 bg-(--app-bg)"
+				:class="[
+					ioFolded ? '@min-[71rem]:hidden' : '',
+					refIOOverlay
+						? 'md:@max-[71rem]:absolute md:@max-[71rem]:right-6 md:@max-[71rem]:top-4 md:@max-[71rem]:z-50 md:@max-[71rem]:w-85 md:@max-[71rem]:shadow-xl md:@max-[71rem]:bg-surface'
+						: 'md:@max-[71rem]:hidden',
+					onPhone('io') ? '' : 'hidden',
+				]"
 				data-io-pane>
 				<div class="flex items-center gap-2 px-3 pt-3 pb-2">
 					<h2 class="flex-1 font-bold text-white">
@@ -1718,6 +1848,15 @@
 						class="w-36"
 						:aria-label="t('plan.io.source.label')"
 						:options="ioSourceOptions" />
+					<PButton
+						v-if="refIOOverlay"
+						type="ghost"
+						size="sm"
+						class="hidden md:@max-[71rem]:flex"
+						@click="closeOverlays">
+						<template #icon><CloseSharp /></template>
+						{{ t("plan.layout.close") }}
+					</PButton>
 					<PButton
 						v-if="folded.io && refIOPinned"
 						type="ghost"
@@ -1771,6 +1910,21 @@
 					</template>
 				</dl>
 			</aside>
+		</div>
+		<!-- a phone: save from a bar above the app's bottom bar, shown while
+			there is something to save -->
+		<div
+			v-if="refIsPhone && isOwnPlan && (modified || refIsSaving || refSaveFailed)"
+			class="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-1000 px-4 py-2 border-t border-line bg-surface [&>div]:w-full [&>div]:justify-between"
+			data-phone-save>
+			<PlanSaveButton
+				:existing="existing"
+				:saveable="saveable"
+				:saving="refIsSaving"
+				:failed="refSaveFailed"
+				:modified="modified"
+				:saved-at="savedAt"
+				@save="save()" />
 		</div>
 		<PlanCalcDebug
 			v-if="calcDebug && refShowCalcDebug"

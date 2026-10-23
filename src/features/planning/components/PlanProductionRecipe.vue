@@ -122,7 +122,7 @@
 	</PModal>
 
 	<div
-		class="grid grid-cols-[5rem_minmax(0,1fr)_4rem_1.75rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4rem_2.75rem_2.75rem] gap-x-2 items-center min-h-9 py-0.5 tabular-nums"
+		class="grid grid-cols-[5rem_minmax(0,1fr)_4rem_1.75rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4rem_2.75rem_2.75rem] max-md:grid-cols-[5rem_minmax(0,1fr)_auto_auto]! gap-x-2 max-md:gap-y-1 items-center min-h-9 py-0.5 max-md:py-1.5 tabular-nums"
 		data-recipe-row>
 		<PInputNumber
 			:value="localRecipeData.amount"
@@ -144,7 +144,7 @@
 			" />
 		<button
 			type="button"
-			class="justify-self-start min-w-0 max-w-full flex flex-wrap items-center gap-1 min-h-7 pointer-coarse:min-h-11 px-1.5 rounded-control border text-left"
+			class="justify-self-start max-md:col-span-3 min-w-0 max-w-full flex flex-wrap items-center gap-1 min-h-7 pointer-coarse:min-h-11 px-1.5 rounded-control border text-left"
 			:class="[
 				pickerOpen
 					? 'border-line-strong bg-hover'
@@ -187,9 +187,10 @@
 				<ExpandMoreSharp />
 			</PIcon>
 		</button>
-		<!-- runtime over share, one column: the tiles get the room -->
+		<!-- runtime over share, one column: the tiles get the room; a phone
+			puts them side by side on a second line with COGM and delete -->
 		<span
-			class="flex flex-col items-end text-xs leading-4 text-muted-strong text-nowrap">
+			class="flex flex-col items-end max-md:flex-row max-md:items-center max-md:gap-2 max-md:col-span-2 max-md:justify-self-start text-xs leading-4 text-muted-strong text-nowrap">
 			<span>{{ humanizeTimeMs(localRecipeData.time) }}</span>
 			<span class="flex items-center gap-1.5">
 				<span
