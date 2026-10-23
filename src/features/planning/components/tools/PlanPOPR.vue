@@ -47,19 +47,26 @@
 </script>
 
 <template>
-	<h2 class="pb-3 text-white/80 font-bold text-lg">
-		{{ $t("plan.tools.popr.title") }}
-	</h2>
-	<div v-if="hasError">
-		{{ $t("plan.tools.popr.error") }}
-	</div>
-	<div v-else-if="isLoading" class="text-center">
-		<PSpin size="lg" />
-		<br />
-		{{ $t("plan.tools.popr.loading") }}
-	</div>
-	<div v-else-if="poprData">
+	<div class="flex flex-col gap-3">
+		<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+			<h2 class="text-white/80 font-bold text-lg">
+				{{ $t("plan.tools.popr.title") }}
+			</h2>
+			<span class="text-sm text-muted">
+				{{ $t("plan.tools.popr.subtitle") }}
+			</span>
+		</div>
+		<p v-if="hasError" class="text-muted">
+			{{ $t("plan.tools.popr.error") }}
+		</p>
+		<div
+			v-else-if="isLoading"
+			class="flex flex-col items-center gap-2 py-6 text-muted">
+			<PSpin size="lg" />
+			{{ $t("plan.tools.popr.loading") }}
+		</div>
 		<PlanetPOPRTable
+			v-else-if="poprData"
 			:planet-natural-id="planetNaturalId"
 			:popr-data="poprData"
 			:workforce-data="workforceData" />

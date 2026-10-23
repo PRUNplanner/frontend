@@ -94,6 +94,7 @@
 		},
 		"popr": {
 			"title": "Latest Population Report",
+			"subtitle": "The planet's workforce from the game's last report, next to what this plan needs",
 			"error": "Error loading latest population report. The planet might not have population.",
 			"loading": "Loading Population Report"
 		},
@@ -130,6 +131,10 @@
 		"construction_cart": {
 			"title": "Construction Cart",
 			"unplanned_info": "Base has unplanned {buildings} (FIO: {fio_updated}). Demolish to ensure area, habitation and materials are accurate.",
+			"sections": {
+				"buildings": "Buildings",
+				"materials": "Materials to buy"
+			},
 			"table": {
 				"building": "@:terms.buildings",
 				"built": "Built",
@@ -158,8 +163,11 @@
 			"title": "Supply Cart",
 			"info": {
 				"p": "The Supply Cart provides updates on your plans needs combined with existing inventory sourced from FIO. You have the flexibility to opt for alternative storage locations to replenish your base. Tailor your selection based on whether you wish to restock workforce and production supplies or focus on a specific category, and specify the duration for which the supplied stock should sustain. XIT ships what the running base still needs once its own production covers part of it. For the first supply, use XIT Initial: it also ships the inputs this plan produces itself, because nothing is produced yet. Use the {link} tool for more advanced supply cart options.",
-				"link": "FIO Burn"
+				"link": "FIO Burn",
+				"label": "About the Supply Cart"
 			},
+			"filter_label": "Supply for",
+			"more_in": "More options in {link}",
 			"buttons": {
 				"all": "All",
 				"workforce": "Workforce",

@@ -64,14 +64,14 @@ async function mountCart(planetNaturalId = "XX-000a", withFIO = false) {
 
 /** summary figures: daily cost, total cost, weight, volume */
 function summary(wrapper: VueWrapper) {
-	const cells = wrapper.findAll("tfoot .grid > div");
+	const items = wrapper.findAll("tfoot dl > div");
 	const value = (key: string) => {
-		const idx = cells.findIndex(
-			(c) => c.text() === `plan.tools.supply_cart.table.${key}`
+		const item = items.find(
+			(d) => d.find("dt").text() === `plan.tools.supply_cart.table.${key}`
 		);
-		expect(idx).toBeGreaterThan(-1);
-		// strip the unit span
-		return cells[idx + 1].text().split(" ")[0];
+		expect(item).toBeDefined();
+		// strip the unit
+		return item!.find("dd").text().split(" ")[0];
 	};
 
 	return {

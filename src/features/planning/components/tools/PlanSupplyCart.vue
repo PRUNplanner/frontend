@@ -39,17 +39,18 @@
 
 	// UI
 	import {
-		PButton,
-		PButtonGroup,
 		PDataTable,
 		PInputNumber,
+		PSegmented,
 		PSelect,
 		PIcon,
+		PTooltip,
 	} from "@/ui";
 	import type { PDataTableColumn } from "@/ui/ui.types";
 	import { RouterLink } from "vue-router";
 	import {
 		CheckCircleOutlineSharp,
+		InfoOutlined,
 		RemoveCircleOutlineSharp,
 	} from "@vicons/material";
 	import type { IXITTransferMaterial } from "@/features/xit/xitAction.types";
@@ -84,6 +85,12 @@
 		planetStorageId(props.planetNaturalId)
 	);
 	const refTypeFilter: Ref<TYPE_FILTER> = ref("all");
+	const typeOptions = computed(() =>
+		(["all", "workforce", "production"] as const).map((value) => ({
+			value,
+			label: t(`plan.tools.supply_cart.buttons.${value}`),
+		}))
+	);
 	const localMaterialIO: Ref<ISupplyCartElement[]> = ref([]);
 
 	watchEffect(() => {
@@ -207,15 +214,19 @@
 			title: t(`plan.tools.supply_cart.table.${title}`),
 			sorter: true as const,
 		});
+		const numeric = (key: string, title: string) => ({
+			...sortable(key, title),
+			align: "right" as const,
+		});
 		return [
 			sortable("ticker", "ticker"),
-			sortable("delta", "daily_need"),
-			sortable("price", "daily_cost"),
-			...(hasStorage.value ? [sortable("stock", "stock")] : []),
-			sortable("stockNeed", "full_need"),
-			sortable("needLeft", "final_need"),
-			sortable("needWeight", "weight"),
-			sortable("needVolume", "volume"),
+			numeric("delta", "daily_need"),
+			numeric("price", "daily_cost"),
+			...(hasStorage.value ? [numeric("stock", "stock")] : []),
+			numeric("stockNeed", "full_need"),
+			numeric("needLeft", "final_need"),
+			numeric("needWeight", "weight"),
+			numeric("needVolume", "volume"),
 			// yes before no; the default compare leaves booleans unsorted
 			{
 				...sortable("workforce", "workforce"),
@@ -230,79 +241,85 @@
 </script>
 
 <template>
-	<h2 class="pb-3 text-white/80 font-bold text-lg">
-		{{ $t("plan.tools.supply_cart.title") }}
-	</h2>
-
-	<i18n-t
-		keypath="plan.tools.supply_cart.info.p"
-		tag="div"
-		class="text-muted pb-3">
-		<template #link>
-			<router-link
-				to="/fio/burn"
-				class="text-link-primary font-bold hover:underline">
-				{{ $t("plan.tools.supply_cart.info.link") }}
-			</router-link>
-		</template>
-	</i18n-t>
-
-	<div
-		class="border border-b-0 rounded-[3px] border-white/20 p-3 flex flex-row justify-between">
-		<div>
-			<PButtonGroup>
-				<PButton
-					:pressed="refTypeFilter === 'all'"
-					@click="refTypeFilter = 'all'">
-					{{ $t("plan.tools.supply_cart.buttons.all") }}
-				</PButton>
-				<PButton
-					:pressed="refTypeFilter === 'workforce'"
-					@click="refTypeFilter = 'workforce'">
-					{{ $t("plan.tools.supply_cart.buttons.workforce") }}
-				</PButton>
-				<PButton
-					:pressed="refTypeFilter === 'production'"
-					@click="refTypeFilter = 'production'">
-					{{ $t("plan.tools.supply_cart.buttons.production") }}
-				</PButton>
-			</PButtonGroup>
-		</div>
-		<div class="flex flex-row flex-wrap gap-3">
-			<div class="my-auto font-bold">
-				{{ $t("plan.tools.supply_cart.table.stock_duration") }}
+	<div class="flex flex-col gap-3">
+		<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+			<h2 class="text-white/80 font-bold text-lg">
+				{{ t("plan.tools.supply_cart.title") }}
+			</h2>
+			<span class="inline-flex items-center gap-1.5 text-sm text-muted">
+				{{ t("plan.tools.descriptions.supply-cart") }}
+				<PTooltip>
+					<template #trigger>
+						<PIcon
+							class="text-muted-strong hover:cursor-help"
+							role="img"
+							:aria-label="t('plan.tools.supply_cart.info.label')">
+							<InfoOutlined />
+						</PIcon>
+					</template>
+					<i18n-t
+						keypath="plan.tools.supply_cart.info.p"
+						tag="p"
+						class="max-w-96">
+						<template #link>{{ t("plan.tools.supply_cart.info.link") }}</template>
+					</i18n-t>
+				</PTooltip>
+			</span>
+			<div class="ml-auto flex flex-wrap items-center gap-2">
+				<XITTransferActionButton
+					source="supply_cart"
+					:elements="xitTransferElements"
+					transfer-name="Supply Cart" />
+				<XITTransferActionButton
+					source="supply_cart_initial"
+					:elements="xitInitialElements"
+					transfer-name="Supply Cart Initial"
+					:button-text="t('plan.tools.supply_cart.buttons.xit_initial')"
+					:drawer-title="t('plan.tools.supply_cart.table.xit_initial_name')"
+					button-secondary />
 			</div>
-			<PInputNumber
-				v-model:value="refStockRequirement"
-				:aria-label="$t('plan.tools.supply_cart.table.stock_duration')"
-				show-buttons
-				:min="0"
-				decimals
-				class="w-25!" />
-			<template v-if="hasStorage">
-				<div class="my-auto font-bold">
-					{{ $t("plan.tools.supply_cart.table.storage") }}
-				</div>
+		</div>
+
+		<!-- what to supply, for how long, from where -->
+		<div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+			<PSegmented
+				v-model:value="refTypeFilter"
+				size="sm"
+				:options="typeOptions"
+				:label="t('plan.tools.supply_cart.filter_label')" />
+			<label class="flex items-center gap-2 text-muted-strong">
+				{{ t("plan.tools.supply_cart.table.stock_duration") }}
+				<PInputNumber
+					v-model:value="refStockRequirement"
+					:aria-label="t('plan.tools.supply_cart.table.stock_duration')"
+					show-buttons
+					size="sm"
+					:min="0"
+					decimals
+					class="w-28!" />
+			</label>
+			<label
+				v-if="hasStorage"
+				class="flex items-center gap-2 text-muted-strong">
+				{{ t("plan.tools.supply_cart.table.storage") }}
 				<PSelect
 					v-model:value="refSelectedStorage"
-					:aria-label="$t('plan.tools.supply_cart.table.storage')"
+					:aria-label="t('plan.tools.supply_cart.table.storage')"
+					size="sm"
 					searchable
 					:options="storageOptions"
-					class="w-62.5!" />
-			</template>
-			<XITTransferActionButton
-				source="supply_cart"
-				:elements="xitTransferElements"
-				transfer-name="Supply Cart" />
-			<XITTransferActionButton
-				source="supply_cart_initial"
-				:elements="xitInitialElements"
-				transfer-name="Supply Cart Initial"
-				:button-text="t('plan.tools.supply_cart.buttons.xit_initial')"
-				:drawer-title="t('plan.tools.supply_cart.table.xit_initial_name')"
-				button-secondary />
+					class="w-56!" />
+			</label>
+			<RouterLink
+				to="/fio/burn"
+				class="ml-auto text-link hover:underline">
+				{{
+					t("plan.tools.supply_cart.more_in", {
+						link: t("plan.tools.supply_cart.info.link"),
+					})
+				}}
+			</RouterLink>
 		</div>
-	</div>
 
 	<PDataTable
 		:columns="columns"
@@ -361,66 +378,28 @@
 			</div>
 		</template>
 		<template #summary>
-			<div class="flex flex-row justify-between">
-				<div
-					class="grid grid-cols-2 gap-x-3 gap-y-1 child:not-even:font-bold">
-					<div>
-						{{
-							$t(
-								"plan.tools.supply_cart.table.daily_cost"
-							)
-						}}
-					</div>
-					<div>
-						{{ formatNumber(dailyCost) }}
-						<span class="pl-1 font-light text-muted">
-							ȼ
-						</span>
-					</div>
-					<div>
-						{{
-							$t(
-								"plan.tools.supply_cart.table.total_cost"
-							)
-						}}
-					</div>
-					<div>
-						{{ formatNumber(totalCost) }}
-						<span class="pl-1 font-light text-muted">
-							ȼ
-						</span>
-					</div>
+			<dl
+				class="flex flex-wrap gap-x-6 gap-y-1 text-sm tabular-nums [&_dt]:text-muted-strong [&>div]:flex [&>div]:gap-2">
+				<div>
+					<dt>{{ t("plan.tools.supply_cart.table.daily_cost") }}</dt>
+					<dd>{{ formatNumber(dailyCost) }} ȼ</dd>
 				</div>
-				<div
-					class="grid grid-cols-2 gap-x-3 gap-y-1 child:text-end child:not-even:font-bold">
-					<div>
-						{{
-							$t(
-								"plan.tools.supply_cart.table.total_weight"
-							)
-						}}
-					</div>
-					<div>
-						{{ formatNumber(totalWeight) }}
-						<span class="pl-1 font-light text-muted">
-							t
-						</span>
-					</div>
-					<div>
-						{{
-							$t(
-								"plan.tools.supply_cart.table.total_volume"
-							)
-						}}
-					</div>
-					<div>
-						{{ formatNumber(totalVolume) }}
-						<span class="pl-1 font-light text-muted">
-							m³
-						</span>
-					</div>
+				<div>
+					<dt>{{ t("plan.tools.supply_cart.table.total_cost") }}</dt>
+					<dd class="font-medium text-ink-strong">
+						{{ formatNumber(totalCost) }} ȼ
+					</dd>
 				</div>
-			</div>
+				<div class="ml-auto">
+					<dt>{{ t("plan.tools.supply_cart.table.total_weight") }}</dt>
+					<dd>{{ formatNumber(totalWeight) }} t</dd>
+				</div>
+				<div>
+					<dt>{{ t("plan.tools.supply_cart.table.total_volume") }}</dt>
+					<dd>{{ formatNumber(totalVolume) }} m³</dd>
+				</div>
+			</dl>
 		</template>
 	</PDataTable>
+	</div>
 </template>
