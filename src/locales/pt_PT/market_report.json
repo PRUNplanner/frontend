@@ -10,9 +10,14 @@
 	"error": "The market data couldn't be loaded.",
 	"in_short": {
 		"title": "In short",
-		"index": "The CX index stands at {level}: {change} since {date}.",
-		"sector": "{sector} moved most, {change} since {date}.",
-		"pioneer": "Feeding 100 pioneers costs {cost} a day, {change} in the last two weeks."
+		"index": "CX index",
+		"sector": "Moved most",
+		"pioneer": "Feeding 100 pioneers",
+		"pioneer_value": "{cost} a day",
+		"gap": "Biggest open gap right now",
+		"since": "since {date}",
+		"gap_note": "buy on {low}, sell on {high}",
+		"no_gap": "No open gap of {min} or more right now"
 	},
 	"kpi": {
 		"turnover_7d": "Traded, last 7 days",
@@ -48,7 +53,9 @@
 		"cheapest": "Cheapest today: {exchange} at {cost}",
 		"drivers": "Moved most",
 		"driver": "{ticker} {delta} ({change})",
-		"chart_label": "{tier} cost per exchange"
+		"chart_label": "{tier} cost per exchange",
+		"in_90_days": "in 90 days",
+		"spark_label": "{tier}, cost over 90 days"
 	},
 	"treemap": {
 		"title": "Where the money moves",
@@ -71,13 +78,74 @@
 		"caption": "VWAP 7D against VWAP 30D, all exchanges. At least 5 M ȼ and 50 units traded in 7 days; flat materials left out.",
 		"row": "{price} · {turnover} in 7 days",
 		"spark_label": "{ticker}, VWAP 7D over 15 days",
-		"empty": "No material moved this way with enough volume."
+		"empty": "No material moved this way with enough volume.",
+		"pages_label": "Movers pages",
+		"col": {
+			"material": "Material",
+			"vwap_7d": "VWAP 7D",
+			"traded_7d": "Traded, 7 days",
+			"spark": "15 days",
+			"change": "vs 30 days"
+		},
+		"sort": {
+			"change_pct": "Change vs 30 days",
+			"label": "Material",
+			"vwap_7d": "VWAP 7D",
+			"turnover_7d": "Traded, 7 days"
+		}
 	},
 	"leaders": {
 		"title": "What the economy runs on",
-		"caption": "The 10 materials with the most turnover in 30 days. Bar: the last 7 days by exchange.",
+		"caption": "The materials with the most turnover in 30 days. Bar: the last 7 days by exchange.",
 		"share": "{share} of turnover",
-		"split_label": "{ticker}, 7-day turnover by exchange"
+		"split_label": "{ticker}, 7-day turnover by exchange",
+		"pages_label": "Leaders pages"
+	},
+	"gaps": {
+		"title": "Price gaps between exchanges",
+		"basis": {
+			"label": "Gap basis",
+			"vwap": "Last 7 days",
+			"books": "Order books now"
+		},
+		"caption_vwap": "The same material at a different VWAP 7D on two exchanges, with real volume on both. Traded prices lag: Books now says whether you could still buy on one and sell on the other.",
+		"caption_books": "Buy at the best ask on one exchange, sell at the best bid on another, right now. Only the top price, not how much is on offer.",
+		"col": {
+			"material": "Material",
+			"low_vwap": "Cheaper · VWAP 7D",
+			"high_vwap": "Dearer · VWAP 7D",
+			"low_books": "Cheaper · best ask",
+			"high_books": "Dearer · best bid",
+			"gap": "Gap",
+			"now": "Books now"
+		},
+		"sort": {
+			"gap": "Gap",
+			"label": "Material",
+			"now": "Books now (open first)"
+		},
+		"ask": "ask {price}",
+		"bid": "bid {price}",
+		"open": "Open {change}",
+		"closed": "Closed",
+		"ask_on": "ask {price} on {exchange}",
+		"no_ask": "no ask on {exchange}",
+		"bid_on": "bid {price} on {exchange}",
+		"no_bid": "no bid on {exchange}",
+		"pages_label": "Price gap pages",
+		"empty": "No material has a gap of {min} or more with enough volume.",
+		"footnote": "Currencies at par · no shipping, fuel or flight time · each exchange needs {units} units and {turnover} traded in 7 days · gaps under {min} and flat materials left out."
+	},
+	"list": {
+		"show_all": {
+			"rising": "Show all {count} rising",
+			"falling": "Show all {count} falling",
+			"materials": "Show all {count} materials",
+			"gaps": "Show all {count} gaps"
+		},
+		"show_top": "Show top {count}",
+		"range": "{from}–{to} of {total}",
+		"sort_by": "Sort by"
 	},
 	"exchanges": {
 		"title": "The four exchanges",
@@ -100,13 +168,14 @@
 	"method": {
 		"title": "How these numbers are made",
 		"source": "Source. FIO, the community service fed by players' game clients, through PRUNplanner's public game data. Daily prices cover full UTC days; order books are current.",
-		"turnover": "Turnover is traded quantity × price, summed over AI1, CI1, IC1 and NC1. Each exchange has its own currency (AIC, CIS, ICA, NCC). The same material trades at close to the same price everywhere, so sums treat the currencies at par.",
+		"turnover": "Turnover is traded quantity × price, summed over AI1, CI1, IC1 and NC1. Each exchange has its own currency (AIC, CIS, ICA, NCC). The same material trades at close to the same price everywhere, so sums treat the currencies at par. Every filled trade counts once, whether a seller filled a bid or a buyer filled an ask. Trades with market makers count too. Orders that aren't filled don't count, and the data doesn't say which side started a trade.",
 		"prices": "Prices are VWAP 7D and VWAP 30D only: turnover ÷ units over the window, so thin days barely count. A chart point is the VWAP 7D on that day.",
 		"index": "Index. Every material with a VWAP 7D on each day of the 90. Weight = 30-day turnover share, capped at 5 % (20 % within a sector), the rest spread over the others.",
 		"movers": "Movers compare VWAP 7D with VWAP 30D, like the Trend in Market Exploration. The 30 days include the last 7, so changes look smaller than week on week.",
+		"gaps": "Price gaps. Last 7 days compares each exchange's VWAP 7D, so a gap there may already be gone; Books now checks the best ask on the cheaper exchange against the best bid on the dearer one. Order books now uses only those top prices, not how much is on offer. Neither counts shipping, fuel or flight time.",
 		"heavy_day": "One heavy day shows for a week. A single large trade at an unusual price pulls the VWAP 7D for as long as it sits in the 7-day window, then the price snaps back.",
 		"not_included": "Not in here: local markets, contracts and trades inside corporations. They never touch the exchanges, so this is the CX, not the whole economy.",
-		"flat": "Flat marks materials whose daily VWAP stays within ±0.3 % of its 30-day median on at least 80 % of trading days, usually because market makers buy or sell them at fixed prices. They count in turnover but are left out of the movers."
+		"flat": "Flat marks materials whose daily VWAP stays within ±0.3 % of its 30-day median on at least 80 % of trading days, usually because market makers buy or sell them at fixed prices. They count in turnover but are left out of the movers and the price gaps."
 	},
 	"sector": {
 		"consumables": "Consumables",
