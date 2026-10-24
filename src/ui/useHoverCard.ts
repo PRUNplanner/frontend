@@ -1,4 +1,13 @@
-import { nextTick, onBeforeUnmount, type Ref, ref, useId, watch } from "vue";
+import {
+	type MaybeRefOrGetter,
+	nextTick,
+	onBeforeUnmount,
+	type Ref,
+	ref,
+	toValue,
+	useId,
+	watch,
+} from "vue";
 
 // Composables
 import { layerOver } from "@/ui/useOverlayLayer";
@@ -13,7 +22,7 @@ export interface IHoverCardOptions {
 	swapDelay?: number;
 	/** after leaving trigger and card, ms */
 	closeDelay?: number;
-	/** hover opens it; click leaves opening to the caller (pin) */
+	/** hover (and focus) opens it; click leaves opening to the caller (pin) */
 	trigger?: "hover" | "click";
 }
 
@@ -59,6 +68,7 @@ const hasSelection = () => !!window.getSelection?.()?.toString();
  *   the trigger;
  * - pin() keeps it open until unpinned, Esc, × or a click outside;
  * - on touch or a narrow window, openSheet() opens a bottom sheet instead;
+ * - with trigger "click", hover and focus open nothing: the caller pins;
  * - Enter or Space on the trigger clicks it; a card that click pinned
  *   takes the focus, so its buttons are in reach.
  *
@@ -66,7 +76,8 @@ const hasSelection = () => !!window.getSelection?.()?.toString();
  *
  * @param {Ref<HTMLElement | null>} trigger Trigger element
  * @param {Ref<HTMLElement | null>} panel Card element
- * @param {IHoverCardOptions} options Timing and trigger
+ * @param {MaybeRefOrGetter<IHoverCardOptions>} options Timing and trigger;
+ *   the trigger is read on every event, the timing once
  * @param {() => void} onOpen Called whenever the card or sheet opens
  * @returns open state, the card's id, the actions and the listeners for
  * trigger and card
@@ -74,15 +85,12 @@ const hasSelection = () => !!window.getSelection?.()?.toString();
 export function useHoverCard(
 	trigger: Ref<HTMLElement | null>,
 	panel: Ref<HTMLElement | null>,
-	options: IHoverCardOptions = {},
+	options: MaybeRefOrGetter<IHoverCardOptions> = {},
 	onOpen: () => void = () => {}
 ) {
-	const {
-		openDelay = 300,
-		swapDelay = 80,
-		closeDelay = 300,
-		trigger: mode = "hover",
-	} = options;
+	const { openDelay = 300, swapDelay = 80, closeDelay = 300 } =
+		toValue(options);
+	const mode = () => toValue(options).trigger ?? "hover";
 
 	const open = ref(false);
 	const pinned = ref(false);
@@ -237,7 +245,7 @@ export function useHoverCard(
 		},
 		pointerenter: (e: PointerEvent) => {
 			lastPointer = e.pointerType;
-			if (mode !== "hover" || e.pointerType === "touch" || e.buttons || wantsSheet())
+			if (mode() !== "hover" || e.pointerType === "touch" || e.buttons || wantsSheet())
 				return;
 			clearTimeout(closeTimer);
 			if (open.value || otherPinned()) return;
@@ -254,7 +262,7 @@ export function useHoverCard(
 			const byPointer = pointerFocus;
 			pointerFocus = false;
 			// no floating card where a tap opens the sheet
-			if (byPointer || blocked || wantsSheet()) return;
+			if (byPointer || blocked || mode() !== "hover" || wantsSheet()) return;
 			if (otherPinned() || blockedByLayer()) return;
 			show();
 		},

@@ -153,19 +153,53 @@ describe("userQueries analytics", () => {
 		const userStore = useUserStore();
 		userStore.setToken("access", "refresh");
 
-		await userQueries.PatchPreferences.fetchFn({
-			...userStore.preferences,
+		Object.assign(userStore.preferences, {
 			locale: "de_DE",
 			colorPalette: "colorblind",
 			layoutNavigationStyle: "collapsed",
+			marketCardTrigger: "click",
 			planSuggestions: false,
-		} as never);
+			defaultEmpireUuid: "empire-uuid",
+			defaultCXUuid: undefined,
+			defaultBuyItemsFromCX: false,
+			burnDaysRed: 3,
+			burnDaysYellow: 8,
+			burnResupplyDays: 25,
+			burnOrigin: "Moria Station Warehouse",
+			supplyCartDays: 14,
+			fioRepairIntervalDays: 90,
+			fioRepairDueSoonDays: 5,
+			fioRepairArrivalDays: 1,
+			fioRepairPlanLinks: { a: { planUuid: null }, b: { planUuid: "p" } },
+			planOverrides: { "plan-a": {} },
+			emailNudgeDismissal: "later",
+			emailNudgeDismissedAt: "2026-10-01T00:00:00Z",
+		});
+
+		// the patch holds only what changed, the store everything
+		await userQueries.PatchPreferences.fetchFn({ locale: "de_DE" });
 
 		expect(trackUser).toHaveBeenCalledWith({
 			language: "de_DE",
 			color_palette: "colorblind",
 			navigation_style: "collapsed",
+			market_card_trigger: "click",
 			is_plan_suggestions_enabled: false,
+			has_default_empire: true,
+			has_default_cx: false,
+			is_buy_from_cx_default: false,
+			burn_days_red: 3,
+			burn_days_yellow: 8,
+			burn_resupply_days: 25,
+			burn_origin: "Moria Station Warehouse",
+			supply_cart_days: 14,
+			fio_repair_interval_days: 90,
+			fio_repair_due_soon_days: 5,
+			fio_repair_arrival_days: 1,
+			fio_repair_plan_link_count: 2,
+			plan_override_count: 1,
+			email_nudge_dismissal: "later",
+			email_nudge_dismissed_at: "2026-10-01T00:00:00Z",
 		});
 	});
 

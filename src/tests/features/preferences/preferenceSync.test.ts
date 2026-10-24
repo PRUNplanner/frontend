@@ -47,11 +47,13 @@ describe("preferenceSync", () => {
 	it("changed top-level keys, unset ones as null", () => {
 		const to = prefs();
 		to.burnDaysRed = 3;
+		to.marketCardTrigger = "click";
 		to.defaultEmpireUuid = undefined;
 
 		expect(diffPreferences(prefs(), to)).toStrictEqual({
 			defaultEmpireUuid: null,
 			burnDaysRed: 3,
+			marketCardTrigger: "click",
 		});
 	});
 

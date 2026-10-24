@@ -52,14 +52,32 @@ import type {
 } from "@/features/api/schemas/apiKeysData.schemas";
 
 /**
- * Person properties of the preferences worth segmenting by
+ * Every preference as a person property: ids only as has_*, per-plan and
+ * per-site settings as counts
  */
 function trackPreferences(prefs: UserPreference): void {
 	trackUser({
 		language: prefs.locale,
 		color_palette: prefs.colorPalette,
 		navigation_style: prefs.layoutNavigationStyle,
+		market_card_trigger: prefs.marketCardTrigger,
 		is_plan_suggestions_enabled: prefs.planSuggestions,
+		has_default_empire: !!prefs.defaultEmpireUuid,
+		has_default_cx: !!prefs.defaultCXUuid,
+		is_buy_from_cx_default: prefs.defaultBuyItemsFromCX,
+		burn_days_red: prefs.burnDaysRed,
+		burn_days_yellow: prefs.burnDaysYellow,
+		burn_resupply_days: prefs.burnResupplyDays,
+		burn_origin: prefs.burnOrigin,
+		supply_cart_days: prefs.supplyCartDays,
+		fio_repair_interval_days: prefs.fioRepairIntervalDays,
+		fio_repair_due_soon_days: prefs.fioRepairDueSoonDays,
+		fio_repair_arrival_days: prefs.fioRepairArrivalDays,
+		fio_repair_plan_link_count: Object.keys(prefs.fioRepairPlanLinks)
+			.length,
+		plan_override_count: Object.keys(prefs.planOverrides).length,
+		email_nudge_dismissal: prefs.emailNudgeDismissal,
+		email_nudge_dismissed_at: prefs.emailNudgeDismissedAt,
 	});
 }
 
@@ -213,10 +231,9 @@ export const userQueries = {
 			// dont try to patch if not logged in, d'oh!
 			if (!userStore.isLoggedIn) return undefined;
 
-			trackPreferences({
-				...userStore.preferences,
-				...patch,
-			} as UserPreference);
+			// the patch is taken from the store, which holds every key: a
+			// patch carries only the changed plans and sites
+			trackPreferences(userStore.preferences);
 			return callPatchUserPreferences(patch);
 		},
 	}),

@@ -23,6 +23,7 @@
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { useExchangeData } from "@/database/services/useExchangeData";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { usePreferences } from "@/features/preferences/usePreferences";
 
 	// Components
 	import MaterialMarketCard from "@/features/material_tile/components/MaterialMarketCard.vue";
@@ -96,6 +97,9 @@
 
 	const { getMaterial, getMaterialClass } = useMaterialData();
 	const { getMaterialExchangeOverview } = useExchangeData();
+	const { marketCardTrigger } = usePreferences();
+	// the profile setting: nothing opens on hover or focus, a click pins
+	const clickOnly = computed(() => marketCardTrigger.value === "click");
 
 	const refShowDrawer: Ref<boolean> = ref(false);
 	const refExchangeOverview: Ref<IMaterialExchangeOverview | undefined> =
@@ -165,7 +169,7 @@
 	function onClick(): void {
 		const card = hoverCard.value;
 		if (card?.wantsSheet()) return card.openSheet();
-		if (!props.disableDrawer) {
+		if (!props.disableDrawer && !clickOnly.value) {
 			if (refShowDrawer.value) refShowDrawer.value = false;
 			else openDrawer("tile");
 			return;
@@ -225,6 +229,7 @@
 				:label="t('material_tile.card.label', { ticker })"
 				:placement="popoverPlacement"
 				:width="CARD_WIDTH"
+				:options="{ trigger: marketCardTrigger }"
 				@open="loadOverview"
 				@pin="onPin">
 				<template #trigger>
@@ -250,7 +255,8 @@
 						:daily-context="dailyContext"
 						:market-check="marketCheck"
 						:pinned="pinned"
-						:click-opens-details="!disableDrawer"
+						:click-opens-details="!disableDrawer && !clickOnly"
+						:click-only="clickOnly"
 						:sheet="sheet"
 						:narrow="narrow"
 						@close="close"

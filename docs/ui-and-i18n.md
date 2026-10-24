@@ -151,7 +151,8 @@ are internal to `PDataTable` and the selects.
     - `<PHoverCard :label placement width>` with a `#trigger` slot is a
       card of content next to its trigger, not a tooltip (the material
       market card). Hover intent (`ui/useHoverCard.ts`, timing and
-      `trigger` as `options`): it opens after the pointer rests 300 ms,
+      `trigger` as `options`; `trigger: "click"` opens nothing on hover or
+      focus and leaves opening to the caller): it opens after the pointer rests 300 ms,
       swaps to another trigger of the group in 80 ms while one is open,
       stays open on the card (a safe area bridges the gap) and closes
       300 ms after leaving both. Keyboard focus opens it at once. It never

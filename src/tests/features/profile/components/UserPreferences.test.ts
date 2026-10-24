@@ -135,6 +135,7 @@ describe("UserPreferences", () => {
 		expect(selects(wrapper).map((s) => s.props("value"))).toEqual([
 			"en_US",
 			"default",
+			"hover",
 			// no default empire yet, so the first one is picked
 			FIRST_EMPIRE.uuid,
 			"Configure on Execution",
@@ -159,11 +160,13 @@ describe("UserPreferences", () => {
 		userStore.preferences.burnResupplyDays = 30;
 		userStore.preferences.burnOrigin = "Moria Station Warehouse";
 		userStore.preferences.defaultBuyItemsFromCX = false;
+		userStore.preferences.marketCardTrigger = "click";
 		const { wrapper } = await mountPreferences();
 
 		expect(selects(wrapper).map((s) => s.props("value"))).toEqual([
 			"en_US",
 			"default",
+			"click",
 			SECOND_EMPIRE.uuid,
 			"Moria Station Warehouse",
 		]);
@@ -186,7 +189,7 @@ describe("UserPreferences", () => {
 				.props("options")
 				.map((o) => o.value)
 		).toEqual(expect.arrayContaining(["en_US", "de_DE"]));
-		const origins = selects(wrapper).at(3)!.props("options");
+		const origins = selects(wrapper).at(4)!.props("options");
 		// "Configure on Execution" plus 6 stations
 		expect(origins).toHaveLength(7);
 		expect(origins.at(0)!.value).toBe("Configure on Execution");
@@ -200,7 +203,7 @@ describe("UserPreferences", () => {
 		seed();
 		const { wrapper } = await mountPreferences();
 
-		const options = selects(wrapper).at(2)!.props("options");
+		const options = selects(wrapper).at(3)!.props("options");
 		expect(options).toHaveLength(7);
 		expect(options.at(0)).toEqual({
 			label: "PRUN REAL",
@@ -237,7 +240,7 @@ describe("UserPreferences", () => {
 		const { wrapper } = await mountPreferences();
 
 		expect(userStore.preferences.defaultEmpireUuid).toBeUndefined();
-		expect(selects(wrapper).at(2)!.props("options")).toEqual([]);
+		expect(selects(wrapper).at(3)!.props("options")).toEqual([]);
 	});
 
 	it("keeps plan preferences of plans this tab doesn't know", async () => {
@@ -321,13 +324,32 @@ describe("UserPreferences", () => {
 		expect(userStore.preferences.colorPalette).toBe("colorblind");
 	});
 
+	it("switches how the market card opens", async () => {
+		const userStore = seed();
+		const { wrapper } = await mountPreferences();
+
+		expect(
+			selects(wrapper)
+				.at(2)!
+				.props("options")
+				.map((o) => o.value)
+		).toEqual(["hover", "click"]);
+		expect(wrapper.text()).toContain(
+			"profile.preferences.form.market_card_help"
+		);
+		selects(wrapper).at(2)!.vm.$emit("update:value", "click");
+		await flushPromises();
+
+		expect(userStore.preferences.marketCardTrigger).toBe("click");
+	});
+
 	it("sets the default empire and XIT origin", async () => {
 		const userStore = seed();
 		const { wrapper } = await mountPreferences();
 
-		selects(wrapper).at(2)!.vm.$emit("update:value", SECOND_EMPIRE.uuid);
+		selects(wrapper).at(3)!.vm.$emit("update:value", SECOND_EMPIRE.uuid);
 		selects(wrapper)
-			.at(3)!
+			.at(4)!
 			.vm.$emit("update:value", "Benten Station Warehouse");
 		await flushPromises();
 
