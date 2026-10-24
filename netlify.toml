@@ -12,3 +12,7 @@
 [build]
   command = "pnpm run build && echo \"window.__APP_CONFIG__ = { POSTHOG_KEY: '${POSTHOG_KEY}' };\" > dist/env.js"
   publish = "dist"
+  # PRs into main get free Deploy Previews, which needs main as a branch-deploy
+  # branch. Cancel that branch deploy (exit 0) so pushes to main never build;
+  # the site itself is only rebuilt by the manual "Update preview" workflow.
+  ignore = "[ \"$CONTEXT\" = branch-deploy ] && [ \"$BRANCH\" = main ]"
