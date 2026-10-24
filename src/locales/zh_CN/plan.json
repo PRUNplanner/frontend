@@ -18,7 +18,8 @@
 		"redo": "重做",
 		"building_removed": "建筑已移除",
 		"recipe_removed": "生产模板已移除",
-		"recipe_changed": "{building}的生产模板已更改"
+		"undo_key": "Undo (Ctrl+Z)",
+		"redo_key": "Redo (Ctrl+Shift+Z)"
 	},
 	"actions": {
 		"more": "更多",
@@ -27,7 +28,8 @@
 		"reload": "重新加载保存的版本",
 		"reload_hint": "放弃未保存的更改",
 		"reload_confirm": "重新加载已保存的版本？您未保存的更改将丢失。",
-		"tools": "规划工具"
+		"tools": "规划工具",
+		"download_csv": "Download Material I/O (CSV)"
 	},
 	"name": {
 		"untitled": "未命名的规划"
@@ -35,13 +37,23 @@
 	"breadcrumb": "Plan location",
 	"tools": {
 		"labels": {
-			"popr": "人口报告",
-			"visitation_frequency": "访问频率",
-			"construction_cart": "建造清单",
-			"supply_cart": "补给清单",
-			"repair_analysis": "维修分析",
-			"profit_breakdown": "Profit Breakdown",
-			"plan_check": "Plan check"
+			"production": "Production",
+			"construction_cart": "Construction",
+			"supply_cart": "Supply",
+			"visitation_frequency": "Visits",
+			"repair_analysis": "Repair",
+			"profit_breakdown": "Profit",
+			"plan_check": "Plan check",
+			"popr": "人口报告"
+		},
+		"descriptions": {
+			"construction-cart": "What is left to buy for the buildings",
+			"supply-cart": "Consumables for n days, as a list or XIT action",
+			"visitation-frequency": "When storage fills",
+			"repair-analysis": "Best repair interval per building",
+			"profit-breakdown": "Where the daily profit comes from",
+			"plan-check": "Thin markets and profit at real ask and bid",
+			"popr": "Population report"
 		},
 		"profit_breakdown": {
 			"title": "Profit Breakdown",
@@ -82,15 +94,22 @@
 		},
 		"popr": {
 			"title": "最新人口报告",
+			"subtitle": "The planet's workforce from the game's last report, next to what this plan needs",
 			"error": "加载最新人口报告时出错。该行星可能没有人口。",
-			"loading": "正在加载人口报告"
+			"loading": "正在加载人口报告",
+			"chart": {
+				"label": "Free workers next to what this plan needs",
+				"legend": "Bar: free workers less the open jobs of other bases · line: what this plan needs",
+				"row": "{tier}: {available} free, plan needs {need}",
+				"value": "{available} free · needs {need}"
+			}
 		},
 		"visitation_frequency": {
 			"title": "访问频率",
 			"storage": {
 				"label": "仓储",
-				"info": "你规划的包含附加{storages}，总仓储容量为 {total_weight}t 和 {total_volume}m³。",
-				"info_no_storage": "你规划的总仓储容量为 {total_weight}t 和 {total_volume}m³。",
+				"info": "Your plan involves adding {storages} giving you a total storage capacity of {total_weight} t and {total_volume} m³.",
+				"info_no_storage": "Your plan has a total storage capacity of {total_weight} t and {total_volume} m³.",
 				"table": {
 					"weight": "吨",
 					"volume": "立方米",
@@ -118,6 +137,10 @@
 		"construction_cart": {
 			"title": "建造清单",
 			"unplanned_info": "基地存在未规划的{buildings}（FIO：{fio_updated}）。请拆除以确保面积、居住需求和物资数据准确。",
+			"sections": {
+				"buildings": "Buildings",
+				"materials": "Materials to buy"
+			},
 			"table": {
 				"building": "@:terms.buildings",
 				"built": "已建造",
@@ -146,8 +169,11 @@
 			"title": "补给清单",
 			"info": {
 				"p": "补给清单会结合 FIO 提供的现有库存，更新你的规划需求。你可以灵活选择其他仓储位置来为基地补给。根据你是想补充劳动力与生产所需物资，还是专注于特定类别，自定义补给范围，并指定补给库存需要维持的天数。若需要更高级的补给清单选项，请使用 {link} 工具。",
-				"link": "FIO 消耗"
+				"link": "FIO 消耗",
+				"label": "About the Supply Cart"
 			},
+			"filter_label": "Supply for",
+			"more_in": "More options in {link}",
 			"buttons": {
 				"all": "全部",
 				"workforce": "劳动力",
@@ -517,28 +543,12 @@
 		}
 	},
 	"components": {
-		"status": {
-			"hq": "总部",
-			"cogc": "@:{'terms.cogc'}",
-			"area": "@:{'terms.area'}",
-			"profit": "@:{'terms.profit'}",
-			"experts": "@:{'terms.experts_plural'}",
-			"experts_none": "无",
-			"area_free": "{count}面积可用",
-			"area_over": "超限{count}面积",
-			"per_day": "ȼ/天"
-		},
 		"configuration": {
-			"label": "配置",
-			"name": "名称",
-			"empire": "@:terms.empire",
 			"prices": "Prices",
 			"no_preference": "Universe · VWAP 30D (no preference)"
 		},
 		"area": {
-			"permits": "@:terms.permits_plural",
-			"area": "@:terms.area",
-			"free": "空闲"
+			"permits": "@:terms.permits_plural"
 		},
 		"bonuses": {
 			"corp_hq": "集团总部",
@@ -546,68 +556,26 @@
 			"cogc": "@:terms.cogc"
 		},
 		"infrastructure": {
-			"label": "基础设施",
-			"auto_optimize": "自动优化住房",
 			"auto_optimize_tooltip": "添加建筑时，自动优化住房以满足劳动力需求。",
-			"buttons": {
-				"optimize_cost": "优化成本",
-				"optimize_area": "优化区域"
-			},
 			"amount_label": "{infrastructure}数量"
 		},
 		"experts": {
-			"label": "专家",
 			"warning": "每个基地最多可分配 6 名专家。你当前已分配 {expert_number} 名专家。",
 			"amount_label": "{expert}名专家"
 		},
-		"workforce": {
-			"label": "劳动力",
-			"table": {
-				"type": "类型",
-				"need_housed": "Need / Housed",
-				"open": "开放",
-				"luxuries": "奢侈品",
-				"pct_eff": "效率 %"
-			}
-		},
-		"overview": {
-			"label": "概览",
-			"table": {
-				"daily_cost": "每日成本",
-				"degradation": "损耗",
-				"plan_cost": "规划成本",
-				"daily_profit": "每日利润",
-				"roi": "ROI",
-				"profit_area": "@:terms.profit_per_area"
-			}
-		},
-		"storage": {
-			"label": "仓储",
-			"table": {
-				"weight": "t",
-				"volume": "m³",
-				"import": "@:terms.import",
-				"export": "@:terms.export",
-				"sum": "@:terms.sum",
-				"filled": "满储"
-			}
-		},
 		"materialio": {
 			"label": "物料输入/输出",
-			"label_production": "生产",
-			"label_workforce": "劳动力",
-			"buttons": {
-				"toggle_weight_volume": "切换重量与体积",
-				"toggle_production_workforce": "切换生产与劳动力拆分"
-			},
 			"table": {
 				"input": "输入",
 				"output": "输出",
 				"delta": "Δ",
 				"cost_day": "ȼ / 天",
 				"total_weight": "Δ t",
-				"total_volume": "Δ m³"
-			}
+				"total_volume": "Δ m³",
+				"share_7d": "7d share",
+				"share_30d": "30d share"
+			},
+			"share_note": "Δ as a share of the average daily volume traded on {exchange}, last 7 and 30 days."
 		},
 		"save_as": {
 			"title": "另存为",
@@ -618,35 +586,15 @@
 			}
 		},
 		"production": {
-			"label": "生产",
-			"planet_resources": "@:{'terms.planets'}@:{'terms.resources_plural'}",
 			"form": {
 				"match_cogc": "匹配@:{'terms.cogc'}",
 				"select_placeholder": "选择@:{'terms.buildings'}并添加到@:{'terms.plan'}中",
 				"popular_on": "{planet}的热门 · {plans}规划",
 				"all_buildings": "全部建筑"
-			},
-			"table": {
-				"building_recipe": "@:{'terms.buildings'} / @:{'terms.recipes'}",
-				"runtime": "运行时间",
-				"share": "分享",
-				"tools": "工具"
 			}
 		},
 		"production_building": {
 			"no_recipe": "无活动@:{'terms.convenes_plural'}",
-			"qty": "数量",
-			"buttons": {
-				"add_recipe": "@:terms.recipes"
-			},
-			"table": {
-				"expertise": "专精",
-				"efficiency": "效率",
-				"revenue": "@:terms.revenue",
-				"area": "@:terms.area",
-				"construction": "土木",
-				"construction_per_building": "每栋建筑"
-			},
 			"zero_reason": {
 				"FERTILITY": "行星无肥沃土壤",
 				"WORKFORCE": "无生产力住所"
@@ -661,27 +609,157 @@
 			"buttons": {
 				"cogm": "@:terms.cogm"
 			},
-			"table": {
-				"input": "输入",
-				"time": "时间",
-				"output": "输出",
-				"daily_revenue": "ȼ / 天",
-				"profit_area": "ȼ / 面积",
-				"roi": "ROI",
-				"plans_here": "此地的规划",
-				"below_threshold": "< 5%"
-			},
-			"info": {
-				"p1_strong": "收入/天",
-				"p1": "是根据配方产生的每日收入，减去每日劳动力成本（包含所有奢侈品供给）以及每日建筑损耗成本（建造成本的 1/180）后计算得出。配方收入基于输入物资成本与输出物资价值之间的差额。",
-				"p2_strong": "ȼ / 面积",
-				"p2": "表示每日收入除以一个生产建筑所占面积，以及在生产模板 ROI 中为该类建筑的最优基地分摊的核心模块与住房建筑所占面积。",
-				"p3_strong": "ROI",
-				"p3": "表示一个持续运行的生产模板产生足够收入以抵消建筑建造成本所需的时间，同时也会计入每日损耗和劳动力成本。",
-				"p4_strong": "此地的规划",
-				"p4": "是每日更新的收集于活跃玩家的在{planet}上带有使用此生产模板的{building}的百分比。"
-			},
 			"amount_label": "{recipe}的生产模板数量"
+		},
+		"storage": {
+			"table": {
+				"weight": "t",
+				"volume": "m³",
+				"import": "@:terms.import",
+				"export": "@:terms.export"
+			}
 		}
+	},
+	"header": {
+		"name": "Plan name",
+		"rename": "Rename plan"
+	},
+	"results": {
+		"label": "Plan results",
+		"profit": "Profit / day",
+		"revenue_cost": "Revenue {revenue} · cost {cost}",
+		"payback": "Payback",
+		"build": "Build {cost} ȼ",
+		"profit_area": "Profit / area",
+		"empire_average": "Empire {value}",
+		"area": "Area",
+		"storage": "Storage",
+		"days_to_full": "days to full",
+		"out_per_day": "{weight} t · {volume} m³ out / day"
+	},
+	"base": {
+		"label": "Base",
+		"empire": {
+			"label": "Empire & prices",
+			"calculate_with": "Calculate with empire",
+			"note": "Faction {faction}, permits from the empire. Plan is in {n} empire. | Faction {faction}, permits from the empire. Plan is in {n} empires."
+		},
+		"planet": {
+			"label": "Planet",
+			"summary": "COGC {cogc} · {n} permit | COGC {cogc} · {n} permits",
+			"area": "area {n}",
+			"resources": "Resources",
+			"add_extractor": "Add {building} for {ticker}",
+			"insights": "{n} plans on {planet} · what others build here"
+		},
+		"workforce": {
+			"label": "Workforce",
+			"need_housed": "{need} / {housed}",
+			"efficiency": "Efficiency",
+			"luxuries": "Luxuries",
+			"supply": "Supply {ticker}",
+			"beds_free": "{n} free",
+			"not_needed": "{tiers}: not needed"
+		},
+		"housing": {
+			"label": "Housing",
+			"auto": "Auto",
+			"cheapest": "Cheapest",
+			"least_area": "Least area",
+			"add": "+ Housing or storage"
+		},
+		"experts": {
+			"label": "Experts",
+			"summary": "{n} placed",
+			"more": "+ {n} more fields",
+			"fewer": "Fewer fields"
+		}
+	},
+	"production": {
+		"counts": "{buildings} buildings · {units} units · {recipes} recipes",
+		"collapse_all": "Collapse all",
+		"expand_all": "Expand all",
+		"columns": {
+			"building": "Building",
+			"count": "Count",
+			"efficiency": "Eff.",
+			"daily": "ȼ / day",
+			"area": "Area"
+		},
+		"fold": "Show or hide the recipes of {building}",
+		"experts": "{n} expert | {n} experts",
+		"delete_building": "Delete {building}, undo with Ctrl+Z",
+		"change_recipe": "Change recipe {recipe}",
+		"cogm_label": "Cost of goods manufactured for {recipe}",
+		"delete_recipe": "Delete recipe {recipe}, undo with Ctrl+Z",
+		"add_recipe": "+ Recipe",
+		"card_meta": "ȼ/day · {efficiency} · area {area}",
+		"recipe_daily": "This order's part of the building's ȼ/day"
+	},
+	"picker": {
+		"change_title": "Change recipe",
+		"add_title": "Add a recipe to {building} as a new order",
+		"replacing": "replacing {amount} × {ticker}",
+		"close": "Close",
+		"sort": {
+			"label": "Sort by",
+			"daily": "ȼ / day",
+			"popular": "Popular"
+		},
+		"columns": {
+			"makes": "Makes",
+			"from": "From",
+			"daily": "ȼ / day",
+			"area": "ȼ / area",
+			"payback": "Payback",
+			"plans": "Plans"
+		},
+		"dependency": "Your {buildings} turn this {ticker} into {outputs}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
+		"dependency_workforce": "Your workforce uses this {ticker}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
+		"uses_made": "uses {tickers} from the plan",
+		"feeds": "feeds {buildings}",
+		"current": "current recipe",
+		"in_plan": "in plan",
+		"vs_now": "{delta} vs now",
+		"below_threshold": "< 5 %",
+		"per_building": "ȼ per building and day",
+		"keys": "Click or Enter replaces · Esc closes",
+		"undo_key": "Ctrl+Z",
+		"replaced": "Replaced {before} with {after}.",
+		"added": "Added {recipe} as a new order.",
+		"keys_add": "Click or Enter adds · Esc closes"
+	},
+	"io": {
+		"source": {
+			"label": "Show materials for",
+			"all": "Whole base",
+			"production": "Production only",
+			"workforce": "Workforce only"
+		},
+		"filter": {
+			"label": "Filter",
+			"all": "All",
+			"exports": "Exports",
+			"imports": "Imports"
+		},
+		"value": {
+			"label": "Value shown"
+		},
+		"exports": "Exports",
+		"imports": "Imports",
+		"degradation": "Degradation",
+		"profit": "Profit / day"
+	},
+	"layout": {
+		"flags": "{n} market flag | {n} market flags",
+		"base_strip": "COGC {cogc} · {n} expert | COGC {cogc} · {n} experts",
+		"show_base": "Show base setup",
+		"show_io": "Show Material I/O",
+		"close": "Close",
+		"fold": "Fold",
+		"sections": "Plan sections",
+		"tools": "Tools",
+		"io_short": "I/O",
+		"all_tools": "All tools"
 	}
 }
