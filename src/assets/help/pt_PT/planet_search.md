@@ -10,7 +10,7 @@
 
 **Counts and Any.** The number next to an option that isn't ticked is how many planets you would get by ticking it. The _Any_ button in the header of Planet conditions, Accept extra building materials, Active COGC program and Infrastructure sets that section to the state that hides the fewest planets, and shows how many planets that gives: both surfaces and no fertility requirement, all extra building materials accepted, no COGC program ticked, no infrastructure ticked. It is highlighted and can no longer be clicked when the section is already there.
 
-**Distance.** Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns.
+**Distance.** Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns. Planet Search works without an account; distances to your own plans need a login.
 
 **Active filters and Reset.** Every active filter shows as a chip above the results; × on a chip removes just that filter. _Reset_ at the top right goes back to the starting filters and the default order. When no planet matches, up to three suggestions appear, each with the number of planets it would give.
 
@@ -28,4 +28,4 @@
 
 **Compare.** On larger screens, pin up to four planets with ☆ to compare them side by side in the tray at the bottom. Fertility, the searched materials and the jumps to your distance picks are coloured from best to worst, with the best value in bold. Rows where the planets differ in anything else are tinted blue.
 
-**Saving and sharing.** The address bar always holds the whole search, so _Copy link_ shares it. "+" opens a new plan for that planet in a new tab, so your search stays where it is. _Save search_ stores named searches in this browser; _Manage_ renames, loads or deletes them.
+**Saving and sharing.** The address bar always holds the whole search, so _Copy link_ shares it. "+" opens a new plan for that planet in a new tab, so your search stays where it is. Without an account, "+" asks you to log in first and then opens the plan. _Save search_ stores named searches in this browser; _Manage_ renames, loads or deletes them.
