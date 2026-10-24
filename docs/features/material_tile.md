@@ -26,7 +26,9 @@ more.
     life.
   - **A click** opens the drawer where it is enabled (Plan Material I/O,
     HQ calculator), else pins the card; on touch or below 560 px it opens
-    the card as a bottom sheet.
+    the card as a bottom sheet. With the profile setting "On click only"
+    (`marketCardTrigger`) hover and focus open nothing and a click pins
+    the card everywhere; "Market details" opens the drawer.
 - `components/MaterialMarketCard.vue`: header, plan line, one row per
   exchange plus Universe (30-day sparklines from `GetCXSparklines`, one
   cached request per exchange, on one scale), summary lines, and the

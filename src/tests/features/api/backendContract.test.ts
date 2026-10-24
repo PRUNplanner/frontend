@@ -369,6 +369,7 @@ describe("Backend contract", () => {
 			"supplyCartDays",
 			"layoutNavigationStyle",
 			"colorPalette",
+			"marketCardTrigger",
 			"planSuggestions",
 			"planOverrides",
 			"fioRepairIntervalDays",
@@ -392,6 +393,7 @@ describe("Backend contract", () => {
 			supplyCartDays: 20,
 			layoutNavigationStyle: "full",
 			colorPalette: "default",
+			marketCardTrigger: "hover",
 			planSuggestions: true,
 			planOverrides: {},
 			fioRepairIntervalDays: 60,
@@ -503,6 +505,20 @@ describe("Backend contract", () => {
 			const { colorPalette: _, ...oldBackend } = backendDefaults;
 			expect(UserPreferenceSchema.parse(oldBackend).colorPalette).toBe(
 				"default"
+			);
+		});
+
+		it("opens the market card on hover for unknown or missing values", () => {
+			expect(
+				UserPreferenceSchema.parse({
+					...backendDefaults,
+					marketCardTrigger: "always",
+				}).marketCardTrigger
+			).toBe("hover");
+
+			const { marketCardTrigger: _, ...oldBackend } = backendDefaults;
+			expect(UserPreferenceSchema.parse(oldBackend).marketCardTrigger).toBe(
+				"hover"
 			);
 		});
 

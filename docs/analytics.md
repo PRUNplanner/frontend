@@ -283,7 +283,7 @@ exception carries `route_name` too.
 | Property | Set from |
 | --- | --- |
 | `username`, `prun_username`, `is_fio_enabled`, `has_verified_email` | the profile, on load and change (`identifyUser`) |
-| `language`, `color_palette`, `navigation_style`, `is_plan_suggestions_enabled` | the preferences, on load and change |
+| `language`, `color_palette`, `navigation_style`, `market_card_trigger`, `is_plan_suggestions_enabled`, `has_default_empire`, `has_default_cx`, `is_buy_from_cx_default`, `burn_days_red`, `burn_days_yellow`, `burn_resupply_days`, `burn_origin`, `supply_cart_days`, `fio_repair_interval_days`, `fio_repair_due_soon_days`, `fio_repair_arrival_days`, `fio_repair_plan_link_count`, `plan_override_count`, `email_nudge_dismissal`, `email_nudge_dismissed_at` | every preference, on load and on each sync (`trackPreferences` in `user.queries.ts`): ids only as `has_*`, per-plan and per-site settings as counts |
 | `plan_count`, `empire_count`, `cx_count` | the planning data loader, on every page that loads the lists |
 
 Person properties set before the user is identified are kept and sent with

@@ -60,6 +60,7 @@
 		sheet = false,
 		narrow = false,
 		clickOpensDetails = false,
+		clickOnly = false,
 	} = defineProps<{
 		ticker: string;
 		material: Material | null;
@@ -77,6 +78,8 @@
 		narrow?: boolean;
 		// a click on the ticker opens Market details, not a pinned card
 		clickOpensDetails?: boolean;
+		// the "On click only" setting: the card only ever opens pinned
+		clickOnly?: boolean;
 	}>();
 
 	const emit = defineEmits<{
@@ -439,11 +442,13 @@
 			<span v-if="!sheet" class="flex-1 text-xs text-muted">
 				{{
 					$t(
-						pinned
-							? "material_tile.card.hint_pinned"
-							: clickOpensDetails
-								? "material_tile.card.hint_details"
-								: "material_tile.card.hint"
+						clickOnly
+							? "material_tile.card.hint_click"
+							: pinned
+								? "material_tile.card.hint_pinned"
+								: clickOpensDetails
+									? "material_tile.card.hint_details"
+									: "material_tile.card.hint"
 					)
 				}}
 			</span>
