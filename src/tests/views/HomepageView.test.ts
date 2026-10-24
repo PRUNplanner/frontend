@@ -106,6 +106,20 @@ describe("HomepageView", () => {
 		]);
 	});
 
+	it("links the Planet Search tour to the public search, tracked", async () => {
+		const { wrapper } = await mount();
+		const cta = wrapper.find("[data-planet-search-cta]");
+		expect(cta.text()).toContain("homepage.most_used.planet_search.cta");
+		expect(wrapper.text()).toContain(
+			"homepage.most_used.planet_search.cta_note"
+		);
+
+		await cta.trigger("click");
+		expect(trackEvent).toHaveBeenCalledWith("landing:planet_search_click", {
+			target: "tour",
+		});
+	});
+
 	it("sends a logged in user to the empire, without sign-up prompts", async () => {
 		useUserStore().setToken("access", "refresh");
 		const { wrapper } = await mount();
@@ -117,6 +131,7 @@ describe("HomepageView", () => {
 			wrapper.findAllComponents(RouterLinkStub).map((l) => l.props("to"))
 		).toContain("/empire");
 		expect(wrapper.find("[data-closing-cta]").exists()).toBe(false);
+		expect(wrapper.find("[data-planet-search-cta]").exists()).toBe(false);
 		expect(wrapper.text()).not.toContain("homepage.hero.example_note");
 	});
 

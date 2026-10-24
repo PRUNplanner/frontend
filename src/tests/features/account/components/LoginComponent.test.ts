@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from "pinia";
 
 import LoginComponent from "@/features/account/components/LoginComponent.vue";
 import { useUserStore } from "@/stores/userStore";
+import { useAuthPanel } from "@/features/account/useAuthPanel";
 import { mountComponent } from "@/tests/mountComponent";
 
 const route = vi.hoisted(() => ({ value: { name: "homepage" } }));
@@ -28,6 +29,7 @@ async function login(result: "ok" | "throttled" | "failed" = "ok") {
 
 describe("LoginComponent", () => {
 	beforeEach(() => {
+		useAuthPanel().close();
 		vi.mocked(router.push).mockClear();
 		window.history.replaceState({}, "", "/");
 	});
@@ -45,6 +47,30 @@ describe("LoginComponent", () => {
 		await login();
 
 		expect(router.push).toHaveBeenCalledWith({ path: "/manage" });
+	});
+
+	it("goes where the panel was opened for, after a redirectTo", async () => {
+		route.value = { name: "search" };
+		useAuthPanel().open("login", "planet_search_plan", {
+			next: "/plan/CH-771a",
+		});
+		await login();
+		expect(router.push).toHaveBeenCalledWith({ path: "/plan/CH-771a" });
+
+		vi.mocked(router.push).mockClear();
+		window.history.replaceState({}, "", "/search?redirectTo=/manage");
+		useAuthPanel().open("login", "planet_search_plan", {
+			next: "/plan/CH-771a",
+		});
+		await login();
+		expect(router.push).toHaveBeenCalledWith({ path: "/manage" });
+	});
+
+	it("stays on Planet Search, with its query", async () => {
+		route.value = { name: "search" };
+		await login();
+
+		expect(router.push).not.toHaveBeenCalled();
 	});
 
 	it("stays on a shared plan", async () => {

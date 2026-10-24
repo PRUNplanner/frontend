@@ -2,8 +2,10 @@
 	import {
 		type Component,
 		computed,
+		nextTick,
 		onMounted,
 		onUnmounted,
+		ref,
 		shallowRef,
 		watch,
 	} from "vue";
@@ -38,17 +40,23 @@
 	// need (this header loads before the mount): loaded once the page has,
 	// or when the panel is asked for first. The panel opens with them, so
 	// it focuses the form's first field.
-	const forms = shallowRef<{ login: Component; registration: Component }>();
+	const forms = shallowRef<{
+		login: Component;
+		registration: Component;
+		context: Component;
+	}>();
 	let loading: Promise<void> | undefined;
 	function loadForms(): Promise<void> {
 		loading ??= Promise.all([
 			import("@/features/account/components/LoginComponent.vue"),
 			import("@/features/account/components/RegistrationComponent.vue"),
+			import("@/features/account/components/AuthPanelContext.vue"),
 		])
-			.then(([login, registration]) => {
+			.then(([login, registration, context]) => {
 				forms.value = {
 					login: login.default,
 					registration: registration.default,
+					context: context.default,
 				};
 			})
 			.catch((error) => {
@@ -73,13 +81,67 @@
 
 	// the section links point into the landing page, also from the report
 	const isLanding = computed(() => route.name === "homepage");
+	// the full-width tool: the header spans it, at the height its frame expects
+	const isSearch = computed(() => route.name === "search");
 	const showSections = computed(
-		() => isLanding.value || route.name === "market"
+		() => isLanding.value || isSearch.value || route.name === "market"
 	);
 	const sections = ["how", "features", "tools"] as const;
 
+	/*
+	 * Menu below lg, where the section nav doesn't fit: the tools, the
+	 * sections and, below sm, Log in
+	 */
+	const menuOpen = ref(false);
+	const menuButton = ref<HTMLButtonElement | null>(null);
+	const menu = ref<HTMLElement | null>(null);
+
+	function closeMenu(focusButton: boolean): void {
+		if (!menuOpen.value) return;
+		menuOpen.value = false;
+		if (focusButton) menuButton.value?.focus();
+	}
+	function onKeydown(e: KeyboardEvent): void {
+		if (e.key === "Escape") closeMenu(true);
+	}
+	function onPointerdown(e: PointerEvent): void {
+		const target = e.target as Node;
+		if (
+			!menu.value?.contains(target) &&
+			!menuButton.value?.contains(target)
+		)
+			closeMenu(true);
+	}
+	watch(menuOpen, async (open) => {
+		if (open) {
+			document.addEventListener("keydown", onKeydown);
+			document.addEventListener("pointerdown", onPointerdown);
+			await nextTick();
+			menu.value?.querySelector<HTMLElement>("a, button")?.focus();
+		} else {
+			document.removeEventListener("keydown", onKeydown);
+			document.removeEventListener("pointerdown", onPointerdown);
+		}
+	});
+	watch(
+		() => route.name,
+		() => closeMenu(false)
+	);
+	// the watchers have stopped by now: remove the listeners here
+	onUnmounted(() => {
+		document.removeEventListener("keydown", onKeydown);
+		document.removeEventListener("pointerdown", onPointerdown);
+	});
+
 	// the header leaves on login, the next visitor starts with a closed panel
 	onUnmounted(close);
+
+	const navLink =
+		"min-h-11 inline-flex items-center hover:text-white aria-[current=page]:text-white aria-[current=page]:shadow-[inset_0_-2px_0_#c0e219]";
+	const menuLink =
+		"min-h-12 flex items-center justify-between text-base text-white/85 border-b border-white/6 hover:text-white aria-[current=page]:text-white aria-[current=page]:font-bold";
+	const menuLabel =
+		"pt-3.5 pb-1 font-mono text-xs uppercase tracking-[0.08em] text-white/62";
 
 	const switchButton =
 		"min-h-10 px-4.5 inline-flex items-center rounded-[7px] text-[15px] font-semibold cursor-pointer";
@@ -87,9 +149,13 @@
 
 <template>
 	<header
-		class="sticky top-0 z-20 bg-[#030707]/86 backdrop-blur-md border-b border-white/10">
+		class="sticky top-0 z-40 bg-[#030707]/86 backdrop-blur-md border-b border-white/10"
+		:class="{ 'lg:h-16': isSearch }">
 		<div
-			class="mx-auto max-w-[1240px] px-4 sm:px-6 py-2.5 sm:py-3.5 flex flex-wrap items-center justify-between gap-x-4 sm:gap-x-8 gap-y-3">
+			class="mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-x-4 sm:gap-x-8 gap-y-3"
+			:class="
+				isSearch ? 'lg:h-full lg:py-0' : 'max-w-[1240px] sm:py-3.5'
+			">
 			<RouterLink
 				to="/"
 				class="min-h-11 inline-flex items-center text-[21px] sm:text-[26px] font-light tracking-[-0.01em] text-prunplanner">
@@ -98,7 +164,8 @@
 			<nav
 				v-if="showSections"
 				:aria-label="$t('homepage.navigation.sections')"
-				class="hidden lg:flex flex-wrap items-center gap-x-7 gap-y-1 text-[15px] text-white/78">
+				class="hidden lg:flex flex-wrap items-center gap-x-7 gap-y-1 text-[15px] text-white/78"
+				:class="{ 'mr-auto': isSearch }">
 				<template v-for="section in sections" :key="section">
 					<a
 						v-if="isLanding"
@@ -116,7 +183,7 @@
 						v-if="section === 'how'"
 						to="/market"
 						data-market-link
-						class="min-h-11 inline-flex items-center hover:text-white aria-[current=page]:text-white"
+						:class="navLink"
 						@mouseenter="prefetchMarketReport()"
 						@focus="prefetchMarketReport()"
 						@click="
@@ -125,6 +192,18 @@
 							})
 						">
 						{{ $t("homepage.navigation.market") }}
+					</RouterLink>
+					<RouterLink
+						v-if="section === 'how'"
+						to="/search"
+						data-planet-search-link
+						:class="navLink"
+						@click="
+							trackEvent('landing:planet_search_click', {
+								target: 'header',
+							})
+						">
+						{{ $t("homepage.navigation.planet_search") }}
 					</RouterLink>
 				</template>
 				<a
@@ -135,11 +214,15 @@
 					{{ $t("homepage.navigation.github") }}
 				</a>
 			</nav>
-			<div class="flex items-center gap-3.5 sm:gap-5">
+			<div class="flex items-center gap-2 sm:gap-5">
+				<!-- below sm it moves into the menu, so the header stays one row -->
 				<button
 					type="button"
 					data-login
-					class="min-h-11 inline-flex items-center text-[15px] text-white/78 hover:text-white cursor-pointer"
+					class="min-h-11 items-center text-[15px] text-white/78 hover:text-white cursor-pointer"
+					:class="
+						showSections ? 'hidden sm:inline-flex' : 'inline-flex'
+					"
 					@click="toggleLogin">
 					{{ $t("homepage.navigation.login") }}
 				</button>
@@ -150,8 +233,106 @@
 					@click="toggleRegistration">
 					{{ $t("homepage.navigation.registration") }}
 				</button>
+				<button
+					v-if="showSections"
+					ref="menuButton"
+					type="button"
+					data-menu
+					class="lg:hidden size-11 inline-flex items-center justify-center rounded-md text-white/85 hover:text-white cursor-pointer"
+					:class="{ 'bg-white/12 text-white!': menuOpen }"
+					:aria-label="
+						$t(
+							menuOpen
+								? 'homepage.navigation.menu_close'
+								: 'homepage.navigation.menu'
+						)
+					"
+					:aria-expanded="menuOpen"
+					aria-controls="homepage-menu"
+					@click="menuOpen = !menuOpen">
+					<svg
+						aria-hidden="true"
+						width="22"
+						height="22"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2">
+						<path v-if="menuOpen" d="M6 6l12 12M18 6L6 18" />
+						<path v-else d="M4 7h16M4 12h16M4 17h16" />
+					</svg>
+				</button>
 			</div>
 		</div>
+
+		<template v-if="menuOpen">
+			<div
+				aria-hidden="true"
+				class="lg:hidden absolute top-full inset-x-0 h-dvh bg-black/60" />
+			<nav
+				id="homepage-menu"
+				ref="menu"
+				:aria-label="$t('homepage.navigation.menu')"
+				class="lg:hidden absolute top-full inset-x-0 px-4 pt-2 pb-4 flex flex-col bg-[#0a1010] border-b border-white/16"
+				@click="closeMenu(false)">
+				<div :class="menuLabel">
+					{{ $t("homepage.navigation.tools_group") }}
+				</div>
+				<RouterLink
+					to="/search"
+					:class="menuLink"
+					@click="
+						trackEvent('landing:planet_search_click', {
+							target: 'header',
+						})
+					">
+					{{ $t("homepage.navigation.planet_search") }}
+					<span
+						v-if="isSearch"
+						aria-hidden="true"
+						class="size-2 rounded-full bg-prunplanner" />
+				</RouterLink>
+				<RouterLink
+					to="/market"
+					:class="menuLink"
+					@click="
+						trackEvent('landing:market_click', { target: 'header' })
+					">
+					{{ $t("homepage.navigation.market") }}
+				</RouterLink>
+				<div :class="menuLabel">PRUNplanner</div>
+				<template v-for="section in sections" :key="section">
+					<a v-if="isLanding" :href="`#${section}`" :class="menuLink">
+						{{
+							$t(
+								`homepage.navigation.${section === "tools" ? "all_tools" : section}`
+							)
+						}}
+					</a>
+					<RouterLink v-else :to="`/#${section}`" :class="menuLink">
+						{{
+							$t(
+								`homepage.navigation.${section === "tools" ? "all_tools" : section}`
+							)
+						}}
+					</RouterLink>
+				</template>
+				<a
+					:href="GITHUB_URL"
+					target="_blank"
+					rel="noopener"
+					:class="menuLink">
+					{{ $t("homepage.navigation.github") }}
+				</a>
+				<button
+					type="button"
+					data-menu-login
+					class="sm:hidden mt-2 min-h-12 flex items-center text-base font-semibold text-white cursor-pointer"
+					@click="toggleLogin">
+					{{ $t("homepage.navigation.login") }}
+				</button>
+			</nav>
+		</template>
 	</header>
 
 	<PDrawer
@@ -188,6 +369,7 @@
 			</div>
 		</template>
 		<template v-if="forms">
+			<component :is="forms.context" />
 			<component :is="forms.login" v-if="showLogin" />
 			<component
 				:is="forms.registration"

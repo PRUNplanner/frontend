@@ -6,15 +6,19 @@
 
 	useHead({
 		title: t("planet_search.view_title"),
+		meta: [
+			{
+				name: "description",
+				content: t("planet_search.description"),
+			},
+		],
 	});
 
 	// Components
-	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import PlanetSearchPage from "@/features/planet_search/components/PlanetSearchPage.vue";
 </script>
 
 <template>
-	<WrapperGameDataLoader load-materials load-exchanges>
-		<PlanetSearchPage />
-	</WrapperGameDataLoader>
+	<!-- the page waits for the game data in its body only (frame first) -->
+	<PlanetSearchPage />
 </template>

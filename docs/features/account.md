@@ -20,7 +20,7 @@ dialog that adds and confirms one.
 
 | Component | Calls |
 | --- | --- |
-| `LoginComponent.vue` | `userStore.performLogin(username, password)`, which returns `"ok"`, `"throttled"` (429) or `"failed"`. On `"ok"` it has stored the tokens and loaded the profile, then navigates: to `?redirectTo=`, else to `/empire`, but a shared plan (`shared-plan` route) stays open. A 429 shows "too many login attempts" instead of the credentials error |
+| `LoginComponent.vue` | `userStore.performLogin(username, password)`, which returns `"ok"`, `"throttled"` (429) or `"failed"`. On `"ok"` it has stored the tokens and loaded the profile, then navigates, first match wins: to `?redirectTo=`, to the panel's `next` (read before the login, since the header and its panel leave on it), stays on a shared plan (`shared-plan`) or Planet Search (`search`, with its query), else to `/empire`. A 429 shows "too many login attempts" instead of the credentials error |
 | `RegistrationComponent.vue` | `PostUserRegistration` |
 | `VerifyEmailComponent.vue` | `PostUserVerifyEmail`, which returns the result code (`verified`, `already_verified`, `invalid`, `expired`, `no_code`, `throttled`, `error`) and refreshes the profile once confirmed. The route needs a login; the guard sends a logged-out visitor to the login with `redirectTo`, so the emailed link works on any device |
 | `EmailNudgeBanner.vue` | The Empire banner (full view only): `none` (Add email, Not now, Don't remind me) or `unconfirmed` (Enter code, Send new code, Not now). Counts all plans with `GetAllPlans` once it shows |
@@ -38,8 +38,13 @@ preferences, synced like any other. `account.util.ts` has `isEmailAddress`
 `useAuthPanel.ts` holds which form the header panel shows (login,
 registration or none), as module state: `HomepageHeader` renders the panel
 and toggles it from its buttons, `switchTo()` is the switch inside it, and
-the landing page and `SharedPlanBanner` open it with
-`open(panel, source)`. Opening never scrolls: the panel slides in where the
+the landing page, `SharedPlanBanner` and Planet Search ("+", the Chart's
+double-click, the Distance section) open it with
+`open(panel, source, { next, context })`. `next` is where a login leads,
+`context` the planet a plan is started on, which `AuthPanelContext.vue`
+names above both forms (loaded with them). Both last across the switch and
+the welcome state, until `close()`; the header's own buttons open the panel
+without them. Opening never scrolls: the panel slides in where the
 page is. `open` and `switchTo` send `landing:auth_open` / `landing:auth_switch`.
 After a registration the welcome state's "Log in" emits `login`, and
 `showLoginForm()` switches the panel to the login form (no event: it is

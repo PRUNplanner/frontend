@@ -40,6 +40,12 @@ const at = (path: string, hash = "") =>
 const scroll = router.options.scrollBehavior!;
 
 describe("router routes", () => {
+	it("opens Planet Search to visitors and search engines", () => {
+		const search = router.getRoutes().find((r) => r.name === "search")!;
+		expect(search.meta.requiresAuth).toBeUndefined();
+		expect(search.meta.indexable).toBe(true);
+	});
+
 	it("registers the kit page in dev builds", () => {
 		expect(router.resolve("/dev/kit").name).toBe("dev-kit");
 	});

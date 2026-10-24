@@ -53,6 +53,34 @@ describe("useAuthPanel", () => {
 		expect(trackEvent).not.toHaveBeenCalled();
 	});
 
+	it("keeps where a login leads across the switch, until it closes", () => {
+		const options = {
+			next: "/plan/CH-771a",
+			context: { planet: "Pyrgos", id: "CH-771a" },
+		};
+		panel.open("login", "planet_search_plan", options);
+		expect(trackEvent).toHaveBeenLastCalledWith("landing:auth_open", {
+			panel: "login",
+			source: "planet_search_plan",
+		});
+
+		panel.switchTo("registration");
+		panel.showLoginForm();
+		expect(panel.next.value).toBe(options.next);
+		expect(panel.context.value).toEqual(options.context);
+
+		panel.close();
+		expect(panel.next.value).toBeUndefined();
+		expect(panel.context.value).toBeUndefined();
+	});
+
+	it("drops a page's next when the header opens the panel", () => {
+		panel.open("login", "planet_search_plan", { next: "/plan/X" });
+		panel.close();
+		panel.toggleLogin();
+		expect(panel.next.value).toBeUndefined();
+	});
+
 	it("switches the open panel's form", () => {
 		panel.open("login", "hero");
 		panel.switchTo("registration");

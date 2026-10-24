@@ -9,10 +9,19 @@ import type { IAnalyticsEventProperties } from "@/lib/analytics/useAnalytics.typ
 type AuthPanel = "login" | "registration";
 type AuthPanelSource = IAnalyticsEventProperties["landing:auth_open"]["source"];
 
+interface IAuthPanelOptions {
+	/** Where a login from this panel leads */
+	next?: string;
+	/** The planet a plan is started on, named above the form */
+	context?: { planet: string; id: string };
+}
+
 // Module state: the homepage header renders the panel, other components
-// (the landing page, the shared plan banner) open it.
+// (the landing page, the shared plan banner, Planet Search) open it.
 const showLogin: Ref<boolean> = ref(false);
 const showRegistration: Ref<boolean> = ref(false);
+const next: Ref<string | undefined> = ref(undefined);
+const context: Ref<IAuthPanelOptions["context"]> = ref(undefined);
 
 /**
  * Login and registration panel of the homepage header, one form at a time.
@@ -25,7 +34,7 @@ export function useAuthPanel() {
 	}
 
 	function toggle(panel: AuthPanel, isOpen: boolean): void {
-		if (isOpen) show(null);
+		if (isOpen) close();
 		else open(panel, "header");
 	}
 
@@ -35,6 +44,8 @@ export function useAuthPanel() {
 
 	function close(): void {
 		show(null);
+		next.value = undefined;
+		context.value = undefined;
 	}
 
 	/** The welcome state after a registration: on to the login form */
@@ -44,12 +55,20 @@ export function useAuthPanel() {
 
 	/**
 	 * Opens the panel on a form, where the page is: it slides in over it.
+	 * `next` and `context` last until it closes, also across the switch.
 	 *
 	 * @param {AuthPanel} panel Form to show
 	 * @param {AuthPanelSource} source Where the visitor opened it
+	 * @param {IAuthPanelOptions} options Where a login leads, and why
 	 */
-	function open(panel: AuthPanel, source: AuthPanelSource): void {
+	function open(
+		panel: AuthPanel,
+		source: AuthPanelSource,
+		options: IAuthPanelOptions = {}
+	): void {
 		show(panel);
+		next.value = options.next;
+		context.value = options.context;
 		trackEvent("landing:auth_open", { panel, source });
 	}
 
@@ -66,6 +85,8 @@ export function useAuthPanel() {
 	return {
 		showLogin,
 		showRegistration,
+		next,
+		context,
 		toggleLogin,
 		toggleRegistration,
 		open,

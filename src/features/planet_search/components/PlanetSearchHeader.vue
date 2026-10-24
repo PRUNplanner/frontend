@@ -1,11 +1,11 @@
 <script setup lang="ts">
-	import { computed, nextTick, ref, type Ref } from "vue";
+	import { computed, onBeforeUnmount, ref, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	// Util
-	import { chipLabel } from "@/features/planet_search/planetSearchLabels.util";
+	// Components
+	import PlanetSearchSavedActions from "@/features/planet_search/components/PlanetSearchSavedActions.vue";
 
 	// Types & Interfaces
 	import type {
@@ -16,8 +16,8 @@
 	import type { IPlanetSearchChip } from "@/features/planet_search/planetSearch.types";
 
 	// UI
-	import { PButton, PInput, PPopover, PSelect } from "@/ui";
-	import { SearchSharp } from "@vicons/material";
+	import { PButton, PInput, PPopover } from "@/ui";
+	import { MoreHorizSharp, SearchSharp } from "@vicons/material";
 
 	const props = defineProps<{
 		filter: PlanetSearchFilter;
@@ -41,40 +41,23 @@
 		set: (v: string | null | undefined) => emit("update:text", v ?? ""),
 	});
 
-	// the select only triggers a load, it doesn't keep a value
-	const loadValue: Ref<string | null> = ref(null);
-	const savedOptions = computed(() =>
-		props.saved.map((s) => ({ label: s.name, value: s.id }))
-	);
-	function onLoad(id: string | number | null | undefined) {
-		const saved = props.saved.find((s) => s.id === id);
-		if (saved) emit("load", saved);
-		nextTick(() => (loadValue.value = null));
-	}
+	// phones fold the saved-search buttons into one "⋯" next to the name
+	const wideQuery =
+		typeof window.matchMedia === "function"
+			? window.matchMedia("(min-width: 640px)")
+			: null;
+	const isPhone: Ref<boolean> = ref(!(wideQuery?.matches ?? true));
+	const onMedia = (e: MediaQueryListEvent) => (isPhone.value = !e.matches);
+	wideQuery?.addEventListener("change", onMedia);
+	onBeforeUnmount(() => wideQuery?.removeEventListener("change", onMedia));
 
-	const saving: Ref<boolean> = ref(false);
-	const saveName: Ref<string | null | undefined> = ref("");
-	function startSave() {
-		saveName.value =
-			props.chips
-				.map((c) => chipLabel(c, props.filter.minDaily, t, props.refName))
-				.join(" · ") || t("planet_search.header.default_name");
-		saving.value = true;
-	}
-	function confirmSave() {
-		const name =
-			saveName.value?.trim() || t("planet_search.header.default_name");
-		emit("save", name);
-		saving.value = false;
-	}
-
-	const manageOpen: Ref<boolean> = ref(false);
+	const moreOpen: Ref<boolean> = ref(false);
 </script>
 
 <template>
 	<div
-		class="px-3 lg:px-6 py-3 border-b border-white/10 flex flex-row flex-wrap items-center gap-2">
-		<label class="flex-1 min-w-[240px] max-w-[560px]">
+		class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-row flex-wrap items-center gap-2">
+		<label class="flex-1 min-w-0 sm:min-w-[240px] max-w-[560px]">
 			<span class="sr-only">{{ t("planet_search.header.search_label") }}</span>
 			<PInput
 				v-model:value="text"
@@ -85,85 +68,40 @@
 			</PInput>
 		</label>
 
-		<div class="ml-auto flex flex-row flex-wrap items-center gap-2">
-			<span class="text-sm text-muted">
-				{{ t("planet_search.header.saved") }}
-			</span>
-			<PSelect
-				v-model:value="loadValue"
-				class="min-w-[200px]"
-				:options="savedOptions"
-				:disabled="!saved.length"
-				:aria-label="t('planet_search.header.load_saved')"
-				:placeholder="t('planet_search.header.load_saved')"
-				@update:value="onLoad" />
-
-			<PPopover v-model:show="manageOpen" placement="bottom-end">
-				<template #trigger>
-					<PButton type="secondary">
-						{{ t("planet_search.header.manage") }}
-					</PButton>
-				</template>
-				<div class="flex flex-col gap-2 w-[380px] max-w-[90vw]">
-					<p v-if="!saved.length" class="text-sm text-muted">
-						{{ t("planet_search.header.no_saved") }}
-					</p>
-					<div
-						v-for="(s, i) in saved"
-						:key="s.id"
-						class="flex flex-row items-center gap-2">
-						<PInput
-							class="flex-1"
-							:value="s.name"
-							:aria-label="
-								t('planet_search.header.rename_label', {
-									n: i + 1,
-								})
-							"
-							@update:value="(v) => emit('rename', s, v ?? '')" />
-						<PButton
-							size="sm"
-							@click="
-								emit('load', s);
-								manageOpen = false;
-							">
-							{{ t("planet_search.header.load") }}
-						</PButton>
-						<PButton
-							size="sm"
-							type="error"
-							@click="emit('delete', s)">
-							{{ t("planet_search.header.delete") }}
-						</PButton>
-					</div>
-				</div>
-			</PPopover>
-
-			<form
-				v-if="saving"
-				class="flex flex-row items-center gap-2"
-				@submit.prevent="confirmSave">
-				<PInput
-					v-model:value="saveName"
-					class="w-[280px]"
-					:aria-label="t('planet_search.header.save_name')" />
-				<PButton html-type="submit">
-					{{ t("planet_search.header.save_confirm") }}
+		<PPopover v-if="isPhone" v-model:show="moreOpen" placement="bottom-end">
+			<template #trigger>
+				<PButton
+					type="secondary"
+					class="min-w-11 min-h-11"
+					:aria-label="t('planet_search.header.more')">
+					<MoreHorizSharp class="w-5 h-5" />
 				</PButton>
-				<PButton type="secondary" @click="saving = false">
-					{{ t("planet_search.header.cancel") }}
-				</PButton>
-			</form>
-			<PButton v-else type="secondary" @click="startSave">
-				{{ t("planet_search.header.save") }}
-			</PButton>
-
-			<PButton @click="emit('copy')">
-				{{ t("planet_search.header.copy_link") }}
-			</PButton>
-			<PButton type="secondary" @click="emit('reset')">
-				{{ t("planet_search.header.reset") }}
-			</PButton>
-		</div>
+			</template>
+			<PlanetSearchSavedActions
+				class="flex-col items-stretch! w-[280px] max-w-[85vw] [&_button]:min-h-11 [&_form]:flex-wrap"
+				:filter="filter"
+				:chips="chips"
+				:saved="saved"
+				:ref-name="refName"
+				@save="(name) => emit('save', name)"
+				@load="(s) => emit('load', s)"
+				@rename="(s, name) => emit('rename', s, name)"
+				@delete="(s) => emit('delete', s)"
+				@copy="emit('copy')"
+				@reset="emit('reset')" />
+		</PPopover>
+		<PlanetSearchSavedActions
+			v-else
+			class="ml-auto"
+			:filter="filter"
+			:chips="chips"
+			:saved="saved"
+			:ref-name="refName"
+			@save="(name) => emit('save', name)"
+			@load="(s) => emit('load', s)"
+			@rename="(s, name) => emit('rename', s, name)"
+			@delete="(s) => emit('delete', s)"
+			@copy="emit('copy')"
+			@reset="emit('reset')" />
 	</div>
 </template>

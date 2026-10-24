@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import {
 	type BaseWrapper,
 	flushPromises,
@@ -113,6 +113,41 @@ describe("PlanetSearchHeader actions", () => {
 		expect(header.emitted("copy")).toHaveLength(1);
 		await button(group, "planet_search.header.reset").trigger("click");
 		expect(header.emitted("reset")).toHaveLength(1);
+	});
+
+	describe("below 640 px", () => {
+		afterEach(() => vi.unstubAllGlobals());
+
+		it("folds them into one button next to the name field", async () => {
+			vi.stubGlobal("matchMedia", () => ({
+				matches: false,
+				addEventListener: vi.fn(),
+				removeEventListener: vi.fn(),
+			}));
+			const { component, wrapper } = await mountComponent(
+				PlanetSearchHeader,
+				{ filter, chips: [], saved, refName },
+				{ attach: true }
+			);
+			const header = component as VueWrapper;
+			expect(header.find(".ml-auto").exists()).toBe(false);
+
+			const more = header.find(
+				'button[aria-label="planet_search.header.more"]'
+			);
+			await more.trigger("click");
+			await flushPromises();
+			expect(more.attributes("aria-expanded")).toBe("true");
+			for (const key of ["manage", "save", "copy_link", "reset"])
+				expect(bodyButton(`planet_search.header.${key}`)).toBeDefined();
+			expect(document.body.textContent).toContain(
+				"planet_search.header.saved"
+			);
+
+			bodyButton("planet_search.header.copy_link").click();
+			expect(header.emitted("copy")).toHaveLength(1);
+			wrapper.unmount();
+		});
 	});
 });
 

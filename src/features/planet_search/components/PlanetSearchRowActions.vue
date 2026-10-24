@@ -4,6 +4,10 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Composables
+	import { useAuthPanel } from "@/features/account/useAuthPanel";
+	import { useUserStore } from "@/stores/userStore";
+
 	// Util
 	import { planetDisplayName } from "@/util/planetName";
 
@@ -32,22 +36,44 @@
 	// 26 px square buttons in both views
 	const square =
 		"touch-target inline-flex items-center justify-center w-[26px] h-[26px] rounded-sm";
+	const plus = [
+		square,
+		buttonConfig.colors.primary.base,
+		buttonConfig.colors.primary.hover,
+	];
+
+	// a visitor logs in first, in place, and goes on to the new plan
+	const userStore = useUserStore();
+	const { open } = useAuthPanel();
+	function loginToPlan() {
+		open("login", "planet_search_plan", {
+			next: `/plan/${props.planet.planet_natural_id}`,
+			context: { planet: name.value, id: props.planet.planet_natural_id },
+		});
+	}
 </script>
 
 <template>
 	<div class="flex flex-row gap-1">
 		<router-link
+			v-if="userStore.isLoggedIn"
 			:to="`/plan/${planet.planet_natural_id}`"
 			target="_blank"
 			rel="noopener"
-			:class="[
-				square,
-				buttonConfig.colors.primary.base,
-				buttonConfig.colors.primary.hover,
-			]"
+			:class="plus"
 			:aria-label="t('planet_search.results.create_plan', { planet: name })">
 			<PlusSharp class="w-4 h-4" />
 		</router-link>
+		<button
+			v-else
+			type="button"
+			:class="[plus, 'cursor-pointer']"
+			:aria-label="
+				t('planet_search.results.create_plan_login', { planet: name })
+			"
+			@click="loginToPlan">
+			<PlusSharp class="w-4 h-4" />
+		</button>
 		<button
 			v-if="showPin"
 			type="button"
