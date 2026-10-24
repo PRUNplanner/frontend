@@ -5,13 +5,19 @@
 		"sections": "Secciones",
 		"how": "Cómo funciona",
 		"market": "Mercado",
+		"planet_search": "Planet Search",
 		"features": "Funciones",
 		"tools": "Herramientas",
-		"github": "GitHub"
+		"github": "GitHub",
+		"menu": "Menu",
+		"menu_close": "Close menu",
+		"tools_group": "Tools",
+		"all_tools": "All tools"
 	},
 	"auth_panel": {
 		"label": "Inicia sesión o crea una cuenta",
-		"switch": "Cuenta"
+		"switch": "Cuenta",
+		"plan_context": "Log in to start a plan on {planet} ({id}). You go straight to it. New here? Create a free account first, you come back to {name} after."
 	},
 	"hero": {
 		"eyebrow": "Planificador de bases e imperios para Prosperous Universe",
@@ -117,7 +123,9 @@
 			"label": "Búsqueda de planetas",
 			"title": "Encuentra el planeta de tu próxima base.",
 			"lead": "Filtra todos los planetas del universo y empieza un plan a partir del resultado.",
-			"alt": "Búsqueda de planetas: filtros a la izquierda, planetas coincidentes con sus recursos, COGC e infraestructura"
+			"alt": "Búsqueda de planetas: filtros a la izquierda, planetas coincidentes con sus recursos, COGC e infraestructura",
+			"cta": "Try Planet Search",
+			"cta_note": "No account needed."
 		},
 		"empire": {
 			"label": "Imperio",
