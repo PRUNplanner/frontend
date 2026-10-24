@@ -6,6 +6,7 @@ allowBuilds:
     esbuild: true
     protobufjs: true
     vue-demi: true
+    workerd: true
 
 strictDepBuilds: true
 
