@@ -10,7 +10,7 @@
 
 **Anzahlen und „Jede“.** Die Zahl neben einer nicht angehakten Option gibt an, wie viele Planeten du erhalten würdest, wenn du sie anhakst. Der Button _Jede_ in der Kopfzeile von Planetenbedingungen, Zusätzliche Baumaterialien akzeptieren, Aktives COGC-Programm und Infrastruktur setzt diesen Abschnitt auf den Zustand, der die wenigsten Planeten ausblendet, und zeigt, wie viele Planeten das ergibt: beide Oberflächen und keine Anforderung an die Fruchtbarkeit, alle zusätzlichen Baumaterialien akzeptiert, kein COGC-Programm angehakt, keine Infrastruktur angehakt. It is highlighted and can no longer be clicked when the section is already there.
 
-**Entfernung.** Wähle Marktplätze und/oder Pläne aus einem deiner Imperien. Ein Planet muss innerhalb der maximalen Sprünge jeder Auswahl liegen, und jeder gewählte Plan bekommt eine eigene Sprung-Spalte. AI1, CI1, IC1 und NC1 sind immer sortierbare Spalten.
+**Entfernung.** Wähle Marktplätze und/oder Pläne aus einem deiner Imperien. Ein Planet muss innerhalb der maximalen Sprünge jeder Auswahl liegen, und jeder gewählte Plan bekommt eine eigene Sprung-Spalte. AI1, CI1, IC1 und NC1 sind immer sortierbare Spalten. Planet Search works without an account; distances to your own plans need a login.
 
 **Aktive Filter und Zurücksetzen.** Jeder aktive Filter erscheint als Chip über den Ergebnissen; × auf einem Chip entfernt nur diesen Filter. _Zurücksetzen_ oben rechts stellt die Startfilter und die Standardsortierung wieder her. Wenn kein Planet passt, erscheinen bis zu drei Vorschläge, jeweils mit der Zahl der Planeten, die er ergeben würde.
 
@@ -28,4 +28,4 @@
 
 **Vergleichen.** Auf größeren Bildschirmen kannst du bis zu vier Planeten mit ☆ anheften, um sie in der Leiste unten nebeneinander zu vergleichen. Fruchtbarkeit, die gesuchten Materialien und die Sprünge zu deinen Entfernungsauswahlen sind vom besten zum schlechtesten Wert eingefärbt, der beste Wert ist fett. Zeilen, in denen sich die Planeten in etwas anderem unterscheiden, sind blau eingefärbt.
 
-**Speichern und Teilen.** Die Adresszeile enthält immer die gesamte Suche, sodass du sie mit _Link kopieren_ teilen kannst. „+“ öffnet einen neuen Plan für diesen Planeten in einem neuen Tab, damit deine Suche erhalten bleibt. _Suche speichern_ speichert benannte Suchen in diesem Browser; _Verwalten_ benennt sie um, lädt oder löscht sie.
+**Speichern und Teilen.** Die Adresszeile enthält immer die gesamte Suche, sodass du sie mit _Link kopieren_ teilen kannst. „+“ öffnet einen neuen Plan für diesen Planeten in einem neuen Tab, damit deine Suche erhalten bleibt. Without an account, "+" asks you to log in first and then opens the plan. _Suche speichern_ speichert benannte Suchen in diesem Browser; _Verwalten_ benennt sie um, lädt oder löscht sie.
