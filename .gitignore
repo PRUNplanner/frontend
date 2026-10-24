@@ -35,3 +35,4 @@ env.js
 .scratch
 .vitest-reports
 .prerender
+.wrangler/
