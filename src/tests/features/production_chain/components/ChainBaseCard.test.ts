@@ -214,8 +214,12 @@ describe("ChainBaseCard variants", () => {
 		steppers[0].vm.$emit("update:value", 9);
 		const [[experts]] = component.emitted("experts") as [Record<string, number>][];
 		expect(experts.Food_Industries).toBe(5);
+		steppers[0].vm.$emit("update:value", null);
 		steppers[0].vm.$emit("update:value", 2);
 		expect((component.emitted("experts") as unknown[][])[1][0]).toMatchObject({
+			Food_Industries: 0,
+		});
+		expect((component.emitted("experts") as unknown[][])[2][0]).toMatchObject({
 			Food_Industries: 2,
 		});
 		// auto is on: the reset is off

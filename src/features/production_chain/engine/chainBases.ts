@@ -487,7 +487,7 @@ function planDraft(
 		plan_data: {
 			experts: expertNames.map((type) => ({
 				type,
-				amount: base.experts[type] ?? 0,
+				amount: base.experts[type],
 			})),
 			workforce: TIERS.map((type) => ({
 				type,

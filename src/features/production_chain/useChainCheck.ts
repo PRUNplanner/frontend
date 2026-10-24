@@ -201,7 +201,7 @@ export function useChainCheck() {
 			const calculation = calculatePlan(
 				{
 					plan,
-					empire: getActiveEmpire(uuid, empires.value ?? undefined),
+					empire: getActiveEmpire(uuid, empires.value!),
 					cxUuid: cx,
 					recipeOptions: false,
 				},
@@ -355,7 +355,8 @@ export function useChainCheck() {
 	function addAll(): void {
 		setTargets([
 			...state.value.targets,
-			...(result.value?.sold.map((s) => s.ticker) ?? []),
+			// the button shows once there is a result
+			...result.value!.sold.map((s) => s.ticker),
 		]);
 		track("check_add_all");
 	}
@@ -375,9 +376,8 @@ export function useChainCheck() {
 
 	/** opens Plan a chain with the finding's change */
 	function tryFinding(finding: ICheckFinding): void {
-		const r = result.value;
-		const input = r && tryInPlanner(r, finding);
-		if (!input) return;
+		// only recipe, buy and location findings offer it: they sit in a chain
+		const input = tryInPlanner(result.value!, finding)!;
 		track("check_try");
 		router.push({
 			name: "production-chain",

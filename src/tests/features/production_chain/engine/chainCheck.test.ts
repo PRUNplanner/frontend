@@ -18,10 +18,15 @@ import {
 // Fixtures
 import {
 	BARREN,
+	checkFromPlan,
 	DW,
 	DW7,
 	FARM_PLANET,
+	FOOD_PLANET,
+	checkPlan,
 	fixtureEmpire,
+	fixturePlan,
+	fixtureWithRigs,
 	index,
 	NOW,
 	RAT,
@@ -457,5 +462,161 @@ describe("checkEmpire", () => {
 		expect([0, 25, 26, 27, 701].map(baseLetter)).toEqual(["A", "Z", "AA", "AB", "ZZ"]);
 		expect(planLux(PLANS[0].result.workforce)).toBe("both");
 		expect(planLux(PLANS[1].result.workforce)).toBe("none");
+	});
+});
+
+describe("checkEmpire edges", () => {
+	it("skips buildings that don't run and orders set to 0; reads a lux 1 plan", () => {
+		const idle = fixturePlan("F", FOOD_PLANET, "---", "lux1", {}, [
+			["FP", 1, RAT],
+			["INC", 1, "INC#4xGRN=>4xC"],
+		]);
+		idle.plan_data.buildings[1].active_recipes[0].amount = 0;
+		const homeless = fixturePlan("G", FOOD_PLANET, "---", "both", {}, [
+			["FP", 1, RAT],
+		]);
+		homeless.plan_data.infrastructure = [];
+		const r = check({
+			plans: [...PLANS, checkFromPlan("F", idle), checkFromPlan("G", homeless)],
+			targets: ["RAT"],
+		});
+		const f = base(r, "F");
+		expect(f.steps.map((s) => s.building)).toEqual(["FP"]);
+		expect(f.lux).toBe("lux1");
+		const lux = f.findings.find((x) => x.kind === "setup" && x.setup === "lux");
+		expect(lux?.kind === "setup" && lux.setup === "lux" && lux.factor).toBeCloseTo(
+			15 / 13 - 1,
+			6
+		);
+		const g = base(r, "G");
+		expect(g.steps).toEqual([]);
+		expect(g.efficiency).toEqual({ min: 0, max: 0 });
+		expect(g.verdict).toBe("out");
+		// a base with a step outside the chains: only its chain steps get alternatives
+		const all = check({
+			plans: [...PLANS, checkFromPlan("F", idle)],
+			targets: ["DW"],
+		});
+		expect(base(all, "F").checked).toBe(false);
+	});
+
+	it("works without prices: nothing sold, shares by quantity", () => {
+		const zero = {
+			...ctx,
+			prices: { ...ctx.prices, getPrice: () => 0 },
+		};
+		const r = check({}, zero);
+		expect(r.sold).toEqual([]);
+		const dw = r.chains.find((c) => c.target === "DW")!;
+		expect(dw.rows.find((x) => x.ticker === "PG")!.chainDefault.kind).toBe(
+			"bought"
+		);
+		// the plans' upkeep stays priced, buying at 0 is cheaper
+		expect(dw.rows.find((x) => x.ticker === "H2O")!.chainDefault.kind).toBe(
+			"buy_cheaper"
+		);
+		expect(r.findings.some((f) => f.kind === "location")).toBe(false);
+		expect(r.findings.some((f) => f.kind === "setup")).toBe(false);
+	});
+
+	it("checks without the planet index: no fixes, no moves", () => {
+		const r = check({}, testContext(false));
+		expect(r.bases.every((b) => b.planet === null && b.running === "---")).toBe(
+			true
+		);
+		expect(
+			r.findings.some((f) => f.kind === "fix" || f.kind === "location")
+		).toBe(false);
+		// planets without extraction sites: extraction steps don't move
+		const noSites = check({}, { ...ctx, extraction: undefined });
+		expect(
+			noSites.findings.some(
+				(f) => f.kind === "location" && f.step.extraction
+			)
+		).toBe(false);
+	});
+
+	it("tries a recipe and a move to an own base in the planner (AC 16)", () => {
+		for (const rid of [DW, DW7]) {
+			const r = check({ plans: fixtureEmpire(rid) });
+			const f = r.findings.find((x) => x.kind === "recipe");
+			if (!f || f.kind !== "recipe") continue;
+			expect(tryInPlanner(r, f)!.recipeId[f.step.ticker]).toBe(
+				f.recipe.recipe_id
+			);
+		}
+		const r = check();
+		const move = base(r, "C").findings.find(
+			(x): x is ICheckLocationFinding => x.kind === "location"
+		)!;
+		const picked = check({ picks: { [move.step.key]: FARM_PLANET } });
+		const p = base(picked, "C").findings.find(
+			(x): x is ICheckLocationFinding => x.kind === "location"
+		)!;
+		expect(p.option.own).toBe("B");
+		const input = tryInPlanner(picked, p)!;
+		const target = input.bases.find((b) => b.id === input.baseOf.GRN)!;
+		expect(target.name).toBe("Plan B");
+		// a new base joins the chain's bases
+		const fresh = move.options.find((o) => !o.own)!;
+		const moved = check({ picks: { [move.step.key]: fresh.planet.planet_natural_id } });
+		const m = base(moved, "C").findings.find(
+			(x): x is ICheckLocationFinding => x.kind === "location"
+		)!;
+		const planned = tryInPlanner(moved, m)!;
+		const added = planned.bases.find((b) => b.id === planned.baseOf.GRN)!;
+		expect(added.planetId).toBe(fresh.planet.planet_natural_id);
+		expect(added.cogc).toBe("auto");
+		const buy = { ...p, kind: "buy" as const, cost: 1, price: 0.5, market: { sharePct: 1, level: null, exchange: "AI1" } };
+		expect(tryInPlanner(picked, buy)!.source[p.step.ticker]).toBe("buy");
+	});
+});
+
+describe("checkEmpire more edges", () => {
+	it("moves extraction to planets with a better rate (AC 9)", () => {
+		const r = check({ plans: fixtureWithRigs() });
+		const rig = base(r, "F").findings.find(
+			(x): x is ICheckLocationFinding => x.kind === "location"
+		)!;
+		expect(rig.step.extraction).toBe(true);
+		const here = ctx.extraction!.get("H2O")!.sites.find(
+			(s) => s.planetId === BARREN
+		)!;
+		expect(rig.hereRate).toBe(extractorRate(here));
+		for (const o of rig.options) expect(o.rate!).toBeGreaterThan(rig.hereRate!);
+	});
+
+	it("reads plans with lux 2, idle orders, steps outside the chains and shared inputs", () => {
+		const lux2 = checkPlan("G", FOOD_PLANET, "---", "lux2", {}, [["FP", 1, RAT]]);
+		expect(planLux(lux2.result.workforce)).toBe("lux2");
+		const mixed = fixturePlan("H", FOOD_PLANET, "---", "both", {}, [
+			["FP", 1, RAT],
+			["INC", 1, "INC#4xGRN=>4xC"],
+		]);
+		mixed.plan_data.buildings[0].active_recipes.push({ recipeid: DW, amount: 0 });
+		const algae = checkPlan("I", FARM_PLANET, "---", "both", {}, [
+			["HYF", 1, "HYF#16xH2O 2xNS=>12xALG"],
+		]);
+		const r = check({
+			plans: [...PLANS, lux2, checkFromPlan("H", mixed), algae],
+			targets: ["RAT"],
+		});
+		const h = base(r, "H");
+		expect(h.steps.map((s) => s.building).sort()).toEqual(["FP", "INC"]);
+		expect(h.checked).toBe(true);
+		expect(h.steps.find((s) => s.building === "INC")!.inChain).toBe(false);
+		// H2O feeds both GRN and ALG: once in the chain
+		const rat = r.chains.find((c) => c.target === "RAT")!;
+		expect(rat.rows.filter((x) => x.ticker === "H2O")).toHaveLength(1);
+		const lux = base(r, "G").findings.find(
+			(x) => x.kind === "setup" && x.setup === "lux"
+		);
+		expect(lux?.kind === "setup" && lux.setup === "lux" && lux.factor).toBeCloseTo(
+			12 / 11 - 1,
+			6
+		);
+		expect(
+			planetPlots({ plots_total: 4 } as unknown as PlanetSearchIndexEntry)
+		).toEqual({ free: 4, total: 4, ghost: false });
 	});
 });

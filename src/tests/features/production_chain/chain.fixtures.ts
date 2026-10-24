@@ -31,6 +31,7 @@ import type {
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
 import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type {
 	ExpertType,
 	InfrastructureType,
@@ -203,15 +204,15 @@ const CHECK_TIERS: [WorkforceType, InfrastructureType, "pioneers" | "settlers" |
 	["scientist", "HB5", "scientists"],
 ];
 
-/** a plan calculated by the plan engine, with habs for its workforce */
-export function checkPlan(
+/** a stored plan with habs for its workforce, as the API returns it */
+export function fixturePlan(
 	id: string,
 	planetId: string,
 	cogc: PlanCOGCProgram,
 	lux: ChainLux,
 	experts: Partial<Record<ExpertType, number>>,
 	buildings: [string, number, string][]
-): ICheckPlan {
+): Plan {
 	const ctx = testContext();
 	const habs = CHECK_TIERS.map(([, hab, field]) => ({
 		building: hab,
@@ -222,45 +223,54 @@ export function checkPlan(
 			) / 100
 		),
 	})).filter((h) => h.amount > 0);
-	const result = calculatePlan(
-		{
-			plan: {
-				plan_cogc: cogc,
-				plan_corphq: false,
-				plan_permits_used: 3,
-				plan_data: {
-					buildings: buildings.map(([name, amount, recipeid]) => ({
-						name,
-						amount,
-						active_recipes: [{ recipeid, amount: 1 }],
-					})),
-					experts: Object.entries(experts).map(([type, amount]) => ({
-						type: type as ExpertType,
-						amount: amount!,
-					})),
-					workforce: CHECK_TIERS.map(([type]) => ({
-						type,
-						lux1: lux === "lux1" || lux === "both",
-						lux2: lux === "lux2" || lux === "both",
-					})),
-					infrastructure: habs,
-				},
-			},
-			empire: undefined,
-			cxUuid: undefined,
-			recipeOptions: false,
+	return {
+		uuid: `uuid-${id}`,
+		plan_name: `Plan ${id}`,
+		planet_natural_id: planetId,
+		plan_cogc: cogc,
+		plan_corphq: false,
+		plan_permits_used: 3,
+		plan_data: {
+			buildings: buildings.map(([name, amount, recipeid]) => ({
+				name,
+				amount,
+				active_recipes: [{ recipeid, amount: 1 }],
+			})),
+			experts: Object.entries(experts).map(([type, amount]) => ({
+				type: type as ExpertType,
+				amount: amount!,
+			})),
+			workforce: CHECK_TIERS.map(([type]) => ({
+				type,
+				lux1: lux === "lux1" || lux === "both",
+				lux2: lux === "lux2" || lux === "both",
+			})),
+			infrastructure: habs,
 		},
-		planContextFor(planetId)
+	} as Plan;
+}
+
+/** a stored plan through the plan engine, as the check gets it */
+export function checkFromPlan(id: string, plan: Plan): ICheckPlan {
+	const result = calculatePlan(
+		{ plan, empire: undefined, cxUuid: undefined, recipeOptions: false },
+		planContextFor(plan.planet_natural_id)
 	);
 	return {
 		id,
-		uuid: `uuid-${id}`,
-		name: `Plan ${id}`,
-		planetId,
-		cogc,
+		uuid: plan.uuid,
+		name: plan.plan_name,
+		planetId: plan.planet_natural_id,
+		cogc: plan.plan_cogc,
 		result: result.result,
 		profit: result.overview.profit,
 	};
+}
+
+export function checkPlan(
+	...args: Parameters<typeof fixturePlan>
+): ICheckPlan {
+	return checkFromPlan(args[0], fixturePlan(...args));
 }
 
 export const DW = "FP#10xH2O 1xPG=>10xDW";
@@ -269,29 +279,38 @@ export const RAT = "FP#1xGRN 1xALG 1xNUT=>10xRAT";
 export const GRN1 = "FRM#1xH2O=>4xGRN";
 export const GRN4 = "FRM#4xH2O=>4xGRN";
 
-export function fixtureEmpire(dwRecipe = DW): ICheckPlan[] {
+export function fixtureEmpirePlans(dwRecipe = DW): Plan[] {
 	return [
-		checkPlan("A", FOOD_PLANET, "FOOD_INDUSTRIES", "both", { Food_Industries: 5 }, [
+		fixturePlan("A", FOOD_PLANET, "FOOD_INDUSTRIES", "both", { Food_Industries: 5 }, [
 			["FP", 4, dwRecipe],
 		]),
 		// runs Agriculture, the plan doesn't count it; no luxuries or experts
-		checkPlan("B", FARM_PLANET, "---", "none", {}, [
+		fixturePlan("B", FARM_PLANET, "---", "none", {}, [
 			["FRM", 3, GRN1],
 			["RIG", 2, "RIG#H2O"],
 		]),
 		// counts Agriculture, the barren planet runs nothing
-		checkPlan("C", BARREN, "AGRICULTURE", "both", {}, [["FRM", 2, GRN4]]),
-		checkPlan("D", FOOD_PLANET, "FOOD_INDUSTRIES", "both", { Food_Industries: 5 }, [
+		fixturePlan("C", BARREN, "AGRICULTURE", "both", {}, [["FRM", 2, GRN4]]),
+		fixturePlan("D", FOOD_PLANET, "FOOD_INDUSTRIES", "both", { Food_Industries: 5 }, [
 			["FP", 2, RAT],
 		]),
 		// carbon: in no chain of DW and RAT
-		checkPlan("E", BARREN, "---", "both", {}, [["INC", 1, "INC#4xGRN=>4xC"]]),
+		fixturePlan("E", BARREN, "---", "both", {}, [["INC", 1, "INC#4xGRN=>4xC"]]),
 	];
 }
 
 
+export function fixtureEmpire(dwRecipe = DW): ICheckPlan[] {
+	return fixtureEmpirePlans(dwRecipe).map((p, i) =>
+		checkFromPlan(String.fromCharCode(65 + i), p)
+	);
+}
+
 /** the fixture empire checked for DW and RAT, every finding shown */
-export function fixtureCheck(overrides: Partial<ICheckInput> = {}) {
+export function fixtureCheck(
+	overrides: Partial<ICheckInput> = {},
+	ctx: IChainContext = testContext()
+) {
 	return checkEmpire(
 		{
 			plans: fixtureEmpire(),
@@ -302,6 +321,14 @@ export function fixtureCheck(overrides: Partial<ICheckInput> = {}) {
 			picks: {},
 			...overrides,
 		},
-		testContext()
+		ctx
 	);
+}
+
+/** the fixture empire plus water rigs on the barren planet, for extraction moves */
+export function fixtureWithRigs(): ICheckPlan[] {
+	return [
+		...fixtureEmpire(),
+		checkPlan("F", BARREN, "---", "both", {}, [["RIG", 2, "RIG#H2O"]]),
+	];
 }

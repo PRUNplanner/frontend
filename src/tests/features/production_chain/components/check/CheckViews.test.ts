@@ -6,11 +6,13 @@ import CheckFindings from "@/features/production_chain/components/check/CheckFin
 import CheckChains from "@/features/production_chain/components/check/CheckChains.vue";
 import CheckAside from "@/features/production_chain/components/check/CheckAside.vue";
 import CheckResults from "@/features/production_chain/components/check/CheckResults.vue";
-import { PButton, PSelect } from "@/ui";
+import CheckFinding from "@/features/production_chain/components/check/CheckFinding.vue";
+import { PButton, PInputNumber, PSelect } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
 import {
 	fixtureCheck,
 	seedGameData,
+	testContext,
 } from "@/tests/features/production_chain/chain.fixtures";
 import messages from "@/locales/en_US/production_chains.json";
 
@@ -202,5 +204,110 @@ describe("CheckAside and CheckResults", () => {
 		expect(wrapper.find("[data-testid='check-result-setup']").text()).toContain(
 			"hidden"
 		);
+	});
+});
+
+describe("check views, edge states", () => {
+	beforeAll(seedGameData);
+
+	it("shows an empty chain list and every chain-default wording", async () => {
+		const empty = await mountComponent(
+			CheckChains,
+			{ result: fixtureCheck({ targets: [] }) },
+			withText
+		);
+		expect(empty.wrapper.text()).toContain("Add a chain above.");
+		const ctx = testContext();
+		const free = fixtureCheck({}, { ...ctx, prices: { ...ctx.prices, getPrice: () => 0 } });
+		const { wrapper } = await mountComponent(CheckChains, { result: free }, withText);
+		expect(wrapper.text()).toContain("bought, cheaper than making");
+		expect(wrapper.text()).toContain("buying is cheaper");
+	});
+
+	it("says so when nothing is to improve or a base is outside the chains", async () => {
+		const quiet = fixtureCheck({ min: 1e12, setup: false });
+		const { wrapper } = await mountComponent(
+			CheckBases,
+			{ result: quiet, nameOf, payback: 100 },
+			withText
+		);
+		await wrapper.find("[data-testid='check-base-toggle-A']").trigger("click");
+		await wrapper.find("[data-testid='check-base-toggle-E']").trigger("click");
+		expect(wrapper.find("[data-testid='check-base-details-A']").text()).toContain(
+			"No findings above the threshold."
+		);
+		expect(wrapper.find("[data-testid='check-base-details-E']").text()).toContain(
+			"Not in these chains"
+		);
+
+		const strip = await mountComponent(
+			CheckResults,
+			{
+				result: {
+					...quiet,
+					totals: {
+						...quiet.totals,
+						profit: 0,
+						counts: { fix: 0, recipe: 0, buy: 0, location: 0, setup: 0 },
+					},
+				},
+				setup: true,
+			},
+			withText
+		);
+		expect(strip.wrapper.find("[data-testid='check-result-gain']").text()).toContain("—");
+		expect(
+			strip.wrapper.find("[data-testid='check-result-improvements']").text()
+		).toContain("none");
+	});
+
+	it("ignores empty or negative settings", async () => {
+		const { wrapper, component } = await mountComponent(CheckBar, {
+			empires: [],
+			empire: undefined,
+			targets: [],
+			sold: null,
+			net: {},
+			cxUuid: undefined,
+			setup: true,
+			min: 200,
+			payback: 100,
+		});
+		const input = (id: string) =>
+			wrapper
+				.findAllComponents(PInputNumber)
+				.find((c) => c.attributes("data-testid") === id)!;
+		for (const id of ["check-min", "check-pay"]) {
+			input(id).vm.$emit("update:value", null);
+			input(id).vm.$emit("update:value", -1);
+		}
+		expect(component.emitted("update:min")).toBeUndefined();
+		expect(component.emitted("update:payback")).toBeUndefined();
+		input("check-min").vm.$emit("update:value", 0);
+		input("check-pay").vm.$emit("update:value", 7);
+		expect(component.emitted("update:min")).toEqual([[0]]);
+		expect(component.emitted("update:payback")).toEqual([[7]]);
+	});
+});
+
+describe("CheckFinding without payback", () => {
+	beforeAll(seedGameData);
+
+	it("shows construction without a payback", async () => {
+		const move = result.findings.find((f) => f.kind === "location" && f.base === "C")!;
+		if (move.kind !== "location") throw new Error("kind");
+		const option = { ...move.option, payback: null };
+		const { wrapper } = await mountComponent(
+			CheckFinding,
+			{
+				finding: { ...move, payback: null, option },
+				base: result.bases.find((b) => b.id === "C")!,
+				nameOf,
+				payback: 100,
+			},
+			withText
+		);
+		expect(wrapper.text()).toContain("no payback");
+		expect(wrapper.text()).not.toContain("payback NaN");
 	});
 });

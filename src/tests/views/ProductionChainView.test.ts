@@ -660,6 +660,8 @@ describe("ProductionChainView check mode", () => {
 		const { wrapper } = await mountComponent(ProductionChainView);
 		const mode = wrapper.findComponent({ name: "PSegmented" });
 		expect(mode.props("value")).toBe("plan");
+		mode.vm.$emit("update:value", "plan");
+		expect(nav.replace).not.toHaveBeenCalled();
 		mode.vm.$emit("update:value", "check");
 		expect(nav.replace).toHaveBeenLastCalledWith({ query: { mode: "check" } });
 		expect(

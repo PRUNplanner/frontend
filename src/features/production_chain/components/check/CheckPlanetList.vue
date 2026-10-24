@@ -341,7 +341,7 @@
 											r.o.own
 												? nameOf(r.o.own)
 												: t("production_chains.check.planets.new_base"),
-											optionWhy(t, f, r.o, base.planet, base.running),
+											optionWhy(t, f, r.o, base.planet!, base.running),
 										]
 											.filter(Boolean)
 											.join(" · ")

@@ -180,6 +180,13 @@ describe("setup per base", () => {
 		})!;
 		expect(broken.input.bases[0].lux).toBeUndefined();
 		expect(broken.input.bases[0].experts).toEqual({ Agriculture: 5 });
+		// a bare base id
+		expect(decodeChain({ t: "DW:100", bases: "A" })!.input.bases[0]).toEqual({
+			id: "A",
+			name: "",
+			planetId: null,
+			cogc: "auto",
+		});
 		// 6 per base
 		const many = decodeChain({
 			t: "DW:100",

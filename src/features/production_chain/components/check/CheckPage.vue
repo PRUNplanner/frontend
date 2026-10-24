@@ -78,7 +78,8 @@
 		plans.value?.find((p) => p.id === id)?.name ?? id;
 
 	const summary = computed(() => {
-		const bases = result.value?.bases ?? [];
+		// read only once there is a result
+		const bases = result.value!.bases;
 		const n = (v: string) => bases.filter((b) => b.verdict === v).length;
 		return { ok: n("ok"), imp: n("imp"), fix: n("fix"), out: n("out") };
 	});
@@ -106,7 +107,8 @@
 			? (cx as PlanetSearchCX)
 			: "AI1";
 	});
-	const index = computed(() => [...(ctx.value.planets?.values() ?? [])]);
+	// the planet list opens from a finding, so the index is loaded
+	const index = computed(() => [...ctx.value.planets!.values()]);
 
 	function openList(f: ICheckFinding): void {
 		listId.value = f.id;

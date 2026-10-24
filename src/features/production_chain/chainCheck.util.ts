@@ -56,7 +56,8 @@ export function optionWhy(
 	t: ICheckT,
 	f: ICheckLocationFinding,
 	o: ICheckOption,
-	here: PlanetSearchIndexEntry | null,
+	// the step's planet: a location finding has one
+	here: PlanetSearchIndexEntry,
 	hereRunning: PlanCOGCProgram
 ): string {
 	const parts: string[] = [];
@@ -70,7 +71,7 @@ export function optionWhy(
 		parts.push(
 			t("production_chains.check.finding.why_fertility", {
 				there: formatShare(o.planet.fertility),
-				here: here ? formatShare(here.fertility) : "—",
+				here: formatShare(here.fertility),
 			})
 		);
 	if (o.rate !== null)
@@ -79,7 +80,7 @@ export function optionWhy(
 				there: formatNumber(o.rate, 1),
 				ticker: f.step.ticker,
 				building: f.step.building,
-				here: formatNumber(f.hereRate ?? 0, 1),
+				here: formatNumber(f.hereRate!, 1),
 			})
 		);
 	return parts.join(", ");
@@ -167,7 +168,8 @@ export function findingText(
 			};
 		case "location": {
 			const o = f.option;
-			const other = base.plan.id === o.own ? null : o.own;
+			// own options are the other bases
+			const other = o.own;
 			const to = other
 				? k("move_own", { id: other, name: nameOf(other) })
 				: k("move_new", { planet: planetShort(o.planet) });
@@ -184,7 +186,7 @@ export function findingText(
 					f.picked ? k("move_picked") : "",
 					k("move_detail", {
 						planet: planetShort(o.planet),
-						why: optionWhy(t, f, o, base.planet, base.running),
+						why: optionWhy(t, f, o, base.planet!, base.running),
 						fewer: formatNumber(moveCount(f.step) / o.ratio, 1),
 						building: f.step.building,
 					}),

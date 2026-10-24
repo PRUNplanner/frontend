@@ -146,7 +146,7 @@
 									v-for="f in chipsOf(r)"
 									:key="f.id"
 									size="sm"
-									:type="f.kind === 'setup' ? 'secondary' : 'warning'">
+									type="warning">
 									{{ $t(`production_chains.check.kind.${f.kind}`) }}
 									{{ signedMoney(t, f.delta) }}
 								</PTag>

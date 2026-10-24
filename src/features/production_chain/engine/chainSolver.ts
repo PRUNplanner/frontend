@@ -461,8 +461,7 @@ export function expertTypeOf(
 	expertise: string | null | undefined
 ): ExpertType | null {
 	return expertise
-		? (MAP_BUILDING_EXPERTISE_EXPERTS[expertise as BuildingExpertise] ??
-				null)
+		? MAP_BUILDING_EXPERTISE_EXPERTS[expertise as BuildingExpertise]
 		: null;
 }
 
@@ -478,7 +477,7 @@ export function bestExpertSplit(
 	weights: Partial<Record<ExpertType, number>>
 ): Record<ExpertType, number> {
 	const types = (Object.keys(weights) as ExpertType[])
-		.filter((t) => (weights[t] ?? 0) > 0)
+		.filter((t) => weights[t]! > 0)
 		.sort((a, b) => weights[b]! - weights[a]!)
 		.slice(0, 3);
 	const best = noExperts();
@@ -519,7 +518,7 @@ const setupRecords = new Map<
 
 function recordsOf(setup: IChainSetup | undefined) {
 	if (!setup) return { workforce: FULL_WORKFORCE, experts: NO_EXPERTS };
-	const key = `${setup.lux}|${expertNames.map((n) => setup.experts[n] ?? 0).join("")}`;
+	const key = `${setup.lux}|${expertNames.map((n) => setup.experts[n]).join("")}`;
 	let records = setupRecords.get(key);
 	if (!records) {
 		records = {
@@ -527,7 +526,7 @@ function recordsOf(setup: IChainSetup | undefined) {
 			experts: calculateExperts(
 				expertNames.map((type) => ({
 					type,
-					amount: setup.experts[type] ?? 0,
+					amount: setup.experts[type],
 				}))
 			),
 		};

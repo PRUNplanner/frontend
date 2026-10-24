@@ -163,7 +163,6 @@ function planSteps(ctx: IChainContext, plan: ICheckPlan): ICheckStep[] {
 					outputs[y] * ctx.prices.getPrice(y, "SELL") -
 					outputs[x] * ctx.prices.getPrice(x, "SELL")
 			)[0];
-			if (!ticker) continue;
 			steps.push({
 				key: `${plan.id}:${b.name}:${ticker}`,
 				base: plan.id,
@@ -197,12 +196,11 @@ function shareOf(ctx: IChainContext, step: ICheckStep, ticker: string): number {
 		value += q * ctx.prices.getPrice(t, "SELL");
 		amount += q;
 	}
-	const q = step.outputs[ticker] ?? 0;
+	// the ticker is one of the step's outputs
+	const q = step.outputs[ticker];
 	return value > 0
 		? (q * ctx.prices.getPrice(ticker, "SELL")) / value
-		: amount > 0
-			? q / amount
-			: 0;
+		: q / amount;
 }
 
 /**
@@ -250,11 +248,12 @@ export function checkEmpire(
 		unitCosts.set(t, buy(t));
 		let cost = 0;
 		let out = 0;
-		for (const s of producers.get(t) ?? []) {
+		// only made materials get here
+		for (const s of producers.get(t)!) {
 			cost += stepCost(s) * shareOf(ctx, s, t);
 			out += s.outputs[t];
 		}
-		const uc = out > EPS ? cost / out : buy(t);
+		const uc = cost / out;
 		unitCosts.set(t, uc);
 		return uc;
 	};
@@ -265,12 +264,10 @@ export function checkEmpire(
 			(sum, [t, q]) => sum + q * unitIn(t),
 			0
 		);
+		// a step that runs makes some of its main output
 		s.unitCost =
-			s.perDay > EPS
-				? ((s.inputCost + s.daily * s.buildings) *
-						shareOf(ctx, s, s.ticker)) /
-					s.perDay
-				: 0;
+			((s.inputCost + s.daily * s.buildings) * shareOf(ctx, s, s.ticker)) /
+			s.perDay;
 		s.margin =
 			Object.entries(s.outputs).reduce((sum, [t, q]) => sum + q * sell(t), 0) -
 			s.inputCost;
@@ -312,8 +309,8 @@ export function checkEmpire(
 		for (const s of steps) s.inChain = true;
 		chains.push({
 			target,
-			sold: Math.max(net[target] ?? 0, 0),
-			value: Math.max(net[target] ?? 0, 0) * sell(target),
+			sold: Math.max(net[target], 0),
+			value: Math.max(net[target], 0) * sell(target),
 			bases: [...new Set(steps.map((s) => s.base))],
 			rows,
 		});
@@ -385,7 +382,7 @@ export function checkEmpire(
 		const bestExperts = bestExpertSplit(weights);
 		const experts = noExperts();
 		for (const n of expertNames)
-			experts[n] = plan.result.experts[n]?.amount ?? 0;
+			experts[n] = plan.result.experts[n].amount;
 
 		if (checked && planet) {
 			// plan fixes
@@ -562,21 +559,20 @@ export function checkEmpire(
 
 	function recipeFindings(s: ICheckStep): ICheckFinding[] {
 		if (s.extraction || s.efficiency <= 0) return [];
+		// every recipe here outputs the step's material
 		const unit = (r: ICheckStep["recipe"]) => {
-			const out =
-				r.outputs.find((o) => o.material_ticker === s.ticker)?.material_amount ??
-				0;
+			const out = r.outputs.find(
+				(o) => o.material_ticker === s.ticker
+			)!.material_amount;
 			const inputs = r.inputs.reduce(
 				(sum, i) => sum + i.material_amount * unitIn(i.material_ticker),
 				0
 			);
-			return out > 0
-				? (inputs + (s.daily * r.time_ms) / DAY_MS / s.efficiency) / out
-				: Infinity;
+			return (inputs + (s.daily * r.time_ms) / DAY_MS / s.efficiency) / out;
 		};
 		const now = s.recipe.outputs.length === 1 ? unit(s.recipe) : s.unitCost;
 		let best: { recipe: ICheckStep["recipe"]; cost: number } | null = null;
-		for (const r of ctx.recipesByOutput.get(s.ticker) ?? []) {
+		for (const r of ctx.recipesByOutput.get(s.ticker)!) {
 			if (
 				r.recipe_id === s.recipe.recipe_id ||
 				r.building_ticker !== s.building ||
@@ -617,8 +613,7 @@ export function checkEmpire(
 		planet: PlanetSearchIndexEntry,
 		s: ICheckStep
 	): ICheckLocationFinding | null {
-		const building = ctx.buildings.get(s.building);
-		if (!building) return null;
+		const building = ctx.buildings.get(s.building)!;
 		const expertise = building.expertise;
 		const pf = (p: PlanetSearchIndexEntry) => {
 			let v = factorOf(p, s.building);
@@ -642,10 +637,7 @@ export function checkEmpire(
 				return {
 					area: fp.area,
 					construction:
-						fp.construction +
-						(ctx.buildings.has(CORE_MODULE)
-							? buildingConstruction(ctx, CORE_MODULE)
-							: 0),
+						fp.construction + buildingConstruction(ctx, CORE_MODULE),
 				};
 			})());
 
@@ -693,7 +685,7 @@ export function checkEmpire(
 			const ratio = pf(p) / here;
 			if (ratio >= LOCATION_MIN_RATIO - EPS) option(p, ratio, other);
 		}
-		for (const p of ctx.planets?.values() ?? []) {
+		for (const p of ctx.planets!.values()) {
 			if (empirePlanets.has(p.planet_natural_id)) continue;
 			const ratio = pf(p) / here;
 			if (ratio >= LOCATION_MIN_RATIO - EPS) option(p, ratio, null);
@@ -756,10 +748,9 @@ export function checkEmpire(
 		let weight = 0;
 		let weighted = 0;
 		for (const s of steps) {
-			const building = ctx.buildings.get(s.building);
-			if (!building) continue;
+			// a step runs, so its workforce factor is above 0
+			const building = ctx.buildings.get(s.building)!;
 			const now = calculateBuildingWorkforceEfficiency(building, workforce);
-			if (now <= 0) continue;
 			const ratio = calculateBuildingWorkforceEfficiency(building, full) / now;
 			gain += Math.max(s.margin, 0) * (ratio - 1);
 			weight += s.buildings;
@@ -787,7 +778,7 @@ export function checkEmpire(
 			lux: planLux(workforce),
 			gain,
 			cost,
-			factor: weight > 0 ? weighted / weight : 0,
+			factor: weighted / weight,
 		};
 	}
 
@@ -902,7 +893,7 @@ export function tryInPlanner(
 			continue;
 		}
 		const main = [...row.steps].sort(
-			(a, b) => (b.outputs[row.ticker] ?? 0) - (a.outputs[row.ticker] ?? 0)
+			(a, b) => b.outputs[row.ticker] - a.outputs[row.ticker]
 		)[0];
 		input.baseOf[row.ticker] = letters.get(main.base) ?? BASE_IDS[0];
 		if (main.extraction) input.source[row.ticker] = "extract";
@@ -915,8 +906,9 @@ export function tryInPlanner(
 	if (finding.kind === "recipe")
 		input.recipeId[step.ticker] = finding.recipe.recipe_id;
 	else if (finding.kind === "buy") input.source[step.ticker] = "buy";
-	else if (finding.kind === "location") {
-		const o = finding.option;
+	else {
+		// fixes and setup have no step: a location
+		const o = (finding as ICheckLocationFinding).option;
 		input.baseOf[step.ticker] = o.own
 			? fromPlan(o.own)
 			: addBase(
@@ -927,6 +919,6 @@ export function tryInPlanner(
 					},
 					o.planet.planet_natural_id
 				);
-	} else return null;
+	}
 	return input;
 }

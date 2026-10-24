@@ -25,6 +25,7 @@
 	import type {
 		ICheckBase,
 		ICheckFinding,
+		ICheckLocationFinding,
 		ICheckOption,
 	} from "@/features/production_chain/engine/chainCheck.types";
 
@@ -58,8 +59,8 @@
 
 	/** jumps between the step's system and the option's, null when unknown */
 	function jumps(o: ICheckOption): string {
-		if (!base.planet) return "";
-		const n = getPathBetweenLength(base.planet.system_id, o.planet.system_id);
+		// a location finding's base has a planet
+		const n = getPathBetweenLength(base.planet!.system_id, o.planet.system_id);
 		return n < 0 ? "" : t("production_chains.check.options.jumps", n);
 	}
 
@@ -81,10 +82,11 @@
 	);
 
 	/** the best three, plus the chosen one when it's further down */
+	// only read in the template for a location finding
+	const loc = () => f as ICheckLocationFinding;
 	const top = computed(() => {
-		if (f.kind !== "location") return [];
-		const list = f.options.slice(0, TOP);
-		if (!list.includes(f.option)) list.push(f.option);
+		const list = loc().options.slice(0, TOP);
+		if (!list.includes(loc().option)) list.push(loc().option);
 		return list;
 	});
 
@@ -96,14 +98,13 @@
 				});
 	}
 	function optionSub(o: ICheckOption): string {
-		if (f.kind !== "location") return "";
 		return [
 			planetDisplayName(o.planet.planet_natural_id, o.planet.planet_name),
-			optionWhy(t, f, o, base.planet, base.running),
+			optionWhy(t, loc(), o, base.planet!, base.running),
 			o.own
 				? t("production_chains.check.options.area_own", {
 						need: formatNumber(o.area, 0),
-						free: formatNumber(Math.max(0, o.free ?? 0), 0),
+						free: formatNumber(Math.max(0, o.free!), 0),
 					})
 				: t("production_chains.check.options.area_new", {
 						n: formatNumber(o.area, 0),
