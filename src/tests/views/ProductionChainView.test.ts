@@ -635,3 +635,93 @@ describe("ProductionChainView interactions", () => {
 		});
 	});
 });
+
+describe("ProductionChainView check mode", () => {
+	beforeAll(seedGameData);
+
+	beforeEach(() => {
+		nav.route.query = {};
+		nav.replace.mockClear();
+		trackEvent.mockClear();
+		execute.mockReset();
+		execute.mockImplementation((name: string) =>
+			Promise.resolve(
+				name === "GetAllEmpires"
+					? [{ uuid: "mine", empire_name: "Mine", plans: [] }]
+					: name === "GetEmpirePlans"
+						? []
+						: index
+			)
+		);
+		localStorage.clear();
+	});
+
+	it("switches between Plan a chain and Check an empire", async () => {
+		const { wrapper } = await mountComponent(ProductionChainView);
+		const mode = wrapper.findComponent({ name: "PSegmented" });
+		expect(mode.props("value")).toBe("plan");
+		mode.vm.$emit("update:value", "check");
+		expect(nav.replace).toHaveBeenLastCalledWith({ query: { mode: "check" } });
+		expect(
+			trackEvent.mock.calls.some(
+				([e, p]) => e === "production_chain:action" && p.action === "mode_check"
+			)
+		).toBe(true);
+	});
+
+	it("keeps each mode's last query when switching back", async () => {
+		nav.route.query = { mode: "check", empire: "mine", t: "DW" };
+		const first = await mountComponent(ProductionChainView);
+		await vi.waitFor(() =>
+			expect(first.wrapper.findComponent({ name: "PSegmented" }).exists()).toBe(
+				true
+			)
+		);
+		first.wrapper
+			.findComponent({ name: "PSegmented" })
+			.vm.$emit("update:value", "plan");
+		expect(nav.replace).toHaveBeenLastCalledWith({ query: {} });
+		first.wrapper.unmount();
+
+		nav.route.query = { t: "RAT:50" };
+		const second = await mountComponent(ProductionChainView);
+		second.wrapper
+			.findComponent({ name: "PSegmented" })
+			.vm.$emit("update:value", "check");
+		expect(nav.replace).toHaveBeenLastCalledWith({
+			query: { mode: "check", empire: "mine", t: "DW" },
+		});
+	});
+
+	it("shows another user's empire as not yours (AC 17)", async () => {
+		nav.route.query = { mode: "check", empire: "theirs", t: "DW" };
+		const { wrapper } = await mountComponent(ProductionChainView);
+		await vi.waitFor(() =>
+			expect(wrapper.find("[data-testid='check-not-yours']").exists()).toBe(true)
+		);
+		expect(wrapper.find("[data-testid='check-bar']").exists()).toBe(true);
+		expect(execute).not.toHaveBeenCalledWith("GetEmpirePlans", expect.anything());
+	});
+
+	it("opens the user's empire and says when it has no plans", async () => {
+		nav.route.query = { mode: "check" };
+		const { wrapper } = await mountComponent(ProductionChainView);
+		await vi.waitFor(() =>
+			expect(wrapper.find("[data-testid='check-no-plans']").exists()).toBe(true)
+		);
+		expect(execute).toHaveBeenCalledWith("GetEmpirePlans", { empireUuid: "mine" });
+		await flushPromises();
+		expect(nav.replace).toHaveBeenLastCalledWith({
+			query: { mode: "check", empire: "mine" },
+		});
+	});
+
+	it("says so without empires", async () => {
+		execute.mockImplementation(() => Promise.resolve([]));
+		nav.route.query = { mode: "check" };
+		const { wrapper } = await mountComponent(ProductionChainView);
+		await vi.waitFor(() =>
+			expect(wrapper.find("[data-testid='check-no-empires']").exists()).toBe(true)
+		);
+	});
+});

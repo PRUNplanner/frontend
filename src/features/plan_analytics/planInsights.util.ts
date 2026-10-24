@@ -5,15 +5,18 @@ import {
 } from "@/features/api/schemas/planningData.schemas";
 import type { AnalyticsPlanetInsightsData } from "@/features/api/schemas/analyticsData.schemas";
 
+// Engine
+import {
+	MAX_EXPERTS_PER_TYPE,
+	MAX_EXPERTS_TOTAL,
+} from "@/features/planning/engine/efficiency";
+
 /** buildings the starter card lists, most planned first */
 export const STARTER_MAX_BUILDINGS = 8;
 /** buildings in at least this % of plans start checked */
 export const STARTER_PRESELECT_PERCENTAGE = 20;
 /** expert types in at least this % of plans are added */
 const STARTER_EXPERT_PERCENTAGE = 50;
-// the expert limits of PlanExperts
-const MAX_EXPERTS_PER_TYPE = 5;
-const MAX_EXPERTS_TOTAL = 6;
 
 /**
  * Colour of a segment in an insights split bar, the first one in the

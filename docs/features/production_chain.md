@@ -8,7 +8,8 @@ haul, and what the whole chain earns and needs to build.
 **Used by.** `views/tools/ProductionChainView.vue` (`/production-chain`),
 which only gates the data (`WrapperGameDataLoader` with materials, recipes,
 buildings and exchanges; `WrapperPlanningDataLoader load-c-x`) and mounts
-`components/ChainPage.vue`.
+`components/ChainPage.vue`, or `components/check/CheckPage.vue` with
+`?mode=check`.
 
 ## Key files
 
@@ -20,6 +21,11 @@ buildings and exchanges; `WrapperPlanningDataLoader load-c-x`) and mounts
 | `engine/chainExtraction.ts` | Extraction sites per resource from the planet search index, and the typical planet |
 | `engine/chainLayout.ts` | `layoutChain(result)`: stage columns and barycenter ordering for the graph. A plain function, so a library layout could replace it |
 | `engine/chainUrl.ts` | `encodeChain` / `decodeChain`: the chain in the URL query |
+| `engine/chainCheck.ts` | `checkEmpire(input, ctx)`: the empire check (steps, chains, findings, verdicts), `tryInPlanner` |
+| `useChainCheck.ts` | Check mode state: URL, empires, plans through the plan engine, planet index, analytics |
+| `chainCheck.util.ts` | Finding texts, option chips, the Planet Search link |
+| `components/ChainModeSwitch.vue` | Plan a chain · Check an empire, each mode keeps its last query |
+| `components/check/` | `CheckPage` with bar, results, Bases, Findings, Chains, aside and the planet list (`CheckPlanetList`) |
 | `useProductionChain.ts` | Page state: input, CX, solved result, URL and localStorage sync, lazy planet index, analytics |
 | `productionChain.util.ts` | Formatting, the buy list and CSV |
 | `components/ChainPage.vue` | The page: header, targets, settings, results, panel, aside, planet picker |
@@ -63,17 +69,26 @@ helpers instead of copying their math: `calculateExtraction`,
   sold. Sell: all sold.
 - **Unit cost.** Inputs at their chain unit cost plus the building's upkeep
   and wear for the run; a recipe with several outputs shares its cost by
-  CX value (by quantity without prices). Upkeep is basic needs only at CX
-  price, wear is construction ÷ 180 a day.
+  CX value (by quantity without prices). Upkeep is basic needs plus the
+  base's luxuries at CX price, wear is construction ÷ 180 a day.
 - **Bases.** Up to eight (A–H); every made or extracted material sits in
   one (`baseOf`, missing = the first), bought rows in none. Demand stays one
   chain; bases change efficiency, extraction and building counts.
-- **Base efficiency.** On a base with a planet: the plan engine's
-  `calculateBuildingEfficiency` with a full workforce, no experts, no HQ
-  and the base's COGC (the planet's running program for "auto"), times the
-  chain efficiency. FRM and ORC on a planet without fertility get 0: no
+- **Base setup.** Each base has luxuries (`lux`, default both) and experts
+  (`experts`, default auto). The workforce record has every tier fully
+  supplied with the base's luxuries (`calculateSatisfaction`: 79.4 %,
+  86.7 %, 91.7 %, 100 %). Auto experts: `bestExpertSplit` over the top three
+  expertises by the output value of the base's steps (building-days without
+  prices), at most 5 per type and 6 per base (`MAX_EXPERTS_*` in
+  `efficiency.ts`), by Σ weight × `calculateExpertBonus`. Load doesn't
+  depend on efficiency, so the split is set after the demand pass.
+- **Base efficiency.** The plan engine's `calculateBuildingEfficiency` with
+  the base's workforce and experts, no HQ and, on a planet, the base's COGC
+  (the planet's running program for "auto") and fertility, times the chain
+  efficiency. FRM and ORC on a planet without fertility get 0: no
   buildings, costed at the chain efficiency, flagged "no farming".
-  Without a planet (or before the planet index loads) the chain efficiency.
+  Without a planet (or before the planet index loads) no COGC and no
+  fertility count.
 - **Base extraction.** The base planet's own site when it has the resource;
   otherwise the picked or typical site, flagged "not on planet".
 - **Footprint per base.** Buildings (built = ceil per base and type), one
@@ -94,11 +109,62 @@ helpers instead of copying their math: `calculateExtraction`,
   base, largest first, at most four; the rest join the first.
 - **Plan drafts.** Built count per type; recipes with the smallest whole
   order amounts (≤ 10) whose time shares are within 5 % of the chain's runs;
-  habs and one STO; no experts, luxuries or HQ; the base's COGC and permits.
+  habs and one STO; the base's luxuries, experts, COGC and permits; no HQ.
 - **Warnings.** Cheaper to buy: made or extracted, not a target, unit cost
   above the CX price. Thin market: bought with no trades in 30 days or a
   share of the daily volume from `MARKET_SHARE_AMBER` (red from
   `MARKET_SHARE_RED`).
+
+## Check rules
+
+`engine/chainCheck.ts` is pure like the solver. Its input is the empire's
+plans with their `IPlanResult` (from `calculatePlan` with
+`usePlanContext().createContext`, as `EmpireView` does), the targets and
+the settings; the chain context brings prices, recipes and the planet index.
+
+- **Steps.** One per plan building and active recipe: outputs and inputs
+  per day as `calculateMaterialIO` (amount × day × buildings ÷ batch
+  time), buildings = amount × daily share, upkeep (the plan's luxuries) and
+  wear per building-day from the plan result. The main output is the one
+  worth most.
+- **Sold.** Net per material = Σ plans' `materialio.delta` (production
+  and workforce); net > 0 with a CX price, by value.
+- **Chains.** From a target through the inputs of every step that outputs
+  it, while the empire makes the input; bought inputs end a branch. A base
+  is checked when one of its steps is in a chain.
+- **Unit cost.** Per material: (inputs at their unit cost, or BUY price
+  when bought, + upkeep and wear) × its value share ÷ output, over its
+  steps; a loop falls back to the price. Margin = outputs at SELL price −
+  input cost.
+- **Plan fix.** The plan counts a program the planet doesn't run: steps
+  with a COGC factor lose margin × (1 ÷ factor − 1). The planet runs a
+  program the plan doesn't count: margin × (program factor − 1).
+- **Recipe.** Another single-output recipe of the same building, at the
+  step's efficiency and upkeep, at least 3 % cheaper per unit:
+  (now − alternative) × output; extra buildings are built.
+- **Make or buy.** Not a target, unit cost above the BUY price:
+  (cost − price) × output, with the market share.
+- **Location.** Planet factor = `planetFactor` without setup (running
+  COGC, fertility) × extractor rate for extraction. Options: the empire's
+  other bases (the step's buildings; area against 1,000 − used) and every
+  index planet outside the empire (a new base: `baseFootprint` plus the
+  core module; area ≤ 1,000; plots from `plots_total`, `plots_used`,
+  `supports_ghost_sites`, unknown counts as possible) with ratio ≥ 1.1.
+  Gain = (ratio − 1) × margin, ranked best first. The suggestion is the
+  first with room, settleable and paying back within the limit; a user
+  pick (`loc=` in the URL) replaces it; better options above it are named.
+- **Setup.** Below both luxuries: Σ margin × (workforce factor with both ÷
+  now − 1) − the luxuries' cost. Experts below `bestExpertSplit` (weights:
+  margin per expertise): Σ margin × (bonus ratio − 1). Hidden with Setup
+  gains: Hide.
+- **Threshold, verdict, gain.** Findings below "Ignore below" are hidden,
+  fixes never. Verdict: not checked, plan fix, improvements, looks optimal.
+  A base's gain = fixes + setup + the best alternative per step; payback =
+  construction ÷ gain.
+- **Try in planner.** `tryInPlanner` builds a chain input: the chain's
+  target at the empire's net amount, its bases (at most 8) with their
+  planets, COGC, luxuries and experts, recipes and sources as planned, and
+  the finding's change.
 
 ## Gotchas
 
@@ -112,6 +178,11 @@ helpers instead of copying their math: `calculateExtraction`,
   without them opens as one base A.
 - **COGC programs are checked against the time the page opened.** Created
   plans keep the base's program, running or not.
+- **The check runs only for the user's own empires**: a link with another
+  empire shows "This empire isn't yours". Its state lives in the URL
+  (`mode=check`, `empire`, `t`, `min`, `setup`, `pay`, `loc`), not in the
+  browser. The plot fields are read when the planet index has them (spec
+  planet-plots); until then every new base shows "plots unknown".
 - **Create plans** creates the empire first, then the plans one by one, and
   stops at the first failure without rollback.
 

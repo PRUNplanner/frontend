@@ -309,6 +309,8 @@ export function rankPlanets(
 	planets: PlanetSearchIndexEntry[]
 ): IChainPlanetFit[] {
 	const base = input.bases.find((b) => b.id === baseId) ?? input.bases[0];
+	const solved = result.bases.find((b) => b.id === base.id);
+	const setup = solved && { lux: solved.lux, experts: solved.experts };
 	const eff = Math.max(input.efficiency, 1) / 100;
 	const rows = result.order
 		.map((t) => result.rows[t])
@@ -336,7 +338,7 @@ export function rankPlanets(
 				ticker = site?.buildingTicker ?? ticker;
 				work = rate > 0 ? row.perDay / rate : 0;
 			}
-			const f = planetFactor(ctx, planet, cogc, ticker);
+			const f = planetFactor(ctx, planet, cogc, ticker, setup);
 			if (f <= 0) {
 				noFarming = true;
 				continue;
@@ -356,7 +358,7 @@ export function rankPlanets(
 		const key = types.map((t) => `${t.ticker}:${t.built}`).join(",");
 		let fp = footprints.get(key);
 		if (!fp) {
-			fp = baseFootprint(ctx, types);
+			fp = baseFootprint(ctx, types, setup?.lux);
 			footprints.set(key, fp);
 		}
 		return {
@@ -416,7 +418,7 @@ export function recipeAmounts(recipes: IRecipeLoad[]): number[] {
 
 /**
  * One plan per base with steps: its buildings and recipes, habs and one
- * STO, the base's COGC and permits; no experts, luxuries or HQ
+ * STO, the base's COGC, permits, luxuries and experts; no HQ
  * @author jplacht
  *
  * @param {IChainResult} result Solved chain
@@ -483,11 +485,14 @@ function planDraft(
 		plan_corphq: false,
 		plan_cogc: base.cogc,
 		plan_data: {
-			experts: expertNames.map((type) => ({ type, amount: 0 })),
+			experts: expertNames.map((type) => ({
+				type,
+				amount: base.experts[type] ?? 0,
+			})),
 			workforce: TIERS.map((type) => ({
 				type,
-				lux1: false,
-				lux2: false,
+				lux1: base.lux === "lux1" || base.lux === "both",
+				lux2: base.lux === "lux2" || base.lux === "both",
 			})),
 			infrastructure: [
 				...base.habs.map((h) => ({

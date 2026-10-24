@@ -1,13 +1,22 @@
 // Engine
 import { BASE_IDS } from "@/features/production_chain/engine/chainBases";
+import {
+	MAX_EXPERTS_PER_TYPE,
+	MAX_EXPERTS_TOTAL,
+} from "@/features/planning/engine/efficiency";
 
 // Schemas
-import { PlanCOGCProgramSchema } from "@/features/api/schemas/planningData.schemas";
+import {
+	ExpertTypeSchema,
+	PlanCOGCProgramSchema,
+} from "@/features/api/schemas/planningData.schemas";
 
 // Types & Interfaces
 import type {
 	ChainBaseCOGC,
 	ChainByproductMode,
+	ChainExperts,
+	ChainLux,
 	ChainRawSource,
 	ChainSource,
 	IChainBase,
@@ -57,32 +66,73 @@ const COGC_CHOICES: string[] = [
 	...PlanCOGCProgramSchema.options,
 ];
 
+const LUX: ChainLux[] = ["none", "lux1", "lux2", "both"];
+const NO_EXPERTS = "none";
+
 /** escapes what splits the value; the router encodes the rest */
 const escape = (s: string) => s.replace(/[%:,]/g, encodeURIComponent);
 
-/** "A:name:planet:cogc,B:…" */
+/** "Agriculture-5.Chemistry-1", "none" for none, "" for auto */
+function encodeExperts(experts: ChainExperts | undefined): string {
+	if (!experts) return "";
+	const parts = Object.entries(experts)
+		.filter(([, n]) => n && n > 0)
+		.map(([type, n]) => `${type}-${n}`);
+	return parts.length ? parts.join(".") : NO_EXPERTS;
+}
+
+function decodeExperts(v: string | undefined): ChainExperts | undefined {
+	if (!v) return undefined;
+	const experts: ChainExperts = {};
+	let total = 0;
+	if (v === NO_EXPERTS) return experts;
+	for (const part of v.split(".")) {
+		const [type, n] = part.split("-");
+		const amount = Number(n);
+		const parsed = ExpertTypeSchema.safeParse(type);
+		if (parsed.success && Number.isInteger(amount) && amount > 0)
+			experts[parsed.data] = Math.min(
+				amount,
+				MAX_EXPERTS_PER_TYPE,
+				MAX_EXPERTS_TOTAL - total
+			);
+		total = Object.values(experts).reduce((s, n) => s + n, 0);
+	}
+	return experts;
+}
+
+/** "A:name:planet:cogc:lux:experts,B:…"; lux and experts empty for the defaults */
 function encodeBases(bases: IChainBase[]): string {
 	return bases
-		.map((b) =>
-			[b.id, escape(b.name), escape(b.planetId ?? ""), b.cogc].join(":")
-		)
+		.map((b) => {
+			const parts = [b.id, escape(b.name), escape(b.planetId ?? ""), b.cogc];
+			const lux = b.lux && b.lux !== "both" ? b.lux : "";
+			const experts = encodeExperts(b.experts);
+			if (lux || experts) parts.push(lux, experts);
+			return parts.join(":");
+		})
 		.join(",");
 }
 
 function decodeBases(v: IQueryValue): IChainBase[] {
 	const bases: IChainBase[] = [];
 	for (const part of (first(v) ?? "").split(",")) {
-		const [id, name, planet, cogc] = part.split(":");
+		const [id, name, planet, cogc, lux, experts] = part.split(":");
 		if (!BASE_IDS.includes(id) || bases.some((b) => b.id === id)) continue;
 		try {
-			bases.push({
+			const base: IChainBase = {
 				id,
 				name: decodeURIComponent(name ?? ""),
 				planetId: decodeURIComponent(planet ?? "") || null,
 				cogc: COGC_CHOICES.includes(cogc)
 					? (cogc as ChainBaseCOGC)
 					: "auto",
-			});
+			};
+			if (LUX.includes(lux as ChainLux) && lux !== "both")
+				base.lux = lux as ChainLux;
+			const split = decodeExperts(experts);
+			if (split) base.experts = split;
+			bases.push(base);
 		} catch {
 			// a broken escape: the base is dropped
 		}

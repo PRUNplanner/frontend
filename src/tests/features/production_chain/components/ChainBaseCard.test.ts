@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeAll } from "vitest";
+import { DOMWrapper } from "@vue/test-utils";
 
 import ChainBaseCard from "@/features/production_chain/components/ChainBaseCard.vue";
-import { PInput, PSelect } from "@/ui";
+import { PInput, PInputNumber, PSelect } from "@/ui";
+import messages from "@/locales/en_US/production_chains.json";
+import gameMessages from "@/locales/en_US/game.json";
 import { mountComponent } from "@/tests/mountComponent";
 import { solveChain } from "@/features/production_chain/engine/chainSolver";
 import { cogcFits } from "@/features/production_chain/engine/chainBases";
@@ -112,7 +115,8 @@ describe("ChainBaseCard variants", () => {
 		cogc: IChainInput["bases"][number]["cogc"] = "auto"
 	) =>
 		chainInput(targets, {
-			bases: [{ id: "A", name: "", planetId, cogc }],
+			// no experts: the planet's factors only
+			bases: [{ id: "A", name: "", planetId, cogc, experts: {} }],
 		});
 
 	it("shows a gaseous planet and a planned program", async () => {
@@ -166,5 +170,85 @@ describe("ChainBaseCard variants", () => {
 		expect(
 			water.wrapper.find("[data-testid='chain-base-warnings-A']").text()
 		).toContain("production_chains.bases.not_on_planet");
+	});
+
+	it("sets luxuries and experts, Auto resets them (AC 3)", async () => {
+		const input = chainInput([["DW", 100]], {
+			bases: [{ id: "A", name: "", planetId: null, cogc: "auto" }],
+		});
+		const result = solveChain(input, ctx);
+		const { wrapper, component } = await mountComponent(
+			ChainBaseCard,
+			{
+				base: result.bases[0],
+				choice: input.bases[0],
+				efficiency: 1,
+				removable: false,
+				fits: () => false,
+			},
+			{ messages: { production_chains: messages, game: gameMessages } }
+		);
+		const lux = wrapper
+			.findAllComponents(PSelect)
+			.find((c) => c.props("value") === "both")!;
+		const labels = (lux.props("options") as PSelectOption[]).map((o) => o.label);
+		expect(labels).toEqual([
+			"Both · 100 %",
+			"Lux 2 · 92 %",
+			"Lux 1 · 87 %",
+			"Essentials · 79 %",
+		]);
+		lux.vm.$emit("update:value", "none");
+		expect(component.emitted("lux")).toEqual([["none"]]);
+		expect(
+			wrapper.find("[data-testid='chain-base-experts-A']").text()
+		).toBe("Auto: 5 Food Industries + 1 Chemistry");
+
+		await wrapper
+			.find("[data-testid='chain-base-experts-edit-A']")
+			.trigger("click");
+		const steppers = wrapper.findAllComponents(PInputNumber);
+		expect(steppers.length).toBeGreaterThan(0);
+		// at most 5 per type and 6 per base
+		expect(steppers[0].props("max")).toBe(5);
+		steppers[0].vm.$emit("update:value", 9);
+		const [[experts]] = component.emitted("experts") as [Record<string, number>][];
+		expect(experts.Food_Industries).toBe(5);
+		steppers[0].vm.$emit("update:value", 2);
+		expect((component.emitted("experts") as unknown[][])[1][0]).toMatchObject({
+			Food_Industries: 2,
+		});
+		// auto is on: the reset is off
+		const reset = new DOMWrapper(document.body).find(
+			"[data-testid='chain-base-experts-auto-A']"
+		);
+		expect(reset.attributes("disabled")).toBeDefined();
+
+		const edited = solveChain(
+			{ ...input, bases: [{ ...input.bases[0], experts: { Food_Industries: 2 } }] },
+			ctx
+		);
+		const manual = await mountComponent(
+			ChainBaseCard,
+			{
+				base: edited.bases[0],
+				choice: input.bases[0],
+				efficiency: 1,
+				removable: false,
+				fits: () => false,
+			},
+			{ messages: { production_chains: messages, game: gameMessages } }
+		);
+		expect(
+			manual.wrapper.find("[data-testid='chain-base-experts-A']").text()
+		).toBe("2 Food Industries");
+		await manual.wrapper
+			.find("[data-testid='chain-base-experts-edit-A']")
+			.trigger("click");
+		await new DOMWrapper(document.body)
+			.findAll("[data-testid='chain-base-experts-auto-A']")
+			.at(-1)!
+			.trigger("click");
+		expect(manual.component.emitted("experts")).toEqual([[undefined]]);
 	});
 });

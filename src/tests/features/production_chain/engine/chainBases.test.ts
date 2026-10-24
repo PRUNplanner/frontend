@@ -37,7 +37,7 @@ const base = (
 	id: string,
 	planetId: string | null = null,
 	cogc: IChainBase["cogc"] = "auto"
-): IChainBase => ({ id, name: `Base ${id}`, planetId, cogc });
+): IChainBase => ({ id, name: `Base ${id}`, planetId, cogc, experts: {} });
 
 function solve(overrides: Partial<IChainInput> = {}) {
 	const input = chainInput(TARGETS, overrides);
@@ -405,11 +405,12 @@ describe("plan drafts", () => {
 					building: h.ticker,
 					amount: h.amount,
 				});
+			// the base's setup: both luxuries, its experts (none here)
 			expect(d.data.plan_data.experts.every((e) => e.amount === 0)).toBe(
 				true
 			);
 			expect(
-				d.data.plan_data.workforce.every((w) => !w.lux1 && !w.lux2)
+				d.data.plan_data.workforce.every((w) => w.lux1 && w.lux2)
 			).toBe(true);
 		}
 		const draft = (id: string) => drafts.find((d) => d.base === id)!.data;

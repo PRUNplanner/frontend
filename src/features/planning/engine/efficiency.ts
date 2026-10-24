@@ -30,6 +30,10 @@ import type {
 
 export const expertNames = ExpertTypeSchema.options;
 
+// the expert limits of a plan: per type and in total
+export const MAX_EXPERTS_PER_TYPE = 5;
+export const MAX_EXPERTS_TOTAL = 6;
+
 /**
  * Static, map of building expertise and plan calculation
  * result expert assignments
@@ -40,7 +44,7 @@ export const expertNames = ExpertTypeSchema.options;
  * 	ExpertType
  * >}
  */
-const MAP_BUILDING_EXPERTISE_EXPERTS: Record<BuildingExpertise, ExpertType> = {
+export const MAP_BUILDING_EXPERTISE_EXPERTS: Record<BuildingExpertise, ExpertType> = {
 	AGRICULTURE: "Agriculture",
 	CHEMISTRY: "Chemistry",
 	CONSTRUCTION: "Construction",

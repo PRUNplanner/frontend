@@ -90,6 +90,14 @@ export type ToolUseProperties =
 			efficiency: number;
 			raw_source: "buy" | "extract";
 			byproducts: "cover" | "sell";
+	  }
+	| {
+			tool_name: "production_chain";
+			mode: "check";
+			target_count: number;
+			bases_checked: number;
+			bases_optimal: number;
+			finding_count: number;
 	  };
 
 // what was done on the production chain page
@@ -108,7 +116,15 @@ export type ProductionChainAction =
 	| "base_remove"
 	| "base_move"
 	| "base_planet"
-	| "base_cogc";
+	| "base_cogc"
+	| "base_lux"
+	| "base_experts"
+	| "mode_check"
+	| "check_add_all"
+	| "check_open_base"
+	| "check_open_plan"
+	| "check_try"
+	| "check_setup_toggle";
 
 // which XIT transfer button: the tool, and which of its buttons
 export type XITTransferSource =
