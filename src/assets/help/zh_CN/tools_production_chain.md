@@ -1,5 +1,19 @@
-生产链视图可以让你探索生产某一特定商品所涉及的所有建筑和物资。你可以逐步追踪整条生产链，清楚了解所选产品是如何被生产出来的。
+Production Chains plans a whole chain per day. Add what you want to produce and how much of it a day, for one material or several at once (for example DW, RAT and OVE). The page works out every step: which recipe makes each material, how many buildings it takes, what to buy, and what the chain costs and earns at your CX prices.
 
-为了便于分析，你可以按物资类别、劳动力类型或所需建筑专业技能为节点着色。如果某条生产链有多个配方选项，你可以微调选择，直到构建出最符合你需求的生产链。
+**Settings.** Efficiency is one global percentage for everything that speeds up production (experts, COGC, HQ, faction); 100 % uses the base recipe times. Prices come from your default CX preference, and you can pick another. Raw resources are bought by default; switch to Extract to mine them, or set a single row to Extract. Byproducts first cover demand for the same material in the chain, and the rest is sold; switch to Sell to sell them all.
 
-该工具还会概览整条生产链所需的所有建筑专业技能和劳动力类型，让你清楚了解完成生产所需的条件。
+**Results.** The strip at the top shows the profit per day, the output value, what you buy, upkeep and wear, the buildings (built and exact), area including habitation, workforce and construction cost with its payback. It adds up all bases, each with its core module and one STO. Buildings of one type share their capacity across recipes, as in the game, so 4.5 Food Processors make 5 built.
+
+**Steps.** Every material once, in chain order (each target with its inputs) or grouped by source. For each material: how much a day, whether it is made, bought or extracted, the recipe or supply, buildings, cost per unit in the chain against the CX price, and whether making it saves money. Click a material to see what it takes and where it goes, its cost per unit, and the spare capacity of its buildings. Click a recipe to compare all recipes for it, with their effect on the chain's profit and buildings. Extracted rows use a typical planet (top 10 % of all planets with the resource); click it to pick a real planet with the filters from Planet Search.
+
+**Warnings.** "Cheaper to buy" lists materials the chain makes for more than the CX price; "Buy all" switches them to buying. "Thin market" lists bought materials where the chain needs 10 % or more of what the CX trades a day, or that didn't trade in 30 days.
+
+**Graph.** The same chain from raw materials on the left to the targets on the right. Line width follows tonnes, credits or nothing. Click a material to see only what it needs and feeds.
+
+**Bases.** A chain can run on up to eight bases, each on one planet. "Split by expertise" suggests bases from the buildings' expertise; the Base column in Steps moves a single step, and "+ new base" starts a new one. On the Bases tab you name each base, pick its planet and its COGC program. The planet's running program is the default; you can pick any other to plan ahead of a vote. A base's buildings get the planet's bonuses as in a plan: +25 % from an advertising program for their expertise, +10 % from a workforce program for a tier they employ, and fertility for farms (FRM and ORC can't run without it). Extracted steps use the planet's own rate; a planet without the resource keeps the chain's rate and warns. Building types share capacity inside one base only. Each base shows its buildings, area with the core module, one STO and habitation, permits, workforce and upkeep. The planet picker solves the base's steps on every planet, so you can compare buildings and area, and marks planets where you already have a plan. "Shipping per day" lists what moves between bases and the CX, in tonnes and m³, with the jumps.
+
+**Create plans.** Once every base has a planet and fits 1,000 area, "Create plans" makes one plan per base with its buildings, recipes, habitation, one STO, the COGC program and permits, optionally in a new empire (with its faction) or an existing one. Experts, luxuries and faction bonuses are set in the plans. The page stays on the chain and links the new plans and the empire.
+
+**Buy list.** What to buy for a number of days, grouped by the base that uses it, with weight and volume to haul, and one XIT action per base that buys it on the CX and moves it to that base.
+
+**Sharing.** The link holds the whole chain; "Copy chain link" copies it. The last chain you worked on opens again in this browser.
