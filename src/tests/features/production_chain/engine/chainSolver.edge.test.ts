@@ -78,6 +78,7 @@ function edgeContext(): IChainContext {
 		prices: createPriceBook(undefined, undefined, getExchange),
 		getExchange,
 		resources: new Set(),
+		now: 0,
 	};
 }
 
@@ -112,7 +113,8 @@ describe("solveChain edge cases", () => {
 		const zzz = r.buildingTypes.find((b) => b.ticker === "ZZZ")!;
 		expect(zzz).toMatchObject({ exact: 24, built: 24, expertise: null });
 		expect(r.totals.construction).toBe(0);
-		expect(r.totals.area).toBe(0);
+		// the core module only, the test data has no STO
+		expect(r.totals.area).toBe(25);
 		expect(r.totals.habs).toEqual([]);
 	});
 

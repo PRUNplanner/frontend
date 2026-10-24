@@ -28,9 +28,14 @@ import {
 } from "@/features/production_chain/engine/chainSolver";
 import { extractionOptions } from "@/features/production_chain/engine/chainExtraction";
 import {
+	BASE_IDS,
+	splitByExpertise,
+} from "@/features/production_chain/engine/chainBases";
+import {
 	decodeChain,
 	DEFAULT_EFFICIENCY,
 	encodeChain,
+	firstBase,
 	type IChainState,
 } from "@/features/production_chain/engine/chainUrl";
 import { RESOURCE_MATERIAL_OPTIONS } from "@/features/resource_roi_overview/resourceROIOverview.constants";
@@ -40,9 +45,15 @@ import { ChainStorageSchema } from "@/features/production_chain/productionChain.
 
 // Types & Interfaces
 import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type { PlanCreateData } from "@/features/api/schemas/planningData.schemas";
 import type { ProductionChainAction } from "@/lib/analytics/useAnalytics.types";
 import type {
+	IChainCreated,
+	IChainEmpireChoice,
+} from "@/features/production_chain/productionChain.types";
+import type {
 	ChainSource,
+	IChainBase,
 	IChainContext,
 	IChainInput,
 	IChainRecipeEffect,
@@ -86,6 +97,8 @@ function emptyInput(): IChainInput {
 		source: {},
 		recipeId: {},
 		planetId: {},
+		bases: [firstBase()],
+		baseOf: {},
 	};
 }
 
@@ -143,6 +156,13 @@ export function useProductionChain() {
 	const extraction = computed(() =>
 		index.value ? extractionOptions(index.value) : undefined
 	);
+	const planets = computed(() =>
+		index.value
+			? new Map(index.value.map((p) => [p.planet_natural_id, p]))
+			: undefined
+	);
+	// COGC programs are checked against the time the page opened
+	const now = Date.now();
 
 	const ctx: ComputedRef<IChainContext> = computed(() => ({
 		recipesByOutput: recipesByOutput.value,
@@ -152,16 +172,20 @@ export function useProductionChain() {
 		getExchange: getExchangeTickerLoaded,
 		resources: RESOURCES,
 		extraction: extraction.value,
+		planets: planets.value,
+		now,
 	}));
 
 	const result: ComputedRef<IChainResult> = computed(() =>
 		solveChain(input.value, ctx.value)
 	);
 
-	// extraction needs the planet index
+	// extraction and base planets need the planet index
 	watch(
-		() => result.value.order.some((t) => result.value.rows[t].pending),
-		(pending) => pending && loadIndex(),
+		() =>
+			result.value.order.some((t) => result.value.rows[t].pending) ||
+			input.value.bases.some((b) => b.planetId),
+		(needed) => needed && loadIndex(),
 		{ immediate: true }
 	);
 
@@ -252,6 +276,143 @@ export function useProductionChain() {
 		input.value = { ...input.value, source };
 	}
 
+	function setBases(
+		bases: IChainBase[],
+		baseOf: Record<string, string>
+	): void {
+		input.value = { ...input.value, bases, baseOf };
+	}
+
+	/** a new base with the next free letter; null when all 8 are used */
+	function addBase(): string | null {
+		const id = BASE_IDS.find(
+			(i) => !input.value.bases.some((b) => b.id === i)
+		);
+		if (!id) return null;
+		setBases(
+			[...input.value.bases, { ...firstBase(), id }],
+			input.value.baseOf
+		);
+		track("base_add");
+		return id;
+	}
+
+	/** its steps move to the first base */
+	function removeBase(id: string): void {
+		const bases = input.value.bases.filter((b) => b.id !== id);
+		if (!bases.length) return;
+		setBases(
+			bases,
+			Object.fromEntries(
+				Object.entries(input.value.baseOf).filter(([, b]) => b !== id)
+			)
+		);
+		track("base_remove");
+	}
+
+	/** moves a step to a base, "new" to a new one */
+	function moveTo(ticker: string, id: string): void {
+		const target = id === "new" ? addBase() : id;
+		if (!target) return;
+		setBases(input.value.bases, {
+			...input.value.baseOf,
+			[ticker]: target,
+		});
+		track("base_move");
+	}
+
+	function updateBase(
+		id: string,
+		patch: Partial<Omit<IChainBase, "id">>
+	): void {
+		setBases(
+			input.value.bases.map((b) =>
+				b.id === id ? { ...b, ...patch } : b
+			),
+			input.value.baseOf
+		);
+		if ("planetId" in patch) track("base_planet");
+		if ("cogc" in patch) track("base_cogc");
+	}
+
+	/** bases by building expertise; planets are not picked */
+	function split(nameOf: (expertise: string | null) => string): void {
+		const { expertise, baseOf } = splitByExpertise(
+			result.value,
+			ctx.value,
+			input.value.efficiency
+		);
+		setBases(
+			expertise.map((e, i) => ({
+				...firstBase(),
+				id: BASE_IDS[i],
+				name: nameOf(e),
+			})),
+			baseOf
+		);
+		track("split");
+	}
+
+	/** what the last "Create plans" made, until the chain changes */
+	const created: Ref<IChainCreated | null> = ref(null);
+	watch(input, () => (created.value = null), { deep: true });
+
+	/**
+	 * Creates the empire (if new), then one plan per draft in it. Stops at
+	 * the first failure and keeps what was created.
+	 */
+	async function createPlans(
+		drafts: { base: string; data: PlanCreateData }[],
+		empire: IChainEmpireChoice
+	): Promise<IChainCreated> {
+		const done: IChainCreated = { plans: [], empire: null, failed: null };
+		trackEvent("production_chain:action", {
+			action: "plans_create",
+			plan_count: drafts.length,
+			empire: empire.kind,
+			faction: empire.kind === "new" ? empire.faction : undefined,
+		});
+		try {
+			if (empire.kind === "new") {
+				const used = drafts.reduce(
+					(s, d) => s + d.data.plan_permits_used,
+					0
+				);
+				const made = await useQuery("CreateEmpire", {
+					data: {
+						empire_name: empire.name,
+						empire_faction: empire.faction,
+						empire_permits_used: Math.max(1, used),
+						empire_permits_total: Math.max(2, used),
+					},
+				}).execute();
+				done.empire = { uuid: made.uuid, name: made.empire_name };
+			} else if (empire.kind === "existing")
+				done.empire = { uuid: empire.uuid, name: empire.name };
+		} catch {
+			done.failed = "empire";
+			return (created.value = done);
+		}
+
+		for (const d of drafts) {
+			try {
+				const plan = await useQuery("CreatePlan", {
+					data: { ...d.data, empire_uuid: done.empire?.uuid },
+				}).execute();
+				done.plans.push({
+					base: d.base,
+					uuid: plan.uuid,
+					name: d.data.plan_name,
+					planetId: d.data.planet_natural_id,
+				});
+			} catch {
+				done.failed = d.base;
+				break;
+			}
+		}
+		return (created.value = done);
+	}
+
 	function recipeOptions(ticker: string): IChainRecipeEffect[] {
 		return recipeEffects(input.value, ctx.value, ticker, result.value);
 	}
@@ -280,6 +441,13 @@ export function useProductionChain() {
 		setPlanet,
 		buyAll,
 		restoreSources,
+		addBase,
+		removeBase,
+		moveTo,
+		updateBase,
+		split,
+		created,
+		createPlans,
 		recipeOptions,
 		chainLink,
 		track,

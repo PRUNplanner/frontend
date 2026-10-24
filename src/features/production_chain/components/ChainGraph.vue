@@ -145,7 +145,7 @@
 				line2:
 					row.source === "buy"
 						? t("production_chains.graph.buy_on", { cx: row.exchange })
-						: `${row.buildingTicker ?? "—"} × ${formatNumber(row.buildings, 2)}`,
+						: `${row.base} · ${row.buildingTicker ?? "—"} × ${formatNumber(row.buildings, 2)}`,
 			};
 		})
 	);

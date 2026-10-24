@@ -27,6 +27,7 @@
 	import type {
 		ChainByproductMode,
 		ChainSource,
+		IChainBase,
 		IChainExtractionOptions,
 		IChainMarketShare,
 		IChainRecipeEffect,
@@ -36,17 +37,28 @@
 	import type { IChainOrder, IChainFilter } from "@/features/production_chain/productionChain.types";
 
 	// UI
-	import { PButton, PSegmented, PTable } from "@/ui";
+	import { PButton, PSegmented, PSelect, PTable } from "@/ui";
 
-	const { result, order, filter, byproductMode, extraction, recipeOptions } =
-		defineProps<{
-			result: IChainResult;
-			order: IChainOrder;
-			filter: IChainFilter | null;
-			byproductMode: ChainByproductMode;
-			extraction: ReadonlyMap<string, IChainExtractionOptions> | undefined;
-			recipeOptions: (ticker: string) => IChainRecipeEffect[];
-		}>();
+	// Engine
+	import { BASE_IDS } from "@/features/production_chain/engine/chainBases";
+
+	const {
+		result,
+		order,
+		filter,
+		byproductMode,
+		extraction,
+		recipeOptions,
+		bases,
+	} = defineProps<{
+		result: IChainResult;
+		order: IChainOrder;
+		filter: IChainFilter | null;
+		byproductMode: ChainByproductMode;
+		extraction: ReadonlyMap<string, IChainExtractionOptions> | undefined;
+		recipeOptions: (ticker: string) => IChainRecipeEffect[];
+		bases: IChainBase[];
+	}>();
 
 	const emit = defineEmits<{
 		(e: "source", ticker: string, source: ChainSource): void;
@@ -54,9 +66,17 @@
 		(e: "planet", ticker: string): void;
 		(e: "buyAll", tickers: string[]): void;
 		(e: "clearFilter"): void;
+		(e: "base", ticker: string, id: string): void;
 	}>();
 
-	const COLUMNS = 8;
+	const COLUMNS = 9;
+
+	const baseOptions = computed(() => [
+		...bases.map((b) => ({ label: b.id, value: b.id })),
+		...(bases.length < BASE_IDS.length
+			? [{ label: t("production_chains.table.new_base"), value: "new" }]
+			: []),
+	]);
 
 	const open: Ref<Set<string>> = ref(new Set());
 	const collapsed: Ref<Set<string>> = ref(new Set());
@@ -219,7 +239,9 @@
 	}
 
 	function typeOf(row: IChainRow) {
-		return result.buildingTypes.find((b) => b.ticker === row.buildingTicker);
+		return result.buildingTypes.find(
+			(b) => b.ticker === row.buildingTicker && b.base === row.base
+		);
 	}
 
 	// one recipe picker, anchored at the button it opens from
@@ -275,6 +297,7 @@
 				<tr class="whitespace-nowrap">
 					<th>{{ $t("production_chains.table.material") }}</th>
 					<th class="numeric">{{ $t("production_chains.table.per_day") }}</th>
+					<th>{{ $t("production_chains.table.base") }}</th>
 					<th>{{ $t("production_chains.table.source") }}</th>
 					<th>{{ $t("production_chains.table.recipe") }}</th>
 					<th>{{ $t("production_chains.table.buildings") }}</th>
@@ -323,7 +346,8 @@
 										:aria-expanded="open.has(entry.row.ticker)"
 										:title="t('production_chains.table.details', { ticker: entry.row.ticker })"
 										@click="toggleOpen(entry.row.ticker)">
-										<span class="block whitespace-nowrap">
+										<!-- long names wrap, so the table fits beside the aside -->
+										<span class="block">
 											{{ name(entry.row.ticker) }}
 											<span
 												v-if="entry.row.target"
@@ -345,8 +369,9 @@
 									</button>
 								</div>
 							</td>
-							<td class="numeric tabular-nums whitespace-nowrap">
-								{{ formatQty(entry.row.perDay) }}
+							<!-- the lines under the amount may wrap, so the table can fit -->
+							<td class="numeric tabular-nums">
+								<span class="whitespace-nowrap">{{ formatQty(entry.row.perDay) }}</span>
 								<span v-if="entry.row.target" class="block text-xs text-muted">
 									{{
 										$t("production_chains.table.sells", {
@@ -361,6 +386,18 @@
 										})
 									}}
 								</span>
+							</td>
+							<td>
+								<PSelect
+									v-if="entry.row.base"
+									:value="entry.row.base"
+									:options="baseOptions"
+									size="sm"
+									class="w-12"
+									:aria-label="t('production_chains.table.base_of', { ticker: entry.row.ticker })"
+									:data-testid="`chain-base-${entry.row.ticker}`"
+									@update:value="(v) => v && v !== entry.row.base && emit('base', entry.row.ticker, String(v))" />
+								<span v-else class="text-muted">–</span>
 							</td>
 							<td>
 								<PSegmented
@@ -469,6 +506,18 @@
 							<td>
 								<div class="flex flex-col items-start gap-1">
 									<span
+										v-if="entry.row.noFarming"
+										class="px-2 rounded-control border text-xs whitespace-nowrap text-negative border-negative"
+										:data-testid="`chain-no-farming-${entry.row.ticker}`">
+										{{ $t("production_chains.table.no_farming") }}
+									</span>
+									<span
+										v-if="entry.row.notOnPlanet"
+										class="px-2 rounded-control border text-xs whitespace-nowrap text-warning border-warning"
+										:data-testid="`chain-not-on-planet-${entry.row.ticker}`">
+										{{ $t("production_chains.table.not_on_planet") }}
+									</span>
+									<span
 										v-if="entry.row.source !== 'buy' && !entry.row.pending"
 										class="px-2 rounded-control border text-xs whitespace-nowrap"
 										:class="verdict(entry.row).cls">
@@ -519,7 +568,7 @@
 							</div>
 						</td>
 						<td class="numeric tabular-nums">{{ formatQty(b.produced) }}</td>
-						<td colspan="4" class="text-muted">
+						<td colspan="5" class="text-muted">
 							{{ $t("production_chains.table.byproduct_from", { list: b.from.join(", ") }) }}
 							<template v-if="b.used > 1e-9">
 								· {{ $t("production_chains.table.byproduct_used", { n: formatQty(b.used) }) }}

@@ -33,8 +33,8 @@ describe("productionChain.util", () => {
 		const bought = result.order.filter(
 			(t) => result.rows[t].source === "buy" && result.rows[t].perDay > 0
 		);
-		expect(list.items.map((i) => i.ticker).sort()).toEqual(bought.sort());
-		for (const i of list.items) {
+		expect(list.groups[0].items.map((i) => i.ticker).sort()).toEqual(bought.sort());
+		for (const i of list.groups[0].items) {
 			const row = result.rows[i.ticker];
 			const m = ctx.materials.get(i.ticker)!;
 			expect(i.units).toBe(Math.ceil(row.perDay * 10 - 1e-9));
@@ -43,7 +43,7 @@ describe("productionChain.util", () => {
 			expect(i.cost).toBeCloseTo(i.units * row.price, 9);
 		}
 		expect(list.cost).toBeCloseTo(
-			list.items.reduce((s, i) => s + i.cost, 0),
+			list.groups[0].items.reduce((s, i) => s + i.cost, 0),
 			9
 		);
 		const dw = ctx.materials.get("DW")!;
@@ -90,7 +90,7 @@ describe("productionChain.util edge cases", () => {
 		const ctx = testContext();
 		const result = solveChain(chainInput([["DW", 10]]), ctx);
 		const list = buyList(result, new Map(), 3);
-		expect(list.items.length).toBeGreaterThan(0);
+		expect(list.groups[0].items.length).toBeGreaterThan(0);
 		expect(list.weight).toBe(0);
 		expect(list.targetsVolume).toBe(0);
 

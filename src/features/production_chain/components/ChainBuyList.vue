@@ -20,9 +20,11 @@
 	import { formatNumber } from "@/util/numbers";
 	import { copyToClipboard } from "@/util/data";
 	import { XITSTATIONWAREHOUSESTOCX } from "@/features/xit/xitConstants";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Types & Interfaces
 	import type { IChainResult } from "@/features/production_chain/engine/chainSolver.types";
+	import type { IChainBuyGroup } from "@/features/production_chain/productionChain.util";
 
 	// UI
 	import { PButton, PInputNumber, useToast } from "@/ui";
@@ -45,10 +47,24 @@
 	const money = (v: number) =>
 		t("production_chains.money", { value: formatMoney(v) });
 
+	/** grouped by base once the chain has more than one */
+	const grouped = computed(() => result.bases.length > 1);
+
+	const baseOf = (id: string) => result.bases.find((b) => b.id === id);
+	const baseName = (id: string) =>
+		baseOf(id)?.name || t("production_chains.bases.unnamed", { id });
+	/** "<planet> Base", the in-game name of a base's inventory */
+	function destination(id: string): string | undefined {
+		const planet = baseOf(id)?.planet;
+		return planet
+			? `${planetDisplayName(planet.planet_natural_id, planet.planet_name)} Base`
+			: undefined;
+	}
+
 	/** the CX most bought rows are priced on, its station's warehouse */
-	const origin = computed(() => {
+	function origin(group: IChainBuyGroup): string | undefined {
 		const counts = new Map<string, number>();
-		for (const i of list.value.items) {
+		for (const i of group.items) {
 			const cx = result.rows[i.ticker].exchange;
 			if (cx) counts.set(cx, (counts.get(cx) ?? 0) + 1);
 		}
@@ -56,19 +72,22 @@
 		return Object.entries(XITSTATIONWAREHOUSESTOCX).find(
 			([, code]) => code === cx
 		)?.[0];
-	});
+	}
 
 	function setDays(v: number | null | undefined): void {
 		if (v != null && v >= 1) days.value = v;
 	}
 
-	function copyXIT(): void {
+	function copyXIT(group: IChainBuyGroup): void {
 		copyToClipboard(
 			transferJSON(
-				list.value.items.map((i) => ({ ticker: i.ticker, value: i.units })),
+				group.items.map((i) => ({ ticker: i.ticker, value: i.units })),
 				{
-					name: t("production_chains.buy_list.xit_name"),
-					origin: origin.value,
+					name: grouped.value
+						? `${t("production_chains.buy_list.xit_name")} ${group.base}`
+						: t("production_chains.buy_list.xit_name"),
+					origin: origin(group),
+					destination: destination(group.base),
 					buy: true,
 				}
 			).value
@@ -94,7 +113,7 @@
 				{{ $t("production_chains.buy_list.days") }}
 			</label>
 		</div>
-		<p v-if="!list.items.length" class="text-muted">
+		<p v-if="!list.groups.length" class="text-muted">
 			{{ $t("production_chains.buy_list.nothing") }}
 		</p>
 		<table v-else class="w-full tabular-nums" data-testid="chain-buy-list">
@@ -108,13 +127,42 @@
 					<th class="text-right font-normal">{{ $t("production_chains.buy_list.cost") }}</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr v-for="i in list.items" :key="i.ticker">
+			<tbody
+				v-for="g in list.groups"
+				:key="g.base"
+				:data-testid="`chain-buy-group-${g.base}`">
+				<tr v-if="grouped">
+					<th colspan="4" class="text-left font-normal pt-2">
+						<span class="px-1 rounded-control border border-line font-mono text-xs">{{ g.base }}</span>
+						<span class="font-bold pl-1">{{ baseName(g.base) }}</span>
+						<span v-if="destination(g.base)" class="text-xs text-muted pl-1">→ {{ destination(g.base) }}</span>
+					</th>
+				</tr>
+				<tr v-for="i in g.items" :key="i.ticker">
 					<td class="py-0.5"><MaterialTile :key="i.ticker" :ticker="i.ticker" /></td>
 					<td class="text-right">{{ formatNumber(i.units, 0) }}</td>
 					<td class="text-right">{{ $t("production_chains.buy_list.tons", { n: formatNumber(i.weight, 1) }) }}</td>
 					<td class="text-right">{{ money(i.cost) }}</td>
 				</tr>
+				<tr v-if="grouped" class="text-xs text-muted">
+					<td>{{ $t("production_chains.buy_list.base_total", { id: g.base }) }}</td>
+					<td />
+					<td class="text-right">{{ $t("production_chains.buy_list.tons", { n: formatNumber(g.weight, 1) }) }}</td>
+					<td class="text-right">{{ money(g.cost) }}</td>
+				</tr>
+				<tr>
+					<td colspan="4" class="pt-1 pb-2">
+						<PButton size="sm" type="secondary" @click="copyXIT(g)">
+							{{
+								grouped
+									? $t("production_chains.buy_list.xit_base", { id: g.base })
+									: $t("production_chains.buy_list.xit")
+							}}
+						</PButton>
+					</td>
+				</tr>
+			</tbody>
+			<tbody>
 				<tr class="border-t border-line font-bold">
 					<td class="pt-1">{{ $t("production_chains.buy_list.total") }}</td>
 					<td />
@@ -123,7 +171,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<p v-if="list.items.length" class="text-xs text-muted">
+		<p v-if="list.groups.length" class="text-xs text-muted">
 			{{ $t("production_chains.buy_list.volume", { n: formatNumber(list.volume, 0) }) }}
 		</p>
 		<p class="text-xs text-muted">
@@ -134,10 +182,5 @@
 				})
 			}}
 		</p>
-		<div v-if="list.items.length">
-			<PButton size="sm" type="secondary" @click="copyXIT">
-				{{ $t("production_chains.buy_list.xit") }}
-			</PButton>
-		</div>
 	</section>
 </template>

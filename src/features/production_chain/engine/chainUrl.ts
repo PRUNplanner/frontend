@@ -1,8 +1,16 @@
+// Engine
+import { BASE_IDS } from "@/features/production_chain/engine/chainBases";
+
+// Schemas
+import { PlanCOGCProgramSchema } from "@/features/api/schemas/planningData.schemas";
+
 // Types & Interfaces
 import type {
+	ChainBaseCOGC,
 	ChainByproductMode,
 	ChainRawSource,
 	ChainSource,
+	IChainBase,
 	IChainInput,
 } from "@/features/production_chain/engine/chainSolver.types";
 
@@ -38,6 +46,50 @@ function pairs(v: IQueryValue): [string, string][] {
 		.filter(([t, value]) => TICKER.test(t) && value !== "");
 }
 
+/** the one base a chain starts with */
+export function firstBase(): IChainBase {
+	return { id: BASE_IDS[0], name: "", planetId: null, cogc: "auto" };
+}
+
+const COGC_CHOICES: string[] = [
+	"auto",
+	"none",
+	...PlanCOGCProgramSchema.options,
+];
+
+/** escapes what splits the value; the router encodes the rest */
+const escape = (s: string) => s.replace(/[%:,]/g, encodeURIComponent);
+
+/** "A:name:planet:cogc,B:…" */
+function encodeBases(bases: IChainBase[]): string {
+	return bases
+		.map((b) =>
+			[b.id, escape(b.name), escape(b.planetId ?? ""), b.cogc].join(":")
+		)
+		.join(",");
+}
+
+function decodeBases(v: IQueryValue): IChainBase[] {
+	const bases: IChainBase[] = [];
+	for (const part of (first(v) ?? "").split(",")) {
+		const [id, name, planet, cogc] = part.split(":");
+		if (!BASE_IDS.includes(id) || bases.some((b) => b.id === id)) continue;
+		try {
+			bases.push({
+				id,
+				name: decodeURIComponent(name ?? ""),
+				planetId: decodeURIComponent(planet ?? "") || null,
+				cogc: COGC_CHOICES.includes(cogc)
+					? (cogc as ChainBaseCOGC)
+					: "auto",
+			});
+		} catch {
+			// a broken escape: the base is dropped
+		}
+	}
+	return bases.length ? bases : [firstBase()];
+}
+
 const join = (record: Record<string, string>) =>
 	Object.entries(record)
 		.map(([t, v]) => `${t}:${v}`)
@@ -61,6 +113,8 @@ export function encodeChain(state: IChainState): Record<string, string> {
 	if (Object.keys(input.source).length) query.src = join(input.source);
 	if (Object.keys(input.recipeId).length) query.r = join(input.recipeId);
 	if (Object.keys(input.planetId).length) query.planet = join(input.planetId);
+	query.bases = encodeBases(input.bases);
+	if (Object.keys(input.baseOf).length) query.base = join(input.baseOf);
 	if (state.cx) query.cx = state.cx;
 	return query;
 }
@@ -85,6 +139,7 @@ export function decodeChain(
 	const raw = first(query.raw) as ChainRawSource;
 	const byp = first(query.byp) as ChainByproductMode;
 
+	const bases = decodeBases(query.bases);
 	return {
 		input: {
 			targets,
@@ -101,6 +156,12 @@ export function decodeChain(
 			) as Record<string, ChainSource>,
 			recipeId: Object.fromEntries(pairs(query.r)),
 			planetId: Object.fromEntries(pairs(query.planet)),
+			bases,
+			baseOf: Object.fromEntries(
+				pairs(query.base).filter(([, id]) =>
+					bases.some((b) => b.id === id)
+				)
+			),
 		},
 		cx: first(query.cx) || undefined,
 	};
