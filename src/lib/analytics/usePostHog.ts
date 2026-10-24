@@ -178,7 +178,7 @@ async function startAnalytics(deferred: boolean = false): Promise<void> {
 		if (consent.value !== "granted" || started || run !== runs) return;
 
 		loaded.init(key, {
-			api_host: "https://squirrel.prunplanner.org/relay-DWJJ",
+			api_host: "https://squirrel.prunplanner.org",
 			ui_host: "https://eu.posthog.com",
 			defaults: "2026-08-30",
 			person_profiles: "identified_only",
