@@ -10,7 +10,7 @@
 
 **名称或编号**。在顶部框中输入行星名称或自然编号的一部分（例如“OT-580”或“Montem”）。名称也是一个筛选条件：它会与筛选面板中设置的所有条件进行组合。当筛选条件隐藏了与名称匹配的行星时，结果上方会有一条提示，说明隐藏了多少颗，并提供最多三项能显示更多匹配行星的更改，每项都附带其增加的行星数量。**展示全部** 会保留名称并重置其他所有筛选条件，这样你就能看到所有与名称匹配的行星。_任意_ 按钮位于“行星条件、接受额外建筑材料、生效的全球商会项目和基础设施”的标题栏中；点击后，会切换该部分状态以隐藏最少的行星，并显示这样可得到多少颗星球：不限地表、不限肥沃、不限建材、不限全球商会、不限基础设施。当该部分已经处于任意状态时，按钮会被高亮且无法再点击。
 
-**Distance.** Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns.
+**Distance.** Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns. Planet Search works without an account; distances to your own plans need a login.
 
 **Active filters and Reset.** Every active filter shows as a chip above the results; × on a chip removes just that filter. _Reset_ at the top right goes back to the starting filters and the default order. When no planet matches, up to three suggestions appear, each with the number of planets it would give.
 
@@ -28,4 +28,4 @@
 
 **Compare.** On larger screens, pin up to four planets with ☆ to compare them side by side in the tray at the bottom. Fertility, the searched materials and the jumps to your distance picks are coloured from best to worst, with the best value in bold. Rows where the planets differ in anything else are tinted blue.
 
-**Saving and sharing.** The address bar always holds the whole search, so _Copy link_ shares it. "+" opens a new plan for that planet in a new tab, so your search stays where it is. _Save search_ stores named searches in this browser; _Manage_ renames, loads or deletes them.
+**Saving and sharing.** The address bar always holds the whole search, so _Copy link_ shares it. "+" opens a new plan for that planet in a new tab, so your search stays where it is. Without an account, "+" asks you to log in first and then opens the plan. _Save search_ stores named searches in this browser; _Manage_ renames, loads or deletes them.
