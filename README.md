@@ -49,8 +49,8 @@ A huge thank you to the following community members who volunteered their time t
 
 ## Deployment
 
-The app is deployed with Cloudflare Pages. Every pull request gets its own
-preview deployment.
+The app runs in production from the Docker image (see below). Every pull
+request gets its own preview deployment on Cloudflare Pages.
 
 ## Getting started
 

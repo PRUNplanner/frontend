@@ -114,12 +114,16 @@ saved over the shared plan.
     as an environment variable):
     `pnpm run build && echo "window.__APP_CONFIG__ = { POSTHOG_KEY: '${POSTHOG_KEY}' };" > dist/env.js`.
 - **Deploy.**
-  - Cloudflare Pages serves `dist/`, configured in its dashboard. With no
-    top-level `404.html` it falls back to `index.html` (SPA); headers are in
-    `public/_headers`. Pull requests get preview deployments.
+  - Production runs the Docker image (`Dockerfile`, `dist/` served by
+    `spa-to-http`) on Hetzner.
+  - Cloudflare Pages builds the pull request previews, configured in its
+    dashboard. With no top-level `404.html` it falls back to `index.html`
+    (SPA); headers are in `public/_headers`.
   - `pnpm build` also prerenders `/` into `dist/index.html`
     ([seo.md](seo.md)).
-  - The Docker image (`Dockerfile`) serves `dist/` with `spa-to-http`.
+  - On Pages builds (`CF_PAGES`) `vite.config.ts` skips the `.gz`/`.br`
+    files (Pages compresses itself, only `spa-to-http` serves them) and the
+    sourcemaps.
   - The `buildVersion` plugin in `vite.config.ts` writes `dist/version.json`
     with the build ID (`BUILD_REVISION`, the commit) that is also baked into
     the bundle as `__BUILD_ID__`; `lib/useVersionCheck.ts` compares the two.
