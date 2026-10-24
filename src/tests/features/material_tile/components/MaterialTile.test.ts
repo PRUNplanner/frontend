@@ -8,6 +8,8 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 import MaterialMarketCard from "@/features/material_tile/components/MaterialMarketCard.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { useUserStore } from "@/stores/userStore";
+import { createPinia, setActivePinia } from "pinia";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
@@ -61,12 +63,15 @@ const GREEN = "rgb(60, 179, 113)";
 const gradient = (empty: string, color: string) =>
 	`background: linear-gradient(transparent ${empty}%, ${color} 0%);`;
 
-async function mountTile(props: Record<string, unknown> = {}) {
-	const mounted = await mountComponent(MaterialTile, {
-		key: "tile",
-		ticker: "FE",
-		...props,
-	});
+async function mountTile(
+	props: Record<string, unknown> = {},
+	options: Parameters<typeof mountComponent>[2] = {}
+) {
+	const mounted = await mountComponent(
+		MaterialTile,
+		{ key: "tile", ticker: "FE", ...props },
+		options
+	);
 	// the material loads in onMounted
 	await vi.waitFor(() =>
 		expect(mounted.wrapper.find(".material-category-metals").exists()).toBe(
@@ -216,6 +221,7 @@ describe("MaterialTile", () => {
 			dailyContext: "empire",
 			marketCheck: check,
 			pinned: false,
+			clickOnly: false,
 			sheet: false,
 		});
 		expect(trigger(wrapper).attributes("aria-expanded")).toBe("true");
@@ -296,6 +302,53 @@ describe("MaterialTile", () => {
 		expect(trackEvent).toHaveBeenCalledWith("material:market_drawer_open", {
 			material_ticker: "FE",
 			source: "card",
+		});
+	});
+
+	describe("on click only", () => {
+		async function mountClickOnly(props: Record<string, unknown> = {}) {
+			const pinia = createPinia();
+			setActivePinia(pinia);
+			useUserStore().setPreference("marketCardTrigger", "click");
+			return mountTile(props, { pinia });
+		}
+
+		it("opens nothing on hover or focus", async () => {
+			const { wrapper } = await mountClickOnly();
+
+			await trigger(wrapper).trigger("pointerenter", {
+				pointerType: "mouse",
+			});
+			await trigger(wrapper).trigger("focusin");
+			await new Promise((resolve) => setTimeout(resolve, 400));
+
+			expect(card().exists()).toBe(false);
+			expect(overviewCalls).not.toHaveBeenCalled();
+		});
+
+		it("pins the card on a click, also where a click opens the drawer", async () => {
+			const { wrapper } = await mountClickOnly({ disableDrawer: false });
+
+			await tile(wrapper).trigger("click");
+			await vi.waitFor(() =>
+				expect(wrapper.findComponent(MaterialMarketCard).exists()).toBe(
+					true
+				)
+			);
+			expect(drawer().exists()).toBe(false);
+			expect(wrapper.findComponent(MaterialMarketCard).props()).toMatchObject(
+				{ pinned: true, clickOnly: true, clickOpensDetails: false }
+			);
+			expect(card().text()).toContain("material_tile.card.hint_click");
+
+			// Market details opens the drawer
+			await body().find("[data-details]").trigger("click");
+			await vi.waitFor(() =>
+				expect(
+					body().find("[data-material-market-details]").exists()
+				).toBe(true)
+			);
+			expect(card().exists()).toBe(false);
 		});
 	});
 

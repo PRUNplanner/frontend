@@ -1,8 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { defineComponent, h, nextTick, ref } from "vue";
+import {
+	defineComponent,
+	h,
+	type MaybeRefOrGetter,
+	nextTick,
+	ref,
+} from "vue";
 
 import { mountComponent } from "@/tests/mountComponent";
-import { useHoverCard } from "@/ui/useHoverCard";
+import { type IHoverCardOptions, useHoverCard } from "@/ui/useHoverCard";
 import PDrawer from "@/ui/components/PDrawer.vue";
 
 type Card = ReturnType<typeof useHoverCard>;
@@ -18,14 +24,17 @@ describe("useHoverCard", () => {
 	// the scroll guard keeps its last time across tests: the clock only moves on
 	let clock = 0;
 
-	async function setup(count = 2) {
+	async function setup(
+		count = 2,
+		options: MaybeRefOrGetter<IHoverCardOptions> = {}
+	) {
 		cards = [];
 		await mountComponent(
 			defineComponent({
 				setup() {
 					for (let i = 0; i < count; i++)
 						cards.push(
-							useHoverCard(ref(triggers[i]), ref(panels[i]), {}, () => opened++)
+							useHoverCard(ref(triggers[i]), ref(panels[i]), options, () => opened++)
 						);
 					return () => h("div");
 				},
@@ -309,5 +318,33 @@ describe("useHoverCard", () => {
 		expect(cards[0].open.value).toBe(false);
 		// Esc with nothing open does nothing
 		expect(press("Escape").defaultPrevented).toBe(false);
+	});
+
+	it("opens on a pin only in click mode, and follows a switch back to hover", async () => {
+		const trigger = ref<"hover" | "click">("click");
+		await setup(1, () => ({ trigger: trigger.value }));
+
+		enter(0);
+		vi.advanceTimersByTime(1000);
+		cards[0].triggerEvents.focusin();
+		expect(cards[0].open.value).toBe(false);
+
+		// a click pins it, a second click closes it
+		cards[0].togglePin();
+		expect(cards[0].open.value && cards[0].pinned.value).toBe(true);
+		cards[0].togglePin();
+		expect(cards[0].open.value).toBe(false);
+
+		// a pinned card closes with Esc
+		cards[0].pin();
+		await nextTick();
+		expect(press("Escape").defaultPrevented).toBe(true);
+		expect(cards[0].open.value).toBe(false);
+
+		leave(0);
+		trigger.value = "hover";
+		enter(0);
+		vi.advanceTimersByTime(300);
+		expect(cards[0].open.value).toBe(true);
 	});
 });
