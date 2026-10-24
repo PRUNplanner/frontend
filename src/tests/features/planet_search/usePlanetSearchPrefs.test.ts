@@ -8,6 +8,7 @@ const KEY = "prunplanner_planet_search";
 const DEFAULTS = {
 	savedSearches: [],
 	hiddenColumns: [],
+	shownColumns: [],
 	hiddenMaterials: [],
 	filtersCollapsed: false,
 	view: "list",
@@ -70,6 +71,29 @@ describe("usePlanetSearchPrefs", () => {
 		prefs.value.view = "matrix";
 		await nextTick();
 		expect(prefs.value.view).toBe("matrix");
+	});
+
+	it("keeps opt-in columns hidden until turned on, also for older prefs", async () => {
+		// saved before the plots column existed: nothing hidden
+		const storage = memoryStorage({
+			[KEY]: JSON.stringify({ hiddenColumns: [] }),
+		});
+		vi.stubGlobal("localStorage", storage);
+		const { prefs, hiddenColumns } = usePlanetSearchPrefs();
+		expect(hiddenColumns.value).toEqual(["plots"]);
+
+		// the columns menu shows plots and hides fert
+		hiddenColumns.value = ["fert"];
+		expect(prefs.value.hiddenColumns).toEqual(["fert"]);
+		expect(prefs.value.shownColumns).toEqual(["plots"]);
+		expect(hiddenColumns.value).toEqual(["fert"]);
+		await nextTick();
+		expect(usePlanetSearchPrefs().hiddenColumns.value).toEqual(["fert"]);
+
+		// and hides it again
+		hiddenColumns.value = ["fert", "plots"];
+		expect(prefs.value.shownColumns).toEqual([]);
+		expect(hiddenColumns.value).toEqual(["fert", "plots"]);
 	});
 
 	it("keeps valid fields of a partly invalid entry", () => {

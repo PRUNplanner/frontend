@@ -24,6 +24,7 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import PlanetFullIcon from "@/features/planet_search/components/PlanetFullIcon.vue";
 	import PlanetPlots from "@/features/planet_search/components/PlanetPlots.vue";
 	import PlanetSearchRowActions from "@/features/planet_search/components/PlanetSearchRowActions.vue";
 	import PlanetSearchSortHeader from "@/features/planet_search/components/PlanetSearchSortHeader.vue";
@@ -232,6 +233,7 @@
 						class="text-xs text-muted font-normal font-mono">
 						{{ row.planet.planet_natural_id }}
 					</span>
+					<PlanetFullIcon :planet="row.planet" />
 				</td>
 				<td v-if="show('fert')" class="text-right tabular-nums" :class="row.fertility === null ? 'text-muted' : 'text-positive'">
 					{{ row.fertility === null ? "—" : formatNumber(row.fertility, 0) }}

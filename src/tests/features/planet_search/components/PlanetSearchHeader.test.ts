@@ -260,7 +260,8 @@ describe("PlanetSearchColumnsMenu", () => {
 		bodyButton("planet_search.columns.none").click();
 		expect(menu.emitted("update:hiddenMaterials")![0]).toEqual([["AR", "O"]]);
 
+		// reset is the default: opt-in plots hidden again
 		bodyButton("planet_search.columns.reset").click();
-		expect(menu.emitted("update:hiddenColumns")!.at(-1)).toEqual([[]]);
+		expect(menu.emitted("update:hiddenColumns")!.at(-1)).toEqual([["plots"]]);
 	});
 });

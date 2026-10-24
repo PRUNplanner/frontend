@@ -593,3 +593,37 @@ describe("PlanetSearchList rows", () => {
 		expect(m.text()).toContain("planet_search.results.loading_more");
 	});
 });
+
+describe("planets that can't be settled", () => {
+	// every plot taken, no ghost sites; the other one has free plots
+	const full = makePlanet({
+		plots_total: 10,
+		plots_used: 10,
+		ghost_sites: 0,
+		supports_ghost_sites: false,
+	});
+	const open = makePlanet({
+		planet_natural_id: "BB-002b",
+		system_id: "sys-b",
+		plots_total: 10,
+		plots_used: 4,
+	});
+
+	it.each([
+		["list", PlanetSearchList],
+		["matrix", PlanetSearchMatrix],
+	] as const)("%s marks them next to the name, plots column hidden", async (_, view) => {
+		const { component } = await mountComponent(view, {
+			...props,
+			planets: [full, open],
+			hiddenMaterials: [],
+			hiddenColumns: ["plots"],
+		});
+		const rows = (component as VueWrapper).findAll("tbody tr");
+		const icon = (i: number) => rows[i].findAll("td")[1].find("[data-testid='planet-full']");
+		expect(icon(0).exists()).toBe(true);
+		expect(icon(1).exists()).toBe(false);
+		// the column is off by default here
+		expect((component as VueWrapper).find("[data-testid='planet-plots']").exists()).toBe(false);
+	});
+});

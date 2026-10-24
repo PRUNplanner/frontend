@@ -22,6 +22,7 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import PlanetFullIcon from "@/features/planet_search/components/PlanetFullIcon.vue";
 	import PlanetPlots from "@/features/planet_search/components/PlanetPlots.vue";
 	import PlanetSearchRowActions from "@/features/planet_search/components/PlanetSearchRowActions.vue";
 	import PlanetSearchSortHeader from "@/features/planet_search/components/PlanetSearchSortHeader.vue";
@@ -203,6 +204,7 @@
 				<td class="sticky z-10 whitespace-nowrap" :class="planetLeft">
 					<div class="font-bold">
 						{{ displayName(row.planet) }}
+						<PlanetFullIcon :planet="row.planet" />
 					</div>
 					<div
 						v-if="displayName(row.planet) !== row.planet.planet_natural_id"
