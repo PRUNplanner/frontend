@@ -25,8 +25,8 @@ The owner's plan is never touched.
   my plans"); visitors get "Sign up to save this" and Login, which open the
   header's login / registration panel through `features/account/useAuthPanel`.
 - **`components/SharedPlanDeltas.vue`**: the copy's profit, ROI, area,
-  workforce and building count against the shared version, shown by
-  `PlanStatusBar` and `PlanOverview`.
+  workforce and building count against the shared version, shown under
+  `PlanResultsBar`.
 - **`sharedPlan.util.ts`** (types in `sharedPlan.types.ts`):
   `toWorkingCopy` (drops uuid, empires and save version), `isOwnPlan`,
   `planFigures`, `buildingChanges` (per building marks and removed

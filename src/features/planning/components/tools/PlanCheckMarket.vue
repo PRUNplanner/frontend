@@ -360,7 +360,7 @@
 							<RouterLink
 								v-if="ruleLink(row)"
 								:to="ruleLink(row)!.to"
-								class="block text-xs text-link hover:underline whitespace-nowrap"
+								class="block py-1 text-xs text-link hover:underline whitespace-nowrap"
 								:aria-label="
 									t('plan.tools.plan_check.market.rule_link', {
 										ticker: row.ticker,
@@ -425,7 +425,7 @@
 						<RouterLink
 							v-if="ruleLink(c)"
 							:to="ruleLink(c)!.to"
-							class="self-start text-xs text-link hover:underline"
+							class="self-start py-1 text-xs text-link hover:underline"
 							:aria-label="
 								t('plan.tools.plan_check.market.rule_link', {
 									ticker: c.ticker,

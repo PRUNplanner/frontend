@@ -161,7 +161,7 @@ const calc = usePlanCalculation(
   | Field | Meaning |
   | --- | --- |
   | `result: ComputedRef<IPlanResult>` | The full result, read-only |
-  | `overviewData`, `visitationData` | Derived summaries for `PlanOverview` / `PlanVisitationFrequency` |
+  | `overviewData`, `visitationData` | Derived summaries for `PlanResultsBar` / `PlanVisitationFrequency` |
   | `calculate()` | Calculates once (async, waits for loading) and returns a fresh result |
   | `calculateOverview(materialIO, production, infrastructure)` | The overview for a result's parts |
   | `backendData` | The `PlanCreateData` payload for save/create |

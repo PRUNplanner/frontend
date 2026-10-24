@@ -36,8 +36,20 @@
 		if (isOpen.value)
 			trackEvent("plan:insights_open", {
 				planet_natural_id: planetNaturalId,
+				source: "button",
 			});
 	}
+
+	// the Base panel's planet link opens the box too
+	function open(): void {
+		if (isOpen.value) return;
+		isOpen.value = true;
+		trackEvent("plan:insights_open", {
+			planet_natural_id: planetNaturalId,
+			source: "planet",
+		});
+	}
+	defineExpose({ open });
 
 	onMounted(() => {
 		if (!isEnabled.value) return;

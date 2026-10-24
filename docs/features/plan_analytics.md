@@ -20,13 +20,14 @@ there.
 
 - **Setting:** renders and requests nothing while the "Plan suggestions"
   preference (`planSuggestions`) is off. Opening it sends
-  `plan:insights_open`.
+  `plan:insights_open` (`source`: its button, or the planet link in Base,
+  which calls the exposed `open()`).
 
 `usePlanetInsights.ts`: `usePlanetInsights(planetNaturalId)` reads the v2
 keys of the same query (`insights_data.buildings`; v1 rows default to
 `[]`) for the plan editor: the "Popular on" group of the building picker
 (`PlanProduction`, via `getProductionBuildingOptions`), the "Plans here"
-column of the recipe picker (`PlanProductionRecipe`) and the "Most planned
+column of the recipe picker (`PlanRecipePicker`) and the "Most planned
 here" mix hint on a building without recipes (`PlanProductionBuilding`,
 `typicalRecipes`). Every caller executes the named query, so the query
 store makes one request per planet. Nothing is requested while

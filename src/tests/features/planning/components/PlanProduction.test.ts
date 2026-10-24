@@ -7,13 +7,15 @@ import { useBuildingData } from "@/database/services/useBuildingData";
 import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 import PlanStarterSetup from "@/features/plan_analytics/components/PlanStarterSetup.vue";
-import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 import PSelect from "@/ui/components/PSelect.vue";
+import PCheckbox from "@/ui/components/PCheckbox.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
-import type { PlanetResource } from "@/features/api/schemas/gameData.schemas";
+import type {
+	IProductionBuilding,
+	IProductionBuildingRecipe,
+} from "@/features/planning/usePlanCalculation.types";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
@@ -61,19 +63,22 @@ vi.mock("@/features/planning/components/PlanProductionBuilding.vue", () => ({
 			buildingIndex: Number,
 			cxUuid: String,
 			planetId: String,
+			change: Object,
+			folded: Boolean,
+			experts: Number,
+			picker: { type: [Number, null], default: undefined },
+			status: Object,
+			materialIO: Array,
+			buildings: Array,
 		},
 		render: () => h("div"),
 	},
 }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String, amount: Number },
-		render: () => h("div"),
-	},
-}));
 
-function building(name: string): IProductionBuilding {
+function building(
+	name: string,
+	overrides: Partial<IProductionBuilding> = {}
+): IProductionBuilding {
 	return {
 		name,
 		amount: 1,
@@ -89,26 +94,9 @@ function building(name: string): IProductionBuilding {
 		workforceDailyCost: 0,
 		dailyRevenue: 0,
 		expertise: null,
+		...overrides,
 	};
 }
-
-const resource = (
-	ticker: string,
-	type: PlanetResource["resource_type"],
-	daily: number
-): PlanetResource => ({
-	material_ticker: ticker,
-	resource_type: type,
-	factor: 0.5,
-	daily_extraction: daily,
-	max_daily_extraction: daily,
-});
-
-const RESOURCES = [
-	resource("FEO", "MINERAL", 12.345),
-	resource("NE", "GASEOUS", 3),
-	resource("H2O", "LIQUID", 20),
-];
 
 async function mountProduction(
 	props: Record<string, unknown> = {},
@@ -117,16 +105,16 @@ async function mountProduction(
 	return mountComponent(
 		PlanProduction,
 		{
-		disabled: false,
-		productionData: {
-			buildings: [building("SME"), building("FP")],
-			materialio: [],
-		},
-		cogc: "METALLURGY",
-		cxUuid: "cx-uuid",
-		planetId: "ZV-307c",
-		planetResources: RESOURCES,
-		...props,
+			disabled: false,
+			productionData: {
+				buildings: [building("SME"), building("FP")],
+				materialio: [],
+			},
+			cogc: "METALLURGY",
+			cxUuid: "cx-uuid",
+			planetId: "ZV-307c",
+			planetResources: [],
+			...props,
 		},
 		{ messages }
 	);
@@ -171,6 +159,16 @@ describe("PlanProduction", () => {
 			expect.objectContaining({ value: "POPULAR#PP1", badge: "58 %" }),
 		]);
 		expect(groups[1].children.map((c) => c.value)).toContain("PP1");
+	});
+
+	it("tracks Match COGC on the building select", async () => {
+		const { wrapper } = await mountProduction();
+
+		wrapper.findComponent(PCheckbox).vm.$emit("update:checked", true);
+		await flushPromises();
+		expect(trackEvent).toHaveBeenCalledWith("plan:cogc_match_toggle", {
+			is_active: true,
+		});
 	});
 
 	it("tracks a building picked from the popular group", async () => {
@@ -334,45 +332,227 @@ describe("PlanProduction", () => {
 		expect(component.emitted("create:building")).toEqual([["PP1"]]);
 	});
 
-	it("creates the extractor of a planet resource with its recipe", async () => {
+	it("tracks a recipe added from the picker as recipe_add", async () => {
+		insights.available = ref(true);
+		insights.mostPlanned = "FP#DW";
 		const { wrapper, component } = await mountProduction();
 
-		const tiles = wrapper.findAll(".ptooltip > button");
-		expect(tiles).toHaveLength(3);
-		for (const tile of tiles) await tile.trigger("click");
+		children(wrapper).at(1)!.vm.$emit("pick:building:recipe", 1, "FP#DW");
+		children(wrapper).at(1)!.vm.$emit("pick:building:recipe", 1, "FP#X");
 
-		expect(component.emitted("create:building:recipe")).toEqual([
-			["EXT", "EXT#FEO"],
-			["COL", "COL#NE"],
-			["RIG", "RIG#H2O"],
+		expect(component.emitted("pick:building:recipe")).toEqual([
+			[1, "FP#DW"],
+			[1, "FP#X"],
+		]);
+		expect(trackPlanEdit.mock.calls.map((c) => c[0])).toEqual([
+			{
+				field: "recipe_add",
+				planet_natural_id: "ZV-307c",
+				building_ticker: "FP",
+				is_most_planned: true,
+			},
+			{
+				field: "recipe_add",
+				planet_natural_id: "ZV-307c",
+				building_ticker: "FP",
+				is_most_planned: false,
+			},
 		]);
 	});
 
-	it("shows planet resources with their rounded daily extraction", async () => {
-		const { wrapper } = await mountProduction();
+	it("counts buildings, units and recipes, with the column heads once", async () => {
+		const recipe = { recipeId: "SME#FE" } as IProductionBuildingRecipe;
+		const { wrapper } = await mountProduction(
+			{
+				productionData: {
+					buildings: [
+						building("SME", { amount: 3, activeRecipes: [recipe, recipe] }),
+						building("FP", { amount: 2, activeRecipes: [recipe] }),
+					],
+					materialio: [],
+				},
+			},
+			{
+				plan: {
+					production: { counts: "{buildings} b, {units} u, {recipes} r" },
+				},
+			}
+		);
 
+		expect(wrapper.text()).toContain("2 b, 5 u, 3 r");
+		expect(wrapper.findAll("[data-column-heads]")).toHaveLength(1);
+	});
+
+	it("passes each building its change, experts and the plan's I/O", async () => {
+		const materialIO = [{ ticker: "FE", input: 1, output: 0 }];
+		const change = { kinds: ["amount"], newRecipes: [] };
+		const { wrapper } = await mountProduction({
+			productionData: {
+				buildings: [
+					building("SME", { expertise: "METALLURGY" }),
+					building("FP"),
+				],
+				materialio: [],
+			},
+			changes: { buildings: { FP: change }, removed: [] },
+			experts: { Metallurgy: { name: "Metallurgy", amount: 3, bonus: 0 } },
+			materialIO,
+		});
+
+		expect(children(wrapper).map((c) => c.props("change"))).toEqual([
+			undefined,
+			change,
+		]);
+		expect(children(wrapper).map((c) => c.props("experts"))).toEqual([3, 0]);
+		expect(children(wrapper).at(0)!.props("materialIO")).toEqual(materialIO);
 		expect(
-			wrapper
-				.findAllComponents(MaterialTile)
-				.map((t) => [t.props("ticker"), t.props("amount")])
-		).toEqual([
-			// 12.345 formats to "12.35"
-			["FEO", 12.35],
-			["NE", 3],
-			["H2O", 20],
-		]);
-		expect(wrapper.text()).toContain(
-			"plan.components.production.planet_resources"
-		);
+			children(wrapper)
+				.at(0)!
+				.props("buildings")!
+				.map((b: IProductionBuilding) => b.name)
+		).toEqual(["SME", "FP"]);
 	});
 
-	it("hides the resource label without planet resources", async () => {
-		const { wrapper } = await mountProduction({ planetResources: [] });
+	it("lists the buildings the shared plan had but the copy removed", async () => {
+		const { wrapper } = await mountProduction({
+			changes: { buildings: {}, removed: ["PP1", "HB1"] },
+		});
 
-		expect(wrapper.findAllComponents(MaterialTile)).toHaveLength(0);
-		expect(wrapper.text()).not.toContain(
-			"plan.components.production.planet_resources"
-		);
+		const removed = wrapper.findAll(".line-through").map((s) => s.text());
+		expect(removed).toEqual(["PP1", "HB1"]);
+		expect(wrapper.text()).toContain("sharing.compare.removed");
+	});
+
+	it("shows the status line at its building only, and passes undo on", async () => {
+		const { wrapper, component } = await mountProduction({
+			status: { building: 1, recipe: 0, text: "Added FE." },
+		});
+
+		expect(children(wrapper).map((c) => c.props("status"))).toEqual([
+			undefined,
+			{ recipe: 0, text: "Added FE." },
+		]);
+
+		children(wrapper).at(1)!.vm.$emit("undo");
+		expect(component.emitted("undo")).toEqual([[]]);
+	});
+
+	describe("recipe picker", () => {
+		const pickers = (wrapper: VueWrapper) =>
+			children(wrapper).map((c) => c.props("picker"));
+
+		it("opens one at a time, under the building that asked", async () => {
+			const { wrapper } = await mountProduction();
+			expect(pickers(wrapper)).toEqual([undefined, undefined]);
+
+			children(wrapper).at(1)!.vm.$emit("open:picker", 0);
+			await flushPromises();
+			expect(pickers(wrapper)).toEqual([undefined, 0]);
+
+			// add mode in the other building closes the first
+			children(wrapper).at(0)!.vm.$emit("open:picker", null);
+			await flushPromises();
+			expect(pickers(wrapper)).toEqual([null, undefined]);
+
+			children(wrapper).at(0)!.vm.$emit("close:picker");
+			await flushPromises();
+			expect(pickers(wrapper)).toEqual([undefined, undefined]);
+		});
+
+		it.each([
+			["pick:building:recipe", [1, "FP#DW"]],
+			["update:building:recipe", [1, 0, "FP#DW"]],
+		])("closes after %s", async (event, args) => {
+			const { wrapper } = await mountProduction();
+			children(wrapper).at(1)!.vm.$emit("open:picker", null);
+			await flushPromises();
+			expect(pickers(wrapper)).toEqual([undefined, null]);
+
+			children(wrapper).at(1)!.vm.$emit(event, ...args);
+			await flushPromises();
+			expect(pickers(wrapper)).toEqual([undefined, undefined]);
+		});
+	});
+
+	describe("fold", () => {
+		const folded = (wrapper: VueWrapper) =>
+			children(wrapper).map((c) => c.props("folded"));
+		const toggleAll = (wrapper: VueWrapper) =>
+			wrapper
+				.findAll("button")
+				.find((b) => b.text().startsWith("plan.production."))!;
+
+		it("folds one building, or all of them", async () => {
+			const { wrapper } = await mountProduction();
+			expect(folded(wrapper)).toEqual([false, false]);
+			expect(toggleAll(wrapper).text()).toBe("plan.production.collapse_all");
+
+			children(wrapper).at(1)!.vm.$emit("toggle:fold");
+			await flushPromises();
+			expect(folded(wrapper)).toEqual([false, true]);
+
+			await toggleAll(wrapper).trigger("click");
+			expect(folded(wrapper)).toEqual([true, true]);
+			expect(toggleAll(wrapper).text()).toBe("plan.production.expand_all");
+
+			await toggleAll(wrapper).trigger("click");
+			expect(folded(wrapper)).toEqual([false, false]);
+		});
+
+		it("offers Expand all once every building is folded", async () => {
+			const { wrapper } = await mountProduction();
+
+			children(wrapper).at(0)!.vm.$emit("toggle:fold");
+			children(wrapper).at(1)!.vm.$emit("toggle:fold");
+			await flushPromises();
+			expect(toggleAll(wrapper).text()).toBe("plan.production.expand_all");
+
+			children(wrapper).at(0)!.vm.$emit("toggle:fold");
+			await flushPromises();
+			expect(toggleAll(wrapper).text()).toBe("plan.production.collapse_all");
+		});
+
+		it("has no toggle without buildings", async () => {
+			const { wrapper } = await mountProduction({
+				productionData: { buildings: [], materialio: [] },
+			});
+
+			expect(
+				wrapper
+					.findAll("button")
+					.some((b) => b.text().includes("collapse_all"))
+			).toBe(false);
+		});
+	});
+
+	it("re-emits the building events with their payloads", async () => {
+		const { wrapper, component } = await mountProduction();
+		const fp = children(wrapper).at(1)!;
+
+		fp.vm.$emit("update:building:amount", 1, 4);
+		fp.vm.$emit("delete:building", 1);
+		fp.vm.$emit("update:building:recipe:amount", 1, 2, 3);
+		fp.vm.$emit("delete:building:recipe", 1, 0);
+		fp.vm.$emit("pick:building:recipe", 1, "FP#X");
+		fp.vm.$emit("update:building:recipe", 1, 0, "FP#DW");
+
+		expect(component.emitted("update:building:amount")).toEqual([[1, 4]]);
+		expect(component.emitted("delete:building")).toEqual([[1]]);
+		expect(component.emitted("update:building:recipe:amount")).toEqual([
+			[1, 2, 3],
+		]);
+		expect(component.emitted("delete:building:recipe")).toEqual([[1, 0]]);
+		expect(component.emitted("pick:building:recipe")).toEqual([[1, "FP#X"]]);
+		expect(component.emitted("update:building:recipe")).toEqual([
+			[1, 0, "FP#DW"],
+		]);
+		expect(trackPlanEdit.mock.calls.map((c) => c[0].field)).toEqual([
+			"building_amount",
+			"recipe_amount",
+			"recipe_delete",
+			"recipe_add",
+			"recipe_change",
+		]);
 	});
 
 	it("renders no rows without buildings", async () => {
@@ -384,28 +564,6 @@ describe("PlanProduction", () => {
 		expect(buildingOptions(wrapper)).toContain("SME");
 	});
 
-	it("re-emits the building events with their payloads", async () => {
-		const { wrapper, component } = await mountProduction();
-		const fp = children(wrapper).at(1)!;
-
-		fp.vm.$emit("update:building:amount", 1, 4);
-		fp.vm.$emit("delete:building", 1);
-		fp.vm.$emit("update:building:recipe:amount", 1, 2, 3);
-		fp.vm.$emit("delete:building:recipe", 1, 0);
-		fp.vm.$emit("add:building:recipe", 1);
-		fp.vm.$emit("update:building:recipe", 1, 0, "FP#DW");
-
-		expect(component.emitted("update:building:amount")).toEqual([[1, 4]]);
-		expect(component.emitted("delete:building")).toEqual([[1]]);
-		expect(component.emitted("update:building:recipe:amount")).toEqual([
-			[1, 2, 3],
-		]);
-		expect(component.emitted("delete:building:recipe")).toEqual([[1, 0]]);
-		expect(component.emitted("add:building:recipe")).toEqual([[1]]);
-		expect(component.emitted("update:building:recipe")).toEqual([
-			[1, 0, "FP#DW"],
-		]);
-	});
 
 	describe("starter setup", () => {
 		const empty = { productionData: { buildings: [], materialio: [] } };

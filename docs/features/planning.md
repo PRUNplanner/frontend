@@ -25,11 +25,16 @@ editor UI. The engine is documented in depth in
 
 ## Components
 
-- **Editor panels** (`components/`) are wired together by `PlanView.vue`:
-  `PlanConfiguration`, `PlanBonuses`, `PlanArea`, `PlanWorkforce`,
-  `PlanInfrastructure`, `PlanExperts`, `PlanSaveButton`, `PlanProduction` (→
-  `PlanProductionBuilding` → `PlanProductionRecipe`), `PlanMaterialIO`,
-  `PlanOverview` and `PlanStatusBar`.
+- **Editor panes** (`components/`) are wired together by `PlanView.vue`,
+  three panes under a sticky `PlanResultsBar` (profit, payback, profit per
+  area, area, storage): `PlanBase` (Base: `PlanConfiguration`,
+  `PlanBonuses`, `PlanArea`, `PlanWorkforce`, `PlanInfrastructure`,
+  `PlanExperts` in foldable `<details>` sections), `PlanProduction` (→
+  `PlanProductionBuilding` → `PlanProductionRecipe`, and the inline
+  `PlanRecipePicker`) and `PlanMaterialIO`. `PlanToolTabs` switches a tool
+  in place of `PlanProduction`; `planView.util.ts` (`foldedPanes`) says
+  which side panes fold to a strip for which tool. The picker's ordering and
+  dependency note are pure functions in `recipePicker.util.ts`.
 - **Tools** (`components/tools/`) are extra panels on the plan page:
   - `PlanCOGM` / `PlanCOGMTable`: cost of goods manufactured, also
     without a CX (Universe prices); input price sources link to the rule
@@ -92,12 +97,14 @@ editor UI. The engine is documented in depth in
 - **A shared plan is the viewer's working copy** (`shared`): editable like
   a new plan, never saved over the owner's. See
   [sharing.md](sharing.md). Optional props compare it with the shared
-  version: `compare` on `PlanStatusBar` and `PlanOverview`, `changes` on
+  version: `compare` on `PlanResultsBar`, `changes` on
   `PlanProduction` (marks per building and recipe row, removed buildings
   struck through).
-- **Recipe rows show their inputs** when another recipe of the building has
-  the same outputs (`hasOutputTwin`, `recipeOutputs.util.ts`). The recipe
-  popover always opens; read-only, a click on an option does nothing.
+- **Recipe rows show inputs → outputs.** A click opens `PlanRecipePicker`
+  under the row (change) or under "+ Recipe" (add); one picker at a time
+  (`PlanProduction` holds which). A pick commits at once and `PlanView`
+  shows a status line with Undo under the row; read-only plans don't open
+  it.
 - **`disabled` means read-only**. Panels hide what only
   makes sense while editing (add building, add or delete recipe, recipe
   picker, empire, amount steppers) instead of greying it out. Inputs that

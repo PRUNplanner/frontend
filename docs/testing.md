@@ -172,7 +172,7 @@ Write them for logic-heavy components, see
   `[role=dialog]`, their close button by
   `button[aria-label="common.ui.close"]`, menus by `[role=menu]` and
   `[role=menuitem]` (see `PlanMoreMenu.test.ts`);
-  `PlanProductionRecipe.test.ts` opens a popover and reads its table. A
+  `PlanRecipePicker.test.ts` drives a listbox with the keyboard. A
   click outside is a `mousedown` on the document. For focus checks pass
   `{ attach: true }` to `mountComponent`. The setup file stubs
   `ResizeObserver`. Test utils stub the transitions, so a closed modal or
