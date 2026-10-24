@@ -43,6 +43,11 @@ export function skipEmptyChunks(): Plugin {
 	};
 }
 
+// Cloudflare Pages compresses on the fly and ignores precompressed files,
+// which only spa-to-http (the Docker image, production) serves. Pages only
+// builds previews, so it skips the sourcemaps too.
+const cfPages = !!process.env.CF_PAGES;
+
 // the commit in CI and Docker, else the build time; the tab compares it with
 // the deployed version.json to know when a newer build is out
 const buildId =
@@ -146,9 +151,10 @@ export default defineConfig({
 		buildVersion(),
 		apiPreconnect(),
 		preloadBodyFont(),
-		compression({
-			algorithms: ["gzip", "brotliCompress"],
-		}),
+		!cfPages &&
+			compression({
+				algorithms: ["gzip", "brotliCompress"],
+			}),
 		// ANALYZE=true pnpm build: bundle treemap, kept out of dist/
 		process.env.ANALYZE === "true" &&
 			visualizer({
@@ -180,7 +186,7 @@ export default defineConfig({
 		cssCodeSplit: true,
 		outDir: "dist",
 		emptyOutDir: true,
-		sourcemap: true,
+		sourcemap: !cfPages,
 		minify: "esbuild",
 		commonjsOptions: {
 			transformMixedEsModules: true,
