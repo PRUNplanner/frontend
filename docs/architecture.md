@@ -109,12 +109,14 @@ saved over the shared plan.
     (`trackVueError`, set in `main.ts`); `router.afterEach` registers
     `route_name` on every event and exception.
   - The PostHog key comes from `window.__APP_CONFIG__`, injected at deploy
-    time through `env.js` (see `netlify.toml` and `docker-compose.yaml`; on
-    Cloudflare the build command writes it).
+    time through `env.js`, written by `docker-compose.yaml` or by the
+    Cloudflare build command (set in the dashboard, with `POSTHOG_KEY` as a
+    build variable):
+    `pnpm run build && echo "window.__APP_CONFIG__ = { POSTHOG_KEY: '${POSTHOG_KEY}' };" > dist/env.js`.
 - **Deploy.**
-  - Netlify builds previews and is configured as an SPA. Cloudflare Workers
-    serves `dist/` as static assets (`wrangler.jsonc`, SPA fallback,
-    headers in `public/_headers`).
+  - Cloudflare Workers serves `dist/` as static assets (`wrangler.jsonc`,
+    SPA fallback, headers in `public/_headers`); pull requests get preview
+    deployments through `wrangler preview`.
   - `pnpm build` also prerenders `/` into `dist/index.html`
     ([seo.md](seo.md)).
   - The Docker image (`Dockerfile`) serves `dist/` with `spa-to-http`.

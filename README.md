@@ -47,11 +47,10 @@ A huge thank you to the following community members who volunteered their time t
 - [Zod](https://zod.dev/) for data validation
 - [Vitest](https://vitest.dev/) as testing framework
 
-## Preview Builds
+## Deployment
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/1a2b21d7-e057-4d2c-8533-425bdb5f2429/deploy-status)](http://preview.prunplanner.org/)
-
-Development previews are powered by Netlify: [http://preview.prunplanner.org/](http://preview.prunplanner.org/)
+The app is deployed with Cloudflare Workers (`wrangler.jsonc`). Every pull
+request gets its own preview deployment.
 
 ## Getting started
 

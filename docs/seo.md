@@ -91,8 +91,8 @@ the app is.
 ## Serving
 
 The Docker image serves `dist/` with spa-to-http, which answers every path
-that is no file with `index.html`, the prerendered landing page; Netlify and
-Cloudflare (`not_found_handling` in `wrangler.jsonc`) rewrite the same way.
+that is no file with `index.html`, the prerendered landing page; Cloudflare
+(`not_found_handling` in `wrangler.jsonc`) rewrites the same way.
 The app mounts the right page on the client (see above). The cost: a crawler that doesn't run JavaScript gets the landing
 page's HTML, title and canonical on every URL, also on `/market`,
 `/search` and `/imprint-tos`. Google renders JavaScript and gets each page's own title,
