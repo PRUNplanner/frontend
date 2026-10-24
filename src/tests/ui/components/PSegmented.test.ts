@@ -68,4 +68,21 @@ describe("PSegmented", () => {
 		);
 		expect(phone.find("button").classes()).toContain("sm:flex-none");
 	});
+
+	it("a disabled option can't be picked", async () => {
+		const picked: (string | number)[] = [];
+		const wrapper = mount(PSegmented, {
+			props: {
+				value: "exchange",
+				options: [OPTIONS[0], { ...OPTIONS[1], disabled: true }],
+				label: "Index view",
+				"onUpdate:value": (v: string | number) => picked.push(v),
+			},
+		});
+		const [enabled, disabled] = wrapper.findAll("button");
+		expect(enabled.attributes("disabled")).toBeUndefined();
+		expect(disabled.attributes("disabled")).toBeDefined();
+		await disabled.trigger("click");
+		expect(picked).toEqual([]);
+	});
 });
