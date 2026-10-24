@@ -112,3 +112,57 @@ describe("ChainGraph fit", () => {
 		}
 	});
 });
+
+describe("ChainGraph details", () => {
+	beforeAll(seedGameData);
+
+	it("zooms in steps, marks bought and cheaper nodes, and shows all again", async () => {
+		const ctx = testContext();
+		const result = solveChain(chainInput([["GWS", 1]]), ctx);
+		const { wrapper, component } = await mountComponent(ChainGraph, {
+			result,
+			lines: "n",
+			focus: null,
+		});
+		const inner = () =>
+			parseFloat(
+				wrapper
+					.find("[data-testid='chain-graph'] > div")
+					.attributes("style")!
+					.match(/width: ([\d.]+)px/)![1]
+			);
+		const before = inner();
+		(component.vm as unknown as { zoomBy: (d: 1 | -1) => void }).zoomBy(1);
+		await wrapper.vm.$nextTick();
+		expect(inner()).toBeCloseTo(before * 1.25, 3);
+		(component.vm as unknown as { zoomBy: (d: 1 | -1) => void }).zoomBy(-1);
+		await wrapper.vm.$nextTick();
+		expect(inner()).toBeCloseTo(before, 3);
+
+		const bought = result.order.find((t) => result.rows[t].source === "buy")!;
+		const node = wrapper.find(`[data-testid='chain-node-${bought}']`);
+		expect(node.classes()).toContain("border-dashed");
+		expect(node.text()).toContain("production_chains.graph.buy_on");
+		const cheaper = result.warnings.cheaper[0];
+		expect(wrapper.find(`[data-testid='chain-node-${cheaper}'] .text-warning`).exists()).toBe(true);
+
+		await node.trigger("click");
+		await node.trigger("click");
+		expect(component.emitted("update:focus")).toEqual([[bought], [null]]);
+	});
+
+	it("shows all from a focused material", async () => {
+		const ctx = testContext();
+		const result = solveChain(chainInput([["DW", 10]]), ctx);
+		const { wrapper, component } = await mountComponent(ChainGraph, {
+			result,
+			lines: "c",
+			focus: "DW",
+		});
+		const showAll = wrapper
+			.findAll("button")
+			.find((b) => b.text() === "production_chains.graph.show_all")!;
+		await showAll.trigger("click");
+		expect(component.emitted("update:focus")).toEqual([[null]]);
+	});
+});

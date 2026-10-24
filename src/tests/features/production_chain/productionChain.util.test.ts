@@ -84,3 +84,17 @@ describe("productionChain.util", () => {
 		).toBe("nothing → 1 DV");
 	});
 });
+
+describe("productionChain.util edge cases", () => {
+	it("weighs nothing for unknown materials and quotes CSV cells", () => {
+		const ctx = testContext();
+		const result = solveChain(chainInput([["DW", 10]]), ctx);
+		const list = buyList(result, new Map(), 3);
+		expect(list.items.length).toBeGreaterThan(0);
+		expect(list.weight).toBe(0);
+		expect(list.targetsVolume).toBe(0);
+
+		const csv = chainCsv(result, ['Per "day"', "a,b"], () => "x", "-");
+		expect(csv.split("\n")[0]).toBe('"Per ""day""","a,b"');
+	});
+});

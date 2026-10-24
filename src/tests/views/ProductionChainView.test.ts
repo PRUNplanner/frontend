@@ -1,8 +1,13 @@
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from "vitest";
 import type { Slots } from "vue";
-import { flushPromises } from "@vue/test-utils";
+import { DOMWrapper, flushPromises } from "@vue/test-utils";
+import { createPinia } from "pinia";
 
 import ProductionChainView from "@/views/tools/ProductionChainView.vue";
+import ChainSettings from "@/features/production_chain/components/ChainSettings.vue";
+import { toasts } from "@/ui/useToast";
+import { usePlanningStore } from "@/stores/planningStore";
+import cxList from "@/tests/test_data/api_data_cx_list.json";
 import { mountComponent } from "@/tests/mountComponent";
 import {
 	index,
@@ -12,7 +17,8 @@ import {
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
 // vi.mock factories are hoisted, so are their helpers
-const { passThrough, nav, trackEvent, execute } = vi.hoisted(() => ({
+const { passThrough, nav, trackEvent, execute, copy } = vi.hoisted(() => ({
+	copy: vi.fn(),
 	passThrough: (name: string) => ({
 		__esModule: true,
 		default: {
@@ -41,6 +47,10 @@ vi.mock("@/features/help/components/HelpDrawer.vue", () => ({
 	default: { name: "HelpDrawer", render: () => null },
 }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/util/data", async (original) => ({
+	...(await original<typeof import("@/util/data")>()),
+	copyToClipboard: copy,
+}));
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: () => ({ execute }),
 }));
@@ -141,5 +151,156 @@ describe("ProductionChainView", () => {
 				wrapper.find("button[aria-label='production_chains.table.choose_planet']").exists()
 			).toBe(true)
 		);
+	});
+});
+
+describe("ProductionChainView interactions", () => {
+	beforeAll(seedGameData);
+
+	beforeEach(() => {
+		nav.route.query = {};
+		nav.replace.mockClear();
+		trackEvent.mockClear();
+		copy.mockClear();
+		execute.mockReset();
+		execute.mockResolvedValue(index);
+		localStorage.clear();
+		toasts.value = [];
+	});
+
+	const lastQuery = () => nav.replace.mock.calls.at(-1)![0].query;
+	const actions = () =>
+		trackEvent.mock.calls
+			.filter(([e]) => e === "production_chain:action")
+			.map(([, p]) => p.action);
+	const byText = (
+		wrapper: Awaited<ReturnType<typeof mountComponent>>["wrapper"],
+		text: string
+	) => wrapper.findAll("button").find((b) => b.text() === text)!;
+
+	it("copies the chain link", async () => {
+		nav.route.query = { t: "DW:100" };
+		const { wrapper } = await mountComponent(ProductionChainView);
+		await byText(wrapper, "production_chains.header.copy_link").trigger("click");
+		expect(copy.mock.calls[0][0]).toMatch(/\/production-chain$/);
+		expect(actions()).toEqual(["link_copy"]);
+		expect(toasts.value.at(-1)!.text).toBe("production_chains.header.link_copied");
+	});
+
+	it("buys all cheaper rows and undoes it", async () => {
+		nav.route.query = { t: "GWS:1" };
+		const { wrapper } = await mountComponent(ProductionChainView);
+		await wrapper.find("[data-testid='chain-chip-cheaper']").trigger("click");
+		const buyAll = wrapper
+			.findAll("[data-testid='chain-filter-banner'] button")
+			.find((b) => b.text().startsWith("production_chains.filter.buy_all"))!;
+		await buyAll.trigger("click");
+		await flushPromises();
+		expect(lastQuery().src).toMatch(/:buy/);
+		expect(actions()).toContain("buy_all");
+		toasts.value.at(-1)!.action!.onClick();
+		await flushPromises();
+		expect(lastQuery().src).toBeUndefined();
+	});
+
+	it("sets a source, a planet and a recipe", async () => {
+		nav.route.query = { t: "DW:100" };
+		const { wrapper } = await mountComponent(ProductionChainView);
+		const extract = wrapper
+			.findAll("[data-testid='chain-row-H2O'] [role=group] button")
+			.find((b) => b.text() === "production_chains.table.extract")!;
+		await extract.trigger("click");
+		await flushPromises();
+		expect(lastQuery().src).toBe("H2O:extract");
+		expect(execute).toHaveBeenCalledTimes(1);
+
+		await vi.waitFor(() =>
+			expect(
+				wrapper.find("button[aria-label='production_chains.table.choose_planet']").exists()
+			).toBe(true)
+		);
+		await wrapper
+			.find("button[aria-label='production_chains.table.choose_planet']")
+			.trigger("click");
+		const body = new DOMWrapper(document.body);
+		await vi.waitFor(() =>
+			expect(body.findAll("[data-testid='chain-planet-row']").length).toBeGreaterThan(0)
+		);
+		await body
+			.findAll("[data-testid='chain-planet-row']")[1]
+			.findAll("button")
+			.at(-1)!
+			.trigger("click");
+		await flushPromises();
+		expect(lastQuery().planet).toMatch(/^H2O:/);
+
+		await wrapper
+			.find("button[aria-label='production_chains.table.choose_recipe']")
+			.trigger("click");
+		await flushPromises();
+		const options = body.findAll("[data-testid='chain-recipe-option']");
+		await options.at(-1)!.trigger("click");
+		await flushPromises();
+		expect(lastQuery().r).toMatch(/^DW:/);
+		expect(actions()).toEqual(["source_set", "planet_pick", "recipe_pick"]);
+	});
+
+	it("changes the settings", async () => {
+		nav.route.query = { t: "DW:100" };
+		const { wrapper } = await mountComponent(ProductionChainView);
+		const settings = wrapper.findComponent(ChainSettings);
+		settings.vm.$emit("update:efficiency", 80);
+		settings.vm.$emit("update:rawSource", "extract");
+		settings.vm.$emit("update:byproducts", "sell");
+		await flushPromises();
+		expect(lastQuery()).toMatchObject({ eff: "80", raw: "extract", byp: "sell" });
+	});
+
+	it("says when planets can't load, and retries", async () => {
+		execute.mockRejectedValueOnce(new Error("down"));
+		nav.route.query = { t: "DW:100", raw: "extract" };
+		const { wrapper } = await mountComponent(ProductionChainView);
+		await flushPromises();
+		expect(wrapper.text()).toContain("production_chains.panel.planets_error");
+		await byText(wrapper, "production_chains.panel.retry").trigger("click");
+		await flushPromises();
+		expect(execute).toHaveBeenCalledTimes(2);
+		expect(wrapper.text()).not.toContain("production_chains.panel.planets_error");
+	});
+
+	it("works without browser storage", async () => {
+		const get = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+			throw new Error("blocked");
+		});
+		const set = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+			throw new Error("blocked");
+		});
+		try {
+			const { wrapper } = await mountComponent(ProductionChainView);
+			expect(wrapper.find("[data-testid='chain-empty']").exists()).toBe(true);
+			wrapper.findComponent({ name: "ChainTargets" }).vm.$emit("update:targets", [
+				{ ticker: "DW", perDay: 5 },
+			]);
+			await flushPromises();
+			expect(lastQuery().t).toBe("DW:5");
+		} finally {
+			get.mockRestore();
+			set.mockRestore();
+		}
+	});
+
+	it("takes the CX from a link only when it is one of the viewer's", async () => {
+		const own = cxList[0].uuid;
+		for (const [cx, follows] of [
+			[own, false],
+			["not-mine", true],
+		] as const) {
+			const pinia = createPinia();
+			// @ts-expect-error fixture strings for the typed unions
+			usePlanningStore(pinia).setCXs(cxList.slice(0, 2));
+			nav.route.query = { t: "DW:100", cx };
+			const { wrapper } = await mountComponent(ProductionChainView, {}, { pinia });
+			expect(wrapper.findComponent(ChainSettings).props("followDefault")).toBe(follows);
+		}
 	});
 });

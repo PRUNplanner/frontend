@@ -14,7 +14,10 @@ import { environmentExtras } from "@/features/planet_search/environmentExtras.ut
 const ctx = testContext();
 const h2o = ctx.extraction!.get("H2O")!;
 
-async function mountPicker(planetId: string | undefined = undefined) {
+async function mountPicker(
+	planetId: string | undefined = undefined,
+	props: Record<string, unknown> = {}
+) {
 	const { wrapper, component } = await mountComponent(ChainPlanetPicker, {
 		show: true,
 		ticker: "H2O",
@@ -25,6 +28,7 @@ async function mountPicker(planetId: string | undefined = undefined) {
 		error: false,
 		unitCost: (site: { dailyExtraction: number }) => 100 / site.dailyExtraction,
 		defaultCX: "AI1",
+		...props,
 	});
 	const body = new DOMWrapper(document.body);
 	const rows = () => body.findAll("[data-testid='chain-planet-row']");
@@ -102,5 +106,56 @@ describe("ChainPlanetPicker", () => {
 			.find("[data-testid='chain-planet-typical'] button")
 			.trigger("click");
 		expect(typical.component.emitted("use")![0]).toEqual([undefined]);
+	});
+
+	it("narrows by surface, jumps, COGC and local market", async () => {
+		const { wrapper, body, rows, planetIds } = await mountPicker();
+		const seg = (text: string) =>
+			body.findAll("[role=group] button").find((b) => b.text() === text)!;
+		const rocky = new Set(index.filter((p) => p.surface).map((p) => p.planet_natural_id));
+		await seg("production_chains.planet_picker.gaseous").trigger("click");
+		expect(planetIds().every((id) => !rocky.has(id))).toBe(true);
+		await seg("production_chains.planet_picker.rocky").trigger("click");
+		expect(planetIds().every((id) => rocky.has(id))).toBe(true);
+		await seg("production_chains.planet_picker.any").trigger("click");
+
+		const jumps = body.findAll("input").find((i) => i.attributes("aria-label") === "production_chains.planet_picker.jumps")!;
+		await jumps.setValue("3");
+		const near = rows().length;
+		expect(near).toBeLessThan(h2o.sites.length);
+		for (const r of rows()) expect(Number(r.findAll("td").at(-2)!.text())).toBeLessThanOrEqual(3);
+		await jumps.setValue("");
+
+		const [, cogc, lm] = wrapper.findAllComponents(PCheckbox);
+		lm.vm.$emit("update:checked", true);
+		await wrapper.vm.$nextTick();
+		const withLM = new Set(index.filter((p) => p.has_localmarket).map((p) => p.planet_natural_id));
+		expect(planetIds().every((id) => withLM.has(id))).toBe(true);
+		lm.vm.$emit("update:checked", false);
+		cogc.vm.$emit("update:checked", true);
+		await wrapper.vm.$nextTick();
+		expect(rows().length).toBeLessThan(h2o.sites.length);
+	});
+
+	it("sorts by every column, twice reverses", async () => {
+		const { body, planetIds } = await mountPicker();
+		for (const col of ["col_planet", "col_extractor", "col_extras", "col_cogc", "col_jumps", "col_rate"]) {
+			const head = body
+				.findAll("th button")
+				.find((b) => b.text().startsWith(`production_chains.planet_picker.${col}`))!;
+			await head.trigger("click");
+			const first = planetIds();
+			await head.trigger("click");
+			// extras and COGC tie on most planets
+			if (!["col_extras", "col_cogc"].includes(col))
+				expect(planetIds()).not.toEqual(first);
+		}
+	});
+
+	it("shows loading and error states", async () => {
+		const loading = await mountPicker(undefined, { loading: true, index: null, options: undefined });
+		expect(loading.body.text()).toContain("production_chains.planet_picker.loading");
+		const failed = await mountPicker(undefined, { error: true });
+		expect(failed.body.text()).toContain("production_chains.planet_picker.error");
 	});
 });

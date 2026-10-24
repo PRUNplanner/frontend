@@ -162,8 +162,62 @@ describe("ChainStepsTable", () => {
 		expect(document.activeElement).toBe(options[1].element);
 		await options[1].trigger("keydown", { key: "End" });
 		expect(document.activeElement).toBe(options.at(-1)!.element);
+		await options.at(-1)!.trigger("keydown", { key: "ArrowUp" });
+		expect(document.activeElement).toBe(options.at(-2)!.element);
+		await options.at(-2)!.trigger("keydown", { key: "Home" });
+		expect(document.activeElement).toBe(options[0].element);
+		await options[0].trigger("keydown", { key: "a" });
+		expect(document.activeElement).toBe(options[0].element);
 		await options.at(-1)!.trigger("click");
 		await flushPromises();
 		expect(document.activeElement).toBe(trigger.element);
+	});
+});
+
+describe("ChainStepsTable supply cells", () => {
+	beforeAll(seedGameData);
+
+	it("shows the extraction site or that planets are loading", async () => {
+		const { wrapper, component } = await mountTable(
+			chainInput([["DW", 100]], { rawSource: "extract" })
+		);
+		const planet = wrapper.find("button[aria-label='production_chains.table.choose_planet']");
+		expect(planet.text()).toContain("production_chains.table.typical_planet");
+		await planet.trigger("click");
+		expect(component.emitted("planet")![0]).toEqual(["H2O"]);
+
+		const result = solveChain(chainInput([["DW", 100]], { rawSource: "extract" }), testContext(false));
+		const pending = await mountComponent(ChainStepsTable, {
+			result,
+			order: "source",
+			filter: null,
+			byproductMode: "sell",
+			extraction: undefined,
+			recipeOptions: () => [],
+		});
+		expect(pending.wrapper.text()).toContain("production_chains.table.pending");
+		expect(pending.wrapper.text()).toContain("production_chains.table.group_extract");
+	});
+
+	it("names a picked planet and the thin filter", async () => {
+		const ctx2 = testContext();
+		const site = ctx2.extraction!.get("H2O")!.sites[0];
+		const { wrapper } = await mountTable(
+			chainInput([["GWS", 1]], {
+				source: { H2O: "extract" },
+				planetId: { H2O: site.planetId },
+			}),
+			{ filter: "thin" }
+		);
+		expect(wrapper.find("[data-testid='chain-filter-banner']").text()).toContain(
+			"production_chains.filter.thin"
+		);
+		const all = await mountTable(
+			chainInput([["DW", 100]], {
+				source: { H2O: "extract" },
+				planetId: { H2O: site.planetId },
+			})
+		);
+		expect(all.wrapper.text()).toContain(site.planetName);
 	});
 });

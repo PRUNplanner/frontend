@@ -58,4 +58,16 @@ describe("ChainBuyList", () => {
 		expect(wrapper.text()).toContain("production_chains.buy_list.nothing");
 		expect(wrapper.find("button").exists()).toBe(false);
 	});
+
+	it("buys for a chosen number of days", async () => {
+		const result = solveChain(chainInput([["DW", 100]]), ctx);
+		const { wrapper } = await mountComponent(ChainBuyList, { result });
+		const days = wrapper.find("input[aria-label='production_chains.buy_list.days_label']");
+		const units = () => wrapper.find("[data-testid='chain-buy-list'] tbody td:nth-child(2)").text();
+		const ten = units();
+		await days.setValue("");
+		expect(units()).toBe(ten);
+		await days.setValue("20");
+		expect(units()).not.toBe(ten);
+	});
 });
