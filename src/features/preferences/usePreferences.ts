@@ -200,6 +200,13 @@ export function usePreferences() {
 			set: (v) => userStore.setPreference("colorPalette", v),
 		});
 
+	const marketCardTrigger: WritableComputedRef<
+		UserPreference["marketCardTrigger"]
+	> = computed({
+		get: () => userStore.preferences.marketCardTrigger,
+		set: (v) => userStore.setPreference("marketCardTrigger", v),
+	});
+
 	const planSuggestions: WritableComputedRef<boolean> = computed({
 		get: () => userStore.preferences.planSuggestions ?? true,
 		set: (v) => userStore.setPreference("planSuggestions", v),
@@ -326,6 +333,7 @@ export function usePreferences() {
 		planSettingsOverview,
 		layoutNavigationStyle,
 		colorPalette,
+		marketCardTrigger,
 		planSuggestions,
 		locale,
 		// functions

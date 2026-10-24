@@ -157,6 +157,7 @@ export const UserPreferenceSchema = z.object({
 	supplyCartDays: z.number(),
 	layoutNavigationStyle: z.enum(["full", "collapsed"]).catch("full"),
 	colorPalette: z.enum(["default", "colorblind"]).catch("default"),
+	marketCardTrigger: z.enum(["hover", "click"]).catch("hover"),
 	// popularity in the pickers, mix hint and planet insights box
 	planSuggestions: z.boolean().catch(true),
 	planOverrides: z

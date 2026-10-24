@@ -47,7 +47,7 @@
 	const triggerRef = ref<HTMLElement | null>(null);
 	const panelRef = ref<HTMLElement | null>(null);
 
-	const card = useHoverCard(triggerRef, panelRef, options, () =>
+	const card = useHoverCard(triggerRef, panelRef, () => options, () =>
 		emit("open")
 	);
 	const { open, pinned, sheet, id, triggerEvents, panelEvents } = card;

@@ -48,6 +48,7 @@
 		fioRepairArrivalDays,
 		locale,
 		colorPalette,
+		marketCardTrigger,
 		planSuggestions,
 		planSettingsOverview,
 	} = usePreferences();
@@ -64,6 +65,17 @@
 		{
 			label: t("profile.preferences.form.palette_colorblind"),
 			value: "colorblind",
+		},
+	]);
+
+	const marketCardOptions: ComputedRef<PSelectOption[]> = computed(() => [
+		{
+			label: t("profile.preferences.form.market_card_hover"),
+			value: "hover",
+		},
+		{
+			label: t("profile.preferences.form.market_card_click"),
+			value: "click",
 		},
 	]);
 
@@ -131,6 +143,17 @@
 				:options="paletteOptions"
 				class="w-full" />
 		</PFormItem>
+		<PFormItem :label="t('profile.preferences.form.market_card')">
+			<PSelect
+				v-model:value="marketCardTrigger"
+				:options="marketCardOptions"
+				class="w-full" />
+		</PFormItem>
+		<PFormSeparator>
+			<p :class="note">
+				{{ $t("profile.preferences.form.market_card_help") }}
+			</p>
+		</PFormSeparator>
 		<PFormItem :label="t('profile.preferences.form.default_empire')">
 			<PSelect
 				v-model:value="defaultEmpireUuid"
