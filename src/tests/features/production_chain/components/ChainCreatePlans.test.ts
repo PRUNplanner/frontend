@@ -6,12 +6,14 @@ import { PSelect } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
 import { solveChain } from "@/features/production_chain/engine/chainSolver";
 import {
+	chainInput,
 	seedGameData,
 	splitInput,
 	testContext,
 } from "@/tests/features/production_chain/chain.fixtures";
 
 import type { IChainCreated } from "@/features/production_chain/productionChain.types";
+import type { IChainInput } from "@/features/production_chain/engine/chainSolver.types";
 
 const { execute } = vi.hoisted(() => ({ execute: vi.fn() }));
 vi.mock("@/lib/query_cache/useQuery", () => ({
@@ -169,5 +171,70 @@ describe("ChainCreatePlans warnings", () => {
 			body.find("[data-testid='chain-create-no-farming-B']").exists()
 		).toBe(false);
 		expect(submit().attributes("disabled")).toBeUndefined();
+	});
+});
+
+describe("ChainCreatePlans blockers and outcomes", () => {
+	beforeAll(seedGameData);
+
+	async function mountFor(input: IChainInput, outcome?: IChainCreated) {
+		execute.mockResolvedValue(EMPIRES);
+		const create = vi.fn().mockResolvedValue(outcome);
+		await mountComponent(ChainCreatePlans, {
+			show: true,
+			result: solveChain(input, ctx),
+			targets: input.targets.map((t) => t.ticker),
+			create,
+		});
+		const body = new DOMWrapper(document.body);
+		return {
+			body,
+			create,
+			blocker: () =>
+				body.find("[data-testid='chain-create-blocker']").text(),
+		};
+	}
+	const onFood = (targets: [string, number][]) =>
+		chainInput(targets, {
+			bases: [{ id: "A", name: "", planetId: "XH-668c", cogc: "auto" }],
+		});
+
+	it("needs steps", async () => {
+		expect((await mountFor(chainInput([]))).blocker()).toBe(
+			"production_chains.create.no_steps"
+		);
+	});
+
+	it("needs an area that fits 1,000", async () => {
+		expect((await mountFor(onFood([["GWS", 1]]))).blocker()).toBe(
+			"production_chains.create.over_area"
+		);
+	});
+
+	it("needs plan and empire names", async () => {
+		const { body, blocker } = await mountFor(onFood([["DW", 10]]));
+		const name = body.find("[data-testid='chain-create-row-A'] input");
+		await name.setValue(" ");
+		expect(blocker()).toBe("production_chains.create.needs_name");
+		await name.setValue("Water");
+		await body.findAll("input").at(-1)!.setValue("");
+		expect(blocker()).toBe("production_chains.create.needs_empire_name");
+	});
+
+	it("warns about extraction off the planet, names failures", async () => {
+		const { body, create } = await mountFor(onFood([["H2O", 50]]), {
+			plans: [],
+			empire: null,
+			failed: "empire",
+		});
+		expect(
+			body.find("[data-testid='chain-create-not-on-planet-A']").exists()
+		).toBe(true);
+		await body.find("[data-testid='chain-create-submit']").trigger("click");
+		await flushPromises();
+		expect(create).toHaveBeenCalledOnce();
+		expect(body.find("[data-testid='chain-create-error']").text()).toBe(
+			"production_chains.create.empire_failed"
+		);
 	});
 });

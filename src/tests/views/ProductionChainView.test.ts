@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeAll,
+	beforeEach,
+	afterEach,
+	vi,
+} from "vitest";
 import type { Slots } from "vue";
 import { DOMWrapper, flushPromises } from "@vue/test-utils";
 import { createPinia } from "pinia";
@@ -91,9 +99,9 @@ describe("ProductionChainView", () => {
 	it("starts empty without a link or a last chain (AC 15)", async () => {
 		const { wrapper } = await mountComponent(ProductionChainView);
 		expect(wrapper.find("[data-testid='chain-empty']").exists()).toBe(true);
-		expect(wrapper.find("[data-testid='chain-result-profit']").exists()).toBe(
-			false
-		);
+		expect(
+			wrapper.find("[data-testid='chain-result-profit']").exists()
+		).toBe(false);
 		const createPlans = wrapper.find("[data-testid='chain-create-plans']");
 		expect(createPlans.attributes("disabled")).toBeDefined();
 		expect(execute).not.toHaveBeenCalled();
@@ -108,9 +116,15 @@ describe("ProductionChainView", () => {
 			src: "C:buy",
 		};
 		const { wrapper } = await mountComponent(ProductionChainView);
-		expect(wrapper.find("[data-testid='chain-empty']").exists()).toBe(false);
-		expect(wrapper.find("[data-testid='chain-row-DW']").exists()).toBe(true);
-		expect(wrapper.find("[data-testid='chain-row-RAT']").exists()).toBe(true);
+		expect(wrapper.find("[data-testid='chain-empty']").exists()).toBe(
+			false
+		);
+		expect(wrapper.find("[data-testid='chain-row-DW']").exists()).toBe(
+			true
+		);
+		expect(wrapper.find("[data-testid='chain-row-RAT']").exists()).toBe(
+			true
+		);
 		expect(wrapper.findAll("[data-testid='chain-target']").length).toBe(2);
 		vi.advanceTimersByTime(2000);
 		expect(toolUses()).toEqual([]);
@@ -143,7 +157,9 @@ describe("ProductionChainView", () => {
 	it("opens the last chain from the browser without a link", async () => {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify({ t: "OVE:50" }));
 		const { wrapper } = await mountComponent(ProductionChainView);
-		expect(wrapper.find("[data-testid='chain-row-OVE']").exists()).toBe(true);
+		expect(wrapper.find("[data-testid='chain-row-OVE']").exists()).toBe(
+			true
+		);
 	});
 
 	it("loads the planet index only when something extracts (AC 6)", async () => {
@@ -153,7 +169,11 @@ describe("ProductionChainView", () => {
 		expect(execute).toHaveBeenCalledTimes(1);
 		await vi.waitFor(() =>
 			expect(
-				wrapper.find("button[aria-label='production_chains.table.choose_planet']").exists()
+				wrapper
+					.find(
+						"button[aria-label='production_chains.table.choose_planet']"
+					)
+					.exists()
 			).toBe(true)
 		);
 	});
@@ -186,19 +206,27 @@ describe("ProductionChainView interactions", () => {
 	it("copies the chain link", async () => {
 		nav.route.query = { t: "DW:100" };
 		const { wrapper } = await mountComponent(ProductionChainView);
-		await byText(wrapper, "production_chains.header.copy_link").trigger("click");
+		await byText(wrapper, "production_chains.header.copy_link").trigger(
+			"click"
+		);
 		expect(copy.mock.calls[0][0]).toMatch(/\/production-chain$/);
 		expect(actions()).toEqual(["link_copy"]);
-		expect(toasts.value.at(-1)!.text).toBe("production_chains.header.link_copied");
+		expect(toasts.value.at(-1)!.text).toBe(
+			"production_chains.header.link_copied"
+		);
 	});
 
 	it("buys all cheaper rows and undoes it", async () => {
 		nav.route.query = { t: "GWS:1" };
 		const { wrapper } = await mountComponent(ProductionChainView);
-		await wrapper.find("[data-testid='chain-chip-cheaper']").trigger("click");
+		await wrapper
+			.find("[data-testid='chain-chip-cheaper']")
+			.trigger("click");
 		const buyAll = wrapper
 			.findAll("[data-testid='chain-filter-banner'] button")
-			.find((b) => b.text().startsWith("production_chains.filter.buy_all"))!;
+			.find((b) =>
+				b.text().startsWith("production_chains.filter.buy_all")
+			)!;
 		await buyAll.trigger("click");
 		await flushPromises();
 		expect(lastQuery().src).toMatch(/:buy/);
@@ -221,7 +249,11 @@ describe("ProductionChainView interactions", () => {
 
 		await vi.waitFor(() =>
 			expect(
-				wrapper.find("button[aria-label='production_chains.table.choose_planet']").exists()
+				wrapper
+					.find(
+						"button[aria-label='production_chains.table.choose_planet']"
+					)
+					.exists()
 			).toBe(true)
 		);
 		await wrapper
@@ -229,7 +261,9 @@ describe("ProductionChainView interactions", () => {
 			.trigger("click");
 		const body = new DOMWrapper(document.body);
 		await vi.waitFor(() =>
-			expect(body.findAll("[data-testid='chain-planet-row']").length).toBeGreaterThan(0)
+			expect(
+				body.findAll("[data-testid='chain-planet-row']").length
+			).toBeGreaterThan(0)
 		);
 		await body
 			.findAll("[data-testid='chain-planet-row']")[1]
@@ -258,7 +292,11 @@ describe("ProductionChainView interactions", () => {
 		settings.vm.$emit("update:rawSource", "extract");
 		settings.vm.$emit("update:byproducts", "sell");
 		await flushPromises();
-		expect(lastQuery()).toMatchObject({ eff: "80", raw: "extract", byp: "sell" });
+		expect(lastQuery()).toMatchObject({
+			eff: "80",
+			raw: "extract",
+			byp: "sell",
+		});
 	});
 
 	it("says when planets can't load, and retries", async () => {
@@ -266,26 +304,36 @@ describe("ProductionChainView interactions", () => {
 		nav.route.query = { t: "DW:100", raw: "extract" };
 		const { wrapper } = await mountComponent(ProductionChainView);
 		await flushPromises();
-		expect(wrapper.text()).toContain("production_chains.panel.planets_error");
+		expect(wrapper.text()).toContain(
+			"production_chains.panel.planets_error"
+		);
 		await byText(wrapper, "production_chains.panel.retry").trigger("click");
 		await flushPromises();
 		expect(execute).toHaveBeenCalledTimes(2);
-		expect(wrapper.text()).not.toContain("production_chains.panel.planets_error");
+		expect(wrapper.text()).not.toContain(
+			"production_chains.panel.planets_error"
+		);
 	});
 
 	it("works without browser storage", async () => {
-		const get = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
-			throw new Error("blocked");
-		});
-		const set = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
-			throw new Error("blocked");
-		});
+		const get = vi
+			.spyOn(Storage.prototype, "getItem")
+			.mockImplementation(() => {
+				throw new Error("blocked");
+			});
+		const set = vi
+			.spyOn(Storage.prototype, "setItem")
+			.mockImplementation(() => {
+				throw new Error("blocked");
+			});
 		try {
 			const { wrapper } = await mountComponent(ProductionChainView);
-			expect(wrapper.find("[data-testid='chain-empty']").exists()).toBe(true);
-			wrapper.findComponent({ name: "ChainTargets" }).vm.$emit("update:targets", [
-				{ ticker: "DW", perDay: 5 },
-			]);
+			expect(wrapper.find("[data-testid='chain-empty']").exists()).toBe(
+				true
+			);
+			wrapper
+				.findComponent({ name: "ChainTargets" })
+				.vm.$emit("update:targets", [{ ticker: "DW", perDay: 5 }]);
 			await flushPromises();
 			expect(lastQuery().t).toBe("DW:5");
 		} finally {
@@ -304,8 +352,14 @@ describe("ProductionChainView interactions", () => {
 			// @ts-expect-error fixture strings for the typed unions
 			usePlanningStore(pinia).setCXs(cxList.slice(0, 2));
 			nav.route.query = { t: "DW:100", cx };
-			const { wrapper } = await mountComponent(ProductionChainView, {}, { pinia });
-			expect(wrapper.findComponent(ChainSettings).props("followDefault")).toBe(follows);
+			const { wrapper } = await mountComponent(
+				ProductionChainView,
+				{},
+				{ pinia }
+			);
+			expect(
+				wrapper.findComponent(ChainSettings).props("followDefault")
+			).toBe(follows);
 		}
 	});
 
@@ -483,6 +537,101 @@ describe("ProductionChainView interactions", () => {
 			expect(
 				body.find("[data-testid='chain-create-result']").text()
 			).toContain("A ·");
+		});
+
+		it("sets a base's planet and program, keeps the limits", async () => {
+			nav.route.query = { t: "DW:100,RAT:100,OVE:50" };
+			execute.mockImplementation((name: string) =>
+				Promise.resolve(name === "GetAllPlans" ? [] : index)
+			);
+			const { wrapper } = await mountComponent(ProductionChainView);
+			await openBases(wrapper);
+			const bases = () => wrapper.findComponent({ name: "ChainBases" });
+
+			// the only base can't be removed
+			bases().vm.$emit("remove", "A");
+			await flushPromises();
+			expect(actions()).not.toContain("base_remove");
+
+			bases().vm.$emit("cogc", "A", "AGRICULTURE");
+			bases().vm.$emit("planet", "A");
+			await settle();
+			const picker = wrapper.findComponent({
+				name: "ChainBasePlanetPicker",
+			});
+			expect(picker.exists()).toBe(true);
+			picker.vm.$emit("use", "PG-899b");
+			await flushPromises();
+			expect(lastQuery().bases).toBe("A::PG-899b:AGRICULTURE");
+
+			// eight bases at most; moving to a new one is then a no-op
+			for (let i = 0; i < 8; i++) bases().vm.$emit("add");
+			await flushPromises();
+			expect(lastQuery().bases.split(",")).toHaveLength(8);
+			const panel = wrapper.findComponent({ name: "ChainPanel" });
+			panel.vm.$emit("base", "DW", "new");
+			panel.vm.$emit("base", "RAT", "B");
+			await flushPromises();
+			expect(lastQuery().base).toBe("RAT:B");
+			expect(actions()).toEqual(
+				expect.arrayContaining([
+					"base_cogc",
+					"base_planet",
+					"base_add",
+					"base_move",
+				])
+			);
+		});
+
+		it("creates plans in an existing empire", async () => {
+			nav.route.query = encodeChain({
+				input: splitInput(),
+				cx: undefined,
+			});
+			execute.mockImplementation((name: string) => {
+				if (name === "GetPlanetSearchIndex")
+					return Promise.resolve(index);
+				if (name === "GetAllEmpires")
+					return Promise.resolve([
+						{
+							uuid: "e1",
+							empire_name: "Main",
+							empire_faction: "NONE",
+							plans: [],
+						},
+					]);
+				if (name === "CreatePlan")
+					return Promise.resolve({ uuid: "p1", modified_at: "" });
+				return Promise.resolve([]);
+			});
+			const { wrapper } = await mountComponent(ProductionChainView);
+			await flushPromises();
+			await wrapper
+				.find("[data-testid='chain-create-plans']")
+				.trigger("click");
+			await settle();
+			const dialog = wrapper.findComponent({ name: "ChainCreatePlans" });
+			dialog
+				.findComponent({ name: "PSegmented" })
+				.vm.$emit("update:value", "existing");
+			await flushPromises();
+			dialog
+				.findAllComponents({ name: "PSelect" })
+				.at(-1)!
+				.vm.$emit("update:value", "e1");
+			await flushPromises();
+			await new DOMWrapper(document.body)
+				.find("[data-testid='chain-create-submit']")
+				.trigger("click");
+			await flushPromises();
+			const calls = execute.mock.calls.filter(([name]) =>
+				name.startsWith("Create")
+			);
+			expect(calls.map(([name]) => name)).toEqual([
+				"CreatePlan",
+				"CreatePlan",
+			]);
+			expect(calls[0][1].data.empire_uuid).toBe("e1");
 		});
 	});
 });

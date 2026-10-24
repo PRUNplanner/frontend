@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { DOMWrapper } from "@vue/test-utils";
 
 import ChainBasePlanetPicker from "@/features/production_chain/components/ChainBasePlanetPicker.vue";
-import { PCheckbox, PInput } from "@/ui";
+import { PCheckbox, PInput, PInputNumber } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
 import { solveChain } from "@/features/production_chain/engine/chainSolver";
 import { rankPlanets } from "@/features/production_chain/engine/chainBases";
@@ -106,5 +106,118 @@ describe("ChainBasePlanetPicker", () => {
 			.find("[data-testid='chain-base-no-planet']")
 			.trigger("click");
 		expect(component.emitted("use")).toEqual([[null]]);
+	});
+});
+
+describe("ChainBasePlanetPicker sorting and filters", () => {
+	beforeAll(seedGameData);
+
+	const header = (
+		body: DOMWrapper<Element>,
+		key: string
+	): DOMWrapper<Element> =>
+		body
+			.findAll("thead button")
+			.find((b) =>
+				b.text().startsWith(`production_chains.base_picker.col_${key}`)
+			)!;
+	const checkboxByText = (
+		wrapper: Awaited<ReturnType<typeof mountPicker>>["wrapper"],
+		key: string
+	) =>
+		wrapper
+			.findAllComponents(PCheckbox)
+			.find((c) => c.text() === `production_chains.${key}`)!;
+
+	it("sorts by every column, both ways", async () => {
+		const { body, names, rows } = await mountPicker(
+			splitInput([null, null]),
+			"A"
+		);
+		await header(body, "name").trigger("click");
+		const asc = names().map((n) => n.split(/\s/)[0]);
+		expect(asc).toEqual([...asc].sort((a, b) => a.localeCompare(b)));
+		await header(body, "name").trigger("click");
+		expect(names()[0]).not.toBe(asc[0]);
+		for (const key of [
+			"built",
+			"area",
+			"cogc",
+			"fert",
+			"extras",
+			"jumps",
+		]) {
+			await header(body, key).trigger("click");
+			expect(rows().length).toBeGreaterThan(0);
+			expect(header(body, key).text()).toMatch(/[↑↓]/);
+		}
+	});
+
+	it("narrows by program, fertility, extras, market and jumps", async () => {
+		const { wrapper, body, rows, names } = await mountPicker(
+			splitInput([null, null]),
+			"A"
+		);
+		const all = rows().length;
+		for (const key of [
+			"base_picker.fertile",
+			"planet_picker.no_extras",
+			"planet_picker.local_market",
+		]) {
+			checkboxByText(wrapper, key).vm.$emit("update:checked", true);
+			await wrapper.vm.$nextTick();
+		}
+		expect(rows().length).toBeLessThan(all);
+		expect(
+			names().every((n) =>
+				n.includes("production_chains.planet_picker.lm")
+			)
+		).toBe(true);
+
+		checkboxByText(wrapper, "base_picker.cogc").vm.$emit(
+			"update:checked",
+			true
+		);
+		wrapper.findComponent(PInputNumber).vm.$emit("update:value", 0);
+		await wrapper.vm.$nextTick();
+		expect(rows().length).toBe(0);
+		expect(body.text()).toContain(
+			"production_chains.planet_picker.none"
+		);
+	});
+
+	it("marks the planet in use and falls back to the first base", async () => {
+		const input = splitInput([FARM_PLANET, null]);
+		const { wrapper, body } = await mountPicker(input, "Z");
+		wrapper
+			.findComponent(PInput)
+			.vm.$emit("update:value", FARM_PLANET.toLowerCase());
+		await wrapper.vm.$nextTick();
+		const use = body.find("[data-testid='chain-base-picker-row'] button");
+		expect(use.attributes("aria-current")).toBe("true");
+		expect(use.text()).toBe("production_chains.planet_picker.in_use");
+	});
+
+	it("shows loading and error states", async () => {
+		const input = splitInput([null, null]);
+		const result = solveChain(input, ctx);
+		for (const [loading, text] of [
+			[true, "production_chains.planet_picker.loading"],
+			[false, "production_chains.planet_picker.error"],
+		] as const) {
+			await mountComponent(ChainBasePlanetPicker, {
+				show: true,
+				baseId: "A",
+				result,
+				input,
+				ctx,
+				index: null,
+				loading,
+				error: !loading,
+				defaultCX: "AI1",
+				myPlanets: new Set(),
+			});
+			expect(new DOMWrapper(document.body).text()).toContain(text);
+		}
 	});
 });
