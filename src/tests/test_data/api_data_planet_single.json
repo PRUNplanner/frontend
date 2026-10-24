@@ -84,5 +84,10 @@
 			"end_epochms": 1767602719829
 		}
 	],
-	"active_cogc_program_type": "ADVERTISING_FOOD_INDUSTRIES"
+	"active_cogc_program_type": "ADVERTISING_FOOD_INDUSTRIES",
+	"plots_total": null,
+	"plots_used": null,
+	"ghost_sites": null,
+	"supports_ghost_sites": null,
+	"plots_updated": null
 }

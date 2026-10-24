@@ -9,6 +9,7 @@
 
 // Util
 import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
+import { planetPlots } from "@/features/planet_search/planetPlots.util";
 import { planetDisplayName, systemName } from "@/util/planetName";
 import { PlanetCOGCProgramTypeSchema } from "@/features/api/schemas/gameData.schemas";
 
@@ -727,6 +728,7 @@ function sortValue(
 		return (p) => planetDisplayName(p.planet_natural_id, p.planet_name);
 	if (key === "fert")
 		return (p) => (p.fertility > -1 ? p.fertility : undefined);
+	if (key === "plots") return (p) => planetPlots(p)?.free;
 	if (key.startsWith("mat:")) {
 		const ticker = key.slice(4);
 		return (p) =>

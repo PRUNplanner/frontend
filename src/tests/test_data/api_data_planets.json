@@ -78,7 +78,12 @@
 				"end_epochms": 1766731147594
 			}
 		],
-		"active_cogc_program_type": null
+		"active_cogc_program_type": null,
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "00fb156286e75845197d99bd02633b4a",
@@ -166,7 +171,12 @@
 				"end_epochms": 1763557265425
 			}
 		],
-		"active_cogc_program_type": null
+		"active_cogc_program_type": null,
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "60c64441d754b04b30f7ab531cc4aae7",
@@ -254,7 +264,12 @@
 				"end_epochms": 1767602719829
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_FOOD_INDUSTRIES"
+		"active_cogc_program_type": "ADVERTISING_FOOD_INDUSTRIES",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "faaf454b4d16e16ae7e7b67f8915ed71",
@@ -291,7 +306,12 @@
 			}
 		],
 		"cogc_programs": [],
-		"active_cogc_program_type": null
+		"active_cogc_program_type": null,
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "1d23f0668bc5ed4b7c3141838794b160",
@@ -321,7 +341,12 @@
 			}
 		],
 		"cogc_programs": [],
-		"active_cogc_program_type": null
+		"active_cogc_program_type": null,
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "6aef54ed22783a2941de08b58111dcfa",
@@ -409,6 +434,11 @@
 				"end_epochms": 1771437508814
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_AGRICULTURE"
+		"active_cogc_program_type": "ADVERTISING_AGRICULTURE",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	}
 ]

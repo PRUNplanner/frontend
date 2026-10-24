@@ -70,6 +70,7 @@ export type PlanetSearchView = z.infer<typeof PlanetSearchViewSchema>;
 
 export const PlanetSearchColumnSchema = z.enum([
 	"fert",
+	"plots",
 	"other",
 	"extras",
 	"cogc",

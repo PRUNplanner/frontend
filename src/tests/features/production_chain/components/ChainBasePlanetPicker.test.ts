@@ -51,6 +51,17 @@ async function mountPicker(
 describe("ChainBasePlanetPicker", () => {
 	beforeAll(seedGameData);
 
+	it("shows the plots chip on every ranked planet, next to your plan", async () => {
+		const input = splitInput([null, null]);
+		const { rows } = await mountPicker(input, "A", [FARM_PLANET]);
+		expect(rows().length).toBeGreaterThan(0);
+		for (const row of rows())
+			expect(row.find("td [data-testid='planet-plots']").exists()).toBe(true);
+		const mine = rows().find((r) => r.find("[data-testid='chain-your-plan']").exists());
+		// Saladin, 332 of 395 plots free in the recorded index
+		expect(mine!.find("[data-testid='planet-plots']").text()).toBe("planet_search.plots.free");
+	});
+
 	it("ranks a farm base by buildings, then area, on fertile planets (AC 7)", async () => {
 		const input = splitInput([null, null]);
 		const { rows, body, result } = await mountPicker(input, "A");

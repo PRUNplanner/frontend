@@ -91,5 +91,10 @@
 			"end_epochms": 1772542800904
 		}
 	],
-	"active_cogc_program_type": "ADVERTISING_RESOURCE_EXTRACTION"
+	"active_cogc_program_type": "ADVERTISING_RESOURCE_EXTRACTION",
+	"plots_total": 418,
+	"plots_used": 418,
+	"ghost_sites": 4,
+	"supports_ghost_sites": true,
+	"plots_updated": "2026-10-24T17:37:45.416641Z"
 }

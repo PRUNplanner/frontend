@@ -85,7 +85,12 @@
 				"end_epochms": 1767150481540
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "7e5af59d1f31c7b0657e8092e210e027",
@@ -180,7 +185,12 @@
 				"end_epochms": 1767514336154
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "873671e7d644f464bd48e9fe90ae1298",
@@ -233,7 +243,12 @@
 				"end_epochms": 1772749081700
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "4672c438261315fe28c992b20b3e32e7",
@@ -328,7 +343,12 @@
 				"end_epochms": 1772630493492
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "4709b7a2412cbec9d818acd55197f9e7",
@@ -420,7 +440,12 @@
 				"end_epochms": 1771937107402
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "da26f6aa1a4f60803682767ca35b5d01",
@@ -501,7 +526,12 @@
 				"end_epochms": 1772454423176
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "75f5444ea05eab9f436029b9a9698c3e",
@@ -589,7 +619,12 @@
 				"end_epochms": 1772396329439
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "b6141f665b411b052b521b899be06d0a",
@@ -677,7 +712,12 @@
 				"end_epochms": 1772910016485
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "7f11259da81d301cec0bca3d4b7b2f78",
@@ -772,7 +812,12 @@
 				"end_epochms": 1767541597252
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "7f1135f5d7792a058c8be66e7cbcb536",
@@ -874,7 +919,12 @@
 				"end_epochms": 1767205776669
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": 418,
+		"plots_used": 418,
+		"ghost_sites": 96,
+		"supports_ghost_sites": true,
+		"plots_updated": "2026-10-24T17:37:45.416641Z"
 	},
 	{
 		"planet_id": "1e4725b234f288004597aa0879883be5",
@@ -947,7 +997,12 @@
 				"end_epochms": 1767545118143
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "c0bcf1bc418fd2196ff2ca42ad1b297f",
@@ -1020,7 +1075,12 @@
 				"end_epochms": 1773072850968
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "562f35329d00ddcb9fb9bc791517848c",
@@ -1115,7 +1175,12 @@
 				"end_epochms": 1772751888942
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "4aa54d86db262cc5f2e06542c035215d",
@@ -1196,7 +1261,12 @@
 				"end_epochms": 1767648996346
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "19d8c3a9c2f2a4df01d3a3a4f498f64a",
@@ -1284,7 +1354,12 @@
 				"end_epochms": 1773078103814
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "5ea983bc9af96facb5eb79f8a47c5a1c",
@@ -1372,7 +1447,12 @@
 				"end_epochms": 1767347286295
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "937c7ed1bb455566f68eb88706092522",
@@ -1467,7 +1547,12 @@
 				"end_epochms": 1766917797517
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "4d44985703ce5805eb52f316af4cf9fc",
@@ -1555,7 +1640,12 @@
 				"end_epochms": 1772896759595
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "6825174e925bcbf0a28043ad97e15259",
@@ -1643,7 +1733,12 @@
 				"end_epochms": 1772455413636
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "08cffb1d0922bfb334744b1cc3c23a2e",
@@ -1731,7 +1826,12 @@
 				"end_epochms": 1767295441847
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "c9ef5f20d7c0000f024117757feff059",
@@ -1812,7 +1912,12 @@
 				"end_epochms": 1773044268427
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "7c90e41148928ca3fd68364634e05900",
@@ -1907,7 +2012,12 @@
 				"end_epochms": 1766895179413
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "e6499e0f33fb97ebd1abc9eda76316db",
@@ -2002,7 +2112,12 @@
 				"end_epochms": 1767665635543
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "036eaee886cdb8969a633d0532621c48",
@@ -2097,7 +2212,12 @@
 				"end_epochms": 1767702719185
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "abd552df6e061adad13eaa3afd4434d2",
@@ -2185,7 +2305,12 @@
 				"end_epochms": 1767088444508
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "819e48b8cd76fd83a479c64eafea5f3f",
@@ -2280,7 +2405,12 @@
 				"end_epochms": 1767232526529
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "004234201296502d6033ca62f9c654fa",
@@ -2375,7 +2505,12 @@
 				"end_epochms": 1767373380222
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "928b5154df17e8b40b7a8cb3ab2bf804",
@@ -2463,7 +2598,12 @@
 				"end_epochms": 1767420729144
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "7de63f8caf7f1093798f7de6bd8d995d",
@@ -2565,7 +2705,12 @@
 				"end_epochms": 1772369209570
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "afacca721bb215130f471c5001d8641a",
@@ -2653,7 +2798,12 @@
 				"end_epochms": 1772388764004
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "8c8c8e5653612cbcc359da2941faeb7e",
@@ -2741,7 +2891,12 @@
 				"end_epochms": 1771921085249
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "64f76e3a45074d8372b943b01b2cdf73",
@@ -2822,7 +2977,12 @@
 				"end_epochms": 1772180289556
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "8d2ab7eb5a47d2ab4e209303b2a13c69",
@@ -2895,7 +3055,12 @@
 				"end_epochms": 1767229526794
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "4c4167e4c4d6f9541f695a9165d0e17c",
@@ -2976,7 +3141,12 @@
 				"end_epochms": 1767683956246
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "e4e93a5d20a1d75fb04696279137a0b0",
@@ -3049,7 +3219,12 @@
 				"end_epochms": 1767189364095
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "42f1a54e993fc221d5499b224eb80471",
@@ -3137,7 +3312,12 @@
 				"end_epochms": 1767263136360
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "7ef6caa148aa38c0e3966fdf47ee1a6b",
@@ -3232,7 +3412,12 @@
 				"end_epochms": 1767567190586
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "5d77c6cb911d46573b81b6f5a57aaa94",
@@ -3313,7 +3498,12 @@
 				"end_epochms": 1771489570712
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "8c3f1d4eea8766a3e97836aa56e45d00",
@@ -3401,7 +3591,12 @@
 				"end_epochms": 1767010507384
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "0043bc735e48a8a36c53961f51423fd0",
@@ -3482,7 +3677,12 @@
 				"end_epochms": 1767578040140
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "484e5bd5b89095049ab2b09ca373e2af",
@@ -3563,7 +3763,12 @@
 				"end_epochms": 1767341982331
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "1619040ac8d2d4e7716cfe7d0a64318f",
@@ -3644,7 +3849,12 @@
 				"end_epochms": 1772781220105
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "3d6af21a78c52187dbdce21d7170cbc9",
@@ -3732,7 +3942,12 @@
 				"end_epochms": 1767764926748
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "799a94b1ff27fa1670898c29cf3cfd73",
@@ -3827,7 +4042,12 @@
 				"end_epochms": 1767201044375
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "838c5b203aa8597f7d3c43bce78eaacb",
@@ -3908,7 +4128,12 @@
 				"end_epochms": 1767323277328
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "3ed3e5fd3ad002f7a81f7fd90d9d66fc",
@@ -4003,7 +4228,12 @@
 				"end_epochms": 1767488935385
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "0af6ae31252a2e389415cbd366e3c031",
@@ -4105,7 +4335,12 @@
 				"end_epochms": 1767325032968
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "91ab093e1691685203d15f5c4de95f07",
@@ -4186,7 +4421,12 @@
 				"end_epochms": 1772117098061
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "7cddd8776c154c64c96d1d77c4a7a948",
@@ -4267,7 +4507,12 @@
 				"end_epochms": 1772410320901
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "183ef736d1d1d7895b2a6b95417db0b0",
@@ -4362,7 +4607,12 @@
 				"end_epochms": 1772970537162
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "b6e46126901ad3b28e1cf77f1dcfd3c5",
@@ -4450,7 +4700,12 @@
 				"end_epochms": 1772856138779
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "ceca269439c41804cb57f3f338672b1d",
@@ -4552,7 +4807,12 @@
 				"end_epochms": 1772095964510
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "59b698ae74a4f398ab88b55126df02c2",
@@ -4654,7 +4914,12 @@
 				"end_epochms": 1771615195205
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "4fa5452b23e7ba33328dd2f45eebb4c7",
@@ -4742,7 +5007,12 @@
 				"end_epochms": 1772857366121
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "53ec36c57f16d4660aea2097a553f826",
@@ -4837,7 +5107,12 @@
 				"end_epochms": 1767455912931
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "944077703aad212ec45793173bc7f524",
@@ -4939,7 +5214,12 @@
 				"end_epochms": 1772646539817
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "535dbb73c474229398314bb6b626ea35",
@@ -5020,7 +5300,12 @@
 				"end_epochms": 1772254412507
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "eab171c2455654e1e57381d8a67e9897",
@@ -5093,7 +5378,12 @@
 				"end_epochms": 1770960070588
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "5c7d8cbf1f55652ea0c99c247284821b",
@@ -5181,7 +5471,12 @@
 				"end_epochms": 1772555267805
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "3ee7c8f67c2261761958122b2f543621",
@@ -5254,7 +5549,12 @@
 				"end_epochms": 1769388630987
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "b4f7bdbe7e69087d5c05fbce290e2703",
@@ -5342,7 +5642,12 @@
 				"end_epochms": 1773214499529
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "d134bb78112a901850a6ff28943cf0d9",
@@ -5437,7 +5742,12 @@
 				"end_epochms": 1767273938644
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "426d37fbaff5d1a8da2948c4ba6ed7c8",
@@ -5525,7 +5835,12 @@
 				"end_epochms": 1770689142980
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "34a1660b7aa9b9e00cd3b313f02705c3",
@@ -5613,7 +5928,12 @@
 				"end_epochms": 1771399195746
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	},
 	{
 		"planet_id": "f47c29147d66705a5110c0f7cbcf77f9",
@@ -5686,6 +6006,11 @@
 				"end_epochms": 1767690566166
 			}
 		],
-		"active_cogc_program_type": "ADVERTISING_CHEMISTRY"
+		"active_cogc_program_type": "ADVERTISING_CHEMISTRY",
+		"plots_total": null,
+		"plots_used": null,
+		"ghost_sites": null,
+		"supports_ghost_sites": null,
+		"plots_updated": null
 	}
 ]

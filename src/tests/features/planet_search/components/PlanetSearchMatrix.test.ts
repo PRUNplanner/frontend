@@ -245,16 +245,19 @@ describe("PlanetSearchMatrix grid", () => {
 		expect(cells[1][2].text()).toBe("—");
 		expect(cells[1][2].classes()).toContain("text-muted");
 
+		// plots unknown until the backend has refreshed them
+		expect(cells[0][3].text()).toBe("planet_search.plots.unknown");
+
 		// FE 10 of max 20 is half: light text; FE 2 of 20 below 60 %
-		expect(cells[0][3].text()).toBe("10.0");
-		expect(cells[0][3].find("span").attributes("title")).toBe(
+		expect(cells[0][4].text()).toBe("10.0");
+		expect(cells[0][4].find("span").attributes("title")).toBe(
 			"planet_search.results.cell"
 		);
-		expect(cells[0][3].find("span").classes()).toContain("text-white");
-		expect(cells[0][3].classes()).toContain("font-bold");
+		expect(cells[0][4].find("span").classes()).toContain("text-white");
+		expect(cells[0][4].classes()).toContain("font-bold");
 		// a planet without the material shows a dot
-		expect(cells[2][3].text()).toBe("·");
-		expect(cells[2][3].find("span").attributes("title")).toBe(
+		expect(cells[2][4].text()).toBe("·");
+		expect(cells[2][4].find("span").attributes("title")).toBe(
 			"planet_search.results.not_present"
 		);
 	});
@@ -267,9 +270,9 @@ describe("PlanetSearchMatrix grid", () => {
 			maxDaily: { FE: 12 },
 		});
 		const rows = (component as VueWrapper).findAll("tbody tr");
-		const hot = rows[0].findAll("td")[3].find("span");
+		const hot = rows[0].findAll("td")[4].find("span");
 		expect(hot.classes()).toContain("text-black");
-		const capped = rows[0].findAll("td")[4].find("span");
+		const capped = rows[0].findAll("td")[5].find("span");
 		expect(capped.text()).toBe("3.0");
 		expect(capped.classes()).toContain("text-black");
 	});
@@ -299,16 +302,16 @@ describe("PlanetSearchMatrix grid", () => {
 		expect(ai1.classes()).not.toContain("text-positive");
 
 		const rows = m.findAll("tbody tr").map((r) => r.findAll("td"));
-		// columns: actions, planet, fert, FE, HE, plan, AI1, CI1, IC1, NC1, ...
+		// columns: actions, planet, fert, plots, FE, HE, plan, AI1, CI1, IC1, NC1, ...
 		const jumps = (i: number) => rows.map((r) => r[i].text());
-		expect(jumps(5)).toEqual(["4", "—", "—"]);
-		expect(rows[1][5].find("span").attributes("title")).toBe(
+		expect(jumps(6)).toEqual(["4", "—", "—"]);
+		expect(rows[1][6].find("span").attributes("title")).toBe(
 			"planet_search.results.unreachable"
 		);
 		// AI1 (sys-a 0, sys-b 7, sys-c unknown)
-		expect(jumps(6)).toEqual(["0", "7", "—"]);
-		expect(rows[0][7].classes()).toContain("text-positive");
-		expect(rows[0][6].classes()).not.toContain("text-positive");
+		expect(jumps(7)).toEqual(["0", "7", "—"]);
+		expect(rows[0][8].classes()).toContain("text-positive");
+		expect(rows[0][7].classes()).not.toContain("text-positive");
 	});
 
 	it("hides optional columns by name", async () => {
@@ -327,8 +330,8 @@ describe("PlanetSearchMatrix grid", () => {
 		// no pin column: narrow action cell
 		expect(m.find("thead th").classes()).toContain("w-[44px]");
 		expect(m.find("tbody tr td").classes()).toContain("w-[44px]");
-		// actions, planet, FE, HE, CI1, IC1
-		expect(m.find("tbody tr").findAll("td")).toHaveLength(6);
+		// actions, planet, plots, FE, HE, CI1, IC1
+		expect(m.find("tbody tr").findAll("td")).toHaveLength(7);
 	});
 
 	it("lists the infrastructure and the running COGC program", async () => {
@@ -474,11 +477,13 @@ describe("PlanetSearchList rows", () => {
 		expect(cells[0][2].text()).toBe("100");
 		expect(cells[1][2].text()).toBe("—");
 		expect(cells[1][2].classes()).toContain("text-muted");
+		// plots unknown until the backend has refreshed them
+		expect(cells[0][3].text()).toBe("planet_search.plots.unknown");
 
-		const present = cells[0][3].find(".tile");
+		const present = cells[0][4].find(".tile");
 		expect(present.attributes("data-amount")).toBe("10");
 		expect(present.attributes("data-max")).toBe("20");
-		const absent = cells[1][3].find("span[title]");
+		const absent = cells[1][4].find("span[title]");
 		expect(absent.attributes("title")).toBe(
 			"planet_search.results.not_present"
 		);
@@ -491,7 +496,7 @@ describe("PlanetSearchList rows", () => {
 		const { component } = await mountComponent(PlanetSearchList, list);
 		const others = (component as VueWrapper)
 			.findAll("tbody tr")[0]
-			.findAll("td")[4]
+			.findAll("td")[5]
 			.findAll(".tile");
 		expect(others.map((t) => t.text())).toEqual(["AL", "HE"]);
 		expect(others.map((t) => t.attributes("data-max"))).toEqual(["2", "6"]);
@@ -503,16 +508,16 @@ describe("PlanetSearchList rows", () => {
 		const rows = m.findAll("tbody tr").map((r) => r.findAll("td"));
 
 		// ..., extras, cogc, plan, AI1, CI1, IC1, NC1
-		expect(rows[0][6].findAll("div").map((d) => d.text())).toEqual([
+		expect(rows[0][7].findAll("div").map((d) => d.text())).toEqual([
 			"game.cogc_program.ADVERTISING_AGRICULTURE",
 			"LM",
 		]);
-		expect(rows[1][6].findAll("div").map((d) => d.text())).toEqual([
+		expect(rows[1][7].findAll("div").map((d) => d.text())).toEqual([
 			"planet_search.results.no_cogc",
 			"planet_search.results.no_infrastructure",
 		]);
-		expect(rows.map((r) => r[7].text())).toEqual(["4", "—", "—"]);
-		expect(rows[1][7].find("span").attributes("title")).toBe(
+		expect(rows.map((r) => r[8].text())).toEqual(["4", "—", "—"]);
+		expect(rows[1][8].find("span").attributes("title")).toBe(
 			"planet_search.results.unreachable"
 		);
 		// only NC1 is a picked reference
@@ -533,6 +538,7 @@ describe("PlanetSearchList rows", () => {
 			...list,
 			hiddenColumns: [
 				"fert",
+				"plots",
 				"other",
 				"extras",
 				"cogc",

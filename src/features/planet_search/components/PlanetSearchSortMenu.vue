@@ -45,9 +45,11 @@
 	}>();
 
 	const label = (key: string) => sortLabel(key, t, props.refName);
-	// materials and fertility sort best first, everything else ascending
+	// materials, fertility and free plots sort best first, everything else ascending
 	const firstDir = (key: string): IPlanetSearchSort["dir"] =>
-		key === "fert" || key.startsWith("mat:") ? "desc" : "asc";
+		key === "fert" || key === "plots" || key.startsWith("mat:")
+			? "desc"
+			: "asc";
 
 	// the columns the current view shows (hidden ones aren't offered)
 	const keys = computed(() => {
@@ -66,6 +68,7 @@
 		return [
 			"name",
 			...(shown("fert") ? ["fert"] : []),
+			...(shown("plots") ? ["plots"] : []),
 			...materials.map((m) => `mat:${m}`),
 			...props.filter.references
 				.filter((r) => r.kind === "plan")
