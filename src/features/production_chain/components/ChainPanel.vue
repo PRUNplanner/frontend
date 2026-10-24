@@ -16,6 +16,7 @@
 	import type {
 		ChainByproductMode,
 		ChainSource,
+		IChainBase,
 		IChainExtractionOptions,
 		IChainRecipeEffect,
 		IChainResult,
@@ -31,12 +32,14 @@
 	// UI
 	import { PButton, PSegmented } from "@/ui";
 
-	const { result, byproductMode, extraction, recipeOptions } = defineProps<{
-		result: IChainResult;
-		byproductMode: ChainByproductMode;
-		extraction: ReadonlyMap<string, IChainExtractionOptions> | undefined;
-		recipeOptions: (ticker: string) => IChainRecipeEffect[];
-	}>();
+	const { result, byproductMode, extraction, recipeOptions, bases } =
+		defineProps<{
+			result: IChainResult;
+			byproductMode: ChainByproductMode;
+			extraction: ReadonlyMap<string, IChainExtractionOptions> | undefined;
+			recipeOptions: (ticker: string) => IChainRecipeEffect[];
+			bases: IChainBase[];
+		}>();
 
 	const emit = defineEmits<{
 		(e: "source", ticker: string, source: ChainSource): void;
@@ -44,6 +47,12 @@
 		(e: "planet", ticker: string): void;
 		(e: "buyAll", tickers: string[]): void;
 		(e: "track", action: ProductionChainAction): void;
+		(e: "base", ticker: string, id: string): void;
+	}>();
+
+	defineSlots<{
+		/** the Bases tab */
+		bases(): unknown;
 	}>();
 
 	const view: Ref<IChainView> = ref("steps");
@@ -60,6 +69,13 @@
 	);
 	const cheaper = computed(() => result.warnings.cheaper.length);
 	const thin = computed(() => result.warnings.thin.length);
+	/** steps a base's planet can't run as planned */
+	const baseWarnings = computed(
+		() =>
+			result.order.filter(
+				(t) => result.rows[t].noFarming || result.rows[t].notOnPlanet
+			).length
+	);
 
 	const orderOptions = computed(() => [
 		{ value: "chain" as const, label: t("production_chains.panel.chain") },
@@ -119,7 +135,7 @@
 			<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
 				<nav :aria-label="t('production_chains.panel.views')" class="flex gap-x-1">
 					<button
-						v-for="v in ['steps', 'graph'] as const"
+						v-for="v in ['steps', 'graph', 'bases'] as const"
 						:key="v"
 						type="button"
 						:aria-pressed="view === v ? 'true' : 'false'"
@@ -159,8 +175,16 @@
 					@click="toggleFilter('thin')">
 					{{ $t("production_chains.panel.thin", thin) }}
 				</PButton>
+				<PButton
+					v-if="baseWarnings"
+					size="sm"
+					type="warning"
+					data-testid="chain-chip-bases"
+					@click="setView('bases')">
+					{{ $t("production_chains.panel.base_warnings", baseWarnings) }}
+				</PButton>
 				<span
-					v-if="!cheaper && !thin"
+					v-if="!cheaper && !thin && !baseWarnings"
 					class="px-2 rounded-control border border-positive text-positive text-xs">
 					{{ $t("production_chains.panel.no_warnings") }}
 				</span>
@@ -185,7 +209,7 @@
 						{{ $t("production_chains.panel.csv") }}
 					</PButton>
 				</template>
-				<template v-else>
+				<template v-else-if="view === 'graph'">
 					<span class="text-xs text-muted">{{ $t("production_chains.panel.lines") }}</span>
 					<PSegmented
 						v-model:value="lines"
@@ -222,11 +246,14 @@
 			:byproduct-mode="byproductMode"
 			:extraction="extraction"
 			:recipe-options="recipeOptions"
+			:bases="bases"
 			@source="(ticker, s) => emit('source', ticker, s)"
 			@recipe="(ticker, id) => emit('recipe', ticker, id)"
 			@planet="(ticker) => emit('planet', ticker)"
 			@buy-all="buyAll"
-			@clear-filter="filter = null" />
+			@clear-filter="filter = null"
+			@base="(ticker, id) => emit('base', ticker, id)" />
+		<slot v-else-if="view === 'bases'" name="bases" />
 		<ChainGraph
 			v-else
 			ref="graph"

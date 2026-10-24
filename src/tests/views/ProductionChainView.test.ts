@@ -12,7 +12,10 @@ import { mountComponent } from "@/tests/mountComponent";
 import {
 	index,
 	seedGameData,
+	NOW,
+	splitInput,
 } from "@/tests/features/production_chain/chain.fixtures";
+import { encodeChain } from "@/features/production_chain/engine/chainUrl";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
@@ -52,7 +55,9 @@ vi.mock("@/util/data", async (original) => ({
 	copyToClipboard: copy,
 }));
 vi.mock("@/lib/query_cache/useQuery", () => ({
-	useQuery: () => ({ execute }),
+	useQuery: (name: string, params?: unknown) => ({
+		execute: () => execute(name, params),
+	}),
 }));
 vi.mock("vue-router", async (original) => ({
 	...(await original<typeof import("vue-router")>()),
@@ -302,5 +307,182 @@ describe("ProductionChainView interactions", () => {
 			const { wrapper } = await mountComponent(ProductionChainView, {}, { pinia });
 			expect(wrapper.findComponent(ChainSettings).props("followDefault")).toBe(follows);
 		}
+	});
+
+	describe("bases", () => {
+		/** async components: wait for their import, then render */
+		const settle = async () => {
+			await vi.dynamicImportSettled();
+			await flushPromises();
+		};
+		const actions = () =>
+			trackEvent.mock.calls
+				.filter(([event]) => event === "production_chain:action")
+				.map(([, props]) => props.action);
+		const lastQuery = () => nav.replace.mock.calls.at(-1)![0].query;
+
+		async function openBases(
+			wrapper: Awaited<ReturnType<typeof mountComponent>>["wrapper"]
+		) {
+			const tab = wrapper
+				.findAll("nav button")
+				.find((b) => b.text() === "production_chains.panel.bases")!;
+			await tab.trigger("click");
+			await settle();
+		}
+
+		it("splits, moves and removes bases, kept in the URL (AC 6, 14)", async () => {
+			nav.route.query = { t: "DW:100,RAT:100,OVE:50" };
+			const { wrapper } = await mountComponent(ProductionChainView);
+			await openBases(wrapper);
+			await wrapper.find("[data-testid='chain-split']").trigger("click");
+			await flushPromises();
+			expect(lastQuery().bases).toBe(
+				"A:game.expertise.AGRICULTURE::auto,B:game.expertise.FOOD_INDUSTRIES::auto"
+			);
+			expect(lastQuery().base).toContain("DW:B");
+
+			wrapper
+				.findComponent({ name: "ChainPanel" })
+				.vm.$emit("base", "DW", "new");
+			await flushPromises();
+			expect(lastQuery().base).toContain("DW:C");
+			expect(lastQuery().bases).toContain("C:::auto");
+
+			wrapper
+				.findComponent({ name: "ChainBases" })
+				.vm.$emit("remove", "C");
+			await flushPromises();
+			expect(lastQuery().bases).not.toContain("C:");
+			// its steps go back to the first base
+			expect(lastQuery().base).not.toContain("DW:");
+			expect(actions()).toEqual([
+				"split",
+				"base_add",
+				"base_move",
+				"base_remove",
+			]);
+		});
+
+		it("creates plans in a new empire and keeps the links until the chain changes (AC 10–13)", async () => {
+			// the fixture's COGC programs run then
+			vi.useFakeTimers({
+				toFake: ["setTimeout", "clearTimeout", "Date"],
+				now: NOW,
+			});
+			nav.route.query = encodeChain({
+				input: splitInput(),
+				cx: undefined,
+			});
+			let plan = 0;
+			execute.mockImplementation((name: string) => {
+				if (name === "GetPlanetSearchIndex")
+					return Promise.resolve(index);
+				if (name === "GetAllEmpires") return Promise.resolve([]);
+				if (name === "CreateEmpire")
+					return Promise.resolve({
+						uuid: "e9",
+						empire_name: "Chain",
+					});
+				if (name === "CreatePlan")
+					return Promise.resolve({
+						uuid: `p${++plan}`,
+						modified_at: "",
+					});
+				return Promise.resolve([]);
+			});
+			const { wrapper } = await mountComponent(ProductionChainView);
+			await flushPromises();
+			await wrapper
+				.find("[data-testid='chain-create-plans']")
+				.trigger("click");
+			await settle();
+			const body = new DOMWrapper(document.body);
+			await body
+				.find("[data-testid='chain-create-submit']")
+				.trigger("click");
+			await flushPromises();
+
+			const calls = execute.mock.calls.filter(([name]) =>
+				name.startsWith("Create")
+			);
+			expect(calls.map(([name]) => name)).toEqual([
+				"CreateEmpire",
+				"CreatePlan",
+				"CreatePlan",
+			]);
+			expect(calls[0][1].data).toMatchObject({ empire_faction: "NONE" });
+			expect(calls[1][1].data).toMatchObject({
+				empire_uuid: "e9",
+				planet_natural_id: "PG-899b",
+				plan_cogc: "AGRICULTURE",
+			});
+			expect(trackEvent).toHaveBeenCalledWith("production_chain:action", {
+				action: "plans_create",
+				plan_count: 2,
+				empire: "new",
+				faction: "NONE",
+			});
+			expect(
+				body.find("[data-testid='chain-create-result']").text()
+			).toContain("A ·");
+
+			await openBases(wrapper);
+			expect(
+				wrapper.find("[data-testid='chain-created-links']").exists()
+			).toBe(true);
+			wrapper
+				.findComponent({ name: "ChainBases" })
+				.vm.$emit("rename", "A", "Farms");
+			await flushPromises();
+			expect(
+				wrapper.find("[data-testid='chain-created-links']").exists()
+			).toBe(false);
+		});
+
+		it("keeps the plans made before a failure (AC 13)", async () => {
+			nav.route.query = encodeChain({
+				input: splitInput(),
+				cx: undefined,
+			});
+			execute.mockImplementation((name: string) => {
+				if (name === "GetPlanetSearchIndex")
+					return Promise.resolve(index);
+				if (name === "CreatePlan") {
+					const n = execute.mock.calls.filter(
+						([x]) => x === "CreatePlan"
+					).length;
+					return n === 1
+						? Promise.resolve({ uuid: "p1", modified_at: "" })
+						: Promise.reject(new Error("down"));
+				}
+				return Promise.resolve([]);
+			});
+			const { wrapper } = await mountComponent(ProductionChainView);
+			await flushPromises();
+			await wrapper
+				.find("[data-testid='chain-create-plans']")
+				.trigger("click");
+			await settle();
+			const body = new DOMWrapper(document.body);
+			wrapper
+				.findAllComponents({ name: "PSegmented" })
+				.at(-1)!
+				.vm.$emit("update:value", "none");
+			await flushPromises();
+			await body
+				.find("[data-testid='chain-create-submit']")
+				.trigger("click");
+			await flushPromises();
+			expect(
+				execute.mock.calls.some(([name]) => name === "CreateEmpire")
+			).toBe(false);
+			expect(
+				body.find("[data-testid='chain-create-error']").exists()
+			).toBe(true);
+			expect(
+				body.find("[data-testid='chain-create-result']").text()
+			).toContain("A ·");
+		});
 	});
 });

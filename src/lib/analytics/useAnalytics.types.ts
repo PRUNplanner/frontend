@@ -11,6 +11,7 @@ import type {
 	ExpertType,
 	InfrastructureType,
 	PlanCOGCProgram,
+	PlanFaction,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
 import type { PlanetSearchView } from "@/features/planet_search/planetSearch.schemas";
@@ -101,7 +102,13 @@ export type ProductionChainAction =
 	| "focus"
 	| "xit_copy"
 	| "csv"
-	| "link_copy";
+	| "link_copy"
+	| "split"
+	| "base_add"
+	| "base_remove"
+	| "base_move"
+	| "base_planet"
+	| "base_cogc";
 
 // which XIT transfer button: the tool, and which of its buttons
 export type XITTransferSource =
@@ -305,7 +312,14 @@ export interface IAnalyticsEventProperties {
 	"planet_search:view_change": { view: PlanetSearchView };
 	"market_exploration:view_change": { view: ChartView };
 	"resource_roi:chart_open": undefined;
-	"production_chain:action": { action: ProductionChainAction };
+	"production_chain:action":
+		| { action: ProductionChainAction }
+		| {
+				action: "plans_create";
+				plan_count: number;
+				empire: "new" | "existing" | "none";
+				faction?: PlanFaction;
+		  };
 	"market:view_change":
 		| { chart: "index"; view: MarketIndexView }
 		| { chart: "workforce"; view: WorkforceType }

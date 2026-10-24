@@ -20,6 +20,16 @@ describe("chain URL", () => {
 			source: { H2O: "buy", C: "extract" },
 			recipeId: { RAT: "FP#1xGRN 1xALG 1xNUT=>10xRAT" },
 			planetId: { H2O: "ZV-307d" },
+			bases: [
+				{
+					id: "A",
+					name: "Food: 50%, fresh",
+					planetId: "XH-668c",
+					cogc: "auto",
+				},
+				{ id: "C", name: "", planetId: null, cogc: "AGRICULTURE" },
+			],
+			baseOf: { RAT: "A", VEG: "C" },
 		},
 		cx: "abc-123",
 	};
@@ -30,10 +40,22 @@ describe("chain URL", () => {
 
 	it("leaves empty overrides and the CX out", () => {
 		const query = encodeChain({
-			input: { ...state.input, source: {}, recipeId: {}, planetId: {} },
+			input: {
+				...state.input,
+				source: {},
+				recipeId: {},
+				planetId: {},
+				baseOf: {},
+			},
 			cx: undefined,
 		});
-		expect(Object.keys(query).sort()).toEqual(["byp", "eff", "raw", "t"]);
+		expect(Object.keys(query).sort()).toEqual([
+			"bases",
+			"byp",
+			"eff",
+			"raw",
+			"t",
+		]);
 	});
 
 	it("returns null without targets", () => {
@@ -54,5 +76,25 @@ describe("chain URL", () => {
 		expect(decoded.input.byproducts).toBe("cover");
 		expect(decoded.input.source).toEqual({ C: "make" });
 		expect(decoded.cx).toBeUndefined();
+	});
+
+	it("opens a spec 1 chain as one base A (AC 14)", () => {
+		const decoded = decodeChain({ t: "DW:10", base: "DW:B" })!;
+		expect(decoded.input.bases).toEqual([
+			{ id: "A", name: "", planetId: null, cogc: "auto" },
+		]);
+		// a step in an unknown base falls back to the first
+		expect(decoded.input.baseOf).toEqual({});
+	});
+
+	it("drops broken bases", () => {
+		const decoded = decodeChain({
+			t: "DW:10",
+			bases: "A:x::warp,A:dup::auto,Z:no::auto,B:%E0%A4%A::auto,C:ok:PG-899b:none",
+		})!;
+		expect(decoded.input.bases).toEqual([
+			{ id: "A", name: "x", planetId: null, cogc: "auto" },
+			{ id: "C", name: "ok", planetId: "PG-899b", cogc: "none" },
+		]);
 	});
 });

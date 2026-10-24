@@ -11,7 +11,11 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Engine
 import { createPriceBook } from "@/features/cx/priceBook";
-import { groupRecipesByOutput } from "@/features/production_chain/engine/chainSolver";
+import {
+	groupRecipesByOutput,
+	solveChain,
+} from "@/features/production_chain/engine/chainSolver";
+import { splitByExpertise } from "@/features/production_chain/engine/chainBases";
 import { extractionOptions } from "@/features/production_chain/engine/chainExtraction";
 import { RESOURCE_MATERIAL_OPTIONS } from "@/features/resource_roi_overview/resourceROIOverview.constants";
 
@@ -36,6 +40,9 @@ import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import planetIndex from "@/tests/test_data/api_data_planet_search_index.json";
 
 export const index = planetIndex as unknown as PlanetSearchIndexEntry[];
+
+/** inside the test index's COGC programs */
+export const NOW = 1_791_000_000_000;
 
 const exchangeMap = new Map(
 	(exchanges as unknown as Exchange[]).map((e) => [e.ticker_id, e])
@@ -63,6 +70,10 @@ export function testContext(withExtraction = true): IChainContext {
 		getExchange,
 		resources: new Set(RESOURCE_MATERIAL_OPTIONS.map((o) => o.value)),
 		extraction: withExtraction ? extractionOptions(index) : undefined,
+		planets: withExtraction
+			? new Map(index.map((p) => [p.planet_natural_id, p]))
+			: undefined,
+		now: NOW,
 	};
 }
 
@@ -78,8 +89,52 @@ export function chainInput(
 		source: {},
 		recipeId: {},
 		planetId: {},
+		bases: [{ id: "A", name: "", planetId: null, cogc: "auto" }],
+		baseOf: {},
 		...overrides,
 	};
+}
+
+/** runs Food Industries, not fertile */
+export const FOOD_PLANET = "XH-668c";
+/** runs Agriculture, fertility 0.4018, H2O */
+export const FARM_PLANET = "PG-899b";
+
+/**
+ * DW 100 + RAT 100 + OVE 50 split by expertise: A Agriculture, B Food
+ * Industries, on the given planets
+ */
+export function splitInput(
+	planets: [string | null, string | null] = [FARM_PLANET, FOOD_PLANET]
+): IChainInput {
+	const ctx = testContext();
+	const targets: [string, number][] = [
+		["DW", 100],
+		["RAT", 100],
+		["OVE", 50],
+	];
+	const split = splitByExpertise(
+		solveChain(chainInput(targets), ctx),
+		ctx,
+		100
+	);
+	return chainInput(targets, {
+		bases: [
+			{
+				id: "A",
+				name: "Agriculture",
+				planetId: planets[0],
+				cogc: "auto",
+			},
+			{
+				id: "B",
+				name: "Food Industries",
+				planetId: planets[1],
+				cogc: "auto",
+			},
+		],
+		baseOf: split.baseOf,
+	});
 }
 
 /**

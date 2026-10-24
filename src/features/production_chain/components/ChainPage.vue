@@ -15,6 +15,19 @@
 	const ChainPlanetPicker = defineAsyncComponent(
 		() => import("@/features/production_chain/components/ChainPlanetPicker.vue")
 	);
+	const ChainBases = defineAsyncComponent(
+		() => import("@/features/production_chain/components/ChainBases.vue")
+	);
+	const ChainBasePlanetPicker = defineAsyncComponent(
+		() =>
+			import("@/features/production_chain/components/ChainBasePlanetPicker.vue")
+	);
+	const ChainCreatePlans = defineAsyncComponent(
+		() => import("@/features/production_chain/components/ChainCreatePlans.vue")
+	);
+
+	// API
+	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
 	import { useProductionChain } from "@/features/production_chain/useProductionChain";
@@ -38,7 +51,7 @@
 	import type { PlanetSearchCX } from "@/features/planet_search/planetSearch.schemas";
 
 	// UI
-	import { PButton, PTooltip, useToast } from "@/ui";
+	import { PButton, useToast } from "@/ui";
 
 	const toast = useToast();
 	const { materials } = useMaterialData();
@@ -57,6 +70,13 @@
 		setPlanet,
 		buyAll,
 		restoreSources,
+		addBase,
+		removeBase,
+		moveTo,
+		updateBase,
+		split,
+		created,
+		createPlans,
 		recipeOptions,
 		chainLink,
 		track,
@@ -125,13 +145,64 @@
 			: "AI1";
 	});
 
+	function onSplit(): void {
+		split((e) =>
+			e
+				? t(`game.expertise.${e}`)
+				: t("production_chains.bases.unnamed", { id: "A" })
+		);
+		toast(t("production_chains.bases.split_done", input.value.bases.length));
+	}
+
+	// planet picker per base
+	const planetBase: Ref<string | null> = ref(null);
+	const showBasePlanets = ref(false);
+	const myPlanets: Ref<ReadonlySet<string>> = ref(new Set());
+
+	async function openBasePlanets(id: string): Promise<void> {
+		planetBase.value = id;
+		showBasePlanets.value = true;
+		loadIndex();
+		try {
+			const plans = await useQuery("GetAllPlans").execute();
+			myPlanets.value = new Set(plans.map((p) => p.planet_natural_id));
+		} catch {
+			// no badges without the plan list
+		}
+	}
+
+	/** the exchange most rows are priced on */
+	const cxCode = computed(() => {
+		const counts = new Map<string, number>();
+		for (const t of result.value.order) {
+			const cx = result.value.rows[t].exchange;
+			if (cx) counts.set(cx, (counts.get(cx) ?? 0) + 1);
+		}
+		return [...counts].sort((a, b) => b[1] - a[1])[0]?.[0];
+	});
+	const baseCX = computed<PlanetSearchCX>(() =>
+		SEARCH_CX.includes(cxCode.value as PlanetSearchCX)
+			? (cxCode.value as PlanetSearchCX)
+			: "AI1"
+	);
+
+	// create plans
+	const showCreate = ref(false);
+	/** bases with steps have a planet and fit */
+	const createReady = computed(() =>
+		result.value.bases
+			.filter((b) => b.materials.length)
+			.every((b) => b.planet && !b.overArea)
+	);
+
 	const unitCost = (site: IChainExtractionSite) =>
 		extractionUnitCost(ctx.value, site, input.value.efficiency);
 	const buyPrice = (ticker: string) => ctx.value.prices.getPrice(ticker, "BUY");
 </script>
 
 <template>
-	<div class="min-h-screen flex flex-col gap-6 px-6 py-3">
+	<!-- @container: the aside goes beside the panel only when the page leaves the Steps table room -->
+	<div class="@container min-h-screen flex flex-col gap-6 px-6 py-3">
 		<header class="flex flex-wrap justify-between gap-3 border-b border-line pb-3">
 			<div>
 				<h1 class="text-2xl font-bold">{{ $t("production_chains.title") }}</h1>
@@ -144,14 +215,13 @@
 					@click="copyLink">
 					{{ $t("production_chains.header.copy_link") }}
 				</PButton>
-				<PTooltip>
-					<template #trigger>
-						<PButton type="secondary" disabled data-testid="chain-create-plans">
-							{{ $t("production_chains.header.create_plans") }}
-						</PButton>
-					</template>
-					{{ $t("production_chains.header.create_plans_soon") }}
-				</PTooltip>
+				<PButton
+					:type="targets.length && createReady ? 'primary' : 'secondary'"
+					:disabled="!targets.length"
+					data-testid="chain-create-plans"
+					@click="showCreate = true">
+					{{ $t("production_chains.header.create_plans") }}
+				</PButton>
 				<HelpDrawer file-name="tools_production_chain" />
 			</div>
 		</header>
@@ -189,24 +259,45 @@
 				</template>
 				<template v-else>{{ $t("production_chains.panel.loading_planets") }}</template>
 			</div>
-			<div class="grid grid-cols-1 min-[1800px]:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">
+			<div class="grid grid-cols-1 @min-[1600px]:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">
 				<ChainPanel
 					:result="result"
 					:byproduct-mode="input.byproducts"
 					:extraction="ctx.extraction"
 					:recipe-options="recipeOptions"
+					:bases="input.bases"
+					@base="moveTo"
 					@source="setSource"
 					@recipe="setRecipe"
 					@planet="openPlanets"
 					@buy-all="onBuyAll"
-					@track="track" />
-				<aside
-					class="grid gap-3 items-start grid-cols-1 md:grid-cols-2 xl:grid-cols-3 min-[1800px]:grid-cols-1">
-					<ChainBuyList :result="result" @xit="track('xit_copy')" />
-					<ChainFootprint
-						:totals="result.totals"
-						:building-types="result.buildingTypes"
-						:prices="buyPrice" />
+					@track="track">
+					<template #bases>
+						<ChainBases
+							:result="result"
+							:bases="input.bases"
+							:efficiency="input.efficiency"
+							:ctx="ctx"
+							:created="created"
+							:ready="createReady"
+							@split="onSplit"
+							@add="addBase"
+							@remove="removeBase"
+							@rename="(id, name) => updateBase(id, { name })"
+							@cogc="(id, cogc) => updateBase(id, { cogc })"
+							@planet="openBasePlanets"
+							@create="showCreate = true" />
+					</template>
+				</ChainPanel>
+				<!-- @container: its columns follow its own width, beside the panel or below it -->
+				<aside class="@container min-w-0">
+					<div class="grid gap-3 items-start grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3">
+						<ChainBuyList :result="result" @xit="track('xit_copy')" />
+						<ChainFootprint
+							:totals="result.totals"
+							:building-types="result.buildingTypes"
+							:prices="buyPrice" />
+					</div>
 				</aside>
 			</div>
 		</template>
@@ -223,5 +314,26 @@
 			:unit-cost="unitCost"
 			:default-c-x="planetCX"
 			@use="(id) => setPlanet(planetTicker!, id)" />
+		<!-- keyed: each base's picker starts with fresh filters -->
+		<ChainBasePlanetPicker
+			v-if="planetBase"
+			:key="planetBase"
+			v-model:show="showBasePlanets"
+			:base-id="planetBase"
+			:result="result"
+			:input="input"
+			:ctx="ctx"
+			:index="index"
+			:loading="indexLoading"
+			:error="indexError"
+			:default-c-x="baseCX"
+			:my-planets="myPlanets"
+			@use="(id) => updateBase(planetBase!, { planetId: id })" />
+		<ChainCreatePlans
+			v-if="showCreate"
+			v-model:show="showCreate"
+			:result="result"
+			:targets="targets.map((x) => x.ticker)"
+			:create="createPlans" />
 	</div>
 </template>

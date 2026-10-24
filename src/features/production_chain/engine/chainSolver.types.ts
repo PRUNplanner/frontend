@@ -3,14 +3,30 @@ import type {
 	Building,
 	Exchange,
 	Material,
+	PlanetSearchIndexEntry,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
-import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+import type {
+	PlanCOGCProgram,
+	WorkforceType,
+} from "@/features/api/schemas/planningData.schemas";
 import type { IPriceBook } from "@/features/cx/priceBook";
 
 export type ChainSource = "make" | "buy" | "extract";
 export type ChainRawSource = "buy" | "extract";
 export type ChainByproductMode = "cover" | "sell";
+
+/** "auto" runs the planet's program, "none" no program */
+export type ChainBaseCOGC = "auto" | "none" | PlanCOGCProgram;
+
+/** A base: one planet, one plan */
+export interface IChainBase {
+	/** A–H */
+	id: string;
+	name: string;
+	planetId: string | null;
+	cogc: ChainBaseCOGC;
+}
 
 export interface IChainTarget {
 	ticker: string;
@@ -28,6 +44,10 @@ export interface IChainInput {
 	source: Record<string, ChainSource>;
 	recipeId: Record<string, string>;
 	planetId: Record<string, string>;
+	/** at least one */
+	bases: IChainBase[];
+	/** base id per ticker, missing = the first base */
+	baseOf: Record<string, string>;
 }
 
 /** One planet a material can be extracted on */
@@ -58,6 +78,10 @@ export interface IChainContext {
 	resources: ReadonlySet<string>;
 	/** per resource, undefined until the planet index is loaded */
 	extraction?: ReadonlyMap<string, IChainExtractionOptions>;
+	/** planets by natural id, undefined until the planet index is loaded */
+	planets?: ReadonlyMap<string, PlanetSearchIndexEntry>;
+	/** epoch ms the COGC programs are checked against */
+	now: number;
 }
 
 export type ChainMarketLevel = "red" | "amber";
@@ -93,6 +117,16 @@ export interface IChainRow {
 	recipeCount: number;
 	defaultRecipeId: string | null;
 	buildingTicker: string | null;
+	/** made or extracted in this base, null when bought */
+	base: string | null;
+	/** buildings at 100 %, so buildings = load / efficiency */
+	load: number;
+	/** chain efficiency times the base planet's factors, 1 = 100 % */
+	efficiency: number;
+	/** a farm on a planet without fertility: no buildings */
+	noFarming: boolean;
+	/** extracted on a base whose planet lacks the resource */
+	notOnPlanet: boolean;
 	/** exact buildings for this material */
 	buildings: number;
 	/** extraction site, null when not extracted or not loaded yet */
@@ -127,12 +161,17 @@ export interface IChainByproduct {
 	used: number;
 	sold: number;
 	from: string[];
+	/** produced per producing material */
+	fromAmounts: Record<string, number>;
 	sellPrice: number;
 	market: IChainMarketShare | null;
 }
 
 export interface IChainBuildingType {
 	ticker: string;
+	base: string;
+	/** of its first material, the base's efficiency for the building */
+	efficiency: number;
 	exact: number;
 	built: number;
 	materials: string[];
@@ -167,6 +206,43 @@ export interface IChainTotals {
 	payback: number | null;
 }
 
+/** What a base needs: its buildings, one STO, the core module and habs */
+export interface IChainFootprint {
+	built: number;
+	exact: number;
+	/** core module, buildings, STO and habs */
+	area: number;
+	habArea: number;
+	/** 250 + 250 per permit */
+	areaAvailable: number;
+	permits: number;
+	/** above 1,000, more than three permits allow */
+	overArea: boolean;
+	workforce: Record<WorkforceType, number>;
+	expertise: Record<string, number>;
+	upkeep: number;
+	wear: number;
+	construction: number;
+	constructionMaterials: Map<string, number>;
+	habs: IChainHab[];
+}
+
+export interface IChainBaseResult extends IChainFootprint {
+	id: string;
+	name: string;
+	/** null without a planet or before the planet index is loaded */
+	planet: PlanetSearchIndexEntry | null;
+	/** the program in use */
+	cogc: PlanCOGCProgram;
+	/** the planet's running program, "---" without */
+	running: PlanCOGCProgram;
+	buildingTypes: IChainBuildingType[];
+	/** made and extracted here, chain order */
+	materials: string[];
+	noFarming: string[];
+	notOnPlanet: string[];
+}
+
 export interface IChainWarnings {
 	cheaper: string[];
 	thin: string[];
@@ -180,6 +256,7 @@ export interface IChainResult {
 	links: IChainLink[];
 	byproducts: IChainByproduct[];
 	buildingTypes: IChainBuildingType[];
+	bases: IChainBaseResult[];
 	totals: IChainTotals;
 	warnings: IChainWarnings;
 }

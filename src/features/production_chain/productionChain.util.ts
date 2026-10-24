@@ -7,6 +7,7 @@ import type {
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
 import type { IChainResult } from "@/features/production_chain/engine/chainSolver.types";
+import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 /** a quantity: no decimals from 100, one from 10, else two */
 export function formatQty(n: number): string {
@@ -44,8 +45,17 @@ export interface IChainBuyItem {
 	cost: number;
 }
 
-export interface IChainBuyList {
+/** what one base buys */
+export interface IChainBuyGroup {
+	base: string;
 	items: IChainBuyItem[];
+	weight: number;
+	volume: number;
+	cost: number;
+}
+
+export interface IChainBuyList {
+	groups: IChainBuyGroup[];
 	weight: number;
 	volume: number;
 	cost: number;
@@ -53,9 +63,16 @@ export interface IChainBuyList {
 	targetsVolume: number;
 }
 
+const sumOf = <T extends Record<K, number>, K extends string>(
+	list: T[],
+	k: K
+) => list.reduce((s, i) => s + i[k], 0);
+
 /**
- * What to buy for a number of days: whole units of every bought row, its
- * weight, volume and cost; and the targets' weight and volume going out
+ * What to buy for a number of days, grouped by the base that uses it:
+ * whole units of every bought row (a material used in two bases in
+ * both, with each base's share), weight, volume and cost; and the
+ * targets' weight and volume going out
  * @author jplacht
  *
  * @param {IChainResult} result Solved chain
@@ -68,19 +85,44 @@ export function buyList(
 	materials: ReadonlyMap<string, Material>,
 	days: number
 ): IChainBuyList {
-	const items: IChainBuyItem[] = [];
-	for (const t of result.order) {
-		const row = result.rows[t];
-		if (row.source !== "buy" || row.perDay <= 1e-9) continue;
-		const units = Math.ceil(row.perDay * days - 1e-9);
-		const m = materials.get(t);
-		items.push({
-			ticker: t,
-			units,
-			weight: units * (m?.weight ?? 0),
-			volume: units * (m?.volume ?? 0),
-			cost: units * row.price,
-		});
+	// what each base's steps take of a bought material
+	const uses = new Map<string, Map<string, number>>();
+	for (const l of result.links) {
+		const base = result.rows[l.consumer]?.base;
+		if (result.rows[l.input]?.source !== "buy" || !base) continue;
+		const byBase = uses.get(l.input) ?? new Map<string, number>();
+		byBase.set(base, (byBase.get(base) ?? 0) + l.perDay);
+		uses.set(l.input, byBase);
+	}
+
+	const groups: IChainBuyGroup[] = [];
+	for (const b of result.bases) {
+		const items: IChainBuyItem[] = [];
+		for (const t of result.order) {
+			const row = result.rows[t];
+			const byBase = uses.get(t);
+			if (row.source !== "buy" || row.perDay <= 1e-9 || !byBase) continue;
+			const total = [...byBase.values()].reduce((s, q) => s + q, 0);
+			const share = total > 0 ? (byBase.get(b.id) ?? 0) / total : 0;
+			if (share <= 1e-9) continue;
+			const units = Math.ceil(row.perDay * share * days - 1e-9);
+			const m = materials.get(t);
+			items.push({
+				ticker: t,
+				units,
+				weight: units * (m?.weight ?? 0),
+				volume: units * (m?.volume ?? 0),
+				cost: units * row.price,
+			});
+		}
+		if (items.length)
+			groups.push({
+				base: b.id,
+				items,
+				weight: sumOf(items, "weight"),
+				volume: sumOf(items, "volume"),
+				cost: sumOf(items, "cost"),
+			});
 	}
 
 	let targetsWeight = 0;
@@ -93,13 +135,11 @@ export function buyList(
 		targetsVolume += row.targetPerDay * days * (m?.volume ?? 0);
 	}
 
-	const sum = (k: "weight" | "volume" | "cost") =>
-		items.reduce((s, i) => s + i[k], 0);
 	return {
-		items,
-		weight: sum("weight"),
-		volume: sum("volume"),
-		cost: sum("cost"),
+		groups,
+		weight: sumOf(groups, "weight"),
+		volume: sumOf(groups, "volume"),
+		cost: sumOf(groups, "cost"),
 		targetsWeight,
 		targetsVolume,
 	};
@@ -145,4 +185,26 @@ export function chainCsv(
 		);
 	}
 	return lines.join("\n");
+}
+
+const WORKFORCE_PROGRAMS: PlanCOGCProgram[] = [
+	"PIONEERS",
+	"SETTLERS",
+	"TECHNICIANS",
+	"ENGINEERS",
+	"SCIENTISTS",
+];
+
+/** the game.cogc_program key of a plan's program */
+export function cogcKey(program: PlanCOGCProgram): string {
+	if (program === "---") return "game.cogc_program.NONE";
+	const kind = WORKFORCE_PROGRAMS.includes(program)
+		? "WORKFORCE"
+		: "ADVERTISING";
+	return `game.cogc_program.${kind}_${program}`;
+}
+
+/** what a program adds to the buildings it helps, in % */
+export function cogcBonus(program: PlanCOGCProgram): number {
+	return WORKFORCE_PROGRAMS.includes(program) ? 10 : 25;
 }

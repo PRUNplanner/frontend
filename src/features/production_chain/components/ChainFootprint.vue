@@ -43,9 +43,14 @@
 			<ul class="flex flex-col gap-1 tabular-nums" data-testid="chain-footprint-buildings">
 				<li
 					v-for="b in buildingTypes"
-					:key="b.ticker"
+					:key="`${b.base}-${b.ticker}`"
 					class="grid grid-cols-[1fr_auto_2rem] gap-2 items-baseline">
 					<span class="min-w-0 truncate">
+						<span
+							class="px-1 mr-1 rounded-control border border-line font-mono text-xs"
+							:title="t('production_chains.footprint.base', { id: b.base })">
+							{{ b.base }}
+						</span>
 						<span class="font-mono font-bold">{{ b.ticker }}</span>
 						<span class="text-xs text-muted pl-1">{{ b.materials.join(", ") }}</span>
 					</span>

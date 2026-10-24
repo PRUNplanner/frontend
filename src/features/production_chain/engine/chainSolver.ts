@@ -1,11 +1,17 @@
 // Engine
 import { calculateExtraction } from "@/features/planning/calculations/extractionCalculations";
 import { optimizeHabs } from "@/features/planning/calculations/habOptimization";
+import type { Solution } from "yalps";
 import {
 	getBuildingConstructionMaterials,
 	resourceBuildingTicker,
 } from "@/features/planning/engine/buildings";
 import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/engine/workforce.constants";
+import {
+	calculateBuildingEfficiency,
+	expertNames,
+} from "@/features/planning/engine/efficiency";
+import { activeProgram } from "@/features/planet_search/planetSearch.engine";
 import { getMaterialIOTotalPrice, type PriceType } from "@/features/cx/priceBook";
 import {
 	MARKET_SHARE_AMBER,
@@ -15,18 +21,29 @@ import {
 // Types & Interfaces
 import type {
 	Exchange,
+	Planet,
+	PlanetSearchIndexEntry,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
-import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+import type {
+	PlanCOGCProgram,
+	WorkforceType,
+} from "@/features/api/schemas/planningData.schemas";
 import type { IInfrastructureCosts } from "@/features/cx/usePrice.types";
-import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+import type {
+	IExpertRecord,
+	IWorkforceRecord,
+} from "@/features/planning/usePlanCalculation.types";
 import type {
 	ChainSource,
+	IChainBase,
+	IChainBaseResult,
 	IChainBuildingType,
 	IChainByproduct,
 	IChainContext,
 	IChainCostParts,
 	IChainExtractionSite,
+	IChainFootprint,
 	IChainHab,
 	IChainInput,
 	IChainLink,
@@ -34,6 +51,7 @@ import type {
 	IChainRecipeEffect,
 	IChainResult,
 	IChainRow,
+	IChainTotals,
 } from "@/features/production_chain/engine/chainSolver.types";
 
 /**
@@ -49,6 +67,13 @@ const DAY_MS = 86_400_000;
 const EPS = 1e-9;
 const COVER_PASSES = 8;
 const WEAR_DAYS = 180;
+/** core module area, in every base */
+const CORE_AREA = 25;
+/** storage every created plan gets */
+const STORAGE = "STO";
+const PERMIT_AREA = 250;
+const MAX_PERMITS = 3;
+export const MAX_AREA = PERMIT_AREA * (MAX_PERMITS + 1);
 
 const WORKFORCE: [WorkforceType, keyof IWorkerCounts][] = [
 	["pioneer", "pioneers"],
@@ -284,7 +309,7 @@ function marketShare(
 }
 
 /** units per extractor and day at 100 %, as the plan's extraction recipe */
-function extractorRate(site: IChainExtractionSite): number {
+export function extractorRate(site: IChainExtractionSite): number {
 	const type = resourceBuildingTicker[site.buildingTicker];
 	if (!type || site.dailyExtraction <= 0) return 0;
 	const { timeMs, extractionAmount } = calculateExtraction(
@@ -313,9 +338,235 @@ export function extractionUnitCost(
 	return rate > 0 ? buildingDaily(ctx, site.buildingTicker) / rate : 0;
 }
 
+/** every tier fully supplied, so the workforce factor is 1 */
+const FULL_WORKFORCE = Object.fromEntries(
+	WORKFORCE.map(([name]) => [
+		name,
+		{
+			name,
+			required: 0,
+			capacity: 0,
+			left: 0,
+			lux1: false,
+			lux2: false,
+			efficiency: 1,
+		},
+	])
+) as IWorkforceRecord;
+
+const NO_EXPERTS = Object.fromEntries(
+	expertNames.map((name) => [name, { name, amount: 0, bonus: 0 }])
+) as IExpertRecord;
+
+/**
+ * A planet's running COGC program as a plan's program
+ * @author jplacht
+ *
+ * @param {PlanetSearchIndexEntry | null} planet Planet
+ * @param {number} now Epoch ms
+ * @returns {PlanCOGCProgram} Program, "---" without one
+ */
+export function runningCOGC(
+	planet: PlanetSearchIndexEntry | null,
+	now: number
+): PlanCOGCProgram {
+	const program = planet ? activeProgram(planet, now) : null;
+	if (!program || program === "Invalid") return "---";
+	return program.replace(/^(ADVERTISING|WORKFORCE)_/, "") as PlanCOGCProgram;
+}
+
+/**
+ * The program a base uses on a planet: the running one for "auto"
+ * @author jplacht
+ *
+ * @param {IChainBase} base Base
+ * @param {PlanetSearchIndexEntry | null} planet Planet
+ * @param {number} now Epoch ms
+ * @returns {PlanCOGCProgram} Program
+ */
+export function baseCOGC(
+	base: IChainBase,
+	planet: PlanetSearchIndexEntry | null,
+	now: number
+): PlanCOGCProgram {
+	if (base.cogc === "auto") return runningCOGC(planet, now);
+	return base.cogc === "none" ? "---" : base.cogc;
+}
+
+/**
+ * A building's factor on a planet from the plan engine: COGC, workforce
+ * program and fertility, with a full workforce and no experts
+ * @author jplacht
+ *
+ * @param {IChainContext} ctx Chain context
+ * @param {PlanetSearchIndexEntry | null} planet Planet, 1 without
+ * @param {PlanCOGCProgram} cogc Program
+ * @param {string} buildingTicker Building
+ * @returns {number} Factor, 0 for a farm without fertility
+ */
+export function planetFactor(
+	ctx: IChainContext,
+	planet: PlanetSearchIndexEntry | null,
+	cogc: PlanCOGCProgram,
+	buildingTicker: string
+): number {
+	const building = ctx.buildings.get(buildingTicker);
+	if (!planet || !building) return 1;
+	return calculateBuildingEfficiency(
+		building,
+		// the efficiency reads only the fertility
+		{ fertility: planet.fertility } as Planet,
+		false,
+		cogc,
+		FULL_WORKFORCE,
+		NO_EXPERTS,
+		undefined
+	).totalEfficiency;
+}
+
+/** construction cost per hab for the hab solver; storage costs nothing there */
+function habCosts(ctx: IChainContext): IInfrastructureCosts {
+	const costs = { STO: 0, STA: 0, STE: 0, STV: 0, STW: 0 } as Record<
+		string,
+		number
+	>;
+	for (const hab of HABS)
+		costs[hab] = ctx.buildings.has(hab)
+			? buildingCosts(ctx, hab).construction
+			: 1e15;
+	return costs as IInfrastructureCosts;
+}
+
+const habArea = (solution: Solution, ctx: IChainContext) =>
+	solution.variables.reduce(
+		(sum, [ticker, n]) =>
+			sum + n * (ctx.buildings.get(ticker)?.area_cost ?? 0),
+		0
+	);
+
+/**
+ * optimizeHabs("auto"), but the cheapest habs when they fit or when the
+ * buildings alone fill the area: proving that nothing fits is slow
+ */
+function fittingHabs(
+	ctx: IChainContext,
+	required: IWorkforceRecord,
+	available: number
+): Solution {
+	const costs = habCosts(ctx);
+	const cheapest = optimizeHabs("cost", costs, required, available);
+	if (
+		available <= 0 ||
+		(cheapest.status === "optimal" && habArea(cheapest, ctx) <= available)
+	)
+		return cheapest;
+	return optimizeHabs("auto", costs, required, available);
+}
+
+/**
+ * A base's footprint: its buildings, one STO, the core module and the
+ * habs for its workforce in the area three permits leave
+ * @author jplacht
+ *
+ * @param {IChainContext} ctx Chain context
+ * @param {Pick<IChainBuildingType, "ticker" | "built" | "exact" | "expertise">[]} types Buildings
+ * @returns {IChainFootprint} Footprint
+ */
+export function baseFootprint(
+	ctx: IChainContext,
+	types: Pick<
+		IChainBuildingType,
+		"ticker" | "built" | "exact" | "expertise"
+	>[]
+): IChainFootprint {
+	const workforce: Record<WorkforceType, number> = {
+		pioneer: 0,
+		settler: 0,
+		technician: 0,
+		engineer: 0,
+		scientist: 0,
+	};
+	const expertise: Record<string, number> = {};
+	const materials = new Map<string, number>();
+	let area = CORE_AREA;
+	let upkeep = 0;
+	let construction = 0;
+	let built = 0;
+	let exact = 0;
+
+	const addConstruction = (ticker: string, amount: number) => {
+		const building = ctx.buildings.get(ticker);
+		if (!building) return;
+		area += amount * building.area_cost;
+		construction += amount * buildingCosts(ctx, ticker).construction;
+		for (const m of building.costs)
+			materials.set(
+				m.material_ticker,
+				(materials.get(m.material_ticker) ?? 0) +
+					m.material_amount * amount
+			);
+	};
+
+	for (const type of types) {
+		built += type.built;
+		exact += type.exact;
+		addConstruction(type.ticker, type.built);
+		upkeep += type.built * buildingCosts(ctx, type.ticker).upkeep;
+		const building = ctx.buildings.get(type.ticker);
+		if (building)
+			for (const [name, key] of WORKFORCE)
+				workforce[name] += building[key] * type.built;
+		if (type.expertise)
+			expertise[type.expertise] =
+				(expertise[type.expertise] ?? 0) + type.built;
+	}
+	addConstruction(STORAGE, 1);
+
+	const habs: IChainHab[] = [];
+	const areaBefore = area;
+	if (Object.values(workforce).some((w) => w > 0)) {
+		const required = Object.fromEntries(
+			WORKFORCE.map(([name]) => [
+				name,
+				{ ...FULL_WORKFORCE[name], required: workforce[name] },
+			])
+		) as IWorkforceRecord;
+		const solution = fittingHabs(ctx, required, MAX_AREA - area);
+		if (solution.status === "optimal")
+			for (const [ticker, amount] of solution.variables) {
+				if (amount <= 0) continue;
+				const before = area;
+				addConstruction(ticker, amount);
+				habs.push({ ticker, amount, area: area - before });
+			}
+	}
+
+	const permits = Math.min(
+		MAX_PERMITS,
+		Math.max(1, Math.ceil((area - PERMIT_AREA) / PERMIT_AREA - EPS))
+	);
+	return {
+		built,
+		exact,
+		area,
+		habArea: area - areaBefore,
+		areaAvailable: PERMIT_AREA * (permits + 1),
+		permits,
+		overArea: area > MAX_AREA + EPS,
+		workforce,
+		expertise,
+		upkeep,
+		wear: construction / WEAR_DAYS,
+		construction,
+		constructionMaterials: materials,
+		habs,
+	};
+}
+
 interface IPassRow {
 	perDay: number;
 	covered: number;
+	load: number;
 	buildings: number;
 }
 
@@ -323,8 +574,39 @@ interface IPass {
 	rows: Map<string, IPassRow>;
 	links: IChainLink[];
 	byproducts: Map<string, number>;
-	byproductFrom: Map<string, Set<string>>;
+	/** per byproduct: produced per producing material */
+	byproductFrom: Map<string, Map<string, number>>;
 }
+
+const EMPTY_FOOTPRINT: IChainFootprint = {
+	built: 0,
+	exact: 0,
+	area: 0,
+	habArea: 0,
+	areaAvailable: PERMIT_AREA * 2,
+	permits: 1,
+	overArea: false,
+	workforce: {
+		pioneer: 0,
+		settler: 0,
+		technician: 0,
+		engineer: 0,
+		scientist: 0,
+	},
+	expertise: {},
+	upkeep: 0,
+	wear: 0,
+	construction: 0,
+	constructionMaterials: new Map(),
+	habs: [],
+};
+
+const FIRST_BASE: IChainBase = {
+	id: "A",
+	name: "",
+	planetId: null,
+	cogc: "auto",
+};
 
 /**
  * Solves a chain
@@ -339,6 +621,7 @@ export function solveChain(
 	ctx: IChainContext
 ): IChainResult {
 	const efficiency = Math.max(input.efficiency, 1) / 100;
+	const bases = input.bases.length ? input.bases : [FIRST_BASE];
 
 	const targetPerDay = new Map<string, number>();
 	for (const t of input.targets)
@@ -384,15 +667,67 @@ export function solveChain(
 		return r;
 	};
 
-	const siteOf = (
-		t: string
-	): { site: IChainExtractionSite; typical: boolean } | null => {
+	const baseIdOf = (t: string): string =>
+		bases.some((b) => b.id === input.baseOf[t])
+			? input.baseOf[t]
+			: bases[0].id;
+	const planetOf = (id: string): PlanetSearchIndexEntry | null => {
+		const planetId = bases.find((b) => b.id === id)?.planetId;
+		return (planetId && ctx.planets?.get(planetId)) || null;
+	};
+	const cogcs = new Map<string, PlanCOGCProgram>(
+		bases.map((b) => [b.id, baseCOGC(b, planetOf(b.id), ctx.now)])
+	);
+
+	interface ISite {
+		site: IChainExtractionSite;
+		typical: boolean;
+		notOnPlanet: boolean;
+	}
+	const sites = new Map<string, ISite | null>();
+	// the base planet's own site wins over a picked or the typical one
+	const siteOf = (t: string): ISite | null => {
+		if (sites.has(t)) return sites.get(t)!;
 		const options = ctx.extraction?.get(t);
-		if (!options) return null;
-		const picked = options.sites.find((s) => s.planetId === input.planetId[t]);
-		return picked
-			? { site: picked, typical: false }
-			: { site: options.typical, typical: true };
+		let s: ISite | null = null;
+		if (options) {
+			const planet = planetOf(baseIdOf(t));
+			const onBase =
+				planet &&
+				options.sites.find(
+					(x) => x.planetId === planet.planet_natural_id
+				);
+			const picked = options.sites.find(
+				(x) => x.planetId === input.planetId[t]
+			);
+			s = onBase
+				? { site: onBase, typical: false, notOnPlanet: false }
+				: {
+						site: picked ?? options.typical,
+						typical: !picked,
+						notOnPlanet: planet !== null,
+					};
+		}
+		sites.set(t, s);
+		return s;
+	};
+
+	// chain efficiency times the base planet's factor, per base and building
+	const factors = new Map<string, number>();
+	const effOf = (t: string): number => {
+		const ticker =
+			sourceOf(t) === "make"
+				? recipeOf(t).building_ticker
+				: siteOf(t)?.site.buildingTicker;
+		if (!ticker) return efficiency;
+		const id = baseIdOf(t);
+		const key = `${id}|${ticker}`;
+		let f = factors.get(key);
+		if (f === undefined) {
+			f = planetFactor(ctx, planetOf(id), cogcs.get(id)!, ticker);
+			factors.set(key, f);
+		}
+		return efficiency * f;
 	};
 
 	// depth-first post-order: inputs before their consumers
@@ -443,7 +778,7 @@ export function solveChain(
 			const gross = need.get(t) ?? 0;
 			const covered = Math.min(gross, supply.get(t) ?? 0);
 			const perDay = gross - covered;
-			let buildings = 0;
+			let load = 0;
 			const source = sourceOf(t);
 
 			if (source === "make") {
@@ -452,7 +787,7 @@ export function solveChain(
 					(o) => o.material_ticker === t
 				)!.material_amount;
 				const runs = perDay / out;
-				buildings = (runs * r.time_ms) / DAY_MS / efficiency;
+				load = (runs * r.time_ms) / DAY_MS;
 				for (const i of r.inputs) {
 					if (cycleEdges.has(`${t}>${i.material_ticker}`)) continue;
 					const q = runs * i.material_amount;
@@ -469,21 +804,25 @@ export function solveChain(
 				for (const o of r.outputs) {
 					if (o.material_ticker === t) continue;
 					const x = o.material_ticker;
-					pass.byproducts.set(
-						x,
-						(pass.byproducts.get(x) ?? 0) + runs * o.material_amount
-					);
+					const q = runs * o.material_amount;
+					pass.byproducts.set(x, (pass.byproducts.get(x) ?? 0) + q);
 					if (runs > EPS) {
-						const from = pass.byproductFrom.get(x) ?? new Set();
-						from.add(t);
+						const from = pass.byproductFrom.get(x) ?? new Map();
+						from.set(t, (from.get(t) ?? 0) + q);
 						pass.byproductFrom.set(x, from);
 					}
 				}
 			} else if (source === "extract") {
 				const rate = rateOf(t);
-				buildings = rate > 0 ? perDay / (rate * efficiency) : 0;
+				load = rate > 0 ? perDay / rate : 0;
 			}
-			pass.rows.set(t, { perDay, covered, buildings });
+			const eff = source === "buy" ? efficiency : effOf(t);
+			pass.rows.set(t, {
+				perDay,
+				covered,
+				load,
+				buildings: eff > 0 ? load / eff : 0,
+			});
 		}
 		return pass;
 	};
@@ -522,12 +861,16 @@ export function solveChain(
 		const source = sourceOf(t);
 		const price = buyPrice(ctx, t);
 		const isTarget = targetPerDay.has(t);
+		const eff = source === "buy" ? efficiency : effOf(t);
+		// a farm without fertility is costed at the chain efficiency
+		const costEff = eff > 0 ? eff : efficiency;
 		let uc = 0;
 		let costParts: IChainCostParts | null = null;
 		let recipe: Recipe | null = null;
 		let buildingTicker: string | null = null;
 		let site: IChainExtractionSite | null = null;
 		let typicalSite = false;
+		let notOnPlanet = false;
 
 		if (source === "buy") uc = price;
 		else if (source === "extract") {
@@ -535,8 +878,9 @@ export function solveChain(
 			if (s) {
 				site = s.site;
 				typicalSite = s.typical;
+				notOnPlanet = s.notOnPlanet;
 				buildingTicker = s.site.buildingTicker;
-				uc = extractionUnitCost(ctx, s.site, input.efficiency);
+				uc = extractionUnitCost(ctx, s.site, costEff * 100);
 				costParts = { inputs: 0, upkeepWear: uc, share: 1 };
 			}
 		} else {
@@ -546,7 +890,7 @@ export function solveChain(
 				ctx,
 				recipe,
 				t,
-				efficiency,
+				costEff,
 				(x) => unitCost.get(x) ?? buyPrice(ctx, x)
 			);
 			uc = cost.unit;
@@ -577,6 +921,11 @@ export function solveChain(
 			recipeCount: ctx.recipesByOutput.get(t)?.length ?? 0,
 			defaultRecipeId: canMake(t) ? defaultRecipe(ctx, t, efficiency) : null,
 			buildingTicker,
+			base: source === "buy" ? null : baseIdOf(t),
+			load: p.load,
+			efficiency: eff,
+			noFarming: source !== "buy" && eff <= 0,
+			notOnPlanet,
 			buildings: p.buildings,
 			site,
 			typicalSite,
@@ -602,24 +951,29 @@ export function solveChain(
 		if (produced <= EPS) continue;
 		const used = Math.min(produced, rows[ticker]?.covered ?? 0);
 		const sold = produced - used;
+		const from = pass.byproductFrom.get(ticker) ?? new Map();
 		byproducts.push({
 			ticker,
 			produced,
 			used,
 			sold,
-			from: [...(pass.byproductFrom.get(ticker) ?? [])],
+			from: [...from.keys()],
+			fromAmounts: Object.fromEntries(from),
 			sellPrice: sellPrice(ctx, ticker),
 			market: sold > EPS ? marketShare(ctx, ticker, sold, "SELL") : null,
 		});
 	}
 
-	// building types share capacity across recipes
+	// building types share capacity across recipes, inside one base only
 	const types = new Map<string, IChainBuildingType>();
 	for (const t of order) {
 		const row = rows[t];
-		if (!row.buildingTicker || row.buildings <= EPS) continue;
-		const type = types.get(row.buildingTicker) ?? {
+		if (!row.buildingTicker || !row.base || row.buildings <= EPS) continue;
+		const key = `${row.base}|${row.buildingTicker}`;
+		const type = types.get(key) ?? {
 			ticker: row.buildingTicker,
+			base: row.base,
+			efficiency: row.efficiency,
 			exact: 0,
 			built: 0,
 			materials: [],
@@ -627,12 +981,35 @@ export function solveChain(
 		};
 		type.exact += row.buildings;
 		type.materials.push(t);
-		types.set(row.buildingTicker, type);
+		types.set(key, type);
 	}
 	const buildingTypes = [...types.values()];
 	for (const type of buildingTypes)
 		type.built = Math.max(1, Math.ceil(type.exact - 1e-6));
-	buildingTypes.sort((a, b) => b.built - a.built || b.exact - a.exact);
+	buildingTypes.sort(
+		(a, b) =>
+			a.base.localeCompare(b.base) ||
+			b.built - a.built ||
+			b.exact - a.exact
+	);
+
+	const baseResults: IChainBaseResult[] = bases.map((b) => {
+		const own = buildingTypes.filter((type) => type.base === b.id);
+		const materials = order.filter((t) => rows[t].base === b.id);
+		return {
+			// a base without steps builds nothing, not even its STO
+			...(materials.length ? baseFootprint(ctx, own) : EMPTY_FOOTPRINT),
+			id: b.id,
+			name: b.name,
+			planet: planetOf(b.id),
+			cogc: cogcs.get(b.id)!,
+			running: runningCOGC(planetOf(b.id), ctx.now),
+			buildingTypes: own,
+			materials,
+			noFarming: materials.filter((t) => rows[t].noFarming),
+			notOnPlanet: materials.filter((t) => rows[t].notOnPlanet),
+		};
+	});
 
 	return {
 		order,
@@ -640,7 +1017,15 @@ export function solveChain(
 		links: pass.links,
 		byproducts,
 		buildingTypes,
-		totals: totalsOf(ctx, rows, order, targetPerDay, byproducts, buildingTypes),
+		bases: baseResults,
+		totals: totalsOf(
+			ctx,
+			rows,
+			order,
+			targetPerDay,
+			byproducts,
+			baseResults
+		),
 		warnings: {
 			cheaper: order.filter((t) => rows[t].cheaper),
 			thin: order.filter(
@@ -651,14 +1036,15 @@ export function solveChain(
 	};
 }
 
+/** spec 1's totals, summed over the bases' footprints */
 function totalsOf(
 	ctx: IChainContext,
 	rows: Record<string, IChainRow>,
 	order: string[],
 	targetPerDay: Map<string, number>,
 	byproducts: IChainByproduct[],
-	buildingTypes: IChainBuildingType[]
-): IChainResult["totals"] {
+	bases: IChainFootprint[]
+): IChainTotals {
 	const workforce: Record<WorkforceType, number> = {
 		pioneer: 0,
 		settler: 0,
@@ -668,78 +1054,39 @@ function totalsOf(
 	};
 	const expertise: Record<string, number> = {};
 	const materials = new Map<string, number>();
+	const habs = new Map<string, IChainHab>();
 	let area = 0;
+	let habArea = 0;
 	let upkeep = 0;
+	let wear = 0;
 	let construction = 0;
 	let built = 0;
 	let exact = 0;
 
-	const addConstruction = (ticker: string, amount: number) => {
-		const building = ctx.buildings.get(ticker);
-		if (!building) return;
-		area += amount * building.area_cost;
-		construction += amount * buildingCosts(ctx, ticker).construction;
-		for (const m of building.costs)
-			materials.set(
-				m.material_ticker,
-				(materials.get(m.material_ticker) ?? 0) +
-					m.material_amount * amount
-			);
-	};
-
-	for (const type of buildingTypes) {
-		built += type.built;
-		exact += type.exact;
-		addConstruction(type.ticker, type.built);
-		upkeep += type.built * buildingCosts(ctx, type.ticker).upkeep;
-		const building = ctx.buildings.get(type.ticker);
-		if (building)
-			for (const [name, key] of WORKFORCE)
-				workforce[name] += building[key] * type.built;
-		if (type.expertise)
-			expertise[type.expertise] =
-				(expertise[type.expertise] ?? 0) + type.built;
-	}
-
-	// habitation for the built buildings' workforce, no area limit
-	const habs: IChainHab[] = [];
-	const areaBefore = area;
-	if (Object.values(workforce).some((w) => w > 0)) {
-		const costs = { STO: 0, STA: 0, STE: 0, STV: 0, STW: 0 } as Record<
-			string,
-			number
-		>;
-		for (const hab of HABS)
-			costs[hab] = ctx.buildings.has(hab)
-				? buildingCosts(ctx, hab).construction
-				: 1e15;
-		const required = Object.fromEntries(
-			WORKFORCE.map(([name]) => [
-				name,
-				{
-					name,
-					required: workforce[name],
-					capacity: 0,
-					left: 0,
-					lux1: false,
-					lux2: false,
-					efficiency: 1,
-				},
-			])
-		) as IWorkforceRecord;
-		const solution = optimizeHabs(
-			"auto",
-			costs as IInfrastructureCosts,
-			required,
-			Number.MAX_SAFE_INTEGER
-		);
-		if (solution.status === "optimal")
-			for (const [ticker, amount] of solution.variables) {
-				if (amount <= 0) continue;
-				const before = area;
-				addConstruction(ticker, amount);
-				habs.push({ ticker, amount, area: area - before });
-			}
+	for (const b of bases) {
+		area += b.area;
+		habArea += b.habArea;
+		upkeep += b.upkeep;
+		wear += b.wear;
+		construction += b.construction;
+		built += b.built;
+		exact += b.exact;
+		for (const [tier, n] of Object.entries(b.workforce))
+			workforce[tier as WorkforceType] += n;
+		for (const [name, n] of Object.entries(b.expertise))
+			expertise[name] = (expertise[name] ?? 0) + n;
+		for (const [ticker, n] of b.constructionMaterials)
+			materials.set(ticker, (materials.get(ticker) ?? 0) + n);
+		for (const h of b.habs) {
+			const sum = habs.get(h.ticker) ?? {
+				ticker: h.ticker,
+				amount: 0,
+				area: 0,
+			};
+			sum.amount += h.amount;
+			sum.area += h.area;
+			habs.set(h.ticker, sum);
+		}
 	}
 
 	let bought = 0;
@@ -758,7 +1105,6 @@ function totalsOf(
 		0
 	);
 	const outputValue = targetsValue + byproductsValue;
-	const wear = construction / WEAR_DAYS;
 	const profit = outputValue - bought - upkeep - wear;
 
 	return {
@@ -773,7 +1119,7 @@ function totalsOf(
 		built,
 		exact,
 		area,
-		habArea: area - areaBefore,
+		habArea,
 		workforce,
 		expertise,
 		construction,
@@ -784,7 +1130,7 @@ function totalsOf(
 					b.amount * buyPrice(ctx, b.ticker) -
 					a.amount * buyPrice(ctx, a.ticker)
 			),
-		habs,
+		habs: [...habs.values()],
 		payback: profit > 0 ? construction / profit : null,
 	};
 }

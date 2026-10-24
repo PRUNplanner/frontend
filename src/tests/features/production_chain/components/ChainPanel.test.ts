@@ -10,8 +10,10 @@ import {
 	solveChain,
 } from "@/features/production_chain/engine/chainSolver";
 import {
+	FOOD_PLANET,
 	chainInput,
 	seedGameData,
+	splitInput,
 	testContext,
 } from "@/tests/features/production_chain/chain.fixtures";
 
@@ -43,6 +45,7 @@ async function mountPanel(input: IChainInput) {
 		byproductMode: input.byproducts,
 		extraction: ctx.extraction,
 		recipeOptions: (t: string) => recipeEffects(input, ctx, t, result),
+		bases: input.bases,
 	});
 	return { ...mounted, result };
 }
@@ -149,7 +152,25 @@ describe("ChainPanel", () => {
 			byproductMode: "cover",
 			extraction: undefined,
 			recipeOptions: () => [],
+			bases: [{ id: "A", name: "", planetId: null, cogc: "auto" }],
 		});
 		expect(wrapper.text()).toContain("production_chains.panel.cycles");
+	});
+});
+
+describe("ChainPanel base warnings", () => {
+	beforeAll(seedGameData);
+
+	it("names steps their base can't run and opens the Bases tab", async () => {
+		// farms on a planet without fertility
+		const { wrapper } = await mountPanel(splitInput([FOOD_PLANET, null]));
+		const chip = wrapper.find("[data-testid='chain-chip-bases']");
+		expect(chip.text()).toBe("production_chains.panel.base_warnings");
+		expect(wrapper.text()).not.toContain("production_chains.panel.no_warnings");
+		await chip.trigger("click");
+		expect(wrapper.findComponent(ChainStepsTable).exists()).toBe(false);
+		expect(
+			button(wrapper, "production_chains.panel.bases").attributes("aria-pressed")
+		).toBe("true");
 	});
 });

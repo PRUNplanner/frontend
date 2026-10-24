@@ -8,10 +8,13 @@ import {
 	recipeEffects,
 } from "@/features/production_chain/engine/chainSolver";
 import {
+	FOOD_PLANET,
 	chainInput,
 	seedGameData,
+	splitInput,
 	testContext,
 } from "@/tests/features/production_chain/chain.fixtures";
+import { PSelect } from "@/ui";
 
 import type {
 	IChainInput,
@@ -26,15 +29,20 @@ async function mountTable(
 	attach = false
 ) {
 	const result: IChainResult = solveChain(input, ctx);
-	const { wrapper, component } = await mountComponent(ChainStepsTable, {
-		result,
-		order: "chain",
-		filter: null,
-		byproductMode: input.byproducts,
-		extraction: ctx.extraction,
-		recipeOptions: (t: string) => recipeEffects(input, ctx, t, result),
-		...props,
-	}, { attach });
+	const { wrapper, component } = await mountComponent(
+		ChainStepsTable,
+		{
+			result,
+			order: "chain",
+			filter: null,
+			byproductMode: input.byproducts,
+			extraction: ctx.extraction,
+			recipeOptions: (t: string) => recipeEffects(input, ctx, t, result),
+			bases: [{ id: "A", name: "", planetId: null, cogc: "auto" }],
+			...props,
+		},
+		{ attach }
+	);
 	return { wrapper, component, result };
 }
 
@@ -194,6 +202,7 @@ describe("ChainStepsTable supply cells", () => {
 			byproductMode: "sell",
 			extraction: undefined,
 			recipeOptions: () => [],
+			bases: [{ id: "A", name: "", planetId: null, cogc: "auto" }],
 		});
 		expect(pending.wrapper.text()).toContain("production_chains.table.pending");
 		expect(pending.wrapper.text()).toContain("production_chains.table.group_extract");
@@ -219,5 +228,36 @@ describe("ChainStepsTable supply cells", () => {
 			})
 		);
 		expect(all.wrapper.text()).toContain(site.planetName);
+	});
+});
+
+describe("ChainStepsTable bases", () => {
+	beforeAll(seedGameData);
+
+	it("moves a step to a base or a new one, not bought rows (AC 2)", async () => {
+		const input = splitInput([FOOD_PLANET, null]);
+		const { wrapper, component, result } = await mountTable(input, {
+			bases: input.bases,
+		});
+		const select = wrapper
+			.findAllComponents(PSelect)
+			.find((s) => s.attributes("data-testid") === "chain-base-DW")!;
+		expect(select.props("value")).toBe(result.rows.DW.base);
+		expect(
+			(select.props("options") as { value: string }[]).map((o) => o.value)
+		).toEqual(["A", "B", "new"]);
+		select.vm.$emit("update:value", "new");
+		expect(component.emitted("base")).toEqual([["DW", "new"]]);
+		// bought rows have no base
+		const h2o = wrapper.find("[data-testid='chain-row-H2O']");
+		expect(h2o.find("[data-testid='chain-base-H2O']").exists()).toBe(false);
+	});
+
+	it("marks farms without fertility (AC 3)", async () => {
+		const input = splitInput([FOOD_PLANET, null]);
+		const { wrapper } = await mountTable(input, { bases: input.bases });
+		expect(
+			wrapper.find("[data-testid='chain-no-farming-GRN']").exists()
+		).toBe(true);
 	});
 });

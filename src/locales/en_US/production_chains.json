@@ -7,8 +7,7 @@
 	"header": {
 		"copy_link": "Copy chain link",
 		"link_copied": "Chain link copied.",
-		"create_plans": "Create plans",
-		"create_plans_soon": "Comes with splitting a chain into bases"
+		"create_plans": "Create plans"
 	},
 	"targets": {
 		"label": "Produce per day",
@@ -85,7 +84,9 @@
 		"zoom": "Zoom",
 		"zoom_out": "Zoom out",
 		"zoom_in": "Zoom in",
-		"fit": "Fit"
+		"fit": "Fit",
+		"bases": "Bases",
+		"base_warnings": "{n} step its base can't run | {n} steps their bases can't run"
 	},
 	"filter": {
 		"cheaper": "{n} material is cheaper to buy than to make in this chain. | {n} materials are cheaper to buy than to make in this chain.",
@@ -140,7 +141,12 @@
 		"byproduct_used": "{n} used in the chain",
 		"byproduct_sold": "{n} sold",
 		"all_used": "All used",
-		"nothing": "nothing"
+		"nothing": "nothing",
+		"base": "Base",
+		"base_of": "Base of {ticker}",
+		"new_base": "+ new base",
+		"no_farming": "no farming",
+		"not_on_planet": "not on planet"
 	},
 	"detail": {
 		"takes": "Takes",
@@ -240,7 +246,9 @@
 		"xit": "Copy XIT buy action",
 		"xit_copied": "XIT action copied.",
 		"xit_name": "Chain buy list",
-		"nothing": "Nothing to buy. Every input is made or extracted."
+		"nothing": "Nothing to buy. Every input is made or extracted.",
+		"base_total": "Base {id}",
+		"xit_base": "Copy XIT action for {id}"
 	},
 	"footprint": {
 		"buildings": "Buildings",
@@ -253,7 +261,8 @@
 		"expertise": "Expertise",
 		"expertise_unit": "buildings",
 		"construction": "Construction",
-		"construction_note": "Without planet extras (MCG, AEF, SEA, HSE, INS, TSH) and the core module."
+		"construction_note": "Without planet extras (MCG, AEF, SEA, HSE, INS, TSH) and the core module.",
+		"base": "Base {id}"
 	},
 	"csv": {
 		"material": "Material",
@@ -264,5 +273,118 @@
 		"buildings": "Buildings",
 		"unit_cost": "Cost per unit",
 		"cx_price": "CX price"
+	},
+	"bases": {
+		"unnamed": "Base {id}",
+		"name": "Name of base {id}",
+		"remove": "Remove base {id}",
+		"remove_title": "Remove the base; its steps move to the first base",
+		"split": "Split by expertise",
+		"split_done": "Kept one base: no expertise needs 1.5 buildings. | Split into {n} bases by building expertise. Move single steps with the Base column.",
+		"add": "+ Add base",
+		"hint": "Move single steps with the Base column in Steps. A base runs on one planet.",
+		"create": "Create {n} plan… | Create {n} plans…",
+		"rocky": "rocky",
+		"gaseous": "gaseous",
+		"fertility": "fertility {pct}",
+		"change": "change",
+		"pick_planet": "Pick a planet",
+		"planet_loading": "Loading the planet …",
+		"cogc": "COGC",
+		"cogc_of": "COGC program of base {id}",
+		"cogc_running": "Running: {program}",
+		"cogc_nothing": "none",
+		"cogc_off": "No program",
+		"bonus": "+{pct} %",
+		"not_running": "not running",
+		"cogc_fits": "COGC {program}: +{pct} % for the buildings it supports.",
+		"planned": " Not running on this planet yet: planned ahead of a vote.",
+		"over_area": "Needs {n} area, more than 1,000 (three permits).",
+		"no_farming": "No farming on this planet: {list} need fertility.",
+		"not_on_planet": "Not on this planet: {list} keep the chain's extraction rate.",
+		"empty": "No steps yet. Move steps here with the Base column.",
+		"buildings": "Buildings",
+		"area": "Area",
+		"permits": "{n} permit | {n} permits",
+		"workforce": "Workforce",
+		"upkeep": "Upkeep + wear",
+		"per_day": "per day",
+		"storage": "storage, in every created plan"
+	},
+	"shipping": {
+		"title": "Shipping per day",
+		"note": "Between bases and the CX. This is what the logistics planner will take over.",
+		"nothing": "Nothing ships between bases.",
+		"route": "Route",
+		"materials": "Materials per day",
+		"weight": "t",
+		"volume": "m³",
+		"jumps": "Jumps",
+		"n_jumps": "{n} jump | {n} jumps"
+	},
+	"base_picker": {
+		"title": "Planet for {name}",
+		"count": "{n} of {total} planets · now {built} buildings, {area} area",
+		"only": "Only planets that",
+		"needs": "have the resources and allow farming",
+		"cogc": "run a COGC program for this base",
+		"fertile": "are fertile",
+		"mine": "have one of my plans",
+		"col_name": "Planet",
+		"col_built": "Buildings",
+		"col_area": "Area",
+		"col_cogc": "COGC running",
+		"col_fert": "Fertility",
+		"col_extras": "Extra materials",
+		"col_jumps": "Jumps to {cx}",
+		"your_plan": "your plan",
+		"no_resource": "no {ticker}",
+		"cut": "Showing the first {n}; the filters narrow it down.",
+		"footer": "Buildings and area are this base's steps on that planet: COGC for matching buildings, fertility for FRM and ORC, the planet's own extraction rates.",
+		"no_planet": "No planet"
+	},
+	"create": {
+		"title": "Create {n} plan | Create {n} plans",
+		"intro": "One plan per base, with its buildings, recipes, habs, one STO and the COGC program. You fine-tune experts and luxuries in each plan.",
+		"base": "Base",
+		"plan_name": "Plan name",
+		"plan_name_of": "Plan name for base {id}",
+		"planet": "Planet",
+		"no_planet": "no planet",
+		"cogc": "COGC",
+		"buildings": "Buildings",
+		"permits": "Permits",
+		"empire": "Empire",
+		"new_empire": "New empire",
+		"existing_empire": "Add to",
+		"no_empire": "No empire",
+		"empire_name": "Empire name",
+		"empire_default": "Chain {targets}",
+		"faction_label": "Faction",
+		"faction": {
+			"NONE": "None",
+			"ANTARES": "Antares",
+			"BENTEN": "Benten",
+			"HORTUS": "Hortus",
+			"MORIA": "Moria",
+			"OUTSIDEREGION": "Outside Region"
+		},
+		"faction_note": "Faction bonuses show up in the plans, not in the chain.",
+		"no_steps": "No base has steps yet.",
+		"needs_planet": "Every base needs a planet first.",
+		"over_area": "A base needs more than 1,000 area; move steps to another base.",
+		"needs_name": "Every plan needs a name.",
+		"needs_empire_name": "The new empire needs a name.",
+		"needs_empire": "Pick an empire.",
+		"submit": "Create {n} plan | Create {n} plans",
+		"created": "Created {n} plan | Created {n} plans",
+		"open_empire": "Open empire {name}",
+		"failed": "Creating the plan for base {base} failed. The plans listed were created.",
+		"empire_failed": "The empire could not be created, so no plans were created.",
+		"stays": "The chain stays here; the links stay in the Bases tab until the chain changes.",
+		"close": "Close",
+		"phone_line": "{planet} · {cogc} · buildings {built} · permits {permits}",
+		"no_farming": "No fertility on this planet: the plan leaves out the farms for {list}.",
+		"not_on_planet": "Not on this planet: {list}. The plan gets the extractor without a recipe."
 	}
 }
