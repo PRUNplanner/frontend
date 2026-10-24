@@ -1,6 +1,11 @@
 {
 	"view_title": "Planetensuche",
 	"title": "Planetensuche",
+	"description": "Search every planet of Prosperous Universe by resources, conditions, COGC, infrastructure and jumps to the exchanges. Free, no account needed.",
+	"intro": {
+		"lead": "Filter all {n} planets of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed.",
+		"lead_any": "Filter every planet of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed."
+	},
 	"loading": "Planeten werden geladen…",
 	"load_error": "Die Planeten konnten nicht geladen werden. Lade die Seite neu, um es erneut zu versuchen.",
 	"header": {
@@ -24,7 +29,8 @@
 		"no_saved": "Noch keine gespeicherten Suchen vorhanden. Speicher die aktuellen Filter mit \"Suche speichern\".",
 		"rename_label": "Gespeicherte Suche {n} umbenennen",
 		"load": "Laden",
-		"delete": "Löschen"
+		"delete": "Löschen",
+		"more": "Saved searches, copy link, reset"
 	},
 	"filters": {
 		"title": "Filter",
@@ -106,7 +112,9 @@
 		"remove_plan": "Entferne {plan}",
 		"exchanges": "Marktplätze",
 		"max_jumps": "Max. Sprünge",
-		"max_jumps_value": "≤ {n} Sprünge von jeder Auswahl"
+		"max_jumps_value": "≤ {n} Sprünge von jeder Auswahl",
+		"login_prompt": "Log in to count jumps from your own bases.",
+		"login": "Log in"
 	},
 	"results": {
 		"count": "{n} von {total} Planeten",
@@ -132,7 +140,8 @@
 		"cell": "{material} {value}/d · {pct}% von max.",
 		"sort": "Sortieren nach {column}",
 		"sort_hint": "Klicken, um nach dieser Spalte zu sortieren, Shift+Klick, um sie als Tiebreaker hinzuzufügen",
-		"loading_more": "Lade mehr Planeten…"
+		"loading_more": "Lade mehr Planeten…",
+		"create_plan_login": "Log in to plan a base on {planet}"
 	},
 	"sort": {
 		"button": "Sortieren ({n})",
