@@ -18,7 +18,8 @@
 		"redo": "Rehacer",
 		"building_removed": "Edificio eliminado",
 		"recipe_removed": "Receta eliminada",
-		"recipe_changed": "Receta de {building} cambiada"
+		"undo_key": "Undo (Ctrl+Z)",
+		"redo_key": "Redo (Ctrl+Shift+Z)"
 	},
 	"actions": {
 		"more": "Más",
@@ -27,7 +28,8 @@
 		"reload": "Recargar versión guardada",
 		"reload_hint": "Descarta los cambios sin guardar",
 		"reload_confirm": "¿Recargar la versión guardada? Tus cambios sin guardar se perderán.",
-		"tools": "Herramientas del plan"
+		"tools": "Herramientas del plan",
+		"download_csv": "Download Material I/O (CSV)"
 	},
 	"name": {
 		"untitled": "Plan sin nombre"
@@ -35,13 +37,23 @@
 	"breadcrumb": "Ubicación del plan",
 	"tools": {
 		"labels": {
-			"popr": "POPR",
-			"visitation_frequency": "Frecuencia de visitas",
-			"construction_cart": "Carrito de construcción",
-			"supply_cart": "Carrito de suministro",
-			"repair_analysis": "Análisis de reparaciones",
-			"profit_breakdown": "Desglose del beneficio",
-			"plan_check": "Revisión del plan"
+			"production": "Production",
+			"construction_cart": "Construction",
+			"supply_cart": "Supply",
+			"visitation_frequency": "Visits",
+			"repair_analysis": "Repair",
+			"profit_breakdown": "Profit",
+			"plan_check": "Revisión del plan",
+			"popr": "POPR"
+		},
+		"descriptions": {
+			"construction-cart": "What is left to buy for the buildings",
+			"supply-cart": "Consumables for n days, as a list or XIT action",
+			"visitation-frequency": "When storage fills",
+			"repair-analysis": "Best repair interval per building",
+			"profit-breakdown": "Where the daily profit comes from",
+			"plan-check": "Thin markets and profit at real ask and bid",
+			"popr": "Population report"
 		},
 		"profit_breakdown": {
 			"title": "Desglose del beneficio",
@@ -82,15 +94,22 @@
 		},
 		"popr": {
 			"title": "Último informe de población",
+			"subtitle": "The planet's workforce from the game's last report, next to what this plan needs",
 			"error": "Error al cargar el último informe de población. Puede que el planeta no tenga población.",
-			"loading": "Cargando informe de población"
+			"loading": "Cargando informe de población",
+			"chart": {
+				"label": "Free workers next to what this plan needs",
+				"legend": "Bar: free workers less the open jobs of other bases · line: what this plan needs",
+				"row": "{tier}: {available} free, plan needs {need}",
+				"value": "{available} free · needs {need}"
+			}
 		},
 		"visitation_frequency": {
 			"title": "Frecuencia de visitas",
 			"storage": {
 				"label": "Almacenamiento",
-				"info": "Tu plan implica añadir {storages}, lo que te da una capacidad total de almacenamiento de {total_weight} t y {total_volume} m³.",
-				"info_no_storage": "Tu plan tiene una capacidad total de almacenamiento de {total_weight} t y {total_volume} m³.",
+				"info": "Your plan involves adding {storages} giving you a total storage capacity of {total_weight} t and {total_volume} m³.",
+				"info_no_storage": "Your plan has a total storage capacity of {total_weight} t and {total_volume} m³.",
 				"table": {
 					"weight": "t",
 					"volume": "m³",
@@ -118,6 +137,10 @@
 		"construction_cart": {
 			"title": "Carrito de construcción",
 			"unplanned_info": "La base tiene {buildings} sin planificar (FIO: {fio_updated}). Demuélelos para que el área, la habitación y los materiales sean correctos.",
+			"sections": {
+				"buildings": "Buildings",
+				"materials": "Materials to buy"
+			},
 			"table": {
 				"building": "@:terms.buildings",
 				"built": "Construidos",
@@ -146,8 +169,11 @@
 			"title": "Carrito de suministro",
 			"info": {
 				"p": "El carrito de suministro te informa de las necesidades de tus planes combinadas con el inventario existente obtenido de FIO. Puedes elegir otros almacenes para reabastecer tu base. Ajusta la selección según quieras reponer suministros de mano de obra y producción o centrarte en una categoría concreta, e indica durante cuánto tiempo debe bastar el stock suministrado. XIT envía lo que la base en marcha aún necesita una vez que su propia producción cubre una parte. Para el primer suministro usa XIT Initial: también envía los insumos que este plan produce por sí mismo, porque todavía no se produce nada. Usa la herramienta {link} para opciones de carrito de suministro más avanzadas.",
-				"link": "FIO Burn"
+				"link": "FIO Burn",
+				"label": "About the Supply Cart"
 			},
+			"filter_label": "Supply for",
+			"more_in": "More options in {link}",
 			"buttons": {
 				"all": "Todos",
 				"workforce": "Mano de obra",
@@ -517,28 +543,12 @@
 		}
 	},
 	"components": {
-		"status": {
-			"hq": "Sede",
-			"cogc": "@:{'terms.cogc'}",
-			"area": "@:{'terms.area'}",
-			"profit": "@:{'terms.profit'}",
-			"experts": "@:{'terms.experts_plural'}",
-			"experts_none": "Ninguno",
-			"area_free": "{count} libres",
-			"area_over": "{count} de más",
-			"per_day": "ȼ/día"
-		},
 		"configuration": {
-			"label": "Configuración",
-			"name": "Nombre",
-			"empire": "@:terms.empire",
 			"prices": "Precios",
 			"no_preference": "Universe · VWAP 30D (sin preferencia)"
 		},
 		"area": {
-			"permits": "@:terms.permits_plural",
-			"area": "@:terms.area",
-			"free": "Libre"
+			"permits": "@:terms.permits_plural"
 		},
 		"bonuses": {
 			"corp_hq": "Sede corp.",
@@ -546,68 +556,26 @@
 			"cogc": "@:terms.cogc"
 		},
 		"infrastructure": {
-			"label": "Infraestructura",
-			"auto_optimize": "Autooptimizar hábitats",
 			"auto_optimize_tooltip": "Optimiza automáticamente los hábitats para cubrir las necesidades de mano de obra al añadir edificios.",
-			"buttons": {
-				"optimize_cost": "Optimizar coste",
-				"optimize_area": "Optimizar área"
-			},
 			"amount_label": "Cantidad de {infrastructure}"
 		},
 		"experts": {
-			"label": "Expertos",
 			"warning": "El máximo de expertos en una base es 6. Ahora mismo tienes asignados {expert_number} expertos.",
 			"amount_label": "Expertos de {expert}"
 		},
-		"workforce": {
-			"label": "Mano de obra",
-			"table": {
-				"type": "Tipo",
-				"need_housed": "Necesidad / Alojados",
-				"open": "Libres",
-				"luxuries": "Lujos",
-				"pct_eff": "Efic. %"
-			}
-		},
-		"overview": {
-			"label": "Resumen",
-			"table": {
-				"daily_cost": "Coste diario",
-				"degradation": "Degradación",
-				"plan_cost": "Coste del plan",
-				"daily_profit": "Beneficio diario",
-				"roi": "ROI",
-				"profit_area": "@:terms.profit_per_area"
-			}
-		},
-		"storage": {
-			"label": "Almacenamiento",
-			"table": {
-				"weight": "t",
-				"volume": "m³",
-				"import": "@:terms.import",
-				"export": "@:terms.export",
-				"sum": "@:terms.sum",
-				"filled": "Lleno"
-			}
-		},
 		"materialio": {
 			"label": "E/S de materiales",
-			"label_production": "Producción",
-			"label_workforce": "Mano de obra",
-			"buttons": {
-				"toggle_weight_volume": "Alternar peso y volumen",
-				"toggle_production_workforce": "Alternar separación entre producción y mano de obra"
-			},
 			"table": {
 				"input": "Entrada",
 				"output": "Salida",
 				"delta": "Δ",
 				"cost_day": "ȼ / día",
 				"total_weight": "Δ t",
-				"total_volume": "Δ m³"
-			}
+				"total_volume": "Δ m³",
+				"share_7d": "7d share",
+				"share_30d": "30d share"
+			},
+			"share_note": "Δ as a share of the average daily volume traded on {exchange}, last 7 and 30 days."
 		},
 		"save_as": {
 			"title": "Guardar como",
@@ -618,35 +586,15 @@
 			}
 		},
 		"production": {
-			"label": "Producción",
-			"planet_resources": "@:terms.planets @:terms.resources_plural",
 			"form": {
 				"match_cogc": "Igualar @:terms.cogc",
 				"select_placeholder": "Selecciona @:terms.buildings y añádelos al @:terms.plan",
 				"popular_on": "Popular en {planet} · {plans} planes",
 				"all_buildings": "Todos los edificios"
-			},
-			"table": {
-				"building_recipe": "@:terms.buildings / @:terms.recipes",
-				"runtime": "Tiempo de ejecución",
-				"share": "Parte",
-				"tools": "Herramientas"
 			}
 		},
 		"production_building": {
 			"no_recipe": "Sin @:terms.recipes_plural activas",
-			"qty": "Cant.",
-			"buttons": {
-				"add_recipe": "@:terms.recipes"
-			},
-			"table": {
-				"expertise": "Campo",
-				"efficiency": "Eficiencia",
-				"revenue": "@:terms.revenue",
-				"area": "@:terms.area",
-				"construction": "Construcción",
-				"construction_per_building": "Por edificio"
-			},
 			"zero_reason": {
 				"FERTILITY": "Planeta no fértil",
 				"WORKFORCE": "Sin mano de obra alojada"
@@ -661,27 +609,157 @@
 			"buttons": {
 				"cogm": "@:terms.cogm"
 			},
-			"table": {
-				"input": "Insumo",
-				"time": "Tiempo",
-				"output": "Producción",
-				"daily_revenue": "ȼ / día",
-				"profit_area": "ȼ / Área",
-				"roi": "ROI",
-				"plans_here": "Planes de aquí",
-				"below_threshold": "< 5 %"
-			},
-			"info": {
-				"p1_strong": "Ingresos / día",
-				"p1": "se calculan tomando el ingreso diario que genera una receta y restando tanto el coste diario de mano de obra (por los trabajadores que aloja este plan y los lujos que ofrece) como el coste diario de degradación del edificio (1/180 del coste de construcción). El ingreso de la receta se basa en la diferencia entre el coste de los materiales de insumo y el valor de los materiales de producción.",
-				"p2_strong": "ȼ / Área",
-				"p2": "es el ingreso diario dividido por el área de un edificio de producción más su parte proporcional del área de un CM y de los hábitats necesarios para una base óptima de esos edificios en ROI de recetas.",
-				"p3_strong": "ROI",
-				"p3": "es el tiempo que necesita una receta en funcionamiento continuo para generar ingresos suficientes que compensen el coste de construcción del edificio. También tiene en cuenta la degradación diaria y los costes de mano de obra.",
-				"p4_strong": "Planes de aquí",
-				"p4": "es la proporción de planes en {planet} con un {building} que ejecutan esta receta, de jugadores activos, actualizada a diario."
-			},
 			"amount_label": "Cantidad de la receta {recipe}"
+		},
+		"storage": {
+			"table": {
+				"weight": "t",
+				"volume": "m³",
+				"import": "@:terms.import",
+				"export": "@:terms.export"
+			}
 		}
+	},
+	"header": {
+		"name": "Plan name",
+		"rename": "Rename plan"
+	},
+	"results": {
+		"label": "Plan results",
+		"profit": "Profit / day",
+		"revenue_cost": "Revenue {revenue} · cost {cost}",
+		"payback": "Payback",
+		"build": "Build {cost} ȼ",
+		"profit_area": "Profit / area",
+		"empire_average": "Empire {value}",
+		"area": "Area",
+		"storage": "Storage",
+		"days_to_full": "days to full",
+		"out_per_day": "{weight} t · {volume} m³ out / day"
+	},
+	"base": {
+		"label": "Base",
+		"empire": {
+			"label": "Empire & prices",
+			"calculate_with": "Calculate with empire",
+			"note": "Faction {faction}, permits from the empire. Plan is in {n} empire. | Faction {faction}, permits from the empire. Plan is in {n} empires."
+		},
+		"planet": {
+			"label": "Planet",
+			"summary": "COGC {cogc} · {n} permit | COGC {cogc} · {n} permits",
+			"area": "area {n}",
+			"resources": "Resources",
+			"add_extractor": "Add {building} for {ticker}",
+			"insights": "{n} plans on {planet} · what others build here"
+		},
+		"workforce": {
+			"label": "Workforce",
+			"need_housed": "{need} / {housed}",
+			"efficiency": "Efficiency",
+			"luxuries": "Luxuries",
+			"supply": "Supply {ticker}",
+			"beds_free": "{n} free",
+			"not_needed": "{tiers}: not needed"
+		},
+		"housing": {
+			"label": "Housing",
+			"auto": "Auto",
+			"cheapest": "Cheapest",
+			"least_area": "Least area",
+			"add": "+ Housing or storage"
+		},
+		"experts": {
+			"label": "Experts",
+			"summary": "{n} placed",
+			"more": "+ {n} more fields",
+			"fewer": "Fewer fields"
+		}
+	},
+	"production": {
+		"counts": "{buildings} buildings · {units} units · {recipes} recipes",
+		"collapse_all": "Collapse all",
+		"expand_all": "Expand all",
+		"columns": {
+			"building": "Building",
+			"count": "Count",
+			"efficiency": "Eff.",
+			"daily": "ȼ / day",
+			"area": "Area"
+		},
+		"fold": "Show or hide the recipes of {building}",
+		"experts": "{n} expert | {n} experts",
+		"delete_building": "Delete {building}, undo with Ctrl+Z",
+		"change_recipe": "Change recipe {recipe}",
+		"cogm_label": "Cost of goods manufactured for {recipe}",
+		"delete_recipe": "Delete recipe {recipe}, undo with Ctrl+Z",
+		"add_recipe": "+ Recipe",
+		"card_meta": "ȼ/day · {efficiency} · area {area}",
+		"recipe_daily": "This order's part of the building's ȼ/day"
+	},
+	"picker": {
+		"change_title": "Change recipe",
+		"add_title": "Add a recipe to {building} as a new order",
+		"replacing": "replacing {amount} × {ticker}",
+		"close": "Close",
+		"sort": {
+			"label": "Sort by",
+			"daily": "ȼ / day",
+			"popular": "Popular"
+		},
+		"columns": {
+			"makes": "Makes",
+			"from": "From",
+			"daily": "ȼ / day",
+			"area": "ȼ / area",
+			"payback": "Payback",
+			"plans": "Plans"
+		},
+		"dependency": "Your {buildings} turn this {ticker} into {outputs}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
+		"dependency_workforce": "Your workforce uses this {ticker}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
+		"uses_made": "uses {tickers} from the plan",
+		"feeds": "feeds {buildings}",
+		"current": "current recipe",
+		"in_plan": "in plan",
+		"vs_now": "{delta} vs now",
+		"below_threshold": "< 5 %",
+		"per_building": "ȼ per building and day",
+		"keys": "Click or Enter replaces · Esc closes",
+		"undo_key": "Ctrl+Z",
+		"replaced": "Replaced {before} with {after}.",
+		"added": "Added {recipe} as a new order.",
+		"keys_add": "Click or Enter adds · Esc closes"
+	},
+	"io": {
+		"source": {
+			"label": "Show materials for",
+			"all": "Whole base",
+			"production": "Production only",
+			"workforce": "Workforce only"
+		},
+		"filter": {
+			"label": "Filter",
+			"all": "All",
+			"exports": "Exports",
+			"imports": "Imports"
+		},
+		"value": {
+			"label": "Value shown"
+		},
+		"exports": "Exports",
+		"imports": "Imports",
+		"degradation": "Degradation",
+		"profit": "Profit / day"
+	},
+	"layout": {
+		"flags": "{n} market flag | {n} market flags",
+		"base_strip": "COGC {cogc} · {n} expert | COGC {cogc} · {n} experts",
+		"show_base": "Show base setup",
+		"show_io": "Show Material I/O",
+		"close": "Close",
+		"fold": "Fold",
+		"sections": "Plan sections",
+		"tools": "Tools",
+		"io_short": "I/O",
+		"all_tools": "All tools"
 	}
 }
