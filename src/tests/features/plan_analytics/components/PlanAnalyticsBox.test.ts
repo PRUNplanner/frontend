@@ -113,6 +113,26 @@ describe("PlanAnalyticsBox", () => {
 		expect(trackEvent).toHaveBeenCalledOnce();
 		expect(trackEvent).toHaveBeenCalledWith("plan:insights_open", {
 			planet_natural_id: PLANET,
+			source: "button",
+		});
+	});
+
+	it("opens from the exposed open() and tracks the planet as source", async () => {
+		trackEvent.mockReset();
+		const { wrapper, component } = await mountBox();
+		const box = component.vm as unknown as { open: () => void };
+
+		box.open();
+		await flushPromises();
+		expect(wrapper.text()).toContain("plan.tools.plan_analytics.title");
+
+		// already open: no second event
+		box.open();
+
+		expect(trackEvent).toHaveBeenCalledOnce();
+		expect(trackEvent).toHaveBeenCalledWith("plan:insights_open", {
+			planet_natural_id: PLANET,
+			source: "planet",
 		});
 	});
 

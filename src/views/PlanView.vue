@@ -63,9 +63,9 @@
 	const { createPrices } = usePlanContext();
 	import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 	const { view: planCheckView } = usePlanCheckView();
-	import { marketCheck } from "@/features/cx/marketCheck.util";
+	import { countLevels, marketCheck } from "@/features/cx/marketCheck.util";
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
-	import { usePlan } from "@/features/planning_data/usePlan";
+	import { cogcTextMapping, usePlan } from "@/features/planning_data/usePlan";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
 	const {
 		createNewPlan,
@@ -87,25 +87,27 @@
 		planFigures,
 	} from "@/features/sharing/sharedPlan.util";
 	import config from "@/lib/config";
+	import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
+	const { cachedProfitPerArea } = useEmpireProfits();
 
 	// Util
 	import { inertClone } from "@/util/data";
+	import {
+		foldedPanes,
+		materialIOCsv,
+		materialIOTotals,
+		type PlanTool,
+	} from "@/features/planning/planView.util";
 	import {
 		breadcrumbEmpire,
 		pickEmpire,
 	} from "@/layout/components/navigation/navigation.util";
 
 	// Components
-	import PlanBonuses from "@/features/planning/components/PlanBonuses.vue";
-	import PlanArea from "@/features/planning/components/PlanArea.vue";
-	import PlanWorkforce from "@/features/planning/components/PlanWorkforce.vue";
-	import PlanInfrastructure from "@/features/planning/components/PlanInfrastructure.vue";
-	import PlanExperts from "@/features/planning/components/PlanExperts.vue";
+	import PlanBase from "@/features/planning/components/PlanBase.vue";
 	import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 	import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
-	import PlanConfiguration from "@/features/planning/components/PlanConfiguration.vue";
-	import PlanOverview from "@/features/planning/components/PlanOverview.vue";
-	import PlanStatusBar from "@/features/planning/components/PlanStatusBar.vue";
+	import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
 	import PlanSaveButton from "@/features/planning/components/PlanSaveButton.vue";
 	import PlanMoreMenu from "@/features/planning/components/PlanMoreMenu.vue";
 	import PlanToolTabs from "@/features/planning/components/PlanToolTabs.vue";
@@ -129,24 +131,28 @@
 	// UI
 	import {
 		PButton,
+		PButtonGroup,
+		PIcon,
 		PTooltip,
 		PForm,
 		PFormItem,
 		PInput,
 		PModal,
+		PSegmented,
 		PSelect,
+		PValue,
 		useToast,
 	} from "@/ui";
 	import type { PSelectOption } from "@/ui/ui.types";
 	const toast = useToast();
 	import {
-		ShoppingBasketSharp,
-		AttachMoneySharp,
-		DataSaverOffSharp,
-		DataObjectRound,
+		ChevronLeftSharp,
+		ChevronRightSharp,
+		CloseSharp,
+		EditSharp,
+		MenuOpenSharp,
 		UndoSharp,
 		RedoSharp,
-		TerminalOutlined,
 	} from "@vicons/material";
 	import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 	import { calcDebug } from "@/lib/debugMode";
@@ -236,7 +242,6 @@
 		handleCreateBuildingAndRecipe,
 		handleUpdateBuildingRecipeAmount,
 		handleDeleteBuildingRecipe,
-		handleAddBuildingRecipe,
 		handleAddBuildingRecipes,
 		handleApplyStarterSetup,
 		handleChangeBuildingRecipe,
@@ -312,8 +317,53 @@
 				: undefined
 	);
 
-	const refMaterialIOShowBasked: Ref<boolean> = ref(false);
-	const refMaterialIOSplitted: Ref<boolean> = ref(false);
+	/*
+	 * Material I/O pane: which flow, which rows and which value per day
+	 */
+	const refIOSource: Ref<"all" | "production" | "workforce"> = ref("all");
+	const refIOFilter: Ref<"all" | "exports" | "imports"> = ref("all");
+	const refIOValue: Ref<"price" | "weight" | "volume" | "share"> = ref("price");
+	// only the user changes these three
+	watch([refIOSource, refIOFilter, refIOValue], ([source, filter, value]) =>
+		trackEvent("plan:io_view", { source, filter, value })
+	);
+
+	const ioRows = computed(() =>
+		refIOSource.value === "production"
+			? result.value.productionMaterialIO
+			: refIOSource.value === "workforce"
+				? result.value.workforceMaterialIO
+				: result.value.materialio
+	);
+	const ioTotals = computed(() => materialIOTotals(ioRows.value));
+
+	const ioSourceOptions = computed<PSelectOption[]>(() => [
+		{ value: "all", label: t("plan.io.source.all") },
+		{ value: "production", label: t("plan.io.source.production") },
+		{ value: "workforce", label: t("plan.io.source.workforce") },
+	]);
+	const ioFilterOptions = computed(() => [
+		{ value: "all" as const, label: t("plan.io.filter.all") },
+		{ value: "exports" as const, label: t("plan.io.filter.exports") },
+		{ value: "imports" as const, label: t("plan.io.filter.imports") },
+	]);
+	const ioValueOptions = [
+		{ value: "price" as const, label: "ȼ" },
+		{ value: "weight" as const, label: "t" },
+		{ value: "volume" as const, label: "m³" },
+		{ value: "share" as const, label: "%" },
+	];
+
+	function downloadMaterialIO(): void {
+		const blob = new Blob([materialIOCsv(ioRows.value)], {
+			type: "text/csv",
+		});
+		const link = document.createElement("a");
+		link.href = URL.createObjectURL(blob);
+		link.download = `${planName.value || planetData.planet_natural_id}-material-io.csv`;
+		link.click();
+		URL.revokeObjectURL(link.href);
+	}
 
 	// Save As modal state
 	const refShowSaveAsModal: Ref<boolean> = ref(false);
@@ -356,20 +406,8 @@
 	 * Tool Setup
 	 */
 
-	type toolOptions =
-		| "configuration"
-		| "visitation-frequency"
-		| "repair-analysis"
-		| "popr"
-		| "supply-cart"
-		| "construction-cart"
-		| "profit-breakdown"
-		| "plan-check"
-		| null;
+	type toolOptions = PlanTool | null;
 	const refShowTool: Ref<toolOptions> = ref(null);
-	if (!refPlanData.value.uuid && !props.shared) {
-		refShowTool.value = "configuration";
-	}
 
 	function toggleTool(key: toolOptions): void {
 		const isVisisble = refShowTool.value === key;
@@ -396,36 +434,199 @@
 			)
 	);
 
-	const refTools = useTemplateRef<HTMLElement>("tools");
-
-	// from the Material I/O: Plan check on its Market check, in view
+	// from the Material I/O: Plan check on its Market check, in place
 	function openPlanCheck(): void {
 		planCheckView.value = "market";
+		refPhoneSection.value = "tools";
 		if (refShowTool.value !== "plan-check") toggleTool("plan-check");
-		setTimeout(() =>
-			refTools.value?.scrollIntoView({ behavior: "smooth", block: "start" })
-		);
 	}
 
+	const flagCount = computed(() => {
+		const { red, amber } = countLevels([...marketChecks.value.values()]);
+		return red + amber;
+	});
+
+	// Production is the default view, a tool replaces it in place
+	type TabKey = PlanTool | "production";
 	const toolTabs = computed(() =>
 		(
 			[
-				["configuration", "plan.components.configuration.label"],
-				...(userStore.isLoggedIn
-					? [["popr", "plan.tools.labels.popr"]]
-					: []),
+				["production", "plan.tools.labels.production"],
+				["construction-cart", "plan.tools.labels.construction_cart"],
+				["supply-cart", "plan.tools.labels.supply_cart"],
 				[
 					"visitation-frequency",
 					"plan.tools.labels.visitation_frequency",
 				],
-				["construction-cart", "plan.tools.labels.construction_cart"],
-				["supply-cart", "plan.tools.labels.supply_cart"],
 				["repair-analysis", "plan.tools.labels.repair_analysis"],
 				["profit-breakdown", "plan.tools.labels.profit_breakdown"],
 				["plan-check", "plan.tools.labels.plan_check"],
-			] as [NonNullable<toolOptions>, string][]
-		).map(([key, label]) => ({ key, label: t(label) }))
+				...(userStore.isLoggedIn
+					? [["popr", "plan.tools.labels.popr"]]
+					: []),
+			] as [TabKey, string][]
+		).map(([key, label]) => ({
+			key,
+			label: t(label),
+			dot:
+				key === "plan-check" && flagCount.value > 0
+					? t("plan.layout.flags", { n: flagCount.value }, flagCount.value)
+					: undefined,
+		}))
 	);
+
+	function selectTab(key: TabKey): void {
+		if (key === "production") {
+			if (refShowTool.value !== null) toggleTool(refShowTool.value);
+		} else toggleTool(key);
+	}
+
+	/*
+	 * Folding: a tool folds Base, wide tools Material I/O too, into a
+	 * strip; a strip pins its pane open, over tool switches, until the
+	 * user folds it again
+	 */
+	const refBasePinned: Ref<boolean> = ref(false);
+	const refIOPinned: Ref<boolean> = ref(false);
+	// a strip: the pane's title read top-down, a detail below it
+	const strip =
+		"sticky top-20 shrink-0 w-10 flex-col items-center gap-3 py-2 rounded border border-line bg-surface text-muted-strong hover:border-line-strong hover:text-white cursor-pointer transition-colors";
+	const stripIcon =
+		"flex items-center justify-center size-6 rounded-control bg-hover";
+	const stripTitle =
+		"[writing-mode:vertical-rl] text-sm font-medium text-ink-strong";
+	const stripDetail = "[writing-mode:vertical-rl] text-xs text-muted";
+	const folded = computed(() => foldedPanes(refShowTool.value));
+	const baseFolded = computed(
+		() => folded.value.base && !refBasePinned.value
+	);
+	const ioFolded = computed(() => folded.value.io && !refIOPinned.value);
+
+	function pinPane(panel: "base" | "io", pinned: boolean): void {
+		if (panel === "base") refBasePinned.value = pinned;
+		else refIOPinned.value = pinned;
+		trackEvent("plan:panel_fold", { panel, folded: !pinned });
+	}
+
+	// below 1296 px of page width (a 1360 px window with the rail, 1544 px
+	// with the full sidebar) Base opens as an overlay from the tab row
+	const refBaseOverlay: Ref<boolean> = ref(false);
+
+	function toggleOverlay(panel: "base" | "io"): void {
+		const open = panel === "base" ? refBaseOverlay : refIOOverlay;
+		open.value = !open.value;
+		if (open.value) trackEvent("plan:overlay_open", { panel });
+	}
+
+	// below 71rem of page width (a tablet) Material I/O does too
+	const refIOOverlay: Ref<boolean> = ref(false);
+
+	// Esc closes them, the focus goes back to their button
+	function closeOverlays(): void {
+		const open = refBaseOverlay.value
+			? "[data-base-toggle]"
+			: refIOOverlay.value
+				? "[data-io-toggle]"
+				: undefined;
+		refBaseOverlay.value = false;
+		refIOOverlay.value = false;
+		if (open) document.querySelector<HTMLElement>(open)?.focus();
+	}
+
+	/*
+	 * A phone (below md, where the app shows its bottom bar): one section
+	 * at a time, picked in a tab row under the results
+	 */
+	const phoneQuery =
+		typeof window.matchMedia === "function"
+			? window.matchMedia("(max-width: 767.98px)")
+			: null;
+	const refIsPhone: Ref<boolean> = ref(phoneQuery?.matches ?? false);
+	const onPhoneMedia = (e: MediaQueryListEvent) =>
+		(refIsPhone.value = e.matches);
+	phoneQuery?.addEventListener("change", onPhoneMedia);
+	onUnmounted(() => phoneQuery?.removeEventListener("change", onPhoneMedia));
+
+	type PhoneSection = "production" | "base" | "io" | "tools";
+	const refPhoneSection: Ref<PhoneSection> = ref("production");
+	function showSection(section: PhoneSection): void {
+		if (section === refPhoneSection.value) return;
+		refPhoneSection.value = section;
+		trackEvent("plan:section_view", { section });
+	}
+	const phoneSections = computed(() => [
+		{
+			key: "production" as const,
+			label: t("plan.tools.labels.production"),
+		},
+		{ key: "base" as const, label: t("plan.base.label") },
+		{
+			key: "io" as const,
+			label: t("plan.components.materialio.label"),
+			dot:
+				flagCount.value > 0
+					? t("plan.layout.flags", { n: flagCount.value }, flagCount.value)
+					: undefined,
+		},
+		{ key: "tools" as const, label: t("plan.layout.tools") },
+	]);
+	// on a phone only the picked section shows, elsewhere every pane
+	const onPhone = (section: PhoneSection): boolean =>
+		!refIsPhone.value || refPhoneSection.value === section;
+
+	// the panes' width (the page next to the app navigation): In and Out
+	// of Material I/O fit only from 1600 px on, where its pane is 384 px;
+	// a phone drops them too
+	// (@[100rem]); the CSS breakpoint @[81rem] (1296 px, 1360 px with the
+	// rail) folds Base
+	const refLayout = useTemplateRef<HTMLElement>("layout");
+	const refIOCompact: Ref<boolean> = ref(false);
+	let layoutObserver: ResizeObserver | undefined;
+	onMounted(() => {
+		if (!refLayout.value) return;
+		layoutObserver = new ResizeObserver(([entry]) => {
+			const width: number = entry.contentRect.width;
+			refIOCompact.value = width < 1600;
+		});
+		layoutObserver.observe(refLayout.value);
+	});
+	onUnmounted(() => layoutObserver?.disconnect());
+
+	const expertCount = computed(() =>
+		Object.values(result.value.experts).reduce((sum, e) => sum + e.amount, 0)
+	);
+	const baseStrip = computed(() =>
+		t("plan.layout.base_strip", {
+			cogc: t(cogcTextMapping[result.value.cogc]),
+			n: expertCount.value,
+		}, expertCount.value)
+	);
+
+	// the planet link in Base opens the insights box
+	const refInsights = useTemplateRef<{ open: () => void }>("insights");
+
+	/*
+	 * Plan name, renamed in place; a new plan starts with naming it
+	 */
+	const refEditingName: Ref<boolean> = ref(false);
+	const refNameDraft: Ref<string> = ref("");
+	const refNameInput = useTemplateRef<{ focus: () => void }>("nameInput");
+
+	function startRename(): void {
+		refNameDraft.value = planName.value ?? "";
+		refEditingName.value = true;
+		void nextTick(() => refNameInput.value?.focus());
+	}
+
+	function commitRename(): void {
+		if (!refEditingName.value) return;
+		refEditingName.value = false;
+		if (refNameDraft.value !== (planName.value ?? ""))
+			handleChangePlanName(refNameDraft.value);
+	}
+
+	if (!refPlanData.value.uuid && !props.shared && !props.disabled)
+		onMounted(startRename);
 
 	/*
 	 * NOTE: This is somewhat hacky to prevent a loaded tool component to re-render on prop change.
@@ -993,6 +1194,11 @@
 			})
 	);
 
+	// one primary: Save on an own plan, the banner's on a shared copy
+	const isOwnPlan: ComputedRef<boolean> = computed(
+		() => userStore.isLoggedIn && !props.disabled && !props.shared
+	);
+
 	// Keyboard: Ctrl/Cmd+S saves, Ctrl/Cmd+Z undoes, +Shift redoes
 	const canSave: ComputedRef<boolean> = computed(
 		() =>
@@ -1054,11 +1260,17 @@
 	// only ever undoes the edit it announced.
 	let undoToast: PToastHandle | undefined;
 
+	// a picked recipe: a status line under its row, with Undo
+	const refRecipeStatus: Ref<
+		{ building: number; recipe: number; text: string } | undefined
+	> = ref(undefined);
+
 	watch(
 		revision,
 		() => {
 			undoToast?.destroy();
 			undoToast = undefined;
+			refRecipeStatus.value = undefined;
 		},
 		// before the next toast opens in the same call
 		{ flush: "sync" }
@@ -1087,21 +1299,57 @@
 		toastUndo(t("plan.history.recipe_removed"));
 	}
 
+	// "12 ALG": a recipe by its first output, per run
+	function recipeLabel(buildingIndex: number, recipeId: string): string {
+		const output = result.value.production.buildings[
+			buildingIndex
+		]?.recipeOptions.find((r) => r.recipe_id === recipeId)?.outputs[0];
+		return output
+			? `${output.material_amount} ${output.material_ticker}`
+			: recipeId;
+	}
+
 	function changeBuildingRecipe(
 		buildingIndex: number,
 		recipeIndex: number,
 		recipeId: string
 	): void {
 		const building = refPlanData.value.plan_data.buildings[buildingIndex];
-		// picking the recipe it already has changes nothing, and the toast's
-		// Undo would take back the edit before it
-		if (building?.active_recipes[recipeIndex]?.recipeid === recipeId)
-			return;
+		// picking the recipe it already has changes nothing, and Undo would
+		// take back the edit before it
+		const before: string | undefined =
+			building?.active_recipes[recipeIndex]?.recipeid;
+		if (before === recipeId) return;
 
 		handleChangeBuildingRecipe(buildingIndex, recipeIndex, recipeId);
-		toastUndo(
-			t("plan.history.recipe_changed", { building: building.name })
-		);
+		refRecipeStatus.value = {
+			building: buildingIndex,
+			recipe: recipeIndex,
+			text: t("plan.picker.replaced", {
+				before: before ? recipeLabel(buildingIndex, before) : "",
+				after: recipeLabel(buildingIndex, recipeId),
+			}),
+		};
+	}
+
+	function addPickedRecipe(buildingIndex: number, recipeId: string): void {
+		handleAddBuildingRecipes(buildingIndex, [
+			{ recipeid: recipeId, amount: 1 },
+		]);
+		refRecipeStatus.value = {
+			building: buildingIndex,
+			recipe:
+				refPlanData.value.plan_data.buildings[buildingIndex]
+					.active_recipes.length - 1,
+			text: t("plan.picker.added", {
+				recipe: recipeLabel(buildingIndex, recipeId),
+			}),
+		};
+	}
+
+	function undoPickedRecipe(): void {
+		trackEvent("plan:recipe_picker_undo");
+		trackedUndo("button");
 	}
 
 	// One undo step: the setup and the habs for its workforce. Auto-optimise
@@ -1194,9 +1442,9 @@
 	);
 </script>
 
-<!--div class="border-b border-white/10 p-3 overflow-visible">-->
 <template>
 	<PlanAnalyticsBox
+		ref="insights"
 		:key="`INSIGHTS#${planetData.planet_natural_id}`"
 		:planet-natural-id="planetData.planet_natural_id" />
 	<SharedPlanBanner
@@ -1206,20 +1454,26 @@
 		@reset="resetShared"
 		@copy="copySharedChanges"
 		@save="openSaveAsModal" />
-	<!-- keep focused controls clear of the sticky status bar; the bottom
+	<!-- keep focused controls clear of the sticky results bar; the bottom
 		padding scrolls the last rows clear of the insights button -->
-	<div class="@container pb-16 [&_*]:scroll-mt-28">
-		<div
-			class="grid grid-cols-[minmax(0,1fr)] grid-rows-[repeat(5,auto)] @3xl:grid-cols-[minmax(0,1fr)_auto] gap-x-3">
-			<!-- Plan Name & Selector -->
-			<div class="p-3 row-1 col-1 min-w-0">
+	<!-- @container: the panes lay out by the width next to the app
+		navigation, so an expanded sidebar makes Base an overlay -->
+	<!-- a phone keeps the last rows clear of the Save bar and the app's
+		bottom bar as well -->
+	<div
+		ref="layout"
+		class="@container pb-16 max-md:pb-36 [&_*]:scroll-mt-24">
+		<!-- Header: name, history, save state and the plan's actions -->
+		<header
+			class="flex flex-wrap items-center gap-x-6 gap-y-2 px-6 max-md:px-4 py-3">
+			<div class="flex-1 min-w-0 basis-60">
 				<nav
 					:aria-label="t('plan.breadcrumb')"
-					class="flex items-center gap-1.5 text-sm text-muted-strong">
+					class="flex items-center gap-1.5 text-xs text-muted-strong">
 					<template v-if="crumbEmpire">
 						<RouterLink
 							to="/empire"
-							class="inline-flex items-center min-h-6 min-w-0 truncate hover:text-ink hover:underline">
+							class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 min-w-0 truncate hover:text-ink hover:underline">
 							{{ crumbEmpire.empire_name }}
 						</RouterLink>
 						<span aria-hidden="true">›</span>
@@ -1233,381 +1487,468 @@
 						}}
 					</span>
 				</nav>
-				<h1 class="text-2xl font-bold text-white">
-					{{ planName || t("plan.name.untitled") }}
-				</h1>
-			</div>
-			<!-- Status Bar (sticky) -->
-			<div
-				class="row-3 @3xl:row-2 col-span-full justify-self-start w-full px-3 py-2 sticky top-0 z-1000 bg-(--app-bg)">
-				<PlanStatusBar
-					:area-data="result.area"
-					:corphq="result.corphq"
-					:cogc="result.cogc"
-					:expert-data="result.experts"
-					:overview-data="overviewData"
-					:compare="sharedCompare" />
-			</div>
-			<!-- Plan Actions: Save is the one primary, the rest under More -->
-			<div
-				class="p-3 row-2 @3xl:row-1 @3xl:col-2 flex flex-row flex-wrap items-center gap-x-3 gap-y-2 @3xl:justify-end">
-				<template v-if="!disabled">
-					<div class="flex gap-x-1">
-						<PTooltip placement="bottom">
-							<template #trigger>
-								<PButton
-									:aria-label="t('plan.history.undo')"
-									type="ghost"
-									:disabled="!canUndo"
-									@click="trackedUndo('button')">
-									<template #icon>
-										<UndoSharp />
-									</template>
-								</PButton>
-							</template>
-							{{ t("plan.history.undo") }}
-						</PTooltip>
-						<PTooltip placement="bottom">
-							<template #trigger>
-								<PButton
-									:aria-label="t('plan.history.redo')"
-									type="ghost"
-									:disabled="!canRedo"
-									@click="trackedRedo('button')">
-									<template #icon>
-										<RedoSharp />
-									</template>
-								</PButton>
-							</template>
-							{{ t("plan.history.redo") }}
-						</PTooltip>
+				<div class="flex items-center gap-1.5 min-w-0">
+					<div
+						v-if="refEditingName"
+						class="max-w-96 w-full"
+						@focusout="commitRename"
+						@keydown.enter="commitRename"
+						@keydown.esc="refEditingName = false">
+						<PInput
+							ref="nameInput"
+							v-model:value="refNameDraft"
+							class="w-full"
+							:aria-label="t('plan.header.name')"
+							:placeholder="
+								existing
+									? t('plan.save_status.name_to_save')
+									: t('plan.save_status.name_to_create')
+							" />
 					</div>
-					<div aria-hidden="true" class="w-px h-5 bg-white/10" />
-				</template>
-
-				<template v-if="userStore.isLoggedIn && !disabled && !shared">
-					<PlanSaveButton
-						:existing="existing"
-						:saveable="saveable"
-						:saving="refIsSaving"
-						:failed="refSaveFailed"
-						:modified="modified"
-						:saved-at="savedAt"
-						@save="save()" />
-					<PlanMoreMenu
-						:existing="existing"
-						:can-share="!!refPlanData.uuid"
-						@save-as="openSaveAsModal"
-						@share="refShowShare = true"
-						@reload="reloadPlan" />
+					<template v-else>
+						<h1 class="text-2xl font-bold text-white truncate">
+							{{ planName || t("plan.name.untitled") }}
+						</h1>
+						<PButton
+							v-if="!disabled"
+							type="ghost"
+							size="sm"
+							:aria-label="t('plan.header.rename')"
+							@click="startRename">
+							<template #icon><EditSharp /></template>
+						</PButton>
+					</template>
+				</div>
+			</div>
+			<div class="flex flex-wrap items-center gap-3">
+				<PButtonGroup v-if="!disabled">
+					<PTooltip placement="bottom">
+						<template #trigger>
+							<PButton
+								:aria-label="t('plan.history.undo')"
+								type="ghost"
+								:disabled="!canUndo"
+								@click="trackedUndo('button')">
+								<template #icon><UndoSharp /></template>
+							</PButton>
+						</template>
+						{{ t("plan.history.undo_key") }}
+					</PTooltip>
+					<PTooltip placement="bottom">
+						<template #trigger>
+							<PButton
+								:aria-label="t('plan.history.redo')"
+								type="ghost"
+								:disabled="!canRedo"
+								@click="trackedRedo('button')">
+								<template #icon><RedoSharp /></template>
+							</PButton>
+						</template>
+						{{ t("plan.history.redo_key") }}
+					</PTooltip>
+				</PButtonGroup>
+				<!-- a phone saves from the bar above the app's bottom bar -->
+				<PlanSaveButton
+					v-if="isOwnPlan && !refIsPhone"
+					:existing="existing"
+					:saveable="saveable"
+					:saving="refIsSaving"
+					:failed="refSaveFailed"
+					:modified="modified"
+					:saved-at="savedAt"
+					@save="save()" />
+				<template v-if="isOwnPlan && refPlanData.uuid">
+					<PButton type="secondary" @click="refShowShare = true">
+						{{ t("plan.actions.share_link") }}
+					</PButton>
 					<SharingModal
-						v-if="refPlanData.uuid"
 						v-model:show="refShowShare"
 						:plan-uuid="refPlanData.uuid" />
 				</template>
-
+				<PlanMoreMenu
+					:existing="existing"
+					:own="isOwnPlan"
+					:debug="calcDebug"
+					@save-as="openSaveAsModal"
+					@reload="reloadPlan"
+					@csv="downloadMaterialIO"
+					@debug="toggleCalcDebug('button')" />
 				<HelpDrawer file-name="plan" />
 			</div>
-			<!-- Tools Container -->
-			<div ref="tools" class="row-4 col-span-full scroll-mt-2">
-				<div
-					class="border-y border-white/10 px-3 flex flex-row items-center gap-x-1">
-					<PlanToolTabs
-						:tabs="toolTabs"
-						:active="refShowTool"
-						:label="t('plan.actions.tools')"
-						@toggle="toggleTool" />
+		</header>
+
+		<!-- Results (sticky) -->
+		<div
+			class="sticky top-0 z-1000 px-6 max-md:px-4 bg-(--app-bg) border-y border-line">
+			<PlanResultsBar
+				:overview="overviewData"
+				:area="result.area"
+				:visitation="visitationData"
+				:revenue="result.revenue"
+				:cost="result.cost"
+				:empire-profit-per-area="
+					refEmpireUuid ? cachedProfitPerArea(refEmpireUuid) : undefined
+				"
+				:compare="sharedCompare" />
+			<!-- a phone: one section at a time -->
+			<PlanToolTabs
+				v-if="refIsPhone"
+				class="-mx-4 px-2 border-t border-line [&>button]:flex-1 [&>button]:justify-center"
+				:tabs="phoneSections"
+				:active="refPhoneSection"
+				:label="t('plan.layout.sections')"
+				@toggle="showSection" />
+		</div>
+
+		<!-- Set up → build → result, side by side; below 81rem of page width
+			Base, below 71rem Material I/O too open as overlays from the tab
+			row, so Production keeps the width; a phone shows one section -->
+		<div
+			class="relative flex flex-col md:flex-row md:items-start gap-6 px-6 max-md:px-4 pt-4"
+			@keydown.esc="closeOverlays">
+			<!-- Base -->
+			<button
+				v-if="baseFolded"
+				type="button"
+				:class="strip"
+				class="hidden @min-[81rem]:flex"
+				:aria-label="`${t('plan.layout.show_base')}: ${baseStrip}`"
+				data-base-strip
+				@click="pinPane('base', true)">
+				<span :class="stripIcon">
+					<PIcon :size="16"><ChevronRightSharp /></PIcon>
+				</span>
+				<span :class="stripTitle">{{ t("plan.base.label") }}</span>
+				<span :class="stripDetail">{{ baseStrip }}</span>
+			</button>
+			<aside
+				:aria-label="t('plan.base.label')"
+				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-20 md:max-h-[calc(100dvh-6rem)] md:overflow-y-auto bg-(--app-bg) [scrollbar-width:thin]"
+				:class="[
+					baseFolded ? '@min-[81rem]:hidden' : '',
+					refBaseOverlay
+						? 'md:@max-[81rem]:absolute md:@max-[81rem]:left-6 md:@max-[81rem]:top-4 md:@max-[81rem]:z-50 md:@max-[81rem]:shadow-xl md:@max-[81rem]:bg-surface'
+						: 'md:@max-[81rem]:hidden',
+					onPhone('base') ? '' : 'hidden',
+				]"
+				data-base-pane>
+				<div class="flex items-center gap-2 px-3 pt-3 pb-1">
+					<h2 class="flex-1 font-bold text-white">
+						{{ t("plan.base.label") }}
+					</h2>
 					<PButton
-						v-if="calcDebug"
+						v-if="refBaseOverlay"
 						type="ghost"
 						size="sm"
-						class="ml-auto shrink-0 pointer-coarse:min-h-11"
-						:pressed="refShowCalcDebug"
-						data-calc-debug-button
-						@click="toggleCalcDebug('button')">
-						<template #icon>
-							<TerminalOutlined />
-						</template>
-						Debug
+						class="hidden md:@max-[81rem]:flex"
+						@click="closeOverlays">
+						<template #icon><CloseSharp /></template>
+						{{ t("plan.layout.close") }}
+					</PButton>
+					<PButton
+						v-if="folded.base && refBasePinned"
+						type="ghost"
+						size="sm"
+						class="hidden @min-[81rem]:flex"
+						@click="pinPane('base', false)">
+						{{ t("plan.layout.fold") }}
 					</PButton>
 				</div>
-				<!-- Tool View -->
-				<div
-					class="transition-discrete transition-opacity duration-150"
-					:class="
-						!refShowTool
-							? 'opacity-0 overflow-hidden h-0!'
-							: 'px-6 py-3 opacity-100 border-b border-white/10'
-					">
-					<div
-						v-if="refShowTool === 'configuration'"
-						class="flex flex-wrap sm:justify-center-safe gap-6">
-						<div class="flex flex-col min-w-75">
-							<h2 class="text-white/80 font-bold text-lg pb-3">
-								{{ $t("plan.components.configuration.label") }}
-							</h2>
+				<PlanBase
+					:disabled="disabled"
+					:result="result"
+					:planet="planetData"
+					:auto-optimize-habs="refAutoOptimizeHabs"
+					:empire-options="refEmpireList"
+					:active-empire="computedActiveEmpire"
+					:plan-empires="planEmpires"
+					:cx-uuid="refCXUuid"
+					:price-source="
+						shared && !refEmpireList?.length
+							? sharedPriceSource
+							: undefined
+					"
+					@update:active-empire="
+						(empireUuid: string) => {
+							refEmpireUuid = empireUuid;
+							refCXUuid = findEmpireCXUuid(empireUuid);
+						}
+					"
+					@update:permits="handleUpdatePermits"
+					@update:corphq="handleUpdateCorpHQ"
+					@update:cogc="handleUpdateCOGC"
+					@update:lux="handleUpdateWorkforceLux"
+					@update:infrastructure="handleUpdateInfrastructure"
+					@update:auto-optimize-habs="
+						(v: boolean, goal: HabSolverGoal) => {
+							refAutoOptimizeHabs = v;
+							trackEvent('plan:hab_auto_toggle', {
+								is_active: v,
+							});
+							applyOptimizeHabs(goal, false);
+						}
+					"
+					@optimize-habs="
+						(goal: HabSolverGoal) => applyOptimizeHabs(goal, true)
+					"
+					@update:expert="handleUpdateExpert"
+					@create:building:recipe="handleCreateBuildingAndRecipe"
+					@open:insights="refInsights?.open()" />
+			</aside>
 
-							<div
-								class="flex flex-col gap-y-3 sm:border sm:border-white/10 sm:rounded sm:p-3">
-								<PlanConfiguration
-									:disabled="disabled"
-									:plan-name="planName"
-									:new-plan="!existing"
-									:empire-options="refEmpireList"
-									:active-empire="computedActiveEmpire"
-									:plan-empires="planEmpires"
-									:cx-uuid="refCXUuid"
-									:planet-id="planetData.planet_natural_id"
-									@update:active-empire="
-										(empireUuid: string) => {
-											refEmpireUuid = empireUuid;
-											refCXUuid =
-												findEmpireCXUuid(empireUuid);
-										}
-									"
-									@update:plan-name="handleChangePlanName" />
-								<PlanArea
-									:disabled="disabled"
-									:area-data="result.area"
-									:planet-natural-id="
-										planetData.planet_natural_id
-									"
-									@update:permits="handleUpdatePermits" />
-								<PlanBonuses
-									:disabled="disabled"
-									:corphq="result.corphq"
-									:cogc="result.cogc"
-									:planet-natural-id="
-										planetData.planet_natural_id
-									"
-									@update:corphq="handleUpdateCorpHQ"
-									@update:cogc="handleUpdateCOGC" />
-							</div>
-						</div>
-						<div>
-							<h2 class="text-white/80 font-bold text-lg pb-3">
-								{{ $t("plan.components.infrastructure.label") }}
-							</h2>
-							<div
-								class="sm:border sm:border-white/10 sm:rounded sm:p-3">
-								<PlanInfrastructure
-									:disabled="disabled"
-									:infrastructure-data="result.infrastructure"
-									:auto-optimize-habs="refAutoOptimizeHabs"
-									:planet-natural-id="
-										planetData.planet_natural_id
-									"
-									@update:infrastructure="
-										handleUpdateInfrastructure
-									"
-									@update:auto-optimize-habs="
-										(v: boolean, goal: HabSolverGoal) => {
-											refAutoOptimizeHabs = v;
-											trackEvent('plan:hab_auto_toggle', {
-												is_active: v,
-											});
-											applyOptimizeHabs(goal, false);
-										}
-									"
-									@optimize-habs="
-										(goal: HabSolverGoal) =>
-											applyOptimizeHabs(goal, true)
-									" />
-							</div>
-						</div>
-						<div>
-							<h2 class="text-white/80 font-bold text-lg pb-3">
-								{{ $t("plan.components.experts.label") }}
-							</h2>
-							<div
-								class="sm:border sm:border-white/10 sm:rounded sm:p-3">
-								<PlanExperts
-									:disabled="disabled"
-									:expert-data="result.experts"
-									:planet-natural-id="
-										planetData.planet_natural_id
-									"
-									@update:expert="handleUpdateExpert" />
-							</div>
-						</div>
-					</div>
-					<Suspense
-						v-else-if="refShowTool && compViewToolMeta"
-						:timeout="200">
+			<!-- Production, or a tool in its place -->
+			<main
+				v-show="onPhone('production') || onPhone('tools')"
+				class="flex-1 min-w-0 w-full">
+				<div
+					v-if="!refIsPhone"
+					class="flex items-center gap-2 border-b border-line">
+					<PButton
+						type="secondary"
+						size="sm"
+						class="hidden md:@max-[81rem]:flex shrink-0"
+						data-base-toggle
+						:aria-expanded="refBaseOverlay ? 'true' : 'false'"
+						@click="toggleOverlay('base')">
+						<template #icon><MenuOpenSharp /></template>
+						{{ t("plan.base.label") }}
+					</PButton>
+					<PlanToolTabs
+						:tabs="toolTabs"
+						:active="refShowTool ?? 'production'"
+						:label="t('plan.actions.tools')"
+						@toggle="selectTab" />
+					<PButton
+						type="secondary"
+						size="sm"
+						class="hidden md:@max-[71rem]:flex shrink-0 ml-auto"
+						data-io-toggle
+						:aria-expanded="refIOOverlay ? 'true' : 'false'"
+						@click="toggleOverlay('io')">
+						<!-- a narrow row says I/O, a screen reader still hears the name -->
+						<span class="@max-[64rem]:sr-only">
+							{{ t("plan.components.materialio.label") }}
+						</span>
+						<span class="hidden @max-[64rem]:inline" aria-hidden="true">
+							{{ t("plan.layout.io_short") }}
+						</span>
+						<span
+							v-if="flagCount > 0"
+							role="img"
+							:aria-label="
+								t('plan.layout.flags', { n: flagCount }, flagCount)
+							"
+							class="size-1.5 ml-1.5 rounded-full bg-warning" />
+					</PButton>
+				</div>
+				<!-- a phone's Tools section: the tools as a list -->
+				<nav
+					v-if="refIsPhone && refPhoneSection === 'tools' && !refShowTool"
+					:aria-label="t('plan.actions.tools')"
+					class="rounded border border-line divide-y divide-line"
+					data-phone-tools>
+					<button
+						v-for="tool in toolTabs.filter((x) => x.key !== 'production')"
+						:key="tool.key"
+						type="button"
+						class="flex items-center gap-3 w-full min-h-14 px-3.5 text-left cursor-pointer hover:bg-hover"
+						@click="selectTab(tool.key)">
+						<span class="flex-1 min-w-0">
+							<span class="flex items-center gap-1.5 font-medium text-ink-strong">
+								{{ tool.label }}
+								<span
+									v-if="tool.dot"
+									role="img"
+									:aria-label="tool.dot"
+									class="size-1.5 rounded-full bg-warning" />
+							</span>
+							<span class="block text-xs text-muted">
+								{{ t(`plan.tools.descriptions.${tool.key}`) }}
+							</span>
+						</span>
+						<PIcon :size="16" class="text-muted">
+							<ChevronRightSharp />
+						</PIcon>
+					</button>
+				</nav>
+				<!-- kept mounted under a tool: its folds, filters and the
+					starter card's state survive -->
+				<div
+					v-show="refIsPhone ? refPhoneSection === 'production' : !refShowTool"
+					data-production>
+				<PlanProduction
+					:disabled="disabled"
+					:production-data="result.production"
+					:planet-resources="planetData.resources"
+					:cogc="result.cogc"
+					:cx-uuid="refCXUuid"
+					:planet-id="planetData.planet_natural_id"
+					:changes="sharedChanges"
+					:material-i-o="result.materialio"
+					:experts="result.experts"
+					:status="refRecipeStatus"
+					@update:building:amount="handleUpdateBuildingAmount"
+					@delete:building="deleteBuilding"
+					@create:building="handleCreateBuilding"
+					@update:building:recipe:amount="
+						handleUpdateBuildingRecipeAmount
+					"
+					@delete:building:recipe="deleteBuildingRecipe"
+					@add:building:recipes="handleAddBuildingRecipes"
+					@apply:starter="applyStarterSetup"
+					@update:building:recipe="changeBuildingRecipe"
+					@pick:building:recipe="addPickedRecipe"
+					@undo="undoPickedRecipe" />
+				</div>
+				<div
+					v-if="refShowTool && onPhone('tools')"
+					class="py-3"
+					data-tool>
+					<PButton
+						v-if="refIsPhone"
+						type="ghost"
+						size="sm"
+						class="mb-2"
+						@click="selectTab('production')">
+						<template #icon><ChevronLeftSharp /></template>
+						{{ t("plan.layout.all_tools") }}
+					</PButton>
+					<Suspense :timeout="200">
 						<template #default>
 							<component
 								:is="compViewToolComponent"
-								v-bind="compViewToolMeta.props"
-								v-on="compViewToolMeta.listeners" />
+								v-bind="compViewToolMeta?.props"
+								v-on="compViewToolMeta?.listeners ?? {}" />
 						</template>
 						<template #fallback>
 							<PlanToolFallback />
 						</template>
 					</Suspense>
 				</div>
-			</div>
-			<!-- Main Plan View -->
-			<div
-				class="p-3 row-5 col-span-full grid grid-cols-[minmax(0,1fr)] @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
-				<div>
-					<div
-						class="flex flex-row flex-wrap sm:justify-center-safe gap-6 child:max-w-full child:overflow-x-auto">
-						<div>
-							<h2 class="text-white/80 font-bold text-lg pb-3">
-								{{ $t("plan.components.workforce.label") }}
-							</h2>
-							<PlanWorkforce
-								:disabled="disabled"
-								:workforce-data="result.workforce"
-								:planet-natural-id="
-									planetData.planet_natural_id
-								"
-								@update:lux="handleUpdateWorkforceLux" />
-						</div>
-						<div>
-							<PlanOverview
-								:visitation-data="visitationData"
-								:overview-data="overviewData"
-								:area-data="result.area"
-								:compare="sharedCompare">
-								<template #heading="{ text }">
-									<h2
-										class="text-white/80 font-bold text-lg pb-3">
-										{{ text }}
-									</h2>
-								</template>
-							</PlanOverview>
-						</div>
-					</div>
-					<div class="pt-6">
-						<PlanProduction
-							:disabled="disabled"
-							:production-data="result.production"
-							:planet-resources="planetData.resources"
-							:cogc="result.cogc"
-							:cx-uuid="refCXUuid"
-							:planet-id="planetData.planet_natural_id"
-							:changes="sharedChanges"
-							@update:building:amount="handleUpdateBuildingAmount"
-							@delete:building="deleteBuilding"
-							@create:building="handleCreateBuilding"
-							@create:building:recipe="
-								handleCreateBuildingAndRecipe
-							"
-							@update:building:recipe:amount="
-								handleUpdateBuildingRecipeAmount
-							"
-							@delete:building:recipe="deleteBuildingRecipe"
-							@add:building:recipe="handleAddBuildingRecipe"
-							@add:building:recipes="handleAddBuildingRecipes"
-							@apply:starter="applyStarterSetup"
-							@update:building:recipe="changeBuildingRecipe" />
-					</div>
-				</div>
-				<div>
-					<div class="sticky top-12">
-						<h2
-							class="text-white/80 font-bold text-lg pb-3 flex justify-between child:my-auto">
-							<div>
-								{{ $t("plan.components.materialio.label") }}
-							</div>
-							<div class="flex gap-x-3">
-								<PTooltip>
-									<template #trigger>
-										<PButton
-											:aria-label="
-												$t(
-													'plan.components.materialio.buttons.toggle_weight_volume'
-												)
-											"
-											size="sm"
-											type="secondary"
-											@click="
-												refMaterialIOShowBasked =
-													!refMaterialIOShowBasked
-											">
-											<template #icon>
-												<ShoppingBasketSharp
-													v-if="
-														!refMaterialIOShowBasked
-													" />
-												<AttachMoneySharp v-else />
-											</template>
-										</PButton>
-									</template>
-									{{
-										$t(
-											"plan.components.materialio.buttons.toggle_weight_volume"
-										)
-									}}
-								</PTooltip>
+			</main>
 
-								<PTooltip>
-									<template #trigger>
-										<PButton
-											:aria-label="
-												$t(
-													'plan.components.materialio.buttons.toggle_production_workforce'
-												)
-											"
-											size="sm"
-											type="secondary"
-											@click="
-												refMaterialIOSplitted =
-													!refMaterialIOSplitted
-											">
-											<template #icon>
-												<DataObjectRound
-													v-if="
-														!refMaterialIOSplitted
-													" />
-												<DataSaverOffSharp v-else />
-											</template>
-										</PButton>
-									</template>
-									{{
-										$t(
-											"plan.components.materialio.buttons.toggle_production_workforce"
-										)
-									}}
-								</PTooltip>
-							</div>
-						</h2>
-						<template v-if="!refMaterialIOSplitted">
-							<PlanMaterialIO
-								:material-i-o-data="result.materialio"
-								max-height="calc(100dvh - 10rem)"
-								:show-basked="refMaterialIOShowBasked"
-								:checks="marketChecks"
-								@open:plan-check="openPlanCheck" />
-						</template>
-						<template v-else>
-							<h3 class="font-bold pb-3">
-								{{
-									$t(
-										"plan.components.materialio.label_production"
-									)
-								}}
-							</h3>
-							<PlanMaterialIO
-								:material-i-o-data="result.productionMaterialIO"
-								max-height="calc(50dvh - 8rem)"
-								:show-basked="refMaterialIOShowBasked" />
-							<h3 class="font-bold py-3">
-								{{
-									$t(
-										"plan.components.materialio.label_workforce"
-									)
-								}}
-							</h3>
-							<PlanMaterialIO
-								:material-i-o-data="result.workforceMaterialIO"
-								max-height="calc(50dvh - 8rem)"
-								:show-basked="refMaterialIOShowBasked" />
-						</template>
-					</div>
+			<!-- Material I/O -->
+			<button
+				v-if="ioFolded"
+				type="button"
+				:class="strip"
+				class="hidden @min-[71rem]:flex"
+				:title="t('plan.layout.show_io')"
+				data-io-strip
+				@click="pinPane('io', true)">
+				<span :class="stripIcon">
+					<PIcon :size="16"><ChevronLeftSharp /></PIcon>
+				</span>
+				<span :class="stripTitle">
+					{{ t("plan.components.materialio.label") }}
+				</span>
+				<span
+					v-if="flagCount > 0"
+					class="[writing-mode:vertical-rl] px-0.5 py-1.5 rounded-full bg-warning/15 text-xs font-medium text-warning">
+					{{ t("plan.layout.flags", { n: flagCount }, flagCount) }}
+				</span>
+			</button>
+			<aside
+				:aria-label="t('plan.components.materialio.label')"
+				class="shrink-0 w-full md:w-75 @min-[81rem]:w-85 @min-[100rem]:w-96 rounded border border-line md:sticky md:top-20 bg-(--app-bg)"
+				:class="[
+					ioFolded ? '@min-[71rem]:hidden' : '',
+					refIOOverlay
+						? 'md:@max-[71rem]:absolute md:@max-[71rem]:right-6 md:@max-[71rem]:top-4 md:@max-[71rem]:z-50 md:@max-[71rem]:w-85 md:@max-[71rem]:shadow-xl md:@max-[71rem]:bg-surface'
+						: 'md:@max-[71rem]:hidden',
+					onPhone('io') ? '' : 'hidden',
+				]"
+				data-io-pane>
+				<div class="flex items-center gap-2 px-3 pt-3 pb-2">
+					<h2 class="flex-1 font-bold text-white">
+						{{ t("plan.components.materialio.label") }}
+					</h2>
+					<PSelect
+						v-model:value="refIOSource"
+						size="sm"
+						class="w-36"
+						:aria-label="t('plan.io.source.label')"
+						:options="ioSourceOptions" />
+					<PButton
+						v-if="refIOOverlay"
+						type="ghost"
+						size="sm"
+						class="hidden md:@max-[71rem]:flex"
+						@click="closeOverlays">
+						<template #icon><CloseSharp /></template>
+						{{ t("plan.layout.close") }}
+					</PButton>
+					<PButton
+						v-if="folded.io && refIOPinned"
+						type="ghost"
+						size="sm"
+						@click="pinPane('io', false)">
+						{{ t("plan.layout.fold") }}
+					</PButton>
 				</div>
-			</div>
+				<div
+					class="flex flex-wrap items-center justify-between gap-x-2 gap-y-2 px-3 pb-2 [&_button]:px-2 [&_button]:min-w-6">
+					<PSegmented
+						v-model:value="refIOFilter"
+						size="sm"
+						:options="ioFilterOptions"
+						:label="t('plan.io.filter.label')" />
+					<PSegmented
+						v-model:value="refIOValue"
+						size="sm"
+						:options="ioValueOptions"
+						:label="t('plan.io.value.label')" />
+				</div>
+				<PlanMaterialIO
+					:material-i-o-data="ioRows"
+					:compact="refIOCompact"
+					max-height="calc(100dvh - 20rem)"
+					:value="refIOValue"
+					:filter="refIOFilter"
+					:checks="refIOSource === 'all' ? marketChecks : undefined"
+					:market="marketChecks"
+					@open:plan-check="openPlanCheck" />
+				<dl
+					class="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-3 py-2 border-t border-line text-sm tabular-nums">
+					<dt class="text-muted-strong">{{ t("plan.io.exports") }}</dt>
+					<dd class="text-right">
+						<PValue :value="ioTotals.exports" />
+					</dd>
+					<dt class="text-muted-strong">{{ t("plan.io.imports") }}</dt>
+					<dd class="text-right">
+						<PValue :value="ioTotals.imports" />
+					</dd>
+					<template v-if="refIOSource === 'all'">
+						<dt class="text-muted-strong">
+							{{ t("plan.io.degradation") }}
+						</dt>
+						<dd class="text-right">
+							<PValue :value="-overviewData.dailyDegradationCost" />
+						</dd>
+						<dt class="font-medium text-ink-strong">
+							{{ t("plan.io.profit") }}
+						</dt>
+						<dd class="text-right font-medium">
+							<PValue :value="overviewData.profit" />
+						</dd>
+					</template>
+				</dl>
+			</aside>
+		</div>
+		<!-- a phone: save from a bar above the app's bottom bar, shown while
+			there is something to save -->
+		<div
+			v-if="refIsPhone && isOwnPlan && (modified || refIsSaving || refSaveFailed)"
+			class="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-1000 px-4 py-2 border-t border-line bg-surface [&>div]:w-full [&>div]:justify-between"
+			data-phone-save>
+			<PlanSaveButton
+				:existing="existing"
+				:saveable="saveable"
+				:saving="refIsSaving"
+				:failed="refSaveFailed"
+				:modified="modified"
+				:saved-at="savedAt"
+				@save="save()" />
 		</div>
 		<PlanCalcDebug
 			v-if="calcDebug && refShowCalcDebug"

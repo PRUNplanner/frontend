@@ -28,47 +28,21 @@ async function mountArea(props: Record<string, unknown> = {}) {
 
 const permitsInput = (wrapper: VueWrapper) =>
 	wrapper.find("input").element as HTMLInputElement;
-const areaLeft = (wrapper: VueWrapper) => wrapper.find("span.font-bold");
 
 describe("PlanArea", () => {
 	beforeEach(() => {
 		vi.mocked(trackPlanEdit).mockClear();
 	});
 
-	it("shows permits, used / total and the free area", async () => {
+	it("shows the permits and the total area", async () => {
 		const { wrapper } = await mountArea();
 
 		expect(permitsInput(wrapper).value).toBe("2");
-		expect(wrapper.text()).toContain("350 / 500");
-		expect(areaLeft(wrapper).text()).toBe("150");
-		expect(wrapper.text()).toContain("plan.components.area.free");
-	});
-
-	it("colors free area positive", async () => {
-		const { wrapper } = await mountArea();
-
-		expect(areaLeft(wrapper).classes()).toContain("text-positive");
-		expect(areaLeft(wrapper).classes()).not.toContain("text-negative");
-	});
-
-	it("colors exactly zero free area positive", async () => {
-		// 500 used of 500, 0 left is still fine
-		const { wrapper } = await mountArea({
-			areaData: { ...AREA, areaUsed: 500, areaLeft: 0 },
-		});
-
-		expect(areaLeft(wrapper).classes()).toContain("text-positive");
-	});
-
-	it("colors overused area negative", async () => {
-		// 520 used of 500 leaves 500 - 520 = -20
-		const { wrapper } = await mountArea({
-			areaData: { ...AREA, areaUsed: 520, areaLeft: -20 },
-		});
-
-		expect(areaLeft(wrapper).text()).toBe("-20");
-		expect(areaLeft(wrapper).classes()).toContain("text-negative");
-		expect(areaLeft(wrapper).classes()).not.toContain("text-positive");
+		expect(wrapper.text()).toContain("plan.components.area.permits");
+		expect(wrapper.text()).toContain("plan.base.planet.area");
+		// used and free area moved to the results bar
+		expect(wrapper.text()).not.toContain("350");
+		expect(wrapper.text()).not.toContain("150");
 	});
 
 	it("emits and tracks new permits", async () => {
@@ -116,8 +90,6 @@ describe("PlanArea", () => {
 		});
 
 		expect(permitsInput(wrapper).value).toBe("3");
-		expect(wrapper.text()).toContain("10 / 750");
-		expect(areaLeft(wrapper).text()).toBe("740");
 	});
 
 	it("disables the permits input", async () => {

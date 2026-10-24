@@ -126,9 +126,10 @@ describe("PlanView: saving with versions and conflicts", () => {
 		});
 		mocks.createNewPlan.mockImplementationOnce(async () => {
 			// edited while the create was in flight
-			wrapper
-				.findComponent({ name: "PlanConfiguration" })
-				.vm.$emit("update:plan-name", "Edited");
+			// a new plan opens with its name field in the header
+			const input = wrapper.find("input[aria-label='plan.header.name']");
+			await input.setValue("Edited");
+			await input.trigger("keydown", { key: "Enter" });
 			await flushPromises();
 			return { uuid: "new", modifiedAt: "v1" };
 		});
@@ -139,7 +140,10 @@ describe("PlanView: saving with versions and conflicts", () => {
 
 		await save();
 
-		expect(mocks.saveExistingPlan).toHaveBeenCalledTimes(1);
+		// typing the name takes a few more ticks than the save's own
+		await vi.waitFor(() =>
+			expect(mocks.saveExistingPlan).toHaveBeenCalledTimes(1)
+		);
 		expect(mocks.saveExistingPlan.mock.calls[0][1].plan_name).toBe(
 			"Edited"
 		);

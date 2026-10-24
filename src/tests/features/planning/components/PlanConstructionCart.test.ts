@@ -133,7 +133,7 @@ const tables = (wrapper: VueWrapper) => wrapper.findAll("table");
 function buildingRows(wrapper: VueWrapper) {
 	return tables(wrapper)[0]
 		.findAll("tbody tr")
-		.slice(0, -2)
+		.slice(0, -1)
 		.map((tr) =>
 			tr
 				.findAll("th, td")
@@ -149,27 +149,25 @@ function buildingRows(wrapper: VueWrapper) {
 const materialSums = (wrapper: VueWrapper) =>
 	tables(wrapper)[0]
 		.findAll("tbody tr")
-		.at(-2)!
+		.at(-1)!
 		.findAll("td")
 		.slice(1)
 		.map((td) => td.text());
 
-/** price, weight and volume of a table's summary */
+/** price, weight and volume of the totals under a table */
 function summary(wrapper: VueWrapper, table: 0 | 1) {
-	const cells = tables(wrapper)
+	const values = wrapper
+		.findAll("dl")
 		.at(table)!
-		.findAll("tbody tr")
-		.at(-1)!
-		.findAll(".grid > div")
+		.findAll("dd")
 		.map((d) => d.text().split(" ")[0]);
-	return { price: cells[1], weight: cells[3], volume: cells[5] };
+	return { price: values[0], weight: values[1], volume: values[2] };
 }
 
 /** material rows of the second table: ticker, amount, (stock), need */
 function needRows(wrapper: VueWrapper) {
 	return tables(wrapper)[1]
 		.findAll("tbody tr")
-		.slice(0, -1)
 		.map((tr) =>
 			tr
 				.findAll("td")

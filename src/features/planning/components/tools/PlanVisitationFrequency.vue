@@ -8,6 +8,9 @@
 		watch,
 	} from "vue";
 
+	import { useI18n } from "vue-i18n";
+	const { t } = useI18n();
+
 	// Composables
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
 
@@ -228,245 +231,211 @@
 </script>
 
 <template>
-	<h2 class="pb-3 text-white/80 font-bold text-lg">
-		{{ $t("plan.tools.visitation_frequency.title") }}
-	</h2>
+	<div class="@container flex flex-col gap-3">
+		<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+			<h2 class="text-white/80 font-bold text-lg">
+				{{ t("plan.tools.visitation_frequency.title") }}
+			</h2>
+			<span class="text-sm text-muted">
+				{{ t("plan.tools.descriptions.visitation-frequency") }}
+			</span>
+		</div>
 
-	<div class="grid grid-cols-1 lg:grid-cols-[40%_auto] gap-3">
-		<div>
-			<h3 class="font-bold text-lg pb-3">
-				{{ $t("plan.tools.visitation_frequency.storage.label") }}
-			</h3>
-
-			<i18n-t
-				v-if="storageAmountsForDisplay.length > 0"
-				keypath="plan.tools.visitation_frequency.storage.info"
-				tag="p"
-				class="pb-3">
-				<template #storages>
-					<template
-						v-for="(item, index) in storageAmountsForDisplay"
-						:key="item.ticker">
-						<strong>{{ item.amount }}</strong> {{ item.ticker }}
+		<div
+			class="grid gap-6 @[48rem]:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+			<!-- Storage: what fills it, and when it's full -->
+			<section class="flex flex-col gap-2">
+				<h3 class="font-medium text-ink-strong">
+					{{ t("plan.tools.visitation_frequency.storage.label") }}
+				</h3>
+				<i18n-t
+					v-if="storageAmountsForDisplay.length > 0"
+					keypath="plan.tools.visitation_frequency.storage.info"
+					tag="p"
+					class="text-sm text-muted text-pretty">
+					<template #storages>
 						<template
-							v-if="index < storageAmountsForDisplay.length - 1">
-							{{
-								index === storageAmountsForDisplay.length - 2
-									? " and "
-									: ", "
-							}}
+							v-for="(item, index) in storageAmountsForDisplay"
+							:key="item.ticker">
+							<strong class="text-ink">{{ item.amount }}</strong>
+							{{ item.ticker }}
+							<template
+								v-if="index < storageAmountsForDisplay.length - 1">
+								{{
+									index === storageAmountsForDisplay.length - 2
+										? " and "
+										: ", "
+								}}
+							</template>
 						</template>
 					</template>
-				</template>
-				<template #total_weight>
-					{{ formatAmount(totalWeight) }}
-				</template>
-				<template #total_volume>
-					{{ formatAmount(totalVolume) }}
-				</template>
-			</i18n-t>
+					<template #total_weight>
+						{{ formatAmount(totalWeight) }}
+					</template>
+					<template #total_volume>
+						{{ formatAmount(totalVolume) }}
+					</template>
+				</i18n-t>
+				<i18n-t
+					v-else
+					keypath="plan.tools.visitation_frequency.storage.info_no_storage"
+					tag="p"
+					class="text-sm text-muted text-pretty">
+					<template #total_weight>
+						{{ formatAmount(totalWeight) }}
+					</template>
+					<template #total_volume>
+						{{ formatAmount(totalVolume) }}
+					</template>
+				</i18n-t>
 
-			<i18n-t
-				v-else
-				keypath="plan.tools.visitation_frequency.storage.info_no_storage"
-				tag="p"
-				class="pb-3">
-				<template #total_weight>
-					{{ formatAmount(totalWeight) }}
-				</template>
-				<template #total_volume>
-					{{ formatAmount(totalVolume) }}
-				</template>
-			</i18n-t>
+				<PTable striped class="tabular-nums">
+					<thead>
+						<tr>
+							<th />
+							<th class="numeric">
+								{{
+									t("plan.tools.visitation_frequency.storage.table.weight")
+								}}
+							</th>
+							<th class="numeric">
+								{{
+									t("plan.tools.visitation_frequency.storage.table.volume")
+								}}
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							v-for="row in [
+								['import', dailyData.dailyWeightImport, dailyData.dailyVolumeImport],
+								['export', dailyData.dailyWeightExport, dailyData.dailyVolumeExport],
+								['sum', dailyData.dailyWeight, dailyData.dailyVolume],
+							] as const"
+							:key="row[0]">
+							<td class="text-muted-strong">
+								{{
+									t(`plan.tools.visitation_frequency.storage.table.${row[0]}`)
+								}}
+							</td>
+							<td class="numeric">{{ formatNumber(row[1]) }}</td>
+							<td class="numeric">{{ formatNumber(row[2]) }}</td>
+						</tr>
+						<tr>
+							<td class="font-medium text-ink-strong">
+								{{
+									t("plan.tools.visitation_frequency.storage.table.storage_filled")
+								}}
+							</td>
+							<td colspan="2" class="numeric font-medium text-ink-strong">
+								{{ formatNumber(dailyData.storageFilled) }}
+								{{
+									t("plan.tools.visitation_frequency.storage.table.filled_unit")
+								}}
+							</td>
+						</tr>
+					</tbody>
+				</PTable>
 
-			<PTable striped>
-				<thead>
-					<tr>
-						<th />
-						<th class="text-center!">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.storage.table.weight"
-								)
-							}}
-						</th>
-						<th class="text-center!">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.storage.table.volume"
-								)
-							}}
-						</th>
-					</tr>
-				</thead>
-				<tbody class="child:child:text-center">
-					<tr>
-						<td class="text-left! font-bold">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.storage.table.import"
-								)
-							}}
-						</td>
-						<td>{{ formatNumber(dailyData.dailyWeightImport) }}</td>
-						<td>{{ formatNumber(dailyData.dailyVolumeImport) }}</td>
-					</tr>
-					<tr>
-						<td class="text-left! font-bold">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.storage.table.export"
-								)
-							}}
-						</td>
-						<td>{{ formatNumber(dailyData.dailyWeightExport) }}</td>
-						<td>{{ formatNumber(dailyData.dailyVolumeExport) }}</td>
-					</tr>
-					<tr>
-						<td class="text-left! font-bold">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.storage.table.sum"
-								)
-							}}
-						</td>
-						<td>{{ formatNumber(dailyData.dailyWeight) }}</td>
-						<td>{{ formatNumber(dailyData.dailyVolume) }}</td>
-					</tr>
-					<tr>
-						<td class="text-left! font-bold">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.storage.table.storage_filled"
-								)
-							}}
-						</td>
-						<td colspan="2" class="font-bold">
-							{{ formatNumber(dailyData.storageFilled) }}
-							{{
-								$t(
-									"plan.tools.visitation_frequency.storage.table.filled_unit"
-								)
-							}}
-						</td>
-					</tr>
-				</tbody>
-			</PTable>
+				<label class="flex flex-col gap-1.5 pt-1">
+					<span class="text-xs text-muted">
+						{{
+							t("plan.tools.visitation_frequency.storage.exclusion_info")
+						}}
+					</span>
+					<PSelectMultiple
+						v-model:value="refMaterialExclusions"
+						:aria-label="
+							t('plan.tools.visitation_frequency.storage.exclusion_label')
+						"
+						:disabled="disabled"
+						:options="refMaterialExclusionOption"
+						searchable
+						clearable
+						@update:value="
+							(value) => {
+								// only keep string values
+								const stringsOnly = value.filter(
+									(v): v is string => typeof v === 'string'
+								);
+								visitationMaterialExclusions = stringsOnly;
+								refMaterialExclusions = stringsOnly;
+							}
+						" />
+				</label>
+			</section>
 
-			<p class="py-3">
-				{{
-					$t("plan.tools.visitation_frequency.storage.exclusion_info")
-				}}
-			</p>
-
-			<PSelectMultiple
-				v-model:value="refMaterialExclusions"
-				:aria-label="
-					$t(
-						'plan.tools.visitation_frequency.storage.exclusion_label'
-					)
-				"
-				:disabled="disabled"
-				:options="refMaterialExclusionOption"
-				searchable
-				clearable
-				@update:value="
-					(value) => {
-						// only keep string values
-						const stringsOnly = value.filter(
-							(v): v is string => typeof v === 'string'
-						);
-						visitationMaterialExclusions = stringsOnly;
-						refMaterialExclusions = stringsOnly;
-					}
-				" />
-		</div>
-		<div>
-			<h3 class="font-bold text-lg pb-3">
-				{{ $t("plan.tools.visitation_frequency.shipping.label") }}
-			</h3>
-
-			<PTable striped>
-				<thead>
-					<tr>
-						<th>
-							{{
-								$t(
-									"plan.tools.visitation_frequency.shipping.table.ship_weight"
-								)
-							}}
-						</th>
-						<th>
-							{{
-								$t(
-									"plan.tools.visitation_frequency.shipping.table.ship_volume"
-								)
-							}}
-						</th>
-						<th class="text-center!">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.shipping.table.visitation_days"
-								)
-							}}
-						</th>
-						<th class="text-center!">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.shipping.table.limit"
-								)
-							}}
-						</th>
-						<th class="text-center!">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.shipping.table.visitation_days"
-								)
-							}}
-						</th>
-						<th class="text-center!">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.shipping.table.limit"
-								)
-							}}
-						</th>
-					</tr>
-					<tr>
-						<th colspan="2" />
-						<th colspan="2" class="text-center!">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.shipping.table.export_frequency"
-								)
-							}}
-						</th>
-						<th colspan="2" class="text-center!">
-							{{
-								$t(
-									"plan.tools.visitation_frequency.shipping.table.import_frequency"
-								)
-							}}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr
-						v-for="(shipData, index) in visitationData"
-						:key="index">
-						<td>{{ formatAmount(shipData.shipWeight) }}</td>
-						<td>{{ formatAmount(shipData.shipVolume) }}</td>
-						<td class="text-center">
-							{{ formatNumber(shipData.exportDays) }}
-						</td>
-						<td class="text-center">{{ shipData.exportLimit }}</td>
-						<td class="text-center">
-							{{ formatNumber(shipData.importDays) }}
-						</td>
-						<td class="text-center">{{ shipData.importLimit }}</td>
-					</tr>
-				</tbody>
-			</PTable>
+			<!-- Shipping: how often a ship of each size has to fly -->
+			<section class="flex flex-col gap-2">
+				<h3 class="font-medium text-ink-strong">
+					{{ t("plan.tools.visitation_frequency.shipping.label") }}
+				</h3>
+				<PTable striped class="tabular-nums">
+					<thead>
+						<tr>
+							<th colspan="2" />
+							<th colspan="2" class="text-center!">
+								{{
+									t("plan.tools.visitation_frequency.shipping.table.export_frequency")
+								}}
+							</th>
+							<th colspan="2" class="text-center!">
+								{{
+									t("plan.tools.visitation_frequency.shipping.table.import_frequency")
+								}}
+							</th>
+						</tr>
+						<tr>
+							<th class="numeric">
+								{{
+									t("plan.tools.visitation_frequency.shipping.table.ship_weight")
+								}}
+							</th>
+							<th class="numeric">
+								{{
+									t("plan.tools.visitation_frequency.shipping.table.ship_volume")
+								}}
+							</th>
+							<template v-for="side in ['export', 'import']" :key="side">
+								<th class="numeric">
+									{{
+										t("plan.tools.visitation_frequency.shipping.table.visitation_days")
+									}}
+								</th>
+								<th class="text-center!">
+									{{
+										t("plan.tools.visitation_frequency.shipping.table.limit")
+									}}
+								</th>
+							</template>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							v-for="(shipData, index) in visitationData"
+							:key="index">
+							<td class="numeric">
+								{{ formatAmount(shipData.shipWeight) }}
+							</td>
+							<td class="numeric">
+								{{ formatAmount(shipData.shipVolume) }}
+							</td>
+							<td class="numeric">
+								{{ formatNumber(shipData.exportDays) }}
+							</td>
+							<td class="text-center text-muted-strong">
+								{{ shipData.exportLimit }}
+							</td>
+							<td class="numeric">
+								{{ formatNumber(shipData.importDays) }}
+							</td>
+							<td class="text-center text-muted-strong">
+								{{ shipData.importLimit }}
+							</td>
+						</tr>
+					</tbody>
+				</PTable>
+			</section>
 		</div>
 	</div>
 </template>

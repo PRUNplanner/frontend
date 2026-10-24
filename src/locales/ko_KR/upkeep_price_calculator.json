@@ -1,11 +1,11 @@
 {
-	"view_title": "Upkeep Price Calculator",
-	"title": "Upkeep Price Calculator",
+	"view_title": "유지비 계산기",
+	"title": "유지비 계산기",
 	"form": {
-		"cx_preference": "CX Preference"
+		"cx_preference": "선호 CX"
 	},
 	"calculator": {
-		"calculating": "Calculating Upkeep Material Prices",
+		"calculating": "유지 자재 가격 계산 중",
 		"needs": {
 			"safety": "@:game.upkeep.safety",
 			"health": "@:game.upkeep.health",
