@@ -102,7 +102,6 @@ describe("en_US volume terms", () => {
 			"Universe Traded Volume 7D"
 		);
 		expect(t("material_tile.chart.metric.traded")).toBe("Traded Volume");
-		expect(t("cx_info_table.traded_volume")).toBe("Traded Volume");
 	});
 
 	it("uses physical volume for cargo", () => {

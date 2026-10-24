@@ -31,6 +31,10 @@ vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
 		},
 	},
 }));
+// logged in: "+" is the plan link, the row's first button is the pin
+vi.mock("@/stores/userStore", () => ({
+	useUserStore: () => ({ isLoggedIn: true }),
+}));
 vi.mock("@/database/services/useMaterialData", () => ({
 	useMaterialData: () => ({ getMaterialClass: () => "" }),
 }));

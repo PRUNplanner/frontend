@@ -441,6 +441,7 @@ describe("sparklineLayout", () => {
 		]);
 		expect(sparklineLayout([null, null], 100, 24)).toEqual({
 			lines: [],
+			dots: [],
 			end: null,
 		});
 	});
@@ -458,6 +459,22 @@ describe("sparklineLayout edges", () => {
 		const { lines } = sparklineLayout([null, null, 1, 2], 90, 20, 0);
 
 		expect(lines).toEqual(["60,20 90,0"]);
+	});
+
+	it("marks values between gaps as lone points", () => {
+		const { lines, dots } = sparklineLayout([1, null, 2, 3, null, 4], 50, 20, 0);
+
+		expect(lines).toHaveLength(3);
+		expect(dots).toEqual([
+			{ x: 0, y: 20 },
+			{ x: 50, y: 0 },
+		]);
+	});
+
+	it("uses a shared domain", () => {
+		const { lines } = sparklineLayout([5, 10], 10, 20, 0, [0, 20]);
+
+		expect(lines).toEqual(["0,15 10,10"]);
 	});
 });
 

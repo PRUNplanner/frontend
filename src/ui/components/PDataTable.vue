@@ -15,6 +15,9 @@
 	// Components
 	import PPagination from "@/ui/components/PPagination.vue";
 
+	// Util
+	import { sortRows } from "@/ui/dataTableSort";
+
 	// UI
 	import { ChevronRightSharp } from "@vicons/material";
 
@@ -22,7 +25,7 @@
 	import type {
 		PDataTableAlign,
 		PDataTableColumn,
-		PDataTableSortOrder,
+		PDataTableSort,
 	} from "@/ui/ui.types";
 
 	// a generic component: imports first, then code
@@ -142,55 +145,38 @@
 	const alignClass = (align: PDataTableAlign | undefined) =>
 		align === "right" ? "numeric" : align === "center" ? "text-center" : "";
 
-	// Sorting: one column at a time, descend → ascend → none
+	// Sorting: one column at a time, descend → ascend → none; a parent
+	// that cuts or pages the rows itself owns it with v-model:sort
+	const sort = defineModel<PDataTableSort>("sort", {
+		default: () => ({ key: null, order: false }),
+	});
+	// defaultSortOrder sorts a table that isn't sorted yet
 	const initial = leaves.value.find((c) => c.sorter && c.defaultSortOrder);
-	const sortKey = ref<string | null>(initial?.key ?? null);
-	const sortOrder = ref<PDataTableSortOrder>(
-		initial?.defaultSortOrder ?? false
-	);
-
-	/** row[key]: empty first, then numbers or strings */
-	function compareKey(key: string) {
-		return (a: T, b: T): number => {
-			const v1 = (a as Record<string, unknown>)[key];
-			const v2 = (b as Record<string, unknown>)[key];
-			if (v1 === null || v1 === undefined)
-				return v2 === null || v2 === undefined ? 0 : -1;
-			if (v2 === null || v2 === undefined) return 1;
-			if (typeof v1 === "number" && typeof v2 === "number") return v1 - v2;
-			if (typeof v1 === "string" && typeof v2 === "string")
-				return v1.localeCompare(v2);
-			return 0;
-		};
-	}
+	if (initial && !sort.value.order)
+		sort.value = { key: initial.key, order: initial.defaultSortOrder! };
 
 	function toggleSort(col: PDataTableColumn<T>): void {
 		if (!col.sorter) return;
-		if (sortKey.value !== col.key || !sortOrder.value) {
-			sortKey.value = col.key;
-			sortOrder.value = "descend";
-		} else
-			sortOrder.value = sortOrder.value === "descend" ? "ascend" : false;
+		const { key, order } = sort.value;
+		sort.value =
+			key !== col.key || !order
+				? { key: col.key, order: "descend" }
+				: { key: col.key, order: order === "descend" ? "ascend" : false };
 	}
 
 	const ariaSort = (col: PDataTableColumn<T>) =>
-		sortKey.value === col.key && sortOrder.value
-			? sortOrder.value === "ascend"
+		sort.value.key === col.key && sort.value.order
+			? sort.value.order === "ascend"
 				? "ascending"
 				: "descending"
 			: "none";
 
 	const isSorting = (key: string) =>
-		sortKey.value === key && sortOrder.value !== false;
+		sort.value.key === key && sort.value.order !== false;
 
-	const sorted = computed<T[]>(() => {
-		const col = leaves.value.find((c) => c.key === sortKey.value);
-		if (!col?.sorter || !sortOrder.value) return data;
-		const compare =
-			col.sorter === true ? compareKey(col.key) : col.sorter;
-		const flag = sortOrder.value === "ascend" ? 1 : -1;
-		return data.slice().sort((a, b) => compare(a, b) * flag);
-	});
+	const sorted = computed<T[]>(() =>
+		sortRows(data, leaves.value, sort.value)
+	);
 
 	// Pagination: the page stays on sort; a shorter list moves it back in bounds
 	const page = ref(1);
@@ -456,7 +442,7 @@
 									class="p-data-table-sorter"
 									:class="
 										isSorting(cell.col.key)
-											? sortOrder === 'ascend'
+											? sort.order === 'ascend'
 												? 'p-data-table-sorter-asc'
 												: 'p-data-table-sorter-desc'
 											: ''

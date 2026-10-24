@@ -64,6 +64,34 @@ describe("MarketWorkforce", () => {
 		expect(wrapper.text()).toContain("market_report.workforce.driver");
 	});
 
+	it("five tier cards: cost, 90-day change, sparkline; a click picks one", async () => {
+		vi.mocked(callCXSparklines).mockImplementation(async (exchange) =>
+			sparks(exchange)
+		);
+		const update = vi.fn();
+		const { wrapper } = await mountComponent(MarketWorkforce, {
+			tier: "pioneer",
+			"onUpdate:tier": update,
+		});
+		const cards = wrapper.findAll("[role=group] button");
+		expect(cards).toHaveLength(5);
+		expect(cards.map((c) => c.attributes("aria-pressed"))).toEqual([
+			"true",
+			"false",
+			"false",
+			"false",
+			"false",
+		]);
+		expect(cards[0].text()).toContain("game.workforce_type.pioneer");
+		expect(cards[0].text()).toContain("1,120 ȼ");
+		// RAT 100 → 150: 4 × 50 on 920
+		expect(cards[0].text()).toContain("+21.7");
+		expect(cards[0].find("svg[role=img]").exists()).toBe(true);
+
+		await cards[3].trigger("click");
+		expect(update).toHaveBeenCalledWith("engineer");
+	});
+
 	it("a failed request shows the error, retry loads again", async () => {
 		vi.mocked(callCXSparklines).mockRejectedValue(new Error("down"));
 		const { wrapper } = await mountComponent(MarketWorkforce, {

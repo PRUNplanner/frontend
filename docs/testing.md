@@ -186,7 +186,7 @@ Write them for logic-heavy components, see
   stale or placeholder content passes an existence check.
 - **jsdom quirks**: an inline style containing `linear-gradient` is
   dropped entirely; spy on the `CSSStyleDeclaration.prototype` `cssText`
-  setter instead (`ChainNode.test.ts`). Queries that persist
+  setter instead. Queries that persist
   (`GetPlanetLastPOPR`, `GetPlanetSearchSingle`) survive a fresh Pinia, so
   give each test its own planet or search id.
 - **Multipart and debounced requests**: axios-mock-adapter records a

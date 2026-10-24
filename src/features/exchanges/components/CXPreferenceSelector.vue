@@ -38,6 +38,12 @@
 			required: false,
 			default: "md",
 		},
+		// false: the given cxUuid wins over the user's default, e.g. one from a link
+		followDefault: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
 	});
 
 	let { defaultCXUuid } = usePreferences();
@@ -58,7 +64,9 @@
 	);
 
 	const localCXUuid: WritableComputedRef<string | undefined> = computed({
-		get: () => validDefaultCXUuid.value ?? props.cxUuid,
+		get: () =>
+			(props.followDefault ? validDefaultCXUuid.value : undefined) ??
+			props.cxUuid,
 		set: (value: string | undefined) => {
 			emit("update:cxuuid", value);
 			defaultCXUuid.value = value;
@@ -69,7 +77,11 @@
 	watch(
 		() => props.cxUuid,
 		(cxUuid) => {
-			if (validDefaultCXUuid.value && validDefaultCXUuid.value !== cxUuid)
+			if (
+				props.followDefault &&
+				validDefaultCXUuid.value &&
+				validDefaultCXUuid.value !== cxUuid
+			)
 				emit("update:cxuuid", validDefaultCXUuid.value);
 		},
 		{ immediate: true }

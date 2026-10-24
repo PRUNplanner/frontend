@@ -6,11 +6,13 @@
 	import {
 		computed,
 		type ComputedRef,
+		defineAsyncComponent,
 		getCurrentInstance,
 		onMounted,
 		type PropType,
 		ref,
 		type Ref,
+		watch,
 	} from "vue";
 	import type { Placement } from "@popperjs/core";
 
@@ -21,10 +23,14 @@
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { useExchangeData } from "@/database/services/useExchangeData";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { usePreferences } from "@/features/preferences/usePreferences";
 
 	// Components
-	import MaterialDataChart from "@/features/market_exploration/components/MaterialDataChart.vue";
-	import MaterialCXOverviewTable from "@/features/cx/components/MaterialCXOverviewTable.vue";
+	import MaterialMarketCard from "@/features/material_tile/components/MaterialMarketCard.vue";
+	const MaterialMarketDetails = defineAsyncComponent(
+		() =>
+			import("@/features/material_tile/components/MaterialMarketDetails.vue")
+	);
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -32,16 +38,11 @@
 	// Interfaces & Types
 	import type { Material } from "@/features/api/schemas/gameData.schemas";
 	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
-	import type { ExchangeMetric } from "@/features/market_exploration/marketExploration.types";
+	import type { IMarketCheck } from "@/features/cx/marketCheck.types";
+	import type { DailyContext } from "@/features/material_tile/materialMarket.types";
 
 	// UI
-	import {
-		PButton,
-		PButtonGroup,
-		PDrawer,
-		PTooltip,
-		PTable,
-	} from "@/ui";
+	import { PDrawer, PHoverCard, PSpin, PTooltip, PTable } from "@/ui";
 
 	// Props
 	const props = defineProps({
@@ -54,8 +55,21 @@
 			required: false,
 			default: undefined,
 		},
+		// + sold, − bought per day
 		daily: {
 			type: Number,
+			required: false,
+			default: undefined,
+		},
+		// whose daily amount it is, for the card's wording
+		dailyContext: {
+			type: String as PropType<DailyContext>,
+			required: false,
+			default: "plan",
+		},
+		// the row's Market check, marks "your CX" in the card
+		marketCheck: {
+			type: Object as PropType<IMarketCheck>,
 			required: false,
 			default: undefined,
 		},
@@ -83,13 +97,16 @@
 
 	const { getMaterial, getMaterialClass } = useMaterialData();
 	const { getMaterialExchangeOverview } = useExchangeData();
+	const { marketCardTrigger } = usePreferences();
+	// the profile setting: nothing opens on hover or focus, a click pins
+	const clickOnly = computed(() => marketCardTrigger.value === "click");
 
 	const refShowDrawer: Ref<boolean> = ref(false);
 	const refExchangeOverview: Ref<IMaterialExchangeOverview | undefined> =
 		ref(undefined);
-
-	const refChartMetric: Ref<ExchangeMetric> = ref("vwap");
-	const chartMetrics: ExchangeMetric[] = ["vwap", "low", "high", "traded"];
+	// the market card with its border, px
+	const CARD_WIDTH = 626;
+	const hoverCard = ref<InstanceType<typeof PHoverCard> | null>(null);
 
 	const material = ref<Material | null>(null);
 	const categoryCssClass = ref<string>("");
@@ -126,14 +143,50 @@
 		return style;
 	});
 
-	function toggleDrawer(): void {
-		if (!props.disableDrawer) {
-			refShowDrawer.value = !refShowDrawer.value;
-			trackEvent("material:market_drawer_open", {
-				material_ticker: props.ticker,
-			});
+	// the overview is built on the first open, not for every tile on a page
+	async function loadOverview(): Promise<void> {
+		if (refExchangeOverview.value) return;
+		try {
+			refExchangeOverview.value = await getMaterialExchangeOverview(
+				props.ticker
+			);
+		} catch {
+			refExchangeOverview.value = undefined;
 		}
 	}
+
+	function openDrawer(source: "tile" | "card"): void {
+		if (!material.value) return;
+		hoverCard.value?.hide();
+		loadOverview();
+		refShowDrawer.value = true;
+		trackEvent("material:market_drawer_open", {
+			material_ticker: props.ticker,
+			source,
+		});
+	}
+
+	function onClick(): void {
+		const card = hoverCard.value;
+		if (card?.wantsSheet()) return card.openSheet();
+		if (!props.disableDrawer && !clickOnly.value) {
+			if (refShowDrawer.value) refShowDrawer.value = false;
+			else openDrawer("tile");
+			return;
+		}
+		if (!card) return;
+		card.togglePin();
+	}
+
+	function onPin(pinned: boolean): void {
+		if (pinned)
+			trackEvent("material:market_card_pin", {
+				material_ticker: props.ticker,
+			});
+	}
+
+	// the drawer returns focus to the tile: that opens no card
+	watch(refShowDrawer, (value) => !value && hoverCard.value?.ignoreFocus());
 
 	const instance = getCurrentInstance();
 
@@ -154,14 +207,6 @@
 		} catch (err) {
 			console.error("Failed to fetch material:", err);
 		}
-		try {
-			if (props.enablePopover)
-				refExchangeOverview.value = await getMaterialExchangeOverview(
-					props.ticker
-				);
-		} catch {
-			refExchangeOverview.value = undefined;
-		}
 	});
 </script>
 
@@ -177,11 +222,16 @@
 						? 'hover:cursor-pointer'
 						: '',
 			]"
-			@click="toggleDrawer">
-			<PTooltip
-				v-if="refExchangeOverview !== undefined"
-				:disabled="!enablePopover"
-				:placement="popoverPlacement">
+			@click="onClick">
+			<PHoverCard
+				v-if="enablePopover"
+				ref="hoverCard"
+				:label="t('material_tile.card.label', { ticker })"
+				:placement="popoverPlacement"
+				:width="CARD_WIDTH"
+				:options="{ trigger: marketCardTrigger }"
+				@open="loadOverview"
+				@pin="onPin">
 				<template #trigger>
 					<div
 						class="flex justify-center items-center"
@@ -194,12 +244,33 @@
 						</div>
 					</div>
 				</template>
-				<MaterialCXOverviewTable
-					:key="`material-tile#CXOverview#${ticker}`"
-					:ticker="ticker"
-					:daily="daily"
-					:overview-data="refExchangeOverview" />
-			</PTooltip>
+				<template #default="{ pinned, sheet, narrow, close }">
+					<MaterialMarketCard
+						v-if="refExchangeOverview"
+						:ticker="ticker"
+						:material="material"
+						:category-class="categoryCssClass"
+						:overview="refExchangeOverview"
+						:daily="daily"
+						:daily-context="dailyContext"
+						:market-check="marketCheck"
+						:pinned="pinned"
+						:click-opens-details="!disableDrawer && !clickOnly"
+						:click-only="clickOnly"
+						:sheet="sheet"
+						:narrow="narrow"
+						@close="close"
+						@details="
+							() => {
+								close();
+								openDrawer('card');
+							}
+						" />
+					<div v-else class="flex justify-center p-6">
+						<PSpin />
+					</div>
+				</template>
+			</PHoverCard>
 			<template v-else>
 				<div
 					class="flex flex-row w-full justify-center items-center"
@@ -244,73 +315,19 @@
 	<PDrawer
 		v-if="refShowDrawer && material"
 		v-model:show="refShowDrawer"
-		:width="600"
-		:title="t('material_tile.information.title')">
-		<div class="flex gap-x-5">
-			<div class="flex items-center">
-				<div
-					:class="categoryCssClass"
-					class="text-nowrap p-2 px-4 text-2xl text-shadow-[0_1px_1px_rgb(34,34,34)]">
-					{{ material.ticker }}
-				</div>
-			</div>
-			<div class="grow">
-				<div
-					class="w-full grid grid-cols-[25%_auto] child:odd:font-bold">
-					<div>
-						{{ $t("material_tile.information.table.category") }}
-					</div>
-					<div>
-						{{
-							$t(
-								`game.material_category.${material.category_name.replace(" ", "_")}`
-							)
-						}}
-					</div>
-					<div>
-						{{ $t("material_tile.information.table.weight") }}
-					</div>
-					<div>
-						{{ formatNumber(material.weight, 4) }}
-						t
-					</div>
-					<div>
-						{{ $t("material_tile.information.table.volume") }}
-					</div>
-					<div>
-						{{ formatNumber(material.volume, 4) }}
-						m³
-					</div>
-				</div>
-			</div>
-		</div>
-		<h3 class="font-bold text-lg py-5">Markets</h3>
-		<MaterialCXOverviewTable
+		:width="760"
+		:title="t('material_tile.details.title')">
+		<MaterialMarketDetails
 			v-if="refExchangeOverview"
 			:ticker="ticker"
-			:overview-data="refExchangeOverview" />
-
-		<div class="flex flex-wrap gap-x-4 gap-y-2 items-center py-5">
-			<h3 class="grow font-bold text-lg">
-				{{ $t("material_tile.chart.title") }}
-				<span class="pl-2 text-sm font-normal text-muted">
-					{{ $t("material_tile.chart.range") }}
-				</span>
-			</h3>
-			<PButtonGroup
-				role="group"
-				:aria-label="$t('material_tile.chart.metric.label')">
-				<PButton
-					v-for="metric in chartMetrics"
-					:key="metric"
-					size="sm"
-					:pressed="refChartMetric === metric"
-					@click="refChartMetric = metric">
-					{{ $t(`material_tile.chart.metric.${metric}`) }}
-				</PButton>
-			</PButtonGroup>
+			:material="material"
+			:category-class="categoryCssClass"
+			:overview="refExchangeOverview"
+			:daily="daily"
+			:daily-context="dailyContext"
+			:market-check="marketCheck" />
+		<div v-else class="flex justify-center p-6">
+			<PSpin />
 		</div>
-
-		<MaterialDataChart :material-ticker="ticker" :metric="refChartMetric" />
 	</PDrawer>
 </template>

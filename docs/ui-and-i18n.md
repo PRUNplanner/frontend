@@ -10,8 +10,8 @@ import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui
 ```
 
 The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDataTable`,
-`PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeparator`, `PIcon`,
-`PInput`, `PInputNumber`, `PModal`, `PPopover`, `PProgressBar`, `PSelect`,
+`PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeparator`, `PHoverCard`, `PIcon`,
+`PInput`, `PInputNumber`, `PModal`, `PPopover`, `PProgressBar`, `PSegmented`, `PSelect`,
 `PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast` (through
 `useToast()`, see "Toasts" below), `PTooltip` and `PValue`, plus
 `useConfirm()` (see "Overlays" below). `PPagination` and `PSelectElement`
@@ -63,6 +63,13 @@ are internal to `PDataTable` and the selects.
   `:pressed="…"` instead of switching `type`: it sets `aria-pressed` and is
   `primary` while pressed, its `type` (default `secondary`) when not. Keep
   `type` only where the colour means something else (a failed save).
+- **Segmented control:** `<PSegmented v-model:value="view" :options label>`
+  switches between a few views of one thing: a `role="group"` named by
+  `label`, one `aria-pressed` button per option in a sunken track, `size`
+  24 / 28 px, `block` fills the width (`block="phone"` below `sm` only),
+  an option with `disabled: true` can't be picked.
+  Used on `/market`; other pages' `PButton pressed` groups move to it page
+  by page. A single on/off toggle stays `PButton pressed`.
 - **Tags:** `<PTag closable @close="…">` adds a remove button named
   "Remove {value}", so tags (and `PSelectMultiple` chips) can be removed
   by keyboard.
@@ -141,6 +148,31 @@ are internal to `PDataTable` and the selects.
       with nothing focusable becomes a tab stop itself (`disabled` turns
       all of it off). Charts with their own SVG tooltips use the same rules
       through `useTooltipTrigger` (`ui/useTooltipTrigger.ts`).
+    - `<PHoverCard :label placement width>` with a `#trigger` slot is a
+      card of content next to its trigger, not a tooltip (the material
+      market card). Hover intent (`ui/useHoverCard.ts`, timing and
+      `trigger` as `options`; `trigger: "click"` opens nothing on hover or
+      focus and leaves opening to the caller): it opens after the pointer rests 300 ms,
+      swaps to another trigger of the group in 80 ms while one is open,
+      stays open on the card (a safe area bridges the gap) and closes
+      300 ms after leaving both. Keyboard focus opens it at once. It never
+      opens while scrolling (150 ms), with a button down or text selected,
+      while another card of the group is pinned, or while a modal, drawer
+      or menu is open that doesn't hold the trigger (`layerOver`); inside a
+      drawer it opens above it (`aboveLayers`), and that drawer's Tab trap
+      leaves focus in the card alone. Esc closes it and blocks it until the
+      pointer or focus leaves the trigger. The trigger is a `role="button"`
+      tab stop with `aria-expanded` and `aria-controls`; Enter or Space
+      clicks it, and a card that click pinned takes the focus (closing it
+      returns focus to the trigger). The card is a labelled `role="region"`,
+      no `aria-describedby`. A click is the caller's: the exposed
+      `togglePin` (emits `pin`), `openSheet` (a `PDrawer placement="bottom"`
+      on touch or below 560 px, `wantsSheet()`) or its own action. Emits
+      `open`, so content can load on the first open. Placed on the wanted
+      side if `width` fits there, else on the roomier one; never wider than
+      that side nor taller than the window. The default slot gets
+      `{ pinned, sheet, narrow, close }`, `narrow` when less than `width`
+      fits. Use `PTooltip` for short descriptions.
     - Popovers and menus are non-modal layers on the same stack: Esc closes
       the topmost, no inert, scroll lock or focus trap. A click outside
       closes them, except on the trigger, inside or in a layer opened from
@@ -167,8 +199,9 @@ are internal to `PDataTable` and the selects.
     `niceTicks` in `scatter.util.ts`; `yBetter="low"` for e.g. jumps,
     `xZero=false` to fit X to the data). Lines over days (one per series,
     direct end labels, a crosshair tooltip sorted by value, an optional
-    volume panel) are `PLineChart.vue`; a 100 × 24 px trend line in a
-    table cell is `PSparkline.vue` (both plain SVG; `lineLabelLayout`,
+    volume panel) are `PLineChart.vue`; a 24 px high trend line in a
+    table cell is `PSparkline.vue` (100 px wide, its own y-scale; `domain`,
+    `color` and `width` for a shared scale in exchange colours) (both plain SVG; `lineLabelLayout`,
     `tooltipRows` and `sparklineLayout` in `charts.util.ts`).
     A 100 % bar of parts (optionally hatched where e.g. revenue doesn't
     cover cost) with a tooltip slot is `PStackedBar.vue`; a signed bar from a
@@ -213,7 +246,10 @@ const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => [
   values first when ascending); pass a function to compare otherwise, e.g.
   by the name shown instead of an id. A header click cycles descend →
   ascend → none; the header is a button with `aria-sort`, so it sorts by
-  keyboard. `defaultSortOrder` sorts on mount.
+  keyboard. `defaultSortOrder` sorts on mount. A parent that cuts or pages
+  the rows before the table owns the sort with `v-model:sort`
+  (`{ key, order }`) and sorts the whole list with `sortRows`
+  (`ui/dataTableSort.ts`), the table's own comparison.
 - **Columns:** `width`, `minWidth` (keeps a column from being squeezed; the
   table scrolls sideways instead), `children` for grouped headers,
   `titleColSpan` to let one title span the next columns.

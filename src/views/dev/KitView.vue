@@ -18,6 +18,7 @@
 	import {
 		PButton,
 		PButtonGroup,
+		PSegmented,
 		PCheckbox,
 		PDataTable,
 		PDrawer,
@@ -192,6 +193,39 @@
 							<PButton type="secondary">Middle</PButton>
 							<PButton type="secondary">Right</PButton>
 						</PButtonGroup>
+					</div>
+					<div class="flex flex-wrap items-center gap-3">
+						<PSegmented
+							v-model:value="view"
+							label="View"
+							:options="
+								['List', 'Matrix', 'Chart'].map((v) => ({
+									value: v,
+									label: v,
+								}))
+							" />
+						<PSegmented
+							v-model:value="view"
+							label="View, small"
+							size="sm"
+							:options="
+								['List', 'Matrix', 'Chart'].map((v) => ({
+									value: v,
+									label: v,
+								}))
+							" />
+						<div class="w-72">
+							<PSegmented
+								v-model:value="view"
+								label="View, block"
+								block
+								:options="
+									['List', 'Matrix', 'Chart'].map((v) => ({
+										value: v,
+										label: v,
+									}))
+								" />
+						</div>
 					</div>
 				</div>
 			</section>

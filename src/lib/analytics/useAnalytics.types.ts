@@ -16,6 +16,7 @@ import type {
 import type { PlanetSearchView } from "@/features/planet_search/planetSearch.schemas";
 import type { ChartView } from "@/features/market_exploration/marketExploration.types";
 import type {
+	MarketGapBasis,
 	MarketIndexView,
 	MarketMoversDirection,
 } from "@/features/market_report/marketReport.types";
@@ -82,11 +83,25 @@ export type ToolUseProperties =
 	  }
 	| {
 			tool_name: "production_chain";
-			material_ticker: string;
-			amount: number;
-			recipes: string[];
-			terminals: string;
+			targets: string[];
+			target_count: number;
+			material_count: number;
+			efficiency: number;
+			raw_source: "buy" | "extract";
+			byproducts: "cover" | "sell";
 	  };
+
+// what was done on the production chain page
+export type ProductionChainAction =
+	| "recipe_pick"
+	| "source_set"
+	| "buy_all"
+	| "planet_pick"
+	| "view_graph"
+	| "focus"
+	| "xit_copy"
+	| "csv"
+	| "link_copy";
 
 // which XIT transfer button: the tool, and which of its buttons
 export type XITTransferSource =
@@ -146,7 +161,13 @@ export interface IAnalyticsEventProperties {
 	"account:api_key_revoke": undefined;
 	"landing:auth_open": {
 		panel: AuthPanel;
-		source: "header" | "hero" | "closing" | "shared_plan";
+		source:
+			| "header"
+			| "hero"
+			| "closing"
+			| "shared_plan"
+			| "planet_search_plan"
+			| "planet_search_distance";
 	};
 	"landing:auth_switch": { panel: AuthPanel };
 	"landing:example_open": { source: "hero" | "shared_plans" };
@@ -154,6 +175,7 @@ export interface IAnalyticsEventProperties {
 	"landing:tour_step": { tour: HomepageTourName; step: string };
 	"landing:tour_toggle": { tour: HomepageTourName; is_playing: boolean };
 	"landing:market_click": { target: "header" | "cta" | "sector" | "mover" };
+	"landing:planet_search_click": { target: "header" | "tour" };
 	"landing:market_view_change": { view: MarketMoversDirection };
 	"apikey:key_copy": undefined;
 	"apikey:builder_change": {
@@ -259,15 +281,22 @@ export interface IAnalyticsEventProperties {
 	"exchange:leave_unsaved": { location: string };
 	"exchange:save_conflict": { location: string; choice: SaveConflictChoice };
 
-	"material:market_drawer_open": { material_ticker: string };
+	"material:market_drawer_open": {
+		material_ticker: string;
+		source: "tile" | "card";
+	};
+	"material:market_card_pin": { material_ticker: string };
 
 	"planet_search:view_change": { view: PlanetSearchView };
 	"market_exploration:view_change": { view: ChartView };
 	"resource_roi:chart_open": undefined;
+	"production_chain:action": { action: ProductionChainAction };
 	"market:view_change":
 		| { chart: "index"; view: MarketIndexView }
 		| { chart: "workforce"; view: WorkforceType }
-		| { chart: "movers"; view: MarketMoversDirection };
+		| { chart: "movers"; view: MarketMoversDirection | "all" }
+		| { chart: "leaders"; view: "all" | "top" }
+		| { chart: "gaps"; view: MarketGapBasis | "all" };
 
 	"tool:use": ToolUseProperties;
 

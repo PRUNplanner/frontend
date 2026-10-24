@@ -5,6 +5,10 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Composables
+	import { useAuthPanel } from "@/features/account/useAuthPanel";
+	import { useUserStore } from "@/stores/userStore";
+
 	// Engine & Util
 	import {
 		activeProgram,
@@ -215,7 +219,23 @@
 		if (props.showPins) emit("pin", id);
 	}
 
+	// a visitor logs in first, as with the + of a row
+	const userStore = useUserStore();
+	const authPanel = useAuthPanel();
 	function open(id: string) {
+		if (!userStore.isLoggedIn) {
+			const planet = props.planets.find((p) => p.planet_natural_id === id);
+			authPanel.open("login", "planet_search_plan", {
+				next: `/plan/${id}`,
+				context: {
+					planet: planet
+						? planetDisplayName(id, planet.planet_name)
+						: id,
+					id,
+				},
+			});
+			return;
+		}
 		window.open(router.resolve(`/plan/${id}`).href, "_blank", "noopener");
 	}
 </script>

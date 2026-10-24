@@ -78,12 +78,13 @@ The PostHog funnel for registrations from it: `landing:auth_open` with
 
 | Event | Properties | When |
 | --- | --- | --- |
-| `landing:auth_open` | `panel` (`login`, `registration`), `source` (`header`, `hero`, `closing`, `shared_plan`) | the login / registration panel was opened |
+| `landing:auth_open` | `panel` (`login`, `registration`), `source` (`header`, `hero`, `closing`, `shared_plan`, `planet_search_plan`: "+" or a Chart double-click on `/search`, `planet_search_distance`: the Distance section's "Log in") | the login / registration panel was opened |
 | `landing:auth_switch` | `panel` (the form switched to) | the switch inside the panel was used |
 | `landing:example_open` | `source` (`hero`, `shared_plans`) | "Open an example plan" was clicked |
 | `landing:tour_step` | `tour` (`plan`, `planet_search`, `empire`), `step` (the step key) | a visitor clicked a tour step; automatic advances are not sent |
 | `landing:tour_toggle` | `tour`, `is_playing` | Pause or Play was clicked |
 | `landing:market_click` | `target` (`header`, `cta`, `sector`, `mover`) | a link of the "Market today" section or the header's "Market" link to `/market` was clicked |
+| `landing:planet_search_click` | `target` (`header`, `tour`) | the header's "Planet Search" link (nav or menu) or the tour card's "Try Planet Search" was clicked |
 | `landing:market_view_change` | `view` (`rising`, `falling`) | the movers of the "Market today" section were switched |
 
 Like the signup events, these reach PostHog only from visitors who consented.
@@ -180,7 +181,8 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `exchange:use_cogm` | `location` (`exchanges_view`, `cogm`), `material_ticker` | a COGM was used as fixed buy price |
 | `exchange:leave_unsaved` | `location` | leaving with unsaved rules asked to confirm |
 | `exchange:save_conflict` | `location` (`exchanges_view`, `cogm`), `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of a CX was answered |
-| `material:market_drawer_open` | `material_ticker` | |
+| `material:market_drawer_open` | `material_ticker`, `source` (`tile`, `card`) | the Market details drawer opened, from a click on the tile (Material I/O, HQ) or the card's "Market details" button |
+| `material:market_card_pin` | `material_ticker` | a click on a ticker pinned its market card open (no event per hover) |
 
 ### Tools
 
@@ -194,7 +196,8 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `planet_search:view_change` | `view` (`list`, `matrix`, `chart`) | Planet Search switched views (also when a link opens another view on the page) |
 | `market_exploration:view_change` | `view` (`candles`, `exchanges`) | Market Exploration switched between the candle chart and the "All exchanges" chart |
 | `resource_roi:chart_open` | | the Resource ROI chart drawer was opened |
-| `market:view_change` | `chart` (`index`, `workforce`, `movers`), `view` (index: `combined`, `exchange`, `sector`; workforce: the tier, e.g. `engineer`; movers: `rising`, `falling`) | a view was switched on the public market report (`/market`) |
+| `production_chain:action` | `action` (`recipe_pick`, `source_set`, `buy_all`, `planet_pick`, `view_graph`, `focus`, `xit_copy`, `csv`, `link_copy`) | something was done on the Production Chains page: a recipe or planet picked, a source set, "Buy all", the graph opened or a node focused, the XIT buy action, CSV or chain link copied |
+| `market:view_change` | `chart` (`index`, `workforce`, `movers`, `leaders`, `gaps`), `view` (index: `exchange`, `combined`, `sector`; workforce: the tier, e.g. `engineer`; movers: `rising`, `falling`; gaps: `vwap`, `books`; movers, leaders and gaps: `all` when "Show all" expands the list, and on collapse the list's own view, `top` for leaders) | a view was switched or a list expanded or collapsed on the public market report (`/market`) |
 
 `tool:use` means a result, not an opened page (pageviews carry
 `route_name` for that). Tools with an input count only a result for an
@@ -206,7 +209,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | --- | --- | --- |
 | `planet_search` | `filter`, `result_count` | a changed filter settled (1 s) |
 | `market_exploration` | `exchange`, `material_ticker` | data for a chosen exchange, material or candle interval loaded, not the default on open |
-| `production_chain` | `material_ticker`, `amount`, `recipes`, `terminals` | a chain was built for a changed input, not the default on open |
+| `production_chain` | `targets` (tickers), `target_count`, `material_count`, `efficiency`, `raw_source` (`buy`, `extract`), `byproducts` (`cover`, `sell`) | targets or settings changed and settled (1 s); not for a chain opened from a link or the browser |
 | `resource_roi` | `material_ticker` | the search finished |
 | `recipe_roi` | | the ROI calculation finished |
 | `hq_upgrade` | | levels or overrides changed and settled (1 s) |
@@ -281,7 +284,7 @@ exception carries `route_name` too.
 | Property | Set from |
 | --- | --- |
 | `username`, `prun_username`, `is_fio_enabled`, `has_verified_email` | the profile, on load and change (`identifyUser`) |
-| `language`, `color_palette`, `navigation_style`, `is_plan_suggestions_enabled` | the preferences, on load and change |
+| `language`, `color_palette`, `navigation_style`, `market_card_trigger`, `is_plan_suggestions_enabled`, `has_default_empire`, `has_default_cx`, `is_buy_from_cx_default`, `burn_days_red`, `burn_days_yellow`, `burn_resupply_days`, `burn_origin`, `supply_cart_days`, `fio_repair_interval_days`, `fio_repair_due_soon_days`, `fio_repair_arrival_days`, `fio_repair_plan_link_count`, `plan_override_count`, `email_nudge_dismissal`, `email_nudge_dismissed_at` | every preference, on load and on each sync (`trackPreferences` in `user.queries.ts`): ids only as `has_*`, per-plan and per-site settings as counts |
 | `plan_count`, `empire_count`, `cx_count` | the planning data loader, on every page that loads the lists |
 
 Person properties set before the user is identified are kept and sent with

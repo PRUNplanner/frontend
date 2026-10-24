@@ -110,8 +110,8 @@ vi.mock("@/ui/charts/MarketExplorationChart.vue", () =>
 vi.mock("@/features/material_tile/components/MaterialTile.vue", () =>
 	stub("MaterialTile", ["ticker"])
 );
-vi.mock("@/features/cx/components/MaterialCXOverviewTable.vue", () =>
-	stub("MaterialCXOverviewTable")
+vi.mock("@/features/material_tile/components/MaterialExchangeTable.vue", () =>
+	stub("MaterialExchangeTable", ["overview"])
 );
 vi.mock(
 	"@/features/market_exploration/components/MarketExplorationExchanges.vue",
@@ -434,6 +434,12 @@ describe("MarketExplorationView", () => {
 
 			expect(wrapper.findComponent(PSelect).props("value")).toBe("RAT");
 			expect(chart.fetchData).toHaveBeenCalledTimes(1);
+			// the exchange table follows, without plan columns
+			const table = wrapper.findComponent({ name: "MaterialExchangeTable" });
+			expect(table.props("overview")).toMatchObject({
+				vwap_7d: { UNIVERSE: 236 },
+			});
+			expect(table.attributes("daily")).toBeUndefined();
 			expect(trackEvent).toHaveBeenCalledWith("tool:use", {
 				tool_name: "market_exploration",
 				exchange: "AI1",

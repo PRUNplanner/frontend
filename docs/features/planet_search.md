@@ -9,6 +9,17 @@ Results show as a List, a Matrix or a Chart (jumps against daily output,
 with the best trade-off planets), can be compared (desktop), shared as a
 link and saved in the browser. A result can be turned into a new plan.
 
+**Public.** `/search` works without an account (indexable, in the
+sitemap): visitors get the homepage header and footer, a one-line intro
+with the planet count, and the frame fits below the 64 px header. The
+planning parts become login prompts through `useAuthPanel().open()`: "+"
+(and a double-click in the Chart) opens the login panel with `next` set to
+the new plan and the planet named above the form; the Distance section's
+plan part is a "Log in" line that keeps the visitor on the search. After a
+login on the page, `PlanetSearchPage` loads the empires and the plan
+distances appear without a reload. Saved searches and the other prefs are
+in localStorage, so they work logged out too.
+
 **Used by.** `views/PlanetSearchView.vue` (`/search`).
 `environmentExtras.util.ts` is also used by `resource_roi_overview`.
 
@@ -26,7 +37,9 @@ link and saved in the browser. A result can be turned into a new plan.
 | `usePlanetSearchPrefs.ts` | Saved searches, hidden columns/materials, collapsed panel, last view in localStorage (not `UserPreference`) |
 | `useIncrementalRows.ts` | Renders long result lists in steps of 100 rows |
 | `environmentExtras.util.ts` | `environmentExtras(buckets)` → extra building materials with their reason; `planetBuckets(planet)` for a full `Planet`. Mirrors `getPlanetSpecialMaterials` in the plan engine (tested for all combinations) |
-| `components/PlanetSearchPage.vue` | Orchestrates state, url sync (`router.replace` debounced by 300 ms, cancelled when leaving the route, flushed on any other unmount), data loading and layout |
+| `components/PlanetSearchPage.vue` | Orchestrates state, url sync (`router.replace` debounced by 300 ms, cancelled when leaving the route, flushed on any other unmount), data loading and layout. The title row and search header paint at once; only the body waits in `WrapperGameDataLoader` |
+| `components/PlanetSearchHeader.vue` / `PlanetSearchSavedActions.vue` | Name field; saved searches, copy link and reset beside it, or in one "⋯" popover below 640 px |
+| `components/PlanetSearchRowActions.vue` | "+" (a new-tab link to the plan logged in, a login prompt logged out) and the pin |
 | `components/PlanetSearchFilterPanel.vue` | The filters (also used in the small-screen drawer) |
 | `components/PlanetSearchList.vue` / `PlanetSearchMatrix.vue` | Result views with sticky header and planet column |
 | `components/PlanetSearchChart.vue` | Chart view: `PScatter` with the best trade-off (`paretoFrontier`), colour by frontier or COGC, a ranked list beside it; click pins, double-click opens a plan |

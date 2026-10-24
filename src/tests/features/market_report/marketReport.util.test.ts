@@ -4,7 +4,9 @@ import {
 	bookStats,
 	changeColor,
 	exchangeCards,
+	exchangeGaps,
 	formatChange,
+	formatDate,
 	formatMoney,
 	indexChanges,
 	marketBrief,
@@ -90,7 +92,7 @@ describe("workforce cost", () => {
 describe("movers", () => {
 	it("never lists a flat material or one below the volume floor", () => {
 		for (const direction of ["rising", "falling"] as const) {
-			const list = marketMovers(summary.materials, direction, 50);
+			const list = marketMovers(summary.materials, direction);
 			expect(list.length).toBeGreaterThan(0);
 			list.forEach((m) => {
 				expect(m.is_flat).toBe(false);
@@ -106,9 +108,9 @@ describe("movers", () => {
 		).not.toContain("ADS");
 	});
 
-	it("sorts by change, top 8 by default", () => {
+	it("sorts by change, all of them (the lists cut)", () => {
 		const rising = marketMovers(summary.materials, "rising");
-		expect(rising).toHaveLength(8);
+		expect(rising.length).toBeGreaterThan(8);
 		expect(rising.slice(0, 3).map((m) => m.ticker)).toEqual([
 			"FE",
 			"THF",
@@ -168,6 +170,11 @@ describe("summary numbers", () => {
 		// against the first spark day: 4 × 153 + 4 × 231 + 0.5 × 189 + 0.2 × 422 + 0.5 × 1030
 		const then = 4 * 153 + 4 * 231 + 0.5 * 189 + 0.2 * 422 + 0.5 * 1030;
 		expect(brief.pioneerChange).toBeCloseTo((2236 / then - 1) * 100);
+		// 15 days from the sparks, the first one 14 days before as_of
+		expect(brief.pioneerStart).toBe(summary.as_of - 14 * 86_400_000);
+		expect(brief.pioneerSeries).toHaveLength(15);
+		expect(brief.pioneerSeries[0]).toBeCloseTo(then);
+		expect(brief.pioneerSeries.at(-1)).toBeCloseTo(2236, -1);
 	});
 
 	it("exchange cards: shares add up to 100 %", () => {
@@ -238,7 +245,98 @@ describe("squarify", () => {
 	});
 });
 
+describe("price gaps", () => {
+	// the books of 22 Oct (MUS, GRA from the 22 Oct snapshot, LST from
+	// 14:50) and materials that must be left out
+	const bk = (
+		ticker: string,
+		exchange_code: string,
+		vwap_7d: number,
+		sum_traded_7d: number,
+		ask: number,
+		bid: number
+	) => ({ ticker, exchange_code, vwap_7d, sum_traded_7d, ask, bid }) as Exchange;
+	const books = [
+		bk("MUS", "AI1", 450, 1000, 500, 400),
+		bk("MUS", "CI1", 470, 1000, 520, 380),
+		bk("MUS", "IC1", 364.69, 1000, 460, 280),
+		bk("MUS", "NC1", 688.3, 1000, 700, 315),
+		bk("GRA", "AI1", 4766.39, 299, 5300, 4000),
+		bk("GRA", "CI1", 6422.45, 832, 7130, 5000),
+		bk("GRA", "IC1", 3768.03, 907, 4730, 2800),
+		bk("GRA", "NC1", 5003.05, 292, 4870, 4010),
+		// the all-exchange row is no exchange
+		bk("GRA", "UNIVERSE", 1, 2330, 0, 0),
+		bk("LST", "AI1", 186.8, 54068, 188, 167),
+		bk("LST", "CI1", 157.5, 40562, 142, 130),
+		bk("LST", "IC1", 170, 30000, 175, 160),
+		bk("LST", "NC1", 180, 20000, 195, 190),
+		// flat
+		bk("FLT", "AI1", 100, 10000, 100, 99),
+		bk("FLT", "CI1", 300, 10000, 300, 299),
+		// CI1 under the unit floor leaves one exchange
+		bk("THN", "AI1", 100, 5000, 100, 99),
+		bk("THN", "CI1", 300, 10, 300, 299),
+		// AI1 under the turnover floor
+		bk("LOW", "AI1", 1, 1000, 1, 1),
+		bk("LOW", "CI1", 2, 1_000_000, 2, 2),
+		// a gap under the minimum
+		bk("SML", "AI1", 100, 10000, 101, 99),
+		bk("SML", "CI1", 105, 10000, 106, 104),
+		// one exchange
+		bk("ONE", "NC1", 100, 10000, 100, 99),
+	];
+	const gapSummary = {
+		...summary,
+		materials: ["MUS", "GRA", "LST", "FLT", "THN", "LOW", "SML", "ONE"].map(
+			(ticker) =>
+				material({ ticker, name: ticker, is_flat: ticker === "FLT" })
+		),
+	};
+
+	it("last 7 days: VWAP 7D, with the books now on each row", () => {
+		const gaps = exchangeGaps(books, gapSummary, "vwap");
+		expect(gaps.map((g) => g.ticker)).toEqual(["MUS", "GRA", "LST"]);
+		expect(gaps[0]).toMatchObject({
+			low: "IC1",
+			high: "NC1",
+			lowPrice: 364.69,
+			highPrice: 688.3,
+			ask: 460,
+			bid: 315,
+			open: null,
+		});
+		expect(gaps[0].gap).toBeCloseTo(88.7, 1);
+		// CI1 bid 5,000 above IC1 ask 4,730
+		expect(gaps[1]).toMatchObject({ low: "IC1", high: "CI1" });
+		expect(gaps[1].open).toBeCloseTo(5.7, 1);
+	});
+
+	it("order books now: the best ask against the best bid elsewhere", () => {
+		const gaps = exchangeGaps(books, gapSummary, "books");
+		expect(gaps.map((g) => g.ticker)).toEqual(["LST"]);
+		expect(gaps[0]).toMatchObject({
+			low: "CI1",
+			high: "NC1",
+			lowPrice: 142,
+			highPrice: 190,
+		});
+		expect(gaps[0].gap).toBeCloseTo(33.8, 1);
+	});
+
+	it("a material missing from the summary is left out", () => {
+		expect(exchangeGaps(books, { ...summary, materials: [] }, "vwap")).toEqual(
+			[]
+		);
+	});
+});
+
 describe("formatting", () => {
+	it("dates in text carry the year", () => {
+		const jul24 = Date.UTC(2026, 6, 24);
+		expect(formatDate(jul24)).toBe("Jul 24, 2026");
+	});
+
 	it("changes carry arrow and sign", () => {
 		expect(formatChange(7.94)).toBe("▲\u00a0+7.9\u00a0%");
 		expect(formatChange(-2.5)).toBe("▼\u00a0−2.5\u00a0%");
@@ -287,6 +385,8 @@ describe("an empty or thin summary", () => {
 			sectorChange: null,
 			pioneerCost: null,
 			pioneerChange: null,
+			pioneerStart: empty.as_of,
+			pioneerSeries: [],
 		});
 	});
 

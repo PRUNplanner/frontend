@@ -24,6 +24,10 @@ import fixture from "@/tests/test_data/api_data_planet_search_index.json";
 const ctx = { now: 0, refJumps: () => undefined };
 
 // keys render as keys, only the Any button shows its count
+const openAuth = vi.hoisted(() => vi.fn());
+vi.mock("@/features/account/useAuthPanel", () => ({
+	useAuthPanel: () => ({ open: openAuth }),
+}));
 vi.mock("vue-i18n", async (original) => ({
 	...(await original<typeof import("vue-i18n")>()),
 	useI18n: () => ({
@@ -437,6 +441,19 @@ describe("PlanetSearchFilterPanel distance", () => {
 		expect(panel.text()).not.toContain("planet_search.distance.empire");
 		expect(panel.findComponent(PInput).exists()).toBe(false);
 		expect(buttonByText(panel, "AI1").exists()).toBe(true);
+
+		// a login line instead, which keeps the visitor on the search
+		const line = panel.find("[data-distance-login]");
+		expect(line.text()).toContain("planet_search.distance.login_prompt");
+		await buttonByText(panel, "planet_search.distance.login").trigger(
+			"click"
+		);
+		expect(openAuth).toHaveBeenCalledWith("login", "planet_search_distance");
+	});
+
+	it("shows no login line with a login", async () => {
+		const panel = await mountWith({});
+		expect(panel.find("[data-distance-login]").exists()).toBe(false);
 	});
 
 	it("tells when there is no empire", async () => {

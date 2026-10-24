@@ -4,6 +4,9 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Composables
+	import { useAuthPanel } from "@/features/account/useAuthPanel";
+
 	// Engine
 	import {
 		addMaterial,
@@ -35,7 +38,7 @@
 	} from "@/features/planet_search/planetSearch.types";
 
 	// UI
-	import { PCheckbox, PInput, PInputNumber, PSelect } from "@/ui";
+	import { PButton, PCheckbox, PInput, PInputNumber, PSelect } from "@/ui";
 
 	const props = defineProps<{
 		filter: PlanetSearchFilter;
@@ -52,6 +55,9 @@
 		(e: "update:filter", value: PlanetSearchFilter): void;
 		(e: "update:empire", value: string): void;
 	}>();
+
+	// a visitor logs in where the search is, it stays as it is
+	const { open: openAuth } = useAuthPanel();
 
 	function set(patch: Partial<PlanetSearchFilter>) {
 		emit("update:filter", { ...props.filter, ...patch });
@@ -582,6 +588,18 @@
 					</div>
 				</template>
 			</template>
+			<div
+				v-else
+				data-distance-login
+				class="flex flex-row items-center justify-between gap-3 p-2.5 border border-white/10 rounded-md">
+				<span>{{ t("planet_search.distance.login_prompt") }}</span>
+				<PButton
+					type="secondary"
+					class="min-h-11 lg:min-h-0"
+					@click="openAuth('login', 'planet_search_distance')">
+					{{ t("planet_search.distance.login") }}
+				</PButton>
+			</div>
 
 			<p class="text-muted mt-1">
 				{{ t("planet_search.distance.exchanges") }}

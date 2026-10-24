@@ -20,6 +20,7 @@ export const preferenceDefaults: IPreferenceDefault = {
 	supplyCartDays: 20,
 	layoutNavigationStyle: "full",
 	colorPalette: "default",
+	marketCardTrigger: "hover",
 	planSuggestions: true,
 
 	fioRepairIntervalDays: 60,

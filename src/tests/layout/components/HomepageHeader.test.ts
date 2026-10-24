@@ -137,8 +137,9 @@ describe("HomepageHeader", () => {
 	});
 
 	it.each([
-		["homepage", 5],
-		["market", 5],
+		["homepage", 6],
+		["market", 6],
+		["search", 6],
 		["shared-plan", 0],
 	])("on %s shows %i section links", async (name, links) => {
 		route.name = name;
@@ -165,5 +166,132 @@ describe("HomepageHeader", () => {
 		expect(trackEvent).toHaveBeenCalledWith("landing:market_click", {
 			target: "header",
 		});
+	});
+
+	it("links Planet Search right after the market report", async () => {
+		const { wrapper } = await mountComponent(HomepageHeader);
+		const nav = wrapper.find("nav");
+		const items = nav.findAll("a").map((a) => a.text());
+		expect(items.indexOf("homepage.navigation.planet_search")).toBe(
+			items.indexOf("homepage.navigation.market") + 1
+		);
+
+		await nav.find("[data-planet-search-link]").trigger("click");
+		expect(trackEvent).toHaveBeenCalledWith("landing:planet_search_click", {
+			target: "header",
+		});
+	});
+
+	it("spans the full width on Planet Search, at the height its frame expects", async () => {
+		route.name = "search";
+		const { wrapper } = await mountComponent(HomepageHeader);
+		expect(wrapper.find("header").classes()).toContain("lg:h-16");
+		expect(wrapper.find("header > div").classes()).not.toContain(
+			"max-w-[1240px]"
+		);
+
+		route.name = "market";
+		const market = (await mountComponent(HomepageHeader)).wrapper;
+		expect(market.find("header > div").classes()).toContain(
+			"max-w-[1240px]"
+		);
+	});
+
+	describe("menu below lg", () => {
+		it("lists the tools, the sections, GitHub and Log in", async () => {
+			route.name = "search";
+			const { wrapper } = await mountComponent(HomepageHeader, {}, {
+				attach: true,
+			});
+			const button = wrapper.find("[data-menu]");
+			expect(button.attributes("aria-expanded")).toBe("false");
+			const focus = vi.spyOn(HTMLElement.prototype, "focus");
+			// below sm Log in leaves the header row for the menu
+			expect(wrapper.find("[data-login]").classes()).toContain("hidden");
+
+			await button.trigger("click");
+			await flushPromises();
+			expect(button.attributes("aria-expanded")).toBe("true");
+			const menu = wrapper.find("#homepage-menu");
+			expect(menu.findAll("a").map((a) => a.text())).toEqual([
+				"homepage.navigation.planet_search",
+				"homepage.navigation.market",
+				"homepage.navigation.how",
+				"homepage.navigation.features",
+				"homepage.navigation.all_tools",
+				"homepage.navigation.github",
+			]);
+			expect(menu.find("[data-menu-login]").classes()).toContain(
+				"sm:hidden"
+			);
+			// focus moves into it (the stub links have no href to hold it)
+			expect(focus.mock.contexts.at(-1)).toBe(menu.find("a").element);
+			focus.mockRestore();
+
+			await menu.find("[data-menu-login]").trigger("click");
+			expect(panel.showLogin.value).toBe(true);
+			expect(wrapper.find("#homepage-menu").exists()).toBe(false);
+			wrapper.unmount();
+		});
+
+		it("closes on Escape and outside clicks, back on its button", async () => {
+			const { wrapper } = await mountComponent(HomepageHeader, {}, {
+				attach: true,
+			});
+			const button = wrapper.find("[data-menu]");
+
+			await button.trigger("click");
+			document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+			await nextTick();
+			expect(wrapper.find("#homepage-menu").exists()).toBe(false);
+			expect(document.activeElement).toBe(button.element);
+
+			await button.trigger("click");
+			document.body.dispatchEvent(
+				new PointerEvent("pointerdown", { bubbles: true })
+			);
+			await nextTick();
+			expect(wrapper.find("#homepage-menu").exists()).toBe(false);
+			expect(document.activeElement).toBe(button.element);
+			wrapper.unmount();
+		});
+
+		it("is not on pages without the section nav", async () => {
+			route.name = "shared-plan";
+			const { wrapper } = await mountComponent(HomepageHeader);
+			expect(wrapper.find("[data-menu]").exists()).toBe(false);
+			expect(wrapper.find("[data-login]").classes()).not.toContain(
+				"hidden"
+			);
+		});
+	});
+
+	it("names the planet above the forms when a plan is started", async () => {
+		const { wrapper } = await mountComponent(HomepageHeader, {}, {
+			messages: {
+				homepage: {
+					auth_panel: { plan_context: "Plan {planet} ({id}), {name}" },
+				},
+			},
+		});
+		panel.open("login", "planet_search_plan", {
+			next: "/plan/CH-771a",
+			context: { planet: "Pyrgos", id: "CH-771a" },
+		});
+		await forms(wrapper);
+		const notice = () =>
+			document.querySelector("[role=dialog] [role=status]");
+		expect(notice()?.textContent).toContain("Plan Pyrgos (CH-771a), Pyrgos");
+
+		// also after the switch to Create account
+		panel.switchTo("registration");
+		await nextTick();
+		expect(notice()).not.toBeNull();
+
+		// gone when the header's button opens the panel
+		panel.close();
+		await wrapper.find("[data-login]").trigger("click");
+		await forms(wrapper);
+		expect(notice()).toBeNull();
 	});
 });

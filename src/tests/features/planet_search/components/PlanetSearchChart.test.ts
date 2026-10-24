@@ -11,6 +11,18 @@ import type { IPlanetSearchContext } from "@/features/planet_search/planetSearch
 
 const resolve = vi.fn((to: string) => ({ href: `/app${to}` }));
 vi.mock("vue-router", () => ({ useRouter: () => ({ resolve }) }));
+const session = vi.hoisted(() => ({ loggedIn: true }));
+vi.mock("@/stores/userStore", () => ({
+	useUserStore: () => ({
+		get isLoggedIn() {
+			return session.loggedIn;
+		},
+	}),
+}));
+const openAuth = vi.hoisted(() => vi.fn());
+vi.mock("@/features/account/useAuthPanel", () => ({
+	useAuthPanel: () => ({ open: openAuth }),
+}));
 
 function planet(
 	id: string,
@@ -166,6 +178,22 @@ describe("PlanetSearchChart", () => {
 		await chart.find('[aria-label="Name B"]').trigger("dblclick");
 		expect(open).toHaveBeenCalledWith("/app/plan/B", "_blank", "noopener");
 		vi.useRealTimers();
+	});
+
+	it("asks a visitor to log in before the plan a double-click opens", async () => {
+		session.loggedIn = false;
+		const open = vi.spyOn(window, "open").mockReturnValue(null);
+		open.mockClear();
+		openAuth.mockClear();
+		const { chart } = await mountChart();
+
+		await chart.find('[aria-label="Name B"]').trigger("dblclick");
+		expect(open).not.toHaveBeenCalled();
+		expect(openAuth).toHaveBeenCalledWith("login", "planet_search_plan", {
+			next: "/plan/B",
+			context: { planet: expect.any(String), id: "B" },
+		});
+		session.loggedIn = true;
 	});
 
 	it("doesn't pin from the chart without the compare tray", async () => {

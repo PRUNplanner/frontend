@@ -53,10 +53,12 @@
 		hintText,
 	} from "@/features/planet_search/planetSearchLabels.util";
 	import { deepClone } from "@/util/data";
+	import { formatNumber } from "@/util/numbers";
 	import { planetDisplayName } from "@/util/planetName";
 
 	// Components
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import PlanetSearchHeader from "@/features/planet_search/components/PlanetSearchHeader.vue";
 	import PlanetSearchFilterPanel from "@/features/planet_search/components/PlanetSearchFilterPanel.vue";
 	import PlanetSearchResultsBar from "@/features/planet_search/components/PlanetSearchResultsBar.vue";
@@ -238,7 +240,8 @@
 			]);
 			// a cache hit returns the query store's reactive copy
 			index.value = toRaw(data);
-			empires.value = empireList;
+			// a login during the load has loaded them already (watch below)
+			if (!empires.value.length) empires.value = empireList;
 			resolveEmpire();
 		} catch {
 			loadError.value = true;
@@ -247,6 +250,21 @@
 		}
 	});
 
+	// a visitor logged in from the page: the plan distances appear, the
+	// search stays as it is
+	watch(
+		() => userStore.isLoggedIn,
+		async (loggedIn) => {
+			if (!loggedIn) return;
+			try {
+				empires.value = await useQuery("GetAllEmpires").execute();
+				if (!loading.value) resolveEmpire();
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	);
+
 	function changeEmpire(uuid: string) {
 		empireUuid.value = uuid;
 		filter.value = {
@@ -254,7 +272,6 @@
 			references: filter.value.references.filter((r) => r.kind === "cx"),
 		};
 	}
-
 
 	/*
 	 * Engine
@@ -442,6 +459,16 @@
 
 	const drawerOpen: Ref<boolean> = ref(false);
 
+	// visitors get a line on what the tool does, and the frame fits below
+	// their header
+	const intro = computed(() =>
+		index.value.length
+			? t("planet_search.intro.lead", {
+					n: formatNumber(index.value.length, 0),
+				})
+			: t("planet_search.intro.lead_any")
+	);
+
 	const panelProps = computed(() => ({
 		filter: filter.value,
 		facets: facets.value,
@@ -455,12 +482,22 @@
 </script>
 
 <template>
-	<div class="flex flex-col lg:h-dvh">
+	<div
+		class="flex flex-col"
+		:class="userStore.isLoggedIn ? 'lg:h-dvh' : 'lg:h-[calc(100dvh-64px)]'">
 		<div
-			class="px-6 py-3 border-b border-white/10 flex flex-row justify-between">
-			<h1 class="text-2xl font-bold my-auto">
-				{{ t("planet_search.title") }}
-			</h1>
+			class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-row justify-between items-start gap-6">
+			<div>
+				<h1 class="text-2xl font-bold my-auto">
+					{{ t("planet_search.title") }}
+				</h1>
+				<p
+					v-if="!userStore.isLoggedIn"
+					data-intro
+					class="mt-1 text-white/70 leading-snug">
+					{{ intro }}
+				</p>
+			</div>
 			<HelpDrawer file-name="planet_search" />
 		</div>
 
@@ -477,134 +514,155 @@
 			@copy="copyLink"
 			@reset="reset" />
 
-		<div v-if="loading" class="flex-1 flex justify-center py-12">
-			<PSpin :aria-label="t('planet_search.loading')" />
-		</div>
-		<p v-else-if="loadError" class="flex-1 px-6 py-12 text-negative">
-			{{ t("planet_search.load_error") }}
-		</p>
+		<!-- the frame above paints at once, the body waits for the game data -->
+		<div class="flex-1 min-h-[420px] lg:min-h-0 flex flex-col">
+			<WrapperGameDataLoader load-materials load-exchanges>
+				<div v-if="loading" class="flex-1 flex justify-center py-12">
+					<PSpin :aria-label="t('planet_search.loading')" />
+				</div>
+				<p
+					v-else-if="loadError"
+					class="flex-1 px-6 py-12 text-negative">
+					{{ t("planet_search.load_error") }}
+				</p>
 
-		<div v-else class="flex-1 min-h-0 flex flex-row">
-			<aside
-				v-if="isDesktop"
-				class="shrink-0 border-r border-white/10 flex flex-col min-h-0"
-				:class="prefs.filtersCollapsed ? 'w-[52px]' : 'w-[400px]'">
-				<div
-					class="flex items-center gap-2 px-3 py-2"
-					:class="
-						prefs.filtersCollapsed
-							? 'flex-col'
-							: 'flex-row justify-between'
-					">
-					<h2
-						class="text-xs font-bold uppercase tracking-wider text-muted whitespace-nowrap"
-						:class="{ '[writing-mode:vertical-rl]': prefs.filtersCollapsed }">
-						{{ t("planet_search.filters.title") }} ·
-						{{ t("planet_search.filters.active", { n: chips.length }) }}
-					</h2>
-					<button
-						type="button"
-						class="touch-target cursor-pointer hover:bg-white/20 hover:rounded-sm p-2"
-						:class="{ '-order-1': prefs.filtersCollapsed }"
-						:aria-label="
-							prefs.filtersCollapsed
-								? t('planet_search.filters.expand')
-								: t('planet_search.filters.collapse')
-						"
-						:aria-expanded="!prefs.filtersCollapsed"
-						@click="
-							prefs.filtersCollapsed = !prefs.filtersCollapsed
+				<div v-else class="flex-1 min-h-0 flex flex-row">
+					<aside
+						v-if="isDesktop"
+						class="shrink-0 border-r border-white/10 flex flex-col min-h-0"
+						:class="
+							prefs.filtersCollapsed ? 'w-[52px]' : 'w-[400px]'
 						">
-						<KeyboardDoubleArrowRightSharp
-							v-if="prefs.filtersCollapsed"
-							class="w-5 h-5" />
-						<KeyboardDoubleArrowLeftSharp v-else class="w-5 h-5" />
-					</button>
-				</div>
-				<div
-					v-if="!prefs.filtersCollapsed"
-					class="flex-1 min-h-0 overflow-y-auto px-4 pb-6">
-					<PlanetSearchFilterPanel
-						v-bind="panelProps"
-						@update:filter="(f) => (filter = f)"
-						@update:empire="changeEmpire" />
-				</div>
-			</aside>
+						<div
+							class="flex items-center gap-2 px-3 py-2"
+							:class="
+								prefs.filtersCollapsed
+									? 'flex-col'
+									: 'flex-row justify-between'
+							">
+							<h2
+								class="text-xs font-bold uppercase tracking-wider text-muted whitespace-nowrap"
+								:class="{
+									'[writing-mode:vertical-rl]':
+										prefs.filtersCollapsed,
+								}">
+								{{ t("planet_search.filters.title") }} ·
+								{{
+									t("planet_search.filters.active", {
+										n: chips.length,
+									})
+								}}
+							</h2>
+							<button
+								type="button"
+								class="touch-target cursor-pointer hover:bg-white/20 hover:rounded-sm p-2"
+								:class="{ '-order-1': prefs.filtersCollapsed }"
+								:aria-label="
+									prefs.filtersCollapsed
+										? t('planet_search.filters.expand')
+										: t('planet_search.filters.collapse')
+								"
+								:aria-expanded="!prefs.filtersCollapsed"
+								@click="
+									prefs.filtersCollapsed =
+										!prefs.filtersCollapsed
+								">
+								<KeyboardDoubleArrowRightSharp
+									v-if="prefs.filtersCollapsed"
+									class="w-5 h-5" />
+								<KeyboardDoubleArrowLeftSharp
+									v-else
+									class="w-5 h-5" />
+							</button>
+						</div>
+						<div
+							v-if="!prefs.filtersCollapsed"
+							class="flex-1 min-h-0 overflow-y-auto px-4 pb-6">
+							<PlanetSearchFilterPanel
+								v-bind="panelProps"
+								@update:filter="(f) => (filter = f)"
+								@update:empire="changeEmpire" />
+						</div>
+					</aside>
 
-			<section class="flex-1 min-w-0 flex flex-col min-h-0">
-				<PlanetSearchResultsBar
-					v-model:view="view"
-					v-model:hidden-columns="prefs.hiddenColumns"
-					v-model:hidden-materials="prefs.hiddenMaterials"
-					:count="results.length"
-					:total="index.length"
-					:results="results"
-					:filter="filter"
-					:chips="chips"
-					:hints="hintItems"
-					:name-note="nameNoteItem"
-					:is-desktop="isDesktop"
-					:ref-name="refName"
-					:sorts="sort"
-					:default-sort="fallbackSort"
-					@update:filter="(f) => (filter = f)"
-					@sort="(s) => (sort = s)"
-					@open-filters="drawerOpen = true" />
+					<section class="flex-1 min-w-0 flex flex-col min-h-0">
+						<PlanetSearchResultsBar
+							v-model:view="view"
+							v-model:hidden-columns="prefs.hiddenColumns"
+							v-model:hidden-materials="prefs.hiddenMaterials"
+							:count="results.length"
+							:total="index.length"
+							:results="results"
+							:filter="filter"
+							:chips="chips"
+							:hints="hintItems"
+							:name-note="nameNoteItem"
+							:is-desktop="isDesktop"
+							:ref-name="refName"
+							:sorts="sort"
+							:default-sort="fallbackSort"
+							@update:filter="(f) => (filter = f)"
+							@sort="(s) => (sort = s)"
+							@open-filters="drawerOpen = true" />
 
-				<div
-					class="lg:flex-1 lg:min-h-0 overflow-auto mx-3 lg:mx-6 mb-3 border border-white/10 rounded">
-					<PlanetSearchList
-						v-if="view === 'list'"
-						:planets="results"
-						:filter="filter"
-						:ctx="ctx"
-						:max-daily="maxDaily"
-						:sorts="activeSort"
-						:pins="pins"
-						:show-pins="isDesktop"
-						:hidden-columns="prefs.hiddenColumns"
-						:ref-name="refName"
-						@sort="(s) => (sort = s)"
-						@pin="togglePin" />
-					<PlanetSearchMatrix
-						v-else-if="view === 'matrix'"
-						:planets="results"
-						:filter="filter"
-						:ctx="ctx"
-						:max-daily="maxDaily"
-						:sorts="activeSort"
-						:pins="pins"
-						:show-pins="isDesktop"
-						:hidden-columns="prefs.hiddenColumns"
-						:hidden-materials="prefs.hiddenMaterials"
-						:ref-name="refName"
-						@sort="(s) => (sort = s)"
-						@pin="togglePin" />
-					<PlanetSearchChart
-						v-else
-						:planets="results"
-						:filter="filter"
-						:ctx="ctx"
-						:pins="pins"
-						:show-pins="isDesktop"
-						:ref-name="refName"
-						@pin="togglePin" />
+						<div
+							class="lg:flex-1 lg:min-h-0 overflow-auto mx-3 lg:mx-6 mb-3 border border-white/10 rounded">
+							<PlanetSearchList
+								v-if="view === 'list'"
+								:planets="results"
+								:filter="filter"
+								:ctx="ctx"
+								:max-daily="maxDaily"
+								:sorts="activeSort"
+								:pins="pins"
+								:show-pins="isDesktop"
+								:hidden-columns="prefs.hiddenColumns"
+								:ref-name="refName"
+								@sort="(s) => (sort = s)"
+								@pin="togglePin" />
+							<PlanetSearchMatrix
+								v-else-if="view === 'matrix'"
+								:planets="results"
+								:filter="filter"
+								:ctx="ctx"
+								:max-daily="maxDaily"
+								:sorts="activeSort"
+								:pins="pins"
+								:show-pins="isDesktop"
+								:hidden-columns="prefs.hiddenColumns"
+								:hidden-materials="prefs.hiddenMaterials"
+								:ref-name="refName"
+								@sort="(s) => (sort = s)"
+								@pin="togglePin" />
+							<PlanetSearchChart
+								v-else
+								:planets="results"
+								:filter="filter"
+								:ctx="ctx"
+								:pins="pins"
+								:show-pins="isDesktop"
+								:ref-name="refName"
+								@pin="togglePin" />
+						</div>
+
+						<PlanetSearchCompare
+							v-if="isDesktop"
+							:planets="
+								pins
+									.map((p) =>
+										index.find(
+											(i) => i.planet_natural_id === p
+										)
+									)
+									.filter((p) => p !== undefined)
+							"
+							:filter="filter"
+							:ctx="ctx"
+							:ref-name="refName"
+							@unpin="togglePin" />
+					</section>
 				</div>
-
-				<PlanetSearchCompare
-					v-if="isDesktop"
-					:planets="
-						pins
-							.map((p) =>
-								index.find((i) => i.planet_natural_id === p)
-							)
-							.filter((p) => p !== undefined)
-					"
-					:filter="filter"
-					:ctx="ctx"
-					:ref-name="refName"
-					@unpin="togglePin" />
-			</section>
+			</WrapperGameDataLoader>
 		</div>
 
 		<!-- a full-screen filter panel, unlike other drawers -->
