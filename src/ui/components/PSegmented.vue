@@ -11,7 +11,7 @@
 		size = "md",
 		block = false,
 	} = defineProps<{
-		options: { value: T; label: string }[];
+		options: { value: T; label: string; disabled?: boolean }[];
 		/** the group's accessible name */
 		label: string;
 		/** 24 or 28 px segments */
@@ -39,15 +39,16 @@
 			v-for="o in options"
 			:key="o.value"
 			type="button"
-			class="touch-target px-3 rounded-control text-[13px] font-medium whitespace-nowrap cursor-pointer"
+			class="touch-target px-3 rounded-control text-[13px] font-medium whitespace-nowrap cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
 			:class="[
 				size === 'sm' ? 'h-6' : 'h-7',
 				block ? 'flex-1 min-w-0' : '',
 				block === 'phone' ? 'sm:flex-none' : '',
 				value === o.value
 					? 'bg-selected text-ink-strong ring-1 ring-inset ring-line-strong'
-					: 'text-muted-strong hover:bg-hover hover:text-ink-strong',
+					: 'text-muted-strong enabled:hover:bg-hover enabled:hover:text-ink-strong',
 			]"
+			:disabled="o.disabled"
 			:aria-pressed="value === o.value"
 			@click="value = o.value">
 			{{ o.label }}

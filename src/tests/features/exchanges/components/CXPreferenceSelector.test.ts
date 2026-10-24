@@ -107,6 +107,17 @@ describe("CXPreferenceSelector", () => {
 		expect(component.emitted("update:cxuuid")).toHaveLength(1);
 	});
 
+	it("lets the given CX win over the default without followDefault", async () => {
+		// a CX from a link
+		const { wrapper, component } = await mountSelector(
+			{ cxUuid: SHARE.uuid, followDefault: false },
+			{ defaultCX: REAL.uuid }
+		);
+
+		expect(select(wrapper).props("value")).toBe(SHARE.uuid);
+		expect(component.emitted("update:cxuuid")).toBeUndefined();
+	});
+
 	it("emits nothing when the given CX is the default CX", async () => {
 		const { component } = await mountSelector(
 			{ cxUuid: REAL.uuid },

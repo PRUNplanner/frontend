@@ -196,6 +196,7 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `planet_search:view_change` | `view` (`list`, `matrix`, `chart`) | Planet Search switched views (also when a link opens another view on the page) |
 | `market_exploration:view_change` | `view` (`candles`, `exchanges`) | Market Exploration switched between the candle chart and the "All exchanges" chart |
 | `resource_roi:chart_open` | | the Resource ROI chart drawer was opened |
+| `production_chain:action` | `action` (`recipe_pick`, `source_set`, `buy_all`, `planet_pick`, `view_graph`, `focus`, `xit_copy`, `csv`, `link_copy`) | something was done on the Production Chains page: a recipe or planet picked, a source set, "Buy all", the graph opened or a node focused, the XIT buy action, CSV or chain link copied |
 | `market:view_change` | `chart` (`index`, `workforce`, `movers`, `leaders`, `gaps`), `view` (index: `exchange`, `combined`, `sector`; workforce: the tier, e.g. `engineer`; movers: `rising`, `falling`; gaps: `vwap`, `books`; movers, leaders and gaps: `all` when "Show all" expands the list, and on collapse the list's own view, `top` for leaders) | a view was switched or a list expanded or collapsed on the public market report (`/market`) |
 
 `tool:use` means a result, not an opened page (pageviews carry
@@ -208,7 +209,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | --- | --- | --- |
 | `planet_search` | `filter`, `result_count` | a changed filter settled (1 s) |
 | `market_exploration` | `exchange`, `material_ticker` | data for a chosen exchange, material or candle interval loaded, not the default on open |
-| `production_chain` | `material_ticker`, `amount`, `recipes`, `terminals` | a chain was built for a changed input, not the default on open |
+| `production_chain` | `targets` (tickers), `target_count`, `material_count`, `efficiency`, `raw_source` (`buy`, `extract`), `byproducts` (`cover`, `sell`) | targets or settings changed and settled (1 s); not for a chain opened from a link or the browser |
 | `resource_roi` | `material_ticker` | the search finished |
 | `recipe_roi` | | the ROI calculation finished |
 | `hq_upgrade` | | levels or overrides changed and settled (1 s) |

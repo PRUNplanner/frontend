@@ -127,8 +127,7 @@ time.
   component during synchronous setup. An `async useX()` that awaits first
   leaks its watchers. Put async work in the functions a composable returns
   (`getPrice`, `calculate`, …), or load it up front in a `features/wrapper`
-  loader. `useGraph` is the one async composable left: it loads planets and
-  registers no watchers.
+  loader.
 - **Calling a composable outside setup** (in a loop or an event handler)
   means no component owns its watchers. Run it in `effectScope()` and
   stop the scope when done. For plan numbers in a loop, call the engine

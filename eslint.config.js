@@ -100,7 +100,10 @@ export default [
 
 	// planning engine: plain TypeScript, no Vue, stores or data layer
 	{
-		files: ["src/features/planning/engine/**"],
+		files: [
+			"src/features/planning/engine/**",
+			"src/features/production_chain/engine/**",
+		],
 		rules: {
 			"no-restricted-imports": [
 				"error",

@@ -83,11 +83,25 @@ export type ToolUseProperties =
 	  }
 	| {
 			tool_name: "production_chain";
-			material_ticker: string;
-			amount: number;
-			recipes: string[];
-			terminals: string;
+			targets: string[];
+			target_count: number;
+			material_count: number;
+			efficiency: number;
+			raw_source: "buy" | "extract";
+			byproducts: "cover" | "sell";
 	  };
+
+// what was done on the production chain page
+export type ProductionChainAction =
+	| "recipe_pick"
+	| "source_set"
+	| "buy_all"
+	| "planet_pick"
+	| "view_graph"
+	| "focus"
+	| "xit_copy"
+	| "csv"
+	| "link_copy";
 
 // which XIT transfer button: the tool, and which of its buttons
 export type XITTransferSource =
@@ -276,6 +290,7 @@ export interface IAnalyticsEventProperties {
 	"planet_search:view_change": { view: PlanetSearchView };
 	"market_exploration:view_change": { view: ChartView };
 	"resource_roi:chart_open": undefined;
+	"production_chain:action": { action: ProductionChainAction };
 	"market:view_change":
 		| { chart: "index"; view: MarketIndexView }
 		| { chart: "workforce"; view: WorkforceType }

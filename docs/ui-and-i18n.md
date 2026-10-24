@@ -66,7 +66,8 @@ are internal to `PDataTable` and the selects.
 - **Segmented control:** `<PSegmented v-model:value="view" :options label>`
   switches between a few views of one thing: a `role="group"` named by
   `label`, one `aria-pressed` button per option in a sunken track, `size`
-  24 / 28 px, `block` fills the width (`block="phone"` below `sm` only).
+  24 / 28 px, `block` fills the width (`block="phone"` below `sm` only),
+  an option with `disabled: true` can't be picked.
   Used on `/market`; other pages' `PButton pressed` groups move to it page
   by page. A single on/off toggle stays `PButton pressed`.
 - **Tags:** `<PTag closable @close="…">` adds a remove button named

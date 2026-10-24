@@ -28,7 +28,7 @@ One page per `src/features/*` folder. Each page follows the same outline:
 | [repair_analysis](repair_analysis.md) | Repair cost vs building age |
 | [hq_upgrade_calculator](hq_upgrade_calculator.md) | Materials and cost for HQ level upgrades |
 | [government](government.md) | POPR reports and the upkeep price calculator |
-| [production_chain](production_chain.md) | Production dependency graph (vue-flow + dagre) |
+| [production_chain](production_chain.md) | Chain planner: per-day targets, make or buy, buildings, prices |
 | [market_report](market_report.md) | Public market report at `/market`: index, workforce cost, treemap, movers |
 | [market_exploration](market_exploration.md) | Historical CX charts |
 | [market_live](market_live.md) | Live CX feed over SSE with user alert rules |
