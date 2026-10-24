@@ -18,7 +18,8 @@
 		"redo": "Redo",
 		"building_removed": "Building removed",
 		"recipe_removed": "Recipe removed",
-		"recipe_changed": "{building} recipe changed"
+		"undo_key": "Undo (Ctrl+Z)",
+		"redo_key": "Redo (Ctrl+Shift+Z)"
 	},
 	"actions": {
 		"more": "More",
@@ -27,7 +28,8 @@
 		"reload": "Reload saved version",
 		"reload_hint": "Discards unsaved changes",
 		"reload_confirm": "Reload the saved version? Your unsaved changes will be lost.",
-		"tools": "Plan tools"
+		"tools": "Plan tools",
+		"download_csv": "Download Material I/O (CSV)"
 	},
 	"name": {
 		"untitled": "Unnamed plan"
@@ -35,13 +37,23 @@
 	"breadcrumb": "Plan location",
 	"tools": {
 		"labels": {
-			"popr": "ПОПР",
-			"visitation_frequency": "Частота посещений",
-			"construction_cart": "Корзина строительства",
-			"supply_cart": "Корзина снабжения",
-			"repair_analysis": "Анализ ремонта",
-			"profit_breakdown": "Profit Breakdown",
-			"plan_check": "Plan check"
+			"production": "Production",
+			"construction_cart": "Construction",
+			"supply_cart": "Supply",
+			"visitation_frequency": "Visits",
+			"repair_analysis": "Repair",
+			"profit_breakdown": "Profit",
+			"plan_check": "Plan check",
+			"popr": "ПОПР"
+		},
+		"descriptions": {
+			"construction-cart": "What is left to buy for the buildings",
+			"supply-cart": "Consumables for n days, as a list or XIT action",
+			"visitation-frequency": "When storage fills",
+			"repair-analysis": "Best repair interval per building",
+			"profit-breakdown": "Where the daily profit comes from",
+			"plan-check": "Thin markets and profit at real ask and bid",
+			"popr": "Population report"
 		},
 		"profit_breakdown": {
 			"title": "Profit Breakdown",
@@ -82,15 +94,22 @@
 		},
 		"popr": {
 			"title": "Последний отчет по популяции",
+			"subtitle": "The planet's workforce from the game's last report, next to what this plan needs",
 			"error": "Ошибка при загрузке последнего отчета о популяции. Планета может быть необитаема.",
-			"loading": "Загрузка отчета о популяции"
+			"loading": "Загрузка отчета о популяции",
+			"chart": {
+				"label": "Free workers next to what this plan needs",
+				"legend": "Bar: free workers less the open jobs of other bases · line: what this plan needs",
+				"row": "{tier}: {available} free, plan needs {need}",
+				"value": "{available} free · needs {need}"
+			}
 		},
 		"visitation_frequency": {
 			"title": "Частота посещений",
 			"storage": {
 				"label": "Хранилище",
-				"info": "Ваш план включает добавление {storages} дающее вам общую вместимость хранилища {total_weight} и {total_volume} m3.",
-				"info_no_storage": "Общий объем хранилища вашего плана составляет {total_weight} и {total_volume} м3.",
+				"info": "Your plan involves adding {storages} giving you a total storage capacity of {total_weight} t and {total_volume} m³.",
+				"info_no_storage": "Your plan has a total storage capacity of {total_weight} t and {total_volume} m³.",
 				"table": {
 					"weight": "t",
 					"volume": "m³",
@@ -118,6 +137,10 @@
 		"construction_cart": {
 			"title": "Корзина строительства",
 			"unplanned_info": "База имеет незапланированный {buildings} (FIO: {fio_updated}). Снесите постройки для обеспечения точности в корпусах и материалах.",
+			"sections": {
+				"buildings": "Buildings",
+				"materials": "Materials to buy"
+			},
 			"table": {
 				"building": "@:terms.buildings",
 				"built": "Построено",
@@ -146,8 +169,11 @@
 			"title": "Корзина снабжения",
 			"info": {
 				"p": "Корзина снабжения предоставляет обновления о ваших планах в сочетании с существующим инвентарием из FIO. Вы можете выбрать альтернативные места хранения для снабжения своей базы. делайте ваш выбор на основе того, хотите ли вы пополнить рабочую силу и материалы производства или сосредоточиться на конкретной категории. Укажите продолжительность, на которую должен поддерживаться поставляемый запас. Используйте инструмент {link} для более продвинутых опций корзины поставок.",
-				"link": "Расход FIO"
+				"link": "Расход FIO",
+				"label": "About the Supply Cart"
 			},
+			"filter_label": "Supply for",
+			"more_in": "More options in {link}",
 			"buttons": {
 				"all": "Всё",
 				"workforce": "Рабочая сила",
@@ -517,28 +543,12 @@
 		}
 	},
 	"components": {
-		"status": {
-			"hq": "Головной офис",
-			"cogc": "@:{'terms.cogc'}",
-			"area": "@:{'terms.area'}",
-			"profit": "@:{'terms.profit'}",
-			"experts": "@:{'terms.experts_plural'}",
-			"experts_none": "None",
-			"area_free": "{count} free",
-			"area_over": "{count} over",
-			"per_day": "ȼ/day"
-		},
 		"configuration": {
-			"label": "Конфигурация",
-			"name": "Имя",
-			"empire": "@:terms.empire",
 			"prices": "Prices",
 			"no_preference": "Universe · VWAP 30D (no preference)"
 		},
 		"area": {
-			"permits": "@:terms.permits_plural",
-			"area": "@:terms.area",
-			"free": "Свободно"
+			"permits": "@:terms.permits_plural"
 		},
 		"bonuses": {
 			"corp_hq": "Штаб-квартира корпорации",
@@ -546,68 +556,26 @@
 			"cogc": "@:terms.cogc"
 		},
 		"infrastructure": {
-			"label": "Инфраструктура",
-			"auto_optimize": "Автоматическая оптимизация заселения",
 			"auto_optimize_tooltip": "Автоматическая оптимизация поселений для удовлетворения кадровых потребностей по мере добавления зданий.",
-			"buttons": {
-				"optimize_cost": "Оптимизация по цене",
-				"optimize_area": "Оптимизация по площади"
-			},
 			"amount_label": "Amount of {infrastructure}"
 		},
 		"experts": {
-			"label": "Эксперты",
 			"warning": "Максимальное количество экспертов на базе - 6. В настоящее время назначены эксперты {expert_number}.",
 			"amount_label": "{expert} experts"
 		},
-		"workforce": {
-			"label": "Рабочая сила",
-			"table": {
-				"type": "Тип",
-				"need_housed": "Need / Housed",
-				"open": "Открыто",
-				"luxuries": "Предметы роскоши",
-				"pct_eff": "Эффективность"
-			}
-		},
-		"overview": {
-			"label": "Обзор",
-			"table": {
-				"daily_cost": "Суточная стоимость",
-				"degradation": "Деградация",
-				"plan_cost": "Стоимость плана",
-				"daily_profit": "Дневной доход",
-				"roi": "ROI",
-				"profit_area": "@:terms.profit_per_area"
-			}
-		},
-		"storage": {
-			"label": "Хранилище",
-			"table": {
-				"weight": "t",
-				"volume": "m³",
-				"import": "@:terms.import",
-				"export": "@:terms.export",
-				"sum": "@:terms.sum",
-				"filled": "Заполнено"
-			}
-		},
 		"materialio": {
 			"label": "I/O Материалов",
-			"label_production": "Производство",
-			"label_workforce": "Рабочая сила",
-			"buttons": {
-				"toggle_weight_volume": "Переключить вес и объем",
-				"toggle_production_workforce": "Переключить производство и разделение рабочей силы"
-			},
 			"table": {
 				"input": "Вход",
 				"output": "Выход",
 				"delta": "Δ",
 				"cost_day": "ȼ / День",
 				"total_weight": "Δ t",
-				"total_volume": "Δ m³"
-			}
+				"total_volume": "Δ m³",
+				"share_7d": "7d share",
+				"share_30d": "30d share"
+			},
+			"share_note": "Δ as a share of the average daily volume traded on {exchange}, last 7 and 30 days."
 		},
 		"save_as": {
 			"title": "Сохранить как",
@@ -618,35 +586,15 @@
 			}
 		},
 		"production": {
-			"label": "Производство",
-			"planet_resources": "@:terms.planets @:terms.resources_plural",
 			"form": {
 				"match_cogc": "Соответствие @:terms.cogc",
 				"select_placeholder": "Выбрать @:terms.buildings и добавить в @:terms.plan",
 				"popular_on": "Popular on {planet} · {plans} plans",
 				"all_buildings": "All buildings"
-			},
-			"table": {
-				"building_recipe": "@:terms.buildings / @:terms.recipes",
-				"runtime": "Время работы",
-				"share": "Поделиться",
-				"tools": "Инструменты"
 			}
 		},
 		"production_building": {
 			"no_recipe": "Нет активных @:terms.recipes_plural",
-			"qty": "Кол-во",
-			"buttons": {
-				"add_recipe": "@:terms.recipes"
-			},
-			"table": {
-				"expertise": "Экспертиза",
-				"efficiency": "Эффективность",
-				"revenue": "@:terms.revenue",
-				"area": "@:terms.area",
-				"construction": "Строительство",
-				"construction_per_building": "Per building"
-			},
 			"zero_reason": {
 				"FERTILITY": "Planet not fertile",
 				"WORKFORCE": "No workforce housed"
@@ -661,27 +609,157 @@
 			"buttons": {
 				"cogm": "@:terms.cogm"
 			},
-			"table": {
-				"input": "Ввод",
-				"time": "Время",
-				"output": "Вывод",
-				"daily_revenue": "ȼ / День",
-				"profit_area": "ȼ / Площадь",
-				"roi": "Доходность",
-				"plans_here": "Plans here",
-				"below_threshold": "< 5 %"
-			},
-			"info": {
-				"p1_strong": "Доход в день",
-				"p1": "is calculated by taking the daily income generated from a recipe and subtracting both the daily workforce cost (for the workers this plan houses and the luxuries it provides) and the daily building degradation cost (1/180th of the construction cost). The income from the recipe is based on the difference between the input material costs and the output material values.",
-				"p2_strong": "ȼ / Площадь",
-				"p2": "это ежедневный доход от площади для одного производственного здания и пропорциональная доля этого участка для КМ и жилищ, необходимых для оптимальной застройки таких зданий в доходности рецепта.",
-				"p3_strong": "Доходность",
-				"p3": "Время окупаемости проекта с учетом затрат на ремонт и обслуживание.",
-				"p4_strong": "Plans here",
-				"p4": "is the share of plans on {planet} with a {building} that run this recipe, from active players, updated daily."
-			},
 			"amount_label": "Amount of recipe {recipe}"
+		},
+		"storage": {
+			"table": {
+				"weight": "t",
+				"volume": "m³",
+				"import": "@:terms.import",
+				"export": "@:terms.export"
+			}
 		}
+	},
+	"header": {
+		"name": "Plan name",
+		"rename": "Rename plan"
+	},
+	"results": {
+		"label": "Plan results",
+		"profit": "Profit / day",
+		"revenue_cost": "Revenue {revenue} · cost {cost}",
+		"payback": "Payback",
+		"build": "Build {cost} ȼ",
+		"profit_area": "Profit / area",
+		"empire_average": "Empire {value}",
+		"area": "Area",
+		"storage": "Storage",
+		"days_to_full": "days to full",
+		"out_per_day": "{weight} t · {volume} m³ out / day"
+	},
+	"base": {
+		"label": "Base",
+		"empire": {
+			"label": "Empire & prices",
+			"calculate_with": "Calculate with empire",
+			"note": "Faction {faction}, permits from the empire. Plan is in {n} empire. | Faction {faction}, permits from the empire. Plan is in {n} empires."
+		},
+		"planet": {
+			"label": "Planet",
+			"summary": "COGC {cogc} · {n} permit | COGC {cogc} · {n} permits",
+			"area": "area {n}",
+			"resources": "Resources",
+			"add_extractor": "Add {building} for {ticker}",
+			"insights": "{n} plans on {planet} · what others build here"
+		},
+		"workforce": {
+			"label": "Workforce",
+			"need_housed": "{need} / {housed}",
+			"efficiency": "Efficiency",
+			"luxuries": "Luxuries",
+			"supply": "Supply {ticker}",
+			"beds_free": "{n} free",
+			"not_needed": "{tiers}: not needed"
+		},
+		"housing": {
+			"label": "Housing",
+			"auto": "Auto",
+			"cheapest": "Cheapest",
+			"least_area": "Least area",
+			"add": "+ Housing or storage"
+		},
+		"experts": {
+			"label": "Experts",
+			"summary": "{n} placed",
+			"more": "+ {n} more fields",
+			"fewer": "Fewer fields"
+		}
+	},
+	"production": {
+		"counts": "{buildings} buildings · {units} units · {recipes} recipes",
+		"collapse_all": "Collapse all",
+		"expand_all": "Expand all",
+		"columns": {
+			"building": "Building",
+			"count": "Count",
+			"efficiency": "Eff.",
+			"daily": "ȼ / day",
+			"area": "Area"
+		},
+		"fold": "Show or hide the recipes of {building}",
+		"experts": "{n} expert | {n} experts",
+		"delete_building": "Delete {building}, undo with Ctrl+Z",
+		"change_recipe": "Change recipe {recipe}",
+		"cogm_label": "Cost of goods manufactured for {recipe}",
+		"delete_recipe": "Delete recipe {recipe}, undo with Ctrl+Z",
+		"add_recipe": "+ Recipe",
+		"card_meta": "ȼ/day · {efficiency} · area {area}",
+		"recipe_daily": "This order's part of the building's ȼ/day"
+	},
+	"picker": {
+		"change_title": "Change recipe",
+		"add_title": "Add a recipe to {building} as a new order",
+		"replacing": "replacing {amount} × {ticker}",
+		"close": "Close",
+		"sort": {
+			"label": "Sort by",
+			"daily": "ȼ / day",
+			"popular": "Popular"
+		},
+		"columns": {
+			"makes": "Makes",
+			"from": "From",
+			"daily": "ȼ / day",
+			"area": "ȼ / area",
+			"payback": "Payback",
+			"plans": "Plans"
+		},
+		"dependency": "Your {buildings} turn this {ticker} into {outputs}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
+		"dependency_workforce": "Your workforce uses this {ticker}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
+		"uses_made": "uses {tickers} from the plan",
+		"feeds": "feeds {buildings}",
+		"current": "current recipe",
+		"in_plan": "in plan",
+		"vs_now": "{delta} vs now",
+		"below_threshold": "< 5 %",
+		"per_building": "ȼ per building and day",
+		"keys": "Click or Enter replaces · Esc closes",
+		"undo_key": "Ctrl+Z",
+		"replaced": "Replaced {before} with {after}.",
+		"added": "Added {recipe} as a new order.",
+		"keys_add": "Click or Enter adds · Esc closes"
+	},
+	"io": {
+		"source": {
+			"label": "Show materials for",
+			"all": "Whole base",
+			"production": "Production only",
+			"workforce": "Workforce only"
+		},
+		"filter": {
+			"label": "Filter",
+			"all": "All",
+			"exports": "Exports",
+			"imports": "Imports"
+		},
+		"value": {
+			"label": "Value shown"
+		},
+		"exports": "Exports",
+		"imports": "Imports",
+		"degradation": "Degradation",
+		"profit": "Profit / day"
+	},
+	"layout": {
+		"flags": "{n} market flag | {n} market flags",
+		"base_strip": "COGC {cogc} · {n} expert | COGC {cogc} · {n} experts",
+		"show_base": "Show base setup",
+		"show_io": "Show Material I/O",
+		"close": "Close",
+		"fold": "Fold",
+		"sections": "Plan sections",
+		"tools": "Tools",
+		"io_short": "I/O",
+		"all_tools": "All tools"
 	}
 }
