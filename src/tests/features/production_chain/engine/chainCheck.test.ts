@@ -272,8 +272,20 @@ describe("checkEmpire", () => {
 		)!;
 		expect(f.options.some((o) => o.own === null)).toBe(true);
 		const fresh = f.options.find((o) => o.own === null)!;
-		expect(fresh.plots).toBeNull();
-		expect(fresh.full).toBe(false);
+		// plots as the index has them (spec planet-plots), unknown without
+		expect(fresh.plots).toEqual(planetPlots(fresh.planet));
+		for (const o of f.options) expect(o.full).toBe(!!o.plots && o.plots.free <= 0 && !o.plots.ghost);
+		const unknown = { ...ctx, planets: new Map(
+			[...ctx.planets!].map(([id, p]) => [
+				id,
+				{ ...p, plots_total: null, plots_used: null, supports_ghost_sites: null } as PlanetSearchIndexEntry,
+			])
+		) };
+		const u = base(check({ plans }, unknown), "C").findings.find(
+			(x): x is ICheckLocationFinding => x.kind === "location"
+		)!;
+		expect(u.options.every((o) => o.plots === null && !o.full)).toBe(true);
+		expect(u.suggested).not.toBeNull();
 		expect(f.options.every((o) => o.own === null)).toBe(true);
 		expect(fresh.area).toBeGreaterThan(25 + 2 * ctx.buildings.get("FRM")!.area_cost);
 		expect(f.suggested).toBe(
