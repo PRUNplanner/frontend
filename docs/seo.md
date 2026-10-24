@@ -29,8 +29,8 @@ URLs stay out of the index.
 - `titleTemplate`: a view's title plus "· PRUNplanner". Views set only their
   own title; the landing page keeps its full title (`titleTemplate: "%s"`).
 - The description (`homepage.seo.description`), which a view may override
-  (`/imprint-tos`, `/market`).
-- Routes with `meta.indexable` (`/`, `/imprint-tos`, `/market`) get a
+  (`/imprint-tos`, `/market`, `/search`).
+- Routes with `meta.indexable` (`/`, `/imprint-tos`, `/market`, `/search`) get a
   canonical URL; every other route gets `<meta name="robots"
   content="noindex">`, including the not-found page (`NotFoundView`, the
   catch-all route).
@@ -94,8 +94,8 @@ The Docker image serves `dist/` with spa-to-http, which answers every path
 that is no file with `index.html`, the prerendered landing page; Netlify
 rewrites the same way. The app mounts the right page on the client (see
 above). The cost: a crawler that doesn't run JavaScript gets the landing
-page's HTML, title and canonical on every URL, also on `/market` and
-`/imprint-tos`. Google renders JavaScript and gets each page's own title,
+page's HTML, title and canonical on every URL, also on `/market`,
+`/search` and `/imprint-tos`. Google renders JavaScript and gets each page's own title,
 description, canonical or `noindex`. A server that can serve an empty shell
 for the other paths would fix it. Every hard load of another path also
 downloads the hidden landing HTML and its eager hero image.

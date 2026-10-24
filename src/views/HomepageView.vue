@@ -291,6 +291,25 @@
 					<p class="m-0 text-white/78">
 						{{ $t("homepage.most_used.planet_search.lead") }}
 					</p>
+					<template v-if="!userStore.isLoggedIn" #after>
+						<div class="mt-2 flex flex-col items-start gap-2">
+							<router-link
+								to="/search"
+								data-planet-search-cta
+								:class="landingOutlineButton"
+								@click="
+									trackEvent('landing:planet_search_click', {
+										target: 'tour',
+									})
+								">
+								{{ $t("homepage.most_used.planet_search.cta") }}
+								<PIcon :size="18"><ArrowForwardSharp /></PIcon>
+							</router-link>
+							<span class="font-mono text-[13px] text-white/62">
+								{{ $t("homepage.most_used.planet_search.cta_note") }}
+							</span>
+						</div>
+					</template>
 				</HomepageTour>
 				<HomepageTour
 					name="empire"

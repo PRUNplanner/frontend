@@ -156,6 +156,7 @@ describe("prerender", () => {
 			"https://prunplanner.org/",
 			"https://prunplanner.org/imprint-tos",
 			"https://prunplanner.org/market",
+			"https://prunplanner.org/search",
 		]);
 	});
 

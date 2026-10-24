@@ -5,6 +5,7 @@
 	const { t } = useI18n();
 
 	import { useUserStore } from "@/stores/userStore";
+	import { useAuthPanel } from "@/features/account/useAuthPanel";
 
 	const userStore = useUserStore();
 	import router from "@/router";
@@ -20,6 +21,10 @@
 		landingInput,
 		landingPrimaryButton,
 	} from "@/features/homepage/homepage.constants";
+
+	// a shared plan stays open, to be cloned right away; a search keeps its
+	// filters, its plan distances appear with the login
+	const STAY_ON = ["shared-plan", "search"];
 
 	const inputUsername: Ref<string | null> = ref(null);
 	const inputPassword: Ref<string | null> = ref(null);
@@ -40,6 +45,8 @@
 
 		isLoggingIn.value = true;
 		loginError.value = null;
+		// read first: the header and its panel leave once logged in
+		const next = useAuthPanel().next.value;
 
 		const result = await userStore.performLogin(
 			inputUsername.value!,
@@ -55,8 +62,11 @@
 			// successfull login should redirect back to origin, if present
 			if (urlParams.has("redirectTo") && urlParams.get("redirectTo")) {
 				router.push({ path: urlParams.get("redirectTo")! });
-			} else if (router.currentRoute.value.name !== "shared-plan") {
-				// a shared plan stays open, to be cloned right away
+			} else if (next) {
+				router.push({ path: next });
+			} else if (
+				!STAY_ON.includes(String(router.currentRoute.value.name))
+			) {
 				router.push({ path: "/empire" });
 			}
 		}

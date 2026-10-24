@@ -147,7 +147,13 @@ export interface IAnalyticsEventProperties {
 	"account:api_key_revoke": undefined;
 	"landing:auth_open": {
 		panel: AuthPanel;
-		source: "header" | "hero" | "closing" | "shared_plan";
+		source:
+			| "header"
+			| "hero"
+			| "closing"
+			| "shared_plan"
+			| "planet_search_plan"
+			| "planet_search_distance";
 	};
 	"landing:auth_switch": { panel: AuthPanel };
 	"landing:example_open": { source: "hero" | "shared_plans" };
@@ -155,6 +161,7 @@ export interface IAnalyticsEventProperties {
 	"landing:tour_step": { tour: HomepageTourName; step: string };
 	"landing:tour_toggle": { tour: HomepageTourName; is_playing: boolean };
 	"landing:market_click": { target: "header" | "cta" | "sector" | "mover" };
+	"landing:planet_search_click": { target: "header" | "tour" };
 	"landing:market_view_change": { view: MarketMoversDirection };
 	"apikey:key_copy": undefined;
 	"apikey:builder_change": {

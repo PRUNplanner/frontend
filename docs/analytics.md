@@ -78,12 +78,13 @@ The PostHog funnel for registrations from it: `landing:auth_open` with
 
 | Event | Properties | When |
 | --- | --- | --- |
-| `landing:auth_open` | `panel` (`login`, `registration`), `source` (`header`, `hero`, `closing`, `shared_plan`) | the login / registration panel was opened |
+| `landing:auth_open` | `panel` (`login`, `registration`), `source` (`header`, `hero`, `closing`, `shared_plan`, `planet_search_plan`: "+" or a Chart double-click on `/search`, `planet_search_distance`: the Distance section's "Log in") | the login / registration panel was opened |
 | `landing:auth_switch` | `panel` (the form switched to) | the switch inside the panel was used |
 | `landing:example_open` | `source` (`hero`, `shared_plans`) | "Open an example plan" was clicked |
 | `landing:tour_step` | `tour` (`plan`, `planet_search`, `empire`), `step` (the step key) | a visitor clicked a tour step; automatic advances are not sent |
 | `landing:tour_toggle` | `tour`, `is_playing` | Pause or Play was clicked |
 | `landing:market_click` | `target` (`header`, `cta`, `sector`, `mover`) | a link of the "Market today" section or the header's "Market" link to `/market` was clicked |
+| `landing:planet_search_click` | `target` (`header`, `tour`) | the header's "Planet Search" link (nav or menu) or the tour card's "Try Planet Search" was clicked |
 | `landing:market_view_change` | `view` (`rising`, `falling`) | the movers of the "Market today" section were switched |
 
 Like the signup events, these reach PostHog only from visitors who consented.

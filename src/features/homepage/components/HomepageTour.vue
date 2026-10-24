@@ -267,6 +267,7 @@
 						:style="{ animationDuration: `${interval}ms` }" />
 				</button>
 			</div>
+			<slot name="after" />
 		</div>
 		<div
 			class="flex-[2_1_520px] min-w-0 p-4 sm:p-7 flex flex-col justify-center gap-3">

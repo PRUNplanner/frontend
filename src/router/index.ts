@@ -69,9 +69,10 @@ const router = createRouter({
 			props: true,
 		},
 		{
+			// public: the app layout logged in, the homepage header logged out
 			name: "search",
 			path: "/search",
-			meta: { requiresAuth: true },
+			meta: { indexable: true },
 			component: () => import("@/views/PlanetSearchView.vue"),
 		},
 		{

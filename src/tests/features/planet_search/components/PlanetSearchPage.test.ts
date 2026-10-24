@@ -64,7 +64,7 @@ const empires = [
 const failIndex = { value: false };
 // holds the index back while set, resolve it to let the page finish loading
 const gate: { promise: Promise<void> | null } = { promise: null };
-const session = { loggedIn: true };
+const session = reactive({ loggedIn: true });
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string) => ({
 		execute: async () => {
@@ -106,6 +106,13 @@ vi.mock("@/database/services/useMaterialData", () => ({
 }));
 vi.mock("@/features/help/components/HelpDrawer.vue", () => ({
 	default: { render: () => h("div") },
+}));
+// the game data gate has its own tests: it lets the body through
+vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () => ({
+	default: {
+		setup: (_: unknown, { slots }: { slots: { default?: () => unknown } }) =>
+			() => slots.default?.(),
+	},
 }));
 
 function stubMedia(desktop: boolean) {
@@ -709,10 +716,12 @@ describe("PlanetSearchPage actions", () => {
 		it("follows the screen size across the desktop breakpoint", async () => {
 			let onChange: (e: { matches: boolean }) => void = () => {};
 			const removeEventListener = vi.fn();
-			vi.stubGlobal("matchMedia", () => ({
+			// the page's desktop query; the header's phone query stays wide
+			vi.stubGlobal("matchMedia", (query: string) => ({
 				matches: true,
-				addEventListener: (_: string, cb: typeof onChange) =>
-					(onChange = cb),
+				addEventListener: (_: string, cb: typeof onChange) => {
+					if (query.includes("1024")) onChange = cb;
+				},
 				removeEventListener,
 			}));
 			const { wrapper } = await mountPage();
@@ -1032,6 +1041,57 @@ describe("PlanetSearchPage actions", () => {
 			expect(filterOf(wrapper).references).toEqual([
 				{ kind: "cx", code: "NC1" },
 			]);
+		});
+
+		it("introduces the tool with the planet count, only to visitors", async () => {
+			session.loggedIn = false;
+			gate.promise = new Promise(() => {});
+			const { wrapper } = await mountComponent(PlanetSearchPage);
+			// the title row paints before the index
+			expect(wrapper.find("[data-intro]").text()).toBe(
+				"planet_search.intro.lead_any"
+			);
+			wrapper.unmount();
+
+			gate.promise = null;
+			const loaded = (await mountPage()).wrapper;
+			expect(loaded.find("[data-intro]").text()).toBe(
+				"planet_search.intro.lead"
+			);
+			loaded.unmount();
+
+			session.loggedIn = true;
+			const member = (await mountPage()).wrapper;
+			expect(member.find("[data-intro]").exists()).toBe(false);
+		});
+
+		it("loads the empires after a login on the page, the search stays", async () => {
+			session.loggedIn = false;
+			route.query = { ref: "cx:NC1", fert: "1" };
+			const { wrapper } = await mountPage();
+			const before = filterOf(wrapper);
+
+			session.loggedIn = true;
+			await flushPromises();
+
+			expect(panel(wrapper).props("showPlans")).toBe(true);
+			expect(panel(wrapper).props("empires")).toEqual(empires);
+			expect(panel(wrapper).props("empireUuid")).toBe("e1");
+			expect(filterOf(wrapper)).toEqual(before);
+		});
+
+		it("keeps the empires of a login made while the index loads", async () => {
+			session.loggedIn = false;
+			let release!: () => void;
+			gate.promise = new Promise((r) => (release = r));
+			const { wrapper } = await mountComponent(PlanetSearchPage);
+
+			session.loggedIn = true;
+			await flushPromises();
+			release();
+			await flushPromises();
+
+			expect(panel(wrapper).props("empires")).toEqual(empires);
 		});
 	});
 
