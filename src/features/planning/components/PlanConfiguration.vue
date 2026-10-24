@@ -2,10 +2,7 @@
 	import {
 		computed,
 		type ComputedRef,
-		onMounted,
 		type PropType,
-		ref,
-		type Ref,
 		type WritableComputedRef,
 	} from "vue";
 
@@ -20,18 +17,16 @@
 	import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
 	import type { PSelectOption } from "@/ui/ui.types";
 
+	// Util
+	import { capitalizeString } from "@/util/text";
+
 	// UI
-	import { PForm, PFormItem, PInput, PSelect } from "@/ui";
+	import { PSelect } from "@/ui";
 
 	const props = defineProps({
 		disabled: {
 			type: Boolean,
 			required: true,
-		},
-		planName: {
-			type: String,
-			required: false,
-			default: undefined,
 		},
 		empireOptions: {
 			type: Array as PropType<PlanEmpire[]>,
@@ -47,12 +42,6 @@
 			type: Array as PropType<PlanEmpire[]>,
 			required: true,
 		},
-		// new plans start with naming them, the hint says why Create waits
-		newPlan: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
 		// the active empire's exchange preference
 		cxUuid: {
 			type: String,
@@ -64,17 +53,18 @@
 			required: false,
 			default: undefined,
 		},
+		// a visitor without empires: where the prices come from instead
+		priceSource: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
 	});
 
 	const planningStore = usePlanningStore();
 	const cxName = computed(() =>
 		props.cxUuid ? planningStore.cxs[props.cxUuid]?.cx_name : undefined
 	);
-
-	const refNameInput: Ref<{ focus: () => void } | null> = ref(null);
-	onMounted(() => {
-		if (props.newPlan) refNameInput.value?.focus();
-	});
 
 	function createEmpireOptions(
 		data: PlanEmpire[] | undefined
@@ -104,15 +94,7 @@
 
 	const emit = defineEmits<{
 		(e: "update:active-empire", empireUuid: string): void;
-		(e: "update:plan-name", value: string): void;
 	}>();
-
-	// Local State
-	const localPlanName: WritableComputedRef<string | undefined> = computed({
-		get: () => props.planName,
-		set: (value: string | undefined) =>
-			emit("update:plan-name", value ?? ""),
-	});
 
 	const localActiveEmpireUuid: WritableComputedRef<string | undefined> =
 		computed({
@@ -126,40 +108,46 @@
 </script>
 
 <template>
-	<PForm>
-		<PFormItem :label="t('plan.components.configuration.name')">
-			<PInput
-				ref="refNameInput"
-				v-model:value="localPlanName"
-				class="w-full"
-				:disabled="disabled"
-				:placeholder="
-					newPlan
-						? t('plan.save_status.name_to_create')
-						: t('plan.save_status.name_to_save')
-				" />
-		</PFormItem>
-		<!-- a read-only plan, or a visitor's shared copy, has no empire to pick -->
-		<PFormItem
-			v-if="!disabled"
-			:label="t('plan.components.configuration.empire')">
+	<div class="flex flex-col gap-3 text-sm">
+		<!-- a visitor's shared copy has no empire to pick -->
+		<label
+			v-if="!disabled && empireSelectOptions.length > 0"
+			class="flex flex-col gap-1 text-xs text-muted-strong">
+			{{ t("plan.base.empire.calculate_with") }}
 			<PSelect
 				v-model:value="localActiveEmpireUuid"
+				:aria-label="t('plan.base.empire.calculate_with')"
+				size="sm"
 				class="w-full"
 				:options="empireSelectOptions" />
-		</PFormItem>
-		<PFormItem
-			v-if="!disabled"
-			:label="t('plan.components.configuration.prices')">
+		</label>
+		<div v-if="activeEmpire" class="text-xs text-muted">
+			{{
+				t(
+					"plan.base.empire.note",
+					{
+						faction: capitalizeString(activeEmpire.empire_faction),
+						n: planEmpires.length,
+					},
+					planEmpires.length
+				)
+			}}
+		</div>
+		<div class="flex items-center justify-between gap-3">
+			<span>{{ t("plan.components.configuration.prices") }}</span>
 			<RouterLink
-				v-if="cxName"
+				v-if="cxName && !disabled"
 				:to="`/exchanges/${cxUuid}?scope=${planetId ?? 'all'}`"
-				class="text-link hover:underline">
+				class="text-link hover:underline text-right">
 				{{ cxName }}
 			</RouterLink>
-			<span v-else class="text-muted">
-				{{ t("plan.components.configuration.no_preference") }}
+			<span v-else class="text-muted text-right">
+				{{
+					priceSource ??
+					cxName ??
+					t("plan.components.configuration.no_preference")
+				}}
 			</span>
-		</PFormItem>
-	</PForm>
+		</div>
+	</div>
 </template>

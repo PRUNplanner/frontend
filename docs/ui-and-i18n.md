@@ -285,11 +285,10 @@ across the app:
   under the header, which comes on top of that height), or `fill` inside a
   `flex-1 min-h-0` wrapper of known height (`CXPointTable`,
   `EmpireMaterialIO`). Leave room for sticky bars above it, such as the plan
-  status bar. Paginated tables (`:page-size="50"`) don't need it.
+  results bar. Paginated tables (`:page-size="50"`) don't need it.
 
 Examples: `features/planning/components/PlanMaterialIO.vue`,
-`features/roi_overview/components/ROIOverviewTable.vue`,
-`features/planning/components/PlanWorkforce.vue` (`PTable`).
+`features/roi_overview/components/ROIOverviewTable.vue`.
 
 ## Styling
 
@@ -341,7 +340,7 @@ on each view and make the rest quieter.
   data). `PButton` defaults to `primary`, so always set `type` on
   non-primary buttons.
 - **Every number once per view.** Don't show the same KPI in a status
-  bar, a card and a table. A sticky summary (the plan status bar) is the
+  bar, a card and a table. A sticky summary (the plan results bar) is the
   exception, as long as the body doesn't repeat it as a KPI.
 - **Big type for values, small for labels.** Labels are `text-muted`,
   values bold and `tabular-nums`, and the value users compare is the

@@ -8,44 +8,42 @@
 	import type { PDropdownOption } from "@/ui/ui.types";
 
 	// UI
-	import { PButton, PDropdown, PIcon } from "@/ui";
+	import { PButton, PDropdown } from "@/ui";
 	import {
-		ArrowDropDownSharp,
 		ChangeCircleOutlined,
 		ContentCopySharp,
-		LinkSharp,
+		FileDownloadSharp,
+		MoreHorizSharp,
+		TerminalOutlined,
 	} from "@vicons/material";
+
+	type MoreAction = "save-as" | "reload" | "csv" | "debug";
 
 	/**
 	 * The plan header's secondary actions, so Save stays the one primary.
-	 * Only shown for plans the user may change.
+	 * Save as and Reload only on the user's own saved plan.
 	 */
-	const { existing, canShare } = defineProps<{
+	const { existing, own, debug } = defineProps<{
 		existing: boolean;
-		canShare: boolean;
+		// the user's own plan, not a shared copy or a read-only one
+		own: boolean;
+		// calculation debug is opted in
+		debug: boolean;
 	}>();
 
 	const emit = defineEmits<{
-		(e: "save-as" | "share" | "reload"): void;
+		(e: MoreAction): void;
 	}>();
 
 	const options: ComputedRef<PDropdownOption[]> = computed(() => {
 		const items: PDropdownOption[] = [];
-		if (existing)
-			items.push({
-				key: "save-as",
-				label: t("plan.actions.save_as_copy"),
-				icon: ContentCopySharp,
-			});
-		if (canShare)
-			items.push({
-				key: "share",
-				label: t("plan.actions.share_link"),
-				icon: LinkSharp,
-			});
-		if (existing)
+		if (own && existing)
 			items.push(
-				{ type: "divider" },
+				{
+					key: "save-as",
+					label: t("plan.actions.save_as_copy"),
+					icon: ContentCopySharp,
+				},
 				{
 					key: "reload",
 					label: t("plan.actions.reload"),
@@ -53,25 +51,35 @@
 					icon: ChangeCircleOutlined,
 				}
 			);
+		items.push({
+			key: "csv",
+			label: t("plan.actions.download_csv"),
+			icon: FileDownloadSharp,
+		});
+		if (debug)
+			items.push(
+				{ type: "divider" },
+				{
+					key: "debug",
+					label: "Calculation debug",
+					icon: TerminalOutlined,
+				}
+			);
 		return items;
 	});
 
 	function onSelect(key: string): void {
-		emit(key as "save-as" | "share" | "reload");
+		emit(key as MoreAction);
 	}
 </script>
 
 <template>
-	<PDropdown
-		v-if="options.length > 0"
-		placement="bottom-end"
-		:options="options"
-		@select="onSelect">
-		<PButton type="secondary" aria-haspopup="menu">
-			{{ t("plan.actions.more") }}
-			<PIcon class="-mr-1 align-middle">
-				<ArrowDropDownSharp />
-			</PIcon>
+	<PDropdown placement="bottom-end" :options="options" @select="onSelect">
+		<PButton
+			type="ghost"
+			aria-haspopup="menu"
+			:aria-label="t('plan.actions.more')">
+			<template #icon><MoreHorizSharp /></template>
 		</PButton>
 	</PDropdown>
 </template>

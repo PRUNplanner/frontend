@@ -30,6 +30,7 @@ async function mountAt(path: string) {
 			{ path: "/empire", component: Page },
 			{ path: "/search", component: Page },
 			{ path: "/plan", component: Editor },
+			{ path: "/plan/:id", component: Editor },
 		],
 	});
 	router.beforeEach((to) => (to.path === "/" ? "/empire" : undefined));
@@ -81,6 +82,19 @@ describe("useUnsavedGuard", () => {
 
 		expect(confirm).toHaveBeenCalledTimes(2);
 		expect(router.currentRoute.value.path).toBe("/plan");
+	});
+
+	it("asks when the same route opens other params, not for a query", async () => {
+		const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+		const router = await mountAt("/plan/a");
+		unsaved.value = true;
+
+		await router.push("/plan/a?tab=io");
+		expect(confirm).not.toHaveBeenCalled();
+
+		await router.push("/plan/b");
+		expect(confirm).toHaveBeenCalledTimes(1);
+		expect(router.currentRoute.value.path).toBe("/plan/a");
 	});
 
 	it("reports unsaved changes of mounted guards only", async () => {

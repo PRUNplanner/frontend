@@ -44,12 +44,46 @@ const NUMERIC = ["input", "output", "delta", "price"];
 async function mountTable(props: Record<string, unknown> = {}) {
 	return mountComponent(PlanMaterialIO, {
 		materialIOData: ROWS,
-		showBasked: false,
 		...props,
 	});
 }
 
 describe("PlanMaterialIO", () => {
+	it("filters exports and imports by the delta's sign", async () => {
+		const rows: IMaterialIO[] = [
+			...ROWS,
+			{ ...ROWS[0], ticker: "DW", input: 0, output: 5, delta: 5, price: 80 },
+		];
+		const tickers = async (filter?: string) =>
+			(await mountTable({ materialIOData: rows, ...(filter ? { filter } : {}) }))
+				.wrapper.findAllComponents({ name: "MaterialTile" })
+				.map((c) => c.props("ticker"))
+				.sort();
+
+		expect(await tickers()).toEqual(["DW", "RAT"]);
+		expect(await tickers("exports")).toEqual(["DW"]);
+		expect(await tickers("imports")).toEqual(["RAT"]);
+	});
+
+	it("shows ȼ, t or m³ per day in the value column", async () => {
+		const cols = async (props: Record<string, unknown> = {}) =>
+			(await mountTable(props)).wrapper
+				.findAll("th[data-col-key]")
+				.map((th) => th.attributes("data-col-key"));
+
+		expect(await cols()).toEqual([
+			"ticker",
+			"input",
+			"output",
+			"delta",
+			"price",
+		]);
+		expect((await cols({ value: "weight" })).at(-1)).toBe("totalWeight");
+		expect((await cols({ value: "volume" })).at(-1)).toBe("totalVolume");
+		// a narrow pane drops In and Out
+		expect(await cols({ compact: true })).toEqual(["ticker", "delta", "price"]);
+	});
+
 	it("right-aligns every numeric column, header and cells", async () => {
 		const { wrapper } = await mountTable();
 
@@ -64,11 +98,11 @@ describe("PlanMaterialIO", () => {
 		);
 	});
 
-	it("names the ticker sort button, though its title is empty", async () => {
+	it("labels the ticker column", async () => {
 		const { wrapper } = await mountTable();
 
 		expect(
-			wrapper.find('th[data-col-key="ticker"] button .sr-only').text()
+			wrapper.find('th[data-col-key="ticker"] button').text()
 		).toBe("terms.material_ticker");
 	});
 
@@ -130,7 +164,6 @@ describe("PlanMaterialIO market flags", () => {
 			PlanMaterialIO,
 			{
 				materialIOData: ROWS,
-				showBasked: false,
 				checks: checks(),
 				"onOpen:planCheck": onOpen,
 			},
@@ -194,5 +227,54 @@ describe("PlanMaterialIO market flags", () => {
 		const { wrapper } = await mountTable();
 		expect(wrapper.find("[data-market-flag]").exists()).toBe(false);
 		expect(wrapper.find("[data-market-summary]").exists()).toBe(false);
+		expect(wrapper.find("[data-share-note]").exists()).toBe(false);
+	});
+
+	it("shows Δ as a 7d and 30d market share, coloured and sortable", async () => {
+		const rows: IMaterialIO[] = [
+			// 10 a day of 70 in 7 days (14 %) and 600 in 30 days (50 %)
+			ROWS[0],
+			{ ...ROWS[0], ticker: "DW", input: 0, output: 1, delta: 1 },
+			// not traded at all
+			{ ...ROWS[0], ticker: "OVE", delta: -3 },
+		];
+		const market = new Map(
+			[
+				{ ticker: "RAT", traded7d: 70, traded30d: 600 },
+				{ ticker: "DW", traded7d: 700, traded30d: 3000 },
+				{ ticker: "OVE", traded7d: 0, traded30d: 0 },
+			].map((c) => [c.ticker, { ...c, exchange: "NC1" }])
+		);
+		const { wrapper } = await mountComponent(
+			PlanMaterialIO,
+			{ materialIOData: rows, market, value: "share" },
+			{ messages: { plan: planMessages } }
+		);
+		const cell = (row: number, key: string) =>
+			wrapper.findAll("tbody tr").at(row)!.find(`td[data-col-key="${key}"]`);
+
+		// In and Out make room for both shares
+		expect(
+			wrapper.findAll("th[data-col-key]").map((th) => th.attributes("data-col-key"))
+		).toEqual(["ticker", "delta", "share7d", "share30d"]);
+		expect(cell(0, "share7d").text()).toBe("100 %");
+		expect(cell(0, "share7d").find(".text-negative").exists()).toBe(true);
+		expect(cell(0, "share30d").text()).toBe("50.0 %");
+		expect(cell(1, "share7d").text()).toBe("1.0 %");
+		expect(cell(1, "share7d").find("span").classes()).toEqual([]);
+		expect(cell(2, "share7d").text()).toBe("—");
+		expect(wrapper.find("[data-share-note]").text()).toContain("NC1");
+
+		const sortBy30d = () =>
+			wrapper.find('th[data-col-key="share30d"] button').trigger("click");
+		const order = () =>
+			wrapper
+				.findAllComponents({ name: "MaterialTile" })
+				.map((c) => c.props("ticker"));
+		// largest share first, then smallest, untraded last/first
+		await sortBy30d();
+		expect(order()).toEqual(["RAT", "DW", "OVE"]);
+		await sortBy30d();
+		expect(order()).toEqual(["OVE", "DW", "RAT"]);
 	});
 });

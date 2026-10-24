@@ -200,7 +200,22 @@ export interface IAnalyticsEventProperties {
 	"plan:plancheck_compare": { same_planet: boolean };
 	"plan:profit_breakdown_mode": { mode: "cost_type" | "building" };
 	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
-	"plan:insights_open": { planet_natural_id: string };
+	"plan:insights_open": {
+		planet_natural_id: string;
+		source: "button" | "planet";
+	};
+	"plan:recipe_picker_open": { mode: "change" | "add" };
+	"plan:recipe_picker_undo": undefined;
+	"plan:panel_fold": { panel: "base" | "io"; folded: boolean };
+	"plan:overlay_open": { panel: "base" | "io" };
+	"plan:section_view": { section: "production" | "base" | "io" | "tools" };
+	"plan:io_view": {
+		source: "all" | "production" | "workforce";
+		filter: "all" | "exports" | "imports";
+		value: "price" | "weight" | "volume" | "share";
+	};
+	"plan:recipe_picker_sort": { sort: "daily" | "popular" };
+	"plan:cogc_match_toggle": { is_active: boolean };
 	"plan:starter_show": {
 		planet_natural_id: string;
 		candidate_count: number;

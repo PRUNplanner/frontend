@@ -1,8 +1,21 @@
 <script setup lang="ts">
-	import { computed, type ComputedRef, type PropType } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		nextTick,
+		type PropType,
+		useTemplateRef,
+		watch,
+	} from "vue";
+
+	import { useI18n } from "vue-i18n";
+	const { t } = useI18n();
 
 	// Types & Interfaces
-	import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
+	import type {
+		IMaterialIO,
+		IProductionBuilding,
+	} from "@/features/planning/usePlanCalculation.types";
 	import type { PlanDataBuilding } from "@/features/api/schemas/planningData.schemas";
 	import type { ITypicalRecipes } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { IBuildingChange } from "@/features/sharing/sharedPlan.types";
@@ -13,15 +26,28 @@
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
+	import PlanRecipePicker from "@/features/planning/components/PlanRecipePicker.vue";
 
 	// Util
 	import { formatNumber, formatPercent } from "@/util/numbers";
 	import { zeroEfficiencyReason } from "@/features/planning/engine/efficiency";
 
 	// UI
-	import { PTooltip, PButton, PInputNumber, PValue } from "@/ui";
-	import { ClearSharp, PlusSharp } from "@vicons/material";
+	import { PTooltip, PButton, PIcon, PInputNumber, PValue } from "@/ui";
+	import {
+		CheckSharp,
+		DeleteOutlineSharp,
+		ExpandLessSharp,
+		ExpandMoreSharp,
+	} from "@vicons/material";
 
+	/**
+	 * A building row of the production list (count, efficiency, revenue,
+	 * area) with its orders indented below, the recipe picker and the
+	 * status line of the last picked recipe
+	 *
+	 * @author jplacht
+	 */
 	const props = defineProps({
 		disabled: {
 			type: Boolean,
@@ -50,6 +76,40 @@
 			required: false,
 			default: undefined,
 		},
+		// recipes hidden, the outputs shown in the row
+		folded: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		// experts placed in this building's field
+		experts: {
+			type: Number,
+			required: false,
+			default: 0,
+		},
+		// open picker: the order it replaces, or null to add one
+		picker: {
+			type: [Number, null] as PropType<number | null | undefined>,
+			required: false,
+			default: undefined,
+		},
+		// after a pick: under which order, and what changed
+		status: {
+			type: Object as PropType<{ recipe: number; text: string }>,
+			required: false,
+			default: undefined,
+		},
+		materialIO: {
+			type: Array as PropType<IMaterialIO[]>,
+			required: false,
+			default: () => [],
+		},
+		buildings: {
+			type: Array as PropType<IProductionBuilding[]>,
+			required: false,
+			default: () => [],
+		},
 	});
 
 	const emit = defineEmits<{
@@ -66,7 +126,6 @@
 			buildingIndex: number,
 			recipeIndex: number
 		): void;
-		(e: "add:building:recipe", buildingIndex: number): void;
 		(
 			e: "add:building:recipes",
 			buildingIndex: number,
@@ -78,6 +137,11 @@
 			recipeIndex: number,
 			recipeid: string
 		): void;
+		(e: "pick:building:recipe", buildingIndex: number, recipeid: string): void;
+		(e: "toggle:fold"): void;
+		(e: "open:picker", recipeIndex: number | null): void;
+		(e: "close:picker"): void;
+		(e: "undo"): void;
 	}>();
 
 	// Local State
@@ -123,51 +187,144 @@
 			: `game.efficiency_type.${type}`;
 	});
 
-	const isPlanetCogc = computed(() => {
-		return localBuildingData.value.efficiencyElements.some(
-			(element) => element.efficiencyType === "COGC"
-		);
-	});
+	// "Agriculture · COGC · 3 experts": what lifts the efficiency
+	// a recipe's ȼ per building and day, as the picker shows it
+	const optionDaily = (recipeId: string): number =>
+		localBuildingData.value.recipeOptions.find((o) => o.recipe_id === recipeId)
+			?.dailyRevenue ?? 0;
 
-	// area and revenue are for all buildings of this row, so is construction;
-	// the engine's constructionCost stays per building (COGM, finance)
-	const constructionCostTotal: ComputedRef<number> = computed(
-		() =>
-			localBuildingData.value.constructionCost *
-			localBuildingData.value.amount
+	const subParts: ComputedRef<string[]> = computed(() => {
+		const b = localBuildingData.value;
+		const parts: string[] = [];
+		if (b.expertise) parts.push(t(`game.expertise.${b.expertise}`));
+		for (const e of b.efficiencyElements) {
+			if (e.efficiencyType === "WORKFORCE" || e.value === 1) continue;
+			parts.push(
+				e.efficiencyType === "EXPERT"
+					? t("plan.production.experts", { n: props.experts }, props.experts)
+					: t(`game.efficiency_type.${e.efficiencyType}`)
+			);
+		}
+		return parts;
+	});
+	const subLine = computed(() => subParts.value.join(" · "));
+
+	const outputTickers: ComputedRef<string[]> = computed(() => [
+		...new Set(
+			localBuildingData.value.activeRecipes.flatMap((r) =>
+				r.recipe.outputs.map((o) => o.material_ticker)
+			)
+		),
+	]);
+
+	// a closed picker gives the focus back to what opened it
+	const rootRef = useTemplateRef<HTMLElement>("root");
+	watch(
+		() => props.picker,
+		(now, before) => {
+			if (now !== undefined || before === undefined) return;
+			void nextTick(() => {
+				// another picker or field took the focus meanwhile: keep it
+				const focused = document.activeElement;
+				if (
+					focused &&
+					focused !== document.body &&
+					!rootRef.value?.contains(focused)
+				)
+					return;
+				const opener =
+					before === null
+						? rootRef.value?.querySelector("[data-add-recipe]")
+						: rootRef.value?.querySelectorAll("[data-recipe-button]")[
+								before
+							];
+				(opener as HTMLElement | null | undefined)?.focus();
+			});
+		}
 	);
+
+	function pick(recipeId: string): void {
+		if (props.picker === null)
+			emit("pick:building:recipe", props.buildingIndex, recipeId);
+		else if (props.picker !== undefined)
+			emit(
+				"update:building:recipe",
+				props.buildingIndex,
+				props.picker,
+				recipeId
+			);
+	}
 </script>
 
 <template>
 	<div
-		class="flex flex-wrap items-center gap-x-3 gap-y-1 @5xl:gap-x-6 px-3 py-1.5 bg-white/10 border-b border-t border-white/5 border-l-2"
-		:class="
-			localBuildingData.amount > 0
-				? 'border-l-prunplanner'
-				: 'border-l-negative'
-		">
-		<!-- one line on a wide panel; on a narrow one name, qty and delete
-			stay on top and the stats move below -->
+		ref="root"
+		class="border-b border-line"
+		:data-building="localBuildingData.name">
+		<!-- a phone: tile, name and delete; under them the count and ȼ/day -->
 		<div
-			class="flex-1 min-w-0 @5xl:flex-none @5xl:min-w-32 text-lg font-mono">
-			{{ localBuildingData.amount }}x
-			<strong>{{ localBuildingData.name }}</strong>
+			class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] @max-[40rem]/prod:grid-cols-[2.75rem_minmax(0,1fr)_auto]! gap-x-2 @max-[40rem]/prod:gap-y-2 items-center py-2 pl-2 border-l-2 tabular-nums"
+			:class="
+				localBuildingData.amount > 0
+					? 'border-l-transparent'
+					: 'border-l-negative'
+			"
+			data-building-row>
 			<span
-				v-for="kind in change?.kinds"
-				:key="kind"
-				class="ml-2 align-middle text-xs font-sans font-bold uppercase"
-				:class="kind === 'added' ? 'text-positive' : 'text-warning'">
-				{{ $t(`sharing.compare.${kind}`) }}
+				class="flex items-center justify-center h-6 rounded-control border border-line-strong bg-surface text-xs font-bold text-ink-strong">
+				{{ localBuildingData.name }}
 			</span>
-		</div>
-		<div
-			class="shrink-0 flex items-center gap-x-1">
-			<span class="text-xs text-muted pr-1">
-				{{ $t("plan.components.production_building.qty") }}
-			</span>
+			<button
+				type="button"
+				class="min-w-0 pointer-coarse:min-h-11 text-left cursor-pointer"
+				:aria-expanded="folded ? 'false' : 'true'"
+				:aria-label="
+					t('plan.production.fold', {
+						building: t(`game.building.${localBuildingData.name}`),
+					})
+				"
+				@click="emit('toggle:fold')">
+				<span
+					class="flex items-center gap-1 font-medium text-ink-strong">
+					<span
+						class="truncate"
+						:title="t(`game.building.${localBuildingData.name}`)">
+						{{ t(`game.building.${localBuildingData.name}`) }}
+					</span>
+					<PIcon :size="18" class="shrink-0 text-muted-strong">
+						<ExpandMoreSharp v-if="folded" />
+						<ExpandLessSharp v-else />
+					</PIcon>
+					<template v-if="folded">
+						<MaterialTile
+							v-for="ticker in outputTickers"
+							:key="`FOLDED#${ticker}`"
+							:ticker="ticker"
+							disable-drawer
+							:enable-popover="false" />
+					</template>
+					<span
+						v-for="kind in change?.kinds"
+						:key="kind"
+						class="text-xs font-bold uppercase"
+						:class="kind === 'added' ? 'text-positive' : 'text-warning'">
+						{{ t(`sharing.compare.${kind}`) }}
+					</span>
+				</span>
+				<span class="block text-xs text-muted line-clamp-2" :title="subLine">
+					<span v-if="zeroReason" class="text-negative">
+						{{ t(zeroReason) }} ·
+					</span>
+					<!-- break between the parts, never inside one -->
+					<template v-for="(part, i) in subParts" :key="part">
+						<template v-if="i"> · </template>
+						<span class="whitespace-nowrap">{{ part }}</span>
+					</template>
+				</span>
+			</button>
 			<PInputNumber
 				:aria-label="
-					$t('plan.components.production_building.qty_label', {
+					t('plan.components.production_building.qty_label', {
 						building: localBuildingData.name,
 					})
 				"
@@ -176,248 +333,174 @@
 				:disabled="disabled"
 				:show-buttons="!disabled"
 				:min="0"
-				class="max-w-25"
+				class="w-full @max-[40rem]/prod:w-36 @max-[40rem]/prod:row-start-2 @max-[40rem]/prod:col-span-2"
 				@update:value="
 					(value) => {
-						if (value !== null && value !== undefined) {
-							emit(
-								'update:building:amount',
-								buildingIndex,
-								value
-							);
-						}
+						if (value !== null && value !== undefined)
+							emit('update:building:amount', buildingIndex, value);
 					}
 				" />
-			<PButton
-				v-if="!disabled && localBuildingData.recipeOptions.length > 0"
-				size="sm"
-				@click="emit('add:building:recipe', buildingIndex)">
-				<template #icon><PlusSharp /></template>
-				{{
-					$t("plan.components.production_building.buttons.add_recipe")
-				}}
-			</PButton>
+			<span class="text-right text-sm whitespace-nowrap @max-[40rem]/prod:hidden">
+				<PTooltip>
+					<template #trigger>
+						<span class="text-ink-strong hover:cursor-help">
+							{{ formatPercent(localBuildingData.totalEfficiency * 100, 1) }}
+						</span>
+					</template>
+					<div
+						v-for="element in localBuildingData.efficiencyElements"
+						:key="`${localBuildingData.name}#EFFICIENCY#${element.efficiencyType}`"
+						class="flex flex-row justify-between gap-x-3 child:p-1">
+						<div>
+							{{ t(`game.efficiency_type.${element.efficiencyType}`) }}
+						</div>
+						<div>{{ formatNumber(element.value * 100) }} %</div>
+					</div>
+				</PTooltip>
+			</span>
+			<span
+				class="text-right text-sm @max-[40rem]/prod:row-start-2 @max-[40rem]/prod:col-start-3 @max-[40rem]/prod:leading-tight">
+				<PValue :value="localBuildingData.dailyRevenue" />
+				<span class="@min-[40rem]/prod:hidden block text-xs text-muted">
+					{{
+						t("plan.production.card_meta", {
+							efficiency: formatPercent(
+								localBuildingData.totalEfficiency * 100,
+								1
+							),
+							area: localBuildingData.areaUsed,
+						})
+					}}
+				</span>
+			</span>
+			<span class="text-right text-sm text-ink @max-[40rem]/prod:hidden">
+				{{ localBuildingData.areaUsed }}
+			</span>
+			<button
+				v-if="!disabled"
+				type="button"
+				class="touch-target flex items-center justify-center size-6 pointer-coarse:size-11 rounded-control text-muted hover:text-negative hover:bg-negative/10 cursor-pointer @max-[40rem]/prod:row-start-1 @max-[40rem]/prod:col-start-3 @max-[40rem]/prod:justify-self-end"
+				:aria-label="
+					t('plan.production.delete_building', {
+						building: localBuildingData.name,
+					})
+				"
+				@click="emit('delete:building', buildingIndex)">
+				<PIcon :size="16"><DeleteOutlineSharp /></PIcon>
+			</button>
 		</div>
-		<!-- each stat has a fixed width (min-w-max lets a long value grow), so the
-			stats line up in columns from one building to the next -->
-		<div
-			class="order-last basis-full @5xl:order-none @5xl:basis-auto @5xl:flex-1 flex flex-wrap justify-end items-center gap-x-6 gap-y-2 text-white/80">
-			<div class="flex flex-col items-end sm:w-[7.5rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wider">
-					{{
-						$t(
-							"plan.components.production_building.table.expertise"
-						)
-					}}
-				</span>
-				<span class="text-xs">
-					<span
-						:class="
-							isPlanetCogc ? 'text-positive' : 'text-negative'
-						">
-						{{ isPlanetCogc ? "✓" : "✗" }}
-						{{
-							$t(`game.expertise.${localBuildingData.expertise}`)
-						}}</span
-					>
-				</span>
-			</div>
-			<div class="flex flex-col items-end sm:w-[5.5rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wide">
-					{{
-						$t(
-							"plan.components.production_building.table.efficiency"
-						)
-					}}
-				</span>
-				<span class="text-xs font-bold whitespace-nowrap">
-					<PTooltip>
-						<template #trigger>
-							<div class="flex gap-x-1 hover:cursor-help">
-								<span class="font-bold">
-									{{
-										formatNumber(
-											localBuildingData.totalEfficiency *
-												100
-										)
-									}}
-									%
-								</span>
-							</div>
-						</template>
 
-						<div
-							v-for="element in localBuildingData.efficiencyElements"
-							:key="`${localBuildingData.name}#EFFICIENCY#${element.efficiencyType}`"
-							class="flex flex-row justify-between align-center gap-x-3 child:p-1">
-							<div>
-								{{
-									$t(
-										`game.efficiency_type.${element.efficiencyType}`
-									)
-								}}
-							</div>
-							<div>{{ formatNumber(element.value * 100) }} %</div>
-						</div>
-					</PTooltip>
-				</span>
-				<span v-if="zeroReason" class="text-xs text-negative">
-					{{ $t(zeroReason) }}
-				</span>
-			</div>
-			<div class="flex flex-col items-end sm:w-[6rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wide">
-					{{
-						$t("plan.components.production_building.table.revenue")
-					}}
-				</span>
-				<span class="text-xs font-bold whitespace-nowrap">
-					<PValue :value="localBuildingData.dailyRevenue" />
-					<span class="pl-1 font-light text-muted">ȼ</span>
-				</span>
-			</div>
-			<div class="flex flex-col items-end sm:w-[2.5rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wide">
-					{{ $t("plan.components.production_building.table.area") }}
-				</span>
-				<span class="text-xs font-bold whitespace-nowrap">
-					{{ localBuildingData.areaUsed }}
-				</span>
-			</div>
-			<div class="flex flex-col items-end sm:w-[7rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wide">
-					{{
-						$t(
-							"plan.components.production_building.table.construction"
-						)
-					}}
-				</span>
-				<span class="text-xs font-bold whitespace-nowrap">
-					<PTooltip :disabled="localBuildingData.amount <= 1">
-						<template #trigger>
-							<span
-								:class="{
-									'hover:cursor-help':
-										localBuildingData.amount > 1,
-								}">
-								{{ formatNumber(constructionCostTotal * -1) }}
-								<span class="font-light text-muted">ȼ</span>
-							</span>
-						</template>
-						<div
-							class="flex flex-row justify-between align-center gap-x-3 child:p-1">
-							<div>
-								{{
-									$t(
-										"plan.components.production_building.table.construction_per_building"
-									)
-								}}
-							</div>
-							<div>
-								{{
-									formatNumber(
-										localBuildingData.constructionCost * -1
-									)
-								}}
-								ȼ
-							</div>
-						</div>
-					</PTooltip>
-				</span>
-			</div>
-		</div>
-		<PButton
-			v-if="!disabled"
-			:aria-label="$t('common.buttons.delete')"
-			size="sm"
-			type="error"
-			@click="emit('delete:building', buildingIndex)">
-			<template #icon><ClearSharp /></template>
-		</PButton>
-	</div>
-	<div class="col-span-12">
-		<div v-if="localBuildingData.activeRecipes.length > 0">
-			<div
+		<div
+			v-if="!folded"
+			class="ml-4 mb-2 pl-3 border-l border-line"
+			data-recipes>
+			<template
 				v-for="(recipe, index) in localBuildingData.activeRecipes"
-				:key="`RECIPE#${index}#${recipe.recipeId}`"
-				class="grid grid-cols-[auto_4.5rem_minmax(0,1fr)_auto] xl:grid-cols-[6rem_minmax(0,1fr)_repeat(3,16.6667%)] px-3 py-2 border-l-2 border-transparent items-center even:bg-white/5 border-b border-b-white/10 last:border-b-0 gap-x-3 gap-y-2 xl:gap-0">
+				:key="`RECIPE#${index}#${recipe.recipeId}`">
 				<PlanProductionRecipe
 					:disabled="disabled"
 					:recipe-index="index"
+					:building-amount="localBuildingData.amount"
+					:option-daily="optionDaily(recipe.recipeId)"
 					:recipe-data="recipe"
-					:recipe-options="localBuildingData.recipeOptions"
 					:cx-uuid="cxUuid"
 					:planet-id="planetId"
 					:is-new="!!change?.newRecipes.includes(recipe.recipeId)"
+					:picker-open="picker === index"
 					@update:building:recipe:amount="
-						(index: number, value: number) => {
-							emit(
-								'update:building:recipe:amount',
-								buildingIndex,
-								index,
-								value
-							);
-						}
+						(i: number, value: number) =>
+							emit('update:building:recipe:amount', buildingIndex, i, value)
 					"
 					@delete:building:recipe="
-						(index: number) => {
-							emit(
-								'delete:building:recipe',
-								buildingIndex,
-								index
-							);
-						}
+						(i: number) => emit('delete:building:recipe', buildingIndex, i)
 					"
-					@update:building:recipe="
-						(index: number, recipeid: string) => {
-							emit(
-								'update:building:recipe',
-								buildingIndex,
-								index,
-								recipeid
-							);
-						}
+					@open:picker="
+						(i: number) =>
+							picker === i ? emit('close:picker') : emit('open:picker', i)
 					" />
-			</div>
-		</div>
-		<div
-			v-else
-			class="h-full w-full flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 py-2 text-muted text-xs">
-			<span>
-				{{ $t("plan.components.production_building.no_recipe") }}
-			</span>
-			<template v-if="typicalMix">
-				<span>
-					{{ $t("plan.components.production_building.mix_hint") }}
-				</span>
-				<PButton
-					size="sm"
-					:aria-label="
-						$t('plan.components.production_building.mix_add_label', {
-							building: localBuildingData.name,
-						})
-					"
-					@click="
-						emit(
-							'add:building:recipes',
-							buildingIndex,
-							typicalMix.recipes
-						)
-					">
-					<span class="flex items-center gap-1.5">
-						<MaterialTile
-							v-for="ticker in typicalMixOutputs"
-							:key="`${localBuildingData.name}#MIX#${ticker}`"
-							:ticker="ticker"
-							disable-drawer
-							:enable-popover="false" />
-						<span class="text-prunplanner">
-							{{ formatPercent(typicalMix.percentage, 0) }}
-						</span>
-						{{ $t("plan.components.production_building.mix_add") }}
-					</span>
-				</PButton>
+				<PlanRecipePicker
+					v-if="picker === index"
+					mode="change"
+					:building="localBuildingData"
+					:recipe-index="index"
+					:material-i-o="materialIO"
+					:buildings="buildings"
+					:planet-id="planetId"
+					@pick="pick"
+					@close="emit('close:picker')" />
+				<div
+					v-if="status?.recipe === index"
+					role="status"
+					class="flex items-center gap-2 my-1 px-3 py-1 rounded-control bg-positive/5 text-xs text-ink">
+					<PIcon :size="14" class="text-positive"><CheckSharp /></PIcon>
+					<span>{{ status.text }}</span>
+					<button
+						type="button"
+						class="min-h-6 pointer-coarse:min-h-11 font-medium text-link hover:underline cursor-pointer"
+						@click="emit('undo')">
+						{{ t("plan.history.undo") }}
+					</button>
+					<span class="grow" />
+					<span class="text-muted">{{ t("plan.picker.undo_key") }}</span>
+				</div>
 			</template>
+
+			<div
+				v-if="localBuildingData.activeRecipes.length === 0"
+				class="flex flex-wrap items-center gap-x-2.5 gap-y-1 py-2 text-muted text-xs">
+				<span>
+					{{ t("plan.components.production_building.no_recipe") }}
+				</span>
+				<template v-if="typicalMix">
+					<span>
+						{{ t("plan.components.production_building.mix_hint") }}
+					</span>
+					<PButton
+						size="sm"
+						type="secondary"
+						:aria-label="
+							t('plan.components.production_building.mix_add_label', {
+								building: localBuildingData.name,
+							})
+						"
+						@click="
+							emit('add:building:recipes', buildingIndex, typicalMix.recipes)
+						">
+						<span class="flex items-center gap-1.5">
+							<MaterialTile
+								v-for="ticker in typicalMixOutputs"
+								:key="`${localBuildingData.name}#MIX#${ticker}`"
+								:ticker="ticker"
+								disable-drawer
+								:enable-popover="false" />
+							<span class="text-prunplanner">
+								{{ formatPercent(typicalMix.percentage, 0) }}
+							</span>
+							{{ t("plan.components.production_building.mix_add") }}
+						</span>
+					</PButton>
+				</template>
+			</div>
+
+			<button
+				v-if="!disabled && localBuildingData.recipeOptions.length > 0"
+				type="button"
+				class="min-h-7 pointer-coarse:min-h-11 px-1 text-xs cursor-pointer hover:text-white"
+				:class="picker === null ? 'text-white' : 'text-muted-strong'"
+				:aria-expanded="picker === null ? 'true' : 'false'"
+				data-add-recipe
+				@click="picker === null ? emit('close:picker') : emit('open:picker', null)">
+				{{ t("plan.production.add_recipe") }}
+			</button>
+			<PlanRecipePicker
+				v-if="picker === null"
+				mode="add"
+				:building="localBuildingData"
+				:material-i-o="materialIO"
+				:buildings="buildings"
+				:planet-id="planetId"
+				@pick="pick"
+				@close="emit('close:picker')" />
 		</div>
 	</div>
 </template>
