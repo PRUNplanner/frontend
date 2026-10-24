@@ -7,6 +7,7 @@ import { solveChain } from "@/features/production_chain/engine/chainSolver";
 import { cogcFits } from "@/features/production_chain/engine/chainBases";
 import {
 	FOOD_PLANET,
+	chainInput,
 	seedGameData,
 	splitInput,
 	testContext,
@@ -14,6 +15,7 @@ import {
 
 import type { PSelectOption } from "@/ui/ui.types";
 import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+import type { IChainInput } from "@/features/production_chain/engine/chainSolver.types";
 
 const ctx = testContext();
 
@@ -86,5 +88,83 @@ describe("ChainBaseCard", () => {
 		expect(
 			wrapper.find("[data-testid='chain-base-buildings-A']").text()
 		).toContain("STO");
+	});
+});
+
+describe("ChainBaseCard variants", () => {
+	beforeAll(seedGameData);
+
+	async function mountFor(input: IChainInput, id = "A") {
+		const result = solveChain(input, ctx);
+		const base = result.bases.find((b) => b.id === id)!;
+		const tickers = base.buildingTypes.map((b) => b.ticker);
+		return mountComponent(ChainBaseCard, {
+			base,
+			choice: input.bases.find((b) => b.id === id)!,
+			efficiency: 1,
+			removable: false,
+			fits: (p: PlanCOGCProgram) => cogcFits(ctx, p, tickers),
+		});
+	}
+	const on = (
+		targets: [string, number][],
+		planetId: string | null,
+		cogc: IChainInput["bases"][number]["cogc"] = "auto"
+	) =>
+		chainInput(targets, {
+			bases: [{ id: "A", name: "", planetId, cogc }],
+		});
+
+	it("shows a gaseous planet and a planned program", async () => {
+		// Tarvos: gaseous, runs Electronics
+		const { wrapper, component } = await mountFor(
+			on([["DW", 10]], "UV-351e", "FOOD_INDUSTRIES")
+		);
+		expect(wrapper.text()).toContain("production_chains.bases.gaseous");
+		expect(wrapper.text()).toContain("production_chains.bases.planned");
+		wrapper.findComponent(PInput).vm.$emit("update:value", null);
+		expect(component.emitted("rename")).toEqual([[""]]);
+		expect(
+			wrapper
+				.find("[aria-label='production_chains.bases.remove']")
+				.exists()
+		).toBe(false);
+	});
+
+	it("marks efficiency below the chain's on poor soil", async () => {
+		// Danakil: fertility -0.4457, so farms run below 100 %
+		const { wrapper } = await mountFor(on([["GRN", 40]], "OT-442b"));
+		expect(wrapper.text()).toContain("production_chains.bases.fertility");
+		expect(
+			wrapper
+				.find("[data-testid='chain-base-buildings-A'] .text-negative")
+				.exists()
+		).toBe(true);
+	});
+
+	it("waits for a planet the index hasn't loaded", async () => {
+		const input = on([["DW", 10]], "XH-668c");
+		const result = solveChain(input, testContext(false));
+		const { wrapper } = await mountComponent(ChainBaseCard, {
+			base: result.bases[0],
+			choice: input.bases[0],
+			efficiency: 1,
+			removable: true,
+			fits: () => false,
+		});
+		expect(wrapper.text()).toContain(
+			"production_chains.bases.planet_loading"
+		);
+	});
+
+	it("warns above 1,000 area and for extraction off the planet", async () => {
+		const big = await mountFor(on([["GWS", 1]], "XH-668c"));
+		expect(
+			big.wrapper.find("[data-testid='chain-base-warnings-A']").text()
+		).toContain("production_chains.bases.over_area");
+		const water = await mountFor(on([["H2O", 50]], "XH-668c"));
+		expect(
+			water.wrapper.find("[data-testid='chain-base-warnings-A']").text()
+		).toContain("production_chains.bases.not_on_planet");
 	});
 });

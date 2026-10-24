@@ -312,7 +312,7 @@ export function rankPlanets(
 	const eff = Math.max(input.efficiency, 1) / 100;
 	const rows = result.order
 		.map((t) => result.rows[t])
-		.filter((r) => r.base === baseId && r.buildingTicker);
+		.filter((r) => r.base === base.id && r.buildingTicker);
 	const footprints = new Map<string, IChainFootprint>();
 
 	return planets.map((planet) => {

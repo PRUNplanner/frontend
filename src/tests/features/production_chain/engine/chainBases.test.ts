@@ -441,3 +441,92 @@ describe("plan drafts", () => {
 		expect(planDrafts(none, { A: "x" })).toEqual([]);
 	});
 });
+
+describe("bases edge cases", () => {
+	it("uses no program for 'none' and one base A without bases", () => {
+		const none = solve({ bases: [base("A", FOOD, "none")] }).result;
+		expect(none.bases[0].cogc).toBe("---");
+		expect(none.rows.DW.efficiency).toBe(1);
+		const empty = solve({ bases: [] }).result;
+		expect(empty.bases.map((b) => b.id)).toEqual(["A"]);
+		expect(empty.rows.DW.base).toBe("A");
+	});
+
+	it("ignores unknown buildings for programs and splits without expertise", () => {
+		expect(cogcFits(ctx, "FOOD_INDUSTRIES", ["ZZZ"])).toBe(false);
+		// extraction still pending: no building, no expertise
+		const pending = testContext(false);
+		const r = solveChain(chainInput([["H2O", 50]]), pending);
+		expect(splitByExpertise(r, pending, 100)).toEqual({
+			expertise: [null],
+			baseOf: { H2O: "A" },
+		});
+	});
+
+	it("ships to a named exchange and weighs unknown materials as 0", () => {
+		const { result } = placed();
+		for (const t of result.order) result.rows[t].exchange = "AI1";
+		const routes = chainShipping(result, new Map(), () => null);
+		expect(routes.some((r) => r.to === "AI1" || r.from === "AI1")).toBe(
+			true
+		);
+		expect(routes.every((r) => r.weight === 0 && r.volume === 0)).toBe(
+			true
+		);
+	});
+
+	it("ranks for the first base when the id is unknown", () => {
+		const { input, result } = solve();
+		const planets = index.filter((p) => p.planet_natural_id === FOOD);
+		expect(rankPlanets(result, input, ctx, "Z", planets)[0].built).toBe(
+			rankPlanets(result, input, ctx, "A", planets)[0].built
+		);
+	});
+
+	it("gives a recipe without time one order", () => {
+		expect(
+			recipeAmounts([
+				{ recipeId: "a", timeMs: 0, load: 1 },
+				{ recipeId: "b", timeMs: 10, load: 1 },
+			])
+		).toEqual([1, 1]);
+	});
+
+	it("drafts an extractor without a recipe when the planet lacks the resource", () => {
+		const r = solveChain(
+			chainInput([["H2O", 50]], { bases: [base("A", FOOD)] }),
+			ctx
+		);
+		const [d] = planDrafts(r, { A: "Water" });
+		expect(d.data.plan_data.buildings[0].active_recipes).toEqual([]);
+	});
+});
+
+describe("chainShipping with byproducts", () => {
+	it("ships demand covered by a byproduct from the base that makes it", () => {
+		// BE yields SIO as a byproduct, which covers all of the chain's SIO
+		const input = chainInput([["THP", 10]], {
+			bases: [base("A"), base("B")],
+			baseOf: { BE: "B" },
+		});
+		const result = solveChain(input, ctx);
+		const sio = result.byproducts.find((b) => b.ticker === "SIO")!;
+		expect(sio.sold).toBeLessThan(1e-9);
+		const consumers = result.links
+			.filter((l) => l.input === "SIO")
+			.map((l) => result.rows[l.consumer].base);
+		expect(consumers.every((b) => b === "A")).toBe(true);
+		const routes = chainShipping(result, ctx.materials, () => null);
+		const fromB = routes.find((r) => r.from === "B" && r.to === "A")!;
+		expect(
+			fromB.materials.find((m) => m.ticker === "SIO")!.perDay
+		).toBeCloseTo(sio.used, 6);
+		// nothing sold, so no SIO goes to the CX
+		expect(
+			routes.some(
+				(r) =>
+					r.to === "CX" && r.materials.some((m) => m.ticker === "SIO")
+			)
+		).toBe(false);
+	});
+});
