@@ -1,9 +1,10 @@
 {
 	"view_title": "Exchanges",
 	"title": "Exchanges",
-	"errors": {
-		"title": "No Preferences",
-		"message": "You don't have exchange preferences. Head to Management and create your first."
+	"empty": {
+		"title": "No exchange preferences yet",
+		"text": "An exchange preference sets which exchange and price your plans use for each material. Create your first one in Management.",
+		"create": "Create a preference"
 	},
 	"labels": {
 		"universe": "Universe",
