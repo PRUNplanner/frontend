@@ -18,31 +18,6 @@ const appVersion = pkg.version;
 const [major, minor, patch] = dbVersionString.split(".").map(Number);
 const indexedDBVersion = major * 10000 + minor * 100 + patch;
 
-export function skipEmptyChunks(): Plugin {
-	return {
-		name: "skip-empty-chunks",
-		// @ts-expect-error Rollout imported from Vite
-		generateBundle(_options: unknown, bundle: OutputBundle) {
-			// add linebreak
-			console.log("\n");
-			for (const fileName in bundle) {
-				// @ts-expect-error Rollout imported from Vite
-				const chunkOrAsset: OutputChunk | OutputAsset =
-					bundle[fileName];
-
-				if (chunkOrAsset.type === "chunk") {
-					if (!chunkOrAsset.code.trim()) {
-						delete bundle[fileName];
-						console.log(
-							`[skip-empty-chunks] Skipping empty chunk: ${fileName}`
-						);
-					}
-				}
-			}
-		},
-	};
-}
-
 // Cloudflare Pages compresses on the fly and ignores precompressed files,
 // which only spa-to-http (the Docker image, production) serves. Pages only
 // builds previews, so it skips the sourcemaps too.
@@ -147,7 +122,6 @@ export default defineConfig({
 		tailwindcss(),
 		tsconfigPaths(),
 		AutoImport({ imports: ["vue", "vue-router", "pinia"] }),
-		skipEmptyChunks(),
 		buildVersion(),
 		apiPreconnect(),
 		preloadBodyFont(),
