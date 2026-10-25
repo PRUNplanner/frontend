@@ -15,7 +15,8 @@
 			"empire_name": "@:terms.empire Name",
 			"faction": "@:terms.faction",
 			"permits_total": "@:terms.permits_plural Total",
-			"permits_used": "@:terms.permits_plural Used"
+			"permits_used": "@:terms.permits_plural Used",
+			"empire_placeholder": "max. 100 characters"
 		},
 		"table": {
 			"empire_name": "@:terms.empire",
