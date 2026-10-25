@@ -124,6 +124,7 @@
 		"chart": "Chart",
 		"planet": "Planet",
 		"fert": "Frucht. %",
+		"plots": "Plots",
 		"other": "Andere Ressourcen",
 		"extras": "Zusätzliche Baumaterialien ",
 		"cogc_infra": "COGC · Infra",
@@ -159,6 +160,7 @@
 	"columns": {
 		"button": "Spalten ({shown}/{total})",
 		"fert": "Fruchtbarkeit",
+		"plots": "Plots",
 		"other": "Weitere Ressourcen",
 		"extras": "Zusätzliche Baumaterialien ",
 		"cogc": "COGC · Infrastruktur",
@@ -170,6 +172,15 @@
 		"all": "Alle",
 		"none": "Keine",
 		"reset": "Zurücksetzen"
+	},
+	"plots": {
+		"free": "{free} / {total} plots free",
+		"full": "Full",
+		"full_ghost": "Full · ghost sites",
+		"unknown": "plots unknown",
+		"full_tooltip": "Every plot is taken: this planet can't be settled anymore.",
+		"ghost_tooltip": "Every plot is taken. New bases go on ghost sites; {n} so far.",
+		"as_of": "As of {date}."
 	},
 	"chips": {
 		"name": "Name: \"{text}\"",
