@@ -126,7 +126,8 @@
 			"sell_outputs": "Продать выходные",
 			"potential_batches": "Потенциальные партии",
 			"delta_required": "Необходима дельта",
-			"missing_material": "Отсутствующие материалы"
+			"missing_material": "Отсутствующие материалы",
+			"missing": "Missing"
 		}
 	},
 	"onboarding": {
