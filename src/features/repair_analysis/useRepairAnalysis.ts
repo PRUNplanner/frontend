@@ -1,13 +1,13 @@
 import { computed, type Ref, shallowRef, watch } from "vue";
 
 // Composables
-import { useBuildingData } from "@/database/services/useBuildingData";
+import { i18n } from "@/lib/i18n";
+import type { Composer } from "vue-i18n";
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Util
 import type { IPriceBook } from "@/features/cx/priceBook";
-import { capitalizeString } from "@/util/text";
 import {
 	goodRange,
 	priceRepairMaterials,
@@ -40,16 +40,14 @@ export function useRepairAnalysis(
 	cxUuid: Ref<string | undefined>,
 	planetNaturalId: Ref<string | undefined>
 ) {
-	const { buildingsMap } = useBuildingData();
+	const { t, te } = i18n.global as unknown as Composer;
 	const { enhanceMaterialIOMinimal } = useMaterialIOUtil();
 	const { getPriceBook } = usePrice(cxUuid, planetNaturalId);
 
-	// "technetiumProcessing" -> "Technetium Processing"
+	// same localized name the Production tab shows, ticker if unknown
 	const displayName = (ticker: string): string => {
-		const name = buildingsMap.value[ticker]?.building_name;
-		return name
-			? capitalizeString(name.replace(/([a-z])([A-Z])/g, "$1 $2"))
-			: ticker;
+		const key = `game.building.${ticker}`;
+		return te(key) ? t(key) : ticker;
 	};
 
 	const book = shallowRef<IPriceBook>();

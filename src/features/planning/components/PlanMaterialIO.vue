@@ -162,9 +162,10 @@
 </script>
 
 <template>
-	<!-- numbers never break mid-digit in the narrow side column -->
+	<!-- numbers never break mid-digit in the narrow side column; titles
+		wrap there instead of running into their sort arrows -->
 	<PDataTable
-		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
+		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"

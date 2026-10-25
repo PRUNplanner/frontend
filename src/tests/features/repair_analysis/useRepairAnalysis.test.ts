@@ -160,8 +160,14 @@ describe("useRepairAnalysis", () => {
 		// at their best day: FRM 2 * 150 = 300, EXT larger
 		expect(buildings.value.map((b) => [b.ticker, b.name])).toEqual([
 			["EXT", "Extractor"],
-			["FRM", "Farm"],
+			["FRM", "Farmstead"],
 		]);
+	});
+
+	it("falls back to the ticker for an unknown building", async () => {
+		const { buildings } = await setup([{ ...FRM, name: "ZZZ" }]);
+
+		expect(buildings.value[0].name).toBe("ZZZ");
 	});
 
 	it("charges wear once, as repair cost, and workforce in full", async () => {

@@ -32,7 +32,7 @@
 		},
 	});
 
-	const isLoading: Ref<boolean> = ref(false);
+	const isLoading: Ref<boolean> = ref(true);
 	const hasError: Ref<boolean> = ref(false);
 	const poprData: Ref<PopulationReport | null> = ref(null);
 
@@ -43,7 +43,7 @@
 				planetNaturalId: planetNaturalId,
 			})
 				.execute()
-				.then((data: PopulationReport) => (poprData.value = data))
+				.then((data: PopulationReport | null) => (poprData.value = data))
 				.finally(() => (isLoading.value = false));
 		} catch {
 			hasError.value = true;
@@ -102,6 +102,9 @@
 		</div>
 		<p v-if="hasError" class="text-muted">
 			{{ $t("plan.tools.popr.error") }}
+		</p>
+		<p v-else-if="!isLoading && !poprData" class="text-muted">
+			{{ $t("plan.tools.popr.empty") }}
 		</p>
 		<div
 			v-else-if="isLoading"

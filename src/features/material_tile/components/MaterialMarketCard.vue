@@ -27,7 +27,7 @@
 	import { CX_DOT_COLOR } from "@/features/exchanges/exchangeLabel.util";
 	import { formatShare } from "@/features/cx/marketCheck.util";
 	import { formatMaterialName } from "@/util/text";
-	import { formatNumber } from "@/util/numbers";
+	import { formatNumber, formatSmallNumber } from "@/util/numbers";
 
 	// Types & Interfaces
 	import type { Material } from "@/features/api/schemas/gameData.schemas";
@@ -201,8 +201,8 @@
 					·
 					{{
 						$t("material_tile.card.facts", {
-							weight: formatNumber(material.weight, 2),
-							volume: formatNumber(material.volume, 2),
+							weight: formatSmallNumber(material.weight),
+							volume: formatSmallNumber(material.volume),
 						})
 					}}
 				</div>

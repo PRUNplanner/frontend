@@ -600,6 +600,19 @@ describe("PlanProduction", () => {
 			expect(trackEvent).not.toHaveBeenCalled();
 		});
 
+		// the hint stands in for the starter card when there are no insights
+		it.each([
+			["an empty plan without insights", false, empty, true],
+			["an empty plan with the starter card", true, empty, false],
+			["a disabled (shared) plan", false, { ...empty, disabled: true }, false],
+			["a plan with a building", false, {}, false],
+		])("hints at the building select on %s", async (_name, available, props, shown) => {
+			insights.available = ref(available);
+			const { wrapper } = await mountProduction(props);
+
+			expect(wrapper.find("[data-empty-hint]").exists()).toBe(shown);
+		});
+
 		it("Start empty hides it, the link brings it back", async () => {
 			insights.available = ref(true);
 			const { wrapper } = await mountProduction(empty, {

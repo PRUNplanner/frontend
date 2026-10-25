@@ -54,6 +54,8 @@
 		empire: PlanEmpire | undefined;
 		cxUuid: string | undefined;
 		planet: Planet;
+		/** the viewer's own plan, not a shared or read-only one */
+		own?: boolean;
 	}>();
 
 	const planningStore = usePlanningStore();
@@ -159,7 +161,6 @@
 			key: "bar",
 			title: t("plan.tools.plan_check.columns.change"),
 			titleAlign: "center",
-			minWidth: 280,
 		},
 		{
 			key: "range",
@@ -247,7 +248,8 @@
 			:plan="plan"
 			:empire="empire"
 			:cx-uuid="cxUuid"
-			:planet="planet" />
+			:planet="planet"
+			:own="own" />
 		<PlanCheckCompare
 			v-else-if="shownView === 'compare'"
 			:plan="plan"
@@ -262,16 +264,28 @@
 			v-else
 			class="grid grid-cols-[minmax(0,1fr)] @[1000px]:grid-cols-[minmax(0,1fr)_280px] gap-3 items-start">
 			<div class="flex flex-col gap-2 min-w-0">
+				<!-- below 640 px the side moves next to the material and the
+					profit range drops: the bar carries the numbers -->
 				<PDataTable
+					class="@max-[640px]:[&_[data-col-key=side]]:hidden @max-[640px]:[&_[data-col-key=range]]:hidden"
 					:columns="columns"
 					:data="shown"
-					:row-key="rowKey"
-					:min-width="640">
+					:row-key="rowKey">
 					<template #cell-ticker="{ row }">
 						<span
 							class="inline-block min-w-10 px-1 rounded-sm text-xs text-center font-bold"
 							:class="chipClass(row.ticker)">
 							{{ row.ticker }}
+						</span>
+						<span
+							class="@[640px]:hidden ml-1.5 px-1.5 border border-white/20 rounded-sm text-xs text-muted-strong">
+							{{ t(`plan.tools.plan_check.side.${row.side}`) }}
+						</span>
+					</template>
+					<!-- a narrow table wraps the long title -->
+					<template #header-bar>
+						<span class="whitespace-normal">
+							{{ t("plan.tools.plan_check.columns.change") }}
 						</span>
 					</template>
 					<template #cell-side="{ row }">
@@ -284,6 +298,7 @@
 						<PTooltip placement="top">
 							<template #trigger>
 								<PDivergingBar
+									class="@[640px]:min-w-65"
 									:value="impact(row)"
 									:max-abs="maxAbs"
 									mirror

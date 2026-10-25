@@ -600,7 +600,10 @@ describe("PlanCheckCompare edge cases", () => {
 			const { wrapper } = await mountWith();
 
 			const rows = tableRows(wrapper);
-			expect(rows.map((r) => r.figure)).toEqual([
+			const figures = wrapper
+				.findAll("td[data-col-key=figure] > span:first-child")
+				.map((s) => s.text());
+			expect(figures).toEqual([
 				"plan.tools.plan_check.compare.figures.profit",
 				"plan.tools.plan_check.compare.figures.cost",
 				"plan.tools.plan_check.compare.figures.roi",
@@ -612,13 +615,20 @@ describe("PlanCheckCompare edge cases", () => {
 			expect(rows[2].delta).toBe("—");
 			expect(rows[0].delta).toContain("+500");
 			expect(rows[4].delta).toBe("0.00 ȼ");
-			// area has no currency
-			expect(rows[5].a).toBe("20");
-			expect(rows[5].delta).toBe("+20");
-
 			const cells = wrapper
 				.findAll("tbody tr")
 				.map((tr) => tr.findAll("td"));
+			// both plans in one cell; below 640 px CSS hides the other
+			// plan's column and shows its value here, under this plan's
+			const values = (r: number) =>
+				cells[r][1].findAll(":scope > span > span").map((s) => s.text());
+			// area has no currency
+			expect(values(5)).toEqual(["20", "40"]);
+			expect(rows[5].delta).toBe("+20");
+			// the payback formula also sits under its name there
+			expect(cells[3][0].text()).toContain(
+				"plan.tools.plan_check.compare.payback.formula"
+			);
 			const cls = (r: number) => cells[r][3].find("span").classes();
 			expect(cls(0)).toContain("text-positive");
 			expect(cls(1)).toContain("text-negative");

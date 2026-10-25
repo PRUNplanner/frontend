@@ -139,12 +139,18 @@ describe("PlanetPOPRButton", () => {
 		expect(trackEvent).toHaveBeenCalledTimes(2);
 	});
 
-	it("disables the button without a POPR", async () => {
-		mock.onGet(poprUrl("AA-006a")).reply(404);
-		vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper } = await mountButton({ planetNaturalId: "AA-006a" });
+	it.each([
+		// no report yet (404) is empty, not an error worth logging
+		[404, "AA-006a", false],
+		[500, "AA-007a", true],
+	])("disables the button without a POPR (%i)", async (status, planet, logged) => {
+		mock.onGet(poprUrl(planet)).reply(status);
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper } = await mountButton({ planetNaturalId: planet });
 
 		await click(wrapper);
+
+		expect(error.mock.calls.length > 0).toBe(logged);
 
 		expect(wrapper.find("button").text()).toBe(
 			"government.popr_button.buttons.no_popr"
