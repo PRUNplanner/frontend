@@ -73,18 +73,23 @@ function endSession(): void {
 let sessionRefresh: Promise<boolean> | null = null;
 
 /**
- * Refreshes the access token, or ends the session if that fails. Parallel
- * 401s share one call, so a failed refresh ends the session once.
+ * Refreshes the access token, or ends the session if the backend refused
+ * it. Parallel 401s share one call, so a failed refresh ends the session
+ * once. A refresh without an answer (network, timeout, 5xx) keeps the
+ * session: the token may still be valid, the next 401 tries again.
  *
  * @returns {Promise<boolean>} Refreshed
  */
 function refreshOrEndSession(): Promise<boolean> {
 	sessionRefresh ??= useUserStore()
 		.performTokenRefresh()
-		.then((refreshed) => {
-			if (!refreshed) endSession();
-			return refreshed;
-		})
+		.then(
+			(refreshed) => {
+				if (!refreshed) endSession();
+				return refreshed;
+			},
+			() => false
+		)
 		.finally(() => {
 			sessionRefresh = null;
 		});
