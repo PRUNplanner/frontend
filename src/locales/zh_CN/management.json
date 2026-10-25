@@ -15,7 +15,8 @@
 			"empire_name": "@:{'terms.empire'}名称",
 			"faction": "@:terms.faction",
 			"permits_total": "@:{'terms.permits_plural'}总数",
-			"permits_used": "已用@:{'terms.permits_plural'}"
+			"permits_used": "已用@:{'terms.permits_plural'}",
+			"empire_placeholder": "max. 100 characters"
 		},
 		"table": {
 			"empire_name": "@:terms.empire",
