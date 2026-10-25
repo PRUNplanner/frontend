@@ -124,6 +124,7 @@
 		"chart": "Chart",
 		"planet": "行星",
 		"fert": "肥沃度 %",
+		"plots": "Plots",
 		"other": "其他资源",
 		"extras": "额外建材",
 		"cogc_infra": "全球商会 · 基础设施",
@@ -159,6 +160,7 @@
 	"columns": {
 		"button": "列 ({shown}/{total})",
 		"fert": "肥沃",
+		"plots": "Plots",
 		"other": "其他资源",
 		"extras": "额外建材",
 		"cogc": "全球商会 · 基础设施",
@@ -170,6 +172,15 @@
 		"all": "全选",
 		"none": "不选",
 		"reset": "重置"
+	},
+	"plots": {
+		"free": "{free} / {total} plots free",
+		"full": "Full",
+		"full_ghost": "Full · ghost sites",
+		"unknown": "plots unknown",
+		"full_tooltip": "Every plot is taken: this planet can't be settled anymore.",
+		"ghost_tooltip": "Every plot is taken. New bases go on ghost sites; {n} so far.",
+		"as_of": "As of {date}."
 	},
 	"chips": {
 		"name": "名称：“{text}”",
