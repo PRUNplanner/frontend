@@ -88,7 +88,7 @@
 			<h3 class="text-xs uppercase text-muted">
 				{{ $t(`production_chains.check.kind.${g.kind}`) }}
 				<span
-					class="pl-1 tabular-nums"
+					class="pl-1 tabular-nums normal-case"
 					:class="g.sum >= 0 ? 'text-positive' : 'text-negative'">
 					{{
 						$t("production_chains.check.finding.per_day", {

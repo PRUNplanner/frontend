@@ -36,6 +36,8 @@
 	const MIN_ZOOM = 0.2;
 	const MAX_ZOOM = 2;
 	const ZOOM_STEP = 1.25;
+	// a width-bound fit stops here so 12 px labels stay readable (9 px)
+	const MIN_FIT_ZOOM = 0.75;
 
 	const layout = computed(() => layoutChain(result));
 	const zoom = ref(1);
@@ -51,9 +53,14 @@
 		const width = scroller.value?.clientWidth ?? 0;
 		if (width <= 0) return;
 		const height = window.innerHeight * MAX_HEIGHT_SHARE;
-		zoom.value = clampZoom(
-			Math.min(1, width / layout.value.width, height / layout.value.height)
-		);
+		const byWidth = width / layout.value.width;
+		const byHeight = height / layout.value.height;
+		// a narrow panel (a phone) stops at MIN_FIT_ZOOM and pans sideways;
+		// a tall chain still fits whole
+		zoom.value =
+			byWidth <= byHeight
+				? Math.max(MIN_FIT_ZOOM, Math.min(1, byWidth))
+				: clampZoom(Math.min(1, byHeight));
 	}
 
 	function zoomBy(direction: 1 | -1): void {

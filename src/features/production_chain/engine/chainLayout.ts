@@ -1,6 +1,9 @@
 // Types & Interfaces
 import type { IChainResult } from "@/features/production_chain/engine/chainSolver.types";
 
+// Util
+import { formatQty } from "@/features/production_chain/productionChain.util";
+
 /** node and gap sizes of the chain graph, in SVG units */
 export const LAYOUT = {
 	nodeWidth: 172,
@@ -12,6 +15,28 @@ export const LAYOUT = {
 } as const;
 
 const BARYCENTER_PASSES = 4;
+
+// edge label box, text-xs tabular digits: width per character, padding and
+// the height above the line it is drawn on
+const LABEL_CHAR = 7;
+const LABEL_PAD = 6;
+const LABEL_H = 16;
+// spots along an edge (0 its input, 1 its consumer), tried from the middle
+// out: 0.5, 0.55, 0.45, … 0.05
+const LABEL_TS = Array.from(
+	{ length: 19 },
+	(_, i) => 0.5 + (i % 2 ? 1 : -1) * Math.ceil(i / 2) * 0.05
+);
+
+interface IBox {
+	x: number;
+	y: number;
+	w: number;
+	h: number;
+}
+
+const overlaps = (a: IBox, b: IBox) =>
+	a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 
 export interface IChainLayoutNode {
 	ticker: string;
@@ -100,6 +125,14 @@ export function layoutChain(result: IChainResult): IChainLayout {
 		})
 	);
 
+	// labels go where they cover no node and no label placed before them:
+	// the middle of the curve first, then further towards either end
+	const boxes: IBox[] = Object.values(nodes).map((n) => ({
+		x: n.x,
+		y: n.y,
+		w: W,
+		h: H,
+	}));
 	const edges: IChainLayoutEdge[] = result.links.map((l) => {
 		const a = nodes[l.input];
 		const b = nodes[l.consumer];
@@ -108,11 +141,24 @@ export function layoutChain(result: IChainResult): IChainLayout {
 		const x2 = b.x;
 		const y2 = b.y + H / 2;
 		const mx = (x1 + x2) / 2;
+		const w = formatQty(l.perDay).length * LABEL_CHAR + LABEL_PAD;
+		const at = (t: number) => {
+			// the cubic below: x runs x1, mx, mx, x2 and y y1, y1, y2, y2
+			const u = 1 - t;
+			const x = u * u * u * x1 + 3 * u * t * mx + t * t * t * x2;
+			const y = y1 + (y2 - y1) * t * t * (3 - 2 * t);
+			return { x, y, box: { x: x - w / 2, y: y - LABEL_H, w, h: LABEL_H } };
+		};
+		const spot =
+			LABEL_TS.map(at).find((c) => !boxes.some((o) => overlaps(c.box, o))) ??
+			at(0.5);
+		boxes.push(spot.box);
 		return {
 			...l,
 			path: `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`,
-			labelX: mx,
-			labelY: (y1 + y2) / 2 - 4,
+			labelX: spot.x,
+			// SVG text sits on its baseline, a little above the line
+			labelY: spot.y - 4,
 		};
 	});
 

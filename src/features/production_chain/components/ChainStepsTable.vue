@@ -294,7 +294,7 @@
 		</div>
 		<PTable class="border-0 rounded-none">
 			<thead>
-				<tr class="whitespace-nowrap">
+				<tr>
 					<th>{{ $t("production_chains.table.material") }}</th>
 					<th class="numeric">{{ $t("production_chains.table.per_day") }}</th>
 					<th>{{ $t("production_chains.table.base") }}</th>
@@ -416,8 +416,8 @@
 										:aria-label="t('production_chains.table.choose_recipe', { ticker: entry.row.ticker })"
 										aria-haspopup="dialog"
 										@click="(e) => openPicker(entry.row.ticker, e)">
-										<ChainRecipeText :recipe="entry.row.recipe" :ticker="entry.row.ticker" />
-										<span class="block text-xs text-muted">
+										<ChainRecipeText class="flex-wrap" :recipe="entry.row.recipe" :ticker="entry.row.ticker" />
+										<span class="block text-xs text-muted whitespace-normal">
 											{{ entry.row.recipe.building_ticker }} ·
 											{{ hours(entry.row.recipe.time_ms) }} ·
 											<span class="text-link">
@@ -426,8 +426,8 @@
 										</span>
 									</button>
 									<div v-else class="px-2 py-1 whitespace-nowrap">
-										<ChainRecipeText :recipe="entry.row.recipe" :ticker="entry.row.ticker" />
-										<span class="block text-xs text-muted">
+										<ChainRecipeText class="flex-wrap" :recipe="entry.row.recipe" :ticker="entry.row.ticker" />
+										<span class="block text-xs text-muted whitespace-normal">
 											{{ entry.row.recipe.building_ticker }} ·
 											{{ hours(entry.row.recipe.time_ms) }}
 										</span>
@@ -479,7 +479,7 @@
 								<template v-if="entry.row.buildingTicker && typeOf(entry.row)">
 									<span class="font-mono">{{ entry.row.buildingTicker }}</span>
 									<span class="pl-2 tabular-nums">{{ formatNumber(entry.row.buildings, 2) }}</span>
-									<span class="block text-xs text-muted">
+									<span class="block text-xs text-muted whitespace-normal">
 										{{
 											$t("production_chains.table.of_built", {
 												n: typeOf(entry.row)!.built,

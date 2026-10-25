@@ -111,6 +111,34 @@ describe("ChainGraph fit", () => {
 			window.innerHeight = innerHeight;
 		}
 	});
+
+	it("stops a width-bound fit at 0.75 so a phone pans instead", async () => {
+		const ctx = testContext();
+		const result = solveChain(chainInput([["RAT", 100]]), ctx);
+		const layout = layoutChain(result);
+		Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+			configurable: true,
+			get: () => 330,
+		});
+		const innerHeight = window.innerHeight;
+		window.innerHeight = 4000;
+		try {
+			const { wrapper } = await mountComponent(ChainGraph, {
+				result,
+				lines: "t",
+				focus: null,
+			});
+			expect(330 / layout.width).toBeLessThan(0.75);
+			const inner = wrapper.find("[data-testid='chain-graph'] > div");
+			expect(parseFloat(inner.attributes("style")!.match(/width: ([\d.]+)px/)![1])).toBeCloseTo(
+				layout.width * 0.75,
+				3
+			);
+		} finally {
+			delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientWidth;
+			window.innerHeight = innerHeight;
+		}
+	});
 });
 
 describe("ChainGraph details", () => {
