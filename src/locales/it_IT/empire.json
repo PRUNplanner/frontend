@@ -126,7 +126,8 @@
 			"sell_outputs": "Vendi Output",
 			"potential_batches": "Lotti Potenziali",
 			"delta_required": "Delta Richiesto",
-			"missing_material": "Materiali mancanti"
+			"missing_material": "Materiali mancanti",
+			"missing": "Missing"
 		}
 	},
 	"onboarding": {
