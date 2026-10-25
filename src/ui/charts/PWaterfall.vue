@@ -15,7 +15,11 @@
 	import { tooltipConfig } from "@/ui/styles";
 	import { Z_TOOLTIP } from "@/ui/zIndex";
 	import { useChartTheme } from "@/ui/charts/chartTheme";
-	import { compactNumber, waterfallLayout } from "@/ui/charts/charts.util";
+	import {
+		compactNumber,
+		labelFit,
+		waterfallLayout,
+	} from "@/ui/charts/charts.util";
 
 	// Types & Interfaces
 	import type {
@@ -41,8 +45,9 @@
 
 	const PLOT_PX = 300;
 	const AXIS_PX = 44;
-	// below this a column scrolls in the box instead of squeezing
-	const MIN_SLOT_PX = 64;
+	// below this a column scrolls in the box instead of squeezing: a phone
+	// fits about 6 columns, the values above the bars need the room
+	const MIN_SLOT_PX = 48;
 	// labels beside a bar need this much room to the next bar
 	const BESIDE_GUTTER_PX = 56;
 
@@ -76,6 +81,23 @@
 	// narrow bars keep the chip and drop the value, very narrow ones both
 	const insideValue = computed(() => barWidth.value >= 72);
 	const insideChip = computed(() => barWidth.value >= 30);
+	// x labels wrap at spaces; a word too wide for its slot turns them
+	const fit = computed(() =>
+		labelFit(
+			columns.map((c) => c.label),
+			slot.value
+		)
+	);
+	const TILT_DEG = 35;
+	// the longest turned label, plus its line
+	const tiltHeight = computed(
+		() =>
+			Math.max(0, ...columns.map((c) => c.label.length)) *
+				6.2 *
+				Math.sin((TILT_DEG * Math.PI) / 180) +
+			20
+	);
+
 	const valueText = (c: IWaterfallColumn) =>
 		slot.value < 100
 			? compactNumber(c.value)
@@ -120,7 +142,11 @@
 		const anchor = event.currentTarget as HTMLElement;
 		await nextTick();
 		if (tooltipRef.value)
-			floating = createFloating(anchor, tooltipRef.value, "right", 8);
+			floating = createFloating(anchor, tooltipRef.value, "right", 8, [
+				"left",
+				"top",
+				"bottom",
+			]);
 	}
 
 	function hide() {
@@ -143,8 +169,8 @@
 			:aria-label="label"
 			class="relative"
 			:style="{ width: `${plotWidth + AXIS_PX}px` }">
-			<!-- y axis and grid -->
-			<div class="relative" :style="{ height: `${PLOT_PX}px` }">
+			<!-- y axis and grid; mt-2 holds the top tick's label -->
+			<div class="relative mt-2" :style="{ height: `${PLOT_PX}px` }">
 				<div
 					v-for="tick in layout.ticks"
 					:key="tick.value"
@@ -178,16 +204,17 @@
 								width: `${slot - barWidth}px`,
 							}" />
 
-						<!-- value above the bar -->
+						<!-- value above the bar, centred even when wider than its slot -->
 						<div
-							class="absolute text-center text-sm font-bold tabular-nums whitespace-nowrap"
-							:class="
+							class="absolute flex justify-center font-bold tabular-nums whitespace-nowrap"
+							:class="[
+								slot >= 64 ? 'text-sm' : 'text-xs',
 								box.column.tone === 'neutral'
 									? 'text-white'
 									: box.column.tone === 'positive'
 										? 'text-positive'
-										: 'text-negative'
-							"
+										: 'text-negative',
+							]"
 							:style="{
 								top: `${box.top - 20}px`,
 								left: `${i * slot}px`,
@@ -248,24 +275,47 @@
 								(s) => s.labelAt === 'beside'
 							)"
 							:key="`beside-${seg.key}`"
-							class="absolute text-xs leading-3.5 text-white/70 whitespace-nowrap overflow-hidden"
+							class="absolute flex flex-col text-xs leading-3.5 text-white/70 whitespace-nowrap overflow-hidden"
 							:style="{
 								top: `${seg.labelTop}px`,
 								left: `${barLeft(i) + barWidth + 4}px`,
 								maxWidth: `${slot - barWidth - 6}px`,
 							}">
-							{{ seg.label }} {{ compactNumber(seg.value) }}
+							<span>{{ seg.label }}</span>
+							<span class="tabular-nums">
+								{{ compactNumber(seg.value) }}
+							</span>
 						</div>
 					</template>
 				</div>
 			</div>
 
-			<!-- column labels -->
-			<div class="flex pt-2" :style="{ marginLeft: `${AXIS_PX}px` }">
+			<!-- column labels, wrapped at spaces only; turned when a word is
+				too wide for its slot -->
+			<div
+				v-if="fit === 'tilt'"
+				class="relative"
+				:style="{
+					marginLeft: `${AXIS_PX}px`,
+					height: `${tiltHeight}px`,
+				}">
+				<div
+					v-for="(box, i) in layout.columns"
+					:key="box.column.key"
+					class="absolute top-1 text-xs text-white/80 whitespace-nowrap origin-top-right"
+					:style="{
+						right: `${plotWidth - (i + 0.5) * slot}px`,
+						transform: `rotate(-${TILT_DEG}deg)`,
+					}">
+					{{ box.column.label }}
+				</div>
+			</div>
+			<div v-else class="flex pt-2" :style="{ marginLeft: `${AXIS_PX}px` }">
 				<div
 					v-for="box in layout.columns"
 					:key="box.column.key"
-					class="px-1 text-center text-xs sm:text-sm text-white/80 break-words"
+					class="flex justify-center px-1 text-center text-white/80"
+					:class="fit === 'sm' ? 'text-sm' : 'text-xs'"
 					:style="{ width: `${slot}px` }">
 					{{ box.column.label }}
 				</div>

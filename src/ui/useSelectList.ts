@@ -56,17 +56,31 @@ export function useSelectList(
 		if (searchString.value === null || searchString.value === "")
 			return options();
 		const search = searchString.value.toLowerCase();
-		return options()
-			.map((f) => {
-				if (f.children) {
-					const children = f.children.filter((c) =>
-						c.label.toLowerCase().includes(search)
-					);
-					return children.length ? { ...f, children } : null;
-				}
-				return f.label.toLowerCase().includes(search) ? f : null;
-			})
-			.filter((x): x is PSelectOption => x != null);
+		// 0: whole first word ("EXT" in "EXT (Extractor)"), 1: label prefix,
+		// 2: anywhere; a group by its best child; ties keep their order
+		const rank = (o: Omit<PSelectOption, "value">): number => {
+			if (o.children) return Math.min(...o.children.map(rank));
+			const label = o.label.toLowerCase();
+			if (label.split(/[\s(]/, 1)[0] === search) return 0;
+			return label.startsWith(search) ? 1 : 2;
+		};
+		const byRank = <T extends Omit<PSelectOption, "value">>(list: T[]) =>
+			list.sort((a, b) => rank(a) - rank(b));
+		return byRank(
+			options()
+				.map((f) => {
+					if (f.children) {
+						const children = f.children.filter((c) =>
+							c.label.toLowerCase().includes(search)
+						);
+						return children.length
+							? { ...f, children: byRank(children) }
+							: null;
+					}
+					return f.label.toLowerCase().includes(search) ? f : null;
+				})
+				.filter((x): x is PSelectOption => x != null)
+		);
 	});
 
 	// what arrow keys and Enter move through: group children, not headers

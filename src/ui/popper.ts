@@ -11,13 +11,16 @@ import { createPopper, type Placement } from "@popperjs/core";
  * @param {HTMLElement} floating The panel
  * @param {Placement} placement Popper placement
  * @param {number} offset Gap to the reference in px
+ * @param {Placement[]} [fallbacks] sides to try in order when the panel
+ *  doesn't fit (default: the opposite side)
  * @returns {{ destroy }} stops positioning
  */
 export function createFloating(
 	reference: Element,
 	floating: HTMLElement,
 	placement: Placement,
-	offset: number
+	offset: number,
+	fallbacks?: Placement[]
 ): { destroy: () => void } {
 	const popper = createPopper(reference, floating, {
 		placement,
@@ -26,7 +29,12 @@ export function createFloating(
 			{ name: "offset", options: { offset: [0, offset] } },
 			{
 				name: "flip",
-				options: { boundary: "viewport", padding: 8, altAxis: false },
+				options: {
+					boundary: "viewport",
+					padding: 8,
+					altAxis: false,
+					fallbackPlacements: fallbacks,
+				},
 			},
 			{
 				name: "preventOverflow",

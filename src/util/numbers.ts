@@ -54,6 +54,21 @@ export function formatNumber(
 	return formatter.format(rounded);
 }
 
+const significant = new Intl.NumberFormat("en-US", {
+	maximumSignificantDigits: 3,
+});
+
+/**
+ * Formats a number that can be tiny (a material's weight or volume): below
+ * 1 with up to 3 significant digits ("0.005"), else like formatNumber
+ * @param {number} value numeric input
+ * @returns {string} e.g. "0.005", "0.0123", "1.80"
+ */
+export function formatSmallNumber(value: number): string {
+	if (!Number.isFinite(value)) return "—";
+	return Math.abs(value) < 1 ? significant.format(value) : formatNumber(value);
+}
+
 /**
  * Formats a percentage as "12.34 %", or "—" without a unit for ∞ or NaN
  * @param {number} value percentage, 0-100

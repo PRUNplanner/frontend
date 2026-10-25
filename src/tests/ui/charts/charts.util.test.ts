@@ -5,6 +5,7 @@ import {
 	chartTooltip,
 	chartZone,
 	compactNumber,
+	labelFit,
 	lineLabelLayout,
 	sparklineLayout,
 	stripLayout,
@@ -110,6 +111,7 @@ describe("chart theme styles", () => {
 		grid: "#grid",
 		axis: "#axis",
 		surface: "#surface",
+		mono: "ui-monospace, monospace",
 		exchange: () => "#cx",
 		costPart: () => "#cost",
 	};
@@ -120,8 +122,8 @@ describe("chart theme styles", () => {
 			borderColor: "#axis",
 			titleColor: "#ink",
 			bodyColor: "#ink",
-			titleFont: { family: "monospace", weight: "bold" },
-			bodyFont: { family: "monospace", size: 12 },
+			titleFont: { family: "ui-monospace, monospace", weight: "bold" },
+			bodyFont: { family: "ui-monospace, monospace", size: 12 },
 		});
 	});
 
@@ -230,6 +232,17 @@ describe("compactNumber", () => {
 	});
 });
 
+describe("labelFit", () => {
+	const labels = ["Output value", "Degradation", "Daily profit"];
+	it("wraps at spaces, shrinks, then turns when a word is too wide", () => {
+		// "Degradation", 11 characters: 77 px at sm, 68 px at xs
+		expect(labelFit(labels, 132)).toBe("sm");
+		expect(labelFit(labels, 80)).toBe("xs");
+		expect(labelFit(labels, 60)).toBe("tilt");
+		expect(labelFit([], 10)).toBe("sm");
+	});
+});
+
 describe("waterfallLayout", () => {
 	const seg = (key: string, value: number) => ({ key, label: key, value });
 	// 100 − 30 − 20 = 50 on a 300 px plot, domain 0..110
@@ -307,13 +320,13 @@ describe("waterfallLayout", () => {
 		const [, lst, flx] = out.segments;
 		const label = (s: { labelTop: number }) => [
 			s.labelTop,
-			s.labelTop + 14,
+			s.labelTop + 28,
 		];
 		for (const s of [lst, flx]) {
 			const [a, b] = label(s);
 			expect(a > out.endY + 2 || b < out.endY - 2).toBe(true);
 		}
-		expect(lst.labelTop).toBeGreaterThanOrEqual(flx.labelTop + 14);
+		expect(lst.labelTop).toBeGreaterThanOrEqual(flx.labelTop + 28);
 	});
 
 	it("hides labels beside a bar on narrow charts, or with no room left", () => {
@@ -341,9 +354,9 @@ describe("waterfallLayout", () => {
 			300
 		).columns[0].segments;
 		expect([a.labelAt, b.labelAt]).toEqual(["beside", "beside"]);
-		expect(Math.abs(a.labelTop - b.labelTop)).toBeGreaterThanOrEqual(14);
+		expect(Math.abs(a.labelTop - b.labelTop)).toBeGreaterThanOrEqual(28);
 		for (const s of [a, b])
-			expect(s.labelTop + 14).toBeLessThanOrEqual(300);
+			expect(s.labelTop + 28).toBeLessThanOrEqual(300);
 
 		// a plot lower than a label: nowhere to go
 		const tiny = waterfallLayout(column([seg("A", 50), seg("B", 50)]), 10)

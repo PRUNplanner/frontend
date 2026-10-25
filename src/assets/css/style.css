@@ -16,6 +16,8 @@
 	--app-bg: #030707;
 	/* focus ring, >= 3:1 on every app surface */
 	--color-focus: #60a5fa;
+	/* font-mono, also read by the charts (canvas text, useChartTheme) */
+	--font-mono: "Roboto Mono", monospace;
 
 	/* the UI kit's look (src/ui), one value per meaning */
 	/* panels: popover, menu, select list, tooltip, toast, modal, drawer */
@@ -78,6 +80,25 @@ body {
 	text-size-adjust: 100%;
 	-webkit-tap-highlight-color: transparent;
 	background-color: var(--app-bg);
+}
+
+/* the toast stack (PToastHost) clears a phone's bottom bar and safe area,
+   and the plan's phone Save bar (4rem bar + its ~3rem) while it shows */
+body {
+	--toast-bottom: calc(5rem + env(safe-area-inset-bottom));
+}
+body:has([data-phone-save]) {
+	--toast-bottom: calc(7.5rem + env(safe-area-inset-bottom));
+}
+/* and the sticky SaveBar (save_bar/): 1.5rem + its 4rem on a desktop,
+   5rem + up to two wrapped rows (~5.5rem) on a phone */
+body:has([data-save-bar]) {
+	--toast-bottom: 6rem;
+}
+@media (width < 48rem) {
+	body:has([data-save-bar]) {
+		--toast-bottom: calc(11rem + env(safe-area-inset-bottom));
+	}
 }
 
 body input {

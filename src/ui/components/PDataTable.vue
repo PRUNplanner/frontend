@@ -55,6 +55,8 @@
 		expandLabel = undefined,
 		virtual = false,
 		minWidth = undefined,
+		stickyFirst = false,
+		dense = false,
 	} = defineProps<{
 		columns: PDataTableColumn<T>[];
 		data: T[];
@@ -76,6 +78,10 @@
 		virtual?: boolean;
 		/** narrower than this, the table scrolls sideways in its box */
 		minWidth?: number | string;
+		/** pins the expand button and the first column while it scrolls sideways */
+		stickyFirst?: boolean;
+		/** narrower cell padding, for wide tables with many short columns */
+		dense?: boolean;
 	}>();
 
 	const expandedRowKeys = defineModel<(string | number)[]>(
@@ -104,6 +110,12 @@
 	const colCount = computed(
 		() => leaves.value.length + (hasExpand.value ? 1 : 0)
 	);
+
+	// the pinned first column starts after the 48px expand column
+	const stickyKey = computed(() =>
+		stickyFirst ? leaves.value[0]?.key : undefined
+	);
+	const stickyLeft = computed(() => (hasExpand.value ? "48px" : "0px"));
 
 	interface HeaderCell {
 		col: PDataTableColumn<T>;
@@ -383,6 +395,7 @@
 		:class="[
 			fill ? 'h-full flex flex-col' : '',
 			popover ? 'p-data-table-popover' : '',
+			dense ? 'p-data-table-dense' : '',
 			windowed && !fill ? 'p-data-table-borderless' : '',
 		]">
 		<!-- with fill, a 0px basis (not 0%): its rows never size the parent, it grows into the space -->
@@ -409,7 +422,8 @@
 						<th
 							v-if="hasExpand && r === 0"
 							:rowspan="headerRows.length"
-							class="p-data-table-expand-cell">
+							class="p-data-table-expand-cell"
+							:class="stickyKey ? 'p-data-table-sticky left-0' : ''">
 							<span class="sr-only">{{ t("common.ui.table.expand_row") }}</span>
 						</th>
 						<th
@@ -423,10 +437,12 @@
 								alignClass(cell.col.titleAlign ?? cell.col.align),
 								cell.col.sorter ? 'p-data-table-sortable' : '',
 								isSorting(cell.col.key) ? 'p-data-table-sorting' : '',
+								cell.col.key === stickyKey ? 'p-data-table-sticky' : '',
 							]"
 							:style="{
 								width: headerWidth(cell.col.width),
 								minWidth: px(cell.col.minWidth),
+								left: cell.col.key === stickyKey ? stickyLeft : undefined,
 							}">
 							<button
 								v-if="cell.col.sorter"
@@ -482,7 +498,10 @@
 								@click="rowClick?.(item.row)"
 								@keydown.enter="rowClick && onRowKey($event, item.row)"
 								@keydown.space="rowClick && onRowKey($event, item.row)">
-								<td v-if="hasExpand" class="p-data-table-expand-cell">
+								<td
+									v-if="hasExpand"
+									class="p-data-table-expand-cell"
+									:class="stickyKey ? 'p-data-table-sticky left-0' : ''">
 									<button
 										type="button"
 										class="p-data-table-expand-button"
@@ -505,7 +524,9 @@
 									:class="[
 										alignClass(col.align),
 										isSorting(col.key) ? 'p-data-table-sorting' : '',
-									]">
+										col.key === stickyKey ? 'p-data-table-sticky' : '',
+									]"
+									:style="col.key === stickyKey ? { left: stickyLeft } : undefined">
 									<slot :name="`cell-${col.key}`" :row="item.row" :index="item.index">
 										{{ (item.row as Record<string, unknown>)[col.key] }}
 									</slot>
@@ -612,6 +633,11 @@
 		@apply text-center;
 	}
 
+	.p-data-table.p-data-table-dense th,
+	.p-data-table.p-data-table-dense td {
+		@apply px-1.5;
+	}
+
 	.p-data-table-title {
 		@apply flex w-full items-center flex-nowrap text-[length:inherit] font-[inherit] leading-[inherit] [text-align:inherit];
 	}
@@ -627,6 +653,10 @@
 	/* the whole cell is the button */
 	.p-data-table-sortable > .p-data-table-title {
 		@apply touch-target -mx-2.5 -my-1.25 px-2.5 py-1.25 w-[calc(100%+20px)] cursor-pointer;
+	}
+
+	.p-data-table-dense .p-data-table-sortable > .p-data-table-title {
+		@apply -mx-1.5 px-1.5 w-[calc(100%+12px)];
 	}
 
 	.p-data-table th.p-data-table-sorting {
@@ -679,6 +709,31 @@
 		@apply bg-hover;
 	}
 
+	/* stickyFirst: pinned cells are opaque, the row colour painted over the
+	   page colour (row 2 % + cell 2 %, striped none, hover 2 + 8 + 8 %) */
+	.p-data-table th.p-data-table-sticky,
+	.p-data-table td.p-data-table-sticky {
+		@apply sticky z-[1];
+	}
+
+	.p-data-table td.p-data-table-sticky {
+		background-color: var(--app-bg);
+		background-image: linear-gradient(color-mix(in srgb, var(--color-white) 4%, transparent), color-mix(in srgb, var(--color-white) 4%, transparent));
+	}
+
+	.p-data-table tr.p-data-table-striped > td.p-data-table-sticky {
+		background-image: none;
+	}
+
+	.p-data-table tbody > tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover > td.p-data-table-sticky {
+		background-color: var(--app-bg);
+		background-image: linear-gradient(color-mix(in srgb, var(--color-white) 17%, transparent), color-mix(in srgb, var(--color-white) 17%, transparent));
+	}
+
+	.p-data-table .p-data-table-sticky:not(.p-data-table-expand-cell) {
+		box-shadow: inset -1px 0 0 var(--color-line);
+	}
+
 	.p-data-table tr.p-data-table-spacer > td {
 		@apply p-0 border-0 bg-transparent;
 	}
@@ -687,12 +742,13 @@
 		@apply cursor-pointer;
 	}
 
+	/* min-w: a squeezed table keeps it 48px, where a pinned first column starts */
 	.p-data-table th.p-data-table-expand-cell {
-		@apply w-12;
+		@apply w-12 min-w-12;
 	}
 
 	.p-data-table td.p-data-table-expand-cell {
-		@apply w-12 p-0 text-center leading-none;
+		@apply w-12 min-w-12 p-0 text-center leading-none;
 	}
 
 	.p-data-table-expand-button {

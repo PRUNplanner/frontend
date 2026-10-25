@@ -9,11 +9,12 @@
 
 <template>
 	<!-- the message container: bottom-right, above the plan page's
-	 floating Insights button, above layers and outside the inert #app.
+	 floating Insights button, above layers and outside the inert #app;
+	 --toast-bottom (style.css) lifts it over bottom bars on a phone.
 	 The slot (the update notice) sits below the toasts. -->
 	<Teleport to="body">
 		<div
-			class="ptoast-host fixed left-0 right-4 bottom-20 h-0 flex flex-col items-end justify-end"
+			class="ptoast-host fixed left-0 right-4 bottom-[var(--toast-bottom,5rem)] h-0 flex flex-col items-end justify-end"
 			:style="{ zIndex: Z_TOAST }">
 			<TransitionGroup
 				tag="div"

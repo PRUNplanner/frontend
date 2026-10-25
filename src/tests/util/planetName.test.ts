@@ -5,6 +5,7 @@ import systemNames from "@/assets/static/system_names.json";
 import {
 	planetDisplayName,
 	planetLabel,
+	planetLabelParts,
 	systemName,
 } from "@/util/planetName";
 
@@ -72,5 +73,19 @@ describe("system_names.json", () => {
 				.map((s) => [s.NaturalId, s.Name])
 		);
 		expect(systemNames).toEqual(derived);
+	});
+});
+
+describe("planetLabelParts", () => {
+	it("splits the name from its id", () => {
+		expect(planetLabelParts("Mount Olympus h (HM-049h)")).toEqual([
+			"Mount Olympus h",
+			"(HM-049h)",
+		]);
+	});
+
+	it("keeps a bare id or name whole", () => {
+		expect(planetLabelParts("KW-602a")).toEqual(["", "KW-602a"]);
+		expect(planetLabelParts("Promitor")).toEqual(["", "Promitor"]);
 	});
 });

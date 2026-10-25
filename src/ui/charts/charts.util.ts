@@ -43,9 +43,6 @@ export function topWithOther(
 	];
 }
 
-// monospace keeps digits tabular, canvas text has no font-variant-numeric
-const CHART_FONT = { family: "monospace", size: 12 };
-
 /**
  * chart.js tooltip style shared by every chart: dark surface, 12 px.
  * @author jplacht
@@ -60,8 +57,9 @@ export function chartTooltip(theme: IChartTheme) {
 		padding: 10,
 		titleColor: theme.ink,
 		bodyColor: theme.ink,
-		titleFont: { ...CHART_FONT, weight: "bold" as const },
-		bodyFont: CHART_FONT,
+		// mono keeps digits tabular, canvas text has no font-variant-numeric
+		titleFont: { family: theme.mono, size: 12, weight: "bold" as const },
+		bodyFont: { family: theme.mono, size: 12 },
 	};
 }
 
@@ -170,10 +168,36 @@ export function compactNumber(value: number): string {
 	return `${sign}${Math.round(abs)}`;
 }
 
+/**
+ * How a chart's x labels fit their slot, wrapped only at spaces: `sm` text,
+ * `xs` text when a word is too wide for `sm`, or `tilt` (xs on one line,
+ * turned) when a word is too wide even for `xs`.
+ * ponytail: a word's width is estimated from its length (7 / 6.2 px per
+ * character at sm / xs); measure the text if labels get wider glyphs.
+ * @author jplacht
+ *
+ * @param {string[]} labels the labels
+ * @param {number} slot px per label
+ * @returns {"sm" | "xs" | "tilt"} the label style
+ */
+export function labelFit(
+	labels: string[],
+	slot: number
+): "sm" | "xs" | "tilt" {
+	const longest = Math.max(
+		0,
+		...labels.flatMap((l) => l.split(/\s+/)).map((w) => w.length)
+	);
+	if (longest * 7 <= slot - 8) return "sm";
+	if (longest * 6.2 <= slot - 4) return "xs";
+	return "tilt";
+}
+
 /** a segment label inside its bar needs this height (px) */
 const WATERFALL_INSIDE_PX = 22;
-/** height of a label beside a bar (px) */
-const WATERFALL_LABEL_PX = 14;
+/** height of a label beside a bar (px): two lines, its name over its value,
+ *  so it fits the narrow gap to the next bar */
+const WATERFALL_LABEL_PX = 28;
 
 /**
  * Lays out a waterfall: totals stand on 0, steps float from the running

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import numbro from "numbro";
 import {
 	formatNumber,
+	formatSmallNumber,
 	formatAmount,
 	formatPayback,
 	formatPercent,
@@ -158,5 +159,15 @@ describe("Util: text", () => {
 		it("high", async () => {
 			expect(boundaryDescriptor(10, 0, 5)).toBe("HIGH");
 		});
+	});
+
+	it("formatSmallNumber keeps tiny values readable", () => {
+		expect(formatSmallNumber(0.005)).toBe("0.005");
+		expect(formatSmallNumber(0.0024)).toBe("0.0024");
+		expect(formatSmallNumber(0.12345)).toBe("0.123");
+		expect(formatSmallNumber(0)).toBe("0");
+		expect(formatSmallNumber(1.8)).toBe("1.80");
+		expect(formatSmallNumber(1234.5)).toBe("1,234.50");
+		expect(formatSmallNumber(NaN)).toBe("—");
 	});
 });

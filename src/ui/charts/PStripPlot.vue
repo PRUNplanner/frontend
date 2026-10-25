@@ -157,7 +157,7 @@
 					:key="dot.key"
 					:data-key="dot.key"
 					type="button"
-					class="absolute size-2.75 -translate-1/2 rounded-full pointer-coarse:after:absolute pointer-coarse:after:top-1/2 pointer-coarse:after:left-1/2 pointer-coarse:after:size-11.25 pointer-coarse:after:-translate-1/2 pointer-coarse:after:content-['']"
+					class="touch-target absolute size-2.75 -translate-1/2 rounded-full"
 					:class="[
 						DOT_CLASS[chartZone(dot.value, red, yellow)],
 						activeKeys.includes(dot.key)

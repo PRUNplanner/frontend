@@ -16,6 +16,8 @@ export interface IChartTheme {
 	axis: string;
 	/** tooltip background */
 	surface: string;
+	/** --font-mono stack for canvas text (canvas cannot read var()) */
+	mono: string;
 	/** exchange colour, UNIVERSE and unknown codes are muted */
 	exchange: (code: string) => string;
 	/** 1 inputs, 2 workforce, 3 degradation, 4 shipping */
