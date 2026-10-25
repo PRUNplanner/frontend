@@ -126,7 +126,8 @@
 			"sell_outputs": "售出输出项",
 			"potential_batches": "潜在批次",
 			"delta_required": "需要缺口",
-			"missing_material": "缺少物料"
+			"missing_material": "缺少物料",
+			"missing": "Missing"
 		}
 	},
 	"onboarding": {
