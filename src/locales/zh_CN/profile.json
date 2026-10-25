@@ -59,6 +59,21 @@
 			"storage": "存储",
 			"records": "记录",
 			"size": "约占空间"
+		},
+		"stores": {
+			"materials": "Materials",
+			"buildings": "Buildings",
+			"recipes": "Recipes",
+			"planets": "Planets",
+			"exchanges": "Exchanges",
+			"plans": "Plans",
+			"empires": "Empires",
+			"cxs": "Exchange Preferences",
+			"shared": "Sharings",
+			"fio_storage_planets": "FIO Storage Planets",
+			"fio_storage_ships": "FIO Storage Ships",
+			"fio_storage_warehouses": "FIO Storage Warehouses",
+			"fio_sites_planets": "FIO Sites Planets"
 		}
 	},
 	"fio_information": {
