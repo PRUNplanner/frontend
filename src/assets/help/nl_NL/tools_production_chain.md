@@ -1,6 +1,6 @@
 Production Chains plans a whole chain per day. Add what you want to produce and how much of it a day, for one material or several at once (for example DW, RAT and OVE). The page works out every step: which recipe makes each material, how many buildings it takes, what to buy, and what the chain costs and earns at your CX prices.
 
-**Settings.** Efficiency is one global percentage for everything that speeds up production (experts, COGC, HQ, faction); 100 % uses the base recipe times. Prices come from your default CX preference, and you can pick another. Raw resources are bought by default; switch to Extract to mine them, or set a single row to Extract. Byproducts first cover demand for the same material in the chain, and the rest is sold; switch to Sell to sell them all.
+**Settings.** Every base runs with both luxuries and the experts worth most for its buildings (see Bases). Efficiency is one more global percentage on top, for HQ or faction bonuses; 100 % adds nothing. Prices come from your default CX preference, and you can pick another. Raw resources are bought by default; switch to Extract to mine them, or set a single row to Extract. Byproducts first cover demand for the same material in the chain, and the rest is sold; switch to Sell to sell them all.
 
 **Results.** The strip at the top shows the profit per day, the output value, what you buy, upkeep and wear, the buildings (built and exact), area including habitation, workforce and construction cost with its payback. It adds up all bases, each with its core module and one STO. Buildings of one type share their capacity across recipes, as in the game, so 4.5 Food Processors make 5 built.
 
@@ -10,10 +10,30 @@ Production Chains plans a whole chain per day. Add what you want to produce and 
 
 **Graph.** The same chain from raw materials on the left to the targets on the right. Line width follows tonnes, credits or nothing. Click a material to see only what it needs and feeds.
 
-**Bases.** A chain can run on up to eight bases, each on one planet. "Split by expertise" suggests bases from the buildings' expertise; the Base column in Steps moves a single step, and "+ new base" starts a new one. On the Bases tab you name each base, pick its planet and its COGC program. The planet's running program is the default; you can pick any other to plan ahead of a vote. A base's buildings get the planet's bonuses as in a plan: +25 % from an advertising program for their expertise, +10 % from a workforce program for a tier they employ, and fertility for farms (FRM and ORC can't run without it). Extracted steps use the planet's own rate; a planet without the resource keeps the chain's rate and warns. Building types share capacity inside one base only. Each base shows its buildings, area with the core module, one STO and habitation, permits, workforce and upkeep. The planet picker solves the base's steps on every planet, so you can compare buildings and area, and marks planets where you already have a plan. "Shipping per day" lists what moves between bases and the CX, in tonnes and m³, with the jumps.
+**Bases.** A chain can run on up to eight bases, each on one planet. "Split by expertise" suggests bases from the buildings' expertise; the Base column in Steps moves a single step, and "+ new base" starts a new one. On the Bases tab you name each base, pick its planet and its COGC program. The planet's running program is the default; you can pick any other to plan ahead of a vote. A base's buildings get the planet's bonuses as in a plan: +25 % from an advertising program for their expertise, +10 % from a workforce program for a tier they employ, and fertility for farms (FRM and ORC can't run without it). Extracted steps use the planet's own rate; a planet without the resource keeps the chain's rate and warns. Building types share capacity inside one base only. **Setup**: each base supplies both luxuries (100 % workforce; Lux 2 92 %, Lux 1 87 %, Essentials 79 %) and pays for them in the upkeep, and gets 5 experts in its main expertise, the sixth in the next one (at most 5 of a type and 6 per base); Auto picks the split worth most for the base's output. Change the luxuries or edit the experts per base; Auto goes back to the best split. Each base shows its buildings, area with the core module, one STO and habitation, permits, workforce and upkeep. The planet picker solves the base's steps on every planet, so you can compare buildings and area, and marks planets where you already have a plan. "Shipping per day" lists what moves between bases and the CX, in tonnes and m³, with the jumps.
 
-**Create plans.** Once every base has a planet and fits 1,000 area, "Create plans" makes one plan per base with its buildings, recipes, habitation, one STO, the COGC program and permits, optionally in a new empire (with its faction) or an existing one. Experts, luxuries and faction bonuses are set in the plans. The page stays on the chain and links the new plans and the empire.
+**Create plans.** Once every base has a planet and fits 1,000 area, "Create plans" makes one plan per base with its buildings, recipes, habitation, one STO, the COGC program and permits, optionally in a new empire (with its faction) or an existing one. The plans get the base's luxuries and experts, so they produce what the chain shows; HQ and faction bonuses are left to the plans. The page stays on the chain and links the new plans and the empire.
 
 **Buy list.** What to buy for a number of days, grouped by the base that uses it, with weight and volume to haul, and one XIT action per base that buys it on the CX and moves it to that base.
 
 **Sharing.** The link holds the whole chain; "Copy chain link" copies it. The last chain you worked on opens again in this browser.
+
+## Check an empire
+
+Switch the mode at the top to **Check an empire** to see how one of your empires makes what it sells, and what would make it better. Pick the empire and the chains to check: each material the empire sells (more made than used) is a chain, shown with its amount per day; "All the empire sells" adds every one. The check follows each chain back through your plans: which base makes each step, with which recipe and efficiency, and what is bought. It never changes a plan; it only points at them.
+
+**Bases.** Every base is marked: looks optimal, has improvements, needs a plan fix, or isn't in the chosen chains. Open a base to see its production as planned, its luxuries, experts and COGC against the chain planner's defaults, and its findings. Coverage on the side shows how many bases the chains reach; "Add …" adds what the other bases sell.
+
+**Findings.** Each finding shows its gain per day, construction and payback:
+
+- _Plan fix_: the plan counts a COGC program the planet doesn't run (−20 % for those buildings), or the planet runs one the plan doesn't count (+25 %).
+- _Recipe_: another recipe of the same building makes the material at least 3 % cheaper.
+- _Make or buy_: a material that isn't a target costs more to make than to buy.
+- _Location_: another planet suits the step at least 10 % better (its COGC program, fertility or extraction rate): one of your bases, or a new base. The suggestion is the best option that has room, a free plot (or ghost sites; unknown plots count as possible) and pays back within "Moves pay back within". "All n planets…" lists every option with filters and sorting; "Use" makes a planet your pick, "Back to suggested" undoes it.
+- _Setup_: both luxuries, or a better expert split. Experts come with time in game; "Setup gains: Hide" leaves these out.
+
+Findings below "Ignore below" are hidden, plan fixes always show. Gains on one step are alternatives, so a base's possible gain counts the best one per step. "Try in planner" opens Plan a chain with the chain's bases and the change applied.
+
+**Chains.** Each chain material by material: how much is made, where, with which recipe, at what cost against the CX price, and what the chain planner would do.
+
+**Sharing.** "Copy check link" copies the empire, the chains and the settings; only you can open your own empires.
