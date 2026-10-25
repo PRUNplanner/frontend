@@ -22,9 +22,11 @@
 
 **Reading the results.** The colour bar on a material tile compares the planet's daily extraction with the highest of that material on any planet: red is below a quarter, then orange, yellow, and green above three quarters. 건설 아이콘이 있는 열에는 해당 행성에 추가로 필요한 건설 자재가 나열됩니다. 자재에 마우스를 올리면 그 이유를 볼 수 있습니다(예: "중력이 낮음"). _COGC · 기반 시설_ 열에는 현재 진행 중인 COGC 프로그램과 행성의 기반 시설이 LM, COGC, WAR, ADM, SHY로 표시됩니다. 점프 수 열에 "—"가 표시되면 점프 경로가 없다는 뜻입니다. 마우스를 올리면 "이주선 필요함"이라는 문구를 볼 수 있습니다.
 
+**Plots.** Every base takes one plot of its planet, and so do HQs and planetary projects (COGC, warehouse, local market and the others). A planet that can't be settled anymore, with every plot taken and no ghost sites, carries a red ⊘ icon next to its name; hover it for the details. The _Plots_ column, which you turn on in the _Columns_ menu, shows the free plots out of the planet's total, as FIO last saw the planet (hover for the date), and marks such a planet red _Full_. Some planets allow **ghost sites**: once every plot is taken, new bases still fit without one, so a full planet that allows them shows an amber _Full · ghost sites_. Full planets keep their place in the results. _plots unknown_ means PRUNplanner hasn't read the planet's plots yet. Sort by the column to see the planets with the most free plots first.
+
 **정렬.** 열 제목을 클릭하면 해당 열 기준으로 정렬되고, 다시 클릭하면 순서가 반대로 바뀝니다. Shift+click another header to add it as a tiebreaker (the headers show 1, 2, 3), up to four columns: "NC1 jumps, then FEO /day" lists the richest FEO planets at each distance. _정렬_ 메뉴를 사용하면 키보드 없이도 같은 기능을 쓸 수 있습니다. 먼저 검색한 첫 번째 물자 기준(높은 순), 물자를 검색하지 않았다면 거리에서 처음 선택한 지점까지의 점프 수 기준, 둘 다 없다면 이름순입니다.
 
-**열.** _열_ 메뉴에서 열을 숨기거나 표시할 수 있습니다. 매트릭스 화면에서는 검색한 모든 물자도 함께 나열되며, _전&#xCCB4;_&#xC640; _없&#xC74C;_&#xC73C;로 한 번에 표시하거나 숨길 수 있습니다. _Reset_ shows everything again.
+**열.** _열_ 메뉴에서 열을 숨기거나 표시할 수 있습니다. 매트릭스 화면에서는 검색한 모든 물자도 함께 나열되며, _전&#xCCB4;_&#xC640; _없&#xC74C;_&#xC73C;로 한 번에 표시하거나 숨길 수 있습니다. _Reset_ goes back to the default columns.
 
 **Compare.** On larger screens, pin up to four planets with ☆ to compare them side by side in the tray at the bottom. 비옥도, 검색한 물자, 거리에서 선택한 지점까지의 점프 수는 가장 좋은 값부터 나쁜 값까지 색으로 구분되며, 가장 좋은 값은 굵게 표시됩니다. 그 밖의 항목에서 행성 간 차이가 있는 행은 파란색으로 표시됩니다.
 
