@@ -96,6 +96,7 @@
 			"title": "Ultima Rapporto Sulla Popolazione",
 			"subtitle": "The planet's workforce from the game's last report, next to what this plan needs",
 			"error": "Errore nel caricare l'ultimo rapporto sulla popolazione. Il pianeta potrebbe non avere popolazione.",
+			"empty": "No population report for this planet yet.",
 			"loading": "Caricamento Rapporto Popolazione",
 			"chart": {
 				"label": "Free workers next to what this plan needs",
@@ -115,7 +116,8 @@
 					"volume": "m³",
 					"import": "@:terms.import",
 					"export": "@:terms.export",
-					"sum": "@:terms.sum",
+					"larger_leg": "Larger leg",
+					"larger_leg_tooltip": "The larger of import and export per day, what a ship carries on its fuller leg. Storage fills at this rate.",
 					"storage_filled": "Stoccaggio Pieno",
 					"filled_unit": "giorni"
 				},
@@ -679,6 +681,7 @@
 		"counts": "{buildings} buildings · {units} units · {recipes} recipes",
 		"collapse_all": "Collapse all",
 		"expand_all": "Expand all",
+		"empty": "No buildings yet. Add the first with “{select}” above.",
 		"columns": {
 			"building": "Building",
 			"count": "Count",
