@@ -17,6 +17,8 @@ import {
 } from "@/features/production_chain/engine/chainSolver";
 import { splitByExpertise } from "@/features/production_chain/engine/chainBases";
 import { extractionOptions } from "@/features/production_chain/engine/chainExtraction";
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { checkEmpire } from "@/features/production_chain/engine/chainCheck";
 import { RESOURCE_MATERIAL_OPTIONS } from "@/features/resource_roi_overview/resourceROIOverview.constants";
 
 // Types & Interfaces
@@ -24,10 +26,24 @@ import type {
 	Building,
 	Exchange,
 	Material,
+	Planet,
 	PlanetSearchIndexEntry,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
+import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
 import type {
+	ExpertType,
+	InfrastructureType,
+	PlanCOGCProgram,
+	WorkforceType,
+} from "@/features/api/schemas/planningData.schemas";
+import type {
+	ICheckInput,
+	ICheckPlan,
+} from "@/features/production_chain/engine/chainCheck.types";
+import type {
+	ChainLux,
 	IChainContext,
 	IChainInput,
 } from "@/features/production_chain/engine/chainSolver.types";
@@ -89,7 +105,8 @@ export function chainInput(
 		source: {},
 		recipeId: {},
 		planetId: {},
-		bases: [{ id: "A", name: "", planetId: null, cogc: "auto" }],
+		// no experts: the factors stay the planet's; setup tests set their own
+		bases: [{ id: "A", name: "", planetId: null, cogc: "auto", experts: {} }],
 		baseOf: {},
 		...overrides,
 	};
@@ -151,4 +168,167 @@ export async function seedGameData(): Promise<void> {
 	await preloadBuildings();
 	await preloadRecipes();
 	await useExchangeData().preload();
+}
+
+/**
+ * A plan engine context on an index planet: game data, the same Universe
+ * prices as testContext; normal gravity, pressure and temperature
+ */
+export function planContextFor(planetId: string): IPlanContext {
+	const ctx = testContext();
+	const entry = index.find((p) => p.planet_natural_id === planetId)!;
+	const recipesByBuilding: Record<string, Recipe[]> = {};
+	for (const r of recipes as Recipe[])
+		(recipesByBuilding[r.building_ticker] ??= []).push(r);
+	return {
+		buildings: ctx.buildings,
+		materials: ctx.materials,
+		recipesByBuilding,
+		planet: {
+			...entry,
+			gravity: 1,
+			pressure: 1,
+			temperature: 20,
+		} as unknown as Planet,
+		prices: ctx.prices,
+	};
+}
+
+/** fertility −0.5, no program, H2O */
+export const BARREN = "GY-110c";
+const CHECK_TIERS: [WorkforceType, InfrastructureType, "pioneers" | "settlers" | "technicians" | "engineers" | "scientists"][] = [
+	["pioneer", "HB1", "pioneers"],
+	["settler", "HB2", "settlers"],
+	["technician", "HB3", "technicians"],
+	["engineer", "HB4", "engineers"],
+	["scientist", "HB5", "scientists"],
+];
+
+/** a stored plan with habs for its workforce, as the API returns it */
+export function fixturePlan(
+	id: string,
+	planetId: string,
+	cogc: PlanCOGCProgram,
+	lux: ChainLux,
+	experts: Partial<Record<ExpertType, number>>,
+	buildings: [string, number, string][]
+): Plan {
+	const ctx = testContext();
+	const habs = CHECK_TIERS.map(([, hab, field]) => ({
+		building: hab,
+		amount: Math.ceil(
+			buildings.reduce(
+				(s, [b, n]) => s + ctx.buildings.get(b)![field] * n,
+				0
+			) / 100
+		),
+	})).filter((h) => h.amount > 0);
+	return {
+		uuid: `uuid-${id}`,
+		plan_name: `Plan ${id}`,
+		planet_natural_id: planetId,
+		plan_cogc: cogc,
+		plan_corphq: false,
+		plan_permits_used: 3,
+		plan_data: {
+			buildings: buildings.map(([name, amount, recipeid]) => ({
+				name,
+				amount,
+				active_recipes: [{ recipeid, amount: 1 }],
+			})),
+			experts: Object.entries(experts).map(([type, amount]) => ({
+				type: type as ExpertType,
+				amount: amount!,
+			})),
+			workforce: CHECK_TIERS.map(([type]) => ({
+				type,
+				lux1: lux === "lux1" || lux === "both",
+				lux2: lux === "lux2" || lux === "both",
+			})),
+			infrastructure: habs,
+		},
+	} as Plan;
+}
+
+/** a stored plan through the plan engine, as the check gets it */
+export function checkFromPlan(id: string, plan: Plan): ICheckPlan {
+	const result = calculatePlan(
+		{ plan, empire: undefined, cxUuid: undefined, recipeOptions: false },
+		planContextFor(plan.planet_natural_id)
+	);
+	return {
+		id,
+		uuid: plan.uuid,
+		name: plan.plan_name,
+		planetId: plan.planet_natural_id,
+		cogc: plan.plan_cogc,
+		result: result.result,
+		profit: result.overview.profit,
+	};
+}
+
+export function checkPlan(
+	...args: Parameters<typeof fixturePlan>
+): ICheckPlan {
+	return checkFromPlan(args[0], fixturePlan(...args));
+}
+
+export const DW = "FP#10xH2O 1xPG=>10xDW";
+export const DW7 = "FP#10xH2O=>7xDW";
+export const RAT = "FP#1xGRN 1xALG 1xNUT=>10xRAT";
+export const GRN1 = "FRM#1xH2O=>4xGRN";
+export const GRN4 = "FRM#4xH2O=>4xGRN";
+
+export function fixtureEmpirePlans(dwRecipe = DW): Plan[] {
+	return [
+		fixturePlan("A", FOOD_PLANET, "FOOD_INDUSTRIES", "both", { Food_Industries: 5 }, [
+			["FP", 4, dwRecipe],
+		]),
+		// runs Agriculture, the plan doesn't count it; no luxuries or experts
+		fixturePlan("B", FARM_PLANET, "---", "none", {}, [
+			["FRM", 3, GRN1],
+			["RIG", 2, "RIG#H2O"],
+		]),
+		// counts Agriculture, the barren planet runs nothing
+		fixturePlan("C", BARREN, "AGRICULTURE", "both", {}, [["FRM", 2, GRN4]]),
+		fixturePlan("D", FOOD_PLANET, "FOOD_INDUSTRIES", "both", { Food_Industries: 5 }, [
+			["FP", 2, RAT],
+		]),
+		// carbon: in no chain of DW and RAT
+		fixturePlan("E", BARREN, "---", "both", {}, [["INC", 1, "INC#4xGRN=>4xC"]]),
+	];
+}
+
+
+export function fixtureEmpire(dwRecipe = DW): ICheckPlan[] {
+	return fixtureEmpirePlans(dwRecipe).map((p, i) =>
+		checkFromPlan(String.fromCharCode(65 + i), p)
+	);
+}
+
+/** the fixture empire checked for DW and RAT, every finding shown */
+export function fixtureCheck(
+	overrides: Partial<ICheckInput> = {},
+	ctx: IChainContext = testContext()
+) {
+	return checkEmpire(
+		{
+			plans: fixtureEmpire(),
+			targets: ["DW", "RAT"],
+			min: 0,
+			setup: true,
+			payback: 100,
+			picks: {},
+			...overrides,
+		},
+		ctx
+	);
+}
+
+/** the fixture empire plus water rigs on the barren planet, for extraction moves */
+export function fixtureWithRigs(): ICheckPlan[] {
+	return [
+		...fixtureEmpire(),
+		checkPlan("F", BARREN, "---", "both", {}, [["RIG", 2, "RIG#H2O"]]),
+	];
 }

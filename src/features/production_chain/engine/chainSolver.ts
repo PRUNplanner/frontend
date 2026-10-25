@@ -7,9 +7,15 @@ import {
 	resourceBuildingTicker,
 } from "@/features/planning/engine/buildings";
 import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/engine/workforce.constants";
+import { calculateSatisfaction } from "@/features/planning/engine/workforce";
 import {
 	calculateBuildingEfficiency,
+	calculateExpertBonus,
+	calculateExperts,
 	expertNames,
+	MAP_BUILDING_EXPERTISE_EXPERTS,
+	MAX_EXPERTS_PER_TYPE,
+	MAX_EXPERTS_TOTAL,
 } from "@/features/planning/engine/efficiency";
 import { activeProgram } from "@/features/planet_search/planetSearch.engine";
 import { getMaterialIOTotalPrice, type PriceType } from "@/features/cx/priceBook";
@@ -20,12 +26,14 @@ import {
 
 // Types & Interfaces
 import type {
+	BuildingExpertise,
 	Exchange,
 	Planet,
 	PlanetSearchIndexEntry,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
 import type {
+	ExpertType,
 	PlanCOGCProgram,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
@@ -35,6 +43,7 @@ import type {
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
 import type {
+	ChainLux,
 	ChainSource,
 	IChainBase,
 	IChainBaseResult,
@@ -104,10 +113,16 @@ interface IWorkerCounts {
 }
 
 interface IBuildingCosts {
-	/** daily workforce upkeep, basic needs at CX price */
+	/** daily workforce upkeep, basic needs and the luxuries at CX price */
 	upkeep: number;
 	construction: number;
 }
+
+/** what a base supplies when it doesn't say */
+export const DEFAULT_LUX: ChainLux = "both";
+
+const hasLux1 = (lux: ChainLux) => lux === "lux1" || lux === "both";
+const hasLux2 = (lux: ChainLux) => lux === "lux2" || lux === "both";
 
 interface IContextCache {
 	buildings: Map<string, IBuildingCosts>;
@@ -152,21 +167,49 @@ const buyPrice = (ctx: IChainContext, ticker: string) =>
 const sellPrice = (ctx: IChainContext, ticker: string) =>
 	ctx.prices.getPrice(ticker, "SELL");
 
-function buildingCosts(ctx: IChainContext, ticker: string): IBuildingCosts {
+/**
+ * What a workforce of a tier consumes per worker and day at CX price:
+ * basic needs plus the given luxuries
+ * @author jplacht
+ *
+ * @param {IChainContext} ctx Chain context
+ * @param {WorkforceType} tier Tier
+ * @param {boolean} lux1 Luxury 1 supplied
+ * @param {boolean} lux2 Luxury 2 supplied
+ * @returns {number} Cost per worker and day
+ */
+export function workerUpkeep(
+	ctx: IChainContext,
+	tier: WorkforceType,
+	lux1: boolean,
+	lux2: boolean
+): number {
+	let sum = 0;
+	for (const need of WORKFORCE_CONSUMPTION_MAP[tier])
+		if ((!need.lux1 || lux1) && (!need.lux2 || lux2))
+			sum += need.need * buyPrice(ctx, need.ticker);
+	return sum;
+}
+
+function buildingCosts(
+	ctx: IChainContext,
+	ticker: string,
+	lux: ChainLux = DEFAULT_LUX
+): IBuildingCosts {
 	const cache = cacheOf(ctx).buildings;
-	let costs = cache.get(ticker);
+	const key = `${ticker}|${lux}`;
+	let costs = cache.get(key);
 	if (costs) return costs;
 
 	const building = ctx.buildings.get(ticker);
 	if (!building) costs = { upkeep: 0, construction: 0 };
 	else {
 		let upkeep = 0;
-		for (const [type, key] of WORKFORCE) {
-			const workers = building[key];
-			if (!workers) continue;
-			for (const need of WORKFORCE_CONSUMPTION_MAP[type])
-				if (!need.lux1 && !need.lux2)
-					upkeep += workers * need.need * buyPrice(ctx, need.ticker);
+		for (const [type, field] of WORKFORCE) {
+			const workers = building[field];
+			if (workers)
+				upkeep +=
+					workers * workerUpkeep(ctx, type, hasLux1(lux), hasLux2(lux));
 		}
 		costs = {
 			upkeep,
@@ -177,13 +220,25 @@ function buildingCosts(ctx: IChainContext, ticker: string): IBuildingCosts {
 			),
 		};
 	}
-	cache.set(ticker, costs);
+	cache.set(key, costs);
 	return costs;
 }
 
+/** construction cost of one building at CX price */
+export function buildingConstruction(
+	ctx: IChainContext,
+	ticker: string
+): number {
+	return buildingCosts(ctx, ticker).construction;
+}
+
 /** upkeep and wear of one building for one day */
-function buildingDaily(ctx: IChainContext, ticker: string): number {
-	const c = buildingCosts(ctx, ticker);
+function buildingDaily(
+	ctx: IChainContext,
+	ticker: string,
+	lux: ChainLux = DEFAULT_LUX
+): number {
+	const c = buildingCosts(ctx, ticker, lux);
 	return c.upkeep + c.construction / WEAR_DAYS;
 }
 
@@ -192,12 +247,13 @@ function buildingDaily(ctx: IChainContext, ticker: string): number {
  * the building's upkeep and wear for the run, shared between outputs by
  * CX value (by quantity when no output has a price)
  */
-function recipeCost(
+export function recipeCost(
 	ctx: IChainContext,
 	recipe: Recipe,
 	ticker: string,
 	efficiency: number,
-	unitCostOf: (ticker: string) => number
+	unitCostOf: (ticker: string) => number,
+	lux: ChainLux = DEFAULT_LUX
 ): { unit: number; parts: IChainCostParts } {
 	const out =
 		recipe.outputs.find((o) => o.material_ticker === ticker)
@@ -212,7 +268,7 @@ function recipeCost(
 	for (const i of recipe.inputs)
 		inputs += i.material_amount * unitCostOf(i.material_ticker);
 	const upkeepWear =
-		(buildingDaily(ctx, recipe.building_ticker) * recipe.time_ms) /
+		(buildingDaily(ctx, recipe.building_ticker, lux) * recipe.time_ms) /
 		DAY_MS /
 		efficiency;
 
@@ -290,7 +346,7 @@ function tryExchange(
  * Share of the 30 day average daily volume on the material's price
  * exchange; no trades count as red
  */
-function marketShare(
+export function marketShare(
 	ctx: IChainContext,
 	ticker: string,
 	perDay: number,
@@ -332,10 +388,38 @@ export function extractorRate(site: IChainExtractionSite): number {
 export function extractionUnitCost(
 	ctx: IChainContext,
 	site: IChainExtractionSite,
-	efficiency: number
+	efficiency: number,
+	lux: ChainLux = DEFAULT_LUX
 ): number {
 	const rate = extractorRate(site) * (Math.max(efficiency, 1) / 100);
-	return rate > 0 ? buildingDaily(ctx, site.buildingTicker) / rate : 0;
+	return rate > 0 ? buildingDaily(ctx, site.buildingTicker, lux) / rate : 0;
+}
+
+/**
+ * Every tier fully supplied with the given luxuries: the plan engine's
+ * workforce efficiency at full satisfaction
+ * @author jplacht
+ *
+ * @param {ChainLux} lux Luxuries
+ * @returns {IWorkforceRecord} Workforce
+ */
+export function workforceRecord(lux: ChainLux): IWorkforceRecord {
+	// capacity above required: satisfaction 1
+	const efficiency = calculateSatisfaction(2, 1, hasLux1(lux), hasLux2(lux));
+	return Object.fromEntries(
+		WORKFORCE.map(([name]) => [
+			name,
+			{
+				name,
+				required: 0,
+				capacity: 0,
+				left: 0,
+				lux1: hasLux1(lux),
+				lux2: hasLux2(lux),
+				efficiency,
+			},
+		])
+	) as IWorkforceRecord;
 }
 
 /** every tier fully supplied, so the workforce factor is 1 */
@@ -357,6 +441,99 @@ const FULL_WORKFORCE = Object.fromEntries(
 const NO_EXPERTS = Object.fromEntries(
 	expertNames.map((name) => [name, { name, amount: 0, bonus: 0 }])
 ) as IExpertRecord;
+
+/** no experts of any type */
+export function noExperts(): Record<ExpertType, number> {
+	return Object.fromEntries(expertNames.map((n) => [n, 0])) as Record<
+		ExpertType,
+		number
+	>;
+}
+
+/**
+ * The expert type a building expertise employs
+ * @author jplacht
+ *
+ * @param {string | null | undefined} expertise Building expertise
+ * @returns {ExpertType | null} Expert type, null without expertise
+ */
+export function expertTypeOf(
+	expertise: string | null | undefined
+): ExpertType | null {
+	return expertise
+		? MAP_BUILDING_EXPERTISE_EXPERTS[expertise as BuildingExpertise]
+		: null;
+}
+
+/**
+ * The expert split worth most: the top three types by weight, at most 5
+ * per type and 6 in total, by Σ weight × expert bonus
+ * @author jplacht
+ *
+ * @param {Partial<Record<ExpertType, number>>} weights Value per type
+ * @returns {Record<ExpertType, number>} Experts per type
+ */
+export function bestExpertSplit(
+	weights: Partial<Record<ExpertType, number>>
+): Record<ExpertType, number> {
+	const types = (Object.keys(weights) as ExpertType[])
+		.filter((t) => weights[t]! > 0)
+		.sort((a, b) => weights[b]! - weights[a]!)
+		.slice(0, 3);
+	const best = noExperts();
+	const current = noExperts();
+	let bestValue = -1;
+	const visit = (i: number, left: number, value: number) => {
+		if (i === types.length) {
+			if (value > bestValue + EPS) {
+				bestValue = value;
+				for (const t of types) best[t] = current[t];
+			}
+			return;
+		}
+		// more on the heavier type first, so ties keep it
+		for (let n = Math.min(MAX_EXPERTS_PER_TYPE, left); n >= 0; n--) {
+			current[types[i]] = n;
+			visit(
+				i + 1,
+				left - n,
+				value + weights[types[i]]! * calculateExpertBonus(n)
+			);
+		}
+	};
+	visit(0, MAX_EXPERTS_TOTAL, 0);
+	return best;
+}
+
+/** a base's luxuries and experts */
+export interface IChainSetup {
+	lux: ChainLux;
+	experts: Record<ExpertType, number>;
+}
+
+const setupRecords = new Map<
+	string,
+	{ workforce: IWorkforceRecord; experts: IExpertRecord }
+>();
+
+function recordsOf(setup: IChainSetup | undefined) {
+	if (!setup) return { workforce: FULL_WORKFORCE, experts: NO_EXPERTS };
+	const key = `${setup.lux}|${expertNames.map((n) => setup.experts[n]).join("")}`;
+	let records = setupRecords.get(key);
+	if (!records) {
+		records = {
+			workforce: workforceRecord(setup.lux),
+			experts: calculateExperts(
+				expertNames.map((type) => ({
+					type,
+					amount: setup.experts[type],
+				}))
+			),
+		};
+		setupRecords.set(key, records);
+	}
+	return records;
+}
 
 /**
  * A planet's running COGC program as a plan's program
@@ -395,31 +572,37 @@ export function baseCOGC(
 
 /**
  * A building's factor on a planet from the plan engine: COGC, workforce
- * program and fertility, with a full workforce and no experts
+ * program and fertility, and with a setup the base's workforce (every tier
+ * supplied with its luxuries) and experts; without a setup a full
+ * workforce and no experts (the planet's factors only). Without a planet
+ * no COGC and no fertility count.
  * @author jplacht
  *
  * @param {IChainContext} ctx Chain context
- * @param {PlanetSearchIndexEntry | null} planet Planet, 1 without
+ * @param {PlanetSearchIndexEntry | null} planet Planet
  * @param {PlanCOGCProgram} cogc Program
  * @param {string} buildingTicker Building
+ * @param {IChainSetup} [setup] The base's luxuries and experts
  * @returns {number} Factor, 0 for a farm without fertility
  */
 export function planetFactor(
 	ctx: IChainContext,
 	planet: PlanetSearchIndexEntry | null,
 	cogc: PlanCOGCProgram,
-	buildingTicker: string
+	buildingTicker: string,
+	setup?: IChainSetup
 ): number {
 	const building = ctx.buildings.get(buildingTicker);
-	if (!planet || !building) return 1;
+	if (!building || (!planet && !setup)) return 1;
+	const { workforce, experts } = recordsOf(setup);
 	return calculateBuildingEfficiency(
 		building,
 		// the efficiency reads only the fertility
-		{ fertility: planet.fertility } as Planet,
+		{ fertility: planet?.fertility ?? 0 } as Planet,
 		false,
-		cogc,
-		FULL_WORKFORCE,
-		NO_EXPERTS,
+		planet ? cogc : "---",
+		workforce,
+		experts,
 		undefined
 	).totalEfficiency;
 }
@@ -470,6 +653,7 @@ function fittingHabs(
  *
  * @param {IChainContext} ctx Chain context
  * @param {Pick<IChainBuildingType, "ticker" | "built" | "exact" | "expertise">[]} types Buildings
+ * @param {ChainLux} [lux] Luxuries the workforce gets
  * @returns {IChainFootprint} Footprint
  */
 export function baseFootprint(
@@ -477,7 +661,8 @@ export function baseFootprint(
 	types: Pick<
 		IChainBuildingType,
 		"ticker" | "built" | "exact" | "expertise"
-	>[]
+	>[],
+	lux: ChainLux = DEFAULT_LUX
 ): IChainFootprint {
 	const workforce: Record<WorkforceType, number> = {
 		pioneer: 0,
@@ -511,7 +696,7 @@ export function baseFootprint(
 		built += type.built;
 		exact += type.exact;
 		addConstruction(type.ticker, type.built);
-		upkeep += type.built * buildingCosts(ctx, type.ticker).upkeep;
+		upkeep += type.built * buildingCosts(ctx, type.ticker, lux).upkeep;
 		const building = ctx.buildings.get(type.ticker);
 		if (building)
 			for (const [name, key] of WORKFORCE)
@@ -566,8 +751,8 @@ export function baseFootprint(
 interface IPassRow {
 	perDay: number;
 	covered: number;
+	/** buildings at 100 %, independent of efficiency */
 	load: number;
-	buildings: number;
 }
 
 interface IPass {
@@ -712,7 +897,9 @@ export function solveChain(
 		return s;
 	};
 
-	// chain efficiency times the base planet's factor, per base and building
+	// the bases' luxuries and experts, set once the demand is known
+	const setups = new Map<string, IChainSetup>();
+	// chain efficiency times the base's factor, per base and building
 	const factors = new Map<string, number>();
 	const effOf = (t: string): number => {
 		const ticker =
@@ -724,7 +911,13 @@ export function solveChain(
 		const key = `${id}|${ticker}`;
 		let f = factors.get(key);
 		if (f === undefined) {
-			f = planetFactor(ctx, planetOf(id), cogcs.get(id)!, ticker);
+			f = planetFactor(
+				ctx,
+				planetOf(id),
+				cogcs.get(id)!,
+				ticker,
+				setups.get(id)
+			);
 			factors.set(key, f);
 		}
 		return efficiency * f;
@@ -816,13 +1009,7 @@ export function solveChain(
 				const rate = rateOf(t);
 				load = rate > 0 ? perDay / rate : 0;
 			}
-			const eff = source === "buy" ? efficiency : effOf(t);
-			pass.rows.set(t, {
-				perDay,
-				covered,
-				load,
-				buildings: eff > 0 ? load / eff : 0,
-			});
+			pass.rows.set(t, { perDay, covered, load });
 		}
 		return pass;
 	};
@@ -846,6 +1033,37 @@ export function solveChain(
 			if (stable) break;
 		}
 
+	// experts per base: the user's or the split worth most, weighted by the
+	// output value per expertise (building-days without prices)
+	for (const b of bases) {
+		const value: Partial<Record<ExpertType, number>> = {};
+		const load: Partial<Record<ExpertType, number>> = {};
+		for (const t of order) {
+			if (baseIdOf(t) !== b.id) continue;
+			const source = sourceOf(t);
+			const ticker =
+				source === "make"
+					? recipeOf(t).building_ticker
+					: source === "extract"
+						? siteOf(t)?.site.buildingTicker
+						: undefined;
+			const type = expertTypeOf(
+				ticker ? ctx.buildings.get(ticker)?.expertise : null
+			);
+			const p = pass.rows.get(t)!;
+			if (!type || p.load <= EPS) continue;
+			value[type] = (value[type] ?? 0) + p.perDay * sellPrice(ctx, t);
+			load[type] = (load[type] ?? 0) + p.load;
+		}
+		const priced = Object.values(value).some((v) => v > EPS);
+		setups.set(b.id, {
+			lux: b.lux ?? DEFAULT_LUX,
+			experts: b.experts
+				? { ...noExperts(), ...b.experts }
+				: bestExpertSplit(priced ? value : load),
+		});
+	}
+
 	// unit costs, inputs first
 	const unitCost = new Map<string, number>();
 	const users = new Map<string, Set<string>>();
@@ -864,6 +1082,7 @@ export function solveChain(
 		const eff = source === "buy" ? efficiency : effOf(t);
 		// a farm without fertility is costed at the chain efficiency
 		const costEff = eff > 0 ? eff : efficiency;
+		const lux = setups.get(baseIdOf(t))!.lux;
 		let uc = 0;
 		let costParts: IChainCostParts | null = null;
 		let recipe: Recipe | null = null;
@@ -880,7 +1099,7 @@ export function solveChain(
 				typicalSite = s.typical;
 				notOnPlanet = s.notOnPlanet;
 				buildingTicker = s.site.buildingTicker;
-				uc = extractionUnitCost(ctx, s.site, costEff * 100);
+				uc = extractionUnitCost(ctx, s.site, costEff * 100, lux);
 				costParts = { inputs: 0, upkeepWear: uc, share: 1 };
 			}
 		} else {
@@ -891,7 +1110,8 @@ export function solveChain(
 				recipe,
 				t,
 				costEff,
-				(x) => unitCost.get(x) ?? buyPrice(ctx, x)
+				(x) => unitCost.get(x) ?? buyPrice(ctx, x),
+				lux
 			);
 			uc = cost.unit;
 			costParts = cost.parts;
@@ -926,7 +1146,7 @@ export function solveChain(
 			efficiency: eff,
 			noFarming: source !== "buy" && eff <= 0,
 			notOnPlanet,
-			buildings: p.buildings,
+			buildings: eff > 0 ? p.load / eff : 0,
 			site,
 			typicalSite,
 			pending: source === "extract" && !site,
@@ -998,12 +1218,17 @@ export function solveChain(
 		const materials = order.filter((t) => rows[t].base === b.id);
 		return {
 			// a base without steps builds nothing, not even its STO
-			...(materials.length ? baseFootprint(ctx, own) : EMPTY_FOOTPRINT),
+			...(materials.length
+				? baseFootprint(ctx, own, setups.get(b.id)!.lux)
+				: EMPTY_FOOTPRINT),
 			id: b.id,
 			name: b.name,
 			planet: planetOf(b.id),
 			cogc: cogcs.get(b.id)!,
 			running: runningCOGC(planetOf(b.id), ctx.now),
+			lux: setups.get(b.id)!.lux,
+			experts: setups.get(b.id)!.experts,
+			expertsAuto: !b.experts,
 			buildingTypes: own,
 			materials,
 			noFarming: materials.filter((t) => rows[t].noFarming),

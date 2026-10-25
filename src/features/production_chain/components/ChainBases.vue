@@ -27,6 +27,8 @@
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 	import type {
 		ChainBaseCOGC,
+		ChainExperts,
+		ChainLux,
 		IChainBase,
 		IChainContext,
 		IChainResult,
@@ -53,6 +55,8 @@
 		(e: "remove", id: string): void;
 		(e: "rename", id: string, name: string): void;
 		(e: "cogc", id: string, cogc: ChainBaseCOGC): void;
+		(e: "lux", id: string, lux: ChainLux): void;
+		(e: "experts", id: string, experts: ChainExperts | undefined): void;
 		(e: "planet", id: string): void;
 		(e: "create"): void;
 	}>();
@@ -173,6 +177,8 @@
 				@rename="(name) => emit('rename', b.id, name)"
 				@remove="emit('remove', b.id)"
 				@cogc="(c) => emit('cogc', b.id, c)"
+				@lux="(l) => emit('lux', b.id, l)"
+				@experts="(x) => emit('experts', b.id, x)"
 				@planet="emit('planet', b.id)" />
 		</div>
 

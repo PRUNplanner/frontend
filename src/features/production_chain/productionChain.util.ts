@@ -7,7 +7,10 @@ import type {
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
 import type { IChainResult } from "@/features/production_chain/engine/chainSolver.types";
-import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+import type {
+	ExpertType,
+	PlanCOGCProgram,
+} from "@/features/api/schemas/planningData.schemas";
 
 /** a quantity: no decimals from 100, one from 10, else two */
 export function formatQty(n: number): string {
@@ -207,4 +210,21 @@ export function cogcKey(program: PlanCOGCProgram): string {
 /** what a program adds to the buildings it helps, in % */
 export function cogcBonus(program: PlanCOGCProgram): number {
 	return WORKFORCE_PROGRAMS.includes(program) ? 10 : 25;
+}
+
+/** the game.expertise key of an expert type */
+export function expertKey(type: ExpertType): string {
+	return `game.expertise.${type.toUpperCase()}`;
+}
+
+/** "5 Food Industries + 1 Agriculture", most first; "" without experts */
+export function expertsText(
+	experts: Partial<Record<ExpertType, number>>,
+	name: (type: ExpertType) => string
+): string {
+	return (Object.entries(experts) as [ExpertType, number][])
+		.filter(([, n]) => n > 0)
+		.sort((a, b) => b[1] - a[1])
+		.map(([type, n]) => `${n} ${name(type)}`)
+		.join(" + ");
 }

@@ -7,6 +7,7 @@ import type {
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
 import type {
+	ExpertType,
 	PlanCOGCProgram,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
@@ -19,6 +20,12 @@ export type ChainByproductMode = "cover" | "sell";
 /** "auto" runs the planet's program, "none" no program */
 export type ChainBaseCOGC = "auto" | "none" | PlanCOGCProgram;
 
+/** luxuries supplied to every tier: none, one of them or both */
+export type ChainLux = "none" | "lux1" | "lux2" | "both";
+
+/** experts per type */
+export type ChainExperts = Partial<Record<ExpertType, number>>;
+
 /** A base: one planet, one plan */
 export interface IChainBase {
 	/** A–H */
@@ -26,6 +33,10 @@ export interface IChainBase {
 	name: string;
 	planetId: string | null;
 	cogc: ChainBaseCOGC;
+	/** undefined = both */
+	lux?: ChainLux;
+	/** undefined = the best split for the base (auto) */
+	experts?: ChainExperts;
 }
 
 export interface IChainTarget {
@@ -236,6 +247,10 @@ export interface IChainBaseResult extends IChainFootprint {
 	cogc: PlanCOGCProgram;
 	/** the planet's running program, "---" without */
 	running: PlanCOGCProgram;
+	lux: ChainLux;
+	/** the split in use, auto or the user's */
+	experts: Record<ExpertType, number>;
+	expertsAuto: boolean;
 	buildingTypes: IChainBuildingType[];
 	/** made and extracted here, chain order */
 	materials: string[];

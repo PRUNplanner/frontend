@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed } from "vue";
+	import { computed, ref } from "vue";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
@@ -10,9 +10,21 @@
 	import {
 		cogcBonus,
 		cogcKey,
+		expertKey,
+		expertsText,
 		formatMoney,
 		formatShare,
 	} from "@/features/production_chain/productionChain.util";
+
+	// Engine
+	import {
+		expertTypeOf,
+		workforceRecord,
+	} from "@/features/production_chain/engine/chainSolver";
+	import {
+		MAX_EXPERTS_PER_TYPE,
+		MAX_EXPERTS_TOTAL,
+	} from "@/features/planning/engine/efficiency";
 	import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
 	import { formatNumber } from "@/util/numbers";
 	import { planetDisplayName } from "@/util/planetName";
@@ -21,15 +33,20 @@
 	import { PlanCOGCProgramSchema } from "@/features/api/schemas/planningData.schemas";
 
 	// Types & Interfaces
-	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+	import type {
+		ExpertType,
+		PlanCOGCProgram,
+	} from "@/features/api/schemas/planningData.schemas";
 	import type {
 		ChainBaseCOGC,
+		ChainExperts,
+		ChainLux,
 		IChainBase,
 		IChainBaseResult,
 	} from "@/features/production_chain/engine/chainSolver.types";
 
 	// UI
-	import { PInput, PSelect } from "@/ui";
+	import { PButton, PInput, PInputNumber, PPopover, PSelect } from "@/ui";
 
 	const { base, choice, efficiency, removable, fits } = defineProps<{
 		base: IChainBaseResult;
@@ -46,7 +63,54 @@
 		(e: "remove"): void;
 		(e: "cogc", cogc: ChainBaseCOGC): void;
 		(e: "planet"): void;
+		(e: "lux", lux: ChainLux): void;
+		// undefined: auto
+		(e: "experts", experts: ChainExperts | undefined): void;
 	}>();
+
+	const LUX: ChainLux[] = ["both", "lux2", "lux1", "none"];
+	const luxOptions = LUX.map((lux) => ({
+		value: lux,
+		label: t(`production_chains.bases.lux_option.${lux}`, {
+			pct: formatShare(workforceRecord(lux).pioneer.efficiency),
+		}),
+	}));
+
+	const expertName = (type: ExpertType) => t(expertKey(type));
+	const expertsLine = computed(() => {
+		const text =
+			expertsText(base.experts, expertName) ||
+			t("production_chains.bases.experts_none");
+		return base.expertsAuto
+			? t("production_chains.bases.experts_auto", { text })
+			: text;
+	});
+	/** the base's expertises and any type with experts */
+	const expertTypes = computed(() => {
+		const types = new Set<ExpertType>();
+		for (const b of base.buildingTypes) {
+			const type = expertTypeOf(b.expertise);
+			if (type) types.add(type);
+		}
+		for (const [type, n] of Object.entries(base.experts))
+			if (n > 0) types.add(type as ExpertType);
+		return [...types];
+	});
+	const editExperts = ref(false);
+	/** at most 5 per type and 6 in total */
+	const maxFor = (type: ExpertType) =>
+		Math.min(
+			MAX_EXPERTS_PER_TYPE,
+			MAX_EXPERTS_TOTAL -
+				Object.entries(base.experts).reduce(
+					(s, [k, n]) => (k === type ? s : s + n),
+					0
+				)
+		);
+	function setExpert(type: ExpertType, n: number): void {
+		const amount = Math.max(0, Math.min(maxFor(type), Math.round(n)));
+		emit("experts", { ...base.experts, [type]: amount });
+	}
 
 	// always needed, so not listed
 	const SURFACE_EXTRAS = ["MCG", "AEF"];
@@ -231,6 +295,81 @@ class="text-link"
 						(v) => v && emit('cogc', v as ChainBaseCOGC)
 					" />
 			</label>
+		</div>
+
+		<div
+			class="flex flex-wrap items-center gap-3"
+			:data-testid="`chain-base-setup-${base.id}`">
+			<span class="text-xs uppercase text-muted">{{
+				$t("production_chains.bases.setup")
+			}}</span>
+			<label class="flex items-center gap-2">
+				<span class="text-xs text-muted">{{
+					$t("production_chains.bases.lux")
+				}}</span>
+				<PSelect
+					:value="base.lux"
+					:options="luxOptions"
+					size="sm"
+					class="w-44"
+					:aria-label="t('production_chains.bases.lux_of', { id: base.id })"
+					@update:value="(v) => v && emit('lux', v as ChainLux)" />
+			</label>
+			<div class="flex items-center gap-2 min-w-0">
+				<span class="text-xs text-muted">{{
+					$t("production_chains.bases.experts")
+				}}</span>
+				<span
+					class="text-sm truncate"
+					:data-testid="`chain-base-experts-${base.id}`"
+					>{{ expertsLine }}</span
+				>
+				<PPopover
+					v-if="expertTypes.length"
+					v-model:show="editExperts"
+					placement="bottom-start">
+					<template #trigger>
+						<PButton
+							type="secondary"
+							size="sm"
+							:data-testid="`chain-base-experts-edit-${base.id}`">
+							{{ $t("production_chains.bases.experts_edit") }}
+						</PButton>
+					</template>
+					<div class="flex flex-col gap-2 w-72 max-w-[90vw]">
+						<label
+							v-for="type in expertTypes"
+							:key="type"
+							class="flex items-center justify-between gap-2">
+							<span class="text-sm">{{ expertName(type) }}</span>
+							<PInputNumber
+								:value="base.experts[type]"
+								show-buttons
+								size="sm"
+								class="w-28"
+								:min="0"
+								:max="maxFor(type)"
+								:aria-label="
+									t('production_chains.bases.experts_of', {
+										type: expertName(type),
+									})
+								"
+								@update:value="(v) => setExpert(type, v ?? 0)" />
+						</label>
+						<p class="text-xs text-muted">
+							{{ $t("production_chains.bases.experts_limits") }}
+						</p>
+						<PButton
+							type="secondary"
+							size="sm"
+							:disabled="base.expertsAuto"
+							:data-testid="`chain-base-experts-auto-${base.id}`"
+							@click="emit('experts', undefined)">
+							{{ $t("production_chains.bases.experts_reset") }}
+						</PButton>
+					</div>
+				</PPopover>
+			</div>
 		</div>
 
 		<p v-if="fitLine" class="text-sm text-positive">

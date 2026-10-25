@@ -333,6 +333,8 @@ export function useProductionChain() {
 		);
 		if ("planetId" in patch) track("base_planet");
 		if ("cogc" in patch) track("base_cogc");
+		if ("lux" in patch) track("base_lux");
+		if ("experts" in patch) track("base_experts");
 	}
 
 	/** bases by building expertise; planets are not picked */

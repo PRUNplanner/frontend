@@ -5,6 +5,7 @@
 
 	// Components
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import ChainModeSwitch from "@/features/production_chain/components/ChainModeSwitch.vue";
 	import ChainTargets from "@/features/production_chain/components/ChainTargets.vue";
 	import ChainSettings from "@/features/production_chain/components/ChainSettings.vue";
 	import ChainResults from "@/features/production_chain/components/ChainResults.vue";
@@ -209,6 +210,7 @@
 				<p class="text-muted">{{ $t("production_chains.description") }}</p>
 			</div>
 			<div class="flex flex-wrap items-center gap-3">
+				<ChainModeSwitch />
 				<PButton
 					type="secondary"
 					:disabled="!targets.length"
@@ -285,6 +287,8 @@
 							@remove="removeBase"
 							@rename="(id, name) => updateBase(id, { name })"
 							@cogc="(id, cogc) => updateBase(id, { cogc })"
+							@lux="(id, lux) => updateBase(id, { lux })"
+							@experts="(id, experts) => updateBase(id, { experts })"
 							@planet="openBasePlanets"
 							@create="showCreate = true" />
 					</template>
