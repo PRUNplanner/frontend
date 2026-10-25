@@ -43,7 +43,7 @@
 	}
 
 	// UI
-	import { PSelectMultiple, PTable } from "@/ui";
+	import { PSelectMultiple, PTable, PTooltip } from "@/ui";
 
 	const props = defineProps({
 		storage: {
@@ -310,13 +310,27 @@
 							v-for="row in [
 								['import', dailyData.dailyWeightImport, dailyData.dailyVolumeImport],
 								['export', dailyData.dailyWeightExport, dailyData.dailyVolumeExport],
-								['sum', dailyData.dailyWeight, dailyData.dailyVolume],
+								['larger_leg', dailyData.dailyWeight, dailyData.dailyVolume],
 							] as const"
 							:key="row[0]">
 							<td class="text-muted-strong">
-								{{
-									t(`plan.tools.visitation_frequency.storage.table.${row[0]}`)
-								}}
+								<PTooltip v-if="row[0] === 'larger_leg'">
+									<template #trigger>
+										<span class="hover:cursor-help">
+											{{
+												t("plan.tools.visitation_frequency.storage.table.larger_leg")
+											}}
+										</span>
+									</template>
+									{{
+										t("plan.tools.visitation_frequency.storage.table.larger_leg_tooltip")
+									}}
+								</PTooltip>
+								<template v-else>
+									{{
+										t(`plan.tools.visitation_frequency.storage.table.${row[0]}`)
+									}}
+								</template>
 							</td>
 							<td class="numeric">{{ formatNumber(row[1]) }}</td>
 							<td class="numeric">{{ formatNumber(row[2]) }}</td>

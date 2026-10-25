@@ -11,7 +11,7 @@ vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 // vi.mock factories are hoisted, so are their helpers
-const { stub, passThrough, hq } = vi.hoisted(() => ({
+const { stub, passThrough, hq, loader } = vi.hoisted(() => ({
 	stub: (name: string, props: string[] = []) => ({
 		default: { name, props, render: () => null },
 	}),
@@ -21,13 +21,22 @@ const { stub, passThrough, hq } = vi.hoisted(() => ({
 		calculate: () => {},
 		override: undefined as unknown as Ref<Record<string, number | null>>,
 	},
+	// the planning loader emits complete once its data is in, unless held back
+	loader: { holdComplete: false },
 	passThrough: (name: string) => ({
 		default: {
 			name,
-			setup:
-				(_: unknown, { slots }: { slots: Slots }) =>
-				() =>
-					slots.default?.(),
+			setup: (
+				_: unknown,
+				{ slots, emit }: { slots: Slots; emit: (e: string) => void }
+			) => {
+				if (
+					name === "WrapperPlanningDataLoader" &&
+					!loader.holdComplete
+				)
+					emit("complete");
+				return () => slots.default?.();
+			},
 		},
 	}),
 }));
@@ -82,6 +91,7 @@ describe("HQUpgradeCalculatorView", () => {
 		vi.mocked(trackEvent).mockClear();
 		hq.rows = [];
 		hq.calculate = vi.fn();
+		loader.holdComplete = false;
 	});
 
 	it("reports one use per settled change, not the defaults on open", async () => {
@@ -212,6 +222,29 @@ describe("HQUpgradeCalculatorView", () => {
 
 		// on open, then once per change
 		expect(hq.calculate).toHaveBeenCalledTimes(3);
+	});
+
+	it("calculates once the loaders complete, not before", async () => {
+		loader.holdComplete = true;
+		const { wrapper } = await mountComponent(HQUpgradeCalculatorView);
+		expect(hq.calculate).not.toHaveBeenCalled();
+
+		wrapper
+			.findComponent({ name: "WrapperPlanningDataLoader" })
+			.vm.$emit("complete");
+		await flushPromises();
+
+		expect(hq.calculate).toHaveBeenCalledTimes(1);
+	});
+
+	it("recalculates when the CX preference changes", async () => {
+		const { wrapper } = await mountComponent(HQUpgradeCalculatorView);
+		wrapper
+			.findComponent({ name: "CXPreferenceSelector" })
+			.vm.$emit("update:cxuuid", "cx-2");
+		await flushPromises();
+
+		expect(hq.calculate).toHaveBeenCalledTimes(2);
 	});
 
 	it("hands the CX chosen by the data loader to the selector", async () => {

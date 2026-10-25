@@ -2,7 +2,6 @@
 	import {
 		computed,
 		onBeforeUnmount,
-		onMounted,
 		type Ref,
 		ref,
 		watch,
@@ -74,7 +73,9 @@
 		refSelectedCXUuid
 	);
 
-	onMounted(async () => calculateMaterialData());
+	// calculated on the loaders' complete (game data and CX are in, which this
+	// view's own onMounted runs before on a direct load) and on a CX change
+	watch(refSelectedCXUuid, calculateMaterialData);
 
 	// one analytics event per settled input, the defaults on open don't count
 	const trackUse = debounce(
@@ -104,6 +105,8 @@
 			{
 				key: "override",
 				title: t("hq_upgrade_calculator.table.override_stock"),
+				// the stepper input needs room once the headers may wrap
+				minWidth: 150,
 			},
 			numeric("required", "required"),
 			numeric("unitCost", "cost_unit"),
@@ -125,6 +128,7 @@
 	<WrapperGameDataLoader load-exchanges load-materials>
 		<WrapperPlanningDataLoader
 			load-c-x
+			@complete="calculateMaterialData"
 			@update:cx-uuid="(d) => (refSelectedCXUuid = d)">
 			<div class="min-h-screen flex flex-col">
 				<div
@@ -253,6 +257,13 @@
 
 				<div class="px-6 py-3">
 					<PDataTable :columns="columns" :data="materialData" striped>
+						<!-- headers wrap at spaces: with locations it fits at 1024 -->
+						<template
+							v-for="col in columns"
+							:key="col.key"
+							#[`header-${col.key}`]>
+							<span class="whitespace-normal">{{ col.title }}</span>
+						</template>
 						<template #cell-ticker="{ row }">
 							<MaterialTile
 								:key="row.ticker"

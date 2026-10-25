@@ -9,9 +9,8 @@
 </script>
 
 <template>
-	<div class="flex justify-center items-center p-10">
-		<div class="w-100 py-2 px-4 border border-white/10">
-			<RequestPasswordReset />
-		</div>
+	<!-- the auth panel's look, as a page -->
+	<div class="mx-auto max-w-[480px] px-4 sm:px-6 py-10 sm:py-16">
+		<RequestPasswordReset />
 	</div>
 </template>

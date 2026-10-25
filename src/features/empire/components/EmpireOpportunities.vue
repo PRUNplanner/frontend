@@ -76,7 +76,7 @@
 
 <template>
 	<div
-		class="border rounded-[3px] border-white/15 p-3 flex flex-col flex-1 min-h-0">
+		class="@container border rounded-[3px] border-white/15 p-3 flex flex-col flex-1">
 		<h1 class="text-lg font-bold">
 			{{ $t("empire.opportunities.headline") }}
 		</h1>
@@ -92,18 +92,18 @@
 			</p>
 		</div>
 		<div
-			class="grid grid-cols-1 xl:grid-cols-3 gap-3 pb-3 child:gap-1 child:bg-black">
+			class="grid grid-cols-1 @sm:grid-cols-3 gap-3 pb-3 child:gap-1 child:bg-black">
 			<div
 				class="flex flex-col p-3 rounded border border-white/10 child:text-xs">
 				<span class="uppercase text-white/80">
 					{{ $t("empire.opportunities.tiles.opportunities") }}
 				</span>
 				<div
-					class="flex flex-row justify-between items-center font-mono">
+					class="flex flex-row flex-wrap justify-between items-center gap-x-2 font-mono">
 					<span class="text-2xl text-white">
 						{{ opportunityStats.fullMatch }}
 					</span>
-					<span>
+					<span class="whitespace-nowrap">
 						{{
 							formatNumber(
 								(opportunityStats.fullMatch /
@@ -135,11 +135,11 @@
 					{{ $t("empire.opportunities.tiles.delta_required") }}
 				</span>
 				<div
-					class="flex flex-row justify-between items-center font-mono">
+					class="flex flex-row flex-wrap justify-between items-center gap-x-2 font-mono">
 					<span class="text-2xl text-white">
 						{{ opportunityStats.deltaRequired }}
 					</span>
-					<span>
+					<span class="whitespace-nowrap">
 						{{
 							formatNumber(
 								(opportunityStats.deltaRequired /
@@ -171,11 +171,11 @@
 					{{ $t("empire.opportunities.tiles.material_missing") }}
 				</span>
 				<div
-					class="flex flex-row justify-between items-center font-mono">
+					class="flex flex-row flex-wrap justify-between items-center gap-x-2 font-mono">
 					<span class="text-2xl text-white">
 						{{ opportunityStats.missingMaterial }}
 					</span>
-					<span>
+					<span class="whitespace-nowrap">
 						{{
 							formatNumber(
 								(opportunityStats.missingMaterial /
@@ -202,7 +202,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex-1">
+		<!-- a screen-high box: the intro scrolls away, then the table's
+			own rows scroll under its header -->
+		<div class="h-[calc(100dvh-8rem)] shrink-0">
+			<!-- long titles wrap in their narrow columns -->
 			<PDataTable
 				v-if="!isLoading"
 				:columns="columns"
@@ -211,7 +214,8 @@
 				fill
 				virtual
 				:min-width="540"
-				:row-key="rowKey">
+				:row-key="rowKey"
+				class="[&_.p-data-table-title-text]:whitespace-normal!">
 				<template #cell-building_recipe="{ row }">
 					<span class="text-lg font-bold text-nowrap">
 						{{ row.recipe.building_ticker }}
@@ -254,8 +258,8 @@
 							</div>
 							<div
 								v-else
-								class="text-xs mt-1 font-mono text-negative opacity-60">
-								MISSING
+								class="text-xs mt-1 font-mono uppercase text-negative opacity-60">
+								{{ t("empire.opportunities.table.missing") }}
 							</div>
 						</div>
 					</div>

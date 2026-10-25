@@ -239,8 +239,10 @@
 		selectedChartFullscreen.value = !selectedChartFullscreen.value;
 	}
 
+	// side by side from 2xl: narrower, the market data table (up to nine
+	// columns) would scroll
 	const chartFullscreenClass = computed(() =>
-		!selectedChartFullscreen.value ? "xl:grid-cols-2" : ""
+		!selectedChartFullscreen.value ? "2xl:grid-cols-2" : ""
 	);
 
 	const overviewColumns = computed<PDataTableColumn<IExchangeOverview>[]>(
@@ -257,9 +259,11 @@
 				{
 					key: "sparkline",
 					title: t("market_exploration.overview.table.sparkline"),
-					width: 116,
+					// the 80px sparkline and the cell padding
+					width: 100,
 				},
 				sortable("weighted_trend", "trend"),
+				// the longest headers wrap (header slots), no fixed width
 				sortable("volume_7d", "volume_7d"),
 				sortable("volume_30d", "volume_30d"),
 				{
@@ -304,223 +308,230 @@
 			</div>
 			<div v-if="dataOverview.length > 0" class="px-6 py-3">
 				<div class="pb-3">
-					<div class="flex gap-x-3 pb-3">
-						<div class="w-[80px] my-auto">
-							<div
-								:class="getMaterialClass(selectedMaterial)"
-								class="text-center text-nowrap p-2 px-4 text-2xl text-shadow-[0_1px_1px_rgb(34,34,34)]">
-								{{ selectedMaterial }}
-							</div>
-						</div>
-						<div class="grow">
-							<div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
+					<!-- Tiles size by the space they get (the sidebar may be open),
+					     values never wrap between number and unit. -->
+					<div class="@container pb-3">
+						<div
+							class="grid grid-cols-2 @2xl:grid-cols-3 @5xl:grid-cols-[auto_repeat(5,minmax(0,1fr))] gap-3">
+							<div class="flex items-center justify-center">
 								<div
-									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-muted">
-										{{
-											$t(
-												"market_exploration.kpis.universe_vwap_7d"
+									:class="getMaterialClass(selectedMaterial)"
+									class="text-center text-nowrap p-2 px-4 text-2xl text-shadow-[0_1px_1px_rgb(34,34,34)]">
+									{{ selectedMaterial }}
+								</div>
+							</div>
+							<div
+								class="min-w-0 p-3 rounded border border-white/10 flex flex-col">
+								<div class="pb-1 text-muted">
+									{{
+										$t(
+											"market_exploration.kpis.universe_vwap_7d"
+										)
+									}}
+								</div>
+								<div
+									class="text-xl @sm:text-2xl @7xl:text-3xl font-bold tabular-nums whitespace-nowrap">
+									{{
+										formatNumber(
+											materialOverviewData()
+												.vwap_universe_7d
+										)
+									}}
+									<span
+										class="pl-1 font-light text-muted">
+										ȼ
+									</span>
+								</div>
+								<div class="">
+									<span
+										:class="
+											getTrendClass(
+												materialOverviewData()
+													.vwap_trend * 100
 											)
-										}}
-									</div>
-									<div class="text-3xl font-bold">
+										">
 										{{
 											formatNumber(
 												materialOverviewData()
-													.vwap_universe_7d
+													.vwap_trend * 100,
+												2,
+												false,
+												true
 											)
 										}}
-										<span
-											class="pl-1 font-light text-muted">
-											ȼ
-										</span>
-									</div>
-									<div class="">
-										<span
-											:class="
-												getTrendClass(
-													materialOverviewData()
-														.vwap_trend * 100
-												)
-											">
-											{{
-												formatNumber(
-													materialOverviewData()
-														.vwap_trend * 100,
-													2,
-													false,
-													true
-												)
-											}}
-											{{
-												$t(
-													"market_exploration.kpis.percent_trend"
-												)
-											}}
-										</span>
-									</div>
-								</div>
-								<div
-									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-muted">
 										{{
 											$t(
-												"market_exploration.kpis.universe_traded_7d"
+												"market_exploration.kpis.percent_trend"
 											)
 										}}
-									</div>
-									<div class="text-3xl font-bold">
+									</span>
+								</div>
+							</div>
+							<div
+								class="min-w-0 p-3 rounded border border-white/10 flex flex-col">
+								<div class="pb-1 text-muted">
+									{{
+										$t(
+											"market_exploration.kpis.universe_traded_7d"
+										)
+									}}
+								</div>
+								<div
+									class="text-xl @sm:text-2xl @7xl:text-3xl font-bold tabular-nums whitespace-nowrap">
+									{{
+										formatAmount(
+											materialOverviewData().volume_7d
+										)
+									}}
+								</div>
+								<div class="text-muted">
+									{{ $t("market_exploration.kpis.30d") }}
+									{{
+										formatAmount(
+											materialOverviewData()
+												.volume_30d
+										)
+									}}
+								</div>
+							</div>
+							<div
+								class="min-w-0 p-3 rounded border border-white/10 flex flex-col">
+								<div class="pb-1 text-muted">
+									{{
+										$t(
+											"market_exploration.kpis.universe_market_delta"
+										)
+									}}
+								</div>
+								<div
+									class="flex flex-wrap items-baseline gap-x-2 text-xl @sm:text-2xl @7xl:text-3xl font-bold tabular-nums">
+									<PValue
+										class="whitespace-nowrap"
+										:value="
+											materialOverviewData()
+												.delta_supply_demand_universe
+										"
+										:decimals="0" />
+									<span
+										v-if="
+											materialOverviewData()
+												.delta_supply_demand_universe !==
+											0
+										"
+										class="text-lg font-normal text-muted">
+										{{
+											$t(
+												materialOverviewData()
+													.delta_supply_demand_universe <
+													0
+													? "market_exploration.kpis.shortage"
+													: "market_exploration.kpis.surplus"
+											)
+										}}
+									</span>
+								</div>
+								<div
+									class="text-muted flex flex-row flex-wrap justify-between gap-x-3">
+									<div class="whitespace-nowrap">
+										{{
+											$t(
+												"market_exploration.kpis.supply"
+											)
+										}}
 										{{
 											formatAmount(
-												materialOverviewData().volume_7d
+												materialOverviewData()
+													.supply_universe
 											)
 										}}
 									</div>
-									<div class="text-muted">
-										{{ $t("market_exploration.kpis.30d") }}
+									<div class="whitespace-nowrap">
+										{{
+											$t(
+												"market_exploration.kpis.demand"
+											)
+										}}
 										{{
 											formatAmount(
 												materialOverviewData()
-													.volume_30d
+													.demand_universe
 											)
 										}}
 									</div>
 								</div>
+							</div>
+							<div
+								class="min-w-0 p-3 rounded border border-white/10 flex flex-col">
+								<div class="pb-1 text-muted">
+									{{
+										$t(
+											"market_exploration.kpis.weighted_trend"
+										)
+									}}
+								</div>
 								<div
-									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-muted">
-										{{
-											$t(
-												"market_exploration.kpis.universe_market_delta"
-											)
-										}}
-									</div>
-									<div class="text-3xl font-bold">
-										<PValue
-											:value="
+									class="text-xl @sm:text-2xl @7xl:text-3xl font-bold tabular-nums whitespace-nowrap">
+									<span
+										:class="
+											getTrendClass(
 												materialOverviewData()
-													.delta_supply_demand_universe
-											"
-											:decimals="0" />
-										<span
-											v-if="
+													.weighted_trend * 100
+											)
+										">
+										{{
+											formatNumber(
 												materialOverviewData()
-													.delta_supply_demand_universe !==
-												0
-											"
-											class="pl-2 text-lg font-normal text-muted">
-											{{
-												$t(
-													materialOverviewData()
-														.delta_supply_demand_universe <
-														0
-														? "market_exploration.kpis.shortage"
-														: "market_exploration.kpis.surplus"
-												)
-											}}
+													.weighted_trend * 100
+											)
+										}}
+										<span class="pl-1 font-light">
+											%
 										</span>
-									</div>
-									<div
-										class="text-muted flex flex-row justify-between">
-										<div>
-											{{
-												$t(
-													"market_exploration.kpis.supply"
-												)
-											}}
-											{{
-												formatAmount(
-													materialOverviewData()
-														.supply_universe
-												)
-											}}
-										</div>
-										<div>
-											{{
-												$t(
-													"market_exploration.kpis.demand"
-												)
-											}}
-											{{
-												formatAmount(
-													materialOverviewData()
-														.demand_universe
-												)
-											}}
-										</div>
-									</div>
+									</span>
+								</div>
+								<div class="text-muted">
+									{{
+										$t(
+											"market_exploration.kpis.volume_adjusted_delta"
+										)
+									}}
+								</div>
+							</div>
+							<div
+								class="min-w-0 p-3 rounded border border-white/10 flex flex-col">
+								<div class="pb-1 text-muted">
+									{{
+										$t(
+											"market_exploration.kpis.price_cohesion"
+										)
+									}}
 								</div>
 								<div
-									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-muted">
+									class="text-xl @sm:text-2xl @7xl:text-3xl font-bold tabular-nums whitespace-nowrap">
+									<span
+										:class="
+											getTrendClass(
+												materialOverviewData()
+													.price_cohesion
+											)
+										">
 										{{
-											$t(
-												"market_exploration.kpis.weighted_trend"
+											formatNumber(
+												materialOverviewData()
+													.price_cohesion
 											)
 										}}
-									</div>
-									<div class="text-3xl font-bold">
-										<span
-											:class="
-												getTrendClass(
-													materialOverviewData()
-														.weighted_trend * 100
-												)
-											">
-											{{
-												formatNumber(
-													materialOverviewData()
-														.weighted_trend * 100
-												)
-											}}
-											<span class="pl-1 font-light">
-												%
-											</span>
+										<span class="pl-1 font-light">
+											%
 										</span>
-									</div>
-									<div class="text-muted">
-										{{
-											$t(
-												"market_exploration.kpis.volume_adjusted_delta"
-											)
-										}}
-									</div>
+									</span>
 								</div>
-								<div
-									class="p-3 rounded border border-white/10 flex flex-col">
-									<div class="pb-1 text-muted">
-										{{
-											$t(
-												"market_exploration.kpis.price_cohesion"
-											)
-										}}
-									</div>
-									<div class="text-3xl font-bold">
-										<span
-											:class="
-												getTrendClass(
-													materialOverviewData()
-														.price_cohesion
-												)
-											">
-											{{
-												formatNumber(
-													materialOverviewData()
-														.price_cohesion
-												)
-											}}
-											<span class="pl-1 font-light">
-												%
-											</span>
-										</span>
-									</div>
-									<div class="text-muted">
-										{{
-											$t(
-												"market_exploration.kpis.variance_index"
-											)
-										}}
-									</div>
+								<div class="text-muted">
+									{{
+										$t(
+											"market_exploration.kpis.variance_index"
+										)
+									}}
 								</div>
 							</div>
 						</div>
@@ -694,8 +705,15 @@
 					:data="dataOverview"
 					striped
 					:max-height="800"
-					:min-width="1180"
-					virtual>
+					:min-width="860"
+					virtual
+					sticky-first>
+					<template
+						v-for="col in overviewColumns.filter((c) => c.sorter)"
+						:key="col.key"
+						#[`header-${col.key}`]>
+						<span class="whitespace-normal">{{ col.title }}</span>
+					</template>
 					<template #cell-material_ticker="{ row }">
 						<MaterialTile
 							:key="row.material_ticker"
@@ -730,6 +748,7 @@
 					<template #cell-sparkline="{ row }">
 						<PSparkline
 							v-if="sparklines[row.material_ticker]"
+							:width="80"
 							:points="sparklines[row.material_ticker]"
 							:trend="row.weighted_trend * 100"
 							:label="

@@ -214,7 +214,15 @@
 			:columns="columns"
 			:data="filteredResult"
 			striped
+			sticky-first
 			:page-size="50">
+			<!-- headers wrap at spaces: the table fits at 1280 -->
+			<template
+				v-for="col in columns"
+				:key="col.key"
+				#[`header-${col.key}`]>
+				<span class="whitespace-normal">{{ col.title }}</span>
+			</template>
 			<template #cell-buildingTicker="{ row }">
 				<span class="font-bold">{{ row.buildingTicker }}</span>
 			</template>
@@ -256,9 +264,7 @@
 				</div>
 			</template>
 			<template #cell-cogc="{ row }">
-				<span class="text-nowrap">
-					{{ capitalizeString(row.cogc) }}
-				</span>
+				{{ capitalizeString(row.cogc) }}
 			</template>
 			<template #cell-cogm="{ row }">
 				<COGMButton :cogm-data="row.cogm" />

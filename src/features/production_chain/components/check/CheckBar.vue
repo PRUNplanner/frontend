@@ -95,7 +95,7 @@
 
 <template>
 	<div class="flex flex-col gap-3" data-testid="check-bar">
-		<div class="flex flex-wrap items-end gap-x-6 gap-y-3">
+		<div class="flex flex-wrap items-start gap-x-6 gap-y-3">
 			<label class="flex flex-col gap-1 w-full sm:w-auto">
 				<span class="text-xs uppercase tracking-wide text-muted">{{
 					$t("production_chains.check.empire")

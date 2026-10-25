@@ -129,11 +129,11 @@
 							<span v-else-if="r.chainDefault.kind === 'buy_cheaper'" class="text-warning">
 								{{ $t("production_chains.check.chains_view.buy_cheaper") }}
 							</span>
-							<span v-else-if="r.chainDefault.kind === 'recipe'" class="text-warning whitespace-nowrap">
+							<span v-else-if="r.chainDefault.kind === 'recipe'" class="text-warning">
 								{{ $t("production_chains.check.chains_view.chain") }}
 								<ChainRecipeText :recipe="r.chainDefault.recipe" :ticker="r.ticker" />
 							</span>
-							<span v-else-if="r.chainDefault.kind === 'make'" class="text-warning whitespace-nowrap">
+							<span v-else-if="r.chainDefault.kind === 'make'" class="text-warning">
 								{{
 									$t("production_chains.check.chains_view.make", {
 										cost: formatNumber(r.chainDefault.cost, 0),

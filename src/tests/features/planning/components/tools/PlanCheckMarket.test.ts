@@ -116,7 +116,7 @@ function realPrices(
 
 async function mountTool(
 	checks: IMarketCheck[],
-	{ cx = true, plan = etherwindPlan() } = {}
+	{ cx = true, plan = etherwindPlan(), own = false } = {}
 ) {
 	marketCheckMock.mockReturnValue(checks);
 	const pinia = createPinia();
@@ -149,6 +149,7 @@ async function mountTool(
 			empire: undefined,
 			cxUuid: cx ? CX_UUID : undefined,
 			planet: planet_etherwind,
+			own,
 		},
 		{ pinia }
 	);
@@ -247,11 +248,12 @@ describe("PlanCheckMarket", () => {
 	});
 
 	it("links a flagged material to the rule that prices it", async () => {
-		const wrapper = await mountTool(FLAGGED);
+		const wrapper = await mountTool(FLAGGED, { own: true });
 
 		// FE, RAT and DW are flagged, ZZZ is not; table and cards each
 		const links = ruleLinks(wrapper).map((l) => l.props("to"));
 		expect(links).toHaveLength(6);
+		expect(wrapper.find("[data-rule-source]").exists()).toBe(false);
 		expect(
 			links.filter((l) => l === `/exchanges/${CX_UUID}?scope=${PLANET}`)
 		).toHaveLength(2);
@@ -264,12 +266,32 @@ describe("PlanCheckMarket", () => {
 		expect(zzz.findComponent(RouterLinkStub).exists()).toBe(false);
 	});
 
+	// a shared or read-only plan: the viewer can't open the owner's CX
+	it("names the rule as text, not a link, on a plan not the viewer's", async () => {
+		const owner = await mountTool(FLAGGED, { own: true });
+		const wrapper = await mountTool(FLAGGED);
+
+		expect(ruleLinks(wrapper)).toHaveLength(0);
+		const sources = wrapper.findAll("[data-rule-source]");
+		expect(sources.map((s) => s.text())).toEqual(
+			ruleLinks(owner).map((l) => l.text())
+		);
+		expect(sources).toHaveLength(6);
+	});
+
 	it("has no rule links and points to the CX setting without one", async () => {
 		const wrapper = await mountTool(FLAGGED, { cx: false });
 
 		expect(ruleLinks(wrapper)).toHaveLength(0);
 		expect(wrapper.find("[data-exchange-caption]").exists()).toBe(false);
 		expect(wrapper.text()).toContain("cx.market_flags.exchange.no_cx");
+		// a shared or read-only plan: setting the viewer's CX doesn't apply
+		expect(wrapper.find("[data-set-cx]").exists()).toBe(false);
+
+		const own = await mountTool(FLAGGED, { cx: false, own: true });
+		const setCx = own.findAll("[data-set-cx]");
+		expect(setCx).toHaveLength(2);
+		expect(setCx[0].text()).toBe("cx.market_flags.exchange.set_cx");
 	});
 
 	it("explains the worst check by its flag and the side it trades on", async () => {

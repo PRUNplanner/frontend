@@ -29,7 +29,6 @@ module.exports = {
 				"Lucida Grande",
 				"sans-serif",
 			],
-			mono: ["Roboto Mono", "monospace"],
 		},
 
 		extend: {

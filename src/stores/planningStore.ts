@@ -262,21 +262,22 @@ export const usePlanningStore = defineStore(
 			return Object.values(shared.value);
 		}
 		async function getStoreSize() {
+			// name: the profile.storage_data.stores key
 			const stores = [
-				{ name: "Plans", source: plans.value },
-				{ name: "Empires", source: empires.value },
-				{ name: "Exchanges", source: cxs.value },
-				{ name: "Sharings", source: shared.value },
+				{ name: "plans", source: plans.value },
+				{ name: "empires", source: empires.value },
+				{ name: "cxs", source: cxs.value },
+				{ name: "shared", source: shared.value },
 				{
-					name: "FIO Storage Planets",
+					name: "fio_storage_planets",
 					source: fio_storage_planets.value,
 				},
-				{ name: "FIO Storage Ships", source: fio_storage_ships.value },
+				{ name: "fio_storage_ships", source: fio_storage_ships.value },
 				{
-					name: "FIO Storage Warehouses",
+					name: "fio_storage_warehouses",
 					source: fio_storage_warehouses.value,
 				},
-				{ name: "FIO Sites Planets", source: fio_sites_planets.value },
+				{ name: "fio_sites_planets", source: fio_sites_planets.value },
 			];
 
 			const sizes = await Promise.all(

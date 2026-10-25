@@ -511,18 +511,31 @@
 				v-if="other"
 				class="grid grid-cols-[minmax(0,1fr)] @[1000px]:grid-cols-[minmax(0,1fr)_340px] gap-3 items-start">
 				<div class="flex flex-col gap-2 min-w-0">
+					<!-- below 640 px both plans share a column, Difference beside
+						them; the side-by-side bars drop -->
 					<PDataTable
+						class="@max-[640px]:[&_[data-col-key=b]]:hidden @max-[640px]:[&_[data-col-key=bars]]:hidden"
 						:columns="columns"
 						:data="tableRows"
 						:row-key="rowKey"
-						:row-class="rowClass"
-						:min-width="560">
+						:row-class="rowClass">
 						<template #header-a>
-							<span class="inline-flex items-center gap-1.5">
+							<span class="inline-flex flex-col items-end gap-0.5">
+								<span class="inline-flex items-center gap-1.5">
+									<span
+										aria-hidden="true"
+										class="size-2.5 rounded-xs bg-(--chart-ink)/72" />
+									{{ t("plan.tools.plan_check.compare.this_plan") }}
+								</span>
 								<span
-									aria-hidden="true"
-									class="size-2.5 rounded-xs bg-(--chart-ink)/72" />
-								{{ t("plan.tools.plan_check.compare.this_plan") }}
+									class="inline-flex @[640px]:hidden items-center gap-1.5 max-w-28">
+									<span
+										aria-hidden="true"
+										class="shrink-0 size-2.5 rounded-xs bg-(--color-cx-ai1)" />
+									<span class="truncate" :title="otherName">
+										{{ otherName }}
+									</span>
+								</span>
 							</span>
 						</template>
 						<template #header-b>
@@ -538,7 +551,7 @@
 						</template>
 						<template #cell-figure="{ row }">
 							<span
-								class="whitespace-nowrap"
+								class="@[640px]:whitespace-nowrap"
 								:class="{
 									'font-bold text-white':
 										row.key === 'payback' || strong(row),
@@ -549,13 +562,32 @@
 									)
 								}}
 							</span>
+							<span
+								v-if="row.key === 'payback'"
+								class="block @[640px]:hidden text-xs text-muted-strong">
+								{{ paybackFormula() }}
+							</span>
 						</template>
 						<template #cell-a="{ row }">
 							<span v-if="row.key === 'payback'" class="text-muted">
 								–
 							</span>
-							<span v-else class="tabular-nums whitespace-nowrap">
-								{{ value(row.key, row.a) }}
+							<span
+								v-else
+								class="inline-flex flex-col items-end tabular-nums whitespace-nowrap">
+								<span class="inline-flex items-center gap-1.5">
+									<span
+										aria-hidden="true"
+										class="@[640px]:hidden size-2 rounded-xs bg-(--chart-ink)/72" />
+									{{ value(row.key, row.a) }}
+								</span>
+								<span
+									class="inline-flex @[640px]:hidden items-center gap-1.5">
+									<span
+										aria-hidden="true"
+										class="size-2 rounded-xs bg-(--color-cx-ai1)" />
+									{{ value(row.key, row.b) }}
+								</span>
 							</span>
 						</template>
 						<template #cell-b="{ row }">

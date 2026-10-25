@@ -106,6 +106,59 @@ describe("PSelect", () => {
 		expect(picked).toEqual(["b"]);
 	});
 
+	it("lists an exact ticker first, then prefixes, then other matches", async () => {
+		const { wrapper, picked } = await mountSelect([
+			{ label: "CLF (Textile Manufacturing)", value: "CLF" },
+			{ label: "EXTX (Prefix)", value: "EXTX" },
+			{ label: "EXT (Extractor)", value: "EXT" },
+		]);
+		await key(wrapper, "ArrowDown");
+
+		await wrapper.find("input").setValue("EXT");
+		await flushPromises();
+		const entries = body()
+			.findAll('.pselect-list [role="option"]')
+			.map((e) => e.text());
+		expect(entries).toEqual([
+			"EXT (Extractor)",
+			"EXTX (Prefix)",
+			"CLF (Textile Manufacturing)",
+		]);
+
+		await key(wrapper, "Enter");
+		expect(picked).toEqual(["EXT"]);
+	});
+
+	it("puts the group with the best match first", async () => {
+		const { wrapper } = await mountSelect([
+			{
+				label: "Popular",
+				value: "POPULAR",
+				children: [{ label: "CLF (Textile Manufacturing)", value: "P#CLF" }],
+			},
+			{
+				label: "All",
+				value: "ALL",
+				children: [
+					{ label: "CLF (Textile Manufacturing)", value: "CLF" },
+					{ label: "EXT (Extractor)", value: "EXT" },
+				],
+			},
+		]);
+		await key(wrapper, "ArrowDown");
+
+		await wrapper.find("input").setValue("ext");
+		await flushPromises();
+		const entries = body()
+			.findAll(".pselect-list .pl-3.grow")
+			.map((e) => e.text());
+		expect(entries).toEqual([
+			"EXT (Extractor)",
+			"CLF (Textile Manufacturing)",
+			"CLF (Textile Manufacturing)",
+		]);
+	});
+
 	it("takes Esc as the top layer while open and releases it however it closes", async () => {
 		const { wrapper } = await mountSelect([
 			{ label: "A", value: "a" },

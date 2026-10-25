@@ -45,6 +45,38 @@ describe("layoutChain", () => {
 		expect(layout.edges[0].path).toMatch(/^M[\d.]+,[\d.]+ C/);
 	});
 
+	it("puts edge labels where they cover no node and no other label", () => {
+		const r = solveChain(
+			chainInput([
+				["RAT", 100],
+				["DW", 50],
+			]),
+			ctx
+		);
+		const layout = layoutChain(r);
+		const { nodeWidth: W, nodeHeight: H } = LAYOUT;
+		// a label's point: its baseline is 4 above, its box 16 high
+		const spots = layout.edges.map((e) => ({ x: e.labelX, y: e.labelY + 4 }));
+		expect(spots.length).toBeGreaterThan(5);
+		for (const s of spots)
+			for (const n of Object.values(layout.nodes))
+				expect(
+					s.x + 12 > n.x &&
+						s.x - 12 < n.x + W &&
+						s.y > n.y &&
+						s.y - 16 < n.y + H
+				).toBe(false);
+		spots.forEach((a, i) =>
+			spots
+				.slice(i + 1)
+				.forEach((b) =>
+					expect(
+						Math.abs(a.x - b.x) < 24 && Math.abs(a.y - b.y) < 16
+					).toBe(false)
+				)
+		);
+	});
+
 	it("lays out an empty chain", () => {
 		const layout = layoutChain(solveChain(chainInput([]), ctx));
 		expect(layout.stages).toBe(1);

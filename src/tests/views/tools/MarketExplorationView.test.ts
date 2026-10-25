@@ -343,16 +343,16 @@ describe("MarketExplorationView", () => {
 		it("toggles the chart between side-by-side and fullscreen", async () => {
 			const wrapper = await mountView();
 			const grid = () => wrapper.find(".grid.grid-cols-1.gap-3");
-			expect(grid().classes()).toContain("xl:grid-cols-2");
+			expect(grid().classes()).toContain("2xl:grid-cols-2");
 
 			const toggle = wrapper.find(
 				'button[aria-label="common.buttons.fullscreen"]'
 			);
 			await toggle.trigger("click");
-			expect(grid().classes()).not.toContain("xl:grid-cols-2");
+			expect(grid().classes()).not.toContain("2xl:grid-cols-2");
 
 			await toggle.trigger("click");
-			expect(grid().classes()).toContain("xl:grid-cols-2");
+			expect(grid().classes()).toContain("2xl:grid-cols-2");
 		});
 
 		it("loads and reports the chart of a clicked exchange", async () => {

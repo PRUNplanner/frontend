@@ -44,7 +44,12 @@
 				planetNaturalId: planetNaturalId,
 			})
 				.execute()
-				.then((data: PopulationReport) => {
+				// no report yet: the button says so, like a failed load
+				.then((data: PopulationReport | null) => {
+					if (!data) {
+						buttonDisabled.value = true;
+						return;
+					}
 					poprData.value = data;
 					showPOPRModal.value = true;
 				})

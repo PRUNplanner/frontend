@@ -16,7 +16,7 @@
 		planLine,
 	} from "@/features/material_tile/materialMarket.util";
 	import { formatMaterialName } from "@/util/text";
-	import { formatNumber } from "@/util/numbers";
+	import { formatNumber, formatSmallNumber } from "@/util/numbers";
 	import { formatDate } from "@/util/date";
 
 	// Types & Interfaces
@@ -142,11 +142,11 @@
 				<div class="flex flex-wrap gap-x-4 text-xs text-muted-strong">
 					<span v-if="material">
 						{{ $t("material_tile.details.weight") }}
-						{{ formatNumber(material.weight, 2) }} t
+						{{ formatSmallNumber(material.weight) }} t
 					</span>
 					<span v-if="material">
 						{{ $t("material_tile.details.volume") }}
-						{{ formatNumber(material.volume, 2) }} m³
+						{{ formatSmallNumber(material.volume) }} m³
 					</span>
 					<span>
 						{{

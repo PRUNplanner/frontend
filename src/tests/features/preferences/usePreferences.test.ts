@@ -331,6 +331,8 @@ describe("usePreferences", async () => {
 		it("red class", async () => {
 			const { getBurnDisplayClass } = usePreferences();
 
+			// black on the red badge: white on it is below 4.5:1
+			expect(getBurnDisplayClass(4).value).toContain("text-black");
 			expect(
 				getBurnDisplayClass(4).value.includes("bg-negative")
 			).toBeTruthy();

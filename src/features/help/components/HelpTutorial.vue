@@ -16,7 +16,7 @@
 </script>
 
 <template>
-	<div class="flex flex-col gap-12 max-w-5xl">
+	<div class="@container flex flex-col gap-12 max-w-5xl">
 		<p class="text-lg leading-relaxed text-ink-strong max-w-3xl">
 			{{ $t("help.tutorial.intro") }}
 		</p>
@@ -80,7 +80,7 @@
 			<h2 class="text-lg font-bold mb-4">
 				{{ $t("help.core_concepts.title") }}
 			</h2>
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+			<div class="grid grid-cols-1 @xl:grid-cols-3 gap-3">
 				<div
 					v-for="c in concepts"
 					:key="c"
@@ -99,7 +99,7 @@
 			<h2 class="text-lg font-bold mb-4">
 				{{ $t("help.key_features.title") }}
 			</h2>
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+			<div class="grid grid-cols-1 @xl:grid-cols-2 gap-x-10 gap-y-6">
 				<div v-for="f in features" :key="f">
 					<h3 class="font-bold text-ink-strong mb-1">
 						{{ $t(`help.key_features.${f}.title`) }}

@@ -362,6 +362,7 @@ describe("PlanView", () => {
 		expect(attrs("PlanCheck")).toMatchObject({
 			planUuid: PLAN_UUID,
 			planet: planet_etherwind,
+			own: true,
 		});
 
 		constructionCart.open();

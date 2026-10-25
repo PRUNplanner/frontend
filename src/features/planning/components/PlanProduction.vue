@@ -373,6 +373,17 @@
 				</template>
 			</i18n-t>
 		</div>
+		<!-- no planet insights, so no starter: point at the building select -->
+		<p
+			v-else-if="isEmpty"
+			class="p-6 text-center text-sm text-muted"
+			data-empty-hint>
+			{{
+				t("plan.production.empty", {
+					select: t("plan.components.production.form.select_placeholder"),
+				})
+			}}
+		</p>
 		<template
 			v-for="(building, index) in localProductionData.buildings"
 			:key="`${building.name}`">

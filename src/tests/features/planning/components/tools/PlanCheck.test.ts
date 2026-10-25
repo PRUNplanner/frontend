@@ -183,6 +183,7 @@ describe("PlanCheck", () => {
 				empire: undefined,
 				cxUuid: "cx-fixed",
 				planet: planet_etherwind,
+				own: true,
 			},
 			{ pinia }
 		);

@@ -291,10 +291,16 @@ export const gameDataQueries = {
 			"last",
 			params.planetNaturalId,
 		],
+		// a planet without a report yet is a 404: empty, not an error
 		fetchFn: (params: {
 			planetNaturalId: string;
-		}): Promise<PopulationReport> =>
-			callPlanetLastPOPR(params.planetNaturalId),
+		}): Promise<PopulationReport | null> =>
+			callPlanetLastPOPR(params.planetNaturalId).catch(
+				(err: { status?: number }) => {
+					if (err.status === 404) return null;
+					throw err;
+				}
+			),
 		expireTime: planetsExpireTime,
 	}),
 	GetExplorationData: defineQuery({

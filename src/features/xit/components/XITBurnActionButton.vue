@@ -35,7 +35,6 @@
 	// UI
 	import {
 		PButton,
-		PButtonGroup,
 		PForm,
 		PFormItem,
 		PInputNumber,
@@ -165,7 +164,7 @@
 							" />
 					</PFormItem>
 					<PFormItem :label="t('xit.form.fit_ship')">
-						<PButtonGroup>
+						<div class="flex flex-wrap gap-1">
 							<PButton
 								v-for="fitOption in fitOptions"
 								:key="fitOption.label"
@@ -180,7 +179,7 @@
 								">
 								{{ fitOption.label }}
 							</PButton>
-						</PButtonGroup>
+						</div>
 					</PFormItem>
 					<PFormItem :label="t('xit.form.hide_infinite')">
 						<PCheckbox v-model:checked="refHideInfinite" />
@@ -250,61 +249,51 @@
 			</div>
 		</div>
 
+		<div
+			class="mb-2 flex flex-wrap justify-between gap-x-4 gap-y-1 whitespace-nowrap">
+			<div>
+				{{
+					$t("xit.table.weight_value", {
+						value: formatNumber(totalWeightVolume.totalWeight),
+					})
+				}}
+				<span class="pl-1 font-light text-muted">t</span>
+			</div>
+			<div>
+				{{
+					$t("xit.table.volume_value", {
+						value: formatNumber(totalWeightVolume.totalVolume),
+					})
+				}}
+				<span class="pl-1 font-light text-muted">m³</span>
+			</div>
+			<div>
+				{{
+					$t("xit.table.price_value", {
+						value: formatNumber(totalPrice),
+					})
+				}}
+				<span class="pl-1 font-light text-muted">ȼ</span>
+			</div>
+		</div>
+
+		<!-- on phones stock and delta go, burn days sum them up -->
 		<PTable striped>
 			<thead>
 				<tr>
 					<th></th>
 					<th>{{ $t("xit.table.ticker") }}</th>
-					<th>{{ $t("xit.table.stock") }}</th>
-					<th>{{ $t("xit.table.delta") }}</th>
+					<th class="hidden sm:table-cell">
+						{{ $t("xit.table.stock") }}
+					</th>
+					<th class="hidden sm:table-cell">
+						{{ $t("xit.table.delta") }}
+					</th>
 					<th>{{ $t("xit.table.burn") }}</th>
 					<th>{{ $t("xit.table.amount") }}</th>
 					<th>{{ $t("xit.table.override") }}</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr class="child:border-b!">
-					<td colspan="7">
-						<div class="flex flex-row justify-between">
-							<div>
-								{{
-									$t("xit.table.weight_value", {
-										value: formatNumber(
-											totalWeightVolume.totalWeight
-										),
-									})
-								}}
-								<span class="pl-1 font-light text-muted">
-									t
-								</span>
-							</div>
-							<div>
-								{{
-									$t("xit.table.volume_value", {
-										value: formatNumber(
-											totalWeightVolume.totalVolume
-										),
-									})
-								}}
-
-								<span class="pl-1 font-light text-muted">
-									m³
-								</span>
-							</div>
-							<div>
-								{{
-									$t("xit.table.price_value", {
-										value: formatNumber(totalPrice),
-									})
-								}}
-								<span class="pl-1 font-light text-muted">
-									ȼ
-								</span>
-							</div>
-						</div>
-					</td>
-				</tr>
-			</tbody>
 			<tbody>
 				<tr v-for="e in materialTable" :key="e.ticker">
 					<td>
@@ -326,8 +315,12 @@
 					<td>
 						<MaterialTile :key="e.ticker" :ticker="e.ticker" />
 					</td>
-					<td>{{ formatAmount(e.stock) }}</td>
-					<td>{{ formatNumber(e.delta) }}</td>
+					<td class="hidden sm:table-cell">
+						{{ formatAmount(e.stock) }}
+					</td>
+					<td class="hidden sm:table-cell">
+						{{ formatNumber(e.delta) }}
+					</td>
 					<td>
 						<span
 							:class="

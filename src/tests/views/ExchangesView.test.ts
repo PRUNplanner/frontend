@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { nextTick, type Ref, type Slots } from "vue";
-import { flushPromises, type VueWrapper } from "@vue/test-utils";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
 import { createPinia } from "pinia";
 
 import ExchangesView from "@/views/ExchangesView.vue";
@@ -503,8 +507,10 @@ describe("ExchangesView", () => {
 	it("shows an error instead of the editor without a preference", async () => {
 		const wrapper = await mountView(null);
 
-		expect(wrapper.text()).toContain("exchanges.errors.title");
-		expect(wrapper.text()).toContain("exchanges.errors.message");
+		expect(wrapper.text()).toContain("exchanges.empty.title");
+		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe(
+			"/manage#cx"
+		);
 		expect(panel(wrapper, "CXHeader").exists()).toBe(false);
 	});
 
@@ -517,7 +523,7 @@ describe("ExchangesView", () => {
 		await flushPromises();
 
 		expect(wrapper.find("h1").text()).toBe("Other");
-		expect(wrapper.text()).not.toContain("exchanges.errors.title");
+		expect(wrapper.text()).not.toContain("exchanges.empty.title");
 	});
 
 	it("takes the new preference once the route changes", async () => {

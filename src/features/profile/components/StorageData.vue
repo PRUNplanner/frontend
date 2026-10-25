@@ -10,6 +10,7 @@
 	import { computed, onMounted, ref, type Ref } from "vue";
 
 	interface IStatistic extends IStoreStatistic {
+		/** profile.storage_data.stores key */
 		name: string;
 	}
 
@@ -36,11 +37,11 @@
 		]);
 
 		stat.value = [
-			{ name: "Materials", ...results[0] },
-			{ name: "Buildings", ...results[1] },
-			{ name: "Recipes", ...results[2] },
-			{ name: "Planets", ...results[3] },
-			{ name: "Exchanges", ...results[4] },
+			{ name: "materials", ...results[0] },
+			{ name: "buildings", ...results[1] },
+			{ name: "recipes", ...results[2] },
+			{ name: "planets", ...results[3] },
+			{ name: "exchanges", ...results[4] },
 			...results[5],
 		];
 	});
@@ -70,7 +71,9 @@
 			</thead>
 			<tbody>
 				<tr v-for="element in stat" :key="element.name">
-					<td>{{ element.name }}</td>
+					<td>
+						{{ $t(`profile.storage_data.stores.${element.name}`) }}
+					</td>
 					<td>{{ formatAmount(element.records) }}</td>
 					<td class="!text-end">
 						{{ formatNumber(element.sizeMB) }} MB

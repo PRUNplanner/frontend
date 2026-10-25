@@ -38,6 +38,10 @@
 
 	const open: Ref<boolean> = ref(true);
 
+	// the pinned label column needs an opaque copy of the row tint
+	const differsHead =
+		"bg-[color-mix(in_srgb,var(--color-blue-400)_10%,black)]";
+
 	interface ICell {
 		text: string;
 		style?: string;
@@ -157,7 +161,7 @@
 </script>
 
 <template>
-	<div class="border-t border-white/10 bg-black px-6 py-2 flex flex-col gap-2">
+	<div class="min-h-0 border-t border-white/10 bg-black px-6 py-2 flex flex-col gap-2">
 		<div class="flex flex-row flex-wrap items-center gap-2">
 			<button
 				type="button"
@@ -190,11 +194,14 @@
 			</span>
 		</div>
 
-		<div v-if="open && planets.length" class="max-h-[380px] overflow-auto">
+		<!-- shrinks before the results list does, scrolls both ways -->
+		<div
+			v-if="open && planets.length"
+			class="min-h-0 max-h-[380px] overflow-auto">
 			<table class="w-full text-sm border-separate border-spacing-0">
-				<thead class="sticky top-0 bg-black">
+				<thead class="sticky top-0 z-20 bg-black">
 					<tr>
-						<th class="text-left px-2 py-1">
+						<th class="sticky left-0 z-10 bg-black text-left px-2 py-1">
 							<span class="sr-only">{{ t("planet_search.compare.row_label") }}</span>
 						</th>
 						<th
@@ -210,7 +217,10 @@
 						v-for="row in rows"
 						:key="row.label"
 						:class="{ 'bg-blue-400/10': row.differs }">
-						<th scope="row" class="text-left font-normal text-muted px-2 py-1 whitespace-nowrap">
+						<th
+							scope="row"
+							class="sticky left-0 z-10 text-left font-normal text-muted px-2 py-1 whitespace-nowrap"
+							:class="row.differs ? differsHead : 'bg-black'">
 							{{ row.label }}
 						</th>
 						<td

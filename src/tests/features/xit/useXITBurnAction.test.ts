@@ -110,6 +110,30 @@ describe("useBurnXITAction", async () => {
 		expect(materialTable.value[2].total).toBe(0);
 	});
 
+	it("never runs out without consumption, also at delta 0", () => {
+		const { materialTable } = useBurnXITAction(
+			ref([
+				{ ticker: "H2O", stock: 2340, delta: 0 },
+				{ ticker: "HCP", stock: 0, delta: 0 },
+				{ ticker: "FEO", stock: 10, delta: 1 },
+				{ ticker: "ALO", stock: 20, delta: -2 },
+			]),
+			ref(5),
+			ref(false),
+			ref({}),
+			ref(new Set<string>()),
+			ref(undefined),
+			ref(undefined)
+		);
+
+		expect(materialTable.value.map((m) => m.burn)).toEqual([
+			Infinity,
+			Infinity,
+			Infinity,
+			10,
+		]);
+	});
+
 	it("totalWeightVolume", async () => {
 		const { totalWeightVolume } = useBurnXITAction(
 			ref(elements),

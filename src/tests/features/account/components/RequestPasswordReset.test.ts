@@ -41,7 +41,7 @@ async function request(
 	email = "test@example.com"
 ): Promise<void> {
 	await wrapper.find("input").setValue(email);
-	await button(wrapper).trigger("click");
+	await wrapper.find("form").trigger("submit");
 	await flushPromises();
 }
 
@@ -156,7 +156,7 @@ describe("RequestPasswordReset", () => {
 		);
 		const wrapper = await mountForm();
 		await request(wrapper);
-		await button(wrapper).trigger("click");
+		await wrapper.find("form").trigger("submit");
 		await flushPromises();
 
 		expect(button(wrapper).attributes("disabled")).toBeDefined();

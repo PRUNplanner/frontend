@@ -46,7 +46,8 @@ describe("StorageData", () => {
 			sizeMB: 2,
 		});
 		vi.spyOn(usePlanningStore(), "getStoreSize").mockResolvedValue([
-			{ name: "Plans", records: 2, sizeMB: 0.5 },
+			{ name: "plans", records: 2, sizeMB: 0.5 },
+			{ name: "cxs", records: 1, sizeMB: 0 },
 		]);
 
 		const { wrapper } = await mountComponent(
@@ -56,13 +57,24 @@ describe("StorageData", () => {
 				pinia,
 				messages: {
 					profile: {
-						storage_data: { total: "{records} records, {size} MB" },
+						storage_data: {
+							total: "{records} records, {size} MB",
+							stores: {
+								materials: "Materials",
+								buildings: "Buildings",
+								recipes: "Recipes",
+								planets: "Planets",
+								exchanges: "Exchanges",
+								plans: "Plans",
+								cxs: "Exchange Preferences",
+							},
+						},
 					},
 				},
 			}
 		);
 		await vi.waitFor(() => {
-			expect(wrapper.findAll("tbody tr")).toHaveLength(6);
+			expect(wrapper.findAll("tbody tr")).toHaveLength(7);
 		});
 
 		const cells = wrapper
@@ -75,8 +87,10 @@ describe("StorageData", () => {
 			["Planets", "5,000", "10.00 MB"],
 			["Exchanges", "100", "2.00 MB"],
 			["Plans", "2", "0.50 MB"],
+			// the CX preferences, not the game's exchanges again
+			["Exchange Preferences", "1", "0.00 MB"],
 		]);
-		expect(wrapper.find("summary").text()).toBe("6,402 records, 14.50 MB");
+		expect(wrapper.find("summary").text()).toBe("6,403 records, 14.50 MB");
 	});
 
 	it("shows the plain title until the statistics arrived", async () => {

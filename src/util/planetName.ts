@@ -49,3 +49,19 @@ export function planetLabel(
 	const name = planetDisplayName(naturalId, planetName);
 	return name === naturalId ? naturalId : `${name} (${naturalId})`;
 }
+
+/**
+ * A label's name and its "(<id>)", so a template can keep the id on one
+ * line (a planet id must not break at its hyphen); a bare id or name is
+ * all second part
+ * @author jplacht
+ *
+ * @param {string} label planetLabel output
+ * @returns {[string, string]} name ("" without one) and the id part
+ */
+export function planetLabelParts(label: string): [string, string] {
+	const i = label.lastIndexOf(" (");
+	return i > 0 && label.endsWith(")")
+		? [label.slice(0, i), label.slice(i + 1)]
+		: ["", label];
+}

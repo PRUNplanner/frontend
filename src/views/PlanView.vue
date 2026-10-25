@@ -762,6 +762,7 @@
 						empire: computedActiveEmpire.value,
 						cxUuid: refCXUuid.value,
 						planet: planetData,
+						own: isOwnPlan.value,
 					},
 					listeners: {},
 				};
@@ -1713,7 +1714,9 @@
 						<template #icon><MenuOpenSharp /></template>
 						{{ t("plan.base.label") }}
 					</PButton>
+					<!-- a narrow row wraps instead of hiding tabs behind I/O -->
 					<PlanToolTabs
+						class="flex-wrap"
 						:tabs="toolTabs"
 						:active="refShowTool ?? 'production'"
 						:label="t('plan.actions.tools')"

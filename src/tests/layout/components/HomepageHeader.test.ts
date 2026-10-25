@@ -140,6 +140,8 @@ describe("HomepageHeader", () => {
 		["homepage", 6],
 		["market", 6],
 		["search", 6],
+		["request-password-reset", 6],
+		["password-reset", 6],
 		["shared-plan", 0],
 	])("on %s shows %i section links", async (name, links) => {
 		route.name = name;

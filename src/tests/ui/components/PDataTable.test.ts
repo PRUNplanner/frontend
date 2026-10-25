@@ -399,6 +399,37 @@ describe("PDataTable", () => {
 		).toHaveLength(200);
 	});
 
+	it("narrows the cell padding with dense", () => {
+		expect(mountTable().classes()).not.toContain("p-data-table-dense");
+		expect(mountTable({ dense: true }).classes()).toContain(
+			"p-data-table-dense"
+		);
+	});
+
+	it("pins the expand column and the first column with stickyFirst", () => {
+		const sticky = (w: ReturnType<typeof mountTable>) =>
+			w.findAll(".p-data-table-sticky");
+		expect(sticky(mountTable())).toHaveLength(0);
+
+		const plain = mountTable({ stickyFirst: true });
+		// header and four rows, the first column only
+		expect(sticky(plain)).toHaveLength(5);
+		expect(header(plain, "name").attributes("style")).toContain("left: 0px");
+
+		const expandable = mountTable(
+			{ stickyFirst: true },
+			{ expand: () => h("p", "detail") }
+		);
+		// the expand cell and the first column, in the header and four rows
+		expect(sticky(expandable)).toHaveLength(10);
+		expect(header(expandable, "name").attributes("style")).toContain(
+			"left: 48px"
+		);
+		expect(
+			expandable.find("td[data-col-key='name']").attributes("style")
+		).toContain("left: 48px");
+	});
+
 	it("sets pixel widths on the header, keeps percentages on the col", () => {
 		const w = mountTable({
 			columns: [

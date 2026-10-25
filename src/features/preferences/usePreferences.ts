@@ -308,7 +308,7 @@ export function usePreferences() {
 	function getBurnDisplayClass(value: number): ComputedRef<string> {
 		return computed(() => {
 			if (value <= burnDaysRed.value) {
-				return "text-white bg-negative";
+				return "text-black bg-negative";
 			} else if (value <= burnDaysYellow.value)
 				return "text-black bg-warning";
 			else return "";

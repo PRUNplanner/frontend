@@ -138,19 +138,33 @@ describe("PlanPOPR", () => {
 		expect(row("technician").find("[data-need]").exists()).toBe(false);
 	});
 
-	it("shows an error without a report", async () => {
+	// no report yet (404) is an empty state: no error, nothing logged
+	it("shows an empty state without a report", async () => {
 		mock.onGet(poprUrl("PP-003a")).reply(404);
-		vi.spyOn(console, "error").mockImplementation(() => {});
+		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountPOPR("PP-003a");
 
 		await vi.waitFor(() =>
-			expect(wrapper.text()).toContain("plan.tools.popr.error")
+			expect(wrapper.text()).toContain("plan.tools.popr.empty")
 		);
+		expect(wrapper.text()).not.toContain("plan.tools.popr.error");
+		expect(error).not.toHaveBeenCalled();
 		expect(wrapper.find("h2").text()).toBe("plan.tools.popr.title");
 		expect(wrapper.findComponent(PSpin).exists()).toBe(false);
 		expect(wrapper.text()).not.toContain("plan.tools.popr.loading");
 		expect(wrapper.find(".popr-table").exists()).toBe(false);
 		expect(wrapper.find("[data-popr-chart]").exists()).toBe(false);
+	});
+
+	it("shows an error when the report fails to load", async () => {
+		mock.onGet(poprUrl("PP-006a")).reply(500);
+		vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper } = await mountPOPR("PP-006a");
+
+		await vi.waitFor(() =>
+			expect(wrapper.text()).toContain("plan.tools.popr.error")
+		);
+		expect(wrapper.text()).not.toContain("plan.tools.popr.empty");
 	});
 
 	it("shows an error for a malformed report", async () => {

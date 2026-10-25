@@ -36,7 +36,7 @@ async function reset(): Promise<VueWrapper> {
 	const [email, , password] = wrapper.findAll("input");
 	await email.setValue("test@example.com");
 	await password.setValue("correct-horse-battery");
-	await wrapper.find("button").trigger("click");
+	await wrapper.find("form").trigger("submit");
 	await flushPromises();
 	return wrapper;
 }
@@ -74,7 +74,7 @@ describe("PasswordReset", () => {
 
 		await email.setValue("test.example.com");
 		await password.setValue("correct-horse-battery");
-		await button().trigger("click");
+		await wrapper.find("form").trigger("submit");
 		await flushPromises();
 		expect(mock.history.post).toHaveLength(0);
 	});

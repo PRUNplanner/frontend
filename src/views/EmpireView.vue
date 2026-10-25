@@ -584,10 +584,10 @@
 						:class="
 							overviewHidden
 								? ''
-								: 'xl:grid-cols-[minmax(0,600px)_minmax(0,1fr)]'
+								: 'xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)]'
 						">
 						<div
-							class="min-h-screen w-full max-w-[600px] min-w-0 flex flex-col gap-6 justify-items-start"
+							class="min-h-screen w-full max-w-[500px] min-w-0 flex flex-col gap-6 justify-items-start"
 							:class="{ 'xl:hidden': overviewHidden }">
 							<div>
 								<PForm>
@@ -629,9 +629,11 @@
 								</div>
 							</div>
 						</div>
+						<!-- xl: a sticky column that scrolls inside; narrower, the
+							page scrolls and the tables keep a screen-high box -->
 						<div
-							class="xl:sticky xl:top-1 h-[calc(100vh-theme(spacing.12))] flex flex-col">
-							<div class="flex flex-col flex-1 overflow-auto">
+							class="xl:sticky xl:top-1 xl:h-[calc(100vh-theme(spacing.12))] flex flex-col">
+							<div class="flex flex-col flex-1 xl:overflow-auto">
 								<EmpireMaterialIOFiltered
 									v-model:content="mainContent"
 									:empire-material-i-o="

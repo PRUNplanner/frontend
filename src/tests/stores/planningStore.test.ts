@@ -20,6 +20,7 @@ import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
 import empire_list from "@/tests/test_data/api_data_empire_list.json";
 import cx_list from "@/tests/test_data/api_data_cx_list.json";
 import shared_list from "@/tests/test_data/api_data_shared_list.json";
+import profile from "@/locales/en_US/profile.json";
 
 const etherwindUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
 
@@ -200,6 +201,11 @@ describe("FIO Data", async () => {
 			const results = await planningStore.getStoreSize();
 
 			expect(results.length).toBe(8);
+			// every store a distinct profile.storage_data.stores key
+			const names = results.map((r) => r.name);
+			expect(new Set(names).size).toBe(8);
+			for (const name of names)
+				expect(profile.storage_data.stores).toHaveProperty(name);
 		});
 	});
 });

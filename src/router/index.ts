@@ -12,25 +12,33 @@ import { markNavigationStart } from "@/lib/perf/navigationStart";
 const router = createRouter({
 	history: createWebHistory(),
 	scrollBehavior(to, from, savedPosition) {
-		// back/forward restores, query or hash change on the same page keeps
-		if (savedPosition) {
-			// views render behind data loaders, so wait until the page is
-			// tall enough to scroll back
-			// ponytail: 3s cap, a slower load lands short of the position
+		// views render behind data loaders, so wait until the page can take
+		// the position
+		// ponytail: 3s cap, a slower load lands short of the position
+		function when<T>(ready: () => boolean, position: T): Promise<T> {
 			const deadline = Date.now() + 3000;
 			return new Promise((resolve) => {
 				const tick = () => {
-					const max =
-						document.documentElement.scrollHeight - window.innerHeight;
-					if (max >= savedPosition.top || Date.now() > deadline)
-						resolve(savedPosition);
+					if (ready() || Date.now() > deadline) resolve(position);
 					else requestAnimationFrame(tick);
 				};
 				tick();
 			});
 		}
+
+		// back/forward restores, query or hash change on the same page keeps
+		if (savedPosition)
+			return when(
+				() =>
+					document.documentElement.scrollHeight - window.innerHeight >=
+					savedPosition.top,
+				savedPosition
+			);
 		if (to.path === from.path) return false;
-		if (to.hash) return { el: to.hash };
+		if (to.hash)
+			return when(() => !!document.querySelector(to.hash), {
+				el: to.hash,
+			});
 		return { top: 0 };
 	},
 	routes: [

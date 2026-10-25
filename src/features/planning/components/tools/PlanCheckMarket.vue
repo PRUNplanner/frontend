@@ -52,6 +52,8 @@
 		empire: PlanEmpire | undefined;
 		cxUuid: string | undefined;
 		planet: Planet;
+		/** the viewer's own plan: links to its CX and to setting one */
+		own?: boolean;
 	}>();
 
 	const planningStore = usePlanningStore();
@@ -226,11 +228,11 @@
 			col("material"),
 			col("side"),
 			col("per_day", true),
-			{ ...col("share"), minWidth: 200 },
+			{ ...col("share"), minWidth: 160 },
 			col("traded", true),
 			col("bid_ask", true),
 			col("spread", true),
-			col("check"),
+			{ ...col("check"), minWidth: 160 },
 		];
 	});
 	const rowKey = (c: IMarketCheck) => c.ticker;
@@ -268,10 +270,16 @@
 				<span class="text-white font-bold">
 					{{ t("cx.market_flags.exchange.all") }}
 				</span>
-				· {{ t("cx.market_flags.exchange.no_cx") }} ·
-				<RouterLink to="/exchanges" class="text-link hover:underline">
-					{{ t("cx.market_flags.exchange.set_cx") }}
-				</RouterLink>
+				· {{ t("cx.market_flags.exchange.no_cx") }}
+				<template v-if="own">
+					·
+					<RouterLink
+						to="/exchanges"
+						class="text-link hover:underline"
+						data-set-cx>
+						{{ t("cx.market_flags.exchange.set_cx") }}
+					</RouterLink>
+				</template>
 			</template>
 		</p>
 
@@ -290,6 +298,12 @@
 						:row-key="rowKey"
 						:row-class="rowClass"
 						:min-width="760">
+						<!-- the long title wraps so the Check column keeps its room -->
+						<template #header-share>
+							<span class="whitespace-normal">
+								{{ t("plan.tools.plan_check.market.columns.share") }}
+							</span>
+						</template>
 						<template #cell-material="{ row }">
 							<span
 								class="inline-block min-w-10 px-1 rounded-sm text-xs text-center font-bold"
@@ -352,15 +366,15 @@
 						<template #cell-check="{ row }">
 							<span
 								v-if="row.level"
-								class="inline-flex items-center gap-1.5 whitespace-nowrap"
+								class="inline-flex items-center gap-1.5"
 								:class="LEVEL_TEXT[row.level as MarketFlagLevel]">
 								<MarketFlagIcon :level="row.level" />
 								{{ t(`cx.market_flags.flags.${row.flags[0]}`) }}
 							</span>
 							<RouterLink
-								v-if="ruleLink(row)"
+								v-if="own && ruleLink(row)"
 								:to="ruleLink(row)!.to"
-								class="block py-1 text-xs text-link hover:underline whitespace-nowrap"
+								class="block py-1 text-xs text-link hover:underline"
 								:aria-label="
 									t('plan.tools.plan_check.market.rule_link', {
 										ticker: row.ticker,
@@ -370,6 +384,12 @@
 								data-rule-link>
 								{{ ruleLink(row)!.label }}
 							</RouterLink>
+							<span
+								v-else-if="ruleLink(row)"
+								class="block py-1 text-xs text-muted-strong"
+								data-rule-source>
+								{{ ruleLink(row)!.label }}
+							</span>
 							<span v-if="!row.level" class="text-muted">
 								{{ t("plan.tools.plan_check.market.ok") }}
 							</span>
@@ -423,7 +443,7 @@
 							</span>
 						</div>
 						<RouterLink
-							v-if="ruleLink(c)"
+							v-if="own && ruleLink(c)"
 							:to="ruleLink(c)!.to"
 							class="self-start py-1 text-xs text-link hover:underline"
 							:aria-label="
@@ -435,6 +455,12 @@
 							data-rule-link>
 							{{ ruleLink(c)!.label }}
 						</RouterLink>
+						<span
+							v-else-if="ruleLink(c)"
+							class="self-start py-1 text-xs text-muted-strong"
+							data-rule-source>
+							{{ ruleLink(c)!.label }}
+						</span>
 						<span class="text-xs text-muted-strong">
 							{{
 								t("plan.tools.plan_check.market.card_traded", {
@@ -555,8 +581,10 @@
 					<p v-if="!real" class="text-xs text-muted-strong">
 						{{ t("plan.tools.plan_check.market.real.no_cx") }}
 						<RouterLink
+							v-if="own"
 							to="/exchanges"
-							class="text-link hover:underline">
+							class="text-link hover:underline"
+							data-set-cx>
 							{{ t("cx.market_flags.exchange.set_cx") }}
 						</RouterLink>
 					</p>

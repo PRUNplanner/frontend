@@ -110,7 +110,7 @@
 				border: chartScale(theme.value).border,
 				ticks: {
 					color: theme.value.muted,
-					font: { family: "monospace", size: LABEL_SIZE },
+					font: { family: theme.value.mono, size: LABEL_SIZE },
 				},
 				// chart.js caps a side axis at ~1/4 of the chart width and
 				// clips longer labels from the left ("ther (12)" at 375 px):
@@ -119,7 +119,7 @@
 				afterFit: (scale) => {
 					const ctx = scale.ctx;
 					ctx.save();
-					ctx.font = `${LABEL_SIZE}px monospace`;
+					ctx.font = `${LABEL_SIZE}px ${theme.value.mono}`;
 					const widest = Math.max(
 						...bars.value.map((b) => ctx.measureText(b.name).width)
 					);
@@ -143,7 +143,7 @@
 				border: { display: false },
 				ticks: {
 					color: theme.value.ink,
-					font: { family: "monospace", size: LABEL_SIZE },
+					font: { family: theme.value.mono, size: LABEL_SIZE },
 				},
 			},
 		},

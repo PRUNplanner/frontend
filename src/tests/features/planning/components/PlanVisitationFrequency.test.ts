@@ -75,13 +75,13 @@ function tableCells(wrapper: VueWrapper, index: number) {
 		.map((tr) => tr.findAll("td").map((td) => td.text()));
 }
 
-/** import, export, sum rows (weight, volume) and the days storage lasts */
+/** import, export, larger leg rows (weight, volume) and the days storage lasts */
 function storageTable(wrapper: VueWrapper) {
 	const rows = tableCells(wrapper, 0);
 	return {
 		import: rows[0].slice(1),
 		export: rows[1].slice(1),
-		sum: rows[2].slice(1),
+		largerLeg: rows[2].slice(1),
 		filled: rows[3][1].split(" ")[0],
 	};
 }
@@ -92,16 +92,19 @@ async function exclude(wrapper: VueWrapper, tickers: string[]) {
 }
 
 describe("PlanVisitationFrequency", () => {
-	it("splits daily flows into import and export, sums by the larger", async () => {
+	it("splits daily flows into import and export, labels the larger leg", async () => {
 		const { wrapper } = await mountTool();
 
 		expect(storageTable(wrapper)).toEqual({
 			import: ["23.00", "12.00"],
 			export: ["50.00", "30.00"],
-			sum: ["50.00", "30.00"],
+			largerLeg: ["50.00", "30.00"],
 			// min(6500 / 50, 6500 / 30)
 			filled: "130.00",
 		});
+		expect(tableCells(wrapper, 0)[2][0]).toBe(
+			"plan.tools.visitation_frequency.storage.table.larger_leg"
+		);
 	});
 
 	it("calculates visitation days and the limiting factor per ship", async () => {
@@ -141,7 +144,7 @@ describe("PlanVisitationFrequency", () => {
 		expect(storageTable(wrapper)).toEqual({
 			import: ["23.00", "12.00"],
 			export: ["0.00", "0.00"],
-			sum: ["23.00", "12.00"],
+			largerLeg: ["23.00", "12.00"],
 			// min(6500 / 23, 6500 / 12)
 			filled: "282.61",
 		});

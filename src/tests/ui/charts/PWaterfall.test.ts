@@ -70,11 +70,15 @@ describe("PWaterfall", () => {
 		expect(wrapper.text()).toContain("51,717");
 		expect(wrapper.text()).toContain("-32,404");
 		expect(wrapper.text()).toContain("Daily profit");
+		// wide slots: labels on one line at sm, never turned
+		expect(wrapper.find(".origin-top-right").exists()).toBe(false);
 
 		// FE is tall enough for its chip inside, LST and FLX sit beside
 		expect(bars[0].find(".chip-fe").text()).toBe("FE");
 		expect(bars[0].text()).toContain("47.4k");
-		expect(wrapper.text()).toContain("LST 2.7k");
+		// beside a bar: the name over its value, two lines that fit the gap
+		const beside = wrapper.findAll("div.flex-col span").map((s) => s.text());
+		expect(beside.slice(0, 2)).toEqual(["LST", "2.7k"]);
 		// one dashed connector between each pair of columns
 		expect(wrapper.findAll(".border-dashed")).toHaveLength(2);
 	});
@@ -130,12 +134,17 @@ describe("PWaterfall", () => {
 			tone: "neutral" as const,
 			segments: [],
 		}));
+		many[19].label = "Degradation";
 		const wrapper = await mountWaterfall(many);
 
-		// 20 columns × 64 px + the axis, values shortened
+		// 20 columns × 48 px + the axis, values shortened
 		expect(wrapper.find("[role=group]").attributes("style")).toContain(
-			"width: 1324px"
+			"width: 1004px"
 		);
 		expect(wrapper.text()).toContain("100");
+		// "Degradation" doesn't fit 48 px: the labels turn instead of breaking
+		const last = wrapper.findAll(".origin-top-right").at(-1)!;
+		expect(last.text()).toBe("Degradation");
+		expect(last.attributes("style")).toContain("rotate(-35deg)");
 	});
 });

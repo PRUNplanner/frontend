@@ -26,6 +26,7 @@ function readTokens() {
 		grid: read("--chart-grid"),
 		axis: read("--chart-axis"),
 		surface: read("--chart-surface"),
+		mono: read("--font-mono") || "monospace",
 		exchanges: Object.fromEntries(
 			Object.entries(EXCHANGE_TOKENS).map(([code, token]) => [
 				code,
