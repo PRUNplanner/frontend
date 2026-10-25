@@ -83,8 +83,15 @@
 	const isLanding = computed(() => route.name === "homepage");
 	// the full-width tool: the header spans it, at the height its frame expects
 	const isSearch = computed(() => route.name === "search");
-	const showSections = computed(
-		() => isLanding.value || isSearch.value || route.name === "market"
+	const SECTION_ROUTES = new Set([
+		"homepage",
+		"search",
+		"market",
+		"request-password-reset",
+		"password-reset",
+	]);
+	const showSections = computed(() =>
+		SECTION_ROUTES.has(String(route.name))
 	);
 	const sections = ["how", "features", "tools"] as const;
 

@@ -10,8 +10,17 @@
 	// Composables
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
-	// UI
-	import { PForm, PFormItem, PInput, PButton } from "@/ui";
+	// UI (by path: a public page, see AGENTS.md)
+	import PFormItem from "@/ui/components/PFormItem.vue";
+	import PInput from "@/ui/components/PInput.vue";
+	import PNotice from "@/ui/components/PNotice.vue";
+	import PSpin from "@/ui/components/PSpin.vue";
+	import {
+		landingField,
+		landingHeading,
+		landingInput,
+		landingPrimaryButton,
+	} from "@/features/homepage/homepage.constants";
 	import {
 		UserPasswordResetPayloadSchema,
 		type UserResponseDetail,
@@ -70,39 +79,39 @@
 </script>
 
 <template>
-	<h2 class="text-white/80 font-bold text-lg font-mono">
-		{{ $t("account.components.password_reset.title") }}
-	</h2>
-	<div class="py-3 text-xs font-mono text-muted">
-		{{ $t("account.components.password_reset.info") }}
-	</div>
-	<div v-if="requestResponse" class="pb-3 text-xs font-mono text-prunplanner">
-		{{ requestResponse.detail }}
-	</div>
-	<div
-		v-if="isThrottled"
-		class="pb-3 text-xs font-mono text-negative"
-		role="alert">
-		{{ $t("account.components.password_reset.throttled") }}
-	</div>
-	<div>
-		<PForm>
+	<form class="flex flex-col gap-5" @submit.prevent="requestReset">
+		<h1 :class="landingHeading">
+			{{ $t("account.components.password_reset.title") }}
+		</h1>
+		<p class="m-0 text-white/78">
+			{{ $t("account.components.password_reset.info") }}
+		</p>
+		<p v-if="requestResponse" class="m-0 text-prunplanner" role="status">
+			{{ requestResponse.detail }}
+		</p>
+		<PNotice v-if="isThrottled" type="error">
+			{{ $t("account.components.password_reset.throttled") }}
+		</PNotice>
+		<div :class="landingField">
 			<PFormItem
 				:label="t('account.components.password_reset.form.email')">
 				<PInput
 					v-model:value="inputEmail"
 					autocomplete="email"
 					:placeholder="t('account.components.hints.email')"
-					class="w-full" />
+					:class="landingInput" />
 			</PFormItem>
-			<PFormItem
-				:label="t('account.components.password_reset.form.code')">
+		</div>
+		<div :class="landingField">
+			<PFormItem :label="t('account.components.password_reset.form.code')">
 				<PInput
 					v-model:value="inputCode"
 					autocomplete="one-time-code"
 					:placeholder="t('account.components.hints.code')"
-					class="w-full" />
+					:class="landingInput" />
 			</PFormItem>
+		</div>
+		<div :class="landingField">
 			<PFormItem
 				:label="t('account.components.password_reset.form.password')">
 				<PInput
@@ -110,7 +119,7 @@
 					autocomplete="new-password"
 					:placeholder="t('account.components.hints.new_password')"
 					type="password"
-					class="w-full" />
+					:class="landingInput" />
 				<template #info>
 					{{
 						$t(
@@ -119,14 +128,14 @@
 					}}
 				</template>
 			</PFormItem>
-			<PFormItem label="">
-				<PButton
-					:disabled="!canSend"
-					:loading="isLoading"
-					@click="requestReset">
-					{{ $t("account.components.password_reset.buttons.send") }}
-				</PButton>
-			</PFormItem>
-		</PForm>
-	</div>
+		</div>
+		<button
+			type="submit"
+			:disabled="!canSend || isLoading"
+			:aria-busy="isLoading"
+			:class="[landingPrimaryButton, 'w-full']">
+			<PSpin v-if="isLoading" color="muted" />
+			{{ $t("account.components.password_reset.buttons.send") }}
+		</button>
+	</form>
 </template>
