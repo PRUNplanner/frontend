@@ -263,10 +263,7 @@
 		// PButton stays clickable while loading, a double click saves once
 		if (!current || saveState.value === "saving") return;
 		saveState.value = "saving";
-		trackEvent("exchange:update", {
-			cx_uuid: current.uuid,
-			location: "exchanges_view",
-		});
+		trackEvent("exchange:update", { location: "exchanges_view" });
 		try {
 			if (
 				await cxSave.save(current, {

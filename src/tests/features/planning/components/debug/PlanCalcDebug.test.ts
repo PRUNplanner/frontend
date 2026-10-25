@@ -244,9 +244,6 @@ describe("PlanCalcDebug", () => {
 		expect(text).toContain("build: dev");
 		expect(text).toContain("FRM#1 time = 2,000 ms");
 		expect(text).toContain('    "plan_name": "Farm",');
-		expect(trackEvent).toHaveBeenLastCalledWith("debug:calc_copy", {
-			format: "text",
-		});
 
 		await button(w, "Copy JSON").trigger("click");
 		await flushPromises();
@@ -326,7 +323,7 @@ describe("PlanCalcDebug", () => {
 		const { wrapper: w, component } = await mountPanel();
 
 		await button(w, "Turn off").trigger("click");
-		expect(setCalcDebug).toHaveBeenCalledWith(false, "panel");
+		expect(setCalcDebug).toHaveBeenCalledWith(false);
 
 		await w.find('[aria-label="common.ui.close"]').trigger("click");
 		expect(component.emitted("update:show")?.[0]).toEqual([false]);

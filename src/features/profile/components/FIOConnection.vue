@@ -85,8 +85,6 @@
 	async function patchProfile(): Promise<void> {
 		if (isUpdating.value) return;
 
-		trackEvent("account:profile_update");
-
 		const fioApiKey = localFIO.fio_apikey?.replace(/ /g, "") ?? null;
 
 		// detect if user has fio enabled
@@ -95,7 +93,6 @@
 			userStore.profile?.fio_apikey && userStore.profile?.prun_username
 		);
 
-		trackEvent("account:fio_update", { is_active: userHasFIO });
 		const fioChanged: boolean =
 			fioApiKey !== (userStore.profile?.fio_apikey ?? null) ||
 			(localFIO.prun_username ?? null) !==

@@ -14,7 +14,10 @@ import type {
 	PlanFaction,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
-import type { PlanetSearchView } from "@/features/planet_search/planetSearch.schemas";
+import type {
+	PlanetSearchColumn,
+	PlanetSearchView,
+} from "@/features/planet_search/planetSearch.schemas";
 import type { ChartView } from "@/features/market_exploration/marketExploration.types";
 import type {
 	MarketGapBasis,
@@ -80,10 +83,13 @@ export type ToolUseProperties =
 	| {
 			tool_name: "planet_search";
 			filter: Record<string, string>;
+			has_text: boolean;
+			reference_count: number;
 			result_count: number;
 	  }
 	| {
 			tool_name: "production_chain";
+			mode: "chain";
 			targets: string[];
 			target_count: number;
 			material_count: number;
@@ -125,6 +131,15 @@ export type ProductionChainAction =
 	| "check_open_plan"
 	| "check_try"
 	| "check_setup_toggle";
+
+// what was done on the Planet Search page, besides searching
+type PlanetSearchAction =
+	| "pin"
+	| "save"
+	| "load"
+	| "link_copy"
+	| "reset"
+	| "plan_open";
 
 // which XIT transfer button: the tool, and which of its buttons
 export type XITTransferSource =
@@ -176,8 +191,6 @@ export interface IAnalyticsEventProperties {
 	"account:password_reset_request": undefined;
 	"account:password_reset": undefined;
 	"account:password_change": undefined;
-	"account:profile_update": undefined;
-	"account:fio_update": { is_active: boolean };
 	"account:fio_link": undefined;
 	"account:fio_link_failed": { reason: string };
 	"account:api_key_create": undefined;
@@ -192,14 +205,11 @@ export interface IAnalyticsEventProperties {
 			| "planet_search_plan"
 			| "planet_search_distance";
 	};
-	"landing:auth_switch": { panel: AuthPanel };
 	"landing:example_open": { source: "hero" | "shared_plans" };
 	// clicks only, an automatic advance sends nothing
 	"landing:tour_step": { tour: HomepageTourName; step: string };
-	"landing:tour_toggle": { tour: HomepageTourName; is_playing: boolean };
 	"landing:market_click": { target: "header" | "cta" | "sector" | "mover" };
 	"landing:planet_search_click": { target: "header" | "tour" };
-	"landing:market_view_change": { view: MarketMoversDirection };
 	"apikey:key_copy": undefined;
 	"apikey:builder_change": {
 		endpoint: string;
@@ -221,7 +231,6 @@ export interface IAnalyticsEventProperties {
 	"plan:leave_unsaved": { planet_natural_id: string };
 	"plan:shared_clone": {
 		planet_natural_id: string;
-		shared_uuid: string;
 		modified: boolean;
 	};
 	"plan:shared_reset": { planet_natural_id: string };
@@ -231,7 +240,7 @@ export interface IAnalyticsEventProperties {
 	};
 	"plan:share_create": undefined;
 	"plan:share_delete": undefined;
-	"plan:tool_toggle": { tool_name: string | null };
+	"plan:tool_toggle": { panel: string | null };
 	"plan:plancheck_change": {
 		view: "market" | "sensitivity" | "compare";
 		pct?: number;
@@ -294,17 +303,17 @@ export interface IAnalyticsEventProperties {
 	"empire:save_conflict": { choice: SaveConflictChoice };
 
 	"manage:cx_create": undefined;
-	"manage:cx_delete": { cx_uuid: string };
+	"manage:cx_delete": undefined;
 	"manage:empire_create": undefined;
-	"manage:empire_delete": { empire_uuid: string };
+	"manage:empire_delete": undefined;
 	"manage:empire_cx_assign": undefined;
 	"manage:plan_empire_assign": undefined;
 	"manage:plan_assign_all": { is_assigned: boolean };
-	"manage:plan_clone": { plan_uuid: string };
-	"manage:plan_delete": { plan_uuid: string };
+	"manage:plan_clone": undefined;
+	"manage:plan_delete": undefined;
 	"manage:plan_delete_bulk": { count: number };
 
-	"exchange:update": { location: string; cx_uuid: string };
+	"exchange:update": { location: string };
 	"exchange:discard": { location: string };
 	// a material row expanded to its price cascade
 	"exchange:price_detail": { location: string; material_ticker: string };
@@ -326,6 +335,14 @@ export interface IAnalyticsEventProperties {
 	"material:market_card_pin": { material_ticker: string };
 
 	"planet_search:view_change": { view: PlanetSearchView };
+	"planet_search:action":
+		| { action: PlanetSearchAction }
+		| { action: "sort"; sort: string; sort_count: number }
+		| {
+				action: "column_toggle";
+				column: PlanetSearchColumn;
+				is_shown: boolean;
+		  };
 	"market_exploration:view_change": { view: ChartView };
 	"resource_roi:chart_open": undefined;
 	"production_chain:action":
@@ -366,7 +383,6 @@ export interface IAnalyticsEventProperties {
 	"xit:transfer_open": { source?: XITTransferSource };
 	"xit:transfer_copy": { source?: XITTransferSource };
 
-	"app:navigation_toggle": { navigation_style: "full" | "collapsed" };
 	"app:nav_click": { target: string; area: NavArea; section: NavSection };
 	"app:version_reload": { source: "notice" | "chip" | "navigation" };
 	"app:version_later": undefined;
@@ -374,12 +390,7 @@ export interface IAnalyticsEventProperties {
 	"app:remote_change": IRemoteChangeProperties;
 	"app:session_change": { reason: "logout" | "login" | "other_user" };
 	"app:db_blocked": undefined;
-	"debug:calc_toggle": {
-		on: boolean;
-		source: "url" | "debug_page" | "panel";
-	};
 	"debug:calc_open": { source: Trigger };
-	"debug:calc_copy": { format: "text" | "json" };
 
 	"onboarding:step_click": {
 		step: "empire_save" | "planet_search" | "exchanges";

@@ -45,7 +45,7 @@ double-click, the Distance section) open it with
 names above both forms (loaded with them). Both last across the switch and
 the welcome state, until `close()`; the header's own buttons open the panel
 without them. Opening never scrolls: the panel slides in where the
-page is. `open` and `switchTo` send `landing:auth_open` / `landing:auth_switch`.
+page is. `open` sends `landing:auth_open`.
 After a registration the welcome state's "Log in" emits `login`, and
 `showLoginForm()` switches the panel to the login form (no event: it is
 not the switch).

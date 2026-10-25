@@ -146,6 +146,7 @@ describe("ProductionChainView", () => {
 		expect(toolUses()).toHaveLength(1);
 		expect(toolUses()[0][1]).toMatchObject({
 			tool_name: "production_chain",
+			mode: "chain",
 			targets: ["DW"],
 			target_count: 1,
 			efficiency: 100,

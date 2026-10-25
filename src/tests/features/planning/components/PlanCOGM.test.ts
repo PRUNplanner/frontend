@@ -261,7 +261,6 @@ describe("PlanCOGM", () => {
 			ticker_empire: [pref("RAT", "BUY", 64.43)],
 		});
 		expect(trackEvent).toHaveBeenCalledWith("exchange:update", {
-			cx_uuid: CX_UUID,
 			location: "cogm",
 		});
 		expect(

@@ -92,7 +92,7 @@
 	async function deleteCX(cxUuid: string): Promise<void> {
 		refIsDeleting.value = cxUuid;
 
-		trackEvent("manage:cx_delete", { cx_uuid: cxUuid });
+		trackEvent("manage:cx_delete");
 
 		try {
 			const deletionResult: boolean = await useQuery("DeleteCX", {

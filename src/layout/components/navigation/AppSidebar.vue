@@ -10,7 +10,6 @@
 	// Composables
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useVersionCheck } from "@/lib/useVersionCheck";
 	import { useNavigation } from "@/layout/components/navigation/useNavigation";
 
@@ -94,9 +93,6 @@
 
 	function toggleNavigationSize(): void {
 		layoutNavigationStyle.value = isFull.value ? "collapsed" : "full";
-		trackEvent("app:navigation_toggle", {
-			navigation_style: layoutNavigationStyle.value,
-		});
 	}
 
 	const empireOptions = computed(() =>

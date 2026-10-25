@@ -250,7 +250,7 @@
 
 	async function deleteEmpire(empireUuid: string): Promise<void> {
 		refIsDeleting.value = empireUuid;
-		trackEvent("manage:empire_delete", { empire_uuid: empireUuid });
+		trackEvent("manage:empire_delete");
 
 		try {
 			const deletionResult: boolean = await useQuery("DeleteEmpire", {

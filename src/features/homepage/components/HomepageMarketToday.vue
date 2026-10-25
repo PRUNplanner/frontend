@@ -77,7 +77,6 @@
 
 	function setDirection(view: MarketMoversDirection): void {
 		direction.value = view;
-		trackEvent("landing:market_view_change", { view });
 	}
 	function opened(target: "sector" | "mover"): void {
 		trackEvent("landing:market_click", { target });

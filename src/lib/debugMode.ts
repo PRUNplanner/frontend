@@ -2,7 +2,6 @@ import { ref, type Ref } from "vue";
 
 // Composables
 import { toast } from "@/ui/useToast";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 /**
  * # Debug modes
@@ -52,12 +51,8 @@ export const calcDebug: Ref<boolean> = ref(
  * @author jplacht
  *
  * @param {boolean} on Debug on
- * @param {"url" | "debug_page" | "panel"} source What switched it
  */
-export function setCalcDebug(
-	on: boolean,
-	source: "url" | "debug_page" | "panel"
-): void {
+export function setCalcDebug(on: boolean): void {
 	writeMode("calc", on);
 	calcDebug.value = on;
 	toast(
@@ -66,7 +61,6 @@ export function setCalcDebug(
 			: "Calculation debug off.",
 		{ type: "info" }
 	);
-	trackEvent("debug:calc_toggle", { on, source });
 }
 
 /** the market report's price gaps show, hidden until their floors are tuned */

@@ -183,9 +183,8 @@ async function startAnalytics(deferred: boolean = false): Promise<void> {
 			defaults: "2026-08-30",
 			person_profiles: "identified_only",
 			name: POSTHOG_NAME,
-			// the project setting turns it off, events come from the
-			// tracking plan
-			autocapture: true,
+			// events come from the tracking plan
+			autocapture: false,
 			// set here, the project setting would win otherwise: inputs
 			// hold the FIO API key, email and the one-time codes
 			session_recording: { maskAllInputs: true },

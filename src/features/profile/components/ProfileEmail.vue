@@ -8,7 +8,6 @@
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useEmailNudge } from "@/features/account/useEmailNudge";
 
 	// Stores
@@ -48,8 +47,6 @@
 
 	async function patchEmail(): Promise<void> {
 		if (isUpdating.value) return;
-
-		trackEvent("account:profile_update");
 
 		const changed = (email.value ?? "") !== (userStore.profile?.email ?? "");
 		isUpdating.value = true;

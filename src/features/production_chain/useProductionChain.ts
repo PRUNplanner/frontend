@@ -214,6 +214,7 @@ export function useProductionChain() {
 				() =>
 					trackEvent("tool:use", {
 						tool_name: "production_chain",
+						mode: "chain",
 						targets: value.targets.map((t) => t.ticker),
 						target_count: value.targets.length,
 						material_count: result.value.order.length,

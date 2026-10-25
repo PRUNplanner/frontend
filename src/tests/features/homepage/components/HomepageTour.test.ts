@@ -136,10 +136,7 @@ describe("HomepageTour", () => {
 		vi.advanceTimersByTime(1000);
 		await nextTick();
 		expect(active()).toBe(1);
-		expect(vi.mocked(trackEvent).mock.calls).toEqual([
-			["landing:tour_toggle", { tour: "plan", is_playing: false }],
-			["landing:tour_toggle", { tour: "plan", is_playing: true }],
-		]);
+		expect(trackEvent).not.toHaveBeenCalled();
 	});
 
 	it("does not advance by itself with reduced motion, steps still work", async () => {

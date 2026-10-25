@@ -335,7 +335,7 @@ describe("PlanView", () => {
 		expect(attrs("PlanPOPR").planetNaturalId).toBe("KW-688c");
 		expect(attrs("PlanPOPR").workforceData.pioneer).toBeDefined();
 		expect(trackEvent).toHaveBeenCalledWith("plan:tool_toggle", {
-			tool_name: "popr",
+			panel: "popr",
 		});
 
 		await openTool(wrapper, "plan.tools.labels.visitation_frequency");

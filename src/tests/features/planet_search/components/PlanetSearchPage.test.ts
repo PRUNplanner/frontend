@@ -1030,11 +1030,79 @@ describe("PlanetSearchPage actions", () => {
 
 			await vi.advanceTimersByTimeAsync(700);
 			expect(trackEvent).toHaveBeenCalledOnce();
+			// the typed name is not sent, only that there is one
 			expect(trackEvent).toHaveBeenCalledWith("tool:use", {
 				tool_name: "planet_search",
-				filter: expect.objectContaining({ q: "KI-" }),
+				filter: {},
+				has_text: true,
+				reference_count: 0,
 				result_count: bar(wrapper).props("count"),
 			});
+		});
+
+		it("sends a plan reference without its uuid", async () => {
+			const { wrapper } = await mountPage();
+			vi.useFakeTimers();
+			vi.mocked(trackEvent).mockClear();
+
+			panel(wrapper).vm.$emit("update:filter", {
+				...filterOf(wrapper),
+				fertile: true,
+				references: [{ kind: "plan", planUuid: "p2" }],
+			});
+			await nextTick();
+			await vi.advanceTimersByTimeAsync(1000);
+
+			expect(trackEvent).toHaveBeenCalledWith("tool:use", {
+				tool_name: "planet_search",
+				filter: { fert: "1" },
+				has_text: false,
+				reference_count: 1,
+				result_count: bar(wrapper).props("count"),
+			});
+		});
+
+		it("reports pins, saved searches, link, reset and sorts", async () => {
+			const writeText = vi.fn().mockResolvedValue(undefined);
+			vi.stubGlobal("navigator", { clipboard: { writeText } });
+			const { wrapper } = await mountPage();
+			const list = wrapper.findComponent({ name: "PlanetSearchList" });
+			const actions = () =>
+				vi
+					.mocked(trackEvent)
+					.mock.calls.filter(([e]) => e === "planet_search:action")
+					.map(([, props]) => props);
+			vi.mocked(trackEvent).mockClear();
+
+			list.vm.$emit("pin", "OT-580b");
+			// unpinning is not reported
+			list.vm.$emit("pin", "OT-580b");
+			header(wrapper).vm.$emit("save", "Mine");
+			await flushPromises();
+			const [saved] = header(wrapper).props(
+				"saved"
+			) as PlanetSearchSaved[];
+			header(wrapper).vm.$emit("load", saved);
+			header(wrapper).vm.$emit("copy");
+			await flushPromises();
+			header(wrapper).vm.$emit("reset");
+			list.vm.$emit("sort", [
+				{ key: "ref:plan:p2", dir: "asc" },
+				{ key: "fert", dir: "desc" },
+			]);
+			list.vm.$emit("sort", [{ key: "mat:FEO", dir: "desc" }]);
+			// a cleared sort is not reported
+			list.vm.$emit("sort", []);
+
+			expect(actions()).toEqual([
+				{ action: "pin" },
+				{ action: "save" },
+				{ action: "load" },
+				{ action: "link_copy" },
+				{ action: "reset" },
+				{ action: "sort", sort: "ref:plan", sort_count: 2 },
+				{ action: "sort", sort: "mat:FEO", sort_count: 1 },
+			]);
 		});
 
 		it("reports nothing once the page is gone", async () => {

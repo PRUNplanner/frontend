@@ -206,7 +206,6 @@ describe("PlanView shared plans, toasts and habs", () => {
 		expect(open).not.toHaveBeenCalled();
 		expect(trackEvent).toHaveBeenCalledWith("plan:shared_clone", {
 			planet_natural_id: "KW-688c",
-			shared_uuid: "shared-uuid",
 			modified: true,
 		});
 		expect(trackEvent).not.toHaveBeenCalledWith(
