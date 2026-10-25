@@ -137,27 +137,34 @@
 	);
 
 	const columns = computed<PDataTableColumn<IEmpireMaterialIO>[]>(() => {
-		const numeric = (key: string, title: string) => ({
+		const numeric = (key: string, title: string, width: number) => ({
 			key,
+			width,
 			title: t(title),
 			align: "right" as const,
 			sorter: true as const,
 		});
 		return [
-			{ key: "ticker", title: t("terms.material_ticker"), sorter: true },
-			numeric("delta", "terms.delta"),
-			numeric("output", "terms.production"),
-			numeric("input", "terms.consumption"),
-			numeric("deltaPrice", "terms.delta_price"),
+			// fixed widths: the planet columns share the rest
+			{
+				key: "ticker",
+				title: t("terms.material_ticker"),
+				sorter: true,
+				width: 90,
+			},
+			numeric("delta", "terms.delta", 80),
+			numeric("output", "terms.production", 114),
+			numeric("input", "terms.consumption", 130),
+			numeric("deltaPrice", "terms.delta_price", 104),
 			{
 				key: "outputPlanets",
 				title: t("empire.material_io.produced_by"),
-				minWidth: 200,
+				minWidth: 106,
 			},
 			{
 				key: "inputPlanets",
 				title: t("empire.material_io.consumed_by"),
-				minWidth: 200,
+				minWidth: 106,
 			},
 		];
 	});
@@ -169,7 +176,8 @@
 </script>
 
 <template>
-	<div class="flex-1 min-h-0">
+	<div
+		class="flex-1 min-h-0 max-xl:flex-none max-xl:h-[calc(100dvh-8rem)]">
 		<PDataTable
 			:columns="columns"
 			:data="localEmpireMaterialIO"
@@ -178,7 +186,8 @@
 			:expand-label="expandLabel"
 			striped
 			fill
-			:min-width="960"
+			:min-width="778"
+			sticky-first
 			@update:expanded-row-keys="updateExpanded">
 			<template #cell-ticker="{ row }">
 				<div class="flex items-center gap-1">

@@ -100,7 +100,7 @@
 		<template #cell-profit="{ row }">
 			<div class="flex items-center gap-x-2">
 				<PDivergingBar
-					class="grow min-w-20"
+					class="grow min-w-12"
 					:value="row.profit"
 					:max-abs="profitExtent.maxAbs"
 					:neg-abs="profitExtent.negAbs"
