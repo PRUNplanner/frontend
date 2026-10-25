@@ -14,6 +14,7 @@
 	// Util
 	import { formatNumber } from "@/util/numbers";
 	import { capitalizeString } from "@/util/text";
+	import { planetLabelParts } from "@/util/planetName";
 	import {
 		ROI_EXCHANGES,
 		jumpsTo,
@@ -30,7 +31,10 @@
 	import PInlineBar from "@/ui/charts/PInlineBar.vue";
 
 	// Types & Interfaces
-	import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
+	import type {
+		IResourceROIExchange,
+		IResourceROIResult,
+	} from "@/features/resource_roi_overview/useResourceROIOverview.types";
 	import type { PDataTableColumn, PSelectOption } from "@/ui/ui.types";
 
 	// UI
@@ -104,31 +108,35 @@
 	const rowClass = (row: IResourceROIResult) =>
 		roiRowKey(row) === props.active ? "!bg-white/10" : "";
 
-	function distanceSorter(key: string) {
+	// jumps to one exchange, unreachable (-1) sorts as the farthest
+	function distanceSorter(code: IResourceROIExchange) {
 		return (row1: IResourceROIResult, row2: IResourceROIResult): number => {
-			const v1 = (row1 as unknown as Record<string, number>)[key];
-			const v2 = (row2 as unknown as Record<string, number>)[key];
-			const d1 = v1 === -1 ? Infinity : v1;
-			const d2 = v2 === -1 ? Infinity : v2;
-			return d1 - d2;
+			const d1 = jumpsTo(row1, code);
+			const d2 = jumpsTo(row2, code);
+			return (d1 === -1 ? Infinity : d1) - (d2 === -1 ? Infinity : d2) || 0;
 		};
 	}
 
+	/*
+	 * The answer first: planet, production, cost and payback, then the
+	 * planet's details and the jumps to every exchange.
+	 */
 	type Column = PDataTableColumn<IResourceROIResult>;
 	const columns = computed<Column[]>(() => {
 		const title = (key: string) => t(`resource_roi.table.${key}`);
-		const numeric = (
-			key: string,
-			text: string,
-			sorter: Column["sorter"] = true
-		): Column => ({ key, title: text, align: "right", sorter });
-		const distance = (key: string, text: string) =>
-			numeric(key, text, distanceSorter(key));
+		const numeric = (key: string, text: string): Column => ({
+			key,
+			title: text,
+			align: "right",
+			sorter: true,
+		});
 		return [
 			{
 				key: "planetName",
 				title: title("planet"),
 				sorter: true,
+				// "Mount Olympus h" on one line, the ID under it
+				minWidth: 140,
 			},
 			{
 				key: "production",
@@ -144,22 +152,6 @@
 				],
 			},
 			{
-				key: "planet",
-				title: title("planet"),
-				children: [
-					{ key: "popr", title: title("popr") },
-					{ key: "planetCOGC", title: title("cogc") },
-					{
-						key: "environment",
-						title: title("environment"),
-					},
-					{
-						key: "planetInfrastructures",
-						title: title("infrastructure"),
-					},
-				],
-			},
-			{
 				key: "profit",
 				title: title("cost_profit"),
 				children: [
@@ -170,17 +162,40 @@
 				],
 			},
 			{
+				key: "planet",
+				title: title("planet"),
+				children: [
+					{ key: "popr", title: title("popr") },
+					{ key: "planetCOGC", title: title("cogc") },
+					{
+						key: "environment",
+						title: title("environment"),
+						// two tiles side by side
+						minWidth: 110,
+					},
+					{
+						key: "planetInfrastructures",
+						title: title("infrastructure"),
+					},
+				],
+			},
+			{
 				key: "distances",
 				title: title("distances"),
-				children: [
-					distance("distanceAI1", "AI1"),
-					distance("distanceCI1", "CI1"),
-					distance("distanceIC1", "IC1"),
-					distance("distanceNC1", "NC1"),
-				],
+				children: ROI_EXCHANGES.map((code) => ({
+					key: `distance${code}`,
+					title: code,
+					align: "right" as const,
+					sorter: distanceSorter(code),
+				})),
 			},
 		];
 	});
+
+	// leaf headers may wrap at spaces: narrower columns
+	const leafColumns = computed(() =>
+		columns.value.flatMap((c) => c.children ?? [c])
+	);
 </script>
 
 <template>
@@ -191,20 +206,32 @@
 		:planet-options="filterOptionPlanet"
 		:building-options="filterOptionBuilding"
 		:searched-material="searchedMaterial" />
-	<!-- below 1700 px the table scrolls instead of squeezing names -->
+	<!-- below 1300 px it scrolls with the planet pinned, not squeezed -->
 	<PDataTable
 		:columns="columns"
 		:data="localResult"
 		striped
+		sticky-first
+		dense
 		:page-size="50"
-		:min-width="1700"
+		:min-width="1300"
 		:row-key="roiRowKey"
 		:row-class="rowClass">
+		<template
+			v-for="col in leafColumns"
+			:key="col.key"
+			#[`header-${col.key}`]>
+			<span class="whitespace-normal">{{ col.title }}</span>
+		</template>
 		<template #cell-planetName="{ row }">
+			<!-- the name wraps, the planet ID never breaks at its hyphen -->
 			<router-link
 				:to="`/plan/${row.planetNaturalId}`"
 				class="text-link-primary font-bold hover:underline">
-				{{ row.planetName }}
+				{{ planetLabelParts(row.planetName)[0] }}
+				<span class="whitespace-nowrap">
+					{{ planetLabelParts(row.planetName)[1] }}
+				</span>
 			</router-link>
 		</template>
 		<template #cell-buildingTicker="{ row }">
@@ -216,7 +243,7 @@
 		<template #cell-percentMaxDailyYield="{ row }">
 			<div class="flex items-center justify-end gap-2">
 				<PInlineBar
-					class="w-12 shrink-0"
+					class="w-8 shrink-0"
 					:value="row.percentMaxDailyYield"
 					:max="1" />
 				{{ formatNumber(row.percentMaxDailyYield * 100) }}
@@ -270,7 +297,7 @@
 		<template #cell-dailyProfit="{ row }">
 			<div class="flex items-center justify-end gap-2">
 				<PInlineBar
-					class="w-12 shrink-0"
+					class="w-8 shrink-0"
 					tone="positive"
 					:value="row.dailyProfit"
 					:max="maxProfit" />
@@ -280,7 +307,7 @@
 		<template #cell-planROI="{ row }">
 			<div class="flex items-center justify-end gap-2">
 				<PInlineBar
-					class="w-10 shrink-0"
+					class="w-8 shrink-0"
 					tone="positive"
 					:value="row.planROI > 0 ? row.planROI : 0"
 					:max="ROI_BAR_DAYS" />

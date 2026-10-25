@@ -103,11 +103,10 @@
 			:label="$t('material_tile.details.views.label')"
 			size="sm" />
 		<div class="overflow-x-auto">
-			<table
-				class="w-full text-[13px] tabular-nums whitespace-nowrap"
-				:data-view="view">
+			<!-- headers wrap at spaces, values never -->
+			<table class="w-full text-[13px] tabular-nums" :data-view="view">
 				<thead>
-					<tr class="text-muted text-xs *:font-medium *:px-2 *:pb-1 *:text-right">
+					<tr class="text-muted text-xs *:font-medium *:px-1.5 *:pb-1 *:text-right">
 						<th class="text-left!">
 							{{ $t("material_tile.card.columns.cx") }}
 						</th>
@@ -142,11 +141,11 @@
 						</template>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody class="whitespace-nowrap">
 					<tr
 						v-for="row in rows"
 						:key="row.cx"
-						class="border-t border-line *:px-2 *:py-1 *:text-right *:font-mono"
+						class="border-t border-line *:px-1.5 *:py-1 *:text-right *:font-mono"
 						:class="row.cx === yourCx ? 'bg-link/10' : ''"
 						:data-cx="row.cx"
 						:data-your-cx="row.cx === yourCx || undefined">
@@ -213,7 +212,7 @@
 											wanted: full(row.demand),
 										})
 									"
-									class="flex h-1.5 w-24 rounded-full overflow-hidden bg-link">
+									class="flex h-1.5 w-16 rounded-full overflow-hidden bg-link">
 									<div
 										class="h-full bg-white/40"
 										:style="{ width: `${offeredShare(row)}%` }" />
