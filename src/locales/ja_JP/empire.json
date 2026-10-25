@@ -126,7 +126,8 @@
 			"sell_outputs": "Sell Outputs",
 			"potential_batches": "Potential Batches",
 			"delta_required": "Delta Required",
-			"missing_material": "Missing Material"
+			"missing_material": "Missing Material",
+			"missing": "Missing"
 		}
 	},
 	"onboarding": {
