@@ -2,6 +2,7 @@
 	import {
 		computed,
 		type ComputedRef,
+		onUnmounted,
 		type PropType,
 		ref,
 		type Ref,
@@ -270,6 +271,23 @@
 		}
 	}
 
+	// Narrow screens get cards instead of the table
+	const media =
+		typeof window.matchMedia === "function"
+			? window.matchMedia("(min-width: 640px)")
+			: undefined;
+	const isWide: Ref<boolean> = ref(media?.matches ?? true);
+	const onMedia = (e: MediaQueryListEvent) => (isWide.value = e.matches);
+	media?.addEventListener("change", onMedia);
+	onUnmounted(() => media?.removeEventListener("change", onMedia));
+
+	// the cards in the table's default order, by name
+	const sortedEmpires: ComputedRef<PlanEmpireElement[]> = computed(() =>
+		[...localEmpires.value].sort((a, b) =>
+			a.empire_name.localeCompare(b.empire_name)
+		)
+	);
+
 	const columns = computed<PDataTableColumn<PlanEmpireElement>[]>(() => [
 		{
 			key: "empire_name",
@@ -307,14 +325,17 @@
 				: 'opacity-100'
 		"
 		class="transition-all duration-500 border-t border-b border-white/10">
-		<div class="flex gap-x-3 pt-3 w-full sm:w-1/2 sm:min-w-100">
+		<div
+			class="flex flex-col gap-3 py-3 w-full sm:w-1/2 sm:min-w-100">
 			<div class="grow">
 				<PForm>
 					<PFormItem :label="t('management.empire.form.empire_name')">
 						<PInput
 							v-model:value="refCreateName"
 							class="w-full"
-							placeholder="Empire Name (max. 100 characters)" />
+							:placeholder="
+								t('management.empire.form.empire_placeholder')
+							" />
 					</PFormItem>
 					<PFormItem :label="t('management.empire.form.faction')">
 						<PSelect
@@ -340,7 +361,7 @@
 					</PFormItem>
 				</PForm>
 			</div>
-			<div>
+			<div class="self-end">
 				<PButton
 					:disabled="!compCanCreate"
 					:loading="refIsCreating"
@@ -350,7 +371,12 @@
 			</div>
 		</div>
 	</div>
-	<PDataTable :columns="columns" :data="localEmpires" striped class="pt-3">
+	<PDataTable
+		v-if="isWide"
+		:columns="columns"
+		:data="localEmpires"
+		striped
+		class="pt-3">
 		<template #cell-empire_name="{ row }">
 				<router-link
 					:to="`/empire/${row.uuid}`"
@@ -400,4 +426,52 @@
 			</div>
 		</template>
 	</PDataTable>
+	<div v-else class="flex flex-col gap-3 pt-3">
+		<div
+			v-for="row in sortedEmpires"
+			:key="row.uuid"
+			class="flex flex-col gap-3 border border-white/10 rounded bg-gray-dark p-3">
+			<div class="flex items-start justify-between gap-3">
+				<div class="min-w-0">
+					<router-link
+						:to="`/empire/${row.uuid}`"
+						class="block py-3 -my-2 text-link-primary font-bold hover:underline truncate">
+						{{ row.empire_name }}
+					</router-link>
+					<div class="text-xs text-muted">
+						{{ capitalizeString(row.empire_faction) }} ·
+						{{ $t("management.empire.table.permits") }}
+						{{ row.empire_permits_used }} /
+						{{ row.empire_permits_total }} ·
+						{{ $t("management.empire.table.plans") }}
+						{{ row.plans.length }}
+					</div>
+				</div>
+				<PButton
+					:aria-label="$t('common.buttons.delete')"
+					size="sm"
+					type="error"
+					:loading="refIsDeleting === row.uuid"
+					@click="handleDeleteConfirm(row.uuid)">
+					<template #icon><ClearSharp /></template>
+				</PButton>
+			</div>
+			<div class="flex items-center gap-3">
+				<span class="text-muted" aria-hidden="true">
+					{{ $t("management.empire.table.cx") }}
+				</span>
+				<PSelect
+					:key="`${row.uuid}#${refEmpireCXMap[row.uuid]}`"
+					v-model:value="refEmpireCXMap[row.uuid]"
+					class="grow min-w-0"
+					:aria-label="$t('management.empire.table.cx')"
+					:options="refCXOptions" />
+			</div>
+		</div>
+		<div v-if="!sortedEmpires.length" class="text-center">
+			{{ $t("management.empire.table.nodata_title") }}
+			<br />
+			{{ $t("management.empire.table.nodata_label") }}
+		</div>
+	</div>
 </template>

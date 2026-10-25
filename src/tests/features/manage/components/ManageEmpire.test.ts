@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeAll,
+	beforeEach,
+	afterEach,
+	vi,
+} from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -324,5 +332,72 @@ describe("ManageEmpire", () => {
 		expect(wrapper.text()).toContain(
 			"management.empire.table.nodata_title"
 		);
+	});
+
+	describe("narrow screens", () => {
+		let onChange: ((e: { matches: boolean }) => void) | undefined;
+		beforeEach(() => {
+			vi.stubGlobal("matchMedia", () => ({
+				matches: false,
+				addEventListener: (_: string, cb: typeof onChange) =>
+					(onChange = cb),
+				removeEventListener: () => {},
+			}));
+		});
+		afterEach(() => {
+			vi.unstubAllGlobals();
+		});
+
+		it("shows a card per empire, by name, with its CX select", async () => {
+			const { wrapper, component } = await mountEmpire();
+
+			expect(wrapper.find("table").exists()).toBe(false);
+			const cards = wrapper.findAll("a").map((a) => a.text());
+			expect(cards).toEqual(["Alpha", "Beta"]);
+			expect(wrapper.text()).toContain("Moria");
+
+			// the create form's faction select comes first
+			const selects = wrapper.findAllComponents(PSelect).slice(1);
+			expect(selects.map((s) => s.text())).toEqual(["Main CX", "None"]);
+			selects[1].vm.$emit("update:value", CX2);
+			await flushPromises();
+			expect(
+				(component.vm as unknown as { changedCount: number })
+					.changedCount
+			).toBe(1);
+
+			// back to the table when the screen widens
+			onChange!({ matches: true });
+			await flushPromises();
+			expect(wrapper.find("table").exists()).toBe(true);
+		});
+
+		it("deletes from a card after confirmation", async () => {
+			mock.onDelete(new RegExp(`planning/empire/${E1}/$`)).reply(204);
+			const { wrapper } = await mountEmpire();
+
+			await wrapper
+				.findAll('button[aria-label="common.buttons.delete"]')[0]
+				.trigger("click");
+			await flushPromises();
+			Array.from(
+				document.body.querySelectorAll<HTMLButtonElement>(
+					"[role=dialog] button"
+				)
+			)
+				.find((b) => b.textContent?.trim() === "common.buttons.delete")!
+				.click();
+			await flushPromises();
+
+			expect(mock.history.delete).toHaveLength(1);
+		});
+
+		it("shows the empty state without empires", async () => {
+			const { wrapper } = await mountEmpire([], []);
+
+			expect(wrapper.text()).toContain(
+				"management.empire.table.nodata_title"
+			);
+		});
 	});
 });

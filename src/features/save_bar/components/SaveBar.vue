@@ -30,10 +30,13 @@
 </script>
 
 <template>
+	<!-- a phone: above the app's bottom bar (4rem); data-save-bar lifts
+		the toasts above it (style.css) -->
 	<div
 		role="region"
 		:aria-label="$t('management.save_bar.label')"
-		class="sticky bottom-6 z-10 mx-6 flex flex-wrap items-center gap-x-4 gap-y-2 min-h-16 py-3 pl-5 pr-4 bg-gray-dark border rounded-md shadow-[0_-8px_32px_rgba(0,0,0,0.7)]"
+		data-save-bar
+		class="sticky bottom-6 max-md:bottom-[calc(5rem+env(safe-area-inset-bottom))] z-10 mx-6 flex flex-wrap items-center gap-x-4 gap-y-2 min-h-16 py-3 pl-5 pr-4 bg-gray-dark border rounded-md shadow-[0_-8px_32px_rgba(0,0,0,0.7)]"
 		:class="
 			state === 'error' ? 'border-negative' : 'border-positive/45'
 		">
