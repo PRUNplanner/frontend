@@ -67,7 +67,9 @@ export function useBurnXITAction(
 						ticker: e.ticker,
 						stock: e.stock,
 						delta: e.delta,
-						burn: e.delta > 0 ? Infinity : e.stock / (e.delta * -1),
+						// no consumption (delta 0 too) never runs out; stock / -0
+						// would be -Infinity and read as critical
+						burn: e.delta < 0 ? e.stock / (e.delta * -1) : Infinity,
 						total: override
 							? override
 							: Math.ceil(totalNeed) > 0

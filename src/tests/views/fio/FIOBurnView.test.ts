@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { nextTick, ref, type Slots } from "vue";
-import type { VueWrapper } from "@vue/test-utils";
+import { RouterLinkStub, type VueWrapper } from "@vue/test-utils";
+import { createPinia, setActivePinia } from "pinia";
 
 import FIOBurnView from "@/views/fio/FIOBurnView.vue";
 import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
@@ -9,6 +10,9 @@ import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameData
 import ComputingProgress from "@/layout/components/ComputingProgress.vue";
 import { PSelect } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
+import { useUserStore } from "@/stores/userStore";
+import fio from "@/locales/en_US/fio.json";
+import empire from "@/locales/en_US/empire.json";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
@@ -76,10 +80,21 @@ const empires = [
 ];
 
 // the planning loader hands over the empires, the shared plan and the CX
-async function mountView() {
-	const { wrapper } = await mountComponent(FIOBurnView);
+async function mountView(
+	empireList: typeof empires = empires,
+	withFIO: boolean = true
+) {
+	const pinia = createPinia();
+	setActivePinia(pinia);
+	if (withFIO)
+		// @ts-expect-error partial profile
+		useUserStore().profile = { fio_apikey: "key", prun_username: "user" };
+	const { wrapper } = await mountComponent(FIOBurnView, {}, {
+		pinia,
+		messages: { fio, empire },
+	});
 	const loader = wrapper.findComponent(WrapperPlanningDataLoader);
-	loader.vm.$emit("data:empire:list", empires);
+	loader.vm.$emit("data:empire:list", empireList);
 	loader.vm.$emit("data:empire:plans", [
 		{ uuid: "P1", planet_natural_id: "OT-580b" },
 	]);
@@ -118,6 +133,32 @@ describe("FIOBurnView", () => {
 		calculatePlan.mockClear();
 		vi.mocked(trackEvent).mockClear();
 		createContext.mockReset().mockResolvedValue({});
+	});
+
+	it("without an empire: a card linking to Management, no colon", async () => {
+		const wrapper = await mountView([]);
+		await complete(wrapper);
+
+		expect(wrapper.find("h1").text()).toBe("FIO Burn");
+		const card = wrapper.find("[data-testid=fio-burn-no-empire]");
+		expect(card.text()).toContain("No empire yet");
+		const link = card.findComponent(RouterLinkStub);
+		expect(link.props("to")).toBe("/manage");
+		expect(link.text()).toBe("Create empire");
+		expect(wrapper.findComponent(PSelect).exists()).toBe(false);
+	});
+
+	it("without FIO: a notice linking to the Profile FIO section", async () => {
+		const wrapper = await mountView(empires, false);
+		await complete(wrapper);
+
+		expect(wrapper.find("h1").text()).toBe("FIO Burn: one");
+		const notice = wrapper.find("[data-testid=fio-burn-no-fio]");
+		expect(notice.text()).toContain("Connect FIO to see your burn");
+		expect(notice.findComponent(RouterLinkStub).props("to")).toBe(
+			"/profile#fio"
+		);
+		expect(wrapper.findComponent(PSelect).exists()).toBe(false);
 	});
 
 	it("calculates the plans of the selected empire", async () => {
