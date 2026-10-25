@@ -101,6 +101,7 @@ describe("planet search labels", () => {
 	it("sort keys", () => {
 		expect(sortLabel("name", t, refName)).toBe("Planet");
 		expect(sortLabel("fert", t, refName)).toBe("Fertility");
+		expect(sortLabel("plots", t, refName)).toBe("Plots");
 		expect(sortLabel("mat:FEO", t, refName)).toBe("FEO");
 		expect(sortLabel("ref:cx:NC1", t, refName)).toBe("NC1");
 		expect(sortLabel("ref:plan:a", t, refName)).toBe("Plan a");

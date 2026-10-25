@@ -90,6 +90,11 @@ function planet(
 			daily_extraction: d,
 			max_daily_extraction: 50,
 		})),
+		plots_total: null,
+		plots_used: null,
+		ghost_sites: null,
+		supports_ghost_sites: null,
+		plots_updated: null,
 		...overrides,
 	};
 }
@@ -716,6 +721,21 @@ describe("planet search engine", () => {
 			expect(ids(sortPlanets(planets, [{ key: "mat:FEO", dir: "asc" }], ctx))).toEqual(["B", "A", "C"]);
 			expect(ids(sortPlanets(planets, [{ key: "ref:cx:NC1", dir: "asc" }], sortCtx))).toEqual(["B", "A", "C"]);
 			expect(ids(sortPlanets(planets, [{ key: "ref:bogus", dir: "asc" }], sortCtx))).toEqual(["B", "A", "C"]);
+		});
+
+		it("sorts by free plots, full in its place, unknown last", () => {
+			const plots = (total: number | null, used: number | null) => ({
+				plots_total: total,
+				plots_used: used,
+			});
+			const byPlots = [
+				planet("Full", plots(10, 10)),
+				planet("Unknown", plots(null, null)),
+				planet("Many", plots(400, 68)),
+				planet("Few", plots(20, 15)),
+			];
+			expect(ids(sortPlanets(byPlots, [{ key: "plots", dir: "desc" }], ctx))).toEqual(["Many", "Few", "Full", "Unknown"]);
+			expect(ids(sortPlanets(byPlots, [{ key: "plots", dir: "asc" }], ctx))).toEqual(["Full", "Few", "Many", "Unknown"]);
 		});
 
 		it("default sort", () => {

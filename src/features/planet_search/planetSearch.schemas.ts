@@ -70,6 +70,7 @@ export type PlanetSearchView = z.infer<typeof PlanetSearchViewSchema>;
 
 export const PlanetSearchColumnSchema = z.enum([
 	"fert",
+	"plots",
 	"other",
 	"extras",
 	"cogc",
@@ -79,6 +80,9 @@ export const PlanetSearchColumnSchema = z.enum([
 	"NC1",
 ]);
 export type PlanetSearchColumn = z.infer<typeof PlanetSearchColumnSchema>;
+
+/** Hidden until picked in the columns menu, also for prefs saved before they existed */
+export const OPT_IN_COLUMNS: PlanetSearchColumn[] = ["plots"];
 
 const PlanetSearchSavedSchema = z.object({
 	id: z.string(),
@@ -92,6 +96,8 @@ export type PlanetSearchSaved = z.infer<typeof PlanetSearchSavedSchema>;
 export const PlanetSearchPrefsSchema = z.object({
 	savedSearches: z.array(PlanetSearchSavedSchema).catch(() => []),
 	hiddenColumns: z.array(PlanetSearchColumnSchema).catch(() => []),
+	/** the opt-in columns the user turned on */
+	shownColumns: z.array(PlanetSearchColumnSchema).catch(() => []),
 	hiddenMaterials: z.array(z.string()).catch(() => []),
 	filtersCollapsed: z.boolean().catch(false),
 	view: PlanetSearchViewSchema.catch("list"),

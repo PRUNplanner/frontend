@@ -192,6 +192,13 @@ export const PlanetSchema = z.object({
 	resources: z.array(PlanetResourceSchema),
 	cogc_programs: z.array(PlanetCOGCProgramSchema),
 	active_cogc_program_type: PlanetCOGCProgramTypeSchema.nullable(),
+
+	// plots from the FIO API, null until the backend's first plots refresh
+	plots_total: z.number().int().nullable(),
+	plots_used: z.number().int().nullable(),
+	ghost_sites: z.number().int().nullable(),
+	supports_ghost_sites: z.boolean().nullable(),
+	plots_updated: z.iso.datetime().nullable(),
 });
 export type Planet = z.infer<typeof PlanetSchema>;
 
@@ -214,6 +221,11 @@ const PlanetSearchIndexEntrySchema = PlanetSchema.pick({
 	has_shipyard: true,
 	cogc_program_status: true,
 	cogc_programs: true,
+	plots_total: true,
+	plots_used: true,
+	ghost_sites: true,
+	supports_ghost_sites: true,
+	plots_updated: true,
 }).extend({
 	gravity_type: PlanetEnvironmentTypeSchema,
 	pressure_type: PlanetEnvironmentTypeSchema,

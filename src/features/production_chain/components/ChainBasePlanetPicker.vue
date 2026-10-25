@@ -5,6 +5,7 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import PlanetPlots from "@/features/planet_search/components/PlanetPlots.vue";
 
 	// Engine
 	import {
@@ -413,6 +414,9 @@
 											)
 										}}
 									</span>
+									<PlanetPlots
+										:planet="r.planet"
+										class="ml-1" />
 									<span
 										v-if="r.lm"
 										class="ml-1 px-1 rounded-control border border-line text-xs"

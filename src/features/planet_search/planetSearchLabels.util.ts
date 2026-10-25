@@ -120,6 +120,7 @@ export function sortLabel(
 ): string {
 	if (key === "name") return t("planet_search.results.planet");
 	if (key === "fert") return t("planet_search.columns.fert");
+	if (key === "plots") return t("planet_search.columns.plots");
 	if (key.startsWith("mat:")) return key.slice(4);
 	const ref = parseRefKey(key.slice(4));
 	return ref ? refName(ref) : key;

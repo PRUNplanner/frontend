@@ -250,9 +250,9 @@ describe("PlanetSearchColumnsMenu", () => {
 		await menu.find("button").trigger("click");
 		await flushPromises();
 
-		// 7 columns (no "other" in the matrix) and the 2 unfiltered materials
+		// 8 columns (no "other" in the matrix) and the 2 unfiltered materials
 		const boxes = [...document.body.querySelectorAll<HTMLInputElement>(".pcheckbox input")];
-		expect(boxes).toHaveLength(9);
+		expect(boxes).toHaveLength(10);
 
 		boxes[0].click();
 		expect(menu.emitted("update:hiddenColumns")![0]).toEqual([["fert"]]);
@@ -260,7 +260,8 @@ describe("PlanetSearchColumnsMenu", () => {
 		bodyButton("planet_search.columns.none").click();
 		expect(menu.emitted("update:hiddenMaterials")![0]).toEqual([["AR", "O"]]);
 
+		// reset is the default: opt-in plots hidden again
 		bodyButton("planet_search.columns.reset").click();
-		expect(menu.emitted("update:hiddenColumns")!.at(-1)).toEqual([[]]);
+		expect(menu.emitted("update:hiddenColumns")!.at(-1)).toEqual([["plots"]]);
 	});
 });

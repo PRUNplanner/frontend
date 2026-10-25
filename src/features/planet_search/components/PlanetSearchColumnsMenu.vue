@@ -14,6 +14,7 @@
 	// Types & Interfaces
 	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
 	import {
+		OPT_IN_COLUMNS,
 		PlanetSearchColumnSchema,
 		type PlanetSearchColumn,
 		type PlanetSearchFilter,
@@ -139,7 +140,7 @@
 				type="secondary"
 				class="mt-2"
 				@click="
-					hiddenColumns = [];
+					hiddenColumns = [...OPT_IN_COLUMNS];
 					hiddenMaterials = [];
 				">
 				{{ t("planet_search.columns.reset") }}

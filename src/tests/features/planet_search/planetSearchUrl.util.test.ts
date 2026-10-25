@@ -124,6 +124,13 @@ describe("planet search url", () => {
 		expect(encodeSearch(state)).toEqual({ view: "chart" });
 	});
 
+	it("keeps a plots sort in the url", () => {
+		expect(decodeSearch({ sort: "plots:desc,name:asc" }).sort).toEqual([
+			{ key: "plots", dir: "desc" },
+			{ key: "name", dir: "asc" },
+		]);
+	});
+
 	it("drops invalid values without throwing", () => {
 		const state = decodeSearch({
 			q: ["first", "second"],

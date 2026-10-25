@@ -24,6 +24,8 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import PlanetFullIcon from "@/features/planet_search/components/PlanetFullIcon.vue";
+	import PlanetPlots from "@/features/planet_search/components/PlanetPlots.vue";
 	import PlanetSearchRowActions from "@/features/planet_search/components/PlanetSearchRowActions.vue";
 	import PlanetSearchSortHeader from "@/features/planet_search/components/PlanetSearchSortHeader.vue";
 
@@ -162,6 +164,13 @@
 						first-dir="desc"
 						:label="t('planet_search.results.fert')" />
 				</th>
+				<th v-if="show('plots')" class="w-px">
+					<PlanetSearchSortHeader
+						v-bind="sortProps"
+						sort-key="plots"
+						first-dir="desc"
+						:label="t('planet_search.results.plots')" />
+				</th>
 				<th
 					v-for="c in columns"
 					:key="c.ticker"
@@ -224,9 +233,14 @@
 						class="text-xs text-muted font-normal font-mono">
 						{{ row.planet.planet_natural_id }}
 					</span>
+					<PlanetFullIcon :planet="row.planet" />
 				</td>
 				<td v-if="show('fert')" class="text-right tabular-nums" :class="row.fertility === null ? 'text-muted' : 'text-positive'">
 					{{ row.fertility === null ? "—" : formatNumber(row.fertility, 0) }}
+				</td>
+				<!-- the 24 px chip keeps the matrix row height -->
+				<td v-if="show('plots')" class="py-0.5!">
+					<PlanetPlots :planet="row.planet" />
 				</td>
 				<td
 					v-for="c in row.cells"

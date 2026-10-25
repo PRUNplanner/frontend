@@ -104,7 +104,7 @@
 	const toast = useToast();
 	const userStore = useUserStore();
 	const { defaultEmpireUuid } = usePreferences();
-	const { prefs } = usePlanetSearchPrefs();
+	const { prefs, hiddenColumns } = usePlanetSearchPrefs();
 
 	/*
 	 * Search state: the url is its source on load, then mirrors it. A fresh
@@ -588,7 +588,7 @@
 					<section class="flex-1 min-w-0 flex flex-col min-h-0">
 						<PlanetSearchResultsBar
 							v-model:view="view"
-							v-model:hidden-columns="prefs.hiddenColumns"
+							v-model:hidden-columns="hiddenColumns"
 							v-model:hidden-materials="prefs.hiddenMaterials"
 							:count="results.length"
 							:total="index.length"
@@ -616,7 +616,7 @@
 								:sorts="activeSort"
 								:pins="pins"
 								:show-pins="isDesktop"
-								:hidden-columns="prefs.hiddenColumns"
+								:hidden-columns="hiddenColumns"
 								:ref-name="refName"
 								@sort="(s) => (sort = s)"
 								@pin="togglePin" />
@@ -629,7 +629,7 @@
 								:sorts="activeSort"
 								:pins="pins"
 								:show-pins="isDesktop"
-								:hidden-columns="prefs.hiddenColumns"
+								:hidden-columns="hiddenColumns"
 								:hidden-materials="prefs.hiddenMaterials"
 								:ref-name="refName"
 								@sort="(s) => (sort = s)"

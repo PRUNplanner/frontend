@@ -39,6 +39,11 @@ function planet(
 			daily_extraction: daily,
 			max_daily_extraction: daily,
 		})),
+		plots_total: null,
+		plots_used: null,
+		ghost_sites: null,
+		supports_ghost_sites: null,
+		plots_updated: null,
 	} as PlanetSearchIndexEntry;
 }
 

@@ -755,19 +755,26 @@ describe("PlanetSearchPage actions", () => {
 	describe("hidden columns and materials", () => {
 		it("keeps what the results bar hides in the prefs", async () => {
 			const { wrapper } = await mountPage();
-			expect(bar(wrapper).props("hiddenColumns")).toEqual([]);
+			// the opt-in plots column starts hidden
+			expect(bar(wrapper).props("hiddenColumns")).toEqual(["plots"]);
 			expect(bar(wrapper).props("hiddenMaterials")).toEqual([]);
 
-			bar(wrapper).vm.$emit("update:hiddenColumns", ["cogc"]);
+			bar(wrapper).vm.$emit("update:hiddenColumns", ["cogc", "plots"]);
 			bar(wrapper).vm.$emit("update:hiddenMaterials", ["H2O"]);
 			await flushPromises();
 
-			expect(bar(wrapper).props("hiddenColumns")).toEqual(["cogc"]);
+			expect(bar(wrapper).props("hiddenColumns")).toEqual(["cogc", "plots"]);
 			expect(bar(wrapper).props("hiddenMaterials")).toEqual(["H2O"]);
 			expect(stored()).toMatchObject({
 				hiddenColumns: ["cogc"],
+				shownColumns: [],
 				hiddenMaterials: ["H2O"],
 			});
+
+			// turned on in the columns menu, it stays on
+			bar(wrapper).vm.$emit("update:hiddenColumns", ["cogc"]);
+			await flushPromises();
+			expect(stored()).toMatchObject({ hiddenColumns: ["cogc"], shownColumns: ["plots"] });
 		});
 	});
 

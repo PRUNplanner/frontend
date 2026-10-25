@@ -47,6 +47,19 @@ describe("ChainPlanetPicker", () => {
 		expect(body.find("[data-testid='chain-planet-typical']").exists()).toBe(true);
 	});
 
+	it("shows every row's plots in rank, unknown never blocks a planet", async () => {
+		const { rows, planetIds } = await mountPicker();
+		expect(rows().map((r) => r.find("[data-testid='planet-plots']").text())).toEqual(
+			planetIds().map((id) =>
+				index.find((p) => p.planet_natural_id === id)?.plots_total == null
+					? "planet_search.plots.unknown"
+					: expect.stringMatching(/^planet_search\.plots\./)
+			)
+		);
+		// the order is the rate ranking, plots don't move a planet
+		expect(planetIds()).toEqual(h2o.sites.map((s) => s.planetId));
+	});
+
 	it("narrows by extractor and the only-filters, counts match", async () => {
 		const { wrapper, body, rows, planetIds } = await mountPicker();
 		const rig = h2o.sites.filter((s) => s.buildingTicker === "RIG");

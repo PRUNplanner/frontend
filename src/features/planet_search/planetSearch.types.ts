@@ -13,7 +13,7 @@ import type {
 } from "@/features/planet_search/planetSearch.schemas";
 
 export interface IPlanetSearchSort {
-	key: string; // "name" | "fert" | "mat:<ticker>" | "ref:<refKey>"
+	key: string; // "name" | "fert" | "plots" | "mat:<ticker>" | "ref:<refKey>"
 	dir: "asc" | "desc";
 }
 

@@ -5,6 +5,7 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import PlanetPlots from "@/features/planet_search/components/PlanetPlots.vue";
 
 	// Engine
 	import {
@@ -112,6 +113,7 @@
 				: -1;
 			return {
 				site,
+				entry,
 				rocky: entry?.surface ?? false,
 				lm: entry?.has_localmarket ?? false,
 				extras,
@@ -389,6 +391,7 @@
 									:title="t('production_chains.planet_picker.lm_title')">
 									{{ $t("production_chains.planet_picker.lm") }}
 								</span>
+								<PlanetPlots :planet="r.entry" class="ml-1" />
 							</td>
 							<td class="numeric tabular-nums">
 								<span class="inline-flex items-center gap-2">

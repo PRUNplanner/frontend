@@ -107,6 +107,7 @@ function decodeSort(s: string): IPlanetSearchSort | null {
 	const valid =
 		key === "name" ||
 		key === "fert" ||
+		key === "plots" ||
 		(key.startsWith("mat:") && TICKER.test(key.slice(4))) ||
 		(key.startsWith("ref:") && parseRefKey(key.slice(4)) !== undefined);
 	return valid ? { key, dir } : null;

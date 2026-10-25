@@ -62,8 +62,13 @@ describe("PlanetSearchSortMenu", () => {
 		const options = (
 			menu.findComponent(PSelect).props("options") as { label: string }[]
 		).map((o) => o.label);
-		// no fert, AI1 or the hidden AR; NC1 and FEO are already in the chain
-		expect(options).toEqual(["planet_search.results.planet", "CI1", "IC1"]);
+		// no fert, AI1 or the hidden AR; NC1 and FEO are already in the chain; plots is shown
+		expect(options).toEqual([
+			"planet_search.results.planet",
+			"planet_search.columns.plots",
+			"CI1",
+			"IC1",
+		]);
 	});
 
 	it("stays open while picking columns, closes on a click away", async () => {
