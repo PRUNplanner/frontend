@@ -141,7 +141,7 @@
 						(empireData) => (empireList = empireData)
 					" />
 			</div>
-			<div>
+			<div id="cx" class="scroll-mt-4">
 				<AsyncManageCX
 					:cx="cxList"
 					@update:cx-list="(cxData) => (cxList = cxData)" />

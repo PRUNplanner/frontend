@@ -42,9 +42,6 @@
 	import CXHeader from "@/features/exchanges/components/CXHeader.vue";
 	import CXPreferenceSwitch from "@/features/exchanges/components/CXPreferenceSwitch.vue";
 	import CXScopeList from "@/features/exchanges/components/CXScopeList.vue";
-	const AsyncWrapperGenericError = defineAsyncComponent(
-		() => import("@/features/wrapper/components/WrapperGenericError.vue")
-	);
 	const AsyncCXOverview = defineAsyncComponent(
 		() => import("@/features/exchanges/components/CXOverview.vue")
 	);
@@ -63,6 +60,16 @@
 
 	// UI
 	import { useConfirm } from "@/ui";
+	import { buttonConfig } from "@/ui/styles";
+
+	// a link that looks like the primary button
+	const createLinkClass = [
+		buttonConfig.base,
+		buttonConfig.sizes.md.base,
+		buttonConfig.colors.primary.base,
+		buttonConfig.colors.primary.hover,
+		"w-fit",
+	].join(" ");
 
 	const props = defineProps({
 		cxUuid: {
@@ -300,10 +307,17 @@
 		@data:plan:list="(value: Plan[]) => (plans = value)"
 		@data:empire:list="(value: PlanEmpireElement[]) => (empires = value)">
 		<WrapperGameDataLoader load-exchanges load-materials>
-			<AsyncWrapperGenericError
+			<section
 				v-if="!cxUuid"
-				:message-title="t('exchanges.errors.title')"
-				:message-text="t('exchanges.errors.message')" />
+				class="max-w-2xl m-3 sm:m-6 p-4 sm:p-6 border border-white/10 rounded flex flex-col gap-3">
+				<h1 class="text-2xl font-bold">
+					{{ $t("exchanges.empty.title") }}
+				</h1>
+				<p class="text-white/80">{{ $t("exchanges.empty.text") }}</p>
+				<router-link to="/manage#cx" :class="createLinkClass">
+					{{ $t("exchanges.empty.create") }}
+				</router-link>
+			</section>
 			<div v-else class="min-h-screen flex flex-col">
 				<CXHeader
 					:name="name"

@@ -135,7 +135,8 @@
 		});
 	});
 
-	// Wide: Buy · Source · Sell · Source · Used on; narrow: one side
+	// Wide: Buy · Sell · Used on; narrow: one side. The source sits under
+	// the price, so the table fits beside the scope list
 	const wideQuery =
 		typeof window.matchMedia === "function"
 			? window.matchMedia("(min-width: 1024px)")
@@ -159,32 +160,16 @@
 			key: "material",
 			title: t("exchanges.overview.columns.material"),
 		};
-		if (!isWide.value)
-			return [
-				material,
-				// the source sits under the price, a third column won't fit
-				{
-					key: "price",
-					title: t(
-						`exchanges.overview.columns.${phoneSide.value.toLowerCase()}`
-					),
-					align: "right",
-				},
-			];
+		const side = (type: PriceType) => ({
+			key: type.toLowerCase(),
+			title: t(`exchanges.overview.columns.${type.toLowerCase()}`),
+			align: "right" as const,
+		});
+		if (!isWide.value) return [material, side(phoneSide.value)];
 		return [
 			material,
-			{
-				key: "buy",
-				title: t("exchanges.overview.columns.buy"),
-				align: "right",
-			},
-			{ key: "buy_source", title: t("exchanges.overview.columns.source") },
-			{
-				key: "sell",
-				title: t("exchanges.overview.columns.sell"),
-				align: "right",
-			},
-			{ key: "sell_source", title: t("exchanges.overview.columns.source") },
+			side("BUY"),
+			side("SELL"),
 			{ key: "planets", title: t("exchanges.overview.columns.used_on") },
 		];
 	});
@@ -204,6 +189,7 @@
 
 	const names = (planets: string[]) =>
 		planets.map((p) => planetName(p, p)).join(", ");
+	const SIDES: PriceType[] = ["BUY", "SELL"];
 	// "Used on" shows this many, the rest in a tooltip
 	const USED_ON_SHOWN = 3;
 
@@ -329,70 +315,45 @@
 					:columns="columns"
 					:data="tableData"
 					:row-key="rowKey"
-					:expand-label="expandLabel">
+					:expand-label="expandLabel"
+					sticky-first>
 					<template #cell-material="{ row }">
 						<MaterialTile :ticker="row.ticker" />
 					</template>
-					<template #cell-buy="{ row }">
-						<span class="tabular-nums text-nowrap">
-							{{ priceText(row.buy) }}
-						</span>
-					</template>
-					<template #cell-sell="{ row }">
-						<span class="tabular-nums text-nowrap">
-							{{ priceText(row.sell) }}
-						</span>
-					</template>
-					<template #cell-price="{ row }">
+					<template
+						v-for="type in SIDES"
+						:key="type"
+						#[`cell-${type.toLowerCase()}`]="{ row }">
 						<div class="flex flex-col items-end gap-1">
 							<span class="tabular-nums text-nowrap">
-								{{ priceText(sideOf(row, phoneSide)) }}
+								{{ priceText(sideOf(row, type)) }}
 							</span>
 							<PTag
-								v-if="sideOf(row, phoneSide)?.varies"
+								v-if="sideOf(row, type)?.varies"
 								size="sm"
 								type="secondary"
 								:value="$t('exchanges.overview.varies')" />
 							<CXSourceTag
-								v-else-if="sideOf(row, phoneSide)"
-								:source="sideOf(row, phoneSide)!.planets[0].source" />
+								v-else-if="sideOf(row, type)"
+								:source="sideOf(row, type)!.planets[0].source" />
 						</div>
 					</template>
-					<template #cell-buy_source="{ row }">
-						<PTag
-							v-if="row.buy?.varies"
-							size="sm"
-							type="secondary"
-							:value="$t('exchanges.overview.varies')" />
-						<CXSourceTag
-							v-else-if="row.buy"
-							:source="row.buy.planets[0].source" />
-					</template>
-					<template #cell-sell_source="{ row }">
-						<PTag
-							v-if="row.sell?.varies"
-							size="sm"
-							type="secondary"
-							:value="$t('exchanges.overview.varies')" />
-						<CXSourceTag
-							v-else-if="row.sell"
-							:source="row.sell.planets[0].source" />
-					</template>
 					<template #cell-planets="{ row }">
-						<template v-if="row.planets.length <= USED_ON_SHOWN">
-							{{ names(row.planets) }}
+						<!-- breaks between planets, never inside an ID -->
+						<template
+							v-for="(p, i) in row.planets.slice(0, USED_ON_SHOWN)"
+							:key="p">
+							<template v-if="i">, </template>
+							<span class="whitespace-nowrap">{{ planetName(p, p) }}</span>
 						</template>
-						<PTooltip v-else>
+						<PTooltip v-if="row.planets.length > USED_ON_SHOWN">
 							<template #trigger>
-								<span tabindex="0">
-									{{ names(row.planets.slice(0, USED_ON_SHOWN)) }}
-									<span class="text-muted">
-										{{
-											$t("exchanges.overview.used_on_more", {
-												n: row.planets.length - USED_ON_SHOWN,
-											})
-										}}
-									</span>
+								<span tabindex="0" class="ml-1 inline-block min-w-6 min-h-6 text-center text-muted whitespace-nowrap">
+									{{
+										$t("exchanges.overview.used_on_more", {
+											n: row.planets.length - USED_ON_SHOWN,
+										})
+									}}
 								</span>
 							</template>
 							{{ names(row.planets) }}

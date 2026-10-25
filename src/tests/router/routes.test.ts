@@ -66,10 +66,24 @@ describe("router scrollBehavior", () => {
 		expect(scroll(at("/search"), at("/search"), null)).toBe(false);
 	});
 
-	it("scrolls to the hash element on another page", () => {
-		expect(scroll(at("/help", "#changelog"), at("/"), null)).toEqual({
-			el: "#changelog",
-		});
+	it("scrolls to the hash element on another page", async () => {
+		document.body.innerHTML = '<div id="changelog"></div>';
+		await expect(
+			scroll(at("/help", "#changelog"), at("/"), null)
+		).resolves.toEqual({ el: "#changelog" });
+		document.body.innerHTML = "";
+	});
+
+	it("waits for a hash element rendered behind a loader", async () => {
+		const result = scroll(at("/manage", "#cx"), at("/"), null);
+		let done = false;
+		void Promise.resolve(result).then(() => (done = true));
+		await new Promise((r) => requestAnimationFrame(r));
+		expect(done).toBe(false);
+
+		document.body.innerHTML = '<div id="cx"></div>';
+		await expect(result).resolves.toEqual({ el: "#cx" });
+		document.body.innerHTML = "";
 	});
 
 	it("scrolls to the top on another page", () => {

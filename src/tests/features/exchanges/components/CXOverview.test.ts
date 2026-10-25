@@ -209,13 +209,16 @@ describe("CXOverview", () => {
 		const [dw, fe, rat] = tableRows(wrapper);
 
 		expect(tickers(wrapper)).toEqual(["DW", "FE", "RAT"]);
-		expect(dw.buy).toBe(`${formatNumber(0)}–${formatNumber(87.72)}`);
-		expect(dw.buy_source).toBe("exchanges.overview.varies");
-		expect(dw.sell).toBe(formatNumber(84.25));
+		// the source sits under the price
+		expect(dw.buy).toBe(
+			`${formatNumber(0)}–${formatNumber(87.72)}exchanges.overview.varies`
+		);
+		expect(dw.sell).toContain(formatNumber(84.25));
 		expect(dw.planets).toBe("A, B, C");
 		expect(fe.sell).toBe("–");
-		expect(rat.buy).toBe(formatNumber(75));
-		expect(rat.buy_source).toBe("exchanges.labels.fixed_all");
+		expect(rat.buy).toBe(
+			`${formatNumber(75)} exchanges.labels.fixed_all`
+		);
 	});
 
 	it.each([
@@ -345,9 +348,7 @@ describe("CXOverview", () => {
 		const [row] = tableRows(wrapper);
 
 		expect(row.buy).toBe("–");
-		expect(row.buy_source).toBe("");
-		expect(row.sell).toBe(formatNumber(10));
-		expect(row.sell_source).toBe("exchanges.overview.varies");
+		expect(row.sell).toBe(`${formatNumber(10)}exchanges.overview.varies`);
 	});
 
 	it("shortens Used on to three planets", async () => {
@@ -355,8 +356,18 @@ describe("CXOverview", () => {
 		const wrapper = await mountOverview({ rows: [many] });
 
 		expect(tableRows(wrapper)[0].planets).toBe(
-			"A, B, C exchanges.overview.used_on_more"
+			"A, B, Cexchanges.overview.used_on_more"
 		);
+	});
+
+	it("keeps each planet of Used on on one line", async () => {
+		const wrapper = await mountOverview();
+		const planets = wrapper
+			.find('td[data-col-key="planets"]')
+			.findAll("span.whitespace-nowrap")
+			.map((s) => s.text());
+
+		expect(planets).toEqual(["A", "B", "C"]);
 	});
 
 	describe("all planets rule", () => {
@@ -466,7 +477,7 @@ describe("CXOverview", () => {
 				"exchanges.overview.columns.material",
 				"exchanges.overview.columns.buy",
 			]);
-			expect(tableRows(wrapper).map((r) => r.price)).toEqual([
+			expect(tableRows(wrapper).map((r) => r.buy)).toEqual([
 				`${formatNumber(0)}–${formatNumber(87.72)}exchanges.overview.varies`,
 				expect.stringContaining(formatNumber(0)),
 				expect.stringContaining(formatNumber(75)),
@@ -482,7 +493,7 @@ describe("CXOverview", () => {
 			await sideButton(wrapper, "SELL").trigger("click");
 
 			expect(tickers(wrapper)).toEqual(["DW"]);
-			expect(tableRows(wrapper)[0].price).toContain(formatNumber(84.25));
+			expect(tableRows(wrapper)[0].sell).toContain(formatNumber(84.25));
 			expect(wrapper.findAll("thead th[data-col-key]")[1].text()).toBe(
 				"exchanges.overview.columns.sell"
 			);
@@ -503,13 +514,13 @@ describe("CXOverview", () => {
 
 		it("follows the screen width", async () => {
 			const wrapper = await phone();
-			expect(wrapper.find("th[data-col-key=buy_source]").exists()).toBe(
+			expect(wrapper.find("th[data-col-key=planets]").exists()).toBe(
 				false
 			);
 
 			media.listener!({ matches: true });
 			await flushPromises();
-			expect(wrapper.find("th[data-col-key=buy_source]").exists()).toBe(
+			expect(wrapper.find("th[data-col-key=planets]").exists()).toBe(
 				true
 			);
 			expect(wrapper.text()).not.toContain(
@@ -518,7 +529,7 @@ describe("CXOverview", () => {
 
 			media.listener!({ matches: false });
 			await flushPromises();
-			expect(wrapper.find("th[data-col-key=buy_source]").exists()).toBe(
+			expect(wrapper.find("th[data-col-key=planets]").exists()).toBe(
 				false
 			);
 		});
