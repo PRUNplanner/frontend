@@ -448,14 +448,31 @@
 	/*
 	 * Layout: desktop gets the docked panel and compare, small screens a drawer
 	 */
-	const desktopQuery =
-		typeof window.matchMedia === "function"
-			? window.matchMedia("(min-width: 1024px)")
-			: null;
-	const isDesktop: Ref<boolean> = ref(desktopQuery?.matches ?? true);
-	const onMedia = (e: MediaQueryListEvent) => (isDesktop.value = e.matches);
-	desktopQuery?.addEventListener("change", onMedia);
-	onBeforeUnmount(() => desktopQuery?.removeEventListener("change", onMedia));
+	function useMedia(query: string): Ref<boolean> {
+		const media =
+			typeof window.matchMedia === "function"
+				? window.matchMedia(query)
+				: null;
+		const matches: Ref<boolean> = ref(media?.matches ?? true);
+		const onChange = (e: MediaQueryListEvent) => (matches.value = e.matches);
+		media?.addEventListener("change", onChange);
+		onBeforeUnmount(() => media?.removeEventListener("change", onChange));
+		return matches;
+	}
+	const isDesktop = useMedia("(min-width: 1024px)");
+	const isWide = useMedia("(min-width: 1440px)");
+
+	// below 1440 px the docked panel starts collapsed, so the results get the
+	// width; opening it there lasts for the visit and leaves the pref alone
+	const narrowOpen: Ref<boolean> = ref(false);
+	const filtersCollapsed = computed({
+		get: () =>
+			isWide.value ? prefs.value.filtersCollapsed : !narrowOpen.value,
+		set: (collapsed: boolean) => {
+			if (isWide.value) prefs.value.filtersCollapsed = collapsed;
+			else narrowOpen.value = !collapsed;
+		},
+	});
 
 	const drawerOpen: Ref<boolean> = ref(false);
 
@@ -531,12 +548,12 @@
 						v-if="isDesktop"
 						class="shrink-0 border-r border-white/10 flex flex-col min-h-0"
 						:class="
-							prefs.filtersCollapsed ? 'w-[52px]' : 'w-[400px]'
+							filtersCollapsed ? 'w-[52px]' : 'w-[400px]'
 						">
 						<div
 							class="flex items-center gap-2 px-3 py-2"
 							:class="
-								prefs.filtersCollapsed
+								filtersCollapsed
 									? 'flex-col'
 									: 'flex-row justify-between'
 							">
@@ -544,7 +561,7 @@
 								class="text-xs font-bold uppercase tracking-wider text-muted whitespace-nowrap"
 								:class="{
 									'[writing-mode:vertical-rl]':
-										prefs.filtersCollapsed,
+										filtersCollapsed,
 								}">
 								{{ t("planet_search.filters.title") }} ·
 								{{
@@ -556,19 +573,19 @@
 							<button
 								type="button"
 								class="touch-target cursor-pointer hover:bg-white/20 hover:rounded-sm p-2"
-								:class="{ '-order-1': prefs.filtersCollapsed }"
+								:class="{ '-order-1': filtersCollapsed }"
 								:aria-label="
-									prefs.filtersCollapsed
+									filtersCollapsed
 										? t('planet_search.filters.expand')
 										: t('planet_search.filters.collapse')
 								"
-								:aria-expanded="!prefs.filtersCollapsed"
+								:aria-expanded="!filtersCollapsed"
 								@click="
-									prefs.filtersCollapsed =
-										!prefs.filtersCollapsed
+									filtersCollapsed =
+										!filtersCollapsed
 								">
 								<KeyboardDoubleArrowRightSharp
-									v-if="prefs.filtersCollapsed"
+									v-if="filtersCollapsed"
 									class="w-5 h-5" />
 								<KeyboardDoubleArrowLeftSharp
 									v-else
@@ -576,7 +593,7 @@
 							</button>
 						</div>
 						<div
-							v-if="!prefs.filtersCollapsed"
+							v-if="!filtersCollapsed"
 							class="flex-1 min-h-0 overflow-y-auto px-4 pb-6">
 							<PlanetSearchFilterPanel
 								v-bind="panelProps"
@@ -606,7 +623,7 @@
 							@open-filters="drawerOpen = true" />
 
 						<div
-							class="lg:flex-1 lg:min-h-0 overflow-auto mx-3 lg:mx-6 mb-3 border border-white/10 rounded">
+							class="lg:flex-1 lg:min-h-[40dvh] overflow-auto mx-3 lg:mx-6 mb-3 border border-white/10 rounded">
 							<PlanetSearchList
 								v-if="view === 'list'"
 								:planets="results"

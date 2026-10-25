@@ -631,6 +631,23 @@ describe("PlanetSearchPage actions", () => {
 			expect(panel(wrapper).exists()).toBe(true);
 		});
 
+		it("starts collapsed below 1440 px and opens there without the pref", async () => {
+			vi.stubGlobal("matchMedia", (query: string) => ({
+				matches: !query.includes("1440"),
+				addEventListener: vi.fn(),
+				removeEventListener: vi.fn(),
+			}));
+			const { wrapper } = await mountPage();
+			const toggle = () => wrapper.find("aside button[aria-expanded]");
+			expect(panel(wrapper).exists()).toBe(false);
+			expect(toggle().attributes("aria-expanded")).toBe("false");
+
+			await toggle().trigger("click");
+			expect(panel(wrapper).exists()).toBe(true);
+			await flushPromises();
+			expect(stored().filtersCollapsed).toBeUndefined();
+		});
+
 		it("reopens collapsed when it was left collapsed", async () => {
 			localStorage.setItem(
 				"prunplanner_planet_search",

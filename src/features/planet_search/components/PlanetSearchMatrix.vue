@@ -226,11 +226,12 @@
 						:show-pin="showPins"
 						@pin="emit('pin', row.planet.planet_natural_id)" />
 				</td>
-				<td class="sticky z-10 whitespace-nowrap font-bold" :class="planetLeft">
+				<!-- phones: the natural id goes below the name, so the sticky part stays narrow -->
+				<td class="sticky z-10 whitespace-nowrap font-bold max-sm:leading-tight" :class="planetLeft">
 					{{ displayName(row.planet) }}
 					<span
 						v-if="displayName(row.planet) !== row.planet.planet_natural_id"
-						class="text-xs text-muted font-normal font-mono">
+						class="text-xs text-muted font-normal font-mono max-sm:block">
 						{{ row.planet.planet_natural_id }}
 					</span>
 					<PlanetFullIcon :planet="row.planet" />
