@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { h } from "vue";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
@@ -97,7 +97,7 @@ async function openCard(wrapper: VueWrapper) {
 }
 
 describe("MaterialTile", () => {
-	beforeAll(async () => {
+	beforeEach(async () => {
 		// @ts-expect-error mock data
 		await exchangesStore.setMany(exchanges);
 		await materialsStore.setMany(materials);

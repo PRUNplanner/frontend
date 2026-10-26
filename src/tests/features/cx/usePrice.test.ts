@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { usePlanningStore } from "@/stores/planningStore";
 import { usePrice } from "@/features/cx/usePrice";
@@ -18,7 +18,7 @@ const fakeCXUuid: string = "2a83a2ca-db0c-49d2-9c43-0db08c1675bb";
 describe("usePrice", async () => {
 	let planningStore: any;
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		setActivePinia(createPinia());
 		planningStore = usePlanningStore();
 

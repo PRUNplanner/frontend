@@ -48,7 +48,7 @@ class Config {
 		this.GAME_DATA_MAX_AGE_MINUTES_EXCHANGES =
 			import.meta.env.VITE_GAME_DATA_MAX_AGE_MINUTES_EXCHANGES || 30;
 		this.GAME_DATA_WRITE_DELAY_MS = Number(
-			import.meta.env.VITE_GAME_DATA_WRITE_DELAY_MS ?? 5000
+			import.meta.env.VITE_GAME_DATA_WRITE_DELAY_MS || 5000
 		);
 		this.INDEXEDDB_DBNAME =
 			import.meta.env.VITE_INDEXEDDB_DBNAME || "prunplanner";

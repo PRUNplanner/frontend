@@ -1,5 +1,5 @@
 import { effectScope, nextTick, ref } from "vue";
-import { describe, it, expect, beforeAll, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
 
@@ -45,7 +45,7 @@ import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 describe("usePlanCalculation", async () => {
 	let planningStore: ReturnType<typeof usePlanningStore>;
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		setActivePinia(createPinia());
 		planningStore = usePlanningStore();
 

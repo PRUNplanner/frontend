@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 // Composables
@@ -24,7 +24,7 @@ import { flushPromises } from "@vue/test-utils";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 describe("Util: materialIO ", async () => {
-	beforeAll(async () => {
+	beforeEach(async () => {
 		setActivePinia(createPinia());
 
 		await materialsStore.setMany(materials);

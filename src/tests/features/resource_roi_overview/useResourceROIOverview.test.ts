@@ -1,5 +1,5 @@
 import { ref, type Ref } from "vue";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axiosSetup from "@/util/axiosSetup";
@@ -73,7 +73,7 @@ vi.mock("@/features/planning/engine/calculatePlan", async () => {
 });
 
 describe("useResourceROIOverview", async () => {
-	beforeAll(async () => {
+	beforeEach(async () => {
 		setActivePinia(createPinia());
 		axiosSetup();
 

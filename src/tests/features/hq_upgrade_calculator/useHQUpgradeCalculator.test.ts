@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
 import { ref } from "vue";
@@ -20,7 +20,7 @@ describe("useHQUpgradeCalculator", async () => {
 	const refOverride = ref({});
 	const refCXUuid = ref(undefined);
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		setActivePinia(createPinia());
 
 		await materialsStore.setMany(materials);

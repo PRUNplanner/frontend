@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -231,7 +231,7 @@ const habitationWarning = (wrapper: VueWrapper) =>
 	tables(wrapper)[0].find("thead .picon").exists();
 
 describe("PlanConstructionCart", () => {
-	beforeAll(async () => {
+	beforeEach(async () => {
 		axiosSetup();
 		// @ts-expect-error mock data
 		await exchangesStore.setMany(exchanges);
