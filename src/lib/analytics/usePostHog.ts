@@ -43,7 +43,6 @@ function maskObject<T>(value: T): T {
  * inputs (session_recording in init), the only place the code shows up.
  */
 export const maskUrlCodes: BeforeSendFn = (event) => {
-	if (!event) return event;
 	return {
 		...event,
 		properties: maskObject(event.properties),
@@ -59,7 +58,7 @@ export const maskUrlCodes: BeforeSendFn = (event) => {
  * unhandled after every deploy.
  */
 export const dropChunkLoadErrors: BeforeSendFn = (event) => {
-	if (event?.event !== "$exception") return event;
+	if (event.event !== "$exception") return event;
 	const list = event.properties.$exception_list;
 	if (!Array.isArray(list) || !list.length) return event;
 	return list.every((entry) => isChunkLoadError(entry?.value)) ? null : event;
