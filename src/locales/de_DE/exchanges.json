@@ -1,9 +1,10 @@
 {
 	"view_title": "Marktplätze",
 	"title": "Marktplätze",
-	"errors": {
-		"title": "Keine Präferenzen",
-		"message": "Du hast keine Marktplatz-Präferenzen. Gehe zur Verwaltungsseite und erstelle deine erste."
+	"empty": {
+		"title": "No exchange preferences yet",
+		"text": "An exchange preference sets which exchange and price your plans use for each material. Create your first one in Management.",
+		"create": "Create a preference"
 	},
 	"labels": {
 		"universe": "Universe",

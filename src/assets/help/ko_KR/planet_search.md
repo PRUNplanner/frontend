@@ -10,7 +10,7 @@
 
 **개수와 상관없음.** 체크하지 않은 옵션 옆의 숫자는 그 옵션을 체크했을 때 표시될 행성 수입니다. 행성 조건, 추가 건설 자재 허용, 진행 중인 COGC 프로그램, 기반 시설 섹션의 제목 옆에 있는 _상관없음_ 버튼을 누르면 해당 섹션이 가장 적은 행성을 걸러 내는 상태로 설정되고, 그때 표시되는 행성 수를 보여 줍니다. 해당 섹션이 이미 그 상태라면 이 옵션은 강조 표시되며 더 이상 클릭할 수 없습니다.
 
-**거리.** 거래소 및/또는 보유한 제국 중 하나에 속한 계획을 선택하세요. 행성은 선택한 모든 대상으로부터 최대 점프 수 이내에 있어야 하며, 선택한 계획마다 별도의 점프 수 열이 표시됩니다. AI1, CI1, IC1, NC1 열은 항상 정렬할 수 있습니다.
+**거리.** 거래소 및/또는 보유한 제국 중 하나에 속한 계획을 선택하세요. 행성은 선택한 모든 대상으로부터 최대 점프 수 이내에 있어야 하며, 선택한 계획마다 별도의 점프 수 열이 표시됩니다. AI1, CI1, IC1, NC1 열은 항상 정렬할 수 있습니다. Planet Search works without an account; distances to your own plans need a login.
 
 **적용 중인 필터와 초기화.** 적용 중인 필터는 모두 결과 위에 칩으로 표시되며, 칩의 ×를 누르면 해당 필터만 제거됩니다. _Reset_ at the top right goes back to the starting filters and the default order. 조건에 맞는 행성이 없으면 최대 세 개의 제안이 표시되며, 각 제안에는 적용 시 나타날 행성 수가 함께 표시됩니다.
 
@@ -22,10 +22,12 @@
 
 **Reading the results.** The colour bar on a material tile compares the planet's daily extraction with the highest of that material on any planet: red is below a quarter, then orange, yellow, and green above three quarters. 건설 아이콘이 있는 열에는 해당 행성에 추가로 필요한 건설 자재가 나열됩니다. 자재에 마우스를 올리면 그 이유를 볼 수 있습니다(예: "중력이 낮음"). _COGC · 기반 시설_ 열에는 현재 진행 중인 COGC 프로그램과 행성의 기반 시설이 LM, COGC, WAR, ADM, SHY로 표시됩니다. 점프 수 열에 "—"가 표시되면 점프 경로가 없다는 뜻입니다. 마우스를 올리면 "이주선 필요함"이라는 문구를 볼 수 있습니다.
 
+**Plots.** Every base takes one plot of its planet, and so do HQs and planetary projects (COGC, warehouse, local market and the others). A planet that can't be settled anymore, with every plot taken and no ghost sites, carries a red ⊘ icon next to its name; hover it for the details. The _Plots_ column, which you turn on in the _Columns_ menu, shows the free plots out of the planet's total, as FIO last saw the planet (hover for the date), and marks such a planet red _Full_. Some planets allow **ghost sites**: once every plot is taken, new bases still fit without one, so a full planet that allows them shows an amber _Full · ghost sites_. Full planets keep their place in the results. _plots unknown_ means PRUNplanner hasn't read the planet's plots yet. Sort by the column to see the planets with the most free plots first.
+
 **정렬.** 열 제목을 클릭하면 해당 열 기준으로 정렬되고, 다시 클릭하면 순서가 반대로 바뀝니다. Shift+click another header to add it as a tiebreaker (the headers show 1, 2, 3), up to four columns: "NC1 jumps, then FEO /day" lists the richest FEO planets at each distance. _정렬_ 메뉴를 사용하면 키보드 없이도 같은 기능을 쓸 수 있습니다. 먼저 검색한 첫 번째 물자 기준(높은 순), 물자를 검색하지 않았다면 거리에서 처음 선택한 지점까지의 점프 수 기준, 둘 다 없다면 이름순입니다.
 
-**열.** _열_ 메뉴에서 열을 숨기거나 표시할 수 있습니다. 매트릭스 화면에서는 검색한 모든 물자도 함께 나열되며, _전&#xCCB4;_&#xC640; _없&#xC74C;_&#xC73C;로 한 번에 표시하거나 숨길 수 있습니다. _Reset_ shows everything again.
+**열.** _열_ 메뉴에서 열을 숨기거나 표시할 수 있습니다. 매트릭스 화면에서는 검색한 모든 물자도 함께 나열되며, _전&#xCCB4;_&#xC640; _없&#xC74C;_&#xC73C;로 한 번에 표시하거나 숨길 수 있습니다. _Reset_ goes back to the default columns.
 
 **Compare.** On larger screens, pin up to four planets with ☆ to compare them side by side in the tray at the bottom. 비옥도, 검색한 물자, 거리에서 선택한 지점까지의 점프 수는 가장 좋은 값부터 나쁜 값까지 색으로 구분되며, 가장 좋은 값은 굵게 표시됩니다. 그 밖의 항목에서 행성 간 차이가 있는 행은 파란색으로 표시됩니다.
 
-**저장 및 공유.** 주소창에는 항상 현재 검색 조건 전체가 담기므로, _링크 복&#xC0AC;_&#xB85C; 검색을 공유할 수 있습니다. "+"를 누르면 해당 행성의 새 계획이 새 탭에서 열리므로, 검색 결과는 그대로 유지됩니다. _검색 저&#xC7A5;_&#xC744; 누르면 이름을 붙인 검색을 이 브라우저에 저장하고, _관&#xB9AC;_&#xC5D0;서 저장한 검색의 이름을 바꾸거나 불러오거나 삭제할 수 있습니다.
+**저장 및 공유.** 주소창에는 항상 현재 검색 조건 전체가 담기므로, _링크 복&#xC0AC;_&#xB85C; 검색을 공유할 수 있습니다. "+"를 누르면 해당 행성의 새 계획이 새 탭에서 열리므로, 검색 결과는 그대로 유지됩니다. Without an account, "+" asks you to log in first and then opens the plan. _검색 저&#xC7A5;_&#xC744; 누르면 이름을 붙인 검색을 이 브라우저에 저장하고, _관&#xB9AC;_&#xC5D0;서 저장한 검색의 이름을 바꾸거나 불러오거나 삭제할 수 있습니다.

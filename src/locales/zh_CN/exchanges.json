@@ -1,9 +1,10 @@
 {
 	"view_title": "交易所",
 	"title": "交易所",
-	"errors": {
-		"title": "无偏好设置",
-		"message": "你还没有交易所偏好设置。请前往“管理”创建第一个偏好设置。"
+	"empty": {
+		"title": "No exchange preferences yet",
+		"text": "An exchange preference sets which exchange and price your plans use for each material. Create your first one in Management.",
+		"create": "Create a preference"
 	},
 	"labels": {
 		"universe": "Universe",

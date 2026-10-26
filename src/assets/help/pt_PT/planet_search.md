@@ -10,7 +10,7 @@
 
 **Counts and Any.** The number next to an option that isn't ticked is how many planets you would get by ticking it. The _Any_ button in the header of Planet conditions, Accept extra building materials, Active COGC program and Infrastructure sets that section to the state that hides the fewest planets, and shows how many planets that gives: both surfaces and no fertility requirement, all extra building materials accepted, no COGC program ticked, no infrastructure ticked. It is highlighted and can no longer be clicked when the section is already there.
 
-**Distance.** Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns.
+**Distance.** Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns. Planet Search works without an account; distances to your own plans need a login.
 
 **Active filters and Reset.** Every active filter shows as a chip above the results; × on a chip removes just that filter. _Reset_ at the top right goes back to the starting filters and the default order. When no planet matches, up to three suggestions appear, each with the number of planets it would give.
 
@@ -22,10 +22,12 @@
 
 **Reading the results.** The colour bar on a material tile compares the planet's daily extraction with the highest of that material on any planet: red is below a quarter, then orange, yellow, and green above three quarters. The column with the construction icon lists the extra building materials a planet needs; hover one to see why (e.g. "Low gravity"). _COGC · Infra_ shows the running COGC program and the planet's infrastructure as LM, COGC, WAR, ADM and SHY. A "—" in a jumps column means there is no jump route: hover it to read "Colony Ship Required".
 
+**Plots.** Every base takes one plot of its planet, and so do HQs and planetary projects (COGC, warehouse, local market and the others). A planet that can't be settled anymore, with every plot taken and no ghost sites, carries a red ⊘ icon next to its name; hover it for the details. The _Plots_ column, which you turn on in the _Columns_ menu, shows the free plots out of the planet's total, as FIO last saw the planet (hover for the date), and marks such a planet red _Full_. Some planets allow **ghost sites**: once every plot is taken, new bases still fit without one, so a full planet that allows them shows an amber _Full · ghost sites_. Full planets keep their place in the results. _plots unknown_ means PRUNplanner hasn't read the planet's plots yet. Sort by the column to see the planets with the most free plots first.
+
 **Sorting.** Click a column header to sort by it, click again to reverse. Shift+click another header to add it as a tiebreaker (the headers show 1, 2, 3), up to four columns: "NC1 jumps, then FEO /day" lists the richest FEO planets at each distance. The _Sort_ menu does the same without a keyboard. Without a sort of your own, the results are ordered by the first searched material (highest first), otherwise by the jumps to the first distance pick, otherwise by name.
 
-**Columns.** The _Columns_ menu hides and shows columns. In the Matrix it also lists every found material with _All_ and _None_ to show or hide them at once. _Reset_ shows everything again.
+**Columns.** The _Columns_ menu hides and shows columns. In the Matrix it also lists every found material with _All_ and _None_ to show or hide them at once. _Reset_ goes back to the default columns.
 
 **Compare.** On larger screens, pin up to four planets with ☆ to compare them side by side in the tray at the bottom. Fertility, the searched materials and the jumps to your distance picks are coloured from best to worst, with the best value in bold. Rows where the planets differ in anything else are tinted blue.
 
-**Saving and sharing.** The address bar always holds the whole search, so _Copy link_ shares it. "+" opens a new plan for that planet in a new tab, so your search stays where it is. _Save search_ stores named searches in this browser; _Manage_ renames, loads or deletes them.
+**Saving and sharing.** The address bar always holds the whole search, so _Copy link_ shares it. "+" opens a new plan for that planet in a new tab, so your search stays where it is. Without an account, "+" asks you to log in first and then opens the plan. _Save search_ stores named searches in this browser; _Manage_ renames, loads or deletes them.

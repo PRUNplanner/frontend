@@ -59,6 +59,21 @@
 			"storage": "存储",
 			"records": "记录",
 			"size": "约占空间"
+		},
+		"stores": {
+			"materials": "Materials",
+			"buildings": "Buildings",
+			"recipes": "Recipes",
+			"planets": "Planets",
+			"exchanges": "Exchanges",
+			"plans": "Plans",
+			"empires": "Empires",
+			"cxs": "Exchange Preferences",
+			"shared": "Sharings",
+			"fio_storage_planets": "FIO Storage Planets",
+			"fio_storage_ships": "FIO Storage Ships",
+			"fio_storage_warehouses": "FIO Storage Warehouses",
+			"fio_sites_planets": "FIO Sites Planets"
 		}
 	},
 	"fio_information": {
@@ -90,6 +105,10 @@
 			"color_palette": "调色板",
 			"palette_default": "默认（绿色/红色）",
 			"palette_colorblind": "色盲（蓝色/橙色）",
+			"market_card": "Market card",
+			"market_card_hover": "On hover",
+			"market_card_click": "On click only",
+			"market_card_help": "On click only: hovering a material shows nothing; click it for prices.",
 			"language_note": "我们希望让所有人都能使用 PRUNplanner。如果你希望看到自己的母语版本，或帮助我们完善现有翻译，欢迎加入我们的本地化项目：{link}。",
 			"default_empire": "默认帝国",
 			"default_cx": "默认交易所偏好",

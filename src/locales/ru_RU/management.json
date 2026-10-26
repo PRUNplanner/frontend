@@ -15,7 +15,8 @@
 			"empire_name": "@:terms.empire название",
 			"faction": "@:terms.faction",
 			"permits_total": "Всего @:terms.permits_plural",
-			"permits_used": "Использовано @:terms.permits_plural"
+			"permits_used": "Использовано @:terms.permits_plural",
+			"empire_placeholder": "max. 100 characters"
 		},
 		"table": {
 			"empire_name": "@:terms.empire",

@@ -59,6 +59,21 @@
 			"storage": "Almacenamiento",
 			"records": "Registros",
 			"size": "Tamaño aprox."
+		},
+		"stores": {
+			"materials": "Materials",
+			"buildings": "Buildings",
+			"recipes": "Recipes",
+			"planets": "Planets",
+			"exchanges": "Exchanges",
+			"plans": "Plans",
+			"empires": "Empires",
+			"cxs": "Exchange Preferences",
+			"shared": "Sharings",
+			"fio_storage_planets": "FIO Storage Planets",
+			"fio_storage_ships": "FIO Storage Ships",
+			"fio_storage_warehouses": "FIO Storage Warehouses",
+			"fio_sites_planets": "FIO Sites Planets"
 		}
 	},
 	"fio_information": {
@@ -90,6 +105,10 @@
 			"color_palette": "Paleta de colores",
 			"palette_default": "Predeterminada (verde / rojo)",
 			"palette_colorblind": "Para daltonismo (azul / naranja)",
+			"market_card": "Market card",
+			"market_card_hover": "On hover",
+			"market_card_click": "On click only",
+			"market_card_help": "On click only: hovering a material shows nothing; click it for prices.",
 			"language_note": "Queremos que PRUNplanner sea accesible para todos. Si quieres ver la herramienta en tu idioma, o ayudarnos a pulir una traducción existente, únete a nuestro proyecto de localización en {link}.",
 			"default_empire": "Imperio predeterminado",
 			"default_cx": "CX predeterminada",

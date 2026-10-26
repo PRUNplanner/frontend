@@ -1,9 +1,10 @@
 {
 	"view_title": "Биржи",
 	"title": "Биржи",
-	"errors": {
-		"title": "Нет предпочтений",
-		"message": "У вас нет предпочитаемой биржи. Перейдите в Менеджмент, чтобы выбрать биржу."
+	"empty": {
+		"title": "No exchange preferences yet",
+		"text": "An exchange preference sets which exchange and price your plans use for each material. Create your first one in Management.",
+		"create": "Create a preference"
 	},
 	"labels": {
 		"universe": "Universe",
