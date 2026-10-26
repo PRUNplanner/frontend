@@ -311,7 +311,7 @@ describe("PlanCOGM", () => {
 		expect(table().props("prices")).toEqual([]);
 		expect(table().props("cogms")).toBeInstanceOf(Map);
 
-		await click(wrapper, "[data-scope-planet]");
+		await click(wrapper, "[aria-label='plan.tools.cogm.prices.scope'] > button:last-child");
 
 		expect(table().props("prices")).toEqual([pref("H2O", "BUY", 30)]);
 		expect(table().props("cogms")).toBeUndefined();
@@ -558,7 +558,7 @@ describe("PlanCOGM", () => {
 			data.ticker_planets = [];
 			const { wrapper } = await mountCOGM(undefined, data);
 
-			await click(wrapper, "[data-scope-planet]");
+			await click(wrapper, "[aria-label='plan.tools.cogm.prices.scope'] > button:last-child");
 			const table = () => wrapper.findComponent(CXFixedPriceTable);
 			expect(table().props("prices")).toEqual([]);
 

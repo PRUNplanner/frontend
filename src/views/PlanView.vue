@@ -318,20 +318,6 @@
 	);
 	const ioTotals = computed(() => materialIOTotals(ioRows.value));
 
-	// a narrow pane (a phone, or Material I/O under Production on a small
-	// tablet) drops In and Out, as v2 did
-	const refIOPane = useTemplateRef<HTMLElement>("ioPane");
-	const refIOCompact: Ref<boolean> = ref(false);
-	let ioObserver: ResizeObserver | undefined;
-	onMounted(() => {
-		if (!refIOPane.value || typeof ResizeObserver === "undefined") return;
-		ioObserver = new ResizeObserver(([entry]) => {
-			refIOCompact.value = entry.contentRect.width < 420;
-		});
-		ioObserver.observe(refIOPane.value);
-	});
-	onUnmounted(() => ioObserver?.disconnect());
-
 	const ioSourceOptions = computed<PSelectOption[]>(() => [
 		{ value: "all", label: t("plan.io.source.all") },
 		{ value: "production", label: t("plan.io.source.production") },
@@ -1570,7 +1556,6 @@
 				</div>
 				<div>
 					<div
-						ref="ioPane"
 						class="sticky top-12 rounded border border-line bg-(--app-bg)"
 						data-io-pane>
 						<div class="flex items-center gap-2 px-3 pt-3 pb-2">
@@ -1599,7 +1584,6 @@
 						</div>
 						<PlanMaterialIO
 							:material-i-o-data="ioRows"
-							:compact="refIOCompact"
 							max-height="calc(100dvh - 20rem)"
 							:value="refIOValue"
 							:filter="refIOFilter"

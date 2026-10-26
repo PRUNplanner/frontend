@@ -39,7 +39,7 @@
 	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	// UI
-	import { PButton, PButtonGroup, PDataTable, PTooltip } from "@/ui";
+	import { PDataTable, PSegmented, PTooltip } from "@/ui";
 
 	const { t } = useI18n();
 
@@ -90,6 +90,18 @@
 		views.value.includes(view.value) ? view.value : "market"
 	);
 	const PCTS = [10, 20, 30, 50];
+	const viewOptions = computed(() =>
+		views.value.map((v) => ({
+			value: v,
+			label: t(`plan.tools.plan_check.views.${v}`),
+		}))
+	);
+	const pctOptions = computed(() =>
+		PCTS.map((p) => ({
+			value: p,
+			label: t("plan.tools.plan_check.pct", { pct: p }),
+		}))
+	);
 
 	function setView(value: PlanCheckView): void {
 		if (view.value === value) return;
@@ -192,8 +204,7 @@
 		).overview;
 	});
 	const allCosts = computed(
-		() =>
-			profit.value - (sensitivity.value.result.cost * pct.value) / 100
+		() => profit.value - (sensitivity.value.result.cost * pct.value) / 100
 	);
 	const priceSource = computed(() =>
 		props.cxUuid
@@ -210,36 +221,24 @@
 			<h2 class="text-white/80 font-bold text-lg">
 				{{ t("plan.tools.plan_check.title") }}
 			</h2>
-			<PButtonGroup
+			<PSegmented
 				v-if="views.length > 1"
-				role="group"
-				:aria-label="t('plan.tools.plan_check.view_label')">
-				<PButton
-					v-for="v in views"
-					:key="v"
-					class="min-h-11 @[640px]:min-h-0"
-					:pressed="shownView === v"
-					@click="setView(v)">
-					{{ t(`plan.tools.plan_check.views.${v}`) }}
-				</PButton>
-			</PButtonGroup>
+				:value="shownView"
+				:options="viewOptions"
+				:label="t('plan.tools.plan_check.view_label')"
+				@update:value="setView" />
 			<HelpDrawer file-name="plan" />
 			<div
 				v-if="shownView === 'sensitivity'"
 				class="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1">
-				<span id="plancheck-pct-label" class="text-sm text-muted">
+				<span aria-hidden="true" class="text-sm text-muted">
 					{{ t("plan.tools.plan_check.pct_label") }}
 				</span>
-				<PButtonGroup role="group" aria-labelledby="plancheck-pct-label">
-					<PButton
-						v-for="p in PCTS"
-						:key="p"
-						class="min-h-11 @[640px]:min-h-0"
-						:pressed="pct === p"
-						@click="setPct(p)">
-						{{ t("plan.tools.plan_check.pct", { pct: p }) }}
-					</PButton>
-				</PButtonGroup>
+				<PSegmented
+					:value="pct"
+					:options="pctOptions"
+					:label="t('plan.tools.plan_check.pct_label')"
+					@update:value="setPct" />
 			</div>
 		</div>
 
@@ -322,7 +321,11 @@
 								</div>
 								<div class="flex justify-between gap-4">
 									<span class="text-muted">
-										{{ t("plan.tools.plan_check.tooltip.value") }}
+										{{
+											t(
+												"plan.tools.plan_check.tooltip.value"
+											)
+										}}
 									</span>
 									<span class="tabular-nums">
 										{{ money(Math.abs(row.slope)) }} ȼ
@@ -334,16 +337,20 @@
 									class="flex justify-between gap-4">
 									<span class="text-muted">
 										{{
-											t("plan.tools.plan_check.tooltip.profit", {
-												change: `${sign < 0 ? "−" : "+"}${pct} %`,
-											})
+											t(
+												"plan.tools.plan_check.tooltip.profit",
+												{
+													change: `${sign < 0 ? "−" : "+"}${pct} %`,
+												}
+											)
 										}}
 									</span>
 									<span class="tabular-nums">
 										{{
 											money(
 												profit +
-													(sign * row.slope * pct) / 100
+													(sign * row.slope * pct) /
+														100
 											)
 										}}
 										ȼ
@@ -401,7 +408,9 @@
 							})
 						}}
 					</span>
-					<span>{{ t("plan.tools.plan_check.footnote.break_even") }}</span>
+					<span>{{
+						t("plan.tools.plan_check.footnote.break_even")
+					}}</span>
 				</p>
 			</div>
 
@@ -437,12 +446,21 @@
 							}}
 							{{
 								typeof top.breakEven === "number"
-									? t("plan.tools.plan_check.means.break_even", {
-											change: signedPct(top.breakEven),
-										})
+									? t(
+											"plan.tools.plan_check.means.break_even",
+											{
+												change: signedPct(
+													top.breakEven
+												),
+											}
+										)
 									: top.breakEven === "never" && profit < 0
-										? t("plan.tools.plan_check.means.never_loss")
-										: t(`plan.tools.plan_check.means.${top.breakEven}`)
+										? t(
+												"plan.tools.plan_check.means.never_loss"
+											)
+										: t(
+												`plan.tools.plan_check.means.${top.breakEven}`
+											)
 							}}
 						</span>
 					</p>
@@ -475,14 +493,25 @@
 						</div>
 						<div class="flex justify-between gap-3 py-1.5">
 							<dt>
-								{{ t("plan.tools.plan_check.means.all_costs", { pct }) }}
+								{{
+									t("plan.tools.plan_check.means.all_costs", {
+										pct,
+									})
+								}}
 							</dt>
 							<dd class="font-bold tabular-nums">
 								{{ money(allCosts) }} ȼ
 							</dd>
 						</div>
-						<div class="flex justify-between items-center gap-3 py-1.5">
-							<dt>{{ t("plan.tools.plan_check.means.most_sensitive") }}</dt>
+						<div
+							class="flex justify-between items-center gap-3 py-1.5">
+							<dt>
+								{{
+									t(
+										"plan.tools.plan_check.means.most_sensitive"
+									)
+								}}
+							</dt>
 							<dd class="flex gap-1">
 								<span
 									v-for="r in sensitivity.rows.slice(0, 3)"

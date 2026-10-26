@@ -34,15 +34,25 @@ vi.mock("@/features/government/components/PlanetPOPRTable.vue", () => ({
 const mock = new AxiosMockAdapter(apiService.client);
 const poprUrl = (planet: string) => `/data/planet/${planet}/popr/`;
 
-// passed through untouched, the table reads it
-const WORKFORCE = { pioneer: { name: "pioneer", required: 100 } };
+const TIERS = [
+	"pioneer",
+	"settler",
+	"technician",
+	"engineer",
+	"scientist",
+] as const;
+
+// what the plan needs per tier; the table gets it untouched
+function workforce(need: Partial<Record<(typeof TIERS)[number], number>> = {}) {
+	return Object.fromEntries(
+		TIERS.map((tier) => [tier, { name: tier, required: need[tier] ?? 0 }])
+	);
+}
+const WORKFORCE = workforce({ pioneer: 100 });
 
 // the query cache persists, so each test asks for its own planet
-async function mountPOPR(planetNaturalId: string) {
-	return mountComponent(PlanPOPR, {
-		planetNaturalId,
-		workforceData: WORKFORCE,
-	});
+async function mountPOPR(planetNaturalId: string, workforceData = WORKFORCE) {
+	return mountComponent(PlanPOPR, { planetNaturalId, workforceData });
 }
 
 describe("PlanPOPR", () => {
@@ -100,6 +110,34 @@ describe("PlanPOPR", () => {
 		expect(table.props("workforceData")).toEqual(WORKFORCE);
 	});
 
+	// fixture: free pioneer 6,121, settler 3,439, technician 61, no open jobs
+	it("charts free workers against the plan's need per tier", async () => {
+		mock.onGet(poprUrl("PP-005a")).reply(200, popr);
+		const { wrapper } = await mountPOPR(
+			"PP-005a",
+			workforce({ pioneer: 1000, settler: 5000 })
+		);
+		await vi.waitFor(() =>
+			expect(wrapper.find("[data-popr-chart]").exists()).toBe(true)
+		);
+		const row = (tier: string) => wrapper.find(`[data-tier="${tier}"]`);
+		const bar = (tier: string) => row(tier).find('[role="img"] > div');
+
+		expect(wrapper.findAll("[data-tier]")).toHaveLength(5);
+		// 6,121 cover 1,000; 3,439 don't cover 5,000
+		expect(bar("pioneer").classes()).toContain("bg-positive");
+		expect(bar("settler").classes()).toContain("bg-negative");
+		expect(
+			row("settler").find('[role="img"]').attributes("aria-label")
+		).toBe("plan.tools.popr.chart.row");
+		// the need line at 5,000 of a 5,500 axis
+		expect(
+			row("settler").find("[data-need]").attributes("style")
+		).toContain(`left: ${(5000 / 5500) * 100}%`);
+		// no need, no line
+		expect(row("technician").find("[data-need]").exists()).toBe(false);
+	});
+
 	// no report yet (404) is an empty state: no error, nothing logged
 	it("shows an empty state without a report", async () => {
 		mock.onGet(poprUrl("PP-003a")).reply(404);
@@ -115,6 +153,7 @@ describe("PlanPOPR", () => {
 		expect(wrapper.findComponent(PSpin).exists()).toBe(false);
 		expect(wrapper.text()).not.toContain("plan.tools.popr.loading");
 		expect(wrapper.find(".popr-table").exists()).toBe(false);
+		expect(wrapper.find("[data-popr-chart]").exists()).toBe(false);
 	});
 
 	it("shows an error when the report fails to load", async () => {

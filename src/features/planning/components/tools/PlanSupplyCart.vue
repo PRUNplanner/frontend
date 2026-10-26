@@ -38,14 +38,7 @@
 	import { formatNumber, formatAmount, clamp } from "@/util/numbers";
 
 	// UI
-	import {
-		PButton,
-		PButtonGroup,
-		PDataTable,
-		PInputNumber,
-		PSelect,
-		PIcon,
-	} from "@/ui";
+	import { PSegmented, PDataTable, PInputNumber, PSelect, PIcon } from "@/ui";
 	import type { PDataTableColumn } from "@/ui/ui.types";
 	import { RouterLink } from "vue-router";
 	import {
@@ -84,6 +77,12 @@
 		planetStorageId(props.planetNaturalId)
 	);
 	const refTypeFilter: Ref<TYPE_FILTER> = ref("all");
+	const typeOptions = computed(() =>
+		(["all", "workforce", "production"] as const).map((value) => ({
+			value,
+			label: t(`plan.tools.supply_cart.buttons.${value}`),
+		}))
+	);
 	const localMaterialIO: Ref<ISupplyCartElement[]> = ref([]);
 
 	watchEffect(() => {
@@ -250,23 +249,10 @@
 	<div
 		class="border border-b-0 rounded-[3px] border-white/20 p-3 flex flex-row justify-between">
 		<div>
-			<PButtonGroup>
-				<PButton
-					:pressed="refTypeFilter === 'all'"
-					@click="refTypeFilter = 'all'">
-					{{ $t("plan.tools.supply_cart.buttons.all") }}
-				</PButton>
-				<PButton
-					:pressed="refTypeFilter === 'workforce'"
-					@click="refTypeFilter = 'workforce'">
-					{{ $t("plan.tools.supply_cart.buttons.workforce") }}
-				</PButton>
-				<PButton
-					:pressed="refTypeFilter === 'production'"
-					@click="refTypeFilter = 'production'">
-					{{ $t("plan.tools.supply_cart.buttons.production") }}
-				</PButton>
-			</PButtonGroup>
+			<PSegmented
+				v-model:value="refTypeFilter"
+				:options="typeOptions"
+				:label="t('plan.tools.supply_cart.filter_label')" />
 		</div>
 		<div class="flex flex-row flex-wrap gap-3">
 			<div class="my-auto font-bold">
@@ -299,15 +285,14 @@
 				:elements="xitInitialElements"
 				transfer-name="Supply Cart Initial"
 				:button-text="t('plan.tools.supply_cart.buttons.xit_initial')"
-				:drawer-title="t('plan.tools.supply_cart.table.xit_initial_name')"
+				:drawer-title="
+					t('plan.tools.supply_cart.table.xit_initial_name')
+				"
 				button-secondary />
 		</div>
 	</div>
 
-	<PDataTable
-		:columns="columns"
-		:data="filteredMaterialIO"
-		striped>
+	<PDataTable :columns="columns" :data="filteredMaterialIO" striped>
 		<template #cell-ticker="{ row }">
 			<MaterialTile
 				:key="`SUPPLYCART#Material#${row.ticker}`"
@@ -337,11 +322,7 @@
 		<template #cell-workforce="{ row }">
 			<div class="text-center">
 				<PIcon
-					:class="
-						row.workforce
-							? 'text-positive'
-							: 'text-negative'
-					">
+					:class="row.workforce ? 'text-positive' : 'text-negative'">
 					<CheckCircleOutlineSharp v-if="row.workforce" />
 					<RemoveCircleOutlineSharp v-else />
 				</PIcon>
@@ -350,11 +331,7 @@
 		<template #cell-production="{ row }">
 			<div class="text-center">
 				<PIcon
-					:class="
-						row.production
-							? 'text-positive'
-							: 'text-negative'
-					">
+					:class="row.production ? 'text-positive' : 'text-negative'">
 					<CheckCircleOutlineSharp v-if="row.production" />
 					<RemoveCircleOutlineSharp v-else />
 				</PIcon>
@@ -365,59 +342,35 @@
 				<div
 					class="grid grid-cols-2 gap-x-3 gap-y-1 child:not-even:font-bold">
 					<div>
-						{{
-							$t(
-								"plan.tools.supply_cart.table.daily_cost"
-							)
-						}}
+						{{ $t("plan.tools.supply_cart.table.daily_cost") }}
 					</div>
 					<div>
 						{{ formatNumber(dailyCost) }}
-						<span class="pl-1 font-light text-muted">
-							ȼ
-						</span>
+						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</div>
 					<div>
-						{{
-							$t(
-								"plan.tools.supply_cart.table.total_cost"
-							)
-						}}
+						{{ $t("plan.tools.supply_cart.table.total_cost") }}
 					</div>
 					<div>
 						{{ formatNumber(totalCost) }}
-						<span class="pl-1 font-light text-muted">
-							ȼ
-						</span>
+						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</div>
 				</div>
 				<div
 					class="grid grid-cols-2 gap-x-3 gap-y-1 child:text-end child:not-even:font-bold">
 					<div>
-						{{
-							$t(
-								"plan.tools.supply_cart.table.total_weight"
-							)
-						}}
+						{{ $t("plan.tools.supply_cart.table.total_weight") }}
 					</div>
 					<div>
 						{{ formatNumber(totalWeight) }}
-						<span class="pl-1 font-light text-muted">
-							t
-						</span>
+						<span class="pl-1 font-light text-muted"> t </span>
 					</div>
 					<div>
-						{{
-							$t(
-								"plan.tools.supply_cart.table.total_volume"
-							)
-						}}
+						{{ $t("plan.tools.supply_cart.table.total_volume") }}
 					</div>
 					<div>
 						{{ formatNumber(totalVolume) }}
-						<span class="pl-1 font-light text-muted">
-							m³
-						</span>
+						<span class="pl-1 font-light text-muted"> m³ </span>
 					</div>
 				</div>
 			</div>

@@ -58,12 +58,6 @@
 			required: false,
 			default: undefined,
 		},
-		// a narrow pane drops In and Out
-		compact: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
 		// all rows, or only exported (delta > 0) or imported ones
 		filter: {
 			type: String as PropType<"all" | "exports" | "imports">,
@@ -107,9 +101,8 @@
 			];
 		return [
 			{ key: "ticker", title: "", sorter: true, width: 84 },
-			...(props.compact
-				? []
-				: [numeric("input", "input"), numeric("output", "output")]),
+			numeric("input", "input"),
+			numeric("output", "output"),
 			numeric("delta", "delta"),
 			props.value === "weight"
 				? numeric("totalWeight", "total_weight", 100)
@@ -150,9 +143,7 @@
 		if (!props.checks) return undefined;
 		const { red, amber } = countLevels([...props.checks.values()]);
 		const parts = [
-			...(red
-				? [t("cx.market_flags.summary.red", { n: red }, red)]
-				: []),
+			...(red ? [t("cx.market_flags.summary.red", { n: red }, red)] : []),
 			...(amber
 				? [t("cx.market_flags.summary.amber", { n: amber }, amber)]
 				: []),
@@ -163,12 +154,14 @@
 
 <template>
 	<!-- numbers never break mid-digit in the narrow side column; titles
-		wrap there instead of running into their sort arrows -->
+		wrap there instead of running into their sort arrows; a phone scrolls
+		the table sideways rather than squeezing In and Out -->
 	<PDataTable
 		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"
+		:min-width="400"
 		striped>
 		<template #header-ticker>
 			{{ t("terms.material_ticker") }}
@@ -237,7 +230,10 @@
 			})
 		}}
 	</p>
-	<p v-if="summary" class="px-3 pt-2 text-sm text-muted-strong" data-market-summary>
+	<p
+		v-if="summary"
+		class="px-3 pt-2 text-sm text-muted-strong"
+		data-market-summary>
 		{{ summary }}
 		<button
 			type="button"

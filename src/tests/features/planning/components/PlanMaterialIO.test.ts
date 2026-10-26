@@ -80,8 +80,6 @@ describe("PlanMaterialIO", () => {
 		]);
 		expect((await cols({ value: "weight" })).at(-1)).toBe("totalWeight");
 		expect((await cols({ value: "volume" })).at(-1)).toBe("totalVolume");
-		// a narrow pane drops In and Out
-		expect(await cols({ compact: true })).toEqual(["ticker", "delta", "price"]);
 	});
 
 	it("right-aligns every numeric column, header and cells", async () => {

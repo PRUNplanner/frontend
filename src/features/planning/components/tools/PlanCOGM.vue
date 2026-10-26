@@ -57,7 +57,7 @@
 	import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.types";
 
 	// UI
-	import { PButton, PButtonGroup, PNotice, PTag } from "@/ui";
+	import { PButton, PNotice, PSegmented, PTag } from "@/ui";
 	import { CheckSharp } from "@vicons/material";
 
 	const props = defineProps<{
@@ -201,6 +201,12 @@
 	 */
 
 	const scope = ref<string>(ALL_PLANETS);
+	const scopeOptions = computed(() => [
+		{ value: ALL_PLANETS, label: t("plan.tools.cogm.prices.all_planets") },
+		...(props.planetId
+			? [{ value: props.planetId, label: planetLabel.value }]
+			: []),
+	]);
 
 	const scopePrices = computed<CXDataTickerOption[]>({
 		get: () => {
@@ -287,8 +293,7 @@
 		() => (props.cxUuid ? planningStore.cxs[props.cxUuid] : undefined),
 		(cx) => {
 			const current = loaded.value;
-			if (saveState.value === "saving" || !current || !edit.value)
-				return;
+			if (saveState.value === "saving" || !current || !edit.value) return;
 			if (
 				cx &&
 				(cx.uuid !== current.uuid ||
@@ -470,23 +475,11 @@
 				<h3 class="text-base font-bold">
 					{{ $t("plan.tools.cogm.prices.fixed_title") }}
 				</h3>
-				<PButtonGroup
-					role="group"
-					:aria-label="$t('plan.tools.cogm.prices.scope')">
-					<PButton
-						size="sm"
-						:pressed="scope === ALL_PLANETS"
-						@click="scope = ALL_PLANETS">
-						{{ $t("plan.tools.cogm.prices.all_planets") }}
-					</PButton>
-					<PButton
-						size="sm"
-						:pressed="scope === planetId"
-						data-scope-planet
-						@click="scope = planetId ?? ALL_PLANETS">
-						{{ planetLabel }}
-					</PButton>
-				</PButtonGroup>
+				<PSegmented
+					v-model:value="scope"
+					size="sm"
+					:options="scopeOptions"
+					:label="$t('plan.tools.cogm.prices.scope')" />
 			</div>
 			<CXFixedPriceTable
 				:key="scope"

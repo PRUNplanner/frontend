@@ -384,7 +384,10 @@ describe("PlanView", () => {
 		const { wrapper } = await mountView();
 		const io = () => wrapper.find("[data-io-pane]");
 		const table = () => wrapper.findComponent(PlanMaterialIO);
-		expect(table().props()).toMatchObject({ value: "price", filter: "all" });
+		expect(table().props()).toMatchObject({
+			value: "price",
+			filter: "all",
+		});
 
 		await io()
 			.findAll("button")
@@ -403,42 +406,6 @@ describe("PlanView", () => {
 			.trigger("click");
 		expect(table().props("filter")).toBe("imports");
 		expect(io().text()).toContain("plan.io.profit");
-	});
-
-	it("drops In and Out of Material I/O while its pane is narrow", async () => {
-		let observe: ((width: number) => void) | undefined;
-		vi.stubGlobal(
-			"ResizeObserver",
-			class {
-				cb: ResizeObserverCallback;
-				constructor(cb: ResizeObserverCallback) {
-					this.cb = cb;
-				}
-				// tooltips observe too, only the pane counts
-				observe(el: Element) {
-					if (!el.hasAttribute("data-io-pane")) return;
-					observe = (width) =>
-						this.cb(
-							[{ contentRect: { width } } as ResizeObserverEntry],
-							this as unknown as ResizeObserver
-						);
-				}
-				unobserve() {}
-				disconnect() {}
-			}
-		);
-		const { wrapper } = await mountView();
-		const compact = () =>
-			wrapper.findComponent(PlanMaterialIO).props("compact");
-
-		// the side column beside Production keeps them, a phone has no room
-		observe!(448);
-		await flushPromises();
-		expect(compact()).toBe(false);
-		observe!(343);
-		await flushPromises();
-		expect(compact()).toBe(true);
-		vi.unstubAllGlobals();
 	});
 
 	// -- calculation debug -----------------------------------------------
@@ -981,10 +948,7 @@ describe("PlanView", () => {
 
 	it("explains the history controls on hover", async () => {
 		const { wrapper } = await mountView({}, { login: true });
-		const labels = [
-			"plan.history.undo",
-			"plan.history.redo",
-		];
+		const labels = ["plan.history.undo", "plan.history.redo"];
 
 		const tooltips = () =>
 			[...document.body.querySelectorAll("[role=tooltip]")].map((e) =>

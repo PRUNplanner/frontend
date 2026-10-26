@@ -35,7 +35,7 @@
 	} from "@/ui/charts/charts.types";
 
 	// UI
-	import { PButton, PButtonGroup } from "@/ui";
+	import { PSegmented } from "@/ui";
 
 	const { t } = useI18n();
 
@@ -58,6 +58,12 @@
 	);
 
 	const MODES: ProfitBreakdownMode[] = ["cost_type", "building"];
+	const modeOptions = computed(() =>
+		MODES.map((m) => ({
+			value: m,
+			label: t(`plan.tools.profit_breakdown.mode.${m}`),
+		}))
+	);
 	function setMode(value: ProfitBreakdownMode): void {
 		if (mode.value === value) return;
 		mode.value = value;
@@ -253,18 +259,12 @@
 			<span class="text-sm text-muted">
 				{{ t("plan.tools.profit_breakdown.subtitle") }}
 			</span>
-			<PButtonGroup
+			<PSegmented
 				class="ml-auto"
-				role="group"
-				:aria-label="t('plan.tools.profit_breakdown.mode_label')">
-				<PButton
-					v-for="m in MODES"
-					:key="m"
-					:pressed="mode === m"
-					@click="setMode(m)">
-					{{ t(`plan.tools.profit_breakdown.mode.${m}`) }}
-				</PButton>
-			</PButtonGroup>
+				:value="mode"
+				:options="modeOptions"
+				:label="t('plan.tools.profit_breakdown.mode_label')"
+				@update:value="setMode" />
 		</div>
 
 		<p v-if="isEmpty" class="text-muted py-6">
