@@ -253,6 +253,8 @@ export interface IAnalyticsEventProperties {
 	"plan:plancheck_compare": { same_planet: boolean };
 	"plan:profit_breakdown_mode": { mode: "cost_type" | "building" };
 	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
+	"plan:recipe_picker_open": { mode: "change" | "add" };
+	"plan:recipe_picker_sort": { sort: "daily" | "popular" };
 	"plan:insights_open": { planet_natural_id: string };
 	"plan:starter_show": {
 		planet_natural_id: string;

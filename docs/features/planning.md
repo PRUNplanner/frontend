@@ -29,7 +29,10 @@ editor UI. The engine is documented in depth in
 - **Editor panels** (`components/`) are wired together by `PlanView.vue`:
   `PlanConfiguration`, `PlanBonuses`, `PlanArea`, `PlanWorkforce`,
   `PlanInfrastructure`, `PlanExperts`, `PlanSaveButton`, `PlanProduction` (→
-  `PlanProductionBuilding` → `PlanProductionRecipe`), `PlanMaterialIO`,
+  `PlanProductionBuilding` → `PlanProductionRecipe`, and the inline
+  `PlanRecipePicker` under a recipe row or "+ Recipe", one open at a time;
+  its ordering and dependency note are pure functions in
+  `recipePicker.util.ts`), `PlanMaterialIO`,
   `PlanOverview`, `PlanStatusBar` and `PlanMoreMenu` (Save as copy, share
   link, Reload). Tools open from `PlanToolTabs` and load lazily inside a
   `Suspense` with `PlanToolFallback` (a delayed spinner).

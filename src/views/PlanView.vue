@@ -236,7 +236,6 @@
 		handleCreateBuildingAndRecipe,
 		handleUpdateBuildingRecipeAmount,
 		handleDeleteBuildingRecipe,
-		handleAddBuildingRecipe,
 		handleAddBuildingRecipes,
 		handleApplyStarterSetup,
 		handleChangeBuildingRecipe,
@@ -1104,6 +1103,18 @@
 		);
 	}
 
+	// "+ Recipe" in the picker: the picked recipe as a new order
+	function addPickedRecipe(buildingIndex: number, recipeId: string): void {
+		handleAddBuildingRecipes(buildingIndex, [
+			{ recipeid: recipeId, amount: 1 },
+		]);
+		toastUndo(
+			t("plan.history.recipe_added", {
+				building: refPlanData.value.plan_data.buildings[buildingIndex].name,
+			})
+		);
+	}
+
 	// One undo step: the setup and the habs for its workforce. Auto-optimise
 	// is a preference, not plan data, so undo leaves it on.
 	const addStarterSetup = record(async (setup: IStarterSetup) => {
@@ -1488,6 +1499,7 @@
 							:cx-uuid="refCXUuid"
 							:planet-id="planetData.planet_natural_id"
 							:changes="sharedChanges"
+							:material-i-o="result.materialio"
 							@update:building:amount="handleUpdateBuildingAmount"
 							@delete:building="deleteBuilding"
 							@create:building="handleCreateBuilding"
@@ -1498,7 +1510,7 @@
 								handleUpdateBuildingRecipeAmount
 							"
 							@delete:building:recipe="deleteBuildingRecipe"
-							@add:building:recipe="handleAddBuildingRecipe"
+							@pick:building:recipe="addPickedRecipe"
 							@add:building:recipes="handleAddBuildingRecipes"
 							@apply:starter="applyStarterSetup"
 							@update:building:recipe="changeBuildingRecipe" />

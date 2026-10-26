@@ -61,6 +61,7 @@ vi.mock("@/features/planning/components/PlanProductionBuilding.vue", () => ({
 			buildingIndex: Number,
 			cxUuid: String,
 			planetId: String,
+			picker: { type: [Number, null], default: undefined },
 		},
 		render: () => h("div"),
 	},
@@ -117,16 +118,17 @@ async function mountProduction(
 	return mountComponent(
 		PlanProduction,
 		{
-		disabled: false,
-		productionData: {
-			buildings: [building("SME"), building("FP")],
-			materialio: [],
-		},
-		cogc: "METALLURGY",
-		cxUuid: "cx-uuid",
-		planetId: "ZV-307c",
-		planetResources: RESOURCES,
-		...props,
+			disabled: false,
+			productionData: {
+				buildings: [building("SME"), building("FP")],
+				materialio: [],
+			},
+			cogc: "METALLURGY",
+			cxUuid: "cx-uuid",
+			planetId: "ZV-307c",
+			planetResources: RESOURCES,
+			materialIO: [],
+			...props,
 		},
 		{ messages }
 	);
@@ -212,8 +214,12 @@ describe("PlanProduction", () => {
 		insights.mostPlanned = "FP#DW";
 		const { wrapper } = await mountProduction();
 
-		children(wrapper).at(1)!.vm.$emit("update:building:recipe", 1, 0, "FP#DW");
-		children(wrapper).at(1)!.vm.$emit("update:building:recipe", 1, 0, "FP#X");
+		children(wrapper)
+			.at(1)!
+			.vm.$emit("update:building:recipe", 1, 0, "FP#DW");
+		children(wrapper)
+			.at(1)!
+			.vm.$emit("update:building:recipe", 1, 0, "FP#X");
 
 		expect(trackPlanEdit.mock.calls.map((c) => c[0])).toEqual([
 			expect.objectContaining({
@@ -392,7 +398,7 @@ describe("PlanProduction", () => {
 		fp.vm.$emit("delete:building", 1);
 		fp.vm.$emit("update:building:recipe:amount", 1, 2, 3);
 		fp.vm.$emit("delete:building:recipe", 1, 0);
-		fp.vm.$emit("add:building:recipe", 1);
+		fp.vm.$emit("pick:building:recipe", 1, "FP#X");
 		fp.vm.$emit("update:building:recipe", 1, 0, "FP#DW");
 
 		expect(component.emitted("update:building:amount")).toEqual([[1, 4]]);
@@ -401,10 +407,36 @@ describe("PlanProduction", () => {
 			[1, 2, 3],
 		]);
 		expect(component.emitted("delete:building:recipe")).toEqual([[1, 0]]);
-		expect(component.emitted("add:building:recipe")).toEqual([[1]]);
+		expect(component.emitted("pick:building:recipe")).toEqual([
+			[1, "FP#X"],
+		]);
 		expect(component.emitted("update:building:recipe")).toEqual([
 			[1, 0, "FP#DW"],
 		]);
+		expect(trackPlanEdit).toHaveBeenCalledWith(
+			expect.objectContaining({
+				field: "recipe_add",
+				building_ticker: "FP",
+			})
+		);
+	});
+
+	it("keeps one recipe picker open, a pick closes it", async () => {
+		const { wrapper } = await mountProduction();
+		const [sme, fp] = children(wrapper);
+
+		sme.vm.$emit("open:picker", 0);
+		await flushPromises();
+		expect(sme.props("picker")).toBe(0);
+
+		fp.vm.$emit("open:picker", null);
+		await flushPromises();
+		expect(sme.props("picker")).toBeUndefined();
+		expect(fp.props("picker")).toBeNull();
+
+		fp.vm.$emit("pick:building:recipe", 1, "FP#X");
+		await flushPromises();
+		expect(fp.props("picker")).toBeUndefined();
 	});
 
 	describe("starter setup", () => {
@@ -412,9 +444,7 @@ describe("PlanProduction", () => {
 		const starter = (wrapper: VueWrapper) =>
 			wrapper.findComponent(PlanStarterSetup);
 		const showLink = (wrapper: VueWrapper) =>
-			wrapper
-				.findAll("button")
-				.find((b) => b.text() === "show");
+			wrapper.findAll("button").find((b) => b.text() === "show");
 
 		it("shows the card on an empty plan with insights, tracked once", async () => {
 			insights.available = ref(true);
@@ -430,8 +460,16 @@ describe("PlanProduction", () => {
 		});
 
 		it.each([
-			["without insights (setting off, below threshold, v1)", false, empty],
-			["for a disabled (shared) plan", true, { ...empty, disabled: true }],
+			[
+				"without insights (setting off, below threshold, v1)",
+				false,
+				empty,
+			],
+			[
+				"for a disabled (shared) plan",
+				true,
+				{ ...empty, disabled: true },
+			],
 			["once the plan has a building", true, {}],
 		])("is hidden %s", async (_name, available, props) => {
 			insights.available = ref(available);
@@ -446,14 +484,22 @@ describe("PlanProduction", () => {
 		it.each([
 			["an empty plan without insights", false, empty, true],
 			["an empty plan with the starter card", true, empty, false],
-			["a disabled (shared) plan", false, { ...empty, disabled: true }, false],
+			[
+				"a disabled (shared) plan",
+				false,
+				{ ...empty, disabled: true },
+				false,
+			],
 			["a plan with a building", false, {}, false],
-		])("hints at the building select on %s", async (_name, available, props, shown) => {
-			insights.available = ref(available);
-			const { wrapper } = await mountProduction(props);
+		])(
+			"hints at the building select on %s",
+			async (_name, available, props, shown) => {
+				insights.available = ref(available);
+				const { wrapper } = await mountProduction(props);
 
-			expect(wrapper.find("[data-empty-hint]").exists()).toBe(shown);
-		});
+				expect(wrapper.find("[data-empty-hint]").exists()).toBe(shown);
+			}
+		);
 
 		it("Start empty hides it, the link brings it back", async () => {
 			insights.available = ref(true);
@@ -461,7 +507,10 @@ describe("PlanProduction", () => {
 				// the link sits in an i18n-t slot
 				plan: {
 					tools: {
-						plan_starter: { empty: "No buildings, or {link}", show: "show" },
+						plan_starter: {
+							empty: "No buildings, or {link}",
+							show: "show",
+						},
 					},
 				},
 			});
@@ -469,9 +518,12 @@ describe("PlanProduction", () => {
 			starter(wrapper).vm.$emit("dismiss");
 			await flushPromises();
 			expect(starter(wrapper).exists()).toBe(false);
-			expect(trackEvent).toHaveBeenLastCalledWith("plan:starter_dismiss", {
-				planet_natural_id: "ZV-307c",
-			});
+			expect(trackEvent).toHaveBeenLastCalledWith(
+				"plan:starter_dismiss",
+				{
+					planet_natural_id: "ZV-307c",
+				}
+			);
 
 			await showLink(wrapper)!.trigger("click");
 			expect(starter(wrapper).exists()).toBe(true);

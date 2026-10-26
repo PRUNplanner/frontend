@@ -26,7 +26,10 @@
 		PlanetResource,
 		PlanetResourceType,
 	} from "@/features/api/schemas/gameData.schemas";
-	import type { IProductionResult } from "@/features/planning/usePlanCalculation.types";
+	import type {
+		IMaterialIO,
+		IProductionResult,
+	} from "@/features/planning/usePlanCalculation.types";
 	import type {
 		PlanCOGCProgram,
 		PlanDataBuilding,
@@ -71,6 +74,11 @@
 			type: Object as PropType<PlanetResource[]>,
 			required: true,
 		},
+		// the plan's Material I/O, for the recipe picker
+		materialIO: {
+			type: Array as PropType<IMaterialIO[]>,
+			required: true,
+		},
 		// a shared plan's copy: what changed against it
 		changes: {
 			type: Object as PropType<IPlanChanges>,
@@ -96,7 +104,7 @@
 			buildingIndex: number,
 			recipeIndex: number
 		): void;
-		(e: "add:building:recipe", buildingIndex: number): void;
+		(e: "pick:building:recipe", buildingIndex: number, recipeId: string): void;
 		(
 			e: "apply:starter",
 			setup: IStarterSetup,
@@ -118,6 +126,23 @@
 	// Local State
 	const localProductionData: ComputedRef<IProductionResult> = computed(
 		() => props.productionData
+	);
+
+	// one recipe picker at a time: the building, and the order it replaces
+	// or null to add one
+	const refPicker: Ref<{ building: number; recipe: number | null } | null> =
+		ref(null);
+	function openPicker(building: number, recipe: number | null): void {
+		refPicker.value = { building, recipe };
+	}
+	function closePicker(): void {
+		refPicker.value = null;
+	}
+	// the picker is held by index: a building added, removed or brought
+	// back by undo would move it to another building
+	watch(
+		() => localProductionData.value.buildings.map((b) => b.name).join(),
+		closePicker
 	);
 	const localSelectedBuilding: Ref<string | undefined> = ref(undefined);
 	const localCOGC: ComputedRef<PlanCOGCProgram> = computed(() => props.cogc);
@@ -356,6 +381,11 @@
 				:cx-uuid="cxUuid"
 				:planet-id="planetId"
 				:change="changes?.buildings[building.name]"
+				:picker="refPicker?.building === index ? refPicker.recipe : undefined"
+				:material-i-o="materialIO"
+				:buildings="localProductionData.buildings"
+				@open:picker="(recipe: number | null) => openPicker(index, recipe)"
+				@close:picker="closePicker"
 				@update:building:amount="
 					(index: number, value: number) => {
 						emit('update:building:amount', index, value);
@@ -404,16 +434,17 @@
 						});
 					}
 				"
-				@add:building:recipe="
-					(buildingIndex: number) => {
-						emit('add:building:recipe', buildingIndex);
+				@pick:building:recipe="
+					(buildingIndex: number, recipeId: string) => {
+						closePicker();
+						emit('pick:building:recipe', buildingIndex, recipeId);
 						trackPlanEdit({
 							field: 'recipe_add',
 							planet_natural_id: props.planetId,
 							building_ticker: building.name,
 							...mostPlanned(
 								building.name,
-								building.recipeOptions[0]?.recipe_id
+								recipeId
 							),
 						});
 					}
@@ -438,6 +469,7 @@
 						recipeIndex: number,
 						recipeId: string
 					) => {
+						closePicker();
 						emit(
 							'update:building:recipe',
 							buildingIndex,

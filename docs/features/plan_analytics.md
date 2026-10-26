@@ -6,7 +6,7 @@ pickers' "popular here" hints and the "Start from a typical setup" card.
 
 **Used by.** `views/PlanView.vue` (the box), the `planning` editor components
 `PlanProduction`, `PlanProductionBuilding` and
-`PlanProductionRecipe` (`usePlanetInsights`).
+`PlanRecipePicker` (`usePlanetInsights`).
 
 ## Key files
 
@@ -21,7 +21,7 @@ pickers' "popular here" hints and the "Start from a typical setup" card.
   `[]`) for the plan editor:
   - the "Popular on" group of the building picker (`PlanProduction`, via
     `getProductionBuildingOptions`);
-  - the "Plans here" column of the recipe picker (`PlanProductionRecipe`);
+  - the "Plans here" column of the recipe picker (`PlanRecipePicker`);
   - the "Most planned here" mix hint on a building without recipes
     (`PlanProductionBuilding`, `typicalRecipes`).
 - **`components/PlanStarterSetup.vue`**: the "Start from a typical setup"

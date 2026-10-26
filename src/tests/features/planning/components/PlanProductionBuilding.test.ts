@@ -4,6 +4,7 @@ import type { VueWrapper } from "@vue/test-utils";
 
 import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
+import PlanRecipePicker from "@/features/planning/components/PlanRecipePicker.vue";
 import PInputNumber from "@/ui/components/PInputNumber.vue";
 import PValue from "@/ui/components/PValue.vue";
 import PTooltip from "@/ui/components/PTooltip.vue";
@@ -44,7 +45,18 @@ vi.mock("@/features/planning/components/PlanProductionRecipe.vue", () => ({
 			isNew: Boolean,
 			cxUuid: String,
 			planetId: String,
+			pickerOpen: Boolean,
 		},
+		render: () => h("div"),
+	},
+}));
+
+// PlanRecipePicker has its own test, the stub only keeps the props
+vi.mock("@/features/planning/components/PlanRecipePicker.vue", () => ({
+	default: {
+		name: "PlanRecipePicker",
+		props: { mode: String, recipeIndex: Number, building: Object },
+		emits: ["pick", "close"],
 		render: () => h("div"),
 	},
 }));
@@ -84,6 +96,8 @@ async function mountBuilding(props: Record<string, unknown> = {}) {
 		buildingData: building(),
 		buildingIndex: 2,
 		cxUuid: "cx-uuid",
+		materialIO: [],
+		buildings: [],
 		planetId: "ZV-307c",
 		...props,
 	});
@@ -225,14 +239,25 @@ describe("PlanProductionBuilding", () => {
 		expect(buildingData.amount).toBe(2);
 	});
 
-	it("emits adding a recipe and deleting the building", async () => {
-		const { wrapper, component } = await mountBuilding();
+	it("opens the add picker from + Recipe, closes it again, deletes", async () => {
+		const { wrapper, component, setProps } = await mountBuilding();
 
 		await button(wrapper, ADD_RECIPE)!.trigger("click");
-		// the icon-only delete button comes last
-		await wrapper.findAll("button").at(-1)!.trigger("click");
+		expect(component.emitted("open:picker")).toEqual([[null]]);
 
-		expect(component.emitted("add:building:recipe")).toEqual([[2]]);
+		await setProps({ picker: null });
+		expect(
+			wrapper.find("[data-add-recipe]").attributes("aria-expanded")
+		).toBe("true");
+		expect(wrapper.findComponent(PlanRecipePicker).props("mode")).toBe(
+			"add"
+		);
+		await button(wrapper, ADD_RECIPE)!.trigger("click");
+		expect(component.emitted("close:picker")).toHaveLength(1);
+
+		// the icon-only delete button comes last
+		const buttons = wrapper.findAll("button");
+		await buttons.at(-1)!.trigger("click");
 		expect(component.emitted("delete:building")).toEqual([[2]]);
 	});
 
@@ -290,20 +315,47 @@ describe("PlanProductionBuilding", () => {
 	});
 
 	it("adds the building index to the recipe events", async () => {
-		const { wrapper, component } = await mountBuilding();
+		const { wrapper, component, setProps } = await mountBuilding();
 		const second = wrapper.findAllComponents(PlanProductionRecipe).at(1)!;
 
 		second.vm.$emit("update:building:recipe:amount", 1, 5);
 		second.vm.$emit("delete:building:recipe", 1);
-		second.vm.$emit("update:building:recipe", 1, "SME#CU");
+		second.vm.$emit("open:picker", 1);
 
 		expect(component.emitted("update:building:recipe:amount")).toEqual([
 			[2, 1, 5],
 		]);
 		expect(component.emitted("delete:building:recipe")).toEqual([[2, 1]]);
+		expect(component.emitted("open:picker")).toEqual([[1]]);
+
+		// the open picker sits under its row; its opener closes it
+		await setProps({ picker: 1 });
+		expect(second.props("pickerOpen")).toBe(true);
+		const picker = wrapper.findComponent(PlanRecipePicker);
+		expect(picker.props()).toMatchObject({
+			mode: "change",
+			recipeIndex: 1,
+		});
+		second.vm.$emit("open:picker", 1);
+		expect(component.emitted("close:picker")).toHaveLength(1);
+
+		picker.vm.$emit("pick", "SME#CU");
 		expect(component.emitted("update:building:recipe")).toEqual([
 			[2, 1, "SME#CU"],
 		]);
+	});
+
+	it("adds the picked recipe as a new order in add mode", async () => {
+		const { wrapper, component } = await mountBuilding({ picker: null });
+
+		wrapper.findComponent(PlanRecipePicker).vm.$emit("pick", "SME#CU");
+		wrapper.findComponent(PlanRecipePicker).vm.$emit("close");
+
+		expect(component.emitted("pick:building:recipe")).toEqual([
+			[2, "SME#CU"],
+		]);
+		expect(component.emitted("update:building:recipe")).toBeUndefined();
+		expect(component.emitted("close:picker")).toHaveLength(1);
 	});
 
 	it("shows a hint without active recipes", async () => {

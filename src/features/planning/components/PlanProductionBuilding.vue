@@ -1,8 +1,18 @@
 <script setup lang="ts">
-	import { computed, type ComputedRef, type PropType } from "vue";
+	import {
+		computed,
+		type ComputedRef,
+		nextTick,
+		type PropType,
+		useTemplateRef,
+		watch,
+	} from "vue";
 
 	// Types & Interfaces
-	import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
+	import type {
+		IMaterialIO,
+		IProductionBuilding,
+	} from "@/features/planning/usePlanCalculation.types";
 	import type { PlanDataBuilding } from "@/features/api/schemas/planningData.schemas";
 	import type { ITypicalRecipes } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { IBuildingChange } from "@/features/sharing/sharedPlan.types";
@@ -13,6 +23,7 @@
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
+	import PlanRecipePicker from "@/features/planning/components/PlanRecipePicker.vue";
 
 	// Util
 	import { formatNumber, formatPercent } from "@/util/numbers";
@@ -50,6 +61,21 @@
 			required: false,
 			default: undefined,
 		},
+		// open picker: the order it replaces, or null to add one
+		picker: {
+			type: [Number, null] as PropType<number | null>,
+			required: false,
+			default: undefined,
+		},
+		// the plan's Material I/O and buildings, for the picker's notes
+		materialIO: {
+			type: Array as PropType<IMaterialIO[]>,
+			required: true,
+		},
+		buildings: {
+			type: Array as PropType<IProductionBuilding[]>,
+			required: true,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -66,7 +92,9 @@
 			buildingIndex: number,
 			recipeIndex: number
 		): void;
-		(e: "add:building:recipe", buildingIndex: number): void;
+		(e: "open:picker", recipeIndex: number | null): void;
+		(e: "close:picker"): void;
+		(e: "pick:building:recipe", buildingIndex: number, recipeId: string): void;
 		(
 			e: "add:building:recipes",
 			buildingIndex: number,
@@ -136,6 +164,45 @@
 			localBuildingData.value.constructionCost *
 			localBuildingData.value.amount
 	);
+
+	// a closed picker gives the focus back to what opened it
+	const recipesRef = useTemplateRef<HTMLElement>("recipes");
+	const addButtonRef = useTemplateRef<{ $el: HTMLElement }>("addButton");
+	watch(
+		() => props.picker,
+		(now, before) => {
+			if (now !== undefined || before === undefined) return;
+			void nextTick(() => {
+				// another picker or field took the focus meanwhile: keep it
+				const focused = document.activeElement;
+				if (
+					focused &&
+					focused !== document.body &&
+					!recipesRef.value?.contains(focused)
+				)
+					return;
+				const opener =
+					before === null
+						? addButtonRef.value?.$el
+						: recipesRef.value?.querySelectorAll("[data-recipe-button]")[
+								before
+							];
+				(opener as HTMLElement | null | undefined)?.focus();
+			});
+		}
+	);
+
+	function pick(recipeId: string): void {
+		if (props.picker === null)
+			emit("pick:building:recipe", props.buildingIndex, recipeId);
+		else if (props.picker !== undefined)
+			emit(
+				"update:building:recipe",
+				props.buildingIndex,
+				props.picker,
+				recipeId
+			);
+	}
 </script>
 
 <template>
@@ -190,8 +257,13 @@
 				" />
 			<PButton
 				v-if="!disabled && localBuildingData.recipeOptions.length > 0"
+				ref="addButton"
 				size="sm"
-				@click="emit('add:building:recipe', buildingIndex)">
+				:aria-expanded="picker === null ? 'true' : 'false'"
+				data-add-recipe
+				@click="
+					picker === null ? emit('close:picker') : emit('open:picker', null)
+				">
 				<template #icon><PlusSharp /></template>
 				{{
 					$t("plan.components.production_building.buttons.add_recipe")
@@ -335,11 +407,12 @@
 			<template #icon><ClearSharp /></template>
 		</PButton>
 	</div>
-	<div class="col-span-12">
+	<div ref="recipes" class="col-span-12">
 		<div v-if="localBuildingData.activeRecipes.length > 0">
-			<div
+			<template
 				v-for="(recipe, index) in localBuildingData.activeRecipes"
-				:key="`RECIPE#${index}#${recipe.recipeId}`"
+				:key="`RECIPE#${index}#${recipe.recipeId}`">
+			<div
 				class="grid grid-cols-[auto_4.5rem_minmax(0,1fr)_auto] xl:grid-cols-[6rem_minmax(0,1fr)_repeat(3,16.6667%)] px-3 py-2 border-l-2 border-transparent items-center even:bg-white/5 border-b border-b-white/10 last:border-b-0 gap-x-3 gap-y-2 xl:gap-0">
 				<PlanProductionRecipe
 					:disabled="disabled"
@@ -349,6 +422,7 @@
 					:cx-uuid="cxUuid"
 					:planet-id="planetId"
 					:is-new="!!change?.newRecipes.includes(recipe.recipeId)"
+					:picker-open="picker === index"
 					@update:building:recipe:amount="
 						(index: number, value: number) => {
 							emit(
@@ -368,17 +442,22 @@
 							);
 						}
 					"
-					@update:building:recipe="
-						(index: number, recipeid: string) => {
-							emit(
-								'update:building:recipe',
-								buildingIndex,
-								index,
-								recipeid
-							);
-						}
+					@open:picker="
+						(i: number) =>
+							picker === i ? emit('close:picker') : emit('open:picker', i)
 					" />
 			</div>
+			<PlanRecipePicker
+				v-if="picker === index"
+				mode="change"
+				:building="localBuildingData"
+				:recipe-index="index"
+				:material-i-o="materialIO"
+				:buildings="buildings"
+				:planet-id="planetId"
+				@pick="pick"
+				@close="emit('close:picker')" />
+			</template>
 		</div>
 		<div
 			v-else
@@ -419,5 +498,14 @@
 				</PButton>
 			</template>
 		</div>
+		<PlanRecipePicker
+			v-if="picker === null"
+			mode="add"
+			:building="localBuildingData"
+			:material-i-o="materialIO"
+			:buildings="buildings"
+			:planet-id="planetId"
+			@pick="pick"
+			@close="emit('close:picker')" />
 	</div>
 </template>

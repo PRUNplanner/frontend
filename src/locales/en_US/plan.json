@@ -18,7 +18,8 @@
 		"redo": "Redo",
 		"building_removed": "Building removed",
 		"recipe_removed": "Recipe removed",
-		"recipe_changed": "{building} recipe changed"
+		"recipe_changed": "{building} recipe changed",
+		"recipe_added": "{building} recipe added"
 	},
 	"actions": {
 		"more": "More",
@@ -687,6 +688,37 @@
 		}
 	},
 	"production": {
-		"empty": "No buildings yet. Add the first with “{select}” above."
+		"empty": "No buildings yet. Add the first with “{select}” above.",
+		"change_recipe": "Change recipe {recipe}"
+	},
+	"picker": {
+		"change_title": "Change recipe",
+		"add_title": "Add a recipe to {building} as a new order",
+		"replacing": "replacing {amount} × {ticker}",
+		"close": "Close",
+		"sort": {
+			"label": "Sort by",
+			"daily": "ȼ / day",
+			"popular": "Popular"
+		},
+		"columns": {
+			"makes": "Makes",
+			"from": "From",
+			"daily": "ȼ / day",
+			"area": "ȼ / area",
+			"payback": "Payback",
+			"plans": "Plans"
+		},
+		"dependency": "Your {buildings} turn this {ticker} into {outputs}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
+		"dependency_workforce": "Your workforce uses this {ticker}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
+		"uses_made": "uses {tickers} from the plan",
+		"feeds": "feeds {buildings}",
+		"current": "current recipe",
+		"in_plan": "in plan",
+		"vs_now": "{delta} vs now",
+		"below_threshold": "< 5 %",
+		"per_building": "ȼ per building and day",
+		"keys": "Click or Enter replaces · Esc closes",
+		"keys_add": "Click or Enter adds · Esc closes"
 	}
 }
