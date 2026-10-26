@@ -44,7 +44,10 @@ pnpm test:coverage                          # unit + component tests, one merged
 - **IndexedDB.**
   - `fake-indexeddb/auto` provides it.
   - `__INDEXEDDB_VERSION__` is `Date.now()`, and a global `beforeEach`
-    closes the connection and deletes the DB (`resetDB()`).
+    empties every store through a short connection of its own
+    (`emptyDB` in `vitest.setup.ts`). The app's cached connection stays
+    open, since a read a previous test left running would fail on a closed
+    one, and the in-memory `useDB` caches are not reset.
   - Seed data yourself in `beforeEach`: data seeded in `beforeAll` is gone
     from the second test on.
 - **Per-test reset.** The setup file also clears `localStorage` and
