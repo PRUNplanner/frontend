@@ -235,10 +235,10 @@ router.beforeEach((to) => {
 	const debug = to.query.debug;
 	if (debug === undefined) return;
 
-	if (debug === "calc") setCalcDebug(true, "url");
+	if (debug === "calc") setCalcDebug(true);
 	else if (debug === "gaps") setMarketGapsDebug(true);
 	else if (debug === "off") {
-		setCalcDebug(false, "url");
+		setCalcDebug(false);
 		setMarketGapsDebug(false);
 	}
 

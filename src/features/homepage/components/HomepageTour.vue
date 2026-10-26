@@ -80,10 +80,6 @@
 
 	function toggle(): void {
 		playing.value = !playing.value;
-		trackEvent("landing:tour_toggle", {
-			tour: name,
-			is_playing: playing.value,
-		});
 	}
 
 	// the image of a tour below the hero loads once the tour comes near:

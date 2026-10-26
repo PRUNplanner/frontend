@@ -103,7 +103,7 @@ describe("HomepageMarketToday", () => {
 		expect(lead).toContain("Straight from FIO");
 	});
 
-	it("sends its events: movers direction, sector and mover clicks", async () => {
+	it("sends its events: sector and mover clicks", async () => {
 		vi.mocked(callMarketSummary).mockResolvedValue(summary);
 		const { wrapper } = await mount();
 		await flushPromises();
@@ -112,9 +112,6 @@ describe("HomepageMarketToday", () => {
 			.findAll("button")
 			.find((b) => b.text() === "Falling")!;
 		await falling.trigger("click");
-		expect(trackEvent).toHaveBeenCalledWith("landing:market_view_change", {
-			view: "falling",
-		});
 		expect(wrapper.findComponent(MarketMovers).props("direction")).toBe(
 			"falling"
 		);

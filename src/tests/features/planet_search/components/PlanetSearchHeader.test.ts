@@ -8,6 +8,7 @@ import {
 import PlanetSearchHeader from "@/features/planet_search/components/PlanetSearchHeader.vue";
 import PlanetSearchResultsBar from "@/features/planet_search/components/PlanetSearchResultsBar.vue";
 import PlanetSearchColumnsMenu from "@/features/planet_search/components/PlanetSearchColumnsMenu.vue";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { mountComponent } from "@/tests/mountComponent";
 import {
 	activeChips,
@@ -34,6 +35,8 @@ const bodyButton = (text: string) =>
 	[...document.body.querySelectorAll("button")].find(
 		(b) => b.textContent?.trim() === text
 	)!;
+
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 describe("PlanetSearchHeader", () => {
 	it("opens the save field prefilled from the chips", async () => {
@@ -256,6 +259,11 @@ describe("PlanetSearchColumnsMenu", () => {
 
 		boxes[0].click();
 		expect(menu.emitted("update:hiddenColumns")![0]).toEqual([["fert"]]);
+		expect(trackEvent).toHaveBeenCalledWith("planet_search:action", {
+			action: "column_toggle",
+			column: "fert",
+			is_shown: false,
+		});
 
 		bodyButton("planet_search.columns.none").click();
 		expect(menu.emitted("update:hiddenMaterials")![0]).toEqual([["AR", "O"]]);

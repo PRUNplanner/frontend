@@ -54,7 +54,7 @@
 			<h2 class="text-2xl pb-3">Calculation debug</h2>
 			<PCheckbox
 				:checked="calcDebug"
-				@update:checked="(v) => setCalcDebug(!!v, 'debug_page')">
+				@update:checked="(v) => setCalcDebug(!!v)">
 				Adds a Debug panel to the plan page that lists every
 				calculation step with its formula.
 			</PCheckbox>

@@ -1,9 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 const toast = vi.fn();
-const trackEvent = vi.fn();
 vi.mock("@/ui/useToast", () => ({ toast }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
 
 const stored = new Map<string, string>();
 let broken = false;
@@ -34,7 +32,6 @@ describe("debugMode", () => {
 		stored.clear();
 		broken = false;
 		toast.mockReset();
-		trackEvent.mockReset();
 	});
 
 	it.each([
@@ -52,19 +49,15 @@ describe("debugMode", () => {
 		stored.set("prunplanner_debug", "cache");
 		const { calcDebug, setCalcDebug } = await load();
 
-		setCalcDebug(true, "url");
+		setCalcDebug(true);
 		expect(calcDebug.value).toBe(true);
 		expect(stored.get("prunplanner_debug")).toBe("cache,calc");
 		expect(toast).toHaveBeenLastCalledWith(
 			"Calculation debug on. Open a plan to see it.",
 			{ type: "info" }
 		);
-		expect(trackEvent).toHaveBeenLastCalledWith("debug:calc_toggle", {
-			on: true,
-			source: "url",
-		});
 
-		setCalcDebug(false, "panel");
+		setCalcDebug(false);
 		expect(calcDebug.value).toBe(false);
 		expect(stored.get("prunplanner_debug")).toBe("cache");
 		expect(toast).toHaveBeenLastCalledWith("Calculation debug off.", {
@@ -74,8 +67,8 @@ describe("debugMode", () => {
 
 	it("removes the key when no mode is left", async () => {
 		const { setCalcDebug } = await load();
-		setCalcDebug(true, "debug_page");
-		setCalcDebug(false, "debug_page");
+		setCalcDebug(true);
+		setCalcDebug(false);
 
 		expect(stored.has("prunplanner_debug")).toBe(false);
 	});
@@ -85,7 +78,7 @@ describe("debugMode", () => {
 		const { calcDebug, setCalcDebug } = await load();
 		expect(calcDebug.value).toBe(false);
 
-		setCalcDebug(true, "url");
+		setCalcDebug(true);
 		expect(calcDebug.value).toBe(true);
 	});
 

@@ -160,10 +160,6 @@ describe("FIOConnection", () => {
 			prun_username: "test-prun-user",
 			email: "test@example.com",
 		});
-		expect(trackEvent).toHaveBeenCalledWith("account:profile_update");
-		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
-			is_active: true,
-		});
 		// FIO was active before
 		expect(trackEvent).not.toHaveBeenCalledWith("account:fio_link");
 	});
@@ -179,9 +175,6 @@ describe("FIOConnection", () => {
 
 		await save(wrapper);
 
-		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
-			is_active: true,
-		});
 		expect(trackEvent).toHaveBeenCalledWith("account:fio_link");
 	});
 
@@ -226,9 +219,6 @@ describe("FIOConnection", () => {
 			prun_username: null,
 			email: "test@example.com",
 		});
-		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
-			is_active: false,
-		});
 	});
 
 	it("sends missing fields as null", async () => {
@@ -246,35 +236,35 @@ describe("FIOConnection", () => {
 	});
 
 	it("needs both the FIO key and the username for FIO to be active", async () => {
-		mock.onPatch(PROFILE_URL).reply(200, profile());
-		const { wrapper } = await mountProfile(profile());
-		const fioActive = () =>
-			vi
-				.mocked(trackEvent)
-				.mock.calls.filter(([e]) => e === "account:fio_update")
-				.map(([, props]) => props);
+		const noFIO = profile({ fio_apikey: null, prun_username: null });
+		mock.resetHandlers();
+		mock.onGet(PROFILE_URL).reply(200, noFIO);
+		mock.onPatch(PROFILE_URL).reply(200, noFIO);
+		const { wrapper } = await mountProfile(noFIO);
 
-		await inputs(wrapper).at(1)!.setValue("");
+		await inputs(wrapper).at(0)!.setValue("key");
 		await save(wrapper);
-		await inputs(wrapper).at(1)!.setValue("test-prun-user");
 		await inputs(wrapper).at(0)!.setValue("");
+		await inputs(wrapper).at(1)!.setValue("PRUN");
 		await save(wrapper);
 
-		expect(fioActive()).toEqual([{ is_active: false }, { is_active: false }]);
+		expect(mock.history.patch).toHaveLength(2);
+		expect(trackEvent).not.toHaveBeenCalledWith("account:fio_link");
 	});
 
 	it("reports FIO as inactive for a key of only spaces", async () => {
-		mock.onPatch(PROFILE_URL).reply(200, profile());
-		const { wrapper } = await mountProfile(profile());
+		const noKey = profile({ fio_apikey: null });
+		mock.resetHandlers();
+		mock.onGet(PROFILE_URL).reply(200, noKey);
+		mock.onPatch(PROFILE_URL).reply(200, noKey);
+		const { wrapper } = await mountProfile(noKey);
 
 		await inputs(wrapper).at(0)!.setValue("   ");
 		await save(wrapper);
 
 		// without its spaces the key is empty, sent as null
 		expect(patchBody()).toMatchObject({ fio_apikey: null });
-		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
-			is_active: false,
-		});
+		expect(trackEvent).not.toHaveBeenCalledWith("account:fio_link");
 	});
 
 	it("reports FIO as inactive for a key without any username", async () => {
@@ -287,9 +277,7 @@ describe("FIOConnection", () => {
 		await save(wrapper);
 
 		expect(patchBody()).toMatchObject({ prun_username: null });
-		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
-			is_active: false,
-		});
+		expect(trackEvent).not.toHaveBeenCalledWith("account:fio_link");
 	});
 
 	it("reports FIO as inactive for a username without any key", async () => {
@@ -302,9 +290,7 @@ describe("FIOConnection", () => {
 		await save(wrapper);
 
 		expect(patchBody()).toMatchObject({ fio_apikey: null });
-		expect(trackEvent).toHaveBeenCalledWith("account:fio_update", {
-			is_active: false,
-		});
+		expect(trackEvent).not.toHaveBeenCalledWith("account:fio_link");
 	});
 
 	it("spins the button while saving", async () => {

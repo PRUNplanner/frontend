@@ -32,14 +32,14 @@ the tables here list the same events; a test
   `result_count`). Booleans start with `is_` or `has_`, timestamps end in
   `_at`.
 - **No personal data** in event properties: no username, email or free
-  text. The person is identified already.
+  text. The person is identified already. No uuids either: they can't be
+  grouped or joined, send a count or a `has_*` instead.
 - **Every new user-facing feature** adds its events to the types and to this
   doc in the same PR.
 - A new event fires when the thing happened (after the API call succeeded,
   when the result is on screen), not when the user asked for it. Some
   older events still fire on the click, before their API call:
-  `account:password_*`, `account:profile_update`, `account:fio_update`,
-  `empire:create`, `manage:*`, `exchange:update`, `planet:popr_load`.
+  `account:password_*`, `empire:create`, `manage:*`, `exchange:update`, `planet:popr_load`.
 
 ## Events
 
@@ -59,8 +59,6 @@ the tables here list the same events; a test
 | `account:password_reset_request` | | |
 | `account:password_reset` | | |
 | `account:password_change` | | |
-| `account:profile_update` | | the profile form was submitted |
-| `account:fio_update` | `is_active` | the profile form was submitted |
 | `account:fio_link` | | FIO became active for a profile that had none |
 | `account:fio_link_failed` | `reason` | saving FIO credentials was refused: `fio_required`, `fio_invalid_key` or `fio_username_mismatch` |
 | `account:api_key_create` | | |
@@ -79,13 +77,10 @@ The PostHog funnel for registrations from it: `landing:auth_open` with
 | Event | Properties | When |
 | --- | --- | --- |
 | `landing:auth_open` | `panel` (`login`, `registration`), `source` (`header`, `hero`, `closing`, `shared_plan`, `planet_search_plan`: "+" or a Chart double-click on `/search`, `planet_search_distance`: the Distance section's "Log in") | the login / registration panel was opened |
-| `landing:auth_switch` | `panel` (the form switched to) | the switch inside the panel was used |
 | `landing:example_open` | `source` (`hero`, `shared_plans`) | "Open an example plan" was clicked |
 | `landing:tour_step` | `tour` (`plan`, `planet_search`, `empire`), `step` (the step key) | a visitor clicked a tour step; automatic advances are not sent |
-| `landing:tour_toggle` | `tour`, `is_playing` | Pause or Play was clicked |
 | `landing:market_click` | `target` (`header`, `cta`, `sector`, `mover`) | a link of the "Market today" section or the header's "Market" link to `/market` was clicked |
 | `landing:planet_search_click` | `target` (`header`, `tour`) | the header's "Planet Search" link (nav or menu) or the tour card's "Try Planet Search" was clicked |
-| `landing:market_view_change` | `view` (`rising`, `falling`) | the movers of the "Market today" section were switched |
 
 Like the signup events, these reach PostHog only from visitors who consented.
 
@@ -110,12 +105,12 @@ No key, URL or UUID goes into these events.
 | `plan:save_as` | `planet_natural_id` | |
 | `plan:reload` | `planet_natural_id` | |
 | `plan:leave_unsaved` | `planet_natural_id` | the plan page was left with unsaved changes |
-| `plan:shared_clone` | `planet_natural_id`, `shared_uuid`, `modified` | a shared plan's working copy was saved to the viewer's plans (`modified`: changed from the shared version) |
+| `plan:shared_clone` | `planet_natural_id`, `modified` | a shared plan's working copy was saved to the viewer's plans (`modified`: changed from the shared version) |
 | `plan:shared_reset` | `planet_natural_id` | the working copy was reset to the shared version |
 | `plan:shared_copy_changes` | `planet_natural_id`, `change_count` | the working copy's change summary was copied for Discord |
 | `plan:share_create` | | |
 | `plan:share_delete` | | |
-| `plan:tool_toggle` | `tool_name` | a plan tool panel was opened |
+| `plan:tool_toggle` | `panel` (the panel key, e.g. `construction-cart`) | a plan tool panel was opened. Before the release after 0.33.0 the property was `tool_name` |
 | `plan:profit_breakdown_mode` | `mode` (`cost_type`, `building`) | the Profit Breakdown tool switched between "By cost type" and "By building" |
 | `plan:plancheck_change` | `view` (`market`, `sensitivity`, `compare`), `pct` (10, 20, 30, 50; only on a price change) | the Plan check tool's view or price change was switched. Before 2026-10-14 (the What-if tool) it was `plan:whatif_change`, sent only on a price change |
 | `plan:plancheck_compare` | `same_planet` | Plan check compared the open plan with another plan (each pick, also the preselected one). Before 2026-10-14: `plan:whatif_compare` |
@@ -173,16 +168,16 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `empire:analysis_more_charts` | | the "More charts" section of Empire Analysis was opened |
 | `empire:save_conflict` | `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of the empire configuration was answered |
 | `manage:cx_create` | | |
-| `manage:cx_delete` | `cx_uuid` | |
+| `manage:cx_delete` | | |
 | `manage:empire_create` | | |
-| `manage:empire_delete` | `empire_uuid` | |
+| `manage:empire_delete` | | |
 | `manage:empire_cx_assign` | | |
 | `manage:plan_empire_assign` | | |
 | `manage:plan_assign_all` | `is_assigned` | |
-| `manage:plan_clone` | `plan_uuid` | |
-| `manage:plan_delete` | `plan_uuid` | |
+| `manage:plan_clone` | | |
+| `manage:plan_delete` | | |
 | `manage:plan_delete_bulk` | `count` | |
-| `exchange:update` | `location`, `cx_uuid` | |
+| `exchange:update` | `location` (`exchanges_view`, `cogm`) | |
 | `exchange:discard` | `location` (`exchanges_view`, `cogm`) | unsaved rules were discarded (was `exchange:reload`) |
 | `exchange:price_detail` | `location`, `material_ticker` | a material's price cascade was expanded |
 | `exchange:preset` | `preset` (`average`, `trade_now`), `scope` (`all`, `planet`) | an exchange preset was applied |
@@ -202,6 +197,7 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `fio_repair:plan_link_set` | `to` (`plan`, `none`, `auto`) | a plan, "no plan" or "back to automatic" was picked for a FIO Repair base |
 | `fio_repair:setting_change` | `setting` (`interval`, `due_soon`, `arrival`, `exchange`, `use_plans`) | a FIO Repair setting was changed on the page, debounced 1 s per setting |
 | `planet_search:view_change` | `view` (`list`, `matrix`, `chart`) | Planet Search switched views (also when a link opens another view on the page) |
+| `planet_search:action` | `action` (`pin`, `save`, `load`, `link_copy`, `reset`, `plan_open`, `sort`, `column_toggle`); `sort` also `sort` (the first sort key: `name`, `fert`, `plots`, `mat:<ticker>`, `ref:cx:<code>` or `ref:plan`) and `sort_count`; `column_toggle` also `column` and `is_shown` | something was done on Planet Search besides searching: a planet pinned for compare, a search saved or loaded, the link copied, Reset, the "+" of a result that opens a new plan (logged in; a visitor gets `landing:auth_open`), a sort picked in a header or the sort menu, a column shown or hidden in the columns menu (e.g. the opt-in `plots`) |
 | `market_exploration:view_change` | `view` (`candles`, `exchanges`) | Market Exploration switched between the candle chart and the "All exchanges" chart |
 | `resource_roi:chart_open` | | the Resource ROI chart drawer was opened |
 | `production_chain:action` | `action` (`recipe_pick`, `source_set`, `buy_all`, `planet_pick`, `view_graph`, `focus`, `xit_copy`, `csv`, `link_copy`, `split`, `base_add`, `base_remove`, `base_move`, `base_planet`, `base_cogc`, `base_lux`, `base_experts`, `mode_check`, `check_add_all`, `check_open_base`, `check_open_plan`, `check_try`, `check_setup_toggle`, `plans_create`); `plans_create` also `plan_count`, `empire` (`new`, `existing`, `none`) and `faction` for a new empire | something was done on the Production Chains page: a recipe or planet picked, a source set, "Buy all", the graph opened or a node focused, the XIT buy action, CSV or chain link copied, the chain split into bases, a base added or removed, a step moved to a base, a base's planet, COGC program, luxuries or experts set, plans created; in Check an empire: the mode opened, all sold materials added, a base opened, a plan opened, a finding tried in the planner, setup gains shown or hidden |
@@ -215,9 +211,9 @@ so for them `tool:use` is close to a pageview that got a result:
 
 | `tool_name` | Extra properties | Fires when |
 | --- | --- | --- |
-| `planet_search` | `filter`, `result_count` | a changed filter settled (1 s) |
+| `planet_search` | `filter` (the URL query of the search without `q` and `ref`), `has_text` (the name field is set), `reference_count` (distance references), `result_count` | a changed filter settled (1 s) |
 | `market_exploration` | `exchange`, `material_ticker` | data for a chosen exchange, material or candle interval loaded, not the default on open |
-| `production_chain` | `targets` (tickers), `target_count`, `material_count`, `efficiency`, `raw_source` (`buy`, `extract`), `byproducts` (`cover`, `sell`) | targets or settings changed and settled (1 s); not for a chain opened from a link or the browser |
+| `production_chain` | `mode: chain`, `targets` (tickers), `target_count`, `material_count`, `efficiency`, `raw_source` (`buy`, `extract`), `byproducts` (`cover`, `sell`) | targets or settings changed and settled (1 s); not for a chain opened from a link or the browser |
 | `production_chain` (check) | `mode: check`, `target_count`, `bases_checked`, `bases_optimal`, `finding_count` | the empire, chains or check settings changed and settled (1 s), with at least one chain; not for the check opened from a link |
 | `resource_roi` | `material_ticker` | the search finished |
 | `recipe_roi` | | the ROI calculation finished |
@@ -237,7 +233,6 @@ so for them `tool:use` is close to a pageview that got a result:
 | `xit:burn_ship_fit` | `weight`, `volume` | |
 | `xit:transfer_open` | `source` | |
 | `xit:transfer_copy` | `source` | |
-| `app:navigation_toggle` | `navigation_style` | |
 | `app:nav_click` | `target` (route name, or `logout`), `area` (`sidebar`, `rail`, `mobile_bar`, `mobile_sheet`), `section` (`empire`, `plans`, `planning`, `tools`, `footer`) | one click on a navigation entry; opening a menu, popover or sheet and the plan breadcrumb are not counted |
 | `app:version_reload` | `source` (`notice`, `chip`, `navigation`) | reload onto a newer build: the update notice's Reload, the nav chip, or a navigation to another page that loaded the new build |
 | `app:version_later` | | the update notice was put off with Later |
@@ -245,9 +240,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | `app:remote_change` | `object_type` (`plan`, `empire`, `cx`), `has_unsaved_edits`, `is_deleted` | another tab saved or deleted what an open editor shows: it reloaded, or (with unsaved edits, or deleted) showed a notice. A deleted empire is sent by the empire page, always with `has_unsaved_edits: false` |
 | `app:session_change` | `reason` (`logout`, `login`, `other_user`) | another tab logged out, logged in, or logged in as another user; sent before this tab resets or reloads |
 | `app:db_blocked` | | the local game data database waits on an older PRUNplanner tab after a deploy |
-| `debug:calc_toggle` | `on`, `source` (`url`, `debug_page`, `panel`) | calculation debug was turned on or off (`?debug=calc` / `?debug=off`, the `/debug` page, the panel's Turn off) |
 | `debug:calc_open` | `source` (`button`, `shortcut`) | the calculation debug panel was opened on a plan |
-| `debug:calc_copy` | `format` (`text`, `json`) | the calculation trace was copied |
 | `onboarding:step_click` | `step` (`empire_save`, `planet_search`, `exchanges`) | a step of the first-run card on the Empire page |
 
 `source` on the XIT transfer events names the button: `supply_cart`,
@@ -261,6 +254,18 @@ so for them `tool:use` is close to a pageview that got a result:
 | --- | --- | --- |
 | `perf:gamedata_load` | `store` (`materials`, `exchanges`, `buildings`, `recipes`), `source` (`cache`, `network`), `is_stale`, `age_min`, `ms_total`, `ms_idb_read`, `ms_fetch`, `ms_idb_write` | a game data list's first load in a tab, once per store: from IndexedDB (`cache`) or the API (`network`). `is_stale`: the IndexedDB copy was older than its stale time (`cache`: refreshed in the background; `network`: older than its maximum age). `age_min` is that copy's age, null without one. `ms_total` is what the page waited; background phases (`ms_fetch` of a refresh, `ms_idb_write`) are in, as the event is sent once they end |
 | `perf:content_ready` | `ms`, `nav` (`hard`, `spa`), `loader_shown` | a page's main content had its first frame, once per mount (today: the market report's index chart with data). `ms` counts from the navigation start (0 for a hard load). Not sent if the tab was hidden during the load |
+
+### Retired
+
+Not sent since the release after 0.33.0, so their data stops there:
+`account:profile_update` and `account:fio_update` (fired on the click;
+`account:email_add`, `account:fio_link` and `account:fio_link_failed` say
+what happened), `app:navigation_toggle` (the person property
+`navigation_style` holds it), `debug:calc_toggle`, `debug:calc_copy`,
+`landing:auth_switch`, `landing:tour_toggle` and
+`landing:market_view_change`. The uuid properties of `manage:*`,
+`exchange:update` (`cx_uuid`) and `plan:shared_clone` (`shared_uuid`) went
+at the same time.
 
 ## Pageviews
 

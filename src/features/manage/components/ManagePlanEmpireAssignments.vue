@@ -451,7 +451,7 @@
 		planName: string
 	): Promise<void> {
 		busyPlan.value = planUuid;
-		trackEvent("manage:plan_clone", { plan_uuid: planUuid });
+		trackEvent("manage:plan_clone");
 
 		try {
 			await useQuery("ClonePlan", {
@@ -478,7 +478,7 @@
 
 	async function deletePlan(planUuid: string): Promise<void> {
 		busyPlan.value = planUuid;
-		trackEvent("manage:plan_delete", { plan_uuid: planUuid });
+		trackEvent("manage:plan_delete");
 
 		try {
 			await useQuery("DeletePlan", { planUuid: planUuid }).execute();

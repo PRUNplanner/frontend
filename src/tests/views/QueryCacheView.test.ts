@@ -202,7 +202,7 @@ describe("QueryCacheView", () => {
 			[false, true],
 			[true, false],
 		])(
-			"switching from %s to %s is reported as the debug page",
+			"switching from %s to %s switches debug",
 			async (before, after) => {
 				calcDebug.value = before;
 				const { wrapper } = await mountComponent(
@@ -213,10 +213,7 @@ describe("QueryCacheView", () => {
 
 				await wrapper.find("input[type=checkbox]").setValue(after);
 
-				expect(setCalcDebug).toHaveBeenCalledExactlyOnceWith(
-					after,
-					"debug_page"
-				);
+				expect(setCalcDebug).toHaveBeenCalledExactlyOnceWith(after);
 			}
 		);
 	});

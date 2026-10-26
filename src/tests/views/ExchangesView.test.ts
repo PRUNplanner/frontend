@@ -338,7 +338,6 @@ describe("ExchangesView", () => {
 			"OLD",
 		]);
 		expect(trackEvent).toHaveBeenCalledWith("exchange:update", {
-			cx_uuid: "cx-1",
 			location: "exchanges_view",
 		});
 	});

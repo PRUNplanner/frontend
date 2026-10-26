@@ -86,8 +86,5 @@ describe("useAuthPanel", () => {
 		panel.switchTo("registration");
 
 		expect(state()).toEqual([false, true]);
-		expect(trackEvent).toHaveBeenLastCalledWith("landing:auth_switch", {
-			panel: "registration",
-		});
 	});
 });

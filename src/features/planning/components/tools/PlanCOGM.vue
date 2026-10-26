@@ -260,10 +260,7 @@
 		if (!loaded.value || !edit.value) return;
 		saveState.value = "saving";
 		try {
-			trackEvent("exchange:update", {
-				cx_uuid: loaded.value.uuid,
-				location: "cogm",
-			});
+			trackEvent("exchange:update", { location: "cogm" });
 			const saved = await cxSave.save(loaded.value, {
 				cx_name: loaded.value.cx_name,
 				cx_data: buildPayload(edit.value),

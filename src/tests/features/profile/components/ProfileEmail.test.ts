@@ -149,7 +149,6 @@ describe("ProfileEmail", () => {
 		expect(JSON.parse(mock.history.patch[0].data)).toEqual({
 			email: "new@example.com",
 		});
-		expect(trackEvent).toHaveBeenCalledWith("account:profile_update");
 		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(true);
 	});
 

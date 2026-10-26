@@ -103,9 +103,6 @@ describe("HomepageHeader", () => {
 		registration.click();
 		await nextTick();
 		expect(await forms(wrapper)).toEqual([false, true]);
-		expect(trackEvent).toHaveBeenLastCalledWith("landing:auth_switch", {
-			panel: "registration",
-		});
 
 		// the welcome state's button after a registration: not a switch
 		vi.mocked(trackEvent).mockClear();

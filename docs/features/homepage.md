@@ -17,7 +17,7 @@ and the landing-only button and form styles.
   aria-pressed>`; a click jumps there and restarts the timer. It advances
   every `interval` ms only while it is on screen (IntersectionObserver), the
   tab is visible and it is playing; with `prefers-reduced-motion: reduce` it
-  starts paused. Clicks send `landing:tour_step` / `landing:tour_toggle`, an
+  starts paused. A clicked step sends `landing:tour_step`, an
   automatic advance sends nothing. Tailwind only, no scoped CSS: the
   prerendered page has no chunk CSS before the app loads.
 - `components/HomepageMarketToday.vue`: the "Market today" section (lead
@@ -29,7 +29,7 @@ and the landing-only button and form styles.
   it loads, `HomepageMarketSkeleton.vue` holds its final size (the shared
   `market*` size classes in `homepage.constants.ts`). The title and the CTA
   are in the view, so a failed summary leaves just those. Events:
-  `landing:market_click`, `landing:market_view_change`.
+  `landing:market_click`.
 - `homepageTour.util.ts`: `tourTransform` (translate and scale, clamped so
   no empty edge shows) and `tourHighlight` (the outline's box, its width
   divided by the zoom).

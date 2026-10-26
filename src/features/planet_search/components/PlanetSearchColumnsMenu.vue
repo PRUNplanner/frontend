@@ -24,6 +24,9 @@
 	// UI
 	import { PButton, PCheckbox, PPopover } from "@/ui";
 
+	// Composables
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
+
 	const hiddenColumns = defineModel<PlanetSearchColumn[]>("hiddenColumns", {
 		required: true,
 	});
@@ -43,6 +46,15 @@
 			(c) => props.view === "list" || c !== "other"
 		)
 	);
+
+	function toggleColumn(column: PlanetSearchColumn, isShown: boolean): void {
+		hiddenColumns.value = toggle(hiddenColumns.value, column);
+		trackEvent("planet_search:action", {
+			action: "column_toggle",
+			column,
+			is_shown: isShown,
+		});
+	}
 
 	const found = computed(() => foundMaterials(props.results));
 	const others = computed(() => {
@@ -80,7 +92,7 @@
 				v-for="c in columns"
 				:key="c"
 				:checked="!hiddenColumns.includes(c)"
-				@update:checked="hiddenColumns = toggle(hiddenColumns, c)">
+				@update:checked="(v) => toggleColumn(c, !!v)">
 				{{ t(`planet_search.columns.${c}`) }}
 			</PCheckbox>
 

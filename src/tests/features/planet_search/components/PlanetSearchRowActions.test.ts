@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { RouterLinkStub } from "@vue/test-utils";
 
 import PlanetSearchRowActions from "@/features/planet_search/components/PlanetSearchRowActions.vue";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
@@ -19,6 +20,7 @@ const open = vi.hoisted(() => vi.fn());
 vi.mock("@/features/account/useAuthPanel", () => ({
 	useAuthPanel: () => ({ open }),
 }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
 describe("PlanetSearchRowActions", () => {
 	const planet = fixture[0];
@@ -29,7 +31,10 @@ describe("PlanetSearchRowActions", () => {
 			showPin: true,
 		});
 
-	beforeEach(() => open.mockClear());
+	beforeEach(() => {
+		open.mockClear();
+		vi.mocked(trackEvent).mockClear();
+	});
 
 	it("links to a new plan in a new tab, logged in", async () => {
 		session.loggedIn = true;
@@ -41,6 +46,11 @@ describe("PlanetSearchRowActions", () => {
 		expect(link.attributes("aria-label")).toBe(
 			"planet_search.results.create_plan"
 		);
+
+		await link.trigger("click");
+		expect(trackEvent).toHaveBeenCalledWith("planet_search:action", {
+			action: "plan_open",
+		});
 	});
 
 	it("asks a visitor to log in, in place, then goes on to the plan", async () => {

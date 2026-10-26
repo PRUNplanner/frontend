@@ -414,7 +414,7 @@
 		refShowTool.value = null;
 		if (isVisisble) return;
 
-		trackEvent("plan:tool_toggle", { tool_name: key });
+		trackEvent("plan:tool_toggle", { panel: key });
 		nextTick(() => {
 			key != refShowTool.value
 				? (refShowTool.value = key)
@@ -889,7 +889,6 @@
 			if (props.shared) {
 				trackEvent("plan:shared_clone", {
 					planet_natural_id: planetData.planet_natural_id,
-					shared_uuid: props.sharedPlanUuid!,
 					modified: modified.value,
 				});
 				router.push(

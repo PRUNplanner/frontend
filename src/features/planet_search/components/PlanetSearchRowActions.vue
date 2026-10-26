@@ -6,6 +6,7 @@
 
 	// Composables
 	import { useAuthPanel } from "@/features/account/useAuthPanel";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useUserStore } from "@/stores/userStore";
 
 	// Util
@@ -61,7 +62,10 @@
 			target="_blank"
 			rel="noopener"
 			:class="plus"
-			:aria-label="t('planet_search.results.create_plan', { planet: name })">
+			:aria-label="t('planet_search.results.create_plan', { planet: name })"
+			@click="
+				trackEvent('planet_search:action', { action: 'plan_open' })
+			">
 			<PlusSharp class="w-4 h-4" />
 		</router-link>
 		<button

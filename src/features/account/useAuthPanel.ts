@@ -79,7 +79,6 @@ export function useAuthPanel() {
 	 */
 	function switchTo(panel: AuthPanel): void {
 		show(panel);
-		trackEvent("landing:auth_switch", { panel });
 	}
 
 	return {

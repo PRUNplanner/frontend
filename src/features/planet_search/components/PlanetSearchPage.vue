@@ -376,20 +376,26 @@
 		filter,
 		() => {
 			clearTimeout(trackTimer);
-			trackTimer = setTimeout(
-				() =>
-					trackEvent("tool:use", {
-						tool_name: "planet_search",
-						filter: encodeSearch({
-							filter: filter.value,
-							sort: [],
-							view: "list",
-							pins: [],
-						}),
-						result_count: matched.value.length,
-					}),
-				1000
-			);
+			trackTimer = setTimeout(() => {
+				// no free text and no plan uuids, only whether they are set
+				const {
+					q,
+					ref: _ref,
+					...tracked
+				} = encodeSearch({
+					filter: filter.value,
+					sort: [],
+					view: "list",
+					pins: [],
+				});
+				trackEvent("tool:use", {
+					tool_name: "planet_search",
+					filter: tracked,
+					has_text: q !== undefined,
+					reference_count: filter.value.references.length,
+					result_count: matched.value.length,
+				});
+			}, 1000);
 		},
 		{ deep: true }
 	);
@@ -403,7 +409,10 @@
 			pins.value = pins.value.filter((p) => p !== planetNaturalId);
 		else if (pins.value.length >= MAX_PINS)
 			toast(t("planet_search.compare.full", { max: MAX_PINS }));
-		else pins.value = [...pins.value, planetNaturalId];
+		else {
+			pins.value = [...pins.value, planetNaturalId];
+			trackEvent("planet_search:action", { action: "pin" });
+		}
 	}
 
 	function saveSearch(name: string) {
@@ -414,6 +423,7 @@
 			view: view.value,
 		});
 		toast(t("planet_search.header.saved_toast", { name }));
+		trackEvent("planet_search:action", { action: "save" });
 	}
 
 	function loadSearch(saved: PlanetSearchSaved) {
@@ -422,6 +432,7 @@
 		// before the empires load, onMounted resolves it
 		if (!loading.value) resolveEmpire();
 		toast(t("planet_search.header.loaded_toast", { name: saved.name }));
+		trackEvent("planet_search:action", { action: "load" });
 	}
 
 	function deleteSearch(saved: PlanetSearchSaved) {
@@ -435,6 +446,7 @@
 		try {
 			await navigator.clipboard.writeText(window.location.href);
 			toast(t("planet_search.header.link_copied"));
+			trackEvent("planet_search:action", { action: "link_copy" });
 		} catch {
 			toast(t("planet_search.header.copy_failed"), { type: "error" });
 		}
@@ -443,6 +455,19 @@
 	function reset() {
 		filter.value = defaultFilter();
 		sort.value = [];
+		trackEvent("planet_search:action", { action: "reset" });
+	}
+
+	// a sort picked in a header or the sort menu; a plan reference is
+	// sent without its uuid
+	function setSort(next: IPlanetSearchSort[]) {
+		sort.value = next;
+		if (!next.length) return;
+		trackEvent("planet_search:action", {
+			action: "sort",
+			sort: next[0].key.startsWith("ref:plan:") ? "ref:plan" : next[0].key,
+			sort_count: next.length,
+		});
 	}
 
 	/*
@@ -619,7 +644,7 @@
 							:sorts="sort"
 							:default-sort="fallbackSort"
 							@update:filter="(f) => (filter = f)"
-							@sort="(s) => (sort = s)"
+							@sort="setSort"
 							@open-filters="drawerOpen = true" />
 
 						<div
@@ -635,7 +660,7 @@
 								:show-pins="isDesktop"
 								:hidden-columns="hiddenColumns"
 								:ref-name="refName"
-								@sort="(s) => (sort = s)"
+								@sort="setSort"
 								@pin="togglePin" />
 							<PlanetSearchMatrix
 								v-else-if="view === 'matrix'"
@@ -649,7 +674,7 @@
 								:hidden-columns="hiddenColumns"
 								:hidden-materials="prefs.hiddenMaterials"
 								:ref-name="refName"
-								@sort="(s) => (sort = s)"
+								@sort="setSort"
 								@pin="togglePin" />
 							<PlanetSearchChart
 								v-else

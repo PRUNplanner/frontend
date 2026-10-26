@@ -12,7 +12,6 @@
 	import { useOverlayLayer } from "@/ui/useOverlayLayer";
 	import { useDockHeight } from "@/ui/useDockHeight";
 	import { setCalcDebug } from "@/lib/debugMode";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
 	import {
@@ -272,7 +271,6 @@
 					: "Calculation trace copied as JSON.",
 				{ type: "info" }
 			);
-			trackEvent("debug:calc_copy", { format });
 		} catch {
 			toast("Copying failed, the browser blocked the clipboard.", {
 				type: "error",
@@ -339,7 +337,7 @@
 					size="sm"
 					type="ghost"
 					class="touch-target pointer-coarse:min-h-11"
-					@click="setCalcDebug(false, 'panel')">
+					@click="setCalcDebug(false)">
 					Turn off
 				</PButton>
 				<PLayerClose class="z-[1]" @click="show = false" />

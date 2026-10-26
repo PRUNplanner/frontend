@@ -369,9 +369,6 @@ describe("SidebarRail", () => {
 		const w = await mountSidebar();
 		await w.find(`button[aria-label="${NAV}.expand"]`).trigger("click");
 		expect(useUserStore().preferences.layoutNavigationStyle).toBe("full");
-		expect(trackEvent).toHaveBeenCalledWith("app:navigation_toggle", {
-			navigation_style: "full",
-		});
 	});
 });
 
@@ -452,9 +449,6 @@ describe("AppSidebar behaviour", () => {
 		expect(useUserStore().preferences.layoutNavigationStyle).toBe(
 			"collapsed"
 		);
-		expect(trackEvent).toHaveBeenCalledWith("app:navigation_toggle", {
-			navigation_style: "collapsed",
-		});
 		expect(w.find("aside").classes()).toContain("w-16");
 		expect(w.find(`button[aria-label="${NAV}.expand"]`).exists()).toBe(
 			true
