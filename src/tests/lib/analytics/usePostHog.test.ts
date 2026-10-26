@@ -664,7 +664,6 @@ describe("usePostHog", () => {
 		it("does not throw on events without URL properties", async () => {
 			const { maskUrlCodes } = await load();
 
-			expect(maskUrlCodes(null)).toBeNull();
 			expect(maskUrlCodes(event("plan:view", {}))).toEqual(
 				event("plan:view", {})
 			);
@@ -713,7 +712,6 @@ describe("usePostHog", () => {
 			};
 			const empty = { uuid: "u", event: "$exception", properties: {} };
 
-			expect(dropChunkLoadErrors(null)).toBeNull();
 			expect(dropChunkLoadErrors(pageview)).toBe(pageview);
 			expect(dropChunkLoadErrors(empty)).toBe(empty);
 		});

@@ -248,12 +248,14 @@
 						{
 							value: $t('homepage.numbers.free_value'),
 							text: $t('homepage.numbers.free'),
+							accent: false,
 						},
 						{
 							value: $t('homepage.numbers.languages_value', {
 								count: languageCount,
 							}),
 							text: $t('homepage.numbers.languages'),
+							accent: false,
 						},
 					]"
 					:key="cell.value"
@@ -332,7 +334,7 @@
 				<div class="flex flex-wrap gap-6">
 					<article
 						v-for="tool in [
-							{ key: 'resource_roi', image: 'resource-roi' },
+							{ key: 'resource_roi', image: 'resource-roi', fio: false },
 							{ key: 'fio_burn', image: 'fio-burn', fio: true },
 						]"
 						:key="tool.key"
