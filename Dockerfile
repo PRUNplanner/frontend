@@ -1,8 +1,8 @@
 FROM --platform=$BUILDPLATFORM node:26-alpine AS build
 WORKDIR /app
 
-# Enable pnpm
-RUN corepack enable
+# Enable pnpm (the version in package.json); Node 25+ no longer bundles corepack
+RUN npm install -g corepack@0.36.0 && corepack enable
 
 # Pass build-time env variables
 ARG BUILD_REVISION
