@@ -247,24 +247,70 @@ describe("User Store", () => {
 		expect(result).toBe(false);
 	});
 
-	it("Perform Token Refresh: API Error", async () => {
+	it.each([401, 400])(
+		"Perform Token Refresh: refused with %i",
+		async (status) => {
+			const userStore = useUserStore();
+
+			const mockToken = "testtoken";
+
+			userStore.refreshToken = mockToken;
+
+			(
+				callRefreshToken as unknown as ReturnType<typeof vi.fn>
+			).mockRejectedValue(
+				Object.assign(new Error("Mock refresh error"), { status })
+			);
+			(
+				callGetProfile as unknown as ReturnType<typeof vi.fn>
+			).mockResolvedValue({});
+
+			const result = await userStore.performTokenRefresh();
+			expect(callRefreshToken).toHaveBeenCalledWith(mockToken);
+
+			expect(result).toBe(false);
+		}
+	);
+
+	it("Perform Token Refresh: refused on a validation error", async () => {
 		const userStore = useUserStore();
+		userStore.refreshToken = "testtoken";
 
-		const mockToken = "testtoken";
+		// apiService's validation errors carry no status
+		(
+			callRefreshToken as unknown as ReturnType<typeof vi.fn>
+		).mockRejectedValueOnce(new Error("Validation error: refresh"));
 
-		userStore.refreshToken = mockToken;
+		expect(await userStore.performTokenRefresh()).toBe(false);
+	});
+
+	it.each([
+		["a network error", undefined],
+		["a server error", 502],
+	])("Perform Token Refresh: rejects on %s", async (_, status) => {
+		const userStore = useUserStore();
+		vi.mocked(callRefreshToken).mockClear();
+
+		userStore.setToken("access", "testtoken");
 
 		(
 			callRefreshToken as unknown as ReturnType<typeof vi.fn>
-		).mockRejectedValue(new Error("Mock login error"));
+		).mockRejectedValueOnce(
+			Object.assign(new Error("Network Error"), { status })
+		);
+
+		await expect(userStore.performTokenRefresh()).rejects.toThrow(
+			"Network Error"
+		);
+		expect(userStore.refreshToken).toBe("testtoken");
+		expect(userStore.accessToken).toBe("access");
+
+		// settled: the next call asks again
 		(
-			callGetProfile as unknown as ReturnType<typeof vi.fn>
-		).mockResolvedValue({});
-
-		const result = await userStore.performTokenRefresh();
-		expect(callRefreshToken).toHaveBeenCalledWith(mockToken);
-
-		expect(result).toBe(false);
+			callRefreshToken as unknown as ReturnType<typeof vi.fn>
+		).mockResolvedValueOnce({ access: "access-2" });
+		expect(await userStore.performTokenRefresh()).toBe(true);
+		expect(callRefreshToken).toHaveBeenCalledTimes(2);
 	});
 
 	describe("fioStatus", () => {

@@ -310,6 +310,14 @@ export const useUserStore = defineStore(
 			}
 		}
 
+		/**
+		 * Refreshes the access token.
+		 *
+		 * @returns {Promise<boolean>} false if the backend refused the
+		 * refresh token (4xx), it failed validation or there is none
+		 * @throws if the refresh got no answer (network, timeout) or a 5xx:
+		 * the token may still be valid, so the session must not end
+		 */
 		async function refreshAccessToken(): Promise<boolean> {
 			if (refreshToken.value) {
 				try {
@@ -322,6 +330,12 @@ export const useUserStore = defineStore(
 					return true;
 				} catch (error) {
 					console.error(error);
+					// apiService puts status on HTTP errors only, undefined
+					// without a response; a validation error has none
+					if (!(error instanceof Error && "status" in error))
+						return false;
+					const status = error.status as number | undefined;
+					if (status === undefined || status >= 500) throw error;
 					return false;
 				}
 			} else {
@@ -338,7 +352,7 @@ export const useUserStore = defineStore(
 		 * settled refreshes again.
 		 * @author jplacht
 		 *
-		 * @returns {Promise<boolean>}
+		 * @returns {Promise<boolean>} As refreshAccessToken, rejects alike
 		 */
 		function performTokenRefresh(): Promise<boolean> {
 			refreshInFlight ??= refreshAccessToken().finally(() => {

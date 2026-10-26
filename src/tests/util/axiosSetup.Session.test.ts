@@ -169,6 +169,61 @@ describe("axiosSetup: a session that can't be refreshed", () => {
 	});
 });
 
+describe("axiosSetup: a refresh without an answer", () => {
+	const token = (name: string) => name.padEnd(120, "x");
+	let userStore: ReturnType<typeof useUserStore>;
+
+	const refreshes = () =>
+		mock.history.post.filter((r) => r.url === "/user/refresh/");
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		userStore = useUserStore();
+		mock.reset();
+		vi.mocked(router.push).mockClear();
+		route.value = { meta: { requiresAuth: true } };
+		userStore.setToken(token("access-old"), token("refresh"));
+		mock.onGet("/data").reply((config) =>
+			config.headers?.Authorization === `Bearer ${token("access-new")}`
+				? [200, "payload"]
+				: [401]
+		);
+	});
+
+	it.each([
+		["a network error", () => mock.onPost("/user/refresh/").networkErrorOnce()],
+		["a timeout", () => mock.onPost("/user/refresh/").timeoutOnce()],
+		["a server error", () => mock.onPost("/user/refresh/").replyOnce(502)],
+	])("keeps the session after %s and refreshes on the next 401", async (_, fail) => {
+		fail();
+		const logout = vi.spyOn(userStore, "logout");
+
+		const error = await axios.get("/data").catch((e) => e);
+
+		// the original request fails with its own 401, not replayed
+		expect(error.response.status).toBe(401);
+		expect(mock.history.get.filter((r) => r.url === "/data")).toHaveLength(1);
+		expect(logout).not.toHaveBeenCalled();
+		expect(router.push).not.toHaveBeenCalled();
+		expect(userStore.isLoggedIn).toBe(true);
+		expect(userStore.refreshToken).toBe(token("refresh"));
+
+		mock.onPost("/user/refresh/").replyOnce(200, { access: token("access-new") });
+		expect((await axios.get("/data")).data).toBe("payload");
+		expect(refreshes()).toHaveLength(2);
+	});
+
+	it("ends the session when the refresh is refused", async () => {
+		mock.onPost("/user/refresh/").replyOnce(401);
+
+		const error = await axios.get("/data").catch((e) => e);
+
+		expect(error.response.status).toBe(401);
+		expect(userStore.isLoggedIn).toBe(false);
+		expect(router.push).toHaveBeenCalledWith("/");
+	});
+});
+
 describe("axiosSetup: parallel 401s", () => {
 	// the token schemas want 120+ characters
 	const token = (name: string) => name.padEnd(120, "x");
