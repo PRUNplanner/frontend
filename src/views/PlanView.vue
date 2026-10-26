@@ -318,6 +318,20 @@
 	);
 	const ioTotals = computed(() => materialIOTotals(ioRows.value));
 
+	// a narrow pane (a phone, or Material I/O under Production on a small
+	// tablet) drops In and Out, as v2 did
+	const refIOPane = useTemplateRef<HTMLElement>("ioPane");
+	const refIOCompact: Ref<boolean> = ref(false);
+	let ioObserver: ResizeObserver | undefined;
+	onMounted(() => {
+		if (!refIOPane.value || typeof ResizeObserver === "undefined") return;
+		ioObserver = new ResizeObserver(([entry]) => {
+			refIOCompact.value = entry.contentRect.width < 420;
+		});
+		ioObserver.observe(refIOPane.value);
+	});
+	onUnmounted(() => ioObserver?.disconnect());
+
 	const ioSourceOptions = computed<PSelectOption[]>(() => [
 		{ value: "all", label: t("plan.io.source.all") },
 		{ value: "production", label: t("plan.io.source.production") },
@@ -1249,9 +1263,9 @@
 		@reset="resetShared"
 		@copy="copySharedChanges"
 		@save="openSaveAsModal" />
-	<!-- keep focused controls clear of the sticky status bar; the bottom
+	<!-- keep focused controls clear of the sticky status bar (sm and up); the bottom
 		padding scrolls the last rows clear of the insights button -->
-	<div class="@container pb-16 [&_*]:scroll-mt-28">
+	<div class="@container pb-16 sm:[&_*]:scroll-mt-28">
 		<div
 			class="grid grid-cols-[minmax(0,1fr)] grid-rows-[repeat(5,auto)] @3xl:grid-cols-[minmax(0,1fr)_auto] gap-x-3">
 			<!-- Plan Name & Selector -->
@@ -1280,9 +1294,10 @@
 					{{ planName || t("plan.name.untitled") }}
 				</h1>
 			</div>
-			<!-- Status Bar (sticky) -->
+			<!-- Status Bar: sticky from sm, on a phone it would cover a sixth
+				of the screen -->
 			<div
-				class="row-3 @3xl:row-2 col-span-full justify-self-start w-full px-3 py-2 sticky top-0 z-1000 bg-(--app-bg)">
+				class="row-3 @3xl:row-2 col-span-full justify-self-start w-full px-3 py-2 sm:sticky sm:top-0 z-1000 bg-(--app-bg)">
 				<PlanStatusBar
 					:area-data="result.area"
 					:corphq="result.corphq"
@@ -1555,6 +1570,7 @@
 				</div>
 				<div>
 					<div
+						ref="ioPane"
 						class="sticky top-12 rounded border border-line bg-(--app-bg)"
 						data-io-pane>
 						<div class="flex items-center gap-2 px-3 pt-3 pb-2">
@@ -1583,6 +1599,7 @@
 						</div>
 						<PlanMaterialIO
 							:material-i-o-data="ioRows"
+							:compact="refIOCompact"
 							max-height="calc(100dvh - 20rem)"
 							:value="refIOValue"
 							:filter="refIOFilter"

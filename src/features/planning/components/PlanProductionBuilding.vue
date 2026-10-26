@@ -237,7 +237,7 @@
 					{{ $t(`game.building.${localBuildingData.name}`) }}
 				</span>
 				<!-- expertise and why nothing is produced, the label-free v2 way -->
-				<span class="truncate text-xs" data-building-sub>
+				<span class="line-clamp-2 text-xs" data-building-sub>
 					<span
 						:class="
 							isPlanetCogc ? 'text-positive' : 'text-negative'

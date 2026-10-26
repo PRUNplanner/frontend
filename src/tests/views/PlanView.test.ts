@@ -405,6 +405,42 @@ describe("PlanView", () => {
 		expect(io().text()).toContain("plan.io.profit");
 	});
 
+	it("drops In and Out of Material I/O while its pane is narrow", async () => {
+		let observe: ((width: number) => void) | undefined;
+		vi.stubGlobal(
+			"ResizeObserver",
+			class {
+				cb: ResizeObserverCallback;
+				constructor(cb: ResizeObserverCallback) {
+					this.cb = cb;
+				}
+				// tooltips observe too, only the pane counts
+				observe(el: Element) {
+					if (!el.hasAttribute("data-io-pane")) return;
+					observe = (width) =>
+						this.cb(
+							[{ contentRect: { width } } as ResizeObserverEntry],
+							this as unknown as ResizeObserver
+						);
+				}
+				unobserve() {}
+				disconnect() {}
+			}
+		);
+		const { wrapper } = await mountView();
+		const compact = () =>
+			wrapper.findComponent(PlanMaterialIO).props("compact");
+
+		// the side column beside Production keeps them, a phone has no room
+		observe!(448);
+		await flushPromises();
+		expect(compact()).toBe(false);
+		observe!(343);
+		await flushPromises();
+		expect(compact()).toBe(true);
+		vi.unstubAllGlobals();
+	});
+
 	// -- calculation debug -----------------------------------------------
 
 	it("describes the plan for the debug panel", async () => {
