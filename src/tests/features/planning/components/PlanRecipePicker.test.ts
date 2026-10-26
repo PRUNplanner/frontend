@@ -259,10 +259,10 @@ describe("PlanRecipePicker", () => {
 		down(document.body);
 		expect(component.emitted("close")).toHaveLength(1);
 
+		// an unmounted component can't emit, so check the listener goes
+		const remove = vi.spyOn(document, "removeEventListener");
 		wrapper.unmount();
-		down(document.body);
-		// unmount clears the history; a stray emit would start it again
-		expect(component.emitted("close")).toBeUndefined();
+		expect(remove).toHaveBeenCalledWith("pointerdown", expect.any(Function));
 		opener.remove();
 		overlay.remove();
 	});
