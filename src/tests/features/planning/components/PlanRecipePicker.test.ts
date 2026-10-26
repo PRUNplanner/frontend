@@ -261,7 +261,8 @@ describe("PlanRecipePicker", () => {
 
 		wrapper.unmount();
 		down(document.body);
-		expect(component.emitted("close")).toHaveLength(1);
+		// unmount clears the history; a stray emit would start it again
+		expect(component.emitted("close")).toBeUndefined();
 		opener.remove();
 		overlay.remove();
 	});
