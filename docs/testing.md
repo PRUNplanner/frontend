@@ -129,7 +129,7 @@ Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
   through the engine (normalized to 10 significant digits). A changed
   snapshot means changed numbers: update with `-u` only on purpose, in its
   own commit.
-- `pnpm vitest bench --run` runs the benchmark files
+- `pnpm vitest bench --run --reporter=verbose` runs the benchmark files
   (`*.bench.ts` under `src/tests/`: plan calculation, query store, `useDB`,
   production chain solver, planet search, preferences and others). They
   are not part of `pnpm test`. Compare runs on the same, otherwise idle

@@ -1,5 +1,6 @@
 import { effectScope, ref, watch } from "vue";
-import { bench, describe, vi } from "vitest";
+import { describe, vi } from "vitest";
+import { bench } from "@/tests/bench";
 
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";

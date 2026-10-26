@@ -16,6 +16,8 @@ export default defineConfig({
 		__BUILD_ID__: JSON.stringify("dev"),
 	},
 	test: {
+		// Node 25+ has its own empty localStorage, which hides jsdom's
+		execArgv: ["--no-experimental-webstorage"],
 		setupFiles: "./src/tests/vitest.setup.ts",
 		globals: true,
 		env: loadEnv("", ""),

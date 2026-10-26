@@ -1,4 +1,5 @@
-import { bench, describe, vi } from "vitest";
+import { describe, vi } from "vitest";
+import { bench } from "@/tests/bench";
 import { computed } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 

@@ -5,16 +5,14 @@
 		"target": "ESNext",
 		"module": "ESNext",
 		"skipLibCheck": true,
-		"ignoreDeprecations": "6.0",
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"composite": true,
 		"lib": ["ESNext", "DOM", "DOM.Iterable"],
 		"strict": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"outDir": "./dist",
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"]
 		}

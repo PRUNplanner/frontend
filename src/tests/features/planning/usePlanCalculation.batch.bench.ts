@@ -1,5 +1,6 @@
 import { effectScope, ref, type Ref, shallowRef } from "vue";
-import { bench, describe, vi } from "vitest";
+import { describe, vi } from "vitest";
+import { bench } from "@/tests/bench";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 // Services

@@ -33,5 +33,5 @@ env.js
 .codegraph
 
 .scratch
-.vitest-reports
+.vitest
 .prerender

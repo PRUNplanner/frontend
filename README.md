@@ -56,7 +56,7 @@ request gets its own preview deployment on Cloudflare Pages.
 
 ## Getting started
 
-With Node 22.19 (`.nvmrc`) and pnpm 10, install dependencies with `pnpm install` and run the vite development server:
+With Node 26 (`.nvmrc`) and pnpm 10, install dependencies with `pnpm install` and run the vite development server:
 
 ```shell
 pnpm run dev

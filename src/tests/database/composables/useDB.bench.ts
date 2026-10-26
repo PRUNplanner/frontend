@@ -1,4 +1,5 @@
-import { bench, describe } from "vitest";
+import { describe } from "vitest";
+import { bench } from "@/tests/bench";
 import { ref, type Ref } from "vue";
 
 import { useDB } from "@/database/composables/useDB";

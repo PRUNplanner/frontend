@@ -36,7 +36,7 @@ jobs:
         uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version-file: .nvmrc
           cache: "pnpm"
       - name: "Install dependencies"
         run: pnpm install --frozen-lockfile
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: blob-unit-${{ matrix.shard }}
-          path: .vitest-reports/
+          path: .vitest/blob/
           include-hidden-files: true
           retention-days: 1
 
@@ -64,7 +64,7 @@ jobs:
         uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version-file: .nvmrc
           cache: "pnpm"
       - name: "Install dependencies"
         run: pnpm install --frozen-lockfile
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: blob-components-${{ matrix.shard }}
-          path: .vitest-reports/
+          path: .vitest/blob/
           include-hidden-files: true
           retention-days: 1
 
@@ -88,14 +88,14 @@ jobs:
         uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version-file: .nvmrc
           cache: "pnpm"
       - name: "Install dependencies"
         run: pnpm install --frozen-lockfile
       - uses: actions/download-artifact@v4
         with:
           pattern: blob-*
-          path: .vitest-reports
+          path: .vitest/blob
           merge-multiple: true
       - name: "Merge reports and check thresholds"
         run: pnpm run test:coverage:report

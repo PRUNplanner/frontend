@@ -14,6 +14,13 @@ import buildings from "@/tests/test_data/api_data_buildings.json";
 import recipes from "@/tests/test_data/api_data_recipes.json";
 import building_single_tnp from "@/tests/test_data/api_data_building_single_tnp.json";
 
+vi.mock("@/features/game_data/usePlanetData", async () => {
+	return {
+		...(await vi.importActual("@/features/game_data/usePlanetData")),
+		getPlanetSpecialMaterials: vi.fn().mockResolvedValue([]),
+	};
+});
+
 describe("useBuildingData", async () => {
 	beforeAll(async () => {
 		//@ts-expect-error mock data
@@ -205,15 +212,6 @@ describe("useBuildingData", async () => {
 					{ material_ticker: "Foo", material_amount: 1 },
 				],
 			};
-
-			vi.mock("@/features/game_data/usePlanetData", async () => {
-				return {
-					...(await vi.importActual(
-						"@/features/game_data/usePlanetData"
-					)),
-					getPlanetSpecialMaterials: vi.fn().mockResolvedValue([]),
-				};
-			});
 
 			const { getBuildingConstructionMaterials } = useBuildingData();
 

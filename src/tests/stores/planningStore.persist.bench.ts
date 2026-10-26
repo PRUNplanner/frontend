@@ -1,5 +1,6 @@
 import { createApp, nextTick } from "vue";
-import { bench, describe, vi } from "vitest";
+import { describe, vi } from "vitest";
+import { bench } from "@/tests/bench";
 import { createPinia, setActivePinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
