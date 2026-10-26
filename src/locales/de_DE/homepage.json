@@ -5,13 +5,19 @@
 		"sections": "Abschnitte",
 		"how": "So funktioniert’s",
 		"market": "Markt",
+		"planet_search": "Planet Search",
 		"features": "Funktionen",
 		"tools": "Werkzeuge",
-		"github": "GitHub"
+		"github": "GitHub",
+		"menu": "Menu",
+		"menu_close": "Close menu",
+		"tools_group": "Tools",
+		"all_tools": "All tools"
 	},
 	"auth_panel": {
 		"label": "Anmelden oder Konto erstellen",
-		"switch": "Konto"
+		"switch": "Konto",
+		"plan_context": "Log in to start a plan on {planet} ({id}). You go straight to it. New here? Create a free account first, you come back to {name} after."
 	},
 	"hero": {
 		"eyebrow": "Plan- und Imperiumplaner für Prosperous Universe",
@@ -117,7 +123,9 @@
 			"label": "Planetensuche",
 			"title": "Finde den Planeten für deine nächste Basis.",
 			"lead": "Filtere jeden Planeten im Universum und starte deinen nächsten Plan.",
-			"alt": "Planetensuche: Filter auf der linken Seite, übereinstimmende Planeten mit ihren Ressourcen, COGC und Infrastruktur daneben"
+			"alt": "Planetensuche: Filter auf der linken Seite, übereinstimmende Planeten mit ihren Ressourcen, COGC und Infrastruktur daneben",
+			"cta": "Try Planet Search",
+			"cta_note": "No account needed."
 		},
 		"empire": {
 			"label": "Imperium",

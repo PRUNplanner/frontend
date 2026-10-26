@@ -86,6 +86,7 @@
 		"hint": "Click the ticker to pin · Esc closes",
 		"hint_details": "Click the ticker for Market details · Esc closes",
 		"hint_pinned": "Pinned · Esc or × closes",
+		"hint_click": "Esc closes",
 		"exploration": "Market Exploration ↗",
 		"details": "Market details →"
 	},

@@ -5,13 +5,19 @@
 		"sections": "Sections",
 		"how": "How it works",
 		"market": "Market",
+		"planet_search": "Planet Search",
 		"features": "Features",
 		"tools": "Tools",
-		"github": "GitHub"
+		"github": "GitHub",
+		"menu": "Menu",
+		"menu_close": "Close menu",
+		"tools_group": "Tools",
+		"all_tools": "All tools"
 	},
 	"auth_panel": {
 		"label": "Log in or create an account",
-		"switch": "Account"
+		"switch": "Account",
+		"plan_context": "Log in to start a plan on {planet} ({id}). You go straight to it. New here? Create a free account first, you come back to {name} after."
 	},
 	"hero": {
 		"eyebrow": "Prosperous Universe 的基地与帝国规划工具",
@@ -117,7 +123,9 @@
 			"label": "行星搜索",
 			"title": "为你的下一座基地找到对的球。",
 			"lead": "筛遍整个宇宙仅为找到最适合您后续规划的那一颗。",
-			"alt": "行星搜索：左侧的筛选条件将行星依据资源、全球商会以及基础设施进行匹配"
+			"alt": "行星搜索：左侧的筛选条件将行星依据资源、全球商会以及基础设施进行匹配",
+			"cta": "Try Planet Search",
+			"cta_note": "No account needed."
 		},
 		"empire": {
 			"label": "Empire",

@@ -126,7 +126,8 @@
 			"sell_outputs": "Vente des sorties",
 			"potential_batches": "Lots possibles",
 			"delta_required": "Delta requis",
-			"missing_material": "Matériau manquant"
+			"missing_material": "Matériau manquant",
+			"missing": "Missing"
 		}
 	},
 	"onboarding": {

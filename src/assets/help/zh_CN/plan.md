@@ -1,24 +1,37 @@
-概览
+**Layout**
 
-概览是规划分析的核心。它会提供输入物资和劳动力消耗品的每日成本，以及生产建筑的每日损耗。规划也会计入初始建筑成本（包括核心建筑），其后续会用于计算基地的 ROI（回本周期）。每日利润通过从每日产出价值中扣除每日成本计算得出。最后，单位区域利润是基地每日利润除以基地实际占用区域得出的数值。需要注意的是，它以实际基地面积作为分母；而建筑配方的单位区域利润（下文会进一步说明）则使用标准化分母，便于比较。
+The plan view reads from left to right: **Base** (set up), **Production** (build) and **Material I/O** (result). The results bar above them stays in view and shows profit per day, payback, profit per area, area and storage.
 
-- 概览计算包含建造核心模块的成本
+- **Base** holds the empire and prices, the planet (COGC program, permits, Corp HQ, planet resources), workforce with its luxuries, housing and experts. Each section folds; its summary line shows the setting at a glance.
+- **Tools** (Construction, Supply, Visits, Repair, Profit, Plan check, POPR) open in place of the production list. While a tool is open, Base folds to a strip at the left, and for Repair, Profit and Plan check Material I/O folds too. Click a strip to show the pane again; it stays open until you fold it.
+- On narrower screens (below 1360 px with the collapsed sidebar, 1544 px with the full one) Base opens from the "Base" button next to the tabs; on a tablet Material I/O opens from its button at the end of the tabs too. On a phone the tabs under the results switch between Production, Base, Material I/O and Tools, recipes are picked in a sheet from the bottom, and Save sits above the navigation bar while there is something to save.
 
-**生产建筑**
+**Results bar**
 
-添加到规划中的每个建筑都会显示在此部分。添加到规划中的每个建筑都会显示在此部分。用户应使用左上角的 + 生产模板 按钮添加生产模板。选择后，那份生产模板会影响整份规划并参与到顶部的概览以及右侧的物料输入/输出的计算当中。
+- **Profit / day**: the value of the plan's output minus inputs, workforce consumables and building degradation, with revenue and cost below it. Construction includes the core module.
+- **Payback**: the build cost of the plan divided by its profit per day.
+- **Profit / area**: profit per day divided by the area the base uses. It uses the actual base as the denominator, while ȼ / area of a recipe uses a standardized one for comparison. When the empire page has calculated your empire, its average is shown below.
+- **Storage**: days until the base storage is full, from what the base exports per day.
 
-选择配方时，会出现该建筑可用配方的下拉列表。每个配方都会显示输入、运行时间和输出。系统还会自动计算并显示该建筑建造成本对应的每日利润（ȼ / 天）、单位面积利润（ȼ / 面积）以及 ROI（回本周期）。
+**Production**
 
-- 每日利润是按规划的交易所偏好设置出售产品后，扣除输入物资、劳动力和折旧成本后的净利润。每日利润是按计划的 CX 设置出售产出后，扣除输入物资、劳动力和折旧成本后的净利润。 Workforce costs follow the plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.
-- 单位区域利润是将每日利润除以生产建筑所占区域，以及该建筑在“最优”布局中按比例分摊的必要 HAB 和 STO 区域后得到的数值（该布局用于配方 ROI 工具）。这样可以在不同建筑之间，用一致的标准比较配方盈利能力。
-- ROI 是该生产建筑的建造成本除以该建筑每日利润后得到的回本周期。
+Each building has one row: count, efficiency, ȼ per day and area. Click the name to fold its orders. Its orders are listed below it: the amount, the recipe, its runtime, its share of the building's time, its part of the building's ȼ per day (the orders add up to the building), COGM and delete. Deleting asks nothing; Ctrl+Z or the Undo message takes it back.
+
+**Changing a recipe**
+
+Click a recipe to open the picker under it, or "+ Recipe" to add one as a new order. Click a row or press Enter to pick it, ↑ and ↓ move through the list, Esc closes it. A line under the row says what changed, with Undo.
+
+- **ȼ / day** is the net profit of one building running only this recipe: the output sold at the plan's CX setting minus inputs, workforce and depreciation. 每日利润是按计划的 CX 设置出售产出后，扣除输入物资、劳动力和折旧成本后的净利润。 Workforce costs follow the plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing. "vs now" compares it with the recipe it would replace.
+- **ȼ / area** is that profit divided by the area of the building plus a proportionate share of the HABs and STOs of its "optimal" layout (as in the Recipe ROI tool), so recipes compare across buildings.
+- **Payback** is the building's construction cost divided by its profit per day.
+- **Plans here** is the share of plans on the planet with this building that run the recipe.
+- A dot after each input says whether the plan makes it (made here) or buys it (bought). When the plan uses what the recipe you replace makes, a note says how much of it you'd have to buy instead.
 
 **保存与撤销**
 
-在配置中命名你的规划并使用 创建/保存 按钮或者 Ctrl+S（Mac系统为 Cmd+S）快捷键保存规划。保存按钮会显示规划的状态：“已保存”代表没有待保存的更改（鼠标悬停可显示上次保存时间），存在未保存的更改是则显示一个圆点，保存规划时显示“保存中…”，“重试保存”则代表保存失败。在保存成功前你的修改内容均会保留。
+Name your plan with the pencil next to its name and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). The text next to Save shows the plan's state: when it was saved, unsaved changes, "Saving…", or a failed save with a retry. 在保存成功前你的修改内容均会保留。
 
-每处修改均可以使用保存按钮旁边的“撤销”和“重做”按钮撤回，或者使用Ctrl+Z和Ctrl+Shift+Z（Mac系统为Cmd键）。移除一栋建筑或一份生产模板，又或者更改一份生产模板，则会短暂显示一条带有撤销按钮的消息。此记录涵盖最后50次更改，在保存或重新加载规划后重置。
+Every change can be undone with the Undo and Redo buttons next to the name, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). 此记录涵盖最后50次更改，在保存或重新加载规划后重置。
 
 **Plan check**
 
@@ -45,6 +58,8 @@ A plan's profit assumes every material can be bought and sold at its price, in a
 
 Spreads are shown but never flagged.
 
+To watch the shares while you change counts and recipes, switch Material I/O to **%**: each material's Δ as a share of the average daily volume of the last 7 and 30 days, amber from 10 %, red from 50 %.
+
 **What CX volume misses**
 
 The volume comes from the commodity exchanges only. Sales on local markets, contracts between players and trades inside a corporation aren't counted, so a material can be easier to sell than its CX volume says.
@@ -57,6 +72,6 @@ The empire's Material I/O checks the empire's net flow: what one plan makes and 
 
 In Price sensitivity, Target price finds the price of one material that gives the profit you want, with every other price unchanged. It also shows the exchange's lowest and highest price of the last 30 days.
 
-选择配方时，会出现该建筑可用配方的下拉列表。每个配方都会显示输入、运行时间和输出。系统还会自动计算并显示该建筑建造成本对应的每日利润（ȼ / 天）、单位面积利润（ȼ / 面积）以及 ROI（回本周期）。
+概览是规划分析的核心。它会提供输入物资和劳动力消耗品的每日成本，以及生产建筑的每日损耗。规划也会计入初始建筑成本（包括核心建筑），其后续会用于计算基地的 ROI（回本周期）。每日利润通过从每日产出价值中扣除每日成本计算得出。最后，单位区域利润是基地每日利润除以基地实际占用区域得出的数值。需要注意的是，它以实际基地面积作为分母；而建筑配方的单位区域利润（下文会进一步说明）则使用标准化分母，便于比较。
 
 In Compare plans: the other plan's extra build cost divided by its extra profit per day, in days. "never" means it costs more and earns no more.

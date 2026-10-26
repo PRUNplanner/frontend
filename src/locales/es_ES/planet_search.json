@@ -1,6 +1,11 @@
 {
 	"view_title": "Búsqueda de planetas",
 	"title": "Búsqueda de planetas",
+	"description": "Search every planet of Prosperous Universe by resources, conditions, COGC, infrastructure and jumps to the exchanges. Free, no account needed.",
+	"intro": {
+		"lead": "Filter all {n} planets of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed.",
+		"lead_any": "Filter every planet of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed."
+	},
 	"loading": "Cargando planetas…",
 	"load_error": "No se pudieron cargar los planetas. Recarga la página para volver a intentarlo.",
 	"header": {
@@ -24,7 +29,8 @@
 		"no_saved": "Aún no hay búsquedas guardadas. Guarda los filtros actuales con \"Guardar búsqueda\".",
 		"rename_label": "Renombrar la búsqueda guardada {n}",
 		"load": "Cargar",
-		"delete": "Eliminar"
+		"delete": "Eliminar",
+		"more": "Saved searches, copy link, reset"
 	},
 	"filters": {
 		"title": "Filtros",
@@ -106,7 +112,9 @@
 		"remove_plan": "Quitar {plan}",
 		"exchanges": "Bolsas",
 		"max_jumps": "Saltos máx.",
-		"max_jumps_value": "≤ {n} saltos desde cada elegido"
+		"max_jumps_value": "≤ {n} saltos desde cada elegido",
+		"login_prompt": "Log in to count jumps from your own bases.",
+		"login": "Log in"
 	},
 	"results": {
 		"count": "{n} de {total} planetas",
@@ -116,6 +124,7 @@
 		"chart": "Gráfico",
 		"planet": "Planeta",
 		"fert": "Fert. %",
+		"plots": "Plots",
 		"other": "Otros recursos",
 		"extras": "Materiales de construcción adicionales",
 		"cogc_infra": "COGC · Infra",
@@ -132,7 +141,8 @@
 		"cell": "{material} {value}/d · {pct} % del máx.",
 		"sort": "Ordenar por {column}",
 		"sort_hint": "Haz clic para ordenar por esta columna; Mayús+clic para añadirla como criterio de desempate",
-		"loading_more": "Cargando más planetas…"
+		"loading_more": "Cargando más planetas…",
+		"create_plan_login": "Log in to plan a base on {planet}"
 	},
 	"sort": {
 		"button": "Ordenar ({n})",
@@ -150,6 +160,7 @@
 	"columns": {
 		"button": "Columnas ({shown}/{total})",
 		"fert": "Fertilidad",
+		"plots": "Plots",
 		"other": "Otros recursos",
 		"extras": "Materiales de construcción adicionales",
 		"cogc": "COGC · Infraestructura",
@@ -161,6 +172,15 @@
 		"all": "Todas",
 		"none": "Ninguna",
 		"reset": "Restablecer"
+	},
+	"plots": {
+		"free": "{free} / {total} plots free",
+		"full": "Full",
+		"full_ghost": "Full · ghost sites",
+		"unknown": "plots unknown",
+		"full_tooltip": "Every plot is taken: this planet can't be settled anymore.",
+		"ghost_tooltip": "Every plot is taken. New bases go on ghost sites; {n} so far.",
+		"as_of": "As of {date}."
 	},
 	"chips": {
 		"name": "Nombre: \"{text}\"",

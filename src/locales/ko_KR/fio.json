@@ -3,6 +3,14 @@
 		"view_title": "FIO Burn",
 		"title": "FIO Burn:",
 		"fio_last_update": "FIO Data Update: {last_updated}",
+		"states": {
+			"no_empire_title": "No empire yet",
+			"no_empire": "FIO Burn shows how long the stock of each base in an empire lasts. Create an empire in Management and assign your plans to it.",
+			"create_empire": "@:empire.empty.create",
+			"no_fio_title": "Connect FIO to see your burn",
+			"no_fio": "FIO Burn reads your bases' stock from FIO. Set up FIO in your {link}, then come back here.",
+			"profile": "Profile"
+		},
 		"form": {
 			"empire": "@:terms.empire",
 			"burn_thresholds": "Burn Thresholds",

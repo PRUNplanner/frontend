@@ -1,9 +1,10 @@
 {
 	"view_title": "Bolsas",
 	"title": "Bolsas",
-	"errors": {
-		"title": "Sin preferencias",
-		"message": "No tienes preferencias de bolsa. Ve a Gestión y crea la primera."
+	"empty": {
+		"title": "No exchange preferences yet",
+		"text": "An exchange preference sets which exchange and price your plans use for each material. Create your first one in Management.",
+		"create": "Create a preference"
 	},
 	"labels": {
 		"universe": "Universe",

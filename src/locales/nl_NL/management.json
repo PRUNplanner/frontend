@@ -15,7 +15,8 @@
 			"empire_name": "Naam van Rijk",
 			"faction": "Factie",
 			"permits_total": "Totaal aantal vergunningen",
-			"permits_used": "Gebruikt aantal vergunningen"
+			"permits_used": "Gebruikt aantal vergunningen",
+			"empire_placeholder": "max. 100 characters"
 		},
 		"table": {
 			"empire_name": "Rijk",

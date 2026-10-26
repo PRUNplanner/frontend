@@ -1,24 +1,37 @@
-**Übersicht**
+**Layout**
 
-Die Übersicht ist das Herzstück der Plananalyse.  It provides the daily cost of inputs and workforce consumables, as well as the daily production building degradation.  Die anfänglichen Baukosten des Plans (einschließlich CM) sind enthalten und werden später zur Berechnung des ROI (Amortisationszeit) der Basis verwendet.  Der tägliche Profit ergibt sich, indem die täglichen Kosten vom Wert des täglichen Outputs abgezogen werden.  Schließlich ist der Profit pro Fläche der tägliche Profit der Basis geteilt durch die genutzte Fläche der Basis; wichtig ist, dass dabei die tatsächliche Basis als Nenner dient, während der Profit pro Fläche der Gebäude-Aufträge (mehr dazu unten) zu Vergleichszwecken einen standardisierten Nenner verwendet.
+The plan view reads from left to right: **Base** (set up), **Production** (build) and **Material I/O** (result). The results bar above them stays in view and shows profit per day, payback, profit per area, area and storage.
 
-- Die Berechnungen der Übersicht enthalten die Kosten für den Bau des Kernmoduls
+- **Base** holds the empire and prices, the planet (COGC program, permits, Corp HQ, planet resources), workforce with its luxuries, housing and experts. Each section folds; its summary line shows the setting at a glance.
+- **Tools** (Construction, Supply, Visits, Repair, Profit, Plan check, POPR) open in place of the production list. While a tool is open, Base folds to a strip at the left, and for Repair, Profit and Plan check Material I/O folds too. Click a strip to show the pane again; it stays open until you fold it.
+- On narrower screens (below 1360 px with the collapsed sidebar, 1544 px with the full one) Base opens from the "Base" button next to the tabs; on a tablet Material I/O opens from its button at the end of the tabs too. On a phone the tabs under the results switch between Production, Base, Material I/O and Tools, recipes are picked in a sheet from the bottom, and Save sits above the navigation bar while there is something to save.
 
-**Produktionsgebäude**
+**Results bar**
 
-Jedes Gebäude, das du zum Plan hinzufügst, erscheint in diesem Abschnitt.  Users should add a recipe using the +RECIPE button on the top right.  Sobald er ausgewählt ist, wirkt sich der Auftrag auf den gesamten Plan aus und fließt oben in die Übersicht und rechts in das Material I/O ein.
+- **Profit / day**: the value of the plan's output minus inputs, workforce consumables and building degradation, with revenue and cost below it. Construction includes the core module.
+- **Payback**: the build cost of the plan divided by its profit per day.
+- **Profit / area**: profit per day divided by the area the base uses. It uses the actual base as the denominator, while ȼ / area of a recipe uses a standardized one for comparison. When the empire page has calculated your empire, its average is shown below.
+- **Storage**: days until the base storage is full, from what the base exports per day.
 
-Wenn du einen Auftrag auswählst, erscheint eine Dropdown-Liste mit den Aufträgen dieses Gebäudes.  For each recipe, the inputs, duration, and output are given.  Der Profit pro Tag (ȼ / Tag), der Profit pro Fläche (ȼ / Fläche) und der ROI (Amortisationszeit) für die Baukosten des Gebäudes werden ebenfalls automatisch berechnet und angezeigt.
+**Production**
 
-- Der Profit pro Tag ist der Nettoprofit aus dem Verkauf des Outputs zur CX-Einstellung des Plans abzüglich der Kosten für Inputs, Belegschaft und Abschreibung. Die Belegschaftskosten richten sich nach den Wohngebäuden und Luxusgütern des Plans: Arbeiter ohne Unterkunft und ausgeschaltete Luxusgüter kosten nichts.
-- Der Profit pro Fläche ist dieser Profit pro Tag geteilt durch die Fläche des Produktionsgebäudes plus einen anteiligen Teil der benötigten HABs und STOs aus dem „optimalen“ Layout des Gebäudes (wird im Werkzeug Rezept-ROI verwendet).  So lässt sich die Profitabilität von Aufträgen über verschiedene Gebäude hinweg einheitlich vergleichen.
-- Der ROI sind die Baukosten dieses Produktionsgebäudes geteilt durch den Profit pro Tag des Gebäudes.
+Each building has one row: count, efficiency, ȼ per day and area. Click the name to fold its orders. Its orders are listed below it: the amount, the recipe, its runtime, its share of the building's time, its part of the building's ȼ per day (the orders add up to the building), COGM and delete. Deleting asks nothing; Ctrl+Z or the Undo message takes it back.
+
+**Changing a recipe**
+
+Click a recipe to open the picker under it, or "+ Recipe" to add one as a new order. Click a row or press Enter to pick it, ↑ and ↓ move through the list, Esc closes it. A line under the row says what changed, with Undo.
+
+- **ȼ / day** is the net profit of one building running only this recipe: the output sold at the plan's CX setting minus inputs, workforce and depreciation. Die Belegschaftskosten richten sich nach den Wohngebäuden und Luxusgütern des Plans: Arbeiter ohne Unterkunft und ausgeschaltete Luxusgüter kosten nichts. "vs now" compares it with the recipe it would replace.
+- **ȼ / area** is that profit divided by the area of the building plus a proportionate share of the HABs and STOs of its "optimal" layout (as in the Recipe ROI tool), so recipes compare across buildings.
+- **Payback** is the building's construction cost divided by its profit per day.
+- **Plans here** is the share of plans on the planet with this building that run the recipe.
+- A dot after each input says whether the plan makes it (made here) or buys it (bought). When the plan uses what the recipe you replace makes, a note says how much of it you'd have to buy instead.
 
 **Speichern und Widerrufen**
 
-Gib deinem Plan in der Konfiguration einen Namen und speichere ihn mit Speichern / Erstellen oder Strg+S (Cmd+S auf dem Mac). Der Speichern-Button zeigt den Status des Plans: „Gespeichert“, wenn es nichts zu speichern gibt (fahre mit der Maus darüber, um zu sehen, wann zuletzt gespeichert wurde), ein Punkt bei nicht gespeicherten Änderungen, „Speichern…“ während des Speicherns und „Speichern wiederholen“, wenn das Speichern fehlschlägt. Your changes are kept until it succeeds.
+Name your plan with the pencil next to its name and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). The text next to Save shows the plan's state: when it was saved, unsaved changes, "Saving…", or a failed save with a retry. Your changes are kept until it succeeds.
 
-Jede Änderung kannst du mit den Buttons Widerrufen und Wiederherstellen neben Speichern rückgängig machen, oder mit Strg+Z und Strg+Umschalt+Z (Cmd auf dem Mac). Wenn du ein Gebäude oder einen Auftrag entfernst oder einen Auftrag änderst, erscheint außerdem für ein paar Sekunden eine Meldung mit einem Widerrufen-Button. Der Verlauf umfasst die letzten 50 Änderungen und beginnt nach dem Speichern oder Neuladen des Plans von vorn.
+Every change can be undone with the Undo and Redo buttons next to the name, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). Der Verlauf umfasst die letzten 50 Änderungen und beginnt nach dem Speichern oder Neuladen des Plans von vorn.
 
 **Plan-Check**
 
@@ -44,6 +57,8 @@ Der Profit eines Plans setzt voraus, dass jedes Material in beliebiger Menge zu 
 - Grau, ein Ring: ein Hinweis. _Alle Marktplätze, keiner gewählt_ (keine CX-Präferenz, daher werden alle Marktplätze gezählt) oder _Daten älter als 2 Tage_.
 
 Spreads werden angezeigt, aber nie markiert.
+
+To watch the shares while you change counts and recipes, switch Material I/O to **%**: each material's Δ as a share of the average daily volume of the last 7 and 30 days, amber from 10 %, red from 50 %.
 
 **Was das CX-Volumen nicht erfasst**
 
