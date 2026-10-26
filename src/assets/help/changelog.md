@@ -1,3 +1,15 @@
+# 2026-10-26 - v. 0.34.0
+
+The headline of this release is the new **Production Chains** planner. You can plan a chain per day, split it into bases on real planets and create the plans in one go, or check the empire you already run. The plan editor also gets a new layout.
+
+- **Production Chains, rebuilt**: enter what you want per day and see every step with its recipe, building count and source (make, buy or extract), the unit cost of each step against the CX, a buy list with an XIT action, and what the chain earns and needs to build [[PR-659]](https://github.com/PRUNplanner/frontend/pull/659)
+- **Chains over several bases**: split a chain into bases A–H, each on its own planet with its COGC, luxuries and best expert split. See buildings, area, costs and shipping per base, then create one plan per base, in a new empire or an existing one [[PR-664]](https://github.com/PRUNplanner/frontend/pull/664), [[PR-666]](https://github.com/PRUNplanner/frontend/pull/666)
+- **Check an empire**: scores every base of an empire against the chains it sells and suggests fixes (recipe, make or buy, location, setup), each with its gain per day and payback [[PR-666]](https://github.com/PRUNplanner/frontend/pull/666)
+- **New plan editor layout**: Base | Production | Material I/O under a sticky results bar. Tools open in place of Production, and recipes change inline with one click and Undo [[PR-652]](https://github.com/PRUNplanner/frontend/pull/652)
+- **Material market card**: hovering any material ticker shows a compact card with price, trend, one row per exchange and whether the market can carry your plan. A "Market details" drawer has the charts. In Profile you can set it to open on click only [[PR-655]](https://github.com/PRUNplanner/frontend/pull/655), [[PR-656]](https://github.com/PRUNplanner/frontend/pull/656)
+- **Planet Search for everyone**: /search now works without an account. Planets that can't be settled anymore (every plot taken, no ghost sites) get a red icon, and you can turn on a Plots column with free and total plots [[PR-658]](https://github.com/PRUNplanner/frontend/pull/658), [[PR-667]](https://github.com/PRUNplanner/frontend/pull/667)
+- **Market report polish**: dates show the year, the In short box is now four tiles, there are cards for all five workforce tiers, and the movers and leaders lists can be sorted and shown in full [[PR-653]](https://github.com/PRUNplanner/frontend/pull/653)
+
 # 2026-10-21 - v. 0.33.0
 
 The headline of this release is PRUNplanner's new **front door**: a redesigned landing page, and a daily **market report** that anyone can read without an account.
