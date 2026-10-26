@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { h } from "vue";
-import { DOMWrapper, type VueWrapper } from "@vue/test-utils";
+import type { VueWrapper } from "@vue/test-utils";
 
 import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanWorkforce from "@/features/planning/components/PlanWorkforce.vue";
+import { CheckSharp, BlockOutlined } from "@vicons/material";
+import PButton from "@/ui/components/PButton.vue";
 import { mountComponent } from "@/tests/mountComponent";
-import plan from "@/locales/en_US/plan.json";
 
 // Types & Interfaces
 import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
@@ -15,13 +15,6 @@ import type {
 } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		setup: (props: { ticker: string }) => () => h("span", props.ticker),
-	},
-}));
 
 const wf = (
 	name: WorkforceType,
@@ -67,85 +60,85 @@ const WORKFORCE: IWorkforceRecord = {
 };
 
 async function mountWorkforce(props: Record<string, unknown> = {}) {
-	return mountComponent(
-		PlanWorkforce,
-		{
-			disabled: false,
-			workforceData: WORKFORCE,
-			planetNaturalId: "ZZ-000a",
-			...props,
-		},
-		// real plan texts, so the numbers in "{need} / {housed}" show
-		{ messages: { plan } }
-	);
+	return mountComponent(PlanWorkforce, {
+		disabled: false,
+		workforceData: WORKFORCE,
+		planetNaturalId: "ZZ-000a",
+		...props,
+	});
 }
 
-// a used tier is the block around its meter
-const rows = (wrapper: VueWrapper) =>
-	wrapper
-		.findAll("[role=img]")
-		.map((m) => new DOMWrapper(m.element.parentElement!));
-const row = (wrapper: VueWrapper, index: number) => rows(wrapper).at(index)!;
-const names = (wrapper: VueWrapper) =>
-	rows(wrapper).map((r) => r.find("span.text-ink-strong").text());
+const row = (wrapper: VueWrapper, index: number) =>
+	wrapper.findAll("tbody tr").at(index)!;
+const cells = (wrapper: VueWrapper, index: number) =>
+	row(wrapper, index).findAll("td");
+const texts = (wrapper: VueWrapper, index: number) =>
+	cells(wrapper, index).map((td) => td.text());
+/** need and housed numbers of a row */
+const needHoused = (wrapper: VueWrapper, index: number) =>
+	cells(wrapper, index)
+		.at(1)!
+		.findAll("span")
+		.map((s) => s.text());
 const meter = (wrapper: VueWrapper, index: number) =>
-	row(wrapper, index).find("[role=img] > div");
-/** lux1 / lux2 toggles of a row */
+	cells(wrapper, index).at(1)!.find("[role=img]");
+/** lux1 / lux2 buttons of a row */
 const luxButtons = (wrapper: VueWrapper, index: number) =>
-	row(wrapper, index).findAll("button[aria-pressed]");
-const bedsFree = (wrapper: VueWrapper, index: number) =>
-	row(wrapper, index).findAll("span").at(-1)!;
+	row(wrapper, index).findAllComponents(PButton) as VueWrapper[];
 
 describe("PlanWorkforce", () => {
 	beforeEach(() => {
 		vi.mocked(trackPlanEdit).mockClear();
 	});
 
-	it("lists the used tiers with need / housed and efficiency", async () => {
+	it("lists every workforce with need / housed, open and efficiency", async () => {
 		const { wrapper } = await mountWorkforce();
 
+		expect(wrapper.findAll("tbody tr")).toHaveLength(5);
 		// capitalizeString("game.workforce_type.pioneer"): "_" becomes " ",
-		// then each word is capitalized; technician and scientist are unused
-		expect(names(wrapper)).toEqual([
-			"Game.workforce Type.pioneer",
-			"Game.workforce Type.settler",
-			"Game.workforce Type.engineer",
-		]);
+		// then each word is capitalized
 		// 0.9634 * 100 = 96.34
-		expect(row(wrapper, 0).text()).toContain("1,200 / 1,500 · 96.34 %");
+		expect(texts(wrapper, 0)).toEqual([
+			"Game.workforce Type.pioneer",
+			"1,2001,500",
+			"300",
+			"PWO",
+			"COF",
+			"96.34",
+		]);
+		expect(needHoused(wrapper, 0)).toEqual(["1,200", "1,500"]);
 		// 0.5 * 100 = 50.00
-		expect(row(wrapper, 1).text()).toContain("250 / 200 · 50.00 %");
+		expect(texts(wrapper, 1).slice(2)).toEqual([
+			"-50",
+			"REP",
+			"KOM",
+			"50.00",
+		]);
+		expect(needHoused(wrapper, 1)).toEqual(["250", "200"]);
 	});
 
-	it("puts the unused tiers on one muted line", async () => {
+	it("shows a meter for every tier with housing or need", async () => {
 		const { wrapper } = await mountWorkforce();
 
-		expect(wrapper.text()).toContain(
-			"Game.workforce Type.technician, Game.workforce Type.scientist: not needed"
+		// pioneer, settler and engineer have housing
+		expect([0, 1, 2, 3, 4].map((i) => meter(wrapper, i).exists())).toEqual(
+			[true, true, false, true, false]
+		);
+		// 1,200 / 1,500 = 80 %
+		expect(meter(wrapper, 0).find("div").attributes("style")).toContain(
+			"width: 80%"
+		);
+		// settler needs 250 with 200 housed: full and negative
+		expect(meter(wrapper, 1).find("div").classes()).toContain(
+			"bg-negative"
 		);
 	});
 
-	it("has no unused line when every tier is used", async () => {
-		const { wrapper } = await mountWorkforce({
-			workforceData: {
-				...WORKFORCE,
-				technician: wf("technician", { capacity: 5, left: 5 }),
-				scientist: wf("scientist", { required: 5, left: -5 }),
-			},
-		});
-
-		expect(rows(wrapper)).toHaveLength(5);
-		expect(wrapper.text()).not.toContain("not needed");
-	});
-
-	it("shows how full the housing is", async () => {
+	it("shows a dash for an empty tier", async () => {
 		const { wrapper } = await mountWorkforce();
 
-		// 1,200 / 1,500 = 80 %
-		expect(meter(wrapper, 0).attributes("style")).toContain("width: 80%");
-		expect(meter(wrapper, 0).classes()).not.toContain("bg-negative");
-		// settler needs 250 with 200 housed: full and negative
-		expect(meter(wrapper, 1).classes()).toContain("bg-negative");
+		expect(cells(wrapper, 2).at(1)!.text()).toBe("–");
+		expect(cells(wrapper, 4).at(1)!.text()).toBe("–");
 	});
 
 	it("keeps a need without housing visible, with a full meter", async () => {
@@ -156,55 +149,113 @@ describe("PlanWorkforce", () => {
 			},
 		});
 
-		expect(names(wrapper)[2]).toBe("Game.workforce Type.technician");
-		expect(row(wrapper, 2).text()).toContain("5 / 0");
-		expect(meter(wrapper, 2).classes()).toContain("bg-negative");
-	});
-
-	it("shows the free beds, negative when short", async () => {
-		const { wrapper } = await mountWorkforce();
-
-		expect(bedsFree(wrapper, 0).text()).toBe("300 free");
-		expect(bedsFree(wrapper, 0).classes()).toContain("text-muted");
-		expect(bedsFree(wrapper, 1).text()).toBe("-50 free");
-		expect(bedsFree(wrapper, 1).classes()).toContain("text-negative");
+		expect(needHoused(wrapper, 2)).toEqual(["5", "0"]);
+		expect(meter(wrapper, 2).find("div").classes()).toContain(
+			"bg-negative"
+		);
 	});
 
 	it("shows each workforce's luxury tickers", async () => {
 		const { wrapper } = await mountWorkforce();
 
 		expect(
-			[0, 1, 2].map((i) => luxButtons(wrapper, i).map((b) => b.text()))
+			[0, 1, 2, 3, 4].map((i) =>
+				luxButtons(wrapper, i).map((b) => b.text())
+			)
 		).toEqual([
 			["PWO", "COF"],
 			["REP", "KOM"],
+			["SC", "ALE"],
 			["VG", "GIN"],
+			["NST", "WIN"],
 		]);
-		expect(luxButtons(wrapper, 0).at(0)!.attributes("aria-label")).toBe(
-			"Supply PWO"
-		);
 	});
 
-	it("marks provided luxuries as pressed", async () => {
+	it("marks provided luxuries", async () => {
 		const { wrapper } = await mountWorkforce();
 
 		// pioneer lux1 only, settler lux2 only, engineer both
 		expect(
-			[0, 1, 2].map((i) =>
-				luxButtons(wrapper, i).map((b) => b.attributes("aria-pressed"))
+			[0, 1, 2, 3].map((i) =>
+				luxButtons(wrapper, i).map(
+					(b) => (b.props() as { pressed: boolean }).pressed
+				)
 			)
 		).toEqual([
-			["true", "false"],
-			["false", "true"],
-			["true", "true"],
+			[true, false],
+			[false, true],
+			[false, false],
+			[true, true],
 		]);
-		// a missing luxury is struck through
-		expect(luxButtons(wrapper, 0).at(1)!.classes()).toContain(
-			"line-through"
-		);
-		expect(luxButtons(wrapper, 0).at(0)!.classes()).not.toContain(
-			"line-through"
-		);
+	});
+
+	it("shows a check for provided luxuries and a block otherwise", async () => {
+		const { wrapper } = await mountWorkforce();
+
+		const icons = (index: number) =>
+			luxButtons(wrapper, index).map((b) =>
+				b.findComponent(CheckSharp).exists()
+					? "check"
+					: b.findComponent(BlockOutlined).exists()
+						? "block"
+						: "none"
+			);
+		// pioneer lux1 only, settler lux2 only
+		expect(icons(0)).toEqual(["check", "block"]);
+		expect(icons(1)).toEqual(["block", "check"]);
+	});
+
+	it("right-aligns the numeric columns", async () => {
+		const { wrapper } = await mountWorkforce();
+
+		// type, need / housed (two-sided), open, lux (colspan 2), eff
+		expect(
+			wrapper.findAll("th").map((th) => th.classes("numeric"))
+		).toEqual([false, false, true, false, true]);
+		expect(
+			wrapper
+				.find("tbody tr")
+				.findAll("td")
+				.map((td) => td.classes("numeric"))
+		).toEqual([false, false, true, false, false, true]);
+	});
+
+	it("grays out zero values", async () => {
+		const { wrapper } = await mountWorkforce();
+
+		const gray = (index: number) =>
+			cells(wrapper, index).map((td) =>
+				td.classes().includes("text-muted!")
+			);
+
+		// name, need / housed, open, lux1, lux2, efficiency
+		expect(gray(2)).toEqual([false, false, true, false, false, true]);
+		expect(gray(0)).toEqual([false, false, false, false, false, false]);
+		// settler lacks 50 workers, a negative open value stays visible
+		expect(gray(1)[2]).toBe(false);
+	});
+
+	it("grays out each zero value on its own", async () => {
+		const { wrapper } = await mountWorkforce({
+			workforceData: {
+				...WORKFORCE,
+				technician: wf("technician", { required: 5, left: 0 }),
+				scientist: wf("scientist", { capacity: 5, efficiency: 0.2 }),
+			},
+		});
+
+		const gray = (index: number) =>
+			cells(wrapper, index).map((td) =>
+				td.classes().includes("text-muted!")
+			);
+
+		expect(gray(2)).toEqual([false, false, true, false, false, true]);
+		expect(gray(4)).toEqual([false, false, true, false, false, false]);
+		// a zero need next to housing is muted, the need itself is not
+		const needClass = (index: number) =>
+			cells(wrapper, index).at(1)!.find("span").classes();
+		expect(needClass(4)).toContain("text-muted");
+		expect(needClass(2)).not.toContain("text-muted");
 	});
 
 	it("toggles lux1 on and tracks it", async () => {
@@ -265,29 +316,31 @@ describe("PlanWorkforce", () => {
 			},
 		});
 
-		expect(row(wrapper, 0).text()).toContain("5,000 / 0");
-		expect(bedsFree(wrapper, 0).text()).toBe("0 free");
+		expect(needHoused(wrapper, 0)).toEqual(["5,000", "0"]);
+		expect(texts(wrapper, 0)[2]).toBe("0");
 		expect(
-			luxButtons(wrapper, 0).map((b) => b.attributes("aria-pressed"))
-		).toEqual(["false", "true"]);
+			luxButtons(wrapper, 0).map(
+				(b) => (b.props() as { pressed: boolean }).pressed
+			)
+		).toEqual([false, true]);
 	});
 
-	it("disables the luxury toggles", async () => {
+	it("disables the luxury buttons", async () => {
 		const { wrapper } = await mountWorkforce({ disabled: true });
 
-		const toggles = wrapper.findAll("button[aria-pressed]");
-		expect(toggles).toHaveLength(6);
 		expect(
-			toggles.every((b) => b.attributes("disabled") !== undefined)
+			wrapper
+				.findAll("tbody button")
+				.every((b) => b.attributes("disabled") !== undefined)
 		).toBe(true);
 	});
 
-	it("enables the luxury toggles", async () => {
+	it("enables the luxury buttons", async () => {
 		const { wrapper } = await mountWorkforce();
 
 		expect(
 			wrapper
-				.findAll("button[aria-pressed]")
+				.findAll("tbody button")
 				.some((b) => b.attributes("disabled") !== undefined)
 		).toBe(false);
 	});

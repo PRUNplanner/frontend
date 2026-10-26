@@ -430,58 +430,46 @@
 		},
 		{ deep: true, immediate: true }
 	);
-	// one line of totals under a table
-	const totalsStrip =
-		"flex flex-wrap gap-x-6 gap-y-1 px-1 text-sm tabular-nums [&_dt]:text-muted-strong [&>div]:flex [&>div]:gap-2";
 </script>
 
 <template>
-	<div class="flex flex-col gap-3">
-		<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-			<h2 class="inline-flex items-center text-white/80 font-bold text-lg">
-				{{ $t("plan.tools.construction_cart.title") }}
-				<PTooltip v-if="unplannedBuildings.length > 0">
-					<template #trigger>
-						<PIcon class="text-warning ml-1 relative top-px">
-							<WarningAmberRound />
-						</PIcon>
-					</template>
-					{{
-						$t("plan.tools.construction_cart.unplanned_info", {
-							buildings: unplannedBuildings.join("+"),
-							fio_updated: fioUpdated,
-						})
-					}}
-				</PTooltip>
-			</h2>
-			<span class="text-sm text-muted">
-				{{ $t("plan.tools.descriptions.construction-cart") }}
+	<div class="pb-3 flex flex-row justify-between child:my-auto">
+		<h2 class="text-white/80 font-bold text-lg inline-flex items-center">
+			{{ $t("plan.tools.construction_cart.title") }}
+			<PTooltip v-if="unplannedBuildings.length > 0">
+				<template #trigger>
+					<PIcon class="text-warning ml-1 relative top-px">
+						<WarningAmberRound />
+					</PIcon>
+				</template>
+				{{
+					$t("plan.tools.construction_cart.unplanned_info", {
+						buildings: unplannedBuildings.join("+"),
+						fio_updated: fioUpdated,
+					})
+				}}
+			</PTooltip>
+		</h2>
+		<div class="flex flex-row gap-x-3 child:my-auto!">
+			<span v-if="!saveUuid" class="text-muted text-sm">
+				{{ $t("plan.tools.construction_cart.built_not_saved") }}
 			</span>
-			<div class="ml-auto flex flex-wrap items-center gap-2">
-				<span v-if="!saveUuid" class="text-xs text-muted">
-					{{ $t("plan.tools.construction_cart.built_not_saved") }}
-				</span>
-				<PButton
-					v-if="Object.keys(manualBuilt).length > 0"
-					size="sm"
-					type="secondary"
-					@click="resetAllBuilt">
-					<template #icon><RestartAltSharp /></template>
-					{{ $t("plan.tools.construction_cart.built_reset_all") }}
-				</PButton>
-				<XITTransferActionButton
-					source="construction_cart"
-					:elements="xitTransferElementsOverview"
-					transfer-name="Construct"
-					:drawer-width="400" />
-			</div>
+			<PButton
+				v-if="Object.keys(manualBuilt).length > 0"
+				size="sm"
+				type="secondary"
+				@click="resetAllBuilt">
+				<template #icon><RestartAltSharp /></template>
+				{{ $t("plan.tools.construction_cart.built_reset_all") }}
+			</PButton>
+			<XITTransferActionButton
+				source="construction_cart"
+				:elements="xitTransferElementsOverview"
+				transfer-name="Construct"
+				:drawer-width="400" />
 		</div>
-
-		<!-- Buildings: built and to build, and what each needs -->
-		<section class="flex flex-col gap-2">
-			<h3 class="font-medium text-ink-strong">
-				{{ $t("plan.tools.construction_cart.sections.buildings") }}
-			</h3>
+	</div>
+	<div class="overflow-auto">
 		<PTable striped>
 			<thead>
 				<tr>
@@ -641,47 +629,86 @@
 						{{ formatAmount(totalMaterials[mat] ?? 0) }}
 					</td>
 				</tr>
-				</tbody>
-			</PTable>
-			<dl :class="totalsStrip">
-				<div>
-					<dt>{{ $t("plan.tools.construction_cart.table.total_cost") }}</dt>
-					<dd class="font-medium text-ink-strong">
-						{{ formatNumber(totalInformation.price) }} ȼ
-					</dd>
-				</div>
-				<div class="@min-[40rem]:ml-auto">
-					<dt>{{ $t("plan.tools.construction_cart.table.total_weight") }}</dt>
-					<dd>{{ formatNumber(totalInformation.weight) }} t</dd>
-				</div>
-				<div>
-					<dt>{{ $t("plan.tools.construction_cart.table.total_volume") }}</dt>
-					<dd>{{ formatNumber(totalInformation.volume) }} m³</dd>
-				</div>
-			</dl>
-		</section>
+				<tr>
+					<td
+						:colspan="
+							uniqueMaterials.length + 4
+						">
+						<div
+							class="flex flex-row justify-between child:my-auto">
+							<div
+								class="grid grid-cols-2 gap-x-3 gap-y-1 child:not-even:font-bold">
+								<div>
+									{{
+										$t(
+											"plan.tools.construction_cart.table.total_cost"
+										)
+									}}
+								</div>
+								<div>
+									{{ formatNumber(totalInformation.price) }}
+									<span class="pl-1 font-light text-muted">
+										ȼ
+									</span>
+								</div>
+							</div>
+							<div
+								class="grid grid-cols-2 gap-x-3 gap-y-1 child:text-end child:not-even:font-bold">
+								<div>
+									{{
+										$t(
+											"plan.tools.construction_cart.table.total_weight"
+										)
+									}}
+								</div>
+								<div>
+									{{ formatNumber(totalInformation.weight) }}
+									<span class="pl-1 font-light text-muted">
+										t
+									</span>
+								</div>
+								<div>
+									{{
+										$t(
+											"plan.tools.construction_cart.table.total_volume"
+										)
+									}}
+								</div>
+								<div>
+									{{ formatNumber(totalInformation.volume) }}
+									<span class="pl-1 font-light text-muted">
+										m³
+									</span>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</PTable>
 
-		<!-- Materials: what is left to buy after stock and overrides -->
-		<section class="flex flex-col gap-2">
-			<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-				<h3 class="font-medium text-ink-strong">
-					{{ $t("plan.tools.construction_cart.sections.materials") }}
-				</h3>
-				<div class="ml-auto flex flex-wrap items-center gap-2">
-					<label
-						v-if="hasStorage && storageOptions"
-						class="flex items-center gap-2 text-sm text-muted-strong">
-						{{ $t("plan.tools.construction_cart.table.storage") }}
+		<div>
+			<div class="py-3 flex flex-row justify-between">
+				<h2 class="text-white/80 font-bold text-lg my-auto">
+					{{ $t("plan.tools.construction_cart.table.material") }}
+				</h2>
+				<div class="flex flex-row flex-wrap gap-3">
+					<template v-if="hasStorage">
+						<div class="my-auto font-bold">
+							{{
+								$t("plan.tools.construction_cart.table.storage")
+							}}
+						</div>
 						<PSelect
+							v-if="storageOptions"
 							v-model:value="refSelectedStorage"
 							:aria-label="
 								$t('plan.tools.construction_cart.table.storage')
 							"
-							size="sm"
 							searchable
 							:options="storageOptions"
-							class="w-56!" />
-					</label>
+							class="w-62.5!" />
+					</template>
 					<XITTransferActionButton
 						source="construction_cart_need"
 						:elements="xitTransferElementsNeed"
@@ -700,12 +727,12 @@
 								)
 							}}
 						</th>
-						<th class="numeric">
+						<th>
 							{{
 								$t("plan.tools.construction_cart.table.amount")
 							}}
 						</th>
-						<th v-if="hasStorage" class="numeric">
+						<th v-if="hasStorage">
 							{{ $t("plan.tools.construction_cart.table.stock") }}
 						</th>
 						<th>
@@ -715,7 +742,7 @@
 								)
 							}}
 						</th>
-						<th class="numeric">
+						<th>
 							{{ $t("plan.tools.construction_cart.table.need") }}
 						</th>
 					</tr>
@@ -729,10 +756,10 @@
 								:key="`CONSTRUCTION#MATERIAL#${material.ticker}`"
 								:ticker="material.ticker" />
 						</td>
-						<td class="numeric">
+						<td>
 							{{ formatAmount(material.amount) }}
 						</td>
-						<td v-if="hasStorage" class="numeric">
+						<td v-if="hasStorage">
 							{{ formatAmount(material.stock) }}
 						</td>
 						<td>
@@ -751,28 +778,80 @@
 								:min="0"
 								class="max-w-50" />
 						</td>
-						<td class="numeric">
+						<td>
 							{{ formatAmount(material.total) }}
 						</td>
 					</tr>
-</tbody>
+
+					<tr>
+						<td :colspan="hasStorage ? 5 : 4">
+							<div
+								class="flex flex-row justify-between child:my-auto">
+								<div
+									class="grid grid-cols-2 gap-x-3 gap-y-1 child:not-even:font-bold">
+									<div>
+										{{
+											$t(
+												"plan.tools.construction_cart.table.total_cost"
+											)
+										}}
+									</div>
+									<div>
+										{{
+											formatNumber(
+												overviewTotalInformation.price
+											)
+										}}
+										<span
+											class="pl-1 font-light text-muted">
+											ȼ
+										</span>
+									</div>
+								</div>
+								<div
+									class="grid grid-cols-2 gap-x-3 gap-y-1 child:text-end child:not-even:font-bold">
+									<div>
+										{{
+											$t(
+												"plan.tools.construction_cart.table.total_weight"
+											)
+										}}
+									</div>
+									<div>
+										{{
+											formatNumber(
+												overviewTotalInformation.weight
+											)
+										}}
+										<span
+											class="pl-1 font-light text-muted">
+											t
+										</span>
+									</div>
+									<div>
+										{{
+											$t(
+												"plan.tools.construction_cart.table.total_volume"
+											)
+										}}
+									</div>
+									<div>
+										{{
+											formatNumber(
+												overviewTotalInformation.volume
+											)
+										}}
+										<span
+											class="pl-1 font-light text-muted">
+											m³
+										</span>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
 			</PTable>
-			<dl :class="totalsStrip">
-				<div>
-					<dt>{{ $t("plan.tools.construction_cart.table.total_cost") }}</dt>
-					<dd class="font-medium text-ink-strong">
-						{{ formatNumber(overviewTotalInformation.price) }} ȼ
-					</dd>
-				</div>
-				<div class="@min-[40rem]:ml-auto">
-					<dt>{{ $t("plan.tools.construction_cart.table.total_weight") }}</dt>
-					<dd>{{ formatNumber(overviewTotalInformation.weight) }} t</dd>
-				</div>
-				<div>
-					<dt>{{ $t("plan.tools.construction_cart.table.total_volume") }}</dt>
-					<dd>{{ formatNumber(overviewTotalInformation.volume) }} m³</dd>
-				</div>
-			</dl>
-		</section>
+		</div>
 	</div>
 </template>

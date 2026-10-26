@@ -51,15 +51,14 @@ async function mountExperts(props: Record<string, unknown> = {}) {
 	});
 }
 
-// one row per shown field: name, "buildings · bonus" and a stepper
-const rows = (wrapper: VueWrapper) => wrapper.findAll("div.items-center.text-sm");
-const names = (wrapper: VueWrapper) =>
-	rows(wrapper).map((r) => r.find(".text-ink-strong").text());
-const bonus = (wrapper: VueWrapper, index: number) =>
-	rows(wrapper).at(index)!.find(".text-xs");
+// each expert renders label, input and bonus as grid cells
+const grid = (wrapper: VueWrapper) => wrapper.find("div.grid");
+const cells = (wrapper: VueWrapper) =>
+	grid(wrapper).element.children as HTMLCollectionOf<HTMLElement>;
 const input = (wrapper: VueWrapper, index: number) =>
 	wrapper.findAll("input").at(index)!;
-const moreButton = (wrapper: VueWrapper) => wrapper.find("button[aria-expanded]");
+const bonus = (wrapper: VueWrapper, index: number) =>
+	grid(wrapper).findAll(":scope > div.text-end").at(index)!;
 const warning = (wrapper: VueWrapper) => wrapper.find(".border-l-warning");
 
 describe("PlanExperts", () => {
@@ -67,95 +66,38 @@ describe("PlanExperts", () => {
 		vi.mocked(trackPlanEdit).mockClear();
 	});
 
-	it("lists only fields with experts, the rest behind a button", async () => {
+	it("lists every expert with amount and bonus", async () => {
 		const { wrapper } = await mountExperts();
 
-		expect(names(wrapper)).toEqual([
-			"game.expertise.CHEMISTRY",
-			"game.expertise.METALLURGY",
-		]);
+		// 9 experts x (label, input, bonus)
+		expect(cells(wrapper)).toHaveLength(27);
+		expect(cells(wrapper)[0].textContent!.trim()).toBe(
+			"game.expertise.AGRICULTURE"
+		);
+		expect(cells(wrapper)[12].textContent!.trim()).toBe(
+			"game.expertise.FOOD_INDUSTRIES"
+		);
 		expect(
 			wrapper
 				.findAll("input")
 				.map((i) => (i.element as HTMLInputElement).value)
-		).toEqual(["2", "1"]);
-		// 9 fields - 2 shown = 7 more
-		expect(moreButton(wrapper).text()).toBe("plan.base.experts.more");
-		expect(moreButton(wrapper).attributes("aria-expanded")).toBe("false");
-	});
-
-	it("lists the fields of the plan's buildings first, with their names", async () => {
-		const { wrapper } = await mountExperts({
-			buildings: [
-				{ name: "FP", expertise: "FOOD_INDUSTRIES" },
-				{ name: "SME", expertise: "METALLURGY" },
-				{ name: "HYF", expertise: "FOOD_INDUSTRIES" },
-				{ name: "HB1", expertise: null },
-			],
-		});
-
-		expect(names(wrapper)).toEqual([
-			"game.expertise.CHEMISTRY",
-			"game.expertise.FOOD_INDUSTRIES",
-			"game.expertise.METALLURGY",
-		]);
-		expect(bonus(wrapper, 1).text()).toMatch(/^FP, HYF ·\s+0.00 %$/);
-		expect(bonus(wrapper, 2).text()).toMatch(/^SME ·\s+\+3.06 %$/);
-		// Chemistry has experts but no building
-		expect(bonus(wrapper, 0).text()).toBe("+5.36 %");
-	});
-
-	it("shows all fields after the more button and folds them again", async () => {
-		const { wrapper } = await mountExperts();
-
-		await moreButton(wrapper).trigger("click");
-
-		expect(moreButton(wrapper).attributes("aria-expanded")).toBe("true");
-		expect(moreButton(wrapper).text()).toBe("plan.base.experts.fewer");
-		// used first, then the others in their order
-		expect(names(wrapper)).toEqual([
-			"game.expertise.CHEMISTRY",
-			"game.expertise.METALLURGY",
-			"game.expertise.AGRICULTURE",
-			"game.expertise.CONSTRUCTION",
-			"game.expertise.ELECTRONICS",
-			"game.expertise.FOOD_INDUSTRIES",
-			"game.expertise.FUEL_REFINING",
-			"game.expertise.MANUFACTURING",
-			"game.expertise.RESOURCE_EXTRACTION",
-		]);
-
-		await moreButton(wrapper).trigger("click");
-
-		expect(rows(wrapper)).toHaveLength(2);
-	});
-
-	it("has no more button when every field is used", async () => {
-		const { wrapper } = await mountExperts({
-			expertData: expertData(
-				Object.fromEntries(EXPERTS.map((e) => [e, [1, 0]]))
-			),
-		});
-
-		expect(rows(wrapper)).toHaveLength(9);
-		expect(moreButton(wrapper).exists()).toBe(false);
+		).toEqual(["0", "2", "0", "0", "0", "0", "0", "1", "0"]);
 	});
 
 	it("formats the bonus as percent", async () => {
 		const { wrapper } = await mountExperts();
 
 		// 0.0536 * 100 = 5.36, 0.0306 * 100 = 3.06
-		expect(bonus(wrapper, 0).text()).toBe("+5.36 %");
-		expect(bonus(wrapper, 1).text()).toBe("+3.06 %");
+		expect(bonus(wrapper, 1).text()).toBe("5.36 %");
+		expect(bonus(wrapper, 7).text()).toBe("3.06 %");
+		expect(bonus(wrapper, 0).text()).toBe("0.00 %");
 	});
 
-	it("grays out fields without bonus", async () => {
+	it("grays out experts without bonus", async () => {
 		const { wrapper } = await mountExperts();
-		await moreButton(wrapper).trigger("click");
 
-		// Agriculture, 0 %
-		expect(bonus(wrapper, 2).classes()).toContain("text-muted");
-		expect(bonus(wrapper, 0).classes()).not.toContain("text-muted");
+		expect(bonus(wrapper, 0).classes()).toContain("text-muted");
+		expect(bonus(wrapper, 1).classes()).not.toContain("text-muted");
 	});
 
 	it("does not warn at 6 experts", async () => {
@@ -195,25 +137,17 @@ describe("PlanExperts", () => {
 	it("emits and tracks a new amount", async () => {
 		const { wrapper, component } = await mountExperts();
 
-		await input(wrapper, 1).setValue("3");
+		await input(wrapper, 4).setValue("3");
 
-		expect(component.emitted("update:expert")).toEqual([["Metallurgy", 3]]);
+		expect(component.emitted("update:expert")).toEqual([
+			["Food_Industries", 3],
+		]);
 		expect(trackPlanEdit).toHaveBeenCalledWith({
 			field: "expert",
 			planet_natural_id: "ZZ-000a",
-			expert_type: "Metallurgy",
+			expert_type: "Food_Industries",
 			amount: 3,
 		});
-	});
-
-	it("emits an amount for a field from the more list", async () => {
-		const { wrapper, component } = await mountExperts();
-		await moreButton(wrapper).trigger("click");
-
-		// Agriculture, the first of the more list
-		await input(wrapper, 2).setValue("1");
-
-		expect(component.emitted("update:expert")).toEqual([["Agriculture", 1]]);
 	});
 
 	it("clamps amounts to 0..5", async () => {
@@ -223,8 +157,8 @@ describe("PlanExperts", () => {
 		await input(wrapper, 0).setValue("-2");
 
 		expect(component.emitted("update:expert")).toEqual([
-			["Chemistry", 5],
-			["Chemistry", 0],
+			["Agriculture", 5],
+			["Agriculture", 0],
 		]);
 	});
 

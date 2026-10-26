@@ -4,11 +4,7 @@
  */
 
 import { onUnmounted, shallowReactive, watch } from "vue";
-import {
-	onBeforeRouteLeave,
-	onBeforeRouteUpdate,
-	type RouteLocationNormalized,
-} from "vue-router";
+import { onBeforeRouteLeave } from "vue-router";
 
 // the mounted guards' checks, for hasUnsavedChanges()
 const guards = shallowReactive(new Set<() => boolean>());
@@ -29,7 +25,7 @@ export function useUnsavedGuard(
 
 	guards.add(unsaved);
 
-	function ask(to: RouteLocationNormalized): false | undefined {
+	onBeforeRouteLeave((to) => {
 		if (!unsaved()) return;
 		if (to.redirectedFrom && to.redirectedFrom.fullPath === confirmedPath)
 			return;
@@ -37,14 +33,7 @@ export function useUnsavedGuard(
 		onAsk?.();
 		if (!confirm(message())) return false;
 		confirmedPath = to.fullPath;
-	}
-
-	onBeforeRouteLeave(ask);
-	// the same route with other params (one plan to another) leaves too;
-	// a query or hash change stays on the page
-	onBeforeRouteUpdate((to, from) =>
-		to.path === from.path ? undefined : ask(to)
-	);
+	});
 
 	function onBeforeUnload(e: BeforeUnloadEvent): void {
 		e.preventDefault();

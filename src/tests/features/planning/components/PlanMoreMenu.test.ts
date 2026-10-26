@@ -8,7 +8,7 @@ import { mountComponent } from "@/tests/mountComponent";
 async function mountMenu(props: Record<string, unknown> = {}) {
 	return mountComponent(
 		PlanMoreMenu,
-		{ existing: true, own: true, debug: false, ...props },
+		{ existing: true, canShare: true, ...props },
 		{ attach: true }
 	);
 }
@@ -31,39 +31,33 @@ function key(k: string, target: Element) {
 }
 
 describe("PlanMoreMenu", () => {
-	it("is an icon-only ghost button, so Save stays the only primary", async () => {
+	it("is a secondary button, so Save stays the only primary", async () => {
 		const { wrapper } = await mountMenu();
 
-		expect(wrapper.findComponent(PButton).props("type")).toBe("ghost");
+		expect(wrapper.findComponent(PButton).props("type")).toBe("secondary");
 		expect(wrapper.find("button").attributes("aria-haspopup")).toBe("menu");
-		expect(wrapper.find("button").attributes("aria-label")).toBe(
-			"plan.actions.more"
-		);
 	});
 
-	it("lists save as copy, reload with its hint and the CSV download", async () => {
+	it("lists save as copy, share and reload with its hint", async () => {
 		const { wrapper } = await mountMenu();
 		await open(wrapper);
 
 		expect(items().map((o) => o.textContent?.trim())).toEqual([
 			"plan.actions.save_as_copy",
+			"plan.actions.share_link",
 			"plan.actions.reloadplan.actions.reload_hint",
-			"plan.actions.download_csv",
 		]);
-		// sharing moved out of the menu
-		expect(item("plan.actions.share_link")).toBeUndefined();
-		expect(document.body.querySelector("[role=separator]")).toBeNull();
+		expect(document.body.querySelector("[role=separator]")).not.toBeNull();
 		expect(wrapper.find("button").attributes("aria-expanded")).toBe("true");
 	});
 
 	it("emits the chosen action and closes", async () => {
-		const { wrapper, component } = await mountMenu({ debug: true });
+		const { wrapper, component } = await mountMenu();
 
 		for (const [label, event] of [
 			["plan.actions.save_as_copy", "save-as"],
+			["plan.actions.share_link", "share"],
 			["plan.actions.reload_hint", "reload"],
-			["plan.actions.download_csv", "csv"],
-			["Calculation debug", "debug"],
 		]) {
 			await open(wrapper);
 			item(label)!.click();
@@ -93,33 +87,25 @@ describe("PlanMoreMenu", () => {
 		key("ArrowDown", menu()!);
 		key("Enter", menu()!);
 		await flushPromises();
-		expect(component.emitted("reload")).toHaveLength(1);
+		expect(component.emitted("share")).toHaveLength(1);
 		expect(document.activeElement).toBe(button);
 	});
 
-	it("offers only the CSV download on a plan without a saved version", async () => {
+	it("offers only sharing on a plan without a saved version", async () => {
 		const { wrapper } = await mountMenu({ existing: false });
 		await open(wrapper);
 
 		expect(items().map((o) => o.textContent?.trim())).toEqual([
-			"plan.actions.download_csv",
+			"plan.actions.share_link",
 		]);
 	});
 
-	it("offers only the CSV download on a plan that isn't the user's", async () => {
-		const { wrapper } = await mountMenu({ own: false });
-		await open(wrapper);
+	it("renders nothing without any item", async () => {
+		const { wrapper } = await mountMenu({
+			existing: false,
+			canShare: false,
+		});
 
-		expect(items().map((o) => o.textContent?.trim())).toEqual([
-			"plan.actions.download_csv",
-		]);
-	});
-
-	it("adds the calculation debug after a divider when opted in", async () => {
-		const { wrapper } = await mountMenu({ debug: true });
-		await open(wrapper);
-
-		expect(items().at(-1)?.textContent?.trim()).toBe("Calculation debug");
-		expect(document.body.querySelector("[role=separator]")).not.toBeNull();
+		expect(wrapper.find("button").exists()).toBe(false);
 	});
 });

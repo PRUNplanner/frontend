@@ -10,7 +10,7 @@
 	import type { IAreaResult } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
-	import { PInputNumber } from "@/ui";
+	import { PForm, PFormItem, PInputNumber } from "@/ui";
 
 	const props = defineProps({
 		disabled: {
@@ -49,22 +49,34 @@
 </script>
 
 <template>
-	<div class="flex items-center justify-between gap-3 text-sm tabular-nums">
-		<span>
-			{{ t("plan.components.area.permits") }}
-			<span class="text-xs text-muted">
-				·
-				{{ t("plan.base.planet.area", { n: areaData.areaTotal }) }}
-			</span>
-		</span>
-		<PInputNumber
-			v-model:value="localPermits"
-			:aria-label="t('plan.components.area.permits')"
-			:disabled="disabled"
-			show-buttons
-			size="sm"
-			:min="1"
-			:max="3"
-			class="w-28" />
-	</div>
+	<PForm>
+		<PFormItem :label="t('plan.components.area.permits')">
+			<PInputNumber
+				v-model:value="localPermits"
+				:disabled="disabled"
+				show-buttons
+				:min="1"
+				:max="3"
+				class="w-full" />
+		</PFormItem>
+		<PFormItem :label="t('plan.components.area.area')">
+			<div class="flex flex-row w-full">
+				<div class="grow">
+					{{ areaData.areaUsed }} / {{ areaData.areaTotal }}
+				</div>
+				<div>
+					<span
+						class="font-bold"
+						:class="
+							areaData.areaLeft >= 0
+								? 'text-positive'
+								: 'text-negative'
+						"
+						>{{ areaData.areaLeft }}</span
+					>
+					{{ $t("plan.components.area.free") }}
+				</div>
+			</div>
+		</PFormItem>
+	</PForm>
 </template>

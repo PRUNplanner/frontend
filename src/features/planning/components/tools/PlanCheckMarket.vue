@@ -366,7 +366,7 @@
 						<template #cell-check="{ row }">
 							<span
 								v-if="row.level"
-								class="inline-flex items-center gap-1.5"
+								class="inline-flex items-center gap-1.5 whitespace-nowrap"
 								:class="LEVEL_TEXT[row.level as MarketFlagLevel]">
 								<MarketFlagIcon :level="row.level" />
 								{{ t(`cx.market_flags.flags.${row.flags[0]}`) }}
@@ -374,7 +374,7 @@
 							<RouterLink
 								v-if="own && ruleLink(row)"
 								:to="ruleLink(row)!.to"
-								class="block py-1 text-xs text-link hover:underline"
+								class="block text-xs text-link hover:underline"
 								:aria-label="
 									t('plan.tools.plan_check.market.rule_link', {
 										ticker: row.ticker,
@@ -445,7 +445,7 @@
 						<RouterLink
 							v-if="own && ruleLink(c)"
 							:to="ruleLink(c)!.to"
-							class="self-start py-1 text-xs text-link hover:underline"
+							class="self-start text-xs text-link hover:underline"
 							:aria-label="
 								t('plan.tools.plan_check.market.rule_link', {
 									ticker: c.ticker,

@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
 import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
-import PSelect from "@/ui/components/PSelect.vue";
 import PlanInfrastructure from "@/features/planning/components/PlanInfrastructure.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
@@ -66,22 +65,9 @@ const disabledInputs = (wrapper: VueWrapper) =>
 	numberInputs(wrapper).map((i) => (i.element as HTMLInputElement).disabled);
 const buttons = (wrapper: VueWrapper) => wrapper.findAll("button");
 const costButton = (wrapper: VueWrapper) =>
-	buttons(wrapper).find((b) => b.text() === "plan.base.housing.cheapest");
+	buttons(wrapper).find((b) => b.text().includes("buttons.optimize_cost"))!;
 const areaButton = (wrapper: VueWrapper) =>
-	buttons(wrapper).find((b) => b.text() === "plan.base.housing.least_area");
-const labels = (wrapper: VueWrapper) =>
-	wrapper.findAll("span.font-mono").map((s) => s.text());
-const addSelect = (wrapper: VueWrapper) => wrapper.findComponent(PSelect);
-
-// only HB1, HBC and STO in use
-const SPARSE: IInfrastructureRecord = {
-	...(Object.fromEntries(
-		Object.keys(INFRASTRUCTURE).map((k) => [k, 0])
-	) as IInfrastructureRecord),
-	HB1: 4,
-	HBC: 2,
-	STO: 1,
-};
+	buttons(wrapper).find((b) => b.text().includes("buttons.optimize_area"))!;
 
 describe("PlanInfrastructure", () => {
 	beforeEach(() => {
@@ -91,7 +77,13 @@ describe("PlanInfrastructure", () => {
 	it("lists habitations, then storages, with their amounts", async () => {
 		const { wrapper } = await mountInfrastructure();
 
-		expect(labels(wrapper)).toEqual(ORDER);
+		// grid cells alternate label, input, the 2 buttons come last
+		expect(
+			wrapper
+				.findAll("div.grid.gap-3 > div")
+				.filter((d) => !d.find("input, button").exists())
+				.map((d) => d.text())
+		).toEqual(ORDER);
 		expect(
 			numberInputs(wrapper).map(
 				(i) => (i.element as HTMLInputElement).value
@@ -103,67 +95,6 @@ describe("PlanInfrastructure", () => {
 		);
 	});
 
-	it("gives only the types in use a stepper", async () => {
-		const { wrapper } = await mountInfrastructure({
-			infrastructureData: SPARSE,
-		});
-
-		expect(labels(wrapper)).toEqual(["HB1", "HBC", "STO"]);
-		expect(
-			numberInputs(wrapper).map(
-				(i) => (i.element as HTMLInputElement).value
-			)
-		).toEqual(["4", "2", "1"]);
-	});
-
-	it("offers the unused types to add, in display order", async () => {
-		const { wrapper } = await mountInfrastructure({
-			infrastructureData: SPARSE,
-		});
-
-		expect(addSelect(wrapper).props("options")).toEqual(
-			ORDER.filter((inf) => !["HB1", "HBC", "STO"].includes(inf)).map(
-				(inf) => ({ label: inf, value: inf })
-			)
-		);
-		expect(addSelect(wrapper).props("placeholder")).toBe(
-			"plan.base.housing.add"
-		);
-	});
-
-	it("adds one of a picked type and tracks it", async () => {
-		const { wrapper, component } = await mountInfrastructure({
-			infrastructureData: SPARSE,
-		});
-
-		addSelect(wrapper).vm.$emit("update:value", "STV");
-
-		expect(component.emitted("update:infrastructure")).toEqual([
-			["STV", 1],
-		]);
-		expect(trackPlanEdit).toHaveBeenCalledWith({
-			field: "infrastructure",
-			planet_natural_id: "ZZ-000a",
-			infrastructure_type: "STV",
-			amount: 1,
-		});
-	});
-
-	it("has no add select when every type is in use", async () => {
-		const { wrapper } = await mountInfrastructure();
-
-		expect(addSelect(wrapper).exists()).toBe(false);
-	});
-
-	it("has no add select when disabled", async () => {
-		const { wrapper } = await mountInfrastructure({
-			disabled: true,
-			infrastructureData: SPARSE,
-		});
-
-		expect(addSelect(wrapper).exists()).toBe(false);
-	});
-
 	it("enables everything without auto-optimize", async () => {
 		const { wrapper } = await mountInfrastructure();
 
@@ -172,11 +103,11 @@ describe("PlanInfrastructure", () => {
 		);
 		expect(checkbox(wrapper).attributes("disabled")).toBeUndefined();
 		expect(disabledInputs(wrapper)).toEqual(ORDER.map(() => false));
-		expect(costButton(wrapper)?.exists()).toBe(true);
-		expect(areaButton(wrapper)?.exists()).toBe(true);
+		expect(costButton(wrapper).attributes("disabled")).toBeUndefined();
+		expect(areaButton(wrapper).attributes("disabled")).toBeUndefined();
 	});
 
-	it("locks habitations and hides the optimize buttons with auto-optimize", async () => {
+	it("locks habitations and optimize buttons with auto-optimize", async () => {
 		const { wrapper } = await mountInfrastructure({
 			autoOptimizeHabs: true,
 		});
@@ -188,8 +119,8 @@ describe("PlanInfrastructure", () => {
 		expect(disabledInputs(wrapper)).toEqual(
 			ORDER.map((inf) => !inf.startsWith("ST"))
 		);
-		expect(costButton(wrapper)).toBeUndefined();
-		expect(areaButton(wrapper)).toBeUndefined();
+		expect(costButton(wrapper).attributes("disabled")).toBeDefined();
+		expect(areaButton(wrapper).attributes("disabled")).toBeDefined();
 	});
 
 	it("disables everything when disabled", async () => {
@@ -197,8 +128,8 @@ describe("PlanInfrastructure", () => {
 
 		expect(checkbox(wrapper).attributes("disabled")).toBeDefined();
 		expect(disabledInputs(wrapper)).toEqual(ORDER.map(() => true));
-		expect(costButton(wrapper)).toBeUndefined();
-		expect(areaButton(wrapper)).toBeUndefined();
+		expect(costButton(wrapper).attributes("disabled")).toBeDefined();
+		expect(areaButton(wrapper).attributes("disabled")).toBeDefined();
 	});
 
 	it("disables storages when disabled with auto-optimize", async () => {
@@ -218,7 +149,7 @@ describe("PlanInfrastructure", () => {
 		await setProps({ autoOptimizeHabs: false });
 
 		expect(disabledInputs(wrapper)).toEqual(ORDER.map(() => false));
-		expect(costButton(wrapper)?.exists()).toBe(true);
+		expect(costButton(wrapper).attributes("disabled")).toBeUndefined();
 	});
 
 	it("emits auto-optimize with the auto goal", async () => {
@@ -246,8 +177,8 @@ describe("PlanInfrastructure", () => {
 	it("emits the optimize goals", async () => {
 		const { wrapper, component } = await mountInfrastructure();
 
-		await costButton(wrapper)!.trigger("click");
-		await areaButton(wrapper)!.trigger("click");
+		await costButton(wrapper).trigger("click");
+		await areaButton(wrapper).trigger("click");
 
 		expect(component.emitted("optimize-habs")).toEqual([
 			["cost"],

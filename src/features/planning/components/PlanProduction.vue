@@ -17,16 +17,16 @@
 	import { usePlanetInsights } from "@/features/plan_analytics/usePlanetInsights";
 
 	// Components
+	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 	import PlanStarterSetup from "@/features/plan_analytics/components/PlanStarterSetup.vue";
 
 	// Types & Interfaces
-	import type { PlanetResource } from "@/features/api/schemas/gameData.schemas";
 	import type {
-		IExpertRecord,
-		IMaterialIO,
-		IProductionResult,
-	} from "@/features/planning/usePlanCalculation.types";
+		PlanetResource,
+		PlanetResourceType,
+	} from "@/features/api/schemas/gameData.schemas";
+	import type { IProductionResult } from "@/features/planning/usePlanCalculation.types";
 	import type {
 		PlanCOGCProgram,
 		PlanDataBuilding,
@@ -38,11 +38,11 @@
 	// UI
 	import PButton from "@/ui/components/PButton.vue";
 	import PCheckbox from "@/ui/components/PCheckbox.vue";
-	import PIcon from "@/ui/components/PIcon.vue";
 	import PSelect from "@/ui/components/PSelect.vue";
-	import { UnfoldLessSharp, UnfoldMoreSharp } from "@vicons/material";
+	import PTooltip from "@/ui/components/PTooltip.vue";
 
 	// Util
+	import { formatNumber } from "@/util/numbers";
 	import { STARTER_MAX_BUILDINGS } from "@/features/plan_analytics/planInsights.util";
 
 	const props = defineProps({
@@ -77,27 +77,6 @@
 			required: false,
 			default: undefined,
 		},
-		// the plan's Material I/O, for the recipe picker
-		materialIO: {
-			type: Array as PropType<IMaterialIO[]>,
-			required: false,
-			default: () => [],
-		},
-		experts: {
-			type: Object as PropType<IExpertRecord>,
-			required: false,
-			default: undefined,
-		},
-		// after a picked recipe: where, and what changed
-		status: {
-			type: Object as PropType<{
-				building: number;
-				recipe: number;
-				text: string;
-			}>,
-			required: false,
-			default: undefined,
-		},
 	});
 
 	const emit = defineEmits<{
@@ -105,6 +84,7 @@
 		(e: "update:building:amount", index: number, value: number): void;
 		(e: "delete:building", index: number): void;
 		(e: "create:building", ticker: string): void;
+		(e: "create:building:recipe", ticker: string, recipeId: string): void;
 		(
 			e: "update:building:recipe:amount",
 			buildingIndex: number,
@@ -116,12 +96,7 @@
 			buildingIndex: number,
 			recipeIndex: number
 		): void;
-		(
-			e: "pick:building:recipe",
-			buildingIndex: number,
-			recipeId: string
-		): void;
-		(e: "undo"): void;
+		(e: "add:building:recipe", buildingIndex: number): void;
 		(
 			e: "apply:starter",
 			setup: IStarterSetup,
@@ -147,9 +122,6 @@
 	const localSelectedBuilding: Ref<string | undefined> = ref(undefined);
 	const localCOGC: ComputedRef<PlanCOGCProgram> = computed(() => props.cogc);
 	const localMatchCOGC: Ref<boolean> = ref(false);
-	watch(localMatchCOGC, (isActive) =>
-		trackEvent("plan:cogc_match_toggle", { is_active: isActive })
-	);
 
 	const { getProductionBuildingOptions } = useBuildingData();
 	const { isAvailable, totalPlans, popularBuildings, mostPlannedRecipe } =
@@ -226,129 +198,119 @@
 		return { is_most_planned: mostPlannedRecipe(ticker) === recipeId };
 	}
 
-	// one picker at a time: the building, and the order it replaces or
-	// null to add one
-	const refPicker: Ref<{ building: number; recipe: number | null } | null> =
-		ref(null);
+	function emitCreateBuildingWithRecipe(
+		resourceType: PlanetResourceType,
+		resourceTicker: string
+	): void {
+		const buildingTicker =
+			resourceType === "MINERAL"
+				? "EXT"
+				: resourceType === "GASEOUS"
+					? "COL"
+					: "RIG";
 
-	function openPicker(building: number, recipe: number | null): void {
-		refPicker.value = { building, recipe };
+		emit(
+			"create:building:recipe",
+			buildingTicker,
+			buildingTicker + "#" + resourceTicker
+		);
 	}
-
-	function closePicker(): void {
-		refPicker.value = null;
-	}
-
-	// the picker is held by index: a building added, removed or brought
-	// back by undo would move it to another building
-	watch(
-		() => localProductionData.value.buildings.map((b) => b.name).join(),
-		closePicker
-	);
-
-	// folded buildings, by ticker: one list per view, not saved
-	const refFolded: Ref<Set<string>> = ref(new Set());
-	const allFolded: ComputedRef<boolean> = computed(
-		() =>
-			localProductionData.value.buildings.length > 0 &&
-			localProductionData.value.buildings.every((b) =>
-				refFolded.value.has(b.name)
-			)
-	);
-
-	function toggleFold(name: string): void {
-		const next = new Set(refFolded.value);
-		if (!next.delete(name)) next.add(name);
-		refFolded.value = next;
-	}
-
-	function toggleAll(): void {
-		refFolded.value = allFolded.value
-			? new Set()
-			: new Set(localProductionData.value.buildings.map((b) => b.name));
-	}
-
-	const counts = computed(() => {
-		const buildings = localProductionData.value.buildings;
-		return {
-			buildings: buildings.length,
-			units: buildings.reduce((sum, b) => sum + b.amount, 0),
-			recipes: buildings.reduce(
-				(sum, b) => sum + b.activeRecipes.length,
-				0
-			),
-		};
-	});
-
-	const expertsOf = (expertise: string | null): number =>
-		Object.values(props.experts ?? {}).find(
-			(e) => e.name.toUpperCase() === expertise
-		)?.amount ?? 0;
 </script>
 
 <template>
-	<div class="flex flex-wrap items-center gap-3 pointer-coarse:gap-y-3 py-2">
-		<span class="text-sm text-muted tabular-nums">
-			{{
-				t("plan.production.counts", {
-					buildings: counts.buildings,
-					units: counts.units,
-					recipes: counts.recipes,
-				})
-			}}
-		</span>
-		<span class="grow" />
-		<PButton
-			v-if="counts.buildings > 0"
-			size="sm"
-			type="ghost"
-			@click="toggleAll">
-			<template #icon>
-				<PIcon>
-					<UnfoldMoreSharp v-if="allFolded" />
-					<UnfoldLessSharp v-else />
-				</PIcon>
-			</template>
-			{{
-				allFolded
-					? t("plan.production.expand_all")
-					: t("plan.production.collapse_all")
-			}}
-		</PButton>
-		<label
+	<h2 class="text-white/80 font-bold text-lg">
+		{{ $t("plan.components.production.label") }}
+	</h2>
+	<!-- the building controls wrap below the planet resources when both
+		don't fit on one line -->
+	<div class="flex flex-wrap justify-between gap-3 py-3 child:my-auto">
+		<div class="flex gap-3 child:my-auto">
+			<div v-if="planetResources.length" class="text-sm">
+				{{ $t("plan.components.production.planet_resources") }}
+			</div>
+			<div class="flex flex-wrap gap-1 child:my-auto">
+				<PTooltip
+					v-for="resource in planetResources"
+					:key="`PLANET#RESOURCE#${resource.material_ticker}`">
+					<template #trigger>
+						<button
+							type="button"
+							class="cursor-pointer"
+							@click="
+								emitCreateBuildingWithRecipe(
+									resource.resource_type,
+									resource.material_ticker
+								)
+							">
+							<MaterialTile
+								:key="resource.material_ticker"
+								:ticker="resource.material_ticker"
+								:amount="
+									parseFloat(
+										formatNumber(resource.daily_extraction)
+									)
+								"
+								disable-drawer
+								:enable-popover="false" />
+						</button>
+					</template>
+					{{ resource.resource_type }} ({{
+						resource.resource_type === "MINERAL"
+							? "EXT"
+							: resource.resource_type === "GASEOUS"
+								? "COL"
+								: "RIG"
+					}})
+				</PTooltip>
+			</div>
+		</div>
+		<div
 			v-if="!disabled"
-			class="flex items-center gap-2 text-sm text-nowrap cursor-pointer">
-			<PCheckbox
-				v-model:checked="localMatchCOGC"
-				:aria-label="t('plan.components.production.form.match_cogc')" />
-			{{ t("plan.components.production.form.match_cogc") }}
-		</label>
-		<PSelect
-			v-if="!disabled"
-			v-model:value="localSelectedBuilding"
-			class="w-full sm:w-64 ml-auto"
-			:aria-label="t('plan.components.production.form.select_placeholder')"
-			searchable
-			:placeholder="t('plan.components.production.form.select_placeholder')"
-			:options="buildingOptions"
-			@update:value="(value) => selectBuilding(value as string)" />
+			class="w-full sm:w-auto sm:ml-auto flex child:my-auto gap-3">
+			<div class="flex gap-3">
+				<div class="text-sm text-nowrap">
+					{{ $t("plan.components.production.form.match_cogc") }}
+				</div>
+				<PCheckbox
+					v-model:checked="localMatchCOGC"
+					:aria-label="
+						$t('plan.components.production.form.match_cogc')
+					" />
+			</div>
+
+			<PSelect
+				v-model:value="localSelectedBuilding"
+				:aria-label="
+					$t('plan.components.production.form.select_placeholder')
+				"
+				searchable
+				:placeholder="
+					t('plan.components.production.form.select_placeholder')
+				"
+				class="w-full sm:w-75!"
+				:options="buildingOptions"
+				@update:value="(value) => selectBuilding(value as string)" />
+		</div>
 	</div>
 
-	<!-- under 40rem (a phone, a tablet next to the sidebar) each building
-		becomes a card instead of squeezing the columns -->
-	<div class="@container/prod">
-	<div
-		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted @max-[40rem]/prod:hidden"
-		data-column-heads>
-		<span />
-		<span>{{ t("plan.production.columns.building") }}</span>
-		<span class="text-center">{{ t("plan.production.columns.count") }}</span>
-		<span class="text-right">{{ t("plan.production.columns.efficiency") }}</span>
-		<span class="text-right">{{ t("plan.production.columns.daily") }}</span>
-		<span class="text-right">{{ t("plan.production.columns.area") }}</span>
-		<span />
-	</div>
-	<div>
+	<!-- @container: building rows lay out by the panel width (it shares the row
+		with Material I/O on wide screens) -->
+	<div class="@container border border-white/10 rounded overflow-hidden">
+		<div
+			class="grid grid-cols-12 text-xs uppercase p-3 bg-white/5 font-bold">
+			<div class="col-span-6">
+				{{ $t("plan.components.production.table.building_recipe") }}
+			</div>
+			<div class="hidden xl:block col-span-2">
+				{{ $t("plan.components.production.table.runtime") }}
+			</div>
+			<div class="hidden xl:block col-span-2">
+				{{ $t("plan.components.production.table.share") }}
+			</div>
+			<div class="hidden xl:block col-span-2 text-end">
+				{{ $t("plan.components.production.table.tools") }}
+			</div>
+		</div>
 		<PlanStarterSetup
 			v-if="showStarter"
 			:planet-id="planetId"
@@ -394,34 +356,6 @@
 				:cx-uuid="cxUuid"
 				:planet-id="planetId"
 				:change="changes?.buildings[building.name]"
-				:folded="refFolded.has(building.name)"
-				:experts="expertsOf(building.expertise)"
-				:picker="
-					refPicker?.building === index ? refPicker.recipe : undefined
-				"
-				:status="
-					status?.building === index
-						? { recipe: status.recipe, text: status.text }
-						: undefined
-				"
-				:material-i-o="materialIO"
-				:buildings="localProductionData.buildings"
-				@toggle:fold="toggleFold(building.name)"
-				@open:picker="(recipe: number | null) => openPicker(index, recipe)"
-				@close:picker="closePicker"
-				@undo="emit('undo')"
-				@pick:building:recipe="
-					(buildingIndex: number, recipeId: string) => {
-						closePicker();
-						emit('pick:building:recipe', buildingIndex, recipeId);
-						trackPlanEdit({
-							field: 'recipe_add',
-							planet_natural_id: props.planetId,
-							building_ticker: building.name,
-							...mostPlanned(building.name, recipeId),
-						});
-					}
-				"
 				@update:building:amount="
 					(index: number, value: number) => {
 						emit('update:building:amount', index, value);
@@ -470,6 +404,20 @@
 						});
 					}
 				"
+				@add:building:recipe="
+					(buildingIndex: number) => {
+						emit('add:building:recipe', buildingIndex);
+						trackPlanEdit({
+							field: 'recipe_add',
+							planet_natural_id: props.planetId,
+							building_ticker: building.name,
+							...mostPlanned(
+								building.name,
+								building.recipeOptions[0]?.recipe_id
+							),
+						});
+					}
+				"
 				@add:building:recipes="
 					(
 						buildingIndex: number,
@@ -490,7 +438,6 @@
 						recipeIndex: number,
 						recipeId: string
 					) => {
-						closePicker();
 						emit(
 							'update:building:recipe',
 							buildingIndex,
@@ -505,18 +452,16 @@
 							...mostPlanned(building.name, recipeId),
 						});
 					}
-				"
-				/>
+				" />
 		</template>
 		<div
 			v-for="name in changes?.removed"
 			:key="`REMOVED#${name}`"
-			class="px-3 py-2 border-b border-line border-l-2 border-l-negative text-muted">
-			<span class="text-sm font-medium line-through">{{ name }}</span>
+			class="px-3 py-1.5 bg-white/5 border-b border-white/5 border-l-2 border-l-negative text-muted">
+			<span class="text-lg font-mono line-through">{{ name }}</span>
 			<span class="ml-2 text-xs font-bold uppercase text-negative">
 				{{ $t("sharing.compare.removed") }}
 			</span>
 		</div>
-	</div>
 	</div>
 </template>

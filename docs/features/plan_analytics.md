@@ -5,8 +5,8 @@ which buildings and recipes other users plan there: the insights box, the
 pickers' "popular here" hints and the "Start from a typical setup" card.
 
 **Used by.** `views/PlanView.vue` (the box), the `planning` editor components
-`PlanBase`, `PlanProduction`, `PlanProductionBuilding` and
-`PlanRecipePicker` (`usePlanetInsights`).
+`PlanProduction`, `PlanProductionBuilding` and
+`PlanProductionRecipe` (`usePlanetInsights`).
 
 ## Key files
 
@@ -15,17 +15,15 @@ pickers' "popular here" hints and the "Start from a typical setup" card.
   - **Data:** on mount it calls `useQuery("GetAnalyticsPlanetInsights", {
     planetNaturalId })` and renders only when `status === "success"`. A
     failed request leaves the box hidden.
-  - **Analytics:** opening it sends `plan:insights_open` (`source`: its
-    button, or the planet link in Base, which calls the exposed `open()`).
+  - **Analytics:** opening it sends `plan:insights_open`.
 - **`usePlanetInsights.ts`**: `usePlanetInsights(planetNaturalId)` reads the
   v2 keys of the same query (`insights_data.buildings`; v1 rows default to
   `[]`) for the plan editor:
   - the "Popular on" group of the building picker (`PlanProduction`, via
     `getProductionBuildingOptions`);
-  - the "Plans here" column of the recipe picker (`PlanRecipePicker`);
+  - the "Plans here" column of the recipe picker (`PlanProductionRecipe`);
   - the "Most planned here" mix hint on a building without recipes
-    (`PlanProductionBuilding`, `typicalRecipes`);
-  - `isAvailable` and `totalPlans` for `PlanBase`'s planet link.
+    (`PlanProductionBuilding`, `typicalRecipes`).
 - **`components/PlanStarterSetup.vue`**: the "Start from a typical setup"
   card, rendered by `PlanProduction` in an empty, editable plan while the
   planet has v2 insights (hidden for this view by "Start empty", which

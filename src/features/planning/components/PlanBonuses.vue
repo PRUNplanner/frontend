@@ -9,7 +9,7 @@
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 	// UI
-	import { PCheckbox, PSelect, PTooltip } from "@/ui";
+	import { PForm, PFormItem, PCheckbox, PSelect, PTooltip } from "@/ui";
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	const props = defineProps({
@@ -117,28 +117,24 @@
 </script>
 
 <template>
-	<div class="flex flex-col gap-3 text-sm">
-		<label class="flex flex-col gap-1 text-xs text-muted-strong">
-			{{ t("plan.components.bonuses.cogc") }}
+	<PForm>
+		<PFormItem :label="t('plan.components.bonuses.corp_hq')">
+			<PTooltip>
+				<template #trigger>
+					<PCheckbox
+						v-model:checked="localCorpHQ"
+						:disabled="disabled" />
+				</template>
+				{{ $t("plan.components.bonuses.corp_hq_tooltip") }}
+			</PTooltip>
+		</PFormItem>
+
+		<PFormItem :label="t('plan.components.bonuses.cogc')">
 			<PSelect
 				v-model:value="localCOGC"
-				:aria-label="t('plan.components.bonuses.cogc')"
-				size="sm"
 				class="w-full"
 				:disabled="disabled"
 				:options="cogcOptions" />
-		</label>
-		<div class="flex items-center justify-between gap-3">
-			<PTooltip>
-				<template #trigger>
-					<span>{{ t("plan.components.bonuses.corp_hq") }}</span>
-				</template>
-				{{ t("plan.components.bonuses.corp_hq_tooltip") }}
-			</PTooltip>
-			<PCheckbox
-				v-model:checked="localCorpHQ"
-				:aria-label="t('plan.components.bonuses.corp_hq')"
-				:disabled="disabled" />
-		</div>
-	</div>
+		</PFormItem>
+	</PForm>
 </template>

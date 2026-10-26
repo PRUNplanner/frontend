@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { RouterLinkStub, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
@@ -25,6 +25,7 @@ const CHARLIE = empire("e-charlie", "Charlie");
 async function mountConfiguration(props: Record<string, unknown> = {}) {
 	return mountComponent(PlanConfiguration, {
 		disabled: false,
+		planName: "My Plan",
 		// unsorted on purpose
 		empireOptions: [CHARLIE, ALPHA, BETA],
 		activeEmpire: BETA,
@@ -34,6 +35,8 @@ async function mountConfiguration(props: Record<string, unknown> = {}) {
 }
 
 const select = (wrapper: VueWrapper) => wrapper.findComponent(PSelect);
+const nameInput = (wrapper: VueWrapper) =>
+	wrapper.find("input").element as HTMLInputElement;
 
 describe("PlanConfiguration", () => {
 	it("marks the plan's empires and sorts the options by label", async () => {
@@ -57,29 +60,34 @@ describe("PlanConfiguration", () => {
 		).toEqual(["Alpha", "Beta", "Charlie"]);
 	});
 
-	it("hides the empire select without empires", async () => {
+	it("has no options without empires", async () => {
 		const { wrapper } = await mountConfiguration({
 			empireOptions: undefined,
 			activeEmpire: undefined,
 		});
 
-		expect(select(wrapper).exists()).toBe(false);
-		// no active empire, no note
-		expect(wrapper.text()).not.toContain("plan.base.empire.note");
+		expect(select(wrapper).props("options")).toEqual([]);
+		expect(select(wrapper).props("value")).toBeUndefined();
 	});
 
-	it("shows the active empire and its note", async () => {
+	it("shows the plan name and the active empire", async () => {
 		const { wrapper } = await mountConfiguration();
 
+		expect(nameInput(wrapper).value).toBe("My Plan");
 		expect(select(wrapper).props("value")).toBe("e-beta");
 		expect(select(wrapper).text()).toContain("» Beta");
-		expect(wrapper.text()).toContain("plan.base.empire.note");
 	});
 
-	it("has no plan name field, the header renames the plan", async () => {
-		const { wrapper } = await mountConfiguration();
+	it("emits a new plan name, also an empty one", async () => {
+		const { wrapper, component } = await mountConfiguration();
 
-		expect(wrapper.find("input").exists()).toBe(false);
+		await wrapper.find("input").setValue("Renamed");
+		await wrapper.find("input").setValue("");
+
+		expect(component.emitted("update:plan-name")).toEqual([
+			["Renamed"],
+			[""],
+		]);
 	});
 
 	it("emits the selected empire", async () => {
@@ -100,11 +108,30 @@ describe("PlanConfiguration", () => {
 		expect(select(wrapper).props("value")).toBe("e-alpha");
 	});
 
-	it("read-only: hides the empire, keeps the note", async () => {
+	it("read-only: disables the name and hides the empire", async () => {
 		const { wrapper } = await mountConfiguration({ disabled: true });
 
+		expect(nameInput(wrapper).disabled).toBe(true);
 		expect(select(wrapper).exists()).toBe(false);
-		expect(wrapper.text()).toContain("plan.base.empire.note");
+	});
+
+	it("enables name and empire", async () => {
+		const { wrapper } = await mountConfiguration();
+
+		expect(nameInput(wrapper).disabled).toBe(false);
+		expect(select(wrapper).props("disabled")).toBe(false);
+	});
+
+	it("focuses the name only for a new plan", async () => {
+		const focus = vi.spyOn(HTMLElement.prototype, "focus");
+
+		await mountConfiguration();
+		expect(focus).not.toHaveBeenCalled();
+
+		const { wrapper } = await mountConfiguration({ newPlan: true });
+		expect(focus.mock.contexts).toEqual([nameInput(wrapper)]);
+
+		focus.mockRestore();
 	});
 
 	it("links the active empire's preference in Exchanges", async () => {
@@ -137,39 +164,5 @@ describe("PlanConfiguration", () => {
 		expect(wrapper.text()).toContain(
 			"plan.components.configuration.no_preference"
 		);
-	});
-
-	it("names the price source of a visitor without empires", async () => {
-		const { wrapper } = await mountConfiguration({
-			empireOptions: undefined,
-			activeEmpire: undefined,
-			priceSource: "Universe average",
-		});
-
-		expect(wrapper.text()).toContain("Universe average");
-		expect(wrapper.text()).not.toContain(
-			"plan.components.configuration.no_preference"
-		);
-	});
-
-	it("read-only: names the exchange without linking it", async () => {
-		const pinia = createPinia();
-		usePlanningStore(pinia).setCXs([
-			// @ts-expect-error partial CX
-			{ uuid: "cx-1", cx_name: "Home NC1" },
-		]);
-		const { wrapper } = await mountComponent(
-			PlanConfiguration,
-			{
-				disabled: true,
-				activeEmpire: BETA,
-				planEmpires: [BETA],
-				cxUuid: "cx-1",
-			},
-			{ pinia }
-		);
-
-		expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);
-		expect(wrapper.text()).toContain("Home NC1");
 	});
 });

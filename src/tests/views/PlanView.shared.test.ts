@@ -10,7 +10,7 @@ import {
 	mocks,
 	mountView,
 	newPlan,
-	openDebug,
+	openTool,
 	press,
 	queryCalls,
 	respond,
@@ -19,7 +19,7 @@ import {
 } from "@/tests/views/PlanView.harness";
 import { describe, it, expect, vi } from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
-import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
+import PlanOverview from "@/features/planning/components/PlanOverview.vue";
 import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 import PlanInfrastructure from "@/features/planning/components/PlanInfrastructure.vue";
 import SharedPlanBanner from "@/features/sharing/components/SharedPlanBanner.vue";
@@ -42,7 +42,8 @@ describe("PlanView shared plans, toasts and habs", () => {
 			{ planData: draftPlan(), empireList: empires() },
 			{ seed: ({ planning }) => planning.setCXs(cxs()) }
 		);
-		await openDebug(wrapper);
+		await wrapper.find("[data-calc-debug-button]").trigger("click");
+		await flushPromises();
 
 		const meta = wrapper
 			.findComponent({ name: "PlanCalcDebug" })
@@ -69,7 +70,8 @@ describe("PlanView shared plans, toasts and habs", () => {
 				},
 			}
 		);
-		await openDebug(wrapper);
+		await wrapper.find("[data-calc-debug-button]").trigger("click");
+		await flushPromises();
 
 		const meta = wrapper
 			.findComponent({ name: "PlanCalcDebug" })
@@ -89,7 +91,8 @@ describe("PlanView shared plans, toasts and habs", () => {
 		expect(
 			wrapper.findComponent(SharedPlanBanner).props("priceSource")
 		).toBe("sharing.banner.price_universe");
-		await openDebug(wrapper);
+		await wrapper.find("[data-calc-debug-button]").trigger("click");
+		await flushPromises();
 		const empireName = () =>
 			wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta")
 				.empire;
@@ -117,7 +120,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 		expect(banner().props("changed")).toBe(true);
 		expect(production().props("changes")).toBeDefined();
 		expect(
-			wrapper.findComponent(PlanResultsBar).props("compare")
+			wrapper.findComponent(PlanOverview).props("compare")
 		).toMatchObject({
 			before: expect.any(Object),
 			after: expect.any(Object),
@@ -298,57 +301,11 @@ describe("PlanView shared plans, toasts and habs", () => {
 		);
 
 		expect(recipeOf(wrapper, swap.index)[0]).toBe(swap.recipeid);
-		// a status line under the row, not a toast
-		expect(mocks.toast).not.toHaveBeenCalled();
-		const status = () =>
-			wrapper.findComponent(PlanProduction).props("status");
-		expect(status()).toMatchObject({
-			building: swap.index,
-			recipe: 0,
-			text: "plan.picker.replaced",
-		});
+		expect(undoToast()[0]).toBe("plan.history.recipe_changed");
 
-		await emitFrom(wrapper, PlanProduction, "undo");
-		expect(recipeOf(wrapper, swap.index)).toEqual(before);
-		expect(trackEvent).toHaveBeenCalledWith("plan:recipe_picker_undo");
-		expect(status()).toBeUndefined();
-	});
-
-	it("adds a picked recipe as one new order, which undo takes back", async () => {
-		const { wrapper } = await mountView();
-		const production = () =>
-			wrapper.findComponent(PlanProduction).props("productionData") as {
-				buildings: {
-					activeRecipes: { recipeId: string; amount: number }[];
-					recipeOptions: { recipe_id: string }[];
-				}[];
-			};
-		const building = production().buildings[swap.index];
-		const count = building.activeRecipes.length;
-		const free = building.recipeOptions.find(
-			(o) => !building.activeRecipes.some((r) => r.recipeId === o.recipe_id)
-		)!.recipe_id;
-
-		await emitFrom(
-			wrapper,
-			PlanProduction,
-			"pick:building:recipe",
-			swap.index,
-			free
-		);
-
-		const added = production().buildings[swap.index].activeRecipes;
-		expect(added).toHaveLength(count + 1);
-		expect(added.at(-1)).toMatchObject({ recipeId: free, amount: 1 });
-		expect(
-			wrapper.findComponent(PlanProduction).props("status")
-		).toMatchObject({ building: swap.index, recipe: count });
-
-		press({ key: "z", ctrlKey: true });
+		undoToast()[1].action.onClick();
 		await flushPromises();
-		expect(production().buildings[swap.index].activeRecipes).toHaveLength(
-			count
-		);
+		expect(recipeOf(wrapper, swap.index)).toEqual(before);
 	});
 
 	it("closes the toast with the next edit and replaces it with the next toast", async () => {
@@ -413,6 +370,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 	});
 
 	// -- habitation optimisation ----------------------------------------
+	const CONFIG_TAB = "plan.components.configuration.label";
 	const infrastructureOf = (wrapper: VueWrapper) =>
 		wrapper
 			.findComponent(PlanInfrastructure)
@@ -420,6 +378,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 
 	it("optimises the habs on request and changes only the ones that differ", async () => {
 		const { wrapper } = await mountView();
+		await openTool(wrapper, CONFIG_TAB);
 		const before = infrastructureOf(wrapper);
 		vi.mocked(optimizeHabs).mockReturnValueOnce({
 			status: "optimal",
@@ -450,6 +409,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 	it("reports a failed optimisation and keeps the habs", async () => {
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountView();
+		await openTool(wrapper, CONFIG_TAB);
 		const before = infrastructureOf(wrapper);
 		vi.mocked(optimizeHabs).mockReturnValueOnce({
 			status: "infeasible",
@@ -467,6 +427,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 
 	it("optimises on the auto toggle only when it is turned on", async () => {
 		const { wrapper } = await mountView();
+		await openTool(wrapper, CONFIG_TAB);
 		vi.mocked(optimizeHabs).mockClear();
 
 		await emitFrom(
@@ -504,6 +465,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 
 	it("re-optimises the habs when the workforce changes, but not on undo", async () => {
 		const { wrapper } = await mountView();
+		await openTool(wrapper, CONFIG_TAB);
 		await emitFrom(
 			wrapper,
 			PlanInfrastructure,
@@ -529,6 +491,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 
 	it("leaves the habs alone while auto optimisation is off", async () => {
 		const { wrapper } = await mountView();
+		await openTool(wrapper, CONFIG_TAB);
 		vi.mocked(optimizeHabs).mockClear();
 
 		await emitFrom(wrapper, PlanProduction, "update:building:amount", 0, 9);
@@ -580,7 +543,8 @@ describe("PlanView shared plans, toasts and habs", () => {
 				},
 			}
 		);
-		await openDebug(wrapper);
+		await wrapper.find("[data-calc-debug-button]").trigger("click");
+		await flushPromises();
 
 		// a refreshed list that still holds the empire picks nothing new
 		await setProps({ empireList: empires().reverse() });

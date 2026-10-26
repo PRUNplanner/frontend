@@ -19,10 +19,8 @@ import {
 	mocks,
 	mountView,
 	newPlan,
-	openDebug,
 	openTool,
 	press,
-	rename,
 	queryCalls,
 	respond,
 	setupPlanViewSuite,
@@ -37,8 +35,8 @@ import {
 } from "@vue/test-utils";
 import { PButton, PModal, PSelect } from "@/ui";
 import PlanProduction from "@/features/planning/components/PlanProduction.vue";
-import PlanBase from "@/features/planning/components/PlanBase.vue";
-import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
+import PlanConfiguration from "@/features/planning/components/PlanConfiguration.vue";
+import PlanInfrastructure from "@/features/planning/components/PlanInfrastructure.vue";
 import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
 import PlanSaveButton from "@/features/planning/components/PlanSaveButton.vue";
 import PlanMoreMenu from "@/features/planning/components/PlanMoreMenu.vue";
@@ -48,11 +46,6 @@ import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 import { etherwindPlan } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-
-// the production list stays mounted under a tool, v-show hides it
-const productionShown = (wrapper: VueWrapper): boolean =>
-	(wrapper.find("[data-production]").element as HTMLElement).style
-		.display !== "none";
 
 describe("PlanView", () => {
 	setupPlanViewSuite();
@@ -82,11 +75,11 @@ describe("PlanView", () => {
 		expect(wrapper.text()).not.toContain("PlanConstructionCart");
 	});
 
-	it("has no Debug item and loads no panel with debug off", async () => {
+	it("has no Debug button and loads no panel with debug off", async () => {
 		calcDebug.value = false;
 		const { wrapper } = await mountView();
 
-		expect(wrapper.findComponent(PlanMoreMenu).props("debug")).toBe(false);
+		expect(wrapper.find("[data-calc-debug-button]").exists()).toBe(false);
 		window.dispatchEvent(
 			new KeyboardEvent("keydown", { code: "Backquote", ctrlKey: true })
 		);
@@ -97,10 +90,13 @@ describe("PlanView", () => {
 	it("opens the debug panel with the button and Ctrl+`", async () => {
 		calcDebug.value = true;
 		const { wrapper } = await mountView();
-		expect(wrapper.findComponent(PlanMoreMenu).props("debug")).toBe(true);
+		const button = wrapper.find("[data-calc-debug-button]");
+		expect(button.exists()).toBe(true);
 
-		await openDebug(wrapper);
+		await button.trigger("click");
+		await flushPromises();
 		expect(wrapper.text()).toContain("debug panel");
+		expect(button.attributes("aria-pressed")).toBe("true");
 
 		window.dispatchEvent(
 			new KeyboardEvent("keydown", { code: "Backquote", metaKey: true })
@@ -115,7 +111,15 @@ describe("PlanView", () => {
 		expect(wrapper.text()).toContain("debug panel");
 
 		// the panel shows what save sends, a rename included
-		await rename(wrapper, "Renamed plan");
+		await wrapper
+			.findAll("nav button")
+			.find((b) => b.text() === "plan.components.configuration.label")!
+			.trigger("click");
+		await flushPromises();
+		wrapper
+			.findComponent({ name: "PlanConfiguration" })
+			.vm.$emit("update:plan-name", "Renamed plan");
+		await flushPromises();
 		expect(wrapper.text()).toContain("debug panel Renamed plan");
 		calcDebug.value = false;
 	});
@@ -150,57 +154,32 @@ describe("PlanView", () => {
 			"New Antares c (KW-688c)"
 		);
 		expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);
-		// a new plan starts with naming it
-		expect(wrapper.find("h1").exists()).toBe(false);
-		expect(
-			wrapper.find("input[aria-label='plan.header.name']").exists()
-		).toBe(true);
-		expect(lastTitle()).toBe("KW-688c");
-
-		await wrapper
-			.find("input[aria-label='plan.header.name']")
-			.trigger("keydown", { key: "Escape" });
 		expect(wrapper.find("h1").text()).toBe("plan.name.untitled");
+		expect(lastTitle()).toBe("KW-688c");
 	});
 
-	it("starts a new plan with naming it in the header", async () => {
-		const { wrapper } = await mountView(
-			{ planData: newPlan() },
-			{ login: true }
-		);
+	it("opens the configuration of a new plan and renames it", async () => {
+		const { wrapper } = await mountView({ planData: newPlan() });
 
-		await rename(wrapper, "Fresh start");
+		const configuration = wrapper.findComponent(PlanConfiguration);
+		expect(configuration.props("newPlan")).toBe(true);
+		expect(configuration.props("planName")).toBeUndefined();
+
+		configuration.vm.$emit("update:plan-name", "Fresh start");
+		await flushPromises();
 
 		expect(wrapper.find("h1").text()).toBe("Fresh start");
 		expect(lastTitle()).toBe("Fresh start");
 	});
 
-	it("renames a saved plan from the pencil, Escape keeps the name", async () => {
-		const { wrapper } = await mountView();
-
-		await wrapper
-			.find("button[aria-label='plan.header.rename']")
-			.trigger("click");
-		const input = wrapper.find("input[aria-label='plan.header.name']");
-		await input.setValue("Not this");
-		await input.trigger("keydown", { key: "Escape" });
-		expect(wrapper.find("h1").text()).toBe("EW COF RAT DW C");
-
-		await rename(wrapper, "That one");
-		expect(wrapper.find("h1").text()).toBe("That one");
-	});
-
-	it("does not start a shared plan's copy in rename mode", async () => {
+	it("does not open the configuration of a shared plan", async () => {
 		const { wrapper } = await mountView({
 			planData: draftPlan(),
 			shared: true,
 			sharedPlanUuid: "shared-uuid",
 		});
 
-		expect(wrapper.find("h1").exists()).toBe(true);
-		expect(
-			wrapper.find("input[aria-label='plan.header.name']").exists()
-		).toBe(false);
+		expect(wrapper.findComponent(PlanConfiguration).exists()).toBe(false);
 	});
 
 	it("hides history and save controls on a disabled plan", async () => {
@@ -372,302 +351,64 @@ describe("PlanView", () => {
 		await openTool(wrapper, "plan.tools.labels.construction_cart");
 		expect(wrapper.text()).toContain("PlanConstructionCart");
 
-		// the open tab closes it again, back to the production list
+		// the open tab closes it again
 		await openTool(wrapper, "plan.tools.labels.construction_cart");
 		expect(wrapper.text()).not.toContain("PlanConstructionCart");
-		expect(wrapper.find("nav button[aria-pressed='true']").text()).toBe(
-			"plan.tools.labels.production"
+		expect(wrapper.find("nav button[aria-pressed='true']").exists()).toBe(
+			false
 		);
-		expect(productionShown(wrapper)).toBe(true);
-	});
-
-	it("shows a tool in place of the production list and folds the panes", async () => {
-		const { wrapper } = await mountView();
-		const strip = (name: string) => wrapper.find(`[data-${name}-strip]`);
-		expect(strip("base").exists()).toBe(false);
-		expect(strip("io").exists()).toBe(false);
-
-		constructionCart.open();
-		await openTool(wrapper, "plan.tools.labels.construction_cart");
-		expect(productionShown(wrapper)).toBe(false);
-		expect(strip("base").exists()).toBe(true);
-		expect(strip("io").exists()).toBe(false);
-
-		await openTool(wrapper, "plan.tools.labels.plan_check");
-		expect(strip("base").exists()).toBe(true);
-		expect(strip("io").exists()).toBe(true);
-
-		// a strip pins its pane open, Fold folds it again
-		await strip("base").trigger("click");
-		expect(strip("base").exists()).toBe(false);
-		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
-			panel: "base",
-			folded: false,
-		});
-		await wrapper
-			.find("[data-base-pane]")
-			.findAll("button")
-			.find((b) => b.text() === "plan.layout.fold")!
-			.trigger("click");
-		expect(strip("base").exists()).toBe(true);
-
-		// a pinned pane stays open over tool switches
-		await strip("io").trigger("click");
-		expect(strip("io").exists()).toBe(false);
-		await openTool(wrapper, "plan.tools.labels.repair_analysis");
-		expect(strip("io").exists()).toBe(false);
-		expect(strip("base").exists()).toBe(true);
-
-		await openTool(wrapper, "plan.tools.labels.production");
-		expect(productionShown(wrapper)).toBe(true);
-		expect(strip("base").exists()).toBe(false);
 	});
 
 	it("opens the plan check on its market view from the material I/O", async () => {
+		const scrollIntoView = vi.fn();
+		Element.prototype.scrollIntoView = scrollIntoView;
 		const { wrapper } = await mountView();
 		usePlanCheckView().view.value = "compare" as never;
 
 		await emitFrom(wrapper, PlanMaterialIO, "open:plan-check");
-		await vi.waitFor(() =>
-			expect(wrapper.findComponent({ name: "PlanCheck" }).exists()).toBe(
-				true
-			)
-		);
+		await vi.waitFor(() => expect(scrollIntoView).toHaveBeenCalledTimes(1));
 		expect(usePlanCheckView().view.value).toBe("market");
-		expect(productionShown(wrapper)).toBe(false);
+		expect(wrapper.findComponent({ name: "PlanCheck" }).exists()).toBe(
+			true
+		);
 
-		// already open: stays open
+		// already open: stays open, still scrolls into view
 		await emitFrom(wrapper, PlanMaterialIO, "open:plan-check");
+		await vi.waitFor(() => expect(scrollIntoView).toHaveBeenCalledTimes(2));
 		expect(wrapper.findComponent({ name: "PlanCheck" }).exists()).toBe(
 			true
 		);
 	});
 
-	it("switches the material I/O source, filter and value", async () => {
+	it("flips the material I/O between weight/volume and money and splits it", async () => {
 		const { wrapper } = await mountView();
-		const io = () => wrapper.findComponent(PlanMaterialIO);
-		const pane = () => wrapper.find("[data-io-pane]");
-		const toggle = async (label: string) => {
-			await pane()
-				.findAll("button[aria-pressed]")
-				.find((b) => b.text() === label)!
-				.trigger("click");
-			await flushPromises();
-		};
-		expect(io().props()).toMatchObject({ value: "price", filter: "all" });
-		const whole = io().props("materialIOData");
-
-		await toggle("t");
-		expect(io().props("value")).toBe("weight");
-		await toggle("m³");
-		expect(io().props("value")).toBe("volume");
-		await toggle("plan.io.filter.imports");
-		expect(io().props("filter")).toBe("imports");
-
-		const source = pane().findComponent(PSelect);
-		source.vm.$emit("update:value", "production");
-		await flushPromises();
-		expect(io().props("materialIOData")).not.toBe(whole);
-		// market flags and the plan totals belong to the whole base
-		expect(io().props("checks")).toBeUndefined();
-		expect(pane().text()).not.toContain("plan.io.profit");
-
-		source.vm.$emit("update:value", "workforce");
-		await flushPromises();
-		source.vm.$emit("update:value", "all");
-		await flushPromises();
-		expect(io().props("materialIOData")).toStrictEqual(whole);
-		expect(pane().text()).toContain("plan.io.profit");
-	});
-
-	it("downloads the material I/O as CSV from the ⋯ menu", async () => {
-		const click = vi
-			.spyOn(HTMLAnchorElement.prototype, "click")
-			.mockImplementation(() => undefined);
-		vi.stubGlobal("URL", {
-			...URL,
-			createObjectURL: vi.fn(() => "blob:csv"),
-			revokeObjectURL: vi.fn(),
-		});
-		const { wrapper } = await mountView();
-
-		await emitFrom(wrapper, PlanMoreMenu, "csv");
-
-		expect(click).toHaveBeenCalledTimes(1);
-		expect((click.mock.contexts[0] as HTMLAnchorElement).download).toBe(
-			"EW COF RAT DW C-material-io.csv"
+		expect(wrapper.findAllComponents(PlanMaterialIO)).toHaveLength(1);
+		expect(wrapper.findComponent(PlanMaterialIO).props("showBasked")).toBe(
+			false
 		);
-	});
-
-	it("opens Base as an overlay on a narrow page, Close and Esc shut it", async () => {
-		const { wrapper } = await mountView();
-		const base = () => wrapper.find("[data-base-pane]");
-		const toggle = () =>
-			wrapper
-				.findAllComponents(PButton)
-				.find(
-					(b) =>
-						b.text() === "plan.base.label" &&
-						b.attributes("aria-expanded") !== undefined
-				)!;
-		expect(base().classes()).toContain("md:@max-[81rem]:hidden");
-
-		await toggle().trigger("click");
-		expect(toggle().attributes("aria-expanded")).toBe("true");
-		expect(base().classes()).toContain("md:@max-[81rem]:absolute");
-
-		await base()
-			.findAll("button")
-			.find((b) => b.text() === "plan.layout.close")!
-			.trigger("click");
-		expect(base().classes()).toContain("md:@max-[81rem]:hidden");
-
-		await toggle().trigger("click");
-		await base().trigger("keydown", { key: "Escape" });
-		expect(toggle().attributes("aria-expanded")).toBe("false");
-	});
-
-	it("opens Material I/O as an overlay on a tablet-wide page, Close and Esc shut it", async () => {
-		const { wrapper } = await mountView();
-		const io = () => wrapper.find("[data-io-pane]");
-		const toggle = () => wrapper.find("[data-io-toggle]");
-		expect(io().classes()).toContain("md:@max-[71rem]:hidden");
-
-		await toggle().trigger("click");
-		expect(toggle().attributes("aria-expanded")).toBe("true");
-		expect(io().classes()).toContain("md:@max-[71rem]:absolute");
-		expect(trackEvent).toHaveBeenCalledWith("plan:overlay_open", {
-			panel: "io",
-		});
-		// switching what it shows tracks the whole view
-		await io()
-			.findAll("button")
-			.find((b) => b.text() === "%")!
-			.trigger("click");
-		expect(trackEvent).toHaveBeenCalledWith("plan:io_view", {
-			source: "all",
-			filter: "all",
-			value: "share",
-		});
-
-		await io()
-			.findAll("button")
-			.find((b) => b.text() === "plan.layout.close")!
-			.trigger("click");
-		expect(io().classes()).toContain("md:@max-[71rem]:hidden");
-
-		await toggle().trigger("click");
-		await io().trigger("keydown", { key: "Escape" });
-		expect(toggle().attributes("aria-expanded")).toBe("false");
-	});
-
-	it("drops In and Out of Material I/O while the panes are narrow", async () => {
-		let observe: ((width: number) => void) | undefined;
-		vi.stubGlobal(
-			"ResizeObserver",
-			class {
-				cb: ResizeObserverCallback;
-				constructor(cb: ResizeObserverCallback) {
-					this.cb = cb;
-				}
-				// tooltips observe too, only the panes' wrapper counts
-				observe(el: Element) {
-					if (!el.classList.contains("@container")) return;
-					observe = (width) =>
-						this.cb(
-							[{ contentRect: { width } } as ResizeObserverEntry],
-							this as unknown as ResizeObserver
-						);
-				}
-				unobserve() {}
-				disconnect() {}
-			}
-		);
-		const { wrapper } = await mountView();
-		const compact = () =>
-			wrapper.findComponent(PlanMaterialIO).props("compact");
-
-		observe!(1856);
-		await flushPromises();
-		expect(compact()).toBe(false);
-		observe!(1376);
-		await flushPromises();
-		expect(compact()).toBe(true);
-		// a phone has no room for them either
-		observe!(343);
-		await flushPromises();
-		expect(compact()).toBe(true);
-	});
-
-	it("opens the planet insights from Base", async () => {
-		const { wrapper } = await mountView();
-
-		await emitFrom(wrapper, PlanBase, "open:insights");
-
-		expect(mocks.openInsights).toHaveBeenCalledTimes(1);
-	});
-
-	it("folds a pinned Material I/O again", async () => {
-		const { wrapper } = await mountView();
-		await openTool(wrapper, "plan.tools.labels.plan_check");
-		await wrapper.find("[data-io-strip]").trigger("click");
-		expect(wrapper.find("[data-io-strip]").exists()).toBe(false);
 
 		await wrapper
-			.find("[data-io-pane]")
-			.findAll("button")
-			.find((b) => b.text() === "plan.layout.fold")!
-			.trigger("click");
-
-		expect(wrapper.find("[data-io-strip]").exists()).toBe(true);
-		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
-			panel: "io",
-			folded: true,
-		});
-	});
-
-	it("names the CSV of an unnamed plan after its planet", async () => {
-		const click = vi
-			.spyOn(HTMLAnchorElement.prototype, "click")
-			.mockImplementation(() => undefined);
-		vi.stubGlobal("URL", {
-			...URL,
-			createObjectURL: vi.fn(() => "blob:csv"),
-			revokeObjectURL: vi.fn(),
-		});
-		const { wrapper } = await mountView({
-			planData: { ...etherwindPlan(), plan_name: "" },
-		});
-
-		await emitFrom(wrapper, PlanMoreMenu, "csv");
-
-		expect((click.mock.contexts[0] as HTMLAnchorElement).download).toBe(
-			"KW-688c-material-io.csv"
-		);
-	});
-
-	it("keeps the name when the rename changes nothing", async () => {
-		const { wrapper } = await mountView();
-
-		await rename(wrapper, "EW COF RAT DW C");
-
-		expect(wrapper.find("h1").text()).toBe("EW COF RAT DW C");
-		expect(
-			wrapper.find("button[aria-label='plan.history.undo']").attributes(
-				"disabled"
+			.find(
+				"button[aria-label='plan.components.materialio.buttons.toggle_weight_volume']"
 			)
-		).toBeDefined();
-	});
+			.trigger("click");
+		expect(wrapper.findComponent(PlanMaterialIO).props("showBasked")).toBe(
+			true
+		);
 
-	it("shows the plan's results once, in the results bar", async () => {
-		const { wrapper } = await mountView();
-		const bar = wrapper.findComponent(PlanResultsBar);
-
-		expect(bar.props("area")).toMatchObject({ permits: expect.any(Number) });
-		expect(bar.props("overview").profit).toEqual(expect.any(Number));
-		expect(bar.props("compare")).toBeUndefined();
-		expect(wrapper.findComponent({ name: "PlanOverview" }).exists()).toBe(
-			false
+		await wrapper
+			.find(
+				"button[aria-label='plan.components.materialio.buttons.toggle_production_workforce']"
+			)
+			.trigger("click");
+		const split = wrapper.findAllComponents(PlanMaterialIO);
+		expect(split).toHaveLength(2);
+		expect(split.every((m) => m.props("showBasked"))).toBe(true);
+		expect(wrapper.text()).toContain(
+			"plan.components.materialio.label_production"
+		);
+		expect(wrapper.text()).toContain(
+			"plan.components.materialio.label_workforce"
 		);
 	});
 
@@ -681,7 +422,8 @@ describe("PlanView", () => {
 				seed: ({ planning }) => planning.setCXs(cxs()),
 			}
 		);
-		await openDebug(wrapper);
+		await wrapper.find("[data-calc-debug-button]").trigger("click");
+		await flushPromises();
 		const meta = () =>
 			wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta");
 
@@ -700,7 +442,8 @@ describe("PlanView", () => {
 			{ empireList: empires() },
 			{ seed: ({ planning }) => planning.setCXs(cxs()) }
 		);
-		await openDebug(wrapper);
+		await wrapper.find("[data-calc-debug-button]").trigger("click");
+		await flushPromises();
 
 		const panel = wrapper.findComponent({ name: "PlanCalcDebug" });
 		expect(panel.props("meta")).toEqual({
@@ -844,7 +587,7 @@ describe("PlanView", () => {
 			{ planData: newPlan() },
 			{ login: true }
 		);
-		await rename(wrapper, "Mine");
+		await emitFrom(wrapper, PlanConfiguration, "update:plan-name", "Mine");
 		wrapper.findComponent(PlanSaveButton).vm.$emit("save");
 		await flushPromises();
 
@@ -1147,35 +890,37 @@ describe("PlanView", () => {
 	});
 
 	// -- tools, menus and modals ----------------------------------------
-	it("keeps Base in view and edits the plan from it", async () => {
+	it("closes a tool by toggling its tab again", async () => {
 		const { wrapper } = await mountView();
-		const base = () => wrapper.findComponent(PlanBase);
-		expect(base().exists()).toBe(true);
+		const label = "plan.components.configuration.label";
 
-		await emitFrom(wrapper, PlanBase, "update:cogc", "AGRICULTURE");
-		expect(base().props("result").cogc).toBe("AGRICULTURE");
-		await emitFrom(wrapper, PlanBase, "update:permits", 2);
-		expect(base().props("result").area.permits).toBe(2);
-		await emitFrom(wrapper, PlanBase, "update:corphq", true);
-		expect(base().props("result").corphq).toBe(true);
-		await emitFrom(wrapper, PlanBase, "update:expert", "Agriculture", 3);
-		expect(base().props("result").experts.Agriculture.amount).toBe(3);
+		await openTool(wrapper, label);
+		expect(wrapper.findComponent(PlanInfrastructure).exists()).toBe(true);
+
+		await openTool(wrapper, label);
+		expect(wrapper.findComponent(PlanInfrastructure).exists()).toBe(false);
 	});
 
-	it("switches the empire and its CX from Base", async () => {
+	it("switches the empire and its CX from the configuration", async () => {
 		const { wrapper } = await mountView(
 			{ empireList: empires() },
 			{ seed: ({ planning }) => planning.setCXs(cxs()) }
 		);
-		const base = () => wrapper.findComponent(PlanBase);
-		expect(base().props("cxUuid")).toBe(SKY_CX);
+		await openTool(wrapper, "plan.components.configuration.label");
+		const configuration = () => wrapper.findComponent(PlanConfiguration);
+		expect(configuration().props("cxUuid")).toBe(SKY_CX);
 
-		await emitFrom(wrapper, PlanBase, "update:active-empire", SHARE_EMPIRE);
+		await emitFrom(
+			wrapper,
+			PlanConfiguration,
+			"update:active-empire",
+			SHARE_EMPIRE
+		);
 
-		expect(base().props("activeEmpire")).toMatchObject({
+		expect(configuration().props("activeEmpire")).toMatchObject({
 			uuid: SHARE_EMPIRE,
 		});
-		expect(base().props("cxUuid")).toBe(SHARE_CX);
+		expect(configuration().props("cxUuid")).toBe(SHARE_CX);
 	});
 
 	it("opens the sharing of a saved plan and closes it again", async () => {
@@ -1183,10 +928,7 @@ describe("PlanView", () => {
 		const modal = () => wrapper.findComponent({ name: "SharingModal" });
 		expect(modal().props("show")).toBe(false);
 
-		await wrapper
-			.findAllComponents(PButton)
-			.find((b) => b.text() === "plan.actions.share_link")!
-			.trigger("click");
+		await emitFrom(wrapper, PlanMoreMenu, "share");
 		expect(modal().props("show")).toBe(true);
 
 		modal().vm.$emit("update:show", false);
@@ -1197,7 +939,8 @@ describe("PlanView", () => {
 	it("closes the debug panel from the panel itself", async () => {
 		calcDebug.value = true;
 		const { wrapper } = await mountView();
-		await openDebug(wrapper);
+		await wrapper.find("[data-calc-debug-button]").trigger("click");
+		await flushPromises();
 		const panel = () => wrapper.findComponent({ name: "PlanCalcDebug" });
 		expect(panel().exists()).toBe(true);
 
@@ -1207,9 +950,14 @@ describe("PlanView", () => {
 		expect(panel().exists()).toBe(false);
 	});
 
-	it("explains the history controls and their keys on hover", async () => {
+	it("explains the history and material controls on hover", async () => {
 		const { wrapper } = await mountView({}, { login: true });
-		const labels = ["plan.history.undo", "plan.history.redo"];
+		const labels = [
+			"plan.history.undo",
+			"plan.history.redo",
+			"plan.components.materialio.buttons.toggle_weight_volume",
+			"plan.components.materialio.buttons.toggle_production_workforce",
+		];
 
 		const tooltips = () =>
 			[...document.body.querySelectorAll("[role=tooltip]")].map((e) =>
@@ -1222,7 +970,7 @@ describe("PlanView", () => {
 				.element.parentElement!;
 			await new DOMWrapper(trigger).trigger("mouseenter");
 			await flushPromises();
-			expect(tooltips()).toContain(`${label}_key`);
+			expect(tooltips()).toContain(label);
 			await new DOMWrapper(trigger).trigger("mouseleave");
 		}
 	});
@@ -1264,96 +1012,5 @@ describe("PlanView", () => {
 
 		expect(dialog().exists()).toBe(false);
 		expect(queryCalls("CreatePlan")).toEqual([]);
-	});
-
-	describe("on a phone", () => {
-		const phone = () =>
-			vi.stubGlobal("matchMedia", (query: string) => ({
-				matches: query === "(max-width: 767.98px)",
-				addEventListener: vi.fn(),
-				removeEventListener: vi.fn(),
-			}));
-		const section = (wrapper: Mounted["wrapper"], label: string) =>
-			wrapper
-				.findAll("nav[aria-label='plan.layout.sections'] button")
-				.find((b) => b.text().startsWith(label))!;
-		const hidden = (wrapper: Mounted["wrapper"], selector: string) =>
-			wrapper.find(selector).classes().includes("hidden");
-
-		it("shows one section at a time, picked in the section tabs", async () => {
-			phone();
-			const { wrapper } = await mountView();
-
-			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
-			expect(hidden(wrapper, "[data-io-pane]")).toBe(true);
-			expect(wrapper.find("[data-production]").attributes("style")).toBeUndefined();
-			// the desktop tab row and the Material I/O button are gone
-			expect(wrapper.find("[data-io-toggle]").exists()).toBe(false);
-
-			await section(wrapper, "plan.base.label").trigger("click");
-			expect(hidden(wrapper, "[data-base-pane]")).toBe(false);
-			expect(wrapper.find("[data-production]").attributes("style")).toContain(
-				"display: none"
-			);
-
-			await section(wrapper, "plan.components.materialio.label").trigger(
-				"click"
-			);
-			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
-			expect(hidden(wrapper, "[data-io-pane]")).toBe(false);
-			expect(
-				vi
-					.mocked(trackEvent)
-					.mock.calls.filter(([name]) => name === "plan:section_view")
-			).toEqual([
-				["plan:section_view", { section: "base" }],
-				["plan:section_view", { section: "io" }],
-			]);
-		});
-
-		it("lists the tools, opens one with a way back to the list", async () => {
-			phone();
-			const { wrapper } = await mountView();
-
-			await section(wrapper, "plan.layout.tools").trigger("click");
-			const tools = wrapper.find("[data-phone-tools]");
-			const plancheck = tools
-				.findAll("button")
-				.find((b) => b.text().startsWith("plan.tools.labels.plan_check"))!;
-			expect(plancheck.text()).toContain(
-				"plan.tools.descriptions.plan-check"
-			);
-
-			await tools
-				.findAll("button")
-				.find((b) => b.text().startsWith("plan.tools.labels.construction_cart"))!
-				.trigger("click");
-			await flushPromises();
-			expect(wrapper.find("[data-phone-tools]").exists()).toBe(false);
-			expect(wrapper.find("[data-tool]").exists()).toBe(true);
-
-			await wrapper
-				.find("[data-tool]")
-				.findAllComponents(PButton)
-				.find((b: VueWrapper) => b.text() === "plan.layout.all_tools")!
-				.trigger("click");
-			expect(wrapper.find("[data-phone-tools]").exists()).toBe(true);
-		});
-
-		it("saves from a bar above the app's bottom bar while unsaved", async () => {
-			phone();
-			const { wrapper } = await mountView({}, { login: true });
-			expect(wrapper.find("[data-phone-save]").exists()).toBe(false);
-			// the header has no Save button on a phone
-			expect(wrapper.findAllComponents(PlanSaveButton)).toHaveLength(0);
-
-			await emitFrom(wrapper, PlanProduction, "update:building:amount", 0, 5);
-
-			const bar = wrapper.find("[data-phone-save]");
-			expect(bar.exists()).toBe(true);
-			expect(
-				bar.findComponent(PlanSaveButton).props("modified")
-			).toBe(true);
-		});
 	});
 });

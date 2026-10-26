@@ -22,26 +22,17 @@ editor UI. The engine is documented in depth in
 | `usePlanHistory.ts` | Undo/redo for the editor: wraps the handlers so each edit is one step, and owns `modified` (differs from the last save), `savedAt` and `savedSnapshot()` (the base of a save conflict) |
 | `calculations/*.ts` | Wrappers around the engine (bonus, workforce, building), infrastructure lists, extraction, hab LP optimisation |
 | `util/materialIO.util.ts` | Combine and enrich material I/O. Also combines empire I/O (`combineEmpireMaterialIO`, `calculateEmpireCostOverview`, `empireMaterialIOState`) |
-| `planView.util.ts` | `PlanTool` keys, `foldedPanes`, and the Material I/O totals and CSV download (`materialIOTotals`, `materialIOCsv`) |
 | `calcDebug.util.ts` / `.types.ts` | Calculation debug: self-checks of a traced run, trace tree, copy as text and JSON. See [Tracing](../planning-engine.md#tracing) |
 
 ## Components
 
-- **Editor panes** (`components/`) are wired together by `PlanView.vue`,
-  three panes under a sticky `PlanResultsBar` (profit, payback, profit per
-  area, area, storage): `PlanBase` (Base: `PlanConfiguration`,
-  `PlanBonuses`, `PlanArea`, `PlanWorkforce`, `PlanInfrastructure`,
-  `PlanExperts` in foldable `<details>` sections), `PlanProduction` (→
-  `PlanProductionBuilding` → `PlanProductionRecipe`, and the inline
-  `PlanRecipePicker`) and `PlanMaterialIO`. `PlanToolTabs` switches a tool
-  in place of `PlanProduction`; `planView.util.ts` (`foldedPanes`) says
-  which side panes fold to a strip for which tool. The picker's ordering and
-  dependency note are pure functions in `recipePicker.util.ts`. Tools load
-  lazily inside a `Suspense` with `PlanToolFallback` (a delayed spinner).
-- **Header**: `PlanSaveButton` (Create/Save with its state: unnamed,
-  saving, failed, unsaved, saved; also in a bar above the phone's bottom
-  bar) and `PlanMoreMenu` (Save as copy and Reload on the user's own saved
-  plan, CSV download, Debug).
+- **Editor panels** (`components/`) are wired together by `PlanView.vue`:
+  `PlanConfiguration`, `PlanBonuses`, `PlanArea`, `PlanWorkforce`,
+  `PlanInfrastructure`, `PlanExperts`, `PlanSaveButton`, `PlanProduction` (→
+  `PlanProductionBuilding` → `PlanProductionRecipe`), `PlanMaterialIO`,
+  `PlanOverview`, `PlanStatusBar` and `PlanMoreMenu` (Save as copy, share
+  link, Reload). Tools open from `PlanToolTabs` and load lazily inside a
+  `Suspense` with `PlanToolFallback` (a delayed spinner).
 - **Tools** (`components/tools/`) are extra panels on the plan page:
   - `PlanCOGM` / `PlanCOGMTable` (opened from a recipe row's COGM button,
     and from the ROI overview's `COGMButton`, not a tool tab): cost of
@@ -76,7 +67,7 @@ editor UI. The engine is documented in depth in
       its own plan view does: its first empire and that empire's CX
       preference.
 - **Calculation debug** (`components/debug/PlanCalcDebug.vue`, English
-  only): with `?debug=calc` the Debug item of `PlanMoreMenu` (or
+  only): with `?debug=calc` a Debug button at the end of the tool tabs (or
   Ctrl/⌘ + \`) docks a terminal-style log of every engine step under the
   plan, like `ResourceROIChartDrawer` (shared `ui/useDockHeight`). Phase
   sections start collapsed (a filter or Issues only opens them); a `plan`
@@ -105,14 +96,12 @@ editor UI. The engine is documented in depth in
 - **A shared plan is the viewer's working copy** (`shared`): editable like
   a new plan, never saved over the owner's. See
   [sharing.md](sharing.md). Optional props compare it with the shared
-  version: `compare` on `PlanResultsBar`, `changes` on
+  version: `compare` on `PlanStatusBar` and `PlanOverview`, `changes` on
   `PlanProduction` (marks per building and recipe row, removed buildings
   struck through).
-- **Recipe rows show inputs → outputs.** A click opens `PlanRecipePicker`
-  under the row (change) or under "+ Recipe" (add); one picker at a time
-  (`PlanProduction` holds which). A pick commits at once and `PlanView`
-  shows a status line with Undo under the row; read-only plans don't open
-  it.
+- **Recipe rows show their inputs** when another recipe of the building has
+  the same outputs (`hasOutputTwin`, `recipeOutputs.util.ts`). The recipe
+  popover always opens; read-only, a click on an option does nothing.
 - **`disabled` means read-only**. Panels hide what only
   makes sense while editing (add building, add or delete recipe, recipe
   picker, empire, amount steppers) instead of greying it out. Inputs that

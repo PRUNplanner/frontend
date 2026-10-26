@@ -35,60 +35,6 @@ describe("PlanToolTabs", () => {
 
 		await wrapper.findAll("button")[1].trigger("click");
 		await wrapper.findAll("button")[2].trigger("click");
-		expect(component.emitted("toggle")).toEqual([
-			["popr"],
-			["supply-cart"],
-		]);
-	});
-
-	// a strip 300 px wide showing 300 of 600 px of tabs
-	function overflow(nav: HTMLElement, scrollLeft = 0) {
-		Object.defineProperty(nav, "clientWidth", {
-			value: 300,
-			configurable: true,
-		});
-		Object.defineProperty(nav, "scrollWidth", {
-			value: 600,
-			configurable: true,
-		});
-		nav.scrollLeft = scrollLeft;
-	}
-
-	it("fades the edge where tabs are cut off", async () => {
-		const { wrapper } = await mountComponent(PlanToolTabs, {
-			tabs,
-			active: "popr",
-			label: "Plan tools",
-		});
-		const nav = wrapper.find("nav");
-		expect(nav.attributes("data-fade")).toBeUndefined();
-
-		overflow(nav.element);
-		await nav.trigger("scroll");
-		expect(nav.attributes("data-fade")).toBe("right");
-		expect(nav.attributes("style")).toContain("to left");
-
-		overflow(nav.element, 150);
-		await nav.trigger("scroll");
-		expect(nav.attributes("data-fade")).toBe("both");
-	});
-
-	it("scrolls an overflowing strip with the mouse wheel", async () => {
-		const { wrapper } = await mountComponent(PlanToolTabs, {
-			tabs,
-			active: "popr",
-			label: "Plan tools",
-		});
-		const nav = wrapper.find("nav");
-
-		await nav.trigger("wheel", { deltaY: 100 });
-		expect(nav.element.scrollLeft).toBe(0);
-
-		overflow(nav.element);
-		await nav.trigger("wheel", { deltaY: 100 });
-		expect(nav.element.scrollLeft).toBe(100);
-		// a sideways swipe is left to the browser
-		await nav.trigger("wheel", { deltaY: 10, deltaX: 40 });
-		expect(nav.element.scrollLeft).toBe(100);
+		expect(component.emitted("toggle")).toEqual([["popr"], ["supply-cart"]]);
 	});
 });

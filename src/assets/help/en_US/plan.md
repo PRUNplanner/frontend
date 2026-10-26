@@ -1,37 +1,28 @@
-**Layout**
+**Overview**
 
-The plan view reads from left to right: **Base** (set up), **Production** (build) and **Material I/O** (result). The results bar above them stays in view and shows profit per day, payback, profit per area, area and storage.
+The overview is the heart of the plan analysis.  It provides the daily cost of inputs and workforce consumables, as well as the daily production building degradation.  Initial building cost of the plan (including CM) is included and later used to calculate ROI (payback period) on the base.  Daily profit is calculated by subtracting daily costs from the value of each day's output.  Finally, profit per area is the daily profit of the base divided by the area used in the base; importantly, it uses the actual base as a denominator while profit per area of building recipes (more info below) uses a standardized denominator for comparison purposes.
 
-- **Base** holds the empire and prices, the planet (COGC program, permits, Corp HQ, planet resources), workforce with its luxuries, housing and experts. Each section folds; its summary line shows the setting at a glance.
-- **Tools** (Construction, Supply, Visits, Repair, Profit, Plan check, POPR) open in place of the production list. While a tool is open, Base folds to a strip at the left, and for Repair, Profit and Plan check Material I/O folds too. Click a strip to show the pane again; it stays open until you fold it.
-- On narrower screens (below 1360 px with the collapsed sidebar, 1544 px with the full one) Base opens from the "Base" button next to the tabs; on a tablet Material I/O opens from its button at the end of the tabs too. On a phone the tabs under the results switch between Production, Base, Material I/O and Tools, recipes are picked in a sheet from the bottom, and Save sits above the navigation bar while there is something to save.
+- Overview Calculations include the cost for constructing the core module
 
-**Results bar**
 
-- **Profit / day**: the value of the plan's output minus inputs, workforce consumables and building degradation, with revenue and cost below it. Construction includes the core module.
-- **Payback**: the build cost of the plan divided by its profit per day.
-- **Profit / area**: profit per day divided by the area the base uses. It uses the actual base as the denominator, while ȼ / area of a recipe uses a standardized one for comparison. When the empire page has calculated your empire, its average is shown below.
-- **Storage**: days until the base storage is full, from what the base exports per day.
+**Production Buildings**
 
-**Production**
+Each building added to the plan appears in this section.  Users should add a recipe using the +RECIPE button on the top right.  Once selected, that recipe will propagate through the plan and contribute to the Overview at the top and Material I/O on the right.  
 
-Each building has one row: count, efficiency, ȼ per day and area. Click the name to fold its orders. Its orders are listed below it: the amount, the recipe, its runtime, its share of the building's time, its part of the building's ȼ per day (the orders add up to the building), COGM and delete. Deleting asks nothing; Ctrl+Z or the Undo message takes it back.
+When selecting a recipe, a dropdown of that buildings recipes appears.  For each recipe, the inputs, duration, and output are given.  The profit per day (ȼ / Day), profit per area (ȼ / Area), and ROI (payback period) for the building's construction cost are also automatically calculated and displayed.  
 
-**Changing a recipe**
+- Profit per day is the net profit from selling the output at the plan's CX setting minus input, workforce, and depreciation costs. Workforce costs follow the plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.  
+- Profit per area is that profit per day divided by the area of the production building and a proportionate share of the necessary HABs and STOs from the buildings "optimal" layout (used in the Recipe ROI tool).  This is provided to allow a consistent measure of comparative recipe profitability across buildings.
+- ROI is the building cost for this production building divided by the profit per day of the building.  
 
-Click a recipe to open the picker under it, or "+ Recipe" to add one as a new order. Click a row or press Enter to pick it, ↑ and ↓ move through the list, Esc closes it. A line under the row says what changed, with Undo.
 
-- **ȼ / day** is the net profit of one building running only this recipe: the output sold at the plan's CX setting minus inputs, workforce and depreciation. Workforce costs follow the plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing. "vs now" compares it with the recipe it would replace.
-- **ȼ / area** is that profit divided by the area of the building plus a proportionate share of the HABs and STOs of its "optimal" layout (as in the Recipe ROI tool), so recipes compare across buildings.
-- **Payback** is the building's construction cost divided by its profit per day.
-- **Plans here** is the share of plans on the planet with this building that run the recipe.
-- A dot after each input says whether the plan makes it (made here) or buys it (bought). When the plan uses what the recipe you replace makes, a note says how much of it you'd have to buy instead.
+
 
 **Saving and Undo**
 
-Name your plan with the pencil next to its name and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). The text next to Save shows the plan's state: when it was saved, unsaved changes, "Saving…", or a failed save with a retry. Your changes are kept until it succeeds.
+Name your plan in Configuration and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). The Save button shows the plan's state: "Saved" when there is nothing to save (hover it to see when it was last saved), a dot when there are unsaved changes, "Saving…" while it saves, and "Retry save" if a save fails. Your changes are kept until it succeeds.
 
-Every change can be undone with the Undo and Redo buttons next to the name, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). The history covers the last 50 changes and starts fresh after saving or reloading the plan.
+Every change can be undone with the Undo and Redo buttons next to Save, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). Removing a building or recipe, or changing a recipe, also shows a message with an Undo button for a few seconds. The history covers the last 50 changes and starts fresh after saving or reloading the plan.
 
 
 **Plan check**
@@ -58,8 +49,6 @@ A plan's profit assumes every material can be bought and sold at its price, in a
 - Grey, a ring: a note. *All exchanges, no exchange set* (no CX preference, so all exchanges are counted) or *Data older than 2 days*.
 
 Spreads are shown but never flagged.
-
-To watch the shares while you change counts and recipes, switch Material I/O to **%**: each material's Δ as a share of the average daily volume of the last 7 and 30 days, amber from 10 %, red from 50 %.
 
 **What CX volume misses**
 

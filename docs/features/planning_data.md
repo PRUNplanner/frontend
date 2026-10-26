@@ -4,7 +4,7 @@
 blank plan creation, save, reload, the COGC mapping and plan diffs.
 
 **Used by.** `PlanView.vue`, `usePlanningDataLoader` and
-`useResourceROIOverview` (`usePlan`); `PlanBase`, `EmpirePlanList` and
+`useResourceROIOverview` (`usePlan`); `PlanStatusBar`, `EmpirePlanList` and
 `save_conflict/changeLineText.ts` (`cogcTextMapping`);
 `sharing/sharedPlan.util.ts` and `PlanView` (`diffPlan`).
 

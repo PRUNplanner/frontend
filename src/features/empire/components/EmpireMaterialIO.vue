@@ -190,7 +190,7 @@
 			sticky-first
 			@update:expanded-row-keys="updateExpanded">
 			<template #cell-ticker="{ row }">
-				<div class="flex items-center gap-1">
+				<div class="flex flex-wrap items-center gap-1">
 					<MaterialTile
 						:key="row.ticker"
 						:ticker="row.ticker"

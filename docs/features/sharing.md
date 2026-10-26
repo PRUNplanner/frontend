@@ -29,8 +29,8 @@ what-if and check compare reuse `paybackDays`.
   my plans"); visitors get "Sign up to save this" and Login, which open the
   header's login / registration panel through `features/account/useAuthPanel`.
 - **`components/SharedPlanDeltas.vue`**: the copy's profit, ROI, area,
-  workforce and building count against the shared version, shown under
-  `PlanResultsBar`.
+  workforce and building count against the shared version, shown by
+  `PlanStatusBar` and `PlanOverview`.
 - **`sharedPlan.util.ts`** (types in `sharedPlan.types.ts`):
   `toWorkingCopy` (drops uuid, empires and save version), `isOwnPlan`,
   `paybackDays` (Infinity when it never pays back),
