@@ -21,7 +21,7 @@ Node 26 (see `.nvmrc`) and pnpm 10.
 | One test file | `pnpm vitest run src/tests/features/cx/usePrice.test.ts` |
 | Component tests (own CI job on PRs) | `pnpm test:components` |
 | Combined coverage (what Codacy gets) | `pnpm test:coverage` (about 7 minutes, writes `coverage/lcov.info`) |
-| Benchmarks (planning engine) | `pnpm vitest bench --run` |
+| Benchmarks (planning engine) | `pnpm vitest bench --run --reporter=verbose` |
 | Type check | `pnpm tsc` (vue-tsc, app and tests) |
 | Lint | `pnpm lint` / `pnpm lint:fix` |
 | Unused exports/files | `pnpm knip` |

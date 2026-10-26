@@ -1,4 +1,5 @@
-import { bench, describe, vi } from "vitest";
+import { describe, vi } from "vitest";
+import { bench } from "@/tests/bench";
 
 // Engine
 import { usePlanContext } from "@/features/planning/usePlanContext";

@@ -47,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: blob-unit-${{ matrix.shard }}
-          path: .vitest-reports/
+          path: .vitest/blob/
           include-hidden-files: true
           retention-days: 1
 
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: blob-components-${{ matrix.shard }}
-          path: .vitest-reports/
+          path: .vitest/blob/
           include-hidden-files: true
           retention-days: 1
 
@@ -95,7 +95,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           pattern: blob-*
-          path: .vitest-reports
+          path: .vitest/blob
           merge-multiple: true
       - name: "Merge reports and check thresholds"
         run: pnpm run test:coverage:report

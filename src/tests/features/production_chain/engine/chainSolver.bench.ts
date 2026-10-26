@@ -1,4 +1,5 @@
-import { bench, describe } from "vitest";
+import { describe } from "vitest";
+import { bench } from "@/tests/bench";
 
 // Engine
 import {
