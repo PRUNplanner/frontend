@@ -11,7 +11,7 @@ Tailwind v4, Zod and Vitest. The backend is a separate service at
 
 ## Commands
 
-Node `22.19` (see `.nvmrc`) and pnpm 10.
+Node 26 (see `.nvmrc`) and pnpm 10.
 
 | Task | Command |
 | --- | --- |

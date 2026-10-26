@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:lts-alpine AS build
+FROM --platform=$BUILDPLATFORM node:26-alpine AS build
 WORKDIR /app
 
 # Enable pnpm
