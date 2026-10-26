@@ -5,15 +5,16 @@ it and computes the daily yield and ROI of extracting it there with the
 optimal extractor layout (`RIG`, `EXT` or `COL`).
 
 **Used by.** `views/tools/ResourceROIOverviewView.vue`
-(`/resource-roi-overview`).
+(`/resource-roi-overview`). `production_chain` reuses
+`RESOURCE_MATERIAL_OPTIONS`.
 
 ## Key files
 
 | File | Role |
 | --- | --- |
-| `useResourceROIOverview.ts` | `useResourceROIOverview(cxUuidRef)` provides `calculate(ticker)`, `searchPlanets`, `resultData`, progress refs and `planetNames` |
-| `useResourceROIOverview.types.ts` | `IResourceROIResult` |
-| `components/ResourceROITable.vue`, `ResourceROITableFilters.vue` | UI. It reuses `PlanetPOPRButton` and the `roi_overview` helpers. Inline bars on % Max, Daily Profit and ROI (0–20 d); the nearest exchange's distance bold in its colour |
+| `useResourceROIOverview.ts` | `useResourceROIOverview(cxUuidRef)` provides `calculate(ticker)`, `searchPlanets`, `getPlanetEnvironment`, `planetResults`, `resultData` and progress refs (incl. `progressSearchingPlanets`) |
+| `useResourceROIOverview.types.ts` | `IResourceROIResult` and the chart shapes (`IResourceROIChartPoint`, `IResourceROIChartData`, `IResourceROIInsight`) |
+| `components/ResourceROITable.vue`, `ResourceROITableFilters.vue` | UI. It reuses `PlanetPOPRButton` (`government`) and `COGMButton` (`roi_overview`). Inline bars on % Max, Daily Profit and ROI (0–20 d); the nearest exchange's distance bold in its colour |
 | `components/ResourceROIChartDrawer.vue` | "Chart" drawer: docked under the table in the page flow (non-modal, Esc closes it via `useOverlayLayer`, resizable with `ui/useDockHeight`). `PScatter` of plan ROI against jumps to the nearest or a chosen exchange, zoomed to paybacks within twice the fastest (the rest, no-payback and no-route rows are counted under it), dot size daily profit, colour the exchange, best trade-off line and a generated insight line. Shows the table's filtered rows; a hovered dot highlights and scrolls to its row. The view keeps its open state in localStorage |
 | `resourceROIChart.util.ts` | `roiRowKey`, `nearestExchange`, `roiChartData`, `roiFrontier` (lower ROI and fewer jumps win), `roiInsight` |
 

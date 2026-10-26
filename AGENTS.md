@@ -37,7 +37,9 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
 ```
 
 CI runs `pnpm test:components` (about 3 minutes) on PRs as well. Run it
-too when you touch a component, a view or their tests.
+too when you touch a component, a view or their tests. Both test suites
+run in `coverage.yml` (its `unit` and `components` jobs), which skips PRs
+that only touch docs, Markdown or non-English locales and help pages.
 
 **Coverage.** `coverage.yml` runs the unit and the component/view suites, each in
 parallel shards, merges their vitest blob reports into one
@@ -76,9 +78,9 @@ time.
 3. **Never hard-code user-facing strings.** Add keys to
    `src/locales/en_US/<namespace>.json` only. Crowdin owns every other locale
    folder, so don't edit those. Help pages follow the same rule and live in
-   `src/assets/help/en_US/`. Debug tooling (the `/debug` page,
-   `features/planning/components/debug/`, `lib/debugMode.ts`) is English
-   only by decision.
+   `src/assets/help/en_US/`. Debug tooling (the `/debug` and `/dev/kit`
+   pages, `features/planning/components/debug/`, `lib/debugMode.ts`) is
+   English only by decision.
 4. **Backend calls follow a fixed chain:** a `call*()` function in
    `src/features/api/*.api.ts`, a Zod schema in `src/features/api/schemas/`,
    then a named `defineQuery()` (reads) or `defineMutation()` (writes) in
@@ -93,8 +95,10 @@ time.
    a plan's production, cost or profit numbers uses the pure engine in
    `src/features/planning/engine/`: `usePlanCalculation` in the plan
    editor, `calculatePlan` with a `usePlanContext` context in batch views.
-   Don't duplicate the math. See
-   [docs/planning-engine.md](docs/planning-engine.md).
+   Don't duplicate the math. Lint keeps `planning/engine/` and
+   `production_chain/engine/` free of Vue, Pinia, `@/stores` (except
+   `*.types`) and `@/database`.
+   See [docs/planning-engine.md](docs/planning-engine.md).
 7. **Keep knip green.** It fails on unused exports, files and dependencies,
    so delete dead code instead of leaving it exported.
 8. **Don't mutate shared module state.** This includes `preferenceDefaults`,

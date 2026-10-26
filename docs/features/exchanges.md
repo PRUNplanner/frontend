@@ -12,12 +12,15 @@ folder never changes a price result.
   `?scope=all|<planet>`, none = Overview), which saves with `PatchCX`
   through `useCXSave`.
 - `PlanCOGM` reuses `CXFixedPriceTable`, the label, fixed price and edit
-  utils, and `useExchangePlanData`.
+  utils, and `useExchangePlanData`; `PlanCOGMTable` and `PlanCheckMarket`
+  the labels and `ALL_PLANETS`, the material market card `CX_DOT_COLOR`.
 - `CXPreferenceSelector` is the "pick a CX" dropdown in the tools
   (`ROIOverviewView`, `ResourceROIOverviewView`, `HQUpgradeCalculatorView`,
-  `UpkeepPriceCalculatorView`, profile `UserPreferences`). It shows the
-  user's default CX over its `cxUuid` prop, emits it as `update:cxuuid`
-  and stores a picked CX as the new default.
+  `UpkeepPriceCalculatorView`, profile `UserPreferences`, `FIORepairSettings`,
+  the production chain's `ChainSettings` and `CheckBar`). It shows the
+  user's default CX over its `cxUuid` prop (unless `followDefault` is false,
+  e.g. a CX from a link), emits it as `update:cxuuid` and stores a picked CX
+  as the new default.
 
 ## Key files
 

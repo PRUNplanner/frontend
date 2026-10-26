@@ -9,6 +9,8 @@ and small CX helpers. Every price in the app is resolved by a `PriceBook`
 - Empire opportunities.
 - The ROI tools, the HQ calculator, repair analysis, XIT burn and upkeep.
 - `MaterialTile` and `MarketExplorationView`.
+- The Exchanges page (`features/exchanges`) and the production chain
+  (`production_chain/engine/chainSolver.ts`, `useChainCheck`).
 
 ## Key files
 
@@ -49,7 +51,9 @@ and small CX helpers. Every price in the app is resolved by a `PriceBook`
   - `getPrice(ticker, "BUY" | "SELL")`;
   - `enhanceMaterialIOMaterial(io[])`, which adds a `price` to each
     material I/O row;
-  - `getMaterialIOTotalPrice`.
+  - `getMaterialIOTotalPrice`;
+  - `getPriceBook()`, the book itself, for callers that resolve many prices
+    (repair analysis, FIO repair).
 
   Each call makes sure exchange data is loaded (a no-op once the game data
   loaders ran) and resolves through a price book. The planning engine
@@ -89,5 +93,7 @@ and small CX helpers. Every price in the app is resolved by a `PriceBook`
 ## Tests
 
 `src/tests/features/cx/priceBook.test.ts`, `marketCheck.util.test.ts`,
-`usePrice.test.ts`, `useCXData.test.ts`, `useCXSave.test.ts`,
-`cxDiff.test.ts`; the flag button is tested through `planning/components/PlanMaterialIO.test.ts`.
+`explainPrice.test.ts`, `priceRegression.test.ts` (every price, source,
+profit and COGM against a snapshot), `usePrice.test.ts`, `useCXData.test.ts`,
+`useCXSave.test.ts`, `cxDiff.test.ts`; the flag button is tested through
+`planning/components/PlanMaterialIO.test.ts`.

@@ -17,10 +17,13 @@ overrides) and prices the remainder.
   - `useFIOStorage().findMaterial` for owned stock;
   - `useMaterialData().materialsMap` for weight and volume.
 
-  It exposes `levelOptions` and the computed material table and totals.
+  It exposes `levelOptions` / `levelOptionsTo`, `hasError`, and the
+  material table (`materialData`, filled by `calculateMaterialData`) and
+  totals.
 - **`useHQUpgradeCalculator.types.ts`**: `IHQLevelRecord` and the result
   types.
 
 ## Tests
 
-`src/tests/features/hq_upgrade_calculator/useHQUpgradeCalculator.test.ts`
+`src/tests/features/hq_upgrade_calculator/useHQUpgradeCalculator.test.ts`;
+the page in `src/tests/views/tools/HQUpgradeCalculatorView.test.ts`.

@@ -5,7 +5,9 @@ the guided tours over a screenshot, the counts and links the page shows,
 and the landing-only button and form styles.
 
 **Used by.** `views/HomepageView.vue`; the styles also by
-`layout/components/HomepageHeader.vue` and the account forms in its panel.
+`layout/components/HomepageHeader.vue` and the account forms in its panel;
+`lib/seo/checkLanding.ts` checks the prerender against the example plan
+and GitHub links.
 
 ## Key files
 
@@ -22,12 +24,14 @@ and the landing-only button and form styles.
   prerendered page has no chunk CSS before the app loads.
 - `components/HomepageMarketToday.vue`: the "Market today" section (lead
   sentence, CX index with 7 / 30 / 90 d chips, top 5 movers, eight sector
-  cards) from `GetMarketSummary` and the UNIVERSE pioneer `GetCXSparklines`
-  call of `/market`'s workforce chart, so `/market` loads neither again.
+  cards) from `GetMarketSummary` (through `market_report`'s
+  `useMarketReport`) and the UNIVERSE pioneer `GetCXSparklines` call of
+  `/market`'s workforce chart, so `/market` loads neither again.
   It is an async chunk: `HomepageView` mounts it through `useInView` once the
   section comes near after a scroll; until then, in the prerender and while
   it loads, `HomepageMarketSkeleton.vue` holds its final size (the shared
-  `market*` size classes in `homepage.constants.ts`). The title and the CTA
+  `market*` size classes in `homepage.constants.ts`; both use
+  `HomepageMarketSectorsHeader.vue`). The title and the CTA
   are in the view, so a failed summary leaves just those. Events:
   `landing:market_click`.
 - `homepageTour.util.ts`: `tourTransform` (translate and scale, clamped so
@@ -52,5 +56,7 @@ and the landing-only button and form styles.
 
 ## Tests
 
-`src/tests/features/homepage/`: the tour math and framing, and the tour's
-timer, pause, reduced motion, visibility and events.
+`src/tests/features/homepage/`: the tour math and framing, the tour's
+timer, pause, reduced motion, visibility and events, and the "Market today"
+section (`components/HomepageMarketToday.test.ts`). The page is in
+`src/tests/views/HomepageView.test.ts`.

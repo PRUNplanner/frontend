@@ -3,13 +3,14 @@
 **Purpose.** A chain planner: the player enters what they want per day
 (several targets) and sees every step with its recipe, buildings and source
 (make, buy, extract), what each unit costs against the CX, what to buy and
-haul, and what the whole chain earns and needs to build.
+haul, and what the whole chain earns and needs to build. Check mode checks
+an existing empire's plans as chains, with findings per base.
 
 **Used by.** `views/tools/ProductionChainView.vue` (`/production-chain`),
 which only gates the data (`WrapperGameDataLoader` with materials, recipes,
 buildings and exchanges; `WrapperPlanningDataLoader load-c-x`) and mounts
-`components/ChainPage.vue`, or `components/check/CheckPage.vue` with
-`?mode=check`.
+`components/ChainPage.vue`, or `components/check/CheckPage.vue` (loaded
+lazily) with `?mode=check`.
 
 ## Key files
 
@@ -181,13 +182,15 @@ the settings; the chain context brings prices, recipes and the planet index.
 - **The check runs only for the user's own empires**: a link with another
   empire shows "This empire isn't yours". Its state lives in the URL
   (`mode=check`, `empire`, `t`, `min`, `setup`, `pay`, `loc`), not in the
-  browser. The plot fields are read when the planet index has them (spec
-  planet-plots); until then every new base shows "plots unknown".
+  browser. The plot fields come from the planet index (`planetPlots`); they
+  are null until the backend's first plots refresh, and a new base on such a
+  planet shows "plots unknown".
 - **Create plans** creates the empire first, then the plans one by one, and
   stops at the first failure without rollback.
 
 ## Tests
 
-`src/tests/features/production_chain/`: solver, layout, extraction and URL
-on the test data (`chain.fixtures.ts` builds a context), components, and
-`src/tests/views/ProductionChainView.test.ts`.
+`src/tests/features/production_chain/`: solver, bases, check, layout,
+extraction and URL on the test data (`chain.fixtures.ts` builds a context),
+`useChainCheck`, components (`check/` too), a solver bench
+(`chainSolver.bench.ts`), and `src/tests/views/ProductionChainView.test.ts`.

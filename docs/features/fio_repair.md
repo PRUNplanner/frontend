@@ -4,6 +4,10 @@
 each FIO base comes due for repair, what repairing costs, what waiting
 costs per day, and one repair flight per base with an "XIT Repair" package.
 
+**Used by.** `views/fio/FIORepairView.vue`, which loads
+`FIORepairOverview` lazily. `PlanRepairAnalysis` reuses
+`isInfrastructureBuilding`.
+
 ## Key files
 
 | File | Role |

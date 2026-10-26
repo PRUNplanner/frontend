@@ -7,7 +7,11 @@ version, copy a change summary for Discord and save it to their own plans.
 The owner's plan is never touched.
 
 **Used by.** `PlanView.vue` (`SharingModal` from the More menu, loaded async) and
-`ManagePlanEmpireAssignments.vue` (`SharingModal`).
+`ManagePlanEmpireAssignments.vue` (`SharingModal`); `PlanView` also shows
+`SharedPlanBanner`, and `PlanResultsBar` renders `SharedPlanDeltas` at its bottom.
+`PlanLoadView.vue` (`/shared/:sharedPlanUuid`) redirects the owner with
+`isOwnPlan`, `usePlanningDataLoader` uses `toWorkingCopy`, and the planning
+what-if and check compare reuse `paybackDays`.
 
 ## Key files
 
@@ -29,6 +33,7 @@ The owner's plan is never touched.
   `PlanResultsBar`.
 - **`sharedPlan.util.ts`** (types in `sharedPlan.types.ts`):
   `toWorkingCopy` (drops uuid, empires and save version), `isOwnPlan`,
+  `paybackDays` (Infinity when it never pays back),
   `planFigures`, `buildingChanges` (per building marks and removed
   buildings, from `diffPlan`) and `buildChangeSummary` (Discord markdown,
   cut to 2000 characters with "…and N more").

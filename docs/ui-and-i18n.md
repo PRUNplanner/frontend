@@ -11,11 +11,13 @@ import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui
 
 The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDataTable`,
 `PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeparator`, `PHoverCard`, `PIcon`,
-`PInput`, `PInputNumber`, `PModal`, `PPopover`, `PProgressBar`, `PSegmented`, `PSelect`,
+`PInput`, `PInputNumber`, `PModal`, `PNotice`, `PPopover`, `PProgressBar`, `PSegmented`, `PSelect`,
 `PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast` (through
 `useToast()`, see "Toasts" below), `PTooltip` and `PValue`, plus
-`useConfirm()` (see "Overlays" below). `PPagination` and `PSelectElement`
-are internal to `PDataTable` and the selects.
+`useConfirm()` (see "Overlays" below). `PConfirmHost` and `PToastHost`
+are exported for `AppProvider.vue` only. `PPagination` and `PSelectElement`
+are internal to `PDataTable` and the selects; `PLayerClose` (the X of
+modals and drawers) is imported by path, not from the barrel.
 
 - **Kit page:** `/dev/kit` (`views/dev/KitView.vue`) shows every component
   in every size, type and state. It exists in `pnpm dev` and in builds with
@@ -41,7 +43,8 @@ are internal to `PDataTable` and the selects.
   buttons closer than about 20 px to each other share the space between
   them, because a hit area never covers a neighbouring control. Text fields and select triggers
   can't take a tap through a pseudo element, so they are 44 px tall there
-  (`pointer-coarse:min-h-11`). Desktop sizes don't change. The UI audit
+  (`pointer-coarse:h-11` on inputs, `pointer-coarse:min-h-11` on select
+  triggers). Desktop sizes don't change. The UI audit
   counts what's left as `smallTargetsTouch`.
 - **Unknown props fail `pnpm tsc`** (`checkUnknownProps` and
   `checkUnknownEvents` in `tsconfig.typecheck.json`). `class`, `style`,
@@ -68,8 +71,8 @@ are internal to `PDataTable` and the selects.
   `label`, one `aria-pressed` button per option in a sunken track, `size`
   24 / 28 px, `block` fills the width (`block="phone"` below `sm` only),
   an option with `disabled: true` can't be picked.
-  Used on `/market`; other pages' `PButton pressed` groups move to it page
-  by page. A single on/off toggle stays `PButton pressed`.
+  Used on `/market`, Production Chains and parts of the plan page; the
+  remaining `PButton pressed` groups move to it page by page. A single on/off toggle stays `PButton pressed`.
 - **Tags:** `<PTag closable @close="…">` adds a remove button named
   "Remove {value}", so tags (and `PSelectMultiple` chips) can be removed
   by keyboard.
@@ -207,6 +210,10 @@ are internal to `PDataTable` and the selects.
     cover cost) with a tooltip slot is `PStackedBar.vue`; a signed bar from a
     shared zero line (own extents left and right, optional value text and a
     `#center` slot) is `PDivergingBar.vue`. Both are plain CSS.
+    Days of runway against red / yellow thresholds are `PRunwayBar.vue`
+    (one bar) and `PStripPlot.vue` (one dot per value, tooltip slot); a
+    profit waterfall is `PWaterfall.vue` (tooltip slot);
+    `MarketExplorationChart.vue` is the candlestick chart.
     Colours come only from `useChartTheme()` (`chartTheme.ts`): polarity,
     warning, muted, ink, grid, axis, tooltip surface, the fixed exchange colours
     (`exchange("AI1")`, tokens `--color-cx-*` in `style.css`) and the four
@@ -218,7 +225,7 @@ are internal to `PDataTable` and the selects.
     `specs/2026-10-13-charts.md`.
   - **Material chips:** `features/material_tile/components/MaterialTile.vue`
     is the standard way to show a material ticker. It is colour-coded by
-    category and has a popover and a market drawer.
+    category and has a market card (`PHoverCard`) and a market drawer.
 
 ## Tables
 
@@ -252,7 +259,9 @@ const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => [
   (`ui/dataTableSort.ts`), the table's own comparison.
 - **Columns:** `width`, `minWidth` (keeps a column from being squeezed; the
   table scrolls sideways instead), `children` for grouped headers,
-  `titleColSpan` to let one title span the next columns.
+  `titleColSpan` to let one title span the next columns. On the table,
+  `stickyFirst` pins the first column (and expand button) while it scrolls
+  sideways, `dense` narrows the cell padding.
 - **Rows:** `rowClick` makes rows clickable and keyboard-operable (Enter,
   Space), `rowClass` adds classes. The `expand` slot adds an expand button
   per row (`expandLabel` names it) and `v-model:expanded-row-keys`.
@@ -321,8 +330,8 @@ Examples: `features/planning/components/PlanMaterialIO.vue`,
 - **Fonts:** Roboto and Roboto Mono are self-hosted via `@fontsource`
   (`main.ts`). Use `font-mono` only for tickers, ids and code.
 - **Other custom colours:** `pp-primary`, `pp-secondary`,
-  `pp-card-header`, `prunplanner` (brand lime), `row`, `row-alternate` and
-  `table-border`. The older `gray-dark`, `pp-border` and `link-primary`
+  `pp-card-header`, `prunplanner` (brand lime), `background`, `dark-gray`,
+  `row`, `row-alternate` and `table-border` (`tailwind.config.js`). The older `gray-dark`, `pp-border` and `link-primary`
   are aliases of `surface`, `line` and `link`; use the token names in new
   code.
 - **Custom variants:** `child:`, `child-hover:` and `not-first:`.

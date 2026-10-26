@@ -7,7 +7,8 @@
 page: the title-row stats, the building list, the detail of the selected
 type and the all-buildings repair list. Intervals start at each type's best
 day and are not saved. With FIO (not on shared plans) it adds the player's
-buildings on the planet and their due dates.
+buildings on the planet and their due dates. `fio_repair` reuses the util
+(`fioRepair.util.ts`, `useFIORepair`) and `IRepairMaterialList`.
 
 ## Key files
 

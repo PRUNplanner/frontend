@@ -4,7 +4,8 @@
 systems. It is used to show how far a planet is from each exchange.
 
 **Used by.** `planet_search` (`planetSearchContext.util.ts`, jumps from
-exchanges and plans via `getJumpsFrom`) and `resource_roi_overview`.
+exchanges and plans via `getJumpsFrom`), `resource_roi_overview`, and the
+production chain (jump counts in `ChainBases` and `CheckFinding`).
 
 ## Key files
 

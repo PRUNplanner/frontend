@@ -38,4 +38,7 @@ calls `connect()` and `disconnect()` from its lifecycle hooks.
 
 ## Tests
 
-`src/tests/features/market_live/cxDetectors.test.ts`
+`src/tests/features/market_live/cxDetectors.test.ts`,
+`useExchangeSSE.test.ts` (plus `useExchangeSSE.bench.ts`) and
+`components/*.test.ts`; the view in
+`src/tests/views/tools/MarketLiveDataView.test.ts`.

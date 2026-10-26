@@ -32,9 +32,19 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 **Composables and types:**
 - `useEmpireForm(data)` keeps an editable copy of an empire's configuration
   and saves it with `PatchEmpire`, sending the version it started from. A
-  save over another tab's newer one opens the save conflict dialog
-  (`conflict`, see [save_conflict](save_conflict.md)); a newer empire from
-  another tab replaces a clean form, or sets `remoteNotice` if it has edits.
+  save over a newer version opens the save conflict dialog
+  (`conflict`, see [save_conflict](save_conflict.md); the lists come from
+  `empireDiff.ts`, `diffEmpire`), a deleted empire sets `remoteNotice`; a
+  newer empire from another tab replaces a clean form, or sets
+  `remoteNotice` if it has edits. `empire.constants.ts` holds the
+  `factionOptions` of its form.
+- `empire.util.ts`: `planResultCacheKey(plan, empire, cx)`, the cache key
+  of an empire-context plan result (`EmpireView`, `useFIORepair`).
+- `useEmpireProfits()`: the plan profits (and profit per area) `EmpireView`
+  last calculated, per empire, for views that never calculate them: the
+  phone plans sheet (`MobileNavBar`) and the plan page's results bar. They
+  count only while the empire's `GetEmpirePlans` entry is cached, so a save
+  drops them.
 - `useProductionOpportunities(empireIO, cxUuid)` works out which recipes
   could use the empire's surplus materials. It prices them with
   `usePrice(...).getPrice(…, "SELL")` and loads its data on mount.
@@ -81,4 +91,6 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 ## Tests
 
 `src/tests/features/empire/useProductionOpportunities.test.ts`,
-`useEmpireForm.test.ts`, and component tests in `components/`.
+`useEmpireForm.test.ts`, `useEmpireProfits.test.ts`, `empireDiff.test.ts`,
+`empire.util.test.ts`, `empireAnalysis.util.test.ts`, `util/`, component
+tests in `components/`, and `src/tests/views/EmpireView.test.ts`.

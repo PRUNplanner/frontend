@@ -1,11 +1,14 @@
 # wrapper
 
-**Purpose.** This folder holds the data-loading gates that almost every view
-wraps its content in. Each gate runs a list of loading steps through the
+**Purpose.** This folder holds the data-loading gates that the data views
+wrap their content in. Each gate runs a list of loading steps through the
 query cache, shows a progress or error screen, and renders its slot only
 when every step has finished.
 
-**Used by.** Nearly every file in `src/views/`.
+**Used by.** The data views in `src/views/` (plan load, empire, manage,
+exchanges, profile, FIO and most tools), plus `PlanetSearchPage` and
+`APIURLBuilder`. The landing, help, account, market report and live views
+load without them.
 
 ## Key files
 
@@ -15,11 +18,13 @@ when every step has finished.
 | `components/WrapperPlanningDataLoader.vue` + `usePlanningDataLoader.ts` | Props `empire-list`, `empire-uuid`, `plan-list`, `planet-natural-id`, `plan-uuid`, `shared-plan-uuid`, `load-c-x`, `cx-uuid` and `load-shared`. Runs the planning queries, which fill `planningStore` |
 | `components/WrapperGenericError.vue` | Shared error panel |
 | `gameDataLoader.types.ts`, `planningDataLoader.types.ts`, `dataLoader.types.ts` | Props, emits, and the `StepConfig` / `StepState` types |
+| `useDelay.ts` | `useDelay(ms)`: true after the delay, so fast loads skip the loading screen (both loaders wait 400 ms; also used by `RenderingProgress` and `PlanToolFallback`) |
 
 ## Behaviour
 
 - **Steps.** Each step config has a `key`, a translated `name`,
-  `enabled()`, `load()` and `onSuccess()`. Only enabled steps run.
+  `enabled()`, `load()` and `onSuccess()`, optionally `dependsOn` (waits
+  for another step's key) and `refreshKey`. Only enabled steps run.
 - **Events.** On success a step emits `data:*` (e.g. `data:materials`,
   `data:empire:plans`), and the loader emits `complete` at the end.
   `WrapperPlanningDataLoader` also emits `update:empireUuid` and
@@ -45,11 +50,13 @@ when every step has finished.
 - **Nest the gates.** Put the planning loader outside the game-data loader
   when the planet list depends on the plans. `EmpireView` passes
   `:load-planet-multiple` computed from the plans.
-- **Coverage** counts this folder except `usePlanningDataLoader.ts`, which
-  its component test covers. Keep its logic thin.
+- **Coverage.** `usePlanningDataLoader.ts` has no unit test; its component
+  test covers it (`pnpm test:coverage` merges both suites). Keep its logic
+  thin.
 
 ## Tests
 
-`src/tests/features/wrapper/useGameDataLoader.test.ts` (`pnpm test`) and
+`src/tests/features/wrapper/useGameDataLoader.test.ts` and
+`useDelay.test.ts` (`pnpm test`), and
 `src/tests/features/wrapper/components/Wrapper*DataLoader.test.ts`
 (`pnpm test:components`, CI runs both).

@@ -5,14 +5,14 @@
 each building and runs each one through the real plan engine.
 
 **Used by.** `views/tools/ROIOverviewView.vue` (`/roi-overview`).
-`optimalProduction` and `COGMButton` are also reused by
-`resource_roi_overview` and the planning engine.
+`optimalProduction` is also used by `resource_roi_overview` and the planning
+engine (`recipeOptions.ts`); `COGMButton` by `resource_roi_overview`.
 
 ## Key files
 
 | File | Role |
 | --- | --- |
-| `useROIOverview.ts` | `useROIOverview(definitionRef, cxUuidRef)` exposes `calculate()`, `resultData`, `progressCurrent`/`progressTotal` and `formatOptimal()` |
+| `useROIOverview.ts` | `useROIOverview(definitionRef, cxUuidRef)` exposes `calculate()` (a newer run supersedes a running one), `calculateItem()`, `resultData`, `progressCurrent`/`progressTotal` and `formatOptimal()` |
 | `assets/optimalProduction.ts` | Static table (`IStaticOptimalProduction[]`) of each building's optimal count plus the habs and storage that fill one base |
 | `useROIOverview.types.ts` | `IROIResult`, `IStaticOptimalProduction` |
 | `components/ROIOverviewTable.vue`, `ROIOverviewTableFilters.vue` | Result table and filters |
@@ -33,10 +33,10 @@ each building and runs each one through the real plan engine.
 ## Gotchas
 
 - **`optimalProduction.ts` is large, hand-maintained data.** Keep it in sync
-  when building data changes. A test validates its shape.
+  when building data changes. A test checks its length (48 buildings).
 - **Prices depend on the CX passed in.**
 
 ## Tests
 
-`src/tests/features/roi_overview/useROIOverview.test.ts` and
-`assets/optimalProduction.test.ts`.
+`src/tests/features/roi_overview/useROIOverview.test.ts`,
+`assets/optimalProduction.test.ts` and `components/ROIOverviewTable.test.ts`.

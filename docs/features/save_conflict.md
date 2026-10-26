@@ -6,7 +6,9 @@ deleted one with 404. This folder shows what happened and lets the user
 choose, so nothing is overwritten silently.
 
 **Used by.** `PlanView`, `useEmpireForm` (`EmpireConfiguration`,
-`EmpireOnboarding`), `useCXSave` (`ExchangesView`, `PlanCOGM`).
+`EmpireOnboarding`), `useCXSave` (`ExchangesView`, `PlanCOGM`);
+`getSaveError` in `usePlan.saveExistingPlan`; `changeLineText` in
+`sharing/sharedPlan.util.ts` (a shared plan's change summary).
 
 ## Key files
 
@@ -17,6 +19,7 @@ choose, so nothing is overwritten silently.
 | `useSaveConflict.ts` | Dialog state; `ask({deleted, options, loadChanges})` resolves with the chosen option, or `null` when closed |
 | `components/SaveConflictDialog.vue` | "Changed in the other tab" and "Your changes", areas changed on both sides highlighted, long lists collapsed |
 | `components/SaveConflictNotice.vue` | Inline "Saved / Deleted in another tab" notice with Reload |
+| `changeLineText.ts` | `changeLineText(line, t, planetName)`: a change line in words (planet names, COGC programs, factions, exchanges as the app names them) |
 
 The diffs live with their type: `planning_data/planDiff.ts`,
 `empire/empireDiff.ts`, `cx/cxDiff.ts`. They are pure and match list items
@@ -40,4 +43,5 @@ by key, never by position, so a reordered list is no change.
 
 `src/tests/features/save_conflict/`, `planning_data/planDiff.test.ts`,
 `empire/empireDiff.test.ts`, `empire/useEmpireForm.test.ts`,
-`cx/cxDiff.test.ts`, `cx/useCXSave.test.ts`.
+`cx/cxDiff.test.ts`, `cx/useCXSave.test.ts`,
+`src/tests/views/PlanView.conflict.test.ts`.

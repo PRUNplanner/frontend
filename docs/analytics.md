@@ -4,7 +4,8 @@ Product analytics go to PostHog, only with the user's consent
 (`useAnalyticsConsent`, see `src/lib/analytics/`). Logged-in users are asked
 once in `AnalyticsConsentDialog`; logged-out visitors in the small
 `AnalyticsConsentBanner` (bottom left, on every page), which the footer's
-"Analytics" link opens again. Both store the same choice in this browser, so
+"Analytics" link (`AnalyticsFooterLink`) opens again; the three live in
+`src/features/analytics/components/`. Both store the same choice in this browser, so
 a visitor who chose is not asked again after logging in. DNT/GPC means no. Code never talks to
 `posthog-js` directly, it uses the typed wrapper in
 `src/lib/analytics/useAnalytics.ts`:
@@ -13,6 +14,7 @@ a visitor who chose is not asked again after logging in. DNT/GPC means no. Code 
 | --- | --- |
 | `trackEvent(name, props)` | one event of the tracking plan below |
 | `trackPlanEdit(props)` | `plan:edit`, debounced (see below) |
+| `flushPlanEdits()` | sends the pending `plan:edit`s now (before a save, on leaving the plan) |
 | `trackPageview(routeName)` | `$pageview`, called by the router only |
 | `trackUser(props)` | person properties |
 | `identifyUser(profile)` / `resetUser()` | login and logout |
@@ -39,7 +41,7 @@ the tables here list the same events; a test
 - A new event fires when the thing happened (after the API call succeeded,
   when the result is on screen), not when the user asked for it. Some
   older events still fire on the click, before their API call:
-  `account:password_*`, `empire:create`, `manage:*`, `exchange:update`, `planet:popr_load`.
+  `account:password_*`, `account:email_verify_request`, `empire:create`, `manage:*`, `exchange:update`, `planet:popr_load`.
 
 ## Events
 

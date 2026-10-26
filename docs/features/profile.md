@@ -4,8 +4,8 @@
 (`/profile`).
 
 **Used by.** `views/ProfileView.vue`, which stacks the sections in this
-order: FIO connection (`#fio`, linked from the repair tools), Account,
-Preferences, Browser storage.
+order: FIO connection (`#fio`, linked from the repair analysis and FIO
+Burn), Account, Preferences, Browser storage.
 
 ## Key files
 
