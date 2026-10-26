@@ -98,13 +98,15 @@ page's HTML, title and canonical on every URL, also on `/market`,
 `/search` and `/imprint-tos`. Google renders JavaScript and gets each page's own title,
 description, canonical or `noindex`. A server that can serve an empty shell
 for the other paths would fix it. Every hard load of another path also
-downloads the hidden landing HTML and its eager hero image.
+downloads the hidden landing HTML, but none of its images or fonts.
 
 ## Updating
 
 - **Counts** (players, plans): `PLAYER_COUNT` and `PLAN_COUNT` in
-  `features/homepage/homepage.constants.ts`, and "6,000" in the description
-  of `index.html` and `homepage.seo.description`.
+  `features/homepage/homepage.constants.ts`, "6,000" in the three
+  descriptions of `index.html` (`description`, `og:description`, the
+  `WebApplication` JSON-LD) and `homepage.seo.description`, and "6,000+"
+  in `lib/seo/checkLanding.ts`.
 - **Share image**: replace `public/images/og/prunplanner.jpg` (1200 × 630,
   under 300 kB). Its alt text is `og:image:alt` in `index.html`.
 - **A new public page**: `meta: { indexable: true }` on its route, a title

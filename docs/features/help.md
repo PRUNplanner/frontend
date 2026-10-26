@@ -5,7 +5,8 @@ localized markdown page, and the getting-started tutorial.
 
 **Used by.**
 - `HelpDrawer` appears in most views: plan, empire, exchanges, manage,
-  search, profile, FIO burn and all tools.
+  search, profile, FIO burn and repair, all tools, and the plan's Plan
+  Check.
 - `HelpTutorial` appears in `HelpView` (`/help`).
 
 ## Key files
@@ -33,4 +34,5 @@ Update it when a release ships user-visible changes.
 
 ## Tests
 
-None.
+`src/tests/features/help/components/HelpDrawer.test.ts` and
+`HelpTutorial.test.ts`; the page in `src/tests/views/HelpView.test.ts`.

@@ -2,6 +2,7 @@ import path from "path";
 import { loadEnv } from "vite";
 import { defineConfig } from "vitest/config";
 import vue from "@vitejs/plugin-vue";
+import pkg from "./package.json";
 
 const alias = { "@": path.resolve(__dirname, "./src") };
 
@@ -11,7 +12,7 @@ export const COMPONENT_TESTS = "src/tests/{**/components,views}/**";
 export default defineConfig({
 	define: {
 		__INDEXEDDB_VERSION__: Date.now(), // force db upgrade each test run
-		__APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+		__APP_VERSION__: JSON.stringify(pkg.version),
 		__BUILD_ID__: JSON.stringify("dev"),
 	},
 	test: {

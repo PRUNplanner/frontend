@@ -85,13 +85,6 @@ const TIERS: WorkforceType[] = [
 const LUX1 = 1 + 1 / 11;
 const LUX2 = 1 + 2 / 13;
 
-/** plot fields the planet index gets with spec planet-plots */
-interface IPlotFields {
-	plots_total?: number | null;
-	plots_used?: number | null;
-	supports_ghost_sites?: boolean | null;
-}
-
 /**
  * A planet's plots, null when unknown
  * @author jplacht
@@ -100,12 +93,11 @@ interface IPlotFields {
  * @returns {ICheckPlots | null} Free and total plots, ghost sites
  */
 export function planetPlots(planet: PlanetSearchIndexEntry): ICheckPlots | null {
-	const p = planet as PlanetSearchIndexEntry & IPlotFields;
-	if (p.plots_total === null || p.plots_total === undefined) return null;
+	if (planet.plots_total == null) return null;
 	return {
-		total: p.plots_total,
-		free: p.plots_total - (p.plots_used ?? 0),
-		ghost: p.supports_ghost_sites === true,
+		total: planet.plots_total,
+		free: planet.plots_total - (planet.plots_used ?? 0),
+		ghost: planet.supports_ghost_sites === true,
 	};
 }
 

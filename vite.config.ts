@@ -27,7 +27,7 @@ const cfPages = !!process.env.CF_PAGES;
 // the deployed version.json to know when a newer build is out
 const buildId =
 	process.env.BUILD_REVISION ||
-	process.env.COMMIT_REF ||
+	process.env.CF_PAGES_COMMIT_SHA ||
 	new Date().toISOString();
 
 export function buildVersion(): Plugin {

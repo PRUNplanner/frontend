@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { exchangesStore } from "@/database/stores";
 import { useExchangeData } from "@/database/services/useExchangeData";
@@ -7,7 +7,7 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 
 describe("useExchangeData", () => {
-	beforeAll(async () => {
+	beforeEach(async () => {
 		// @ts-expect-error
 		await exchangesStore.setMany(exchanges);
 	});

@@ -21,7 +21,9 @@ distances appear without a reload. Saved searches and the other prefs are
 in localStorage, so they work logged out too.
 
 **Used by.** `views/PlanetSearchView.vue` (`/search`).
-`environmentExtras.util.ts` is also used by `resource_roi_overview`.
+`environmentExtras.util.ts` is also used by `resource_roi_overview`;
+`production_chain` reuses `environmentExtras`, `createSearchContext`,
+`encodeSearch`, `SEARCH_CX`, `activeProgram` and `PlanetPlots`.
 
 ## Key files
 
@@ -34,7 +36,7 @@ in localStorage, so they work logged out too.
 | `planetSearchUrl.util.ts` | `encodeSearch` / `decodeSearch`: readable query params, invalid values dropped |
 | `planetSearchLabels.util.ts` | Chip and hint texts with the actual values |
 | `planetSearchChart.util.ts` | `chartData`: the Chart view's X reference (the Distance picks, max jumps over several, else the nearest exchange), Y values (a searched material or fertility), points for the first 300 results and the counts without a route or value; `chartYMaterial` |
-| `usePlanetSearchPrefs.ts` | Saved searches, hidden columns/materials, collapsed panel, last view in localStorage (not `UserPreference`) |
+| `usePlanetSearchPrefs.ts` | Saved searches, hidden columns/materials, shown opt-in columns (`OPT_IN_COLUMNS`: plots), collapsed panel, last view in localStorage (not `UserPreference`) |
 | `useIncrementalRows.ts` | Renders long result lists in steps of 100 rows |
 | `environmentExtras.util.ts` | `environmentExtras(buckets)` → extra building materials with their reason; `planetBuckets(planet)` for a full `Planet`. Mirrors `getPlanetSpecialMaterials` in the plan engine (tested for all combinations) |
 | `components/PlanetSearchPage.vue` | Orchestrates state, url sync (`router.replace` debounced by 300 ms, cancelled when leaving the route, flushed on any other unmount), data loading and layout. The title row and search header paint at once; only the body waits in `WrapperGameDataLoader` |
@@ -44,6 +46,8 @@ in localStorage, so they work logged out too.
 | `components/PlanetSearchList.vue` / `PlanetSearchMatrix.vue` | Result views with sticky header and planet column |
 | `components/PlanetSearchChart.vue` | Chart view: `PScatter` with the best trade-off (`paretoFrontier`), colour by frontier or COGC, a ranked list beside it; click pins, double-click opens a plan |
 | `components/PlanetSearchCompare.vue` | Docked compare tray, desktop only |
+| `components/PlanetSearchResultsBar.vue`, `PlanetSearchColumnsMenu.vue`, `PlanetSearchSortMenu.vue`, `PlanetSearchSortHeader.vue` | Count, view switch, columns and sort chain above the results; the sortable column headers (shift+click adds a tiebreaker) |
+| `planetPlots.util.ts`, `components/PlanetPlots.vue`, `PlanetFullIcon.vue` | `planetPlots(planet)`: free/total plots, full, blocked (full without ghost sites), null while unknown; the plots tag (opt-in column) and the red icon on a planet no new base can settle |
 
 ## Data
 
@@ -57,6 +61,7 @@ in localStorage, so they work logged out too.
 
 `src/tests/features/planet_search/`: engine (including property tests of
 the facet counts on `api_data_planet_search_index.json`, a production-size
-index), url round trip, prefs, labels, the chart data, and a bench
+index), url round trip, prefs, labels, the chart data, plots, incremental
+rows, a reactive bench (`planetSearch.reactive.bench.ts`) and a bench
 (`planetSearch.engine.bench.ts`, budget 50 ms per recompute). Component
 tests in `components/` run with `pnpm test:components`.

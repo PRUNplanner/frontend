@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { flushPromises, RouterLinkStub } from "@vue/test-utils";
 import { createPinia, type Pinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -8,6 +8,7 @@ import axiosSetup from "@/util/axiosSetup";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
+import { useExchangeData } from "@/database/services/useExchangeData";
 import { usePlanningStore } from "@/stores/planningStore";
 import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
 import CXFixedPriceTable from "@/features/exchanges/components/CXFixedPriceTable.vue";
@@ -163,12 +164,13 @@ async function clickText(wrapper: VueWrapper, text: string) {
 const putPayload = () => JSON.parse(mock.history.put.at(-1)!.data);
 
 describe("PlanCOGM", () => {
-	beforeAll(async () => {
+	beforeEach(async () => {
 		axiosSetup();
 		// @ts-expect-error mock data
 		await exchangesStore.setMany(exchanges);
 		await materialsStore.setMany(materials);
 		await useMaterialData().preload();
+		await useExchangeData().preload(true);
 	});
 
 	beforeEach(() => {

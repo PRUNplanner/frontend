@@ -8,6 +8,7 @@ editor UI. The engine is documented in depth in
 - `views/PlanView.vue`, the editor at `/plan/:planetNaturalId/:planUuid?`
   and `/shared/:sharedPlanUuid`.
 - The batch calculation callers: `EmpireView`, `FIOBurnView`,
+  `fio_repair`, `exchanges`, `production_chain` (the empire check),
   `roi_overview` and `resource_roi_overview`.
 
 ## Key files
@@ -17,10 +18,11 @@ editor UI. The engine is documented in depth in
 | `engine/*.ts` | The pure calculation engine, `calculatePlan(input, ctx)`. See [planning-engine.md](../planning-engine.md) |
 | `usePlanContext.ts` | Builds the engine context: game data maps, planet, price book; `getActiveEmpire` |
 | `usePlanCalculation.ts` / `.types.ts` | Vue adapter for the plan editor (synchronous `computed` result), `IPlanResult` and its sub-records. The domain unions (`WorkforceType`, `InfrastructureType`, `ExpertType`, `StorageType`) derive from the enums in `api/schemas/planningData.schemas.ts` |
-| `usePlanCalculationHandlers.ts` | Every edit operation (`handleUpdate*`, `handleCreate*`, `handleDelete*`). Each one mutates `plan.plan_data` |
-| `usePlanHistory.ts` | Undo/redo for the editor: wraps the handlers so each edit is one step, and owns `modified` (differs from the last save) and `savedAt` |
+| `usePlanCalculationHandlers.ts` | Every edit operation (`handleUpdate*`, `handleCreate*`, `handleDelete*`, `handleAdd*`, `handleChange*`, `handleApplyStarterSetup`). Each one mutates `plan.plan_data` |
+| `usePlanHistory.ts` | Undo/redo for the editor: wraps the handlers so each edit is one step, and owns `modified` (differs from the last save), `savedAt` and `savedSnapshot()` (the base of a save conflict) |
 | `calculations/*.ts` | Wrappers around the engine (bonus, workforce, building), infrastructure lists, extraction, hab LP optimisation |
-| `util/materialIO.util.ts` | Combine and enrich material I/O. Also combines empire I/O (`combineEmpireMaterialIO`, `empireMaterialIOState`) |
+| `util/materialIO.util.ts` | Combine and enrich material I/O. Also combines empire I/O (`combineEmpireMaterialIO`, `calculateEmpireCostOverview`, `empireMaterialIOState`) |
+| `planView.util.ts` | `PlanTool` keys, `foldedPanes`, and the Material I/O totals and CSV download (`materialIOTotals`, `materialIOCsv`) |
 | `calcDebug.util.ts` / `.types.ts` | Calculation debug: self-checks of a traced run, trace tree, copy as text and JSON. See [Tracing](../planning-engine.md#tracing) |
 
 ## Components
@@ -34,10 +36,16 @@ editor UI. The engine is documented in depth in
   `PlanRecipePicker`) and `PlanMaterialIO`. `PlanToolTabs` switches a tool
   in place of `PlanProduction`; `planView.util.ts` (`foldedPanes`) says
   which side panes fold to a strip for which tool. The picker's ordering and
-  dependency note are pure functions in `recipePicker.util.ts`.
+  dependency note are pure functions in `recipePicker.util.ts`. Tools load
+  lazily inside a `Suspense` with `PlanToolFallback` (a delayed spinner).
+- **Header**: `PlanSaveButton` (Create/Save with its state: unnamed,
+  saving, failed, unsaved, saved; also in a bar above the phone's bottom
+  bar) and `PlanMoreMenu` (Save as copy and Reload on the user's own saved
+  plan, CSV download, Debug).
 - **Tools** (`components/tools/`) are extra panels on the plan page:
-  - `PlanCOGM` / `PlanCOGMTable`: cost of goods manufactured, also
-    without a CX (Universe prices); input price sources link to the rule
+  - `PlanCOGM` / `PlanCOGMTable` (opened from a recipe row's COGM button,
+    and from the ROI overview's `COGMButton`, not a tool tab): cost of
+    goods manufactured, also without a CX (Universe prices); input price sources link to the rule
     in Exchanges, and the prices panel sets the all-planets buy price to
     the COGM ("Use as buy price", "Update to <COGM>") with the shared
     `CXFixedPriceTable` and save bar;
@@ -68,7 +76,7 @@ editor UI. The engine is documented in depth in
       its own plan view does: its first empire and that empire's CX
       preference.
 - **Calculation debug** (`components/debug/PlanCalcDebug.vue`, English
-  only): with `?debug=calc` a Debug button at the end of the tool tabs (or
+  only): with `?debug=calc` the Debug item of `PlanMoreMenu` (or
   Ctrl/⌘ + \`) docks a terminal-style log of every engine step under the
   plan, like `ResourceROIChartDrawer` (shared `ui/useDockHeight`). Phase
   sections start collapsed (a filter or Issues only opens them); a `plan`
@@ -117,5 +125,8 @@ editor UI. The engine is documented in depth in
 
 ## Tests
 
-`src/tests/features/planning/` covers the engine, handlers, precomputes,
-`calculations/*` and `util/`.
+`src/tests/features/planning/` covers the engine, the adapter (with the
+characterization snapshots and benchmarks, see
+[planning-engine.md](../planning-engine.md#tests-and-benchmarks)), handlers,
+history, `calculations/*`, `util/` and the components.
+`src/tests/views/PlanView*.test.ts` cover the page (save, conflict, shared).

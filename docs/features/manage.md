@@ -1,7 +1,8 @@
 # manage
 
 **Purpose.** This folder powers the management page (`/manage`). It covers:
-- creating, renaming and deleting **empires**;
+- creating and deleting **empires** (renaming is on the Empire page,
+  `empire/components/EmpireConfiguration.vue`);
 - creating and deleting **CX preferences**, and assigning them to empires;
 - assigning **plans to empires** in bulk (plus clone, delete and share
   actions).
@@ -12,7 +13,7 @@
 
 | Component | Role |
 | --- | --- |
-| `ManageEmpire.vue` | Empire CRUD: `CreateEmpire`, `PatchEmpire`, `DeleteEmpire`, and the CX select per empire. Exposes `changedCount`, `save()` (`PatchEmpireCXJunctions`) and `discard()` to the save bar |
+| `ManageEmpire.vue` | Empire list, create and delete: `CreateEmpire`, `DeleteEmpire`, and the CX select per empire. Exposes `changedCount`, `save()` (`PatchEmpireCXJunctions`) and `discard()` to the save bar |
 | `ManageCX.vue` | CX create and delete: `CreateCX`, `DeleteCX` |
 | `ManagePlanEmpireAssignments.vue` | Plan↔empire matrix: toolbar (search, "In empire", unassigned only), sortable plain table (cards below `md`), one ⋯ `PDropdown` (`ClonePlan`, `SharingModal`, `DeletePlan`), a select box per row and one in the header for all shown rows, deleted together after one confirm (one `DeletePlan` each, failed ones stay selected). Exposes `changes`, `save()` (`PatchEmpirePlanJunctions`) and `discard()` |
 | `ManageAssignmentRow.vue` / `ManageAssignmentCard.vue` | One plan as table row / card. Cell state arrives as one string (`cells`), so a toggle re-renders only that row. The ⋯ menu button is a plain `<button>` with an inline SVG, cheap in every row |
@@ -31,7 +32,8 @@
 - CX selects and matrix cells are local edits until **Save changes** in
   the bar (`ManageView`). It saves CX first, then plans, each only with
   changes; a part that succeeded has nothing left to send on Retry.
-- `ManageView` guards route leave and `beforeunload` while dirty.
+- `ManageView` guards route leave and `beforeunload` while dirty
+  (`lib/useUnsavedGuard.ts`).
 - Create/delete/clone still save at once. The reload that follows
   re-applies pending edits (`rebase` for the matrix, the same idea for CX
   selects), dropping edits of deleted plans or empires.

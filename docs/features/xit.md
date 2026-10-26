@@ -7,7 +7,8 @@ PRUNplanner only produces the JSON. It never talks to the game.
 **Used by.**
 - The FIO burn table.
 - The plan tools: supply cart, construction cart and repair analysis.
-- The HQ upgrade calculator.
+- The HQ upgrade calculator, the FIO repair base panel and the production
+  chain buy list (`ChainBuyList`, `useXITAction` directly).
 - Profile `UserPreferences`, which sets the default origin and "buy from CX".
 
 ## Key files
@@ -26,8 +27,11 @@ PRUNplanner only produces the JSON. It never talks to the game.
   match the consuming tool.
 - **A buy action is only added** when `buy` is true and the origin station
   maps to a CX.
+- **The action name is sanitised** to `PRUNplanner <name>` with only
+  letters, digits, spaces, `.` and `-` (refined-prun's XIT ACT rejects
+  others). The `MTRA` action sets `noSfc`.
 
 ## Tests
 
-`src/tests/features/xit/useXITAction.test.ts`, `useXITBurnAction.test.ts`
-and `xitConstants.test.ts`.
+`src/tests/features/xit/useXITAction.test.ts`, `useXITBurnAction.test.ts`,
+`xitConstants.test.ts` and `components/*.test.ts`.

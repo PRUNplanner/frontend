@@ -18,6 +18,10 @@ pnpm test:coverage                          # unit + component tests, one merged
 - **Naming.**
   - API tests are `*.api.test.ts` under `src/tests/features/api/`.
   - Schema tests are under `src/tests/features/api/schemas/`.
+  - `src/tests/features/api/backendContract.test.ts` pins what the
+    frontend sends and which backend shapes it must accept, which the
+    fixture-based API tests can't notice drifting. Extend it when a
+    request or response shape changes.
 - **Fixtures.** Real backend payloads live in `src/tests/test_data/`:
   `api_data_materials.json`, `api_data_buildings.json`,
   `api_data_recipes.json`, `api_data_exchanges.json`,
@@ -28,8 +32,9 @@ pnpm test:coverage                          # unit + component tests, one merged
 - **Coverage.** Off for `pnpm test`. `pnpm test:coverage` runs the unit
   suite and the component/view suite (v8) and merges both blob reports into
   one `coverage/lcov.info` plus an html report in `coverage/`. That is the
-  report CI uploads to Codacy. Every file in `src/` counts, also the ones
-  without a test; only `src/tests/`, `main.ts`, `*.d.ts` and static data
+  report CI uploads to Codacy (`coverage.yml`: the unit suite in 3 shards,
+  the component suite in 2, then a merge job). Every file in `src/`
+  counts, also the ones without a test; only `src/tests/`, `main.ts`, `*.d.ts` and static data
   (`json`, `css`, `md`) are excluded. Thresholds apply to the merged report.
 
 ## Environment details
@@ -38,9 +43,19 @@ pnpm test:coverage                          # unit + component tests, one merged
   without imports. Most files still import them explicitly from `vitest`.
 - **IndexedDB.**
   - `fake-indexeddb/auto` provides it.
-  - `__INDEXEDDB_VERSION__` is `Date.now()`, and the DB is deleted in a
-    global `beforeEach`.
-  - Seed data yourself in `beforeAll`/`beforeEach`.
+  - `__INDEXEDDB_VERSION__` is `Date.now()`, and a global `beforeEach`
+    empties every store through a short connection of its own
+    (`emptyDB` in `vitest.setup.ts`). The app's cached connection stays
+    open, since a read a previous test left running would fail on a closed
+    one, and the in-memory `useDB` caches are not reset.
+  - Seed data yourself in `beforeEach`: data seeded in `beforeAll` is gone
+    from the second test on.
+- **Per-test reset.** The setup file also clears `localStorage` and
+  `sessionStorage` before each test and calls `vi.useRealTimers()` after
+  it; the config undoes `vi.stubGlobal` / `vi.stubEnv` after each test
+  (`unstubGlobals`, `unstubEnvs`). Node 25+ shadows jsdom's storage with an
+  undefined global: run tests on the `.nvmrc` Node, or stub it with
+  `memoryStorage()` from `src/tests/memoryStorage.ts`.
 - **Env vars.** `import.meta.env` comes from `loadEnv("", "")`.
 - **Type checking.** `pnpm tsc` type-checks tests too, so a mock or
   fixture that drifts from its type fails CI. Type mocks with the real type
@@ -49,7 +64,8 @@ pnpm test:coverage                          # unit + component tests, one merged
   fixtures widen enums to `string`, so cast them (`as PlanEmpireElement[]`).
 - **Type-level tests** live in `*.test-d.ts` (for example
   `src/tests/lib/query_cache/queryRepository.test-d.ts`). `pnpm test` runs
-  them through `vitest --typecheck` with `tsconfig.typecheck.json`, using
+  them through vitest's typecheck mode (`typecheck` in `vitest.config.ts`,
+  with `tsconfig.typecheck.json`), using
   `expectTypeOf` and `// @ts-expect-error`.
 
 ## Patterns
@@ -109,11 +125,13 @@ Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
 ### Characterization snapshots and benchmarks
 
 - `usePlanCalculation.characterization.test.ts` snapshots the full plan
-  result for 11 plans (normalized to 10 significant digits). A changed
+  result for 11 plan cases, through `usePlanCalculation` and straight
+  through the engine (normalized to 10 significant digits). A changed
   snapshot means changed numbers: update with `-u` only on purpose, in its
   own commit.
 - `pnpm vitest bench --run` runs the benchmark files
-  (`*.bench.ts`): single-plan edit -> result latency and batch views. They
+  (`*.bench.ts` under `src/tests/`: plan calculation, query store, `useDB`,
+  production chain solver, planet search, preferences and others). They
   are not part of `pnpm test`. Compare runs on the same, otherwise idle
   machine; note that they are Node + jsdom numbers.
 
@@ -134,7 +152,8 @@ pnpm vitest run --config vitest.components.config.ts src/tests/features/manage
 ```
 
 The glob is `COMPONENT_TESTS` in `vitest.config.ts`; the components config
-spreads the base config and swaps `include`/`exclude`. Logic you extract
+spreads the base config, swaps `include`/`exclude` and raises the test
+and hook timeouts (mounting is slow under coverage). Logic you extract
 from a component into a util belongs in the regular suite, not this one.
 
 Write them for logic-heavy components, see
@@ -144,7 +163,8 @@ Write them for logic-heavy components, see
   from `src/tests/mountComponent.ts`. It renders inside `<Suspense>`
   (async setup), installs a message-less i18n instance, so `t(key)` and
   `$t(key)` render the key itself, stubs `RouterLink`, and unmounts after
-  each test. `withDialog` renders `PConfirmHost` for `useConfirm()`.
+  each test. `withDialog` renders `PConfirmHost` for `useConfirm()`;
+  `messages` (en_US) lets `<i18n-t>` render its slots.
   `setProps` updates props, `component.emitted()` holds emitted events.
 - **Data**: seed fixtures into the IndexedDB stores and preload, as in
   engine tests. Mock the backend with axios-mock-adapter and assert on
@@ -160,6 +180,8 @@ Write them for logic-heavy components, see
 - **Charts**: chart.js has no canvas in jsdom. `vi.mock` the chart
   component with a stub that declares its props, then assert on
   `findComponent(Chart).props()`; see `PlanRepairAnalysis.test.ts`.
+  `switchPalette()` (`src/tests/switchPalette.ts`) flips the colour-blind
+  palette for code that reads `useChartTheme`.
 - **Children** with their own test get the same kind of stub. Assert the
   props you hand them and fire their events with `stub.vm.$emit(...)`; see
   `PlanProduction.test.ts`.
@@ -204,8 +226,9 @@ Some tests used to pass only when run in a particular order. Avoid that:
 - Create a fresh Pinia per file, or per test when state leaks.
 - Don't mutate module-level singletons: `preferenceDefaults`, fixtures, and
   the `useDB` / `useExchangeSSE` module state. Clone first.
-- Use `vi.useFakeTimers()` only when you also restore it with
-  `vi.useRealTimers()`. Undo `vi.stubGlobal` / `vi.stubEnv` too.
+- Fake timers, `vi.stubGlobal` / `vi.stubEnv` and storage are reset between
+  tests (Per-test reset above); undo any other global change yourself
+  (a prototype spy, attributes on `document`).
 - Always `await` async assertions (`await expect(p).rejects…`). A bare
   `expect(x).toBeTruthy` without `()` asserts nothing.
 - Run a single file on its own (`pnpm vitest run <file>`) to confirm it

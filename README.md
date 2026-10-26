@@ -43,6 +43,8 @@ A huge thank you to the following community members who volunteered their time t
 - [Vue3](https://vuejs.org/)
 - [Vite](https://vite.dev/)
 - Typescript
+- [Pinia](https://pinia.vuejs.org/) for global state
+- [Tailwind CSS](https://tailwindcss.com/) v4 for styling
 - [Axios](https://axios-http.com/) for backend calls
 - [Zod](https://zod.dev/) for data validation
 - [Vitest](https://vitest.dev/) as testing framework
@@ -54,7 +56,7 @@ request gets its own preview deployment on Cloudflare Pages.
 
 ## Getting started
 
-Install dependencies with `pnpm install` and run the vite development:
+With Node 22.19 (`.nvmrc`) and pnpm 10, install dependencies with `pnpm install` and run the vite development server:
 
 ```shell
 pnpm run dev
@@ -80,7 +82,6 @@ pnpm run test:components
 
 | Key                               | Type   | Default Value                    |
 | --------------------------------- | ------ | -------------------------------- |
-| VITE_APP_VERSION                  | string | "0.xx"                           |
 | VITE_API_BASE_URL                 | string | "https://api.prunplanner.org"    |
 | VITE_SHARE_BASE_URL               | string | "https://prunplanner.org/shared" |
 | VITE_GAME_DATA_STALE_MINUTES_BUILDINGS | int    | 1440                             |
@@ -94,6 +95,9 @@ pnpm run test:components
 | VITE_GAME_DATA_MAX_AGE_MINUTES_EXCHANGES | int | 30    |
 | VITE_GAME_DATA_WRITE_DELAY_MS | int | 5000 |
 | VITE_INDEXEDDB_DBNAME             | string | "prunplanner"                    |
+| VITE_KIT_PAGE                     | string | unset (`"true"` adds the `/dev/kit` page) |
+
+The app version comes from `version` in `package.json`, not from an env var.
 
 # Build & Run Frontend
 
@@ -114,16 +118,23 @@ docker run -p 80:80 prunplanner-frontend:latest --brotli --port 80
 docker run -p 80:80 ghcr.io/prunplanner/prunplanner-frontend:latest --brotli --port 80
 ```
 
-Or use it with Docker Compose in your `docker-compose.yaml`:
+Or use it with Docker Compose, as in the repo's `docker-compose.yaml`:
 
 ```yaml
 services:
     frontend:
         image: ghcr.io/prunplanner/prunplanner-frontend:latest
         container_name: prunplanner-frontend
-        command: --port 80 --brotli
+        entrypoint: ["sh", "-c"]
+        command: >
+            "echo \"window.__APP_CONFIG__ = { POSTHOG_KEY: '${POSTHOG_KEY}' }\" > /code/env.js &&
+            /bin/go-http-server --port 80 --brotli"
         ports:
             - "80:80"
+        restart: unless-stopped
 ```
 
-
+`index.html` loads a runtime `/env.js` (`window.__APP_CONFIG__`) for the
+PostHog key; the compose file writes it from `POSTHOG_KEY` before starting
+the server. The plain `docker run` commands above don't write it, so the app
+runs with analytics off.

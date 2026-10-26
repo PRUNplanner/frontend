@@ -11,11 +11,11 @@ const names = (source: string, pattern: RegExp): string[] =>
 describe("tracking plan", () => {
 	const types = names(
 		read("../../../lib/analytics/useAnalytics.types.ts"),
-		/^\t"([a-z]+:[a-z_]+)":/gm
+		/^\t"([a-z_]+:[a-z_]+)":/gm
 	);
 	const documented = names(
 		read("../../../../docs/analytics.md"),
-		/^\| `([a-z]+:[a-z_]+)` \|/gm
+		/^\| `([a-z_]+:[a-z_]+)` \|/gm
 	);
 
 	it("finds the events", () => {
@@ -28,7 +28,7 @@ describe("tracking plan", () => {
 
 	it("names are lowercase category:snake_case", () => {
 		types.forEach((name) =>
-			expect(name).toMatch(/^[a-z]+:[a-z]+(_[a-z]+)*$/)
+			expect(name).toMatch(/^[a-z]+(_[a-z]+)*:[a-z]+(_[a-z]+)*$/)
 		);
 	});
 });

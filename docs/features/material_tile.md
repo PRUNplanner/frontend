@@ -68,8 +68,8 @@ more.
 
 - **Game data must be loaded first.** The tile loads its material on mount,
   so render it inside `WrapperGameDataLoader load-materials`.
-- **Give the tile a unique `key` in lists.** The component enforces this on
-  mount.
+- **Give the tile a unique `key` in lists.** The component warns on mount
+  without one.
 - **`daily` is signed.** Inputs are negative (ROI overview passes them so).
 
 ## Tests

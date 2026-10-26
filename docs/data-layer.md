@@ -15,11 +15,12 @@ component / composable
 
 - `apiService` is a singleton that wraps the **global** axios instance.
   `apiService.client` is public so tests can attach `axios-mock-adapter`.
-  `baseURL` comes from `config.API_BASE_URL`, and GET requests send no-cache
-  headers.
-- **Timeout:** every API call (other origins excepted) fails after 30 s
-  (`API_TIMEOUT_MS`). A timeout is a network error (`status` undefined), so
-  the query cache retries it like any transient failure.
+  `baseURL` comes from `config.API_BASE_URL`.
+- **Request ids and timeout:** every API call (other origins excepted)
+  gets an `X-Request-ID` and an `X-Correlation-ID` (the PostHog session
+  id, else a per-tab id; `src/lib/requestIds.ts`), and fails after 30 s
+  (`API_TIMEOUT_MS`). A timeout is a network error (`status` undefined),
+  so the query cache retries it like any transient failure.
 - **Request methods and validation:**
   - `get(path, responseSchema)` validates the response.
   - `post`, `put` and `patch` take `(path, payload, requestSchema,
@@ -37,6 +38,14 @@ component / composable
     `ApiClientError` (429). Other 4xx (including the 401 of an expired
     refresh token) and discarded responses are not reported. Paths are sent as templates
     (`src/util/pathTemplate.ts`: `/planning/plan/:uuid/`).
+  - A payload that fails its own request schema (nothing was sent) is
+    `ApiRequestValidationError`. A network error is skipped while the
+    browser is offline, and for a read (GET, or a read sent as POST)
+    until the same path fails again within 10 min.
+  - Response validation, 5xx and network errors also go to the backend
+    (`reportClientError` in `src/lib/clientErrors.ts`, `POST
+    /client-errors/`, logged to Axiom): from every user regardless of
+    consent, production builds only, never through `apiService`.
 - **Auth** is handled in `src/util/axiosSetup.ts`, which `ApiService`
   registers once when it is created (before the first request):
   - A request interceptor adds `Authorization: Bearer <userStore.accessToken>`.
@@ -44,10 +53,12 @@ component / composable
     once. A replay that gets a 401 again is not refreshed again: it is
     rejected (or, on a public page after a logout, asked once more without
     the token).
-  - If the refresh fails, or the 401 comes from `/user/refresh/` itself, it
-    calls `logout()`. A route with `meta.requiresAuth` then goes to `/`; a
-    public route (a shared plan) stays, and the failed request is sent once
-    more without the token.
+  - Parallel 401s share one refresh. If the backend refuses it (a 4xx,
+    including a 401 from `/user/refresh/` itself), it calls `logout()`. A
+    route with `meta.requiresAuth` then goes to `/`; a public route (a
+    shared plan) stays, and the failed request is sent once more without
+    the token. A refresh without an answer (network, timeout, 5xx) keeps
+    the session; the next 401 tries again.
   - `logout()` resets the user, planning and query stores and PostHog. The
     next login loads its own profile and preferences again.
   - A response to a request sent logged in, in a session that has since
@@ -83,6 +94,10 @@ component / composable
   - Responses use `z.infer` (the parsed output). Where a caller builds a
     payload and the schema coerces or transforms, use `z.input<typeof …>`.
   - Enums are a `z.enum([...])` with the union type derived from it.
+  - A shape only one feature reads keeps its schema in that feature's
+    `*.schemas.ts` (the CX SSE stream, market exploration), as does data
+    read back from localStorage (saved planet searches, the last
+    production chain).
 - `apiService` infers its types from the schemas:
   `get(path, schema)` returns `z.output<typeof schema>`, and
   `post/put/patch` type the payload as `z.input` of the request schema. Don't
@@ -128,7 +143,8 @@ component / composable
   - `initialData` (optional): a persisted copy for an entry's first read,
     `{ data, fetchedAt } | null`. Skipped by `forceRefetch` and once the
     entry has data; a copy already past `expireTime` is returned and
-    refetched in the background (§4, the game data lists).
+    refetched in the background (§4, the game data lists;
+    `GetMarketSummary` reads localStorage).
 - **Mutations** (`defineMutation({ fetchFn })`) have only a `fetchFn`: no
   key, `expireTime`, `autoRefetch` or `cache`. `execute` runs them outside
   the cache: no entry, no in-flight slot, no dedupe (two calls send two
@@ -168,6 +184,9 @@ component / composable
   - A 10s interval refetches expired `autoRefetch` entries and evicts the
     other expired ones. It pauses while the user is idle (`userActivity`, see
     [features/user_activity.md](features/user_activity.md)).
+    An `autoRefetch` entry whose fetch failed transiently (network error or
+    5xx, `isTransientError`) is retried one `expireTime` after the failure;
+    any other error stops its refresh.
     Batched families are declared as data in `queryBatches.ts`
     (`batchRefresh`): expired `GetPlanet` entries are refetched together in
     one `GetMultiplePlanets` request (or taken from an expiring multiple
@@ -255,8 +274,9 @@ component / composable
     `GetRecipes`, `gameDataQuery`): a tab's first read is the definition's
     `initialData` hook. `readGameData` reads the store's `gamedata_meta`
     row; if it exists and is at most `config.GAME_DATA_MAX_AGE_MINUTES_*`
-    old (exchanges 30 min, the rest 7 days) the rows are preloaded and
-    returned with the entry's timestamp set to `fetchedAt`. Already past
+    old (exchanges 30 min, the rest 7 days) the rows are preloaded and, if
+    their count matches the meta row, returned with the entry's timestamp
+    set to `fetchedAt`. Already past
     the TTL (materials 1–7 days old), the query store refetches it in the
     background at once. No meta row, too old or an IndexedDB error: the
     query waits for the API as before. Exchange prices older than 30
@@ -284,7 +304,7 @@ component / composable
 
 **End-to-end example (materials):**
 
-1. `WrapperGameDataLoader load-materials` runs
+1. `<WrapperGameDataLoader load-materials>` (`useGameDataLoader`) runs
    `queryStore.execute("GetMaterials")`.
 2. The entry has no data: `initialData` reads IndexedDB. A fresh copy is
    returned and the steps below are skipped.
@@ -297,12 +317,14 @@ component / composable
 ## 5. Pinia stores (`src/stores/`)
 
 The stores are setup-style. Persistence uses `pinia-plugin-persistedstate`
-(localStorage) with `persist.pick`.
+(localStorage) with `persist.pick`. The user and planning stores write
+through `lib/persistStorage.ts`: a failed write (quota full) keeps the
+stored value and is reported once per key, and §6 can stop it.
 
 | Store (`id`) | Holds | Persisted keys |
 | --- | --- | --- |
 | `useUserStore` (`prunplanner_user`) | Tokens, profile, preferences (incl. per-plan overrides), locale. Actions: login, refresh, logout, `setLocale` | `accessToken`, `refreshToken`, `profile`, `preferences` |
-| `usePlanningStore` (`prunplanner_planning`) | `plans`, `empires`, `cxs`, `shared` (records keyed by uuid), FIO storage/sites + timestamps | all of those |
+| `usePlanningStore` (`prunplanner_planning`) | `plans`, `empires`, `cxs`, `shared` (records keyed by uuid), FIO storage/sites + timestamp | `plans`, `empires`, `cxs`, `shared` (not FIO storage: too big for the quota, `GetFIOStorage` refetches it on every load) |
 | `useAlertsStore` (`prunplanner_alerts`) | Market-live alert rules | `userAlerts` |
 | `useQueryStore` (`prunplanner_query_store`) | Query cache state | not persisted |
 
@@ -328,9 +350,11 @@ Each tab hydrates the persisted stores once and then keeps its own copy, so
 the tabs of one browser are kept in step explicitly (registered in
 `main.ts`):
 
-- **Planning changes.** Every planning mutation in `planning.queries.ts`
-  invalidates through `changed(prefixes, uuid)`, which also posts
-  `{userId, keys, uuid}` on the `"prunplanner"` `BroadcastChannel`. The
+- **Planning changes.** The planning mutations in `planning.queries.ts`
+  (all but `PatchEmpireState`) invalidate through `changed(prefixes,
+  uuid)`, or invalidate and call `broadcastChange` themselves (shared
+  plans, plan clone and delete). It posts `{userId, keys, uuid}` on the
+  `"prunplanner"` `BroadcastChannel`. The
   user's other tabs run the same `invalidate`, then set `remoteChange`.
   `usePlanningDataLoader` reloads its loaded steps under those keys
   (`refreshKey`) without clearing them and emits `refreshed`; open editors
@@ -362,5 +386,6 @@ the tabs of one browser are kept in step explicitly (registered in
 `config.ts` reads the `VITE_*` env vars (see the README table) and applies
 defaults: the API and share base URLs, the stale minutes for each game-data
 type, the maximum age of an IndexedDB copy a tab renders from
-(`GAME_DATA_MAX_AGE_MINUTES_*`), and the IndexedDB name. The values are frozen when the module is
-imported.
+(`GAME_DATA_MAX_AGE_MINUTES_*`), the delay of the background IndexedDB
+write (`GAME_DATA_WRITE_DELAY_MS`) and the IndexedDB name. The values are
+frozen when the module is imported.

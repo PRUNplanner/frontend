@@ -108,7 +108,6 @@ export function usePlanCalculation(
 
 	const planName: Ref<string | undefined> = toRef(plan.value.plan_name);
 	const data: ComputedRef<PlanData> = computed(() => plan.value.plan_data);
-	const empires: Ref<PlanEmpire[]> = toRef([]);
 	const planEmpires: ComputedRef<PlanEmpire[]> = computed(() =>
 		plan.value.empires ? plan.value.empires : []
 	);
@@ -307,7 +306,6 @@ export function usePlanCalculation(
 		existing,
 		saveable,
 		result,
-		empires,
 		backendData,
 		planEmpires,
 		planName,

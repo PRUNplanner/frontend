@@ -1,7 +1,8 @@
 # Features
 
-One page per `src/features/*` folder. Each page follows the same outline:
-**Purpose**, **Used by**, **Key files**, **Data**, **Gotchas**, **Tests**.
+One page per `src/features/*` folder. Each page starts with **Purpose** and
+**Used by**, then **Key files**, then sections only where they help (**Data**,
+**Gotchas**, or a topic such as solver rules), and ends with **Tests**.
 
 ## Core planning
 
@@ -41,6 +42,7 @@ One page per `src/features/*` folder. Each page follows the same outline:
 | --- | --- |
 | [api](api.md) | Backend `call*()` functions and Zod schemas |
 | [wrapper](wrapper.md) | Data-loading gates used by every view |
+| [save_bar](save_bar.md) | Sticky unsaved-changes bar (Manage, Exchanges, plan COGM prices) |
 | [save_conflict](save_conflict.md) | Dialog when a plan, empire or CX was saved or deleted in another tab |
 | [material_tile](material_tile.md) | The standard material ticker chip |
 | [plan_analytics](plan_analytics.md) | Planet insights box on the plan page |
@@ -50,3 +52,4 @@ One page per `src/features/*` folder. Each page follows the same outline:
 | [profile](profile.md) | Profile page sections |
 | [api_keys](api_keys.md) | Personal API key management |
 | [user_activity](user_activity.md) | Idle detection that throttles background refetching |
+| [analytics](analytics.md) | Consent dialog, banner and footer link (logic in `src/lib/analytics/`) |

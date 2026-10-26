@@ -25,8 +25,8 @@ const { result, overview } = calculatePlan(input, ctx);
 
 - **Pure and synchronous.** Plain data in and out, no Vue, no stores, no
   awaits, and it never mutates its input. An ESLint rule forbids `vue`,
-  `pinia`, `@/stores/*` (except `*.types`) and `@/database/*` imports in
-  `engine/`.
+  `pinia`, `@vue/*`, `@/stores/*` (except `*.types`) and `@/database/*`
+  imports in `engine/` (and in `production_chain/engine/`).
 - **`input: IPlanInput`** is the plan (`plan_data`, `plan_cogc`,
   `plan_corphq`, `plan_permits_used`), the active **empire** (faction bonus)
   and the **CX** uuid, all explicit. `recipeOptions: false` skips recipe
@@ -41,6 +41,8 @@ const { result, overview } = calculatePlan(input, ctx);
 | File | Concern |
 | --- | --- |
 | `calculatePlan.ts` | Orchestration |
+| `engine.types.ts` | `IPlanInput`, `IGameData`, `IPlanContext`, `IPlanCalculation` and the trace types |
+| `trace.ts` | `createPlanTracer`, `tracePriceBook`, `TRACE_PHASES` (see Tracing) |
 | `workforce.ts` | Need vs capacity, satisfaction, luxury consumption |
 | `workforce.constants.ts` | `WORKFORCE_CONSUMPTION_MAP` (re-exported by `workforce.ts`; the market report reads it without the engine) |
 | `area.ts` | Area and permits, infrastructure and storage records |
@@ -132,7 +134,8 @@ which records the first lookup per ticker and type with its source.
 The switch is `lib/debugMode.ts` (`?debug=calc` / `?debug=off` on any
 page, or the `/debug` page; stored in `localStorage.prunplanner_debug`).
 With it on, the plan page shows a Debug button (and Ctrl/⌘ + \`) that
-opens `components/debug/PlanCalcDebug.vue`, loaded lazily.
+opens `components/debug/PlanCalcDebug.vue`, loaded lazily. The button is
+the Debug item of the header's More menu (`PlanMoreMenu`).
 
 ## `usePlanCalculation` (`src/features/planning/usePlanCalculation.ts`)
 
@@ -163,15 +166,16 @@ const calc = usePlanCalculation(
   | `result: ComputedRef<IPlanResult>` | The full result, read-only |
   | `overviewData`, `visitationData` | Derived summaries for `PlanResultsBar` / `PlanVisitationFrequency` |
   | `calculate()` | Calculates once (async, waits for loading) and returns a fresh result |
-  | `calculateOverview(materialIO, production, infrastructure)` | The overview for a result's parts |
+  | `calculateOverview(materialIO, production, infrastructure)` | The overview for a result's parts (async, waits for loading) |
+  | `traceCalculation()` | One traced run for the debug panel, `undefined` until the planet is loaded |
   | `backendData` | The `PlanCreateData` payload for save/create |
   | `existing`, `saveable`, `modified`, `planName`, `planEmpires`, `computedActiveEmpire` | Editor state. `modified` means "differs from the last save or load" |
-  | `undo`, `redo`, `canUndo`, `canRedo`, `markSaved(snapshot?)`, `snapshot`, `savedAt`, `revision`, `isRestoring` | Undo history from `usePlanHistory`. A save passes the `snapshot()` it sent to `markSaved`; `revision` bumps on every new step, undo, redo and save |
+  | `undo`, `redo`, `canUndo`, `canRedo`, `markSaved(snapshot?)`, `snapshot`, `savedSnapshot`, `savedAt`, `revision`, `isRestoring` | Undo history from `usePlanHistory`. A save passes the `snapshot()` it sent to `markSaved`; `savedSnapshot()` is the last saved state, the base of a save conflict and of a shared plan's changes; `revision` bumps on every new step, undo, redo and save |
   | `record(fn)` | Wraps a function so every handler it calls is one undo step (PlanView applies the typical setup and its habs this way) |
   | `handle*` | Mutators from `usePlanCalculationHandlers`, each one an undo step |
 
 `usePlanCalculationHandlers.ts` holds every edit operation (`handleUpdate*`,
-`handleCreate*`, `handleDelete*`), plus `handleApplyStarterSetup` (several buildings, recipes and experts at once). Each one mutates `plan.plan_data`.
+`handleCreate*`, `handleDelete*`, `handleAdd*`, `handleChange*`), plus `handleApplyStarterSetup` (several buildings, recipes and experts at once). Each one mutates `plan.plan_data`.
 `usePlanCalculation` wraps them with `usePlanHistory.ts`: every call becomes
 an undo step (edits made by watchers in the same flush, like hab
 auto-optimisation, join it; typing the plan name is one step), capped at 50
@@ -182,7 +186,8 @@ the new result.
 
 ## Batch calculation
 
-Empire, FIO burn and the ROI overviews call the engine directly:
+Empire, FIO burn, FIO repair, Exchanges, the chain check and the ROI
+overviews call the engine directly:
 
 ```ts
 const { loadGameData, createContext } = usePlanContext();
@@ -255,9 +260,13 @@ aggregated material I/O is pushed back to the backend with
 
 | Caller | How |
 | --- | --- |
-| `views/PlanView.vue` | `usePlanCalculation`. Owns the plan ref and wires the `handle*` functions into the `features/planning/components/Plan*.vue` panels |
+| `views/PlanView.vue` | `usePlanCalculation`. Owns the plan ref and wires the `handle*` functions into the `features/planning/components/Plan*.vue` panels. A shared plan gets a second one for the shared version, to compare against |
+| Plan check tool (`PlanCheckMarket`, `PlanCheckCompare`, `util/whatIf.util.ts`) | Engine with the plan's context: scaled price books, real ask/bid prices, another of the user's plans |
 | `views/EmpireView.vue` | Engine per plan, results cached |
 | `views/fio/FIOBurnView.vue` | Engine per plan, then `useFIOBurn` |
+| `features/fio_repair/useFIORepair.ts` | Engine per candidate plan, keyed by `planResultCacheKey` |
+| `features/exchanges/useExchangePlanData.ts` | Engine once per plan of the empires using a CX preference (Universe prices); edits re-price without recalculating |
+| `features/production_chain/useChainCheck.ts` | Engine per plan of the checked empire |
 | `features/roi_overview/useROIOverview.ts` | Synthetic single-building plans per recipe, one context |
 | `features/resource_roi_overview/useResourceROIOverview.ts` | Synthetic extraction plans per planet (concurrency-limited with `p-limit`) |
 

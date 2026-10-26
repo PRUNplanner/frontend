@@ -20,10 +20,10 @@ dialog that adds and confirms one.
 
 | Component | Calls |
 | --- | --- |
-| `LoginComponent.vue` | `userStore.performLogin(username, password)`, which returns `"ok"`, `"throttled"` (429) or `"failed"`. On `"ok"` it has stored the tokens and loaded the profile, then navigates, first match wins: to `?redirectTo=`, to the panel's `next` (read before the login, since the header and its panel leave on it), stays on a shared plan (`shared-plan`) or Planet Search (`search`, with its query), else to `/empire`. A 429 shows "too many login attempts" instead of the credentials error |
+| `LoginComponent.vue` | `userStore.performLogin(username, password)`, which returns `"ok"`, `"throttled"` (429) or `"failed"`. On `"ok"` it has stored the tokens, started the profile load and loaded the preferences, then navigates, first match wins: to `?redirectTo=`, to the panel's `next` (read before the login, since the header and its panel leave on it), stays on a shared plan (`shared-plan`) or Planet Search (`search`, with its query), else to `/empire`. A 429 shows "too many login attempts" instead of the credentials error |
 | `RegistrationComponent.vue` | `PostUserRegistration` |
 | `VerifyEmailComponent.vue` | `PostUserVerifyEmail`, which returns the result code (`verified`, `already_verified`, `invalid`, `expired`, `no_code`, `throttled`, `error`) and refreshes the profile once confirmed. The route needs a login; the guard sends a logged-out visitor to the login with `redirectTo`, so the emailed link works on any device |
-| `EmailNudgeBanner.vue` | The Empire banner (full view only): `none` (Add email, Not now, Don't remind me) or `unconfirmed` (Enter code, Send new code, Not now). Counts all plans with `GetAllPlans` once it shows |
+| `EmailNudgeBanner.vue` | The Empire banner, above a loaded empire with plans: `none` (Add email, Not now, Don't remind me) or `unconfirmed` (Enter code, Send new code, Not now). Counts all plans with `GetAllPlans` once it shows |
 | `EmailAddDialog.vue` | Email, then code, then done: `PatchUserProfile` with `{email}` only, then `PostUserVerifyEmail`. Opens at `email` or `code`; used by the banner and Profile |
 | `RequestPasswordReset.vue` | `PostUserRequestPasswordReset`, enabled once the email passes the request schema and ignored while a request runs. A 429 shows the throttled message, any other error a generic one |
 | `PasswordReset.vue` | `PostUserPasswordReset`. It turns every error into a message, except a 429, which it rethrows so the component shows the throttled message |
@@ -65,4 +65,7 @@ not the switch).
 The API is covered in `src/tests/features/api/userData.api.test.ts`. Login
 and refresh are covered in `src/tests/stores/userStore.test.ts`, where the
 login navigates in `src/tests/features/account/components/LoginComponent.test.ts`
-(`pnpm test:components`).
+(`pnpm test:components`). Every other component but
+`AuthPanelContext` has a test there too;
+`useAuthPanel.test.ts` and `useEmailNudge.test.ts` are in
+`src/tests/features/account/`.

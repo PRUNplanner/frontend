@@ -17,23 +17,29 @@ The backend proxies the data, and the user links FIO in their profile.
 | --- | --- |
 | `useFIOBurn.ts` | `useFIOBurn(plans, planResults)` computes days of supply per planet from the plan's daily consumption and FIO stock. Its outputs are `planTable` and the burn table |
 | `useFIOStorage.ts` | `storageOptions` (planets / warehouses / ships as grouped select options), `planetStorageId(planet)` (the `PLANET#id` option, only if FIO has storage there) and `findMaterial(ticker)` across all storages |
+| `fioBurn.util.ts` | `burnAxisMax` (3 × the yellow threshold) and `burnSummary` (red, yellow, consumed and produced counts of a plan) |
 | `components/FIOBurnTable.vue`, `FIOBurnPlanTable.vue` | Burn UI, with XIT resupply buttons |
 
 ## Data
 
-- FIO storage and sites live in `planningStore.fio_*` and are persisted.
+- FIO storage and sites live in `planningStore.fio_*`, in memory only (not
+  persisted: too big for the storage quota, and refetched on every app load).
   They are loaded by the `GetFIOStorage` query (`callDataFIOStorage`),
-  which `AppSidebar` (mounted on every screen size) triggers whenever `userStore.fioStatus` is `ok` or
-  `error` (the states that can have stored data, so also when polling turns
-  `syncing` into `ok`) and `PlanConstructionCart` triggers when needed. In
-  every other state the nav drops the query cache, but the persisted
+  which `AppSidebar` (mounted on every screen size) triggers whenever the
+  user has FIO and `userStore.fioStatus` is `ok` or `error` (the states
+  that can have stored data, so also when polling turns `syncing` into
+  `ok`) and `PlanConstructionCart` triggers when needed. In
+  every other state the sidebar drops the query cache, but
   `planningStore.fio_*` stays until logout.
 - The burn view calculates every plan with the planning engine
   (`calculatePlan`, game data loaded once) first, then passes the results
   into `useFIOBurn`.
-- Burn colour thresholds come from the preferences `burnDaysRed`,
-  `burnDaysYellow` and `burnResupplyDays`.
+- Burn colour thresholds come from the preferences `burnDaysRed` and
+  `burnDaysYellow`; the XIT resupply buttons (`XITBurnActionButton`) use
+  `burnResupplyDays`.
 
 ## Tests
 
-`src/tests/features/fio/useFIOBurn.test.ts` and `useFIOStorage.test.ts`.
+`src/tests/features/fio/`: `useFIOBurn.test.ts`, `useFIOStorage.test.ts`,
+`fioBurn.util.test.ts` and `components/`; the page in
+`src/tests/views/fio/FIOBurnView.test.ts`.

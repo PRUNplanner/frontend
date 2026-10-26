@@ -8,8 +8,8 @@
 
 **Used by.**
 - `views/tools/UpkeepPriceCalculatorView.vue` (`/upkeep-price-calculator`).
-- `PlanetPOPRButton` in planet search results and the resource ROI table.
-- `PlanetPOPRTable` in the plan tool `PlanPOPR`.
+- `PlanetPOPRButton` in the resource ROI table (`ResourceROITable`).
+- `PlanetPOPRTable` and `popr.util.ts` in the plan tool `PlanPOPR`.
 
 ## Key files
 
@@ -19,7 +19,8 @@
 | `upkeepCalculations.ts` | Pure functions: `calculatePricePerNeed`, `getBuildingsForNeed`, `getBuildingNeedCount`, `calculateMaterialsForNeed`, and `calculateAllNeeds(getPrice)`, which prices every need's materials and sorts them by price per need |
 | `upkeepCalculations.types.ts` | `UpkeepNeedType`, `IUpkeepBuilding`, `IUpkeepMaterialCalculation` |
 | `components/UpkeepPriceCalculator.vue` | Calculator UI. Passes `usePrice(...).getPrice(ticker, "BUY")` into `calculateAllNeeds` and recalculates when the CX changes |
-| `components/PlanetPOPRButton.vue`, `PlanetPOPRTable.vue` | POPR popup and table, fed by the `GetPlanetLastPOPR` query |
+| `popr.util.ts` | `poprAvailable` (free workers less open jobs, never below 0) and `poprCovers` (whether they cover the plan's need) |
+| `components/PlanetPOPRButton.vue`, `PlanetPOPRTable.vue` | POPR popup and table; the button and `PlanPOPR` fetch the report with the `GetPlanetLastPOPR` query and pass it to the table |
 
 ## Gotchas
 
@@ -30,4 +31,6 @@
 
 ## Tests
 
-`src/tests/features/government/upkeepCalculations.test.ts`
+`src/tests/features/government/`: `upkeepCalculations.test.ts`,
+`popr.util.test.ts` and `components/` (both POPR components and the
+calculator).
