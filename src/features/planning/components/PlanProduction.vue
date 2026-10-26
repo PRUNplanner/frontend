@@ -104,7 +104,11 @@
 			buildingIndex: number,
 			recipeIndex: number
 		): void;
-		(e: "pick:building:recipe", buildingIndex: number, recipeId: string): void;
+		(
+			e: "pick:building:recipe",
+			buildingIndex: number,
+			recipeId: string
+		): void;
 		(
 			e: "apply:starter",
 			setup: IStarterSetup,
@@ -155,7 +159,8 @@
 	// "Start empty" hides the starter card for this view
 	const isStarterDismissed: Ref<boolean> = ref(false);
 	const isEmpty: ComputedRef<boolean> = computed(
-		() => !props.disabled && localProductionData.value.buildings.length === 0
+		() =>
+			!props.disabled && localProductionData.value.buildings.length === 0
 	);
 	const showStarter: ComputedRef<boolean> = computed(
 		() => isEmpty.value && isAvailable.value && !isStarterDismissed.value
@@ -181,7 +186,9 @@
 
 	function dismissStarter(): void {
 		isStarterDismissed.value = true;
-		trackEvent("plan:starter_dismiss", { planet_natural_id: props.planetId });
+		trackEvent("plan:starter_dismiss", {
+			planet_natural_id: props.planetId,
+		});
 	}
 
 	const buildingOptions: ComputedRef<PSelectOption[]> = computed(() =>
@@ -321,19 +328,40 @@
 	<!-- @container: building rows lay out by the panel width (it shares the row
 		with Material I/O on wide screens) -->
 	<div class="@container border border-white/10 rounded overflow-hidden">
+		<!-- the building stats' titles once, over their columns; a narrow
+			panel wraps the stats under the name and titles each one there -->
 		<div
-			class="grid grid-cols-12 text-xs uppercase p-3 bg-white/5 font-bold">
-			<div class="col-span-6">
+			class="flex items-center gap-x-6 px-3 py-3 border-l-2 border-transparent text-xs uppercase bg-white/5 font-bold">
+			<div class="flex-1">
 				{{ $t("plan.components.production.table.building_recipe") }}
 			</div>
-			<div class="hidden xl:block col-span-2">
-				{{ $t("plan.components.production.table.runtime") }}
-			</div>
-			<div class="hidden xl:block col-span-2">
-				{{ $t("plan.components.production.table.share") }}
-			</div>
-			<div class="hidden xl:block col-span-2 text-end">
-				{{ $t("plan.components.production.table.tools") }}
+			<div
+				class="hidden @5xl:flex justify-end gap-x-6 text-right text-muted"
+				data-stat-titles>
+				<span class="w-[5.5rem]">
+					{{
+						$t(
+							"plan.components.production_building.table.efficiency"
+						)
+					}}
+				</span>
+				<span class="w-[6rem]">
+					{{
+						$t("plan.components.production_building.table.revenue")
+					}}
+				</span>
+				<span class="w-[2.5rem]">
+					{{ $t("plan.components.production_building.table.area") }}
+				</span>
+				<span class="w-[7rem]">
+					{{
+						$t(
+							"plan.components.production_building.table.construction"
+						)
+					}}
+				</span>
+				<!-- the delete button's column -->
+				<span v-if="!disabled" class="w-6" />
 			</div>
 		</div>
 		<PlanStarterSetup
@@ -367,7 +395,9 @@
 			data-empty-hint>
 			{{
 				t("plan.production.empty", {
-					select: t("plan.components.production.form.select_placeholder"),
+					select: t(
+						"plan.components.production.form.select_placeholder"
+					),
 				})
 			}}
 		</p>
@@ -381,10 +411,14 @@
 				:cx-uuid="cxUuid"
 				:planet-id="planetId"
 				:change="changes?.buildings[building.name]"
-				:picker="refPicker?.building === index ? refPicker.recipe : undefined"
+				:picker="
+					refPicker?.building === index ? refPicker.recipe : undefined
+				"
 				:material-i-o="materialIO"
 				:buildings="localProductionData.buildings"
-				@open:picker="(recipe: number | null) => openPicker(index, recipe)"
+				@open:picker="
+					(recipe: number | null) => openPicker(index, recipe)
+				"
 				@close:picker="closePicker"
 				@update:building:amount="
 					(index: number, value: number) => {
@@ -442,10 +476,7 @@
 							field: 'recipe_add',
 							planet_natural_id: props.planetId,
 							building_ticker: building.name,
-							...mostPlanned(
-								building.name,
-								recipeId
-							),
+							...mostPlanned(building.name, recipeId),
 						});
 					}
 				"

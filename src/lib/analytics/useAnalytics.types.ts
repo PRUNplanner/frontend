@@ -255,6 +255,11 @@ export interface IAnalyticsEventProperties {
 	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
 	"plan:recipe_picker_open": { mode: "change" | "add" };
 	"plan:recipe_picker_sort": { sort: "daily" | "popular" };
+	"plan:io_view": {
+		source: "all" | "production" | "workforce";
+		filter: "all" | "exports" | "imports";
+		value: "price" | "weight" | "volume" | "share";
+	};
 	"plan:insights_open": { planet_natural_id: string };
 	"plan:starter_show": {
 		planet_natural_id: string;

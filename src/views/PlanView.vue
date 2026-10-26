@@ -64,14 +64,11 @@
 	import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 	const { view: planCheckView } = usePlanCheckView();
 	import { marketCheck } from "@/features/cx/marketCheck.util";
+	import { materialIOTotals } from "@/features/planning/util/materialIO.util";
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { usePlan } from "@/features/planning_data/usePlan";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
-	const {
-		createNewPlan,
-		saveExistingPlan,
-		reloadExistingPlan,
-	} = usePlan();
+	const { createNewPlan, saveExistingPlan, reloadExistingPlan } = usePlan();
 	import { flushPlanEdits, trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { remoteChange } from "@/lib/crossTab";
@@ -122,8 +119,7 @@
 	);
 	// only loaded with calculation debug on
 	const PlanCalcDebug = defineAsyncComponent(
-		() =>
-			import("@/features/planning/components/debug/PlanCalcDebug.vue")
+		() => import("@/features/planning/components/debug/PlanCalcDebug.vue")
 	);
 
 	// UI
@@ -134,20 +130,14 @@
 		PFormItem,
 		PInput,
 		PModal,
+		PSegmented,
 		PSelect,
+		PValue,
 		useToast,
 	} from "@/ui";
 	import type { PSelectOption } from "@/ui/ui.types";
 	const toast = useToast();
-	import {
-		ShoppingBasketSharp,
-		AttachMoneySharp,
-		DataSaverOffSharp,
-		DataObjectRound,
-		UndoSharp,
-		RedoSharp,
-		TerminalOutlined,
-	} from "@vicons/material";
+	import { UndoSharp, RedoSharp, TerminalOutlined } from "@vicons/material";
 	import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 	import { calcDebug } from "@/lib/debugMode";
 
@@ -253,14 +243,12 @@
 		if (refShowCalcDebug.value) trackEvent("debug:calc_open", { source });
 	}
 	// what save sends, with the plan's id, empires and version
-	const calcDebugPlan = computed(
-		(): ICalcDebugPlan => ({
-			uuid: refPlanData.value.uuid,
-			...backendData.value,
-			empires: refPlanData.value.empires,
-			modified_at: refPlanData.value.modified_at,
-		})
-	);
+	const calcDebugPlan = computed((): ICalcDebugPlan => ({
+		uuid: refPlanData.value.uuid,
+		...backendData.value,
+		empires: refPlanData.value.empires,
+		modified_at: refPlanData.value.modified_at,
+	}));
 	const calcDebugMeta = computed(() => ({
 		plan: planName.value || t("plan.name.untitled"),
 		planet: planetData.planet_natural_id,
@@ -288,31 +276,64 @@
 		() => props.shared && modified.value
 	);
 
-	const sharedCompare: ComputedRef<IPlanCompare | undefined> = computed(
-		() =>
-			sharedChanged.value && baselineCalculation
-				? {
-						before: planFigures(
-							baselineCalculation.result.value,
-							baselineCalculation.overviewData.value
-						),
-						after: planFigures(result.value, overviewData.value),
-					}
-				: undefined
+	const sharedCompare: ComputedRef<IPlanCompare | undefined> = computed(() =>
+		sharedChanged.value && baselineCalculation
+			? {
+					before: planFigures(
+						baselineCalculation.result.value,
+						baselineCalculation.overviewData.value
+					),
+					after: planFigures(result.value, overviewData.value),
+				}
+			: undefined
 	);
 
-	const sharedChanges: ComputedRef<IPlanChanges | undefined> = computed(
-		() =>
-			sharedChanged.value
-				? buildingChanges(
-						JSON.parse(savedSnapshot()),
-						JSON.parse(snapshot())
-					)
-				: undefined
+	const sharedChanges: ComputedRef<IPlanChanges | undefined> = computed(() =>
+		sharedChanged.value
+			? buildingChanges(
+					JSON.parse(savedSnapshot()),
+					JSON.parse(snapshot())
+				)
+			: undefined
 	);
 
-	const refMaterialIOShowBasked: Ref<boolean> = ref(false);
-	const refMaterialIOSplitted: Ref<boolean> = ref(false);
+	/*
+	 * Material I/O pane: which flow, which rows and which value per day
+	 */
+	const refIOSource: Ref<"all" | "production" | "workforce"> = ref("all");
+	const refIOFilter: Ref<"all" | "exports" | "imports"> = ref("all");
+	const refIOValue: Ref<"price" | "weight" | "volume" | "share"> =
+		ref("price");
+	// only the user changes these three
+	watch([refIOSource, refIOFilter, refIOValue], ([source, filter, value]) =>
+		trackEvent("plan:io_view", { source, filter, value })
+	);
+
+	const ioRows = computed(() =>
+		refIOSource.value === "production"
+			? result.value.productionMaterialIO
+			: refIOSource.value === "workforce"
+				? result.value.workforceMaterialIO
+				: result.value.materialio
+	);
+	const ioTotals = computed(() => materialIOTotals(ioRows.value));
+
+	const ioSourceOptions = computed<PSelectOption[]>(() => [
+		{ value: "all", label: t("plan.io.source.all") },
+		{ value: "production", label: t("plan.io.source.production") },
+		{ value: "workforce", label: t("plan.io.source.workforce") },
+	]);
+	const ioFilterOptions = computed(() => [
+		{ value: "all" as const, label: t("plan.io.filter.all") },
+		{ value: "exports" as const, label: t("plan.io.filter.exports") },
+		{ value: "imports" as const, label: t("plan.io.filter.imports") },
+	]);
+	const ioValueOptions = [
+		{ value: "price" as const, label: "ȼ" },
+		{ value: "weight" as const, label: "t" },
+		{ value: "volume" as const, label: "m³" },
+		{ value: "share" as const, label: "%" },
+	];
 
 	// Save As modal state
 	const refShowSaveAsModal: Ref<boolean> = ref(false);
@@ -402,7 +423,10 @@
 		planCheckView.value = "market";
 		if (refShowTool.value !== "plan-check") toggleTool("plan-check");
 		setTimeout(() =>
-			refTools.value?.scrollIntoView({ behavior: "smooth", block: "start" })
+			refTools.value?.scrollIntoView({
+				behavior: "smooth",
+				block: "start",
+			})
 		);
 	}
 
@@ -560,7 +584,10 @@
 						empire: computedActiveEmpire.value,
 						cxUuid: refCXUuid.value,
 						planet: planetData,
-						own: userStore.isLoggedIn && !props.disabled && !props.shared,
+						own:
+							userStore.isLoggedIn &&
+							!props.disabled &&
+							!props.shared,
 					},
 					listeners: {},
 				};
@@ -1023,7 +1050,11 @@
 		if (!(e.ctrlKey || e.metaKey)) return;
 		const key: string = e.key.toLowerCase();
 
-		if (e.code === "Backquote" && calcDebug.value && !isTextField(e.target)) {
+		if (
+			e.code === "Backquote" &&
+			calcDebug.value &&
+			!isTextField(e.target)
+		) {
 			e.preventDefault();
 			toggleCalcDebug("shortcut");
 		} else if (key === "s") {
@@ -1110,7 +1141,8 @@
 		]);
 		toastUndo(
 			t("plan.history.recipe_added", {
-				building: refPlanData.value.plan_data.buildings[buildingIndex].name,
+				building:
+					refPlanData.value.plan_data.buildings[buildingIndex].name,
 			})
 		);
 	}
@@ -1461,33 +1493,38 @@
 			<div
 				class="p-3 row-5 col-span-full grid grid-cols-[minmax(0,1fr)] @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
 				<div>
-					<div
-						class="flex flex-row flex-wrap sm:justify-center-safe gap-6 child:max-w-full child:overflow-x-auto">
-						<div>
-							<h2 class="text-white/80 font-bold text-lg pb-3">
-								{{ $t("plan.components.workforce.label") }}
-							</h2>
-							<PlanWorkforce
-								:disabled="disabled"
-								:workforce-data="result.workforce"
-								:planet-natural-id="
-									planetData.planet_natural_id
-								"
-								@update:lux="handleUpdateWorkforceLux" />
-						</div>
-						<div>
-							<PlanOverview
-								:visitation-data="visitationData"
-								:overview-data="overviewData"
-								:area-data="result.area"
-								:compare="sharedCompare">
-								<template #heading="{ text }">
-									<h2
-										class="text-white/80 font-bold text-lg pb-3">
-										{{ text }}
-									</h2>
-								</template>
-							</PlanOverview>
+					<div class="@container">
+						<!-- Workforce on the left half, Overview and Storage share
+							the right; stacked when narrow, tables fill their cell -->
+						<div
+							class="grid grid-cols-1 @4xl:grid-cols-2 gap-6 [&_table]:w-full">
+							<div class="min-w-0">
+								<h2
+									class="text-white/80 font-bold text-lg pb-3">
+									{{ $t("plan.components.workforce.label") }}
+								</h2>
+								<PlanWorkforce
+									:disabled="disabled"
+									:workforce-data="result.workforce"
+									:planet-natural-id="
+										planetData.planet_natural_id
+									"
+									@update:lux="handleUpdateWorkforceLux" />
+							</div>
+							<div class="min-w-0">
+								<PlanOverview
+									:visitation-data="visitationData"
+									:overview-data="overviewData"
+									:area-data="result.area"
+									:compare="sharedCompare">
+									<template #heading="{ text }">
+										<h2
+											class="text-white/80 font-bold text-lg pb-3">
+											{{ text }}
+										</h2>
+									</template>
+								</PlanOverview>
+							</div>
 						</div>
 					</div>
 					<div class="pt-6">
@@ -1517,106 +1554,75 @@
 					</div>
 				</div>
 				<div>
-					<div class="sticky top-12">
-						<h2
-							class="text-white/80 font-bold text-lg pb-3 flex justify-between child:my-auto">
-							<div>
-								{{ $t("plan.components.materialio.label") }}
-							</div>
-							<div class="flex gap-x-3">
-								<PTooltip>
-									<template #trigger>
-										<PButton
-											:aria-label="
-												$t(
-													'plan.components.materialio.buttons.toggle_weight_volume'
-												)
-											"
-											size="sm"
-											type="secondary"
-											@click="
-												refMaterialIOShowBasked =
-													!refMaterialIOShowBasked
-											">
-											<template #icon>
-												<ShoppingBasketSharp
-													v-if="
-														!refMaterialIOShowBasked
-													" />
-												<AttachMoneySharp v-else />
-											</template>
-										</PButton>
-									</template>
-									{{
-										$t(
-											"plan.components.materialio.buttons.toggle_weight_volume"
-										)
-									}}
-								</PTooltip>
-
-								<PTooltip>
-									<template #trigger>
-										<PButton
-											:aria-label="
-												$t(
-													'plan.components.materialio.buttons.toggle_production_workforce'
-												)
-											"
-											size="sm"
-											type="secondary"
-											@click="
-												refMaterialIOSplitted =
-													!refMaterialIOSplitted
-											">
-											<template #icon>
-												<DataObjectRound
-													v-if="
-														!refMaterialIOSplitted
-													" />
-												<DataSaverOffSharp v-else />
-											</template>
-										</PButton>
-									</template>
-									{{
-										$t(
-											"plan.components.materialio.buttons.toggle_production_workforce"
-										)
-									}}
-								</PTooltip>
-							</div>
-						</h2>
-						<template v-if="!refMaterialIOSplitted">
-							<PlanMaterialIO
-								:material-i-o-data="result.materialio"
-								max-height="calc(100dvh - 10rem)"
-								:show-basked="refMaterialIOShowBasked"
-								:checks="marketChecks"
-								@open:plan-check="openPlanCheck" />
-						</template>
-						<template v-else>
-							<h3 class="font-bold pb-3">
-								{{
-									$t(
-										"plan.components.materialio.label_production"
-									)
-								}}
-							</h3>
-							<PlanMaterialIO
-								:material-i-o-data="result.productionMaterialIO"
-								max-height="calc(50dvh - 8rem)"
-								:show-basked="refMaterialIOShowBasked" />
-							<h3 class="font-bold py-3">
-								{{
-									$t(
-										"plan.components.materialio.label_workforce"
-									)
-								}}
-							</h3>
-							<PlanMaterialIO
-								:material-i-o-data="result.workforceMaterialIO"
-								max-height="calc(50dvh - 8rem)"
-								:show-basked="refMaterialIOShowBasked" />
-						</template>
+					<div
+						class="sticky top-12 rounded border border-line bg-(--app-bg)"
+						data-io-pane>
+						<div class="flex items-center gap-2 px-3 pt-3 pb-2">
+							<h2 class="flex-1 font-bold text-white">
+								{{ t("plan.components.materialio.label") }}
+							</h2>
+							<PSelect
+								v-model:value="refIOSource"
+								size="sm"
+								class="w-36"
+								:aria-label="t('plan.io.source.label')"
+								:options="ioSourceOptions" />
+						</div>
+						<div
+							class="flex flex-wrap items-center justify-between gap-x-2 gap-y-2 px-3 pb-2 [&_button]:px-2 [&_button]:min-w-6">
+							<PSegmented
+								v-model:value="refIOFilter"
+								size="sm"
+								:options="ioFilterOptions"
+								:label="t('plan.io.filter.label')" />
+							<PSegmented
+								v-model:value="refIOValue"
+								size="sm"
+								:options="ioValueOptions"
+								:label="t('plan.io.value.label')" />
+						</div>
+						<PlanMaterialIO
+							:material-i-o-data="ioRows"
+							max-height="calc(100dvh - 20rem)"
+							:value="refIOValue"
+							:filter="refIOFilter"
+							:checks="
+								refIOSource === 'all' ? marketChecks : undefined
+							"
+							:market="marketChecks"
+							@open:plan-check="openPlanCheck" />
+						<dl
+							class="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-3 py-2 border-t border-line text-sm tabular-nums">
+							<dt class="text-muted-strong">
+								{{ t("plan.io.exports") }}
+							</dt>
+							<dd class="text-right">
+								<PValue :value="ioTotals.exports" />
+							</dd>
+							<dt class="text-muted-strong">
+								{{ t("plan.io.imports") }}
+							</dt>
+							<dd class="text-right">
+								<PValue :value="ioTotals.imports" />
+							</dd>
+							<template v-if="refIOSource === 'all'">
+								<dt class="text-muted-strong">
+									{{ t("plan.io.degradation") }}
+								</dt>
+								<dd class="text-right">
+									<PValue
+										:value="
+											-overviewData.dailyDegradationCost
+										" />
+								</dd>
+								<dt class="font-medium text-ink-strong">
+									{{ t("plan.io.profit") }}
+								</dt>
+								<dd class="text-right font-medium">
+									<PValue :value="overviewData.profit" />
+								</dd>
+							</template>
+						</dl>
 					</div>
 				</div>
 			</div>

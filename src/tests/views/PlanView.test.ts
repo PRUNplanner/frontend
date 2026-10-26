@@ -380,36 +380,29 @@ describe("PlanView", () => {
 		);
 	});
 
-	it("flips the material I/O between weight/volume and money and splits it", async () => {
+	it("switches the Material I/O's source, filter and value, tracks the view", async () => {
 		const { wrapper } = await mountView();
-		expect(wrapper.findAllComponents(PlanMaterialIO)).toHaveLength(1);
-		expect(wrapper.findComponent(PlanMaterialIO).props("showBasked")).toBe(
-			false
-		);
+		const io = () => wrapper.find("[data-io-pane]");
+		const table = () => wrapper.findComponent(PlanMaterialIO);
+		expect(table().props()).toMatchObject({ value: "price", filter: "all" });
 
-		await wrapper
-			.find(
-				"button[aria-label='plan.components.materialio.buttons.toggle_weight_volume']"
-			)
+		await io()
+			.findAll("button")
+			.find((b) => b.text() === "%")!
 			.trigger("click");
-		expect(wrapper.findComponent(PlanMaterialIO).props("showBasked")).toBe(
-			true
-		);
+		expect(table().props("value")).toBe("share");
+		expect(trackEvent).toHaveBeenCalledWith("plan:io_view", {
+			source: "all",
+			filter: "all",
+			value: "share",
+		});
 
-		await wrapper
-			.find(
-				"button[aria-label='plan.components.materialio.buttons.toggle_production_workforce']"
-			)
+		await io()
+			.findAll("button")
+			.find((b) => b.text() === "plan.io.filter.imports")!
 			.trigger("click");
-		const split = wrapper.findAllComponents(PlanMaterialIO);
-		expect(split).toHaveLength(2);
-		expect(split.every((m) => m.props("showBasked"))).toBe(true);
-		expect(wrapper.text()).toContain(
-			"plan.components.materialio.label_production"
-		);
-		expect(wrapper.text()).toContain(
-			"plan.components.materialio.label_workforce"
-		);
+		expect(table().props("filter")).toBe("imports");
+		expect(io().text()).toContain("plan.io.profit");
 	});
 
 	// -- calculation debug -----------------------------------------------
@@ -950,13 +943,11 @@ describe("PlanView", () => {
 		expect(panel().exists()).toBe(false);
 	});
 
-	it("explains the history and material controls on hover", async () => {
+	it("explains the history controls on hover", async () => {
 		const { wrapper } = await mountView({}, { login: true });
 		const labels = [
 			"plan.history.undo",
 			"plan.history.redo",
-			"plan.components.materialio.buttons.toggle_weight_volume",
-			"plan.components.materialio.buttons.toggle_production_workforce",
 		];
 
 		const tooltips = () =>

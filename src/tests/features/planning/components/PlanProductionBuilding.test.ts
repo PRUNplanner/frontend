@@ -113,17 +113,17 @@ function button(wrapper: VueWrapper, text: string) {
 	return wrapper.findAll("button").find((b) => b.text() === text);
 }
 
-const ADD_RECIPE = "plan.components.production_building.buttons.add_recipe";
+const ADD_RECIPE = "plan.production.add_recipe";
 const PER_BUILDING =
 	"plan.components.production_building.table.construction_per_building";
 
 describe("PlanProductionBuilding", () => {
-	it("shows amount, name and the building figures", async () => {
+	it("shows the ticker tag, name and the building figures", async () => {
 		const { wrapper } = await mountBuilding();
 		const text = wrapper.text();
 
-		expect(text).toContain("3x");
-		expect(wrapper.find("strong").text()).toBe("SME");
+		expect(text).toContain("game.building.SME");
+		expect(wrapper.find(".rounded-control.font-bold").text()).toBe("SME");
 		// 1.3375 * 100
 		expect(text).toContain("133.75 %");
 		expect(text).toContain("2,500.00");
@@ -255,9 +255,9 @@ describe("PlanProductionBuilding", () => {
 		await button(wrapper, ADD_RECIPE)!.trigger("click");
 		expect(component.emitted("close:picker")).toHaveLength(1);
 
-		// the icon-only delete button comes last
-		const buttons = wrapper.findAll("button");
-		await buttons.at(-1)!.trigger("click");
+		await wrapper
+			.find("button[aria-label='common.buttons.delete']")
+			.trigger("click");
 		expect(component.emitted("delete:building")).toEqual([[2]]);
 	});
 
@@ -523,7 +523,7 @@ describe("PlanProductionBuilding", () => {
 	describe("against the shared plan", () => {
 		const badges = (wrapper: VueWrapper) =>
 			wrapper
-				.findAll("span.ml-2.uppercase")
+				.findAll("span.font-bold.uppercase")
 				.map((s) => [s.text(), s.classes()]);
 
 		it("badges what changed", async () => {

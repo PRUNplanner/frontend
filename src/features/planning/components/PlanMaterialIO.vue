@@ -14,7 +14,13 @@
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
-	import { countLevels, flaggedCheck } from "@/features/cx/marketCheck.util";
+	import {
+		countLevels,
+		flaggedCheck,
+		formatShare,
+		MARKET_SHARE_AMBER,
+		MARKET_SHARE_RED,
+	} from "@/features/cx/marketCheck.util";
 
 	import type { PDataTableColumn } from "@/ui/ui.types";
 
@@ -40,42 +46,105 @@
 			required: false,
 			default: undefined,
 		},
-		showBasked: {
+		// value column: ȼ, t or m³ per day, or the share of the market
+		value: {
+			type: String as PropType<"price" | "weight" | "volume" | "share">,
+			required: false,
+			default: "price",
+		},
+		// every material's market check: its traded volumes, for the share
+		market: {
+			type: Object as PropType<Map<string, IMarketCheck>>,
+			required: false,
+			default: undefined,
+		},
+		// a narrow pane drops In and Out
+		compact: {
 			type: Boolean,
-			required: true,
+			required: false,
+			default: false,
+		},
+		// all rows, or only exported (delta > 0) or imported ones
+		filter: {
+			type: String as PropType<"all" | "exports" | "imports">,
+			required: false,
+			default: "all",
 		},
 	});
 
 	// Local State
-	const localMaterialIOData: ComputedRef<IMaterialIO[]> = computed(
-		() => props.materialIOData
-	);
-	const localShowBasked: ComputedRef<boolean> = computed(
-		() => props.showBasked
+	const localMaterialIOData: ComputedRef<IMaterialIO[]> = computed(() =>
+		props.filter === "all"
+			? props.materialIOData
+			: props.materialIOData.filter((r) =>
+					props.filter === "exports" ? r.delta > 0 : r.delta < 0
+				)
 	);
 
 	const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => {
-		const numeric = (key: string, title: string) => ({
+		const numeric = (key: string, title: string, width?: number) => ({
 			key,
 			title: t(`plan.components.materialio.table.${title}`),
 			align: "right" as const,
 			sorter: true as const,
+			width,
 		});
+		const shareColumn = (days: 7 | 30) => ({
+			key: `share${days}d`,
+			title: t(`plan.components.materialio.table.share_${days}d`),
+			align: "right" as const,
+			sorter: (a: IMaterialIO, b: IMaterialIO) =>
+				(share(a, days) ?? -1) - (share(b, days) ?? -1),
+		});
+		// the fixed table shares the width equally: the tile (and its flag)
+		// needs less, the value per day (+2,480,862.73) more
+		if (props.value === "share")
+			return [
+				{ key: "ticker", title: "", sorter: true, width: 84 },
+				numeric("delta", "delta"),
+				shareColumn(7),
+				shareColumn(30),
+			];
 		return [
-			{ key: "ticker", title: "", sorter: true },
-			numeric("input", "input"),
-			numeric("output", "output"),
+			{ key: "ticker", title: "", sorter: true, width: 84 },
+			...(props.compact
+				? []
+				: [numeric("input", "input"), numeric("output", "output")]),
 			numeric("delta", "delta"),
-			...(localShowBasked.value
-				? [
-						numeric("totalWeight", "total_weight"),
-						numeric("totalVolume", "total_volume"),
-					]
-				: [numeric("price", "cost_day")]),
+			props.value === "weight"
+				? numeric("totalWeight", "total_weight", 100)
+				: props.value === "volume"
+					? numeric("totalVolume", "total_volume", 100)
+					: numeric("price", "cost_day", 100),
 		];
 	});
 
 	const flagged = (ticker: string) => flaggedCheck(props.checks, ticker);
+
+	// the row's Δ against the average daily volume of the last 7 or 30
+	// days, in %; null without trades
+	function share(row: IMaterialIO, days: 7 | 30): number | null {
+		const check = props.market?.get(row.ticker);
+		const traded = days === 7 ? check?.traded7d : check?.traded30d;
+		return traded ? (Math.abs(row.delta) / (traded / days)) * 100 : null;
+	}
+
+	const shareClass = (pct: number | null): string =>
+		pct === null
+			? "text-muted"
+			: pct >= MARKET_SHARE_RED
+				? "text-negative"
+				: pct >= MARKET_SHARE_AMBER
+					? "text-warning"
+					: "";
+
+	// the volume exchange of the shares, the same for every material
+	const shareExchange = computed(() => {
+		const exchange = props.market?.values().next().value?.exchange;
+		return !exchange || exchange === "UNIVERSE"
+			? t("cx.market_flags.all_exchanges")
+			: exchange;
+	});
 
 	const summary = computed(() => {
 		if (!props.checks) return undefined;
@@ -93,19 +162,19 @@
 </script>
 
 <template>
-	<!-- numbers never break mid-digit in the narrow side column -->
+	<!-- numbers never break mid-digit in the narrow side column; titles
+		wrap there instead of running into their sort arrows -->
 	<PDataTable
-		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal!"
+		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"
 		striped>
-		<!-- the ticker title is visually empty, as before, but names the sort button -->
 		<template #header-ticker>
-			<span class="sr-only">{{ t("terms.material_ticker") }}</span>
+			{{ t("terms.material_ticker") }}
 		</template>
 		<template #cell-ticker="{ row }">
-			<div class="flex flex-wrap items-center gap-1">
+			<div class="flex items-center gap-0.5 [&_[data-market-flag]]:-mr-2">
 				<MaterialTile
 					:key="`MATERIALIO#MATERIALTILE#${row.ticker}`"
 					:ticker="row.ticker"
@@ -147,8 +216,28 @@
 		<template #cell-totalVolume="{ row }">
 			<PValue :value="row.totalVolume" />
 		</template>
+		<template #cell-share7d="{ row }">
+			<span :class="shareClass(share(row, 7))">
+				{{ formatShare(share(row, 7)) }}
+			</span>
+		</template>
+		<template #cell-share30d="{ row }">
+			<span :class="shareClass(share(row, 30))">
+				{{ formatShare(share(row, 30)) }}
+			</span>
+		</template>
 	</PDataTable>
-	<p v-if="summary" class="pt-2 text-sm text-muted-strong" data-market-summary>
+	<p
+		v-if="value === 'share'"
+		class="px-3 pt-2 text-xs text-muted-strong"
+		data-share-note>
+		{{
+			t("plan.components.materialio.share_note", {
+				exchange: shareExchange,
+			})
+		}}
+	</p>
+	<p v-if="summary" class="px-3 pt-2 text-sm text-muted-strong" data-market-summary>
 		{{ summary }}
 		<button
 			type="button"

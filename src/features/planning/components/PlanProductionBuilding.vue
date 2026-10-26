@@ -31,7 +31,7 @@
 
 	// UI
 	import { PTooltip, PButton, PInputNumber, PValue } from "@/ui";
-	import { ClearSharp, PlusSharp } from "@vicons/material";
+	import { ClearSharp } from "@vicons/material";
 
 	const props = defineProps({
 		disabled: {
@@ -94,7 +94,11 @@
 		): void;
 		(e: "open:picker", recipeIndex: number | null): void;
 		(e: "close:picker"): void;
-		(e: "pick:building:recipe", buildingIndex: number, recipeId: string): void;
+		(
+			e: "pick:building:recipe",
+			buildingIndex: number,
+			recipeId: string
+		): void;
 		(
 			e: "add:building:recipes",
 			buildingIndex: number,
@@ -116,19 +120,24 @@
 	const { typicalRecipes } = usePlanetInsights(() => props.planetId);
 
 	// the planet's typical recipes for an empty building, only ones it can run
-	const typicalMix: ComputedRef<ITypicalRecipes | undefined> = computed(() => {
-		if (props.disabled || localBuildingData.value.activeRecipes.length > 0)
-			return undefined;
-		const typical = typicalRecipes(localBuildingData.value.name);
-		if (!typical) return undefined;
-		const optionIds = new Set(
-			localBuildingData.value.recipeOptions.map((o) => o.recipe_id)
-		);
-		const recipes = typical.recipes.filter((r) =>
-			optionIds.has(r.recipeid)
-		);
-		return recipes.length > 0 ? { ...typical, recipes } : undefined;
-	});
+	const typicalMix: ComputedRef<ITypicalRecipes | undefined> = computed(
+		() => {
+			if (
+				props.disabled ||
+				localBuildingData.value.activeRecipes.length > 0
+			)
+				return undefined;
+			const typical = typicalRecipes(localBuildingData.value.name);
+			if (!typical) return undefined;
+			const optionIds = new Set(
+				localBuildingData.value.recipeOptions.map((o) => o.recipe_id)
+			);
+			const recipes = typical.recipes.filter((r) =>
+				optionIds.has(r.recipeid)
+			);
+			return recipes.length > 0 ? { ...typical, recipes } : undefined;
+		}
+	);
 
 	const typicalMixOutputs: ComputedRef<string[]> = computed(() =>
 		(typicalMix.value?.recipes ?? []).flatMap(
@@ -167,7 +176,7 @@
 
 	// a closed picker gives the focus back to what opened it
 	const recipesRef = useTemplateRef<HTMLElement>("recipes");
-	const addButtonRef = useTemplateRef<{ $el: HTMLElement }>("addButton");
+	const addButtonRef = useTemplateRef<HTMLElement>("addButton");
 	watch(
 		() => props.picker,
 		(now, before) => {
@@ -183,10 +192,10 @@
 					return;
 				const opener =
 					before === null
-						? addButtonRef.value?.$el
-						: recipesRef.value?.querySelectorAll("[data-recipe-button]")[
-								before
-							];
+						? addButtonRef.value
+						: recipesRef.value?.querySelectorAll(
+								"[data-recipe-button]"
+							)[before];
 				(opener as HTMLElement | null | undefined)?.focus();
 			});
 		}
@@ -216,19 +225,42 @@
 		<!-- one line on a wide panel; on a narrow one name, qty and delete
 			stay on top and the stats move below -->
 		<div
-			class="flex-1 min-w-0 @5xl:flex-none @5xl:min-w-32 text-lg font-mono">
-			{{ localBuildingData.amount }}x
-			<strong>{{ localBuildingData.name }}</strong>
+			class="flex-1 min-w-0 @5xl:flex-none @5xl:min-w-56 flex items-center gap-2">
+			<span
+				class="shrink-0 flex items-center justify-center h-6 min-w-11 px-1 rounded-control border border-line-strong bg-surface text-xs font-bold text-ink-strong">
+				{{ localBuildingData.name }}
+			</span>
+			<span class="min-w-0 flex flex-col">
+				<span
+					class="truncate font-medium text-ink-strong"
+					:title="$t(`game.building.${localBuildingData.name}`)">
+					{{ $t(`game.building.${localBuildingData.name}`) }}
+				</span>
+				<!-- expertise and why nothing is produced, the label-free v2 way -->
+				<span class="truncate text-xs" data-building-sub>
+					<span
+						:class="
+							isPlanetCogc ? 'text-positive' : 'text-negative'
+						">
+						{{ isPlanetCogc ? "✓" : "✗" }}
+						{{
+							$t(`game.expertise.${localBuildingData.expertise}`)
+						}}
+					</span>
+					<span v-if="zeroReason" class="text-negative">
+						· {{ $t(zeroReason) }}
+					</span>
+				</span>
+			</span>
 			<span
 				v-for="kind in change?.kinds"
 				:key="kind"
-				class="ml-2 align-middle text-xs font-sans font-bold uppercase"
+				class="text-xs font-bold uppercase"
 				:class="kind === 'added' ? 'text-positive' : 'text-warning'">
 				{{ $t(`sharing.compare.${kind}`) }}
 			</span>
 		</div>
-		<div
-			class="shrink-0 flex items-center gap-x-1">
+		<div class="shrink-0 flex items-center gap-x-1">
 			<span class="text-xs text-muted pr-1">
 				{{ $t("plan.components.production_building.qty") }}
 			</span>
@@ -255,47 +287,15 @@
 						}
 					}
 				" />
-			<PButton
-				v-if="!disabled && localBuildingData.recipeOptions.length > 0"
-				ref="addButton"
-				size="sm"
-				:aria-expanded="picker === null ? 'true' : 'false'"
-				data-add-recipe
-				@click="
-					picker === null ? emit('close:picker') : emit('open:picker', null)
-				">
-				<template #icon><PlusSharp /></template>
-				{{
-					$t("plan.components.production_building.buttons.add_recipe")
-				}}
-			</PButton>
 		</div>
 		<!-- each stat has a fixed width (min-w-max lets a long value grow), so the
 			stats line up in columns from one building to the next -->
 		<div
 			class="order-last basis-full @5xl:order-none @5xl:basis-auto @5xl:flex-1 flex flex-wrap justify-end items-center gap-x-6 gap-y-2 text-white/80">
-			<div class="flex flex-col items-end sm:w-[7.5rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wider">
-					{{
-						$t(
-							"plan.components.production_building.table.expertise"
-						)
-					}}
-				</span>
-				<span class="text-xs">
-					<span
-						:class="
-							isPlanetCogc ? 'text-positive' : 'text-negative'
-						">
-						{{ isPlanetCogc ? "✓" : "✗" }}
-						{{
-							$t(`game.expertise.${localBuildingData.expertise}`)
-						}}</span
-					>
-				</span>
-			</div>
-			<div class="flex flex-col items-end sm:w-[5.5rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wide">
+			<div
+				class="flex flex-col items-end sm:w-[5.5rem] min-w-max text-right">
+				<span
+					class="@5xl:hidden text-xs text-muted uppercase tracking-wide">
 					{{
 						$t(
 							"plan.components.production_building.table.efficiency"
@@ -333,12 +333,11 @@
 						</div>
 					</PTooltip>
 				</span>
-				<span v-if="zeroReason" class="text-xs text-negative">
-					{{ $t(zeroReason) }}
-				</span>
 			</div>
-			<div class="flex flex-col items-end sm:w-[6rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wide">
+			<div
+				class="flex flex-col items-end sm:w-[6rem] min-w-max text-right">
+				<span
+					class="@5xl:hidden text-xs text-muted uppercase tracking-wide">
 					{{
 						$t("plan.components.production_building.table.revenue")
 					}}
@@ -348,16 +347,20 @@
 					<span class="pl-1 font-light text-muted">ȼ</span>
 				</span>
 			</div>
-			<div class="flex flex-col items-end sm:w-[2.5rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wide">
+			<div
+				class="flex flex-col items-end sm:w-[2.5rem] min-w-max text-right">
+				<span
+					class="@5xl:hidden text-xs text-muted uppercase tracking-wide">
 					{{ $t("plan.components.production_building.table.area") }}
 				</span>
 				<span class="text-xs font-bold whitespace-nowrap">
 					{{ localBuildingData.areaUsed }}
 				</span>
 			</div>
-			<div class="flex flex-col items-end sm:w-[7rem] min-w-max text-right">
-				<span class="text-xs text-muted uppercase tracking-wide">
+			<div
+				class="flex flex-col items-end sm:w-[7rem] min-w-max text-right">
+				<span
+					class="@5xl:hidden text-xs text-muted uppercase tracking-wide">
 					{{
 						$t(
 							"plan.components.production_building.table.construction"
@@ -407,56 +410,59 @@
 			<template #icon><ClearSharp /></template>
 		</PButton>
 	</div>
-	<div ref="recipes" class="col-span-12">
+	<!-- the orders hang off a line under their building -->
+	<div ref="recipes" class="col-span-12 ml-4 my-1 pl-3 border-l border-line">
 		<div v-if="localBuildingData.activeRecipes.length > 0">
 			<template
 				v-for="(recipe, index) in localBuildingData.activeRecipes"
 				:key="`RECIPE#${index}#${recipe.recipeId}`">
-			<div
-				class="grid grid-cols-[auto_4.5rem_minmax(0,1fr)_auto] xl:grid-cols-[6rem_minmax(0,1fr)_repeat(3,16.6667%)] px-3 py-2 border-l-2 border-transparent items-center even:bg-white/5 border-b border-b-white/10 last:border-b-0 gap-x-3 gap-y-2 xl:gap-0">
-				<PlanProductionRecipe
-					:disabled="disabled"
+				<div
+					class="grid grid-cols-[auto_4.5rem_minmax(0,1fr)_auto] xl:grid-cols-[6rem_minmax(0,1fr)_repeat(3,16.6667%)] px-3 py-2 border-l-2 border-transparent items-center even:bg-white/5 border-b border-b-white/10 last:border-b-0 gap-x-3 gap-y-2 xl:gap-0">
+					<PlanProductionRecipe
+						:disabled="disabled"
+						:recipe-index="index"
+						:recipe-data="recipe"
+						:recipe-options="localBuildingData.recipeOptions"
+						:cx-uuid="cxUuid"
+						:planet-id="planetId"
+						:is-new="!!change?.newRecipes.includes(recipe.recipeId)"
+						:picker-open="picker === index"
+						@update:building:recipe:amount="
+							(index: number, value: number) => {
+								emit(
+									'update:building:recipe:amount',
+									buildingIndex,
+									index,
+									value
+								);
+							}
+						"
+						@delete:building:recipe="
+							(index: number) => {
+								emit(
+									'delete:building:recipe',
+									buildingIndex,
+									index
+								);
+							}
+						"
+						@open:picker="
+							(i: number) =>
+								picker === i
+									? emit('close:picker')
+									: emit('open:picker', i)
+						" />
+				</div>
+				<PlanRecipePicker
+					v-if="picker === index"
+					mode="change"
+					:building="localBuildingData"
 					:recipe-index="index"
-					:recipe-data="recipe"
-					:recipe-options="localBuildingData.recipeOptions"
-					:cx-uuid="cxUuid"
+					:material-i-o="materialIO"
+					:buildings="buildings"
 					:planet-id="planetId"
-					:is-new="!!change?.newRecipes.includes(recipe.recipeId)"
-					:picker-open="picker === index"
-					@update:building:recipe:amount="
-						(index: number, value: number) => {
-							emit(
-								'update:building:recipe:amount',
-								buildingIndex,
-								index,
-								value
-							);
-						}
-					"
-					@delete:building:recipe="
-						(index: number) => {
-							emit(
-								'delete:building:recipe',
-								buildingIndex,
-								index
-							);
-						}
-					"
-					@open:picker="
-						(i: number) =>
-							picker === i ? emit('close:picker') : emit('open:picker', i)
-					" />
-			</div>
-			<PlanRecipePicker
-				v-if="picker === index"
-				mode="change"
-				:building="localBuildingData"
-				:recipe-index="index"
-				:material-i-o="materialIO"
-				:buildings="buildings"
-				:planet-id="planetId"
-				@pick="pick"
-				@close="emit('close:picker')" />
+					@pick="pick"
+					@close="emit('close:picker')" />
 			</template>
 		</div>
 		<div
@@ -472,9 +478,12 @@
 				<PButton
 					size="sm"
 					:aria-label="
-						$t('plan.components.production_building.mix_add_label', {
-							building: localBuildingData.name,
-						})
+						$t(
+							'plan.components.production_building.mix_add_label',
+							{
+								building: localBuildingData.name,
+							}
+						)
 					"
 					@click="
 						emit(
@@ -497,6 +506,24 @@
 					</span>
 				</PButton>
 			</template>
+		</div>
+		<div
+			v-if="!disabled && localBuildingData.recipeOptions.length > 0"
+			class="px-2">
+			<button
+				ref="addButton"
+				type="button"
+				class="min-h-7 pointer-coarse:min-h-11 px-1 text-xs cursor-pointer hover:text-white"
+				:class="picker === null ? 'text-white' : 'text-muted-strong'"
+				:aria-expanded="picker === null ? 'true' : 'false'"
+				data-add-recipe
+				@click="
+					picker === null
+						? emit('close:picker')
+						: emit('open:picker', null)
+				">
+				{{ $t("plan.production.add_recipe") }}
+			</button>
 		</div>
 		<PlanRecipePicker
 			v-if="picker === null"

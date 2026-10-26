@@ -18,6 +18,7 @@ import {
 // Types & Interfaces
 import type { Material } from "@/features/api/schemas/gameData.schemas";
 import type {
+	IMaterialIO,
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
@@ -103,9 +104,10 @@ export function useMaterialIOUtil() {
 		 */
 
 		Object.entries(combinedMap).map(([ticker, pre]) => {
-			const flatPlanets = [...pre.inputPlanets, ...pre.outputPlanets].filter(
-				(p) => p.delta
-			);
+			const flatPlanets = [
+				...pre.inputPlanets,
+				...pre.outputPlanets,
+			].filter((p) => p.delta);
 
 			const flatValues: number[] = flatPlanets.map((pv) =>
 				Math.abs(pv.delta)
@@ -230,4 +232,22 @@ export function useMaterialIOUtil() {
 		calculateEmpireCostOverview,
 		empireMaterialIOState,
 	};
+}
+
+/**
+ * Value per day of a Material I/O's exports and imports
+ *
+ * @author jplacht
+ */
+export function materialIOTotals(rows: IMaterialIO[]): {
+	exports: number;
+	imports: number;
+} {
+	let exports: number = 0;
+	let imports: number = 0;
+	for (const r of rows) {
+		if (r.delta > 0) exports += r.price;
+		else if (r.delta < 0) imports += r.price;
+	}
+	return { exports, imports };
 }

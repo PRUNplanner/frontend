@@ -597,20 +597,17 @@
 		},
 		"materialio": {
 			"label": "Material I/O",
-			"label_production": "Production",
-			"label_workforce": "Workforce",
-			"buttons": {
-				"toggle_weight_volume": "Toggle Weight & Volume",
-				"toggle_production_workforce": "Toggle Production & Workforce Split"
-			},
 			"table": {
 				"input": "In",
 				"output": "Out",
 				"delta": "Δ",
 				"cost_day": "ȼ / day",
 				"total_weight": "Δ t",
-				"total_volume": "Δ m³"
-			}
+				"total_volume": "Δ m³",
+				"share_7d": "7d share",
+				"share_30d": "30d share"
+			},
+			"share_note": "Δ as a share of the average daily volume traded on {exchange}, last 7 and 30 days."
 		},
 		"save_as": {
 			"title": "Save As",
@@ -630,20 +627,13 @@
 				"all_buildings": "All buildings"
 			},
 			"table": {
-				"building_recipe": "@:terms.buildings / @:terms.recipes",
-				"runtime": "Runtime",
-				"share": "Share",
-				"tools": "Tools"
+				"building_recipe": "@:terms.buildings / @:terms.recipes"
 			}
 		},
 		"production_building": {
 			"no_recipe": "No Active @:terms.recipes_plural",
 			"qty": "Qty",
-			"buttons": {
-				"add_recipe": "@:terms.recipes"
-			},
 			"table": {
-				"expertise": "Expertise",
 				"efficiency": "Efficiency",
 				"revenue": "@:terms.revenue",
 				"area": "@:terms.area",
@@ -689,7 +679,8 @@
 	},
 	"production": {
 		"empty": "No buildings yet. Add the first with “{select}” above.",
-		"change_recipe": "Change recipe {recipe}"
+		"change_recipe": "Change recipe {recipe}",
+		"add_recipe": "+ Recipe"
 	},
 	"picker": {
 		"change_title": "Change recipe",
@@ -720,5 +711,26 @@
 		"per_building": "ȼ per building and day",
 		"keys": "Click or Enter replaces · Esc closes",
 		"keys_add": "Click or Enter adds · Esc closes"
+	},
+	"io": {
+		"source": {
+			"label": "Show materials for",
+			"all": "Whole base",
+			"production": "Production only",
+			"workforce": "Workforce only"
+		},
+		"filter": {
+			"label": "Filter",
+			"all": "All",
+			"exports": "Exports",
+			"imports": "Imports"
+		},
+		"value": {
+			"label": "Value shown"
+		},
+		"exports": "Exports",
+		"imports": "Imports",
+		"degradation": "Degradation",
+		"profit": "Profit / day"
 	}
 }

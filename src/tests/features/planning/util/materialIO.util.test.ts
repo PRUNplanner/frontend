@@ -3,11 +3,17 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 // Composables
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
+import {
+	materialIOTotals,
+	useMaterialIOUtil,
+} from "@/features/planning/util/materialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
-import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type {
+	IMaterialIO,
+	IMaterialIOMinimal,
+} from "@/features/planning/usePlanCalculation.types";
 import type {
 	IEmpireMaterialIO,
 	IEmpirePlanMaterialIO,
@@ -332,5 +338,20 @@ describe("Util: materialIO ", async () => {
 		expect(result?.empire_total["C"].p).toBe(0);
 		expect(result?.empire_total["C"].c).toBe(5);
 		expect(result?.empire_total["C"].d).toBe(-5);
+	});
+});
+
+describe("materialIOTotals", () => {
+	const io = (ticker: string, delta: number, price: number) =>
+		({ ticker, delta, price }) as IMaterialIO;
+
+	it("splits exports and imports by the delta's sign", () => {
+		expect(
+			materialIOTotals([
+				io("RAT", 10, 500),
+				io("H2O", -20, -80),
+				io("DW", 0, 0),
+			])
+		).toStrictEqual({ exports: 500, imports: -80 });
 	});
 });

@@ -121,6 +121,7 @@ No key, URL or UUID goes into these events.
 | `plan:cogm_open` | `planet_natural_id`, `recipe_id` | |
 | `plan:recipe_picker_open` | `mode` (`change`, `add`) | the inline recipe picker opened under a recipe row or under "+ Recipe"; the pick itself is a `plan:edit` |
 | `plan:recipe_picker_sort` | `sort` (`daily`, `popular`) | the recipe picker's sort was switched |
+| `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | the plan's Material I/O source, filter or unit was switched; the event carries all three |
 | `plan:insights_open` | `planet_natural_id` | the planet insights box was opened |
 | `plan:starter_show` | `planet_natural_id`, `candidate_count` | the "Start from a typical setup" card was shown on an empty plan, once per plan view |
 | `plan:starter_apply` | `planet_natural_id`, `building_count`, `expert_count`, `is_selection_changed` | the typical setup was added to the plan (`is_selection_changed`: the user changed the preselected buildings) |

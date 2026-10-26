@@ -50,150 +50,189 @@
 </script>
 
 <template>
-	<div class="flex flex-row flex-wrap gap-6 child:shrink-0">
-		<div>
-			<slot
-				name="heading"
-				:text="t('plan.components.overview.label')"></slot>
-			<SharedPlanDeltas
-				v-if="compare"
-				class="pb-3 max-w-80"
-				:compare="compare" />
-			<PTable striped>
-				<tbody
-					class="child:child:first:font-bold child:child:last:text-end">
-					<!-- empty row to make the background colors match the other tables-->
-					<tr />
-					<tr>
-						<td>
-							{{
-								$t("plan.components.overview.table.daily_cost")
-							}}
-						</td>
-						<td>
-							{{ formatNumber(overviewData.dailyCost) }}
-							<span class="font-light text-muted"> ȼ </span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{{
-								$t("plan.components.overview.table.degradation")
-							}}
-						</td>
-						<td>
-							{{
-								formatNumber(overviewData.dailyDegradationCost)
-							}}
-							<span class="font-light text-muted"> ȼ </span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{{ $t("plan.components.overview.table.plan_cost") }}
-						</td>
-						<td>
-							{{
-								formatNumber(overviewData.totalConstructionCost)
-							}}
-							<span class="font-light text-muted"> ȼ </span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{{
-								$t(
-									"plan.components.overview.table.daily_profit"
-								)
-							}}
-						</td>
-						<td>
-							<PValue :value="overviewData.profit" />
-							<span class="font-light text-muted"> ȼ </span>
-						</td>
-					</tr>
-					<tr>
-						<td>{{ $t("plan.components.overview.table.roi") }}</td>
-						<td
-							:class="
-								overviewData.roi > 0
-									? 'text-positive!'
-									: 'text-negative!'
-							">
-							{{ formatPayback(overviewData.roi) }}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{{
-								$t("plan.components.overview.table.profit_area")
-							}}
-						</td>
-						<td>
-							<PValue :value="profitPerArea" />
-							<span class="font-light text-muted"> ȼ </span>
-						</td>
-					</tr>
-				</tbody>
-			</PTable>
-		</div>
-		<div>
-			<slot
-				name="heading"
-				:text="t('plan.components.storage.label')"></slot>
-			<PTable striped>
-				<thead class="child:text-center">
-					<tr>
-						<th />
-						<th class="text-center!">
-							{{ $t("plan.components.storage.table.weight") }}
-						</th>
-						<th class="text-center!">
-							{{ $t("plan.components.storage.table.volume") }}
-						</th>
-					</tr>
-				</thead>
-				<tbody class="child:child:text-center">
-					<tr>
-						<td class="text-left! font-bold">
-							{{ $t("plan.components.storage.table.import") }}
-						</td>
-						<td>
-							{{ formatNumber(visitationData.dailyWeightImport) }}
-						</td>
-						<td>
-							{{ formatNumber(visitationData.dailyVolumeImport) }}
-						</td>
-					</tr>
-					<tr>
-						<td class="text-left! font-bold">
-							{{ $t("plan.components.storage.table.export") }}
-						</td>
-						<td>
-							{{ formatNumber(visitationData.dailyWeightExport) }}
-						</td>
-						<td>
-							{{ formatNumber(visitationData.dailyVolumeExport) }}
-						</td>
-					</tr>
-					<tr>
-						<td class="text-left! font-bold">
-							{{ $t("plan.components.storage.table.sum") }}
-						</td>
-						<td>{{ formatNumber(visitationData.dailyWeight) }}</td>
-						<td>{{ formatNumber(visitationData.dailyVolume) }}</td>
-					</tr>
-					<tr>
-						<td class="text-left! font-bold">
-							{{ $t("plan.components.storage.table.filled") }}
-						</td>
-						<td colspan="2" class="font-bold">
-							{{ formatNumber(visitationData.storageFilled) }}
-							<span class="font-light text-muted"> d </span>
-						</td>
-					</tr>
-				</tbody>
-			</PTable>
+	<!-- side by side when there is room for both, stacked otherwise -->
+	<div class="@container">
+		<div class="grid grid-cols-1 @lg:grid-cols-2 gap-6 child:min-w-0">
+			<div>
+				<slot
+					name="heading"
+					:text="t('plan.components.overview.label')"></slot>
+				<SharedPlanDeltas
+					v-if="compare"
+					class="pb-3 max-w-80"
+					:compare="compare" />
+				<PTable striped>
+					<tbody
+						class="child:child:first:font-bold child:child:last:text-end">
+						<!-- empty row to make the background colors match the other tables-->
+						<tr />
+						<tr>
+							<td>
+								{{
+									$t(
+										"plan.components.overview.table.daily_cost"
+									)
+								}}
+							</td>
+							<td>
+								{{ formatNumber(overviewData.dailyCost) }}
+								<span class="font-light text-muted"> ȼ </span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								{{
+									$t(
+										"plan.components.overview.table.degradation"
+									)
+								}}
+							</td>
+							<td>
+								{{
+									formatNumber(
+										overviewData.dailyDegradationCost
+									)
+								}}
+								<span class="font-light text-muted"> ȼ </span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								{{
+									$t(
+										"plan.components.overview.table.plan_cost"
+									)
+								}}
+							</td>
+							<td>
+								{{
+									formatNumber(
+										overviewData.totalConstructionCost
+									)
+								}}
+								<span class="font-light text-muted"> ȼ </span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								{{
+									$t(
+										"plan.components.overview.table.daily_profit"
+									)
+								}}
+							</td>
+							<td>
+								<PValue :value="overviewData.profit" />
+								<span class="font-light text-muted"> ȼ </span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								{{ $t("plan.components.overview.table.roi") }}
+							</td>
+							<td
+								:class="
+									overviewData.roi > 0
+										? 'text-positive!'
+										: 'text-negative!'
+								">
+								{{ formatPayback(overviewData.roi) }}
+							</td>
+						</tr>
+						<tr>
+							<td>
+								{{
+									$t(
+										"plan.components.overview.table.profit_area"
+									)
+								}}
+							</td>
+							<td>
+								<PValue :value="profitPerArea" />
+								<span class="font-light text-muted"> ȼ </span>
+							</td>
+						</tr>
+					</tbody>
+				</PTable>
+			</div>
+			<div>
+				<slot
+					name="heading"
+					:text="t('plan.components.storage.label')"></slot>
+				<PTable striped>
+					<thead class="child:text-center">
+						<tr>
+							<th />
+							<th class="text-center!">
+								{{ $t("plan.components.storage.table.weight") }}
+							</th>
+							<th class="text-center!">
+								{{ $t("plan.components.storage.table.volume") }}
+							</th>
+						</tr>
+					</thead>
+					<tbody class="child:child:text-center">
+						<tr>
+							<td class="text-left! font-bold">
+								{{ $t("plan.components.storage.table.import") }}
+							</td>
+							<td>
+								{{
+									formatNumber(
+										visitationData.dailyWeightImport
+									)
+								}}
+							</td>
+							<td>
+								{{
+									formatNumber(
+										visitationData.dailyVolumeImport
+									)
+								}}
+							</td>
+						</tr>
+						<tr>
+							<td class="text-left! font-bold">
+								{{ $t("plan.components.storage.table.export") }}
+							</td>
+							<td>
+								{{
+									formatNumber(
+										visitationData.dailyWeightExport
+									)
+								}}
+							</td>
+							<td>
+								{{
+									formatNumber(
+										visitationData.dailyVolumeExport
+									)
+								}}
+							</td>
+						</tr>
+						<tr>
+							<td class="text-left! font-bold">
+								{{ $t("plan.components.storage.table.sum") }}
+							</td>
+							<td>
+								{{ formatNumber(visitationData.dailyWeight) }}
+							</td>
+							<td>
+								{{ formatNumber(visitationData.dailyVolume) }}
+							</td>
+						</tr>
+						<tr>
+							<td class="text-left! font-bold">
+								{{ $t("plan.components.storage.table.filled") }}
+							</td>
+							<td colspan="2" class="font-bold">
+								{{ formatNumber(visitationData.storageFilled) }}
+								<span class="font-light text-muted"> d </span>
+							</td>
+						</tr>
+					</tbody>
+				</PTable>
+			</div>
 		</div>
 	</div>
 </template>
