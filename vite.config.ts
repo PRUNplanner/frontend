@@ -2,14 +2,13 @@ import { defineConfig } from "vite";
 import path from "path";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import { compression } from "vite-plugin-compression2";
 import AutoImport from "unplugin-auto-import/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { Plugin } from "vite";
 
 // read package.json
-import pkg from "./package.json";
+import pkg from "./package.json" with { type: "json" };
 
 const dbVersionString = pkg.dbVersion;
 const appVersion = pkg.version;
@@ -120,7 +119,6 @@ export default defineConfig({
 	plugins: [
 		vue(),
 		tailwindcss(),
-		tsconfigPaths(),
 		AutoImport({ imports: ["vue", "vue-router", "pinia"] }),
 		buildVersion(),
 		apiPreconnect(),
@@ -141,18 +139,21 @@ export default defineConfig({
 	],
 	resolve: {
 		alias: [
-			{ find: "@", replacement: path.resolve(__dirname, "./src") },
+			{
+				find: "@",
+				replacement: path.resolve(import.meta.dirname, "./src"),
+			},
 			// exact match: vue/server-renderer (the prerender) is the package's
-			{ find: /^vue$/, replacement: "vue/dist/vue.runtime.esm-bundler.js" },
+			{
+				find: /^vue$/,
+				replacement: "vue/dist/vue.runtime.esm-bundler.js",
+			},
 		],
 		dedupe: ["vue"],
 	},
 	optimizeDeps: {
 		include: ["vue", "vue-router", "pinia"],
 		exclude: [],
-		esbuildOptions: {
-			target: "ESNext",
-		},
 	},
 	assetsInclude: ["**/*.md"],
 	build: {
@@ -161,40 +162,44 @@ export default defineConfig({
 		outDir: "dist",
 		emptyOutDir: true,
 		sourcemap: !cfPages,
-		minify: "esbuild",
-		commonjsOptions: {
-			transformMixedEsModules: true,
-		},
-		rollupOptions: {
-			cache: false,
-			watch: false,
-			treeshake: {
-				moduleSideEffects: true,
-			},
+		rolldownOptions: {
 			output: {
-				// sourcemapExcludeSources: false,
-
 				entryFileNames: "assets/[name].[hash].js",
 				chunkFileNames: "assets/chunks/[name].[hash].js",
 				assetFileNames: "assets/[ext]/[name].[hash].[ext]",
 
 				// Named chunks only for what the shell needs on every page;
-				// Rollup splits everything else per route. posthog-js stays
-				// its own chunk, fetched only after consent.
-				manualChunks(id) {
-					if (!id.includes("node_modules")) return;
-					const parts = id.split("node_modules/").pop()!.split("/");
-					const pkg = parts[0].startsWith("@")
-						? `${parts[0]}/${parts[1]}`
-						: parts[0];
-
-					if (pkg === "posthog-js") return "vendor_posthog";
-					if (pkg === "vue" || pkg.startsWith("@vue/"))
-						return "vendor_vue";
-					if (pkg === "vue-router") return "vendor_vue_router";
-					if (pkg.startsWith("pinia")) return "vendor_pinia";
-					if (pkg === "vue-i18n" || pkg.startsWith("@intlify/"))
-						return "vendor_vue_i18n";
+				// Rolldown splits everything else per route. posthog-js stays
+				// its own chunk, fetched only after consent. A group also takes
+				// its dependencies, so vue goes first, else pinia's would take it.
+				codeSplitting: {
+					groups: [
+						{
+							name: "vendor_vue",
+							test: /node_modules\/(vue|@vue\/[^/]+)\//,
+							priority: 2,
+						},
+						{
+							name: "vendor_vue_router",
+							test: /node_modules\/vue-router\//,
+							priority: 1,
+						},
+						{
+							name: "vendor_pinia",
+							test: /node_modules\/pinia[^/]*\//,
+							priority: 1,
+						},
+						{
+							name: "vendor_vue_i18n",
+							test: /node_modules\/(vue-i18n|@intlify\/[^/]+)\//,
+							priority: 1,
+						},
+						{
+							name: "vendor_posthog",
+							test: /node_modules\/posthog-js\//,
+							priority: 1,
+						},
+					],
 				},
 			},
 		},
