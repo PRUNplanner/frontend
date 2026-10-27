@@ -112,7 +112,7 @@
 		:aria-label="t('plan.results.label')"
 		class="tabular-nums">
 		<div
-			class="grid grid-cols-3 gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-4 @min-[72rem]:grid-cols-5 @min-[48rem]:divide-x divide-line">
+			class="grid grid-cols-3 gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-4 @min-[72rem]:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.7fr)_minmax(0,0.9fr)_minmax(0,0.9fr)] @min-[48rem]:divide-x divide-line">
 			<button type="button" :class="[tile, '@min-[48rem]:-ml-6 @min-[48rem]:pl-6 @min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
