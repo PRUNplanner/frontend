@@ -1638,7 +1638,7 @@
 			</button>
 			<aside
 				:aria-label="t('plan.base.label')"
-				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-20 md:max-h-[calc(100dvh-6rem)] md:overflow-y-auto bg-(--app-bg) [scrollbar-width:thin]"
+				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-20 md:max-h-[calc(100dvh-6rem)] md:overflow-y-auto bg-(--app-bg)"
 				:class="[
 					baseFolded ? '@min-[81rem]:hidden' : '',
 					refBaseOverlay

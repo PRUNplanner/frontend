@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, type ComputedRef, type PropType } from "vue";
+	import { computed, type ComputedRef, type PropType, ref } from "vue";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
@@ -46,15 +46,17 @@
 		): void;
 	}>();
 
-	// tiers the plan needs or houses get a row, the rest one muted line
+	// tiers the plan needs workers of get a row; the rest (housed or not)
+	// stay behind a link that shows them
+	const refShowAll = ref(false);
 	const used: ComputedRef<IWorkforceElement[]> = computed(() =>
 		Object.values(props.workforceData).filter(
-			(w) => w.required > 0 || w.capacity > 0
+			(w) => refShowAll.value || w.required > 0
 		)
 	);
 	const unused: ComputedRef<string> = computed(() =>
 		Object.values(props.workforceData)
-			.filter((w) => w.required === 0 && w.capacity === 0)
+			.filter((w) => w.required === 0)
 			.map((w) => capitalizeString(t(`game.workforce_type.${w.name}`)))
 			.join(", ")
 	);
@@ -152,8 +154,18 @@
 				</span>
 			</div>
 		</div>
-		<div v-if="unused" class="text-xs text-muted">
-			{{ t("plan.base.workforce.not_needed", { tiers: unused }) }}
-		</div>
+		<button
+			v-if="unused"
+			type="button"
+			class="self-start text-left text-xs text-link hover:underline cursor-pointer pointer-coarse:min-h-11"
+			:aria-expanded="refShowAll ? 'true' : 'false'"
+			data-unneeded-toggle
+			@click="refShowAll = !refShowAll">
+			{{
+				refShowAll
+					? t("plan.base.workforce.hide_not_needed")
+					: t("plan.base.workforce.show_not_needed", { tiers: unused })
+			}}
+		</button>
 	</div>
 </template>

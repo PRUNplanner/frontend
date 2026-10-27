@@ -666,7 +666,8 @@
 			"luxuries": "Luxuries",
 			"supply": "Supply {ticker}",
 			"beds_free": "{n} free",
-			"not_needed": "{tiers}: not needed"
+			"show_not_needed": "Show {tiers} (not needed)",
+			"hide_not_needed": "Hide the workforce not needed"
 		},
 		"housing": {
 			"label": "Housing",
