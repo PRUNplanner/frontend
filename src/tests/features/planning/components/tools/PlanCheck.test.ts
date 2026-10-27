@@ -3,6 +3,7 @@ import { nextTick } from "vue";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanCheck from "@/features/planning/components/tools/PlanCheck.vue";
+import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 import { flushPromises, RouterLinkStub } from "@vue/test-utils";
 import { createPinia } from "pinia";
 import { usePlanningStore } from "@/stores/planningStore";
@@ -92,6 +93,10 @@ describe("PlanCheck", () => {
 			"plan.tools.plan_check.views.sensitivity",
 		]);
 		expect(buttons[0].attributes("aria-pressed")).toBe("true");
+		// only Market check's own "what this means" help, none next to the views
+		expect(
+			wrapper.findAllComponents(HelpDrawer).map((h) => h.props("buttonTitle"))
+		).toEqual(["plan.tools.plan_check.market.means.help"]);
 		// no CX preference: no real prices, a hint to set one
 		const real = wrapper.find("[data-real-prices]");
 		expect(real.find("[data-ask-bid]").text()).toBe(
@@ -107,6 +112,8 @@ describe("PlanCheck", () => {
 			view: "sensitivity",
 		});
 		expect(wrapper.find("[data-real-prices]").exists()).toBe(false);
+		// the plan's help is in the plan header, not in the tool
+		expect(wrapper.findComponent(HelpDrawer).exists()).toBe(false);
 	});
 
 	it("names a UNIVERSE preference as the plan's, without a hint to set one", async () => {

@@ -54,12 +54,14 @@ describe("pickerOptions", () => {
 		expect(rows.slice(1).every((r) => !r.disabled)).toBe(true);
 	});
 
-	it("disables the other recipes the building runs in change mode", () => {
+	it("keeps the other recipes the building runs selectable in change mode", () => {
 		const rows = pickerOptions("change", OPTIONS, ["CAF", "MUS"], "CAF", "daily", none);
+		// only the recipe being replaced is disabled; MUS is in plan but a
+		// second order of it stays pickable
 		expect(rows.map((r) => [r.recipe.recipe_id, r.disabled])).toStrictEqual([
 			["CAF", true],
 			["ALG", false],
-			["MUS", true],
+			["MUS", false],
 			["VEG", false],
 		]);
 		expect(rows[2]).toMatchObject({ current: false, inPlan: true });
@@ -71,11 +73,12 @@ describe("pickerOptions", () => {
 		expect(ids(popular)).toStrictEqual(["VEG", "ALG", "CAF", "MUS"]);
 	});
 
-	it("lists recipes already ordered last and disabled in add mode", () => {
+	it("lists recipes already ordered last in add mode, still selectable", () => {
 		const rows = pickerOptions("add", OPTIONS, ["ALG", "CAF"], undefined, "daily", none);
 		expect(ids(rows)).toStrictEqual(["MUS", "VEG", "ALG", "CAF"]);
-		expect(rows.map((r) => r.disabled)).toStrictEqual([false, false, true, true]);
-		expect(rows.every((r) => !r.current)).toBe(true);
+		expect(rows.map((r) => r.inPlan)).toStrictEqual([false, false, true, true]);
+		// add mode has no current recipe, so nothing is disabled
+		expect(rows.every((r) => !r.disabled && !r.current)).toBe(true);
 	});
 });
 

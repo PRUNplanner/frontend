@@ -87,6 +87,8 @@ const luxButtons = (wrapper: VueWrapper, index: number) =>
 	row(wrapper, index).findAll("button[aria-pressed]");
 const bedsFree = (wrapper: VueWrapper, index: number) =>
 	row(wrapper, index).findAll("span").at(-1)!;
+const unneededToggle = (wrapper: VueWrapper) =>
+	wrapper.find("[data-unneeded-toggle]");
 
 describe("PlanWorkforce", () => {
 	beforeEach(() => {
@@ -109,15 +111,33 @@ describe("PlanWorkforce", () => {
 		expect(row(wrapper, 1).text()).toContain("250 / 200 · 50.00 %");
 	});
 
-	it("puts the unused tiers on one muted line", async () => {
+	it("puts the unneeded tiers behind a toggle", async () => {
 		const { wrapper } = await mountWorkforce();
+		const toggle = unneededToggle(wrapper);
 
-		expect(wrapper.text()).toContain(
-			"Game.workforce Type.technician, Game.workforce Type.scientist: not needed"
+		expect(toggle.text()).toBe(
+			"Show Game.workforce Type.technician, Game.workforce Type.scientist (not needed)"
 		);
+		expect(toggle.attributes("aria-expanded")).toBe("false");
+
+		// showing lists them as rows, in tier order
+		await toggle.trigger("click");
+		expect(names(wrapper)).toEqual([
+			"Game.workforce Type.pioneer",
+			"Game.workforce Type.settler",
+			"Game.workforce Type.technician",
+			"Game.workforce Type.engineer",
+			"Game.workforce Type.scientist",
+		]);
+		expect(toggle.text()).toBe("Hide the workforce not needed");
+		expect(toggle.attributes("aria-expanded")).toBe("true");
+
+		await toggle.trigger("click");
+		expect(rows(wrapper)).toHaveLength(3);
+		expect(toggle.attributes("aria-expanded")).toBe("false");
 	});
 
-	it("has no unused line when every tier is used", async () => {
+	it("keeps housed tiers without a need behind the toggle too", async () => {
 		const { wrapper } = await mountWorkforce({
 			workforceData: {
 				...WORKFORCE,
@@ -126,8 +146,29 @@ describe("PlanWorkforce", () => {
 			},
 		});
 
+		// technician is housed but not needed: no row
+		expect(names(wrapper)).toEqual([
+			"Game.workforce Type.pioneer",
+			"Game.workforce Type.settler",
+			"Game.workforce Type.engineer",
+			"Game.workforce Type.scientist",
+		]);
+		expect(unneededToggle(wrapper).text()).toBe(
+			"Show Game.workforce Type.technician (not needed)"
+		);
+	});
+
+	it("has no toggle when every tier is needed", async () => {
+		const { wrapper } = await mountWorkforce({
+			workforceData: {
+				...WORKFORCE,
+				technician: wf("technician", { required: 5, left: -5 }),
+				scientist: wf("scientist", { required: 5, left: -5 }),
+			},
+		});
+
 		expect(rows(wrapper)).toHaveLength(5);
-		expect(wrapper.text()).not.toContain("not needed");
+		expect(unneededToggle(wrapper).exists()).toBe(false);
 	});
 
 	it("shows how full the housing is", async () => {

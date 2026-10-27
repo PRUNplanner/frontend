@@ -379,6 +379,24 @@ describe("PlanCheckMarket", () => {
 		expect(fine.find("span").classes()).toContain("bg-black/40");
 	});
 
+	// the caption above the table says "all exchanges" once
+	it("doesn't repeat all exchanges per row, but keeps real flags", async () => {
+		const wrapper = await mountTool([FLAGGED[1], FLAGGED[2]], {
+			cx: false,
+		});
+		const [rat, dw] = tableRows(wrapper);
+
+		expect(rat.check).toBe("cx.market_flags.flags.large_share");
+		// muted, so no OK either: the cell stays empty
+		expect(dw.check).toBe("");
+
+		const [ratCard, dwCard] = cards(wrapper);
+		expect(ratCard.text()).toContain("cx.market_flags.flags.large_share");
+		// a phone card reads OK instead
+		expect(dwCard.text()).toContain("plan.tools.plan_check.market.ok");
+		expect(dwCard.text()).not.toContain("flags.all_exchanges");
+	});
+
 	describe("at real prices", () => {
 		const real = (w: Wrapper) => w.find("[data-real-prices]");
 

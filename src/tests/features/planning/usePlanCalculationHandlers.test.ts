@@ -287,6 +287,23 @@ describe("Planning: Workforce Calculations", async () => {
 			expect(fakePlan.buildings[0].amount).toBe(6);
 		});
 
+		it("Update to 0 buildings", async () => {
+			const plan = {
+				buildings: [{ name: "foo", amount: 3, active_recipes: [] }],
+			};
+			const { handleUpdateBuildingAmount } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(plan),
+				ref(),
+				ref({})
+			);
+
+			// 0 is a count, not an empty value
+			handleUpdateBuildingAmount(0, 0);
+			expect(plan.buildings[0].amount).toBe(0);
+		});
+
 		it("Update at invalid index", async () => {
 			const { handleUpdateBuildingAmount } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data

@@ -161,6 +161,30 @@ describe("PlanProductionRecipe", () => {
 		expect(wrapper.text()).toContain("1d 0h 0m");
 	});
 
+	it("hides the opener's label in a narrow production column", async () => {
+		const { wrapper } = await mountRecipe();
+
+		// the label's own span, not the box around it and the chevron
+		const label = recipeButton(wrapper)
+			.findAll("span")
+			.filter(
+				(s) =>
+					s.text() === "plan.production.recipe" &&
+					s.element.children.length === 0
+			);
+		expect(label).toHaveLength(1);
+		expect(label[0].classes()).toContain("@max-[48rem]/prod:hidden");
+	});
+
+	it("stripes the row when asked", async () => {
+		const { wrapper, setProps } = await mountRecipe();
+		const row = () => wrapper.find("[data-recipe-row]");
+
+		expect(row().classes()).not.toContain("bg-white/3");
+		await setProps({ striped: true });
+		expect(row().classes()).toContain("bg-white/3");
+	});
+
 	it("leaves out the arrow for a recipe without inputs", async () => {
 		const { wrapper } = await mountRecipe({
 			recipeData: recipe({ recipe: { ...FE, inputs: [] } }),

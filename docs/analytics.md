@@ -124,6 +124,7 @@ No key, URL or UUID goes into these events.
 | `plan:recipe_picker_undo` | | Undo in the status line after a picked recipe |
 | `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a folded side pane was pinned open from its strip (`folded: false`) or folded again (`true`) |
 | `plan:overlay_open` | `panel` (`base`, `io`) | Base or Material I/O was opened as an overlay from the tab row (below 81rem, 71rem of page width) |
+| `plan:result_tile` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results bar tile was clicked; it opens where its figure comes from |
 | `plan:section_view` | `section` (`production`, `base`, `io`, `tools`) | a phone switched the plan section |
 | `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | the plan's Material I/O source, filter or unit was switched; the event carries all three |
 | `plan:recipe_picker_sort` | `sort` (`daily`, `popular`) | the recipe picker's sort was switched |

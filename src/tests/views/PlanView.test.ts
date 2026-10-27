@@ -384,6 +384,7 @@ describe("PlanView", () => {
 	it("shows a tool in place of the production list and folds the panes", async () => {
 		const { wrapper } = await mountView();
 		const strip = (name: string) => wrapper.find(`[data-${name}-strip]`);
+		const pane = (name: string) => wrapper.find(`[data-${name}-pane]`);
 		expect(strip("base").exists()).toBe(false);
 		expect(strip("io").exists()).toBe(false);
 
@@ -393,34 +394,82 @@ describe("PlanView", () => {
 		expect(strip("base").exists()).toBe(true);
 		expect(strip("io").exists()).toBe(false);
 
+		// a tool folds Base only between 81rem and 100rem of page width
+		expect(strip("base").classes()).toEqual(
+			expect.arrayContaining(["hidden", "@min-[81rem]:@max-[100rem]:flex"])
+		);
+		expect(strip("base").classes()).not.toContain("@min-[81rem]:flex");
+		expect(pane("base").classes()).toContain(
+			"@min-[81rem]:@max-[100rem]:hidden"
+		);
+		expect(pane("base").classes()).not.toContain("@min-[81rem]:hidden");
+
+		// a wide tool folds Material I/O too
 		await openTool(wrapper, "plan.tools.labels.plan_check");
 		expect(strip("base").exists()).toBe(true);
 		expect(strip("io").exists()).toBe(true);
+		expect(pane("io").classes()).toContain("@min-[71rem]:hidden");
 
-		// a strip pins its pane open, Fold folds it again
+		// a strip pins its pane open
 		await strip("base").trigger("click");
 		expect(strip("base").exists()).toBe(false);
+		expect(pane("base").classes()).not.toContain(
+			"@min-[81rem]:@max-[100rem]:hidden"
+		);
 		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
 			panel: "base",
 			folded: false,
 		});
-		await wrapper
-			.find("[data-base-pane]")
-			.findAll("button")
-			.find((b) => b.text() === "plan.layout.fold")!
-			.trigger("click");
-		expect(strip("base").exists()).toBe(true);
 
 		// a pinned pane stays open over tool switches
 		await strip("io").trigger("click");
 		expect(strip("io").exists()).toBe(false);
 		await openTool(wrapper, "plan.tools.labels.repair_analysis");
 		expect(strip("io").exists()).toBe(false);
-		expect(strip("base").exists()).toBe(true);
+		expect(strip("base").exists()).toBe(false);
 
 		await openTool(wrapper, "plan.tools.labels.production");
 		expect(productionShown(wrapper)).toBe(true);
 		expect(strip("base").exists()).toBe(false);
+	});
+
+	it("folds Base by hand at any width, its strip unfolds it", async () => {
+		const { wrapper } = await mountView();
+		const strip = () => wrapper.find("[data-base-strip]");
+		const pane = () => wrapper.find("[data-base-pane]");
+		const fold = wrapper.find("[data-base-fold]");
+		// an icon button, side by side only; a phone names Base in its tabs
+		expect(fold.attributes("aria-label")).toBe("plan.layout.fold");
+		expect(fold.classes()).toEqual(
+			expect.arrayContaining(["hidden", "@min-[81rem]:flex"])
+		);
+		expect(fold.element.parentElement!.classList).toContain("max-md:hidden");
+
+		await fold.trigger("click");
+		expect(strip().classes()).toEqual(
+			expect.arrayContaining(["hidden", "@min-[81rem]:flex"])
+		);
+		expect(pane().classes()).toContain("@min-[81rem]:hidden");
+		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
+			panel: "base",
+			folded: true,
+		});
+
+		// it stays folded at every width under a tool, and back on the list
+		constructionCart.open();
+		await openTool(wrapper, "plan.tools.labels.construction_cart");
+		expect(strip().classes()).toContain("@min-[81rem]:flex");
+		expect(pane().classes()).toContain("@min-[81rem]:hidden");
+		await openTool(wrapper, "plan.tools.labels.construction_cart");
+		expect(strip().exists()).toBe(true);
+
+		await strip().trigger("click");
+		expect(strip().exists()).toBe(false);
+		expect(pane().classes()).not.toContain("@min-[81rem]:hidden");
+		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
+			panel: "base",
+			folded: false,
+		});
 	});
 
 	it("opens the plan check on its market view from the material I/O", async () => {
@@ -569,22 +618,121 @@ describe("PlanView", () => {
 		expect(mocks.openInsights).toHaveBeenCalledTimes(1);
 	});
 
-	it("folds a pinned Material I/O again", async () => {
+	it("folds Material I/O by hand, its strip unfolds it", async () => {
 		const { wrapper } = await mountView();
-		await openTool(wrapper, "plan.tools.labels.plan_check");
-		await wrapper.find("[data-io-strip]").trigger("click");
-		expect(wrapper.find("[data-io-strip]").exists()).toBe(false);
+		const strip = () => wrapper.find("[data-io-strip]");
+		const pane = () => wrapper.find("[data-io-pane]");
+		const fold = wrapper.find("[data-io-fold]");
+		// always there, side by side only (from 71rem)
+		expect(fold.attributes("aria-label")).toBe("plan.layout.fold");
+		expect(fold.classes()).toEqual(
+			expect.arrayContaining(["hidden", "@min-[71rem]:flex"])
+		);
 
-		await wrapper
-			.find("[data-io-pane]")
-			.findAll("button")
-			.find((b) => b.text() === "plan.layout.fold")!
-			.trigger("click");
-
-		expect(wrapper.find("[data-io-strip]").exists()).toBe(true);
+		// without a tool
+		await fold.trigger("click");
+		expect(strip().exists()).toBe(true);
+		expect(pane().classes()).toContain("@min-[71rem]:hidden");
 		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
 			panel: "io",
 			folded: true,
+		});
+		await strip().trigger("click");
+		expect(strip().exists()).toBe(false);
+		expect(pane().classes()).not.toContain("@min-[71rem]:hidden");
+		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
+			panel: "io",
+			folded: false,
+		});
+
+		// a wide tool's fold, pinned open, folds again
+		await openTool(wrapper, "plan.tools.labels.plan_check");
+		expect(strip().exists()).toBe(false);
+		await wrapper.find("[data-io-fold]").trigger("click");
+		expect(strip().exists()).toBe(true);
+		await openTool(wrapper, "plan.tools.labels.production");
+		expect(strip().exists()).toBe(true);
+	});
+
+	describe("results tiles", () => {
+		const activeTab = (wrapper: VueWrapper) =>
+			wrapper.find("nav button[aria-pressed='true']").text();
+
+		it("opens the tool each tile's figure comes from", async () => {
+			const { wrapper } = await mountView();
+
+			await emitFrom(wrapper, PlanResultsBar, "open", "profit");
+			await vi.waitFor(() =>
+				expect(
+					wrapper.findComponent({ name: "PlanProfitBreakdown" }).exists()
+				).toBe(true)
+			);
+			expect(activeTab(wrapper)).toBe("plan.tools.labels.profit_breakdown");
+			expect(trackEvent).toHaveBeenCalledWith("plan:result_tile", {
+				tile: "profit",
+			});
+			// a second click keeps it open instead of toggling it shut
+			await emitFrom(wrapper, PlanResultsBar, "open", "profit");
+			expect(activeTab(wrapper)).toBe("plan.tools.labels.profit_breakdown");
+
+			constructionCart.open();
+			await emitFrom(wrapper, PlanResultsBar, "open", "payback");
+			await vi.waitFor(() =>
+				expect(wrapper.text()).toContain("PlanConstructionCart")
+			);
+			expect(activeTab(wrapper)).toBe("plan.tools.labels.construction_cart");
+
+			await emitFrom(wrapper, PlanResultsBar, "open", "storage");
+			await vi.waitFor(() =>
+				expect(
+					wrapper
+						.findComponent({ name: "PlanVisitationFrequency" })
+						.exists()
+				).toBe(true)
+			);
+			expect(activeTab(wrapper)).toBe(
+				"plan.tools.labels.visitation_frequency"
+			);
+			expect(productionShown(wrapper)).toBe(false);
+		});
+
+		it("opens Base's section for area and workforce, unfolded", async () => {
+			Element.prototype.scrollIntoView = vi.fn();
+			const { wrapper } = await mountView({}, { login: true });
+			const section = (key: string) =>
+				wrapper.find<HTMLDetailsElement>(`details[data-section="${key}"]`)
+					.element;
+			const strip = () => wrapper.find("[data-base-strip]");
+			// both start open, close them to see the tiles open them
+			section("planet").open = false;
+			section("workforce").open = false;
+
+			// a tool's fold gives way: the tile pins Base open
+			await openTool(wrapper, "plan.tools.labels.popr");
+			expect(strip().exists()).toBe(true);
+			await emitFrom(wrapper, PlanResultsBar, "open", "workforce");
+			expect(section("workforce").open).toBe(true);
+			expect(section("planet").open).toBe(false);
+			expect(strip().exists()).toBe(false);
+			expect(trackEvent).toHaveBeenCalledWith("plan:result_tile", {
+				tile: "workforce",
+			});
+
+			// a hand fold too
+			await wrapper.find("[data-base-fold]").trigger("click");
+			expect(strip().exists()).toBe(true);
+			await emitFrom(wrapper, PlanResultsBar, "open", "area");
+			expect(section("planet").open).toBe(true);
+			expect(strip().exists()).toBe(false);
+			expect(
+				vi.mocked(Element.prototype.scrollIntoView).mock.contexts
+			).toEqual(
+				expect.arrayContaining([section("workforce"), section("planet")])
+			);
+			// jsdom's layout has no width: below 81rem, Base opens as an overlay
+			expect(
+				wrapper.find("[data-base-toggle]").attributes("aria-expanded")
+			).toBe("true");
 		});
 	});
 
@@ -1300,6 +1448,25 @@ describe("PlanView", () => {
 				.find((b: VueWrapper) => b.text() === "plan.layout.all_tools")!
 				.trigger("click");
 			expect(wrapper.find("[data-phone-tools]").exists()).toBe(true);
+		});
+
+		it("switches to the section a results tile opens", async () => {
+			phone();
+			Element.prototype.scrollIntoView = vi.fn();
+			const { wrapper } = await mountView();
+
+			await emitFrom(wrapper, PlanResultsBar, "open", "area");
+			expect(hidden(wrapper, "[data-base-pane]")).toBe(false);
+
+			await emitFrom(wrapper, PlanResultsBar, "open", "storage");
+			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
+			await vi.waitFor(() =>
+				expect(
+					wrapper
+						.findComponent({ name: "PlanVisitationFrequency" })
+						.exists()
+				).toBe(true)
+			);
 		});
 
 		it("saves from a bar above the app's bottom bar while unsaved", async () => {

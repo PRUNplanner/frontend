@@ -167,6 +167,30 @@ describe("planning engine", () => {
 			expectFinite(run());
 		});
 
+		it("a building at 0 takes no area and adds nothing, all finite", () => {
+			const plan = etherwindPlan();
+			const run = () =>
+				calculatePlan(
+					{ plan, empire: undefined, cxUuid: undefined },
+					ctx
+				).result;
+			const before = run();
+			const area = before.production.buildings[0].areaUsed;
+			expect(area).toBeGreaterThan(0);
+
+			plan.plan_data.buildings[0].amount = 0;
+			const after = run();
+
+			const building = after.production.buildings[0];
+			expect(building.amount).toBe(0);
+			expect(building.areaUsed).toBe(0);
+			// the area it took is free again
+			expect(after.area.areaUsed).toBe(before.area.areaUsed - area);
+			expect(Number.isFinite(after.revenue)).toBe(true);
+			for (const m of after.materialio)
+				expect(Number.isFinite(m.delta)).toBe(true);
+		});
+
 		it("calculates COGM without a CX", () => {
 			const cogm = calculatePlan(
 				{ plan: etherwindPlan(), empire: undefined, cxUuid: undefined },

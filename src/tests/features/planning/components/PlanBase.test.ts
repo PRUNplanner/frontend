@@ -136,7 +136,10 @@ function planResult(): IPlanResult {
 	return r;
 }
 
-async function mountBase(props: Record<string, unknown> = {}) {
+async function mountBase(
+	props: Record<string, unknown> = {},
+	options: { attach?: boolean } = {}
+) {
 	return mountComponent(
 		PlanBase,
 		{
@@ -150,7 +153,7 @@ async function mountBase(props: Record<string, unknown> = {}) {
 			...props,
 		},
 		// real plan texts, so the values in the summaries show
-		{ messages: { plan } }
+		{ messages: { plan }, ...options }
 	);
 }
 
@@ -181,7 +184,7 @@ describe("PlanBase", () => {
 			"Empire & prices | Alpha · Universe average",
 			"Planet | COGC game.cogc_program_short.ADVERTISING_RESOURCE_EXTRACTION · 2 permits",
 			"Workforce",
-			"Housing | 4 HB1 · 2 STO · Auto",
+			"Infrastructure | 4 HB1 · 2 STO · Auto",
 			"Experts | 3 placed",
 		]);
 		// empire and housing start folded
@@ -192,6 +195,29 @@ describe("PlanBase", () => {
 			undefined,
 			"",
 		]);
+		// the summaries stay rendered, CSS hides them while a section is open
+		expect(
+			wrapper
+				.findAll("summary span:not(:first-child)")
+				.map((s) => s.classes("group-open:hidden"))
+		).toEqual([true, true, true, true]);
+	});
+
+	it("opens a section, scrolls it into view and focuses its summary", async () => {
+		const scrollIntoView = vi.fn();
+		Element.prototype.scrollIntoView = scrollIntoView;
+		const { wrapper, component } = await mountBase({}, { attach: true });
+		const housing = wrapper.find<HTMLDetailsElement>(
+			'details[data-section="housing"]'
+		);
+		expect(housing.element.open).toBe(false);
+
+		(component.vm as unknown as { openSection: (k: string) => void })
+			.openSection("housing");
+
+		expect(housing.element.open).toBe(true);
+		expect(scrollIntoView.mock.contexts).toEqual([housing.element]);
+		expect(document.activeElement).toBe(housing.find("summary").element);
 	});
 
 	it("summarizes an empty plan", async () => {
@@ -208,7 +234,7 @@ describe("PlanBase", () => {
 			"Empire & prices | ",
 			"Planet | COGC game.cogc_program_short.NONE · 1 permit",
 			"Workforce",
-			"Housing | ",
+			"Infrastructure | ",
 			"Experts | 0 placed",
 		]);
 	});

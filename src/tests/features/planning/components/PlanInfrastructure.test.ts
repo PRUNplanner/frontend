@@ -101,7 +101,7 @@ describe("PlanInfrastructure", () => {
 		);
 	});
 
-	it("shows every type, the unused ones muted", async () => {
+	it("shows every type, the unused ones as strong as the used", async () => {
 		const { wrapper } = await mountInfrastructure({
 			infrastructureData: SPARSE,
 		});
@@ -116,12 +116,13 @@ describe("PlanInfrastructure", () => {
 				String(SPARSE[inf as keyof IInfrastructureRecord])
 			)
 		);
+		// no muted labels for the unused types any more
 		expect(
 			wrapper
 				.findAll("span.font-mono")
-				.filter((s) => !s.classes().includes("text-muted"))
+				.filter((s) => s.classes("text-ink-strong"))
 				.map((s) => s.text())
-		).toEqual(["HB1", "HBC", "STO"]);
+		).toEqual(ORDER);
 	});
 
 	it("adds an unused type with its stepper and tracks it", async () => {

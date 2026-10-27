@@ -50,6 +50,7 @@ vi.mock("@/features/planning/components/PlanProductionRecipe.vue", () => ({
 			planetId: String,
 			buildingAmount: Number,
 			optionDaily: Number,
+			striped: Boolean,
 		},
 		emits: [
 			"update:building:recipe:amount",
@@ -178,15 +179,36 @@ describe("PlanProductionBuilding", () => {
 		);
 		const sub = () => nameButton(wrapper).find("span.block").text();
 
-		// workforce and neutral factors are left out
-		expect(sub()).toBe(
-			"game.expertise.METALLURGY · game.efficiency_type.COGC · 3 experts"
-		);
+		// workforce and neutral factors are left out, the COGC shows as the
+		// tick on the expertise
+		expect(sub()).toBe("✓ game.expertise.METALLURGY · 3 experts");
 
 		await setProps({
 			buildingData: building({ expertise: null, efficiencyElements: [] }),
 		});
 		expect(sub()).toBe("");
+	});
+
+	it("ticks the expertise when the planet's COGC matches, crosses it when not", async () => {
+		const { wrapper, setProps } = await mountBuilding();
+		const match = () => wrapper.find("[data-cogc-match]");
+
+		expect(match().text()).toBe("✓ game.expertise.METALLURGY");
+		expect(match().classes()).toContain("text-positive");
+
+		// no COGC element: the planet's program lifts something else
+		await setProps({
+			buildingData: building({
+				efficiencyElements: [{ efficiencyType: "EXPERT", value: 1.07 }],
+			}),
+		});
+		expect(match().text()).toBe("✗ game.expertise.METALLURGY");
+		expect(match().classes()).toContain("text-negative");
+		expect(match().classes()).not.toContain("text-positive");
+
+		// a building without expertise has nothing to match
+		await setProps({ buildingData: building({ expertise: null }) });
+		expect(match().exists()).toBe(false);
 	});
 
 	it("shows the revenue with its sign", async () => {
@@ -310,6 +332,11 @@ describe("PlanProductionBuilding", () => {
 		).toEqual([
 			[0, "SME#FE"],
 			[1, "SME#AL"],
+		]);
+		// every second row is striped, so long orders stay readable
+		expect(recipes(wrapper).map((r) => r.props("striped"))).toEqual([
+			false,
+			true,
 		]);
 		expect(recipes(wrapper).at(1)!.props()).toMatchObject({
 			disabled: false,

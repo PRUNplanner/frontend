@@ -174,8 +174,9 @@ describe("PlanRecipePicker", () => {
 		const { wrapper } = await mountPicker();
 
 		expect(ids(wrapper)).toEqual(["FE", "AL", "CU", "BSE"]);
-		// CU is ordered already: a second order would duplicate it
-		expect(disabled(wrapper)).toEqual([true, false, true, false]);
+		// CU is ordered already but stays selectable: free accounts split
+		// their runs into a second order of the same recipe
+		expect(disabled(wrapper)).toEqual([true, false, false, false]);
 		expect(options(wrapper).at(0)!.text()).toContain("plan.picker.current");
 		expect(options(wrapper).at(2)!.text()).toContain("plan.picker.in_plan");
 		expect(wrapper.text()).toContain("plan.picker.change_title");
@@ -183,14 +184,15 @@ describe("PlanRecipePicker", () => {
 		expect(highlighted(wrapper)).toBe("AL");
 	});
 
-	it("add: lists the recipes already ordered last, disabled", async () => {
+	it("add: lists the recipes already ordered last, still selectable", async () => {
 		const { wrapper } = await mountPicker({
 			mode: "add",
 			recipeIndex: undefined,
 		});
 
 		expect(ids(wrapper)).toEqual(["AL", "BSE", "FE", "CU"]);
-		expect(disabled(wrapper)).toEqual([false, false, true, true]);
+		// nothing is replaced, so every row can be picked
+		expect(disabled(wrapper)).toEqual([false, false, false, false]);
 		expect(options(wrapper).at(2)!.text()).toContain("plan.picker.in_plan");
 		expect(wrapper.text()).toContain("plan.picker.add_title");
 		expect(highlighted(wrapper)).toBe("AL");
@@ -200,7 +202,9 @@ describe("PlanRecipePicker", () => {
 		const { wrapper, component } = await mountPicker();
 
 		expect(highlighted(wrapper)).toBe("AL");
-		// skips CU, already ordered
+		// CU, already ordered, can be picked again
+		await press(wrapper, "ArrowDown");
+		expect(highlighted(wrapper)).toBe("CU");
 		await press(wrapper, "ArrowDown");
 		expect(highlighted(wrapper)).toBe("BSE");
 		// wraps around past the current recipe
@@ -214,18 +218,19 @@ describe("PlanRecipePicker", () => {
 		expect(component.emitted("close")).toBeUndefined();
 	});
 
-	it("skips the disabled rows in add mode", async () => {
+	it("moves over the ordered rows too in add mode", async () => {
 		const { wrapper, component } = await mountPicker({
 			mode: "add",
 			recipeIndex: undefined,
 		});
 
+		// wraps from the first row to CU, ordered and listed last
 		await press(wrapper, "ArrowUp");
-		expect(highlighted(wrapper)).toBe("BSE");
+		expect(highlighted(wrapper)).toBe("CU");
+		await press(wrapper, "Enter");
+		expect(component.emitted("pick")).toEqual([["R_CU"]]);
 		await press(wrapper, "ArrowDown");
 		expect(highlighted(wrapper)).toBe("AL");
-		await press(wrapper, "Enter");
-		expect(component.emitted("pick")).toEqual([["R_AL"]]);
 	});
 
 	it("closes on Escape and the close button", async () => {
@@ -267,17 +272,15 @@ describe("PlanRecipePicker", () => {
 		overlay.remove();
 	});
 
-	it("picks a clicked row, but not a disabled one", async () => {
+	it("picks a clicked row, an ordered one too, but not the current", async () => {
 		const { wrapper, component } = await mountPicker();
 
 		await options(wrapper).at(0)!.trigger("click");
 		expect(component.emitted("pick")).toBeUndefined();
 
 		await options(wrapper).at(2)!.trigger("click");
-		expect(component.emitted("pick")).toBeUndefined();
-
 		await options(wrapper).at(1)!.trigger("click");
-		expect(component.emitted("pick")).toEqual([["R_AL"]]);
+		expect(component.emitted("pick")).toEqual([["R_CU"], ["R_AL"]]);
 	});
 
 	it("tracks opening, with its mode", async () => {
@@ -379,28 +382,40 @@ describe("PlanRecipePicker", () => {
 
 		await options(wrapper)[3].trigger("mousemove");
 		expect(highlighted(wrapper)).toBe("BSE");
-		// the current and the ordered recipe take no highlight
-		await options(wrapper)[0].trigger("mousemove");
+		// the ordered recipe takes the highlight, the current one doesn't
 		await options(wrapper)[2].trigger("mousemove");
-		expect(highlighted(wrapper)).toBe("BSE");
+		expect(highlighted(wrapper)).toBe("CU");
+		await options(wrapper)[0].trigger("mousemove");
+		expect(highlighted(wrapper)).toBe("CU");
 	});
 
 	it("leaves other keys to the page", async () => {
-		const { wrapper } = await mountPicker();
+		const { wrapper, component } = await mountPicker();
 		const before = highlighted(wrapper);
 
 		await press(wrapper, "a");
 
 		expect(highlighted(wrapper)).toBe(before);
-		expect(wrapper.emitted("pick")).toBeUndefined();
-		expect(wrapper.emitted("close")).toBeUndefined();
+		expect(component.emitted("pick")).toBeUndefined();
+		expect(component.emitted("close")).toBeUndefined();
 	});
 
-	it("has nothing to move or pick when every recipe is ordered", async () => {
-		const { wrapper } = await mountPicker({
+	it("still picks in add mode when every recipe is ordered", async () => {
+		const { wrapper, component } = await mountPicker({
 			mode: "add",
 			recipeIndex: undefined,
 			building: building("SME", [FE, CU], [FE, CU]),
+		});
+
+		expect(highlighted(wrapper)).toBe("FE");
+		await press(wrapper, "ArrowDown");
+		await press(wrapper, "Enter");
+		expect(component.emitted("pick")).toEqual([["R_CU"]]);
+	});
+
+	it("has nothing to move or pick when the current recipe is the only one", async () => {
+		const { wrapper, component } = await mountPicker({
+			building: building("SME", [FE], [FE]),
 		});
 
 		expect(listbox(wrapper).attributes("aria-activedescendant")).toBe(
@@ -408,7 +423,7 @@ describe("PlanRecipePicker", () => {
 		);
 		await press(wrapper, "ArrowDown");
 		await press(wrapper, "Enter");
-		expect(wrapper.emitted("pick")).toBeUndefined();
+		expect(component.emitted("pick")).toBeUndefined();
 	});
 
 	it("compares with the current recipe's own revenue", async () => {
