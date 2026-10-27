@@ -642,12 +642,7 @@
 		"lowest_efficiency": "Lowest efficiency of the workforce the plan needs",
 		"beds_short": "{tier}: {n} beds short",
 		"luxuries_off": "{n} luxury off | {n} luxuries off",
-		"all_housed": "All housed, all luxuries",
-		"market": "Market",
-		"cant_trade": "{n} can't trade | {n} can't trade",
-		"large_share": "{n} large share | {n} large shares",
-		"no_flags": "No flags",
-		"plan_check": "Plan check →"
+		"all_housed": "All housed, all luxuries"
 	},
 	"base": {
 		"label": "Base",

@@ -12,7 +12,6 @@
 		IWorkforceRecord,
 	} from "@/features/planning/usePlanCalculation.types";
 	import type { IPlanCompare } from "@/features/sharing/sharedPlan.types";
-	import type { IMarketCheck } from "@/features/cx/marketCheck.types";
 	import type { ResultTile } from "@/features/planning/planView.util";
 
 	// Components
@@ -21,7 +20,6 @@
 	// Util
 	import { formatAmount, formatNumber, formatPayback } from "@/util/numbers";
 	import { capitalizeString } from "@/util/text";
-	import { countLevels } from "@/features/cx/marketCheck.util";
 
 	// UI
 	import { PValue } from "@/ui";
@@ -29,7 +27,7 @@
 
 	/**
 	 * The plan's results, always in view: profit, payback, profit per
-	 * area, area, storage, workforce and market flags. Each figure appears
+	 * area, area, storage and workforce. Each figure appears
 	 * only here.
 	 *
 	 * @author jplacht
@@ -39,7 +37,6 @@
 		area,
 		visitation,
 		workforce,
-		checks,
 		revenue,
 		cost,
 		empireProfitPerArea = undefined,
@@ -49,8 +46,6 @@
 		area: IAreaResult;
 		visitation: IVisitationData;
 		workforce: IWorkforceRecord;
-		// market flags of the plan's net material flow
-		checks: Map<string, IMarketCheck>;
 		revenue: number;
 		cost: number;
 		// the empire's average, when the empire page calculated it
@@ -96,8 +91,6 @@
 			: t("plan.results.all_housed");
 	});
 
-	const flags = computed(() => countLevels([...checks.values()]));
-
 	// label and figure share a line; under 64rem of page width every tile
 	// puts them on two, so the figures line up
 	const head =
@@ -117,7 +110,7 @@
 		:aria-label="t('plan.results.label')"
 		class="tabular-nums">
 		<div
-			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(3,minmax(0,1fr))] @min-[72rem]:grid-cols-[1.5fr_repeat(5,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
+			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(3,minmax(0,1fr))] @min-[72rem]:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
 			<button type="button" :class="[tile, '@min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
@@ -215,9 +208,9 @@
 					}}
 				</div>
 			</button>
-			<!-- the quick checks: below 72rem of page width only the figures
+			<!-- the quick check: below 72rem of page width only the figures
 				before them show -->
-			<button type="button" :class="[tile, 'px-3 @max-[72rem]:hidden']" data-tile="workforce" @click="emit('open', 'workforce')">
+			<button type="button" :class="[tile, 'pl-3 @max-[72rem]:hidden']" data-tile="workforce" @click="emit('open', 'workforce')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.workforce") }}</span>
 					<span
@@ -234,31 +227,6 @@
 					:class="[sub, shortTier ? 'text-negative!' : '']"
 					data-workforce-note>
 					{{ workforceNote }}
-				</div>
-			</button>
-			<button type="button" :class="[tile, 'pl-3 @max-[72rem]:hidden']" data-tile="market" data-market @click="emit('open', 'market')">
-				<div :class="head">
-					<span :class="label">{{ t("plan.results.market") }}</span>
-					<span v-if="flags.red" :class="[value, 'text-negative!']">
-						{{ t("plan.results.cant_trade", { n: flags.red }, flags.red) }}
-					</span>
-					<span v-else-if="flags.amber" :class="[value, 'text-warning!']">
-						{{
-							t("plan.results.large_share", { n: flags.amber }, flags.amber)
-						}}
-					</span>
-					<span v-else :class="[value, 'text-muted!']">
-						{{ t("plan.results.no_flags") }}
-					</span>
-				</div>
-				<div :class="sub">
-					<template v-if="flags.red && flags.amber">
-						{{
-							t("plan.results.large_share", { n: flags.amber }, flags.amber)
-						}}
-						·
-					</template>
-					<span class="text-link">{{ t("plan.results.plan_check") }}</span>
 				</div>
 			</button>
 		</div>

@@ -23,8 +23,7 @@ export type ResultTile =
 	| "payback"
 	| "area"
 	| "storage"
-	| "workforce"
-	| "market";
+	| "workforce";
 
 // tools wide enough to need Material I/O's room too
 const WIDE_TOOLS: PlanTool[] = [
