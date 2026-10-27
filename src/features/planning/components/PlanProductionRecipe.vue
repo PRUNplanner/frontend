@@ -89,6 +89,12 @@
 			required: false,
 			default: false,
 		},
+		// every second order of a building with several: a faint stripe
+		striped: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -147,7 +153,8 @@
 	</PModal>
 
 	<div
-		class="grid grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_4.5rem_2.75rem] @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto]! gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
+		class="grid grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_4.5rem_2.75rem] @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto]! gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 -ml-2 pl-2 rounded-sm @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
+		:class="striped ? 'bg-white/3' : ''"
 		data-recipe-row>
 		<PInputNumber
 			:value="localRecipeData.amount"

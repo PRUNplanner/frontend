@@ -433,6 +433,7 @@
 					:planet-id="planetId"
 					:is-new="!!change?.newRecipes.includes(recipe.recipeId)"
 					:picker-open="picker === index"
+					:striped="index % 2 === 1"
 					@update:building:recipe:amount="
 						(i: number, value: number) =>
 							emit('update:building:recipe:amount', buildingIndex, i, value)

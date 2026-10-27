@@ -670,7 +670,7 @@
 			"hide_not_needed": "Hide the workforce not needed"
 		},
 		"housing": {
-			"label": "Housing",
+			"label": "Infrastructure",
 			"auto": "Auto",
 			"cheapest": "Cheapest",
 			"least_area": "Least area"
