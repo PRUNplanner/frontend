@@ -640,10 +640,24 @@
 		"in_out_per_day": "{in}\u00a0{unit} in · {out}\u00a0{unit} out\u00a0/\u00a0day",
 		"workforce": "Workforce",
 		"lowest_efficiency": "Lowest efficiency of the workforce the plan needs",
-		"beds_short": "{tier}: {n} beds short",
-		"luxuries_off": "{n} luxury off | {n} luxuries off",
-		"all_housed": "All housed, all luxuries",
-		"housed": "{need} / {beds} housed"
+		"tier_short": {
+			"pioneer": "PIO",
+			"settler": "SET",
+			"technician": "TEC",
+			"engineer": "ENG",
+			"scientist": "SCI"
+		},
+		"expert_short": {
+			"Agriculture": "Agri",
+			"Chemistry": "Chem",
+			"Construction": "Cons",
+			"Electronics": "Elec",
+			"Food_Industries": "Food",
+			"Fuel_Refining": "Fuel",
+			"Manufacturing": "Manu",
+			"Metallurgy": "Metal",
+			"Resource_Extraction": "Res"
+		}
 	},
 	"base": {
 		"label": "Base",

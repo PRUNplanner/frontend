@@ -20,7 +20,6 @@
 
 	// Util
 	import { formatAmount, formatNumber, formatPayback } from "@/util/numbers";
-	import { capitalizeString } from "@/util/text";
 
 	// UI
 	import { PValue } from "@/ui";
@@ -76,36 +75,20 @@
 	const shortTier = computed(() =>
 		Object.values(workforce).find((w) => w.left < 0)
 	);
-	// the worst problem first: beds short, then luxuries off
-	const workforceNote = computed(() => {
-		if (shortTier.value)
-			return t("plan.results.beds_short", {
-				tier: capitalizeString(
-					t(`game.workforce_type.${shortTier.value.name}`)
-				),
-				n: formatAmount(-shortTier.value.left),
-			});
-		const off = needed.value.reduce(
-			(n, w) => n + (w.lux1 ? 0 : 1) + (w.lux2 ? 0 : 1),
-			0
-		);
-		return off
-			? t("plan.results.luxuries_off", { n: off }, off)
-			: t("plan.results.all_housed");
-	});
-	// workers the plan needs of the beds it has, over every tier
-	const housed = computed(() => {
-		const tiers = Object.values(workforce);
-		return t("plan.results.housed", {
-			need: formatAmount(tiers.reduce((n, w) => n + w.required, 0)),
-			beds: formatAmount(tiers.reduce((n, w) => n + w.capacity, 0)),
-		});
-	});
-	// "Chemistry 4 · Metallurgy 4": the experts placed, in one line
+	// "PIO 260/650 · SET 550/1,450": workers needed of the beds, per tier
+	// the plan needs; a tier short of beds in red
+	const tierParts = computed(() =>
+		needed.value.map((w) => ({
+			key: w.name,
+			text: `${t(`plan.results.tier_short.${w.name}`)} ${formatAmount(w.required)}/${formatAmount(w.capacity)}`,
+			short: w.left < 0,
+		}))
+	);
+	// "Agri 1 · Chem 4": the experts placed, in one line
 	const expertLine = computed(() =>
 		Object.values(experts)
 			.filter((e) => e.amount > 0)
-			.map((e) => `${t(`game.expertise.${e.name.toUpperCase()}`)} ${e.amount}`)
+			.map((e) => `${t(`plan.results.expert_short.${e.name}`)} ${e.amount}`)
 			.join(" · ")
 	);
 
@@ -121,7 +104,7 @@
 	// every tile is a button: a quiet hover, the figures stay put; the first
 	// and last visible tile reach into the bar's padding, so the hover does
 	const tile =
-		"py-1.5 text-left cursor-pointer hover:bg-hover focus-visible:bg-hover transition-colors";
+		"py-2.5 text-left cursor-pointer hover:bg-hover focus-visible:bg-hover transition-colors";
 </script>
 
 <template>
@@ -161,8 +144,8 @@
 					}}
 				</div>
 			</button>
-			<!-- workforce: the lowest efficiency, beds used, the worst problem
-				and the experts; below 72rem of page width it gives way -->
+			<!-- workforce: the lowest efficiency, workers needed of the beds per
+				tier and the experts; below 72rem of page width it gives way -->
 			<button type="button" :class="[tile, 'px-3 @max-[72rem]:hidden']" data-tile="workforce" @click="emit('open', 'workforce')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.workforce") }}</span>
@@ -176,13 +159,15 @@
 						}}
 					</span>
 				</div>
-				<div :class="sub">
-					{{ housed }} ·
-					<span
-						:class="shortTier ? 'text-negative' : ''"
-						data-workforce-note>
-						{{ workforceNote }}
-					</span>
+				<div :class="sub" data-workforce-tiers>
+					<template v-for="(part, i) in tierParts" :key="part.key">
+						<template v-if="i"> · </template>
+						<span
+							class="whitespace-nowrap"
+							:class="part.short ? 'text-negative' : ''">
+							{{ part.text }}
+						</span>
+					</template>
 				</div>
 				<!-- one line, the full list on hover -->
 				<div
