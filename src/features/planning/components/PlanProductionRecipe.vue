@@ -147,7 +147,7 @@
 	</PModal>
 
 	<div
-		class="grid grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_3rem_2.75rem] @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto]! gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
+		class="grid grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_4.5rem_2.75rem] @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto]! gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
 		data-recipe-row>
 		<PInputNumber
 			:value="localRecipeData.amount"
@@ -254,14 +254,14 @@
 		<PButton
 			size="sm"
 			type="ghost"
-			class="justify-self-end size-6 pointer-coarse:size-11 border border-link/40 pointer-coarse:border-transparent text-link! disabled:text-link/40!"
+			class="justify-self-end pointer-coarse:h-11 border border-link/40 pointer-coarse:border-transparent text-link! disabled:text-link/40!"
 			:disabled="!cogmEnabled"
 			:aria-label="
 				t('plan.production.cogm_label', { recipe: outputs })
 			"
-			:title="t('plan.components.production_recipe.buttons.cogm')"
 			@click="openCOGM">
 			<template #icon><AnalyticsOutlined /></template>
+			{{ t("plan.components.production_recipe.buttons.cogm") }}
 		</PButton>
 		<button
 			v-if="!disabled"

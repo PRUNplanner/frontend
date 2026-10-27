@@ -338,7 +338,7 @@
 		becomes a card instead of squeezing the columns -->
 	<div class="@container/prod">
 	<div
-		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted @max-[40rem]/prod:hidden"
+		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted @max-[40rem]/prod:hidden"
 		data-column-heads>
 		<span />
 		<span>{{ t("plan.production.columns.building") }}</span>

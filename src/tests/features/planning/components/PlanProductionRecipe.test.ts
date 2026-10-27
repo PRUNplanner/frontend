@@ -269,9 +269,8 @@ describe("PlanProductionRecipe", () => {
 		const disabled = () =>
 			(cogmButton(wrapper).element as HTMLButtonElement).disabled;
 		expect(disabled()).toBe(false);
-		// icon-only, the label names it and the title shows "COGM"
-		expect(cogmButton(wrapper).text()).toBe("");
-		expect(cogmButton(wrapper).attributes("title")).toBe(
+		// "COGM" as text, the label names the recipe
+		expect(cogmButton(wrapper).text()).toBe(
 			"plan.components.production_recipe.buttons.cogm"
 		);
 

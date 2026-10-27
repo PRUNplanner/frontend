@@ -230,6 +230,22 @@ describe("PlanProductionBuilding", () => {
 		]);
 	});
 
+	it("goes down to 0 buildings, typed or with the minus button", async () => {
+		const { wrapper, component } = await mountBuilding({
+			buildingData: building({ amount: 1 }),
+		});
+		const input = wrapper.findComponent(PInputNumber);
+
+		await input.find("input").setValue("0");
+		await input.find('button[aria-label="common.ui.input_number.decrease"]').trigger("click");
+
+		// 0 is a valid count, not an empty field
+		expect(component.emitted("update:building:amount")).toEqual([
+			[2, 0],
+			[2, 0],
+		]);
+	});
+
 	it("emits a new amount without writing into the result (S9)", async () => {
 		const buildingData = building({ amount: 2 });
 		const { wrapper, component } = await mountBuilding({ buildingData });

@@ -112,7 +112,7 @@
 		:aria-label="t('plan.results.label')"
 		class="tabular-nums">
 		<div
-			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))] @min-[72rem]:grid-cols-[1.5fr_repeat(6,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
+			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(3,minmax(0,1fr))] @min-[72rem]:grid-cols-[1.5fr_repeat(5,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
 			<div class="py-1.5 @min-[48rem]:pr-3">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
@@ -144,20 +144,9 @@
 					}}
 				</div>
 			</div>
-			<div class="py-1.5 @min-[48rem]:px-3 @max-[48rem]:hidden">
-				<div :class="head">
-					<span :class="label">{{ t("plan.results.profit_area") }}</span>
-					<span :class="value"><PValue :value="profitPerArea" /></span>
-				</div>
-				<div v-if="empireProfitPerArea !== undefined" :class="sub">
-					{{
-						t("plan.results.empire_average", {
-							value: formatNumber(empireProfitPerArea, 2, false, true),
-						})
-					}}
-				</div>
-			</div>
-			<div class="py-1.5 @min-[48rem]:px-3">
+			<!-- area and what it earns: used of total over its meter, the
+				profit per used area (and the empire's) below -->
+			<div class="py-1.5 @min-[48rem]:px-3" data-area>
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.area") }}</span>
 					<span :class="value">
@@ -174,6 +163,24 @@
 					:value="area.areaUsed"
 					:max="area.areaTotal"
 					:label="t('plan.results.area')" />
+				<div
+					class="flex flex-wrap items-baseline gap-x-1.5 mt-1 text-xs text-muted"
+					data-profit-area>
+					<span class="text-sm font-medium">
+						<PValue :value="profitPerArea" />
+					</span>
+					{{ t("plan.results.profit_per_area") }}
+					<span
+						v-if="empireProfitPerArea !== undefined"
+						class="@max-[60rem]:hidden">
+						·
+						{{
+							t("plan.results.empire_average", {
+								value: formatNumber(empireProfitPerArea, 2, false, true),
+							})
+						}}
+					</span>
+				</div>
 			</div>
 			<div class="py-1.5 @min-[48rem]:px-3 @max-[48rem]:hidden">
 				<div :class="head">

@@ -263,7 +263,7 @@
 		:data-building="localBuildingData.name">
 		<!-- a phone: tile, name and delete; under them the count and ȼ/day -->
 		<div
-			class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] @max-[40rem]/prod:grid-cols-[2.75rem_minmax(0,1fr)_auto]! gap-x-2 @max-[40rem]/prod:gap-y-2 items-center py-2 pl-2 border-l-2 tabular-nums"
+			class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_2.75rem] @max-[40rem]/prod:grid-cols-[2.75rem_minmax(0,1fr)_auto]! gap-x-2 @max-[40rem]/prod:gap-y-2 items-center py-2 pl-2 border-l-2 tabular-nums"
 			:class="
 				localBuildingData.amount > 0
 					? 'border-l-transparent'
