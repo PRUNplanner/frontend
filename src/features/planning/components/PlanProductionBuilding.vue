@@ -509,11 +509,16 @@
 				</template>
 			</div>
 
+			<!-- in the brand yellow, so a second order is easy to find -->
 			<button
 				v-if="!disabled && localBuildingData.recipeOptions.length > 0"
 				type="button"
-				class="min-h-7 pointer-coarse:min-h-11 px-1 text-xs cursor-pointer hover:text-white"
-				:class="picker === null ? 'text-white' : 'text-muted-strong'"
+				class="inline-flex items-center h-7 pointer-coarse:min-h-11 my-1 px-2.5 rounded-control border text-xs font-medium text-prunplanner cursor-pointer transition-colors hover:border-prunplanner hover:bg-prunplanner/10"
+				:class="
+					picker === null
+						? 'border-prunplanner bg-prunplanner/15'
+						: 'border-prunplanner/40'
+				"
 				:aria-expanded="picker === null ? 'true' : 'false'"
 				data-add-recipe
 				@click="picker === null ? emit('close:picker') : emit('open:picker', null)">

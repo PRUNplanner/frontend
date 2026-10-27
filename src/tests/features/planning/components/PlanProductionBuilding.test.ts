@@ -444,6 +444,16 @@ describe("PlanProductionBuilding", () => {
 			expect(addRecipe(wrapper).attributes("aria-expanded")).toBe("false");
 		});
 
+		it("shows + Recipe in the brand yellow, filled while its picker is open", async () => {
+			const { wrapper, setProps } = await mountBuilding();
+
+			expect(addRecipe(wrapper).classes()).toContain("text-prunplanner");
+			expect(addRecipe(wrapper).classes()).not.toContain("bg-prunplanner/15");
+
+			await setProps({ picker: null });
+			expect(addRecipe(wrapper).classes()).toContain("bg-prunplanner/15");
+		});
+
 		it("change: opens under its order and emits the replacement", async () => {
 			const { wrapper, component } = await mountBuilding({
 				picker: 1,
