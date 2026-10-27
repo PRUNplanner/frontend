@@ -13,6 +13,7 @@
 	} from "@/features/planning/usePlanCalculation.types";
 	import type { IPlanCompare } from "@/features/sharing/sharedPlan.types";
 	import type { IMarketCheck } from "@/features/cx/marketCheck.types";
+	import type { ResultTile } from "@/features/planning/planView.util";
 
 	// Components
 	import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
@@ -58,7 +59,8 @@
 		compare?: IPlanCompare;
 	}>();
 
-	const emit = defineEmits<{ (e: "open:planCheck"): void }>();
+	// a tile opens where its figure comes from
+	const emit = defineEmits<{ (e: "open", tile: ResultTile): void }>();
 
 	const profitPerArea = computed(() =>
 		area.areaUsed > 0 ? overview.profit / area.areaUsed : 0
@@ -105,6 +107,9 @@
 	// page width (tablets, phones) only the figures show
 	const sub = "text-xs text-muted text-balance @max-[60rem]:hidden";
 	const value = "text-lg font-medium text-ink-strong text-nowrap";
+	// every tile is a button: a quiet hover, the figures stay put
+	const tile =
+		"py-1.5 text-left cursor-pointer hover:bg-hover focus-visible:bg-hover transition-colors";
 </script>
 
 <template>
@@ -113,7 +118,7 @@
 		class="tabular-nums">
 		<div
 			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(3,minmax(0,1fr))] @min-[72rem]:grid-cols-[1.5fr_repeat(5,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
-			<div class="py-1.5 @min-[48rem]:pr-3">
+			<button type="button" :class="[tile, '@min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
 					<span class="text-xl font-medium leading-tight">
@@ -130,8 +135,8 @@
 						})
 					}}
 				</div>
-			</div>
-			<div class="py-1.5 @min-[48rem]:px-3">
+			</button>
+			<button type="button" :class="[tile, '@min-[48rem]:px-3']" data-tile="payback" @click="emit('open', 'payback')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.payback") }}</span>
 					<span :class="value">{{ formatPayback(overview.roi) }}</span>
@@ -143,10 +148,10 @@
 						})
 					}}
 				</div>
-			</div>
+			</button>
 			<!-- area and what it earns: used of total over its meter, the
 				profit per used area (and the empire's) below -->
-			<div class="py-1.5 @min-[48rem]:px-3" data-area>
+			<button type="button" :class="[tile, '@min-[48rem]:px-3']" data-tile="area" data-area @click="emit('open', 'area')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.area") }}</span>
 					<span :class="value">
@@ -181,8 +186,8 @@
 						}}
 					</span>
 				</div>
-			</div>
-			<div class="py-1.5 @min-[48rem]:px-3 @max-[48rem]:hidden">
+			</button>
+			<button type="button" :class="[tile, '@min-[48rem]:px-3 @max-[48rem]:hidden']" data-tile="storage" @click="emit('open', 'storage')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.storage") }}</span>
 					<span :class="value">
@@ -209,10 +214,10 @@
 						})
 					}}
 				</div>
-			</div>
+			</button>
 			<!-- the quick checks: below 72rem of page width only the figures
 				before them show -->
-			<div class="py-1.5 px-3 @max-[72rem]:hidden">
+			<button type="button" :class="[tile, 'px-3 @max-[72rem]:hidden']" data-tile="workforce" @click="emit('open', 'workforce')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.workforce") }}</span>
 					<span
@@ -230,12 +235,8 @@
 					data-workforce-note>
 					{{ workforceNote }}
 				</div>
-			</div>
-			<button
-				type="button"
-				class="py-1.5 pl-3 text-left cursor-pointer hover:bg-hover @max-[72rem]:hidden"
-				data-market
-				@click="emit('open:planCheck')">
+			</button>
+			<button type="button" :class="[tile, 'pl-3 @max-[72rem]:hidden']" data-tile="market" data-market @click="emit('open', 'market')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.market") }}</span>
 					<span v-if="flags.red" :class="[value, 'text-negative!']">

@@ -1,3 +1,4 @@
+import type { ResultTile } from "@/features/planning/planView.util";
 import type { HomepageTourName } from "@/features/homepage/homepageTour.types";
 import type {
 	NavArea,
@@ -261,6 +262,8 @@ export interface IAnalyticsEventProperties {
 	"plan:recipe_picker_undo": undefined;
 	"plan:panel_fold": { panel: "base" | "io"; folded: boolean };
 	"plan:overlay_open": { panel: "base" | "io" };
+	// a results bar tile clicked, opening where its figure comes from
+	"plan:result_tile": { tile: ResultTile };
 	"plan:section_view": { section: "production" | "base" | "io" | "tools" };
 	"plan:io_view": {
 		source: "all" | "production" | "workforce";

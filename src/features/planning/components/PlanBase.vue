@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed } from "vue";
+	import { computed, useTemplateRef } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -28,6 +28,7 @@
 	} from "@/features/api/schemas/gameData.schemas";
 	import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 	import type { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
+	import type { BaseSection } from "@/features/planning/planView.util";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -140,11 +141,24 @@
 	const head =
 		"flex items-center gap-2 h-10 pointer-coarse:h-11 px-3 cursor-pointer list-none hover:bg-hover [&::-webkit-details-marker]:hidden";
 	const body = "px-3 pb-3";
+
+	// a results tile opens its section: open, in view and focused
+	const root = useTemplateRef<HTMLElement>("root");
+	function openSection(key: BaseSection): void {
+		const details = root.value?.querySelector<HTMLDetailsElement>(
+			`details[data-section="${key}"]`
+		);
+		if (!details) return;
+		details.open = true;
+		details.scrollIntoView({ block: "nearest", behavior: "smooth" });
+		details.querySelector("summary")?.focus({ preventScroll: true });
+	}
+	defineExpose({ openSection });
 </script>
 
 <template>
-	<div class="text-sm">
-		<details :class="section">
+	<div ref="root" class="text-sm">
+		<details :class="section" data-section="empire">
 			<summary :class="head">
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.empire.label") }}
@@ -169,7 +183,7 @@
 			</div>
 		</details>
 
-		<details :class="section" open>
+		<details :class="section" data-section="planet" open>
 			<summary :class="head">
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.planet.label") }}
@@ -254,7 +268,7 @@
 			</div>
 		</details>
 
-		<details :class="section" open>
+		<details :class="section" data-section="workforce" open>
 			<summary :class="head">
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.workforce.label") }}
@@ -273,7 +287,7 @@
 			</div>
 		</details>
 
-		<details :class="section">
+		<details :class="section" data-section="housing">
 			<summary :class="head">
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.housing.label") }}
@@ -301,7 +315,7 @@
 			</div>
 		</details>
 
-		<details :class="section" open>
+		<details :class="section" data-section="experts" open>
 			<summary :class="head">
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.experts.label") }}

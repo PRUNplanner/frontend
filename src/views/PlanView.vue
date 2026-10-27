@@ -96,7 +96,9 @@
 		foldedPanes,
 		materialIOCsv,
 		materialIOTotals,
+		type BaseSection,
 		type PlanTool,
+		type ResultTile,
 	} from "@/features/planning/planView.util";
 	import {
 		breadcrumbEmpire,
@@ -531,6 +533,35 @@
 		refBaseOverlay.value = false;
 		refIOOverlay.value = false;
 		if (open) document.querySelector<HTMLElement>(open)?.focus();
+	}
+
+	// a results tile opens where its figure comes from: a Base section, in
+	// whatever form Base has (a phone's section, the overlay below 81rem of
+	// page width, a folded strip), or a tool in place of the production list
+	const refLayout = useTemplateRef<HTMLElement>("layout");
+	const refBase = useTemplateRef<{ openSection: (s: BaseSection) => void }>(
+		"base"
+	);
+	function openBase(section: BaseSection): void {
+		if (refIsPhone.value) showSection("base");
+		refBasePinned.value = true;
+		const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+		if ((refLayout.value?.clientWidth ?? Infinity) < 81 * rem)
+			refBaseOverlay.value = true;
+		nextTick(() => refBase.value?.openSection(section));
+	}
+	function openTool(key: PlanTool): void {
+		if (refIsPhone.value) showSection("tools");
+		if (refShowTool.value !== key) toggleTool(key);
+	}
+	function openTile(tile: ResultTile): void {
+		trackEvent("plan:result_tile", { tile });
+		if (tile === "area") openBase("planet");
+		else if (tile === "workforce") openBase("workforce");
+		else if (tile === "profit") openTool("profit-breakdown");
+		else if (tile === "payback") openTool("construction-cart");
+		else if (tile === "storage") openTool("supply-cart");
+		else openPlanCheck();
 	}
 
 	/*
@@ -1444,6 +1475,7 @@
 	<!-- a phone keeps the last rows clear of the Save bar and the app's
 		bottom bar as well -->
 	<div
+		ref="layout"
 		class="@container pb-16 max-md:pb-36 [&_*]:scroll-mt-24">
 		<!-- Header: name, history, save state and the plan's actions -->
 		<header
@@ -1574,7 +1606,7 @@
 					refEmpireUuid ? cachedProfitPerArea(refEmpireUuid) : undefined
 				"
 				:compare="sharedCompare"
-				@open:plan-check="openPlanCheck" />
+				@open="openTile" />
 			<!-- a phone: one section at a time -->
 			<PlanToolTabs
 				v-if="refIsPhone"
@@ -1640,6 +1672,7 @@
 					</PButton>
 				</div>
 				<PlanBase
+					ref="base"
 					:disabled="disabled"
 					:result="result"
 					:planet="planetData"
