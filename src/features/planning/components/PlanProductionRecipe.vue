@@ -153,7 +153,7 @@
 	</PModal>
 
 	<div
-		class="grid grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_4.5rem_2.75rem] @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto]! gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 -ml-2 pl-2 rounded-sm @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
+		class="grid @min-[40rem]/prod:grid-cols-subgrid @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto] gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 -ml-2 pl-2 rounded-sm @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
 		:class="striped ? 'bg-white/3' : ''"
 		data-recipe-row>
 		<PInputNumber
@@ -174,12 +174,13 @@
 						emit('update:building:recipe:amount', recipeIndex, value);
 				}
 			" />
-		<!-- the whole column opens the picker: inputs → outputs on the left,
-			spaced so the tiles don't touch, the opener at the right edge of
-			the column, so it lines up from row to row -->
+		<!-- the whole recipe opens the picker. It spans three columns of the
+			building's grid (subgrid): the inputs, the arrow and outputs (both as
+			wide as the widest of the plan, so they line up across buildings)
+			and the opener at the right edge. A phone wraps. -->
 		<button
 			type="button"
-			class="group @max-[40rem]/prod:col-span-4 min-w-0 w-full flex items-center gap-3 min-h-9 pointer-coarse:min-h-11 px-1.5 py-1 rounded-control text-left"
+			class="group @max-[40rem]/prod:col-span-4 @min-[40rem]/prod:col-span-3 @min-[40rem]/prod:grid @min-[40rem]/prod:grid-cols-subgrid min-w-0 w-full flex flex-wrap items-center gap-3 @min-[40rem]/prod:gap-x-2 min-h-9 pointer-coarse:min-h-11 px-1.5 py-1 rounded-control text-left"
 			:class="[
 				pickerOpen ? 'bg-hover ring-1 ring-line-strong' : '',
 				disabled ? 'cursor-default' : 'cursor-pointer hover:bg-hover',
@@ -191,12 +192,13 @@
 			"
 			data-recipe-button
 			@click="emit('open:picker', recipeIndex)">
-			<span
-				v-if="isNew"
-				class="text-xs font-bold uppercase text-positive">
-				{{ t("sharing.compare.new") }}
-			</span>
-			<span class="flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0">
+			<!-- the inputs column -->
+			<span class="flex flex-wrap items-center gap-1.5 min-w-0">
+				<span
+					v-if="isNew"
+					class="text-xs font-bold uppercase text-positive">
+					{{ t("sharing.compare.new") }}
+				</span>
 				<span
 					v-if="localRecipeData.recipe.inputs.length"
 					class="flex flex-wrap items-center gap-1.5"
@@ -209,6 +211,9 @@
 						disable-drawer
 						:enable-popover="false" />
 				</span>
+			</span>
+			<!-- the outputs column: the arrow and outputs -->
+			<span class="flex items-center min-w-0">
 				<span
 					class="flex flex-wrap items-center gap-1.5"
 					data-recipe-outputs>
@@ -229,18 +234,23 @@
 						:enable-popover="false" />
 				</span>
 			</span>
-			<span
-				v-if="!disabled"
-				class="ml-auto shrink-0 flex items-center gap-0.5 h-6 pl-2 pr-1 @max-[48rem]/prod:px-0.5 rounded-control border border-line text-xs text-muted-strong group-hover:border-line-strong group-hover:text-ink-strong"
-				:class="pickerOpen ? 'border-line-strong text-ink-strong' : ''">
-				<!-- a narrow production column keeps only the chevron -->
-				<span class="@max-[48rem]/prod:hidden">
-					{{ t("plan.production.recipe") }}
+			<!-- the rest of the row: the opener at its end; on a phone it wraps
+				under the tiles rather than run past the edge -->
+			<span class="flex flex-1 justify-end">
+				<span
+					v-if="!disabled"
+					class="ml-auto shrink-0 flex items-center gap-0.5 h-6 pl-2 pr-1 @max-[56rem]/prod:px-0.5 rounded-control border border-line text-xs text-muted-strong group-hover:border-line-strong group-hover:text-ink-strong"
+					:class="pickerOpen ? 'border-line-strong text-ink-strong' : ''">
+					<!-- a production column under 56rem keeps only the chevron: the
+						aligned tile columns need the room -->
+					<span class="@max-[56rem]/prod:hidden">
+						{{ t("plan.production.recipe") }}
+					</span>
+					<PIcon :size="16">
+						<ExpandLessSharp v-if="pickerOpen" />
+						<ExpandMoreSharp v-else />
+					</PIcon>
 				</span>
-				<PIcon :size="16">
-					<ExpandLessSharp v-if="pickerOpen" />
-					<ExpandMoreSharp v-else />
-				</PIcon>
 			</span>
 		</button>
 		<!-- runtime over share, one column: the tiles get the room; a phone

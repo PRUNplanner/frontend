@@ -373,6 +373,21 @@ describe("PlanProductionBuilding", () => {
 		);
 	});
 
+	it("says when the building can make nothing here", async () => {
+		const { wrapper } = await mountBuilding({
+			buildingData: building({ activeRecipes: [], recipeOptions: [] }),
+		});
+
+		// no options: nothing to add, so no "no active recipes" either
+		expect(wrapper.text()).toContain(
+			"plan.components.production_building.no_recipe_available"
+		);
+		expect(
+			wrapper.text().replace("no_recipe_available", "")
+		).not.toContain("plan.components.production_building.no_recipe");
+		expect(wrapper.find("[data-add-recipe]").exists()).toBe(false);
+	});
+
 	describe("fold", () => {
 		it("toggles from the name, folded hides the recipes and shows the outputs", async () => {
 			const { wrapper, component, setProps } = await mountBuilding();

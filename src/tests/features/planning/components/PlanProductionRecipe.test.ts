@@ -161,7 +161,7 @@ describe("PlanProductionRecipe", () => {
 		expect(wrapper.text()).toContain("1d 0h 0m");
 	});
 
-	it("hides the opener's label in a narrow production column", async () => {
+	it("hides the opener's label in a production column under 56rem", async () => {
 		const { wrapper } = await mountRecipe();
 
 		// the label's own span, not the box around it and the chevron
@@ -173,7 +173,7 @@ describe("PlanProductionRecipe", () => {
 					s.element.children.length === 0
 			);
 		expect(label).toHaveLength(1);
-		expect(label[0].classes()).toContain("@max-[48rem]/prod:hidden");
+		expect(label[0].classes()).toContain("@max-[56rem]/prod:hidden");
 	});
 
 	it("stripes the row when asked", async () => {

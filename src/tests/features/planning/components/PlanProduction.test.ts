@@ -142,6 +142,38 @@ describe("PlanProduction", () => {
 		trackEvent.mockReset();
 	});
 
+	it("sizes the recipe columns after the plan's widest inputs and outputs", async () => {
+		const { wrapper, setProps } = await mountProduction();
+		const root = wrapper.find('[class~="@container/prod"]')
+			.element as HTMLElement;
+		// tile groups as the recipe rows render them; jsdom lays out nothing,
+		// so their tiles get a width of their own
+		const group = (attr: string, widths: number[]) => {
+			const el = document.createElement("span");
+			el.setAttribute(attr, "");
+			el.style.columnGap = "6px";
+			for (const w of widths) {
+				const tile = document.createElement("span");
+				Object.defineProperty(tile, "offsetWidth", { value: w });
+				el.append(tile);
+			}
+			root.append(el);
+		};
+		group("data-recipe-inputs", [40, 50]);
+		group("data-recipe-inputs", [60, 60, 60]);
+		group("data-recipe-outputs", [16, 70]);
+
+		await setProps({
+			productionData: { buildings: [building("SME")], materialio: [] },
+		});
+		await flushPromises();
+
+		// tiles and gaps in one line, plus 2px slack: 3 × 60 + 2 × 6 + 2
+		expect(root.style.getPropertyValue("--recipe-in")).toBe("194px");
+		// 16 + 6 + 70 + 2
+		expect(root.style.getPropertyValue("--recipe-out")).toBe("94px");
+	});
+
 	it("offers the planet's popular buildings first", async () => {
 		insights.available = ref(true);
 		const { wrapper } = await mountProduction();

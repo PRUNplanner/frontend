@@ -292,9 +292,11 @@
 				class="flex items-center justify-center h-6 rounded-control border border-line-strong bg-surface text-xs font-bold text-ink-strong">
 				{{ localBuildingData.name }}
 			</span>
+			<!-- name over what lifts it; a wide production column puts both on
+				one line, the name whole, the rest cut short (all of it on hover) -->
 			<button
 				type="button"
-				class="min-w-0 pointer-coarse:min-h-11 text-left cursor-pointer"
+				class="min-w-0 pointer-coarse:min-h-11 text-left cursor-pointer @min-[48rem]/prod:flex @min-[48rem]/prod:items-center @min-[48rem]/prod:gap-x-3"
 				:aria-expanded="folded ? 'false' : 'true'"
 				:aria-label="
 					t('plan.production.fold', {
@@ -303,7 +305,7 @@
 				"
 				@click="emit('toggle:fold')">
 				<span
-					class="flex items-center gap-1 font-medium text-ink-strong">
+					class="flex items-center gap-1 font-medium text-ink-strong @min-[48rem]/prod:shrink-0 @min-[48rem]/prod:max-w-[60%]">
 					<span
 						class="truncate @max-[40rem]/prod:whitespace-normal"
 						:title="t(`game.building.${localBuildingData.name}`)">
@@ -329,7 +331,9 @@
 						{{ t(`sharing.compare.${kind}`) }}
 					</span>
 				</span>
-				<span class="block text-xs text-muted line-clamp-2" :title="subLine">
+				<span
+					class="block text-xs text-muted line-clamp-2 @min-[48rem]/prod:min-w-0 @min-[48rem]/prod:truncate"
+					:title="subLine">
 					<span v-if="zeroReason" class="text-negative">
 						{{ t(zeroReason) }} ·
 					</span>
@@ -416,9 +420,15 @@
 			</button>
 		</div>
 
+		<!-- one grid for the building's orders (their rows use its columns):
+			amount, inputs (they wrap first when tight) and arrow + outputs (never
+			squeezed) as wide as the widest of the whole
+			plan (PlanProduction measures them), so they line up across
+			buildings; the opener, runtime, ȼ/day, COGM, delete. Everything else
+			in it spans the full width -->
 		<div
 			v-if="!folded"
-			class="ml-4 mb-2 pl-3 border-l border-line"
+			class="ml-4 mb-2 pl-3 border-l border-line @min-[40rem]/prod:grid @min-[40rem]/prod:grid-cols-[5rem_minmax(0,var(--recipe-in,12rem))_var(--recipe-out,8rem)_minmax(min-content,1fr)_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:@min-[40rem]/prod:grid-cols-[5rem_minmax(0,var(--recipe-in,12rem))_var(--recipe-out,8rem)_minmax(min-content,1fr)_4.5rem_6.5rem_4.5rem_2.75rem] @min-[40rem]/prod:gap-x-2 @min-[40rem]/prod:[&>*]:col-span-full"
 			data-recipes>
 			<template
 				v-for="(recipe, index) in localBuildingData.activeRecipes"
@@ -475,8 +485,13 @@
 			<div
 				v-if="localBuildingData.activeRecipes.length === 0"
 				class="flex flex-wrap items-center gap-x-2.5 gap-y-1 py-2 text-muted text-xs">
+				<!-- nothing ordered yet, or nothing this building can make here -->
 				<span>
-					{{ t("plan.components.production_building.no_recipe") }}
+					{{
+						localBuildingData.recipeOptions.length
+							? t("plan.components.production_building.no_recipe")
+							: t("plan.components.production_building.no_recipe_available")
+					}}
 				</span>
 				<template v-if="typicalMix">
 					<span>
@@ -513,7 +528,7 @@
 			<button
 				v-if="!disabled && localBuildingData.recipeOptions.length > 0"
 				type="button"
-				class="inline-flex items-center h-7 pointer-coarse:min-h-11 my-1 px-2.5 rounded-control border text-xs font-medium text-prunplanner cursor-pointer transition-colors hover:border-prunplanner hover:bg-prunplanner/10"
+				class="inline-flex items-center h-7 pointer-coarse:min-h-11 my-1 justify-self-start px-2.5 rounded-control border text-xs font-medium text-prunplanner cursor-pointer transition-colors hover:border-prunplanner hover:bg-prunplanner/10"
 				:class="
 					picker === null
 						? 'border-prunplanner bg-prunplanner/15'

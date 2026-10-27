@@ -596,6 +596,7 @@
 		},
 		"production_building": {
 			"no_recipe": "No Active @:terms.recipes_plural",
+			"no_recipe_available": "No recipe available for this building",
 			"zero_reason": {
 				"FERTILITY": "Planet not fertile",
 				"WORKFORCE": "No workforce housed"
