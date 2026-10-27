@@ -153,7 +153,7 @@ describe("PlanResultsBar", () => {
 		expect(profit.text()).toContain("+1,234.50");
 		expect(profit.find(".text-positive").exists()).toBe(true);
 		expect(profit.text()).toContain(
-			"Revenue 5,000.00 · cost 3,765.50 incl. 12.00 degradation"
+			"Revenue\u00a05,000.00 · cost\u00a03,765.50 incl.\u00a012.00\u00a0degradation"
 		);
 	});
 

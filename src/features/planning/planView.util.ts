@@ -33,7 +33,9 @@ const WIDE_TOOLS: PlanTool[] = [
 ];
 
 /**
- * Which side panes fold while a tool replaces the production list
+ * Which side panes fold: Base always (the CSS keeps that to 81–100rem of
+ * page width, where Production would get too narrow next to both panes),
+ * Material I/O for the wide tools
  *
  * @author jplacht
  *
@@ -45,7 +47,7 @@ export function foldedPanes(tool: PlanTool | null): {
 	io: boolean;
 } {
 	return {
-		base: tool !== null,
+		base: true,
 		io: tool !== null && WIDE_TOOLS.includes(tool),
 	};
 }

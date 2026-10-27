@@ -28,6 +28,9 @@ import {
 	setupPlanViewSuite,
 	supplyCart,
 } from "@/tests/views/PlanView.harness";
+
+// the other empire the fixture plan is in, after Sky Productions
+const PRUN_REAL = "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6";
 import { describe, it, expect, vi } from "vitest";
 import {
 	DOMWrapper,
@@ -385,7 +388,10 @@ describe("PlanView", () => {
 		const { wrapper } = await mountView();
 		const strip = (name: string) => wrapper.find(`[data-${name}-strip]`);
 		const pane = (name: string) => wrapper.find(`[data-${name}-pane]`);
-		expect(strip("base").exists()).toBe(false);
+		// between 81rem and 100rem of page width Base starts folded, on the
+		// production list too, so Production keeps its width; Material I/O stays
+		expect(strip("base").exists()).toBe(true);
+		expect(strip("base").classes()).toContain("@min-[81rem]:@max-[100rem]:flex");
 		expect(strip("io").exists()).toBe(false);
 
 		constructionCart.open();
@@ -801,6 +807,48 @@ describe("PlanView", () => {
 			cx: "Universe",
 			empire: "none",
 		});
+		calcDebug.value = false;
+	});
+
+	it("calculates with the navigation's empire when the plan is in several", async () => {
+		calcDebug.value = true;
+		// the plan is in Sky Productions (listed first) and PRUN REAL; the
+		// navigation shows PRUN REAL
+		const { wrapper } = await mountView(
+			{ empireList: empires() },
+			{
+				seed: ({ user, planning }) => {
+					planning.setEmpires(empires());
+					planning.setCXs(cxs());
+					user.preferences.defaultEmpireUuid = PRUN_REAL;
+				},
+			}
+		);
+		await openDebug(wrapper);
+
+		expect(
+			wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta")
+		).toMatchObject({ empire: "PRUN REAL" });
+		calcDebug.value = false;
+	});
+
+	it("falls back to the plan's first empire when the navigation's isn't one", async () => {
+		calcDebug.value = true;
+		const { wrapper } = await mountView(
+			{ empireList: empires() },
+			{
+				seed: ({ user, planning }) => {
+					planning.setEmpires(empires());
+					planning.setCXs(cxs());
+					user.preferences.defaultEmpireUuid = SHARE_EMPIRE;
+				},
+			}
+		);
+		await openDebug(wrapper);
+
+		expect(
+			wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta")
+		).toMatchObject({ empire: "Sky Productions" });
 		calcDebug.value = false;
 	});
 

@@ -389,14 +389,22 @@
 	 * Handle initial empire uuid assignment
 	 *
 	 * Option A: no empire list => undefined
-	 * Option B: planData has empires in list, use first uuid
+	 * Option B: planData has empires in list: the empire the navigation
+	 *   shows when the plan is in it (as the breadcrumb), else its first
 	 * Option C: empire list => use first element
 	 * Fallback: undefined
 	 */
 	if (!props.empireList) {
 		refEmpireUuid.value = undefined;
 	} else if (planEmpires.value.length > 0) {
-		refEmpireUuid.value = planEmpires.value[0].uuid;
+		const current = pickEmpire(
+			Object.values(planningStore.empires),
+			userStore.preferences.defaultEmpireUuid
+		);
+		refEmpireUuid.value = (
+			planEmpires.value.find((e) => e.uuid === current?.uuid) ??
+			planEmpires.value[0]
+		).uuid;
 		// update cx uuid
 		refCXUuid.value = findEmpireCXUuid(refEmpireUuid.value);
 	} else if (props.empireList && props.empireList.length > 0) {
@@ -1755,18 +1763,19 @@
 				class="flex-1 min-w-0 w-full">
 				<div
 					v-if="!refIsPhone"
-					class="flex items-center gap-2 border-b border-line">
+					class="flex items-start gap-2 border-b border-line">
 					<PButton
 						type="secondary"
 						size="sm"
-						class="hidden md:@max-[81rem]:flex shrink-0"
+						class="hidden md:@max-[81rem]:flex shrink-0 mt-2"
 						data-base-toggle
 						:aria-expanded="refBaseOverlay ? 'true' : 'false'"
 						@click="toggleOverlay('base')">
 						<template #icon><MenuOpenSharp /></template>
 						{{ t("plan.base.label") }}
 					</PButton>
-					<!-- a narrow row wraps instead of hiding tabs behind I/O -->
+					<!-- a narrow row wraps instead of hiding tabs behind I/O;
+						Base and I/O stay on its first line -->
 					<PlanToolTabs
 						class="flex-wrap"
 						:tabs="toolTabs"
@@ -1776,7 +1785,7 @@
 					<PButton
 						type="secondary"
 						size="sm"
-						class="hidden md:@max-[71rem]:flex shrink-0 ml-auto"
+						class="hidden md:@max-[71rem]:flex shrink-0 ml-auto mt-2"
 						data-io-toggle
 						:aria-expanded="refIOOverlay ? 'true' : 'false'"
 						@click="toggleOverlay('io')">

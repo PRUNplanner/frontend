@@ -350,8 +350,7 @@
 				"experts": "Experts",
 				"production_buildings": "Production @:terms.buildings_plural",
 				"recipes": "@:terms.recipes_plural"
-			},
-			"toggle": "Toggle insights"
+			}
 		},
 		"plan_starter": {
 			"title": "Start from a typical setup on {planet}",
@@ -629,7 +628,7 @@
 	"results": {
 		"label": "Plan results",
 		"profit": "Profit / day",
-		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation",
+		"revenue_cost": "Revenue\u00a0{revenue} · cost\u00a0{cost} incl.\u00a0{degradation}\u00a0degradation",
 		"payback": "Payback",
 		"build": "Build {cost} ȼ",
 		"profit_per_area": "ȼ profit / area",
@@ -733,6 +732,7 @@
 		"columns": {
 			"makes": "Makes",
 			"from": "From",
+			"runtime": "Runtime",
 			"daily": "ȼ / day",
 			"area": "ȼ / area",
 			"payback": "Payback",

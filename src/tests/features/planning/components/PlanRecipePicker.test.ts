@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { humanizeTimeMs } from "@/util/date";
 import { h } from "vue";
 import type { VueWrapper } from "@vue/test-utils";
 
@@ -182,6 +183,16 @@ describe("PlanRecipePicker", () => {
 		expect(wrapper.text()).toContain("plan.picker.change_title");
 		// the highlight starts on the first selectable row
 		expect(highlighted(wrapper)).toBe("AL");
+	});
+
+	it("shows the runtime in a column of its own", async () => {
+		const { wrapper } = await mountPicker();
+
+		expect(wrapper.text()).toContain("plan.picker.columns.runtime");
+		// every option takes an hour per run
+		expect(
+			options(wrapper).map((o) => o.find("[data-runtime]").text())
+		).toEqual(Array(4).fill(humanizeTimeMs(3600000)));
 	});
 
 	it("add: lists the recipes already ordered last, still selectable", async () => {
