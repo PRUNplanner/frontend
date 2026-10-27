@@ -22,7 +22,6 @@
 
 	// Components
 	import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import PlanCheckMarket from "@/features/planning/components/tools/PlanCheckMarket.vue";
 	import PlanCheckTarget from "@/features/planning/components/tools/PlanCheckTarget.vue";
 
@@ -223,7 +222,6 @@
 					{{ t(`plan.tools.plan_check.views.${v}`) }}
 				</PButton>
 			</PButtonGroup>
-			<HelpDrawer file-name="plan" />
 			<div
 				v-if="shownView === 'sensitivity'"
 				class="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1">

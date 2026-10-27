@@ -163,7 +163,7 @@
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.empire.label") }}
 				</span>
-				<span class="text-xs text-muted truncate" :title="summary.empire">
+				<span class="text-xs text-muted truncate group-open:hidden" :title="summary.empire">
 					{{ summary.empire }}
 				</span>
 				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
@@ -188,7 +188,7 @@
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.planet.label") }}
 				</span>
-				<span class="text-xs text-muted truncate tabular-nums" :title="summary.planet">
+				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.planet">
 					{{ summary.planet }}
 				</span>
 				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
@@ -292,7 +292,7 @@
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.housing.label") }}
 				</span>
-				<span class="text-xs text-muted truncate tabular-nums" :title="summary.housing">
+				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.housing">
 					{{ summary.housing }}
 				</span>
 				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
@@ -320,7 +320,7 @@
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.experts.label") }}
 				</span>
-				<span class="text-xs text-muted truncate tabular-nums" :title="summary.experts">
+				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.experts">
 					{{ summary.experts }}
 				</span>
 				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>

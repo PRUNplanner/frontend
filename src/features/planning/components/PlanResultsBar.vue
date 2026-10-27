@@ -100,7 +100,8 @@
 	// page width (tablets, phones) only the figures show
 	const sub = "text-xs text-muted text-balance @max-[60rem]:hidden";
 	const value = "text-lg font-medium text-ink-strong text-nowrap";
-	// every tile is a button: a quiet hover, the figures stay put
+	// every tile is a button: a quiet hover, the figures stay put; the first
+	// and last visible tile reach into the bar's padding, so the hover does
 	const tile =
 		"py-1.5 text-left cursor-pointer hover:bg-hover focus-visible:bg-hover transition-colors";
 </script>
@@ -111,7 +112,7 @@
 		class="tabular-nums">
 		<div
 			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(3,minmax(0,1fr))] @min-[72rem]:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
-			<button type="button" :class="[tile, '@min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
+			<button type="button" :class="[tile, '@min-[48rem]:-ml-6 @min-[48rem]:pl-6 @min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
 					<span class="text-xl font-medium leading-tight">
@@ -180,7 +181,7 @@
 					</span>
 				</div>
 			</button>
-			<button type="button" :class="[tile, '@min-[48rem]:px-3 @max-[48rem]:hidden']" data-tile="storage" @click="emit('open', 'storage')">
+			<button type="button" :class="[tile, '@min-[48rem]:px-3 @min-[48rem]:@max-[72rem]:-mr-6 @min-[48rem]:@max-[72rem]:pr-6 @max-[48rem]:hidden']" data-tile="storage" @click="emit('open', 'storage')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.storage") }}</span>
 					<span :class="value">
@@ -210,7 +211,7 @@
 			</button>
 			<!-- the quick check: below 72rem of page width only the figures
 				before them show -->
-			<button type="button" :class="[tile, 'pl-3 @max-[72rem]:hidden']" data-tile="workforce" @click="emit('open', 'workforce')">
+			<button type="button" :class="[tile, 'pl-3 -mr-6 pr-6 @max-[72rem]:hidden']" data-tile="workforce" @click="emit('open', 'workforce')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.workforce") }}</span>
 					<span

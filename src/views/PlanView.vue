@@ -510,6 +510,28 @@
 		trackEvent("plan:panel_fold", { panel, folded: !pinned });
 	}
 
+	// the user folds Base by hand, at any width it sits side by side; a
+	// tool folds it only below 100rem of page width
+	const refBaseCollapsed: Ref<boolean> = ref(false);
+	function foldBase(): void {
+		refBaseCollapsed.value = true;
+		pinPane("base", false);
+	}
+	function unfoldBase(): void {
+		refBaseCollapsed.value = false;
+		pinPane("base", true);
+	}
+	// the same for Material I/O, side by side from 71rem; a wide tool folds it
+	const refIOCollapsed: Ref<boolean> = ref(false);
+	function foldIO(): void {
+		refIOCollapsed.value = true;
+		pinPane("io", false);
+	}
+	function unfoldIO(): void {
+		refIOCollapsed.value = false;
+		pinPane("io", true);
+	}
+
 	// below 1296 px of page width (a 1360 px window with the rail, 1544 px
 	// with the full sidebar) Base opens as an overlay from the tab row
 	const refBaseOverlay: Ref<boolean> = ref(false);
@@ -544,6 +566,7 @@
 	);
 	function openBase(section: BaseSection): void {
 		if (refIsPhone.value) showSection("base");
+		refBaseCollapsed.value = false;
 		refBasePinned.value = true;
 		const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
 		if ((refLayout.value?.clientWidth ?? Infinity) < 81 * rem)
@@ -1615,7 +1638,8 @@
 				@toggle="showSection" />
 		</div>
 
-		<!-- Set up → build → result, side by side; below 81rem of page width
+		<!-- Set up → build → result, side by side; from 100rem of page width
+			Base stays open with any tool, below it folds for a tool; below 81rem
 			Base, below 71rem Material I/O too open as overlays from the tab
 			row, so Production keeps the width; a phone shows one section -->
 		<div
@@ -1623,13 +1647,17 @@
 			@keydown.esc="closeOverlays">
 			<!-- Base -->
 			<button
-				v-if="baseFolded"
+				v-if="refBaseCollapsed || baseFolded"
 				type="button"
-				:class="strip"
-				class="hidden @min-[81rem]:flex"
+				:class="[
+					strip,
+					refBaseCollapsed
+						? 'hidden @min-[81rem]:flex'
+						: 'hidden @min-[81rem]:@max-[100rem]:flex',
+				]"
 				:aria-label="`${t('plan.layout.show_base')}: ${baseStrip}`"
 				data-base-strip
-				@click="pinPane('base', true)">
+				@click="unfoldBase">
 				<span :class="stripIcon">
 					<PIcon :size="16"><ChevronRightSharp /></PIcon>
 				</span>
@@ -1640,7 +1668,11 @@
 				:aria-label="t('plan.base.label')"
 				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-20 md:max-h-[calc(100dvh-6rem)] md:overflow-y-auto bg-(--app-bg)"
 				:class="[
-					baseFolded ? '@min-[81rem]:hidden' : '',
+					refBaseCollapsed
+						? '@min-[81rem]:hidden'
+						: baseFolded
+							? '@min-[81rem]:@max-[100rem]:hidden'
+							: '',
 					refBaseOverlay
 						? 'md:@max-[81rem]:absolute md:@max-[81rem]:left-6 md:@max-[81rem]:top-4 md:@max-[81rem]:z-50 md:@max-[81rem]:shadow-xl md:@max-[81rem]:bg-surface'
 						: 'md:@max-[81rem]:hidden',
@@ -1660,13 +1692,16 @@
 						<template #icon><CloseSharp /></template>
 						{{ t("plan.layout.close") }}
 					</PButton>
+					<!-- side by side (from 81rem) Base folds on request, at any width -->
 					<PButton
-						v-if="folded.base && refBasePinned"
 						type="ghost"
 						size="sm"
 						class="hidden @min-[81rem]:flex"
-						@click="pinPane('base', false)">
-						{{ t("plan.layout.fold") }}
+						data-base-fold
+						:aria-label="t('plan.layout.fold')"
+						:title="t('plan.layout.fold')"
+						@click="foldBase">
+						<template #icon><ChevronLeftSharp /></template>
 					</PButton>
 				</div>
 				<PlanBase
@@ -1847,13 +1882,13 @@
 
 			<!-- Material I/O -->
 			<button
-				v-if="ioFolded"
+				v-if="refIOCollapsed || ioFolded"
 				type="button"
 				:class="strip"
 				class="hidden @min-[71rem]:flex"
 				:title="t('plan.layout.show_io')"
 				data-io-strip
-				@click="pinPane('io', true)">
+				@click="unfoldIO">
 				<span :class="stripIcon">
 					<PIcon :size="16"><ChevronLeftSharp /></PIcon>
 				</span>
@@ -1870,7 +1905,7 @@
 				:aria-label="t('plan.components.materialio.label')"
 				class="shrink-0 w-full md:w-96 @min-[100rem]:w-112 rounded border border-line md:sticky md:top-20 bg-(--app-bg)"
 				:class="[
-					ioFolded ? '@min-[71rem]:hidden' : '',
+					refIOCollapsed || ioFolded ? '@min-[71rem]:hidden' : '',
 					refIOOverlay
 						? 'md:@max-[71rem]:absolute md:@max-[71rem]:right-6 md:@max-[71rem]:top-4 md:@max-[71rem]:z-50 md:@max-[71rem]:w-96 md:@max-[71rem]:shadow-xl md:@max-[71rem]:bg-surface'
 						: 'md:@max-[71rem]:hidden',
@@ -1897,11 +1932,14 @@
 						{{ t("plan.layout.close") }}
 					</PButton>
 					<PButton
-						v-if="folded.io && refIOPinned"
 						type="ghost"
 						size="sm"
-						@click="pinPane('io', false)">
-						{{ t("plan.layout.fold") }}
+						class="hidden @min-[71rem]:flex"
+						data-io-fold
+						:aria-label="t('plan.layout.fold')"
+						:title="t('plan.layout.fold')"
+						@click="foldIO">
+						<template #icon><ChevronRightSharp /></template>
 					</PButton>
 				</div>
 				<div

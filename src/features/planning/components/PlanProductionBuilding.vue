@@ -187,18 +187,29 @@
 			: `game.efficiency_type.${type}`;
 	});
 
-	// "Agriculture · COGC · 3 experts": what lifts the efficiency
 	// a recipe's ȼ per building and day, as the picker shows it
 	const optionDaily = (recipeId: string): number =>
 		localBuildingData.value.recipeOptions.find((o) => o.recipe_id === recipeId)
 			?.dailyRevenue ?? 0;
 
+	// "✓ Agriculture · 3 experts": the expertise green with a tick when the
+	// planet's COGC lifts it, red with a cross when not, then what else
+	// lifts the efficiency
+	const cogcMatch = computed(() =>
+		localBuildingData.value.efficiencyElements.some(
+			(e) => e.efficiencyType === "COGC"
+		)
+	);
 	const subParts: ComputedRef<string[]> = computed(() => {
 		const b = localBuildingData.value;
 		const parts: string[] = [];
-		if (b.expertise) parts.push(t(`game.expertise.${b.expertise}`));
 		for (const e of b.efficiencyElements) {
-			if (e.efficiencyType === "WORKFORCE" || e.value === 1) continue;
+			if (
+				e.efficiencyType === "WORKFORCE" ||
+				e.efficiencyType === "COGC" ||
+				e.value === 1
+			)
+				continue;
 			parts.push(
 				e.efficiencyType === "EXPERT"
 					? t("plan.production.experts", { n: props.experts }, props.experts)
@@ -207,7 +218,14 @@
 		}
 		return parts;
 	});
-	const subLine = computed(() => subParts.value.join(" · "));
+	const subLine = computed(() =>
+		[
+			...(localBuildingData.value.expertise
+				? [t(`game.expertise.${localBuildingData.value.expertise}`)]
+				: []),
+			...subParts.value,
+		].join(" · ")
+	);
 
 	const outputTickers: ComputedRef<string[]> = computed(() => [
 		...new Set(
@@ -315,9 +333,17 @@
 					<span v-if="zeroReason" class="text-negative">
 						{{ t(zeroReason) }} ·
 					</span>
+					<span
+						v-if="localBuildingData.expertise"
+						class="whitespace-nowrap"
+						:class="cogcMatch ? 'text-positive' : 'text-negative'"
+						data-cogc-match>
+						{{ cogcMatch ? "✓" : "✗" }}
+						{{ t(`game.expertise.${localBuildingData.expertise}`) }}
+					</span>
 					<!-- break between the parts, never inside one -->
-					<template v-for="(part, i) in subParts" :key="part">
-						<template v-if="i"> · </template>
+					<template v-for="part in subParts" :key="part">
+						<template v-if="localBuildingData.expertise || part !== subParts[0]"> · </template>
 						<span class="whitespace-nowrap">{{ part }}</span>
 					</template>
 				</span>
