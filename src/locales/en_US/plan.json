@@ -642,7 +642,8 @@
 		"lowest_efficiency": "Lowest efficiency of the workforce the plan needs",
 		"beds_short": "{tier}: {n} beds short",
 		"luxuries_off": "{n} luxury off | {n} luxuries off",
-		"all_housed": "All housed, all luxuries"
+		"all_housed": "All housed, all luxuries",
+		"housed": "{need} / {beds} housed"
 	},
 	"base": {
 		"label": "Base",

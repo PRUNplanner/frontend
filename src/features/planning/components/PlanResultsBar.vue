@@ -9,6 +9,7 @@
 		IAreaResult,
 		IOverviewData,
 		IVisitationData,
+		IExpertRecord,
 		IWorkforceRecord,
 	} from "@/features/planning/usePlanCalculation.types";
 	import type { IPlanCompare } from "@/features/sharing/sharedPlan.types";
@@ -26,8 +27,8 @@
 	import PMeter from "@/ui/charts/PMeter.vue";
 
 	/**
-	 * The plan's results, always in view: profit, payback, profit per
-	 * area, area, storage and workforce. Each figure appears
+	 * The plan's results, always in view: profit, payback, workforce,
+	 * area with profit per area, and storage. Each figure appears
 	 * only here.
 	 *
 	 * @author jplacht
@@ -37,6 +38,7 @@
 		area,
 		visitation,
 		workforce,
+		experts,
 		revenue,
 		cost,
 		empireProfitPerArea = undefined,
@@ -46,6 +48,7 @@
 		area: IAreaResult;
 		visitation: IVisitationData;
 		workforce: IWorkforceRecord;
+		experts: IExpertRecord;
 		revenue: number;
 		cost: number;
 		// the empire's average, when the empire page calculated it
@@ -90,6 +93,21 @@
 			? t("plan.results.luxuries_off", { n: off }, off)
 			: t("plan.results.all_housed");
 	});
+	// workers the plan needs of the beds it has, over every tier
+	const housed = computed(() => {
+		const tiers = Object.values(workforce);
+		return t("plan.results.housed", {
+			need: formatAmount(tiers.reduce((n, w) => n + w.required, 0)),
+			beds: formatAmount(tiers.reduce((n, w) => n + w.capacity, 0)),
+		});
+	});
+	// "Chemistry 4 · Metallurgy 4": the experts placed, in one line
+	const expertLine = computed(() =>
+		Object.values(experts)
+			.filter((e) => e.amount > 0)
+			.map((e) => `${t(`game.expertise.${e.name.toUpperCase()}`)} ${e.amount}`)
+			.join(" · ")
+	);
 
 	// label and figure share a line; under 64rem of page width every tile
 	// puts them on two, so the figures line up
@@ -111,7 +129,7 @@
 		:aria-label="t('plan.results.label')"
 		class="tabular-nums">
 		<div
-			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(3,minmax(0,1fr))] @min-[72rem]:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
+			class="grid grid-cols-3 gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-4 @min-[72rem]:grid-cols-5 @min-[48rem]:divide-x divide-line">
 			<button type="button" :class="[tile, '@min-[48rem]:-ml-6 @min-[48rem]:pl-6 @min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
@@ -141,6 +159,38 @@
 							cost: formatNumber(overview.totalConstructionCost, 0),
 						})
 					}}
+				</div>
+			</button>
+			<!-- workforce: the lowest efficiency, beds used, the worst problem
+				and the experts; below 72rem of page width it gives way -->
+			<button type="button" :class="[tile, 'px-3 @max-[72rem]:hidden']" data-tile="workforce" @click="emit('open', 'workforce')">
+				<div :class="head">
+					<span :class="label">{{ t("plan.results.workforce") }}</span>
+					<span
+						:class="[value, shortTier ? 'text-negative!' : '']"
+						:title="t('plan.results.lowest_efficiency')">
+						{{
+							lowestEfficiency === undefined
+								? "—"
+								: `${formatNumber(lowestEfficiency * 100, 1)} %`
+						}}
+					</span>
+				</div>
+				<div :class="sub">
+					{{ housed }} ·
+					<span
+						:class="shortTier ? 'text-negative' : ''"
+						data-workforce-note>
+						{{ workforceNote }}
+					</span>
+				</div>
+				<!-- one line, the full list on hover -->
+				<div
+					v-if="expertLine"
+					class="text-xs text-muted truncate @max-[60rem]:hidden"
+					:title="expertLine"
+					data-experts>
+					{{ expertLine }}
 				</div>
 			</button>
 			<!-- area and what it earns: used of total over its meter, the
@@ -181,7 +231,7 @@
 					</span>
 				</div>
 			</button>
-			<button type="button" :class="[tile, '@min-[48rem]:px-3 @min-[48rem]:@max-[72rem]:-mr-6 @min-[48rem]:@max-[72rem]:pr-6 @max-[48rem]:hidden']" data-tile="storage" @click="emit('open', 'storage')">
+			<button type="button" :class="[tile, '@min-[48rem]:pl-3 @min-[48rem]:-mr-6 @min-[48rem]:pr-6 @max-[48rem]:hidden']" data-tile="storage" @click="emit('open', 'storage')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.storage") }}</span>
 					<span :class="value">
@@ -207,27 +257,6 @@
 							unit: "t",
 						})
 					}}
-				</div>
-			</button>
-			<!-- the quick check: below 72rem of page width only the figures
-				before them show -->
-			<button type="button" :class="[tile, 'pl-3 -mr-6 pr-6 @max-[72rem]:hidden']" data-tile="workforce" @click="emit('open', 'workforce')">
-				<div :class="head">
-					<span :class="label">{{ t("plan.results.workforce") }}</span>
-					<span
-						:class="[value, shortTier ? 'text-negative!' : '']"
-						:title="t('plan.results.lowest_efficiency')">
-						{{
-							lowestEfficiency === undefined
-								? "—"
-								: `${formatNumber(lowestEfficiency * 100, 1)} %`
-						}}
-					</span>
-				</div>
-				<div
-					:class="[sub, shortTier ? 'text-negative!' : '']"
-					data-workforce-note>
-					{{ workforceNote }}
 				</div>
 			</button>
 		</div>

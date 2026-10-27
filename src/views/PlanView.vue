@@ -583,7 +583,7 @@
 		else if (tile === "workforce") openBase("workforce");
 		else if (tile === "profit") openTool("profit-breakdown");
 		else if (tile === "payback") openTool("construction-cart");
-		else openTool("supply-cart");
+		else openTool("visitation-frequency");
 	}
 
 	/*
@@ -1621,6 +1621,7 @@
 				:area="result.area"
 				:visitation="visitationData"
 				:workforce="result.workforce"
+				:experts="result.experts"
 				:revenue="result.revenue"
 				:cost="result.cost"
 				:empire-profit-per-area="
