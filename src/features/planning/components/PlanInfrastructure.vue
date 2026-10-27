@@ -18,8 +18,7 @@
 	import { isStorageInfrastructure } from "@/features/planning/calculations/infrastructureCalculations";
 
 	// UI
-	import { PButton, PCheckbox, PInputNumber, PSelect, PTooltip } from "@/ui";
-	import type { PSelectOption } from "@/ui/ui.types";
+	import { PButton, PCheckbox, PInputNumber, PTooltip } from "@/ui";
 
 	const props = defineProps({
 		disabled: {
@@ -75,21 +74,6 @@
 		"STW",
 	];
 
-	// types in use get a stepper, the rest are one pick away
-	const used: ComputedRef<InfrastructureType[]> = computed(() =>
-		infrastructureOrder.filter((inf) => localInfrastructureData.value[inf] > 0)
-	);
-	// under auto-optimise only storages: an added hab couldn't be changed
-	const addOptions: ComputedRef<PSelectOption[]> = computed(() =>
-		infrastructureOrder
-			.filter(
-				(inf) =>
-					localInfrastructureData.value[inf] === 0 &&
-					(!props.autoOptimizeHabs || isStorageInfrastructure(inf))
-			)
-			.map((inf) => ({ label: inf, value: inf }))
-	);
-
 	function update(inf: InfrastructureType, value: number): void {
 		emit("update:infrastructure", inf, value);
 		trackPlanEdit({
@@ -140,42 +124,40 @@
 				</PButton>
 			</template>
 		</div>
-		<div
-			v-for="inf in used"
-			:key="inf"
-			class="flex items-center justify-between gap-3 text-sm tabular-nums">
-			<span class="font-mono text-ink-strong">{{ inf }}</span>
-			<PInputNumber
-				:aria-label="
-					t('plan.components.infrastructure.amount_label', {
-						infrastructure: inf,
-					})
-				"
-				:value="localInfrastructureData[inf]"
-				:disabled="
-					disabled ||
-					(localAutoOptimizeHabs && !isStorageInfrastructure(inf))
-				"
-				show-buttons
-				size="sm"
-				:min="0"
-				class="w-28"
-				@update:value="
-					(value) => {
-						if (value !== null && value !== undefined)
-							update(inf, value);
-					}
-				" />
+		<div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm tabular-nums">
+			<div
+				v-for="inf in infrastructureOrder"
+				:key="inf"
+				class="flex items-center justify-between gap-2">
+				<span
+					class="font-mono"
+					:class="
+						localInfrastructureData[inf] > 0 ? 'text-ink-strong' : 'text-muted'
+					">
+					{{ inf }}
+				</span>
+				<PInputNumber
+					:aria-label="
+						t('plan.components.infrastructure.amount_label', {
+							infrastructure: inf,
+						})
+					"
+					:value="localInfrastructureData[inf]"
+					:disabled="
+						disabled ||
+						(localAutoOptimizeHabs && !isStorageInfrastructure(inf))
+					"
+					show-buttons
+					size="sm"
+					:min="0"
+					class="w-28"
+					@update:value="
+						(value) => {
+							if (value !== null && value !== undefined)
+								update(inf, value);
+						}
+					" />
+			</div>
 		</div>
-		<PSelect
-			v-if="!disabled && addOptions.length > 0"
-			size="sm"
-			:value="undefined"
-			:aria-label="t('plan.base.housing.add')"
-			:placeholder="t('plan.base.housing.add')"
-			:options="addOptions"
-			@update:value="
-				(value) => update(value as InfrastructureType, 1)
-			" />
 	</div>
 </template>

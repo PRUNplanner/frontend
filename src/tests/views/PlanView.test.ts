@@ -561,44 +561,6 @@ describe("PlanView", () => {
 		expect(toggle().attributes("aria-expanded")).toBe("false");
 	});
 
-	it("drops In and Out of Material I/O while the panes are narrow", async () => {
-		let observe: ((width: number) => void) | undefined;
-		vi.stubGlobal(
-			"ResizeObserver",
-			class {
-				cb: ResizeObserverCallback;
-				constructor(cb: ResizeObserverCallback) {
-					this.cb = cb;
-				}
-				// tooltips observe too, only the panes' wrapper counts
-				observe(el: Element) {
-					if (!el.classList.contains("@container")) return;
-					observe = (width) =>
-						this.cb(
-							[{ contentRect: { width } } as ResizeObserverEntry],
-							this as unknown as ResizeObserver
-						);
-				}
-				unobserve() {}
-				disconnect() {}
-			}
-		);
-		const { wrapper } = await mountView();
-		const compact = () =>
-			wrapper.findComponent(PlanMaterialIO).props("compact");
-
-		observe!(1856);
-		await flushPromises();
-		expect(compact()).toBe(false);
-		observe!(1376);
-		await flushPromises();
-		expect(compact()).toBe(true);
-		// a phone has no room for them either
-		observe!(343);
-		await flushPromises();
-		expect(compact()).toBe(true);
-	});
-
 	it("opens the planet insights from Base", async () => {
 		const { wrapper } = await mountView();
 

@@ -667,8 +667,7 @@
 			"label": "Housing",
 			"auto": "Auto",
 			"cheapest": "Cheapest",
-			"least_area": "Least area",
-			"add": "+ Housing or storage"
+			"least_area": "Least area"
 		},
 		"experts": {
 			"label": "Experts",

@@ -574,23 +574,6 @@
 	const onPhone = (section: PhoneSection): boolean =>
 		!refIsPhone.value || refPhoneSection.value === section;
 
-	// the panes' width (the page next to the app navigation): In and Out
-	// of Material I/O fit only from 1600 px on, where its pane is 384 px;
-	// a phone drops them too
-	// (@[100rem]); the CSS breakpoint @[81rem] (1296 px, 1360 px with the
-	// rail) folds Base
-	const refLayout = useTemplateRef<HTMLElement>("layout");
-	const refIOCompact: Ref<boolean> = ref(false);
-	let layoutObserver: ResizeObserver | undefined;
-	onMounted(() => {
-		if (!refLayout.value) return;
-		layoutObserver = new ResizeObserver(([entry]) => {
-			const width: number = entry.contentRect.width;
-			refIOCompact.value = width < 1600;
-		});
-		layoutObserver.observe(refLayout.value);
-	});
-	onUnmounted(() => layoutObserver?.disconnect());
 
 	const expertCount = computed(() =>
 		Object.values(result.value.experts).reduce((sum, e) => sum + e.amount, 0)
@@ -1461,7 +1444,6 @@
 	<!-- a phone keeps the last rows clear of the Save bar and the app's
 		bottom bar as well -->
 	<div
-		ref="layout"
 		class="@container pb-16 max-md:pb-36 [&_*]:scroll-mt-24">
 		<!-- Header: name, history, save state and the plan's actions -->
 		<header
@@ -1852,11 +1834,11 @@
 			</button>
 			<aside
 				:aria-label="t('plan.components.materialio.label')"
-				class="shrink-0 w-full md:w-75 @min-[81rem]:w-85 @min-[100rem]:w-96 rounded border border-line md:sticky md:top-20 bg-(--app-bg)"
+				class="shrink-0 w-full md:w-96 @min-[100rem]:w-112 rounded border border-line md:sticky md:top-20 bg-(--app-bg)"
 				:class="[
 					ioFolded ? '@min-[71rem]:hidden' : '',
 					refIOOverlay
-						? 'md:@max-[71rem]:absolute md:@max-[71rem]:right-6 md:@max-[71rem]:top-4 md:@max-[71rem]:z-50 md:@max-[71rem]:w-85 md:@max-[71rem]:shadow-xl md:@max-[71rem]:bg-surface'
+						? 'md:@max-[71rem]:absolute md:@max-[71rem]:right-6 md:@max-[71rem]:top-4 md:@max-[71rem]:z-50 md:@max-[71rem]:w-96 md:@max-[71rem]:shadow-xl md:@max-[71rem]:bg-surface'
 						: 'md:@max-[71rem]:hidden',
 					onPhone('io') ? '' : 'hidden',
 				]"
@@ -1903,7 +1885,6 @@
 				</div>
 				<PlanMaterialIO
 					:material-i-o-data="ioRows"
-					:compact="refIOCompact"
 					max-height="calc(100dvh - 20rem)"
 					:value="refIOValue"
 					:filter="refIOFilter"

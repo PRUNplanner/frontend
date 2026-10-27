@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { h } from "vue";
 import { DOMWrapper, type VueWrapper } from "@vue/test-utils";
 
 import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
@@ -15,13 +14,6 @@ import type {
 } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		setup: (props: { ticker: string }) => () => h("span", props.ticker),
-	},
-}));
 
 const wf = (
 	name: WorkforceType,
@@ -198,12 +190,10 @@ describe("PlanWorkforce", () => {
 			["false", "true"],
 			["true", "true"],
 		]);
-		// a missing luxury is struck through
-		expect(luxButtons(wrapper, 0).at(1)!.classes()).toContain(
-			"line-through"
-		);
-		expect(luxButtons(wrapper, 0).at(0)!.classes()).not.toContain(
-			"line-through"
+		// on is a filled primary button, off a plain one
+		expect(luxButtons(wrapper, 0).at(0)!.classes()).toContain("bg-primary");
+		expect(luxButtons(wrapper, 0).at(1)!.classes()).not.toContain(
+			"bg-primary"
 		);
 	});
 
