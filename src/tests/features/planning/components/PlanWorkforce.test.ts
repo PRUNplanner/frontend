@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { DOMWrapper, type VueWrapper } from "@vue/test-utils";
 
-import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
+import { trackEvent, trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanWorkforce from "@/features/planning/components/PlanWorkforce.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import plan from "@/locales/en_US/plan.json";
@@ -13,7 +13,10 @@ import type {
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	trackEvent: vi.fn(),
+	trackPlanEdit: vi.fn(),
+}));
 
 const wf = (
 	name: WorkforceType,
@@ -112,6 +115,7 @@ describe("PlanWorkforce", () => {
 	});
 
 	it("puts the unneeded tiers behind a toggle", async () => {
+		vi.mocked(trackEvent).mockClear();
 		const { wrapper } = await mountWorkforce();
 		const toggle = unneededToggle(wrapper);
 
@@ -135,6 +139,11 @@ describe("PlanWorkforce", () => {
 		await toggle.trigger("click");
 		expect(rows(wrapper)).toHaveLength(3);
 		expect(toggle.attributes("aria-expanded")).toBe("false");
+		// each switch is tracked with what it shows now
+		expect(vi.mocked(trackEvent).mock.calls).toEqual([
+			["plan:workforce_unneeded", { shown: true }],
+			["plan:workforce_unneeded", { shown: false }],
+		]);
 	});
 
 	it("keeps housed tiers without a need behind the toggle too", async () => {

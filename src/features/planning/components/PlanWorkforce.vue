@@ -3,7 +3,7 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, trackPlanEdit } from "@/lib/analytics/useAnalytics";
 
 	// Utils
 	import { capitalizeString } from "@/util/text";
@@ -49,6 +49,10 @@
 	// tiers the plan needs workers of get a row; the rest (housed or not)
 	// stay behind a link that shows them
 	const refShowAll = ref(false);
+	function toggleUnneeded(): void {
+		refShowAll.value = !refShowAll.value;
+		trackEvent("plan:workforce_unneeded", { shown: refShowAll.value });
+	}
 	const used: ComputedRef<IWorkforceElement[]> = computed(() =>
 		Object.values(props.workforceData).filter(
 			(w) => refShowAll.value || w.required > 0
@@ -160,7 +164,7 @@
 			class="self-start text-left text-xs text-link hover:underline cursor-pointer pointer-coarse:min-h-11"
 			:aria-expanded="refShowAll ? 'true' : 'false'"
 			data-unneeded-toggle
-			@click="refShowAll = !refShowAll">
+			@click="toggleUnneeded">
 			{{
 				refShowAll
 					? t("plan.base.workforce.hide_not_needed")

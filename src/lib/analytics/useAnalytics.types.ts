@@ -256,7 +256,8 @@ export interface IAnalyticsEventProperties {
 	"plan:cogm_open": { planet_natural_id: string; recipe_id: string };
 	"plan:insights_open": {
 		planet_natural_id: string;
-		source: "button" | "planet";
+		// the floating "button" is gone; older data still has it
+		source: "planet";
 	};
 	"plan:recipe_picker_open": { mode: "change" | "add" };
 	"plan:recipe_picker_undo": undefined;
@@ -264,6 +265,8 @@ export interface IAnalyticsEventProperties {
 	"plan:overlay_open": { panel: "base" | "io" };
 	// a results bar tile clicked, opening where its figure comes from
 	"plan:result_tile": { tile: ResultTile };
+	// the tiers the plan needs no workers of shown or hidden in Base
+	"plan:workforce_unneeded": { shown: boolean };
 	"plan:section_view": { section: "production" | "base" | "io" | "tools" };
 	"plan:io_view": {
 		source: "all" | "production" | "workforce";

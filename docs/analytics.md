@@ -119,12 +119,13 @@ No key, URL or UUID goes into these events.
 | `plan:plancheck_target` | `has_target` | the target price solver was first used (material or target profit changed), once per open view |
 | `plan:market_flag_open` | `where` (`plan`, `empire`), `level` (`red`, `amber`, `muted`) | a market flag's details were opened in a Material I/O |
 | `plan:cogm_open` | `planet_natural_id`, `recipe_id` | |
-| `plan:insights_open` | `planet_natural_id`, `source` (`button`, `planet`) | the planet insights box was opened, by its button or the planet link in Base (`source` since 2026-10-22) |
+| `plan:insights_open` | `planet_natural_id`, `source` (`planet`) | the planet insights box was opened from the planet link in Base (`source` since 2026-10-22; `button`, its floating button, only until it was removed in #679) |
 | `plan:recipe_picker_open` | `mode` (`change`, `add`) | the inline recipe picker opened under a recipe row or under "+ Recipe"; the pick itself is a `plan:edit` |
 | `plan:recipe_picker_undo` | | Undo in the status line after a picked recipe |
-| `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a folded side pane was pinned open from its strip (`folded: false`) or folded again (`true`) |
+| `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a side pane was folded by hand with its chevron (`folded: true`, at any width it sits side by side, since #679) or opened from its folded strip (`false`) |
 | `plan:overlay_open` | `panel` (`base`, `io`) | Base or Material I/O was opened as an overlay from the tab row (below 81rem, 71rem of page width) |
-| `plan:result_tile` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results bar tile was clicked; it opens where its figure comes from |
+| `plan:result_tile` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results bar tile was clicked; it opens where its figure comes from (profit, payback and storage open a tool, which also sends `plan:tool_toggle`; area and workforce open a Base section) |
+| `plan:workforce_unneeded` | `shown` | the workforce tiers the plan needs no workers of were shown (`true`) or hidden again (`false`) in Base |
 | `plan:section_view` | `section` (`production`, `base`, `io`, `tools`) | a phone switched the plan section |
 | `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | the plan's Material I/O source, filter or unit was switched; the event carries all three |
 | `plan:recipe_picker_sort` | `sort` (`daily`, `popular`) | the recipe picker's sort was switched |
