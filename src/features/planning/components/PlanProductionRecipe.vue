@@ -31,6 +31,7 @@
 	import {
 		AnalyticsOutlined,
 		DeleteOutlineSharp,
+		EastSharp,
 		ExpandLessSharp,
 		ExpandMoreSharp,
 	} from "@vicons/material";
@@ -166,18 +167,15 @@
 						emit('update:building:recipe:amount', recipeIndex, value);
 				}
 			" />
+		<!-- the whole column opens the picker: inputs → outputs on the left,
+			spaced so the tiles don't touch, the opener at the right edge of
+			the column, so it lines up from row to row -->
 		<button
 			type="button"
-			class="group justify-self-start @max-[40rem]/prod:col-span-4 min-w-0 max-w-full flex items-stretch gap-1 min-h-7 pointer-coarse:min-h-11 pl-1.5 rounded-control border text-left"
+			class="group @max-[40rem]/prod:col-span-4 min-w-0 w-full flex items-center gap-3 min-h-9 pointer-coarse:min-h-11 px-1.5 py-1 rounded-control text-left"
 			:class="[
-				pickerOpen
-					? 'border-line-strong bg-hover'
-					: disabled
-						? 'border-transparent'
-						: 'border-line bg-surface',
-				disabled
-					? 'cursor-default pr-1.5'
-					: 'cursor-pointer hover:border-line-strong hover:bg-hover',
+				pickerOpen ? 'bg-hover ring-1 ring-line-strong' : '',
+				disabled ? 'cursor-default' : 'cursor-pointer hover:bg-hover',
 			]"
 			:disabled="disabled"
 			:aria-expanded="pickerOpen ? 'true' : 'false'"
@@ -186,38 +184,49 @@
 			"
 			data-recipe-button
 			@click="emit('open:picker', recipeIndex)">
-			<!-- the tiles wrap among themselves, the opener stays at the end -->
-			<span class="flex flex-wrap items-center gap-1 min-w-0 py-0.5">
 			<span
 				v-if="isNew"
-				class="text-xs font-bold uppercase text-positive pr-1">
+				class="text-xs font-bold uppercase text-positive">
 				{{ t("sharing.compare.new") }}
 			</span>
-			<MaterialTile
-				v-for="material in localRecipeData.recipe.inputs"
-				:key="`IN#${material.material_ticker}`"
-				:ticker="material.material_ticker"
-				:amount="material.material_amount * localRecipeData.amount"
-				disable-drawer
-				:enable-popover="false" />
-			<span
-				v-if="localRecipeData.recipe.inputs.length"
-				aria-hidden="true"
-				class="px-0.5 text-muted">
-				→
+			<span class="flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0">
+				<span
+					v-if="localRecipeData.recipe.inputs.length"
+					class="flex flex-wrap items-center gap-1.5"
+					data-recipe-inputs>
+					<MaterialTile
+						v-for="material in localRecipeData.recipe.inputs"
+						:key="`IN#${material.material_ticker}`"
+						:ticker="material.material_ticker"
+						:amount="material.material_amount * localRecipeData.amount"
+						disable-drawer
+						:enable-popover="false" />
+				</span>
+				<span
+					class="flex flex-wrap items-center gap-1.5"
+					data-recipe-outputs>
+					<!-- the arrow wraps with the outputs, never alone -->
+					<PIcon
+						v-if="localRecipeData.recipe.inputs.length"
+						:size="16"
+						aria-hidden="true"
+						class="text-muted">
+						<EastSharp />
+					</PIcon>
+					<MaterialTile
+						v-for="material in localRecipeData.recipe.outputs"
+						:key="`OUT#${material.material_ticker}`"
+						:ticker="material.material_ticker"
+						:amount="material.material_amount * localRecipeData.amount"
+						disable-drawer
+						:enable-popover="false" />
+				</span>
 			</span>
-			<MaterialTile
-				v-for="material in localRecipeData.recipe.outputs"
-				:key="`OUT#${material.material_ticker}`"
-				:ticker="material.material_ticker"
-				:amount="material.material_amount * localRecipeData.amount"
-				disable-drawer
-				:enable-popover="false" />
-			</span>
-			<!-- the opener, set off from the tiles -->
 			<span
 				v-if="!disabled"
-				class="flex items-center self-stretch px-0.5 border-l border-line text-muted-strong group-hover:text-white">
+				class="ml-auto shrink-0 flex items-center gap-0.5 h-6 pl-2 pr-1 rounded-control border border-line text-xs text-muted-strong group-hover:border-line-strong group-hover:text-ink-strong"
+				:class="pickerOpen ? 'border-line-strong text-ink-strong' : ''">
+				{{ t("plan.production.recipe") }}
 				<PIcon :size="16">
 					<ExpandLessSharp v-if="pickerOpen" />
 					<ExpandMoreSharp v-else />

@@ -629,7 +629,7 @@
 	"results": {
 		"label": "Plan results",
 		"profit": "Profit / day",
-		"revenue_cost": "Revenue {revenue} · cost {cost}",
+		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation",
 		"payback": "Payback",
 		"build": "Build {cost} ȼ",
 		"profit_area": "Profit / area",
@@ -637,7 +637,17 @@
 		"area": "Area",
 		"storage": "Storage",
 		"days_to_full": "days to full",
-		"out_per_day": "{weight}\u00a0t · {volume}\u00a0m³ out\u00a0/\u00a0day"
+		"in_out_per_day": "{in}\u00a0{unit} in · {out}\u00a0{unit} out\u00a0/\u00a0day",
+		"workforce": "Workforce",
+		"lowest_efficiency": "Lowest efficiency of the workforce the plan needs",
+		"beds_short": "{tier}: {n} beds short",
+		"luxuries_off": "{n} luxury off | {n} luxuries off",
+		"all_housed": "All housed, all luxuries",
+		"market": "Market",
+		"cant_trade": "{n} can't trade | {n} can't trade",
+		"large_share": "{n} large share | {n} large shares",
+		"no_flags": "No flags",
+		"plan_check": "Plan check →"
 	},
 	"base": {
 		"label": "Base",
@@ -692,6 +702,7 @@
 		"experts": "{n} expert | {n} experts",
 		"delete_building": "Delete {building}, undo with Ctrl+Z",
 		"change_recipe": "Change recipe {recipe}",
+		"recipe": "Recipe",
 		"cogm_label": "Cost of goods manufactured for {recipe}",
 		"delete_recipe": "Delete recipe {recipe}, undo with Ctrl+Z",
 		"add_recipe": "+ Recipe",

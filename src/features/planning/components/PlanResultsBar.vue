@@ -9,14 +9,18 @@
 		IAreaResult,
 		IOverviewData,
 		IVisitationData,
+		IWorkforceRecord,
 	} from "@/features/planning/usePlanCalculation.types";
 	import type { IPlanCompare } from "@/features/sharing/sharedPlan.types";
+	import type { IMarketCheck } from "@/features/cx/marketCheck.types";
 
 	// Components
 	import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
 
 	// Util
-	import { formatNumber, formatPayback } from "@/util/numbers";
+	import { formatAmount, formatNumber, formatPayback } from "@/util/numbers";
+	import { capitalizeString } from "@/util/text";
+	import { countLevels } from "@/features/cx/marketCheck.util";
 
 	// UI
 	import { PValue } from "@/ui";
@@ -24,7 +28,8 @@
 
 	/**
 	 * The plan's results, always in view: profit, payback, profit per
-	 * area, area and storage. Each figure appears only here.
+	 * area, area, storage, workforce and market flags. Each figure appears
+	 * only here.
 	 *
 	 * @author jplacht
 	 */
@@ -32,6 +37,8 @@
 		overview,
 		area,
 		visitation,
+		workforce,
+		checks,
 		revenue,
 		cost,
 		empireProfitPerArea = undefined,
@@ -40,6 +47,9 @@
 		overview: IOverviewData;
 		area: IAreaResult;
 		visitation: IVisitationData;
+		workforce: IWorkforceRecord;
+		// market flags of the plan's net material flow
+		checks: Map<string, IMarketCheck>;
 		revenue: number;
 		cost: number;
 		// the empire's average, when the empire page calculated it
@@ -48,9 +58,43 @@
 		compare?: IPlanCompare;
 	}>();
 
+	const emit = defineEmits<{ (e: "open:planCheck"): void }>();
+
 	const profitPerArea = computed(() =>
 		area.areaUsed > 0 ? overview.profit / area.areaUsed : 0
 	);
+
+	// the tiers the plan needs workers of; the least efficient one shows
+	const needed = computed(() =>
+		Object.values(workforce).filter((w) => w.required > 0)
+	);
+	const lowestEfficiency = computed(() =>
+		needed.value.length
+			? Math.min(...needed.value.map((w) => w.efficiency))
+			: undefined
+	);
+	const shortTier = computed(() =>
+		Object.values(workforce).find((w) => w.left < 0)
+	);
+	// the worst problem first: beds short, then luxuries off
+	const workforceNote = computed(() => {
+		if (shortTier.value)
+			return t("plan.results.beds_short", {
+				tier: capitalizeString(
+					t(`game.workforce_type.${shortTier.value.name}`)
+				),
+				n: formatAmount(-shortTier.value.left),
+			});
+		const off = needed.value.reduce(
+			(n, w) => n + (w.lux1 ? 0 : 1) + (w.lux2 ? 0 : 1),
+			0
+		);
+		return off
+			? t("plan.results.luxuries_off", { n: off }, off)
+			: t("plan.results.all_housed");
+	});
+
+	const flags = computed(() => countLevels([...checks.values()]));
 
 	// label and figure share a line; under 64rem of page width every tile
 	// puts them on two, so the figures line up
@@ -68,7 +112,7 @@
 		:aria-label="t('plan.results.label')"
 		class="tabular-nums">
 		<div
-			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
+			class="grid grid-cols-[1.4fr_1fr_1fr] gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))] @min-[72rem]:grid-cols-[1.5fr_repeat(6,minmax(0,1fr))] @min-[48rem]:divide-x divide-line">
 			<div class="py-1.5 @min-[48rem]:pr-3">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
@@ -82,6 +126,7 @@
 						t("plan.results.revenue_cost", {
 							revenue: formatNumber(revenue),
 							cost: formatNumber(cost),
+							degradation: formatNumber(overview.dailyDegradationCost),
 						})
 					}}
 				</div>
@@ -130,7 +175,7 @@
 					:max="area.areaTotal"
 					:label="t('plan.results.area')" />
 			</div>
-			<div class="py-1.5 @min-[48rem]:pl-3 @max-[48rem]:hidden">
+			<div class="py-1.5 @min-[48rem]:px-3 @max-[48rem]:hidden">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.storage") }}</span>
 					<span :class="value">
@@ -140,15 +185,74 @@
 						</span>
 					</span>
 				</div>
-				<div :class="sub">
+				<div
+					:class="sub"
+					:title="
+						t('plan.results.in_out_per_day', {
+							in: formatNumber(visitation.dailyVolumeImport, 1),
+							out: formatNumber(visitation.dailyVolumeExport, 1),
+							unit: 'm³',
+						})
+					">
 					{{
-						t("plan.results.out_per_day", {
-							weight: formatNumber(visitation.dailyWeightExport, 1),
-							volume: formatNumber(visitation.dailyVolumeExport, 1),
+						t("plan.results.in_out_per_day", {
+							in: formatNumber(visitation.dailyWeightImport, 1),
+							out: formatNumber(visitation.dailyWeightExport, 1),
+							unit: "t",
 						})
 					}}
 				</div>
 			</div>
+			<!-- the quick checks: below 72rem of page width only the figures
+				before them show -->
+			<div class="py-1.5 px-3 @max-[72rem]:hidden">
+				<div :class="head">
+					<span :class="label">{{ t("plan.results.workforce") }}</span>
+					<span
+						:class="[value, shortTier ? 'text-negative!' : '']"
+						:title="t('plan.results.lowest_efficiency')">
+						{{
+							lowestEfficiency === undefined
+								? "—"
+								: `${formatNumber(lowestEfficiency * 100, 1)} %`
+						}}
+					</span>
+				</div>
+				<div
+					:class="[sub, shortTier ? 'text-negative!' : '']"
+					data-workforce-note>
+					{{ workforceNote }}
+				</div>
+			</div>
+			<button
+				type="button"
+				class="py-1.5 pl-3 text-left cursor-pointer hover:bg-hover @max-[72rem]:hidden"
+				data-market
+				@click="emit('open:planCheck')">
+				<div :class="head">
+					<span :class="label">{{ t("plan.results.market") }}</span>
+					<span v-if="flags.red" :class="[value, 'text-negative!']">
+						{{ t("plan.results.cant_trade", { n: flags.red }, flags.red) }}
+					</span>
+					<span v-else-if="flags.amber" :class="[value, 'text-warning!']">
+						{{
+							t("plan.results.large_share", { n: flags.amber }, flags.amber)
+						}}
+					</span>
+					<span v-else :class="[value, 'text-muted!']">
+						{{ t("plan.results.no_flags") }}
+					</span>
+				</div>
+				<div :class="sub">
+					<template v-if="flags.red && flags.amber">
+						{{
+							t("plan.results.large_share", { n: flags.amber }, flags.amber)
+						}}
+						·
+					</template>
+					<span class="text-link">{{ t("plan.results.plan_check") }}</span>
+				</div>
+			</button>
 		</div>
 		<SharedPlanDeltas v-if="compare" class="pb-2" :compare="compare" />
 	</section>

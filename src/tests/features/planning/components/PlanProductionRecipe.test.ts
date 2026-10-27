@@ -148,7 +148,16 @@ describe("PlanProductionRecipe", () => {
 			["C", 2],
 			["FE", 2],
 		]);
-		expect(recipeButton(wrapper).text()).toContain("→");
+		// inputs and outputs in their own groups, the opener named after them
+		const tickers = (group: string) =>
+			recipeButton(wrapper)
+				.find(`[data-recipe-${group}]`)
+				.findAllComponents(MaterialTile)
+				.map((t: { props: (key: "ticker") => string }) => t.props("ticker"));
+		expect(tickers("inputs")).toEqual(["FEO", "C"]);
+		expect(tickers("outputs")).toEqual(["FE"]);
+		expect(recipeButton(wrapper).find("svg").exists()).toBe(true);
+		expect(recipeButton(wrapper).text()).toContain("plan.production.recipe");
 		expect(wrapper.text()).toContain("1d 0h 0m");
 	});
 
@@ -157,7 +166,11 @@ describe("PlanProductionRecipe", () => {
 			recipeData: recipe({ recipe: { ...FE, inputs: [] } }),
 		});
 
-		expect(recipeButton(wrapper).text()).not.toContain("→");
+		expect(recipeButton(wrapper).find("[data-recipe-inputs]").exists()).toBe(
+			false
+		);
+		// only the opener's chevron, no arrow
+		expect(recipeButton(wrapper).findAll("svg")).toHaveLength(1);
 	});
 
 	it("opens the picker for its order, expanded while open", async () => {

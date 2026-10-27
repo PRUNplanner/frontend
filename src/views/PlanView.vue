@@ -1566,12 +1566,15 @@
 				:overview="overviewData"
 				:area="result.area"
 				:visitation="visitationData"
+				:workforce="result.workforce"
+				:checks="marketChecks"
 				:revenue="result.revenue"
 				:cost="result.cost"
 				:empire-profit-per-area="
 					refEmpireUuid ? cachedProfitPerArea(refEmpireUuid) : undefined
 				"
-				:compare="sharedCompare" />
+				:compare="sharedCompare"
+				@open:plan-check="openPlanCheck" />
 			<!-- a phone: one section at a time -->
 			<PlanToolTabs
 				v-if="refIsPhone"
