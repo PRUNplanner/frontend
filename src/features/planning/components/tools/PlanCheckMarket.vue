@@ -364,8 +364,9 @@
 							</span>
 						</template>
 						<template #cell-check="{ row }">
+							<!-- "all exchanges" is said once above the table, not per row -->
 							<span
-								v-if="row.level"
+								v-if="row.level && row.flags[0] !== 'all_exchanges'"
 								class="inline-flex items-center gap-1.5"
 								:class="LEVEL_TEXT[row.level as MarketFlagLevel]">
 								<MarketFlagIcon :level="row.level" />
@@ -419,7 +420,7 @@
 								}}
 							</span>
 							<span
-								v-if="c.level"
+								v-if="c.level && c.flags[0] !== 'all_exchanges'"
 								class="ml-auto inline-flex items-center gap-1.5 text-right"
 								:class="LEVEL_TEXT[c.level]">
 								<MarketFlagIcon :level="c.level" />

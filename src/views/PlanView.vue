@@ -1679,7 +1679,8 @@
 					onPhone('base') ? '' : 'hidden',
 				]"
 				data-base-pane>
-				<div class="flex items-center gap-2 px-3 pt-3 pb-1">
+				<!-- a phone names Base in its section tabs already -->
+				<div class="flex items-center gap-2 px-3 pt-3 pb-1 max-md:hidden">
 					<h2 class="flex-1 font-bold text-white">
 						{{ t("plan.base.label") }}
 					</h2>

@@ -231,9 +231,12 @@
 			</span>
 			<span
 				v-if="!disabled"
-				class="ml-auto shrink-0 flex items-center gap-0.5 h-6 pl-2 pr-1 rounded-control border border-line text-xs text-muted-strong group-hover:border-line-strong group-hover:text-ink-strong"
+				class="ml-auto shrink-0 flex items-center gap-0.5 h-6 pl-2 pr-1 @max-[48rem]/prod:px-0.5 rounded-control border border-line text-xs text-muted-strong group-hover:border-line-strong group-hover:text-ink-strong"
 				:class="pickerOpen ? 'border-line-strong text-ink-strong' : ''">
-				{{ t("plan.production.recipe") }}
+				<!-- a narrow production column keeps only the chevron -->
+				<span class="@max-[48rem]/prod:hidden">
+					{{ t("plan.production.recipe") }}
+				</span>
 				<PIcon :size="16">
 					<ExpandLessSharp v-if="pickerOpen" />
 					<ExpandMoreSharp v-else />

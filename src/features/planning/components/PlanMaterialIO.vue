@@ -154,9 +154,11 @@
 <template>
 	<!-- numbers never break mid-digit in the narrow side column; titles
 		wrap there instead of running into their sort arrows. In, Out and Δ
-		always show: a pane narrower than the columns scrolls sideways -->
+		always show: a pane narrower than the columns scrolls sideways;
+		a phone shares its width instead. The scroll box fades out at the
+		bottom, so a cut-off row reads as more to scroll -->
 	<PDataTable
-		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! [&_th]:[overflow-wrap:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
+		class="max-md:[&_.p-data-table-table]:min-w-0! [&_.p-data-table-box]:[mask-image:linear-gradient(to_bottom,#000_calc(100%-0.75rem),transparent)] [&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! [&_th]:[overflow-wrap:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"
