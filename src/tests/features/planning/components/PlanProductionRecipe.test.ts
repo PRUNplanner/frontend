@@ -148,8 +148,41 @@ describe("PlanProductionRecipe", () => {
 			["C", 2],
 			["FE", 2],
 		]);
-		expect(recipeButton(wrapper).text()).toContain("→");
+		// inputs and outputs in their own groups, the opener named after them
+		const tickers = (group: string) =>
+			recipeButton(wrapper)
+				.find(`[data-recipe-${group}]`)
+				.findAllComponents(MaterialTile)
+				.map((t: { props: (key: "ticker") => string }) => t.props("ticker"));
+		expect(tickers("inputs")).toEqual(["FEO", "C"]);
+		expect(tickers("outputs")).toEqual(["FE"]);
+		expect(recipeButton(wrapper).find("svg").exists()).toBe(true);
+		expect(recipeButton(wrapper).text()).toContain("plan.production.recipe");
 		expect(wrapper.text()).toContain("1d 0h 0m");
+	});
+
+	it("hides the opener's label in a production column under 56rem", async () => {
+		const { wrapper } = await mountRecipe();
+
+		// the label's own span, not the box around it and the chevron
+		const label = recipeButton(wrapper)
+			.findAll("span")
+			.filter(
+				(s) =>
+					s.text() === "plan.production.recipe" &&
+					s.element.children.length === 0
+			);
+		expect(label).toHaveLength(1);
+		expect(label[0].classes()).toContain("@max-[56rem]/prod:hidden");
+	});
+
+	it("stripes the row when asked", async () => {
+		const { wrapper, setProps } = await mountRecipe();
+		const row = () => wrapper.find("[data-recipe-row]");
+
+		expect(row().classes()).not.toContain("bg-white/3");
+		await setProps({ striped: true });
+		expect(row().classes()).toContain("bg-white/3");
 	});
 
 	it("leaves out the arrow for a recipe without inputs", async () => {
@@ -157,7 +190,11 @@ describe("PlanProductionRecipe", () => {
 			recipeData: recipe({ recipe: { ...FE, inputs: [] } }),
 		});
 
-		expect(recipeButton(wrapper).text()).not.toContain("→");
+		expect(recipeButton(wrapper).find("[data-recipe-inputs]").exists()).toBe(
+			false
+		);
+		// only the opener's chevron, no arrow
+		expect(recipeButton(wrapper).findAll("svg")).toHaveLength(1);
 	});
 
 	it("opens the picker for its order, expanded while open", async () => {
@@ -256,9 +293,8 @@ describe("PlanProductionRecipe", () => {
 		const disabled = () =>
 			(cogmButton(wrapper).element as HTMLButtonElement).disabled;
 		expect(disabled()).toBe(false);
-		// icon-only, the label names it and the title shows "COGM"
-		expect(cogmButton(wrapper).text()).toBe("");
-		expect(cogmButton(wrapper).attributes("title")).toBe(
+		// "COGM" as text, the label names the recipe
+		expect(cogmButton(wrapper).text()).toBe(
 			"plan.components.production_recipe.buttons.cogm"
 		);
 

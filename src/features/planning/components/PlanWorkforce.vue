@@ -1,9 +1,9 @@
 <script setup lang="ts">
-	import { computed, type ComputedRef, type PropType } from "vue";
+	import { computed, type ComputedRef, type PropType, ref } from "vue";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, trackPlanEdit } from "@/lib/analytics/useAnalytics";
 
 	// Utils
 	import { capitalizeString } from "@/util/text";
@@ -17,11 +17,10 @@
 		IWorkforceRecord,
 	} from "@/features/planning/usePlanCalculation.types";
 
-	// Components
-	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
-
 	// UI
+	import { PButton } from "@/ui";
 	import PMeter from "@/ui/charts/PMeter.vue";
+	import { BlockOutlined, CheckSharp } from "@vicons/material";
 
 	const props = defineProps({
 		disabled: {
@@ -47,15 +46,21 @@
 		): void;
 	}>();
 
-	// tiers the plan needs or houses get a row, the rest one muted line
+	// tiers the plan needs workers of get a row; the rest (housed or not)
+	// stay behind a link that shows them
+	const refShowAll = ref(false);
+	function toggleUnneeded(): void {
+		refShowAll.value = !refShowAll.value;
+		trackEvent("plan:workforce_unneeded_toggle", { is_shown: refShowAll.value });
+	}
 	const used: ComputedRef<IWorkforceElement[]> = computed(() =>
 		Object.values(props.workforceData).filter(
-			(w) => w.required > 0 || w.capacity > 0
+			(w) => refShowAll.value || w.required > 0
 		)
 	);
 	const unused: ComputedRef<string> = computed(() =>
 		Object.values(props.workforceData)
-			.filter((w) => w.required === 0 && w.capacity === 0)
+			.filter((w) => w.required === 0)
 			.map((w) => capitalizeString(t(`game.workforce_type.${w.name}`)))
 			.join(", ")
 	);
@@ -120,30 +125,27 @@
 				<span class="text-xs text-muted pr-1">
 					{{ t("plan.base.workforce.luxuries") }}
 				</span>
-				<button
+				<PButton
 					v-for="lux in ['lux1', 'lux2'] as const"
 					:key="lux"
-					type="button"
+					size="sm"
+					class="pointer-coarse:h-11"
 					:disabled="disabled"
-					:aria-pressed="workforce[lux] ? 'true' : 'false'"
+					:pressed="workforce[lux]"
 					:aria-label="
 						t('plan.base.workforce.supply', {
 							ticker: getLuxuryTicker(workforce.name, lux),
 						})
 					"
-					class="inline-flex min-h-6 pointer-coarse:min-h-11 items-center rounded-control border border-dashed cursor-pointer disabled:cursor-default"
-					:class="
-						workforce[lux]
-							? 'border-transparent'
-							: 'opacity-40 line-through border-line-strong'
-					"
 					@click="updateLux(workforce.name, lux, !workforce[lux])">
-					<MaterialTile
-						:key="getLuxuryTicker(workforce.name, lux)"
-						:ticker="getLuxuryTicker(workforce.name, lux)"
-						disable-drawer
-						:enable-popover="false" />
-				</button>
+					<template #icon>
+						<CheckSharp v-if="workforce[lux]" />
+						<BlockOutlined v-else />
+					</template>
+					<span class="inline-block w-[4ch]">
+						{{ getLuxuryTicker(workforce.name, lux) }}
+					</span>
+				</PButton>
 				<span class="grow" />
 				<span
 					class="text-xs"
@@ -156,8 +158,18 @@
 				</span>
 			</div>
 		</div>
-		<div v-if="unused" class="text-xs text-muted">
-			{{ t("plan.base.workforce.not_needed", { tiers: unused }) }}
-		</div>
+		<button
+			v-if="unused"
+			type="button"
+			class="self-start min-h-6 text-left text-xs text-link hover:underline cursor-pointer pointer-coarse:min-h-11"
+			:aria-expanded="refShowAll ? 'true' : 'false'"
+			data-unneeded-toggle
+			@click="toggleUnneeded">
+			{{
+				refShowAll
+					? t("plan.base.workforce.hide_not_needed")
+					: t("plan.base.workforce.show_not_needed", { tiers: unused })
+			}}
+		</button>
 	</div>
 </template>

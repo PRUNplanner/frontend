@@ -50,6 +50,7 @@ vi.mock("@/features/planning/components/PlanProductionRecipe.vue", () => ({
 			planetId: String,
 			buildingAmount: Number,
 			optionDaily: Number,
+			striped: Boolean,
 		},
 		emits: [
 			"update:building:recipe:amount",
@@ -178,15 +179,65 @@ describe("PlanProductionBuilding", () => {
 		);
 		const sub = () => nameButton(wrapper).find("span.block").text();
 
-		// workforce and neutral factors are left out
+		// workforce and neutral factors are left out, the COGC shows as the
+		// tick on the expertise
 		expect(sub()).toBe(
-			"game.expertise.METALLURGY · game.efficiency_type.COGC · 3 experts"
+			"✓plan.production.cogc_match: game.expertise.METALLURGY · 3 experts"
 		);
+
+		// a workforce program lifts the tier's buildings: listed with the rest
+		await setProps({
+			buildingData: building({
+				efficiencyElements: [{ efficiencyType: "COGC", value: 1.1 }],
+			}),
+		});
+		expect(sub()).toMatch(/ · game\.efficiency_type\.COGC$/);
 
 		await setProps({
 			buildingData: building({ expertise: null, efficiencyElements: [] }),
 		});
 		expect(sub()).toBe("");
+	});
+
+	it("ticks the expertise when the planet's COGC matches, crosses it when not", async () => {
+		const { wrapper, setProps } = await mountBuilding();
+		const match = () => wrapper.find("[data-cogc-match]");
+
+		// the glyph for the eye, the words for a screen reader (the fold
+		// button's label hides its content, so the line describes it) and on
+		// hover
+		expect(match().find("[aria-hidden]").text()).toBe("✓");
+		const described = wrapper.find(
+			`[id="${nameButton(wrapper).attributes("aria-describedby")}"]`
+		);
+		expect(described.text()).toContain(
+			"plan.production.cogc_match: game.expertise.METALLURGY"
+		);
+		expect(match().attributes("title")).toBe("plan.production.cogc_match");
+		expect(match().classes()).toContain("text-positive");
+
+		// no COGC element: the planet's program lifts something else
+		await setProps({
+			buildingData: building({
+				efficiencyElements: [{ efficiencyType: "EXPERT", value: 1.07 }],
+			}),
+		});
+		expect(match().find("[aria-hidden]").text()).toBe("✗");
+		expect(match().attributes("title")).toBe("plan.production.cogc_no_match");
+		expect(match().classes()).toContain("text-negative");
+		expect(match().classes()).not.toContain("text-positive");
+
+		// a workforce program's COGC lifts the building, not its expertise
+		await setProps({
+			buildingData: building({
+				efficiencyElements: [{ efficiencyType: "COGC", value: 1.1 }],
+			}),
+		});
+		expect(match().find("[aria-hidden]").text()).toBe("✗");
+
+		// a building without expertise has nothing to match
+		await setProps({ buildingData: building({ expertise: null }) });
+		expect(match().exists()).toBe(false);
 	});
 
 	it("shows the revenue with its sign", async () => {
@@ -227,6 +278,22 @@ describe("PlanProductionBuilding", () => {
 		expect(component.emitted("update:building:amount")).toEqual([
 			[2, 0],
 			[2, 7],
+		]);
+	});
+
+	it("goes down to 0 buildings, typed or with the minus button", async () => {
+		const { wrapper, component } = await mountBuilding({
+			buildingData: building({ amount: 1 }),
+		});
+		const input = wrapper.findComponent(PInputNumber);
+
+		await input.find("input").setValue("0");
+		await input.find('button[aria-label="common.ui.input_number.decrease"]').trigger("click");
+
+		// 0 is a valid count, not an empty field
+		expect(component.emitted("update:building:amount")).toEqual([
+			[2, 0],
+			[2, 0],
 		]);
 	});
 
@@ -295,6 +362,11 @@ describe("PlanProductionBuilding", () => {
 			[0, "SME#FE"],
 			[1, "SME#AL"],
 		]);
+		// every second row is striped, so long orders stay readable
+		expect(recipes(wrapper).map((r) => r.props("striped"))).toEqual([
+			false,
+			true,
+		]);
 		expect(recipes(wrapper).at(1)!.props()).toMatchObject({
 			disabled: false,
 			pickerOpen: false,
@@ -328,6 +400,21 @@ describe("PlanProductionBuilding", () => {
 		expect(wrapper.text()).toContain(
 			"plan.components.production_building.no_recipe"
 		);
+	});
+
+	it("says when the building can make nothing here", async () => {
+		const { wrapper } = await mountBuilding({
+			buildingData: building({ activeRecipes: [], recipeOptions: [] }),
+		});
+
+		// no options: nothing to add, so no "no active recipes" either
+		expect(wrapper.text()).toContain(
+			"plan.components.production_building.no_recipe_available"
+		);
+		expect(
+			wrapper.text().replace("no_recipe_available", "")
+		).not.toContain("plan.components.production_building.no_recipe");
+		expect(wrapper.find("[data-add-recipe]").exists()).toBe(false);
 	});
 
 	describe("fold", () => {
@@ -399,6 +486,16 @@ describe("PlanProductionBuilding", () => {
 
 			expect(pickers(wrapper)).toHaveLength(0);
 			expect(addRecipe(wrapper).attributes("aria-expanded")).toBe("false");
+		});
+
+		it("shows + Recipe in the brand yellow, filled while its picker is open", async () => {
+			const { wrapper, setProps } = await mountBuilding();
+
+			expect(addRecipe(wrapper).classes()).toContain("text-prunplanner");
+			expect(addRecipe(wrapper).classes()).not.toContain("bg-prunplanner/15");
+
+			await setProps({ picker: null });
+			expect(addRecipe(wrapper).classes()).toContain("bg-prunplanner/15");
 		});
 
 		it("change: opens under its order and emits the replacement", async () => {

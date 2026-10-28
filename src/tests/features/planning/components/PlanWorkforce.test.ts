@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { h } from "vue";
 import { DOMWrapper, type VueWrapper } from "@vue/test-utils";
 
-import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
+import { trackEvent, trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanWorkforce from "@/features/planning/components/PlanWorkforce.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import plan from "@/locales/en_US/plan.json";
@@ -14,13 +13,9 @@ import type {
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		setup: (props: { ticker: string }) => () => h("span", props.ticker),
-	},
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	trackEvent: vi.fn(),
+	trackPlanEdit: vi.fn(),
 }));
 
 const wf = (
@@ -95,6 +90,8 @@ const luxButtons = (wrapper: VueWrapper, index: number) =>
 	row(wrapper, index).findAll("button[aria-pressed]");
 const bedsFree = (wrapper: VueWrapper, index: number) =>
 	row(wrapper, index).findAll("span").at(-1)!;
+const unneededToggle = (wrapper: VueWrapper) =>
+	wrapper.find("[data-unneeded-toggle]");
 
 describe("PlanWorkforce", () => {
 	beforeEach(() => {
@@ -117,15 +114,39 @@ describe("PlanWorkforce", () => {
 		expect(row(wrapper, 1).text()).toContain("250 / 200 · 50.00 %");
 	});
 
-	it("puts the unused tiers on one muted line", async () => {
+	it("puts the unneeded tiers behind a toggle", async () => {
+		vi.mocked(trackEvent).mockClear();
 		const { wrapper } = await mountWorkforce();
+		const toggle = unneededToggle(wrapper);
 
-		expect(wrapper.text()).toContain(
-			"Game.workforce Type.technician, Game.workforce Type.scientist: not needed"
+		expect(toggle.text()).toBe(
+			"Show Game.workforce Type.technician, Game.workforce Type.scientist (not needed)"
 		);
+		expect(toggle.attributes("aria-expanded")).toBe("false");
+
+		// showing lists them as rows, in tier order
+		await toggle.trigger("click");
+		expect(names(wrapper)).toEqual([
+			"Game.workforce Type.pioneer",
+			"Game.workforce Type.settler",
+			"Game.workforce Type.technician",
+			"Game.workforce Type.engineer",
+			"Game.workforce Type.scientist",
+		]);
+		expect(toggle.text()).toBe("Hide the workforce not needed");
+		expect(toggle.attributes("aria-expanded")).toBe("true");
+
+		await toggle.trigger("click");
+		expect(rows(wrapper)).toHaveLength(3);
+		expect(toggle.attributes("aria-expanded")).toBe("false");
+		// each switch is tracked with what it shows now
+		expect(vi.mocked(trackEvent).mock.calls).toEqual([
+			["plan:workforce_unneeded_toggle", { is_shown: true }],
+			["plan:workforce_unneeded_toggle", { is_shown: false }],
+		]);
 	});
 
-	it("has no unused line when every tier is used", async () => {
+	it("keeps housed tiers without a need behind the toggle too", async () => {
 		const { wrapper } = await mountWorkforce({
 			workforceData: {
 				...WORKFORCE,
@@ -134,8 +155,29 @@ describe("PlanWorkforce", () => {
 			},
 		});
 
+		// technician is housed but not needed: no row
+		expect(names(wrapper)).toEqual([
+			"Game.workforce Type.pioneer",
+			"Game.workforce Type.settler",
+			"Game.workforce Type.engineer",
+			"Game.workforce Type.scientist",
+		]);
+		expect(unneededToggle(wrapper).text()).toBe(
+			"Show Game.workforce Type.technician (not needed)"
+		);
+	});
+
+	it("has no toggle when every tier is needed", async () => {
+		const { wrapper } = await mountWorkforce({
+			workforceData: {
+				...WORKFORCE,
+				technician: wf("technician", { required: 5, left: -5 }),
+				scientist: wf("scientist", { required: 5, left: -5 }),
+			},
+		});
+
 		expect(rows(wrapper)).toHaveLength(5);
-		expect(wrapper.text()).not.toContain("not needed");
+		expect(unneededToggle(wrapper).exists()).toBe(false);
 	});
 
 	it("shows how full the housing is", async () => {
@@ -198,12 +240,10 @@ describe("PlanWorkforce", () => {
 			["false", "true"],
 			["true", "true"],
 		]);
-		// a missing luxury is struck through
-		expect(luxButtons(wrapper, 0).at(1)!.classes()).toContain(
-			"line-through"
-		);
-		expect(luxButtons(wrapper, 0).at(0)!.classes()).not.toContain(
-			"line-through"
+		// on is a filled primary button, off a plain one
+		expect(luxButtons(wrapper, 0).at(0)!.classes()).toContain("bg-primary");
+		expect(luxButtons(wrapper, 0).at(1)!.classes()).not.toContain(
+			"bg-primary"
 		);
 	});
 

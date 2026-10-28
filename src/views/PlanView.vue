@@ -96,11 +96,14 @@
 		foldedPanes,
 		materialIOCsv,
 		materialIOTotals,
+		type BaseSection,
 		type PlanTool,
+		type ResultTile,
 	} from "@/features/planning/planView.util";
 	import {
 		breadcrumbEmpire,
 		pickEmpire,
+		planEmpireUuid,
 	} from "@/layout/components/navigation/navigation.util";
 
 	// Components
@@ -387,14 +390,20 @@
 	 * Handle initial empire uuid assignment
 	 *
 	 * Option A: no empire list => undefined
-	 * Option B: planData has empires in list, use first uuid
+	 * Option B: planData has empires in list: the empire the navigation
+	 *   shows when the plan is in it (as the breadcrumb), else its first
 	 * Option C: empire list => use first element
 	 * Fallback: undefined
 	 */
 	if (!props.empireList) {
 		refEmpireUuid.value = undefined;
 	} else if (planEmpires.value.length > 0) {
-		refEmpireUuid.value = planEmpires.value[0].uuid;
+		refEmpireUuid.value = planEmpireUuid(
+			props.planData.uuid,
+			planEmpires.value,
+			Object.values(planningStore.empires),
+			userStore.preferences.defaultEmpireUuid
+		);
 		// update cx uuid
 		refCXUuid.value = findEmpireCXUuid(refEmpireUuid.value);
 	} else if (props.empireList && props.empireList.length > 0) {
@@ -482,9 +491,9 @@
 	}
 
 	/*
-	 * Folding: a tool folds Base, wide tools Material I/O too, into a
-	 * strip; a strip pins its pane open, over tool switches, until the
-	 * user folds it again
+	 * Folding: Base starts as a strip between 81 and 100rem of page width,
+	 * wide tools fold Material I/O into one; a strip pins its pane open,
+	 * over tool switches, until the user folds it again
 	 */
 	const refBasePinned: Ref<boolean> = ref(false);
 	const refIOPinned: Ref<boolean> = ref(false);
@@ -508,6 +517,37 @@
 		trackEvent("plan:panel_fold", { panel, folded: !pinned });
 	}
 
+	// the user folds Base by hand, at any width it sits side by side
+	const refBaseCollapsed: Ref<boolean> = ref(false);
+	// the pressed button goes away: the focus moves to the one replacing it
+	function focusLayout(selector: string): void {
+		nextTick(() =>
+			refLayout.value?.querySelector<HTMLElement>(selector)?.focus()
+		);
+	}
+	function foldBase(): void {
+		refBaseCollapsed.value = true;
+		pinPane("base", false);
+		focusLayout("[data-base-strip]");
+	}
+	function unfoldBase(): void {
+		refBaseCollapsed.value = false;
+		pinPane("base", true);
+		focusLayout("[data-base-fold]");
+	}
+	// the same for Material I/O, side by side from 71rem; a wide tool folds it
+	const refIOCollapsed: Ref<boolean> = ref(false);
+	function foldIO(): void {
+		refIOCollapsed.value = true;
+		pinPane("io", false);
+		focusLayout("[data-io-strip]");
+	}
+	function unfoldIO(): void {
+		refIOCollapsed.value = false;
+		pinPane("io", true);
+		focusLayout("[data-io-fold]");
+	}
+
 	// below 1296 px of page width (a 1360 px window with the rail, 1544 px
 	// with the full sidebar) Base opens as an overlay from the tab row
 	const refBaseOverlay: Ref<boolean> = ref(false);
@@ -515,7 +555,10 @@
 	function toggleOverlay(panel: "base" | "io"): void {
 		const open = panel === "base" ? refBaseOverlay : refIOOverlay;
 		open.value = !open.value;
-		if (open.value) trackEvent("plan:overlay_open", { panel });
+		if (!open.value) return;
+		trackEvent("plan:overlay_open", { panel });
+		// the focus goes in; Esc or Close brings it back to the toggle
+		focusLayout(`[data-${panel}-close]`);
 	}
 
 	// below 71rem of page width (a tablet) Material I/O does too
@@ -531,6 +574,38 @@
 		refBaseOverlay.value = false;
 		refIOOverlay.value = false;
 		if (open) document.querySelector<HTMLElement>(open)?.focus();
+	}
+
+	// a results tile opens where its figure comes from: a Base section, in
+	// whatever form Base has (a phone's section, the overlay below 81rem of
+	// page width, a folded strip), or a tool in place of the production list
+	const refLayout = useTemplateRef<HTMLElement>("layout");
+	const refBase = useTemplateRef<{ openSection: (s: BaseSection) => void }>(
+		"base"
+	);
+	function openBase(section: BaseSection): void {
+		if (refIsPhone.value) showSection("base");
+		refBaseCollapsed.value = false;
+		refBasePinned.value = true;
+		const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+		if (
+			!refIsPhone.value &&
+			(refLayout.value?.clientWidth ?? Infinity) < 81 * rem
+		)
+			refBaseOverlay.value = true;
+		nextTick(() => refBase.value?.openSection(section));
+	}
+	function openTool(key: PlanTool): void {
+		if (refIsPhone.value) showSection("tools");
+		if (refShowTool.value !== key) toggleTool(key);
+	}
+	function openTile(tile: ResultTile): void {
+		trackEvent("plan:result_tile_open", { tile });
+		if (tile === "area") openBase("planet");
+		else if (tile === "workforce") openBase("workforce");
+		else if (tile === "profit") openTool("profit-breakdown");
+		else if (tile === "payback") openTool("construction-cart");
+		else openTool("visitation-frequency");
 	}
 
 	/*
@@ -574,23 +649,6 @@
 	const onPhone = (section: PhoneSection): boolean =>
 		!refIsPhone.value || refPhoneSection.value === section;
 
-	// the panes' width (the page next to the app navigation): In and Out
-	// of Material I/O fit only from 1600 px on, where its pane is 384 px;
-	// a phone drops them too
-	// (@[100rem]); the CSS breakpoint @[81rem] (1296 px, 1360 px with the
-	// rail) folds Base
-	const refLayout = useTemplateRef<HTMLElement>("layout");
-	const refIOCompact: Ref<boolean> = ref(false);
-	let layoutObserver: ResizeObserver | undefined;
-	onMounted(() => {
-		if (!refLayout.value) return;
-		layoutObserver = new ResizeObserver(([entry]) => {
-			const width: number = entry.contentRect.width;
-			refIOCompact.value = width < 1600;
-		});
-		layoutObserver.observe(refLayout.value);
-	});
-	onUnmounted(() => layoutObserver?.disconnect());
 
 	const expertCount = computed(() =>
 		Object.values(result.value.experts).reduce((sum, e) => sum + e.amount, 0)
@@ -1017,17 +1075,23 @@
 
 	/**
 	 * Saves this tab's edits as "<name> (copy)" in the original's empire
-	 * and opens it, the original keeps the other tab's version
+	 * (the one it calculates with when the original is in it) and opens
+	 * it, the original keeps the other tab's version
 	 */
 	async function saveAsNewPlan(): Promise<void> {
 		refIsSaving.value = true;
 		try {
+			const inPlanEmpire = planEmpires.value.some(
+				(e) => e.uuid === refEmpireUuid.value
+			);
 			const created = await createNewPlan({
 				...backendData.value,
 				plan_name: t("save_conflict.copy_name", {
 					name: planName.value ?? "",
 				}),
-				empire_uuid: planEmpires.value[0]?.uuid ?? refEmpireUuid.value,
+				empire_uuid: inPlanEmpire
+					? refEmpireUuid.value
+					: (planEmpires.value[0]?.uuid ?? refEmpireUuid.value),
 			});
 			if (!created) return saveFailed();
 
@@ -1455,7 +1519,7 @@
 		@copy="copySharedChanges"
 		@save="openSaveAsModal" />
 	<!-- keep focused controls clear of the sticky results bar; the bottom
-		padding scrolls the last rows clear of the insights button -->
+		padding leaves room below the last rows -->
 	<!-- @container: the panes lay out by the width next to the app
 		navigation, so an expanded sidebar makes Base an overlay -->
 	<!-- a phone keeps the last rows clear of the Save bar and the app's
@@ -1577,19 +1641,23 @@
 			</div>
 		</header>
 
-		<!-- Results (sticky) -->
+		<!-- Results (sticky); from 48rem its first and last tile carry the
+			side padding, so their hover reaches the edges -->
 		<div
-			class="sticky top-0 z-1000 px-6 max-md:px-4 bg-(--app-bg) border-y border-line">
+			class="sticky top-0 z-1000 px-6 max-md:px-4 @min-[48rem]:px-0 bg-(--app-bg) border-y border-line">
 			<PlanResultsBar
 				:overview="overviewData"
 				:area="result.area"
 				:visitation="visitationData"
+				:workforce="result.workforce"
+				:experts="result.experts"
 				:revenue="result.revenue"
 				:cost="result.cost"
 				:empire-profit-per-area="
 					refEmpireUuid ? cachedProfitPerArea(refEmpireUuid) : undefined
 				"
-				:compare="sharedCompare" />
+				:compare="sharedCompare"
+				@open="openTile" />
 			<!-- a phone: one section at a time -->
 			<PlanToolTabs
 				v-if="refIsPhone"
@@ -1600,7 +1668,8 @@
 				@toggle="showSection" />
 		</div>
 
-		<!-- Set up → build → result, side by side; below 81rem of page width
+		<!-- Set up → build → result, side by side; from 100rem of page width
+			Base stays open, from 81rem it starts as a strip; below 81rem
 			Base, below 71rem Material I/O too open as overlays from the tab
 			row, so Production keeps the width; a phone shows one section -->
 		<div
@@ -1608,13 +1677,17 @@
 			@keydown.esc="closeOverlays">
 			<!-- Base -->
 			<button
-				v-if="baseFolded"
+				v-if="refBaseCollapsed || baseFolded"
 				type="button"
-				:class="strip"
-				class="hidden @min-[81rem]:flex"
+				:class="[
+					strip,
+					refBaseCollapsed
+						? 'hidden @min-[81rem]:flex'
+						: 'hidden @min-[81rem]:@max-[100rem]:flex',
+				]"
 				:aria-label="`${t('plan.layout.show_base')}: ${baseStrip}`"
 				data-base-strip
-				@click="pinPane('base', true)">
+				@click="unfoldBase">
 				<span :class="stripIcon">
 					<PIcon :size="16"><ChevronRightSharp /></PIcon>
 				</span>
@@ -1623,16 +1696,21 @@
 			</button>
 			<aside
 				:aria-label="t('plan.base.label')"
-				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-20 md:max-h-[calc(100dvh-6rem)] md:overflow-y-auto bg-(--app-bg) [scrollbar-width:thin]"
+				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-20 md:max-h-[calc(100dvh-6rem)] md:overflow-y-auto bg-(--app-bg)"
 				:class="[
-					baseFolded ? '@min-[81rem]:hidden' : '',
+					refBaseCollapsed
+						? '@min-[81rem]:hidden'
+						: baseFolded
+							? '@min-[81rem]:@max-[100rem]:hidden'
+							: '',
 					refBaseOverlay
 						? 'md:@max-[81rem]:absolute md:@max-[81rem]:left-6 md:@max-[81rem]:top-4 md:@max-[81rem]:z-50 md:@max-[81rem]:shadow-xl md:@max-[81rem]:bg-surface'
 						: 'md:@max-[81rem]:hidden',
 					onPhone('base') ? '' : 'hidden',
 				]"
 				data-base-pane>
-				<div class="flex items-center gap-2 px-3 pt-3 pb-1">
+				<!-- a phone names Base in its section tabs already -->
+				<div class="flex items-center gap-2 px-3 pt-3 pb-1 max-md:hidden">
 					<h2 class="flex-1 font-bold text-white">
 						{{ t("plan.base.label") }}
 					</h2>
@@ -1641,20 +1719,25 @@
 						type="ghost"
 						size="sm"
 						class="hidden md:@max-[81rem]:flex"
+						data-base-close
 						@click="closeOverlays">
 						<template #icon><CloseSharp /></template>
 						{{ t("plan.layout.close") }}
 					</PButton>
+					<!-- side by side (from 81rem) Base folds on request, at any width -->
 					<PButton
-						v-if="folded.base && refBasePinned"
 						type="ghost"
 						size="sm"
 						class="hidden @min-[81rem]:flex"
-						@click="pinPane('base', false)">
-						{{ t("plan.layout.fold") }}
+						data-base-fold
+						:aria-label="t('plan.layout.fold_base')"
+						:title="t('plan.layout.fold_base')"
+						@click="foldBase">
+						<template #icon><ChevronLeftSharp /></template>
 					</PButton>
 				</div>
 				<PlanBase
+					ref="base"
 					:disabled="disabled"
 					:result="result"
 					:planet="planetData"
@@ -1702,18 +1785,19 @@
 				class="flex-1 min-w-0 w-full">
 				<div
 					v-if="!refIsPhone"
-					class="flex items-center gap-2 border-b border-line">
+					class="flex items-start gap-2 border-b border-line">
 					<PButton
 						type="secondary"
 						size="sm"
-						class="hidden md:@max-[81rem]:flex shrink-0"
+						class="hidden md:@max-[81rem]:flex shrink-0 mt-2"
 						data-base-toggle
 						:aria-expanded="refBaseOverlay ? 'true' : 'false'"
 						@click="toggleOverlay('base')">
 						<template #icon><MenuOpenSharp /></template>
 						{{ t("plan.base.label") }}
 					</PButton>
-					<!-- a narrow row wraps instead of hiding tabs behind I/O -->
+					<!-- a narrow row wraps instead of hiding tabs behind I/O;
+						Base and I/O stay on its first line -->
 					<PlanToolTabs
 						class="flex-wrap"
 						:tabs="toolTabs"
@@ -1723,7 +1807,7 @@
 					<PButton
 						type="secondary"
 						size="sm"
-						class="hidden md:@max-[71rem]:flex shrink-0 ml-auto"
+						class="hidden md:@max-[71rem]:flex shrink-0 ml-auto mt-2"
 						data-io-toggle
 						:aria-expanded="refIOOverlay ? 'true' : 'false'"
 						@click="toggleOverlay('io')">
@@ -1831,13 +1915,13 @@
 
 			<!-- Material I/O -->
 			<button
-				v-if="ioFolded"
+				v-if="refIOCollapsed || ioFolded"
 				type="button"
 				:class="strip"
 				class="hidden @min-[71rem]:flex"
 				:title="t('plan.layout.show_io')"
 				data-io-strip
-				@click="pinPane('io', true)">
+				@click="unfoldIO">
 				<span :class="stripIcon">
 					<PIcon :size="16"><ChevronLeftSharp /></PIcon>
 				</span>
@@ -1852,11 +1936,11 @@
 			</button>
 			<aside
 				:aria-label="t('plan.components.materialio.label')"
-				class="shrink-0 w-full md:w-75 @min-[81rem]:w-85 @min-[100rem]:w-96 rounded border border-line md:sticky md:top-20 bg-(--app-bg)"
+				class="shrink-0 w-full md:w-96 @min-[100rem]:w-112 rounded border border-line md:sticky md:top-20 bg-(--app-bg)"
 				:class="[
-					ioFolded ? '@min-[71rem]:hidden' : '',
+					refIOCollapsed || ioFolded ? '@min-[71rem]:hidden' : '',
 					refIOOverlay
-						? 'md:@max-[71rem]:absolute md:@max-[71rem]:right-6 md:@max-[71rem]:top-4 md:@max-[71rem]:z-50 md:@max-[71rem]:w-85 md:@max-[71rem]:shadow-xl md:@max-[71rem]:bg-surface'
+						? 'md:@max-[71rem]:absolute md:@max-[71rem]:right-6 md:@max-[71rem]:top-4 md:@max-[71rem]:z-50 md:@max-[71rem]:w-96 md:@max-[71rem]:shadow-xl md:@max-[71rem]:bg-surface'
 						: 'md:@max-[71rem]:hidden',
 					onPhone('io') ? '' : 'hidden',
 				]"
@@ -1876,16 +1960,20 @@
 						type="ghost"
 						size="sm"
 						class="hidden md:@max-[71rem]:flex"
+						data-io-close
 						@click="closeOverlays">
 						<template #icon><CloseSharp /></template>
 						{{ t("plan.layout.close") }}
 					</PButton>
 					<PButton
-						v-if="folded.io && refIOPinned"
 						type="ghost"
 						size="sm"
-						@click="pinPane('io', false)">
-						{{ t("plan.layout.fold") }}
+						class="hidden @min-[71rem]:flex"
+						data-io-fold
+						:aria-label="t('plan.layout.fold_io')"
+						:title="t('plan.layout.fold_io')"
+						@click="foldIO">
+						<template #icon><ChevronRightSharp /></template>
 					</PButton>
 				</div>
 				<div
@@ -1903,7 +1991,6 @@
 				</div>
 				<PlanMaterialIO
 					:material-i-o-data="ioRows"
-					:compact="refIOCompact"
 					max-height="calc(100dvh - 20rem)"
 					:value="refIOValue"
 					:filter="refIOFilter"

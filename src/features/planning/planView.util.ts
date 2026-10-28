@@ -9,6 +9,22 @@ export type PlanTool =
 	| "profit-breakdown"
 	| "plan-check";
 
+// the foldable sections of Base
+export type BaseSection =
+	| "empire"
+	| "planet"
+	| "workforce"
+	| "housing"
+	| "experts";
+
+// the tiles of the results bar, each opens where its figure comes from
+export type ResultTile =
+	| "profit"
+	| "payback"
+	| "area"
+	| "storage"
+	| "workforce";
+
 // tools wide enough to need Material I/O's room too
 const WIDE_TOOLS: PlanTool[] = [
 	"repair-analysis",
@@ -17,7 +33,9 @@ const WIDE_TOOLS: PlanTool[] = [
 ];
 
 /**
- * Which side panes fold while a tool replaces the production list
+ * Which side panes fold: Base always (the CSS keeps that to 81–100rem of
+ * page width, where Production would get too narrow next to both panes),
+ * Material I/O for the wide tools
  *
  * @author jplacht
  *
@@ -29,7 +47,7 @@ export function foldedPanes(tool: PlanTool | null): {
 	io: boolean;
 } {
 	return {
-		base: tool !== null,
+		base: true,
 		io: tool !== null && WIDE_TOOLS.includes(tool),
 	};
 }

@@ -91,7 +91,7 @@
 </script>
 
 <template>
-	<div class="flex flex-col gap-3">
+	<div class="@container/popr flex flex-col gap-3">
 		<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
 			<h2 class="text-white/80 font-bold text-lg">
 				{{ $t("plan.tools.popr.title") }}
@@ -112,8 +112,11 @@
 			<PSpin size="lg" />
 			{{ $t("plan.tools.popr.loading") }}
 		</div>
-		<template v-else-if="poprData">
-			<figure class="flex flex-col gap-2 max-w-3xl" data-popr-chart>
+		<!-- a wide tool puts the chart next to the report's table -->
+		<div
+			v-else-if="poprData"
+			class="grid gap-x-6 gap-y-4 items-start @[72rem]/popr:grid-cols-[minmax(24rem,36rem)_minmax(0,1fr)]">
+			<figure class="@container flex flex-col gap-2 max-w-3xl" data-popr-chart>
 				<figcaption class="text-sm font-medium text-ink-strong">
 					{{ t("plan.tools.popr.chart.label") }}
 					<span class="block text-xs font-normal text-muted">
@@ -162,6 +165,6 @@
 				:planet-natural-id="planetNaturalId"
 				:popr-data="poprData"
 				:workforce-data="workforceData" />
-		</template>
+		</div>
 	</div>
 </template>

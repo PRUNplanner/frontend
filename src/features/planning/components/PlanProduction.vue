@@ -2,9 +2,13 @@
 	import {
 		computed,
 		type ComputedRef,
+		nextTick,
+		onBeforeUnmount,
+		onMounted,
 		type PropType,
 		ref,
 		type Ref,
+		useTemplateRef,
 		watch,
 	} from "vue";
 
@@ -284,6 +288,59 @@
 		Object.values(props.experts ?? {}).find(
 			(e) => e.name.toUpperCase() === expertise
 		)?.amount ?? 0;
+
+	// the recipe columns line up across buildings: every building's grid
+	// takes the plan's widest inputs and outputs (their tiles in one line)
+	const refProd = useTemplateRef<HTMLElement>("prod");
+	const recipeColumns: Ref<Record<string, string>> = ref({});
+	function lineWidth(el: Element): number {
+		const kids = [...el.children] as HTMLElement[];
+		const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+		// offsetWidth rounds every tile: a little slack keeps the line whole
+		return (
+			kids.reduce((w, k) => w + k.offsetWidth, 0) +
+			gap * Math.max(kids.length - 1, 0) +
+			2
+		);
+	}
+	function measureRecipeColumns(): void {
+		const root = refProd.value;
+		// hidden under a tool (v-show) every tile measures 0: the observer
+		// below measures again once the list shows
+		if (!root || root.offsetWidth === 0) return;
+		const widest = (selector: string): number =>
+			Math.ceil(
+				Math.max(0, ...[...root.querySelectorAll(selector)].map(lineWidth))
+			);
+		// the recipe button's left padding sits in the inputs column
+		const pad = parseFloat(
+			getComputedStyle(
+				root.querySelector("[data-recipe-button]") ?? root
+			).paddingLeft
+		) || 0;
+		recipeColumns.value = {
+			"--recipe-in": `${widest("[data-recipe-inputs]") + pad}px`,
+			"--recipe-out": `${widest("[data-recipe-outputs]")}px`,
+		};
+	}
+	// an unfolded building brings recipes not measured yet
+	watch(
+		[() => props.productionData, refFolded],
+		() => nextTick(measureRecipeColumns),
+		{ deep: true }
+	);
+	// shown again after a tool, or a pane folded beside it
+	let resize: ResizeObserver | undefined;
+	onBeforeUnmount(() => resize?.disconnect());
+	onMounted(() => {
+		measureRecipeColumns();
+		if (typeof ResizeObserver !== "undefined" && refProd.value) {
+			resize = new ResizeObserver(() => measureRecipeColumns());
+			resize.observe(refProd.value);
+		}
+		// tile widths change once the font is in
+		void document.fonts?.ready.then(measureRecipeColumns);
+	});
 </script>
 
 <template>
@@ -336,9 +393,9 @@
 
 	<!-- under 40rem (a phone, a tablet next to the sidebar) each building
 		becomes a card instead of squeezing the columns -->
-	<div class="@container/prod">
+	<div ref="prod" class="@container/prod" :style="recipeColumns">
 	<div
-		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted @max-[40rem]/prod:hidden"
+		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted @max-[40rem]/prod:hidden"
 		data-column-heads>
 		<span />
 		<span>{{ t("plan.production.columns.building") }}</span>

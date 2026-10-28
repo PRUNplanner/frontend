@@ -31,6 +31,7 @@
 	import {
 		AnalyticsOutlined,
 		DeleteOutlineSharp,
+		EastSharp,
 		ExpandLessSharp,
 		ExpandMoreSharp,
 	} from "@vicons/material";
@@ -84,6 +85,12 @@
 		},
 		// the picker for this row is open below it
 		pickerOpen: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		// every second order of a building with several: a faint stripe
+		striped: {
 			type: Boolean,
 			required: false,
 			default: false,
@@ -146,7 +153,8 @@
 	</PModal>
 
 	<div
-		class="grid grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[5rem_minmax(0,1fr)_4.5rem_6.5rem_3rem_2.75rem] @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto]! gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
+		class="grid @min-[40rem]/prod:grid-cols-subgrid @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto] gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 -ml-2 pl-2 rounded-sm @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
+		:class="striped ? 'bg-white/3' : ''"
 		data-recipe-row>
 		<PInputNumber
 			:value="localRecipeData.amount"
@@ -166,18 +174,16 @@
 						emit('update:building:recipe:amount', recipeIndex, value);
 				}
 			" />
+		<!-- the whole recipe opens the picker. It spans three columns of the
+			building's grid (subgrid): the inputs, the arrow and outputs (both as
+			wide as the widest of the plan, so they line up across buildings)
+			and the opener at the right edge. A phone wraps. -->
 		<button
 			type="button"
-			class="group justify-self-start @max-[40rem]/prod:col-span-4 min-w-0 max-w-full flex items-stretch gap-1 min-h-7 pointer-coarse:min-h-11 pl-1.5 rounded-control border text-left"
+			class="group @max-[40rem]/prod:col-span-4 @min-[40rem]/prod:col-span-3 @min-[40rem]/prod:grid @min-[40rem]/prod:grid-cols-subgrid min-w-0 w-full flex flex-wrap items-center gap-3 @min-[40rem]/prod:gap-x-2 min-h-9 pointer-coarse:min-h-11 px-1.5 py-1 rounded-control text-left"
 			:class="[
-				pickerOpen
-					? 'border-line-strong bg-hover'
-					: disabled
-						? 'border-transparent'
-						: 'border-line bg-surface',
-				disabled
-					? 'cursor-default pr-1.5'
-					: 'cursor-pointer hover:border-line-strong hover:bg-hover',
+				pickerOpen ? 'bg-hover ring-1 ring-line-strong' : '',
+				disabled ? 'cursor-default' : 'cursor-pointer hover:bg-hover',
 			]"
 			:disabled="disabled"
 			:aria-expanded="pickerOpen ? 'true' : 'false'"
@@ -186,42 +192,65 @@
 			"
 			data-recipe-button
 			@click="emit('open:picker', recipeIndex)">
-			<!-- the tiles wrap among themselves, the opener stays at the end -->
-			<span class="flex flex-wrap items-center gap-1 min-w-0 py-0.5">
-			<span
-				v-if="isNew"
-				class="text-xs font-bold uppercase text-positive pr-1">
-				{{ t("sharing.compare.new") }}
+			<!-- the inputs column -->
+			<span class="flex flex-wrap items-center gap-1.5 min-w-0">
+				<span
+					v-if="isNew"
+					class="text-xs font-bold uppercase text-positive">
+					{{ t("sharing.compare.new") }}
+				</span>
+				<span
+					v-if="localRecipeData.recipe.inputs.length"
+					class="flex flex-wrap items-center gap-1.5"
+					data-recipe-inputs>
+					<MaterialTile
+						v-for="material in localRecipeData.recipe.inputs"
+						:key="`IN#${material.material_ticker}`"
+						:ticker="material.material_ticker"
+						:amount="material.material_amount * localRecipeData.amount"
+						disable-drawer
+						:enable-popover="false" />
+				</span>
 			</span>
-			<MaterialTile
-				v-for="material in localRecipeData.recipe.inputs"
-				:key="`IN#${material.material_ticker}`"
-				:ticker="material.material_ticker"
-				:amount="material.material_amount * localRecipeData.amount"
-				disable-drawer
-				:enable-popover="false" />
-			<span
-				v-if="localRecipeData.recipe.inputs.length"
-				aria-hidden="true"
-				class="px-0.5 text-muted">
-				→
+			<!-- the outputs column: the arrow and outputs -->
+			<span class="flex items-center min-w-0">
+				<span
+					class="flex flex-wrap items-center gap-1.5"
+					data-recipe-outputs>
+					<!-- the arrow wraps with the outputs, never alone -->
+					<PIcon
+						v-if="localRecipeData.recipe.inputs.length"
+						:size="16"
+						aria-hidden="true"
+						class="text-muted">
+						<EastSharp />
+					</PIcon>
+					<MaterialTile
+						v-for="material in localRecipeData.recipe.outputs"
+						:key="`OUT#${material.material_ticker}`"
+						:ticker="material.material_ticker"
+						:amount="material.material_amount * localRecipeData.amount"
+						disable-drawer
+						:enable-popover="false" />
+				</span>
 			</span>
-			<MaterialTile
-				v-for="material in localRecipeData.recipe.outputs"
-				:key="`OUT#${material.material_ticker}`"
-				:ticker="material.material_ticker"
-				:amount="material.material_amount * localRecipeData.amount"
-				disable-drawer
-				:enable-popover="false" />
-			</span>
-			<!-- the opener, set off from the tiles -->
-			<span
-				v-if="!disabled"
-				class="flex items-center self-stretch px-0.5 border-l border-line text-muted-strong group-hover:text-white">
-				<PIcon :size="16">
-					<ExpandLessSharp v-if="pickerOpen" />
-					<ExpandMoreSharp v-else />
-				</PIcon>
+			<!-- the rest of the row: the opener at its end; on a phone it wraps
+				under the tiles rather than run past the edge -->
+			<span class="flex flex-1 justify-end">
+				<span
+					v-if="!disabled"
+					class="ml-auto shrink-0 flex items-center gap-0.5 h-6 pl-2 pr-1 @max-[56rem]/prod:px-0.5 rounded-control border border-line text-xs text-muted-strong group-hover:border-line-strong group-hover:text-ink-strong"
+					:class="pickerOpen ? 'border-line-strong text-ink-strong' : ''">
+					<!-- a production column under 56rem keeps only the chevron: the
+						aligned tile columns need the room -->
+					<span class="@max-[56rem]/prod:hidden">
+						{{ t("plan.production.recipe") }}
+					</span>
+					<PIcon :size="16">
+						<ExpandLessSharp v-if="pickerOpen" />
+						<ExpandMoreSharp v-else />
+					</PIcon>
+				</span>
 			</span>
 		</button>
 		<!-- runtime over share, one column: the tiles get the room; a phone
@@ -245,14 +274,14 @@
 		<PButton
 			size="sm"
 			type="ghost"
-			class="justify-self-end size-6 pointer-coarse:size-11 border border-link/40 pointer-coarse:border-transparent text-link! disabled:text-link/40!"
+			class="justify-self-end pointer-coarse:h-11 border border-link/40 pointer-coarse:border-transparent text-link! disabled:text-link/40!"
 			:disabled="!cogmEnabled"
 			:aria-label="
 				t('plan.production.cogm_label', { recipe: outputs })
 			"
-			:title="t('plan.components.production_recipe.buttons.cogm')"
 			@click="openCOGM">
 			<template #icon><AnalyticsOutlined /></template>
+			{{ t("plan.components.production_recipe.buttons.cogm") }}
 		</PButton>
 		<button
 			v-if="!disabled"

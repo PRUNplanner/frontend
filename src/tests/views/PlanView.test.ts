@@ -28,7 +28,10 @@ import {
 	setupPlanViewSuite,
 	supplyCart,
 } from "@/tests/views/PlanView.harness";
-import { describe, it, expect, vi } from "vitest";
+
+// the other empire the fixture plan is in, after Sky Productions
+const PRUN_REAL = "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6";
+import { beforeEach, describe, it, expect, vi } from "vitest";
 import {
 	DOMWrapper,
 	flushPromises,
@@ -384,7 +387,11 @@ describe("PlanView", () => {
 	it("shows a tool in place of the production list and folds the panes", async () => {
 		const { wrapper } = await mountView();
 		const strip = (name: string) => wrapper.find(`[data-${name}-strip]`);
-		expect(strip("base").exists()).toBe(false);
+		const pane = (name: string) => wrapper.find(`[data-${name}-pane]`);
+		// between 81rem and 100rem of page width Base starts folded, on the
+		// production list too, so Production keeps its width; Material I/O stays
+		expect(strip("base").exists()).toBe(true);
+		expect(strip("base").classes()).toContain("@min-[81rem]:@max-[100rem]:flex");
 		expect(strip("io").exists()).toBe(false);
 
 		constructionCart.open();
@@ -393,34 +400,82 @@ describe("PlanView", () => {
 		expect(strip("base").exists()).toBe(true);
 		expect(strip("io").exists()).toBe(false);
 
+		// a tool folds Base only between 81rem and 100rem of page width
+		expect(strip("base").classes()).toEqual(
+			expect.arrayContaining(["hidden", "@min-[81rem]:@max-[100rem]:flex"])
+		);
+		expect(strip("base").classes()).not.toContain("@min-[81rem]:flex");
+		expect(pane("base").classes()).toContain(
+			"@min-[81rem]:@max-[100rem]:hidden"
+		);
+		expect(pane("base").classes()).not.toContain("@min-[81rem]:hidden");
+
+		// a wide tool folds Material I/O too
 		await openTool(wrapper, "plan.tools.labels.plan_check");
 		expect(strip("base").exists()).toBe(true);
 		expect(strip("io").exists()).toBe(true);
+		expect(pane("io").classes()).toContain("@min-[71rem]:hidden");
 
-		// a strip pins its pane open, Fold folds it again
+		// a strip pins its pane open
 		await strip("base").trigger("click");
 		expect(strip("base").exists()).toBe(false);
+		expect(pane("base").classes()).not.toContain(
+			"@min-[81rem]:@max-[100rem]:hidden"
+		);
 		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
 			panel: "base",
 			folded: false,
 		});
-		await wrapper
-			.find("[data-base-pane]")
-			.findAll("button")
-			.find((b) => b.text() === "plan.layout.fold")!
-			.trigger("click");
-		expect(strip("base").exists()).toBe(true);
 
 		// a pinned pane stays open over tool switches
 		await strip("io").trigger("click");
 		expect(strip("io").exists()).toBe(false);
 		await openTool(wrapper, "plan.tools.labels.repair_analysis");
 		expect(strip("io").exists()).toBe(false);
-		expect(strip("base").exists()).toBe(true);
+		expect(strip("base").exists()).toBe(false);
 
 		await openTool(wrapper, "plan.tools.labels.production");
 		expect(productionShown(wrapper)).toBe(true);
 		expect(strip("base").exists()).toBe(false);
+	});
+
+	it("folds Base by hand at any width, its strip unfolds it", async () => {
+		const { wrapper } = await mountView();
+		const strip = () => wrapper.find("[data-base-strip]");
+		const pane = () => wrapper.find("[data-base-pane]");
+		const fold = wrapper.find("[data-base-fold]");
+		// an icon button, side by side only; a phone names Base in its tabs
+		expect(fold.attributes("aria-label")).toBe("plan.layout.fold_base");
+		expect(fold.classes()).toEqual(
+			expect.arrayContaining(["hidden", "@min-[81rem]:flex"])
+		);
+		expect(fold.element.parentElement!.classList).toContain("max-md:hidden");
+
+		await fold.trigger("click");
+		expect(strip().classes()).toEqual(
+			expect.arrayContaining(["hidden", "@min-[81rem]:flex"])
+		);
+		expect(pane().classes()).toContain("@min-[81rem]:hidden");
+		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
+			panel: "base",
+			folded: true,
+		});
+
+		// it stays folded at every width under a tool, and back on the list
+		constructionCart.open();
+		await openTool(wrapper, "plan.tools.labels.construction_cart");
+		expect(strip().classes()).toContain("@min-[81rem]:flex");
+		expect(pane().classes()).toContain("@min-[81rem]:hidden");
+		await openTool(wrapper, "plan.tools.labels.construction_cart");
+		expect(strip().exists()).toBe(true);
+
+		await strip().trigger("click");
+		expect(strip().exists()).toBe(false);
+		expect(pane().classes()).not.toContain("@min-[81rem]:hidden");
+		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
+			panel: "base",
+			folded: false,
+		});
 	});
 
 	it("opens the plan check on its market view from the material I/O", async () => {
@@ -561,44 +616,6 @@ describe("PlanView", () => {
 		expect(toggle().attributes("aria-expanded")).toBe("false");
 	});
 
-	it("drops In and Out of Material I/O while the panes are narrow", async () => {
-		let observe: ((width: number) => void) | undefined;
-		vi.stubGlobal(
-			"ResizeObserver",
-			class {
-				cb: ResizeObserverCallback;
-				constructor(cb: ResizeObserverCallback) {
-					this.cb = cb;
-				}
-				// tooltips observe too, only the panes' wrapper counts
-				observe(el: Element) {
-					if (!el.classList.contains("@container")) return;
-					observe = (width) =>
-						this.cb(
-							[{ contentRect: { width } } as ResizeObserverEntry],
-							this as unknown as ResizeObserver
-						);
-				}
-				unobserve() {}
-				disconnect() {}
-			}
-		);
-		const { wrapper } = await mountView();
-		const compact = () =>
-			wrapper.findComponent(PlanMaterialIO).props("compact");
-
-		observe!(1856);
-		await flushPromises();
-		expect(compact()).toBe(false);
-		observe!(1376);
-		await flushPromises();
-		expect(compact()).toBe(true);
-		// a phone has no room for them either
-		observe!(343);
-		await flushPromises();
-		expect(compact()).toBe(true);
-	});
-
 	it("opens the planet insights from Base", async () => {
 		const { wrapper } = await mountView();
 
@@ -607,22 +624,153 @@ describe("PlanView", () => {
 		expect(mocks.openInsights).toHaveBeenCalledTimes(1);
 	});
 
-	it("folds a pinned Material I/O again", async () => {
-		const { wrapper } = await mountView();
-		await openTool(wrapper, "plan.tools.labels.plan_check");
+	it("moves the focus to the button replacing a fold or a strip", async () => {
+		const { wrapper } = await mountView({}, { attach: true });
+		const focused = (selector: string) =>
+			expect(document.activeElement).toBe(wrapper.find(selector).element);
+
+		await wrapper.find("[data-base-fold]").trigger("click");
+		await flushPromises();
+		focused("[data-base-strip]");
+		await wrapper.find("[data-base-strip]").trigger("click");
+		await flushPromises();
+		focused("[data-base-fold]");
+
+		await wrapper.find("[data-io-fold]").trigger("click");
+		await flushPromises();
+		focused("[data-io-strip]");
 		await wrapper.find("[data-io-strip]").trigger("click");
-		expect(wrapper.find("[data-io-strip]").exists()).toBe(false);
+		await flushPromises();
+		focused("[data-io-fold]");
 
-		await wrapper
-			.find("[data-io-pane]")
-			.findAll("button")
-			.find((b) => b.text() === "plan.layout.fold")!
-			.trigger("click");
+		// an overlay takes the focus in, Esc gives it back to its toggle
+		for (const panel of ["base", "io"]) {
+			await wrapper.find(`[data-${panel}-toggle]`).trigger("click");
+			await flushPromises();
+			focused(`[data-${panel}-close]`);
+			await wrapper.find(`[data-${panel}-close]`).trigger("keydown.esc");
+			await flushPromises();
+			focused(`[data-${panel}-toggle]`);
+		}
+		wrapper.unmount();
+	});
 
-		expect(wrapper.find("[data-io-strip]").exists()).toBe(true);
+	it("folds Material I/O by hand, its strip unfolds it", async () => {
+		const { wrapper } = await mountView();
+		const strip = () => wrapper.find("[data-io-strip]");
+		const pane = () => wrapper.find("[data-io-pane]");
+		const fold = wrapper.find("[data-io-fold]");
+		// always there, side by side only (from 71rem)
+		expect(fold.attributes("aria-label")).toBe("plan.layout.fold_io");
+		expect(fold.classes()).toEqual(
+			expect.arrayContaining(["hidden", "@min-[71rem]:flex"])
+		);
+
+		// without a tool
+		await fold.trigger("click");
+		expect(strip().exists()).toBe(true);
+		expect(pane().classes()).toContain("@min-[71rem]:hidden");
 		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
 			panel: "io",
 			folded: true,
+		});
+		await strip().trigger("click");
+		expect(strip().exists()).toBe(false);
+		expect(pane().classes()).not.toContain("@min-[71rem]:hidden");
+		expect(trackEvent).toHaveBeenCalledWith("plan:panel_fold", {
+			panel: "io",
+			folded: false,
+		});
+
+		// a wide tool's fold, pinned open, folds again
+		await openTool(wrapper, "plan.tools.labels.plan_check");
+		expect(strip().exists()).toBe(false);
+		await wrapper.find("[data-io-fold]").trigger("click");
+		expect(strip().exists()).toBe(true);
+		await openTool(wrapper, "plan.tools.labels.production");
+		expect(strip().exists()).toBe(true);
+	});
+
+	describe("results tiles", () => {
+		const activeTab = (wrapper: VueWrapper) =>
+			wrapper.find("nav button[aria-pressed='true']").text();
+
+		it("opens the tool each tile's figure comes from", async () => {
+			const { wrapper } = await mountView();
+
+			await emitFrom(wrapper, PlanResultsBar, "open", "profit");
+			await vi.waitFor(() =>
+				expect(
+					wrapper.findComponent({ name: "PlanProfitBreakdown" }).exists()
+				).toBe(true)
+			);
+			expect(activeTab(wrapper)).toBe("plan.tools.labels.profit_breakdown");
+			expect(trackEvent).toHaveBeenCalledWith("plan:result_tile_open", {
+				tile: "profit",
+			});
+			// a second click keeps it open instead of toggling it shut
+			await emitFrom(wrapper, PlanResultsBar, "open", "profit");
+			expect(activeTab(wrapper)).toBe("plan.tools.labels.profit_breakdown");
+
+			constructionCart.open();
+			await emitFrom(wrapper, PlanResultsBar, "open", "payback");
+			await vi.waitFor(() =>
+				expect(wrapper.text()).toContain("PlanConstructionCart")
+			);
+			expect(activeTab(wrapper)).toBe("plan.tools.labels.construction_cart");
+
+			await emitFrom(wrapper, PlanResultsBar, "open", "storage");
+			await vi.waitFor(() =>
+				expect(
+					wrapper
+						.findComponent({ name: "PlanVisitationFrequency" })
+						.exists()
+				).toBe(true)
+			);
+			expect(activeTab(wrapper)).toBe(
+				"plan.tools.labels.visitation_frequency"
+			);
+			expect(productionShown(wrapper)).toBe(false);
+		});
+
+		it("opens Base's section for area and workforce, unfolded", async () => {
+			const scroll = vi.spyOn(Element.prototype, "scrollIntoView");
+			const { wrapper } = await mountView({}, { login: true });
+			const section = (key: string) =>
+				wrapper.find<HTMLDetailsElement>(`details[data-section="${key}"]`)
+					.element;
+			const strip = () => wrapper.find("[data-base-strip]");
+			// both start open, close them to see the tiles open them
+			section("planet").open = false;
+			section("workforce").open = false;
+
+			// a tool's fold gives way: the tile pins Base open
+			await openTool(wrapper, "plan.tools.labels.popr");
+			expect(strip().exists()).toBe(true);
+			await emitFrom(wrapper, PlanResultsBar, "open", "workforce");
+			expect(section("workforce").open).toBe(true);
+			expect(section("planet").open).toBe(false);
+			expect(strip().exists()).toBe(false);
+			expect(trackEvent).toHaveBeenCalledWith("plan:result_tile_open", {
+				tile: "workforce",
+			});
+
+			// a hand fold too
+			await wrapper.find("[data-base-fold]").trigger("click");
+			expect(strip().exists()).toBe(true);
+			await emitFrom(wrapper, PlanResultsBar, "open", "area");
+			expect(section("planet").open).toBe(true);
+			expect(strip().exists()).toBe(false);
+			expect(
+				scroll.mock.contexts
+			).toEqual(
+				expect.arrayContaining([section("workforce"), section("planet")])
+			);
+			scroll.mockRestore();
+			// jsdom's layout has no width: below 81rem, Base opens as an overlay
+			expect(
+				wrapper.find("[data-base-toggle]").attributes("aria-expanded")
+			).toBe("true");
 		});
 	});
 
@@ -691,6 +839,49 @@ describe("PlanView", () => {
 			cx: "Universe",
 			empire: "none",
 		});
+		calcDebug.value = false;
+	});
+
+	it("calculates with the navigation's empire when the plan is in several", async () => {
+		calcDebug.value = true;
+		// the plan is in Sky Productions (listed first) and PRUN REAL; the
+		// navigation shows PRUN REAL
+		const { wrapper } = await mountView(
+			{ empireList: empires() },
+			{
+				seed: ({ user, planning }) => {
+					planning.setEmpires(empires());
+					planning.setCXs(cxs());
+					user.preferences.defaultEmpireUuid = PRUN_REAL;
+				},
+			}
+		);
+		await openDebug(wrapper);
+
+		expect(
+			wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta")
+		).toMatchObject({ empire: "PRUN REAL" });
+		calcDebug.value = false;
+	});
+
+	// as its breadcrumb: the first of the user's empires that holds the plan
+	it("falls back to the empire its breadcrumb links when the navigation's isn't one", async () => {
+		calcDebug.value = true;
+		const { wrapper } = await mountView(
+			{ empireList: empires() },
+			{
+				seed: ({ user, planning }) => {
+					planning.setEmpires(empires());
+					planning.setCXs(cxs());
+					user.preferences.defaultEmpireUuid = SHARE_EMPIRE;
+				},
+			}
+		);
+		await openDebug(wrapper);
+
+		expect(
+			wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta")
+		).toMatchObject({ empire: "PRUN REAL" });
 		calcDebug.value = false;
 	});
 
@@ -1267,12 +1458,13 @@ describe("PlanView", () => {
 	});
 
 	describe("on a phone", () => {
-		const phone = () =>
+		beforeEach(() =>
 			vi.stubGlobal("matchMedia", (query: string) => ({
 				matches: query === "(max-width: 767.98px)",
 				addEventListener: vi.fn(),
 				removeEventListener: vi.fn(),
-			}));
+			}))
+		);
 		const section = (wrapper: Mounted["wrapper"], label: string) =>
 			wrapper
 				.findAll("nav[aria-label='plan.layout.sections'] button")
@@ -1281,7 +1473,6 @@ describe("PlanView", () => {
 			wrapper.find(selector).classes().includes("hidden");
 
 		it("shows one section at a time, picked in the section tabs", async () => {
-			phone();
 			const { wrapper } = await mountView();
 
 			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
@@ -1312,7 +1503,6 @@ describe("PlanView", () => {
 		});
 
 		it("lists the tools, opens one with a way back to the list", async () => {
-			phone();
 			const { wrapper } = await mountView();
 
 			await section(wrapper, "plan.layout.tools").trigger("click");
@@ -1340,8 +1530,28 @@ describe("PlanView", () => {
 			expect(wrapper.find("[data-phone-tools]").exists()).toBe(true);
 		});
 
+		it("switches to the section a results tile opens", async () => {
+			const { wrapper } = await mountView();
+
+			await emitFrom(wrapper, PlanResultsBar, "open", "area");
+			expect(hidden(wrapper, "[data-base-pane]")).toBe(false);
+			// never its tablet overlay: a phone turned to a tablet would show it
+			expect(wrapper.find("[data-base-pane]").classes()).not.toContain(
+				"md:@max-[81rem]:absolute"
+			);
+
+			await emitFrom(wrapper, PlanResultsBar, "open", "storage");
+			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
+			await vi.waitFor(() =>
+				expect(
+					wrapper
+						.findComponent({ name: "PlanVisitationFrequency" })
+						.exists()
+				).toBe(true)
+			);
+		});
+
 		it("saves from a bar above the app's bottom bar while unsaved", async () => {
-			phone();
 			const { wrapper } = await mountView({}, { login: true });
 			expect(wrapper.find("[data-phone-save]").exists()).toBe(false);
 			// the header has no Save button on a phone

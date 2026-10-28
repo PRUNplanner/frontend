@@ -66,6 +66,22 @@ export function breadcrumbEmpire(
 	return current && holds(current) ? current : empires.find(holds);
 }
 
+/**
+ * The empire a plan calculates with: the one its breadcrumb links, when the
+ * plan lists it, else the plan's first
+ * @author jplacht
+ */
+export function planEmpireUuid(
+	planUuid: string | undefined,
+	planEmpires: { uuid: string }[],
+	empires: PlanEmpireElement[],
+	stored: string | undefined
+): string | undefined {
+	const crumb = breadcrumbEmpire(planUuid, empires, pickEmpire(empires, stored));
+	return (planEmpires.find((e) => e.uuid === crumb?.uuid) ?? planEmpires[0])
+		?.uuid;
+}
+
 /** up to two letters for the empire badge */
 export function initials(name: string): string {
 	const words = name.trim().split(/\s+/).filter(Boolean);

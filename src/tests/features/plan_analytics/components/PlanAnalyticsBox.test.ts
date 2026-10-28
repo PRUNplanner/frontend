@@ -67,11 +67,17 @@ async function mountBox(response: [number, unknown?] = [200, INSIGHTS]) {
 	return mounted;
 }
 
-const toggle = (wrapper: VueWrapper) =>
-	wrapper.find('button[aria-label="plan.tools.plan_analytics.toggle"]');
+// the floating box, rendered once there are insights; no button of its own
+const box = (wrapper: VueWrapper) => wrapper.find("div.fixed");
 
+// the Base panel's planet link opens it through the exposed open()
 async function open(wrapper: VueWrapper) {
-	await toggle(wrapper).trigger("click");
+	(
+		wrapper.findComponent(PlanAnalyticsBox).vm as unknown as {
+			open: () => void;
+		}
+	).open();
+	await flushPromises();
 }
 
 /** the collapsible recipe groups, one button per building */
@@ -100,21 +106,7 @@ describe("PlanAnalyticsBox", () => {
 		await flushPromises();
 
 		expect(mock.history.get).toHaveLength(0);
-		expect(toggle(wrapper).exists()).toBe(false);
-	});
-
-	it("tracks opening the insights", async () => {
-		trackEvent.mockReset();
-		const { wrapper } = await mountBox();
-
-		await open(wrapper);
-		await open(wrapper);
-
-		expect(trackEvent).toHaveBeenCalledOnce();
-		expect(trackEvent).toHaveBeenCalledWith("plan:insights_open", {
-			planet_natural_id: PLANET,
-			source: "button",
-		});
+		expect(box(wrapper).exists()).toBe(false);
 	});
 
 	it("opens from the exposed open() and tracks the planet as source", async () => {
@@ -140,9 +132,11 @@ describe("PlanAnalyticsBox", () => {
 		const { wrapper } = await mountBox();
 
 		expect(mock.history.get).toHaveLength(1);
-		expect(toggle(wrapper).exists()).toBe(true);
-		// closed until toggled
+		expect(box(wrapper).exists()).toBe(true);
+		// closed until opened
 		expect(wrapper.text()).not.toContain("plan.tools.plan_analytics.title");
+		// no floating button: the Base panel's planet link opens it
+		expect(box(wrapper).findAll("button")).toHaveLength(0);
 	});
 
 	it("opens and closes the insights", async () => {
@@ -155,9 +149,10 @@ describe("PlanAnalyticsBox", () => {
 		await wrapper.find("h3 + button").trigger("click");
 		expect(wrapper.text()).not.toContain("plan.tools.plan_analytics.title");
 
+		// opening again shows it again; a second open keeps it open
 		await open(wrapper);
 		await open(wrapper);
-		expect(wrapper.text()).not.toContain("plan.tools.plan_analytics.title");
+		expect(wrapper.text()).toContain("plan.tools.plan_analytics.title");
 	});
 
 	it("shows the expert distribution with segment colours", async () => {
@@ -270,7 +265,7 @@ describe("PlanAnalyticsBox", () => {
 		]);
 
 		expect(mock.history.get).toHaveLength(1);
-		expect(toggle(wrapper).exists()).toBe(false);
+		expect(box(wrapper).exists()).toBe(false);
 		expect(wrapper.text()).toBe("");
 	});
 
@@ -278,7 +273,7 @@ describe("PlanAnalyticsBox", () => {
 		const { wrapper } = await mountBox([500]);
 
 		expect(mock.history.get).toHaveLength(1);
-		expect(toggle(wrapper).exists()).toBe(false);
+		expect(box(wrapper).exists()).toBe(false);
 	});
 
 	it("renders nothing for an invalid response", async () => {
@@ -288,6 +283,6 @@ describe("PlanAnalyticsBox", () => {
 			{ ...INSIGHTS, total_plans_analyzed: 3 },
 		]);
 
-		expect(toggle(wrapper).exists()).toBe(false);
+		expect(box(wrapper).exists()).toBe(false);
 	});
 });

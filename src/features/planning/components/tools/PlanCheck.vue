@@ -22,7 +22,6 @@
 
 	// Components
 	import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import PlanCheckMarket from "@/features/planning/components/tools/PlanCheckMarket.vue";
 	import PlanCheckTarget from "@/features/planning/components/tools/PlanCheckTarget.vue";
 
@@ -39,7 +38,7 @@
 	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	// UI
-	import { PButton, PButtonGroup, PDataTable, PTooltip } from "@/ui";
+	import { PDataTable, PSegmented, PTooltip } from "@/ui";
 
 	const { t } = useI18n();
 
@@ -210,36 +209,33 @@
 			<h2 class="text-white/80 font-bold text-lg">
 				{{ t("plan.tools.plan_check.title") }}
 			</h2>
-			<PButtonGroup
+			<PSegmented
 				v-if="views.length > 1"
-				role="group"
-				:aria-label="t('plan.tools.plan_check.view_label')">
-				<PButton
-					v-for="v in views"
-					:key="v"
-					class="min-h-11 @[640px]:min-h-0"
-					:pressed="shownView === v"
-					@click="setView(v)">
-					{{ t(`plan.tools.plan_check.views.${v}`) }}
-				</PButton>
-			</PButtonGroup>
-			<HelpDrawer file-name="plan" />
+				:value="shownView"
+				:options="
+					views.map((v) => ({
+						value: v,
+						label: t(`plan.tools.plan_check.views.${v}`),
+					}))
+				"
+				:label="t('plan.tools.plan_check.view_label')"
+				@update:value="setView" />
 			<div
 				v-if="shownView === 'sensitivity'"
 				class="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1">
-				<span id="plancheck-pct-label" class="text-sm text-muted">
+				<span class="text-sm text-muted" aria-hidden="true">
 					{{ t("plan.tools.plan_check.pct_label") }}
 				</span>
-				<PButtonGroup role="group" aria-labelledby="plancheck-pct-label">
-					<PButton
-						v-for="p in PCTS"
-						:key="p"
-						class="min-h-11 @[640px]:min-h-0"
-						:pressed="pct === p"
-						@click="setPct(p)">
-						{{ t("plan.tools.plan_check.pct", { pct: p }) }}
-					</PButton>
-				</PButtonGroup>
+				<PSegmented
+					:value="pct"
+					:options="
+						PCTS.map((p) => ({
+							value: p,
+							label: t('plan.tools.plan_check.pct', { pct: p }),
+						}))
+					"
+					:label="t('plan.tools.plan_check.pct_label')"
+					@update:value="setPct" />
 			</div>
 		</div>
 

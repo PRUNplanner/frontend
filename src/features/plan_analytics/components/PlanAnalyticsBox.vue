@@ -8,7 +8,7 @@
 
 	// UI
 	import PIcon from "@/ui/components/PIcon.vue";
-	import { InsightsSharp, CloseSharp } from "@vicons/material";
+	import { CloseSharp } from "@vicons/material";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -31,16 +31,7 @@
 	// the "Plan suggestions" preference turns the box off
 	const { planSuggestions: isEnabled } = usePreferences();
 
-	function toggleOpen(): void {
-		isOpen.value = !isOpen.value;
-		if (isOpen.value)
-			trackEvent("plan:insights_open", {
-				planet_natural_id: planetNaturalId,
-				source: "button",
-			});
-	}
-
-	// the Base panel's planet link opens the box too
+	// the Base panel's planet link opens the box, its close button closes it
 	function open(): void {
 		if (isOpen.value) return;
 		isOpen.value = true;
@@ -109,7 +100,7 @@
 		class="fixed bottom-6 right-4 z-50 flex flex-col items-end text-white/80">
 		<div
 			v-if="isOpen"
-			class="flex flex-col gap-3 w-100 max-h-[500px] flex-col rounded border border-white/10 bg-gray-dark shadow-lg mb-3">
+			class="flex flex-col gap-3 w-100 max-h-[500px] flex-col rounded border border-white/10 bg-gray-dark shadow-lg">
 			<div
 				class="flex items-center justify-between border-b border-white/10 p-3">
 				<h3 class="font-bold">
@@ -276,16 +267,5 @@
 				</div>
 			</div>
 		</div>
-
-		<button
-			class="touch-target bg-prunplanner flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110 active:scale-80"
-			type="button"
-			:aria-label="$t('plan.tools.plan_analytics.toggle')"
-			@click="toggleOpen">
-			<span class="h-5 w-5 flex items-center justify-center text-black">
-				<InsightsSharp v-if="!isOpen" />
-				<CloseSharp v-else />
-			</span>
-		</button>
 	</div>
 </template>

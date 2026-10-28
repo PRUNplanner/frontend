@@ -63,6 +63,16 @@ describe("PlanData API Calls", async () => {
 		expect(spyApiServiceGet).toHaveBeenCalled();
 	});
 
+	it("callGetPlan keeps a building at 0", async () => {
+		const plan = structuredClone(plan_etherwind);
+		plan.plan_data.buildings[0].amount = 0;
+		mock.onGet(`/planning/plan/${etherwindUuid}/`).reply(200, plan);
+
+		// the schema allows 0: a building set to 0 survives save and load
+		const loaded = await callGetPlan(etherwindUuid);
+		expect(loaded.plan_data.buildings[0].amount).toBe(0);
+	});
+
 	it("callGetPlanlist", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 

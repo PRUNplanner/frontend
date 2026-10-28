@@ -118,13 +118,14 @@
 
 <template>
 	<div class="flex flex-col gap-3 text-sm">
-		<label class="flex flex-col gap-1 text-xs text-muted-strong">
+		<!-- label left, control right, like Corp. HQ and Permits below -->
+		<label class="flex items-center justify-between gap-3">
 			{{ t("plan.components.bonuses.cogc") }}
 			<PSelect
 				v-model:value="localCOGC"
 				:aria-label="t('plan.components.bonuses.cogc')"
 				size="sm"
-				class="w-full"
+				class="flex-1 min-w-0 max-w-44"
 				:disabled="disabled"
 				:options="cogcOptions" />
 		</label>

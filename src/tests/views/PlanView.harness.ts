@@ -191,6 +191,8 @@ export function draftPlan(): IPlanDefinition {
 
 export interface IMountOptions {
 	login?: boolean;
+	// in the document, for focus
+	attach?: boolean;
 	seed?: (stores: {
 		user: ReturnType<typeof useUserStore>;
 		planning: ReturnType<typeof usePlanningStore>;
@@ -214,7 +216,7 @@ export async function mountView(
 	const mounted = await mountComponent(
 		PlanView,
 		{ planData: etherwindPlan(), ...props },
-		{ pinia }
+		{ pinia, attach: options.attach }
 	);
 	// the children load game data, Suspense shows the page once they did
 	await vi.waitFor(() =>
