@@ -9,6 +9,7 @@
 
 	// Stores
 	import { usePlanningStore } from "@/stores/planningStore";
+	import { useUserStore } from "@/stores/userStore";
 
 	// Composables
 	import { useExchangeData } from "@/database/services/useExchangeData";
@@ -20,6 +21,7 @@
 	} from "@/features/planning/usePlanContext";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { planEmpireUuid } from "@/layout/components/navigation/navigation.util";
 
 	// Engine
 	import { calculatePlan } from "@/features/planning/engine/calculatePlan";
@@ -76,6 +78,7 @@
 	}>();
 
 	const planningStore = usePlanningStore();
+	const userStore = useUserStore();
 	const { getGameData, createPrices, loadGameData } = usePlanContext();
 	const { findEmpireCXUuid } = useCXData();
 	const { getExchangeTickerLoaded } = useExchangeData();
@@ -194,11 +197,18 @@
 	const calcFailed = ref(false);
 	let latest = 0;
 
-	// the other plan as its own plan view calculates it: its first empire
-	// (else the user's first) and that empire's CX preference
+	// the other plan as its own plan view calculates it: the empire its
+	// breadcrumb links, else its first (else the user's first), and that
+	// empire's CX preference
 	async function calculateOther(plan: Plan): Promise<IOther> {
 		const empires = Object.values(planningStore.empires);
-		const empireUuid = plan.empires?.[0]?.uuid ?? empires[0]?.uuid;
+		const empireUuid =
+			planEmpireUuid(
+				plan.uuid,
+				plan.empires ?? [],
+				empires,
+				userStore.preferences.defaultEmpireUuid
+			) ?? empires[0]?.uuid;
 		const cxUuid = findEmpireCXUuid(empireUuid);
 		// its planet may not be loaded in this session yet
 		const [gameData, planet] = await Promise.all([

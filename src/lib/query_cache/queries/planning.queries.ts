@@ -99,10 +99,17 @@ async function dropShared(): Promise<void> {
 /**
  * Stores plans and seeds each plan's own `GetPlan` entry. An empire's plan
  * list leaves out the empires a plan is in: those aren't seeded, or the
- * opened plan would calculate with the first empire, not its own
+ * opened plan would calculate with the first empire, not its own, and
+ * keep the empires a stored copy already has (a reload reads it)
  */
 function setPlans(plans: Plan[]): void {
-	usePlanningStore().setPlans(plans);
+	const store = usePlanningStore();
+	store.setPlans(
+		plans.map((p) => {
+			const kept = store.plans[p.uuid]?.empires;
+			return p.empires || !kept ? p : { ...p, empires: kept };
+		})
+	);
 
 	const queryStore = useQueryStore();
 	plans

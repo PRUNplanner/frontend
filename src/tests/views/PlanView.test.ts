@@ -624,6 +624,27 @@ describe("PlanView", () => {
 		expect(mocks.openInsights).toHaveBeenCalledTimes(1);
 	});
 
+	it("moves the focus to the button replacing a fold or a strip", async () => {
+		const { wrapper } = await mountView({}, { attach: true });
+		const focused = (selector: string) =>
+			expect(document.activeElement).toBe(wrapper.find(selector).element);
+
+		await wrapper.find("[data-base-fold]").trigger("click");
+		await flushPromises();
+		focused("[data-base-strip]");
+		await wrapper.find("[data-base-strip]").trigger("click");
+		await flushPromises();
+		focused("[data-base-fold]");
+
+		await wrapper.find("[data-io-fold]").trigger("click");
+		await flushPromises();
+		focused("[data-io-strip]");
+		await wrapper.find("[data-io-strip]").trigger("click");
+		await flushPromises();
+		focused("[data-io-fold]");
+		wrapper.unmount();
+	});
+
 	it("folds Material I/O by hand, its strip unfolds it", async () => {
 		const { wrapper } = await mountView();
 		const strip = () => wrapper.find("[data-io-strip]");
@@ -832,7 +853,8 @@ describe("PlanView", () => {
 		calcDebug.value = false;
 	});
 
-	it("falls back to the plan's first empire when the navigation's isn't one", async () => {
+	// as its breadcrumb: the first of the user's empires that holds the plan
+	it("falls back to the empire its breadcrumb links when the navigation's isn't one", async () => {
 		calcDebug.value = true;
 		const { wrapper } = await mountView(
 			{ empireList: empires() },
@@ -848,7 +870,7 @@ describe("PlanView", () => {
 
 		expect(
 			wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta")
-		).toMatchObject({ empire: "Sky Productions" });
+		).toMatchObject({ empire: "PRUN REAL" });
 		calcDebug.value = false;
 	});
 
@@ -1467,6 +1489,19 @@ describe("PlanView", () => {
 				["plan:section_view", { section: "base" }],
 				["plan:section_view", { section: "io" }],
 			]);
+		});
+
+		it("opens Base's section for a tile, never its tablet overlay", async () => {
+			phone();
+			Element.prototype.scrollIntoView = vi.fn();
+			const { wrapper } = await mountView();
+
+			await emitFrom(wrapper, PlanResultsBar, "open", "workforce");
+			expect(hidden(wrapper, "[data-base-pane]")).toBe(false);
+			// a phone turned to a tablet would show the overlay open
+			expect(wrapper.find("[data-base-pane]").classes()).not.toContain(
+				"md:@max-[81rem]:absolute"
+			);
 		});
 
 		it("lists the tools, opens one with a way back to the list", async () => {

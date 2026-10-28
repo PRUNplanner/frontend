@@ -229,17 +229,15 @@
 				<div
 					:class="sub"
 					:title="
-						t('plan.results.in_out_per_day', {
+						t('plan.results.in_out_volume_per_day', {
 							in: formatNumber(visitation.dailyVolumeImport, 1),
 							out: formatNumber(visitation.dailyVolumeExport, 1),
-							unit: 'm³',
 						})
 					">
 					{{
 						t("plan.results.in_out_per_day", {
 							in: formatNumber(visitation.dailyWeightImport, 1),
 							out: formatNumber(visitation.dailyWeightExport, 1),
-							unit: "t",
 						})
 					}}
 				</div>

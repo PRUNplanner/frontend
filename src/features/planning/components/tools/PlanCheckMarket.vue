@@ -38,6 +38,7 @@
 	import type { IPlanInput } from "@/features/planning/engine/engine.types";
 	import type {
 		IMarketCheck,
+		MarketFlag,
 		MarketFlagLevel,
 	} from "@/features/cx/marketCheck.types";
 	import type { PDataTableColumn } from "@/ui/ui.types";
@@ -182,6 +183,10 @@
 	/*
 	 * Table and cards
 	 */
+
+	// "all exchanges" is said once above the table: a row names its next flag
+	const rowFlag = (flags: MarketFlag[]): MarketFlag | undefined =>
+		flags.find((f) => f !== "all_exchanges");
 
 	const LEVEL_TEXT: Record<MarketFlagLevel, string> = {
 		red: "text-negative",
@@ -364,13 +369,12 @@
 							</span>
 						</template>
 						<template #cell-check="{ row }">
-							<!-- "all exchanges" is said once above the table, not per row -->
 							<span
-								v-if="row.level && row.flags[0] !== 'all_exchanges'"
+								v-if="row.level && rowFlag(row.flags)"
 								class="inline-flex items-center gap-1.5"
 								:class="LEVEL_TEXT[row.level as MarketFlagLevel]">
 								<MarketFlagIcon :level="row.level" />
-								{{ t(`cx.market_flags.flags.${row.flags[0]}`) }}
+								{{ t(`cx.market_flags.flags.${rowFlag(row.flags)}`) }}
 							</span>
 							<RouterLink
 								v-if="own && ruleLink(row)"
@@ -420,11 +424,11 @@
 								}}
 							</span>
 							<span
-								v-if="c.level && c.flags[0] !== 'all_exchanges'"
+								v-if="c.level && rowFlag(c.flags)"
 								class="ml-auto inline-flex items-center gap-1.5 text-right"
 								:class="LEVEL_TEXT[c.level]">
 								<MarketFlagIcon :level="c.level" />
-								{{ t(`cx.market_flags.flags.${c.flags[0]}`) }}
+								{{ t(`cx.market_flags.flags.${rowFlag(c.flags)}`) }}
 							</span>
 							<span v-else class="ml-auto text-muted">
 								{{ t("plan.tools.plan_check.market.ok") }}

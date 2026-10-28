@@ -103,6 +103,7 @@
 	import {
 		breadcrumbEmpire,
 		pickEmpire,
+		planEmpireUuid,
 	} from "@/layout/components/navigation/navigation.util";
 
 	// Components
@@ -397,14 +398,12 @@
 	if (!props.empireList) {
 		refEmpireUuid.value = undefined;
 	} else if (planEmpires.value.length > 0) {
-		const current = pickEmpire(
+		refEmpireUuid.value = planEmpireUuid(
+			props.planData.uuid,
+			planEmpires.value,
 			Object.values(planningStore.empires),
 			userStore.preferences.defaultEmpireUuid
 		);
-		refEmpireUuid.value = (
-			planEmpires.value.find((e) => e.uuid === current?.uuid) ??
-			planEmpires.value[0]
-		).uuid;
 		// update cx uuid
 		refCXUuid.value = findEmpireCXUuid(refEmpireUuid.value);
 	} else if (props.empireList && props.empireList.length > 0) {
@@ -492,9 +491,9 @@
 	}
 
 	/*
-	 * Folding: a tool folds Base, wide tools Material I/O too, into a
-	 * strip; a strip pins its pane open, over tool switches, until the
-	 * user folds it again
+	 * Folding: Base starts as a strip between 81 and 100rem of page width,
+	 * wide tools fold Material I/O into one; a strip pins its pane open,
+	 * over tool switches, until the user folds it again
 	 */
 	const refBasePinned: Ref<boolean> = ref(false);
 	const refIOPinned: Ref<boolean> = ref(false);
@@ -518,26 +517,35 @@
 		trackEvent("plan:panel_fold", { panel, folded: !pinned });
 	}
 
-	// the user folds Base by hand, at any width it sits side by side; a
-	// tool folds it only below 100rem of page width
+	// the user folds Base by hand, at any width it sits side by side
 	const refBaseCollapsed: Ref<boolean> = ref(false);
+	// the pressed button goes away: the focus moves to the one replacing it
+	function focusLayout(selector: string): void {
+		nextTick(() =>
+			refLayout.value?.querySelector<HTMLElement>(selector)?.focus()
+		);
+	}
 	function foldBase(): void {
 		refBaseCollapsed.value = true;
 		pinPane("base", false);
+		focusLayout("[data-base-strip]");
 	}
 	function unfoldBase(): void {
 		refBaseCollapsed.value = false;
 		pinPane("base", true);
+		focusLayout("[data-base-fold]");
 	}
 	// the same for Material I/O, side by side from 71rem; a wide tool folds it
 	const refIOCollapsed: Ref<boolean> = ref(false);
 	function foldIO(): void {
 		refIOCollapsed.value = true;
 		pinPane("io", false);
+		focusLayout("[data-io-strip]");
 	}
 	function unfoldIO(): void {
 		refIOCollapsed.value = false;
 		pinPane("io", true);
+		focusLayout("[data-io-fold]");
 	}
 
 	// below 1296 px of page width (a 1360 px window with the rail, 1544 px
@@ -577,7 +585,10 @@
 		refBaseCollapsed.value = false;
 		refBasePinned.value = true;
 		const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-		if ((refLayout.value?.clientWidth ?? Infinity) < 81 * rem)
+		if (
+			!refIsPhone.value &&
+			(refLayout.value?.clientWidth ?? Infinity) < 81 * rem
+		)
 			refBaseOverlay.value = true;
 		nextTick(() => refBase.value?.openSection(section));
 	}
@@ -1648,7 +1659,7 @@
 		</div>
 
 		<!-- Set up → build → result, side by side; from 100rem of page width
-			Base stays open with any tool, below it folds for a tool; below 81rem
+			Base stays open, from 81rem it starts as a strip; below 81rem
 			Base, below 71rem Material I/O too open as overlays from the tab
 			row, so Production keeps the width; a phone shows one section -->
 		<div

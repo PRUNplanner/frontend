@@ -143,9 +143,26 @@ describe("PlanProduction", () => {
 	});
 
 	it("sizes the recipe columns after the plan's widest inputs and outputs", async () => {
+		// the observer that measures again once the list shows
+		let observed: (() => void) | undefined;
+		let target: Element | undefined;
+		vi.stubGlobal(
+			"ResizeObserver",
+			class {
+				constructor(cb: () => void) {
+					observed = cb;
+				}
+				observe(el: Element) {
+					target = el;
+				}
+				disconnect() {}
+			}
+		);
 		const { wrapper, setProps } = await mountProduction();
 		const root = wrapper.find('[class~="@container/prod"]')
 			.element as HTMLElement;
+		let shown = 800;
+		Object.defineProperty(root, "offsetWidth", { get: () => shown });
 		// tile groups as the recipe rows render them; jsdom lays out nothing,
 		// so their tiles get a width of their own
 		const group = (attr: string, widths: number[]) => {
@@ -172,6 +189,29 @@ describe("PlanProduction", () => {
 		expect(root.style.getPropertyValue("--recipe-in")).toBe("194px");
 		// 16 + 6 + 70 + 2
 		expect(root.style.getPropertyValue("--recipe-out")).toBe("94px");
+
+		// hidden under a tool every tile measures 0: the columns stay
+		shown = 0;
+		group("data-recipe-outputs", [100, 100]);
+		await setProps({
+			productionData: { buildings: [building("SME"), building("PP1")], materialio: [] },
+		});
+		await flushPromises();
+		expect(root.style.getPropertyValue("--recipe-out")).toBe("94px");
+
+		expect(target).toBe(root);
+		// shown again: measured; 100 + 6 + 100 + 2
+		shown = 800;
+		observed!();
+		await flushPromises();
+		expect(root.style.getPropertyValue("--recipe-out")).toBe("208px");
+
+		// an unfolded building brings recipes not measured yet
+		group("data-recipe-outputs", [150, 100]);
+		children(wrapper)[0].vm.$emit("toggle:fold");
+		await flushPromises();
+		expect(root.style.getPropertyValue("--recipe-out")).toBe("258px");
+		vi.unstubAllGlobals();
 	});
 
 	it("offers the planet's popular buildings first", async () => {

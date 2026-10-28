@@ -71,8 +71,9 @@ vi.mock("@/features/cx/marketCheck.util", async (importActual) => {
 	};
 });
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+const prefs = vi.hoisted((): { defaultEmpireUuid?: string } => ({}));
 vi.mock("@/stores/userStore", () => ({
-	useUserStore: () => ({ isLoggedIn: true }),
+	useUserStore: () => ({ isLoggedIn: true, preferences: prefs }),
 }));
 vi.mock("@/database/services/usePlanetData", async () => {
 	const actual: any = await vi.importActual(

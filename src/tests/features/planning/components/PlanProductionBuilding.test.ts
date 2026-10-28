@@ -181,7 +181,19 @@ describe("PlanProductionBuilding", () => {
 
 		// workforce and neutral factors are left out, the COGC shows as the
 		// tick on the expertise
-		expect(sub()).toBe("✓ game.expertise.METALLURGY · 3 experts");
+		expect(sub()).toBe(
+			"✓plan.production.cogc_match: game.expertise.METALLURGY · 3 experts"
+		);
+
+		// a workforce program lifts the tier's buildings: listed, no tick
+		await setProps({
+			buildingData: building({
+				efficiencyElements: [{ efficiencyType: "COGC", value: 1.1 }],
+			}),
+		});
+		expect(sub()).toBe(
+			"✗plan.production.cogc_no_match: game.expertise.METALLURGY · game.efficiency_type.COGC"
+		);
 
 		await setProps({
 			buildingData: building({ expertise: null, efficiencyElements: [] }),
@@ -193,7 +205,12 @@ describe("PlanProductionBuilding", () => {
 		const { wrapper, setProps } = await mountBuilding();
 		const match = () => wrapper.find("[data-cogc-match]");
 
-		expect(match().text()).toBe("✓ game.expertise.METALLURGY");
+		// the glyph for the eye, the words for a screen reader and on hover
+		expect(match().find("[aria-hidden]").text()).toBe("✓");
+		expect(match().find(".sr-only").text()).toBe(
+			"plan.production.cogc_match:"
+		);
+		expect(match().attributes("title")).toBe("plan.production.cogc_match");
 		expect(match().classes()).toContain("text-positive");
 
 		// no COGC element: the planet's program lifts something else
@@ -202,9 +219,18 @@ describe("PlanProductionBuilding", () => {
 				efficiencyElements: [{ efficiencyType: "EXPERT", value: 1.07 }],
 			}),
 		});
-		expect(match().text()).toBe("✗ game.expertise.METALLURGY");
+		expect(match().find("[aria-hidden]").text()).toBe("✗");
+		expect(match().attributes("title")).toBe("plan.production.cogc_no_match");
 		expect(match().classes()).toContain("text-negative");
 		expect(match().classes()).not.toContain("text-positive");
+
+		// a workforce program's COGC lifts the building, not its expertise
+		await setProps({
+			buildingData: building({
+				efficiencyElements: [{ efficiencyType: "COGC", value: 1.1 }],
+			}),
+		});
+		expect(match().find("[aria-hidden]").text()).toBe("✗");
 
 		// a building without expertise has nothing to match
 		await setProps({ buildingData: building({ expertise: null }) });

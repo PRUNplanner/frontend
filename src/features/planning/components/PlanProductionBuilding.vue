@@ -195,10 +195,12 @@
 	// "✓ Agriculture · 3 experts": the expertise green with a tick when the
 	// planet's COGC lifts it, red with a cross when not, then what else
 	// lifts the efficiency
+	// the expertise's program lifts by 1.25 (engine/efficiency.ts); a
+	// workforce program's 1.1 lifts any building of that tier and is listed
+	const isExpertiseCOGC = (e: { efficiencyType: string; value: number }) =>
+		e.efficiencyType === "COGC" && e.value === 1.25;
 	const cogcMatch = computed(() =>
-		localBuildingData.value.efficiencyElements.some(
-			(e) => e.efficiencyType === "COGC"
-		)
+		localBuildingData.value.efficiencyElements.some(isExpertiseCOGC)
 	);
 	const subParts: ComputedRef<string[]> = computed(() => {
 		const b = localBuildingData.value;
@@ -206,7 +208,7 @@
 		for (const e of b.efficiencyElements) {
 			if (
 				e.efficiencyType === "WORKFORCE" ||
-				e.efficiencyType === "COGC" ||
+				isExpertiseCOGC(e) ||
 				e.value === 1
 			)
 				continue;
@@ -341,8 +343,10 @@
 						v-if="localBuildingData.expertise"
 						class="whitespace-nowrap"
 						:class="cogcMatch ? 'text-positive' : 'text-negative'"
+						:title="t(cogcMatch ? 'plan.production.cogc_match' : 'plan.production.cogc_no_match')"
 						data-cogc-match>
-						{{ cogcMatch ? "✓" : "✗" }}
+						<span aria-hidden="true">{{ cogcMatch ? "✓" : "✗" }}</span>
+						<span class="sr-only">{{ t(cogcMatch ? "plan.production.cogc_match" : "plan.production.cogc_no_match") }}:</span>
 						{{ t(`game.expertise.${localBuildingData.expertise}`) }}
 					</span>
 					<!-- break between the parts, never inside one -->

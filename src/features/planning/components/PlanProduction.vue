@@ -3,6 +3,7 @@
 		computed,
 		type ComputedRef,
 		nextTick,
+		onBeforeUnmount,
 		onMounted,
 		type PropType,
 		ref,
@@ -304,7 +305,9 @@
 	}
 	function measureRecipeColumns(): void {
 		const root = refProd.value;
-		if (!root) return;
+		// hidden under a tool (v-show) every tile measures 0: the observer
+		// below measures again once the list shows
+		if (!root || root.offsetWidth === 0) return;
 		const widest = (selector: string): number =>
 			Math.ceil(
 				Math.max(0, ...[...root.querySelectorAll(selector)].map(lineWidth))
@@ -320,13 +323,21 @@
 			"--recipe-out": `${widest("[data-recipe-outputs]")}px`,
 		};
 	}
+	// an unfolded building brings recipes not measured yet
 	watch(
-		() => props.productionData,
+		[() => props.productionData, refFolded],
 		() => nextTick(measureRecipeColumns),
 		{ deep: true }
 	);
+	// shown again after a tool, or a pane folded beside it
+	let resize: ResizeObserver | undefined;
+	onBeforeUnmount(() => resize?.disconnect());
 	onMounted(() => {
 		measureRecipeColumns();
+		if (typeof ResizeObserver !== "undefined" && refProd.value) {
+			resize = new ResizeObserver(() => measureRecipeColumns());
+			resize.observe(refProd.value);
+		}
 		// tile widths change once the font is in
 		void document.fonts?.ready.then(measureRecipeColumns);
 	});
