@@ -58,12 +58,6 @@
 			required: false,
 			default: undefined,
 		},
-		// a narrow pane drops In and Out
-		compact: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
 		// all rows, or only exported (delta > 0) or imported ones
 		filter: {
 			type: String as PropType<"all" | "exports" | "imports">,
@@ -98,24 +92,20 @@
 		});
 		// the fixed table shares the width equally: the tile (and its flag)
 		// needs less, the value per day (+2,480,862.73) more
-		if (props.value === "share")
-			return [
-				{ key: "ticker", title: "", sorter: true, width: 84 },
-				numeric("delta", "delta"),
-				shareColumn(7),
-				shareColumn(30),
-			];
 		return [
 			{ key: "ticker", title: "", sorter: true, width: 84 },
-			...(props.compact
-				? []
-				: [numeric("input", "input"), numeric("output", "output")]),
+			numeric("input", "input"),
+			numeric("output", "output"),
 			numeric("delta", "delta"),
-			props.value === "weight"
-				? numeric("totalWeight", "total_weight", 100)
-				: props.value === "volume"
-					? numeric("totalVolume", "total_volume", 100)
-					: numeric("price", "cost_day", 100),
+			...(props.value === "share"
+				? [shareColumn(7), shareColumn(30)]
+				: [
+						props.value === "weight"
+							? numeric("totalWeight", "total_weight", 100)
+							: props.value === "volume"
+								? numeric("totalVolume", "total_volume", 100)
+								: numeric("price", "cost_day", 100),
+					]),
 		];
 	});
 
@@ -163,12 +153,16 @@
 
 <template>
 	<!-- numbers never break mid-digit in the narrow side column; titles
-		wrap there instead of running into their sort arrows -->
+		wrap there instead of running into their sort arrows. In, Out and Δ
+		always show: a pane narrower than the columns scrolls sideways;
+		a phone shares its width instead. The scroll box fades out at the
+		bottom, so a cut-off row reads as more to scroll -->
 	<PDataTable
-		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
+		class="max-md:[&_.p-data-table-table]:min-w-0! [&_.p-data-table-box]:[mask-image:linear-gradient(to_bottom,#000_calc(100%-0.75rem),transparent)] [&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! [&_th]:[overflow-wrap:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"
+		:min-width="value === 'share' ? 440 : 376"
 		striped>
 		<template #header-ticker>
 			{{ t("terms.material_ticker") }}

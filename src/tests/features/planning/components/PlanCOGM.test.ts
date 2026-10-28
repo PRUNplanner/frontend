@@ -149,6 +149,10 @@ async function mountCOGM(
 
 const find = (wrapper: VueWrapper, selector: string) => wrapper.find(selector);
 
+// the price scope's planet segment
+const PLANET_SCOPE =
+	'[aria-label="plan.tools.cogm.prices.scope"] button:last-child';
+
 async function click(wrapper: VueWrapper, selector: string) {
 	await find(wrapper, selector).trigger("click");
 	await flushPromises();
@@ -311,7 +315,7 @@ describe("PlanCOGM", () => {
 		expect(table().props("prices")).toEqual([]);
 		expect(table().props("cogms")).toBeInstanceOf(Map);
 
-		await click(wrapper, "[data-scope-planet]");
+		await click(wrapper, PLANET_SCOPE);
 
 		expect(table().props("prices")).toEqual([pref("H2O", "BUY", 30)]);
 		expect(table().props("cogms")).toBeUndefined();
@@ -558,7 +562,7 @@ describe("PlanCOGM", () => {
 			data.ticker_planets = [];
 			const { wrapper } = await mountCOGM(undefined, data);
 
-			await click(wrapper, "[data-scope-planet]");
+			await click(wrapper, PLANET_SCOPE);
 			const table = () => wrapper.findComponent(CXFixedPriceTable);
 			expect(table().props("prices")).toEqual([]);
 

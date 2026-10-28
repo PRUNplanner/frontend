@@ -4,6 +4,7 @@
 		type ComputedRef,
 		nextTick,
 		type PropType,
+		useId,
 		useTemplateRef,
 		watch,
 	} from "vue";
@@ -187,18 +188,33 @@
 			: `game.efficiency_type.${type}`;
 	});
 
-	// "Agriculture · COGC · 3 experts": what lifts the efficiency
 	// a recipe's ȼ per building and day, as the picker shows it
 	const optionDaily = (recipeId: string): number =>
 		localBuildingData.value.recipeOptions.find((o) => o.recipe_id === recipeId)
 			?.dailyRevenue ?? 0;
 
+	// "✓ Agriculture · 3 experts": the expertise green with a tick when the
+	// planet's COGC lifts it, red with a cross when not, then what else
+	// lifts the efficiency
+	// the expertise's program lifts by 1.25 (engine/efficiency.ts); a
+	// workforce program's 1.1 lifts any building of that tier and is listed
+	const isExpertiseCOGC = (e: { efficiencyType: string; value: number }) =>
+		e.efficiencyType === "COGC" && e.value === 1.25;
+	const cogcMatch = computed(() =>
+		localBuildingData.value.efficiencyElements.some(isExpertiseCOGC)
+	);
+	// the fold button's label replaces its content: the line is its description
+	const subLineId = useId();
 	const subParts: ComputedRef<string[]> = computed(() => {
 		const b = localBuildingData.value;
 		const parts: string[] = [];
-		if (b.expertise) parts.push(t(`game.expertise.${b.expertise}`));
 		for (const e of b.efficiencyElements) {
-			if (e.efficiencyType === "WORKFORCE" || e.value === 1) continue;
+			if (
+				e.efficiencyType === "WORKFORCE" ||
+				isExpertiseCOGC(e) ||
+				e.value === 1
+			)
+				continue;
 			parts.push(
 				e.efficiencyType === "EXPERT"
 					? t("plan.production.experts", { n: props.experts }, props.experts)
@@ -207,7 +223,14 @@
 		}
 		return parts;
 	});
-	const subLine = computed(() => subParts.value.join(" · "));
+	const subLine = computed(() =>
+		[
+			...(localBuildingData.value.expertise
+				? [t(`game.expertise.${localBuildingData.value.expertise}`)]
+				: []),
+			...subParts.value,
+		].join(" · ")
+	);
 
 	const outputTickers: ComputedRef<string[]> = computed(() => [
 		...new Set(
@@ -263,7 +286,7 @@
 		:data-building="localBuildingData.name">
 		<!-- a phone: tile, name and delete; under them the count and ȼ/day -->
 		<div
-			class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_3rem_2.75rem] @max-[40rem]/prod:grid-cols-[2.75rem_minmax(0,1fr)_auto]! gap-x-2 @max-[40rem]/prod:gap-y-2 items-center py-2 pl-2 border-l-2 tabular-nums"
+			class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_2.75rem] @max-[40rem]/prod:grid-cols-[2.75rem_minmax(0,1fr)_auto]! gap-x-2 @max-[40rem]/prod:gap-y-2 items-center py-2 pl-2 border-l-2 tabular-nums"
 			:class="
 				localBuildingData.amount > 0
 					? 'border-l-transparent'
@@ -274,20 +297,23 @@
 				class="flex items-center justify-center h-6 rounded-control border border-line-strong bg-surface text-xs font-bold text-ink-strong">
 				{{ localBuildingData.name }}
 			</span>
+			<!-- name over what lifts it; a wide production column puts both on
+				one line, the name whole, the rest cut short (all of it on hover) -->
 			<button
 				type="button"
-				class="min-w-0 pointer-coarse:min-h-11 text-left cursor-pointer"
+				class="min-w-0 min-h-6 pointer-coarse:min-h-11 text-left cursor-pointer @min-[48rem]/prod:flex @min-[48rem]/prod:items-center @min-[48rem]/prod:gap-x-3"
 				:aria-expanded="folded ? 'false' : 'true'"
 				:aria-label="
 					t('plan.production.fold', {
 						building: t(`game.building.${localBuildingData.name}`),
 					})
 				"
+				:aria-describedby="subLineId"
 				@click="emit('toggle:fold')">
 				<span
-					class="flex items-center gap-1 font-medium text-ink-strong">
+					class="flex items-center gap-1 font-medium text-ink-strong @min-[48rem]/prod:shrink-0 @min-[48rem]/prod:max-w-[60%]">
 					<span
-						class="truncate"
+						class="truncate @max-[40rem]/prod:whitespace-normal"
 						:title="t(`game.building.${localBuildingData.name}`)">
 						{{ t(`game.building.${localBuildingData.name}`) }}
 					</span>
@@ -311,13 +337,26 @@
 						{{ t(`sharing.compare.${kind}`) }}
 					</span>
 				</span>
-				<span class="block text-xs text-muted line-clamp-2" :title="subLine">
+				<span
+					:id="subLineId"
+					class="block text-xs text-muted line-clamp-2 @min-[48rem]/prod:min-w-0 @min-[48rem]/prod:truncate"
+					:title="subLine">
 					<span v-if="zeroReason" class="text-negative">
 						{{ t(zeroReason) }} ·
 					</span>
+					<span
+						v-if="localBuildingData.expertise"
+						class="whitespace-nowrap"
+						:class="cogcMatch ? 'text-positive' : 'text-negative'"
+						:title="t(cogcMatch ? 'plan.production.cogc_match' : 'plan.production.cogc_no_match')"
+						data-cogc-match>
+						<span aria-hidden="true">{{ cogcMatch ? "✓" : "✗" }}</span>
+						<span class="sr-only">{{ t(cogcMatch ? "plan.production.cogc_match" : "plan.production.cogc_no_match") }}:</span>
+						{{ t(`game.expertise.${localBuildingData.expertise}`) }}
+					</span>
 					<!-- break between the parts, never inside one -->
-					<template v-for="(part, i) in subParts" :key="part">
-						<template v-if="i"> · </template>
+					<template v-for="part in subParts" :key="part">
+						<template v-if="localBuildingData.expertise || part !== subParts[0]"> · </template>
 						<span class="whitespace-nowrap">{{ part }}</span>
 					</template>
 				</span>
@@ -390,9 +429,15 @@
 			</button>
 		</div>
 
+		<!-- one grid for the building's orders (their rows use its columns):
+			amount, inputs (they wrap first when tight) and arrow + outputs (never
+			squeezed) as wide as the widest of the whole
+			plan (PlanProduction measures them), so they line up across
+			buildings; the opener, runtime, ȼ/day, COGM, delete. Everything else
+			in it spans the full width -->
 		<div
 			v-if="!folded"
-			class="ml-4 mb-2 pl-3 border-l border-line"
+			class="ml-4 mb-2 pl-3 border-l border-line @min-[40rem]/prod:grid @min-[40rem]/prod:grid-cols-[5rem_minmax(0,var(--recipe-in,12rem))_var(--recipe-out,8rem)_minmax(min-content,1fr)_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:@min-[40rem]/prod:grid-cols-[5rem_minmax(0,var(--recipe-in,12rem))_var(--recipe-out,8rem)_minmax(min-content,1fr)_4.5rem_6.5rem_4.5rem_2.75rem] @min-[40rem]/prod:gap-x-2 @min-[40rem]/prod:[&>*]:col-span-full"
 			data-recipes>
 			<template
 				v-for="(recipe, index) in localBuildingData.activeRecipes"
@@ -407,6 +452,7 @@
 					:planet-id="planetId"
 					:is-new="!!change?.newRecipes.includes(recipe.recipeId)"
 					:picker-open="picker === index"
+					:striped="index % 2 === 1"
 					@update:building:recipe:amount="
 						(i: number, value: number) =>
 							emit('update:building:recipe:amount', buildingIndex, i, value)
@@ -448,8 +494,13 @@
 			<div
 				v-if="localBuildingData.activeRecipes.length === 0"
 				class="flex flex-wrap items-center gap-x-2.5 gap-y-1 py-2 text-muted text-xs">
+				<!-- nothing ordered yet, or nothing this building can make here -->
 				<span>
-					{{ t("plan.components.production_building.no_recipe") }}
+					{{
+						localBuildingData.recipeOptions.length
+							? t("plan.components.production_building.no_recipe")
+							: t("plan.components.production_building.no_recipe_available")
+					}}
 				</span>
 				<template v-if="typicalMix">
 					<span>
@@ -482,11 +533,16 @@
 				</template>
 			</div>
 
+			<!-- in the brand yellow, so a second order is easy to find -->
 			<button
 				v-if="!disabled && localBuildingData.recipeOptions.length > 0"
 				type="button"
-				class="min-h-7 pointer-coarse:min-h-11 px-1 text-xs cursor-pointer hover:text-white"
-				:class="picker === null ? 'text-white' : 'text-muted-strong'"
+				class="inline-flex items-center h-7 pointer-coarse:min-h-11 my-1 justify-self-start px-2.5 rounded-control border text-xs font-medium text-prunplanner cursor-pointer transition-colors hover:border-prunplanner hover:bg-prunplanner/10"
+				:class="
+					picker === null
+						? 'border-prunplanner bg-prunplanner/15'
+						: 'border-prunplanner/40'
+				"
 				:aria-expanded="picker === null ? 'true' : 'false'"
 				data-add-recipe
 				@click="picker === null ? emit('close:picker') : emit('open:picker', null)">

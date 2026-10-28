@@ -14,6 +14,7 @@ import {
 	respond,
 	setupPlanViewSuite,
 } from "@/tests/views/PlanView.harness";
+import type { IMountOptions } from "@/tests/views/PlanView.harness";
 import { describe, it, expect, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import PlanProduction from "@/features/planning/components/PlanProduction.vue";
@@ -37,7 +38,10 @@ describe("PlanView save conflicts", () => {
 		return { ...plan, modified_at: "theirs" };
 	}
 
-	async function saveIntoConflict(error: object) {
+	async function saveIntoConflict(
+		error: object,
+		view: { props?: object; seed?: IMountOptions["seed"] } = {}
+	) {
 		const patch = vi.fn(() => {
 			throw error;
 		});
@@ -49,8 +53,11 @@ describe("PlanView save conflicts", () => {
 		});
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		const mounted = await mountView(
-			{ planData: { ...etherwindPlan(), modified_at: "mine" } },
-			{ login: true }
+			{
+				planData: { ...etherwindPlan(), modified_at: "mine" },
+				...view.props,
+			},
+			{ login: true, seed: view.seed }
 		);
 		await emitFrom(
 			mounted.wrapper,
@@ -149,6 +156,26 @@ describe("PlanView save conflicts", () => {
 		expect(mocks.push).toHaveBeenCalledWith("/plan/KW-688c/copy-uuid");
 		expect(wrapper.findComponent(PlanSaveButton).props("modified")).toBe(
 			false
+		);
+	});
+
+	it("puts the copy in the empire the plan calculates with", async () => {
+		// the plan is in Sky Productions (listed first) and PRUN REAL; the
+		// navigation shows PRUN REAL
+		const prunReal = empires().find((e) => e.empire_name === "PRUN REAL")!;
+		await saveIntoConflict(CONFLICT, {
+			props: { empireList: empires() },
+			seed: ({ user, planning }) => {
+				planning.setEmpires(empires());
+				user.preferences.defaultEmpireUuid = prunReal.uuid;
+			},
+		});
+
+		await dialogButton("save_conflict.option.save_as_new").trigger("click");
+		await flushPromises();
+
+		expect(queryCalls("CreatePlan")[0][1].data.empire_uuid).toBe(
+			prunReal.uuid
 		);
 	});
 

@@ -242,9 +242,10 @@
 		})
 	);
 
-	// a phone keeps makes, from and ȼ/day
+	// makes, from, runtime, ȼ/day, ȼ/area, payback, plans; a phone keeps
+	// makes (with the runtime under it), from and ȼ/day
 	const grid =
-		"grid grid-cols-[5rem_minmax(0,1fr)_6rem_4.5rem_4.5rem_3.5rem] max-md:grid-cols-[auto_minmax(0,1fr)_auto]! max-md:[&>*:nth-child(n+4)]:hidden gap-x-2 items-center";
+		"grid grid-cols-[5rem_minmax(0,1fr)_4.5rem_6rem_4.5rem_4.5rem_3.5rem] max-md:grid-cols-[auto_minmax(0,1fr)_auto]! max-md:[&>*:nth-child(3)]:hidden max-md:[&>*:nth-child(n+5)]:hidden gap-x-2 items-center";
 </script>
 
 <template>
@@ -294,6 +295,7 @@
 			class="px-3 py-1 text-xs font-medium text-muted">
 			<span>{{ t("plan.picker.columns.makes") }}</span>
 			<span>{{ t("plan.picker.columns.from") }}</span>
+			<span class="text-right">{{ t("plan.picker.columns.runtime") }}</span>
 			<span class="text-right">{{ t("plan.picker.columns.daily") }}</span>
 			<span class="text-right">{{ t("plan.picker.columns.area") }}</span>
 			<span class="text-right">{{ t("plan.picker.columns.payback") }}</span>
@@ -334,7 +336,7 @@
 				class="pl-2.5 pr-3 py-1.5 pointer-coarse:min-h-11 border-t border-t-line border-l-2"
 				@mousemove="!row.disabled && (active = i)"
 				@click="choose(i)">
-				<!-- what it makes, and how long one run takes -->
+				<!-- what it makes; a phone says how long one run takes under it -->
 				<span class="flex flex-col items-start gap-0.5">
 					<span class="flex flex-wrap items-center gap-1">
 						<MaterialTile
@@ -344,7 +346,7 @@
 							:amount="m.material_amount"
 							disable-drawer />
 					</span>
-					<span class="text-xs text-muted text-nowrap">
+					<span class="md:hidden text-xs text-muted text-nowrap">
 						{{ humanizeTimeMs(row.recipe.time_ms) }}
 					</span>
 				</span>
@@ -363,6 +365,9 @@
 						:title="notes[i]">
 						{{ notes[i] }}
 					</span>
+				</span>
+				<span class="text-right text-sm text-ink text-nowrap" data-runtime>
+					{{ humanizeTimeMs(row.recipe.time_ms) }}
 				</span>
 				<span class="text-right text-sm leading-tight">
 					<PValue class="block" :value="row.recipe.dailyRevenue" />

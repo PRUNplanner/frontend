@@ -80,8 +80,6 @@ describe("PlanMaterialIO", () => {
 		]);
 		expect((await cols({ value: "weight" })).at(-1)).toBe("totalWeight");
 		expect((await cols({ value: "volume" })).at(-1)).toBe("totalVolume");
-		// a narrow pane drops In and Out
-		expect(await cols({ compact: true })).toEqual(["ticker", "delta", "price"]);
 	});
 
 	it("right-aligns every numeric column, header and cells", async () => {
@@ -253,10 +251,9 @@ describe("PlanMaterialIO market flags", () => {
 		const cell = (row: number, key: string) =>
 			wrapper.findAll("tbody tr").at(row)!.find(`td[data-col-key="${key}"]`);
 
-		// In and Out make room for both shares
 		expect(
 			wrapper.findAll("th[data-col-key]").map((th) => th.attributes("data-col-key"))
-		).toEqual(["ticker", "delta", "share7d", "share30d"]);
+		).toEqual(["ticker", "input", "output", "delta", "share7d", "share30d"]);
 		expect(cell(0, "share7d").text()).toBe("100 %");
 		expect(cell(0, "share7d").find(".text-negative").exists()).toBe(true);
 		expect(cell(0, "share30d").text()).toBe("50.0 %");

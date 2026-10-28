@@ -13,8 +13,8 @@ export interface IPickerOption {
 	recipe: IRecipeBuildingOption;
 	// change: the recipe being replaced
 	current: boolean;
-	// already ordered in this building: not selectable, it would be a
-	// second order of the same recipe
+	// already ordered in this building: still selectable, a second order
+	// of the same recipe (free accounts split their runs that way)
 	inPlan: boolean;
 	disabled: boolean;
 }
@@ -29,7 +29,8 @@ export interface IDependencyNote {
 
 /**
  * The recipe picker's rows: in change mode the current recipe first; in
- * add mode the recipes already ordered last. Ordered ones are disabled
+ * add mode the recipes already ordered last. Only the recipe being
+ * replaced is disabled
  *
  * @author jplacht
  *
@@ -65,14 +66,14 @@ export function pickerOptions(
 				.filter((r) => r !== current)
 				.map((recipe) => {
 					const inPlan = activeIds.includes(recipe.recipe_id);
-					return { recipe, current: false, inPlan, disabled: inPlan };
+					return { recipe, current: false, inPlan, disabled: false };
 				}),
 		];
 	}
 
 	const row = (recipe: IRecipeBuildingOption): IPickerOption => {
 		const inPlan = activeIds.includes(recipe.recipe_id);
-		return { recipe, current: false, inPlan, disabled: inPlan };
+		return { recipe, current: false, inPlan, disabled: false };
 	};
 	return [
 		...sorted.filter((r) => !activeIds.includes(r.recipe_id)).map(row),

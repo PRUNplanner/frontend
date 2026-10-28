@@ -142,6 +142,102 @@ describe("PlanProduction", () => {
 		trackEvent.mockReset();
 	});
 
+	describe("recipe columns", () => {
+		// the observer that measures again once the list shows or resizes
+		let observed: () => void;
+		let target: Element | undefined;
+		// the list's own width: 0 while a tool hides it (v-show)
+		let shown: number;
+		beforeEach(() => {
+			shown = 800;
+			target = undefined;
+			vi.stubGlobal(
+				"ResizeObserver",
+				class {
+					constructor(cb: () => void) {
+						observed = cb;
+					}
+					observe(el: Element) {
+						target = el;
+					}
+					disconnect() {}
+				}
+			);
+		});
+
+		async function mountColumns() {
+			const mounted = await mountProduction();
+			const root = mounted.wrapper.find('[class~="@container/prod"]')
+				.element as HTMLElement;
+			Object.defineProperty(root, "offsetWidth", { get: () => shown });
+			// tile groups as the recipe rows render them; jsdom lays out
+			// nothing, so their tiles get a width of their own
+			const group = (attr: string, widths: number[]) => {
+				const el = document.createElement("span");
+				el.setAttribute(attr, "");
+				el.style.columnGap = "6px";
+				for (const w of widths) {
+					const tile = document.createElement("span");
+					Object.defineProperty(tile, "offsetWidth", { value: w });
+					el.append(tile);
+				}
+				root.append(el);
+			};
+			const column = (side: "in" | "out") =>
+				root.style.getPropertyValue(`--recipe-${side}`);
+			// a recalculation, as an edit anywhere in the plan brings
+			const recalculate = async () => {
+				await mounted.setProps({
+					productionData: { buildings: [building("SME")], materialio: [] },
+				});
+				await flushPromises();
+			};
+			return { ...mounted, root, group, column, recalculate };
+		}
+
+		it("sizes them after the plan's widest inputs and outputs", async () => {
+			const { group, column, recalculate } = await mountColumns();
+			group("data-recipe-inputs", [40, 50]);
+			group("data-recipe-inputs", [60, 60, 60]);
+			group("data-recipe-outputs", [16, 70]);
+			await recalculate();
+
+			// tiles and gaps in one line, plus 2px slack: 3 × 60 + 2 × 6 + 2
+			expect(column("in")).toBe("194px");
+			// 16 + 6 + 70 + 2
+			expect(column("out")).toBe("94px");
+		});
+
+		it("keeps them while hidden under a tool, measures once shown", async () => {
+			const { root, group, column, recalculate } = await mountColumns();
+			group("data-recipe-outputs", [16, 70]);
+			await recalculate();
+
+			// hidden, every tile would measure 0
+			shown = 0;
+			group("data-recipe-outputs", [100, 100]);
+			await recalculate();
+			expect(column("out")).toBe("94px");
+
+			// the observer watches the list: shown again, 100 + 6 + 100 + 2
+			expect(target).toBe(root);
+			shown = 800;
+			observed();
+			await flushPromises();
+			expect(column("out")).toBe("208px");
+		});
+
+		it("measures a building's recipes once it unfolds", async () => {
+			const { wrapper, group, column } = await mountColumns();
+			group("data-recipe-outputs", [150, 100]);
+
+			children(wrapper)[0].vm.$emit("toggle:fold");
+			await flushPromises();
+			// 150 + 6 + 100 + 2
+			expect(column("out")).toBe("258px");
+		});
+	});
+
 	it("offers the planet's popular buildings first", async () => {
 		insights.available = ref(true);
 		const { wrapper } = await mountProduction();
@@ -199,6 +295,8 @@ describe("PlanProduction", () => {
 		children(wrapper).at(1)!.vm.$emit("update:building:recipe", 1, 0, "x");
 		await flushPromises();
 
+		// the building and the recipe pick
+		expect(trackPlanEdit).toHaveBeenCalledTimes(2);
 		trackPlanEdit.mock.calls.forEach(([props]) => {
 			expect(props).not.toHaveProperty("is_from_popular");
 			expect(props).not.toHaveProperty("is_most_planned");

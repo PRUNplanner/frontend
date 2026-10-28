@@ -21,8 +21,8 @@ const io = (ticker: string, delta: number, price: number): IMaterialIO => ({
 });
 
 describe("foldedPanes", () => {
-	it("keeps both panes open on the production list", () => {
-		expect(foldedPanes(null)).toStrictEqual({ base: false, io: false });
+	it("folds Base on the production list too (only 81–100rem, by CSS)", () => {
+		expect(foldedPanes(null)).toStrictEqual({ base: true, io: false });
 	});
 
 	it.each<[PlanTool, boolean]>([

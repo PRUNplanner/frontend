@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
 import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
-import PSelect from "@/ui/components/PSelect.vue";
 import PlanInfrastructure from "@/features/planning/components/PlanInfrastructure.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
@@ -71,7 +70,6 @@ const areaButton = (wrapper: VueWrapper) =>
 	buttons(wrapper).find((b) => b.text() === "plan.base.housing.least_area");
 const labels = (wrapper: VueWrapper) =>
 	wrapper.findAll("span.font-mono").map((s) => s.text());
-const addSelect = (wrapper: VueWrapper) => wrapper.findComponent(PSelect);
 
 // only HB1, HBC and STO in use
 const SPARSE: IInfrastructureRecord = {
@@ -103,40 +101,37 @@ describe("PlanInfrastructure", () => {
 		);
 	});
 
-	it("gives only the types in use a stepper", async () => {
+	it("shows every type, the unused ones as strong as the used", async () => {
 		const { wrapper } = await mountInfrastructure({
 			infrastructureData: SPARSE,
 		});
 
-		expect(labels(wrapper)).toEqual(["HB1", "HBC", "STO"]);
+		expect(labels(wrapper)).toEqual(ORDER);
 		expect(
 			numberInputs(wrapper).map(
 				(i) => (i.element as HTMLInputElement).value
 			)
-		).toEqual(["4", "2", "1"]);
-	});
-
-	it("offers the unused types to add, in display order", async () => {
-		const { wrapper } = await mountInfrastructure({
-			infrastructureData: SPARSE,
-		});
-
-		expect(addSelect(wrapper).props("options")).toEqual(
-			ORDER.filter((inf) => !["HB1", "HBC", "STO"].includes(inf)).map(
-				(inf) => ({ label: inf, value: inf })
+		).toEqual(
+			ORDER.map((inf) =>
+				String(SPARSE[inf as keyof IInfrastructureRecord])
 			)
 		);
-		expect(addSelect(wrapper).props("placeholder")).toBe(
-			"plan.base.housing.add"
-		);
+		// every type's ticker in the same white, used or not
+		expect(
+			wrapper
+				.findAll("span.font-mono")
+				.filter((s) => s.classes("text-ink-strong"))
+				.map((s) => s.text())
+		).toEqual(ORDER);
 	});
 
-	it("adds one of a picked type and tracks it", async () => {
+	it("adds an unused type with its stepper and tracks it", async () => {
 		const { wrapper, component } = await mountInfrastructure({
 			infrastructureData: SPARSE,
 		});
 
-		addSelect(wrapper).vm.$emit("update:value", "STV");
+		// index 12 is STV
+		await numberInput(wrapper, 12).setValue("1");
 
 		expect(component.emitted("update:infrastructure")).toEqual([
 			["STV", 1],
@@ -147,21 +142,6 @@ describe("PlanInfrastructure", () => {
 			infrastructure_type: "STV",
 			amount: 1,
 		});
-	});
-
-	it("has no add select when every type is in use", async () => {
-		const { wrapper } = await mountInfrastructure();
-
-		expect(addSelect(wrapper).exists()).toBe(false);
-	});
-
-	it("has no add select when disabled", async () => {
-		const { wrapper } = await mountInfrastructure({
-			disabled: true,
-			infrastructureData: SPARSE,
-		});
-
-		expect(addSelect(wrapper).exists()).toBe(false);
 	});
 
 	it("enables everything without auto-optimize", async () => {

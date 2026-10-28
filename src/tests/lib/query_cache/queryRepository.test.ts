@@ -2,6 +2,7 @@ import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { usePlanningStore } from "@/stores/planningStore";
 import { queryRepository } from "@/lib/query_cache/queryRepository";
 import { batchRefresh } from "@/lib/query_cache/queryBatches";
 import { planetsStore } from "@/database/stores";
@@ -143,6 +144,38 @@ describe("queryRepository", () => {
 			expect(await queryStore.execute(name, params)).toStrictEqual(data);
 			expect(api).toHaveBeenCalledTimes(2);
 		});
+	});
+
+	// an empire's list leaves out each plan's empires: opening such a plan
+	// from the cache would calculate with the first empire
+	it("seeds GetPlan only from plans that carry their empires", async () => {
+		const queryStore = useQueryStore();
+		const full = { ...plan, uuid: "plan-2", empires: [] };
+		// @ts-expect-error mock data
+		vi.mocked(callGetEmpirePlans).mockResolvedValue([plan, full]);
+
+		await queryStore.execute("GetEmpirePlans", { empireUuid: "empire-1" });
+
+		expect(
+			queryStore.peekQueryState(["planningdata", "plan", "plan-1"])
+		).toBeUndefined();
+		expect(
+			queryStore.peekQueryState(["planningdata", "plan", "plan-2"])?.data
+		).toStrictEqual(full);
+	});
+
+	// a reload reads the stored copy
+	it("keeps the empires a stored plan has when a list leaves them out", async () => {
+		const queryStore = useQueryStore();
+		const empires = [{ uuid: "empire-1", empire_name: "Sky" }];
+		usePlanningStore().setPlan({ ...plan, empires } as never);
+		// @ts-expect-error mock data
+		vi.mocked(callGetEmpirePlans).mockResolvedValue([plan, { uuid: "plan-3" }]);
+
+		await queryStore.execute("GetEmpirePlans", { empireUuid: "empire-1" });
+
+		expect(usePlanningStore().plans["plan-1"]).toStrictEqual({ ...plan, empires });
+		expect(usePlanningStore().plans["plan-3"]).toStrictEqual({ uuid: "plan-3" });
 	});
 
 	it("ClonePlan and DeletePlan: return the API response", async () => {

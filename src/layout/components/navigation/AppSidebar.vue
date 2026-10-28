@@ -117,7 +117,7 @@
 	<aside
 		class="h-screen sticky top-0 shrink-0 flex-col border-r border-line bg-gray-dark overflow-y-auto"
 		:class="isFull ? 'w-62' : 'w-16'"
-		style="scrollbar-width: thin">
+		style="scrollbar-width: thin; scrollbar-color: var(--color-line-strong) transparent">
 		<SidebarRail v-if="!isFull" @expand="toggleNavigationSize" />
 		<div v-else class="flex flex-col h-full">
 			<!-- Logo -->

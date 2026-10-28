@@ -35,7 +35,7 @@
 	} from "@/ui/charts/charts.types";
 
 	// UI
-	import { PButton, PButtonGroup } from "@/ui";
+	import { PSegmented } from "@/ui";
 
 	const { t } = useI18n();
 
@@ -253,18 +253,17 @@
 			<span class="text-sm text-muted">
 				{{ t("plan.tools.profit_breakdown.subtitle") }}
 			</span>
-			<PButtonGroup
+			<PSegmented
 				class="ml-auto"
-				role="group"
-				:aria-label="t('plan.tools.profit_breakdown.mode_label')">
-				<PButton
-					v-for="m in MODES"
-					:key="m"
-					:pressed="mode === m"
-					@click="setMode(m)">
-					{{ t(`plan.tools.profit_breakdown.mode.${m}`) }}
-				</PButton>
-			</PButtonGroup>
+				:value="mode"
+				:options="
+					MODES.map((m) => ({
+						value: m,
+						label: t(`plan.tools.profit_breakdown.mode.${m}`),
+					}))
+				"
+				:label="t('plan.tools.profit_breakdown.mode_label')"
+				@update:value="setMode" />
 		</div>
 
 		<p v-if="isEmpty" class="text-muted py-6">
