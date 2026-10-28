@@ -163,12 +163,16 @@ export function layoutChain(result: IChainResult): IChainLayout {
 		);
 		const underNodes = (box: IBox) =>
 			nodeBoxes.reduce((sum, n) => sum + shared(box, n), 0);
-		const spot =
-			spots.find((c) => free(c.box, labels) && free(c.box, nodeBoxes)) ??
-			spots
-				.filter((c) => free(c.box, labels))
-				.sort((a, b) => underNodes(a.box) - underNodes(b.box))[0] ??
-			at(0.5);
+		const clear = spots.filter((c) => free(c.box, labels));
+		let spot = clear.find((c) => free(c.box, nodeBoxes));
+		// else the clear spot over the least node area
+		let least = Infinity;
+		if (!spot)
+			for (const c of clear) {
+				const cost = underNodes(c.box);
+				if (cost < least) [least, spot] = [cost, c];
+			}
+		spot ??= at(0.5);
 		labels.push(spot.box);
 		return {
 			...l,

@@ -83,7 +83,7 @@ describe("ChainResults", () => {
 			"own production at CX price"
 		);
 		expect((await text(had, "buildings", without)).text()).toContain(
-			"3 fewer than making it all"
+			"3 fewer without own production"
 		);
 		expect((await text(had, "construction", without)).text()).toContain(
 			"5,000 ȼ less · pays back in 10 days"

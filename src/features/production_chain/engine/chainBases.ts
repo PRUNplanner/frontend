@@ -241,12 +241,13 @@ export function chainShipping(
 	}
 
 	// between bases, from the plans, from the CX, to the CX
-	const fromPlan = (end: string) =>
-		Object.values(suppliers).some((list) => list.some((s) => s.key === end));
+	const supplierKeys = new Set(
+		Object.values(suppliers).flatMap((list) => list.map((s) => s.key))
+	);
 	const rank = (from: string, to: string) =>
 		isBase(from) && isBase(to)
 			? 0
-			: fromPlan(from)
+			: supplierKeys.has(from)
 				? 1
 				: isBase(to)
 					? 2

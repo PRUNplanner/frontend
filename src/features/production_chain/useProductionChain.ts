@@ -239,8 +239,9 @@ export function useProductionChain() {
 		solveChain(solverInput.value, ctx.value)
 	);
 	/** the same chain without own production, to show the saving */
+	const usesHave = computed(() => result.value.totals.ownCount > 0);
 	const baseline: ComputedRef<IChainTotals | null> = computed(() =>
-		result.value.totals.ownCount
+		usesHave.value
 			? solveChain(input.value, ctx.value).totals
 			: null
 	);
@@ -452,7 +453,8 @@ export function useProductionChain() {
 			ownPlanets.value = new Map(planets.map((p) => [p.planet_natural_id, p]));
 			ownLoaded.value = uuid;
 			return true;
-		} catch {
+		} catch (e) {
+			console.error(e);
 			return false;
 		}
 	}
@@ -519,7 +521,7 @@ export function useProductionChain() {
 
 	/** what the last "Create plans" made, until the chain changes */
 	const created: Ref<IChainCreated | null> = ref(null);
-	watch(input, () => (created.value = null), { deep: true });
+	watch(solverInput, () => (created.value = null), { deep: true });
 
 	/**
 	 * Creates the empire (if new), then one plan per draft in it. Stops at

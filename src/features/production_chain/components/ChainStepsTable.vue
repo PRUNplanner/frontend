@@ -151,7 +151,8 @@
 		const entries: IEntry[] = [];
 		const rows = [...result.order].reverse().map((t) => result.rows[t]);
 		for (const source of ["make", "extract", "buy", "have"] as const) {
-			const list = rows.filter((r) => r.source === source);
+			// by what the source control shows: a partly had row under Have
+			const list = rows.filter((r) => sourceValue(r) === source);
 			if (!list.length) continue;
 			entries.push({
 				kind: "group",
@@ -246,13 +247,15 @@
 			}));
 
 	/** the amount field while typing, applied on blur or Enter */
+	/** amounts show, and compare, at two decimals */
+	const round2 = (q: number) => Math.round(q * 100) / 100;
 	const drafts: Ref<Record<string, number | null>> = ref({});
 	const draftOf = (row: IChainRow) =>
 		row.ticker in drafts.value
 			? drafts.value[row.ticker]
 			: row.haveAvailable === null
 				? null
-				: Math.round(row.haveAvailable * 100) / 100;
+				: round2(row.haveAvailable);
 
 	function applyHave(row: IChainRow): void {
 		if (!(row.ticker in drafts.value)) return;
@@ -278,7 +281,8 @@
 			uses,
 			...(own.suppliers[row.ticker] ?? []).map(
 				(s) =>
-					`${s.plan?.name ?? t("production_chains.have.your_bases")} ${formatQty(s.perDay)}`
+					// the amount stays with its plan when the line wraps
+					`${s.plan?.name ?? t("production_chains.have.your_bases")}\u00a0${formatQty(s.perDay)}`
 			),
 		].join(" · ");
 	}
@@ -291,7 +295,7 @@
 			o?.origin === "typed" &&
 			o.value !== "off" &&
 			q &&
-			o.value !== q
+			(o.value === "all" || round2(o.value) !== round2(q))
 			? q
 			: null;
 	}
@@ -473,8 +477,11 @@
 								<span v-if="entry.row.source === 'have'" class="block text-xs text-have">
 									{{ $t("production_chains.have.from_plans") }}
 								</span>
-								<span v-else-if="entry.row.have > 1e-9" class="block text-xs text-have">
-									{{ $t("production_chains.have.plus_from_plans", { n: formatQty(entry.row.have) }) }}
+								<span
+									v-else-if="entry.row.have > EPS"
+									class="block text-xs text-have whitespace-nowrap"
+									:title="t('production_chains.have.plus_from_plans', { n: formatQty(entry.row.have) })">
+									{{ $t("production_chains.have.plus_own", { n: formatQty(entry.row.have) }) }}
 								</span>
 								<span v-if="entry.row.target" class="block text-xs text-muted">
 									{{
@@ -483,7 +490,7 @@
 										})
 									}}
 								</span>
-								<span v-if="entry.row.covered > 1e-9" class="block text-xs text-positive">
+								<span v-if="entry.row.covered > EPS" class="block text-xs text-positive">
 									{{
 										$t("production_chains.table.from_byproducts", {
 											n: formatQty(entry.row.covered),
@@ -515,7 +522,7 @@
 										@update:value="(v) => onSource(entry.row, v)" />
 								</span>
 								<label
-									v-if="entry.row.have > 1e-9 && entry.row.source !== 'have'"
+									v-if="entry.row.have > EPS && entry.row.source !== 'have'"
 									class="flex items-center gap-2 pt-1 text-xs text-muted">
 									{{ $t("production_chains.have.rest") }}
 									<PSelect
@@ -529,24 +536,24 @@
 								</label>
 							</td>
 							<td>
-								<div v-if="entry.row.have > 1e-9" class="pb-1" :data-testid="`chain-have-${entry.row.ticker}`">
-									<div class="flex items-center gap-2">
+								<div v-if="entry.row.have > EPS" class="pb-1" :data-testid="`chain-have-${entry.row.ticker}`">
+									<div class="flex flex-wrap items-center gap-x-2 gap-y-1">
 										<span class="px-1 rounded-control border border-have text-have text-xs font-bold uppercase">
 											{{ $t("production_chains.have.badge") }}
 										</span>
-										<!-- applies on blur or Enter, not while typing -->
-										<span class="contents" @focusout="applyHave(entry.row)" @keydown.enter="applyHave(entry.row)">
+										<!-- the amount and its unit stay together; applies on blur or Enter, not while typing -->
+										<span class="inline-flex items-center gap-2 whitespace-nowrap" @focusout="applyHave(entry.row)" @keydown.enter="applyHave(entry.row)">
 											<PInputNumber
 												:value="draftOf(entry.row)"
 												decimals
 												:min="0"
 												size="sm"
-												class="w-24"
+												class="w-20"
 												:placeholder="t('production_chains.have.all')"
 												:aria-label="t('production_chains.have.amount', { ticker: entry.row.ticker })"
 												@update:value="(v) => (drafts = { ...drafts, [entry.row.ticker]: v ?? null })" />
+											<span class="text-muted text-xs">{{ $t("production_chains.have.per_day") }}</span>
 										</span>
-										<span class="text-muted text-xs">{{ $t("production_chains.have.per_day") }}</span>
 									</div>
 									<span class="block text-xs text-muted pt-1">{{ usesText(entry.row) }}</span>
 									<button

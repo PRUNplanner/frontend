@@ -750,6 +750,7 @@ export function baseFootprint(
 }
 
 interface IPassRow {
+	source: ChainRowSource;
 	perDay: number;
 	covered: number;
 	have: number;
@@ -1021,6 +1022,7 @@ export function solveChain(
 				load = rate > 0 ? perDay / rate : 0;
 			}
 			pass.rows.set(t, {
+				source,
 				perDay: source === "have" ? 0 : perDay,
 				covered,
 				have,
@@ -1057,10 +1059,6 @@ export function solveChain(
 	});
 	order.splice(0, order.length, ...needed);
 	const links = pass.links.filter((l) => l.perDay > EPS);
-	const rowSource = (t: string): ChainRowSource => {
-		const p = pass.rows.get(t)!;
-		return p.perDay <= EPS && p.have > EPS ? "have" : sourceOf(t);
-	};
 
 	// experts per base: the user's or the split worth most, weighted by the
 	// output value per expertise (building-days without prices)
@@ -1105,7 +1103,7 @@ export function solveChain(
 	const rows: Record<string, IChainRow> = {};
 	for (const t of order) {
 		const p = pass.rows.get(t)!;
-		const source = rowSource(t);
+		const source = pass.rows.get(t)!.source;
 		const price = buyPrice(ctx, t);
 		const isTarget = targetPerDay.has(t);
 		// bought and had rows run no buildings here
@@ -1164,12 +1162,7 @@ export function solveChain(
 			perDay: p.perDay,
 			covered: p.covered,
 			have: p.have,
-			haveAvailable:
-				input.have?.[t] === undefined || isTarget
-					? 0
-					: input.have[t] === "all"
-						? null
-						: Math.max(0, input.have[t] as number),
+			haveAvailable: haveOf(t) === Infinity ? null : haveOf(t),
 			source,
 			target: isTarget,
 			targetPerDay: targetPerDay.get(t) ?? 0,
@@ -1294,7 +1287,7 @@ export function solveChain(
 			thin: order.filter(
 				(t) => rows[t].source === "buy" && rows[t].market?.level
 			),
-			cycles,
+			cycles: cycles.filter((t) => t in rows),
 		},
 	};
 }

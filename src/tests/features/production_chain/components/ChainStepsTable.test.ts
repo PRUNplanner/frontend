@@ -312,7 +312,7 @@ describe("ChainStepsTable with own production", () => {
 		const row = cell(wrapper, "GRN");
 		expect(row.find("[data-testid='chain-have-GRN']").exists()).toBe(true);
 		expect(row.text()).toContain("production_chains.have.from_plans");
-		expect(row.text()).toContain("Alpha 4.00");
+		expect(row.text()).toContain("Alpha\u00a04.00");
 		expect(row.text()).toContain("Zeta");
 		expect(
 			segment(wrapper, "GRN", "production_chains.have.option").attributes(
@@ -329,7 +329,7 @@ describe("ChainStepsTable with own production", () => {
 			chainInput([["RAT", 100]], { have: { LST: 0.5 } })
 		);
 		const row = cell(wrapper, "LST");
-		expect(row.text()).toContain("production_chains.have.plus_from_plans");
+		expect(row.text()).toContain("production_chains.have.plus_own");
 		expect(row.text()).toContain("production_chains.table.bought_on");
 		const rest = row.findComponent(PSelect);
 		expect(rest.props("value")).toBe("buy");
@@ -382,6 +382,12 @@ describe("ChainStepsTable with own production", () => {
 			{ own: own(3) }
 		);
 		expect(back(same.wrapper)).toBe(false);
+		// nor when it only differs below the two decimals shown
+		const shown = await mountTable(
+			chainInput([["RAT", 100]], { have: { GRN: 3 } }),
+			{ own: { ...own(3), surplus: new Map([["GRN", 3.004]]) } }
+		);
+		expect(back(shown.wrapper)).toBe(false);
 		const more = await mountTable(
 			chainInput([["RAT", 100]], { have: { GRN: 5 } }),
 			{ own: own(5) }
@@ -400,11 +406,19 @@ describe("ChainStepsTable with own production", () => {
 		expect(off.component.emitted("have")![0]).toEqual(["GRN", undefined]);
 	});
 
-	it("groups Have rows by source", async () => {
+	it("groups Have rows by source, a partly had one with them", async () => {
 		const { wrapper } = await mountTable(
-			chainInput([["RAT", 100]], { have: { GRN: "all" } }),
+			chainInput([["RAT", 100]], { have: { GRN: "all", LST: 0.5 } }),
 			{ order: "source" }
 		);
-		expect(wrapper.text()).toContain("production_chains.table.group_have");
+		const rows = wrapper.findAll("tbody tr");
+		const group = rows.findIndex(
+			(r) => r.text() === "production_chains.table.group_have"
+		);
+		expect(group).toBeGreaterThan(-1);
+		for (const t of ["GRN", "LST"])
+			expect(
+				rows.findIndex((r) => r.find(`[data-testid='chain-have-${t}']`).exists())
+			).toBeGreaterThan(group);
 	});
 });

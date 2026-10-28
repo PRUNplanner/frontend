@@ -656,7 +656,7 @@
 		"loading": "Loading {name}'s plans …",
 		"error": "Couldn't load {name}'s plans. Pick it again to retry.",
 		"option": "Have",
-		"target_reason": "A target is always made: what you have of it doesn't count.",
+		"target_reason": "Targets come from the chain itself: what you have of them doesn't count.",
 		"badge": "Have",
 		"all": "all",
 		"amount": "{ticker} you have per day, empty for all",
@@ -670,6 +670,7 @@
 		"rest_option": "{source} {n}",
 		"from_plans": "from your plans",
 		"plus_from_plans": "+ {n} from your plans",
+		"plus_own": "+ {n} own",
 		"chip": "{n} from your plans",
 		"detail_title": "From your plans",
 		"detail_of": "{n} of its {of}",
@@ -677,12 +678,12 @@
 		"stage_raw": "Bought · extracted · have",
 		"graph_full": "Have · {name}",
 		"graph_full_more": "Have · {name} +{n}",
-		"graph_part": "Have {n} · {rest}",
 		"graph_mark": "Have",
+		"graph_mark_part": "Have {n}",
 		"inputs": "Inputs / day",
 		"inputs_sub": "{own} own · {bought} bought",
 		"profit_sub": "own production at CX price",
-		"buildings_fewer": "{n} fewer than making it all",
+		"buildings_fewer": "{n} fewer without own production",
 		"construction_less": "{value} less · {payback}",
 		"bases_title": "From your plans",
 		"bases_value": "{value} / day at CX price",
@@ -693,8 +694,7 @@
 		"materials": "Materials per day",
 		"value": "Value / day",
 		"of": "of {n}",
-		"unused": "Surplus this chain doesn't use: {list}",
-		"create_note": "Not in the new plans, your bases supply them: {list}",
-		"graph_part_buy": "Have {n} · buy {rest}"
+		"unused": "One surplus material this chain doesn't use | {n} surplus materials this chain doesn't use",
+		"create_note": "Your bases supply these, so they aren't in the new plans: {list}"
 	}
 }

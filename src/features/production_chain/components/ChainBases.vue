@@ -146,15 +146,14 @@
 		own.name ? unusedSurplus(own.surplus, result) : []
 	);
 
-	const planOf = (end: string) =>
-		fromPlans.value.find((p) => p.key === end)?.plan;
+	const byKey = computed(() => new Map(fromPlans.value.map((p) => [p.key, p])));
+	const planOf = (end: string) => byKey.value.get(end)?.plan;
 	/** a route end's name: a base id, an exchange, a plan or "Your bases" */
 	function endName(end: string): string {
 		if (end === OWN_SUPPLIER) return t("production_chains.have.your_bases");
 		return planOf(end)?.name ?? end;
 	}
-	const isSupplier = (end: string) =>
-		fromPlans.value.some((p) => p.key === end);
+	const isSupplier = (end: string) => byKey.value.has(end);
 
 	/** a base's planet system, a plan's or an exchange's */
 	function systemOf(end: string): string | undefined {
@@ -294,7 +293,7 @@
 							v-for="p in fromPlans"
 							:key="p.key"
 							:data-testid="`chain-from-plan-${p.key}`">
-							<td>
+							<td class="whitespace-nowrap">
 								<RouterLink
 									v-if="p.plan"
 									:to="{
@@ -302,11 +301,11 @@
 										params: { planetNaturalId: p.plan.planetId, planUuid: p.plan.uuid },
 									}"
 									class="text-link hover:underline">
-									{{ p.plan.name }} ↗
+									{{ p.plan.name }}&nbsp;↗
 								</RouterLink>
 								<span v-else>{{ $t("production_chains.have.your_bases") }}</span>
 							</td>
-							<td>{{ p.plan ? planetName(p.plan.planetId) : "–" }}</td>
+							<td class="whitespace-nowrap">{{ p.plan ? planetName(p.plan.planetId) : "–" }}</td>
 							<td>
 								<span class="flex flex-wrap gap-x-3 gap-y-1">
 									<span
@@ -317,24 +316,28 @@
 										{{ formatQty(m.perDay) }}
 										<span
 											v-if="m.surplus !== null && m.surplus - m.perDay > 1e-6"
-											class="text-muted">
+											class="text-muted whitespace-nowrap">
 											{{ $t("production_chains.have.of", { n: formatQty(m.surplus) }) }}
 										</span>
 									</span>
 								</span>
 							</td>
-							<td class="numeric tabular-nums">{{ money(p.value) }}</td>
+							<td class="numeric tabular-nums whitespace-nowrap">{{ money(p.value) }}</td>
 						</tr>
 					</tbody>
 				</PTable>
 			</div>
-			<p v-if="unused.length" class="text-xs text-muted pt-1" data-testid="chain-unused-surplus">
-				{{
-					$t("production_chains.have.unused", {
-						list: unused.map((u) => `${u.ticker} ${formatQty(u.perDay)}`).join(", "),
-					})
-				}}
-			</p>
+			<!-- an empire's surplus can be long: closed until asked for -->
+			<details v-if="unused.length" class="text-xs text-muted pt-1" data-testid="chain-unused-surplus">
+				<summary class="cursor-pointer">
+					{{ $t("production_chains.have.unused", unused.length) }}
+				</summary>
+				<span class="flex flex-wrap gap-x-3 gap-y-1 pt-1 tabular-nums">
+					<span v-for="u in unused" :key="u.ticker" class="whitespace-nowrap">
+						{{ u.ticker }} {{ formatQty(u.perDay) }}
+					</span>
+				</span>
+			</details>
 		</section>
 
 		<section>

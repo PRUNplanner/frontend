@@ -166,10 +166,11 @@ export function encodeChain(state: IChainState): Record<string, string> {
 	if (Object.keys(input.planetId).length) query.planet = join(input.planetId);
 	query.bases = encodeBases(input.bases);
 	if (Object.keys(input.baseOf).length) query.base = join(input.baseOf);
-	// two decimals are enough for amounts per day; what rounds to 0 goes
+	// two decimals are enough for amounts per day, rounded up so a link never
+	// leaves a sliver to make
 	const have = Object.fromEntries(
 		Object.entries(input.have ?? {})
-			.map(([t, v]) => [t, v === "all" ? v : Math.round(v * 100) / 100])
+			.map(([t, v]) => [t, v === "all" ? v : Math.ceil(v * 100 - 1e-6) / 100])
 			.filter(([, v]) => v !== 0)
 	);
 	if (Object.keys(have).length) query.have = join(have);

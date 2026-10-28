@@ -168,6 +168,7 @@
 		result.order.map((ticker) => {
 			const row = result.rows[ticker];
 			const pos = layout.value.nodes[ticker];
+			const had = row.have > 1e-9;
 			const made =
 				row.source === "buy"
 					? t("production_chains.graph.buy_on", { cx: row.exchange })
@@ -178,22 +179,15 @@
 				x: pos.x,
 				y: pos.y,
 				perDay: row.perDay + row.have,
-				have: row.have > 1e-9,
-				line2:
-					row.source === "have"
-						? haveLine(ticker)
-						: row.have > 1e-9
-							? row.source === "buy"
-								? t("production_chains.have.graph_part_buy", {
-										n: formatQty(row.have),
-										rest: formatQty(row.perDay),
-									})
-								: t("production_chains.have.graph_part", {
-										n: formatQty(row.have),
-										// no base letter: the line is short
-										rest: `${row.buildingTicker ?? "—"} × ${formatNumber(row.buildings, 2)}`,
-									})
-							: made,
+				have: had,
+				mark: had
+					? row.source === "have"
+						? t("production_chains.have.graph_mark")
+						: t("production_chains.have.graph_mark_part", {
+								n: formatQty(row.have),
+							})
+					: null,
+				line2: row.source === "have" ? haveLine(ticker) : made,
 			};
 		})
 	);
@@ -328,7 +322,7 @@
 							</span>
 							<span
 								class="block text-xs truncate"
-								:class="n.row.cheaper ? 'text-warning' : n.have ? 'text-have' : 'text-muted'"
+								:class="n.row.cheaper ? 'text-warning' : n.row.source === 'have' ? 'text-have' : 'text-muted'"
 								:title="n.line2">
 								{{ n.line2 }}
 								<template v-if="n.row.cheaper">
@@ -340,7 +334,7 @@
 							v-if="n.have"
 							class="absolute -top-2.5 right-1 px-1 rounded-control border border-have bg-surface text-have text-xs font-bold uppercase leading-4"
 							:data-testid="`chain-have-mark-${n.ticker}`">
-							{{ $t("production_chains.have.graph_mark") }}
+							{{ n.mark }}
 						</span>
 					</button>
 				</div>

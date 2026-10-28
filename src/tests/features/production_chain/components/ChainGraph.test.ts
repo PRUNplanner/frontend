@@ -224,9 +224,11 @@ describe("ChainGraph details", () => {
 		expect(wrapper.find("[data-testid='chain-node-GRN']").text()).toContain(
 			"production_chains.have.graph_full_more"
 		);
-		expect(wrapper.find("[data-testid='chain-node-NUT']").text()).toContain(
-			"production_chains.have.graph_part"
+		// partly had: the amount in the mark, the usual second line
+		expect(wrapper.find("[data-testid='chain-have-mark-NUT']").text()).toBe(
+			"production_chains.have.graph_mark_part"
 		);
+		expect(wrapper.find("[data-testid='chain-node-NUT']").text()).toContain(" · ");
 		expect(wrapper.text()).toContain("production_chains.have.stage_raw");
 	});
 });

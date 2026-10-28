@@ -139,7 +139,7 @@
 			<div class="text-xl font-bold tabular-nums" :class="s.tone">
 				{{ s.value }}
 			</div>
-			<div class="text-xs text-muted truncate" :title="s.sub">
+			<div class="text-xs text-muted" :title="s.sub">
 				{{ s.sub }}
 			</div>
 		</div>
