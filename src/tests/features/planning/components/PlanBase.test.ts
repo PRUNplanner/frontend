@@ -198,7 +198,7 @@ describe("PlanBase", () => {
 		// the summaries stay rendered, CSS hides them while a section is open
 		expect(
 			wrapper
-				.findAll("summary span:not(:first-child)")
+				.findAll("summary > span.flex-1 ~ span")
 				.map((s) => s.classes("group-open:hidden"))
 		).toEqual([true, true, true, true]);
 	});

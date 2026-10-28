@@ -138,8 +138,12 @@
 	);
 
 	const section = "group border-t border-line first:border-t-0";
+	// a bar with the chevron in front, pointing right when folded and down
+	// when open: reads as something to open, unlike a small arrow at the end
 	const head =
-		"flex items-center gap-2 h-10 pointer-coarse:h-11 px-3 cursor-pointer list-none hover:bg-hover [&::-webkit-details-marker]:hidden";
+		"group/head flex items-center gap-2 h-10 pointer-coarse:h-11 pl-2 pr-3 cursor-pointer list-none select-none bg-white/3 hover:bg-hover group-open:bg-transparent group-open:hover:bg-hover [&::-webkit-details-marker]:hidden";
+	const chevron =
+		"shrink-0 -rotate-90 group-open:rotate-0 text-muted-strong transition-transform group-hover/head:text-ink-strong";
 	const body = "px-3 pb-3";
 
 	// a results tile opens its section: open, in view and focused
@@ -160,13 +164,13 @@
 	<div ref="root" class="text-sm">
 		<details :class="section" data-section="empire">
 			<summary :class="head">
+				<PIcon :size="18" :class="chevron"><ExpandMoreSharp /></PIcon>
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.empire.label") }}
 				</span>
 				<span class="text-xs text-muted truncate group-open:hidden" :title="summary.empire">
 					{{ summary.empire }}
 				</span>
-				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
 </summary>
 			<div :class="body">
 				<PlanConfiguration
@@ -185,13 +189,13 @@
 
 		<details :class="section" data-section="planet" open>
 			<summary :class="head">
+				<PIcon :size="18" :class="chevron"><ExpandMoreSharp /></PIcon>
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.planet.label") }}
 				</span>
 				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.planet">
 					{{ summary.planet }}
 				</span>
-				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
 </summary>
 			<div :class="body" class="flex flex-col gap-3">
 				<PlanBonuses
@@ -270,10 +274,10 @@
 
 		<details :class="section" data-section="workforce" open>
 			<summary :class="head">
+				<PIcon :size="18" :class="chevron"><ExpandMoreSharp /></PIcon>
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.workforce.label") }}
 				</span>
-				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
 </summary>
 			<div :class="body">
 				<PlanWorkforce
@@ -289,13 +293,13 @@
 
 		<details :class="section" data-section="housing">
 			<summary :class="head">
+				<PIcon :size="18" :class="chevron"><ExpandMoreSharp /></PIcon>
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.housing.label") }}
 				</span>
 				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.housing">
 					{{ summary.housing }}
 				</span>
-				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
 </summary>
 			<div :class="body">
 				<PlanInfrastructure
@@ -317,13 +321,13 @@
 
 		<details :class="section" data-section="experts" open>
 			<summary :class="head">
+				<PIcon :size="18" :class="chevron"><ExpandMoreSharp /></PIcon>
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.experts.label") }}
 				</span>
 				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.experts">
 					{{ summary.experts }}
 				</span>
-				<PIcon :size="16" class="shrink-0 text-muted transition-transform group-open:rotate-180"> <ExpandMoreSharp /> </PIcon>
 </summary>
 			<div :class="body">
 				<PlanExperts

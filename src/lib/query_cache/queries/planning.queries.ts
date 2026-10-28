@@ -96,14 +96,20 @@ async function dropShared(): Promise<void> {
 	broadcastChange([["planningdata", "shared"]]);
 }
 
-/** Stores plans and seeds each plan's own `GetPlan` entry. */
+/**
+ * Stores plans and seeds each plan's own `GetPlan` entry. An empire's plan
+ * list leaves out the empires a plan is in: those aren't seeded, or the
+ * opened plan would calculate with the first empire, not its own
+ */
 function setPlans(plans: Plan[]): void {
 	usePlanningStore().setPlans(plans);
 
 	const queryStore = useQueryStore();
-	plans.forEach((p) =>
-		queryStore.addCacheState("GetPlan", { planUuid: p.uuid }, p)
-	);
+	plans
+		.filter((p) => p.empires)
+		.forEach((p) =>
+			queryStore.addCacheState("GetPlan", { planUuid: p.uuid }, p)
+		);
 }
 
 export const planningQueries = {

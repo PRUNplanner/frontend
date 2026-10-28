@@ -145,6 +145,24 @@ describe("queryRepository", () => {
 		});
 	});
 
+	// an empire's list leaves out each plan's empires: opening such a plan
+	// from the cache would calculate with the first empire
+	it("seeds GetPlan only from plans that carry their empires", async () => {
+		const queryStore = useQueryStore();
+		const full = { ...plan, uuid: "plan-2", empires: [] };
+		// @ts-expect-error mock data
+		vi.mocked(callGetEmpirePlans).mockResolvedValue([plan, full]);
+
+		await queryStore.execute("GetEmpirePlans", { empireUuid: "empire-1" });
+
+		expect(
+			queryStore.peekQueryState(["planningdata", "plan", "plan-1"])
+		).toBeUndefined();
+		expect(
+			queryStore.peekQueryState(["planningdata", "plan", "plan-2"])?.data
+		).toStrictEqual(full);
+	});
+
 	it("ClonePlan and DeletePlan: return the API response", async () => {
 		const queryStore = useQueryStore();
 		// @ts-expect-error mock data
