@@ -67,7 +67,7 @@ async function mountTool(plan = etherwindPlan()) {
 }
 
 const pctButtons = (w: Awaited<ReturnType<typeof mountTool>>) =>
-	w.findAll("[aria-labelledby=plancheck-pct-label] > button");
+	w.findAll("[aria-label='plan.tools.plan_check.pct_label'] > button");
 
 describe("PlanCheck", () => {
 	beforeAll(async () => {
@@ -326,12 +326,12 @@ describe("PlanCheck", () => {
 		expect(buttons[0].attributes("aria-pressed")).toBe("true");
 		expect(wrapper.find("[data-real-prices]").exists()).toBe(true);
 
-		// choosing it stores the view, once
-		await buttons[0].trigger("click");
-		await buttons[0].trigger("click");
+		// choosing another view stores it, once
+		await buttons[1].trigger("click");
+		await buttons[1].trigger("click");
 		expect(trackEvent).toHaveBeenCalledTimes(1);
 		expect(trackEvent).toHaveBeenCalledWith("plan:plancheck_change", {
-			view: "market",
+			view: "sensitivity",
 		});
 	});
 
