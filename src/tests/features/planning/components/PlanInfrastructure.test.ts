@@ -116,7 +116,7 @@ describe("PlanInfrastructure", () => {
 				String(SPARSE[inf as keyof IInfrastructureRecord])
 			)
 		);
-		// no muted labels for the unused types any more
+		// every type's ticker in the same white, used or not
 		expect(
 			wrapper
 				.findAll("span.font-mono")

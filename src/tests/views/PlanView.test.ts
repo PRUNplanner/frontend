@@ -31,7 +31,7 @@ import {
 
 // the other empire the fixture plan is in, after Sky Productions
 const PRUN_REAL = "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6";
-import { describe, it, expect, vi } from "vitest";
+import { beforeEach, describe, it, expect, vi } from "vitest";
 import {
 	DOMWrapper,
 	flushPromises,
@@ -724,7 +724,7 @@ describe("PlanView", () => {
 		});
 
 		it("opens Base's section for area and workforce, unfolded", async () => {
-			Element.prototype.scrollIntoView = vi.fn();
+			const scroll = vi.spyOn(Element.prototype, "scrollIntoView");
 			const { wrapper } = await mountView({}, { login: true });
 			const section = (key: string) =>
 				wrapper.find<HTMLDetailsElement>(`details[data-section="${key}"]`)
@@ -752,10 +752,11 @@ describe("PlanView", () => {
 			expect(section("planet").open).toBe(true);
 			expect(strip().exists()).toBe(false);
 			expect(
-				vi.mocked(Element.prototype.scrollIntoView).mock.contexts
+				scroll.mock.contexts
 			).toEqual(
 				expect.arrayContaining([section("workforce"), section("planet")])
 			);
+			scroll.mockRestore();
 			// jsdom's layout has no width: below 81rem, Base opens as an overlay
 			expect(
 				wrapper.find("[data-base-toggle]").attributes("aria-expanded")
@@ -1447,12 +1448,13 @@ describe("PlanView", () => {
 	});
 
 	describe("on a phone", () => {
-		const phone = () =>
+		beforeEach(() =>
 			vi.stubGlobal("matchMedia", (query: string) => ({
 				matches: query === "(max-width: 767.98px)",
 				addEventListener: vi.fn(),
 				removeEventListener: vi.fn(),
-			}));
+			}))
+		);
 		const section = (wrapper: Mounted["wrapper"], label: string) =>
 			wrapper
 				.findAll("nav[aria-label='plan.layout.sections'] button")
@@ -1461,7 +1463,6 @@ describe("PlanView", () => {
 			wrapper.find(selector).classes().includes("hidden");
 
 		it("shows one section at a time, picked in the section tabs", async () => {
-			phone();
 			const { wrapper } = await mountView();
 
 			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
@@ -1491,21 +1492,7 @@ describe("PlanView", () => {
 			]);
 		});
 
-		it("opens Base's section for a tile, never its tablet overlay", async () => {
-			phone();
-			Element.prototype.scrollIntoView = vi.fn();
-			const { wrapper } = await mountView();
-
-			await emitFrom(wrapper, PlanResultsBar, "open", "workforce");
-			expect(hidden(wrapper, "[data-base-pane]")).toBe(false);
-			// a phone turned to a tablet would show the overlay open
-			expect(wrapper.find("[data-base-pane]").classes()).not.toContain(
-				"md:@max-[81rem]:absolute"
-			);
-		});
-
 		it("lists the tools, opens one with a way back to the list", async () => {
-			phone();
 			const { wrapper } = await mountView();
 
 			await section(wrapper, "plan.layout.tools").trigger("click");
@@ -1534,12 +1521,14 @@ describe("PlanView", () => {
 		});
 
 		it("switches to the section a results tile opens", async () => {
-			phone();
-			Element.prototype.scrollIntoView = vi.fn();
 			const { wrapper } = await mountView();
 
 			await emitFrom(wrapper, PlanResultsBar, "open", "area");
 			expect(hidden(wrapper, "[data-base-pane]")).toBe(false);
+			// never its tablet overlay: a phone turned to a tablet would show it
+			expect(wrapper.find("[data-base-pane]").classes()).not.toContain(
+				"md:@max-[81rem]:absolute"
+			);
 
 			await emitFrom(wrapper, PlanResultsBar, "open", "storage");
 			expect(hidden(wrapper, "[data-base-pane]")).toBe(true);
@@ -1553,7 +1542,6 @@ describe("PlanView", () => {
 		});
 
 		it("saves from a bar above the app's bottom bar while unsaved", async () => {
-			phone();
 			const { wrapper } = await mountView({}, { login: true });
 			expect(wrapper.find("[data-phone-save]").exists()).toBe(false);
 			// the header has no Save button on a phone

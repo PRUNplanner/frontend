@@ -204,8 +204,7 @@ describe("PlanBase", () => {
 	});
 
 	it("opens a section, scrolls it into view and focuses its summary", async () => {
-		const scrollIntoView = vi.fn();
-		Element.prototype.scrollIntoView = scrollIntoView;
+		const scrollIntoView = vi.spyOn(Element.prototype, "scrollIntoView");
 		const { wrapper, component } = await mountBase({}, { attach: true });
 		const housing = wrapper.find<HTMLDetailsElement>(
 			'details[data-section="housing"]'
@@ -218,6 +217,7 @@ describe("PlanBase", () => {
 		expect(housing.element.open).toBe(true);
 		expect(scrollIntoView.mock.contexts).toEqual([housing.element]);
 		expect(document.activeElement).toBe(housing.find("summary").element);
+		scrollIntoView.mockRestore();
 	});
 
 	it("summarizes an empty plan", async () => {

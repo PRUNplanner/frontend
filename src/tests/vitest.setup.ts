@@ -66,3 +66,7 @@ globalThis.ResizeObserver ??= class {
 	unobserve() {}
 	disconnect() {}
 };
+
+// jsdom lays nothing out and has no scrollIntoView; a test that checks the
+// scroll spies on it
+Element.prototype.scrollIntoView ??= function () {};
