@@ -16,6 +16,7 @@ import type {
 	ChainBaseCOGC,
 	ChainByproductMode,
 	ChainExperts,
+	ChainHave,
 	ChainLux,
 	ChainRawSource,
 	ChainSource,
@@ -140,7 +141,7 @@ function decodeBases(v: IQueryValue): IChainBase[] {
 	return bases.length ? bases : [firstBase()];
 }
 
-const join = (record: Record<string, string>) =>
+const join = (record: Record<string, string | number>) =>
 	Object.entries(record)
 		.map(([t, v]) => `${t}:${v}`)
 		.join(",");
@@ -165,6 +166,13 @@ export function encodeChain(state: IChainState): Record<string, string> {
 	if (Object.keys(input.planetId).length) query.planet = join(input.planetId);
 	query.bases = encodeBases(input.bases);
 	if (Object.keys(input.baseOf).length) query.base = join(input.baseOf);
+	// two decimals are enough for amounts per day; what rounds to 0 goes
+	const have = Object.fromEntries(
+		Object.entries(input.have ?? {})
+			.map(([t, v]) => [t, v === "all" ? v : Math.round(v * 100) / 100])
+			.filter(([, v]) => v !== 0)
+	);
+	if (Object.keys(have).length) query.have = join(have);
 	if (state.cx) query.cx = state.cx;
 	return query;
 }
@@ -190,6 +198,12 @@ export function decodeChain(
 	const byp = first(query.byp) as ChainByproductMode;
 
 	const bases = decodeBases(query.bases);
+	const have: Record<string, ChainHave> = {};
+	for (const [t, v] of pairs(query.have)) {
+		const n = Number(v);
+		if (v === "all") have[t] = "all";
+		else if (Number.isFinite(n) && n > 0) have[t] = n;
+	}
 	return {
 		input: {
 			targets,
@@ -212,6 +226,7 @@ export function decodeChain(
 					bases.some((b) => b.id === id)
 				)
 			),
+			...(Object.keys(have).length ? { have } : {}),
 		},
 		cx: first(query.cx) || undefined,
 	};

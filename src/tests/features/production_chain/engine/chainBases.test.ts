@@ -19,6 +19,7 @@ import {
 } from "@/tests/features/production_chain/chain.fixtures";
 
 // Types & Interfaces
+import type { IChainHaveSupply } from "@/features/production_chain/engine/chainHave";
 import type {
 	IChainBase,
 	IChainInput,
@@ -529,5 +530,71 @@ describe("chainShipping with byproducts", () => {
 					r.to === "CX" && r.materials.some((m) => m.ticker === "SIO")
 			)
 		).toBe(false);
+	});
+});
+
+describe("Bases with own production", () => {
+	const supply = (key: string, perDay: number): IChainHaveSupply => ({
+		key,
+		plan: null,
+		perDay,
+		surplus: null,
+	});
+
+	it("ships own production from each supplying plan to the base that uses it (AC 12)", () => {
+		const input = chainInput([["RAT", 100]], {
+			bases: [base("A", FOOD), base("B")],
+			baseOf: { NUT: "B" },
+			have: { GRN: "all", H2O: 2 },
+		});
+		const result = solveChain(input, ctx);
+		const grn = result.rows.GRN.have;
+		const routes = chainShipping(result, ctx.materials, () => null, {
+			GRN: [supply("uuid-1", grn / 4), supply("uuid-2", (grn * 3) / 4)],
+			H2O: [supply("own", 2)],
+		});
+		const from = (key: string, ticker: string) =>
+			routes
+				.filter((r) => r.from === key)
+				.flatMap((r) => r.materials)
+				.filter((m) => m.ticker === ticker)
+				.reduce((s, m) => s + m.perDay, 0);
+		expect(from("uuid-1", "GRN")).toBeCloseTo(grn / 4, 6);
+		expect(from("uuid-2", "GRN")).toBeCloseTo((grn * 3) / 4, 6);
+		expect(routes.find((r) => r.from === "uuid-1")!.to).toBe("A");
+		expect(from("own", "H2O")).toBeCloseTo(2, 6);
+		// the bought rest of H2O still comes from the CX
+		expect(from("CX", "H2O") + from("AI1", "H2O")).toBeCloseTo(
+			result.rows.H2O.perDay,
+			6
+		);
+		// plan routes come after the routes between bases
+		const firstPlan = routes.findIndex((r) => r.from === "uuid-1");
+		const lastBetween = routes.findLastIndex(
+			(r) => r.from.length === 1 && r.to.length === 1
+		);
+		expect(firstPlan).toBeGreaterThan(lastBetween);
+	});
+
+	it("leaves Have rows out of the drafts and the split (AC 12)", () => {
+		const result = solveChain(
+			chainInput([["RAT", 100]], {
+				bases: [base("A", FARM)],
+				have: { GRN: "all", NUT: 2 },
+			}),
+			ctx
+		);
+		const [draft] = planDrafts(result, { A: "Food" });
+		const recipes = draft.data.plan_data.buildings.flatMap((b) =>
+			b.active_recipes.map((r) => r.recipeid)
+		);
+		expect(result.rows.GRN.recipe).toBeNull();
+		expect(recipes.some((r) => r.includes("xGRN") && !r.includes("RAT"))).toBe(false);
+		// a partly had step is still built for the rest
+		expect(result.rows.NUT.have).toBeCloseTo(2, 6);
+		expect(recipes).toContain(result.rows.NUT.recipe!.recipe_id);
+		expect(
+			splitByExpertise(result, ctx, 100).baseOf
+		).not.toHaveProperty("GRN");
 	});
 });

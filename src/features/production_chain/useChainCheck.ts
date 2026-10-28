@@ -15,21 +15,17 @@ import { useRoute, useRouter, type LocationQuery } from "vue-router";
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Composables
-import {
-	getActiveEmpire,
-	usePlanContext,
-} from "@/features/planning/usePlanContext";
+import { usePlanContext } from "@/features/planning/usePlanContext";
+import { useChainPlans } from "@/features/production_chain/useChainPlans";
 import { useExchangeData } from "@/database/services/useExchangeData";
 import { useCXData } from "@/features/cx/useCXData";
 import { usePreferences } from "@/features/preferences/usePreferences";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { groupRecipesByOutput } from "@/features/production_chain/engine/chainSolver";
 import { extractionOptions } from "@/features/production_chain/engine/chainExtraction";
 import {
-	baseLetter,
 	checkEmpire,
 	tryInPlanner,
 } from "@/features/production_chain/engine/chainCheck";
@@ -132,8 +128,8 @@ export function encodeCheck(state: ICheckState): Record<string, string> {
 export function useChainCheck() {
 	const route = useRoute();
 	const router = useRouter();
-	const { getGameData, loadGameData, createPrices, createContext } =
-		usePlanContext();
+	const { getGameData, createPrices } = usePlanContext();
+	const { loadEmpirePlans } = useChainPlans();
 	const { getExchangeTickerLoaded } = useExchangeData();
 	const { findEmpireCXUuid } = useCXData();
 	const { defaultEmpireUuid } = usePreferences();
@@ -176,50 +172,6 @@ export function useChainCheck() {
 		index.value = toRaw(await useQuery("GetPlanetSearchIndex").execute());
 	}
 
-	/** every plan of the empire through the plan engine, at the check's CX */
-	async function loadPlans(uuid: string, cx: string | undefined) {
-		const list = await useQuery("GetEmpirePlans", {
-			empireUuid: uuid,
-		}).execute();
-		const ids = [...new Set(list.map((p) => p.planet_natural_id))];
-		if (ids.length)
-			await useQuery("GetMultiplePlanets", {
-				planetNaturalIds: ids,
-			}).execute();
-		const gameData = await loadGameData();
-		const sorted = [...list].sort(
-			(a, b) =>
-				a.plan_name.localeCompare(b.plan_name) || a.uuid.localeCompare(b.uuid)
-		);
-		const out: ICheckPlan[] = [];
-		for (const [i, plan] of sorted.entries()) {
-			const context = await createContext(
-				gameData,
-				plan.planet_natural_id,
-				cx
-			);
-			const calculation = calculatePlan(
-				{
-					plan,
-					empire: getActiveEmpire(uuid, empires.value!),
-					cxUuid: cx,
-					recipeOptions: false,
-				},
-				context
-			);
-			out.push({
-				id: baseLetter(i),
-				uuid: plan.uuid,
-				name: plan.plan_name,
-				planetId: plan.planet_natural_id,
-				cogc: plan.plan_cogc,
-				result: calculation.result,
-				profit: calculation.overview.profit,
-			});
-		}
-		return out;
-	}
-
 	let run = 0;
 	async function load(): Promise<void> {
 		const mine = ++run;
@@ -234,8 +186,8 @@ export function useChainCheck() {
 				plans.value = null;
 				return;
 			}
-			const [list] = await Promise.all([
-				loadPlans(uuid, cxUuid.value),
+			const [{ plans: list }] = await Promise.all([
+				loadEmpirePlans(uuid, cxUuid.value, empires.value!),
 				loadIndex(),
 			]);
 			if (mine === run) plans.value = list;

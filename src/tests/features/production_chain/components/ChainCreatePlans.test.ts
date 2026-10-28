@@ -237,4 +237,22 @@ describe("ChainCreatePlans blockers and outcomes", () => {
 			"production_chains.create.empire_failed"
 		);
 	});
+
+	it("names the materials own production covers, and leaves them out (AC 12)", async () => {
+		execute.mockResolvedValue(EMPIRES);
+		const create = vi.fn();
+		const input = splitInput();
+		const result = solveChain({ ...input, have: { GRN: "all" } }, ctx);
+		await mountComponent(ChainCreatePlans, {
+			show: true,
+			result,
+			targets: ["DW", "RAT", "OVE"],
+			create,
+		});
+		const body = new DOMWrapper(document.body);
+		const note = body.find("[data-testid='chain-create-have']");
+		expect(note.exists()).toBe(true);
+		expect(note.text()).toContain("production_chains.have.create_note");
+		expect(result.bases.flatMap((b) => b.materials)).not.toContain("GRN");
+	});
 });

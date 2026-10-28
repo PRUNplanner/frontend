@@ -13,7 +13,11 @@
 	// Types & Interfaces
 	import type { IChainTotals } from "@/features/production_chain/engine/chainSolver.types";
 
-	const { totals } = defineProps<{ totals: IChainTotals }>();
+	const { totals, baseline = null } = defineProps<{
+		totals: IChainTotals;
+		/** the chain without own production, null without Have */
+		baseline?: IChainTotals | null;
+	}>();
 
 	const money = (v: number) =>
 		t("production_chains.money", { value: formatMoney(v) });
@@ -21,14 +25,25 @@
 	const stats = computed(() => {
 		const tt = totals;
 		const workforce = Object.values(tt.workforce);
+		const own = tt.ownCount > 0;
+		const payback =
+			tt.payback !== null
+				? t("production_chains.results.payback", {
+						n: formatNumber(tt.payback, 0),
+					})
+				: t("production_chains.results.no_payback");
 		return [
 			{
 				key: "profit",
 				value: money(tt.profit),
 				tone: tt.profit >= 0 ? "text-positive" : "text-negative",
-				sub: t("production_chains.results.profit_share", {
-					pct: formatShare(tt.outputValue ? tt.profit / tt.outputValue : 0),
-				}),
+				sub: own
+					? t("production_chains.have.profit_sub")
+					: t("production_chains.results.profit_share", {
+							pct: formatShare(
+								tt.outputValue ? tt.profit / tt.outputValue : 0
+							),
+						}),
 			},
 			{
 				key: "output",
@@ -39,11 +54,21 @@
 						})
 					: t("production_chains.results.output_targets"),
 			},
-			{
-				key: "bought",
-				value: money(tt.bought),
-				sub: t("production_chains.results.bought_count", tt.boughtCount),
-			},
+			own
+				? {
+						key: "bought",
+						label: t("production_chains.have.inputs"),
+						value: money(tt.bought + tt.own),
+						sub: t("production_chains.have.inputs_sub", {
+							own: money(tt.own),
+							bought: money(tt.bought),
+						}),
+					}
+				: {
+						key: "bought",
+						value: money(tt.bought),
+						sub: t("production_chains.results.bought_count", tt.boughtCount),
+					},
 			{
 				key: "upkeep",
 				value: money(tt.upkeep + tt.wear),
@@ -54,9 +79,14 @@
 			{
 				key: "buildings",
 				value: formatNumber(tt.built, 0),
-				sub: t("production_chains.results.buildings_exact", {
-					n: formatNumber(tt.exact, 2),
-				}),
+				sub:
+					baseline && baseline.built > tt.built
+						? t("production_chains.have.buildings_fewer", {
+								n: formatNumber(baseline.built - tt.built, 0),
+							})
+						: t("production_chains.results.buildings_exact", {
+								n: formatNumber(tt.exact, 2),
+							}),
 			},
 			{
 				key: "area",
@@ -83,11 +113,12 @@
 				key: "construction",
 				value: money(tt.construction),
 				sub:
-					tt.payback !== null
-						? t("production_chains.results.payback", {
-								n: formatNumber(tt.payback, 0),
+					baseline && baseline.construction > tt.construction
+						? t("production_chains.have.construction_less", {
+								value: money(baseline.construction - tt.construction),
+								payback,
 							})
-						: t("production_chains.results.no_payback"),
+						: payback,
 			},
 		];
 	});
@@ -103,7 +134,7 @@
 			class="px-3 py-3 min-w-0"
 			:data-testid="`chain-result-${s.key}`">
 			<div class="text-xs uppercase tracking-wide text-muted">
-				{{ $t(`production_chains.results.${s.key}`) }}
+				{{ "label" in s ? s.label : $t(`production_chains.results.${s.key}`) }}
 			</div>
 			<div class="text-xl font-bold tabular-nums" :class="s.tone">
 				{{ s.value }}

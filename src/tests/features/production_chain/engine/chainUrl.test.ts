@@ -58,6 +58,35 @@ describe("chain URL", () => {
 		]);
 	});
 
+	it("round-trips own production amounts", () => {
+		const withHave: IChainState = {
+			...state,
+			input: { ...state.input, have: { AL: 480, C: 110.5, BTS: "all" } },
+		};
+		const query = encodeChain(withHave);
+		expect(query.have).toBe("AL:480,C:110.5,BTS:all");
+		expect(decodeChain(query)).toEqual(withHave);
+	});
+
+	it("rounds own production to two decimals and leaves out what rounds to 0", () => {
+		const query = encodeChain({
+			...state,
+			input: { ...state.input, have: { AL: 233.62946, C: 0.004 } },
+		});
+		expect(query.have).toBe("AL:233.63");
+		expect(
+			encodeChain({ ...state, input: { ...state.input, have: { C: 0.001 } } })
+		).not.toHaveProperty("have");
+	});
+
+	it("drops broken have amounts, and opens without have= as before", () => {
+		expect(
+			decodeChain({ t: "DW:1", have: "AL:0,C:-3,FE:abc,al:5,O:all,W:12" })
+				?.input.have
+		).toEqual({ O: "all", W: 12 });
+		expect(decodeChain({ t: "DW:1" })?.input).not.toHaveProperty("have");
+	});
+
 	it("returns null without targets", () => {
 		expect(decodeChain({})).toBeNull();
 		expect(decodeChain({ t: "DW:0,rat:5,XYZW:1" })).toBeNull();

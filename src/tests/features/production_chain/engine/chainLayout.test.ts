@@ -6,6 +6,16 @@ import {
 	LAYOUT,
 	layoutChain,
 } from "@/features/production_chain/engine/chainLayout";
+import { formatQty } from "@/features/production_chain/productionChain.util";
+
+import type { ChainHave } from "@/features/production_chain/engine/chainSolver.types";
+
+interface IBox {
+	x: number;
+	y: number;
+	w: number;
+	h: number;
+}
 
 // Fixtures
 import {
@@ -81,5 +91,45 @@ describe("layoutChain", () => {
 		const layout = layoutChain(solveChain(chainInput([]), ctx));
 		expect(layout.stages).toBe(1);
 		expect(layout.edges).toEqual([]);
+	});
+	it("puts fully had materials in column 0, partly had ones in their stage (AC 13)", () => {
+		const plain = layoutChain(solveChain(chainInput([["RAT", 100]]), ctx));
+		expect(plain.nodes.GRN.stage).toBeGreaterThan(0);
+		const full = layoutChain(
+			solveChain(chainInput([["RAT", 100]], { have: { GRN: "all" } }), ctx)
+		);
+		expect(full.nodes.GRN.stage).toBe(0);
+		const part = layoutChain(
+			solveChain(chainInput([["RAT", 100]], { have: { GRN: 1 } }), ctx)
+		);
+		expect(part.nodes.GRN.stage).toBe(plain.nodes.GRN.stage);
+	});
+
+	it("keeps edge labels clear of each other and of the nodes", () => {
+		const cases: Record<string, ChainHave>[] = [
+			{},
+			{ AL: 480, C: 110, BTS: 600 },
+			{ AL: 100, FE: "all" },
+		];
+		for (const have of cases) {
+			const layout = layoutChain(solveChain(chainInput([["HCB", 1]], { have }), ctx));
+			// a little wider than the layout's estimate, as the browser draws them
+			const boxes = layout.edges.map((e) => {
+				const w = formatQty(e.perDay).length * 7.5 + 4;
+				return { x: e.labelX - w / 2, y: e.labelY - 12, w, h: 14 };
+			});
+			const nodes = Object.values(layout.nodes).map((n) => ({
+				x: n.x,
+				y: n.y,
+				w: LAYOUT.nodeWidth,
+				h: LAYOUT.nodeHeight,
+			}));
+			const hit = (a: IBox, b: IBox) =>
+				a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+			for (const [i, a] of boxes.entries()) {
+				for (const b of boxes.slice(i + 1)) expect(hit(a, b)).toBe(false);
+				for (const n of nodes) expect(hit(a, n)).toBe(false);
+			}
+		}
 	});
 });

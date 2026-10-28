@@ -12,13 +12,41 @@
 		ChainRawSource,
 	} from "@/features/production_chain/engine/chainSolver.types";
 
-	// UI
-	import { PInputNumber, PSegmented } from "@/ui";
+	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
-	const { followDefault } = defineProps<{
+	// UI
+	import { PInputNumber, PSegmented, PSelect, PSpin } from "@/ui";
+
+	const {
+		followDefault,
+		empires = [],
+		ownEmpire = undefined,
+		ownLoading = false,
+		ownError = null,
+	} = defineProps<{
 		/** false: a CX from a link wins over the user's default */
 		followDefault: boolean;
+		/** the user's empires, for Own production */
+		empires?: PlanEmpireElement[];
+		/** the picked empire, undefined for none */
+		ownEmpire?: string;
+		ownLoading?: boolean;
+		/** the empire whose plans failed to load */
+		ownError?: string | null;
 	}>();
+
+	const emit = defineEmits<{
+		(e: "own", uuid: string | undefined): void;
+	}>();
+
+	const NONE = "";
+	const ownOptions = computed(() => [
+		{ value: NONE, label: t("production_chains.have.none") },
+		...empires.map((e) => ({ value: e.uuid, label: e.empire_name })),
+	]);
+	const ownName = computed(
+		() => empires.find((e) => e.uuid === ownEmpire)?.empire_name ?? ""
+	);
 
 	const efficiency = defineModel<number>("efficiency", { required: true });
 	const rawSource = defineModel<ChainRawSource>("rawSource", {
@@ -92,6 +120,26 @@
 				v-model:value="byproducts"
 				:options="byproductOptions"
 								:label="t('production_chains.settings.byproducts')" />
+		</div>
+		<div class="flex flex-wrap items-center gap-2">
+			<span class="text-xs uppercase tracking-wide text-muted">
+				{{ $t("production_chains.have.own_production") }}
+			</span>
+			<PSelect
+				:value="ownEmpire ?? NONE"
+				:options="ownOptions"
+				size="sm"
+				class="w-44"
+				:aria-label="t('production_chains.have.own_production')"
+				data-testid="chain-own-production"
+				@update:value="(v) => emit('own', v ? String(v) : undefined)" />
+			<span v-if="ownLoading" class="flex items-center gap-1 text-xs text-muted" role="status">
+				<PSpin size="xs" color="muted" />
+				{{ $t("production_chains.have.loading", { name: ownName }) }}
+			</span>
+			<span v-else-if="ownError" class="text-xs text-negative" role="alert">
+				{{ $t("production_chains.have.error", { name: ownError }) }}
+			</span>
 		</div>
 	</div>
 </template>

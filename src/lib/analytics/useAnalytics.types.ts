@@ -130,7 +130,9 @@ export type ProductionChainAction =
 	| "check_open_base"
 	| "check_open_plan"
 	| "check_try"
-	| "check_setup_toggle";
+	| "check_setup_toggle"
+	| "have_set"
+	| "own_pick";
 
 // what was done on the Planet Search page, besides searching
 type PlanetSearchAction =

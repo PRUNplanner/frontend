@@ -21,6 +21,7 @@ import type {
 	PlanCreateData,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
+import type { IChainHaveSupply } from "@/features/production_chain/engine/chainHave";
 import type {
 	IChainBaseResult,
 	IChainContext,
@@ -108,7 +109,7 @@ export function splitByExpertise(
 ): IChainSplit {
 	const eff = Math.max(efficiency, 1) / 100;
 	const groups = new Map<string, { exact: number; tickers: string[] }>();
-	const steps = result.order.filter((t) => result.rows[t].source !== "buy");
+	const steps = result.order.filter((t) => result.rows[t].base);
 	for (const t of steps) {
 		const row = result.rows[t];
 		const expertise = row.buildingTicker
@@ -161,18 +162,21 @@ export interface IChainRoute {
 /**
  * What ships every day: links between bases, bought inputs from the CX
  * to the bases that use them, targets and sold byproducts to the CX.
- * Demand covered by byproducts ships from the bases that produce them.
+ * Demand covered by byproducts ships from the bases that produce them,
+ * own production from the plans that supply it.
  * @author jplacht
  *
  * @param {IChainResult} result Solved chain
  * @param {ReadonlyMap<string, Material>} materials Materials by ticker
  * @param {(from: string, to: string) => number | null} jumps Jumps between two route ends
+ * @param {Record<string, IChainHaveSupply[]>} [suppliers] Have suppliers by ticker, their keys the route ends
  * @returns {IChainRoute[]} Routes, between bases first
  */
 export function chainShipping(
 	result: IChainResult,
 	materials: ReadonlyMap<string, Material>,
-	jumps: (from: string, to: string) => number | null
+	jumps: (from: string, to: string) => number | null,
+	suppliers: Record<string, IChainHaveSupply[]> = {}
 ): IChainRoute[] {
 	const isBase = (end: string) => result.bases.some((b) => b.id === end);
 	// Universe prices name no exchange to ship to
@@ -183,10 +187,15 @@ export function chainShipping(
 	/** where a material comes from, as shares of its demand */
 	const sourcesOf = (t: string): [string, number][] => {
 		const row = result.rows[t];
-		const gross = row.perDay + row.covered;
+		const gross = row.perDay + row.covered + row.have;
 		if (gross <= EPS) return [];
-		const own = row.source === "buy" ? cx(row.exchange) : row.base!;
-		const list: [string, number][] = [[own, row.perDay / gross]];
+		const list: [string, number][] = [];
+		if (row.perDay > EPS)
+			list.push([
+				row.source === "buy" ? cx(row.exchange) : row.base!,
+				row.perDay / gross,
+			]);
+		for (const s of suppliers[t] ?? []) list.push([s.key, s.perDay / gross]);
 		const from = byproduct.get(t)?.fromAmounts ?? {};
 		const total = Object.values(from).reduce((s, q) => s + q, 0);
 		if (row.covered > EPS && total > 0)
@@ -231,8 +240,17 @@ export function chainShipping(
 			);
 	}
 
+	// between bases, from the plans, from the CX, to the CX
+	const fromPlan = (end: string) =>
+		Object.values(suppliers).some((list) => list.some((s) => s.key === end));
 	const rank = (from: string, to: string) =>
-		isBase(from) && isBase(to) ? 0 : isBase(to) ? 1 : 2;
+		isBase(from) && isBase(to)
+			? 0
+			: fromPlan(from)
+				? 1
+				: isBase(to)
+					? 2
+					: 3;
 	return [...routes]
 		.map(([key, list]): IChainRoute => {
 			const [from, to] = key.split(">");

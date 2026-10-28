@@ -6,7 +6,9 @@ import ChainBaseCard from "@/features/production_chain/components/ChainBaseCard.
 import { mountComponent } from "@/tests/mountComponent";
 import { solveChain } from "@/features/production_chain/engine/chainSolver";
 import {
+	FOOD_PLANET,
 	chainInput,
+	index,
 	seedGameData,
 	splitInput,
 	testContext,
@@ -105,5 +107,50 @@ describe("ChainBases without steps", () => {
 				.find("[data-testid='chain-bases-create']")
 				.attributes("disabled")
 		).toBeDefined();
+	});
+});
+
+describe("ChainBases with own production", () => {
+	beforeAll(seedGameData);
+
+	it("lists the supplying plans, the unused surplus and routes from them with jumps (AC 8, 12)", async () => {
+		const input = { ...splitInput(), have: { GRN: "all" as const, H2O: 3 } };
+		const result = solveChain(input, ctx);
+		const grn = result.rows.GRN.have;
+		const food = index.find((p) => p.planet_natural_id === FOOD_PLANET)!;
+		const plan = { uuid: "p1", name: "Grain Farm", planetId: FOOD_PLANET };
+		const { wrapper } = await mountComponent(ChainBases, {
+			result,
+			bases: input.bases,
+			efficiency: 100,
+			ctx,
+			created: null,
+			ready: true,
+			own: {
+				name: "Main",
+				surplus: new Map([
+					["GRN", grn + 7],
+					["C", 4],
+				]),
+				suppliers: {
+					GRN: [{ key: "p1", plan, perDay: grn, surplus: grn + 7 }],
+					H2O: [{ key: "own", plan: null, perDay: 3, surplus: null }],
+				},
+				overrides: { H2O: { value: 3, origin: "typed" } },
+				planets: new Map([[FOOD_PLANET, food]]),
+			},
+		});
+		const table = wrapper.find("[data-testid='chain-from-plans']");
+		expect(table.text()).toContain("Grain Farm");
+		expect(table.text()).toContain(food.planet_name);
+		expect(table.text()).toContain("production_chains.have.your_bases");
+		expect(wrapper.find("[data-testid='chain-unused-surplus']").exists()).toBe(true);
+		// from the plan's planet to the base that uses GRN
+		const route = wrapper.find("[data-testid^='chain-route-p1-']");
+		expect(route.text()).toContain("Grain Farm");
+		expect(route.text()).toContain("production_chains.shipping.n_jumps");
+		expect(wrapper.find("[data-testid^='chain-route-own-']").text()).toContain(
+			"production_chains.have.your_bases"
+		);
 	});
 });

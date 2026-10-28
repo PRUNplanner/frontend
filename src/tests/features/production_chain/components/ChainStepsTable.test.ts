@@ -261,3 +261,150 @@ describe("ChainStepsTable bases", () => {
 		).toBe(true);
 	});
 });
+
+describe("ChainStepsTable with own production", () => {
+	beforeAll(seedGameData);
+
+	const supplier = (name: string, perDay: number, surplus: number) => ({
+		key: `uuid-${name}`,
+		plan: { uuid: `uuid-${name}`, name, planetId: "XH-668c" },
+		perDay,
+		surplus,
+	});
+	const cell = (
+		wrapper: Awaited<ReturnType<typeof mountTable>>["wrapper"],
+		ticker: string
+	) => wrapper.find(`tr[data-testid='chain-row-${ticker}']`);
+	const segment = (
+		wrapper: Awaited<ReturnType<typeof mountTable>>["wrapper"],
+		ticker: string,
+		label: string
+	) =>
+		cell(wrapper, ticker)
+			.findAll("[role=group] button")
+			.find((b) => b.text() === label)!;
+
+	it("offers Have, never on a target (AC 4)", async () => {
+		const { wrapper, component } = await mountTable(chainInput([["RAT", 100]]));
+		expect(
+			segment(wrapper, "RAT", "production_chains.have.option").attributes("disabled")
+		).toBeDefined();
+		expect(
+			cell(wrapper, "RAT").find("[title='production_chains.have.target_reason']").exists()
+		).toBe(true);
+		await segment(wrapper, "GRN", "production_chains.have.option").trigger("click");
+		expect(component.emitted("have")![0]).toEqual(["GRN", "all"]);
+	});
+
+	it("shows a Have row with its suppliers, and leaves it for Make (AC 8, 9)", async () => {
+		const input = chainInput([["RAT", 100]], { have: { GRN: 12 } });
+		const used = solveChain(input, ctx).rows.GRN.have;
+		const { wrapper, component } = await mountTable(input, {
+			own: {
+				name: "Main",
+				surplus: new Map([["GRN", 12]]),
+				suppliers: {
+					GRN: [supplier("Alpha", 4, 4), supplier("Zeta", used - 4, 8)],
+				},
+				overrides: {},
+			},
+		});
+		const row = cell(wrapper, "GRN");
+		expect(row.find("[data-testid='chain-have-GRN']").exists()).toBe(true);
+		expect(row.text()).toContain("production_chains.have.from_plans");
+		expect(row.text()).toContain("Alpha 4.00");
+		expect(row.text()).toContain("Zeta");
+		expect(
+			segment(wrapper, "GRN", "production_chains.have.option").attributes(
+				"aria-pressed"
+			)
+		).toBe("true");
+		await segment(wrapper, "GRN", "production_chains.table.make").trigger("click");
+		expect(component.emitted("source")![0]).toEqual(["GRN", "make"]);
+		expect(component.emitted("have")![0]).toEqual(["GRN", "off"]);
+	});
+
+	it("shows the rest of a partly had row and its source (AC 2)", async () => {
+		const { wrapper, component } = await mountTable(
+			chainInput([["RAT", 100]], { have: { LST: 0.5 } })
+		);
+		const row = cell(wrapper, "LST");
+		expect(row.text()).toContain("production_chains.have.plus_from_plans");
+		expect(row.text()).toContain("production_chains.table.bought_on");
+		const rest = row.findComponent(PSelect);
+		expect(rest.props("value")).toBe("buy");
+		rest.vm.$emit("update:value", "extract");
+		expect(component.emitted("source")![0]).toEqual(["LST", "extract"]);
+	});
+
+	it("applies a typed amount on blur or Enter, empty for all, and goes back to the empire (AC 9)", async () => {
+		const { wrapper, component } = await mountTable(
+			chainInput([["RAT", 100]], { have: { GRN: 4 } }),
+			{
+				own: {
+					name: "Main",
+					surplus: new Map([["GRN", 9]]),
+					suppliers: {},
+					overrides: { GRN: { value: 4, origin: "typed" } },
+				},
+			}
+		);
+		const field = cell(wrapper, "GRN").find("input");
+		expect((field.element as HTMLInputElement).value).toBe("4");
+		await field.setValue("3");
+		expect(component.emitted("have")).toBeUndefined();
+		await field.trigger("focusout");
+		expect(component.emitted("have")![0]).toEqual(["GRN", 3]);
+		await field.setValue("");
+		await field.trigger("keydown", { key: "Enter" });
+		expect(component.emitted("have")![1]).toEqual(["GRN", "all"]);
+		const back = cell(wrapper, "GRN")
+			.findAll("button")
+			.find((b) => b.text() === "production_chains.have.use_empire")!;
+		await back.trigger("click");
+		expect(component.emitted("have")![2]).toEqual(["GRN", undefined]);
+	});
+
+	it("goes back to the empire's surplus, and links it while a typed amount differs from it", async () => {
+		const own = (value: number) => ({
+			name: "Main",
+			surplus: new Map([["GRN", 3]]),
+			suppliers: {},
+			overrides: { GRN: { value, origin: "typed" as const } },
+		});
+		const back = (w: Awaited<ReturnType<typeof mountTable>>["wrapper"]) =>
+			cell(w, "GRN")
+				.findAll("button")
+				.some((b) => b.text() === "production_chains.have.use_empire");
+		// typed what the empire has: nothing to go back to
+		const same = await mountTable(
+			chainInput([["RAT", 100]], { have: { GRN: 3 } }),
+			{ own: own(3) }
+		);
+		expect(back(same.wrapper)).toBe(false);
+		const more = await mountTable(
+			chainInput([["RAT", 100]], { have: { GRN: 5 } }),
+			{ own: own(5) }
+		);
+		expect(back(more.wrapper)).toBe(true);
+		const less = await mountTable(
+			chainInput([["RAT", 100]], { have: { GRN: 2 } }),
+			{ own: own(2) }
+		);
+		expect(back(less.wrapper)).toBe(true);
+		// switched off, Have goes back to the surplus rather than all
+		const off = await mountTable(chainInput([["RAT", 100]]), {
+			own: { ...own(2), overrides: { GRN: { value: "off", origin: "typed" } } },
+		});
+		await segment(off.wrapper, "GRN", "production_chains.have.option").trigger("click");
+		expect(off.component.emitted("have")![0]).toEqual(["GRN", undefined]);
+	});
+
+	it("groups Have rows by source", async () => {
+		const { wrapper } = await mountTable(
+			chainInput([["RAT", 100]], { have: { GRN: "all" } }),
+			{ order: "source" }
+		);
+		expect(wrapper.text()).toContain("production_chains.table.group_have");
+	});
+});

@@ -12,6 +12,8 @@ const totals = (over: Partial<IChainTotals> = {}): IChainTotals => ({
 	outputValue: 1000,
 	bought: 200,
 	boughtCount: 1,
+	own: 0,
+	ownCount: 0,
 	upkeep: 100,
 	wear: 50,
 	profit: 650,
@@ -28,10 +30,14 @@ const totals = (over: Partial<IChainTotals> = {}): IChainTotals => ({
 	...over,
 });
 
-const text = async (t: IChainTotals, key: string) => {
+const text = async (
+	t: IChainTotals,
+	key: string,
+	baseline: IChainTotals | null = null
+) => {
 	const { wrapper } = await mountComponent(
 		ChainResults,
-		{ totals: t },
+		{ totals: t, baseline },
 		{ messages: { production_chains: messages } }
 	);
 	return wrapper.find(`[data-testid='chain-result-${key}']`);
@@ -64,5 +70,23 @@ describe("ChainResults", () => {
 		expect((await text(loss, "construction")).text()).toContain("no payback");
 		expect((await text(loss, "output")).text()).toContain("incl. 300 ȼ byproducts");
 		expect((await text(loss, "bought")).text()).toContain("2 materials");
+	});
+
+	it("shows own production and the saving against the chain without it (AC 6)", async () => {
+		const had = totals({ own: 300, ownCount: 2, built: 2, construction: 4000 });
+		const without = totals({ built: 5, construction: 9000 });
+		const inputs = await text(had, "bought", without);
+		expect(inputs.text()).toContain("Inputs / day");
+		expect(inputs.text()).toContain("500 ȼ");
+		expect(inputs.text()).toContain("300 ȼ own · 200 ȼ bought");
+		expect((await text(had, "profit", without)).text()).toContain(
+			"own production at CX price"
+		);
+		expect((await text(had, "buildings", without)).text()).toContain(
+			"3 fewer than making it all"
+		);
+		expect((await text(had, "construction", without)).text()).toContain(
+			"5,000 ȼ less · pays back in 10 days"
+		);
 	});
 });

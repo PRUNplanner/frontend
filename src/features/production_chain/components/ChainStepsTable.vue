@@ -18,6 +18,7 @@
 		formatMoney,
 		formatQty,
 		formatShare,
+		NO_OWN,
 	} from "@/features/production_chain/productionChain.util";
 	import { formatNumber } from "@/util/numbers";
 	import { formatMaterialName } from "@/util/text";
@@ -26,6 +27,8 @@
 	// Types & Interfaces
 	import type {
 		ChainByproductMode,
+		ChainHave,
+		ChainRowSource,
 		ChainSource,
 		IChainBase,
 		IChainExtractionOptions,
@@ -34,10 +37,14 @@
 		IChainResult,
 		IChainRow,
 	} from "@/features/production_chain/engine/chainSolver.types";
-	import type { IChainOrder, IChainFilter } from "@/features/production_chain/productionChain.types";
+	import type {
+		IChainFilter,
+		IChainOrder,
+		IChainOwn,
+	} from "@/features/production_chain/productionChain.types";
 
 	// UI
-	import { PButton, PSegmented, PSelect, PTable } from "@/ui";
+	import { PButton, PInputNumber, PSegmented, PSelect, PTable } from "@/ui";
 
 	// Engine
 	import { BASE_IDS } from "@/features/production_chain/engine/chainBases";
@@ -50,6 +57,7 @@
 		extraction,
 		recipeOptions,
 		bases,
+		own = NO_OWN,
 	} = defineProps<{
 		result: IChainResult;
 		order: IChainOrder;
@@ -58,6 +66,7 @@
 		extraction: ReadonlyMap<string, IChainExtractionOptions> | undefined;
 		recipeOptions: (ticker: string) => IChainRecipeEffect[];
 		bases: IChainBase[];
+		own?: IChainOwn;
 	}>();
 
 	const emit = defineEmits<{
@@ -67,6 +76,7 @@
 		(e: "buyAll", tickers: string[]): void;
 		(e: "clearFilter"): void;
 		(e: "base", ticker: string, id: string): void;
+		(e: "have", ticker: string, value: ChainHave | "off" | undefined): void;
 	}>();
 
 	const COLUMNS = 9;
@@ -140,7 +150,7 @@
 	function sourceEntries(): IEntry[] {
 		const entries: IEntry[] = [];
 		const rows = [...result.order].reverse().map((t) => result.rows[t]);
-		for (const source of ["make", "extract", "buy"] as const) {
+		for (const source of ["make", "extract", "buy", "have"] as const) {
 			const list = rows.filter((r) => r.source === source);
 			if (!list.length) continue;
 			entries.push({
@@ -177,7 +187,7 @@
 
 	function sourceOptions(row: IChainRow) {
 		const options: {
-			value: ChainSource;
+			value: ChainRowSource;
 			label: string;
 			disabled?: boolean;
 		}[] = [
@@ -197,7 +207,93 @@
 				value: "extract",
 				label: t("production_chains.table.extract"),
 			});
+		options.push({
+			value: "have",
+			label: t("production_chains.have.option"),
+			disabled: row.target,
+		});
 		return options;
+	}
+
+	const EPS = 1e-9;
+	/** Have shows as the source while own production covers any of it */
+	const sourceValue = (row: IChainRow): ChainRowSource =>
+		row.have > EPS ? "have" : row.source;
+
+	function onSource(row: IChainRow, v: ChainRowSource): void {
+		if (v === sourceValue(row)) return;
+		// back to the empire's surplus when it has one, else all of it
+		if (v === "have")
+			return emit(
+				"have",
+				row.ticker,
+				own.surplus.has(row.ticker) ? undefined : "all"
+			);
+		emit("source", row.ticker, v);
+		if (row.have > EPS) emit("have", row.ticker, "off");
+	}
+
+	/** what makes, buys or extracts the rest of a partly had row */
+	const restOptions = (row: IChainRow) =>
+		sourceOptions(row)
+			.filter((o) => o.value !== "have" && !o.disabled)
+			.map((o) => ({
+				value: o.value,
+				label: t("production_chains.have.rest_option", {
+					source: o.label,
+					n: formatQty(row.perDay),
+				}),
+			}));
+
+	/** the amount field while typing, applied on blur or Enter */
+	const drafts: Ref<Record<string, number | null>> = ref({});
+	const draftOf = (row: IChainRow) =>
+		row.ticker in drafts.value
+			? drafts.value[row.ticker]
+			: row.haveAvailable === null
+				? null
+				: Math.round(row.haveAvailable * 100) / 100;
+
+	function applyHave(row: IChainRow): void {
+		if (!(row.ticker in drafts.value)) return;
+		const v = drafts.value[row.ticker];
+		const next = { ...drafts.value };
+		delete next[row.ticker];
+		drafts.value = next;
+		// empty is all, 0 none
+		const value: ChainHave | "off" = v === null ? "all" : v > 0 ? v : "off";
+		if (value !== (draftOf(row) ?? "all")) emit("have", row.ticker, value);
+	}
+
+	/** "uses 450 of 480 · Deimos Metals 200 · Montem Smelter 250" */
+	function usesText(row: IChainRow): string {
+		const uses =
+			row.haveAvailable === null
+				? t("production_chains.have.uses_all", { n: formatQty(row.have) })
+				: t("production_chains.have.uses", {
+						n: formatQty(row.have),
+						of: formatQty(row.haveAvailable),
+					});
+		return [
+			uses,
+			...(own.suppliers[row.ticker] ?? []).map(
+				(s) =>
+					`${s.plan?.name ?? t("production_chains.have.your_bases")} ${formatQty(s.perDay)}`
+			),
+		].join(" · ");
+	}
+
+	/** a typed amount other than the empire's surplus: the way back to it */
+	function empireBack(row: IChainRow): number | null {
+		const o = own.overrides[row.ticker];
+		const q = own.surplus.get(row.ticker);
+		return own.name &&
+			o?.origin === "typed" &&
+			o.value !== "off" &&
+			q &&
+			o.value !== q
+			? q
+			: null;
 	}
 
 	function shareChip(market: IChainMarketShare) {
@@ -371,7 +467,15 @@
 							</td>
 							<!-- the lines under the amount may wrap, so the table can fit -->
 							<td class="numeric tabular-nums">
-								<span class="whitespace-nowrap">{{ formatQty(entry.row.perDay) }}</span>
+								<span class="whitespace-nowrap">{{
+									formatQty(entry.row.source === "have" ? entry.row.have : entry.row.perDay)
+								}}</span>
+								<span v-if="entry.row.source === 'have'" class="block text-xs text-have">
+									{{ $t("production_chains.have.from_plans") }}
+								</span>
+								<span v-else-if="entry.row.have > 1e-9" class="block text-xs text-have">
+									{{ $t("production_chains.have.plus_from_plans", { n: formatQty(entry.row.have) }) }}
+								</span>
 								<span v-if="entry.row.target" class="block text-xs text-muted">
 									{{
 										$t("production_chains.table.sells", {
@@ -400,14 +504,64 @@
 								<span v-else class="text-muted">–</span>
 							</td>
 							<td>
-								<PSegmented
-									:value="entry.row.source"
-									:options="sourceOptions(entry.row)"
-									size="sm"
-									:label="t('production_chains.table.source_of', { ticker: entry.row.ticker })"
-									@update:value="(v) => v !== entry.row.source && emit('source', entry.row.ticker, v)" />
+								<span
+									class="inline-block"
+									:title="entry.row.target ? t('production_chains.have.target_reason') : undefined">
+									<PSegmented
+										:value="sourceValue(entry.row)"
+										:options="sourceOptions(entry.row)"
+										size="sm"
+										:label="t('production_chains.table.source_of', { ticker: entry.row.ticker })"
+										@update:value="(v) => onSource(entry.row, v)" />
+								</span>
+								<label
+									v-if="entry.row.have > 1e-9 && entry.row.source !== 'have'"
+									class="flex items-center gap-2 pt-1 text-xs text-muted">
+									{{ $t("production_chains.have.rest") }}
+									<PSelect
+										:value="entry.row.source"
+										:options="restOptions(entry.row)"
+										size="sm"
+										class="w-32"
+										:aria-label="t('production_chains.have.rest_of', { ticker: entry.row.ticker })"
+										:data-testid="`chain-rest-${entry.row.ticker}`"
+										@update:value="(v) => v && v !== entry.row.source && emit('source', entry.row.ticker, v as ChainSource)" />
+								</label>
 							</td>
 							<td>
+								<div v-if="entry.row.have > 1e-9" class="pb-1" :data-testid="`chain-have-${entry.row.ticker}`">
+									<div class="flex items-center gap-2">
+										<span class="px-1 rounded-control border border-have text-have text-xs font-bold uppercase">
+											{{ $t("production_chains.have.badge") }}
+										</span>
+										<!-- applies on blur or Enter, not while typing -->
+										<span class="contents" @focusout="applyHave(entry.row)" @keydown.enter="applyHave(entry.row)">
+											<PInputNumber
+												:value="draftOf(entry.row)"
+												decimals
+												:min="0"
+												size="sm"
+												class="w-24"
+												:placeholder="t('production_chains.have.all')"
+												:aria-label="t('production_chains.have.amount', { ticker: entry.row.ticker })"
+												@update:value="(v) => (drafts = { ...drafts, [entry.row.ticker]: v ?? null })" />
+										</span>
+										<span class="text-muted text-xs">{{ $t("production_chains.have.per_day") }}</span>
+									</div>
+									<span class="block text-xs text-muted pt-1">{{ usesText(entry.row) }}</span>
+									<button
+										v-if="empireBack(entry.row) !== null"
+										type="button"
+										class="text-xs text-link hover:underline cursor-pointer"
+										@click="emit('have', entry.row.ticker, undefined)">
+										{{
+											$t("production_chains.have.use_empire", {
+												empire: own.name,
+												n: formatQty(empireBack(entry.row)!),
+											})
+										}}
+									</button>
+								</div>
 								<template v-if="entry.row.source === 'make' && entry.row.recipe">
 									<button
 										v-if="entry.row.recipeCount > 1"
@@ -471,7 +625,7 @@
 										</span>
 									</button>
 								</template>
-								<span v-else class="text-muted">
+								<span v-else-if="entry.row.source === 'buy'" class="text-muted">
 									{{ $t("production_chains.table.bought_on", { cx: entry.row.exchange }) }}
 								</span>
 							</td>
@@ -492,7 +646,7 @@
 								<span v-else class="text-muted">–</span>
 							</td>
 							<td class="numeric tabular-nums whitespace-nowrap">
-								<template v-if="entry.row.source !== 'buy' && !entry.row.pending">
+								<template v-if="entry.row.source !== 'buy' && entry.row.source !== 'have' && !entry.row.pending">
 									{{ money(entry.row.unitCost) }}
 								</template>
 								<span v-else class="text-muted">–</span>
@@ -518,7 +672,7 @@
 										{{ $t("production_chains.table.not_on_planet") }}
 									</span>
 									<span
-										v-if="entry.row.source !== 'buy' && !entry.row.pending"
+										v-if="entry.row.source !== 'buy' && entry.row.source !== 'have' && !entry.row.pending"
 										class="px-2 rounded-control border text-xs whitespace-nowrap"
 										:class="verdict(entry.row).cls">
 										{{ verdict(entry.row).text }}
@@ -534,7 +688,7 @@
 						</tr>
 						<tr v-if="open.has(entry.row.ticker)">
 							<td :colspan="COLUMNS" class="p-0">
-								<ChainStepDetail :row="entry.row" :result="result" />
+								<ChainStepDetail :row="entry.row" :result="result" :own="own" />
 							</td>
 						</tr>
 					</template>

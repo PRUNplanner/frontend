@@ -10,11 +10,15 @@
 	);
 
 	// Util
-	import { chainCsv } from "@/features/production_chain/productionChain.util";
+	import {
+		chainCsv,
+		NO_OWN,
+	} from "@/features/production_chain/productionChain.util";
 
 	// Types & Interfaces
 	import type {
 		ChainByproductMode,
+		ChainHave,
 		ChainSource,
 		IChainBase,
 		IChainExtractionOptions,
@@ -25,6 +29,7 @@
 		IChainFilter,
 		IChainLineMode,
 		IChainOrder,
+		IChainOwn,
 		IChainView,
 	} from "@/features/production_chain/productionChain.types";
 	import type { ProductionChainAction } from "@/lib/analytics/useAnalytics.types";
@@ -32,13 +37,21 @@
 	// UI
 	import { PButton, PSegmented } from "@/ui";
 
-	const { result, byproductMode, extraction, recipeOptions, bases } =
+	const {
+		result,
+		byproductMode,
+		extraction,
+		recipeOptions,
+		bases,
+		own = NO_OWN,
+	} =
 		defineProps<{
 			result: IChainResult;
 			byproductMode: ChainByproductMode;
 			extraction: ReadonlyMap<string, IChainExtractionOptions> | undefined;
 			recipeOptions: (ticker: string) => IChainRecipeEffect[];
 			bases: IChainBase[];
+			own?: IChainOwn;
 		}>();
 
 	const emit = defineEmits<{
@@ -48,6 +61,7 @@
 		(e: "buyAll", tickers: string[]): void;
 		(e: "track", action: ProductionChainAction): void;
 		(e: "base", ticker: string, id: string): void;
+		(e: "have", ticker: string, value: ChainHave | "off" | undefined): void;
 	}>();
 
 	defineSlots<{
@@ -114,6 +128,7 @@
 				t("production_chains.csv.buildings"),
 				t("production_chains.csv.unit_cost"),
 				t("production_chains.csv.cx_price"),
+				t("production_chains.csv.have_per_day"),
 			],
 			(s) => t(`production_chains.table.${s}`),
 			t("production_chains.table.nothing")
@@ -156,6 +171,12 @@
 							made,
 						})
 					}}
+				</span>
+				<span
+					v-if="result.totals.ownCount"
+					class="px-2 rounded-control border border-have text-have text-xs"
+					data-testid="chain-chip-have">
+					{{ $t("production_chains.have.chip", { n: result.totals.ownCount }) }}
 				</span>
 				<PButton
 					v-if="cheaper"
@@ -247,12 +268,14 @@
 			:extraction="extraction"
 			:recipe-options="recipeOptions"
 			:bases="bases"
+			:own="own"
 			@source="(ticker, s) => emit('source', ticker, s)"
 			@recipe="(ticker, id) => emit('recipe', ticker, id)"
 			@planet="(ticker) => emit('planet', ticker)"
 			@buy-all="buyAll"
 			@clear-filter="filter = null"
-			@base="(ticker, id) => emit('base', ticker, id)" />
+			@base="(ticker, id) => emit('base', ticker, id)"
+			@have="(ticker, v) => emit('have', ticker, v)" />
 		<slot v-else-if="view === 'bases'" name="bases" />
 		<ChainGraph
 			v-else
@@ -260,6 +283,7 @@
 			v-model:focus="focus"
 			:result="result"
 			:lines="lines"
+			:own="own"
 			@focused="emit('track', 'focus')" />
 	</section>
 </template>
