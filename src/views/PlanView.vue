@@ -555,7 +555,10 @@
 	function toggleOverlay(panel: "base" | "io"): void {
 		const open = panel === "base" ? refBaseOverlay : refIOOverlay;
 		open.value = !open.value;
-		if (open.value) trackEvent("plan:overlay_open", { panel });
+		if (!open.value) return;
+		trackEvent("plan:overlay_open", { panel });
+		// the focus goes in; Esc or Close brings it back to the toggle
+		focusLayout(`[data-${panel}-close]`);
 	}
 
 	// below 71rem of page width (a tablet) Material I/O does too
@@ -597,7 +600,7 @@
 		if (refShowTool.value !== key) toggleTool(key);
 	}
 	function openTile(tile: ResultTile): void {
-		trackEvent("plan:result_tile", { tile });
+		trackEvent("plan:result_tile_open", { tile });
 		if (tile === "area") openBase("planet");
 		else if (tile === "workforce") openBase("workforce");
 		else if (tile === "profit") openTool("profit-breakdown");
@@ -1072,17 +1075,23 @@
 
 	/**
 	 * Saves this tab's edits as "<name> (copy)" in the original's empire
-	 * and opens it, the original keeps the other tab's version
+	 * (the one it calculates with when the original is in it) and opens
+	 * it, the original keeps the other tab's version
 	 */
 	async function saveAsNewPlan(): Promise<void> {
 		refIsSaving.value = true;
 		try {
+			const inPlanEmpire = planEmpires.value.some(
+				(e) => e.uuid === refEmpireUuid.value
+			);
 			const created = await createNewPlan({
 				...backendData.value,
 				plan_name: t("save_conflict.copy_name", {
 					name: planName.value ?? "",
 				}),
-				empire_uuid: planEmpires.value[0]?.uuid ?? refEmpireUuid.value,
+				empire_uuid: inPlanEmpire
+					? refEmpireUuid.value
+					: (planEmpires.value[0]?.uuid ?? refEmpireUuid.value),
 			});
 			if (!created) return saveFailed();
 
@@ -1510,7 +1519,7 @@
 		@copy="copySharedChanges"
 		@save="openSaveAsModal" />
 	<!-- keep focused controls clear of the sticky results bar; the bottom
-		padding scrolls the last rows clear of the insights button -->
+		padding leaves room below the last rows -->
 	<!-- @container: the panes lay out by the width next to the app
 		navigation, so an expanded sidebar makes Base an overlay -->
 	<!-- a phone keeps the last rows clear of the Save bar and the app's
@@ -1632,9 +1641,10 @@
 			</div>
 		</header>
 
-		<!-- Results (sticky) -->
+		<!-- Results (sticky); from 48rem its first and last tile carry the
+			side padding, so their hover reaches the edges -->
 		<div
-			class="sticky top-0 z-1000 px-6 max-md:px-4 bg-(--app-bg) border-y border-line">
+			class="sticky top-0 z-1000 px-6 max-md:px-4 @min-[48rem]:px-0 bg-(--app-bg) border-y border-line">
 			<PlanResultsBar
 				:overview="overviewData"
 				:area="result.area"
@@ -1709,6 +1719,7 @@
 						type="ghost"
 						size="sm"
 						class="hidden md:@max-[81rem]:flex"
+						data-base-close
 						@click="closeOverlays">
 						<template #icon><CloseSharp /></template>
 						{{ t("plan.layout.close") }}
@@ -1719,8 +1730,8 @@
 						size="sm"
 						class="hidden @min-[81rem]:flex"
 						data-base-fold
-						:aria-label="t('plan.layout.fold')"
-						:title="t('plan.layout.fold')"
+						:aria-label="t('plan.layout.fold_base')"
+						:title="t('plan.layout.fold_base')"
 						@click="foldBase">
 						<template #icon><ChevronLeftSharp /></template>
 					</PButton>
@@ -1949,6 +1960,7 @@
 						type="ghost"
 						size="sm"
 						class="hidden md:@max-[71rem]:flex"
+						data-io-close
 						@click="closeOverlays">
 						<template #icon><CloseSharp /></template>
 						{{ t("plan.layout.close") }}
@@ -1958,8 +1970,8 @@
 						size="sm"
 						class="hidden @min-[71rem]:flex"
 						data-io-fold
-						:aria-label="t('plan.layout.fold')"
-						:title="t('plan.layout.fold')"
+						:aria-label="t('plan.layout.fold_io')"
+						:title="t('plan.layout.fold_io')"
 						@click="foldIO">
 						<template #icon><ChevronRightSharp /></template>
 					</PButton>

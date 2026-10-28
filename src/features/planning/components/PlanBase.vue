@@ -119,6 +119,14 @@
 				{ cogc: cogcLabel.value, n: r.area.permits },
 				r.area.permits
 			),
+			// "PIO 100 % · SET 87 %": the efficiency of each tier the plan needs
+			workforce: Object.values(r.workforce)
+				.filter((w) => w.required > 0)
+				.map(
+					(w) =>
+						`${t(`plan.results.tier_short.${w.name}`)} ${formatNumber(w.efficiency * 100, 0)} %`
+				)
+				.join(" · "),
 			housing: [
 				...housing,
 				...(props.autoOptimizeHabs ? [t("plan.base.housing.auto")] : []),
@@ -277,6 +285,9 @@
 				<PIcon :size="18" :class="chevron"><ExpandMoreSharp /></PIcon>
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.workforce.label") }}
+				</span>
+				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.workforce">
+					{{ summary.workforce }}
 				</span>
 </summary>
 			<div :class="body">

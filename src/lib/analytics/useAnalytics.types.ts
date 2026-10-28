@@ -264,9 +264,9 @@ export interface IAnalyticsEventProperties {
 	"plan:panel_fold": { panel: "base" | "io"; folded: boolean };
 	"plan:overlay_open": { panel: "base" | "io" };
 	// a results bar tile clicked, opening where its figure comes from
-	"plan:result_tile": { tile: ResultTile };
+	"plan:result_tile_open": { tile: ResultTile };
 	// the tiers the plan needs no workers of shown or hidden in Base
-	"plan:workforce_unneeded": { shown: boolean };
+	"plan:workforce_unneeded_toggle": { is_shown: boolean };
 	"plan:section_view": { section: "production" | "base" | "io" | "tools" };
 	"plan:io_view": {
 		source: "all" | "production" | "workforce";

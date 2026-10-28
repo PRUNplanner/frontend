@@ -101,8 +101,9 @@
 	// page width (tablets, phones) only the figures show
 	const sub = "text-xs text-muted text-balance @max-[60rem]:hidden";
 	const value = "text-lg font-medium text-ink-strong text-nowrap";
-	// every tile is a button: a quiet hover, the figures stay put; the first
-	// and last visible tile reach into the bar's padding, so the hover does
+	// every tile is a button: a quiet hover, the figures stay put; from 48rem
+	// the bar has no side padding, the first and last tile carry it, so the
+	// hover reaches the bar's edges (PlanView drops the padding)
 	const tile =
 		"py-2.5 text-left cursor-pointer hover:bg-hover focus-visible:bg-hover transition-colors";
 </script>
@@ -113,7 +114,7 @@
 		class="tabular-nums">
 		<div
 			class="grid grid-cols-3 gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-4 @min-[72rem]:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.7fr)_minmax(0,0.9fr)_minmax(0,0.9fr)] @min-[48rem]:divide-x divide-line">
-			<button type="button" :class="[tile, '@min-[48rem]:-ml-6 @min-[48rem]:pl-6 @min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
+			<button type="button" :class="[tile, '@min-[48rem]:pl-6 @min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
 					<span class="text-xl font-medium leading-tight">
@@ -216,7 +217,7 @@
 					</span>
 				</div>
 			</button>
-			<button type="button" :class="[tile, '@min-[48rem]:pl-3 @min-[48rem]:-mr-6 @min-[48rem]:pr-6 @max-[48rem]:hidden']" data-tile="storage" @click="emit('open', 'storage')">
+			<button type="button" :class="[tile, '@min-[48rem]:pl-3 @min-[48rem]:pr-6 @max-[48rem]:hidden']" data-tile="storage" @click="emit('open', 'storage')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.storage") }}</span>
 					<span :class="value">
@@ -243,6 +244,6 @@
 				</div>
 			</button>
 		</div>
-		<SharedPlanDeltas v-if="compare" class="pb-2" :compare="compare" />
+		<SharedPlanDeltas v-if="compare" class="pb-2 @min-[48rem]:px-6" :compare="compare" />
 	</section>
 </template>

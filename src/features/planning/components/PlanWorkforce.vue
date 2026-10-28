@@ -51,7 +51,7 @@
 	const refShowAll = ref(false);
 	function toggleUnneeded(): void {
 		refShowAll.value = !refShowAll.value;
-		trackEvent("plan:workforce_unneeded", { shown: refShowAll.value });
+		trackEvent("plan:workforce_unneeded_toggle", { is_shown: refShowAll.value });
 	}
 	const used: ComputedRef<IWorkforceElement[]> = computed(() =>
 		Object.values(props.workforceData).filter(
@@ -161,7 +161,7 @@
 		<button
 			v-if="unused"
 			type="button"
-			class="self-start text-left text-xs text-link hover:underline cursor-pointer pointer-coarse:min-h-11"
+			class="self-start min-h-6 text-left text-xs text-link hover:underline cursor-pointer pointer-coarse:min-h-11"
 			:aria-expanded="refShowAll ? 'true' : 'false'"
 			data-unneeded-toggle
 			@click="toggleUnneeded">

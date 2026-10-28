@@ -445,7 +445,7 @@ describe("PlanView", () => {
 		const pane = () => wrapper.find("[data-base-pane]");
 		const fold = wrapper.find("[data-base-fold]");
 		// an icon button, side by side only; a phone names Base in its tabs
-		expect(fold.attributes("aria-label")).toBe("plan.layout.fold");
+		expect(fold.attributes("aria-label")).toBe("plan.layout.fold_base");
 		expect(fold.classes()).toEqual(
 			expect.arrayContaining(["hidden", "@min-[81rem]:flex"])
 		);
@@ -642,6 +642,16 @@ describe("PlanView", () => {
 		await wrapper.find("[data-io-strip]").trigger("click");
 		await flushPromises();
 		focused("[data-io-fold]");
+
+		// an overlay takes the focus in, Esc gives it back to its toggle
+		for (const panel of ["base", "io"]) {
+			await wrapper.find(`[data-${panel}-toggle]`).trigger("click");
+			await flushPromises();
+			focused(`[data-${panel}-close]`);
+			await wrapper.find(`[data-${panel}-close]`).trigger("keydown.esc");
+			await flushPromises();
+			focused(`[data-${panel}-toggle]`);
+		}
 		wrapper.unmount();
 	});
 
@@ -651,7 +661,7 @@ describe("PlanView", () => {
 		const pane = () => wrapper.find("[data-io-pane]");
 		const fold = wrapper.find("[data-io-fold]");
 		// always there, side by side only (from 71rem)
-		expect(fold.attributes("aria-label")).toBe("plan.layout.fold");
+		expect(fold.attributes("aria-label")).toBe("plan.layout.fold_io");
 		expect(fold.classes()).toEqual(
 			expect.arrayContaining(["hidden", "@min-[71rem]:flex"])
 		);
@@ -695,7 +705,7 @@ describe("PlanView", () => {
 				).toBe(true)
 			);
 			expect(activeTab(wrapper)).toBe("plan.tools.labels.profit_breakdown");
-			expect(trackEvent).toHaveBeenCalledWith("plan:result_tile", {
+			expect(trackEvent).toHaveBeenCalledWith("plan:result_tile_open", {
 				tile: "profit",
 			});
 			// a second click keeps it open instead of toggling it shut
@@ -741,7 +751,7 @@ describe("PlanView", () => {
 			expect(section("workforce").open).toBe(true);
 			expect(section("planet").open).toBe(false);
 			expect(strip().exists()).toBe(false);
-			expect(trackEvent).toHaveBeenCalledWith("plan:result_tile", {
+			expect(trackEvent).toHaveBeenCalledWith("plan:result_tile_open", {
 				tile: "workforce",
 			});
 

@@ -183,7 +183,8 @@ describe("PlanBase", () => {
 		expect(summaries(wrapper)).toEqual([
 			"Empire & prices | Alpha · Universe average",
 			"Planet | COGC game.cogc_program_short.ADVERTISING_RESOURCE_EXTRACTION · 2 permits",
-			"Workforce",
+			// the efficiency of each tier the plan needs
+			"Workforce | PIO 92 % · SET 85 %",
 			"Infrastructure | 4 HB1 · 2 STO · Auto",
 			"Experts | 3 placed",
 		]);
@@ -200,7 +201,7 @@ describe("PlanBase", () => {
 			wrapper
 				.findAll("summary > span.flex-1 ~ span")
 				.map((s) => s.classes("group-open:hidden"))
-		).toEqual([true, true, true, true]);
+		).toEqual([true, true, true, true, true]);
 	});
 
 	it("opens a section, scrolls it into view and focuses its summary", async () => {
@@ -233,7 +234,7 @@ describe("PlanBase", () => {
 		expect(summaries(wrapper)).toEqual([
 			"Empire & prices | ",
 			"Planet | COGC game.cogc_program_short.NONE · 1 permit",
-			"Workforce",
+			"Workforce | ",
 			"Infrastructure | ",
 			"Experts | 0 placed",
 		]);

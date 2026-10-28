@@ -659,6 +659,41 @@ describe("Planning: Workforce Calculations", async () => {
 				{ type: "Metallurgy", amount: 1 },
 			]);
 		});
+
+		it("keeps the recipes a building in the plan runs once", async () => {
+			const fakePlan = {
+				buildings: [
+					{ name: "PP1", amount: 1, active_recipes: [{ recipeid: "a", amount: 4 }] },
+				],
+				experts: [],
+			};
+			const { handleApplyStarterSetup } = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(fakePlan),
+				ref(),
+				ref({})
+			);
+
+			await handleApplyStarterSetup({
+				buildings: [
+					{
+						ticker: "PP1",
+						amount: 3,
+						recipes: [
+							{ recipeid: "a", amount: 2 },
+							{ recipeid: "b", amount: 1 },
+						],
+					},
+				],
+				experts: [],
+			});
+
+			expect(fakePlan.buildings[0].active_recipes).toStrictEqual([
+				{ recipeid: "a", amount: 4 },
+				{ recipeid: "b", amount: 1 },
+			]);
+		});
 	});
 
 	describe("handleAddBuildingRecipe", async () => {
@@ -771,7 +806,8 @@ describe("Planning: Workforce Calculations", async () => {
 			expect(() => handleAddBuildingRecipes(0, [])).toThrowError();
 		});
 
-		it("adds all recipes, skipping ones the building runs", async () => {
+		// a second order of a recipe it runs: free accounts split runs so
+		it("adds all recipes, also ones the building runs", async () => {
 			const fakePlan = {
 				buildings: [
 					{ name: "FRM", active_recipes: [{ recipeid: "a", amount: 1 }] },
@@ -793,6 +829,7 @@ describe("Planning: Workforce Calculations", async () => {
 			]);
 			expect(fakePlan.buildings[0].active_recipes).toStrictEqual([
 				{ recipeid: "a", amount: 1 },
+				{ recipeid: "a", amount: 5 },
 				{ recipeid: "b", amount: 2 },
 				{ recipeid: "c", amount: 3 },
 			]);

@@ -124,8 +124,8 @@ No key, URL or UUID goes into these events.
 | `plan:recipe_picker_undo` | | Undo in the status line after a picked recipe |
 | `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a side pane was folded by hand with its chevron (`folded: true`, at any width it sits side by side, since #679) or opened from its folded strip (`false`) |
 | `plan:overlay_open` | `panel` (`base`, `io`) | Base or Material I/O was opened as an overlay from the tab row (below 81rem, 71rem of page width) |
-| `plan:result_tile` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results bar tile was clicked; it opens where its figure comes from (profit, payback and storage open a tool, which also sends `plan:tool_toggle`; area and workforce open a Base section) |
-| `plan:workforce_unneeded` | `shown` | the workforce tiers the plan needs no workers of were shown (`true`) or hidden again (`false`) in Base |
+| `plan:result_tile_open` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results bar tile was clicked; it opens where its figure comes from (profit, payback and storage open a tool, which also sends `plan:tool_toggle`; area and workforce open a Base section) |
+| `plan:workforce_unneeded_toggle` | `is_shown` | the workforce tiers the plan needs no workers of were shown (`true`) or hidden again (`false`) in Base |
 | `plan:section_view` | `section` (`production`, `base`, `io`, `tools`) | a phone switched the plan section |
 | `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | the plan's Material I/O source, filter or unit was switched; the event carries all three |
 | `plan:recipe_picker_sort` | `sort` (`daily`, `popular`) | the recipe picker's sort was switched |

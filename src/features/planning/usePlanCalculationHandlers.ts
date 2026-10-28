@@ -364,7 +364,8 @@ export function usePlanCalculationHandlers(
 
 	/**
 	 * Adds several recipes to the building at specified index, e.g. the
-	 * planet's typical mix. Recipes it already runs are skipped.
+	 * planet's typical mix. A recipe it already runs becomes a second order
+	 * (free accounts split their runs that way).
 	 *
 	 * @author jplacht
 	 *
@@ -382,10 +383,9 @@ export function usePlanCalculationHandlers(
 			);
 		}
 
-		recipes.forEach(({ recipeid, amount }) => {
-			if (!building.active_recipes.some((r) => r.recipeid === recipeid))
-				building.active_recipes.push({ recipeid, amount });
-		});
+		recipes.forEach(({ recipeid, amount }) =>
+			building.active_recipes.push({ recipeid, amount })
+		);
 	}
 
 	/**
@@ -406,7 +406,12 @@ export function usePlanCalculationHandlers(
 				(e) => e.name === ticker
 			);
 			handleUpdateBuildingAmount(index, amount);
-			handleAddBuildingRecipes(index, recipes);
+			// a building already in the plan keeps the recipes it runs once
+			const runs = planData.value.buildings[index].active_recipes;
+			handleAddBuildingRecipes(
+				index,
+				recipes.filter((r) => !runs.some((e) => e.recipeid === r.recipeid))
+			);
 		}
 		setup.experts.forEach(({ type, amount }) =>
 			handleUpdateExpert(type, amount)

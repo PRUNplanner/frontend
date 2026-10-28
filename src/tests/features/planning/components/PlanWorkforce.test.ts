@@ -141,8 +141,8 @@ describe("PlanWorkforce", () => {
 		expect(toggle.attributes("aria-expanded")).toBe("false");
 		// each switch is tracked with what it shows now
 		expect(vi.mocked(trackEvent).mock.calls).toEqual([
-			["plan:workforce_unneeded", { shown: true }],
-			["plan:workforce_unneeded", { shown: false }],
+			["plan:workforce_unneeded_toggle", { is_shown: true }],
+			["plan:workforce_unneeded_toggle", { is_shown: false }],
 		]);
 	});
 

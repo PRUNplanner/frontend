@@ -4,6 +4,7 @@
 		type ComputedRef,
 		nextTick,
 		type PropType,
+		useId,
 		useTemplateRef,
 		watch,
 	} from "vue";
@@ -202,6 +203,8 @@
 	const cogcMatch = computed(() =>
 		localBuildingData.value.efficiencyElements.some(isExpertiseCOGC)
 	);
+	// the fold button's label replaces its content: the line is its description
+	const subLineId = useId();
 	const subParts: ComputedRef<string[]> = computed(() => {
 		const b = localBuildingData.value;
 		const parts: string[] = [];
@@ -298,13 +301,14 @@
 				one line, the name whole, the rest cut short (all of it on hover) -->
 			<button
 				type="button"
-				class="min-w-0 pointer-coarse:min-h-11 text-left cursor-pointer @min-[48rem]/prod:flex @min-[48rem]/prod:items-center @min-[48rem]/prod:gap-x-3"
+				class="min-w-0 min-h-6 pointer-coarse:min-h-11 text-left cursor-pointer @min-[48rem]/prod:flex @min-[48rem]/prod:items-center @min-[48rem]/prod:gap-x-3"
 				:aria-expanded="folded ? 'false' : 'true'"
 				:aria-label="
 					t('plan.production.fold', {
 						building: t(`game.building.${localBuildingData.name}`),
 					})
 				"
+				:aria-describedby="subLineId"
 				@click="emit('toggle:fold')">
 				<span
 					class="flex items-center gap-1 font-medium text-ink-strong @min-[48rem]/prod:shrink-0 @min-[48rem]/prod:max-w-[60%]">
@@ -334,6 +338,7 @@
 					</span>
 				</span>
 				<span
+					:id="subLineId"
 					class="block text-xs text-muted line-clamp-2 @min-[48rem]/prod:min-w-0 @min-[48rem]/prod:truncate"
 					:title="subLine">
 					<span v-if="zeroReason" class="text-negative">

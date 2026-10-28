@@ -203,10 +203,15 @@ describe("PlanProductionBuilding", () => {
 		const { wrapper, setProps } = await mountBuilding();
 		const match = () => wrapper.find("[data-cogc-match]");
 
-		// the glyph for the eye, the words for a screen reader and on hover
+		// the glyph for the eye, the words for a screen reader (the fold
+		// button's label hides its content, so the line describes it) and on
+		// hover
 		expect(match().find("[aria-hidden]").text()).toBe("✓");
-		expect(match().find(".sr-only").text()).toBe(
-			"plan.production.cogc_match:"
+		const described = wrapper.find(
+			`[id="${nameButton(wrapper).attributes("aria-describedby")}"]`
+		);
+		expect(described.text()).toContain(
+			"plan.production.cogc_match: game.expertise.METALLURGY"
 		);
 		expect(match().attributes("title")).toBe("plan.production.cogc_match");
 		expect(match().classes()).toContain("text-positive");
