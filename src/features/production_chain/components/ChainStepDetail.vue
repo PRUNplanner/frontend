@@ -11,23 +11,29 @@
 		formatMoney,
 		formatQty,
 		formatShare,
+		NO_OWN,
 	} from "@/features/production_chain/productionChain.util";
 	import { formatNumber } from "@/util/numbers";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Types & Interfaces
 	import type {
 		IChainResult,
 		IChainRow,
 	} from "@/features/production_chain/engine/chainSolver.types";
+	import type { IChainOwn } from "@/features/production_chain/productionChain.types";
 
-	const { row, result } = defineProps<{
+	const { row, result, own = NO_OWN } = defineProps<{
 		row: IChainRow;
 		result: IChainResult;
+		own?: IChainOwn;
 	}>();
 
 	const money = (v: number) =>
 		t("production_chains.money", { value: formatMoney(v) });
-	const gross = (r: IChainRow) => r.perDay + r.covered;
+	const gross = (r: IChainRow) => r.perDay + r.covered + r.have;
+
+	const supplies = computed(() => own.suppliers[row.ticker] ?? []);
 
 	const takes = computed(() =>
 		result.links
@@ -119,6 +125,36 @@
 				</li>
 				<li v-if="!goesTo.length" class="text-muted">
 					{{ $t("production_chains.detail.nothing") }}
+				</li>
+			</ul>
+		</div>
+		<div v-if="supplies.length" data-testid="chain-detail-have">
+			<h3 class="text-xs uppercase tracking-wide text-have pb-2">
+				{{ $t("production_chains.have.detail_title") }}
+			</h3>
+			<ul class="flex flex-col gap-1">
+				<li v-for="s in supplies" :key="s.key">
+					<span class="block">
+						{{ s.plan?.name ?? $t("production_chains.have.your_bases") }}
+						<span v-if="s.plan" class="text-xs text-muted">{{
+							planetDisplayName(
+								s.plan.planetId,
+								own.planets.get(s.plan.planetId)?.planet_name ?? s.plan.planetId
+							)
+						}}</span>
+					</span>
+					<span class="block text-xs text-muted tabular-nums">
+						{{
+							s.surplus === null
+								? $t("production_chains.detail.per_day", { n: formatQty(s.perDay) })
+								: $t("production_chains.have.detail_of", {
+										n: formatQty(s.perDay),
+										of: formatQty(s.surplus),
+									})
+						}}
+						·
+						{{ $t("production_chains.have.detail_value", { value: money(s.perDay * row.price) }) }}
+					</span>
 				</li>
 			</ul>
 		</div>

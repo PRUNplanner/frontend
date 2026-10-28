@@ -1,5 +1,7 @@
 <script setup lang="ts">
 	import { computed } from "vue";
+	import { useI18n } from "vue-i18n";
+	const { t } = useI18n();
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -18,10 +20,19 @@
 		chainShipping,
 		cogcFits,
 	} from "@/features/production_chain/engine/chainBases";
+	import {
+		OWN_SUPPLIER,
+		unusedSurplus,
+	} from "@/features/production_chain/engine/chainHave";
 
 	// Util
-	import { formatQty } from "@/features/production_chain/productionChain.util";
+	import {
+		formatMoney,
+		formatQty,
+		NO_OWN,
+	} from "@/features/production_chain/productionChain.util";
 	import { formatNumber } from "@/util/numbers";
+	import { planetDisplayName } from "@/util/planetName";
 
 	// Types & Interfaces
 	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
@@ -33,12 +44,24 @@
 		IChainContext,
 		IChainResult,
 	} from "@/features/production_chain/engine/chainSolver.types";
-	import type { IChainCreated } from "@/features/production_chain/productionChain.types";
+	import type {
+		IChainCreated,
+		IChainOwn,
+	} from "@/features/production_chain/productionChain.types";
+	import type { ICheckPlan } from "@/features/production_chain/engine/chainCheck.types";
 
 	// UI
 	import { PButton, PTable } from "@/ui";
 
-	const { result, bases, efficiency, ctx, created, ready } = defineProps<{
+	const {
+		result,
+		bases,
+		efficiency,
+		ctx,
+		created,
+		ready,
+		own = NO_OWN,
+	} = defineProps<{
 		result: IChainResult;
 		bases: IChainBase[];
 		/** chain efficiency in % */
@@ -47,6 +70,7 @@
 		created: IChainCreated | null;
 		/** every base with steps has a planet and fits */
 		ready: boolean;
+		own?: IChainOwn;
 	}>();
 
 	const emit = defineEmits<{
@@ -80,10 +104,63 @@
 		return (program: PlanCOGCProgram) => cogcFits(ctx, program, tickers);
 	}
 
-	/** a base's planet system or an exchange's */
+	const money = (v: number) =>
+		t("production_chains.money", { value: formatMoney(v) });
+	const planetName = (id: string) =>
+		planetDisplayName(id, own.planets.get(id)?.planet_name ?? id);
+
+	/** the supplying plans, each with what the chain uses of it */
+	const fromPlans = computed(() => {
+		const plans = new Map<
+			string,
+			{
+				key: string;
+				plan: ICheckPlan | null;
+				items: { ticker: string; perDay: number; surplus: number | null }[];
+				value: number;
+			}
+		>();
+		for (const [ticker, list] of Object.entries(own.suppliers))
+			for (const s of list) {
+				const entry = plans.get(s.key) ?? {
+					key: s.key,
+					plan: s.plan,
+					items: [],
+					value: 0,
+				};
+				entry.items.push({ ticker, perDay: s.perDay, surplus: s.surplus });
+				entry.value += s.perDay * result.rows[ticker].price;
+				plans.set(s.key, entry);
+			}
+		// plan-name order, "Your bases" last
+		return [...plans.values()].sort(
+			(a, b) =>
+				Number(!a.plan) - Number(!b.plan) ||
+				(a.plan?.name ?? "").localeCompare(b.plan?.name ?? "")
+		);
+	});
+	const fromPlansValue = computed(() =>
+		fromPlans.value.reduce((s, p) => s + p.value, 0)
+	);
+	const unused = computed(() =>
+		own.name ? unusedSurplus(own.surplus, result) : []
+	);
+
+	const byKey = computed(() => new Map(fromPlans.value.map((p) => [p.key, p])));
+	const planOf = (end: string) => byKey.value.get(end)?.plan;
+	/** a route end's name: a base id, an exchange, a plan or "Your bases" */
+	function endName(end: string): string {
+		if (end === OWN_SUPPLIER) return t("production_chains.have.your_bases");
+		return planOf(end)?.name ?? end;
+	}
+	const isSupplier = (end: string) => byKey.value.has(end);
+
+	/** a base's planet system, a plan's or an exchange's */
 	function systemOf(end: string): string | undefined {
+		const planetId = planOf(end)?.planetId;
 		return (
 			result.bases.find((b) => b.id === end)?.planet?.system_id ??
+			(planetId ? own.planets.get(planetId)?.system_id : undefined) ??
 			CX_SYSTEMS[end]
 		);
 	}
@@ -92,11 +169,16 @@
 		() => new Map((materials.value ?? []).map((m) => [m.ticker, m]))
 	);
 	const routes = computed(() =>
-		chainShipping(result, materialMap.value, (from, to) => {
-			const a = systemOf(from);
-			const b = systemOf(to);
-			return a && b ? (getJumpsFrom(a).get(b) ?? null) : null;
-		})
+		chainShipping(
+			result,
+			materialMap.value,
+			(from, to) => {
+				const a = systemOf(from);
+				const b = systemOf(to);
+				return a && b ? (getJumpsFrom(a).get(b) ?? null) : null;
+			},
+			own.suppliers
+		)
 	);
 	const isBase = (end: string) => BASE_IDS.includes(end);
 </script>
@@ -182,6 +264,82 @@
 				@planet="emit('planet', b.id)" />
 		</div>
 
+		<section v-if="fromPlans.length" data-testid="chain-from-plans">
+			<h2 class="font-bold">
+				{{ $t("production_chains.have.bases_title") }}
+				<span class="font-normal text-muted">
+					{{ $t("production_chains.have.bases_value", { value: money(fromPlansValue) }) }}
+				</span>
+			</h2>
+			<p class="text-xs text-muted pb-2">
+				{{
+					own.name
+						? $t("production_chains.have.bases_note", { empire: own.name })
+						: $t("production_chains.have.bases_note_typed")
+				}}
+			</p>
+			<div class="overflow-x-auto">
+				<PTable>
+					<thead>
+						<tr>
+							<th>{{ $t("production_chains.have.plan") }}</th>
+							<th>{{ $t("production_chains.have.planet") }}</th>
+							<th>{{ $t("production_chains.have.materials") }}</th>
+							<th class="numeric">{{ $t("production_chains.have.value") }}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							v-for="p in fromPlans"
+							:key="p.key"
+							:data-testid="`chain-from-plan-${p.key}`">
+							<td class="whitespace-nowrap">
+								<RouterLink
+									v-if="p.plan"
+									:to="{
+										name: 'plan',
+										params: { planetNaturalId: p.plan.planetId, planUuid: p.plan.uuid },
+									}"
+									class="text-link hover:underline">
+									{{ p.plan.name }}&nbsp;↗
+								</RouterLink>
+								<span v-else>{{ $t("production_chains.have.your_bases") }}</span>
+							</td>
+							<td class="whitespace-nowrap">{{ p.plan ? planetName(p.plan.planetId) : "–" }}</td>
+							<td>
+								<span class="flex flex-wrap gap-x-3 gap-y-1">
+									<span
+										v-for="m in p.items"
+										:key="m.ticker"
+										class="inline-flex items-center gap-1 tabular-nums">
+										<MaterialTile :key="m.ticker" :ticker="m.ticker" />
+										{{ formatQty(m.perDay) }}
+										<span
+											v-if="m.surplus !== null && m.surplus - m.perDay > 1e-6"
+											class="text-muted whitespace-nowrap">
+											{{ $t("production_chains.have.of", { n: formatQty(m.surplus) }) }}
+										</span>
+									</span>
+								</span>
+							</td>
+							<td class="numeric tabular-nums whitespace-nowrap">{{ money(p.value) }}</td>
+						</tr>
+					</tbody>
+				</PTable>
+			</div>
+			<!-- an empire's surplus can be long: closed until asked for -->
+			<details v-if="unused.length" class="text-xs text-muted pt-1" data-testid="chain-unused-surplus">
+				<summary class="cursor-pointer">
+					{{ $t("production_chains.have.unused", unused.length) }}
+				</summary>
+				<span class="flex flex-wrap gap-x-3 gap-y-1 pt-1 tabular-nums">
+					<span v-for="u in unused" :key="u.ticker" class="whitespace-nowrap">
+						{{ u.ticker }} {{ formatQty(u.perDay) }}
+					</span>
+				</span>
+			</details>
+		</section>
+
 		<section>
 			<h2 class="font-bold">
 				{{ $t("production_chains.shipping.title") }}
@@ -220,23 +378,27 @@
 							:data-testid="`chain-route-${r.from}-${r.to}`">
 							<td class="whitespace-nowrap">
 								<span
-									class="px-1 rounded-control border font-mono text-xs"
+									class="px-1 rounded-control border text-xs"
 									:class="
 										isBase(r.from)
-											? 'border-line'
-											: 'border-link text-link'
+											? 'border-line font-mono'
+											: isSupplier(r.from)
+												? 'border-have text-have'
+												: 'border-link text-link font-mono'
 									">
-									{{ r.from }}
+									{{ endName(r.from) }}
 								</span>
 								→
 								<span
-									class="px-1 rounded-control border font-mono text-xs"
+									class="px-1 rounded-control border text-xs"
 									:class="
 										isBase(r.to)
-											? 'border-line'
-											: 'border-link text-link'
+											? 'border-line font-mono'
+											: isSupplier(r.to)
+												? 'border-have text-have'
+												: 'border-link text-link font-mono'
 									">
-									{{ r.to }}
+									{{ endName(r.to) }}
 								</span>
 							</td>
 							<td>

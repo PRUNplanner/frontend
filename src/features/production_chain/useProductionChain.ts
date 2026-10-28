@@ -19,6 +19,9 @@ import { usePlanContext } from "@/features/planning/usePlanContext";
 import { useExchangeData } from "@/database/services/useExchangeData";
 import { useCXData } from "@/features/cx/useCXData";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { useChainPlans } from "@/features/production_chain/useChainPlans";
+import { remoteChange } from "@/lib/crossTab";
+import { isSubset } from "@/lib/query_cache/cacheKeys";
 
 // Engine
 import {
@@ -27,6 +30,14 @@ import {
 	solveChain,
 } from "@/features/production_chain/engine/chainSolver";
 import { extractionOptions } from "@/features/production_chain/engine/chainExtraction";
+import {
+	effectiveHave,
+	empireSurplus,
+	haveSuppliers,
+	typedOnly,
+	withHave,
+	type IChainHaveSupply,
+} from "@/features/production_chain/engine/chainHave";
 import {
 	BASE_IDS,
 	splitByExpertise,
@@ -46,18 +57,24 @@ import { ChainStorageSchema } from "@/features/production_chain/productionChain.
 // Types & Interfaces
 import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
 import type { PlanCreateData } from "@/features/api/schemas/planningData.schemas";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { ICheckPlan } from "@/features/production_chain/engine/chainCheck.types";
 import type { ProductionChainAction } from "@/lib/analytics/useAnalytics.types";
 import type {
 	IChainCreated,
 	IChainEmpireChoice,
+	IChainHaveOverride,
 } from "@/features/production_chain/productionChain.types";
 import type {
+	ChainHave,
 	ChainSource,
 	IChainBase,
 	IChainContext,
 	IChainInput,
 	IChainRecipeEffect,
 	IChainResult,
+	IChainTotals,
 } from "@/features/production_chain/engine/chainSolver.types";
 
 const STORAGE_KEY = "prunplanner_production_chain";
@@ -122,7 +139,18 @@ export function useProductionChain() {
 	const linkCX =
 		initial?.cx && ownCX.includes(initial.cx) ? initial.cx : undefined;
 
-	const input: Ref<IChainInput> = ref(initial?.input ?? emptyInput());
+	// own production lives in the overrides and the empire, not the input
+	const { have: linkHave, ...initialInput } = initial?.input ?? emptyInput();
+	const input: Ref<IChainInput> = ref(initialInput);
+	/** Have per ticker the user set: typed here or from the link */
+	const haveOverride: Ref<Record<string, IChainHaveOverride>> = ref(
+		Object.fromEntries(
+			Object.entries(linkHave ?? {}).map(([t, value]) => [
+				t,
+				{ value, origin: "link" },
+			])
+		)
+	);
 	const cxUuid: Ref<string | undefined> = ref(linkCX);
 	/** the CX came from the link, so it wins over the user's default */
 	const cxFromLink: boolean = linkCX !== undefined;
@@ -176,9 +204,55 @@ export function useProductionChain() {
 		now,
 	}));
 
-	const result: ComputedRef<IChainResult> = computed(() =>
-		solveChain(input.value, ctx.value)
+	// Own production: one empire's net surplus, live while the page is open
+	const { loadEmpirePlans } = useChainPlans();
+	const empires: Ref<PlanEmpireElement[]> = ref([]);
+	/** the picked empire, this page only */
+	const ownEmpire: Ref<string | undefined> = ref(undefined);
+	const ownPlans: ShallowRef<ICheckPlan[]> = shallowRef([]);
+	/** their planets, for names and jumps */
+	const ownPlanets: ShallowRef<Map<string, Planet>> = shallowRef(new Map());
+	/** the empire ownPlans belong to; lags ownEmpire while loading */
+	const ownLoaded: Ref<string | undefined> = ref(undefined);
+	const ownLoading: Ref<boolean> = ref(false);
+	/** the name of the empire whose plans failed to load */
+	const ownError: Ref<string | null> = ref(null);
+
+	useQuery("GetAllEmpires")
+		.execute()
+		.then((list) => (empires.value = list))
+		.catch(() => {
+			// no empires to pick; typed amounts still work
+		});
+
+	const surplus = computed(() => empireSurplus(ownPlans.value));
+	/** what the solver gets: the overrides over the empire's surplus */
+	const have = computed<Record<string, ChainHave>>(() =>
+		effectiveHave(surplus.value, haveOverride.value)
 	);
+	const solverInput = computed<IChainInput>(() => ({
+		...input.value,
+		have: have.value,
+	}));
+
+	const result: ComputedRef<IChainResult> = computed(() =>
+		solveChain(solverInput.value, ctx.value)
+	);
+	/** the same chain without own production, to show the saving */
+	const usesHave = computed(() => result.value.totals.ownCount > 0);
+	const baseline: ComputedRef<IChainTotals | null> = computed(() =>
+		usesHave.value
+			? solveChain(input.value, ctx.value).totals
+			: null
+	);
+	const suppliers: ComputedRef<Record<string, IChainHaveSupply[]>> =
+		computed(() =>
+			haveSuppliers(
+				result.value,
+				ownPlans.value,
+				(t) => !(t in haveOverride.value)
+			)
+		);
 
 	// extraction and base planets need the planet index
 	watch(
@@ -189,8 +263,16 @@ export function useProductionChain() {
 		{ immediate: true }
 	);
 
+	// the link keeps the amounts in use, never the empire
 	const state = computed<IChainState>(() => ({
-		input: input.value,
+		input: {
+			...input.value,
+			have: Object.fromEntries(
+				Object.entries(have.value).filter(
+					([t]) => (result.value.rows[t]?.have ?? 0) > 1e-9
+				)
+			),
+		},
 		cx: cxUuid.value,
 	}));
 
@@ -356,9 +438,90 @@ export function useProductionChain() {
 		track("split");
 	}
 
+	let ownRun = 0;
+	/** the empire's plans through the plan engine; true when they loaded */
+	async function loadOwn(uuid: string): Promise<boolean> {
+		const run = ++ownRun;
+		try {
+			const { plans, planets } = await loadEmpirePlans(
+				uuid,
+				cxUuid.value,
+				empires.value
+			);
+			if (run !== ownRun) return false;
+			ownPlans.value = plans;
+			ownPlanets.value = new Map(planets.map((p) => [p.planet_natural_id, p]));
+			ownLoaded.value = uuid;
+			return true;
+		} catch (e) {
+			console.error(e);
+			return false;
+		}
+	}
+
+	/**
+	 * Picks the empire whose surplus fills Have. The amounts stay until its
+	 * plans are calculated; a failed load goes back to the previous empire.
+	 */
+	async function pickOwn(uuid: string | undefined): Promise<void> {
+		const previous = ownEmpire.value;
+		ownEmpire.value = uuid;
+		ownError.value = null;
+		track("own_pick");
+		if (!uuid) {
+			ownRun++;
+			ownPlans.value = [];
+			ownLoaded.value = undefined;
+			ownLoading.value = false;
+			return;
+		}
+		ownLoading.value = true;
+		const run = ownRun + 1;
+		const loaded = await loadOwn(uuid);
+		if (run !== ownRun) return;
+		ownLoading.value = false;
+		if (loaded) haveOverride.value = typedOnly(haveOverride.value);
+		else {
+			ownEmpire.value = previous;
+			ownError.value =
+				empires.value.find((e) => e.uuid === uuid)?.empire_name ?? uuid;
+		}
+	}
+
+	// another tab saved the empire's plans: load them again, quietly
+	watch(remoteChange, (change) => {
+		const uuid = ownEmpire.value;
+		if (
+			uuid &&
+			!ownLoading.value &&
+			change?.keys.some((k) =>
+				isSubset(k, ["planningdata", "empire", "plans", uuid])
+			)
+		)
+			loadOwn(uuid);
+	});
+
+	/**
+	 * Own production for a material: an amount ("all" for as much as the
+	 * chain needs), "off" to make, buy or extract it instead, undefined to
+	 * go back to the empire's surplus
+	 */
+	function setHave(
+		ticker: string,
+		value: ChainHave | "off" | undefined
+	): void {
+		haveOverride.value = withHave(
+			haveOverride.value,
+			ticker,
+			value,
+			surplus.value
+		);
+		track("have_set");
+	}
+
 	/** what the last "Create plans" made, until the chain changes */
 	const created: Ref<IChainCreated | null> = ref(null);
-	watch(input, () => (created.value = null), { deep: true });
+	watch(solverInput, () => (created.value = null), { deep: true });
 
 	/**
 	 * Creates the empire (if new), then one plan per draft in it. Stops at
@@ -417,7 +580,7 @@ export function useProductionChain() {
 	}
 
 	function recipeOptions(ticker: string): IChainRecipeEffect[] {
-		return recipeEffects(input.value, ctx.value, ticker, result.value);
+		return recipeEffects(solverInput.value, ctx.value, ticker, result.value);
 	}
 
 	/** the chain as a link, for sharing */
@@ -431,6 +594,18 @@ export function useProductionChain() {
 
 	return {
 		input,
+		haveOverride,
+		empires,
+		ownEmpire,
+		ownLoaded,
+		ownPlanets,
+		ownLoading,
+		ownError,
+		surplus,
+		suppliers,
+		baseline,
+		pickOwn,
+		setHave,
 		cxUuid,
 		cxFromLink,
 		result,

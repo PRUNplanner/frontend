@@ -14,6 +14,10 @@ import type {
 import type { IPriceBook } from "@/features/cx/priceBook";
 
 export type ChainSource = "make" | "buy" | "extract";
+/** a row's source: "have" when own production covers all of it */
+export type ChainRowSource = ChainSource | "have";
+/** what the user has per day, "all" for as much as the chain needs */
+export type ChainHave = number | "all";
 export type ChainRawSource = "buy" | "extract";
 export type ChainByproductMode = "cover" | "sell";
 
@@ -59,6 +63,8 @@ export interface IChainInput {
 	bases: IChainBase[];
 	/** base id per ticker, missing = the first base */
 	baseOf: Record<string, string>;
+	/** own production per ticker and day, missing = none; targets ignore it */
+	have?: Record<string, ChainHave>;
 }
 
 /** One planet a material can be extracted on */
@@ -114,11 +120,15 @@ export interface IChainCostParts {
 
 export interface IChainRow {
 	ticker: string;
-	/** demand after byproduct cover */
+	/** demand after byproduct and own production cover: made, bought or extracted */
 	perDay: number;
 	/** demand covered by byproducts */
 	covered: number;
-	source: ChainSource;
+	/** demand covered by own production */
+	have: number;
+	/** own production available, null for all, 0 without */
+	haveAvailable: number | null;
+	source: ChainRowSource;
 	target: boolean;
 	/** what the user wants of it, 0 for intermediates */
 	targetPerDay: number;
@@ -201,6 +211,9 @@ export interface IChainTotals {
 	outputValue: number;
 	bought: number;
 	boughtCount: number;
+	/** own production used, at CX BUY price */
+	own: number;
+	ownCount: number;
 	upkeep: number;
 	wear: number;
 	profit: number;

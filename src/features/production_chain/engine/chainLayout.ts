@@ -38,6 +38,11 @@ interface IBox {
 const overlaps = (a: IBox, b: IBox) =>
 	a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 
+/** area two boxes share */
+const shared = (a: IBox, b: IBox) =>
+	Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)) *
+	Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+
 export interface IChainLayoutNode {
 	ticker: string;
 	stage: number;
@@ -126,13 +131,17 @@ export function layoutChain(result: IChainResult): IChainLayout {
 	);
 
 	// labels go where they cover no node and no label placed before them:
-	// the middle of the curve first, then further towards either end
-	const boxes: IBox[] = Object.values(nodes).map((n) => ({
+	// the middle of the curve first, then further towards either end, then
+	// a line above or below it; else clear of other labels, under as little
+	// of a node as possible
+	const nodeBoxes: IBox[] = Object.values(nodes).map((n) => ({
 		x: n.x,
 		y: n.y,
 		w: W,
 		h: H,
 	}));
+	const labels: IBox[] = [];
+	const free = (box: IBox, list: IBox[]) => !list.some((o) => overlaps(box, o));
 	const edges: IChainLayoutEdge[] = result.links.map((l) => {
 		const a = nodes[l.input];
 		const b = nodes[l.consumer];
@@ -142,17 +151,29 @@ export function layoutChain(result: IChainResult): IChainLayout {
 		const y2 = b.y + H / 2;
 		const mx = (x1 + x2) / 2;
 		const w = formatQty(l.perDay).length * LABEL_CHAR + LABEL_PAD;
-		const at = (t: number) => {
+		const at = (t: number, dy = 0) => {
 			// the cubic below: x runs x1, mx, mx, x2 and y y1, y1, y2, y2
 			const u = 1 - t;
 			const x = u * u * u * x1 + 3 * u * t * mx + t * t * t * x2;
-			const y = y1 + (y2 - y1) * t * t * (3 - 2 * t);
+			const y = y1 + (y2 - y1) * t * t * (3 - 2 * t) + dy;
 			return { x, y, box: { x: x - w / 2, y: y - LABEL_H, w, h: LABEL_H } };
 		};
-		const spot =
-			LABEL_TS.map(at).find((c) => !boxes.some((o) => overlaps(c.box, o))) ??
-			at(0.5);
-		boxes.push(spot.box);
+		const spots = [0, -LABEL_H, LABEL_H].flatMap((dy) =>
+			LABEL_TS.map((t) => at(t, dy))
+		);
+		const underNodes = (box: IBox) =>
+			nodeBoxes.reduce((sum, n) => sum + shared(box, n), 0);
+		const clear = spots.filter((c) => free(c.box, labels));
+		let spot = clear.find((c) => free(c.box, nodeBoxes));
+		// else the clear spot over the least node area
+		let least = Infinity;
+		if (!spot)
+			for (const c of clear) {
+				const cost = underNodes(c.box);
+				if (cost < least) [least, spot] = [cost, c];
+			}
+		spot ??= at(0.5);
+		labels.push(spot.box);
 		return {
 			...l,
 			path: `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`,

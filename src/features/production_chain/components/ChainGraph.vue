@@ -14,16 +14,23 @@
 	} from "@/features/production_chain/engine/chainLayout";
 
 	// Util
-	import { formatQty } from "@/features/production_chain/productionChain.util";
+	import {
+		formatQty,
+		NO_OWN,
+	} from "@/features/production_chain/productionChain.util";
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
 	import type { IChainResult } from "@/features/production_chain/engine/chainSolver.types";
-	import type { IChainLineMode } from "@/features/production_chain/productionChain.types";
+	import type {
+		IChainLineMode,
+		IChainOwn,
+	} from "@/features/production_chain/productionChain.types";
 
-	const { result, lines } = defineProps<{
+	const { result, lines, own = NO_OWN } = defineProps<{
 		result: IChainResult;
 		lines: IChainLineMode;
+		own?: IChainOwn;
 	}>();
 
 	/** the focused material, null shows everything */
@@ -140,19 +147,47 @@
 		}
 	}
 
+	const anyHave = computed(() =>
+		result.order.some((t) => result.rows[t].source === "have")
+	);
+
+	/** "Have · Deimos Metals +1", "Your bases" for typed amounts */
+	function haveLine(ticker: string): string {
+		const list = own.suppliers[ticker] ?? [];
+		const name =
+			list[0]?.plan?.name ?? t("production_chains.have.your_bases");
+		return list.length > 1
+			? t("production_chains.have.graph_full_more", {
+					name,
+					n: list.length - 1,
+				})
+			: t("production_chains.have.graph_full", { name });
+	}
+
 	const nodes = computed(() =>
 		result.order.map((ticker) => {
 			const row = result.rows[ticker];
 			const pos = layout.value.nodes[ticker];
+			const had = row.have > 1e-9;
+			const made =
+				row.source === "buy"
+					? t("production_chains.graph.buy_on", { cx: row.exchange })
+					: `${row.base} · ${row.buildingTicker ?? "—"} × ${formatNumber(row.buildings, 2)}`;
 			return {
 				ticker,
 				row,
 				x: pos.x,
 				y: pos.y,
-				line2:
-					row.source === "buy"
-						? t("production_chains.graph.buy_on", { cx: row.exchange })
-						: `${row.base} · ${row.buildingTicker ?? "—"} × ${formatNumber(row.buildings, 2)}`,
+				perDay: row.perDay + row.have,
+				have: had,
+				mark: had
+					? row.source === "have"
+						? t("production_chains.have.graph_mark")
+						: t("production_chains.have.graph_mark_part", {
+								n: formatQty(row.have),
+							})
+					: null,
+				line2: row.source === "have" ? haveLine(ticker) : made,
 			};
 		})
 	);
@@ -207,9 +242,11 @@
 							:y="LAYOUT.pad"
 							class="fill-current text-muted text-xs uppercase">
 							{{
-								s === 1
-									? $t("production_chains.graph.stage_raw")
-									: $t("production_chains.graph.stage", { n: s - 1 })
+								s > 1
+									? $t("production_chains.graph.stage", { n: s - 1 })
+									: anyHave
+										? $t("production_chains.have.stage_raw")
+										: $t("production_chains.graph.stage_raw")
 							}}
 						</text>
 						<path
@@ -250,7 +287,11 @@
 						type="button"
 						class="absolute flex items-center gap-2 p-1.5 rounded-panel border bg-surface text-left cursor-pointer hover:bg-hover"
 						:class="[
-							n.row.source === 'buy' ? 'border-dashed border-line' : 'border-line-strong',
+							n.have
+								? 'border-have/70'
+								: n.row.source === 'buy'
+									? 'border-dashed border-line'
+									: 'border-line-strong',
 							n.row.target ? 'border-prunplanner' : '',
 							focus === n.ticker ? 'ring-2 ring-link' : '',
 							dim(n.ticker) ? 'opacity-25' : '',
@@ -265,7 +306,7 @@
 						:aria-label="
 							t('production_chains.graph.node', {
 								ticker: n.ticker,
-								n: formatQty(n.row.perDay),
+								n: formatQty(n.perDay),
 							})
 						"
 						:data-testid="`chain-node-${n.ticker}`"
@@ -277,16 +318,23 @@
 						</span>
 						<span class="min-w-0">
 							<span class="block text-sm tabular-nums truncate">
-								{{ $t("production_chains.detail.per_day", { n: formatQty(n.row.perDay) }) }}
+								{{ $t("production_chains.detail.per_day", { n: formatQty(n.perDay) }) }}
 							</span>
 							<span
 								class="block text-xs truncate"
-								:class="n.row.cheaper ? 'text-warning' : 'text-muted'">
+								:class="n.row.cheaper ? 'text-warning' : n.row.source === 'have' ? 'text-have' : 'text-muted'"
+								:title="n.line2">
 								{{ n.line2 }}
 								<template v-if="n.row.cheaper">
 									· {{ $t("production_chains.graph.buy_hint") }}
 								</template>
 							</span>
+						</span>
+						<span
+							v-if="n.have"
+							class="absolute -top-2.5 right-1 px-1 rounded-control border border-have bg-surface text-have text-xs font-bold uppercase leading-4"
+							:data-testid="`chain-have-mark-${n.ticker}`">
+							{{ n.mark }}
 						</span>
 					</button>
 				</div>

@@ -24,6 +24,7 @@ import {
 	splitInput,
 } from "@/tests/features/production_chain/chain.fixtures";
 import { encodeChain } from "@/features/production_chain/engine/chainUrl";
+import { remoteChange } from "@/lib/crossTab";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
@@ -78,6 +79,15 @@ vi.mock("vue-router", async (original) => ({
 
 const STORAGE_KEY = "prunplanner_production_chain";
 
+/** the mocked queries: no empires, the planet index for the rest */
+const byName =
+	(answers: Record<string, () => Promise<unknown>>) => (name: string) =>
+		answers[name]?.() ??
+		Promise.resolve(name === "GetAllEmpires" ? [] : index);
+const indexCalls = () =>
+	execute.mock.calls.filter(([name]) => name === "GetPlanetSearchIndex")
+		.length;
+
 const toolUses = () =>
 	trackEvent.mock.calls.filter(([event]) => event === "tool:use");
 
@@ -90,7 +100,7 @@ describe("ProductionChainView", () => {
 		nav.replace.mockClear();
 		trackEvent.mockClear();
 		execute.mockReset();
-		execute.mockResolvedValue(index);
+		execute.mockImplementation(byName({}));
 		localStorage.clear();
 	});
 
@@ -104,7 +114,7 @@ describe("ProductionChainView", () => {
 		).toBe(false);
 		const createPlans = wrapper.find("[data-testid='chain-create-plans']");
 		expect(createPlans.attributes("disabled")).toBeDefined();
-		expect(execute).not.toHaveBeenCalled();
+		expect(indexCalls()).toBe(0);
 	});
 
 	it("restores the chain from the URL, untracked (AC 15)", async () => {
@@ -167,7 +177,7 @@ describe("ProductionChainView", () => {
 		nav.route.query = { t: "DW:100", raw: "extract" };
 		const { wrapper } = await mountComponent(ProductionChainView);
 		await flushPromises();
-		expect(execute).toHaveBeenCalledTimes(1);
+		expect(indexCalls()).toBe(1);
 		await vi.waitFor(() =>
 			expect(
 				wrapper
@@ -189,7 +199,7 @@ describe("ProductionChainView interactions", () => {
 		trackEvent.mockClear();
 		copy.mockClear();
 		execute.mockReset();
-		execute.mockResolvedValue(index);
+		execute.mockImplementation(byName({}));
 		localStorage.clear();
 		toasts.value = [];
 	});
@@ -246,7 +256,7 @@ describe("ProductionChainView interactions", () => {
 		await extract.trigger("click");
 		await flushPromises();
 		expect(lastQuery().src).toBe("H2O:extract");
-		expect(execute).toHaveBeenCalledTimes(1);
+		expect(indexCalls()).toBe(1);
 
 		await vi.waitFor(() =>
 			expect(
@@ -301,7 +311,15 @@ describe("ProductionChainView interactions", () => {
 	});
 
 	it("says when planets can't load, and retries", async () => {
-		execute.mockRejectedValueOnce(new Error("down"));
+		let failed = false;
+		execute.mockImplementation(
+			byName({
+				GetPlanetSearchIndex: () =>
+					failed
+						? Promise.resolve(index)
+						: ((failed = true), Promise.reject(new Error("down"))),
+			})
+		);
 		nav.route.query = { t: "DW:100", raw: "extract" };
 		const { wrapper } = await mountComponent(ProductionChainView);
 		await flushPromises();
@@ -310,7 +328,7 @@ describe("ProductionChainView interactions", () => {
 		);
 		await byText(wrapper, "production_chains.panel.retry").trigger("click");
 		await flushPromises();
-		expect(execute).toHaveBeenCalledTimes(2);
+		expect(indexCalls()).toBe(2);
 		expect(wrapper.text()).not.toContain(
 			"production_chains.panel.planets_error"
 		);
@@ -634,6 +652,56 @@ describe("ProductionChainView interactions", () => {
 			]);
 			expect(calls[0][1].data.empire_uuid).toBe("e1");
 		});
+	});
+	it("fills Have from a picked empire, keeps the amounts on error and reloads live (AC 10, 11, 15)", async () => {
+		let plans: () => Promise<unknown> = () => Promise.reject(new Error("down"));
+		execute.mockImplementation(
+			byName({
+				GetAllEmpires: () =>
+					Promise.resolve([{ uuid: "mine", empire_name: "Mine", plans: [] }]),
+				GetEmpirePlans: () => plans(),
+			})
+		);
+		// a link's amounts come from "Your bases"
+		nav.route.query = { t: "RAT:100", have: "GRN:5" };
+		const { wrapper } = await mountComponent(ProductionChainView);
+		await flushPromises();
+		const grn = () => wrapper.find("[data-testid='chain-have-GRN']");
+		expect(grn().text()).toContain("production_chains.have.your_bases");
+		const settings = wrapper.findComponent(ChainSettings);
+
+		// a failed load goes back to None and keeps the amounts
+		settings.vm.$emit("own", "mine");
+		await flushPromises();
+		expect(wrapper.text()).toContain("production_chains.have.error");
+		expect(settings.props("ownEmpire")).toBeUndefined();
+		expect(grn().exists()).toBe(true);
+
+		// a loaded empire replaces the link's amounts; the link keeps no empire
+		plans = () => Promise.resolve([]);
+		settings.vm.$emit("own", "mine");
+		await flushPromises();
+		expect(settings.props("ownEmpire")).toBe("mine");
+		expect(wrapper.text()).not.toContain("production_chains.have.error");
+		expect(grn().exists()).toBe(false);
+		expect(lastQuery()).not.toHaveProperty("have");
+		expect(lastQuery()).not.toHaveProperty("empire");
+		expect(
+			trackEvent.mock.calls.some(
+				([e, p]) => e === "production_chain:action" && p.action === "own_pick"
+			)
+		).toBe(true);
+
+		// another tab saved the empire's plans: they load again
+		const loads = () =>
+			execute.mock.calls.filter(([name]) => name === "GetEmpirePlans").length;
+		expect(loads()).toBe(2);
+		remoteChange.value = { keys: [["planningdata", "cx"]], seq: 1 };
+		await flushPromises();
+		expect(loads()).toBe(2);
+		remoteChange.value = { keys: [["planningdata", "empire"]], seq: 2 };
+		await flushPromises();
+		expect(loads()).toBe(3);
 	});
 });
 

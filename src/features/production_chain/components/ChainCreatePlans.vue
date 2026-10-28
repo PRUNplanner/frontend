@@ -57,6 +57,11 @@
 	const creating = ref(false);
 	const outcome: Ref<IChainCreated | null> = ref(null);
 
+	/** materials own production covers: no step in the new plans */
+	const had = computed(() =>
+		result.order.filter((t) => result.rows[t].source === "have")
+	);
+
 	/** bases with steps; an empty base makes no plan */
 	const bases = computed(() =>
 		result.bases.filter((b) => b.materials.length)
@@ -178,6 +183,9 @@
 			<template v-if="!outcome">
 				<p class="text-muted">
 					{{ $t("production_chains.create.intro") }}
+				</p>
+				<p v-if="had.length" class="text-xs text-have" data-testid="chain-create-have">
+					{{ $t("production_chains.have.create_note", { list: had.join(", ") }) }}
 				</p>
 				<div class="overflow-x-auto">
 					<PTable>

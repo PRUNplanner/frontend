@@ -193,4 +193,42 @@ describe("ChainGraph details", () => {
 		await showAll.trigger("click");
 		expect(component.emitted("update:focus")).toEqual([[null]]);
 	});
+
+	it("marks Have nodes, full ones in the first column (AC 13)", async () => {
+		const had = solveChain(
+			chainInput([["RAT", 100]], { have: { GRN: "all", NUT: 2 } }),
+			testContext()
+		);
+		const { wrapper } = await mountComponent(ChainGraph, {
+			result: had,
+			lines: "t",
+			focus: null,
+			own: {
+				name: "Main",
+				surplus: new Map(),
+				suppliers: {
+					GRN: [
+						{ key: "a", plan: { name: "Alpha" }, perDay: 1, surplus: 1 },
+						{ key: "b", plan: { name: "Beta" }, perDay: 1, surplus: 1 },
+					],
+				},
+				overrides: {},
+			},
+		});
+		const layout = layoutChain(had);
+		expect(layout.nodes.GRN.stage).toBe(0);
+		expect(layout.nodes.NUT.stage).toBeGreaterThan(0);
+		for (const t of ["GRN", "NUT"])
+			expect(wrapper.find(`[data-testid='chain-have-mark-${t}']`).exists()).toBe(true);
+		expect(wrapper.find("[data-testid='chain-have-mark-RAT']").exists()).toBe(false);
+		expect(wrapper.find("[data-testid='chain-node-GRN']").text()).toContain(
+			"production_chains.have.graph_full_more"
+		);
+		// partly had: the amount in the mark, the usual second line
+		expect(wrapper.find("[data-testid='chain-have-mark-NUT']").text()).toBe(
+			"production_chains.have.graph_mark_part"
+		);
+		expect(wrapper.find("[data-testid='chain-node-NUT']").text()).toContain(" · ");
+		expect(wrapper.text()).toContain("production_chains.have.stage_raw");
+	});
 });

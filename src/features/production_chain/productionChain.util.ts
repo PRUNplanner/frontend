@@ -7,6 +7,7 @@ import type {
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
 import type { IChainResult } from "@/features/production_chain/engine/chainSolver.types";
+import type { IChainOwn } from "@/features/production_chain/productionChain.types";
 import type {
 	ExpertType,
 	PlanCOGCProgram,
@@ -182,6 +183,7 @@ export function chainCsv(
 				row.buildings.toFixed(4),
 				row.unitCost.toFixed(2),
 				row.price.toFixed(2),
+				row.have.toFixed(4),
 			]
 				.map(csvCell)
 				.join(",")
@@ -228,3 +230,12 @@ export function expertsText(
 		.map(([type, n]) => `${n} ${name(type)}`)
 		.join(" + ");
 }
+
+/** no own production: no empire, nothing typed */
+export const NO_OWN: IChainOwn = {
+	name: null,
+	surplus: new Map(),
+	suppliers: {},
+	overrides: {},
+	planets: new Map(),
+};

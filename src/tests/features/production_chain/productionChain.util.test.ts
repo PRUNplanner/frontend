@@ -11,6 +11,8 @@ import {
 } from "@/features/production_chain/productionChain.util";
 import { solveChain } from "@/features/production_chain/engine/chainSolver";
 
+import messages from "@/locales/en_US/production_chains.json";
+
 // Fixtures
 import {
 	chainInput,
@@ -57,6 +59,35 @@ describe("productionChain.util", () => {
 		expect(lines.length).toBe(result.order.length + 1);
 		expect(lines[1].startsWith(result.order[result.order.length - 1])).toBe(true);
 		expect(csv).toContain("buy");
+	});
+
+	it("counts the Buy list and the CSV with own production (AC 2)", () => {
+		const had = solveChain(
+			chainInput(
+				[
+					["DW", 100],
+					["RAT", 100],
+					["OVE", 50],
+				],
+				{ have: { H2O: 100, GRN: "all" } }
+			),
+			ctx
+		);
+		const h2o = buyList(had, ctx.materials, 1).groups[0].items.find(
+			(i) => i.ticker === "H2O"
+		)!;
+		// only the bought share
+		expect(h2o.units).toBe(Math.ceil(had.rows.H2O.perDay - 1e-9));
+		expect(had.rows.H2O.have).toBe(100);
+		const csv = chainCsv(had, Array(9).fill("x"), (s) => s, "nothing");
+		const grn = csv.split("\n").find((l) => l.startsWith("GRN,"))!;
+		expect(grn.split(",")[2]).toBe("have");
+		expect(Number(grn.split(",")[8])).toBeCloseTo(had.rows.GRN.have, 3);
+	});
+
+	it("has a source label for every row source", () => {
+		for (const source of ["make", "buy", "extract", "have"])
+			expect(messages.table).toHaveProperty(source);
 	});
 
 	it("formats numbers", () => {

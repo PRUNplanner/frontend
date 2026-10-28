@@ -44,6 +44,7 @@ import type {
 } from "@/features/planning/usePlanCalculation.types";
 import type {
 	ChainLux,
+	ChainRowSource,
 	ChainSource,
 	IChainBase,
 	IChainBaseResult,
@@ -749,8 +750,10 @@ export function baseFootprint(
 }
 
 interface IPassRow {
+	source: ChainRowSource;
 	perDay: number;
 	covered: number;
+	have: number;
 	/** buildings at 100 %, independent of efficiency */
 	load: number;
 }
@@ -958,6 +961,13 @@ export function solveChain(
 		return r;
 	};
 
+	// own production per day; targets never use it
+	const haveOf = (t: string): number => {
+		const h = input.have?.[t];
+		if (h === undefined || targetPerDay.has(t)) return 0;
+		return h === "all" ? Infinity : Math.max(0, h);
+	};
+
 	const runPass = (supply: Map<string, number>): IPass => {
 		const need = new Map(targetPerDay);
 		const pass: IPass = {
@@ -969,10 +979,12 @@ export function solveChain(
 		for (let k = order.length - 1; k >= 0; k--) {
 			const t = order[k];
 			const gross = need.get(t) ?? 0;
+			// byproducts first, then own production, the rest from the source
 			const covered = Math.min(gross, supply.get(t) ?? 0);
-			const perDay = gross - covered;
+			const have = Math.min(gross - covered, haveOf(t));
+			const perDay = Math.max(0, gross - covered - have);
 			let load = 0;
-			const source = sourceOf(t);
+			const source = perDay <= EPS && have > EPS ? "have" : sourceOf(t);
 
 			if (source === "make") {
 				const r = recipeOf(t);
@@ -1009,7 +1021,13 @@ export function solveChain(
 				const rate = rateOf(t);
 				load = rate > 0 ? perDay / rate : 0;
 			}
-			pass.rows.set(t, { perDay, covered, load });
+			pass.rows.set(t, {
+				source,
+				perDay: source === "have" ? 0 : perDay,
+				covered,
+				have,
+				load,
+			});
 		}
 		return pass;
 	};
@@ -1032,6 +1050,15 @@ export function solveChain(
 			pass = next;
 			if (stable) break;
 		}
+
+	// materials nothing needs any more drop out: the inputs of Have rows and
+	// of steps byproducts cover fully
+	const needed = order.filter((t) => {
+		const p = pass.rows.get(t)!;
+		return targetPerDay.has(t) || p.perDay + p.covered + p.have > EPS;
+	});
+	order.splice(0, order.length, ...needed);
+	const links = pass.links.filter((l) => l.perDay > EPS);
 
 	// experts per base: the user's or the split worth most, weighted by the
 	// output value per expertise (building-days without prices)
@@ -1067,7 +1094,7 @@ export function solveChain(
 	// unit costs, inputs first
 	const unitCost = new Map<string, number>();
 	const users = new Map<string, Set<string>>();
-	for (const l of pass.links) {
+	for (const l of links) {
 		const u = users.get(l.input) ?? new Set();
 		u.add(l.consumer);
 		users.set(l.input, u);
@@ -1076,10 +1103,12 @@ export function solveChain(
 	const rows: Record<string, IChainRow> = {};
 	for (const t of order) {
 		const p = pass.rows.get(t)!;
-		const source = sourceOf(t);
+		const source = pass.rows.get(t)!.source;
 		const price = buyPrice(ctx, t);
 		const isTarget = targetPerDay.has(t);
-		const eff = source === "buy" ? efficiency : effOf(t);
+		// bought and had rows run no buildings here
+		const noStep = source === "buy" || source === "have";
+		const eff = noStep ? efficiency : effOf(t);
 		// a farm without fertility is costed at the chain efficiency
 		const costEff = eff > 0 ? eff : efficiency;
 		const lux = setups.get(baseIdOf(t))!.lux;
@@ -1091,7 +1120,7 @@ export function solveChain(
 		let typicalSite = false;
 		let notOnPlanet = false;
 
-		if (source === "buy") uc = price;
+		if (noStep) uc = price;
 		else if (source === "extract") {
 			const s = siteOf(t);
 			if (s) {
@@ -1132,6 +1161,8 @@ export function solveChain(
 			ticker: t,
 			perDay: p.perDay,
 			covered: p.covered,
+			have: p.have,
+			haveAvailable: haveOf(t) === Infinity ? null : haveOf(t),
 			source,
 			target: isTarget,
 			targetPerDay: targetPerDay.get(t) ?? 0,
@@ -1141,10 +1172,10 @@ export function solveChain(
 			recipeCount: ctx.recipesByOutput.get(t)?.length ?? 0,
 			defaultRecipeId: canMake(t) ? defaultRecipe(ctx, t, efficiency) : null,
 			buildingTicker,
-			base: source === "buy" ? null : baseIdOf(t),
+			base: noStep ? null : baseIdOf(t),
 			load: p.load,
 			efficiency: eff,
-			noFarming: source !== "buy" && eff <= 0,
+			noFarming: !noStep && eff <= 0,
 			notOnPlanet,
 			buildings: eff > 0 ? p.load / eff : 0,
 			site,
@@ -1157,7 +1188,7 @@ export function solveChain(
 			exchange: priceSource.exchange ?? priceSource.volume,
 			users: [...(users.get(t) ?? [])],
 			cheaper:
-				source !== "buy" &&
+				!noStep &&
 				!isTarget &&
 				price > 0 &&
 				uc > price + EPS,
@@ -1239,7 +1270,7 @@ export function solveChain(
 	return {
 		order,
 		rows,
-		links: pass.links,
+		links,
 		byproducts,
 		buildingTypes,
 		bases: baseResults,
@@ -1256,7 +1287,7 @@ export function solveChain(
 			thin: order.filter(
 				(t) => rows[t].source === "buy" && rows[t].market?.level
 			),
-			cycles,
+			cycles: cycles.filter((t) => t in rows),
 		},
 	};
 }
@@ -1316,8 +1347,14 @@ function totalsOf(
 
 	let bought = 0;
 	let boughtCount = 0;
+	let own = 0;
+	let ownCount = 0;
 	for (const t of order) {
 		const row = rows[t];
+		if (row.have > EPS) {
+			own += row.have * row.price;
+			ownCount++;
+		}
 		if (row.source !== "buy" || row.perDay <= EPS) continue;
 		bought += row.perDay * row.price;
 		boughtCount++;
@@ -1330,7 +1367,8 @@ function totalsOf(
 		0
 	);
 	const outputValue = targetsValue + byproductsValue;
-	const profit = outputValue - bought - upkeep - wear;
+	// own production counts like a bought input at its CX price
+	const profit = outputValue - bought - own - upkeep - wear;
 
 	return {
 		targetsValue,
@@ -1338,6 +1376,8 @@ function totalsOf(
 		outputValue,
 		bought,
 		boughtCount,
+		own,
+		ownCount,
 		upkeep,
 		wear,
 		profit,

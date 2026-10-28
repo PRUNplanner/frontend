@@ -22,12 +22,14 @@ lazily) with `?mode=check`.
 | `engine/chainExtraction.ts` | Extraction sites per resource from the planet search index, and the typical planet |
 | `engine/chainLayout.ts` | `layoutChain(result)`: stage columns and barycenter ordering for the graph. A plain function, so a library layout could replace it |
 | `engine/chainUrl.ts` | `encodeChain` / `decodeChain`: the chain in the URL query |
+| `engine/chainHave.ts` | Own production: `empireSurplus`, `haveSuppliers` (which plan supplies each Have row), `unusedSurplus`, and the override rules (`effectiveHave`, `withHave`, `typedOnly`) |
+| `useChainPlans.ts` | `loadEmpirePlans`: an empire's plans through the plan engine, for Check and Own production |
 | `engine/chainCheck.ts` | `checkEmpire(input, ctx)`: the empire check (steps, chains, findings, verdicts), `tryInPlanner` |
-| `useChainCheck.ts` | Check mode state: URL, empires, plans through the plan engine, planet index, analytics |
+| `useChainCheck.ts` | Check mode state: URL, empires, plans (`useChainPlans`), planet index, analytics |
 | `chainCheck.util.ts` | Finding texts, option chips, the Planet Search link |
 | `components/ChainModeSwitch.vue` | Plan a chain · Check an empire, each mode keeps its last query |
 | `components/check/` | `CheckPage` with bar, results, Bases, Findings, Chains, aside and the planet list (`CheckPlanetList`) |
-| `useProductionChain.ts` | Page state: input, CX, solved result, URL and localStorage sync, lazy planet index, analytics |
+| `useProductionChain.ts` | Page state: input, CX, own production (empire, overrides), solved result, URL and localStorage sync, lazy planet index, analytics |
 | `productionChain.util.ts` | Formatting, the buy list and CSV |
 | `components/ChainPage.vue` | The page: header, targets, settings, results, panel, aside, planet picker |
 | `components/ChainPanel.vue` | Steps / Graph / Bases tabs (Bases as a slot), warning chips, view tools |
@@ -68,6 +70,23 @@ helpers instead of copying their math: `calculateExtraction`,
 - **Byproducts.** Cover demand: a byproduct first reduces the demand for the
   same material, repeated until stable (at most 8 passes); the rest is
   sold. Sell: all sold.
+- **Have (own production).** `input.have` per ticker: an amount per day or
+  `"all"`. Demand is covered by byproducts first, then Have
+  (`min(rest, have)`), then the row's source. Targets ignore Have. A row with
+  nothing left is a Have row: source `"have"`, no recipe, inputs, buildings
+  or base, unit cost = the CX BUY price. A partly had row keeps its source
+  and stage; `perDay` is only the rest, `have` the part from own
+  production. After the passes, rows nothing needs any more (inputs of Have
+  rows and of steps byproducts cover fully) drop out with their links.
+- **Own production.** The page fills Have from one empire: the net surplus
+  is Σ of its plans' `materialio` deltas, positive totals only, reloaded
+  when another tab saves its plans (`remoteChange`). Typed amounts win over
+  the empire and stay when it changes; linked amounts (`have=` in the link
+  or the saved chain) give way to a picked empire. Switching a row to make,
+  buy or extract sets `"off"` while the empire has a surplus of it. The
+  link holds the amounts in use, never the empire. Suppliers: the plans
+  with a positive delta in name order, each giving what is left up to its
+  delta; a typed or linked amount comes from "Your bases".
 - **Unit cost.** Inputs at their chain unit cost plus the building's upkeep
   and wear for the run; a recipe with several outputs shares its cost by
   CX value (by quantity without prices). Upkeep is basic needs plus the
@@ -99,11 +118,12 @@ helpers instead of copying their math: `calculateExtraction`,
   Permits = ceil((area − 250) / 250), 1 to 3; above 1,000 warns. A base
   without steps builds nothing.
 - **Totals.** Profit = targets and sold byproducts at CX price − bought
-  inputs − upkeep − wear of the bases' buildings, STOs and habs. Area,
+  inputs − own production at CX BUY price (`own`) − upkeep − wear of the bases' buildings, STOs and habs. Area,
   buildings, workforce and construction are the bases' sums. Planet extras
   (MCG, AEF, …) are left out.
 - **Shipping.** Cross-base links from the input's base (the part covered by
-  byproducts from their producers' bases), bought inputs from the CX,
+  byproducts from their producers' bases, the Have part from each supplying
+  plan, jumps from its planet), bought inputs from the CX,
   targets and sold byproducts to the CX ("CX" with Universe prices).
 - **Split by expertise.** Groups of made and extracted rows by building
   expertise; 1.5 or more exact buildings (at the chain efficiency) get a
@@ -112,7 +132,8 @@ helpers instead of copying their math: `calculateExtraction`,
   order amounts (≤ 10) whose time shares are within 5 % of the chain's runs;
   habs and one STO; the base's luxuries, experts, COGC and permits; no HQ.
 - **Warnings.** Cheaper to buy: made or extracted, not a target, unit cost
-  above the CX price. Thin market: bought with no trades in 30 days or a
+  above the CX price; never a Have row. Thin market: bought (a partly had
+  row on its bought part) with no trades in 30 days or a
   share of the daily volume from `MARKET_SHARE_AMBER` (red from
   `MARKET_SHARE_RED`).
 

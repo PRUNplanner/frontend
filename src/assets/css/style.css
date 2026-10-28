@@ -36,6 +36,8 @@
 	--color-primary: var(--color-blue-800);
 	/* links, active sort and page */
 	--color-link: #6ea8fe;
+	/* own production (Have) in the chain planner */
+	--color-have: #5eead4;
 	/* buttons, inputs, selects, tags, checkboxes */
 	--radius-control: 4px;
 	/* popovers, menus, lists, tooltips, toasts, modals, tables */

@@ -50,6 +50,7 @@
 		IChainTarget,
 	} from "@/features/production_chain/engine/chainSolver.types";
 	import type { PlanetSearchCX } from "@/features/planet_search/planetSearch.schemas";
+	import type { IChainOwn } from "@/features/production_chain/productionChain.types";
 
 	// UI
 	import { PButton, useToast } from "@/ui";
@@ -81,7 +82,30 @@
 		recipeOptions,
 		chainLink,
 		track,
+		haveOverride,
+		empires,
+		ownEmpire,
+		ownLoaded,
+		ownPlanets,
+		ownLoading,
+		ownError,
+		surplus,
+		suppliers,
+		baseline,
+		pickOwn,
+		setHave,
 	} = useProductionChain();
+
+	const own = computed<IChainOwn>(() => ({
+		name:
+			// the empire whose surplus is shown, not the one loading
+			empires.value.find((e) => e.uuid === ownLoaded.value)?.empire_name ??
+			null,
+		surplus: surplus.value,
+		suppliers: suppliers.value,
+		overrides: haveOverride.value,
+		planets: ownPlanets.value,
+	}));
 
 	// a two-way binding to one input field
 	function field<K extends keyof typeof input.value>(key: K) {
@@ -235,7 +259,12 @@
 				v-model:raw-source="rawSource"
 				v-model:byproducts="byproducts"
 				v-model:cx-uuid="cxUuid"
-				:follow-default="!cxFromLink" />
+				:follow-default="!cxFromLink"
+				:empires="empires"
+				:own-empire="ownEmpire"
+				:own-loading="ownLoading"
+				:own-error="ownError"
+				@own="pickOwn" />
 		</div>
 
 		<div
@@ -247,7 +276,7 @@
 		</div>
 
 		<template v-else>
-			<ChainResults :totals="result.totals" />
+			<ChainResults :totals="result.totals" :baseline="baseline" />
 			<div
 				v-if="indexLoading || indexError"
 				class="text-xs"
@@ -268,7 +297,9 @@
 					:extraction="ctx.extraction"
 					:recipe-options="recipeOptions"
 					:bases="input.bases"
+					:own="own"
 					@base="moveTo"
+					@have="setHave"
 					@source="setSource"
 					@recipe="setRecipe"
 					@planet="openPlanets"
@@ -282,6 +313,7 @@
 							:ctx="ctx"
 							:created="created"
 							:ready="createReady"
+							:own="own"
 							@split="onSplit"
 							@add="addBase"
 							@remove="removeBase"
