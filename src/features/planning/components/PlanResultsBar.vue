@@ -117,8 +117,16 @@
 			<button type="button" :class="[tile, '@min-[48rem]:pl-6 @min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
-					<span class="text-xl font-medium leading-tight">
-						<PValue :value="overview.profit" />
+					<!-- a phone's third of the bar fits the profit without its
+						cents -->
+					<span
+						class="text-xl @max-[30rem]:text-lg font-medium leading-tight text-nowrap">
+						<PValue class="@max-[30rem]:hidden" :value="overview.profit" />
+						<PValue
+							class="@min-[30rem]:hidden"
+							:value="overview.profit"
+							:decimals="0"
+							data-profit-short />
 						<span class="pl-1 text-sm text-muted">ȼ</span>
 					</span>
 				</div>

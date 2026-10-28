@@ -152,6 +152,10 @@ describe("PlanResultsBar", () => {
 		expect(profit.text()).toContain("Profit / day");
 		expect(profit.text()).toContain("+1,234.50");
 		expect(profit.find(".text-positive").exists()).toBe(true);
+		// a phone's tile shows it without the cents, the other is hidden there
+		const short = profit.find("[data-profit-short]");
+		expect(short.text()).toBe("+1,235");
+		expect(short.classes()).toContain("@min-[30rem]:hidden");
 		expect(profit.text()).toContain(
 			"Revenue\u00a05,000.00 · cost\u00a03,765.50 incl.\u00a012.00\u00a0degradation"
 		);
