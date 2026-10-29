@@ -48,6 +48,7 @@
 			"title": "重置密码",
 			"info": "请输入系统发送到邮箱的验证码及新密码。",
 			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
 			"buttons": {
 				"send": "发送重置密码"
 			},
