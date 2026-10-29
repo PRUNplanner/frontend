@@ -3,7 +3,6 @@ import path from "path";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
 import { compression } from "vite-plugin-compression2";
-import AutoImport from "unplugin-auto-import/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { Plugin } from "vite";
 
@@ -119,7 +118,6 @@ export default defineConfig({
 	plugins: [
 		vue(),
 		tailwindcss(),
-		AutoImport({ imports: ["vue", "vue-router", "pinia"] }),
 		buildVersion(),
 		apiPreconnect(),
 		preloadBodyFont(),

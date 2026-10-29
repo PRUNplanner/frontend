@@ -81,4 +81,23 @@ describe("useBaseROISettings (criteria 2, 14)", () => {
 			defaultBaseROISettings()
 		);
 	});
+
+	it("blocked storage gives the defaults and keeps changes in memory", async () => {
+		vi.stubGlobal("localStorage", {
+			getItem: () => {
+				throw new Error("blocked");
+			},
+			setItem: () => {
+				throw new Error("blocked");
+			},
+		});
+		const { settings, hasStored } = useBaseROISettings();
+		expect(settings.value).toEqual(defaultBaseROISettings());
+		// nothing could be read: the setup dialog opens
+		expect(hasStored.value).toBe(false);
+		settings.value.bufferDays = 20;
+		await nextTick();
+		expect(settings.value.bufferDays).toBe(20);
+		expect(hasStored.value).toBe(true);
+	});
 });

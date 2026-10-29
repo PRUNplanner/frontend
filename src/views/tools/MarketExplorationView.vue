@@ -36,6 +36,7 @@
 	import { useMarketExplorationChart } from "@/features/market_exploration/useMarketExplorationChart";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { readStorage, writeStorage } from "@/lib/storage";
 
 	// Types & Interfaces
 	import type { PDataTableColumn, PSelectOption } from "@/ui/ui.types";
@@ -85,25 +86,16 @@
 
 	// the chart view is remembered for the session
 	const CHART_VIEW_KEY = "market_exploration.chart_view";
-	function storedChartView(): ChartView {
-		try {
-			return sessionStorage.getItem(CHART_VIEW_KEY) === "exchanges"
-				? "exchanges"
-				: "candles";
-		} catch {
-			return "candles";
-		}
-	}
-	const chartView = ref<ChartView>(storedChartView());
+	const chartView = ref<ChartView>(
+		readStorage(CHART_VIEW_KEY, "session") === "exchanges"
+			? "exchanges"
+			: "candles"
+	);
 	function setChartView(view: ChartView): void {
 		if (view !== chartView.value)
 			trackEvent("market_exploration:view_change", { view });
 		chartView.value = view;
-		try {
-			sessionStorage.setItem(CHART_VIEW_KEY, view);
-		} catch {
-			// storage blocked: the view just isn't remembered
-		}
+		writeStorage(CHART_VIEW_KEY, view, "session");
 	}
 	const chartViews: ChartView[] = ["candles", "exchanges"];
 	const exchangeMetrics: ExchangeMetric[] = ["vwap", "low", "high"];
@@ -187,7 +179,13 @@
 
 		const result: IExchangeOverview[] = (
 			await Promise.all(overviewPromises)
-		).sort((a, b) => (a.material_ticker > b.material_ticker ? 1 : -1));
+		).sort((a, b) =>
+			a.material_ticker < b.material_ticker
+				? -1
+				: a.material_ticker > b.material_ticker
+					? 1
+					: 0
+		);
 
 		dataOverview.value = result;
 	}

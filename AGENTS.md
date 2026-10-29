@@ -60,10 +60,8 @@ time.
 
 ## Hard rules
 
-1. **Import explicitly.** Write `import { ref } from "vue"` and the like.
-   `unplugin-auto-import` is configured, but the generated `.d.ts` files are
-   gitignored and Vitest doesn't load the plugin. Use the `@/` alias for
-   everything under `src/`.
+1. **Import explicitly.** Write `import { ref } from "vue"` and the like:
+   nothing is auto-imported. Use the `@/` alias for everything under `src/`.
 2. **Reuse the UI kit.** Use `import { PButton, PSelect, … } from "@/ui"`
    (`src/ui/`), and `PDataTable` for data tables. All overlays come from the
    kit: `PModal`, `PDrawer`, `useConfirm`, `PPopover`, `PDropdown` and

@@ -141,7 +141,7 @@ describe("PlanData API Calls", async () => {
 
 		mock.onDelete("/planning/plan/foo/").reply(200, true);
 
-		expect(await callDeletePlan("foo")).toBeTruthy();
+		await expect(callDeletePlan("foo")).resolves.toBeUndefined();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
 	});
 });

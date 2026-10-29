@@ -2,6 +2,7 @@ import { ref, type Ref } from "vue";
 
 // Composables
 import { toast } from "@/ui/useToast";
+import { readStorage, writeStorage } from "@/lib/storage";
 
 /**
  * # Debug modes
@@ -21,29 +22,17 @@ function readModes(value: string | null | undefined): string[] {
 		.filter((m) => m !== "");
 }
 
-function readStorage(): string | null {
-	try {
-		return localStorage.getItem(STORAGE_KEY);
-	} catch {
-		return null;
-	}
-}
-
 // adds or removes one mode in storage
 function writeMode(mode: string, on: boolean): void {
-	const modes = readModes(readStorage()).filter((m) => m !== mode);
+	const modes = readModes(readStorage(STORAGE_KEY)).filter((m) => m !== mode);
 	if (on) modes.push(mode);
-	try {
-		if (modes.length) localStorage.setItem(STORAGE_KEY, modes.join(","));
-		else localStorage.removeItem(STORAGE_KEY);
-	} catch {
-		// no storage: on for this tab only
-	}
+	// no storage: on for this tab only
+	writeStorage(STORAGE_KEY, modes.length ? modes.join(",") : null);
 }
 
 /** the calculation debug panel on the plan page is available */
 export const calcDebug: Ref<boolean> = ref(
-	readModes(readStorage()).includes("calc")
+	readModes(readStorage(STORAGE_KEY)).includes("calc")
 );
 
 /**
@@ -65,7 +54,7 @@ export function setCalcDebug(on: boolean): void {
 
 /** the market report's price gaps show, hidden until their floors are tuned */
 export const marketGapsDebug: Ref<boolean> = ref(
-	readModes(readStorage()).includes("gaps")
+	readModes(readStorage(STORAGE_KEY)).includes("gaps")
 );
 
 /**

@@ -138,10 +138,9 @@ export const planningQueries = {
 		expireTime: staleMinutes(60),
 	}),
 	DeleteSharedPlan: defineMutation({
-		fetchFn: async (params: { sharedUuid: string }): Promise<boolean> => {
-			const data = await callDeleteSharing(params.sharedUuid);
+		fetchFn: async (params: { sharedUuid: string }): Promise<void> => {
+			await callDeleteSharing(params.sharedUuid);
 			await dropShared();
-			return data;
 		},
 	}),
 	CreateSharedPlan: defineMutation({
@@ -192,10 +191,9 @@ export const planningQueries = {
 		},
 	}),
 	DeleteEmpire: defineMutation({
-		fetchFn: async (params: { empireUuid: string }): Promise<boolean> => {
-			const data = await callDeleteEmpire(params.empireUuid);
+		fetchFn: async (params: { empireUuid: string }): Promise<void> => {
+			await callDeleteEmpire(params.empireUuid);
 			await changed([EMPIRES], params.empireUuid);
-			return data;
 		},
 	}),
 	PatchEmpire: defineMutation({
@@ -270,10 +268,9 @@ export const planningQueries = {
 		},
 	}),
 	DeleteCX: defineMutation({
-		fetchFn: async (params: { cxUuid: string }): Promise<boolean> => {
-			const data = await callDeleteCX(params.cxUuid);
+		fetchFn: async (params: { cxUuid: string }): Promise<void> => {
+			await callDeleteCX(params.cxUuid);
 			await changed([CXS], params.cxUuid);
-			return data;
 		},
 	}),
 
@@ -327,8 +324,8 @@ export const planningQueries = {
 		},
 	}),
 	DeletePlan: defineMutation({
-		fetchFn: async (params: { planUuid: string }): Promise<boolean> => {
-			const data = await callDeletePlan(params.planUuid);
+		fetchFn: async (params: { planUuid: string }): Promise<void> => {
+			await callDeletePlan(params.planUuid);
 			const queryStore = useQueryStore();
 			await invalidate(EMPIRES);
 			await queryStore.invalidateKey([...PLANS, "list"]);
@@ -338,7 +335,6 @@ export const planningQueries = {
 				[EMPIRES, [...PLANS, "list"], [...PLANS, params.planUuid]],
 				params.planUuid
 			);
-			return data;
 		},
 	}),
 };

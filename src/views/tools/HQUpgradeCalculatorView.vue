@@ -179,12 +179,8 @@
 										)
 									">
 									<CXPreferenceSelector
-										:cx-uuid="refSelectedCXUuid"
-										class="w-full"
-										@update:cxuuid="
-											(value) =>
-												(refSelectedCXUuid = value)
-										" />
+										v-model:cx-uuid="refSelectedCXUuid"
+										class="w-full" />
 								</PFormItem>
 								<PFormItem
 									:label="

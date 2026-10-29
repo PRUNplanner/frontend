@@ -1,4 +1,4 @@
-import { computed, type ComputedRef, ref, watch } from "vue";
+import { computed, type ComputedRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 // Stores
@@ -8,6 +8,7 @@ import { useUserStore } from "@/stores/userStore";
 // Composables
 import { usePreferences } from "@/features/preferences/usePreferences";
 import { useQuery } from "@/lib/query_cache/useQuery";
+import { useStoredFlag } from "@/lib/storage";
 
 // Util
 import { relativeFromDate } from "@/util/date";
@@ -43,16 +44,8 @@ import {
 
 const TOOLS_KEY = "prunplanner_nav_tools";
 
-function readToolsOpen(): boolean {
-	try {
-		return localStorage.getItem(TOOLS_KEY) !== "0";
-	} catch {
-		return true;
-	}
-}
-
 // one fold state for the page, kept per device
-const toolsOpen = ref(readToolsOpen());
+const toolsOpen = useStoredFlag(TOOLS_KEY, true);
 
 /**
  * State and entries shared by the sidebar, the rail and the phone bar:
@@ -263,11 +256,6 @@ export function useNavigation() {
 
 	function toggleTools(): void {
 		toolsOpen.value = !toolsOpen.value;
-		try {
-			localStorage.setItem(TOOLS_KEY, toolsOpen.value ? "1" : "0");
-		} catch {
-			// storage blocked: kept for this page only
-		}
 	}
 
 	return {

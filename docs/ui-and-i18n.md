@@ -396,8 +396,10 @@ Example: the plan editor header (`views/PlanView.vue`, `PlanMoreMenu`,
 
 - **Formatting.** Prettier formats with `vueIndentScriptAndStyle: true`, so
   the script body is indented one tab.
-- **Props.** Both `defineProps<T>()` and the object syntax with `PropType`
-  appear in the codebase. Follow whichever the file already uses.
+- **Props.** New code uses type-based `defineProps<T>()` and `defineModel`
+  for v-model (not a `computed` that emits `update:x`). The object syntax
+  with `PropType` still appears in older files; a file a change touches is
+  converted.
 - **Page titles.** Set them with `useHead` from `@unhead/vue`:
   `` useHead({ title: `${t("…")} | PRUNplanner` }) ``.
 - **Lint rules.** `vue/no-unused-properties` warns, and

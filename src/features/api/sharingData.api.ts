@@ -32,9 +32,9 @@ export async function callGetSharedList(): Promise<Shared[]> {
  * @export
  * @async
  * @param {string} sharedUuid Sharing Uuid
- * @returns {Promise<boolean>} Deletion Status
+ * @returns {Promise<void>} Resolves once deleted
  */
-export async function callDeleteSharing(sharedUuid: string): Promise<boolean> {
+export async function callDeleteSharing(sharedUuid: string): Promise<void> {
 	return apiService.delete(`/planning/shared/${sharedUuid}/`);
 }
 

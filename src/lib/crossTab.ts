@@ -14,6 +14,7 @@ import { useUserStore } from "@/stores/userStore";
 
 // Util
 import { stopPersisting } from "@/lib/persistStorage";
+import { readStorage } from "@/lib/storage";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import {
 	applyPreferencePatch,
@@ -139,7 +140,7 @@ export function onUserStorage(event: StorageEvent, router: Router): void {
 	// already. Two tabs adopting each other's crossing writes would else
 	// swap them back and forth for good, as long as their states serialize
 	// differently (e.g. the key order of planOverrides)
-	const next = parseUser(localStorage.getItem(USER_KEY));
+	const next = parseUser(readStorage(USER_KEY));
 
 	if (!next?.refreshToken) {
 		if (!userStore.refreshToken) return;

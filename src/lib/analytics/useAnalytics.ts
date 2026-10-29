@@ -8,6 +8,7 @@ import {
 	reset,
 	setUserProp,
 } from "@/lib/analytics/usePostHog";
+import { ApiError, isApiError } from "@/lib/apiError";
 
 // Types & Interfaces
 import type { ComponentPublicInstance } from "vue";
@@ -113,11 +114,7 @@ export function trackVueError(
 ): void {
 	// apiService reports its own errors, and their message is the
 	// response body or the Zod issues, which must not be sent
-	const fromApi =
-		err instanceof Error &&
-		("status" in err || err.message.startsWith("Validation error"));
-
-	if (!fromApi)
+	if (!(err instanceof ApiError || isApiError(err)))
 		trackException(err, {
 			component:
 				instance?.$options.name ?? instance?.$options.__name,

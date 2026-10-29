@@ -103,10 +103,7 @@ to `/plan/…` instead.
 
 - **Alias.** `@` → `src/`, defined in `tsconfig.app.json`, `vite.config.ts`
   and `vitest.config.ts`.
-- **Auto-imports.**
-  - `AutoImport` (vue, vue-router, pinia) is enabled in `vite.config.ts`.
-  - The generated `auto-imports.d.ts` is gitignored.
-  - Code imports explicitly anyway. Keep it that way.
+- **Imports.** Nothing is auto-imported: every file imports what it uses.
 - **Build-time globals.**
   - `__INDEXEDDB_VERSION__` is derived from `dbVersion` in `package.json`
     (not the app `version`). Bumping it wipes and rebuilds the IndexedDB

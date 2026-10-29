@@ -71,13 +71,9 @@
 		"w-fit",
 	].join(" ");
 
-	const props = defineProps({
-		cxUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-	});
+	const props = defineProps<{
+		cxUuid?: string;
+	}>();
 
 	const route = useRoute();
 	const router = useRouter();
@@ -212,7 +208,7 @@
 	);
 
 	// Edits
-	function useCOGM(note: IExchangeNote): void {
+	function applyCOGM(note: IExchangeNote): void {
 		const ticker = note.tickers[0];
 		data.value = {
 			...data.value,
@@ -355,7 +351,7 @@
 							]"
 							:planet-counts="planetCounts"
 							@open="(s: string) => (scope = s)"
-							@use-cogm="useCOGM" />
+							@use-cogm="applyCOGM" />
 						<AsyncCXScopeRules
 							v-else
 							v-model:cx-data="data"
@@ -372,7 +368,7 @@
 							:priced-data="planData.pricedData.value"
 							:price-book-for="planData.priceBookFor"
 							@open="(s: string) => (scope = s)"
-							@use-cogm="useCOGM"
+							@use-cogm="applyCOGM"
 							@delete="deletePlanet" />
 					</main>
 				</div>

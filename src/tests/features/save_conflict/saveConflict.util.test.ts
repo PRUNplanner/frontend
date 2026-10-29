@@ -6,18 +6,23 @@ import {
 	getSaveError,
 	threeWay,
 } from "@/features/save_conflict/saveConflict.util";
+import { ApiError } from "@/lib/apiError";
 
 // Types & Interfaces
 import type { IChangeLine } from "@/features/save_conflict/saveConflict.types";
+
+const apiError = (fields: Partial<ApiError>) =>
+	Object.assign(new ApiError("api"), fields);
 
 const line = (area: string): IChangeLine => ({ area, key: "name", params: {} });
 
 describe("saveConflict.util", () => {
 	it.each([
-		[{ status: 409, responseData: { code: "conflict" } }, "conflict"],
-		[{ status: 409, responseData: { code: "other" } }, null],
-		[{ status: 404 }, "deleted"],
-		[{ status: 500 }, null],
+		[apiError({ status: 409, responseData: { code: "conflict" } }), "conflict"],
+		[apiError({ status: 409, responseData: { code: "other" } }), null],
+		[apiError({ status: 404 }), "deleted"],
+		[apiError({ status: 500 }), null],
+		[{ status: 404 }, null],
 		[new Error("network"), null],
 		[undefined, null],
 	])("getSaveError %#", (err, kind) => {

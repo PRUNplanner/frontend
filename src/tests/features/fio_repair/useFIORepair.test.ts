@@ -53,9 +53,9 @@ vi.mock("@/features/cx/usePrice", () => ({
 		},
 	}),
 }));
-vi.mock("@/features/planning/util/materialIO.util", () => ({
+vi.mock("@/features/planning/useMaterialIOUtil", () => ({
 	useMaterialIOUtil: () => ({
-		enhanceMaterialIOMinimal: (data: IMaterialIOMinimal[]) =>
+		enhanceMaterialIO: (data: IMaterialIOMinimal[]) =>
 			data.map((d) => ({
 				...d,
 				delta: d.output - d.input,

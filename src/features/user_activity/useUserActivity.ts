@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { throttle } from "lodash-es";
 
 /*
  * Hooks into user activity and keeps track of last action
@@ -13,25 +14,19 @@ export function useUserActivity(
 	const lastActivity = ref(Date.now());
 	const lastForcedActivity = ref(Date.now());
 
+	// mousemove/scroll fire often: once per 200 ms, at its end
+	const updateLastActivity = throttle(
+		() => (lastActivity.value = Date.now()),
+		200,
+		{ leading: false }
+	);
+
 	// events to track
 	const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
 
 	events.forEach((event) =>
 		window.addEventListener(event, updateLastActivity, { passive: true })
 	);
-
-	// throttle updates
-	let timeout: number | null = null;
-
-	function updateLastActivity() {
-		if (timeout) return;
-
-		// debounce 200ms, mousemove/scroll
-		timeout = window.setTimeout(() => {
-			lastActivity.value = Date.now();
-			timeout = null;
-		}, 200);
-	}
 
 	function updateForcedActivity() {
 		lastForcedActivity.value = Date.now();

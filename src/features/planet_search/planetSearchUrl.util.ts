@@ -1,3 +1,5 @@
+import { isEqual } from "lodash-es";
+
 // Engine
 import {
 	defaultFilter,
@@ -64,7 +66,7 @@ export function encodeSearch(state: IPlanetSearchState): Record<string, string> 
 	const q: Record<string, string> = {};
 
 	if (f.text) q.q = f.text;
-	if (JSON.stringify(f.materialGroups) !== JSON.stringify(def.materialGroups))
+	if (!isEqual(f.materialGroups, def.materialGroups))
 		q.m = f.materialGroups
 			.map((g) => `${g.op}:${g.materials.join("|")}`)
 			.join(",");

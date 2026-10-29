@@ -35,8 +35,9 @@ import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import { setSyncedPreferences } from "@/features/preferences/preferenceSync";
 import { persistStorage } from "@/lib/persistStorage";
 import { deepClone } from "@/util/data";
-import type { Composer } from "vue-i18n";
+import { isApiError } from "@/lib/apiError";
 import {
+	type AppComposer,
 	dropInvalidMessages,
 	localeLazyLoaders,
 	type SupportedLocale,
@@ -121,11 +122,11 @@ export const useUserStore = defineStore(
 			);
 		}
 
-		async function initLocale(composer: Composer) {
+		async function initLocale(composer: AppComposer) {
 			await setLocale(preferences.locale, composer);
 		}
 
-		async function setLocale(v: SupportedLocale, composer: Composer) {
+		async function setLocale(v: SupportedLocale, composer: AppComposer) {
 			// language already loaded
 			if (composer.availableLocales.includes(v)) {
 				composer.locale.value = v;
@@ -147,25 +148,16 @@ export const useUserStore = defineStore(
 				// 3. Resolve all loaders in parallel
 				const loadedModules = await Promise.all(
 					relevantFiles.map(async (path) => {
-						const loader = localeLazyLoaders[
-							path
-							// eslint-disable-next-line @typescript-eslint/no-explicit-any
-						] as () => Promise<{ default: any }>;
-						const mod = await loader();
+						const data = await localeLazyLoaders[path]();
 						const key = path.split("/").pop()?.replace(".json", "");
-						return { key, data: mod.default };
+						return { key, data };
 					})
 				);
 
 				// 4. Merge into a single message object
-				const messages = loadedModules.reduce(
-					(acc, { key, data }) => {
-						if (key) acc[key] = data;
-						return acc;
-					},
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					{} as Record<string, any>
-				);
+				const messages: Record<string, unknown> = {};
+				for (const { key, data } of loadedModules)
+					if (key) messages[key] = data;
 
 				// 5. Register and switch, untranslatable messages fall back
 				const { messages: validMessages, dropped } =
@@ -304,7 +296,7 @@ export const useUserStore = defineStore(
 				return "ok";
 			} catch (err) {
 				console.error(err);
-				return (err as { status?: number }).status === 429
+				return isApiError(err) && err.status === 429
 					? "throttled"
 					: "failed";
 			}
@@ -332,9 +324,8 @@ export const useUserStore = defineStore(
 					console.error(error);
 					// apiService puts status on HTTP errors only, undefined
 					// without a response; a validation error has none
-					if (!(error instanceof Error && "status" in error))
-						return false;
-					const status = error.status as number | undefined;
+					if (!isApiError(error)) return false;
+					const { status } = error;
 					if (status === undefined || status >= 500) throw error;
 					return false;
 				}

@@ -6,6 +6,7 @@
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { isApiError } from "@/lib/apiError";
 
 	// Composables
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -56,7 +57,7 @@
 			).execute();
 		} catch (err) {
 			failure.value =
-				(err as { status?: number }).status === 429
+				isApiError(err) && err.status === 429
 					? "throttled"
 					: "error";
 		} finally {

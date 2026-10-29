@@ -45,11 +45,7 @@
 										)
 									">
 									<CXPreferenceSelector
-										:cx-uuid="refSelectedCXUuid"
-										@update:cxuuid="
-											(value) =>
-												(refSelectedCXUuid = value)
-										" />
+										v-model:cx-uuid="refSelectedCXUuid" />
 								</PFormItem>
 							</PForm>
 							<HelpDrawer

@@ -41,7 +41,7 @@ describe("Empire Data API Calls", async () => {
 
 		mock.onDelete("/planning/shared/foo/").reply(200, true);
 
-		expect(await callDeleteSharing("foo")).toBeTruthy();
+		await expect(callDeleteSharing("foo")).resolves.toBeUndefined();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
 	});
 

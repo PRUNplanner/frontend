@@ -1,6 +1,5 @@
 import { computed } from "vue";
 import { i18n } from "@/lib/i18n";
-import type { Composer } from "vue-i18n";
 
 import { useDB } from "@/database/composables/useDB";
 import { recipesStore, buildingsStore } from "@/database/stores";
@@ -38,7 +37,7 @@ export function useBuildingData() {
 		preload: preloadRecipes,
 	} = useDB(recipesStore);
 
-	const { t } = i18n.global as unknown as Composer;
+	const { t } = i18n.global;
 
 	const buildingsMap = computed((): Record<string, Building> => {
 		return (allDataBuildings.value ?? []).reduce(

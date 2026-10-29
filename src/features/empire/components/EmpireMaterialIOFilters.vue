@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, type PropType } from "vue";
+	import { computed, type Ref, type WritableComputedRef } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -16,95 +16,54 @@
 	// Types & Interfaces
 	import type { PSelectOption } from "@/ui/ui.types";
 
-	const props = defineProps({
-		loadBalance: {
-			type: Boolean,
-			required: true,
-		},
-		hideConsumables: {
-			type: Boolean,
-			required: true,
-		},
-		expandAll: {
-			type: Boolean,
-			required: true,
-		},
+	const {
 		// the Planets control only applies to the Material I/O table
-		showExpandAll: {
-			type: Boolean,
-			default: false,
-		},
-		filterMaterials: {
-			type: Array as PropType<string[]>,
-			required: true,
-		},
-		filterPlanets: {
-			type: Array as PropType<string[]>,
-			required: true,
-		},
-		materialOptions: {
-			type: Array as PropType<PSelectOption[]>,
-			required: true,
-		},
-		planetOptions: {
-			type: Array as PropType<PSelectOption[]>,
-			required: true,
-		},
-	});
+		showExpandAll = false,
+	} = defineProps<{
+		showExpandAll?: boolean;
+		materialOptions: PSelectOption[];
+		planetOptions: PSelectOption[];
+	}>();
 
 	const emit = defineEmits<{
 		(e: "applyFilter"): void;
-		(e: "update:loadBalance", value: boolean): void;
-		(e: "update:hideConsumables", value: boolean): void;
-		(e: "update:expandAll", value: boolean): void;
 		(e: "collapseAll"): void;
-		(e: "update:filterMaterials", value: string[]): void;
-		(e: "update:filterPlanets", value: string[]): void;
 	}>();
 
-	const localLoadBalance = computed({
-		get: () => props.loadBalance,
-		set: (v: boolean) => {
-			emit("update:loadBalance", v);
-			emit("applyFilter");
-		},
+	const loadBalance = defineModel<boolean>("loadBalance", { required: true });
+	const hideConsumables = defineModel<boolean>("hideConsumables", {
+		required: true,
 	});
-
-	const localHideConsumables = computed({
-		get: () => props.hideConsumables,
-		set: (v: boolean) => {
-			emit("update:hideConsumables", v);
-			emit("applyFilter");
-		},
-	});
-
 	// display only, the data is unchanged
-	const localExpandAll = computed({
-		get: () => props.expandAll,
-		set: (v: boolean) => emit("update:expandAll", v),
+	const expandAll = defineModel<boolean>("expandAll", { required: true });
+	const filterMaterials = defineModel<string[]>("filterMaterials", {
+		required: true,
 	});
+	const filterPlanets = defineModel<string[]>("filterPlanets", {
+		required: true,
+	});
+
+	/** a changed filter re-applies it, after the parent has the new value */
+	function applying<T>(model: Ref<T>): WritableComputedRef<T> {
+		return computed({
+			get: () => model.value,
+			set: (v: T) => {
+				model.value = v;
+				emit("applyFilter");
+			},
+		});
+	}
+
+	const localLoadBalance = applying(loadBalance);
+	const localHideConsumables = applying(hideConsumables);
+	const localFilterMaterials = applying(filterMaterials);
+	const localFilterPlanets = applying(filterPlanets);
 
 	// Summary closes every row, also when it is already selected
 	function summary(): void {
-		localExpandAll.value = false;
+		expandAll.value = false;
 		emit("collapseAll");
 	}
-
-	const localFilterMaterials = computed({
-		get: () => props.filterMaterials,
-		set: (v: string[]) => {
-			emit("update:filterMaterials", v);
-			emit("applyFilter");
-		},
-	});
-
-	const localFilterPlanets = computed({
-		get: () => props.filterPlanets,
-		set: (v: string[]) => {
-			emit("update:filterPlanets", v);
-			emit("applyFilter");
-		},
-	});
 </script>
 
 <template>
@@ -145,13 +104,13 @@
 					:label="t('empire.material_io.planets')">
 					<PButtonGroup>
 						<PButton
-							:pressed="!localExpandAll"
+							:pressed="!expandAll"
 							@click="summary">
 							{{ $t("empire.material_io.summary") }}
 						</PButton>
 						<PButton
-							:pressed="localExpandAll"
-							@click="localExpandAll = true">
+							:pressed="expandAll"
+							@click="expandAll = true">
 							{{ $t("empire.material_io.expand_all") }}
 						</PButton>
 					</PButtonGroup>

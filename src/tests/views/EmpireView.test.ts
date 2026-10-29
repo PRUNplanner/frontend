@@ -90,7 +90,7 @@ vi.mock("@/features/preferences/usePreferences", () => {
 	const defaultEmpireUuid = ref("E1");
 	return { usePreferences: () => ({ defaultEmpireUuid }) };
 });
-vi.mock("@/features/planning/util/materialIO.util", () => ({
+vi.mock("@/features/planning/useMaterialIOUtil", () => ({
 	useMaterialIOUtil: () => ({
 		// its result only feeds the stubbed EmpireCostOverview
 		calculateEmpireCostOverview: costOverview,

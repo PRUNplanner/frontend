@@ -23,7 +23,7 @@ vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () => ({
 	default: {
 		name: "CXPreferenceSelector",
 		props: { cxUuid: String, addUndefinedCX: Boolean },
-		emits: ["update:cxuuid"],
+		emits: ["update:cxUuid"],
 		render: () => h("div", { "data-testid": "cx-select" }),
 	},
 }));
@@ -78,7 +78,7 @@ describe("FIO Repair components", () => {
 
 			wrapper
 				.findComponent({ name: "CXPreferenceSelector" })
-				.vm.$emit("update:cxuuid", "CX1");
+				.vm.$emit("update:cxUuid", "CX1");
 			expect(onChange).toHaveBeenCalledWith("exchange");
 
 			await setProps({ usePlans: false });

@@ -29,7 +29,7 @@ in-game resources.
 | **HQ / Corp HQ** | Corporation headquarters on a planet, which gives an efficiency bonus. A separate tool plans HQ level upgrades | `plan_corphq`; `src/features/hq_upgrade_calculator` |
 | **Fertility** | Planet property that affects farms (`FRM`, `ORC`) | `features/planning/engine/efficiency.ts` |
 | **Extraction** | Resource extractors (`EXT`, `RIG`, `COL`) pulling planet resources | `calculations/extractionCalculations.ts` |
-| **Material I/O** | Daily input, output and delta per material for a plan or empire | `IMaterialIO*` in `usePlanCalculation.types.ts`; `features/planning/util/materialIO.util.ts` |
+| **Material I/O** | Daily input, output and delta per material for a plan or empire | `IMaterialIO*` in `usePlanCalculation.types.ts`; `features/planning/useMaterialIOUtil.ts` |
 | **Profit** | Daily revenue − material cost − 1/180 of construction cost | [planning-engine.md](planning-engine.md) |
 | **COGM** | Cost of goods manufactured: the per-unit production cost of a recipe | `components/tools/PlanCOGM*.vue`, `roi_overview/components/COGMButton.vue` |
 | **ROI** | Return on investment: payback time of building a production setup | `src/features/roi_overview`, `src/features/resource_roi_overview` |

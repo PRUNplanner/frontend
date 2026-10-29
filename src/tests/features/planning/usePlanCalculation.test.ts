@@ -525,6 +525,50 @@ describe("usePlanCalculation", async () => {
 		expect(plan.value.plan_data.buildings).toHaveLength(buildings - 1);
 	});
 
+	it("a renamed plan keeps its name through undo, redo, save and reload", async () => {
+		const plan = ref(structuredClone(plan_etherwind));
+		const {
+			planName,
+			backendData,
+			modified,
+			handleChangePlanName,
+			undo,
+			redo,
+			markSaved,
+		} = usePlanCalculation(
+			// @ts-expect-error mock data
+			plan,
+			ref(undefined),
+			ref(undefined),
+			ref(undefined)
+		);
+
+		handleChangePlanName(" Renamed ");
+		await flushPromises();
+		// the name is the plan's own field, no copy to keep in sync
+		expect(planName.value).toBe("Renamed");
+		expect(plan.value.plan_name).toBe("Renamed");
+		expect(backendData.value.plan_name).toBe("Renamed");
+		expect(modified.value).toBe(true);
+
+		undo();
+		expect(planName.value).toBe("EW COF RAT DW C");
+		expect(backendData.value.plan_name).toBe("EW COF RAT DW C");
+		expect(modified.value).toBe(false);
+
+		redo();
+		expect(planName.value).toBe("Renamed");
+		expect(backendData.value.plan_name).toBe("Renamed");
+
+		markSaved();
+		expect(modified.value).toBe(false);
+
+		// a reloaded plan (PlanView's applySavedPlan) brings its own name
+		plan.value = { ...structuredClone(plan_etherwind), plan_name: "Saved" };
+		expect(planName.value).toBe("Saved");
+		expect(backendData.value.plan_name).toBe("Saved");
+	});
+
 	it("a starter setup and its habs are one undo step", async () => {
 		const plan = ref(structuredClone(plan_etherwind));
 		plan.value.plan_data.buildings = [];

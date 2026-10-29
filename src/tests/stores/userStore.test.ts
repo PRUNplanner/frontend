@@ -1,5 +1,4 @@
 import { createApp, nextTick, ref } from "vue";
-import type { Composer } from "vue-i18n";
 import { setActivePinia, createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { beforeEach, describe, it, expect, onTestFinished, vi } from "vitest";
@@ -13,7 +12,11 @@ import {
 
 import { useUserStore } from "@/stores/userStore";
 import { memoryStorage } from "@/tests/memoryStorage";
-import { localeLazyLoaders, type SupportedLocale } from "@/lib/i18n";
+import {
+	type AppComposer,
+	localeLazyLoaders,
+	type SupportedLocale,
+} from "@/lib/i18n";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import {
 	UserPreferencePayloadSchema,
@@ -754,10 +757,10 @@ describe("User Store", () => {
 				locale: ref("en_US"),
 				setLocaleMessage: vi.fn(),
 			};
-			return { composer, typed: composer as unknown as Composer };
+			return { composer, typed: composer as unknown as AppComposer };
 		}
 
-		function addLoader(loader: () => Promise<{ default: unknown }>) {
+		function addLoader(loader: () => Promise<unknown>) {
 			localeLazyLoaders[localeKey] = loader;
 			onTestFinished(() => {
 				delete localeLazyLoaders[localeKey];
@@ -802,7 +805,7 @@ describe("User Store", () => {
 		it("skips message files without a name", async () => {
 			const userStore = useUserStore();
 			const unnamed = "/src/locales/xx_XX/.json";
-			localeLazyLoaders[unnamed] = async () => ({ default: { a: "b" } });
+			localeLazyLoaders[unnamed] = async () => ({ a: "b" });
 			onTestFinished(() => {
 				delete localeLazyLoaders[unnamed];
 			});
@@ -815,7 +818,7 @@ describe("User Store", () => {
 
 		it("registers the loaded messages and sets the html lang", async () => {
 			const userStore = useUserStore();
-			addLoader(async () => ({ default: { hello: "Hallo" } }));
+			addLoader(async () => ({ hello: "Hallo" }));
 			const { composer, typed } = fakeComposer();
 
 			await userStore.setLocale(xx, typed);
@@ -832,7 +835,8 @@ describe("User Store", () => {
 			const userStore = useUserStore();
 			const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 			addLoader(async () => ({
-				default: { broken: "@:{terms.materials}", ok: "fine" },
+				broken: "@:{terms.materials}",
+				ok: "fine",
 			}));
 			const { composer, typed } = fakeComposer();
 

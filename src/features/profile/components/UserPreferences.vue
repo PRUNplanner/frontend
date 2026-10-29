@@ -284,7 +284,7 @@
 							</router-link>
 						</td>
 						<td class="w-[50%] max-w-[75%]">
-							{{ plan.preferences.join(", ") }}
+							{{ plan.preferences.map((key) => t(key)).join(", ") }}
 						</td>
 					</tr>
 				</tbody>

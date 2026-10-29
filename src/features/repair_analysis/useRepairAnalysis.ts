@@ -2,8 +2,7 @@ import { computed, type Ref, shallowRef, watch } from "vue";
 
 // Composables
 import { i18n } from "@/lib/i18n";
-import type { Composer } from "vue-i18n";
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
+import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Util
@@ -40,8 +39,8 @@ export function useRepairAnalysis(
 	cxUuid: Ref<string | undefined>,
 	planetNaturalId: Ref<string | undefined>
 ) {
-	const { t, te } = i18n.global as unknown as Composer;
-	const { enhanceMaterialIOMinimal } = useMaterialIOUtil();
+	const { t, te } = i18n.global;
+	const { enhanceMaterialIO } = useMaterialIOUtil();
 	const { getPriceBook } = usePrice(cxUuid, planetNaturalId);
 
 	// same localized name the Production tab shows, ticker if unknown
@@ -102,7 +101,7 @@ export function useRepairAnalysis(
 		minimal: IMaterialIOMinimal[],
 		prices: IPriceBook
 	): IRepairMaterialList {
-		return priceRepairMaterials(enhanceMaterialIOMinimal(minimal), prices);
+		return priceRepairMaterials(enhanceMaterialIO(minimal), prices);
 	}
 
 	// last result per type, an interval change recomputes only its type

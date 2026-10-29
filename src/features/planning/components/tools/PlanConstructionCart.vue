@@ -1,7 +1,6 @@
 <script setup lang="ts">
 	import {
 		computed,
-		type PropType,
 		type Ref,
 		ref,
 		watchEffect,
@@ -54,39 +53,15 @@
 		WarningAmberRound,
 	} from "@vicons/material";
 
-	const props = defineProps({
-		planetNaturalId: {
-			type: String,
-			required: true,
-		},
-		planUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-		disabled: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		cxUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-		constructionData: {
-			type: Array as PropType<IBuildingConstruction[]>,
-			required: true,
-		},
-		productionBuildingData: {
-			type: Array as PropType<IProductionBuilding[]>,
-			required: true,
-		},
-		infrastructureData: {
-			type: Object as PropType<Record<InfrastructureType, number>>,
-			required: true,
-		},
-	});
+	const props = defineProps<{
+		planetNaturalId: string;
+		planUuid?: string;
+		disabled?: boolean;
+		cxUuid?: string;
+		constructionData: IBuildingConstruction[];
+		productionBuildingData: IProductionBuilding[];
+		infrastructureData: Record<InfrastructureType, number>;
+	}>();
 
 	const { materialsMap } = useMaterialData();
 	const { buildingsMap } = useBuildingData();
@@ -332,7 +307,9 @@
 					ticker: e.ticker,
 					value: e.amount,
 				}))
-				.sort((a, b) => (a.ticker > b.ticker ? 1 : -1))
+				.sort((a, b) =>
+					a.ticker < b.ticker ? -1 : a.ticker > b.ticker ? 1 : 0
+				)
 	);
 
 	const totalMaterialsSorted: ComputedRef<

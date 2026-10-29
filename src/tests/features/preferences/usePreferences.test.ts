@@ -304,7 +304,7 @@ describe("usePreferences", async () => {
 		expect(planSettingsOverview.value).toHaveLength(1);
 		expect(planSettingsOverview.value[0]).toMatchObject({
 			planUuid: "foo",
-			preferences: ["Auto-Optimize Inactive"],
+			preferences: ["profile.preferences.plan_settings.auto_optimize_inactive"],
 		});
 	});
 
@@ -318,7 +318,7 @@ describe("usePreferences", async () => {
 
 		expect(planSettingsOverview.value).toHaveLength(1);
 		expect(planSettingsOverview.value[0].preferences).toStrictEqual([
-			"Construction Cart: Built",
+			"profile.preferences.plan_settings.construction_built",
 		]);
 	});
 

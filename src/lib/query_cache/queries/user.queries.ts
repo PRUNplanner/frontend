@@ -1,7 +1,6 @@
-import type { Composer } from "vue-i18n";
-
 import { i18n } from "@/lib/i18n";
 import { trackEvent, trackUser } from "@/lib/analytics/useAnalytics";
+import { isApiError } from "@/lib/apiError";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
@@ -91,9 +90,10 @@ export const userQueries = {
 				const result = await callRegisterUser(params);
 				trackEvent("account:signup_complete");
 				return result;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			} catch (error: any) {
-				const apiErrors = error.responseData;
+			} catch (error) {
+				const apiErrors = isApiError(error)
+					? error.responseData
+					: undefined;
 
 				// field names only, the values are personal data
 				trackEvent("account:signup_fail", {
@@ -105,6 +105,7 @@ export const userQueries = {
 
 				// every field and every message, shown at their fields
 				if (
+					isApiError(error) &&
 					error.status === 400 &&
 					apiErrors &&
 					typeof apiErrors === "object"
@@ -132,13 +133,13 @@ export const userQueries = {
 			try {
 				await callVerifyEmail(params);
 			} catch (err) {
-				const { status, responseData } = err as {
-					status?: number;
-					responseData?: { code?: unknown };
-				};
-				const code = responseData?.code;
+				const data = isApiError(err) ? err.responseData : undefined;
+				const code =
+					data && typeof data === "object" && "code" in data
+						? data.code
+						: undefined;
 				result =
-					status === 429
+					isApiError(err) && err.status === 429
 						? "throttled"
 						: typeof code === "string"
 							? code
@@ -163,9 +164,10 @@ export const userQueries = {
 			callRequestPasswordReset(params.email),
 	}),
 	PostUserPasswordReset: defineMutation({
+		// the backend's detail, or "error" for the caller to translate
 		fetchFn: async (
 			params: UserPasswordResetPayload
-		): Promise<UserResponseDetail> => {
+		): Promise<UserResponseDetail | "error"> => {
 			try {
 				return await callPasswordReset(
 					params.email,
@@ -174,10 +176,8 @@ export const userQueries = {
 				);
 			} catch (err) {
 				// throttled: the caller shows its own message
-				if ((err as { status?: number }).status === 429) throw err;
-				return {
-					detail: "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
-				};
+				if (isApiError(err) && err.status === 429) throw err;
+				return "error";
 			}
 		},
 	}),
@@ -216,7 +216,7 @@ export const userQueries = {
 			// handle locale
 			const userLocale = userStore.preferences.locale || "en_US";
 			userStore
-				.setLocale(userLocale, i18n.global as unknown as Composer)
+				.setLocale(userLocale, i18n.global)
 				.catch(console.error);
 
 			return prefs;
@@ -254,10 +254,9 @@ export const userQueries = {
 		},
 	}),
 	DeleteAPIKey: defineMutation({
-		fetchFn: async (params: { id: string }): Promise<boolean> => {
-			const deleted = await callDeleteAPIKey(params.id);
+		fetchFn: async (params: { id: string }): Promise<void> => {
+			await callDeleteAPIKey(params.id);
 			trackEvent("account:api_key_revoke");
-			return deleted;
 		},
 	}),
 };

@@ -9,6 +9,7 @@
 
 	// Composables
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { isApiError } from "@/lib/apiError";
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
@@ -30,7 +31,14 @@
 		prun_username: userStore.profile?.prun_username ?? null,
 	});
 	const isUpdating: Ref<boolean> = ref(false);
-	const wasSaved: Ref<boolean> = ref(true);
+	// the form matches the stored profile (an emptied field counts as null)
+	const wasSaved = computed(
+		() =>
+			(localFIO.fio_apikey || null) ===
+				(userStore.profile?.fio_apikey ?? null) &&
+			(localFIO.prun_username || null) ===
+				(userStore.profile?.prun_username ?? null)
+	);
 	const isThrottled: Ref<boolean> = ref(false);
 
 	// backend error codes per FIO field, shown under the field
@@ -72,15 +80,7 @@
 			})
 	);
 
-	watch(
-		() => localFIO,
-		() => (wasSaved.value = false),
-		{ deep: true }
-	);
-
-	onMounted(() =>
-		userStore.performGetProfile().then(() => (wasSaved.value = true))
-	);
+	onMounted(() => userStore.performGetProfile());
 
 	async function patchProfile(): Promise<void> {
 		if (isUpdating.value) return;
@@ -112,16 +112,16 @@
 
 			if (userHasFIO && !userHadFIO) trackEvent("account:fio_link");
 			fioConnected.value = userHasFIO && fioChanged;
-
-			wasSaved.value = true;
 		} catch (err) {
 			console.error("Error patching user profile", err);
-			isThrottled.value = (err as { status?: number }).status === 429;
+			const data = isApiError(err) ? err.responseData : undefined;
+			isThrottled.value = isApiError(err) && err.status === 429;
 			// DRF field errors: { field: [code] }
-			const data = (err as { responseData?: Record<string, unknown> })
-				.responseData;
 			for (const field of ["fio_apikey", "prun_username"] as const) {
-				const messages = data?.[field];
+				const messages =
+					data && typeof data === "object"
+						? (data as Record<string, unknown>)[field]
+						: undefined;
 				if (Array.isArray(messages) && typeof messages[0] === "string")
 					fioErrors.value[field] = messages[0];
 			}

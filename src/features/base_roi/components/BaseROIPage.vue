@@ -122,10 +122,9 @@
 				<!-- its options are read once: mounted after the CX list loaded -->
 				<CXPreferenceSelector
 					v-if="ready"
+					v-model:cx-uuid="cxUuid"
 					class="w-56 max-w-full"
-					:aria-label="t('base_roi.cx_select')"
-					:cx-uuid="cxUuid"
-					@update:cxuuid="(v) => (cxUuid = v)" />
+					:aria-label="t('base_roi.cx_select')" />
 				<span
 					v-else
 					aria-hidden="true"
@@ -178,7 +177,6 @@
 			v-if="setupOpen && ready"
 			v-model:show="setupOpen"
 			v-model:settings="settings"
-			:cx-uuid="cxUuid"
-			@update:cxuuid="(v) => (cxUuid = v)" />
+			v-model:cx-uuid="cxUuid" />
 	</div>
 </template>

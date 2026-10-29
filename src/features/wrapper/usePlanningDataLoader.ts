@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 
 // Stores & Repository
 import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { isApiError } from "@/lib/apiError";
 
 // Composables
 import { usePlan } from "@/features/planning_data/usePlan";
@@ -354,9 +355,8 @@ export function usePlanningDataLoader(
 
 	// a share link that was revoked, deleted or mistyped
 	const sharedPlanMissing = computed(() => {
-		const error: (Error & { status?: number }) | null | undefined =
-			steps.find((s) => s.cfg.key === "sharedPlan")?.error;
-		return error?.status === 404;
+		const error = steps.find((s) => s.cfg.key === "sharedPlan")?.error;
+		return isApiError(error) && error.status === 404;
 	});
 
 	const allLoaded = computed(() =>

@@ -5,6 +5,7 @@ import {
 	checkMaterial,
 	countLevels,
 	flaggedCheck,
+	formatShare,
 	marketCheck,
 } from "@/features/cx/marketCheck.util";
 import { createPriceBook } from "@/features/cx/priceBook";
@@ -212,5 +213,21 @@ describe("flaggedCheck", () => {
 		expect(flaggedCheck(checks, "C")?.level).toBe("muted");
 		expect(flaggedCheck(checks, "D")).toBeUndefined();
 		expect(flaggedCheck(undefined, "A")).toBeUndefined();
+	});
+});
+
+describe("formatShare", () => {
+	it("shows one decimal below 100 %, none from there", () => {
+		expect(formatShare(6)).toBe("6.0 %");
+		expect(formatShare(99.96)).toBe("100.0 %");
+		expect(formatShare(189.4)).toBe("189 %");
+		expect(formatShare(1234.5)).toBe("1,235 %");
+		expect(formatShare(0)).toBe("0.0 %");
+	});
+
+	it("shows a dash without data, and keeps the unit for ∞ and NaN", () => {
+		expect(formatShare(null)).toBe("—");
+		expect(formatShare(Infinity)).toBe("— %");
+		expect(formatShare(NaN)).toBe("— %");
 	});
 });

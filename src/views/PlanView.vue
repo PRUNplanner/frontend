@@ -1,12 +1,12 @@
 <script setup lang="ts">
 	import {
+		type Component,
 		computed,
 		type ComputedRef,
 		defineAsyncComponent,
 		nextTick,
 		onMounted,
 		onUnmounted,
-		type PropType,
 		ref,
 		type Ref,
 		useTemplateRef,
@@ -160,33 +160,14 @@
 	import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 	import { calcDebug } from "@/lib/debugMode";
 
-	const props = defineProps({
-		disabled: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		planData: {
-			type: Object as PropType<IPlanDefinition>,
-			required: true,
-		},
-		empireList: {
-			type: Array as PropType<PlanEmpireElement[]>,
-			required: false,
-			default: undefined,
-		},
-		sharedPlanUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
+	const props = defineProps<{
+		disabled?: boolean;
+		planData: IPlanDefinition;
+		empireList?: PlanEmpireElement[];
+		sharedPlanUuid?: string;
 		// a shared plan, edited as the viewer's working copy
-		shared: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	});
+		shared?: boolean;
+	}>();
 
 	const refPlanData: Ref<IPlanDefinition> = ref(inertClone(props.planData));
 	// save version the edits started from, sent so a save over another
@@ -686,58 +667,40 @@
 	if (!refPlanData.value.uuid && !props.shared && !props.disabled)
 		onMounted(startRename);
 
-	/*
-	 * NOTE: This is somewhat hacky to prevent a loaded tool component to re-render on prop change.
-	 * As most of the props depend on calculation data they're anyway changing with every change
-	 * to the plan. v-memo does not work as it would prevent all tool components from only being
-	 * rendered once and not receiving a prop update afterwards.
-	 * Splitting the component from its actual data, does work and allows any logic or re-execution
-	 * solely being handled in the loaded child component that holds the tool. However, two computed
-	 * properties are needed instead of one.
-	 */
+	const TOOL_COMPONENTS: Record<PlanTool, Component> = {
+		"visitation-frequency": defineAsyncComponent(
+			() =>
+				import("@/features/planning/components/tools/PlanVisitationFrequency.vue")
+		),
+		"repair-analysis": defineAsyncComponent(
+			() =>
+				import("@/features/planning/components/tools/PlanRepairAnalysis.vue")
+		),
+		popr: defineAsyncComponent(
+			() => import("@/features/planning/components/tools/PlanPOPR.vue")
+		),
+		"supply-cart": defineAsyncComponent(
+			() =>
+				import("@/features/planning/components/tools/PlanSupplyCart.vue")
+		),
+		"construction-cart": defineAsyncComponent(
+			() =>
+				import("@/features/planning/components/tools/PlanConstructionCart.vue")
+		),
+		"profit-breakdown": defineAsyncComponent(
+			() =>
+				import("@/features/planning/components/tools/PlanProfitBreakdown.vue")
+		),
+		"plan-check": defineAsyncComponent(
+			() => import("@/features/planning/components/tools/PlanCheck.vue")
+		),
+	};
 
-	const compViewToolComponent = computed(() => {
-		switch (refShowTool.value) {
-			case "visitation-frequency":
-				return defineAsyncComponent(
-					() =>
-						import("@/features/planning/components/tools/PlanVisitationFrequency.vue")
-				);
-			case "repair-analysis":
-				return defineAsyncComponent(
-					() =>
-						import("@/features/planning/components/tools/PlanRepairAnalysis.vue")
-				);
+	const compViewToolComponent = computed(() =>
+		refShowTool.value ? TOOL_COMPONENTS[refShowTool.value] : null
+	);
 
-			case "popr":
-				return defineAsyncComponent(
-					() =>
-						import("@/features/planning/components/tools/PlanPOPR.vue")
-				);
-			case "supply-cart":
-				return defineAsyncComponent(
-					() =>
-						import("@/features/planning/components/tools/PlanSupplyCart.vue")
-				);
-			case "construction-cart":
-				return defineAsyncComponent(
-					() =>
-						import("@/features/planning/components/tools/PlanConstructionCart.vue")
-				);
-			case "profit-breakdown":
-				return defineAsyncComponent(
-					() =>
-						import("@/features/planning/components/tools/PlanProfitBreakdown.vue")
-				);
-			case "plan-check":
-				return defineAsyncComponent(
-					() =>
-						import("@/features/planning/components/tools/PlanCheck.vue")
-				);
-			default:
-				return null;
-		}
-	});
+	// props change with every recalculation, the component only on a switch
 
 	const compViewToolMeta = computed(() => {
 		switch (refShowTool.value) {
@@ -1002,7 +965,6 @@
 	 */
 	function applySavedPlan(plan: IPlanDefinition): void {
 		refPlanData.value = inertClone(plan);
-		planName.value = refPlanData.value.plan_name;
 		refBaseModifiedAt.value = plan.modified_at;
 		refSaveFailed.value = false;
 		markSaved();

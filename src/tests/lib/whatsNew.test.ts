@@ -51,4 +51,14 @@ describe("announceRelease", () => {
 		expect(trackEvent).toHaveBeenCalledWith("app:whats_new_click");
 		expect(open).toHaveBeenCalledOnce();
 	});
+
+	it("stays quiet when storage is blocked", () => {
+		const blocked = () => {
+			throw new DOMException("blocked", "SecurityError");
+		};
+		vi.stubGlobal("localStorage", { getItem: blocked, setItem: blocked });
+
+		expect(() => announceRelease(open)).not.toThrow();
+		expect(toast).not.toHaveBeenCalled();
+	});
 });

@@ -41,7 +41,6 @@
 	import { PButton, PCheckbox, PInput, PInputNumber, PSelect } from "@/ui";
 
 	const props = defineProps<{
-		filter: PlanetSearchFilter;
 		facets: IPlanetSearchFacets;
 		materials: string[];
 		maxDaily: Record<string, number>;
@@ -51,8 +50,10 @@
 		planetNames: Record<string, string>;
 	}>();
 
+	const filter = defineModel<PlanetSearchFilter>("filter", {
+		required: true,
+	});
 	const emit = defineEmits<{
-		(e: "update:filter", value: PlanetSearchFilter): void;
 		(e: "update:empire", value: string): void;
 	}>();
 
@@ -60,7 +61,7 @@
 	const { open: openAuth } = useAuthPanel();
 
 	function set(patch: Partial<PlanetSearchFilter>) {
-		emit("update:filter", { ...props.filter, ...patch });
+		filter.value = { ...filter.value, ...patch };
 	}
 
 	/*
@@ -70,29 +71,23 @@
 		index: number,
 		change: (g: PlanetSearchMaterialGroup) => PlanetSearchMaterialGroup
 	) {
-		emit(
-			"update:filter",
-			setGroups(
-				props.filter,
-				props.filter.materialGroups.map((g, i) =>
-					i === index ? change(g) : g
-				)
+		filter.value = setGroups(
+			filter.value,
+			filter.value.materialGroups.map((g, i) =>
+				i === index ? change(g) : g
 			)
 		);
 	}
 
 	function removeGroup(index: number) {
-		emit(
-			"update:filter",
-			setGroups(
-				props.filter,
-				props.filter.materialGroups.filter((_, i) => i !== index)
-			)
+		filter.value = setGroups(
+			filter.value,
+			filter.value.materialGroups.filter((_, i) => i !== index)
 		);
 	}
 
 	function setMin(ticker: string, value: number | null) {
-		const minDaily = { ...props.filter.minDaily };
+		const minDaily = { ...filter.value.minDaily };
 		if (value && value > 0) minDaily[ticker] = value;
 		else delete minDaily[ticker];
 		set({ minDaily });
@@ -114,7 +109,7 @@
 	}
 	function onAdd(groupIndex: number, ticker: string | number | null | undefined) {
 		if (typeof ticker === "string")
-			emit("update:filter", addMaterial(props.filter, groupIndex, ticker));
+			filter.value = addMaterial(filter.value, groupIndex, ticker);
 		addValue.value = null;
 	}
 
@@ -135,7 +130,7 @@
 		}))
 	);
 	const pickedKeys = computed(
-		() => new Set(props.filter.references.map(refKey))
+		() => new Set(filter.value.references.map(refKey))
 	);
 	const planOptions = computed(() => {
 		const q = (planQuery.value ?? "").trim().toLowerCase();
@@ -153,7 +148,7 @@
 		)
 	);
 	function toggleRef(ref: PlanetSearchReference) {
-		emit("update:filter", toggleReference(props.filter, ref));
+		filter.value = toggleReference(filter.value, ref);
 	}
 
 	const pill =
@@ -165,7 +160,7 @@
 
 	/** "Any" button of a section: sets it to its widest state */
 	function anyButton(section: IPlanetSearchSection, title: string) {
-		const wide = isSectionWide(props.filter, section);
+		const wide = isSectionWide(filter.value, section);
 		return {
 			class: [
 				segment,
@@ -179,7 +174,7 @@
 				n: props.facets.any[section],
 			}),
 			onClick: () =>
-				emit("update:filter", widenSection(props.filter, section)),
+				(filter.value = widenSection(filter.value, section)),
 		};
 	}
 </script>

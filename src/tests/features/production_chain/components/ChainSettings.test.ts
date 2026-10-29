@@ -54,7 +54,7 @@ describe("ChainSettings", () => {
 		const { wrapper, updates } = await mountSettings();
 		const selector = wrapper.findComponent(CXPreferenceSelector);
 		expect(selector.props("followDefault")).toBe(false);
-		selector.vm.$emit("update:cxuuid", "cx-1");
+		selector.vm.$emit("update:cxUuid", "cx-1");
 		expect(updates.cxUuid).toEqual(["cx-1"]);
 	});
 });

@@ -67,7 +67,7 @@
 				<figure class="max-w-xl">
 					<img
 						src="/images/help/management-screenshot.png"
-						alt="Management Screenshot"
+						:alt="$t('help.getting_started.image_alt')"
 						class="w-full rounded-md border border-line shadow-lg" />
 					<figcaption class="mt-2 text-xs text-muted">
 						{{ $t("help.getting_started.image_label") }}

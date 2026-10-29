@@ -9,6 +9,7 @@ import {
 	type Ref,
 	type ShallowRef,
 } from "vue";
+import { debounce } from "lodash-es";
 import { useRoute, useRouter } from "vue-router";
 
 // API
@@ -22,6 +23,7 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { useChainPlans } from "@/features/production_chain/useChainPlans";
 import { remoteChange } from "@/lib/crossTab";
 import { isSubset } from "@/lib/query_cache/cacheKeys";
+import { readStorage, writeStorage } from "@/lib/storage";
 
 // Engine
 import {
@@ -86,23 +88,21 @@ const RESOURCES: ReadonlySet<string> = new Set(
 function readStored(): IChainState | null {
 	try {
 		const parsed = ChainStorageSchema.safeParse(
-			JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null")
+			JSON.parse(readStorage(STORAGE_KEY) ?? "null")
 		);
 		return parsed.success ? decodeChain(parsed.data) : null;
 	} catch {
-		// storage blocked or corrupt: no last chain
+		// corrupt: no last chain
 		return null;
 	}
 }
 
+/** blocked or full storage: the URL still holds the chain */
 function writeStored(state: IChainState): void {
-	try {
-		if (state.input.targets.length)
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(encodeChain(state)));
-		else localStorage.removeItem(STORAGE_KEY);
-	} catch {
-		// storage blocked or full: the URL still holds the chain
-	}
+	writeStorage(
+		STORAGE_KEY,
+		state.input.targets.length ? JSON.stringify(encodeChain(state)) : null
+	);
 }
 
 function emptyInput(): IChainInput {
@@ -286,30 +286,29 @@ export function useProductionChain() {
 	);
 
 	// tool:use for changes, not for the chain the page opened with
-	let trackTimer: ReturnType<typeof setTimeout> | undefined;
+	const trackUse = debounce(
+		(value: IChainInput) =>
+			trackEvent("tool:use", {
+				tool_name: "production_chain",
+				mode: "chain",
+				targets: value.targets.map((t) => t.ticker),
+				target_count: value.targets.length,
+				material_count: result.value.order.length,
+				efficiency: value.efficiency,
+				raw_source: value.rawSource,
+				byproducts: value.byproducts,
+			}),
+		TRACK_DELAY_MS
+	);
 	watch(
 		input,
 		(value) => {
-			clearTimeout(trackTimer);
-			if (!value.targets.length) return;
-			trackTimer = setTimeout(
-				() =>
-					trackEvent("tool:use", {
-						tool_name: "production_chain",
-						mode: "chain",
-						targets: value.targets.map((t) => t.ticker),
-						target_count: value.targets.length,
-						material_count: result.value.order.length,
-						efficiency: value.efficiency,
-						raw_source: value.rawSource,
-						byproducts: value.byproducts,
-					}),
-				TRACK_DELAY_MS
-			);
+			if (value.targets.length) trackUse(value);
+			else trackUse.cancel();
 		},
 		{ deep: true }
 	);
-	onScopeDispose(() => clearTimeout(trackTimer));
+	onScopeDispose(trackUse.cancel);
 
 	function track(action: ProductionChainAction): void {
 		trackEvent("production_chain:action", { action });

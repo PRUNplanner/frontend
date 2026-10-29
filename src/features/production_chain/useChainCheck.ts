@@ -9,6 +9,7 @@ import {
 	type Ref,
 	type ShallowRef,
 } from "vue";
+import { debounce } from "lodash-es";
 import { useRoute, useRouter, type LocationQuery } from "vue-router";
 
 // API
@@ -261,7 +262,18 @@ export function useChainCheck() {
 	);
 
 	// tool:use for a changed check with chains, not for the one the page opened with
-	let trackTimer: ReturnType<typeof setTimeout> | undefined;
+	const trackUse = debounce(() => {
+		const r = result.value;
+		if (!r || !state.value.targets.length) return;
+		trackEvent("tool:use", {
+			tool_name: "production_chain",
+			mode: "check",
+			target_count: state.value.targets.length,
+			bases_checked: r.totals.checked,
+			bases_optimal: r.totals.optimal,
+			finding_count: r.findings.length,
+		});
+	}, TRACK_DELAY_MS);
 	watch(
 		() => [
 			state.value.targets.join(),
@@ -270,23 +282,9 @@ export function useChainCheck() {
 			state.value.payback,
 			state.value.empire,
 		],
-		() => {
-			clearTimeout(trackTimer);
-			trackTimer = setTimeout(() => {
-				const r = result.value;
-				if (!r || !state.value.targets.length) return;
-				trackEvent("tool:use", {
-					tool_name: "production_chain",
-					mode: "check",
-					target_count: state.value.targets.length,
-					bases_checked: r.totals.checked,
-					bases_optimal: r.totals.optimal,
-					finding_count: r.findings.length,
-				});
-			}, TRACK_DELAY_MS);
-		}
+		() => trackUse()
 	);
-	onScopeDispose(() => clearTimeout(trackTimer));
+	onScopeDispose(trackUse.cancel);
 
 	function track(action: ProductionChainAction): void {
 		trackEvent("production_chain:action", { action });

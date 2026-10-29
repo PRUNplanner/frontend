@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 
 // API
 import { useQuery } from "@/lib/query_cache/useQuery";
+import { isApiError } from "@/lib/apiError";
 
 // Composables
 import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -125,7 +126,7 @@ export function useEmailNudge(planCount: MaybeRefOrGetter<number>) {
 			console.error("Error resending verification code", err);
 			toast(
 				t(
-					(err as { status?: number }).status === 429
+					isApiError(err) && err.status === 429
 						? "account.email_dialog.errors.throttled"
 						: "account.email_dialog.errors.unknown"
 				),

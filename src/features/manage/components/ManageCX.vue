@@ -2,7 +2,6 @@
 	import {
 		computed,
 		type ComputedRef,
-		type PropType,
 		ref,
 		type Ref,
 	} from "vue";
@@ -26,12 +25,7 @@
 	import type { PDataTableColumn } from "@/ui/ui.types";
 	import { ClearSharp, PlusSharp } from "@vicons/material";
 
-	const props = defineProps({
-		cx: {
-			type: Array as PropType<CX[]>,
-			required: true,
-		},
-	});
+	const props = defineProps<{ cx: CX[] }>();
 
 	// Local Data
 	const localCX: ComputedRef<CX[]> = computed(() => inertClone(props.cx));
@@ -95,14 +89,9 @@
 		trackEvent("manage:cx_delete");
 
 		try {
-			const deletionResult: boolean = await useQuery("DeleteCX", {
-				cxUuid: cxUuid,
-			}).execute();
-
-			if (deletionResult) {
-				// forced reload of all CX
-				emit("update:cxList", await useQuery("GetAllCX").execute());
-			}
+			await useQuery("DeleteCX", { cxUuid: cxUuid }).execute();
+			// forced reload of all CX
+			emit("update:cxList", await useQuery("GetAllCX").execute());
 		} catch (err) {
 			console.error(err);
 		} finally {

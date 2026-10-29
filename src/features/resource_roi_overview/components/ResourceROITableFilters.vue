@@ -1,6 +1,4 @@
 <script setup lang="ts">
-	import { computed, type PropType } from "vue";
-
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
@@ -10,54 +8,20 @@
 	// UI
 	import { PCheckbox, PSelect } from "@/ui";
 
-	const props = defineProps({
-		searchedMaterial: {
-			type: String,
-			required: true,
-		},
-		filterPlanet: {
-			type: null as unknown as PropType<string | null>,
-			required: false,
-			default: null,
-		},
-		filterBuilding: {
-			type: null as unknown as PropType<string | null>,
-			required: false,
-			default: null,
-		},
-		filterPositiveROI: {
-			type: Boolean,
-			required: true,
-		},
-		planetOptions: {
-			type: Array as PropType<PSelectOption[]>,
-			required: true,
-		},
-		buildingOptions: {
-			type: Array as PropType<PSelectOption[]>,
-			required: true,
-		},
-	});
-
-	const emit = defineEmits<{
-		(e: "update:filterPlanet", value: string | null): void;
-		(e: "update:filterBuilding", value: string | null): void;
-		(e: "update:filterPositiveROI", value: boolean): void;
+	defineProps<{
+		searchedMaterial: string;
+		planetOptions: PSelectOption[];
+		buildingOptions: PSelectOption[];
 	}>();
 
-	const localFilterPlanet = computed({
-		get: () => props.filterPlanet,
-		set: (v: string | null) => emit("update:filterPlanet", v),
+	const filterPlanet = defineModel<string | null>("filterPlanet", {
+		default: null,
 	});
-
-	const localFilterBuilding = computed({
-		get: () => props.filterBuilding,
-		set: (v: string | null) => emit("update:filterBuilding", v),
+	const filterBuilding = defineModel<string | null>("filterBuilding", {
+		default: null,
 	});
-
-	const localFilterPositiveROI = computed({
-		get: () => props.filterPositiveROI,
-		set: (v: boolean) => emit("update:filterPositiveROI", v),
+	const filterPositiveROI = defineModel<boolean>("filterPositiveROI", {
+		required: true,
 	});
 </script>
 
@@ -69,7 +33,7 @@
 			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
 				<div>Planet</div>
 				<PSelect
-					v-model:value="localFilterPlanet"
+					v-model:value="filterPlanet"
 					:aria-label="$t('resource_roi.table.planet')"
 					:options="planetOptions"
 					searchable
@@ -79,7 +43,7 @@
 			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
 				<div>Building</div>
 				<PSelect
-					v-model:value="localFilterBuilding"
+					v-model:value="filterBuilding"
 					:aria-label="$t('resource_roi.table.building')"
 					:options="buildingOptions"
 					searchable
@@ -89,7 +53,7 @@
 			<div class="flex flex-row flex-wrap gap-3 child:my-auto">
 				<div>Positive ROI</div>
 				<PCheckbox
-					v-model:checked="localFilterPositiveROI"
+					v-model:checked="filterPositiveROI"
 					:aria-label="$t('recipe_roi.filters.positive_roi')" />
 			</div>
 		</div>

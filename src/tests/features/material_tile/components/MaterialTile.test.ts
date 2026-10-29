@@ -382,18 +382,4 @@ describe("MaterialTile", () => {
 		expect(drawer().exists()).toBe(false);
 		error.mockRestore();
 	});
-
-	it("warns when used without a key", async () => {
-		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-
-		await mountComponent(MaterialTile, { ticker: "FE" });
-		expect(warn).toHaveBeenCalledWith(
-			"[MaterialTile] should always be used with a :key!"
-		);
-
-		warn.mockClear();
-		await mountTile();
-		expect(warn).not.toHaveBeenCalled();
-		warn.mockRestore();
-	});
 });

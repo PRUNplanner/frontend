@@ -3,6 +3,9 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Composables
+	import { useSortState } from "@/features/production_chain/useSortState";
+
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PlanetPlots from "@/features/planet_search/components/PlanetPlots.vue";
@@ -117,8 +120,10 @@
 	const nearCX: Ref<PlanetSearchCX> = ref(defaultCX);
 	const maxJumps: Ref<number | null> = ref(null);
 	const text = ref("");
-	const sortKey = ref<ISortKey>("built");
-	const sortDir = ref<1 | -1>(1);
+	const { sortKey, sortDir, sortBy, ariaSort } = useSortState<ISortKey>(
+		"built",
+		(key) => key === "fert"
+	);
 
 	const searchCtx = computed(() =>
 		createSearchContext(index ?? [], {}, ctx.now)
@@ -212,21 +217,6 @@
 		});
 	});
 	const shown = computed(() => matched.value.slice(0, MAX_ROWS));
-
-	function sortBy(key: ISortKey): void {
-		if (sortKey.value === key) sortDir.value = sortDir.value === 1 ? -1 : 1;
-		else {
-			sortKey.value = key;
-			sortDir.value = key === "fert" ? -1 : 1;
-		}
-	}
-
-	const ariaSort = (key: ISortKey) =>
-		sortKey.value === key
-			? sortDir.value === 1
-				? "ascending"
-				: "descending"
-			: undefined;
 
 	const columns = computed(() => {
 		const list: { key: ISortKey; numeric?: boolean }[] = [

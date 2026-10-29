@@ -1,10 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		type ComputedRef,
-		type PropType,
-		type WritableComputedRef,
-	} from "vue";
+	import { computed, type ComputedRef, type WritableComputedRef } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	import { RouterLink } from "vue-router";
@@ -23,43 +18,17 @@
 	// UI
 	import { PSelect } from "@/ui";
 
-	const props = defineProps({
-		disabled: {
-			type: Boolean,
-			required: true,
-		},
-		empireOptions: {
-			type: Array as PropType<PlanEmpire[]>,
-			required: false,
-			default: undefined,
-		},
-		activeEmpire: {
-			type: Object as PropType<PlanEmpire>,
-			required: false,
-			default: undefined,
-		},
-		planEmpires: {
-			type: Array as PropType<PlanEmpire[]>,
-			required: true,
-		},
+	const props = defineProps<{
+		disabled: boolean;
+		empireOptions?: PlanEmpire[];
+		activeEmpire?: PlanEmpire;
+		planEmpires: PlanEmpire[];
 		// the active empire's exchange preference
-		cxUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-		planetId: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
+		cxUuid?: string;
+		planetId?: string;
 		// a visitor without empires: where the prices come from instead
-		priceSource: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-	});
+		priceSource?: string;
+	}>();
 
 	const planningStore = usePlanningStore();
 	const cxName = computed(() =>
@@ -88,7 +57,7 @@
 		});
 
 		return selectOptions.sort((a, b) =>
-			(a.label as string) > (b.label as string) ? 1 : -1
+			a.label < b.label ? -1 : a.label > b.label ? 1 : 0
 		);
 	}
 

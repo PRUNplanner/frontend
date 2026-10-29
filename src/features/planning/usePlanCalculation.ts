@@ -6,7 +6,7 @@ import {
 	ref,
 	type Ref,
 	shallowRef,
-	toRef,
+	type WritableComputedRef,
 	watch,
 } from "vue";
 
@@ -106,12 +106,18 @@ export function usePlanCalculation(
 
 	// data references
 
-	const planName: Ref<string | undefined> = toRef(plan.value.plan_name);
+	// the plan's own field: undo/redo, save and a reloaded plan carry it
+	const planName: WritableComputedRef<string | undefined> = computed({
+		get: () => plan.value.plan_name,
+		set: (value) => (plan.value.plan_name = value),
+	});
 	const data: ComputedRef<PlanData> = computed(() => plan.value.plan_data);
 	const planEmpires: ComputedRef<PlanEmpire[]> = computed(() =>
 		plan.value.empires ? plan.value.empires : []
 	);
-	const planetNaturalId: Ref<string> = toRef(plan.value.planet_natural_id);
+	const planetNaturalId: ComputedRef<string> = computed(
+		() => plan.value.planet_natural_id
+	);
 
 	// computations
 

@@ -83,7 +83,7 @@ describe("useSharing", async () => {
 	});
 
 	it("delete shared plan", async () => {
-		vi.mocked(callDeleteSharing).mockResolvedValueOnce(true);
+		vi.mocked(callDeleteSharing).mockResolvedValueOnce(undefined);
 		// @ts-expect-error mock data date as string
 		vi.mocked(callGetSharedList).mockResolvedValueOnce(shared_list);
 

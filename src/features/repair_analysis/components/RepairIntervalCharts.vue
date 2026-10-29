@@ -20,7 +20,7 @@
 		REPAIR_DAY_MAX,
 		repairEfficiency,
 	} from "@/features/repair_analysis/repairAnalysis.util";
-	import { clamp, formatNumber } from "@/util/numbers";
+	import { clamp, formatNumber, signed } from "@/util/numbers";
 
 	// Types & Interfaces
 	import type { IRepairBuilding } from "@/features/repair_analysis/useRepairAnalysis.types";
@@ -87,7 +87,6 @@
 		Math.abs(v) >= 1000
 			? `${formatNumber(v / 1000, 1, true)}k`
 			: formatNumber(v, 0);
-	const signed = (v: number) => (v > 0 ? "+" : "") + formatNumber(v, 0);
 
 	function line(values: number[], y: (v: number) => number): string {
 		let d = "";
@@ -255,8 +254,8 @@
 		const delta = profit.value[day] - profit.value[best.value];
 		return {
 			day,
-			profit: signed(profit.value[day]),
-			delta: day === best.value ? undefined : signed(delta),
+			profit: signed(profit.value[day], 0),
+			delta: day === best.value ? undefined : signed(delta, 0),
 			left: `${(xs(day) / width.value) * 100}%`,
 			right: xs(day) / width.value < 0.6,
 		};

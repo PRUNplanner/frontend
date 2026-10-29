@@ -1,7 +1,8 @@
 <script setup lang="ts">
-	import { type ComputedRef, type PropType, computed, ref } from "vue";
+	import { type ComputedRef, computed } from "vue";
 
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useStoredFlag } from "@/lib/storage";
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
@@ -19,45 +20,24 @@
 	} from "@/features/empire/empire.types";
 	import type { IChartBarItem } from "@/ui/charts/charts.types";
 
-	const props = defineProps({
-		empireMaterialIO: {
-			type: Array as PropType<IEmpireMaterialIO[]>,
-			required: true,
-		},
-		planListData: {
-			type: Array as PropType<IEmpirePlanListData[]>,
-			required: true,
-		},
-	});
+	const props = defineProps<{
+		empireMaterialIO: IEmpireMaterialIO[];
+		planListData: IEmpirePlanListData[];
+	}>();
 
 	const emit = defineEmits<{ "open:material": [ticker: string] }>();
 
 	// "More charts": open state kept in this browser
-	const MORE_CHARTS_KEY = "prunplanner_empire_more_charts";
-	function readMoreCharts(): boolean {
-		try {
-			return localStorage.getItem(MORE_CHARTS_KEY) === "1";
-		} catch {
-			return false;
-		}
-	}
-	const moreChartsOpen = ref(readMoreCharts());
-
+	const moreChartsOpen = useStoredFlag(
+		"prunplanner_empire_more_charts",
+		false
+	);
 	function toggleMoreCharts(event: Event): void {
 		const open = (event.target as HTMLDetailsElement).open;
 		if (open === moreChartsOpen.value) return;
 		moreChartsOpen.value = open;
-		try {
-			localStorage.setItem(MORE_CHARTS_KEY, open ? "1" : "0");
-		} catch {
-			// storage blocked: open for this page only
-		}
 		if (open) trackEvent("empire:analysis_more_charts");
 	}
-
-	// Local State
-	const localEmpireMaterialIO = computed(() => props.empireMaterialIO);
-	const localPlanListData = computed(() => props.planListData);
 
 	const materialColors: Record<string, string> = {
 		"agricultural-products": "#003800",
@@ -104,7 +84,7 @@
 
 	// every plan, losses included; the sign picks the bar colour
 	const chartDataPlanProfit: ComputedRef<IChartBarItem[]> = computed(() =>
-		localPlanListData.value.map((e) => ({
+		props.planListData.map((e) => ({
 			name: e.name || e.planet,
 			value: Math.round(e.profit * 100) / 100,
 		}))
@@ -112,7 +92,7 @@
 
 	const chartDataMaterialProfit: ComputedRef<IChartBarItem[]> =
 		computed(() => {
-			const data = localEmpireMaterialIO.value.filter(
+			const data = props.empireMaterialIO.filter(
 				(f) => f.deltaPrice > 0
 			);
 
@@ -127,7 +107,7 @@
 
 	const chartDataMaterialCost: ComputedRef<IChartBarItem[]> =
 		computed(() => {
-			const data = localEmpireMaterialIO.value.filter(
+			const data = props.empireMaterialIO.filter(
 				(f) => f.deltaPrice < 0
 			);
 
@@ -142,7 +122,7 @@
 
 	const chartDataNetProduction: ComputedRef<IChartBarItem[]> =
 		computed(() => {
-			const data = localEmpireMaterialIO.value.filter((f) => f.delta > 0);
+			const data = props.empireMaterialIO.filter((f) => f.delta > 0);
 
 			return data.map((e) => {
 				return {
@@ -155,7 +135,7 @@
 
 	const chartDataNetConsumption: ComputedRef<IChartBarItem[]> =
 		computed(() => {
-			const data = localEmpireMaterialIO.value.filter((f) => f.delta < 0);
+			const data = props.empireMaterialIO.filter((f) => f.delta < 0);
 
 			return data.map((e) => {
 				return {
@@ -168,7 +148,7 @@
 
 	const chartDataExclusiveProduction: ComputedRef<IChartBarItem[]> =
 		computed(() => {
-			const data = localEmpireMaterialIO.value.filter(
+			const data = props.empireMaterialIO.filter(
 				(f) => f.output > 0 && f.input === 0
 			);
 
@@ -183,7 +163,7 @@
 
 	const chartDataExclusiveConsumption: ComputedRef<IChartBarItem[]> =
 		computed(() => {
-			const data = localEmpireMaterialIO.value.filter(
+			const data = props.empireMaterialIO.filter(
 				(f) => f.output === 0 && f.input > 0
 			);
 
@@ -199,9 +179,9 @@
 
 <template>
 	<div class="flex flex-col gap-3">
-		<EmpireRevenueSplit :plans="localPlanListData" />
+		<EmpireRevenueSplit :plans="planListData" />
 		<EmpireMaterialButterfly
-			:material-i-o="localEmpireMaterialIO"
+			:material-i-o="empireMaterialIO"
 			@open:material="(ticker: string) => emit('open:material', ticker)" />
 		<details
 			:open="moreChartsOpen"
