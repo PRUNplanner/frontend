@@ -23,6 +23,7 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { useChainPlans } from "@/features/production_chain/useChainPlans";
 import { remoteChange } from "@/lib/crossTab";
 import { isSubset } from "@/lib/query_cache/cacheKeys";
+import { batchChanges } from "@/lib/query_cache/queries/planning.queries";
 import { readStorage, writeStorage } from "@/lib/storage";
 
 // Engine
@@ -524,9 +525,17 @@ export function useProductionChain() {
 
 	/**
 	 * Creates the empire (if new), then one plan per draft in it. Stops at
-	 * the first failure and keeps what was created.
+	 * the first failure and keeps what was created. One invalidation and
+	 * broadcast for all saves, not one per save.
 	 */
-	async function createPlans(
+	function createPlans(
+		drafts: { base: string; data: PlanCreateData }[],
+		empire: IChainEmpireChoice
+	): Promise<IChainCreated> {
+		return batchChanges(() => createAll(drafts, empire));
+	}
+
+	async function createAll(
 		drafts: { base: string; data: PlanCreateData }[],
 		empire: IChainEmpireChoice
 	): Promise<IChainCreated> {

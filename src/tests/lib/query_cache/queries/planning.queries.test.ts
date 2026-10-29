@@ -1,9 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
+import { watch } from "vue";
 
-import { planningQueries } from "@/lib/query_cache/queries/planning.queries";
+// first, as in the app: the repository then holds every query module
+import "@/lib/query_cache/queryRepository";
+import {
+	batchChanges,
+	planningQueries,
+} from "@/lib/query_cache/queries/planning.queries";
 import { broadcastChange } from "@/lib/crossTab";
+import { reportClientError } from "@/lib/clientErrors";
+import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { callPatchCX } from "@/features/api/cxData.api";
+import { callGetEmpireList } from "@/features/api/empireData.api";
 
 vi.mock("@/lib/crossTab", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/crossTab")>()),
@@ -20,7 +29,9 @@ vi.mock("@/features/api/empireData.api", () => ({
 	callCreateEmpire: vi.fn(async () => ({ uuid: "empire-new" })),
 	callDeleteEmpire: vi.fn(async () => true),
 	callPatchEmpirePlanJunctions: vi.fn(async () => []),
+	callGetEmpireList: vi.fn(async () => []),
 }));
+vi.mock("@/lib/clientErrors", () => ({ reportClientError: vi.fn() }));
 vi.mock("@/features/api/cxData.api", () => ({
 	callPatchCX: vi.fn(async () => ({ uuid: "cx-a", modified_at: "v2" })),
 	callCreateCX: vi.fn(async () => ({ uuid: "cx-new" })),
@@ -47,42 +58,42 @@ describe("planning queries tell the other tabs", () => {
 		[
 			"PatchPlan",
 			{ planUuid: "plan-a", data: {} },
-			[[PLANS, EMPIRES], "plan-a"],
+			[[PLANS, EMPIRES], ["plan-a"]],
 		],
-		["CreatePlan", { data: {} }, [[PLANS, EMPIRES], "new"]],
+		["CreatePlan", { data: {} }, [[PLANS, EMPIRES], ["new"]]],
 		[
 			"DeletePlan",
 			{ planUuid: "plan-a" },
-			[[EMPIRES, [...PLANS, "list"], [...PLANS, "plan-a"]], "plan-a"],
+			[[EMPIRES, [...PLANS, "list"], [...PLANS, "plan-a"]], ["plan-a"]],
 		],
 		[
 			"ClonePlan",
 			{ planUuid: "plan-a", cloneName: "c" },
-			[[EMPIRES, [...PLANS, "list"]], "clone"],
+			[[EMPIRES, [...PLANS, "list"]], ["clone"]],
 		],
 		[
 			"PatchEmpire",
 			{ empireUuid: "empire-a", data: {} },
-			[[EMPIRES], "empire-a"],
+			[[EMPIRES], ["empire-a"]],
 		],
-		["CreateEmpire", { data: {} }, [[EMPIRES], "empire-new"]],
-		["DeleteEmpire", { empireUuid: "empire-a" }, [[EMPIRES], "empire-a"]],
+		["CreateEmpire", { data: {} }, [[EMPIRES], ["empire-new"]]],
+		["DeleteEmpire", { empireUuid: "empire-a" }, [[EMPIRES], ["empire-a"]]],
 		[
 			"PatchEmpirePlanJunctions",
 			{ junctions: [] },
-			[[EMPIRES, PLANS], undefined],
+			[[EMPIRES, PLANS], []],
 		],
 		[
 			"PatchEmpireCXJunctions",
 			{ junctions: [] },
-			[[EMPIRES, CXS], undefined],
+			[[EMPIRES, CXS], []],
 		],
-		["CreateCX", { cxName: "n" }, [[CXS], "cx-new"]],
-		["DeleteCX", { cxUuid: "cx-a" }, [[CXS], "cx-a"]],
+		["CreateCX", { cxName: "n" }, [[CXS], ["cx-new"]]],
+		["DeleteCX", { cxUuid: "cx-a" }, [[CXS], ["cx-a"]]],
 		[
 			"PatchCX",
 			{ cxName: "n", cxUuid: "cx-a", data: {}, baseModifiedAt: "v1" },
-			[[CXS], "cx-a"],
+			[[CXS], ["cx-a"]],
 		],
 		[
 			"CreateSharedPlan",
@@ -108,7 +119,7 @@ describe("planning queries tell the other tabs", () => {
 
 		expect(vi.mocked(broadcastChange).mock.calls).toEqual([
 			[[["planningdata", "shared"]]],
-			[[PLANS, EMPIRES], "clone-shared"],
+			[[PLANS, EMPIRES], ["clone-shared"]],
 		]);
 	});
 
@@ -122,5 +133,116 @@ describe("planning queries tell the other tabs", () => {
 		});
 
 		expect(callPatchCX).toHaveBeenCalledWith("n", "cx-a", {}, "v1");
+	});
+});
+
+describe("batchChanges", () => {
+	const q = planningQueries;
+	let invalidateKey: ReturnType<typeof vi.spyOn>;
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		vi.clearAllMocks();
+		invalidateKey = vi.spyOn(useQueryStore(), "invalidateKey");
+	});
+
+	it("invalidates each key once and broadcasts once at the end", async () => {
+		const result = await batchChanges(async () => {
+			// @ts-expect-error mock data
+			await q.CreateEmpire.fetchFn({ data: {} });
+			// @ts-expect-error mock data
+			await q.CreatePlan.fetchFn({ data: {} });
+			await q.DeletePlan.fetchFn({ planUuid: "plan-a" });
+			expect(invalidateKey).not.toHaveBeenCalled();
+			expect(broadcastChange).not.toHaveBeenCalled();
+			return "done";
+		});
+
+		expect(result).toBe("done");
+		expect(vi.mocked(broadcastChange).mock.calls).toEqual([
+			[
+				[EMPIRES, PLANS, [...PLANS, "list"], [...PLANS, "plan-a"]],
+				["empire-new", "new", "plan-a"],
+			],
+		]);
+		expect(invalidateKey.mock.calls).toEqual([
+			[EMPIRES, { exact: false }],
+			[PLANS, { exact: false }],
+			[[...PLANS, "list"], { exact: true }],
+			[[...PLANS, "plan-a"], { exact: true }],
+		]);
+	});
+
+	it("joins a nested batch to the outer one", async () => {
+		await batchChanges(async () => {
+			await batchChanges(() => q.DeleteCX.fetchFn({ cxUuid: "cx-a" }));
+			expect(broadcastChange).not.toHaveBeenCalled();
+			// @ts-expect-error mock data
+			await q.PatchEmpire.fetchFn({ empireUuid: "empire-a", data: {} });
+		});
+
+		expect(broadcastChange).toHaveBeenCalledOnce();
+		expect(broadcastChange).toHaveBeenCalledWith(
+			[CXS, EMPIRES],
+			["cx-a", "empire-a"]
+		);
+	});
+
+	it("still flushes what was saved when fn throws, and rethrows", async () => {
+		await expect(
+			batchChanges(async () => {
+				// @ts-expect-error mock data
+				await q.CreatePlan.fetchFn({ data: {} });
+				throw new Error("second save failed");
+			})
+		).rejects.toThrow("second save failed");
+
+		expect(broadcastChange).toHaveBeenCalledOnce();
+		expect(broadcastChange).toHaveBeenCalledWith([PLANS, EMPIRES], ["new"]);
+	});
+
+	it("broadcasts nothing without a change", async () => {
+		await batchChanges(async () => {});
+
+		expect(broadcastChange).not.toHaveBeenCalled();
+	});
+
+	// the navigation: a dropped empire list is loaded again right away
+	function mountEmpireReader(): void {
+		const store = useQueryStore();
+		watch(
+			() => !store.peekQueryState(["planningdata", "empire", "list"]),
+			(missing) => {
+				if (missing) store.execute("GetAllEmpires", undefined).catch(() => {});
+			},
+			{ immediate: true, flush: "sync" }
+		);
+	}
+
+	it("8 saves in a batch: the empire list is fetched once, no loop", async () => {
+		mountEmpireReader();
+		await vi.waitFor(() => expect(callGetEmpireList).toHaveBeenCalledOnce());
+		vi.mocked(callGetEmpireList).mockClear();
+
+		await batchChanges(async () => {
+			for (let i = 0; i < 8; i++)
+				// @ts-expect-error mock data
+				await q.CreatePlan.fetchFn({ data: {} });
+		});
+		await vi.waitFor(() => expect(callGetEmpireList).toHaveBeenCalled());
+
+		expect(callGetEmpireList).toHaveBeenCalledOnce();
+		expect(reportClientError).not.toHaveBeenCalled();
+	});
+
+	it("8 saves without a batch trip the guard", async () => {
+		mountEmpireReader();
+		await vi.waitFor(() => expect(callGetEmpireList).toHaveBeenCalledOnce());
+
+		for (let i = 0; i < 8; i++)
+			// @ts-expect-error mock data
+			await q.CreatePlan.fetchFn({ data: {} });
+
+		expect(reportClientError).toHaveBeenCalledOnce();
 	});
 });

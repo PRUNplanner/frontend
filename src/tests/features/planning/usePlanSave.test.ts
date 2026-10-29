@@ -288,11 +288,11 @@ describe("usePlanSave", () => {
 		const { wrapper } = await mountSave(s);
 
 		// another plan
-		remoteChange.value = { keys: [], uuid: "p-x", seq: 1 };
+		remoteChange.value = { keys: [], uuids: ["p-x"], seq: 1 };
 		await flushPromises();
 		expect(m.getPlan).not.toHaveBeenCalled();
 
-		remoteChange.value = { keys: [], uuid: "p-1", seq: 2 };
+		remoteChange.value = { keys: [], uuids: ["p-1"], seq: 2 };
 		await flushPromises();
 		expect(m.toast).toHaveBeenCalledWith(
 			"save_conflict.notice.saved_elsewhere",
@@ -306,14 +306,14 @@ describe("usePlanSave", () => {
 
 		// without edits it reloads
 		s.modified.value = false;
-		remoteChange.value = { keys: [], uuid: "p-1", seq: 3 };
+		remoteChange.value = { keys: [], uuids: ["p-1"], seq: 3 };
 		await flushPromises();
 		expect(destroy).toHaveBeenCalled();
 		expect(s.plan.value.modified_at).toBe("t7");
 
 		// deleted elsewhere
 		m.getPlan.mockRejectedValue("deleted");
-		remoteChange.value = { keys: [], uuid: "p-1", seq: 4 };
+		remoteChange.value = { keys: [], uuids: ["p-1"], seq: 4 };
 		await flushPromises();
 		expect(m.toast).toHaveBeenLastCalledWith(
 			"save_conflict.notice.deleted_elsewhere",

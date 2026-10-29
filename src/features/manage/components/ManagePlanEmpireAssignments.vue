@@ -19,6 +19,7 @@
 	const { getPlanet } = usePlanetData();
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { useManageData } from "@/features/manage/useManageData";
+	import { batchChanges } from "@/lib/query_cache/queries/planning.queries";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import {
 		cellKey,
@@ -327,15 +328,18 @@
 		deleting.value = 0;
 		const failed: string[] = [];
 		// ponytail: one request per plan, a bulk endpoint if hundreds get slow
-		for (const planUuid of uuids) {
-			try {
-				await useQuery("DeletePlan", { planUuid }).execute();
-			} catch (err) {
-				console.error(err);
-				failed.push(planUuid);
+		// one invalidation and broadcast at the end, not one per plan
+		await batchChanges(async () => {
+			for (const planUuid of uuids) {
+				try {
+					await useQuery("DeletePlan", { planUuid }).execute();
+				} catch (err) {
+					console.error(err);
+					failed.push(planUuid);
+				}
+				deleting.value = (deleting.value ?? 0) + 1;
 			}
-			deleting.value++;
-		}
+		});
 		try {
 			await refetch();
 		} catch (err) {

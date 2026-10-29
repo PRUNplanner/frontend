@@ -254,7 +254,7 @@ describe("WrapperPlanningDataLoader with an empire list", () => {
 		await invalidate(["planningdata", "empire"]);
 		remoteChange.value = {
 			keys: [["planningdata", "empire"]],
-			uuid: E2,
+			uuids: [E2],
 			seq: (remoteChange.value?.seq ?? 0) + 1,
 		};
 		// the list and the empire's plans
@@ -301,7 +301,7 @@ describe("WrapperPlanningDataLoader with an empire list", () => {
 		await invalidate(["planningdata", "cx"]);
 		remoteChange.value = {
 			keys: [["planningdata", "cx"]],
-			uuid: E2,
+			uuids: [E2],
 			seq: (remoteChange.value?.seq ?? 0) + 1,
 		};
 		await vi.waitFor(() =>
@@ -501,7 +501,7 @@ describe("WrapperPlanningDataLoader plan data", () => {
 		function change(...keys: string[][]) {
 			remoteChange.value = {
 				keys,
-				uuid: E2,
+				uuids: [E2],
 				seq: (remoteChange.value?.seq ?? 0) + 1,
 			};
 		}
