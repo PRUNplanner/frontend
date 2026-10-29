@@ -132,5 +132,12 @@
 		"title": "Seite nicht gefunden",
 		"text": "Unter dieser Adresse gibt es keine Seite.",
 		"home": "Zur Startseite"
+	},
+	"not_implemented": {
+		"title": "Feature Not Yet Implemented",
+		"open_source": "PRUNplanner v2 is Open Source. Check out the {link}.",
+		"repository": "Github repository",
+		"contact": "Get in touch on the {link}.",
+		"discord": "PrUn Community Tools Discord"
 	}
 }
