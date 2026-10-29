@@ -317,4 +317,53 @@ describe("baseROIMetrics", () => {
 			}).rows
 		).toHaveLength(1);
 	});
+
+	it("row kind, expertise and building filters, not counted as hidden", () => {
+		const s = defaultBaseROISettings();
+		const row = (key: string, o: Partial<IBaseROIRow>) =>
+			({
+				...rowInput({ key, ...o }),
+				metrics: calculateMetrics(rowInput(), s, 0),
+			}) as IBaseROIRow;
+		const rows = [
+			row("chp", {}),
+			row("ext", { kind: "resource", building: "EXT", expertise: "RESOURCE_EXTRACTION" }),
+		];
+		const shown = (f: Partial<typeof s>) =>
+			filterRows(rows, [], { ...s, ...f }).rows.map((r) => r.key);
+		expect(shown({ showRecipes: false })).toEqual(["ext"]);
+		expect(shown({ showResources: false })).toEqual(["chp"]);
+		expect(shown({ expertise: "CHEMISTRY" })).toEqual(["chp"]);
+		expect(shown({ building: "EXT" })).toEqual(["ext"]);
+		expect(filterRows(rows, [], { ...s, building: "EXT" }).hidden).toEqual({
+			maxJumps: 0,
+			logistics: 0,
+			marketCapacity: 0,
+			negative: 0,
+		});
+	});
+
+	it("edge cases: manual limit met, no outputs, zero output, free base, unknown HQ level", () => {
+		const s = defaultBaseROISettings();
+		expect(
+			calculateMetrics(rowInput({ weightIn: 10, volumeIn: 10 }), { ...s, logistics: "manual" }, 0)
+				.fitsLogistics
+		).toBe(true);
+		expect(calculateMetrics(rowInput({ outputs: [] }), s, 0).marketCapacity).toBe(0);
+		expect(
+			calculateMetrics(
+				rowInput({ outputs: [{ ticker: "A", amount: 0, traded: 5 }] }),
+				s,
+				0
+			).marketCapacity
+		).toBe(Infinity);
+		expect(
+			calculateMetrics(
+				rowInput({ construction: 0, revenue: 0, inputs: 0, consumables: 0, degradation: 0 }),
+				{ ...s, bufferDays: 0 },
+				0
+			).weeklyReturn
+		).toBe(0);
+		expect(hqStepCost(99, () => 1)).toBe(0);
+	});
 });

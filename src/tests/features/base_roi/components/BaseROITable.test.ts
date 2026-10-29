@@ -11,6 +11,10 @@ import { baseROIRows } from "@/tests/features/base_roi/baseROI.fixtures";
 // Types & Interfaces
 import type { IBaseROIRow } from "@/features/base_roi/baseROI.types";
 
+vi.mock("@/features/base_roi/components/BaseROIRowDetail.vue", () => ({
+	__esModule: true,
+	default: { name: "BaseROIRowDetail", props: ["row"], emits: ["close"], render: () => null },
+}));
 vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
 	default: { name: "MaterialTile", props: ["ticker"], render: () => null },
 }));
@@ -135,5 +139,131 @@ describe("BaseROITable", () => {
 			)
 			.map((r) => r.key);
 		expect(keys).toEqual(sorted);
+	});
+
+	it("sorts by every numeric column, both ways, never last", async () => {
+		const never = {
+			...rows[0],
+			key: "never",
+			metrics: { ...rows[0].metrics, breakEven: Infinity, dailyProfit: -1 },
+		};
+		const wrapper = await mountTable({ rows: [...rows, never] });
+		const keys = () =>
+			wrapper.findAll("tbody tr[data-row-key]").map((tr) => tr.attributes("data-row-key"));
+		for (const button of wrapper.findAll("thead button.p-data-table-title")) {
+			await button.trigger("click");
+			const asc = keys();
+			await button.trigger("click");
+			expect(keys()).toHaveLength(asc.length);
+		}
+		// break-even ascending again: never at the end
+		const breakEven = wrapper
+			.findAll("thead button.p-data-table-title")
+			.find((b) => b.text().includes("base_roi.columns.break_even"))!;
+		await breakEven.trigger("click");
+		await breakEven.trigger("click");
+		await breakEven.trigger("click");
+		expect(keys().at(-1)).toBe("never");
+	});
+
+	it("names each step of a running calculation", async () => {
+		for (const [step, key] of [
+			["recipes", "base_roi.status.recipes"],
+			["planets", "base_roi.status.planets"],
+			["calculating", "base_roi.status.calculating"],
+		]) {
+			const wrapper = await mountTable({ step, progress: { current: 3, total: 9 } });
+			expect(wrapper.text()).toContain(key);
+		}
+		const pending = await mountTable({ step: "done", planetRowsPending: true });
+		expect(pending.text()).toContain("base_roi.status.planet_rows");
+	});
+
+	it("fixed experts: the profit header names them, no payback line", async () => {
+		const wrapper = await mountTable({
+			settings: { ...defaultBaseROISettings(), experts: 3 },
+		});
+		expect(wrapper.text()).not.toContain("base_roi.table.from_zero");
+		expect(wrapper.text()).not.toContain("base_roi.table.at_five");
+	});
+
+	it("expands a row into its detail and closes it", async () => {
+		const wrapper = await mountTable();
+		await wrapper.find("tbody button[aria-expanded]").trigger("click");
+		await flushPromises();
+		const detail = wrapper.findComponent({ name: "BaseROIRowDetail" });
+		expect(detail.exists()).toBe(true);
+		detail.vm.$emit("close");
+		await flushPromises();
+		expect(wrapper.findComponent({ name: "BaseROIRowDetail" }).exists()).toBe(false);
+	});
+
+	it("hiding a column in the menu writes the settings", async () => {
+		const updates: unknown[] = [];
+		const wrapper = await mountTable({
+			"onUpdate:settings": (v: unknown) => updates.push(v),
+		});
+		wrapper
+			.findComponent({ name: "BaseROIColumnsMenu" })
+			.vm.$emit("update:hiddenColumns", ["cargo"]);
+		expect(updates.at(-1)).toMatchObject({ hiddenColumns: ["cargo"] });
+	});
+
+	it("an empty table says so", async () => {
+		const wrapper = await mountTable({ rows: [] });
+		expect(wrapper.text()).toContain("base_roi.table.empty");
+	});
+
+	it("highlights the row hovered in the chart", async () => {
+		const wrapper = await mountTable({ active: rows[0].key });
+		expect(
+			wrapper.find(`tr[data-row-key="${rows[0].key}"]`).classes()
+		).toContain("!bg-white/10");
+	});
+
+	it("the ⚠ lists the price scenarios (criterion 11)", async () => {
+		const row: IBaseROIRow = {
+			...rows[0],
+			metrics: {
+				...rows[0].metrics,
+				scenarios: [
+					{ prices: [{ ticker: "IND", side: "bid", price: 4060 }], dailyProfit: -500 },
+					{ prices: [{ ticker: "CU", side: "ask", price: 1400 }], dailyProfit: 900 },
+				],
+			},
+		};
+		const wrapper = await mountTable({ rows: [row] });
+		const warn = wrapper.find('button[aria-label="base_roi.table.volatility"]');
+		expect(warn.text()).toBe("2");
+		await warn.trigger("click");
+		await flushPromises();
+		const text = document.body.textContent!;
+		expect(text).toContain("IND (base_roi.table.bid 4,060.00)");
+		expect(text).toContain("base_roi.table.volatility_title");
+	});
+
+	it("planet rows without a name or a route, rows without expertise or outputs", async () => {
+		const planet: IBaseROIRow = {
+			...rows.find((r) => r.kind === "resource")!,
+			key: "noname",
+			planetName: null,
+			jumps: null,
+		};
+		const bare: IBaseROIRow = {
+			...rows[0],
+			key: "bare",
+			expertise: null,
+			outputs: [],
+			workforce: [],
+		};
+		const wrapper = await mountTable({ rows: [planet, bare, rows[1]], series: { AI1: {} } });
+		expect(wrapper.text()).toContain(`@ ${planet.planetNaturalId} (base_roi.table.no_route)`);
+		expect(wrapper.find('tr[data-row-key="bare"]').text()).toContain("—");
+		const sortExpertise = wrapper
+			.findAll("thead button.p-data-table-title")
+			.find((b) => b.text().includes("base_roi.columns.expertise"))!;
+		await sortExpertise.trigger("click");
+		await sortExpertise.trigger("click");
+		expect(wrapper.findAll("tbody tr[data-row-key]")).toHaveLength(3);
 	});
 });

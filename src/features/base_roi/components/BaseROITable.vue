@@ -142,11 +142,11 @@
 		),
 	]);
 	const titles = computed(() =>
-		columns.value.map((c) => c.title ?? c.key)
+		columns.value.map((c) => c.title!)
 	);
 	// expand button + every column
 	const tableWidth = computed(() =>
-		columns.value.reduce((w, c) => w + (WIDTHS[c.key] ?? 120), 48)
+		columns.value.reduce((w, c) => w + WIDTHS[c.key], 48)
 	);
 
 	const maxProfit = computed(() =>

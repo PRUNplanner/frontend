@@ -30,6 +30,10 @@ const calls = vi.hoisted(() => ({
 	byName: {} as Record<string, unknown[]>,
 	sparklines: "ok" as "ok" | "fail",
 	index: "ok" as "ok" | "fail",
+	// a query waits for this before it answers
+	hold: {} as Record<string, Promise<void> | undefined>,
+	// planets GetMultiplePlanets leaves out
+	drop: new Set<string>(),
 }));
 
 const { getJumpsFrom, systemidAI1 } = usePathfinder();
@@ -51,6 +55,7 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string, params?: Record<string, unknown>) => ({
 		execute: async () => {
 			(calls.byName[name] ??= []).push(params);
+			await calls.hold[name];
 			switch (name) {
 				case "GetPlanetSearchIndex":
 					if (calls.index === "fail") throw new Error("down");
@@ -58,9 +63,9 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 				case "PostPlanetSearch":
 					return [...planets.values()].filter((p) => p.fertility !== -1);
 				case "GetMultiplePlanets":
-					return (params!.planetNaturalIds as string[]).map(
-						(id) => planets.get(id)!
-					);
+					return (params!.planetNaturalIds as string[])
+						.filter((id) => !calls.drop.has(id))
+						.map((id) => planets.get(id)!);
 				case "GetPlanet":
 					return planets.get(params!.planetNaturalId as string)!;
 				case "GetCXSparklines":
@@ -83,6 +88,8 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 		calls.byName = {};
 		calls.sparklines = "ok";
 		calls.index = "ok";
+		calls.hold = {};
+		calls.drop = new Set();
 		vi.mocked(trackEvent).mockClear();
 	});
 
@@ -218,5 +225,89 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 		expect(tried.environmentMaterials.map((m) => m.ticker)).toContain("AEF");
 		expect(row.metrics.buildingCost).toBe(before);
 		expect(roi.rows.value.find((r) => r.key === row.key)!.planetNaturalId).toBeNull();
+	});
+
+	/** a promise and its resolve, to hold a query open */
+	function gate() {
+		let open!: () => void;
+		const wait = new Promise<void>((r) => (open = r));
+		return { wait, open };
+	}
+
+	it.each([
+		["GetPlanetSearchIndex", "the index"],
+		["GetMultiplePlanets", "the planets"],
+	])("a newer run stops one waiting for %s", async (query) => {
+		const { roi, settings } = setup({ maxJumps: 1 });
+		const g = gate();
+		calls.hold[query] = g.wait;
+		const first = roi.calculate();
+		await vi.waitFor(() => expect(calls.byName[query]).toBeDefined());
+		delete calls.hold[query];
+		settings.value = { ...settings.value };
+		const second = roi.calculate();
+		g.open();
+		expect(await first).toBe(false);
+		expect(await second).toBe(true);
+		expect(trackEvent).toHaveBeenCalledTimes(1);
+	});
+
+	it("a newer run stops one between two chunks of recipe or planet rows", async () => {
+		const { roi } = setup();
+		const recipes = roi.calculate();
+		await vi.waitFor(() => expect(roi.step.value).toBe("recipes"));
+		const planetsRun = roi.calculate();
+		expect(await recipes).toBe(false);
+		await vi.waitFor(() => expect(roi.step.value).toBe("calculating"));
+		const last = roi.calculate();
+		expect(await planetsRun).toBe(false);
+		expect(await last).toBe(true);
+	});
+
+	it("uses scheduler.yield where the browser has it", async () => {
+		const yieldFn = vi.fn(() => Promise.resolve());
+		vi.stubGlobal("scheduler", { yield: yieldFn });
+		try {
+			await setup({ maxJumps: 0 }).roi.calculate();
+			expect(yieldFn).toHaveBeenCalled();
+		} finally {
+			vi.unstubAllGlobals();
+		}
+	});
+
+	it("a planet the server doesn't return gives no rows", async () => {
+		const { roi } = setup();
+		const missing = index.find((p) => p.resources.length)!.planet_natural_id;
+		calls.drop.add(missing);
+		await roi.calculate();
+		expect(roi.rows.value.some((r) => r.planetNaturalId === missing)).toBe(false);
+		expect(roi.rows.value.some((r) => r.planetNaturalId)).toBe(true);
+	});
+
+	it("a stale history answer is dropped", async () => {
+		const { roi } = setup({}, CX_AI1);
+		const g = gate();
+		calls.hold.GetCXSparklines = g.wait;
+		await roi.calculate();
+		calls.sparklines = "fail";
+		const second = roi.calculate();
+		g.open();
+		await second;
+		await vi.waitFor(() => expect(roi.historyFailed.value).toBe(true));
+	});
+
+	it("tries a row before any calculation, and a planet without a route", async () => {
+		const { roi } = setup();
+		const planet = { ...[...planets.values()][0], system_id: "f".repeat(32) };
+		planets.set(planet.planet_natural_id, planet);
+		try {
+			await roi.calculate();
+			const row = roi.rows.value.find((r) => r.kind === "recipe")!;
+			const fresh = setup().roi;
+			const tried = await fresh.tryOnPlanet(row, planet.planet_natural_id);
+			expect(tried.jumps).toBeNull();
+		} finally {
+			planets.set(planet.planet_natural_id, asPlanet(index.find((e) => e.planet_natural_id === planet.planet_natural_id)!));
+		}
 	});
 });

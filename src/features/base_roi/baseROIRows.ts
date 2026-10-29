@@ -145,7 +145,7 @@ export function planetCandidates(
 
 		for (const resource of planet.resources) {
 			const building = extractorOf[resource.resource_type];
-			if (resource.daily_extraction > 0 && building && layoutOf(building))
+			if (resource.daily_extraction > 0 && building)
 				list.push(
 					row(
 						"resource",
@@ -156,11 +156,10 @@ export function planetCandidates(
 		}
 
 		if (planet.fertility !== -1)
-			for (const building of FARM_BUILDINGS) {
-				if (!layoutOf(building)) continue;
+			// optimalProduction.ts has a layout for every extractor and farm
+			for (const building of FARM_BUILDINGS)
 				for (const recipe of gameData.recipesByBuilding[building] ?? [])
 					list.push(row("farming", building, recipe.recipe_id));
-			}
 	}
 
 	return { within, beyond };

@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 
 import BaseROIRowDetail from "@/features/base_roi/components/BaseROIRowDetail.vue";
 import PSelect from "@/ui/components/PSelect.vue";
+import PLayerClose from "@/ui/components/PLayerClose.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import { baseROIRows } from "@/tests/features/base_roi/baseROI.fixtures";
@@ -15,6 +16,7 @@ import type { IBaseROIRow } from "@/features/base_roi/baseROI.types";
 
 const query = vi.hoisted(() => ({
 	calls: [] as { name: string; params: unknown }[],
+	failCreate: false,
 }));
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string, params: unknown) => ({
@@ -23,8 +25,12 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 			if (name === "GetPlanetSearchIndex")
 				return [
 					{ planet_natural_id: "UV-072c", planet_name: "UV-072c" },
+					{ planet_natural_id: "OT-580b", planet_name: "Montem" },
 				];
-			if (name === "CreatePlan") return { uuid: "new-plan" };
+			if (name === "CreatePlan") {
+				if (query.failCreate) throw new Error("400");
+				return { uuid: "new-plan" };
+			}
 			throw new Error(name);
 		},
 	}),
@@ -58,8 +64,10 @@ vi.mock("@/ui/useToast", () => ({ useToast: () => toast }));
 async function mountDetail(
 	row: IBaseROIRow,
 	tryOnPlanet = vi.fn(),
-	pinia: Pinia = createPinia()
+	pinia: Pinia = createPinia(),
+	props: Record<string, unknown> = {}
 ) {
+	const closes: unknown[] = [];
 	const { wrapper } = await mountComponent(
 		BaseROIRowDetail,
 		{
@@ -68,13 +76,15 @@ async function mountDetail(
 			series: null,
 			tryOnPlanet,
 			cxUuid: undefined,
+			onClose: () => closes.push(true),
+			...props,
 		},
 		{ pinia }
 	);
 	await flushPromises();
 	const button = (label: string) =>
 		wrapper.findAll("button").find((b) => b.text() === label)!;
-	return { wrapper, button };
+	return { wrapper, button, closes };
 }
 
 describe("BaseROIRowDetail (criteria 16, 26)", () => {
@@ -176,5 +186,79 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		const { wrapper } = await mountDetail(row);
 		expect(wrapper.findComponent(PSelect).exists()).toBe(false);
 		expect(query.calls.map((c) => c.name)).not.toContain("GetPlanetSearchIndex");
+	});
+
+	it("section 9: the 30-day chart from the series, or the no-history note", async () => {
+		const row = rows[0];
+		// every material on AI1 with a 7D price: one series per ticker
+		const priced = {
+			...row,
+			materials: row.materials.map((m) => ({
+				...m,
+				source: { ...m.source, exchange: "AI1" as const, key: "vwap_7d" as const },
+			})),
+		};
+		const series = {
+			AI1: Object.fromEntries(priced.materials.map((m) => [m.ticker, Array(30).fill(m.price)])),
+		};
+		const { wrapper } = await mountDetail(priced, vi.fn(), createPinia(), { series });
+		const chart = wrapper.findComponent({ name: "PLineChart" });
+		expect(chart.props("series")).toHaveLength(3);
+		expect(chart.props("days")).toHaveLength(30);
+		expect(wrapper.text()).toContain("base_roi.detail.history_note");
+
+		const none = await mountDetail(row, vi.fn(), createPinia(), { series: { AI1: {} } });
+		expect(none.wrapper.text()).toContain("base_roi.table.history_none");
+	});
+
+	it("the close button closes it", async () => {
+		const { wrapper, closes } = await mountDetail(rows[0]);
+		wrapper.findComponent(PLayerClose).vm.$emit("click");
+		expect(closes).toHaveLength(1);
+	});
+
+	it("names planets by name and id, falls back to the id", async () => {
+		const row = rows.find((r) => r.kind === "recipe")!;
+		const never: IBaseROIRow = {
+			...row,
+			metrics: { ...row.metrics, breakEven: Infinity },
+		};
+		const onPlanet: IBaseROIRow = {
+			...never,
+			planetNaturalId: "OT-580b",
+			planetName: null,
+		};
+		const { wrapper } = await mountDetail(never, vi.fn().mockResolvedValue(onPlanet));
+		const select = wrapper.findComponent(PSelect);
+		expect(select.props("options").map((o: { label: string }) => o.label)).toEqual([
+			"UV-072c",
+			"Montem (OT-580b)",
+		]);
+		select.vm.$emit("update:value", "OT-580b");
+		await flushPromises();
+		expect(wrapper.text()).toContain("OT-580b");
+		expect(wrapper.text()).toContain("base_roi.detail.open_planet");
+	});
+
+	it("a planet that fails to load says so and keeps the standard planet", async () => {
+		toast.mockReset();
+		const row = rows.find((r) => r.kind === "recipe")!;
+		const { wrapper } = await mountDetail(row, vi.fn().mockRejectedValue(new Error("down")));
+		wrapper.findComponent(PSelect).vm.$emit("update:value", "UV-072c");
+		await flushPromises();
+		expect(toast).toHaveBeenCalledWith("base_roi.detail.planet_failed", { type: "error" });
+		expect(wrapper.text()).not.toContain("base_roi.detail.compare");
+	});
+
+	it("a plan that can't be created says so", async () => {
+		toast.mockReset();
+		query.calls = [];
+		query.failCreate = true;
+		const { button } = await mountDetail(rows[0]);
+		await button("base_roi.detail.open_plan").trigger("click");
+		await flushPromises();
+		query.failCreate = false;
+		expect(toast).toHaveBeenCalledWith("base_roi.detail.plan_failed", { type: "error" });
+		expect(push).not.toHaveBeenCalled();
 	});
 });

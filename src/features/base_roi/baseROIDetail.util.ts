@@ -28,8 +28,8 @@ const days = (n: number) => (Number.isFinite(n) ? `${num(n, 1)} d` : "—");
 
 /** "1x MG + 1x S → 1x IND" */
 export function recipeLabel(row: IBaseROIRow): string {
-	const recipe = row.result.production.buildings[0]?.activeRecipes[0]?.recipe;
-	if (!recipe) return row.recipeId;
+	// every row is one building with one recipe
+	const recipe = row.result.production.buildings[0].activeRecipes[0].recipe;
 	const side = (m: { material_ticker: string; material_amount: number }[]) =>
 		m.map((x) => `${num(x.material_amount, 1)}x ${x.material_ticker}`).join(" + ");
 	return recipe.inputs.length
@@ -51,12 +51,12 @@ export function detailSections(
 	s: BaseROISettings,
 	t: Translate
 ): IBaseROIDetailSection[] {
-	const k = (key: string, named?: Record<string, unknown>) =>
-		t(`base_roi.detail.${key}`, named ?? {});
+	const k = (key: string, named: Record<string, unknown> = {}) =>
+		t(`base_roi.detail.${key}`, named);
 	const m = row.metrics;
 	const production = row.result.production.buildings[0];
-	const recipe = production?.activeRecipes[0]?.recipe;
-	const efficiency = production?.totalEfficiency ?? 0;
+	const recipe = production.activeRecipes[0].recipe;
+	const efficiency = production.totalEfficiency;
 	const priceOf = new Map(row.materials.map((x) => [x.ticker, x.price]));
 
 	// 1 layout and building cost
@@ -171,9 +171,8 @@ export function detailSections(
 	];
 
 	// 3 production efficiency
-	const efficiencyLines: IBaseROIDetailLine[] = (
-		production?.efficiencyElements ?? []
-	).map((e) => ({
+	const efficiencyLines: IBaseROIDetailLine[] =
+		production.efficiencyElements.map((e) => ({
 		label: t(`game.efficiency_type.${e.efficiencyType}`),
 		value: num(e.value, 4),
 	}));
@@ -185,9 +184,9 @@ export function detailSections(
 	});
 
 	// 4 line runs
-	const baseHours = (recipe?.time_ms ?? 0) / 3_600_000;
+	const baseHours = recipe.time_ms / 3_600_000;
 	const cycle = efficiency > 0 ? baseHours / efficiency : Infinity;
-	const runsPerBuilding = Number.isFinite(cycle) && cycle > 0 ? 24 / cycle : 0;
+	const runsPerBuilding = 24 / cycle;
 	const runsPerDay = runsPerBuilding * row.productionBuildings;
 	const runs: IBaseROIDetailLine[] = [
 		{
@@ -220,7 +219,7 @@ export function detailSections(
 	];
 
 	// 5 yield
-	const yields: IBaseROIDetailLine[] = (recipe?.outputs ?? []).map((o) => ({
+	const yields: IBaseROIDetailLine[] = recipe.outputs.map((o) => ({
 		label: o.material_ticker,
 		ticker: o.material_ticker,
 		value: num(o.material_amount * runsPerDay, 2),

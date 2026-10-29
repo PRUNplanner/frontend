@@ -27,6 +27,7 @@ import { useResourceROIOverview } from "@/features/resource_roi_overview/useReso
 
 // Unit
 import {
+	basePlan,
 	calculateBase,
 	planetCandidates,
 	recipeCandidates,
@@ -232,6 +233,43 @@ describe("baseROIRows", () => {
 			2 * universe.metrics.dailyProfit,
 			4
 		);
+	});
+
+	it("a building without expertise: no COGC, no experts", () => {
+		const plan = basePlan(
+			{ building: "TNP", recipeId: "x", expertise: null },
+			3,
+			{} as Parameters<typeof basePlan>[2],
+			{ cogc: "matching", experts: "ramp" }
+		);
+		expect(plan.plan_cogc).toBe("---");
+		expect(plan.plan_data.experts.every((e) => e.amount === 0)).toBe(true);
+	});
+
+	it("missing exchange data: no bid, ask or traded volume", () => {
+		const ctx = ctxOn(STANDARD_PLANET);
+		const candidate = recipeCandidates(gameData).find((c) => c.building === "TNP")!;
+		const input = toRowInput(
+			candidate,
+			calculateBase(candidate, ctx, plain, undefined),
+			ctx,
+			() => {
+				throw new Error("no data");
+			}
+		);
+		expect(input.materials.every((m) => m.bid === 0 && m.ask === 0)).toBe(true);
+		expect(input.outputs.every((o) => o.traded === 0)).toBe(true);
+	});
+
+	it("an unknown building has no layout", () => {
+		expect(() =>
+			calculateBase(
+				{ ...recipeCandidates(gameData)[0], building: "XXX" },
+				ctxOn(STANDARD_PLANET),
+				plain,
+				undefined
+			)
+		).toThrow("No layout for XXX");
 	});
 
 	describe("planet rows (criterion 7)", () => {
