@@ -246,10 +246,10 @@ describe("PlanView save conflicts", () => {
 
 	// -- changes from another tab ----------------------------------------
 
-	function changed(uuid: string | null = PLAN_UUID) {
+	function changed(uuids: string[] = [PLAN_UUID]) {
 		remoteChange.value = {
 			keys: [],
-			uuid: uuid ?? undefined,
+			uuids,
 			seq: Math.random(),
 		};
 		return flushPromises();
@@ -268,6 +268,15 @@ describe("PlanView save conflicts", () => {
 			is_deleted: false,
 		});
 		expect(mocks.toast).not.toHaveBeenCalled();
+	});
+
+	it("loads the plan when another tab's bulk action included it", async () => {
+		respond({ GetPlan: () => remotePlan() });
+		const { wrapper } = await mountView({}, { login: true });
+
+		await changed(["another-plan", PLAN_UUID]);
+
+		expect(wrapper.find("h1").text()).toBe("Their name");
 	});
 
 	it("only tells about a plan another tab saved while there are edits", async () => {
@@ -323,8 +332,8 @@ describe("PlanView save conflicts", () => {
 		);
 		const before = queryCalls("GetPlan").length;
 
-		await changed("another-plan");
-		await changed(null);
+		await changed(["another-plan"]);
+		await changed([]);
 		remoteChange.value = null;
 		await flushPromises();
 		expect(queryCalls("GetPlan")).toHaveLength(before);

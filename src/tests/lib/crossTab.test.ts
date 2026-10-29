@@ -115,12 +115,27 @@ describe("crossTab", () => {
 			userStore.setToken("access", jwt(7));
 			const message = received();
 
-			broadcastChange([["planningdata", "plan"]], "plan-a");
+			broadcastChange([["planningdata", "plan"]], ["plan-a"]);
 
 			expect((await message).data).toStrictEqual({
 				userId: "7",
 				keys: [["planningdata", "plan"]],
 				uuid: "plan-a",
+				uuids: ["plan-a"],
+			});
+		});
+
+		it("posts several uuids without the single one", async () => {
+			userStore.setToken("access", jwt(7));
+			const message = received();
+
+			broadcastChange([["planningdata", "plan"]], ["plan-a", "plan-b"]);
+
+			expect((await message).data).toStrictEqual({
+				userId: "7",
+				keys: [["planningdata", "plan"]],
+				uuid: undefined,
+				uuids: ["plan-a", "plan-b"],
 			});
 		});
 
@@ -143,6 +158,7 @@ describe("crossTab", () => {
 				userId: "8",
 				keys: [["planningdata", "cx"]],
 			});
+			// an older build sends only the single uuid
 			otherTab.postMessage({
 				userId: "7",
 				keys: [["planningdata", "plan"]],
@@ -154,7 +170,7 @@ describe("crossTab", () => {
 
 			expect(remoteChange.value).toMatchObject({
 				keys: [["planningdata", "plan"]],
-				uuid: "plan-a",
+				uuids: ["plan-a"],
 			});
 			expect(invalidateKey).toHaveBeenCalledTimes(1);
 			expect(invalidateKey).toHaveBeenCalledWith(
@@ -163,6 +179,27 @@ describe("crossTab", () => {
 					exact: false,
 				}
 			);
+		});
+
+		it("announces every uuid of a batch, none without any", async () => {
+			userStore.setToken("access", jwt(7));
+			const before = remoteChange.value?.seq ?? 0;
+
+			otherTab.postMessage({
+				userId: "7",
+				keys: [["planningdata", "plan"]],
+				uuids: ["plan-a", "plan-b"],
+			});
+			await vi.waitFor(() =>
+				expect(remoteChange.value?.seq).toBe(before + 1)
+			);
+			expect(remoteChange.value?.uuids).toStrictEqual(["plan-a", "plan-b"]);
+
+			otherTab.postMessage({ userId: "7", keys: [["planningdata", "cx"]] });
+			await vi.waitFor(() =>
+				expect(remoteChange.value?.seq).toBe(before + 2)
+			);
+			expect(remoteChange.value?.uuids).toStrictEqual([]);
 		});
 	});
 
