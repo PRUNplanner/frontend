@@ -66,6 +66,7 @@ export interface IPlanEditProperties {
 // tools that report a result without further properties
 type SimpleToolName =
 	| "recipe_roi"
+	| "base_roi"
 	| "hq_upgrade"
 	| "upkeep_price"
 	| "market_live"

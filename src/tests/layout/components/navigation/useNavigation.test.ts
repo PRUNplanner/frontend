@@ -200,6 +200,15 @@ describe("useNavigation", { timeout: 60_000 }, () => {
 		expect(nav.tools.value).toHaveLength(8);
 	});
 
+	// test phase: Base ROI opens by URL only
+	it("has no Base ROI entry and keeps the Tools count", async () => {
+		const nav = await setup();
+		const all = nav.toolGroups.value.flatMap((g) => g.items);
+		expect(all.map((i) => i.name)).not.toContain("base-roi");
+		expect(all.map((i) => i.to)).not.toContain("/base-roi");
+		expect(nav.tools.value).toHaveLength(8);
+	});
+
 	it("lists the market report first among the market tools, with a prefetch", async () => {
 		const nav = await setup();
 		const [first] = nav.toolGroups.value[0].items;

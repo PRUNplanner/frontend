@@ -1,0 +1,117 @@
+{
+	"source": "roi_ai1.json",
+	"timestamp": "2026-10-28T19:55:55.366661+00:00",
+	"settings": {
+		"bufferDays": 9,
+		"targetPermit": 10,
+		"roundTripHours": 8,
+		"ship": "WCB"
+	},
+	"hqPrices": {
+		"LDE": 14366.39,
+		"TRU": 650.57,
+		"LTA": 5146.48,
+		"LSE": 12500.77,
+		"MCG": 49.82,
+		"SP": 3056.91,
+		"POW": 8320.55,
+		"LBH": 6192.84
+	},
+	"rows": [
+		{
+			"kind": "manufacturing",
+			"building": "CHP",
+			"recipe": "1x MG + 1x S + 1x CU = 1x IND",
+			"planet": "",
+			"jumps": 0,
+			"expertise": "CHEMISTRY",
+			"layout": {
+				"CM": 1,
+				"CHP": 16,
+				"HB2": 6,
+				"HBB": 5,
+				"STO": 1,
+				"STA": 1
+			},
+			"inputs": 141747.20632137763,
+			"consumables": 46955.9904,
+			"repair": 3848.1762711864408,
+			"revenue": 474882.1690610353,
+			"construction": 1612069.27,
+			"maxWeight": 642.8320242514732,
+			"maxVolume": 106.9445216468782,
+			"productionBuildings": 16,
+			"expected": {
+				"buffer": 2986134.146020858,
+				"hq": 752052.0399999999,
+				"shipCost": 57140.62437790872,
+				"total": 5407396.080398767,
+				"profit": 282330.7960684713,
+				"weekly": 0.36548378241483576,
+				"breakEven": 22.77372446650662
+			}
+		},
+		{
+			"kind": "loss_at_0",
+			"building": "BMP",
+			"recipe": "25x PG + 100x PE = 20x OVE",
+			"planet": "",
+			"jumps": 0,
+			"expertise": "MANUFACTURING",
+			"layout": {
+				"CM": 1,
+				"BMP": 21,
+				"HB1": 21,
+				"STA": 1
+			},
+			"inputs": 156466.9884144292,
+			"consumables": 47728.989,
+			"repair": 7500.153559322034,
+			"revenue": 225209.86201289974,
+			"construction": 2147541.9899999998,
+			"maxWeight": 86.66474185023552,
+			"maxVolume": 76.9374396835027,
+			"productionBuildings": 21,
+			"expected": {
+				"buffer": 1932326.27742298,
+				"hq": 752052.0399999999,
+				"shipCost": 20516.650582267386,
+				"total": 4852436.958005247,
+				"profit": 13513.731039148552,
+				"weekly": 0.019494558732593342,
+				"breakEven": 385.79129005022355
+			}
+		},
+		{
+			"kind": "resource",
+			"building": "EXT",
+			"recipe": "IY-206c Extraction (35.0x BER)",
+			"planet": "IY-206c",
+			"jumps": 5,
+			"expertise": "RESOURCE_EXTRACTION",
+			"layout": {
+				"CM": 1,
+				"EXT": 14,
+				"HB1": 9,
+				"STO": 1
+			},
+			"inputs": 0,
+			"consumables": 19091.5956,
+			"repair": 4412.961355932204,
+			"revenue": 131792.06646958613,
+			"construction": 1395418.7399999998,
+			"maxWeight": 566.8222024586833,
+			"maxVolume": 295.2198971138975,
+			"productionBuildings": 14,
+			"expected": {
+				"buffer": 678976.4793131376,
+				"hq": 752052.0399999999,
+				"shipCost": 78725.30589703933,
+				"total": 2905172.5652101766,
+				"profit": 108287.50951365393,
+				"weekly": 0.2609182585822535,
+				"breakEven": 31.550159942316554
+			}
+		}
+	]
+}

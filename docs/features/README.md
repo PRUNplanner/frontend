@@ -26,6 +26,7 @@ One page per `src/features/*` folder. Each page starts with **Purpose** and
 | [xit](xit.md) | Generate XIT action JSON (buy/transfer) |
 | [roi_overview](roi_overview.md) | ROI of every production recipe |
 | [resource_roi_overview](resource_roi_overview.md) | ROI of extracting a resource per planet |
+| [base_roi](base_roi.md) | Base ROI (`/base-roi`, test phase): every base layout ranked by break-even with the expert ramp, buffer, HQ and ship add-ons |
 | [repair_analysis](repair_analysis.md) | Repair cost vs building age |
 | [hq_upgrade_calculator](hq_upgrade_calculator.md) | Materials and cost for HQ level upgrades |
 | [government](government.md) | POPR reports and the upkeep price calculator |
