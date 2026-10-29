@@ -48,6 +48,7 @@
 			"title": "Restablece tu contraseña",
 			"info": "Introduce el código enviado a tu e-mail, junto con tu nueva contraseña.",
 			"throttled": "Demasiados intentos. Espera unos minutos e inténtalo de nuevo.",
+			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
 			"buttons": {
 				"send": "Restablecer contraseña"
 			},
