@@ -155,6 +155,8 @@ export const useQueryStore = defineStore(
 				keyHash,
 				setTimeout(() => {
 					blockTimers.delete(keyHash);
+					// a timer may fire just before the wall clock ends the block
+					blockedUntil.delete(keyHash);
 					if (!cacheState[keyHash]) return;
 					// logged and reported in execute already
 					execute(definitionName, params as QueryParams<QueryName>, {
