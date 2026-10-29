@@ -22,6 +22,7 @@ import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 
 // Util
 import { deepClone } from "@/util/data";
+import { yieldToBrowser } from "@/util/yieldToBrowser";
 import {
 	calculateMaterialCOGMs,
 	priceMaterials,
@@ -163,7 +164,7 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 						);
 						cache.set(key, base);
 						// yield back to Vue so the page stays usable
-						await new Promise((r) => setTimeout(r, 0));
+						await yieldToBrowser();
 					} catch (err) {
 						// e.g. its planet failed to load: skip this plan only
 						console.error(err);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, type PropType } from "vue";
+	import { computed, toRefs } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -21,23 +21,14 @@
 	// UI
 	import { PDataTable } from "@/ui";
 
-	const props = defineProps({
-		empireMaterialIO: {
-			type: Array as PropType<IEmpireMaterialIO[]>,
-			required: true,
-		},
-		cxUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-	});
+	const props = defineProps<{
+		empireMaterialIO: IEmpireMaterialIO[];
+		cxUuid?: string;
+	}>();
 
-	const localEmpireMaterialIO = computed(() => props.empireMaterialIO);
-	const localCxUuid = computed(() => props.cxUuid);
-
+	const { empireMaterialIO, cxUuid } = toRefs(props);
 	const { isLoading, opportunities, opportunityStats } =
-		useProductionOpportunities(localEmpireMaterialIO, localCxUuid);
+		useProductionOpportunities(empireMaterialIO, cxUuid);
 
 	const columns = computed<
 		PDataTableColumn<(typeof opportunities.value)[number]>[]

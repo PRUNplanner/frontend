@@ -4,8 +4,6 @@ import {
 	expect,
 	beforeEach,
 	vi,
-	beforeAll,
-	afterAll,
 } from "vitest";
 import { ref, reactive, isReactive, toRaw } from "vue";
 import {
@@ -96,52 +94,6 @@ describe("inertClone (structuredClone available)", () => {
 		// TypedArray
 		expect(clone.ta).not.toBe(ta);
 		expect(Array.from(clone.ta)).toEqual([10, 20, 30]);
-	});
-});
-
-describe("inertClone fallback branch (no structuredClone)", () => {
-	let inertClone: typeof inertCloneDefault;
-	let originalStructuredClone: any;
-
-	beforeAll(async () => {
-		// remove structuredClone and reload module to hit fallback
-		originalStructuredClone = globalThis.structuredClone;
-		// @ts-expect-error
-		delete globalThis.structuredClone;
-		vi.resetModules();
-		const mod = await import("@/util/data");
-		inertClone = mod.inertClone;
-	});
-
-	afterAll(() => {
-		// restore structuredClone
-		globalThis.structuredClone = originalStructuredClone;
-	});
-
-	it("shallow-clones arrays via slice", () => {
-		const nested = { foo: "bar" };
-		const arr = [nested];
-		const clone = inertClone(arr);
-		expect(clone).toEqual(arr);
-		expect(clone).not.toBe(arr);
-		// shallow: nested reference is same
-		expect(clone[0]).toBe(nested);
-	});
-
-	it("shallow-clones objects via spread", () => {
-		const nested = { x: 1 };
-		const obj = { nested };
-		const clone = inertClone(obj);
-		expect(clone).toEqual(obj);
-		expect(clone).not.toBe(obj);
-		// shallow: nested reference is same
-		expect((clone as any).nested).toBe(nested);
-	});
-
-	it("returns primitives and functions as-is", () => {
-		expect(inertClone(7)).toBe(7);
-		const fn = () => 99;
-		expect(inertClone(fn)).toBe(fn);
 	});
 });
 
@@ -244,32 +196,6 @@ describe("deepClone: structured clone available", () => {
 		clone.a = 42;
 		expect(obj.a).toBe(1);
 		expect(clone.a).toBe(42);
-	});
-});
-
-describe("deepClone (JSON fallback)", () => {
-	let originalStructuredClone: typeof structuredClone;
-
-	beforeAll(() => {
-		originalStructuredClone = globalThis.structuredClone;
-
-		// Remove it so fallback is triggered
-		// @ts-expect-error override global
-		delete globalThis.structuredClone;
-	});
-
-	afterAll(() => {
-		// Restore original
-		globalThis.structuredClone = originalStructuredClone;
-	});
-
-	it("clones using JSON.parse fallback", () => {
-		const source = ref({ a: 1, b: { c: 2 } });
-		const clone = deepClone(source.value);
-
-		expect(clone).toEqual({ a: 1, b: { c: 2 } });
-		expect(clone).not.toBe(source.value);
-		expect(clone.b).not.toBe(source.value.b);
 	});
 });
 

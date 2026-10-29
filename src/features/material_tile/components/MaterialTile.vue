@@ -7,9 +7,7 @@
 		computed,
 		type ComputedRef,
 		defineAsyncComponent,
-		getCurrentInstance,
 		onMounted,
-		type PropType,
 		ref,
 		type Ref,
 		watch,
@@ -45,55 +43,32 @@
 	import { PDrawer, PHoverCard, PSpin, PTooltip, PTable } from "@/ui";
 
 	// Props
-	const props = defineProps({
-		ticker: {
-			type: String,
-			required: true,
-		},
-		amount: {
-			type: Number,
-			required: false,
-			default: undefined,
-		},
-		// + sold, − bought per day
-		daily: {
-			type: Number,
-			required: false,
-			default: undefined,
-		},
-		// whose daily amount it is, for the card's wording
-		dailyContext: {
-			type: String as PropType<DailyContext>,
-			required: false,
-			default: "plan",
-		},
-		// the row's Market check, marks "your CX" in the card
-		marketCheck: {
-			type: Object as PropType<IMarketCheck>,
-			required: false,
-			default: undefined,
-		},
-		disableDrawer: {
-			type: Boolean,
-			required: false,
-			default: true,
-		},
-		max: {
-			type: Number,
-			required: false,
-			default: undefined,
-		},
-		enablePopover: {
-			type: Boolean,
-			required: false,
-			default: true,
-		},
-		popoverPlacement: {
-			type: String as PropType<Placement>,
-			required: false,
-			default: "left",
-		},
-	});
+	const props = withDefaults(
+		defineProps<{
+			ticker: string;
+			amount?: number;
+			// + sold, − bought per day
+			daily?: number;
+			// whose daily amount it is, for the card's wording
+			dailyContext?: DailyContext;
+			// the row's Market check, marks "your CX" in the card
+			marketCheck?: IMarketCheck;
+			disableDrawer?: boolean;
+			max?: number;
+			enablePopover?: boolean;
+			popoverPlacement?: Placement;
+		}>(),
+		{
+			amount: undefined,
+			daily: undefined,
+			dailyContext: "plan",
+			marketCheck: undefined,
+			max: undefined,
+			disableDrawer: true,
+			enablePopover: true,
+			popoverPlacement: "left",
+		}
+	);
 
 	const { getMaterial, getMaterialClass } = useMaterialData();
 	const { getMaterialExchangeOverview } = useExchangeData();
@@ -188,19 +163,7 @@
 	// the drawer returns focus to the tile: that opens no card
 	watch(refShowDrawer, (value) => !value && hoverCard.value?.ignoreFocus());
 
-	const instance = getCurrentInstance();
-
 	onMounted(async () => {
-		// enforce a "key" on MaterialTile
-		if (!instance?.vnode.key) {
-			console.warn(
-				`[${
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(instance?.type as any).__name
-				}] should always be used with a :key!`
-			);
-		}
-
 		try {
 			material.value = await getMaterial(props.ticker);
 			categoryCssClass.value = getMaterialClass(props.ticker);

@@ -11,7 +11,6 @@ import {
 	unsyncedPreferences,
 } from "@/features/preferences/preferenceSync";
 import { i18n, type SupportedLocale } from "@/lib/i18n";
-import type { Composer } from "vue-i18n";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
@@ -217,7 +216,7 @@ export function usePreferences() {
 		set: (v: SupportedLocale) => {
 			userStore.setPreference("locale", v);
 			userStore
-				.setLocale(v, i18n.global as unknown as Composer)
+				.setLocale(v, i18n.global)
 				.catch(console.error);
 		},
 	});
@@ -245,6 +244,7 @@ export function usePreferences() {
 						planUuid: planUuid,
 						planetId: planetId,
 						planName: planName,
+						// i18n keys, translated by the overview
 						preferences: [] as string[],
 					};
 
@@ -254,7 +254,9 @@ export function usePreferences() {
 						preference.includeCM !==
 							preferenceDefaults.planDefaults.includeCM
 					) {
-						planOverview.preferences.push("Include CM");
+						planOverview.preferences.push(
+							"profile.preferences.plan_settings.include_cm"
+						);
 					}
 
 					if (
@@ -263,7 +265,7 @@ export function usePreferences() {
 						preference.visitationMaterialExclusions.length > 0
 					) {
 						planOverview.preferences.push(
-							"Visitation Material Exclusions"
+							"profile.preferences.plan_settings.visitation_exclusions"
 						);
 					}
 
@@ -272,7 +274,7 @@ export function usePreferences() {
 						Object.keys(preference.constructionBuilt).length > 0
 					) {
 						planOverview.preferences.push(
-							"Construction Cart: Built"
+							"profile.preferences.plan_settings.construction_built"
 						);
 					}
 
@@ -281,7 +283,9 @@ export function usePreferences() {
 						preference.autoOptimizeHabs !==
 							preferenceDefaults.planDefaults.autoOptimizeHabs
 					) {
-						planOverview.preferences.push("Auto-Optimize Inactive");
+						planOverview.preferences.push(
+							"profile.preferences.plan_settings.auto_optimize_inactive"
+						);
 					}
 
 					// add to overview if there is a pref set

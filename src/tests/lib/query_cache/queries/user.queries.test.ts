@@ -2,7 +2,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 import { userQueries } from "@/lib/query_cache/queries/user.queries";
-import { callRegisterUser } from "@/features/api/userData.api";
+import {
+	callPasswordReset,
+	callRegisterUser,
+	callVerifyEmail,
+} from "@/features/api/userData.api";
+import { ApiError } from "@/lib/apiError";
 import {
 	callDeleteAPIKey,
 	callPostCreateAPIKey,
@@ -18,6 +23,8 @@ vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 vi.mock("@/features/api/userData.api", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/features/api/userData.api")>()),
 	callRegisterUser: vi.fn(),
+	callVerifyEmail: vi.fn(),
+	callPasswordReset: vi.fn(),
 	callPatchUserPreferences: vi.fn(async (prefs) => prefs),
 }));
 
@@ -57,6 +64,7 @@ describe("userQueries analytics", () => {
 	it("reports a failed signup with the field names only", async () => {
 		vi.mocked(callRegisterUser).mockRejectedValue(
 			Object.assign(new Error("400"), {
+				status: 400,
 				responseData: {
 					username: ["A user with that username already exists."],
 					email: ["Enter a valid email address."],
@@ -144,7 +152,7 @@ describe("userQueries analytics", () => {
 		).rejects.toThrow();
 		expect(trackEvent).not.toHaveBeenCalledWith("account:api_key_revoke");
 
-		vi.mocked(callDeleteAPIKey).mockResolvedValue(true);
+		vi.mocked(callDeleteAPIKey).mockResolvedValue(undefined);
 		await userQueries.DeleteAPIKey.fetchFn({ id: "1" });
 		expect(trackEvent).toHaveBeenCalledWith("account:api_key_revoke");
 	});
@@ -209,5 +217,51 @@ describe("userQueries analytics", () => {
 		await userQueries.PatchPreferences.fetchFn(userStore.preferences);
 
 		expect(trackUser).not.toHaveBeenCalled();
+	});
+});
+
+function apiError(status: number, responseData?: unknown): ApiError {
+	return Object.assign(new ApiError(String(status)), { status, responseData });
+}
+
+describe("userQueries error codes", () => {
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		vi.clearAllMocks();
+	});
+
+	it.each([
+		[apiError(429), "throttled"],
+		[apiError(400, { code: "expired" }), "expired"],
+		[apiError(400, { code: ["Ensure this field has 8 characters."] }), "invalid"],
+		[apiError(500), "error"],
+		[new Error("Network"), "error"],
+	])("maps a failed email verification to a code", async (err, code) => {
+		vi.mocked(callVerifyEmail).mockRejectedValue(err);
+		expect(
+			await userQueries.PostUserVerifyEmail.fetchFn({ code: "12345678" })
+		).toBe(code);
+	});
+
+	it("returns an error code for a failed password reset", async () => {
+		vi.mocked(callPasswordReset).mockRejectedValue(apiError(400));
+		expect(
+			await userQueries.PostUserPasswordReset.fetchFn({
+				email: "foo@example.com",
+				code: "12345678",
+				new_password: "secret-password",
+			})
+		).toBe("error");
+	});
+
+	it("rethrows a throttled password reset", async () => {
+		vi.mocked(callPasswordReset).mockRejectedValue(apiError(429));
+		await expect(
+			userQueries.PostUserPasswordReset.fetchFn({
+				email: "foo@example.com",
+				code: "12345678",
+				new_password: "secret-password",
+			})
+		).rejects.toMatchObject({ status: 429 });
 	});
 });

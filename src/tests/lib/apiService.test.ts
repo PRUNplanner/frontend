@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, beforeEach, onTestFinished, vi } from "vitest";
 import { z } from "zod";
 import { apiService } from "@/lib/apiService";
+import { ApiError, ApiValidationError, isApiError } from "@/lib/apiError";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axiosSetup from "@/util/axiosSetup";
 import { createPinia, setActivePinia } from "pinia";
@@ -47,6 +48,35 @@ describe("ApiService", () => {
 			await expect(
 				apiService.get("/test", responseSchema)
 			).rejects.toThrowError();
+		});
+
+		it("throws an ApiValidationError without status for a bad response", async () => {
+			mock.onGet("/test").reply(200, { id: "x" });
+
+			const err = await apiService
+				.get("/test", z.object({ id: z.number() }))
+				.catch((e: unknown) => e);
+
+			expect(err).toBeInstanceOf(ApiValidationError);
+			expect((err as Error).message).toMatch(/^Validation error: /);
+			expect(isApiError(err)).toBe(false);
+		});
+
+		it("throws an ApiError with status and body for an error response", async () => {
+			mock.onGet("/test").reply(500, { detail: "boom" });
+
+			const err = await apiService
+				.get("/test", z.object({}))
+				.catch((e: unknown) => e);
+
+			expect(err).toBeInstanceOf(ApiError);
+			expect(isApiError(err)).toBe(true);
+			expect(err).toMatchObject({
+				status: 500,
+				responseData: { detail: "boom" },
+				message: JSON.stringify({ detail: "boom" }),
+			});
+			expect(err).not.toHaveProperty("retryAfter");
 		});
 
 		it("keeps a 429's status and Retry-After seconds", async () => {
@@ -636,9 +666,7 @@ describe("ApiService", () => {
 		it("successfull call and reponse parsing", async () => {
 			mock.onDelete("/test").reply(200, true);
 
-			const result = await apiService.delete("/test");
-
-			expect(result).toBeTruthy();
+			await expect(apiService.delete("/test")).resolves.toBeUndefined();
 		});
 
 		it("triggering delete error", async () => {

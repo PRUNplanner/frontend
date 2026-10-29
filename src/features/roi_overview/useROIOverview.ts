@@ -8,6 +8,7 @@ import { TOTALMSDAY } from "@/features/planning/calculations/buildingCalculation
 
 // Util
 import { deepClone } from "@/util/data";
+import { yieldToBrowser } from "@/util/yieldToBrowser";
 
 // Static
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
@@ -55,17 +56,19 @@ export function useROIOverview(
 	 * @async
 	 * @param {IStaticOptimalProduction} optimal Optimal Building Setup
 	 * @param {IPlanContext} [ctx] Shared plan context, built if not given
+	 * @param {IPlanDefinition} [base] Definition to start from, the given one by default
 	 * @returns {Promise<void>} Void, adds to resultData directly
 	 */
 	async function calculateItem(
 		optimal: IStaticOptimalProduction,
-		ctx?: IPlanContext
+		ctx?: IPlanContext,
+		base: IPlanDefinition = definition.value
 	): Promise<IROIResult[]> {
 		ctx ??= await createPlanContext();
 
 		// get a deep copy of the definition as otherwise parallel runs would
 		// overwrite each other in terms of setup
-		const definitionCopy = deepClone(definition.value);
+		const definitionCopy = deepClone(base);
 
 		const buildingRecipes: Recipe[] = await getBuildingRecipes(
 			optimal.ticker,
@@ -169,10 +172,9 @@ export function useROIOverview(
 		progressCurrent.value = 0;
 		progressTotal.value = filteredOptimalProduction.length;
 
-		// set all the experts to 5
-		definition.value.plan_data.experts.forEach(
-			(expert) => (expert.amount = 5)
-		);
+		// all experts at 5, on a copy: the definition is the caller's
+		const base: IPlanDefinition = deepClone(definition.value);
+		base.plan_data.experts.forEach((expert) => (expert.amount = 5));
 
 		// one context for all plans: same planet and CX
 		const ctx: IPlanContext = await createPlanContext();
@@ -180,14 +182,14 @@ export function useROIOverview(
 		for (const optimal of filteredOptimalProduction) {
 			await Promise.resolve();
 
-			const result = await calculateItem(optimal, ctx);
+			const result = await calculateItem(optimal, ctx, base);
 			if (run !== latestRun) return undefined;
 			results.push(...result);
 
 			progressCurrent.value++;
 
 			// yield back to vue and update dom
-			await new Promise((r) => setTimeout(r, 0));
+			await yieldToBrowser();
 		}
 
 		if (run !== latestRun) return undefined;
@@ -213,7 +215,7 @@ export function useROIOverview(
 			.filter(
 				([key, value]) => !skipKeys.includes(key) && Number(value) !== 0
 			)
-			.sort((a, b) => (a > b ? 1 : -1))
+			.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
 			.map(([key, value]) => `${value}x ${key.toUpperCase()}`);
 
 		return [prefix, ...infrastructure].join(", ");

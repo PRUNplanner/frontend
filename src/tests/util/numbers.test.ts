@@ -6,6 +6,7 @@ import {
 	formatAmount,
 	formatPayback,
 	formatPercent,
+	signed,
 	clamp,
 	boundaryDescriptor,
 } from "@/util/numbers";
@@ -82,6 +83,28 @@ describe("Util: text", () => {
 			expect(mismatches).toStrictEqual([]);
 			for (const v of [NaN, Infinity, -Infinity])
 				expect(formatNumber(v, 3, true, true)).toBe("—");
+		});
+	});
+
+	describe("signed", () => {
+		// the copies it replaced: (v > 0 ? "+" : "") + formatNumber(v, d)
+		it.each([
+			[1234.4, 0, "+1,234"],
+			[0.4, 0, "+0"],
+			[0, 0, "0"],
+			[-12.6, 0, "-13"],
+			[2.5, 2, "+2.50"],
+			[-0.004, 2, "0.00"],
+			[NaN, 2, "—"],
+		])("signed(%s, %s) = %s", (value, decimals, out) => {
+			expect(signed(value, decimals)).toBe(out);
+			expect(signed(value, decimals)).toBe(
+				(value > 0 ? "+" : "") + formatNumber(value, decimals)
+			);
+		});
+
+		it("uses 2 decimals by default", () => {
+			expect(signed(1)).toBe("+1.00");
 		});
 	});
 

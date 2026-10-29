@@ -129,7 +129,7 @@ describe("CheckPage", () => {
 	afterEach(() => vi.useRealTimers());
 
 	it("opens the first empire, checks everything it sells and tracks it", async () => {
-		vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+		vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
 		const { wrapper, find } = await mountPage();
 		expect(execute).toHaveBeenCalledWith("GetEmpirePlans", {
 			empireUuid: "e1",
@@ -145,7 +145,10 @@ describe("CheckPage", () => {
 		expect(lastQuery().t).toContain("DW");
 		expect(find("check-result-profit").exists()).toBe(true);
 		expect(actions()).toContain("check_add_all");
-		vi.advanceTimersByTime(1100);
+		// 1 s after the last change
+		vi.advanceTimersByTime(900);
+		expect(trackEvent.mock.calls.some(([e]) => e === "tool:use")).toBe(false);
+		vi.advanceTimersByTime(200);
 		const use = trackEvent.mock.calls.find(([e]) => e === "tool:use");
 		expect(use?.[1]).toMatchObject({
 			tool_name: "production_chain",

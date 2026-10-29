@@ -3,7 +3,6 @@
 		computed,
 		type ComputedRef,
 		onUnmounted,
-		type PropType,
 		ref,
 		type Ref,
 		watch,
@@ -44,16 +43,7 @@
 	import type { PDataTableColumn } from "@/ui/ui.types";
 	import { ClearSharp, PlusSharp } from "@vicons/material";
 
-	const props = defineProps({
-		empires: {
-			type: Array as PropType<PlanEmpireElement[]>,
-			required: true,
-		},
-		cx: {
-			type: Array as PropType<CX[]>,
-			required: true,
-		},
-	});
+	const props = defineProps<{ empires: PlanEmpireElement[]; cx: CX[] }>();
 
 	// Local Data & Watcher
 	const localEmpires: ComputedRef<PlanEmpireElement[]> = computed(() =>
@@ -253,17 +243,9 @@
 		trackEvent("manage:empire_delete");
 
 		try {
-			const deletionResult: boolean = await useQuery("DeleteEmpire", {
-				empireUuid: empireUuid,
-			}).execute();
-
-			if (deletionResult) {
-				// forced reload of all Empires
-				emit(
-					"update:empireList",
-					await useQuery("GetAllEmpires").execute()
-				);
-			}
+			await useQuery("DeleteEmpire", { empireUuid: empireUuid }).execute();
+			// forced reload of all Empires
+			emit("update:empireList", await useQuery("GetAllEmpires").execute());
 		} catch (err) {
 			console.error(err);
 		} finally {

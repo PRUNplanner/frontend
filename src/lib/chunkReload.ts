@@ -63,7 +63,7 @@ export function registerChunkReload(router: Router): void {
 	// preloads and failed imports here. posthog-js handles its own failure
 	// (a content blocker), a reload wouldn't help.
 	window.addEventListener("vite:preloadError", (event) => {
-		const error = (event as Event & { payload?: unknown }).payload;
+		const error = event.payload;
 		if (navigating || !isChunkLoadError(error)) return;
 		if (String(error).includes("vendor_posthog")) return;
 		if (reloadOnce()) event.preventDefault();

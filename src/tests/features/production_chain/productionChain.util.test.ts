@@ -100,6 +100,11 @@ describe("productionChain.util", () => {
 		expect(formatShare(0.45)).toBe("45 %");
 		expect(formatShare(0.002)).toBe("0.2 %");
 		expect(formatShare(NaN)).toBe("—");
+		expect(formatShare(Infinity)).toBe("—");
+		expect(formatShare(-0.05)).toBe("-5.0 %");
+		expect(formatShare(0.0999)).toBe("10.0 %");
+		expect(formatShare(0.1)).toBe("10 %");
+		expect(formatShare(0)).toBe("0.0 %");
 		expect(
 			recipeLabel(
 				{

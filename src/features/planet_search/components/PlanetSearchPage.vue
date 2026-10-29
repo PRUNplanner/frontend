@@ -4,6 +4,7 @@
 		defineAsyncComponent,
 		onBeforeUnmount,
 		onMounted,
+		onScopeDispose,
 		ref,
 		shallowRef,
 		toRaw,
@@ -12,7 +13,7 @@
 		type Ref,
 		type ShallowRef,
 	} from "vue";
-	import { debounce } from "lodash-es";
+	import { debounce, isEqual } from "lodash-es";
 	import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
 	import { useI18n } from "vue-i18n";
@@ -148,11 +149,7 @@
 		() => route.query,
 		(query) => {
 			const next = decodeSearch(query);
-			if (
-				JSON.stringify(encodeSearch(next)) ===
-				JSON.stringify(currentQuery())
-			)
-				return;
+			if (isEqual(encodeSearch(next), currentQuery())) return;
 			filter.value = next.filter;
 			sort.value = next.sort;
 			view.value = next.view;
@@ -371,35 +368,28 @@
 	});
 
 	// one analytics event per settled search
-	let trackTimer: ReturnType<typeof setTimeout> | undefined;
-	watch(
-		filter,
-		() => {
-			clearTimeout(trackTimer);
-			trackTimer = setTimeout(() => {
-				// no free text and no plan uuids, only whether they are set
-				const {
-					q,
-					ref: _ref,
-					...tracked
-				} = encodeSearch({
-					filter: filter.value,
-					sort: [],
-					view: "list",
-					pins: [],
-				});
-				trackEvent("tool:use", {
-					tool_name: "planet_search",
-					filter: tracked,
-					has_text: q !== undefined,
-					reference_count: filter.value.references.length,
-					result_count: matched.value.length,
-				});
-			}, 1000);
-		},
-		{ deep: true }
-	);
-	onBeforeUnmount(() => clearTimeout(trackTimer));
+	const trackSearch = debounce(() => {
+		// no free text and no plan uuids, only whether they are set
+		const {
+			q,
+			ref: _ref,
+			...tracked
+		} = encodeSearch({
+			filter: filter.value,
+			sort: [],
+			view: "list",
+			pins: [],
+		});
+		trackEvent("tool:use", {
+			tool_name: "planet_search",
+			filter: tracked,
+			has_text: q !== undefined,
+			reference_count: filter.value.references.length,
+			result_count: matched.value.length,
+		});
+	}, 1000);
+	watch(filter, () => trackSearch(), { deep: true });
+	onScopeDispose(trackSearch.cancel);
 
 	/*
 	 * Pins, saved searches, sharing

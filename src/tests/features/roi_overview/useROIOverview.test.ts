@@ -24,6 +24,7 @@ import { useROIOverview } from "@/features/roi_overview/useROIOverview";
 import { usePlan } from "@/features/planning_data/usePlan";
 import { expectFullWorkforceCost } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import { deepClone } from "@/util/data";
 
 vi.mock("@/database/services/usePlanetData", async () => {
 	const actual: any = await vi.importActual(
@@ -78,6 +79,7 @@ vi.mock("@/features/planning/engine/calculatePlan", async () => {
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 describe("useROIOverview", async () => {
+	const original = deepClone(plan_etherwind);
 	const definition = ref(plan_etherwind);
 	const tnp = optimalProduction.find((e) => e.ticker === "TNP")!;
 
@@ -153,6 +155,8 @@ describe("useROIOverview", async () => {
 		await calculate();
 
 		expect(resultData.value.length).toBe(370);
+		// experts at 5 on a copy, the passed definition stays as it is
+		expect(definition.value).toEqual(original);
 	});
 
 	// e.g. the CX changes while the first sweep still runs

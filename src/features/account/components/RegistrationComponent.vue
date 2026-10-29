@@ -27,6 +27,7 @@
 	} from "@/features/homepage/homepage.constants";
 	import type { UserRegistrationPayload } from "@/features/api/schemas/user.schemas";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { isApiError } from "@/lib/apiError";
 	import { isEmailAddress } from "@/features/account/account.util";
 
 	// the welcome state's button: the panel switches to the login form
@@ -154,14 +155,14 @@
 			).execute();
 			registrationUsername.value = data.username;
 			registrationSuccess.value = true;
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (err: any) {
+		} catch (err) {
+			const apiError = isApiError(err) ? err : undefined;
 			// the security planet stays: the typed answer belongs to it
-			if (err.status === 429) {
+			if (apiError?.status === 429) {
 				alertKind.value = "throttled";
-			} else if (err.fieldErrors) {
+			} else if (apiError?.fieldErrors) {
 				for (const [key, messages] of Object.entries(
-					err.fieldErrors as Record<string, string[]>
+					apiError.fieldErrors
 				)) {
 					if (isField(key)) fieldErrors.value[key] = messages;
 					else alertMessages.value.push(...messages);

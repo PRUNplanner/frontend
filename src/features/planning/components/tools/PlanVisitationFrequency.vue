@@ -1,12 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		type ComputedRef,
-		type PropType,
-		ref,
-		type Ref,
-		watch,
-	} from "vue";
+	import { computed, type ComputedRef, ref, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -45,25 +38,12 @@
 	// UI
 	import { PSelectMultiple, PTable, PTooltip } from "@/ui";
 
-	const props = defineProps({
-		storage: {
-			type: Object as PropType<IStorageRecord>,
-			required: true,
-		},
-		materialIO: {
-			type: Array as PropType<IMaterialIO[]>,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			required: true,
-		},
-		planUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-	});
+	const props = defineProps<{
+		storage: IStorageRecord;
+		materialIO: IMaterialIO[];
+		disabled: boolean;
+		planUuid?: string;
+	}>();
 
 	// plan preference patch-in
 	const { visitationMaterialExclusions } = usePlanPreferences(() =>
@@ -123,42 +103,24 @@
 	}
 
 	// Local State
-	const localStorage: Ref<IStorageRecord> = ref(props.storage);
-	const localMaterialIO: Ref<IMaterialIO[]> = ref(props.materialIO);
-
-	const refMaterialExclusionOption: Ref<PSelectOption[]> = ref(
+	const exclusionOptions: ComputedRef<PSelectOption[]> = computed(() =>
 		getExclusionOptions(props.materialIO)
 	);
 	const refMaterialExclusions: Ref<string[]> = ref(
 		visitationMaterialExclusions.value ?? []
 	);
 
-	// Prop Watcher
-	watch(
-		() => props.storage,
-		(newStorage: IStorageRecord) => {
-			localStorage.value = newStorage;
-		}
-	);
-	watch(
-		() => props.materialIO,
-		(newIO: IMaterialIO[]) => {
-			localMaterialIO.value = newIO;
-			refMaterialExclusionOption.value = getExclusionOptions(newIO);
-		}
-	);
-
 	//
 	const totalWeight: ComputedRef<number> = computed(() => {
-		return getWeightOfAllStorages(localStorage.value);
+		return getWeightOfAllStorages(props.storage);
 	});
 
 	const totalVolume: ComputedRef<number> = computed(() => {
-		return getVolumeOfAllStorages(localStorage.value);
+		return getVolumeOfAllStorages(props.storage);
 	});
 
 	const dailyData = computed(() => {
-		const filteredMaterialIO: IMaterialIO[] = localMaterialIO.value.filter(
+		const filteredMaterialIO: IMaterialIO[] = props.materialIO.filter(
 			(e) => !refMaterialExclusions.value.includes(e.ticker)
 		);
 		return calculateDailyData(filteredMaterialIO);
@@ -174,7 +136,7 @@
 			{ volume: 5000, weight: 5000 },
 		];
 
-		const filteredMaterialIO: IMaterialIO[] = localMaterialIO.value.filter(
+		const filteredMaterialIO: IMaterialIO[] = props.materialIO.filter(
 			(e) => !refMaterialExclusions.value.includes(e.ticker)
 		);
 
@@ -224,7 +186,7 @@
 	const storageAmountsForDisplay: ComputedRef<
 		{ ticker: string; amount: number }[]
 	> = computed(() => {
-		return Object.entries(localStorage.value)
+		return Object.entries(props.storage)
 			.filter(([_, amount]) => amount > 0)
 			.map(([ticker, amount]) => ({ ticker: ticker, amount: amount }));
 	});
@@ -363,7 +325,7 @@
 							t('plan.tools.visitation_frequency.storage.exclusion_label')
 						"
 						:disabled="disabled"
-						:options="refMaterialExclusionOption"
+						:options="exclusionOptions"
 						searchable
 						clearable
 						@update:value="

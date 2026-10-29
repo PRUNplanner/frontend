@@ -80,6 +80,17 @@ export function formatPercent(value: number, decimals: number = 2): string {
 }
 
 /**
+ * Formats a number with a "+" in front of positive values, negatives keep
+ * formatNumber's "-": "+1,234", "-12", "0"
+ * @param {number} value numeric input
+ * @param {number} decimals decimals
+ * @returns {string} formatted number as string
+ */
+export function signed(value: number, decimals: number = 2): string {
+	return (value > 0 ? "+" : "") + formatNumber(value, decimals);
+}
+
+/**
  * Formats a number representing an amount as String
  * with thousand separation.
  * @author jplacht

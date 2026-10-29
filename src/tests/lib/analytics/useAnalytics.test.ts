@@ -16,6 +16,7 @@ import {
 	identify,
 	register,
 } from "@/lib/analytics/usePostHog";
+import { ApiError, ApiValidationError } from "@/lib/apiError";
 
 vi.mock("@/lib/analytics/usePostHog", () => ({
 	capture: vi.fn(),
@@ -73,7 +74,8 @@ describe("useAnalytics", () => {
 
 	it.each([
 		Object.assign(new Error('{"detail":"nope"}'), { status: 400 }),
-		new Error("Validation error: [...]"),
+		Object.assign(new ApiError("timeout"), { status: undefined }),
+		new ApiValidationError("Validation error: [...]"),
 	])("trackVueError only logs an apiService error", (error) => {
 		trackVueError(error, instance({ name: "EmpireView" }), "setup function");
 

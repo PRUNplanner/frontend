@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, type PropType, type WritableComputedRef } from "vue";
+	import { computed, type WritableComputedRef } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -12,20 +12,11 @@
 	// UI
 	import { PInputNumber } from "@/ui";
 
-	const props = defineProps({
-		disabled: {
-			type: Boolean,
-			required: true,
-		},
-		areaData: {
-			type: Object as PropType<IAreaResult>,
-			required: true,
-		},
-		planetNaturalId: {
-			type: String,
-			required: true,
-		},
-	});
+	const props = defineProps<{
+		disabled: boolean;
+		areaData: IAreaResult;
+		planetNaturalId: string;
+	}>();
 
 	const emit = defineEmits<{
 		(e: "update:permits", value: number): void;

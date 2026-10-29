@@ -23,7 +23,7 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 			if (name === "PostCreateAPIKey") return { api_key: "secret-key" };
 			if (name === "DeleteAPIKey") {
 				keys.value = [];
-				return true;
+				return undefined;
 			}
 			return name === "GetAPIKeys" ? keys.value : [];
 		},

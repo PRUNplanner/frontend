@@ -5,7 +5,6 @@
 		nextTick,
 		onBeforeUnmount,
 		onMounted,
-		type PropType,
 		ref,
 		type Ref,
 		useTemplateRef,
@@ -49,60 +48,30 @@
 	// Util
 	import { STARTER_MAX_BUILDINGS } from "@/features/plan_analytics/planInsights.util";
 
-	const props = defineProps({
-		disabled: {
-			type: Boolean,
-			required: true,
-		},
-		productionData: {
-			type: Object as PropType<IProductionResult>,
-			required: true,
-		},
-		cogc: {
-			type: String as PropType<PlanCOGCProgram>,
-			required: true,
-		},
-		cxUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-		planetId: {
-			type: String,
-			required: true,
-		},
-		planetResources: {
-			type: Object as PropType<PlanetResource[]>,
-			required: true,
-		},
-		// a shared plan's copy: what changed against it
-		changes: {
-			type: Object as PropType<IPlanChanges>,
-			required: false,
-			default: undefined,
-		},
-		// the plan's Material I/O, for the recipe picker
-		materialIO: {
-			type: Array as PropType<IMaterialIO[]>,
-			required: false,
-			default: () => [],
-		},
-		experts: {
-			type: Object as PropType<IExpertRecord>,
-			required: false,
-			default: undefined,
-		},
-		// after a picked recipe: where, and what changed
-		status: {
-			type: Object as PropType<{
-				building: number;
-				recipe: number;
-				text: string;
-			}>,
-			required: false,
-			default: undefined,
-		},
-	});
+	const props = withDefaults(
+		defineProps<{
+			disabled: boolean;
+			productionData: IProductionResult;
+			cogc: PlanCOGCProgram;
+			cxUuid?: string;
+			planetId: string;
+			planetResources: PlanetResource[];
+			// a shared plan's copy: what changed against it
+			changes?: IPlanChanges;
+			// the plan's Material I/O, for the recipe picker
+			materialIO?: IMaterialIO[];
+			experts?: IExpertRecord;
+			// after a picked recipe: where, and what changed
+			status?: { building: number; recipe: number; text: string };
+		}>(),
+		{
+			cxUuid: undefined,
+			changes: undefined,
+			materialIO: () => [],
+			experts: undefined,
+			status: undefined,
+		}
+	);
 
 	const emit = defineEmits<{
 		// from PlanProductionBuilding.vue
@@ -324,10 +293,8 @@
 		};
 	}
 	// an unfolded building brings recipes not measured yet
-	watch(
-		[() => props.productionData, refFolded],
-		() => nextTick(measureRecipeColumns),
-		{ deep: true }
+	watch([() => props.productionData, refFolded], () =>
+		nextTick(measureRecipeColumns)
 	);
 	// shown again after a tool, or a pane folded beside it
 	let resize: ResizeObserver | undefined;

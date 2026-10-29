@@ -8,7 +8,7 @@ import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePlanetData } from "@/database/services/usePlanetData";
 import { useCXData } from "@/features/cx/useCXData";
 import { usePrice } from "@/features/cx/usePrice";
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
+import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
 import {
 	getActiveEmpire,
 	usePlanContext,
@@ -33,6 +33,7 @@ import {
 } from "@/features/fio_repair/fioRepair.util";
 
 import { planetDisplayName } from "@/util/planetName";
+import { yieldToBrowser } from "@/util/yieldToBrowser";
 
 // Types & Interfaces
 import type { IPriceBook } from "@/features/cx/priceBook";
@@ -66,7 +67,7 @@ export function useFIORepair(
 	const { buildingsMap } = useBuildingData();
 	const { getPlanet } = usePlanetData();
 	const { findEmpireCXUuid } = useCXData();
-	const { enhanceMaterialIOMinimal } = useMaterialIOUtil();
+	const { enhanceMaterialIO } = useMaterialIOUtil();
 	const { loadGameData, createContext } = usePlanContext();
 	const {
 		defaultCXUuid,
@@ -196,7 +197,7 @@ export function useFIORepair(
 						console.error(err);
 					}
 					progress.value.current++;
-					await new Promise((r) => setTimeout(r, 0));
+					await yieldToBrowser();
 				}
 			});
 		return calcRun;
@@ -242,7 +243,7 @@ export function useFIORepair(
 		);
 
 	const price = (prices: IPriceBook, bill: IMaterialIOMinimal[]) =>
-		priceRepairMaterials(enhanceMaterialIOMinimal(bill), prices);
+		priceRepairMaterials(enhanceMaterialIO(bill), prices);
 
 	/*
 	 * Bases, most urgent first

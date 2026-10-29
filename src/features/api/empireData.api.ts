@@ -104,9 +104,9 @@ export async function callCreateEmpire(
  * @export
  * @async
  * @param {string} empireUuid Empire Uuid
- * @returns {Promise<boolean>} Deletion Status
+ * @returns {Promise<void>} Resolves once deleted
  */
-export async function callDeleteEmpire(empireUuid: string): Promise<boolean> {
+export async function callDeleteEmpire(empireUuid: string): Promise<void> {
 	return apiService.delete(`/planning/empire/${empireUuid}/`);
 }
 

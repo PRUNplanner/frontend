@@ -6,12 +6,13 @@
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { i18n } from "@/lib/i18n";
 import { toast } from "@/ui/useToast";
+import { readStorage, writeStorage } from "@/lib/storage";
 
 const KEY = "prunplanner_seen_release";
 
 export function announceRelease(openChangelog: () => void): void {
-	const seen = localStorage.getItem(KEY);
-	localStorage.setItem(KEY, __APP_VERSION__);
+	const seen = readStorage(KEY);
+	writeStorage(KEY, __APP_VERSION__);
 	if (seen === null || seen === __APP_VERSION__) return;
 
 	const { t } = i18n.global;

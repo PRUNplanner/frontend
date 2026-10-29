@@ -2,9 +2,9 @@ import { type ShallowRef, shallowRef } from "vue";
 
 import type { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
 
-interface SharedState<T extends object> {
+interface SharedState<T extends object, K extends keyof T> {
 	allData: ShallowRef<T[]>;
-	cache: Map<string, T>;
+	cache: Map<T[K], T>;
 	loaded: boolean;
 }
 
@@ -12,18 +12,18 @@ const storeStateMap = new WeakMap<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	ReturnType<typeof useIndexedDBStore<any, any>>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	SharedState<any>
+	SharedState<any, any>
 >();
 
 // Ensures a store is created and stored in the map
 function ensureState<T extends object, K extends keyof T & string>(
 	store: ReturnType<typeof useIndexedDBStore<T, K>>
-): SharedState<T> {
-	let state = storeStateMap.get(store) as SharedState<T> | undefined;
+): SharedState<T, K> {
+	let state = storeStateMap.get(store) as SharedState<T, K> | undefined;
 	if (!state) {
 		state = {
 			allData: shallowRef<T[]>([]),
-			cache: new Map<string, T>(),
+			cache: new Map<T[K], T>(),
 			loaded: false,
 		};
 		storeStateMap.set(store, state);
@@ -34,13 +34,8 @@ function ensureState<T extends object, K extends keyof T & string>(
 export function useDB<T extends object, K extends keyof T & string>(
 	store: ReturnType<typeof useIndexedDBStore<T, K>>
 ) {
-	// The key prop literal type
-	type KeyProp = typeof store.keyPath extends keyof T
-		? typeof store.keyPath
-		: never;
-
 	// The type of the key itself
-	type KeyType = T[KeyProp] extends IDBValidKey ? T[KeyProp] : never;
+	type KeyType = T[K] extends IDBValidKey ? T[K] : never;
 
 	const state = ensureState(store);
 
@@ -62,7 +57,6 @@ export function useDB<T extends object, K extends keyof T & string>(
 		if (replace) state.cache.clear();
 
 		for (const item of rows) {
-			// @ts-expect-error keyPath dynamically
 			state.cache.set(item[store.keyPath], item);
 		}
 
@@ -72,13 +66,12 @@ export function useDB<T extends object, K extends keyof T & string>(
 
 	async function get(key: KeyType): Promise<T | undefined> {
 		// return from cache
-		if (state.cache.has(key as string))
-			return state.cache.get(key as string)! as T;
+		if (state.cache.has(key)) return state.cache.get(key)!;
 
 		// check in database
 		const item = await store.get(key);
-		if (item) state.cache.set(key as string, item);
-		return item as T;
+		if (item) state.cache.set(key, item);
+		return item;
 	}
 
 	/**
@@ -91,7 +84,7 @@ export function useDB<T extends object, K extends keyof T & string>(
 			throw new Error(
 				`No data: store '${store.storeName}' is not loaded. Ensure game data has been loaded before calculating.`
 			);
-		return state.cache.get(key as string);
+		return state.cache.get(key);
 	}
 
 	return {

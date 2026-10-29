@@ -153,7 +153,7 @@ describe("SharingModal", () => {
 
 	it("stops sharing, closes the modal and tracks it", async () => {
 		share();
-		vi.mocked(callDeleteSharing).mockResolvedValue(true);
+		vi.mocked(callDeleteSharing).mockResolvedValue(undefined);
 		vi.mocked(callGetSharedList).mockResolvedValue([]);
 		const { component } = await mountModal();
 

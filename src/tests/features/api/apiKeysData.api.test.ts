@@ -65,7 +65,7 @@ describe("API Keys Data API Calls", async () => {
 
 		mock.onDelete(`/user/api/keys/${deleteId}/`).reply(204);
 
-		expect(await callDeleteAPIKey(deleteId)).toBeTruthy();
+		await expect(callDeleteAPIKey(deleteId)).resolves.toBeUndefined();
 		expect(spyApiService).toHaveBeenCalledOnce();
 	});
 });

@@ -97,11 +97,10 @@
 				{{ $t("production_chains.settings.prices") }}
 			</span>
 			<CXPreferenceSelector
-				:cx-uuid="cxUuid"
+				v-model:cx-uuid="cxUuid"
 				:follow-default="followDefault"
 				size="sm"
-				select-class="w-52"
-				@update:cxuuid="(v) => (cxUuid = v)" />
+				select-class="w-52" />
 		</div>
 		<div class="flex items-center gap-2">
 			<span class="text-xs uppercase tracking-wide text-muted">

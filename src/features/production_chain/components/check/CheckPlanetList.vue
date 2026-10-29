@@ -3,6 +3,9 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Composables
+	import { useSortState } from "@/features/production_chain/useSortState";
+
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
@@ -91,8 +94,10 @@
 	const mine = ref(false);
 	const nearCX: Ref<PlanetSearchCX> = ref(defaultCX);
 	const maxJumps: Ref<number | null> = ref(null);
-	const sortKey = ref<ISortKey>("gain");
-	const sortDir = ref<1 | -1>(-1);
+	const { sortKey, sortDir, sortBy, ariaSort } = useSortState<ISortKey>(
+		"gain",
+		(key) => key === "gain" || key === "plots"
+	);
 
 	const searchCtx = computed(() => createSearchContext(index, {}, now));
 	const jumpsOf = (p: PlanetSearchIndexEntry) =>
@@ -153,20 +158,6 @@
 		});
 	});
 	const shown = computed(() => matched.value.slice(0, MAX_ROWS));
-
-	function sortBy(key: ISortKey): void {
-		if (sortKey.value === key) sortDir.value = sortDir.value === 1 ? -1 : 1;
-		else {
-			sortKey.value = key;
-			sortDir.value = key === "gain" || key === "plots" ? -1 : 1;
-		}
-	}
-	const ariaSort = (key: ISortKey) =>
-		sortKey.value === key
-			? sortDir.value === 1
-				? "ascending"
-				: "descending"
-			: undefined;
 
 	const COLUMNS: { key: ISortKey | "rank" | "factor" | "cost" | "extras"; sort?: ISortKey; numeric?: boolean }[] = [
 		{ key: "rank", numeric: true },

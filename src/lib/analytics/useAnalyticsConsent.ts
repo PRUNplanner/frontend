@@ -1,17 +1,15 @@
 import { computed, ref, type Ref } from "vue";
 
+import { readStorage, writeStorage } from "@/lib/storage";
+
 type AnalyticsConsent = "granted" | "denied";
 
 const STORAGE_KEY = "prunplanner_analytics_consent";
 
+// storage blocked (private mode): not asked
 function readStored(): AnalyticsConsent | null {
-	try {
-		const value = localStorage.getItem(STORAGE_KEY);
-		return value === "granted" || value === "denied" ? value : null;
-	} catch {
-		// storage blocked (private mode): not asked
-		return null;
-	}
+	const value = readStorage(STORAGE_KEY);
+	return value === "granted" || value === "denied" ? value : null;
 }
 
 // the choice made in this browser, null = not asked yet
@@ -34,11 +32,8 @@ const reopened: Ref<boolean> = ref(false);
 function store(value: AnalyticsConsent): void {
 	stored.value = value;
 	reopened.value = false;
-	try {
-		localStorage.setItem(STORAGE_KEY, value);
-	} catch {
-		// storage blocked: the choice lasts until the page is closed
-	}
+	// storage blocked: the choice lasts until the page is closed
+	writeStorage(STORAGE_KEY, value);
 }
 
 /**

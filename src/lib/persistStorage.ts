@@ -1,5 +1,6 @@
 import type { StorageLike } from "pinia-plugin-persistedstate";
 import { trackException } from "@/lib/analytics/useAnalytics";
+import { readStorage } from "@/lib/storage";
 
 // no imports from the stores: they read this while their module loads
 
@@ -17,7 +18,7 @@ const reported = new Set<string>();
  * and tab, so a later failure of another store is reported too.
  */
 export const persistStorage: StorageLike = {
-	getItem: (key) => localStorage.getItem(key),
+	getItem: (key) => readStorage(key),
 	setItem: (key, value) => {
 		if (stopped) return;
 		try {

@@ -48,11 +48,7 @@
 							<PForm>
 								<PFormItem :label="t('recipe_roi.cx_select')">
 									<CXPreferenceSelector
-										:cx-uuid="refSelectedCXUuid"
-										@update:cxuuid="
-											(value) =>
-												(refSelectedCXUuid = value)
-										" />
+										v-model:cx-uuid="refSelectedCXUuid" />
 								</PFormItem>
 							</PForm>
 							<HelpDrawer file-name="tools_roi_overview" />

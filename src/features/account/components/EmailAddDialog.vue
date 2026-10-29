@@ -9,6 +9,7 @@
 
 	// Composables
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { isApiError } from "@/lib/apiError";
 	import { useEmailNudge } from "@/features/account/useEmailNudge";
 
 	// Stores
@@ -94,13 +95,11 @@
 			trackEvent("account:email_add", { is_success: true });
 			step.value = "code";
 		} catch (err) {
-			const { status, responseData } = err as {
-				status?: number;
-				responseData?: { email?: unknown };
-			};
-			const field = Array.isArray(responseData?.email)
-				? responseData.email[0]
+			const status = isApiError(err) ? err.status : undefined;
+			const email = isApiError(err)
+				? (err.responseData as { email?: unknown } | undefined)?.email
 				: undefined;
+			const field = Array.isArray(email) ? email[0] : undefined;
 			const reason =
 				status === 429
 					? "throttled"

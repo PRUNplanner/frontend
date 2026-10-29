@@ -6,7 +6,7 @@
 	import { usePlanetData } from "@/database/services/usePlanetData";
 
 	// Util
-	import { formatNumber, formatPercent } from "@/util/numbers";
+	import { formatNumber, formatPercent, signed } from "@/util/numbers";
 	import { exchangeOptionLabel } from "@/features/exchanges/exchangeLabel.util";
 	import { ALL_PLANETS } from "@/features/exchanges/cxEdit.util";
 
@@ -58,8 +58,8 @@
 			.filter((n) => n.code === "cogm_drift")
 			.sort((a, b) => Math.abs(gap(b)) - Math.abs(gap(a)))
 	);
-	const signed = (text: string, value: number) =>
-		value > 0 ? `+${text}` : text;
+	// not signed() + " %": formatPercent drops the unit for ∞ and NaN
+	const signedPercent = (v: number) => (v > 0 ? "+" : "") + formatPercent(v, 0);
 	const others = computed(() => notes.filter((n) => n.code !== "cogm_drift"));
 
 	const { t } = useI18n();
@@ -215,9 +215,9 @@
 								{{ formatNumber(note.cogm!) }}
 							</td>
 							<td class="numeric tabular-nums text-nowrap">
-								{{ signed(formatNumber(diff(note)), diff(note)) }}
+								{{ signed(diff(note)) }}
 								<span class="text-muted">
-									{{ signed(formatPercent(gap(note) * 100, 0), gap(note)) }}
+									{{ signedPercent(gap(note) * 100) }}
 								</span>
 							</td>
 							<td class="text-muted text-xs">{{ names(note.planets) }}</td>

@@ -1,12 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		type PropType,
-		ref,
-		type Ref,
-		useTemplateRef,
-		watch,
-	} from "vue";
+	import { computed, ref, type Ref, useTemplateRef, watch } from "vue";
 
 	// Components
 	import EmpireMaterialIOFilters from "@/features/empire/components/EmpireMaterialIOFilters.vue";
@@ -46,27 +39,12 @@
 	import type { PSelectOption } from "@/ui/ui.types";
 	import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/calculations/workforceCalculations";
 
-	const props = defineProps({
-		content: {
-			type: String as PropType<
-				"materialio" | "analysis" | "opportunities"
-			>,
-			required: true,
-		},
-		empireMaterialIO: {
-			type: Array as PropType<IEmpireMaterialIO[]>,
-			required: true,
-		},
-		planListData: {
-			type: Array as PropType<IEmpirePlanListData[]>,
-			required: true,
-		},
-		cxUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-	});
+	const props = defineProps<{
+		content: "materialio" | "analysis" | "opportunities";
+		empireMaterialIO: IEmpireMaterialIO[];
+		planListData: IEmpirePlanListData[];
+		cxUuid?: string;
+	}>();
 
 	const emit = defineEmits<{
 		"update:content": ["materialio" | "analysis" | "opportunities"];
@@ -81,9 +59,6 @@
 	];
 
 	// Local State
-	const localEmpireMaterialIO: Ref<IEmpireMaterialIO[]> = ref([]);
-	const localPlanListData = computed(() => props.planListData);
-
 	const filteredMaterialIO: Ref<IEmpireMaterialIO[]> = ref([]);
 	const refMaterialSelectOptions: Ref<PSelectOption[]> = ref([]);
 	const refFilterMaterials: Ref<string[]> = ref([]);
@@ -162,8 +137,7 @@
 	// Prop Watcher
 	watch(
 		() => props.empireMaterialIO,
-		(newData: IEmpireMaterialIO[]) => {
-			localEmpireMaterialIO.value = newData;
+		() => {
 			createFilter();
 			applyFilter();
 		},
@@ -177,7 +151,7 @@
 	 * @returns {void}
 	 */
 	async function createFilter(): Promise<void> {
-		refMaterialSelectOptions.value = localEmpireMaterialIO.value.map(
+		refMaterialSelectOptions.value = props.empireMaterialIO.map(
 			(m) => {
 				return {
 					label: m.ticker,
@@ -188,7 +162,7 @@
 
 		let availPlanetIds: string[] = [];
 
-		localEmpireMaterialIO.value.map((p) => {
+		props.empireMaterialIO.map((p) => {
 			availPlanetIds = availPlanetIds.concat(
 				p.inputPlanets
 					.flat()
@@ -230,7 +204,7 @@
 	 * @returns {void}
 	 */
 	function applyFilter(): void {
-		filteredMaterialIO.value = inertClone(localEmpireMaterialIO.value);
+		filteredMaterialIO.value = inertClone(props.empireMaterialIO);
 
 		// material
 		if (refFilterMaterials.value.length > 0) {
@@ -365,7 +339,7 @@
 		<EmpireAnalysis
 			v-else-if="content === 'analysis'"
 			:empire-material-i-o="filteredMaterialIO"
-			:plan-list-data="localPlanListData"
+			:plan-list-data="planListData"
 			@open:material="openMaterial" />
 		<EmpireOpportunities
 			v-else-if="content === 'opportunities'"

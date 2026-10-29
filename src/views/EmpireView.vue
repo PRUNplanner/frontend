@@ -30,13 +30,14 @@
 		usePlanContext,
 	} from "@/features/planning/usePlanContext";
 	import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
+	import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { planResultCacheKey } from "@/features/empire/empire.util";
 	import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
 	import { calculateEmpireShippingDemand } from "@/features/empire/util/empireShippingDemand.util";
 	import { profitBreakdown } from "@/features/planning/util/profitBreakdown.util";
 	import { empireSplitParts } from "@/features/empire/empireAnalysis.util";
+	import { yieldToBrowser } from "@/util/yieldToBrowser";
 	const {
 		calculateEmpireCostOverview,
 		combineEmpireMaterialIO,
@@ -100,13 +101,7 @@
 	import { useRouter } from "vue-router";
 	const router = useRouter();
 
-	const props = defineProps({
-		empireUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-	});
+	const props = defineProps<{ empireUuid?: string }>();
 
 	const { setProfits } = useEmpireProfits();
 
@@ -223,7 +218,7 @@
 					// cache
 					cacheCalculatedPlans.set(cacheKey, calculation);
 					// yield back to vue and update DOM
-					await new Promise((r) => setTimeout(r, 0));
+					await yieldToBrowser();
 					if (current !== run) return;
 				}
 			}

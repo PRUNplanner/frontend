@@ -10,6 +10,7 @@
  */
 
 import { computed, ref } from "vue";
+import { writeStorage } from "@/lib/storage";
 
 const POLL_MS = 5 * 60_000;
 const MIN_GAP_MS = 60_000;
@@ -62,7 +63,7 @@ function startWatch(): void {
 	watching = true;
 
 	// left by older builds, which compared against it
-	localStorage.removeItem("prunplanner_version");
+	writeStorage("prunplanner_version", null);
 
 	checkIfDue();
 	setInterval(checkIfDue, POLL_MS);

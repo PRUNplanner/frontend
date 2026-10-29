@@ -18,7 +18,9 @@
 		operator: string;
 	}>();
 
-	const emit = defineEmits(["update:modelValue"]);
+	const emit = defineEmits<{
+		"update:modelValue": [value: ComparisonTarget];
+	}>();
 
 	const isStaticOnly = computed(() => props.operator === "matches");
 
@@ -93,7 +95,7 @@
 					value: 'previous_pct',
 				},
 			]"
-			@update:value="(val: any) => setType(val)" />
+			@update:value="(val) => setType(val as ComparisonTarget['type'])" />
 
 		<span v-else class="text-xs font-bold uppercase px-2 text-slate-400">
 			{{ $t("market_live.rule_type.text") }}

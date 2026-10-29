@@ -17,7 +17,7 @@ import { useROIOverview } from "@/features/roi_overview/useROIOverview";
 import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
+import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
 
 // Static
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";

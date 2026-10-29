@@ -119,7 +119,7 @@ describe("Empire Data API Calls", async () => {
 
 		mock.onDelete("/planning/empire/foo/").reply(200, true);
 
-		expect(await callDeleteEmpire("foo")).toBeTruthy();
+		await expect(callDeleteEmpire("foo")).resolves.toBeUndefined();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
 	});
 

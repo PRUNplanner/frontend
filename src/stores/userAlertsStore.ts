@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
+import { i18n } from "@/lib/i18n";
+import { deepClone } from "@/util/data";
+
 // Types & Interfaces
 import type { DetectorConfig } from "@/features/market_live/cxDetectors.types";
-
-// NOTE: Need to connect alert preferences to user preferences + backend
 
 export const useAlertsStore = defineStore(
 	"prunplanner_alerts",
@@ -15,7 +16,7 @@ export const useAlertsStore = defineStore(
 
 		// actions
 		const startEditing = (alert: DetectorConfig) => {
-			activeDraft.value = JSON.parse(JSON.stringify(alert));
+			activeDraft.value = deepClone(alert);
 		};
 
 		const cancelEditing = () => {
@@ -37,7 +38,9 @@ export const useAlertsStore = defineStore(
 		const addAlert = () => {
 			const newAlert: DetectorConfig = {
 				id: crypto.randomUUID(),
-				name: "New Alert",
+				name: i18n.global.t(
+					"market_live.components.alert_manager.new_alert_name"
+				),
 				severity: "LOW",
 				logic: {
 					operator: "AND",

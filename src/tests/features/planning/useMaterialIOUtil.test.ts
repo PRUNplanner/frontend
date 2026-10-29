@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 // Composables
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
+import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
@@ -91,8 +91,8 @@ describe("Util: materialIO ", async () => {
 		expect(findDW?.output).toBe(12);
 	});
 
-	it("enhanceMaterialIOMinimal", async () => {
-		const { enhanceMaterialIOMinimal } = useMaterialIOUtil();
+	it("enhanceMaterialIO", async () => {
+		const { enhanceMaterialIO } = useMaterialIOUtil();
 
 		const fakeArray: IMaterialIOMinimal[] = [
 			{
@@ -107,7 +107,7 @@ describe("Util: materialIO ", async () => {
 			},
 		];
 
-		const result = enhanceMaterialIOMinimal(fakeArray);
+		const result = enhanceMaterialIO(fakeArray);
 
 		expect(result.length).toBe(fakeArray.length);
 

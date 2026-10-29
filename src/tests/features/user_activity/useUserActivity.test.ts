@@ -83,4 +83,26 @@ describe("useUserActivity", () => {
 			expect(options).toStrictEqual({ passive: true });
 		add.mockRestore();
 	});
+
+	it("records a burst of events once, 200 ms after its first event", () => {
+		const { lastActivity } = useUserActivity();
+		expect(lastActivity.value).toBe(0);
+
+		window.dispatchEvent(new Event("mousemove"));
+		vi.advanceTimersByTime(150);
+		// no leading update, and later events don't push it back
+		window.dispatchEvent(new Event("scroll"));
+		expect(lastActivity.value).toBe(0);
+		vi.advanceTimersByTime(50);
+		expect(lastActivity.value).toBe(200);
+		vi.advanceTimersByTime(1000);
+		expect(lastActivity.value).toBe(200);
+
+		// the next burst starts its own window
+		window.dispatchEvent(new Event("keydown"));
+		vi.advanceTimersByTime(199);
+		expect(lastActivity.value).toBe(200);
+		vi.advanceTimersByTime(1);
+		expect(lastActivity.value).toBe(1400);
+	});
 });

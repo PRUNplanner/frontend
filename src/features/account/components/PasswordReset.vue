@@ -26,12 +26,8 @@
 		type UserResponseDetail,
 	} from "@/features/api/schemas/user.schemas";
 
-	const props = defineProps({
-		resetCode: {
-			type: String,
-			required: false,
-			default: null,
-		},
+	const props = withDefaults(defineProps<{ resetCode?: string | null }>(), {
+		resetCode: null,
 	});
 
 	const inputEmail: Ref<string | null> = ref(null);
@@ -40,7 +36,9 @@
 	const isLoading: Ref<boolean> = ref(false);
 	const isThrottled: Ref<boolean> = ref(false);
 
-	const requestResponse: Ref<UserResponseDetail | null> = ref(null);
+	// the backend's detail, or "error" for any failure but a 429
+	const requestResponse: Ref<UserResponseDetail | "error" | null> =
+		ref(null);
 
 	// the request's own schema, so the button never sends an invalid email
 	const canSend = computed(
@@ -87,7 +85,11 @@
 			{{ $t("account.components.password_reset.info") }}
 		</p>
 		<p v-if="requestResponse" class="m-0 text-prunplanner" role="status">
-			{{ requestResponse.detail }}
+			{{
+				requestResponse === "error"
+					? t("account.components.password_reset.error")
+					: requestResponse.detail
+			}}
 		</p>
 		<PNotice v-if="isThrottled" type="error">
 			{{ $t("account.components.password_reset.throttled") }}
