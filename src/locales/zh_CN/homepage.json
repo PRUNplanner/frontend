@@ -29,7 +29,7 @@
 		"cta_logged_in": "掌管你的帝国",
 		"example": "Open an example plan",
 		"example_note": "The example needs no account. Registering takes a minute with the game open.",
-		"image_alt": "位于 Montem 的铁基地的规划编辑器：生产力、概览、生产建筑以及物料输入/输出",
+		"image_alt": "The plan editor for an iron base on Montem: profit, payback, workforce and area in the results bar, the production list with its recipes, and material I/O",
 		"image_title": "prunplanner.org / plan / Montem iron"
 	},
 	"numbers": {
@@ -49,27 +49,27 @@
 			"label": "Plan tour steps",
 			"whole": {
 				"title": "The whole plan",
-				"text": "One base on one screen: workforce, costs, storage, production and material flow, updating as you change it."
+				"text": "One base on one screen: profit, payback, workforce, area and storage at the top, production in the middle, material flow at the side, updating as you change it."
 			},
 			"buildings": {
 				"title": "Add buildings",
-				"text": "Pick buildings and recipes from what the planet offers. Each one shows efficiency, revenue, area and construction cost."
+				"text": "Pick buildings and recipes from what the planet offers. Each building shows its efficiency, profit per day and area; each recipe its runtime, share and COGM."
 			},
 			"workforce": {
 				"title": "Staff it",
-				"text": "Workforce needed against housing supplied, per tier, with the luxuries you choose to provide."
+				"text": "Workforce needed against housing supplied, with the efficiency it gives; the Base pane holds the tiers and the luxuries you choose to provide."
 			},
 			"money": {
 				"title": "See the money",
-				"text": "This iron base on Montem makes 19,312.82 a day and pays back in 63.79 days."
+				"text": "This iron base on Montem makes 21,938.67 a day and pays back its build cost in 63.56 days."
 			},
 			"flow": {
 				"title": "Check the flow",
-				"text": "Material I/O lists what the base consumes and produces per day, and what each line is worth."
+				"text": "Material I/O lists what the base consumes and produces per day, what each line is worth, and flags materials that are a large share of their market."
 			},
 			"tabs": {
 				"title": "Go deeper",
-				"text": "POPR, visitation frequency, construction cart, supply cart and repair analysis are one tab away."
+				"text": "Construction, supply, visits, repair, profit, plan check and POPR are one tab away."
 			}
 		},
 		"planet_search": {
@@ -99,7 +99,7 @@
 			"label": "Empire tour steps",
 			"totals": {
 				"title": "One bottom line",
-				"text": "Revenue, cost and profit of all bases together: this empire makes 186,973.33 a day."
+				"text": "Revenue, cost and profit of all bases together: this empire makes 104,290.08 a day."
 			},
 			"plans": {
 				"title": "Every plan side by side",
