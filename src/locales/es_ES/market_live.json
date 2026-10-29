@@ -84,6 +84,7 @@
 			"title_editing": "Editar alerta",
 			"info": "Las alertas se guardan por ahora solo en este dispositivo y no se sincronizan con tu cuenta.",
 			"no_alerts": "No se han encontrado alertas. Empieza creando tu primera señal de detección",
+			"new_alert_name": "New Alert",
 			"buttons": {
 				"create_alert": "Crear nueva alerta",
 				"discard": "@:common.buttons.discard",
