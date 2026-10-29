@@ -165,6 +165,13 @@ const router = createRouter({
 				import("@/views/tools/ResourceROIOverviewView.vue"),
 		},
 		{
+			// test phase: reachable by URL only, no nav entry yet
+			name: "base-roi",
+			path: "/base-roi",
+			meta: { requiresAuth: true },
+			component: () => import("@/views/tools/BaseROIView.vue"),
+		},
+		{
 			name: "production-chain",
 			path: "/production-chain",
 			meta: { requiresAuth: true },

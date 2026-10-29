@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { RouteLocationNormalized } from "vue-router";
 
+import { createPinia, setActivePinia } from "pinia";
+
 import router from "@/router";
 
 // every route loads its view lazily; stub them so loading stays cheap
@@ -33,6 +35,7 @@ vi.mock("@/views/tools/ProductionChainView.vue", () => stub);
 vi.mock("@/views/tools/ROIOverviewView.vue", () => stub);
 vi.mock("@/views/tools/ResourceROIOverviewView.vue", () => stub);
 vi.mock("@/views/tools/UpkeepPriceCalculatorView.vue", () => stub);
+vi.mock("@/views/tools/BaseROIView.vue", () => stub);
 
 const at = (path: string, hash = "") =>
 	({ path, hash }) as RouteLocationNormalized;
@@ -58,6 +61,19 @@ describe("router routes", () => {
 			const load = r.components!.default as () => Promise<typeof stub>;
 			expect((await load()).default, r.name as string).toBe(stub.default);
 		}
+	});
+
+	it("Base ROI needs a login and stays out of the sitemap", async () => {
+		const route = router.getRoutes().find((r) => r.name === "base-roi")!;
+		expect(route.path).toBe("/base-roi");
+		expect(route.meta.requiresAuth).toBe(true);
+		expect(route.meta.indexable).toBeUndefined();
+
+		// logged out: the login, back to the page afterwards
+		setActivePinia(createPinia());
+		await router.push("/base-roi");
+		expect(router.currentRoute.value.name).toBe("homepage");
+		expect(router.currentRoute.value.query.redirectTo).toBe("/base-roi");
 	});
 });
 

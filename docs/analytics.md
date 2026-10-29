@@ -221,6 +221,7 @@ so for them `tool:use` is close to a pageview that got a result:
 | `production_chain` (check) | `mode: check`, `target_count`, `bases_checked`, `bases_optimal`, `finding_count` | the empire, chains or check settings changed and settled (1 s), with at least one chain; not for the check opened from a link |
 | `resource_roi` | `material_ticker` | the search finished |
 | `recipe_roi` | | the ROI calculation finished |
+| `base_roi` | | a Base ROI calculation finished (once per finished run, not for one a newer setting stopped) |
 | `hq_upgrade` | | levels or overrides changed and settled (1 s) |
 | `upkeep_price` | | the price calculation finished |
 | `market_live` | | live data arrived, once per visit |
