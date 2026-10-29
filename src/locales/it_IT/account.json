@@ -48,6 +48,7 @@
 			"title": "Reimposta la tua password",
 			"info": "Inserisci il codice inviato alla tua email, insieme alla tua nuova password.",
 			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
 			"buttons": {
 				"send": "Reimposta password"
 			},
