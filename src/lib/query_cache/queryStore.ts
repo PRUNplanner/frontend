@@ -9,6 +9,7 @@ import {
 } from "@/lib/query_cache/queryBatches";
 import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { onSessionReset } from "@/lib/sessionReset";
+import { reportClientError } from "@/lib/clientErrors";
 
 import type {
 	IMutationDefinition,
@@ -23,8 +24,9 @@ import type {
 } from "@/lib/query_cache/queryRepository.types";
 
 /**
- * Network failure or server error (status set by apiService's
- * normalizeError), worth retrying; validation errors carry no status
+ * Network failure, server error or 429 (status set by apiService's
+ * normalizeError), worth retrying; validation errors and QueryLoopError
+ * carry no status
  *
  * @param {Error} err Error
  * @returns {boolean} Transient error
@@ -32,7 +34,29 @@ import type {
 function isTransientError(err: Error): boolean {
 	if (!("status" in err)) return false;
 	const status = (err as { status?: number }).status;
-	return status === undefined || status >= 500;
+	return status === undefined || status === 429 || status >= 500;
+}
+
+/**
+ * Fetch budget per cache key, the guard against request loops: more than
+ * `fetches` network fetches of one key within `windowMs` block its fetches
+ * for `blockMs`. Changed by tests only.
+ */
+export const queryLoopGuard = {
+	fetches: 5,
+	windowMs: 10_000,
+	blockMs: 30_000,
+};
+
+/**
+ * A fetch the budget blocked while the key has no data. No status, so the
+ * status watcher doesn't retry it.
+ */
+export class QueryLoopError extends Error {
+	constructor(definitionName: string) {
+		super(`${definitionName} fetched too often, paused`);
+		this.name = "QueryLoopError";
+	}
 }
 
 /**
@@ -66,6 +90,11 @@ export const useQueryStore = defineStore(
 	"prunplanner_query_store",
 	() => {
 		const inFlight = new Map<string, Promise<unknown>>();
+		// fetch budget: recent network fetches and block end per key, and
+		// the keys this tab reported a loop of
+		const fetchTimes = new Map<string, number[]>();
+		const blockedUntil = new Map<string, number>();
+		const loopReported = new Set<string>();
 
 		// shallow, and so is each entry (updateState): their fields are
 		// tracked, but a cache hit returns the raw data a fresh fetch
@@ -81,6 +110,44 @@ export const useQueryStore = defineStore(
 		function $reset(): void {
 			Object.keys(cacheState).forEach((key) => delete cacheState[key]);
 			inFlight.clear();
+			fetchTimes.clear();
+			blockedUntil.clear();
+		}
+
+		/**
+		 * Counts a network fetch of a key against its budget
+		 * (queryLoopGuard). The fetch that overspends blocks the key and
+		 * reports the loop, once per key and tab.
+		 *
+		 * @param {string} keyHash Cache key
+		 * @param {string} definitionName Query name, for the report
+		 * @returns {boolean} Fetch allowed
+		 */
+		function allowFetch(keyHash: string, definitionName: string): boolean {
+			const now = Date.now();
+			if (now < (blockedUntil.get(keyHash) ?? 0)) return false;
+
+			const recent = (fetchTimes.get(keyHash) ?? []).filter(
+				(at) => now - at < queryLoopGuard.windowMs
+			);
+			if (recent.length < queryLoopGuard.fetches) {
+				recent.push(now);
+				fetchTimes.set(keyHash, recent);
+				return true;
+			}
+
+			blockedUntil.set(keyHash, now + queryLoopGuard.blockMs);
+			fetchTimes.delete(keyHash);
+			if (!loopReported.has(keyHash)) {
+				loopReported.add(keyHash);
+				reportClientError({
+					kind: "query_loop",
+					query: definitionName,
+					// the blocked one included
+					fetches: recent.length + 1,
+				});
+			}
+			return false;
 		}
 
 		function updateState<TParams, TData>(
@@ -192,6 +259,12 @@ export const useQueryStore = defineStore(
 							expireTime: definition.expireTime,
 						});
 						return cached.data;
+					}
+
+					if (!allowFetch(keyHash, definitionName)) {
+						const last = cacheState[keyHash]?.data;
+						if (last != null) return last as QueryData<K>;
+						throw new QueryLoopError(definitionName);
 					}
 
 					const result = await definition.fetchFn(params);
@@ -388,19 +461,24 @@ export const useQueryStore = defineStore(
 				const name = entry.definitionName as QueryName;
 				const refreshed = !!getQueryDefinition(name)?.autoRefetch;
 				// a transient failure of a refreshed entry is retried one
-				// expireTime after it, any other error stops the refresh
+				// expireTime after it, a 429 once its Retry-After passed;
+				// any other error stops the refresh
 				const since =
 					entry.error === null
 						? entry.timestamp
 						: refreshed && isTransientError(entry.error)
 							? entry.errorAt
 							: undefined;
+				const retryAfter = (entry.error as { retryAfter?: number } | null)
+					?.retryAfter;
+				const wait =
+					retryAfter === undefined ? entry.expireTime : retryAfter * 1000;
 
 				if (
 					entry.expireTime &&
 					!entry.loading &&
 					since &&
-					now - since > entry.expireTime
+					now - since > wait!
 				) {
 					const single = batchRefresh.find((b) => b.single === name);
 					if (single) {

@@ -2,7 +2,12 @@ import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
 import { readFileSync } from "node:fs";
 import { computed, isReactive } from "vue";
-import { isFresh, useQueryStore } from "@/lib/query_cache/queryStore";
+import {
+	isFresh,
+	QueryLoopError,
+	useQueryStore,
+} from "@/lib/query_cache/queryStore";
+import { reportClientError } from "@/lib/clientErrors";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { useUserActivity } from "@/features/user_activity/useUserActivity";
 import { userActivity } from "@/features/user_activity/userActivityStore";
@@ -19,6 +24,8 @@ const persisted = vi.hoisted(() => ({
 	initialData: (): Promise<{ data: unknown; fetchedAt: number } | null> =>
 		Promise.resolve(null),
 }));
+
+vi.mock("@/lib/clientErrors", () => ({ reportClientError: vi.fn() }));
 
 // mock repository
 vi.mock("@/lib/query_cache/queryRepository", () => {
@@ -499,6 +506,24 @@ describe("checkEntryStatusAndRefresh: failed refreshes", () => {
 			});
 		}
 	);
+
+	it("retries a 429 once its Retry-After passed, not before", async () => {
+		await failRefresh(
+			Object.assign(apiError(429), { retryAfter: 60 })
+		);
+
+		vi.setSystemTime(3000 + 59_000);
+		store.checkEntryStatusAndRefresh();
+		expect(autoFetch).not.toHaveBeenCalled();
+
+		autoFetch.mockResolvedValueOnce({ result: "fresh" });
+		vi.setSystemTime(3000 + 61_000);
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+
+		expect(autoFetch).toHaveBeenCalledOnce();
+		expect(autoState()).toMatchObject({ data: { result: "fresh" } });
+	});
 
 	it.each([
 		["a 404", apiError(404)],
@@ -1057,5 +1082,99 @@ describe("useQueryStore: initialData", () => {
 		expect(await run()).toBe("fetched");
 		expect(definition().initialData).not.toHaveBeenCalled();
 		expect(definition().fetchFn).toHaveBeenCalledTimes(2);
+	});
+});
+
+describe("useQueryStore: fetch budget", () => {
+	let store: ReturnType<typeof useQueryStore>;
+	// @ts-expect-error mock query repository
+	const testFetch = getQueryDefinition("testQuery").fetchFn as Mock;
+	// @ts-expect-error mock query repository
+	const autoFetch = getQueryDefinition("autoRefetchQuery").fetchFn as Mock;
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		store = useQueryStore();
+		vi.useFakeTimers();
+		vi.setSystemTime(1000);
+		vi.clearAllMocks();
+		vi.spyOn(userActivity, "shouldDelay").mockReturnValue(false);
+		vi.spyOn(console, "error").mockImplementation(() => {});
+	});
+
+	// what the sidebar did: drop the key and its request, ask again
+	async function loop(times: number) {
+		for (let i = 0; i < times; i++) {
+			await store.invalidateKey(["testQuery", "a"]);
+			// @ts-expect-error mock query repository
+			await store.execute("testQuery", "a").catch(() => {});
+		}
+	}
+
+	it("allows 5 fetches in 10 s, then none for 30 s, and reports once", async () => {
+		await loop(50);
+		expect(testFetch).toHaveBeenCalledTimes(5);
+
+		vi.setSystemTime(1000 + 29_000);
+		await loop(50);
+		expect(testFetch).toHaveBeenCalledTimes(5);
+
+		vi.setSystemTime(1000 + 31_000);
+		await loop(50);
+		// a new budget, spent and blocked again
+		expect(testFetch).toHaveBeenCalledTimes(10);
+		expect(reportClientError).toHaveBeenCalledOnce();
+		expect(reportClientError).toHaveBeenCalledWith({
+			kind: "query_loop",
+			query: "testQuery",
+			fetches: 6,
+		});
+	});
+
+	it("counts fetches, not cache hits or mutations", async () => {
+		for (let i = 0; i < 20; i++) {
+			// @ts-expect-error mock query repository
+			await store.execute("testQuery", "a");
+		}
+		expect(testFetch).toHaveBeenCalledOnce();
+		expect(reportClientError).not.toHaveBeenCalled();
+	});
+
+	it("returns the last data while blocked", async () => {
+		for (let i = 0; i < 5; i++) {
+			// @ts-expect-error mock query repository
+			await store.execute("testQuery", "a", { forceRefetch: true });
+		}
+		testFetch.mockClear();
+
+		await expect(
+			// @ts-expect-error mock query repository
+			store.execute("testQuery", "a", { forceRefetch: true })
+		).resolves.toEqual({ result: "data-a" });
+		expect(testFetch).not.toHaveBeenCalled();
+	});
+
+	it("rejects without data, and the status watcher doesn't retry it", async () => {
+		const key = ["autoRefetchQuery", "a"];
+		for (let i = 0; i < 5; i++) {
+			await store.invalidateKey(key, { exact: true, skipRefetch: true });
+			// @ts-expect-error mock query repository
+			await store.execute("autoRefetchQuery", "a");
+		}
+		await store.invalidateKey(key, { exact: true, skipRefetch: true });
+
+		await expect(
+			// @ts-expect-error mock query repository
+			store.execute("autoRefetchQuery", "a")
+		).rejects.toBeInstanceOf(QueryLoopError);
+
+		autoFetch.mockClear();
+		vi.setSystemTime(1000 + 120_000);
+		store.checkEntryStatusAndRefresh();
+		await vi.runAllTimersAsync();
+		expect(autoFetch).not.toHaveBeenCalled();
+		expect(store.cacheState[toCacheKey(key)].error).toBeInstanceOf(
+			QueryLoopError
+		);
 	});
 });

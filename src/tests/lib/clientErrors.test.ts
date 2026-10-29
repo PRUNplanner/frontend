@@ -94,6 +94,19 @@ describe("reportClientError", () => {
 		expect(fetchMock).toHaveBeenCalledTimes(3);
 	});
 
+	it("tells query loops apart by their query", async () => {
+		const { reportClientError } = await load();
+
+		reportClientError({ kind: "query_loop", query: "GetFIOStorage", fetches: 6 });
+		reportClientError({ kind: "query_loop", query: "GetFIOStorage", fetches: 6 });
+		reportClientError({ kind: "query_loop", query: "GetAllCX", fetches: 6 });
+
+		expect(sentBodies()).toMatchObject([
+			{ kind: "query_loop", query: "GetFIOStorage", fetches: 6 },
+			{ kind: "query_loop", query: "GetAllCX", fetches: 6 },
+		]);
+	});
+
 	it("sends at most 20 reports per tab", async () => {
 		const { reportClientError } = await load();
 

@@ -135,7 +135,11 @@ export function onUserStorage(event: StorageEvent, router: Router): void {
 		return;
 
 	const userStore = useUserStore();
-	const next = parseUser(event.newValue);
+	// the stored value, not the event's: a later write may have replaced it
+	// already. Two tabs adopting each other's crossing writes would else
+	// swap them back and forth for good, as long as their states serialize
+	// differently (e.g. the key order of planOverrides)
+	const next = parseUser(localStorage.getItem(USER_KEY));
 
 	if (!next?.refreshToken) {
 		if (!userStore.refreshToken) return;
@@ -172,10 +176,12 @@ export function onUserStorage(event: StorageEvent, router: Router): void {
 		userStore.profile = next.profile;
 
 	// only what the other tab changed, keys this tab changed and hasn't
-	// sent yet stay; the other tab sends its own changes
+	// sent yet stay; the other tab sends its own changes. From the event:
+	// the stored value may already hold this tab's own unsent change
 	const previous = parseUser(event.oldValue)?.preferences;
-	if (previous && next.preferences) {
-		const patch = diffPreferences(previous, next.preferences);
+	const changed = parseUser(event.newValue)?.preferences;
+	if (previous && changed) {
+		const patch = diffPreferences(previous, changed);
 		applyPreferencePatch(userStore.preferences, patch);
 		markPreferencesSynced(patch);
 	}
