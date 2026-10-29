@@ -2,13 +2,17 @@ import config from "@/lib/config";
 import { correlationId } from "@/lib/requestIds";
 
 export interface IClientErrorReport {
-	kind: "validation" | "server" | "network";
-	method: string;
-	path_template: string;
+	kind: "validation" | "server" | "network" | "query_loop";
+	// the failed call; a query_loop is about a query, not one call
+	method?: string;
+	path_template?: string;
 	status?: number;
 	failed_request_id?: string;
 	issues?: string[];
 	client_ms?: number;
+	// query_loop: the query's name and its fetches in the budget window
+	query?: string;
+	fetches?: number;
 }
 
 const DEDUPE_MS = 60_000;
@@ -40,7 +44,11 @@ export function setClientErrorRoute(name: string | undefined): void {
 export function reportClientError(report: IClientErrorReport): void {
 	if (import.meta.env.DEV) return;
 
-	const key = [report.kind, report.path_template, report.issues].join("|");
+	const key = [
+		report.kind,
+		report.path_template ?? report.query,
+		report.issues,
+	].join("|");
 	const now = Date.now();
 	if (sent >= MAX_REPORTS || now - (lastSent.get(key) ?? -Infinity) < DEDUPE_MS)
 		return;

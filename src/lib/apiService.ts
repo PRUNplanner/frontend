@@ -377,6 +377,12 @@ class ApiService {
 			(newError as any).responseData = body;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(newError as any).status = status;
+			// seconds until a throttled call may be sent again, for the
+			// query cache's retry
+			const retryAfter = Number(err.response?.headers["retry-after"]);
+			if (status === 429 && Number.isFinite(retryAfter))
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				(newError as any).retryAfter = retryAfter;
 
 			return newError;
 		}

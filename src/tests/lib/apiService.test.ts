@@ -49,6 +49,16 @@ describe("ApiService", () => {
 			).rejects.toThrowError();
 		});
 
+		it("keeps a 429's status and Retry-After seconds", async () => {
+			mock.onGet("/test").reply(429, { detail: "throttled" }, {
+				"retry-after": "42",
+			});
+
+			await expect(
+				apiService.get("/test", z.object({}))
+			).rejects.toMatchObject({ status: 429, retryAfter: 42 });
+		});
+
 		it("post: generic error", async () => {
 			const mockPayload = { foo: "moo" };
 			const payloadSchema = z.object({ foo: z.string() });

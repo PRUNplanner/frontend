@@ -38,6 +38,8 @@ function jwt(userId: number, jti: string = "a"): string {
 	return `header.${payload}.signature`;
 }
 
+const USER_KEY = "prunplanner_user";
+
 const profile: UserProfile = {
 	id: 7,
 	username: "tester",
@@ -49,10 +51,13 @@ const profile: UserProfile = {
 	fio_last_refreshed_at: null,
 };
 
+// what another tab's write does: stores the value, then sends the event
 function storageEvent(
 	oldValue: object | null,
 	newValue: object | null
 ): StorageEvent {
+	if (newValue) localStorage.setItem(USER_KEY, JSON.stringify(newValue));
+	else localStorage.removeItem(USER_KEY);
 	return new StorageEvent("storage", {
 		key: "prunplanner_user",
 		oldValue: oldValue && JSON.stringify(oldValue),
@@ -74,6 +79,7 @@ describe("crossTab", () => {
 		vi.mocked(router.push).mockClear();
 		vi.mocked(trackEvent).mockClear();
 		sessionReplaced.value = false;
+		localStorage.clear();
 	});
 
 	afterEach(() => {
@@ -182,6 +188,7 @@ describe("crossTab", () => {
 
 		it("cleared storage counts as logout, nothing to do when logged out", () => {
 			userStore.setToken("access", jwt(7));
+			localStorage.clear();
 			onUserStorage(
 				new StorageEvent("storage", { key: null, newValue: null }),
 				router
@@ -292,6 +299,112 @@ describe("crossTab", () => {
 				router
 			);
 			expect(userStore.profile).toBe(adopted);
+		});
+
+		it("keeps its own unsent preference when storage already holds it", () => {
+			userStore.setToken("access", jwt(7));
+			userStore.setPreference("burnDaysYellow", 15);
+			const old = cloneDeep(preferenceDefaults);
+			const event = storageEvent(
+				{ refreshToken: jwt(7), preferences: old },
+				{ refreshToken: jwt(7), preferences: { ...old, burnDaysRed: 2 } }
+			);
+			// this tab persisted its change before handling the event
+			localStorage.setItem(
+				USER_KEY,
+				JSON.stringify({
+					refreshToken: jwt(7),
+					preferences: { ...old, burnDaysRed: 2, burnDaysYellow: 15 },
+				})
+			);
+
+			onUserStorage(event, router);
+
+			expect(userStore.preferences.burnDaysRed).toBe(2);
+			expect(unsyncedPreferences(userStore.preferences)).toStrictEqual({
+				burnDaysYellow: 15,
+			});
+		});
+
+		it("same user: adopts the stored user, not an older event's", () => {
+			userStore.setToken("access", jwt(7));
+			const event = storageEvent(null, {
+				refreshToken: jwt(7),
+				profile: { ...profile, fio_status: "syncing" },
+			});
+			// the other tab wrote again before this event was handled
+			localStorage.setItem(
+				USER_KEY,
+				JSON.stringify({
+					refreshToken: jwt(7),
+					profile: { ...profile, fio_status: "ok" },
+				})
+			);
+
+			onUserStorage(event, router);
+
+			expect(userStore.fioStatus).toBe("ok");
+		});
+
+		it("two tabs' crossing writes settle instead of swapping", () => {
+			// two tabs, each with its own store; a write stores the tab's
+			// state and sends the event to the other tab
+			const tabs = [createPinia(), createPinia()];
+			const storeOf = (tab: number) => {
+				setActivePinia(tabs[tab]);
+				return useUserStore();
+			};
+			// `tab`: the states differ in something adopting never aligns,
+			// as the key order of planOverrides did in the incident
+			const stateOf = (tab: number) => {
+				const store = storeOf(tab);
+				return JSON.stringify({
+					tab,
+					accessToken: store.accessToken,
+					refreshToken: store.refreshToken,
+					profile: store.profile,
+				});
+			};
+			const pending: { tab: number; event: StorageEvent }[] = [];
+			const written = ["", ""];
+			const write = (tab: number) => {
+				const value = stateOf(tab);
+				written[tab] = value;
+				const oldValue = localStorage.getItem(USER_KEY);
+				// localStorage sends no event for an unchanged value
+				if (value === oldValue) return;
+				localStorage.setItem(USER_KEY, value);
+				pending.push({
+					tab: 1 - tab,
+					event: new StorageEvent("storage", {
+						key: USER_KEY,
+						oldValue,
+						newValue: value,
+					}),
+				});
+			};
+			const statuses = ["ok", "syncing"] as const;
+			for (const tab of [0, 1]) {
+				const store = storeOf(tab);
+				store.accessToken = "access";
+				store.refreshToken = jwt(7);
+				store.profile = { ...profile, fio_status: statuses[tab] };
+			}
+			// both write before either sees the other's event
+			write(0);
+			write(1);
+
+			let delivered = 0;
+			while (pending.length && delivered < 100) {
+				const { tab, event } = pending.shift()!;
+				delivered++;
+				storeOf(tab);
+				onUserStorage(event, router);
+				if (stateOf(tab) !== written[tab]) write(tab);
+			}
+
+			expect(delivered).toBeLessThan(10);
+			expect(storeOf(0).fioStatus).toBe(storeOf(1).fioStatus);
 		});
 
 		it("same user: new refresh token is adopted", () => {
