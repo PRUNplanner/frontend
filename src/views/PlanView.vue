@@ -1,26 +1,17 @@
 <script setup lang="ts">
 	import {
-		type Component,
 		computed,
 		type ComputedRef,
 		defineAsyncComponent,
 		nextTick,
 		onMounted,
-		onUnmounted,
 		ref,
 		type Ref,
 		useTemplateRef,
-		watch,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
-
-	// UI
-	import type { PToastHandle } from "@/ui/ui.types";
-
-	// Router
-	import router from "@/router";
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
@@ -29,77 +20,40 @@
 	const planningStore = usePlanningStore();
 
 	// Types & Interfaces
-	import type {
-		InfrastructureType,
-		Plan,
-		PlanCreateData,
-	} from "@/features/api/schemas/planningData.schemas";
-	import type { IPlanDiffable } from "@/features/planning_data/planDiff";
-	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-	import type { ICalcDebugPlan } from "@/features/planning/calcDebug.types";
-	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
-	import type {
-		IPlanChanges,
-		IPlanCompare,
-	} from "@/features/sharing/sharedPlan.types";
-	import {
-		optimizeHabs,
-		calculateAvailableArea,
-		type HabSolverGoal,
-	} from "@/features/planning/calculations/habOptimization";
-
-	import { planetLabel } from "@/util/planetName";
+	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
+	import type { ICalcDebugPlan } from "@/features/planning/calcDebug.types";
+	import type { IPlanViewProps } from "@/features/planning/planView.types";
+	import type { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
-	const { getPlanet, planetName } = usePlanetData();
+	const { getPlanet } = usePlanetData();
 	import { useCXData } from "@/features/cx/useCXData";
 	const { findEmpireCXUuid } = useCXData();
 	import { useExchangeData } from "@/database/services/useExchangeData";
 	const { getExchangeTickerLoaded } = useExchangeData();
 	import { usePlanContext } from "@/features/planning/usePlanContext";
 	const { createPrices } = usePlanContext();
-	import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
-	const { view: planCheckView } = usePlanCheckView();
 	import { countLevels, marketCheck } from "@/features/cx/marketCheck.util";
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
-	import { cogcTextMapping, usePlan } from "@/features/planning_data/usePlan";
+	import { usePlanSave } from "@/features/planning/usePlanSave";
+	import { usePlanShortcuts } from "@/features/planning/usePlanShortcuts";
+	import { usePlanEdits } from "@/features/planning/usePlanEdits";
+	import { usePlanSharedCopy } from "@/features/planning/usePlanSharedCopy";
+	import { usePlanLayout } from "@/features/planning/usePlanLayout";
+	import { usePlanIO } from "@/features/planning/usePlanIO";
+	import { cogcTextMapping } from "@/features/planning_data/usePlan";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
-	const {
-		createNewPlan,
-		saveExistingPlan,
-		reloadExistingPlan,
-	} = usePlan();
-	import { flushPlanEdits, trackEvent } from "@/lib/analytics/useAnalytics";
-	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { remoteChange } from "@/lib/crossTab";
-	import { useSaveConflict } from "@/features/save_conflict/useSaveConflict";
-	import {
-		getSaveError,
-		threeWay,
-	} from "@/features/save_conflict/saveConflict.util";
-	import { diffPlan } from "@/features/planning_data/planDiff";
-	import {
-		buildChangeSummary,
-		buildingChanges,
-		planFigures,
-	} from "@/features/sharing/sharedPlan.util";
-	import config from "@/lib/config";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { calcDebug } from "@/lib/debugMode";
 	import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
 	const { cachedProfitPerArea } = useEmpireProfits();
 
 	// Util
 	import { inertClone } from "@/util/data";
-	import {
-		foldedPanes,
-		materialIOCsv,
-		materialIOTotals,
-		type BaseSection,
-		type PlanTool,
-		type ResultTile,
-	} from "@/features/planning/planView.util";
+	import { planetLabel } from "@/util/planetName";
 	import {
 		breadcrumbEmpire,
 		pickEmpire,
@@ -127,8 +81,7 @@
 	);
 	// only loaded with calculation debug on
 	const PlanCalcDebug = defineAsyncComponent(
-		() =>
-			import("@/features/planning/components/debug/PlanCalcDebug.vue")
+		() => import("@/features/planning/components/debug/PlanCalcDebug.vue")
 	);
 
 	// UI
@@ -144,10 +97,7 @@
 		PSegmented,
 		PSelect,
 		PValue,
-		useToast,
 	} from "@/ui";
-	import type { PSelectOption } from "@/ui/ui.types";
-	const toast = useToast();
 	import {
 		ChevronLeftSharp,
 		ChevronRightSharp,
@@ -157,24 +107,10 @@
 		UndoSharp,
 		RedoSharp,
 	} from "@vicons/material";
-	import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
-	import { calcDebug } from "@/lib/debugMode";
 
-	const props = defineProps<{
-		disabled?: boolean;
-		planData: IPlanDefinition;
-		empireList?: PlanEmpireElement[];
-		sharedPlanUuid?: string;
-		// a shared plan, edited as the viewer's working copy
-		shared?: boolean;
-	}>();
+	const props = defineProps<IPlanViewProps>();
 
 	const refPlanData: Ref<IPlanDefinition> = ref(inertClone(props.planData));
-	// save version the edits started from, sent so a save over another
-	// tab's newer one fails as a conflict
-	const refBaseModifiedAt: Ref<string | undefined> = ref(
-		props.planData.modified_at
-	);
 	const refEmpireList: Ref<PlanEmpireElement[] | undefined> = ref(
 		props.empireList
 	);
@@ -206,14 +142,6 @@
 		savedAt,
 		canUndo,
 		canRedo,
-		undo,
-		redo,
-		markSaved,
-		isRestoring,
-		record,
-		snapshot,
-		savedSnapshot,
-		revision,
 		handleUpdateCorpHQ,
 		handleUpdateCOGC,
 		handleUpdatePermits,
@@ -221,36 +149,21 @@
 		handleUpdateInfrastructure,
 		handleUpdateExpert,
 		handleUpdateBuildingAmount,
-		handleDeleteBuilding,
 		handleCreateBuilding,
 		handleCreateBuildingAndRecipe,
 		handleUpdateBuildingRecipeAmount,
-		handleDeleteBuildingRecipe,
 		handleAddBuildingRecipes,
-		handleApplyStarterSetup,
-		handleChangeBuildingRecipe,
 		handleChangePlanName,
 		traceCalculation,
 	} = calculation;
 
-	/*
-	 * Calculation debug (English only by decision): the panel is mounted
-	 * only while open, so nothing is traced when it's closed
-	 */
-	const refShowCalcDebug: Ref<boolean> = ref(false);
-	function toggleCalcDebug(source: "button" | "shortcut"): void {
-		refShowCalcDebug.value = !refShowCalcDebug.value;
-		if (refShowCalcDebug.value) trackEvent("debug:calc_open", { source });
-	}
 	// what save sends, with the plan's id, empires and version
-	const calcDebugPlan = computed(
-		(): ICalcDebugPlan => ({
-			uuid: refPlanData.value.uuid,
-			...backendData.value,
-			empires: refPlanData.value.empires,
-			modified_at: refPlanData.value.modified_at,
-		})
-	);
+	const calcDebugPlan = computed((): ICalcDebugPlan => ({
+		uuid: refPlanData.value.uuid,
+		...backendData.value,
+		empires: refPlanData.value.empires,
+		modified_at: refPlanData.value.modified_at,
+	}));
 	const calcDebugMeta = computed(() => ({
 		plan: planName.value || t("plan.name.untitled"),
 		planet: planetData.planet_natural_id,
@@ -260,100 +173,18 @@
 		empire: computedActiveEmpire.value?.empire_name ?? "none",
 	}));
 
-	/*
-	 * Shared plan: the working copy is compared against the shared version,
-	 * calculated with the same empire and prices
-	 */
-	const sharedBaseline: IPlanDefinition = inertClone(props.planData);
-	const baselineCalculation = props.shared
-		? usePlanCalculation(
-				ref(inertClone(sharedBaseline)),
-				refEmpireUuid,
-				refEmpireList,
-				refCXUuid
-			)
-		: undefined;
-
-	const sharedChanged: ComputedRef<boolean> = computed(
-		() => props.shared && modified.value
-	);
-
-	const sharedCompare: ComputedRef<IPlanCompare | undefined> = computed(
-		() =>
-			sharedChanged.value && baselineCalculation
-				? {
-						before: planFigures(
-							baselineCalculation.result.value,
-							baselineCalculation.overviewData.value
-						),
-						after: planFigures(result.value, overviewData.value),
-					}
-				: undefined
-	);
-
-	const sharedChanges: ComputedRef<IPlanChanges | undefined> = computed(
-		() =>
-			sharedChanged.value
-				? buildingChanges(
-						JSON.parse(savedSnapshot()),
-						JSON.parse(snapshot())
-					)
-				: undefined
-	);
-
-	/*
-	 * Material I/O pane: which flow, which rows and which value per day
-	 */
-	const refIOSource: Ref<"all" | "production" | "workforce"> = ref("all");
-	const refIOFilter: Ref<"all" | "exports" | "imports"> = ref("all");
-	const refIOValue: Ref<"price" | "weight" | "volume" | "share"> = ref("price");
-	// only the user changes these three
-	watch([refIOSource, refIOFilter, refIOValue], ([source, filter, value]) =>
-		trackEvent("plan:io_view", { source, filter, value })
-	);
-
-	const ioRows = computed(() =>
-		refIOSource.value === "production"
-			? result.value.productionMaterialIO
-			: refIOSource.value === "workforce"
-				? result.value.workforceMaterialIO
-				: result.value.materialio
-	);
-	const ioTotals = computed(() => materialIOTotals(ioRows.value));
-
-	const ioSourceOptions = computed<PSelectOption[]>(() => [
-		{ value: "all", label: t("plan.io.source.all") },
-		{ value: "production", label: t("plan.io.source.production") },
-		{ value: "workforce", label: t("plan.io.source.workforce") },
-	]);
-	const ioFilterOptions = computed(() => [
-		{ value: "all" as const, label: t("plan.io.filter.all") },
-		{ value: "exports" as const, label: t("plan.io.filter.exports") },
-		{ value: "imports" as const, label: t("plan.io.filter.imports") },
-	]);
-	const ioValueOptions = [
-		{ value: "price" as const, label: "ȼ" },
-		{ value: "weight" as const, label: "t" },
-		{ value: "volume" as const, label: "m³" },
-		{ value: "share" as const, label: "%" },
-	];
-
-	function downloadMaterialIO(): void {
-		const blob = new Blob([materialIOCsv(ioRows.value)], {
-			type: "text/csv",
-		});
-		const link = document.createElement("a");
-		link.href = URL.createObjectURL(blob);
-		link.download = `${planName.value || planetData.planet_natural_id}-material-io.csv`;
-		link.click();
-		URL.revokeObjectURL(link.href);
-	}
-
-	// Save As modal state
-	const refShowSaveAsModal: Ref<boolean> = ref(false);
-	const refSaveAsName: Ref<string> = ref("");
-	const refSaveAsEmpireUuid: Ref<string | undefined> = ref(undefined);
-	const refIsSavingAs: Ref<boolean> = ref(false);
+	// Material I/O pane: flow, rows, value per day and the CSV
+	const {
+		refIOSource,
+		refIOFilter,
+		refIOValue,
+		ioRows,
+		ioTotals,
+		ioSourceOptions,
+		ioFilterOptions,
+		ioValueOptions,
+		downloadMaterialIO,
+	} = usePlanIO(result, () => planName.value || planetData.planet_natural_id);
 
 	// Plan Preferences
 	const { autoOptimizeHabs } = usePlanPreferences(() => props.planData.uuid);
@@ -392,26 +223,6 @@
 		refCXUuid.value = findEmpireCXUuid(refEmpireUuid.value);
 	}
 
-	/**
-	 * Tool Setup
-	 */
-
-	type toolOptions = PlanTool | null;
-	const refShowTool: Ref<toolOptions> = ref(null);
-
-	function toggleTool(key: toolOptions): void {
-		const isVisisble = refShowTool.value === key;
-		refShowTool.value = null;
-		if (isVisisble) return;
-
-		trackEvent("plan:tool_toggle", { panel: key });
-		nextTick(() => {
-			key != refShowTool.value
-				? (refShowTool.value = key)
-				: (refShowTool.value = null);
-		});
-	}
-
 	// market flags of the plan's net material flow, priced like the plan
 	const marketChecks = computed(
 		() =>
@@ -424,221 +235,125 @@
 			)
 	);
 
-	// from the Material I/O: Plan check on its Market check, in place
-	function openPlanCheck(): void {
-		planCheckView.value = "market";
-		refPhoneSection.value = "tools";
-		if (refShowTool.value !== "plan-check") toggleTool("plan-check");
-	}
-
 	const flagCount = computed(() => {
 		const { red, amber } = countLevels([...marketChecks.value.values()]);
 		return red + amber;
 	});
 
-	// Production is the default view, a tool replaces it in place
-	type TabKey = PlanTool | "production";
-	const toolTabs = computed(() =>
-		(
-			[
-				["production", "plan.tools.labels.production"],
-				["construction-cart", "plan.tools.labels.construction_cart"],
-				["supply-cart", "plan.tools.labels.supply_cart"],
-				[
-					"visitation-frequency",
-					"plan.tools.labels.visitation_frequency",
-				],
-				["repair-analysis", "plan.tools.labels.repair_analysis"],
-				["profit-breakdown", "plan.tools.labels.profit_breakdown"],
-				["plan-check", "plan.tools.labels.plan_check"],
-				...(userStore.isLoggedIn
-					? [["popr", "plan.tools.labels.popr"]]
-					: []),
-			] as [TabKey, string][]
-		).map(([key, label]) => ({
-			key,
-			label: t(label),
-			dot:
-				key === "plan-check" && flagCount.value > 0
-					? t("plan.layout.flags", { n: flagCount.value }, flagCount.value)
-					: undefined,
-		}))
+	// Plan Saving & Reloading, Save As, conflicts and the leave guard
+	const {
+		refIsSaving,
+		refSaveFailed,
+		canSave,
+		save,
+		refShowSaveAsModal,
+		refSaveAsName,
+		refSaveAsEmpireUuid,
+		refIsSavingAs,
+		saveAsEmpireOptions,
+		saveAs,
+		openSaveAsModal,
+		reloadPlan,
+		applySavedPlan,
+		conflict,
+	} = usePlanSave(
+		calculation,
+		refPlanData,
+		{ uuid: refEmpireUuid, list: refEmpireList },
+		refAutoOptimizeHabs,
+		props
 	);
 
-	function selectTab(key: TabKey): void {
-		if (key === "production") {
-			if (refShowTool.value !== null) toggleTool(refShowTool.value);
-		} else toggleTool(key);
-	}
+	// Keyboard, tracked undo / redo and calculation debug
+	const { refShowCalcDebug, toggleCalcDebug, trackedUndo, trackedRedo } =
+		usePlanShortcuts(calculation, props, {
+			canSave,
+			save,
+			openSaveAsModal,
+		});
 
-	/*
-	 * Folding: Base starts as a strip between 81 and 100rem of page width,
-	 * wide tools fold Material I/O into one; a strip pins its pane open,
-	 * over tool switches, until the user folds it again
-	 */
-	const refBasePinned: Ref<boolean> = ref(false);
-	const refIOPinned: Ref<boolean> = ref(false);
-	// a strip: the pane's title read top-down, a detail below it
-	const strip =
-		"sticky top-20 shrink-0 w-10 flex-col items-center gap-3 py-2 rounded border border-line bg-surface text-muted-strong hover:border-line-strong hover:text-white cursor-pointer transition-colors";
-	const stripIcon =
-		"flex items-center justify-center size-6 rounded-control bg-hover";
-	const stripTitle =
-		"[writing-mode:vertical-rl] text-sm font-medium text-ink-strong";
-	const stripDetail = "[writing-mode:vertical-rl] text-xs text-muted";
-	const folded = computed(() => foldedPanes(refShowTool.value));
-	const baseFolded = computed(
-		() => folded.value.base && !refBasePinned.value
+	// Recipe and building edits with undo, starter setup, hab optimizing
+	const {
+		refRecipeStatus,
+		deleteBuilding,
+		deleteBuildingRecipe,
+		changeBuildingRecipe,
+		addPickedRecipe,
+		undoPickedRecipe,
+		applyStarterSetup,
+		applyOptimizeHabs,
+	} = usePlanEdits(
+		calculation,
+		refPlanData,
+		refAutoOptimizeHabs,
+		trackedUndo,
+		planetData.planet_natural_id
 	);
-	const ioFolded = computed(() => folded.value.io && !refIOPinned.value);
 
-	function pinPane(panel: "base" | "io", pinned: boolean): void {
-		if (panel === "base") refBasePinned.value = pinned;
-		else refIOPinned.value = pinned;
-		trackEvent("plan:panel_fold", { panel, folded: !pinned });
-	}
-
-	// the user folds Base by hand, at any width it sits side by side
-	const refBaseCollapsed: Ref<boolean> = ref(false);
-	// the pressed button goes away: the focus moves to the one replacing it
-	function focusLayout(selector: string): void {
-		nextTick(() =>
-			refLayout.value?.querySelector<HTMLElement>(selector)?.focus()
-		);
-	}
-	function foldBase(): void {
-		refBaseCollapsed.value = true;
-		pinPane("base", false);
-		focusLayout("[data-base-strip]");
-	}
-	function unfoldBase(): void {
-		refBaseCollapsed.value = false;
-		pinPane("base", true);
-		focusLayout("[data-base-fold]");
-	}
-	// the same for Material I/O, side by side from 71rem; a wide tool folds it
-	const refIOCollapsed: Ref<boolean> = ref(false);
-	function foldIO(): void {
-		refIOCollapsed.value = true;
-		pinPane("io", false);
-		focusLayout("[data-io-strip]");
-	}
-	function unfoldIO(): void {
-		refIOCollapsed.value = false;
-		pinPane("io", true);
-		focusLayout("[data-io-fold]");
-	}
-
-	// below 1296 px of page width (a 1360 px window with the rail, 1544 px
-	// with the full sidebar) Base opens as an overlay from the tab row
-	const refBaseOverlay: Ref<boolean> = ref(false);
-
-	function toggleOverlay(panel: "base" | "io"): void {
-		const open = panel === "base" ? refBaseOverlay : refIOOverlay;
-		open.value = !open.value;
-		if (!open.value) return;
-		trackEvent("plan:overlay_open", { panel });
-		// the focus goes in; Esc or Close brings it back to the toggle
-		focusLayout(`[data-${panel}-close]`);
-	}
-
-	// below 71rem of page width (a tablet) Material I/O does too
-	const refIOOverlay: Ref<boolean> = ref(false);
-
-	// Esc closes them, the focus goes back to their button
-	function closeOverlays(): void {
-		const open = refBaseOverlay.value
-			? "[data-base-toggle]"
-			: refIOOverlay.value
-				? "[data-io-toggle]"
-				: undefined;
-		refBaseOverlay.value = false;
-		refIOOverlay.value = false;
-		if (open) document.querySelector<HTMLElement>(open)?.focus();
-	}
-
-	// a results tile opens where its figure comes from: a Base section, in
-	// whatever form Base has (a phone's section, the overlay below 81rem of
-	// page width, a folded strip), or a tool in place of the production list
-	const refLayout = useTemplateRef<HTMLElement>("layout");
-	const refBase = useTemplateRef<{ openSection: (s: BaseSection) => void }>(
-		"base"
+	// Shared plan: compared against the shared version, reset and copied
+	const {
+		sharedChanged,
+		sharedCompare,
+		sharedChanges,
+		sharedPriceSource,
+		resetShared,
+		copySharedChanges,
+	} = usePlanSharedCopy(
+		calculation,
+		{ uuid: refEmpireUuid, list: refEmpireList, cxUuid: refCXUuid },
+		applySavedPlan,
+		props
 	);
-	function openBase(section: BaseSection): void {
-		if (refIsPhone.value) showSection("base");
-		refBaseCollapsed.value = false;
-		refBasePinned.value = true;
-		const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-		if (
-			!refIsPhone.value &&
-			(refLayout.value?.clientWidth ?? Infinity) < 81 * rem
-		)
-			refBaseOverlay.value = true;
-		nextTick(() => refBase.value?.openSection(section));
-	}
-	function openTool(key: PlanTool): void {
-		if (refIsPhone.value) showSection("tools");
-		if (refShowTool.value !== key) toggleTool(key);
-	}
-	function openTile(tile: ResultTile): void {
-		trackEvent("plan:result_tile_open", { tile });
-		if (tile === "area") openBase("planet");
-		else if (tile === "workforce") openBase("workforce");
-		else if (tile === "profit") openTool("profit-breakdown");
-		else if (tile === "payback") openTool("construction-cart");
-		else openTool("visitation-frequency");
-	}
 
-	/*
-	 * A phone (below md, where the app shows its bottom bar): one section
-	 * at a time, picked in a tab row under the results
-	 */
-	const phoneQuery =
-		typeof window.matchMedia === "function"
-			? window.matchMedia("(max-width: 767.98px)")
-			: null;
-	const refIsPhone: Ref<boolean> = ref(phoneQuery?.matches ?? false);
-	const onPhoneMedia = (e: MediaQueryListEvent) =>
-		(refIsPhone.value = e.matches);
-	phoneQuery?.addEventListener("change", onPhoneMedia);
-	onUnmounted(() => phoneQuery?.removeEventListener("change", onPhoneMedia));
+	// Tool tabs, folding, overlays and the phone layout
+	const {
+		strip,
+		stripIcon,
+		stripTitle,
+		stripDetail,
+		refShowTool,
+		openPlanCheck,
+		toolTabs,
+		selectTab,
+		compViewToolComponent,
+		baseFolded,
+		ioFolded,
+		refBaseCollapsed,
+		foldBase,
+		unfoldBase,
+		refIOCollapsed,
+		foldIO,
+		unfoldIO,
+		refBaseOverlay,
+		refIOOverlay,
+		toggleOverlay,
+		closeOverlays,
+		openTile,
+		refIsPhone,
+		refPhoneSection,
+		showSection,
+		phoneSections,
+		onPhone,
+	} = usePlanLayout(flagCount);
 
-	type PhoneSection = "production" | "base" | "io" | "tools";
-	const refPhoneSection: Ref<PhoneSection> = ref("production");
-	function showSection(section: PhoneSection): void {
-		if (section === refPhoneSection.value) return;
-		refPhoneSection.value = section;
-		trackEvent("plan:section_view", { section });
-	}
-	const phoneSections = computed(() => [
-		{
-			key: "production" as const,
-			label: t("plan.tools.labels.production"),
-		},
-		{ key: "base" as const, label: t("plan.base.label") },
-		{
-			key: "io" as const,
-			label: t("plan.components.materialio.label"),
-			dot:
-				flagCount.value > 0
-					? t("plan.layout.flags", { n: flagCount.value }, flagCount.value)
-					: undefined,
-		},
-		{ key: "tools" as const, label: t("plan.layout.tools") },
-	]);
-	// on a phone only the picked section shows, elsewhere every pane
-	const onPhone = (section: PhoneSection): boolean =>
-		!refIsPhone.value || refPhoneSection.value === section;
-
+	// Share link: the sharing modal creates, copies and stops the link
+	const refShowShare: Ref<boolean> = ref(false);
 
 	const expertCount = computed(() =>
-		Object.values(result.value.experts).reduce((sum, e) => sum + e.amount, 0)
+		Object.values(result.value.experts).reduce(
+			(sum, e) => sum + e.amount,
+			0
+		)
 	);
 	const baseStrip = computed(() =>
-		t("plan.layout.base_strip", {
-			cogc: t(cogcTextMapping[result.value.cogc]),
-			n: expertCount.value,
-		}, expertCount.value)
+		t(
+			"plan.layout.base_strip",
+			{
+				cogc: t(cogcTextMapping[result.value.cogc]),
+				n: expertCount.value,
+			},
+			expertCount.value
+		)
 	);
 
 	// the planet link in Base opens the insights box
@@ -667,41 +382,12 @@
 	if (!refPlanData.value.uuid && !props.shared && !props.disabled)
 		onMounted(startRename);
 
-	const TOOL_COMPONENTS: Record<PlanTool, Component> = {
-		"visitation-frequency": defineAsyncComponent(
-			() =>
-				import("@/features/planning/components/tools/PlanVisitationFrequency.vue")
-		),
-		"repair-analysis": defineAsyncComponent(
-			() =>
-				import("@/features/planning/components/tools/PlanRepairAnalysis.vue")
-		),
-		popr: defineAsyncComponent(
-			() => import("@/features/planning/components/tools/PlanPOPR.vue")
-		),
-		"supply-cart": defineAsyncComponent(
-			() =>
-				import("@/features/planning/components/tools/PlanSupplyCart.vue")
-		),
-		"construction-cart": defineAsyncComponent(
-			() =>
-				import("@/features/planning/components/tools/PlanConstructionCart.vue")
-		),
-		"profit-breakdown": defineAsyncComponent(
-			() =>
-				import("@/features/planning/components/tools/PlanProfitBreakdown.vue")
-		),
-		"plan-check": defineAsyncComponent(
-			() => import("@/features/planning/components/tools/PlanCheck.vue")
-		),
-	};
-
-	const compViewToolComponent = computed(() =>
-		refShowTool.value ? TOOL_COMPONENTS[refShowTool.value] : null
+	// one primary: Save on an own plan, the banner's on a shared copy
+	const isOwnPlan: ComputedRef<boolean> = computed(
+		() => userStore.isLoggedIn && !props.disabled && !props.shared
 	);
 
 	// props change with every recalculation, the component only on a switch
-
 	const compViewToolMeta = computed(() => {
 		switch (refShowTool.value) {
 			case "visitation-frequency":
@@ -792,368 +478,6 @@
 		}
 	});
 
-	/*
-	 * Plan Saving & Reloading
-	 */
-
-	const refIsSaving: Ref<boolean> = ref(false);
-	const refSaveFailed: Ref<boolean> = ref(false);
-
-	function saveFailed(): void {
-		// keep modified state, the status offers a retry
-		refSaveFailed.value = true;
-		toast(t("plan.save_status.failed_message"), { type: "error" });
-	}
-
-	async function save(
-		trigger: "button" | "shortcut" = "button"
-	): Promise<void> {
-		// pending plan:edit events belong before the save
-		flushPlanEdits();
-		refIsSaving.value = true;
-		refSaveFailed.value = false;
-		// edits made while saving stay unsaved
-		const sent: string = snapshot();
-
-		try {
-			// plan exists, trigger a save
-			if (existing.value) {
-				const saved = await saveExistingPlan(
-					refPlanData.value.uuid!,
-					backendData.value,
-					refBaseModifiedAt.value
-				);
-				if ("error" in saved) {
-					const kind = saved.error;
-					if (kind === "failed") return saveFailed();
-					// after the save settled, the dialog waits on the user
-					void nextTick(() => resolveConflict(kind));
-					return;
-				}
-
-				refBaseModifiedAt.value = saved.modifiedAt;
-				markSaved(sent);
-				trackEvent("plan:save", {
-					planet_natural_id: planetData.planet_natural_id,
-					trigger,
-				});
-			} else {
-				// ponytail: from the persisted plan store, so an account
-				// whose plans this browser never loaded counts as first
-				const isFirstPlan: boolean =
-					Object.keys(planningStore.plans).length === 0;
-				const created = await createNewPlan(backendData.value);
-				if (!created) return saveFailed();
-
-				refPlanData.value.uuid = created.uuid;
-				refBaseModifiedAt.value = created.modifiedAt;
-				// Persist the auto-optimize-habs preference
-				userStore.setPlanPreference(created.uuid, {
-					autoOptimizeHabs: refAutoOptimizeHabs.value,
-				});
-
-				markSaved(sent);
-				trackEvent("plan:create", {
-					planet_natural_id: planetData.planet_natural_id,
-					is_first_plan: isFirstPlan,
-				});
-			}
-
-			// A new plan moves to its uuid URL, which remounts this page.
-			// Save edits made while creating first, or they'd be lost.
-			if (props.planData.uuid === undefined) {
-				const planUuid: string = refPlanData.value.uuid!;
-				while (modified.value) {
-					const again: string = snapshot();
-					const saved = await saveExistingPlan(
-						planUuid,
-						backendData.value,
-						refBaseModifiedAt.value
-					);
-					if ("error" in saved) return saveFailed();
-					refBaseModifiedAt.value = saved.modifiedAt;
-					markSaved(again);
-				}
-				router.push(
-					`/plan/${planetData.planet_natural_id}/${planUuid}`
-				);
-			}
-		} finally {
-			refIsSaving.value = false;
-		}
-	}
-
-	async function saveAs(): Promise<void> {
-		if (!refSaveAsName.value.trim()) return;
-
-		refIsSavingAs.value = true;
-
-		// Create new plan data with the new name and selected empire
-		const saveAsData: PlanCreateData = {
-			...backendData.value,
-			plan_name: refSaveAsName.value.trim(),
-			empire_uuid: refSaveAsEmpireUuid.value,
-		};
-
-		try {
-			const created = await createNewPlan(saveAsData);
-			if (!created) return;
-
-			// Persist the auto-optimize-habs preference
-			userStore.setPlanPreference(created.uuid, {
-				autoOptimizeHabs: refAutoOptimizeHabs.value,
-			});
-
-			refShowSaveAsModal.value = false;
-
-			// a shared plan's copy opens in place
-			if (props.shared) {
-				trackEvent("plan:shared_clone", {
-					planet_natural_id: planetData.planet_natural_id,
-					modified: modified.value,
-				});
-				router.push(
-					`/plan/${planetData.planet_natural_id}/${created.uuid}`
-				);
-				return;
-			}
-
-			trackEvent("plan:save_as", {
-				planet_natural_id: planetData.planet_natural_id,
-			});
-
-			// open new plan in a new tab
-			window.open(
-				`/plan/${planetData.planet_natural_id}/${created.uuid}`,
-				"_blank"
-			);
-		} finally {
-			refIsSavingAs.value = false;
-		}
-	}
-
-	function openSaveAsModal(): void {
-		// Pre-fill with current plan name + " (Copy)"
-		refSaveAsName.value = planName.value ? `${planName.value} (Copy)` : "";
-		// Pre-fill with current empire
-		refSaveAsEmpireUuid.value = refEmpireUuid.value;
-		refShowSaveAsModal.value = true;
-	}
-
-	// Share link: the sharing modal creates, copies and stops the link
-	const refShowShare: Ref<boolean> = ref(false);
-
-	async function reloadPlan(): Promise<void> {
-		if (!existing.value || !refPlanData.value.uuid) {
-			throw new Error(`Unable to reload plan without uuid.`);
-		}
-		// reloading throws away unsaved edits
-		if (modified.value && !confirm(t("plan.actions.reload_confirm")))
-			return;
-
-		applySavedPlan(await reloadExistingPlan(refPlanData.value.uuid));
-
-		trackEvent("plan:reload", {
-			planet_natural_id: planetData.planet_natural_id,
-		});
-	}
-
-	/**
-	 * Shows the saved plan, dropping unsaved edits and the history
-	 *
-	 * @param {IPlanDefinition} plan Saved plan
-	 */
-	function applySavedPlan(plan: IPlanDefinition): void {
-		refPlanData.value = inertClone(plan);
-		refBaseModifiedAt.value = plan.modified_at;
-		refSaveFailed.value = false;
-		markSaved();
-	}
-
-	/**
-	 * Loads the plan as saved in the backend
-	 *
-	 * @returns {Promise<Plan>} Saved plan
-	 */
-	function fetchSavedPlan(): Promise<Plan> {
-		return useQuery("GetPlan", {
-			planUuid: refPlanData.value.uuid!,
-		}).execute({ forceRefetch: true });
-	}
-
-	/*
-	 * Save conflicts: saved or deleted in another tab since this tab loaded
-	 * the plan. The dialog lists both sides' changes and lets the user keep
-	 * theirs as a new plan, overwrite or reload.
-	 */
-	const conflict = useSaveConflict();
-
-	async function resolveConflict(
-		kind: "conflict" | "deleted"
-	): Promise<void> {
-		const loaded: IPlanDiffable = JSON.parse(savedSnapshot());
-		const mine: IPlanDiffable = JSON.parse(snapshot());
-
-		const choice = await conflict.ask({
-			deleted: kind === "deleted",
-			options:
-				kind === "deleted"
-					? ["save_as_new"]
-					: ["save_as_new", "overwrite", "reload"],
-			loadChanges:
-				kind === "deleted"
-					? undefined
-					: async () =>
-							threeWay(
-								loaded,
-								await fetchSavedPlan(),
-								mine,
-								diffPlan
-							),
-		});
-		trackEvent("plan:save_conflict", {
-			planet_natural_id: planetData.planet_natural_id,
-			is_deleted: kind === "deleted",
-			choice: choice ?? "close",
-		});
-
-		if (choice === "save_as_new") await saveAsNewPlan();
-		else if (choice === "overwrite") {
-			refBaseModifiedAt.value = undefined;
-			await save();
-		} else if (choice === "reload") await reloadSavedPlan();
-	}
-
-	/**
-	 * Drops the edits for the saved plan, a failed load keeps them
-	 */
-	async function reloadSavedPlan(): Promise<void> {
-		try {
-			applySavedPlan(await fetchSavedPlan());
-		} catch (err) {
-			console.error("Reloading the saved plan", err);
-		}
-	}
-
-	/**
-	 * Saves this tab's edits as "<name> (copy)" in the original's empire
-	 * (the one it calculates with when the original is in it) and opens
-	 * it, the original keeps the other tab's version
-	 */
-	async function saveAsNewPlan(): Promise<void> {
-		refIsSaving.value = true;
-		try {
-			const inPlanEmpire = planEmpires.value.some(
-				(e) => e.uuid === refEmpireUuid.value
-			);
-			const created = await createNewPlan({
-				...backendData.value,
-				plan_name: t("save_conflict.copy_name", {
-					name: planName.value ?? "",
-				}),
-				empire_uuid: inPlanEmpire
-					? refEmpireUuid.value
-					: (planEmpires.value[0]?.uuid ?? refEmpireUuid.value),
-			});
-			if (!created) return saveFailed();
-
-			userStore.setPlanPreference(created.uuid, {
-				autoOptimizeHabs: refAutoOptimizeHabs.value,
-			});
-			// leaving is no loss now
-			markSaved();
-			router.push(
-				`/plan/${planetData.planet_natural_id}/${created.uuid}`
-			);
-		} finally {
-			refIsSaving.value = false;
-		}
-	}
-
-	/*
-	 * Saved or deleted in another tab: without unsaved edits the plan
-	 * reloads, with them a notice offers to
-	 */
-	let remoteToast: PToastHandle | undefined;
-
-	watch(remoteChange, async (change) => {
-		const planUuid: string | undefined = refPlanData.value.uuid;
-		if (!change || !planUuid || change.uuid !== planUuid) return;
-
-		remoteToast?.destroy();
-		try {
-			// the other tab's change invalidated it, this refetches
-			const plan: Plan = await useQuery("GetPlan", {
-				planUuid,
-			}).execute();
-			if (plan.modified_at === refBaseModifiedAt.value) return;
-
-			trackEvent("app:remote_change", {
-				object_type: "plan",
-				has_unsaved_edits: modified.value,
-				is_deleted: false,
-			});
-			if (!modified.value) applySavedPlan(plan);
-			else
-				remoteToast = toast(t("save_conflict.notice.saved_elsewhere"), {
-					duration: 15_000,
-					action: {
-						label: t("save_conflict.notice.reload"),
-						onClick: reloadSavedPlan,
-					},
-				});
-		} catch (err) {
-			if (getSaveError(err) !== "deleted") return;
-			trackEvent("app:remote_change", {
-				object_type: "plan",
-				has_unsaved_edits: modified.value,
-				is_deleted: true,
-			});
-			remoteToast = toast(t("save_conflict.notice.deleted_elsewhere"), {
-				type: "error",
-				duration: 15_000,
-			});
-		}
-	});
-
-	/*
-	 * Shared plan actions: prices, reset and the change summary
-	 */
-	const sharedPriceSource: ComputedRef<string> = computed(() => {
-		const cxName: string | undefined = refCXUuid.value
-			? planningStore.cxs[refCXUuid.value]?.cx_name
-			: undefined;
-		return cxName
-			? t("sharing.banner.price_cx", { name: cxName })
-			: t("sharing.banner.price_universe");
-	});
-
-	// a logged in viewer prices the copy with their empire's CX, also
-	// after logging in on the page (the default empire first)
-	if (props.shared) {
-		let picked: boolean = false;
-		watch(
-			[() => props.empireList, () => planningStore.cxs],
-			([list]) => {
-				if (!list?.length) return;
-				refEmpireList.value = list;
-				if (
-					!picked ||
-					!list.some((e) => e.uuid === refEmpireUuid.value)
-				) {
-					const preferred: string | undefined =
-						userStore.preferences.defaultEmpireUuid;
-					refEmpireUuid.value = (
-						list.find((e) => e.uuid === preferred) ?? list[0]
-					).uuid;
-					picked = true;
-				}
-				refCXUuid.value = findEmpireCXUuid(refEmpireUuid.value);
-			},
-			{ immediate: true, deep: true }
-		);
-	}
-
 	// breadcrumb: the current empire if it holds the plan, else the first
 	const crumbEmpire = computed(() => {
 		const empires = Object.values(planningStore.empires);
@@ -1164,44 +488,6 @@
 		);
 	});
 
-	function resetShared(): void {
-		applySavedPlan(sharedBaseline);
-		trackEvent("plan:shared_reset", {
-			planet_natural_id: planetData.planet_natural_id,
-		});
-	}
-
-	async function copySharedChanges(): Promise<void> {
-		const changes = diffPlan(
-			JSON.parse(savedSnapshot()),
-			JSON.parse(snapshot())
-		);
-		const text: string = buildChangeSummary(
-			{
-				name: planName.value || t("plan.name.untitled"),
-				planet: planetData.planet_natural_id,
-				changes,
-				before: sharedCompare.value!.before,
-				after: sharedCompare.value!.after,
-				priceSource: sharedPriceSource.value,
-				url: `${config.SHARE_BASE_URL}/${props.sharedPlanUuid}`,
-			},
-			t,
-			(id) => planetName(id, id)
-		);
-
-		try {
-			await navigator.clipboard.writeText(text);
-			toast(t("sharing.banner.copied"));
-			trackEvent("plan:shared_copy_changes", {
-				planet_natural_id: planetData.planet_natural_id,
-				change_count: changes.length,
-			});
-		} catch {
-			toast(t("sharing.banner.copy_failed"), { type: "error" });
-		}
-	}
-
 	// Unhead
 	import { useHead } from "@unhead/vue";
 	useHead({
@@ -1209,263 +495,6 @@
 			() => planName.value || props.planData.planet_natural_id
 		),
 	});
-
-	// Route and Browser Guard: leaving with unsaved changes
-	useUnsavedGuard(
-		() => modified.value && !props.sharedPlanUuid,
-		() => t("plan.notifications.leave_unsaved"),
-		() =>
-			trackEvent("plan:leave_unsaved", {
-				planet_natural_id: planetData.planet_natural_id,
-			})
-	);
-
-	// one primary: Save on an own plan, the banner's on a shared copy
-	const isOwnPlan: ComputedRef<boolean> = computed(
-		() => userStore.isLoggedIn && !props.disabled && !props.shared
-	);
-
-	// Keyboard: Ctrl/Cmd+S saves, Ctrl/Cmd+Z undoes, +Shift redoes
-	const canSave: ComputedRef<boolean> = computed(
-		() =>
-			userStore.isLoggedIn &&
-			!props.disabled &&
-			saveable.value &&
-			!refIsSaving.value
-	);
-
-	function isTextField(target: EventTarget | null): boolean {
-		return (
-			target instanceof HTMLElement &&
-			(target.isContentEditable ||
-				["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
-		);
-	}
-
-	function trackedUndo(trigger: "button" | "shortcut"): void {
-		if (canUndo.value) trackEvent("plan:undo", { trigger });
-		undo();
-	}
-
-	function trackedRedo(trigger: "button" | "shortcut"): void {
-		if (canRedo.value) trackEvent("plan:redo", { trigger });
-		redo();
-	}
-
-	function onKeydown(e: KeyboardEvent): void {
-		if (!(e.ctrlKey || e.metaKey)) return;
-		const key: string = e.key.toLowerCase();
-
-		if (e.code === "Backquote" && calcDebug.value && !isTextField(e.target)) {
-			e.preventDefault();
-			toggleCalcDebug("shortcut");
-		} else if (key === "s") {
-			// never open the browser's save dialog on the plan page
-			e.preventDefault();
-			if (props.shared) {
-				if (userStore.isLoggedIn) openSaveAsModal();
-			} else if (canSave.value) save("shortcut");
-		} else if (key === "z" && !props.disabled && !isTextField(e.target)) {
-			e.preventDefault();
-			if (e.shiftKey) trackedRedo("shortcut");
-			else trackedUndo("shortcut");
-		}
-	}
-
-	onMounted(() => window.addEventListener("keydown", onKeydown));
-	onUnmounted(() => {
-		flushPlanEdits();
-		window.removeEventListener("keydown", onKeydown);
-		// toasts belong to the app, don't let one outlive its plan
-		undoToast?.destroy();
-		remoteToast?.destroy();
-	});
-
-	// Deleting or changing a recipe shows a toast to take it back. Any later
-	// change to the history (edit, undo, redo, save) closes it, so its Undo
-	// only ever undoes the edit it announced.
-	let undoToast: PToastHandle | undefined;
-
-	// a picked recipe: a status line under its row, with Undo
-	const refRecipeStatus: Ref<
-		{ building: number; recipe: number; text: string } | undefined
-	> = ref(undefined);
-
-	watch(
-		revision,
-		() => {
-			undoToast?.destroy();
-			undoToast = undefined;
-			refRecipeStatus.value = undefined;
-		},
-		// before the next toast opens in the same call
-		{ flush: "sync" }
-	);
-
-	function toastUndo(text: string): void {
-		undoToast?.destroy();
-		undoToast = toast(text, {
-			action: {
-				label: t("plan.history.undo"),
-				onClick: () => trackedUndo("button"),
-			},
-		});
-	}
-
-	function deleteBuilding(index: number): void {
-		handleDeleteBuilding(index);
-		toastUndo(t("plan.history.building_removed"));
-	}
-
-	function deleteBuildingRecipe(
-		buildingIndex: number,
-		recipeIndex: number
-	): void {
-		handleDeleteBuildingRecipe(buildingIndex, recipeIndex);
-		toastUndo(t("plan.history.recipe_removed"));
-	}
-
-	// "12 ALG": a recipe by its first output, per run
-	function recipeLabel(buildingIndex: number, recipeId: string): string {
-		const output = result.value.production.buildings[
-			buildingIndex
-		]?.recipeOptions.find((r) => r.recipe_id === recipeId)?.outputs[0];
-		return output
-			? `${output.material_amount} ${output.material_ticker}`
-			: recipeId;
-	}
-
-	function changeBuildingRecipe(
-		buildingIndex: number,
-		recipeIndex: number,
-		recipeId: string
-	): void {
-		const building = refPlanData.value.plan_data.buildings[buildingIndex];
-		// picking the recipe it already has changes nothing, and Undo would
-		// take back the edit before it
-		const before: string | undefined =
-			building?.active_recipes[recipeIndex]?.recipeid;
-		if (before === recipeId) return;
-
-		handleChangeBuildingRecipe(buildingIndex, recipeIndex, recipeId);
-		refRecipeStatus.value = {
-			building: buildingIndex,
-			recipe: recipeIndex,
-			text: t("plan.picker.replaced", {
-				before: before ? recipeLabel(buildingIndex, before) : "",
-				after: recipeLabel(buildingIndex, recipeId),
-			}),
-		};
-	}
-
-	function addPickedRecipe(buildingIndex: number, recipeId: string): void {
-		handleAddBuildingRecipes(buildingIndex, [
-			{ recipeid: recipeId, amount: 1 },
-		]);
-		refRecipeStatus.value = {
-			building: buildingIndex,
-			recipe:
-				refPlanData.value.plan_data.buildings[buildingIndex]
-					.active_recipes.length - 1,
-			text: t("plan.picker.added", {
-				recipe: recipeLabel(buildingIndex, recipeId),
-			}),
-		};
-	}
-
-	function undoPickedRecipe(): void {
-		trackEvent("plan:recipe_picker_undo");
-		trackedUndo("button");
-	}
-
-	// One undo step: the setup and the habs for its workforce. Auto-optimise
-	// is a preference, not plan data, so undo leaves it on.
-	const addStarterSetup = record(async (setup: IStarterSetup) => {
-		refAutoOptimizeHabs.value = true;
-		await handleApplyStarterSetup(setup);
-		applyOptimizeHabs("auto", false);
-	});
-
-	async function applyStarterSetup(
-		setup: IStarterSetup,
-		isSelectionChanged: boolean
-	): Promise<void> {
-		await addStarterSetup(setup);
-		toastUndo(
-			t(
-				"plan.tools.plan_starter.applied",
-				{ n: setup.buildings.length },
-				setup.buildings.length
-			)
-		);
-		trackEvent("plan:starter_apply", {
-			planet_natural_id: planetData.planet_natural_id,
-			building_count: setup.buildings.length,
-			expert_count: setup.experts.reduce((sum, e) => sum + e.amount, 0),
-			is_selection_changed: isSelectionChanged,
-		});
-	}
-
-	// Auto Optimize Habitation on Workforce Change
-	const availableHabArea: ComputedRef<number> = computed(() => {
-		return calculateAvailableArea(
-			result.value.area.areaTotal,
-			result.value.area.areaUsed,
-			result.value.infrastructure
-		);
-	});
-
-	// Save As empire options
-	const saveAsEmpireOptions: ComputedRef<PSelectOption[]> = computed(() => {
-		if (!refEmpireList.value) return [];
-		return refEmpireList.value.map((e) => ({
-			label: e.empire_name,
-			value: e.uuid,
-		}));
-	});
-
-	function applyOptimizeHabs(goal: HabSolverGoal, force: boolean) {
-		// skip, if autooptimization is deactivated and not forced,
-		// forcing only happens from the button clicks in configuration
-
-		if (!refAutoOptimizeHabs.value && !force) return;
-
-		trackEvent("plan:hab_optimize", { goal });
-
-		const solution = optimizeHabs(
-			goal,
-			result.value.infrastructureCosts,
-			result.value.workforce,
-			availableHabArea.value
-		);
-
-		if (solution.status === "optimal") {
-			for (const [hab, count] of solution.variables) {
-				const habType = hab as InfrastructureType;
-				// Don't update the plan if nothing changed
-				if (result.value.infrastructure[habType] === count) continue;
-				handleUpdateInfrastructure(habType, count);
-			}
-		} else {
-			console.error(`Unable to optimize habs: ${solution.status}`);
-		}
-	}
-
-	watch(
-		[
-			() => result.value.workforce.pioneer.required,
-			() => result.value.workforce.settler.required,
-			() => result.value.workforce.technician.required,
-			() => result.value.workforce.engineer.required,
-			() => result.value.workforce.scientist.required,
-			() => result.value.infrastructureCosts,
-		],
-		() => {
-			// undo/redo restore a snapshot as it was
-			if (isRestoring()) return;
-			applyOptimizeHabs("auto", false);
-		}
-	);
 </script>
 
 <template>

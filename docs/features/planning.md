@@ -23,10 +23,22 @@ editor UI. The engine is documented in depth in
 | `calculations/*.ts` | Wrappers around the engine (bonus, workforce, building), infrastructure lists, extraction, hab LP optimisation |
 | `useMaterialIOUtil.ts` | Combine and enrich material I/O (`enhanceMaterialIO`). Also combines empire I/O (`combineEmpireMaterialIO`, `calculateEmpireCostOverview`, `empireMaterialIOState`) |
 | `planView.util.ts` | `PlanTool` keys, `foldedPanes`, and the Material I/O totals and CSV download (`materialIOTotals`, `materialIOCsv`) |
+| `planView.types.ts` | `IPlanCalculation` (what `usePlanCalculation` returns) and `IPlanViewProps`, shared by `PlanView` and its composables |
+| `usePlanSave.ts` | Save, Save as, reload, save conflicts (`useSaveConflict`), another tab's change (`remoteChange`) and the leave guard; owns the save version (`modified_at`) a save is sent from |
+| `usePlanShortcuts.ts` | Ctrl/Cmd with S, Z, Shift+Z and Backquote (calculation debug), the tracked `trackedUndo` / `trackedRedo` |
+| `usePlanEdits.ts` | Edits with feedback: undo toasts for removed buildings and recipes, the recipe picker's status line, the starter setup and hab optimising (auto on workforce changes) |
+| `usePlanSharedCopy.ts` | A shared plan's working copy: the shared version's calculation to compare against, reset, the change summary copy, the viewer's empire for prices |
+| `usePlanLayout.ts` | Tool tabs, folding Base and Material I/O to strips, their overlays, result tiles opening their source, the phone's one section at a time; binds the `layout` and `base` template refs |
+| `usePlanIO.ts` | The Material I/O pane's flow, filter and value, rows, totals and CSV download |
 | `calcDebug.util.ts` / `.types.ts` | Calculation debug: self-checks of a traced run, trace tree, copy as text and JSON. See [Tracing](../planning-engine.md#tracing) |
 
 ## Components
 
+- **`PlanView.vue`** is a thin page: it owns the plan ref, the empire and
+  CX it calculates with and `usePlanCalculation`, and composes the
+  `usePlan*` composables above, each given the calculation and the refs it
+  needs. They are synchronous, so their watchers and listeners bind to
+  the page and go with it.
 - **Editor panes** (`components/`) are wired together by `PlanView.vue`,
   three panes under a sticky `PlanResultsBar` (profit, payback, profit per
   area, area, storage): `PlanBase` (Base: `PlanConfiguration`,
@@ -129,4 +141,6 @@ editor UI. The engine is documented in depth in
 characterization snapshots and benchmarks, see
 [planning-engine.md](../planning-engine.md#tests-and-benchmarks)), handlers,
 history, `calculations/*`, `util/` and the components.
-`src/tests/views/PlanView*.test.ts` cover the page (save, conflict, shared).
+`src/tests/views/PlanView*.test.ts` cover the page (save, conflict, shared);
+the page's composables (`usePlanSave`, `usePlanLayout`, …) have their own
+tests next to them.

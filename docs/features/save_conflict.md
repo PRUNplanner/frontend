@@ -5,7 +5,7 @@ another device) after this tab loaded it makes the save fail with 409, a
 deleted one with 404. This folder shows what happened and lets the user
 choose, so nothing is overwritten silently.
 
-**Used by.** `PlanView`, `useEmpireForm` (`EmpireConfiguration`,
+**Used by.** `usePlanSave` (`PlanView`), `useEmpireForm` (`EmpireConfiguration`,
 `EmpireOnboarding`), `useCXSave` (`ExchangesView`, `PlanCOGM`);
 `getSaveError` in `usePlan.saveExistingPlan`; `changeLineText` in
 `sharing/sharedPlan.util.ts` (a shared plan's change summary).

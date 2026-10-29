@@ -260,7 +260,7 @@ aggregated material I/O is pushed back to the backend with
 
 | Caller | How |
 | --- | --- |
-| `views/PlanView.vue` | `usePlanCalculation`. Owns the plan ref and wires the `handle*` functions into the `features/planning/components/Plan*.vue` panels. A shared plan gets a second one for the shared version, to compare against |
+| `views/PlanView.vue` | `usePlanCalculation`. Owns the plan ref and wires the `handle*` functions into the `features/planning/components/Plan*.vue` panels. A shared plan gets a second one for the shared version, to compare against (`usePlanSharedCopy`) |
 | Plan check tool (`PlanCheckMarket`, `PlanCheckCompare`, `util/whatIf.util.ts`) | Engine with the plan's context: scaled price books, real ask/bid prices, another of the user's plans |
 | `views/EmpireView.vue` | Engine per plan, results cached |
 | `views/fio/FIOBurnView.vue` | Engine per plan, then `useFIOBurn` |

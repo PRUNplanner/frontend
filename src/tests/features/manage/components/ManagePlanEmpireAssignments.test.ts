@@ -19,6 +19,7 @@ import PDropdown from "@/ui/components/PDropdown.vue";
 import ManageAssignmentCard from "@/features/manage/components/ManageAssignmentCard.vue";
 import { toasts } from "@/ui/useToast";
 import { mountComponent } from "@/tests/mountComponent";
+import { manageDataHost } from "@/tests/features/manage/manageData.helper";
 
 // test data
 import empireList from "@/tests/test_data/api_data_empire_list.json";
@@ -68,18 +69,20 @@ const EMPIRES = [
 	empire(E1, "Alpha", [PLANS[1], PLANS[0]]),
 ];
 
-interface IExposed {
-	changes: { changedCount: number };
-	save: () => Promise<void>;
-	discard: () => void;
-}
-
-async function mountAssignments(empires = EMPIRES, plans = PLANS) {
-	return mountComponent(
+async function mountAssignments(
+	empires = EMPIRES,
+	plans = PLANS,
+	options: Parameters<typeof mountComponent>[2] = {}
+) {
+	const { host, setup } = manageDataHost();
+	const mounted = await mountComponent(
 		ManagePlanEmpireAssignments,
 		{ empires, plans },
-		{ withDialog: true }
+		{ withDialog: true, ...options, setup }
 	);
+	// what it registers with the save bar
+	const section = () => host.sections.assignments!;
+	return { ...mounted, host, section };
 }
 
 const bodyRows = (wrapper: VueWrapper) =>
@@ -136,8 +139,6 @@ async function clickHeader(wrapper: VueWrapper, column: number) {
 	await input.setValue(!(input.element as HTMLInputElement).checked);
 	await flushPromises();
 }
-
-const exposed = (component: VueWrapper) => component.vm as unknown as IExposed;
 
 async function openMenu(wrapper: VueWrapper, row: number) {
 	await bodyRows(wrapper)[row].find("button[aria-busy]").trigger("click");
@@ -199,7 +200,7 @@ describe("ManagePlanEmpireAssignments", () => {
 	});
 
 	it("stripes and counts unsaved cells, discard reverts them", async () => {
-		const { wrapper, component } = await mountAssignments();
+		const { wrapper, section } = await mountAssignments();
 
 		await toggleCell(wrapper, 0, 1);
 		await toggleCell(wrapper, 1, 0);
@@ -207,13 +208,17 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(assigned(wrapper, 1)).toEqual([true, false, true]);
 		expect(striped(wrapper, 1)).toEqual([true, false, false]);
 		expect(striped(wrapper, 0)).toEqual([false, true, false]);
-		expect(exposed(component).changes.changedCount).toBe(2);
+		expect(section().changedCount.value).toBe(2);
 
 		// toggling back is no change
 		await toggleCell(wrapper, 0, 1);
-		expect(exposed(component).changes.changedCount).toBe(1);
+		expect(section().changedCount.value).toBe(1);
+		// the save bar's line under the count
+		expect(section().detail?.value).toBe(
+			"management.assignments.plan_count"
+		);
 
-		exposed(component).discard();
+		section().discard();
 		await flushPromises();
 		expect(striped(wrapper, 0)).toEqual([false, false, false]);
 		expect(assigned(wrapper, 0)).toEqual([true, true, false]);
@@ -238,11 +243,11 @@ describe("ManagePlanEmpireAssignments", () => {
 
 	it("saves only the changed empires as junctions and reloads", async () => {
 		mock.onPost(/planning\/empire\/junctions\/$/).reply(200, empireList);
-		const { wrapper, component } = await mountAssignments();
+		const { wrapper, host, section } = await mountAssignments();
 
 		// assign Plan B to Beta
 		await toggleCell(wrapper, 1, 1);
-		await exposed(component).save();
+		await section().save();
 
 		expect(mock.history.post).toHaveLength(1);
 		const payload = JSON.parse(mock.history.post[0].data);
@@ -254,19 +259,17 @@ describe("ManagePlanEmpireAssignments", () => {
 			)
 		).toEqual(expect.arrayContaining([P2, P3]));
 
-		expect(component.emitted("update:empireList")?.[0][0]).toHaveLength(
-			empireList.length
-		);
-		expect(component.emitted("update:planList")?.[0][0]).toHaveLength(1);
+		expect(host.data.empireList.value).toHaveLength(empireList.length);
+		expect(host.data.planList.value).toHaveLength(1);
 	});
 
 	it("rejects when saving fails and keeps the edits", async () => {
 		mock.onPost(/planning\/empire\/junctions\/$/).reply(500);
-		const { wrapper, component } = await mountAssignments();
+		const { wrapper, section } = await mountAssignments();
 
 		await toggleCell(wrapper, 1, 1);
-		await expect(exposed(component).save()).rejects.toThrow();
-		expect(exposed(component).changes.changedCount).toBe(1);
+		await expect(section().save()).rejects.toThrow();
+		expect(section().changedCount.value).toBe(1);
 	});
 
 	it("filters by search, empire and unassigned; header acts on shown rows", async () => {
@@ -315,7 +318,7 @@ describe("ManagePlanEmpireAssignments", () => {
 	});
 
 	it("keeps unsaved edits when the lists reload", async () => {
-		const { wrapper, component, setProps } = await mountAssignments();
+		const { wrapper, section, setProps } = await mountAssignments();
 
 		await toggleCell(wrapper, 0, 1);
 		await toggleCell(wrapper, 2, 0);
@@ -332,7 +335,7 @@ describe("ManagePlanEmpireAssignments", () => {
 
 		expect(planNames(wrapper)).toEqual(["Plan A", "Plan B", "Plan D"]);
 		expect(striped(wrapper, 1)).toEqual([true, false, false]);
-		expect(exposed(component).changes.changedCount).toBe(1);
+		expect(section().changedCount.value).toBe(1);
 	});
 
 	it("opens the row menu at the row's button, Escape and a click away close it", async () => {
@@ -368,7 +371,7 @@ describe("ManagePlanEmpireAssignments", () => {
 
 	it("row menu clones a plan with a suffixed name", async () => {
 		mock.onPost(new RegExp(`planning/plan/${P2}/clone/$`)).reply(200, plan);
-		const { wrapper, component } = await mountAssignments();
+		const { wrapper, host } = await mountAssignments();
 
 		await openMenu(wrapper, 1);
 		expect(
@@ -385,12 +388,12 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(JSON.parse(mock.history.post[0].data)).toEqual({
 			plan_name: "Plan B (Clone)",
 		});
-		expect(component.emitted("update:planList")).toHaveLength(1);
+		expect(host.data.refetchPlans).toHaveBeenCalledTimes(1);
 	});
 
 	it("row menu deletes a plan only after confirmation", async () => {
 		mock.onDelete(new RegExp(`planning/plan/${P3}/$`)).reply(204);
-		const { wrapper, component } = await mountAssignments();
+		const { wrapper, host } = await mountAssignments();
 
 		await openMenu(wrapper, 2);
 		menuOption("management.assignments.menu.delete")!.click();
@@ -401,13 +404,13 @@ describe("ManagePlanEmpireAssignments", () => {
 		await flushPromises();
 
 		expect(mock.history.delete).toHaveLength(1);
-		expect(component.emitted("update:empireList")).toHaveLength(1);
+		expect(host.data.refetchPlans).toHaveBeenCalledTimes(1);
 	});
 
 	it("keeps the plans and stops the spinner when deleting fails", async () => {
 		mock.onDelete(new RegExp(`planning/plan/${P3}/$`)).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper, component } = await mountAssignments();
+		const { wrapper, host } = await mountAssignments();
 
 		await openMenu(wrapper, 2);
 		menuOption("management.assignments.menu.delete")!.click();
@@ -416,7 +419,7 @@ describe("ManagePlanEmpireAssignments", () => {
 		await flushPromises();
 
 		expect(mock.history.delete).toHaveLength(1);
-		expect(component.emitted("update:planList")).toBeUndefined();
+		expect(host.data.planList.value).toEqual([]);
 		expect(
 			bodyRows(wrapper)[2].find("button").attributes("aria-busy")
 		).toBe("false");
@@ -428,7 +431,7 @@ describe("ManagePlanEmpireAssignments", () => {
 		mock.onDelete(new RegExp(`planning/plan/${P1}/$`)).reply(204);
 		mock.onDelete(new RegExp(`planning/plan/${P2}/$`)).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper, component } = await mountAssignments();
+		const { wrapper, host } = await mountAssignments();
 		const selectedBoxes = () =>
 			bodyRows(wrapper).map(
 				(tr) =>
@@ -458,7 +461,7 @@ describe("ManagePlanEmpireAssignments", () => {
 		await flushPromises();
 
 		expect(mock.history.delete).toHaveLength(2);
-		expect(component.emitted("update:planList")).toHaveLength(1);
+		expect(host.data.refetchPlans).toHaveBeenCalledTimes(1);
 		// the one that failed stays selected
 		expect(selectedBoxes()).toEqual([false, true]);
 		expect(error).toHaveBeenCalled();
@@ -518,7 +521,7 @@ describe("ManagePlanEmpireAssignments", () => {
 			const on = await mountComponent(
 				ManagePlanEmpireAssignments,
 				{ empires: EMPIRES, plans: PLANS, saved: true },
-				{ withDialog: true }
+				{ withDialog: true, setup: manageDataHost().setup }
 			);
 			expect(on.wrapper.find("[role=status]").text()).toContain(
 				"management.save_bar.all_saved"
@@ -655,23 +658,18 @@ describe("ManagePlanEmpireAssignments", () => {
 				await gate;
 				return [204];
 			});
-			const { wrapper, component } = await mountComponent(
-				ManagePlanEmpireAssignments,
-				{ empires: [], plans },
-				{
-					withDialog: true,
-					messages: {
-						management: {
-							assignments: {
-								selection: {
-									confirm_content: "Delete {names}",
-									more: "{names} and {count} more",
-								},
+			const { wrapper, host } = await mountAssignments([], plans, {
+				messages: {
+					management: {
+						assignments: {
+							selection: {
+								confirm_content: "Delete {names}",
+								more: "{names} and {count} more",
 							},
 						},
 					},
-				}
-			);
+				},
+			});
 
 			await wrapper.find("thead th:first-child input").setValue(true);
 			await button(wrapper, `${SEL}.delete`)!.trigger("click");
@@ -691,7 +689,7 @@ describe("ManagePlanEmpireAssignments", () => {
 
 			release();
 			await vi.waitFor(() => {
-				expect(component.emitted("update:planList")).toHaveLength(1);
+				expect(host.data.refetchPlans).toHaveBeenCalledTimes(1);
 			});
 			await flushPromises();
 
@@ -728,7 +726,7 @@ describe("ManagePlanEmpireAssignments", () => {
 			const error = vi
 				.spyOn(console, "error")
 				.mockImplementation(() => {});
-			const { wrapper, component } = await mountAssignments();
+			const { wrapper, host } = await mountAssignments();
 
 			await rowBox(wrapper, 0).setValue(true);
 			await button(wrapper, `${SEL}.delete`)!.trigger("click");
@@ -738,19 +736,19 @@ describe("ManagePlanEmpireAssignments", () => {
 
 			expect(mock.history.delete).toHaveLength(1);
 			expect(error).toHaveBeenCalled();
-			expect(component.emitted("update:planList")).toBeUndefined();
+			expect(host.data.planList.value).toEqual([]);
 			expect(wrapper.find("[role=status]").exists()).toBe(false);
 			expect(toasts.value).toEqual([]);
 			error.mockRestore();
 		});
 
 		it("saving without changes sends nothing", async () => {
-			const { component } = await mountAssignments();
+			const { host, section } = await mountAssignments();
 
-			await exposed(component).save();
+			await section().save();
 
 			expect(mock.history.post).toHaveLength(0);
-			expect(component.emitted("update:planList")).toBeUndefined();
+			expect(host.data.planList.value).toEqual([]);
 		});
 	});
 
@@ -785,14 +783,14 @@ describe("ManagePlanEmpireAssignments", () => {
 			const error = vi
 				.spyOn(console, "error")
 				.mockImplementation(() => {});
-			const { wrapper, component } = await mountAssignments();
+			const { wrapper, host } = await mountAssignments();
 
 			await openMenu(wrapper, 0);
 			menuOption("management.assignments.menu.clone")!.click();
 			await flushPromises();
 
 			expect(mock.history.post).toHaveLength(1);
-			expect(component.emitted("update:planList")).toBeUndefined();
+			expect(host.data.planList.value).toEqual([]);
 			expect(
 				bodyRows(wrapper)[0]
 					.find("button[aria-busy]")
@@ -803,7 +801,7 @@ describe("ManagePlanEmpireAssignments", () => {
 		});
 
 		it("does not delete when the confirmation is declined", async () => {
-			const { wrapper, component } = await mountAssignments();
+			const { wrapper, host } = await mountAssignments();
 
 			await openMenu(wrapper, 0);
 			menuOption("management.assignments.menu.delete")!.click();
@@ -818,7 +816,7 @@ describe("ManagePlanEmpireAssignments", () => {
 			await flushPromises();
 
 			expect(mock.history.delete).toHaveLength(0);
-			expect(component.emitted("update:empireList")).toBeUndefined();
+			expect(host.data.empireList.value).toEqual([]);
 		});
 
 		it("ignores a choice for a plan that is gone", async () => {

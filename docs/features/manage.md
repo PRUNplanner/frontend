@@ -13,11 +13,12 @@
 
 | Component | Role |
 | --- | --- |
-| `ManageEmpire.vue` | Empire list, create and delete: `CreateEmpire`, `DeleteEmpire`, and the CX select per empire. Exposes `changedCount`, `save()` (`PatchEmpireCXJunctions`) and `discard()` to the save bar |
+| `ManageEmpire.vue` | Empire list, create and delete: `CreateEmpire`, `DeleteEmpire`, and the CX select per empire. Registers `changedCount`, `save()` (`PatchEmpireCXJunctions`) and `discard()` as the `empire` section |
 | `ManageCX.vue` | CX create and delete: `CreateCX`, `DeleteCX` |
-| `ManagePlanEmpireAssignments.vue` | Plan↔empire matrix: toolbar (search, "In empire", unassigned only), sortable plain table (cards below `md`), one ⋯ `PDropdown` (`ClonePlan`, `SharingModal`, `DeletePlan`), a select box per row and one in the header for all shown rows, deleted together after one confirm (one `DeletePlan` each, failed ones stay selected). Exposes `changes`, `save()` (`PatchEmpirePlanJunctions`) and `discard()` |
+| `ManagePlanEmpireAssignments.vue` | Plan↔empire matrix: toolbar (search, "In empire", unassigned only), sortable plain table (cards below `md`), one ⋯ `PDropdown` (`ClonePlan`, `SharingModal`, `DeletePlan`), a select box per row and one in the header for all shown rows, deleted together after one confirm (one `DeletePlan` each, failed ones stay selected). Registers its count, the plans/empires detail line, `save()` (`PatchEmpirePlanJunctions`) and `discard()` as the `assignments` section |
 | `ManageAssignmentRow.vue` / `ManageAssignmentCard.vue` | One plan as table row / card. Cell state arrives as one string (`cells`), so a toggle re-renders only that row. The ⋯ menu button is a plain `<button>` with an inline SVG, cheap in every row |
 | `save_bar/components/SaveBar.vue` | Sticky "n unsaved changes" bar: Discard, Save changes, saving and error states. Shared with Exchanges and COGM |
+| `useManageData.ts` / `.types.ts` | The page's data, provided by `ManageView` (`provideManageData`) and injected by the sections (`useManageData`, throws without the provider): the empire, plan and CX lists filled by `WrapperPlanningDataLoader`, `refetchCX()`, `refetchEmpires()`, `refetchPlans()` (plans with their empires, both or neither), and the save bar's sections (`register`, `totalChanged`, `saveDetail`, `saveSections()`, `discardSections()`) |
 | `useAssignmentMatrix.ts` | Matrix state as two `Set`s of `"<plan>|<empire>"` keys (`loaded`, `current`) in `shallowRef`s, plus pure `buildLoaded`, `diff`, `toJunctions`, `setMany`, `rebase`. Types in `useAssignmentMatrix.types.ts`; payloads are `PlanEmpireJunction` (`empireData.schemas.ts`) and `CXEmpireJunction` (`cxData.schemas.ts`) |
 
 ## Data
@@ -25,13 +26,17 @@
 - Every write goes through `useQuery`. The query definitions invalidate
   `["planningdata", "empire"]` and `["planningdata", "plan"]` with
   `exact: false`, so empires and plans refetch into `planningStore`.
-- The views read from `planningStore` (`getAllCX`, `empires`, `plans`).
+- `ManageView` owns the lists through `useManageData` and passes them to
+  the sections as props. A section never fetches a list itself: after a
+  write it calls the injected `refetch*()`, which updates the lists for
+  every section.
 
 ## Saving
 
 - CX selects and matrix cells are local edits until **Save changes** in
-  the bar (`ManageView`). It saves CX first, then plans, each only with
-  changes; a part that succeeded has nothing left to send on Retry.
+  the bar (`ManageView`, through `useManageData.saveSections`). It saves
+  CX first, then plans, each only with changes; a part that succeeded
+  has nothing left to send on Retry.
 - `ManageView` guards route leave and `beforeunload` while dirty
   (`lib/useUnsavedGuard.ts`).
 - Create/delete/clone still save at once. The reload that follows
@@ -55,8 +60,9 @@
 
 ## Tests
 
-`useAssignmentMatrix` is covered in
-`src/tests/features/manage/useAssignmentMatrix.test.ts`. Component tests
+`useAssignmentMatrix` and `useManageData` are covered in
+`src/tests/features/manage/`. Sections mount with real Manage data through
+`manageDataHost()` (`manageData.helper.ts`). Component tests
 live in `src/tests/features/manage/components/` and the save bar flow in
 `src/tests/views/ManageView.test.ts` (local suite, see
 [testing.md](../testing.md#component-tests)). The API calls are

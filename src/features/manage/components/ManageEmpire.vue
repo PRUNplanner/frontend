@@ -13,6 +13,7 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { useManageData } from "@/features/manage/useManageData";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
@@ -56,10 +57,7 @@
 		generateEmpireCXMap();
 	});
 
-	const emit = defineEmits<{
-		(e: "update:cxList", value: CX[]): void;
-		(e: "update:empireList", value: PlanEmpireElement[]): void;
-	}>();
+	const { refetchCX, refetchEmpires, register } = useManageData();
 
 	const refCXOptions: Ref<PSelectOption[]> = ref([]);
 	const refEmpireCXMap: Ref<Record<string, string | undefined>> = ref({});
@@ -193,10 +191,10 @@
 			junctions: cxEmpireJunctions.value,
 		}).execute();
 
-		emit("update:cxList", await useQuery("GetAllCX").execute());
+		await refetchCX();
 	}
 
-	defineExpose({ changedCount, save, discard });
+	register("empire", { changedCount, save, discard });
 
 	async function createEmpire(): Promise<void> {
 		refIsCreating.value = true;
@@ -215,10 +213,7 @@
 				}).execute();
 
 				// forced reload of all Empires
-				emit(
-					"update:empireList",
-					await useQuery("GetAllEmpires").execute()
-				);
+				await refetchEmpires();
 			}
 		} catch (err) {
 			console.error(err);
@@ -245,7 +240,7 @@
 		try {
 			await useQuery("DeleteEmpire", { empireUuid: empireUuid }).execute();
 			// forced reload of all Empires
-			emit("update:empireList", await useQuery("GetAllEmpires").execute());
+			await refetchEmpires();
 		} catch (err) {
 			console.error(err);
 		} finally {

@@ -10,6 +10,7 @@ import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
 import ManageCX from "@/features/manage/components/ManageCX.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
+import { manageDataHost } from "@/tests/features/manage/manageData.helper";
 
 // test data
 import cxList from "@/tests/test_data/api_data_cx_list.json";
@@ -21,7 +22,13 @@ const [REAL, SHARE] = cxList;
 const deleteURL = (uuid: string) => new RegExp(`planning/cx/${uuid}/$`);
 
 async function mountCX(cx = cxList.slice(0, 3)) {
-	return mountComponent(ManageCX, { cx }, { withDialog: true });
+	const { host, setup } = manageDataHost();
+	const mounted = await mountComponent(
+		ManageCX,
+		{ cx },
+		{ withDialog: true, setup }
+	);
+	return { ...mounted, host };
 }
 
 function button(wrapper: VueWrapper, text: string) {
@@ -150,9 +157,9 @@ describe("ManageCX", () => {
 		expect(disabled()).toBe(true);
 	});
 
-	it("creates an empty CX and hands the reloaded list up", async () => {
+	it("creates an empty CX and reloads the shared list", async () => {
 		mock.onPost(LIST_URL).reply(200, { ...REAL, cx_name: "My new CX" });
-		const { wrapper, component } = await mountCX();
+		const { wrapper, host } = await mountCX();
 		await button(wrapper, "management.cx.buttons.new_cx").trigger("click");
 
 		await create(wrapper, "My new CX");
@@ -168,7 +175,7 @@ describe("ManageCX", () => {
 			},
 		});
 		expect(mock.history.get).toHaveLength(1);
-		expect(component.emitted("update:cxList")).toEqual([[cxList]]);
+		expect(host.data.cxList.value).toEqual(cxList);
 
 		// the form is reset and closed
 		expect((wrapper.find("input").element as HTMLInputElement).value).toBe(
@@ -179,25 +186,25 @@ describe("ManageCX", () => {
 	});
 
 	it("does not create with an invalid name", async () => {
-		const { wrapper, component } = await mountCX();
+		const { wrapper, host } = await mountCX();
 
 		// the button is disabled, clicking it anyway does nothing
 		await create(wrapper, "x".repeat(101));
 
 		expect(mock.history.post).toHaveLength(0);
-		expect(component.emitted("update:cxList")).toBeUndefined();
+		expect(host.data.cxList.value).toEqual([]);
 	});
 
 	it("stops the create spinner when creating fails", async () => {
 		mock.onPost(LIST_URL).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper, component } = await mountCX();
+		const { wrapper, host } = await mountCX();
 		await button(wrapper, "management.cx.buttons.new_cx").trigger("click");
 
 		await create(wrapper, "My new CX");
 
 		expect(mock.history.post).toHaveLength(1);
-		expect(component.emitted("update:cxList")).toBeUndefined();
+		expect(host.data.cxList.value).toEqual([]);
 		expect(createButton(wrapper).attributes("aria-busy")).toBe("false");
 		// the form stays open to try again
 		expect((wrapper.find("input").element as HTMLInputElement).value).toBe(
@@ -210,7 +217,7 @@ describe("ManageCX", () => {
 
 	it("deletes a CX only after confirmation", async () => {
 		mock.onDelete(deleteURL(SHARE.uuid)).reply(204);
-		const { wrapper, component } = await mountCX();
+		const { wrapper, host } = await mountCX();
 
 		await clickDelete(wrapper, 1);
 		expect(mock.history.delete).toHaveLength(0);
@@ -219,33 +226,33 @@ describe("ManageCX", () => {
 
 		expect(mock.history.delete).toHaveLength(1);
 		expect(mock.history.delete[0].url).toMatch(deleteURL(SHARE.uuid));
-		expect(component.emitted("update:cxList")).toEqual([[cxList]]);
+		expect(host.data.cxList.value).toEqual(cxList);
 		expect(deleteButtons(wrapper).at(1)!.attributes("aria-busy")).toBe(
 			"false"
 		);
 	});
 
 	it("keeps the CX when the dialog is cancelled", async () => {
-		const { wrapper, component } = await mountCX();
+		const { wrapper, host } = await mountCX();
 
 		await clickDelete(wrapper, 0);
 		await answerDialog("common.buttons.cancel");
 
 		expect(mock.history.delete).toHaveLength(0);
-		expect(component.emitted("update:cxList")).toBeUndefined();
+		expect(host.data.cxList.value).toEqual([]);
 	});
 
 	it("keeps the list and stops the spinner when deleting fails", async () => {
 		mock.onDelete(deleteURL(REAL.uuid)).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper, component } = await mountCX();
+		const { wrapper, host } = await mountCX();
 
 		await clickDelete(wrapper, 0);
 		await answerDialog("common.buttons.delete");
 
 		expect(mock.history.delete).toHaveLength(1);
 		expect(mock.history.get).toHaveLength(0);
-		expect(component.emitted("update:cxList")).toBeUndefined();
+		expect(host.data.cxList.value).toEqual([]);
 		expect(deleteButtons(wrapper).at(0)!.attributes("aria-busy")).toBe(
 			"false"
 		);

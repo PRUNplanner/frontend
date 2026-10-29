@@ -1,7 +1,5 @@
 <script setup lang="ts">
 	import {
-		computed,
-		type ComputedRef,
 		defineAsyncComponent,
 		nextTick,
 		onUnmounted,
@@ -18,6 +16,9 @@
 	useHead({
 		title: t("management.view_title"),
 	});
+
+	// Composables
+	import { provideManageData } from "@/features/manage/useManageData";
 
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
@@ -38,40 +39,21 @@
 	import type { Plan } from "@/features/api/schemas/planningData.schemas";
 	import type { CX } from "@/features/api/schemas/cxData.schemas";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-	import type ManageEmpire from "@/features/manage/components/ManageEmpire.vue";
-	import type ManagePlanEmpireAssignments from "@/features/manage/components/ManagePlanEmpireAssignments.vue";
 
 	// UI
 	import { useToast } from "@/ui";
 	const toast = useToast();
 
-	const empireList: Ref<PlanEmpireElement[]> = ref([]);
-	const planList: Ref<Plan[]> = ref([]);
-	const cxList: Ref<CX[]> = ref([]);
-
-	// Save bar: CX selects and plan assignments, saved together
-	const empireRef: Ref<InstanceType<typeof ManageEmpire> | null> = ref(null);
-	const matrixRef: Ref<InstanceType<
-		typeof ManagePlanEmpireAssignments
-	> | null> = ref(null);
-
-	const cxChanged: ComputedRef<number> = computed(
-		() => empireRef.value?.changedCount ?? 0
-	);
-	const matrixChanged: ComputedRef<number> = computed(
-		() => matrixRef.value?.changes.changedCount ?? 0
-	);
-	const totalChanged: ComputedRef<number> = computed(
-		() => cxChanged.value + matrixChanged.value
-	);
-	const saveDetail: ComputedRef<string | undefined> = computed(() => {
-		const changes = matrixRef.value?.changes;
-		if (!changes || changes.changedCount === 0) return undefined;
-		return t("management.assignments.plan_count", {
-			plans: t("management.assignments.plans", changes.planCount),
-			empires: t("management.assignments.empires", changes.empireCount),
-		});
-	});
+	// Lists and the save bar's sections (CX selects, plan assignments)
+	const {
+		empireList,
+		planList,
+		cxList,
+		totalChanged,
+		saveDetail,
+		saveSections,
+		discardSections,
+	} = provideManageData();
 
 	const saveState: Ref<"idle" | "saving" | "error"> = ref("idle");
 	const justSaved: Ref<boolean> = ref(false);
@@ -82,9 +64,7 @@
 		if (saveState.value === "saving") return;
 		saveState.value = "saving";
 		try {
-			// a part saved before a failure has no changes left on retry
-			if (cxChanged.value > 0) await empireRef.value?.save();
-			if (matrixChanged.value > 0) await matrixRef.value?.save();
+			await saveSections();
 			await nextTick();
 
 			saveState.value = "idle";
@@ -99,8 +79,7 @@
 	}
 
 	function discardAll(): void {
-		empireRef.value?.discard();
-		matrixRef.value?.discard();
+		discardSections();
 		saveState.value = "idle";
 	}
 
@@ -132,29 +111,17 @@
 		<div
 			class="border-b border-white/10 grid grid-cols-1 xl:grid-cols-[60%_auto] divide-x divide-white/10 child:px-6 child:py-3">
 			<div>
-				<AsyncManageEmpire
-					ref="empireRef"
-					:empires="empireList"
-					:cx="cxList"
-					@update:cx-list="(cxData) => (cxList = cxData)"
-					@update:empire-list="
-						(empireData) => (empireList = empireData)
-					" />
+				<AsyncManageEmpire :empires="empireList" :cx="cxList" />
 			</div>
 			<div id="cx" class="scroll-mt-4">
-				<AsyncManageCX
-					:cx="cxList"
-					@update:cx-list="(cxData) => (cxList = cxData)" />
+				<AsyncManageCX :cx="cxList" />
 			</div>
 		</div>
 		<div class="px-6 pb-3 pt-4">
 			<AsyncManagePlanEmpireAssignments
-				ref="matrixRef"
 				:empires="empireList"
 				:plans="planList"
-				:saved="justSaved"
-				@update:empire-list="(empireData) => (empireList = empireData)"
-				@update:plan-list="(planData) => (planList = planData)" />
+				:saved="justSaved" />
 		</div>
 		<SaveBar
 			v-if="totalChanged > 0"

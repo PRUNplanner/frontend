@@ -1,25 +1,29 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
 import type { Slots } from "vue";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import ManageView from "@/views/ManageView.vue";
 import SaveBar from "@/features/save_bar/components/SaveBar.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import type { IManageData } from "@/features/manage/useManageData.types";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
 // vi.mock factories are hoisted, so are their helpers
 const { passThrough, fake, toast, guards } = vi.hoisted(() => {
-	// the child editors have their own tests: these fakes expose the same
-	// changedCount / changes, save() and discard() the view drives
-	const fake = (name: string, state: Record<string, unknown>) => ({
+	// the child editors have their own tests: these fakes register the
+	// same changedCount, detail, save() and discard() the view drives
+	const fake = (name: string, onSetup: () => void = () => {}) => ({
 		// defineAsyncComponent unwraps .default of ES modules only
 		__esModule: true,
 		default: {
 			name,
 			props: ["empires", "plans", "cx", "saved"],
-			setup(_: unknown, { expose }: { expose: (e: object) => void }) {
-				expose(state);
+			setup() {
+				onSetup();
 				return () => null;
 			},
 		},
@@ -43,8 +47,8 @@ const { passThrough, fake, toast, guards } = vi.hoisted(() => {
 const state = vi.hoisted(() => ({
 	empire: {} as {
 		changedCount: number;
-		save: ReturnType<typeof vi.fn>;
-		discard: ReturnType<typeof vi.fn>;
+		save: Mock<() => Promise<void>>;
+		discard: Mock<() => void>;
 	},
 	matrix: {} as {
 		changes: {
@@ -52,39 +56,63 @@ const state = vi.hoisted(() => ({
 			planCount: number;
 			empireCount: number;
 		};
-		save: ReturnType<typeof vi.fn>;
-		discard: ReturnType<typeof vi.fn>;
+		save: Mock<() => Promise<void>>;
+		discard: Mock<() => void>;
 	},
+	// what the sections inject
+	data: undefined as IManageData | undefined,
 }));
 
 vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
 	passThrough("WrapperPlanningDataLoader")
 );
 vi.mock("@/features/help/components/HelpDrawer.vue", () =>
-	fake("HelpDrawer", {})
+	fake("HelpDrawer")
 );
-vi.mock("@/features/manage/components/ManageCX.vue", () =>
-	fake("ManageCX", {})
-);
+vi.mock("@/features/manage/components/ManageCX.vue", async () => {
+	const { useManageData } = await import("@/features/manage/useManageData");
+	return fake("ManageCX", () => (state.data = useManageData()));
+});
 vi.mock("@/features/manage/components/ManageEmpire.vue", async () => {
-	const { reactive } = await import("vue");
+	const { computed, reactive } = await import("vue");
+	const { useManageData } = await import("@/features/manage/useManageData");
 	state.empire = reactive({
 		changedCount: 0,
 		save: vi.fn(),
 		discard: vi.fn(),
 	}) as typeof state.empire;
-	return fake("ManageEmpire", state.empire);
+	return fake("ManageEmpire", () =>
+		useManageData().register("empire", {
+			changedCount: computed(() => state.empire.changedCount),
+			save: () => state.empire.save(),
+			discard: () => state.empire.discard(),
+		})
+	);
 });
 vi.mock(
 	"@/features/manage/components/ManagePlanEmpireAssignments.vue",
 	async () => {
-		const { reactive } = await import("vue");
+		const { computed, reactive } = await import("vue");
+		const { useManageData } = await import(
+			"@/features/manage/useManageData"
+		);
 		state.matrix = reactive({
 			changes: { changedCount: 0, planCount: 0, empireCount: 0 },
 			save: vi.fn(),
 			discard: vi.fn(),
 		}) as typeof state.matrix;
-		return fake("ManagePlanEmpireAssignments", state.matrix);
+		return fake("ManagePlanEmpireAssignments", () =>
+			useManageData().register("assignments", {
+				changedCount: computed(() => state.matrix.changes.changedCount),
+				detail: computed(() =>
+					state.matrix.changes.changedCount > 0
+						? "management.assignments.plan_count"
+						: undefined
+				),
+				save: () => state.matrix.save(),
+				discard: () => state.matrix.discard(),
+			})
+		);
 	}
 );
 vi.mock("@/ui/useToast", () => ({ useToast: () => toast }));
@@ -307,7 +335,7 @@ describe("ManageView", () => {
 		}
 	});
 
-	it("feeds the loaded lists to the editors and takes their updates", async () => {
+	it("feeds the loaded lists to the editors and their reloads to all", async () => {
 		const { wrapper } = await mountView();
 		const loader = wrapper.findComponent({
 			name: "WrapperPlanningDataLoader",
@@ -331,12 +359,12 @@ describe("ManageView", () => {
 		expect(matrix().props("empires")).toEqual([{ uuid: "e-1" }]);
 		expect(matrix().props("plans")).toEqual([{ uuid: "p-1" }]);
 
-		// edits in the children replace the lists
-		empire().vm.$emit("update:cx-list", [{ uuid: "cx-2" }]);
-		cx().vm.$emit("update:cx-list", [{ uuid: "cx-3" }]);
-		empire().vm.$emit("update:empire-list", [{ uuid: "e-2" }]);
-		matrix().vm.$emit("update:empire-list", [{ uuid: "e-3" }]);
-		matrix().vm.$emit("update:plan-list", [{ uuid: "p-2" }]);
+		// a section's reload replaces the shared lists
+		state.data!.cxList.value = [{ uuid: "cx-3" }] as CX[];
+		state.data!.empireList.value = [
+			{ uuid: "e-3" },
+		] as PlanEmpireElement[];
+		state.data!.planList.value = [{ uuid: "p-2" }] as Plan[];
 		await flushPromises();
 
 		expect(cx().props("cx")).toEqual([{ uuid: "cx-3" }]);
