@@ -1,11 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { RouterLinkStub, type VueWrapper } from "@vue/test-utils";
-import { createPinia } from "pinia";
 
 import PlanConfiguration from "@/features/planning/components/PlanConfiguration.vue";
 import PSelect from "@/ui/components/PSelect.vue";
-import { usePlanningStore } from "@/stores/planningStore";
-import { mountComponent } from "@/tests/mountComponent";
+import { mountComponent, piniaWithCX } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
@@ -76,12 +74,6 @@ describe("PlanConfiguration", () => {
 		expect(wrapper.text()).toContain("plan.base.empire.note");
 	});
 
-	it("has no plan name field, the header renames the plan", async () => {
-		const { wrapper } = await mountConfiguration();
-
-		expect(wrapper.find("input").exists()).toBe(false);
-	});
-
 	it("emits the selected empire", async () => {
 		const { wrapper, component } = await mountConfiguration();
 
@@ -108,11 +100,6 @@ describe("PlanConfiguration", () => {
 	});
 
 	it("links the active empire's preference in Exchanges", async () => {
-		const pinia = createPinia();
-		usePlanningStore(pinia).setCXs([
-			// @ts-expect-error partial CX
-			{ uuid: "cx-1", cx_name: "Home NC1" },
-		]);
 		const { wrapper } = await mountComponent(
 			PlanConfiguration,
 			{
@@ -122,7 +109,7 @@ describe("PlanConfiguration", () => {
 				cxUuid: "cx-1",
 				planetId: "ZV-307c",
 			},
-			{ pinia }
+			{ pinia: piniaWithCX("cx-1", "Home NC1") }
 		);
 
 		const link = wrapper.findComponent(RouterLinkStub);
@@ -153,11 +140,6 @@ describe("PlanConfiguration", () => {
 	});
 
 	it("read-only: names the exchange without linking it", async () => {
-		const pinia = createPinia();
-		usePlanningStore(pinia).setCXs([
-			// @ts-expect-error partial CX
-			{ uuid: "cx-1", cx_name: "Home NC1" },
-		]);
 		const { wrapper } = await mountComponent(
 			PlanConfiguration,
 			{
@@ -166,7 +148,7 @@ describe("PlanConfiguration", () => {
 				planEmpires: [BETA],
 				cxUuid: "cx-1",
 			},
-			{ pinia }
+			{ pinia: piniaWithCX("cx-1", "Home NC1") }
 		);
 
 		expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);

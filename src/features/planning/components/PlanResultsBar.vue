@@ -160,6 +160,7 @@
 					<span :class="label">{{ t("plan.results.workforce") }}</span>
 					<span
 						:class="[value, shortTier ? 'text-negative!' : '']"
+						:data-short="!!shortTier"
 						:title="t('plan.results.lowest_efficiency')">
 						{{
 							lowestEfficiency === undefined
@@ -173,7 +174,8 @@
 						<template v-if="i"> · </template>
 						<span
 							class="whitespace-nowrap"
-							:class="part.short ? 'text-negative' : ''">
+							:class="part.short ? 'text-negative' : ''"
+							:data-short="part.short">
 							{{ part.text }}
 						</span>
 					</template>
@@ -193,7 +195,9 @@
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.area") }}</span>
 					<span :class="value">
-						<span :class="area.areaLeft < 0 ? 'text-negative' : ''">
+						<span
+							:class="area.areaLeft < 0 ? 'text-negative' : ''"
+							:data-over="area.areaLeft < 0">
 							{{ area.areaUsed }}
 						</span>
 						<span class="text-sm text-muted">

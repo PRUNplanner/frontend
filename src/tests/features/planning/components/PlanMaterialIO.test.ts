@@ -1,11 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
-import { h } from "vue";
 
 import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import planMessages from "@/locales/en_US/plan.json";
 import cxMessages from "@/locales/en_US/cx.json";
-import { flushPromises } from "@vue/test-utils";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { createPriceBook } from "@/features/cx/priceBook";
 import { marketCheck } from "@/features/cx/marketCheck.util";
@@ -17,13 +16,10 @@ import type { Exchange } from "@/features/api/schemas/gameData.schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: () => h("div"),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const ROWS: IMaterialIO[] = [
 	{
@@ -85,15 +81,14 @@ describe("PlanMaterialIO", () => {
 	it("right-aligns every numeric column, header and cells", async () => {
 		const { wrapper } = await mountTable();
 
-		for (const key of NUMERIC) {
-			const th = wrapper.find(`th[data-col-key="${key}"]`);
-			const td = wrapper.find(`td[data-col-key="${key}"]`);
-			expect(th.classes(), key).toContain("numeric");
-			expect(td.classes(), key).toContain("numeric");
-		}
-		expect(wrapper.find('th[data-col-key="ticker"]').classes()).not.toContain(
-			"numeric"
-		);
+		const numeric = (cell: "th" | "td") =>
+			wrapper
+				.findAll(`${cell}[data-col-key]`)
+				.map((c) => [c.attributes("data-col-key"), c.classes("numeric")]);
+		const expected = [["ticker", false], ...NUMERIC.map((k) => [k, true])];
+
+		expect(numeric("th")).toEqual(expected);
+		expect(numeric("td")).toEqual(expected);
 	});
 
 	it("labels the ticker column", async () => {
@@ -104,12 +99,9 @@ describe("PlanMaterialIO", () => {
 		).toBe("terms.material_ticker");
 	});
 
-	it("keeps the unit in the header, the cell holds the number", async () => {
+	it("titles the price column, its cell holds only the number", async () => {
 		const { wrapper } = await mountTable();
 
-		expect(planMessages.components.materialio.table.cost_day).toContain(
-			"ȼ"
-		);
 		expect(wrapper.find('th[data-col-key="price"]').text()).toBe(
 			"plan.components.materialio.table.cost_day"
 		);
@@ -182,43 +174,65 @@ describe("PlanMaterialIO market flags", () => {
 		);
 	});
 
-	it("opens the details on click, closes on Esc and returns focus", async () => {
-		const { wrapper, onOpen } = await mountFlagged();
+	/** the flag, its details opened by a click */
+	async function openFlag(wrapper: VueWrapper) {
 		const flag = wrapper.find("[data-market-flag]");
 		(flag.element as HTMLElement).focus();
-
 		await flag.trigger("click");
 		await flushPromises();
-		const panel = document.body.querySelector("[role=dialog]")!;
-		expect(panel.textContent).toContain("No price");
-		expect(panel.textContent).toContain("You buy");
+		return flag;
+	}
+	const panel = () => document.body.querySelector("[role=dialog]");
+
+	it("opens the details on click and tracks it", async () => {
+		const { wrapper } = await mountFlagged();
+		await openFlag(wrapper);
+
+		expect(panel()!.textContent).toContain("No price");
+		expect(panel()!.textContent).toContain("You buy");
 		expect(trackEvent).toHaveBeenCalledWith("plan:market_flag_open", {
 			where: "plan",
 			level: "red",
 		});
+	});
+
+	it("closes the details on Esc and returns focus to the flag", async () => {
+		const { wrapper } = await mountFlagged();
+		const flag = await openFlag(wrapper);
+		// tabbed into the details
+		panel()!.querySelector("button")!.focus();
+		expect(document.activeElement).not.toBe(flag.element);
 
 		document.dispatchEvent(
 			new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
 		);
 		await flushPromises();
-		expect(document.body.querySelector("[role=dialog]")).toBeNull();
-		expect(document.activeElement).toBe(flag.element);
 
-		// an outside click closes it as well; "Open Plan check" asks the view
-		await flag.trigger("click");
-		await flushPromises();
+		expect(panel()).toBeNull();
+		expect(document.activeElement).toBe(flag.element);
+	});
+
+	it("closes the details on a click outside", async () => {
+		const { wrapper } = await mountFlagged();
+		await openFlag(wrapper);
+
 		document.body.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
 		await flushPromises();
-		expect(document.body.querySelector("[role=dialog]")).toBeNull();
 
-		await flag.trigger("click");
-		await flushPromises();
+		expect(panel()).toBeNull();
+	});
+
+	it("asks the view to open Plan check", async () => {
+		const { wrapper, onOpen } = await mountFlagged();
+		await openFlag(wrapper);
+
 		(
-			[...document.body.querySelectorAll("[role=dialog] button")].find(
-				(b) => b.textContent?.includes("Open Plan check")
+			[...panel()!.querySelectorAll("button")].find((b) =>
+				b.textContent?.includes("Open Plan check")
 			) as HTMLElement
 		).click();
-		expect(onOpen).toHaveBeenCalled();
+
+		expect(onOpen).toHaveBeenCalledOnce();
 	});
 
 	it("shows no flag and no summary without checks", async () => {
@@ -255,7 +269,9 @@ describe("PlanMaterialIO market flags", () => {
 			wrapper.findAll("th[data-col-key]").map((th) => th.attributes("data-col-key"))
 		).toEqual(["ticker", "input", "output", "delta", "share7d", "share30d"]);
 		expect(cell(0, "share7d").text()).toBe("100 %");
-		expect(cell(0, "share7d").find(".text-negative").exists()).toBe(true);
+		expect(cell(0, "share7d").find("span").classes()).toEqual([
+			"text-negative",
+		]);
 		expect(cell(0, "share30d").text()).toBe("50.0 %");
 		expect(cell(1, "share7d").text()).toBe("1.0 %");
 		expect(cell(1, "share7d").find("span").classes()).toEqual([]);

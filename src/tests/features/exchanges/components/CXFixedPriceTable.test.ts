@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from "vitest";
-import { h } from "vue";
 import type { VueWrapper } from "@vue/test-utils";
 
 import CXFixedPriceTable from "@/features/exchanges/components/CXFixedPriceTable.vue";
@@ -15,13 +14,10 @@ import type { IPriceSource } from "@/features/cx/priceBook";
 import type { PSelectOption } from "@/ui/ui.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: (ctx: { ticker: string }) => h("span", ctx.ticker),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 vi.mock("@/database/services/useMaterialData", async () => {
 	const { ref } = await import("vue");
 	return {

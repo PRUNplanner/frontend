@@ -92,15 +92,10 @@ const toast = vi.fn();
 vi.mock("@/ui/useToast", () => ({ useToast: () => toast }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 // the rows' tiles look materials up, which the page tests don't load
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: ["ticker"],
-		render(this: { ticker: string }) {
-			return h("span", this.ticker);
-		},
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 vi.mock("@/database/services/useMaterialData", () => ({
 	useMaterialData: () => ({ getMaterialClass: () => "" }),
 }));

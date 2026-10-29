@@ -71,8 +71,9 @@ vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () =>
 vi.mock("@/features/xit/components/XITTransferActionButton.vue", () =>
 	stub("XITTransferActionButton", ["source", "elements"])
 );
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () =>
-	stub("MaterialTile", ["ticker"])
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
 );
 
 const material = (ticker: string, extra: Record<string, unknown> = {}) => ({

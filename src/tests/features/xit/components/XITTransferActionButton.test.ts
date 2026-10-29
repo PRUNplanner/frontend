@@ -1,5 +1,4 @@
 import { describe, it, expect, afterEach, onTestFinished, vi } from "vitest";
-import { h } from "vue";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 import { PDrawer } from "@/ui";
 
@@ -10,15 +9,10 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render(this: { ticker: string }) {
-			return h("span", this.ticker);
-		},
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const CONFIGURE = "Configure on Execution";
 const ELEMENTS = [

@@ -110,14 +110,16 @@
 		<div
 			v-for="expert in shown"
 			:key="expert.name"
-			class="flex items-center gap-3 text-sm">
+			class="flex items-center gap-3 text-sm"
+			data-expert-row>
 			<div class="flex-1 min-w-0">
 				<div class="text-ink-strong truncate">
 					{{ t(`game.expertise.${expert.name.toUpperCase()}`) }}
 				</div>
 				<div
 					class="text-xs truncate"
-					:class="expert.bonus === 0 ? 'text-muted' : 'text-muted-strong'">
+					:class="expert.bonus === 0 ? 'text-muted' : 'text-muted-strong'"
+					data-bonus>
 					<template v-if="fieldBuildings(expert.name)">
 						{{ fieldBuildings(expert.name) }} ·
 					</template>

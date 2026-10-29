@@ -12,34 +12,16 @@ import type {
 	IMaterialIO,
 	IStorageRecord,
 } from "@/features/planning/usePlanCalculation.types";
+import { io } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 const PLAN_UUID = "plan-uuid";
 
-/** total weight and volume carry the sign of delta */
-function io(
-	ticker: string,
-	delta: number,
-	totalWeight: number,
-	totalVolume: number
-): IMaterialIO {
-	return {
-		ticker,
-		input: delta < 0 ? -delta : 0,
-		output: delta > 0 ? delta : 0,
-		delta,
-		price: 0,
-		individualWeight: 0,
-		individualVolume: 0,
-		totalWeight,
-		totalVolume,
-	};
-}
-
+// total weight and volume carry the sign of delta
 // imports: 23 t / 12 m³ per day, exports: 50 t / 30 m³ per day
 const MATERIAL_IO = [
-	io("RAT", -100, -21, -10),
-	io("H2O", -10, -2, -2),
-	io("FE", 20, 50, 30),
+	io("RAT", -100, { totalWeight: -21, totalVolume: -10 }),
+	io("H2O", -10, { totalWeight: -2, totalVolume: -2 }),
+	io("FE", 20, { totalWeight: 50, totalVolume: 30 }),
 ];
 
 // 1500 base + 5000 of one STO, in t and m³
@@ -195,13 +177,15 @@ describe("PlanVisitationFrequency", () => {
 		expect(
 			useUserStore(pinia).getPlanPreference(PLAN_UUID)
 				.visitationMaterialExclusions
-		).not.toEqual(["RAT"]);
+		).toEqual([]);
 	});
 
 	it("follows new material flows", async () => {
 		const { wrapper, setProps } = await mountTool();
 
-		await setProps({ materialIO: [io("RAT", -100, -21, -10)] });
+		await setProps({
+			materialIO: [io("RAT", -100, { totalWeight: -21, totalVolume: -10 })],
+		});
 
 		expect(storageTable(wrapper).import).toEqual(["21.00", "10.00"]);
 		expect(storageTable(wrapper).export).toEqual(["0.00", "0.00"]);

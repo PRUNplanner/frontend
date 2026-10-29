@@ -7,7 +7,6 @@ import {
 	onTestFinished,
 	vi,
 } from "vitest";
-import { h } from "vue";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
@@ -23,13 +22,10 @@ import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: () => h("div"),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 // the burn math is covered by useXITBurnAction.test.ts, this checks the
 // wiring: elements, days, overrides and inactives into the table and JSON

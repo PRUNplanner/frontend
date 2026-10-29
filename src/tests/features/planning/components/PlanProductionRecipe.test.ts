@@ -1,22 +1,21 @@
-import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { h } from "vue";
+import { describe, it, expect, beforeAll, vi } from "vitest";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
-import { createPinia } from "pinia";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
-import { usePlanningStore } from "@/stores/planningStore";
 import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
 import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
 import PInputNumber from "@/ui/components/PInputNumber.vue";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
-import { mountComponent } from "@/tests/mountComponent";
+import { mountComponent, piniaWithCX } from "@/tests/mountComponent";
+import {
+	activeRecipe,
+	m,
+	option,
+} from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
-import type {
-	IProductionBuildingRecipe,
-	IRecipeBuildingOption,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IProductionBuildingRecipe } from "@/features/planning/usePlanCalculation.types";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
@@ -27,33 +26,22 @@ vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
 	trackEvent,
 }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String, amount: Number },
-		render: () => h("span"),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const HOUR = 60 * 60 * 1000;
 const CX_UUID = "cx-uuid";
 
-const m = (ticker: string, amount: number) => ({
-	material_ticker: ticker,
-	material_amount: amount,
-});
-
-const FE: IRecipeBuildingOption = {
-	recipe_id: "R_FE",
-	building_ticker: "SME",
-	recipe_name: "R_FE",
+const FE = option("R_FE", {
 	time_ms: 12 * HOUR,
 	inputs: [m("FEO", 2), m("C", 1)],
 	outputs: [m("FE", 1)],
 	dailyRevenue: 500,
 	roi: 20,
 	profitPerArea: 5,
-};
+});
 
 const COGM = {
 	runtime: 12 * HOUR,
@@ -71,36 +59,16 @@ const COGM = {
 	totalProfit: 0,
 };
 
-function recipe(
-	overrides: Partial<IProductionBuildingRecipe> = {}
-): IProductionBuildingRecipe {
-	return {
-		recipeId: "R_FE",
+const recipe = (over: Partial<IProductionBuildingRecipe> = {}) =>
+	activeRecipe(FE, {
 		amount: 2,
-		recipe: FE,
 		dailyShare: 0.5,
 		time: 24 * HOUR,
 		cogm: COGM,
-		...overrides,
-	};
-}
+		...over,
+	});
 
 async function mountRecipe(props: Record<string, unknown> = {}) {
-	const pinia = createPinia();
-	usePlanningStore(pinia).setCXs([
-		// @ts-expect-error partial CX
-		{
-			uuid: CX_UUID,
-			cx_name: "CX",
-			empires: [],
-			cx_data: {
-				cx_empire: [],
-				cx_planets: [],
-				ticker_empire: [],
-				ticker_planets: [],
-			},
-		},
-	]);
 	return mountComponent(
 		PlanProductionRecipe,
 		{
@@ -110,7 +78,7 @@ async function mountRecipe(props: Record<string, unknown> = {}) {
 			planetId: "ZV-307c",
 			...props,
 		},
-		{ pinia }
+		{ pinia: piniaWithCX(CX_UUID, "CX") }
 	);
 }
 
@@ -128,10 +96,6 @@ describe("PlanProductionRecipe", () => {
 		await exchangesStore.setMany(exchanges);
 		await materialsStore.setMany(materials);
 		await useMaterialData().preload();
-	});
-
-	beforeEach(() => {
-		trackEvent.mockReset();
 	});
 
 	it("shows inputs → outputs for all buildings and the runtime", async () => {
@@ -180,9 +144,9 @@ describe("PlanProductionRecipe", () => {
 		const { wrapper, setProps } = await mountRecipe();
 		const row = () => wrapper.find("[data-recipe-row]");
 
-		expect(row().classes()).not.toContain("bg-white/3");
+		expect(row().attributes("data-striped")).toBeUndefined();
 		await setProps({ striped: true });
-		expect(row().classes()).toContain("bg-white/3");
+		expect(row().attributes("data-striped")).toBe("true");
 	});
 
 	it("leaves out the arrow for a recipe without inputs", async () => {

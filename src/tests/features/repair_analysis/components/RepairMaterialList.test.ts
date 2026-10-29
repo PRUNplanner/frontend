@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from "vitest";
-import { h } from "vue";
 
 import RepairMaterialList from "@/features/repair_analysis/components/RepairMaterialList.vue";
 import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
@@ -9,13 +8,10 @@ import { materialList } from "@/tests/features/repair_analysis/components/repair
 import plan from "@/locales/en_US/plan.json";
 
 // fake tickers, the tile only renders
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: () => h("div"),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 async function mountList(props: Record<string, unknown> = {}) {
 	return mountComponent(

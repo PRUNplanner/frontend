@@ -102,7 +102,8 @@
 			<span
 				v-if="state === 'unsaved'"
 				aria-hidden="true"
-				class="inline-block size-1.5 ml-1 align-middle rounded-full bg-current" />
+				class="inline-block size-1.5 ml-1 align-middle rounded-full bg-current"
+				data-unsaved />
 		</PButton>
 	</div>
 </template>

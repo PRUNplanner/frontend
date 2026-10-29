@@ -1,18 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
-import { h } from "vue";
 
 import ResourceROITableFilters from "@/features/resource_roi_overview/components/ResourceROITableFilters.vue";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: () => h("div"),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const PLANETS = [
 	{ label: "Katoa", value: "Katoa" },

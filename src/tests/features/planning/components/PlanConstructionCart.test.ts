@@ -5,24 +5,18 @@ import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
-import {
-	buildingsStore,
-	exchangesStore,
-	materialsStore,
-} from "@/database/stores";
-import { useBuildingData } from "@/database/services/useBuildingData";
-import { useMaterialData } from "@/database/services/useMaterialData";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
 import PlanConstructionCart from "@/features/planning/components/tools/PlanConstructionCart.vue";
 import PSelect from "@/ui/components/PSelect.vue";
+import PInputNumber from "@/ui/components/PInputNumber.vue";
+import { WarningAmberRound } from "@vicons/material";
 import { mountComponent } from "@/tests/mountComponent";
+import { cxFixture, fioProfile } from "@/tests/features/cx/cx.fixtures";
+import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // test data
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import materials from "@/tests/test_data/api_data_materials.json";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 
 // lets a test hold back price lookups, to finish calculations out of order
@@ -85,27 +79,19 @@ async function mountCart(
 		});
 	const planningStore = usePlanningStore(pinia);
 	planningStore.setCXs([
-		// @ts-expect-error mock data
-		{
+		cxFixture({
 			uuid: CX_UUID,
-			cx_name: "CX",
+			name: "CX",
 			cx_data: {
-				cx_empire: [],
-				cx_planets: [],
 				ticker_empire: Object.entries(PRICES).map(
-					([ticker, value]) => ({ ticker, type: "BUY", value })
+					([ticker, value]) => ({ ticker, type: "BUY" as const, value })
 				),
-				ticker_planets: [],
 			},
-		},
+		}),
 	]);
 
 	if (options.fio || options.fioFails) {
-		// @ts-expect-error partial profile
-		userStore.profile = {
-			fio_apikey: "key",
-			prun_username: "user",
-		};
+		userStore.profile = fioProfile();
 		mock.onGet(/data\/storage\/$/).reply(
 			options.fioFails ? 500 : 200,
 			fio_storage
@@ -199,6 +185,10 @@ async function setBuilt(wrapper: VueWrapper, building: string, value: string) {
 	await flushPromises();
 }
 
+/** a row's fields: built, amount */
+const fields = (wrapper: VueWrapper, building: string) =>
+	buildingRow(wrapper, building).findAllComponents(PInputNumber);
+
 const manualMarker = (wrapper: VueWrapper, building: string) =>
 	buildingRow(wrapper, building).find(
 		"[aria-label='plan.tools.construction_cart.built_manual']"
@@ -228,23 +218,19 @@ async function setOverride(wrapper: VueWrapper, ticker: string, value: number) {
 }
 
 const habitationWarning = (wrapper: VueWrapper) =>
-	tables(wrapper)[0].find("thead .picon").exists();
+	tables(wrapper)[0]
+		.find("thead")
+		.findComponent(WarningAmberRound)
+		.exists();
+
+const unplannedWarning = (wrapper: VueWrapper) =>
+	wrapper.find("h2").findComponent(WarningAmberRound).exists();
 
 describe("PlanConstructionCart", () => {
 	beforeEach(async () => {
 		axiosSetup();
-		// @ts-expect-error mock data
-		await exchangesStore.setMany(exchanges);
-		await materialsStore.setMany(materials);
-		// @ts-expect-error mock data
-		await buildingsStore.setMany(buildings);
-		await useMaterialData().preload();
-		await (await useBuildingData()).preloadBuildings();
-	});
-
-	beforeEach(() => {
 		mock.reset();
-		vi.mocked(trackEvent).mockClear();
+		await setupPlanningTestData();
 	});
 
 	it("lists planned buildings with their construction materials", async () => {
@@ -296,10 +282,9 @@ describe("PlanConstructionCart", () => {
 
 		// 3 FRM need 150 pioneers, one HB1 houses 100
 		expect(habitationWarning(wrapper)).toBe(true);
-		const hb1Input = tables(wrapper)[0]
-			.findAll("tbody tr")[2]
-			.findAll(".min-w-20")[1];
-		expect(hb1Input.find("input").attributes("aria-invalid")).toBe("true");
+		expect(
+			fields(wrapper, "HB1")[1].find("input").attributes("aria-invalid")
+		).toBe("true");
 
 		// 2 FRM need exactly 100
 		await setBuildingAmount(wrapper, "FRM", 2);
@@ -355,18 +340,15 @@ describe("PlanConstructionCart", () => {
 				["HB1", "21", "0", "1", "0", "0", "0"],
 			]);
 			// more built than planned is flagged
-			const built = tables(wrapper)[0]
-				.findAll("tbody tr")
-				.slice(0, 3)
-				.map((tr) =>
-					tr.find(".min-w-20 .inset-ring-warning").exists()
-				);
-			expect(built[0]).toBe(false);
-			expect(built[2]).toBe(true);
+			expect(
+				["CM", "FRM", "HB1"].map((b) =>
+					fields(wrapper, b)[0].props("status")
+				)
+			).toEqual([undefined, undefined, "warning"]);
 			// FIO counts aren't manual values
 			expect(manualMarker(wrapper, "HB1").exists()).toBe(false);
 
-			expect(wrapper.find("h2 .picon").exists()).toBe(true);
+			expect(unplannedWarning(wrapper)).toBe(true);
 			// built habitations count towards housing
 			expect(habitationWarning(wrapper)).toBe(false);
 		});
@@ -382,7 +364,7 @@ describe("PlanConstructionCart", () => {
 				})),
 			});
 
-			expect(wrapper.find("h2 .picon").exists()).toBe(false);
+			expect(unplannedWarning(wrapper)).toBe(false);
 		});
 
 		it("takes stock from the selected storage", async () => {
@@ -539,7 +521,8 @@ describe("PlanConstructionCart", () => {
 				["FRM", "3", "0", "3", "0", "0", "0"],
 				["HB1", "1", "0", "1", "0", "0", "0"],
 			]);
-			// built habitations still house the built farms
+			// built buildings count for housing too: the built HB1 houses 100
+			// of the 150 pioneers the 3 built FRM need
 			expect(habitationWarning(wrapper)).toBe(true);
 		});
 

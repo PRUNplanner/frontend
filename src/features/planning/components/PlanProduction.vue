@@ -393,7 +393,7 @@
 
 	<!-- under 40rem (a phone, a tablet next to the sidebar) each building
 		becomes a card instead of squeezing the columns -->
-	<div ref="prod" class="@container/prod" :style="recipeColumns">
+	<div ref="prod" class="@container/prod" :style="recipeColumns" data-recipe-columns>
 	<div
 		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted @max-[40rem]/prod:hidden"
 		data-column-heads>
@@ -569,7 +569,7 @@
 			v-for="name in changes?.removed"
 			:key="`REMOVED#${name}`"
 			class="px-3 py-2 border-b border-line border-l-2 border-l-negative text-muted">
-			<span class="text-sm font-medium line-through">{{ name }}</span>
+			<span class="text-sm font-medium line-through" data-removed-building>{{ name }}</span>
 			<span class="ml-2 text-xs font-bold uppercase text-negative">
 				{{ $t("sharing.compare.removed") }}
 			</span>

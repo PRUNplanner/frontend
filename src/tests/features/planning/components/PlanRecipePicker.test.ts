@@ -1,18 +1,20 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, onTestFinished, vi } from "vitest";
 import { humanizeTimeMs } from "@/util/date";
-import { h } from "vue";
 import type { VueWrapper } from "@vue/test-utils";
 
 import PlanRecipePicker from "@/features/planning/components/PlanRecipePicker.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
+import {
+	activeRecipe,
+	building,
+	inOut,
+	m,
+	option,
+} from "@/tests/features/planning/usePlanCalculation.fixtures";
+
 // Types & Interfaces
-import type {
-	IMaterialIO,
-	IProductionBuilding,
-	IProductionBuildingRecipe,
-	IRecipeBuildingOption,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IRecipeBuildingOption } from "@/features/planning/usePlanCalculation.types";
 
 const insights = vi.hoisted(() => ({
 	available: false,
@@ -33,92 +35,55 @@ vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
 	trackEvent,
 }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String, amount: Number },
-		render: () => h("span"),
-	},
-}));
-
-const m = (ticker: string, amount = 1) => ({
-	material_ticker: ticker,
-	material_amount: amount,
-});
-
-const option = (
-	id: string,
-	output: string,
-	input: string,
-	daily: number,
-	area: number,
-	roi: number
-): IRecipeBuildingOption => ({
-	recipe_id: id,
-	building_ticker: "SME",
-	recipe_name: id,
-	time_ms: 3600000,
-	inputs: [m(input, 2)],
-	outputs: [m(output)],
-	dailyRevenue: daily,
-	roi,
-	profitPerArea: area,
-});
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 // by ȼ/day: FE, AL, CU, BSE; by ȼ/area: BSE, CU, AL, FE; by payback:
 // CU, AL, FE, BSE (never pays back)
-const FE = option("R_FE", "FE", "FEO", 500, 5, 20);
-const AL = option("R_AL", "AL", "ALO", 300, 10, 10);
-const CU = option("R_CU", "CU", "CUO", 100, 20, 5);
-const BSE = option("R_BSE", "BSE", "FE", 50, 30, -1);
-
-const active = (recipe: IRecipeBuildingOption): IProductionBuildingRecipe => ({
-	recipeId: recipe.recipe_id,
-	amount: 2,
-	recipe,
-	dailyShare: 0.5,
-	time: 0,
-	cogm: undefined,
+const FE = option("R_FE", {
+	inputs: [m("FEO", 2)],
+	outputs: [m("FE")],
+	dailyRevenue: 500,
+	profitPerArea: 5,
+	roi: 20,
+});
+const AL = option("R_AL", {
+	inputs: [m("ALO", 2)],
+	outputs: [m("AL")],
+	dailyRevenue: 300,
+	profitPerArea: 10,
+	roi: 10,
+});
+const CU = option("R_CU", {
+	inputs: [m("CUO", 2)],
+	outputs: [m("CU")],
+	dailyRevenue: 100,
+	profitPerArea: 20,
+	roi: 5,
+});
+const BSE = option("R_BSE", {
+	inputs: [m("FE", 2)],
+	outputs: [m("BSE")],
+	dailyRevenue: 50,
+	profitPerArea: 30,
+	roi: -1,
 });
 
-function building(
+const active = (recipe: IRecipeBuildingOption) =>
+	activeRecipe(recipe, { amount: 2, dailyShare: 0.5 });
+
+/** a building with its recipe options, running `running` */
+const withRecipes = (
 	name: string,
 	recipeOptions: IRecipeBuildingOption[],
-	recipes: IRecipeBuildingOption[]
-): IProductionBuilding {
-	return {
-		name,
-		amount: 1,
-		areaUsed: 0,
-		activeRecipes: recipes.map(active),
-		recipeOptions,
-		totalEfficiency: 1,
-		efficiencyElements: [],
-		totalBatchTime: 0,
-		constructionMaterials: [],
-		constructionCost: 0,
-		workforceMaterials: [],
-		workforceDailyCost: 0,
-		dailyRevenue: 0,
-		expertise: null,
-	};
-}
+	running: IRecipeBuildingOption[]
+) => building(name, { recipeOptions, activeRecipes: running.map(active) });
 
 // SME runs FE and CU, PP1 turns FE into BSE
-const SME = building("SME", [FE, AL, CU, BSE], [FE, CU]);
-const PP1 = building("PP1", [BSE], [BSE]);
-
-const io = (ticker: string, input: number, output: number): IMaterialIO => ({
-	ticker,
-	input,
-	output,
-	delta: output - input,
-	individualWeight: 0,
-	individualVolume: 0,
-	totalWeight: 0,
-	totalVolume: 0,
-	price: 0,
-});
+const SME = withRecipes("SME", [FE, AL, CU, BSE], [FE, CU]);
+const PP1 = withRecipes("PP1", [BSE], [BSE]);
 
 const MESSAGES = {
 	plan: {
@@ -168,7 +133,6 @@ describe("PlanRecipePicker", () => {
 	beforeEach(() => {
 		insights.available = false;
 		insights.popularity = {};
-		trackEvent.mockReset();
 	});
 
 	it("change: lists the current recipe first, not selectable", async () => {
@@ -264,6 +228,10 @@ describe("PlanRecipePicker", () => {
 		const overlay = document.createElement("div");
 		overlay.setAttribute("role", "tooltip");
 		document.body.append(opener, overlay);
+		onTestFinished(() => {
+			opener.remove();
+			overlay.remove();
+		});
 		const down = (el: Element) =>
 			el.dispatchEvent(new Event("pointerdown", { bubbles: true }));
 
@@ -277,10 +245,9 @@ describe("PlanRecipePicker", () => {
 
 		// an unmounted component can't emit, so check the listener goes
 		const remove = vi.spyOn(document, "removeEventListener");
+		onTestFinished(() => remove.mockRestore());
 		wrapper.unmount();
 		expect(remove).toHaveBeenCalledWith("pointerdown", expect.any(Function));
-		opener.remove();
-		overlay.remove();
 	});
 
 	it("picks a clicked row, an ordered one too, but not the current", async () => {
@@ -310,7 +277,7 @@ describe("PlanRecipePicker", () => {
 
 		it("names who uses the output and its In amount", async () => {
 			const { wrapper } = await mountPicker({
-				materialIO: [io("FE", 12.5, 20)],
+				materialIO: [inOut("FE", 12.5, 20)],
 			});
 
 			expect(note(wrapper).text()).toBe("PP1 turn FE into BSE, buy 12.50");
@@ -319,23 +286,23 @@ describe("PlanRecipePicker", () => {
 		it("falls back to the workforce without a building using it", async () => {
 			const { wrapper } = await mountPicker({
 				buildings: [SME],
-				materialIO: [io("FE", 3, 20)],
+				materialIO: [inOut("FE", 3, 20)],
 			});
 
 			expect(note(wrapper).text()).toBe("workforce uses FE, buy 3.00");
 		});
 
 		it("is not shown without an In, or when adding", async () => {
-			const unused = await mountPicker({ materialIO: [io("FE", 0, 20)] });
+			const unused = await mountPicker({ materialIO: [inOut("FE", 0, 20)] });
 			expect(note(unused.wrapper).exists()).toBe(false);
 
-			const missing = await mountPicker({ materialIO: [io("AL", 5, 0)] });
+			const missing = await mountPicker({ materialIO: [inOut("AL", 5, 0)] });
 			expect(note(missing.wrapper).exists()).toBe(false);
 
 			const add = await mountPicker({
 				mode: "add",
 				recipeIndex: undefined,
-				materialIO: [io("FE", 12.5, 20)],
+				materialIO: [inOut("FE", 12.5, 20)],
 			});
 			expect(note(add.wrapper).exists()).toBe(false);
 		});
@@ -343,7 +310,7 @@ describe("PlanRecipePicker", () => {
 
 	it("names the inputs the plan makes itself, not the bought ones", async () => {
 		const { wrapper } = await mountPicker({
-			materialIO: [io("FE", 0, 20), io("FEO", 10, 0)],
+			materialIO: [inOut("FE", 0, 20), inOut("FEO", 10, 0)],
 		});
 
 		// FE: FEO is bought; BSE: FE is made
@@ -415,7 +382,7 @@ describe("PlanRecipePicker", () => {
 		const { wrapper, component } = await mountPicker({
 			mode: "add",
 			recipeIndex: undefined,
-			building: building("SME", [FE, CU], [FE, CU]),
+			building: withRecipes("SME", [FE, CU], [FE, CU]),
 		});
 
 		expect(highlighted(wrapper)).toBe("FE");
@@ -426,7 +393,7 @@ describe("PlanRecipePicker", () => {
 
 	it("has nothing to move or pick when the current recipe is the only one", async () => {
 		const { wrapper, component } = await mountPicker({
-			building: building("SME", [FE], [FE]),
+			building: withRecipes("SME", [FE], [FE]),
 		});
 
 		expect(listbox(wrapper).attributes("aria-activedescendant")).toBe(
@@ -439,7 +406,7 @@ describe("PlanRecipePicker", () => {
 
 	it("compares with the current recipe's own revenue", async () => {
 		// the engine's active recipes carry no revenue, the options do
-		const sme = building("SME", [FE, AL, CU, BSE], [FE, CU]);
+		const sme = withRecipes("SME", [FE, AL, CU, BSE], [FE, CU]);
 		sme.activeRecipes[0].recipe = { ...FE, dailyRevenue: 0 };
 		const { wrapper } = await mountPicker({ building: sme });
 

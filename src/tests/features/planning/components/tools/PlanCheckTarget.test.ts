@@ -1,15 +1,19 @@
-import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	vi,
+	beforeAll,
+	beforeEach,
+	onTestFinished,
+} from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
-import { exchangesStore } from "@/database/stores";
-import { useExchangeData } from "@/database/services/useExchangeData";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanCheckTarget from "@/features/planning/components/tools/PlanCheckTarget.vue";
 import { PInputNumber, PSelect } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
-
-// test data
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
+import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
 import type { IPlanContext } from "@/features/planning/engine/engine.types";
@@ -69,6 +73,17 @@ const result = (w: Awaited<ReturnType<typeof mountTool>>) =>
 	w.find("[data-target-result]");
 const range = (w: Awaited<ReturnType<typeof mountTool>>) =>
 	w.find("[data-target-range]");
+// a pending range fetch
+interface Pending {
+	resolve: (v: unknown) => void;
+	reject: (e: Error) => void;
+}
+// a failed range fetch logs its error
+function silenceErrors() {
+	const error = vi.spyOn(console, "error").mockImplementation(() => {});
+	onTestFinished(() => error.mockRestore());
+	return error;
+}
 async function setTarget(
 	w: Awaited<ReturnType<typeof mountTool>>,
 	value: number | null
@@ -79,15 +94,11 @@ async function setTarget(
 
 describe("PlanCheckTarget", () => {
 	beforeAll(async () => {
-		// @ts-expect-error mock data
-		await exchangesStore.setMany(exchanges);
-		await useExchangeData().preload();
+		await setupPlanningTestData();
 	});
 
 	beforeEach(() => {
-		vi.mocked(trackEvent).mockClear();
-		explorationQuery.mockReset().mockResolvedValue([]);
-		vi.spyOn(console, "error").mockImplementation(() => {});
+		explorationQuery.mockResolvedValue([]);
 	});
 
 	it("starts on the largest sold material with the profit rounded up to 10k", async () => {
@@ -97,8 +108,9 @@ describe("PlanCheckTarget", () => {
 		expect(wrapper.findComponent(PInputNumber).props("value")).toBe(10_000);
 		// 4,000 + 6,000 more profit needs twice today's 1,000
 		expect(result(wrapper).text()).toContain("2,000 ȼ");
-		expect(result(wrapper).text()).toContain("100.0 %");
-		expect(result(wrapper).find(".text-positive").exists()).toBe(true);
+		const change = result(wrapper).find("[data-price-change]");
+		expect(change.text()).toBe("+100.0 %");
+		expect(change.classes()).toContain("text-positive");
 		const text = wrapper.find("dl").text();
 		expect(text).toContain("1,000 ȼ");
 		// FE.AI1 bid and ask
@@ -159,6 +171,7 @@ describe("PlanCheckTarget", () => {
 				reject = r;
 			})
 		);
+		const error = silenceErrors();
 		const wrapper = await mountTool();
 		await setTarget(wrapper, 8_000);
 		expect(range(wrapper).text()).toBe("…");
@@ -169,7 +182,7 @@ describe("PlanCheckTarget", () => {
 		expect(range(wrapper).text()).toBe(
 			"plan.tools.plan_check.target.range_error"
 		);
-		expect(console.error).toHaveBeenCalled();
+		expect(error).toHaveBeenCalledTimes(1);
 		expect(wrapper.text()).not.toContain(
 			"plan.tools.plan_check.target.above"
 		);
@@ -224,20 +237,20 @@ describe("PlanCheckTarget", () => {
 		await setTarget(wrapper, 2_000);
 
 		expect(result(wrapper).text()).toContain("667 ȼ");
-		expect(result(wrapper).find(".text-negative").exists()).toBe(true);
+		const change = result(wrapper).find("[data-price-change]");
+		expect(change.text()).toBe("-33.3 %");
+		expect(change.classes()).toContain("text-negative");
 		expect(wrapper.text()).toContain("plan.tools.plan_check.target.below");
 	});
 
-	it("calls a target unreachable when the price would be zero or below", async () => {
-		const wrapper = await mountTool();
-
+	it.each([
 		// −6,000 / 6,000 takes the price to 0
-		await setTarget(wrapper, -2_000);
-		expect(result(wrapper).text()).toContain(
-			"plan.tools.plan_check.target.unreachable"
-		);
+		{ target: -2_000, why: "that takes the price to zero" },
+		{ target: null, why: "that is cleared" },
+	])("calls a target $why unreachable", async ({ target }) => {
+		const wrapper = await mountTool();
+		await setTarget(wrapper, target);
 
-		await setTarget(wrapper, null);
 		expect(result(wrapper).text()).toContain(
 			"plan.tools.plan_check.target.unreachable"
 		);
@@ -261,26 +274,40 @@ describe("PlanCheckTarget", () => {
 		expect(wrapper.find("dl").text()).toContain("0 ȼ");
 	});
 
-	it("ignores a range that arrives after the material changed", async () => {
-		let resolveFirst!: (v: unknown) => void;
-		explorationQuery.mockReturnValueOnce(
-			new Promise((r) => {
-				resolveFirst = r;
-			})
-		);
-		const wrapper = await mountTool();
-		await setTarget(wrapper, 8_000);
+	it.each([
+		{
+			stale: "range",
+			settle: (p: Pending) =>
+				p.resolve([{ date_epoch: DAY, traded: 1, low_p: 1, high_p: 2 }]),
+		},
+		{
+			stale: "range error",
+			settle: (p: Pending) => p.reject(new Error("offline")),
+		},
+	])(
+		"ignores a $stale that arrives after the material changed",
+		async ({ settle }) => {
+			silenceErrors();
+			let first!: Pending;
+			explorationQuery.mockReturnValueOnce(
+				new Promise((resolve, reject) => {
+					first = { resolve, reject };
+				})
+			);
+			const wrapper = await mountTool();
+			await setTarget(wrapper, 8_000);
 
-		explorationQuery.mockResolvedValue([
-			{ date_epoch: DAY, traded: 1, low_p: 10, high_p: 20 },
-		]);
-		wrapper.findComponent(PSelect).vm.$emit("update:value", "ZZZ");
-		await flushPromises();
-		resolveFirst([{ date_epoch: DAY, traded: 1, low_p: 1, high_p: 2 }]);
-		await flushPromises();
+			explorationQuery.mockResolvedValue([
+				{ date_epoch: DAY, traded: 1, low_p: 10, high_p: 20 },
+			]);
+			wrapper.findComponent(PSelect).vm.$emit("update:value", "ZZZ");
+			await flushPromises();
+			settle(first);
+			await flushPromises();
 
-		expect(range(wrapper).text()).toBe("10 – 20 ȼ");
-	});
+			expect(range(wrapper).text()).toBe("10 – 20 ȼ");
+		}
+	);
 
 	it("shows no result for a material that is not in the list", async () => {
 		const wrapper = await mountTool();
@@ -289,26 +316,5 @@ describe("PlanCheckTarget", () => {
 
 		expect(result(wrapper).exists()).toBe(false);
 		expect(wrapper.find("dl").exists()).toBe(false);
-	});
-
-	it("ignores a range error that arrives after the material changed", async () => {
-		let rejectFirst!: (e: Error) => void;
-		explorationQuery.mockReturnValueOnce(
-			new Promise((_, r) => {
-				rejectFirst = r;
-			})
-		);
-		const wrapper = await mountTool();
-		await setTarget(wrapper, 8_000);
-
-		explorationQuery.mockResolvedValue([
-			{ date_epoch: DAY, traded: 1, low_p: 10, high_p: 20 },
-		]);
-		wrapper.findComponent(PSelect).vm.$emit("update:value", "ZZZ");
-		await flushPromises();
-		rejectFirst(new Error("offline"));
-		await flushPromises();
-
-		expect(range(wrapper).text()).toBe("10 – 20 ȼ");
 	});
 });
