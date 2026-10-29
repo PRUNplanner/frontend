@@ -67,9 +67,16 @@ export const API_ENDPOINTS: IAPIEndpoint[] = [
 	entry("planet", "public", "data/planet/{planet}/"),
 	entry("planet_popr", "public", "data/planet/{planet}/popr/"),
 	entry("market_history", "public", "data/cxpc/{ticker}/{exchange}/"),
+	// days, not a start date: a Sheets formula keeps working
+	entry("market_daily", "public", "data/cxpc/daily/?days={days}&exchange={exchange}", {
+		csvPath: "data/cxpc/daily/csv/?days={days}&exchange={exchange}",
+	}),
 ];
 
 export const API_EXCHANGES = ["AI1", "CI1", "IC1", "NC1", "UNIVERSE"];
+
+/** market_daily allows at most 31 days for one exchange */
+export const API_DAYS = ["1", "7", "14", "31"];
 
 /**
  * The formats an endpoint serves, CSV first

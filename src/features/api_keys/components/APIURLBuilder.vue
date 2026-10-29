@@ -15,7 +15,11 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
-	import { API_ENDPOINTS, API_EXCHANGES } from "@/features/api_keys/apiEndpoints";
+	import {
+		API_DAYS,
+		API_ENDPOINTS,
+		API_EXCHANGES,
+	} from "@/features/api_keys/apiEndpoints";
 	import { copyToClipboard } from "@/util/data";
 
 	// Components
@@ -67,6 +71,13 @@
 		label: e,
 		value: e,
 	}));
+
+	const dayOptions = computed<PSelectOption[]>(() =>
+		API_DAYS.map((d) => ({
+			label: t("api_keys.builder.days_option", { n: d }, Number(d)),
+			value: d,
+		}))
+	);
 
 	// the user's empires, plans and CX preferences, loaded when an
 	// endpoint needs them; null until loaded
@@ -213,6 +224,14 @@
 				<PSelect
 					v-model:value="values.exchange"
 					:options="exchangeOptions"
+					class="w-full" />
+			</PFormItem>
+			<PFormItem
+				v-if="needs('days')"
+				:label="t('api_keys.builder.params.days')">
+				<PSelect
+					v-model:value="values.days"
+					:options="dayOptions"
 					class="w-full" />
 			</PFormItem>
 		</PForm>

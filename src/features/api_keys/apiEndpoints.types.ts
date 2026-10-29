@@ -4,7 +4,8 @@ export type APIEndpointParam =
 	| "cx"
 	| "planet"
 	| "ticker"
-	| "exchange";
+	| "exchange"
+	| "days";
 export type APIEndpointFormat = "csv" | "json";
 export type APIEndpointGroup = "new" | "planning" | "public";
 export type APISnippetKind = "url" | "sheets" | "curl" | "python";

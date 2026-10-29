@@ -17,6 +17,7 @@ const VALUES = {
 	planet: "OT-580b",
 	ticker: "RAT",
 	exchange: "AI1",
+	days: "7",
 };
 const byId = (id: string) => API_ENDPOINTS.find((e) => e.id === id)!;
 
@@ -53,6 +54,18 @@ describe("buildSnippets", () => {
 		expect(s.curl).toBe(`curl "${BASE}/data/exchanges/csv/"`);
 		expect(s.python).not.toContain("real");
 		expect(s.python).not.toContain("headers");
+	});
+
+	it("market history of every material: days and exchange in the query", () => {
+		const s = buildSnippets(byId("market_daily"), "csv", VALUES, "real")!;
+		const url = `${BASE}/data/cxpc/daily/csv/?days=7&exchange=AI1`;
+		expect(s.url).toBe(url);
+		expect(s.sheets).toBe(`=IMPORTDATA("${url}")`);
+		expect(s.curl).toBe(`curl "${url}"`);
+		expect(s.python).toContain(`requests.get("${url}")`);
+		expect(
+			buildSnippets(byId("market_daily"), "json", VALUES, null)!.url
+		).toBe(`${BASE}/data/cxpc/daily/?days=7&exchange=AI1`);
 	});
 
 	it("curl and Python send the key in the header, not the URL", () => {

@@ -109,6 +109,13 @@ describe("APIURLBuilder", () => {
 		// endpoint, ticker, exchange
 		expect(wrapper.findAllComponents(PSelect)).toHaveLength(3);
 
+		await pickEndpoint(wrapper, "market_daily");
+		// endpoint, exchange, days
+		expect(wrapper.findAllComponents(PSelect)).toHaveLength(3);
+		expect(snippet(wrapper, "sheets").text()).toBe(
+			`=IMPORTDATA("${BASE}/data/cxpc/daily/csv/?days=7&exchange=AI1")`
+		);
+
 		await pickEndpoint(wrapper, "planet");
 		expect(wrapper.findComponent(PInput).exists()).toBe(true);
 		expect(wrapper.text()).toContain("api_keys.builder.incomplete");
