@@ -98,9 +98,9 @@
 
 	// one large shot at 150 % width, offset to its focal area
 	const setup = [
-		{ key: "plan", image: "plan", offset: "-ml-[22%] -mt-[9%]" },
+		{ key: "plan", image: "plan", offset: "-ml-[15%] -mt-[13%]" },
 		{ key: "empire", image: "empire", offset: "-ml-[40%] -mt-[4%]" },
-		{ key: "exchange", image: "exchanges", offset: "-ml-[3%] -mt-[3%]" },
+		{ key: "exchange", image: "exchanges", offset: "-ml-[25%] -mt-[3%]" },
 	];
 	const setupStep = ref(setup[0]);
 

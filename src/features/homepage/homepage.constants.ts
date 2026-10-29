@@ -39,24 +39,24 @@ export const landingHeading =
 // public/images/homepage: retaking a shot means re-measuring its boxes.
 export const PLAN_TOUR: IHomepageTourStep[] = [
 	{ key: "whole", box: [0, 0, 1, 1], zoom: 1 },
-	{ key: "buildings", box: [0.05, 0.538, 0.671, 0.997], zoom: 1.45 },
-	{ key: "workforce", box: [0.066, 0.205, 0.363, 0.424], zoom: 2.3 },
-	{ key: "money", box: [0.379, 0.205, 0.519, 0.416], zoom: 2.6 },
-	{ key: "flow", box: [0.679, 0.205, 0.992, 0.749], zoom: 1.6 },
-	{ key: "tabs", box: [0.05, 0.108, 0.53, 0.146], zoom: 1.8 },
+	{ key: "buildings", box: [0.105, 0.29, 0.7, 0.93], zoom: 1.45 },
+	{ key: "workforce", box: [0.39, 0.094, 0.69, 0.176], zoom: 2.3 },
+	{ key: "money", box: [0.05, 0.094, 0.39, 0.176], zoom: 2.6 },
+	{ key: "flow", box: [0.716, 0.198, 0.984, 0.86], zoom: 1.5 },
+	{ key: "tabs", box: [0.105, 0.204, 0.525, 0.24], zoom: 1.8 },
 ];
 export const PLANET_SEARCH_TOUR: IHomepageTourStep[] = [
-	{ key: "materials", box: [0.052, 0.225, 0.31, 0.425], zoom: 2.5 },
-	{ key: "conditions", box: [0.048, 0.44, 0.313, 0.84], zoom: 2.1 },
-	{ key: "matches", box: [0.337, 0.228, 0.983, 0.815], zoom: 1.4 },
-	{ key: "create_plan", box: [0.341, 0.279, 0.363, 0.313], zoom: 2.8 },
-	{ key: "compare", box: [0.335, 0.955, 0.431, 0.993], zoom: 2.3 },
+	{ key: "materials", box: [0.054, 0.184, 0.311, 0.424], zoom: 2.5 },
+	{ key: "conditions", box: [0.054, 0.448, 0.311, 0.88], zoom: 2.1 },
+	{ key: "matches", box: [0.339, 0.23, 0.983, 0.812], zoom: 1.4 },
+	{ key: "create_plan", box: [0.344, 0.28, 0.364, 0.312], zoom: 2.8 },
+	{ key: "compare", box: [0.339, 0.957, 0.431, 0.993], zoom: 2.3 },
 ];
 export const EMPIRE_TOUR: IHomepageTourStep[] = [
-	{ key: "totals", box: [0.095, 0.152, 0.44, 0.22], zoom: 2.0 },
-	{ key: "plans", box: [0.059, 0.246, 0.475, 0.432], zoom: 1.9 },
-	{ key: "material_io", box: [0.493, 0.226, 0.983, 1.0], zoom: 1.29 },
-	{ key: "tabs", box: [0.715, 0.014, 0.944, 0.045], zoom: 2.2 },
+	{ key: "totals", box: [0.075, 0.15, 0.395, 0.22], zoom: 2 },
+	{ key: "plans", box: [0.061, 0.424, 0.409, 0.684], zoom: 1.9 },
+	{ key: "material_io", box: [0.426, 0.35, 0.983, 1], zoom: 1.29 },
+	{ key: "tabs", box: [0.715, 0.012, 0.944, 0.047], zoom: 2.2 },
 ];
 
 // "Market today": the skeleton and the section share these sizes, so the
