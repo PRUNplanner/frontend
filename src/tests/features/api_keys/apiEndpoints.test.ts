@@ -13,12 +13,13 @@ const VALUES = {
 	planet: "OT-580b",
 	ticker: "RAT",
 	exchange: "AI1",
+	days: "7",
 };
 
 describe("apiEndpoints", () => {
-	it("lists the 17 endpoints with unique ids", () => {
-		expect(API_ENDPOINTS).toHaveLength(17);
-		expect(new Set(API_ENDPOINTS.map((e) => e.id)).size).toBe(17);
+	it("lists the 18 endpoints with unique ids", () => {
+		expect(API_ENDPOINTS).toHaveLength(18);
+		expect(new Set(API_ENDPOINTS.map((e) => e.id)).size).toBe(18);
 	});
 
 	it("resolves every template and offers an input per placeholder", () => {
@@ -27,7 +28,7 @@ describe("apiEndpoints", () => {
 				const path = resolvePath(template!, VALUES);
 				expect(path).not.toBeNull();
 				expect(path).not.toMatch(/[{}]/);
-				expect(path).toMatch(/^[a-z].*\/$/);
+				expect(path).toMatch(/^[a-z][^?]*\/(\?.+)?$/);
 				[...template!.matchAll(/\{(\w+)\}/g)].forEach((m) =>
 					expect(e.params).toContain(m[1])
 				);
@@ -45,6 +46,7 @@ describe("apiEndpoints", () => {
 			"planet",
 			"planet_popr",
 			"market_history",
+			"market_daily",
 		]);
 	});
 
@@ -56,6 +58,7 @@ describe("apiEndpoints", () => {
 			"empire_plans",
 			"fio_storage",
 			"exchanges",
+			"market_daily",
 		]);
 		expect(endpointFormats(API_ENDPOINTS[0])).toEqual(["csv", "json"]);
 		expect(endpointFormats(API_ENDPOINTS[5])).toEqual(["json"]);

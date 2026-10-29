@@ -118,7 +118,7 @@ export function useAPIBuilder(key: () => string | null) {
 	watch(endpointId, () => (format.value = formats.value[0]));
 
 	const values = reactive<Partial<Record<APIEndpointParam, string | null>>>(
-		{ exchange: "AI1" }
+		{ exchange: "AI1", days: "7" }
 	);
 
 	const snippets = computed<IAPISnippets | null>(() =>
