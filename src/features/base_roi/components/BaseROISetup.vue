@@ -183,8 +183,8 @@
 						{{ t('base_roi.settings.ship') }}
 					</span>
 					<PSelect
-						:aria-label="t('base_roi.settings.ship')"
 						v-if="preset === 'veteran'"
+						:aria-label="t('base_roi.settings.ship')"
 						:value="veteranShip"
 						:options="shipOptions"
 						@update:value="
@@ -206,8 +206,8 @@
 						{{ t('base_roi.settings.visit_days') }}
 					</span>
 					<PSelect
-						:aria-label="t('base_roi.settings.visit_days')"
 						v-model:value="visitDays"
+						:aria-label="t('base_roi.settings.visit_days')"
 						:options="visitOptions" />
 				</div>
 			</div>
