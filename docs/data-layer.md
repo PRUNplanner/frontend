@@ -31,7 +31,8 @@ component / composable
 - **Errors go through `normalizeError`:**
   - a `ZodError` becomes `Error("Validation error: …")`;
   - an axios error becomes an `Error` whose message is the JSON response
-    body, with `.status` and `.responseData` attached.
+    body, with `.status` and `.responseData` attached, and for a 429
+    `.retryAfter` (seconds, the `Retry-After` header).
   - it also reports to PostHog error tracking (`trackException`, only
     with consent): `ApiValidationError` (field names and issue codes,
     never values, record keys or indices), `ApiServerError` (5xx), `ApiNetworkError` (no response) and
@@ -185,8 +186,16 @@ component / composable
     other expired ones. It pauses while the user is idle (`userActivity`, see
     [features/user_activity.md](features/user_activity.md)).
     An `autoRefetch` entry whose fetch failed transiently (network error or
-    5xx, `isTransientError`) is retried one `expireTime` after the failure;
-    any other error stops its refresh.
+    5xx, `isTransientError`) is retried one `expireTime` after the failure,
+    after a 429 once its `retryAfter` passed; any other error stops its
+    refresh.
+  - **Fetch budget** (`queryLoopGuard`), the guard against request loops:
+    more than 5 network fetches of one key within 10 s block that key's
+    fetches for 30 s. Cache hits, deduped calls and mutations don't count.
+    While blocked, `execute` returns the entry's last data, or rejects with
+    `QueryLoopError` (no status, so never retried) when it has none. The
+    first block per key and tab sends a `query_loop` client error with the
+    query's name, so a loop shows up in Axiom by name.
     Batched families are declared as data in `queryBatches.ts`
     (`batchRefresh`): expired `GetPlanet` entries are refetched together in
     one `GetMultiplePlanets` request (or taken from an expiring multiple
@@ -372,9 +381,13 @@ the tabs of one browser are kept in step explicitly (registered in
   persisted stores from writing (`lib/persistStorage.ts`, the `storage` of
   the user and planning stores), so a tab kept open by the leave-page
   prompt can never write the old login or plans back; it shows a notice to
-  reload. The same user adopts the tokens and only the preference
-  keys the other tab changed. Values are assigned only when they differ,
-  so the persist plugin can't bounce writes between tabs.
+  reload. The same user adopts the tokens and profile from the value
+  stored now, not the event's (a later write may already have replaced
+  it), and only the preference keys the other tab changed. Values are
+  assigned only when they differ, so the persist plugin can't bounce
+  writes between tabs. Reading the event's value let two tabs that wrote
+  at the same moment swap their profiles for good, flipping the FIO
+  status and refetching FIO storage on every swap (28 Oct 2026).
 - **Preferences** (`features/preferences/preferenceSync.ts`) keep the last
   state known to match the backend. The debounced PATCH sends only what
   changed since: top-level keys, and `planOverrides` per uuid with `null`
