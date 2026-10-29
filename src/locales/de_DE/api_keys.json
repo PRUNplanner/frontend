@@ -31,8 +31,10 @@
 			"cx": "CX-Präferenz",
 			"planet": "Planet",
 			"ticker": "Material",
-			"exchange": "Marktplatz"
+			"exchange": "Marktplatz",
+			"days": "Days"
 		},
+		"days_option": "Last day | Last {n} days",
 		"planet_placeholder": "Natürliche ID, z. B. OT-580b",
 		"empty": {
 			"empire": "Du hast noch keine Imperien.",
@@ -120,6 +122,10 @@
 			"market_history": {
 				"label": "Marktverlauf",
 				"description": "Täglicher Preisverlauf eines Materials auf einem Marktplatz."
+			},
+			"market_daily": {
+				"label": "Market history, every material",
+				"description": "Daily prices of every material on one exchange for the last days, up to 31, in one request. Limited to 30 requests per minute."
 			}
 		}
 	},
