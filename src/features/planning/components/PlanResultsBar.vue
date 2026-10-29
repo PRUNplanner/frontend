@@ -145,12 +145,14 @@
 					<span :class="label">{{ t("plan.results.payback") }}</span>
 					<span :class="value">{{ formatPayback(overview.roi) }}</span>
 				</div>
-				<div :class="sub">
-					{{
-						t("plan.results.build", {
-							cost: formatNumber(overview.totalConstructionCost, 0),
-						})
-					}}
+				<!-- what the payback earns back, set like the profit per area -->
+				<div
+					class="flex flex-wrap items-baseline gap-x-1.5 mt-1 text-xs text-muted"
+					data-build-cost>
+					<span class="text-sm font-medium text-ink-strong">
+						{{ formatNumber(overview.totalConstructionCost, 0) }}
+					</span>
+					{{ t("plan.results.build_cost") }}
 				</div>
 			</button>
 			<!-- workforce: the lowest efficiency, workers needed of the beds per
