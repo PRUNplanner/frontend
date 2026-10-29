@@ -84,6 +84,7 @@
 			"title_editing": "Alarm bearbeiten",
 			"info": "Alarme werden derzeit nur auf diesem Gerät gespeichert und nicht mit deinem Konto synchronisiert.",
 			"no_alerts": "Keine Alarme gefunden. Erstelle dein erstes Alarm-Signal",
+			"new_alert_name": "New Alert",
 			"buttons": {
 				"create_alert": "Neuen Alarm erstellen",
 				"discard": "@:common.buttons.discard",
