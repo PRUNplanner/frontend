@@ -48,6 +48,7 @@
 			"title": "비밀번호 재설정",
 			"info": "이메일로 전송된 코드와 새로운 비밀번호를 입력하세요.",
 			"throttled": "시도 횟수가 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요.",
+			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
 			"buttons": {
 				"send": "비밀번호 재설정"
 			},
