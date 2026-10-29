@@ -1,3 +1,12 @@
+# 2026-10-29 - v. 0.34.1
+
+A follow-up to 0.34.0: Production Chains can now build on what you already make, and the new plan editor gets a round of polish from your feedback.
+
+- **Plan a chain with what you already make**: **Have** is a fourth source next to Make, Buy and Extract. Pick an empire under Own production (or enter amounts by hand) and the chain shows only what it still adds: steps, buildings, construction and inputs, and which of your plans feeds it [[PR-680]](https://github.com/PRUNplanner/frontend/pull/680)
+- **Plan editor polish**: every results tile opens where its figure comes from, workforce shows per tier and build cost sits under the payback. Luxuries are on/off toggles, and all habitation and storage types share one Infrastructure grid. Recipes line up across buildings in striped rows, and a building can order a recipe it already runs again. Material I/O always shows In, Out and Δ, and POPR puts its chart next to the table on wide screens [[PR-679]](https://github.com/PRUNplanner/frontend/pull/679)
+- **Market history in bulk**: the API URL builder has a new "Market history, every material" entry that gets the daily bars for every ticker in one request (JSON or CSV), with a Days select next to Exchange [[PR-685]](https://github.com/PRUNplanner/frontend/pull/685)
+- **Fixes**: a plan opened from an empire's page now uses its own empire instead of your first one, profit fits its tile on phones, and two open tabs no longer keep reloading FIO storage data [[PR-679]](https://github.com/PRUNplanner/frontend/pull/679), [[PR-681]](https://github.com/PRUNplanner/frontend/pull/681), [[PR-684]](https://github.com/PRUNplanner/frontend/pull/684)
+
 # 2026-10-26 - v. 0.34.0
 
 The headline of this release is the new **Production Chains** planner. You can plan a chain per day, split it into bases on real planets and create the plans in one go, or check the empire you already run. The plan editor also gets a new layout.
