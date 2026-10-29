@@ -4,10 +4,10 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Util
 import { broadcastChange } from "@/lib/crossTab";
+import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 import {
 	defineMutation,
 	defineQuery,
-	invalidate,
 	staleMinutes,
 } from "@/lib/query_cache/queries/queries.util";
 
@@ -76,15 +76,75 @@ const EMPIRES = ["planningdata", "empire"];
 const PLANS = ["planningdata", "plan"];
 const CXS = ["planningdata", "cx"];
 
+interface IChangedKey {
+	key: JSONValue;
+	exact: boolean;
+}
+
+// the running batchChanges: keys to invalidate (deduped) and changed objects
+let batch: { keys: Map<string, IChangedKey>; uuids: Set<string> } | null =
+	null;
+
 /**
- * Invalidates the keys after a change and tells the user's other tabs
+ * Invalidates the keys and tells the user's other tabs, in one broadcast
+ *
+ * @param {IChangedKey[]} keys Keys, exact or prefixes
+ * @param {string[]} uuids Changed plans, empires or CXs
+ */
+async function flush(keys: IChangedKey[], uuids: string[]): Promise<void> {
+	const queryStore = useQueryStore();
+	for (const { key, exact } of keys)
+		await queryStore.invalidateKey(key, { exact });
+	broadcastChange(
+		keys.map((k) => k.key),
+		uuids
+	);
+}
+
+/**
+ * Invalidates the keys after a change and tells the user's other tabs;
+ * inside `batchChanges` only records them
  *
  * @param {JSONValue[]} prefixes Key prefixes
  * @param {string} [uuid] Changed plan, empire or CX
+ * @param {JSONValue[]} [exact=[]] Keys invalidated exactly
  */
-async function changed(prefixes: JSONValue[], uuid?: string): Promise<void> {
-	await invalidate(...prefixes);
-	broadcastChange(prefixes, uuid);
+async function changed(
+	prefixes: JSONValue[],
+	uuid?: string,
+	exact: JSONValue[] = []
+): Promise<void> {
+	const keys = [
+		...prefixes.map((key) => ({ key, exact: false })),
+		...exact.map((key) => ({ key, exact: true })),
+	];
+	const uuids = uuid ? [uuid] : [];
+	if (!batch) return flush(keys, uuids);
+
+	keys.forEach((k) => batch!.keys.set(`${k.exact}:${toCacheKey(k.key)}`, k));
+	uuids.forEach((u) => batch!.uuids.add(u));
+}
+
+/**
+ * Runs a bulk action (a loop of planning mutations) with one invalidation
+ * per key and one broadcast at its end, also when `fn` throws, so readers
+ * refetch once instead of once per save. Nested calls join the outer one;
+ * another save of this tab meanwhile waits with it.
+ *
+ * @param {() => Promise<T>} fn Bulk action
+ * @returns {Promise<T>} What `fn` returns
+ */
+export async function batchChanges<T>(fn: () => Promise<T>): Promise<T> {
+	if (batch) return fn();
+
+	const current = (batch = { keys: new Map(), uuids: new Set() });
+	try {
+		return await fn();
+	} finally {
+		batch = null;
+		if (current.keys.size)
+			await flush([...current.keys.values()], [...current.uuids]);
+	}
 }
 
 /** Drops every shared plan entry without refetching the list. */
@@ -320,24 +380,18 @@ export const planningQueries = {
 			cloneName: string;
 		}): Promise<Plan> => {
 			const data = await callClonePlan(params.planUuid, params.cloneName);
-			await invalidate(EMPIRES);
-			await useQueryStore().invalidateKey([...PLANS, "list"]);
-			broadcastChange([EMPIRES, [...PLANS, "list"]], data.uuid);
+			await changed([EMPIRES], data.uuid, [[...PLANS, "list"]]);
 			return data;
 		},
 	}),
 	DeletePlan: defineMutation({
 		fetchFn: async (params: { planUuid: string }): Promise<boolean> => {
 			const data = await callDeletePlan(params.planUuid);
-			const queryStore = useQueryStore();
-			await invalidate(EMPIRES);
-			await queryStore.invalidateKey([...PLANS, "list"]);
-			await queryStore.invalidateKey([...PLANS, params.planUuid]);
 			usePlanningStore().deletePlan(params.planUuid);
-			broadcastChange(
-				[EMPIRES, [...PLANS, "list"], [...PLANS, params.planUuid]],
-				params.planUuid
-			);
+			await changed([EMPIRES], params.planUuid, [
+				[...PLANS, "list"],
+				[...PLANS, params.planUuid],
+			]);
 			return data;
 		},
 	}),

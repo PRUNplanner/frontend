@@ -95,6 +95,8 @@ export const useQueryStore = defineStore(
 		const fetchTimes = new Map<string, number[]>();
 		const blockedUntil = new Map<string, number>();
 		const loopReported = new Set<string>();
+		// one fetch per blocked key when its block ends
+		const blockTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
 		// shallow, and so is each entry (updateState): their fields are
 		// tracked, but a cache hit returns the raw data a fresh fetch
@@ -112,18 +114,27 @@ export const useQueryStore = defineStore(
 			inFlight.clear();
 			fetchTimes.clear();
 			blockedUntil.clear();
+			blockTimers.forEach(clearTimeout);
+			blockTimers.clear();
 		}
 
 		/**
 		 * Counts a network fetch of a key against its budget
 		 * (queryLoopGuard). The fetch that overspends blocks the key and
-		 * reports the loop, once per key and tab.
+		 * reports the loop, once per key and tab. When the block ends, a key
+		 * still in the cache is fetched once, so it doesn't keep the data
+		 * (or the QueryLoopError) of the block.
 		 *
 		 * @param {string} keyHash Cache key
-		 * @param {string} definitionName Query name, for the report
+		 * @param {QueryName} definitionName Query name, for the report
+		 * @param {unknown} params Query params, for the fetch after the block
 		 * @returns {boolean} Fetch allowed
 		 */
-		function allowFetch(keyHash: string, definitionName: string): boolean {
+		function allowFetch(
+			keyHash: string,
+			definitionName: QueryName,
+			params: unknown
+		): boolean {
 			const now = Date.now();
 			if (now < (blockedUntil.get(keyHash) ?? 0)) return false;
 
@@ -138,6 +149,18 @@ export const useQueryStore = defineStore(
 
 			blockedUntil.set(keyHash, now + queryLoopGuard.blockMs);
 			fetchTimes.delete(keyHash);
+			clearTimeout(blockTimers.get(keyHash));
+			blockTimers.set(
+				keyHash,
+				setTimeout(() => {
+					blockTimers.delete(keyHash);
+					if (!cacheState[keyHash]) return;
+					// logged and reported in execute already
+					execute(definitionName, params as QueryParams<QueryName>, {
+						forceRefetch: true,
+					}).catch(() => {});
+				}, queryLoopGuard.blockMs)
+			);
 			if (!loopReported.has(keyHash)) {
 				loopReported.add(keyHash);
 				reportClientError({
@@ -261,7 +284,7 @@ export const useQueryStore = defineStore(
 						return cached.data;
 					}
 
-					if (!allowFetch(keyHash, definitionName)) {
+					if (!allowFetch(keyHash, definitionName, params)) {
 						const last = cacheState[keyHash]?.data;
 						if (last != null) return last as QueryData<K>;
 						throw new QueryLoopError(definitionName);

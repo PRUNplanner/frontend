@@ -1116,7 +1116,7 @@
 
 	watch(remoteChange, async (change) => {
 		const planUuid: string | undefined = refPlanData.value.uuid;
-		if (!change || !planUuid || change.uuid !== planUuid) return;
+		if (!change || !planUuid || !change.uuids.includes(planUuid)) return;
 
 		remoteToast?.destroy();
 		try {

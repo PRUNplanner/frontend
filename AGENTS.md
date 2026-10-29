@@ -87,7 +87,9 @@ time.
    `src/lib/query_cache/queries/*.queries.ts` (types are inferred from
    `fetchFn`). Components and composables call
    `useQuery("Name", params).execute()`, never axios or `call*()` directly.
-   See [docs/data-layer.md](docs/data-layer.md).
+   A loop of planning mutations (a bulk create, delete or import) runs
+   inside `batchChanges()`, so readers refetch once and the fetch budget
+   isn't tripped. See [docs/data-layer.md](docs/data-layer.md).
 5. **Read game data (materials, buildings, recipes, exchanges, planets)
    through `src/database/services/use*Data`.** It is cached in IndexedDB and
    loaded by the `WrapperGameDataLoader` gate, so don't fetch it again.

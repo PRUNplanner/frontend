@@ -30,7 +30,8 @@ import type {
 
 export interface IRemoteChange {
 	keys: JSONValue[];
-	uuid?: string;
+	// plans, empires or CXs that changed
+	uuids: string[];
 	// tells two changes with the same keys apart
 	seq: number;
 }
@@ -38,7 +39,9 @@ export interface IRemoteChange {
 interface IChangeMessage {
 	userId: string;
 	keys: JSONValue[];
+	// set when exactly one object changed, read by tabs on an older build
 	uuid?: string;
+	uuids?: string[];
 }
 
 // the user store as the persist plugin writes it to localStorage
@@ -77,7 +80,7 @@ export function tokenUserId(token: string | undefined): string | undefined {
 }
 
 async function onMessage(event: MessageEvent<IChangeMessage>): Promise<void> {
-	const { userId, keys, uuid } = event.data;
+	const { userId, keys, uuid, uuids } = event.data;
 	if (userId !== tokenUserId(useUserStore().refreshToken)) return;
 
 	// the query layer loads with the first logged-in page, not the shell
@@ -87,7 +90,7 @@ async function onMessage(event: MessageEvent<IChangeMessage>): Promise<void> {
 	await invalidate(...keys);
 	remoteChange.value = {
 		keys,
-		uuid,
+		uuids: uuids ?? (uuid ? [uuid] : []),
 		seq: (remoteChange.value?.seq ?? 0) + 1,
 	};
 }
@@ -105,12 +108,20 @@ function getChannel(): BroadcastChannel | null {
  * the same keys and refresh what they show
  *
  * @param {JSONValue[]} keys Invalidated key prefixes
- * @param {string} [uuid] Plan, empire or CX that changed
+ * @param {string[]} [uuids=[]] Plans, empires or CXs that changed
  */
-export function broadcastChange(keys: JSONValue[], uuid?: string): void {
+export function broadcastChange(
+	keys: JSONValue[],
+	uuids: string[] = []
+): void {
 	const userId = tokenUserId(useUserStore().refreshToken);
 	if (userId === undefined) return;
-	getChannel()?.postMessage({ userId, keys, uuid } satisfies IChangeMessage);
+	getChannel()?.postMessage({
+		userId,
+		keys,
+		uuid: uuids.length === 1 ? uuids[0] : undefined,
+		uuids,
+	} satisfies IChangeMessage);
 }
 
 function parseUser(value: string | null): IPersistedUser | null {

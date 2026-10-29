@@ -696,10 +696,10 @@ describe("ProductionChainView interactions", () => {
 		const loads = () =>
 			execute.mock.calls.filter(([name]) => name === "GetEmpirePlans").length;
 		expect(loads()).toBe(2);
-		remoteChange.value = { keys: [["planningdata", "cx"]], seq: 1 };
+		remoteChange.value = { keys: [["planningdata", "cx"]], uuids: [], seq: 1 };
 		await flushPromises();
 		expect(loads()).toBe(2);
-		remoteChange.value = { keys: [["planningdata", "empire"]], seq: 2 };
+		remoteChange.value = { keys: [["planningdata", "empire"]], uuids: [], seq: 2 };
 		await flushPromises();
 		expect(loads()).toBe(3);
 	});

@@ -1154,7 +1154,7 @@ describe("useQueryStore: fetch budget", () => {
 		expect(testFetch).not.toHaveBeenCalled();
 	});
 
-	it("rejects without data, and the status watcher doesn't retry it", async () => {
+	it("rejects without data; the status watcher doesn't retry it, the end of the block fetches once", async () => {
 		const key = ["autoRefetchQuery", "a"];
 		for (let i = 0; i < 5; i++) {
 			await store.invalidateKey(key, { exact: true, skipRefetch: true });
@@ -1169,12 +1169,50 @@ describe("useQueryStore: fetch budget", () => {
 		).rejects.toBeInstanceOf(QueryLoopError);
 
 		autoFetch.mockClear();
-		vi.setSystemTime(1000 + 120_000);
+		await vi.advanceTimersByTimeAsync(29_000);
 		store.checkEntryStatusAndRefresh();
-		await vi.runAllTimersAsync();
 		expect(autoFetch).not.toHaveBeenCalled();
 		expect(store.cacheState[toCacheKey(key)].error).toBeInstanceOf(
 			QueryLoopError
 		);
+
+		await vi.advanceTimersByTimeAsync(2_000);
+		expect(autoFetch).toHaveBeenCalledOnce();
+		const entry = store.cacheState[toCacheKey(key)];
+		expect(entry.error).toBeNull();
+		expect(entry.data).not.toBeNull();
+	});
+
+	it("doesn't fetch after the block when the entry is gone", async () => {
+		await loop(6);
+		await store.invalidateKey(["testQuery", "a"]);
+		testFetch.mockClear();
+
+		await vi.advanceTimersByTimeAsync(31_000);
+
+		expect(testFetch).not.toHaveBeenCalled();
+	});
+
+	it("logout cancels the fetch after the block", async () => {
+		await loop(6);
+		store.$reset();
+		// @ts-expect-error mock query repository
+		store.addCacheState("testQuery", "a", { result: "kept" });
+		testFetch.mockClear();
+
+		await vi.advanceTimersByTimeAsync(31_000);
+
+		expect(testFetch).not.toHaveBeenCalled();
+	});
+
+	it("counts the fetch after the block, so a real loop stays capped", async () => {
+		await loop(50);
+		await vi.advanceTimersByTimeAsync(30_000);
+		// the 5 of the budget, then the one after the block
+		expect(testFetch).toHaveBeenCalledTimes(6);
+
+		await loop(50);
+		expect(testFetch).toHaveBeenCalledTimes(10);
+		expect(reportClientError).toHaveBeenCalledOnce();
 	});
 });

@@ -195,7 +195,10 @@ component / composable
     While blocked, `execute` returns the entry's last data, or rejects with
     `QueryLoopError` (no status, so never retried) when it has none. The
     first block per key and tab sends a `query_loop` client error with the
-    query's name, so a loop shows up in Axiom by name.
+    query's name, so a loop shows up in Axiom by name. When the block ends,
+    a key still in the cache is fetched once (forced, counted against the
+    budget), so it never keeps the data or `QueryLoopError` of the block; a
+    dropped key isn't, and `$reset` (logout) cancels it.
     Batched families are declared as data in `queryBatches.ts`
     (`batchRefresh`): expired `GetPlanet` entries are refetched together in
     one `GetMultiplePlanets` request (or taken from an expiring multiple
@@ -361,10 +364,19 @@ the tabs of one browser are kept in step explicitly (registered in
 
 - **Planning changes.** The planning mutations in `planning.queries.ts`
   (all but `PatchEmpireState`) invalidate through `changed(prefixes,
-  uuid)`, or invalidate and call `broadcastChange` themselves (shared
-  plans, plan clone and delete). It posts `{userId, keys, uuid}` on the
-  `"prunplanner"` `BroadcastChannel`. The
-  user's other tabs run the same `invalidate`, then set `remoteChange`.
+  uuid, exact)`, the shared plans through `dropShared`. It posts
+  `{userId, keys, uuids, uuid}` on the `"prunplanner"` `BroadcastChannel`
+  (`uuid` only when exactly one object changed, for tabs on an older
+  build). The user's other tabs run the same `invalidate`, then set
+  `remoteChange` (`uuids`, from `uuid` for an older sender).
+- **Bulk actions.** A loop of mutations runs inside `batchChanges(fn)`
+  (chain "Create plans", Manage bulk delete): while `fn` runs, `changed`
+  only records its keys (deduped) and uuids; when it ends, also by a throw,
+  each key is invalidated once and one broadcast carries all uuids. So
+  readers such as the navigation refetch once, not once per save, and the
+  fetch budget isn't spent. The saves and their store updates still run
+  one by one; another save of the tab meanwhile waits for the batch's end.
+  Nested batches join the outer one.
   `usePlanningDataLoader` reloads its loaded steps under those keys
   (`refreshKey`) without clearing them and emits `refreshed`; open editors
   (plan, empire configuration, CX) reload when they have no unsaved edits,
