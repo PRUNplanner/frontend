@@ -155,6 +155,7 @@
 	<div
 		class="grid @min-[40rem]/prod:grid-cols-subgrid @max-[40rem]/prod:grid-cols-[5rem_minmax(0,1fr)_auto_auto_auto] gap-x-2 @max-[40rem]/prod:gap-y-1 items-center min-h-9 py-1 -ml-2 pl-2 rounded-sm @max-[40rem]/prod:py-1.5 border-t border-line/60 first:border-t-0 hover:bg-hover/40 tabular-nums"
 		:class="striped ? 'bg-white/3' : ''"
+		:data-striped="striped || undefined"
 		data-recipe-row>
 		<PInputNumber
 			:value="localRecipeData.amount"

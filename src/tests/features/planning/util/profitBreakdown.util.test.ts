@@ -9,17 +9,15 @@ import { profitBreakdown } from "@/features/planning/util/profitBreakdown.util";
 
 // Types & Interfaces
 import type { IPlanContext } from "@/features/planning/engine/engine.types";
-import type {
-	IMaterialIO,
-	IOverviewData,
-	IProductionBuilding,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IOverviewData } from "@/features/planning/usePlanCalculation.types";
 import type { IProfitBreakdown } from "@/features/planning/util/profitBreakdown.types";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
 import {
+	building,
 	etherwindPlan,
+	io,
 	largePlan,
 	setupPlanningTestData,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
@@ -39,19 +37,9 @@ vi.mock("@/database/services/usePlanetData", async () => {
 });
 
 /** a priced material i/o row: delta per day at a unit price */
-function mio(ticker: string, delta: number, price: number): IMaterialIO {
-	return {
-		ticker,
-		input: Math.max(-delta, 0),
-		output: Math.max(delta, 0),
-		delta,
-		individualWeight: 0,
-		individualVolume: 0,
-		totalWeight: 0,
-		totalVolume: 0,
-		price: delta * price,
-	};
-}
+/** price is per unit, the row carries delta × price */
+const mio = (ticker: string, delta: number, price: number) =>
+	io(ticker, delta, { price: delta * price });
 
 function overview(profit: number, degradation: number): IOverviewData {
 	return {
@@ -62,20 +50,6 @@ function overview(profit: number, degradation: number): IOverviewData {
 		profit,
 		roi: 0,
 	};
-}
-
-function building(
-	name: string,
-	dailyRevenue: number,
-	constructionCost: number,
-	amount = 1
-): IProductionBuilding {
-	return {
-		name,
-		amount,
-		dailyRevenue,
-		constructionCost,
-	} as IProductionBuilding;
 }
 
 const sumSteps = (b: IProfitBreakdown) =>
@@ -172,7 +146,14 @@ describe("profitBreakdown", () => {
 		const b = profitBreakdown(
 			[],
 			[],
-			[building("SME", 90, -1800, 2), building("EXT", 290, -1800)],
+			[
+				building("SME", {
+					dailyRevenue: 90,
+					constructionCost: -1800,
+					amount: 2,
+				}),
+				building("EXT", { dailyRevenue: 290, constructionCost: -1800 }),
+			],
 			overview(330, 30)
 		);
 

@@ -129,9 +129,6 @@ async function expandAll(w: VueWrapper) {
 
 describe("PlanCalcDebug", () => {
 	beforeEach(() => {
-		traceCalculation.mockClear();
-		trackEvent.mockClear();
-		setCalcDebug.mockClear();
 		checks.report = {
 			checks: [
 				{ name: "ok check", pass: true },
@@ -238,6 +235,7 @@ describe("PlanCalcDebug", () => {
 
 		await button(w, "Copy text").trigger("click");
 		await flushPromises();
+		expect(writeText).toHaveBeenCalledOnce();
 		const text = writeText.mock.calls[0][0] as string;
 		expect(text).toContain("plan: Farm");
 		expect(text).toContain("planet: KW-688c");
@@ -247,6 +245,7 @@ describe("PlanCalcDebug", () => {
 
 		await button(w, "Copy JSON").trigger("click");
 		await flushPromises();
+		expect(writeText).toHaveBeenCalledTimes(2);
 		const json = JSON.parse(writeText.mock.calls[1][0]);
 		expect(json.meta.plan).toBe("Farm");
 		expect(json.plan).toEqual(PLAN);
@@ -392,20 +391,30 @@ describe("PlanCalcDebug", () => {
 			...traceRun(),
 			truncated: true,
 		});
-		const { wrapper: w } = await mountPanel();
+		const { wrapper: w, setProps } = await mountPanel();
 
 		expect(w.find("[data-status]").text()).toMatch(
 			/5 steps \(truncated\) · 1\/1 checks ✓$/
 		);
-		expect(w.find("[data-status]").classes()).toContain("text-muted");
-		expect(w.find("[data-status]").classes()).not.toContain(
-			"text-negative"
+		expect(w.find("[data-status]").attributes("data-status")).toBe("ok");
+
+		// a failed run is failing, even with every check passing
+		traceCalculation.mockImplementationOnce(() => {
+			throw new Error("boom");
+		});
+		await setProps({ result: { done: true, profit: 5 } });
+		await vi.waitFor(() =>
+			expect(w.find("[data-status]").attributes("data-status")).toBe(
+				"failing"
+			)
 		);
 	});
 
 	it("shows a failing check in red and a thrown non-error as text", async () => {
 		const { wrapper: w, setProps } = await mountPanel();
-		expect(w.find("[data-status]").classes()).toContain("text-negative");
+		expect(w.find("[data-status]").attributes("data-status")).toBe(
+			"failing"
+		);
 
 		traceCalculation.mockImplementationOnce(() => {
 			throw "out of memory";

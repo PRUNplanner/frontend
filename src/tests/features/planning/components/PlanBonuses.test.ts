@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
 import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
@@ -22,10 +22,6 @@ const select = (wrapper: VueWrapper) => wrapper.findComponent(PSelect);
 const checkbox = (wrapper: VueWrapper) => wrapper.find("input[type=checkbox]");
 
 describe("PlanBonuses", () => {
-	beforeEach(() => {
-		vi.mocked(trackPlanEdit).mockClear();
-	});
-
 	it("offers no program, the advertising and the workforce programs", async () => {
 		const { wrapper } = await mountBonuses();
 
@@ -81,29 +77,16 @@ describe("PlanBonuses", () => {
 		);
 	});
 
-	it("emits and tracks corp HQ", async () => {
-		const { wrapper, component } = await mountBonuses();
+	it.each([true, false])("emits and tracks corp HQ %s", async (value) => {
+		const { wrapper, component } = await mountBonuses({ corphq: !value });
 
-		await checkbox(wrapper).setValue(true);
+		await checkbox(wrapper).setValue(value);
 
-		expect(component.emitted("update:corphq")).toEqual([[true]]);
+		expect(component.emitted("update:corphq")).toEqual([[value]]);
 		expect(trackPlanEdit).toHaveBeenCalledWith({
 			field: "corphq",
 			planet_natural_id: "ZZ-000a",
-			value: true,
-		});
-	});
-
-	it("emits and tracks removing corp HQ", async () => {
-		const { wrapper, component } = await mountBonuses({ corphq: true });
-
-		await checkbox(wrapper).setValue(false);
-
-		expect(component.emitted("update:corphq")).toEqual([[false]]);
-		expect(trackPlanEdit).toHaveBeenCalledWith({
-			field: "corphq",
-			planet_natural_id: "ZZ-000a",
-			value: false,
+			value,
 		});
 	});
 
@@ -131,17 +114,15 @@ describe("PlanBonuses", () => {
 		expect(select(wrapper).props("value")).toBe("CHEMISTRY");
 	});
 
-	it("disables corp HQ and COGC", async () => {
-		const { wrapper } = await mountBonuses({ disabled: true });
+	it.each([true, false])(
+		"passes disabled: %s to corp HQ and COGC",
+		async (disabled) => {
+			const { wrapper } = await mountBonuses({ disabled });
 
-		expect(checkbox(wrapper).attributes("disabled")).toBeDefined();
-		expect(select(wrapper).props("disabled")).toBe(true);
-	});
-
-	it("enables corp HQ and COGC", async () => {
-		const { wrapper } = await mountBonuses();
-
-		expect(checkbox(wrapper).attributes("disabled")).toBeUndefined();
-		expect(select(wrapper).props("disabled")).toBe(false);
-	});
+			expect(
+				(checkbox(wrapper).element as HTMLInputElement).disabled
+			).toBe(disabled);
+			expect(select(wrapper).props("disabled")).toBe(disabled);
+		}
+	);
 });

@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from "vitest";
-import { h } from "vue";
 import type { VueWrapper } from "@vue/test-utils";
 
 import PlanetSearchFilterPanel from "@/features/planet_search/components/PlanetSearchFilterPanel.vue";
@@ -36,15 +35,10 @@ vi.mock("vue-i18n", async (original) => ({
 	}),
 }));
 
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: ["ticker"],
-		render(this: { ticker: string }) {
-			return h("span", this.ticker);
-		},
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const empires: PlanEmpireElement[] = [
 	{

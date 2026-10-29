@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from "vitest";
-import { h } from "vue";
 import {
 	flushPromises,
 	RouterLinkStub,
@@ -20,13 +19,10 @@ import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanC
 
 // the table only renders the composable's result, which the view passes in
 // as a prop; useResourceROIOverview.test.ts covers the calculation
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: () => h("div"),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 // jsdom has no CSS tokens: a fixed colour per exchange
 vi.mock("@/ui/charts/chartTheme", async () => {

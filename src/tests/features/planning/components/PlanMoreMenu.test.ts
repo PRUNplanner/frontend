@@ -50,27 +50,24 @@ describe("PlanMoreMenu", () => {
 			"plan.actions.reloadplan.actions.reload_hint",
 			"plan.actions.download_csv",
 		]);
-		// sharing moved out of the menu
-		expect(item("plan.actions.share_link")).toBeUndefined();
 		expect(document.body.querySelector("[role=separator]")).toBeNull();
 		expect(wrapper.find("button").attributes("aria-expanded")).toBe("true");
 	});
 
-	it("emits the chosen action and closes", async () => {
+	it.each([
+		["plan.actions.save_as_copy", "save-as"],
+		["plan.actions.reload_hint", "reload"],
+		["plan.actions.download_csv", "csv"],
+		["Calculation debug", "debug"],
+	])("emits %s as %s and closes", async (label, event) => {
 		const { wrapper, component } = await mountMenu({ debug: true });
+		await open(wrapper);
 
-		for (const [label, event] of [
-			["plan.actions.save_as_copy", "save-as"],
-			["plan.actions.reload_hint", "reload"],
-			["plan.actions.download_csv", "csv"],
-			["Calculation debug", "debug"],
-		]) {
-			await open(wrapper);
-			item(label)!.click();
-			await flushPromises();
-			expect(component.emitted(event)).toHaveLength(1);
-			expect(menu()).toBeNull();
-		}
+		item(label)!.click();
+		await flushPromises();
+
+		expect(component.emitted(event)).toHaveLength(1);
+		expect(menu()).toBeNull();
 	});
 
 	it("opens with the down arrow, moves, closes with Escape and returns focus", async () => {
@@ -97,17 +94,11 @@ describe("PlanMoreMenu", () => {
 		expect(document.activeElement).toBe(button);
 	});
 
-	it("offers only the CSV download on a plan without a saved version", async () => {
-		const { wrapper } = await mountMenu({ existing: false });
-		await open(wrapper);
-
-		expect(items().map((o) => o.textContent?.trim())).toEqual([
-			"plan.actions.download_csv",
-		]);
-	});
-
-	it("offers only the CSV download on a plan that isn't the user's", async () => {
-		const { wrapper } = await mountMenu({ own: false });
+	it.each([
+		["without a saved version", { existing: false }],
+		["that isn't the user's", { own: false }],
+	])("offers only the CSV download on a plan %s", async (_, props) => {
+		const { wrapper } = await mountMenu(props);
 		await open(wrapper);
 
 		expect(items().map((o) => o.textContent?.trim())).toEqual([

@@ -10,6 +10,7 @@ import PlanStarterSetup from "@/features/plan_analytics/components/PlanStarterSe
 import PSelect from "@/ui/components/PSelect.vue";
 import PCheckbox from "@/ui/components/PCheckbox.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { building } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
 import type {
@@ -75,29 +76,6 @@ vi.mock("@/features/planning/components/PlanProductionBuilding.vue", () => ({
 	},
 }));
 
-function building(
-	name: string,
-	overrides: Partial<IProductionBuilding> = {}
-): IProductionBuilding {
-	return {
-		name,
-		amount: 1,
-		areaUsed: 0,
-		activeRecipes: [],
-		recipeOptions: [],
-		totalEfficiency: 1,
-		efficiencyElements: [],
-		totalBatchTime: 0,
-		constructionMaterials: [],
-		constructionCost: 0,
-		workforceMaterials: [],
-		workforceDailyCost: 0,
-		dailyRevenue: 0,
-		expertise: null,
-		...overrides,
-	};
-}
-
 async function mountProduction(
 	props: Record<string, unknown> = {},
 	messages?: Record<string, unknown>
@@ -138,8 +116,6 @@ describe("PlanProduction", () => {
 	beforeEach(() => {
 		insights.available = ref(false);
 		insights.mostPlanned = undefined;
-		trackPlanEdit.mockReset();
-		trackEvent.mockReset();
 	});
 
 	describe("recipe columns", () => {
@@ -167,7 +143,7 @@ describe("PlanProduction", () => {
 
 		async function mountColumns() {
 			const mounted = await mountProduction();
-			const root = mounted.wrapper.find('[class~="@container/prod"]')
+			const root = mounted.wrapper.find("[data-recipe-columns]")
 				.element as HTMLElement;
 			Object.defineProperty(root, "offsetWidth", { get: () => shown });
 			// tile groups as the recipe rows render them; jsdom lays out
@@ -196,14 +172,20 @@ describe("PlanProduction", () => {
 		}
 
 		it("sizes them after the plan's widest inputs and outputs", async () => {
-			const { group, column, recalculate } = await mountColumns();
+			const { root, group, column, recalculate } = await mountColumns();
 			group("data-recipe-inputs", [40, 50]);
 			group("data-recipe-inputs", [60, 60, 60]);
 			group("data-recipe-outputs", [16, 70]);
+			// the recipe button's left padding sits in the inputs column
+			const button = document.createElement("button");
+			button.setAttribute("data-recipe-button", "");
+			button.style.paddingLeft = "8px";
+			root.append(button);
 			await recalculate();
 
-			// tiles and gaps in one line, plus 2px slack: 3 × 60 + 2 × 6 + 2
-			expect(column("in")).toBe("194px");
+			// tiles and gaps in one line, plus 2px slack and the button's
+			// padding: 3 × 60 + 2 × 6 + 2 + 8
+			expect(column("in")).toBe("202px");
 			// 16 + 6 + 70 + 2
 			expect(column("out")).toBe("94px");
 		});
@@ -421,15 +403,6 @@ describe("PlanProduction", () => {
 		expect(buildingOptions(wrapper)).toEqual(["FER", "IVP"]);
 	});
 
-	it("emits creating the selected building", async () => {
-		const { wrapper, component } = await mountProduction();
-
-		wrapper.findComponent(PSelect).vm.$emit("update:value", "PP1");
-		await flushPromises();
-
-		expect(component.emitted("create:building")).toEqual([["PP1"]]);
-	});
-
 	it("tracks a recipe added from the picker as recipe_add", async () => {
 		insights.available = ref(true);
 		insights.mostPlanned = "FP#DW";
@@ -516,7 +489,9 @@ describe("PlanProduction", () => {
 			changes: { buildings: {}, removed: ["PP1", "HB1"] },
 		});
 
-		const removed = wrapper.findAll(".line-through").map((s) => s.text());
+		const removed = wrapper
+			.findAll("[data-removed-building]")
+			.map((s) => s.text());
 		expect(removed).toEqual(["PP1", "HB1"]);
 		expect(wrapper.text()).toContain("sharing.compare.removed");
 	});

@@ -20,8 +20,6 @@ import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { calcDebug } from "@/lib/debugMode";
 import { remoteChange } from "@/lib/crossTab";
-import { flushPlanEdits, trackEvent } from "@/lib/analytics/useAnalytics";
-import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 import { useUserStore } from "@/stores/userStore";
 import { usePlanningStore } from "@/stores/planningStore";
 import {
@@ -81,9 +79,7 @@ const { gate, tool, stub, attrsTool, mocks } = vi.hoisted(() => ({
 		Mock
 	>,
 }));
-const debugPanel = vi.hoisted(() => ({ loads: 0 }));
 vi.mock("@/features/planning/components/debug/PlanCalcDebug.vue", async () => {
-	debugPanel.loads++;
 	const { h } = await import("vue");
 	return {
 		__esModule: true,
@@ -174,6 +170,8 @@ export const SKY_EMPIRE = "32aed118-c4ed-4a4e-9eb4-3cf6aa0068da";
 export const SKY_CX = "8eec58c8-7fcb-4bc6-bfc9-56879d297a18";
 export const SHARE_EMPIRE = "a208d74e-d07f-4722-8192-9b55d4140f58";
 export const SHARE_CX = "41c6f4dc-d1cd-4bde-b61a-c1595101d980";
+// the other empire the fixture plan is in, after Sky Productions
+export const PRUN_REAL = "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6";
 
 export const empires = () =>
 	structuredClone(empire_list) as unknown as PlanEmpireElement[];
@@ -273,6 +271,11 @@ export async function openTool(wrapper: VueWrapper, label: string) {
 
 export const dialog = () => new DOMWrapper(document.body).find("[role=dialog]");
 
+export const dialogButton = (label: string) =>
+	dialog()
+		.findAll("button")
+		.find((b) => b.text() === label)!;
+
 /** Renames the plan in the header: pencil, type, Enter */
 export async function rename(wrapper: VueWrapper, name: string) {
 	const pencil = wrapper.find("button[aria-label='plan.header.rename']");
@@ -290,6 +293,29 @@ export async function openDebug(wrapper: VueWrapper) {
 	await flushPromises();
 }
 
+/** What the debug panel names: plan, planet, CX and empire */
+export function debugMeta(wrapper: VueWrapper) {
+	return wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta");
+}
+
+// the production list stays mounted under a tool, v-show hides it
+export const productionShown = (wrapper: VueWrapper): boolean =>
+	(wrapper.find("[data-production]").element as HTMLElement).style
+		.display !== "none";
+
+/** Catches a file download: returns the spy on the link's click */
+export function stubDownload() {
+	const click = vi
+		.spyOn(HTMLAnchorElement.prototype, "click")
+		.mockImplementation(() => undefined);
+	vi.stubGlobal("URL", {
+		...URL,
+		createObjectURL: vi.fn(() => "blob:csv"),
+		revokeObjectURL: vi.fn(),
+	});
+	return click;
+}
+
 export function buildingAmounts(wrapper: VueWrapper): Record<string, number> {
 	const production = wrapper
 		.findComponent(PlanProduction)
@@ -301,7 +327,8 @@ export function buildingAmounts(wrapper: VueWrapper): Record<string, number> {
 	);
 }
 
-export function undoToast() {
+/** The arguments of the last toast */
+export function lastToast() {
 	return mocks.toast.mock.calls.at(-1)!;
 }
 
@@ -321,25 +348,17 @@ export function setupPlanViewSuite(): void {
 		config.global.config.errorHandler = undefined;
 	});
 	beforeEach(() => {
-		mocks.query.mockReset().mockResolvedValue(undefined);
-		mocks.push.mockReset();
-		mocks.useHead.mockReset();
-		mocks.openInsights.mockReset();
-		mocks.getPlanet.mockReset().mockResolvedValue(planet_etherwind);
-		mocks.toast
-			.mockReset()
-			.mockImplementation(() => ({ destroy: vi.fn() }));
-		vi.mocked(trackEvent).mockClear();
-		vi.mocked(flushPlanEdits).mockClear();
-		vi.mocked(useUnsavedGuard).mockClear();
+		// a test may answer differently, see respond()
+		mocks.query.mockResolvedValue(undefined);
+		mocks.getPlanet.mockResolvedValue(planet_etherwind);
+		mocks.toast.mockImplementation(() => ({ destroy: vi.fn() }));
 		remoteChange.value = null;
 	});
 	afterEach(() => {
 		errors.length = 0;
 		calcDebug.value = false;
 		vi.restoreAllMocks();
-		vi.unstubAllGlobals();
 	});
 }
 
-export { mocks, debugPanel, constructionCart, supplyCart };
+export { mocks, constructionCart, supplyCart };

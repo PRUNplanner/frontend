@@ -3,6 +3,7 @@ import {
 	defineComponent,
 	Fragment,
 	h,
+	nextTick,
 	shallowReactive,
 	Suspense,
 } from "vue";
@@ -17,6 +18,8 @@ import {
 import { createPinia, type Pinia } from "pinia";
 import { createI18n } from "vue-i18n";
 import { PConfirmHost } from "@/ui";
+import { usePlanningStore } from "@/stores/planningStore";
+import { cxFixture } from "@/tests/features/cx/cx.fixtures";
 import { afterEach } from "vitest";
 
 // unmount after each test, teleported layers (modals, drawers) live in document.body
@@ -98,4 +101,19 @@ export function tableRows(wrapper: DOMWrapper<Element> | VueWrapper) {
 					])
 			)
 		);
+}
+
+/** A Pinia whose planning store holds one exchange preference without rules */
+export function piniaWithCX(uuid: string, name: string): Pinia {
+	const pinia = createPinia();
+	usePlanningStore(pinia).setCXs([cxFixture({ uuid, name })]);
+	return pinia;
+}
+
+/** Hovers `el` and returns the text of the tooltip it opens */
+export async function hoverTooltip(el: DOMWrapper<Element> | VueWrapper) {
+	await el.trigger("mouseenter");
+	await nextTick();
+	return [...document.body.querySelectorAll("[role=tooltip]")].at(-1)!
+		.textContent;
 }

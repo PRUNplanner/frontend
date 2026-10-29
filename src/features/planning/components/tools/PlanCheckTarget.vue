@@ -209,7 +209,8 @@
 					</span>
 					<span
 						class="font-bold tabular-nums"
-						:class="factor >= 1 ? 'text-positive' : 'text-negative'">
+						:class="factor >= 1 ? 'text-positive' : 'text-negative'"
+						data-price-change>
 						{{ formatNumber((factor - 1) * 100, 1, false, true) }} %
 					</span>
 				</div>

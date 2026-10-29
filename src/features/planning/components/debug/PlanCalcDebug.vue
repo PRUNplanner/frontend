@@ -311,7 +311,7 @@
 				<span
 					class="text-xs font-mono"
 					:class="allPass && !error ? 'text-muted' : 'text-negative'"
-					data-status>
+					:data-status="allPass && !error ? 'ok' : 'failing'">
 					{{ status }}
 				</span>
 			</div>

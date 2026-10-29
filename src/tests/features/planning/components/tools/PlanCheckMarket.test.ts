@@ -6,6 +6,8 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import PlanCheckMarket from "@/features/planning/components/tools/PlanCheckMarket.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
+import { cxFixture } from "@/tests/features/cx/cx.fixtures";
+import { marketCheck } from "@/tests/features/cx/marketCheck.fixtures";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
@@ -39,38 +41,21 @@ vi.mock("@/features/planning/util/whatIf.util", async (importActual) => ({
 const PLANET = planet_etherwind.planet_natural_id;
 const CX_UUID = "cx-fixed";
 
-const chk = (
-	ticker: string,
-	over: Partial<IMarketCheck> = {}
-): IMarketCheck => ({
-	ticker,
-	delta: 10,
-	exchange: "AI1",
-	sharePct: 5,
-	traded30d: 3000,
-	traded7d: 700,
-	bid: 1020,
-	ask: 1100,
-	spreadPct: 7.3,
-	flags: [],
-	level: null,
-	...over,
-});
 const red = (ticker: string, over: Partial<IMarketCheck> = {}) =>
-	chk(ticker, { flags: ["no_trades"], level: "red", ...over });
+	marketCheck(ticker, { flags: ["no_trades"], level: "red", ...over });
 
 // FE sold much more than the exchange takes, RAT bought on a large share,
 // DW without exchange data, ZZZ is not a game material
 const FLAGGED = [
 	red("FE", { sharePct: 80, flags: ["bigger", "stale"] }),
-	chk("RAT", {
+	marketCheck("RAT", {
 		delta: -5,
 		exchange: "CI1",
 		sharePct: 20,
 		flags: ["large_share"],
 		level: "amber",
 	}),
-	chk("DW", {
+	marketCheck("DW", {
 		delta: -1,
 		exchange: "UNIVERSE",
 		sharePct: null,
@@ -80,7 +65,7 @@ const FLAGGED = [
 		flags: ["all_exchanges"],
 		level: "muted",
 	}),
-	chk("ZZZ"),
+	marketCheck("ZZZ"),
 ];
 
 let whatIf: WhatIf;
@@ -121,15 +106,10 @@ async function mountTool(
 	marketCheckMock.mockReturnValue(checks);
 	const pinia = createPinia();
 	usePlanningStore(pinia).setCXs([
-		// @ts-expect-error mock data
-		{
+		cxFixture({
 			uuid: CX_UUID,
-			cx_name: "Fixed",
-			empires: [],
+			name: "Fixed",
 			cx_data: {
-				cx_empire: [],
-				cx_planets: [],
-				ticker_empire: [],
 				// RAT fixed on this planet, the rest from Universe
 				ticker_planets: [
 					{
@@ -140,7 +120,7 @@ async function mountTool(
 					},
 				],
 			},
-		},
+		}),
 	]);
 	const { wrapper } = await mountComponent(
 		PlanCheckMarket,
@@ -163,6 +143,8 @@ const ruleLinks = (w: Wrapper) =>
 		.filter((l) => l.attributes("data-rule-link") !== undefined);
 const means = (w: Wrapper) => w.find("[data-market-means]");
 const cards = (w: Wrapper) => w.findAll("[data-market-cards] > li");
+// a count or difference without a colour
+const PLAIN = ["font-bold", "tabular-nums"];
 
 describe("PlanCheckMarket", () => {
 	beforeAll(async () => {
@@ -173,14 +155,13 @@ describe("PlanCheckMarket", () => {
 	});
 
 	beforeEach(() => {
-		marketCheckMock.mockReset().mockReturnValue([]);
-		realisticPlanMock.mockReset();
+		marketCheckMock.mockReturnValue([]);
 		realisticPlanMock.mockImplementation((...args: unknown[]) =>
 			(whatIf.realisticPlan as (...a: unknown[]) => unknown)(...args)
 		);
 	});
 
-	it("tells an empty plan has nothing to check", async () => {
+	it("says there is nothing to check without traded materials", async () => {
 		const wrapper = await mountTool([]);
 
 		expect(wrapper.text()).toContain("plan.tools.plan_check.market.empty");
@@ -222,10 +203,11 @@ describe("PlanCheckMarket", () => {
 		);
 		expect(body[3].find("span").classes()).toContain("bg-black/40");
 		// bigger is red, a large share amber, the rest plain
-		const share = (i: number) => body[i].find(".w-14").classes();
-		expect(share(0)).toEqual(expect.arrayContaining(["text-negative"]));
-		expect(share(1)).toEqual(expect.arrayContaining(["text-warning"]));
-		expect(share(2)).not.toContain("font-bold");
+		const share = (i: number) =>
+			body[i].find("td[data-col-key=share] span").classes();
+		expect(share(0)).toContain("text-negative");
+		expect(share(1)).toContain("text-warning");
+		expect(share(2)).toEqual(["w-14", "text-right", "tabular-nums"]);
 	});
 
 	it("names the exchanges the plan is checked against", async () => {
@@ -305,11 +287,12 @@ describe("PlanCheckMarket", () => {
 				.findAll("dd")
 				.map((d) => d.text())
 		).toEqual(["1", "1", "2"]);
-		expect(means(sells).find("dd.text-negative").exists()).toBe(true);
-		expect(means(sells).find("dd.text-warning").exists()).toBe(true);
+		const [redCount, amberCount] = means(sells).findAll("dd");
+		expect(redCount.classes()).toContain("text-negative");
+		expect(amberCount.classes()).toContain("text-warning");
 
 		const buys = await mountTool([
-			chk("RAT", {
+			marketCheck("RAT", {
 				delta: -5,
 				sharePct: 30,
 				flags: ["large_share"],
@@ -319,14 +302,15 @@ describe("PlanCheckMarket", () => {
 		expect(means(buys).text()).toContain(
 			"cx.market_flags.means.large_share_buy"
 		);
-		expect(means(buys).find("dd.text-negative").exists()).toBe(false);
+		// no red check: its count stays plain
+		expect(means(buys).findAll("dd")[0].classes()).toEqual(PLAIN);
 
 		// other flags have one text, UNIVERSE is named as all exchanges
 		const plain = await mountTool([
 			red("FE", { exchange: "UNIVERSE", flags: ["no_price"] }),
 		]);
 		expect(means(plain).text()).toContain("cx.market_flags.means.no_price");
-		expect(means(plain).find("dd.text-warning").exists()).toBe(false);
+		expect(means(plain).findAll("dd")[1].classes()).toEqual(PLAIN);
 	});
 
 	it("calls a plan fine when its worst check is only a note", async () => {
@@ -342,11 +326,12 @@ describe("PlanCheckMarket", () => {
 		).toEqual(["0", "0", "2"]);
 	});
 
-	it("shows 6 cards and the rest on request", async () => {
+	it("shows 6 cards and a button for the other 3", async () => {
 		const wrapper = await mountTool(
-			Array.from({ length: 9 }, (_, i) => chk(`M${i}`))
+			Array.from({ length: 9 }, (_, i) => marketCheck(`M${i}`))
 		);
 
+		// 6 cards and the item holding the button
 		expect(cards(wrapper)).toHaveLength(7);
 		const more = wrapper.find("[data-market-cards] button");
 		expect(more.text()).toBe("plan.tools.plan_check.market.more");
@@ -438,8 +423,8 @@ describe("PlanCheckMarket", () => {
 			realPrices(0);
 			const same = await mountTool(FLAGGED);
 			const none = real(same).findAll("dd")[2];
-			expect(none.classes()).not.toContain("text-positive");
-			expect(none.classes()).not.toContain("text-negative");
+			expect(none.text()).toMatch(/^0 ȼ/);
+			expect(none.classes()).toEqual(PLAIN);
 		});
 
 		it("lists nothing as kept that the plan does not trade", async () => {

@@ -2,47 +2,44 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
-import { exchangesStore, materialsStore } from "@/database/stores";
-import { useMaterialData } from "@/database/services/useMaterialData";
 import { usePlanningStore } from "@/stores/planningStore";
 import PlanSupplyCart from "@/features/planning/components/tools/PlanSupplyCart.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
+import { CheckCircleOutlineSharp } from "@vicons/material";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
+import {
+	io,
+	setupPlanningTestData,
+} from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
 import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 // test data
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import materials from "@/tests/test_data/api_data_materials.json";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 
-function io(
-	ticker: string,
-	delta: number,
-	price: number,
-	weight: number,
-	volume: number
-): IMaterialIO {
-	return {
-		ticker,
-		input: delta < 0 ? -delta : 0,
-		output: delta > 0 ? delta : 0,
-		delta,
-		price,
-		individualWeight: weight,
-		individualVolume: volume,
-		totalWeight: 0,
-		totalVolume: 0,
-	};
-}
-
 // consumption has negative delta and price, unit prices: RAT 50, DW 50, H2O 20
-const RAT = io("RAT", -100, -5000, 0.21, 0.1);
-const DW = io("DW", -4, -200, 0.1, 0.1);
-const H2O = io("H2O", -2.4, -48, 0.2, 0.2);
-const PE = io("PE", 5, 100, 1, 1);
+const RAT = io("RAT", -100, {
+	price: -5000,
+	individualWeight: 0.21,
+	individualVolume: 0.1,
+});
+const DW = io("DW", -4, {
+	price: -200,
+	individualWeight: 0.1,
+	individualVolume: 0.1,
+});
+const H2O = io("H2O", -2.4, {
+	price: -48,
+	individualWeight: 0.2,
+	individualVolume: 0.2,
+});
+const PE = io("PE", 5, {
+	price: 100,
+	individualWeight: 1,
+	individualVolume: 1,
+});
 
 async function mountCart(planetNaturalId = "XX-000a", withFIO = false) {
 	const pinia = createPinia();
@@ -93,10 +90,7 @@ async function clickFilter(wrapper: VueWrapper, key: string) {
 
 describe("PlanSupplyCart", () => {
 	beforeAll(async () => {
-		// @ts-expect-error mock data
-		await exchangesStore.setMany(exchanges);
-		await materialsStore.setMany(materials);
-		await useMaterialData().preload();
+		await setupPlanningTestData();
 	});
 
 	it("lists consumed materials with 20 days of stock need", async () => {
@@ -123,32 +117,17 @@ describe("PlanSupplyCart", () => {
 		});
 	});
 
-	it("rounds the stock need up for the chosen number of days", async () => {
+	// H2O: 2.4 * 3 = 7.2 rounds up to 8; decimal days work, 2.4 * 2.5 = 6
+	it.each([
+		["3", ["300", "12", "8"]],
+		["2.5", ["250", "10", "6"]],
+	])("rounds the stock need up for %s days", async (days, need) => {
 		const { wrapper } = await mountCart();
 
-		await wrapper.find("input").setValue("3");
+		await wrapper.find("input").setValue(days);
 		await flushPromises();
 
-		// 2.4 * 3 = 7.2 -> 8
-		expect(tableRows(wrapper).map((r) => r.stockNeed)).toEqual([
-			"300",
-			"12",
-			"8",
-		]);
-	});
-
-	it("accepts decimal days", async () => {
-		const { wrapper } = await mountCart();
-
-		await wrapper.find("input").setValue("2.5");
-		await flushPromises();
-
-		// 2.5x the daily need, 2.4 * 2.5 = 6
-		expect(tableRows(wrapper).map((r) => r.stockNeed)).toEqual([
-			"250",
-			"10",
-			"6",
-		]);
+		expect(tableRows(wrapper).map((r) => r.stockNeed)).toEqual(need);
 	});
 
 	it("marks and filters workforce and production materials", async () => {
@@ -156,8 +135,10 @@ describe("PlanSupplyCart", () => {
 
 		const marks = (key: "workforce" | "production") =>
 			wrapper
-				.findAll(`td[data-col-key="${key}"] .picon`)
-				.map((i) => i.classes("text-positive"));
+				.findAll(`td[data-col-key="${key}"]`)
+				.map((td) =>
+					td.findComponent(CheckCircleOutlineSharp).exists()
+				);
 		expect(marks("workforce")).toEqual([true, true, false]);
 		expect(marks("production")).toEqual([false, false, true]);
 

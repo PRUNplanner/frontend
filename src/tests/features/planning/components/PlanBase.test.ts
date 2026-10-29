@@ -1,5 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { h } from "vue";
+import { describe, it, expect, vi, beforeEach, onTestFinished } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
 import PlanBase from "@/features/planning/components/PlanBase.vue";
@@ -11,6 +10,7 @@ import PlanInfrastructure from "@/features/planning/components/PlanInfrastructur
 import PlanExperts from "@/features/planning/components/PlanExperts.vue";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { building } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import { planEmptyResult } from "@/features/planning/usePlanCalculation.types";
 import plan from "@/locales/en_US/plan.json";
 import planetFixture from "@/tests/test_data/api_data_planet_etherwind.json";
@@ -18,17 +18,11 @@ import planetFixture from "@/tests/test_data/api_data_planet_etherwind.json";
 // Types & Interfaces
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
 import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
-import type {
-	IPlanResult,
-	IProductionBuilding,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 
 // every child has its own test: stubs that declare their props
-const stub = vi.hoisted(() => (name: string, props: string[]) => ({
-	default: { name, props, render: () => h("div") },
-}));
-vi.mock("@/features/planning/components/PlanConfiguration.vue", () =>
-	stub("PlanConfiguration", [
+vi.mock("@/features/planning/components/PlanConfiguration.vue", async () =>
+	(await import("@/tests/stubs")).stubComponent("PlanConfiguration", [
 		"disabled",
 		"empireOptions",
 		"activeEmpire",
@@ -38,38 +32,47 @@ vi.mock("@/features/planning/components/PlanConfiguration.vue", () =>
 		"priceSource",
 	])
 );
-vi.mock("@/features/planning/components/PlanBonuses.vue", () =>
-	stub("PlanBonuses", [
+vi.mock("@/features/planning/components/PlanBonuses.vue", async () =>
+	(await import("@/tests/stubs")).stubComponent("PlanBonuses", [
 		"disabled",
 		"corphq",
 		"cogc",
 		"planetNaturalId",
 	])
 );
-vi.mock("@/features/planning/components/PlanArea.vue", () =>
-	stub("PlanArea", ["disabled", "areaData", "planetNaturalId"])
+vi.mock("@/features/planning/components/PlanArea.vue", async () =>
+	(await import("@/tests/stubs")).stubComponent("PlanArea", [
+		"disabled",
+		"areaData",
+		"planetNaturalId",
+	])
 );
-vi.mock("@/features/planning/components/PlanWorkforce.vue", () =>
-	stub("PlanWorkforce", ["disabled", "workforceData", "planetNaturalId"])
+vi.mock("@/features/planning/components/PlanWorkforce.vue", async () =>
+	(await import("@/tests/stubs")).stubComponent("PlanWorkforce", [
+		"disabled",
+		"workforceData",
+		"planetNaturalId",
+	])
 );
-vi.mock("@/features/planning/components/PlanInfrastructure.vue", () =>
-	stub("PlanInfrastructure", [
+vi.mock("@/features/planning/components/PlanInfrastructure.vue", async () =>
+	(await import("@/tests/stubs")).stubComponent("PlanInfrastructure", [
 		"disabled",
 		"infrastructureData",
 		"autoOptimizeHabs",
 		"planetNaturalId",
 	])
 );
-vi.mock("@/features/planning/components/PlanExperts.vue", () =>
-	stub("PlanExperts", [
+vi.mock("@/features/planning/components/PlanExperts.vue", async () =>
+	(await import("@/tests/stubs")).stubComponent("PlanExperts", [
 		"disabled",
 		"expertData",
 		"buildings",
 		"planetNaturalId",
 	])
 );
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () =>
-	stub("MaterialTile", ["ticker", "amount"])
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
 );
 
 const insights = vi.hoisted(() => ({ available: false, total: 0 }));
@@ -94,21 +97,6 @@ const EMPIRE: PlanEmpire = {
 	empire_permits_total: 2,
 };
 
-const building = (
-	name: string,
-	dailyRevenue: number,
-	cogc: boolean,
-	expertise: IProductionBuilding["expertise"]
-): IProductionBuilding =>
-	({
-		name,
-		dailyRevenue,
-		expertise,
-		efficiencyElements: cogc
-			? [{ efficiencyType: "COGC", value: 1.25 }]
-			: [{ efficiencyType: "WORKFORCE", value: 1 }],
-	}) as IProductionBuilding;
-
 function planResult(): IPlanResult {
 	const r: IPlanResult = structuredClone(planEmptyResult);
 	r.cogc = "RESOURCE_EXTRACTION";
@@ -130,8 +118,16 @@ function planResult(): IPlanResult {
 	r.experts.Resource_Extraction.amount = 2;
 	r.experts.Chemistry.amount = 1;
 	r.production.buildings = [
-		building("EXT", 300, true, "RESOURCE_EXTRACTION"),
-		building("FP", 600, false, "FOOD_INDUSTRIES"),
+		building("EXT", {
+			dailyRevenue: 300,
+			expertise: "RESOURCE_EXTRACTION",
+			efficiencyElements: [{ efficiencyType: "COGC", value: 1.25 }],
+		}),
+		building("FP", {
+			dailyRevenue: 600,
+			expertise: "FOOD_INDUSTRIES",
+			efficiencyElements: [{ efficiencyType: "WORKFORCE", value: 1 }],
+		}),
 	];
 	return r;
 }
@@ -199,13 +195,14 @@ describe("PlanBase", () => {
 		// the summaries stay rendered, CSS hides them while a section is open
 		expect(
 			wrapper
-				.findAll("summary > span.flex-1 ~ span")
+				.findAll("summary > span[title]")
 				.map((s) => s.classes("group-open:hidden"))
 		).toEqual([true, true, true, true, true]);
 	});
 
 	it("opens a section, scrolls it into view and focuses its summary", async () => {
 		const scrollIntoView = vi.spyOn(Element.prototype, "scrollIntoView");
+		onTestFinished(() => scrollIntoView.mockRestore());
 		const { wrapper, component } = await mountBase({}, { attach: true });
 		const housing = wrapper.find<HTMLDetailsElement>(
 			'details[data-section="housing"]'
@@ -218,7 +215,6 @@ describe("PlanBase", () => {
 		expect(housing.element.open).toBe(true);
 		expect(scrollIntoView.mock.contexts).toEqual([housing.element]);
 		expect(document.activeElement).toBe(housing.find("summary").element);
-		scrollIntoView.mockRestore();
 	});
 
 	it("summarizes an empty plan", async () => {

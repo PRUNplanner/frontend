@@ -1694,6 +1694,8 @@
 				<span :class="stripTitle">{{ t("plan.base.label") }}</span>
 				<span :class="stripDetail">{{ baseStrip }}</span>
 			</button>
+			<!-- data-folded: "hand" when the user folded it, "auto" when the
+				layout does (Base at mid width, I/O under a wide tool) -->
 			<aside
 				:aria-label="t('plan.base.label')"
 				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-20 md:max-h-[calc(100dvh-6rem)] md:overflow-y-auto bg-(--app-bg)"
@@ -1708,6 +1710,10 @@
 						: 'md:@max-[81rem]:hidden',
 					onPhone('base') ? '' : 'hidden',
 				]"
+				:data-folded="
+					refBaseCollapsed ? 'hand' : baseFolded ? 'auto' : undefined
+				"
+				:data-section-hidden="!onPhone('base') || undefined"
 				data-base-pane>
 				<!-- a phone names Base in its section tabs already -->
 				<div class="flex items-center gap-2 px-3 pt-3 pb-1 max-md:hidden">
@@ -1944,6 +1950,10 @@
 						: 'md:@max-[71rem]:hidden',
 					onPhone('io') ? '' : 'hidden',
 				]"
+				:data-folded="
+					refIOCollapsed ? 'hand' : ioFolded ? 'auto' : undefined
+				"
+				:data-section-hidden="!onPhone('io') || undefined"
 				data-io-pane>
 				<div class="flex items-center gap-2 px-3 pt-3 pb-2">
 					<h2 class="flex-1 font-bold text-white">

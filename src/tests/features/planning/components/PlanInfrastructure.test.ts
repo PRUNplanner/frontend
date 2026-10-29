@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
 import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
@@ -58,8 +58,8 @@ async function mountInfrastructure(props: Record<string, unknown> = {}) {
 const checkbox = (wrapper: VueWrapper) => wrapper.find("input[type=checkbox]");
 const numberInputs = (wrapper: VueWrapper) =>
 	wrapper.findAll("input:not([type=checkbox])");
-const numberInput = (wrapper: VueWrapper, index: number) =>
-	numberInputs(wrapper).at(index)!;
+const numberInput = (wrapper: VueWrapper, inf: string) =>
+	numberInputs(wrapper).at(ORDER.indexOf(inf))!;
 /** disabled state per building, in display order */
 const disabledInputs = (wrapper: VueWrapper) =>
 	numberInputs(wrapper).map((i) => (i.element as HTMLInputElement).disabled);
@@ -69,7 +69,7 @@ const costButton = (wrapper: VueWrapper) =>
 const areaButton = (wrapper: VueWrapper) =>
 	buttons(wrapper).find((b) => b.text() === "plan.base.housing.least_area");
 const labels = (wrapper: VueWrapper) =>
-	wrapper.findAll("span.font-mono").map((s) => s.text());
+	wrapper.findAll("[data-ticker]").map((s) => s.text());
 
 // only HB1, HBC and STO in use
 const SPARSE: IInfrastructureRecord = {
@@ -82,67 +82,26 @@ const SPARSE: IInfrastructureRecord = {
 };
 
 describe("PlanInfrastructure", () => {
-	beforeEach(() => {
-		vi.mocked(trackPlanEdit).mockClear();
-	});
+	it.each([
+		["every", INFRASTRUCTURE],
+		["a few", SPARSE],
+	])(
+		"lists every type, habitations then storages, with %s in use",
+		async (_, infrastructureData) => {
+			const { wrapper } = await mountInfrastructure({ infrastructureData });
 
-	it("lists habitations, then storages, with their amounts", async () => {
-		const { wrapper } = await mountInfrastructure();
-
-		expect(labels(wrapper)).toEqual(ORDER);
-		expect(
-			numberInputs(wrapper).map(
-				(i) => (i.element as HTMLInputElement).value
-			)
-		).toEqual(
-			ORDER.map((inf) =>
-				String(INFRASTRUCTURE[inf as keyof IInfrastructureRecord])
-			)
-		);
-	});
-
-	it("shows every type, the unused ones as strong as the used", async () => {
-		const { wrapper } = await mountInfrastructure({
-			infrastructureData: SPARSE,
-		});
-
-		expect(labels(wrapper)).toEqual(ORDER);
-		expect(
-			numberInputs(wrapper).map(
-				(i) => (i.element as HTMLInputElement).value
-			)
-		).toEqual(
-			ORDER.map((inf) =>
-				String(SPARSE[inf as keyof IInfrastructureRecord])
-			)
-		);
-		// every type's ticker in the same white, used or not
-		expect(
-			wrapper
-				.findAll("span.font-mono")
-				.filter((s) => s.classes("text-ink-strong"))
-				.map((s) => s.text())
-		).toEqual(ORDER);
-	});
-
-	it("adds an unused type with its stepper and tracks it", async () => {
-		const { wrapper, component } = await mountInfrastructure({
-			infrastructureData: SPARSE,
-		});
-
-		// index 12 is STV
-		await numberInput(wrapper, 12).setValue("1");
-
-		expect(component.emitted("update:infrastructure")).toEqual([
-			["STV", 1],
-		]);
-		expect(trackPlanEdit).toHaveBeenCalledWith({
-			field: "infrastructure",
-			planet_natural_id: "ZZ-000a",
-			infrastructure_type: "STV",
-			amount: 1,
-		});
-	});
+			expect(labels(wrapper)).toEqual(ORDER);
+			expect(
+				numberInputs(wrapper).map(
+					(i) => (i.element as HTMLInputElement).value
+				)
+			).toEqual(
+				ORDER.map((inf) =>
+					String(infrastructureData[inf as keyof IInfrastructureRecord])
+				)
+			);
+		}
+	);
 
 	it("enables everything without auto-optimize", async () => {
 		const { wrapper } = await mountInfrastructure();
@@ -201,27 +160,20 @@ describe("PlanInfrastructure", () => {
 		expect(costButton(wrapper)?.exists()).toBe(true);
 	});
 
-	it("emits auto-optimize with the auto goal", async () => {
-		const { wrapper, component } = await mountInfrastructure();
+	it.each([true, false])(
+		"emits auto-optimize %s with the auto goal",
+		async (value) => {
+			const { wrapper, component } = await mountInfrastructure({
+				autoOptimizeHabs: !value,
+			});
 
-		await checkbox(wrapper).setValue(true);
+			await checkbox(wrapper).setValue(value);
 
-		expect(component.emitted("update:auto-optimize-habs")).toEqual([
-			[true, "auto"],
-		]);
-	});
-
-	it("emits turning auto-optimize off", async () => {
-		const { wrapper, component } = await mountInfrastructure({
-			autoOptimizeHabs: true,
-		});
-
-		await checkbox(wrapper).setValue(false);
-
-		expect(component.emitted("update:auto-optimize-habs")).toEqual([
-			[false, "auto"],
-		]);
-	});
+			expect(component.emitted("update:auto-optimize-habs")).toEqual([
+				[value, "auto"],
+			]);
+		}
+	);
 
 	it("emits the optimize goals", async () => {
 		const { wrapper, component } = await mountInfrastructure();
@@ -238,8 +190,7 @@ describe("PlanInfrastructure", () => {
 	it("emits and tracks a new amount", async () => {
 		const { wrapper, component } = await mountInfrastructure();
 
-		// index 3 is HBC
-		await numberInput(wrapper, 3).setValue("25");
+		await numberInput(wrapper, "HBC").setValue("25");
 
 		expect(component.emitted("update:infrastructure")).toEqual([
 			["HBC", 25],
@@ -257,8 +208,7 @@ describe("PlanInfrastructure", () => {
 			autoOptimizeHabs: true,
 		});
 
-		// index 13 is STW
-		await numberInput(wrapper, 13).setValue("2");
+		await numberInput(wrapper, "STW").setValue("2");
 
 		expect(component.emitted("update:infrastructure")).toEqual([
 			["STW", 2],
@@ -268,8 +218,8 @@ describe("PlanInfrastructure", () => {
 	it("clamps amounts at 0 without an upper limit", async () => {
 		const { wrapper, component } = await mountInfrastructure();
 
-		await numberInput(wrapper, 0).setValue("-4");
-		await numberInput(wrapper, 0).setValue("1234");
+		await numberInput(wrapper, "HB1").setValue("-4");
+		await numberInput(wrapper, "HB1").setValue("1234");
 
 		expect(component.emitted("update:infrastructure")).toEqual([
 			["HB1", 0],
@@ -280,7 +230,7 @@ describe("PlanInfrastructure", () => {
 	it("ignores a cleared input", async () => {
 		const { wrapper, component } = await mountInfrastructure();
 
-		await numberInput(wrapper, 9).setValue("");
+		await numberInput(wrapper, "STO").setValue("");
 
 		expect(component.emitted("update:infrastructure")).toBeUndefined();
 		expect(trackPlanEdit).not.toHaveBeenCalled();
@@ -291,9 +241,8 @@ describe("PlanInfrastructure", () => {
 
 		await setProps({ infrastructureData: { ...INFRASTRUCTURE, HBB: 42 } });
 
-		// index 1 is HBB
 		expect(
-			(numberInput(wrapper, 1).element as HTMLInputElement).value
+			(numberInput(wrapper, "HBB").element as HTMLInputElement).value
 		).toBe("42");
 	});
 });

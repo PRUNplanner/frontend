@@ -6,16 +6,14 @@ import {
 	pickerOptions,
 	recipeConsumers,
 } from "@/features/planning/recipePicker.util";
-import type {
-	IMaterialIO,
-	IProductionBuilding,
-	IRecipeBuildingOption,
-} from "@/features/planning/usePlanCalculation.types";
-
-const m = (material_ticker: string, material_amount = 1) => ({
-	material_ticker,
-	material_amount,
-});
+import type { IRecipeBuildingOption } from "@/features/planning/usePlanCalculation.types";
+import {
+	activeRecipe,
+	building,
+	inOut,
+	m,
+	option,
+} from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 const recipe = (
 	id: string,
@@ -24,18 +22,16 @@ const recipe = (
 	roi: number,
 	inputs: string[] = [],
 	outputs: string[] = [id]
-): IRecipeBuildingOption =>
-	({
-		recipe_id: id,
+) =>
+	option(id, {
 		building_ticker: "HYF",
-		recipe_name: id,
 		time_ms: 1000,
 		inputs: inputs.map((t) => m(t)),
 		outputs: outputs.map((t) => m(t, 2)),
 		dailyRevenue: daily,
 		profitPerArea: area,
 		roi,
-	}) as IRecipeBuildingOption;
+	});
 
 const CAF = recipe("CAF", 100, 5, 70, ["H2O"]);
 const ALG = recipe("ALG", 500, 20, 20, ["H2O"]);
@@ -82,33 +78,15 @@ describe("pickerOptions", () => {
 	});
 });
 
-const building = (
-	name: string,
-	active: IRecipeBuildingOption[]
-): IProductionBuilding =>
-	({
-		name,
-		activeRecipes: active.map((r) => ({ recipeId: r.recipe_id, recipe: r })),
-	}) as IProductionBuilding;
-
 const COF = recipe("COF", 0, 0, 0, ["CAF", "DW"], ["COF"]);
-const PLAN = [building("HYF", [CAF]), building("FP", [COF])];
-
-const io = (ticker: string, input: number, output: number): IMaterialIO => ({
-	ticker,
-	input,
-	output,
-	delta: output - input,
-	price: 0,
-	individualWeight: 0,
-	individualVolume: 0,
-	totalWeight: 0,
-	totalVolume: 0,
-});
+const PLAN = [
+	building("HYF", { activeRecipes: [activeRecipe(CAF)] }),
+	building("FP", { activeRecipes: [activeRecipe(COF)] }),
+];
 
 describe("dependencyNote", () => {
 	it("gives the In amount and who uses the output", () => {
-		expect(dependencyNote(CAF, [io("CAF", 27.1, 30)], PLAN)).toStrictEqual({
+		expect(dependencyNote(CAF, [inOut("CAF", 27.1, 30)], PLAN)).toStrictEqual({
 			ticker: "CAF",
 			amount: 27.1,
 			consumers: [{ building: "FP", outputs: ["COF"] }],
@@ -116,12 +94,12 @@ describe("dependencyNote", () => {
 	});
 
 	it("is undefined when nothing in the plan uses the output", () => {
-		expect(dependencyNote(CAF, [io("CAF", 0, 30)], PLAN)).toBeUndefined();
+		expect(dependencyNote(CAF, [inOut("CAF", 0, 30)], PLAN)).toBeUndefined();
 		expect(dependencyNote(CAF, [], PLAN)).toBeUndefined();
 	});
 
 	it("names no building when only the workforce uses it", () => {
-		expect(dependencyNote(ALG, [io("ALG", 4, 0)], PLAN)).toStrictEqual({
+		expect(dependencyNote(ALG, [inOut("ALG", 4, 0)], PLAN)).toStrictEqual({
 			ticker: "ALG",
 			amount: 4,
 			consumers: [],
@@ -138,7 +116,7 @@ describe("recipeConsumers / inputSource", () => {
 	});
 
 	it("says whether the plan makes an input or buys it", () => {
-		const flow = [io("H2O", 10, 20), io("NS", 5, 0)];
+		const flow = [inOut("H2O", 10, 20), inOut("NS", 5, 0)];
 		expect(inputSource("H2O", flow)).toBe("made");
 		expect(inputSource("NS", flow)).toBe("bought");
 		expect(inputSource("XX", flow)).toBe("bought");

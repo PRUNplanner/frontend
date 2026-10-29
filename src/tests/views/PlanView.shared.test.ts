@@ -3,10 +3,13 @@ import {
 	SHARE_EMPIRE,
 	buildingAmounts,
 	cxs,
+	debugMeta,
 	dialog,
+	dialogButton,
 	draftPlan,
 	emitFrom,
 	empires,
+	lastToast,
 	mocks,
 	mountView,
 	newPlan,
@@ -15,7 +18,6 @@ import {
 	queryCalls,
 	respond,
 	setupPlanViewSuite,
-	undoToast,
 } from "@/tests/views/PlanView.harness";
 import { describe, it, expect, vi } from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
@@ -34,21 +36,6 @@ import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.
 
 describe("PlanView shared plans, toasts and habs", () => {
 	setupPlanViewSuite();
-
-	// -- empire of a new plan -------------------------------------------
-	it("starts a new plan in the first empire of the list", async () => {
-		calcDebug.value = true;
-		const { wrapper } = await mountView(
-			{ planData: draftPlan(), empireList: empires() },
-			{ seed: ({ planning }) => planning.setCXs(cxs()) }
-		);
-		await openDebug(wrapper);
-
-		const meta = wrapper
-			.findComponent({ name: "PlanCalcDebug" })
-			.props("meta");
-		expect(meta.empire).toBe("PRUN REAL");
-	});
 
 	// -- shared plans ----------------------------------------------------
 	const sharedProps = () => ({
@@ -71,9 +58,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 		);
 		await openDebug(wrapper);
 
-		const meta = wrapper
-			.findComponent({ name: "PlanCalcDebug" })
-			.props("meta");
+		const meta = debugMeta(wrapper);
 		expect(meta).toMatchObject({ empire: "Share", cx: "Share CX" });
 		expect(
 			wrapper.findComponent(SharedPlanBanner).props("priceSource")
@@ -90,9 +75,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 			wrapper.findComponent(SharedPlanBanner).props("priceSource")
 		).toBe("sharing.banner.price_universe");
 		await openDebug(wrapper);
-		const empireName = () =>
-			wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta")
-				.empire;
+		const empireName = () => debugMeta(wrapper).empire;
 
 		// logging in on the page brings the empires, the first one prices
 		await setProps({ empireList: empires() });
@@ -122,7 +105,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 			before: expect.any(Object),
 			after: expect.any(Object),
 		});
-		expect(buildingAmounts(wrapper)).not.toEqual(original);
+		expect(buildingAmounts(wrapper).EXT).toBe(7);
 
 		await emitFrom(wrapper, SharedPlanBanner, "reset");
 
@@ -193,10 +176,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 		await emitFrom(mounted.wrapper, SharedPlanBanner, "save");
 
 		await dialog().find("input").setValue("Copy of shared");
-		await dialog()
-			.findAll("button")
-			.find((b) => b.text() === "common.buttons.create")!
-			.trigger("click");
+		await dialogButton("common.buttons.create").trigger("click");
 		await flushPromises();
 
 		expect(queryCalls("CreatePlan")[0][1].data.plan_name).toBe(
@@ -212,6 +192,58 @@ describe("PlanView shared plans, toasts and habs", () => {
 			"plan:save_as",
 			expect.anything()
 		);
+	});
+
+	it("saves a shared plan as a copy with the shortcut for logged in viewers only", async () => {
+		const guest = await mountView(sharedProps());
+		press({ key: "s", ctrlKey: true });
+		await flushPromises();
+		expect(dialog().exists()).toBe(false);
+		guest.wrapper.unmount();
+
+		await mountView(sharedProps(), { login: true });
+		const event = press({ key: "s", ctrlKey: true });
+		await flushPromises();
+
+		expect(event.defaultPrevented).toBe(true);
+		expect(dialog().exists()).toBe(true);
+		expect(dialog().text()).toContain("sharing.banner.save");
+		expect(queryCalls("PatchPlan")).toEqual([]);
+	});
+
+	it("copies the changes of an unnamed shared plan", async () => {
+		const writeText = vi.fn(async () => {});
+		stubClipboard(writeText);
+		const { wrapper } = await mountView({
+			...sharedProps(),
+			planData: { ...draftPlan(), plan_name: undefined },
+		});
+		await emitFrom(wrapper, PlanProduction, "update:building:amount", 0, 7);
+
+		await emitFrom(wrapper, SharedPlanBanner, "copy");
+
+		expect(writeText).toHaveBeenCalledExactlyOnceWith(
+			expect.stringContaining("plan.name.untitled")
+		);
+	});
+
+	it("keeps the empire the viewer already has when the list is refreshed", async () => {
+		calcDebug.value = true;
+		const { wrapper, setProps } = await mountView(
+			{ ...sharedProps(), empireList: empires() },
+			{
+				login: true,
+				seed: ({ user }) => {
+					user.preferences.defaultEmpireUuid = SHARE_EMPIRE;
+				},
+			}
+		);
+		await openDebug(wrapper);
+
+		// a refreshed list that still holds the empire picks nothing new
+		await setProps({ empireList: empires().reverse() });
+
+		expect(debugMeta(wrapper).empire).toBe("Share");
 	});
 
 	// -- undo toasts -----------------------------------------------------
@@ -236,7 +268,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 		expect(Object.keys(buildingAmounts(wrapper))).toHaveLength(
 			Object.keys(original).length - 1
 		);
-		const [text, options] = undoToast();
+		const [text, options] = lastToast();
 		expect(text).toBe("plan.history.building_removed");
 		expect(options.action.label).toBe("plan.history.undo");
 
@@ -264,7 +296,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 		);
 
 		expect(recipeOf(wrapper, swap.index)).toHaveLength(before.length - 1);
-		const [text, options] = undoToast();
+		const [text, options] = lastToast();
 		expect(text).toBe("plan.history.recipe_removed");
 
 		options.action.onClick();
@@ -403,10 +435,10 @@ describe("PlanView shared plans, toasts and habs", () => {
 			expert_count: 2,
 			is_selection_changed: true,
 		});
-		expect(undoToast()[0]).toBe("plan.tools.plan_starter.applied");
+		expect(lastToast()[0]).toBe("plan.tools.plan_starter.applied");
 
 		// one undo takes the whole setup back, auto habs stays on
-		undoToast()[1].action.onClick();
+		lastToast()[1].action.onClick();
 		await flushPromises();
 		expect(buildingAmounts(wrapper)).toEqual({});
 		expect(infrastructure()).toBe(true);
@@ -417,6 +449,11 @@ describe("PlanView shared plans, toasts and habs", () => {
 		wrapper
 			.findComponent(PlanInfrastructure)
 			.props("infrastructureData") as Record<string, number>;
+	// the optimizeHabs calls from here on, not those of earlier steps
+	const optimizeCallsFromNow = () => {
+		const from = vi.mocked(optimizeHabs).mock.calls.length;
+		return () => vi.mocked(optimizeHabs).mock.calls.slice(from);
+	};
 
 	it("optimises the habs on request and changes only the ones that differ", async () => {
 		const { wrapper } = await mountView();
@@ -467,7 +504,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 
 	it("optimises on the auto toggle only when it is turned on", async () => {
 		const { wrapper } = await mountView();
-		vi.mocked(optimizeHabs).mockClear();
+		const calls = optimizeCallsFromNow();
 
 		await emitFrom(
 			wrapper,
@@ -479,7 +516,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 		expect(trackEvent).toHaveBeenCalledWith("plan:hab_auto_toggle", {
 			is_active: false,
 		});
-		expect(optimizeHabs).not.toHaveBeenCalled();
+		expect(calls()).toEqual([]);
 
 		await emitFrom(
 			wrapper,
@@ -491,12 +528,14 @@ describe("PlanView shared plans, toasts and habs", () => {
 		expect(trackEvent).toHaveBeenCalledWith("plan:hab_auto_toggle", {
 			is_active: true,
 		});
-		expect(optimizeHabs).toHaveBeenCalledWith(
-			"cost",
-			expect.anything(),
-			expect.anything(),
-			expect.any(Number)
-		);
+		expect(calls()).toEqual([
+			[
+				"cost",
+				expect.anything(),
+				expect.anything(),
+				expect.any(Number),
+			],
+		]);
 		expect(
 			wrapper.findComponent(PlanInfrastructure).props("autoOptimizeHabs")
 		).toBe(true);
@@ -511,83 +550,30 @@ describe("PlanView shared plans, toasts and habs", () => {
 			true,
 			"auto"
 		);
-		vi.mocked(optimizeHabs).mockClear();
+		const edit = optimizeCallsFromNow();
 
 		await emitFrom(wrapper, PlanProduction, "update:building:amount", 0, 9);
-		expect(optimizeHabs).toHaveBeenCalledWith(
+		// an edit may optimise more than once, the last one counts
+		expect(edit()).not.toHaveLength(0);
+		expect(optimizeHabs).toHaveBeenLastCalledWith(
 			"auto",
 			expect.anything(),
 			expect.anything(),
 			expect.any(Number)
 		);
 
-		vi.mocked(optimizeHabs).mockClear();
+		const undo = optimizeCallsFromNow();
 		press({ key: "z", ctrlKey: true });
 		await flushPromises();
-		expect(optimizeHabs).not.toHaveBeenCalled();
+		expect(undo()).toEqual([]);
 	});
 
 	it("leaves the habs alone while auto optimisation is off", async () => {
 		const { wrapper } = await mountView();
-		vi.mocked(optimizeHabs).mockClear();
+		const calls = optimizeCallsFromNow();
 
 		await emitFrom(wrapper, PlanProduction, "update:building:amount", 0, 9);
 
-		expect(optimizeHabs).not.toHaveBeenCalled();
-	});
-
-	it("saves a shared plan as a copy with the shortcut for logged in viewers only", async () => {
-		const guest = await mountView(sharedProps());
-		press({ key: "s", ctrlKey: true });
-		await flushPromises();
-		expect(dialog().exists()).toBe(false);
-		guest.wrapper.unmount();
-
-		await mountView(sharedProps(), { login: true });
-		const event = press({ key: "s", ctrlKey: true });
-		await flushPromises();
-
-		expect(event.defaultPrevented).toBe(true);
-		expect(dialog().exists()).toBe(true);
-		expect(dialog().text()).toContain("sharing.banner.save");
-		expect(queryCalls("PatchPlan")).toEqual([]);
-	});
-
-	it("copies the changes of an unnamed shared plan", async () => {
-		const writeText = vi.fn(async () => {});
-		stubClipboard(writeText);
-		const { wrapper } = await mountView({
-			...sharedProps(),
-			planData: { ...draftPlan(), plan_name: undefined },
-		});
-		await emitFrom(wrapper, PlanProduction, "update:building:amount", 0, 7);
-
-		await emitFrom(wrapper, SharedPlanBanner, "copy");
-
-		expect((writeText.mock.calls as unknown as string[][])[0][0]).toContain(
-			"plan.name.untitled"
-		);
-	});
-
-	it("keeps the empire the viewer already has when the list is refreshed", async () => {
-		calcDebug.value = true;
-		const { wrapper, setProps } = await mountView(
-			{ ...sharedProps(), empireList: empires() },
-			{
-				login: true,
-				seed: ({ user }) => {
-					user.preferences.defaultEmpireUuid = SHARE_EMPIRE;
-				},
-			}
-		);
-		await openDebug(wrapper);
-
-		// a refreshed list that still holds the empire picks nothing new
-		await setProps({ empireList: empires().reverse() });
-
-		expect(
-			wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta")
-				.empire
-		).toBe("Share");
+		expect(calls()).toEqual([]);
 	});
 });

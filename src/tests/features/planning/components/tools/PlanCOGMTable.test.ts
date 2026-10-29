@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from "vitest";
-import { h } from "vue";
 import { RouterLinkStub } from "@vue/test-utils";
 
 import PlanCOGMTable from "@/features/planning/components/tools/PlanCOGMTable.vue";
@@ -9,13 +8,10 @@ import { mountComponent } from "@/tests/mountComponent";
 // Types & Interfaces
 import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
 
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: (ctx: { ticker: string }) => h("span", ctx.ticker),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const CX_UUID = "cx-1";
 const PLANET = "ZV-307c";

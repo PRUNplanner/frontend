@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, onTestFinished } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
 import APIKeyView from "@/views/APIKeyView.vue";
@@ -64,7 +64,6 @@ const button = (label: string) =>
 describe("APIKeyView", () => {
 	beforeEach(() => {
 		calls.length = 0;
-		Element.prototype.scrollIntoView = vi.fn();
 	});
 
 	it("renders the manage heading key", async () => {
@@ -120,6 +119,8 @@ describe("APIKeyView", () => {
 	});
 
 	it("passes a new key to the URL builder", async () => {
+		const scroll = vi.spyOn(Element.prototype, "scrollIntoView");
+		onTestFinished(() => scroll.mockRestore());
 		const { wrapper } = await mountView([]);
 		expect(wrapper.findComponent(APIURLBuilder).props("apiKey")).toBeNull();
 
@@ -144,7 +145,7 @@ describe("APIKeyView", () => {
 		expect(wrapper.findComponent(APIURLBuilder).props("apiKey")).toBe(
 			"secret-key"
 		);
-		expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+		expect(scroll).toHaveBeenCalled();
 	});
 
 	it("opens at the name again after closing with X on the key step", async () => {

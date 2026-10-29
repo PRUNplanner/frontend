@@ -4,6 +4,7 @@ import {
 	SKY_EMPIRE,
 	buildingAmounts,
 	dialog,
+	dialogButton,
 	emitFrom,
 	empires,
 	mocks,
@@ -72,21 +73,24 @@ describe("PlanView save conflicts", () => {
 		return { ...mounted, patch };
 	}
 
-	const dialogButton = (label: string) =>
-		dialog()
-			.findAll("button")
-			.find((b) => b.text() === label)!;
-
 	it("lists both sides of a save conflict and overwrites on request", async () => {
 		const { wrapper, patch } = await saveIntoConflict(CONFLICT);
 
 		expect(dialog().text()).toContain("save_conflict.title");
 		expect(dialog().text()).toContain("save_conflict.option.reload");
 		expect(dialog().text()).not.toContain("save_conflict.load_failed");
-		// the other tab's version is loaded fresh to compare
-		expect(
-			queryCalls("GetPlan").some(([, , options]) => options?.forceRefetch)
-		).toBe(true);
+		// the other tab's version is loaded fresh to compare, their side lists
+		// the name they gave it
+		expect(queryCalls("GetPlan")).toEqual([
+			["GetPlan", expect.anything(), { forceRefetch: true }],
+		]);
+		expect(dialog().findAll("h3").map((h) => h.text())).toEqual([
+			"save_conflict.theirs",
+			"save_conflict.mine",
+		]);
+		expect(dialog().find("h3 + ul").text()).toContain(
+			"save_conflict.change.name"
+		);
 
 		patch.mockImplementation(() => ({ modified_at: SAVED_AT }) as never);
 		await dialogButton("save_conflict.option.overwrite").trigger("click");
@@ -109,7 +113,7 @@ describe("PlanView save conflicts", () => {
 	});
 
 	it("reloads the other tab's version on request", async () => {
-		const { wrapper } = await saveIntoConflict(CONFLICT);
+		const { wrapper, patch } = await saveIntoConflict(CONFLICT);
 
 		await dialogButton("save_conflict.option.reload").trigger("click");
 		await flushPromises();
@@ -122,6 +126,16 @@ describe("PlanView save conflicts", () => {
 		expect(trackEvent).toHaveBeenCalledWith(
 			"plan:save_conflict",
 			expect.objectContaining({ choice: "reload" })
+		);
+
+		// the next save starts from their version
+		patch.mockImplementation(() => ({ modified_at: SAVED_AT }) as never);
+		await emitFrom(wrapper, PlanProduction, "update:building:amount", 0, 3);
+		press({ key: "s", ctrlKey: true });
+		await flushPromises();
+		expect(queryCalls("PatchPlan")).toHaveLength(2);
+		expect(queryCalls("PatchPlan")[1][1].data.base_modified_at).toBe(
+			"theirs"
 		);
 	});
 
@@ -198,9 +212,12 @@ describe("PlanView save conflicts", () => {
 	});
 
 	it("only offers a copy for a plan deleted elsewhere", async () => {
-		await saveIntoConflict(DELETED);
+		const { wrapper } = await saveIntoConflict(DELETED);
 
 		expect(dialog().text()).toContain("save_conflict.deleted_title");
+		// nothing to compare with: no change list
+		expect(queryCalls("GetPlan")).toEqual([]);
+		expect(dialog().find("h3").exists()).toBe(false);
 		const labels = dialog()
 			.findAll("button")
 			.map((b) => b.text())
@@ -218,6 +235,10 @@ describe("PlanView save conflicts", () => {
 			choice: "close",
 		});
 		expect(dialog().exists()).toBe(false);
+		// closing keeps the edits, unsaved
+		expect(buildingAmounts(wrapper).EXT).toBe(5);
+		expect(queryCalls("PatchPlan")).toHaveLength(1);
+		expect(queryCalls("CreatePlan")).toEqual([]);
 	});
 
 	// -- changes from another tab ----------------------------------------

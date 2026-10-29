@@ -49,9 +49,10 @@ vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () => ({
 	default: { name: "CXPreferenceSelector", render: () => h("div") },
 }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: { name: "MaterialTile", render: () => h("span") },
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const messages = { fio };
 let pinia: Pinia;

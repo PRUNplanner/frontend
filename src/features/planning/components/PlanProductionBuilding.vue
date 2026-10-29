@@ -333,7 +333,8 @@
 						v-for="kind in change?.kinds"
 						:key="kind"
 						class="text-xs font-bold uppercase"
-						:class="kind === 'added' ? 'text-positive' : 'text-warning'">
+						:class="kind === 'added' ? 'text-positive' : 'text-warning'"
+						data-badge>
 						{{ t(`sharing.compare.${kind}`) }}
 					</span>
 				</span>
@@ -341,7 +342,7 @@
 					:id="subLineId"
 					class="block text-xs text-muted line-clamp-2 @min-[48rem]/prod:min-w-0 @min-[48rem]/prod:truncate"
 					:title="subLine">
-					<span v-if="zeroReason" class="text-negative">
+					<span v-if="zeroReason" class="text-negative" data-zero-reason>
 						{{ t(zeroReason) }} ·
 					</span>
 					<span

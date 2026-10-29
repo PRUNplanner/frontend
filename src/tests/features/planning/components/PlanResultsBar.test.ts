@@ -4,19 +4,17 @@ import type { VueWrapper } from "@vue/test-utils";
 
 import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
 import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
+import PValue from "@/ui/components/PValue.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { experts, wf } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import { formatPayback } from "@/util/numbers";
-import { ExpertTypeSchema } from "@/features/api/schemas/planningData.schemas";
 import plan from "@/locales/en_US/plan.json";
 
 // Types & Interfaces
-import type { ExpertType } from "@/features/api/schemas/planningData.schemas";
 import type {
 	IAreaResult,
-	IExpertRecord,
 	IOverviewData,
 	IVisitationData,
-	IWorkforceElement,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
 import type { IPlanCompare } from "@/features/sharing/sharedPlan.types";
@@ -57,20 +55,6 @@ const VISITATION: IVisitationData = {
 	dailyVolume: 8.04,
 };
 
-const wf = (
-	name: IWorkforceElement["name"],
-	data: Partial<IWorkforceElement> = {}
-): IWorkforceElement => ({
-	name,
-	required: 0,
-	capacity: 0,
-	left: 0,
-	lux1: true,
-	lux2: true,
-	efficiency: 0,
-	...data,
-});
-
 // pioneers fully efficient, settlers at 86.7 %, technicians housed but
 // not needed
 const WORKFORCE: IWorkforceRecord = {
@@ -86,17 +70,6 @@ const WORKFORCE: IWorkforceRecord = {
 	engineer: wf("engineer"),
 	scientist: wf("scientist"),
 };
-
-/** every expert at 0, the given ones at their amount */
-const experts = (
-	amounts: Partial<Record<ExpertType, number>> = {}
-): IExpertRecord =>
-	Object.fromEntries(
-		ExpertTypeSchema.options.map((name) => [
-			name,
-			{ name, amount: amounts[name] ?? 0, bonus: 0 },
-		])
-	) as IExpertRecord;
 
 async function mountBar(props: Record<string, unknown> = {}) {
 	return mountComponent(
@@ -118,6 +91,11 @@ async function mountBar(props: Record<string, unknown> = {}) {
 
 const tile = (wrapper: VueWrapper, key: ResultTile) =>
 	wrapper.find(`[data-tile="${key}"]`);
+// the efficiency, then each needed tier: text and whether it's short of beds
+const shortFlags = (workforce: ReturnType<typeof tile>) =>
+	workforce
+		.findAll("[data-short]")
+		.map((e) => [e.text(), e.attributes("data-short")]);
 
 describe("PlanResultsBar", () => {
 	it("shows five tiles as buttons, each opening its own figure", async () => {
@@ -151,7 +129,6 @@ describe("PlanResultsBar", () => {
 
 		expect(profit.text()).toContain("Profit / day");
 		expect(profit.text()).toContain("+1,234.50");
-		expect(profit.find(".text-positive").exists()).toBe(true);
 		// a phone's tile shows it without the cents, the other is hidden there
 		const short = profit.find("[data-profit-short]");
 		expect(short.text()).toBe("+1,235");
@@ -161,15 +138,14 @@ describe("PlanResultsBar", () => {
 		);
 	});
 
-	it("colors a loss negative", async () => {
+	it("shows a loss", async () => {
 		const { wrapper } = await mountBar({
 			overview: { ...OVERVIEW, profit: -20 },
 		});
 		const profit = tile(wrapper, "profit");
 
 		expect(profit.text()).toContain("-20.00");
-		expect(profit.find(".text-negative").exists()).toBe(true);
-		expect(profit.find(".text-positive").exists()).toBe(false);
+		expect(profit.find("[data-profit-short]").text()).toBe("-20");
 	});
 
 	it("shows the payback and the build cost", async () => {
@@ -200,7 +176,11 @@ describe("PlanResultsBar", () => {
 		// don't count, or it would read 0.0 %
 		expect(workforce.text()).toContain("Workforce");
 		expect(workforce.text()).toContain("86.7 %");
-		expect(workforce.find(".text-negative\\!").exists()).toBe(false);
+		expect(shortFlags(workforce)).toEqual([
+			["86.7 %", "false"],
+			["PIO 100/100", "false"],
+			["SET 50/60", "false"],
+		]);
 	});
 
 	it("shows no efficiency without needed workforce", async () => {
@@ -224,7 +204,6 @@ describe("PlanResultsBar", () => {
 
 		// technicians have beds but aren't needed, so they don't show
 		expect(tiers.text()).toBe("PIO 100/100 · SET 50/60");
-		expect(tiers.find(".text-negative").exists()).toBe(false);
 	});
 
 	it("reds the efficiency and a tier short of beds", async () => {
@@ -242,19 +221,17 @@ describe("PlanResultsBar", () => {
 		});
 		const workforce = tile(wrapper, "workforce");
 
-		// 0.5 is now the lowest
-		expect(workforce.find(".text-negative\\!").text()).toBe("50.0 %");
-		const tiers = workforce.find("[data-workforce-tiers]");
-		expect(tiers.text()).toBe("PIO 100/100 · SET 80/60");
-		// only the short tier is red
-		expect(tiers.findAll(".text-negative").map((p) => p.text())).toEqual([
-			"SET 80/60",
+		// 0.5 is now the lowest; only the short tier is red
+		expect(shortFlags(workforce)).toEqual([
+			["50.0 %", "true"],
+			["PIO 100/100", "false"],
+			["SET 80/60", "true"],
 		]);
 	});
 
 	it("lists the placed experts in one line, the same on hover", async () => {
 		const { wrapper } = await mountBar({
-			experts: experts({ Agriculture: 1, Chemistry: 4 }),
+			experts: experts({ Agriculture: [1], Chemistry: [4] }),
 		});
 		const line = tile(wrapper, "workforce").find("[data-experts]");
 
@@ -277,36 +254,36 @@ describe("PlanResultsBar", () => {
 
 		expect(area.text()).toContain("250");
 		expect(area.text()).toContain("/ 500");
-		expect(area.find(".text-negative").exists()).toBe(false);
 		// 250 / 500
 		expect(area.find("[role=img] > div").attributes("style")).toContain(
 			"width: 50%"
 		);
 	});
 
-	it("colors overused area negative", async () => {
-		// 520 used of 500 leaves 500 - 520 = -20
-		const { wrapper } = await mountBar({
-			area: { ...AREA, areaUsed: 520, areaLeft: -20 },
-		});
+	// red only above the total: 520 of 500 leaves 500 - 520 = -20
+	it.each([
+		[250, 250, "false"],
+		[500, 0, "false"],
+		[520, -20, "true"],
+	])(
+		"marks %i used area (%i left) as over: %s",
+		async (areaUsed, areaLeft, over) => {
+			const { wrapper } = await mountBar({
+				area: { ...AREA, areaUsed, areaLeft },
+			});
+			const used = tile(wrapper, "area").find("[data-over]");
 
-		expect(tile(wrapper, "area").find(".text-negative").text()).toBe("520");
-	});
-
-	it("keeps exactly full area neutral", async () => {
-		const { wrapper } = await mountBar({
-			area: { ...AREA, areaUsed: 500, areaLeft: 0 },
-		});
-
-		expect(tile(wrapper, "area").find(".text-negative").exists()).toBe(false);
-	});
+			expect(used.text()).toBe(String(areaUsed));
+			expect(used.attributes("data-over")).toBe(over);
+		}
+	);
 
 	it("shows the profit per used area", async () => {
 		const { wrapper } = await mountBar();
 		const perArea = tile(wrapper, "area").find("[data-profit-area]");
 
 		// 1,234.5 / 250 = 4.938
-		expect(perArea.find(".text-sm").text()).toBe("+4.94");
+		expect(perArea.findComponent(PValue).text()).toBe("+4.94");
 		expect(perArea.text()).toContain("ȼ profit / area");
 		expect(perArea.text()).not.toContain("Empire");
 	});
@@ -317,7 +294,10 @@ describe("PlanResultsBar", () => {
 		});
 
 		expect(
-			tile(wrapper, "area").find("[data-profit-area] .text-sm").text()
+			tile(wrapper, "area")
+				.find("[data-profit-area]")
+				.findComponent(PValue)
+				.text()
 		).toBe("0.00");
 	});
 

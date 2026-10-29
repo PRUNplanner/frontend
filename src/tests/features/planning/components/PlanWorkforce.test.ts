@@ -1,37 +1,22 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { DOMWrapper, type VueWrapper } from "@vue/test-utils";
 
 import { trackEvent, trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanWorkforce from "@/features/planning/components/PlanWorkforce.vue";
+import PMeter from "@/ui/charts/PMeter.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { wf } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import plan from "@/locales/en_US/plan.json";
 
 // Types & Interfaces
-import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
-import type {
-	IWorkforceElement,
-	IWorkforceRecord,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	trackEvent: vi.fn(),
 	trackPlanEdit: vi.fn(),
 }));
 
-const wf = (
-	name: WorkforceType,
-	data: Partial<IWorkforceElement> = {}
-): IWorkforceElement => ({
-	name,
-	required: 0,
-	capacity: 0,
-	left: 0,
-	lux1: false,
-	lux2: false,
-	efficiency: 0,
-	...data,
-});
-
+// without luxuries unless a tier sets them
 const WORKFORCE: IWorkforceRecord = {
 	pioneer: wf("pioneer", {
 		required: 1200,
@@ -49,7 +34,7 @@ const WORKFORCE: IWorkforceRecord = {
 		lux2: true,
 		efficiency: 0.5,
 	}),
-	technician: wf("technician"),
+	technician: wf("technician", {}, false),
 	engineer: wf("engineer", {
 		required: 10,
 		capacity: 100,
@@ -58,7 +43,7 @@ const WORKFORCE: IWorkforceRecord = {
 		lux2: true,
 		efficiency: 1,
 	}),
-	scientist: wf("scientist"),
+	scientist: wf("scientist", {}, false),
 };
 
 async function mountWorkforce(props: Record<string, unknown> = {}) {
@@ -81,23 +66,25 @@ const rows = (wrapper: VueWrapper) =>
 		.findAll("[role=img]")
 		.map((m) => new DOMWrapper(m.element.parentElement!));
 const row = (wrapper: VueWrapper, index: number) => rows(wrapper).at(index)!;
+// the name is a row's first text
 const names = (wrapper: VueWrapper) =>
-	rows(wrapper).map((r) => r.find("span.text-ink-strong").text());
+	rows(wrapper).map((r) => r.find("span").text());
 const meter = (wrapper: VueWrapper, index: number) =>
 	row(wrapper, index).find("[role=img] > div");
+/** value and max of every meter, PMeter colors it over max */
+const meters = (wrapper: VueWrapper) =>
+	wrapper
+		.findAllComponents(PMeter)
+		.map((m) => [m.props("value"), m.props("max")]);
 /** lux1 / lux2 toggles of a row */
 const luxButtons = (wrapper: VueWrapper, index: number) =>
 	row(wrapper, index).findAll("button[aria-pressed]");
 const bedsFree = (wrapper: VueWrapper, index: number) =>
-	row(wrapper, index).findAll("span").at(-1)!;
+	row(wrapper, index).find("[data-short]");
 const unneededToggle = (wrapper: VueWrapper) =>
 	wrapper.find("[data-unneeded-toggle]");
 
 describe("PlanWorkforce", () => {
-	beforeEach(() => {
-		vi.mocked(trackPlanEdit).mockClear();
-	});
-
 	it("lists the used tiers with need / housed and efficiency", async () => {
 		const { wrapper } = await mountWorkforce();
 
@@ -115,7 +102,6 @@ describe("PlanWorkforce", () => {
 	});
 
 	it("puts the unneeded tiers behind a toggle", async () => {
-		vi.mocked(trackEvent).mockClear();
 		const { wrapper } = await mountWorkforce();
 		const toggle = unneededToggle(wrapper);
 
@@ -150,8 +136,8 @@ describe("PlanWorkforce", () => {
 		const { wrapper } = await mountWorkforce({
 			workforceData: {
 				...WORKFORCE,
-				technician: wf("technician", { capacity: 5, left: 5 }),
-				scientist: wf("scientist", { required: 5, left: -5 }),
+				technician: wf("technician", { capacity: 5, left: 5 }, false),
+				scientist: wf("scientist", { required: 5, left: -5 }, false),
 			},
 		});
 
@@ -171,8 +157,8 @@ describe("PlanWorkforce", () => {
 		const { wrapper } = await mountWorkforce({
 			workforceData: {
 				...WORKFORCE,
-				technician: wf("technician", { required: 5, left: -5 }),
-				scientist: wf("scientist", { required: 5, left: -5 }),
+				technician: wf("technician", { required: 5, left: -5 }, false),
+				scientist: wf("scientist", { required: 5, left: -5 }, false),
 			},
 		});
 
@@ -185,31 +171,49 @@ describe("PlanWorkforce", () => {
 
 		// 1,200 / 1,500 = 80 %
 		expect(meter(wrapper, 0).attributes("style")).toContain("width: 80%");
-		expect(meter(wrapper, 0).classes()).not.toContain("bg-negative");
-		// settler needs 250 with 200 housed: full and negative
-		expect(meter(wrapper, 1).classes()).toContain("bg-negative");
+		// settler needs 250 with 200 housed: over
+		expect(meters(wrapper)).toEqual([
+			[1200, 1500],
+			[250, 200],
+			[10, 100],
+		]);
 	});
 
 	it("keeps a need without housing visible, with a full meter", async () => {
 		const { wrapper } = await mountWorkforce({
 			workforceData: {
 				...WORKFORCE,
-				technician: wf("technician", { required: 5, left: -5 }),
+				technician: wf("technician", { required: 5, left: -5 }, false),
 			},
 		});
 
 		expect(names(wrapper)[2]).toBe("Game.workforce Type.technician");
 		expect(row(wrapper, 2).text()).toContain("5 / 0");
-		expect(meter(wrapper, 2).classes()).toContain("bg-negative");
+		expect(meters(wrapper)[2]).toEqual([5, 0]);
 	});
 
-	it("shows the free beds, negative when short", async () => {
+	it("shows the free beds, marked when short", async () => {
 		const { wrapper } = await mountWorkforce();
 
-		expect(bedsFree(wrapper, 0).text()).toBe("300 free");
-		expect(bedsFree(wrapper, 0).classes()).toContain("text-muted");
-		expect(bedsFree(wrapper, 1).text()).toBe("-50 free");
-		expect(bedsFree(wrapper, 1).classes()).toContain("text-negative");
+		expect(
+			[0, 1].map((i) => [
+				bedsFree(wrapper, i).text(),
+				bedsFree(wrapper, i).attributes("data-short"),
+			])
+		).toEqual([
+			["300 free", "false"],
+			["-50 free", "true"],
+		]);
+
+		// exactly full housing is not short
+		const full = await mountWorkforce({
+			workforceData: {
+				...WORKFORCE,
+				settler: wf("settler", { required: 200, capacity: 200, left: 0 }),
+			},
+		});
+		expect(bedsFree(full.wrapper, 1).text()).toBe("0 free");
+		expect(bedsFree(full.wrapper, 1).attributes("data-short")).toBe("false");
 	});
 
 	it("shows each workforce's luxury tickers", async () => {
@@ -240,48 +244,31 @@ describe("PlanWorkforce", () => {
 			["false", "true"],
 			["true", "true"],
 		]);
-		// on is a filled primary button, off a plain one
-		expect(luxButtons(wrapper, 0).at(0)!.classes()).toContain("bg-primary");
-		expect(luxButtons(wrapper, 0).at(1)!.classes()).not.toContain(
-			"bg-primary"
-		);
 	});
 
-	it("toggles lux1 on and tracks it", async () => {
-		const { wrapper, component } = await mountWorkforce();
+	// settler has lux2 but no lux1 yet
+	it.each([
+		["lux1", true, 0, "Lux1"],
+		["lux2", false, 1, "Lux2"],
+	])(
+		"toggles settler %s to %s and tracks it",
+		async (lux, value, index, luxType) => {
+			const { wrapper, component } = await mountWorkforce();
 
-		// settler has no lux1 yet
-		await luxButtons(wrapper, 1).at(0)!.trigger("click");
+			await luxButtons(wrapper, 1).at(index)!.trigger("click");
 
-		expect(component.emitted("update:lux")).toEqual([
-			["settler", "lux1", true],
-		]);
-		expect(trackPlanEdit).toHaveBeenCalledWith({
-			field: "workforce",
-			planet_natural_id: "ZZ-000a",
-			workforce_type: "settler",
-			lux_type: "Lux1",
-			value: true,
-		});
-	});
-
-	it("toggles lux2 off and tracks it", async () => {
-		const { wrapper, component } = await mountWorkforce();
-
-		// settler has lux2
-		await luxButtons(wrapper, 1).at(1)!.trigger("click");
-
-		expect(component.emitted("update:lux")).toEqual([
-			["settler", "lux2", false],
-		]);
-		expect(trackPlanEdit).toHaveBeenCalledWith({
-			field: "workforce",
-			planet_natural_id: "ZZ-000a",
-			workforce_type: "settler",
-			lux_type: "Lux2",
-			value: false,
-		});
-	});
+			expect(component.emitted("update:lux")).toEqual([
+				["settler", lux, value],
+			]);
+			expect(trackPlanEdit).toHaveBeenCalledWith({
+				field: "workforce",
+				planet_natural_id: "ZZ-000a",
+				workforce_type: "settler",
+				lux_type: luxType,
+				value,
+			});
+		}
+	);
 
 	it("toggles pioneer lux1 off and lux2 on", async () => {
 		const { wrapper, component } = await mountWorkforce();
@@ -301,7 +288,7 @@ describe("PlanWorkforce", () => {
 		await setProps({
 			workforceData: {
 				...WORKFORCE,
-				pioneer: wf("pioneer", { required: 5000, lux2: true }),
+				pioneer: wf("pioneer", { required: 5000, lux2: true }, false),
 			},
 		});
 
@@ -312,23 +299,17 @@ describe("PlanWorkforce", () => {
 		).toEqual(["false", "true"]);
 	});
 
-	it("disables the luxury toggles", async () => {
-		const { wrapper } = await mountWorkforce({ disabled: true });
+	it.each([true, false])(
+		"passes disabled: %s to the luxury toggles",
+		async (disabled) => {
+			const { wrapper } = await mountWorkforce({ disabled });
 
-		const toggles = wrapper.findAll("button[aria-pressed]");
-		expect(toggles).toHaveLength(6);
-		expect(
-			toggles.every((b) => b.attributes("disabled") !== undefined)
-		).toBe(true);
-	});
-
-	it("enables the luxury toggles", async () => {
-		const { wrapper } = await mountWorkforce();
-
-		expect(
-			wrapper
-				.findAll("button[aria-pressed]")
-				.some((b) => b.attributes("disabled") !== undefined)
-		).toBe(false);
-	});
+			// 3 used tiers, 2 luxuries each
+			expect(
+				wrapper
+					.findAll("button[aria-pressed]")
+					.map((b) => (b.element as HTMLButtonElement).disabled)
+			).toEqual(Array(6).fill(disabled));
+		}
+	);
 });

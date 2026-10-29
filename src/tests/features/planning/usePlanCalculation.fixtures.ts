@@ -16,9 +16,22 @@ import { useBuildingData } from "@/database/services/useBuildingData";
 import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import {
+	ExpertTypeSchema,
+	type ExpertType,
+	type Plan,
+	type WorkforceType,
+} from "@/features/api/schemas/planningData.schemas";
 import type { Building, Planet } from "@/features/api/schemas/gameData.schemas";
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type {
+	IExpertRecord,
+	IMaterialIO,
+	IPlanResult,
+	IProductionBuilding,
+	IProductionBuildingRecipe,
+	IRecipeBuildingOption,
+	IWorkforceElement,
+} from "@/features/planning/usePlanCalculation.types";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
@@ -184,3 +197,113 @@ export function expectFullWorkforceCost(results: IPlanResult[]): void {
 			);
 	}
 }
+
+// -- builders for hand-made calculation results ---------------------------
+
+/** A recipe input or output */
+export const m = (material_ticker: string, material_amount = 1) => ({
+	material_ticker,
+	material_amount,
+});
+
+/** A recipe option of an SME, 1 h, without materials or figures */
+export const option = (
+	id: string,
+	over: Partial<IRecipeBuildingOption> = {}
+): IRecipeBuildingOption => ({
+	recipe_id: id,
+	building_ticker: "SME",
+	recipe_name: id,
+	time_ms: 3600000,
+	inputs: [],
+	outputs: [],
+	dailyRevenue: 0,
+	roi: 0,
+	profitPerArea: 0,
+	...over,
+});
+
+/** A building's running recipe, once, the whole day */
+export const activeRecipe = (
+	recipe: IRecipeBuildingOption,
+	over: Partial<IProductionBuildingRecipe> = {}
+): IProductionBuildingRecipe => ({
+	recipeId: recipe.recipe_id,
+	amount: 1,
+	recipe,
+	dailyShare: 1,
+	time: 0,
+	cogm: undefined,
+	...over,
+});
+
+/** One production building without recipes, costs or bonuses */
+export const building = (
+	name: string,
+	over: Partial<IProductionBuilding> = {}
+): IProductionBuilding => ({
+	name,
+	amount: 1,
+	areaUsed: 0,
+	activeRecipes: [],
+	recipeOptions: [],
+	totalEfficiency: 1,
+	efficiencyElements: [],
+	totalBatchTime: 0,
+	constructionMaterials: [],
+	constructionCost: 0,
+	workforceMaterials: [],
+	workforceDailyCost: 0,
+	dailyRevenue: 0,
+	expertise: null,
+	...over,
+});
+
+/** A material I/O row: input or output from the sign of delta, the rest 0 */
+export const io = (
+	ticker: string,
+	delta: number,
+	over: Partial<IMaterialIO> = {}
+): IMaterialIO => ({
+	ticker,
+	input: delta < 0 ? -delta : 0,
+	output: delta > 0 ? delta : 0,
+	delta,
+	price: 0,
+	individualWeight: 0,
+	individualVolume: 0,
+	totalWeight: 0,
+	totalVolume: 0,
+	...over,
+});
+
+/** A material I/O row with both In and Out */
+export const inOut = (ticker: string, input: number, output: number) =>
+	io(ticker, output - input, { input, output });
+
+/** A workforce tier at 0, with both luxuries or none (`lux`) */
+export const wf = (
+	name: WorkforceType,
+	data: Partial<IWorkforceElement> = {},
+	lux = true
+): IWorkforceElement => ({
+	name,
+	required: 0,
+	capacity: 0,
+	left: 0,
+	lux1: lux,
+	lux2: lux,
+	efficiency: 0,
+	...data,
+});
+
+/** Every expert at 0 / 0 %, the given ones at [amount, bonus] */
+export const experts = (
+	set: Partial<Record<ExpertType, [number, number?]>> = {}
+): IExpertRecord =>
+	Object.fromEntries(
+		ExpertTypeSchema.options.map((name) => [
+			name,
+			{ name, amount: set[name]?.[0] ?? 0, bonus: set[name]?.[1] ?? 0 },
+		])
+	) as IExpertRecord;

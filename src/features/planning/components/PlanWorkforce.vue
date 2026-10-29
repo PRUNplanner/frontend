@@ -149,7 +149,8 @@
 				<span class="grow" />
 				<span
 					class="text-xs"
-					:class="workforce.left < 0 ? 'text-negative' : 'text-muted'">
+					:class="workforce.left < 0 ? 'text-negative' : 'text-muted'"
+					:data-short="workforce.left < 0">
 					{{
 						t("plan.base.workforce.beds_free", {
 							n: formatAmount(workforce.left),

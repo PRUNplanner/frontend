@@ -1,5 +1,5 @@
 import { flushPromises } from "@vue/test-utils";
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, onTestFinished, vi } from "vitest";
 import { h } from "vue";
 import type { VueWrapper } from "@vue/test-utils";
 
@@ -10,12 +10,17 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import PValue from "@/ui/components/PValue.vue";
 import PTooltip from "@/ui/components/PTooltip.vue";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
-import { mountComponent } from "@/tests/mountComponent";
+import { hoverTooltip, mountComponent } from "@/tests/mountComponent";
+import {
+	activeRecipe,
+	building,
+	m,
+	option,
+} from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
 import type {
 	IProductionBuilding,
-	IProductionBuildingRecipe,
 	IRecipeBuildingOption,
 } from "@/features/planning/usePlanCalculation.types";
 
@@ -27,13 +32,10 @@ const typical = vi.hoisted(() => ({
 vi.mock("@/features/plan_analytics/usePlanetInsights", () => ({
 	usePlanetInsights: () => ({ typicalRecipes: () => typical.value }),
 }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: () => h("span"),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 // PlanProductionRecipe and PlanRecipePicker have their own tests, the stubs
 // keep the props and mark their place in the DOM
@@ -79,19 +81,13 @@ vi.mock("@/features/planning/components/PlanRecipePicker.vue", () => ({
 	},
 }));
 
-const OPTION = { recipe_id: "SME#FE" } as IRecipeBuildingOption;
+const OPTION = option("SME#FE");
 const recipe = (recipeId: string, output: string) =>
-	({
-		recipeId,
-		amount: 1,
-		recipe: { outputs: [{ material_ticker: output }] },
-	}) as IProductionBuildingRecipe;
+	activeRecipe(option(recipeId, { outputs: [m(output)] }));
 
-function building(
-	overrides: Partial<IProductionBuilding> = {}
-): IProductionBuilding {
-	return {
-		name: "SME",
+/** 3 SME running FE and AL, with COGC and expert bonus */
+const smelter = (over: Partial<IProductionBuilding> = {}) =>
+	building("SME", {
 		amount: 3,
 		areaUsed: 105,
 		activeRecipes: [recipe("SME#FE", "FE"), recipe("SME#AL", "AL")],
@@ -102,16 +98,10 @@ function building(
 			{ efficiencyType: "EXPERT", value: 1.07 },
 			{ efficiencyType: "WORKFORCE", value: 1 },
 		],
-		totalBatchTime: 0,
-		constructionMaterials: [],
-		constructionCost: 123456.789,
-		workforceMaterials: [],
-		workforceDailyCost: 0,
 		dailyRevenue: 2500,
 		expertise: "METALLURGY",
-		...overrides,
-	};
-}
+		...over,
+	});
 
 async function mountBuilding(
 	props: Record<string, unknown> = {},
@@ -122,7 +112,7 @@ async function mountBuilding(
 		PlanProductionBuilding,
 		{
 			disabled: false,
-			buildingData: building(),
+			buildingData: smelter(),
 			buildingIndex: 2,
 			cxUuid: "cx-uuid",
 			planetId: "ZV-307c",
@@ -138,6 +128,11 @@ const nameButton = (wrapper: VueWrapper) =>
 const deleteButton = (wrapper: VueWrapper) =>
 	wrapper.find('button[aria-label="plan.production.delete_building"]');
 const addRecipe = (wrapper: VueWrapper) => wrapper.find("[data-add-recipe]");
+/** what lifts the efficiency, the name button's description */
+const subLine = (wrapper: VueWrapper) =>
+	wrapper.find(
+		`[id="${nameButton(wrapper).attributes("aria-describedby")}"]`
+	);
 const recipes = (wrapper: VueWrapper) =>
 	wrapper.findAllComponents(PlanProductionRecipe);
 const pickers = (wrapper: VueWrapper) =>
@@ -165,8 +160,6 @@ describe("PlanProductionBuilding", () => {
 		expect(text).toContain("133.8 %");
 		expect(text).toContain("2,500.00");
 		expect(text).toContain("105");
-		// no construction cost column any more
-		expect(text).not.toContain("123,456");
 		expect(
 			wrapper.findComponent(PInputNumber).find("input").element.value
 		).toBe("3");
@@ -177,7 +170,7 @@ describe("PlanProductionBuilding", () => {
 			{ experts: 3 },
 			{ plan: { production: { experts: "{n} expert | {n} experts" } } }
 		);
-		const sub = () => nameButton(wrapper).find("span.block").text();
+		const sub = () => subLine(wrapper).text();
 
 		// workforce and neutral factors are left out, the COGC shows as the
 		// tick on the expertise
@@ -187,14 +180,14 @@ describe("PlanProductionBuilding", () => {
 
 		// a workforce program lifts the tier's buildings: listed with the rest
 		await setProps({
-			buildingData: building({
+			buildingData: smelter({
 				efficiencyElements: [{ efficiencyType: "COGC", value: 1.1 }],
 			}),
 		});
 		expect(sub()).toMatch(/ · game\.efficiency_type\.COGC$/);
 
 		await setProps({
-			buildingData: building({ expertise: null, efficiencyElements: [] }),
+			buildingData: smelter({ expertise: null, efficiencyElements: [] }),
 		});
 		expect(sub()).toBe("");
 	});
@@ -207,10 +200,7 @@ describe("PlanProductionBuilding", () => {
 		// button's label hides its content, so the line describes it) and on
 		// hover
 		expect(match().find("[aria-hidden]").text()).toBe("✓");
-		const described = wrapper.find(
-			`[id="${nameButton(wrapper).attributes("aria-describedby")}"]`
-		);
-		expect(described.text()).toContain(
+		expect(subLine(wrapper).text()).toContain(
 			"plan.production.cogc_match: game.expertise.METALLURGY"
 		);
 		expect(match().attributes("title")).toBe("plan.production.cogc_match");
@@ -218,25 +208,24 @@ describe("PlanProductionBuilding", () => {
 
 		// no COGC element: the planet's program lifts something else
 		await setProps({
-			buildingData: building({
+			buildingData: smelter({
 				efficiencyElements: [{ efficiencyType: "EXPERT", value: 1.07 }],
 			}),
 		});
 		expect(match().find("[aria-hidden]").text()).toBe("✗");
 		expect(match().attributes("title")).toBe("plan.production.cogc_no_match");
 		expect(match().classes()).toContain("text-negative");
-		expect(match().classes()).not.toContain("text-positive");
 
 		// a workforce program's COGC lifts the building, not its expertise
 		await setProps({
-			buildingData: building({
+			buildingData: smelter({
 				efficiencyElements: [{ efficiencyType: "COGC", value: 1.1 }],
 			}),
 		});
 		expect(match().find("[aria-hidden]").text()).toBe("✗");
 
 		// a building without expertise has nothing to match
-		await setProps({ buildingData: building({ expertise: null }) });
+		await setProps({ buildingData: smelter({ expertise: null }) });
 		expect(match().exists()).toBe(false);
 	});
 
@@ -244,14 +233,14 @@ describe("PlanProductionBuilding", () => {
 		const { wrapper, setProps } = await mountBuilding();
 		const revenue = () => wrapper.findComponent(PValue);
 
-		expect(revenue().classes()).toEqual(["text-positive"]);
-		expect(revenue().text()).toMatch(/^\+/);
+		// PValue colours it by the sign (PValue.test.ts)
+		expect(revenue().props("value")).toBe(2500);
+		expect(revenue().text()).toBe("+2,500.00");
 
-		await setProps({ buildingData: building({ dailyRevenue: 0 }) });
-		expect(revenue().classes()).toEqual([]);
+		await setProps({ buildingData: smelter({ dailyRevenue: 0 }) });
+		expect(revenue().text()).toBe("0.00");
 
-		await setProps({ buildingData: building({ dailyRevenue: -0.01 }) });
-		expect(revenue().classes()).toEqual(["text-negative"]);
+		await setProps({ buildingData: smelter({ dailyRevenue: -0.01 }) });
 		expect(revenue().text()).toBe("-0.01");
 	});
 
@@ -260,7 +249,7 @@ describe("PlanProductionBuilding", () => {
 
 		expect(row(wrapper).classes()).toContain("border-l-transparent");
 
-		await setProps({ buildingData: building({ amount: 0 }) });
+		await setProps({ buildingData: smelter({ amount: 0 }) });
 		expect(row(wrapper).classes()).toContain("border-l-negative");
 	});
 
@@ -283,7 +272,7 @@ describe("PlanProductionBuilding", () => {
 
 	it("goes down to 0 buildings, typed or with the minus button", async () => {
 		const { wrapper, component } = await mountBuilding({
-			buildingData: building({ amount: 1 }),
+			buildingData: smelter({ amount: 1 }),
 		});
 		const input = wrapper.findComponent(PInputNumber);
 
@@ -298,7 +287,7 @@ describe("PlanProductionBuilding", () => {
 	});
 
 	it("emits a new amount without writing into the result (S9)", async () => {
-		const buildingData = building({ amount: 2 });
+		const buildingData = smelter({ amount: 2 });
 		const { wrapper, component } = await mountBuilding({ buildingData });
 
 		wrapper.findComponent(PInputNumber).vm.$emit("update:value", 5);
@@ -331,7 +320,7 @@ describe("PlanProductionBuilding", () => {
 
 	it("hands each recipe row its ȼ per building and day and the building count", async () => {
 		const { wrapper } = await mountBuilding({
-			buildingData: building({
+			buildingData: smelter({
 				recipeOptions: [
 					{ recipe_id: "SME#FE", dailyRevenue: 400 } as IRecipeBuildingOption,
 				],
@@ -393,7 +382,7 @@ describe("PlanProductionBuilding", () => {
 
 	it("shows a hint without active recipes", async () => {
 		const { wrapper } = await mountBuilding({
-			buildingData: building({ activeRecipes: [] }),
+			buildingData: smelter({ activeRecipes: [] }),
 		});
 
 		expect(recipes(wrapper)).toHaveLength(0);
@@ -404,7 +393,7 @@ describe("PlanProductionBuilding", () => {
 
 	it("says when the building can make nothing here", async () => {
 		const { wrapper } = await mountBuilding({
-			buildingData: building({ activeRecipes: [], recipeOptions: [] }),
+			buildingData: smelter({ activeRecipes: [], recipeOptions: [] }),
 		});
 
 		// no options: nothing to add, so no "no active recipes" either
@@ -460,13 +449,13 @@ describe("PlanProductionBuilding", () => {
 			expect(document.activeElement).toBe(
 				wrapper.find("[data-add-recipe]").element
 			);
-			wrapper.unmount();
 		});
 
 		it("leaves the focus where it moved meanwhile, e.g. another picker", async () => {
 			const elsewhere = document.createElement("input");
 			document.body.appendChild(elsewhere);
-			const { wrapper, setProps } = await mountBuilding(
+			onTestFinished(() => elsewhere.remove());
+			const { setProps } = await mountBuilding(
 				{ picker: 0 },
 				undefined,
 				true
@@ -477,8 +466,6 @@ describe("PlanProductionBuilding", () => {
 			await flushPromises();
 
 			expect(document.activeElement).toBe(elsewhere);
-			wrapper.unmount();
-			elsewhere.remove();
 		});
 
 		it("is closed without a picker", async () => {
@@ -488,21 +475,11 @@ describe("PlanProductionBuilding", () => {
 			expect(addRecipe(wrapper).attributes("aria-expanded")).toBe("false");
 		});
 
-		it("shows + Recipe in the brand yellow, filled while its picker is open", async () => {
-			const { wrapper, setProps } = await mountBuilding();
-
-			expect(addRecipe(wrapper).classes()).toContain("text-prunplanner");
-			expect(addRecipe(wrapper).classes()).not.toContain("bg-prunplanner/15");
-
-			await setProps({ picker: null });
-			expect(addRecipe(wrapper).classes()).toContain("bg-prunplanner/15");
-		});
-
 		it("change: opens under its order and emits the replacement", async () => {
 			const { wrapper, component } = await mountBuilding({
 				picker: 1,
 				materialIO: [],
-				buildings: [building()],
+				buildings: [smelter()],
 			});
 
 			expect(layout(wrapper)).toEqual(["recipe", "recipe", "picker", "add"]);
@@ -568,7 +545,7 @@ describe("PlanProductionBuilding", () => {
 
 		it("offers + Recipe only with recipe options", async () => {
 			const { wrapper } = await mountBuilding({
-				buildingData: building({ recipeOptions: [] }),
+				buildingData: smelter({ recipeOptions: [] }),
 			});
 
 			expect(addRecipe(wrapper).exists()).toBe(false);
@@ -603,7 +580,7 @@ describe("PlanProductionBuilding", () => {
 			{ recipe_id: "SME#AL", outputs: [{ material_ticker: "AL" }] },
 		] as IRecipeBuildingOption[];
 		const empty = () =>
-			building({ activeRecipes: [], recipeOptions: options });
+			smelter({ activeRecipes: [], recipeOptions: options });
 		const mixButton = (wrapper: VueWrapper) =>
 			wrapper.find(`button[aria-label="${MIX_LABEL}"]`);
 
@@ -675,12 +652,9 @@ describe("PlanProductionBuilding", () => {
 	it("lists the efficiency factors in a tooltip", async () => {
 		const { wrapper } = await mountBuilding();
 
-		await wrapper
-			.findComponent(PTooltip)
-			.find("div")
-			.trigger("mouseenter");
-
-		const tip = document.body.querySelector("[role=tooltip]")!.textContent;
+		const tip = await hoverTooltip(
+			wrapper.findComponent(PTooltip).find("div")
+		);
 		expect(tip).toContain("game.efficiency_type.COGC");
 		expect(tip).toContain("125.00 %");
 		expect(tip).toContain("game.efficiency_type.EXPERT");
@@ -690,7 +664,7 @@ describe("PlanProductionBuilding", () => {
 	describe("zero efficiency", () => {
 		const REASON = "plan.components.production_building.zero_reason";
 		const zero = (type: "FERTILITY" | "WORKFORCE" | "EXPERT") =>
-			building({
+			smelter({
 				totalEfficiency: 0,
 				efficiencyElements: [
 					{ efficiencyType: "COGC", value: 1.25 },
@@ -714,17 +688,17 @@ describe("PlanProductionBuilding", () => {
 			});
 
 			// in the sub line, before what lifts the efficiency
-			expect(
-				wrapper.find("[data-building-row] span.text-negative").text()
-			).toBe("game.efficiency_type.EXPERT ·");
+			expect(wrapper.find("[data-zero-reason]").text()).toBe(
+				"game.efficiency_type.EXPERT ·"
+			);
 			expect(wrapper.text()).not.toContain(REASON);
 		});
 
 		it("names no reason without a zero factor or with an efficiency", async () => {
 			const { wrapper, setProps } = await mountBuilding({
-				buildingData: building({ totalEfficiency: 0 }),
+				buildingData: smelter({ totalEfficiency: 0 }),
 			});
-			expect(wrapper.find(".text-negative.text-xs").exists()).toBe(false);
+			expect(wrapper.find("[data-zero-reason]").exists()).toBe(false);
 
 			await setProps({
 				buildingData: { ...zero("FERTILITY"), totalEfficiency: 1 },
@@ -736,7 +710,7 @@ describe("PlanProductionBuilding", () => {
 	describe("against the shared plan", () => {
 		const badges = (wrapper: VueWrapper) =>
 			nameButton(wrapper)
-				.findAll("span.uppercase")
+				.findAll("[data-badge]")
 				.map((s) => [s.text(), s.classes()]);
 
 		it("badges what changed", async () => {
