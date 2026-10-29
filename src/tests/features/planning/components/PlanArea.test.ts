@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
 import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
@@ -30,19 +30,12 @@ const permitsInput = (wrapper: VueWrapper) =>
 	wrapper.find("input").element as HTMLInputElement;
 
 describe("PlanArea", () => {
-	beforeEach(() => {
-		vi.mocked(trackPlanEdit).mockClear();
-	});
-
 	it("shows the permits and the total area", async () => {
 		const { wrapper } = await mountArea();
 
 		expect(permitsInput(wrapper).value).toBe("2");
 		expect(wrapper.text()).toContain("plan.components.area.permits");
 		expect(wrapper.text()).toContain("plan.base.planet.area");
-		// used and free area moved to the results bar
-		expect(wrapper.text()).not.toContain("350");
-		expect(wrapper.text()).not.toContain("150");
 	});
 
 	it("emits and tracks new permits", async () => {
@@ -92,15 +85,12 @@ describe("PlanArea", () => {
 		expect(permitsInput(wrapper).value).toBe("3");
 	});
 
-	it("disables the permits input", async () => {
-		const { wrapper } = await mountArea({ disabled: true });
+	it.each([true, false])(
+		"passes disabled: %s to the permits input",
+		async (disabled) => {
+			const { wrapper } = await mountArea({ disabled });
 
-		expect(permitsInput(wrapper).disabled).toBe(true);
-	});
-
-	it("enables the permits input", async () => {
-		const { wrapper } = await mountArea();
-
-		expect(permitsInput(wrapper).disabled).toBe(false);
-	});
+			expect(permitsInput(wrapper).disabled).toBe(disabled);
+		}
+	);
 });

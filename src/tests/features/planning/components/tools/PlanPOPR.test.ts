@@ -156,26 +156,24 @@ describe("PlanPOPR", () => {
 		expect(wrapper.find("[data-popr-chart]").exists()).toBe(false);
 	});
 
-	it("shows an error when the report fails to load", async () => {
-		mock.onGet(poprUrl("PP-006a")).reply(500);
+	it.each([
+		{ why: "fails to load", planet: "PP-006a", status: 500, body: undefined },
+		// fails Zod validation, so the query rejects like a failed request
+		{
+			why: "is malformed",
+			planet: "PP-004a",
+			status: 200,
+			body: { simulation_period: 1 },
+		},
+	])("shows an error when the report $why", async ({ planet, status, body }) => {
+		mock.onGet(poprUrl(planet)).reply(status, body);
 		vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper } = await mountPOPR("PP-006a");
+		const { wrapper } = await mountPOPR(planet);
 
 		await vi.waitFor(() =>
 			expect(wrapper.text()).toContain("plan.tools.popr.error")
 		);
 		expect(wrapper.text()).not.toContain("plan.tools.popr.empty");
-	});
-
-	it("shows an error for a malformed report", async () => {
-		// fails Zod validation, so the query rejects like a failed request
-		mock.onGet(poprUrl("PP-004a")).reply(200, { simulation_period: 1 });
-		vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper } = await mountPOPR("PP-004a");
-
-		await vi.waitFor(() =>
-			expect(wrapper.text()).toContain("plan.tools.popr.error")
-		);
 		expect(wrapper.find(".popr-table").exists()).toBe(false);
 	});
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
-import { h, ref } from "vue";
+import { ref } from "vue";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { buildingsStore, recipesStore } from "@/database/stores";
@@ -60,13 +60,10 @@ vi.mock("@/features/plan_analytics/usePlanetInsights", () => ({
 			})[ticker],
 	}),
 }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: () => h("div"),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const RESOURCES: PlanetResource[] = [
 	{

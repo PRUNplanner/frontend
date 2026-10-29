@@ -42,6 +42,8 @@ export default defineConfig({
 		// undo vi.stubGlobal / vi.stubEnv after each test
 		unstubGlobals: true,
 		unstubEnvs: true,
+		// reset every mock's calls before each test, implementations stay
+		clearMocks: true,
 		// Off for `pnpm test`. `pnpm test:coverage` runs the unit and the component
 		// suites (vitest.components.config.ts) as blob reports and merges them
 		// into the one coverage/lcov.info that CI uploads to Codacy

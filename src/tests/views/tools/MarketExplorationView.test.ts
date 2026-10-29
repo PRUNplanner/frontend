@@ -107,8 +107,9 @@ vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
 vi.mock("@/ui/charts/MarketExplorationChart.vue", () =>
 	stub("MarketExplorationChart")
 );
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () =>
-	stub("MaterialTile", ["ticker"])
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
 );
 vi.mock("@/features/material_tile/components/MaterialExchangeTable.vue", () =>
 	stub("MaterialExchangeTable", ["overview"])

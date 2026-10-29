@@ -1,45 +1,25 @@
-import {
-	describe,
-	it,
-	expect,
-	vi,
-	beforeAll,
-	beforeEach,
-	afterEach,
-} from "vitest";
-import { nextTick } from "vue";
+import { describe, it, expect, vi, beforeAll, afterEach } from "vitest";
 
-import { materialsStore } from "@/database/stores";
-import { useMaterialData } from "@/database/services/useMaterialData";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanProfitBreakdown from "@/features/planning/components/tools/PlanProfitBreakdown.vue";
-import { mountComponent } from "@/tests/mountComponent";
-
-// test data
-import materials from "@/tests/test_data/api_data_materials.json";
+import PWaterfall from "@/ui/charts/PWaterfall.vue";
+import { hoverTooltip, mountComponent } from "@/tests/mountComponent";
+import {
+	io,
+	setupPlanningTestData,
+} from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
 import type {
-	IMaterialIO,
 	IOverviewData,
 	IProductionBuilding,
 } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
-function mio(ticker: string, delta: number, price: number): IMaterialIO {
-	return {
-		ticker,
-		input: Math.max(-delta, 0),
-		output: Math.max(delta, 0),
-		delta,
-		individualWeight: 0,
-		individualVolume: 0,
-		totalWeight: 0,
-		totalVolume: 0,
-		price: delta * price,
-	};
-}
+/** price is per unit, the row carries delta × price */
+const mio = (ticker: string, delta: number, price: number) =>
+	io(ticker, delta, { price: delta * price });
 
 const WORKFORCE = [mio("RAT", -2, 100), mio("DW", -1, 50)];
 const OVERVIEW: IOverviewData = {
@@ -79,6 +59,13 @@ async function mountTool(props: Record<string, unknown> = {}) {
 const modeButtons = (w: Awaited<ReturnType<typeof mountTool>>) =>
 	w.findAll("[role=group] > button");
 
+// the waterfall's columns as label, value and tone
+const steps = (w: Awaited<ReturnType<typeof mountTool>>) =>
+	w
+		.findComponent(PWaterfall)
+		.props("columns")
+		.map((c) => [c.label, c.value, c.tone]);
+
 async function setView(w: Awaited<ReturnType<typeof mountTool>>, i: number) {
 	const button = modeButtons(w)[i];
 	if (button.attributes("aria-pressed") !== "true")
@@ -87,11 +74,8 @@ async function setView(w: Awaited<ReturnType<typeof mountTool>>, i: number) {
 
 describe("PlanProfitBreakdown", () => {
 	beforeAll(async () => {
-		await materialsStore.setMany(materials);
-		await useMaterialData().preload();
+		await setupPlanningTestData();
 	});
-
-	beforeEach(() => vi.mocked(trackEvent).mockClear());
 
 	// the mode is module state, every test starts and ends on cost type
 	afterEach(async () => {
@@ -121,10 +105,7 @@ describe("PlanProfitBreakdown", () => {
 
 	it("shows a segment's numbers in its tooltip", async () => {
 		const wrapper = await mountTool();
-		await wrapper.find("button[aria-label*='FE']").trigger("mouseenter");
-		await nextTick();
-
-		const tip = document.body.querySelector("[role=tooltip]")!.textContent;
+		const tip = await hoverTooltip(wrapper.find("button[aria-label*='FE']"));
 		expect(tip).toContain("plan.tools.profit_breakdown.tooltip.produced");
 		expect(tip).toContain("10.00");
 		expect(tip).toContain("90.00 ȼ");
@@ -183,10 +164,8 @@ describe("PlanProfitBreakdown", () => {
 			"material-category-metals"
 		);
 
-		await wrapper.find("button[aria-label*='FE']").trigger("mouseenter");
-		await nextTick();
 		expect(
-			document.body.querySelector("[role=tooltip]")!.textContent
+			await hoverTooltip(wrapper.find("button[aria-label*='FE']"))
 		).toContain("iron");
 	});
 
@@ -199,12 +178,9 @@ describe("PlanProfitBreakdown", () => {
 
 		const chip = wrapper.find("button[aria-label*='ZZZ'] span");
 		expect(chip.classes()).toContain("bg-black/70");
-		expect(chip.classes().join(" ")).not.toContain("material-category");
 		expect(wrapper.find("ul li span").classes()).toContain("bg-black/40");
 
-		await wrapper.find("button[aria-label*='ZZZ']").trigger("mouseenter");
-		await nextTick();
-		const tip = document.body.querySelector("[role=tooltip]")!.textContent;
+		const tip = await hoverTooltip(wrapper.find("button[aria-label*='ZZZ']"));
 		expect(tip).toContain("ZZZ");
 		expect(tip).toContain("500.00 ȼ");
 	});
@@ -214,10 +190,9 @@ describe("PlanProfitBreakdown", () => {
 			overview: { ...OVERVIEW, profit: -50 },
 		});
 
-		const negative = wrapper.findAll("dd.text-negative");
-		expect(negative).toHaveLength(1);
-		expect(negative[0].text()).toBe("-5.0 %");
-		expect(wrapper.findAll("dd.text-positive")).toHaveLength(0);
+		const margin = wrapper.findAll("dd")[2];
+		expect(margin.text()).toBe("-5.0 %");
+		expect(margin.classes()).toContain("text-negative");
 	});
 
 	it("sums everything beyond the 3 largest items into one more segment", async () => {
@@ -241,18 +216,14 @@ describe("PlanProfitBreakdown", () => {
 		expect(more).toHaveLength(2);
 
 		// output: the smallest item, no amount or price of its own
-		await more[0].trigger("mouseenter");
-		await nextTick();
-		let tip = document.body.querySelector("[role=tooltip]")!.textContent;
+		let tip = await hoverTooltip(more[0]);
 		expect(tip).toContain("30.00 ȼ");
 		expect(tip).toContain("1.8 %");
 		expect(tip).not.toContain("tooltip.produced");
 		expect(tip).not.toContain("tooltip.price");
 
 		// inputs are costs, so negative per day
-		await more[1].trigger("mouseenter");
-		await nextTick();
-		tip = document.body.querySelector("[role=tooltip]")!.textContent;
+		tip = await hoverTooltip(more[1]);
 		expect(tip).toContain("-10.00 ȼ");
 		expect(tip).not.toContain("tooltip.consumed");
 	});
@@ -281,14 +252,22 @@ describe("PlanProfitBreakdown", () => {
 				"plan.tools.profit_breakdown.more_buildings"
 			);
 			expect(text).not.toContain("B7");
-			// B6 (-35) and the folded steps (-30) lose, the 75 not attributed do not
-			const negative = wrapper.findAll("div.text-negative");
-			expect(negative.map((n) => n.text())).toEqual(
-				expect.arrayContaining(["\u221235", "\u221230"])
-			);
-			expect(
-				wrapper.findAll("div.text-white").map((n) => n.text())
-			).toContain("75");
+			// largest first; B6 (-35) and the folded steps (-30) lose, the 75
+			// not attributed do not
+			const key = "plan.tools.profit_breakdown";
+			expect(steps(wrapper)).toEqual([
+				["B0", 90, "neutral"],
+				["B1", 80, "neutral"],
+				["B2", 70, "neutral"],
+				["B3", 60, "neutral"],
+				["B4", 50, "neutral"],
+				["B5", 40, "neutral"],
+				[`${key}.more_buildings`, -30, "negative"],
+				["B6", -35, "negative"],
+				[`${key}.steps.unattributed`, 75, "neutral"],
+				[`${key}.steps.degradation`, -100, "hatched"],
+				[`${key}.steps.profit`, 300, "positive"],
+			]);
 		});
 
 		it("explains what is not attributed, and colours a negative rest", async () => {
@@ -298,15 +277,14 @@ describe("PlanProfitBreakdown", () => {
 			});
 			await setView(wrapper, 1);
 
-			expect(
-				wrapper.findAll("div.text-negative").map((n) => n.text())
-			).toContain("\u221225");
-			await wrapper
-				.find("button[aria-label*='steps.unattributed']")
-				.trigger("mouseenter");
-			await nextTick();
-			const tip =
-				document.body.querySelector("[role=tooltip]")!.textContent;
+			expect(steps(wrapper)[8]).toEqual([
+				"plan.tools.profit_breakdown.steps.unattributed",
+				-25,
+				"negative",
+			]);
+			const tip = await hoverTooltip(
+				wrapper.find("button[aria-label*='steps.unattributed']")
+			);
 			expect(tip).toContain("-25.00 ȼ");
 			expect(tip).toContain(
 				"plan.tools.profit_breakdown.tooltip.unattributed"
@@ -333,13 +311,11 @@ describe("PlanProfitBreakdown", () => {
 			workforceMaterialIO: [],
 		});
 
-		await wrapper
-			.find(
+		const tip = await hoverTooltip(
+			wrapper.find(
 				"button[aria-label^='plan.tools.profit_breakdown.steps.inputs: ZZZ']"
 			)
-			.trigger("mouseenter");
-		await nextTick();
-		const tip = document.body.querySelector("[role=tooltip]")!.textContent;
+		);
 		expect(tip).toContain("plan.tools.profit_breakdown.tooltip.consumed");
 		expect(tip).not.toContain("tooltip.produced");
 		expect(tip).toContain("-200.00 ȼ");

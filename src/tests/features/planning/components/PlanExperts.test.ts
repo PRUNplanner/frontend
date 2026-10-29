@@ -1,48 +1,21 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
 
 import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanExperts from "@/features/planning/components/PlanExperts.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { ExpertTypeSchema } from "@/features/api/schemas/planningData.schemas";
+import { experts } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
-import type { ExpertType } from "@/features/api/schemas/planningData.schemas";
 import type { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
 
-const EXPERTS: ExpertType[] = [
-	"Agriculture",
-	"Chemistry",
-	"Construction",
-	"Electronics",
-	"Food_Industries",
-	"Fuel_Refining",
-	"Manufacturing",
-	"Metallurgy",
-	"Resource_Extraction",
-];
-
-/** all experts at 0 / 0 %, overridden by `set` */
-function expertData(
-	set: Partial<Record<ExpertType, [number, number]>> = {}
-): IExpertRecord {
-	return Object.fromEntries(
-		EXPERTS.map((name) => [
-			name,
-			{
-				name,
-				amount: set[name]?.[0] ?? 0,
-				bonus: set[name]?.[1] ?? 0,
-			},
-		])
-	) as IExpertRecord;
-}
-
 async function mountExperts(props: Record<string, unknown> = {}) {
 	return mountComponent(PlanExperts, {
 		disabled: false,
-		expertData: expertData({
+		expertData: experts({
 			Chemistry: [2, 0.0536],
 			Metallurgy: [1, 0.0306],
 		}),
@@ -52,21 +25,17 @@ async function mountExperts(props: Record<string, unknown> = {}) {
 }
 
 // one row per shown field: name, "buildings · bonus" and a stepper
-const rows = (wrapper: VueWrapper) => wrapper.findAll("div.items-center.text-sm");
+const rows = (wrapper: VueWrapper) => wrapper.findAll("[data-expert-row]");
+// the name sits above the bonus
 const names = (wrapper: VueWrapper) =>
-	rows(wrapper).map((r) => r.find(".text-ink-strong").text());
+	rows(wrapper).map((r) => r.find(":scope > div > :first-child").text());
 const bonus = (wrapper: VueWrapper, index: number) =>
-	rows(wrapper).at(index)!.find(".text-xs");
+	rows(wrapper).at(index)!.find("[data-bonus]");
 const input = (wrapper: VueWrapper, index: number) =>
 	wrapper.findAll("input").at(index)!;
 const moreButton = (wrapper: VueWrapper) => wrapper.find("button[aria-expanded]");
-const warning = (wrapper: VueWrapper) => wrapper.find(".border-l-warning");
 
 describe("PlanExperts", () => {
-	beforeEach(() => {
-		vi.mocked(trackPlanEdit).mockClear();
-	});
-
 	it("lists only fields with experts, the rest behind a button", async () => {
 		const { wrapper } = await mountExperts();
 
@@ -132,8 +101,8 @@ describe("PlanExperts", () => {
 
 	it("has no more button when every field is used", async () => {
 		const { wrapper } = await mountExperts({
-			expertData: expertData(
-				Object.fromEntries(EXPERTS.map((e) => [e, [1, 0]]))
+			expertData: experts(
+				Object.fromEntries(ExpertTypeSchema.options.map((e) => [e, [1, 0]]))
 			),
 		});
 
@@ -153,43 +122,29 @@ describe("PlanExperts", () => {
 		const { wrapper } = await mountExperts();
 		await moreButton(wrapper).trigger("click");
 
-		// Agriculture, 0 %
+		// Agriculture, 0 %, against Chemistry's 5.36 %
 		expect(bonus(wrapper, 2).classes()).toContain("text-muted");
-		expect(bonus(wrapper, 0).classes()).not.toContain("text-muted");
+		expect(bonus(wrapper, 0).classes()).toContain("text-muted-strong");
 	});
 
-	it("does not warn at 6 experts", async () => {
-		// 5 + 1 = 6, the most a base can hold
-		const { wrapper } = await mountExperts({
-			expertData: expertData({ Chemistry: [5, 0.2], Metallurgy: [1, 0] }),
-		});
-
-		expect(warning(wrapper).exists()).toBe(false);
-	});
-
-	it("warns above 6 experts", async () => {
-		// 5 + 1 + 1 = 7
-		const { wrapper } = await mountExperts({
-			expertData: expertData({
+	// 6 is the most a base can hold: 5 + 1, then 5 + 1 + 1 = 7
+	it.each<[number, IExpertRecord, string[]]>([
+		[6, experts({ Chemistry: [5, 0.2], Metallurgy: [1, 0] }), []],
+		[
+			7,
+			experts({
 				Chemistry: [5, 0.2],
 				Metallurgy: [1, 0],
 				Agriculture: [1, 0],
 			}),
-		});
+			["plan.components.experts.warning"],
+		],
+	])("warns only above 6 experts: %i", async (_, expertData, warnings) => {
+		const { wrapper } = await mountExperts({ expertData });
 
-		expect(warning(wrapper).text()).toBe("plan.components.experts.warning");
-	});
-
-	it("warns once the amounts grow above 6", async () => {
-		const { wrapper, setProps } = await mountExperts();
-		expect(warning(wrapper).exists()).toBe(false);
-
-		// 4 + 3 = 7
-		await setProps({
-			expertData: expertData({ Chemistry: [4, 0], Metallurgy: [3, 0] }),
-		});
-
-		expect(warning(wrapper).exists()).toBe(true);
+		expect(wrapper.findAll("[role=status]").map((n) => n.text())).toEqual(
+			warnings
+		);
 	});
 
 	it("emits and tracks a new amount", async () => {
@@ -237,23 +192,16 @@ describe("PlanExperts", () => {
 		expect(trackPlanEdit).not.toHaveBeenCalled();
 	});
 
-	it("disables the inputs", async () => {
-		const { wrapper } = await mountExperts({ disabled: true });
+	it.each([true, false])(
+		"passes disabled: %s to the inputs",
+		async (disabled) => {
+			const { wrapper } = await mountExperts({ disabled });
 
-		expect(
-			wrapper
-				.findAll("input")
-				.every((i) => (i.element as HTMLInputElement).disabled)
-		).toBe(true);
-	});
-
-	it("enables the inputs", async () => {
-		const { wrapper } = await mountExperts();
-
-		expect(
-			wrapper
-				.findAll("input")
-				.some((i) => (i.element as HTMLInputElement).disabled)
-		).toBe(false);
-	});
+			expect(
+				wrapper
+					.findAll("input")
+					.map((i) => (i.element as HTMLInputElement).disabled)
+			).toEqual([disabled, disabled]);
+		}
+	);
 });

@@ -1,9 +1,7 @@
-import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeAll, vi } from "vitest";
 import { type VueWrapper, RouterLinkStub } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
-import { exchangesStore, materialsStore } from "@/database/stores";
-import { useMaterialData } from "@/database/services/useMaterialData";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
@@ -15,10 +13,10 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import PNotice from "@/ui/components/PNotice.vue";
 import PTag from "@/ui/components/PTag.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { cxFixture, fioProfile } from "@/tests/features/cx/cx.fixtures";
+import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // test data
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import materials from "@/tests/test_data/api_data_materials.json";
 import plan from "@/locales/en_US/plan.json";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
@@ -88,28 +86,20 @@ async function mountAnalysis(options: IMountOptions = {}) {
 	const pinia = createPinia();
 	const planningStore = usePlanningStore(pinia);
 	planningStore.setCXs([
-		// @ts-expect-error mock data
-		{
+		cxFixture({
 			uuid: CX_UUID,
-			cx_name: "CX",
+			name: "CX",
 			cx_data: {
-				cx_empire: [],
-				cx_planets: [],
 				ticker_empire: Object.entries(PRICES).map(
-					([ticker, value]) => ({ ticker, type: "BUY", value })
+					([ticker, value]) => ({ ticker, type: "BUY" as const, value })
 				),
-				ticker_planets: [],
 			},
-		},
+		}),
 	]);
 
 	const fio = options.fio ?? "none";
 	if (fio !== "none") {
-		// @ts-expect-error partial profile
-		useUserStore(pinia).profile = {
-			fio_apikey: "key",
-			prun_username: "user",
-		};
+		useUserStore(pinia).profile = fioProfile();
 		planningStore.setFIOStorageData({
 			storage_data: { planets: {}, warehouses: {}, ships: {} },
 			sites_data:
@@ -172,6 +162,12 @@ const pressedPreset = (wrapper: VueWrapper) =>
 		.filter((b: VueWrapper) => b.attributes("aria-pressed") === "true")
 		.map((b: VueWrapper) => b.text());
 
+/** the hint that the FIO data is more than a day old */
+const staleHint = (wrapper: VueWrapper) =>
+	wrapper
+		.find("[data-testid=repair-fio-note]")
+		.find(`[aria-label="${plan.tools.repair_analysis.fio.stale}"]`);
+
 async function selectRow(wrapper: VueWrapper, ticker: string) {
 	await rows(wrapper)
 		.find((r) => r.text().includes(`× ${ticker}`))!
@@ -189,14 +185,7 @@ function stubPhone(phone: boolean) {
 
 describe("PlanRepairAnalysis", () => {
 	beforeAll(async () => {
-		// @ts-expect-error mock data
-		await exchangesStore.setMany(exchanges);
-		await materialsStore.setMany(materials);
-		await useMaterialData().preload();
-	});
-
-	beforeEach(() => {
-		vi.mocked(trackEvent).mockClear();
+		await setupPlanningTestData();
 	});
 
 	it("lists every type, most expensive repair first, at its best day", async () => {
@@ -255,12 +244,13 @@ describe("PlanRepairAnalysis", () => {
 	it("updates the plan's repair bill with the interval", async () => {
 		const { wrapper } = await mountAnalysis();
 		const bill = () => wrapper.find("[data-testid=repair-stats]").text();
-		const before = bill();
+		// one repair of every building: older ones cost more to repair
+		expect(bill()).toContain("750 ȼ · 8.8 t · 7.1 m³");
 
 		rowField(wrapper, "FRM").vm.$emit("update:value", 180);
 		await wrapper.vm.$nextTick();
 
-		expect(bill()).not.toBe(before);
+		expect(bill()).toContain("1,650 ȼ · 13.6 t · 14.9 m³");
 	});
 
 	it("warns on both fields outside the good range", async () => {
@@ -434,30 +424,24 @@ describe("PlanRepairAnalysis", () => {
 		expect(wrapper.findAll(".repair-fio-marker")).toHaveLength(0);
 	});
 
-	it("reads FIO dates restored from storage as strings", async () => {
-		const { wrapper } = await mountAnalysis({
-			fio: "site",
-			restored: true,
-			fioAgeDays: 2,
-		});
+	it("reads FIO repair dates restored from storage as strings", async () => {
+		const { wrapper } = await mountAnalysis({ fio: "site", restored: true });
 
 		const frmRow = rows(wrapper).find((r) => r.text().includes("× FRM"))!;
 		expect(frmRow.findComponent(PTag).text()).toBe("Overdue 5 d");
-		expect(
-			wrapper.find("[data-testid=repair-fio-note] .ptooltip").exists()
-		).toBe(true);
 	});
 
 	it("explains FIO data older than a day", async () => {
 		const fresh = await mountAnalysis({ fio: "site" });
-		expect(
-			fresh.wrapper.find("[data-testid=repair-fio-note] .ptooltip").exists()
-		).toBe(false);
+		expect(staleHint(fresh.wrapper).exists()).toBe(false);
 
-		const { wrapper } = await mountAnalysis({ fio: "site", fioAgeDays: 2 });
-		expect(
-			wrapper.find("[data-testid=repair-fio-note] .ptooltip").exists()
-		).toBe(true);
+		// restored from storage, so the update time is a string too
+		const { wrapper } = await mountAnalysis({
+			fio: "site",
+			fioAgeDays: 2,
+			restored: true,
+		});
+		expect(staleHint(wrapper).exists()).toBe(true);
 	});
 
 	it("on a shared plan: no FIO parts and no notice, whatever the store holds", async () => {

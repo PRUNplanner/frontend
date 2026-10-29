@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from "vitest";
-import { h } from "vue";
 import type { VueWrapper } from "@vue/test-utils";
 
 import RepairBuildingDetail from "@/features/repair_analysis/components/RepairBuildingDetail.vue";
@@ -15,13 +14,10 @@ import {
 import plan from "@/locales/en_US/plan.json";
 
 // fake tickers, the tile only renders
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: () => h("div"),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const building = repairBuilding();
 

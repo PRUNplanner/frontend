@@ -129,7 +129,7 @@
 				v-for="inf in infrastructureOrder"
 				:key="inf"
 				class="flex items-center justify-between gap-2">
-				<span class="font-mono text-ink-strong">{{ inf }}</span>
+				<span class="font-mono text-ink-strong" data-ticker>{{ inf }}</span>
 				<PInputNumber
 					:aria-label="
 						t('plan.components.infrastructure.amount_label', {

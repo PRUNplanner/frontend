@@ -6,8 +6,6 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
-import { exchangesStore, materialsStore } from "@/database/stores";
-import { useMaterialData } from "@/database/services/useMaterialData";
 import { useExchangeData } from "@/database/services/useExchangeData";
 import { usePlanningStore } from "@/stores/planningStore";
 import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
@@ -16,15 +14,13 @@ import SaveBar from "@/features/save_bar/components/SaveBar.vue";
 import SaveConflictDialog from "@/features/save_conflict/components/SaveConflictDialog.vue";
 import SaveConflictNotice from "@/features/save_conflict/components/SaveConflictNotice.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import { cxFixture } from "@/tests/features/cx/cx.fixtures";
+import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
 import type { VueWrapper } from "@vue/test-utils";
 import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
 import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.types";
-
-// test data
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import materials from "@/tests/test_data/api_data_materials.json";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
 
@@ -119,13 +115,13 @@ const SKY = empire("00000002-0000-4000-8000-000000000000", "Sky Productions");
 
 function seedCX(pinia: Pinia, data: CXData, empires = [SKY]) {
 	usePlanningStore(pinia).setCXs([
-		{
+		cxFixture({
 			uuid: CX_UUID,
-			cx_name: "Home NC1",
+			name: "Home NC1",
 			cx_data: data,
 			empires,
 			modified_at: "v1",
-		},
+		}),
 	]);
 }
 
@@ -170,15 +166,12 @@ const putPayload = () => JSON.parse(mock.history.put.at(-1)!.data);
 describe("PlanCOGM", () => {
 	beforeEach(async () => {
 		axiosSetup();
-		// @ts-expect-error mock data
-		await exchangesStore.setMany(exchanges);
-		await materialsStore.setMany(materials);
-		await useMaterialData().preload();
+		await setupPlanningTestData();
+		// a fresh exchange cache for every test, not only the first
 		await useExchangeData().preload(true);
 	});
 
 	beforeEach(() => {
-		vi.mocked(trackEvent).mockClear();
 		planData.bases = planData.cogms = undefined;
 		mock.reset();
 		// the backend answers with the saved CX
@@ -614,7 +607,10 @@ describe("PlanCOGM", () => {
 				]);
 				// the dialog's look at the saved version
 				mock.onGet().reply(500);
-				vi.spyOn(console, "error").mockImplementation(() => {});
+				const error = vi
+					.spyOn(console, "error")
+					.mockImplementation(() => {});
+				return () => error.mockRestore();
 			});
 
 			const dialog = async (wrapper: VueWrapper) => {

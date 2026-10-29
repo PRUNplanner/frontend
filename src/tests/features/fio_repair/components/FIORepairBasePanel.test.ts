@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DOMWrapper, flushPromises, RouterLinkStub } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
-import { h } from "vue";
 
 import fio from "@/locales/en_US/fio.json";
 
@@ -27,15 +26,10 @@ import {
 import type { IFIORepairBase } from "@/features/fio_repair/fioRepair.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render(this: { ticker: string }) {
-			return h("span", this.ticker);
-		},
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 const messages = { fio };
 const FLIGHT = {

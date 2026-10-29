@@ -53,7 +53,9 @@ pnpm test:coverage                          # unit + component tests, one merged
 - **Per-test reset.** The setup file also clears `localStorage` and
   `sessionStorage` before each test and calls `vi.useRealTimers()` after
   it; the config undoes `vi.stubGlobal` / `vi.stubEnv` after each test
-  (`unstubGlobals`, `unstubEnvs`). Node 25+ shadows jsdom's storage with an
+  (`unstubGlobals`, `unstubEnvs`) and clears every mock's calls before
+  each test (`clearMocks`; implementations stay, so set the one a test
+  needs in `beforeEach`). Node 25+ shadows jsdom's storage with an
   undefined global: run tests on the `.nvmrc` Node, or stub it with
   `memoryStorage()` from `src/tests/memoryStorage.ts`.
 - **Env vars.** `import.meta.env` comes from `loadEnv("", "")`.
@@ -118,7 +120,12 @@ vi.mock("@/database/services/usePlanetData", …); // getPlanet → fixture
 Preload exchanges and buildings too if the code under test reads them
 synchronously (the planning engine, `PriceBook`). The planning tests share
 `setupPlanningTestData()` and the plan builders in
-`src/tests/features/planning/usePlanCalculation.fixtures.ts`.
+`src/tests/features/planning/usePlanCalculation.fixtures.ts`,
+with builders for hand-made results: `building`, `option`, `activeRecipe`,
+`m`, `io`, `wf` (luxuries on unless `lux` is false) and `experts`.
+Exchange preferences come from `cxFixture()` (and the FIO profile from
+`fioProfile()`) in `src/tests/features/cx/cx.fixtures.ts`, market checks
+from `marketCheck()` in `src/tests/features/cx/marketCheck.fixtures.ts`.
 
 Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
 
@@ -166,6 +173,7 @@ Write them for logic-heavy components, see
   each test. `withDialog` renders `PConfirmHost` for `useConfirm()`;
   `messages` (en_US) lets `<i18n-t>` render its slots.
   `setProps` updates props, `component.emitted()` holds emitted events.
+  `piniaWithCX(uuid, name)` gives a Pinia whose store holds one CX.
 - **Data**: seed fixtures into the IndexedDB stores and preload, as in
   engine tests. Mock the backend with axios-mock-adapter and assert on
   `mock.history` request bodies. Payloads are Zod-validated, so use real
@@ -185,6 +193,10 @@ Write them for logic-heavy components, see
 - **Children** with their own test get the same kind of stub. Assert the
   props you hand them and fire their events with `stub.vm.$emit(...)`; see
   `PlanProduction.test.ts`.
+  `stubComponent(name, props)` in `src/tests/stubs.ts` builds one in the
+  module shape `vi.mock` wants, `materialTile` is the shared MaterialTile;
+  load them inside the factory
+  (`async () => (await import("@/tests/stubs")).materialTile`).
 - **File inputs**: define `files` on the hidden `<input type="file">` and
   `trigger("change")`, then `vi.waitFor` the parse; see
   `ExchangesView.test.ts`.
@@ -200,6 +212,7 @@ Write them for logic-heavy components, see
   `ResizeObserver`. Test utils stub the transitions, so a closed modal or
   drawer is gone at once; `findComponent(PDrawer).props("show")` also
   works, see `HelpDrawer.test.ts`.
+  `hoverTooltip(el)` hovers an element and returns its tooltip's text.
 - **Number inputs**: `PInputNumber` sets its `v-model` to `null` while
   the field is empty. A setter that emits it needs a null guard, and a
   test that clears the input; see `PlanArea.test.ts`.

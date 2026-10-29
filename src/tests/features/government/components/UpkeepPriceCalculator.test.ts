@@ -1,6 +1,5 @@
 import { afterEach, describe, it, expect, vi } from "vitest";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
-import { h } from "vue";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
@@ -32,15 +31,10 @@ vi.mock("@/features/cx/usePrice", async (importOriginal) => {
 		},
 	};
 });
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render(this: { ticker: string }) {
-			return h("span", this.ticker);
-		},
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 
 // no exchange data, materials without a CX price cost 0
 const CX_CHEAP = "00000001-0000-4000-8000-000000000000";

@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { h } from "vue";
 
 import CXPlanetPrices from "@/features/exchanges/components/CXPlanetPrices.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
@@ -15,13 +14,10 @@ import type {
 } from "@/features/exchanges/useExchangePlanData.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
-vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
-	default: {
-		name: "MaterialTile",
-		props: { ticker: String },
-		render: (ctx: { ticker: string }) => h("span", ctx.ticker),
-	},
-}));
+vi.mock(
+	"@/features/material_tile/components/MaterialTile.vue",
+	async () => (await import("@/tests/stubs")).materialTile
+);
 // the ladder has its own test
 vi.mock("@/features/exchanges/components/CXPriceLadder.vue", () => ({
 	default: {

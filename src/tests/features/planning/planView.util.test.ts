@@ -6,19 +6,7 @@ import {
 	materialIOTotals,
 	type PlanTool,
 } from "@/features/planning/planView.util";
-import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
-
-const io = (ticker: string, delta: number, price: number): IMaterialIO => ({
-	ticker,
-	input: delta < 0 ? -delta : 0,
-	output: delta > 0 ? delta : 0,
-	delta,
-	price,
-	individualWeight: 1,
-	individualVolume: 1,
-	totalWeight: delta,
-	totalVolume: delta / 2,
-});
+import { io } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 describe("foldedPanes", () => {
 	it("folds Base on the production list too (only 81–100rem, by CSS)", () => {
@@ -42,9 +30,9 @@ describe("materialIOTotals", () => {
 	it("splits exports and imports by the delta's sign", () => {
 		expect(
 			materialIOTotals([
-				io("RAT", 10, 500),
-				io("H2O", -20, -80),
-				io("DW", 0, 0),
+				io("RAT", 10, { price: 500 }),
+				io("H2O", -20, { price: -80 }),
+				io("DW", 0),
 			])
 		).toStrictEqual({ exports: 500, imports: -80 });
 	});
@@ -52,7 +40,8 @@ describe("materialIOTotals", () => {
 
 describe("materialIOCsv", () => {
 	it("writes a header and one line per material", () => {
-		expect(materialIOCsv([io("RAT", 10, 500)])).toBe(
+		const rat = io("RAT", 10, { price: 500, totalWeight: 10, totalVolume: 5 });
+		expect(materialIOCsv([rat])).toBe(
 			"ticker,input,output,delta,value,weight,volume\nRAT,0,10,10,500,10,5"
 		);
 	});
