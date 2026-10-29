@@ -84,6 +84,7 @@
 			"title_editing": "Modifier l'alerte",
 			"info": "Les alertes sont actuellement stockées uniquement sur cet appareil et ne sont pas synchronisées avec ton compte.",
 			"no_alerts": "Aucune alerte trouvée. Commence par créer ton premier signal de détection",
+			"new_alert_name": "New Alert",
 			"buttons": {
 				"create_alert": "Créer une alerte",
 				"discard": "@:common.buttons.discard",
