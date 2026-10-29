@@ -155,7 +155,9 @@ describe("PlanResultsBar", () => {
 		// 123.456 days
 		expect(payback.text()).toContain("123.46 d");
 		expect(payback.text()).toContain(formatPayback(123.456));
-		expect(payback.text()).toContain("Build 1,500,000 ȼ");
+		expect(payback.find("[data-build-cost]").text()).toContain(
+			"1,500,000 ȼ build cost"
+		);
 	});
 
 	it("shows a payback that never comes", async () => {
