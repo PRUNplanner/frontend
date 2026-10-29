@@ -631,7 +631,7 @@
 		"profit": "Profit / day",
 		"revenue_cost": "Revenue\u00a0{revenue} · cost\u00a0{cost} incl.\u00a0{degradation}\u00a0degradation",
 		"payback": "Payback",
-		"build": "Build {cost} ȼ",
+		"build_cost": "ȼ build cost",
 		"profit_per_area": "ȼ profit / area",
 		"empire_average": "Empire {value}",
 		"area": "Area",
