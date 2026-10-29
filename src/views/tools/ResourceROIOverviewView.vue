@@ -13,6 +13,7 @@
 	// Composables
 	import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { useStoredFlag } from "@/lib/storage";
 
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
@@ -49,22 +50,9 @@
 	/*
 	 * Chart drawer: open state kept in this browser
 	 */
-	const CHART_KEY = "prunplanner_resource_roi_chart";
-	function readChartOpen(): boolean {
-		try {
-			return localStorage.getItem(CHART_KEY) === "1";
-		} catch {
-			return false;
-		}
-	}
-	const refChartOpen: Ref<boolean> = ref(readChartOpen());
+	const refChartOpen = useStoredFlag("prunplanner_resource_roi_chart", false);
 	watch(refChartOpen, (open) => {
 		if (open) trackEvent("resource_roi:chart_open");
-		try {
-			localStorage.setItem(CHART_KEY, open ? "1" : "0");
-		} catch {
-			// storage blocked: open for this page only
-		}
 	});
 	const hasResults = computed(
 		() => !refIsLoading.value && resultData.value.length > 0
@@ -132,12 +120,9 @@
 							class="w-50" />
 						<div>{{ $t("resource_roi.cx_select") }}</div>
 						<CXPreferenceSelector
+							v-model:cx-uuid="refSelectedCXUuid"
 							:aria-label="$t('resource_roi.cx_select')"
-							:cx-uuid="refSelectedCXUuid"
-							class="w-50"
-							@update:cxuuid="
-								(value) => (refSelectedCXUuid = value)
-							" />
+							class="w-50" />
 						<PButton
 							:disabled="!refSearchMaterial"
 							:loading="refIsLoading"

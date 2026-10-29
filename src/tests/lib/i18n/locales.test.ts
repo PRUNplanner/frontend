@@ -80,13 +80,13 @@ describe("localeLazyLoaders", () => {
 			path.startsWith("/src/locales/de_DE/")
 		);
 
-		const modules = await Promise.all(
+		const messages = await Promise.all(
 			files.map((path) => localeLazyLoaders[path]())
 		);
 
 		expect(files.length).toBeGreaterThan(0);
-		for (const mod of modules)
-			expect(typeof (mod as { default: object }).default).toBe("object");
+		for (const mod of messages)
+			expect(typeof mod).toBe("object");
 	});
 });
 

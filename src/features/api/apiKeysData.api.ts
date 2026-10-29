@@ -22,6 +22,6 @@ export async function callPostCreateAPIKey(
 	);
 }
 
-export async function callDeleteAPIKey(id: string): Promise<boolean> {
+export async function callDeleteAPIKey(id: string): Promise<void> {
 	return apiService.delete(`/user/api/keys/${id}/`);
 }

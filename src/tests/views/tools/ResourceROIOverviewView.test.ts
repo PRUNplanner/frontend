@@ -252,7 +252,7 @@ describe("ResourceROIOverviewView search", () => {
 		await flushPromises();
 		expect(selector().props("cxUuid")).toBe("cx-1");
 
-		selector().vm.$emit("update:cxuuid", "cx-2");
+		selector().vm.$emit("update:cxUuid", "cx-2");
 		await flushPromises();
 		expect(selector().props("cxUuid")).toBe("cx-2");
 	});

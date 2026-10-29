@@ -61,9 +61,9 @@ export async function callCreateCX(cxName: string): Promise<CX> {
  * @export
  * @async
  * @param {string} cxUuid CX Uuid
- * @returns {Promise<boolean>} Deletion status
+ * @returns {Promise<void>} Resolves once deleted
  */
-export async function callDeleteCX(cxUuid: string): Promise<boolean> {
+export async function callDeleteCX(cxUuid: string): Promise<void> {
 	return apiService.delete(`/planning/cx/${cxUuid}/`);
 }
 

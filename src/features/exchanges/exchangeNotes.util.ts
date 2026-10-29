@@ -1,3 +1,5 @@
+import { isEqual, sortBy } from "lodash-es";
+
 // Prices
 import {
 	findExchangeRule,
@@ -14,6 +16,7 @@ import {
 // Types & Interfaces
 import type {
 	CXData,
+	CXDataExchangeOption,
 	CXExchangeOptionType,
 } from "@/features/api/schemas/cxData.schemas";
 import type {
@@ -62,9 +65,10 @@ interface INotesInput {
 
 const sorted = (values: Iterable<string>) => [...new Set(values)].sort();
 
-const sameRules = (a: unknown[], b: unknown[]) =>
-	JSON.stringify(a.map((e) => JSON.stringify(e)).sort()) ===
-	JSON.stringify(b.map((e) => JSON.stringify(e)).sort());
+// the same rules in any order
+const RULE_KEYS = ["type", "exchange"];
+const sameRules = (a: CXDataExchangeOption[], b: CXDataExchangeOption[]) =>
+	isEqual(sortBy(a, RULE_KEYS), sortBy(b, RULE_KEYS));
 
 /**
  * Notes on a preference's rules, over the edited rules and the linked

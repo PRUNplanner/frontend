@@ -10,6 +10,7 @@
 	// Composables
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { isApiError } from "@/lib/apiError";
 	import { useVersionCheck } from "@/lib/useVersionCheck";
 	import { useNavigation } from "@/layout/components/navigation/useNavigation";
 
@@ -76,8 +77,8 @@
 				// still 404 for an error before any FIO data arrived
 				useQuery("GetFIOStorage")
 					.execute()
-					.catch((err: { status?: number }) => {
-						if (err.status !== 404) throw err;
+					.catch((err: unknown) => {
+						if (!isApiError(err) || err.status !== 404) throw err;
 					});
 			} else {
 				queryStore.invalidateKey(["gamedata", "fio"], {

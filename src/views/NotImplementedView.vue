@@ -1,8 +1,10 @@
 <script setup lang="ts">
 	import { useHead } from "@unhead/vue";
 
-	// the page itself is English only
-	useHead({ title: "Feature Not Yet Implemented" });
+	import { useI18n } from "vue-i18n";
+	const { t } = useI18n();
+
+	useHead({ title: t("common.not_implemented.title") });
 
 	// UI
 	import { PIcon } from "@/ui";
@@ -17,26 +19,30 @@
 				<PIcon :size="40" class="text-white/38">
 					<HourglassEmptySharp />
 				</PIcon>
-				<div class="mt-2 text-muted">Feature Not Yet Implemented</div>
+				<div class="mt-2 text-muted">
+					{{ t("common.not_implemented.title") }}
+				</div>
 				<div class="mt-3 text-center text-white/82">
-					<div>
-						PRUNplanner v2 is Open Source. Check out the
-						<a
-							href="https://github.com/PRUNplanner/frontend"
-							target="_blank"
-							class="text-link-primary hover:underline">
-							Github repository</a
-						>.
-					</div>
-					<div>
-						Get in touch on the
-						<a
-							href="https://discord.gg/2MDR5DYSfY"
-							target="_blank"
-							class="text-link-primary hover:underline"
-							>PrUn Community Tools Discord</a
-						>.
-					</div>
+					<i18n-t keypath="common.not_implemented.open_source" tag="div">
+						<template #link>
+							<a
+								href="https://github.com/PRUNplanner/frontend"
+								target="_blank"
+								class="text-link-primary hover:underline">
+								{{ t("common.not_implemented.repository") }}</a
+							>
+						</template>
+					</i18n-t>
+					<i18n-t keypath="common.not_implemented.contact" tag="div">
+						<template #link>
+							<a
+								href="https://discord.gg/2MDR5DYSfY"
+								target="_blank"
+								class="text-link-primary hover:underline"
+								>{{ t("common.not_implemented.discord") }}</a
+							>
+						</template>
+					</i18n-t>
 				</div>
 			</div>
 		</div>

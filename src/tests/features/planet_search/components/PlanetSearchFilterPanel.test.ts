@@ -63,6 +63,8 @@ async function mountPanel(
 	const facets = facetCounts(index, f, ctx, indexMaterials([]), []);
 	const { component } = await mountComponent(PlanetSearchFilterPanel, {
 		filter: f,
+		// bound like the page: the filter only changes through the prop
+		"onUpdate:filter": () => {},
 		facets,
 		materials: ["FEO", "H2O"],
 		maxDaily: { FEO: 44.1 },
@@ -238,6 +240,7 @@ async function mountWith(props: Record<string, unknown>) {
 		planetNames: {},
 		...props,
 		filter,
+		"onUpdate:filter": () => {},
 	});
 	return component as VueWrapper;
 }

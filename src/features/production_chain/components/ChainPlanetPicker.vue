@@ -3,6 +3,9 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Composables
+	import { useSortState } from "@/features/production_chain/useSortState";
+
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PlanetPlots from "@/features/planet_search/components/PlanetPlots.vue";
@@ -88,8 +91,10 @@
 	const cogcOnly = ref(false);
 	const lmOnly = ref(false);
 	const text = ref("");
-	const sortKey = ref<ISortKey>("rate");
-	const sortDir = ref<1 | -1>(-1);
+	const { sortKey, sortDir, sortBy, ariaSort } = useSortState<ISortKey>(
+		"rate",
+		(key) => key === "rate"
+	);
 
 	const now = Date.now();
 	const entries = computed(
@@ -197,21 +202,6 @@
 	const maxRate = computed(() =>
 		Math.max(1e-9, ...rows.value.map((r) => r.site.dailyExtraction))
 	);
-
-	function sortBy(key: ISortKey): void {
-		if (sortKey.value === key) sortDir.value = sortDir.value === 1 ? -1 : 1;
-		else {
-			sortKey.value = key;
-			sortDir.value = key === "rate" ? -1 : 1;
-		}
-	}
-
-	const ariaSort = (key: ISortKey) =>
-		sortKey.value === key
-			? sortDir.value === 1
-				? "ascending"
-				: "descending"
-			: undefined;
 
 	const columns: { key: ISortKey; numeric?: boolean }[] = [
 		{ key: "name" },

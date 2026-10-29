@@ -36,7 +36,6 @@ const config = {
 		},
 	},
 	ignore: ["src/globals.d.ts", "src/router/router.d.ts"],
-	ignoreDependencies: ["fast-equals"],
 	include: [
 		"exports",
 		"types",

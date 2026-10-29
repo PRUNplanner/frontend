@@ -1,11 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		type ComputedRef,
-		type PropType,
-		watch,
-		type WritableComputedRef,
-	} from "vue";
+	import { computed, type ComputedRef, watch } from "vue";
 
 	// Composables
 	import { useCXData } from "@/features/cx/useCXData";
@@ -17,40 +11,25 @@
 	// UI
 	import { PSelect } from "@/ui";
 
-	const props = defineProps({
-		cxUuid: {
-			type: String,
-			required: false,
-			default: undefined,
-		},
-		selectClass: {
-			type: String,
-			required: false,
-			default: "",
-		},
-		addUndefinedCX: {
-			type: Boolean,
-			required: false,
-			default: true,
-		},
-		size: {
-			type: String as PropType<SizeKey>,
-			required: false,
-			default: "md",
-		},
-		// false: the given cxUuid wins over the user's default, e.g. one from a link
-		followDefault: {
-			type: Boolean,
-			required: false,
-			default: true,
-		},
-	});
+	const props = withDefaults(
+		defineProps<{
+			selectClass?: string;
+			addUndefinedCX?: boolean;
+			size?: SizeKey;
+			// false: the given cxUuid wins over the user's default, e.g. one from a link
+			followDefault?: boolean;
+		}>(),
+		{
+			selectClass: "",
+			addUndefinedCX: true,
+			size: "md",
+			followDefault: true,
+		}
+	);
 
-	let { defaultCXUuid } = usePreferences();
+	const cxUuid = defineModel<string | undefined>("cxUuid");
 
-	const emit = defineEmits<{
-		(e: "update:cxuuid", value: string | undefined): void;
-	}>();
+	const { defaultCXUuid } = usePreferences();
 
 	const preferenceOptions: PSelectOption[] = useCXData().getPreferenceOptions(
 		props.addUndefinedCX
@@ -63,26 +42,28 @@
 			: undefined
 	);
 
-	const localCXUuid: WritableComputedRef<string | undefined> = computed({
-		get: () =>
+	// shown: the default CX, else the CX the parent passed
+	const shownCXUuid: ComputedRef<string | undefined> = computed(
+		() =>
 			(props.followDefault ? validDefaultCXUuid.value : undefined) ??
-			props.cxUuid,
-		set: (value: string | undefined) => {
-			emit("update:cxuuid", value);
-			defaultCXUuid.value = value;
-		},
-	});
+			cxUuid.value
+	);
+
+	function pick(value: string | undefined): void {
+		cxUuid.value = value;
+		defaultCXUuid.value = value;
+	}
 
 	// the parent calculates with its CX, keep it on the one shown here
 	watch(
-		() => props.cxUuid,
-		(cxUuid) => {
+		() => cxUuid.value,
+		(current) => {
 			if (
 				props.followDefault &&
 				validDefaultCXUuid.value &&
-				validDefaultCXUuid.value !== cxUuid
+				validDefaultCXUuid.value !== current
 			)
-				emit("update:cxuuid", validDefaultCXUuid.value);
+				cxUuid.value = validDefaultCXUuid.value;
 		},
 		{ immediate: true }
 	);
@@ -90,10 +71,11 @@
 
 <template>
 	<PSelect
-		v-model:value="localCXUuid"
+		:value="shownCXUuid"
 		:options="preferenceOptions"
 		clearable
 		searchable
 		:size="size"
-		:class="selectClass" />
+		:class="selectClass"
+		@update:value="(v) => pick(v as string | undefined)" />
 </template>

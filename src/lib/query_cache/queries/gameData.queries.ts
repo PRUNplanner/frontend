@@ -2,6 +2,8 @@ import config from "@/lib/config";
 
 // Stores
 import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { isApiError } from "@/lib/apiError";
+import { readStorage, writeStorage } from "@/lib/storage";
 import { usePlanningStore } from "@/stores/planningStore";
 import type { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
 import {
@@ -167,7 +169,7 @@ const MARKET_SUMMARY_KEY = "prunplanner_market_summary";
 function readMarketSummary(): MarketSummary | null {
 	try {
 		const parsed = MarketSummarySchema.safeParse(
-			JSON.parse(localStorage.getItem(MARKET_SUMMARY_KEY) ?? "null")
+			JSON.parse(readStorage(MARKET_SUMMARY_KEY) ?? "null")
 		);
 		return parsed.success ? parsed.data : null;
 	} catch {
@@ -175,12 +177,9 @@ function readMarketSummary(): MarketSummary | null {
 	}
 }
 
+// storage full or blocked: the next visit fetches it
 function writeMarketSummary(data: MarketSummary): void {
-	try {
-		localStorage.setItem(MARKET_SUMMARY_KEY, JSON.stringify(data));
-	} catch {
-		// storage full or blocked: the next visit fetches it
-	}
+	writeStorage(MARKET_SUMMARY_KEY, JSON.stringify(data));
 }
 
 const planetsExpireTime = staleMinutes(config.GAME_DATA_STALE_MINUTES_PLANETS);
@@ -296,8 +295,8 @@ export const gameDataQueries = {
 			planetNaturalId: string;
 		}): Promise<PopulationReport | null> =>
 			callPlanetLastPOPR(params.planetNaturalId).catch(
-				(err: { status?: number }) => {
-					if (err.status === 404) return null;
+				(err: unknown) => {
+					if (isApiError(err) && err.status === 404) return null;
 					throw err;
 				}
 			),

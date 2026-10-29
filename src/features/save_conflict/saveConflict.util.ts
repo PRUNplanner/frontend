@@ -1,5 +1,7 @@
 import { isEqual } from "lodash-es";
 
+import { isApiError } from "@/lib/apiError";
+
 // Types & Interfaces
 import type {
 	IChangeLine,
@@ -14,12 +16,10 @@ import type {
  * @returns {"conflict" | "deleted" | null} Reason
  */
 export function getSaveError(err: unknown): "conflict" | "deleted" | null {
-	const { status, responseData } = (err ?? {}) as {
-		status?: number;
-		responseData?: { code?: string };
-	};
-	if (status === 409 && responseData?.code === "conflict") return "conflict";
-	if (status === 404) return "deleted";
+	if (!isApiError(err)) return null;
+	const code = (err.responseData as { code?: unknown } | undefined)?.code;
+	if (err.status === 409 && code === "conflict") return "conflict";
+	if (err.status === 404) return "deleted";
 	return null;
 }
 

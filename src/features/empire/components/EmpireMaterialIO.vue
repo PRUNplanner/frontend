@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { type PropType, computed, ref, watch } from "vue";
+	import { computed, ref, watch } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -32,33 +32,19 @@
 
 	import type { PDataTableColumn } from "@/ui/ui.types";
 
-	const props = defineProps({
-		empireMaterialIO: {
-			type: Array as PropType<IEmpireMaterialIO[]>,
-			required: true,
-		},
+	const props = defineProps<{
+		empireMaterialIO: IEmpireMaterialIO[];
 		// market flags of the empire's net flow per ticker
-		checks: {
-			type: Object as PropType<Map<string, IMarketCheck>>,
-			required: false,
-			default: undefined,
-		},
+		checks?: Map<string, IMarketCheck>;
 		// each plan's own share per flagged ticker
-		planShares: {
-			type: Object as PropType<
-				Map<string, { name: string; sharePct: number | null }[]>
-			>,
-			required: false,
-			default: undefined,
-		},
-	});
+		planShares?: Map<string, { name: string; sharePct: number | null }[]>;
+	}>();
 
 	const flagged = (ticker: string) => flaggedCheck(props.checks, ticker);
 
 	const expandAll = defineModel<boolean>("expandAll", { default: false });
 
 	// Local State
-	const localEmpireMaterialIO = computed(() => props.empireMaterialIO);
 	const expandedKeys = ref<string[]>([]);
 	const detailView = ref<"sides" | "net">("sides");
 
@@ -180,7 +166,7 @@
 		class="flex-1 min-h-0 max-xl:flex-none max-xl:h-[calc(100dvh-8rem)]">
 		<PDataTable
 			:columns="columns"
-			:data="localEmpireMaterialIO"
+			:data="empireMaterialIO"
 			:row-key="rowKey"
 			:expanded-row-keys="expandedKeys"
 			:expand-label="expandLabel"

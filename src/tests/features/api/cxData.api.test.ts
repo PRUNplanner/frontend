@@ -51,7 +51,7 @@ describe("CX Data API Calls", async () => {
 
 		mock.onDelete("/planning/cx/foo/").reply(200, true);
 
-		expect(await callDeleteCX("foo")).toBeTruthy();
+		await expect(callDeleteCX("foo")).resolves.toBeUndefined();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
 	});
 

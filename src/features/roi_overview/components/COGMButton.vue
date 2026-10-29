@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { type PropType, ref, type Ref } from "vue";
+	import { ref, type Ref } from "vue";
 
 	// Components
 	import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
@@ -8,13 +8,7 @@
 	import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
 	import { AnalyticsOutlined } from "@vicons/material";
 
-	defineProps({
-		cogmData: {
-			type: Object as PropType<IProductionBuildingRecipeCOGM>,
-			required: false,
-			default: undefined,
-		},
-	});
+	defineProps<{ cogmData?: IProductionBuildingRecipeCOGM }>();
 
 	const refShowCOGM: Ref<boolean> = ref(false);
 </script>
@@ -23,7 +17,7 @@
 	<PModal
 		key="COGM"
 		v-model:show="refShowCOGM"
-		title="Cost Of Goods Manufactured"
+		:title="$t('plan.components.production_recipe.cogm_title')"
 		:width="600">
 		<PlanCOGM v-if="cogmData" :cogm-data="cogmData" />
 	</PModal>
@@ -32,6 +26,6 @@
 		type="secondary"
 		:disabled="cogmData === undefined"
 		@click="() => (refShowCOGM = true)">
-		<template #icon><AnalyticsOutlined /> </template>COGM
+		<template #icon><AnalyticsOutlined /> </template>{{ $t("terms.cogm") }}
 	</PButton>
 </template>

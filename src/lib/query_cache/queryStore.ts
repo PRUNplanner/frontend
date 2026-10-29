@@ -10,6 +10,7 @@ import {
 import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { onSessionReset } from "@/lib/sessionReset";
 import { reportClientError } from "@/lib/clientErrors";
+import { isApiError } from "@/lib/apiError";
 
 import type {
 	IMutationDefinition,
@@ -32,8 +33,8 @@ import type {
  * @returns {boolean} Transient error
  */
 function isTransientError(err: Error): boolean {
-	if (!("status" in err)) return false;
-	const status = (err as { status?: number }).status;
+	if (!isApiError(err)) return false;
+	const status = err.status;
 	return status === undefined || status === 429 || status >= 500;
 }
 
@@ -492,8 +493,10 @@ export const useQueryStore = defineStore(
 						: refreshed && isTransientError(entry.error)
 							? entry.errorAt
 							: undefined;
-				const retryAfter = (entry.error as { retryAfter?: number } | null)
-					?.retryAfter;
+				const { error } = entry;
+				const retryAfter = isApiError(error)
+					? error.retryAfter
+					: undefined;
 				const wait =
 					retryAfter === undefined ? entry.expireTime : retryAfter * 1000;
 

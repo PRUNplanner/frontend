@@ -27,7 +27,7 @@ const mock = new AxiosMockAdapter(apiService.client);
 const RESET_URL = /user\/password_reset\/$/;
 
 const THROTTLED = "account.components.password_reset.throttled";
-const ERROR = "An error occured. Check your Email, Code and Password.";
+const ERROR = "account.components.password_reset.error";
 
 async function reset(): Promise<VueWrapper> {
 	const { wrapper } = await mountComponent(PasswordReset, {

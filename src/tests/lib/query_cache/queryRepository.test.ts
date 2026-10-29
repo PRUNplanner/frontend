@@ -182,7 +182,7 @@ describe("queryRepository", () => {
 		const queryStore = useQueryStore();
 		// @ts-expect-error mock data
 		vi.mocked(callClonePlan).mockResolvedValue(plan);
-		vi.mocked(callDeletePlan).mockResolvedValue(true);
+		vi.mocked(callDeletePlan).mockResolvedValue(undefined);
 
 		expect(
 			await queryStore.execute("ClonePlan", {
@@ -192,7 +192,7 @@ describe("queryRepository", () => {
 		).toStrictEqual(plan);
 		expect(
 			await queryStore.execute("DeletePlan", { planUuid: "plan-1" })
-		).toBe(true);
+		).toBeUndefined();
 	});
 
 	it("CreateSharedPlan: drops the shared list after the call", async () => {

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-	import { computed, type PropType } from "vue";
-
 	// Types & Interfaces
 	import type { PSelectOption } from "@/ui/ui.types";
 
@@ -8,76 +6,25 @@
 	import PCheckbox from "@/ui/components/PCheckbox.vue";
 	import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
 
-	const props = defineProps({
-		filterBuilding: {
-			type: null as unknown as PropType<string[]>,
-			required: false,
-			default: null,
-		},
-		filterCogc: {
-			type: null as unknown as PropType<string[]>,
-			required: false,
-			default: null,
-		},
-		filterOutputMaterial: {
-			type: null as unknown as PropType<string[]>,
-			required: false,
-			default: null,
-		},
-		filterInputMaterial: {
-			type: null as unknown as PropType<string[]>,
-			required: false,
-			default: null,
-		},
-		filterPositiveROI: {
-			type: Boolean,
-			required: true,
-		},
-		buildingOptions: {
-			type: Array as PropType<PSelectOption[]>,
-			required: true,
-		},
-		cogcOptions: {
-			type: Array as PropType<PSelectOption[]>,
-			required: true,
-		},
-		outputMaterialOptions: {
-			type: Array as PropType<PSelectOption[]>,
-			required: true,
-		},
-		inputMaterialOptions: {
-			type: Array as PropType<PSelectOption[]>,
-			required: true,
-		},
-	});
-
-	const emit = defineEmits<{
-		(e: "update:filterBuilding", value: string[]): void;
-		(e: "update:filterCogc", value: string[]): void;
-		(e: "update:filterOutputMaterial", value: string[]): void;
-		(e: "update:filterInputMaterial", value: string[]): void;
-		(e: "update:filterPositiveROI", value: boolean): void;
+	defineProps<{
+		buildingOptions: PSelectOption[];
+		cogcOptions: PSelectOption[];
+		outputMaterialOptions: PSelectOption[];
+		inputMaterialOptions: PSelectOption[];
 	}>();
 
-	const localFilterBuilding = computed({
-		get: () => props.filterBuilding,
-		set: (v: string[]) => emit("update:filterBuilding", v),
+	const filterBuilding = defineModel<string[]>("filterBuilding", {
+		required: true,
 	});
-	const localFilterCogc = computed({
-		get: () => props.filterCogc,
-		set: (v: string[]) => emit("update:filterCogc", v),
+	const filterCogc = defineModel<string[]>("filterCogc", { required: true });
+	const filterOutputMaterial = defineModel<string[]>("filterOutputMaterial", {
+		required: true,
 	});
-	const localFilterOutputMaterial = computed({
-		get: () => props.filterOutputMaterial,
-		set: (v: string[]) => emit("update:filterOutputMaterial", v),
+	const filterInputMaterial = defineModel<string[]>("filterInputMaterial", {
+		required: true,
 	});
-	const localFilterInputMaterial = computed({
-		get: () => props.filterInputMaterial,
-		set: (v: string[]) => emit("update:filterInputMaterial", v),
-	});
-	const localFilterPositiveROI = computed({
-		get: () => props.filterPositiveROI,
-		set: (v: boolean) => emit("update:filterPositiveROI", v),
+	const filterPositiveROI = defineModel<boolean>("filterPositiveROI", {
+		required: true,
 	});
 </script>
 
@@ -89,7 +36,7 @@
 				{{ $t("recipe_roi.filters.building") }}
 			</span>
 			<PSelectMultiple
-				v-model:value="localFilterBuilding"
+				v-model:value="filterBuilding"
 				:aria-label="$t('recipe_roi.filters.building')"
 				:options="buildingOptions"
 				searchable
@@ -101,7 +48,7 @@
 				{{ $t("recipe_roi.filters.cogc") }}
 			</span>
 			<PSelectMultiple
-				v-model:value="localFilterCogc"
+				v-model:value="filterCogc"
 				:aria-label="$t('recipe_roi.filters.cogc')"
 				:options="cogcOptions"
 				searchable
@@ -113,7 +60,7 @@
 				{{ $t("recipe_roi.filters.output") }}
 			</span>
 			<PSelectMultiple
-				v-model:value="localFilterOutputMaterial"
+				v-model:value="filterOutputMaterial"
 				:aria-label="$t('recipe_roi.filters.output')"
 				:options="outputMaterialOptions"
 				searchable
@@ -125,7 +72,7 @@
 				{{ $t("recipe_roi.filters.input") }}
 			</span>
 			<PSelectMultiple
-				v-model:value="localFilterInputMaterial"
+				v-model:value="filterInputMaterial"
 				:aria-label="$t('recipe_roi.filters.input')"
 				:options="inputMaterialOptions"
 				searchable
@@ -133,7 +80,7 @@
 				class="w-full" />
 		</div>
 		<PCheckbox
-			v-model:checked="localFilterPositiveROI"
+			v-model:checked="filterPositiveROI"
 			class="min-h-8 pointer-coarse:min-h-11 flex items-center">
 			{{ $t("recipe_roi.filters.positive_roi") }}
 		</PCheckbox>

@@ -12,7 +12,7 @@ import type {
 import { useMaterialData } from "@/database/services/useMaterialData";
 import {
 	combineMaterialIOMinimal,
-	enhanceMaterialIOMinimal as enhanceWithMaterials,
+	enhanceMaterialIOMinimal,
 } from "@/features/planning/engine/materialIO";
 
 // Types & Interfaces
@@ -40,10 +40,10 @@ export function useMaterialIOUtil() {
 	 * @param {IMaterialIOMinimal[]} data Minimal Array
 	 * @returns {IMaterialIOMaterial[]} Array enhanced by Weight & Volume
 	 */
-	function enhanceMaterialIOMinimal(
+	function enhanceMaterialIO(
 		data: IMaterialIOMinimal[]
 	): IMaterialIOMaterial[] {
-		return enhanceWithMaterials(materials, data);
+		return enhanceMaterialIOMinimal(materials, data);
 	}
 
 	function combineEmpireMaterialIO(
@@ -130,7 +130,7 @@ export function useMaterialIOUtil() {
 		});
 
 		return Object.values(combinedMap).sort((a, b) =>
-			a.ticker > b.ticker ? 1 : -1
+			a.ticker < b.ticker ? -1 : a.ticker > b.ticker ? 1 : 0
 		);
 	}
 
@@ -225,7 +225,7 @@ export function useMaterialIOUtil() {
 
 	return {
 		combineMaterialIOMinimal,
-		enhanceMaterialIOMinimal,
+		enhanceMaterialIO,
 		combineEmpireMaterialIO,
 		calculateEmpireCostOverview,
 		empireMaterialIOState,

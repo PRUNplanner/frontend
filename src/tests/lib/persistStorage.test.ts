@@ -72,4 +72,14 @@ describe("persistStorage", () => {
 		storage.setItem("k", "v");
 		expect(stored.has("k")).toBe(false);
 	});
+
+	it("reads nothing from a blocked storage", async () => {
+		const storage = await load();
+		vi.stubGlobal("localStorage", {
+			getItem: () => {
+				throw new DOMException("blocked", "SecurityError");
+			},
+		});
+		expect(storage.getItem("prunplanner_user")).toBeNull();
+	});
 });

@@ -27,12 +27,19 @@ component / composable
     responseSchema)`. They validate the payload before sending and the
     response after.
   - `post` also has an `asForm` flag for multipart.
-  - `delete` does no validation.
-- **Errors go through `normalizeError`:**
-  - a `ZodError` becomes `Error("Validation error: …")`;
-  - an axios error becomes an `Error` whose message is the JSON response
-    body, with `.status` and `.responseData` attached, and for a 429
-    `.retryAfter` (seconds, the `Retry-After` header).
+  - `delete(path)` does no validation and resolves `void`.
+- **Errors go through `normalizeError`**, as the classes in
+  `src/lib/apiError.ts` (a module of its own, so tests that mock
+  `apiService` keep them):
+  - a `ZodError` becomes `ApiValidationError` (message `Validation error:
+    …`, no `status`);
+  - an axios error becomes an `ApiError` whose message is the JSON response
+    body, with `.status` (undefined without a response) and
+    `.responseData`, and for a 429 `.retryAfter` (seconds, the
+    `Retry-After` header).
+  - Read errors with `isApiError(err)` (an `Error` with a `status` key:
+    axios errors, not validation errors) and the typed fields, never a cast.
+    `trackVueError` skips `ApiError`s: apiService reports them itself.
   - it also reports to PostHog error tracking (`trackException`, only
     with consent): `ApiValidationError` (field names and issue codes,
     never values, record keys or indices), `ApiServerError` (5xx), `ApiNetworkError` (no response) and

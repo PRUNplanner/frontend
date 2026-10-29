@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, type PropType, type WritableComputedRef } from "vue";
+	import { computed } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -12,52 +12,32 @@
 	import { PCheckbox, PSelect, PTooltip } from "@/ui";
 	import type { PSelectOption } from "@/ui/ui.types";
 
-	const props = defineProps({
-		disabled: {
-			type: Boolean,
-			required: true,
-		},
-		corphq: {
-			type: Boolean,
-			required: true,
-		},
-		cogc: {
-			type: String as PropType<PlanCOGCProgram>,
-			required: true,
-		},
-		planetNaturalId: {
-			type: String,
-			required: true,
-		},
-	});
-
-	const emit = defineEmits<{
-		(e: "update:corphq", value: boolean): void;
-		(e: "update:cogc", value: PlanCOGCProgram): void;
+	const { planetNaturalId } = defineProps<{
+		disabled: boolean;
+		planetNaturalId: string;
 	}>();
 
-	// Local State
-	const localCorpHQ: WritableComputedRef<boolean> = computed({
-		get: () => props.corphq,
-		set: (value: boolean) => {
-			emit("update:corphq", value);
+	const corphq = defineModel<boolean>("corphq", {
+		required: true,
+		set: (value) => {
 			trackPlanEdit({
 				field: "corphq",
-				planet_natural_id: props.planetNaturalId,
+				planet_natural_id: planetNaturalId,
 				value,
 			});
+			return value;
 		},
 	});
 
-	const localCOGC: WritableComputedRef<PlanCOGCProgram> = computed({
-		get: () => props.cogc,
-		set: (value: PlanCOGCProgram) => {
-			emit("update:cogc", value);
+	const cogc = defineModel<PlanCOGCProgram>("cogc", {
+		required: true,
+		set: (value) => {
 			trackPlanEdit({
 				field: "cogc",
-				planet_natural_id: props.planetNaturalId,
+				planet_natural_id: planetNaturalId,
 				value,
 			});
+			return value;
 		},
 	});
 
@@ -122,7 +102,7 @@
 		<label class="flex items-center justify-between gap-3">
 			{{ t("plan.components.bonuses.cogc") }}
 			<PSelect
-				v-model:value="localCOGC"
+				v-model:value="cogc"
 				:aria-label="t('plan.components.bonuses.cogc')"
 				size="sm"
 				class="flex-1 min-w-0 max-w-44"
@@ -137,7 +117,7 @@
 				{{ t("plan.components.bonuses.corp_hq_tooltip") }}
 			</PTooltip>
 			<PCheckbox
-				v-model:checked="localCorpHQ"
+				v-model:checked="corphq"
 				:aria-label="t('plan.components.bonuses.corp_hq')"
 				:disabled="disabled" />
 		</div>

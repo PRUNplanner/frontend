@@ -24,6 +24,12 @@ async function mountFilters(props: Record<string, unknown> = {}) {
 		filterPlanets: [],
 		materialOptions: MATERIAL_OPTIONS,
 		planetOptions: PLANET_OPTIONS,
+		// bound like EmpireMaterialIOFiltered: values only change by prop
+		"onUpdate:loadBalance": () => {},
+		"onUpdate:hideConsumables": () => {},
+		"onUpdate:expandAll": () => {},
+		"onUpdate:filterMaterials": () => {},
+		"onUpdate:filterPlanets": () => {},
 		...props,
 	});
 }
@@ -163,10 +169,8 @@ describe("EmpireMaterialIOFilters", () => {
 		await setProps({ expandAll: false });
 		await click(wrapper, SUMMARY);
 
-		expect(component.emitted("update:expandAll")).toEqual([
-			[false],
-			[false],
-		]);
+		// the second Summary sets no new value, it only collapses the rows
+		expect(component.emitted("update:expandAll")).toEqual([[false]]);
 		expect(component.emitted("collapseAll")).toHaveLength(2);
 		expect(component.emitted("applyFilter")).toBeUndefined();
 	});

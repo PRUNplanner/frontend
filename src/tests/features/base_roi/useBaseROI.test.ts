@@ -253,15 +253,38 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 	});
 
 	it("a newer run stops one between two chunks of recipe or planet rows", async () => {
-		const { roi } = setup();
-		const recipes = roi.calculate();
-		await vi.waitFor(() => expect(roi.step.value).toBe("recipes"));
-		const planetsRun = roi.calculate();
-		expect(await recipes).toBe(false);
-		await vi.waitFor(() => expect(roi.step.value).toBe("calculating"));
-		const last = roi.calculate();
-		expect(await planetsRun).toBe(false);
-		expect(await last).toBe(true);
+		// every yield waits for the test, so a run sits between two chunks
+		// until it is let go (polling for the step raced a fast run)
+		const waiting: (() => void)[] = [];
+		const releaseAll = () => waiting.splice(0).forEach((go) => go());
+		vi.stubGlobal("scheduler", {
+			yield: () => new Promise<void>((go) => waiting.push(go)),
+		});
+		try {
+			const { roi } = setup();
+			const pauseIn = async (step: string): Promise<void> => {
+				for (let i = 0; i < 10_000; i++) {
+					if (roi.step.value === step && waiting.length) return;
+					releaseAll();
+					await new Promise((r) => setTimeout(r, 0));
+				}
+				throw new Error(`never paused in ${step}`);
+			};
+
+			const recipes = roi.calculate();
+			await pauseIn("recipes");
+			const planetsRun = roi.calculate();
+			releaseAll();
+			expect(await recipes).toBe(false);
+			await pauseIn("calculating");
+			const last = roi.calculate();
+			vi.stubGlobal("scheduler", { yield: () => Promise.resolve() });
+			releaseAll();
+			expect(await planetsRun).toBe(false);
+			expect(await last).toBe(true);
+		} finally {
+			vi.unstubAllGlobals();
+		}
 	});
 
 	it("uses scheduler.yield where the browser has it", async () => {

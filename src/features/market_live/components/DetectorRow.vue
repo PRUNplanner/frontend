@@ -17,7 +17,10 @@
 	import { ClearSharp } from "@vicons/material";
 
 	const props = defineProps<{ modelValue: Detector }>();
-	const emit = defineEmits(["remove", "update:modelValue"]);
+	const emit = defineEmits<{
+		remove: [];
+		"update:modelValue": [value: Detector];
+	}>();
 
 	const config = computed(
 		() => FieldConfigs[props.modelValue.field as SchemaKey]
@@ -73,7 +76,7 @@
 				:value="modelValue.operator"
 				:options="configOptions"
 				@update:value="
-					(val) => updateDetector({ operator: val as any })
+					(val) => updateDetector({ operator: val as Detector['operator'] })
 				" />
 
 			<TargetEditor

@@ -25,9 +25,12 @@ async function mountSelector(
 	if (options.defaultCX)
 		userStore.setPreference("defaultCXUuid", options.defaultCX);
 
-	const mounted = await mountComponent(CXPreferenceSelector, props, {
-		pinia,
-	});
+	// bound like a parent: the CX only changes through the prop
+	const mounted = await mountComponent(
+		CXPreferenceSelector,
+		{ "onUpdate:cxUuid": () => {}, ...props },
+		{ pinia }
+	);
 	return { ...mounted, userStore };
 }
 
@@ -100,11 +103,11 @@ describe("CXPreferenceSelector", () => {
 			{ defaultCX: REAL.uuid }
 		);
 
-		expect(component.emitted("update:cxuuid")).toEqual([[REAL.uuid]]);
+		expect(component.emitted("update:cxUuid")).toEqual([[REAL.uuid]]);
 
 		// once the parent passes it back, nothing more is emitted
 		await setProps({ cxUuid: REAL.uuid });
-		expect(component.emitted("update:cxuuid")).toHaveLength(1);
+		expect(component.emitted("update:cxUuid")).toHaveLength(1);
 	});
 
 	it("lets the given CX win over the default without followDefault", async () => {
@@ -115,7 +118,7 @@ describe("CXPreferenceSelector", () => {
 		);
 
 		expect(select(wrapper).props("value")).toBe(SHARE.uuid);
-		expect(component.emitted("update:cxuuid")).toBeUndefined();
+		expect(component.emitted("update:cxUuid")).toBeUndefined();
 	});
 
 	it("emits nothing when the given CX is the default CX", async () => {
@@ -124,7 +127,7 @@ describe("CXPreferenceSelector", () => {
 			{ defaultCX: REAL.uuid }
 		);
 
-		expect(component.emitted("update:cxuuid")).toBeUndefined();
+		expect(component.emitted("update:cxUuid")).toBeUndefined();
 	});
 
 	it("ignores a default CX that no longer exists", async () => {
@@ -135,7 +138,7 @@ describe("CXPreferenceSelector", () => {
 
 		expect(select(wrapper).props("value")).toBe(SHARE.uuid);
 		expect(wrapper.text()).toBe("Share CX");
-		expect(component.emitted("update:cxuuid")).toBeUndefined();
+		expect(component.emitted("update:cxUuid")).toBeUndefined();
 	});
 
 	it("emits the picked CX and stores it as default", async () => {
@@ -145,7 +148,7 @@ describe("CXPreferenceSelector", () => {
 
 		await pick(wrapper, NORWICK.uuid);
 
-		expect(component.emitted("update:cxuuid")).toEqual([[NORWICK.uuid]]);
+		expect(component.emitted("update:cxUuid")).toEqual([[NORWICK.uuid]]);
 		expect(userStore.preferences.defaultCXUuid).toBe(NORWICK.uuid);
 		// the parent has not passed it back yet, the default shows
 		expect(wrapper.text()).toBe("CX Norwick Scheme");
@@ -161,7 +164,7 @@ describe("CXPreferenceSelector", () => {
 		await pick(wrapper, null);
 
 		// the default on mount, then the cleared value
-		expect(component.emitted("update:cxuuid")).toEqual([
+		expect(component.emitted("update:cxUuid")).toEqual([
 			[REAL.uuid],
 			[null],
 		]);

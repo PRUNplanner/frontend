@@ -1,11 +1,13 @@
 import axios, {
 	type AxiosInstance,
+	type AxiosRequestConfig,
 	type InternalAxiosRequestConfig,
 	isAxiosError,
 	isCancel,
 } from "axios";
 import { ZodError, type ZodType, type z } from "zod";
 import apiConfig from "@/lib/config";
+import { ApiError, ApiValidationError } from "@/lib/apiError";
 import { trackException } from "@/lib/analytics/useAnalytics";
 import { correlationId } from "@/lib/requestIds";
 import { type IClientErrorReport, reportClientError } from "@/lib/clientErrors";
@@ -120,7 +122,6 @@ class ApiService {
 	 * @author jplacht
 	 *
 	 * @public
-	 * @async
 	 * @template Req Request Schema
 	 * @template Res Response Schema
 	 * @param {string} path URL
@@ -130,51 +131,66 @@ class ApiService {
 	 * @param {?boolean} [asForm] adds multipart/form-data header
 	 * @returns {Promise<z.output<Res>>}
 	 */
-	public async post<Req extends ZodType, Res extends ZodType>(
+	public post<Req extends ZodType, Res extends ZodType>(
 		path: string,
 		payload: z.input<Req>,
 		requestSchema: Req,
 		responseSchema: Res,
 		asForm?: boolean
 	): Promise<z.output<Res>> {
-		// the call whose response failed validation
-		let request: InternalAxiosRequestConfig | undefined;
-
-		try {
-			const body = requestSchema.parse(payload);
-
-			const headers = asForm
-				? { headers: { "Content-Type": "multipart/form-data" } }
-				: {};
-
-			const { data, config } = await this.client.post(path, body, headers);
-			request = config;
-
-			return responseSchema.parse(data);
-		} catch (e) {
-			throw this.normalizeError(e, "POST", path, request);
-		}
+		const config = asForm
+			? { headers: { "Content-Type": "multipart/form-data" } }
+			: {};
+		return this.send(
+			"post",
+			path,
+			payload,
+			requestSchema,
+			responseSchema,
+			config
+		);
 	}
 
-	/**
-	 * Performs a PUT request towards the backend
-	 * @author jplacht
-	 *
-	 * @public
-	 * @async
-	 * @template Req Request Schema
-	 * @template Res Response Schema
-	 * @param {string} path URL
-	 * @param {z.input<Req>} payload Payload data
-	 * @param {Req} requestSchema Request Schema
-	 * @param {Res} responseSchema Response Schema
-	 * @returns {Promise<z.output<Res>>}
-	 */
-	public async put<Req extends ZodType, Res extends ZodType>(
+	/** Performs a PUT request towards the backend, see `post` */
+	public put<Req extends ZodType, Res extends ZodType>(
 		path: string,
 		payload: z.input<Req>,
 		requestSchema: Req,
 		responseSchema: Res
+	): Promise<z.output<Res>> {
+		return this.send("put", path, payload, requestSchema, responseSchema);
+	}
+
+	/** Performs a PATCH request towards the backend, see `post` */
+	public patch<Req extends ZodType, Res extends ZodType>(
+		path: string,
+		payload: z.input<Req>,
+		requestSchema: Req,
+		responseSchema: Res
+	): Promise<z.output<Res>> {
+		return this.send("patch", path, payload, requestSchema, responseSchema);
+	}
+
+	/**
+	 * Validates the payload, sends it and validates the response
+	 *
+	 * @private
+	 * @async
+	 * @param {"post" | "put" | "patch"} method HTTP method
+	 * @param {string} path URL
+	 * @param {z.input<Req>} payload Payload data
+	 * @param {Req} requestSchema Request Schema
+	 * @param {Res} responseSchema Response Schema
+	 * @param {AxiosRequestConfig} [config] Request config
+	 * @returns {Promise<z.output<Res>>}
+	 */
+	private async send<Req extends ZodType, Res extends ZodType>(
+		method: "post" | "put" | "patch",
+		path: string,
+		payload: z.input<Req>,
+		requestSchema: Req,
+		responseSchema: Res,
+		config?: AxiosRequestConfig
 	): Promise<z.output<Res>> {
 		// the call whose response failed validation
 		let request: InternalAxiosRequestConfig | undefined;
@@ -182,47 +198,16 @@ class ApiService {
 		try {
 			const body = requestSchema.parse(payload);
 
-			const { data, config } = await this.client.put(path, body);
-			request = config;
+			const { data, config: sent } = await this.client[method](
+				path,
+				body,
+				config
+			);
+			request = sent;
 
 			return responseSchema.parse(data);
 		} catch (e) {
-			throw this.normalizeError(e, "PUT", path, request);
-		}
-	}
-
-	/**
-	 * Performs a PATCH request towards the backend
-	 * @author jplacht
-	 *
-	 * @public
-	 * @async
-	 * @template Req Request Schema
-	 * @template Res Response Schema
-	 * @param {string} path URL
-	 * @param {z.input<Req>} payload Payload data
-	 * @param {Req} requestSchema Request Schema
-	 * @param {Res} responseSchema Response Schema
-	 * @returns {Promise<z.output<Res>>}
-	 */
-	public async patch<Req extends ZodType, Res extends ZodType>(
-		path: string,
-		payload: z.input<Req>,
-		requestSchema: Req,
-		responseSchema: Res
-	): Promise<z.output<Res>> {
-		// the call whose response failed validation
-		let request: InternalAxiosRequestConfig | undefined;
-
-		try {
-			const body = requestSchema.parse(payload);
-
-			const { data, config } = await this.client.patch(path, body);
-			request = config;
-
-			return responseSchema.parse(data);
-		} catch (e) {
-			throw this.normalizeError(e, "PATCH", path, request);
+			throw this.normalizeError(e, method.toUpperCase(), path, request);
 		}
 	}
 
@@ -233,11 +218,11 @@ class ApiService {
 	 * @public
 	 * @async
 	 * @param {string} path URL
-	 * @returns {Promise<boolean>} Response Status
+	 * @returns {Promise<void>}
 	 */
-	public async delete(path: string): Promise<boolean> {
+	public async delete(path: string): Promise<void> {
 		try {
-			return await this.client.delete(path);
+			await this.client.delete(path);
 		} catch (e) {
 			throw this.normalizeError(e, "DELETE", path);
 		}
@@ -361,7 +346,7 @@ class ApiService {
 		this.reportError(err, method, path, request);
 
 		if (err instanceof ZodError) {
-			return new Error(`Validation error: ${err.message}`);
+			return new ApiValidationError(`Validation error: ${err.message}`);
 		} else if (isAxiosError(err)) {
 			const status = err.response?.status;
 			const body = err.response?.data;
@@ -371,20 +356,17 @@ class ApiService {
 					? JSON.stringify(body)
 					: err.message;
 
-			const newError = new Error(msg);
-
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(newError as any).responseData = body;
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(newError as any).status = status;
+			const error = Object.assign(new ApiError(msg), {
+				status,
+				responseData: body,
+			});
 			// seconds until a throttled call may be sent again, for the
 			// query cache's retry
 			const retryAfter = Number(err.response?.headers["retry-after"]);
 			if (status === 429 && Number.isFinite(retryAfter))
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				(newError as any).retryAfter = retryAfter;
+				error.retryAfter = retryAfter;
 
-			return newError;
+			return error;
 		}
 
 		return err instanceof Error ? err : new Error(String(err));

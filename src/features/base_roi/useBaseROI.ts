@@ -47,21 +47,13 @@ import type {
 	IGameData,
 	IPlanContext,
 } from "@/features/planning/engine/engine.types";
+import { yieldToBrowser } from "@/util/yieldToBrowser";
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
 type EngineSettings = Pick<
 	BaseROISettings,
 	"cogc" | "experts" | "bufferDays" | "maxJumps"
 >;
-
-/** gives the browser a turn: scheduler.yield where it exists */
-function yieldToBrowser(): Promise<void> {
-	const s = (
-		globalThis as { scheduler?: { yield?: () => Promise<void> } }
-	).scheduler;
-	if (s?.yield) return s.yield();
-	return new Promise((r) => setTimeout(r, 0));
-}
 
 /**
  * Base ROI: every row's engine numbers, calculated on request (the page

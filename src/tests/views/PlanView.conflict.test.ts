@@ -29,8 +29,11 @@ describe("PlanView save conflicts", () => {
 
 	// -- save conflicts --------------------------------------------------
 
-	const CONFLICT = { status: 409, responseData: { code: "conflict" } };
-	const DELETED = { status: 404 };
+	const CONFLICT = Object.assign(new Error("409"), {
+		status: 409,
+		responseData: { code: "conflict" },
+	});
+	const DELETED = Object.assign(new Error("404"), { status: 404 });
 
 	function remotePlan() {
 		const plan = etherwindPlan();

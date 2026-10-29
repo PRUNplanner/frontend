@@ -7,6 +7,7 @@ import {
 	type PlanetSearchColumn,
 	type PlanetSearchPrefs,
 } from "@/features/planet_search/planetSearch.schemas";
+import { readStorage, writeStorage } from "@/lib/storage";
 
 const STORAGE_KEY = "prunplanner_planet_search";
 
@@ -17,20 +18,12 @@ const STORAGE_KEY = "prunplanner_planet_search";
 function readPlanetSearchPrefs(): PlanetSearchPrefs {
 	let stored: unknown = {};
 	try {
-		stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}");
+		stored = JSON.parse(readStorage(STORAGE_KEY) ?? "{}");
 	} catch {
-		// storage blocked or corrupt: defaults
+		// corrupt: defaults
 	}
 	const parsed = PlanetSearchPrefsSchema.safeParse(stored);
 	return parsed.success ? parsed.data : PlanetSearchPrefsSchema.parse({});
-}
-
-function writePlanetSearchPrefs(prefs: PlanetSearchPrefs): void {
-	try {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-	} catch {
-		// storage blocked or full: prefs live for this page only
-	}
 }
 
 /**
@@ -45,7 +38,11 @@ export function usePlanetSearchPrefs(): {
 } {
 	const prefs: Ref<PlanetSearchPrefs> = ref(readPlanetSearchPrefs());
 
-	watch(prefs, (value) => writePlanetSearchPrefs(value), { deep: true });
+	watch(
+		prefs,
+		(value) => writeStorage(STORAGE_KEY, JSON.stringify(value)),
+		{ deep: true }
+	);
 
 	// every hidden column: the ones hidden by the user and the opt-in ones not turned on
 	const hiddenColumns = computed({

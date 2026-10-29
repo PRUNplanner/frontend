@@ -5,6 +5,7 @@ import {
 	BaseROISettingsSchema,
 	type BaseROISettings,
 } from "@/features/base_roi/baseROI.schemas";
+import { readStorage, writeStorage } from "@/lib/storage";
 
 const STORAGE_KEY = "prunplanner_base_roi";
 
@@ -14,11 +15,12 @@ export function defaultBaseROISettings(): BaseROISettings {
 }
 
 function readStored(): unknown {
+	const raw = readStorage(STORAGE_KEY);
+	if (raw === null) return undefined;
 	try {
-		const raw = localStorage.getItem(STORAGE_KEY);
-		return raw === null ? undefined : JSON.parse(raw);
+		return JSON.parse(raw);
 	} catch {
-		// storage blocked or corrupt: defaults
+		// corrupt: defaults
 		return {};
 	}
 }
@@ -43,12 +45,8 @@ export function useBaseROISettings(): {
 	watch(
 		settings,
 		(value) => {
-			try {
-				localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
-				hasStored.value = true;
-			} catch {
-				// storage blocked or full: settings live for this page only
-			}
+			writeStorage(STORAGE_KEY, JSON.stringify(value));
+			hasStored.value = true;
 		},
 		{ deep: true }
 	);

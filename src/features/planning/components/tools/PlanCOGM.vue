@@ -183,7 +183,7 @@
 		})
 	);
 
-	function useCOGM(ticker: string, value: number): void {
+	function applyCOGM(ticker: string, value: number): void {
 		if (!edit.value) return;
 		edit.value = {
 			...edit.value,
@@ -413,7 +413,7 @@
 					<PButton
 						type="secondary"
 						data-use-cogm
-						@click="useCOGM(o.ticker, o.cogm)">
+						@click="applyCOGM(o.ticker, o.cogm)">
 						{{ $t("plan.tools.cogm.prices.use") }}
 					</PButton>
 				</div>
@@ -433,7 +433,7 @@
 							size="sm"
 							type="secondary"
 							data-update-cogm
-							@click="useCOGM(o.ticker, o.cogm)">
+							@click="applyCOGM(o.ticker, o.cogm)">
 							{{
 								$t("plan.tools.cogm.prices.update", {
 									value: formatNumber(o.cogm),

@@ -13,7 +13,7 @@
 		REPAIR_DAY_MAX,
 		repairEfficiency,
 	} from "@/features/repair_analysis/repairAnalysis.util";
-	import { formatNumber } from "@/util/numbers";
+	import { formatNumber, signed } from "@/util/numbers";
 
 	// Types & Interfaces
 	import type {
@@ -66,7 +66,6 @@
 		() =>
 			profit.value - building.curve[building.best].profit * building.amount
 	);
-	const signed = (v: number) => (v > 0 ? "+" : "") + formatNumber(v, 0);
 
 	const condition = computed(() => {
 		let sum = 0;
@@ -162,7 +161,7 @@
 						}}
 					</span>
 					<span>
-						<b class="text-lg text-positive">{{ signed(profit) }}</b>
+						<b class="text-lg text-positive">{{ signed(profit, 0) }}</b>
 						<span class="text-xs text-muted">
 							{{ $t("plan.tools.repair_analysis.per_day") }}
 						</span>
@@ -181,12 +180,12 @@
 								: inRange
 									? $t(
 											"plan.tools.repair_analysis.detail.in_range",
-											{ delta: signed(delta) }
+											{ delta: signed(delta, 0) }
 										)
 									: $t(
 											"plan.tools.repair_analysis.detail.vs_best",
 											{
-												delta: signed(delta),
+												delta: signed(delta, 0),
 												best: building.best,
 											}
 										)

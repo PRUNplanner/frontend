@@ -1,5 +1,5 @@
 // Util
-import { formatNumber } from "@/util/numbers";
+import { formatNumber, formatPercent } from "@/util/numbers";
 
 // Types & Interfaces
 import type {
@@ -29,9 +29,8 @@ export function formatMoney(n: number): string {
 
 /** a share (0–1) as "45 %", one decimal below 10 % */
 export function formatShare(share: number): string {
-	if (!Number.isFinite(share)) return "—";
 	const pct = share * 100;
-	return `${formatNumber(pct, Math.abs(pct) < 10 ? 1 : 0)} %`;
+	return formatPercent(pct, Math.abs(pct) < 10 ? 1 : 0);
 }
 
 /** "1 VEG + 1 MUS → 10 RAT", "nothing → 1 DV" without inputs */

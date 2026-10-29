@@ -95,7 +95,7 @@ describe("ProductionChainView", () => {
 	beforeAll(seedGameData);
 
 	beforeEach(() => {
-		vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+		vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
 		nav.route.query = {};
 		nav.replace.mockClear();
 		trackEvent.mockClear();
@@ -152,7 +152,10 @@ describe("ProductionChainView", () => {
 		expect(query.t).toBe("DW:110");
 		expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).t).toBe("DW:110");
 
-		vi.advanceTimersByTime(1100);
+		// 1 s after the last change
+		vi.advanceTimersByTime(900);
+		expect(toolUses()).toHaveLength(0);
+		vi.advanceTimersByTime(200);
 		expect(toolUses()).toHaveLength(1);
 		expect(toolUses()[0][1]).toMatchObject({
 			tool_name: "production_chain",

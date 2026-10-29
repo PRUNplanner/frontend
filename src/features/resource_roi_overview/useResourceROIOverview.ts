@@ -29,6 +29,7 @@ import type {
 import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
 import type { IStaticOptimalProduction } from "../roi_overview/useROIOverview.types";
 import { usePathfinder } from "../pathfinding/usePathfinder";
+import { yieldToBrowser } from "@/util/yieldToBrowser";
 
 let lastYieldTime = 0;
 
@@ -282,7 +283,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		progressCurrent.value++;
 
 		if (performance.now() - lastYieldTime > 16) {
-			await new Promise((r) => setTimeout(r, 0));
+			await yieldToBrowser();
 			lastYieldTime = performance.now();
 		}
 

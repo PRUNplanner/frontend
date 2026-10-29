@@ -21,7 +21,7 @@ editor UI. The engine is documented in depth in
 | `usePlanCalculationHandlers.ts` | Every edit operation (`handleUpdate*`, `handleCreate*`, `handleDelete*`, `handleAdd*`, `handleChange*`, `handleApplyStarterSetup`). Each one mutates `plan.plan_data` |
 | `usePlanHistory.ts` | Undo/redo for the editor: wraps the handlers so each edit is one step, and owns `modified` (differs from the last save), `savedAt` and `savedSnapshot()` (the base of a save conflict) |
 | `calculations/*.ts` | Wrappers around the engine (bonus, workforce, building), infrastructure lists, extraction, hab LP optimisation |
-| `util/materialIO.util.ts` | Combine and enrich material I/O. Also combines empire I/O (`combineEmpireMaterialIO`, `calculateEmpireCostOverview`, `empireMaterialIOState`) |
+| `useMaterialIOUtil.ts` | Combine and enrich material I/O (`enhanceMaterialIO`). Also combines empire I/O (`combineEmpireMaterialIO`, `calculateEmpireCostOverview`, `empireMaterialIOState`) |
 | `planView.util.ts` | `PlanTool` keys, `foldedPanes`, and the Material I/O totals and CSV download (`materialIOTotals`, `materialIOCsv`) |
 | `calcDebug.util.ts` / `.types.ts` | Calculation debug: self-checks of a traced run, trace tree, copy as text and JSON. See [Tracing](../planning-engine.md#tracing) |
 

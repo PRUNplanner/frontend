@@ -52,6 +52,7 @@
 
 	// Util
 	import { relativeFromDate } from "@/util/date";
+	import { yieldToBrowser } from "@/util/yieldToBrowser";
 
 	// Types & Interfaces
 	import type { Plan } from "@/features/api/schemas/planningData.schemas";
@@ -180,7 +181,7 @@
 					// cache
 					cacheCalculatedPlans.set(cacheKey, result);
 					// yield back to vue and update DOM
-					await new Promise((r) => setTimeout(r, 0));
+					await yieldToBrowser();
 					if (current !== run) return;
 				}
 			}

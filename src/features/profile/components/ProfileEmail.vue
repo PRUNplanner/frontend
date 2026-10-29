@@ -6,6 +6,7 @@
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { isApiError } from "@/lib/apiError";
 
 	// Composables
 	import { useEmailNudge } from "@/features/account/useEmailNudge";
@@ -59,15 +60,14 @@
 			codeSent.value = changed && !!email.value;
 		} catch (err) {
 			console.error("Error patching user profile", err);
-			const { status, responseData } = err as {
-				status?: number;
-				responseData?: { email?: unknown };
-			};
-			isThrottled.value = status === 429;
+			const data = isApiError(err) ? err.responseData : undefined;
+			isThrottled.value = isApiError(err) && err.status === 429;
 			// DRF field errors: { email: [code or message] }
-			const field = Array.isArray(responseData?.email)
-				? responseData.email[0]
-				: undefined;
+			const messages =
+				data && typeof data === "object" && "email" in data
+					? data.email
+					: undefined;
+			const field = Array.isArray(messages) ? messages[0] : undefined;
 			if (field === "email_taken")
 				emailError.value = t("profile.change_profile.email_taken");
 			else if (typeof field === "string")

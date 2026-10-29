@@ -164,10 +164,10 @@ describe("BaseROIPage", () => {
 	it("a CX chosen in the header or the setup recalculates", async () => {
 		const wrapper = await mountPage();
 		calculate.mockReset();
-		wrapper.findComponent({ name: "CXPreferenceSelector" }).vm.$emit("update:cxuuid", "cx-2");
+		wrapper.findComponent({ name: "CXPreferenceSelector" }).vm.$emit("update:cxUuid", "cx-2");
 		await flushPromises();
 		expect(calculate).toHaveBeenCalledTimes(1);
-		wrapper.findComponent({ name: "BaseROISetup" }).vm.$emit("update:cxuuid", "cx-3");
+		wrapper.findComponent({ name: "BaseROISetup" }).vm.$emit("update:cxUuid", "cx-3");
 		await flushPromises();
 		expect(calculate).toHaveBeenCalledTimes(2);
 		expect(wrapper.findComponent({ name: "BaseROITable" }).props("cxUuid")).toBe("cx-3");

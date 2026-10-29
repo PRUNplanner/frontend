@@ -21,7 +21,10 @@
 		group: RuleGroupType;
 	}>();
 
-	const emit = defineEmits(["remove", "update:group"]);
+	const emit = defineEmits<{
+		remove: [];
+		"update:group": [value: RuleGroupType];
+	}>();
 
 	// a key per condition object, not its index: deleting a row must not hand
 	// its component (and its inputs) to the next one. Raw objects: the draft

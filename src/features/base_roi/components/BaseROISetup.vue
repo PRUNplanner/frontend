@@ -38,10 +38,7 @@
 	const settings = defineModel<BaseROISettings>("settings", {
 		required: true,
 	});
-	const { cxUuid } = defineProps<{ cxUuid: string | undefined }>();
-	const emit = defineEmits<{
-		(e: "update:cxuuid", value: string | undefined): void;
-	}>();
+	const cxUuid = defineModel<string | undefined>("cxUuid");
 
 	const preset = ref<BaseROIPreset>("standard");
 	// Veteran's choice; "none" = no logistics limit
@@ -142,9 +139,8 @@
 						{{ t('base_roi.cx_select') }}
 					</span>
 				<CXPreferenceSelector
-						:aria-label="t('base_roi.cx_select')"
-					:cx-uuid="cxUuid"
-					@update:cxuuid="(v) => emit('update:cxuuid', v)" />
+					v-model:cx-uuid="cxUuid"
+					:aria-label="t('base_roi.cx_select')" />
 			</div>
 
 			<fieldset>

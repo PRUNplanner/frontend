@@ -122,7 +122,7 @@
 					:add-undefined-c-x="false"
 					size="sm"
 					:aria-label="$t('fio.repair.settings.exchange')"
-					@update:cxuuid="emit('change', 'exchange')" />
+					@update:cx-uuid="emit('change', 'exchange')" />
 				<span :class="note">
 					{{ $t("fio.repair.settings.exchange_note") }}
 				</span>

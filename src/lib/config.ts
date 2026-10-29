@@ -1,3 +1,12 @@
+/**
+ * A numeric env var: unset, empty or not a number gives the default
+ * (env vars are strings; "0" stays 0)
+ */
+function envNumber(value: string | undefined, fallback: number): number {
+	const n = Number(value);
+	return value && Number.isFinite(n) ? n : fallback;
+}
+
 class Config {
 	public readonly API_BASE_URL: string;
 	public readonly SHARE_BASE_URL: string;
@@ -27,28 +36,47 @@ class Config {
 			import.meta.env.VITE_SHARE_BASE_URL ||
 			"https://prunplanner.org/shared";
 
-		this.GAME_DATA_STALE_MINUTES_BUILDINGS =
-			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_BUILDINGS || 24 * 60;
-		this.GAME_DATA_STALE_MINUTES_RECIPES =
-			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_RECIPES || 24 * 60;
-		this.GAME_DATA_STALE_MINUTES_MATERIALS =
-			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_MATERIALS || 24 * 60;
-		this.GAME_DATA_STALE_MINUTES_EXCHANGES =
-			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_EXCHANGES || 30;
-		this.GAME_DATA_STALE_MINUTES_PLANETS =
-			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_PLANETS || 3 * 60;
+		this.GAME_DATA_STALE_MINUTES_BUILDINGS = envNumber(
+			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_BUILDINGS,
+			24 * 60
+		);
+		this.GAME_DATA_STALE_MINUTES_RECIPES = envNumber(
+			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_RECIPES,
+			24 * 60
+		);
+		this.GAME_DATA_STALE_MINUTES_MATERIALS = envNumber(
+			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_MATERIALS,
+			24 * 60
+		);
+		this.GAME_DATA_STALE_MINUTES_EXCHANGES = envNumber(
+			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_EXCHANGES,
+			30
+		);
+		this.GAME_DATA_STALE_MINUTES_PLANETS = envNumber(
+			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_PLANETS,
+			3 * 60
+		);
 
-		this.GAME_DATA_MAX_AGE_MINUTES_BUILDINGS =
-			import.meta.env.VITE_GAME_DATA_MAX_AGE_MINUTES_BUILDINGS || 7 * 24 * 60;
-		this.GAME_DATA_MAX_AGE_MINUTES_RECIPES =
-			import.meta.env.VITE_GAME_DATA_MAX_AGE_MINUTES_RECIPES || 7 * 24 * 60;
-		this.GAME_DATA_MAX_AGE_MINUTES_MATERIALS =
-			import.meta.env.VITE_GAME_DATA_MAX_AGE_MINUTES_MATERIALS || 7 * 24 * 60;
+		this.GAME_DATA_MAX_AGE_MINUTES_BUILDINGS = envNumber(
+			import.meta.env.VITE_GAME_DATA_MAX_AGE_MINUTES_BUILDINGS,
+			7 * 24 * 60
+		);
+		this.GAME_DATA_MAX_AGE_MINUTES_RECIPES = envNumber(
+			import.meta.env.VITE_GAME_DATA_MAX_AGE_MINUTES_RECIPES,
+			7 * 24 * 60
+		);
+		this.GAME_DATA_MAX_AGE_MINUTES_MATERIALS = envNumber(
+			import.meta.env.VITE_GAME_DATA_MAX_AGE_MINUTES_MATERIALS,
+			7 * 24 * 60
+		);
 		// prices older than their stale time are never shown
-		this.GAME_DATA_MAX_AGE_MINUTES_EXCHANGES =
-			import.meta.env.VITE_GAME_DATA_MAX_AGE_MINUTES_EXCHANGES || 30;
-		this.GAME_DATA_WRITE_DELAY_MS = Number(
-			import.meta.env.VITE_GAME_DATA_WRITE_DELAY_MS || 5000
+		this.GAME_DATA_MAX_AGE_MINUTES_EXCHANGES = envNumber(
+			import.meta.env.VITE_GAME_DATA_MAX_AGE_MINUTES_EXCHANGES,
+			30
+		);
+		this.GAME_DATA_WRITE_DELAY_MS = envNumber(
+			import.meta.env.VITE_GAME_DATA_WRITE_DELAY_MS,
+			5000
 		);
 		this.INDEXEDDB_DBNAME =
 			import.meta.env.VITE_INDEXEDDB_DBNAME || "prunplanner";

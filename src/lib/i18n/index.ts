@@ -17,7 +17,9 @@ const en_US = Object.entries(enModules).reduce(
 	{} as Record<string, unknown>
 );
 
-export const localeLazyLoaders = import.meta.glob("@/locales/**/*.json");
+export const localeLazyLoaders = import.meta.glob("@/locales/**/*.json", {
+	import: "default",
+});
 
 /**
  * Splits off the messages vue-i18n can't compile (e.g. a translated
@@ -87,34 +89,6 @@ export const SupportedLanguages: PSelectOption[] = [
 		label: "Deutsch",
 		value: "de_DE",
 	},
-	// {
-	// 	label: "Español",
-	// 	value: "es_ES",
-	// },
-	// {
-	// 	label: "Français",
-	// 	value: "fr_FR",
-	// },
-	// {
-	// 	label: "Italiano",
-	// 	value: "it_IT",
-	// },
-	// {
-	// 	label: "日本",
-	// 	value: "ja_JP",
-	// },
-	// {
-	// 	label: "한국어",
-	// 	value: "ko_KR",
-	// },
-	// {
-	// 	label: "Nederlands",
-	// 	value: "nl_NL",
-	// },
-	// {
-	// 	label: "Português",
-	// 	value: "pt_PT",
-	// },
 	{
 		label: "Русский",
 		value: "ru_RU",
@@ -150,6 +124,8 @@ export const i18n: I18n<
 	messages: {
 		en_US,
 		keymode: {},
+		// the JSON files are typed Record<string, unknown>, which createI18n
+		// rejects as LocaleMessage; the annotation above types the result
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} as any,
 	globalInjection: true,
@@ -157,3 +133,6 @@ export const i18n: I18n<
 		if (locale === "keymode") return key;
 	},
 });
+
+/** The global composer, for code outside components */
+export type AppComposer = typeof i18n.global;

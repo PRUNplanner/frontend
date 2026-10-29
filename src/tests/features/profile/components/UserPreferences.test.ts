@@ -278,7 +278,11 @@ describe("UserPreferences", () => {
 		expect(planRows(wrapper)).toEqual([
 			[
 				"EW COF RAT DW C",
-				"Include CM, Visitation Material Exclusions, Auto-Optimize Inactive",
+				[
+					"profile.preferences.plan_settings.include_cm",
+					"profile.preferences.plan_settings.visitation_exclusions",
+					"profile.preferences.plan_settings.auto_optimize_inactive",
+				].join(", "),
 			],
 		]);
 		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe(

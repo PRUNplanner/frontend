@@ -1,5 +1,5 @@
 // Util
-import { formatNumber } from "@/util/numbers";
+import { formatPercent } from "@/util/numbers";
 
 // Types & Interfaces
 import type { Exchange } from "@/features/api/schemas/gameData.schemas";
@@ -216,7 +216,8 @@ export function askBidPriceBook(
  */
 export function formatShare(pct: number | null): string {
 	if (pct === null) return "—";
-	return `${formatNumber(pct, pct < 100 ? 1 : 0)} %`;
+	// unlike formatPercent, ∞ and NaN keep the unit
+	return Number.isFinite(pct) ? formatPercent(pct, pct < 100 ? 1 : 0) : "— %";
 }
 
 /**
