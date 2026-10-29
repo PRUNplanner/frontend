@@ -48,6 +48,7 @@
 			"title": "Passwort zurücksetzen",
 			"info": "Bitte gib den an deine E-Mail gesendeten Code zusammen mit deinem neuen Passwort sein.",
 			"throttled": "Zu viele Versuche. Bitte warte einige Minuten und probiere es erneut.",
+			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
 			"buttons": {
 				"send": "Passwort zurücksetzen"
 			},
