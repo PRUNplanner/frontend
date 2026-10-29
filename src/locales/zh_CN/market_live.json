@@ -84,6 +84,7 @@
 			"title_editing": "编辑提醒",
 			"info": "提醒目前仅存储在此设备上，不会同步到你的账户。",
 			"no_alerts": "未找到提醒。请先创建你的第一个检测信号",
+			"new_alert_name": "New Alert",
 			"buttons": {
 				"create_alert": "创建新提醒",
 				"discard": "@:common.butons.discard",
