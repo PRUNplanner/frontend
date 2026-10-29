@@ -29,7 +29,7 @@
 		"cta_logged_in": "Ouvre ton empire",
 		"example": "Ouvrir un plan d'exemple",
 		"example_note": "L'exemple ne demande aucun compte. L'inscription prend une minute, jeu ouvert.",
-		"image_alt": "L'éditeur de plan d'une base de fer sur Montem : main-d'œuvre, aperçu, bâtiments de production et E/S des matériaux",
+		"image_alt": "The plan editor for an iron base on Montem: profit, payback, workforce and area in the results bar, the production list with its recipes, and material I/O",
 		"image_title": "prunplanner.org / plan / Montem iron"
 	},
 	"numbers": {
@@ -49,27 +49,27 @@
 			"label": "Étapes de la visite du plan",
 			"whole": {
 				"title": "Le plan en entier",
-				"text": "Une base sur un seul écran : main-d'œuvre, coûts, stockage, production et flux de matériaux, mis à jour au fil de tes changements."
+				"text": "One base on one screen: profit, payback, workforce, area and storage at the top, production in the middle, material flow at the side, updating as you change it."
 			},
 			"buildings": {
 				"title": "Ajoute des bâtiments",
-				"text": "Choisis bâtiments et recettes parmi ce que la planète offre. Chacun affiche son efficacité, ses recettes, sa surface et son coût de construction."
+				"text": "Pick buildings and recipes from what the planet offers. Each building shows its efficiency, profit per day and area; each recipe its runtime, share and COGM."
 			},
 			"workforce": {
 				"title": "Recrute le personnel",
-				"text": "Main-d'œuvre nécessaire face aux logements fournis, par niveau, avec les produits de luxe que tu choisis d'offrir."
+				"text": "Workforce needed against housing supplied, with the efficiency it gives; the Base pane holds the tiers and the luxuries you choose to provide."
 			},
 			"money": {
 				"title": "Vois l'argent",
-				"text": "Cette base de fer sur Montem rapporte 19 312,82 par jour et est rentabilisée en 63,79 jours."
+				"text": "This iron base on Montem makes 21,938.67 a day and pays back its build cost in 63.56 days."
 			},
 			"flow": {
 				"title": "Vérifie le flux",
-				"text": "Les E/S des matériaux listent ce que la base consomme et produit par jour, et ce que vaut chaque ligne."
+				"text": "Material I/O lists what the base consumes and produces per day, what each line is worth, and flags materials that are a large share of their market."
 			},
 			"tabs": {
 				"title": "Va plus loin",
-				"text": "POPR, fréquence de visite, panier de construction, panier d'approvisionnement et analyse des réparations sont à un onglet de distance."
+				"text": "Construction, supply, visits, repair, profit, plan check and POPR are one tab away."
 			}
 		},
 		"planet_search": {
@@ -99,7 +99,7 @@
 			"label": "Étapes de la visite de l'empire",
 			"totals": {
 				"title": "Un seul résultat",
-				"text": "Recettes, coûts et bénéfices de toutes les bases réunies : cet empire rapporte 186 973,33 par jour."
+				"text": "Revenue, cost and profit of all bases together: this empire makes 104,290.08 a day."
 			},
 			"plans": {
 				"title": "Tous les plans côte à côte",
