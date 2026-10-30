@@ -17,6 +17,7 @@ import PInput from "@/ui/components/PInput.vue";
 import PInputNumber from "@/ui/components/PInputNumber.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
+import { manageDataHost } from "@/tests/features/manage/manageData.helper";
 
 // test data
 import empireList from "@/tests/test_data/api_data_empire_list.json";
@@ -67,11 +68,15 @@ const cx = (id: string, name: string, empires: string[]) => ({
 const CXS = [cx(CX1, "Main CX", [E1]), cx(CX2, "Alt CX", [])];
 
 async function mountEmpire(empires = EMPIRES, cxs = CXS) {
-	return mountComponent(
+	const { host, setup } = manageDataHost();
+	const mounted = await mountComponent(
 		ManageEmpire,
 		{ empires, cx: cxs },
-		{ withDialog: true }
+		{ withDialog: true, setup }
 	);
+	// what it registers with the save bar
+	const section = () => host.sections.empire!;
+	return { ...mounted, host, section };
 }
 
 function button(wrapper: VueWrapper, label: string) {
@@ -137,12 +142,8 @@ describe("ManageEmpire", () => {
 	});
 
 	it("counts changed CX selects and discards them", async () => {
-		const { wrapper, component } = await mountEmpire();
-		const vm = component.vm as unknown as {
-			changedCount: number;
-			discard: () => void;
-		};
-		expect(vm.changedCount).toBe(0);
+		const { wrapper, section } = await mountEmpire();
+		expect(section().changedCount.value).toBe(0);
 		expect(
 			wrapper
 				.findAll("button")
@@ -153,11 +154,11 @@ describe("ManageEmpire", () => {
 		alpha.vm.$emit("update:value", undefined);
 		beta.vm.$emit("update:value", CX2);
 		await flushPromises();
-		expect(vm.changedCount).toBe(2);
+		expect(section().changedCount.value).toBe(2);
 
-		vm.discard();
+		section().discard();
 		await flushPromises();
-		expect(vm.changedCount).toBe(0);
+		expect(section().changedCount.value).toBe(0);
 		expect(cxSelects(wrapper).map((s) => s.text())).toEqual([
 			"Main CX",
 			"None",
@@ -166,36 +167,36 @@ describe("ManageEmpire", () => {
 
 	it("saves the CX assignment of every empire", async () => {
 		mock.onPost(/planning\/cx\/junctions\/$/).reply(200, cxList);
-		const { wrapper, component } = await mountEmpire();
+		const { wrapper, host, section } = await mountEmpire();
 
 		const [alpha, beta] = cxSelects(wrapper);
 		alpha.vm.$emit("update:value", undefined);
 		beta.vm.$emit("update:value", CX2);
 		await flushPromises();
 
-		await (component.vm as unknown as { save: () => Promise<void> }).save();
+		await section().save();
 
 		expect(JSON.parse(mock.history.post[0].data)).toEqual([
 			{ cx_uuid: CX1, empires: [] },
 			{ cx_uuid: CX2, empires: [{ empire_uuid: E2 }] },
 		]);
-		expect(component.emitted("update:cxList")?.[0][0]).toHaveLength(
+		expect(host.data.cxList.value).toHaveLength(
 			cxList.length
 		);
 	});
 
 	it("rejects when saving fails", async () => {
 		mock.onPost(/planning\/cx\/junctions\/$/).reply(500);
-		const { component } = await mountEmpire();
+		const { host, section } = await mountEmpire();
 
 		await expect(
-			(component.vm as unknown as { save: () => Promise<void> }).save()
+			section().save()
 		).rejects.toThrow();
-		expect(component.emitted("update:cxList")).toBeUndefined();
+		expect(host.data.cxList.value).toEqual([]);
 	});
 
 	it("keeps unsaved CX selects when the empires reload", async () => {
-		const { wrapper, component, setProps } = await mountEmpire();
+		const { wrapper, section, setProps } = await mountEmpire();
 
 		cxSelects(wrapper)[1].vm.$emit("update:value", CX2);
 		await flushPromises();
@@ -211,7 +212,7 @@ describe("ManageEmpire", () => {
 			"None",
 		]);
 		expect(
-			(component.vm as unknown as { changedCount: number }).changedCount
+			section().changedCount.value
 		).toBe(1);
 	});
 
@@ -254,7 +255,7 @@ describe("ManageEmpire", () => {
 			...EMPIRES[0],
 			plans: undefined,
 		});
-		const { wrapper, component } = await mountEmpire();
+		const { wrapper, host } = await mountEmpire();
 
 		await fillCreate(wrapper, "Gamma", 5, 3);
 		wrapper
@@ -272,14 +273,14 @@ describe("ManageEmpire", () => {
 			empire_permits_total: 5,
 			empire_name: "Gamma",
 		});
-		expect(component.emitted("update:empireList")?.[0][0]).toHaveLength(
+		expect(host.data.empireList.value).toHaveLength(
 			empireList.length
 		);
 	});
 
 	it("deletes an empire only after confirmation", async () => {
 		mock.onDelete(new RegExp(`planning/empire/${E2}/$`)).reply(204);
-		const { wrapper, component } = await mountEmpire();
+		const { wrapper, host } = await mountEmpire();
 
 		await wrapper
 			.findAll('td[data-col-key="configuration"] button')[1]
@@ -297,13 +298,13 @@ describe("ManageEmpire", () => {
 		await flushPromises();
 
 		expect(mock.history.delete).toHaveLength(1);
-		expect(component.emitted("update:empireList")).toHaveLength(1);
+		expect(host.data.empireList.value).toHaveLength(empireList.length);
 	});
 
 	it("keeps the list and stops the spinner when deleting fails", async () => {
 		mock.onDelete(new RegExp(`planning/empire/${E2}/$`)).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper, component } = await mountEmpire();
+		const { wrapper, host } = await mountEmpire();
 		const deleteButton = () =>
 			wrapper.findAll('td[data-col-key="configuration"] button')[1];
 
@@ -319,7 +320,7 @@ describe("ManageEmpire", () => {
 		await flushPromises();
 
 		expect(mock.history.delete).toHaveLength(1);
-		expect(component.emitted("update:empireList")).toBeUndefined();
+		expect(host.data.empireList.value).toEqual([]);
 		expect(deleteButton().attributes("aria-busy")).toBe("false");
 		expect(error).toHaveBeenCalled();
 		error.mockRestore();
@@ -349,7 +350,7 @@ describe("ManageEmpire", () => {
 		});
 
 		it("shows a card per empire, by name, with its CX select", async () => {
-			const { wrapper, component } = await mountEmpire();
+			const { wrapper, section } = await mountEmpire();
 
 			expect(wrapper.find("table").exists()).toBe(false);
 			const cards = wrapper.findAll("a").map((a) => a.text());
@@ -362,8 +363,7 @@ describe("ManageEmpire", () => {
 			selects[1].vm.$emit("update:value", CX2);
 			await flushPromises();
 			expect(
-				(component.vm as unknown as { changedCount: number })
-					.changedCount
+				section().changedCount.value
 			).toBe(1);
 
 			// back to the table when the screen widens

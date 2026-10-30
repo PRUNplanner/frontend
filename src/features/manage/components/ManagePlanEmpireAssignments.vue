@@ -18,6 +18,7 @@
 	import { usePlanetData } from "@/database/services/usePlanetData";
 	const { getPlanet } = usePlanetData();
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { useManageData } from "@/features/manage/useManageData";
 	import { batchChanges } from "@/lib/query_cache/queries/planning.queries";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import {
@@ -86,10 +87,7 @@
 		},
 	});
 
-	const emit = defineEmits<{
-		(e: "update:empireList", value: PlanEmpireElement[]): void;
-		(e: "update:planList", value: Plan[]): void;
-	}>();
+	const { refetchPlans: refetch, register } = useManageData();
 
 	// Rows: plain frozen objects, planet names resolved once per planet
 	// before the rows are built, so the table renders once
@@ -441,15 +439,6 @@
 		} else if (key === "delete") handleDeleteConfirm(row.planUuid);
 	}
 
-	async function refetch(): Promise<void> {
-		const [empireList, planList] = await Promise.all([
-			useQuery("GetAllEmpires").execute(),
-			useQuery("GetAllPlans").execute(),
-		]);
-		emit("update:empireList", empireList);
-		emit("update:planList", planList);
-	}
-
 	async function clonePlan(
 		planUuid: string,
 		planName: string
@@ -513,9 +502,22 @@
 		await refetch();
 	}
 
-	const changes = matrix.changes;
-	const discard = matrix.discard;
-	defineExpose({ changes, save, discard });
+	register("assignments", {
+		changedCount: computed(() => matrix.changes.value.changedCount),
+		detail: computed(() => {
+			const changes = matrix.changes.value;
+			if (changes.changedCount === 0) return undefined;
+			return t("management.assignments.plan_count", {
+				plans: t("management.assignments.plans", changes.planCount),
+				empires: t(
+					"management.assignments.empires",
+					changes.empireCount
+				),
+			});
+		}),
+		save,
+		discard: matrix.discard,
+	});
 </script>
 
 <template>

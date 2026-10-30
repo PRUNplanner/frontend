@@ -174,6 +174,10 @@ Write them for logic-heavy components, see
   `messages` (en_US) lets `<i18n-t>` render its slots.
   `setProps` updates props, `component.emitted()` holds emitted events.
   `piniaWithCX(uuid, name)` gives a Pinia whose store holds one CX.
+  `setup` runs in the root's setup, to `provide()` what the component
+  injects. `mountComposable(() => useX(...))` runs a composable in a
+  mounted component, for one with lifecycle hooks or `inject()`; unmount
+  its `wrapper` to dispose it.
 - **Data**: seed fixtures into the IndexedDB stores and preload, as in
   engine tests. Mock the backend with axios-mock-adapter and assert on
   `mock.history` request bodies. Payloads are Zod-validated, so use real

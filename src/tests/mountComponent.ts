@@ -33,7 +33,8 @@ enableAutoUnmount(afterEach);
  * `component.emitted()`. `withDialog` renders PConfirmHost next to it
  * for components calling useConfirm(). `messages` (en_US) lets `<i18n-t>` render
  * its slots, which a key-only i18n drops. `attach` mounts it into the
- * document, for focus checks.
+ * document, for focus checks. `setup` runs in the root's setup, to
+ * provide() what the component injects.
  */
 export async function mountComponent(
 	component: Component,
@@ -43,6 +44,8 @@ export async function mountComponent(
 		withDialog?: boolean;
 		messages?: Record<string, unknown>;
 		attach?: boolean;
+		// runs in the root's setup, e.g. to provide() for the component
+		setup?: () => void;
 	} = {}
 ) {
 	const i18n = createI18n({
@@ -61,6 +64,7 @@ export async function mountComponent(
 
 	const wrapper = mount(
 		defineComponent({
+			setup: () => void options.setup?.(),
 			render: () =>
 				options.withDialog
 					? h(Fragment, [content(), h(PConfirmHost)])
@@ -116,4 +120,26 @@ export async function hoverTooltip(el: DOMWrapper<Element> | VueWrapper) {
 	await nextTick();
 	return [...document.body.querySelectorAll("[role=tooltip]")].at(-1)!
 		.textContent;
+}
+
+/**
+ * Runs a composable in a mounted component's setup, so its lifecycle
+ * hooks, inject() and i18n work; unmount the wrapper to dispose it
+ */
+export async function mountComposable<T>(
+	use: () => T,
+	options: Parameters<typeof mountComponent>[2] = {}
+) {
+	let result: T | undefined;
+	const { wrapper } = await mountComponent(
+		defineComponent({
+			setup() {
+				result = use();
+				return () => null;
+			},
+		}),
+		{},
+		options
+	);
+	return { result: result as T, wrapper };
 }

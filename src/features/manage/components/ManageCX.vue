@@ -11,6 +11,7 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { useManageData } from "@/features/manage/useManageData";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
@@ -45,9 +46,7 @@
 		return false;
 	});
 
-	const emit = defineEmits<{
-		(e: "update:cxList", value: CX[]): void;
-	}>();
+	const { refetchCX } = useManageData();
 
 	async function createCX(): Promise<void> {
 		if (compCanCreate.value) {
@@ -61,7 +60,7 @@
 				}).execute();
 
 				// forced reload of all CX
-				emit("update:cxList", await useQuery("GetAllCX").execute());
+				await refetchCX();
 
 				refNewCXName.value = "";
 				refShowCreateCX.value = false;
@@ -91,7 +90,7 @@
 		try {
 			await useQuery("DeleteCX", { cxUuid: cxUuid }).execute();
 			// forced reload of all CX
-			emit("update:cxList", await useQuery("GetAllCX").execute());
+			await refetchCX();
 		} catch (err) {
 			console.error(err);
 		} finally {
