@@ -15,7 +15,10 @@
 	const { pageCount } = defineProps<{ pageCount: number }>();
 	const page = defineModel<number>("page", { required: true });
 
-	interface PageItem { page: number; more: boolean }
+	interface PageItem {
+		page: number;
+		more: boolean;
+	}
 
 	// up to 9 items: first, last and the pages around the current one
 	const items = computed<PageItem[]>(() => {
@@ -29,7 +32,9 @@
 		const start = Math.max(Math.min(page.value - 2, last - 6), 3);
 		const list: PageItem[] = [{ page: 1, more: false }];
 		list.push(
-			start > 3 ? { page: start - 1, more: true } : { page: 2, more: false }
+			start > 3
+				? { page: start - 1, more: true }
+				: { page: 2, more: false }
 		);
 		for (let i = start; i <= end; i++) list.push({ page: i, more: false });
 		if (end < last - 2) list.push({ page: end + 1, more: true });
@@ -60,13 +65,17 @@
 			:key="`${item.more ? 'more' : 'page'}#${item.page}`"
 			type="button"
 			class="ppagination-item"
-			:class="item.page === page && !item.more ? 'ppagination-active' : ''"
+			:class="
+				item.page === page && !item.more ? 'ppagination-active' : ''
+			"
 			:aria-label="
 				item.more
 					? t('common.ui.pagination.more')
 					: t('common.ui.pagination.page', { page: item.page })
 			"
-			:aria-current="item.page === page && !item.more ? 'page' : undefined"
+			:aria-current="
+				item.page === page && !item.more ? 'page' : undefined
+			"
 			@click="go(item.page)">
 			{{ item.more ? "…" : item.page }}
 		</button>

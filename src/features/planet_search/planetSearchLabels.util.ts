@@ -19,10 +19,16 @@ function groupLabel(
 	t: ITranslate
 ): string {
 	const parts = group.materials.map((m) =>
-		minDaily[m] ? t("planet_search.chips.min", { material: m, n: minDaily[m] }) : m
+		minDaily[m]
+			? t("planet_search.chips.min", { material: m, n: minDaily[m] })
+			: m
 	);
 	const joined = parts.join(
-		t(group.op === "all" ? "planet_search.chips.and" : "planet_search.chips.or")
+		t(
+			group.op === "all"
+				? "planet_search.chips.and"
+				: "planet_search.chips.or"
+		)
 	);
 	return parts.length > 1 ? `(${joined})` : joined;
 }

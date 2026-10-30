@@ -85,8 +85,7 @@ describe("localeLazyLoaders", () => {
 		);
 
 		expect(files.length).toBeGreaterThan(0);
-		for (const mod of messages)
-			expect(typeof mod).toBe("object");
+		for (const mod of messages) expect(typeof mod).toBe("object");
 	});
 });
 

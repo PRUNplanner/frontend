@@ -44,7 +44,10 @@ export const MAX_EXPERTS_TOTAL = 6;
  * 	ExpertType
  * >}
  */
-export const MAP_BUILDING_EXPERTISE_EXPERTS: Record<BuildingExpertise, ExpertType> = {
+export const MAP_BUILDING_EXPERTISE_EXPERTS: Record<
+	BuildingExpertise,
+	ExpertType
+> = {
 	AGRICULTURE: "Agriculture",
 	CHEMISTRY: "Chemistry",
 	CONSTRUCTION: "Construction",

@@ -81,7 +81,8 @@
 	// always needed, so not listed
 	const SURFACE_EXTRAS = ["MCG", "AEF"];
 
-	type ISortKey = "name" | "rate" | "extractor" | "cost" | "extras" | "cogc" | "jumps";
+	type ISortKey =
+		"name" | "rate" | "extractor" | "cost" | "extras" | "cogc" | "jumps";
 
 	const extractor = ref<string>("all");
 	const surface = ref<"any" | "rocky" | "gaseous">("any");
@@ -100,9 +101,7 @@
 	const entries = computed(
 		() => new Map((index ?? []).map((p) => [p.planet_natural_id, p]))
 	);
-	const searchCtx = computed(() =>
-		createSearchContext(index ?? [], {}, now)
-	);
+	const searchCtx = computed(() => createSearchContext(index ?? [], {}, now));
 
 	const rows = computed(() =>
 		(options?.sites ?? []).map((site) => {
@@ -114,7 +113,11 @@
 				: [];
 			const cogc = entry ? activeProgram(entry, now) : null;
 			const jumps = entry
-				? planetJumps(entry, { kind: "cx", code: nearCX.value }, searchCtx.value)
+				? planetJumps(
+						entry,
+						{ kind: "cx", code: nearCX.value },
+						searchCtx.value
+					)
 				: -1;
 			return {
 				site,
@@ -146,9 +149,18 @@
 			.map(([b, n]) => ({ value: b, label: `${b} ${n}` })),
 	]);
 	const surfaceOptions = computed(() => [
-		{ value: "any" as const, label: t("production_chains.planet_picker.any") },
-		{ value: "rocky" as const, label: t("production_chains.planet_picker.rocky") },
-		{ value: "gaseous" as const, label: t("production_chains.planet_picker.gaseous") },
+		{
+			value: "any" as const,
+			label: t("production_chains.planet_picker.any"),
+		},
+		{
+			value: "rocky" as const,
+			label: t("production_chains.planet_picker.rocky"),
+		},
+		{
+			value: "gaseous" as const,
+			label: t("production_chains.planet_picker.gaseous"),
+		},
 	]);
 	const cxOptions = SEARCH_CX.map((c) => ({ label: c, value: c }));
 
@@ -220,7 +232,9 @@
 			cost: t("production_chains.planet_picker.col_cost"),
 			extras: t("production_chains.planet_picker.col_extras"),
 			cogc: t("production_chains.planet_picker.col_cogc"),
-			jumps: t("production_chains.planet_picker.col_jumps", { cx: nearCX.value }),
+			jumps: t("production_chains.planet_picker.col_jumps", {
+				cx: nearCX.value,
+			}),
 		})[key];
 
 	const money = (v: number) =>
@@ -263,61 +277,103 @@
 					}}
 				</span>
 			</div>
-			<p v-if="loading" class="text-muted">{{ $t("production_chains.planet_picker.loading") }}</p>
-			<p v-else-if="error" class="text-negative">{{ $t("production_chains.planet_picker.error") }}</p>
+			<p v-if="loading" class="text-muted">
+				{{ $t("production_chains.planet_picker.loading") }}
+			</p>
+			<p v-else-if="error" class="text-negative">
+				{{ $t("production_chains.planet_picker.error") }}
+			</p>
 			<template v-else>
 				<div class="flex flex-wrap items-end gap-x-6 gap-y-3">
 					<div>
-						<div class="text-xs uppercase text-muted pb-1">{{ $t("production_chains.planet_picker.extractor") }}</div>
+						<div class="text-xs uppercase text-muted pb-1">
+							{{
+								$t("production_chains.planet_picker.extractor")
+							}}
+						</div>
 						<PSegmented
 							v-model:value="extractor"
 							:options="extractorOptions"
 							size="sm"
-							:label="t('production_chains.planet_picker.extractor')" />
+							:label="
+								t('production_chains.planet_picker.extractor')
+							" />
 					</div>
 					<div>
-						<div class="text-xs uppercase text-muted pb-1">{{ $t("production_chains.planet_picker.surface") }}</div>
+						<div class="text-xs uppercase text-muted pb-1">
+							{{ $t("production_chains.planet_picker.surface") }}
+						</div>
 						<PSegmented
 							v-model:value="surface"
 							:options="surfaceOptions"
 							size="sm"
-							:label="t('production_chains.planet_picker.surface')" />
+							:label="
+								t('production_chains.planet_picker.surface')
+							" />
 					</div>
 					<div>
-						<div class="text-xs uppercase text-muted pb-1">{{ $t("production_chains.planet_picker.near") }}</div>
+						<div class="text-xs uppercase text-muted pb-1">
+							{{ $t("production_chains.planet_picker.near") }}
+						</div>
 						<div class="flex items-center gap-2">
 							<PSelect
 								v-model:value="nearCX"
 								:options="cxOptions"
 								size="sm"
 								class="w-24"
-								:aria-label="t('production_chains.planet_picker.near')" />
-							<span class="text-muted">{{ $t("production_chains.planet_picker.within") }}</span>
+								:aria-label="
+									t('production_chains.planet_picker.near')
+								" />
+							<span class="text-muted">{{
+								$t("production_chains.planet_picker.within")
+							}}</span>
 							<PInputNumber
 								v-model:value="maxJumps"
 								:min="0"
 								size="sm"
 								class="w-16"
-								:aria-label="t('production_chains.planet_picker.jumps')" />
-							<span class="text-muted">{{ $t("production_chains.planet_picker.jumps") }}</span>
+								:aria-label="
+									t('production_chains.planet_picker.jumps')
+								" />
+							<span class="text-muted">{{
+								$t("production_chains.planet_picker.jumps")
+							}}</span>
 						</div>
 					</div>
 					<div>
-						<div class="text-xs uppercase text-muted pb-1">{{ $t("production_chains.planet_picker.only") }}</div>
+						<div class="text-xs uppercase text-muted pb-1">
+							{{ $t("production_chains.planet_picker.only") }}
+						</div>
 						<div class="flex flex-wrap gap-3">
-							<PCheckbox v-model:checked="noExtras">{{ $t("production_chains.planet_picker.no_extras") }}</PCheckbox>
-							<PCheckbox v-model:checked="cogcOnly">{{ $t("production_chains.planet_picker.cogc") }}</PCheckbox>
-							<PCheckbox v-model:checked="lmOnly">{{ $t("production_chains.planet_picker.local_market") }}</PCheckbox>
+							<PCheckbox v-model:checked="noExtras">{{
+								$t("production_chains.planet_picker.no_extras")
+							}}</PCheckbox>
+							<PCheckbox v-model:checked="cogcOnly">{{
+								$t("production_chains.planet_picker.cogc")
+							}}</PCheckbox>
+							<PCheckbox v-model:checked="lmOnly">{{
+								$t(
+									"production_chains.planet_picker.local_market"
+								)
+							}}</PCheckbox>
 						</div>
 					</div>
 					<div>
-						<div class="text-xs uppercase text-muted pb-1">{{ $t("production_chains.planet_picker.planet") }}</div>
+						<div class="text-xs uppercase text-muted pb-1">
+							{{ $t("production_chains.planet_picker.planet") }}
+						</div>
 						<PInput
 							v-model:value="text"
 							size="sm"
 							class="w-48"
-							:placeholder="t('production_chains.planet_picker.name_placeholder')"
-							:aria-label="t('production_chains.planet_picker.planet')" />
+							:placeholder="
+								t(
+									'production_chains.planet_picker.name_placeholder'
+								)
+							"
+							:aria-label="
+								t('production_chains.planet_picker.planet')
+							" />
 					</div>
 				</div>
 				<PTable>
@@ -331,39 +387,94 @@
 								<button
 									type="button"
 									class="cursor-pointer hover:underline whitespace-nowrap"
-									:title="t('production_chains.planet_picker.sort_by', { column: columnLabel(c.key) })"
+									:title="
+										t(
+											'production_chains.planet_picker.sort_by',
+											{ column: columnLabel(c.key) }
+										)
+									"
 									@click="sortBy(c.key)">
 									{{ columnLabel(c.key) }}
-									<span v-if="sortKey === c.key" aria-hidden="true">
+									<span
+										v-if="sortKey === c.key"
+										aria-hidden="true">
 										{{ sortDir === 1 ? "↑" : "↓" }}
 									</span>
 								</button>
 							</th>
-							<th><span class="sr-only">{{ $t("production_chains.planet_picker.use") }}</span></th>
+							<th>
+								<span class="sr-only">{{
+									$t("production_chains.planet_picker.use")
+								}}</span>
+							</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-if="options" class="bg-surface-sunken" data-testid="chain-planet-typical">
+						<tr
+							v-if="options"
+							class="bg-surface-sunken"
+							data-testid="chain-planet-typical">
 							<td>
-								<span class="font-bold">{{ $t("production_chains.planet_picker.typical") }}</span>
+								<span class="font-bold">{{
+									$t(
+										"production_chains.planet_picker.typical"
+									)
+								}}</span>
 								<span class="text-xs text-muted pl-1">
-									{{ $t("production_chains.planet_picker.typical_note", { planet: options.typical.planetName }) }}
+									{{
+										$t(
+											"production_chains.planet_picker.typical_note",
+											{
+												planet: options.typical
+													.planetName,
+											}
+										)
+									}}
 								</span>
 							</td>
-							<td class="numeric tabular-nums">{{ formatNumber(options.typical.dailyExtraction, 1) }}</td>
-							<td class="font-mono">{{ options.typical.buildingTicker }}</td>
-							<td class="numeric tabular-nums">{{ money(unitCost(options.typical)) }}</td>
-							<td colspan="3" class="text-xs text-muted">{{ $t("production_chains.planet_picker.typical_hint") }}</td>
+							<td class="numeric tabular-nums">
+								{{
+									formatNumber(
+										options.typical.dailyExtraction,
+										1
+									)
+								}}
+							</td>
+							<td class="font-mono">
+								{{ options.typical.buildingTicker }}
+							</td>
+							<td class="numeric tabular-nums">
+								{{ money(unitCost(options.typical)) }}
+							</td>
+							<td colspan="3" class="text-xs text-muted">
+								{{
+									$t(
+										"production_chains.planet_picker.typical_hint"
+									)
+								}}
+							</td>
 							<td>
 								<PButton
 									size="sm"
-									:type="planetId === undefined ? 'primary' : 'secondary'"
-									:aria-current="planetId === undefined ? 'true' : undefined"
+									:type="
+										planetId === undefined
+											? 'primary'
+											: 'secondary'
+									"
+									:aria-current="
+										planetId === undefined
+											? 'true'
+											: undefined
+									"
 									@click="use(undefined)">
 									{{
 										planetId === undefined
-											? $t("production_chains.planet_picker.in_use")
-											: $t("production_chains.planet_picker.use")
+											? $t(
+													"production_chains.planet_picker.in_use"
+												)
+											: $t(
+													"production_chains.planet_picker.use"
+												)
 									}}
 								</PButton>
 							</td>
@@ -374,60 +485,107 @@
 							data-testid="chain-planet-row">
 							<td class="whitespace-nowrap">
 								{{ r.site.planetName }}
-								<span class="text-xs text-muted">({{ r.site.planetId }})</span>
+								<span class="text-xs text-muted"
+									>({{ r.site.planetId }})</span
+								>
 								<span
 									v-if="r.lm"
 									class="ml-1 px-1 rounded-control border border-line text-xs"
-									:title="t('production_chains.planet_picker.lm_title')">
-									{{ $t("production_chains.planet_picker.lm") }}
+									:title="
+										t(
+											'production_chains.planet_picker.lm_title'
+										)
+									">
+									{{
+										$t("production_chains.planet_picker.lm")
+									}}
 								</span>
 								<PlanetPlots :planet="r.entry" class="ml-1" />
 							</td>
 							<td class="numeric tabular-nums">
 								<span class="inline-flex items-center gap-2">
-									<span class="w-16 h-1.5 rounded-control bg-surface-sunken overflow-hidden">
+									<span
+										class="w-16 h-1.5 rounded-control bg-surface-sunken overflow-hidden">
 										<span
 											class="block h-full bg-prunplanner"
-											:style="{ width: `${(r.site.dailyExtraction / maxRate) * 100}%` }" />
+											:style="{
+												width: `${(r.site.dailyExtraction / maxRate) * 100}%`,
+											}" />
 									</span>
-									{{ formatNumber(r.site.dailyExtraction, 1) }}
+									{{
+										formatNumber(r.site.dailyExtraction, 1)
+									}}
 								</span>
 							</td>
-							<td class="font-mono">{{ r.site.buildingTicker }}</td>
-							<td class="numeric tabular-nums">{{ money(r.cost) }}</td>
+							<td class="font-mono">
+								{{ r.site.buildingTicker }}
+							</td>
+							<td class="numeric tabular-nums">
+								{{ money(r.cost) }}
+							</td>
 							<td>
 								<span class="flex gap-1">
-									<MaterialTile v-for="x in r.extras" :key="x" :ticker="x" />
-									<span v-if="!r.extras.length" class="text-muted">–</span>
+									<MaterialTile
+										v-for="x in r.extras"
+										:key="x"
+										:ticker="x" />
+									<span
+										v-if="!r.extras.length"
+										class="text-muted"
+										>–</span
+									>
 								</span>
 							</td>
 							<td class="text-xs">
-								<template v-if="r.cogc">{{ $t(`game.cogc_program.${r.cogc}`) }}</template>
+								<template v-if="r.cogc">{{
+									$t(`game.cogc_program.${r.cogc}`)
+								}}</template>
 								<span v-else class="text-muted">–</span>
 							</td>
-							<td class="numeric tabular-nums">{{ r.jumps >= 0 ? r.jumps : "–" }}</td>
+							<td class="numeric tabular-nums">
+								{{ r.jumps >= 0 ? r.jumps : "–" }}
+							</td>
 							<td>
 								<PButton
 									size="sm"
-									:type="planetId === r.site.planetId ? 'primary' : 'secondary'"
-									:aria-current="planetId === r.site.planetId ? 'true' : undefined"
+									:type="
+										planetId === r.site.planetId
+											? 'primary'
+											: 'secondary'
+									"
+									:aria-current="
+										planetId === r.site.planetId
+											? 'true'
+											: undefined
+									"
 									@click="use(r.site.planetId)">
 									{{
 										planetId === r.site.planetId
-											? $t("production_chains.planet_picker.in_use")
-											: $t("production_chains.planet_picker.use")
+											? $t(
+													"production_chains.planet_picker.in_use"
+												)
+											: $t(
+													"production_chains.planet_picker.use"
+												)
 									}}
 								</PButton>
 							</td>
 						</tr>
 						<tr v-if="!matched.length">
-							<td colspan="8" class="text-muted">{{ $t("production_chains.planet_picker.none") }}</td>
+							<td colspan="8" class="text-muted">
+								{{ $t("production_chains.planet_picker.none") }}
+							</td>
 						</tr>
 					</tbody>
 				</PTable>
-				<div class="flex flex-wrap justify-between gap-3 text-xs text-muted">
-					<span>{{ $t("production_chains.planet_picker.footer") }}</span>
-					<RouterLink :to="searchLink" class="text-link hover:underline">
+				<div
+					class="flex flex-wrap justify-between gap-3 text-xs text-muted">
+					<span>{{
+						$t("production_chains.planet_picker.footer")
+					}}</span>
+					<RouterLink
+						:to="searchLink"
+						class="text-link hover:underline">
 						{{ $t("production_chains.planet_picker.open_search") }}
 					</RouterLink>
 				</div>

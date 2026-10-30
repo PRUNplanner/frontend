@@ -32,17 +32,22 @@ describe("exchange labels", () => {
 		expect(exchangeOptionLabel("AI1_30D", t)).toBe("AI1 · VWAP 30D");
 		expect(exchangeOptionLabel("NC1_ASK", t)).toBe("NC1 · Ask");
 		expect(exchangeOptionLabel("IC1_BID", t)).toBe("IC1 · Bid");
-		expect(exchangeOptionLabel("UNIVERSE_7D", t)).toBe("Universe · VWAP 7D");
+		expect(exchangeOptionLabel("UNIVERSE_7D", t)).toBe(
+			"Universe · VWAP 7D"
+		);
 	});
 
 	it("labels every price source", () => {
 		expect(priceSourceLabel(source({}), t)).toBe("NC1 · VWAP 30D");
 		expect(
-			priceSourceLabel(source({ level: "planet_exchange", key: "bid" }), t)
+			priceSourceLabel(
+				source({ level: "planet_exchange", key: "bid" }),
+				t
+			)
 		).toBe("NC1 · Bid · planet");
-		expect(
-			priceSourceLabel(source({ key: "ask", zero: true }), t)
-		).toBe("NC1 · Ask · no price");
+		expect(priceSourceLabel(source({ key: "ask", zero: true }), t)).toBe(
+			"NC1 · Ask · no price"
+		);
 		expect(
 			priceSourceLabel(
 				source({ level: "fallback", exchange: "UNIVERSE" }),

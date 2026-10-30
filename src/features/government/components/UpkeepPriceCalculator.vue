@@ -36,7 +36,13 @@
 	} from "@/features/government/upkeepCalculations.types";
 
 	// UI
-	import { PProgressBar, PButton, PButtonGroup, PDataTable, useToast } from "@/ui";
+	import {
+		PProgressBar,
+		PButton,
+		PButtonGroup,
+		PDataTable,
+		useToast,
+	} from "@/ui";
 	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	const props = defineProps({
@@ -111,7 +117,11 @@
 				t(`upkeep_price_calculator.calculator.details.table.${key}`);
 			return [
 				{ key: "ticker", title: title("material"), sorter: true },
-				{ key: "buildingTicker", title: title("building"), sorter: true },
+				{
+					key: "buildingTicker",
+					title: title("building"),
+					sorter: true,
+				},
 				{
 					key: "pricePerNeed",
 					title: title("price_need"),
@@ -178,9 +188,7 @@
 						:ticker="row.ticker" />
 				</template>
 				<template #cell-buildingTicker="{ row }">
-					<span class="font-bold">{{
-						row.buildingTicker
-					}}</span>
+					<span class="font-bold">{{ row.buildingTicker }}</span>
 				</template>
 				<template #cell-pricePerNeed="{ row }">
 					<div

@@ -43,12 +43,12 @@ const anotherPlanetButton = (wrapper: VueWrapper) =>
 // the info line under the nth form field (username, password, email, planet)
 const fieldInfo = (wrapper: VueWrapper, index: number) => {
 	const id = inputs(wrapper)[index].attributes("id");
-	const content = wrapper.find(`label[for="${id}"]`).element.nextElementSibling;
+	const content = wrapper.find(`label[for="${id}"]`).element
+		.nextElementSibling;
 	const info = content?.nextElementSibling;
 	return info?.classList.contains("col-2") ? (info.textContent ?? "") : "";
 };
-const alert = (wrapper: VueWrapper) =>
-	wrapper.findComponent(PNotice).text();
+const alert = (wrapper: VueWrapper) => wrapper.findComponent(PNotice).text();
 const disabled = (wrapper: VueWrapper) =>
 	registerButton(wrapper).element.disabled;
 
@@ -242,7 +242,9 @@ describe("RegistrationComponent", () => {
 		// the panel switches to the login form
 		const buttons = wrapper.findAll("button");
 		expect(buttons).toHaveLength(1);
-		expect(buttons[0].text()).toBe("account.components.login.buttons.login");
+		expect(buttons[0].text()).toBe(
+			"account.components.login.buttons.login"
+		);
 		await buttons[0].trigger("click");
 		expect(
 			wrapper.findComponent(RegistrationComponent).emitted("login")
@@ -328,7 +330,9 @@ describe("RegistrationComponent", () => {
 		expect(fieldInfo(wrapper, 1)).toContain("Entirely numeric.");
 		expect(fieldInfo(wrapper, 2)).toContain("Enter a valid email address.");
 		expect(fieldInfo(wrapper, 3)).toContain("Wrong planet.");
-		expect(wrapper.findAll(".col-2 .text-negative[role=alert]")).toHaveLength(4);
+		expect(
+			wrapper.findAll(".col-2 .text-negative[role=alert]")
+		).toHaveLength(4);
 		// the top alert only points at the fields
 		expect(alert(wrapper)).not.toContain("Taken.");
 	});

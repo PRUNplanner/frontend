@@ -48,13 +48,17 @@ function planet(
 }
 
 // jumps per reference: cx code or plan uuid → planet id → jumps
-function context(jumps: Record<string, Record<string, number>>): IPlanetSearchContext {
+function context(
+	jumps: Record<string, Record<string, number>>
+): IPlanetSearchContext {
 	return {
 		now: 0,
 		refJumps: (ref) => {
 			const table = jumps[ref.kind === "cx" ? ref.code : ref.planUuid];
 			return table
-				? new Map(Object.entries(table).map(([id, j]) => [`sys-${id}`, j]))
+				? new Map(
+						Object.entries(table).map(([id, j]) => [`sys-${id}`, j])
+					)
 				: undefined;
 		},
 	};
@@ -84,7 +88,9 @@ describe("chartData X axis", () => {
 			refs: [{ kind: "cx", code: "IC1" }],
 			nearest: false,
 		});
-		expect(data.points.map((p) => [p.planet.planet_natural_id, p.x])).toEqual([
+		expect(
+			data.points.map((p) => [p.planet.planet_natural_id, p.x])
+		).toEqual([
 			["A", 3],
 			["B", 8],
 		]);
@@ -129,7 +135,12 @@ describe("chartData X axis", () => {
 
 describe("chartData Y axis", () => {
 	it("plots the material's daily output and counts planets without it", () => {
-		const data = chartData([A, B], withH2O, context({ CI1: { A: 1, B: 1 } }), "FEO");
+		const data = chartData(
+			[A, B],
+			withH2O,
+			context({ CI1: { A: 1, B: 1 } }),
+			"FEO"
+		);
 		expect(data.points.map((p) => p.y)).toEqual([5]);
 		expect(data.noValue).toBe(1);
 	});
@@ -158,12 +169,17 @@ describe("chartData limit", () => {
 		const many = Array.from({ length: CHART_LIMIT + 5 }, (_, i) =>
 			planet(`P${i}`, { H2O: i })
 		);
-		const jumps = Object.fromEntries(many.map((p) => [p.planet_natural_id, 1]));
+		const jumps = Object.fromEntries(
+			many.map((p) => [p.planet_natural_id, 1])
+		);
 		const data = chartData(many, withH2O, context({ CI1: jumps }), "H2O");
 		expect(data.points).toHaveLength(CHART_LIMIT);
 		expect(data.points[0].planet.planet_natural_id).toBe("P0");
 		expect(data.capped).toBe(CHART_LIMIT + 5);
 
-		expect(chartData(many.slice(0, 3), withH2O, context({ CI1: jumps }), "H2O").capped).toBe(0);
+		expect(
+			chartData(many.slice(0, 3), withH2O, context({ CI1: jumps }), "H2O")
+				.capped
+		).toBe(0);
 	});
 });

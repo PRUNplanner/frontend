@@ -234,7 +234,9 @@ describe("EmpireOpportunities", () => {
 		expect(h.find(".font-mono").text()).toBe("2x");
 		expect(h.find(".font-mono").classes()).toContain("text-warning");
 		expect(h.find(".opacity-30").exists()).toBe(false);
-		expect(n.find(".font-mono").text()).toBe("empire.opportunities.table.missing");
+		expect(n.find(".font-mono").text()).toBe(
+			"empire.opportunities.table.missing"
+		);
 		expect(n.find(".font-mono").classes()).toContain("uppercase");
 		expect(n.find(".font-mono").classes()).toContain("text-negative");
 		expect(n.find(".opacity-30").exists()).toBe(true);

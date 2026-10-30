@@ -32,7 +32,11 @@ const activeLabel = () => {
 };
 const key = (k: string, target: Element = menu().element) =>
 	target.dispatchEvent(
-		new KeyboardEvent("keydown", { key: k, bubbles: true, cancelable: true })
+		new KeyboardEvent("keydown", {
+			key: k,
+			bubbles: true,
+			cancelable: true,
+		})
 	);
 
 function mountDropdown(props: Record<string, unknown> = {}) {
@@ -151,14 +155,18 @@ describe("PDropdown", () => {
 							PModal,
 							{
 								show: modal.value,
-								"onUpdate:show": (v: boolean) => (modal.value = v),
+								"onUpdate:show": (v: boolean) =>
+									(modal.value = v),
 								title: "Save as",
 							},
 							() => h("input")
 						),
 						h(
 							PDropdown,
-							{ options: OPTIONS, onSelect: () => (modal.value = true) },
+							{
+								options: OPTIONS,
+								onSelect: () => (modal.value = true),
+							},
 							() => h("button", { id: "trigger" }, "More")
 						),
 					]),
@@ -167,7 +175,11 @@ describe("PDropdown", () => {
 				attachTo: document.body,
 				global: {
 					plugins: [
-						createI18n({ legacy: false, locale: "en_US", messages: {} }),
+						createI18n({
+							legacy: false,
+							locale: "en_US",
+							messages: {},
+						}),
 					],
 				},
 			}
@@ -246,7 +258,9 @@ describe("PDropdown", () => {
 
 		wrapper
 			.find("#outside")
-			.element.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+			.element.dispatchEvent(
+				new MouseEvent("mousedown", { bubbles: true })
+			);
 		await flushPromises();
 		expect(show.value).toBe(false);
 		anchor.remove();

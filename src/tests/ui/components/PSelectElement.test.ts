@@ -46,9 +46,9 @@ describe("PSelectElement", () => {
 		const options = wrapper.findAll("[role=option]");
 
 		expect(wrapper.attributes("role")).toBe("group");
-		expect(wrapper.find(`#${wrapper.attributes("aria-labelledby")}`).text()).toBe(
-			"Metals"
-		);
+		expect(
+			wrapper.find(`#${wrapper.attributes("aria-labelledby")}`).text()
+		).toBe("Metals");
 		expect(options.map((o) => o.attributes("id"))).toEqual(["l-2", "l-3"]);
 		expect(options.map((o) => o.attributes("aria-selected"))).toEqual([
 			"false",

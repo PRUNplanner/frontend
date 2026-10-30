@@ -238,18 +238,16 @@ export function useProductionChain() {
 	/** the same chain without own production, to show the saving */
 	const usesHave = computed(() => result.value.totals.ownCount > 0);
 	const baseline: ComputedRef<IChainTotals | null> = computed(() =>
-		usesHave.value
-			? solveChain(input.value, ctx.value).totals
-			: null
+		usesHave.value ? solveChain(input.value, ctx.value).totals : null
 	);
-	const suppliers: ComputedRef<Record<string, IChainHaveSupply[]>> =
-		computed(() =>
+	const suppliers: ComputedRef<Record<string, IChainHaveSupply[]>> = computed(
+		() =>
 			haveSuppliers(
 				result.value,
 				ownPlans.value,
 				(t) => !(t in haveOverride.value)
 			)
-		);
+	);
 
 	// extraction and base planets need the planet index
 	watch(
@@ -446,7 +444,9 @@ export function useProductionChain() {
 			);
 			if (run !== ownRun) return false;
 			ownPlans.value = plans;
-			ownPlanets.value = new Map(planets.map((p) => [p.planet_natural_id, p]));
+			ownPlanets.value = new Map(
+				planets.map((p) => [p.planet_natural_id, p])
+			);
 			ownLoaded.value = uuid;
 			return true;
 		} catch (e) {
@@ -584,7 +584,12 @@ export function useProductionChain() {
 	}
 
 	function recipeOptions(ticker: string): IChainRecipeEffect[] {
-		return recipeEffects(solverInput.value, ctx.value, ticker, result.value);
+		return recipeEffects(
+			solverInput.value,
+			ctx.value,
+			ticker,
+			result.value
+		);
 	}
 
 	/** the chain as a link, for sharing */

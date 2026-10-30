@@ -517,9 +517,9 @@ describe("Backend contract", () => {
 			).toBe("hover");
 
 			const { marketCardTrigger: _, ...oldBackend } = backendDefaults;
-			expect(UserPreferenceSchema.parse(oldBackend).marketCardTrigger).toBe(
-				"hover"
-			);
+			expect(
+				UserPreferenceSchema.parse(oldBackend).marketCardTrigger
+			).toBe("hover");
 		});
 
 		it("FIO Repair: defaults from a backend without them, links kept", () => {

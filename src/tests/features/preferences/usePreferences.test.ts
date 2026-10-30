@@ -304,7 +304,9 @@ describe("usePreferences", async () => {
 		expect(planSettingsOverview.value).toHaveLength(1);
 		expect(planSettingsOverview.value[0]).toMatchObject({
 			planUuid: "foo",
-			preferences: ["profile.preferences.plan_settings.auto_optimize_inactive"],
+			preferences: [
+				"profile.preferences.plan_settings.auto_optimize_inactive",
+			],
 		});
 	});
 

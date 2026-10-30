@@ -67,9 +67,7 @@
 	const active: Ref<string | null> = ref(null);
 
 	const materials = computed(() => filteredMaterials(props.filter));
-	const material = computed(() =>
-		chartYMaterial(props.filter, picked.value)
-	);
+	const material = computed(() => chartYMaterial(props.filter, picked.value));
 	const data = computed(() =>
 		chartData(props.planets, props.filter, props.ctx, material.value)
 	);
@@ -190,7 +188,9 @@
 
 	const byKey = computed(
 		() =>
-			new Map(data.value.points.map((p) => [p.planet.planet_natural_id, p]))
+			new Map(
+				data.value.points.map((p) => [p.planet.planet_natural_id, p])
+			)
 	);
 
 	// ranked list: best Y first
@@ -224,7 +224,9 @@
 	const authPanel = useAuthPanel();
 	function open(id: string) {
 		if (!userStore.isLoggedIn) {
-			const planet = props.planets.find((p) => p.planet_natural_id === id);
+			const planet = props.planets.find(
+				(p) => p.planet_natural_id === id
+			);
 			authPanel.open("login", "planet_search_plan", {
 				next: `/plan/${id}`,
 				context: {
@@ -337,15 +339,28 @@
 								<dd class="font-mono text-muted text-right">
 									{{ point.key }}
 									<template v-if="point.ring">
-										· {{ t("planet_search.chart.legend_pinned") }}
+										·
+										{{
+											t(
+												"planet_search.chart.legend_pinned"
+											)
+										}}
 									</template>
 								</dd>
 								<dt class="text-muted">{{ yTitle }}</dt>
-								<dd class="font-mono text-right">{{ yText(point.y) }}</dd>
+								<dd class="font-mono text-right">
+									{{ yText(point.y) }}
+								</dd>
 								<dt class="text-muted">
-									{{ t("planet_search.chart.tooltip_jumps", { target }) }}
+									{{
+										t("planet_search.chart.tooltip_jumps", {
+											target,
+										})
+									}}
 								</dt>
-								<dd class="font-mono text-right">{{ point.x }}</dd>
+								<dd class="font-mono text-right">
+									{{ point.x }}
+								</dd>
 								<!-- Y already is fertility without a material -->
 								<template v-if="material">
 									<dt class="text-muted">
@@ -358,12 +373,18 @@
 								<dt class="text-muted">
 									{{ t("planet_search.chart.tooltip_infra") }}
 								</dt>
-								<dd class="font-mono text-right">{{ details(point.key).infra }}</dd>
+								<dd class="font-mono text-right">
+									{{ details(point.key).infra }}
+								</dd>
 								<template v-if="details(point.key).program">
 									<dt class="text-muted">
-										{{ t("planet_search.chart.colour_cogc") }}
+										{{
+											t("planet_search.chart.colour_cogc")
+										}}
 									</dt>
-									<dd class="text-right">{{ details(point.key).program }}</dd>
+									<dd class="text-right">
+										{{ details(point.key).program }}
+									</dd>
 								</template>
 							</dl>
 						</template>
@@ -441,14 +462,17 @@
 						:data-key="p.planet.planet_natural_id"
 						class="px-3 py-1.5 min-h-11 grid grid-cols-[minmax(0,1fr)_4rem_auto_2rem_auto] items-center gap-2 border-b border-white/5"
 						:class="{
-							'bg-white/10': active === p.planet.planet_natural_id,
+							'bg-white/10':
+								active === p.planet.planet_natural_id,
 						}"
 						@mouseenter="active = p.planet.planet_natural_id"
 						@mouseleave="active = null"
 						@focusin="active = p.planet.planet_natural_id"
 						@focusout="active = null">
 						<div class="min-w-0">
-							<div class="font-bold truncate">{{ name(p.planet) }}</div>
+							<div class="font-bold truncate">
+								{{ name(p.planet) }}
+							</div>
 							<div class="text-xs font-mono text-muted">
 								{{ p.planet.planet_natural_id }}
 							</div>
@@ -465,7 +489,9 @@
 									width: `${maxY ? (p.y / maxY) * 100 : 0}%`,
 								}" />
 						</div>
-						<span class="font-mono text-right">{{ yText(p.y) }}</span>
+						<span class="font-mono text-right">{{
+							yText(p.y)
+						}}</span>
 						<span class="font-mono text-right">{{ p.x }}</span>
 						<PlanetSearchRowActions
 							:planet="p.planet"

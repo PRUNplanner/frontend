@@ -32,14 +32,21 @@
 			if (next === "check")
 				trackEvent("production_chain:action", { action: "mode_check" });
 			router.replace({
-				query: last[next] ?? (next === "check" ? { mode: "check" } : {}),
+				query:
+					last[next] ?? (next === "check" ? { mode: "check" } : {}),
 			});
 		},
 	});
 
 	const options = computed(() => [
-		{ value: "plan" as IMode, label: t("production_chains.check.mode.plan") },
-		{ value: "check" as IMode, label: t("production_chains.check.mode.check") },
+		{
+			value: "plan" as IMode,
+			label: t("production_chains.check.mode.plan"),
+		},
+		{
+			value: "check" as IMode,
+			label: t("production_chains.check.mode.check"),
+		},
 	]);
 </script>
 

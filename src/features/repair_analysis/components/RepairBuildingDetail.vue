@@ -64,7 +64,8 @@
 	);
 	const delta = computed(
 		() =>
-			profit.value - building.curve[building.best].profit * building.amount
+			profit.value -
+			building.curve[building.best].profit * building.amount
 	);
 
 	const condition = computed(() => {
@@ -155,13 +156,18 @@
 				<div class="flex flex-col">
 					<span class="text-xs text-muted">
 						{{
-							$t("plan.tools.repair_analysis.detail.profit_every", {
-								day: interval,
-							})
+							$t(
+								"plan.tools.repair_analysis.detail.profit_every",
+								{
+									day: interval,
+								}
+							)
 						}}
 					</span>
 					<span>
-						<b class="text-lg text-positive">{{ signed(profit, 0) }}</b>
+						<b class="text-lg text-positive">{{
+							signed(profit, 0)
+						}}</b>
 						<span class="text-xs text-muted">
 							{{ $t("plan.tools.repair_analysis.per_day") }}
 						</span>
@@ -176,7 +182,9 @@
 						data-testid="repair-detail-delta">
 						{{
 							interval === building.best
-								? $t("plan.tools.repair_analysis.detail.is_best")
+								? $t(
+										"plan.tools.repair_analysis.detail.is_best"
+									)
 								: inRange
 									? $t(
 											"plan.tools.repair_analysis.detail.in_range",
@@ -251,7 +259,8 @@
 					<div
 						class="absolute inset-x-2.25 top-1/2 -translate-y-1/2 h-1.5"
 						aria-hidden="true">
-						<div class="absolute inset-0 rounded-full bg-white/12" />
+						<div
+							class="absolute inset-0 rounded-full bg-white/12" />
 						<div
 							class="absolute inset-y-0 rounded-full bg-positive/55"
 							:style="{
@@ -270,7 +279,9 @@
 						step="1"
 						:value="interval"
 						:aria-label="
-							$t('plan.tools.repair_analysis.detail.interval_label')
+							$t(
+								'plan.tools.repair_analysis.detail.interval_label'
+							)
 						"
 						:aria-valuetext="
 							$t('plan.tools.repair_analysis.detail.n_days', {
@@ -312,8 +323,7 @@
 			:interval="interval"
 			:ages="ages" />
 
-		<div
-			class="flex flex-wrap gap-x-5 gap-y-3 pt-2.5 border-t border-line">
+		<div class="flex flex-wrap gap-x-5 gap-y-3 pt-2.5 border-t border-line">
 			<div class="flex-[1_1_280px] min-w-0">
 				<slot name="fio" />
 			</div>

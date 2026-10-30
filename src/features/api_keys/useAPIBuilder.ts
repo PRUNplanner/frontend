@@ -117,9 +117,10 @@ export function useAPIBuilder(key: () => string | null) {
 	// CSV again whenever the endpoint has it
 	watch(endpointId, () => (format.value = formats.value[0]));
 
-	const values = reactive<Partial<Record<APIEndpointParam, string | null>>>(
-		{ exchange: "AI1", days: "7" }
-	);
+	const values = reactive<Partial<Record<APIEndpointParam, string | null>>>({
+		exchange: "AI1",
+		days: "7",
+	});
 
 	const snippets = computed<IAPISnippets | null>(() =>
 		buildSnippets(endpoint.value, format.value, values, key())

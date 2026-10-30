@@ -88,7 +88,8 @@ const PP1 = withRecipes("PP1", [BSE], [BSE]);
 const MESSAGES = {
 	plan: {
 		picker: {
-			dependency: "{buildings} turn {ticker} into {outputs}, buy {amount}",
+			dependency:
+				"{buildings} turn {ticker} into {outputs}, buy {amount}",
 			dependency_workforce: "workforce uses {ticker}, buy {amount}",
 			vs_now: "{delta} vs now",
 		},
@@ -115,7 +116,8 @@ const listbox = (wrapper: VueWrapper) => wrapper.find("[role=listbox]");
 const options = (wrapper: VueWrapper) => wrapper.findAll("[role=option]");
 const ids = (wrapper: VueWrapper) =>
 	options(wrapper).map(
-		(o) => o.findComponent({ name: "MaterialTile" }).props("ticker") as string
+		(o) =>
+			o.findComponent({ name: "MaterialTile" }).props("ticker") as string
 	);
 const disabled = (wrapper: VueWrapper) =>
 	options(wrapper).map((o) => o.attributes("aria-disabled") === "true");
@@ -247,7 +249,10 @@ describe("PlanRecipePicker", () => {
 		const remove = vi.spyOn(document, "removeEventListener");
 		onTestFinished(() => remove.mockRestore());
 		wrapper.unmount();
-		expect(remove).toHaveBeenCalledWith("pointerdown", expect.any(Function));
+		expect(remove).toHaveBeenCalledWith(
+			"pointerdown",
+			expect.any(Function)
+		);
 	});
 
 	it("picks a clicked row, an ordered one too, but not the current", async () => {
@@ -280,7 +285,9 @@ describe("PlanRecipePicker", () => {
 				materialIO: [inOut("FE", 12.5, 20)],
 			});
 
-			expect(note(wrapper).text()).toBe("PP1 turn FE into BSE, buy 12.50");
+			expect(note(wrapper).text()).toBe(
+				"PP1 turn FE into BSE, buy 12.50"
+			);
 		});
 
 		it("falls back to the workforce without a building using it", async () => {
@@ -293,10 +300,14 @@ describe("PlanRecipePicker", () => {
 		});
 
 		it("is not shown without an In, or when adding", async () => {
-			const unused = await mountPicker({ materialIO: [inOut("FE", 0, 20)] });
+			const unused = await mountPicker({
+				materialIO: [inOut("FE", 0, 20)],
+			});
 			expect(note(unused.wrapper).exists()).toBe(false);
 
-			const missing = await mountPicker({ materialIO: [inOut("AL", 5, 0)] });
+			const missing = await mountPicker({
+				materialIO: [inOut("AL", 5, 0)],
+			});
 			expect(note(missing.wrapper).exists()).toBe(false);
 
 			const add = await mountPicker({
@@ -418,7 +429,9 @@ describe("PlanRecipePicker", () => {
 		const change = await mountPicker();
 		const add = await mountPicker({ mode: "add", recipeIndex: undefined });
 
-		expect(change.wrapper.find("footer").text()).toContain("plan.picker.keys");
+		expect(change.wrapper.find("footer").text()).toContain(
+			"plan.picker.keys"
+		);
 		expect(change.wrapper.find("footer").text()).not.toContain("keys_add");
 		expect(add.wrapper.find("footer").text()).toContain(
 			"plan.picker.keys_add"

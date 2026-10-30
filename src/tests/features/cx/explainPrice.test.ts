@@ -87,18 +87,31 @@ describe("explainPrice", () => {
 							cx_empire: ee,
 							cx_planets: [{ planet: PLANET, preferences: pe }],
 							ticker_empire: et,
-							ticker_planets: [{ planet: PLANET, preferences: pt }],
+							ticker_planets: [
+								{ planet: PLANET, preferences: pt },
+							],
 						};
 						for (const data of [cx, undefined])
 							for (const planet of [PLANET, undefined])
-								for (const ticker of ["RAT", "GAP", "MISS", "NONE"])
-									for (const type of ["BUY", "SELL"] as PriceType[]) {
+								for (const ticker of [
+									"RAT",
+									"GAP",
+									"MISS",
+									"NONE",
+								])
+									for (const type of [
+										"BUY",
+										"SELL",
+									] as PriceType[]) {
 										const book = createPriceBook(
 											data ? () => data : undefined,
 											planet,
 											getExchange
 										);
-										const source = book.getPriceSource(ticker, type);
+										const source = book.getPriceSource(
+											ticker,
+											type
+										);
 										const { steps, winner } = explainPrice(
 											data,
 											planet,
@@ -112,13 +125,19 @@ describe("explainPrice", () => {
 											expect(winner, label).toBe(-1);
 											continue;
 										}
-										expect(steps[winner].level, label).toBe(source.level);
+										expect(steps[winner].level, label).toBe(
+											source.level
+										);
 										expect(steps[winner].value, label).toBe(
 											book.getPrice(ticker, type)
 										);
 										if (source.exchange && source.key) {
-											expect(steps[winner].exchange).toBe(source.exchange);
-											expect(steps[winner].key).toBe(source.key);
+											expect(steps[winner].exchange).toBe(
+												source.exchange
+											);
+											expect(steps[winner].key).toBe(
+												source.key
+											);
 										}
 										checked++;
 									}

@@ -45,7 +45,10 @@
 				"ignoreRestSiblings": true
 			}
 		],
-		"@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+		"@typescript-eslint/consistent-type-definitions": [
+			"error",
+			"interface"
+		],
 		"@typescript-eslint/no-import-type-side-effects": "error",
 		"@typescript-eslint/consistent-type-imports": [
 			"error",
@@ -56,7 +59,8 @@
 			}
 		],
 		"vue/no-unused-vars": ["error", { "ignorePattern": "^_" }],
-		"vue/max-attributes-per-line": ["error", { "singleline": 5 }],
+		"vue/max-attributes-per-line": "off",
+		"vue/multiline-html-element-content-newline": "off",
 		"vue/html-indent": "off",
 		"vue/singleline-html-element-content-newline": "off",
 		"vue/html-closing-bracket-newline": "off",

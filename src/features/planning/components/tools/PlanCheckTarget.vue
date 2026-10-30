@@ -40,7 +40,9 @@
 	const picked = ref<string | number | null | undefined>(
 		(props.rows.find((r) => r.side === "sell") ?? props.rows[0])?.ticker
 	);
-	const target = ref<number | null>(Math.ceil(props.profit / 10_000) * 10_000);
+	const target = ref<number | null>(
+		Math.ceil(props.profit / 10_000) * 10_000
+	);
 	// the range is fetched once the solver is used
 	const used = ref(false);
 
@@ -61,7 +63,9 @@
 		}))
 	);
 
-	const row = computed(() => props.rows.find((r) => r.ticker === picked.value));
+	const row = computed(() =>
+		props.rows.find((r) => r.ticker === picked.value)
+	);
 	const type = computed(() => (row.value?.side === "sell" ? "SELL" : "BUY"));
 	const today = computed(() =>
 		row.value ? props.ctx.prices.getPrice(row.value.ticker, type.value) : 0
@@ -197,10 +201,9 @@
 			<template v-if="needed !== null && factor !== null">
 				<div class="text-xs text-muted-strong">
 					{{
-						t(
-							`plan.tools.plan_check.target.result_${row.side}`,
-							{ ticker: row.ticker }
-						)
+						t(`plan.tools.plan_check.target.result_${row.side}`, {
+							ticker: row.ticker,
+						})
 					}}
 				</div>
 				<div class="flex items-baseline gap-2">

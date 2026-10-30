@@ -44,35 +44,70 @@ const none = () => undefined;
 
 describe("pickerOptions", () => {
 	it("pins the current recipe first in change mode, not selectable", () => {
-		const rows = pickerOptions("change", OPTIONS, ["CAF"], "CAF", "daily", none);
+		const rows = pickerOptions(
+			"change",
+			OPTIONS,
+			["CAF"],
+			"CAF",
+			"daily",
+			none
+		);
 		expect(ids(rows)).toStrictEqual(["CAF", "ALG", "MUS", "VEG"]);
 		expect(rows[0]).toMatchObject({ current: true, disabled: true });
 		expect(rows.slice(1).every((r) => !r.disabled)).toBe(true);
 	});
 
 	it("keeps the other recipes the building runs selectable in change mode", () => {
-		const rows = pickerOptions("change", OPTIONS, ["CAF", "MUS"], "CAF", "daily", none);
+		const rows = pickerOptions(
+			"change",
+			OPTIONS,
+			["CAF", "MUS"],
+			"CAF",
+			"daily",
+			none
+		);
 		// only the recipe being replaced is disabled; MUS is in plan but a
 		// second order of it stays pickable
-		expect(rows.map((r) => [r.recipe.recipe_id, r.disabled])).toStrictEqual([
-			["CAF", true],
-			["ALG", false],
-			["MUS", false],
-			["VEG", false],
-		]);
+		expect(rows.map((r) => [r.recipe.recipe_id, r.disabled])).toStrictEqual(
+			[
+				["CAF", true],
+				["ALG", false],
+				["MUS", false],
+				["VEG", false],
+			]
+		);
 		expect(rows[2]).toMatchObject({ current: false, inPlan: true });
 	});
 
 	it("sorts by popularity, unknown last", () => {
 		const plans: Record<string, number> = { VEG: 60, ALG: 20 };
-		const popular = pickerOptions("add", OPTIONS, [], undefined, "popular", (id) => plans[id]);
+		const popular = pickerOptions(
+			"add",
+			OPTIONS,
+			[],
+			undefined,
+			"popular",
+			(id) => plans[id]
+		);
 		expect(ids(popular)).toStrictEqual(["VEG", "ALG", "CAF", "MUS"]);
 	});
 
 	it("lists recipes already ordered last in add mode, still selectable", () => {
-		const rows = pickerOptions("add", OPTIONS, ["ALG", "CAF"], undefined, "daily", none);
+		const rows = pickerOptions(
+			"add",
+			OPTIONS,
+			["ALG", "CAF"],
+			undefined,
+			"daily",
+			none
+		);
 		expect(ids(rows)).toStrictEqual(["MUS", "VEG", "ALG", "CAF"]);
-		expect(rows.map((r) => r.inPlan)).toStrictEqual([false, false, true, true]);
+		expect(rows.map((r) => r.inPlan)).toStrictEqual([
+			false,
+			false,
+			true,
+			true,
+		]);
 		// add mode has no current recipe, so nothing is disabled
 		expect(rows.every((r) => !r.disabled && !r.current)).toBe(true);
 	});
@@ -86,7 +121,9 @@ const PLAN = [
 
 describe("dependencyNote", () => {
 	it("gives the In amount and who uses the output", () => {
-		expect(dependencyNote(CAF, [inOut("CAF", 27.1, 30)], PLAN)).toStrictEqual({
+		expect(
+			dependencyNote(CAF, [inOut("CAF", 27.1, 30)], PLAN)
+		).toStrictEqual({
 			ticker: "CAF",
 			amount: 27.1,
 			consumers: [{ building: "FP", outputs: ["COF"] }],
@@ -94,7 +131,9 @@ describe("dependencyNote", () => {
 	});
 
 	it("is undefined when nothing in the plan uses the output", () => {
-		expect(dependencyNote(CAF, [inOut("CAF", 0, 30)], PLAN)).toBeUndefined();
+		expect(
+			dependencyNote(CAF, [inOut("CAF", 0, 30)], PLAN)
+		).toBeUndefined();
 		expect(dependencyNote(CAF, [], PLAN)).toBeUndefined();
 	});
 

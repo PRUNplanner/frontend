@@ -55,8 +55,8 @@
 			<PCheckbox
 				:checked="calcDebug"
 				@update:checked="(v) => setCalcDebug(!!v)">
-				Adds a Debug panel to the plan page that lists every
-				calculation step with its formula.
+				Adds a Debug panel to the plan page that lists every calculation
+				step with its formula.
 			</PCheckbox>
 		</div>
 		<div>
@@ -85,9 +85,7 @@
 						{{ entry.key }}
 					</td>
 					<td>
-						<PTag
-							v-if="entry.state.loading"
-							type="success">
+						<PTag v-if="entry.state.loading" type="success">
 							yes
 						</PTag>
 						<PTag v-else>no</PTag>
@@ -117,9 +115,7 @@
 						}}
 					</td>
 					<td>
-						<PTag
-							v-if="entry.state.autoRefetch"
-							type="success">
+						<PTag v-if="entry.state.autoRefetch" type="success">
 							yes
 						</PTag>
 						<PTag v-else type="error"> no </PTag>

@@ -1,10 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		type ComputedRef,
-		ref,
-		type Ref,
-	} from "vue";
+	import { computed, type ComputedRef, ref, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -22,7 +17,14 @@
 	import { inertClone } from "@/util/data";
 
 	// UI
-	import { PButton, PDataTable, PInput, PTag, useConfirm, useToast } from "@/ui";
+	import {
+		PButton,
+		PDataTable,
+		PInput,
+		PTag,
+		useConfirm,
+		useToast,
+	} from "@/ui";
 	const confirm = useConfirm();
 	import type { PDataTableColumn } from "@/ui/ui.types";
 	import { ClearSharp, PlusSharp } from "@vicons/material";
@@ -149,35 +151,33 @@
 
 	<PDataTable :columns="columns" :data="localCX" striped class="pt-3">
 		<template #cell-cx_name="{ row }">
-				<router-link
-					:to="`/exchanges/${row.uuid}`"
-					class="text-link-primary font-bold hover:underline">
-					{{ row.cx_name }}
-				</router-link>
+			<router-link
+				:to="`/exchanges/${row.uuid}`"
+				class="text-link-primary font-bold hover:underline">
+				{{ row.cx_name }}
+			</router-link>
 		</template>
 		<template #cell-uuid="{ row }">
-				<div class="text-center">
-					<PTag v-if="row.empires.length > 0" type="success">
-						{{ $t("common.buttons.yes") }} ({{
-							row.empires.length
-						}})
-					</PTag>
-					<PTag v-else type="error">
-						{{ $t("common.buttons.no") }}
-					</PTag>
-				</div>
+			<div class="text-center">
+				<PTag v-if="row.empires.length > 0" type="success">
+					{{ $t("common.buttons.yes") }} ({{ row.empires.length }})
+				</PTag>
+				<PTag v-else type="error">
+					{{ $t("common.buttons.no") }}
+				</PTag>
+			</div>
 		</template>
 		<template #cell-configuration="{ row }">
-				<div class="text-end">
-					<PButton
-						:aria-label="$t('common.buttons.delete')"
-						size="sm"
-						type="error"
-						:loading="refIsDeleting === row.uuid ? true : false"
-						@click="handleDeleteConfirm(row.uuid)">
-						<template #icon><ClearSharp /></template>
-					</PButton>
-				</div>
+			<div class="text-end">
+				<PButton
+					:aria-label="$t('common.buttons.delete')"
+					size="sm"
+					type="error"
+					:loading="refIsDeleting === row.uuid ? true : false"
+					@click="handleDeleteConfirm(row.uuid)">
+					<template #icon><ClearSharp /></template>
+				</PButton>
+			</div>
 		</template>
 		<template #empty>
 			<div class="flex flex-col gap-y-3">

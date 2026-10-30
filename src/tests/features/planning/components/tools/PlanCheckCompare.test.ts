@@ -1,11 +1,4 @@
-import {
-	describe,
-	it,
-	expect,
-	vi,
-	beforeAll,
-	beforeEach,
-} from "vitest";
+import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
@@ -189,9 +182,7 @@ function silenceErrors() {
 }
 // the Difference column's colour, after its static classes
 const deltaTones = (w: Wrapper) =>
-	w
-		.findAll("td[data-col-key=delta] > span")
-		.map((s) => s.classes().at(-1));
+	w.findAll("td[data-col-key=delta] > span").map((s) => s.classes().at(-1));
 
 describe("PlanCheckCompare", () => {
 	beforeAll(async () => {
@@ -395,7 +386,9 @@ describe("PlanCheckCompare", () => {
 		expect(buttons[2].attributes("aria-pressed")).toBe("true");
 		// the price change belongs to the sensitivity view only
 		expect(
-			wrapper.find("[aria-label='plan.tools.plan_check.pct_label']").exists()
+			wrapper
+				.find("[aria-label='plan.tools.plan_check.pct_label']")
+				.exists()
 		).toBe(false);
 		expect(wrapper.findComponent(PlanCheckCompare).exists()).toBe(true);
 		// 8 key figures and the payback of the difference
@@ -424,11 +417,13 @@ describe("PlanCheckCompare", () => {
 
 			// no plan on this planet: only the other planets' group
 			expect(options.map((o) => o.value)).toEqual(["other"]);
-			expect(options[0].children!.map((o) => [o.label, o.badge])).toEqual([
-				["Zed", "AA-001a"],
-				["Aaa", "ZV-307c"],
-				["Far", "ZV-307c"],
-			]);
+			expect(options[0].children!.map((o) => [o.label, o.badge])).toEqual(
+				[
+					["Zed", "AA-001a"],
+					["Aaa", "ZV-307c"],
+					["Far", "ZV-307c"],
+				]
+			);
 			expect(select(wrapper).props("value")).toBe(near.uuid);
 		});
 
@@ -445,7 +440,9 @@ describe("PlanCheckCompare", () => {
 			const { wrapper, setProps } = await mountCompare();
 			await pick(wrapper, COPY.uuid);
 
-			await setProps({ planUuid: "00000000-0000-4000-8000-0000000000fc" });
+			await setProps({
+				planUuid: "00000000-0000-4000-8000-0000000000fc",
+			});
 
 			expect(select(wrapper).props("value")).toBe(COPY.uuid);
 			// the former open plan is offered now
@@ -770,12 +767,19 @@ describe("PlanCheckCompare", () => {
 				];
 				// this plan's checks, then the other plan's
 				crafted.checks = [
-					[check("RAT", "amber"), check("DW", "red"), check("O", "red")],
+					[
+						check("RAT", "amber"),
+						check("DW", "red"),
+						check("O", "red"),
+					],
 					[
 						// new: sold on one exchange
 						check("FE", "red"),
 						// worse: bought across all exchanges
-						check("RAT", "red", { delta: -5, exchange: "UNIVERSE" }),
+						check("RAT", "red", {
+							delta: -5,
+							exchange: "UNIVERSE",
+						}),
 						// better, muted and fine
 						check("DW", "amber", { delta: -1 }),
 						check("H2O", "muted"),
@@ -795,7 +799,9 @@ describe("PlanCheckCompare", () => {
 					)
 				);
 				// an icon beside FE and RAT only
-				const icons = items(wrapper).map((li) => li.find("svg").exists());
+				const icons = items(wrapper).map((li) =>
+					li.find("svg").exists()
+				);
 				expect(icons.slice(0, 6)).toEqual([
 					true,
 					true,

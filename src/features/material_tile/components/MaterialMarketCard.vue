@@ -120,7 +120,10 @@
 			})
 				.execute()
 				.then((r) => {
-					history.value = { ...history.value, [cx]: r.series[ticker] };
+					history.value = {
+						...history.value,
+						[cx]: r.series[ticker],
+					};
 				})
 				// the column stays empty, the numbers still show
 				.catch(() => undefined);
@@ -151,7 +154,9 @@
 	}
 
 	const shareText = (row: IMarketRow) =>
-		row.share === null ? t("material_tile.card.no_trades") : formatShare(row.share);
+		row.share === null
+			? t("material_tile.card.no_trades")
+			: formatShare(row.share);
 
 	const weightedClass = computed(() => {
 		const w = summary.value.weightedTrend;
@@ -179,7 +184,9 @@
 <template>
 	<div
 		class="flex flex-col gap-3 text-ink"
-		:class="sheet ? 'w-full' : narrow ? 'w-max max-w-full p-4' : 'w-[624px] p-4'"
+		:class="
+			sheet ? 'w-full' : narrow ? 'w-max max-w-full p-4' : 'w-[624px] p-4'
+		"
 		data-material-market-card>
 		<!-- header -->
 		<div class="flex items-start gap-3">
@@ -299,7 +306,9 @@
 							<div class="flex items-center gap-1.5">
 								<span
 									class="size-2 rounded-full shrink-0"
-									:style="{ background: CX_DOT_COLOR[row.cx] }" />
+									:style="{
+										background: CX_DOT_COLOR[row.cx],
+									}" />
 								<span class="font-bold text-ink-strong">
 									{{ cxLabel(row.cx) }}
 								</span>
@@ -313,13 +322,19 @@
 								v-if="row.status"
 								class="pl-3.5 text-xs text-warning"
 								data-status>
-								{{ $t(`material_tile.card.status.${row.status}`) }}
+								{{
+									$t(
+										`material_tile.card.status.${row.status}`
+									)
+								}}
 							</div>
 						</td>
 						<template v-if="row.cx === 'UNIVERSE'">
 							<td class="text-right text-muted">—</td>
 							<td class="text-right text-muted">—</td>
-							<td v-if="!compact" class="text-right text-muted">—</td>
+							<td v-if="!compact" class="text-right text-muted">
+								—
+							</td>
 						</template>
 						<template v-else>
 							<td
@@ -335,7 +350,11 @@
 							<td
 								v-if="!compact"
 								class="text-right font-mono"
-								:class="row.spreadState === 'ok' ? '' : 'text-warning'"
+								:class="
+									row.spreadState === 'ok'
+										? ''
+										: 'text-warning'
+								"
 								data-spread>
 								{{ spreadText(row) }}
 							</td>
@@ -356,7 +375,9 @@
 							<td class="text-right font-mono">
 								{{ formatMarketPrice(row.vwap30d) }}
 							</td>
-							<td class="text-right" :class="trendClass(row.trend)">
+							<td
+								class="text-right"
+								:class="trendClass(row.trend)">
 								{{ trendText(row.trend) }}
 							</td>
 						</template>
@@ -367,7 +388,9 @@
 								{{ $t("material_tile.card.shared_scale") }}
 							</span>
 							<PSparkline
-								v-else-if="row.cx !== 'UNIVERSE' && history[row.cx]"
+								v-else-if="
+									row.cx !== 'UNIVERSE' && history[row.cx]
+								"
 								:points="history[row.cx]!"
 								:trend="row.trend.change * 100"
 								:domain="domain"
@@ -401,7 +424,10 @@
 			<div v-if="rare" class="text-warning" data-rare>
 				{{
 					$t("material_tile.card.rare", {
-						units: formatNumber(overview.sum_traded_30d.UNIVERSE, 0),
+						units: formatNumber(
+							overview.sum_traded_30d.UNIVERSE,
+							0
+						),
 					})
 				}}
 			</div>

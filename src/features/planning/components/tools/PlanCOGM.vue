@@ -289,8 +289,7 @@
 		() => (props.cxUuid ? planningStore.cxs[props.cxUuid] : undefined),
 		(cx) => {
 			const current = loaded.value;
-			if (saveState.value === "saving" || !current || !edit.value)
-				return;
+			if (saveState.value === "saving" || !current || !edit.value) return;
 			if (
 				cx &&
 				(cx.uuid !== current.uuid ||

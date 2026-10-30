@@ -336,8 +336,7 @@
 												.vwap_universe_7d
 										)
 									}}
-									<span
-										class="pl-1 font-light text-muted">
+									<span class="pl-1 font-light text-muted">
 										ȼ
 									</span>
 								</div>
@@ -387,8 +386,7 @@
 									{{ $t("market_exploration.kpis.30d") }}
 									{{
 										formatAmount(
-											materialOverviewData()
-												.volume_30d
+											materialOverviewData().volume_30d
 										)
 									}}
 								</div>
@@ -433,9 +431,7 @@
 									class="text-muted flex flex-row flex-wrap justify-between gap-x-3">
 									<div class="whitespace-nowrap">
 										{{
-											$t(
-												"market_exploration.kpis.supply"
-											)
+											$t("market_exploration.kpis.supply")
 										}}
 										{{
 											formatAmount(
@@ -446,9 +442,7 @@
 									</div>
 									<div class="whitespace-nowrap">
 										{{
-											$t(
-												"market_exploration.kpis.demand"
-											)
+											$t("market_exploration.kpis.demand")
 										}}
 										{{
 											formatAmount(
@@ -483,9 +477,7 @@
 													.weighted_trend * 100
 											)
 										}}
-										<span class="pl-1 font-light">
-											%
-										</span>
+										<span class="pl-1 font-light"> % </span>
 									</span>
 								</div>
 								<div class="text-muted">
@@ -520,9 +512,7 @@
 													.price_cohesion
 											)
 										}}
-										<span class="pl-1 font-light">
-											%
-										</span>
+										<span class="pl-1 font-light"> % </span>
 									</span>
 								</div>
 								<div class="text-muted">
@@ -549,7 +539,9 @@
 									<PButtonGroup
 										role="group"
 										:aria-label="
-											$t('market_exploration.chart.view.label')
+											$t(
+												'market_exploration.chart.view.label'
+											)
 										">
 										<PButton
 											v-for="view in chartViews"
@@ -574,8 +566,12 @@
 											<PButton
 												v-for="metric in exchangeMetrics"
 												:key="metric"
-												:pressed="exchangeMetric === metric"
-												@click="exchangeMetric = metric">
+												:pressed="
+													exchangeMetric === metric
+												"
+												@click="
+													exchangeMetric = metric
+												">
 												{{
 													$t(
 														`market_exploration.chart.metric.${metric}`
@@ -593,7 +589,9 @@
 											<PButton
 												v-for="range in exchangeRanges"
 												:key="range ?? 'all'"
-												:pressed="exchangeRange === range"
+												:pressed="
+													exchangeRange === range
+												"
 												@click="exchangeRange = range">
 												{{
 													$t(
@@ -604,56 +602,64 @@
 										</PButtonGroup>
 									</template>
 									<template v-else>
-									<div class="flex flex-row flex-wrap gap-1">
-										<template
-											v-for="option in exchangeOptions"
-											:key="option.value">
-											<PButton
-												:pressed="option.value == selectedExchange"
-												@click="
-													() => {
-														if (
-															option.value &&
-															typeof option.value ===
-																'string'
-														) {
-															selectedExchange =
-																option.value;
-															fetch();
+										<div
+											class="flex flex-row flex-wrap gap-1">
+											<template
+												v-for="option in exchangeOptions"
+												:key="option.value">
+												<PButton
+													:pressed="
+														option.value ==
+														selectedExchange
+													"
+													@click="
+														() => {
+															if (
+																option.value &&
+																typeof option.value ===
+																	'string'
+															) {
+																selectedExchange =
+																	option.value;
+																fetch();
+															}
 														}
-													}
-												">
-												{{ option.label }}
-											</PButton>
-										</template>
-									</div>
-									<div class="flex flex-row flex-wrap gap-1">
-										<template
-											v-for="option in intervalOptions"
-											:key="option.value">
-											<PButton
-												:pressed="option.value == selectedInterval"
-												@click="
-													() => {
-														if (
-															option.value &&
-															typeof option.value ===
-																'string'
-														) {
-															selectedInterval =
-																option.value as CandleInterval;
-															fetch();
+													">
+													{{ option.label }}
+												</PButton>
+											</template>
+										</div>
+										<div
+											class="flex flex-row flex-wrap gap-1">
+											<template
+												v-for="option in intervalOptions"
+												:key="option.value">
+												<PButton
+													:pressed="
+														option.value ==
+														selectedInterval
+													"
+													@click="
+														() => {
+															if (
+																option.value &&
+																typeof option.value ===
+																	'string'
+															) {
+																selectedInterval =
+																	option.value as CandleInterval;
+																fetch();
+															}
 														}
-													}
-												">
-												{{
-													$t(
-														`market_exploration.chart.intervals.${option.label}`
-													)
-												}}
-											</PButton>
-										</template>
-									</div>
+													">
+													{{
+														$t(
+															`market_exploration.chart.intervals.${option.label}`
+														)
+													}}
+												</PButton>
+											</template>
+										</div>
 									</template>
 									<PButton
 										:aria-label="
@@ -670,8 +676,7 @@
 									</PButton>
 								</div>
 							</div>
-							<div
-								class="flex-grow min-h-0">
+							<div class="flex-grow min-h-0">
 								<MarketExplorationExchanges
 									v-if="chartView === 'exchanges'"
 									class="h-[420px] md:h-[560px]"
@@ -758,10 +763,7 @@
 							" />
 					</template>
 					<template #cell-weighted_trend="{ row }">
-						<span
-							:class="
-								getTrendClass(row.weighted_trend * 100)
-							">
+						<span :class="getTrendClass(row.weighted_trend * 100)">
 							{{ formatNumber(row.weighted_trend * 100) }}
 							<span class="pl-1 font-light"> % </span>
 						</span>
@@ -776,14 +778,11 @@
 						<PButton
 							@click="
 								() => {
-									selectedMaterial =
-										row.material_ticker;
+									selectedMaterial = row.material_ticker;
 									fetch();
 								}
 							">
-							{{
-								t("market_exploration.overview.table.explore")
-							}}
+							{{ t("market_exploration.overview.table.explore") }}
 						</PButton>
 					</template>
 				</PDataTable>

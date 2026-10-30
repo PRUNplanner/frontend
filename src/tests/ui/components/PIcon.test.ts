@@ -12,9 +12,9 @@ describe("PIcon", () => {
 	});
 
 	it("takes a size in px and a colour", () => {
-		const style = mount(PIcon, { props: { size: 20, color: "red" } }).attributes(
-			"style"
-		);
+		const style = mount(PIcon, {
+			props: { size: 20, color: "red" },
+		}).attributes("style");
 
 		expect(style).toContain("width: 20px");
 		expect(style).toContain("height: 20px");

@@ -113,9 +113,7 @@
 	}
 
 	const shown = computed(() => tried.value ?? row);
-	const sections = computed(() =>
-		detailSections(shown.value, settings, t)
-	);
+	const sections = computed(() => detailSections(shown.value, settings, t));
 	const name = computed(
 		() =>
 			`${shown.value.outputs.map((o) => o.ticker).join(", ")} · ${shown.value.building}`
@@ -126,9 +124,11 @@
 	const compare = computed(() =>
 		tried.value
 			? t("base_roi.detail.compare", {
-					planet: tried.value.planetName ?? tried.value.planetNaturalId,
+					planet:
+						tried.value.planetName ?? tried.value.planetNaturalId,
 					cost: formatNumber(
-						tried.value.metrics.buildingCost - row.metrics.buildingCost,
+						tried.value.metrics.buildingCost -
+							row.metrics.buildingCost,
 						0,
 						false,
 						true
@@ -162,7 +162,12 @@
 	const creating = ref(false);
 	async function openAsPlan(): Promise<void> {
 		const r = shown.value;
-		const plan = basePlan(r, r.productionBuildings, r.infrastructure, settings);
+		const plan = basePlan(
+			r,
+			r.productionBuildings,
+			r.infrastructure,
+			settings
+		);
 		const planetId = r.planetNaturalId ?? STANDARD_PLAN_PLANET;
 		creating.value = true;
 		try {
@@ -170,7 +175,9 @@
 			const created = await useQuery("CreatePlan", {
 				data: {
 					...plan,
-					plan_name: t("base_roi.detail.plan_name", { name: name.value }),
+					plan_name: t("base_roi.detail.plan_name", {
+						name: name.value,
+					}),
 					planet_natural_id: planetId,
 					empire_uuid: empireUuid,
 				},
@@ -193,7 +200,11 @@
 	 */
 	const history = computed(() =>
 		series
-			? profitHistory(shown.value.materials, shown.value.degradation, series)
+			? profitHistory(
+					shown.value.materials,
+					shown.value.degradation,
+					series
+				)
 			: null
 	);
 	const historyDays = computed(() => {
@@ -246,7 +257,9 @@
 			</div>
 			<div class="flex flex-row flex-wrap items-center gap-2 ml-auto">
 				<template v-if="row.kind === 'recipe'">
-					<span class="text-muted">{{ t("base_roi.detail.try_planet") }}</span>
+					<span class="text-muted">{{
+						t("base_roi.detail.try_planet")
+					}}</span>
 					<PSelect
 						class="w-60"
 						:value="planet"
@@ -255,7 +268,9 @@
 						:aria-label="t('base_roi.detail.try_planet')"
 						:disabled="loadingPlanet"
 						searchable
-						@update:value="(v) => pickPlanet(v as string | undefined)" />
+						@update:value="
+							(v) => pickPlanet(v as string | undefined)
+						" />
 					<PButton
 						v-if="tried"
 						size="sm"
@@ -267,10 +282,16 @@
 				<PButton size="sm" type="secondary" @click="copy">
 					{{ t("base_roi.detail.copy") }}
 				</PButton>
-				<PButton size="sm" type="secondary" :loading="creating" @click="openAsPlan">
+				<PButton
+					size="sm"
+					type="secondary"
+					:loading="creating"
+					@click="openAsPlan">
 					{{ t("base_roi.detail.open_plan") }}
 				</PButton>
-				<PLayerClose :aria-label="t('base_roi.detail.close')" @click="emit('close')" />
+				<PLayerClose
+					:aria-label="t('base_roi.detail.close')"
+					@click="emit('close')" />
 			</div>
 		</div>
 		<p v-if="loadingPlanet" class="text-sm text-muted" aria-live="polite">
@@ -296,16 +317,28 @@
 						v-for="(l, i) in s.lines"
 						:key="i"
 						class="flex flex-col"
-						:class="l.total ? 'border-t border-white/10 pt-1 font-bold' : ''">
+						:class="
+							l.total
+								? 'border-t border-white/10 pt-1 font-bold'
+								: ''
+						">
 						<div class="flex flex-row justify-between gap-3">
 							<!-- the label keeps its width, a long value wraps -->
-							<dt class="flex flex-row items-center gap-1.5 shrink-0 max-w-[60%]">
-								<MaterialTile v-if="l.ticker" :ticker="l.ticker" />
+							<dt
+								class="flex flex-row items-center gap-1.5 shrink-0 max-w-[60%]">
+								<MaterialTile
+									v-if="l.ticker"
+									:ticker="l.ticker" />
 								<span v-else>{{ l.label }}</span>
 							</dt>
-							<dd class="font-mono text-right min-w-0 [overflow-wrap:anywhere]">{{ l.value }}</dd>
+							<dd
+								class="font-mono text-right min-w-0 [overflow-wrap:anywhere]">
+								{{ l.value }}
+							</dd>
 						</div>
-						<span v-if="l.formula" class="font-mono text-xs text-muted font-normal">
+						<span
+							v-if="l.formula"
+							class="font-mono text-xs text-muted font-normal">
 							{{ l.formula }}
 						</span>
 					</div>
@@ -329,7 +362,11 @@
 					v-if="s.id === 10 && shown.planetNaturalId"
 					:to="`/plan/${shown.planetNaturalId}`"
 					class="mt-2 inline-block text-link-primary hover:underline">
-					{{ t("base_roi.detail.open_planet", { planet: shown.planetName ?? shown.planetNaturalId }) }}
+					{{
+						t("base_roi.detail.open_planet", {
+							planet: shown.planetName ?? shown.planetNaturalId,
+						})
+					}}
 				</router-link>
 			</section>
 		</div>

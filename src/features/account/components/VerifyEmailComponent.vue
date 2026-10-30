@@ -87,7 +87,9 @@
 				data-testid="verify-ok">
 				{{
 					verifyResult === "already_verified"
-						? $t("account.components.verify_email.result.already_verified")
+						? $t(
+								"account.components.verify_email.result.already_verified"
+							)
 						: $t("account.components.verify_email.result.ok")
 				}}
 				<router-link to="/empire" class="underline">

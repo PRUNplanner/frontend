@@ -310,7 +310,10 @@
 					{{ box.column.label }}
 				</div>
 			</div>
-			<div v-else class="flex pt-2" :style="{ marginLeft: `${AXIS_PX}px` }">
+			<div
+				v-else
+				class="flex pt-2"
+				:style="{ marginLeft: `${AXIS_PX}px` }">
 				<div
 					v-for="box in layout.columns"
 					:key="box.column.key"

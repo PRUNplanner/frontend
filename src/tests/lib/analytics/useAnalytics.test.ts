@@ -99,7 +99,11 @@ describe("useAnalytics", () => {
 		it("captures with component and info, and still logs", () => {
 			const error = new Error("boom 4");
 
-			trackVueError(error, instance({ name: "PlanView" }), "setup function");
+			trackVueError(
+				error,
+				instance({ name: "PlanView" }),
+				"setup function"
+			);
 
 			expect(captureException).toHaveBeenCalledWith(error, {
 				component: "PlanView",
@@ -115,19 +119,19 @@ describe("useAnalytics", () => {
 				"native event handler"
 			);
 
-			expect(captureException).toHaveBeenCalledWith(
-				expect.any(Error),
-				{ component: "PlanBonuses", vue_info: "native event handler" }
-			);
+			expect(captureException).toHaveBeenCalledWith(expect.any(Error), {
+				component: "PlanBonuses",
+				vue_info: "native event handler",
+			});
 		});
 
 		it("works without a component instance", () => {
 			trackVueError(new Error("boom 6"), null, "app errorHandler");
 
-			expect(captureException).toHaveBeenCalledWith(
-				expect.any(Error),
-				{ component: undefined, vue_info: "app errorHandler" }
-			);
+			expect(captureException).toHaveBeenCalledWith(expect.any(Error), {
+				component: undefined,
+				vue_info: "app errorHandler",
+			});
 		});
 	});
 
@@ -136,7 +140,11 @@ describe("useAnalytics", () => {
 		Object.assign(new ApiError("timeout"), { status: undefined }),
 		new ApiValidationError("Validation error: [...]"),
 	])("trackVueError only logs an apiService error", (error) => {
-		trackVueError(error, instance({ name: "EmpireView" }), "setup function");
+		trackVueError(
+			error,
+			instance({ name: "EmpireView" }),
+			"setup function"
+		);
 
 		expect(captureException).not.toHaveBeenCalled();
 		expect(console.error).toHaveBeenCalledWith(error);

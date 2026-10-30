@@ -184,8 +184,15 @@
 				<p class="text-muted">
 					{{ $t("production_chains.create.intro") }}
 				</p>
-				<p v-if="had.length" class="text-xs text-have" data-testid="chain-create-have">
-					{{ $t("production_chains.have.create_note", { list: had.join(", ") }) }}
+				<p
+					v-if="had.length"
+					class="text-xs text-have"
+					data-testid="chain-create-have">
+					{{
+						$t("production_chains.have.create_note", {
+							list: had.join(", "),
+						})
+					}}
 				</p>
 				<div class="overflow-x-auto">
 					<PTable>
@@ -282,7 +289,9 @@
 								</td>
 								<td
 									class="hidden sm:table-cell whitespace-nowrap">
-									<span v-if="b.planet">{{ planetOf(b) }}</span>
+									<span v-if="b.planet">{{
+										planetOf(b)
+									}}</span>
 									<span v-else class="text-warning">{{
 										$t("production_chains.create.no_planet")
 									}}</span>

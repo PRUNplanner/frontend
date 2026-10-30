@@ -58,7 +58,9 @@
 	<div
 		class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-row flex-wrap items-center gap-2">
 		<label class="flex-1 min-w-0 sm:min-w-[240px] max-w-[560px]">
-			<span class="sr-only">{{ t("planet_search.header.search_label") }}</span>
+			<span class="sr-only">{{
+				t("planet_search.header.search_label")
+			}}</span>
 			<PInput
 				v-model:value="text"
 				class="w-full"

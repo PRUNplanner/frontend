@@ -64,7 +64,9 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 					if (calls.index === "fail") throw new Error("down");
 					return index;
 				case "PostPlanetSearch":
-					return [...planets.values()].filter((p) => p.fertility !== -1);
+					return [...planets.values()].filter(
+						(p) => p.fertility !== -1
+					);
 				case "GetMultiplePlanets":
 					return (params!.planetNaturalIds as string[])
 						.filter((id) => !calls.drop.has(id))
@@ -152,9 +154,9 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 			(p) => (p as { planetNaturalIds: string[] }).planetNaturalIds
 		);
 		for (const id of fetched)
-			expect(
-				fromAI1.get(planets.get(id)!.system_id)
-			).toBeLessThanOrEqual(3);
+			expect(fromAI1.get(planets.get(id)!.system_id)).toBeLessThanOrEqual(
+				3
+			);
 
 		// another setting: the same planets, nothing fetched
 		const before = JSON.stringify(calls.byName.GetMultiplePlanets ?? []);
@@ -188,7 +190,11 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 		const { settings, roi } = setup();
 		await roi.calculate();
 		const shown = roi.filtered.value.rows.length;
-		settings.value = { ...settings.value, minMarketCapacity: 0, showNegative: true };
+		settings.value = {
+			...settings.value,
+			minMarketCapacity: 0,
+			showNegative: true,
+		};
 		expect(roi.filtered.value.rows.length).toBeGreaterThanOrEqual(shown);
 		expect(roi.step.value).toBe("done");
 	});
@@ -225,9 +231,13 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 		expect(Object.keys(calls.byName)).toEqual(["GetPlanet"]);
 		expect(tried.planetNaturalId).toBe(planet.planet_natural_id);
 		// gaseous: AEF instead of the standard planet's MCG
-		expect(tried.environmentMaterials.map((m) => m.ticker)).toContain("AEF");
+		expect(tried.environmentMaterials.map((m) => m.ticker)).toContain(
+			"AEF"
+		);
 		expect(row.metrics.buildingCost).toBe(before);
-		expect(roi.rows.value.find((r) => r.key === row.key)!.planetNaturalId).toBeNull();
+		expect(
+			roi.rows.value.find((r) => r.key === row.key)!.planetNaturalId
+		).toBeNull();
 	});
 
 	/** a promise and its resolve, to hold a query open */
@@ -303,10 +313,14 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 
 	it("a planet the server doesn't return gives no rows", async () => {
 		const { roi } = setup();
-		const missing = index.find((p) => p.resources.length)!.planet_natural_id;
+		const missing = index.find(
+			(p) => p.resources.length
+		)!.planet_natural_id;
 		calls.drop.add(missing);
 		await roi.calculate();
-		expect(roi.rows.value.some((r) => r.planetNaturalId === missing)).toBe(false);
+		expect(roi.rows.value.some((r) => r.planetNaturalId === missing)).toBe(
+			false
+		);
 		expect(roi.rows.value.some((r) => r.planetNaturalId)).toBe(true);
 	});
 
@@ -324,16 +338,29 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 
 	it("tries a row before any calculation, and a planet without a route", async () => {
 		const { roi } = setup();
-		const planet = { ...[...planets.values()][0], system_id: "f".repeat(32) };
+		const planet = {
+			...[...planets.values()][0],
+			system_id: "f".repeat(32),
+		};
 		planets.set(planet.planet_natural_id, planet);
 		try {
 			await roi.calculate();
 			const row = roi.rows.value.find((r) => r.kind === "recipe")!;
 			const fresh = setup().roi;
-			const tried = await fresh.tryOnPlanet(row, planet.planet_natural_id);
+			const tried = await fresh.tryOnPlanet(
+				row,
+				planet.planet_natural_id
+			);
 			expect(tried.jumps).toBeNull();
 		} finally {
-			planets.set(planet.planet_natural_id, asPlanet(index.find((e) => e.planet_natural_id === planet.planet_natural_id)!));
+			planets.set(
+				planet.planet_natural_id,
+				asPlanet(
+					index.find(
+						(e) => e.planet_natural_id === planet.planet_natural_id
+					)!
+				)
+			);
 		}
 	});
 });

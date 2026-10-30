@@ -101,7 +101,9 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	function getPlanetEnvironment(planet: Planet) {
 		const extras = environmentExtras(planetBuckets(planet));
 		const of = (...reasons: string[]) =>
-			extras.filter((e) => reasons.includes(e.reason)).map((e) => e.ticker);
+			extras
+				.filter((e) => reasons.includes(e.reason))
+				.map((e) => e.ticker);
 
 		const surface = of("rocky", "gaseous");
 		const gravity = of("low_gravity", "high_gravity");

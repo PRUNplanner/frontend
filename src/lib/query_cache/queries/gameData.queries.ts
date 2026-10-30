@@ -104,11 +104,14 @@ function gameDataQuery<T extends object, K extends keyof T & string>(
 		key: () => ["gamedata", name],
 		initialData: async () => {
 			if (report) report.start ??= performance.now();
-			const [cached, ms] = await measured(`gamedata:${name}:idb-read`, () =>
-				readGameData(store, staleMinutes(maxAgeMinutes))
+			const [cached, ms] = await measured(
+				`gamedata:${name}:idb-read`,
+				() => readGameData(store, staleMinutes(maxAgeMinutes))
 			);
 			const age =
-				cached.fetchedAt === null ? null : Date.now() - cached.fetchedAt;
+				cached.fetchedAt === null
+					? null
+					: Date.now() - cached.fetchedAt;
 			const stale = age !== null && age > expireTime;
 			if (report)
 				Object.assign(report, {
@@ -139,7 +142,9 @@ function gameDataQuery<T extends object, K extends keyof T & string>(
 
 			if (report) {
 				report.ms_fetch = msFetch;
-				report.ms_total ??= Math.round(performance.now() - report.start!);
+				report.ms_total ??= Math.round(
+					performance.now() - report.start!
+				);
 			}
 			// cloning thousands of rows into IndexedDB costs main thread
 			// time: start it once the page has rendered
@@ -297,12 +302,10 @@ export const gameDataQueries = {
 		fetchFn: (params: {
 			planetNaturalId: string;
 		}): Promise<PopulationReport | null> =>
-			callPlanetLastPOPR(params.planetNaturalId).catch(
-				(err: unknown) => {
-					if (isApiError(err) && err.status === 404) return null;
-					throw err;
-				}
-			),
+			callPlanetLastPOPR(params.planetNaturalId).catch((err: unknown) => {
+				if (isApiError(err) && err.status === 404) return null;
+				throw err;
+			}),
 		expireTime: planetsExpireTime,
 	}),
 	GetExplorationData: defineQuery({

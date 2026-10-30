@@ -4,9 +4,9 @@ import { ApiError, ApiValidationError, isApiError } from "@/lib/apiError";
 
 describe("isApiError", () => {
 	it("is true for a response error, also without a status value", () => {
-		expect(isApiError(Object.assign(new ApiError("x"), { status: 500 }))).toBe(
-			true
-		);
+		expect(
+			isApiError(Object.assign(new ApiError("x"), { status: 500 }))
+		).toBe(true);
 		expect(
 			isApiError(Object.assign(new ApiError("x"), { status: undefined }))
 		).toBe(true);

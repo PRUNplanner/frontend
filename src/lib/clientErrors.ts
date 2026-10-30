@@ -50,7 +50,10 @@ export function reportClientError(report: IClientErrorReport): void {
 		report.issues,
 	].join("|");
 	const now = Date.now();
-	if (sent >= MAX_REPORTS || now - (lastSent.get(key) ?? -Infinity) < DEDUPE_MS)
+	if (
+		sent >= MAX_REPORTS ||
+		now - (lastSent.get(key) ?? -Infinity) < DEDUPE_MS
+	)
 		return;
 	lastSent.set(key, now);
 	sent++;

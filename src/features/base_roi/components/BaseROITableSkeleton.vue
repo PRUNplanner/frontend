@@ -1,7 +1,11 @@
 <script setup lang="ts">
 	// the table before its rows: the real header row and skeleton rows at
 	// the real row height, so nothing moves when the rows arrive
-	const { titles, rows = 12, header = true } = defineProps<{
+	const {
+		titles,
+		rows = 12,
+		header = true,
+	} = defineProps<{
 		/** the visible columns' titles */
 		titles: string[];
 		rows?: number;

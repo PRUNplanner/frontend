@@ -557,7 +557,9 @@ describe("EmpireView", () => {
 			reply.patchFails = true;
 			await open([E1], plans);
 			await vi.waitFor(() =>
-				expect(reportError).toHaveBeenCalledWith(new Error("patch failed"))
+				expect(reportError).toHaveBeenCalledWith(
+					new Error("patch failed")
+				)
 			);
 		});
 	});

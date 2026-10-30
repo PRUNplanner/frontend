@@ -589,12 +589,14 @@ describe("Bases with own production", () => {
 			b.active_recipes.map((r) => r.recipeid)
 		);
 		expect(result.rows.GRN.recipe).toBeNull();
-		expect(recipes.some((r) => r.includes("xGRN") && !r.includes("RAT"))).toBe(false);
+		expect(
+			recipes.some((r) => r.includes("xGRN") && !r.includes("RAT"))
+		).toBe(false);
 		// a partly had step is still built for the rest
 		expect(result.rows.NUT.have).toBeCloseTo(2, 6);
 		expect(recipes).toContain(result.rows.NUT.recipe!.recipe_id);
-		expect(
-			splitByExpertise(result, ctx, 100).baseOf
-		).not.toHaveProperty("GRN");
+		expect(splitByExpertise(result, ctx, 100).baseOf).not.toHaveProperty(
+			"GRN"
+		);
 	});
 });

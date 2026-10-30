@@ -54,7 +54,10 @@ const cx: CXData = {
 	],
 	ticker_empire: [{ type: "BOTH", ticker: "H2O", value: 0 }],
 	ticker_planets: [
-		{ planet: PLANET, preferences: [{ type: "BUY", ticker: "DW", value: 50 }] },
+		{
+			planet: PLANET,
+			preferences: [{ type: "BUY", ticker: "DW", value: 50 }],
+		},
 	],
 };
 
@@ -116,10 +119,15 @@ describe("exchange plan data", () => {
 						if (Number.isFinite(o.costTotal))
 							expected.set(
 								o.ticker,
-								Math.min(expected.get(o.ticker) ?? Infinity, o.costTotal)
+								Math.min(
+									expected.get(o.ticker) ?? Infinity,
+									o.costTotal
+								)
 							);
 
-			expect([...cogms.keys()].sort()).toEqual([...expected.keys()].sort());
+			expect([...cogms.keys()].sort()).toEqual(
+				[...expected.keys()].sort()
+			);
 			for (const [ticker, value] of expected)
 				expect(cogms.get(ticker)!.value).toBeCloseTo(value, 9);
 		}

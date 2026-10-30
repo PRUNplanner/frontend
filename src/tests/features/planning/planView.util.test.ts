@@ -40,7 +40,11 @@ describe("materialIOTotals", () => {
 
 describe("materialIOCsv", () => {
 	it("writes a header and one line per material", () => {
-		const rat = io("RAT", 10, { price: 500, totalWeight: 10, totalVolume: 5 });
+		const rat = io("RAT", 10, {
+			price: 500,
+			totalWeight: 10,
+			totalVolume: 5,
+		});
 		expect(materialIOCsv([rat])).toBe(
 			"ticker,input,output,delta,value,weight,volume\nRAT,0,10,10,500,10,5"
 		);

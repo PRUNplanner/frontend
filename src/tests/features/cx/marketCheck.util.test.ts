@@ -55,12 +55,12 @@ describe("checkMaterial", () => {
 	});
 
 	it("flags a buy without offers and a sale without buyers", () => {
-		expect(
-			checkMaterial("FE", -1, source(), ex({ ask: 0 })).flags
-		).toEqual(["no_offers"]);
-		expect(checkMaterial("FE", 1, source(), ex({ bid: 0 })).flags).toEqual(
-			["no_buyers"]
+		expect(checkMaterial("FE", -1, source(), ex({ ask: 0 })).flags).toEqual(
+			["no_offers"]
 		);
+		expect(checkMaterial("FE", 1, source(), ex({ bid: 0 })).flags).toEqual([
+			"no_buyers",
+		]);
 	});
 
 	it("flags no price before everything else", () => {
@@ -118,7 +118,11 @@ describe("marketCheck", () => {
 				{ ticker: "D", delta: -60 },
 				{ ticker: "E", delta: 3 },
 			],
-			createPriceBook(() => cx, undefined, () => ex()),
+			createPriceBook(
+				() => cx,
+				undefined,
+				() => ex()
+			),
 			() => ex()
 		);
 		expect(checks.map((c) => c.ticker)).toEqual(["D", "B", "E", "A"]);
@@ -129,7 +133,9 @@ describe("marketCheck", () => {
 			fine: 2,
 		});
 		expect(
-			countLevels(marketCheck([{ ticker: "A", delta: 1 }], book, () => ex()))
+			countLevels(
+				marketCheck([{ ticker: "A", delta: 1 }], book, () => ex())
+			)
 		).toEqual({ red: 0, amber: 0, muted: 1, fine: 1 });
 	});
 
@@ -201,7 +207,12 @@ describe("flaggedCheck", () => {
 	const checks = new Map(
 		[
 			checkMaterial("A", 50, source(), ex()),
-			checkMaterial("B", 1, source({ level: "fallback", volume: "UNIVERSE" }), ex()),
+			checkMaterial(
+				"B",
+				1,
+				source({ level: "fallback", volume: "UNIVERSE" }),
+				ex()
+			),
 			checkMaterial("C", 1, source(), ex({ exchange_status: "STALE" })),
 			checkMaterial("D", 1, source(), ex()),
 		].map((c) => [c.ticker, c])

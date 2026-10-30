@@ -6,7 +6,10 @@ import { factionOptions } from "@/features/empire/empire.constants";
 import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 import type { IChangeLine } from "@/features/save_conflict/saveConflict.types";
 
-type Translate = (key: string, params?: Record<string, string | number>) => string;
+type Translate = (
+	key: string,
+	params?: Record<string, string | number>
+) => string;
 
 // as the exchange selects name them, e.g. "UNIVERSE VWAP 30D"
 function exchange(value: string | number): string {
@@ -46,7 +49,9 @@ export function changeLineText(
 		params.from = faction(params.from);
 		params.to = faction(params.to);
 	} else if (line.key === "experts") {
-		params.label = t(`game.expertise.${String(params.label).toUpperCase()}`);
+		params.label = t(
+			`game.expertise.${String(params.label).toUpperCase()}`
+		);
 	} else if (line.key.startsWith("lux_")) {
 		params.label = t(`game.workforce_type.${params.label}`);
 	} else if (line.key.startsWith("exchange")) {

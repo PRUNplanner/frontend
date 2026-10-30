@@ -789,7 +789,7 @@
 		"fold_io": "Fold Material I/O",
 		"sections": "Plan sections",
 		"tools": "Tools",
-			"io_short": "I/O",
+		"io_short": "I/O",
 		"all_tools": "All tools"
 	}
 }

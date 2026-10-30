@@ -30,7 +30,8 @@ const router = createRouter({
 		if (savedPosition)
 			return when(
 				() =>
-					document.documentElement.scrollHeight - window.innerHeight >=
+					document.documentElement.scrollHeight -
+						window.innerHeight >=
 					savedPosition.top,
 				savedPosition
 			);

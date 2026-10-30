@@ -87,10 +87,11 @@ describe("PlanView save conflicts", () => {
 		expect(queryCalls("GetPlan")).toEqual([
 			["GetPlan", expect.anything(), { forceRefetch: true }],
 		]);
-		expect(dialog().findAll("h3").map((h) => h.text())).toEqual([
-			"save_conflict.theirs",
-			"save_conflict.mine",
-		]);
+		expect(
+			dialog()
+				.findAll("h3")
+				.map((h) => h.text())
+		).toEqual(["save_conflict.theirs", "save_conflict.mine"]);
 		expect(dialog().find("h3 + ul").text()).toContain(
 			"save_conflict.change.name"
 		);

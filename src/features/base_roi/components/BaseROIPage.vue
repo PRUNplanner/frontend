@@ -116,7 +116,9 @@
 	<div class="min-h-screen flex flex-col">
 		<div
 			class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap gap-x-6 gap-y-2 justify-between">
-			<h1 class="text-2xl font-bold my-auto">{{ t("base_roi.title") }}</h1>
+			<h1 class="text-2xl font-bold my-auto">
+				{{ t("base_roi.title") }}
+			</h1>
 			<div class="flex flex-row flex-wrap items-center gap-3">
 				<span class="text-muted">{{ t("base_roi.cx_select") }}</span>
 				<!-- its options are read once: mounted after the CX list loaded -->
@@ -162,7 +164,10 @@
 					:try-on-planet="tryOnPlanet"
 					:cx-uuid="cxUuid" />
 				<!-- the data loaders: steps or an error over the table box only when slow -->
-				<div :class="ready ? 'hidden' : 'absolute inset-x-0 top-12 bottom-0'">
+				<div
+					:class="
+						ready ? 'hidden' : 'absolute inset-x-0 top-12 bottom-0'
+					">
 					<slot name="loader" />
 				</div>
 			</div>

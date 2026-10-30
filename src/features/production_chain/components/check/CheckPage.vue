@@ -102,7 +102,9 @@
 	);
 	const listCX = computed<PlanetSearchCX>(() => {
 		const ticker = listFinding.value?.step.ticker;
-		const cx = ticker ? ctx.value.prices.getPriceSource(ticker, "BUY").exchange : null;
+		const cx = ticker
+			? ctx.value.prices.getPriceSource(ticker, "BUY").exchange
+			: null;
 		return SEARCH_CX.includes(cx as PlanetSearchCX)
 			? (cx as PlanetSearchCX)
 			: "AI1";
@@ -121,11 +123,17 @@
 
 <template>
 	<!-- @container: the aside goes beside the panel only when the page leaves it room -->
-	<div class="@container min-h-screen flex flex-col gap-6 px-3 sm:px-6 py-3 min-w-0">
-		<header class="flex flex-wrap justify-between gap-3 border-b border-line pb-3">
+	<div
+		class="@container min-h-screen flex flex-col gap-6 px-3 sm:px-6 py-3 min-w-0">
+		<header
+			class="flex flex-wrap justify-between gap-3 border-b border-line pb-3">
 			<div class="min-w-0">
-				<h1 class="text-2xl font-bold">{{ $t("production_chains.title") }}</h1>
-				<p class="text-muted">{{ $t("production_chains.check.description") }}</p>
+				<h1 class="text-2xl font-bold">
+					{{ $t("production_chains.title") }}
+				</h1>
+				<p class="text-muted">
+					{{ $t("production_chains.check.description") }}
+				</p>
 			</div>
 			<div class="flex flex-wrap items-center gap-3">
 				<ChainModeSwitch />
@@ -157,39 +165,64 @@
 
 		<p v-if="error" class="text-negative" role="alert">
 			{{ $t("production_chains.check.error") }}
-			<button type="button" class="text-link hover:underline cursor-pointer" @click="load">
+			<button
+				type="button"
+				class="text-link hover:underline cursor-pointer"
+				@click="load">
 				{{ $t("production_chains.check.retry") }}
 			</button>
 		</p>
 		<p v-else-if="loading" class="text-muted" role="status">
 			{{ $t("production_chains.check.loading") }}
 		</p>
-		<p v-else-if="empires && !empires.length" class="text-muted" data-testid="check-no-empires">
+		<p
+			v-else-if="empires && !empires.length"
+			class="text-muted"
+			data-testid="check-no-empires">
 			{{ $t("production_chains.check.no_empires") }}
 		</p>
-		<p v-else-if="notYours" class="text-warning" role="alert" data-testid="check-not-yours">
+		<p
+			v-else-if="notYours"
+			class="text-warning"
+			role="alert"
+			data-testid="check-not-yours">
 			{{ $t("production_chains.check.not_yours") }}
 		</p>
-		<p v-else-if="plans && !plans.length" class="text-muted" data-testid="check-no-plans">
+		<p
+			v-else-if="plans && !plans.length"
+			class="text-muted"
+			data-testid="check-no-plans">
 			{{ $t("production_chains.check.no_plans") }}
 		</p>
 		<div
 			v-else-if="result && !state.targets.length"
 			class="flex-1 flex flex-col items-center justify-center text-center gap-3 py-24"
 			data-testid="check-empty">
-			<h2 class="text-xl font-bold">{{ $t("production_chains.check.empty.title") }}</h2>
-			<p class="text-muted max-w-md">{{ $t("production_chains.check.empty.text") }}</p>
-			<PButton :disabled="!result.sold.length" data-testid="check-empty-all" @click="addAll">
+			<h2 class="text-xl font-bold">
+				{{ $t("production_chains.check.empty.title") }}
+			</h2>
+			<p class="text-muted max-w-md">
+				{{ $t("production_chains.check.empty.text") }}
+			</p>
+			<PButton
+				:disabled="!result.sold.length"
+				data-testid="check-empty-all"
+				@click="addAll">
 				{{ $t("production_chains.check.empty.all") }}
 			</PButton>
 		</div>
 
 		<template v-else-if="result">
 			<CheckResults :result="result" :setup="state.setup" />
-			<div class="grid grid-cols-1 @min-[1400px]:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">
+			<div
+				class="grid grid-cols-1 @min-[1400px]:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">
 				<section class="rounded-panel border border-line min-w-0">
-					<div class="flex flex-wrap items-center gap-3 p-3 border-b border-line">
-						<PButtonGroup :aria-label="t('production_chains.check.tabs.label')">
+					<div
+						class="flex flex-wrap items-center gap-3 p-3 border-b border-line">
+						<PButtonGroup
+							:aria-label="
+								t('production_chains.check.tabs.label')
+							">
 							<PButton
 								v-for="v in VIEWS"
 								:key="v"
@@ -201,16 +234,35 @@
 						</PButtonGroup>
 						<span class="flex flex-wrap items-center gap-2 text-sm">
 							<PTag v-if="summary.ok" size="sm" type="success">
-								{{ $t("production_chains.check.summary.optimal", { n: summary.ok }) }}
+								{{
+									$t(
+										"production_chains.check.summary.optimal",
+										{ n: summary.ok }
+									)
+								}}
 							</PTag>
 							<PTag v-if="summary.imp" size="sm" type="warning">
-								{{ $t("production_chains.check.summary.improvements", { n: summary.imp }) }}
+								{{
+									$t(
+										"production_chains.check.summary.improvements",
+										{ n: summary.imp }
+									)
+								}}
 							</PTag>
 							<PTag v-if="summary.fix" size="sm" type="error">
-								{{ $t("production_chains.check.summary.fixes", summary.fix) }}
+								{{
+									$t(
+										"production_chains.check.summary.fixes",
+										summary.fix
+									)
+								}}
 							</PTag>
 							<span v-if="summary.out" class="text-muted">
-								{{ $t("production_chains.check.summary.out", { n: summary.out }) }}
+								{{
+									$t("production_chains.check.summary.out", {
+										n: summary.out,
+									})
+								}}
 							</span>
 						</span>
 					</div>
@@ -237,7 +289,9 @@
 				</section>
 				<CheckAside
 					:result="result"
-					@add="(tickers) => setTargets([...state.targets, ...tickers])" />
+					@add="
+						(tickers) => setTargets([...state.targets, ...tickers])
+					" />
 			</div>
 		</template>
 

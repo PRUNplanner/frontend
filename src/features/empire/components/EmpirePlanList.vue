@@ -41,7 +41,8 @@
 		negAbs: Math.max(0, ...props.planListData.map((p) => -p.profit)),
 	}));
 
-	const planetLabel = (id: string) => planetNames.value.get(id) || "Loading...";
+	const planetLabel = (id: string) =>
+		planetNames.value.get(id) || "Loading...";
 
 	const columns = computed<PDataTableColumn<IEmpirePlanListData>[]>(() => [
 		{

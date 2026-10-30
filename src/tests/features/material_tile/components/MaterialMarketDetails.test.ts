@@ -69,7 +69,9 @@ describe("MaterialMarketDetails", () => {
 		expect(text).toContain("7.87 t");
 		expect(text).toContain("1.00 m³");
 		expect(text).toContain("material_tile.details.data_of");
-		expect(wrapper.find("[data-active]").classes()).toContain("text-warning");
+		expect(wrapper.find("[data-active]").classes()).toContain(
+			"text-warning"
+		);
 		expect(wrapper.find("[data-plan-line]").exists()).toBe(false);
 	});
 
@@ -144,7 +146,9 @@ describe("MaterialMarketDetails", () => {
 		expect(plan).toContain("material_tile.card.plan.plan_sells");
 		expect(plan).toContain("material_tile.details.same_limits");
 		expect(
-			wrapper.findAll("[data-your-cx]").map((r) => r.attributes("data-cx"))
+			wrapper
+				.findAll("[data-your-cx]")
+				.map((r) => r.attributes("data-cx"))
 		).toEqual(["CI1"]);
 	});
 
@@ -152,7 +156,9 @@ describe("MaterialMarketDetails", () => {
 		const wrapper = await mountDetails();
 
 		expect(
-			wrapper.findAll("[data-health]").map((t) => t.attributes("data-health"))
+			wrapper
+				.findAll("[data-health]")
+				.map((t) => t.attributes("data-health"))
 		).toEqual(["breadth", "trend", "balance", "cohesion"]);
 		// 500 offered, 500 wanted on each exchange
 		expect(wrapper.find('[data-health="balance"]').text()).toContain(
@@ -166,7 +172,13 @@ describe("MaterialMarketDetails", () => {
 			daily: -5,
 			overview: makeOverview({
 				bid: { AI1: 0, CI1: 98, IC1: 98, NC1: 98, UNIVERSE: 0 },
-				sum_traded_30d: { AI1: 0, CI1: 3000, IC1: 3000, NC1: 3000, UNIVERSE: 9000 },
+				sum_traded_30d: {
+					AI1: 0,
+					CI1: 3000,
+					IC1: 3000,
+					NC1: 3000,
+					UNIVERSE: 9000,
+				},
 				supply: { AI1: 0, CI1: 0, IC1: 0, NC1: 0, UNIVERSE: 0 },
 				systemic_health: {
 					diffusionIndex: 100,

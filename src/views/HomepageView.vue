@@ -217,7 +217,8 @@
 									:key="dot"
 									aria-hidden="true"
 									class="size-2.5 rounded-full bg-white/18" />
-								<span class="ml-3 font-mono text-[12.5px] text-white/62">
+								<span
+									class="ml-3 font-mono text-[12.5px] text-white/62">
 									{{ $t("homepage.hero.image_title") }}
 								</span>
 							</div>
@@ -263,7 +264,9 @@
 					class="bg-[#0a1010] px-6 py-6.5 flex flex-col gap-1">
 					<div
 						class="text-[34px] leading-[1.05] font-black tracking-[-0.02em]"
-						:class="cell.accent ? 'text-prunplanner' : 'text-white'">
+						:class="
+							cell.accent ? 'text-prunplanner' : 'text-white'
+						">
 						{{ cell.value }}
 					</div>
 					<div class="text-[15px] text-white/78">{{ cell.text }}</div>
@@ -274,8 +277,12 @@
 		<!-- What players use most -->
 		<section id="features" :class="section">
 			<div class="flex flex-col gap-3.5 max-w-[760px]">
-				<div :class="eyebrow">{{ $t("homepage.most_used.eyebrow") }}</div>
-				<h2 :class="sectionTitle">{{ $t("homepage.most_used.title") }}</h2>
+				<div :class="eyebrow">
+					{{ $t("homepage.most_used.eyebrow") }}
+				</div>
+				<h2 :class="sectionTitle">
+					{{ $t("homepage.most_used.title") }}
+				</h2>
 			</div>
 			<div class="flex flex-col gap-6">
 				<HomepageTour
@@ -308,7 +315,11 @@
 								<PIcon :size="18"><ArrowForwardSharp /></PIcon>
 							</router-link>
 							<span class="font-mono text-[13px] text-white/62">
-								{{ $t("homepage.most_used.planet_search.cta_note") }}
+								{{
+									$t(
+										"homepage.most_used.planet_search.cta_note"
+									)
+								}}
 							</span>
 						</div>
 					</template>
@@ -334,14 +345,20 @@
 				<div class="flex flex-wrap gap-6">
 					<article
 						v-for="tool in [
-							{ key: 'resource_roi', image: 'resource-roi', fio: false },
+							{
+								key: 'resource_roi',
+								image: 'resource-roi',
+								fio: false,
+							},
 							{ key: 'fio_burn', image: 'fio-burn', fio: true },
 						]"
 						:key="tool.key"
 						:class="card"
 						class="flex-[1_1_380px] min-w-0 flex flex-col overflow-hidden">
 						<div class="p-8 sm:px-10 sm:pt-10 flex flex-col gap-4">
-							<div :class="eyebrow" class="flex flex-wrap items-center gap-2.5">
+							<div
+								:class="eyebrow"
+								class="flex flex-wrap items-center gap-2.5">
 								{{ $t(`homepage.most_used.${tool.key}.label`) }}
 								<span v-if="tool.fio" :class="pill">
 									{{ $t("homepage.most_used.needs_fio") }}
@@ -638,7 +655,9 @@
 						<span
 							aria-hidden="true"
 							class="shrink-0 size-11 rounded-[10px] bg-prunplanner/10 inline-flex items-center justify-center text-prunplanner">
-							<PIcon :size="22"><component :is="link.icon" /></PIcon>
+							<PIcon :size="22"
+								><component :is="link.icon"
+							/></PIcon>
 						</span>
 						<span class="grow flex flex-col">
 							<span class="text-[18px] font-bold text-white">

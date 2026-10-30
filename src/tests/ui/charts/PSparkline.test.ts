@@ -42,11 +42,14 @@ describe("PSparkline", () => {
 		[0.4, "#888888"],
 		[-0.4, "#888888"],
 		[Number.NaN, "#888888"],
-	])("colours the end dot of trend %s as the Trend column", async (trend, colour) => {
-		const wrapper = await mountSparkline([1, 2, 3], trend);
+	])(
+		"colours the end dot of trend %s as the Trend column",
+		async (trend, colour) => {
+			const wrapper = await mountSparkline([1, 2, 3], trend);
 
-		expect(wrapper.find("circle").attributes("fill")).toBe(colour);
-	});
+			expect(wrapper.find("circle").attributes("fill")).toBe(colour);
+		}
+	);
 
 	it("has no dot without values", async () => {
 		const wrapper = await mountSparkline([null, null], 2);

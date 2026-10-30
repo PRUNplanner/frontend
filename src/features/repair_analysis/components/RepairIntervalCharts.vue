@@ -36,7 +36,11 @@
 	 *
 	 * @author jplacht
 	 */
-	const { building, interval, ages = [] } = defineProps<{
+	const {
+		building,
+		interval,
+		ages = [],
+	} = defineProps<{
 		building: IRepairBuilding;
 		interval: number;
 		ages?: number[];
@@ -176,8 +180,16 @@
 		// near the right edge the label goes left of its point
 		const lostLabel: ILabel =
 			lostDay > 120
-				? { x: xs(lostDay) - 8, y: yt(lost[lostDay]) + 4, anchor: "end" }
-				: { x: xs(lostDay) + 8, y: yt(lost[lostDay]) + 4, anchor: "start" };
+				? {
+						x: xs(lostDay) - 8,
+						y: yt(lost[lostDay]) + 4,
+						anchor: "end",
+					}
+				: {
+						x: xs(lostDay) + 8,
+						y: yt(lost[lostDay]) + 4,
+						anchor: "start",
+					};
 
 		const candidates = [compact.value ? 150 : 160, 100, 60].flatMap(
 			(day): ILabel[] => [
@@ -298,10 +310,18 @@
 				aria-hidden="true">
 				<defs>
 					<clipPath :id="`${clipId}-p`">
-						<rect :x="X0" :y="P.top" :width="x1 - X0" :height="P.h" />
+						<rect
+							:x="X0"
+							:y="P.top"
+							:width="x1 - X0"
+							:height="P.h" />
 					</clipPath>
 					<clipPath :id="`${clipId}-t`">
-						<rect :x="X0" :y="T.top" :width="x1 - X0" :height="T.h" />
+						<rect
+							:x="X0"
+							:y="T.top"
+							:width="x1 - X0"
+							:height="T.h" />
 					</clipPath>
 				</defs>
 				<rect
@@ -365,7 +385,12 @@
 					stroke-width="2.5" />
 				<circle
 					:cx="xs(interval)"
-					:cy="Math.min(Math.max(ys(profit[interval]), P.top), P.top + P.h)"
+					:cy="
+						Math.min(
+							Math.max(ys(profit[interval]), P.top),
+							P.top + P.h
+						)
+					"
 					r="5"
 					:fill="theme.ink" />
 			</svg>
@@ -395,10 +420,13 @@
 					{{
 						tip.delta === undefined
 							? $t("plan.tools.repair_analysis.charts.tip_best")
-							: $t("plan.tools.repair_analysis.charts.tip_delta", {
-									delta: tip.delta,
-									best: building.best,
-								})
+							: $t(
+									"plan.tools.repair_analysis.charts.tip_delta",
+									{
+										delta: tip.delta,
+										best: building.best,
+									}
+								)
 					}}
 				</span>
 			</div>

@@ -151,7 +151,10 @@ describe("repairAnalysis.util", () => {
 		const flat = curveOf(Array.from({ length: 181 }, () => 50));
 		expect(goodRange(flat, 90)).toEqual([1, 180]);
 
-		const profits = Array.from({ length: 181 }, (_, d) => 100 - Math.abs(d - 90));
+		const profits = Array.from(
+			{ length: 181 },
+			(_, d) => 100 - Math.abs(d - 90)
+		);
 		// 5 % of 100: 95 and up, days 85 to 95
 		expect(goodRange(curveOf(profits), 90, 0.05)).toEqual([85, 95]);
 	});
@@ -182,7 +185,11 @@ describe("repairAnalysis.util", () => {
 
 	it("repairMaterialsAt scales one building's materials to the interval and amount", () => {
 		expect(repairMaterialsAt(MATERIALS, 90, 3)).toEqual([
-			{ ticker: "A", input: calculateAmountAtDay(90, 180) * 3, output: 0 },
+			{
+				ticker: "A",
+				input: calculateAmountAtDay(90, 180) * 3,
+				output: 0,
+			},
 			{ ticker: "B", input: calculateAmountAtDay(90, 90) * 3, output: 0 },
 		]);
 		// A 90 * 3, B 45 * 3

@@ -36,7 +36,8 @@
 
 	const name = (planetId: string) => shortPlanetName(planetNames, planetId);
 	// "Planet (ID)" for link titles
-	const fullName = (planetId: string) => planetNames.get(planetId) ?? planetId;
+	const fullName = (planetId: string) =>
+		planetNames.get(planetId) ?? planetId;
 
 	const halves = computed(() => {
 		const scale = Math.max(row.output, row.input);
@@ -77,7 +78,11 @@
 	});
 
 	/** "Planet · plan name" when the planet has several plans on this side */
-	function sideLabel(side: IEmpireMaterialIOSide, planetId: string, plan: string) {
+	function sideLabel(
+		side: IEmpireMaterialIOSide,
+		planetId: string,
+		plan: string
+	) {
 		return side.entries.filter((e) => e.planetId === planetId).length > 1
 			? `${name(planetId)} · ${plan}`
 			: name(planetId);
@@ -97,10 +102,7 @@
 				@click="view = 'sides'">
 				{{ t("empire.material_io.view_sides") }}
 			</PButton>
-			<PButton
-				size="sm"
-				:pressed="view === 'net'"
-				@click="view = 'net'">
+			<PButton size="sm" :pressed="view === 'net'" @click="view = 'net'">
 				{{ t("empire.material_io.view_net") }}
 			</PButton>
 		</PButtonGroup>
@@ -142,9 +144,16 @@
 									:to="`/plan/${e.planetId}/${e.planUuid}`"
 									:title="`${fullName(e.planetId)} · ${e.planName}`"
 									class="truncate min-w-0 text-link-primary hover:underline">
-									{{ sideLabel(half.side, e.planetId, e.planName) }}
+									{{
+										sideLabel(
+											half.side,
+											e.planetId,
+											e.planName
+										)
+									}}
 								</router-link>
-								<strong class="ml-auto shrink-0 whitespace-nowrap">
+								<strong
+									class="ml-auto shrink-0 whitespace-nowrap">
 									{{ formatNumber(e.amount) }}
 								</strong>
 								<span
@@ -152,7 +161,9 @@
 									{{ formatNumber(e.share * 100, 0) }}%
 								</span>
 							</div>
-							<div class="h-0.5 mt-0.5 bg-white/7" aria-hidden="true">
+							<div
+								class="h-0.5 mt-0.5 bg-white/7"
+								aria-hidden="true">
 								<div
 									class="h-full bg-white/60"
 									:style="{ width: `${e.share * 100}%` }" />

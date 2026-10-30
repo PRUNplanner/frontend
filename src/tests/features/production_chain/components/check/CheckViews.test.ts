@@ -58,9 +58,15 @@ describe("CheckBar", () => {
 		await wrapper
 			.find("[aria-label='production_chains.check.remove']")
 			.trigger("click");
-		expect(component.emitted("targets")).toEqual([[["DW", "C"]], [[]], [[]]]);
+		expect(component.emitted("targets")).toEqual([
+			[["DW", "C"]],
+			[[]],
+			[[]],
+		]);
 		expect(component.emitted("add-all")).toHaveLength(1);
-		expect(wrapper.find("[data-testid='check-target-DW']").exists()).toBe(true);
+		expect(wrapper.find("[data-testid='check-target-DW']").exists()).toBe(
+			true
+		);
 	});
 
 	it("picks an empire and edits the settings", async () => {
@@ -71,7 +77,9 @@ describe("CheckBar", () => {
 		expect((empire.props("options") as unknown[]).length).toBe(2);
 		empire.vm.$emit("update:value", "e2");
 		expect(component.emitted("empire")).toEqual([["e2"]]);
-		expect(wrapper.find("[data-testid='check-clear']").exists()).toBe(false);
+		expect(wrapper.find("[data-testid='check-clear']").exists()).toBe(
+			false
+		);
 	});
 });
 
@@ -86,7 +94,8 @@ describe("CheckBases", () => {
 		);
 		const rows = wrapper.findAll("[data-testid^='check-base-toggle-']");
 		const ids = rows.map((r) => r.attributes("data-testid")!.slice(-1));
-		const verdict = (id: string) => result.bases.find((b) => b.id === id)!.verdict;
+		const verdict = (id: string) =>
+			result.bases.find((b) => b.id === id)!.verdict;
 		const order = ["fix", "imp", "ok", "out"];
 		for (let i = 1; i < ids.length; i++)
 			expect(order.indexOf(verdict(ids[i - 1]))).toBeLessThanOrEqual(
@@ -108,7 +117,9 @@ describe("CheckBases", () => {
 		).toBeGreaterThan(0);
 		expect(component.emitted("open")).toEqual([["B"]]);
 		await toggle.trigger("click");
-		expect(wrapper.find("[data-testid='check-base-details-B']").exists()).toBe(false);
+		expect(
+			wrapper.find("[data-testid='check-base-details-B']").exists()
+		).toBe(false);
 	});
 });
 
@@ -122,27 +133,45 @@ describe("CheckFindings", () => {
 			withText
 		);
 		const groups = () =>
-			wrapper.findAll("[data-testid^='check-findings-group-']").map((g) =>
-				g.attributes("data-testid")!.replace("check-findings-group-", "")
-			);
+			wrapper
+				.findAll("[data-testid^='check-findings-group-']")
+				.map((g) =>
+					g
+						.attributes("data-testid")!
+						.replace("check-findings-group-", "")
+				);
 		expect(groups()).toContain("fix");
 		expect(groups()).toContain("location");
-		await wrapper.find("[data-testid='check-findings-kind-location']").trigger("click");
+		await wrapper
+			.find("[data-testid='check-findings-kind-location']")
+			.trigger("click");
 		expect(groups()).toEqual(["location"]);
 
-		await wrapper.find("[data-testid='check-finding-try']").trigger("click");
-		await wrapper.find("[data-testid='check-finding-all-planets']").trigger("click");
-		expect(component.emitted("try")![0][0]).toMatchObject({ kind: "location" });
-		expect(component.emitted("planets")![0][0]).toMatchObject({ kind: "location" });
+		await wrapper
+			.find("[data-testid='check-finding-try']")
+			.trigger("click");
+		await wrapper
+			.find("[data-testid='check-finding-all-planets']")
+			.trigger("click");
+		expect(component.emitted("try")![0][0]).toMatchObject({
+			kind: "location",
+		});
+		expect(component.emitted("planets")![0][0]).toMatchObject({
+			kind: "location",
+		});
 		expect(wrapper.text()).toContain("Open in Planet Search");
 		expect(wrapper.text()).toContain("Open Plan");
 
-		await wrapper.find("[data-testid='check-findings-kind-all']").trigger("click");
+		await wrapper
+			.find("[data-testid='check-findings-kind-all']")
+			.trigger("click");
 		expect(groups().length).toBeGreaterThan(1);
 	});
 
 	it("shows the user's pick and Back to suggested (AC 10)", async () => {
-		const f = result.findings.find((x) => x.kind === "location" && x.base === "C")!;
+		const f = result.findings.find(
+			(x) => x.kind === "location" && x.base === "C"
+		)!;
 		if (f.kind !== "location") throw new Error("kind");
 		const last = f.options[f.options.length - 1];
 		const picked = fixtureCheck({
@@ -165,9 +194,17 @@ describe("CheckChains", () => {
 	beforeAll(seedGameData);
 
 	it("shows each chain's materials with the chain planner's default", async () => {
-		const { wrapper } = await mountComponent(CheckChains, { result }, withText);
-		expect(wrapper.find("[data-testid='check-chain-DW']").exists()).toBe(true);
-		expect(wrapper.find("[data-testid='check-chain-RAT']").exists()).toBe(true);
+		const { wrapper } = await mountComponent(
+			CheckChains,
+			{ result },
+			withText
+		);
+		expect(wrapper.find("[data-testid='check-chain-DW']").exists()).toBe(
+			true
+		);
+		expect(wrapper.find("[data-testid='check-chain-RAT']").exists()).toBe(
+			true
+		);
 		const pg = wrapper.find("[data-testid='check-chain-row-DW-PG']");
 		expect(pg.text()).toContain("bought");
 		const h2o = wrapper.find("[data-testid='check-chain-row-DW-H2O']");
@@ -185,7 +222,9 @@ describe("CheckAside and CheckResults", () => {
 			withText
 		);
 		expect(wrapper.text()).toContain("4 of 5 bases");
-		await wrapper.find("[data-testid='check-coverage-add']").trigger("click");
+		await wrapper
+			.find("[data-testid='check-coverage-add']")
+			.trigger("click");
 		expect(component.emitted("add")).toEqual([[["C"]]]);
 		expect(wrapper.findComponent(PButton).text()).toBe("Add C");
 	});
@@ -196,14 +235,16 @@ describe("CheckAside and CheckResults", () => {
 			{ result, setup: true },
 			withText
 		);
-		expect(wrapper.findAll("[data-testid^='check-result-']").length).toBe(8);
-		expect(wrapper.find("[data-testid='check-result-checked']").text()).toContain(
-			"4 of 5"
+		expect(wrapper.findAll("[data-testid^='check-result-']").length).toBe(
+			8
 		);
+		expect(
+			wrapper.find("[data-testid='check-result-checked']").text()
+		).toContain("4 of 5");
 		await setProps({ setup: false });
-		expect(wrapper.find("[data-testid='check-result-setup']").text()).toContain(
-			"hidden"
-		);
+		expect(
+			wrapper.find("[data-testid='check-result-setup']").text()
+		).toContain("hidden");
 	});
 });
 
@@ -218,8 +259,15 @@ describe("check views, edge states", () => {
 		);
 		expect(empty.wrapper.text()).toContain("Add a chain above.");
 		const ctx = testContext();
-		const free = fixtureCheck({}, { ...ctx, prices: { ...ctx.prices, getPrice: () => 0 } });
-		const { wrapper } = await mountComponent(CheckChains, { result: free }, withText);
+		const free = fixtureCheck(
+			{},
+			{ ...ctx, prices: { ...ctx.prices, getPrice: () => 0 } }
+		);
+		const { wrapper } = await mountComponent(
+			CheckChains,
+			{ result: free },
+			withText
+		);
 		expect(wrapper.text()).toContain("bought, cheaper than making");
 		expect(wrapper.text()).toContain("buying is cheaper");
 	});
@@ -231,14 +279,18 @@ describe("check views, edge states", () => {
 			{ result: quiet, nameOf, payback: 100 },
 			withText
 		);
-		await wrapper.find("[data-testid='check-base-toggle-A']").trigger("click");
-		await wrapper.find("[data-testid='check-base-toggle-E']").trigger("click");
-		expect(wrapper.find("[data-testid='check-base-details-A']").text()).toContain(
-			"No findings above the threshold."
-		);
-		expect(wrapper.find("[data-testid='check-base-details-E']").text()).toContain(
-			"Not in these chains"
-		);
+		await wrapper
+			.find("[data-testid='check-base-toggle-A']")
+			.trigger("click");
+		await wrapper
+			.find("[data-testid='check-base-toggle-E']")
+			.trigger("click");
+		expect(
+			wrapper.find("[data-testid='check-base-details-A']").text()
+		).toContain("No findings above the threshold.");
+		expect(
+			wrapper.find("[data-testid='check-base-details-E']").text()
+		).toContain("Not in these chains");
 
 		const strip = await mountComponent(
 			CheckResults,
@@ -248,16 +300,26 @@ describe("check views, edge states", () => {
 					totals: {
 						...quiet.totals,
 						profit: 0,
-						counts: { fix: 0, recipe: 0, buy: 0, location: 0, setup: 0 },
+						counts: {
+							fix: 0,
+							recipe: 0,
+							buy: 0,
+							location: 0,
+							setup: 0,
+						},
 					},
 				},
 				setup: true,
 			},
 			withText
 		);
-		expect(strip.wrapper.find("[data-testid='check-result-gain']").text()).toContain("—");
 		expect(
-			strip.wrapper.find("[data-testid='check-result-improvements']").text()
+			strip.wrapper.find("[data-testid='check-result-gain']").text()
+		).toContain("—");
+		expect(
+			strip.wrapper
+				.find("[data-testid='check-result-improvements']")
+				.text()
 		).toContain("none");
 	});
 
@@ -294,7 +356,9 @@ describe("CheckFinding without payback", () => {
 	beforeAll(seedGameData);
 
 	it("shows construction without a payback", async () => {
-		const move = result.findings.find((f) => f.kind === "location" && f.base === "C")!;
+		const move = result.findings.find(
+			(f) => f.kind === "location" && f.base === "C"
+		)!;
 		if (move.kind !== "location") throw new Error("kind");
 		const option = { ...move.option, payback: null };
 		const { wrapper } = await mountComponent(

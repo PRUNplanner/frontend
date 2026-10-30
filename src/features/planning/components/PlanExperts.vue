@@ -118,7 +118,9 @@
 				</div>
 				<div
 					class="text-xs truncate"
-					:class="expert.bonus === 0 ? 'text-muted' : 'text-muted-strong'"
+					:class="
+						expert.bonus === 0 ? 'text-muted' : 'text-muted-strong'
+					"
 					data-bonus>
 					<template v-if="fieldBuildings(expert.name)">
 						{{ fieldBuildings(expert.name) }} ·
@@ -129,7 +131,9 @@
 			<PInputNumber
 				:aria-label="
 					t('plan.components.experts.amount_label', {
-						expert: t(`game.expertise.${expert.name.toUpperCase()}`),
+						expert: t(
+							`game.expertise.${expert.name.toUpperCase()}`
+						),
 					})
 				"
 				:value="localExpertData[expert.name].amount"

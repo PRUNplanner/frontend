@@ -70,11 +70,7 @@
 	import PSegmented from "@/ui/components/PSegmented.vue";
 
 	const { summary, failed, retry } = useMarketReport();
-	const {
-		books,
-		failed: booksFailed,
-		load: loadBooks,
-	} = useMarketBooks();
+	const { books, failed: booksFailed, load: loadBooks } = useMarketBooks();
 
 	// the index chart is the page's main content; the order books (In
 	// short's gap, the gaps, the exchange cards) start once it is on screen
@@ -339,7 +335,9 @@
 					:failed="failed"
 					size="h-[358px] sm:h-[396px]"
 					@retry="retry">
-					<MarketMoversTable :summary="summary!" :direction="direction" />
+					<MarketMoversTable
+						:summary="summary!"
+						:direction="direction" />
 				</MarketBlock>
 			</section>
 

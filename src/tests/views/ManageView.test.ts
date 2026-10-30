@@ -66,9 +66,7 @@ const state = vi.hoisted(() => ({
 vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
 	passThrough("WrapperPlanningDataLoader")
 );
-vi.mock("@/features/help/components/HelpDrawer.vue", () =>
-	fake("HelpDrawer")
-);
+vi.mock("@/features/help/components/HelpDrawer.vue", () => fake("HelpDrawer"));
 vi.mock("@/features/manage/components/ManageCX.vue", async () => {
 	const { useManageData } = await import("@/features/manage/useManageData");
 	return fake("ManageCX", () => (state.data = useManageData()));
@@ -93,9 +91,8 @@ vi.mock(
 	"@/features/manage/components/ManagePlanEmpireAssignments.vue",
 	async () => {
 		const { computed, reactive } = await import("vue");
-		const { useManageData } = await import(
-			"@/features/manage/useManageData"
-		);
+		const { useManageData } =
+			await import("@/features/manage/useManageData");
 		state.matrix = reactive({
 			changes: { changedCount: 0, planCount: 0, empireCount: 0 },
 			save: vi.fn(),
@@ -359,9 +356,7 @@ describe("ManageView", () => {
 
 		// a section's reload replaces the shared lists
 		state.data!.cxList.value = [{ uuid: "cx-3" }] as CX[];
-		state.data!.empireList.value = [
-			{ uuid: "e-3" },
-		] as PlanEmpireElement[];
+		state.data!.empireList.value = [{ uuid: "e-3" }] as PlanEmpireElement[];
 		state.data!.planList.value = [{ uuid: "p-2" }] as Plan[];
 		await flushPromises();
 

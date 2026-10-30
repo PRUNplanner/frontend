@@ -77,7 +77,9 @@
 	function spreadPct(row: IMarketRow): string {
 		if (row.spreadState === "no_bids" || row.spreadState === "no_asks")
 			return t(`material_tile.card.${row.spreadState}`);
-		return row.spreadPct === null ? "—" : `${formatNumber(row.spreadPct, 1)} %`;
+		return row.spreadPct === null
+			? "—"
+			: `${formatNumber(row.spreadPct, 1)} %`;
 	}
 	const shareText = (share: number | null) =>
 		share === null ? t("material_tile.card.no_trades") : formatShare(share);
@@ -106,37 +108,100 @@
 			<!-- headers wrap at spaces, values never -->
 			<table class="w-full text-[13px] tabular-nums" :data-view="view">
 				<thead>
-					<tr class="text-muted text-xs *:font-medium *:px-1.5 *:pb-1 *:text-right">
+					<tr
+						class="text-muted text-xs *:font-medium *:px-1.5 *:pb-1 *:text-right">
 						<th class="text-left!">
 							{{ $t("material_tile.card.columns.cx") }}
 						</th>
 						<template v-if="view === 'prices'">
 							<th>{{ $t("material_tile.card.columns.ask") }}</th>
 							<th>{{ $t("material_tile.card.columns.bid") }}</th>
-							<th>{{ $t("material_tile.card.columns.spread") }}</th>
-							<th>{{ $t("material_tile.details.columns.spread_pct") }}</th>
-							<th>{{ $t("material_tile.card.columns.vwap_7d") }}</th>
-							<th>{{ $t("material_tile.card.columns.vwap_30d") }}</th>
-							<th>{{ $t("material_tile.card.columns.trend") }}</th>
-							<th>{{ $t("material_tile.details.columns.vs_universe") }}</th>
+							<th>
+								{{ $t("material_tile.card.columns.spread") }}
+							</th>
+							<th>
+								{{
+									$t(
+										"material_tile.details.columns.spread_pct"
+									)
+								}}
+							</th>
+							<th>
+								{{ $t("material_tile.card.columns.vwap_7d") }}
+							</th>
+							<th>
+								{{ $t("material_tile.card.columns.vwap_30d") }}
+							</th>
+							<th>
+								{{ $t("material_tile.card.columns.trend") }}
+							</th>
+							<th>
+								{{
+									$t(
+										"material_tile.details.columns.vs_universe"
+									)
+								}}
+							</th>
 						</template>
 						<template v-else-if="view === 'book'">
-							<th>{{ $t("material_tile.details.columns.offered") }}</th>
-							<th>{{ $t("material_tile.details.columns.wanted") }}</th>
-							<th>{{ $t("material_tile.details.columns.delta") }}</th>
-							<th>{{ $t("material_tile.details.columns.ratio") }}</th>
+							<th>
+								{{
+									$t("material_tile.details.columns.offered")
+								}}
+							</th>
+							<th>
+								{{ $t("material_tile.details.columns.wanted") }}
+							</th>
+							<th>
+								{{ $t("material_tile.details.columns.delta") }}
+							</th>
+							<th>
+								{{ $t("material_tile.details.columns.ratio") }}
+							</th>
 							<th class="text-left!">
 								{{ $t("material_tile.details.columns.split") }}
 							</th>
 						</template>
 						<template v-else>
-							<th>{{ $t("material_tile.details.columns.traded_7d") }}</th>
-							<th>{{ $t("material_tile.details.columns.traded_30d") }}</th>
-							<th>{{ $t("material_tile.card.columns.per_day") }}</th>
+							<th>
+								{{
+									$t(
+										"material_tile.details.columns.traded_7d"
+									)
+								}}
+							</th>
+							<th>
+								{{
+									$t(
+										"material_tile.details.columns.traded_30d"
+									)
+								}}
+							</th>
+							<th>
+								{{ $t("material_tile.card.columns.per_day") }}
+							</th>
 							<template v-if="daily">
-								<th>{{ $t("material_tile.details.columns.share_7d") }}</th>
-								<th>{{ $t("material_tile.details.columns.share_30d") }}</th>
-								<th>{{ $t("material_tile.details.columns.verdict") }}</th>
+								<th>
+									{{
+										$t(
+											"material_tile.details.columns.share_7d"
+										)
+									}}
+								</th>
+								<th>
+									{{
+										$t(
+											"material_tile.details.columns.share_30d"
+										)
+									}}
+								</th>
+								<th>
+									{{
+										$t(
+											"material_tile.details.columns.verdict"
+										)
+									}}
+								</th>
 							</template>
 						</template>
 					</tr>
@@ -153,12 +218,20 @@
 							<span class="inline-flex items-center gap-1.5">
 								<span
 									class="size-2 rounded-full"
-									:style="{ background: CX_DOT_COLOR[row.cx] }" />
+									:style="{
+										background: CX_DOT_COLOR[row.cx],
+									}" />
 								<span class="font-bold text-ink-strong">
 									{{ cxLabel(row.cx) }}
 								</span>
-								<span v-if="row.status" class="text-xs text-warning">
-									{{ $t(`material_tile.card.status.${row.status}`) }}
+								<span
+									v-if="row.status"
+									class="text-xs text-warning">
+									{{
+										$t(
+											`material_tile.card.status.${row.status}`
+										)
+									}}
 								</span>
 								<span
 									v-if="row.cx === yourCx"
@@ -178,9 +251,18 @@
 								<td>{{ formatMarketPrice(row.ask) }}</td>
 								<td>{{ formatMarketPrice(row.bid) }}</td>
 								<td>
-									{{ row.spread === null ? "—" : formatNumber(row.spread, 2, true) }}
+									{{
+										row.spread === null
+											? "—"
+											: formatNumber(row.spread, 2, true)
+									}}
 								</td>
-								<td :class="row.spreadState === 'ok' ? '' : 'text-warning'">
+								<td
+									:class="
+										row.spreadState === 'ok'
+											? ''
+											: 'text-warning'
+									">
 									{{ spreadPct(row) }}
 								</td>
 							</template>
@@ -194,7 +276,16 @@
 						<template v-else-if="view === 'book'">
 							<td>{{ full(row.supply) }}</td>
 							<td>{{ full(row.demand) }}</td>
-							<td>{{ formatNumber(row.supply - row.demand, 0, false, true) }}</td>
+							<td>
+								{{
+									formatNumber(
+										row.supply - row.demand,
+										0,
+										false,
+										true
+									)
+								}}
+							</td>
 							<td>
 								{{
 									row.wantedPerOffered === null
@@ -206,16 +297,21 @@
 								<div
 									role="img"
 									:aria-label="
-										$t('material_tile.details.split_label', {
-											cx: cxLabel(row.cx),
-											offered: full(row.supply),
-											wanted: full(row.demand),
-										})
+										$t(
+											'material_tile.details.split_label',
+											{
+												cx: cxLabel(row.cx),
+												offered: full(row.supply),
+												wanted: full(row.demand),
+											}
+										)
 									"
 									class="flex h-1.5 w-16 rounded-full overflow-hidden bg-link">
 									<div
 										class="h-full bg-white/40"
-										:style="{ width: `${offeredShare(row)}%` }" />
+										:style="{
+											width: `${offeredShare(row)}%`,
+										}" />
 								</div>
 							</td>
 						</template>
@@ -233,7 +329,11 @@
 								<td
 									class="font-sans!"
 									:class="VERDICT_CLASS[row.verdict!]">
-									{{ $t(`material_tile.card.verdict.${row.verdict}`) }}
+									{{
+										$t(
+											`material_tile.card.verdict.${row.verdict}`
+										)
+									}}
 								</td>
 							</template>
 						</template>

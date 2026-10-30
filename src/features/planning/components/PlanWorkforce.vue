@@ -51,7 +51,9 @@
 	const refShowAll = ref(false);
 	function toggleUnneeded(): void {
 		refShowAll.value = !refShowAll.value;
-		trackEvent("plan:workforce_unneeded_toggle", { is_shown: refShowAll.value });
+		trackEvent("plan:workforce_unneeded_toggle", {
+			is_shown: refShowAll.value,
+		});
 	}
 	const used: ComputedRef<IWorkforceElement[]> = computed(() =>
 		Object.values(props.workforceData).filter(
@@ -97,7 +99,11 @@
 		<div v-for="workforce in used" :key="workforce.name">
 			<div class="flex items-baseline justify-between gap-2 text-sm">
 				<span class="text-ink-strong">
-					{{ capitalizeString(t(`game.workforce_type.${workforce.name}`)) }}
+					{{
+						capitalizeString(
+							t(`game.workforce_type.${workforce.name}`)
+						)
+					}}
 				</span>
 				<span class="text-xs text-muted">
 					{{
@@ -169,7 +175,9 @@
 			{{
 				refShowAll
 					? t("plan.base.workforce.hide_not_needed")
-					: t("plan.base.workforce.show_not_needed", { tiers: unused })
+					: t("plan.base.workforce.show_not_needed", {
+							tiers: unused,
+						})
 			}}
 		</button>
 	</div>

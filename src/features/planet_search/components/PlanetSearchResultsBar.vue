@@ -79,7 +79,8 @@
 			</PButton>
 
 			<!-- one row, one height: view switch, then sort and columns -->
-			<div class="ml-auto flex flex-row flex-wrap items-center gap-x-6 gap-y-2">
+			<div
+				class="ml-auto flex flex-row flex-wrap items-center gap-x-6 gap-y-2">
 				<PButtonGroup
 					role="group"
 					:aria-label="t('planet_search.results.view_label')">
@@ -122,7 +123,9 @@
 				<button
 					type="button"
 					class="touch-target min-w-11 min-h-11 lg:min-w-7 lg:min-h-7 rounded-full cursor-pointer hover:bg-white/10"
-					:aria-label="t('planet_search.chips.remove', { label: c.label })"
+					:aria-label="
+						t('planet_search.chips.remove', { label: c.label })
+					"
 					@click="emit('update:filter', c.chip.remove)">
 					×
 				</button>

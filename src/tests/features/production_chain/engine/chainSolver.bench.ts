@@ -33,7 +33,9 @@ const gwsResult = solveChain(gws, ctx);
 // the made material with the most recipes in the GWS chain
 const mostRecipes = gwsResult.order
 	.filter((t) => gwsResult.rows[t].source === "make")
-	.sort((a, b) => gwsResult.rows[b].recipeCount - gwsResult.rows[a].recipeCount)[0];
+	.sort(
+		(a, b) => gwsResult.rows[b].recipeCount - gwsResult.rows[a].recipeCount
+	)[0];
 
 console.log(
 	`GWS ${gwsResult.order.length} materials; ten biggest ${solveChain(biggest, ctx).order.length}; ` +

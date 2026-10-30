@@ -37,10 +37,16 @@ describe("PToastHost", () => {
 		const host = body().find(".ptoast-host");
 		expect(host.element.parentElement).toBe(document.body);
 		expect(host.classes()).toEqual(
-			expect.arrayContaining(["fixed", "bottom-[var(--toast-bottom,5rem)]", "right-4", "items-end"])
+			expect.arrayContaining([
+				"fixed",
+				"bottom-[var(--toast-bottom,5rem)]",
+				"right-4",
+				"items-end",
+			])
 		);
-		expect(host.findAll("[role=status], [role=alert]").map((t) => t.text()))
-			.toEqual(["one", "two"]);
+		expect(
+			host.findAll("[role=status], [role=alert]").map((t) => t.text())
+		).toEqual(["one", "two"]);
 	});
 
 	it("runs the action and closes with the X", async () => {

@@ -60,7 +60,10 @@
 	/** jumps between the step's system and the option's, null when unknown */
 	function jumps(o: ICheckOption): string {
 		// a location finding's base has a planet
-		const n = getPathBetweenLength(base.planet!.system_id, o.planet.system_id);
+		const n = getPathBetweenLength(
+			base.planet!.system_id,
+			o.planet.system_id
+		);
 		return n < 0 ? "" : t("production_chains.check.options.jumps", n);
 	}
 
@@ -143,7 +146,13 @@
 					</span>
 					<PTag
 						size="sm"
-						:type="f.kind === 'fix' ? 'error' : f.kind === 'setup' ? 'secondary' : 'warning'">
+						:type="
+							f.kind === 'fix'
+								? 'error'
+								: f.kind === 'setup'
+									? 'secondary'
+									: 'warning'
+						">
 						{{ $t(`production_chains.check.kind.${f.kind}`) }}
 					</PTag>
 					<span class="font-bold">{{ text.title }}</span>
@@ -203,7 +212,9 @@
 					</span>
 					<span
 						class="col-start-2 sm:col-start-3 sm:text-right tabular-nums">
-						<span class="block text-positive">{{ optionGain(o) }}</span>
+						<span class="block text-positive">{{
+							optionGain(o)
+						}}</span>
 						<span class="block text-xs text-muted">{{
 							optionCost(o)
 						}}</span>

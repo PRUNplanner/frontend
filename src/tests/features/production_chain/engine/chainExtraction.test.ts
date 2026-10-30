@@ -46,6 +46,8 @@ describe("extractionOptions", () => {
 		expect(options.size).toBe(0);
 		const all = extractionOptions(index);
 		expect(all.get("N")!.sites.length).toBeGreaterThan(10);
-		expect(["COL", "EXT", "RIG"]).toContain(all.get("N")!.typical.buildingTicker);
+		expect(["COL", "EXT", "RIG"]).toContain(
+			all.get("N")!.typical.buildingTicker
+		);
 	});
 });

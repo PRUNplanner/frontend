@@ -81,9 +81,15 @@ describe("PDivergingBar", () => {
 	});
 
 	it("draws nothing for zero or without an extent", async () => {
-		expect((await mountBar({ value: 0, maxAbs: 10 })).find("[data-bar]").exists()).toBe(false);
+		expect(
+			(await mountBar({ value: 0, maxAbs: 10 }))
+				.find("[data-bar]")
+				.exists()
+		).toBe(false);
 		const none = await mountBar({ value: 5, maxAbs: 0 });
-		expect(none.find("[data-bar]").attributes("style")).toContain("width: 0%");
+		expect(none.find("[data-bar]").attributes("style")).toContain(
+			"width: 0%"
+		);
 	});
 
 	it("moves text that doesn't fit the measured bar beside it", async () => {

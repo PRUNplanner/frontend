@@ -13,9 +13,7 @@
 
 	const over = computed(() => value > max);
 	// a need without any total counts as full (and over)
-	const ratio = computed(() =>
-		max > 0 ? value / max : value > 0 ? 1 : 0
-	);
+	const ratio = computed(() => (max > 0 ? value / max : value > 0 ? 1 : 0));
 	const fillWidth = computed(() => `${Math.min(ratio.value, 1) * 100}%`);
 </script>
 

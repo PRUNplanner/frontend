@@ -67,22 +67,36 @@
 
 	const show = (c: PlanetSearchColumn) => !props.hiddenColumns.includes(c);
 	const found = computed(() => foundMaterials(props.planets));
-	const filtered = computed(() => [...filteredMaterials(props.filter)].sort());
+	const filtered = computed(() =>
+		[...filteredMaterials(props.filter)].sort()
+	);
 
 	// filtered materials first, then the other found ones; both alphabetical
 	const columns = computed(() => {
 		const isFiltered = new Set(filtered.value);
 		const others = Object.keys(found.value)
-			.filter((m) => !isFiltered.has(m) && !props.hiddenMaterials.includes(m))
+			.filter(
+				(m) => !isFiltered.has(m) && !props.hiddenMaterials.includes(m)
+			)
 			.sort();
 		return [
-			...filtered.value.map((m) => ({ ticker: m, filtered: true, divider: false })),
-			...others.map((m) => ({ ticker: m, filtered: false, divider: false })),
+			...filtered.value.map((m) => ({
+				ticker: m,
+				filtered: true,
+				divider: false,
+			})),
+			...others.map((m) => ({
+				ticker: m,
+				filtered: false,
+				divider: false,
+			})),
 		].map((c, i, all) => ({
 			...c,
 			// 2 px divider after the last filtered material, if others follow
 			divider:
-				c.filtered && i === filtered.value.length - 1 && i < all.length - 1,
+				c.filtered &&
+				i === filtered.value.length - 1 &&
+				i < all.length - 1,
 		}));
 	});
 
@@ -109,12 +123,19 @@
 				cells: columns.value.map((c) => {
 					const daily = res.get(c.ticker);
 					const max = props.maxDaily[c.ticker] || 1;
-					return { ...c, daily, share: daily === undefined ? 0 : Math.min(1, daily / max) };
+					return {
+						...c,
+						daily,
+						share:
+							daily === undefined ? 0 : Math.min(1, daily / max),
+					};
 				}),
 				extras: environmentExtras(p),
 				cogc: activeProgram(p, props.ctx.now),
 				infrastructure: planetInfrastructure(p),
-				planJumps: planRefs.value.map((r) => planetJumps(p, r, props.ctx)),
+				planJumps: planRefs.value.map((r) =>
+					planetJumps(p, r, props.ctx)
+				),
 				cxJumps: SEARCH_CX.map((code) =>
 					planetJumps(p, { kind: "cx", code }, props.ctx)
 				),
@@ -146,9 +167,12 @@
 <template>
 	<table class="text-sm border-separate border-spacing-0">
 		<thead class="sticky top-0 z-20">
-			<tr class="child:bg-black child:border-b child:border-white/10 child:px-2 child:py-1 child:text-left child:align-bottom child:whitespace-nowrap">
+			<tr
+				class="child:bg-black child:border-b child:border-white/10 child:px-2 child:py-1 child:text-left child:align-bottom child:whitespace-nowrap">
 				<th class="sticky left-0 z-30" :class="actionWidth">
-					<span class="sr-only">{{ t("planet_search.results.actions") }}</span>
+					<span class="sr-only">{{
+						t("planet_search.results.actions")
+					}}</span>
 				</th>
 				<th class="sticky z-30" :class="planetLeft">
 					<PlanetSearchSortHeader
@@ -175,8 +199,17 @@
 					v-for="c in columns"
 					:key="c.ticker"
 					class="p-0! text-center!"
-					:class="[c.filtered ? 'bg-blue-950!' : '', c.divider ? divider : '']"
-					:title="t('planet_search.results.material_count', { material: c.ticker, n: found[c.ticker] ?? 0, total: planets.length })">
+					:class="[
+						c.filtered ? 'bg-blue-950!' : '',
+						c.divider ? divider : '',
+					]"
+					:title="
+						t('planet_search.results.material_count', {
+							material: c.ticker,
+							n: found[c.ticker] ?? 0,
+							total: planets.length,
+						})
+					">
 					<div class="h-1" :class="getMaterialClass(c.ticker)" />
 					<div class="px-2 py-1">
 						<PlanetSearchSortHeader
@@ -188,7 +221,10 @@
 							:sub="`${found[c.ticker] ?? 0}/${planets.length}`" />
 					</div>
 				</th>
-				<th v-for="r in planRefs" :key="r.kind === 'plan' ? r.planUuid : ''" class="text-right!">
+				<th
+					v-for="r in planRefs"
+					:key="r.kind === 'plan' ? r.planUuid : ''"
+					class="text-right!">
 					<PlanetSearchSortHeader
 						v-bind="sortProps"
 						:sort-key="`ref:plan:${r.kind === 'plan' ? r.planUuid : ''}`"
@@ -206,11 +242,17 @@
 							:label="code" />
 					</th>
 				</template>
-				<th v-if="show('extras')" :title="t('planet_search.results.extras')">
+				<th
+					v-if="show('extras')"
+					:title="t('planet_search.results.extras')">
 					<ConstructionSharp class="w-4 h-4" aria-hidden="true" />
-					<span class="sr-only">{{ t("planet_search.results.extras") }}</span>
+					<span class="sr-only">{{
+						t("planet_search.results.extras")
+					}}</span>
 				</th>
-				<th v-if="show('cogc')">{{ t("planet_search.results.cogc_infra") }}</th>
+				<th v-if="show('cogc')">
+					{{ t("planet_search.results.cogc_infra") }}
+				</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -227,17 +269,31 @@
 						@pin="emit('pin', row.planet.planet_natural_id)" />
 				</td>
 				<!-- phones: the natural id goes below the name, so the sticky part stays narrow -->
-				<td class="sticky z-10 whitespace-nowrap font-bold max-sm:leading-tight" :class="planetLeft">
+				<td
+					class="sticky z-10 whitespace-nowrap font-bold max-sm:leading-tight"
+					:class="planetLeft">
 					{{ displayName(row.planet) }}
 					<span
-						v-if="displayName(row.planet) !== row.planet.planet_natural_id"
+						v-if="
+							displayName(row.planet) !==
+							row.planet.planet_natural_id
+						"
 						class="text-xs text-muted font-normal font-mono max-sm:block">
 						{{ row.planet.planet_natural_id }}
 					</span>
 					<PlanetFullIcon :planet="row.planet" />
 				</td>
-				<td v-if="show('fert')" class="text-right tabular-nums" :class="row.fertility === null ? 'text-muted' : 'text-positive'">
-					{{ row.fertility === null ? "—" : formatNumber(row.fertility, 0) }}
+				<td
+					v-if="show('fert')"
+					class="text-right tabular-nums"
+					:class="
+						row.fertility === null ? 'text-muted' : 'text-positive'
+					">
+					{{
+						row.fertility === null
+							? "—"
+							: formatNumber(row.fertility, 0)
+					}}
 				</td>
 				<!-- the 24 px chip keeps the matrix row height -->
 				<td v-if="show('plots')" class="py-0.5!">
@@ -247,11 +303,18 @@
 					v-for="c in row.cells"
 					:key="c.ticker"
 					class="text-right tabular-nums px-0.5! py-0.5!"
-					:class="[c.divider ? divider : '', c.filtered ? 'font-bold' : '']">
+					:class="[
+						c.divider ? divider : '',
+						c.filtered ? 'font-bold' : '',
+					]">
 					<span
 						v-if="c.daily === undefined"
 						class="block text-center text-white/20"
-						:title="t('planet_search.results.not_present', { material: c.ticker })">
+						:title="
+							t('planet_search.results.not_present', {
+								material: c.ticker,
+							})
+						">
 						·
 					</span>
 					<span
@@ -259,17 +322,41 @@
 						class="block rounded-sm px-1.5 py-0.5"
 						:class="c.share > 0.6 ? 'text-black' : 'text-white'"
 						:style="heat(c.share)"
-						:title="t('planet_search.results.cell', { material: c.ticker, value: formatNumber(c.daily, 2), pct: Math.round(c.share * 100) })">
+						:title="
+							t('planet_search.results.cell', {
+								material: c.ticker,
+								value: formatNumber(c.daily, 2),
+								pct: Math.round(c.share * 100),
+							})
+						">
 						{{ formatNumber(c.daily, 1) }}
 					</span>
 				</td>
-				<td v-for="(j, ji) in row.planJumps" :key="ji" class="text-right tabular-nums font-bold text-positive">
-					<span v-if="j === -1" :title="t('planet_search.results.unreachable')">—</span>
+				<td
+					v-for="(j, ji) in row.planJumps"
+					:key="ji"
+					class="text-right tabular-nums font-bold text-positive">
+					<span
+						v-if="j === -1"
+						:title="t('planet_search.results.unreachable')"
+						>—</span
+					>
 					<template v-else>{{ j }}</template>
 				</td>
 				<template v-for="(j, ci) in row.cxJumps" :key="ci">
-					<td v-if="show(SEARCH_CX[ci])" class="text-right tabular-nums" :class="{ 'text-positive font-bold': pickedCX.has(SEARCH_CX[ci]) }">
-						<span v-if="j === -1" :title="t('planet_search.results.unreachable')">—</span>
+					<td
+						v-if="show(SEARCH_CX[ci])"
+						class="text-right tabular-nums"
+						:class="{
+							'text-positive font-bold': pickedCX.has(
+								SEARCH_CX[ci]
+							),
+						}">
+						<span
+							v-if="j === -1"
+							:title="t('planet_search.results.unreachable')"
+							>—</span
+						>
 						<template v-else>{{ j }}</template>
 					</td>
 				</template>
@@ -279,14 +366,24 @@
 							v-for="e in row.extras"
 							:key="e.ticker"
 							:title="t(`planet_search.reasons.${e.reason}`)">
-							<MaterialTile :ticker="e.ticker" :enable-popover="false" />
+							<MaterialTile
+								:ticker="e.ticker"
+								:enable-popover="false" />
 						</span>
 					</div>
 				</td>
 				<td v-if="show('cogc')" class="whitespace-nowrap text-xs">
-					{{ row.cogc ? t(`game.cogc_program.${row.cogc}`) : t("planet_search.results.no_cogc") }}
+					{{
+						row.cogc
+							? t(`game.cogc_program.${row.cogc}`)
+							: t("planet_search.results.no_cogc")
+					}}
 					<span class="text-muted">
-						· {{ row.infrastructure.join(" · ") || t("planet_search.results.no_infrastructure") }}
+						·
+						{{
+							row.infrastructure.join(" · ") ||
+							t("planet_search.results.no_infrastructure")
+						}}
 					</span>
 				</td>
 			</tr>

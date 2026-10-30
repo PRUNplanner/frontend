@@ -114,7 +114,10 @@ describe("ChainBases with own production", () => {
 	beforeAll(seedGameData);
 
 	it("lists the supplying plans, the unused surplus and routes from them with jumps (AC 8, 12)", async () => {
-		const input = { ...splitInput(), have: { GRN: "all" as const, H2O: 3 } };
+		const input = {
+			...splitInput(),
+			have: { GRN: "all" as const, H2O: 3 },
+		};
 		const result = solveChain(input, ctx);
 		const grn = result.rows.GRN.have;
 		const food = index.find((p) => p.planet_natural_id === FOOD_PLANET)!;
@@ -144,13 +147,15 @@ describe("ChainBases with own production", () => {
 		expect(table.text()).toContain("Grain Farm");
 		expect(table.text()).toContain(food.planet_name);
 		expect(table.text()).toContain("production_chains.have.your_bases");
-		expect(wrapper.find("[data-testid='chain-unused-surplus']").exists()).toBe(true);
+		expect(
+			wrapper.find("[data-testid='chain-unused-surplus']").exists()
+		).toBe(true);
 		// from the plan's planet to the base that uses GRN
 		const route = wrapper.find("[data-testid^='chain-route-p1-']");
 		expect(route.text()).toContain("Grain Farm");
 		expect(route.text()).toContain("production_chains.shipping.n_jumps");
-		expect(wrapper.find("[data-testid^='chain-route-own-']").text()).toContain(
-			"production_chains.have.your_bases"
-		);
+		expect(
+			wrapper.find("[data-testid^='chain-route-own-']").text()
+		).toContain("production_chains.have.your_bases");
 	});
 });

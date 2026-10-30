@@ -171,7 +171,10 @@
 								t('empire.analysis.revenue_split.row_label', {
 									name: line.name,
 									margin: margin(line.parts!),
-									revenue: formatNumber(line.parts!.revenue, 0),
+									revenue: formatNumber(
+										line.parts!.revenue,
+										0
+									),
 								})
 							">
 							<div class="font-bold pb-1">{{ line.name }}</div>
@@ -179,25 +182,41 @@
 								v-for="key in PART_KEYS"
 								:key="key"
 								class="flex justify-between gap-x-4 tabular-nums">
-								<span>{{ $t(`empire.analysis.parts.${key}`) }}</span>
+								<span>{{
+									$t(`empire.analysis.parts.${key}`)
+								}}</span>
 								<span>
 									{{ formatNumber(line.parts![key], 0) }} ·
-									{{ formatPercent(splitShares(line.parts!)[key], 1) }}
+									{{
+										formatPercent(
+											splitShares(line.parts!)[key],
+											1
+										)
+									}}
 								</span>
 							</div>
 							<div
 								v-if="hatchFrom(line.parts!) !== undefined"
 								class="flex justify-between gap-x-4 tabular-nums text-negative">
-								<span>{{ $t("empire.analysis.parts.uncovered") }}</span>
+								<span>{{
+									$t("empire.analysis.parts.uncovered")
+								}}</span>
 								<span>
-									{{ formatPercent(splitShares(line.parts!).uncovered, 1) }}
+									{{
+										formatPercent(
+											splitShares(line.parts!).uncovered,
+											1
+										)
+									}}
 								</span>
 							</div>
 						</PStackedBar>
 						<div
 							class="text-right tabular-nums"
 							:class="
-								line.parts!.profit < 0 ? 'text-negative' : 'text-positive'
+								line.parts!.profit < 0
+									? 'text-negative'
+									: 'text-positive'
 							">
 							{{ margin(line.parts!) }}
 						</div>
@@ -215,7 +234,9 @@
 				v-for="l in legend"
 				:key="l.key"
 				class="inline-flex items-center gap-x-1.5">
-				<span class="inline-block size-2.5 rounded-[2px]" :style="l.style" />
+				<span
+					class="inline-block size-2.5 rounded-[2px]"
+					:style="l.style" />
 				{{ l.label }}
 			</span>
 		</div>

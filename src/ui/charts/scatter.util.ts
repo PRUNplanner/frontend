@@ -43,14 +43,9 @@ export function niceTicks(min: number, max: number): number[] {
 	if (max <= min) [min, max] = [min - 1, max + 1];
 	const raw = (max - min) / 5;
 	const power = 10 ** Math.floor(Math.log10(raw));
-	const step =
-		[1, 2, 2.5, 5, 10].find((m) => m * power >= raw)! * power;
+	const step = [1, 2, 2.5, 5, 10].find((m) => m * power >= raw)! * power;
 	const ticks: number[] = [];
-	for (
-		let v = Math.floor(min / step) * step;
-		v < max + step / 2;
-		v += step
-	)
+	for (let v = Math.floor(min / step) * step; v < max + step / 2; v += step)
 		ticks.push(Number(v.toFixed(10)));
 	if (ticks.at(-1)! < max) ticks.push(ticks.at(-1)! + step);
 	return ticks;
@@ -62,10 +57,7 @@ const LABEL_SIDES: IScatterLabelSide[] = ["right", "left", "below", "above"];
 
 function overlaps(a: IScatterRect, b: IScatterRect): boolean {
 	return (
-		a.x < b.x + b.w &&
-		b.x < a.x + a.w &&
-		a.y < b.y + b.h &&
-		b.y < a.y + a.h
+		a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h
 	);
 }
 

@@ -76,7 +76,10 @@
 				:value="modelValue.operator"
 				:options="configOptions"
 				@update:value="
-					(val) => updateDetector({ operator: val as Detector['operator'] })
+					(val) =>
+						updateDetector({
+							operator: val as Detector['operator'],
+						})
 				" />
 
 			<TargetEditor

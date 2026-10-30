@@ -128,7 +128,10 @@ export function useBaseROI(
 	}
 
 	const hqCost = computed(() => {
-		const prices = createPrices(STANDARD_PLANET.planet_natural_id, cxUuid.value);
+		const prices = createPrices(
+			STANDARD_PLANET.planet_natural_id,
+			cxUuid.value
+		);
 		return hqStepCost(settings.value.targetPermit, (t) =>
 			prices.getPrice(t, "BUY")
 		);
@@ -157,7 +160,9 @@ export function useBaseROI(
 		if (!ids.length) return;
 
 		const fertile = new Set(
-			candidates.filter((c) => c.kind === "farming").map((c) => c.planetNaturalId!)
+			candidates
+				.filter((c) => c.kind === "farming")
+				.map((c) => c.planetNaturalId!)
 		);
 		if ([...fertile].some((id) => !planets.has(id))) {
 			const found: Planet[] = await useQuery("PostPlanetSearch", {
@@ -274,7 +279,10 @@ export function useBaseROI(
 		const standard: IPlanContext = {
 			...gameData,
 			planet: STANDARD_PLANET,
-			prices: createPrices(STANDARD_PLANET.planet_natural_id, cxUuid.value),
+			prices: createPrices(
+				STANDARD_PLANET.planet_natural_id,
+				cxUuid.value
+			),
 		};
 		step.value = "recipes";
 		progress.value = { current: 0, total: recipes.length };

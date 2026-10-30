@@ -213,10 +213,12 @@ describe("HomepageTour", () => {
 		// not with the page: once the tour comes near
 		expect(other.wrapper.find("img").exists()).toBe(false);
 		// its `near` observer, created before its on-screen one
-		observers.at(-2)!.cb(
-			[{ isIntersecting: true } as IntersectionObserverEntry],
-			{} as IntersectionObserver
-		);
+		observers
+			.at(-2)!
+			.cb(
+				[{ isIntersecting: true } as IntersectionObserverEntry],
+				{} as IntersectionObserver
+			);
 		await nextTick();
 		expect(other.wrapper.find("img").attributes("src")).toBe(
 			"/images/homepage/empire.webp"
@@ -235,7 +237,9 @@ describe("HomepageTour", () => {
 		expect(wrapper.find("article").exists()).toBe(true);
 		expect(wrapper.find(".order-2").exists()).toBe(true);
 		expect(steps()[0].text()).toContain("homepage.tour.empire.one.text");
-		expect(steps()[1].text()).not.toContain("homepage.tour.empire.two.text");
+		expect(steps()[1].text()).not.toContain(
+			"homepage.tour.empire.two.text"
+		);
 		expect(wrapper.text()).toContain("homepage.tour.step_of");
 	});
 });

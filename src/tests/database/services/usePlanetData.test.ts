@@ -53,7 +53,11 @@ describe("usePlanetData", () => {
 			if (id === mockPlanet2.planet_natural_id) return mockPlanet2;
 			if (id === mockPlanet3.planet_natural_id) return mockPlanet3;
 			if (id === "ZV-759e")
-				return { ...mockPlanet3, planet_natural_id: id, planet_name: id };
+				return {
+					...mockPlanet3,
+					planet_natural_id: id,
+					planet_name: id,
+				};
 			return undefined;
 		});
 

@@ -71,9 +71,9 @@ describe("APIKeyView", () => {
 
 	it("renders the manage heading key", async () => {
 		const { wrapper } = await mountView([]);
-		expect(
-			wrapper.findAll("h2").map((h) => h.text())
-		).toContain("api_keys.manage.title");
+		expect(wrapper.findAll("h2").map((h) => h.text())).toContain(
+			"api_keys.manage.title"
+		);
 	});
 
 	it("shows the empty state without keys", async () => {
@@ -95,10 +95,7 @@ describe("APIKeyView", () => {
 	it("revokes only after the confirm", async () => {
 		const { wrapper } = await mountView([KEY]);
 
-		await wrapper
-			.findComponent(PTable)
-			.find("button")
-			.trigger("click");
+		await wrapper.findComponent(PTable).find("button").trigger("click");
 		await flushPromises();
 		expect(document.body.textContent).toContain(
 			"api_keys.confirm_revoke.title"
@@ -107,10 +104,7 @@ describe("APIKeyView", () => {
 		await flushPromises();
 		expect(calls.some((c) => c.name === "DeleteAPIKey")).toBe(false);
 
-		await wrapper
-			.findComponent(PTable)
-			.find("button")
-			.trigger("click");
+		await wrapper.findComponent(PTable).find("button").trigger("click");
 		await flushPromises();
 		button("api_keys.confirm_revoke.positive").click();
 		await flushPromises();

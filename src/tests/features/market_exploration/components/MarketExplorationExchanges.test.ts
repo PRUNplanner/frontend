@@ -94,7 +94,9 @@ describe("MarketExplorationExchanges", () => {
 		await flushPromises();
 
 		expect(wrapper.findComponent(PLineChart).exists()).toBe(false);
-		expect(wrapper.text()).toContain("market_exploration.chart.exchanges.empty");
+		expect(wrapper.text()).toContain(
+			"market_exploration.chart.exchanges.empty"
+		);
 	});
 
 	it("says the data failed instead of an empty range", async () => {

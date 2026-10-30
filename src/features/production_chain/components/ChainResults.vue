@@ -67,7 +67,10 @@
 				: {
 						key: "bought",
 						value: money(tt.bought),
-						sub: t("production_chains.results.bought_count", tt.boughtCount),
+						sub: t(
+							"production_chains.results.bought_count",
+							tt.boughtCount
+						),
 					},
 			{
 				key: "upkeep",
@@ -115,7 +118,9 @@
 				sub:
 					baseline && baseline.construction > tt.construction
 						? t("production_chains.have.construction_less", {
-								value: money(baseline.construction - tt.construction),
+								value: money(
+									baseline.construction - tt.construction
+								),
 								payback,
 							})
 						: payback,
@@ -134,7 +139,11 @@
 			class="px-3 py-3 min-w-0"
 			:data-testid="`chain-result-${s.key}`">
 			<div class="text-xs uppercase tracking-wide text-muted">
-				{{ "label" in s ? s.label : $t(`production_chains.results.${s.key}`) }}
+				{{
+					"label" in s
+						? s.label
+						: $t(`production_chains.results.${s.key}`)
+				}}
 			</div>
 			<div class="text-xl font-bold tabular-nums" :class="s.tone">
 				{{ s.value }}

@@ -54,8 +54,12 @@ const labels = (wrapper: Awaited<ReturnType<typeof mountScatter>>) =>
 
 describe("PScatter", () => {
 	beforeEach(() => {
-		vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(600);
-		vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(400);
+		vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(
+			600
+		);
+		vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(
+			400
+		);
 	});
 	afterEach(() => {
 		vi.restoreAllMocks();
@@ -86,7 +90,10 @@ describe("PScatter", () => {
 	});
 
 	it("starts the frontier at the top when lower Y is better", async () => {
-		const wrapper = await mountScatter({ yBetter: "low", frontier: ["N", "H"] });
+		const wrapper = await mountScatter({
+			yBetter: "low",
+			frontier: ["N", "H"],
+		});
 		const paths = wrapper.findAll(".scatter-frontier path");
 		// plot top is 24 px; the shade closes along the top edge
 		expect(paths[1].attributes("d")).toMatch(/^M[\d.]+,24 L/);
@@ -145,14 +152,19 @@ describe("PScatter", () => {
 		// a tap fires mouseenter before the click
 		await dot.trigger("mouseenter");
 		dot.element.dispatchEvent(
-			Object.assign(new MouseEvent("click", { detail: 1, bubbles: true }), {
-				pointerType: "touch",
-			})
+			Object.assign(
+				new MouseEvent("click", { detail: 1, bubbles: true }),
+				{
+					pointerType: "touch",
+				}
+			)
 		);
 		await wrapper.vm.$nextTick();
 		expect(tooltip()?.textContent).toBe("Saladin");
 
-		document.body.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+		document.body.dispatchEvent(
+			new Event("pointerdown", { bubbles: true })
+		);
 		await wrapper.vm.$nextTick();
 		expect(tooltip()).toBeNull();
 	});
@@ -160,7 +172,9 @@ describe("PScatter", () => {
 	it("keeps the dot order when a dot becomes active, so focus stays", async () => {
 		const wrapper = await mountScatter();
 		const order = () =>
-			wrapper.findAll(".scatter-dot").map((d) => d.attributes("aria-label"));
+			wrapper
+				.findAll(".scatter-dot")
+				.map((d) => d.attributes("aria-label"));
 		const before = order();
 
 		await wrapper.find('[aria-label="Saladin"]').trigger("focus");
@@ -175,11 +189,15 @@ describe("PScatter", () => {
 			{ attach: true }
 		);
 		const order = () =>
-			wrapper.findAll(".scatter-dot").map((d) => d.attributes("aria-label"));
+			wrapper
+				.findAll(".scatter-dot")
+				.map((d) => d.attributes("aria-label"));
 		const before = order();
 
 		await setProps({
-			points: POINTS.map((p) => (p.key === "S" ? { ...p, ring: true } : p)),
+			points: POINTS.map((p) =>
+				p.key === "S" ? { ...p, ring: true } : p
+			),
 		});
 		expect(order()).toEqual(before);
 		expect(wrapper.findAll(".scatter-ring")).toHaveLength(2);

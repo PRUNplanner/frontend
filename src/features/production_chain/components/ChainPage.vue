@@ -14,7 +14,8 @@
 	import ChainFootprint from "@/features/production_chain/components/ChainFootprint.vue";
 	// opens on demand; it brings the jump map along
 	const ChainPlanetPicker = defineAsyncComponent(
-		() => import("@/features/production_chain/components/ChainPlanetPicker.vue")
+		() =>
+			import("@/features/production_chain/components/ChainPlanetPicker.vue")
 	);
 	const ChainBases = defineAsyncComponent(
 		() => import("@/features/production_chain/components/ChainBases.vue")
@@ -24,7 +25,8 @@
 			import("@/features/production_chain/components/ChainBasePlanetPicker.vue")
 	);
 	const ChainCreatePlans = defineAsyncComponent(
-		() => import("@/features/production_chain/components/ChainCreatePlans.vue")
+		() =>
+			import("@/features/production_chain/components/ChainCreatePlans.vue")
 	);
 
 	// API
@@ -99,8 +101,8 @@
 	const own = computed<IChainOwn>(() => ({
 		name:
 			// the empire whose surplus is shown, not the one loading
-			empires.value.find((e) => e.uuid === ownLoaded.value)?.empire_name ??
-			null,
+			empires.value.find((e) => e.uuid === ownLoaded.value)
+				?.empire_name ?? null,
 		surplus: surplus.value,
 		suppliers: suppliers.value,
 		overrides: haveOverride.value,
@@ -176,7 +178,9 @@
 				? t(`game.expertise.${e}`)
 				: t("production_chains.bases.unnamed", { id: "A" })
 		);
-		toast(t("production_chains.bases.split_done", input.value.bases.length));
+		toast(
+			t("production_chains.bases.split_done", input.value.bases.length)
+		);
 	}
 
 	// planet picker per base
@@ -222,16 +226,22 @@
 
 	const unitCost = (site: IChainExtractionSite) =>
 		extractionUnitCost(ctx.value, site, input.value.efficiency);
-	const buyPrice = (ticker: string) => ctx.value.prices.getPrice(ticker, "BUY");
+	const buyPrice = (ticker: string) =>
+		ctx.value.prices.getPrice(ticker, "BUY");
 </script>
 
 <template>
 	<!-- @container: the aside goes beside the panel only when the page leaves the Steps table room -->
 	<div class="@container min-h-screen flex flex-col gap-6 px-6 py-3">
-		<header class="flex flex-wrap justify-between gap-3 border-b border-line pb-3">
+		<header
+			class="flex flex-wrap justify-between gap-3 border-b border-line pb-3">
 			<div>
-				<h1 class="text-2xl font-bold">{{ $t("production_chains.title") }}</h1>
-				<p class="text-muted">{{ $t("production_chains.description") }}</p>
+				<h1 class="text-2xl font-bold">
+					{{ $t("production_chains.title") }}
+				</h1>
+				<p class="text-muted">
+					{{ $t("production_chains.description") }}
+				</p>
 			</div>
 			<div class="flex flex-wrap items-center gap-3">
 				<ChainModeSwitch />
@@ -242,7 +252,9 @@
 					{{ $t("production_chains.header.copy_link") }}
 				</PButton>
 				<PButton
-					:type="targets.length && createReady ? 'primary' : 'secondary'"
+					:type="
+						targets.length && createReady ? 'primary' : 'secondary'
+					"
 					:disabled="!targets.length"
 					data-testid="chain-create-plans"
 					@click="showCreate = true">
@@ -271,8 +283,12 @@
 			v-if="!targets.length"
 			class="flex-1 flex flex-col items-center justify-center text-center gap-2 py-24"
 			data-testid="chain-empty">
-			<h2 class="text-xl font-bold">{{ $t("production_chains.empty.title") }}</h2>
-			<p class="text-muted max-w-md">{{ $t("production_chains.empty.text") }}</p>
+			<h2 class="text-xl font-bold">
+				{{ $t("production_chains.empty.title") }}
+			</h2>
+			<p class="text-muted max-w-md">
+				{{ $t("production_chains.empty.text") }}
+			</p>
 		</div>
 
 		<template v-else>
@@ -284,13 +300,19 @@
 				role="status">
 				<template v-if="indexError">
 					{{ $t("production_chains.panel.planets_error") }}
-					<button type="button" class="text-link hover:underline cursor-pointer" @click="loadIndex">
+					<button
+						type="button"
+						class="text-link hover:underline cursor-pointer"
+						@click="loadIndex">
 						{{ $t("production_chains.panel.retry") }}
 					</button>
 				</template>
-				<template v-else>{{ $t("production_chains.panel.loading_planets") }}</template>
+				<template v-else>{{
+					$t("production_chains.panel.loading_planets")
+				}}</template>
 			</div>
-			<div class="grid grid-cols-1 @min-[1600px]:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">
+			<div
+				class="grid grid-cols-1 @min-[1600px]:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">
 				<ChainPanel
 					:result="result"
 					:byproduct-mode="input.byproducts"
@@ -320,15 +342,20 @@
 							@rename="(id, name) => updateBase(id, { name })"
 							@cogc="(id, cogc) => updateBase(id, { cogc })"
 							@lux="(id, lux) => updateBase(id, { lux })"
-							@experts="(id, experts) => updateBase(id, { experts })"
+							@experts="
+								(id, experts) => updateBase(id, { experts })
+							"
 							@planet="openBasePlanets"
 							@create="showCreate = true" />
 					</template>
 				</ChainPanel>
 				<!-- @container: its columns follow its own width, beside the panel or below it -->
 				<aside class="@container min-w-0">
-					<div class="grid gap-3 items-start grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3">
-						<ChainBuyList :result="result" @xit="track('xit_copy')" />
+					<div
+						class="grid gap-3 items-start grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3">
+						<ChainBuyList
+							:result="result"
+							@xit="track('xit_copy')" />
 						<ChainFootprint
 							:totals="result.totals"
 							:building-types="result.buildingTypes"

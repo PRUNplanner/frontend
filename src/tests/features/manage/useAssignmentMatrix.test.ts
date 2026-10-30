@@ -110,7 +110,12 @@ describe("useAssignmentMatrix", () => {
 			new Set(["E1", "E2"])
 		);
 		expect(next).toEqual(
-			new Set([k("P2", "E1"), k("P3", "E1"), k("P3", "E2"), k("P4", "E2")])
+			new Set([
+				k("P2", "E1"),
+				k("P3", "E1"),
+				k("P3", "E2"),
+				k("P4", "E2"),
+			])
 		);
 	});
 

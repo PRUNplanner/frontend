@@ -174,7 +174,12 @@ describe("baseROIMetrics", () => {
 	it("ramp stages last EXPERT_STAGE_DAYS ÷ production buildings", () => {
 		const { timeline } = rampBreakEven(1e12, 1000, 0, 10);
 		expect(timeline.map((s) => s.days)).toEqual([
-			1, 1.25, 5.757, 27.65, 91.51, Infinity,
+			1,
+			1.25,
+			5.757,
+			27.65,
+			91.51,
+			Infinity,
 		]);
 	});
 
@@ -197,7 +202,8 @@ describe("baseROIMetrics", () => {
 			calculateMetrics(row, { ...s, visitDays: 2 }, 0).fitsLogistics
 		).toBe(true);
 		expect(
-			calculateMetrics(row, { ...s, logistics: "manual" }, 0).fitsLogistics
+			calculateMetrics(row, { ...s, logistics: "manual" }, 0)
+				.fitsLogistics
 		).toBe(false);
 		expect(
 			calculateMetrics(row, { ...s, logistics: "none" }, 0).fitsLogistics
@@ -235,7 +241,11 @@ describe("baseROIMetrics", () => {
 				volatilityScenarios(
 					[
 						material({ ticker: "A" }),
-						material({ ticker: "B", source: source("ask"), bid: 10 }),
+						material({
+							ticker: "B",
+							source: source("ask"),
+							bid: 10,
+						}),
 						material({
 							ticker: "C",
 							source: { ...source(null), exchange: null },
@@ -258,7 +268,13 @@ describe("baseROIMetrics", () => {
 						bid: 4060,
 						ask: 7500,
 					}),
-					material({ ticker: "CU", amount: -5, price: 1000, bid: 990, ask: 1400 }),
+					material({
+						ticker: "CU",
+						amount: -5,
+						price: 1000,
+						bid: 990,
+						ask: 1400,
+					}),
 				],
 				50_000
 			);
@@ -327,7 +343,11 @@ describe("baseROIMetrics", () => {
 			}) as IBaseROIRow;
 		const rows = [
 			row("chp", {}),
-			row("ext", { kind: "resource", building: "EXT", expertise: "RESOURCE_EXTRACTION" }),
+			row("ext", {
+				kind: "resource",
+				building: "EXT",
+				expertise: "RESOURCE_EXTRACTION",
+			}),
 		];
 		const shown = (f: Partial<typeof s>) =>
 			filterRows(rows, [], { ...s, ...f }).rows.map((r) => r.key);
@@ -346,10 +366,15 @@ describe("baseROIMetrics", () => {
 	it("edge cases: manual limit met, no outputs, zero output, free base, unknown HQ level", () => {
 		const s = defaultBaseROISettings();
 		expect(
-			calculateMetrics(rowInput({ weightIn: 10, volumeIn: 10 }), { ...s, logistics: "manual" }, 0)
-				.fitsLogistics
+			calculateMetrics(
+				rowInput({ weightIn: 10, volumeIn: 10 }),
+				{ ...s, logistics: "manual" },
+				0
+			).fitsLogistics
 		).toBe(true);
-		expect(calculateMetrics(rowInput({ outputs: [] }), s, 0).marketCapacity).toBe(0);
+		expect(
+			calculateMetrics(rowInput({ outputs: [] }), s, 0).marketCapacity
+		).toBe(0);
 		expect(
 			calculateMetrics(
 				rowInput({ outputs: [{ ticker: "A", amount: 0, traded: 5 }] }),
@@ -359,7 +384,13 @@ describe("baseROIMetrics", () => {
 		).toBe(Infinity);
 		expect(
 			calculateMetrics(
-				rowInput({ construction: 0, revenue: 0, inputs: 0, consumables: 0, degradation: 0 }),
+				rowInput({
+					construction: 0,
+					revenue: 0,
+					inputs: 0,
+					consumables: 0,
+					degradation: 0,
+				}),
 				{ ...s, bufferDays: 0 },
 				0
 			).weeklyReturn

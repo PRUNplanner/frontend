@@ -56,7 +56,9 @@ async function load() {
 		useDB: (await import("@/database/composables/useDB")).useDB,
 		stores: await import("@/database/stores"),
 		util: await import("@/lib/query_cache/queries/queries.util"),
-		queryStore: (await import("@/lib/query_cache/queryStore")).useQueryStore(),
+		queryStore: (
+			await import("@/lib/query_cache/queryStore")
+		).useQueryStore(),
 	};
 }
 
@@ -330,7 +332,10 @@ describe("planet search index query", () => {
 		vi.mocked(m.api.callDataPlanetSearchIndex).mockResolvedValue(index);
 
 		await m.queryStore.execute("GetPlanetSearchIndex", undefined);
-		const hit = await m.queryStore.execute("GetPlanetSearchIndex", undefined);
+		const hit = await m.queryStore.execute(
+			"GetPlanetSearchIndex",
+			undefined
+		);
 
 		expect(hit).toBe(index);
 		expect(m.api.callDataPlanetSearchIndex).toHaveBeenCalledOnce();

@@ -23,7 +23,10 @@ const loaded: CXData = {
 		{ type: "BOTH", ticker: "H2O", value: 9 },
 	],
 	ticker_planets: [
-		{ planet: "B", preferences: [{ type: "BOTH", ticker: "DW", value: 0 }] },
+		{
+			planet: "B",
+			preferences: [{ type: "BOTH", ticker: "DW", value: 0 }],
+		},
 	],
 };
 

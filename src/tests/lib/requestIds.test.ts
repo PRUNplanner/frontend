@@ -7,7 +7,8 @@ const { getSessionId } = vi.hoisted(() => ({
 }));
 vi.mock("@/lib/analytics/usePostHog", () => ({ getSessionId }));
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const UUID =
+	/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 // a fresh copy is a new tab
 async function tab() {

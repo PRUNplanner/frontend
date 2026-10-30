@@ -273,7 +273,8 @@ export function useFIORepair(
 					// FIO's name equals the id for an unnamed planet
 					name: planetDisplayName(
 						planet,
-						site.PlanetName || planets.value.get(planet)?.planet_name
+						site.PlanetName ||
+							planets.value.get(planet)?.planet_name
 					),
 					siteId: site.SiteId,
 					match,

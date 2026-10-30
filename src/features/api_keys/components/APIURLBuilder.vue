@@ -135,8 +135,8 @@
 	const outputs = computed<{ kind: APISnippetKind; text: string }[]>(() => {
 		const s = snippets.value;
 		if (!s || emptyList.value) return [];
-		return (["sheets", "url", "curl", "python"] as const).flatMap(
-			(kind) => (s[kind] === null ? [] : [{ kind, text: s[kind] }])
+		return (["sheets", "url", "curl", "python"] as const).flatMap((kind) =>
+			s[kind] === null ? [] : [{ kind, text: s[kind] }]
 		);
 	});
 
@@ -188,7 +188,9 @@
 					</PButton>
 				</PButtonGroup>
 			</PFormItem>
-			<template v-for="list in ['empire', 'plan', 'cx'] as const" :key="list">
+			<template
+				v-for="list in ['empire', 'plan', 'cx'] as const"
+				:key="list">
 				<PFormItem
 					v-if="needs(list) && lists[list]?.length"
 					:label="t(`api_keys.builder.params.${list}`)">
@@ -251,9 +253,7 @@
 			<PNotice v-if="endpoint.needsKey && apiKey" type="warning">
 				{{ t("api_keys.builder.key_warning") }}
 			</PNotice>
-			<p
-				v-else-if="endpoint.needsKey"
-				class="text-xs text-muted">
+			<p v-else-if="endpoint.needsKey" class="text-xs text-muted">
 				{{
 					t("api_keys.builder.placeholder_note", {
 						placeholder: API_KEY_PLACEHOLDER,
@@ -288,8 +288,7 @@
 			</div>
 			<pre
 				class="ph-no-capture font-mono text-xs text-white/80 bg-gray-dark p-2 rounded border border-white/10 whitespace-pre-wrap break-all"
-				>{{ output.text }}</pre
-			>
+				>{{ output.text }}</pre>
 		</div>
 	</div>
 </template>

@@ -81,11 +81,11 @@ describe("resourceROIChart.util", () => {
 		});
 
 		const ci1 = roiChartData(ALO, "CI1");
-		expect(ci1.points.map((p) => p.exchange)).toEqual(
-			Array(8).fill("CI1")
-		);
+		expect(ci1.points.map((p) => p.exchange)).toEqual(Array(8).fill("CI1"));
 		expect(ci1.points[2].y).toBe(20);
-		expect(roiChartData([row("x", 5, 1, [3, -1, 2, 2])], "CI1").noRoute).toBe(1);
+		expect(
+			roiChartData([row("x", 5, 1, [3, -1, 2, 2])], "CI1").noRoute
+		).toBe(1);
 	});
 
 	it("zooms to paybacks within twice the fastest", () => {
@@ -102,7 +102,10 @@ describe("resourceROIChart.util", () => {
 		expect(data.maxDays).toBeCloseTo(23.76);
 		expect(data.slow).toBe(2);
 		expect(data.points.map((p) => p.row.planetName)).toContain("Near");
-		expect(roiChartData([], "nearest")).toMatchObject({ slow: 0, maxDays: 0 });
+		expect(roiChartData([], "nearest")).toMatchObject({
+			slow: 0,
+			maxDays: 0,
+		});
 	});
 
 	it("finds the best trade-off: Nascent and Deimos for ALO", () => {
@@ -115,8 +118,10 @@ describe("resourceROIChart.util", () => {
 		// a slower but closer planet joins the frontier
 		expect(
 			roiFrontier(
-				roiChartData([...ALO, row("Close", 20, 1, [0, 5, 5, 5])], "nearest")
-					.points
+				roiChartData(
+					[...ALO, row("Close", 20, 1, [0, 5, 5, 5])],
+					"nearest"
+				).points
 			)
 		).toEqual(["Nascent#EXT", "Deimos#EXT", "Close#EXT"]);
 	});
@@ -128,7 +133,11 @@ describe("resourceROIChart.util", () => {
 			"Nascent",
 			"Deimos",
 		]);
-		expect(insight).toMatchObject({ minJumps: 1, maxJumps: 2, exchange: "AI1" });
+		expect(insight).toMatchObject({
+			minJumps: 1,
+			maxJumps: 2,
+			exchange: "AI1",
+		});
 		expect(insight.topProfit?.row.planetName).toBe("BI-500b");
 		expect(insight.topProfit?.y).toBe(19);
 

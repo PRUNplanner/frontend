@@ -43,7 +43,10 @@ const cx: CXData = {
 		{ type: "SELL", ticker: "FE", value: 10 },
 	],
 	ticker_planets: [
-		{ planet: "P1", preferences: [{ type: "SELL", ticker: "DW", value: 0 }] },
+		{
+			planet: "P1",
+			preferences: [{ type: "SELL", ticker: "DW", value: 0 }],
+		},
 	],
 };
 

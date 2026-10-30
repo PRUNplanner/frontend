@@ -249,10 +249,8 @@ describe("planning engine", () => {
 		it("charges no technician consumables without technician housing", () => {
 			const plan = orcOnSettlerHabs();
 			const run = (c: IPlanContext) =>
-				calculatePlan(
-					{ plan, empire: undefined, cxUuid: undefined },
-					c
-				).result.production.buildings[0];
+				calculatePlan({ plan, empire: undefined, cxUuid: undefined }, c)
+					.result.production.buildings[0];
 
 			const orc = run(ctx);
 			expect(

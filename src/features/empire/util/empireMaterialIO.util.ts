@@ -106,10 +106,9 @@ export function netPerPlanet(row: IEmpireMaterialIO): IEmpireMaterialIONet {
 		round2(list.reduce((s, e) => s + e.raw, 0));
 
 	return {
-		surplus: [
-			...surplus.sort((a, b) => b.raw - a.raw),
-			...balanced,
-		].map((e) => e.entry),
+		surplus: [...surplus.sort((a, b) => b.raw - a.raw), ...balanced].map(
+			(e) => e.entry
+		),
 		needs: needs.sort((a, b) => a.raw - b.raw).map((e) => e.entry),
 		// balanced planets' leftovers count to surplus, so the totals add up to the row delta
 		surplusTotal: sum([...surplus, ...balanced]),
@@ -130,5 +129,8 @@ export function shortPlanetName(
 	planetNames: Map<string, string>,
 	planetId: string
 ): string {
-	return (planetNames.get(planetId) ?? planetId).replace(` (${planetId})`, "");
+	return (planetNames.get(planetId) ?? planetId).replace(
+		` (${planetId})`,
+		""
+	);
 }

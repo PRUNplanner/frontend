@@ -81,11 +81,7 @@ describe("User Store", () => {
 	it("Logout: clears the query cache", async () => {
 		const { useQueryStore } = await import("@/lib/query_cache/queryStore");
 		const queryStore = useQueryStore();
-		queryStore.addCacheState(
-			"GetMarketSummary",
-			undefined,
-			{} as never
-		);
+		queryStore.addCacheState("GetMarketSummary", undefined, {} as never);
 		expect(Object.keys(queryStore.cacheState)).toHaveLength(1);
 
 		useUserStore().logout();

@@ -49,17 +49,32 @@ describe("Util: text", () => {
 				Number.MAX_SAFE_INTEGER,
 				-Number.MAX_SAFE_INTEGER,
 				...[
-					0.5, 1.5, 2.5, 1.005, 2.675, 999.995, 123456789.125, 1e-7,
-					1e21, 0.004, 0.005, 1.45, 1.55, 0.1 + 0.2,
+					0.5,
+					1.5,
+					2.5,
+					1.005,
+					2.675,
+					999.995,
+					123456789.125,
+					1e-7,
+					1e21,
+					0.004,
+					0.005,
+					1.45,
+					1.55,
+					0.1 + 0.2,
 				].flatMap((v) => [v, -v]),
 			];
 			// seeded, so a mismatch reproduces
 			let seed = 7;
-			const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+			const random = () =>
+				(seed = (seed * 16807) % 2147483647) / 2147483647;
 			for (let i = 0; i < 4000; i++) {
 				const magnitude = [1, 100, 1e4, 1e7][i % 4];
 				values.push((random() - 0.5) * magnitude);
-				values.push(Math.round((random() - 0.5) * magnitude * 1000) / 1000);
+				values.push(
+					Math.round((random() - 0.5) * magnitude * 1000) / 1000
+				);
 			}
 
 			const mismatches: string[] = [];
@@ -73,7 +88,12 @@ describe("Util: text", () => {
 								optionalMantissa: optional,
 								forceSign: sign,
 							});
-							const actual = formatNumber(v, decimals, optional, sign);
+							const actual = formatNumber(
+								v,
+								decimals,
+								optional,
+								sign
+							);
 							if (actual !== expected)
 								mismatches.push(
 									`${v} ${decimals} ${optional} ${sign}: ${actual} != ${expected}`

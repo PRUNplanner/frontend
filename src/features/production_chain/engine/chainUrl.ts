@@ -106,7 +106,12 @@ function decodeExperts(v: string | undefined): ChainExperts | undefined {
 function encodeBases(bases: IChainBase[]): string {
 	return bases
 		.map((b) => {
-			const parts = [b.id, escape(b.name), escape(b.planetId ?? ""), b.cogc];
+			const parts = [
+				b.id,
+				escape(b.name),
+				escape(b.planetId ?? ""),
+				b.cogc,
+			];
 			const lux = b.lux && b.lux !== "both" ? b.lux : "";
 			const experts = encodeExperts(b.experts);
 			if (lux || experts) parts.push(lux, experts);
@@ -170,7 +175,10 @@ export function encodeChain(state: IChainState): Record<string, string> {
 	// leaves a sliver to make
 	const have = Object.fromEntries(
 		Object.entries(input.have ?? {})
-			.map(([t, v]) => [t, v === "all" ? v : Math.ceil(v * 100 - 1e-6) / 100])
+			.map(([t, v]) => [
+				t,
+				v === "all" ? v : Math.ceil(v * 100 - 1e-6) / 100,
+			])
 			.filter(([, v]) => v !== 0)
 	);
 	if (Object.keys(have).length) query.have = join(have);

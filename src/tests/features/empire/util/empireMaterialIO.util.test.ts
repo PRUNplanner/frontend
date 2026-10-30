@@ -46,11 +46,19 @@ describe("empireMaterialIO.util", () => {
 	describe("summarizeSide", () => {
 		it("sorts by amount, sets top, more and shares", () => {
 			const side = summarizeSide(
-				[plan("A", "a", 10, 0), plan("B", "b", 30, 0), plan("C", "c", 0, 0)],
+				[
+					plan("A", "a", 10, 0),
+					plan("B", "b", 30, 0),
+					plan("C", "c", 0, 0),
+				],
 				"output",
 				40
 			);
-			expect(side.entries.map((e) => e.planetId)).toEqual(["B", "A", "C"]);
+			expect(side.entries.map((e) => e.planetId)).toEqual([
+				"B",
+				"A",
+				"C",
+			]);
 			expect(side.top?.planetId).toBe("B");
 			expect(side.more).toBe(2);
 			expect(side.total).toBe(40);
@@ -61,10 +69,12 @@ describe("empireMaterialIO.util", () => {
 		it("scales the smaller side against the larger one", () => {
 			const r = row([plan("A", "a", 40, 0), plan("B", "b", 0, 10)]);
 			const scale = Math.max(r.output, r.input);
-			expect(summarizeSide(r.outputPlanets, "output", scale).fillPct).toBe(
-				100
+			expect(
+				summarizeSide(r.outputPlanets, "output", scale).fillPct
+			).toBe(100);
+			expect(summarizeSide(r.inputPlanets, "input", scale).fillPct).toBe(
+				25
 			);
-			expect(summarizeSide(r.inputPlanets, "input", scale).fillPct).toBe(25);
 		});
 
 		it("handles an empty side", () => {

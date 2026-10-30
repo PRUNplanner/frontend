@@ -76,14 +76,20 @@
 
 <template>
 	<div>
-		<div v-if="!data && !failed" class="h-75 flex items-center justify-center">
+		<div
+			v-if="!data && !failed"
+			class="h-75 flex items-center justify-center">
 			<PSpin size="lg" />
 		</div>
 		<div
 			v-else-if="!lines || !hasValues"
 			class="h-75 flex items-center justify-center text-muted">
 			{{
-				t(failed ? "material_tile.chart.error" : "material_tile.chart.empty")
+				t(
+					failed
+						? "material_tile.chart.error"
+						: "material_tile.chart.empty"
+				)
 			}}
 		</div>
 		<div v-else class="h-75">
@@ -103,7 +109,12 @@
 				{{ t("material_tile.chart.cheapest") }}
 				<span class="font-bold">
 					{{ cheapest.code }}
-					{{ formatNumber(cheapest.value, cheapest.value >= 100 ? 0 : 2) }}
+					{{
+						formatNumber(
+							cheapest.value,
+							cheapest.value >= 100 ? 0 : 2
+						)
+					}}
 				</span>
 			</div>
 			<router-link

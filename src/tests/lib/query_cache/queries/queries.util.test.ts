@@ -119,7 +119,9 @@ describe("persistGameData / readGameData", () => {
 			"gamedata_materials",
 			"ticker"
 		);
-		vi.spyOn(console, "warn").mockImplementation(() => {}).mockClear();
+		vi.spyOn(console, "warn")
+			.mockImplementation(() => {})
+			.mockClear();
 	});
 
 	it("replaces the rows and writes the meta row with them", async () => {
@@ -138,9 +140,15 @@ describe("persistGameData / readGameData", () => {
 		await persistGameData(store, [material("A")], Date.now());
 
 		// no key: this put throws after the meta delete and the first rows
-		await persistGameData(store, [material("B"), {} as Material], Date.now());
+		await persistGameData(
+			store,
+			[material("B"), {} as Material],
+			Date.now()
+		);
 
-		expect(await gamedataMetaStore.get("gamedata_materials")).toBeUndefined();
+		expect(
+			await gamedataMetaStore.get("gamedata_materials")
+		).toBeUndefined();
 		expect((await readGameData(store, 60_000)).data).toBeNull();
 		expect(console.warn).toHaveBeenCalledOnce();
 	});

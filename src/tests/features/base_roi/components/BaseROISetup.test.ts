@@ -11,7 +11,11 @@ import PSelect from "@/ui/components/PSelect.vue";
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
 
 vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () => ({
-	default: { name: "CXPreferenceSelector", props: ["cxUuid"], render: () => null },
+	default: {
+		name: "CXPreferenceSelector",
+		props: ["cxUuid"],
+		render: () => null,
+	},
 }));
 
 async function mountSetup(settings = defaultBaseROISettings()) {
@@ -65,7 +69,10 @@ describe("BaseROISetup (criterion 13)", () => {
 		await flushPromises();
 		button("base_roi.setup.start").click();
 		await flushPromises();
-		expect(updates.at(-1)).toMatchObject({ ship: "SCB", logistics: "ship" });
+		expect(updates.at(-1)).toMatchObject({
+			ship: "SCB",
+			logistics: "ship",
+		});
 	});
 
 	it("Veteran: no limit preselected, any market capacity, or a chosen ship", async () => {
@@ -86,7 +93,10 @@ describe("BaseROISetup (criterion 13)", () => {
 		await flushPromises();
 		button("base_roi.setup.start").click();
 		await flushPromises();
-		expect(updates.at(-1)).toMatchObject({ logistics: "ship", ship: "HCB" });
+		expect(updates.at(-1)).toMatchObject({
+			logistics: "ship",
+			ship: "HCB",
+		});
 	});
 
 	it("days between visits and the starting columns are written", async () => {
@@ -107,7 +117,10 @@ describe("BaseROISetup (criterion 13)", () => {
 	});
 
 	it("Skip keeps the settings and stores them", async () => {
-		const settings = { ...defaultBaseROISettings(), bufferDays: 3 as const };
+		const settings = {
+			...defaultBaseROISettings(),
+			bufferDays: 3 as const,
+		};
 		const { updates, button } = await mountSetup(settings);
 		button("base_roi.setup.skip").click();
 		await flushPromises();

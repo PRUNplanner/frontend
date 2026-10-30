@@ -87,7 +87,11 @@ async function mountCart(
 			name: "CX",
 			cx_data: {
 				ticker_empire: Object.entries(PRICES).map(
-					([ticker, value]) => ({ ticker, type: "BUY" as const, value })
+					([ticker, value]) => ({
+						ticker,
+						type: "BUY" as const,
+						value,
+					})
 				),
 			},
 		}),
@@ -221,10 +225,7 @@ async function setOverride(wrapper: VueWrapper, ticker: string, value: number) {
 }
 
 const habitationWarning = (wrapper: VueWrapper) =>
-	tables(wrapper)[0]
-		.find("thead")
-		.findComponent(WarningAmberRound)
-		.exists();
+	tables(wrapper)[0].find("thead").findComponent(WarningAmberRound).exists();
 
 const unplannedWarning = (wrapper: VueWrapper) =>
 	wrapper.find("h2").findComponent(WarningAmberRound).exists();

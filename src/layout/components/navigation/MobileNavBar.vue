@@ -200,7 +200,9 @@
 					to="/empire"
 					class="flex-1 min-w-0 text-ink-strong"
 					@click="go('empire', 'empire')">
-					<span class="block truncate text-base font-medium" :title="currentEmpire.empire_name">
+					<span
+						class="block truncate text-base font-medium"
+						:title="currentEmpire.empire_name">
 						{{ currentEmpire.empire_name }}
 					</span>
 					<span class="block text-xs text-muted">

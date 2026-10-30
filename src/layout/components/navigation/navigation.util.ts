@@ -77,7 +77,11 @@ export function planEmpireUuid(
 	empires: PlanEmpireElement[],
 	stored: string | undefined
 ): string | undefined {
-	const crumb = breadcrumbEmpire(planUuid, empires, pickEmpire(empires, stored));
+	const crumb = breadcrumbEmpire(
+		planUuid,
+		empires,
+		pickEmpire(empires, stored)
+	);
 	return (planEmpires.find((e) => e.uuid === crumb?.uuid) ?? planEmpires[0])
 		?.uuid;
 }

@@ -69,7 +69,9 @@ export function haveSuppliers(
 		const used = result.rows[t].have;
 		if (used <= EPS) continue;
 		if (!fromEmpire(t)) {
-			out[t] = [{ key: OWN_SUPPLIER, plan: null, perDay: used, surplus: null }];
+			out[t] = [
+				{ key: OWN_SUPPLIER, plan: null, perDay: used, surplus: null },
+			];
 			continue;
 		}
 		let left = used;

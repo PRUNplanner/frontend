@@ -110,7 +110,9 @@ describe("MaterialMarketCard", () => {
 		const wrapper = await mountCard();
 
 		expect(wrapper.find("[data-plan-line]").exists()).toBe(false);
-		expect(headers(wrapper)).not.toContain("material_tile.card.columns.plan");
+		expect(headers(wrapper)).not.toContain(
+			"material_tile.card.columns.plan"
+		);
 		expect(wrapper.find("[data-your-cx]").exists()).toBe(false);
 		// no data date in the card
 		expect(wrapper.text()).not.toContain("2026");
@@ -129,9 +131,13 @@ describe("MaterialMarketCard", () => {
 		);
 		expect(headers(wrapper)).toContain("material_tile.card.columns.plan");
 		expect(
-			wrapper.findAll("[data-your-cx]").map((r) => r.attributes("data-cx"))
+			wrapper
+				.findAll("[data-your-cx]")
+				.map((r) => r.attributes("data-cx"))
 		).toEqual(["IC1"]);
-		expect(row(wrapper, "IC1").text()).toContain("material_tile.card.your_cx");
+		expect(row(wrapper, "IC1").text()).toContain(
+			"material_tile.card.your_cx"
+		);
 	});
 
 	it("shows a flagged check with its flag's words and level", async () => {
@@ -160,7 +166,9 @@ describe("MaterialMarketCard", () => {
 			"material_tile.card.plan.check_universe"
 		);
 		expect(
-			wrapper.findAll("[data-your-cx]").map((r) => r.attributes("data-cx"))
+			wrapper
+				.findAll("[data-your-cx]")
+				.map((r) => r.attributes("data-cx"))
 		).toEqual(["UNIVERSE"]);
 	});
 
@@ -189,9 +197,21 @@ describe("MaterialMarketCard", () => {
 	it("marks a rarely traded market, missing bids and inactive exchanges", async () => {
 		const wrapper = await mountCard({
 			overview: makeOverview({
-				sum_traded_30d: { AI1: 1, CI1: 2, IC1: 5, NC1: 3, UNIVERSE: 11 },
+				sum_traded_30d: {
+					AI1: 1,
+					CI1: 2,
+					IC1: 5,
+					NC1: 3,
+					UNIVERSE: 11,
+				},
 				bid: { AI1: 0, CI1: 500, IC1: 750, NC1: 400, UNIVERSE: 0 },
-				ask: { AI1: 1e6, CI1: 949e3, IC1: 799e3, NC1: 799e3, UNIVERSE: 0 },
+				ask: {
+					AI1: 1e6,
+					CI1: 949e3,
+					IC1: 799e3,
+					NC1: 799e3,
+					UNIVERSE: 0,
+				},
 				exchange_status: {
 					AI1: "INACTIVE",
 					CI1: "INACTIVE",
@@ -202,7 +222,9 @@ describe("MaterialMarketCard", () => {
 			}),
 		});
 
-		expect(wrapper.find("[data-rare]").text()).toBe("material_tile.card.rare");
+		expect(wrapper.find("[data-rare]").text()).toBe(
+			"material_tile.card.rare"
+		);
 		expect(row(wrapper, "AI1").find("[data-spread]").text()).toBe(
 			"material_tile.card.no_bids"
 		);

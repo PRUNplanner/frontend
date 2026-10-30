@@ -233,10 +233,7 @@ describe("RuleGroup", () => {
 		const uids = () => rows().map((r) => r.vm.$.uid);
 		const [price, , supply] = uids();
 
-		await rows()[1]
-			.findAllComponents(PButton)
-			.at(-1)!
-			.trigger("click");
+		await rows()[1].findAllComponents(PButton).at(-1)!.trigger("click");
 		await setProps({ group: lastGroup() });
 
 		expect(rows().map((r) => r.props("modelValue"))).toEqual([
@@ -255,7 +252,8 @@ describe("RuleGroup", () => {
 				render: () =>
 					h(RuleGroup, {
 						group: draft.value,
-						"onUpdate:group": (g: RuleGroupType) => (draft.value = g),
+						"onUpdate:group": (g: RuleGroupType) =>
+							(draft.value = g),
 					}),
 			})
 		);

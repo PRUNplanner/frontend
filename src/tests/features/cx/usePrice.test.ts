@@ -42,20 +42,14 @@ describe("usePrice", async () => {
 		});
 
 		it("with cx uuid and planet material and ticker preference", async () => {
-			const { getPrice } = usePrice(
-				ref(fakeCXUuid),
-				ref("OT-580c")
-			);
+			const { getPrice } = usePrice(ref(fakeCXUuid), ref("OT-580c"));
 
 			expect(await getPrice("LSE", "BUY")).toBe(10872.315150756913);
 			expect(await getPrice("FEO", "BUY")).toBe(146.257042818308);
 		});
 
 		it("with cx uuid and planet exchange pref", async () => {
-			const { getPrice } = usePrice(
-				ref(fakeCXUuid),
-				ref("UV-796b")
-			);
+			const { getPrice } = usePrice(ref(fakeCXUuid), ref("UV-796b"));
 
 			expect(await getPrice("LSE", "BUY")).toBe(10872.315150756913);
 			expect(await getPrice("FEO", "BUY")).toBe(146.257042818308);

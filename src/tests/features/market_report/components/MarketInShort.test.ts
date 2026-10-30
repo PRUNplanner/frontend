@@ -63,7 +63,9 @@ describe("MarketInShort", () => {
 		const tile = () => wrapper.find("[data-gap-tile]");
 		expect(tile().find("[data-skeleton]").exists()).toBe(true);
 
-		await setProps({ books: [book("AI1", 100, 90), book("NC1", 130, 120)] });
+		await setProps({
+			books: [book("AI1", 100, 90), book("NC1", 130, 120)],
+		});
 		expect(tile().text()).toContain("FE");
 		expect(tile().text()).toContain("buy on AI1, sell on NC1");
 		expect(tile().text()).toContain("ask 100");
@@ -71,11 +73,17 @@ describe("MarketInShort", () => {
 		expect(tile().text()).toContain("+20.0");
 
 		// the table's format: 142.5 stays 142.5
-		await setProps({ books: [book("AI1", 142.5, 90), book("NC1", 200, 170)] });
+		await setProps({
+			books: [book("AI1", 142.5, 90), book("NC1", 200, 170)],
+		});
 		expect(tile().text()).toContain("ask 142.5");
 
-		await setProps({ books: [book("AI1", 100, 90), book("NC1", 130, 101)] });
-		expect(tile().text()).toContain("No open gap of 15 % or more right now");
+		await setProps({
+			books: [book("AI1", 100, 90), book("NC1", 130, 101)],
+		});
+		expect(tile().text()).toContain(
+			"No open gap of 15 % or more right now"
+		);
 
 		await setProps({ books: null, booksFailed: true });
 		expect(tile().text()).toContain("market_report.error");

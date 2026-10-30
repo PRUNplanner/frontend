@@ -233,7 +233,10 @@ describe("PlanSupplyCart", () => {
 		// PE made and used by the plan: input 3, output 8, net +5
 		const PE_SELF: IMaterialIO = { ...PE, input: 3, output: 8 };
 
-		async function mountInitial(planetNaturalId = "XX-000a", withFIO = false) {
+		async function mountInitial(
+			planetNaturalId = "XX-000a",
+			withFIO = false
+		) {
 			const pinia = createPinia();
 			if (withFIO)
 				// @ts-expect-error mock data
@@ -251,20 +254,18 @@ describe("PlanSupplyCart", () => {
 			);
 		}
 
-		const xit = (wrapper: VueWrapper, idx: number) =>
-			wrapper.findAllComponents(XITTransferActionButton)[idx].props(
-				"elements"
-			);
+		const xit = (wrapper: VueWrapper, idx: number) => {
+			const buttons = wrapper.findAllComponents(XITTransferActionButton);
+			return buttons[idx].props("elements");
+		};
 
 		it("ships the gross input, including self-produced materials", async () => {
 			const { wrapper } = await mountInitial();
 
 			// the running cart stays net, without PE
-			expect(xit(wrapper, 0).map((e: { ticker: string }) => e.ticker)).toEqual([
-				"RAT",
-				"DW",
-				"H2O",
-			]);
+			expect(
+				xit(wrapper, 0).map((e: { ticker: string }) => e.ticker)
+			).toEqual(["RAT", "DW", "H2O"]);
 			// 20 days of gross input
 			expect(xit(wrapper, 1)).toEqual([
 				{ ticker: "RAT", value: 2000 },

@@ -215,9 +215,7 @@ describe("CXOverview", () => {
 		expect(dw.sell).toContain(formatNumber(84.25));
 		expect(dw.planets).toBe("A, B, C");
 		expect(fe.sell).toBe("–");
-		expect(rat.buy).toBe(
-			`${formatNumber(75)} exchanges.labels.fixed_all`
-		);
+		expect(rat.buy).toBe(`${formatNumber(75)} exchanges.labels.fixed_all`);
 	});
 
 	it.each([

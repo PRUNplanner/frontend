@@ -39,12 +39,8 @@
 	const refSearchMaterial: Ref<string | undefined> = ref(undefined);
 	const refIsLoading: Ref<boolean> = ref(false);
 
-	const {
-		resultData,
-		calculate,
-		progress,
-		progressSearchingPlanets,
-	} = useResourceROIOverview(refSelectedCXUuid);
+	const { resultData, calculate, progress, progressSearchingPlanets } =
+		useResourceROIOverview(refSelectedCXUuid);
 
 	/*
 	 * Chart drawer: open state kept in this browser
@@ -69,7 +65,8 @@
 			: null;
 		if (!row) return;
 		const drawer = document.querySelector("[data-roi-chart]");
-		const bottom = drawer?.getBoundingClientRect().top ?? window.innerHeight;
+		const bottom =
+			drawer?.getBoundingClientRect().top ?? window.innerHeight;
 		const rect = row.getBoundingClientRect();
 		if (rect.top >= 0 && rect.bottom <= bottom) return;
 		window.scrollBy({ top: rect.top + rect.height / 2 - bottom / 2 });
@@ -104,7 +101,8 @@
 			<div class="min-h-screen flex flex-col">
 				<div
 					class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap gap-x-6 gap-y-2 justify-between">
-					<h1 class="text-2xl font-bold my-auto grow whitespace-nowrap">
+					<h1
+						class="text-2xl font-bold my-auto grow whitespace-nowrap">
 						{{ $t("resource_roi.title") }}
 					</h1>
 					<div

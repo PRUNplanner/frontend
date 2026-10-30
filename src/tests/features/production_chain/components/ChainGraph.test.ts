@@ -21,8 +21,12 @@ describe("ChainGraph", () => {
 		ctx
 	);
 
-	const widths = (wrapper: Awaited<ReturnType<typeof mountComponent>>["wrapper"]) =>
-		wrapper.findAll("path").map((p) => Number(p.attributes("stroke-width")));
+	const widths = (
+		wrapper: Awaited<ReturnType<typeof mountComponent>>["wrapper"]
+	) =>
+		wrapper
+			.findAll("path")
+			.map((p) => Number(p.attributes("stroke-width")));
 
 	it("draws a node per material and an edge per link", async () => {
 		const { wrapper } = await mountComponent(ChainGraph, {
@@ -61,7 +65,10 @@ describe("ChainGraph", () => {
 		expect(component.emitted("update:focus")![0]).toEqual(["RAT"]);
 		expect(component.emitted("focused")![0]).toEqual(["RAT"]);
 		const dimmed = (t: string) =>
-			wrapper.find(`[data-testid='chain-node-${t}']`).classes().includes("opacity-25");
+			wrapper
+				.find(`[data-testid='chain-node-${t}']`)
+				.classes()
+				.includes("opacity-25");
 		expect(dimmed("RAT")).toBe(false);
 		expect(dimmed("DW")).toBe(true);
 		for (const l of result.links.filter((l) => l.consumer === "RAT"))
@@ -102,12 +109,14 @@ describe("ChainGraph fit", () => {
 			const zoom = (400 * 0.75) / layout.height;
 			expect(zoom).toBeLessThan(1);
 			const inner = wrapper.find("[data-testid='chain-graph'] > div");
-			expect(parseFloat(inner.attributes("style")!.match(/height: ([\d.]+)px/)![1])).toBeCloseTo(
-				layout.height * Math.max(zoom, 0.2),
-				3
-			);
+			expect(
+				parseFloat(
+					inner.attributes("style")!.match(/height: ([\d.]+)px/)![1]
+				)
+			).toBeCloseTo(layout.height * Math.max(zoom, 0.2), 3);
 		} finally {
-			delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientWidth;
+			delete (HTMLElement.prototype as unknown as Record<string, unknown>)
+				.clientWidth;
 			window.innerHeight = innerHeight;
 		}
 	});
@@ -130,12 +139,14 @@ describe("ChainGraph fit", () => {
 			});
 			expect(330 / layout.width).toBeLessThan(0.75);
 			const inner = wrapper.find("[data-testid='chain-graph'] > div");
-			expect(parseFloat(inner.attributes("style")!.match(/width: ([\d.]+)px/)![1])).toBeCloseTo(
-				layout.width * 0.75,
-				3
-			);
+			expect(
+				parseFloat(
+					inner.attributes("style")!.match(/width: ([\d.]+)px/)![1]
+				)
+			).toBeCloseTo(layout.width * 0.75, 3);
 		} finally {
-			delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientWidth;
+			delete (HTMLElement.prototype as unknown as Record<string, unknown>)
+				.clientWidth;
 			window.innerHeight = innerHeight;
 		}
 	});
@@ -167,12 +178,18 @@ describe("ChainGraph details", () => {
 		await wrapper.vm.$nextTick();
 		expect(inner()).toBeCloseTo(before, 3);
 
-		const bought = result.order.find((t) => result.rows[t].source === "buy")!;
+		const bought = result.order.find(
+			(t) => result.rows[t].source === "buy"
+		)!;
 		const node = wrapper.find(`[data-testid='chain-node-${bought}']`);
 		expect(node.classes()).toContain("border-dashed");
 		expect(node.text()).toContain("production_chains.graph.buy_on");
 		const cheaper = result.warnings.cheaper[0];
-		expect(wrapper.find(`[data-testid='chain-node-${cheaper}'] .text-warning`).exists()).toBe(true);
+		expect(
+			wrapper
+				.find(`[data-testid='chain-node-${cheaper}'] .text-warning`)
+				.exists()
+		).toBe(true);
 
 		await node.trigger("click");
 		await node.trigger("click");
@@ -208,8 +225,18 @@ describe("ChainGraph details", () => {
 				surplus: new Map(),
 				suppliers: {
 					GRN: [
-						{ key: "a", plan: { name: "Alpha" }, perDay: 1, surplus: 1 },
-						{ key: "b", plan: { name: "Beta" }, perDay: 1, surplus: 1 },
+						{
+							key: "a",
+							plan: { name: "Alpha" },
+							perDay: 1,
+							surplus: 1,
+						},
+						{
+							key: "b",
+							plan: { name: "Beta" },
+							perDay: 1,
+							surplus: 1,
+						},
 					],
 				},
 				overrides: {},
@@ -219,8 +246,12 @@ describe("ChainGraph details", () => {
 		expect(layout.nodes.GRN.stage).toBe(0);
 		expect(layout.nodes.NUT.stage).toBeGreaterThan(0);
 		for (const t of ["GRN", "NUT"])
-			expect(wrapper.find(`[data-testid='chain-have-mark-${t}']`).exists()).toBe(true);
-		expect(wrapper.find("[data-testid='chain-have-mark-RAT']").exists()).toBe(false);
+			expect(
+				wrapper.find(`[data-testid='chain-have-mark-${t}']`).exists()
+			).toBe(true);
+		expect(
+			wrapper.find("[data-testid='chain-have-mark-RAT']").exists()
+		).toBe(false);
 		expect(wrapper.find("[data-testid='chain-node-GRN']").text()).toContain(
 			"production_chains.have.graph_full_more"
 		);
@@ -228,7 +259,9 @@ describe("ChainGraph details", () => {
 		expect(wrapper.find("[data-testid='chain-have-mark-NUT']").text()).toBe(
 			"production_chains.have.graph_mark_part"
 		);
-		expect(wrapper.find("[data-testid='chain-node-NUT']").text()).toContain(" · ");
+		expect(wrapper.find("[data-testid='chain-node-NUT']").text()).toContain(
+			" · "
+		);
 		expect(wrapper.text()).toContain("production_chains.have.stage_raw");
 	});
 });

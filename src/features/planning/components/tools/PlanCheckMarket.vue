@@ -103,9 +103,7 @@
 
 	const exchanges = computed(() => [
 		...new Set(
-			checks.value
-				.map((c) => c.exchange)
-				.filter((e) => e !== "UNIVERSE")
+			checks.value.map((c) => c.exchange).filter((e) => e !== "UNIVERSE")
 		),
 	]);
 	const exchangeLabel = computed(() =>
@@ -129,7 +127,9 @@
 		return {
 			profit: askBid,
 			diff,
-			diffPct: profit.value ? (diff / Math.abs(profit.value)) * 100 : null,
+			diffPct: profit.value
+				? (diff / Math.abs(profit.value)) * 100
+				: null,
 			roi: r.calculation.overview.roi,
 			keptZero: [...r.kept.zero].filter((k) => traded.has(k)),
 			keptFallback: [...r.kept.fallback].filter((k) => traded.has(k)),
@@ -306,7 +306,11 @@
 						<!-- the long title wraps so the Check column keeps its room -->
 						<template #header-share>
 							<span class="whitespace-normal">
-								{{ t("plan.tools.plan_check.market.columns.share") }}
+								{{
+									t(
+										"plan.tools.plan_check.market.columns.share"
+									)
+								}}
 							</span>
 						</template>
 						<template #cell-material="{ row }">
@@ -331,10 +335,13 @@
 							<div
 								class="flex items-center gap-3"
 								:aria-label="
-									t('plan.tools.plan_check.market.share_label', {
-										ticker: row.ticker,
-										share: formatShare(row.sharePct),
-									})
+									t(
+										'plan.tools.plan_check.market.share_label',
+										{
+											ticker: row.ticker,
+											share: formatShare(row.sharePct),
+										}
+									)
 								">
 								<PInlineBar
 									class="flex-1"
@@ -372,19 +379,28 @@
 							<span
 								v-if="row.level && rowFlag(row.flags)"
 								class="inline-flex items-center gap-1.5"
-								:class="LEVEL_TEXT[row.level as MarketFlagLevel]">
+								:class="
+									LEVEL_TEXT[row.level as MarketFlagLevel]
+								">
 								<MarketFlagIcon :level="row.level" />
-								{{ t(`cx.market_flags.flags.${rowFlag(row.flags)}`) }}
+								{{
+									t(
+										`cx.market_flags.flags.${rowFlag(row.flags)}`
+									)
+								}}
 							</span>
 							<RouterLink
 								v-if="own && ruleLink(row)"
 								:to="ruleLink(row)!.to"
 								class="block py-1 text-xs text-link hover:underline"
 								:aria-label="
-									t('plan.tools.plan_check.market.rule_link', {
-										ticker: row.ticker,
-										source: ruleLink(row)!.label,
-									})
+									t(
+										'plan.tools.plan_check.market.rule_link',
+										{
+											ticker: row.ticker,
+											source: ruleLink(row)!.label,
+										}
+									)
 								"
 								data-rule-link>
 								{{ ruleLink(row)!.label }}
@@ -402,12 +418,16 @@
 					</PDataTable>
 				</div>
 
-				<ul class="flex flex-col gap-2 @[640px]:hidden" data-market-cards>
+				<ul
+					class="flex flex-col gap-2 @[640px]:hidden"
+					data-market-cards>
 					<li
 						v-for="c in checks.slice(0, cardCount)"
 						:key="c.ticker"
 						class="flex flex-col gap-2 rounded border p-3 text-sm"
-						:class="c.level ? LEVEL_CARD[c.level] : 'border-white/10'">
+						:class="
+							c.level ? LEVEL_CARD[c.level] : 'border-white/10'
+						">
 						<div class="flex items-center gap-2">
 							<span
 								class="min-w-10 px-1 rounded-sm text-xs text-center font-bold"
@@ -417,10 +437,15 @@
 							<span
 								class="px-1.5 border border-white/20 rounded-sm text-xs text-muted-strong">
 								{{
-									t("plan.tools.plan_check.market.card_side", {
-										side: side(c),
-										value: formatNumber(Math.abs(c.delta)),
-									})
+									t(
+										"plan.tools.plan_check.market.card_side",
+										{
+											side: side(c),
+											value: formatNumber(
+												Math.abs(c.delta)
+											),
+										}
+									)
 								}}
 							</span>
 							<span
@@ -428,7 +453,11 @@
 								class="ml-auto inline-flex items-center gap-1.5 text-right"
 								:class="LEVEL_TEXT[c.level]">
 								<MarketFlagIcon :level="c.level" />
-								{{ t(`cx.market_flags.flags.${rowFlag(c.flags)}`) }}
+								{{
+									t(
+										`cx.market_flags.flags.${rowFlag(c.flags)}`
+									)
+								}}
 							</span>
 							<span v-else class="ml-auto text-muted">
 								{{ t("plan.tools.plan_check.market.ok") }}
@@ -514,16 +543,23 @@
 						</h3>
 						<p v-if="cxUuid" class="text-xs text-muted-strong">
 							{{
-								t("plan.tools.plan_check.market.real.subtitle", {
-									source: cxName,
-								})
+								t(
+									"plan.tools.plan_check.market.real.subtitle",
+									{
+										source: cxName,
+									}
+								)
 							}}
 						</p>
 					</div>
 					<dl class="flex flex-col divide-y divide-white/10">
 						<div class="flex justify-between gap-3 py-1.5">
 							<dt>
-								{{ t("plan.tools.plan_check.market.real.plan_profit") }}
+								{{
+									t(
+										"plan.tools.plan_check.market.real.plan_profit"
+									)
+								}}
 							</dt>
 							<dd class="font-bold tabular-nums">
 								{{ money(profit) }} ȼ
@@ -531,7 +567,11 @@
 						</div>
 						<div class="flex justify-between gap-3 py-1.5">
 							<dt>
-								{{ t("plan.tools.plan_check.market.real.ask_bid") }}
+								{{
+									t(
+										"plan.tools.plan_check.market.real.ask_bid"
+									)
+								}}
 							</dt>
 							<dd class="font-bold tabular-nums" data-ask-bid>
 								{{
@@ -559,7 +599,10 @@
 												? 'text-positive'
 												: ''
 									">
-									{{ formatNumber(real.diff, 0, false, true) }} ȼ
+									{{
+										formatNumber(real.diff, 0, false, true)
+									}}
+									ȼ
 									<template v-if="real.diffPct !== null">
 										({{
 											formatNumber(
@@ -575,7 +618,11 @@
 							</div>
 							<div class="flex justify-between gap-3 py-1.5">
 								<dt>
-									{{ t("plan.tools.plan_check.market.real.roi") }}
+									{{
+										t(
+											"plan.tools.plan_check.market.real.roi"
+										)
+									}}
 								</dt>
 								<dd class="font-bold tabular-nums">
 									{{ formatPayback(real.roi) }}
@@ -648,7 +695,11 @@
 					</p>
 					<dl class="flex flex-col divide-y divide-white/10">
 						<div class="flex justify-between gap-3 py-1.5">
-							<dt>{{ t("plan.tools.plan_check.market.means.red") }}</dt>
+							<dt>
+								{{
+									t("plan.tools.plan_check.market.means.red")
+								}}
+							</dt>
 							<dd
 								class="font-bold tabular-nums"
 								:class="counts.red ? 'text-negative' : ''">
@@ -657,7 +708,11 @@
 						</div>
 						<div class="flex justify-between gap-3 py-1.5">
 							<dt>
-								{{ t("plan.tools.plan_check.market.means.amber") }}
+								{{
+									t(
+										"plan.tools.plan_check.market.means.amber"
+									)
+								}}
 							</dt>
 							<dd
 								class="font-bold tabular-nums"
@@ -666,7 +721,9 @@
 							</dd>
 						</div>
 						<div class="flex justify-between gap-3 py-1.5">
-							<dt>{{ t("plan.tools.plan_check.market.means.ok") }}</dt>
+							<dt>
+								{{ t("plan.tools.plan_check.market.means.ok") }}
+							</dt>
 							<dd class="font-bold tabular-nums">
 								{{ counts.fine }}
 							</dd>

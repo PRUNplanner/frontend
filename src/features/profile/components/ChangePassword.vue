@@ -62,7 +62,10 @@
 				{{ $t("profile.change_password.form.password_info") }}
 			</div>
 			<template v-if="changeStatus !== null">
-				<div v-if="changeStatus" class="text-sm text-positive" role="status">
+				<div
+					v-if="changeStatus"
+					class="text-sm text-positive"
+					role="status">
 					{{ $t("profile.change_password.form.change_success") }}
 				</div>
 				<PNotice v-else type="error">
@@ -84,7 +87,9 @@
 					<PInput
 						v-model:value="refNewPassword"
 						autocomplete="new-password"
-						:placeholder="t('account.components.hints.new_password')"
+						:placeholder="
+							t('account.components.hints.new_password')
+						"
 						type="password"
 						class="w-full max-w-sm" />
 				</PFormItem>

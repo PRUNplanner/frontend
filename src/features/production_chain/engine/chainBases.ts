@@ -195,7 +195,8 @@ export function chainShipping(
 				row.source === "buy" ? cx(row.exchange) : row.base!,
 				row.perDay / gross,
 			]);
-		for (const s of suppliers[t] ?? []) list.push([s.key, s.perDay / gross]);
+		for (const s of suppliers[t] ?? [])
+			list.push([s.key, s.perDay / gross]);
 		const from = byproduct.get(t)?.fromAmounts ?? {};
 		const total = Object.values(from).reduce((s, q) => s + q, 0);
 		if (row.covered > EPS && total > 0)

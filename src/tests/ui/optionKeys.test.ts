@@ -4,11 +4,9 @@ import { optionKeys } from "@/ui/optionKeys";
 
 describe("optionKeys", () => {
 	it("keys unique values by the value itself", () => {
-		expect(optionKeys([{ value: "a" }, { value: 1 }, { value: "1" }])).toEqual([
-			"a",
-			1,
-			"1",
-		]);
+		expect(
+			optionKeys([{ value: "a" }, { value: 1 }, { value: "1" }])
+		).toEqual(["a", 1, "1"]);
 	});
 
 	it("gives repeated and missing values keys of their own", () => {

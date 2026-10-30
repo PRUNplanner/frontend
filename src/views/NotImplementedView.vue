@@ -23,7 +23,9 @@
 					{{ t("common.not_implemented.title") }}
 				</div>
 				<div class="mt-3 text-center text-white/82">
-					<i18n-t keypath="common.not_implemented.open_source" tag="div">
+					<i18n-t
+						keypath="common.not_implemented.open_source"
+						tag="div">
 						<template #link>
 							<a
 								href="https://github.com/PRUNplanner/frontend"

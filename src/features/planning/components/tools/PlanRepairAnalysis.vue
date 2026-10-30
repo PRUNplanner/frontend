@@ -207,9 +207,8 @@
 		if (!userStore.hasFIO) return "none";
 		return site.value ? "site" : "no_site";
 	});
-	const planetLabel = computed(
-		() =>
-			planetDisplayName(props.planetNaturalId ?? "", site.value?.PlanetName)
+	const planetLabel = computed(() =>
+		planetDisplayName(props.planetNaturalId ?? "", site.value?.PlanetName)
 	);
 
 	const fioBuildings = computed<Record<string, IRepairFIOBuilding[]>>(() => {

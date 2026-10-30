@@ -7,8 +7,7 @@ import { mountComponent } from "@/tests/mountComponent";
 
 async function mountSettings() {
 	const updates: Record<string, unknown[]> = {};
-	const on = (key: string) => (v: unknown) =>
-		(updates[key] ??= []).push(v);
+	const on = (key: string) => (v: unknown) => (updates[key] ??= []).push(v);
 	const { wrapper } = await mountComponent(
 		ChainSettings,
 		{
@@ -44,8 +43,12 @@ describe("ChainSettings", () => {
 
 	it("switches raw resources and byproducts", async () => {
 		const { wrapper, updates } = await mountSettings();
-		await button(wrapper, "production_chains.settings.extract").trigger("click");
-		await button(wrapper, "production_chains.settings.sell").trigger("click");
+		await button(wrapper, "production_chains.settings.extract").trigger(
+			"click"
+		);
+		await button(wrapper, "production_chains.settings.sell").trigger(
+			"click"
+		);
 		expect(updates.rawSource).toEqual(["extract"]);
 		expect(updates.byproducts).toEqual(["sell"]);
 	});

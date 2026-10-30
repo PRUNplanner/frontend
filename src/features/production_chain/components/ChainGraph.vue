@@ -27,7 +27,11 @@
 		IChainOwn,
 	} from "@/features/production_chain/productionChain.types";
 
-	const { result, lines, own = NO_OWN } = defineProps<{
+	const {
+		result,
+		lines,
+		own = NO_OWN,
+	} = defineProps<{
 		result: IChainResult;
 		lines: IChainLineMode;
 		own?: IChainOwn;
@@ -106,7 +110,11 @@
 		const f = focus.value;
 		if (!f || !result.rows[f]) return null;
 		const set = new Set<string>([f]);
-		const walk = (t: string, next: Map<string, string[]>, seen: Set<string>) => {
+		const walk = (
+			t: string,
+			next: Map<string, string[]>,
+			seen: Set<string>
+		) => {
 			for (const n of next.get(t) ?? [])
 				if (!seen.has(n)) {
 					seen.add(n);
@@ -202,7 +210,9 @@
 	<div>
 		<div class="px-3 py-2 text-xs flex items-center gap-2 min-h-10">
 			<template v-if="focus">
-				<span>{{ $t("production_chains.graph.focused", { ticker: focus }) }}</span>
+				<span>{{
+					$t("production_chains.graph.focused", { ticker: focus })
+				}}</span>
 				<button
 					type="button"
 					class="px-2 py-0.5 rounded-control border border-line hover:bg-hover cursor-pointer"
@@ -214,7 +224,10 @@
 				{{ $t("production_chains.graph.focus_hint") }}
 			</span>
 		</div>
-		<div ref="scroller" class="overflow-auto max-h-[75vh]" data-testid="chain-graph">
+		<div
+			ref="scroller"
+			class="overflow-auto max-h-[75vh]"
+			data-testid="chain-graph">
 			<div
 				class="relative"
 				:style="{
@@ -238,15 +251,22 @@
 						<text
 							v-for="s in layout.stages"
 							:key="`s-${s}`"
-							:x="LAYOUT.pad + (s - 1) * (LAYOUT.nodeWidth + LAYOUT.gapX)"
+							:x="
+								LAYOUT.pad +
+								(s - 1) * (LAYOUT.nodeWidth + LAYOUT.gapX)
+							"
 							:y="LAYOUT.pad"
 							class="fill-current text-muted text-xs uppercase">
 							{{
 								s > 1
-									? $t("production_chains.graph.stage", { n: s - 1 })
+									? $t("production_chains.graph.stage", {
+											n: s - 1,
+										})
 									: anyHave
 										? $t("production_chains.have.stage_raw")
-										: $t("production_chains.graph.stage_raw")
+										: $t(
+												"production_chains.graph.stage_raw"
+											)
 							}}
 						</text>
 						<path
@@ -256,7 +276,10 @@
 							fill="none"
 							stroke="currentColor"
 							:stroke-width="e.width"
-							:class="[e.cls, e.dim ? 'opacity-10' : 'opacity-70']">
+							:class="[
+								e.cls,
+								e.dim ? 'opacity-10' : 'opacity-70',
+							]">
 							<title>
 								{{
 									$t("production_chains.graph.edge", {
@@ -318,15 +341,26 @@
 						</span>
 						<span class="min-w-0">
 							<span class="block text-sm tabular-nums truncate">
-								{{ $t("production_chains.detail.per_day", { n: formatQty(n.perDay) }) }}
+								{{
+									$t("production_chains.detail.per_day", {
+										n: formatQty(n.perDay),
+									})
+								}}
 							</span>
 							<span
 								class="block text-xs truncate"
-								:class="n.row.cheaper ? 'text-warning' : n.row.source === 'have' ? 'text-have' : 'text-muted'"
+								:class="
+									n.row.cheaper
+										? 'text-warning'
+										: n.row.source === 'have'
+											? 'text-have'
+											: 'text-muted'
+								"
 								:title="n.line2">
 								{{ n.line2 }}
 								<template v-if="n.row.cheaper">
-									· {{ $t("production_chains.graph.buy_hint") }}
+									·
+									{{ $t("production_chains.graph.buy_hint") }}
 								</template>
 							</span>
 						</span>

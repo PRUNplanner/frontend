@@ -29,11 +29,11 @@
 	const icon = computed(
 		() =>
 			customIcon ??
-			({
+			{
 				info: InfoOutlined,
 				warning: WarningSharp,
 				error: ErrorOutlineSharp,
-			})[type]
+			}[type]
 	);
 </script>
 
@@ -41,7 +41,10 @@
 	<div
 		:role="type === 'error' ? 'alert' : 'status'"
 		:class="[noticeConfig.container, noticeConfig.types[type].box]">
-		<PIcon :size="18" class="shrink-0" :class="noticeConfig.types[type].icon">
+		<PIcon
+			:size="18"
+			class="shrink-0"
+			:class="noticeConfig.types[type].icon">
 			<component :is="icon" />
 		</PIcon>
 		<div class="grow min-w-0">

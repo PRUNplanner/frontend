@@ -77,7 +77,9 @@ describe("PWaterfall", () => {
 		expect(bars[0].find(".chip-fe").text()).toBe("FE");
 		expect(bars[0].text()).toContain("47.4k");
 		// beside a bar: the name over its value, two lines that fit the gap
-		const beside = wrapper.findAll("div.flex-col span").map((s) => s.text());
+		const beside = wrapper
+			.findAll("div.flex-col span")
+			.map((s) => s.text());
 		expect(beside.slice(0, 2)).toEqual(["LST", "2.7k"]);
 		// one dashed connector between each pair of columns
 		expect(wrapper.findAll(".border-dashed")).toHaveLength(2);

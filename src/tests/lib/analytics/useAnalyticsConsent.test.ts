@@ -7,9 +7,8 @@ const STORAGE_KEY = "prunplanner_analytics_consent";
 // module state is read once on import, so each case loads a fresh copy
 async function load() {
 	vi.resetModules();
-	const { useAnalyticsConsent } = await import(
-		"@/lib/analytics/useAnalyticsConsent"
-	);
+	const { useAnalyticsConsent } =
+		await import("@/lib/analytics/useAnalyticsConsent");
 	return useAnalyticsConsent();
 }
 

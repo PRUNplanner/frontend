@@ -269,7 +269,9 @@
 				<thead>
 					<tr>
 						<th>{{ $t("profile.preferences.form.plan") }}</th>
-						<th>{{ $t("profile.preferences.form.preferences") }}</th>
+						<th>
+							{{ $t("profile.preferences.form.preferences") }}
+						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -284,7 +286,9 @@
 							</router-link>
 						</td>
 						<td class="w-[50%] max-w-[75%]">
-							{{ plan.preferences.map((key) => t(key)).join(", ") }}
+							{{
+								plan.preferences.map((key) => t(key)).join(", ")
+							}}
 						</td>
 					</tr>
 				</tbody>

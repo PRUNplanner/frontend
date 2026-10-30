@@ -43,7 +43,10 @@ const presets = (wrapper: Awaited<ReturnType<typeof mountDetail>>["wrapper"]) =>
 	wrapper
 		.find("[role=group]")
 		.findAllComponents(PButton)
-		.map((b: VueWrapper) => [b.text(), b.attributes("aria-pressed") === "true"]);
+		.map((b: VueWrapper) => [
+			b.text(),
+			b.attributes("aria-pressed") === "true",
+		]);
 
 describe("RepairBuildingDetail", () => {
 	it("shows the type's profit, bill and condition at the interval", async () => {
@@ -72,7 +75,10 @@ describe("RepairBuildingDetail", () => {
 	it("emits the interval from a preset, the slider and the field", async () => {
 		const { wrapper, onInterval } = await mountDetail();
 
-		await wrapper.find("[role=group]").findAllComponents(PButton)[2].trigger("click");
+		await wrapper
+			.find("[role=group]")
+			.findAllComponents(PButton)[2]
+			.trigger("click");
 		expect(onInterval).toHaveBeenLastCalledWith(60, "preset");
 
 		const slider = wrapper.find("input[type=range]");
@@ -114,7 +120,9 @@ describe("RepairBuildingDetail", () => {
 
 	it("shows the change against the best inside the range without a warning", async () => {
 		const inside =
-			building.best < building.range[1] ? building.best + 1 : building.best - 1;
+			building.best < building.range[1]
+				? building.best + 1
+				: building.best - 1;
 		const { wrapper } = await mountDetail({ interval: inside });
 
 		expect(wrapper.findComponent(PInputNumber).props("status")).toBe(
@@ -130,7 +138,9 @@ describe("RepairBuildingDetail", () => {
 
 		await wrapper.find("[aria-label='Back to buildings']").trigger("click");
 		expect(onBack).toHaveBeenCalled();
-		expect(wrapper.findComponent(RepairMaterialList).props("limit")).toBe(6);
+		expect(wrapper.findComponent(RepairMaterialList).props("limit")).toBe(
+			6
+		);
 	});
 
 	it("shows all materials on wider screens", async () => {
@@ -139,6 +149,8 @@ describe("RepairBuildingDetail", () => {
 		expect(wrapper.find("[aria-label='Back to buildings']").exists()).toBe(
 			false
 		);
-		expect(wrapper.findAll("[data-testid=repair-material]")).toHaveLength(8);
+		expect(wrapper.findAll("[data-testid=repair-material]")).toHaveLength(
+			8
+		);
 	});
 });

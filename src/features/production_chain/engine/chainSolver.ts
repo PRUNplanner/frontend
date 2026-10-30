@@ -18,7 +18,10 @@ import {
 	MAX_EXPERTS_TOTAL,
 } from "@/features/planning/engine/efficiency";
 import { activeProgram } from "@/features/planet_search/planetSearch.engine";
-import { getMaterialIOTotalPrice, type PriceType } from "@/features/cx/priceBook";
+import {
+	getMaterialIOTotalPrice,
+	type PriceType,
+} from "@/features/cx/priceBook";
 import {
 	MARKET_SHARE_AMBER,
 	MARKET_SHARE_RED,
@@ -210,7 +213,8 @@ function buildingCosts(
 			const workers = building[field];
 			if (workers)
 				upkeep +=
-					workers * workerUpkeep(ctx, type, hasLux1(lux), hasLux2(lux));
+					workers *
+					workerUpkeep(ctx, type, hasLux1(lux), hasLux2(lux));
 		}
 		costs = {
 			upkeep,
@@ -819,7 +823,8 @@ export function solveChain(
 				(targetPerDay.get(t.ticker) ?? 0) + t.perDay
 			);
 
-	const canMake = (t: string) => (ctx.recipesByOutput.get(t)?.length ?? 0) > 0;
+	const canMake = (t: string) =>
+		(ctx.recipesByOutput.get(t)?.length ?? 0) > 0;
 	const canExtract = (t: string) => ctx.resources.has(t);
 
 	const sources = new Map<string, ChainSource>();
@@ -1170,7 +1175,9 @@ export function solveChain(
 			canExtract: canExtract(t),
 			recipe,
 			recipeCount: ctx.recipesByOutput.get(t)?.length ?? 0,
-			defaultRecipeId: canMake(t) ? defaultRecipe(ctx, t, efficiency) : null,
+			defaultRecipeId: canMake(t)
+				? defaultRecipe(ctx, t, efficiency)
+				: null,
 			buildingTicker,
 			base: noStep ? null : baseIdOf(t),
 			load: p.load,
@@ -1187,11 +1194,7 @@ export function solveChain(
 			sellPrice: sellPrice(ctx, t),
 			exchange: priceSource.exchange ?? priceSource.volume,
 			users: [...(users.get(t) ?? [])],
-			cheaper:
-				!noStep &&
-				!isTarget &&
-				price > 0 &&
-				uc > price + EPS,
+			cheaper: !noStep && !isTarget && price > 0 && uc > price + EPS,
 			market,
 		};
 	}
@@ -1432,7 +1435,10 @@ export function recipeEffects(
 				: solveChain(
 						{
 							...forced,
-							recipeId: { ...input.recipeId, [ticker]: recipe.recipe_id },
+							recipeId: {
+								...input.recipeId,
+								[ticker]: recipe.recipe_id,
+							},
 						},
 						ctx
 					);
@@ -1448,6 +1454,7 @@ export function recipeEffects(
 		})
 		.sort(
 			(a, b) =>
-				Number(b.inUse) - Number(a.inUse) || b.deltaProfit - a.deltaProfit
+				Number(b.inUse) - Number(a.inUse) ||
+				b.deltaProfit - a.deltaProfit
 		);
 }

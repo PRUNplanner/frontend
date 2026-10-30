@@ -135,9 +135,9 @@
 			<p class="text-muted">{{ t("base_roi.setup.intro") }}</p>
 
 			<div class="flex flex-col gap-1.5 min-w-0">
-					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.cx_select') }}
-					</span>
+				<span class="text-xs font-bold uppercase text-muted">
+					{{ t("base_roi.cx_select") }}
+				</span>
 				<CXPreferenceSelector
 					v-model:cx-uuid="cxUuid"
 					:aria-label="t('base_roi.cx_select')" />
@@ -176,7 +176,7 @@
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.ship') }}
+						{{ t("base_roi.settings.ship") }}
 					</span>
 					<PSelect
 						v-if="preset === 'veteran'"
@@ -199,7 +199,7 @@
 				</div>
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.visit_days') }}
+						{{ t("base_roi.settings.visit_days") }}
 					</span>
 					<PSelect
 						v-model:value="visitDays"
@@ -228,7 +228,9 @@
 				<PButton type="secondary" @click="skip">
 					{{ t("base_roi.setup.skip") }}
 				</PButton>
-				<PButton @click="start">{{ t("base_roi.setup.start") }}</PButton>
+				<PButton @click="start">{{
+					t("base_roi.setup.start")
+				}}</PButton>
 			</div>
 		</template>
 	</PModal>

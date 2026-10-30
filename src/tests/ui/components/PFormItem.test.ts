@@ -35,7 +35,9 @@ describe("PFormItem", () => {
 		const wrapper = mountItem(() => h(PInput, { value: "" }));
 		const input = wrapper.find("input");
 
-		expect(wrapper.find("label").attributes("for")).toBe(input.attributes("id"));
+		expect(wrapper.find("label").attributes("for")).toBe(
+			input.attributes("id")
+		);
 		expect(input.attributes("aria-invalid")).toBeUndefined();
 		expect(input.attributes("aria-describedby")).toBeUndefined();
 	});
@@ -43,7 +45,11 @@ describe("PFormItem", () => {
 	it.each([
 		["PInput", () => h(PInput, { value: "" }), "input"],
 		["PInputNumber", () => h(PInputNumber, { value: 1 }), "input"],
-		["PSelect", () => h(PSelect, { value: null, options: [] }), "[role=combobox]"],
+		[
+			"PSelect",
+			() => h(PSelect, { value: null, options: [] }),
+			"[role=combobox]",
+		],
 	])(
 		"shows an error under %s, marks it invalid and describes it",
 		(_, control, selector) => {
@@ -66,7 +72,10 @@ describe("PFormItem", () => {
 			"Name is taken",
 			"Up to 30 letters"
 		);
-		const ids = wrapper.find("input").attributes("aria-describedby")!.split(" ");
+		const ids = wrapper
+			.find("input")
+			.attributes("aria-describedby")!
+			.split(" ");
 
 		expect(ids).toHaveLength(2);
 		expect(wrapper.find(`[id="${ids[1]}"]`).text()).toBe(

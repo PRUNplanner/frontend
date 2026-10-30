@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeAll,
+	beforeEach,
+	afterEach,
+	vi,
+} from "vitest";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -31,7 +39,10 @@ const NUDGE = "account.email_nudge";
 const messages = {
 	account: {
 		email_nudge: {
-			none: { body: "your plan | your {count} plans", body_plain: "plain" },
+			none: {
+				body: "your plan | your {count} plans",
+				body_plain: "plain",
+			},
 			unconfirmed: { body: "sent to {email}" },
 		},
 	},
@@ -59,7 +70,11 @@ async function mountBanner(patch: Partial<UserProfile> = {}, knownPlans = 1) {
 	userStore.refreshToken = "r".repeat(120);
 	userStore.profile = profile(patch);
 	userStore.preferencesLoaded = true;
-	return mountComponent(EmailNudgeBanner, { knownPlans }, { pinia, messages });
+	return mountComponent(
+		EmailNudgeBanner,
+		{ knownPlans },
+		{ pinia, messages }
+	);
 }
 
 const notice = (wrapper: VueWrapper) => wrapper.findComponent(PNotice);
@@ -68,7 +83,9 @@ const button = (wrapper: VueWrapper, label: string) =>
 		.findAll("button")
 		.find((b) => b.text() === `${NUDGE}.buttons.${label}`);
 const labels = (wrapper: VueWrapper) =>
-	wrapper.findAll("button").map((b) => b.text().replace(`${NUDGE}.buttons.`, ""));
+	wrapper
+		.findAll("button")
+		.map((b) => b.text().replace(`${NUDGE}.buttons.`, ""));
 
 describe("EmailNudgeBanner", () => {
 	beforeAll(() => {
@@ -118,7 +135,11 @@ describe("EmailNudgeBanner", () => {
 	});
 
 	it.each([
-		["a confirmed email", { email: "a@ex.com", is_email_verified: true }, 1],
+		[
+			"a confirmed email",
+			{ email: "a@ex.com", is_email_verified: true },
+			1,
+		],
 		["no plans", {}, 0],
 	])("stays hidden with %s", async (_, patch, plans) => {
 		const { wrapper } = await mountBanner(patch, plans);

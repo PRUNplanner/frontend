@@ -87,7 +87,8 @@
 
 	type Column = PDataTableColumn<IBaseROIRow>;
 	const by =
-		(value: (r: IBaseROIRow) => number) => (a: IBaseROIRow, b: IBaseROIRow) => {
+		(value: (r: IBaseROIRow) => number) =>
+		(a: IBaseROIRow, b: IBaseROIRow) => {
 			const x = value(a);
 			const y = value(b);
 			// never (Infinity) and missing values last when ascending
@@ -141,9 +142,7 @@
 			})
 		),
 	]);
-	const titles = computed(() =>
-		columns.value.map((c) => c.title!)
-	);
+	const titles = computed(() => columns.value.map((c) => c.title!));
 	// expand button + every column
 	const tableWidth = computed(() =>
 		columns.value.reduce((w, c) => w + WIDTHS[c.key], 48)
@@ -186,7 +185,9 @@
 			hidden.marketCapacity +
 			hidden.negative
 	);
-	const showSkeleton = computed(() => firstLoad && !rows.length && busy.value);
+	const showSkeleton = computed(
+		() => firstLoad && !rows.length && busy.value
+	);
 
 	const histories = computed(() => {
 		const map = new Map<string, number[]>();
@@ -214,9 +215,16 @@
 		row.expertise ? capitalizeString(row.expertise) : "—";
 	const workforceText = (row: IBaseROIRow) =>
 		row.workforce
-			.map((w) => `${formatNumber(w.required, 0)} ${WORKFORCE_SHORT[w.tier]}`)
+			.map(
+				(w) =>
+					`${formatNumber(w.required, 0)} ${WORKFORCE_SHORT[w.tier]}`
+			)
 			.join(" · ");
-	const kindType = { resource: "primary", farming: "success", recipe: "secondary" } as const;
+	const kindType = {
+		resource: "primary",
+		farming: "success",
+		recipe: "secondary",
+	} as const;
 </script>
 
 <template>
@@ -226,33 +234,66 @@
 			<div class="flex flex-col min-w-0 grow" aria-live="polite">
 				<p v-if="!showSkeleton" class="text-sm">
 					<span class="font-bold">
-						{{ t("base_roi.table.rows", { n: rows.length }, rows.length) }}
+						{{
+							t(
+								"base_roi.table.rows",
+								{ n: rows.length },
+								rows.length
+							)
+						}}
 					</span>
 					<template v-if="!planetRowsPending && totalHidden">
 						·
 						<span class="font-bold">
-							{{ t("base_roi.table.hidden", { n: formatNumber(totalHidden, 0) }) }}
+							{{
+								t("base_roi.table.hidden", {
+									n: formatNumber(totalHidden, 0),
+								})
+							}}
 						</span>
 						{{
 							[
-								t("base_roi.table.hidden_jumps", { n: formatNumber(hidden.maxJumps, 0) }),
-								t("base_roi.table.hidden_logistics", { n: formatNumber(hidden.logistics, 0) }),
-								t("base_roi.table.hidden_market", { n: formatNumber(hidden.marketCapacity, 0) }),
+								t("base_roi.table.hidden_jumps", {
+									n: formatNumber(hidden.maxJumps, 0),
+								}),
+								t("base_roi.table.hidden_logistics", {
+									n: formatNumber(hidden.logistics, 0),
+								}),
+								t("base_roi.table.hidden_market", {
+									n: formatNumber(hidden.marketCapacity, 0),
+								}),
 								...(settings.showNegative
 									? []
-									: [t("base_roi.table.hidden_negative", { n: formatNumber(hidden.negative, 0) })]),
+									: [
+											t(
+												"base_roi.table.hidden_negative",
+												{
+													n: formatNumber(
+														hidden.negative,
+														0
+													),
+												}
+											),
+										]),
 							].join(" · ")
 						}}
 					</template>
 				</p>
-				<p v-if="step === 'error'" class="text-sm text-negative" role="alert">
+				<p
+					v-if="step === 'error'"
+					class="text-sm text-negative"
+					role="alert">
 					{{ statusText }}
 				</p>
 				<div
 					v-else-if="busy || planetRowsPending"
 					class="flex flex-row items-center gap-3 text-xs text-muted">
 					<span>
-						{{ planetRowsPending && !busy ? t("base_roi.status.planet_rows") : statusText }}
+						{{
+							planetRowsPending && !busy
+								? t("base_roi.status.planet_rows")
+								: statusText
+						}}
 					</span>
 					<PProgressBar
 						v-if="progress.total"
@@ -276,7 +317,15 @@
 					:row-key="rowKey"
 					:row-class="rowClass"
 					:aria-label="t('base_roi.table.label')"
-					:expand-label="(row) => t('base_roi.table.details', { name: row.outputs.map((o) => o.ticker).join(', ') || row.building })"
+					:expand-label="
+						(row) =>
+							t('base_roi.table.details', {
+								name:
+									row.outputs
+										.map((o) => o.ticker)
+										.join(', ') || row.building,
+							})
+					"
 					fill
 					striped
 					sticky-first
@@ -286,7 +335,9 @@
 					<template #header-daily_profit>
 						<span class="flex flex-col leading-tight">
 							{{ t("base_roi.columns.daily_profit") }}
-							<span class="text-xs font-normal text-muted">{{ atExperts }}</span>
+							<span class="text-xs font-normal text-muted">{{
+								atExperts
+							}}</span>
 						</span>
 					</template>
 					<template #header-break_even>
@@ -300,10 +351,20 @@
 						</span>
 					</template>
 					<template
-						v-for="c in ['expertise', 'weekly_return', 'building_cost', 'running_cost', 'cargo', 'market_capacity', 'workforce']"
+						v-for="c in [
+							'expertise',
+							'weekly_return',
+							'building_cost',
+							'running_cost',
+							'cargo',
+							'market_capacity',
+							'workforce',
+						]"
 						:key="c"
 						#[`header-${c}`]>
-						<span class="whitespace-normal">{{ t(`base_roi.columns.${c}`) }}</span>
+						<span class="whitespace-normal">{{
+							t(`base_roi.columns.${c}`)
+						}}</span>
 					</template>
 					<template #header-history>
 						<span :title="t('base_roi.table.history_tooltip')">
@@ -320,38 +381,88 @@
 									:ticker="o.ticker" />
 							</div>
 							<div class="flex flex-col min-w-0 flex-1">
-								<span class="flex flex-row items-center gap-1.5 whitespace-nowrap min-w-0">
-									<span v-if="row.planetNaturalId" class="font-bold truncate">
+								<span
+									class="flex flex-row items-center gap-1.5 whitespace-nowrap min-w-0">
+									<span
+										v-if="row.planetNaturalId"
+										class="font-bold truncate">
 										{{ planetLine(row) }}
 									</span>
-									<span v-else class="font-bold">{{ row.building }}</span>
+									<span v-else class="font-bold">{{
+										row.building
+									}}</span>
 									<PTag
 										v-if="row.kind !== 'recipe'"
 										size="sm"
 										:type="kindType[row.kind]"
-										:value="t(`base_roi.table.${row.kind}`)" />
-									<PPopover v-if="row.metrics.scenarios.length" placement="bottom-start">
+										:value="
+											t(`base_roi.table.${row.kind}`)
+										" />
+									<PPopover
+										v-if="row.metrics.scenarios.length"
+										placement="bottom-start">
 										<template #trigger>
 											<button
 												type="button"
 												class="inline-flex items-center gap-0.5 rounded border border-warning/60 px-1 text-xs text-warning"
-												:aria-label="t('base_roi.table.volatility', { n: row.metrics.scenarios.length }, row.metrics.scenarios.length)">
-												<WarningAmberSharp class="size-3.5" />
-												{{ row.metrics.scenarios.length }}
+												:aria-label="
+													t(
+														'base_roi.table.volatility',
+														{
+															n: row.metrics
+																.scenarios
+																.length,
+														},
+														row.metrics.scenarios
+															.length
+													)
+												">
+												<WarningAmberSharp
+													class="size-3.5" />
+												{{
+													row.metrics.scenarios.length
+												}}
 											</button>
 										</template>
-										<div class="flex flex-col gap-1 max-w-80 text-sm">
-											<p class="font-bold">{{ t("base_roi.table.volatility_title") }}</p>
-											<ul class="flex flex-col gap-0.5 max-h-60 overflow-y-auto">
+										<div
+											class="flex flex-col gap-1 max-w-80 text-sm">
+											<p class="font-bold">
+												{{
+													t(
+														"base_roi.table.volatility_title"
+													)
+												}}
+											</p>
+											<ul
+												class="flex flex-col gap-0.5 max-h-60 overflow-y-auto">
 												<li
-													v-for="(s, i) in row.metrics.scenarios"
+													v-for="(s, i) in row.metrics
+														.scenarios"
 													:key="i"
 													class="flex flex-row justify-between gap-3">
 													<span>
-														{{ s.prices.map((p) => `${p.ticker} (${t(`base_roi.table.${p.side}`)} ${formatNumber(p.price)})`).join(", ") }}
+														{{
+															s.prices
+																.map(
+																	(p) =>
+																		`${p.ticker} (${t(`base_roi.table.${p.side}`)} ${formatNumber(p.price)})`
+																)
+																.join(", ")
+														}}
 													</span>
-													<span class="font-mono" :class="s.dailyProfit > 0 ? 'text-positive' : 'text-negative'">
-														{{ formatNumber(s.dailyProfit, 0) }}
+													<span
+														class="font-mono"
+														:class="
+															s.dailyProfit > 0
+																? 'text-positive'
+																: 'text-negative'
+														">
+														{{
+															formatNumber(
+																s.dailyProfit,
+																0
+															)
+														}}
 													</span>
 												</li>
 											</ul>
@@ -359,13 +470,19 @@
 									</PPopover>
 								</span>
 								<span class="text-xs text-muted truncate">
-									{{ row.planetNaturalId ? `${row.building} · ` : "" }}{{ recipeLabel(row) }}
+									{{
+										row.planetNaturalId
+											? `${row.building} · `
+											: ""
+									}}{{ recipeLabel(row) }}
 								</span>
 							</div>
 						</div>
 					</template>
 					<template #cell-expertise="{ row }">
-						<span class="block truncate" :title="`${expertise(row)} ${row.building}`">
+						<span
+							class="block truncate"
+							:title="`${expertise(row)} ${row.building}`">
 							{{ expertise(row) }}
 							<span class="text-muted">{{ row.building }}</span>
 						</span>
@@ -379,49 +496,89 @@
 								:max="maxProfit" />
 							<span
 								class="font-mono whitespace-nowrap"
-								:class="row.metrics.dailyProfit > 0 ? '' : 'text-negative'">
+								:class="
+									row.metrics.dailyProfit > 0
+										? ''
+										: 'text-negative'
+								">
 								{{ formatNumber(row.metrics.dailyProfit, 0) }}
 							</span>
 						</div>
 					</template>
 					<template #cell-break_even="{ row }">
 						<span class="flex flex-col items-end leading-tight">
-							<span class="font-bold font-mono">{{ days(row.metrics.breakEven) }}</span>
+							<span class="font-bold font-mono">{{
+								days(row.metrics.breakEven)
+							}}</span>
 							<span
-								v-if="settings.experts === 'ramp' && Number.isFinite(row.metrics.payback)"
+								v-if="
+									settings.experts === 'ramp' &&
+									Number.isFinite(row.metrics.payback)
+								"
 								class="text-xs text-muted whitespace-nowrap">
-								{{ t("base_roi.table.at_five", { days: days(row.metrics.payback) }) }}
+								{{
+									t("base_roi.table.at_five", {
+										days: days(row.metrics.payback),
+									})
+								}}
 							</span>
 						</span>
 					</template>
 					<template #cell-weekly_return="{ row }">
 						<span class="font-mono whitespace-nowrap">
-							{{ formatPercent(row.metrics.weeklyReturn * 100, 1) }}
+							{{
+								formatPercent(row.metrics.weeklyReturn * 100, 1)
+							}}
 						</span>
 					</template>
 					<template #cell-building_cost="{ row }">
-						<span class="font-mono">{{ formatNumber(row.metrics.buildingCost, 0) }}</span>
+						<span class="font-mono">{{
+							formatNumber(row.metrics.buildingCost, 0)
+						}}</span>
 					</template>
 					<template #cell-running_cost="{ row }">
-						<span class="font-mono">{{ formatNumber(row.metrics.runningCost, 0) }}</span>
+						<span class="font-mono">{{
+							formatNumber(row.metrics.runningCost, 0)
+						}}</span>
 					</template>
 					<template #cell-cargo="{ row }">
-						<span class="flex flex-col items-end leading-tight font-mono whitespace-nowrap">
-							<span>{{ formatNumber(Math.max(row.weightIn, row.weightOut), 1) }} t</span>
+						<span
+							class="flex flex-col items-end leading-tight font-mono whitespace-nowrap">
+							<span
+								>{{
+									formatNumber(
+										Math.max(row.weightIn, row.weightOut),
+										1
+									)
+								}}
+								t</span
+							>
 							<span class="text-xs text-muted">
-								{{ formatNumber(Math.max(row.volumeIn, row.volumeOut), 1) }} m³
+								{{
+									formatNumber(
+										Math.max(row.volumeIn, row.volumeOut),
+										1
+									)
+								}}
+								m³
 							</span>
 						</span>
 					</template>
 					<template #cell-market_capacity="{ row }">
 						<span
 							class="font-mono"
-							:class="row.metrics.marketCapacity < 1 ? 'text-warning' : ''">
+							:class="
+								row.metrics.marketCapacity < 1
+									? 'text-warning'
+									: ''
+							">
 							{{ formatNumber(row.metrics.marketCapacity, 2) }}
 						</span>
 					</template>
 					<template #cell-workforce="{ row }">
-						<span class="block truncate text-xs" :title="workforceText(row)">
+						<span
+							class="block truncate text-xs"
+							:title="workforceText(row)">
 							{{ workforceText(row) }}
 						</span>
 					</template>
@@ -449,10 +606,14 @@
 							:series="series"
 							:try-on-planet="tryOnPlanet"
 							:cx-uuid="cxUuid"
-							@close="expanded = expanded.filter((k) => k !== row.key)" />
+							@close="
+								expanded = expanded.filter((k) => k !== row.key)
+							" />
 					</template>
 					<template #empty>
-						<p class="py-6 text-center text-muted">{{ t("base_roi.table.empty") }}</p>
+						<p class="py-6 text-center text-muted">
+							{{ t("base_roi.table.empty") }}
+						</p>
 					</template>
 				</PDataTable>
 				<BaseROITableSkeleton

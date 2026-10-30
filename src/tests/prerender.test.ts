@@ -44,7 +44,8 @@ describe("prerender", () => {
 		// the auth panel is closed, the tours on their first step
 		expect(doc.querySelector("[role=dialog]")).toBeNull();
 		expect(
-			doc.querySelector('[role=group] button[aria-pressed="true"]')!.textContent
+			doc.querySelector('[role=group] button[aria-pressed="true"]')!
+				.textContent
 		).toContain("01");
 		// confirm host, toast host, drawer: the order the client hydrates
 		// them in <body> (HomepageHeader, async, comes last on both sides)
@@ -55,7 +56,9 @@ describe("prerender", () => {
 		expect(get).not.toHaveBeenCalled();
 		// the router records its pageview; PostHog never starts in the
 		// prerender, so capture() drops it
-		expect(vi.mocked(trackPageview).mock.calls.flat()).toEqual(["homepage"]);
+		expect(vi.mocked(trackPageview).mock.calls.flat()).toEqual([
+			"homepage",
+		]);
 	});
 
 	it("puts the markup into #app and the teleports first in <body>", () => {
@@ -106,7 +109,9 @@ describe("prerender", () => {
 			.spyOn(document.head, "appendChild")
 			.mockImplementation((n) => n);
 		// the paint observer: reports a first paint, then the timer runs out
-		let report!: (list: { getEntriesByName: (n: string) => unknown[] }) => void;
+		let report!: (list: {
+			getEntriesByName: (n: string) => unknown[];
+		}) => void;
 		vi.stubGlobal(
 			"PerformanceObserver",
 			class {
@@ -144,7 +149,9 @@ describe("prerender", () => {
 	});
 
 	it("refuses a shell without an empty #app", () => {
-		expect(() => injectLanding("<html></html>", "x")).toThrow("no empty #app");
+		expect(() => injectLanding("<html></html>", "x")).toThrow(
+			"no empty #app"
+		);
 	});
 
 	it("lists the indexable routes in the sitemap", () => {

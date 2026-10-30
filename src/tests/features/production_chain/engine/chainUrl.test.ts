@@ -71,7 +71,10 @@ describe("chain URL", () => {
 	it("rounds own production up to two decimals, so a link never leaves a sliver to make", () => {
 		const query = encodeChain({
 			...state,
-			input: { ...state.input, have: { AL: 233.62146, C: 0.004, FE: 0.07 } },
+			input: {
+				...state.input,
+				have: { AL: 233.62146, C: 0.004, FE: 0.07 },
+			},
 		});
 		expect(query.have).toBe("AL:233.63,C:0.01,FE:0.07");
 	});

@@ -40,7 +40,6 @@
 			return `${t("planet_search.plots.ghost_tooltip", { n: plots.value.ghost })} ${asOf.value}`;
 		return asOf.value;
 	});
-
 </script>
 
 <template>
@@ -65,7 +64,12 @@
 						{{ t("planet_search.plots.full_ghost") }}
 					</PTag>
 					<span v-else class="text-xs tabular-nums">
-						{{ t("planet_search.plots.free", { free: plots.free, total: plots.total }) }}
+						{{
+							t("planet_search.plots.free", {
+								free: plots.free,
+								total: plots.total,
+							})
+						}}
 					</span>
 				</span>
 			</template>

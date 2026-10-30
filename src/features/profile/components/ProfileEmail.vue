@@ -40,24 +40,29 @@
 
 	const recovery = computed(
 		() =>
-			({
-				none: { type: "secondary", key: "not_set_up" },
-				unconfirmed: { type: "warning", key: "waiting" },
-				ready: { type: "success", key: "ready" },
-			} as const)[state.value]
+			(
+				({
+					none: { type: "secondary", key: "not_set_up" },
+					unconfirmed: { type: "warning", key: "waiting" },
+					ready: { type: "success", key: "ready" },
+				}) as const
+			)[state.value]
 	);
 
 	async function patchEmail(): Promise<void> {
 		if (isUpdating.value) return;
 
-		const changed = (email.value ?? "") !== (userStore.profile?.email ?? "");
+		const changed =
+			(email.value ?? "") !== (userStore.profile?.email ?? "");
 		isUpdating.value = true;
 		isThrottled.value = false;
 		hasFailed.value = false;
 		codeSent.value = false;
 
 		try {
-			await useQuery("PatchUserProfile", { email: email.value }).execute();
+			await useQuery("PatchUserProfile", {
+				email: email.value,
+			}).execute();
 			codeSent.value = changed && !!email.value;
 		} catch (err) {
 			reportError(err);
@@ -72,7 +77,9 @@
 			if (field === "email_taken")
 				emailError.value = t("profile.change_profile.email_taken");
 			else if (typeof field === "string")
-				emailError.value = t("account.email_dialog.errors.invalid_email");
+				emailError.value = t(
+					"account.email_dialog.errors.invalid_email"
+				);
 			else hasFailed.value = !isThrottled.value;
 		} finally {
 			isUpdating.value = false;
@@ -96,10 +103,13 @@
 				class="w-full max-w-sm" />
 		</PFormItem>
 		<PFormItem :label="t('profile.change_profile.recovery.label')">
-			<div class="w-full flex flex-row flex-wrap items-center gap-x-3 gap-y-4 py-1 whitespace-normal">
+			<div
+				class="w-full flex flex-row flex-wrap items-center gap-x-3 gap-y-4 py-1 whitespace-normal">
 				<PTag
 					:type="recovery.type"
-					:value="t(`profile.change_profile.recovery.${recovery.key}`)"
+					:value="
+						t(`profile.change_profile.recovery.${recovery.key}`)
+					"
 					data-testid="email-recovery" />
 				<template v-if="state === 'unconfirmed'">
 					<PButton
@@ -115,7 +125,11 @@
 					</PButton>
 				</template>
 				<span v-else class="text-sm text-muted">
-					{{ t(`profile.change_profile.recovery.${recovery.key}_info`) }}
+					{{
+						t(
+							`profile.change_profile.recovery.${recovery.key}_info`
+						)
+					}}
 				</span>
 			</div>
 		</PFormItem>

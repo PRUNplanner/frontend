@@ -660,11 +660,14 @@ describe("ProductionChainView interactions", () => {
 		});
 	});
 	it("fills Have from a picked empire, keeps the amounts on error and reloads live (AC 10, 11, 15)", async () => {
-		let plans: () => Promise<unknown> = () => Promise.reject(new Error("down"));
+		let plans: () => Promise<unknown> = () =>
+			Promise.reject(new Error("down"));
 		execute.mockImplementation(
 			byName({
 				GetAllEmpires: () =>
-					Promise.resolve([{ uuid: "mine", empire_name: "Mine", plans: [] }]),
+					Promise.resolve([
+						{ uuid: "mine", empire_name: "Mine", plans: [] },
+					]),
 				GetEmpirePlans: () => plans(),
 			})
 		);
@@ -694,18 +697,28 @@ describe("ProductionChainView interactions", () => {
 		expect(lastQuery()).not.toHaveProperty("empire");
 		expect(
 			trackEvent.mock.calls.some(
-				([e, p]) => e === "production_chain:action" && p.action === "own_pick"
+				([e, p]) =>
+					e === "production_chain:action" && p.action === "own_pick"
 			)
 		).toBe(true);
 
 		// another tab saved the empire's plans: they load again
 		const loads = () =>
-			execute.mock.calls.filter(([name]) => name === "GetEmpirePlans").length;
+			execute.mock.calls.filter(([name]) => name === "GetEmpirePlans")
+				.length;
 		expect(loads()).toBe(2);
-		remoteChange.value = { keys: [["planningdata", "cx"]], uuids: [], seq: 1 };
+		remoteChange.value = {
+			keys: [["planningdata", "cx"]],
+			uuids: [],
+			seq: 1,
+		};
 		await flushPromises();
 		expect(loads()).toBe(2);
-		remoteChange.value = { keys: [["planningdata", "empire"]], uuids: [], seq: 2 };
+		remoteChange.value = {
+			keys: [["planningdata", "empire"]],
+			uuids: [],
+			seq: 2,
+		};
 		await flushPromises();
 		expect(loads()).toBe(3);
 	});
@@ -738,10 +751,13 @@ describe("ProductionChainView check mode", () => {
 		mode.vm.$emit("update:value", "plan");
 		expect(nav.replace).not.toHaveBeenCalled();
 		mode.vm.$emit("update:value", "check");
-		expect(nav.replace).toHaveBeenLastCalledWith({ query: { mode: "check" } });
+		expect(nav.replace).toHaveBeenLastCalledWith({
+			query: { mode: "check" },
+		});
 		expect(
 			trackEvent.mock.calls.some(
-				([e, p]) => e === "production_chain:action" && p.action === "mode_check"
+				([e, p]) =>
+					e === "production_chain:action" && p.action === "mode_check"
 			)
 		).toBe(true);
 	});
@@ -750,9 +766,9 @@ describe("ProductionChainView check mode", () => {
 		nav.route.query = { mode: "check", empire: "mine", t: "DW" };
 		const first = await mountComponent(ProductionChainView);
 		await vi.waitFor(() =>
-			expect(first.wrapper.findComponent({ name: "PSegmented" }).exists()).toBe(
-				true
-			)
+			expect(
+				first.wrapper.findComponent({ name: "PSegmented" }).exists()
+			).toBe(true)
 		);
 		first.wrapper
 			.findComponent({ name: "PSegmented" })
@@ -774,19 +790,28 @@ describe("ProductionChainView check mode", () => {
 		nav.route.query = { mode: "check", empire: "theirs", t: "DW" };
 		const { wrapper } = await mountComponent(ProductionChainView);
 		await vi.waitFor(() =>
-			expect(wrapper.find("[data-testid='check-not-yours']").exists()).toBe(true)
+			expect(
+				wrapper.find("[data-testid='check-not-yours']").exists()
+			).toBe(true)
 		);
 		expect(wrapper.find("[data-testid='check-bar']").exists()).toBe(true);
-		expect(execute).not.toHaveBeenCalledWith("GetEmpirePlans", expect.anything());
+		expect(execute).not.toHaveBeenCalledWith(
+			"GetEmpirePlans",
+			expect.anything()
+		);
 	});
 
 	it("opens the user's empire and says when it has no plans", async () => {
 		nav.route.query = { mode: "check" };
 		const { wrapper } = await mountComponent(ProductionChainView);
 		await vi.waitFor(() =>
-			expect(wrapper.find("[data-testid='check-no-plans']").exists()).toBe(true)
+			expect(
+				wrapper.find("[data-testid='check-no-plans']").exists()
+			).toBe(true)
 		);
-		expect(execute).toHaveBeenCalledWith("GetEmpirePlans", { empireUuid: "mine" });
+		expect(execute).toHaveBeenCalledWith("GetEmpirePlans", {
+			empireUuid: "mine",
+		});
 		await flushPromises();
 		expect(nav.replace).toHaveBeenLastCalledWith({
 			query: { mode: "check", empire: "mine" },
@@ -798,7 +823,9 @@ describe("ProductionChainView check mode", () => {
 		nav.route.query = { mode: "check" };
 		const { wrapper } = await mountComponent(ProductionChainView);
 		await vi.waitFor(() =>
-			expect(wrapper.find("[data-testid='check-no-empires']").exists()).toBe(true)
+			expect(
+				wrapper.find("[data-testid='check-no-empires']").exists()
+			).toBe(true)
 		);
 	});
 });

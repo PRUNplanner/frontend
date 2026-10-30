@@ -44,7 +44,6 @@ import type {
 } from "@/features/base_roi/baseROI.types";
 import type { IPlanContext } from "@/features/planning/engine/engine.types";
 
-
 /**
  * Base ROI benchmarks (B10), run with `pnpm vitest bench --run`. Node +
  * jsdom numbers. Planet rows: every index planet within 7 jumps of AI1,
@@ -141,7 +140,12 @@ function engineRows(
 		for (const c of candidates.slice(i, i + CHUNK_SIZE)) {
 			const ctx = contextOf(c);
 			out.push(
-				toRowInput(c, calculateBase(c, ctx, s, undefined), ctx, getExchange)
+				toRowInput(
+					c,
+					calculateBase(c, ctx, s, undefined),
+					ctx,
+					getExchange
+				)
 			);
 		}
 		chunks++;

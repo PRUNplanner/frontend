@@ -19,7 +19,10 @@
 		data: CXDataPoint[];
 	}>();
 
-	const numeric = (key: string, title: string): PDataTableColumn<CXDataPoint> => ({
+	const numeric = (
+		key: string,
+		title: string
+	): PDataTableColumn<CXDataPoint> => ({
 		key,
 		title: t(`market_live.components.point_table.table.${title}`),
 		align: "right",

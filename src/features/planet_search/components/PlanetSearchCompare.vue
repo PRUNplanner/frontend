@@ -96,8 +96,8 @@
 	const rows = computed((): IRow[] => {
 		const materials = filteredMaterials(props.filter);
 		const daily = (p: PlanetSearchIndexEntry, m: string) =>
-			p.resources.find((r) => r.material_ticker === m)?.daily_extraction ??
-			null;
+			p.resources.find((r) => r.material_ticker === m)
+				?.daily_extraction ?? null;
 		const jumps = (p: PlanetSearchIndexEntry, r: PlanetSearchReference) => {
 			const j = planetJumps(p, r, props.ctx);
 			return j === -1 ? null : j;
@@ -161,7 +161,8 @@
 </script>
 
 <template>
-	<div class="min-h-0 border-t border-white/10 bg-black px-6 py-2 flex flex-col gap-2">
+	<div
+		class="min-h-0 border-t border-white/10 bg-black px-6 py-2 flex flex-col gap-2">
 		<div class="flex flex-row flex-wrap items-center gap-2">
 			<button
 				type="button"
@@ -169,7 +170,12 @@
 				:aria-expanded="open"
 				:aria-label="t('planet_search.compare.toggle')"
 				@click="open = !open">
-				{{ t("planet_search.compare.title", { n: planets.length, max: MAX_PINS }) }}
+				{{
+					t("planet_search.compare.title", {
+						n: planets.length,
+						max: MAX_PINS,
+					})
+				}}
 				<span aria-hidden="true">{{ open ? "▼" : "▲" }}</span>
 			</button>
 			<span
@@ -180,7 +186,9 @@
 				<button
 					type="button"
 					class="touch-target w-7 h-7 rounded-full cursor-pointer hover:bg-white/10"
-					:aria-label="t('planet_search.compare.remove', { planet: name(p) })"
+					:aria-label="
+						t('planet_search.compare.remove', { planet: name(p) })
+					"
 					@click="emit('unpin', p.planet_natural_id)">
 					×
 				</button>
@@ -201,8 +209,11 @@
 			<table class="w-full text-sm border-separate border-spacing-0">
 				<thead class="sticky top-0 z-20 bg-black">
 					<tr>
-						<th class="sticky left-0 z-10 bg-black text-left px-2 py-1">
-							<span class="sr-only">{{ t("planet_search.compare.row_label") }}</span>
+						<th
+							class="sticky left-0 z-10 bg-black text-left px-2 py-1">
+							<span class="sr-only">{{
+								t("planet_search.compare.row_label")
+							}}</span>
 						</th>
 						<th
 							v-for="p in planets"

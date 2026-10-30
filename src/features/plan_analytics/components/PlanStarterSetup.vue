@@ -158,10 +158,18 @@
 			<div class="flex flex-col">
 				<div
 					class="hidden md:grid grid-cols-[13rem_1fr_6rem_1fr] gap-3 px-2.5 pb-1 text-xs font-bold uppercase text-muted">
-					<span class="pl-6">{{ $t("plan.tools.plan_starter.columns.building") }}</span>
-					<span>{{ $t("plan.tools.plan_starter.columns.in_plans") }}</span>
-					<span>{{ $t("plan.tools.plan_starter.columns.amount") }}</span>
-					<span>{{ $t("plan.tools.plan_starter.columns.recipes") }}</span>
+					<span class="pl-6">{{
+						$t("plan.tools.plan_starter.columns.building")
+					}}</span>
+					<span>{{
+						$t("plan.tools.plan_starter.columns.in_plans")
+					}}</span>
+					<span>{{
+						$t("plan.tools.plan_starter.columns.amount")
+					}}</span>
+					<span>{{
+						$t("plan.tools.plan_starter.columns.recipes")
+					}}</span>
 				</div>
 				<div
 					v-for="c in candidates"
@@ -175,16 +183,15 @@
 							(value?: boolean) => toggle(c.ticker, !!value)
 						">
 						<span class="inline-block py-0.5 cursor-pointer">
-						<strong class="font-mono text-white">
-							{{ c.ticker }}
-						</strong>
-						<span class="text-xs text-muted-strong ml-1.5">
-							{{ $t(`game.building.${c.ticker}`) }}
-						</span>
+							<strong class="font-mono text-white">
+								{{ c.ticker }}
+							</strong>
+							<span class="text-xs text-muted-strong ml-1.5">
+								{{ $t(`game.building.${c.ticker}`) }}
+							</span>
 						</span>
 					</PCheckbox>
-					<span
-						class="pl-6 md:pl-0 flex items-center gap-2 text-xs">
+					<span class="pl-6 md:pl-0 flex items-center gap-2 text-xs">
 						<span
 							class="block h-1.5 w-22 shrink-0 overflow-hidden rounded-full bg-white/10">
 							<span
@@ -239,7 +246,10 @@
 						:key="`STARTER#EXPERT#${item.type}`"
 						class="flex items-center gap-1.5">
 						<span
-							:class="['h-2 w-2 rounded-full', segmentColor(index)]"
+							:class="[
+								'h-2 w-2 rounded-full',
+								segmentColor(index),
+							]"
 							aria-hidden="true"></span>
 						{{
 							$t("plan.tools.plan_starter.expert_share", {
@@ -269,7 +279,9 @@
 							<router-link
 								:to="{ name: 'profile' }"
 								class="text-link-primary hover:underline">
-								{{ $t("plan.tools.plan_starter.turn_off_link") }}
+								{{
+									$t("plan.tools.plan_starter.turn_off_link")
+								}}
 							</router-link>
 						</template>
 					</i18n-t>

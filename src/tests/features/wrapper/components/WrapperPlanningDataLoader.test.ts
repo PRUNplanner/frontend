@@ -556,7 +556,6 @@ describe("WrapperPlanningDataLoader plan data", () => {
 		});
 	});
 
-
 	describe("on another planet", () => {
 		const otherPlanet = {
 			...planet,
@@ -575,7 +574,10 @@ describe("WrapperPlanningDataLoader plan data", () => {
 
 		beforeEach(() => {
 			mock.onGet(`/planning/plan/${plan.uuid}/`).reply(200, plan);
-			mock.onGet(`/planning/plan/${otherPlan.uuid}/`).reply(200, otherPlan);
+			mock.onGet(`/planning/plan/${otherPlan.uuid}/`).reply(
+				200,
+				otherPlan
+			);
 			mock.onGet(`/data/planet/${planet.planet_natural_id}/`).reply(
 				200,
 				planet

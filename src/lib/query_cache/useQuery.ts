@@ -6,10 +6,7 @@ import type {
 	QueryName,
 	QueryParams,
 } from "./queryRepository.types";
-import type {
-	IMutationDefinition,
-	IQueryDefinition,
-} from "./queryCache.types";
+import type { IMutationDefinition, IQueryDefinition } from "./queryCache.types";
 import { getQueryDefinition } from "./queryRepository";
 
 export function useQuery<K extends QueryName>(

@@ -188,7 +188,9 @@ describe("MaterialTile", () => {
 				),
 		});
 		await vi.waitFor(() =>
-			expect(wrapper.findAll(".material-category-metals")).toHaveLength(50)
+			expect(wrapper.findAll(".material-category-metals")).toHaveLength(
+				50
+			)
 		);
 		await flushPromises();
 
@@ -339,9 +341,13 @@ describe("MaterialTile", () => {
 				)
 			);
 			expect(drawer().exists()).toBe(false);
-			expect(wrapper.findComponent(MaterialMarketCard).props()).toMatchObject(
-				{ pinned: true, clickOnly: true, clickOpensDetails: false }
-			);
+			expect(
+				wrapper.findComponent(MaterialMarketCard).props()
+			).toMatchObject({
+				pinned: true,
+				clickOnly: true,
+				clickOpensDetails: false,
+			});
 			expect(card().text()).toContain("material_tile.card.hint_click");
 
 			// Market details opens the drawer
@@ -361,7 +367,9 @@ describe("MaterialTile", () => {
 		await trigger(wrapper).trigger("pointerdown", { pointerType: "touch" });
 		await tile(wrapper).trigger("click");
 		await vi.waitFor(() =>
-			expect(wrapper.findComponent(MaterialMarketCard).exists()).toBe(true)
+			expect(wrapper.findComponent(MaterialMarketCard).exists()).toBe(
+				true
+			)
 		);
 		expect(wrapper.findComponent(MaterialMarketCard).props("sheet")).toBe(
 			true

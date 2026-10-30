@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
-import { flushPromises, RouterLinkStub, type VueWrapper } from "@vue/test-utils";
+import {
+	flushPromises,
+	RouterLinkStub,
+	type VueWrapper,
+} from "@vue/test-utils";
 
 import { materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
@@ -58,12 +62,10 @@ const MATERIAL_IO = [
 ];
 
 const rowOf = (wrapper: VueWrapper, ticker: string) =>
-	wrapper
-		.findAll("tbody tr[data-row-key]")
-		.find((tr) => {
-			const cell = tr.find(`td[data-col-key="ticker"]`);
-			return cell.exists() && cell.text() === ticker;
-		})!;
+	wrapper.findAll("tbody tr[data-row-key]").find((tr) => {
+		const cell = tr.find(`td[data-col-key="ticker"]`);
+		return cell.exists() && cell.text() === ticker;
+	})!;
 
 const toggle = (wrapper: VueWrapper, ticker: string) =>
 	rowOf(wrapper, ticker).find("button[aria-expanded]");
@@ -105,7 +107,7 @@ describe("EmpireMaterialIO", () => {
 		expect(details(wrapper)).toHaveLength(0);
 	});
 
-		vi.mocked(trackEvent).mockClear();
+	vi.mocked(trackEvent).mockClear();
 	it("expands a row with a real toggle button", async () => {
 		const { wrapper } = await mountComponent(EmpireMaterialIO, {
 			empireMaterialIO: MATERIAL_IO,
@@ -134,9 +136,9 @@ describe("EmpireMaterialIO", () => {
 			"/plan/KW-688c/kw",
 		]);
 		expect(detail.text()).toContain("OT-580b · ot2 name");
-		expect(
-			detail.findComponent(RouterLinkStub).attributes("title")
-		).toBe("KW-688c · kw name");
+		expect(detail.findComponent(RouterLinkStub).attributes("title")).toBe(
+			"KW-688c · kw name"
+		);
 
 		await click(toggle(wrapper, "DW"));
 		expect(details(wrapper)).toHaveLength(0);
@@ -170,13 +172,13 @@ describe("EmpireMaterialIO", () => {
 			// the plan with the largest volume on the planet
 			"/plan/OT-580b/ot2",
 		]);
-		expect(dw.findAllComponents(RouterLinkStub)[2].attributes("title")).toBe(
-			"OT-580b · ot2 name, ot1 name"
-		);
+		expect(
+			dw.findAllComponents(RouterLinkStub)[2].attributes("title")
+		).toBe("OT-580b · ot2 name, ot1 name");
 		// only KW makes and uses DW
-		expect(dw.text().match(/empire\.material_io\.makes_uses/g)).toHaveLength(
-			1
-		);
+		expect(
+			dw.text().match(/empire\.material_io\.makes_uses/g)
+		).toHaveLength(1);
 	});
 
 	it("opens every row with Expand all and switches back when one closes", async () => {

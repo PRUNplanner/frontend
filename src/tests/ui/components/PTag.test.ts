@@ -7,7 +7,9 @@ import PTag from "@/ui/components/PTag.vue";
 const i18n = createI18n({
 	legacy: false,
 	locale: "en_US",
-	messages: { en_US: { common: { ui: { tag: { remove: "Remove {label}" } } } } },
+	messages: {
+		en_US: { common: { ui: { tag: { remove: "Remove {label}" } } } },
+	},
 });
 
 describe("PTag", () => {

@@ -35,7 +35,10 @@ const plans = Object.fromEntries(
 	raw.slice(0, 32).map((p, i) => [`plan-${i}`, p.planet_natural_id])
 );
 const refs: PlanetSearchReference[] = [
-	...Object.keys(plans).map((planUuid) => ({ kind: "plan" as const, planUuid })),
+	...Object.keys(plans).map((planUuid) => ({
+		kind: "plan" as const,
+		planUuid,
+	})),
 	...SEARCH_CX.map((code) => ({ kind: "cx" as const, code })),
 ];
 

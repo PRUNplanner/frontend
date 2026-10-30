@@ -399,7 +399,9 @@ export function usePlanCalculationHandlers(
 	 * @param {IStarterSetup} setup Buildings and experts to add
 	 * @returns {Promise<void>} void
 	 */
-	async function handleApplyStarterSetup(setup: IStarterSetup): Promise<void> {
+	async function handleApplyStarterSetup(
+		setup: IStarterSetup
+	): Promise<void> {
 		for (const { ticker, amount, recipes } of setup.buildings) {
 			await handleCreateBuilding(ticker);
 			const index = planData.value.buildings.findIndex(
@@ -410,7 +412,9 @@ export function usePlanCalculationHandlers(
 			const runs = planData.value.buildings[index].active_recipes;
 			handleAddBuildingRecipes(
 				index,
-				recipes.filter((r) => !runs.some((e) => e.recipeid === r.recipeid))
+				recipes.filter(
+					(r) => !runs.some((e) => e.recipeid === r.recipeid)
+				)
 			);
 		}
 		setup.experts.forEach(({ type, amount }) =>

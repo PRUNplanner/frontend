@@ -66,7 +66,12 @@ describe("placeLabels", () => {
 
 	it("puts a label right of its dot when that is free", () => {
 		expect(
-			placeLabels([dot("a", 100, 100)], [{ key: "a", width: 40 }], [], box)
+			placeLabels(
+				[dot("a", 100, 100)],
+				[{ key: "a", width: 40 }],
+				[],
+				box
+			)
 		).toEqual({ a: "right" });
 	});
 
@@ -123,7 +128,12 @@ describe("placeLabels", () => {
 	it("keeps labels off the edges, lines and earlier labels", () => {
 		// right edge: left
 		expect(
-			placeLabels([dot("a", 390, 100)], [{ key: "a", width: 40 }], [], box)
+			placeLabels(
+				[dot("a", 390, 100)],
+				[{ key: "a", width: 40 }],
+				[],
+				box
+			)
 		).toEqual({ a: "left" });
 		// a horizontal line through the dot blocks both sides
 		expect(
@@ -159,10 +169,12 @@ describe("placeLabels", () => {
 
 	it("lets a crossLines label sit on a line rather than hide", () => {
 		// lines through the dot both ways, dots below and above
-		const dots = [dot("a", 100, 100), dot("d", 100, 118), dot("e", 100, 82)];
-		const lines: [number, number, number, number][] = [
-			[0, 100, 400, 100],
+		const dots = [
+			dot("a", 100, 100),
+			dot("d", 100, 118),
+			dot("e", 100, 82),
 		];
+		const lines: [number, number, number, number][] = [[0, 100, 400, 100]];
 		expect(
 			placeLabels(dots, [{ key: "a", width: 40 }], lines, box)
 		).toEqual({ a: null });

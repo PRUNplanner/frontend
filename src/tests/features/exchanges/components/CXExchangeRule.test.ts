@@ -79,7 +79,9 @@ describe("CXExchangeRule", () => {
 	});
 
 	it("disables Trade now for Universe", async () => {
-		const rule = await mountRule([{ type: "BOTH", exchange: "UNIVERSE_7D" }]);
+		const rule = await mountRule([
+			{ type: "BOTH", exchange: "UNIVERSE_7D" },
+		]);
 		expect(
 			rule.button("exchanges.rule.preset_trade_now").props("disabled")
 		).toBe(true);
@@ -102,7 +104,9 @@ describe("CXExchangeRule", () => {
 			{ type: "BUY", exchange: "NC1_ASK" },
 			{ type: "SELL", exchange: "NC1_BID" },
 		]);
-		expect(pressed(rule.button("exchanges.rule.mode.separate"))).toBe("true");
+		expect(pressed(rule.button("exchanges.rule.mode.separate"))).toBe(
+			"true"
+		);
 
 		const selects = rule.wrapper.findAllComponents(PSelect);
 		selects[1].vm.$emit("update:value", "7D");
@@ -127,7 +131,13 @@ describe("CXExchangeRule", () => {
 		const rule = await mountRule([{ type: "BOTH", exchange: "CI1_ASK" }], {
 			isPlanet: true,
 		});
-		for (const mode of ["separate", "same", "separate", "inherit", "same"]) {
+		for (const mode of [
+			"separate",
+			"same",
+			"separate",
+			"inherit",
+			"same",
+		]) {
 			await rule.click(`exchanges.rule.mode.${mode}`);
 			const types = (last(rule.emitted) ?? []).map((o) => o.type);
 			expect(types.includes("BOTH") && types.length > 1).toBe(false);

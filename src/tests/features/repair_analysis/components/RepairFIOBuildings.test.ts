@@ -105,14 +105,14 @@ describe("RepairFIOBuildings", () => {
 
 	it("notes stale FIO amounts only with due buildings", async () => {
 		const stale = await mountFIO({ stale: true });
-		expect(stale.wrapper.find("[data-testid=repair-fio-stale]").text()).toContain(
-			"may be higher by now"
-		);
+		expect(
+			stale.wrapper.find("[data-testid=repair-fio-stale]").text()
+		).toContain("may be higher by now");
 
 		const fresh = await mountFIO();
-		expect(fresh.wrapper.find("[data-testid=repair-fio-stale]").exists()).toBe(
-			false
-		);
+		expect(
+			fresh.wrapper.find("[data-testid=repair-fio-stale]").exists()
+		).toBe(false);
 	});
 
 	it("notes when FIO has another count than the plan", async () => {
@@ -123,8 +123,8 @@ describe("RepairFIOBuildings", () => {
 		);
 
 		const same = await mountFIO();
-		expect(same.wrapper.find("[data-testid=repair-fio-count]").exists()).toBe(
-			false
-		);
+		expect(
+			same.wrapper.find("[data-testid=repair-fio-count]").exists()
+		).toBe(false);
 	});
 });

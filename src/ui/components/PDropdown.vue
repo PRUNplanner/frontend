@@ -150,9 +150,7 @@
 			role="menu"
 			tabindex="-1"
 			class="py-1 outline-none"
-			:aria-activedescendant="
-				active >= 0 ? `${id}-${active}` : undefined
-			"
+			:aria-activedescendant="active >= 0 ? `${id}-${active}` : undefined"
 			@keydown="onMenuKeydown"
 			@mousedown.prevent
 			@mouseenter="onEnter"
@@ -184,7 +182,9 @@
 							<PIcon><component :is="o.icon" /></PIcon>
 						</span>
 					</span>
-					<span v-if="o.hint" class="relative flex-1 flex flex-col pb-2">
+					<span
+						v-if="o.hint"
+						class="relative flex-1 flex flex-col pb-2">
 						<span class="whitespace-nowrap">{{ o.label }}</span>
 						<span class="text-xs leading-4 text-muted">
 							{{ o.hint }}

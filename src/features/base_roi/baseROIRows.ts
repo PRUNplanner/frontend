@@ -123,7 +123,8 @@ export function planetCandidates(
 ): { within: IBaseROICandidate[]; beyond: IBaseROICandidate[] } {
 	const within: IBaseROICandidate[] = [];
 	const beyond: IBaseROICandidate[] = [];
-	const expertise = (b: string) => gameData.buildings.get(b)?.expertise ?? null;
+	const expertise = (b: string) =>
+		gameData.buildings.get(b)?.expertise ?? null;
 
 	for (const planet of index) {
 		const jumps = jumpsOf(planet.system_id);
@@ -381,7 +382,8 @@ export function toRowInput(
 				ticker: m.ticker,
 				amount: m.delta,
 				traded:
-					exchange(`${m.ticker}.${source.volume}`)?.avg_traded_7d ?? 0,
+					exchange(`${m.ticker}.${source.volume}`)?.avg_traded_7d ??
+					0,
 			});
 	}
 
@@ -452,7 +454,10 @@ export function toRowInput(
 		materials,
 		outputs,
 		workforce: WorkforceTypeSchema.options
-			.map((tier) => ({ tier, required: result.workforce[tier].required }))
+			.map((tier) => ({
+				tier,
+				required: result.workforce[tier].required,
+			}))
 			.filter((w) => w.required > 0),
 		result,
 	};

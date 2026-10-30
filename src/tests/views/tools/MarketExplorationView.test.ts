@@ -440,7 +440,9 @@ describe("MarketExplorationView", () => {
 			expect(wrapper.findComponent(PSelect).props("value")).toBe("RAT");
 			expect(chart.fetchData).toHaveBeenCalledTimes(1);
 			// the exchange table follows, without plan columns
-			const table = wrapper.findComponent({ name: "MaterialExchangeTable" });
+			const table = wrapper.findComponent({
+				name: "MaterialExchangeTable",
+			});
 			expect(table.props("overview")).toMatchObject({
 				vwap_7d: { UNIVERSE: 236 },
 			});

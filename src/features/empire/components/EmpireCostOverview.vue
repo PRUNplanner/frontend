@@ -71,8 +71,12 @@
 				pct: formatPercent(shares[key], 1),
 			}),
 		}));
-		const legend: { key: string; value: number; color: string; text: string }[] =
-			parts.filter((p) => p.key !== "profit" || p.value > 0);
+		const legend: {
+			key: string;
+			value: number;
+			color: string;
+			text: string;
+		}[] = parts.filter((p) => p.key !== "profit" || p.value > 0);
 		if (shares.uncovered > 0)
 			legend.push({
 				key: "uncovered",
@@ -112,7 +116,9 @@
 					{{ formatNumber(costOverview.totalCost) }}
 				</div>
 				<div class="text-muted text-xs">
-					{{ formatPercent(revenuePercentage(costOverview.totalCost)) }}
+					{{
+						formatPercent(revenuePercentage(costOverview.totalCost))
+					}}
 				</div>
 			</div>
 			<div>
@@ -121,7 +127,11 @@
 					<PValue :value="costOverview.totalProfit" />
 				</div>
 				<div class="text-muted text-xs">
-					{{ formatPercent(revenuePercentage(costOverview.totalProfit)) }}
+					{{
+						formatPercent(
+							revenuePercentage(costOverview.totalProfit)
+						)
+					}}
 				</div>
 			</div>
 			<div>
@@ -138,7 +148,10 @@
 				:segments="kpiSplit.parts"
 				:hatch-from="kpiSplit.hatchFrom"
 				:label="kpiSplit.label">
-				<div v-for="l in kpiSplit.legend" :key="l.key" class="tabular-nums">
+				<div
+					v-for="l in kpiSplit.legend"
+					:key="l.key"
+					class="tabular-nums">
 					{{ l.text }}
 				</div>
 				<div v-if="kpiSplit.hatchFrom !== undefined" class="text-muted">

@@ -14,7 +14,12 @@ import type {
 /** the chart shows paybacks up to this many times the fastest one */
 const ROI_ZOOM = 2;
 
-export const ROI_EXCHANGES: IResourceROIExchange[] = ["AI1", "CI1", "IC1", "NC1"];
+export const ROI_EXCHANGES: IResourceROIExchange[] = [
+	"AI1",
+	"CI1",
+	"IC1",
+	"NC1",
+];
 
 /** one row per planet and building: the table's row and the chart's point key */
 export const roiRowKey = (row: IResourceROIResult): string =>
@@ -81,7 +86,12 @@ export function roiChartData(
 			data.noRoute++;
 			continue;
 		}
-		data.points.push({ row, x: row.planROI, y: to.jumps, exchange: to.code });
+		data.points.push({
+			row,
+			x: row.planROI,
+			y: to.jumps,
+			exchange: to.code,
+		});
 	}
 	if (!data.points.length) return data;
 	data.maxDays = Math.min(...data.points.map((p) => p.x)) * ROI_ZOOM;

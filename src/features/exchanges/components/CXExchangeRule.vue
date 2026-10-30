@@ -117,7 +117,9 @@
 		rules.value =
 			preset === "average"
 				? presetAverage(exchange)
-				: presetTradeNow(exchange as Exclude<EXCHANGES_TYPE, "UNIVERSE">);
+				: presetTradeNow(
+						exchange as Exclude<EXCHANGES_TYPE, "UNIVERSE">
+					);
 		trackEvent("exchange:preset", {
 			preset,
 			scope: isPlanet ? "planet" : "all",
@@ -137,7 +139,9 @@
 			? inherited
 					.map((o) =>
 						t("exchanges.rule.inherited_part", {
-							type: t(`exchanges.rule.side.${o.type.toLowerCase()}`),
+							type: t(
+								`exchanges.rule.side.${o.type.toLowerCase()}`
+							),
 							rule: exchangeOptionLabel(o.exchange, t),
 						})
 					)
@@ -154,9 +158,16 @@
 			</h3>
 			<div class="flex flex-wrap items-center gap-2">
 				<span class="text-muted text-sm">
-					{{ $t("exchanges.rule.presets_on", { exchange: presetLabel }) }}
+					{{
+						$t("exchanges.rule.presets_on", {
+							exchange: presetLabel,
+						})
+					}}
 				</span>
-				<PButton type="secondary" size="sm" @click="applyPreset('average')">
+				<PButton
+					type="secondary"
+					size="sm"
+					@click="applyPreset('average')">
 					{{ $t("exchanges.rule.preset_average") }}
 				</PButton>
 				<PTooltip :disabled="presetCX !== 'UNIVERSE'">

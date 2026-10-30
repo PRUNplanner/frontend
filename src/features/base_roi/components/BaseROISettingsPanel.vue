@@ -22,7 +22,6 @@
 	import {
 		PButton,
 		PCheckbox,
-
 		PInputNumber,
 		PSegmented,
 		PSelect,
@@ -156,7 +155,9 @@
 				<ExpandMoreSharp
 					class="size-5 shrink-0 transition-transform"
 					:class="settings.panelOpen ? '' : '-rotate-90'" />
-				<span class="font-bold">{{ t("base_roi.settings.title") }}</span>
+				<span class="font-bold">{{
+					t("base_roi.settings.title")
+				}}</span>
 				<span class="text-xs text-muted truncate">{{ summary }}</span>
 			</button>
 			<PButton
@@ -176,7 +177,7 @@
 				class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 p-3">
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.cogc') }}
+						{{ t("base_roi.settings.cogc") }}
 					</span>
 					<PSegmented
 						:value="settings.cogc"
@@ -195,7 +196,7 @@
 				</div>
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.experts') }}
+						{{ t("base_roi.settings.experts") }}
 					</span>
 					<PSelect
 						:aria-label="t('base_roi.settings.experts')"
@@ -205,7 +206,7 @@
 				</div>
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.buffer') }}
+						{{ t("base_roi.settings.buffer") }}
 					</span>
 					<PSelect
 						:aria-label="t('base_roi.settings.buffer')"
@@ -216,7 +217,7 @@
 
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.min_market_capacity') }}
+						{{ t("base_roi.settings.min_market_capacity") }}
 					</span>
 					<PSelect
 						:aria-label="t('base_roi.settings.min_market_capacity')"
@@ -226,7 +227,7 @@
 				</div>
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.logistics') }}
+						{{ t("base_roi.settings.logistics") }}
 					</span>
 					<div class="flex flex-col gap-2">
 						<PSegmented
@@ -235,15 +236,21 @@
 							:options="[
 								{
 									value: 'ship',
-									label: t('base_roi.settings.logistics_ship'),
+									label: t(
+										'base_roi.settings.logistics_ship'
+									),
 								},
 								{
 									value: 'manual',
-									label: t('base_roi.settings.logistics_manual'),
+									label: t(
+										'base_roi.settings.logistics_manual'
+									),
 								},
 								{
 									value: 'none',
-									label: t('base_roi.settings.logistics_none'),
+									label: t(
+										'base_roi.settings.logistics_none'
+									),
 								},
 							]"
 							@update:value="(v) => set('logistics', v)" />
@@ -270,7 +277,9 @@
 								class="w-28"
 								:value="settings.manualWeight"
 								:min="0"
-								:aria-label="t('base_roi.settings.manual_weight')"
+								:aria-label="
+									t('base_roi.settings.manual_weight')
+								"
 								@update:value="
 									(v) => set('manualWeight', v ?? 0)
 								" />
@@ -281,7 +290,9 @@
 								class="w-28"
 								:value="settings.manualVolume"
 								:min="0"
-								:aria-label="t('base_roi.settings.manual_volume')"
+								:aria-label="
+									t('base_roi.settings.manual_volume')
+								"
 								@update:value="
 									(v) => set('manualVolume', v ?? 0)
 								" />
@@ -293,7 +304,7 @@
 				</div>
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.target_permit') }}
+						{{ t("base_roi.settings.target_permit") }}
 					</span>
 					<PSelect
 						:aria-label="t('base_roi.settings.target_permit')"
@@ -305,7 +316,7 @@
 
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.round_trip') }}
+						{{ t("base_roi.settings.round_trip") }}
 					</span>
 					<PSelect
 						:aria-label="t('base_roi.settings.round_trip')"
@@ -315,16 +326,20 @@
 				</div>
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.max_jumps') }}
+						{{ t("base_roi.settings.max_jumps") }}
 					</span>
 					<div class="flex flex-row items-center gap-2">
 						<PInputNumber
-						:aria-label="t('base_roi.settings.max_jumps')"
+							:aria-label="t('base_roi.settings.max_jumps')"
 							class="w-24"
 							:value="settings.maxJumps"
 							:min="0"
 							@update:value="
-								(v) => set('maxJumps', Math.max(0, Math.round(v ?? 0)))
+								(v) =>
+									set(
+										'maxJumps',
+										Math.max(0, Math.round(v ?? 0))
+									)
 							" />
 						<span class="text-muted">
 							{{
@@ -337,7 +352,7 @@
 				</div>
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.row_kinds') }}
+						{{ t("base_roi.settings.row_kinds") }}
 					</span>
 					<div class="flex flex-row flex-wrap gap-x-4 gap-y-1">
 						<PCheckbox
@@ -360,7 +375,7 @@
 
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t('base_roi.settings.filters') }}
+						{{ t("base_roi.settings.filters") }}
 					</span>
 					<div class="flex flex-row flex-wrap gap-2">
 						<PSelect

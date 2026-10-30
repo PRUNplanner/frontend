@@ -112,7 +112,9 @@ export function exchangeNotes(input: INotesInput): IExchangeNote[] {
 			) {
 				const rule = findExchangeRule(cxData, base.planet, type)!;
 				const scope =
-					source.level === "planet_exchange" ? base.planet : ALL_PLANETS;
+					source.level === "planet_exchange"
+						? base.planet
+						: ALL_PLANETS;
 				addGap(
 					`gap#${scope}#${rule.option}#${type}`,
 					{
@@ -146,7 +148,11 @@ export function exchangeNotes(input: INotesInput): IExchangeNote[] {
 		}
 	}
 	for (const { note, tickers, planets } of gaps.values())
-		notes.push({ ...note, tickers: sorted(tickers), planets: sorted(planets) });
+		notes.push({
+			...note,
+			tickers: sorted(tickers),
+			planets: sorted(planets),
+		});
 
 	// 3: fixed at 0
 	const zero = (prefs: CXData["ticker_empire"]) =>
@@ -198,10 +204,7 @@ export function exchangeNotes(input: INotesInput): IExchangeNote[] {
 
 	// 5: a planet rule identical to the all-planets rule
 	for (const { planet, preferences } of cxData.cx_planets)
-		if (
-			preferences.length > 0 &&
-			sameRules(preferences, cxData.cx_empire)
-		)
+		if (preferences.length > 0 && sameRules(preferences, cxData.cx_empire))
 			notes.push({
 				code: "planet_redundant",
 				kind: "info",

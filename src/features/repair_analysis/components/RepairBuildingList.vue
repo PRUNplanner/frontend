@@ -55,7 +55,9 @@
 	<section
 		:aria-label="$t('plan.tools.repair_analysis.list.title')"
 		class="flex flex-col min-w-0"
-		:class="cards ? 'gap-1.5' : 'bg-surface border border-line rounded-panel'">
+		:class="
+			cards ? 'gap-1.5' : 'bg-surface border border-line rounded-panel'
+		">
 		<div
 			class="flex justify-between items-center gap-3"
 			:class="cards ? '' : 'pt-3 pb-2.5 px-4'">
@@ -85,7 +87,9 @@
 				data-testid="repair-building-card"
 				@click="emit('select', b.ticker)">
 				<span>
-					<b class="text-ink-strong">{{ b.amount }}× {{ b.ticker }}</b>
+					<b class="text-ink-strong"
+						>{{ b.amount }}× {{ b.ticker }}</b
+					>
 					<span class="ms-1 text-muted">{{ b.name }}</span>
 				</span>
 				<span>
@@ -128,8 +132,12 @@
 						<th class="py-1.5 pr-4 pl-1.5 font-medium text-start">
 							{{
 								due
-									? $t("plan.tools.repair_analysis.list.next_due")
-									: $t("plan.tools.repair_analysis.list.good_range")
+									? $t(
+											"plan.tools.repair_analysis.list.next_due"
+										)
+									: $t(
+											"plan.tools.repair_analysis.list.good_range"
+										)
 							}}
 						</th>
 					</tr>
@@ -139,7 +147,11 @@
 						v-for="b in buildings"
 						:key="b.ticker"
 						class="border-t border-line"
-						:class="b.ticker === selected ? 'bg-selected' : 'hover:bg-hover'"
+						:class="
+							b.ticker === selected
+								? 'bg-selected'
+								: 'hover:bg-hover'
+						"
 						data-testid="repair-building-row">
 						<td class="py-1 pl-4 pr-1.5">
 							<button
@@ -150,11 +162,17 @@
 								<span class="font-bold text-ink-strong">
 									{{ b.amount }}× {{ b.ticker }}
 								</span>
-								<span class="text-xs text-muted">{{ b.name }}</span>
+								<span class="text-xs text-muted">{{
+									b.name
+								}}</span>
 							</button>
 						</td>
 						<td class="p-1.5 text-end text-nowrap">
-							{{ $t("plan.tools.repair_analysis.n_d", { n: b.best }) }}
+							{{
+								$t("plan.tools.repair_analysis.n_d", {
+									n: b.best,
+								})
+							}}
 							<span class="text-xs text-muted">
 								({{ b.range[0] }}–{{ b.range[1] }})
 							</span>
@@ -174,10 +192,14 @@
 									)
 								"
 								@update:value="
-									(v) => v && emit('update:interval', b.ticker, v)
+									(v) =>
+										v &&
+										emit('update:interval', b.ticker, v)
 								" />
 						</td>
-						<td class="p-1.5 text-end text-nowrap">{{ profit(b) }}</td>
+						<td class="p-1.5 text-end text-nowrap">
+							{{ profit(b) }}
+						</td>
 						<td class="py-1.5 pr-4 pl-1.5">
 							<template v-if="due">
 								<RepairDueTag
@@ -212,7 +234,12 @@
 								<rect
 									:x="rx(b.range[0])"
 									y="3"
-									:width="Math.max(2, rx(b.range[1]) - rx(b.range[0]))"
+									:width="
+										Math.max(
+											2,
+											rx(b.range[1]) - rx(b.range[0])
+										)
+									"
 									height="10"
 									rx="2"
 									class="fill-positive/35" />

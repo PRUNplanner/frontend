@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeAll,
+	beforeEach,
+	afterEach,
+	vi,
+} from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -50,8 +58,7 @@ async function mountEmail(stored: UserProfile | undefined) {
 	return mountComponent(ProfileEmail, {}, { pinia });
 }
 
-const input = (wrapper: VueWrapper) =>
-	wrapper.find<HTMLInputElement>("input");
+const input = (wrapper: VueWrapper) => wrapper.find<HTMLInputElement>("input");
 const tag = (wrapper: VueWrapper) =>
 	wrapper.find("[data-testid=email-recovery]");
 const enterCode = (wrapper: VueWrapper) =>
@@ -92,7 +99,11 @@ describe("ProfileEmail", () => {
 			profile({ email: null, is_email_verified: false }),
 			"not_set_up",
 		],
-		["an unconfirmed email", profile({ is_email_verified: false }), "waiting"],
+		[
+			"an unconfirmed email",
+			profile({ is_email_verified: false }),
+			"waiting",
+		],
 	])("shows the recovery status for %s", async (_, stored, key) => {
 		const { wrapper } = await mountEmail(stored);
 
@@ -104,7 +115,9 @@ describe("ProfileEmail", () => {
 	});
 
 	it("opens the dialog at the code step from Enter code", async () => {
-		const { wrapper } = await mountEmail(profile({ is_email_verified: false }));
+		const { wrapper } = await mountEmail(
+			profile({ is_email_verified: false })
+		);
 
 		await enterCode(wrapper).trigger("click");
 		await flushPromises();
@@ -114,7 +127,9 @@ describe("ProfileEmail", () => {
 
 	it("sends a new code, then opens the dialog at the code step", async () => {
 		mock.onPost(RESEND_URL).reply(200, { detail: "Code sent." });
-		const { wrapper } = await mountEmail(profile({ is_email_verified: false }));
+		const { wrapper } = await mountEmail(
+			profile({ is_email_verified: false })
+		);
 
 		await resend(wrapper).trigger("click");
 		await flushPromises();
@@ -126,7 +141,9 @@ describe("ProfileEmail", () => {
 
 	it("reports a failed code request and keeps the dialog closed", async () => {
 		mock.onPost(RESEND_URL).reply(500);
-		const { wrapper } = await mountEmail(profile({ is_email_verified: false }));
+		const { wrapper } = await mountEmail(
+			profile({ is_email_verified: false })
+		);
 
 		await resend(wrapper).trigger("click");
 		await flushPromises();
@@ -146,7 +163,9 @@ describe("ProfileEmail", () => {
 		expect(JSON.parse(mock.history.patch[0].data)).toEqual({
 			email: "new@example.com",
 		});
-		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(true);
+		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(
+			true
+		);
 	});
 
 	it("sends a cleared email as null, without the code notice", async () => {
@@ -157,7 +176,9 @@ describe("ProfileEmail", () => {
 		await save(wrapper);
 
 		expect(JSON.parse(mock.history.patch[0].data)).toEqual({ email: null });
-		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(false);
+		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(
+			false
+		);
 	});
 
 	it("shows an address used by another account under the field", async () => {
@@ -170,20 +191,24 @@ describe("ProfileEmail", () => {
 
 		expect(wrapper.text()).toContain("profile.change_profile.email_taken");
 		expect(wrapper.find("[role=alert]").exists()).toBe(false);
-		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(false);
+		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(
+			false
+		);
 	});
 
 	it("shows any other email field error as the invalid text", async () => {
-		mock
-			.onPatch(PROFILE_URL)
-			.reply(400, { email: ["Enter a valid email address."] });
+		mock.onPatch(PROFILE_URL).reply(400, {
+			email: ["Enter a valid email address."],
+		});
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountEmail(profile());
 		await input(wrapper).setValue("x@y");
 
 		await save(wrapper);
 
-		expect(wrapper.text()).toContain("account.email_dialog.errors.invalid_email");
+		expect(wrapper.text()).toContain(
+			"account.email_dialog.errors.invalid_email"
+		);
 		expect(wrapper.text()).not.toContain("Enter a valid email address.");
 	});
 

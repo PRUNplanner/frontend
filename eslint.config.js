@@ -145,7 +145,8 @@ export default [
 	{
 		rules: {
 			"vue/no-unused-vars": ["error", { ignorePattern: "^_" }],
-			"vue/max-attributes-per-line": ["error", { singleline: 5 }],
+			"vue/max-attributes-per-line": "off",
+			"vue/multiline-html-element-content-newline": "off",
 			"vue/html-indent": "off",
 			"vue/singleline-html-element-content-newline": "off",
 			"vue/html-closing-bracket-newline": "off",

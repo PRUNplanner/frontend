@@ -6,13 +6,8 @@ import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.sch
 import type { IPlanetSearchContext } from "@/features/planet_search/planetSearch.types";
 import type { PlanetSearchCX } from "@/features/planet_search/planetSearch.schemas";
 
-const {
-	getJumpsFrom,
-	systemidAI1,
-	systemidCI1,
-	systemidIC1,
-	systemidNC1,
-} = usePathfinder();
+const { getJumpsFrom, systemidAI1, systemidCI1, systemidIC1, systemidNC1 } =
+	usePathfinder();
 
 const CX_SYSTEMS: Record<PlanetSearchCX, string> = {
 	AI1: systemidAI1,

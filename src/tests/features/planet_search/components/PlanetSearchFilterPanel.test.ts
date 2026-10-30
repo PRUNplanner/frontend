@@ -445,7 +445,10 @@ describe("PlanetSearchFilterPanel distance", () => {
 		await buttonByText(panel, "planet_search.distance.login").trigger(
 			"click"
 		);
-		expect(openAuth).toHaveBeenCalledWith("login", "planet_search_distance");
+		expect(openAuth).toHaveBeenCalledWith(
+			"login",
+			"planet_search_distance"
+		);
 	});
 
 	it("shows no login line with a login", async () => {

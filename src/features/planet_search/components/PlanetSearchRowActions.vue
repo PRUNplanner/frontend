@@ -27,12 +27,11 @@
 
 	const emit = defineEmits<{ (e: "pin"): void }>();
 
-	const name = computed(
-		() =>
-			planetDisplayName(
-				props.planet.planet_natural_id,
-				props.planet.planet_name
-			)
+	const name = computed(() =>
+		planetDisplayName(
+			props.planet.planet_natural_id,
+			props.planet.planet_name
+		)
 	);
 	// 26 px square buttons in both views
 	const square =
@@ -62,7 +61,9 @@
 			target="_blank"
 			rel="noopener"
 			:class="plus"
-			:aria-label="t('planet_search.results.create_plan', { planet: name })"
+			:aria-label="
+				t('planet_search.results.create_plan', { planet: name })
+			"
 			@click="
 				trackEvent('planet_search:action', { action: 'plan_open' })
 			">

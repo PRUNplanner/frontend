@@ -210,7 +210,10 @@ export function marketBrief(summary: MarketSummary): IMarketBrief {
 		"pioneer"
 	);
 	// the sparks' days, the last one is as_of
-	const sparkDays = Math.max(0, ...summary.materials.map((m) => m.spark.length));
+	const sparkDays = Math.max(
+		0,
+		...summary.materials.map((m) => m.spark.length)
+	);
 
 	return {
 		index: summary.index.combined.findLast((v) => v != null) ?? null,
@@ -266,7 +269,9 @@ export function exchangeGaps(
 			for (const hi of rows) {
 				if (lo === hi) continue;
 				const [a, b] =
-					basis === "vwap" ? [lo.vwap_7d, hi.vwap_7d] : [lo.ask, hi.bid];
+					basis === "vwap"
+						? [lo.vwap_7d, hi.vwap_7d]
+						: [lo.ask, hi.bid];
 				if (a <= 0 || b <= 0) continue;
 				const gap = (b / a - 1) * 100;
 				if (!best || gap > best[2]) best = [lo, hi, gap];
@@ -284,7 +289,10 @@ export function exchangeGaps(
 			gap,
 			ask: lo.ask,
 			bid: hi.bid,
-			open: lo.ask > 0 && hi.bid > lo.ask ? (hi.bid / lo.ask - 1) * 100 : null,
+			open:
+				lo.ask > 0 && hi.bid > lo.ask
+					? (hi.bid / lo.ask - 1) * 100
+					: null,
 		});
 	}
 	return gaps.sort((a, b) => b.gap - a.gap);

@@ -16,8 +16,7 @@ async function mountMenu(props: Record<string, unknown> = {}) {
 const menu = () => document.body.querySelector<HTMLElement>("[role=menu]");
 const items = () =>
 	Array.from(document.body.querySelectorAll<HTMLElement>("[role=menuitem]"));
-const item = (key: string) =>
-	items().find((o) => o.textContent?.includes(key));
+const item = (key: string) => items().find((o) => o.textContent?.includes(key));
 
 async function open(wrapper: VueWrapper) {
 	await wrapper.find("button").trigger("click");
@@ -26,7 +25,11 @@ async function open(wrapper: VueWrapper) {
 
 function key(k: string, target: Element) {
 	target.dispatchEvent(
-		new KeyboardEvent("keydown", { key: k, bubbles: true, cancelable: true })
+		new KeyboardEvent("keydown", {
+			key: k,
+			bubbles: true,
+			cancelable: true,
+		})
 	);
 }
 

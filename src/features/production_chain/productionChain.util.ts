@@ -2,10 +2,7 @@
 import { formatNumber, formatPercent } from "@/util/numbers";
 
 // Types & Interfaces
-import type {
-	Material,
-	Recipe,
-} from "@/features/api/schemas/gameData.schemas";
+import type { Material, Recipe } from "@/features/api/schemas/gameData.schemas";
 import type { IChainResult } from "@/features/production_chain/engine/chainSolver.types";
 import type { IChainOwn } from "@/features/production_chain/productionChain.types";
 import type {
@@ -36,7 +33,9 @@ export function formatShare(share: number): string {
 /** "1 VEG + 1 MUS → 10 RAT", "nothing → 1 DV" without inputs */
 export function recipeLabel(recipe: Recipe, nothing: string): string {
 	const side = (list: Recipe["inputs"]) =>
-		list.map((m) => `${m.material_amount} ${m.material_ticker}`).join(" + ");
+		list
+			.map((m) => `${m.material_amount} ${m.material_ticker}`)
+			.join(" + ");
 	return `${side(recipe.inputs) || nothing} → ${side(recipe.outputs)}`;
 }
 

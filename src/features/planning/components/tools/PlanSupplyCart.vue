@@ -255,7 +255,9 @@
 						<PIcon
 							class="text-muted-strong hover:cursor-help"
 							role="img"
-							:aria-label="t('plan.tools.supply_cart.info.label')">
+							:aria-label="
+								t('plan.tools.supply_cart.info.label')
+							">
 							<InfoOutlined />
 						</PIcon>
 					</template>
@@ -263,7 +265,9 @@
 						keypath="plan.tools.supply_cart.info.p"
 						tag="p"
 						class="max-w-96">
-						<template #link>{{ t("plan.tools.supply_cart.info.link") }}</template>
+						<template #link>{{
+							t("plan.tools.supply_cart.info.link")
+						}}</template>
 					</i18n-t>
 				</PTooltip>
 			</span>
@@ -276,8 +280,12 @@
 					source="supply_cart_initial"
 					:elements="xitInitialElements"
 					transfer-name="Supply Cart Initial"
-					:button-text="t('plan.tools.supply_cart.buttons.xit_initial')"
-					:drawer-title="t('plan.tools.supply_cart.table.xit_initial_name')"
+					:button-text="
+						t('plan.tools.supply_cart.buttons.xit_initial')
+					"
+					:drawer-title="
+						t('plan.tools.supply_cart.table.xit_initial_name')
+					"
 					button-secondary />
 			</div>
 		</div>
@@ -293,7 +301,9 @@
 				{{ t("plan.tools.supply_cart.table.stock_duration") }}
 				<PInputNumber
 					v-model:value="refStockRequirement"
-					:aria-label="t('plan.tools.supply_cart.table.stock_duration')"
+					:aria-label="
+						t('plan.tools.supply_cart.table.stock_duration')
+					"
 					show-buttons
 					size="sm"
 					:min="0"
@@ -323,63 +333,56 @@
 			</RouterLink>
 		</div>
 
-	<PDataTable
-		:columns="columns"
-		:data="filteredMaterialIO"
-		striped>
-		<template #cell-ticker="{ row }">
-			<MaterialTile
-				:key="`SUPPLYCART#Material#${row.ticker}`"
-				:ticker="row.ticker" />
-		</template>
-		<template #cell-delta="{ row }">
-			{{ formatNumber(row.delta * -1) }}
-		</template>
-		<template #cell-price="{ row }">
-			{{ formatNumber(row.price * -1) }}
-		</template>
-		<template #cell-stock="{ row }">
-			{{ formatAmount(row.stock) }}
-		</template>
-		<template #cell-stockNeed="{ row }">
-			{{ formatAmount(row.stockNeed) }}
-		</template>
-		<template #cell-needLeft="{ row }">
-			{{ formatAmount(row.needLeft) }}
-		</template>
-		<template #cell-needWeight="{ row }">
-			{{ formatNumber(row.needWeight) }}
-		</template>
-		<template #cell-needVolume="{ row }">
-			{{ formatNumber(row.needVolume) }}
-		</template>
-		<template #cell-workforce="{ row }">
-			<div class="text-center">
-				<PIcon
-					:class="
-						row.workforce
-							? 'text-positive'
-							: 'text-negative'
-					">
-					<CheckCircleOutlineSharp v-if="row.workforce" />
-					<RemoveCircleOutlineSharp v-else />
-				</PIcon>
-			</div>
-		</template>
-		<template #cell-production="{ row }">
-			<div class="text-center">
-				<PIcon
-					:class="
-						row.production
-							? 'text-positive'
-							: 'text-negative'
-					">
-					<CheckCircleOutlineSharp v-if="row.production" />
-					<RemoveCircleOutlineSharp v-else />
-				</PIcon>
-			</div>
-		</template>
-	</PDataTable>
+		<PDataTable :columns="columns" :data="filteredMaterialIO" striped>
+			<template #cell-ticker="{ row }">
+				<MaterialTile
+					:key="`SUPPLYCART#Material#${row.ticker}`"
+					:ticker="row.ticker" />
+			</template>
+			<template #cell-delta="{ row }">
+				{{ formatNumber(row.delta * -1) }}
+			</template>
+			<template #cell-price="{ row }">
+				{{ formatNumber(row.price * -1) }}
+			</template>
+			<template #cell-stock="{ row }">
+				{{ formatAmount(row.stock) }}
+			</template>
+			<template #cell-stockNeed="{ row }">
+				{{ formatAmount(row.stockNeed) }}
+			</template>
+			<template #cell-needLeft="{ row }">
+				{{ formatAmount(row.needLeft) }}
+			</template>
+			<template #cell-needWeight="{ row }">
+				{{ formatNumber(row.needWeight) }}
+			</template>
+			<template #cell-needVolume="{ row }">
+				{{ formatNumber(row.needVolume) }}
+			</template>
+			<template #cell-workforce="{ row }">
+				<div class="text-center">
+					<PIcon
+						:class="
+							row.workforce ? 'text-positive' : 'text-negative'
+						">
+						<CheckCircleOutlineSharp v-if="row.workforce" />
+						<RemoveCircleOutlineSharp v-else />
+					</PIcon>
+				</div>
+			</template>
+			<template #cell-production="{ row }">
+				<div class="text-center">
+					<PIcon
+						:class="
+							row.production ? 'text-positive' : 'text-negative'
+						">
+						<CheckCircleOutlineSharp v-if="row.production" />
+						<RemoveCircleOutlineSharp v-else />
+					</PIcon>
+				</div>
+			</template>
+		</PDataTable>
 		<!-- outside the table: a wide table scrolls, the totals stay in view -->
 		<dl
 			class="flex flex-wrap gap-x-6 gap-y-1 px-1 text-sm tabular-nums [&_dt]:text-muted-strong [&>div]:flex [&>div]:gap-2"

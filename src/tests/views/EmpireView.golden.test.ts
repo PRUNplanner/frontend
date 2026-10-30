@@ -208,9 +208,9 @@ async function snapshot(input: ICase) {
 	profits.length = 0;
 	const wrapper = await mountView(input);
 	await vi.waitFor(() => {
-		expect(
-			wrapper.findComponent({ name: "EmpirePlanList" }).exists()
-		).toBe(true);
+		expect(wrapper.findComponent({ name: "EmpirePlanList" }).exists()).toBe(
+			true
+		);
 		expect(
 			wrapper.findComponent({ name: "EmpireCostOverview" }).exists()
 		).toBe(true);

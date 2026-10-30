@@ -209,8 +209,9 @@ describe("PlanBase", () => {
 		);
 		expect(housing.element.open).toBe(false);
 
-		(component.vm as unknown as { openSection: (k: string) => void })
-			.openSection("housing");
+		(
+			component.vm as unknown as { openSection: (k: string) => void }
+		).openSection("housing");
 
 		expect(housing.element.open).toBe(true);
 		expect(scrollIntoView.mock.contexts).toEqual([housing.element]);

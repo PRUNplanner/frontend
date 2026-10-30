@@ -97,8 +97,8 @@ describe("EmpireBarChart", () => {
 
 		// no decimals from 100 up, no unit (it sits in the heading)
 		expect(
-			wrapper.findComponent({ name: "Bar" }).props("options").scales.values
-				.labels
+			wrapper.findComponent({ name: "Bar" }).props("options").scales
+				.values.labels
 		).toEqual(["663,456", "-99.50"]);
 	});
 
