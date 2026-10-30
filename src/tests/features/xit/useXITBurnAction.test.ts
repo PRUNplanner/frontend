@@ -94,15 +94,13 @@ describe("useBurnXITAction", async () => {
 	const materialInactives: Set<string> = new Set(["FEO"]);
 
 	it("materialTable", async () => {
-		const { materialTable } = useBurnXITAction(
-			ref(elements),
-			ref(resupplyDays),
-			ref(hideInfinite),
-			ref(materialOverrides),
-			ref(materialInactives),
-			ref(undefined),
-			ref(undefined)
-		);
+		const { materialTable } = useBurnXITAction({
+			elements: ref(elements),
+			resupplyDays: ref(resupplyDays),
+			hideInfinite: ref(hideInfinite),
+			materialOverrides: ref(materialOverrides),
+			materialInactives: ref(materialInactives),
+		});
 
 		expect(materialTable.value.length).toBe(3);
 		expect(materialTable.value[0].total).toBe(10);
@@ -111,20 +109,18 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("never runs out without consumption, also at delta 0", () => {
-		const { materialTable } = useBurnXITAction(
-			ref([
+		const { materialTable } = useBurnXITAction({
+			elements: ref([
 				{ ticker: "H2O", stock: 2340, delta: 0 },
 				{ ticker: "HCP", stock: 0, delta: 0 },
 				{ ticker: "FEO", stock: 10, delta: 1 },
 				{ ticker: "ALO", stock: 20, delta: -2 },
 			]),
-			ref(5),
-			ref(false),
-			ref({}),
-			ref(new Set<string>()),
-			ref(undefined),
-			ref(undefined)
-		);
+			resupplyDays: ref(5),
+			hideInfinite: ref(false),
+			materialOverrides: ref({}),
+			materialInactives: ref(new Set<string>()),
+		});
 
 		expect(materialTable.value.map((m) => m.burn)).toEqual([
 			Infinity,
@@ -135,15 +131,13 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("totalWeightVolume", async () => {
-		const { totalWeightVolume } = useBurnXITAction(
-			ref(elements),
-			ref(resupplyDays),
-			ref(hideInfinite),
-			ref(materialOverrides),
-			ref(materialInactives),
-			ref(undefined),
-			ref(undefined)
-		);
+		const { totalWeightVolume } = useBurnXITAction({
+			elements: ref(elements),
+			resupplyDays: ref(resupplyDays),
+			hideInfinite: ref(hideInfinite),
+			materialOverrides: ref(materialOverrides),
+			materialInactives: ref(materialInactives),
+		});
 
 		expect(totalWeightVolume.value.totalWeight).toBe(16.230000257492065);
 		expect(totalWeightVolume.value.totalVolume).toBe(11);
@@ -152,40 +146,60 @@ describe("useBurnXITAction", async () => {
 	it("fit", async () => {
 		const days = ref(5);
 
-		const { fit } = useBurnXITAction(
-			ref(elements),
-			days,
-			ref(hideInfinite),
-			ref(materialOverrides),
-			ref(materialInactives),
-			ref(undefined),
-			ref(undefined)
-		);
+		const { fit } = useBurnXITAction({
+			elements: ref(elements),
+			resupplyDays: days,
+			hideInfinite: ref(hideInfinite),
+			materialOverrides: ref(materialOverrides),
+			materialInactives: ref(materialInactives),
+		});
 
-		fit(50, 50);
+		days.value = fit(50, 50);
 		expect(days.value).toBe(7);
 
-		fit(500, 500);
+		days.value = fit(500, 500);
 		expect(days.value).toBe(39);
 
 		days.value = 50;
-		fit(50, 50);
+		days.value = fit(50, 50);
 		expect(days.value).toBe(7);
+	});
+
+	it("writes none of the refs it is given", async () => {
+		const days = ref(5);
+		const overrides = ref<Record<string, number | null>>({ ALO: 10 });
+		const inactives = ref(new Set<string>(["FEO"]));
+		const scope = effectScope();
+		const { fit, materialTable } = scope.run(() =>
+			useBurnXITAction({
+				elements: ref(elements),
+				resupplyDays: days,
+				hideInfinite: ref(hideInfinite),
+				materialOverrides: overrides,
+				materialInactives: inactives,
+			})
+		)!;
+		await flushPromises();
+
+		expect(materialTable.value.length).toBe(3);
+		expect(fit(50, 50)).toBe(7);
+		expect(days.value).toBe(5);
+		expect(overrides.value).toEqual({ ALO: 10 });
+		expect([...inactives.value]).toEqual(["FEO"]);
+		scope.stop();
 	});
 
 	it("stops updating totalPrice once its scope is stopped", async () => {
 		const days = ref(5);
 		const scope = effectScope();
 		const { totalPrice } = scope.run(() =>
-			useBurnXITAction(
-				ref([{ ticker: "RAT", stock: 0, delta: -10 }]),
-				days,
-				ref(true),
-				ref({}),
-				ref(new Set<string>()),
-				ref(undefined),
-				ref(undefined)
-			)
+			useBurnXITAction({
+				elements: ref([{ ticker: "RAT", stock: 0, delta: -10 }]),
+				resupplyDays: days,
+				hideInfinite: ref(true),
+				materialOverrides: ref({}),
+				materialInactives: ref(new Set<string>()),
+			})
 		)!;
 
 		// live while the scope is active
@@ -209,18 +223,16 @@ describe("useBurnXITAction", async () => {
 
 		const scope = effectScope();
 		const { totalPrice } = scope.run(() =>
-			useBurnXITAction(
-				ref([
+			useBurnXITAction({
+				elements: ref([
 					{ ticker: "RAT", stock: 0, delta: -10 },
 					{ ticker: "OVE", stock: 0, delta: -10 },
 				]),
-				ref(5),
-				ref(true),
-				ref({}),
-				ref(new Set<string>(["OVE"])),
-				ref(undefined),
-				ref(undefined)
-			)
+				resupplyDays: ref(5),
+				hideInfinite: ref(true),
+				materialOverrides: ref({}),
+				materialInactives: ref(new Set<string>(["OVE"])),
+			})
 		)!;
 
 		// only RAT: 5 days × 10 RAT = 50 RAT
@@ -243,15 +255,13 @@ describe("useBurnXITAction", async () => {
 		const days = ref(5);
 		const scope = effectScope();
 		const { totalPrice } = scope.run(() =>
-			useBurnXITAction(
-				ref([{ ticker: "RAT", stock: 0, delta: -10 }]),
-				days,
-				ref(true),
-				ref({}),
-				ref(new Set<string>()),
-				ref(undefined),
-				ref(undefined)
-			)
+			useBurnXITAction({
+				elements: ref([{ ticker: "RAT", stock: 0, delta: -10 }]),
+				resupplyDays: days,
+				hideInfinite: ref(true),
+				materialOverrides: ref({}),
+				materialInactives: ref(new Set<string>()),
+			})
 		)!;
 		await flushPromises();
 

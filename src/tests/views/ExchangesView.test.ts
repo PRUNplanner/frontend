@@ -103,8 +103,7 @@ vi.mock("@/features/exchanges/useExchangePlanData", async () => {
 			return {
 				bases: ref([]),
 				isCalculating: ref(false),
-				progressCurrent: ref(0),
-				progressTotal: ref(0),
+				progress: ref({ current: 0, total: 0 }),
 				pricedData: computed(() => source.cxData()),
 				materialRows: ref([]),
 				materialCOGMs: mocks.cogms,

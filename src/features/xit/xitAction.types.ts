@@ -1,3 +1,5 @@
+import type { Ref } from "vue";
+
 export interface IXITActionElement {
 	ticker: string;
 	stock: number;
@@ -11,6 +13,17 @@ export interface IXITActionMaterialElement {
 	delta: number;
 	burn: number;
 	total: number;
+}
+
+export interface IBurnXITActionOptions {
+	elements: Ref<IXITActionElement[]>;
+	resupplyDays: Ref<number>;
+	hideInfinite: Ref<boolean>;
+	materialOverrides: Ref<Record<string, number | null>>;
+	materialInactives: Ref<Set<string>>;
+	// Universe prices when unset
+	cxUuid?: Ref<string | undefined>;
+	planetNaturalId?: Ref<string | undefined>;
 }
 
 interface IXITJSONActionCXBuy {

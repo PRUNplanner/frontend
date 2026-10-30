@@ -8,7 +8,7 @@ import { TOTALMSDAY } from "@/features/planning/calculations/buildingCalculation
 
 // Util
 import { deepClone } from "@/util/data";
-import { yieldToBrowser } from "@/util/yieldToBrowser";
+import { useRunProgress } from "@/util/runProgress";
 
 // Static
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
@@ -35,8 +35,7 @@ export function useROIOverview(
 		(e) => !["RIG", "EXT", "COL", "FRM"].includes(e.ticker)
 	);
 
-	const progressCurrent = ref(0);
-	const progressTotal = ref(0);
+	const { progress, start } = useRunProgress();
 
 	const resultData: Ref<IROIResult[]> = ref([]);
 
@@ -154,8 +153,6 @@ export function useROIOverview(
 		return itemResults;
 	}
 
-	let latestRun = 0;
-
 	/**
 	 * Triggers calculation of all optimal definitions, a newer call
 	 * stops the running one
@@ -166,11 +163,9 @@ export function useROIOverview(
 	 * if a newer calculation took over
 	 */
 	async function calculate(): Promise<IROIResult[] | undefined> {
-		const run = ++latestRun;
 		const results: IROIResult[] = [];
 		resultData.value = [];
-		progressCurrent.value = 0;
-		progressTotal.value = filteredOptimalProduction.length;
+		const run = start(filteredOptimalProduction.length);
 
 		// all experts at 5, on a copy: the definition is the caller's
 		const base: IPlanDefinition = deepClone(definition.value);
@@ -183,16 +178,16 @@ export function useROIOverview(
 			await Promise.resolve();
 
 			const result = await calculateItem(optimal, ctx, base);
-			if (run !== latestRun) return undefined;
+			if (!run.isCurrent()) return undefined;
 			results.push(...result);
 
-			progressCurrent.value++;
+			run.step();
 
 			// yield back to vue and update dom
-			await yieldToBrowser();
+			await run.yield();
 		}
 
-		if (run !== latestRun) return undefined;
+		if (!run.isCurrent()) return undefined;
 		resultData.value = results;
 		return results;
 	}
@@ -227,7 +222,6 @@ export function useROIOverview(
 		calculateItem,
 		formatOptimal,
 		// progress
-		progressCurrent,
-		progressTotal,
+		progress,
 	};
 }

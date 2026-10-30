@@ -93,17 +93,6 @@ export function usePlanCalculation(
 	const { getPlanet } = usePlanetData();
 	const { getGameData, loadGameData, createPrices } = usePlanContext();
 
-	const refreshKey: Ref<number> = ref(0);
-
-	// watches external data to trigger a recalculation
-	watch(
-		() => planningDataStore.cxs,
-		() => {
-			refreshKey.value++;
-		},
-		{ deep: true }
-	);
-
 	// data references
 
 	// the plan's own field: undo/redo, save and a reloaded plan carry it
@@ -175,8 +164,11 @@ export function usePlanCalculation(
 
 	const calculation: ComputedRef<IPlanCalculation | undefined> = computed(
 		() => {
-			// recalculate on CX preference updates
-			const _refresh: number = refreshKey.value;
+			// recalculate when the plan's CX changes: saving or reloading it
+			// replaces its object in the store, another CX is not read
+			const _cx = cxUuid.value
+				? planningDataStore.cxs[cxUuid.value]
+				: undefined;
 
 			if (stopped || !planet.value) return lastCalculation;
 
@@ -326,7 +318,6 @@ export function usePlanCalculation(
 		// several edits as one undo step
 		record,
 		// internal,
-		refreshKey,
 		calculate,
 		calculateOverview,
 		traceCalculation,

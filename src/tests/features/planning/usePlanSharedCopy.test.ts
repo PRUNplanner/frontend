@@ -39,10 +39,6 @@ vi.mock("@/features/sharing/sharedPlan.util", () => ({
 vi.mock("@/features/planning_data/planDiff", () => ({
 	diffPlan: () => [{ kind: "added" }, { kind: "removed" }],
 }));
-vi.mock("@/features/cx/useCXData", () => ({
-	useCXData: () => ({ findEmpireCXUuid: (uuid: string) => `cx-${uuid}` }),
-}));
-
 const pinia = createPinia();
 const empire = (uuid: string) => ({ uuid }) as PlanEmpireElement;
 const PLAN = {
@@ -132,7 +128,6 @@ describe("usePlanSharedCopy", () => {
 		await nextTick();
 		expect(s.refs.list.value).toHaveLength(2);
 		expect(s.refs.uuid.value).toBe("e-2");
-		expect(s.refs.cxUuid.value).toBe("cx-e-2");
 
 		// the picked one stays while it's in the list
 		s.refs.uuid.value = "e-1";
@@ -142,7 +137,6 @@ describe("usePlanSharedCopy", () => {
 		};
 		await nextTick();
 		expect(s.refs.uuid.value).toBe("e-1");
-		expect(s.refs.cxUuid.value).toBe("cx-e-1");
 	});
 
 	it("resets to the shared version", async () => {

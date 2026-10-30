@@ -47,7 +47,7 @@ import type {
 	IGameData,
 	IPlanContext,
 } from "@/features/planning/engine/engine.types";
-import { yieldToBrowser } from "@/util/yieldToBrowser";
+import { type IRun, useRunProgress } from "@/util/runProgress";
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
 type EngineSettings = Pick<
@@ -87,7 +87,7 @@ export function useBaseROI(
 	// the engine settings the inputs were calculated with
 	const calculatedWith = shallowRef<EngineSettings | null>(null);
 	const step = ref<BaseROIStep>("idle");
-	const progress = ref({ current: 0, total: 0 });
+	const { progress, start: startRun } = useRunProgress();
 	// recipe rows are in, planet rows still calculating (first load)
 	const planetRowsPending = ref(false);
 	const firstLoad = ref(true);
@@ -98,7 +98,6 @@ export function useBaseROI(
 	// planets fetched on this page, never fetched twice
 	const planets = new Map<string, Planet>();
 	let gameData: IGameData | undefined;
-	let run = 0;
 
 	/** the exchanges the CX preference prices from, all four without one */
 	function preferenceExchanges(): string[] {
@@ -198,7 +197,7 @@ export function useBaseROI(
 		candidates: IBaseROICandidate[],
 		contextOf: (c: IBaseROICandidate) => IPlanContext | undefined,
 		engine: EngineSettings,
-		id: number
+		run: IRun
 	): Promise<IBaseROIRowInput[] | null> {
 		const out: IBaseROIRowInput[] = [];
 		for (let i = 0; i < candidates.length; i += CHUNK_SIZE) {
@@ -219,9 +218,8 @@ export function useBaseROI(
 					console.error(error);
 				}
 			}
-			progress.value.current += Math.min(CHUNK_SIZE, candidates.length - i);
-			await yieldToBrowser();
-			if (id !== run) return null;
+			run.step(Math.min(CHUNK_SIZE, candidates.length - i));
+			if (!(await run.yield())) return null;
 		}
 		return out;
 	}
@@ -234,13 +232,13 @@ export function useBaseROI(
 	 * @returns {Promise<boolean>} Whether this run finished
 	 */
 	async function calculate(): Promise<boolean> {
-		const id = ++run;
+		const run = startRun();
 		try {
-			return await calculateRun(id);
+			return await calculateRun(run);
 		} catch (error) {
 			// a failed request: keep what is shown, say so, stop waiting
 			console.error(error);
-			if (id === run) {
+			if (run.isCurrent()) {
 				step.value = "error";
 				planetRowsPending.value = false;
 			}
@@ -248,7 +246,7 @@ export function useBaseROI(
 		}
 	}
 
-	async function calculateRun(id: number): Promise<boolean> {
+	async function calculateRun(run: IRun): Promise<boolean> {
 		const start = performance.now();
 		const s = settings.value;
 		const engine: EngineSettings = {
@@ -262,7 +260,7 @@ export function useBaseROI(
 		step.value = "game";
 		progress.value = { current: 0, total: 0 };
 		gameData ??= await loadGameData();
-		if (id !== run) return false;
+		if (!run.isCurrent()) return false;
 
 		const indexPromise = measured("base-roi:index", () =>
 			useQuery("GetPlanetSearchIndex").execute()
@@ -281,7 +279,7 @@ export function useBaseROI(
 		progress.value = { current: 0, total: recipes.length };
 		const [recipeRows, recipeMs] = await measured(
 			"base-roi:recipe-rows",
-			() => calculateRows(recipes, () => standard, engine, id)
+			() => calculateRows(recipes, () => standard, engine, run)
 		);
 		times.recipes = recipeMs;
 		if (!recipeRows) return false;
@@ -297,7 +295,7 @@ export function useBaseROI(
 		step.value = "planets";
 		const [index, indexMs] = await indexPromise;
 		times.index = indexMs;
-		if (id !== run) return false;
+		if (!run.isCurrent()) return false;
 		const { within, beyond: far } = planetCandidates(
 			index,
 			gameData,
@@ -308,7 +306,7 @@ export function useBaseROI(
 			fetchPlanets(within)
 		);
 		times.planets = planetsMs;
-		if (id !== run) return false;
+		if (!run.isCurrent()) return false;
 
 		step.value = "calculating";
 		progress.value = { current: 0, total: within.length };
@@ -336,7 +334,7 @@ export function useBaseROI(
 						return ctx;
 					},
 					engine,
-					id
+					run
 				)
 		);
 		times.planetRows = planetRowsMs;
@@ -356,12 +354,12 @@ export function useBaseROI(
 				times
 			);
 		trackEvent("tool:use", { tool_name: "base_roi" });
-		void loadHistory(id);
+		void loadHistory(run);
 		return true;
 	}
 
 	/** daily VWAP of the last 30 days for every exchange a price uses */
-	async function loadHistory(id: number): Promise<void> {
+	async function loadHistory(run: IRun): Promise<void> {
 		const exchanges = new Set<string>();
 		for (const row of inputs.value)
 			for (const m of row.materials)
@@ -386,12 +384,12 @@ export function useBaseROI(
 					)
 				)
 			);
-			if (id !== run) return;
+			if (!run.isCurrent()) return;
 			series.value = Object.fromEntries(
 				loaded.map((l) => [l.exchange, l.series])
 			);
 		} catch {
-			if (id === run) historyFailed.value = true;
+			if (run.isCurrent()) historyFailed.value = true;
 		}
 	}
 

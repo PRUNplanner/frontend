@@ -42,8 +42,7 @@
 	const {
 		resultData,
 		calculate,
-		progressCurrent,
-		progressTotal,
+		progress,
 		progressSearchingPlanets,
 	} = useResourceROIOverview(refSelectedCXUuid);
 
@@ -160,8 +159,8 @@
 							</div>
 							<div v-else>
 								<PProgressBar
-									:step="progressCurrent"
-									:total="progressTotal" />
+									:step="progress.current"
+									:total="progress.total" />
 								<div class="pt-3 text-xs text-muted">
 									{{ $t("resource_roi.calculating") }}
 								</div>

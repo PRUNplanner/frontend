@@ -944,10 +944,10 @@ describe("PlanView", () => {
 				plan_name: "EW COF RAT DW C",
 			});
 
-			// the CX uuid stands in for a CX the store does not know
+			// a CX gone from the store (deleted elsewhere): Universe prices
 			planning.cxs = {};
 			await flushPromises();
-			expect(panel.props("meta").cx).toBe(SKY_CX);
+			expect(panel.props("meta").cx).toBe("Universe");
 		});
 
 		// the debug panel names the empire the plan calculates with

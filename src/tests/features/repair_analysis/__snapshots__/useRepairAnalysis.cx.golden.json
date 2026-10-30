@@ -1,0 +1,855 @@
+{
+ "buildings": [
+  {
+   "ticker": "HYF",
+   "name": "Hydroponics Farm",
+   "amount": 11,
+   "constructionMaterials": [
+    {
+     "ticker": "TRU",
+     "input": 4,
+     "output": 0
+    },
+    {
+     "ticker": "BSE",
+     "input": 2,
+     "output": 0
+    },
+    {
+     "ticker": "MHL",
+     "input": 16,
+     "output": 0
+    },
+    {
+     "ticker": "LBH",
+     "input": 4,
+     "output": 0
+    },
+    {
+     "ticker": "MCG",
+     "input": 60,
+     "output": 0
+    }
+   ],
+   "productionValue": 9114.697895,
+   "workforceCost": 1283.42707,
+   "best": 45,
+   "range": [
+    41,
+    45
+   ]
+  },
+  {
+   "ticker": "FP",
+   "name": "Food Processor",
+   "amount": 19,
+   "constructionMaterials": [
+    {
+     "ticker": "BBH",
+     "input": 3,
+     "output": 0
+    },
+    {
+     "ticker": "BDE",
+     "input": 3,
+     "output": 0
+    },
+    {
+     "ticker": "BSE",
+     "input": 3,
+     "output": 0
+    },
+    {
+     "ticker": "MCG",
+     "input": 48,
+     "output": 0
+    }
+   ],
+   "productionValue": 3912.777092,
+   "workforceCost": 687.6742048,
+   "best": 60,
+   "range": [
+    41,
+    60
+   ]
+  },
+  {
+   "ticker": "INC",
+   "name": "Incinerator",
+   "amount": 7,
+   "constructionMaterials": [
+    {
+     "ticker": "BDE",
+     "input": 2,
+     "output": 0
+    },
+    {
+     "ticker": "BSE",
+     "input": 4,
+     "output": 0
+    },
+    {
+     "ticker": "BBH",
+     "input": 3,
+     "output": 0
+    },
+    {
+     "ticker": "BTA",
+     "input": 1,
+     "output": 0
+    },
+    {
+     "ticker": "MCG",
+     "input": 40,
+     "output": 0
+    }
+   ],
+   "productionValue": 5398.974594,
+   "workforceCost": 687.6742048,
+   "best": 45,
+   "range": [
+    35,
+    60
+   ]
+  },
+  {
+   "ticker": "RIG",
+   "name": "Rig",
+   "amount": 21,
+   "constructionMaterials": [
+    {
+     "ticker": "BSE",
+     "input": 12,
+     "output": 0
+    },
+    {
+     "ticker": "MCG",
+     "input": 40,
+     "output": 0
+    }
+   ],
+   "productionValue": 2549.923122,
+   "workforceCost": 515.7556536,
+   "best": 15,
+   "range": [
+    13,
+    15
+   ]
+  },
+  {
+   "ticker": "EXT",
+   "name": "Extractor",
+   "amount": 1,
+   "constructionMaterials": [
+    {
+     "ticker": "BSE",
+     "input": 16,
+     "output": 0
+    },
+    {
+     "ticker": "MCG",
+     "input": 100,
+     "output": 0
+    }
+   ],
+   "productionValue": 4690.41526,
+   "workforceCost": 1031.511307,
+   "best": 11,
+   "range": [
+    9,
+    11
+   ]
+  }
+ ],
+ "materials": [
+  {
+   "ticker": "HYF",
+   "best": {
+    "materials": [
+     {
+      "ticker": "MHL",
+      "amount": 44,
+      "cost": 249102.4132,
+      "weight": 4.400000066,
+      "volume": 2.200000033
+     },
+     {
+      "ticker": "LBH",
+      "amount": 11,
+      "cost": 59348.79683,
+      "weight": 2.200000033,
+      "volume": 6.600000262
+     },
+     {
+      "ticker": "BSE",
+      "amount": 11,
+      "cost": 19962.55054,
+      "weight": 3.300000131,
+      "volume": 5.5
+     },
+     {
+      "ticker": "TRU",
+      "amount": 11,
+      "cost": 5834.921931,
+      "weight": 1.100000016,
+      "volume": 16.5
+     },
+     {
+      "ticker": "MCG",
+      "amount": 165,
+      "cost": 5798.407174,
+      "weight": 39.59999911,
+      "volume": 16.50000025
+     }
+    ],
+    "cost": 340047.0897,
+    "weight": 50.59999936,
+    "volume": 47.30000054
+   },
+   "day30": {
+    "materials": [
+     {
+      "ticker": "MHL",
+      "amount": 33,
+      "cost": 186826.8099,
+      "weight": 3.300000049,
+      "volume": 1.650000025
+     },
+     {
+      "ticker": "LBH",
+      "amount": 11,
+      "cost": 59348.79683,
+      "weight": 2.200000033,
+      "volume": 6.600000262
+     },
+     {
+      "ticker": "BSE",
+      "amount": 11,
+      "cost": 19962.55054,
+      "weight": 3.300000131,
+      "volume": 5.5
+     },
+     {
+      "ticker": "TRU",
+      "amount": 11,
+      "cost": 5834.921931,
+      "weight": 1.100000016,
+      "volume": 16.5
+     },
+     {
+      "ticker": "MCG",
+      "amount": 110,
+      "cost": 3865.604782,
+      "weight": 26.39999941,
+      "volume": 11.00000016
+     }
+    ],
+    "cost": 275838.684,
+    "weight": 36.29999964,
+    "volume": 41.25000045
+   },
+   "day90": {
+    "materials": [
+     {
+      "ticker": "MHL",
+      "amount": 88,
+      "cost": 498204.8265,
+      "weight": 8.800000131,
+      "volume": 4.400000066
+     },
+     {
+      "ticker": "LBH",
+      "amount": 22,
+      "cost": 118697.5937,
+      "weight": 4.400000066,
+      "volume": 13.20000052
+     },
+     {
+      "ticker": "BSE",
+      "amount": 11,
+      "cost": 19962.55054,
+      "weight": 3.300000131,
+      "volume": 5.5
+     },
+     {
+      "ticker": "TRU",
+      "amount": 22,
+      "cost": 11669.84386,
+      "weight": 2.200000033,
+      "volume": 33
+     },
+     {
+      "ticker": "MCG",
+      "amount": 330,
+      "cost": 11596.81435,
+      "weight": 79.19999823,
+      "volume": 33.00000049
+     }
+    ],
+    "cost": 660131.6289,
+    "weight": 97.89999859,
+    "volume": 89.10000108
+   }
+  },
+  {
+   "ticker": "FP",
+   "best": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 19,
+      "cost": 47540.21185,
+      "weight": 9.5,
+      "volume": 15.20000023
+     },
+     {
+      "ticker": "BDE",
+      "amount": 19,
+      "cost": 45870.72387,
+      "weight": 1.900000028,
+      "volume": 28.5
+     },
+     {
+      "ticker": "BSE",
+      "amount": 19,
+      "cost": 34480.76911,
+      "weight": 5.700000226,
+      "volume": 9.5
+     },
+     {
+      "ticker": "MCG",
+      "amount": 304,
+      "cost": 10683.12594,
+      "weight": 72.95999837,
+      "volume": 30.40000045
+     }
+    ],
+    "cost": 138574.8308,
+    "weight": 90.05999862,
+    "volume": 83.60000068
+   },
+   "day30": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 19,
+      "cost": 47540.21185,
+      "weight": 9.5,
+      "volume": 15.20000023
+     },
+     {
+      "ticker": "BDE",
+      "amount": 19,
+      "cost": 45870.72387,
+      "weight": 1.900000028,
+      "volume": 28.5
+     },
+     {
+      "ticker": "BSE",
+      "amount": 19,
+      "cost": 34480.76911,
+      "weight": 5.700000226,
+      "volume": 9.5
+     },
+     {
+      "ticker": "MCG",
+      "amount": 152,
+      "cost": 5341.562972,
+      "weight": 36.47999918,
+      "volume": 15.20000023
+     }
+    ],
+    "cost": 133233.2678,
+    "weight": 53.57999944,
+    "volume": 68.40000045
+   },
+   "day90": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 38,
+      "cost": 95080.42371,
+      "weight": 19,
+      "volume": 30.40000045
+     },
+     {
+      "ticker": "BDE",
+      "amount": 38,
+      "cost": 91741.44774,
+      "weight": 3.800000057,
+      "volume": 57
+     },
+     {
+      "ticker": "BSE",
+      "amount": 38,
+      "cost": 68961.53822,
+      "weight": 11.40000045,
+      "volume": 19
+     },
+     {
+      "ticker": "MCG",
+      "amount": 456,
+      "cost": 16024.68892,
+      "weight": 109.4399976,
+      "volume": 45.60000068
+     }
+    ],
+    "cost": 271808.0986,
+    "weight": 143.6399981,
+    "volume": 152.0000011
+   }
+  },
+  {
+   "ticker": "INC",
+   "best": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 7,
+      "cost": 17514.81489,
+      "weight": 3.5,
+      "volume": 5.600000083
+     },
+     {
+      "ticker": "BDE",
+      "amount": 7,
+      "cost": 16899.74037,
+      "weight": 0.7000000104,
+      "volume": 10.5
+     },
+     {
+      "ticker": "BSE",
+      "amount": 7,
+      "cost": 12703.44125,
+      "weight": 2.100000083,
+      "volume": 3.5
+     },
+     {
+      "ticker": "BTA",
+      "amount": 7,
+      "cost": 10538.30454,
+      "weight": 2.100000083,
+      "volume": 2.800000042
+     },
+     {
+      "ticker": "MCG",
+      "amount": 70,
+      "cost": 2459.930316,
+      "weight": 16.79999962,
+      "volume": 7.000000104
+     }
+    ],
+    "cost": 60116.23138,
+    "weight": 25.1999998,
+    "volume": 29.40000023
+   },
+   "day30": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 7,
+      "cost": 17514.81489,
+      "weight": 3.5,
+      "volume": 5.600000083
+     },
+     {
+      "ticker": "BDE",
+      "amount": 7,
+      "cost": 16899.74037,
+      "weight": 0.7000000104,
+      "volume": 10.5
+     },
+     {
+      "ticker": "BSE",
+      "amount": 7,
+      "cost": 12703.44125,
+      "weight": 2.100000083,
+      "volume": 3.5
+     },
+     {
+      "ticker": "BTA",
+      "amount": 7,
+      "cost": 10538.30454,
+      "weight": 2.100000083,
+      "volume": 2.800000042
+     },
+     {
+      "ticker": "MCG",
+      "amount": 49,
+      "cost": 1721.951221,
+      "weight": 11.75999974,
+      "volume": 4.900000073
+     }
+    ],
+    "cost": 59378.25228,
+    "weight": 20.15999991,
+    "volume": 27.3000002
+   },
+   "day90": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 14,
+      "cost": 35029.62979,
+      "weight": 7,
+      "volume": 11.20000017
+     },
+     {
+      "ticker": "BSE",
+      "amount": 14,
+      "cost": 25406.8825,
+      "weight": 4.200000167,
+      "volume": 7
+     },
+     {
+      "ticker": "BDE",
+      "amount": 7,
+      "cost": 16899.74037,
+      "weight": 0.7000000104,
+      "volume": 10.5
+     },
+     {
+      "ticker": "BTA",
+      "amount": 7,
+      "cost": 10538.30454,
+      "weight": 2.100000083,
+      "volume": 2.800000042
+     },
+     {
+      "ticker": "MCG",
+      "amount": 140,
+      "cost": 4919.860632,
+      "weight": 33.59999925,
+      "volume": 14.00000021
+     }
+    ],
+    "cost": 92794.41784,
+    "weight": 47.59999951,
+    "volume": 45.50000042
+   }
+  },
+  {
+   "ticker": "RIG",
+   "best": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 21,
+      "cost": 38110.32375,
+      "weight": 6.30000025,
+      "volume": 10.5
+     },
+     {
+      "ticker": "MCG",
+      "amount": 84,
+      "cost": 2951.916379,
+      "weight": 20.15999955,
+      "volume": 8.400000125
+     }
+    ],
+    "cost": 41062.24013,
+    "weight": 26.4599998,
+    "volume": 18.90000013
+   },
+   "day30": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 42,
+      "cost": 76220.64751,
+      "weight": 12.6000005,
+      "volume": 21
+     },
+     {
+      "ticker": "MCG",
+      "amount": 147,
+      "cost": 5165.853664,
+      "weight": 35.27999921,
+      "volume": 14.70000022
+     }
+    ],
+    "cost": 81386.50117,
+    "weight": 47.87999971,
+    "volume": 35.70000022
+   },
+   "day90": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 126,
+      "cost": 228661.9425,
+      "weight": 37.8000015,
+      "volume": 63
+     },
+     {
+      "ticker": "MCG",
+      "amount": 420,
+      "cost": 14759.5819,
+      "weight": 100.7999977,
+      "volume": 42.00000063
+     }
+    ],
+    "cost": 243421.5244,
+    "weight": 138.5999992,
+    "volume": 105.0000006
+   }
+  },
+  {
+   "ticker": "EXT",
+   "best": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 1,
+      "cost": 1814.777322,
+      "weight": 0.3000000119,
+      "volume": 0.5
+     },
+     {
+      "ticker": "MCG",
+      "amount": 7,
+      "cost": 245.9930316,
+      "weight": 1.679999962,
+      "volume": 0.7000000104
+     }
+    ],
+    "cost": 2060.770353,
+    "weight": 1.979999974,
+    "volume": 1.20000001
+   },
+   "day30": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 3,
+      "cost": 5444.331965,
+      "weight": 0.9000000358,
+      "volume": 1.5
+     },
+     {
+      "ticker": "MCG",
+      "amount": 17,
+      "cost": 597.4116482,
+      "weight": 4.079999909,
+      "volume": 1.700000025
+     }
+    ],
+    "cost": 6041.743613,
+    "weight": 4.979999945,
+    "volume": 3.200000025
+   },
+   "day90": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 8,
+      "cost": 14518.21857,
+      "weight": 2.400000095,
+      "volume": 4
+     },
+     {
+      "ticker": "MCG",
+      "amount": 50,
+      "cost": 1757.093083,
+      "weight": 11.99999973,
+      "volume": 5.000000075
+     }
+    ],
+    "cost": 16275.31166,
+    "weight": 14.39999983,
+    "volume": 9.000000075
+   }
+  }
+ ],
+ "all": {
+  "best": {
+   "materials": [
+    {
+     "ticker": "MHL",
+     "amount": 44,
+     "cost": 249102.4132,
+     "weight": 4.400000066,
+     "volume": 2.200000033
+    },
+    {
+     "ticker": "BSE",
+     "amount": 59,
+     "cost": 107071.862,
+     "weight": 17.7000007,
+     "volume": 29.5
+    },
+    {
+     "ticker": "BBH",
+     "amount": 26,
+     "cost": 65055.02675,
+     "weight": 13,
+     "volume": 20.80000031
+    },
+    {
+     "ticker": "BDE",
+     "amount": 26,
+     "cost": 62770.46425,
+     "weight": 2.600000039,
+     "volume": 39
+    },
+    {
+     "ticker": "LBH",
+     "amount": 11,
+     "cost": 59348.79683,
+     "weight": 2.200000033,
+     "volume": 6.600000262
+    },
+    {
+     "ticker": "MCG",
+     "amount": 630,
+     "cost": 22139.37285,
+     "weight": 151.1999966,
+     "volume": 63.00000094
+    },
+    {
+     "ticker": "BTA",
+     "amount": 7,
+     "cost": 10538.30454,
+     "weight": 2.100000083,
+     "volume": 2.800000042
+    },
+    {
+     "ticker": "TRU",
+     "amount": 11,
+     "cost": 5834.921931,
+     "weight": 1.100000016,
+     "volume": 16.5
+    }
+   ],
+   "cost": 581861.1624,
+   "weight": 194.2999976,
+   "volume": 180.4000016
+  },
+  "day45": {
+   "materials": [
+    {
+     "ticker": "MHL",
+     "amount": 44,
+     "cost": 249102.4132,
+     "weight": 4.400000066,
+     "volume": 2.200000033
+    },
+    {
+     "ticker": "BSE",
+     "amount": 104,
+     "cost": 188736.8414,
+     "weight": 31.20000124,
+     "volume": 52
+    },
+    {
+     "ticker": "BBH",
+     "amount": 26,
+     "cost": 65055.02675,
+     "weight": 13,
+     "volume": 20.80000031
+    },
+    {
+     "ticker": "BDE",
+     "amount": 26,
+     "cost": 62770.46425,
+     "weight": 2.600000039,
+     "volume": 39
+    },
+    {
+     "ticker": "LBH",
+     "amount": 11,
+     "cost": 59348.79683,
+     "weight": 2.200000033,
+     "volume": 6.600000262
+    },
+    {
+     "ticker": "MCG",
+     "amount": 698,
+     "cost": 24529.01944,
+     "weight": 167.5199963,
+     "volume": 69.80000104
+    },
+    {
+     "ticker": "BTA",
+     "amount": 7,
+     "cost": 10538.30454,
+     "weight": 2.100000083,
+     "volume": 2.800000042
+    },
+    {
+     "ticker": "TRU",
+     "amount": 11,
+     "cost": 5834.921931,
+     "weight": 1.100000016,
+     "volume": 16.5
+    }
+   ],
+   "cost": 665915.7884,
+   "weight": 224.1199977,
+   "volume": 209.7000017
+  },
+  "day180": {
+   "materials": [
+    {
+     "ticker": "MHL",
+     "amount": 176,
+     "cost": 996409.6529,
+     "weight": 17.60000026,
+     "volume": 8.800000131
+    },
+    {
+     "ticker": "BSE",
+     "amount": 375,
+     "cost": 680541.4956,
+     "weight": 112.5000045,
+     "volume": 187.5
+    },
+    {
+     "ticker": "LBH",
+     "amount": 44,
+     "cost": 237395.1873,
+     "weight": 8.800000131,
+     "volume": 26.40000105
+    },
+    {
+     "ticker": "BBH",
+     "amount": 78,
+     "cost": 195165.0802,
+     "weight": 39,
+     "volume": 62.40000093
+    },
+    {
+     "ticker": "BDE",
+     "amount": 71,
+     "cost": 171411.6524,
+     "weight": 7.100000106,
+     "volume": 106.5
+    },
+    {
+     "ticker": "MCG",
+     "amount": 2792,
+     "cost": 98116.07775,
+     "weight": 670.079985,
+     "volume": 279.2000042
+    },
+    {
+     "ticker": "TRU",
+     "amount": 44,
+     "cost": 23339.68773,
+     "weight": 4.400000066,
+     "volume": 66
+    },
+    {
+     "ticker": "BTA",
+     "amount": 7,
+     "cost": 10538.30454,
+     "weight": 2.100000083,
+     "volume": 2.800000042
+    }
+   ],
+   "cost": 2412917.139,
+   "weight": 861.5799901,
+   "volume": 739.6000063
+  }
+ }
+}

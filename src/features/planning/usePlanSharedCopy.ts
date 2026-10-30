@@ -8,7 +8,6 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 import { usePlanetData } from "@/database/services/usePlanetData";
-import { useCXData } from "@/features/cx/useCXData";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { useToast } from "@/ui";
 
@@ -41,7 +40,7 @@ import type {
  * @author jplacht
  *
  * @param {IPlanCalculation} calculation The working copy's calculation
- * @param {{ uuid: Ref<string | undefined>; list: Ref<PlanEmpireElement[] | undefined>; cxUuid: Ref<string | undefined> }} empire Empire and CX the plan calculates with
+ * @param {{ uuid: Ref<string | undefined>; list: Ref<PlanEmpireElement[] | undefined>; cxUuid: Readonly<Ref<string | undefined>> }} empire Empire and CX the plan calculates with
  * @param {(plan: IPlanDefinition) => void} applySavedPlan Shows a plan as saved
  * @param {IPlanViewProps} props The view's props
  */
@@ -50,7 +49,7 @@ export function usePlanSharedCopy(
 	empire: {
 		uuid: Ref<string | undefined>;
 		list: Ref<PlanEmpireElement[] | undefined>;
-		cxUuid: Ref<string | undefined>;
+		cxUuid: Readonly<Ref<string | undefined>>;
 	},
 	applySavedPlan: (plan: IPlanDefinition) => void,
 	props: IPlanViewProps
@@ -60,7 +59,6 @@ export function usePlanSharedCopy(
 	const userStore = useUserStore();
 	const planningStore = usePlanningStore();
 	const { planetName } = usePlanetData();
-	const { findEmpireCXUuid } = useCXData();
 	const {
 		modified,
 		result,
@@ -115,13 +113,13 @@ export function usePlanSharedCopy(
 			: t("sharing.banner.price_universe");
 	});
 
-	// a logged in viewer prices the copy with their empire's CX, also
-	// after logging in on the page (the default empire first)
+	// a logged in viewer's empire (the default one first) prices the copy
+	// with its CX, also after logging in on the page
 	if (props.shared) {
 		let picked: boolean = false;
 		watch(
-			[() => props.empireList, () => planningStore.cxs],
-			([list]) => {
+			() => props.empireList,
+			(list) => {
 				if (!list?.length) return;
 				empire.list.value = list;
 				if (
@@ -135,9 +133,8 @@ export function usePlanSharedCopy(
 					).uuid;
 					picked = true;
 				}
-				empire.cxUuid.value = findEmpireCXUuid(empire.uuid.value);
 			},
-			{ immediate: true, deep: true }
+			{ immediate: true }
 		);
 	}
 

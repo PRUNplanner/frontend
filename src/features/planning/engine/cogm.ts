@@ -91,7 +91,9 @@ function cogm(
 		};
 	});
 
-	inputCost.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
+	inputCost.sort((a, b) =>
+		a.ticker < b.ticker ? -1 : a.ticker > b.ticker ? 1 : 0
+	);
 
 	const inputTotal: number = inputCost.reduce(
 		(sum, current) => sum + current.costTotal,
@@ -123,7 +125,9 @@ function cogm(
 			costSplit: totalCost / sumOutputs,
 			costTotal: totalCost / outputMat.material_amount,
 		}))
-		.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
+		.sort((a, b) =>
+			a.ticker < b.ticker ? -1 : a.ticker > b.ticker ? 1 : 0
+		);
 
 	const result = {
 		runtime: ar.recipe.time_ms / totalEfficiency,

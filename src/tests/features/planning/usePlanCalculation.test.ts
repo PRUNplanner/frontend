@@ -22,6 +22,7 @@ import recipes from "@/tests/test_data/api_data_recipes.json";
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
+import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
 
 vi.mock("@/database/services/usePlanetData", async () => {
 	const actual: any = await vi.importActual(
@@ -41,6 +42,19 @@ import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+
+// Types & Interfaces
+import type { CX } from "@/features/api/schemas/cxData.schemas";
+
+// counts engine runs, still the real engine
+vi.mock("@/features/planning/engine/calculatePlan", async (importOriginal) => {
+	const actual =
+		await importOriginal<
+			typeof import("@/features/planning/engine/calculatePlan")
+		>();
+	return { ...actual, calculatePlan: vi.fn(actual.calculatePlan) };
+});
 
 describe("usePlanCalculation", async () => {
 	let planningStore: ReturnType<typeof usePlanningStore>;
@@ -67,31 +81,46 @@ describe("usePlanCalculation", async () => {
 		vi.resetAllMocks();
 	});
 
-	it("refreshkey", async () => {
-		const calculation = usePlanCalculation(
-			// @ts-expect-error mock data
-			ref(plan_etherwind),
-			ref(undefined),
-			ref(undefined),
-			ref(undefined)
-		);
+	it("recalculates for its own CX only", async () => {
+		const cx = (uuid: string) => ({ ...cx_definition, uuid }) as unknown as CX;
+		planningStore.setCXs([cx("own"), cx("other")]);
 
-		const { refreshKey } = calculation;
+		const scope = effectScope();
+		const { result } = scope.run(() =>
+			usePlanCalculation(
+				// @ts-expect-error mock data
+				ref(structuredClone(plan_etherwind)),
+				ref(undefined),
+				ref(undefined),
+				ref("own")
+			)
+		)!;
+		await vi.waitFor(() => expect(result.value.materialio.length).toBe(18));
+		vi.mocked(calculatePlan).mockClear();
 
-		expect(refreshKey.value).toBe(0);
+		// another CX saved
+		planningStore.setCX(cx("other"));
+		void result.value;
+		expect(calculatePlan).not.toHaveBeenCalled();
 
-		// upate store
-		// @ts-expect-error mock data
-		planningStore.cxs = "foo";
-		await nextTick();
-		expect(refreshKey.value).toBe(1);
+		// its own CX saved (Manage, COGM, fixed prices)
+		planningStore.setCX(cx("own"));
+		void result.value;
+		expect(calculatePlan).toHaveBeenCalledTimes(1);
+
+		// another tab changed the CXs, all reloaded
+		planningStore.setCXs([cx("own"), cx("other")]);
+		void result.value;
+		expect(calculatePlan).toHaveBeenCalledTimes(2);
+
+		scope.stop();
 	});
 
 	it("stops recalculating once its effect scope is stopped", async () => {
 		const plan = ref(structuredClone(plan_etherwind));
 
 		const scope = effectScope();
-		const { result, refreshKey, calculate } = scope.run(() =>
+		const { result, calculate } = scope.run(() =>
 			usePlanCalculation(
 				// @ts-expect-error mock data
 				plan,
@@ -118,7 +147,6 @@ describe("usePlanCalculation", async () => {
 		await flushPromises();
 
 		expect(result.value).toBe(stopped);
-		expect(refreshKey.value).toBe(0);
 	});
 
 	it("the result follows the latest plan, also across a slow load (S2)", async () => {

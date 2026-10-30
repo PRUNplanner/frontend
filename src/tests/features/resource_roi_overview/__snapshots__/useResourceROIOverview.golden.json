@@ -1,0 +1,270 @@
+[
+ {
+  "planetNaturalId": "ZV-639d",
+  "planetName": "Ashyn (ZV-639d)",
+  "buildingTicker": "RIG",
+  "dailyYield": 1650.437032,
+  "percentMaxDailyYield": 1,
+  "cogm": {
+   "runtime": 10993451.82,
+   "runtimeShare": 0.1272390257,
+   "efficiency": 1.605,
+   "degradation": 329.0129588,
+   "degradationShare": 41.86328832,
+   "workforceCost": 65.62424687,
+   "workforceCostTotal": 515.7556536,
+   "inputCost": [],
+   "inputTotal": 0,
+   "outputCOGM": [
+    {
+     "ticker": "N",
+     "amount": 6,
+     "costSplit": 17.9145892,
+     "costTotal": 17.9145892
+    }
+   ],
+   "totalCost": 107.4875352,
+   "outputRevenue": 961.0561841,
+   "totalProfit": 853.5686489
+  },
+  "outputProfit": 853.5686489,
+  "dailyProfit": 234793.5513,
+  "planCost": 3047635.867,
+  "planROI": 12.98006632,
+  "planArea": 500,
+  "planProfitArea": 469.5871027,
+  "planetSurface": [
+   "AEF"
+  ],
+  "planetGravity": [],
+  "planetPressure": [],
+  "planetTemperature": [
+   "INS"
+  ],
+  "planetCOGC": "ADVERTISING_CHEMISTRY",
+  "planetInfrastructures": [
+   "ADM",
+   "COGC",
+   "LM",
+   "WAR"
+  ],
+  "distanceAI1": 1,
+  "distanceCI1": 10,
+  "distanceIC1": 7,
+  "distanceNC1": 13
+ },
+ {
+  "planetNaturalId": "UV-795h",
+  "planetName": "UV-795h",
+  "buildingTicker": "EXT",
+  "dailyYield": 669.9934283,
+  "percentMaxDailyYield": 0.4059491002,
+  "cogm": {
+   "runtime": 27080862.64,
+   "runtimeShare": 0.3134359101,
+   "efficiency": 1.605,
+   "degradation": 651.5426885,
+   "degradationShare": 204.2168756,
+   "workforceCost": 323.3126854,
+   "workforceCostTotal": 1031.511307,
+   "inputCost": [],
+   "inputTotal": 0,
+   "outputCOGM": [
+    {
+     "ticker": "N",
+     "amount": 15,
+     "costSplit": 35.1686374,
+     "costTotal": 35.1686374
+    }
+   ],
+   "totalCost": 527.529561,
+   "outputRevenue": 2402.64046,
+   "totalProfit": 1875.110899
+  },
+  "outputProfit": 1875.110899,
+  "dailyProfit": 83754.132,
+  "planCost": 2547172.892,
+  "planROI": 30.41250421,
+  "planArea": 484,
+  "planProfitArea": 173.0457273,
+  "planetSurface": [
+   "AEF"
+  ],
+  "planetGravity": [],
+  "planetPressure": [],
+  "planetTemperature": [
+   "INS"
+  ],
+  "planetCOGC": "ADVERTISING_CHEMISTRY",
+  "planetInfrastructures": [
+   "ADM",
+   "COGC"
+  ],
+  "distanceAI1": 11,
+  "distanceCI1": 2,
+  "distanceIC1": 10,
+  "distanceNC1": 4
+ },
+ {
+  "planetNaturalId": "XD-534d",
+  "planetName": "XD-534d",
+  "buildingTicker": "COL",
+  "dailyYield": 87.54629734,
+  "percentMaxDailyYield": 0.05304431227,
+  "cogm": {
+   "runtime": 21711940.51,
+   "runtimeShare": 0.2512956078,
+   "efficiency": 1.605,
+   "degradation": 443.5148845,
+   "degradationShare": 111.4533425,
+   "workforceCost": 216.0118841,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [],
+   "inputTotal": 0,
+   "outputCOGM": [
+    {
+     "ticker": "N",
+     "amount": 1,
+     "costSplit": 327.4652265,
+     "costTotal": 327.4652265
+    }
+   ],
+   "totalCost": 327.4652265,
+   "outputRevenue": 160.1760307,
+   "totalProfit": -167.2891959
+  },
+  "outputProfit": -167.2891959,
+  "dailyProfit": -14645.54968,
+  "planCost": 2731173.169,
+  "planROI": -186.4848523,
+  "planArea": 480,
+  "planProfitArea": -30.51156184,
+  "planetSurface": [
+   "AEF"
+  ],
+  "planetGravity": [],
+  "planetPressure": [],
+  "planetTemperature": [
+   "INS"
+  ],
+  "planetCOGC": "ADVERTISING_CHEMISTRY",
+  "planetInfrastructures": [
+   "ADM",
+   "COGC",
+   "WAR"
+  ],
+  "distanceAI1": 19,
+  "distanceCI1": 13,
+  "distanceIC1": 11,
+  "distanceNC1": 7
+ },
+ {
+  "planetNaturalId": "ZV-759d",
+  "planetName": "Agamemnon (ZV-759d)",
+  "buildingTicker": "COL",
+  "dailyYield": 56.70586028,
+  "percentMaxDailyYield": 0.03435808769,
+  "cogm": {
+   "runtime": 33520345,
+   "runtimeShare": 0.387966956,
+   "efficiency": 1.605,
+   "degradation": 395.6901307,
+   "degradationShare": 153.5146955,
+   "workforceCost": 333.4935849,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [],
+   "inputTotal": 0,
+   "outputCOGM": [
+    {
+     "ticker": "N",
+     "amount": 1,
+     "costSplit": 487.0082804,
+     "costTotal": 487.0082804
+    }
+   ],
+   "totalCost": 487.0082804,
+   "outputRevenue": 160.1760307,
+   "totalProfit": -326.8322497
+  },
+  "outputProfit": -326.8322497,
+  "dailyProfit": -18533.30389,
+  "planCost": 2461150.541,
+  "planROI": -132.7961035,
+  "planArea": 480,
+  "planProfitArea": -38.61104977,
+  "planetSurface": [
+   "MCG"
+  ],
+  "planetGravity": [],
+  "planetPressure": [
+   "HSE"
+  ],
+  "planetTemperature": [
+   "INS"
+  ],
+  "planetCOGC": "ADVERTISING_CHEMISTRY",
+  "planetInfrastructures": [
+   "ADM",
+   "COGC",
+   "LM",
+   "WAR"
+  ],
+  "distanceAI1": 1,
+  "distanceCI1": 8,
+  "distanceIC1": 9,
+  "distanceNC1": 11
+ },
+ {
+  "planetNaturalId": "LB-476c",
+  "planetName": "Boombastic (LB-476c)",
+  "buildingTicker": "COL",
+  "dailyYield": 56.14417396,
+  "percentMaxDailyYield": 0.03401776187,
+  "cogm": {
+   "runtime": 33855694.47,
+   "runtimeShare": 0.3918483157,
+   "efficiency": 1.605,
+   "degradation": 262.6905922,
+   "degradationShare": 102.9348661,
+   "workforceCost": 336.8299736,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [],
+   "inputTotal": 0,
+   "outputCOGM": [
+    {
+     "ticker": "N",
+     "amount": 1,
+     "costSplit": 439.7648397,
+     "costTotal": 439.7648397
+    }
+   ],
+   "totalCost": 439.7648397,
+   "outputRevenue": 160.1760307,
+   "totalProfit": -279.588809
+  },
+  "outputProfit": -279.588809,
+  "dailyProfit": -15697.28273,
+  "planCost": 1695073.199,
+  "planROI": -107.9851353,
+  "planArea": 480,
+  "planProfitArea": -32.70267235,
+  "planetSurface": [
+   "MCG"
+  ],
+  "planetGravity": [],
+  "planetPressure": [
+   "HSE"
+  ],
+  "planetTemperature": [],
+  "planetCOGC": "ADVERTISING_CHEMISTRY",
+  "planetInfrastructures": [
+   "ADM",
+   "COGC",
+   "WAR"
+  ],
+  "distanceAI1": 13,
+  "distanceCI1": 7,
+  "distanceIC1": 5,
+  "distanceNC1": 3
+ }
+]

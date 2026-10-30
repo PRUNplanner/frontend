@@ -1,0 +1,355 @@
+{
+ "combined": [
+  {
+   "ticker": "SIO",
+   "input": 17,
+   "output": 8
+  },
+  {
+   "ticker": "AL",
+   "input": 33,
+   "output": 12.5
+  },
+  {
+   "ticker": "O",
+   "input": 11,
+   "output": 13
+  },
+  {
+   "ticker": "FE",
+   "input": 8,
+   "output": 2
+  },
+  {
+   "ticker": "H2O",
+   "input": 13,
+   "output": 10
+  },
+  {
+   "ticker": "ZR",
+   "input": 6,
+   "output": 7.5
+  },
+  {
+   "ticker": "C",
+   "input": 12,
+   "output": 4.5
+  },
+  {
+   "ticker": "BE",
+   "input": 18,
+   "output": 1.5
+  },
+  {
+   "ticker": "CL",
+   "input": 10,
+   "output": 7.5
+  },
+  {
+   "ticker": "NA",
+   "input": 15,
+   "output": 5
+  }
+ ],
+ "enhanced": [
+  {
+   "ticker": "AL",
+   "input": 33,
+   "output": 12.5,
+   "delta": -20.5,
+   "individualWeight": 2.700000048,
+   "individualVolume": 1,
+   "totalWeight": -55.35000098,
+   "totalVolume": -20.5
+  },
+  {
+   "ticker": "BE",
+   "input": 18,
+   "output": 1.5,
+   "delta": -16.5,
+   "individualWeight": 1.840000033,
+   "individualVolume": 1,
+   "totalWeight": -30.36000055,
+   "totalVolume": -16.5
+  },
+  {
+   "ticker": "C",
+   "input": 12,
+   "output": 4.5,
+   "delta": -7.5,
+   "individualWeight": 2.25,
+   "individualVolume": 1,
+   "totalWeight": -16.875,
+   "totalVolume": -7.5
+  },
+  {
+   "ticker": "CL",
+   "input": 10,
+   "output": 7.5,
+   "delta": -2.5,
+   "individualWeight": 3.200000048,
+   "individualVolume": 1,
+   "totalWeight": -8.000000119,
+   "totalVolume": -2.5
+  },
+  {
+   "ticker": "FE",
+   "input": 8,
+   "output": 2,
+   "delta": -6,
+   "individualWeight": 7.874000072,
+   "individualVolume": 1,
+   "totalWeight": -47.24400043,
+   "totalVolume": -6
+  },
+  {
+   "ticker": "H2O",
+   "input": 13,
+   "output": 10,
+   "delta": -3,
+   "individualWeight": 0.200000003,
+   "individualVolume": 0.200000003,
+   "totalWeight": -0.6000000089,
+   "totalVolume": -0.6000000089
+  },
+  {
+   "ticker": "NA",
+   "input": 15,
+   "output": 5,
+   "delta": -10,
+   "individualWeight": 0.9700000286,
+   "individualVolume": 1,
+   "totalWeight": -9.700000286,
+   "totalVolume": -10
+  },
+  {
+   "ticker": "O",
+   "input": 11,
+   "output": 13,
+   "delta": 2,
+   "individualWeight": 1.141000032,
+   "individualVolume": 1,
+   "totalWeight": 2.282000065,
+   "totalVolume": 2
+  },
+  {
+   "ticker": "SIO",
+   "input": 17,
+   "output": 8,
+   "delta": -9,
+   "individualWeight": 1.789999962,
+   "individualVolume": 1,
+   "totalWeight": -16.10999966,
+   "totalVolume": -9
+  },
+  {
+   "ticker": "ZR",
+   "input": 6,
+   "output": 7.5,
+   "delta": 1.5,
+   "individualWeight": 6.53000021,
+   "individualVolume": 1,
+   "totalWeight": 9.795000315,
+   "totalVolume": 1.5
+  }
+ ],
+ "production": [
+  {
+   "ticker": "TCO",
+   "input": 2.941176471,
+   "output": 0
+  },
+  {
+   "ticker": "TC",
+   "input": 0,
+   "output": 2.941176471
+  },
+  {
+   "ticker": "O",
+   "input": 0,
+   "output": 2.941176471
+  },
+  {
+   "ticker": "HAL",
+   "input": 15.51724138,
+   "output": 0
+  },
+  {
+   "ticker": "H2O",
+   "input": 5.172413793,
+   "output": 0
+  },
+  {
+   "ticker": "CL",
+   "input": 0,
+   "output": 5.172413793
+  },
+  {
+   "ticker": "NA",
+   "input": 0,
+   "output": 10.34482759
+  },
+  {
+   "ticker": "ZIR",
+   "input": 2.5,
+   "output": 0
+  },
+  {
+   "ticker": "BER",
+   "input": 5,
+   "output": 0
+  },
+  {
+   "ticker": "ZR",
+   "input": 0,
+   "output": 1.25
+  },
+  {
+   "ticker": "SIO",
+   "input": 0,
+   "output": 5
+  },
+  {
+   "ticker": "AL",
+   "input": 0,
+   "output": 2.5
+  },
+  {
+   "ticker": "BE",
+   "input": 0,
+   "output": 2.5
+  }
+ ],
+ "productionEnhanced": [
+  {
+   "ticker": "AL",
+   "input": 0,
+   "output": 2.5,
+   "delta": 2.5,
+   "individualWeight": 2.700000048,
+   "individualVolume": 1,
+   "totalWeight": 6.750000119,
+   "totalVolume": 2.5
+  },
+  {
+   "ticker": "BE",
+   "input": 0,
+   "output": 2.5,
+   "delta": 2.5,
+   "individualWeight": 1.840000033,
+   "individualVolume": 1,
+   "totalWeight": 4.600000083,
+   "totalVolume": 2.5
+  },
+  {
+   "ticker": "BER",
+   "input": 5,
+   "output": 0,
+   "delta": -5,
+   "individualWeight": 1.919999957,
+   "individualVolume": 1,
+   "totalWeight": -9.599999785,
+   "totalVolume": -5
+  },
+  {
+   "ticker": "CL",
+   "input": 0,
+   "output": 5.172413793,
+   "delta": 5.172413793,
+   "individualWeight": 3.200000048,
+   "individualVolume": 1,
+   "totalWeight": 16.55172438,
+   "totalVolume": 5.172413793
+  },
+  {
+   "ticker": "H2O",
+   "input": 5.172413793,
+   "output": 0,
+   "delta": -5.172413793,
+   "individualWeight": 0.200000003,
+   "individualVolume": 0.200000003,
+   "totalWeight": -1.034482774,
+   "totalVolume": -1.034482774
+  },
+  {
+   "ticker": "HAL",
+   "input": 15.51724138,
+   "output": 0,
+   "delta": -15.51724138,
+   "individualWeight": 2.170000076,
+   "individualVolume": 1,
+   "totalWeight": -33.67241498,
+   "totalVolume": -15.51724138
+  },
+  {
+   "ticker": "NA",
+   "input": 0,
+   "output": 10.34482759,
+   "delta": 10.34482759,
+   "individualWeight": 0.9700000286,
+   "individualVolume": 1,
+   "totalWeight": 10.03448305,
+   "totalVolume": 10.34482759
+  },
+  {
+   "ticker": "O",
+   "input": 0,
+   "output": 2.941176471,
+   "delta": 2.941176471,
+   "individualWeight": 1.141000032,
+   "individualVolume": 1,
+   "totalWeight": 3.355882448,
+   "totalVolume": 2.941176471
+  },
+  {
+   "ticker": "SIO",
+   "input": 0,
+   "output": 5,
+   "delta": 5,
+   "individualWeight": 1.789999962,
+   "individualVolume": 1,
+   "totalWeight": 8.949999809,
+   "totalVolume": 5
+  },
+  {
+   "ticker": "TC",
+   "input": 0,
+   "output": 2.941176471,
+   "delta": 2.941176471,
+   "individualWeight": 11.80000019,
+   "individualVolume": 1,
+   "totalWeight": 34.70588291,
+   "totalVolume": 2.941176471
+  },
+  {
+   "ticker": "TCO",
+   "input": 2.941176471,
+   "output": 0,
+   "delta": -2.941176471,
+   "individualWeight": 9.800000191,
+   "individualVolume": 1,
+   "totalWeight": -28.82352997,
+   "totalVolume": -2.941176471
+  },
+  {
+   "ticker": "ZIR",
+   "input": 2.5,
+   "output": 0,
+   "delta": -2.5,
+   "individualWeight": 4.849999905,
+   "individualVolume": 1,
+   "totalWeight": -12.12499976,
+   "totalVolume": -2.5
+  },
+  {
+   "ticker": "ZR",
+   "input": 0,
+   "output": 1.25,
+   "delta": 1.25,
+   "individualWeight": 6.53000021,
+   "individualVolume": 1,
+   "totalWeight": 8.162500262,
+   "totalVolume": 1.25
+  }
+ ]
+}

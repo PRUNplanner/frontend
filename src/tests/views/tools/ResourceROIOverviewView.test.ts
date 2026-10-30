@@ -34,8 +34,7 @@ vi.mock("@/features/resource_roi_overview/useResourceROIOverview", () => ({
 	useResourceROIOverview: () => ({
 		resultData: ref(state.results),
 		calculate,
-		progressCurrent: ref(0),
-		progressTotal: ref(0),
+		progress: ref({ current: 0, total: 0 }),
 		progressSearchingPlanets: ref(state.searching),
 	}),
 }));

@@ -1,0 +1,167 @@
+{
+ "H2O": [
+  {
+   "planetNaturalId": "KW-688c",
+   "planetName": "Etherwind (KW-688c)",
+   "buildingTicker": "RIG",
+   "dailyYield": 2359.350094,
+   "percentMaxDailyYield": 1,
+   "cogm": {
+    "runtime": 11535380.05,
+    "runtimeShare": 0.1335113432,
+    "efficiency": 1.605,
+    "degradation": 128.7944574,
+    "degradationShare": 17.19552099,
+    "workforceCost": 68.85923006,
+    "workforceCostTotal": 515.7556536,
+    "inputCost": [],
+    "inputTotal": 0,
+    "outputCOGM": [
+     {
+      "ticker": "H2O",
+      "amount": 9,
+      "costSplit": 9.561639006,
+      "costTotal": 9.561639006
+     }
+    ],
+    "totalCost": 86.05475105,
+    "outputRevenue": 424.1506508,
+    "totalProfit": 338.0958998
+   },
+   "outputProfit": 338.0958998,
+   "dailyProfit": 88631.84365,
+   "planCost": 1256411.885,
+   "planROI": 14.1756262,
+   "planArea": 500,
+   "planProfitArea": 177.2636873,
+   "planetSurface": [
+    "MCG"
+   ],
+   "planetGravity": [],
+   "planetPressure": [],
+   "planetTemperature": [],
+   "planetCOGC": "ADVERTISING_RESOURCE_EXTRACTION",
+   "planetInfrastructures": [
+    "ADM",
+    "COGC",
+    "LM",
+    "SHY",
+    "WAR"
+   ],
+   "distanceAI1": 7,
+   "distanceCI1": 4,
+   "distanceIC1": 11,
+   "distanceNC1": 6
+  }
+ ],
+ "SIO": [
+  {
+   "planetNaturalId": "KW-688c",
+   "planetName": "Etherwind (KW-688c)",
+   "buildingTicker": "EXT",
+   "dailyYield": 471.8700188,
+   "percentMaxDailyYield": 1,
+   "cogm": {
+    "runtime": 28197595.68,
+    "runtimeShare": 0.3263610611,
+    "efficiency": 1.605,
+    "degradation": 180.8367962,
+    "degradationShare": 59.01808868,
+    "workforceCost": 336.6451247,
+    "workforceCostTotal": 1031.511307,
+    "inputCost": [],
+    "inputTotal": 0,
+    "outputCOGM": [
+     {
+      "ticker": "SIO",
+      "amount": 11,
+      "costSplit": 35.96938304,
+      "costTotal": 35.96938304
+     }
+    ],
+    "totalCost": 395.6632134,
+    "outputRevenue": 1907.148524,
+    "totalProfit": 1511.485311
+   },
+   "outputProfit": 1511.485311,
+   "dailyProfit": 64838.60017,
+   "planCost": 892032.3067,
+   "planROI": 13.75773543,
+   "planArea": 484,
+   "planProfitArea": 133.9640499,
+   "planetSurface": [
+    "MCG"
+   ],
+   "planetGravity": [],
+   "planetPressure": [],
+   "planetTemperature": [],
+   "planetCOGC": "ADVERTISING_RESOURCE_EXTRACTION",
+   "planetInfrastructures": [
+    "ADM",
+    "COGC",
+    "LM",
+    "SHY",
+    "WAR"
+   ],
+   "distanceAI1": 7,
+   "distanceCI1": 4,
+   "distanceIC1": 11,
+   "distanceNC1": 6
+  }
+ ],
+ "O": [
+  {
+   "planetNaturalId": "KW-688c",
+   "planetName": "Etherwind (KW-688c)",
+   "buildingTicker": "COL",
+   "dailyYield": 953.3699747,
+   "percentMaxDailyYield": 1,
+   "cogm": {
+    "runtime": 13956386.66,
+    "runtimeShare": 0.161532253,
+    "efficiency": 1.605,
+    "degradation": 173.0274936,
+    "degradationShare": 27.94952088,
+    "workforceCost": 138.8519546,
+    "workforceCostTotal": 859.592756,
+    "inputCost": [],
+    "inputTotal": 0,
+    "outputCOGM": [
+     {
+      "ticker": "O",
+      "amount": 7,
+      "costSplit": 23.82878221,
+      "costTotal": 23.82878221
+     }
+    ],
+    "totalCost": 166.8014755,
+    "outputRevenue": 878.5487037,
+    "totalProfit": 711.7472282
+   },
+   "outputProfit": 711.7472282,
+   "dailyProfit": 96936.91957,
+   "planCost": 1130195.678,
+   "planROI": 11.65908389,
+   "planArea": 480,
+   "planProfitArea": 201.9519158,
+   "planetSurface": [
+    "MCG"
+   ],
+   "planetGravity": [],
+   "planetPressure": [],
+   "planetTemperature": [],
+   "planetCOGC": "ADVERTISING_RESOURCE_EXTRACTION",
+   "planetInfrastructures": [
+    "ADM",
+    "COGC",
+    "LM",
+    "SHY",
+    "WAR"
+   ],
+   "distanceAI1": 7,
+   "distanceCI1": 4,
+   "distanceIC1": 11,
+   "distanceNC1": 6
+  }
+ ]
+}

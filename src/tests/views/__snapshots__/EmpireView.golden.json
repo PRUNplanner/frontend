@@ -1,0 +1,4332 @@
+{
+ "plain": {
+  "planList": [
+   {
+    "uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+    "name": "EW COF RAT DW C",
+    "planet": "KW-688c",
+    "permits": 3,
+    "cogc": "RESOURCE_EXTRACTION",
+    "profit": 133298.3609,
+    "revenue": 182596.7731,
+    "inputs": 29484.63016,
+    "workforce": 6408.686759,
+    "degradation": 13405.09521
+   },
+   {
+    "uuid": "8b0e6b1c-0000-4000-8000-000000000002",
+    "name": "Small",
+    "planet": "KW-688c",
+    "permits": 3,
+    "cogc": "RESOURCE_EXTRACTION",
+    "profit": 79442.94364,
+    "revenue": 177096.3443,
+    "inputs": 82609.93662,
+    "workforce": 5218.250877,
+    "degradation": 9825.213186
+   },
+   {
+    "uuid": "8b0e6b1c-0000-4000-8000-000000000003",
+    "name": "Food COGC",
+    "planet": "ZV-307b",
+    "permits": 3,
+    "cogc": "FOOD_INDUSTRIES",
+    "profit": 131164.3288,
+    "revenue": 210135.864,
+    "inputs": 59157.75326,
+    "workforce": 6408.686759,
+    "degradation": 13405.09521
+   }
+  ],
+  "costOverview": {
+   "costOverview": {
+    "totalRevenue": 562286.2728,
+    "totalCost": 218380.6394,
+    "totalProfit": 343905.6333,
+    "totalAreaUsed": 2702
+   },
+   "shippingDemand": {
+    "dailyWeightImport": 446.592812,
+    "dailyWeightExport": 693.7714446,
+    "dailyVolumeImport": 425.5455818,
+    "dailyVolumeExport": 448.1539343,
+    "dailyWeight": 752.4880388,
+    "dailyVolume": 540.8285294
+   },
+   "split": {
+    "revenue": 562286.2728,
+    "inputs": 164428.2914,
+    "workforce": 17316.9444,
+    "degradation": 36635.40361,
+    "profit": 343905.6333
+   }
+  },
+  "materialIO": {
+   "empireMaterialIO": [
+    {
+     "ticker": "C",
+     "input": 0,
+     "output": 98.37545455,
+     "delta": 98.37545455,
+     "deltaPrice": 95533.27848,
+     "inputPlanets": [],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 54.6530303,
+       "input": 0,
+       "output": 54.6530303,
+       "price": 53074.0436
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 43.72242424,
+       "input": 0,
+       "output": 43.72242424,
+       "price": 42459.23488
+      }
+     ]
+    },
+    {
+     "ticker": "CAF",
+     "input": 88.06373333,
+     "output": 85.65784615,
+     "delta": -2.405887179,
+     "deltaPrice": -4246.477251,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -9386.551447
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -9386.551447
+      }
+     ]
+    },
+    {
+     "ticker": "COF",
+     "input": 28,
+     "output": 264.1912,
+     "delta": 236.1912,
+     "deltaPrice": 228898.9038,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 70.4396,
+       "input": 10.85,
+       "output": 81.2896,
+       "price": 68264.80929
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 74.9896,
+       "input": 6.3,
+       "output": 81.2896,
+       "price": 72674.3301
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 90.762,
+       "input": 10.85,
+       "output": 101.612,
+       "price": 87959.7644
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 70.4396,
+       "input": 10.85,
+       "output": 81.2896,
+       "price": 68264.80929
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 74.9896,
+       "input": 6.3,
+       "output": 81.2896,
+       "price": 72674.3301
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 90.762,
+       "input": 10.85,
+       "output": 101.612,
+       "price": 87959.7644
+      }
+     ]
+    },
+    {
+     "ticker": "DW",
+     "input": 521.1912,
+     "output": 1232.892267,
+     "delta": 711.7010667,
+     "deltaPrice": 80233.21558,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 200.2618667,
+       "input": 179.0896,
+       "output": 379.3514667,
+       "price": 22576.40781
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 236.6618667,
+       "input": 142.6896,
+       "output": 379.3514667,
+       "price": 26679.94114
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 274.7773333,
+       "input": 199.412,
+       "output": 474.1893333,
+       "price": 30976.86663
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 200.2618667,
+       "input": 179.0896,
+       "output": 379.3514667,
+       "price": 22576.40781
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 236.6618667,
+       "input": 142.6896,
+       "output": 379.3514667,
+       "price": 26679.94114
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 274.7773333,
+       "input": 199.412,
+       "output": 474.1893333,
+       "price": 30976.86663
+      }
+     ]
+    },
+    {
+     "ticker": "EXO",
+     "input": 3.3,
+     "output": 0,
+     "delta": -3.3,
+     "deltaPrice": -1028.637809,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -342.8792697
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -342.8792697
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -342.8792697
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "H2O",
+     "input": 3517.260513,
+     "output": 2045.225781,
+     "delta": -1472.034732,
+     "deltaPrice": -69373.83216,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 8.977263099,
+       "input": 1127.259282,
+       "output": 1136.236545,
+       "price": 423.0791095
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1127.259282,
+       "input": 1127.259282,
+       "output": 0,
+       "price": -53125.30646
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -353.7527126,
+       "input": 1262.741949,
+       "output": 908.9892361,
+       "price": -16671.60481
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 8.977263099,
+       "input": 1127.259282,
+       "output": 1136.236545,
+       "price": 423.0791095
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -353.7527126,
+       "input": 1262.741949,
+       "output": 908.9892361,
+       "price": -16671.60481
+      }
+     ]
+    },
+    {
+     "ticker": "HCP",
+     "input": 98.37545455,
+     "output": 171.3156923,
+     "delta": 72.94023776,
+     "deltaPrice": 29769.23701,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 2.452200466,
+       "input": 54.6530303,
+       "output": 57.10523077,
+       "price": 1000.821208
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 13.38280653,
+       "input": 43.72242424,
+       "output": 57.10523077,
+       "price": 5461.950106
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 2.452200466,
+       "input": 54.6530303,
+       "output": 57.10523077,
+       "price": 1000.821208
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 57.10523077,
+       "input": 0,
+       "output": 57.10523077,
+       "price": 23306.4657
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 13.38280653,
+       "input": 43.72242424,
+       "output": 57.10523077,
+       "price": 5461.950106
+      }
+     ]
+    },
+    {
+     "ticker": "KOM",
+     "input": 6.6,
+     "output": 0,
+     "delta": -6.6,
+     "deltaPrice": -6886.736082,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.2,
+       "input": 2.2,
+       "output": 0,
+       "price": -2295.578694
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.2,
+       "input": 2.2,
+       "output": 0,
+       "price": -2295.578694
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -2.2,
+       "input": 2.2,
+       "output": 0,
+       "price": -2295.578694
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "MAI",
+     "input": 137.2514606,
+     "output": 171.3156923,
+     "delta": 34.0642317,
+     "deltaPrice": 14007.50398,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 2.682182284,
+       "input": 54.42304848,
+       "output": 57.10523077,
+       "price": 1102.93634
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 30.00869744,
+       "input": 27.09653333,
+       "output": 57.10523077,
+       "price": 12339.83354
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 1.373351981,
+       "input": 55.73187879,
+       "output": 57.10523077,
+       "price": 564.7341035
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 2.682182284,
+       "input": 54.42304848,
+       "output": 57.10523077,
+       "price": 1102.93634
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 30.00869744,
+       "input": 27.09653333,
+       "output": 57.10523077,
+       "price": 12339.83354
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 1.373351981,
+       "input": 55.73187879,
+       "output": 57.10523077,
+       "price": 564.7341035
+      }
+     ]
+    },
+    {
+     "ticker": "MUS",
+     "input": 88.06373333,
+     "output": 85.65784615,
+     "delta": -2.405887179,
+     "deltaPrice": -706.4490286,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -1561.557913
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -1561.557913
+      }
+     ]
+    },
+    {
+     "ticker": "NS",
+     "input": 221.2827692,
+     "output": 0,
+     "delta": -221.2827692,
+     "deltaPrice": -88453.89049,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -73.76092308,
+       "input": 73.76092308,
+       "output": 0,
+       "price": -29484.63016
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -73.76092308,
+       "input": 73.76092308,
+       "output": 0,
+       "price": -29484.63016
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -73.76092308,
+       "input": 73.76092308,
+       "output": 0,
+       "price": -29484.63016
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "OVE",
+     "input": 28,
+     "output": 0,
+     "delta": -28,
+     "deltaPrice": -3417.016811,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -10.85,
+       "input": 10.85,
+       "output": 0,
+       "price": -1324.094014
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -6.3,
+       "input": 6.3,
+       "output": 0,
+       "price": -768.8287824
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -10.85,
+       "input": 10.85,
+       "output": 0,
+       "price": -1324.094014
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "PT",
+     "input": 3.3,
+     "output": 0,
+     "delta": -3.3,
+     "deltaPrice": -1827.64931,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -609.2164368
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -609.2164368
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -609.2164368
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "PWO",
+     "input": 11.2,
+     "output": 0,
+     "delta": -11.2,
+     "deltaPrice": -3908.74246,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -4.34,
+       "input": 4.34,
+       "output": 0,
+       "price": -1514.637703
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.52,
+       "input": 2.52,
+       "output": 0,
+       "price": -879.4670534
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -4.34,
+       "input": 4.34,
+       "output": 0,
+       "price": -1514.637703
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "RAT",
+     "input": 263.6,
+     "output": 880.6373333,
+     "delta": 617.0373333,
+     "deltaPrice": 100710.9712,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 170.9653333,
+       "input": 100,
+       "output": 270.9653333,
+       "price": 27904.4457
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 207.3653333,
+       "input": 63.6,
+       "output": 270.9653333,
+       "price": 33845.54383
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 238.7066667,
+       "input": 100,
+       "output": 338.7066667,
+       "price": 38960.98166
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 170.9653333,
+       "input": 100,
+       "output": 270.9653333,
+       "price": 27904.4457
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 207.3653333,
+       "input": 63.6,
+       "output": 270.9653333,
+       "price": 33845.54383
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 238.7066667,
+       "input": 100,
+       "output": 338.7066667,
+       "price": 38960.98166
+      }
+     ]
+    },
+    {
+     "ticker": "REP",
+     "input": 1.32,
+     "output": 0,
+     "delta": -1.32,
+     "deltaPrice": -966.8419218,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -0.44,
+       "input": 0.44,
+       "output": 0,
+       "price": -322.2806406
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -0.44,
+       "input": 0.44,
+       "output": 0,
+       "price": -322.2806406
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -0.44,
+       "input": 0.44,
+       "output": 0,
+       "price": -322.2806406
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "SIO",
+     "input": 0,
+     "output": 75.74910301,
+     "delta": 75.74910301,
+     "deltaPrice": 13133.16273,
+     "inputPlanets": [],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 27.05325107,
+       "input": 0,
+       "output": 27.05325107,
+       "price": 4690.41526
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 27.05325107,
+       "input": 0,
+       "output": 27.05325107,
+       "price": 4690.41526
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 21.64260086,
+       "input": 0,
+       "output": 21.64260086,
+       "price": 3752.332208
+      }
+     ]
+    },
+    {
+     "ticker": "VEG",
+     "input": 88.06373333,
+     "output": 85.65784615,
+     "delta": -2.405887179,
+     "deltaPrice": -928.9624983,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -2053.408924
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -2053.408924
+      }
+     ]
+    }
+   ]
+  },
+  "setProfits": [
+   [
+    "8804b0e1-73d8-48f7-93e3-48bb2ef7b727",
+    {
+     "41094cb6-c4bc-429f-b8c8-b81d02b3811c": 133298.3609,
+     "8b0e6b1c-0000-4000-8000-000000000002": 79442.94364,
+     "8b0e6b1c-0000-4000-8000-000000000003": 131164.3288
+    },
+    127.2781767
+   ]
+  ],
+  "patchEmpireState": [
+   {
+    "empireUuid": "8804b0e1-73d8-48f7-93e3-48bb2ef7b727",
+    "empireState": {
+     "metadata": {
+      "faction": "NONE",
+      "permits_used": 1,
+      "permits_total": 2,
+      "plan_count": 0
+     },
+     "empire_total": {
+      "C": {
+       "p": 98.3755,
+       "c": 0,
+       "d": 98.3755
+      },
+      "CAF": {
+       "p": 85.6578,
+       "c": 88.0637,
+       "d": -2.4059
+      },
+      "COF": {
+       "p": 264.1912,
+       "c": 28,
+       "d": 236.1912
+      },
+      "DW": {
+       "p": 1232.8923,
+       "c": 521.1912,
+       "d": 711.7011
+      },
+      "EXO": {
+       "p": 0,
+       "c": 3.3,
+       "d": -3.3
+      },
+      "H2O": {
+       "p": 2045.2258,
+       "c": 3517.2605,
+       "d": -1472.0347
+      },
+      "HCP": {
+       "p": 171.3157,
+       "c": 98.3755,
+       "d": 72.9402
+      },
+      "KOM": {
+       "p": 0,
+       "c": 6.6,
+       "d": -6.6
+      },
+      "MAI": {
+       "p": 171.3157,
+       "c": 137.2515,
+       "d": 34.0642
+      },
+      "MUS": {
+       "p": 85.6578,
+       "c": 88.0637,
+       "d": -2.4059
+      },
+      "NS": {
+       "p": 0,
+       "c": 221.2828,
+       "d": -221.2828
+      },
+      "OVE": {
+       "p": 0,
+       "c": 28,
+       "d": -28
+      },
+      "PT": {
+       "p": 0,
+       "c": 3.3,
+       "d": -3.3
+      },
+      "PWO": {
+       "p": 0,
+       "c": 11.2,
+       "d": -11.2
+      },
+      "RAT": {
+       "p": 880.6373,
+       "c": 263.6,
+       "d": 617.0373
+      },
+      "REP": {
+       "p": 0,
+       "c": 1.32,
+       "d": -1.32
+      },
+      "SIO": {
+       "p": 75.7491,
+       "c": 0,
+       "d": 75.7491
+      },
+      "VEG": {
+       "p": 85.6578,
+       "c": 88.0637,
+       "d": -2.4059
+      }
+     },
+     "plan_details": {
+      "41094cb6-c4bc-429f-b8c8-b81d02b3811c": {
+       "metadata": {
+        "planet_natural_id": "KW-688c",
+        "cogc": "RESOURCE_EXTRACTION"
+       },
+       "deltas": {
+        "C": {
+         "p": 54.653,
+         "c": 0,
+         "d": 54.653
+        },
+        "CAF": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "COF": {
+         "p": 81.2896,
+         "c": 10.85,
+         "d": 70.4396
+        },
+        "DW": {
+         "p": 379.3515,
+         "c": 179.0896,
+         "d": 200.2619
+        },
+        "EXO": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "H2O": {
+         "p": 1136.2365,
+         "c": 1127.2593,
+         "d": 8.9773
+        },
+        "HCP": {
+         "p": 57.1052,
+         "c": 54.653,
+         "d": 2.4522
+        },
+        "KOM": {
+         "p": 0,
+         "c": 2.2,
+         "d": -2.2
+        },
+        "MAI": {
+         "p": 57.1052,
+         "c": 54.423,
+         "d": 2.6822
+        },
+        "MUS": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "NS": {
+         "p": 0,
+         "c": 73.7609,
+         "d": -73.7609
+        },
+        "OVE": {
+         "p": 0,
+         "c": 10.85,
+         "d": -10.85
+        },
+        "PT": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "PWO": {
+         "p": 0,
+         "c": 4.34,
+         "d": -4.34
+        },
+        "RAT": {
+         "p": 270.9653,
+         "c": 100,
+         "d": 170.9653
+        },
+        "REP": {
+         "p": 0,
+         "c": 0.44,
+         "d": -0.44
+        },
+        "SIO": {
+         "p": 27.0533,
+         "c": 0,
+         "d": 27.0533
+        },
+        "VEG": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        }
+       }
+      },
+      "8b0e6b1c-0000-4000-8000-000000000003": {
+       "metadata": {
+        "planet_natural_id": "ZV-307b",
+        "cogc": "FOOD_INDUSTRIES"
+       },
+       "deltas": {
+        "C": {
+         "p": 43.7224,
+         "c": 0,
+         "d": 43.7224
+        },
+        "CAF": {
+         "p": 28.5526,
+         "c": 33.8707,
+         "d": -5.3181
+        },
+        "COF": {
+         "p": 101.612,
+         "c": 10.85,
+         "d": 90.762
+        },
+        "DW": {
+         "p": 474.1893,
+         "c": 199.412,
+         "d": 274.7773
+        },
+        "EXO": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "H2O": {
+         "p": 908.9892,
+         "c": 1262.7419,
+         "d": -353.7527
+        },
+        "HCP": {
+         "p": 57.1052,
+         "c": 43.7224,
+         "d": 13.3828
+        },
+        "KOM": {
+         "p": 0,
+         "c": 2.2,
+         "d": -2.2
+        },
+        "MAI": {
+         "p": 57.1052,
+         "c": 55.7319,
+         "d": 1.3734
+        },
+        "MUS": {
+         "p": 28.5526,
+         "c": 33.8707,
+         "d": -5.3181
+        },
+        "NS": {
+         "p": 0,
+         "c": 73.7609,
+         "d": -73.7609
+        },
+        "OVE": {
+         "p": 0,
+         "c": 10.85,
+         "d": -10.85
+        },
+        "PT": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "PWO": {
+         "p": 0,
+         "c": 4.34,
+         "d": -4.34
+        },
+        "RAT": {
+         "p": 338.7067,
+         "c": 100,
+         "d": 238.7067
+        },
+        "REP": {
+         "p": 0,
+         "c": 0.44,
+         "d": -0.44
+        },
+        "SIO": {
+         "p": 21.6426,
+         "c": 0,
+         "d": 21.6426
+        },
+        "VEG": {
+         "p": 28.5526,
+         "c": 33.8707,
+         "d": -5.3181
+        }
+       }
+      },
+      "8b0e6b1c-0000-4000-8000-000000000002": {
+       "metadata": {
+        "planet_natural_id": "KW-688c",
+        "cogc": "RESOURCE_EXTRACTION"
+       },
+       "deltas": {
+        "CAF": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "COF": {
+         "p": 81.2896,
+         "c": 6.3,
+         "d": 74.9896
+        },
+        "DW": {
+         "p": 379.3515,
+         "c": 142.6896,
+         "d": 236.6619
+        },
+        "EXO": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "H2O": {
+         "p": 0,
+         "c": 1127.2593,
+         "d": -1127.2593
+        },
+        "HCP": {
+         "p": 57.1052,
+         "c": 0,
+         "d": 57.1052
+        },
+        "KOM": {
+         "p": 0,
+         "c": 2.2,
+         "d": -2.2
+        },
+        "MAI": {
+         "p": 57.1052,
+         "c": 27.0965,
+         "d": 30.0087
+        },
+        "MUS": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "NS": {
+         "p": 0,
+         "c": 73.7609,
+         "d": -73.7609
+        },
+        "OVE": {
+         "p": 0,
+         "c": 6.3,
+         "d": -6.3
+        },
+        "PT": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "PWO": {
+         "p": 0,
+         "c": 2.52,
+         "d": -2.52
+        },
+        "RAT": {
+         "p": 270.9653,
+         "c": 63.6,
+         "d": 207.3653
+        },
+        "REP": {
+         "p": 0,
+         "c": 0.44,
+         "d": -0.44
+        },
+        "SIO": {
+         "p": 27.0533,
+         "c": 0,
+         "d": 27.0533
+        },
+        "VEG": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ },
+ "cx": {
+  "planList": [
+   {
+    "uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+    "name": "EW COF RAT DW C",
+    "planet": "KW-688c",
+    "permits": 3,
+    "cogc": "RESOURCE_EXTRACTION",
+    "profit": 152130.0691,
+    "revenue": 182596.7731,
+    "inputs": 11064.13846,
+    "workforce": 5997.470322,
+    "degradation": 13405.09521
+   },
+   {
+    "uuid": "8b0e6b1c-0000-4000-8000-000000000002",
+    "name": "Small",
+    "planet": "KW-688c",
+    "permits": 3,
+    "cogc": "RESOURCE_EXTRACTION",
+    "profit": 141254.6247,
+    "revenue": 177096.3443,
+    "inputs": 21209.472,
+    "workforce": 4807.03444,
+    "degradation": 9825.213186
+   },
+   {
+    "uuid": "8b0e6b1c-0000-4000-8000-000000000003",
+    "name": "Food COGC",
+    "planet": "ZV-307b",
+    "permits": 3,
+    "cogc": "FOOD_INDUSTRIES",
+    "profit": 145063.3756,
+    "revenue": 210135.864,
+    "inputs": 45669.92286,
+    "workforce": 5997.470322,
+    "degradation": 13405.09521
+   }
+  ],
+  "costOverview": {
+   "costOverview": {
+    "totalRevenue": 562286.2728,
+    "totalCost": 124724.3942,
+    "totalProfit": 437561.8785,
+    "totalAreaUsed": 2702
+   },
+   "shippingDemand": {
+    "dailyWeightImport": 446.592812,
+    "dailyWeightExport": 693.7714446,
+    "dailyVolumeImport": 425.5455818,
+    "dailyVolumeExport": 448.1539343,
+    "dailyWeight": 752.4880388,
+    "dailyVolume": 540.8285294
+   },
+   "split": {
+    "revenue": 562286.2728,
+    "inputs": 72467.46881,
+    "workforce": 15621.5218,
+    "degradation": 36635.40361,
+    "profit": 437561.8785
+   }
+  },
+  "materialIO": {
+   "cxUuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
+   "empireMaterialIO": [
+    {
+     "ticker": "C",
+     "input": 0,
+     "output": 98.37545455,
+     "delta": 98.37545455,
+     "deltaPrice": 95533.27848,
+     "inputPlanets": [],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 54.6530303,
+       "input": 0,
+       "output": 54.6530303,
+       "price": 53074.0436
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 43.72242424,
+       "input": 0,
+       "output": 43.72242424,
+       "price": 42459.23488
+      }
+     ]
+    },
+    {
+     "ticker": "CAF",
+     "input": 88.06373333,
+     "output": 85.65784615,
+     "delta": -2.405887179,
+     "deltaPrice": -4246.477251,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -9386.551447
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -9386.551447
+      }
+     ]
+    },
+    {
+     "ticker": "COF",
+     "input": 28,
+     "output": 264.1912,
+     "delta": 236.1912,
+     "deltaPrice": 228898.9038,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 70.4396,
+       "input": 10.85,
+       "output": 81.2896,
+       "price": 68264.80929
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 74.9896,
+       "input": 6.3,
+       "output": 81.2896,
+       "price": 72674.3301
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 90.762,
+       "input": 10.85,
+       "output": 101.612,
+       "price": 87959.7644
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 70.4396,
+       "input": 10.85,
+       "output": 81.2896,
+       "price": 68264.80929
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 74.9896,
+       "input": 6.3,
+       "output": 81.2896,
+       "price": 72674.3301
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 90.762,
+       "input": 10.85,
+       "output": 101.612,
+       "price": 87959.7644
+      }
+     ]
+    },
+    {
+     "ticker": "DW",
+     "input": 521.1912,
+     "output": 1232.892267,
+     "delta": 711.7010667,
+     "deltaPrice": 80233.21558,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 200.2618667,
+       "input": 179.0896,
+       "output": 379.3514667,
+       "price": 22576.40781
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 236.6618667,
+       "input": 142.6896,
+       "output": 379.3514667,
+       "price": 26679.94114
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 274.7773333,
+       "input": 199.412,
+       "output": 474.1893333,
+       "price": 30976.86663
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 200.2618667,
+       "input": 179.0896,
+       "output": 379.3514667,
+       "price": 22576.40781
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 236.6618667,
+       "input": 142.6896,
+       "output": 379.3514667,
+       "price": 26679.94114
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 274.7773333,
+       "input": 199.412,
+       "output": 474.1893333,
+       "price": 30976.86663
+      }
+     ]
+    },
+    {
+     "ticker": "EXO",
+     "input": 3.3,
+     "output": 0,
+     "delta": -3.3,
+     "deltaPrice": -1028.637809,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -342.8792697
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -342.8792697
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -342.8792697
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "H2O",
+     "input": 3517.260513,
+     "output": 2045.225781,
+     "delta": -1472.034732,
+     "deltaPrice": -13792.21967,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 8.977263099,
+       "input": 1127.259282,
+       "output": 1136.236545,
+       "price": 423.0791095
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1127.259282,
+       "input": 1127.259282,
+       "output": 0,
+       "price": -10145.33354
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -353.7527126,
+       "input": 1262.741949,
+       "output": 908.9892361,
+       "price": -3183.774413
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 8.977263099,
+       "input": 1127.259282,
+       "output": 1136.236545,
+       "price": 423.0791095
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -353.7527126,
+       "input": 1262.741949,
+       "output": 908.9892361,
+       "price": -3183.774413
+      }
+     ]
+    },
+    {
+     "ticker": "HCP",
+     "input": 98.37545455,
+     "output": 171.3156923,
+     "delta": 72.94023776,
+     "deltaPrice": 29769.23701,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 2.452200466,
+       "input": 54.6530303,
+       "output": 57.10523077,
+       "price": 1000.821208
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 13.38280653,
+       "input": 43.72242424,
+       "output": 57.10523077,
+       "price": 5461.950106
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 2.452200466,
+       "input": 54.6530303,
+       "output": 57.10523077,
+       "price": 1000.821208
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 57.10523077,
+       "input": 0,
+       "output": 57.10523077,
+       "price": 23306.4657
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 13.38280653,
+       "input": 43.72242424,
+       "output": 57.10523077,
+       "price": 5461.950106
+      }
+     ]
+    },
+    {
+     "ticker": "KOM",
+     "input": 6.6,
+     "output": 0,
+     "delta": -6.6,
+     "deltaPrice": -6886.736082,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.2,
+       "input": 2.2,
+       "output": 0,
+       "price": -2295.578694
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.2,
+       "input": 2.2,
+       "output": 0,
+       "price": -2295.578694
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -2.2,
+       "input": 2.2,
+       "output": 0,
+       "price": -2295.578694
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "MAI",
+     "input": 137.2514606,
+     "output": 171.3156923,
+     "delta": 34.0642317,
+     "deltaPrice": 14007.50398,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 2.682182284,
+       "input": 54.42304848,
+       "output": 57.10523077,
+       "price": 1102.93634
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 30.00869744,
+       "input": 27.09653333,
+       "output": 57.10523077,
+       "price": 12339.83354
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 1.373351981,
+       "input": 55.73187879,
+       "output": 57.10523077,
+       "price": 564.7341035
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 2.682182284,
+       "input": 54.42304848,
+       "output": 57.10523077,
+       "price": 1102.93634
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 30.00869744,
+       "input": 27.09653333,
+       "output": 57.10523077,
+       "price": 12339.83354
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 1.373351981,
+       "input": 55.73187879,
+       "output": 57.10523077,
+       "price": 564.7341035
+      }
+     ]
+    },
+    {
+     "ticker": "MUS",
+     "input": 88.06373333,
+     "output": 85.65784615,
+     "delta": -2.405887179,
+     "deltaPrice": -706.4490286,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -1561.557913
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -1561.557913
+      }
+     ]
+    },
+    {
+     "ticker": "NS",
+     "input": 221.2827692,
+     "output": 0,
+     "delta": -221.2827692,
+     "deltaPrice": -51612.90709,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -73.76092308,
+       "input": 73.76092308,
+       "output": 0,
+       "price": -11064.13846
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -73.76092308,
+       "input": 73.76092308,
+       "output": 0,
+       "price": -11064.13846
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -73.76092308,
+       "input": 73.76092308,
+       "output": 0,
+       "price": -29484.63016
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "OVE",
+     "input": 28,
+     "output": 0,
+     "delta": -28,
+     "deltaPrice": -3417.016811,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -10.85,
+       "input": 10.85,
+       "output": 0,
+       "price": -1324.094014
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -6.3,
+       "input": 6.3,
+       "output": 0,
+       "price": -768.8287824
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -10.85,
+       "input": 10.85,
+       "output": 0,
+       "price": -1324.094014
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "PT",
+     "input": 3.3,
+     "output": 0,
+     "delta": -3.3,
+     "deltaPrice": -594,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -198
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -198
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -198
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "PWO",
+     "input": 11.2,
+     "output": 0,
+     "delta": -11.2,
+     "deltaPrice": -3908.74246,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -4.34,
+       "input": 4.34,
+       "output": 0,
+       "price": -1514.637703
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.52,
+       "input": 2.52,
+       "output": 0,
+       "price": -879.4670534
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -4.34,
+       "input": 4.34,
+       "output": 0,
+       "price": -1514.637703
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "RAT",
+     "input": 263.6,
+     "output": 880.6373333,
+     "delta": 617.0373333,
+     "deltaPrice": 100710.9712,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 170.9653333,
+       "input": 100,
+       "output": 270.9653333,
+       "price": 27904.4457
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 207.3653333,
+       "input": 63.6,
+       "output": 270.9653333,
+       "price": 33845.54383
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 238.7066667,
+       "input": 100,
+       "output": 338.7066667,
+       "price": 38960.98166
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 170.9653333,
+       "input": 100,
+       "output": 270.9653333,
+       "price": 27904.4457
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 207.3653333,
+       "input": 63.6,
+       "output": 270.9653333,
+       "price": 33845.54383
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 238.7066667,
+       "input": 100,
+       "output": 338.7066667,
+       "price": 38960.98166
+      }
+     ]
+    },
+    {
+     "ticker": "REP",
+     "input": 1.32,
+     "output": 0,
+     "delta": -1.32,
+     "deltaPrice": -966.8419218,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -0.44,
+       "input": 0.44,
+       "output": 0,
+       "price": -322.2806406
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -0.44,
+       "input": 0.44,
+       "output": 0,
+       "price": -322.2806406
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -0.44,
+       "input": 0.44,
+       "output": 0,
+       "price": -322.2806406
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "SIO",
+     "input": 0,
+     "output": 75.74910301,
+     "delta": 75.74910301,
+     "deltaPrice": 13133.16273,
+     "inputPlanets": [],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 27.05325107,
+       "input": 0,
+       "output": 27.05325107,
+       "price": 4690.41526
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 27.05325107,
+       "input": 0,
+       "output": 27.05325107,
+       "price": 4690.41526
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 21.64260086,
+       "input": 0,
+       "output": 21.64260086,
+       "price": 3752.332208
+      }
+     ]
+    },
+    {
+     "ticker": "VEG",
+     "input": 88.06373333,
+     "output": 85.65784615,
+     "delta": -2.405887179,
+     "deltaPrice": -928.9624983,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -2053.408924
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -2053.408924
+      }
+     ]
+    }
+   ]
+  },
+  "setProfits": [
+   [
+    "8804b0e1-73d8-48f7-93e3-48bb2ef7b727",
+    {
+     "41094cb6-c4bc-429f-b8c8-b81d02b3811c": 152130.0691,
+     "8b0e6b1c-0000-4000-8000-000000000002": 141254.6247,
+     "8b0e6b1c-0000-4000-8000-000000000003": 145063.3756
+    },
+    161.9399995
+   ]
+  ],
+  "patchEmpireState": [
+   {
+    "empireUuid": "8804b0e1-73d8-48f7-93e3-48bb2ef7b727",
+    "empireState": {
+     "metadata": {
+      "faction": "NONE",
+      "permits_used": 1,
+      "permits_total": 2,
+      "plan_count": 0
+     },
+     "empire_total": {
+      "C": {
+       "p": 98.3755,
+       "c": 0,
+       "d": 98.3755
+      },
+      "CAF": {
+       "p": 85.6578,
+       "c": 88.0637,
+       "d": -2.4059
+      },
+      "COF": {
+       "p": 264.1912,
+       "c": 28,
+       "d": 236.1912
+      },
+      "DW": {
+       "p": 1232.8923,
+       "c": 521.1912,
+       "d": 711.7011
+      },
+      "EXO": {
+       "p": 0,
+       "c": 3.3,
+       "d": -3.3
+      },
+      "H2O": {
+       "p": 2045.2258,
+       "c": 3517.2605,
+       "d": -1472.0347
+      },
+      "HCP": {
+       "p": 171.3157,
+       "c": 98.3755,
+       "d": 72.9402
+      },
+      "KOM": {
+       "p": 0,
+       "c": 6.6,
+       "d": -6.6
+      },
+      "MAI": {
+       "p": 171.3157,
+       "c": 137.2515,
+       "d": 34.0642
+      },
+      "MUS": {
+       "p": 85.6578,
+       "c": 88.0637,
+       "d": -2.4059
+      },
+      "NS": {
+       "p": 0,
+       "c": 221.2828,
+       "d": -221.2828
+      },
+      "OVE": {
+       "p": 0,
+       "c": 28,
+       "d": -28
+      },
+      "PT": {
+       "p": 0,
+       "c": 3.3,
+       "d": -3.3
+      },
+      "PWO": {
+       "p": 0,
+       "c": 11.2,
+       "d": -11.2
+      },
+      "RAT": {
+       "p": 880.6373,
+       "c": 263.6,
+       "d": 617.0373
+      },
+      "REP": {
+       "p": 0,
+       "c": 1.32,
+       "d": -1.32
+      },
+      "SIO": {
+       "p": 75.7491,
+       "c": 0,
+       "d": 75.7491
+      },
+      "VEG": {
+       "p": 85.6578,
+       "c": 88.0637,
+       "d": -2.4059
+      }
+     },
+     "plan_details": {
+      "41094cb6-c4bc-429f-b8c8-b81d02b3811c": {
+       "metadata": {
+        "planet_natural_id": "KW-688c",
+        "cogc": "RESOURCE_EXTRACTION"
+       },
+       "deltas": {
+        "C": {
+         "p": 54.653,
+         "c": 0,
+         "d": 54.653
+        },
+        "CAF": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "COF": {
+         "p": 81.2896,
+         "c": 10.85,
+         "d": 70.4396
+        },
+        "DW": {
+         "p": 379.3515,
+         "c": 179.0896,
+         "d": 200.2619
+        },
+        "EXO": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "H2O": {
+         "p": 1136.2365,
+         "c": 1127.2593,
+         "d": 8.9773
+        },
+        "HCP": {
+         "p": 57.1052,
+         "c": 54.653,
+         "d": 2.4522
+        },
+        "KOM": {
+         "p": 0,
+         "c": 2.2,
+         "d": -2.2
+        },
+        "MAI": {
+         "p": 57.1052,
+         "c": 54.423,
+         "d": 2.6822
+        },
+        "MUS": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "NS": {
+         "p": 0,
+         "c": 73.7609,
+         "d": -73.7609
+        },
+        "OVE": {
+         "p": 0,
+         "c": 10.85,
+         "d": -10.85
+        },
+        "PT": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "PWO": {
+         "p": 0,
+         "c": 4.34,
+         "d": -4.34
+        },
+        "RAT": {
+         "p": 270.9653,
+         "c": 100,
+         "d": 170.9653
+        },
+        "REP": {
+         "p": 0,
+         "c": 0.44,
+         "d": -0.44
+        },
+        "SIO": {
+         "p": 27.0533,
+         "c": 0,
+         "d": 27.0533
+        },
+        "VEG": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        }
+       }
+      },
+      "8b0e6b1c-0000-4000-8000-000000000003": {
+       "metadata": {
+        "planet_natural_id": "ZV-307b",
+        "cogc": "FOOD_INDUSTRIES"
+       },
+       "deltas": {
+        "C": {
+         "p": 43.7224,
+         "c": 0,
+         "d": 43.7224
+        },
+        "CAF": {
+         "p": 28.5526,
+         "c": 33.8707,
+         "d": -5.3181
+        },
+        "COF": {
+         "p": 101.612,
+         "c": 10.85,
+         "d": 90.762
+        },
+        "DW": {
+         "p": 474.1893,
+         "c": 199.412,
+         "d": 274.7773
+        },
+        "EXO": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "H2O": {
+         "p": 908.9892,
+         "c": 1262.7419,
+         "d": -353.7527
+        },
+        "HCP": {
+         "p": 57.1052,
+         "c": 43.7224,
+         "d": 13.3828
+        },
+        "KOM": {
+         "p": 0,
+         "c": 2.2,
+         "d": -2.2
+        },
+        "MAI": {
+         "p": 57.1052,
+         "c": 55.7319,
+         "d": 1.3734
+        },
+        "MUS": {
+         "p": 28.5526,
+         "c": 33.8707,
+         "d": -5.3181
+        },
+        "NS": {
+         "p": 0,
+         "c": 73.7609,
+         "d": -73.7609
+        },
+        "OVE": {
+         "p": 0,
+         "c": 10.85,
+         "d": -10.85
+        },
+        "PT": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "PWO": {
+         "p": 0,
+         "c": 4.34,
+         "d": -4.34
+        },
+        "RAT": {
+         "p": 338.7067,
+         "c": 100,
+         "d": 238.7067
+        },
+        "REP": {
+         "p": 0,
+         "c": 0.44,
+         "d": -0.44
+        },
+        "SIO": {
+         "p": 21.6426,
+         "c": 0,
+         "d": 21.6426
+        },
+        "VEG": {
+         "p": 28.5526,
+         "c": 33.8707,
+         "d": -5.3181
+        }
+       }
+      },
+      "8b0e6b1c-0000-4000-8000-000000000002": {
+       "metadata": {
+        "planet_natural_id": "KW-688c",
+        "cogc": "RESOURCE_EXTRACTION"
+       },
+       "deltas": {
+        "CAF": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "COF": {
+         "p": 81.2896,
+         "c": 6.3,
+         "d": 74.9896
+        },
+        "DW": {
+         "p": 379.3515,
+         "c": 142.6896,
+         "d": 236.6619
+        },
+        "EXO": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "H2O": {
+         "p": 0,
+         "c": 1127.2593,
+         "d": -1127.2593
+        },
+        "HCP": {
+         "p": 57.1052,
+         "c": 0,
+         "d": 57.1052
+        },
+        "KOM": {
+         "p": 0,
+         "c": 2.2,
+         "d": -2.2
+        },
+        "MAI": {
+         "p": 57.1052,
+         "c": 27.0965,
+         "d": 30.0087
+        },
+        "MUS": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "NS": {
+         "p": 0,
+         "c": 73.7609,
+         "d": -73.7609
+        },
+        "OVE": {
+         "p": 0,
+         "c": 6.3,
+         "d": -6.3
+        },
+        "PT": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "PWO": {
+         "p": 0,
+         "c": 2.52,
+         "d": -2.52
+        },
+        "RAT": {
+         "p": 270.9653,
+         "c": 63.6,
+         "d": 207.3653
+        },
+        "REP": {
+         "p": 0,
+         "c": 0.44,
+         "d": -0.44
+        },
+        "SIO": {
+         "p": 27.0533,
+         "c": 0,
+         "d": 27.0533
+        },
+        "VEG": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ },
+ "empire": {
+  "planList": [
+   {
+    "uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+    "name": "EW COF RAT DW C",
+    "planet": "KW-688c",
+    "permits": 3,
+    "cogc": "RESOURCE_EXTRACTION",
+    "profit": 140556.9225,
+    "revenue": 190936.3736,
+    "inputs": 30565.66911,
+    "workforce": 6408.686759,
+    "degradation": 13405.09521
+   },
+   {
+    "uuid": "8b0e6b1c-0000-4000-8000-000000000002",
+    "name": "Small",
+    "planet": "KW-688c",
+    "permits": 3,
+    "cogc": "RESOURCE_EXTRACTION",
+    "profit": 79880.71573,
+    "revenue": 177534.1164,
+    "inputs": 82609.93662,
+    "workforce": 5218.250877,
+    "degradation": 9825.213186
+   },
+   {
+    "uuid": "8b0e6b1c-0000-4000-8000-000000000003",
+    "name": "Food COGC",
+    "planet": "ZV-307b",
+    "permits": 3,
+    "cogc": "FOOD_INDUSTRIES",
+    "profit": 136971.178,
+    "revenue": 212218.7214,
+    "inputs": 55433.76135,
+    "workforce": 6408.686759,
+    "degradation": 13405.09521
+   }
+  ],
+  "costOverview": {
+   "costOverview": {
+    "totalRevenue": 566793.3269,
+    "totalCost": 209384.5107,
+    "totalProfit": 357408.8163,
+    "totalAreaUsed": 2702
+   },
+   "shippingDemand": {
+    "dailyWeightImport": 432.611148,
+    "dailyWeightExport": 737.9678464,
+    "dailyVolumeImport": 411.8935594,
+    "dailyVolumeExport": 475.158522,
+    "dailyWeight": 792.1647442,
+    "dailyVolume": 565.3081471
+   },
+   "split": {
+    "revenue": 566793.3269,
+    "inputs": 156056.2508,
+    "workforce": 16692.85623,
+    "degradation": 36635.40361,
+    "profit": 357408.8163
+   }
+  },
+  "materialIO": {
+   "empireMaterialIO": [
+    {
+     "ticker": "C",
+     "input": 0,
+     "output": 107.5571636,
+     "delta": 107.5571636,
+     "deltaPrice": 104449.7178,
+     "inputPlanets": [],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 59.7539798,
+       "input": 0,
+       "output": 59.7539798,
+       "price": 58027.621
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 47.80318384,
+       "input": 0,
+       "output": 47.80318384,
+       "price": 46422.0968
+      }
+     ]
+    },
+    {
+     "ticker": "CAF",
+     "input": 88.06373333,
+     "output": 85.65784615,
+     "delta": -2.405887179,
+     "deltaPrice": -4246.477251,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -9386.551447
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 2570.037098
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -9386.551447
+      }
+     ]
+    },
+    {
+     "ticker": "COF",
+     "input": 28,
+     "output": 264.1912,
+     "delta": 236.1912,
+     "deltaPrice": 228898.9038,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 70.4396,
+       "input": 10.85,
+       "output": 81.2896,
+       "price": 68264.80929
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 74.9896,
+       "input": 6.3,
+       "output": 81.2896,
+       "price": 72674.3301
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 90.762,
+       "input": 10.85,
+       "output": 101.612,
+       "price": 87959.7644
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 70.4396,
+       "input": 10.85,
+       "output": 81.2896,
+       "price": 68264.80929
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 74.9896,
+       "input": 6.3,
+       "output": 81.2896,
+       "price": 72674.3301
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 90.762,
+       "input": 10.85,
+       "output": 101.612,
+       "price": 87959.7644
+      }
+     ]
+    },
+    {
+     "ticker": "DW",
+     "input": 521.1912,
+     "output": 1232.892267,
+     "delta": 711.7010667,
+     "deltaPrice": 80233.21558,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 200.2618667,
+       "input": 179.0896,
+       "output": 379.3514667,
+       "price": 22576.40781
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 236.6618667,
+       "input": 142.6896,
+       "output": 379.3514667,
+       "price": 26679.94114
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 274.7773333,
+       "input": 199.412,
+       "output": 474.1893333,
+       "price": 30976.86663
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 200.2618667,
+       "input": 179.0896,
+       "output": 379.3514667,
+       "price": 22576.40781
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 236.6618667,
+       "input": 142.6896,
+       "output": 379.3514667,
+       "price": 26679.94114
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 274.7773333,
+       "input": 199.412,
+       "output": 474.1893333,
+       "price": 30976.86663
+      }
+     ]
+    },
+    {
+     "ticker": "EXO",
+     "input": 3.3,
+     "output": 0,
+     "delta": -3.3,
+     "deltaPrice": -1028.637809,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -342.8792697
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -342.8792697
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -342.8792697
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "H2O",
+     "input": 3517.260513,
+     "output": 2236.113521,
+     "delta": -1281.146992,
+     "deltaPrice": -60377.70338,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 115.0260073,
+       "input": 1127.259282,
+       "output": 1242.285289,
+       "price": 5420.928429
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1127.259282,
+       "input": 1127.259282,
+       "output": 0,
+       "price": -53125.30646
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -268.9137172,
+       "input": 1262.741949,
+       "output": 993.8282315,
+       "price": -12673.32535
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 115.0260073,
+       "input": 1127.259282,
+       "output": 1242.285289,
+       "price": 5420.928429
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -268.9137172,
+       "input": 1262.741949,
+       "output": 993.8282315,
+       "price": -12673.32535
+      }
+     ]
+    },
+    {
+     "ticker": "HCP",
+     "input": 107.5571636,
+     "output": 171.3156923,
+     "delta": 63.75852867,
+     "deltaPrice": 26021.88874,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.648749029,
+       "input": 59.7539798,
+       "output": 57.10523077,
+       "price": -1081.038944
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 9.302046931,
+       "input": 47.80318384,
+       "output": 57.10523077,
+       "price": 3796.461984
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.648749029,
+       "input": 59.7539798,
+       "output": 57.10523077,
+       "price": -1081.038944
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 57.10523077,
+       "input": 0,
+       "output": 57.10523077,
+       "price": 23306.4657
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 9.302046931,
+       "input": 47.80318384,
+       "output": 57.10523077,
+       "price": 3796.461984
+      }
+     ]
+    },
+    {
+     "ticker": "KOM",
+     "input": 6.6,
+     "output": 0,
+     "delta": -6.6,
+     "deltaPrice": -6886.736082,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.2,
+       "input": 2.2,
+       "output": 0,
+       "price": -2295.578694
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.2,
+       "input": 2.2,
+       "output": 0,
+       "price": -2295.578694
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -2.2,
+       "input": 2.2,
+       "output": 0,
+       "price": -2295.578694
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "MAI",
+     "input": 141.8423152,
+     "output": 171.3156923,
+     "delta": 29.47337716,
+     "deltaPrice": 12119.70525,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 0.1317075369,
+       "input": 56.97352323,
+       "output": 57.10523077,
+       "price": 54.15926782
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 30.00869744,
+       "input": 27.09653333,
+       "output": 57.10523077,
+       "price": 12339.83354
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -0.6670278166,
+       "input": 57.77225859,
+       "output": 57.10523077,
+       "price": -274.2875542
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 0.1317075369,
+       "input": 56.97352323,
+       "output": 57.10523077,
+       "price": 54.15926782
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 30.00869744,
+       "input": 27.09653333,
+       "output": 57.10523077,
+       "price": 12339.83354
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -0.6670278166,
+       "input": 57.77225859,
+       "output": 57.10523077,
+       "price": -274.2875542
+      }
+     ]
+    },
+    {
+     "ticker": "MUS",
+     "input": 88.06373333,
+     "output": 85.65784615,
+     "delta": -2.405887179,
+     "deltaPrice": -706.4490286,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -1561.557913
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 427.5544421
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -1561.557913
+      }
+     ]
+    },
+    {
+     "ticker": "NS",
+     "input": 221.2827692,
+     "output": 0,
+     "delta": -221.2827692,
+     "deltaPrice": -88453.89049,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -73.76092308,
+       "input": 73.76092308,
+       "output": 0,
+       "price": -29484.63016
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -73.76092308,
+       "input": 73.76092308,
+       "output": 0,
+       "price": -29484.63016
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -73.76092308,
+       "input": 73.76092308,
+       "output": 0,
+       "price": -29484.63016
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "OVE",
+     "input": 28,
+     "output": 0,
+     "delta": -28,
+     "deltaPrice": -3417.016811,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -10.85,
+       "input": 10.85,
+       "output": 0,
+       "price": -1324.094014
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -6.3,
+       "input": 6.3,
+       "output": 0,
+       "price": -768.8287824
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -10.85,
+       "input": 10.85,
+       "output": 0,
+       "price": -1324.094014
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "PT",
+     "input": 3.3,
+     "output": 0,
+     "delta": -3.3,
+     "deltaPrice": -1827.64931,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -609.2164368
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -609.2164368
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -1.1,
+       "input": 1.1,
+       "output": 0,
+       "price": -609.2164368
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "PWO",
+     "input": 11.2,
+     "output": 0,
+     "delta": -11.2,
+     "deltaPrice": -3908.74246,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -4.34,
+       "input": 4.34,
+       "output": 0,
+       "price": -1514.637703
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -2.52,
+       "input": 2.52,
+       "output": 0,
+       "price": -879.4670534
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -4.34,
+       "input": 4.34,
+       "output": 0,
+       "price": -1514.637703
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "RAT",
+     "input": 263.6,
+     "output": 880.6373333,
+     "delta": 617.0373333,
+     "deltaPrice": 100710.9712,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 170.9653333,
+       "input": 100,
+       "output": 270.9653333,
+       "price": 27904.4457
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 207.3653333,
+       "input": 63.6,
+       "output": 270.9653333,
+       "price": 33845.54383
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 238.7066667,
+       "input": 100,
+       "output": 338.7066667,
+       "price": 38960.98166
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 170.9653333,
+       "input": 100,
+       "output": 270.9653333,
+       "price": 27904.4457
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 207.3653333,
+       "input": 63.6,
+       "output": 270.9653333,
+       "price": 33845.54383
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 238.7066667,
+       "input": 100,
+       "output": 338.7066667,
+       "price": 38960.98166
+      }
+     ]
+    },
+    {
+     "ticker": "REP",
+     "input": 1.32,
+     "output": 0,
+     "delta": -1.32,
+     "deltaPrice": -966.8419218,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -0.44,
+       "input": 0.44,
+       "output": 0,
+       "price": -322.2806406
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": -0.44,
+       "input": 0.44,
+       "output": 0,
+       "price": -322.2806406
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -0.44,
+       "input": 0.44,
+       "output": 0,
+       "price": -322.2806406
+      }
+     ],
+     "outputPlanets": []
+    },
+    {
+     "ticker": "SIO",
+     "input": 0,
+     "output": 82.81901929,
+     "delta": 82.81901929,
+     "deltaPrice": 14358.92458,
+     "inputPlanets": [],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 29.57822118,
+       "input": 0,
+       "output": 29.57822118,
+       "price": 5128.187351
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 29.57822118,
+       "input": 0,
+       "output": 29.57822118,
+       "price": 5128.187351
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": 23.66257694,
+       "input": 0,
+       "output": 23.66257694,
+       "price": 4102.549881
+      }
+     ]
+    },
+    {
+     "ticker": "VEG",
+     "input": 88.06373333,
+     "output": 85.65784615,
+     "delta": -2.405887179,
+     "deltaPrice": -928.9624983,
+     "inputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -2053.408924
+      }
+     ],
+     "outputPlanets": [
+      {
+       "planetId": "KW-688c",
+       "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "planName": "EW COF RAT DW C",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "KW-688c",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+       "planName": "Small",
+       "planCOGC": "RESOURCE_EXTRACTION",
+       "delta": 1.456082051,
+       "input": 27.09653333,
+       "output": 28.55261538,
+       "price": 562.2232129
+      },
+      {
+       "planetId": "ZV-307b",
+       "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+       "planName": "Food COGC",
+       "planCOGC": "FOOD_INDUSTRIES",
+       "delta": -5.318051282,
+       "input": 33.87066667,
+       "output": 28.55261538,
+       "price": -2053.408924
+      }
+     ]
+    }
+   ]
+  },
+  "setProfits": [
+   [
+    "a208d74e-d07f-4722-8192-9b55d4140f58",
+    {
+     "41094cb6-c4bc-429f-b8c8-b81d02b3811c": 140556.9225,
+     "8b0e6b1c-0000-4000-8000-000000000002": 79880.71573,
+     "8b0e6b1c-0000-4000-8000-000000000003": 136971.178
+    },
+    132.2756537
+   ]
+  ],
+  "patchEmpireState": [
+   {
+    "empireUuid": "a208d74e-d07f-4722-8192-9b55d4140f58",
+    "empireState": {
+     "metadata": {
+      "faction": "OUTSIDEREGION",
+      "permits_used": 1,
+      "permits_total": 3,
+      "plan_count": 2
+     },
+     "empire_total": {
+      "C": {
+       "p": 107.5572,
+       "c": 0,
+       "d": 107.5572
+      },
+      "CAF": {
+       "p": 85.6578,
+       "c": 88.0637,
+       "d": -2.4059
+      },
+      "COF": {
+       "p": 264.1912,
+       "c": 28,
+       "d": 236.1912
+      },
+      "DW": {
+       "p": 1232.8923,
+       "c": 521.1912,
+       "d": 711.7011
+      },
+      "EXO": {
+       "p": 0,
+       "c": 3.3,
+       "d": -3.3
+      },
+      "H2O": {
+       "p": 2236.1135,
+       "c": 3517.2605,
+       "d": -1281.147
+      },
+      "HCP": {
+       "p": 171.3157,
+       "c": 107.5572,
+       "d": 63.7585
+      },
+      "KOM": {
+       "p": 0,
+       "c": 6.6,
+       "d": -6.6
+      },
+      "MAI": {
+       "p": 171.3157,
+       "c": 141.8423,
+       "d": 29.4734
+      },
+      "MUS": {
+       "p": 85.6578,
+       "c": 88.0637,
+       "d": -2.4059
+      },
+      "NS": {
+       "p": 0,
+       "c": 221.2828,
+       "d": -221.2828
+      },
+      "OVE": {
+       "p": 0,
+       "c": 28,
+       "d": -28
+      },
+      "PT": {
+       "p": 0,
+       "c": 3.3,
+       "d": -3.3
+      },
+      "PWO": {
+       "p": 0,
+       "c": 11.2,
+       "d": -11.2
+      },
+      "RAT": {
+       "p": 880.6373,
+       "c": 263.6,
+       "d": 617.0373
+      },
+      "REP": {
+       "p": 0,
+       "c": 1.32,
+       "d": -1.32
+      },
+      "SIO": {
+       "p": 82.819,
+       "c": 0,
+       "d": 82.819
+      },
+      "VEG": {
+       "p": 85.6578,
+       "c": 88.0637,
+       "d": -2.4059
+      }
+     },
+     "plan_details": {
+      "41094cb6-c4bc-429f-b8c8-b81d02b3811c": {
+       "metadata": {
+        "planet_natural_id": "KW-688c",
+        "cogc": "RESOURCE_EXTRACTION"
+       },
+       "deltas": {
+        "C": {
+         "p": 59.754,
+         "c": 0,
+         "d": 59.754
+        },
+        "CAF": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "COF": {
+         "p": 81.2896,
+         "c": 10.85,
+         "d": 70.4396
+        },
+        "DW": {
+         "p": 379.3515,
+         "c": 179.0896,
+         "d": 200.2619
+        },
+        "EXO": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "H2O": {
+         "p": 1242.2853,
+         "c": 1127.2593,
+         "d": 115.026
+        },
+        "HCP": {
+         "p": 57.1052,
+         "c": 59.754,
+         "d": -2.6487
+        },
+        "KOM": {
+         "p": 0,
+         "c": 2.2,
+         "d": -2.2
+        },
+        "MAI": {
+         "p": 57.1052,
+         "c": 56.9735,
+         "d": 0.1317
+        },
+        "MUS": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "NS": {
+         "p": 0,
+         "c": 73.7609,
+         "d": -73.7609
+        },
+        "OVE": {
+         "p": 0,
+         "c": 10.85,
+         "d": -10.85
+        },
+        "PT": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "PWO": {
+         "p": 0,
+         "c": 4.34,
+         "d": -4.34
+        },
+        "RAT": {
+         "p": 270.9653,
+         "c": 100,
+         "d": 170.9653
+        },
+        "REP": {
+         "p": 0,
+         "c": 0.44,
+         "d": -0.44
+        },
+        "SIO": {
+         "p": 29.5782,
+         "c": 0,
+         "d": 29.5782
+        },
+        "VEG": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        }
+       }
+      },
+      "8b0e6b1c-0000-4000-8000-000000000003": {
+       "metadata": {
+        "planet_natural_id": "ZV-307b",
+        "cogc": "FOOD_INDUSTRIES"
+       },
+       "deltas": {
+        "C": {
+         "p": 47.8032,
+         "c": 0,
+         "d": 47.8032
+        },
+        "CAF": {
+         "p": 28.5526,
+         "c": 33.8707,
+         "d": -5.3181
+        },
+        "COF": {
+         "p": 101.612,
+         "c": 10.85,
+         "d": 90.762
+        },
+        "DW": {
+         "p": 474.1893,
+         "c": 199.412,
+         "d": 274.7773
+        },
+        "EXO": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "H2O": {
+         "p": 993.8282,
+         "c": 1262.7419,
+         "d": -268.9137
+        },
+        "HCP": {
+         "p": 57.1052,
+         "c": 47.8032,
+         "d": 9.302
+        },
+        "KOM": {
+         "p": 0,
+         "c": 2.2,
+         "d": -2.2
+        },
+        "MAI": {
+         "p": 57.1052,
+         "c": 57.7723,
+         "d": -0.667
+        },
+        "MUS": {
+         "p": 28.5526,
+         "c": 33.8707,
+         "d": -5.3181
+        },
+        "NS": {
+         "p": 0,
+         "c": 73.7609,
+         "d": -73.7609
+        },
+        "OVE": {
+         "p": 0,
+         "c": 10.85,
+         "d": -10.85
+        },
+        "PT": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "PWO": {
+         "p": 0,
+         "c": 4.34,
+         "d": -4.34
+        },
+        "RAT": {
+         "p": 338.7067,
+         "c": 100,
+         "d": 238.7067
+        },
+        "REP": {
+         "p": 0,
+         "c": 0.44,
+         "d": -0.44
+        },
+        "SIO": {
+         "p": 23.6626,
+         "c": 0,
+         "d": 23.6626
+        },
+        "VEG": {
+         "p": 28.5526,
+         "c": 33.8707,
+         "d": -5.3181
+        }
+       }
+      },
+      "8b0e6b1c-0000-4000-8000-000000000002": {
+       "metadata": {
+        "planet_natural_id": "KW-688c",
+        "cogc": "RESOURCE_EXTRACTION"
+       },
+       "deltas": {
+        "CAF": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "COF": {
+         "p": 81.2896,
+         "c": 6.3,
+         "d": 74.9896
+        },
+        "DW": {
+         "p": 379.3515,
+         "c": 142.6896,
+         "d": 236.6619
+        },
+        "EXO": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "H2O": {
+         "p": 0,
+         "c": 1127.2593,
+         "d": -1127.2593
+        },
+        "HCP": {
+         "p": 57.1052,
+         "c": 0,
+         "d": 57.1052
+        },
+        "KOM": {
+         "p": 0,
+         "c": 2.2,
+         "d": -2.2
+        },
+        "MAI": {
+         "p": 57.1052,
+         "c": 27.0965,
+         "d": 30.0087
+        },
+        "MUS": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        },
+        "NS": {
+         "p": 0,
+         "c": 73.7609,
+         "d": -73.7609
+        },
+        "OVE": {
+         "p": 0,
+         "c": 6.3,
+         "d": -6.3
+        },
+        "PT": {
+         "p": 0,
+         "c": 1.1,
+         "d": -1.1
+        },
+        "PWO": {
+         "p": 0,
+         "c": 2.52,
+         "d": -2.52
+        },
+        "RAT": {
+         "p": 270.9653,
+         "c": 63.6,
+         "d": 207.3653
+        },
+        "REP": {
+         "p": 0,
+         "c": 0.44,
+         "d": -0.44
+        },
+        "SIO": {
+         "p": 29.5782,
+         "c": 0,
+         "d": 29.5782
+        },
+        "VEG": {
+         "p": 28.5526,
+         "c": 27.0965,
+         "d": 1.4561
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

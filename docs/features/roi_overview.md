@@ -12,7 +12,7 @@ engine (`recipeOptions.ts`); `COGMButton` by `resource_roi_overview`.
 
 | File | Role |
 | --- | --- |
-| `useROIOverview.ts` | `useROIOverview(definitionRef, cxUuidRef)` exposes `calculate()` (a newer run supersedes a running one), `calculateItem()`, `resultData`, `progressCurrent`/`progressTotal` and `formatOptimal()` |
+| `useROIOverview.ts` | `useROIOverview(definitionRef, cxUuidRef)` exposes `calculate()` (a newer run supersedes a running one), `calculateItem()`, `resultData`, `progress` (`{ current, total }`) and `formatOptimal()` |
 | `assets/optimalProduction.ts` | Static table (`IStaticOptimalProduction[]`) of each building's optimal count plus the habs and storage that fill one base |
 | `useROIOverview.types.ts` | `IROIResult`, `IStaticOptimalProduction` |
 | `components/ROIOverviewTable.vue`, `ROIOverviewTableFilters.vue` | Result table and filters |

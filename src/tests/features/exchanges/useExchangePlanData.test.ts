@@ -336,8 +336,7 @@ describe("useExchangePlanData", () => {
 				linked.uuid,
 				other.uuid,
 			]);
-			expect(data.progressTotal.value).toBe(2);
-			expect(data.progressCurrent.value).toBe(2);
+			expect(data.progress.value).toEqual({ current: 2, total: 2 });
 			expect(data.isCalculating.value).toBe(false);
 
 			vi.mocked(useQuery).mockImplementation((() => ({

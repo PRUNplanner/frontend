@@ -151,9 +151,10 @@ const calc = usePlanCalculation(
 ```
 
 - **`result` is a synchronous `computed`** over `calculatePlan`. It
-  recalculates when the plan, the empire, the CX or the CX preferences
-  (`refreshKey`, which follows `planningStore.cxs`) change. There are no
-  recalculation watchers and no async runs.
+  recalculates when the plan, the empire, the CX uuid or that CX in
+  `planningStore.cxs` change (saving or reloading a CX replaces its object;
+  another CX is not read). There are no recalculation watchers and no
+  async runs.
 - **Loading.** Game data and the plan's planet are loaded once when the
   composable is created. Views load them before (see
   [data-layer.md](data-layer.md)), so this is a no-op wait; until then
@@ -203,7 +204,10 @@ for (const plan of plans) {
 
 - Game data is shared; each plan gets its planet and price book.
 - Pass `recipeOptions: false` unless you read `production.buildings[].recipeOptions`.
-- Keep yielding to the UI between plans (`setTimeout(0)`) for progress bars.
+- Run the loop through `useRunProgress` (`src/util/runProgress.ts`):
+  `start(total)` gives a run with `step()` for the progress, `yield()` to
+  give the browser a turn, and `isCurrent()`, false once a newer run started
+  or the component unmounted. Empire and FIO burn share `useEmpireCalculation`.
 - Resource ROI decides which extractor to calculate from the extractor's
   recipes for the planet (`getBuildingRecipes`), then calculates only those.
 
@@ -243,8 +247,9 @@ and logged.
 
 An empire is a named group of plans with a faction and permits
 (`PlanEmpireElement`). There is **no separate empire engine**:
-`EmpireView.calculateEmpire()` calculates each plan (see batch above),
-caches results in a `Map` keyed by plan, empire and CX, and aggregates cost,
+`useEmpireCalculation` (`features/empire`, used by `EmpireView` and
+`FIOBurnView`) calculates each plan (see batch above) and caches results in
+a `Map` keyed by plan, empire and CX. `EmpireView` aggregates cost,
 material I/O and plan lists for the `features/empire` components. The
 aggregated material I/O is pushed back to the backend with
 `PatchEmpireState`.

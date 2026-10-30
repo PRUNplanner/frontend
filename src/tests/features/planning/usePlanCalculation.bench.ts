@@ -3,6 +3,7 @@ import { describe, vi } from "vitest";
 import { bench } from "@/tests/bench";
 
 // Composables
+import { usePlanningStore } from "@/stores/planningStore";
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 
 // Types & Interfaces
@@ -10,6 +11,7 @@ import type { Plan } from "@/features/api/schemas/planningData.schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
+import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
 import {
 	etherwindPlan,
 	findRecipeSwap,
@@ -46,10 +48,12 @@ const plans: [string, () => Plan][] = [
 ];
 
 // a live instance (watchers active) that has its first result
-async function liveInstance(planFactory: () => Plan) {
+async function liveInstance(planFactory: () => Plan, cxUuid?: string) {
 	const plan = ref(planFactory());
 	const scope = effectScope();
-	const calc = scope.run(() => usePlanCalculation(plan))!;
+	const calc = scope.run(() =>
+		usePlanCalculation(plan, ref(undefined), ref(undefined), ref(cxUuid))
+	)!;
 	await vi.waitFor(() => {
 		if (!calc.result.value.done) throw new Error("no result yet");
 	});
@@ -81,6 +85,10 @@ function editToResult(live: Live, edit: () => void): Promise<void> {
 
 for (const [name, planFactory] of plans) {
 	const live = await liveInstance(planFactory);
+	// B5: priced with a CX, whose save replaces it in the store
+	// @ts-expect-error mock data
+	usePlanningStore().cxs[cx_definition.uuid] = cx_definition;
+	const liveCX = await liveInstance(planFactory, cx_definition.uuid);
 	const { index, recipeid } = findRecipeSwap(live.plan.value);
 	const swapBuilding = live.plan.value.plan_data.buildings[index];
 	const recipeIds = [swapBuilding.active_recipes[0].recipeid, recipeid];
@@ -133,8 +141,9 @@ for (const [name, planFactory] of plans) {
 		});
 
 		bench("B5 CX refresh -> result", async () => {
-			await editToResult(live, () => {
-				live.calc.refreshKey.value++;
+			await editToResult(liveCX, () => {
+				// @ts-expect-error mock data
+				usePlanningStore().setCX(cx_definition);
 			});
 		});
 

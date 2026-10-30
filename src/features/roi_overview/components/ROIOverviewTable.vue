@@ -60,7 +60,7 @@
 	const filterInputMaterial: Ref<string[]> = ref([]);
 	const filterPostiveROI: Ref<boolean> = ref(false);
 
-	const { calculate, formatOptimal, progressCurrent, progressTotal } =
+	const { calculate, formatOptimal, progress } =
 		useROIOverview(definition, cx);
 
 	const filteredResult: ComputedRef<IROIResult[]> = computed(() => {
@@ -193,7 +193,7 @@
 <template>
 	<div v-if="isCalculating" class="w-full flex justify-center">
 		<div class="text-center w-100 py-3">
-			<PProgressBar :step="progressCurrent" :total="progressTotal" />
+			<PProgressBar :step="progress.current" :total="progress.total" />
 			<div class="pt-3 text-xs text-muted">
 				{{ $t("recipe_roi.calculating") }}
 			</div>

@@ -82,9 +82,9 @@ itself. See [../planning-engine.md](../planning-engine.md#empires).
 - Components use `defineAsyncComponent`, so keep heavy additions lazy.
 - `EmpireView` checks the onboarding case (`planData` empty) before the
   calculation progress, so the card stays mounted while a save recalculates.
-- Only the latest `calculateEmpire` run writes: each run uses the plans,
-  empire, CX and empire list it started with, and an older run stops at its
-  next yield (no results, progress or `PatchEmpireState`). The results keep
+- `useEmpireCalculation` runs the calculation (shared with FIO Burn); only
+  its latest run writes: each run uses the plans, empire, CX and empire
+  list it started with, and an older run stops at its next yield (no results, progress or `PatchEmpireState`). The results keep
   the plan list they were calculated from, so a refresh that changed the
   plans never mixes old results with new plans.
 

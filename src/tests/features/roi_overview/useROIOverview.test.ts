@@ -164,8 +164,7 @@ describe("useROIOverview", async () => {
 		"drops a calculation a newer one took over",
 		{ timeout: 40_000 },
 		async () => {
-			const { calculate, resultData, progressCurrent, progressTotal } =
-				useROIOverview(
+			const { calculate, resultData, progress } = useROIOverview(
 					// @ts-expect-error mock definition
 					definition,
 					ref(undefined)
@@ -179,7 +178,7 @@ describe("useROIOverview", async () => {
 			expect(second).toHaveLength(370);
 			expect(resultData.value).toHaveLength(370);
 			// the dropped run stops counting progress
-			expect(progressCurrent.value).toBe(progressTotal.value);
+			expect(progress.value.current).toBe(progress.value.total);
 		}
 	);
 
@@ -187,8 +186,7 @@ describe("useROIOverview", async () => {
 		"drops a run superseded in its last step",
 		{ timeout: 60_000 },
 		async () => {
-			const { calculate, progressCurrent, progressTotal } =
-				useROIOverview(
+			const { calculate, progress } = useROIOverview(
 					// @ts-expect-error mock definition
 					definition,
 					ref(undefined)
@@ -197,9 +195,9 @@ describe("useROIOverview", async () => {
 			// start the next run once the first one counted its last building
 			let second: ReturnType<typeof calculate> | undefined;
 			watch(
-				progressCurrent,
+				() => progress.value.current,
 				(v) => {
-					if (v === progressTotal.value && !second)
+					if (v === progress.value.total && !second)
 						second = calculate();
 				},
 				{ flush: "sync" }

@@ -1,0 +1,246 @@
+[
+ {
+  "recipeId": "APF#1xHCP 1xNS 1xH2O 1xWAI 1xPCB 1xSAR 1xGV 1xFC 1xBAC=>1xAIR",
+  "given": {
+   "inputs": [
+    "SAR",
+    "PCB",
+    "BAC",
+    "FC",
+    "H2O",
+    "HCP",
+    "NS",
+    "WAI",
+    "GV"
+   ],
+   "outputs": [
+    "AIR"
+   ]
+  },
+  "cogm": {
+   "runtime": 172800000,
+   "runtimeShare": 2,
+   "efficiency": 1.25,
+   "degradation": 1388.888889,
+   "degradationShare": 2777.777778,
+   "workforceCost": 3000,
+   "workforceCostTotal": 1500,
+   "inputCost": [
+    {
+     "ticker": "BAC",
+     "amount": 1,
+     "costUnit": 2592.243783,
+     "costTotal": 2592.243783
+    },
+    {
+     "ticker": "FC",
+     "amount": 1,
+     "costUnit": 5472.774324,
+     "costTotal": 5472.774324
+    },
+    {
+     "ticker": "GV",
+     "amount": 1,
+     "costUnit": 2634.942269,
+     "costTotal": 2634.942269
+    },
+    {
+     "ticker": "H2O",
+     "amount": 1,
+     "costUnit": 47.12785009,
+     "costTotal": 47.12785009
+    },
+    {
+     "ticker": "HCP",
+     "amount": 1,
+     "costUnit": 408.1318888,
+     "costTotal": 408.1318888
+    },
+    {
+     "ticker": "NS",
+     "amount": 1,
+     "costUnit": 399.7323913,
+     "costTotal": 399.7323913
+    },
+    {
+     "ticker": "PCB",
+     "amount": 1,
+     "costUnit": 3004.878268,
+     "costTotal": 3004.878268
+    },
+    {
+     "ticker": "SAR",
+     "amount": 1,
+     "costUnit": 30982.34305,
+     "costTotal": 30982.34305
+    },
+    {
+     "ticker": "WAI",
+     "amount": 1,
+     "costUnit": 95957.36994,
+     "costTotal": 95957.36994
+    }
+   ],
+   "inputTotal": 141499.5438,
+   "outputCOGM": [
+    {
+     "ticker": "AIR",
+     "amount": 1,
+     "costSplit": 147277.3215,
+     "costTotal": 147277.3215
+    }
+   ],
+   "totalCost": 147277.3215,
+   "outputRevenue": 200069.5249,
+   "totalProfit": 52792.20337
+  }
+ },
+ {
+  "recipeId": "AML#2xZIR=>1xZR 2xSIO",
+  "given": {
+   "inputs": [
+    "ZIR"
+   ],
+   "outputs": [
+    "ZR",
+    "SIO"
+   ]
+  },
+  "cogm": {
+   "runtime": 41472000,
+   "runtimeShare": 0.48,
+   "efficiency": 1.25,
+   "degradation": 1388.888889,
+   "degradationShare": 666.6666667,
+   "workforceCost": 720,
+   "workforceCostTotal": 1500,
+   "inputCost": [
+    {
+     "ticker": "ZIR",
+     "amount": 2,
+     "costUnit": 739.9012476,
+     "costTotal": 1479.802495
+    }
+   ],
+   "inputTotal": 1479.802495,
+   "outputCOGM": [
+    {
+     "ticker": "SIO",
+     "amount": 2,
+     "costSplit": 955.4897206,
+     "costTotal": 1433.234581
+    },
+    {
+     "ticker": "ZR",
+     "amount": 1,
+     "costSplit": 955.4897206,
+     "costTotal": 2866.469162
+    }
+   ],
+   "totalCost": 2866.469162,
+   "outputRevenue": 14020.81285,
+   "totalProfit": 11154.34369
+  }
+ },
+ {
+  "recipeId": "CHP#3xHAL 1xH2O=>2xNA 1xCL",
+  "given": {
+   "inputs": [
+    "HAL",
+    "H2O"
+   ],
+   "outputs": [
+    "CL",
+    "NA"
+   ]
+  },
+  "cogm": {
+   "runtime": 40089600,
+   "runtimeShare": 0.464,
+   "efficiency": 1.25,
+   "degradation": 1388.888889,
+   "degradationShare": 644.4444444,
+   "workforceCost": 696,
+   "workforceCostTotal": 1500,
+   "inputCost": [
+    {
+     "ticker": "H2O",
+     "amount": 1,
+     "costUnit": 47.12785009,
+     "costTotal": 47.12785009
+    },
+    {
+     "ticker": "HAL",
+     "amount": 3,
+     "costUnit": 393.2865713,
+     "costTotal": 1179.859714
+    }
+   ],
+   "inputTotal": 1226.987564,
+   "outputCOGM": [
+    {
+     "ticker": "CL",
+     "amount": 1,
+     "costSplit": 855.8106695,
+     "costTotal": 2567.432009
+    },
+    {
+     "ticker": "NA",
+     "amount": 2,
+     "costSplit": 855.8106695,
+     "costTotal": 1283.716004
+    }
+   ],
+   "totalCost": 2567.432009,
+   "outputRevenue": 3852.165418,
+   "totalProfit": 1284.73341
+  }
+ },
+ {
+  "recipeId": "TNP#1xTCO=>1xTC 1xO",
+  "given": {
+   "inputs": [
+    "TCO"
+   ],
+   "outputs": [
+    "TC",
+    "O"
+   ]
+  },
+  "cogm": {
+   "runtime": 47001600,
+   "runtimeShare": 0.544,
+   "efficiency": 1.25,
+   "degradation": 1388.888889,
+   "degradationShare": 755.5555556,
+   "workforceCost": 816,
+   "workforceCostTotal": 1500,
+   "inputCost": [
+    {
+     "ticker": "TCO",
+     "amount": 1,
+     "costUnit": 548.0187192,
+     "costTotal": 548.0187192
+    }
+   ],
+   "inputTotal": 548.0187192,
+   "outputCOGM": [
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costSplit": 1059.787137,
+     "costTotal": 2119.574275
+    },
+    {
+     "ticker": "TC",
+     "amount": 1,
+     "costSplit": 1059.787137,
+     "costTotal": 2119.574275
+    }
+   ],
+   "totalCost": 2119.574275,
+   "outputRevenue": 11712.34906,
+   "totalProfit": 9592.774788
+  }
+ }
+]

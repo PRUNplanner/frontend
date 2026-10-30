@@ -346,8 +346,8 @@
 							:notes="notes"
 							:calculating="planData.isCalculating.value"
 							:progress="[
-								planData.progressCurrent.value,
-								planData.progressTotal.value,
+								planData.progress.value.current,
+								planData.progress.value.total,
 							]"
 							:planet-counts="planetCounts"
 							@open="(s: string) => (scope = s)"

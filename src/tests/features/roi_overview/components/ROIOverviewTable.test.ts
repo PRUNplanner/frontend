@@ -25,8 +25,7 @@ vi.mock("@/features/roi_overview/useROIOverview", () => ({
 		calculate,
 		formatOptimal: (o: { amount: number; ticker: string }) =>
 			`${o.amount}x ${o.ticker}`,
-		progressCurrent: ref(3),
-		progressTotal: ref(10),
+		progress: ref({ current: 3, total: 10 }),
 	}),
 }));
 

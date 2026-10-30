@@ -108,19 +108,17 @@
 	];
 
 	const refHideInfinite: Ref<boolean> = ref(false);
-	const refMaterialOverrides: Ref<Record<string, number>> = ref({});
+	const refMaterialOverrides: Ref<Record<string, number | null>> = ref({});
 	const refMaterialInactives: Ref<Set<string>> = ref(new Set([]));
 
 	const { materialTable, totalWeightVolume, totalPrice, fit } =
-		useBurnXITAction(
-			localElements,
-			burnResupplyDays,
-			refHideInfinite,
-			refMaterialOverrides,
-			refMaterialInactives,
-			ref(undefined),
-			ref(undefined)
-		);
+		useBurnXITAction({
+			elements: localElements,
+			resupplyDays: burnResupplyDays,
+			hideInfinite: refHideInfinite,
+			materialOverrides: refMaterialOverrides,
+			materialInactives: refMaterialInactives,
+		});
 </script>
 
 <template>
@@ -170,7 +168,10 @@
 								:key="fitOption.label"
 								@click="
 									() => {
-										fit(fitOption.weight, fitOption.volume);
+										burnResupplyDays = fit(
+											fitOption.weight,
+											fitOption.volume
+										);
 										trackEvent('xit:burn_ship_fit', {
 											weight: fitOption.weight,
 											volume: fitOption.volume,
