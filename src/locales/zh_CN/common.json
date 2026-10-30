@@ -98,6 +98,10 @@
 		},
 		"language": "语言",
 		"page_load_failed": "此页面无法加载。重新加载以获取最新版本。",
+		"save_failed": "Couldn't save that. Please try again.",
+		"load_failed": "Couldn't load that. Please try again.",
+		"delete_failed": "Couldn't delete that. Please try again.",
+		"copy_failed": "Couldn't copy to the clipboard.",
 		"meter": {
 			"used": "{label} {pct} % used"
 		},
