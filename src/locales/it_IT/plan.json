@@ -558,7 +558,8 @@
 		},
 		"infrastructure": {
 			"auto_optimize_tooltip": "Ottimizza automaticamente le abitazioni per soddisfare le esigenze della forza lavoro man mano che vengono aggiunti gli edifici.",
-			"amount_label": "Amount of {infrastructure}"
+			"amount_label": "Amount of {infrastructure}",
+			"optimize_failed": "Couldn't find a habitation setup for this workforce."
 		},
 		"experts": {
 			"warning": "Il numero massimo di esperti in una base è 6. Al momento hai {expert_number} esperti assegnati.",
