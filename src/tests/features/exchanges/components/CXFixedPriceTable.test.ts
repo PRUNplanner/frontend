@@ -207,6 +207,82 @@ describe("CXFixedPriceTable", () => {
 		]);
 	});
 
+	it("keeps a row with both sides cleared in its place", async () => {
+		const table = await mountTable([
+			{ type: "BUY", ticker: "DW", value: 50 },
+			{ type: "BUY", ticker: "H2O", value: 9 },
+			{ type: "BUY", ticker: "RAT", value: 75 },
+		]);
+
+		table.inputs()[2].vm.$emit("update:value", null);
+		await table.setProps({});
+		expect(table.emitted.at(-1)).toEqual([
+			{ type: "BUY", ticker: "DW", value: 50 },
+			{ type: "BUY", ticker: "RAT", value: 75 },
+		]);
+		expect(table.inputs()).toHaveLength(6);
+
+		table.inputs()[2].vm.$emit("update:value", 10);
+		await table.setProps({});
+		expect(table.emitted.at(-1)).toEqual([
+			{ type: "BUY", ticker: "DW", value: 50 },
+			{ type: "BUY", ticker: "H2O", value: 10 },
+			{ type: "BUY", ticker: "RAT", value: 75 },
+		]);
+	});
+
+	it("stores one BOTH again once both sides match", async () => {
+		const table = await mountTable([
+			{ type: "BOTH", ticker: "H2O", value: 9 },
+		]);
+
+		table.inputs()[1].vm.$emit("update:value", 12);
+		await table.setProps({});
+		table.inputs()[1].vm.$emit("update:value", 9);
+		await table.setProps({});
+		expect(table.emitted.at(-1)).toEqual([
+			{ type: "BOTH", ticker: "H2O", value: 9 },
+		]);
+	});
+
+	it("shows prices changed elsewhere as stored", async () => {
+		const table = await mountTable([
+			{ type: "BOTH", ticker: "H2O", value: 9 },
+		]);
+		table.inputs()[1].vm.$emit("update:value", 12);
+		await table.setProps({});
+
+		// e.g. the COGM button sets the buy price
+		await table.setProps({
+			prices: [
+				{ type: "BUY", ticker: "H2O", value: 7 },
+				{ type: "SELL", ticker: "H2O", value: 7 },
+			],
+		});
+		table.inputs()[0].vm.$emit("update:value", 8);
+		await table.setProps({});
+		expect(table.emitted.at(-1)).toEqual([
+			{ type: "BUY", ticker: "H2O", value: 8 },
+			{ type: "SELL", ticker: "H2O", value: 7 },
+		]);
+	});
+
+	it("drops an unsaved empty row when the prices are reset from outside", async () => {
+		const table = await mountTable([
+			{ type: "BUY", ticker: "H2O", value: 9 },
+		]);
+		table.inputs()[0].vm.$emit("update:value", null);
+		await table.setProps({});
+		expect(table.inputs()).toHaveLength(2);
+
+		// e.g. Discard restores the saved prices
+		await table.setProps({
+			prices: [{ type: "BUY", ticker: "RAT", value: 75 }],
+		});
+		expect(table.inputs()).toHaveLength(2);
+		expect(table.wrapper.text()).not.toContain("H2O");
+	});
+
 	describe("market column", () => {
 		it("signs a fixed price above the market", async () => {
 			const table = await mountTable([

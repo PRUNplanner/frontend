@@ -29,7 +29,7 @@ import type {
 import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
 import type { IStaticOptimalProduction } from "../roi_overview/useROIOverview.types";
 import { usePathfinder } from "../pathfinding/usePathfinder";
-import { yieldToBrowser } from "@/util/yieldToBrowser";
+import { type IRun, useRunProgress } from "@/util/runProgress";
 
 let lastYieldTime = 0;
 
@@ -42,8 +42,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	const resultData: Ref<IResourceROIResult[]> = ref([]);
 
 	const progressSearchingPlanets = ref(false);
-	const progressCurrent = ref(0);
-	const progressTotal = ref(0);
+	const { progress, start } = useRunProgress();
 
 	const planetDistanceMap: Record<string, [number, number, number, number]> =
 		{};
@@ -94,8 +93,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 			.finally(() => (progressSearchingPlanets.value = false));
 
 		// reset total + current
-		progressCurrent.value = 0;
-		progressTotal.value = planetResults.value.length;
+		progress.value = { current: 0, total: planetResults.value.length };
 
 		return planetResults.value;
 	}
@@ -248,7 +246,8 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	async function calculatePlanet(
 		planet: Planet,
 		materialTicker: string,
-		gameData: IGameData
+		gameData: IGameData,
+		run: IRun
 	): Promise<IResourceROIResult[]> {
 		const ctx: IPlanContext = await createContext(
 			gameData,
@@ -280,10 +279,10 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 			)
 		);
 
-		progressCurrent.value++;
+		run.step();
 
 		if (performance.now() - lastYieldTime > 16) {
-			await yieldToBrowser();
+			await run.yield();
 			lastYieldTime = performance.now();
 		}
 
@@ -300,8 +299,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		const planets: Planet[] = await searchPlanets(materialTicker);
 		const localResults: IResourceROIResult[] = [];
 
-		progressCurrent.value = 0;
-		progressTotal.value = planets.length;
+		const run = start(planets.length);
 
 		// trigger planet name loading and wait on it
 		await loadPlanetNames(planets.map((p) => p.planet_natural_id));
@@ -313,7 +311,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		const limit = pLimit(calculatePLimit);
 
 		const promises = planets.map((planet) =>
-			limit(() => calculatePlanet(planet, materialTicker, gameData))
+			limit(() => calculatePlanet(planet, materialTicker, gameData, run))
 		);
 
 		const allResults = await Promise.all(promises);
@@ -342,8 +340,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		planetResults,
 		resultData,
 		// progress
-		progressCurrent,
-		progressTotal,
+		progress,
 		progressSearchingPlanets,
 	};
 }

@@ -26,6 +26,7 @@
 
 	// Util
 	import { relativeFromDate } from "@/util/date";
+	import { useRunProgress } from "@/util/runProgress";
 	import { clamp, formatAmount, formatNumber } from "@/util/numbers";
 	import { workforceTypeNames } from "@/features/planning/calculations/workforceCalculations";
 
@@ -127,12 +128,8 @@
 	}
 
 	function resetAmount(ticker: string): void {
-		const planned = plannedBuildings.value[ticker];
-		if (planned !== undefined)
-			localBuildingAmount.value[ticker] = Math.max(
-				planned - getBuilt(ticker),
-				0
-			);
+		if (plannedBuildings.value[ticker] !== undefined)
+			delete amountOverrides.value[ticker];
 	}
 
 	/**
@@ -171,10 +168,59 @@
 		})
 	);
 
-	const plannedBuildings: Ref<Record<string, number>> = ref({});
-	const localBuildingAmount: Ref<Record<string, number>> = ref({});
-	const localBuildingMaterials: Ref<Record<string, Record<string, number>>> =
-		ref({});
+	// planned amount per building, the core module once
+	const plannedBuildings: ComputedRef<Record<string, number>> = computed(
+		() => {
+			const r: Record<string, number> = {};
+			buildingTicker.value.forEach((bticker) => {
+				const planned: number | undefined =
+					bticker === "CM"
+						? 1
+						: (props.productionBuildingData.find(
+								(pf) => pf.name === bticker
+							)?.amount ??
+							props.infrastructureData[bticker as InfrastructureType]);
+				if (planned !== undefined) r[bticker] = planned;
+			});
+			return r;
+		}
+	);
+
+	// amounts typed in (null when emptied); the others are planned - built
+	const amountOverrides: Ref<Record<string, number | null>> = ref({});
+	const localBuildingAmount: ComputedRef<Record<string, number>> = computed(
+		() => {
+			const r: Record<string, number> = {};
+			buildingTicker.value.forEach((bticker) => {
+				const planned: number | undefined =
+					plannedBuildings.value[bticker];
+				if (bticker in amountOverrides.value)
+					r[bticker] = amountOverrides.value[bticker] as number;
+				else if (planned !== undefined)
+					r[bticker] = Math.max(planned - getBuilt(bticker), 0);
+			});
+			return r;
+		}
+	);
+
+	// materials per building for its amount
+	const localBuildingMaterials: ComputedRef<
+		Record<string, Record<string, number>>
+	> = computed(() =>
+		Object.fromEntries(
+			props.constructionData.map((b) => [
+				b.ticker,
+				b.materials.reduce(
+					(sum, current) => {
+						sum[current.ticker] =
+							current.input * localBuildingAmount.value[b.ticker];
+						return sum;
+					},
+					{} as Record<string, number>
+				),
+			])
+		)
+	);
 
 	const refStorageOverride: Ref<Record<string, number | null>> = ref({});
 	const totalInformation = ref({ weight: 0, volume: 0, price: 0 });
@@ -264,42 +310,6 @@
 		return r;
 	});
 
-	function generateMatrix(): void {
-		buildingTicker.value.forEach((bticker) => {
-			if (localBuildingAmount.value[bticker] === undefined) {
-				let planned =
-					props.productionBuildingData.find(
-						(pf) => pf.name === bticker
-					)?.amount ??
-					props.infrastructureData[bticker as InfrastructureType];
-				if (bticker === "CM") planned = 1;
-				let need = planned;
-				if (planned !== undefined) {
-					plannedBuildings.value[bticker] = planned;
-					need = Math.max(planned - getBuilt(bticker), 0);
-				}
-				localBuildingAmount.value[bticker] = need;
-			}
-
-			const thisMats = props.constructionData.find(
-				(e) => e.ticker === bticker
-			);
-
-			if (thisMats) {
-				localBuildingMaterials.value[bticker] =
-					thisMats.materials.reduce(
-						(sum, current) => {
-							sum[current.ticker] =
-								current.input *
-								localBuildingAmount.value[bticker];
-							return sum;
-						},
-						{} as Record<string, number>
-					);
-			}
-		});
-	}
-
 	const xitTransferElements: ComputedRef<IXITTransferMaterial[]> = computed(
 		() =>
 			Object.values(totalMaterialsSorted.value)
@@ -385,24 +395,23 @@
 
 	// prices resolve async, a run started later may finish first: only the
 	// latest run may set a total, a slower older one is stale
-	let latestTotalRun: number = 0;
-	let latestOverviewRun: number = 0;
+	const { start: startTotal } = useRunProgress();
+	const { start: startOverview } = useRunProgress();
 
 	watchEffect(() => {
-		generateMatrix();
-		const run = ++latestTotalRun;
+		const run = startTotal();
 		// the sync part of calculateTotal reads the dependencies
 		void calculateTotal(xitTransferElements.value).then((total) => {
-			if (run === latestTotalRun) totalInformation.value = total;
+			if (run.isCurrent()) totalInformation.value = total;
 		});
 	});
 
 	watch(
 		() => xitTransferElementsNeed.value,
 		async (overview) => {
-			const run = ++latestOverviewRun;
+			const run = startOverview();
 			const total = await calculateTotal(overview);
-			if (run === latestOverviewRun)
+			if (run.isCurrent())
 				overviewTotalInformation.value = total;
 		},
 		{ deep: true, immediate: true }
@@ -565,7 +574,7 @@
 					</th>
 					<th class="border-r!">
 						<PInputNumber
-							v-model:value="localBuildingAmount[building]"
+							:value="localBuildingAmount[building]"
 							:aria-label="
 								$t(
 									'plan.tools.construction_cart.amount_label',
@@ -580,7 +589,11 @@
 									? 'error'
 									: undefined
 							"
-							:min="0" />
+							:min="0"
+							@update:value="
+								(v: number | null | undefined) =>
+									(amountOverrides[building] = v ?? null)
+							" />
 					</th>
 					<th>
 						{{ plannedBuildings[building] ?? 0 }}

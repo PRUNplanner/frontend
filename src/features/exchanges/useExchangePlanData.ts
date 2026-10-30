@@ -22,7 +22,7 @@ import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 
 // Util
 import { deepClone } from "@/util/data";
-import { yieldToBrowser } from "@/util/yieldToBrowser";
+import { useRunProgress } from "@/util/runProgress";
 import {
 	calculateMaterialCOGMs,
 	priceMaterials,
@@ -59,8 +59,7 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 
 	const bases = shallowRef<IExchangePlanBase[]>([]);
 	const isCalculating: Ref<boolean> = ref(false);
-	const progressCurrent: Ref<number> = ref(0);
-	const progressTotal: Ref<number> = ref(0);
+	const { progress, start } = useRunProgress();
 
 	// each plan once: linked ones in the first empire using the preference
 	const planList = computed(() => {
@@ -88,17 +87,13 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 
 	// price-free, so neither CX nor edits are part of the key
 	const cache = new Map<string, IExchangePlanBase>();
-	let run = 0;
-
 	async function calculate(): Promise<void> {
-		const current = ++run;
 		const plans = new Map(source.plans().map((p) => [p.uuid, p]));
 		const empires = source.empires();
 		const todo = planList.value.filter((p) => plans.has(p.uuid));
+		const run = start(todo.length);
 
 		isCalculating.value = true;
-		progressTotal.value = todo.length;
-		progressCurrent.value = 0;
 
 		try {
 			// a direct visit may have no game data cached yet, and the page's
@@ -126,7 +121,7 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 			const result: IExchangePlanBase[] = [];
 
 			for (const item of todo) {
-				if (current !== run) return;
+				if (!run.isCurrent()) return;
 				const plan = plans.get(item.uuid)!;
 				const empire = getActiveEmpire(item.empireUuid, empires);
 				const key = [
@@ -164,22 +159,22 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 						);
 						cache.set(key, base);
 						// yield back to Vue so the page stays usable
-						await yieldToBrowser();
+						await run.yield();
 					} catch (err) {
 						// e.g. its planet failed to load: skip this plan only
 						console.error(err);
 					}
 				}
 				if (base) result.push({ ...base, linked: item.linked });
-				progressCurrent.value++;
+				run.step();
 			}
 
-			if (current === run) bases.value = result;
+			if (run.isCurrent()) bases.value = result;
 		} catch (err) {
 			// e.g. game data missing: keep what was shown
 			console.error(err);
 		} finally {
-			if (current === run) isCalculating.value = false;
+			if (run.isCurrent()) isCalculating.value = false;
 		}
 	}
 
@@ -192,7 +187,6 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 		() => void calculate(),
 		{ immediate: true, deep: true }
 	);
-	onScopeDispose(() => run++);
 
 	// the edited rules, debounced; a copy, edits may mutate in place
 	const snapshot = () => {
@@ -266,8 +260,7 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 	return {
 		bases,
 		isCalculating,
-		progressCurrent,
-		progressTotal,
+		progress,
 		pricedData,
 		materialRows,
 		materialCOGMs,

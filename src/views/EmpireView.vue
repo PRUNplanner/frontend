@@ -3,11 +3,8 @@
 		computed,
 		type ComputedRef,
 		defineAsyncComponent,
-		onUnmounted,
 		ref,
 		type Ref,
-		shallowRef,
-		type ShallowRef,
 		watch,
 	} from "vue";
 
@@ -20,24 +17,17 @@
 		title: t("empire.view_title"),
 	});
 
-	import { debounce } from "lodash-es";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import {
-		getActiveEmpire,
-		usePlanContext,
-	} from "@/features/planning/usePlanContext";
-	import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+	import { useEmpireCalculation } from "@/features/empire/useEmpireCalculation";
 	import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
 	import { usePreferences } from "@/features/preferences/usePreferences";
-	import { planResultCacheKey } from "@/features/empire/empire.util";
 	import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
 	import { calculateEmpireShippingDemand } from "@/features/empire/util/empireShippingDemand.util";
 	import { profitBreakdown } from "@/features/planning/util/profitBreakdown.util";
 	import { empireSplitParts } from "@/features/empire/empireAnalysis.util";
-	import { yieldToBrowser } from "@/util/yieldToBrowser";
 	const {
 		calculateEmpireCostOverview,
 		combineEmpireMaterialIO,
@@ -75,7 +65,6 @@
 	// Types & Interfaces
 	import type { Plan } from "@/features/api/schemas/planningData.schemas";
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-	import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
 	import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 	import type {
 		IEmpireCostOverview,
@@ -126,104 +115,21 @@
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
 	const refEmpireList: Ref<PlanEmpireElement[]> = ref([]);
 
-	const calculatedPlans: ShallowRef<Record<string, IPlanCalculation>> =
-		shallowRef({});
-	// the plans calculatedPlans was calculated from
-	const calculatedPlanData: ShallowRef<Plan[]> = shallowRef([]);
 	const planData: Ref<Plan[]> = ref([]);
 
-	const isCalculating: Ref<boolean> = ref(true);
-	const progressCurrent = ref(0);
-	const progressTotal = ref(0);
-
-	const cacheCalculatedPlans = new Map<string, IPlanCalculation>();
-	const { loadGameData, createContext } = usePlanContext();
-
-	// only the latest run writes its results, an older one stops at its
-	// next yield (e.g. the empire changed while calculating)
-	let run = 0;
-	onUnmounted(() => run++);
-
-	/**
-	 * Calculates all given plans
-	 * @author jplacht
-	 *
-	 * @async
-	 * @param {boolean} [clearCache=false] Recalculate cached plans
-	 * @param {boolean} [quiet=false] Keep the page (and an open form's
-	 * edits) instead of the progress screen, show the results when done
-	 * @returns {Promise<void>}
-	 */
-	async function calculateEmpire(
-		clearCache = false,
-		quiet = false
-	): Promise<void> {
-		const current = ++run;
-		// a run calculates the empire, cx and plans it started with
-		const plans = planData.value;
-		const empireUuid = selectedEmpireUuid.value;
-		const cxUuid = selectedCXUuid.value;
-		const empires = refEmpireList.value;
-
-		if (!quiet) {
-			isCalculating.value = true;
-			calculatedPlans.value = {};
-		}
-		const results: Record<string, IPlanCalculation> = {};
-		progressTotal.value = plans.length;
-		progressCurrent.value = 0;
-
-		if (clearCache) cacheCalculatedPlans.clear();
-
-		try {
-			// game data once for all plans
-			const gameData = await loadGameData();
-			if (current !== run) return;
-
-			for (const plan of plans) {
-				// note, calculation depends on empire + cx, so a plan is only
-				// calculated properly within this context
-
-				const cacheKey: string = planResultCacheKey(
-					plan.uuid,
-					empireUuid,
-					cxUuid
-				);
-
-				if (cacheCalculatedPlans.has(cacheKey)) {
-					results[plan.uuid] = cacheCalculatedPlans.get(cacheKey)!;
-					progressCurrent.value++;
-				} else {
-					await Promise.resolve();
-					const context = await createContext(
-						gameData,
-						plan.planet_natural_id,
-						cxUuid
-					);
-					if (current !== run) return;
-
-					const calculation = calculatePlan(
-						{
-							plan,
-							empire: getActiveEmpire(empireUuid, empires),
-							cxUuid,
-							// never read by this view
-							recipeOptions: false,
-						},
-						context
-					);
-					results[plan.uuid] = calculation;
-					progressCurrent.value++;
-
-					// cache
-					cacheCalculatedPlans.set(cacheKey, calculation);
-					// yield back to vue and update DOM
-					await yieldToBrowser();
-					if (current !== run) return;
-				}
-			}
-			calculatedPlanData.value = plans;
-			calculatedPlans.value = results;
+	const {
+		results: calculatedPlans,
+		calculatedPlans: calculatedPlanData,
+		progress,
+		isCalculating,
+		calculate: calculateEmpire,
+		recalculateRefreshed,
+	} = useEmpireCalculation(
+		planData,
+		selectedEmpireUuid,
+		selectedCXUuid,
+		refEmpireList,
+		({ run, empireUuid, empires, results }) => {
 			if (empireUuid)
 				setProfits(
 					empireUuid,
@@ -239,27 +145,21 @@
 								costOverview.value.totalAreaUsed
 						: undefined
 				);
-		} catch (err) {
-			// e.g. game data missing, never persist a partial empire state
-			if (current === run) console.error(err);
-			return;
-		} finally {
-			if (current === run) isCalculating.value = false;
-		}
 
-		const empire = empires.find((e) => e.uuid === empireUuid);
-		empireMaterialIOState(empire, combinedEmpireMaterialIO.value).then(
-			(data) => {
-				if (data && empire && current === run)
-					useQuery("PatchEmpireState", {
-						empireUuid: empire.uuid,
-						empireState: data,
-					})
-						.execute()
-						.catch(console.error);
-			}
-		);
-	}
+			const empire = empires.find((e) => e.uuid === empireUuid);
+			empireMaterialIOState(empire, combinedEmpireMaterialIO.value).then(
+				(data) => {
+					if (data && empire && run.isCurrent())
+						useQuery("PatchEmpireState", {
+							empireUuid: empire.uuid,
+							empireState: data,
+						})
+							.execute()
+							.catch(console.error);
+				}
+			);
+		}
+	);
 
 	/**
 	 * Reloads empires forcefully by triggering store reload
@@ -274,13 +174,6 @@
 		await calculateEmpire(true);
 	}
 
-	// another tab changed the empire or its plans; the list and the plans
-	// steps refresh one after the other, calculate once
-	const recalculateRefreshed = debounce(
-		() => calculateEmpire(true, true),
-		200
-	);
-	onUnmounted(() => recalculateRefreshed.cancel());
 
 	/**
 	 * Selects the empire the loader picked: the first one, when none is
@@ -511,8 +404,8 @@
 
 				<ComputingProgress
 					v-else-if="isCalculating"
-					:step="progressCurrent"
-					:total="progressTotal"
+					:step="progress.current"
+					:total="progress.total"
 					message="One does not simply calculate empire plans." />
 
 				<div v-else>

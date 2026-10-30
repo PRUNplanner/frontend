@@ -115,7 +115,10 @@
 		props.empireList
 	);
 	const refEmpireUuid: Ref<string | undefined> = ref(undefined);
-	const refCXUuid: Ref<string | undefined> = ref(undefined);
+	// the empire's CX, also after its CXs changed (e.g. in another tab)
+	const refCXUuid: ComputedRef<string | undefined> = computed(() =>
+		findEmpireCXUuid(refEmpireUuid.value)
+	);
 
 	const planetData: Planet = await getPlanet(
 		props.planData.planet_natural_id
@@ -216,11 +219,8 @@
 			Object.values(planningStore.empires),
 			userStore.preferences.defaultEmpireUuid
 		);
-		// update cx uuid
-		refCXUuid.value = findEmpireCXUuid(refEmpireUuid.value);
 	} else if (props.empireList && props.empireList.length > 0) {
 		refEmpireUuid.value = props.empireList[0].uuid;
-		refCXUuid.value = findEmpireCXUuid(refEmpireUuid.value);
 	}
 
 	// market flags of the plan's net material flow, priced like the plan
@@ -749,10 +749,7 @@
 							: undefined
 					"
 					@update:active-empire="
-						(empireUuid: string) => {
-							refEmpireUuid = empireUuid;
-							refCXUuid = findEmpireCXUuid(empireUuid);
-						}
+						(empireUuid: string) => (refEmpireUuid = empireUuid)
 					"
 					@update:permits="handleUpdatePermits"
 					@update:corphq="handleUpdateCorpHQ"

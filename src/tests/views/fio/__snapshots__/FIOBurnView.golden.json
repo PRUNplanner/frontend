@@ -1,0 +1,2398 @@
+{
+ "plain": {
+  "burnTable": [
+   {
+    "key": "8b0e6b1c-0000-4000-8000-000000000003",
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+    "planName": "Bober",
+    "planetId": "ZV-307b",
+    "hasStorage": true,
+    "burnMaterials": [
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 6.3,
+      "output": 81.2896,
+      "delta": 74.9896,
+      "stock": 12,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 142.6896,
+      "output": 379.3514667,
+      "delta": 236.6618667,
+      "stock": 1386,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 45,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 0,
+      "delta": -1127.259282,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "HCP",
+      "input": 0,
+      "output": 57.10523077,
+      "delta": 57.10523077,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 90,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "MAI",
+      "input": 27.09653333,
+      "output": 57.10523077,
+      "delta": 30.00869744,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "OVE",
+      "input": 6.3,
+      "output": 0,
+      "delta": -6.3,
+      "stock": 12,
+      "exhaustion": 1.904761905
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 45,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "PWO",
+      "input": 2.52,
+      "output": 0,
+      "delta": -2.52,
+      "stock": 5,
+      "exhaustion": 1.984126984
+     },
+     {
+      "ticker": "RAT",
+      "input": 63.6,
+      "output": 270.9653333,
+      "delta": 207.3653333,
+      "stock": 1420,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 18,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 27.05325107,
+      "delta": 27.05325107,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     }
+    ],
+    "minDays": 0
+   },
+   {
+    "key": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+    "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+    "planName": "EW COF RAT DW C",
+    "planetId": "KW-688c",
+    "hasStorage": true,
+    "burnMaterials": [
+     {
+      "ticker": "C",
+      "input": 0,
+      "output": 54.6530303,
+      "delta": 54.6530303,
+      "stock": 252,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 106,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 10.85,
+      "output": 81.2896,
+      "delta": 70.4396,
+      "stock": 338,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 179.0896,
+      "output": 379.3514667,
+      "delta": 200.2618667,
+      "stock": 1208,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 1136.236545,
+      "delta": 8.977263099,
+      "stock": 679,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "HCP",
+      "input": 54.6530303,
+      "output": 57.10523077,
+      "delta": 2.452200466,
+      "stock": 227,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 31,
+      "exhaustion": 14.09090909
+     },
+     {
+      "ticker": "MAI",
+      "input": 54.42304848,
+      "output": 57.10523077,
+      "delta": 2.682182284,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 1049,
+      "exhaustion": 14.22162246
+     },
+     {
+      "ticker": "OVE",
+      "input": 10.85,
+      "output": 0,
+      "delta": -10.85,
+      "stock": 152,
+      "exhaustion": 14.00921659
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "PWO",
+      "input": 4.34,
+      "output": 0,
+      "delta": -4.34,
+      "stock": 61,
+      "exhaustion": 14.05529954
+     },
+     {
+      "ticker": "RAT",
+      "input": 100,
+      "output": 270.9653333,
+      "delta": 170.9653333,
+      "stock": 962,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 7,
+      "exhaustion": 15.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 27.05325107,
+      "delta": 27.05325107,
+      "stock": 174,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 161,
+      "exhaustion": "Infinity"
+     }
+    ],
+    "minDays": 14.00921659
+   },
+   {
+    "key": "8b0e6b1c-0000-4000-8000-000000000004",
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000004",
+    "planName": "Nowhere",
+    "planetId": "XX-000a",
+    "hasStorage": false,
+    "burnMaterials": [
+     {
+      "ticker": "C",
+      "input": 0,
+      "output": 54.6530303,
+      "delta": 54.6530303,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 10.85,
+      "output": 81.2896,
+      "delta": 70.4396,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 179.0896,
+      "output": 379.3514667,
+      "delta": 200.2618667,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 1136.236545,
+      "delta": 8.977263099,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "HCP",
+      "input": 54.6530303,
+      "output": 57.10523077,
+      "delta": 2.452200466,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "MAI",
+      "input": 54.42304848,
+      "output": 57.10523077,
+      "delta": 2.682182284,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "OVE",
+      "input": 10.85,
+      "output": 0,
+      "delta": -10.85,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "PWO",
+      "input": 4.34,
+      "output": 0,
+      "delta": -4.34,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "RAT",
+      "input": 100,
+      "output": 270.9653333,
+      "delta": 170.9653333,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 27.05325107,
+      "delta": 27.05325107,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     }
+    ],
+    "minDays": 0
+   },
+   {
+    "key": "8b0e6b1c-0000-4000-8000-000000000002",
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+    "planName": "Small",
+    "planetId": "KW-688c",
+    "hasStorage": true,
+    "burnMaterials": [
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 106,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 6.3,
+      "output": 81.2896,
+      "delta": 74.9896,
+      "stock": 338,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 142.6896,
+      "output": 379.3514667,
+      "delta": 236.6618667,
+      "stock": 1208,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 0,
+      "delta": -1127.259282,
+      "stock": 679,
+      "exhaustion": 0.602345894
+     },
+     {
+      "ticker": "HCP",
+      "input": 0,
+      "output": 57.10523077,
+      "delta": 57.10523077,
+      "stock": 227,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 31,
+      "exhaustion": 14.09090909
+     },
+     {
+      "ticker": "MAI",
+      "input": 27.09653333,
+      "output": 57.10523077,
+      "delta": 30.00869744,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 1049,
+      "exhaustion": 14.22162246
+     },
+     {
+      "ticker": "OVE",
+      "input": 6.3,
+      "output": 0,
+      "delta": -6.3,
+      "stock": 152,
+      "exhaustion": 24.12698413
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "PWO",
+      "input": 2.52,
+      "output": 0,
+      "delta": -2.52,
+      "stock": 61,
+      "exhaustion": 24.20634921
+     },
+     {
+      "ticker": "RAT",
+      "input": 63.6,
+      "output": 270.9653333,
+      "delta": 207.3653333,
+      "stock": 962,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 7,
+      "exhaustion": 15.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 27.05325107,
+      "delta": 27.05325107,
+      "stock": 174,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 161,
+      "exhaustion": "Infinity"
+     }
+    ],
+    "minDays": 0.602345894
+   }
+  ],
+  "planTable": [
+   {
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+    "planName": "Bober",
+    "planetId": "ZV-307b",
+    "minDays": 0,
+    "burnMaterials": [
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 6.3,
+      "output": 81.2896,
+      "delta": 74.9896,
+      "stock": 12,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 142.6896,
+      "output": 379.3514667,
+      "delta": 236.6618667,
+      "stock": 1386,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 45,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 0,
+      "delta": -1127.259282,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "HCP",
+      "input": 0,
+      "output": 57.10523077,
+      "delta": 57.10523077,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 90,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "MAI",
+      "input": 27.09653333,
+      "output": 57.10523077,
+      "delta": 30.00869744,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "OVE",
+      "input": 6.3,
+      "output": 0,
+      "delta": -6.3,
+      "stock": 12,
+      "exhaustion": 1.904761905
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 45,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "PWO",
+      "input": 2.52,
+      "output": 0,
+      "delta": -2.52,
+      "stock": 5,
+      "exhaustion": 1.984126984
+     },
+     {
+      "ticker": "RAT",
+      "input": 63.6,
+      "output": 270.9653333,
+      "delta": 207.3653333,
+      "stock": 1420,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 18,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 27.05325107,
+      "delta": 27.05325107,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     }
+    ]
+   },
+   {
+    "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+    "planName": "EW COF RAT DW C",
+    "planetId": "KW-688c",
+    "minDays": 14.00921659,
+    "burnMaterials": [
+     {
+      "ticker": "C",
+      "input": 0,
+      "output": 54.6530303,
+      "delta": 54.6530303,
+      "stock": 252,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 106,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 10.85,
+      "output": 81.2896,
+      "delta": 70.4396,
+      "stock": 338,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 179.0896,
+      "output": 379.3514667,
+      "delta": 200.2618667,
+      "stock": 1208,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 1136.236545,
+      "delta": 8.977263099,
+      "stock": 679,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "HCP",
+      "input": 54.6530303,
+      "output": 57.10523077,
+      "delta": 2.452200466,
+      "stock": 227,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 31,
+      "exhaustion": 14.09090909
+     },
+     {
+      "ticker": "MAI",
+      "input": 54.42304848,
+      "output": 57.10523077,
+      "delta": 2.682182284,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 1049,
+      "exhaustion": 14.22162246
+     },
+     {
+      "ticker": "OVE",
+      "input": 10.85,
+      "output": 0,
+      "delta": -10.85,
+      "stock": 152,
+      "exhaustion": 14.00921659
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "PWO",
+      "input": 4.34,
+      "output": 0,
+      "delta": -4.34,
+      "stock": 61,
+      "exhaustion": 14.05529954
+     },
+     {
+      "ticker": "RAT",
+      "input": 100,
+      "output": 270.9653333,
+      "delta": 170.9653333,
+      "stock": 962,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 7,
+      "exhaustion": 15.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 27.05325107,
+      "delta": 27.05325107,
+      "stock": 174,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 161,
+      "exhaustion": "Infinity"
+     }
+    ]
+   },
+   {
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000004",
+    "planName": "Nowhere",
+    "planetId": "XX-000a",
+    "minDays": 0,
+    "burnMaterials": [
+     {
+      "ticker": "C",
+      "input": 0,
+      "output": 54.6530303,
+      "delta": 54.6530303,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 10.85,
+      "output": 81.2896,
+      "delta": 70.4396,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 179.0896,
+      "output": 379.3514667,
+      "delta": 200.2618667,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 1136.236545,
+      "delta": 8.977263099,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "HCP",
+      "input": 54.6530303,
+      "output": 57.10523077,
+      "delta": 2.452200466,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "MAI",
+      "input": 54.42304848,
+      "output": 57.10523077,
+      "delta": 2.682182284,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "OVE",
+      "input": 10.85,
+      "output": 0,
+      "delta": -10.85,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "PWO",
+      "input": 4.34,
+      "output": 0,
+      "delta": -4.34,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "RAT",
+      "input": 100,
+      "output": 270.9653333,
+      "delta": 170.9653333,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 27.05325107,
+      "delta": 27.05325107,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     }
+    ]
+   },
+   {
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+    "planName": "Small",
+    "planetId": "KW-688c",
+    "minDays": 0.602345894,
+    "burnMaterials": [
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 106,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 6.3,
+      "output": 81.2896,
+      "delta": 74.9896,
+      "stock": 338,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 142.6896,
+      "output": 379.3514667,
+      "delta": 236.6618667,
+      "stock": 1208,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 0,
+      "delta": -1127.259282,
+      "stock": 679,
+      "exhaustion": 0.602345894
+     },
+     {
+      "ticker": "HCP",
+      "input": 0,
+      "output": 57.10523077,
+      "delta": 57.10523077,
+      "stock": 227,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 31,
+      "exhaustion": 14.09090909
+     },
+     {
+      "ticker": "MAI",
+      "input": 27.09653333,
+      "output": 57.10523077,
+      "delta": 30.00869744,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 1049,
+      "exhaustion": 14.22162246
+     },
+     {
+      "ticker": "OVE",
+      "input": 6.3,
+      "output": 0,
+      "delta": -6.3,
+      "stock": 152,
+      "exhaustion": 24.12698413
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "PWO",
+      "input": 2.52,
+      "output": 0,
+      "delta": -2.52,
+      "stock": 61,
+      "exhaustion": 24.20634921
+     },
+     {
+      "ticker": "RAT",
+      "input": 63.6,
+      "output": 270.9653333,
+      "delta": 207.3653333,
+      "stock": 962,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 7,
+      "exhaustion": 15.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 27.05325107,
+      "delta": 27.05325107,
+      "stock": 174,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 161,
+      "exhaustion": "Infinity"
+     }
+    ]
+   }
+  ]
+ },
+ "empire_cx": {
+  "burnTable": [
+   {
+    "key": "8b0e6b1c-0000-4000-8000-000000000003",
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+    "planName": "Bober",
+    "planetId": "ZV-307b",
+    "hasStorage": true,
+    "burnMaterials": [
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 6.3,
+      "output": 81.2896,
+      "delta": 74.9896,
+      "stock": 12,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 142.6896,
+      "output": 379.3514667,
+      "delta": 236.6618667,
+      "stock": 1386,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 45,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 0,
+      "delta": -1127.259282,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "HCP",
+      "input": 0,
+      "output": 57.10523077,
+      "delta": 57.10523077,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 90,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "MAI",
+      "input": 27.09653333,
+      "output": 57.10523077,
+      "delta": 30.00869744,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "OVE",
+      "input": 6.3,
+      "output": 0,
+      "delta": -6.3,
+      "stock": 12,
+      "exhaustion": 1.904761905
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 45,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "PWO",
+      "input": 2.52,
+      "output": 0,
+      "delta": -2.52,
+      "stock": 5,
+      "exhaustion": 1.984126984
+     },
+     {
+      "ticker": "RAT",
+      "input": 63.6,
+      "output": 270.9653333,
+      "delta": 207.3653333,
+      "stock": 1420,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 18,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 29.57822118,
+      "delta": 29.57822118,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     }
+    ],
+    "minDays": 0
+   },
+   {
+    "key": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+    "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+    "planName": "EW COF RAT DW C",
+    "planetId": "KW-688c",
+    "hasStorage": true,
+    "burnMaterials": [
+     {
+      "ticker": "C",
+      "input": 0,
+      "output": 59.7539798,
+      "delta": 59.7539798,
+      "stock": 252,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 106,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 10.85,
+      "output": 81.2896,
+      "delta": 70.4396,
+      "stock": 338,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 179.0896,
+      "output": 379.3514667,
+      "delta": 200.2618667,
+      "stock": 1208,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 1242.285289,
+      "delta": 115.0260073,
+      "stock": 679,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "HCP",
+      "input": 59.7539798,
+      "output": 57.10523077,
+      "delta": -2.648749029,
+      "stock": 227,
+      "exhaustion": 85.70083369
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 31,
+      "exhaustion": 14.09090909
+     },
+     {
+      "ticker": "MAI",
+      "input": 56.97352323,
+      "output": 57.10523077,
+      "delta": 0.1317075369,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 1049,
+      "exhaustion": 14.22162246
+     },
+     {
+      "ticker": "OVE",
+      "input": 10.85,
+      "output": 0,
+      "delta": -10.85,
+      "stock": 152,
+      "exhaustion": 14.00921659
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "PWO",
+      "input": 4.34,
+      "output": 0,
+      "delta": -4.34,
+      "stock": 61,
+      "exhaustion": 14.05529954
+     },
+     {
+      "ticker": "RAT",
+      "input": 100,
+      "output": 270.9653333,
+      "delta": 170.9653333,
+      "stock": 962,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 7,
+      "exhaustion": 15.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 29.57822118,
+      "delta": 29.57822118,
+      "stock": 174,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 161,
+      "exhaustion": "Infinity"
+     }
+    ],
+    "minDays": 14.00921659
+   },
+   {
+    "key": "8b0e6b1c-0000-4000-8000-000000000004",
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000004",
+    "planName": "Nowhere",
+    "planetId": "XX-000a",
+    "hasStorage": false,
+    "burnMaterials": [
+     {
+      "ticker": "C",
+      "input": 0,
+      "output": 59.7539798,
+      "delta": 59.7539798,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 10.85,
+      "output": 81.2896,
+      "delta": 70.4396,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 179.0896,
+      "output": 379.3514667,
+      "delta": 200.2618667,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 1242.285289,
+      "delta": 115.0260073,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "HCP",
+      "input": 59.7539798,
+      "output": 57.10523077,
+      "delta": -2.648749029,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "MAI",
+      "input": 56.97352323,
+      "output": 57.10523077,
+      "delta": 0.1317075369,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "OVE",
+      "input": 10.85,
+      "output": 0,
+      "delta": -10.85,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "PWO",
+      "input": 4.34,
+      "output": 0,
+      "delta": -4.34,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "RAT",
+      "input": 100,
+      "output": 270.9653333,
+      "delta": 170.9653333,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 29.57822118,
+      "delta": 29.57822118,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     }
+    ],
+    "minDays": 0
+   },
+   {
+    "key": "8b0e6b1c-0000-4000-8000-000000000002",
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+    "planName": "Small",
+    "planetId": "KW-688c",
+    "hasStorage": true,
+    "burnMaterials": [
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 106,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 6.3,
+      "output": 81.2896,
+      "delta": 74.9896,
+      "stock": 338,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 142.6896,
+      "output": 379.3514667,
+      "delta": 236.6618667,
+      "stock": 1208,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 0,
+      "delta": -1127.259282,
+      "stock": 679,
+      "exhaustion": 0.602345894
+     },
+     {
+      "ticker": "HCP",
+      "input": 0,
+      "output": 57.10523077,
+      "delta": 57.10523077,
+      "stock": 227,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 31,
+      "exhaustion": 14.09090909
+     },
+     {
+      "ticker": "MAI",
+      "input": 27.09653333,
+      "output": 57.10523077,
+      "delta": 30.00869744,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 1049,
+      "exhaustion": 14.22162246
+     },
+     {
+      "ticker": "OVE",
+      "input": 6.3,
+      "output": 0,
+      "delta": -6.3,
+      "stock": 152,
+      "exhaustion": 24.12698413
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "PWO",
+      "input": 2.52,
+      "output": 0,
+      "delta": -2.52,
+      "stock": 61,
+      "exhaustion": 24.20634921
+     },
+     {
+      "ticker": "RAT",
+      "input": 63.6,
+      "output": 270.9653333,
+      "delta": 207.3653333,
+      "stock": 962,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 7,
+      "exhaustion": 15.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 29.57822118,
+      "delta": 29.57822118,
+      "stock": 174,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 161,
+      "exhaustion": "Infinity"
+     }
+    ],
+    "minDays": 0.602345894
+   }
+  ],
+  "planTable": [
+   {
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000003",
+    "planName": "Bober",
+    "planetId": "ZV-307b",
+    "minDays": 0,
+    "burnMaterials": [
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 6.3,
+      "output": 81.2896,
+      "delta": 74.9896,
+      "stock": 12,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 142.6896,
+      "output": 379.3514667,
+      "delta": 236.6618667,
+      "stock": 1386,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 45,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 0,
+      "delta": -1127.259282,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "HCP",
+      "input": 0,
+      "output": 57.10523077,
+      "delta": 57.10523077,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 90,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "MAI",
+      "input": 27.09653333,
+      "output": 57.10523077,
+      "delta": 30.00869744,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "OVE",
+      "input": 6.3,
+      "output": 0,
+      "delta": -6.3,
+      "stock": 12,
+      "exhaustion": 1.904761905
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 45,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "PWO",
+      "input": 2.52,
+      "output": 0,
+      "delta": -2.52,
+      "stock": 5,
+      "exhaustion": 1.984126984
+     },
+     {
+      "ticker": "RAT",
+      "input": 63.6,
+      "output": 270.9653333,
+      "delta": 207.3653333,
+      "stock": 1420,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 18,
+      "exhaustion": 40.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 29.57822118,
+      "delta": 29.57822118,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     }
+    ]
+   },
+   {
+    "planUuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+    "planName": "EW COF RAT DW C",
+    "planetId": "KW-688c",
+    "minDays": 14.00921659,
+    "burnMaterials": [
+     {
+      "ticker": "C",
+      "input": 0,
+      "output": 59.7539798,
+      "delta": 59.7539798,
+      "stock": 252,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 106,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 10.85,
+      "output": 81.2896,
+      "delta": 70.4396,
+      "stock": 338,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 179.0896,
+      "output": 379.3514667,
+      "delta": 200.2618667,
+      "stock": 1208,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 1242.285289,
+      "delta": 115.0260073,
+      "stock": 679,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "HCP",
+      "input": 59.7539798,
+      "output": 57.10523077,
+      "delta": -2.648749029,
+      "stock": 227,
+      "exhaustion": 85.70083369
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 31,
+      "exhaustion": 14.09090909
+     },
+     {
+      "ticker": "MAI",
+      "input": 56.97352323,
+      "output": 57.10523077,
+      "delta": 0.1317075369,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 1049,
+      "exhaustion": 14.22162246
+     },
+     {
+      "ticker": "OVE",
+      "input": 10.85,
+      "output": 0,
+      "delta": -10.85,
+      "stock": 152,
+      "exhaustion": 14.00921659
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "PWO",
+      "input": 4.34,
+      "output": 0,
+      "delta": -4.34,
+      "stock": 61,
+      "exhaustion": 14.05529954
+     },
+     {
+      "ticker": "RAT",
+      "input": 100,
+      "output": 270.9653333,
+      "delta": 170.9653333,
+      "stock": 962,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 7,
+      "exhaustion": 15.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 29.57822118,
+      "delta": 29.57822118,
+      "stock": 174,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 161,
+      "exhaustion": "Infinity"
+     }
+    ]
+   },
+   {
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000004",
+    "planName": "Nowhere",
+    "planetId": "XX-000a",
+    "minDays": 0,
+    "burnMaterials": [
+     {
+      "ticker": "C",
+      "input": 0,
+      "output": 59.7539798,
+      "delta": 59.7539798,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 10.85,
+      "output": 81.2896,
+      "delta": 70.4396,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 179.0896,
+      "output": 379.3514667,
+      "delta": 200.2618667,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 1242.285289,
+      "delta": 115.0260073,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "HCP",
+      "input": 59.7539798,
+      "output": 57.10523077,
+      "delta": -2.648749029,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "MAI",
+      "input": 56.97352323,
+      "output": 57.10523077,
+      "delta": 0.1317075369,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "OVE",
+      "input": 10.85,
+      "output": 0,
+      "delta": -10.85,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "PWO",
+      "input": 4.34,
+      "output": 0,
+      "delta": -4.34,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "RAT",
+      "input": 100,
+      "output": 270.9653333,
+      "delta": 170.9653333,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 0,
+      "exhaustion": 0
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 29.57822118,
+      "delta": 29.57822118,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 0,
+      "exhaustion": "Infinity"
+     }
+    ]
+   },
+   {
+    "planUuid": "8b0e6b1c-0000-4000-8000-000000000002",
+    "planName": "Small",
+    "planetId": "KW-688c",
+    "minDays": 0.602345894,
+    "burnMaterials": [
+     {
+      "ticker": "CAF",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 106,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "COF",
+      "input": 6.3,
+      "output": 81.2896,
+      "delta": 74.9896,
+      "stock": 338,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "DW",
+      "input": 142.6896,
+      "output": 379.3514667,
+      "delta": 236.6618667,
+      "stock": 1208,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "EXO",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "H2O",
+      "input": 1127.259282,
+      "output": 0,
+      "delta": -1127.259282,
+      "stock": 679,
+      "exhaustion": 0.602345894
+     },
+     {
+      "ticker": "HCP",
+      "input": 0,
+      "output": 57.10523077,
+      "delta": 57.10523077,
+      "stock": 227,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "KOM",
+      "input": 2.2,
+      "output": 0,
+      "delta": -2.2,
+      "stock": 31,
+      "exhaustion": 14.09090909
+     },
+     {
+      "ticker": "MAI",
+      "input": 27.09653333,
+      "output": 57.10523077,
+      "delta": 30.00869744,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "MUS",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 180,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "NS",
+      "input": 73.76092308,
+      "output": 0,
+      "delta": -73.76092308,
+      "stock": 1049,
+      "exhaustion": 14.22162246
+     },
+     {
+      "ticker": "OVE",
+      "input": 6.3,
+      "output": 0,
+      "delta": -6.3,
+      "stock": 152,
+      "exhaustion": 24.12698413
+     },
+     {
+      "ticker": "PT",
+      "input": 1.1,
+      "output": 0,
+      "delta": -1.1,
+      "stock": 16,
+      "exhaustion": 14.54545455
+     },
+     {
+      "ticker": "PWO",
+      "input": 2.52,
+      "output": 0,
+      "delta": -2.52,
+      "stock": 61,
+      "exhaustion": 24.20634921
+     },
+     {
+      "ticker": "RAT",
+      "input": 63.6,
+      "output": 270.9653333,
+      "delta": 207.3653333,
+      "stock": 962,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "REP",
+      "input": 0.44,
+      "output": 0,
+      "delta": -0.44,
+      "stock": 7,
+      "exhaustion": 15.90909091
+     },
+     {
+      "ticker": "SIO",
+      "input": 0,
+      "output": 29.57822118,
+      "delta": 29.57822118,
+      "stock": 174,
+      "exhaustion": "Infinity"
+     },
+     {
+      "ticker": "VEG",
+      "input": 27.09653333,
+      "output": 28.55261538,
+      "delta": 1.456082051,
+      "stock": 161,
+      "exhaustion": "Infinity"
+     }
+    ]
+   }
+  ]
+ }
+}

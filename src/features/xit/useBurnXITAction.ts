@@ -3,105 +3,100 @@ import { computed, type ComputedRef, type Ref, ref, watchEffect } from "vue";
 // Composables
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { usePrice } from "@/features/cx/usePrice";
+import { useRunProgress } from "@/util/runProgress";
 
 // Types & Interfaces
 import type {
-	IXITActionElement,
+	IBurnXITActionOptions,
 	IXITActionMaterialElement,
 } from "@/features/xit/xitAction.types";
 import type { Material } from "@/features/api/schemas/gameData.schemas";
 
-export function useBurnXITAction(
-	elements: Ref<IXITActionElement[]>,
-	resupplyDays: Ref<number>,
-	hideInfinite: Ref<boolean>,
-	materialOverrides: Ref<Record<string, number | null>>,
-	materialInactives: Ref<Set<string>>,
-	cxUuid: Ref<string | undefined>,
-	planetNaturalId: Ref<string | undefined>
-) {
+interface IWeightVolume {
+	totalWeight: number;
+	totalVolume: number;
+}
+
+/**
+ * # Burn XIT Action
+ *
+ * Resupply amounts, their weight, volume and price for the given burn
+ * elements. Reads the given refs only; `fit` returns the days that fit.
+ *
+ * @param {IBurnXITActionOptions} options Elements and the action settings
+ */
+export function useBurnXITAction({
+	elements,
+	resupplyDays,
+	hideInfinite,
+	materialOverrides,
+	materialInactives,
+	cxUuid = ref(undefined),
+	planetNaturalId = ref(undefined),
+}: IBurnXITActionOptions) {
 	// get materials
 	const { materialsMap } = useMaterialData();
 
 	// get price function
 	const { getPrice } = usePrice(cxUuid, planetNaturalId);
 
-	// buildupo material overrides
-	materialOverrides.value = elements.value.reduce(
-		(sum, current) => {
-			sum[current.ticker] =
-				materialOverrides.value[current.ticker] ?? null;
-			return sum;
-		},
-		{} as Record<string, number | null>
-	);
-
 	/**
-	 * Computes a material table to be used in a XIT Resupply Action
+	 * The material table for a resupply of the given days
 	 *
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<IXITActionMaterialElement[]>}
+	 * @param {number} days Resupply days
+	 * @returns {IXITActionMaterialElement[]} Material table
 	 */
-	const materialTable: ComputedRef<IXITActionMaterialElement[]> = computed(
-		() => {
-			const tableElements: IXITActionMaterialElement[] = [];
+	function tableFor(days: number): IXITActionMaterialElement[] {
+		const tableElements: IXITActionMaterialElement[] = [];
 
-			elements.value.forEach((e) => {
-				let totalNeed: number = Infinity;
+		elements.value.forEach((e) => {
+			let totalNeed: number = Infinity;
 
-				if (e.delta < 0) {
-					totalNeed = e.delta * -1 * resupplyDays.value - e.stock;
-				}
+			if (e.delta < 0) {
+				totalNeed = e.delta * -1 * days - e.stock;
+			}
 
-				if (
-					!hideInfinite.value ||
-					(hideInfinite.value && e.delta < 0)
-				) {
-					const value = materialOverrides.value[e.ticker];
-					const override: number | undefined =
-						value != null && value > 0 ? value : undefined;
+			if (!hideInfinite.value || (hideInfinite.value && e.delta < 0)) {
+				// no override set reads as undefined, like null
+				const value = materialOverrides.value[e.ticker];
+				const override: number | undefined =
+					value != null && value > 0 ? value : undefined;
 
-					tableElements.push({
-						active: !materialInactives.value.has(e.ticker),
-						ticker: e.ticker,
-						stock: e.stock,
-						delta: e.delta,
-						// no consumption (delta 0 too) never runs out; stock / -0
-						// would be -Infinity and read as critical
-						burn: e.delta < 0 ? e.stock / (e.delta * -1) : Infinity,
-						total: override
-							? override
-							: Math.ceil(totalNeed) > 0
-								? Math.ceil(totalNeed)
-								: 0,
-					});
-				}
-			});
+				tableElements.push({
+					active: !materialInactives.value.has(e.ticker),
+					ticker: e.ticker,
+					stock: e.stock,
+					delta: e.delta,
+					// no consumption (delta 0 too) never runs out; stock / -0
+					// would be -Infinity and read as critical
+					burn: e.delta < 0 ? e.stock / (e.delta * -1) : Infinity,
+					total: override
+						? override
+						: Math.ceil(totalNeed) > 0
+							? Math.ceil(totalNeed)
+							: 0,
+				});
+			}
+		});
 
-			return tableElements;
-		}
-	);
+		return tableElements;
+	}
 
 	/**
-	 * Computes weight and volume totals for materialTable elements
-	 * total amount to be used in the resupply action
+	 * Weight and volume of a material table's active, finite amounts
 	 *
 	 * @author jplacht
 	 *
-	 * @type {ComputedRef<{
-	 * 		totalWeight: number;
-	 * 		totalVolume: number;
-	 * 	}>}
+	 * @param {IXITActionMaterialElement[]} table Material table
+	 * @returns {IWeightVolume} Totals
 	 */
-	const totalWeightVolume: ComputedRef<{
-		totalWeight: number;
-		totalVolume: number;
-	}> = computed(() => {
+	function weightVolumeOf(table: IXITActionMaterialElement[]): IWeightVolume {
 		let totalWeight: number = 0;
 		let totalVolume: number = 0;
 
-		materialTable.value
+		table
 			.filter((f) => f.total !== Infinity && f.active)
 			.forEach((material) => {
 				const mat: Material = materialsMap.value[material.ticker];
@@ -114,7 +109,30 @@ export function useBurnXITAction(
 			totalWeight,
 			totalVolume,
 		};
-	});
+	}
+
+	/**
+	 * Computes a material table to be used in a XIT Resupply Action
+	 *
+	 * @author jplacht
+	 *
+	 * @type {ComputedRef<IXITActionMaterialElement[]>}
+	 */
+	const materialTable: ComputedRef<IXITActionMaterialElement[]> = computed(
+		() => tableFor(resupplyDays.value)
+	);
+
+	/**
+	 * Computes weight and volume totals for materialTable elements
+	 * total amount to be used in the resupply action
+	 *
+	 * @author jplacht
+	 *
+	 * @type {ComputedRef<IWeightVolume>}
+	 */
+	const totalWeightVolume: ComputedRef<IWeightVolume> = computed(() =>
+		weightVolumeOf(materialTable.value)
+	);
 
 	/**
 	 * Holds estimated price total for materialTable elements
@@ -128,10 +146,10 @@ export function useBurnXITAction(
 
 	// prices resolve async, a run started later may finish first: only the
 	// latest run may set the total, a slower older one is stale
-	let latestPriceRun: number = 0;
+	const { start } = useRunProgress();
 
 	async function sumPrices(
-		activeMaterials: typeof materialTable.value
+		activeMaterials: IXITActionMaterialElement[]
 	): Promise<number> {
 		let price: number = 0;
 
@@ -144,39 +162,45 @@ export function useBurnXITAction(
 	}
 
 	watchEffect(() => {
-		const run = ++latestPriceRun;
+		const run = start();
 		const activeMaterials = materialTable.value.filter(
 			(f) => f.total !== Infinity && f.active
 		);
 
 		void sumPrices(activeMaterials).then((price) => {
-			if (run === latestPriceRun) totalPrice.value = price;
+			if (run.isCurrent()) totalPrice.value = price;
 		});
 	});
 
-	function fit(targetWeight: number, targetVolume: number): void {
+	/**
+	 * The resupply days whose amounts fit the given weight and volume,
+	 * starting from the current days, capped to 0 and 100
+	 *
+	 * @param {number} targetWeight Max weight
+	 * @param {number} targetVolume Max volume
+	 * @returns {number} Resupply days
+	 */
+	function fit(targetWeight: number, targetVolume: number): number {
 		function fits(days: number): boolean {
-			const old = resupplyDays.value;
-			resupplyDays.value = days;
-
-			const ok =
-				totalWeightVolume.value.totalWeight <= targetWeight &&
-				totalWeightVolume.value.totalVolume <= targetVolume;
-
-			resupplyDays.value = old;
-			return ok;
+			const { totalWeight, totalVolume } = weightVolumeOf(tableFor(days));
+			return totalWeight <= targetWeight && totalVolume <= targetVolume;
 		}
 
+		let days: number = resupplyDays.value;
+
 		// decrease until fit or 0
-		while (resupplyDays.value > 0 && !fits(resupplyDays.value)) {
-			resupplyDays.value--;
+		while (days > 0 && !fits(days)) {
+			days--;
 		}
 
 		// increase until next would exceed, max to 100 capped
-		while (resupplyDays.value < 100 && fits(resupplyDays.value + 1)) {
-			resupplyDays.value++;
+		while (days < 100 && fits(days + 1)) {
+			days++;
 		}
+
+		return days;
 	}
+
 	return {
 		materialTable,
 		totalWeightVolume,

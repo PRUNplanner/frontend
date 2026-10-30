@@ -69,7 +69,9 @@ export function enhanceMaterialIOMinimal(
 	});
 
 	// return sorted
-	return enhancedArray.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
+	return enhancedArray.sort((a, b) =>
+		a.ticker < b.ticker ? -1 : a.ticker > b.ticker ? 1 : 0
+	);
 }
 
 /**

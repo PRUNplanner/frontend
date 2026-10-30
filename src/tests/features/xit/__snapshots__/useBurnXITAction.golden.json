@@ -1,0 +1,619 @@
+{
+ "all": {
+  "materialTable": [
+   {
+    "active": true,
+    "ticker": "RAT",
+    "stock": 120,
+    "delta": -36.5,
+    "burn": 3.287671233,
+    "total": 245
+   },
+   {
+    "active": true,
+    "ticker": "DW",
+    "stock": 40,
+    "delta": -28,
+    "burn": 1.428571429,
+    "total": 240
+   },
+   {
+    "active": true,
+    "ticker": "OVE",
+    "stock": 15,
+    "delta": -7.25,
+    "burn": 2.068965517,
+    "total": 58
+   },
+   {
+    "active": true,
+    "ticker": "PWO",
+    "stock": 0,
+    "delta": -3.1,
+    "burn": 0,
+    "total": 31
+   },
+   {
+    "active": true,
+    "ticker": "COF",
+    "stock": 500,
+    "delta": -2,
+    "burn": 250,
+    "total": 0
+   },
+   {
+    "active": true,
+    "ticker": "H2O",
+    "stock": 2340,
+    "delta": 0,
+    "burn": "Infinity",
+    "total": "Infinity"
+   },
+   {
+    "active": true,
+    "ticker": "FEO",
+    "stock": 10,
+    "delta": 12.75,
+    "burn": "Infinity",
+    "total": "Infinity"
+   },
+   {
+    "active": true,
+    "ticker": "MCG",
+    "stock": 0,
+    "delta": -120.4,
+    "burn": 0,
+    "total": 1204
+   },
+   {
+    "active": true,
+    "ticker": "BSE",
+    "stock": 3,
+    "delta": -0.5,
+    "burn": 6,
+    "total": 2
+   }
+  ],
+  "totalWeightVolume": {
+   "totalWeight": 367.7199923,
+   "totalVolume": 172.9000026
+  },
+  "totalPrice": 130881.7273,
+  "fits": [
+   {
+    "weight": 500,
+    "volume": 500,
+    "resupplyDays": 13,
+    "totalWeightVolume": {
+     "totalWeight": 487.6399898,
+     "totalVolume": 230.5500034
+    },
+    "totalPrice": 180830.9437
+   },
+   {
+    "weight": 1000,
+    "volume": 3000,
+    "resupplyDays": 25,
+    "totalWeightVolume": {
+     "totalWeight": 965.1699797,
+     "totalVolume": 459.3750068
+    },
+    "totalPrice": 375362.2324
+   },
+   {
+    "weight": 3000,
+    "volume": 1000,
+    "resupplyDays": 53,
+    "totalWeightVolume": {
+     "totalWeight": 2080.079956,
+     "totalVolume": 993.6000146
+    },
+    "totalPrice": 829594.9474
+   },
+   {
+    "weight": 50,
+    "volume": 50,
+    "resupplyDays": 1,
+    "totalWeightVolume": {
+     "totalWeight": 29.23999935,
+     "totalVolume": 12.30000018
+    },
+    "totalPrice": 5648.144711
+   },
+   {
+    "weight": 100000,
+    "volume": 100000,
+    "resupplyDays": 100,
+    "totalWeightVolume": {
+     "totalWeight": 3950.699917,
+     "totalVolume": 1889.750028
+    },
+    "totalPrice": 1590539.718
+   }
+  ]
+ },
+ "hide_infinite": {
+  "materialTable": [
+   {
+    "active": true,
+    "ticker": "RAT",
+    "stock": 120,
+    "delta": -36.5,
+    "burn": 3.287671233,
+    "total": 245
+   },
+   {
+    "active": true,
+    "ticker": "DW",
+    "stock": 40,
+    "delta": -28,
+    "burn": 1.428571429,
+    "total": 240
+   },
+   {
+    "active": true,
+    "ticker": "OVE",
+    "stock": 15,
+    "delta": -7.25,
+    "burn": 2.068965517,
+    "total": 58
+   },
+   {
+    "active": true,
+    "ticker": "PWO",
+    "stock": 0,
+    "delta": -3.1,
+    "burn": 0,
+    "total": 31
+   },
+   {
+    "active": true,
+    "ticker": "COF",
+    "stock": 500,
+    "delta": -2,
+    "burn": 250,
+    "total": 0
+   },
+   {
+    "active": true,
+    "ticker": "MCG",
+    "stock": 0,
+    "delta": -120.4,
+    "burn": 0,
+    "total": 1204
+   },
+   {
+    "active": true,
+    "ticker": "BSE",
+    "stock": 3,
+    "delta": -0.5,
+    "burn": 6,
+    "total": 2
+   }
+  ],
+  "totalWeightVolume": {
+   "totalWeight": 367.7199923,
+   "totalVolume": 172.9000026
+  },
+  "totalPrice": 130881.7273,
+  "fits": [
+   {
+    "weight": 500,
+    "volume": 500,
+    "resupplyDays": 13,
+    "totalWeightVolume": {
+     "totalWeight": 487.6399898,
+     "totalVolume": 230.5500034
+    },
+    "totalPrice": 180830.9437
+   },
+   {
+    "weight": 1000,
+    "volume": 3000,
+    "resupplyDays": 25,
+    "totalWeightVolume": {
+     "totalWeight": 965.1699797,
+     "totalVolume": 459.3750068
+    },
+    "totalPrice": 375362.2324
+   },
+   {
+    "weight": 3000,
+    "volume": 1000,
+    "resupplyDays": 53,
+    "totalWeightVolume": {
+     "totalWeight": 2080.079956,
+     "totalVolume": 993.6000146
+    },
+    "totalPrice": 829594.9474
+   },
+   {
+    "weight": 50,
+    "volume": 50,
+    "resupplyDays": 1,
+    "totalWeightVolume": {
+     "totalWeight": 29.23999935,
+     "totalVolume": 12.30000018
+    },
+    "totalPrice": 5648.144711
+   },
+   {
+    "weight": 100000,
+    "volume": 100000,
+    "resupplyDays": 100,
+    "totalWeightVolume": {
+     "totalWeight": 3950.699917,
+     "totalVolume": 1889.750028
+    },
+    "totalPrice": 1590539.718
+   }
+  ]
+ },
+ "override": {
+  "materialTable": [
+   {
+    "active": true,
+    "ticker": "RAT",
+    "stock": 120,
+    "delta": -36.5,
+    "burn": 3.287671233,
+    "total": 1000
+   },
+   {
+    "active": true,
+    "ticker": "DW",
+    "stock": 40,
+    "delta": -28,
+    "burn": 1.428571429,
+    "total": 156
+   },
+   {
+    "active": true,
+    "ticker": "OVE",
+    "stock": 15,
+    "delta": -7.25,
+    "burn": 2.068965517,
+    "total": 36
+   },
+   {
+    "active": true,
+    "ticker": "PWO",
+    "stock": 0,
+    "delta": -3.1,
+    "burn": 0,
+    "total": 22
+   },
+   {
+    "active": true,
+    "ticker": "COF",
+    "stock": 500,
+    "delta": -2,
+    "burn": 250,
+    "total": 0
+   },
+   {
+    "active": true,
+    "ticker": "H2O",
+    "stock": 2340,
+    "delta": 0,
+    "burn": "Infinity",
+    "total": "Infinity"
+   },
+   {
+    "active": true,
+    "ticker": "FEO",
+    "stock": 10,
+    "delta": 12.75,
+    "burn": "Infinity",
+    "total": "Infinity"
+   },
+   {
+    "active": true,
+    "ticker": "MCG",
+    "stock": 0,
+    "delta": -120.4,
+    "burn": 0,
+    "total": 843
+   },
+   {
+    "active": true,
+    "ticker": "BSE",
+    "stock": 3,
+    "delta": -0.5,
+    "burn": 6,
+    "total": 1
+   }
+  ],
+  "totalWeightVolume": {
+   "totalWeight": 430.0399892,
+   "totalVolume": 202.400003
+  },
+  "totalPrice": 224314.1142,
+  "fits": [
+   {
+    "weight": 500,
+    "volume": 500,
+    "resupplyDays": 9,
+    "totalWeightVolume": {
+     "totalWeight": 494.379988,
+     "totalVolume": 233.2750035
+    },
+    "totalPrice": 244835.7223
+   },
+   {
+    "weight": 1000,
+    "volume": 3000,
+    "resupplyDays": 24,
+    "totalWeightVolume": {
+     "totalWeight": 976.429979,
+     "totalVolume": 464.4250069
+    },
+    "totalPrice": 397936.5077
+   },
+   {
+    "weight": 3000,
+    "volume": 1000,
+    "resupplyDays": 58,
+    "totalWeightVolume": {
+     "totalWeight": 2069.479959,
+     "totalVolume": 988.9500145
+    },
+    "totalPrice": 746769.1134
+   },
+   {
+    "weight": 50,
+    "volume": 50,
+    "resupplyDays": 0,
+    "totalWeightVolume": {
+     "totalWeight": 209.9999934,
+     "totalVolume": 100.0000015
+    },
+    "totalPrice": 163216.9818
+   },
+   {
+    "weight": 100000,
+    "volume": 100000,
+    "resupplyDays": 100,
+    "totalWeightVolume": {
+     "totalWeight": 3419.399933,
+     "totalVolume": 1636.750024
+    },
+    "totalPrice": 1177600.754
+   }
+  ]
+ },
+ "inactive": {
+  "materialTable": [
+   {
+    "active": true,
+    "ticker": "RAT",
+    "stock": 120,
+    "delta": -36.5,
+    "burn": 3.287671233,
+    "total": 245
+   },
+   {
+    "active": true,
+    "ticker": "DW",
+    "stock": 40,
+    "delta": -28,
+    "burn": 1.428571429,
+    "total": 240
+   },
+   {
+    "active": false,
+    "ticker": "OVE",
+    "stock": 15,
+    "delta": -7.25,
+    "burn": 2.068965517,
+    "total": 58
+   },
+   {
+    "active": true,
+    "ticker": "PWO",
+    "stock": 0,
+    "delta": -3.1,
+    "burn": 0,
+    "total": 31
+   },
+   {
+    "active": true,
+    "ticker": "COF",
+    "stock": 500,
+    "delta": -2,
+    "burn": 250,
+    "total": 0
+   },
+   {
+    "active": false,
+    "ticker": "MCG",
+    "stock": 0,
+    "delta": -120.4,
+    "burn": 0,
+    "total": 1204
+   },
+   {
+    "active": true,
+    "ticker": "BSE",
+    "stock": 3,
+    "delta": -0.5,
+    "burn": 6,
+    "total": 2
+   }
+  ],
+  "totalWeightVolume": {
+   "totalWeight": 77.5999988,
+   "totalVolume": 51.05000075
+  },
+  "totalPrice": 81492.81962,
+  "fits": [
+   {
+    "weight": 500,
+    "volume": 500,
+    "resupplyDays": 49,
+    "totalWeightVolume": {
+     "totalWeight": 497.8899914,
+     "totalVolume": 318.7000046
+    },
+    "totalPrice": 515543.7263
+   },
+   {
+    "weight": 1000,
+    "volume": 3000,
+    "resupplyDays": 95,
+    "totalWeightVolume": {
+     "totalWeight": 993.3299827,
+     "totalVolume": 634.0500091
+    },
+    "totalPrice": 1026433.131
+   },
+   {
+    "weight": 3000,
+    "volume": 1000,
+    "resupplyDays": 100,
+    "totalWeightVolume": {
+     "totalWeight": 1046.899982,
+     "totalVolume": 668.0000096
+    },
+    "totalPrice": 1080785.92
+   },
+   {
+    "weight": 50,
+    "volume": 50,
+    "resupplyDays": 7,
+    "totalWeightVolume": {
+     "totalWeight": 45.55999937,
+     "totalVolume": 30.80000045
+    },
+    "totalPrice": 49276.74523
+   },
+   {
+    "weight": 100000,
+    "volume": 100000,
+    "resupplyDays": 100,
+    "totalWeightVolume": {
+     "totalWeight": 1046.899982,
+     "totalVolume": 668.0000096
+    },
+    "totalPrice": 1080785.92
+   }
+  ]
+ },
+ "cx_planet": {
+  "materialTable": [
+   {
+    "active": true,
+    "ticker": "RAT",
+    "stock": 120,
+    "delta": -36.5,
+    "burn": 3.287671233,
+    "total": 391
+   },
+   {
+    "active": true,
+    "ticker": "DW",
+    "stock": 40,
+    "delta": -28,
+    "burn": 1.428571429,
+    "total": 352
+   },
+   {
+    "active": true,
+    "ticker": "OVE",
+    "stock": 15,
+    "delta": -7.25,
+    "burn": 2.068965517,
+    "total": 87
+   },
+   {
+    "active": true,
+    "ticker": "PWO",
+    "stock": 0,
+    "delta": -3.1,
+    "burn": 0,
+    "total": 44
+   },
+   {
+    "active": true,
+    "ticker": "COF",
+    "stock": 500,
+    "delta": -2,
+    "burn": 250,
+    "total": 0
+   },
+   {
+    "active": true,
+    "ticker": "MCG",
+    "stock": 0,
+    "delta": -120.4,
+    "burn": 0,
+    "total": 1686
+   },
+   {
+    "active": true,
+    "ticker": "BSE",
+    "stock": 3,
+    "delta": -0.5,
+    "burn": 6,
+    "total": 4
+   }
+  ],
+  "totalWeightVolume": {
+   "totalWeight": 527.089989,
+   "totalVolume": 249.2750037
+  },
+  "totalPrice": 195981.5813,
+  "fits": [
+   {
+    "weight": 500,
+    "volume": 500,
+    "resupplyDays": 13,
+    "totalWeightVolume": {
+     "totalWeight": 487.6399898,
+     "totalVolume": 230.5500034
+    },
+    "totalPrice": 180830.9437
+   },
+   {
+    "weight": 1000,
+    "volume": 3000,
+    "resupplyDays": 25,
+    "totalWeightVolume": {
+     "totalWeight": 965.1699797,
+     "totalVolume": 459.3750068
+    },
+    "totalPrice": 375362.2324
+   },
+   {
+    "weight": 3000,
+    "volume": 1000,
+    "resupplyDays": 53,
+    "totalWeightVolume": {
+     "totalWeight": 2080.079956,
+     "totalVolume": 993.6000146
+    },
+    "totalPrice": 829594.9474
+   },
+   {
+    "weight": 50,
+    "volume": 50,
+    "resupplyDays": 1,
+    "totalWeightVolume": {
+     "totalWeight": 29.23999935,
+     "totalVolume": 12.30000018
+    },
+    "totalPrice": 5648.144711
+   },
+   {
+    "weight": 100000,
+    "volume": 100000,
+    "resupplyDays": 100,
+    "totalWeightVolume": {
+     "totalWeight": 3950.699917,
+     "totalVolume": 1889.750028
+    },
+    "totalPrice": 1590539.718
+   }
+  ]
+ }
+}

@@ -12,7 +12,7 @@ optimal extractor layout (`RIG`, `EXT` or `COL`).
 
 | File | Role |
 | --- | --- |
-| `useResourceROIOverview.ts` | `useResourceROIOverview(cxUuidRef)` provides `calculate(ticker)`, `searchPlanets`, `getPlanetEnvironment`, `planetResults`, `resultData` and progress refs (incl. `progressSearchingPlanets`) |
+| `useResourceROIOverview.ts` | `useResourceROIOverview(cxUuidRef)` provides `calculate(ticker)`, `searchPlanets`, `getPlanetEnvironment`, `planetResults`, `resultData` `progress` (`{ current, total }`) and `progressSearchingPlanets` |
 | `useResourceROIOverview.types.ts` | `IResourceROIResult` and the chart shapes (`IResourceROIChartPoint`, `IResourceROIChartData`, `IResourceROIInsight`) |
 | `components/ResourceROITable.vue`, `ResourceROITableFilters.vue` | UI. It reuses `PlanetPOPRButton` (`government`) and `COGMButton` (`roi_overview`). Inline bars on % Max, Daily Profit and ROI (0–20 d); the nearest exchange's distance bold in its colour |
 | `components/ResourceROIChartDrawer.vue` | "Chart" drawer: docked under the table in the page flow (non-modal, Esc closes it via `useOverlayLayer`, resizable with `ui/useDockHeight`). `PScatter` of plan ROI against jumps to the nearest or a chosen exchange, zoomed to paybacks within twice the fastest (the rest, no-payback and no-route rows are counted under it), dot size daily profit, colour the exchange, best trade-off line and a generated insight line. Shows the table's filtered rows; a hovered dot highlights and scrolls to its row. The view keeps its open state in localStorage |

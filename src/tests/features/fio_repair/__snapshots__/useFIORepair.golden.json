@@ -1,0 +1,6138 @@
+{
+ "bases": [
+  {
+   "planet": "ZV-194a",
+   "name": "Nike",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "PP2",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "PP2",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "PP2",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "WEL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "PP2",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "PP2",
+     "days": null,
+     "wasRepaired": false,
+     "condition": 0.9876142144
+    },
+    {
+     "ticker": "PP2",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "PP2",
+     "days": null,
+     "wasRepaired": false,
+     "condition": 0.9876142144
+    },
+    {
+     "ticker": "PP2",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "PP2",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "PP2",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084
+    },
+    {
+     "ticker": "PP2",
+     "days": null,
+     "wasRepaired": false,
+     "condition": 0.9876142144
+    }
+   ],
+   "types": [
+    {
+     "ticker": "PP2",
+     "count": 11,
+     "target": 60,
+     "since": null,
+     "wasRepaired": false,
+     "condition": 0.9825887084,
+     "due": null,
+     "status": "unknown"
+    },
+    {
+     "ticker": "BMP",
+     "count": 2,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "EXT",
+     "count": 1,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "WEL",
+     "count": 1,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825887084,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": null,
+   "status": "unknown",
+   "since": null,
+   "wasRepaired": false,
+   "condition": 0.9825887084,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 41,
+      "cost": 102586.7729,
+      "weight": 20.5,
+      "volume": 32.80000049
+     },
+     {
+      "ticker": "BDE",
+      "amount": 36,
+      "cost": 86912.9505,
+      "weight": 3.600000054,
+      "volume": 54
+     },
+     {
+      "ticker": "BSE",
+      "amount": 28,
+      "cost": 50813.76501,
+      "weight": 8.400000334,
+      "volume": 14
+     },
+     {
+      "ticker": "TRU",
+      "amount": 28,
+      "cost": 14852.52855,
+      "weight": 2.800000042,
+      "volume": 42
+     }
+    ],
+    "cost": 255166.017,
+    "weight": 35.30000043,
+    "volume": 142.8000005
+   },
+   "waiting": 2266.154344
+  },
+  {
+   "planet": "KW-688c",
+   "name": "Etherwind",
+   "match": {
+    "candidate": {
+     "plan": {
+      "uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+      "plan_name": "EW COF RAT DW C",
+      "planet_natural_id": "KW-688c",
+      "plan_permits_used": 3,
+      "plan_cogc": "RESOURCE_EXTRACTION",
+      "plan_corphq": false,
+      "plan_data": {
+       "experts": [
+        {
+         "type": "Agriculture",
+         "amount": 3
+        },
+        {
+         "type": "Chemistry",
+         "amount": 0
+        },
+        {
+         "type": "Construction",
+         "amount": 0
+        },
+        {
+         "type": "Electronics",
+         "amount": 0
+        },
+        {
+         "type": "Food_Industries",
+         "amount": 2
+        },
+        {
+         "type": "Fuel_Refining",
+         "amount": 0
+        },
+        {
+         "type": "Manufacturing",
+         "amount": 0
+        },
+        {
+         "type": "Metallurgy",
+         "amount": 0
+        },
+        {
+         "type": "Resource_Extraction",
+         "amount": 1
+        }
+       ],
+       "buildings": [
+        {
+         "name": "EXT",
+         "amount": 1,
+         "active_recipes": [
+          {
+           "amount": 1,
+           "recipeid": "EXT#SIO"
+          }
+         ]
+        },
+        {
+         "name": "FP",
+         "amount": 19,
+         "active_recipes": [
+          {
+           "amount": 2,
+           "recipeid": "FP#10xH2O=>7xDW"
+          },
+          {
+           "amount": 1,
+           "recipeid": "FP#1xCAF 3xDW=>3xCOF"
+          },
+          {
+           "amount": 1,
+           "recipeid": "FP#1xMUS 1xVEG 1xMAI=>10xRAT"
+          }
+         ]
+        },
+        {
+         "name": "HYF",
+         "amount": 11,
+         "active_recipes": [
+          {
+           "amount": 6,
+           "recipeid": "HYF#22xH2O 3xNS=>2xCAF"
+          },
+          {
+           "amount": 3,
+           "recipeid": "HYF#14xH2O 1xNS=>8xHCP"
+          },
+          {
+           "amount": 1,
+           "recipeid": "HYF#4xNS=>12xMUS"
+          },
+          {
+           "amount": 2,
+           "recipeid": "HYF#16xH2O 1xNS=>6xVEG"
+          },
+          {
+           "amount": 2,
+           "recipeid": "HYF#20xH2O 2xNS=>12xMAI"
+          }
+         ]
+        },
+        {
+         "name": "INC",
+         "amount": 7,
+         "active_recipes": [
+          {
+           "amount": 1,
+           "recipeid": "INC#4xHCP 2xMAI=>4xC"
+          }
+         ]
+        },
+        {
+         "name": "RIG",
+         "amount": 21,
+         "active_recipes": [
+          {
+           "amount": 1,
+           "recipeid": "RIG#H2O"
+          }
+         ]
+        }
+       ],
+       "workforce": [
+        {
+         "lux1": true,
+         "lux2": true,
+         "type": "pioneer"
+        },
+        {
+         "lux1": true,
+         "lux2": true,
+         "type": "settler"
+        },
+        {
+         "lux1": false,
+         "lux2": false,
+         "type": "technician"
+        },
+        {
+         "lux1": false,
+         "lux2": false,
+         "type": "engineer"
+        },
+        {
+         "lux1": false,
+         "lux2": false,
+         "type": "scientist"
+        }
+       ],
+       "infrastructure": [
+        {
+         "amount": 22,
+         "building": "HB1"
+        },
+        {
+         "amount": 3,
+         "building": "HB2"
+        },
+        {
+         "amount": 0,
+         "building": "HB3"
+        },
+        {
+         "amount": 0,
+         "building": "HB4"
+        },
+        {
+         "amount": 0,
+         "building": "HB5"
+        },
+        {
+         "amount": 0,
+         "building": "HBB"
+        },
+        {
+         "amount": 0,
+         "building": "HBC"
+        },
+        {
+         "amount": 0,
+         "building": "HBM"
+        },
+        {
+         "amount": 0,
+         "building": "HBL"
+        },
+        {
+         "amount": 1,
+         "building": "STO"
+        }
+       ]
+      },
+      "empires": [
+       {
+        "uuid": "32aed118-c4ed-4a4e-9eb4-3cf6aa0068da",
+        "empire_name": "Sky Productions",
+        "empire_faction": "MORIA",
+        "empire_permits_used": 25,
+        "empire_permits_total": 28,
+        "cx": {
+         "uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
+         "cx_name": "PRUN CX REAL",
+         "cx_data": {
+          "cx_empire": [
+           {
+            "type": "BOTH",
+            "exchange": "UNIVERSE_30D"
+           }
+          ],
+          "cx_planets": [],
+          "ticker_empire": [
+           {
+            "type": "SELL",
+            "value": 80,
+            "ticker": "FEO"
+           },
+           {
+            "type": "SELL",
+            "value": 3800,
+            "ticker": "UTS"
+           },
+           {
+            "type": "SELL",
+            "value": 45,
+            "ticker": "SFK"
+           },
+           {
+            "type": "SELL",
+            "value": 145,
+            "ticker": "MFK"
+           },
+           {
+            "type": "BUY",
+            "value": 35,
+            "ticker": "O"
+           },
+           {
+            "type": "BUY",
+            "value": 19,
+            "ticker": "PG"
+           },
+           {
+            "type": "BUY",
+            "value": 9,
+            "ticker": "PE"
+           },
+           {
+            "type": "BUY",
+            "value": 9,
+            "ticker": "H2O"
+           },
+           {
+            "type": "BUY",
+            "value": 180,
+            "ticker": "PT"
+           },
+           {
+            "type": "BUY",
+            "value": 53,
+            "ticker": "GRN"
+           },
+           {
+            "type": "BUY",
+            "value": 150,
+            "ticker": "C"
+           },
+           {
+            "type": "BUY",
+            "value": 250,
+            "ticker": "AL"
+           },
+           {
+            "type": "BUY",
+            "value": 9,
+            "ticker": "NCS"
+           },
+           {
+            "type": "BUY",
+            "value": 95,
+            "ticker": "EPO"
+           },
+           {
+            "type": "BUY",
+            "value": 1100,
+            "ticker": "HER"
+           },
+           {
+            "type": "BUY",
+            "value": 74,
+            "ticker": "BEA"
+           },
+           {
+            "type": "BUY",
+            "value": 74,
+            "ticker": "HCP"
+           },
+           {
+            "type": "BUY",
+            "value": 70,
+            "ticker": "PPA"
+           },
+           {
+            "type": "BUY",
+            "value": 770,
+            "ticker": "FIM"
+           },
+           {
+            "type": "BUY",
+            "value": 2650,
+            "ticker": "MEA"
+           }
+          ],
+          "ticker_planets": [
+           {
+            "planet": "ZV-194a",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 300,
+              "ticker": "AL"
+             }
+            ]
+           },
+           {
+            "planet": "KW-688c",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 150,
+              "ticker": "NS"
+             }
+            ]
+           },
+           {
+            "planet": "KI-446b",
+            "preferences": [
+             {
+              "type": "BOTH",
+              "value": 17,
+              "ticker": "H2O"
+             },
+             {
+              "type": "BUY",
+              "value": 150,
+              "ticker": "NS"
+             }
+            ]
+           },
+           {
+            "planet": "ZV-307c",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 486,
+              "ticker": "RCO"
+             }
+            ]
+           },
+           {
+            "planet": "OT-580b",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 48,
+              "ticker": "LST"
+             }
+            ]
+           },
+           {
+            "planet": "QJ-149c",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 55,
+              "ticker": "GRN"
+             }
+            ]
+           },
+           {
+            "planet": "JS-299a",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 14,
+              "ticker": "H2O"
+             },
+             {
+              "type": "BUY",
+              "value": 53,
+              "ticker": "GRN"
+             }
+            ]
+           },
+           {
+            "planet": "ZV-759b",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 313,
+              "ticker": "FE"
+             }
+            ]
+           },
+           {
+            "planet": "QJ-382a",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 145,
+              "ticker": "H"
+             }
+            ]
+           }
+          ]
+         }
+        }
+       },
+       {
+        "uuid": "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6",
+        "empire_name": "PRUN REAL",
+        "empire_faction": "MORIA",
+        "empire_permits_used": 25,
+        "empire_permits_total": 28,
+        "cx": {
+         "uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
+         "cx_name": "PRUN CX REAL",
+         "cx_data": {
+          "cx_empire": [
+           {
+            "type": "BOTH",
+            "exchange": "UNIVERSE_30D"
+           }
+          ],
+          "cx_planets": [],
+          "ticker_empire": [
+           {
+            "type": "SELL",
+            "value": 80,
+            "ticker": "FEO"
+           },
+           {
+            "type": "SELL",
+            "value": 3800,
+            "ticker": "UTS"
+           },
+           {
+            "type": "SELL",
+            "value": 45,
+            "ticker": "SFK"
+           },
+           {
+            "type": "SELL",
+            "value": 145,
+            "ticker": "MFK"
+           },
+           {
+            "type": "BUY",
+            "value": 35,
+            "ticker": "O"
+           },
+           {
+            "type": "BUY",
+            "value": 19,
+            "ticker": "PG"
+           },
+           {
+            "type": "BUY",
+            "value": 9,
+            "ticker": "PE"
+           },
+           {
+            "type": "BUY",
+            "value": 9,
+            "ticker": "H2O"
+           },
+           {
+            "type": "BUY",
+            "value": 180,
+            "ticker": "PT"
+           },
+           {
+            "type": "BUY",
+            "value": 53,
+            "ticker": "GRN"
+           },
+           {
+            "type": "BUY",
+            "value": 150,
+            "ticker": "C"
+           },
+           {
+            "type": "BUY",
+            "value": 250,
+            "ticker": "AL"
+           },
+           {
+            "type": "BUY",
+            "value": 9,
+            "ticker": "NCS"
+           },
+           {
+            "type": "BUY",
+            "value": 95,
+            "ticker": "EPO"
+           },
+           {
+            "type": "BUY",
+            "value": 1100,
+            "ticker": "HER"
+           },
+           {
+            "type": "BUY",
+            "value": 74,
+            "ticker": "BEA"
+           },
+           {
+            "type": "BUY",
+            "value": 74,
+            "ticker": "HCP"
+           },
+           {
+            "type": "BUY",
+            "value": 70,
+            "ticker": "PPA"
+           },
+           {
+            "type": "BUY",
+            "value": 770,
+            "ticker": "FIM"
+           },
+           {
+            "type": "BUY",
+            "value": 2650,
+            "ticker": "MEA"
+           }
+          ],
+          "ticker_planets": [
+           {
+            "planet": "ZV-194a",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 300,
+              "ticker": "AL"
+             }
+            ]
+           },
+           {
+            "planet": "KW-688c",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 150,
+              "ticker": "NS"
+             }
+            ]
+           },
+           {
+            "planet": "KI-446b",
+            "preferences": [
+             {
+              "type": "BOTH",
+              "value": 17,
+              "ticker": "H2O"
+             },
+             {
+              "type": "BUY",
+              "value": 150,
+              "ticker": "NS"
+             }
+            ]
+           },
+           {
+            "planet": "ZV-307c",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 486,
+              "ticker": "RCO"
+             }
+            ]
+           },
+           {
+            "planet": "OT-580b",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 48,
+              "ticker": "LST"
+             }
+            ]
+           },
+           {
+            "planet": "QJ-149c",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 55,
+              "ticker": "GRN"
+             }
+            ]
+           },
+           {
+            "planet": "JS-299a",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 14,
+              "ticker": "H2O"
+             },
+             {
+              "type": "BUY",
+              "value": 53,
+              "ticker": "GRN"
+             }
+            ]
+           },
+           {
+            "planet": "ZV-759b",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 313,
+              "ticker": "FE"
+             }
+            ]
+           },
+           {
+            "planet": "QJ-382a",
+            "preferences": [
+             {
+              "type": "BUY",
+              "value": 145,
+              "ticker": "H"
+             }
+            ]
+           }
+          ]
+         }
+        }
+       }
+      ]
+     },
+     "score": 1
+    },
+    "confidence": "match",
+    "candidates": [
+     {
+      "plan": {
+       "uuid": "41094cb6-c4bc-429f-b8c8-b81d02b3811c",
+       "plan_name": "EW COF RAT DW C",
+       "planet_natural_id": "KW-688c",
+       "plan_permits_used": 3,
+       "plan_cogc": "RESOURCE_EXTRACTION",
+       "plan_corphq": false,
+       "plan_data": {
+        "experts": [
+         {
+          "type": "Agriculture",
+          "amount": 3
+         },
+         {
+          "type": "Chemistry",
+          "amount": 0
+         },
+         {
+          "type": "Construction",
+          "amount": 0
+         },
+         {
+          "type": "Electronics",
+          "amount": 0
+         },
+         {
+          "type": "Food_Industries",
+          "amount": 2
+         },
+         {
+          "type": "Fuel_Refining",
+          "amount": 0
+         },
+         {
+          "type": "Manufacturing",
+          "amount": 0
+         },
+         {
+          "type": "Metallurgy",
+          "amount": 0
+         },
+         {
+          "type": "Resource_Extraction",
+          "amount": 1
+         }
+        ],
+        "buildings": [
+         {
+          "name": "EXT",
+          "amount": 1,
+          "active_recipes": [
+           {
+            "amount": 1,
+            "recipeid": "EXT#SIO"
+           }
+          ]
+         },
+         {
+          "name": "FP",
+          "amount": 19,
+          "active_recipes": [
+           {
+            "amount": 2,
+            "recipeid": "FP#10xH2O=>7xDW"
+           },
+           {
+            "amount": 1,
+            "recipeid": "FP#1xCAF 3xDW=>3xCOF"
+           },
+           {
+            "amount": 1,
+            "recipeid": "FP#1xMUS 1xVEG 1xMAI=>10xRAT"
+           }
+          ]
+         },
+         {
+          "name": "HYF",
+          "amount": 11,
+          "active_recipes": [
+           {
+            "amount": 6,
+            "recipeid": "HYF#22xH2O 3xNS=>2xCAF"
+           },
+           {
+            "amount": 3,
+            "recipeid": "HYF#14xH2O 1xNS=>8xHCP"
+           },
+           {
+            "amount": 1,
+            "recipeid": "HYF#4xNS=>12xMUS"
+           },
+           {
+            "amount": 2,
+            "recipeid": "HYF#16xH2O 1xNS=>6xVEG"
+           },
+           {
+            "amount": 2,
+            "recipeid": "HYF#20xH2O 2xNS=>12xMAI"
+           }
+          ]
+         },
+         {
+          "name": "INC",
+          "amount": 7,
+          "active_recipes": [
+           {
+            "amount": 1,
+            "recipeid": "INC#4xHCP 2xMAI=>4xC"
+           }
+          ]
+         },
+         {
+          "name": "RIG",
+          "amount": 21,
+          "active_recipes": [
+           {
+            "amount": 1,
+            "recipeid": "RIG#H2O"
+           }
+          ]
+         }
+        ],
+        "workforce": [
+         {
+          "lux1": true,
+          "lux2": true,
+          "type": "pioneer"
+         },
+         {
+          "lux1": true,
+          "lux2": true,
+          "type": "settler"
+         },
+         {
+          "lux1": false,
+          "lux2": false,
+          "type": "technician"
+         },
+         {
+          "lux1": false,
+          "lux2": false,
+          "type": "engineer"
+         },
+         {
+          "lux1": false,
+          "lux2": false,
+          "type": "scientist"
+         }
+        ],
+        "infrastructure": [
+         {
+          "amount": 22,
+          "building": "HB1"
+         },
+         {
+          "amount": 3,
+          "building": "HB2"
+         },
+         {
+          "amount": 0,
+          "building": "HB3"
+         },
+         {
+          "amount": 0,
+          "building": "HB4"
+         },
+         {
+          "amount": 0,
+          "building": "HB5"
+         },
+         {
+          "amount": 0,
+          "building": "HBB"
+         },
+         {
+          "amount": 0,
+          "building": "HBC"
+         },
+         {
+          "amount": 0,
+          "building": "HBM"
+         },
+         {
+          "amount": 0,
+          "building": "HBL"
+         },
+         {
+          "amount": 1,
+          "building": "STO"
+         }
+        ]
+       },
+       "empires": [
+        {
+         "uuid": "32aed118-c4ed-4a4e-9eb4-3cf6aa0068da",
+         "empire_name": "Sky Productions",
+         "empire_faction": "MORIA",
+         "empire_permits_used": 25,
+         "empire_permits_total": 28,
+         "cx": {
+          "uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
+          "cx_name": "PRUN CX REAL",
+          "cx_data": {
+           "cx_empire": [
+            {
+             "type": "BOTH",
+             "exchange": "UNIVERSE_30D"
+            }
+           ],
+           "cx_planets": [],
+           "ticker_empire": [
+            {
+             "type": "SELL",
+             "value": 80,
+             "ticker": "FEO"
+            },
+            {
+             "type": "SELL",
+             "value": 3800,
+             "ticker": "UTS"
+            },
+            {
+             "type": "SELL",
+             "value": 45,
+             "ticker": "SFK"
+            },
+            {
+             "type": "SELL",
+             "value": 145,
+             "ticker": "MFK"
+            },
+            {
+             "type": "BUY",
+             "value": 35,
+             "ticker": "O"
+            },
+            {
+             "type": "BUY",
+             "value": 19,
+             "ticker": "PG"
+            },
+            {
+             "type": "BUY",
+             "value": 9,
+             "ticker": "PE"
+            },
+            {
+             "type": "BUY",
+             "value": 9,
+             "ticker": "H2O"
+            },
+            {
+             "type": "BUY",
+             "value": 180,
+             "ticker": "PT"
+            },
+            {
+             "type": "BUY",
+             "value": 53,
+             "ticker": "GRN"
+            },
+            {
+             "type": "BUY",
+             "value": 150,
+             "ticker": "C"
+            },
+            {
+             "type": "BUY",
+             "value": 250,
+             "ticker": "AL"
+            },
+            {
+             "type": "BUY",
+             "value": 9,
+             "ticker": "NCS"
+            },
+            {
+             "type": "BUY",
+             "value": 95,
+             "ticker": "EPO"
+            },
+            {
+             "type": "BUY",
+             "value": 1100,
+             "ticker": "HER"
+            },
+            {
+             "type": "BUY",
+             "value": 74,
+             "ticker": "BEA"
+            },
+            {
+             "type": "BUY",
+             "value": 74,
+             "ticker": "HCP"
+            },
+            {
+             "type": "BUY",
+             "value": 70,
+             "ticker": "PPA"
+            },
+            {
+             "type": "BUY",
+             "value": 770,
+             "ticker": "FIM"
+            },
+            {
+             "type": "BUY",
+             "value": 2650,
+             "ticker": "MEA"
+            }
+           ],
+           "ticker_planets": [
+            {
+             "planet": "ZV-194a",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 300,
+               "ticker": "AL"
+              }
+             ]
+            },
+            {
+             "planet": "KW-688c",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 150,
+               "ticker": "NS"
+              }
+             ]
+            },
+            {
+             "planet": "KI-446b",
+             "preferences": [
+              {
+               "type": "BOTH",
+               "value": 17,
+               "ticker": "H2O"
+              },
+              {
+               "type": "BUY",
+               "value": 150,
+               "ticker": "NS"
+              }
+             ]
+            },
+            {
+             "planet": "ZV-307c",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 486,
+               "ticker": "RCO"
+              }
+             ]
+            },
+            {
+             "planet": "OT-580b",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 48,
+               "ticker": "LST"
+              }
+             ]
+            },
+            {
+             "planet": "QJ-149c",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 55,
+               "ticker": "GRN"
+              }
+             ]
+            },
+            {
+             "planet": "JS-299a",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 14,
+               "ticker": "H2O"
+              },
+              {
+               "type": "BUY",
+               "value": 53,
+               "ticker": "GRN"
+              }
+             ]
+            },
+            {
+             "planet": "ZV-759b",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 313,
+               "ticker": "FE"
+              }
+             ]
+            },
+            {
+             "planet": "QJ-382a",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 145,
+               "ticker": "H"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        },
+        {
+         "uuid": "cfddf9ec-6f9b-4c74-affb-bd55fd1f8aa6",
+         "empire_name": "PRUN REAL",
+         "empire_faction": "MORIA",
+         "empire_permits_used": 25,
+         "empire_permits_total": 28,
+         "cx": {
+          "uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
+          "cx_name": "PRUN CX REAL",
+          "cx_data": {
+           "cx_empire": [
+            {
+             "type": "BOTH",
+             "exchange": "UNIVERSE_30D"
+            }
+           ],
+           "cx_planets": [],
+           "ticker_empire": [
+            {
+             "type": "SELL",
+             "value": 80,
+             "ticker": "FEO"
+            },
+            {
+             "type": "SELL",
+             "value": 3800,
+             "ticker": "UTS"
+            },
+            {
+             "type": "SELL",
+             "value": 45,
+             "ticker": "SFK"
+            },
+            {
+             "type": "SELL",
+             "value": 145,
+             "ticker": "MFK"
+            },
+            {
+             "type": "BUY",
+             "value": 35,
+             "ticker": "O"
+            },
+            {
+             "type": "BUY",
+             "value": 19,
+             "ticker": "PG"
+            },
+            {
+             "type": "BUY",
+             "value": 9,
+             "ticker": "PE"
+            },
+            {
+             "type": "BUY",
+             "value": 9,
+             "ticker": "H2O"
+            },
+            {
+             "type": "BUY",
+             "value": 180,
+             "ticker": "PT"
+            },
+            {
+             "type": "BUY",
+             "value": 53,
+             "ticker": "GRN"
+            },
+            {
+             "type": "BUY",
+             "value": 150,
+             "ticker": "C"
+            },
+            {
+             "type": "BUY",
+             "value": 250,
+             "ticker": "AL"
+            },
+            {
+             "type": "BUY",
+             "value": 9,
+             "ticker": "NCS"
+            },
+            {
+             "type": "BUY",
+             "value": 95,
+             "ticker": "EPO"
+            },
+            {
+             "type": "BUY",
+             "value": 1100,
+             "ticker": "HER"
+            },
+            {
+             "type": "BUY",
+             "value": 74,
+             "ticker": "BEA"
+            },
+            {
+             "type": "BUY",
+             "value": 74,
+             "ticker": "HCP"
+            },
+            {
+             "type": "BUY",
+             "value": 70,
+             "ticker": "PPA"
+            },
+            {
+             "type": "BUY",
+             "value": 770,
+             "ticker": "FIM"
+            },
+            {
+             "type": "BUY",
+             "value": 2650,
+             "ticker": "MEA"
+            }
+           ],
+           "ticker_planets": [
+            {
+             "planet": "ZV-194a",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 300,
+               "ticker": "AL"
+              }
+             ]
+            },
+            {
+             "planet": "KW-688c",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 150,
+               "ticker": "NS"
+              }
+             ]
+            },
+            {
+             "planet": "KI-446b",
+             "preferences": [
+              {
+               "type": "BOTH",
+               "value": 17,
+               "ticker": "H2O"
+              },
+              {
+               "type": "BUY",
+               "value": 150,
+               "ticker": "NS"
+              }
+             ]
+            },
+            {
+             "planet": "ZV-307c",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 486,
+               "ticker": "RCO"
+              }
+             ]
+            },
+            {
+             "planet": "OT-580b",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 48,
+               "ticker": "LST"
+              }
+             ]
+            },
+            {
+             "planet": "QJ-149c",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 55,
+               "ticker": "GRN"
+              }
+             ]
+            },
+            {
+             "planet": "JS-299a",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 14,
+               "ticker": "H2O"
+              },
+              {
+               "type": "BUY",
+               "value": 53,
+               "ticker": "GRN"
+              }
+             ]
+            },
+            {
+             "planet": "ZV-759b",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 313,
+               "ticker": "FE"
+              }
+             ]
+            },
+            {
+             "planet": "QJ-382a",
+             "preferences": [
+              {
+               "type": "BUY",
+               "value": 145,
+               "ticker": "H"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       ]
+      },
+      "score": 1
+     }
+    ]
+   },
+   "buildings": [
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "INC",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "INC",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "INC",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "EXT",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "INC",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "INC",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "INC",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "FP",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "INC",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078
+    }
+   ],
+   "types": [
+    {
+     "ticker": "EXT",
+     "count": 1,
+     "target": 11,
+     "since": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078,
+     "due": -37,
+     "status": "overdue"
+    },
+    {
+     "ticker": "RIG",
+     "count": 21,
+     "target": 15,
+     "since": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078,
+     "due": -33,
+     "status": "overdue"
+    },
+    {
+     "ticker": "HYF",
+     "count": 11,
+     "target": 45,
+     "since": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078,
+     "due": -3,
+     "status": "overdue"
+    },
+    {
+     "ticker": "FP",
+     "count": 19,
+     "target": 60,
+     "since": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078,
+     "due": 12,
+     "status": "later"
+    },
+    {
+     "ticker": "INC",
+     "count": 7,
+     "target": 60,
+     "since": 48,
+     "wasRepaired": true,
+     "condition": 0.9835205078,
+     "due": 12,
+     "status": "later"
+    }
+   ],
+   "due": -37,
+   "status": "overdue",
+   "since": 48,
+   "wasRepaired": true,
+   "condition": 0.9835205078,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "MHL",
+      "amount": 55,
+      "cost": 311378.0165,
+      "weight": 5.500000082,
+      "volume": 2.750000041
+     },
+     {
+      "ticker": "BSE",
+      "amount": 133,
+      "cost": 241365.3838,
+      "weight": 39.90000159,
+      "volume": 66.5
+     },
+     {
+      "ticker": "LBH",
+      "amount": 22,
+      "cost": 118697.5937,
+      "weight": 4.400000066,
+      "volume": 13.20000052
+     },
+     {
+      "ticker": "BBH",
+      "amount": 26,
+      "cost": 65055.02675,
+      "weight": 13,
+      "volume": 20.80000031
+     },
+     {
+      "ticker": "BDE",
+      "amount": 26,
+      "cost": 62770.46425,
+      "weight": 2.600000039,
+      "volume": 39
+     },
+     {
+      "ticker": "MCG",
+      "amount": 758,
+      "cost": 26637.53114,
+      "weight": 181.9199959,
+      "volume": 75.80000113
+     },
+     {
+      "ticker": "TRU",
+      "amount": 22,
+      "cost": 11669.84386,
+      "weight": 2.200000033,
+      "volume": 33
+     },
+     {
+      "ticker": "BTA",
+      "amount": 7,
+      "cost": 10538.30454,
+      "weight": 2.100000083,
+      "volume": 2.800000042
+     }
+    ],
+    "cost": 848112.1645,
+    "weight": 251.6199978,
+    "volume": 253.850002
+   },
+   "waiting": 13405.09521
+  },
+  {
+   "planet": "ZV-307b",
+   "name": "Bober",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117
+    }
+   ],
+   "types": [
+    {
+     "ticker": "LAB",
+     "count": 7,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "POL",
+     "count": 10,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9824314117,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.9824314117,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "LDE",
+      "amount": 28,
+      "cost": 302473.9912,
+      "weight": 2.800000042,
+      "volume": 33.60000134
+     },
+     {
+      "ticker": "LBH",
+      "amount": 30,
+      "cost": 161860.355,
+      "weight": 6.000000089,
+      "volume": 18.00000072
+     },
+     {
+      "ticker": "LSE",
+      "amount": 14,
+      "cost": 152212.4121,
+      "weight": 4.200000167,
+      "volume": 16.80000067
+     },
+     {
+      "ticker": "BDE",
+      "amount": 20,
+      "cost": 48284.9725,
+      "weight": 2.00000003,
+      "volume": 30
+     },
+     {
+      "ticker": "BSE",
+      "amount": 20,
+      "cost": 36295.54643,
+      "weight": 6.000000238,
+      "volume": 10
+     },
+     {
+      "ticker": "TRU",
+      "amount": 31,
+      "cost": 16443.8709,
+      "weight": 3.100000046,
+      "volume": 46.5
+     }
+    ],
+    "cost": 717571.1482,
+    "weight": 24.10000061,
+    "volume": 154.9000027
+   },
+   "waiting": 11139.78815
+  },
+  {
+   "planet": "ZV-759c",
+   "name": "Deimos",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962
+    }
+   ],
+   "types": [
+    {
+     "ticker": "EXT",
+     "count": 6,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "SME",
+     "count": 10,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825392962,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.9825392962,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 50,
+      "cost": 90738.86608,
+      "weight": 15.0000006,
+      "volume": 25
+     },
+     {
+      "ticker": "BBH",
+      "amount": 20,
+      "cost": 50042.32827,
+      "weight": 10,
+      "volume": 16.00000024
+     },
+     {
+      "ticker": "BDE",
+      "amount": 20,
+      "cost": 48284.9725,
+      "weight": 2.00000003,
+      "volume": 30
+     }
+    ],
+    "cost": 189066.1668,
+    "weight": 27.00000063,
+    "volume": 71.00000024
+   },
+   "waiting": 2665.332576
+  },
+  {
+   "planet": "LS-300c",
+   "name": "Griffonstone",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "CHP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "CHP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "CHP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "CHP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "CHP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "CHP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "CHP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "CHP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "POL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "LAB",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    },
+    {
+     "ticker": "CHP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674
+    }
+   ],
+   "types": [
+    {
+     "ticker": "CHP",
+     "count": 9,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "EXT",
+     "count": 5,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "LAB",
+     "count": 4,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "POL",
+     "count": 9,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833818674,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.9833818674,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "LDE",
+      "amount": 16,
+      "cost": 172842.2807,
+      "weight": 1.600000024,
+      "volume": 19.20000076
+     },
+     {
+      "ticker": "LBH",
+      "amount": 27,
+      "cost": 145674.3195,
+      "weight": 5.40000008,
+      "volume": 16.20000064
+     },
+     {
+      "ticker": "BSE",
+      "amount": 52,
+      "cost": 94368.42072,
+      "weight": 15.60000062,
+      "volume": 26
+     },
+     {
+      "ticker": "LSE",
+      "amount": 8,
+      "cost": 86978.52121,
+      "weight": 2.400000095,
+      "volume": 9.600000381
+     },
+     {
+      "ticker": "BDE",
+      "amount": 27,
+      "cost": 65184.71287,
+      "weight": 2.70000004,
+      "volume": 40.5
+     },
+     {
+      "ticker": "BBH",
+      "amount": 9,
+      "cost": 22519.04772,
+      "weight": 4.5,
+      "volume": 7.200000107
+     },
+     {
+      "ticker": "TRU",
+      "amount": 39,
+      "cost": 20687.45048,
+      "weight": 3.900000058,
+      "volume": 58.5
+     }
+    ],
+    "cost": 608254.7532,
+    "weight": 36.10000092,
+    "volume": 177.2000019
+   },
+   "waiting": 9403.96501
+  },
+  {
+   "planet": "ZV-896b",
+   "name": "Harmonia",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FRM",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    },
+    {
+     "ticker": "RIG",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906
+    }
+   ],
+   "types": [
+    {
+     "ticker": "FP",
+     "count": 14,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "FRM",
+     "count": 14,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "RIG",
+     "count": 18,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833813906,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.9833813906,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 114,
+      "cost": 206884.6147,
+      "weight": 34.20000136,
+      "volume": 57
+     },
+     {
+      "ticker": "BBH",
+      "amount": 42,
+      "cost": 105088.8894,
+      "weight": 21,
+      "volume": 33.6000005
+     },
+     {
+      "ticker": "BDE",
+      "amount": 14,
+      "cost": 33799.48075,
+      "weight": 1.400000021,
+      "volume": 21
+     }
+    ],
+    "cost": 345772.9848,
+    "weight": 56.60000138,
+    "volume": 111.6000005
+   },
+   "waiting": 5091.366276
+  },
+  {
+   "planet": "ZV-307c",
+   "name": "Hephaestus",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "WPL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "WPL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "PPF",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "WPL",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    },
+    {
+     "ticker": "BMP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773
+    }
+   ],
+   "types": [
+    {
+     "ticker": "BMP",
+     "count": 24,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "PPF",
+     "count": 1,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "WPL",
+     "count": 3,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9824305773,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.9824305773,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 48,
+      "cost": 120101.5878,
+      "weight": 24,
+      "volume": 38.40000057
+     },
+     {
+      "ticker": "BSE",
+      "amount": 49,
+      "cost": 88924.08876,
+      "weight": 14.70000058,
+      "volume": 24.5
+     },
+     {
+      "ticker": "BDE",
+      "amount": 27,
+      "cost": 65184.71287,
+      "weight": 2.70000004,
+      "volume": 40.5
+     },
+     {
+      "ticker": "LBH",
+      "amount": 8,
+      "cost": 43162.76133,
+      "weight": 1.600000024,
+      "volume": 4.800000191
+     },
+     {
+      "ticker": "LSE",
+      "amount": 3,
+      "cost": 32616.94545,
+      "weight": 0.9000000358,
+      "volume": 3.600000143
+     },
+     {
+      "ticker": "LDE",
+      "amount": 1,
+      "cost": 10802.64254,
+      "weight": 0.1000000015,
+      "volume": 1.200000048
+     },
+     {
+      "ticker": "TRU",
+      "amount": 7,
+      "cost": 3713.132138,
+      "weight": 0.7000000104,
+      "volume": 10.5
+     }
+    ],
+    "cost": 364505.8709,
+    "weight": 44.7000007,
+    "volume": 123.500001
+   },
+   "waiting": 4912.737525
+  },
+  {
+   "planet": "QJ-149c",
+   "name": "Nascent",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    },
+    {
+     "ticker": "INC",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225
+    }
+   ],
+   "types": [
+    {
+     "ticker": "INC",
+     "count": 31,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.983382225,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.983382225,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 62,
+      "cost": 112516.1939,
+      "weight": 18.60000074,
+      "volume": 31
+     },
+     {
+      "ticker": "BBH",
+      "amount": 31,
+      "cost": 77565.60882,
+      "weight": 15.5,
+      "volume": 24.80000037
+     },
+     {
+      "ticker": "BDE",
+      "amount": 31,
+      "cost": 74841.70737,
+      "weight": 3.100000046,
+      "volume": 46.5
+     },
+     {
+      "ticker": "BTA",
+      "amount": 31,
+      "cost": 46669.63439,
+      "weight": 9.30000037,
+      "volume": 12.40000018
+     }
+    ],
+    "cost": 311593.1445,
+    "weight": 46.50000115,
+    "volume": 114.7000006
+   },
+   "waiting": 3633.790353
+  },
+  {
+   "planet": "YK-649b",
+   "name": "Norwick",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "IVP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "IVP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "IVP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    },
+    {
+     "ticker": "FP",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403
+    }
+   ],
+   "types": [
+    {
+     "ticker": "EXT",
+     "count": 2,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "FP",
+     "count": 17,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "IVP",
+     "count": 3,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833829403,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.9833829403,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "RDE",
+      "amount": 6,
+      "cost": 182814.6075,
+      "weight": 8.399999857,
+      "volume": 9
+     },
+     {
+      "ticker": "RSE",
+      "amount": 6,
+      "cost": 181311.9549,
+      "weight": 11.39999986,
+      "volume": 4.199999928
+     },
+     {
+      "ticker": "RBH",
+      "amount": 6,
+      "cost": 120346.6492,
+      "weight": 14.40000057,
+      "volume": 5.399999857
+     },
+     {
+      "ticker": "RTA",
+      "amount": 3,
+      "cost": 52935.07504,
+      "weight": 4.5,
+      "volume": 1.5
+     },
+     {
+      "ticker": "BSE",
+      "amount": 27,
+      "cost": 48998.98768,
+      "weight": 8.100000322,
+      "volume": 13.5
+     },
+     {
+      "ticker": "BBH",
+      "amount": 17,
+      "cost": 42535.97903,
+      "weight": 8.5,
+      "volume": 13.6000002
+     },
+     {
+      "ticker": "BDE",
+      "amount": 17,
+      "cost": 41042.22662,
+      "weight": 1.700000025,
+      "volume": 25.5
+     },
+     {
+      "ticker": "TRU",
+      "amount": 6,
+      "cost": 3182.68469,
+      "weight": 0.6000000089,
+      "volume": 9
+     }
+    ],
+    "cost": 673168.1647,
+    "weight": 57.60000064,
+    "volume": 81.69999999
+   },
+   "waiting": 8922.624507
+  },
+  {
+   "planet": "ZV-307d",
+   "name": "Phobos",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "CLR",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "CLR",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "CLR",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "CLR",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "CLR",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "CLR",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    },
+    {
+     "ticker": "SE",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385
+    }
+   ],
+   "types": [
+    {
+     "ticker": "CLR",
+     "count": 6,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "SE",
+     "count": 10,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825389385,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.9825389385,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "RDE",
+      "amount": 20,
+      "cost": 609382.025,
+      "weight": 27.99999952,
+      "volume": 30
+     },
+     {
+      "ticker": "RSE",
+      "amount": 20,
+      "cost": 604373.183,
+      "weight": 37.99999952,
+      "volume": 13.99999976
+     },
+     {
+      "ticker": "RBH",
+      "amount": 20,
+      "cost": 401155.4974,
+      "weight": 48.00000191,
+      "volume": 17.99999952
+     },
+     {
+      "ticker": "RTA",
+      "amount": 10,
+      "cost": 176450.2501,
+      "weight": 15,
+      "volume": 5
+     },
+     {
+      "ticker": "LSE",
+      "amount": 12,
+      "cost": 130467.7818,
+      "weight": 3.600000143,
+      "volume": 14.40000057
+     },
+     {
+      "ticker": "LDE",
+      "amount": 12,
+      "cost": 129631.7105,
+      "weight": 1.200000018,
+      "volume": 14.40000057
+     },
+     {
+      "ticker": "LTA",
+      "amount": 12,
+      "cost": 72430.40822,
+      "weight": 3.600000143,
+      "volume": 6
+     },
+     {
+      "ticker": "LBH",
+      "amount": 12,
+      "cost": 64744.142,
+      "weight": 2.400000036,
+      "volume": 7.200000286
+     },
+     {
+      "ticker": "TRU",
+      "amount": 32,
+      "cost": 16974.31835,
+      "weight": 3.200000048,
+      "volume": 48
+     }
+    ],
+    "cost": 2205609.316,
+    "weight": 143.0000013,
+    "volume": 157.0000007
+   },
+   "waiting": 31609.54435
+  },
+  {
+   "planet": "IY-816c",
+   "name": "Selene",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827
+    }
+   ],
+   "types": [
+    {
+     "ticker": "EXT",
+     "count": 6,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "SME",
+     "count": 11,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9833825827,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.9833825827,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 52,
+      "cost": 94368.42072,
+      "weight": 15.60000062,
+      "volume": 26
+     },
+     {
+      "ticker": "BBH",
+      "amount": 22,
+      "cost": 55046.56109,
+      "weight": 11,
+      "volume": 17.60000026
+     },
+     {
+      "ticker": "BDE",
+      "amount": 22,
+      "cost": 53113.46975,
+      "weight": 2.200000033,
+      "volume": 33
+     }
+    ],
+    "cost": 202528.4516,
+    "weight": 28.80000065,
+    "volume": 76.60000026
+   },
+   "waiting": 2835.07771
+  },
+  {
+   "planet": "ZV-759b",
+   "name": "Vulcan",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "EXT",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "FS",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    },
+    {
+     "ticker": "SME",
+     "days": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134
+    }
+   ],
+   "types": [
+    {
+     "ticker": "EXT",
+     "count": 3,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "FS",
+     "count": 1,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134,
+     "due": 11,
+     "status": "later"
+    },
+    {
+     "ticker": "SME",
+     "count": 12,
+     "target": 60,
+     "since": 49,
+     "wasRepaired": true,
+     "condition": 0.9825397134,
+     "due": 11,
+     "status": "later"
+    }
+   ],
+   "due": 11,
+   "status": "later",
+   "since": 49,
+   "wasRepaired": true,
+   "condition": 0.9825397134,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 39,
+      "cost": 70776.31554,
+      "weight": 11.70000046,
+      "volume": 19.5
+     },
+     {
+      "ticker": "BBH",
+      "amount": 25,
+      "cost": 62552.91034,
+      "weight": 12.5,
+      "volume": 20.0000003
+     },
+     {
+      "ticker": "BDE",
+      "amount": 24,
+      "cost": 57941.967,
+      "weight": 2.400000036,
+      "volume": 36
+     },
+     {
+      "ticker": "LDE",
+      "amount": 1,
+      "cost": 10802.64254,
+      "weight": 0.1000000015,
+      "volume": 1.200000048
+     },
+     {
+      "ticker": "LBH",
+      "amount": 1,
+      "cost": 5395.345167,
+      "weight": 0.200000003,
+      "volume": 0.6000000238
+     },
+     {
+      "ticker": "TRU",
+      "amount": 2,
+      "cost": 1060.894897,
+      "weight": 0.200000003,
+      "volume": 3
+     }
+    ],
+    "cost": 208530.0755,
+    "weight": 27.10000051,
+    "volume": 80.30000037
+   },
+   "waiting": 2740.44888
+  },
+  {
+   "planet": "KI-446b",
+   "name": "Demeter",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "RIG",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    },
+    {
+     "ticker": "HYF",
+     "days": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582
+    }
+   ],
+   "types": [
+    {
+     "ticker": "HYF",
+     "count": 8,
+     "target": 60,
+     "since": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582,
+     "due": 12,
+     "status": "later"
+    },
+    {
+     "ticker": "RIG",
+     "count": 21,
+     "target": 60,
+     "since": 48,
+     "wasRepaired": true,
+     "condition": 0.9837209582,
+     "due": 12,
+     "status": "later"
+    }
+   ],
+   "due": 12,
+   "status": "later",
+   "since": 48,
+   "wasRepaired": true,
+   "condition": 0.9837209582,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "MHL",
+      "amount": 40,
+      "cost": 226456.7393,
+      "weight": 4.00000006,
+      "volume": 2.00000003
+     },
+     {
+      "ticker": "BSE",
+      "amount": 92,
+      "cost": 166959.5136,
+      "weight": 27.6000011,
+      "volume": 46
+     },
+     {
+      "ticker": "LBH",
+      "amount": 16,
+      "cost": 86325.52267,
+      "weight": 3.200000048,
+      "volume": 9.600000381
+     },
+     {
+      "ticker": "TRU",
+      "amount": 16,
+      "cost": 8487.159173,
+      "weight": 1.600000024,
+      "volume": 24
+     }
+    ],
+    "cost": 488228.9347,
+    "weight": 36.40000123,
+    "volume": 81.60000041
+   },
+   "waiting": 7781.37362
+  },
+  {
+   "planet": "RC-040b",
+   "name": "Malahat",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    },
+    {
+     "ticker": "SL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095
+    }
+   ],
+   "types": [
+    {
+     "ticker": "SL",
+     "count": 20,
+     "target": 60,
+     "since": 47,
+     "wasRepaired": true,
+     "condition": 0.9848771095,
+     "due": 13,
+     "status": "later"
+    }
+   ],
+   "due": 13,
+   "status": "later",
+   "since": 47,
+   "wasRepaired": true,
+   "condition": 0.9848771095,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "RSE",
+      "amount": 80,
+      "cost": 2417492.732,
+      "weight": 151.9999981,
+      "volume": 55.99999905
+     },
+     {
+      "ticker": "RBH",
+      "amount": 80,
+      "cost": 1604621.99,
+      "weight": 192.0000076,
+      "volume": 71.99999809
+     },
+     {
+      "ticker": "LDE",
+      "amount": 60,
+      "cost": 648158.5527,
+      "weight": 6.000000089,
+      "volume": 72.00000286
+     },
+     {
+      "ticker": "LTA",
+      "amount": 40,
+      "cost": 241434.6941,
+      "weight": 12.00000048,
+      "volume": 20
+     },
+     {
+      "ticker": "TRU",
+      "amount": 60,
+      "cost": 31826.8469,
+      "weight": 6.000000089,
+      "volume": 90
+     }
+    ],
+    "cost": 4943534.815,
+    "weight": 368.0000064,
+    "volume": 310
+   },
+   "waiting": 81133.0147
+  },
+  {
+   "planet": "OT-580b",
+   "name": "Montem",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "EXT",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "EXT",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "EXT",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "POL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "POL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "POL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "POL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "POL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "EXT",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "EXT",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "POL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    },
+    {
+     "ticker": "CHP",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174
+    }
+   ],
+   "types": [
+    {
+     "ticker": "CHP",
+     "count": 13,
+     "target": 60,
+     "since": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174,
+     "due": 13,
+     "status": "later"
+    },
+    {
+     "ticker": "EXT",
+     "count": 5,
+     "target": 60,
+     "since": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174,
+     "due": 13,
+     "status": "later"
+    },
+    {
+     "ticker": "POL",
+     "count": 6,
+     "target": 60,
+     "since": 47,
+     "wasRepaired": true,
+     "condition": 0.9848759174,
+     "due": 13,
+     "status": "later"
+    }
+   ],
+   "due": 13,
+   "status": "later",
+   "since": 47,
+   "wasRepaired": true,
+   "condition": 0.9848759174,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "LBH",
+      "amount": 18,
+      "cost": 97116.213,
+      "weight": 3.600000054,
+      "volume": 10.80000043
+     },
+     {
+      "ticker": "BSE",
+      "amount": 50,
+      "cost": 90738.86608,
+      "weight": 15.0000006,
+      "volume": 25
+     },
+     {
+      "ticker": "BDE",
+      "amount": 25,
+      "cost": 60356.21562,
+      "weight": 2.500000037,
+      "volume": 37.5
+     },
+     {
+      "ticker": "BBH",
+      "amount": 13,
+      "cost": 32527.51337,
+      "weight": 6.5,
+      "volume": 10.40000015
+     },
+     {
+      "ticker": "TRU",
+      "amount": 32,
+      "cost": 16974.31835,
+      "weight": 3.200000048,
+      "volume": 48
+     }
+    ],
+    "cost": 297713.1264,
+    "weight": 30.80000073,
+    "volume": 131.7000006
+   },
+   "waiting": 4456.214251
+  },
+  {
+   "planet": "JS-299a",
+   "name": "Nemesis",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "RIG",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "RIG",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "COL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "COL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "COL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "RIG",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "RIG",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "RIG",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "COL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "COL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "COL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "COL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "RIG",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "COL",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923
+    }
+   ],
+   "types": [
+    {
+     "ticker": "COL",
+     "count": 8,
+     "target": 60,
+     "since": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923,
+     "due": 13,
+     "status": "later"
+    },
+    {
+     "ticker": "FRM",
+     "count": 6,
+     "target": 60,
+     "since": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923,
+     "due": 13,
+     "status": "later"
+    },
+    {
+     "ticker": "RIG",
+     "count": 6,
+     "target": 60,
+     "since": 47,
+     "wasRepaired": true,
+     "condition": 0.9848766923,
+     "due": 13,
+     "status": "later"
+    }
+   ],
+   "due": 13,
+   "status": "later",
+   "since": 47,
+   "wasRepaired": true,
+   "condition": 0.9848766923,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 76,
+      "cost": 137923.0764,
+      "weight": 22.80000091,
+      "volume": 38
+     },
+     {
+      "ticker": "BBH",
+      "amount": 12,
+      "cost": 30025.39696,
+      "weight": 6,
+      "volume": 9.600000143
+     }
+    ],
+    "cost": 167948.4734,
+    "weight": 28.80000091,
+    "volume": 47.60000014
+   },
+   "waiting": 2592.005078
+  },
+  {
+   "planet": "UV-796b",
+   "name": "Proxion",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    },
+    {
+     "ticker": "FRM",
+     "days": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347
+    }
+   ],
+   "types": [
+    {
+     "ticker": "FRM",
+     "count": 13,
+     "target": 60,
+     "since": 47,
+     "wasRepaired": true,
+     "condition": 0.9848763347,
+     "due": 13,
+     "status": "later"
+    }
+   ],
+   "due": 13,
+   "status": "later",
+   "since": 47,
+   "wasRepaired": true,
+   "condition": 0.9848763347,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 26,
+      "cost": 65055.02675,
+      "weight": 13,
+      "volume": 20.80000031
+     },
+     {
+      "ticker": "BSE",
+      "amount": 26,
+      "cost": 47184.21036,
+      "weight": 7.80000031,
+      "volume": 13
+     }
+    ],
+    "cost": 112239.2371,
+    "weight": 20.80000031,
+    "volume": 33.80000031
+   },
+   "waiting": 1247.102635
+  },
+  {
+   "planet": "CH-771a",
+   "name": "Pyrgos",
+   "match": {
+    "confidence": "none",
+    "candidates": []
+   },
+   "buildings": [
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "RIG",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FRM",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FRM",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "RIG",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "RIG",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "RIG",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FRM",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FRM",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FRM",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "RIG",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "RIG",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "RIG",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FRM",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    },
+    {
+     "ticker": "FP",
+     "days": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563
+    }
+   ],
+   "types": [
+    {
+     "ticker": "FP",
+     "count": 10,
+     "target": 60,
+     "since": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563,
+     "due": 14,
+     "status": "later"
+    },
+    {
+     "ticker": "FRM",
+     "count": 6,
+     "target": 60,
+     "since": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563,
+     "due": 14,
+     "status": "later"
+    },
+    {
+     "ticker": "RIG",
+     "count": 7,
+     "target": 60,
+     "since": 46,
+     "wasRepaired": true,
+     "condition": 0.9856419563,
+     "due": 14,
+     "status": "later"
+    }
+   ],
+   "due": 14,
+   "status": "later",
+   "since": 46,
+   "wasRepaired": true,
+   "condition": 0.9856419563,
+   "bill": {
+    "materials": [
+     {
+      "ticker": "BSE",
+      "amount": 50,
+      "cost": 90738.86608,
+      "weight": 15.0000006,
+      "volume": 25
+     },
+     {
+      "ticker": "BBH",
+      "amount": 22,
+      "cost": 55046.56109,
+      "weight": 11,
+      "volume": 17.60000026
+     },
+     {
+      "ticker": "BDE",
+      "amount": 10,
+      "cost": 24142.48625,
+      "weight": 1.000000015,
+      "volume": 15
+     }
+    ],
+    "cost": 169927.9134,
+    "weight": 27.00000061,
+    "volume": 57.60000026
+   },
+   "waiting": 2544.338975
+  }
+ ],
+ "flights": [
+  {
+   "planet": "ZV-194a",
+   "arrival": 0,
+   "useStore": false,
+   "load": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 41,
+      "cost": 102586.7729,
+      "weight": 20.5,
+      "volume": 32.80000049
+     },
+     {
+      "ticker": "BDE",
+      "amount": 36,
+      "cost": 86912.9505,
+      "weight": 3.600000054,
+      "volume": 54
+     },
+     {
+      "ticker": "BSE",
+      "amount": 28,
+      "cost": 50813.76501,
+      "weight": 8.400000334,
+      "volume": 14
+     },
+     {
+      "ticker": "TRU",
+      "amount": 28,
+      "cost": 14852.52855,
+      "weight": 2.800000042,
+      "volume": 42
+     }
+    ],
+    "cost": 255166.017,
+    "weight": 35.30000043,
+    "volume": 142.8000005
+   },
+   "fromStore": [],
+   "extra": 0
+  },
+  {
+   "planet": "ZV-194a",
+   "arrival": 0,
+   "useStore": true,
+   "load": {
+    "materials": [
+     {
+      "ticker": "BDE",
+      "amount": 36,
+      "cost": 86912.9505,
+      "weight": 3.600000054,
+      "volume": 54
+     }
+    ],
+    "cost": 86912.9505,
+    "weight": 3.600000054,
+    "volume": 54
+   },
+   "fromStore": [
+    {
+     "ticker": "BSE",
+     "input": 28,
+     "output": 0
+    },
+    {
+     "ticker": "BBH",
+     "input": 41,
+     "output": 0
+    },
+    {
+     "ticker": "TRU",
+     "input": 28,
+     "output": 0
+    }
+   ],
+   "extra": 0
+  },
+  {
+   "planet": "ZV-194a",
+   "arrival": 30,
+   "useStore": false,
+   "load": {
+    "materials": [
+     {
+      "ticker": "BBH",
+      "amount": 50,
+      "cost": 125105.8207,
+      "weight": 25,
+      "volume": 40.0000006
+     },
+     {
+      "ticker": "BDE",
+      "amount": 44,
+      "cost": 106226.9395,
+      "weight": 4.400000066,
+      "volume": 66
+     },
+     {
+      "ticker": "BSE",
+      "amount": 42,
+      "cost": 76220.64751,
+      "weight": 12.6000005,
+      "volume": 21
+     },
+     {
+      "ticker": "TRU",
+      "amount": 28,
+      "cost": 14852.52855,
+      "weight": 2.800000042,
+      "volume": 42
+     }
+    ],
+    "cost": 322405.9362,
+    "weight": 44.80000061,
+    "volume": 169.0000006
+   },
+   "fromStore": [],
+   "extra": 67239.91922
+  },
+  {
+   "planet": "ZV-194a",
+   "arrival": 30,
+   "useStore": true,
+   "load": {
+    "materials": [
+     {
+      "ticker": "BDE",
+      "amount": 44,
+      "cost": 106226.9395,
+      "weight": 4.400000066,
+      "volume": 66
+     }
+    ],
+    "cost": 106226.9395,
+    "weight": 4.400000066,
+    "volume": 66
+   },
+   "fromStore": [
+    {
+     "ticker": "BSE",
+     "input": 42,
+     "output": 0
+    },
+    {
+     "ticker": "BBH",
+     "input": 50,
+     "output": 0
+    },
+    {
+     "ticker": "TRU",
+     "input": 28,
+     "output": 0
+    }
+   ],
+   "extra": 67239.91922
+  },
+  {
+   "planet": "KW-688c",
+   "arrival": 0,
+   "useStore": false,
+   "load": {
+    "materials": [
+     {
+      "ticker": "MHL",
+      "amount": 55,
+      "cost": 311378.0165,
+      "weight": 5.500000082,
+      "volume": 2.750000041
+     },
+     {
+      "ticker": "BSE",
+      "amount": 133,
+      "cost": 241365.3838,
+      "weight": 39.90000159,
+      "volume": 66.5
+     },
+     {
+      "ticker": "LBH",
+      "amount": 22,
+      "cost": 118697.5937,
+      "weight": 4.400000066,
+      "volume": 13.20000052
+     },
+     {
+      "ticker": "BBH",
+      "amount": 26,
+      "cost": 65055.02675,
+      "weight": 13,
+      "volume": 20.80000031
+     },
+     {
+      "ticker": "BDE",
+      "amount": 26,
+      "cost": 62770.46425,
+      "weight": 2.600000039,
+      "volume": 39
+     },
+     {
+      "ticker": "MCG",
+      "amount": 758,
+      "cost": 26637.53114,
+      "weight": 181.9199959,
+      "volume": 75.80000113
+     },
+     {
+      "ticker": "TRU",
+      "amount": 22,
+      "cost": 11669.84386,
+      "weight": 2.200000033,
+      "volume": 33
+     },
+     {
+      "ticker": "BTA",
+      "amount": 7,
+      "cost": 10538.30454,
+      "weight": 2.100000083,
+      "volume": 2.800000042
+     }
+    ],
+    "cost": 848112.1645,
+    "weight": 251.6199978,
+    "volume": 253.850002
+   },
+   "fromStore": [],
+   "extra": 0
+  },
+  {
+   "planet": "KW-688c",
+   "arrival": 0,
+   "useStore": true,
+   "load": {
+    "materials": [
+     {
+      "ticker": "MHL",
+      "amount": 55,
+      "cost": 311378.0165,
+      "weight": 5.500000082,
+      "volume": 2.750000041
+     },
+     {
+      "ticker": "BSE",
+      "amount": 133,
+      "cost": 241365.3838,
+      "weight": 39.90000159,
+      "volume": 66.5
+     },
+     {
+      "ticker": "LBH",
+      "amount": 22,
+      "cost": 118697.5937,
+      "weight": 4.400000066,
+      "volume": 13.20000052
+     },
+     {
+      "ticker": "BBH",
+      "amount": 26,
+      "cost": 65055.02675,
+      "weight": 13,
+      "volume": 20.80000031
+     },
+     {
+      "ticker": "BDE",
+      "amount": 26,
+      "cost": 62770.46425,
+      "weight": 2.600000039,
+      "volume": 39
+     },
+     {
+      "ticker": "MCG",
+      "amount": 758,
+      "cost": 26637.53114,
+      "weight": 181.9199959,
+      "volume": 75.80000113
+     },
+     {
+      "ticker": "TRU",
+      "amount": 22,
+      "cost": 11669.84386,
+      "weight": 2.200000033,
+      "volume": 33
+     },
+     {
+      "ticker": "BTA",
+      "amount": 7,
+      "cost": 10538.30454,
+      "weight": 2.100000083,
+      "volume": 2.800000042
+     }
+    ],
+    "cost": 848112.1645,
+    "weight": 251.6199978,
+    "volume": 253.850002
+   },
+   "fromStore": [],
+   "extra": 0
+  },
+  {
+   "planet": "KW-688c",
+   "arrival": 30,
+   "useStore": false,
+   "load": {
+    "materials": [
+     {
+      "ticker": "MHL",
+      "amount": 77,
+      "cost": 435929.2232,
+      "weight": 7.700000115,
+      "volume": 3.850000057
+     },
+     {
+      "ticker": "BSE",
+      "amount": 196,
+      "cost": 355696.355,
+      "weight": 58.80000234,
+      "volume": 98
+     },
+     {
+      "ticker": "BBH",
+      "amount": 52,
+      "cost": 130110.0535,
+      "weight": 26,
+      "volume": 41.60000062
+     },
+     {
+      "ticker": "LBH",
+      "amount": 22,
+      "cost": 118697.5937,
+      "weight": 4.400000066,
+      "volume": 13.20000052
+     },
+     {
+      "ticker": "BDE",
+      "amount": 45,
+      "cost": 108641.1881,
+      "weight": 4.500000067,
+      "volume": 67.5
+     },
+     {
+      "ticker": "MCG",
+      "amount": 1233,
+      "cost": 43329.91543,
+      "weight": 295.9199934,
+      "volume": 123.3000018
+     },
+     {
+      "ticker": "TRU",
+      "amount": 22,
+      "cost": 11669.84386,
+      "weight": 2.200000033,
+      "volume": 33
+     },
+     {
+      "ticker": "BTA",
+      "amount": 7,
+      "cost": 10538.30454,
+      "weight": 2.100000083,
+      "volume": 2.800000042
+     }
+    ],
+    "cost": 1214612.477,
+    "weight": 401.6199961,
+    "volume": 383.2500031
+   },
+   "fromStore": [],
+   "extra": 366500.3128
+  },
+  {
+   "planet": "KW-688c",
+   "arrival": 30,
+   "useStore": true,
+   "load": {
+    "materials": [
+     {
+      "ticker": "MHL",
+      "amount": 77,
+      "cost": 435929.2232,
+      "weight": 7.700000115,
+      "volume": 3.850000057
+     },
+     {
+      "ticker": "BSE",
+      "amount": 196,
+      "cost": 355696.355,
+      "weight": 58.80000234,
+      "volume": 98
+     },
+     {
+      "ticker": "BBH",
+      "amount": 52,
+      "cost": 130110.0535,
+      "weight": 26,
+      "volume": 41.60000062
+     },
+     {
+      "ticker": "LBH",
+      "amount": 22,
+      "cost": 118697.5937,
+      "weight": 4.400000066,
+      "volume": 13.20000052
+     },
+     {
+      "ticker": "BDE",
+      "amount": 45,
+      "cost": 108641.1881,
+      "weight": 4.500000067,
+      "volume": 67.5
+     },
+     {
+      "ticker": "MCG",
+      "amount": 1233,
+      "cost": 43329.91543,
+      "weight": 295.9199934,
+      "volume": 123.3000018
+     },
+     {
+      "ticker": "TRU",
+      "amount": 22,
+      "cost": 11669.84386,
+      "weight": 2.200000033,
+      "volume": 33
+     },
+     {
+      "ticker": "BTA",
+      "amount": 7,
+      "cost": 10538.30454,
+      "weight": 2.100000083,
+      "volume": 2.800000042
+     }
+    ],
+    "cost": 1214612.477,
+    "weight": 401.6199961,
+    "volume": 383.2500031
+   },
+   "fromStore": [],
+   "extra": 366500.3128
+  },
+  {
+   "planet": "ZV-307b",
+   "arrival": 0,
+   "useStore": false,
+   "load": {
+    "materials": [
+     {
+      "ticker": "LDE",
+      "amount": 28,
+      "cost": 302473.9912,
+      "weight": 2.800000042,
+      "volume": 33.60000134
+     },
+     {
+      "ticker": "LBH",
+      "amount": 30,
+      "cost": 161860.355,
+      "weight": 6.000000089,
+      "volume": 18.00000072
+     },
+     {
+      "ticker": "LSE",
+      "amount": 14,
+      "cost": 152212.4121,
+      "weight": 4.200000167,
+      "volume": 16.80000067
+     },
+     {
+      "ticker": "BDE",
+      "amount": 20,
+      "cost": 48284.9725,
+      "weight": 2.00000003,
+      "volume": 30
+     },
+     {
+      "ticker": "BSE",
+      "amount": 20,
+      "cost": 36295.54643,
+      "weight": 6.000000238,
+      "volume": 10
+     },
+     {
+      "ticker": "TRU",
+      "amount": 31,
+      "cost": 16443.8709,
+      "weight": 3.100000046,
+      "volume": 46.5
+     }
+    ],
+    "cost": 717571.1482,
+    "weight": 24.10000061,
+    "volume": 154.9000027
+   },
+   "fromStore": [],
+   "extra": 0
+  },
+  {
+   "planet": "ZV-307b",
+   "arrival": 0,
+   "useStore": true,
+   "load": {
+    "materials": [
+     {
+      "ticker": "LDE",
+      "amount": 28,
+      "cost": 302473.9912,
+      "weight": 2.800000042,
+      "volume": 33.60000134
+     },
+     {
+      "ticker": "LBH",
+      "amount": 30,
+      "cost": 161860.355,
+      "weight": 6.000000089,
+      "volume": 18.00000072
+     },
+     {
+      "ticker": "LSE",
+      "amount": 14,
+      "cost": 152212.4121,
+      "weight": 4.200000167,
+      "volume": 16.80000067
+     },
+     {
+      "ticker": "BDE",
+      "amount": 20,
+      "cost": 48284.9725,
+      "weight": 2.00000003,
+      "volume": 30
+     },
+     {
+      "ticker": "BSE",
+      "amount": 20,
+      "cost": 36295.54643,
+      "weight": 6.000000238,
+      "volume": 10
+     },
+     {
+      "ticker": "TRU",
+      "amount": 31,
+      "cost": 16443.8709,
+      "weight": 3.100000046,
+      "volume": 46.5
+     }
+    ],
+    "cost": 717571.1482,
+    "weight": 24.10000061,
+    "volume": 154.9000027
+   },
+   "fromStore": [],
+   "extra": 0
+  },
+  {
+   "planet": "ZV-307b",
+   "arrival": 30,
+   "useStore": false,
+   "load": {
+    "materials": [
+     {
+      "ticker": "LDE",
+      "amount": 42,
+      "cost": 453710.9869,
+      "weight": 4.200000063,
+      "volume": 50.400002
+     },
+     {
+      "ticker": "LSE",
+      "amount": 21,
+      "cost": 228318.6182,
+      "weight": 6.30000025,
+      "volume": 25.200001
+     },
+     {
+      "ticker": "LBH",
+      "amount": 40,
+      "cost": 215813.8067,
+      "weight": 8.000000119,
+      "volume": 24.00000095
+     },
+     {
+      "ticker": "BDE",
+      "amount": 20,
+      "cost": 48284.9725,
+      "weight": 2.00000003,
+      "volume": 30
+     },
+     {
+      "ticker": "BSE",
+      "amount": 20,
+      "cost": 36295.54643,
+      "weight": 6.000000238,
+      "volume": 10
+     },
+     {
+      "ticker": "TRU",
+      "amount": 38,
+      "cost": 20157.00304,
+      "weight": 3.800000057,
+      "volume": 57
+     }
+    ],
+    "cost": 1002580.934,
+    "weight": 30.30000076,
+    "volume": 196.600004
+   },
+   "fromStore": [],
+   "extra": 285009.7855
+  },
+  {
+   "planet": "ZV-307b",
+   "arrival": 30,
+   "useStore": true,
+   "load": {
+    "materials": [
+     {
+      "ticker": "LDE",
+      "amount": 42,
+      "cost": 453710.9869,
+      "weight": 4.200000063,
+      "volume": 50.400002
+     },
+     {
+      "ticker": "LSE",
+      "amount": 21,
+      "cost": 228318.6182,
+      "weight": 6.30000025,
+      "volume": 25.200001
+     },
+     {
+      "ticker": "LBH",
+      "amount": 40,
+      "cost": 215813.8067,
+      "weight": 8.000000119,
+      "volume": 24.00000095
+     },
+     {
+      "ticker": "BDE",
+      "amount": 20,
+      "cost": 48284.9725,
+      "weight": 2.00000003,
+      "volume": 30
+     },
+     {
+      "ticker": "BSE",
+      "amount": 20,
+      "cost": 36295.54643,
+      "weight": 6.000000238,
+      "volume": 10
+     },
+     {
+      "ticker": "TRU",
+      "amount": 38,
+      "cost": 20157.00304,
+      "weight": 3.800000057,
+      "volume": 57
+     }
+    ],
+    "cost": 1002580.934,
+    "weight": 30.30000076,
+    "volume": 196.600004
+   },
+   "fromStore": [],
+   "extra": 285009.7855
+  }
+ ]
+}

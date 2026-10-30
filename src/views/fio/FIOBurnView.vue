@@ -1,12 +1,11 @@
 <script setup lang="ts">
 	import {
 		computed,
+		type ComputedRef,
 		defineAsyncComponent,
-		onUnmounted,
 		type Ref,
 		ref,
 	} from "vue";
-	import { debounce } from "lodash-es";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -26,12 +25,7 @@
 	// Composables
 	import { useFIOBurn } from "@/features/fio/useFIOBurn";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
-	import {
-		getActiveEmpire,
-		usePlanContext,
-	} from "@/features/planning/usePlanContext";
-	import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-	import { planResultCacheKey } from "@/features/empire/empire.util";
+	import { useEmpireCalculation } from "@/features/empire/useEmpireCalculation";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	const { defaultEmpireUuid, burnDaysRed, burnDaysYellow } = usePreferences();
 
@@ -52,7 +46,6 @@
 
 	// Util
 	import { relativeFromDate } from "@/util/date";
-	import { yieldToBrowser } from "@/util/yieldToBrowser";
 
 	// Types & Interfaces
 	import type { Plan } from "@/features/api/schemas/planningData.schemas";
@@ -72,8 +65,6 @@
 		"w-fit",
 	].join(" ");
 
-	const isCalculating: Ref<boolean> = ref(false);
-
 	const internalEmpireUuid = ref(defaultEmpireUuid.value);
 
 	const selectedEmpireUuid = computed({
@@ -89,7 +80,6 @@
 	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
 	const planData: Ref<Plan[]> = ref([]);
 	const empireList: Ref<PlanEmpireElement[]> = ref([]);
-	const calculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
 
 	const selectedEmpireName = computed(
 		() =>
@@ -97,112 +87,31 @@
 				?.empire_name
 	);
 
-	const progressCurrent = ref(0);
-	const progressTotal = ref(0);
-
-	const cacheCalculatedPlans = new Map<string, IPlanResult>();
-	const { loadGameData, createContext } = usePlanContext();
-
-	// only the latest run writes its results
-	let run = 0;
-	onUnmounted(() => run++);
-
-	/**
-	 * Calculates all given plans
-	 * @author jplacht
-	 *
-	 * @async
-	 * @param {boolean} [clearCache=false] Recalculate cached plans
-	 * @param {boolean} [quiet=false] Keep the page instead of the progress
-	 * screen, show the results when done
-	 * @returns {Promise<void>}
-	 */
-	async function calculateEmpire(
-		clearCache = false,
-		quiet = false
-	): Promise<void> {
-		const current = ++run;
-		// a run calculates the empire, cx and plans it started with
-		const plans = planData.value;
-		const empireUuid = selectedEmpireUuid.value;
-		const cxUuid = selectedCXUuid.value;
-		const empires = empireList.value;
-
-		if (!quiet) {
-			isCalculating.value = true;
-			calculatedPlans.value = {};
-		}
-		const results: Record<string, IPlanResult> = {};
-		progressTotal.value = plans.length;
-		progressCurrent.value = 0;
-
-		if (clearCache) cacheCalculatedPlans.clear();
-
-		try {
-			// game data once for all plans
-			const gameData = await loadGameData();
-			if (current !== run) return;
-
-			for (const plan of plans) {
-				// note, calculation depends on empire + cx, so a plan is only
-				// calculated properly within this context
-
-				const cacheKey: string = planResultCacheKey(
-					plan.uuid,
-					empireUuid,
-					cxUuid
-				);
-
-				if (cacheCalculatedPlans.has(cacheKey)) {
-					results[plan.uuid] = cacheCalculatedPlans.get(cacheKey)!;
-					progressCurrent.value++;
-				} else {
-					await Promise.resolve();
-					const context = await createContext(
-						gameData,
-						plan.planet_natural_id,
-						cxUuid
-					);
-					if (current !== run) return;
-
-					const { result } = calculatePlan(
-						{
-							plan,
-							empire: getActiveEmpire(empireUuid, empires),
-							cxUuid,
-							// never read by this view
-							recipeOptions: false,
-						},
-						context
-					);
-					results[plan.uuid] = result;
-					progressCurrent.value++;
-
-					// cache
-					cacheCalculatedPlans.set(cacheKey, result);
-					// yield back to vue and update DOM
-					await yieldToBrowser();
-					if (current !== run) return;
-				}
-			}
-			calculatedPlans.value = results;
-
-			if (plans.length > 0 && !quiet)
+	const {
+		results,
+		progress,
+		isCalculating,
+		calculate: calculateEmpire,
+		recalculateRefreshed,
+	} = useEmpireCalculation(
+		planData,
+		selectedEmpireUuid,
+		selectedCXUuid,
+		empireList,
+		({ quiet, results: calculated }) => {
+			if (Object.keys(calculated).length > 0 && !quiet)
 				trackEvent("tool:use", { tool_name: "fio_burn" });
-		} catch (err) {
-			if (current === run) console.error(err);
-		} finally {
-			if (current === run) isCalculating.value = false;
 		}
-	}
-
-	// another tab changed the empire or its plans; the list and the plans
-	// steps refresh one after the other, calculate once
-	const recalculateRefreshed = debounce(
-		() => calculateEmpire(true, true),
-		200
 	);
-	onUnmounted(() => recalculateRefreshed.cancel());
+	const calculatedPlans: ComputedRef<Record<string, IPlanResult>> = computed(
+		() =>
+			Object.fromEntries(
+				Object.entries(results.value).map(([uuid, c]) => [
+					uuid,
+					c.result,
+				])
+			)
+	);
 
 	const { burnTable, planTable } = useFIOBurn(planData, calculatedPlans);
 </script>
@@ -228,8 +137,8 @@
 				@complete="calculateEmpire">
 				<ComputingProgress
 					v-if="isCalculating"
-					:step="progressCurrent"
-					:total="progressTotal"
+					:step="progress.current"
+					:total="progress.total"
 					message="One does not simply calculate automate burn supply." />
 				<div v-else class="min-h-screen flex flex-col">
 					<div

@@ -1,0 +1,3972 @@
+[
+ {
+  "buildingTicker": "TNP",
+  "optimalSetup": {
+   "ticker": "TNP",
+   "amount": 11,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 0,
+   "HB2": 0,
+   "HB3": 9,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "TNP#1xTC 4xREA 4xFLX=>1xETC",
+  "dailyRuns": 1.25,
+  "recipeInputs": [
+   {
+    "material_ticker": "FLX",
+    "material_amount": 4
+   },
+   {
+    "material_ticker": "REA",
+    "material_amount": 4
+   },
+   {
+    "material_ticker": "TC",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "ETC",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "CHEMISTRY",
+  "cogm": {
+   "runtime": 55296000,
+   "runtimeShare": 0.64,
+   "efficiency": 1.25,
+   "degradation": 1431.786645,
+   "degradationShare": 916.343453,
+   "workforceCost": 2975.871769,
+   "workforceCostTotal": 4649.799638,
+   "inputCost": [
+    {
+     "ticker": "FLX",
+     "amount": 4,
+     "costUnit": 227.3210602,
+     "costTotal": 909.2842408
+    },
+    {
+     "ticker": "REA",
+     "amount": 4,
+     "costUnit": 1152.944217,
+     "costTotal": 4611.776869
+    },
+    {
+     "ticker": "TC",
+     "amount": 1,
+     "costUnit": 11586.84211,
+     "costTotal": 11586.84211
+    }
+   ],
+   "inputTotal": 17107.90322,
+   "outputCOGM": [
+    {
+     "ticker": "ETC",
+     "amount": 1,
+     "costSplit": 21000.11844,
+     "costTotal": 21000.11844
+    }
+   ],
+   "totalCost": 21000.11844,
+   "outputRevenue": 24975.60976,
+   "totalProfit": 3975.491319
+  },
+  "outputProfit": 3975.491319,
+  "dailyProfit": 68328.75705,
+  "planCost": 4471614.906,
+  "planROI": 65.44264962,
+  "planArea": 496,
+  "planProfitArea": 137.7595908
+ },
+ {
+  "buildingTicker": "TNP",
+  "optimalSetup": {
+   "ticker": "TNP",
+   "amount": 11,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 0,
+   "HB2": 0,
+   "HB3": 9,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "TNP#1xTC=>3xTCS",
+  "dailyRuns": 2,
+  "recipeInputs": [
+   {
+    "material_ticker": "TC",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "TCS",
+    "material_amount": 3
+   }
+  ],
+  "cogc": "CHEMISTRY",
+  "cogm": {
+   "runtime": 34560000,
+   "runtimeShare": 0.4,
+   "efficiency": 1.25,
+   "degradation": 1431.786645,
+   "degradationShare": 572.7146581,
+   "workforceCost": 1859.919855,
+   "workforceCostTotal": 4649.799638,
+   "inputCost": [
+    {
+     "ticker": "TC",
+     "amount": 1,
+     "costUnit": 11586.84211,
+     "costTotal": 11586.84211
+    }
+   ],
+   "inputTotal": 11586.84211,
+   "outputCOGM": [
+    {
+     "ticker": "TCS",
+     "amount": 3,
+     "costSplit": 4673.158873,
+     "costTotal": 4673.158873
+    }
+   ],
+   "totalCost": 14019.47662,
+   "outputRevenue": 18400.55887,
+   "totalProfit": 4381.082255
+  },
+  "outputProfit": 4381.082255,
+  "dailyProfit": 120479.762,
+  "planCost": 4471614.906,
+  "planROI": 37.11507088,
+  "planArea": 496,
+  "planProfitArea": 242.902746
+ },
+ {
+  "buildingTicker": "TNP",
+  "optimalSetup": {
+   "ticker": "TNP",
+   "amount": 11,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 0,
+   "HB2": 0,
+   "HB3": 9,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "TNP#1xTCO=>1xTC 1xO",
+  "dailyRuns": 1.470588235,
+  "recipeInputs": [
+   {
+    "material_ticker": "TCO",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "TC",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "CHEMISTRY",
+  "cogm": {
+   "runtime": 47001600,
+   "runtimeShare": 0.544,
+   "efficiency": 1.25,
+   "degradation": 1431.786645,
+   "degradationShare": 778.891935,
+   "workforceCost": 2529.491003,
+   "workforceCostTotal": 4649.799638,
+   "inputCost": [
+    {
+     "ticker": "TCO",
+     "amount": 1,
+     "costUnit": 548.0187192,
+     "costTotal": 548.0187192
+    }
+   ],
+   "inputTotal": 548.0187192,
+   "outputCOGM": [
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costSplit": 1928.200829,
+     "costTotal": 3856.401658
+    },
+    {
+     "ticker": "TC",
+     "amount": 1,
+     "costSplit": 1928.200829,
+     "costTotal": 3856.401658
+    }
+   ],
+   "totalCost": 3856.401658,
+   "outputRevenue": 11712.34906,
+   "totalProfit": 7855.947405
+  },
+  "outputProfit": 7855.947405,
+  "dailyProfit": 158851.8777,
+  "planCost": 4471614.906,
+  "planROI": 28.14958798,
+  "planArea": 496,
+  "planProfitArea": 320.2658824
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#10xH2O 1xPG=>10xDW",
+  "dailyRuns": 5,
+  "recipeInputs": [
+   {
+    "material_ticker": "H2O",
+    "material_amount": 10
+   },
+   {
+    "material_ticker": "PG",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "DW",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 13824000,
+   "runtimeShare": 0.16,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 19.44909906,
+   "workforceCost": 110.0278728,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "H2O",
+     "amount": 10,
+     "costUnit": 9,
+     "costTotal": 90
+    },
+    {
+     "ticker": "PG",
+     "amount": 1,
+     "costUnit": 19,
+     "costTotal": 19
+    }
+   ],
+   "inputTotal": 109,
+   "outputCOGM": [
+    {
+     "ticker": "DW",
+     "amount": 10,
+     "costSplit": 23.84769718,
+     "costTotal": 23.84769718
+    }
+   ],
+   "totalCost": 238.4769718,
+   "outputRevenue": 1127.344321,
+   "totalProfit": 888.8673492
+  },
+  "outputProfit": 888.8673492,
+  "dailyProfit": 155551.7861,
+  "planCost": 1079031.088,
+  "planROI": 6.936796514,
+  "planArea": 496,
+  "planProfitArea": 313.612472
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#10xH2O=>7xDW",
+  "dailyRuns": 10,
+  "recipeInputs": [
+   {
+    "material_ticker": "H2O",
+    "material_amount": 10
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "DW",
+    "material_amount": 7
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 6912000,
+   "runtimeShare": 0.08,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 9.724549529,
+   "workforceCost": 55.01393638,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "H2O",
+     "amount": 10,
+     "costUnit": 9,
+     "costTotal": 90
+    }
+   ],
+   "inputTotal": 90,
+   "outputCOGM": [
+    {
+     "ticker": "DW",
+     "amount": 7,
+     "costSplit": 22.10549799,
+     "costTotal": 22.10549799
+    }
+   ],
+   "totalCost": 154.7384859,
+   "outputRevenue": 789.1410247,
+   "totalProfit": 634.4025388
+  },
+  "outputProfit": 634.4025388,
+  "dailyProfit": 222040.8886,
+  "planCost": 1079031.088,
+  "planROI": 4.859605339,
+  "planArea": 496,
+  "planProfitArea": 447.6630818
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xALG 1xH2O 1xBEA=>6xPPA",
+  "dailyRuns": 2,
+  "recipeInputs": [
+   {
+    "material_ticker": "BEA",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "ALG",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "H2O",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "PPA",
+    "material_amount": 6
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 34560000,
+   "runtimeShare": 0.4,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 48.62274764,
+   "workforceCost": 275.0696819,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "ALG",
+     "amount": 1,
+     "costUnit": 336.4105582,
+     "costTotal": 336.4105582
+    },
+    {
+     "ticker": "BEA",
+     "amount": 1,
+     "costUnit": 74,
+     "costTotal": 74
+    },
+    {
+     "ticker": "H2O",
+     "amount": 1,
+     "costUnit": 9,
+     "costTotal": 9
+    }
+   ],
+   "inputTotal": 419.4105582,
+   "outputCOGM": [
+    {
+     "ticker": "PPA",
+     "amount": 6,
+     "costSplit": 123.850498,
+     "costTotal": 123.850498
+    }
+   ],
+   "totalCost": 743.1029878,
+   "outputRevenue": 1782.814129,
+   "totalProfit": 1039.711141
+  },
+  "outputProfit": 1039.711141,
+  "dailyProfit": 72779.77989,
+  "planCost": 1079031.088,
+  "planROI": 14.82597349,
+  "planArea": 496,
+  "planProfitArea": 146.7334272
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xCAF 3xDW=>3xCOF",
+  "dailyRuns": 3.333333333,
+  "recipeInputs": [
+   {
+    "material_ticker": "DW",
+    "material_amount": 3
+   },
+   {
+    "material_ticker": "CAF",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "COF",
+    "material_amount": 3
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 20736000,
+   "runtimeShare": 0.24,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 29.17364859,
+   "workforceCost": 165.0418092,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "CAF",
+     "amount": 1,
+     "costUnit": 1765.035903,
+     "costTotal": 1765.035903
+    },
+    {
+     "ticker": "DW",
+     "amount": 3,
+     "costUnit": 112.7344321,
+     "costTotal": 338.2032963
+    }
+   ],
+   "inputTotal": 2103.239199,
+   "outputCOGM": [
+    {
+     "ticker": "COF",
+     "amount": 3,
+     "costSplit": 765.818219,
+     "costTotal": 765.818219
+    }
+   ],
+   "totalCost": 2297.454657,
+   "outputRevenue": 2907.37636,
+   "totalProfit": 609.921703
+  },
+  "outputProfit": 609.921703,
+  "dailyProfit": 71157.53202,
+  "planCost": 1079031.088,
+  "planROI": 15.16397572,
+  "planArea": 496,
+  "planProfitArea": 143.4627662
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xGRN 1xALG 1xNUT=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "GRN",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "NUT",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "ALG",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "ALG",
+     "amount": 1,
+     "costUnit": 336.4105582,
+     "costTotal": 336.4105582
+    },
+    {
+     "ticker": "GRN",
+     "amount": 1,
+     "costUnit": 53,
+     "costTotal": 53
+    },
+    {
+     "ticker": "NUT",
+     "amount": 1,
+     "costUnit": 366.8363134,
+     "costTotal": 366.8363134
+    }
+   ],
+   "inputTotal": 756.2468716,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 91.80930863,
+     "costTotal": 91.80930863
+    }
+   ],
+   "totalCost": 918.0930863,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 714.0767314
+  },
+  "outputProfit": 714.0767314,
+  "dailyProfit": 99970.7424,
+  "planCost": 1079031.088,
+  "planROI": 10.79346879,
+  "planArea": 496,
+  "planProfitArea": 201.5539161
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xGRN 1xALG 1xVEG=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "ALG",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "VEG",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "GRN",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "ALG",
+     "amount": 1,
+     "costUnit": 336.4105582,
+     "costTotal": 336.4105582
+    },
+    {
+     "ticker": "GRN",
+     "amount": 1,
+     "costUnit": 53,
+     "costTotal": 53
+    },
+    {
+     "ticker": "VEG",
+     "amount": 1,
+     "costUnit": 386.1205572,
+     "costTotal": 386.1205572
+    }
+   ],
+   "inputTotal": 775.5311154,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 93.73773302,
+     "costTotal": 93.73773302
+    }
+   ],
+   "totalCost": 937.3773302,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 694.7924876
+  },
+  "outputProfit": 694.7924876,
+  "dailyProfit": 97270.94826,
+  "planCost": 1079031.088,
+  "planROI": 11.09304584,
+  "planArea": 496,
+  "planProfitArea": 196.1107828
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xGRN 1xBEA 1xNUT=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "GRN",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "NUT",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "BEA",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "BEA",
+     "amount": 1,
+     "costUnit": 74,
+     "costTotal": 74
+    },
+    {
+     "ticker": "GRN",
+     "amount": 1,
+     "costUnit": 53,
+     "costTotal": 53
+    },
+    {
+     "ticker": "NUT",
+     "amount": 1,
+     "costUnit": 366.8363134,
+     "costTotal": 366.8363134
+    }
+   ],
+   "inputTotal": 493.8363134,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 65.56825281,
+     "costTotal": 65.56825281
+    }
+   ],
+   "totalCost": 655.6825281,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 976.4872896
+  },
+  "outputProfit": 976.4872896,
+  "dailyProfit": 136708.2205,
+  "planCost": 1079031.088,
+  "planROI": 7.892949548,
+  "planArea": 496,
+  "planProfitArea": 275.6214124
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xGRN 1xBEA 1xVEG=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "BEA",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "VEG",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "GRN",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "BEA",
+     "amount": 1,
+     "costUnit": 74,
+     "costTotal": 74
+    },
+    {
+     "ticker": "GRN",
+     "amount": 1,
+     "costUnit": 53,
+     "costTotal": 53
+    },
+    {
+     "ticker": "VEG",
+     "amount": 1,
+     "costUnit": 386.1205572,
+     "costTotal": 386.1205572
+    }
+   ],
+   "inputTotal": 513.1205572,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 67.4966772,
+     "costTotal": 67.4966772
+    }
+   ],
+   "totalCost": 674.966772,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 957.2030458
+  },
+  "outputProfit": 957.2030458,
+  "dailyProfit": 134008.4264,
+  "planCost": 1079031.088,
+  "planROI": 8.051964466,
+  "planArea": 496,
+  "planProfitArea": 270.1782791
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xMAI 1xALG 1xNUT=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "NUT",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "ALG",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "MAI",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "ALG",
+     "amount": 1,
+     "costUnit": 336.4105582,
+     "costTotal": 336.4105582
+    },
+    {
+     "ticker": "MAI",
+     "amount": 1,
+     "costUnit": 411.2085693,
+     "costTotal": 411.2085693
+    },
+    {
+     "ticker": "NUT",
+     "amount": 1,
+     "costUnit": 366.8363134,
+     "costTotal": 366.8363134
+    }
+   ],
+   "inputTotal": 1114.455441,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 127.6301656,
+     "costTotal": 127.6301656
+    }
+   ],
+   "totalCost": 1276.301656,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 355.8681621
+  },
+  "outputProfit": 355.8681621,
+  "dailyProfit": 49821.54269,
+  "planCost": 1079031.088,
+  "planROI": 21.65792204,
+  "planArea": 496,
+  "planProfitArea": 100.4466587
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xMAI 1xALG 1xVEG=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "MAI",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "ALG",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "VEG",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "ALG",
+     "amount": 1,
+     "costUnit": 336.4105582,
+     "costTotal": 336.4105582
+    },
+    {
+     "ticker": "MAI",
+     "amount": 1,
+     "costUnit": 411.2085693,
+     "costTotal": 411.2085693
+    },
+    {
+     "ticker": "VEG",
+     "amount": 1,
+     "costUnit": 386.1205572,
+     "costTotal": 386.1205572
+    }
+   ],
+   "inputTotal": 1133.739685,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 129.55859,
+     "costTotal": 129.55859
+    }
+   ],
+   "totalCost": 1295.5859,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 336.5839182
+  },
+  "outputProfit": 336.5839182,
+  "dailyProfit": 47121.74855,
+  "planCost": 1079031.088,
+  "planROI": 22.89879134,
+  "planArea": 496,
+  "planProfitArea": 95.00352531
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xMAI 1xBEA 1xNUT=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "MAI",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "BEA",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "NUT",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "BEA",
+     "amount": 1,
+     "costUnit": 74,
+     "costTotal": 74
+    },
+    {
+     "ticker": "MAI",
+     "amount": 1,
+     "costUnit": 411.2085693,
+     "costTotal": 411.2085693
+    },
+    {
+     "ticker": "NUT",
+     "amount": 1,
+     "costUnit": 366.8363134,
+     "costTotal": 366.8363134
+    }
+   ],
+   "inputTotal": 852.0448827,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 101.3891097,
+     "costTotal": 101.3891097
+    }
+   ],
+   "totalCost": 1013.891097,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 618.2787203
+  },
+  "outputProfit": 618.2787203,
+  "dailyProfit": 86559.02084,
+  "planCost": 1079031.088,
+  "planROI": 12.46584212,
+  "planArea": 496,
+  "planProfitArea": 174.5141549
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xMAI 1xBEA 1xVEG=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "MAI",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "BEA",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "VEG",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "BEA",
+     "amount": 1,
+     "costUnit": 74,
+     "costTotal": 74
+    },
+    {
+     "ticker": "MAI",
+     "amount": 1,
+     "costUnit": 411.2085693,
+     "costTotal": 411.2085693
+    },
+    {
+     "ticker": "VEG",
+     "amount": 1,
+     "costUnit": 386.1205572,
+     "costTotal": 386.1205572
+    }
+   ],
+   "inputTotal": 871.3291265,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 103.3175341,
+     "costTotal": 103.3175341
+    }
+   ],
+   "totalCost": 1033.175341,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 598.9944764
+  },
+  "outputProfit": 598.9944764,
+  "dailyProfit": 83859.2267,
+  "planCost": 1079031.088,
+  "planROI": 12.86717193,
+  "planArea": 496,
+  "planProfitArea": 169.0710216
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xMUS 1xNUT 1xGRN=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "GRN",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "NUT",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "MUS",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "GRN",
+     "amount": 1,
+     "costUnit": 53,
+     "costTotal": 53
+    },
+    {
+     "ticker": "MUS",
+     "amount": 1,
+     "costUnit": 293.6334815,
+     "costTotal": 293.6334815
+    },
+    {
+     "ticker": "NUT",
+     "amount": 1,
+     "costUnit": 366.8363134,
+     "costTotal": 366.8363134
+    }
+   ],
+   "inputTotal": 713.4697949,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 87.53160096,
+     "costTotal": 87.53160096
+    }
+   ],
+   "totalCost": 875.3160096,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 756.8538081
+  },
+  "outputProfit": 756.8538081,
+  "dailyProfit": 105959.5331,
+  "planCost": 1079031.088,
+  "planROI": 10.18342622,
+  "planArea": 496,
+  "planProfitArea": 213.628091
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xMUS 1xNUT 1xMAI=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "NUT",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "MUS",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "MAI",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "MAI",
+     "amount": 1,
+     "costUnit": 411.2085693,
+     "costTotal": 411.2085693
+    },
+    {
+     "ticker": "MUS",
+     "amount": 1,
+     "costUnit": 293.6334815,
+     "costTotal": 293.6334815
+    },
+    {
+     "ticker": "NUT",
+     "amount": 1,
+     "costUnit": 366.8363134,
+     "costTotal": 366.8363134
+    }
+   ],
+   "inputTotal": 1071.678364,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 123.3524579,
+     "costTotal": 123.3524579
+    }
+   ],
+   "totalCost": 1233.524579,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 398.6452388
+  },
+  "outputProfit": 398.6452388,
+  "dailyProfit": 55810.33343,
+  "planCost": 1079031.088,
+  "planROI": 19.3338943,
+  "planArea": 496,
+  "planProfitArea": 112.5208335
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xMUS 1xVEG 1xGRN=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "VEG",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "MUS",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "GRN",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "GRN",
+     "amount": 1,
+     "costUnit": 53,
+     "costTotal": 53
+    },
+    {
+     "ticker": "MUS",
+     "amount": 1,
+     "costUnit": 293.6334815,
+     "costTotal": 293.6334815
+    },
+    {
+     "ticker": "VEG",
+     "amount": 1,
+     "costUnit": 386.1205572,
+     "costTotal": 386.1205572
+    }
+   ],
+   "inputTotal": 732.7540387,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 89.46002535,
+     "costTotal": 89.46002535
+    }
+   ],
+   "totalCost": 894.6002535,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 737.5695643
+  },
+  "outputProfit": 737.5695643,
+  "dailyProfit": 103259.739,
+  "planCost": 1079031.088,
+  "planROI": 10.44967863,
+  "planArea": 496,
+  "planProfitArea": 208.1849577
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#1xMUS 1xVEG 1xMAI=>10xRAT",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "VEG",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "MAI",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "MUS",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 10
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 24.31137382,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "MAI",
+     "amount": 1,
+     "costUnit": 411.2085693,
+     "costTotal": 411.2085693
+    },
+    {
+     "ticker": "MUS",
+     "amount": 1,
+     "costUnit": 293.6334815,
+     "costTotal": 293.6334815
+    },
+    {
+     "ticker": "VEG",
+     "amount": 1,
+     "costUnit": 386.1205572,
+     "costTotal": 386.1205572
+    }
+   ],
+   "inputTotal": 1090.962608,
+   "outputCOGM": [
+    {
+     "ticker": "RAT",
+     "amount": 10,
+     "costSplit": 125.2808823,
+     "costTotal": 125.2808823
+    }
+   ],
+   "totalCost": 1252.808823,
+   "outputRevenue": 1632.169818,
+   "totalProfit": 379.3609949
+  },
+  "outputProfit": 379.3609949,
+  "dailyProfit": 53110.53929,
+  "planCost": 1079031.088,
+  "planROI": 20.31670365,
+  "planArea": 496,
+  "planProfitArea": 107.0777002
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#2xALG 1xH2O=>4xPPA",
+  "dailyRuns": 3.333333333,
+  "recipeInputs": [
+   {
+    "material_ticker": "ALG",
+    "material_amount": 2
+   },
+   {
+    "material_ticker": "H2O",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "PPA",
+    "material_amount": 4
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 20736000,
+   "runtimeShare": 0.24,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 29.17364859,
+   "workforceCost": 165.0418092,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "ALG",
+     "amount": 2,
+     "costUnit": 336.4105582,
+     "costTotal": 672.8211164
+    },
+    {
+     "ticker": "H2O",
+     "amount": 1,
+     "costUnit": 9,
+     "costTotal": 9
+    }
+   ],
+   "inputTotal": 681.8211164,
+   "outputCOGM": [
+    {
+     "ticker": "PPA",
+     "amount": 4,
+     "costSplit": 219.0091435,
+     "costTotal": 219.0091435
+    }
+   ],
+   "totalCost": 876.0365741,
+   "outputRevenue": 1188.542753,
+   "totalProfit": 312.5061786
+  },
+  "outputProfit": 312.5061786,
+  "dailyProfit": 36459.05417,
+  "planCost": 1079031.088,
+  "planROI": 29.59569611,
+  "planArea": 496,
+  "planProfitArea": 73.5061576
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#2xBEA 1xH2O=>4xPPA",
+  "dailyRuns": 3.333333333,
+  "recipeInputs": [
+   {
+    "material_ticker": "H2O",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "BEA",
+    "material_amount": 2
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "PPA",
+    "material_amount": 4
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 20736000,
+   "runtimeShare": 0.24,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 29.17364859,
+   "workforceCost": 165.0418092,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "BEA",
+     "amount": 2,
+     "costUnit": 74,
+     "costTotal": 148
+    },
+    {
+     "ticker": "H2O",
+     "amount": 1,
+     "costUnit": 9,
+     "costTotal": 9
+    }
+   ],
+   "inputTotal": 157,
+   "outputCOGM": [
+    {
+     "ticker": "PPA",
+     "amount": 4,
+     "costSplit": 87.80386444,
+     "costTotal": 87.80386444
+    }
+   ],
+   "totalCost": 351.2154577,
+   "outputRevenue": 1188.542753,
+   "totalProfit": 837.327295
+  },
+  "outputProfit": 837.327295,
+  "dailyProfit": 97688.18442,
+  "planCost": 1079031.088,
+  "planROI": 11.04566631,
+  "planArea": 496,
+  "planProfitArea": 196.9519847
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#2xFIM 1xMTP=>2xMEA",
+  "dailyRuns": 1.538461538,
+  "recipeInputs": [
+   {
+    "material_ticker": "FIM",
+    "material_amount": 2
+   },
+   {
+    "material_ticker": "MTP",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "MEA",
+    "material_amount": 2
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 44928000,
+   "runtimeShare": 0.52,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 63.20957194,
+   "workforceCost": 357.5905865,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "FIM",
+     "amount": 2,
+     "costUnit": 770,
+     "costTotal": 1540
+    },
+    {
+     "ticker": "MTP",
+     "amount": 1,
+     "costUnit": 1644.467618,
+     "costTotal": 1644.467618
+    }
+   ],
+   "inputTotal": 3184.467618,
+   "outputCOGM": [
+    {
+     "ticker": "MEA",
+     "amount": 2,
+     "costSplit": 1802.633888,
+     "costTotal": 1802.633888
+    }
+   ],
+   "totalCost": 3605.267776,
+   "outputRevenue": 8058.184583,
+   "totalProfit": 4452.916807
+  },
+  "outputProfit": 4452.916807,
+  "dailyProfit": 239772.4435,
+  "planCost": 1079031.088,
+  "planROI": 4.500229768,
+  "planArea": 496,
+  "planProfitArea": 483.4121844
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#2xRAT 1xHER=>2xFIM",
+  "dailyRuns": 2,
+  "recipeInputs": [
+   {
+    "material_ticker": "RAT",
+    "material_amount": 2
+   },
+   {
+    "material_ticker": "HER",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "FIM",
+    "material_amount": 2
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 34560000,
+   "runtimeShare": 0.4,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 48.62274764,
+   "workforceCost": 275.0696819,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "HER",
+     "amount": 1,
+     "costUnit": 1100,
+     "costTotal": 1100
+    },
+    {
+     "ticker": "RAT",
+     "amount": 2,
+     "costUnit": 163.2169818,
+     "costTotal": 326.4339636
+    }
+   ],
+   "inputTotal": 1426.433964,
+   "outputCOGM": [
+    {
+     "ticker": "FIM",
+     "amount": 2,
+     "costSplit": 875.0631966,
+     "costTotal": 875.0631966
+    }
+   ],
+   "totalCost": 1750.126393,
+   "outputRevenue": 4395.336452,
+   "totalProfit": 2645.210059
+  },
+  "outputProfit": 2645.210059,
+  "dailyProfit": 185164.7041,
+  "planCost": 1079031.088,
+  "planROI": 5.827412373,
+  "planArea": 496,
+  "planProfitArea": 373.3159357
+ },
+ {
+  "buildingTicker": "FP",
+  "optimalSetup": {
+   "ticker": "FP",
+   "amount": 28,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 471,
+   "HB1": 12,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "FP#5xNUT 5xMAI 5xVEG=>16xFOD",
+  "dailyRuns": 2,
+  "recipeInputs": [
+   {
+    "material_ticker": "MAI",
+    "material_amount": 5
+   },
+   {
+    "material_ticker": "NUT",
+    "material_amount": 5
+   },
+   {
+    "material_ticker": "VEG",
+    "material_amount": 5
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "FOD",
+    "material_amount": 16
+   }
+  ],
+  "cogc": "FOOD_INDUSTRIES",
+  "cogm": {
+   "runtime": 34560000,
+   "runtimeShare": 0.4,
+   "efficiency": 1.25,
+   "degradation": 121.5568691,
+   "degradationShare": 48.62274764,
+   "workforceCost": 275.0696819,
+   "workforceCostTotal": 687.6742048,
+   "inputCost": [
+    {
+     "ticker": "MAI",
+     "amount": 5,
+     "costUnit": 411.2085693,
+     "costTotal": 2056.042847
+    },
+    {
+     "ticker": "NUT",
+     "amount": 5,
+     "costUnit": 366.8363134,
+     "costTotal": 1834.181567
+    },
+    {
+     "ticker": "VEG",
+     "amount": 5,
+     "costUnit": 386.1205572,
+     "costTotal": 1930.602786
+    }
+   ],
+   "inputTotal": 5820.827199,
+   "outputCOGM": [
+    {
+     "ticker": "FOD",
+     "amount": 16,
+     "costSplit": 384.0324768,
+     "costTotal": 384.0324768
+    }
+   ],
+   "totalCost": 6144.519629,
+   "outputRevenue": 6766.062714,
+   "totalProfit": 621.5430851
+  },
+  "outputProfit": 621.5430851,
+  "dailyProfit": 43508.01596,
+  "planCost": 1079031.088,
+  "planROI": 24.8007422,
+  "planArea": 496,
+  "planProfitArea": 87.71777411
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#10xLIO 4xHAL=>4xLI",
+  "dailyRuns": 1.515151515,
+  "recipeInputs": [
+   {
+    "material_ticker": "LIO",
+    "material_amount": 10
+   },
+   {
+    "material_ticker": "HAL",
+    "material_amount": 4
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "LI",
+    "material_amount": 4
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 45619200,
+   "runtimeShare": 0.528,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 96.63506065,
+   "workforceCost": 453.8649752,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "HAL",
+     "amount": 4,
+     "costUnit": 393.2865713,
+     "costTotal": 1573.146285
+    },
+    {
+     "ticker": "LIO",
+     "amount": 10,
+     "costUnit": 414.5510722,
+     "costTotal": 4145.510722
+    }
+   ],
+   "inputTotal": 5718.657008,
+   "outputCOGM": [
+    {
+     "ticker": "LI",
+     "amount": 4,
+     "costSplit": 1567.289261,
+     "costTotal": 1567.289261
+    }
+   ],
+   "totalCost": 6269.157043,
+   "outputRevenue": 8264.115805,
+   "totalProfit": 1994.958761
+  },
+  "outputProfit": 1994.958761,
+  "dailyProfit": 75566.61975,
+  "planCost": 1117740.809,
+  "planROI": 14.79146233,
+  "planArea": 495,
+  "planProfitArea": 152.6598379
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#1xC 3xAUO=>2xAU",
+  "dailyRuns": 2.222222222,
+  "recipeInputs": [
+   {
+    "material_ticker": "AUO",
+    "material_amount": 3
+   },
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "AU",
+    "material_amount": 2
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 31104000,
+   "runtimeShare": 0.36,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 65.88754135,
+   "workforceCost": 309.4533922,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "AUO",
+     "amount": 3,
+     "costUnit": 508.197993,
+     "costTotal": 1524.593979
+    },
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    }
+   ],
+   "inputTotal": 1674.593979,
+   "outputCOGM": [
+    {
+     "ticker": "AU",
+     "amount": 2,
+     "costSplit": 1024.967456,
+     "costTotal": 1024.967456
+    }
+   ],
+   "totalCost": 2049.934912,
+   "outputRevenue": 4607.518226,
+   "totalProfit": 2557.583313
+  },
+  "outputProfit": 2557.583313,
+  "dailyProfit": 142087.9618,
+  "planCost": 1117740.809,
+  "planROI": 7.866541223,
+  "planArea": 495,
+  "planProfitArea": 287.0463876
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#1xSCR 1xO=>6xS",
+  "dailyRuns": 3.333333333,
+  "recipeInputs": [
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "SCR",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "S",
+    "material_amount": 6
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 20736000,
+   "runtimeShare": 0.24,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 43.92502757,
+   "workforceCost": 206.3022614,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    },
+    {
+     "ticker": "SCR",
+     "amount": 1,
+     "costUnit": 140.9777261,
+     "costTotal": 140.9777261
+    }
+   ],
+   "inputTotal": 175.9777261,
+   "outputCOGM": [
+    {
+     "ticker": "S",
+     "amount": 6,
+     "costSplit": 71.03416919,
+     "costTotal": 71.03416919
+    }
+   ],
+   "totalCost": 426.2050152,
+   "outputRevenue": 1122.293971,
+   "totalProfit": 696.088956
+  },
+  "outputProfit": 696.088956,
+  "dailyProfit": 58007.413,
+  "planCost": 1117740.809,
+  "planROI": 19.26893049,
+  "planArea": 495,
+  "planProfitArea": 117.1866929
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#2xFE 8xO=>2xSTL",
+  "dailyRuns": 2.857142857,
+  "recipeInputs": [
+   {
+    "material_ticker": "FE",
+    "material_amount": 2
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 8
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "STL",
+    "material_amount": 2
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 24192000,
+   "runtimeShare": 0.28,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 51.2458655,
+   "workforceCost": 240.6859717,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "FE",
+     "amount": 2,
+     "costUnit": 922.3121013,
+     "costTotal": 1844.624203
+    },
+    {
+     "ticker": "O",
+     "amount": 8,
+     "costUnit": 35,
+     "costTotal": 280
+    }
+   ],
+   "inputTotal": 2124.624203,
+   "outputCOGM": [
+    {
+     "ticker": "STL",
+     "amount": 2,
+     "costSplit": 1208.27802,
+     "costTotal": 1208.27802
+    }
+   ],
+   "totalCost": 2416.55604,
+   "outputRevenue": 4005.201374,
+   "totalProfit": 1588.645335
+  },
+  "outputProfit": 1588.645335,
+  "dailyProfit": 113474.6668,
+  "planCost": 1117740.809,
+  "planROI": 9.850135198,
+  "planArea": 495,
+  "planProfitArea": 229.241751
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#3xSIO 1xAL=>1xSI",
+  "dailyRuns": 6.666666667,
+  "recipeInputs": [
+   {
+    "material_ticker": "SIO",
+    "material_amount": 3
+   },
+   {
+    "material_ticker": "AL",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "SI",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 10368000,
+   "runtimeShare": 0.12,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 21.96251378,
+   "workforceCost": 103.1511307,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "AL",
+     "amount": 1,
+     "costUnit": 250,
+     "costTotal": 250
+    },
+    {
+     "ticker": "SIO",
+     "amount": 3,
+     "costUnit": 173.3771386,
+     "costTotal": 520.1314157
+    }
+   ],
+   "inputTotal": 770.1314157,
+   "outputCOGM": [
+    {
+     "ticker": "SI",
+     "amount": 1,
+     "costSplit": 895.2450602,
+     "costTotal": 895.2450602
+    }
+   ],
+   "totalCost": 895.2450602,
+   "outputRevenue": 1984.241278,
+   "totalProfit": 1088.996218
+  },
+  "outputProfit": 1088.996218,
+  "dailyProfit": 181499.3697,
+  "planCost": 1117740.809,
+  "planROI": 6.158372954,
+  "planArea": 495,
+  "planProfitArea": 366.6653932
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#3xSIO 1xC 1xO 1xFLX=>1xSI",
+  "dailyRuns": 8.333333333,
+  "recipeInputs": [
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "FLX",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "SIO",
+    "material_amount": 3
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "SI",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 8294400,
+   "runtimeShare": 0.096,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 17.57001103,
+   "workforceCost": 82.52090458,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    },
+    {
+     "ticker": "FLX",
+     "amount": 1,
+     "costUnit": 227.3210602,
+     "costTotal": 227.3210602
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    },
+    {
+     "ticker": "SIO",
+     "amount": 3,
+     "costUnit": 173.3771386,
+     "costTotal": 520.1314157
+    }
+   ],
+   "inputTotal": 932.4524759,
+   "outputCOGM": [
+    {
+     "ticker": "SI",
+     "amount": 1,
+     "costSplit": 1032.543391,
+     "costTotal": 1032.543391
+    }
+   ],
+   "totalCost": 1032.543391,
+   "outputRevenue": 1984.241278,
+   "totalProfit": 951.6978866
+  },
+  "outputProfit": 951.6978866,
+  "dailyProfit": 198270.393,
+  "planCost": 1117740.809,
+  "planROI": 5.63745697,
+  "planArea": 495,
+  "planProfitArea": 400.5462486
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#3xSIO 1xC 1xO=>1xSI",
+  "dailyRuns": 5,
+  "recipeInputs": [
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "SIO",
+    "material_amount": 3
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "SI",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 13824000,
+   "runtimeShare": 0.16,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 29.28335171,
+   "workforceCost": 137.534841,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    },
+    {
+     "ticker": "SIO",
+     "amount": 3,
+     "costUnit": 173.3771386,
+     "costTotal": 520.1314157
+    }
+   ],
+   "inputTotal": 705.1314157,
+   "outputCOGM": [
+    {
+     "ticker": "SI",
+     "amount": 1,
+     "costSplit": 871.9496083,
+     "costTotal": 871.9496083
+    }
+   ],
+   "totalCost": 871.9496083,
+   "outputRevenue": 1984.241278,
+   "totalProfit": 1112.29167
+  },
+  "outputProfit": 1112.29167,
+  "dailyProfit": 139036.4587,
+  "planCost": 1117740.809,
+  "planROI": 8.039192162,
+  "planArea": 495,
+  "planProfitArea": 280.8817348
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#4xAL 1xSI 2xO=>1xCF",
+  "dailyRuns": 2.5,
+  "recipeInputs": [
+   {
+    "material_ticker": "SI",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "AL",
+    "material_amount": 4
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 2
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "CF",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 27648000,
+   "runtimeShare": 0.32,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 58.56670342,
+   "workforceCost": 275.0696819,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "AL",
+     "amount": 4,
+     "costUnit": 250,
+     "costTotal": 1000
+    },
+    {
+     "ticker": "O",
+     "amount": 2,
+     "costUnit": 35,
+     "costTotal": 70
+    },
+    {
+     "ticker": "SI",
+     "amount": 1,
+     "costUnit": 1984.241278,
+     "costTotal": 1984.241278
+    }
+   ],
+   "inputTotal": 3054.241278,
+   "outputCOGM": [
+    {
+     "ticker": "CF",
+     "amount": 1,
+     "costSplit": 3387.877663,
+     "costTotal": 3387.877663
+    }
+   ],
+   "totalCost": 3387.877663,
+   "outputRevenue": 7559.733219,
+   "totalProfit": 4171.855555
+  },
+  "outputProfit": 4171.855555,
+  "dailyProfit": 260740.9722,
+  "planCost": 1117740.809,
+  "planROI": 4.28678623,
+  "planArea": 495,
+  "planProfitArea": 526.7494388
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#4xTIO 1xC 1xO=>2xTI",
+  "dailyRuns": 1.333333333,
+  "recipeInputs": [
+   {
+    "material_ticker": "TIO",
+    "material_amount": 4
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "TI",
+    "material_amount": 2
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 51840000,
+   "runtimeShare": 0.6,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 109.8125689,
+   "workforceCost": 515.7556536,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    },
+    {
+     "ticker": "TIO",
+     "amount": 4,
+     "costUnit": 328.4495045,
+     "costTotal": 1313.798018
+    }
+   ],
+   "inputTotal": 1498.798018,
+   "outputCOGM": [
+    {
+     "ticker": "TI",
+     "amount": 2,
+     "costSplit": 1062.18312,
+     "costTotal": 1062.18312
+    }
+   ],
+   "totalCost": 2124.36624,
+   "outputRevenue": 5082.728064,
+   "totalProfit": 2958.361823
+  },
+  "outputProfit": 2958.361823,
+  "dailyProfit": 98612.06077,
+  "planCost": 1117740.809,
+  "planROI": 11.33472722,
+  "planArea": 495,
+  "planProfitArea": 199.2162844
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#4xTS 1xO 1xAL=>1xSI",
+  "dailyRuns": 8.333333333,
+  "recipeInputs": [
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "AL",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "TS",
+    "material_amount": 4
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "SI",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 8294400,
+   "runtimeShare": 0.096,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 17.57001103,
+   "workforceCost": 82.52090458,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "AL",
+     "amount": 1,
+     "costUnit": 250,
+     "costTotal": 250
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    },
+    {
+     "ticker": "TS",
+     "amount": 4,
+     "costUnit": 137.7875743,
+     "costTotal": 551.1502972
+    }
+   ],
+   "inputTotal": 836.1502972,
+   "outputCOGM": [
+    {
+     "ticker": "SI",
+     "amount": 1,
+     "costSplit": 936.2412128,
+     "costTotal": 936.2412128
+    }
+   ],
+   "totalCost": 936.2412128,
+   "outputRevenue": 1984.241278,
+   "totalProfit": 1048.000065
+  },
+  "outputProfit": 1048.000065,
+  "dailyProfit": 218333.3469,
+  "planCost": 1117740.809,
+  "planROI": 5.119423235,
+  "planArea": 495,
+  "planProfitArea": 441.0774686
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#5xCUO 10xO 1xSIO=>3xCU",
+  "dailyRuns": 2,
+  "recipeInputs": [
+   {
+    "material_ticker": "CUO",
+    "material_amount": 5
+   },
+   {
+    "material_ticker": "SIO",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 10
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "CU",
+    "material_amount": 3
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 34560000,
+   "runtimeShare": 0.4,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 73.20837928,
+   "workforceCost": 343.8371024,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "CUO",
+     "amount": 5,
+     "costUnit": 441.0651419,
+     "costTotal": 2205.32571
+    },
+    {
+     "ticker": "O",
+     "amount": 10,
+     "costUnit": 35,
+     "costTotal": 350
+    },
+    {
+     "ticker": "SIO",
+     "amount": 1,
+     "costUnit": 173.3771386,
+     "costTotal": 173.3771386
+    }
+   ],
+   "inputTotal": 2728.702848,
+   "outputCOGM": [
+    {
+     "ticker": "CU",
+     "amount": 3,
+     "costSplit": 1048.582777,
+     "costTotal": 1048.582777
+    }
+   ],
+   "totalCost": 3145.74833,
+   "outputRevenue": 6446.151914,
+   "totalProfit": 3300.403584
+  },
+  "outputProfit": 3300.403584,
+  "dailyProfit": 165020.1792,
+  "planCost": 1117740.809,
+  "planROI": 6.773358353,
+  "planArea": 495,
+  "planProfitArea": 333.3740994
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#6xALO 1xC 1xO=>3xAL",
+  "dailyRuns": 2,
+  "recipeInputs": [
+   {
+    "material_ticker": "ALO",
+    "material_amount": 6
+   },
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "AL",
+    "material_amount": 3
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 34560000,
+   "runtimeShare": 0.4,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 73.20837928,
+   "workforceCost": 343.8371024,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "ALO",
+     "amount": 6,
+     "costUnit": 166.3865255,
+     "costTotal": 998.3191533
+    },
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    }
+   ],
+   "inputTotal": 1183.319153,
+   "outputCOGM": [
+    {
+     "ticker": "AL",
+     "amount": 3,
+     "costSplit": 533.4548783,
+     "costTotal": 533.4548783
+    }
+   ],
+   "totalCost": 1600.364635,
+   "outputRevenue": 3280.501259,
+   "totalProfit": 1680.136624
+  },
+  "outputProfit": 1680.136624,
+  "dailyProfit": 84006.83119,
+  "planCost": 1117740.809,
+  "planROI": 13.30535616,
+  "planArea": 495,
+  "planProfitArea": 169.7107701
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#6xALO 1xO 1xC 1xFLX=>4xAL",
+  "dailyRuns": 1.666666667,
+  "recipeInputs": [
+   {
+    "material_ticker": "ALO",
+    "material_amount": 6
+   },
+   {
+    "material_ticker": "FLX",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "AL",
+    "material_amount": 4
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 41472000,
+   "runtimeShare": 0.48,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 87.85005513,
+   "workforceCost": 412.6045229,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "ALO",
+     "amount": 6,
+     "costUnit": 166.3865255,
+     "costTotal": 998.3191533
+    },
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    },
+    {
+     "ticker": "FLX",
+     "amount": 1,
+     "costUnit": 227.3210602,
+     "costTotal": 227.3210602
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    }
+   ],
+   "inputTotal": 1410.640213,
+   "outputCOGM": [
+    {
+     "ticker": "AL",
+     "amount": 4,
+     "costSplit": 477.7736979,
+     "costTotal": 477.7736979
+    }
+   ],
+   "totalCost": 1911.094791,
+   "outputRevenue": 4374.001678,
+   "totalProfit": 2462.906887
+  },
+  "outputProfit": 2462.906887,
+  "dailyProfit": 102621.1203,
+  "planCost": 1117740.809,
+  "planROI": 10.89191782,
+  "planArea": 495,
+  "planProfitArea": 207.3153945
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#6xFEO 1xC 1xO 1xFLX=>4xFE",
+  "dailyRuns": 1.666666667,
+  "recipeInputs": [
+   {
+    "material_ticker": "FEO",
+    "material_amount": 6
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "FLX",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "FE",
+    "material_amount": 4
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 41472000,
+   "runtimeShare": 0.48,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 87.85005513,
+   "workforceCost": 412.6045229,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    },
+    {
+     "ticker": "FEO",
+     "amount": 6,
+     "costUnit": 146.2570428,
+     "costTotal": 877.5422569
+    },
+    {
+     "ticker": "FLX",
+     "amount": 1,
+     "costUnit": 227.3210602,
+     "costTotal": 227.3210602
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    }
+   ],
+   "inputTotal": 1289.863317,
+   "outputCOGM": [
+    {
+     "ticker": "FE",
+     "amount": 4,
+     "costSplit": 447.5794738,
+     "costTotal": 447.5794738
+    }
+   ],
+   "totalCost": 1790.317895,
+   "outputRevenue": 3689.248405,
+   "totalProfit": 1898.93051
+  },
+  "outputProfit": 1898.93051,
+  "dailyProfit": 79122.10459,
+  "planCost": 1117740.809,
+  "planROI": 14.12678309,
+  "planArea": 495,
+  "planProfitArea": 159.8426355
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#6xFEO 1xC 1xO=>3xFE",
+  "dailyRuns": 2,
+  "recipeInputs": [
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "FEO",
+    "material_amount": 6
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "FE",
+    "material_amount": 3
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 34560000,
+   "runtimeShare": 0.4,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 73.20837928,
+   "workforceCost": 343.8371024,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    },
+    {
+     "ticker": "FEO",
+     "amount": 6,
+     "costUnit": 146.2570428,
+     "costTotal": 877.5422569
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    }
+   ],
+   "inputTotal": 1062.542257,
+   "outputCOGM": [
+    {
+     "ticker": "FE",
+     "amount": 3,
+     "costSplit": 493.1959129,
+     "costTotal": 493.1959129
+    }
+   ],
+   "totalCost": 1479.587739,
+   "outputRevenue": 2766.936304,
+   "totalProfit": 1287.348565
+  },
+  "outputProfit": 1287.348565,
+  "dailyProfit": 64367.42826,
+  "planCost": 1117740.809,
+  "planROI": 17.36500648,
+  "planArea": 495,
+  "planProfitArea": 130.0352086
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#8xREO 1xC 1xO 1xFLX=>5xRE",
+  "dailyRuns": 1.25,
+  "recipeInputs": [
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "FLX",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "REO",
+    "material_amount": 8
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RE",
+    "material_amount": 5
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 55296000,
+   "runtimeShare": 0.64,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 117.1334068,
+   "workforceCost": 550.1393638,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    },
+    {
+     "ticker": "FLX",
+     "amount": 1,
+     "costUnit": 227.3210602,
+     "costTotal": 227.3210602
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    },
+    {
+     "ticker": "REO",
+     "amount": 8,
+     "costUnit": 2435.201794,
+     "costTotal": 19481.61435
+    }
+   ],
+   "inputTotal": 19893.93541,
+   "outputCOGM": [
+    {
+     "ticker": "RE",
+     "amount": 5,
+     "costSplit": 4112.241636,
+     "costTotal": 4112.241636
+    }
+   ],
+   "totalCost": 20561.20818,
+   "outputRevenue": 24647.35265,
+   "totalProfit": 4086.144467
+  },
+  "outputProfit": 4086.144467,
+  "dailyProfit": 127692.0146,
+  "planCost": 1117740.809,
+  "planROI": 8.753411972,
+  "planArea": 495,
+  "planProfitArea": 257.9636658
+ },
+ {
+  "buildingTicker": "SME",
+  "optimalSetup": {
+   "ticker": "SME",
+   "amount": 20,
+   "sto": 2,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 470,
+   "HB1": 10,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "SME#8xREO 1xC 1xO=>4xRE",
+  "dailyRuns": 1.25,
+  "recipeInputs": [
+   {
+    "material_ticker": "REO",
+    "material_amount": 8
+   },
+   {
+    "material_ticker": "C",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "O",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "RE",
+    "material_amount": 4
+   }
+  ],
+  "cogc": "METALLURGY",
+  "cogm": {
+   "runtime": 55296000,
+   "runtimeShare": 0.64,
+   "efficiency": 1.25,
+   "degradation": 183.0209482,
+   "degradationShare": 117.1334068,
+   "workforceCost": 550.1393638,
+   "workforceCostTotal": 859.592756,
+   "inputCost": [
+    {
+     "ticker": "C",
+     "amount": 1,
+     "costUnit": 150,
+     "costTotal": 150
+    },
+    {
+     "ticker": "O",
+     "amount": 1,
+     "costUnit": 35,
+     "costTotal": 35
+    },
+    {
+     "ticker": "REO",
+     "amount": 8,
+     "costUnit": 2435.201794,
+     "costTotal": 19481.61435
+    }
+   ],
+   "inputTotal": 19666.61435,
+   "outputCOGM": [
+    {
+     "ticker": "RE",
+     "amount": 4,
+     "costSplit": 5083.47178,
+     "costTotal": 5083.47178
+    }
+   ],
+   "totalCost": 20333.88712,
+   "outputRevenue": 19717.88212,
+   "totalProfit": -616.0050026
+  },
+  "outputProfit": -616.0050026,
+  "dailyProfit": -19250.15633,
+  "planCost": 1117740.809,
+  "planROI": -58.06398608,
+  "planArea": 495,
+  "planProfitArea": -38.88920471
+ },
+ {
+  "buildingTicker": "PP1",
+  "optimalSetup": {
+   "ticker": "PP1",
+   "amount": 16,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 449,
+   "HB1": 13,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "PP1#150xPE=>1xBDE",
+  "dailyRuns": 3.333333333,
+  "recipeInputs": [
+   {
+    "material_ticker": "PE",
+    "material_amount": 150
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "BDE",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "CONSTRUCTION",
+  "cogm": {
+   "runtime": 20736000,
+   "runtimeShare": 0.24,
+   "efficiency": 1.25,
+   "degradation": 137.1054772,
+   "degradationShare": 32.90531452,
+   "workforceCost": 330.0836183,
+   "workforceCostTotal": 1375.34841,
+   "inputCost": [
+    {
+     "ticker": "PE",
+     "amount": 150,
+     "costUnit": 9,
+     "costTotal": 1350
+    }
+   ],
+   "inputTotal": 1350,
+   "outputCOGM": [
+    {
+     "ticker": "BDE",
+     "amount": 1,
+     "costSplit": 1712.988933,
+     "costTotal": 1712.988933
+    }
+   ],
+   "totalCost": 1712.988933,
+   "outputRevenue": 2414.248625,
+   "totalProfit": 701.259692
+  },
+  "outputProfit": 701.259692,
+  "dailyProfit": 46750.64614,
+  "planCost": 882625.9056,
+  "planROI": 18.87943758,
+  "planArea": 474,
+  "planProfitArea": 98.63005514
+ },
+ {
+  "buildingTicker": "PP1",
+  "optimalSetup": {
+   "ticker": "PP1",
+   "amount": 16,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 449,
+   "HB1": 13,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "PP1#1xFE 2xLST=>1xBSE",
+  "dailyRuns": 4,
+  "recipeInputs": [
+   {
+    "material_ticker": "LST",
+    "material_amount": 2
+   },
+   {
+    "material_ticker": "FE",
+    "material_amount": 1
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "BSE",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "CONSTRUCTION",
+  "cogm": {
+   "runtime": 17280000,
+   "runtimeShare": 0.2,
+   "efficiency": 1.25,
+   "degradation": 137.1054772,
+   "degradationShare": 27.42109543,
+   "workforceCost": 275.0696819,
+   "workforceCostTotal": 1375.34841,
+   "inputCost": [
+    {
+     "ticker": "FE",
+     "amount": 1,
+     "costUnit": 922.3121013,
+     "costTotal": 922.3121013
+    },
+    {
+     "ticker": "LST",
+     "amount": 2,
+     "costUnit": 150.8477969,
+     "costTotal": 301.6955939
+    }
+   ],
+   "inputTotal": 1224.007695,
+   "outputCOGM": [
+    {
+     "ticker": "BSE",
+     "amount": 1,
+     "costSplit": 1526.498473,
+     "costTotal": 1526.498473
+    }
+   ],
+   "totalCost": 1526.498473,
+   "outputRevenue": 1814.777322,
+   "totalProfit": 288.2788491
+  },
+  "outputProfit": 288.2788491,
+  "dailyProfit": 23062.30793,
+  "planCost": 882625.9056,
+  "planROI": 38.27136071,
+  "planArea": 474,
+  "planProfitArea": 48.65465808
+ },
+ {
+  "buildingTicker": "PP1",
+  "optimalSetup": {
+   "ticker": "PP1",
+   "amount": 16,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 449,
+   "HB1": 13,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "PP1#1xFE 50xPE=>1xBTA",
+  "dailyRuns": 6.666666667,
+  "recipeInputs": [
+   {
+    "material_ticker": "FE",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "PE",
+    "material_amount": 50
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "BTA",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "CONSTRUCTION",
+  "cogm": {
+   "runtime": 10368000,
+   "runtimeShare": 0.12,
+   "efficiency": 1.25,
+   "degradation": 137.1054772,
+   "degradationShare": 16.45265726,
+   "workforceCost": 165.0418092,
+   "workforceCostTotal": 1375.34841,
+   "inputCost": [
+    {
+     "ticker": "FE",
+     "amount": 1,
+     "costUnit": 922.3121013,
+     "costTotal": 922.3121013
+    },
+    {
+     "ticker": "PE",
+     "amount": 50,
+     "costUnit": 9,
+     "costTotal": 450
+    }
+   ],
+   "inputTotal": 1372.312101,
+   "outputCOGM": [
+    {
+     "ticker": "BTA",
+     "amount": 1,
+     "costSplit": 1553.806568,
+     "costTotal": 1553.806568
+    }
+   ],
+   "totalCost": 1553.806568,
+   "outputRevenue": 1505.472077,
+   "totalProfit": -48.33449048
+  },
+  "outputProfit": -48.33449048,
+  "dailyProfit": -6444.598731,
+  "planCost": 882625.9056,
+  "planROI": -136.9559134,
+  "planArea": 474,
+  "planProfitArea": -13.59619985
+ },
+ {
+  "buildingTicker": "PP1",
+  "optimalSetup": {
+   "ticker": "PP1",
+   "amount": 16,
+   "sto": 1,
+   "sta": 0,
+   "ste": 0,
+   "stv": 0,
+   "stw": 0,
+   "total_area": 449,
+   "HB1": 13,
+   "HB2": 0,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0
+  },
+  "recipeId": "PP1#2xFE 1xLST=>1xBBH",
+  "dailyRuns": 3.03030303,
+  "recipeInputs": [
+   {
+    "material_ticker": "LST",
+    "material_amount": 1
+   },
+   {
+    "material_ticker": "FE",
+    "material_amount": 2
+   }
+  ],
+  "recipeOutputs": [
+   {
+    "material_ticker": "BBH",
+    "material_amount": 1
+   }
+  ],
+  "cogc": "CONSTRUCTION",
+  "cogm": {
+   "runtime": 22809600,
+   "runtimeShare": 0.264,
+   "efficiency": 1.25,
+   "degradation": 137.1054772,
+   "degradationShare": 36.19584597,
+   "workforceCost": 363.0919801,
+   "workforceCostTotal": 1375.34841,
+   "inputCost": [
+    {
+     "ticker": "FE",
+     "amount": 2,
+     "costUnit": 922.3121013,
+     "costTotal": 1844.624203
+    },
+    {
+     "ticker": "LST",
+     "amount": 1,
+     "costUnit": 150.8477969,
+     "costTotal": 150.8477969
+    }
+   ],
+   "inputTotal": 1995.472,
+   "outputCOGM": [
+    {
+     "ticker": "BBH",
+     "amount": 1,
+     "costSplit": 2394.759826,
+     "costTotal": 2394.759826
+    }
+   ],
+   "totalCost": 2394.759826,
+   "outputRevenue": 2502.116413,
+   "totalProfit": 107.3565878
+  },
+  "outputProfit": 107.3565878,
+  "dailyProfit": 6506.459865,
+  "planCost": 882625.9056,
+  "planROI": 135.6537847,
+  "planArea": 474,
+  "planProfitArea": 13.72670858
+ }
+]

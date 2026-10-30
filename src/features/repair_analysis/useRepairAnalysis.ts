@@ -4,6 +4,7 @@ import { computed, type Ref, shallowRef, watch } from "vue";
 import { i18n } from "@/lib/i18n";
 import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
 import { usePrice } from "@/features/cx/usePrice";
+import { useRunProgress } from "@/util/runProgress";
 
 // Util
 import type { IPriceBook } from "@/features/cx/priceBook";
@@ -50,16 +51,16 @@ export function useRepairAnalysis(
 	};
 
 	const book = shallowRef<IPriceBook>();
-	let run = 0;
+	const { start } = useRunProgress();
 
 	watch(
 		[data, cxUuid, planetNaturalId],
 		async () => {
 			// a slower older run must not replace a newer book
-			const current = ++run;
+			const run = start();
 			try {
 				const loaded = await getPriceBook();
-				if (current === run) book.value = loaded;
+				if (run.isCurrent()) book.value = loaded;
 			} catch (err) {
 				console.error(err);
 			}

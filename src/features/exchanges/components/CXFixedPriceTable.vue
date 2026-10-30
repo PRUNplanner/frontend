@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, nextTick, ref, watch, useTemplateRef } from "vue";
+	import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
 	import { useI18n } from "vue-i18n";
 
 	// Composables
@@ -60,29 +60,70 @@
 	const { materialSelectOptions } = useMaterialData();
 	const { planetName } = usePlanetData();
 
-	// local rows keep an empty new row and each row's stored shape
-	const rows = ref<IFixedPriceRow[]>([]);
+	// what stored prices can't hold: an empty row (new, or both sides
+	// cleared) at its place, and the shape each row was stored with
+	const emptyRows = ref<{ row: IFixedPriceRow; at: number }[]>([]);
+	const shapes = ref<Record<string, IFixedPriceRow["stored"]>>({});
+
+	const sameOptions = (a: CXDataTickerOption[], b: CXDataTickerOption[]) =>
+		a.length === b.length &&
+		a.every(
+			(o, i) =>
+				o.ticker === b[i].ticker &&
+				o.type === b[i].type &&
+				o.value === b[i].value
+		);
+
+	// the prices this table wrote last; others came from outside (a
+	// discard, a reload), the local state goes with them
+	let written: CXDataTickerOption[] = prices.value;
 	watch(
 		prices,
 		(stored) => {
-			if (JSON.stringify(stored) !== JSON.stringify(fromRows(rows.value)))
-				rows.value = toRows(stored);
+			if (sameOptions(stored, written)) return;
+			written = stored;
+			emptyRows.value = [];
+			shapes.value = {};
 		},
-		{ immediate: true, deep: true }
+		{ deep: true }
 	);
 
-	function commit(): void {
-		prices.value = fromRows(rows.value);
-	}
+	const rows = computed<IFixedPriceRow[]>({
+		get: () => {
+			const list = toRows(prices.value).map((row) => {
+				const shape = shapes.value[row.ticker];
+				const own = shape ? { ...row, stored: shape } : undefined;
+				// a row keeps its shape while it stores the same options
+				return own && sameOptions(fromRows([own]), fromRows([row]))
+					? own
+					: row;
+			});
+			for (const { row, at } of emptyRows.value)
+				if (!list.some((r) => r.ticker === row.ticker))
+					list.splice(at, 0, row);
+			return list;
+		},
+		set: (next) => {
+			// the getter already applied each row's shape
+			shapes.value = Object.fromEntries(
+				next.map((r) => [r.ticker, r.stored])
+			);
+			emptyRows.value = next.flatMap((row, at) =>
+				row.buy === null && row.sell === null ? [{ row, at }] : []
+			);
+			written = fromRows(next);
+			prices.value = written;
+		},
+	});
 
 	function setSide(row: IFixedPriceRow, side: "buy" | "sell", v: number | null) {
-		row[side] = v;
-		commit();
+		rows.value = rows.value.map((r) =>
+			r.ticker === row.ticker ? { ...r, [side]: v } : r
+		);
 	}
 
 	function remove(ticker: string): void {
 		rows.value = rows.value.filter((r) => r.ticker !== ticker);
-		commit();
 	}
 
 	const tableRef = useTemplateRef<HTMLElement>("table");
@@ -93,8 +134,7 @@
 		sell: number | null = null
 	): Promise<void> {
 		if (rows.value.some((r) => r.ticker === ticker)) return;
-		rows.value.push({ ticker, buy, sell, stored: "new" });
-		commit();
+		rows.value = [...rows.value, { ticker, buy, sell, stored: "new" }];
 		await nextTick();
 		tableRef.value
 			?.querySelector<HTMLInputElement>(`[data-buy="${ticker}"] input`)

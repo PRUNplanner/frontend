@@ -33,7 +33,7 @@ import {
 } from "@/features/fio_repair/fioRepair.util";
 
 import { planetDisplayName } from "@/util/planetName";
-import { yieldToBrowser } from "@/util/yieldToBrowser";
+import { useRunProgress } from "@/util/runProgress";
 
 // Types & Interfaces
 import type { IPriceBook } from "@/features/cx/priceBook";
@@ -92,11 +92,11 @@ export function useFIORepair(
 	);
 	const { getPriceBook } = usePrice(cxUuid, ref(undefined));
 	const book = shallowRef<IPriceBook>();
-	let priceRun = 0;
+	const { start: startPrices } = useRunProgress();
 	async function loadPrices(): Promise<void> {
-		const current = ++priceRun;
+		const run = startPrices();
 		const loaded = await getPriceBook();
-		if (current === priceRun) book.value = loaded;
+		if (run.isCurrent()) book.value = loaded;
 	}
 
 	const planets = shallowRef(new Map<string, Planet>());
@@ -146,61 +146,54 @@ export function useFIORepair(
 		);
 
 	const best = shallowRef(new Map<string, Record<string, number>>());
-	const progress = ref({ current: 0, total: 0 });
-	let calcRun: Promise<void> = Promise.resolve();
+	const { progress, start: startCalc } = useRunProgress();
 
 	/**
 	 * Calculates the matched and picked plans not calculated yet, one after
-	 * the other like FIO Burn, yielding to the DOM between plans
+	 * the other like FIO Burn, yielding to the DOM between plans. A newer
+	 * call takes over: it picks up the plans an older one didn't finish.
 	 * @author jplacht
 	 *
 	 * @async
 	 * @returns {Promise<void>}
 	 */
-	function calculate(): Promise<void> {
-		calcRun = calcRun
-			.catch(() => {})
-			.then(async () => {
-				const todo = new Map<string, IFIORepairCandidate>();
-				for (const m of Object.values(matches.value))
-					if (m.candidate && !best.value.has(keyOf(m.candidate)))
-						todo.set(keyOf(m.candidate), m.candidate);
-				if (!todo.size) return;
+	async function calculate(): Promise<void> {
+		const todo = new Map<string, IFIORepairCandidate>();
+		for (const m of Object.values(matches.value))
+			if (m.candidate && !best.value.has(keyOf(m.candidate)))
+				todo.set(keyOf(m.candidate), m.candidate);
+		if (!todo.size) return;
 
-				progress.value = { current: 0, total: todo.size };
-				const gameData = await loadGameData();
-				for (const [key, c] of todo) {
-					const cx = findEmpireCXUuid(c.empire?.uuid);
-					try {
-						const ctx = await createContext(
-							gameData,
-							c.plan.planet_natural_id,
-							cx
-						);
-						const { result } = calculatePlan(
-							{
-								plan: c.plan,
-								empire: getActiveEmpire(
-									c.empire?.uuid,
-									empires.value
-								),
-								cxUuid: cx,
-								recipeOptions: false,
-							},
-							ctx
-						);
-						best.value = new Map(best.value).set(
-							key,
-							bestDays(result, ctx.prices)
-						);
-					} catch (err) {
-						console.error(err);
-					}
-					progress.value.current++;
-					await yieldToBrowser();
-				}
-			});
-		return calcRun;
+		const run = startCalc(todo.size);
+		const gameData = await loadGameData();
+		for (const [key, c] of todo) {
+			if (!run.isCurrent()) return;
+			const cx = findEmpireCXUuid(c.empire?.uuid);
+			try {
+				const ctx = await createContext(
+					gameData,
+					c.plan.planet_natural_id,
+					cx
+				);
+				const { result } = calculatePlan(
+					{
+						plan: c.plan,
+						empire: getActiveEmpire(c.empire?.uuid, empires.value),
+						cxUuid: cx,
+						recipeOptions: false,
+					},
+					ctx
+				);
+				best.value = new Map(best.value).set(
+					key,
+					bestDays(result, ctx.prices)
+				);
+			} catch (err) {
+				console.error(err);
+			}
+			run.step();
+			await run.yield();
+		}
 	}
 
 	/**
