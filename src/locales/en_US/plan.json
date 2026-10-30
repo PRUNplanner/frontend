@@ -558,7 +558,8 @@
 		},
 		"infrastructure": {
 			"auto_optimize_tooltip": "Automatically optimize habitations to meet workforce needs as buildings are added.",
-			"amount_label": "Amount of {infrastructure}"
+			"amount_label": "Amount of {infrastructure}",
+			"optimize_failed": "Couldn't find a habitation setup for this workforce."
 		},
 		"experts": {
 			"warning": "Maximum number of experts on a base is 6. You currently have {expert_number} experts assigned.",
