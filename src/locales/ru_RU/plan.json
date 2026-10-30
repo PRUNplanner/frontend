@@ -558,7 +558,8 @@
 		},
 		"infrastructure": {
 			"auto_optimize_tooltip": "Автоматическая оптимизация поселений для удовлетворения кадровых потребностей по мере добавления зданий.",
-			"amount_label": "Amount of {infrastructure}"
+			"amount_label": "Amount of {infrastructure}",
+			"optimize_failed": "Couldn't find a habitation setup for this workforce."
 		},
 		"experts": {
 			"warning": "Максимальное количество экспертов на базе - 6. В настоящее время назначены эксперты {expert_number}.",
