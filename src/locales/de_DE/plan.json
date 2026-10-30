@@ -558,7 +558,8 @@
 		},
 		"infrastructure": {
 			"auto_optimize_tooltip": "Automatische Optimierung der Belegschaftsgebäude, um die Bedürfnisse der Belegschaft zu befriedigen, wenn Gebäude hinzugefügt werden.",
-			"amount_label": "Anzahl {infrastructure}"
+			"amount_label": "Anzahl {infrastructure}",
+			"optimize_failed": "Couldn't find a habitation setup for this workforce."
 		},
 		"experts": {
 			"warning": "Maximale Anzahl von Experten auf einer Basis ist 6. Du hast derzeit {expert_number} Experten zugewiesen.",
